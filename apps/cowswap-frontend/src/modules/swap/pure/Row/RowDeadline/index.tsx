@@ -1,4 +1,5 @@
 import { INPUT_OUTPUT_EXPLANATION, MINIMUM_ETH_FLOW_DEADLINE_SECONDS } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/types'
 import { RowFixed } from '@cowprotocol/ui'
 import { MouseoverTooltipContent } from '@cowprotocol/ui'
 
@@ -33,7 +34,7 @@ export function getNonNativeOrderDeadlineTooltip() {
 }
 
 export interface RowDeadlineProps extends Omit<RowSlippageProps, 'allowedSlippage'> {
-  toggleSettings: () => void
+  toggleSettings: Command
   isEoaEthFlow: boolean
   symbols?: (string | undefined)[]
   displayDeadline: string

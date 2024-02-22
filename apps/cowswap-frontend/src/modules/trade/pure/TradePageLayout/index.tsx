@@ -6,6 +6,7 @@ export const PageWrapper = styled.div<{ isUnlocked: boolean }>`
   max-width: 1500px;
   margin: 0 auto;
   grid-template-columns: ${({ theme, isUnlocked }) => (isUnlocked ? theme.appBody.maxWidth.swap : '')} 1fr;
+  grid-template-rows: max-content;
   grid-column-gap: 20px;
 
   ${({ theme }) => theme.mediaWidth.upToLargeAlt`
@@ -22,6 +23,7 @@ export const PrimaryWrapper = styled.div`
   display: flex;
   flex-flow: column wrap;
   gap: 16px;
+  width: 100%;
   max-width: ${({ theme }) => theme.appBody.maxWidth.swap};
   margin: 0 auto;
   color: inherit;

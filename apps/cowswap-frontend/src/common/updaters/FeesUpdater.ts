@@ -2,11 +2,13 @@ import { useEffect, useMemo } from 'react'
 
 import { DEFAULT_DECIMALS } from '@cowprotocol/common-const'
 import { useDebounce, useIsOnline, useIsWindowVisible } from '@cowprotocol/common-hooks'
-import { getIsNativeToken, isAddress, tryParseCurrencyAmount } from '@cowprotocol/common-utils'
+import { getIsNativeToken, isAddress, isSellOrder, tryParseCurrencyAmount } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { useENSAddress } from '@cowprotocol/ens'
 import { useIsUnsupportedToken } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
+
+import ms from 'ms.macro'
 
 import { useRefetchQuoteCallback } from 'legacy/hooks/useRefetchPriceCallback'
 import { useAllQuotes, useIsBestQuoteLoading, useSetQuoteError } from 'legacy/state/price/hooks'
@@ -26,9 +28,9 @@ import { getPriceQuality } from 'api/gnosisProtocol/api'
 import { useVerifiedQuotesEnabled } from '../hooks/featureFlags/useVerifiedQuotesEnabled'
 
 export const TYPED_VALUE_DEBOUNCE_TIME = 350
-const REFETCH_CHECK_INTERVAL = 10000 // Every 10s
-const RENEW_FEE_QUOTES_BEFORE_EXPIRATION_TIME = 30000 // Will renew the quote if there's less than 30 seconds left for the quote to expire
-const WAITING_TIME_BETWEEN_EQUAL_REQUESTS = 5000 // Prevents from sending the same request to often (max, every 5s)
+export const SWAP_QUOTE_CHECK_INTERVAL = ms`10s` // Every 10s
+const RENEW_FEE_QUOTES_BEFORE_EXPIRATION_TIME = ms`30s` // Will renew the quote if there's less than 30 seconds left for the quote to expire
+const WAITING_TIME_BETWEEN_EQUAL_REQUESTS = ms`5s` // Prevents from sending the same request to often (max, every 5s)
 
 type FeeQuoteParams = Omit<LegacyFeeQuoteParams, 'validTo'>
 
@@ -188,10 +190,7 @@ export function FeesUpdater(): null {
 
     // Don't refetch if the amount is missing
     const kind = independentField === Field.INPUT ? OrderKind.SELL : OrderKind.BUY
-    const amount = tryParseCurrencyAmount(
-      typedValue,
-      (kind === OrderKind.SELL ? sellCurrency : buyCurrency) ?? undefined
-    )
+    const amount = tryParseCurrencyAmount(typedValue, (isSellOrder(kind) ? sellCurrency : buyCurrency) ?? undefined)
     if (!amount) return
 
     const fromDecimals = sellCurrency?.decimals ?? DEFAULT_DECIMALS
@@ -258,7 +257,7 @@ export function FeesUpdater(): null {
     // Note that refetchFee won't refresh if it doesn't need to (i.e. the quote is valid for a long time)
     const intervalId = setInterval(() => {
       refetchQuoteIfRequired()
-    }, REFETCH_CHECK_INTERVAL)
+    }, SWAP_QUOTE_CHECK_INTERVAL)
 
     return () => clearInterval(intervalId)
   }, [

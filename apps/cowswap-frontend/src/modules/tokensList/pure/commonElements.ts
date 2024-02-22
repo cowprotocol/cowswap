@@ -50,8 +50,8 @@ export const ImportButton = styled.button`
 
 export const CommonListContainer = styled.div`
   display: block;
-  height: 100vh;
   width: 100%;
+  height: 100%;
   overflow: auto;
 
   ${({ theme }) => theme.colorScrollbar};

@@ -1,3 +1,4 @@
+import { isSellOrder } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 
 import { TRADE_URL_BUY_AMOUNT_KEY, TRADE_URL_SELL_AMOUNT_KEY } from '../const/tradeUrl'
@@ -16,7 +17,7 @@ export function parameterizeTradeSearch(search: string, searchParamsToAdd?: Trad
   const searchParams = new URLSearchParams(search)
 
   const amountQueryKey = searchParamsToAdd
-    ? searchParamsToAdd.kind === OrderKind.SELL
+    ? isSellOrder(searchParamsToAdd.kind)
       ? TRADE_URL_SELL_AMOUNT_KEY
       : TRADE_URL_BUY_AMOUNT_KEY
     : undefined

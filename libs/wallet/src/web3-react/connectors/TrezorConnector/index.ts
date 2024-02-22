@@ -9,6 +9,7 @@ import type transformTypedData from '@trezor/connect-plugin-ethereum'
 import type { TrezorConnect } from '@trezor/connect-web'
 import { getCurrentChainIdFromUrl } from '@cowprotocol/common-utils'
 import { RPC_URLS } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/types'
 
 const defaultChainId = getCurrentChainIdFromUrl()
 
@@ -35,7 +36,7 @@ export class TrezorConnector extends Connector {
 
   private accountsOffset = 0
 
-  private cancelActivation: () => void = () => void 0
+  private cancelActivation: Command = () => void 0
 
   connectEagerly(...args: unknown[]) {
     return this.activate(args[0] as SupportedChainId)

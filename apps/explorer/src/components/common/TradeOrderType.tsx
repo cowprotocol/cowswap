@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { capitalize } from 'utils'
 import { OrderKind } from '@cowprotocol/cow-sdk'
+import { isSellOrder } from '@cowprotocol/common-utils'
 
 const TradeTypeWrapper = styled.div`
   span {
@@ -18,11 +19,9 @@ export type TradeTypeProps = {
 }
 
 const TradeOrderType = ({ kind }: TradeTypeProps): JSX.Element | null => {
-  const isBuyOrder = kind === 'buy'
-
   return (
     <TradeTypeWrapper>
-      <span className={isBuyOrder ? 'long' : 'short'}>{capitalize(kind)}</span>
+      <span className={isSellOrder(kind) ? 'short' : 'long'}>{capitalize(kind)}</span>
     </TradeTypeWrapper>
   )
 }

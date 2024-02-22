@@ -1,12 +1,8 @@
-import { RowBetween } from '@cowprotocol/ui'
-import { ExternalLink } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
+import { BackButton, UI } from '@cowprotocol/ui'
 
 import { transparentize } from 'color2k'
-import { Link } from 'react-router-dom'
+import { X } from 'react-feather'
 import styled, { css } from 'styled-components/macro'
-
-import { CloseIcon } from 'legacy/theme'
 
 export const Wrapper = styled.div`
   width: 100%;
@@ -16,45 +12,11 @@ export const Wrapper = styled.div`
   overflow-y: auto; // fallback for 'overlay'
   overflow-y: overlay;
   height: inherit;
+
   strong {
     font-weight: 600;
   }
   ${({ theme }) => theme.colorScrollbar};
-`
-
-export const Section = styled.div`
-  padding: 0 16px 16px;
-  align-items: center;
-  justify-content: flex-start;
-  display: flex;
-  flex-flow: column wrap;
-`
-
-export const Header = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  background: var(${UI.COLOR_PAPER});
-  position: sticky;
-  top: 0;
-  left: 0;
-  width: 100%;
-  padding: 16px 0;
-  z-index: 20;
-`
-
-export const CloseIconWrapper = styled(CloseIcon)<{ margin?: string }>`
-  display: flex;
-  margin: ${({ margin }) => margin ?? '0 0 0 auto'};
-  opacity: 0.6;
-  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
-  height: 28px;
-  width: 28px;
-
-  &:hover {
-    opacity: 1;
-  }
 `
 
 export const WalletIcon = styled.div`
@@ -102,85 +64,14 @@ export const WalletIcon = styled.div`
   }
 `
 
-export const GPModalHeader = styled(RowBetween)`
-  position: sticky;
-  top: 0;
-  left: 0;
-  width: 100%;
-  padding: 16px 0;
-  background: var(${UI.COLOR_PAPER});
-  z-index: 20;
-`
-
-export const InternalLink = styled(Link)``
-
-export const StyledIcon = styled.img`
-  height: auto;
-  width: 20px;
-  max-height: 100%;
-  margin: 0 10px 0 0;
-`
-
-export const ExternalLinkCustom = styled(ExternalLink)`
-  margin: 12px auto 32px;
-`
-
-export const ButtonGroup = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  margin: 12px 0 0;
-  width: 100%;
-
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    flex-direction: column;
-  `}
-`
-
-export const ButtonCustom = styled.button`
-  display: flex;
-  flex: 1 1 auto;
-  align-self: center;
-  justify-content: center;
-  align-items: center;
-  border-radius: 16px;
-  min-height: 52px;
-  border: 1px solid ${({ theme }) => theme.border2};
-  color: inherit;
-  background: transparent;
-  outline: 0;
-  padding: 8px 16px;
-  margin: 16px 0 0;
-  font-size: 14px;
-  line-height: 1;
-  font-weight: 500;
-  transition: background var(${UI.ANIMATION_DURATION}) ease-in-out;
-  cursor: pointer;
-
-  &:hover {
-    background: ${({ theme }) => theme.border2};
-  }
-
-  > a {
-    display: flex;
-    align-items: center;
-    color: inherit;
-    text-decoration: none;
-  }
-`
-
 export const UpperSection = styled.div`
   display: flex;
   flex-flow: column wrap;
-  padding: 16px 16px 32px;
+  padding: 26px 16px 32px;
   background: var(${UI.COLOR_PAPER_DARKER});
   border-radius: 16px 16px 0 0;
   color: inherit;
-
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    border-radius: 0;
-  `};
+  position: relative;
 
   > span {
     font-size: 18px;
@@ -200,9 +91,10 @@ export const UpperSection = styled.div`
 export const LowerSection = styled.div`
   display: flex;
   flex-flow: column wrap;
-  padding: 16px;
-  margin: 16px auto;
+  padding: 32px 16px;
   color: inherit;
+  background: var(${UI.COLOR_PAPER});
+  border-radius: 0 0 16px 16px;
 
   > h3 {
     text-align: center;
@@ -364,28 +256,29 @@ export const StepsWrapper = styled.div`
   }
 `
 
-export const ApproveWrapper = styled.div`
-  display: flex;
-  flex-flow: column wrap;
-  width: 100%;
-  padding: 26px 16px 32px;
-  gap: 32px;
-  color: inherit;
+export const CloseIcon = styled(X)`
+  cursor: pointer;
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  color: var(${UI.COLOR_TEXT});
+  transition: color var(${UI.ANIMATION_DURATION}) ease-in-out;
 
-  > h3 {
-    font-size: 21px;
-    line-height: 1.2;
-    font-weight: 400;
-    text-align: center;
-    width: 100%;
-    margin: 0 auto;
-    color: inherit;
+  &:hover {
+    color: var(${UI.COLOR_PRIMARY});
   }
+`
+
+export const BackButtonStyled = styled(BackButton)`
+  position: absolute;
+  top: 16px;
+  left: 16px;
 `
 
 export const ApproveComparison = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
+  grid-template-rows: max-content;
   grid-gap: 16px;
   margin: 0 auto;
   width: 100%;

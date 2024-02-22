@@ -1,4 +1,4 @@
-import { ButtonPrimary } from '@cowprotocol/ui'
+import { BackButton, ButtonPrimary } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
@@ -10,6 +10,8 @@ import { CloseIcon } from 'legacy/theme'
 const Wrapper = styled.div`
   width: 100%;
   padding: 15px;
+  background: var(${UI.COLOR_PAPER});
+  border-radius: 20px;
 `
 
 const Header = styled.div`
@@ -23,13 +25,14 @@ const Header = styled.div`
 const Body = styled.div`
   width: 100%;
   text-align: center;
-  margin: 40px 0;
+  margin: 80px 0;
 `
 
 const Text = styled.div`
   color: var(${UI.COLOR_DANGER});
   font-weight: 500;
   font-size: 16px;
+  word-break: break-word;
 `
 
 const AlertIcon = styled(AlertTriangle)`
@@ -38,21 +41,27 @@ const AlertIcon = styled(AlertTriangle)`
   margin-bottom: 15px;
 `
 
+const BackButtonStyled = styled(BackButton)`
+  margin-right: -22px;
+`
+
 export interface TransactionErrorContentProps {
   message: JSX.Element | string
   onDismiss(): void
+  modalMode?: boolean
 }
 
 export function TransactionErrorContent(props: TransactionErrorContentProps) {
-  const { message, onDismiss } = props
+  const { message, onDismiss, modalMode } = props
 
   return (
     <Wrapper>
       <Header>
+        {!modalMode && <BackButtonStyled onClick={onDismiss} />}
         <span>
           <Trans>Error</Trans>
         </span>
-        <CloseIcon onClick={onDismiss} />
+        {!modalMode ? <div></div> : <CloseIcon onClick={onDismiss} />}
       </Header>
       <Body>
         <AlertIcon size={64} />

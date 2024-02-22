@@ -27,9 +27,12 @@ import DecodeAppData from 'components/AppData/DecodeAppData'
 import { TAB_QUERY_PARAM_KEY } from '../../../explorer/const'
 import { getUiOrderType } from 'utils/getUiOrderType'
 
+import { Command } from '@cowprotocol/types'
+
 const Table = styled(SimpleTable)`
   > tbody > tr {
     grid-template-columns: 27rem auto;
+    grid-template-rows: max-content;
     padding: 1.4rem 0 1.4rem 1.1rem;
 
     ${media.mediumDown} {
@@ -162,9 +165,9 @@ export type Props = {
   order: Order
   showFillsButton: boolean | undefined
   areTradesLoading: boolean
-  viewFills: () => void
+  viewFills: Command
   isPriceInverted: boolean
-  invertPrice: () => void
+  invertPrice: Command
 }
 
 export function DetailsTable(props: Props): JSX.Element | null {

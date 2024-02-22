@@ -1,12 +1,11 @@
 import React from 'react'
 
-import { shortenAddress } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { isAddress } from 'ethers/lib/utils'
 import styled from 'styled-components/macro'
 
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
+import { RecipientRow } from 'modules/trade'
 import { ConfirmDetailsItem } from 'modules/trade/pure/ConfirmDetailsItem'
 import { ReviewOrderModalAmountRow } from 'modules/trade/pure/ReviewOrderModalAmountRow'
 
@@ -14,7 +13,7 @@ import { PartsState } from '../../state/partsStateAtom'
 import { deadlinePartsDisplay } from '../../utils/deadlinePartsDisplay'
 
 const Wrapper = styled.div`
-  padding: 10px;
+  padding: 0 6px;
   font-size: 13px;
 
   > b {
@@ -25,6 +24,18 @@ const Wrapper = styled.div`
       margin: 0 0 10px;
     `}
   }
+`
+
+const TWAPSplitTitle = styled.div`
+  display: flex;
+  width: 100%;
+  min-height: 24px;
+  align-items: center;
+  gap: 3px;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    margin: 0 0 10px;
+  `}
 `
 
 export type TwapConfirmDetailsProps = {
@@ -45,11 +56,14 @@ export const TwapConfirmDetails = React.memo(function TwapConfirmDetails(props: 
   const totalDurationDisplay = totalDuration ? deadlinePartsDisplay(totalDuration, true) : ''
 
   const { account } = useWalletInfo()
-  const { recipient } = useAdvancedOrdersDerivedState()
+  const { recipient, recipientAddress } = useAdvancedOrdersDerivedState()
+  const recipientAddressOrName = recipient || recipientAddress
 
   return (
     <Wrapper>
-      <b>TWAP order split in {numberOfPartsValue} equal parts</b>
+      <TWAPSplitTitle>
+        TWAP order split in <b>{numberOfPartsValue} equal parts</b>
+      </TWAPSplitTitle>
 
       {/* Sell amount per part */}
       <ReviewOrderModalAmountRow
@@ -57,6 +71,7 @@ export const TwapConfirmDetails = React.memo(function TwapConfirmDetails(props: 
         fiatAmount={inputFiatAmount}
         tooltip="This is the amount that will be sold in each part of the TWAP order."
         label={'Sell' + amountLabelSuffix}
+        withTimelineDot={true}
       />
 
       {/* Buy amount per part */}
@@ -66,6 +81,7 @@ export const TwapConfirmDetails = React.memo(function TwapConfirmDetails(props: 
         tooltip="This is the estimated amount you will receive for each part of the TWAP order."
         label={'Buy' + amountLabelSuffix}
         isAmountAccurate={false}
+        withTimelineDot={true}
       />
 
       {/* Start time */}
@@ -96,17 +112,7 @@ export const TwapConfirmDetails = React.memo(function TwapConfirmDetails(props: 
       </ConfirmDetailsItem>
 
       {/* Recipient */}
-      {recipient && recipient !== account && (
-        <ConfirmDetailsItem
-          withArrow={false}
-          label="Recipient"
-          tooltip="The tokens received from this order will automatically be sent to this address. No need to do a second transaction!"
-        >
-          <div>
-            <span title={recipient}>{isAddress(recipient) ? shortenAddress(recipient) : recipient}</span>
-          </div>
-        </ConfirmDetailsItem>
-      )}
+      <RecipientRow recipient={recipient} account={account} recipientAddressOrName={recipientAddressOrName} />
     </Wrapper>
   )
 })

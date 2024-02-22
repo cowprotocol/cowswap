@@ -1,4 +1,5 @@
 import { ZERO_BIG_NUMBER } from '@cowprotocol/common-const'
+import { isSellOrder } from '@cowprotocol/common-utils'
 
 import BigNumber from 'bignumber.js'
 
@@ -22,14 +23,14 @@ export function getOrderFilledAmount(order: Order): FilledAmountResult {
     return { amount: ZERO_BIG_NUMBER, percentage: ZERO_BIG_NUMBER }
   }
 
-  if (order.kind === 'buy') {
-    executedAmount = new BigNumber(order.apiAdditionalInfo.executedBuyAmount)
-    totalAmount = new BigNumber(order.buyAmount.toString())
-  } else {
+  if (isSellOrder(order.kind)) {
     executedAmount = new BigNumber(order.apiAdditionalInfo.executedSellAmount).minus(
       order.apiAdditionalInfo?.executedFeeAmount
     )
     totalAmount = new BigNumber(order.sellAmount.toString())
+  } else {
+    executedAmount = new BigNumber(order.apiAdditionalInfo.executedBuyAmount)
+    totalAmount = new BigNumber(order.buyAmount.toString())
   }
 
   return { amount: executedAmount, percentage: executedAmount.div(totalAmount) }

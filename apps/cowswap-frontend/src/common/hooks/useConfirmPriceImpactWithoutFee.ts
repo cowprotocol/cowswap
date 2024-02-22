@@ -26,7 +26,9 @@ function shouldSkipInput(priceImpactWithoutFee: Percent) {
 
 export function useConfirmPriceImpactWithoutFee() {
   const [isConfirmed, setIsConfirmed] = useState(false)
-  const triggerConfirmation = useConfirmationRequest({ onEnable: () => setIsConfirmed(true) })
+  const onEnable = useCallback(() => setIsConfirmed(true), [])
+  const triggerConfirmation = useConfirmationRequest({ onEnable })
+
   const confirmPriceImpactWithoutFee = useCallback(
     async (priceImpactWithoutFee: Percent | undefined) => {
       if (

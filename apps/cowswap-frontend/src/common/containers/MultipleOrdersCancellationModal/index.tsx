@@ -2,22 +2,22 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import React, { useCallback, useState } from 'react'
 
 import { isRejectRequestProviderError } from '@cowprotocol/common-utils'
+import { Command } from '@cowprotocol/types'
 import { ButtonPrimary } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { LegacyConfirmationModalContent } from 'legacy/components/TransactionConfirmationModal/LegacyConfirmationModalContent'
-import { LegacyConfirmationPendingContent } from 'legacy/components/TransactionConfirmationModal/LegacyConfirmationPendingContent'
 import { useRequestOrderCancellation } from 'legacy/state/orders/hooks'
-import { ConfirmOperationType } from 'legacy/state/types'
 
 import { ordersToCancelAtom, updateOrdersToCancelAtom } from 'common/hooks/useMultipleOrdersCancellation/state'
 import { useCancelMultipleOrders } from 'common/hooks/useMultipleOrdersCancellation/useCancelMultipleOrders'
 import { CowModal as Modal } from 'common/pure/Modal'
 import { TransactionErrorContent } from 'common/pure/TransactionErrorContent'
 
+import { ConfirmationPendingContent } from '../../pure/ConfirmationPendingContent'
 interface Props {
   isOpen: boolean
-  onDismiss: () => void
+  onDismiss: Command
 }
 
 export function MultipleOrdersCancellationModal(props: Props) {
@@ -73,7 +73,7 @@ export function MultipleOrdersCancellationModal(props: Props) {
 
     return (
       <Modal isOpen={true} onDismiss={dismissAll}>
-        <TransactionErrorContent onDismiss={dismissAll} message={errorMessage} />
+        <TransactionErrorContent modalMode onDismiss={dismissAll} message={errorMessage} />
       </Modal>
     )
   }
@@ -81,11 +81,12 @@ export function MultipleOrdersCancellationModal(props: Props) {
   if (cancellationInProgress) {
     return (
       <Modal isOpen={true} onDismiss={dismissAll}>
-        <LegacyConfirmationPendingContent
-          chainId={chainId}
+        <ConfirmationPendingContent
+          modalMode
           onDismiss={onDismiss}
-          pendingText={<>Cancelling {ordersCount} orders</>}
-          operationType={ConfirmOperationType.ORDER_CANCEL}
+          title={<>Cancelling {ordersCount} orders</>}
+          description="Canceling your order"
+          operationLabel="cancellation"
         />
       </Modal>
     )

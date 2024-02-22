@@ -6,6 +6,19 @@ import styled from 'styled-components/macro'
 
 export const TermsWrapper = styled.div`
   color: inherit;
+  font-size: 13px;
+  line-height: 1.5;
+  text-align: center;
+  padding: 0 32px;
+
+  > a {
+    color: inherit;
+    text-decoration: underline;
+  }
+
+  > a:hover {
+    color: var(${UI.COLOR_PRIMARY});
+  }
 `
 
 export const Blurb = styled.div`
@@ -66,6 +79,7 @@ export const OptionGrid = styled.div`
   display: grid;
   grid-gap: 10px;
   grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: max-content;
   color: inherit;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`

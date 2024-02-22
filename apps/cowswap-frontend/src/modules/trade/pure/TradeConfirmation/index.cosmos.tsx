@@ -8,12 +8,15 @@ const Fixtures = {
   default: (
     <TradeConfirmation
       title="Review order"
+      account={undefined}
       inputCurrencyInfo={inputCurrencyInfoMock}
       outputCurrencyInfo={outputCurrencyInfoMock}
       onConfirm={() => void 0}
       onDismiss={() => void 0}
       isConfirmDisabled={false}
       priceImpact={priceImpactMock}
+      refreshInterval={10_000}
+      recipient={null}
     >
       <span>Trade confirmation</span>
     </TradeConfirmation>

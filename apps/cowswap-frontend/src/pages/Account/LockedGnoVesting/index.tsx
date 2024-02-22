@@ -16,6 +16,7 @@ import {
   isRejectRequestProviderError,
 } from '@cowprotocol/common-utils'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { Command } from '@cowprotocol/types'
 import { ButtonSize, TokenAmount, ButtonPrimary } from '@cowprotocol/ui'
 import { MouseoverTooltipContent } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -26,7 +27,6 @@ import SVG from 'react-inlinesvg'
 
 import CopyHelper from 'legacy/components/Copy'
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
-import { ConfirmOperationType } from 'legacy/state/types'
 
 import { HelpCircle } from 'common/pure/HelpCircle'
 import { Card, BalanceDisplay, ConvertWrapper, VestingBreakdown, CardActions, ExtLink } from 'pages/Account/styled'
@@ -41,8 +41,8 @@ enum ClaimStatus {
 }
 
 interface Props {
-  openModal: (message: string, operationType: ConfirmOperationType) => void
-  closeModal: () => void
+  openModal: (message: string) => void
+  closeModal: Command
   vested: CurrencyAmount<Currency>
   allocated: CurrencyAmount<Currency>
   claimed: CurrencyAmount<Currency>

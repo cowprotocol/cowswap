@@ -3,6 +3,7 @@ import { useCallback, useMemo } from 'react'
 import { L2_DEADLINE_FROM_NOW, NATIVE_CURRENCIES, SupportedLocale, TokenWithLogo } from '@cowprotocol/common-const'
 import { calculateValidTo, getIsNativeToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Command } from '@cowprotocol/types'
 import { Currency, Percent } from '@uniswap/sdk-core'
 
 import JSBI from 'jsbi'
@@ -33,8 +34,7 @@ export function useIsDarkMode(): boolean {
 
   return userDarkMode === null ? matchesDarkMode : userDarkMode
 }
-
-export function useDarkModeManager(): [boolean, () => void] {
+export function useDarkModeManager(): [boolean, Command] {
   const dispatch = useAppDispatch()
   const darkMode = useIsDarkMode()
 
@@ -67,7 +67,7 @@ export function useIsExpertMode(): boolean {
   return useAppSelector((state) => state.user.userExpertMode)
 }
 
-export function useExpertModeManager(): [boolean, () => void] {
+export function useExpertModeManager(): [boolean, Command] {
   const dispatch = useAppDispatch()
   const expertMode = useIsExpertMode()
 

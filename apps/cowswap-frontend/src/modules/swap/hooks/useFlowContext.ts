@@ -4,6 +4,7 @@ import { useTokenContract, useWETHContract } from '@cowprotocol/common-hooks'
 import { calculateValidTo, getAddress, getIsNativeToken } from '@cowprotocol/common-utils'
 import { OrderClass, OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useENSAddress } from '@cowprotocol/ens'
+import { Command, UiOrderType } from '@cowprotocol/types'
 import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { Web3Provider } from '@ethersproject/providers'
 import { SafeInfoResponse } from '@safe-global/api-kit'
@@ -22,13 +23,14 @@ import { PostOrderParams } from 'legacy/utils/trade'
 
 import type { AppDataInfo, UploadAppDataParams } from 'modules/appData'
 import { useAppData, useUploadAppData } from 'modules/appData'
-import { useIsSafeApprovalBundle } from 'modules/limitOrders/hooks/useIsSafeApprovalBundle'
+import { useGetCachedPermit } from 'modules/permit'
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
-import { SwapConfirmManager, useSwapConfirmManager } from 'modules/swap/hooks/useSwapConfirmManager'
 import { BaseFlowContext } from 'modules/swap/services/types'
-import { SwapFlowAnalyticsContext } from 'modules/trade/utils/analytics'
+import { TradeConfirmActions, useTradeConfirmActions } from 'modules/trade'
+import { TradeFlowAnalyticsContext } from 'modules/trade/utils/analytics'
 
 import { useSwapZeroFee } from 'common/hooks/featureFlags/useSwapZeroFee'
+import { useIsSafeApprovalBundle } from 'common/hooks/useIsSafeApprovalBundle'
 
 import { useIsSafeEthFlow } from './useIsSafeEthFlow'
 import { useDerivedSwapInfo, useSwapState } from './useSwapState'
@@ -41,7 +43,6 @@ export enum FlowType {
   SAFE_BUNDLE_APPROVAL = 'SAFE_BUNDLE_APPROVAL',
   SAFE_BUNDLE_ETH = 'SAFE_BUNDLE_ETH',
 }
-
 interface BaseFlowContextSetup {
   chainId: SupportedChainId
   account: string | undefined
@@ -58,9 +59,8 @@ interface BaseFlowContextSetup {
   deadline: number
   ensRecipientAddress: string | null
   allowsOffchainSigning: boolean
-  swapConfirmManager: SwapConfirmManager
   flowType: FlowType
-  closeModals: () => void
+  closeModals: Command
   uploadAppData: (update: UploadAppDataParams) => void
   addOrderCallback: AddOrderCallback
   dispatch: AppDispatch
@@ -68,6 +68,8 @@ interface BaseFlowContextSetup {
   featureFlags: {
     swapZeroFee: boolean | undefined
   }
+  tradeConfirmActions: TradeConfirmActions
+  getCachedPermit: ReturnType<typeof useGetCachedPermit>
 }
 
 export function useSwapAmountsWithSlippage(): [
@@ -95,14 +97,15 @@ export function useBaseFlowContextSetup(): BaseFlowContextSetup {
   const uploadAppData = useUploadAppData()
   const addOrderCallback = useAddPendingOrder()
   const dispatch = useDispatch<AppDispatch>()
+  const tradeConfirmActions = useTradeConfirmActions()
 
   const { address: ensRecipientAddress } = useENSAddress(recipient)
   const recipientAddressOrName = recipient || ensRecipientAddress
   const [deadline] = useUserTransactionTTL()
   const wethContract = useWETHContract()
-  const swapConfirmManager = useSwapConfirmManager()
   const isEoaEthFlow = useIsEoaEthFlow()
   const isSafeEthFlow = useIsSafeEthFlow()
+  const getCachedPermit = useGetCachedPermit()
 
   const { allowedSlippage } = useDerivedSwapInfo()
   const [inputAmountWithSlippage, outputAmountWithSlippage] = useSwapAmountsWithSlippage()
@@ -127,7 +130,6 @@ export function useBaseFlowContextSetup(): BaseFlowContextSetup {
     deadline,
     ensRecipientAddress,
     allowsOffchainSigning,
-    swapConfirmManager,
     uploadAppData,
     flowType,
     closeModals,
@@ -135,6 +137,8 @@ export function useBaseFlowContextSetup(): BaseFlowContextSetup {
     dispatch,
     allowedSlippage,
     featureFlags: { swapZeroFee },
+    tradeConfirmActions,
+    getCachedPermit,
   }
 }
 
@@ -174,7 +178,6 @@ export function getFlowContext({ baseProps, sellToken, kind }: BaseGetFlowContex
     deadline,
     ensRecipientAddress,
     allowsOffchainSigning,
-    swapConfirmManager,
     closeModals,
     addOrderCallback,
     uploadAppData,
@@ -183,6 +186,8 @@ export function getFlowContext({ baseProps, sellToken, kind }: BaseGetFlowContex
     sellTokenContract,
     featureFlags,
     allowedSlippage,
+    tradeConfirmActions,
+    getCachedPermit,
   } = baseProps
 
   if (
@@ -198,7 +203,7 @@ export function getFlowContext({ baseProps, sellToken, kind }: BaseGetFlowContex
     return null
   }
 
-  const isGnosisSafeWallet = !!gnosisSafeInfo
+  const isSafeWallet = !!gnosisSafeInfo
 
   const buyToken = getIsNativeToken(trade.outputAmount.currency)
     ? NATIVE_CURRENCIES[chainId as SupportedChainId]
@@ -209,12 +214,12 @@ export function getFlowContext({ baseProps, sellToken, kind }: BaseGetFlowContex
     return null
   }
 
-  const swapFlowAnalyticsContext: SwapFlowAnalyticsContext = {
+  const swapFlowAnalyticsContext: TradeFlowAnalyticsContext = {
     account,
     recipient,
     recipientAddress: recipientAddressOrName,
     marketLabel,
-    orderClass: OrderClass.MARKET,
+    orderType: UiOrderType.SWAP,
   }
 
   const validTo = calculateValidTo(deadline)
@@ -245,6 +250,7 @@ export function getFlowContext({ baseProps, sellToken, kind }: BaseGetFlowContex
     appData,
     quoteId: trade.quoteId,
     featureFlags,
+    isSafeWallet,
   }
 
   return {
@@ -257,18 +263,18 @@ export function getFlowContext({ baseProps, sellToken, kind }: BaseGetFlowContex
     },
     flags: {
       allowsOffchainSigning,
-      isGnosisSafeWallet,
     },
     callbacks: {
       closeModals,
       addOrderCallback,
       uploadAppData,
+      getCachedPermit,
     },
     dispatch,
     swapFlowAnalyticsContext,
-    swapConfirmManager,
     orderParams,
     appDataInfo: appData,
     sellTokenContract,
+    tradeConfirmActions,
   }
 }

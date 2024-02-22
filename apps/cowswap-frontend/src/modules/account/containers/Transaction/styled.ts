@@ -44,12 +44,13 @@ export const Summary = styled.div`
   padding: 22px;
   grid-template-rows: 1fr;
   grid-template-columns: 80px auto min-content;
+  grid-template-rows: max-content;
   color: inherit;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     display: flex;
-    grid-template-rows: initial;
     grid-template-columns: initial;
+    grid-template-rows: initial;
   `};
 
   > span {
@@ -87,6 +88,7 @@ export const SummaryInner = styled.div`
     width: 100%;
     display: grid;
     grid-template-columns: 1fr;
+    grid-template-rows: initial;
     grid-gap: 0 18px;
     justify-items: flex-start;
     align-items: flex-start;

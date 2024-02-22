@@ -1,5 +1,6 @@
 import { ReactNode, useEffect, useRef } from 'react'
 
+import { Command } from '@cowprotocol/types'
 import { ButtonPrimary, ButtonSecondary } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { isAddress } from '@ethersproject/address'
@@ -22,8 +23,8 @@ type FooterNavButtonsProps = Pick<ClaimCommonTypes, 'hasClaims' | 'isClaimed' | 
   Pick<ClaimAddressProps, 'toggleWalletModal'> & {
     isPaidClaimsOnly: boolean
     resolvedAddress: string | null
-    handleSubmitClaim: () => void
-    handleCheckClaim: () => void
+    handleSubmitClaim: Command
+    handleCheckClaim: Command
   }
 
 export default function FooterNavButtons({
@@ -73,7 +74,7 @@ export default function FooterNavButtons({
   let buttonContent: ReactNode = null
 
   // Disconnected, show wallet connect
-  if (!account && activeClaimAccount) {
+  if (!account && activeClaimAccount && toggleWalletModal) {
     buttonContent = (
       <ButtonPrimary ref={buttonRef} onClick={toggleWalletModal}>
         <Trans>Connect a wallet</Trans>
@@ -81,7 +82,7 @@ export default function FooterNavButtons({
     )
   }
   // Already claimed
-  else if (isClaimed && claimStatus !== ClaimStatus.CONFIRMED) {
+  else if (isClaimed && claimStatus !== ClaimStatus.CONFIRMED && toggleWalletModal) {
     buttonContent = (
       <ButtonPrimary ref={buttonRef} onClick={toggleWalletModal} disabled>
         <Trans>Already claimed</Trans>

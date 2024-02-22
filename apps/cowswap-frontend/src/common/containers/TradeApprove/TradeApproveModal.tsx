@@ -1,28 +1,13 @@
-import { useAtom } from 'jotai'
-import React from 'react'
+import { Currency } from '@uniswap/sdk-core'
 
-import { TokenSymbol } from '@cowprotocol/ui'
+import { usePendingApprovalModal } from '../../hooks/usePendingApprovalModal'
+import { useUpdateTradeApproveState } from '../../hooks/useUpdateTradeApproveState'
 
-import { TransactionConfirmationModal } from 'legacy/components/TransactionConfirmationModal'
-import { ConfirmOperationType } from 'legacy/state/types'
+export function TradeApproveModal({ currency }: { currency: Currency | undefined }) {
+  const currencySymbol = currency?.symbol
+  const setState = useUpdateTradeApproveState()
+  const onDismiss = () => setState({ currency, approveInProgress: false })
+  const { Modal: PendingApprovalModal } = usePendingApprovalModal({ currencySymbol, onDismiss })
 
-import { tradeApproveStateAtom } from './tradeApproveStateAtom'
-
-export function TradeApproveModal() {
-  const [{ approveInProgress, currency }, setState] = useAtom(tradeApproveStateAtom)
-
-  return (
-    <TransactionConfirmationModal
-      isOpen={approveInProgress}
-      operationType={ConfirmOperationType.APPROVE_TOKEN}
-      currencyToAdd={currency}
-      pendingText={
-        <>
-          Approving <TokenSymbol token={currency} /> for trading
-        </>
-      }
-      onDismiss={() => setState({ currency, approveInProgress: false })}
-      attemptingTxn={true}
-    />
-  )
+  return PendingApprovalModal
 }

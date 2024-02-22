@@ -1,5 +1,4 @@
-import { toErc20Address } from '@cowprotocol/common-utils'
-import { OrderKind } from '@cowprotocol/cow-sdk'
+import { isSellOrder, toErc20Address } from '@cowprotocol/common-utils'
 import { Percent } from '@uniswap/sdk-core'
 
 import BigNumberJs from 'bignumber.js'
@@ -20,9 +19,11 @@ export async function getFullQuote({ quoteParams }: { quoteParams: LegacyFeeQuot
   const { kind } = quoteParams
   const { quote, expiration: expirationDate, id: quoteId } = await getQuote(quoteParams)
 
+  const isSell = isSellOrder(kind)
+
   const price = {
-    amount: kind === OrderKind.SELL ? quote.buyAmount : quote.sellAmount,
-    token: kind === OrderKind.SELL ? quote.buyToken : quote.sellToken,
+    amount: isSell ? quote.buyAmount : quote.sellAmount,
+    token: isSell ? quote.buyToken : quote.sellToken,
     quoteId: quoteId ?? undefined,
   }
   const fee = {

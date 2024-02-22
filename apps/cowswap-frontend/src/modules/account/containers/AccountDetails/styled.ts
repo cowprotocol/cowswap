@@ -1,3 +1,4 @@
+import { Command } from '@cowprotocol/types'
 import { ButtonSecondary } from '@cowprotocol/ui'
 import { ExternalLink, StyledLink } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
@@ -404,6 +405,7 @@ export const LowerSectionSimple = styled(LowerSection)`
       // target the activity comp
       > div > ${ActivityDetailsText} > ${Summary} {
         grid-template-columns: auto auto;
+        grid-template-rows: max-content;
 
         > span {
           display: none;
@@ -478,6 +480,7 @@ export const SurplusCardWrapper = styled.div`
   align-items: center;
   justify-content: center;
   grid-template-columns: 1fr;
+  grid-template-rows: max-content;
   gap: 24px;
   box-sizing: border-box;
   padding: 0 24px;
@@ -602,7 +605,7 @@ export const WalletIconWrapper = styled.div`
 
 interface WalletSelectorProps {
   isHardWareWallet?: boolean
-  onClick?: () => void
+  onClick?: Command
 }
 
 export const WalletSelector = styled.div<WalletSelectorProps>`

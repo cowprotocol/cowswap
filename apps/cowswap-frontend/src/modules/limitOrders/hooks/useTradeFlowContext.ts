@@ -3,7 +3,7 @@ import { useAtomValue } from 'jotai'
 import { GP_VAULT_RELAYER } from '@cowprotocol/common-const'
 import { useGP2SettlementContract } from '@cowprotocol/common-hooks'
 import { OrderClass } from '@cowprotocol/cow-sdk'
-import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
+import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 
@@ -15,7 +15,7 @@ import { useAppData } from 'modules/appData'
 import { useRateImpact } from 'modules/limitOrders/hooks/useRateImpact'
 import { TradeFlowContext } from 'modules/limitOrders/services/types'
 import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
-import { useGeneratePermitHook, usePermitInfo } from 'modules/permit'
+import { useGeneratePermitHook, useGetCachedPermit, usePermitInfo } from 'modules/permit'
 import { useEnoughBalanceAndAllowance } from 'modules/tokens'
 import { TradeType } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
@@ -28,8 +28,8 @@ export function useTradeFlowContext(): TradeFlowContext | null {
   const { provider } = useWeb3React()
   const { chainId, account } = useWalletInfo()
   const { allowsOffchainSigning } = useWalletDetails()
-  const gnosisSafeInfo = useGnosisSafeInfo()
   const state = useLimitOrdersDerivedState()
+  const isSafeWallet = useIsSafeWallet()
   const settlementContract = useGP2SettlementContract()
   const dispatch = useDispatch<AppDispatch>()
   const appData = useAppData()
@@ -46,6 +46,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
     checkAllowanceAddress,
   })
   const generatePermitHook = useGeneratePermitHook()
+  const getCachedPermit = useGetCachedPermit()
 
   if (
     !chainId ||
@@ -61,7 +62,6 @@ export function useTradeFlowContext(): TradeFlowContext | null {
     return null
   }
 
-  const isGnosisSafeWallet = !!gnosisSafeInfo
   const recipientAddressOrName = state.recipient || state.recipientAddress
   const recipient = state.recipientAddress || state.recipient || account
   const sellToken = state.inputCurrency as Token
@@ -75,12 +75,12 @@ export function useTradeFlowContext(): TradeFlowContext | null {
     chainId,
     settlementContract,
     allowsOffchainSigning,
-    isGnosisSafeWallet,
     dispatch,
     provider,
     rateImpact,
     permitInfo: !enoughAllowance ? permitInfo : undefined,
     generatePermitHook,
+    getCachedPermit,
     postOrderParams: {
       class: OrderClass.LIMIT,
       kind: state.orderKind,
@@ -101,6 +101,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
       featureFlags: {
         swapZeroFee,
       },
+      isSafeWallet,
     },
   }
 }

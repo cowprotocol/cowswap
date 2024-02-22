@@ -1,7 +1,7 @@
 import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
-import { FractionUtils } from '@cowprotocol/common-utils'
+import { FractionUtils, isSellOrder } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { Fraction } from '@uniswap/sdk-core'
 
@@ -27,7 +27,7 @@ export function useUpdateCurrencyAmount() {
   return useCallback(
     (params: CurrencyAmountProps) => {
       const { activeRate, amount, orderKind } = params
-      const field = orderKind === OrderKind.SELL ? Field.INPUT : Field.OUTPUT
+      const field = isSellOrder(orderKind) ? Field.INPUT : Field.OUTPUT
 
       const calculatedAmount = calculateAmountForRate({
         activeRate,

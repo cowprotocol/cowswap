@@ -2,6 +2,8 @@ import { atom, useSetAtom } from 'jotai'
 import { atomWithReset, useResetAtom } from 'jotai/utils'
 import { useCallback } from 'react'
 
+import { Command } from '@cowprotocol/types'
+
 import { t } from '@lingui/macro'
 
 import { useCloseModal, useOpenModal } from 'legacy/state/application/hooks'
@@ -13,9 +15,8 @@ type TriggerConfirmationParams = Pick<
   ConfirmationModalProps,
   'title' | 'description' | 'callToAction' | 'warning' | 'confirmWord' | 'action' | 'skipInput'
 >
-
 interface ConfirmationModalContext {
-  onDismiss: () => void
+  onDismiss: Command
   activePromise?: Promise<boolean>
   title: string
   callToAction: string
@@ -23,7 +24,7 @@ interface ConfirmationModalContext {
   warning?: string
   confirmWord: string
   action: string
-  onEnable: () => void
+  onEnable: Command
   skipInput?: boolean
   triggerConfirmation: ({
     title,
@@ -58,26 +59,27 @@ export const updateConfirmationModalContextAtom = atom(
 )
 
 export function useConfirmationRequest({
-  onEnable: onEnableParam = () => {},
-  onDismiss: onDismissParam = () => {},
+  onEnable: onEnableParam,
+  onDismiss: onDismissParam,
 }: Partial<Pick<ConfirmationModalContext, 'onEnable' | 'onDismiss'>>) {
   const openModal = useOpenModal(ApplicationModal.CONFIRMATION)
   const closeModal = useCloseModal(ApplicationModal.CONFIRMATION)
   const setContext = useSetAtom(updateConfirmationModalContextAtom)
   const resetContext = useResetAtom(confirmationModalContextAtom)
-  const triggerConfirmation = useCallback(
+
+  return useCallback(
     (params: TriggerConfirmationParams): Promise<boolean> => {
       return new Promise((resolve) => {
         const onDismiss = () => {
           closeModal()
-          onDismissParam()
+          onDismissParam?.()
           resetContext()
           resolve(false)
         }
 
         const onEnable = () => {
           closeModal()
-          onEnableParam()
+          onEnableParam?.()
           resetContext()
           resolve(true)
         }
@@ -92,6 +94,4 @@ export function useConfirmationRequest({
     },
     [setContext, openModal, closeModal, onDismissParam, resetContext, onEnableParam]
   )
-
-  return triggerConfirmation
 }

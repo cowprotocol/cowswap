@@ -1,4 +1,5 @@
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
+export type { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 export interface JsonRpcRequest {
   id: number
@@ -119,14 +120,30 @@ interface CowSwapWidgetConfig {
   buy: TradeAsset
 
   /**
-   * The theme of the widget UI.
+   * Enables the ability to switch between trade types in the widget.
    */
-  theme: CowSwapTheme | CowSwapWidgetPalette
+  enabledTradeTypes: TradeType[]
 
   /**
-   * Allows to set a custom logo for the widget.
+   * The interface fee in basis points.
+   * For example: 1.5% = 150 bips
+   *
+   * Please contact https://cowprotocol.typeform.com/to/rONXaxHV
    */
-  logoUrl: string
+  interfaceFeeBips: string
+
+  /**
+   * Disables showing the confirmation modal you get after posting an order.
+   * Defaults to false.
+   */
+  disablePostedOrderConfirmationModal?: boolean
+
+  /**
+   * Disables showing the toast messages.
+   * Some UI might want to disable it and subscribe to CowEvents.ON_TOAST_MESSAGE event to handle the toast messages itself.
+   * Defaults to false.
+   */
+  disableToastMessages?: boolean
 
   /**
    * Option to hide the logo in the widget.
@@ -139,17 +156,53 @@ interface CowSwapWidgetConfig {
   hideNetworkSelector: boolean
 
   /**
-   * Enables the ability to switch between trade types in the widget.
+   * Hides the connect buttons, and the connected account button. Defaults to false.
    */
-  enabledTradeTypes: TradeType[]
+  hideConnectButton?: boolean
 
   /**
-   * The interface fee in basis points.
-   * For example: 1.5% = 150 bips
-   *
-   * Please contact https://cowprotocol.typeform.com/to/rONXaxHV
+   * The theme of the widget UI.
    */
-  interfaceFeeBips: string
+  theme: CowSwapTheme | CowSwapWidgetPalette
+
+  /**
+   * Allows to set a custom logo for the widget.
+   */
+  logoUrl: string
+
+  /**
+   * Customizable images for the widget.
+   */
+  images: {
+    /**
+     * The image to display when the orders table is empty (no orders yet). It defaults to "Yoga CoW" image.
+     * Alternatively, you can use a URL to a custom image file, or set to null to disable the image.
+     */
+    emptyOrders?: string | null
+  }
+
+  /**
+   * Sounds configuration for the app.
+   */
+  sounds?: {
+    /**
+     * The sound to play when the order is executed. Defaults to world wide famous CoW Swap moooooooooo!
+     * Alternatively, you can use a URL to a custom sound file, or set to null to disable the sound.
+     */
+    postOrder?: string | null
+
+    /**
+     * The sound to play when the order is executed. Defaults to world wide famous CoW Swap happy moooooooooo!
+     * Alternatively, you can use a URL to a custom sound file, or set to null to disable the sound.
+     */
+    orderExecuted?: string | null
+
+    /**
+     * The sound to play when the order is executed. Defaults to world wide famous CoW Swap unhappy moooooooooo!
+     * Alternatively, you can use a URL to a custom sound file, or set to null to disable the sound.
+     */
+    orderError?: string | null
+  }
 }
 
 export type CowSwapWidgetParams = Partial<CowSwapWidgetConfig>

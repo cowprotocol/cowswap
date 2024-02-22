@@ -1,13 +1,6 @@
 import { createStore, Store } from 'redux'
 
-import reducer, {
-  addPopup,
-  ApplicationModal,
-  ApplicationState,
-  removePopup,
-  setOpenModal,
-  updateChainId,
-} from './reducer'
+import reducer, { addPopup, ApplicationState, removePopup, updateChainId } from './reducer'
 
 describe('application reducer', () => {
   let store: Store<ApplicationState>
@@ -40,19 +33,6 @@ describe('application reducer', () => {
       expect(list[0].show).toEqual(true)
       expect(list[0].content).toEqual({ txn: { hash: 'def' } })
       expect(list[0].removeAfterMs).toEqual(25000)
-    })
-  })
-
-  describe('setOpenModal', () => {
-    it('set wallet modal', () => {
-      store.dispatch(setOpenModal(ApplicationModal.WALLET))
-      expect(store.getState().openModal).toEqual(ApplicationModal.WALLET)
-      store.dispatch(setOpenModal(ApplicationModal.WALLET))
-      expect(store.getState().openModal).toEqual(ApplicationModal.WALLET)
-      store.dispatch(setOpenModal(ApplicationModal.CLAIM_POPUP))
-      expect(store.getState().openModal).toEqual(ApplicationModal.CLAIM_POPUP)
-      store.dispatch(setOpenModal(null))
-      expect(store.getState().openModal).toEqual(null)
     })
   })
 

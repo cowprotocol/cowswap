@@ -65,6 +65,7 @@ export function TradeBasicConfirmDetails(props: Props) {
 
       {/* Min received */}
       <ReviewOrderModalAmountRow
+        highlighted={true}
         amount={minReceiveAmount}
         fiatAmount={minReceivedUsdAmount}
         tooltip={minReceivedTooltip}

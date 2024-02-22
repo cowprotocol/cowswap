@@ -42,7 +42,6 @@ export function useWidgetParamsAndSettings(
       appCode: 'CoW Widget: Configurator',
       width: '450px',
       height: '640px',
-      provider,
       chainId,
       tokenLists: tokenLists.filter((list) => list.enabled).map((list) => list.url),
       env: getEnv(),
@@ -62,8 +61,10 @@ export function useWidgetParamsAndSettings(
         info: themeColors.info,
         success: themeColors.success,
       },
+
+      hideConnectButton: true,
     }
 
     return params
-  }, [provider, configuratorState])
+  }, [configuratorState])
 }

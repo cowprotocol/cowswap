@@ -8,7 +8,8 @@ import {
   timeSinceInSeconds,
 } from '@cowprotocol/common-utils'
 import { EthflowData, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { useWalletInfo } from '@cowprotocol/wallet'
+import { Command, UiOrderType } from '@cowprotocol/types'
+import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
 
 import { GetSafeInfo, useGetSafeInfo } from 'legacy/hooks/useGetSafeInfo'
 import { FulfillOrdersBatchParams, Order, OrderFulfillmentData, OrderStatus } from 'legacy/state/orders/actions'
@@ -33,7 +34,7 @@ import { OrderTransitionStatus } from 'legacy/state/orders/utils'
 import { useAddOrderToSurplusQueue } from 'modules/swap/state/surplusModal'
 
 import { getOrder } from 'api/gnosisProtocol'
-import { getUiOrderType, UiOrderType } from 'utils/orderUtils/getUiOrderType'
+import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { fetchOrderPopupData, OrderLogPopupMixData } from './utils'
 
@@ -98,6 +99,7 @@ async function _updatePresignGnosisSafeTx(
 async function _updateCreatingOrders(
   chainId: ChainId,
   pendingOrders: Order[],
+  isSafeWallet: boolean,
   addOrUpdateOrders: AddOrUpdateOrdersCallback
 ): Promise<void> {
   const promises = pendingOrders.reduce<Promise<void>[]>((acc, order) => {
@@ -122,7 +124,7 @@ async function _updateCreatingOrders(
             status: OrderStatus.PENDING, // seen once, can be moved to pending bucket
             apiAdditionalInfo: orderData,
           }
-          addOrUpdateOrders({ chainId, orders: [updatedOrder] })
+          addOrUpdateOrders({ chainId, orders: [updatedOrder], isSafeWallet })
         })
         .catch((error) => {
           // Nothing to do here, keep waiting until the order shows up
@@ -139,8 +141,9 @@ async function _updateCreatingOrders(
 }
 
 interface UpdateOrdersParams {
-  account: string
   chainId: ChainId
+  account: string
+  isSafeWallet: boolean
   orders: Order[]
   // Actions
   addOrUpdateOrders: AddOrUpdateOrdersCallback
@@ -149,7 +152,7 @@ interface UpdateOrdersParams {
   cancelOrdersBatch: CancelOrdersBatchCallback
   presignOrders: PresignOrdersCallback
   addOrderToSurplusQueue: (orderId: string) => void
-  triggerTotalSurplusUpdate: (() => void) | null
+  triggerTotalSurplusUpdate: Command | null
   updatePresignGnosisSafeTx: UpdatePresignGnosisSafeTxCallback
   getSafeInfo: GetSafeInfo
 }
@@ -158,6 +161,7 @@ async function _updateOrders({
   account,
   chainId,
   orders,
+  isSafeWallet,
   // Actions
   addOrUpdateOrders,
   fulfillOrdersBatch,
@@ -208,6 +212,7 @@ async function _updateOrders({
       presignOrders({
         ids: ordersPresignaturePendingSigned,
         chainId,
+        isSafeWallet,
       })
     }
   }
@@ -216,6 +221,7 @@ async function _updateOrders({
     expireOrdersBatch({
       ids: expired as string[],
       chainId,
+      isSafeWallet,
     })
   }
 
@@ -223,6 +229,7 @@ async function _updateOrders({
     cancelOrdersBatch({
       ids: cancelled as string[],
       chainId,
+      isSafeWallet,
     })
   }
 
@@ -232,6 +239,7 @@ async function _updateOrders({
     fulfillOrdersBatch({
       ordersData: fulfilledOrders,
       chainId,
+      isSafeWallet,
     })
     // add to surplus queue
     fulfilledOrders.forEach(({ id, apiAdditionalInfo }) => {
@@ -250,7 +258,7 @@ async function _updateOrders({
   // Update the presign Gnosis Safe Tx info (if applies)
   await _updatePresignGnosisSafeTx(chainId, orders, getSafeInfo, updatePresignGnosisSafeTx)
   // Update the creating EthFlow orders (if any)
-  await _updateCreatingOrders(chainId, orders, addOrUpdateOrders)
+  await _updateCreatingOrders(chainId, orders, isSafeWallet, addOrUpdateOrders)
 }
 
 // Check if there is any order pending for a long time
@@ -276,6 +284,7 @@ function _triggerNps(pending: Order[], chainId: ChainId) {
 }
 
 export function PendingOrdersUpdater(): null {
+  const isSafeWallet = useIsSafeWallet()
   const { chainId, account } = useWalletInfo()
   const removeOrdersToCancel = useSetAtom(removeOrdersToCancelAtom)
 
@@ -318,7 +327,7 @@ export function PendingOrdersUpdater(): null {
   )
 
   const updateOrders = useCallback(
-    async (chainId: ChainId, account: string, uiOrderType: UiOrderType) => {
+    async (chainId: ChainId, account: string, isSafeWallet: boolean, uiOrderType: UiOrderType) => {
       if (!account) {
         return []
       }
@@ -332,6 +341,7 @@ export function PendingOrdersUpdater(): null {
         return _updateOrders({
           account,
           chainId,
+          isSafeWallet,
           orders: pendingRef.current.filter((order) => getUiOrderType(order) === uiOrderType),
           addOrUpdateOrders,
           fulfillOrdersBatch,
@@ -368,28 +378,28 @@ export function PendingOrdersUpdater(): null {
     }
 
     const marketInterval = setInterval(
-      () => updateOrders(chainId, account, UiOrderType.SWAP),
+      () => updateOrders(chainId, account, isSafeWallet, UiOrderType.SWAP),
       MARKET_OPERATOR_API_POLL_INTERVAL
     )
     const limitInterval = setInterval(
-      () => updateOrders(chainId, account, UiOrderType.LIMIT),
+      () => updateOrders(chainId, account, isSafeWallet, UiOrderType.LIMIT),
       LIMIT_OPERATOR_API_POLL_INTERVAL
     )
     const twapInterval = setInterval(
-      () => updateOrders(chainId, account, UiOrderType.TWAP),
+      () => updateOrders(chainId, account, isSafeWallet, UiOrderType.TWAP),
       LIMIT_OPERATOR_API_POLL_INTERVAL
     )
 
-    updateOrders(chainId, account, UiOrderType.SWAP)
-    updateOrders(chainId, account, UiOrderType.LIMIT)
-    updateOrders(chainId, account, UiOrderType.TWAP)
+    updateOrders(chainId, account, isSafeWallet, UiOrderType.SWAP)
+    updateOrders(chainId, account, isSafeWallet, UiOrderType.LIMIT)
+    updateOrders(chainId, account, isSafeWallet, UiOrderType.TWAP)
 
     return () => {
       clearInterval(marketInterval)
       clearInterval(limitInterval)
       clearInterval(twapInterval)
     }
-  }, [account, chainId, updateOrders])
+  }, [account, chainId, isSafeWallet, updateOrders])
 
   return null
 }

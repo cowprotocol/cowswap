@@ -1,8 +1,9 @@
-import { useSetAtom } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 import { useResetAtom } from 'jotai/utils'
 import { useCallback } from 'react'
 
 import { calculateGasMargin } from '@cowprotocol/common-utils'
+import { Command } from '@cowprotocol/types'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useCloseModal, useOpenModal } from 'legacy/state/application/hooks'
@@ -14,6 +15,7 @@ import { getIsEthFlowOrder } from 'modules/swap/containers/EthFlowStepper'
 import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
 
 import { useGetOnChainCancellation } from 'common/hooks/useCancelOrder/useGetOnChainCancellation'
+import { computeOrderSummary } from 'common/updaters/orders/utils'
 import { isOrderCancellable } from 'common/utils/isOrderCancellable'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
@@ -21,7 +23,7 @@ import { cancellationModalContextAtom, CancellationType, updateCancellationModal
 import { useOffChainCancelOrder } from './useOffChainCancelOrder'
 import { useSendOnChainCancellation } from './useSendOnChainCancellation'
 
-export type UseCancelOrderReturn = (() => void) | null
+export type UseCancelOrderReturn = Command | null
 
 /**
  *
@@ -38,6 +40,7 @@ export function useCancelOrder(): (order: Order) => UseCancelOrderReturn {
   const { allowsOffchainSigning } = useWalletDetails()
   const openModal = useOpenModal(ApplicationModal.CANCELLATION)
   const closeModal = useCloseModal(ApplicationModal.CANCELLATION)
+  const { isPendingSignature } = useAtomValue(cancellationModalContextAtom)
   const setContext = useSetAtom(updateCancellationModalContextAtom)
   const resetContext = useResetAtom(cancellationModalContextAtom)
   const offChainOrderCancel = useOffChainCancelOrder()
@@ -76,10 +79,13 @@ export function useCancelOrder(): (order: Order) => UseCancelOrderReturn {
           setContext({ isPendingSignature: true, error: null })
           // Actual cancellation is triggered here
           await cancelFn(order)
-          // When done, dismiss the modal
           onDismiss()
+          // When done, dismiss the modal
         } catch (e: any) {
-          const swapErrorMessage = getSwapErrorMessage(e)
+          onDismiss()
+          if (!isPendingSignature) return
+
+          const swapErrorMessage = getSwapErrorMessage(e?.body?.description || e)
           setContext({ error: swapErrorMessage })
         }
         setContext({ isPendingSignature: false })
@@ -87,11 +93,15 @@ export function useCancelOrder(): (order: Order) => UseCancelOrderReturn {
 
       // The callback returned that triggers the modal
       return () => {
+        const summary = computeOrderSummary({
+          orderFromStore: order,
+          orderFromApi: null,
+        })
         // Updates the cancellation context with details pertaining the order
         setContext({
           orderId: order.id,
           chainId,
-          summary: order?.summary,
+          summary,
           defaultType: isOffChainCancellable ? 'offChain' : 'onChain',
           onDismiss,
           triggerCancellation,
@@ -120,6 +130,7 @@ export function useCancelOrder(): (order: Order) => UseCancelOrderReturn {
       getOnChainTxInfo,
       gasPrices,
       nativeCurrency,
+      isPendingSignature,
     ]
   )
 }

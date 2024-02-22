@@ -1,6 +1,6 @@
-import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { OrderKind } from '@cowprotocol/cow-sdk'
+import { OrderKind, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { Percent } from '@uniswap/sdk-core'
+import { isSellOrder } from './isSellOrder'
 
 interface Market<T = string> {
   baseToken: T
@@ -10,9 +10,7 @@ interface Market<T = string> {
 const PROVIDER_REJECT_REQUEST_CODES = [4001, -32000] // See https://eips.ethereum.org/EIPS/eip-1193
 const PROVIDER_REJECT_REQUEST_ERROR_MESSAGES = [
   'User denied message signature',
-  'User rejected the transaction',
-  'user rejected transaction',
-  'User rejected signing',
+  'User rejected',
   'Transaction was rejected',
 ]
 
@@ -85,7 +83,7 @@ export function getCanonicalMarket<T>({ sellToken, buyToken, kind }: CanonicalMa
   // The used reasoning is:
   //    - If I sell apples, the quote is EUR (buy token)
   //    - If I buy apples, the quote is EUR (sell token)
-  if (kind === OrderKind.SELL) {
+  if (isSellOrder(kind)) {
     return {
       baseToken: sellToken,
       quoteToken: buyToken,
@@ -103,7 +101,7 @@ export function getTokensFromMarket<T>({
   baseToken,
   kind,
 }: TokensFromMarketParams<T>): Omit<CanonicalMarketParams<T>, 'kind'> {
-  if (kind === OrderKind.SELL) {
+  if (isSellOrder(kind)) {
     return {
       sellToken: baseToken,
       buyToken: quoteToken,

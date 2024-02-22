@@ -1,7 +1,7 @@
-import { ExplorerDataType, getExplorerLink, shortenAddress } from '@cowprotocol/common-utils'
-import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
-import { ExternalLink } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
+import { ExplorerDataType, getExplorerLink, isSellOrder, shortenAddress } from '@cowprotocol/common-utils'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Command } from '@cowprotocol/types'
+import { ExternalLink, UI } from '@cowprotocol/ui'
 import { CurrencyAmount, Fraction, Token } from '@uniswap/sdk-core'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
@@ -33,7 +33,6 @@ import { PriceField } from './PriceField'
 import { StatusField } from './StatusField'
 import * as styledEl from './styled'
 import { SurplusField } from './SurplusField'
-
 interface ReceiptProps {
   isOpen: boolean
   order: ParsedOrder
@@ -41,7 +40,7 @@ interface ReceiptProps {
   twapOrder: TwapOrderItem | null
   isTwapPartOrder: boolean
   chainId: SupportedChainId
-  onDismiss: () => void
+  onDismiss: Command
   sellAmount: CurrencyAmount<Token>
   buyAmount: CurrencyAmount<Token>
   limitPrice: Fraction | null
@@ -113,8 +112,10 @@ export function ReceiptModal({
 
   const twapPartOrderExists = isTwapPartOrder && TWAP_PART_ORDER_EXISTS_STATES.has(order.status)
 
-  const inputLabel = order.kind === OrderKind.SELL ? 'You sell' : 'You sell at most'
-  const outputLabel = order.kind === OrderKind.SELL ? 'You receive at least' : 'You receive exactly'
+  const isSell = isSellOrder(order.kind)
+
+  const inputLabel = isSell ? 'You sell' : 'You sell at most'
+  const outputLabel = isSell ? 'You receive at least' : 'You receive exactly'
   const safeTxParams = twapOrder?.safeTxParams
 
   return (

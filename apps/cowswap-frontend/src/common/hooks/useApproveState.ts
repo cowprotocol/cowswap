@@ -3,17 +3,22 @@ import { useMemo } from 'react'
 import { useTokensAllowances } from '@cowprotocol/balances-and-allowances'
 import { usePrevious } from '@cowprotocol/common-hooks'
 import { getWrappedToken } from '@cowprotocol/common-utils'
-import { BigNumber } from '@ethersproject/bignumber'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 
-import { ApprovalState } from 'legacy/hooks/useApproveCallback/useApproveCallbackMod'
 import { useHasPendingApproval } from 'legacy/state/enhancedTransactions/hooks'
 
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
 import { useTradeSpenderAddress } from './useTradeSpenderAddress'
+
+export enum ApprovalState {
+  UNKNOWN = 'UNKNOWN',
+  NOT_APPROVED = 'NOT_APPROVED',
+  PENDING = 'PENDING',
+  APPROVED = 'APPROVED',
+}
 
 function getCurrencyToApprove(amountToApprove: Nullish<CurrencyAmount<Currency>>): Token | undefined {
   if (!amountToApprove) return undefined
@@ -21,14 +26,28 @@ function getCurrencyToApprove(amountToApprove: Nullish<CurrencyAmount<Currency>>
   return getWrappedToken(amountToApprove.currency)
 }
 
-export function useApproveState(amountToApprove: Nullish<CurrencyAmount<Currency>>): ApprovalState {
+export function useApproveState(
+  amountToApprove: Nullish<CurrencyAmount<Currency>>,
+  amountToCheckAgainstAllowance?: Nullish<CurrencyAmount<Currency>>
+): {
+  state: ApprovalState
+  currentAllowance: Nullish<CurrencyAmount<Currency>>
+} {
   const spender = useTradeSpenderAddress()
   const token = getCurrencyToApprove(amountToApprove)
   const tokenAddress = token?.address?.toLowerCase()
   const allowances = useTokensAllowances()
   const pendingApproval = useHasPendingApproval(tokenAddress, spender)
 
-  const currentAllowance = tokenAddress ? allowances.values[tokenAddress] : undefined
+  const tokenAllowance = useMemo(() => {
+    const tokenRawAllowance = tokenAddress ? allowances.values[tokenAddress] : undefined
+
+    if (!token || !tokenRawAllowance) return undefined
+
+    return CurrencyAmount.fromRawAmount(token, tokenRawAllowance.toHexString())
+  }, [allowances, token, tokenAddress])
+
+  const currentAllowance = amountToCheckAgainstAllowance || tokenAllowance
 
   const approvalStateBase = useSafeMemo(() => {
     if (!amountToApprove || !currentAllowance) {
@@ -37,7 +56,7 @@ export function useApproveState(amountToApprove: Nullish<CurrencyAmount<Currency
 
     const amountToApproveString = amountToApprove.quotient.toString()
 
-    if (currentAllowance.gte(amountToApproveString)) {
+    if (currentAllowance.greaterThan(amountToApproveString) || currentAllowance.equalTo(amountToApproveString)) {
       return ApprovalState.APPROVED
     }
 
@@ -45,14 +64,16 @@ export function useApproveState(amountToApprove: Nullish<CurrencyAmount<Currency
       return ApprovalState.PENDING
     }
 
-    if (currentAllowance.lt(amountToApproveString)) {
+    if (currentAllowance.lessThan(amountToApproveString)) {
       return ApprovalState.NOT_APPROVED
     }
 
     return ApprovalState.APPROVED
   }, [amountToApprove, currentAllowance, pendingApproval])
 
-  return useAuxApprovalState(approvalStateBase, currentAllowance)
+  const state = useAuxApprovalState(approvalStateBase, currentAllowance)
+
+  return { state, currentAllowance }
 }
 
 /**
@@ -62,9 +83,12 @@ export function useApproveState(amountToApprove: Nullish<CurrencyAmount<Currency
  *
  * Solution: we check the prev approval state and also check if the allowance has been updated
  */
-function useAuxApprovalState(approvalStateBase: ApprovalState, currentAllowance?: BigNumber): ApprovalState {
+function useAuxApprovalState(
+  approvalStateBase: ApprovalState,
+  currentAllowance?: CurrencyAmount<Currency>
+): ApprovalState {
   const previousApprovalState = usePrevious(approvalStateBase)
-  const currentAllowanceString = currentAllowance?.toHexString()
+  const currentAllowanceString = currentAllowance?.quotient.toString(16)
   const previousAllowanceString = usePrevious(currentAllowanceString)
   // Has allowance actually updated?
   const allowanceHasNotChanged = previousAllowanceString === currentAllowanceString

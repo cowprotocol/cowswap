@@ -18,6 +18,7 @@ const outputCurrency = GNO[SupportedChainId.MAINNET]
 const tradeContext: TradeFlowContext = {
   permitInfo: undefined,
   generatePermitHook: () => Promise.resolve(undefined),
+  getCachedPermit: () => Promise.resolve(undefined),
   postOrderParams: {
     class: OrderClass.LIMIT,
     account: '0x000',
@@ -35,6 +36,7 @@ const tradeContext: TradeFlowContext = {
     partiallyFillable: true,
     appData: getAppData(),
     featureFlags: { swapZeroFee: false },
+    isSafeWallet: false,
   },
   rateImpact: 0,
   provider: {} as any,
@@ -42,7 +44,6 @@ const tradeContext: TradeFlowContext = {
   chainId: 1,
   dispatch: (() => void 0) as any,
   allowsOffchainSigning: true,
-  isGnosisSafeWallet: false,
 }
 
 const rateInfoParams = {

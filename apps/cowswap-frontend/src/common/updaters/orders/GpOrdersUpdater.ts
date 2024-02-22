@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { EnrichedOrder, EthflowData, OrderClass, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { TokensByAddress, useAllTokens } from '@cowprotocol/tokens'
-import { useWalletInfo } from '@cowprotocol/wallet'
+import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
 
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 import { useAddOrUpdateOrders, useClearOrdersStorage } from 'legacy/state/orders/hooks'
@@ -137,6 +137,7 @@ function _filterOrders(orders: EnrichedOrder[], tokens: TokensByAddress, chainId
  * - Persist the new tokens and orders on redux
  */
 export function GpOrdersUpdater(): null {
+  const isSafeWallet = useIsSafeWallet()
   const clearOrderStorage = useClearOrdersStorage()
 
   const { account, chainId } = useWalletInfo()
@@ -170,12 +171,12 @@ export function GpOrdersUpdater(): null {
         console.debug(`GpOrdersUpdater::will add/update ${orders.length} out of ${gpOrders.length}`)
 
         // Add orders to redux state
-        orders.length && addOrUpdateOrders({ orders, chainId })
+        orders.length && addOrUpdateOrders({ orders, chainId, isSafeWallet })
       } catch (e: any) {
         console.error(`GpOrdersUpdater::Failed to fetch orders`, e)
       }
     },
-    [addOrUpdateOrders, gpOrders, getTokensForOrdersList]
+    [addOrUpdateOrders, gpOrders, getTokensForOrdersList, isSafeWallet]
   )
 
   useEffect(() => {

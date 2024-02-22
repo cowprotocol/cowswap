@@ -22,10 +22,9 @@ import { getSwapButtonState } from 'modules/swap/helpers/getSwapButtonState'
 import { useEthFlowContext } from 'modules/swap/hooks/useEthFlowContext'
 import { useHandleSwap } from 'modules/swap/hooks/useHandleSwap'
 import { useSafeBundleApprovalFlowContext } from 'modules/swap/hooks/useSafeBundleApprovalFlowContext'
-import { useSwapConfirmManager } from 'modules/swap/hooks/useSwapConfirmManager'
 import { useSwapFlowContext } from 'modules/swap/hooks/useSwapFlowContext'
 import { SwapButtonsContext } from 'modules/swap/pure/SwapButtons'
-import { TradeType, useWrapNativeFlow } from 'modules/trade'
+import { TradeType, useTradeConfirmActions, useWrapNativeFlow } from 'modules/trade'
 import { useIsNativeIn } from 'modules/trade/hooks/useIsNativeInOrOut'
 import { useIsWrappedOut } from 'modules/trade/hooks/useIsWrappedInOrOut'
 import { useWrappedToken } from 'modules/trade/hooks/useWrappedToken'
@@ -63,7 +62,6 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
   } = useDerivedSwapInfo()
   const [isExpertMode] = useExpertModeManager()
   const toggleWalletModal = useToggleWalletModal()
-  const { openSwapConfirmModal } = useSwapConfirmManager()
   const swapFlowContext = useSwapFlowContext()
   const ethFlowContext = useEthFlowContext()
   const safeBundleApprovalFlowContext = useSafeBundleApprovalFlowContext()
@@ -71,6 +69,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
   const { onCurrencySelection } = useSwapActionHandlers()
   const isBestQuoteLoading = useIsBestQuoteLoading()
   const { swapZeroFee } = useFeatureFlags()
+  const tradeConfirmActions = useTradeConfirmActions()
 
   const currencyIn = currencies[Field.INPUT]
   const currencyOut = currencies[Field.OUTPUT]
@@ -89,11 +88,13 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
   const wrapUnwrapAmount = isNativeInSwap ? currencyAmountToTokenAmount(inputAmount) || undefined : inputAmount
   const hasEnoughWrappedBalanceForSwap = useHasEnoughWrappedBalanceForSwap(wrapUnwrapAmount)
   const wrapCallback = useWrapNativeFlow()
-  const approvalState = useApproveState(slippageAdjustedSellAmount || null)
+  const { state: approvalState } = useApproveState(slippageAdjustedSellAmount || null)
 
   const handleSwap = useHandleSwap(priceImpactParams)
 
   const contextExists = ethFlowContext || swapFlowContext || safeBundleApprovalFlowContext || safeBundleEthFlowContext
+  const recipientAddressOrName = contextExists?.orderParams.recipientAddressOrName || null
+
   const swapCallbackError = contextExists ? null : 'Missing dependencies'
 
   const gnosisSafeInfo = useGnosisSafeInfo()
@@ -155,15 +156,12 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
     handleSwap,
     hasEnoughWrappedBalanceForSwap,
     onWrapOrUnwrap: wrapCallback,
-    onEthFlow() {
-      openNativeWrapModal()
-    },
-    openSwapConfirm() {
-      trade && openSwapConfirmModal(trade)
-    },
+    onEthFlow: openNativeWrapModal,
+    openSwapConfirm: tradeConfirmActions.onOpen,
     toggleWalletModal,
     swapInputError,
     onCurrencySelection,
+    recipientAddressOrName,
   }
 }
 

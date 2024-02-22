@@ -1,50 +1,73 @@
-import { useAtomValue } from 'jotai'
+import { useCallback } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Command } from '@cowprotocol/types'
+import { UI } from '@cowprotocol/ui'
 import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
 
+import styled from 'styled-components/macro'
+
+import { Order } from 'legacy/state/orders/actions'
+import { useOrder } from 'legacy/state/orders/hooks'
+
 import { PermitModal } from 'common/containers/PermitModal'
-import { CowModal, NewCowModal } from 'common/pure/Modal'
 import { OrderSubmittedContent } from 'common/pure/OrderSubmittedContent'
 import { TransactionErrorContent } from 'common/pure/TransactionErrorContent'
 import { TradeAmounts } from 'common/types'
 
-import { TradeConfirmPendingContent } from './TradeConfirmPendingContent'
-
+import { useSetShowFollowPendingTxPopup } from '../../../wallet/hooks/useSetShowFollowPendingTxPopup'
 import { useTradeConfirmActions } from '../../hooks/useTradeConfirmActions'
-import { tradeConfirmStateAtom } from '../../state/tradeConfirmStateAtom'
+import { useTradeConfirmState } from '../../hooks/useTradeConfirmState'
+
+const Container = styled.div`
+  background: var(${UI.COLOR_PAPER});
+  border-radius: var(${UI.BORDER_RADIUS_NORMAL});
+  box-shadow: ${({ theme }) => theme.boxShadow1};
+`
+type CustomSubmittedContent = (order: Order | undefined, onDismiss: Command) => JSX.Element
 
 export interface TradeConfirmModalProps {
   children: JSX.Element
+  title: string
+  submittedContent?: CustomSubmittedContent
 }
 
 export function TradeConfirmModal(props: TradeConfirmModalProps) {
-  const { children } = props
+  const { children, submittedContent, title } = props
 
   const { chainId, account } = useWalletInfo()
   const isSafeWallet = useIsSafeWallet()
-  const { isOpen, permitSignatureState, pendingTrade, transactionHash, error } = useAtomValue(tradeConfirmStateAtom)
+  const { permitSignatureState, pendingTrade, transactionHash, error } = useTradeConfirmState()
   const { onDismiss } = useTradeConfirmActions()
+  const setShowFollowPendingTxPopup = useSetShowFollowPendingTxPopup()
+
+  const order = useOrder({ chainId, id: transactionHash || undefined })
+
+  const dismissConfirmation = useCallback(() => {
+    setShowFollowPendingTxPopup(true)
+    onDismiss()
+  }, [onDismiss, setShowFollowPendingTxPopup])
 
   if (!account) return null
 
-  const Modal = permitSignatureState ? NewCowModal : CowModal
-
   return (
-    <Modal isOpen={isOpen} onDismiss={onDismiss}>
+    <Container>
       <InnerComponent
         chainId={chainId}
         account={account}
         error={error}
+        title={title}
         pendingTrade={pendingTrade}
         transactionHash={transactionHash}
-        onDismiss={onDismiss}
+        onDismiss={dismissConfirmation}
         permitSignatureState={permitSignatureState}
         isSafeWallet={isSafeWallet}
+        submittedContent={submittedContent}
+        order={order}
       >
         {children}
       </InnerComponent>
-    </Modal>
+    </Container>
   )
 }
 
@@ -52,14 +75,16 @@ type InnerComponentProps = {
   children: JSX.Element
   chainId: SupportedChainId
   account: string
+  title: string
   error: string | null
   pendingTrade: TradeAmounts | null
   transactionHash: string | null
-  onDismiss: () => void
+  onDismiss: Command
   permitSignatureState: string | undefined
   isSafeWallet: boolean
+  submittedContent?: CustomSubmittedContent
+  order?: Order
 }
-
 function InnerComponent(props: InnerComponentProps) {
   const {
     account,
@@ -68,16 +93,19 @@ function InnerComponent(props: InnerComponentProps) {
     error,
     isSafeWallet,
     onDismiss,
+    title,
     pendingTrade,
     permitSignatureState,
     transactionHash,
+    order,
+    submittedContent,
   } = props
 
   if (error) {
     return <TransactionErrorContent message={error} onDismiss={onDismiss} />
   }
 
-  if (pendingTrade && permitSignatureState) {
+  if (pendingTrade && permitSignatureState && permitSignatureState !== 'signed') {
     // TODO: potentially replace TradeConfirmPendingContent completely with PermitModal
     // We could use this not just for permit, but for any token, even already approved
     const step = permitSignatureState === 'signed' ? 'submit' : 'approve'
@@ -87,17 +115,15 @@ function InnerComponent(props: InnerComponentProps) {
         outputAmount={pendingTrade.outputAmount}
         step={step}
         onDismiss={onDismiss}
-        orderType={'Limit Order'}
+        orderType={title}
       />
     )
   }
 
-  if (pendingTrade) {
-    return <TradeConfirmPendingContent pendingTrade={pendingTrade} onDismiss={onDismiss} />
-  }
-
   if (transactionHash) {
-    return (
+    return submittedContent ? (
+      submittedContent(order, onDismiss)
+    ) : (
       <OrderSubmittedContent
         chainId={chainId}
         account={account}

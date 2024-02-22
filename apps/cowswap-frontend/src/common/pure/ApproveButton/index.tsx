@@ -1,6 +1,7 @@
 import { useContext, useMemo } from 'react'
 
 import { TokenLogo } from '@cowprotocol/tokens'
+import { Command } from '@cowprotocol/types'
 import { ButtonSize, Loader, TokenSymbol, AutoRow, ButtonConfirmed } from '@cowprotocol/ui'
 import { MouseoverTooltip } from '@cowprotocol/ui'
 import { Currency } from '@uniswap/sdk-core'
@@ -9,12 +10,12 @@ import { Trans } from '@lingui/macro'
 import { CheckCircle, HelpCircle } from 'react-feather'
 import { ThemeContext } from 'styled-components/macro'
 
-import { ApprovalState } from 'legacy/hooks/useApproveCallback/useApproveCallbackMod'
+import { ApprovalState } from '../../hooks/useApproveState'
 
 export interface ApproveButtonProps {
   currency: Currency | undefined | null
   state: ApprovalState
-  onClick: () => void
+  onClick: Command
   isDisabled?: boolean
 }
 

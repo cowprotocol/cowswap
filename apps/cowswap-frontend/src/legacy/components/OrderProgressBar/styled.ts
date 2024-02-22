@@ -16,19 +16,17 @@ export const ProgressBarWrapper = animated(styled.div`
   display: flex;
   flex-flow: column wrap;
   border-radius: 12px;
-  padding: 20px 20px 0;
+  padding: 20px;
   color: inherit;
   background-color: var(${UI.COLOR_PAPER_DARKER});
   transition: height 0.2s ease;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
+    padding: 18px;
     margin: 24px auto 12px;
     width: 100%;
     max-width: 100%;
     grid-column: 1 / -1;
-  `};
-  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
-    padding: 24px 10px 0;
   `};
 `)
 
@@ -150,7 +148,7 @@ export const StatusMsgContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  margin: 1rem 0;
+  margin: 20px auto 0;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     gap: 0.2rem;

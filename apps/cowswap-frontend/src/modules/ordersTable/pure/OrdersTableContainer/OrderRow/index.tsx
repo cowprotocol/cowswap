@@ -6,6 +6,7 @@ import { useTimeAgo } from '@cowprotocol/common-hooks'
 import { getAddress, getEtherscanLink } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
+import { Command, UiOrderType } from '@cowprotocol/types'
 import { Loader, TokenAmount, TokenSymbol, UI } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
 
@@ -35,7 +36,7 @@ import { calculatePercentageInRelationToReference } from 'utils/orderUtils/calcu
 import { calculatePriceDifference, PriceDifference } from 'utils/orderUtils/calculatePriceDifference'
 import { getIsComposableCowParentOrder } from 'utils/orderUtils/getIsComposableCowParentOrder'
 import { getSellAmountWithFee } from 'utils/orderUtils/getSellAmountWithFee'
-import { getUiOrderType, UiOrderType } from 'utils/orderUtils/getUiOrderType'
+import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import * as styledEl from './styled'
@@ -91,8 +92,7 @@ function BalanceWarning(params: { symbol: string; isScheduled: boolean }) {
     </styledEl.WarningParagraph>
   )
 }
-
-function AllowanceWarning(params: { symbol: string; isScheduled: boolean; approve: () => void }) {
+function AllowanceWarning(params: { symbol: string; isScheduled: boolean; approve: Command }) {
   const { symbol, isScheduled } = params
 
   return (
@@ -146,7 +146,7 @@ export interface OrderRowProps {
   isRowSelected: boolean
   isChild?: boolean
   orderParams: OrderParams
-  onClick: () => void
+  onClick: Command
   orderActions: OrderActions
   hasValidPendingPermit?: boolean | undefined
   children?: JSX.Element

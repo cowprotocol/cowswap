@@ -3,6 +3,7 @@ import { useMemo } from 'react'
 
 import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
 import { currencyAmountToTokenAmount } from '@cowprotocol/common-utils'
+import { Command } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -19,22 +20,20 @@ import { useWrappedToken } from 'modules/trade/hooks/useWrappedToken'
 
 import { useTradeApproveCallback } from 'common/containers/TradeApprove'
 import { useApproveState } from 'common/hooks/useApproveState'
-import { CowModal } from 'common/pure/Modal'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 import { useEthFlowActions } from './hooks/useEthFlowActions'
 import useRemainingNativeTxsAndCosts from './hooks/useRemainingNativeTxsAndCosts'
 import { useSetupEthFlow } from './hooks/useSetupEthFlow'
-
 export interface EthFlowProps {
   nativeInput?: CurrencyAmount<Currency>
   hasEnoughWrappedBalanceForSwap: boolean
   wrapCallback: WrapUnwrapCallback | null
   directSwapCallback: HandleSwapCallback
-  onDismiss: () => void
+  onDismiss: Command
 }
 
-function EthFlow({
+export function EthFlowModal({
   nativeInput,
   onDismiss,
   wrapCallback,
@@ -45,7 +44,7 @@ function EthFlow({
   const isExpertMode = useIsExpertMode()
   const native = useNativeCurrency()
   const wrapped = useWrappedToken()
-  const approvalState = useApproveState(nativeInput || null)
+  const { state: approvalState } = useApproveState(nativeInput || null)
 
   const ethFlowContext = useAtomValue(ethFlowContextAtom)
   const approveCallback = useTradeApproveCallback(
@@ -104,13 +103,5 @@ function EthFlow({
       wrappingPreview={wrappingPreview}
       onDismiss={onDismiss}
     />
-  )
-}
-
-export function EthFlowModal(props: EthFlowProps) {
-  return (
-    <CowModal isOpen onDismiss={props.onDismiss}>
-      <EthFlow {...props} />
-    </CowModal>
   )
 }

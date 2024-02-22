@@ -20,7 +20,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
   const tradeQuote = useTradeQuote()
 
   const { inputCurrency, outputCurrency, slippageAdjustedSellAmount, recipient, tradeType } = derivedTradeState || {}
-  const approvalState = useApproveState(slippageAdjustedSellAmount)
+  const { state: approvalState } = useApproveState(slippageAdjustedSellAmount)
   const { address: recipientEnsAddress } = useENSAddress(recipient)
   const isSwapUnsupported =
     useIsTradeUnsupported(inputCurrency, outputCurrency) || isUnsupportedTokenInQuote(tradeQuote)
@@ -30,7 +30,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
   const { isSupportedWallet } = useWalletDetails()
   const gnosisSafeInfo = useGnosisSafeInfo()
 
-  const isSafeReadonlyUser = gnosisSafeInfo?.isReadOnly || false
+  const isSafeReadonlyUser = gnosisSafeInfo?.isReadOnly === true
 
   const isPermitSupported = useTokenSupportsPermit(inputCurrency, tradeType)
 

@@ -5,9 +5,10 @@ import { priceOutOfRangeAnalytics } from '@cowprotocol/analytics'
 import { useTokensBalances } from '@cowprotocol/balances-and-allowances'
 import { NATIVE_CURRENCY_ADDRESS, WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { useIsWindowVisible } from '@cowprotocol/common-hooks'
-import { getPromiseFulfilledValue } from '@cowprotocol/common-utils'
+import { getPromiseFulfilledValue, isSellOrder } from '@cowprotocol/common-utils'
 import { timestamp } from '@cowprotocol/contracts'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { UiOrderType } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
 
@@ -30,7 +31,7 @@ import { updatePendingOrderPricesAtom } from 'modules/orders/state/pendingOrders
 import { hasEnoughBalanceAndAllowance } from 'modules/tokens'
 
 import { getPriceQuality } from 'api/gnosisProtocol/api'
-import { getUiOrderType, UiOrderType } from 'utils/orderUtils/getUiOrderType'
+import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { PRICE_QUOTE_VALID_TO_TIME } from '../../constants/quote'
 import { useVerifiedQuotesEnabled } from '../../hooks/featureFlags/useVerifiedQuotesEnabled'
@@ -226,7 +227,7 @@ async function _getOrderPrice(
   // Don't quote if there's nothing left to match in this order
   if (amount === '0') return null
 
-  if (order.kind === 'sell') {
+  if (isSellOrder(order.kind)) {
     // this order sell amount is sellAmountAfterFees
     // this is an issue as it will be adjusted again in the backend
     // e.g order submitted w/sellAmount adjusted for fee: 995, we re-query 995

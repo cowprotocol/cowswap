@@ -57,6 +57,7 @@ const RateLabel = styled.div`
   transition: color var(${UI.ANIMATION_DURATION}) ease-in-out, opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
   color: inherit;
   opacity: 0.7;
+  white-space: nowrap;
 
   &:hover {
     opacity: 1;

@@ -1,5 +1,6 @@
 import savingsIcon from '@cowprotocol/assets/cow-swap/savings.svg'
 import { MINIMUM_ETH_FLOW_SLIPPAGE, PERCENTAGE_PRECISION } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/types'
 import { ButtonPrimary } from '@cowprotocol/ui'
 import { Currency, Token } from '@uniswap/sdk-core'
 
@@ -10,13 +11,12 @@ import SVG from 'react-inlinesvg'
 import { EthFlowBannerCallbacks } from 'modules/swap/containers/EthFlow/EthFlowBanner'
 
 import * as styledEl from './styleds'
-
 export interface EthFlowBannerContentProps extends EthFlowBannerCallbacks {
   native: Currency
   wrapped: Token
   showBanner: boolean
   hasEnoughWrappedBalance: boolean
-  showBannerCallback: () => void
+  showBannerCallback: Command
 }
 
 export function EthFlowBannerContent(props: EthFlowBannerContentProps) {

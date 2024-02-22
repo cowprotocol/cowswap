@@ -3,7 +3,7 @@ import { FeatureFlag, formatTokenAmount, FractionUtils } from '@cowprotocol/comm
 import { UI } from '../../enum'
 import styled from 'styled-components'
 import { FractionLike, Nullish } from '../../types'
-import { TokenSymbol, TokenSymbolProps } from '../TokenSymbol'
+import { formatTokenSymbol, TokenNameAndSymbol, TokenSymbol } from '../TokenSymbol'
 import { AMOUNTS_FORMATTING_FEATURE_FLAG } from '../../consts'
 
 export const Wrapper = styled.span<{ highlight: boolean; lowVolumeWarning?: boolean }>`
@@ -23,7 +23,7 @@ export const SymbolElement = styled.span<{ opacitySymbol?: boolean }>`
 export interface TokenAmountProps {
   amount: Nullish<FractionLike>
   defaultValue?: string
-  tokenSymbol?: TokenSymbolProps['token']
+  tokenSymbol?: Nullish<TokenNameAndSymbol>
   className?: string
   hideTokenSymbol?: boolean
   round?: boolean
@@ -61,4 +61,25 @@ export function TokenAmount({
       <SymbolElement opacitySymbol={opacitySymbol}>{tokenSymbolElement}</SymbolElement>
     </Wrapper>
   )
+}
+
+export type FormatTokenAmountWithSymbolParams = Omit<TokenAmountProps, 'className' | 'opacitySymbol'>
+
+export function formatTokenAmountWithSymbol(props: FormatTokenAmountWithSymbolParams): string | null {
+  const { amount, defaultValue, tokenSymbol, round, hideTokenSymbol } = props
+
+  if (!amount) {
+    return null
+  }
+
+  const symbol = hideTokenSymbol || !tokenSymbol ? null : formatTokenSymbol({ token: tokenSymbol })
+
+  const roundedAmount = round ? FractionUtils.round(amount) : amount
+
+  const formattedAmount = formatTokenAmount(roundedAmount) || defaultValue
+  if (!formattedAmount) {
+    return null
+  }
+
+  return symbol ? `${formattedAmount} ${symbol}` : formattedAmount
 }

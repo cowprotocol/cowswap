@@ -7,15 +7,13 @@ import {
   isRejectRequestProviderError,
 } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Command } from '@cowprotocol/types'
 import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
 import { TransactionResponse } from '@ethersproject/providers'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
-
-import { getOperationMessage } from '../components/TransactionConfirmationModal/LegacyConfirmationPendingContent'
-import { ConfirmOperationType } from '../state/types'
 
 // Use a 180K gas as a fallback if there's issue calculating the gas estimation (fixes some issues with some nodes failing to calculate gas costs for SC wallets)
 const WRAP_UNWRAP_GAS_LIMIT_DEFAULT = BigNumber.from('180000')
@@ -28,21 +26,18 @@ export type WrapUnwrapCallback = (params?: WrapUnwrapCallbackParams) => Promise<
 
 type TransactionAdder = ReturnType<typeof useTransactionAdder>
 
-export type OpenSwapConfirmModalCallback = (message: string, operationType: ConfirmOperationType) => void
-
 export interface WrapDescription {
   confirmationMessage: string
   operationMessage: string
   summary: string
 }
-
 export interface WrapUnwrapContext {
   chainId: SupportedChainId
   wethContract: Contract
   amount: CurrencyAmount<Currency>
   addTransaction: TransactionAdder
-  closeModals: () => void
-  openTransactionConfirmationModal: OpenSwapConfirmModalCallback
+  closeModals: Command
+  openTransactionConfirmationModal: Command
 }
 
 export async function wrapUnwrapCallback(
@@ -52,13 +47,12 @@ export async function wrapUnwrapCallback(
   const { chainId, amount, wethContract, addTransaction, openTransactionConfirmationModal, closeModals } = context
   const isNativeIn = getIsNativeToken(amount.currency)
   const amountHex = `0x${amount.quotient.toString(RADIX_HEX)}`
-  const operationType = isNativeIn ? ConfirmOperationType.WRAP_ETHER : ConfirmOperationType.UNWRAP_WETH
 
   const useModals = params.useModals
-  const { confirmationMessage, operationMessage, summary } = getWrapDescription(chainId, isNativeIn, amount)
+  const { operationMessage, summary } = getWrapDescription(chainId, isNativeIn, amount)
 
   try {
-    useModals && openTransactionConfirmationModal(confirmationMessage, operationType)
+    useModals && openTransactionConfirmationModal()
     wrapAnalytics('Send', operationMessage)
 
     const wrapUnwrap = isNativeIn ? wrapContractCall : unwrapContractCall
@@ -96,12 +90,11 @@ function getWrapDescription(
   inputAmount: CurrencyAmount<Currency>
 ): WrapDescription {
   const { native, wrapped } = getChainCurrencySymbols(chainId)
-  const operationType = isWrap ? ConfirmOperationType.WRAP_ETHER : ConfirmOperationType.UNWRAP_WETH
   const baseSummarySuffix = isWrap ? `${native} to ${wrapped}` : `${wrapped} to ${native}`
   const baseSummary = `${formatTokenAmount(inputAmount)} ${baseSummarySuffix}`
   const summary = `${isWrap ? 'Wrap' : 'Unwrap'} ${baseSummary}`
   const confirmationMessage = `${isWrap ? 'Wrapping' : 'Unwrapping'} ${baseSummary}`
-  const operationMessage = getOperationMessage(operationType, chainId)
+  const operationMessage = isWrap ? 'Wrapping ' + native : 'Unwrapping ' + wrapped
 
   return {
     summary,

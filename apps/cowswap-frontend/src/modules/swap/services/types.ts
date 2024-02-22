@@ -1,4 +1,5 @@
 import { CoWSwapEthFlow, Erc20, GPv2Settlement, Weth } from '@cowprotocol/abis'
+import { Command } from '@cowprotocol/types'
 import { Web3Provider } from '@ethersproject/providers'
 import SafeAppsSDK from '@safe-global/safe-apps-sdk'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
@@ -10,13 +11,12 @@ import TradeGp from 'legacy/state/swap/TradeGp'
 import { PostOrderParams } from 'legacy/utils/trade'
 
 import { AppDataInfo, UploadAppDataParams } from 'modules/appData'
-import { GeneratePermitHook, IsTokenPermittableResult } from 'modules/permit'
-import { SwapConfirmManager } from 'modules/swap/hooks/useSwapConfirmManager'
-import { SwapFlowAnalyticsContext } from 'modules/trade/utils/analytics'
+import { GeneratePermitHook, IsTokenPermittableResult, useGetCachedPermit } from 'modules/permit'
+import { TradeConfirmActions } from 'modules/trade'
+import { TradeFlowAnalyticsContext } from 'modules/trade/utils/analytics'
 
 import { EthFlowOrderExistsCallback } from '../hooks/useCheckEthFlowOrderExists'
 import { FlowType } from '../hooks/useFlowContext'
-
 export interface BaseFlowContext {
   context: {
     chainId: number
@@ -27,19 +27,19 @@ export interface BaseFlowContext {
   }
   flags: {
     allowsOffchainSigning: boolean
-    isGnosisSafeWallet: boolean
   }
   callbacks: {
-    closeModals: () => void
+    closeModals: Command
     addOrderCallback: AddOrderCallback
     uploadAppData: (params: UploadAppDataParams) => void
+    getCachedPermit: ReturnType<typeof useGetCachedPermit>
   }
   sellTokenContract: Erc20 | null
   dispatch: AppDispatch
-  swapFlowAnalyticsContext: SwapFlowAnalyticsContext
-  swapConfirmManager: SwapConfirmManager
+  swapFlowAnalyticsContext: TradeFlowAnalyticsContext
   orderParams: PostOrderParams
   appDataInfo: AppDataInfo
+  tradeConfirmActions: TradeConfirmActions
 }
 
 export type SwapFlowContext = BaseFlowContext & {

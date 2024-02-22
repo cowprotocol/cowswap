@@ -8,19 +8,20 @@ import {
   RequestArguments,
 } from '@web3-react/types'
 
+import { Command } from '@cowprotocol/types'
 import { IFrameEthereumProvider } from './IFrameEthereumProvider'
 import { isInjectedWidget, isRejectRequestProviderError } from '@cowprotocol/common-utils'
 
 type InjectedWalletProvider = Provider & {
   isConnected: () => boolean
   request<T>(args: RequestArguments): Promise<T>
-  enable?: () => void
+  enable?: Command
   on: (event: string, args: unknown) => unknown
 }
 
 interface injectedWalletConstructorArgs {
   actions: Actions
-  onError?: () => void
+  onError?: Command
   walletUrl: string
   searchKeywords: string[]
 }
@@ -51,7 +52,7 @@ export class InjectedWallet extends Connector {
 
   // Based on https://github.com/Uniswap/web3-react/blob/de97c00c378b7909dfbd8a06558ed12e1f796caa/packages/metamask/src/index.ts#L130 with some changes
   async activate(desiredChainIdOrChainParameters?: number | AddEthereumChainParameter): Promise<void> {
-    let cancelActivation: () => void
+    let cancelActivation: Command
 
     if (!this.provider?.isConnected?.()) {
       cancelActivation = this.actions.startActivation()

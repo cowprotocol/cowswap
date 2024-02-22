@@ -1,3 +1,5 @@
+import { Command } from '@cowprotocol/types'
+
 function wait(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
@@ -40,7 +42,7 @@ export interface RetryOptions {
 export function retry<T>(
   fn: () => Promise<T>,
   { n, minWait, maxWait }: RetryOptions
-): { promise: Promise<T>; cancel: () => void } {
+): { promise: Promise<T>; cancel: Command } {
   let completed = false
   let rejectCancelled: (error: Error) => void
   // eslint-disable-next-line no-async-promise-executor

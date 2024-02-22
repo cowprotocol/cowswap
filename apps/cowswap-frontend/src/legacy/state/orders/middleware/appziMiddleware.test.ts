@@ -1,9 +1,10 @@
 import { isOrderInPendingTooLong, openNpsAppziSometimes } from '@cowprotocol/common-utils'
+import { UiOrderType } from '@cowprotocol/types'
 
 import { AnyAction, Dispatch, MiddlewareAPI } from 'redux'
 import { instance, mock, resetCalls, when } from 'ts-mockito'
 
-import { getUiOrderType, UiOrderType } from 'utils/orderUtils/getUiOrderType'
+import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { appziMiddleware } from './appziMiddleware'
 

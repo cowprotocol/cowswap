@@ -18,16 +18,16 @@ export function PaletteControl({ paletteManager }: { paletteManager: ColorPalett
   const [expanded, setExpanded] = React.useState(false)
 
   return (
-    <>
+    <div>
       {visibleColorKeys.map((key) => (
-        <FormControl sx={{ width: '100%', gap: '1.6rem' }} key={key}>
+        <FormControl sx={{ width: '100%', margin: '10px 0' }} key={key}>
           <ColorInput colorKey={key} paletteManager={paletteManager} />
         </FormControl>
       ))}
 
       <Collapse in={expanded}>
         {otherColorKeys.map((colorKey) => (
-          <FormControl sx={{ width: '100%', margin: '0 0 1.6rem' }} key={colorKey}>
+          <FormControl sx={{ width: '100%', margin: '10px 0' }} key={colorKey}>
             <ColorInput colorKey={colorKey} paletteManager={paletteManager} />
           </FormControl>
         ))}
@@ -35,7 +35,7 @@ export function PaletteControl({ paletteManager }: { paletteManager: ColorPalett
 
       <Button onClick={() => setExpanded(!expanded)}>{expanded ? 'Less' : 'More'} Options</Button>
       <Button onClick={resetColorPalette}>Reset to Default</Button>
-    </>
+    </div>
   )
 }
 

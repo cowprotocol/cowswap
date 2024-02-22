@@ -6,7 +6,7 @@ look and much more!
 
 ## Live example
 
-See the widget in action in the [widget configurator](../../apps/widget-configurator/src/main.tsx)
+See the widget in action in the [widget configurator](https://widget.cow.fi)
 
 ## Docs
 

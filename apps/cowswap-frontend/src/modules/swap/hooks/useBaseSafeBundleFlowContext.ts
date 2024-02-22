@@ -15,6 +15,7 @@ export function useBaseSafeBundleFlowContext(): BaseSafeFlowContext | null {
   const sellToken = baseProps.trade ? getWrappedToken(baseProps.trade.inputAmount.currency) : undefined
   const settlementContract = useGP2SettlementContract()
   const spender = useTradeSpenderAddress()
+
   const safeAppsSdk = useSafeAppsSdk()
   const { provider } = useWeb3React()
 

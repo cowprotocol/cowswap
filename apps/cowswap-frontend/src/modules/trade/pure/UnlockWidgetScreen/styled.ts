@@ -33,6 +33,7 @@ export const TitleSection = styled.div`
 export const List = styled.ul`
   display: grid;
   grid-template-columns: 1fr 1fr;
+  grid-template-rows: max-content;
   list-style: none;
   margin: 0 0 28px;
   padding: 0;
@@ -47,6 +48,7 @@ export const List = styled.ul`
     background: transparent;
     display: grid;
     grid-template-columns: 20px auto;
+    grid-template-rows: max-content;
     align-items: flex-start;
     gap: 6px;
     margin: 0;

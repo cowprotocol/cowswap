@@ -98,7 +98,7 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
   },
   [TradeFormValidation.WalletNotConnected]: (context) => {
     return (
-      <TradeFormBlankButton onClick={context.connectWallet}>
+      <TradeFormBlankButton onClick={context.connectWallet || undefined} disabled={!context.connectWallet}>
         <Trans>Connect Wallet</Trans>
       </TradeFormBlankButton>
     )

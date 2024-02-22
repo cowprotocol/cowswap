@@ -144,6 +144,7 @@ export const Row = styled.div`
   display: grid;
   grid-gap: 16px;
   grid-template-columns: 62px 430px repeat(2, 100px) 1fr;
+  grid-template-rows: max-content;
   padding: 16px;
   justify-content: flex-start;
   align-items: center;
@@ -343,8 +344,8 @@ export const TokenText = styled.div`
   `};
 `
 
-export const ApproveLabel = styled.span<{ color?: string }>`
-  color: ${({ color }) => color || 'inherit'};
+export const ApproveLabel = styled.span`
+  color: ${({ theme }) => theme.green1};
   font-weight: 500;
 `
 

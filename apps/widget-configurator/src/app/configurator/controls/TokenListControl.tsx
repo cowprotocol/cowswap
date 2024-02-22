@@ -1,5 +1,7 @@
 import React, { useState, useCallback, useMemo, Dispatch, SetStateAction } from 'react'
 
+import { Command } from '@cowprotocol/types'
+
 import {
   Checkbox,
   Dialog,
@@ -42,7 +44,7 @@ type CustomList = {
 
 type AddCustomListDialogProps = {
   open: boolean
-  onClose: () => void
+  onClose: Command
   onAdd: (newList: CustomList) => void
 }
 

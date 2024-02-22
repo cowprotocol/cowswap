@@ -1,5 +1,5 @@
 import { useAtomValue, useSetAtom } from 'jotai'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import { openAdvancedOrdersTabAnalytics, twapWalletCompatibilityAnalytics } from '@cowprotocol/analytics'
 import { renderTooltip } from '@cowprotocol/ui'
@@ -38,7 +38,6 @@ import {
 } from '../../state/twapOrdersSettingsAtom'
 import { deadlinePartsDisplay } from '../../utils/deadlinePartsDisplay'
 import { ActionButtons } from '../ActionButtons'
-import { TwapConfirmModal } from '../TwapConfirmModal'
 import { TwapFormWarnings } from '../TwapFormWarnings'
 
 export type { LabelTooltip, LabelTooltipItems } from './tooltips'
@@ -102,10 +101,17 @@ export function TwapFormWidget() {
   const isInvertedState = useState(false)
   const [isInverted] = isInvertedState
 
+  const { onSlippageInput, onNumOfPartsInput } = useMemo(() => {
+    return {
+      onSlippageInput: (value: number | null) => updateSettingsState({ slippageValue: value }),
+      onNumOfPartsInput: (value: number | null) => {
+        updateSettingsState({ numberOfPartsValue: value || DEFAULT_NUM_OF_PARTS })
+      },
+    }
+  }, [updateSettingsState])
+
   return (
     <>
-      <TwapConfirmModal fallbackHandlerIsNotSet={isFallbackHandlerRequired} />
-
       {!isWrapOrUnwrap && (
         <styledEl.Row>
           <styledEl.StyledRateInfo
@@ -117,7 +123,7 @@ export function TwapFormWidget() {
       )}
       <TradeNumberInput
         value={+twapOrderSlippage.toFixed(2)}
-        onUserInput={(value: number | null) => updateSettingsState({ slippageValue: value })}
+        onUserInput={onSlippageInput}
         decimalsPlaces={2}
         placeholder={DEFAULT_TWAP_SLIPPAGE.toFixed(1)}
         min={0}
@@ -141,9 +147,7 @@ export function TwapFormWidget() {
       <styledEl.Row>
         <TradeNumberInput
           value={numberOfPartsValue}
-          onUserInput={(value: number | null) => {
-            updateSettingsState({ numberOfPartsValue: value || DEFAULT_NUM_OF_PARTS })
-          }}
+          onUserInput={onNumOfPartsInput}
           min={DEFAULT_NUM_OF_PARTS}
           label={LABELS_TOOLTIPS.numberOfParts.label}
           tooltip={renderTooltip(LABELS_TOOLTIPS.numberOfParts.tooltip)}

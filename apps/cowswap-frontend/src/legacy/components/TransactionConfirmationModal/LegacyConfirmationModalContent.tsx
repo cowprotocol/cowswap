@@ -1,5 +1,7 @@
 import React, { ReactNode } from 'react'
 
+import { Command } from '@cowprotocol/types'
+
 import { Text } from 'rebass'
 
 import { BottomSection, CloseIconWrapper, ContentWrapper, GPModalHeader, Section } from './styled'
@@ -9,11 +11,12 @@ export interface ConfirmationModalContentProps {
   titleSize?: number
   styles?: React.CSSProperties
   className?: string
-  onDismiss: () => void
+  onDismiss: Command
   topContent: () => ReactNode
   bottomContent?: () => ReactNode | undefined
 }
 
+// @deprecated use common/pure/NewModal instead
 export function LegacyConfirmationModalContent({
   title,
   titleSize,

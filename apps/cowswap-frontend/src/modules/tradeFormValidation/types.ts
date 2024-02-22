@@ -1,7 +1,9 @@
-import { ApprovalState } from 'legacy/hooks/useApproveCallback/useApproveCallbackMod'
+import { Command } from '@cowprotocol/types'
 
 import { TradeDerivedState } from 'modules/trade'
 import { TradeQuoteState } from 'modules/tradeQuote'
+
+import { ApprovalState } from 'common/hooks/useApproveState'
 
 export enum TradeFormValidation {
   // Wrap/unwrap
@@ -65,6 +67,6 @@ export interface TradeFormButtonContext {
 
   doTrade(): void
   confirmTrade(): void
-  connectWallet(): void
+  connectWallet: Command | null
   wrapNativeFlow(): void
 }

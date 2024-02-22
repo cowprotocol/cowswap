@@ -1,8 +1,12 @@
 import { useCallback, useMemo } from 'react'
 
 import { DEFAULT_TXN_DISMISS_MS } from '@cowprotocol/common-const'
+import { Command } from '@cowprotocol/types'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { createAction } from '@reduxjs/toolkit'
+
+import { useInjectedWidgetParams } from 'modules/injectedWidget'
 
 import { addPopup, ApplicationModal, PopupContent, removePopup } from './reducer'
 
@@ -16,55 +20,33 @@ export function useModalIsOpen(modal: ApplicationModal): boolean {
   return openModal === modal
 }
 
-export function useToggleModal(modal: ApplicationModal): () => void {
+export function useToggleModal(modal: ApplicationModal): Command {
   const isOpen = useModalIsOpen(modal)
   const dispatch = useAppDispatch()
   return useCallback(() => dispatch(setOpenModal(isOpen ? null : modal)), [dispatch, modal, isOpen])
 }
 
-export function useCloseModal(_modal: ApplicationModal): () => void {
+export function useCloseModal(_modal: ApplicationModal): Command {
   const dispatch = useAppDispatch()
   return useCallback(() => dispatch(setOpenModal(null)), [dispatch])
 }
+export function useToggleWalletModal(): Command | null {
+  const { active } = useWalletInfo()
+  const { hideConnectButton } = useInjectedWidgetParams()
 
-export function useToggleWalletModal(): () => void {
-  return useToggleModal(ApplicationModal.WALLET)
+  const toggleWalletModal = useToggleModal(ApplicationModal.WALLET)
+
+  return useMemo(() => {
+    if (!active || hideConnectButton) {
+      return null
+    }
+
+    return toggleWalletModal
+  }, [hideConnectButton, active, toggleWalletModal])
 }
 
-export function useToggleSettingsMenu(): () => void {
+export function useToggleSettingsMenu(): Command {
   return useToggleModal(ApplicationModal.SETTINGS)
-}
-
-export function useShowClaimPopup(): boolean {
-  return useModalIsOpen(ApplicationModal.CLAIM_POPUP)
-}
-
-export function useToggleShowClaimPopup(): () => void {
-  return useToggleModal(ApplicationModal.CLAIM_POPUP)
-}
-
-export function useToggleSelfClaimModal(): () => void {
-  return useToggleModal(ApplicationModal.SELF_CLAIM)
-}
-
-export function useToggleDelegateModal(): () => void {
-  return useToggleModal(ApplicationModal.DELEGATE)
-}
-
-export function useToggleVoteModal(): () => void {
-  return useToggleModal(ApplicationModal.VOTE)
-}
-
-export function useToggleQueueModal(): () => void {
-  return useToggleModal(ApplicationModal.QUEUE)
-}
-
-export function useToggleExecuteModal(): () => void {
-  return useToggleModal(ApplicationModal.EXECUTE)
-}
-
-export function useTogglePrivacyPolicy(): () => void {
-  return useToggleModal(ApplicationModal.PRIVACY_POLICY)
 }
 
 /**
@@ -88,21 +70,16 @@ export function useActivePopups(): AppState['application']['popupList'] {
   return useMemo(() => list.filter((item) => item.show), [list])
 }
 
-export function useToggleTransactionConfirmation(): () => void {
-  return useToggleModal(ApplicationModal.TRANSACTION_CONFIRMATION)
-}
-
 // TODO: These two seem to be gone from original. Check whether they have been replaced
-export function useOpenModal(modal: ApplicationModal): () => void {
+export function useOpenModal(modal: ApplicationModal): Command {
   const dispatch = useAppDispatch()
   return useCallback(() => dispatch(setOpenModal(modal)), [dispatch, modal])
 }
 
-export function useCloseModals(): () => void {
+export function useCloseModals(): Command {
   const dispatch = useAppDispatch()
   return useCallback(() => dispatch(setOpenModal(null)), [dispatch])
 }
-
 /**
  * @deprecated use @cowprotocol/snackbars instead
  */

@@ -3,7 +3,6 @@ import React, { useMemo, useState } from 'react'
 import ArrowDownImage from '@cowprotocol/assets/cow-swap/arrowDownRight.svg'
 import { DEFAULT_DATE_FORMAT } from '@cowprotocol/common-const'
 import { formatInputAmount } from '@cowprotocol/common-utils'
-import { isAddress, shortenAddress } from '@cowprotocol/common-utils'
 import { Currency, Price } from '@uniswap/sdk-core'
 
 import SVG from 'react-inlinesvg'
@@ -19,6 +18,7 @@ import { LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersS
 import { LimitRateState } from 'modules/limitOrders/state/limitRateAtom'
 import { PartiallyFillableOverrideDispatcherType } from 'modules/limitOrders/state/partiallyFillableOverride'
 import { calculateLimitOrdersDeadline } from 'modules/limitOrders/utils/calculateLimitOrdersDeadline'
+import { RecipientRow } from 'modules/trade'
 
 import { ordersTableFeatures } from 'common/constants/featureFlags'
 import { ExecutionPrice } from 'common/pure/ExecutionPrice'
@@ -31,6 +31,7 @@ const Wrapper = styled.div`
   font-weight: 400;
   color: inherit;
   padding: 8px;
+  gap: 10px;
 `
 
 const ArrowDownRight = styled.div`
@@ -128,23 +129,7 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
         </div>
       </styledEl.DetailsRow> */}
       <OrderType isPartiallyFillable={partiallyFillable} partiallyFillableOverride={partiallyFillableOverride} />
-      {recipientAddressOrName && recipient !== account && (
-        <styledEl.DetailsRow>
-          <div>
-            <span>Recipient</span>{' '}
-            <InfoIcon
-              content={
-                'The tokens received from this order will automatically be sent to this address. No need to do a second transaction!'
-              }
-            />
-          </div>
-          <div>
-            <span title={recipientAddressOrName}>
-              {isAddress(recipientAddressOrName) ? shortenAddress(recipientAddressOrName) : recipientAddressOrName}
-            </span>
-          </div>
-        </styledEl.DetailsRow>
-      )}
+      <RecipientRow recipient={recipient} account={account} recipientAddressOrName={recipientAddressOrName} />
     </Wrapper>
   )
 }

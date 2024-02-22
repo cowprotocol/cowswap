@@ -1,4 +1,3 @@
-import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
 import { useWETHContract } from '@cowprotocol/common-hooks'
@@ -16,8 +15,7 @@ import {
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 
 import { useDerivedTradeState } from './useDerivedTradeState'
-
-import { wrapNativeStateAtom } from '../state/wrapNativeStateAtom'
+import { useWrapNativeScreenState } from './useWrapNativeScreenState'
 
 export function useWrapNativeFlow(): WrapUnwrapCallback {
   const derivedTradeState = useDerivedTradeState()
@@ -37,7 +35,7 @@ function useWrapNativeContext(amount: Nullish<CurrencyAmount<Currency>>): WrapUn
   const { chainId } = useWalletInfo()
   const wethContract = useWETHContract()
   const addTransaction = useTransactionAdder()
-  const setWrapNativeState = useSetAtom(wrapNativeStateAtom)
+  const [, setWrapNativeState] = useWrapNativeScreenState()
 
   if (!wethContract || !chainId || !amount) {
     return null

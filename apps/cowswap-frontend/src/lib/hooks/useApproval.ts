@@ -11,12 +11,7 @@ import { Nullish } from 'types'
 
 import { useTokenAllowance } from 'legacy/hooks/useTokenAllowance'
 
-export enum ApprovalState {
-  UNKNOWN = 'UNKNOWN',
-  NOT_APPROVED = 'NOT_APPROVED',
-  PENDING = 'PENDING',
-  APPROVED = 'APPROVED',
-}
+import { ApprovalState } from 'common/hooks/useApproveState'
 
 export interface ApprovalStateForSpenderResult {
   approvalState: ApprovalState

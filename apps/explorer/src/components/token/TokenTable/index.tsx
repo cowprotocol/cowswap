@@ -57,6 +57,7 @@ const Wrapper = styled(StyledUserDetailsTable)`
   > thead > tr,
   > tbody > tr {
     grid-template-columns: 4rem 21rem minmax(7rem, 12rem) repeat(6, minmax(10rem, 1.5fr));
+    grid-template-rows: max-content;
   }
   > tbody > tr > td,
   > thead > tr > th {
@@ -92,6 +93,7 @@ const Wrapper = styled(StyledUserDetailsTable)`
     }
     > tbody > tr {
       grid-template-columns: none;
+      grid-template-rows: max-content;
       border: 0.1rem solid ${({ theme }): string => theme.tableRowBorder};
       box-shadow: 0px 4px 12px ${({ theme }): string => theme.boxShadow};
       border-radius: 6px;

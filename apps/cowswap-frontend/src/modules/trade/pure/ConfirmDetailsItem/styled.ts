@@ -1,3 +1,5 @@
+import { UI } from '@cowprotocol/ui'
+
 import styled from 'styled-components/macro'
 
 import { StyledRowBetween } from 'modules/swap/pure/Row/styled'
@@ -5,10 +7,13 @@ import { StyledRowBetween } from 'modules/swap/pure/Row/styled'
 export const Wrapper = styled.div`
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  min-height: 24px;
+  gap: 6px;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     width: 100%;
-    flex-flow: row nowrap;
+    flex-flow: column wrap;
     align-items: flex-start;
     margin: 0 0 10px;
   `}
@@ -64,5 +69,20 @@ export const Content = styled.div`
     opacity: 0.7;
     word-break: break-all;
     text-align: right;
+  }
+`
+
+export const Label = styled.span<{ labelOpacity?: boolean }>`
+  display: flex;
+  align-items: center;
+  font-weight: 400;
+  gap: 5px;
+  text-align: left;
+  opacity: ${({ labelOpacity }) => (labelOpacity ? 0.7 : 1)};
+  transition: color var(${UI.ANIMATION_DURATION}) ease-in-out, opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
+  color: inherit;
+
+  &:hover {
+    opacity: 1;
   }
 `
