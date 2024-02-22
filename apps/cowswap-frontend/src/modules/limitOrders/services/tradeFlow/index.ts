@@ -12,6 +12,7 @@ import { LOW_RATE_THRESHOLD_PERCENT } from 'modules/limitOrders/const/trade'
 import { PriceImpactDeclineError, TradeFlowContext } from 'modules/limitOrders/services/types'
 import { LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { calculateLimitOrdersDeadline } from 'modules/limitOrders/utils/calculateLimitOrdersDeadline'
+import { emitPostedOrderEvent } from 'modules/orders'
 import { handlePermit } from 'modules/permit'
 import { appDataContainsPermitSigner } from 'modules/permit/utils/appDataContainsPermitSigner'
 import { presignOrderStep } from 'modules/swap/services/swapFlow/steps/presignOrderStep'
@@ -22,7 +23,6 @@ import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
 
 import { UiOrderType } from 'utils/orderUtils/getUiOrderType'
 
-import { emitPostedOrderEvent } from '../../../../legacy/state/orders/middleware/emitPostedOrderEvent'
 export async function tradeFlow(
   params: TradeFlowContext,
   priceImpact: PriceImpact,

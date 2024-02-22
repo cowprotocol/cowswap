@@ -1,3 +1,4 @@
+import { orderAnalytics } from '@cowprotocol/analytics'
 import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CowEvents, OnPostedOrderPayload } from '@cowprotocol/events'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
@@ -47,4 +48,6 @@ export function emitPostedOrderEvent(params: PendingOrderNotificationParams) {
 
     EVENT_EMITTER.emit(CowEvents.ON_POSTED_ORDER, postedOrderPayload)
   }
+
+  orderAnalytics('Posted', 'TWAP', 'Presign')
 }

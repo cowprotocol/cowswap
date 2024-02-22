@@ -11,6 +11,7 @@ import { Nullish } from 'types'
 
 import { updateAdvancedOrdersAtom, useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
 import { useAppData, useUploadAppData } from 'modules/appData'
+import { emitPostedOrderEvent } from 'modules/orders'
 import { useTradeConfirmActions, useTradePriceImpact } from 'modules/trade'
 import { SwapFlowAnalyticsContext, tradeFlowAnalytics } from 'modules/trade/utils/analytics'
 
@@ -20,7 +21,6 @@ import { UiOrderType } from 'utils/orderUtils/getUiOrderType'
 import { useExtensibleFallbackContext } from './useExtensibleFallbackContext'
 import { useTwapOrderCreationContext } from './useTwapOrderCreationContext'
 
-import { emitPostedOrderEvent } from '../../../legacy/state/orders/middleware/emitPostedOrderEvent'
 import { DEFAULT_TWAP_EXECUTION_INFO } from '../const'
 import { createTwapOrderTxs } from '../services/createTwapOrderTxs'
 import { extensibleFallbackSetupTxs } from '../services/extensibleFallbackSetupTxs'

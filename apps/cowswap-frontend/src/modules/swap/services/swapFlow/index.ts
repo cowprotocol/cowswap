@@ -13,6 +13,7 @@ import { partialOrderUpdate } from 'legacy/state/orders/utils'
 import { signAndPostOrder } from 'legacy/utils/trade'
 
 import { updateHooksOnAppData } from 'modules/appData'
+import { emitPostedOrderEvent } from 'modules/orders'
 import { handlePermit } from 'modules/permit'
 import { appDataContainsHooks } from 'modules/permit/utils/appDataContainsHooks'
 import { appDataContainsPermitSigner } from 'modules/permit/utils/appDataContainsPermitSigner'
@@ -25,7 +26,6 @@ import { UiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { presignOrderStep } from './steps/presignOrderStep'
 
-import { emitPostedOrderEvent } from '../../../../legacy/state/orders/middleware/emitPostedOrderEvent'
 import { SwapFlowContext } from '../types'
 
 export async function swapFlow(
