@@ -28,7 +28,7 @@ export function postMessageToWindow(contentWindow: Window, method: string, paylo
     method,
     ...data,
   }
-  // console.log('[widget:messages] postMessageToWindow', postPayload)
+
   contentWindow.postMessage(
     postPayload,
     '*' // TODO: Change to CoW specific origin in production. https://github.com/cowprotocol/cowswap/issues/3828
