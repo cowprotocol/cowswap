@@ -25,23 +25,18 @@ export enum SwapButtonState {
   NeedApprove = 'NeedApprove',
   SwapDisabled = 'SwapDisabled',
   SwapError = 'SwapError',
-  ExpertModeSwap = 'ExpertModeSwap',
   RegularSwap = 'RegularSwap',
   SwapWithWrappedToken = 'SwapWithWrappedToken',
   RegularEthFlowSwap = 'EthFlowSwap',
-  ExpertModeEthFlowSwap = 'ExpertModeEthFlowSwap',
   ApproveAndSwap = 'ApproveAndSwap',
-  ExpertApproveAndSwap = 'ExpertApproveAndSwap',
 
   WrapAndSwap = 'WrapAndSwap',
-  ExpertWrapAndSwap = 'ExpertWrapAndSwap',
 }
 
 export interface SwapButtonStateParams {
   account: string | undefined
   isSupportedWallet: boolean
   isReadonlyGnosisSafeUser: boolean
-  isExpertMode: boolean
   isSwapUnsupported: boolean
   isBundlingSupported: boolean
   quoteError: QuoteError | undefined | null
@@ -74,7 +69,7 @@ export function getSwapButtonState(input: SwapButtonStateParams): SwapButtonStat
   const { quoteError, approvalState, isPermitSupported, amountsForSignature } = input
 
   // show approve flow when: no error on inputs, not approved or pending, or approved in current session
-  // never show if price impact is above threshold in non expert mode
+  // never show if price impact is above threshold
   const showApproveFlow =
     !isPermitSupported &&
     !input.inputError &&
@@ -111,7 +106,7 @@ export function getSwapButtonState(input: SwapButtonStateParams): SwapButtonStat
 
   if (!input.isNativeIn && showApproveFlow) {
     if (input.isBundlingSupported) {
-      return input.isExpertMode ? SwapButtonState.ExpertApproveAndSwap : SwapButtonState.ApproveAndSwap
+      return SwapButtonState.ApproveAndSwap
     }
     return SwapButtonState.NeedApprove
   }
@@ -130,16 +125,12 @@ export function getSwapButtonState(input: SwapButtonStateParams): SwapButtonStat
 
   if (input.isNativeIn) {
     if (getEthFlowEnabled(input.isSmartContractWallet === true)) {
-      return input.isExpertMode ? SwapButtonState.ExpertModeEthFlowSwap : SwapButtonState.RegularEthFlowSwap
+      return SwapButtonState.RegularEthFlowSwap
     } else if (input.isBundlingSupported) {
-      return input.isExpertMode ? SwapButtonState.ExpertWrapAndSwap : SwapButtonState.WrapAndSwap
+      return SwapButtonState.WrapAndSwap
     } else {
       return SwapButtonState.SwapWithWrappedToken
     }
-  }
-
-  if (input.isExpertMode) {
-    return SwapButtonState.ExpertModeSwap
   }
 
   return SwapButtonState.RegularSwap

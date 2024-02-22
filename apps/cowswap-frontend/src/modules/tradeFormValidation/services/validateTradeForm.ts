@@ -10,7 +10,6 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     approvalState,
     isBundlingSupported,
     isWrapUnwrap,
-    isExpertMode,
     isSupportedWallet,
     isSafeReadonlyUser,
     isSwapUnsupported,
@@ -84,7 +83,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
 
   if (approvalRequired) {
     if (isBundlingSupported) {
-      return isExpertMode ? TradeFormValidation.ExpertApproveAndSwap : TradeFormValidation.ApproveAndSwap
+      return TradeFormValidation.ApproveAndSwap
     }
     return TradeFormValidation.ApproveRequired
   }

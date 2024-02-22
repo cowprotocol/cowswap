@@ -6,8 +6,7 @@ import { FEE_SIZE_THRESHOLD } from '@cowprotocol/common-const'
 import { formatSymbol, getIsNativeToken, isAddress, tryParseCurrencyAmount } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useENS } from '@cowprotocol/ens'
-import { useTokenBySymbolOrAddress } from '@cowprotocol/tokens'
-import { useAreThereTokensWithSameSymbol } from '@cowprotocol/tokens'
+import { useAreThereTokensWithSameSymbol, useTokenBySymbolOrAddress } from '@cowprotocol/tokens'
 import { Command } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
@@ -22,7 +21,6 @@ import { stringToCurrency, useTradeExactInWithFee, useTradeExactOutWithFee } fro
 import TradeGp from 'legacy/state/swap/TradeGp'
 import { isWrappingTrade } from 'legacy/state/swap/utils'
 import { Field } from 'legacy/state/types'
-import { useIsExpertMode } from 'legacy/state/user/hooks'
 
 import { useNavigateOnCurrencySelection } from 'modules/trade/hooks/useNavigateOnCurrencySelection'
 import { useTradeNavigate } from 'modules/trade/hooks/useTradeNavigate'
@@ -115,7 +113,6 @@ export function useSwapActionHandlers(): SwapActions {
  * @param trade TradeGp param
  */
 export function useHighFeeWarning(trade?: TradeGp) {
-  const isExpertMode = useIsExpertMode()
   const { INPUT, OUTPUT, independentField } = useSwapState()
 
   const [feeWarningAccepted, setFeeWarningAccepted] = useState<boolean>(false) // mod - high fee warning disable state
@@ -138,7 +135,7 @@ export function useHighFeeWarning(trade?: TradeGp) {
     isHighFee,
     feePercentage,
     // we only care/check about feeWarning being accepted if the fee is actually high..
-    feeWarningAccepted: _computeFeeWarningAcceptedState({ feeWarningAccepted, isHighFee, isExpertMode }),
+    feeWarningAccepted: _computeFeeWarningAcceptedState({ feeWarningAccepted, isHighFee }),
     setFeeWarningAccepted,
   }
 }
@@ -146,16 +143,13 @@ export function useHighFeeWarning(trade?: TradeGp) {
 function _computeFeeWarningAcceptedState({
   feeWarningAccepted,
   isHighFee,
-  isExpertMode,
 }: {
   feeWarningAccepted: boolean
   isHighFee: boolean
-  isExpertMode: boolean
 }) {
-  // in expert mode there is no fee warning thus it's true
-  if (isExpertMode || feeWarningAccepted) return true
+  if (feeWarningAccepted) return true
   else {
-    // not expert mode? is the fee high? that's only when we care
+    // is the fee high? that's only when we care
     if (isHighFee) {
       return feeWarningAccepted
     } else {
@@ -165,7 +159,6 @@ function _computeFeeWarningAcceptedState({
 }
 
 export function useUnknownImpactWarning() {
-  const isExpertMode = useIsExpertMode()
   const { INPUT, OUTPUT, independentField } = useSwapState()
 
   const [impactWarningAccepted, setImpactWarningAccepted] = useState<boolean>(false)
@@ -176,7 +169,7 @@ export function useUnknownImpactWarning() {
   }, [INPUT.currencyId, OUTPUT.currencyId, independentField])
 
   return {
-    impactWarningAccepted: isExpertMode || impactWarningAccepted,
+    impactWarningAccepted,
     setImpactWarningAccepted,
   }
 }

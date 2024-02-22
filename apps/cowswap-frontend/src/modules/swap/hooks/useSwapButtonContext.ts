@@ -15,7 +15,6 @@ import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 import { useGetQuoteAndStatus, useIsBestQuoteLoading } from 'legacy/state/price/hooks'
 import { Field } from 'legacy/state/types'
-import { useExpertModeManager } from 'legacy/state/user/hooks'
 
 import { useTokenSupportsPermit } from 'modules/permit'
 import { getSwapButtonState } from 'modules/swap/helpers/getSwapButtonState'
@@ -60,7 +59,6 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
     inputError: swapInputError,
     allowedSlippage,
   } = useDerivedSwapInfo()
-  const [isExpertMode] = useExpertModeManager()
   const toggleWalletModal = useToggleWalletModal()
   const swapFlowContext = useSwapFlowContext()
   const ethFlowContext = useEthFlowContext()
@@ -131,7 +129,6 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
     isSmartContractWallet,
     isReadonlyGnosisSafeUser,
     isBundlingSupported,
-    isExpertMode,
     isSwapUnsupported,
     isNativeIn: isNativeInSwap,
     wrappedToken,

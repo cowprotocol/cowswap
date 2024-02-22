@@ -31,6 +31,7 @@ export const defaultEthFlowContext: EthFlowContext = {
   },
 }
 
+// TODO: remove now that there's no expert mode?
 export const ethFlowContextAtom = atom<EthFlowContext>(defaultEthFlowContext)
 
 export const updateEthFlowContextAtom = atom(null, (get, set, nextState: PartialEthFlowContext) => {

@@ -21,7 +21,6 @@ import { useUsdAmount } from 'modules/usdAmount'
 
 interface TradeBasicDetailsProp extends BoxProps {
   allowedSlippage: Percent | string
-  isExpertMode: boolean
   allowsOffchainSigning: boolean
   trade?: TradeGp
   fee: CurrencyAmount<Currency>
@@ -29,7 +28,7 @@ interface TradeBasicDetailsProp extends BoxProps {
 }
 
 export function TradeBasicDetails(props: TradeBasicDetailsProp) {
-  const { trade, allowedSlippage, isExpertMode, allowsOffchainSigning, fee, isReviewSwap, ...boxProps } = props
+  const { trade, allowedSlippage, allowsOffchainSigning, fee, isReviewSwap, ...boxProps } = props
   const allowedSlippagePercent = !(allowedSlippage instanceof Percent)
     ? INITIAL_ALLOWED_SLIPPAGE_PERCENT
     : allowedSlippage
@@ -43,13 +42,10 @@ export function TradeBasicDetails(props: TradeBasicDetailsProp) {
   const isExactIn = trade?.tradeType === TradeType.EXACT_INPUT
 
   const showRowSlippage =
-    (isReviewSwap ||
-      isEoaEthFlow ||
-      isExpertMode ||
-      !allowedSlippagePercent.equalTo(INITIAL_ALLOWED_SLIPPAGE_PERCENT)) &&
+    (isReviewSwap || isEoaEthFlow || !allowedSlippagePercent.equalTo(INITIAL_ALLOWED_SLIPPAGE_PERCENT)) &&
     !isWrapOrUnwrap
 
-  const showRowReceivedAfterSlippage = (isReviewSwap || isExpertMode) && trade
+  const showRowReceivedAfterSlippage = isReviewSwap && trade
 
   return (
     <LowerSectionWrapper {...boxProps}>

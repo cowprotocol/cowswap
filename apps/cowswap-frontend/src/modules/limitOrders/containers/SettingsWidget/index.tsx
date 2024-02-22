@@ -1,11 +1,9 @@
 import { useAtomValue, useSetAtom } from 'jotai'
-import React, { useCallback, useState } from 'react'
+import React, { useCallback } from 'react'
 
 import { Menu, MenuItem } from '@reach/menu-button'
 
-import { ExpertModeIndicator, MenuContent, SettingsButton, SettingsIcon } from 'modules/trade/pure/Settings'
-
-import { ExpertModeModal } from 'common/pure/ExpertModeModal'
+import { MenuContent, SettingsButton, SettingsIcon } from 'modules/trade/pure/Settings'
 
 import { Settings } from '../../pure/Settings'
 import {
@@ -17,43 +15,19 @@ import {
 export function SettingsWidget() {
   const settingsState = useAtomValue(limitOrdersSettingsAtom)
   const updateSettingsState = useSetAtom(updateLimitOrdersSettingsAtom)
-  const [showExpertConfirm, setShowExpertConfirm] = useState(false)
 
   const onStateChanged = useCallback(
     (state: Partial<LimitOrdersSettingsState>) => {
-      const { expertMode } = state
-
-      if (expertMode !== undefined) {
-        const isExpertModeOn = !settingsState.expertMode && expertMode
-        const isExpertModeOff = settingsState.expertMode && !expertMode
-
-        if (isExpertModeOn) {
-          setShowExpertConfirm(true)
-        } else if (isExpertModeOff) {
-          updateSettingsState({ expertMode: false })
-        }
-      } else {
-        updateSettingsState(state)
-      }
+      updateSettingsState(state)
     },
-    [settingsState, updateSettingsState]
+    [updateSettingsState]
   )
-  const onEnableExpertMode = useCallback(() => {
-    updateSettingsState({ expertMode: true })
-    setShowExpertConfirm(false)
-  }, [updateSettingsState, setShowExpertConfirm])
 
   return (
     <>
       <Menu>
         <SettingsButton>
           <SettingsIcon />
-          {settingsState.expertMode && (
-            <ExpertModeIndicator>
-              <span>🐮</span>
-              <span>🥋</span>
-            </ExpertModeIndicator>
-          )}
         </SettingsButton>
         <MenuContent>
           <MenuItem disabled={true} onSelect={() => void 0}>
@@ -61,11 +35,6 @@ export function SettingsWidget() {
           </MenuItem>
         </MenuContent>
       </Menu>
-      <ExpertModeModal
-        isOpen={showExpertConfirm}
-        onDismiss={() => setShowExpertConfirm(false)}
-        onEnable={onEnableExpertMode}
-      />
     </>
   )
 }

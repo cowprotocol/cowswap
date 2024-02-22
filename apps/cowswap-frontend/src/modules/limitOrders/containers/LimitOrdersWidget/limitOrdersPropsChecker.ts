@@ -21,8 +21,6 @@ export interface LimitOrdersProps {
   isUnlocked: boolean
   isRateLoading: boolean
   showRecipient: boolean
-  isExpertMode: boolean
-
   recipient: string | null
   partiallyFillableOverride: PartiallyFillableOverrideDispatcherType
 

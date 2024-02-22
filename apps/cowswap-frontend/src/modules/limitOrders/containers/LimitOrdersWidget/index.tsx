@@ -79,7 +79,7 @@ export function LimitOrdersWidget() {
   const partiallyFillableOverride = useAtom(partiallyFillableOverrideAtom)
   const widgetActions = useLimitOrdersWidgetActions()
 
-  const { showRecipient, expertMode: isExpertMode } = settingsState
+  const { showRecipient } = settingsState
 
   const priceImpact = useTradePriceImpact()
   const quoteAmount = useMemo(
@@ -119,7 +119,6 @@ export function LimitOrdersWidget() {
     isUnlocked,
     isRateLoading,
     showRecipient,
-    isExpertMode,
     recipient,
     partiallyFillableOverride,
     rateInfoParams,
@@ -144,7 +143,6 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
     widgetActions,
     partiallyFillableOverride,
     showRecipient,
-    isExpertMode,
     recipient,
     rateInfoParams,
     priceImpact,
@@ -210,15 +208,6 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
           <styledEl.StyledRateInfo rateInfoParams={rateInfoParams} />
         </styledEl.FooterBox>
 
-        {isExpertMode && (
-          <styledEl.FooterBox>
-            <styledEl.StyledOrderType
-              isPartiallyFillable={isPartiallyFillable}
-              partiallyFillableOverride={partiallyFillableOverride}
-            />
-          </styledEl.FooterBox>
-        )}
-
         <LimitOrdersWarnings feeAmount={feeAmount} />
 
         <styledEl.TradeButtonBox>
@@ -237,7 +226,6 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
 
   const params = {
     compactView: false,
-    isExpertMode,
     recipient,
     showRecipient,
     isTradePriceUpdating,

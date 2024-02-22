@@ -25,7 +25,6 @@ export interface SwapWarningsTopProps {
   feeWarningAccepted: boolean
   impactWarningAccepted: boolean
   hideUnknownImpactWarning: boolean
-  isExpertMode: boolean
   showApprovalBundlingBanner: boolean
   showWrapBundlingBanner: boolean
   shouldZeroApprove: boolean
@@ -57,7 +56,6 @@ export const SwapWarningsTop = React.memo(function (props: SwapWarningsTopProps)
     account,
     feeWarningAccepted,
     impactWarningAccepted,
-    isExpertMode,
     hideUnknownImpactWarning,
     showApprovalBundlingBanner,
     showWrapBundlingBanner,
@@ -80,11 +78,10 @@ export const SwapWarningsTop = React.memo(function (props: SwapWarningsTopProps)
       <HighFeeWarning
         trade={trade}
         acceptedStatus={feeWarningAccepted}
-        acceptWarningCb={!isExpertMode && account ? () => setFeeWarningAccepted((state) => !state) : undefined}
+        acceptWarningCb={account ? () => setFeeWarningAccepted((state) => !state) : undefined}
       />
       {!hideUnknownImpactWarning && (
         <StyledNoImpactWarning
-          withoutAccepting={isExpertMode}
           isAccepted={impactWarningAccepted}
           acceptCallback={() => setImpactWarningAccepted((state) => !state)}
         />
