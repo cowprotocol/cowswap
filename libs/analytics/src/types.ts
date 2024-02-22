@@ -1,5 +1,3 @@
-import { OrderClass } from '@cowprotocol/cow-sdk'
-
 export enum Category {
   TRADE = 'Trade',
   LIST = 'Lists',
@@ -21,13 +19,6 @@ export enum Category {
   WIDGET_CONFIGURATOR = 'Widget configurator',
 }
 
-export interface EventParams {
-  category: Category
-  action: string
-  label?: string
-  value?: number
-}
-
 export enum Dimensions {
   chainId = 'chainId',
   walletName = 'walletName',
@@ -36,6 +27,3 @@ export enum Dimensions {
   market = 'market',
   injectedWidgetAppId = 'injectedWidgetAppId',
 }
-
-// TODO: use UiOrderType instead
-export type AnalyticsOrderType = OrderClass | 'TWAP'

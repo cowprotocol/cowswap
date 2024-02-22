@@ -3,6 +3,7 @@ import { orderAnalytics } from '@cowprotocol/analytics'
 import { Dispatch, MiddlewareAPI } from 'redux'
 
 import { computeOrderSummary } from 'common/updaters/orders/utils'
+import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { addPopup } from '../../application/reducer'
 import { AppState } from '../../index'
@@ -22,8 +23,6 @@ export function batchExpireOrdersPopup(
 
     // Do not trigger expired pop up if order is hidden
     if (orderObject && !orderObject.order.isHidden) {
-      const { class: orderClass, composableCowInfo } = orderObject.order
-
       const popup = setPopupData(OrderTxTypes.METATXN, {
         success: false,
         summary: computeOrderSummary({
@@ -33,8 +32,7 @@ export function batchExpireOrdersPopup(
         id,
         status: OrderActions.OrderStatus.EXPIRED,
       })
-      const orderType = composableCowInfo ? 'TWAP' : orderClass
-      orderAnalytics('Expired', orderType)
+      orderAnalytics('Expired', getUiOrderType(orderObject.order))
 
       store.dispatch(addPopup(popup))
     }
