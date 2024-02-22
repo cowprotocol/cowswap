@@ -115,7 +115,14 @@ export function useHandleOrderPlacement(
           tradeConfirmActions.onError(getSwapErrorMessage(error))
         }
       })
-  }, [tradeFn, tradeConfirmActions, updateLimitOrdersState, setPartiallyFillableOverride, hideAlternativeOrderModal])
+  }, [
+    tradeFn,
+    tradeConfirmActions,
+    updateLimitOrdersState,
+    setPartiallyFillableOverride,
+    hideAlternativeOrderModal,
+    navigateToOpenOrdersTable,
+  ])
 }
 
 function buildTradeAmounts(tradeContext: TradeFlowContext): TradeAmounts {
