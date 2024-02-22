@@ -1,6 +1,12 @@
 import { CowEventListeners } from '@cowprotocol/events'
 import { IframeRpcProviderBridge } from './IframeRpcProviderBridge'
-import { CowSwapWidgetParams, EthereumProvider, WidgetMethodsEmit, WidgetMethodsListen } from './types'
+import {
+  CowSwapWidgetParams,
+  CowSwapWidgetProps,
+  EthereumProvider,
+  WidgetMethodsEmit,
+  WidgetMethodsListen,
+} from './types'
 import { buildTradeAmountsQuery, buildWidgetPath, buildWidgetUrl } from './urlUtils'
 import { IframeCowEventEmitter } from './IframeCowEventEmitter'
 import { WindowListener, listenToMessageFromWindow, postMessageToWindow, stopListeningWindowListener } from './messages'
@@ -20,7 +26,7 @@ const HEIGHT_THRESHOLD = 20
  * Callback function signature for updating the CoW Swap Widget.
  */
 export interface CowSwapWidgetHandler {
-  updateWidget: (params: CowSwapWidgetParams, listeners?: CowEventListeners) => void
+  updateParams: (params: CowSwapWidgetParams) => void
   updateListeners: (newListeners?: CowEventListeners) => void
   updateProvider: (newProvider?: EthereumProvider) => void
   destroy: () => void
@@ -32,12 +38,9 @@ export interface CowSwapWidgetHandler {
  * @param params - Parameters for configuring the widget.
  * @returns A callback function to update the widget with new settings.
  */
-export function createCowSwapWidget(
-  container: HTMLElement,
-  params: CowSwapWidgetParams = {},
-  listeners?: CowEventListeners
-): CowSwapWidgetHandler {
-  const { provider } = params
+export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidgetProps): CowSwapWidgetHandler {
+  const { params, provider: providerAux, listeners } = props
+  let provider = providerAux
 
   // 1. Create a brand new iframe
   const iframe = createIframe(params)
@@ -66,13 +69,14 @@ export function createCowSwapWidget(
   let iframeRpcProviderBridge = updateProvider(iframeWindow, null, provider)
 
   // 7. Schedule the uploading of the params, once the iframe is loaded
-  iframe.addEventListener('load', () => updateWidgetParams(iframeWindow, params))
+  iframe.addEventListener('load', () => updateParams(iframeWindow, params, provider))
 
   // 8. Return the handler, so the widget, listeners, and provider can be updated
   return {
-    updateWidget: (newParams: CowSwapWidgetParams) => updateWidgetParams(iframeWindow, newParams),
+    updateParams: (newParams: CowSwapWidgetParams) => updateParams(iframeWindow, newParams, provider),
     updateListeners: (newListeners?: CowEventListeners) => iFrameCowEventEmitter.updateListeners(newListeners),
     updateProvider: (newProvider) => {
+      provider = newProvider
       iframeRpcProviderBridge = updateProvider(iframeWindow, iframeRpcProviderBridge, newProvider)
     },
 
@@ -143,9 +147,13 @@ function createIframe(params: CowSwapWidgetParams): HTMLIFrameElement {
  * @param params - New params for the widget.
  * @param contentWindow - Window object of the widget's iframe.
  */
-function updateWidgetParams(contentWindow: Window, params: CowSwapWidgetParams) {
+function updateParams(contentWindow: Window, params: CowSwapWidgetParams, provider: EthereumProvider | undefined) {
+  const hasProvider = !!provider
+
   const pathname = buildWidgetPath(params)
   const search = buildTradeAmountsQuery(params).toString()
+
+  console.log('[cowSwapWidget] updateWidgetParams', { pathname, search, params, hasProvider })
 
   postMessageToWindow(contentWindow, WidgetMethodsListen.UPDATE_PARAMS, {
     urlParams: {
@@ -154,8 +162,8 @@ function updateWidgetParams(contentWindow: Window, params: CowSwapWidgetParams) 
     },
     appParams: {
       ...params,
-      provider: undefined,
     },
+    hasProvider,
   })
 }
 

@@ -266,7 +266,7 @@ export function Configurator({ title }: { title: string }) {
               handleClose={handleDialogClose}
             />
             <br />
-            <CowSwapWidget provider={provider} params={params} listeners={COW_LISTENERS} />
+            <CowSwapWidget params={params} provider={provider} listeners={COW_LISTENERS} />
           </>
         )}
       </Box>

@@ -2,26 +2,21 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 
 import {
   createCowSwapWidget,
-  CowSwapWidgetParams,
   EthereumProvider,
   CowSwapWidgetHandler,
+  CowSwapWidgetProps,
+  CowSwapWidgetParams,
 } from '@cowprotocol/widget-lib'
 import type { CowEventListeners } from '@cowprotocol/events'
 
-export interface CowSwapWidgetProps {
-  params: Omit<CowSwapWidgetParams, 'provider'>
-  provider?: EthereumProvider
-  listeners?: CowEventListeners
-}
-
 import { Command } from '@cowprotocol/types'
 
-export function CowSwapWidget({ params, provider, listeners }: CowSwapWidgetProps) {
+export function CowSwapWidget(props: CowSwapWidgetProps) {
+  const { params, provider, listeners } = props
   const [error, setError] = useState<{ error: Error; message: string } | null>(null)
-  const paramsRef = useRef<Omit<CowSwapWidgetParams, 'provider'> | null>(null)
-  const providerRef = useRef<EthereumProvider | null>(provider ?? null)
+  const paramsRef = useRef<CowSwapWidgetParams | null>(null)
+  const providerRef = useRef<EthereumProvider | undefined>(provider)
   const listenersRef = useRef<CowEventListeners | undefined>(listeners)
-
   const containerRef = useRef<HTMLDivElement>(null)
   const widgetHandlerRef = useRef<CowSwapWidgetHandler | null>(null)
 
@@ -51,29 +46,21 @@ export function CowSwapWidget({ params, provider, listeners }: CowSwapWidgetProp
 
     if (handler === null) {
       tryOrHandleError('Creating a new widget', () => {
-        widgetHandlerRef.current = createCowSwapWidget(
-          container,
-          { ...params, provider: providerRef.current ?? undefined }, // Override params to add the provider
-          listeners
-        )
+        widgetHandlerRef.current = createCowSwapWidget(container, { params, provider: providerRef.current, listeners })
         listenersRef.current = listeners
       })
     } else {
-      tryOrHandleError('Updating the widget', () => handler.updateWidget(params))
+      tryOrHandleError('Updating the widget', () => handler.updateParams(params))
     }
   }, [params])
 
   useEffect(() => {
-    if (
-      !widgetHandlerRef.current ||
-      providerRef.current === provider ||
-      (provider === undefined && providerRef.current === null)
-    ) {
+    if (!widgetHandlerRef.current || providerRef.current === provider) {
       return
     }
 
     // Update provider
-    providerRef.current = provider || null
+    providerRef.current = provider
 
     // TODO: Fix this https://github.com/cowprotocol/cowswap/issues/3810#issue-2127257473 (in meantime forcing full refresh as before)
     // const handler = widgetHandlerRef.current
@@ -90,11 +77,7 @@ export function CowSwapWidget({ params, provider, listeners }: CowSwapWidgetProp
         widgetHandlerRef.current?.destroy()
 
         // Re-create the widget
-        widgetHandlerRef.current = createCowSwapWidget(
-          container,
-          { ...params, provider: providerRef.current ?? undefined },
-          listeners
-        )
+        widgetHandlerRef.current = createCowSwapWidget(container, { params, provider: providerRef.current, listeners })
       })
     }
   }, [provider])
