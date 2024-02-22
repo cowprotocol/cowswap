@@ -1,6 +1,7 @@
 import { useSetAtom } from 'jotai'
 import { useEffect, useRef } from 'react'
 
+import { deepEqual } from '@cowprotocol/common-utils'
 import {
   UpdateParamsPayload,
   WidgetMethodsEmit,
@@ -57,7 +58,7 @@ export function InjectedWidgetUpdater() {
 
     // Start listening messages inside of React
     const updateParamsListener = listenToMessageFromWindow(window, WidgetMethodsListen.UPDATE_PARAMS, (data) => {
-      // if (prevData.current && deepEqual(prevData.current, data)) return
+      if (prevData.current && deepEqual(prevData.current, data)) return
 
       // Update params
       prevData.current = data
