@@ -41,12 +41,6 @@ export function EthFlowModalBottomContent(params: BottomContentParams) {
     wrap: { txStatus: wrapTxStatus, txHash: wrapTxHash },
   } = ethFlowContext
 
-  const isFailedState = [
-    EthFlowState.WrapFailed,
-    EthFlowState.ApproveFailed,
-    EthFlowState.ApproveInsufficient,
-  ].includes(state)
-  const showButton = isFailedState || state === EthFlowState.SwapReady
   const showWrapPreview = ![EthFlowState.SwapReady, EthFlowState.ApproveNeeded].includes(state)
   const [isActionInProgress, setIsActionInProgress] = useState(false)
 
@@ -77,11 +71,9 @@ export function EthFlowModalBottomContent(params: BottomContentParams) {
     <>
       {showWrapPreview && <WrappingPreview {...wrappingPreview} />}
       <SimpleAccountDetails pendingTransactions={pendingTransactions} confirmedTransactions={[]} $margin="12px 0 0" />
-      {showButton && (
-        <TradeFormBlankButton onClick={onClick} loading={isActionInProgress || showLoader}>
-          <Trans>{buttonText}</Trans>
-        </TradeFormBlankButton>
-      )}
+      <TradeFormBlankButton onClick={onClick} loading={isActionInProgress || showLoader}>
+        <Trans>{buttonText}</Trans>
+      </TradeFormBlankButton>
     </>
   )
 }
