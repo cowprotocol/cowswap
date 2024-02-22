@@ -33,7 +33,6 @@ import { CancellableOrder } from 'common/utils/isOrderCancellable'
 import { isOrderOffChainCancellable } from 'common/utils/isOrderOffChainCancellable'
 
 import { OrderRow } from './OrderRow'
-import { OrdersTablePagination } from './OrdersTablePagination'
 import { TableGroup } from './TableGroup'
 import { getOrderParams } from './utils/getOrderParams'
 
@@ -44,6 +43,7 @@ import {
   OrderTableItem,
   tableItemsToOrders,
 } from '../../utils/orderTableGroupUtils'
+import { OrdersTablePagination } from '../OrdersTablePagination'
 
 // TODO: move elements to styled.jsx
 

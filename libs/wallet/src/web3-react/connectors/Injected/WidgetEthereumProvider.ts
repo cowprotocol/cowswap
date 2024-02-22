@@ -52,9 +52,9 @@ interface IFrameEthereumProviderOptions {
 /**
  * This is what we store in the state to keep track of pending promises.
  */
-interface PromiseCompleter<TResult, TErrorData> {
+interface PromiseCompleter<T, D> {
   // A response was received (either error or result response).
-  resolve(result: JsonRpcSucessfulResponseMessage<TResult> | JsonRpcErrorResponseMessage<TErrorData>): void
+  resolve(result: JsonRpcSucessfulResponseMessage<T> | JsonRpcErrorResponseMessage<D>): void
 
   // An error with executing the request was encountered.
   reject(error: Error): void
@@ -122,7 +122,6 @@ export class RpcError extends Error {
  */
 export class WidgetEthereumProvider extends EventEmitter<IFrameEthereumProviderEventTypes> {
   request({ method, params }: { method: string; params: unknown[] }) {
-    // console.log('[IFrameEthereumProvider] IFrameEthereumProvider - rpc request', { method, params })
     return this.send(method, params)
   }
 
@@ -165,12 +164,10 @@ export class WidgetEthereumProvider extends EventEmitter<IFrameEthereumProviderE
     this.eventTarget = eventTarget
 
     listenToMessageFromWindow(this.eventSource, WidgetMethodsListen.PROVIDER_RPC_RESPONSE, (message) => {
-      // console.debug('[WidgetEthereumProvider] handle PROVIDER_RPC_RESPONSE', message)
       this.handleRpcRequests(message)
     })
 
     listenToMessageFromWindow(this.eventSource, WidgetMethodsListen.PROVIDER_ON_EVENT, (message) => {
-      // console.debug('[WidgetEthereumProvider] handle PROVIDER_ON_EVENT', message)
       this.handleOnEvent(message)
     })
   }
@@ -191,7 +188,6 @@ export class WidgetEthereumProvider extends EventEmitter<IFrameEthereumProviderE
       id,
       method,
       params,
-      // ...(typeof params === 'undefined' ? null : { params }),
     }
 
     const promise = new Promise<JsonRpcSucessfulResponseMessage<TResult> | JsonRpcErrorResponseMessage<TErrorData>>(
@@ -291,7 +287,6 @@ export class WidgetEthereumProvider extends EventEmitter<IFrameEthereumProviderE
 
   private handleOnEvent(message: ProviderOnEventPayload) {
     const params = message.params as any
-    // console.debug('[WidgetEthereumProvider] on', message.event, params)
     switch (message.event) {
       case 'notification':
         this.emitNotification(params)

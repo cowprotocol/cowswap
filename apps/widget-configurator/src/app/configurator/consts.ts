@@ -8,7 +8,6 @@ export const TRADE_MODES = [TradeType.SWAP, TradeType.LIMIT, TradeType.ADVANCED]
 export const DEFAULT_TOKEN_LISTS: TokenListItem[] = [
   { url: 'https://files.cow.fi/tokens/CowSwap.json', enabled: true },
   { url: 'https://files.cow.fi/tokens/CoinGecko.json', enabled: true },
-  { url: 'https://tokens.coingecko.com/uniswap/all.json', enabled: false },
   { url: 'https://tokens.1inch.eth.link', enabled: false },
   { url: 'https://tokenlist.aave.eth.link', enabled: false },
   { url: 'https://datafi.theagora.eth.link', enabled: false },

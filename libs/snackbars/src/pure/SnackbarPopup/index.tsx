@@ -1,4 +1,5 @@
 import { ReactNode, useCallback, useEffect } from 'react'
+import { UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 import { X } from 'react-feather'
@@ -7,17 +8,12 @@ import { animated, useSpring } from '@react-spring/web'
 const Wrapper = styled.div`
   display: inline-block;
   width: 100%;
-  background-color: ${({ theme }) => theme.bg1};
+  background-color: var(${UI.COLOR_PAPER});
   position: relative;
   border-radius: 10px;
-  padding: 20px 40px 20px 20px;
-  margin-bottom: 20px;
+  padding: 20px 35px 20px 20px;
   overflow: hidden;
-  border: 2px solid ${({ theme }) => theme.black};
-  box-shadow: 2px 2px 0 ${({ theme }) => theme.black};
-  font-weight: 500;
-  font-size: 16px;
-  color: ${({ theme }) => theme.text1};
+  border: 2px solid var(${UI.COLOR_TEXT_OPACITY_50});
 `
 
 const ContentWrapper = styled.div`
@@ -31,11 +27,17 @@ const StyledClose = styled(X)`
   position: absolute;
   right: 10px;
   top: 10px;
-  stroke: currentColor;
-  color: currentColor;
+  color: inherit;
+  opacity: 0.7;
+  transition: opacity ${UI.ANIMATION_DURATION} ease-in-out;
 
   &:hover {
+    opacity: 1;
     cursor: pointer;
+  }
+
+  svg {
+    stroke: currentColor;
   }
 `
 
@@ -44,8 +46,8 @@ const Fader = styled.div`
   bottom: 0;
   left: 0;
   width: 100%;
-  background-color: ${({ theme }) => theme.disabled};
-  height: 4px;
+  height: 2px;
+  background-color: var(${UI.COLOR_PAPER_DARKER});
 `
 
 const AnimatedFader = animated(Fader)

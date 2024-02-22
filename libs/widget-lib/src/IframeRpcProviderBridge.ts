@@ -116,7 +116,6 @@ export class IframeRpcProviderBridge {
   }
 
   private onProviderEvent(event: string, params: unknown): void {
-    // console.debug('[IframeRpcProviderBridge] onProviderEvent', { event, params })
     postMessageToWindow(this.iframeWidow, WidgetMethodsListen.PROVIDER_ON_EVENT, {
       event,
       params,
@@ -127,7 +126,6 @@ export class IframeRpcProviderBridge {
    * Forward a JSON-RPC message to the content window.
    */
   private forwardRpcResponseToIframe(params: ProviderRpcResponsePayload) {
-    // console.debug('[IframeRpcProviderBridge] forwardRpcResponseToIframe', params)
     postMessageToWindow(this.iframeWidow, WidgetMethodsListen.PROVIDER_RPC_RESPONSE, params)
   }
 }

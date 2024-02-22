@@ -7,7 +7,7 @@ export const ApproveWrapper = styled.div`
   display: flex;
   flex-flow: column wrap;
   width: 100%;
-  padding: 26px 16px 32px;
+  padding: 26px 0 0;
   gap: 32px;
   color: inherit;
 

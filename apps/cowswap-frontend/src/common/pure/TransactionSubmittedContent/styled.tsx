@@ -4,7 +4,7 @@ import styled from 'styled-components/macro'
 
 import { CloseIcon } from 'legacy/theme'
 
-export const ButtonCustom = styled.button`
+export const ButtonCustom = styled.button<{ cowGame?: boolean }>`
   display: flex;
   flex: 1 1 auto;
   align-self: center;
@@ -13,19 +13,20 @@ export const ButtonCustom = styled.button`
   border-radius: 16px;
   min-height: 52px;
   border: 0;
-  color: var(${UI.COLOR_BUTTON_TEXT});
-  background: var(${UI.COLOR_PRIMARY});
+  color: ${({ cowGame }) => (cowGame ? `var(${UI.COLOR_INFO_TEXT})` : `var(${UI.COLOR_BUTTON_TEXT})`)};
+  background: ${({ cowGame }) => (cowGame ? `var(${UI.COLOR_INFO_BG})` : `var(${UI.COLOR_PRIMARY})`)};
   outline: 0;
   padding: 8px 16px;
-  margin: 16px 0 0;
-  font-size: 14px;
-  line-height: 1;
-  font-weight: 500;
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
   transition: background var(${UI.ANIMATION_DURATION}) ease-in-out;
   cursor: pointer;
+  width: 100%;
 
   &:hover {
-    background: var(${UI.COLOR_PRIMARY_DARKER});
+    color: ${({ cowGame }) => (cowGame ? `var(${UI.COLOR_PAPER})` : `var(${UI.COLOR_BUTTON_TEXT})`)};
+    background: ${({ cowGame }) => (cowGame ? `var(${UI.COLOR_INFO_TEXT})` : `var(${UI.COLOR_PRIMARY_DARKER})`)};
   }
 
   > a {
@@ -40,9 +41,16 @@ export const ButtonGroup = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
-  margin: 12px 0 0;
+  flex-flow: column wrap;
+  gap: 14px;
+  padding: 0;
+  margin: 16px auto 0;
   width: 100%;
+
+  > a {
+    width: 100%;
+    text-decoration: none;
+  }
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     flex-direction: column;

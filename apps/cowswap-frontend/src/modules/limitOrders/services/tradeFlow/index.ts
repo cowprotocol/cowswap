@@ -1,8 +1,7 @@
 import { reportPermitWithDefaultSigner } from '@cowprotocol/common-utils'
-import { OrderClass } from '@cowprotocol/cow-sdk'
 import { CowEvents } from '@cowprotocol/events'
 import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
-import { Command } from '@cowprotocol/types'
+import { Command, UiOrderType } from '@cowprotocol/types'
 import { Percent } from '@uniswap/sdk-core'
 
 import { EVENT_EMITTER } from 'eventEmitter'
@@ -19,7 +18,7 @@ import { handlePermit } from 'modules/permit'
 import { appDataContainsPermitSigner } from 'modules/permit/utils/appDataContainsPermitSigner'
 import { presignOrderStep } from 'modules/swap/services/swapFlow/steps/presignOrderStep'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
-import { SwapFlowAnalyticsContext, tradeFlowAnalytics } from 'modules/trade/utils/analytics'
+import { TradeFlowAnalyticsContext, tradeFlowAnalytics } from 'modules/trade/utils/analytics'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
 export async function tradeFlow(
@@ -27,7 +26,7 @@ export async function tradeFlow(
   priceImpact: PriceImpact,
   settingsState: LimitOrdersSettingsState,
   confirmPriceImpactWithoutFee: (priceImpact: Percent) => Promise<boolean>,
-  beforePermit: Command,
+  beforePermit: () => Promise<void>,
   beforeTrade: Command
 ): Promise<string> {
   const {
@@ -43,12 +42,12 @@ export async function tradeFlow(
   } = params
   const { account, recipientAddressOrName, sellToken, buyToken, appData, isSafeWallet } = postOrderParams
   const marketLabel = [sellToken.symbol, buyToken.symbol].join(',')
-  const swapFlowAnalyticsContext: SwapFlowAnalyticsContext = {
+  const swapFlowAnalyticsContext: TradeFlowAnalyticsContext = {
     account,
     recipient: recipientAddressOrName,
     recipientAddress: recipientAddressOrName,
     marketLabel,
-    orderClass: OrderClass.LIMIT,
+    orderType: UiOrderType.LIMIT,
   }
 
   logTradeFlow('LIMIT ORDER FLOW', 'STEP 1: confirm price impact')
@@ -62,7 +61,7 @@ export async function tradeFlow(
 
   try {
     logTradeFlow('LIMIT ORDER FLOW', 'STEP 2: handle permit')
-    if (isSupportedPermitInfo(permitInfo)) beforePermit()
+    if (isSupportedPermitInfo(permitInfo)) await beforePermit()
 
     postOrderParams.appData = await handlePermit({
       permitInfo,

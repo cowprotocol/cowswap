@@ -15,8 +15,6 @@ import { OrderSubmittedContent } from 'common/pure/OrderSubmittedContent'
 import { TransactionErrorContent } from 'common/pure/TransactionErrorContent'
 import { TradeAmounts } from 'common/types'
 
-import { TradeConfirmPendingContent } from './TradeConfirmPendingContent'
-
 import { useSetShowFollowPendingTxPopup } from '../../../wallet/hooks/useSetShowFollowPendingTxPopup'
 import { useTradeConfirmActions } from '../../hooks/useTradeConfirmActions'
 import { useTradeConfirmState } from '../../hooks/useTradeConfirmState'
@@ -107,7 +105,7 @@ function InnerComponent(props: InnerComponentProps) {
     return <TransactionErrorContent message={error} onDismiss={onDismiss} />
   }
 
-  if (pendingTrade && permitSignatureState) {
+  if (pendingTrade && permitSignatureState && permitSignatureState !== 'signed') {
     // TODO: potentially replace TradeConfirmPendingContent completely with PermitModal
     // We could use this not just for permit, but for any token, even already approved
     const step = permitSignatureState === 'signed' ? 'submit' : 'approve'
@@ -120,10 +118,6 @@ function InnerComponent(props: InnerComponentProps) {
         orderType={title}
       />
     )
-  }
-
-  if (pendingTrade) {
-    return <TradeConfirmPendingContent pendingTrade={pendingTrade} onDismiss={onDismiss} />
   }
 
   if (transactionHash) {

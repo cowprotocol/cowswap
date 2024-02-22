@@ -52,7 +52,7 @@ export const popupMiddleware: Middleware<Record<string, unknown>, AppState> = (s
       // Seems like redux is not smart enough to differentiate based on action.type,
       // so we need to do it manually like this
 
-      const orders = action.payload.ids.map((id) => getOrderByIdFromState(ordersMap, id)?.order).filter(isTruthy)
+      const orders = action.payload.ids.map((id) => getOrderByIdFromState(ordersMap, id)).filter(isTruthy)
 
       batchCancelOrdersPopup(store, orders)
     } else if (action.type === 'order/expireOrdersBatch') {

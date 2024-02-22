@@ -25,7 +25,7 @@ const Header = styled.div`
 const Body = styled.div`
   width: 100%;
   text-align: center;
-  margin: 40px 0;
+  margin: 80px 0;
 `
 
 const Text = styled.div`
