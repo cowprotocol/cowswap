@@ -1,10 +1,8 @@
 import { Erc20 } from '@cowprotocol/abis'
-import { reportAppDataWithHooks } from '@cowprotocol/common-utils'
-import { CowEvents } from '@cowprotocol/events'
+import { currencyAmountToTokenAmount, reportAppDataWithHooks } from '@cowprotocol/common-utils'
+import { OrderKind } from '@cowprotocol/cow-sdk'
 import { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import { Percent } from '@uniswap/sdk-core'
-
-import { EVENT_EMITTER } from 'eventEmitter'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
@@ -20,6 +18,10 @@ import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { tradeFlowAnalytics } from 'modules/trade/utils/analytics'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
+
+import { UiOrderType } from 'utils/orderUtils/getUiOrderType'
+
+import { emitPostedOrderEvent } from '../../../../legacy/state/orders/middleware/emitPostedOrderEvent'
 
 const LOG_PREFIX = 'SAFE BUNDLE ETH FLOW'
 
@@ -48,8 +50,11 @@ export async function safeBundleEthFlow(
     tradeConfirmActions,
   } = input
 
+  const { account, recipientAddressOrName, inputAmount, outputAmount } = orderParams
+  const { inputAmountWithSlippage, chainId } = context
+
   tradeFlowAnalytics.wrapApproveAndPresign(swapFlowAnalyticsContext)
-  const nativeAmountInWei = context.inputAmountWithSlippage.quotient.toString()
+  const nativeAmountInWei = inputAmountWithSlippage.quotient.toString()
 
   try {
     const txs: MetaTransactionData[] = []
@@ -70,7 +75,7 @@ export async function safeBundleEthFlow(
       const approveTx = await buildApproveTx({
         erc20Contract: wrappedNativeContract as unknown as Erc20,
         spender,
-        amountToApprove: context.inputAmountWithSlippage,
+        amountToApprove: inputAmountWithSlippage,
       })
 
       txs.push({
@@ -121,7 +126,18 @@ export async function safeBundleEthFlow(
     logTradeFlow(LOG_PREFIX, 'STEP 6: send safe tx')
 
     const safeTx = await safeAppsSdk.txs.send({ txs })
-    EVENT_EMITTER.emit(CowEvents.ON_POSTED_ORDER, { orderUid: orderId, chainId: context.chainId })
+
+    emitPostedOrderEvent({
+      chainId,
+      id: safeTx.safeTxHash,
+      kind: OrderKind.SELL,
+      receiver: recipientAddressOrName,
+      // TODO: check, should we use inputAmountWithSlippage instead?
+      inputAmount: currencyAmountToTokenAmount(inputAmount),
+      outputAmount: currencyAmountToTokenAmount(outputAmount),
+      owner: account,
+      uiOrderType: UiOrderType.SWAP,
+    })
 
     logTradeFlow(LOG_PREFIX, 'STEP 7: add safe tx hash and unhide order')
     partialOrderUpdate(

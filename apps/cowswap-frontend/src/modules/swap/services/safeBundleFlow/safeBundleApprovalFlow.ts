@@ -1,9 +1,7 @@
-import { reportAppDataWithHooks } from '@cowprotocol/common-utils'
-import { CowEvents } from '@cowprotocol/events'
+import { currencyAmountToTokenAmount, reportAppDataWithHooks } from '@cowprotocol/common-utils'
+import { OrderKind } from '@cowprotocol/cow-sdk'
 import { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import { Percent } from '@uniswap/sdk-core'
-
-import { EVENT_EMITTER } from 'eventEmitter'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
@@ -20,6 +18,10 @@ import { tradeFlowAnalytics } from 'modules/trade/utils/analytics'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
 import { shouldZeroApprove as shouldZeroApproveFn } from 'modules/zeroApproval'
+
+import { UiOrderType } from 'utils/orderUtils/getUiOrderType'
+
+import { emitPostedOrderEvent } from '../../../../legacy/state/orders/middleware/emitPostedOrderEvent'
 
 const LOG_PREFIX = 'SAFE APPROVAL BUNDLE FLOW'
 
@@ -47,6 +49,9 @@ export async function safeBundleApprovalFlow(
     tradeConfirmActions,
   } = input
 
+  const { chainId } = context
+  const { appData, account, isSafeWallet, recipientAddressOrName, inputAmount, outputAmount } = orderParams
+
   tradeFlowAnalytics.approveAndPresign(swapFlowAnalyticsContext)
 
   try {
@@ -61,7 +66,7 @@ export async function safeBundleApprovalFlow(
 
     // TODO: remove once we figure out what's adding this to appData in the first place
     // make sure no pre-approval hooks are included, just as a safety measure
-    if (appDataContainsHooks(orderParams.appData.fullAppData)) {
+    if (appDataContainsHooks(appData.fullAppData)) {
       reportAppDataWithHooks(orderParams)
       // wipe out the hooks
       orderParams.appData = await updateHooksOnAppData(orderParams.appData, undefined)
@@ -72,7 +77,6 @@ export async function safeBundleApprovalFlow(
       callbacks.closeModals()
     })
 
-    const { isSafeWallet } = orderParams
     addPendingOrderStep(
       {
         id: orderId,
@@ -117,7 +121,17 @@ export async function safeBundleApprovalFlow(
     }
 
     const safeTx = await safeAppsSdk.txs.send({ txs: safeTransactionData })
-    EVENT_EMITTER.emit(CowEvents.ON_POSTED_ORDER, { orderUid: orderId, chainId: context.chainId })
+
+    emitPostedOrderEvent({
+      chainId,
+      id: safeTx.safeTxHash,
+      kind: OrderKind.SELL,
+      receiver: recipientAddressOrName,
+      inputAmount: currencyAmountToTokenAmount(inputAmount),
+      outputAmount: currencyAmountToTokenAmount(outputAmount),
+      owner: account,
+      uiOrderType: UiOrderType.SWAP,
+    })
 
     logTradeFlow(LOG_PREFIX, 'STEP 6: add safe tx hash and unhide order')
     partialOrderUpdate(

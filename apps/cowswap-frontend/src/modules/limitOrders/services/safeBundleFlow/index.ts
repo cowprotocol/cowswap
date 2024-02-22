@@ -1,10 +1,8 @@
-import { reportAppDataWithHooks } from '@cowprotocol/common-utils'
-import { CowEvents } from '@cowprotocol/events'
+import { currencyAmountToTokenAmount, reportAppDataWithHooks } from '@cowprotocol/common-utils'
+import { OrderKind } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
 import { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import { Percent } from '@uniswap/sdk-core'
-
-import { EVENT_EMITTER } from 'eventEmitter'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
@@ -24,6 +22,10 @@ import { SwapFlowAnalyticsContext, tradeFlowAnalytics } from 'modules/trade/util
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
 import { shouldZeroApprove as shouldZeroApproveFn } from 'modules/zeroApproval'
+
+import { UiOrderType } from 'utils/orderUtils/getUiOrderType'
+
+import { emitPostedOrderEvent } from '../../../../legacy/state/orders/middleware/emitPostedOrderEvent'
 
 const LOG_PREFIX = 'LIMIT ORDER SAFE BUNDLE FLOW'
 export async function safeBundleFlow(
@@ -46,7 +48,9 @@ export async function safeBundleFlow(
     sellToken,
     buyToken,
     inputAmount,
+    outputAmount,
     class: orderClass,
+    isSafeWallet,
   } = params.postOrderParams
 
   // TODO: remove once we figure out what's adding this to appData in the first place
@@ -70,7 +74,6 @@ export async function safeBundleFlow(
 
   const { chainId, postOrderParams, provider, erc20Contract, spender, dispatch, settlementContract, safeAppsSdk } =
     params
-  const { isSafeWallet } = postOrderParams
 
   const validTo = calculateLimitOrdersDeadline(settingsState)
 
@@ -136,7 +139,18 @@ export async function safeBundleFlow(
     }
 
     const safeTx = await safeAppsSdk.txs.send({ txs: safeTransactionData })
-    EVENT_EMITTER.emit(CowEvents.ON_POSTED_ORDER, { orderUid: orderId, chainId })
+    const safeTxHash = safeTx.safeTxHash
+
+    emitPostedOrderEvent({
+      chainId,
+      id: safeTxHash,
+      kind: OrderKind.SELL,
+      receiver: recipientAddressOrName,
+      inputAmount: currencyAmountToTokenAmount(inputAmount),
+      outputAmount: currencyAmountToTokenAmount(outputAmount),
+      owner: account,
+      uiOrderType: UiOrderType.LIMIT,
+    })
 
     logTradeFlow(LOG_PREFIX, 'STEP 7: add safe tx hash and unhide order')
     partialOrderUpdate(

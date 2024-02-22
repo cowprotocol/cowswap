@@ -72,9 +72,9 @@ function Custom({
         onExpire={() => console.log('expire')}
       >
         <PendingOrderNotification
-          account={account}
+          owner={account}
           chainId={SupportedChainId.MAINNET}
-          orderId={orderId}
+          orderUid={orderId}
           kind={kind}
           receiver={receiver}
           orderType={orderType}

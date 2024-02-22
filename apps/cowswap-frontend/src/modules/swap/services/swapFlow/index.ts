@@ -1,9 +1,12 @@
-import { getIsNativeToken, reportAppDataWithHooks, reportPermitWithDefaultSigner } from '@cowprotocol/common-utils'
-import { CowEvents } from '@cowprotocol/events'
+import {
+  currencyAmountToTokenAmount,
+  getIsNativeToken,
+  reportAppDataWithHooks,
+  reportPermitWithDefaultSigner,
+} from '@cowprotocol/common-utils'
+import { OrderKind } from '@cowprotocol/cow-sdk'
 import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
 import { Percent } from '@uniswap/sdk-core'
-
-import { EVENT_EMITTER } from 'eventEmitter'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
@@ -18,8 +21,11 @@ import { tradeFlowAnalytics } from 'modules/trade/utils/analytics'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
 
+import { UiOrderType } from 'utils/orderUtils/getUiOrderType'
+
 import { presignOrderStep } from './steps/presignOrderStep'
 
+import { emitPostedOrderEvent } from '../../../../legacy/state/orders/middleware/emitPostedOrderEvent'
 import { SwapFlowContext } from '../types'
 
 export async function swapFlow(
@@ -41,15 +47,7 @@ export async function swapFlow(
     return false
   }
 
-  const {
-    orderParams,
-    context,
-    permitInfo,
-    generatePermitHook,
-    swapFlowAnalyticsContext,
-    callbacks,
-    dispatch,
-  } = input
+  const { orderParams, context, permitInfo, generatePermitHook, swapFlowAnalyticsContext, callbacks, dispatch } = input
   const { chainId, trade } = context
 
   try {
@@ -58,7 +56,7 @@ export async function swapFlow(
       tradeConfirmActions.requestPermitSignature(tradeAmounts)
     }
 
-    const { appData, account, isSafeWallet } = orderParams
+    const { appData, account, isSafeWallet, recipientAddressOrName, inputAmount, outputAmount } = orderParams
     orderParams.appData = await handlePermit({
       appData,
       account,
@@ -110,7 +108,17 @@ export async function swapFlow(
       ? Promise.resolve(null)
       : presignOrderStep(orderUid, input.contract))
 
-    EVENT_EMITTER.emit(CowEvents.ON_POSTED_ORDER, { orderUid, chainId })
+    emitPostedOrderEvent({
+      chainId,
+      id: orderUid,
+      kind: OrderKind.SELL,
+      receiver: recipientAddressOrName,
+      // TODO: check, should we use inputAmountWithSlippage instead?
+      inputAmount: currencyAmountToTokenAmount(inputAmount),
+      outputAmount: currencyAmountToTokenAmount(outputAmount),
+      owner: account,
+      uiOrderType: UiOrderType.SWAP,
+    })
 
     logTradeFlow('SWAP FLOW', 'STEP 6: unhide SC order (optional)')
     if (presignTx) {

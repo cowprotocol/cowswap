@@ -4,21 +4,19 @@ import { MiddlewareAPI } from '@reduxjs/toolkit'
 import { Dispatch } from 'redux'
 import { anything, instance, mock, resetCalls, verify, when } from 'ts-mockito'
 
+import { emitPostedOrderEvent } from './emitPostedOrderEvent'
 import { pendingOrderPopup } from './pendingOrderPopup'
-import { showPendingOrderNotification } from './showPendingOrderNotification'
 
 import { AppState } from '../../index'
 import { AddPendingOrderParams } from '../actions'
 import { setPopupData } from '../helpers'
 
-jest.mock('./showPendingOrderNotification', () => ({
-  ...jest.requireActual('./showPendingOrderNotification'),
+jest.mock('./emitPostedOrderEvent', () => ({
+  ...jest.requireActual('./emitPostedOrderEvent'),
   showPendingOrderNotification: jest.fn(),
 }))
 
-const showPendingOrderNotificationMock = showPendingOrderNotification as jest.MockedFunction<
-  typeof showPendingOrderNotification
->
+const showPendingOrderNotificationMock = emitPostedOrderEvent as jest.MockedFunction<typeof emitPostedOrderEvent>
 
 const inputToken = {
   address: '0x95222290dd7278aa3ddd389cc1e1d165cc4bafe5',

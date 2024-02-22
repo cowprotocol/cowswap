@@ -7,7 +7,7 @@ import { Dispatch } from 'redux'
 
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
-import { showPendingOrderNotification } from './showPendingOrderNotification'
+import { emitPostedOrderEvent } from './emitPostedOrderEvent'
 
 import { AppState } from '../../index'
 import { AddPendingOrderParams } from '../actions'
@@ -18,7 +18,7 @@ export function pendingOrderPopup(
   payload: AddPendingOrderParams,
   skipAnalytics?: boolean
 ) {
-  const { id, chainId, isSafeWallet } = payload
+  const { id, chainId } = payload
 
   // use current state to lookup orders' data
   const orders = store.getState().orders[chainId]
@@ -35,14 +35,13 @@ export function pendingOrderPopup(
   const inputAmount = CurrencyAmount.fromRawAmount(TokenWithLogo.fromToken(order.inputToken), order.sellAmount)
   const outputAmount = CurrencyAmount.fromRawAmount(TokenWithLogo.fromToken(order.outputToken), order.buyAmount)
 
-  showPendingOrderNotification({
+  emitPostedOrderEvent({
     ...order,
     chainId,
     receiver,
     inputAmount,
     outputAmount,
     uiOrderType: getUiOrderType(order),
-    isSafeWallet,
   })
 
   if (skipAnalytics) return

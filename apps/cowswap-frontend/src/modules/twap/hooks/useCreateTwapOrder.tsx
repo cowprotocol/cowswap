@@ -9,8 +9,6 @@ import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 
-import { showPendingOrderNotification } from 'legacy/state/orders/middleware/showPendingOrderNotification'
-
 import { updateAdvancedOrdersAtom, useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
 import { useAppData, useUploadAppData } from 'modules/appData'
 import { useTradeConfirmActions, useTradePriceImpact } from 'modules/trade'
@@ -22,6 +20,7 @@ import { UiOrderType } from 'utils/orderUtils/getUiOrderType'
 import { useExtensibleFallbackContext } from './useExtensibleFallbackContext'
 import { useTwapOrderCreationContext } from './useTwapOrderCreationContext'
 
+import { emitPostedOrderEvent } from '../../../legacy/state/orders/middleware/emitPostedOrderEvent'
 import { DEFAULT_TWAP_EXECUTION_INFO } from '../const'
 import { createTwapOrderTxs } from '../services/createTwapOrderTxs'
 import { extensibleFallbackSetupTxs } from '../services/extensibleFallbackSetupTxs'
@@ -114,7 +113,7 @@ export function useCreateTwapOrder() {
 
         getCowSoundSend().play()
 
-        showPendingOrderNotification({
+        emitPostedOrderEvent({
           chainId,
           id: safeTxHash,
           kind: OrderKind.SELL,
@@ -123,7 +122,6 @@ export function useCreateTwapOrder() {
           outputAmount: twapOrder.buyAmount,
           owner: account,
           uiOrderType: UiOrderType.TWAP,
-          isSafeWallet: true, // TWAP is always a safe wallet
         })
 
         orderAnalytics('Posted', 'TWAP', 'Presign')

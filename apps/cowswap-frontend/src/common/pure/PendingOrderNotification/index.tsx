@@ -1,7 +1,6 @@
 import { isAddress, isCowOrder, isSellOrder, shortenAddress } from '@cowprotocol/common-utils'
 import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
-import { OnToastMessagePayload, ToastMessageType } from '@cowprotocol/events'
-import { TokenAmount, formatTokenAmountWithSymbol } from '@cowprotocol/ui'
+import { TokenAmount } from '@cowprotocol/ui'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
@@ -29,61 +28,19 @@ const ORDER_TYPE_TITLES: Record<UiOrderType, string> = {
 }
 
 export interface PendingOrderNotificationProps {
-  account: string
+  owner: string
   chainId: SupportedChainId
-  orderId: string
+  orderUid: string
   kind: OrderKind
   orderType: UiOrderType
   inputAmount: CurrencyAmount<Token>
   outputAmount: CurrencyAmount<Token>
   receiver?: string
-  orderCreationHash?: string
   isSafeWallet: boolean
 }
 
-export function getPendingOrderNotificationToast(props: PendingOrderNotificationProps): OnToastMessagePayload | null {
-  const { orderId, kind, inputAmount, outputAmount, receiver, account, orderType } = props
-
-  if (!account) return null
-
-  const toAddress = receiver && isAddress(receiver) ? shortenAddress(receiver) : receiver
-
-  const inputAmountElement = formatTokenAmountWithSymbol({
-    amount: inputAmount,
-    tokenSymbol: inputAmount.currency,
-  })
-  const outputAmountElement = formatTokenAmountWithSymbol({
-    amount: outputAmount,
-    tokenSymbol: outputAmount.currency,
-  })
-
-  const messagePrefix = `${ORDER_TYPE_TITLES[orderType]} submitted: `
-
-  const baseMessage = (() => {
-    const isSellOrder = kind === OrderKind.SELL
-
-    if (isSellOrder) {
-      return `Sell ${inputAmountElement} for at least ${outputAmountElement}`
-    } else {
-      return `Buy ${outputAmountElement} for at most ${inputAmountElement}`
-    }
-  })()
-
-  const message = toAddress && receiver ? `${baseMessage}. Receiver: ${toAddress}` : baseMessage
-
-  return {
-    messageType: ToastMessageType.SWAP_POSTED_API,
-    message: messagePrefix + message,
-    data: {
-      orderUid: orderId,
-    },
-  }
-}
-
 export function PendingOrderNotification(props: PendingOrderNotificationProps) {
-  const { chainId, account, isSafeWallet, orderId, kind, orderType, inputAmount, outputAmount, receiver } = props
-
-  if (!account) return null
+  const { chainId, owner, isSafeWallet, orderUid, kind, orderType, inputAmount, outputAmount, receiver } = props
 
   const isSell = isSellOrder(kind)
   const toAddress = receiver && isAddress(receiver) ? shortenAddress(receiver) : receiver
@@ -92,11 +49,11 @@ export function PendingOrderNotification(props: PendingOrderNotificationProps) {
   const outputAmountElement = <TokenAmount amount={outputAmount} tokenSymbol={outputAmount.currency} />
 
   const tx = {
-    hash: orderId,
-    hashType: isSafeWallet && !isCowOrder('transaction', orderId) ? HashType.GNOSIS_SAFE_TX : HashType.ETHEREUM_TX,
+    hash: orderUid,
+    hashType: isSafeWallet && !isCowOrder('transaction', orderUid) ? HashType.GNOSIS_SAFE_TX : HashType.ETHEREUM_TX,
     safeTransaction: {
-      safeTxHash: orderId,
-      safe: account,
+      safeTxHash: orderUid,
+      safe: owner,
     },
   }
 

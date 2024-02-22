@@ -6,6 +6,7 @@ import { GasPriceStrategyUpdater } from 'legacy/state/gas/gas-price-strategy-upd
 
 import { UploadToIpfsUpdater } from 'modules/appData/updater/UploadToIpfsUpdater'
 import { CowEventsUpdater, InjectedWidgetUpdater, useInjectedWidgetParams } from 'modules/injectedWidget'
+import { OrdersNotificationsUpdater } from 'modules/orders'
 import { EthFlowDeadlineUpdater, EthFlowSlippageUpdater } from 'modules/swap/state/EthFlow/updaters'
 import { UsdPricesUpdater } from 'modules/usdAmount'
 
@@ -60,6 +61,8 @@ export function Updaters() {
       <CowEventsUpdater />
       <TotalSurplusUpdater />
       <UsdPricesUpdater />
+      <OrdersNotificationsUpdater />
+
       <TokensListsUpdater chainId={chainId} />
       <WidgetTokensListsUpdater tokenLists={tokenLists} appCode={appCode} />
       <UnsupportedTokensUpdater />

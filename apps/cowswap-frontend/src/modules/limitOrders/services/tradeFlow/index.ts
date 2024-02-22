@@ -1,11 +1,8 @@
-import { reportPermitWithDefaultSigner } from '@cowprotocol/common-utils'
-import { OrderClass } from '@cowprotocol/cow-sdk'
-import { CowEvents } from '@cowprotocol/events'
+import { currencyAmountToTokenAmount, reportPermitWithDefaultSigner } from '@cowprotocol/common-utils'
+import { OrderClass, OrderKind } from '@cowprotocol/cow-sdk'
 import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
 import { Command } from '@cowprotocol/types'
 import { Percent } from '@uniswap/sdk-core'
-
-import { EVENT_EMITTER } from 'eventEmitter'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
@@ -22,6 +19,10 @@ import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { SwapFlowAnalyticsContext, tradeFlowAnalytics } from 'modules/trade/utils/analytics'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
+
+import { UiOrderType } from 'utils/orderUtils/getUiOrderType'
+
+import { emitPostedOrderEvent } from '../../../../legacy/state/orders/middleware/emitPostedOrderEvent'
 export async function tradeFlow(
   params: TradeFlowContext,
   priceImpact: PriceImpact,
@@ -41,7 +42,8 @@ export async function tradeFlow(
     dispatch,
     generatePermitHook,
   } = params
-  const { account, recipientAddressOrName, sellToken, buyToken, appData, isSafeWallet } = postOrderParams
+  const { account, recipientAddressOrName, sellToken, buyToken, appData, isSafeWallet, inputAmount, outputAmount } =
+    postOrderParams
   const marketLabel = [sellToken.symbol, buyToken.symbol].join(',')
   const swapFlowAnalyticsContext: SwapFlowAnalyticsContext = {
     account,
@@ -122,7 +124,17 @@ export async function tradeFlow(
         dispatch
       )
     }
-    EVENT_EMITTER.emit(CowEvents.ON_POSTED_ORDER, { orderUid: orderId, chainId })
+
+    emitPostedOrderEvent({
+      chainId,
+      id: orderId,
+      kind: OrderKind.SELL,
+      receiver: recipientAddressOrName,
+      inputAmount: currencyAmountToTokenAmount(inputAmount),
+      outputAmount: currencyAmountToTokenAmount(outputAmount),
+      owner: account,
+      uiOrderType: UiOrderType.LIMIT,
+    })
 
     logTradeFlow('LIMIT ORDER FLOW', 'STEP 8: Sign order')
     tradeFlowAnalytics.sign(swapFlowAnalyticsContext)
