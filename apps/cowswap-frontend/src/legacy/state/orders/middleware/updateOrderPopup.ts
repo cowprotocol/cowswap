@@ -3,6 +3,8 @@ import { orderAnalytics } from '@cowprotocol/analytics'
 import { MiddlewareAPI } from '@reduxjs/toolkit'
 import { Dispatch } from 'redux'
 
+import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
+
 import { pendingOrderPopup } from './pendingOrderPopup'
 
 import { AppState } from '../../index'
@@ -26,6 +28,6 @@ export function updateOrderPopup(store: MiddlewareAPI<Dispatch, AppState>, paylo
       true
     )
 
-    orderAnalytics('Posted', orderObject.order.class, 'Presign')
+    orderAnalytics('Posted', getUiOrderType(orderObject.order), 'Presign')
   }
 }

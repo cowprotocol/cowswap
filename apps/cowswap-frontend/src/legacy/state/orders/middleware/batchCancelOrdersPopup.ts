@@ -3,6 +3,7 @@ import { orderAnalytics } from '@cowprotocol/analytics'
 import { Dispatch, MiddlewareAPI } from 'redux'
 
 import { computeOrderSummary } from 'common/updaters/orders/utils'
+import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { addPopup, AddPopupPayload } from '../../application/reducer'
 import { AppState } from '../../index'
@@ -16,8 +17,7 @@ export function batchCancelOrdersPopup(store: MiddlewareAPI<Dispatch, AppState>,
   orders.forEach((order) => {
     const popup = _buildCancellationPopup(order)
 
-    const orderType = order.order.composableCowInfo ? 'TWAP' : order.order.class
-    orderAnalytics('Canceled', orderType)
+    orderAnalytics('Canceled', getUiOrderType(order.order))
 
     store.dispatch(addPopup(popup))
   })

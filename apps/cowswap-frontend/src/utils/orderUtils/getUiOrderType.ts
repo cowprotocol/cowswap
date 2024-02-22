@@ -1,21 +1,10 @@
 import { OrderClass } from '@cowprotocol/cow-sdk'
+import { UiOrderType } from '@cowprotocol/types'
 
 import { Order } from 'legacy/state/orders/actions'
 
 import { AppDataMetadataOrderClass } from 'modules/appData/types'
 import { decodeAppData } from 'modules/appData/utils/decodeAppData'
-
-/**
- * UI order type that is different from existing types or classes
- *
- * This concept doesn't match what the API returns, as it has no notion of advanced/twap orders
- * It uses order appData if available, otherwise fallback to less reliable ways
- */
-export enum UiOrderType {
-  SWAP = 'SWAP',
-  LIMIT = 'LIMIT',
-  TWAP = 'TWAP',
-}
 
 const APPDATA_ORDER_CLASS_TO_UI_ORDER_TYPE_MAP: Record<string, UiOrderType> = {
   market: UiOrderType.SWAP,
