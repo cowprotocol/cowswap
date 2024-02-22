@@ -86,9 +86,13 @@ export function CowSwapWidget({ params, provider, listeners }: CowSwapWidgetProp
     const container = containerRef.current
     if (container) {
       tryOrHandleError('Updating the provider', () => {
+        // Destroy the old widget (if it exists)
+        widgetHandlerRef.current?.destroy()
+
+        // Re-create the widget
         widgetHandlerRef.current = createCowSwapWidget(
           container,
-          { ...params, provider: providerRef.current ?? undefined }, // Override params to add the provider
+          { ...params, provider: providerRef.current ?? undefined },
           listeners
         )
       })
