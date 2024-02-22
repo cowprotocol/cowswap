@@ -74,7 +74,7 @@ function _useSafeInfo(walletInfo: WalletInfo): GnosisSafeInfo | undefined {
           })
         )
         .catch((error) => {
-          console.error('[WalletUpdater] Error getting Safe Info', error)
+          console.debug(`[WalletUpdater] Address ${account} is likely not a Safe (API didn't return Safe info)`)
         })
     } else {
       setSafeInfo(undefined)

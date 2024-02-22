@@ -1,16 +1,16 @@
-<h1>Cookie Policy</h1>
+# Cookie Policy
 
-### Last updated: November 2022
+**Last updated: November 2022**
 
 As further described in the Privacy Policy, certain statistical information is available to us via our internet service provider as well as through the use of special tracking technologies. Such information tells us about the pages you are clicking on or the hardware you are using, but not your name, age, address or anything we can use to identify you personally.
 
 This Cookie Policy sets out some further detail on how and why we use these technologies on our website or websites we may host on behalf of clients. The terms "Nomev", "we", "us", and "our" include Nomev Labs, Lda and affiliates. The terms “you” and “your” include our clients, business partners and users of this website. By using our website, you consent to storage and access to cookies and other technologies on your device, in accordance with this Cookie Policy.
 
-### 1. What are cookies?
+## 1. What are cookies?
 
 Cookies are a feature of web browser software that allows web servers to recognize the computer or device used to access a website. A cookie is a small text file that a website saves on your computer or mobile device when you visit the site. It enables the website to remember your actions and preferences (such as login, language, font size and other display preferences) over a period of time, so you don't have to keep re-entering them whenever you come back to the site or browse from one page to another.
 
-### 2. What are the different types of cookies?
+## 2. What are the different types of cookies?
 
 A cookie can be classified by its lifespan and the domain to which it belongs.
 By lifespan, a cookie is either a:
@@ -23,7 +23,7 @@ As for the domain to which it belongs, cookies are either:
 - first-party cookies which are set by the web server of the visited page and share the same domain (i.e. set by us); or
 - third-party cookies stored by a different domain to the visited page's domain.
 
-### 3. What cookies do we use and why?
+## 3. What cookies do we use and why?
 
 We list all the cookies we use on this website in the APPENDIX below.
 
@@ -38,7 +38,7 @@ We will retain and evaluate information on your recent visits to our website and
 
 This information may also be used to help us to improve, administer and diagnose problems with our server and website. The information also helps us monitor traffic on our website so that we can manage our website's capacity and efficiency.
 
-### 4. Other Technologies
+## 4. Other Technologies
 
 We may allow others to provide analytics services and serve advertisements on our behalf. In addition to the uses of cookies described above, these entities may use other methods, such as the technologies described below, to collect information about your use of our website and other websites and online services.
 
@@ -46,7 +46,7 @@ Pixels tags. Pixel tags (which are also called clear GIFs, web beacons, or pixel
 
 Device Identifiers. A device identifier is a unique label that can be used to identify a mobile device. Device identifiers may be used to track, analyse and improve the performance of the website and ads delivered.
 
-### 5. What data is collected by cookies and other technologies on our website?
+## 5. What data is collected by cookies and other technologies on our website?
 
 This information may include:
 
@@ -70,7 +70,7 @@ This website also uses cookies to:
 
 We may also use other services, such as [Google Analytics](https://www.google.com/analytics/) (described below) or other third-party cookies, to assist with analysing performance on our website. As part of providing these services, these service providers may use cookies and the technologies described below to collect and store information about your device, such as time of visit, pages visited, time spent on each page of our website, links clicked and conversion information, IP address, browser, mobile network information, and type of operating system used.
 
-### 6. Google Analytics Cookies
+## 6. Google Analytics Cookies
 
 This website uses [Google Analytics](https://www.google.com/analytics/), a web analytics service provided by Google, Inc. ("Google").
 
@@ -95,7 +95,7 @@ By using this website, you consent to the processing of data about you by Google
 
 For more information about Google Analytics cookies, please see Google's help pages and privacy policy: [Google's Privacy Policy](http://www.google.com/intl/en/policies/privacy/) and [Google Analytics Help pages](https://developers.google.com/analytics/devguides/collection/analyticsjs/cookie-usage). For further information about the use of these cookies by Google [click here](https://support.google.com/analytics/answer/6004245).
 
-### 7. What if you don’t agree with us monitoring your use of our website (even if we don’t collect your personal data)?
+## 7. What if you don’t agree with us monitoring your use of our website (even if we don’t collect your personal data)?
 
 Enabling these cookies is not strictly necessary for our website to work but it will provide you with a better browsing experience. You can delete or block the cookies we set, but if you do that, some features of this website may not work as intended.
 
@@ -109,77 +109,24 @@ In order to implement your objection it may be necessary to install an opt-out c
 
 To opt out of being tracked by Google Analytics across all websites, Google has developed the Google Analytics opt-out browser add-on. If you would like to opt out of Google Analytics, you have the option of downloading and installing this browser add-on which can be found under the link: [http://tools.google.com/dlpage/gaoptout](http://tools.google.com/dlpage/gaoptout).
 
-### 8. Revisions to this Cookie Policy
+## 8. Revisions to this Cookie Policy
 
 We may modify this Cookie Policy from time to time. If we make changes to this Cookie Policy, we will provide notice of such changes, such as by sending an email notification, providing notice through our website or updating the ‘Last Updated’ date at the beginning of this Cookie Policy. The amended Cookie Policy will be effective immediately after the date it is posted. By continuing to access or use our website after the effective date, you confirm your acceptance of the revised Cookie Policy and all of the terms incorporated therein by reference. We encourage you to review our Privacy Policy and our Cookie Policy whenever you access or use our website to stay informed about our information practices and the choices available to you.
 
 If you do not accept changes which are made to this Cookie Policy, or take any measures described above to opt-out by removing or rejecting cookies, you may continue to use this website but accept that it may not display and/or function as intended by us. Your exercise of any rights to opt-out may also impact how our information and content is displayed and/or accessible to you on this website and on other websites.
 
-### APPENDIX
+## APPENDIX
 
-<i>Table: Overview of cookies placed and the consequences if the cookies are not placed</i>
+Table: Overview of cookies placed and the consequences if the cookies are not placed
 
-<div id="table-container">
-    <table>
-        <thead>
-            <tr>
-                <th>Name of cookie</th>
-                <th>Purpose(s) of cookie</th>
-                <th>Storage period of cookie</th>
-                <th>Consequences if cookie is not accepted</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>__viewed_cookie_policy</td>
-                <td>Cookie set by GDPR cookie consent plug-in. Cookie used to save the agreement of the use of cookies from the user. No personal data will be saved.</td>
-                <td>1 year from set/update</td>
-                <td>User activity won't be tracked</td>
-            </tr>
-            <tr>
-                <td>__cookielawinfo_checkbox_performance</td>
-                <td>Cookie set by GDPR cookie consent plug-in. Cookie used to save the agreement of the user for category “performance”.</td>
-                <td>1 year from set/update</td>
-                <td>User activity won't be tracked</td>
-            </tr>
-            <tr>
-                <td>__cookielawinfo_checkbox_other</td>
-                <td>Cookie set by GDPR cookie consent plug-in. Cookie used to save the agreement of the user for category “other”.</td>
-                <td>1 year from set/update</td>
-                <td>User activity won't be tracked</td>
-            </tr>
-            <tr>
-                <td>__cookielawinfo_checkbox_necessary</td>
-                <td>xCookie set by GDPR cookie consent plug-in. Cookie used to save the agreement of the user for category “necessary”.</td>
-                <td>1 year from set/update</td>
-                <td>User activity won't be tracked</td>
-            </tr>
-            <tr>
-                <td>__cookielawinfo_checkbox_functional</td>
-                <td>Cookie set by GDPR cookie consent plug-in. Cookie used to save the agreement of the user for category “functional”.</td>
-                <td>1 year from set/update</td>
-                <td>User activity won't be tracked</td>
-            </tr>
-            <tr>
-                <td>__cookielawinfo_checkbox_analytics</td>
-                <td>Cookie set by GDPR cookie consent plug-in. Cookie used to save the agreement of the user for category “analytics”.</td>
-                <td>1 year from set/update</td>
-                <td>User activity won't be tracked</td>
-            </tr>
-            <tr>
-                <td>__cookielawinfo_checkbox_advertisement</td>
-                <td>Cookie set by GDPR cookie consent plug-in. Cookie used to save the agreement of the user for category “advertisement”.</td>
-                <td>1 year from set/update</td>
-                <td>User activity won't be tracked</td>
-            </tr>
-            <tr>
-                <td>CookieLawInfoConsent</td>
-                <td>Cookie set by GDPR cookie consent plug-in. Cookie used to save the agreement of the user for category “LawInfoConsent”.</td>
-                <td>1 year from set/update</td>
-                <td>User activity won't be tracked</td>
-            </tr>
-        </tbody>
-    </table>
-</div>
+| Name of cookie                         | Purpose(s) of cookie                                                                                                                              | Storage period of cookie | Consequences if cookie is not accepted |
+|----------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------|----------------------------------------|
+| __viewed_cookie_policy                 | Cookie set by GDPR cookie consent plug-in. Cookie used to save the agreement of the use of cookies from the user. No personal data will be saved. | 1 year from set/update   | User activity won't be tracked         |
+| __cookielawinfo_checkbox_performance   | Cookie set by GDPR cookie consent plug-in. Cookie used to save the agreement of the user for category “performance”.                              | 1 year from set/update   | User activity won't be tracked         |
+| __cookielawinfo_checkbox_other         | Cookie set by GDPR cookie consent plug-in. Cookie used to save the agreement of the user for category “other”.                                    | 1 year from set/update   | User activity won't be tracked         |
+| __cookielawinfo_checkbox_necessary     | xCookie set by GDPR cookie consent plug-in. Cookie used to save the agreement of the user for category “necessary”.                               | 1 year from set/update   | User activity won't be tracked         |
+| __cookielawinfo_checkbox_functional    | Cookie set by GDPR cookie consent plug-in. Cookie used to save the agreement of the user for category “functional”.                               | 1 year from set/update   | User activity won't be tracked         |
+| __cookielawinfo_checkbox_analytics     | Cookie set by GDPR cookie consent plug-in. Cookie used to save the agreement of the user for category “analytics”.                                | 1 year from set/update   | User activity won't be tracked         |
+| __cookielawinfo_checkbox_advertisement | Cookie set by GDPR cookie consent plug-in. Cookie used to save the agreement of the user for category “advertisement”.                            | 1 year from set/update   | User activity won't be tracked         |
+| CookieLawInfoConsent                   | Cookie set by GDPR cookie consent plug-in. Cookie used to save the agreement of the user for category “LawInfoConsent”.                           | 1 year from set/update   | User activity won't be tracked         |
 
-<button onClick="(() => {window.scrollTo({ top: 0, behavior: 'smooth' })})();return false;" id="back-to-top">Back to top ↑</button>

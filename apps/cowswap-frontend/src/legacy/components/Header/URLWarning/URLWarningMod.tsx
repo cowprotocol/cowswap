@@ -29,6 +29,7 @@ export const StyledClose = styled(X)`
   }
 `
 
+// TODO: unify with OnlyUniswapListAvailableBanner
 export default function URLWarning({ announcement }: { announcement?: React.ReactNode }) {
   const showAnnouncement = !!announcement
 

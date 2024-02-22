@@ -11,20 +11,17 @@ import {
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWeb3React } from '@web3-react/core'
 
-import {
-  getPermitCacheAtom,
-  staticPermitCacheAtom,
-  storePermitCacheAtom,
-  userPermitCacheAtom,
-} from '../state/permitCacheAtom'
+import { useGetCachedPermit } from './useGetCachedPermit'
+
+import { staticPermitCacheAtom, storePermitCacheAtom, userPermitCacheAtom } from '../state/permitCacheAtom'
 import { GeneratePermitHook, GeneratePermitHookParams } from '../types'
 
 /**
  * Hook that returns callback to generate permit hook data
  */
 export function useGeneratePermitHook(): GeneratePermitHook {
-  const getCachedPermit = useSetAtom(getPermitCacheAtom)
   const storePermit = useSetAtom(storePermitCacheAtom)
+  const getCachedPermit = useGetCachedPermit()
 
   // Warming up stored atoms
   //
@@ -55,7 +52,7 @@ export function useGeneratePermitHook(): GeneratePermitHook {
 
       const permitParams = { chainId, tokenAddress: inputToken.address, account, nonce }
 
-      const cachedPermit = getCachedPermit(permitParams)
+      const cachedPermit = await getCachedPermit(inputToken.address)
 
       if (cachedPermit) {
         return cachedPermit
