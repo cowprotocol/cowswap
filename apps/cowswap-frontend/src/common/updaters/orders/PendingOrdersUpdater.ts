@@ -336,8 +336,6 @@ export function PendingOrdersUpdater(): null {
 
       if (!isUpdating.current) {
         isUpdating.current = true
-        // const startTime = Date.now()
-        // console.debug('[PendingOrdersUpdater] Updating orders....')
         return _updateOrders({
           account,
           chainId,
@@ -354,7 +352,6 @@ export function PendingOrdersUpdater(): null {
           getSafeInfo,
         }).finally(() => {
           isUpdating.current = false
-          // console.debug(`[PendingOrdersUpdater] Updated orders in ${Date.now() - startTime}ms`)
         })
       }
     },

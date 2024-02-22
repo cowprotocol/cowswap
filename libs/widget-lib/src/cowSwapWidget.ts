@@ -167,8 +167,9 @@ function sendAppCodeOnActivation(contentWindow: Window, appCode: string | undefi
  * @param defaultHeight - Default height for the widget.
  */
 function listenToHeightChanges(iframe: HTMLIFrameElement, defaultHeight = DEFAULT_HEIGHT) {
-  listenToMessageFromWindow(window, WidgetMethodsEmit.UPDATE_HEIGHT, (data) => {
-    // console.debug('[widget] applyDynamicHeight', data)
-    iframe.style.height = data.height ? `${data.height + HEIGHT_THRESHOLD}px` : defaultHeight
-  })
+  listenToMessageFromWindow(
+    window,
+    WidgetMethodsEmit.UPDATE_HEIGHT,
+    (data) => (iframe.style.height = data.height ? `${data.height + HEIGHT_THRESHOLD}px` : defaultHeight)
+  )
 }

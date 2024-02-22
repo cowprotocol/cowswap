@@ -25,7 +25,6 @@ function mockAndFailUntilAttempt(attempt: number) {
 
   fetchMock.mockImplementation((() => {
     count++
-    // console.log('ATTEMPT', count)
     return count >= attempt ? Promise.resolve(OK_RESPONSE) : Promise.reject(ERROR_MESSAGE)
   }) as any)
 }

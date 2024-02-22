@@ -164,12 +164,10 @@ export class WidgetEthereumProvider extends EventEmitter<IFrameEthereumProviderE
     this.eventTarget = eventTarget
 
     listenToMessageFromWindow(this.eventSource, WidgetMethodsListen.PROVIDER_RPC_RESPONSE, (message) => {
-      // console.debug('[WidgetEthereumProvider] handle PROVIDER_RPC_RESPONSE', message)
       this.handleRpcRequests(message)
     })
 
     listenToMessageFromWindow(this.eventSource, WidgetMethodsListen.PROVIDER_ON_EVENT, (message) => {
-      // console.debug('[WidgetEthereumProvider] handle PROVIDER_ON_EVENT', message)
       this.handleOnEvent(message)
     })
   }
@@ -289,7 +287,6 @@ export class WidgetEthereumProvider extends EventEmitter<IFrameEthereumProviderE
 
   private handleOnEvent(message: ProviderOnEventPayload) {
     const params = message.params as any
-    // console.debug('[WidgetEthereumProvider] on', message.event, params)
     switch (message.event) {
       case 'notification':
         this.emitNotification(params)

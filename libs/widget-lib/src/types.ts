@@ -24,7 +24,7 @@ export interface JsonRpcRequest {
   params: unknown[]
 }
 
-// https://eips.ethereum.org/EIPS/ei  p-1193
+// https://eips.ethereum.org/EIPS/eip-1193
 export interface EthereumProvider {
   /**
    * Subscribes to Ethereum-related events.
