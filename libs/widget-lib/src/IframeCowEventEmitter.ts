@@ -1,15 +1,18 @@
 import { SimpleCowEventEmitter, CowEventListener, CowEventListeners, CowEvents } from '@cowprotocol/events'
-const COW_SWAP_WIDGET_EVENT_KEY = 'cowSwapWidget'
+import { WidgetMethodsEmit } from './types'
+import { listenToMessageFromWindow } from './messages'
 
 export class IframeCowEventEmitter {
   private eventEmitter: SimpleCowEventEmitter = new SimpleCowEventEmitter()
 
-  constructor(private listeners: CowEventListeners = []) {
+  constructor(contentWindow: Window, private listeners: CowEventListeners = []) {
     // Subscribe to events
     this.updateListeners(listeners)
 
     // Forward messages to the event emitter
-    window.addEventListener('message', this.forwardEvents)
+    listenToMessageFromWindow(contentWindow, WidgetMethodsEmit.EMIT_COW_EVENT, (cowEvent) => {
+      this.eventEmitter.emit(cowEvent.event, cowEvent.payload)
+    })
   }
 
   public updateListeners(listeners?: CowEventListeners): void {
@@ -23,12 +26,5 @@ export class IframeCowEventEmitter {
     for (const listener of this.listeners) {
       this.eventEmitter.on(listener as CowEventListener<CowEvents>)
     }
-  }
-
-  private forwardEvents = (event: MessageEvent): void => {
-    if (event.data.key !== COW_SWAP_WIDGET_EVENT_KEY || event.data.method !== 'event') {
-      return
-    }
-    this.eventEmitter.emit(event.data.eventName, event.data.payload)
   }
 }

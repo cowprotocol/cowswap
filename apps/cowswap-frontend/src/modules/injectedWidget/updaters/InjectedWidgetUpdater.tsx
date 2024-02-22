@@ -2,6 +2,7 @@ import { useSetAtom } from 'jotai'
 import { useCallback, useEffect, useRef } from 'react'
 
 import { deepEqual } from '@cowprotocol/common-utils'
+import { WidgetMethodsEmit, WidgetMethodsListen, postMessageToWindow } from '@cowprotocol/widget-lib'
 
 import { useNavigate } from 'react-router-dom'
 
@@ -34,13 +35,7 @@ const cacheMessages = (event: MessageEvent) => {
 
   window.addEventListener('message', cacheMessages)
 
-  window.top.postMessage(
-    {
-      key: COW_SWAP_WIDGET_EVENT_KEY,
-      method: 'activate',
-    },
-    '*'
-  )
+  postMessageToWindow(window.top, WidgetMethodsEmit.ACTIVATE, void 0)
 })()
 
 export function InjectedWidgetUpdater() {
@@ -51,16 +46,20 @@ export function InjectedWidgetUpdater() {
 
   const processEvent = useCallback(
     (method: string, data: any) => {
-      if (method === 'update') {
-        if (prevData.current && deepEqual(prevData.current, data)) return
+      switch (method) {
+        case WidgetMethodsListen.UPDATE_PARAMS:
+          if (prevData.current && deepEqual(prevData.current, data)) return
 
-        prevData.current = data
-        updateParams(data.appParams)
-        navigate(data.urlParams)
-      }
+          prevData.current = data
+          updateParams(data.appParams)
+          navigate(data.urlParams)
+          break
 
-      if (method === 'metaData' && data.metaData) {
-        updateMetaData(data.metaData)
+        case WidgetMethodsListen.UPDATE_APP_DATA:
+          if (data.metaData) {
+            updateMetaData(data.metaData)
+          }
+          break
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
