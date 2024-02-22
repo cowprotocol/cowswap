@@ -1,5 +1,26 @@
 # Changelog
 
+## [1.60.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.59.2...cowswap-v1.60.0) (2024-02-22)
+
+
+### Features
+
+* style improvements ([#3884](https://github.com/cowprotocol/cowswap/issues/3884)) ([f4d5e17](https://github.com/cowprotocol/cowswap/commit/f4d5e175df0b8090ec68f83af607e3ae407c64e2))
+* **token-lists:** limit token lists by 5000 tokens ([#3881](https://github.com/cowprotocol/cowswap/issues/3881)) ([d8a5816](https://github.com/cowprotocol/cowswap/commit/d8a581652fcca40fc8ec2f63e904855b616951c6))
+* **trade:** display loading state for trade confirmation ([#3856](https://github.com/cowprotocol/cowswap/issues/3856)) ([980f721](https://github.com/cowprotocol/cowswap/commit/980f721da30af439ef1ed1c28733b717d38bbc7c))
+* update T&C content and add ToC to policies pages ([#3865](https://github.com/cowprotocol/cowswap/issues/3865)) ([72f8a43](https://github.com/cowprotocol/cowswap/commit/72f8a4391840b3ad342f14e05bface90ccdc9d60))
+* **widget:** let the host app be the one connecting ([#3846](https://github.com/cowprotocol/cowswap/issues/3846)) ([05a3321](https://github.com/cowprotocol/cowswap/commit/05a3321ede220e7c07dc41df2f2f706028fc4afb))
+
+
+### Bug Fixes
+
+* don't request network changing just after previous one ([#3848](https://github.com/cowprotocol/cowswap/issues/3848)) ([58c70a0](https://github.com/cowprotocol/cowswap/commit/58c70a07f45c0886fbc75cac0aa33fae015282fe))
+* **notifications:** display proper type in order notifications ([#3887](https://github.com/cowprotocol/cowswap/issues/3887)) ([bfb6c01](https://github.com/cowprotocol/cowswap/commit/bfb6c01e9f3e744a47774cb52836469c2ad2f09f))
+* place order notification sell amount ([#3857](https://github.com/cowprotocol/cowswap/issues/3857)) ([2909e69](https://github.com/cowprotocol/cowswap/commit/2909e69b30d7c2feb86f86f4a2ab315cec140c26))
+* **trade:** unify recipient displaying on confirm screen ([#3877](https://github.com/cowprotocol/cowswap/issues/3877)) ([5a86527](https://github.com/cowprotocol/cowswap/commit/5a8652776cd8d93500532f8881894d3a0d3a5a53))
+* **widget:** widget displaying and expanded colors panel ([#3854](https://github.com/cowprotocol/cowswap/issues/3854)) ([025d223](https://github.com/cowprotocol/cowswap/commit/025d2238fd06e14d2bd471f73f02379e86ff94c1))
+* **widget:** widget displaying and expanded colors panel ([#3854](https://github.com/cowprotocol/cowswap/issues/3854)) ([eed09c8](https://github.com/cowprotocol/cowswap/commit/eed09c81f941c5d5e11cc9daed92aaf0faa0922e))
+
 ## [1.59.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.59.1...cowswap-v1.59.2) (2024-02-14)
 
 
