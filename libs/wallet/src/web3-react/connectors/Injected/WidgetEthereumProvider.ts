@@ -122,7 +122,6 @@ export class RpcError extends Error {
  */
 export class WidgetEthereumProvider extends EventEmitter<IFrameEthereumProviderEventTypes> {
   request({ method, params }: { method: string; params: unknown[] }) {
-    // console.log('[IFrameEthereumProvider] IFrameEthereumProvider - rpc request', { method, params })
     return this.send(method, params)
   }
 
@@ -191,7 +190,6 @@ export class WidgetEthereumProvider extends EventEmitter<IFrameEthereumProviderE
       id,
       method,
       params,
-      // ...(typeof params === 'undefined' ? null : { params }),
     }
 
     const promise = new Promise<JsonRpcSucessfulResponseMessage<TResult> | JsonRpcErrorResponseMessage<TErrorData>>(
