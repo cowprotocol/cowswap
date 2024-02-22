@@ -15,6 +15,7 @@ import { getIsEthFlowOrder } from 'modules/swap/containers/EthFlowStepper'
 import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
 
 import { useGetOnChainCancellation } from 'common/hooks/useCancelOrder/useGetOnChainCancellation'
+import { computeOrderSummary } from 'common/updaters/orders/utils'
 import { isOrderCancellable } from 'common/utils/isOrderCancellable'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
@@ -92,11 +93,15 @@ export function useCancelOrder(): (order: Order) => UseCancelOrderReturn {
 
       // The callback returned that triggers the modal
       return () => {
+        const summary = computeOrderSummary({
+          orderFromStore: order,
+          orderFromApi: null,
+        })
         // Updates the cancellation context with details pertaining the order
         setContext({
           orderId: order.id,
           chainId,
-          summary: order?.summary,
+          summary,
           defaultType: isOffChainCancellable ? 'offChain' : 'onChain',
           onDismiss,
           triggerCancellation,

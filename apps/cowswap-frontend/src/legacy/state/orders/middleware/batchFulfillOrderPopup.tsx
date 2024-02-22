@@ -4,6 +4,7 @@ import { MiddlewareAPI } from '@reduxjs/toolkit'
 import { Dispatch } from 'redux'
 
 import { ExecutedSummary } from 'common/pure/ExecutedSummary'
+import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 import { parseOrder } from 'utils/orderUtils/parseOrder'
 
 import { addPopup } from '../../application/reducer'
@@ -21,7 +22,6 @@ export function batchFulfillOrderPopup(
   payload.ordersData.forEach(({ id, summary }) => {
     const orderObject = getOrderByIdFromState(orders, id)
     if (orderObject) {
-      const { class: orderClass, composableCowInfo } = orderObject.order
       // it's an OrderTxTypes.TXN, yes, but we still want to point to the explorer
       // because it's nicer there
       const parsedOrder = parseOrder(orderObject.order as Order)
@@ -33,8 +33,7 @@ export function batchFulfillOrderPopup(
         status: OrderActions.OrderStatus.FULFILLED,
         descriptor: null,
       })
-      const orderType = composableCowInfo ? 'TWAP' : orderClass
-      orderAnalytics('Executed', orderType)
+      orderAnalytics('Executed', getUiOrderType(orderObject.order))
 
       store.dispatch(addPopup(popup))
     }

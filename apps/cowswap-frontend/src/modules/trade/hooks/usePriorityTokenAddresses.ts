@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 
 import { getAddress, isTruthy } from '@cowprotocol/common-utils'
+import { UiOrderType } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useSelector } from 'react-redux'
@@ -8,7 +9,7 @@ import { useSelector } from 'react-redux'
 import { AppState } from 'legacy/state'
 import { PartialOrdersMap } from 'legacy/state/orders/reducer'
 
-import { getUiOrderType, UiOrderType } from 'utils/orderUtils/getUiOrderType'
+import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { useDerivedTradeState } from './useDerivedTradeState'
 

@@ -2,11 +2,15 @@ import { orderAnalytics } from '@cowprotocol/analytics'
 
 import { Dispatch, MiddlewareAPI } from 'redux'
 
+import { computeOrderSummary } from 'common/updaters/orders/utils'
+import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
+
 import { addPopup } from '../../application/reducer'
 import { AppState } from '../../index'
 import { PresignedOrdersParams } from '../actions'
 import { getOrderByIdFromState, OrderTxTypes, setPopupData } from '../helpers'
 import { OrdersStateNetwork } from '../reducer'
+import { deserializeOrder } from '../utils/deserializeOrder'
 
 export function batchPresignOrdersPopup(
   store: MiddlewareAPI<Dispatch, AppState>,
@@ -17,10 +21,15 @@ export function batchPresignOrdersPopup(
     const orderObject = getOrderByIdFromState(orders, id)
 
     if (orderObject) {
-      const { order } = orderObject
-
-      const popup = setPopupData(OrderTxTypes.METATXN, { summary: order.summary, status: 'presigned', id })
-      orderAnalytics('Posted', order.class, 'Pre-Signed')
+      const popup = setPopupData(OrderTxTypes.METATXN, {
+        summary: computeOrderSummary({
+          orderFromStore: deserializeOrder(orderObject),
+          orderFromApi: null,
+        }),
+        status: 'presigned',
+        id,
+      })
+      orderAnalytics('Posted', getUiOrderType(orderObject.order), 'Pre-Signed')
 
       store.dispatch(addPopup(popup))
     }

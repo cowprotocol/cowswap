@@ -2,6 +2,7 @@ import { jotaiStore } from '@cowprotocol/core'
 import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CowEvents } from '@cowprotocol/events'
 import { addSnackbarAtom } from '@cowprotocol/snackbars'
+import { UiOrderType } from '@cowprotocol/types'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { EVENT_EMITTER } from 'eventEmitter'
@@ -12,7 +13,6 @@ import {
   PendingOrderNotificationProps,
   getPendingOrderNotificationToast,
 } from 'common/pure/PendingOrderNotification'
-import { UiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 interface PendingOrderNotificationParams {
   chainId: SupportedChainId

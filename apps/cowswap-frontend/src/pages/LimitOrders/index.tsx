@@ -1,3 +1,4 @@
+import { UiOrderType } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useOrders } from 'legacy/state/orders/hooks'
@@ -16,8 +17,6 @@ import {
 import { OrdersTableWidget } from 'modules/ordersTable'
 import { TabOrderTypes } from 'modules/ordersTable/pure/OrdersTableContainer'
 import * as styledEl from 'modules/trade/pure/TradePageLayout'
-
-import { UiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 export default function LimitOrderPage() {
   const { chainId, account } = useWalletInfo()
