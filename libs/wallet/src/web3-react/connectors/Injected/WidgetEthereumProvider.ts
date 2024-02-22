@@ -52,9 +52,9 @@ interface IFrameEthereumProviderOptions {
 /**
  * This is what we store in the state to keep track of pending promises.
  */
-interface PromiseCompleter<TResult, TErrorData> {
+interface PromiseCompleter<T, D> {
   // A response was received (either error or result response).
-  resolve(result: JsonRpcSucessfulResponseMessage<TResult> | JsonRpcErrorResponseMessage<TErrorData>): void
+  resolve(result: JsonRpcSucessfulResponseMessage<T> | JsonRpcErrorResponseMessage<D>): void
 
   // An error with executing the request was encountered.
   reject(error: Error): void
