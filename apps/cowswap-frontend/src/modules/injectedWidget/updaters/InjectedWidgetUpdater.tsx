@@ -1,6 +1,7 @@
 import { useSetAtom } from 'jotai'
 import { useEffect, useRef } from 'react'
 
+import { useWalletInfo } from '@cowprotocol/wallet'
 import {
   UpdateParamsPayload,
   WidgetMethodsEmit,
@@ -11,6 +12,8 @@ import {
 } from '@cowprotocol/widget-lib'
 
 import { useNavigate } from 'react-router-dom'
+
+import { useConnectWallet, useDisconnectWallet } from 'modules/account/hooks/useDisconnectWallet'
 
 import { IframeResizer } from './IframeResizer'
 
@@ -50,6 +53,38 @@ export function InjectedWidgetUpdater() {
 
   const navigate = useNavigate()
   const prevData = useRef<UpdateParamsPayload | null>(null)
+
+  const { account } = useWalletInfo()
+  // const [triggerDisconnect, setTriggerDisconnect] = useState(false)
+  const diconnectWallet = useDisconnectWallet()
+  const diconnectWalletRef = useRef(diconnectWallet)
+  diconnectWalletRef.current = diconnectWallet
+
+  const connectWallet = useConnectWallet()
+  const connectWalletRef = useRef(connectWallet)
+
+  const isConnected = !!account
+  const hideConnectButton = prevData?.current?.appParams.hideConnectButton
+  const hasProvider = prevData?.current?.hasProvider
+
+  useEffect(() => {
+    if (!hideConnectButton) return
+
+    if (hasProvider) {
+      // Disconnect if we don't have a provider, and we are still not connected
+      if (!isConnected) {
+        console.log('[TEST]: Connect wallet', { hideConnectButton, isConnected, hasProvider })
+        connectWalletRef.current()
+      }
+    } else {
+      // Connect if we have a provider, and we are still not connected
+      if (isConnected) {
+        console.log('[TEST]: Disconnecting wallet', { hideConnectButton, isConnected, hasProvider })
+        diconnectWalletRef.current()
+      }
+    }
+    // setTriggerDisconnect(false)
+  }, [isConnected, hideConnectButton, hasProvider])
 
   useEffect(() => {
     // Stop listening of message outside of React

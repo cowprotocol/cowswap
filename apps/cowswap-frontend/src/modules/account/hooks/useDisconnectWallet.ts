@@ -16,3 +16,11 @@ export function useDisconnectWallet() {
     dispatch(updateSelectedWallet({ wallet: undefined }))
   }
 }
+
+export function useConnectWallet() {
+  const { connector } = useWeb3React()
+
+  return () => {
+    connector.activate()
+  }
+}
