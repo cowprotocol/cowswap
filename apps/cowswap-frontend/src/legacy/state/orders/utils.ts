@@ -1,13 +1,14 @@
 import { ONE_HUNDRED_PERCENT, PENDING_ORDERS_BUFFER, ZERO_FRACTION } from '@cowprotocol/common-const'
 import { buildPriceFromCurrencyAmounts, isSellOrder } from '@cowprotocol/common-utils'
 import { EnrichedOrder, OrderKind, OrderStatus } from '@cowprotocol/cow-sdk'
+import { UiOrderType } from '@cowprotocol/types'
 import { Currency, CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
 
 import JSBI from 'jsbi'
 
 import { getIsComposableCowParentOrder } from 'utils/orderUtils/getIsComposableCowParentOrder'
 import { getOrderSurplus } from 'utils/orderUtils/getOrderSurplus'
-import { getUiOrderType, UiOrderType } from 'utils/orderUtils/getUiOrderType'
+import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { Order, updateOrder, UpdateOrderParams as UpdateOrderParamsAction } from './actions'
 import { OUT_OF_MARKET_PRICE_DELTA_PERCENTAGE } from './consts'

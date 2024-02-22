@@ -1,9 +1,8 @@
 import { WRAPPED_NATIVE_CURRENCIES as WETH } from '@cowprotocol/common-const'
 import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { OnToastMessagePayload, ToastMessageType } from '@cowprotocol/events'
+import { UiOrderType } from '@cowprotocol/types'
 import { CurrencyAmount, Token, ChainId } from '@uniswap/sdk-core'
-
-import { UiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { PendingOrderNotificationProps, getPendingOrderNotificationToast } from '.'
 

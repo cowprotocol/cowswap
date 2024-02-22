@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef } from 'react'
 import { useIsWindowVisible } from '@cowprotocol/common-hooks'
 import { FractionUtils } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { UiOrderType } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Token } from '@uniswap/sdk-core'
 
@@ -13,7 +14,7 @@ import { useCombinedPendingOrders } from 'legacy/state/orders/hooks'
 import { requestPrice } from 'modules/limitOrders/hooks/useGetInitialPrice'
 import { UpdateSpotPriceAtom, updateSpotPricesAtom } from 'modules/orders/state/spotPricesAtom'
 
-import { getUiOrderType, UiOrderType } from 'utils/orderUtils/getUiOrderType'
+import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { useSafeMemo } from '../../hooks/useSafeMemo'
 import { getCanonicalMarketChainKey } from '../../utils/markets'
