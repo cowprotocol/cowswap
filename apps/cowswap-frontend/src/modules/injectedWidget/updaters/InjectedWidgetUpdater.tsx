@@ -56,7 +56,7 @@ export function InjectedWidgetUpdater() {
     // Stop listening of message outside of React
     window.removeEventListener('message', cacheMessages)
 
-    // Start listening messages inside of React
+    // Start listening for messages inside of React
     const updateParamsListener = listenToMessageFromWindow(window, WidgetMethodsListen.UPDATE_PARAMS, (data) => {
       if (prevData.current && deepEqual(prevData.current, data)) return
 
