@@ -14,7 +14,7 @@ const UNISWAP_LIST_SOURCE: ListSourceConfig = {
 }
 
 export const userAddedListsSourcesAtom = atomWithStorage<ListsSourcesByNetwork>(
-  'userAddedTokenListsAtom:v2',
+  'userAddedTokenListsAtom:v3',
   mapSupportedNetworks([]),
   getJotaiMergerStorage()
 )
@@ -32,7 +32,7 @@ export const allListsSourcesAtom = atom((get) => {
 
 // Lists states
 export const listsStatesByChainAtom = atomWithStorage<TokenListsState>(
-  'allTokenListsInfoAtom:v2',
+  'allTokenListsInfoAtom:v3',
   mapSupportedNetworks({}),
   getJotaiMergerStorage()
 )

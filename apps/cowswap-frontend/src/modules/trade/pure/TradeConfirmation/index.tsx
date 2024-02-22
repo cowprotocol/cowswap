@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 
-import { ButtonSize, ButtonPrimary, Loader } from '@cowprotocol/ui'
-import { BackButton } from '@cowprotocol/ui'
+import { ButtonSize, ButtonPrimary, BackButton, CenteredDots, LongLoadText } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import ms from 'ms.macro'
@@ -131,7 +130,13 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
         {showRecipientWarning && <CustomRecipientWarningBanner orientation={BannerOrientation.Horizontal} />}
         {isPriceChanged && <PriceUpdatedBanner onClick={resetPriceChanged} />}
         <ButtonPrimary onClick={handleConfirmClick} disabled={isButtonDisabled} buttonSize={ButtonSize.BIG}>
-          {hasPendingTrade ? <Loader /> : <Trans>{buttonText}</Trans>}
+          {hasPendingTrade ? (
+            <LongLoadText fontSize={15} fontWeight={500}>
+              Confirm with your wallet <CenteredDots smaller />
+            </LongLoadText>
+          ) : (
+            <Trans>{buttonText}</Trans>
+          )}
         </ButtonPrimary>
       </styledEl.ContentWrapper>
     </styledEl.WidgetWrapper>
