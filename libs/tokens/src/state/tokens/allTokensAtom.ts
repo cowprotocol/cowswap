@@ -22,6 +22,12 @@ export interface TokensState {
   inactiveTokens: TokensMap
 }
 
+interface BridgeInfo {
+  [chainId: number]: {
+    tokenAddress: string
+  }
+}
+
 export const tokensStateAtom = atom<TokensState>((get) => {
   const { chainId } = get(environmentAtom)
   const listsStatesList = get(listsStatesListAtom)
@@ -32,17 +38,26 @@ export const tokensStateAtom = atom<TokensState>((get) => {
       const isListEnabled = listsEnabledState[list.source]
 
       list.list.tokens.forEach((token) => {
-        if (token.chainId !== chainId) return
+        const bridgeInfo = token.extensions?.['bridgeInfo'] as never as BridgeInfo | undefined
+        const currentChainInfo = bridgeInfo?.[chainId]
+        const bridgeAddress = currentChainInfo?.tokenAddress
 
-        const tokenAddress = token.address.toLowerCase()
+        if (token.chainId !== chainId && !bridgeAddress) return
+
+        const tokenAddress = bridgeAddress || token.address
+        const tokenAddressKey = tokenAddress.toLowerCase()
+        const tokenInfo: TokenInfo = {
+          ...token,
+          address: tokenAddress,
+        }
 
         if (isListEnabled) {
-          if (!acc.activeTokens[tokenAddress]) {
-            acc.activeTokens[tokenAddress] = token
+          if (!acc.activeTokens[tokenAddressKey]) {
+            acc.activeTokens[tokenAddressKey] = tokenInfo
           }
         } else {
-          if (!acc.inactiveTokens[tokenAddress]) {
-            acc.inactiveTokens[tokenAddress] = token
+          if (!acc.inactiveTokens[tokenAddressKey]) {
+            acc.inactiveTokens[tokenAddressKey] = tokenInfo
           }
         }
       })

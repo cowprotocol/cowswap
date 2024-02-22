@@ -11,7 +11,7 @@ import TradeGp from 'legacy/state/swap/TradeGp'
 import { PostOrderParams } from 'legacy/utils/trade'
 
 import { AppDataInfo, UploadAppDataParams } from 'modules/appData'
-import { GeneratePermitHook, IsTokenPermittableResult } from 'modules/permit'
+import { GeneratePermitHook, IsTokenPermittableResult, useGetCachedPermit } from 'modules/permit'
 import { TradeConfirmActions } from 'modules/trade'
 import { SwapFlowAnalyticsContext } from 'modules/trade/utils/analytics'
 
@@ -32,6 +32,7 @@ export interface BaseFlowContext {
     closeModals: Command
     addOrderCallback: AddOrderCallback
     uploadAppData: (params: UploadAppDataParams) => void
+    getCachedPermit: ReturnType<typeof useGetCachedPermit>
   }
   sellTokenContract: Erc20 | null
   dispatch: AppDispatch

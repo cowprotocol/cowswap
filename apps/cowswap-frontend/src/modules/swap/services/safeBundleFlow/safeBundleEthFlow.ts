@@ -49,7 +49,16 @@ export async function safeBundleEthFlow(
   } = input
 
   tradeFlowAnalytics.wrapApproveAndPresign(swapFlowAnalyticsContext)
+
   const nativeAmountInWei = context.inputAmountWithSlippage.quotient.toString()
+  const {
+    context: {
+      trade: { inputAmount, outputAmount },
+    },
+  } = input
+  const tradeAmounts = { inputAmount, outputAmount }
+
+  tradeConfirmActions.onSign(tradeAmounts)
 
   try {
     const txs: MetaTransactionData[] = []

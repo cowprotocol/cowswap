@@ -1,9 +1,10 @@
+import { PageWithToC } from 'legacy/components/PageWithToC'
+
 import { PageTitle } from 'modules/application/containers/PageTitle'
 import { Page, Content } from 'modules/application/pure/Page'
 
 import { useToC } from './hooks'
 import { FaqMenu } from './Menu'
-import { Wrapper } from './styled'
 import ToC from './ToC'
 
 import { Footer } from '.'
@@ -13,7 +14,7 @@ export default function ProtocolFaq() {
 
   return (
     <>
-      <Wrapper ref={faqRef}>
+      <PageWithToC ref={faqRef}>
         <PageTitle title="Protocol FAQ" />
         <FaqMenu />
         <Page>
@@ -95,7 +96,7 @@ export default function ProtocolFaq() {
             <Footer />
           </Content>
         </Page>
-      </Wrapper>
+      </PageWithToC>
     </>
   )
 }
