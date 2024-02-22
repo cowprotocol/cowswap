@@ -40,7 +40,7 @@ const Wrapper = styled.div<{ longList?: boolean }>`
 
   > div {
     height: 90vh;
-    overflow-y: scroll;
+    overflow-y: auto;
     margin-right: 5px;
     ${({ theme }) => theme.colorScrollbar};
 
