@@ -5,9 +5,9 @@ import { CurrencyAmount } from '@uniswap/sdk-core'
 import { MiddlewareAPI } from '@reduxjs/toolkit'
 import { Dispatch } from 'redux'
 
-import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
+import { emitPostedOrderEvent } from 'modules/orders'
 
-import { emitPostedOrderEvent } from './emitPostedOrderEvent'
+import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { AppState } from '../../index'
 import { AddPendingOrderParams } from '../actions'
