@@ -1,8 +1,6 @@
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { CowEventPayloadMap, CowEvents } from '@cowprotocol/events'
+import { CowEventListeners, CowEventPayloadMap, CowEvents } from '@cowprotocol/events'
 export type { SupportedChainId } from '@cowprotocol/cow-sdk'
-
-export type CowSwapWidgetParams = Partial<CowSwapWidgetConfig>
 
 export enum WidgetMethodsEmit {
   ACTIVATE = 'ACTIVATE',
@@ -16,6 +14,12 @@ export enum WidgetMethodsListen {
   UPDATE_APP_DATA = 'UPDATE_APP_DATA',
   PROVIDER_RPC_RESPONSE = 'PROVIDER_RPC_RESPONSE',
   PROVIDER_ON_EVENT = 'PROVIDER_ON_EVENT',
+}
+
+export interface CowSwapWidgetProps {
+  params: CowSwapWidgetParams
+  provider?: EthereumProvider
+  listeners?: CowEventListeners
 }
 
 export interface JsonRpcRequest {
@@ -90,7 +94,7 @@ export interface CowSwapWidgetPalette {
   success: string
 }
 
-interface CowSwapWidgetConfig {
+export interface CowSwapWidgetParams {
   /**
    * The width of the widget in pixels. Default: 400px
    */
@@ -104,10 +108,6 @@ interface CowSwapWidgetConfig {
    * Please fill the for to let us know a little about you: https://cowprotocol.typeform.com/to/rONXaxHV
    */
   appCode: string
-  /**
-   * The widget might be connected to a custom Ethereum provider.
-   */
-  provider: EthereumProvider
 
   /**
    * Network ID.
@@ -246,6 +246,7 @@ export interface UpdateParamsPayload {
     search: string
   }
   appParams: CowSwapWidgetParams
+  hasProvider: boolean
 }
 
 export interface UpdateAppDataPayload {
