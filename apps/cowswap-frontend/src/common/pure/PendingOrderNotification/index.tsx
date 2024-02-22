@@ -1,6 +1,7 @@
 import { isAddress, isCowOrder, isSellOrder, shortenAddress } from '@cowprotocol/common-utils'
 import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { OnToastMessagePayload, ToastMessageType } from '@cowprotocol/events'
+import { UiOrderType } from '@cowprotocol/types'
 import { TokenAmount, formatTokenAmountWithSymbol } from '@cowprotocol/ui'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
@@ -10,7 +11,7 @@ import { EnhancedTransactionLink } from 'legacy/components/EnhancedTransactionLi
 import { ExplorerLink } from 'legacy/components/ExplorerLink'
 import { HashType } from 'legacy/state/enhancedTransactions/reducer'
 
-import { ORDER_UI_TYPE_TITLES, UiOrderType } from 'utils/orderUtils/getUiOrderType'
+import { ORDER_UI_TYPE_TITLES } from 'utils/orderUtils/getUiOrderType'
 
 const OrderLinkWrapper = styled.div`
   margin-top: 15px;

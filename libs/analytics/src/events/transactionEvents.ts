@@ -1,18 +1,16 @@
-import { OrderClass } from '@cowprotocol/cow-sdk'
-
 import { sendEvent } from '../googleAnalytics'
 import { PixelEvent, sendAllPixels } from '../pixel'
-import { AnalyticsOrderType, Category } from '../types'
+import { Category } from '../types'
+import { UiOrderType } from '@cowprotocol/types'
 
-const LABEL_FROM_CLASS: Record<AnalyticsOrderType, string> = {
-  [OrderClass.LIMIT]: 'Limit Order',
-  [OrderClass.MARKET]: 'Market Order',
-  [OrderClass.LIQUIDITY]: 'Liquidity Order',
-  TWAP: 'TWAP Order',
+const LABEL_FROM_TYPE: Record<UiOrderType, string> = {
+  [UiOrderType.LIMIT]: 'Limit Order',
+  [UiOrderType.SWAP]: 'Market Order',
+  [UiOrderType.TWAP]: 'TWAP Order',
 }
 
-function getClassLabel(orderClass: AnalyticsOrderType, label?: string) {
-  const classLabel = LABEL_FROM_CLASS[orderClass]
+function getClassLabel(orderClass: UiOrderType, label?: string) {
+  const classLabel = LABEL_FROM_TYPE[orderClass]
   return label ? `${label}::${classLabel}` : classLabel
 }
 
@@ -60,25 +58,25 @@ export type TradeAction =
   | 'Bundle Approve and Swap'
   | 'Bundled Eth Flow'
   | 'Place Advanced Order'
-export function tradeAnalytics(action: TradeAction, orderClass: AnalyticsOrderType, label?: string, value?: number) {
+export function tradeAnalytics(action: TradeAction, orderType: UiOrderType, label?: string, value?: number) {
   sendEvent({
     category: Category.TRADE,
     action,
-    label: getClassLabel(orderClass, label),
+    label: getClassLabel(orderType, label),
     value,
   })
 }
 
-export function signTradeAnalytics(orderClass: AnalyticsOrderType, label?: string) {
+export function signTradeAnalytics(orderType: UiOrderType, label?: string) {
   sendEvent({
     category: Category.TRADE,
     action: 'Sign',
-    label: getClassLabel(orderClass, label),
+    label: getClassLabel(orderType, label),
   })
 }
 
 export type OrderType = 'Posted' | 'Executed' | 'Canceled' | 'Expired'
-export function orderAnalytics(action: OrderType, orderClass: AnalyticsOrderType, label?: string) {
+export function orderAnalytics(action: OrderType, orderType: UiOrderType, label?: string) {
   if (action === 'Posted') {
     sendAllPixels(PixelEvent.POST_TRADE)
   }
@@ -86,7 +84,7 @@ export function orderAnalytics(action: OrderType, orderClass: AnalyticsOrderType
   sendEvent({
     category: Category.TRADE,
     action,
-    label: getClassLabel(orderClass, label),
+    label: getClassLabel(orderType, label),
   })
 }
 

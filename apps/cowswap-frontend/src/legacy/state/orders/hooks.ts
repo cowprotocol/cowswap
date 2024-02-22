@@ -2,12 +2,13 @@ import { useCallback, useMemo } from 'react'
 
 import { isTruthy } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { UiOrderType } from '@cowprotocol/types'
 
 import { useDispatch, useSelector } from 'react-redux'
 
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 
-import { getUiOrderType, UiOrderType } from 'utils/orderUtils/getUiOrderType'
+import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import {
   addOrUpdateOrders,

@@ -4,6 +4,7 @@ import { useCallback } from 'react'
 import { orderAnalytics, twapConversionAnalytics } from '@cowprotocol/analytics'
 import { getCowSoundSend } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/cow-sdk'
+import { UiOrderType } from '@cowprotocol/types'
 import { useSafeAppsSdk, useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
@@ -14,10 +15,9 @@ import { showPendingOrderNotification } from 'legacy/state/orders/middleware/sho
 import { updateAdvancedOrdersAtom, useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
 import { useAppData, useUploadAppData } from 'modules/appData'
 import { useTradeConfirmActions, useTradePriceImpact } from 'modules/trade'
-import { SwapFlowAnalyticsContext, tradeFlowAnalytics } from 'modules/trade/utils/analytics'
+import { TradeFlowAnalyticsContext, tradeFlowAnalytics } from 'modules/trade/utils/analytics'
 
 import { useConfirmPriceImpactWithoutFee } from 'common/hooks/useConfirmPriceImpactWithoutFee'
-import { UiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { useExtensibleFallbackContext } from './useExtensibleFallbackContext'
 import { useTwapOrderCreationContext } from './useTwapOrderCreationContext'
@@ -78,12 +78,13 @@ export function useCreateTwapOrder() {
         outputAmount: outputCurrencyAmount,
       }
 
-      const twapFlowAnalyticsContext: SwapFlowAnalyticsContext = {
+      const orderType = UiOrderType.TWAP
+      const twapFlowAnalyticsContext: TradeFlowAnalyticsContext = {
         account,
         recipient: twapOrder.receiver,
         recipientAddress: twapOrder.receiver,
         marketLabel: [inputCurrencyAmount.currency.symbol, outputCurrencyAmount.currency.symbol].join(','),
-        orderClass: 'TWAP',
+        orderType,
       }
 
       try {
@@ -122,11 +123,11 @@ export function useCreateTwapOrder() {
           inputAmount: twapOrder.sellAmount,
           outputAmount: twapOrder.buyAmount,
           owner: account,
-          uiOrderType: UiOrderType.TWAP,
+          uiOrderType: orderType,
           isSafeWallet: true, // TWAP is always a safe wallet
         })
 
-        orderAnalytics('Posted', 'TWAP', 'Presign')
+        orderAnalytics('Posted', orderType, 'Presign')
 
         uploadAppData({ chainId, orderId, appData: appDataInfo })
         updateAdvancedOrdersState({ recipient: null, recipientAddress: null })

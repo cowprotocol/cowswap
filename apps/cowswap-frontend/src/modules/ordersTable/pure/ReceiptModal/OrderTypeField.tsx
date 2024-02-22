@@ -1,4 +1,6 @@
-import { getUiOrderType, UiOrderType } from 'utils/orderUtils/getUiOrderType'
+import { UiOrderType } from '@cowprotocol/types'
+
+import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import * as styledEl from './styled'
