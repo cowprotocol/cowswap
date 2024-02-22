@@ -153,8 +153,6 @@ function updateParams(contentWindow: Window, params: CowSwapWidgetParams, provid
   const pathname = buildWidgetPath(params)
   const search = buildTradeAmountsQuery(params).toString()
 
-  console.log('[cowSwapWidget] updateWidgetParams', { pathname, search, params, hasProvider })
-
   postMessageToWindow(contentWindow, WidgetMethodsListen.UPDATE_PARAMS, {
     urlParams: {
       pathname,
