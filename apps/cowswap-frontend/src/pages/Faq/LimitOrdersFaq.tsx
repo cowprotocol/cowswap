@@ -1,9 +1,11 @@
+import { PageWithToC } from 'legacy/components/PageWithToC'
+
 import { PageTitle } from 'modules/application/containers/PageTitle'
 import { Content, Page } from 'modules/application/pure/Page'
 
 import { useToC } from './hooks'
 import { FaqMenu } from './Menu'
-import { ExternalLinkFaq, InternalLinkFaq, Wrapper } from './styled'
+import { ExternalLinkFaq, InternalLinkFaq } from './styled'
 import ToC from './ToC'
 
 import { Footer } from '.'
@@ -13,7 +15,7 @@ export default function LimitOrderFAQ() {
 
   return (
     <>
-      <Wrapper ref={faqRef}>
+      <PageWithToC ref={faqRef}>
         <PageTitle title="Limit orders FAQ" />
         <FaqMenu />
         <Page>
@@ -224,7 +226,7 @@ export default function LimitOrderFAQ() {
             <Footer />
           </Content>
         </Page>
-      </Wrapper>
+      </PageWithToC>
     </>
   )
 }

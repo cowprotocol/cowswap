@@ -43,7 +43,6 @@ export function ExpiredOrdersUpdater(): null {
         })
 
         if (orderWithoutRefund.length === 0) {
-          // console.debug(`[CancelledOrdersUpdater] No orders are being expired`)
           return
         } else {
           console.debug(`[ExpiredOrdersUpdater] Checking ${orderWithoutRefund.length} recently expired orders...`)

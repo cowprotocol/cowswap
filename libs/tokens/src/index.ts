@@ -1,8 +1,10 @@
-import { tokensLegacyStateMigration } from './migrations/tokensLegacyStateMigration'
+// Containers
+import { userAddedTokenListsAtomv2Migration } from './migrations/userAddedTokenListsAtomv2Migration'
+export { OnlyUniswapListAvailableBanner } from './containers/OnlyUniswapListAvailableBanner'
 
 // Run migrations first of all
-// TODO: remove it after 30.01.2024
-tokensLegacyStateMigration()
+// TODO: remove it after 01.04.2024
+userAddedTokenListsAtomv2Migration()
 
 // Updaters
 export { TokensListsUpdater } from './updaters/TokensListsUpdater'

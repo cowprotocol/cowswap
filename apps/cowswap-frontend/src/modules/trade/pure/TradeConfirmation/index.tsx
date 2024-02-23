@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
-import { ButtonSize, ButtonPrimary } from '@cowprotocol/ui'
-import { BackButton } from '@cowprotocol/ui'
+import { ButtonSize, ButtonPrimary, BackButton, CenteredDots, LongLoadText } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import ms from 'ms.macro'
@@ -16,7 +15,7 @@ import { QuoteCountdown } from './CountDown'
 import { useIsPriceChanged } from './hooks/useIsPriceChanged'
 import * as styledEl from './styled'
 
-import { CustomRecipientBanner } from '../CustomRecipientBanner'
+import { useTradeConfirmState } from '../../hooks/useTradeConfirmState'
 import { PriceUpdatedBanner } from '../PriceUpdatedBanner'
 
 const ONE_SEC = ms`1s`
@@ -37,6 +36,14 @@ export interface TradeConfirmationProps {
 }
 
 export function TradeConfirmation(props: TradeConfirmationProps) {
+  const { pendingTrade } = useTradeConfirmState()
+
+  const propsRef = useRef(props)
+  propsRef.current = props
+
+  const [frozenProps, setFrozenProps] = useState<TradeConfirmationProps | null>(null)
+  const hasPendingTrade = !!pendingTrade
+
   const {
     onConfirm,
     onDismiss,
@@ -50,7 +57,14 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
     buttonText = 'Confirm',
     children,
     recipient,
-  } = props
+  } = frozenProps || props
+
+  /**
+   * Once user sends a transaction, we keep the confirmation content frozen
+   */
+  useEffect(() => {
+    setFrozenProps(hasPendingTrade ? propsRef.current : null)
+  }, [hasPendingTrade])
 
   const showRecipientWarning = recipient && account && recipient.toLowerCase() !== account.toLowerCase()
   const inputAmount = inputCurrencyInfo.amount?.toExact()
@@ -58,7 +72,7 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
 
   const { isPriceChanged, resetPriceChanged } = useIsPriceChanged(inputAmount, outputAmount)
 
-  const isButtonDisabled = isConfirmDisabled || isPriceChanged
+  const isButtonDisabled = isConfirmDisabled || isPriceChanged || hasPendingTrade
 
   const [nextUpdateAt, setNextUpdateAt] = useState(refreshInterval)
 
@@ -95,7 +109,9 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
         <BackButton onClick={onDismiss} />
         <styledEl.ConfirmHeaderTitle>{title}</styledEl.ConfirmHeaderTitle>
 
-        {nextUpdateAt !== undefined && <QuoteCountdown nextUpdateAt={nextUpdateAt} />}
+        <styledEl.HeaderRightContent>
+          {hasPendingTrade ? null : nextUpdateAt !== undefined && <QuoteCountdown nextUpdateAt={nextUpdateAt} />}
+        </styledEl.HeaderRightContent>
       </styledEl.Header>
       <styledEl.ContentWrapper id="trade-confirmation">
         <styledEl.AmountsPreviewContainer>
@@ -112,10 +128,15 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
         {children}
         {/*Banners*/}
         {showRecipientWarning && <CustomRecipientWarningBanner orientation={BannerOrientation.Horizontal} />}
-        <CustomRecipientBanner recipient={recipient} />
         {isPriceChanged && <PriceUpdatedBanner onClick={resetPriceChanged} />}
         <ButtonPrimary onClick={handleConfirmClick} disabled={isButtonDisabled} buttonSize={ButtonSize.BIG}>
-          <Trans>{buttonText}</Trans>
+          {hasPendingTrade ? (
+            <LongLoadText fontSize={15} fontWeight={500}>
+              Confirm with your wallet <CenteredDots smaller />
+            </LongLoadText>
+          ) : (
+            <Trans>{buttonText}</Trans>
+          )}
         </ButtonPrimary>
       </styledEl.ContentWrapper>
     </styledEl.WidgetWrapper>

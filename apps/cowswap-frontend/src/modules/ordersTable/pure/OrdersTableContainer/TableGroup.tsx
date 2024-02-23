@@ -13,12 +13,12 @@ import { BalancesAndAllowances } from 'modules/tokens'
 
 import { OrderRow } from './OrderRow'
 import * as styledEl from './OrderRow/styled'
-import { OrdersTablePagination } from './OrdersTablePagination'
 import { OrderActions } from './types'
 import { getOrderParams } from './utils/getOrderParams'
 
 import { ORDERS_TABLE_PAGE_SIZE } from '../../const/tabs'
 import { OrderTableGroup } from '../../utils/orderTableGroupUtils'
+import { OrdersTablePagination } from '../OrdersTablePagination'
 
 const GroupBox = styled.div``
 

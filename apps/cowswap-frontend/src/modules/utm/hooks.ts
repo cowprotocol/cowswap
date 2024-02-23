@@ -42,7 +42,7 @@ function cleanUpParams(searchParams: URLSearchParams): URLSearchParams {
 
 export function useInitializeUtm(): void {
   const navigate = useNavigate()
-  const { search, pathname } = useLocation()
+  const { search, pathname, hash } = useLocation()
 
   // get atom setter
   const setUtm = useSetAtom(utmAtom)
@@ -53,7 +53,7 @@ export function useInitializeUtm(): void {
       const searchParams = new URLSearchParams(search || window.location.search)
       const utm = getUtmParams(searchParams)
 
-      const { href, origin, pathname: locationPath, hash, search: locationSearch } = window.location
+      const { href, origin, pathname: locationPath, hash: locationHash, search: locationSearch } = window.location
 
       if (Object.values(utm).filter(Boolean).length > 0) {
         // Only overrides the UTM if the URL includes at least one UTM param
@@ -67,7 +67,7 @@ export function useInitializeUtm(): void {
         return
       }
 
-      const validHref = `${origin}${locationPath}${hash}${locationSearch}`
+      const validHref = `${origin}${locationPath}${locationHash}${locationSearch}`
       const isWeirdURl = href !== validHref
 
       // Example: http://localhost:3000?
@@ -76,7 +76,7 @@ export function useInitializeUtm(): void {
         return
       }
 
-      navigate({ pathname, search: newSearch }, { replace: true })
+      navigate({ pathname, search: newSearch, hash }, { replace: true })
     },
     // No dependencies: It only needs to be initialized once
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -36,6 +36,7 @@ export interface SwapButtonsContext {
   hasEnoughWrappedBalanceForSwap: boolean
   swapInputError?: ReactNode
   onCurrencySelection: (field: Field, currency: Currency) => void
+  recipientAddressOrName: string | null
 }
 
 const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonsContext) => JSX.Element } = {

@@ -48,10 +48,12 @@ export async function safeBundleApprovalFlow(
     tradeConfirmActions,
   } = input
 
-  const { chainId } = context
+  const { chainId, trade: { inputAmount, outputAmount } } = context
   const { appData, account, isSafeWallet, recipientAddressOrName, inputAmount, outputAmount } = orderParams
+  const tradeAmounts = { inputAmount, outputAmount }
 
   tradeFlowAnalytics.approveAndPresign(swapFlowAnalyticsContext)
+  tradeConfirmActions.onSign(tradeAmounts)
 
   try {
     // For now, bundling ALWAYS includes 2 steps: approve and presign.

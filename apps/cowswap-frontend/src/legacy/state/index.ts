@@ -43,8 +43,6 @@ export const cowSwapStore = configureStore({
     getDefaultMiddleware({ thunk: true, serializableCheck: false })
       .concat(save({ states: PERSISTED_KEYS, debounce: 1000 }))
       .concat(popupMiddleware)
-      // TODO: fix it
-      // .concat(composableOrdersPopupMiddleware)
       .concat(cowTokenMiddleware)
       .concat(soundMiddleware)
       .concat(appziMiddleware)

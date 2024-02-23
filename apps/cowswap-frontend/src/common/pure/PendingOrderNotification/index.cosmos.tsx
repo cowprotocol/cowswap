@@ -4,14 +4,13 @@ import { useEffect } from 'react'
 import { USDC_MAINNET, WBTC } from '@cowprotocol/common-const'
 import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { SnackbarPopup } from '@cowprotocol/snackbars'
+import { UiOrderType } from '@cowprotocol/types'
 import { GnosisSafeInfo, gnosisSafeInfoAtom } from '@cowprotocol/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useSelect, useValue } from 'react-cosmos/client'
 import { CheckCircle } from 'react-feather'
 import styled from 'styled-components/macro'
-
-import { UiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { PendingOrderNotification } from './index'
 

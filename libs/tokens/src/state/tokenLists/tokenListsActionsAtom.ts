@@ -43,7 +43,11 @@ export const addListAtom = atom(null, (get, set, state: ListState) => {
 
   set(userAddedListsSourcesAtom, {
     ...userAddedTokenLists,
-    [chainId]: userAddedTokenLists[chainId].concat({ ...state }),
+    [chainId]: userAddedTokenLists[chainId].concat({
+      widgetAppCode: state.widgetAppCode,
+      priority: state.priority,
+      source: state.source,
+    }),
   })
 
   set(upsertListsAtom, chainId, [state])

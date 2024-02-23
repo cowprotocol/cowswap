@@ -8,7 +8,7 @@ import {
   timeSinceInSeconds,
 } from '@cowprotocol/common-utils'
 import { EthflowData, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { Command } from '@cowprotocol/types'
+import { Command, UiOrderType } from '@cowprotocol/types'
 import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
 
 import { GetSafeInfo, useGetSafeInfo } from 'legacy/hooks/useGetSafeInfo'
@@ -34,7 +34,7 @@ import { OrderTransitionStatus } from 'legacy/state/orders/utils'
 import { useAddOrderToSurplusQueue } from 'modules/swap/state/surplusModal'
 
 import { getOrder } from 'api/gnosisProtocol'
-import { getUiOrderType, UiOrderType } from 'utils/orderUtils/getUiOrderType'
+import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { fetchOrderPopupData, OrderLogPopupMixData } from './utils'
 
@@ -336,8 +336,6 @@ export function PendingOrdersUpdater(): null {
 
       if (!isUpdating.current) {
         isUpdating.current = true
-        // const startTime = Date.now()
-        // console.debug('[PendingOrdersUpdater] Updating orders....')
         return _updateOrders({
           account,
           chainId,
@@ -354,7 +352,6 @@ export function PendingOrdersUpdater(): null {
           getSafeInfo,
         }).finally(() => {
           isUpdating.current = false
-          // console.debug(`[PendingOrdersUpdater] Updated orders in ${Date.now() - startTime}ms`)
         })
       }
     },

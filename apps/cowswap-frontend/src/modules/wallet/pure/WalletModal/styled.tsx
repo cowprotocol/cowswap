@@ -6,6 +6,19 @@ import styled from 'styled-components/macro'
 
 export const TermsWrapper = styled.div`
   color: inherit;
+  font-size: 13px;
+  line-height: 1.5;
+  text-align: center;
+  padding: 0 32px;
+
+  > a {
+    color: inherit;
+    text-decoration: underline;
+  }
+
+  > a:hover {
+    color: var(${UI.COLOR_PRIMARY});
+  }
 `
 
 export const Blurb = styled.div`

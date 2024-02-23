@@ -1,21 +1,10 @@
 import { OrderClass } from '@cowprotocol/cow-sdk'
+import { UiOrderType } from '@cowprotocol/types'
 
 import { Order } from 'legacy/state/orders/actions'
 
 import { AppDataMetadataOrderClass } from 'modules/appData/types'
 import { decodeAppData } from 'modules/appData/utils/decodeAppData'
-
-/**
- * UI order type that is different from existing types or classes
- *
- * This concept doesn't match what the API returns, as it has no notion of advanced/twap orders
- * It uses order appData if available, otherwise fallback to less reliable ways
- */
-export enum UiOrderType {
-  SWAP = 'SWAP',
-  LIMIT = 'LIMIT',
-  TWAP = 'TWAP',
-}
 
 const APPDATA_ORDER_CLASS_TO_UI_ORDER_TYPE_MAP: Record<string, UiOrderType> = {
   market: UiOrderType.SWAP,
@@ -30,11 +19,15 @@ const API_ORDER_CLASS_TO_UI_ORDER_TYPE_MAP: Record<OrderClass, UiOrderType> = {
   [OrderClass.LIQUIDITY]: UiOrderType.LIMIT,
 }
 
-export function getUiOrderType({
-  fullAppData,
-  composableCowInfo,
-  class: orderClass,
-}: Pick<Order, 'fullAppData' | 'composableCowInfo' | 'class'>): UiOrderType {
+export const ORDER_UI_TYPE_TITLES: Record<UiOrderType, string> = {
+  [UiOrderType.SWAP]: 'Swap',
+  [UiOrderType.LIMIT]: 'Limit order',
+  [UiOrderType.TWAP]: 'TWAP order',
+}
+
+export type UiOrderTypeParams = Pick<Order, 'fullAppData' | 'composableCowInfo' | 'class'>
+
+export function getUiOrderType({ fullAppData, composableCowInfo, class: orderClass }: UiOrderTypeParams): UiOrderType {
   const parsedAppData = decodeAppData(fullAppData)
 
   const appDataOrderClass = parsedAppData?.metadata?.orderClass as AppDataMetadataOrderClass | undefined

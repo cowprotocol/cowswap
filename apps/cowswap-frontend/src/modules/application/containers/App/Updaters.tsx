@@ -8,6 +8,7 @@ import { UploadToIpfsUpdater } from 'modules/appData/updater/UploadToIpfsUpdater
 import { CowEventsUpdater, InjectedWidgetUpdater, useInjectedWidgetParams } from 'modules/injectedWidget'
 import { OrdersNotificationsUpdater } from 'modules/orders'
 import { EthFlowDeadlineUpdater, EthFlowSlippageUpdater } from 'modules/swap/state/EthFlow/updaters'
+import { useOnTokenListAddingError } from 'modules/tokensList'
 import { UsdPricesUpdater } from 'modules/usdAmount'
 
 import { TotalSurplusUpdater } from 'common/state/totalSurplusState'
@@ -33,6 +34,7 @@ import { UserUpdater } from 'common/updaters/UserUpdater'
 export function Updaters() {
   const { chainId, account } = useWalletInfo()
   const { tokenLists, appCode } = useInjectedWidgetParams()
+  const onTokenListAddingError = useOnTokenListAddingError()
 
   return (
     <>
@@ -64,7 +66,11 @@ export function Updaters() {
       <OrdersNotificationsUpdater />
 
       <TokensListsUpdater chainId={chainId} />
-      <WidgetTokensListsUpdater tokenLists={tokenLists} appCode={appCode} />
+      <WidgetTokensListsUpdater
+        tokenLists={tokenLists}
+        appCode={appCode}
+        onTokenListAddingError={onTokenListAddingError}
+      />
       <UnsupportedTokensUpdater />
       <BalancesAndAllowancesUpdater chainId={chainId} account={account} />
     </>

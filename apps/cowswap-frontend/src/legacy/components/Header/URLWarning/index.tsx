@@ -6,12 +6,14 @@ import { UI } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { AlertTriangle } from 'react-feather'
+import ReactMarkdown, { Components } from 'react-markdown'
 import styled from 'styled-components/macro'
 
-import { Markdown } from 'legacy/components/Markdown'
 import { useAnnouncementVisible, useCloseAnnouncement } from 'legacy/state/profile/hooks'
 
 import URLWarningUni, { PhishAlert, StyledClose } from './URLWarningMod'
+
+import { markdownComponents } from '../../Markdown/components'
 
 export * from './URLWarningMod'
 
@@ -86,6 +88,11 @@ function useGetAnnouncement(chainId: number): string | undefined {
   }
 
   return announcementText || envAnnouncementText
+}
+
+function Markdown(props: { children?: string }) {
+  const { children = '' } = props
+  return <ReactMarkdown components={markdownComponents as Components}>{children}</ReactMarkdown>
 }
 
 export default function URLWarning() {

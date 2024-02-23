@@ -4,7 +4,7 @@ import { useTokenContract, useWETHContract } from '@cowprotocol/common-hooks'
 import { calculateValidTo, getAddress, getIsNativeToken } from '@cowprotocol/common-utils'
 import { OrderClass, OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useENSAddress } from '@cowprotocol/ens'
-import { Command } from '@cowprotocol/types'
+import { Command, UiOrderType } from '@cowprotocol/types'
 import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { Web3Provider } from '@ethersproject/providers'
 import { SafeInfoResponse } from '@safe-global/api-kit'
@@ -23,10 +23,11 @@ import { PostOrderParams } from 'legacy/utils/trade'
 
 import type { AppDataInfo, UploadAppDataParams } from 'modules/appData'
 import { useAppData, useUploadAppData } from 'modules/appData'
+import { useGetCachedPermit } from 'modules/permit'
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { BaseFlowContext } from 'modules/swap/services/types'
 import { TradeConfirmActions, useTradeConfirmActions } from 'modules/trade'
-import { SwapFlowAnalyticsContext } from 'modules/trade/utils/analytics'
+import { TradeFlowAnalyticsContext } from 'modules/trade/utils/analytics'
 
 import { useSwapZeroFee } from 'common/hooks/featureFlags/useSwapZeroFee'
 import { useIsSafeApprovalBundle } from 'common/hooks/useIsSafeApprovalBundle'
@@ -68,6 +69,7 @@ interface BaseFlowContextSetup {
     swapZeroFee: boolean | undefined
   }
   tradeConfirmActions: TradeConfirmActions
+  getCachedPermit: ReturnType<typeof useGetCachedPermit>
 }
 
 export function useSwapAmountsWithSlippage(): [
@@ -103,6 +105,7 @@ export function useBaseFlowContextSetup(): BaseFlowContextSetup {
   const wethContract = useWETHContract()
   const isEoaEthFlow = useIsEoaEthFlow()
   const isSafeEthFlow = useIsSafeEthFlow()
+  const getCachedPermit = useGetCachedPermit()
 
   const { allowedSlippage } = useDerivedSwapInfo()
   const [inputAmountWithSlippage, outputAmountWithSlippage] = useSwapAmountsWithSlippage()
@@ -135,6 +138,7 @@ export function useBaseFlowContextSetup(): BaseFlowContextSetup {
     allowedSlippage,
     featureFlags: { swapZeroFee },
     tradeConfirmActions,
+    getCachedPermit,
   }
 }
 
@@ -183,6 +187,7 @@ export function getFlowContext({ baseProps, sellToken, kind }: BaseGetFlowContex
     featureFlags,
     allowedSlippage,
     tradeConfirmActions,
+    getCachedPermit,
   } = baseProps
 
   if (
@@ -209,12 +214,12 @@ export function getFlowContext({ baseProps, sellToken, kind }: BaseGetFlowContex
     return null
   }
 
-  const swapFlowAnalyticsContext: SwapFlowAnalyticsContext = {
+  const swapFlowAnalyticsContext: TradeFlowAnalyticsContext = {
     account,
     recipient,
     recipientAddress: recipientAddressOrName,
     marketLabel,
-    orderClass: OrderClass.MARKET,
+    orderType: UiOrderType.SWAP,
   }
 
   const validTo = calculateValidTo(deadline)
@@ -263,6 +268,7 @@ export function getFlowContext({ baseProps, sellToken, kind }: BaseGetFlowContex
       closeModals,
       addOrderCallback,
       uploadAppData,
+      getCachedPermit,
     },
     dispatch,
     swapFlowAnalyticsContext,

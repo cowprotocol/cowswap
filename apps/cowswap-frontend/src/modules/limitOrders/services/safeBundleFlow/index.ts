@@ -1,6 +1,7 @@
 import { currencyAmountToTokenAmount, reportAppDataWithHooks } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/cow-sdk'
-import { Command } from '@cowprotocol/types'
+import { CowEvents } from '@cowprotocol/events'
+import { Command, UiOrderType } from '@cowprotocol/types'
 import { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import { Percent } from '@uniswap/sdk-core'
 
@@ -19,7 +20,7 @@ import { buildZeroApproveTx } from 'modules/operations/bundle/buildZeroApproveTx
 import { emitPostedOrderEvent } from 'modules/orders'
 import { appDataContainsHooks } from 'modules/permit/utils/appDataContainsHooks'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
-import { SwapFlowAnalyticsContext, tradeFlowAnalytics } from 'modules/trade/utils/analytics'
+import { TradeFlowAnalyticsContext, tradeFlowAnalytics } from 'modules/trade/utils/analytics'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
 import { shouldZeroApprove as shouldZeroApproveFn } from 'modules/zeroApproval'
@@ -59,12 +60,12 @@ export async function safeBundleFlow(
     params.postOrderParams.appData = await updateHooksOnAppData(params.postOrderParams.appData, undefined)
   }
 
-  const swapFlowAnalyticsContext: SwapFlowAnalyticsContext = {
+  const swapFlowAnalyticsContext: TradeFlowAnalyticsContext = {
     account,
     recipient: recipientAddressOrName,
     recipientAddress: recipientAddressOrName,
     marketLabel: [sellToken.symbol, buyToken.symbol].join(','),
-    orderClass,
+    orderType: UiOrderType.LIMIT,
   }
 
   logTradeFlow(LOG_PREFIX, 'STEP 2: send transaction')

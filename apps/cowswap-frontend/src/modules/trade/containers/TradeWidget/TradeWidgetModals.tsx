@@ -8,6 +8,7 @@ import {
   SelectTokenWidget,
   useSelectTokenWidgetState,
   useUpdateSelectTokenWidgetState,
+  useTokenListAddingError,
 } from 'modules/tokensList'
 import { useZeroApproveModalState, ZeroApprovalModal } from 'modules/zeroApproval'
 
@@ -32,7 +33,7 @@ export function TradeWidgetModals(confirmModal: ReactNode | undefined) {
   const { open: isTokenSelectOpen } = useSelectTokenWidgetState()
   const [{ isOpen: isWrapNativeOpen }, setWrapNativeScreenState] = useWrapNativeScreenState()
   const { approveInProgress, currency: approvingCurrency, error: approveError } = useTradeApproveState()
-
+  const [tokenListAddingError, setTokenListAddingError] = useTokenListAddingError()
   const { isModalOpen: isZeroApprovalModalOpen, closeModal: closeZeroApprovalModal } = useZeroApproveModalState()
   const {
     tokensToImport,
@@ -50,6 +51,7 @@ export function TradeWidgetModals(confirmModal: ReactNode | undefined) {
     updateSelectTokenWidgetState({ open: false })
     setWrapNativeScreenState({ isOpen: false })
     updateTradeApproveState({ approveInProgress: false, error: undefined })
+    setTokenListAddingError(null)
   }, [
     closeTradeConfirm,
     closeZeroApprovalModal,
@@ -57,9 +59,10 @@ export function TradeWidgetModals(confirmModal: ReactNode | undefined) {
     updateSelectTokenWidgetState,
     setWrapNativeScreenState,
     updateTradeApproveState,
+    setTokenListAddingError,
   ])
 
-  const error = approveError || confirmError
+  const error = tokenListAddingError || approveError || confirmError
 
   /**
    * Close modals on chain/account change

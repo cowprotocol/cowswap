@@ -10,9 +10,7 @@ interface Market<T = string> {
 const PROVIDER_REJECT_REQUEST_CODES = [4001, -32000] // See https://eips.ethereum.org/EIPS/eip-1193
 const PROVIDER_REJECT_REQUEST_ERROR_MESSAGES = [
   'User denied message signature',
-  'User rejected the transaction',
-  'user rejected transaction',
-  'User rejected signing',
+  'User rejected',
   'Transaction was rejected',
 ]
 

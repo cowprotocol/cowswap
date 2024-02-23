@@ -56,14 +56,11 @@ export const StyledClose = styled(X)`
 
   &:hover {
     opacity: 1;
+    cursor: pointer;
   }
 
   svg {
     stroke: currentColor;
-  }
-
-  :hover {
-    cursor: pointer;
   }
 `
 

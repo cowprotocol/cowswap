@@ -9,7 +9,7 @@ import { EnhancedTransactionLink } from 'legacy/components/EnhancedTransactionLi
 import { ExplorerLink } from 'legacy/components/ExplorerLink'
 import { HashType } from 'legacy/state/enhancedTransactions/reducer'
 
-import { UiOrderType } from 'utils/orderUtils/getUiOrderType'
+import { ORDER_UI_TYPE_TITLES } from 'utils/orderUtils/getUiOrderType'
 
 const OrderLinkWrapper = styled.div`
   margin-top: 15px;
@@ -21,12 +21,6 @@ const OrderLinkWrapper = styled.div`
   }
 `
 
-const ORDER_TYPE_TITLES: Record<UiOrderType, string> = {
-  [UiOrderType.SWAP]: 'Swap',
-  [UiOrderType.LIMIT]: 'Limit order',
-  [UiOrderType.TWAP]: 'TWAP order',
-}
-
 export interface PendingOrderNotificationProps {
   owner: string
   chainId: SupportedChainId
@@ -37,6 +31,45 @@ export interface PendingOrderNotificationProps {
   outputAmount: CurrencyAmount<Token>
   receiver?: string
   isSafeWallet: boolean
+}
+
+export function getPendingOrderNotificationToast(props: PendingOrderNotificationProps): OnToastMessagePayload | null {
+  const { orderId, kind, inputAmount, outputAmount, receiver, account, orderType } = props
+
+  if (!account) return null
+
+  const toAddress = receiver && isAddress(receiver) ? shortenAddress(receiver) : receiver
+
+  const inputAmountElement = formatTokenAmountWithSymbol({
+    amount: inputAmount,
+    tokenSymbol: inputAmount.currency,
+  })
+  const outputAmountElement = formatTokenAmountWithSymbol({
+    amount: outputAmount,
+    tokenSymbol: outputAmount.currency,
+  })
+
+  const messagePrefix = `${ORDER_UI_TYPE_TITLES[orderType]} submitted: `
+
+  const baseMessage = (() => {
+    const isSellOrder = kind === OrderKind.SELL
+
+    if (isSellOrder) {
+      return `Sell ${inputAmountElement} for at least ${outputAmountElement}`
+    } else {
+      return `Buy ${outputAmountElement} for at most ${inputAmountElement}`
+    }
+  })()
+
+  const message = toAddress && receiver ? `${baseMessage}. Receiver: ${toAddress}` : baseMessage
+
+  return {
+    messageType: ToastMessageType.SWAP_POSTED_API,
+    message: messagePrefix + message,
+    data: {
+      orderUid: orderId,
+    },
+  }
 }
 
 export function PendingOrderNotification(props: PendingOrderNotificationProps) {
@@ -59,7 +92,7 @@ export function PendingOrderNotification(props: PendingOrderNotificationProps) {
 
   return (
     <>
-      <strong>{ORDER_TYPE_TITLES[orderType]} submitted</strong>
+      <strong>{ORDER_UI_TYPE_TITLES[orderType]} submitted</strong>
       <br />
       {isSell ? (
         <>
