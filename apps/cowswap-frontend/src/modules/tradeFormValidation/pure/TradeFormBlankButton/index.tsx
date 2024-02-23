@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 
-import { Loader, UI } from '@cowprotocol/ui'
+import { UI, CenteredDots, LongLoadText } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import ms from 'ms.macro'
@@ -90,7 +90,13 @@ export function TradeFormBlankButton({ onClick, children, disabled, loading, id 
 
   return (
     <ActionButton ref={ref} id={id} onClick={handleClick} disabled={showLoader || disabled} hasLongText$={hasLongText}>
-      {showLoader ? <Loader size="24px" /> : <Trans>{children}</Trans>}
+      {showLoader ? (
+        <>
+          <LongLoadText>Confirm with your wallet </LongLoadText> <CenteredDots smaller />
+        </>
+      ) : (
+        <Trans>{children}</Trans>
+      )}
     </ActionButton>
   )
 }

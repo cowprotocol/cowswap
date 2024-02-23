@@ -1,12 +1,9 @@
 import { useEffect } from 'react'
 
-import { CowEventListener, CowEventListeners, CowEvents } from '@cowprotocol/events'
+import { CowEventListener, CowEventListeners, CowEventPayloadMap, CowEvents } from '@cowprotocol/events'
+import { WidgetMethodsEmit, postMessageToWindow } from '@cowprotocol/widget-lib'
 
 import { EVENT_EMITTER } from 'eventEmitter'
-
-import { COW_SWAP_WIDGET_EVENT_KEY } from '../consts'
-
-const TARGET_ORIGIN = '*' // TODO: Change to CoW specific origin in production. https://github.com/cowprotocol/cowswap/issues/3828
 
 const ALL_EVENTS = Object.values(CowEvents)
 
@@ -17,10 +14,7 @@ export function CowEventsUpdater() {
     const allHandlers: CowEventListeners = ALL_EVENTS.map((event) => {
       return {
         event,
-        handler: (payload: any) => {
-          console.debug('[CowEventsUpdater] Forward event to iFrame', event, payload)
-          forwardEventToIframe(event, payload)
-        },
+        handler: (payload: any) => forwardEventToIframe(event, payload),
       }
     })
     allHandlers.forEach((listener) => EVENT_EMITTER.on(listener as CowEventListener<CowEvents>))
@@ -34,14 +28,9 @@ export function CowEventsUpdater() {
   return null
 }
 
-function forwardEventToIframe(event: CowEvents, payload: any) {
-  window.parent.postMessage(
-    {
-      key: COW_SWAP_WIDGET_EVENT_KEY,
-      method: 'event',
-      eventName: event,
-      payload,
-    },
-    TARGET_ORIGIN
-  )
+function forwardEventToIframe<T extends CowEvents>(event: CowEvents, payload: CowEventPayloadMap[T]) {
+  postMessageToWindow(window.parent, WidgetMethodsEmit.EMIT_COW_EVENT, {
+    event,
+    payload,
+  })
 }

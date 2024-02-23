@@ -1,12 +1,12 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback, useMemo } from 'react'
 
-import { Command } from '@cowprotocol/types'
+import { Command, UiOrderType } from '@cowprotocol/types'
 
 import { useSetAlternativeOrder } from 'modules/trade/state/alternativeOrder'
 
 import { isPending } from 'common/hooks/useCategorizeRecentActivity'
-import { getUiOrderType, UiOrderType } from 'utils/orderUtils/getUiOrderType'
+import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import { receiptAtom, updateReceiptAtom } from '../../state/orderReceiptAtom'

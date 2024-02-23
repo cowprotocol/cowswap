@@ -2,6 +2,7 @@ import ms from 'ms.macro'
 import ReactAppzi from 'react-appzi'
 import { isImTokenBrowser, majorBrowserVersion, userAgent } from './userAgent'
 import { environmentName, isProdLike } from './environments'
+import { isInjectedWidget } from './isInjectedWidget'
 
 // Metamask IOS app uses a version from July 2019 which causes problems in appZi
 const OLD_CHROME_FROM_METAMASK_IOS_APP = 76
@@ -99,6 +100,8 @@ const NPS_DATA = isProdLike ? PROD_NPS_DATA : TEST_NPS_DATA
  * It'll display only if the trigger rules are met
  */
 export function openNpsAppziSometimes(data?: Omit<AppziCustomSettings, 'userTradedOrWaitedForLong' | 'isTestNps'>) {
+  if (isInjectedWidget()) return
+
   updateAppziSettings({ data: { env: environmentName, ...data, ...NPS_DATA } })
 }
 

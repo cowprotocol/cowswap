@@ -1,3 +1,4 @@
+import { UiOrderType } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useOrders } from 'legacy/state/orders/hooks'
@@ -5,8 +6,6 @@ import { useOrders } from 'legacy/state/orders/hooks'
 import { LimitOrdersWidget, useIsWidgetUnlocked } from 'modules/limitOrders'
 import { OrdersTableWidget, TabOrderTypes } from 'modules/ordersTable'
 import * as styledEl from 'modules/trade/pure/TradePageLayout'
-
-import { UiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 export function RegularLimitOrders() {
   const isUnlocked = useIsWidgetUnlocked()

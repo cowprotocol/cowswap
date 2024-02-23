@@ -1,33 +1,11 @@
 import { useEffect, useState } from 'react'
 
 import { LONG_LOAD_THRESHOLD } from '@cowprotocol/common-const'
+import { CenteredDots, LongLoadText } from '@cowprotocol/ui'
 
 import { Text } from 'rebass'
-import styled from 'styled-components/macro'
 
-import { Dots } from 'legacy/components/swap/styleds'
 import { ThemedText } from 'legacy/theme'
-
-const fadeIn = `
-  @keyframes fadeIn {
-    0% {
-      opacity: 0;
-    }
-    100% {
-      opacity: 1;
-    }
-  }
-`
-
-const CenteredDots = styled(Dots)<{ smaller?: boolean }>`
-  vertical-align: ${({ smaller = false }) => (smaller ? 'normal' : 'super')};
-`
-
-const LongLoadText = styled.span`
-  animation: fadeIn 0.42s ease-in;
-
-  ${fadeIn}
-`
 
 export const TradeLoadingButton = () => {
   const [isLongLoad, setIsLongLoad] = useState<boolean>(false)

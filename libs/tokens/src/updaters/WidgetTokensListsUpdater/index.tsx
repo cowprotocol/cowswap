@@ -13,6 +13,7 @@ import { getFulfilledResults } from '../TokensListsUpdater/helpers'
 export interface CustomTokensListsUpdaterProps {
   tokenLists?: string[]
   appCode?: string
+  onTokenListAddingError(error: Error): void
 }
 
 /**
@@ -22,7 +23,7 @@ export interface CustomTokensListsUpdaterProps {
  * Important! Added token lists would be shown only for this widget, they are distinguished by `appCode`
  */
 export function WidgetTokensListsUpdater(props: CustomTokensListsUpdaterProps) {
-  const { tokenLists, appCode } = props
+  const { tokenLists, appCode, onTokenListAddingError } = props
   const addList = useAddList()
   const removeList = useRemoveList()
   const allTokensLists = useAtomValue(allListsSourcesAtom)
@@ -73,9 +74,13 @@ export function WidgetTokensListsUpdater(props: CustomTokensListsUpdaterProps) {
 
     console.debug('Custom lists added: ', fetchedLists)
     fetchedLists.forEach((list) => {
-      addList(list)
+      try {
+        addList(list)
+      } catch (error) {
+        onTokenListAddingError(error)
+      }
     })
-  }, [fetchedLists, addList])
+  }, [fetchedLists, addList, onTokenListAddingError])
 
   /**
    * Since token lists are stored in the local storage, we need to remove previously added widget-specific lists

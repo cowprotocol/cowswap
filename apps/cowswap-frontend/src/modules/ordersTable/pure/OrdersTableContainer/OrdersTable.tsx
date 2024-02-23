@@ -24,7 +24,6 @@ import { CancellableOrder } from 'common/utils/isOrderCancellable'
 import { isOrderOffChainCancellable } from 'common/utils/isOrderOffChainCancellable'
 
 import { OrderRow } from './OrderRow'
-import { OrdersTablePagination } from './OrdersTablePagination'
 import { CheckboxCheckmark, TableHeader, TableRowCheckbox, TableRowCheckboxWrapper } from './styled'
 import { TableGroup } from './TableGroup'
 import { OrderActions } from './types'
@@ -38,6 +37,7 @@ import {
   OrderTableItem,
   tableItemsToOrders,
 } from '../../utils/orderTableGroupUtils'
+import { OrdersTablePagination } from '../OrdersTablePagination'
 
 // TODO: move elements to styled.jsx
 

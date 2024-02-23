@@ -5,6 +5,7 @@ import { ExplorerDataType, getExplorerLink, shortenAddress } from '@cowprotocol/
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useENS } from '@cowprotocol/ens'
 import { TokenLogo, useTokenBySymbolOrAddress } from '@cowprotocol/tokens'
+import { UiOrderType } from '@cowprotocol/types'
 import { ExternalLink, TokenAmount, UI } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -26,7 +27,7 @@ import {
   useHideReceiverWalletBanner,
   useIsReceiverWalletBannerHidden,
 } from 'common/state/receiverWalletBannerVisibility'
-import { getUiOrderType, UiOrderType } from 'utils/orderUtils/getUiOrderType'
+import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { StatusDetails } from './StatusDetails'
 import {

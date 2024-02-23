@@ -2,6 +2,7 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback, useEffect, useMemo } from 'react'
 
 import { useTokensAllowances, useTokensBalances } from '@cowprotocol/balances-and-allowances'
+import { UiOrderType } from '@cowprotocol/types'
 import { useIsSafeViaWc, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useLocation, useNavigate } from 'react-router-dom'
@@ -18,7 +19,7 @@ import { useCancelOrder } from 'common/hooks/useCancelOrder'
 import { isPending, useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
 import { ordersToCancelAtom, updateOrdersToCancelAtom } from 'common/hooks/useMultipleOrdersCancellation/state'
 import { CancellableOrder } from 'common/utils/isOrderCancellable'
-import { getUiOrderType, UiOrderType } from 'utils/orderUtils/getUiOrderType'
+import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import { useGetOrdersToCheckPendingPermit } from './hooks/useGetOrdersToCheckPendingPermit'

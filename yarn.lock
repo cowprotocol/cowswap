@@ -3467,13 +3467,6 @@
     "@ethersproject/properties" "^5.7.0"
     "@ethersproject/strings" "^5.7.0"
 
-"@ethvault/iframe-provider@^0.1.10":
-  version "0.1.10"
-  resolved "https://registry.yarnpkg.com/@ethvault/iframe-provider/-/iframe-provider-0.1.10.tgz#75f35d9bc651587d104ef86843c1d13fe4bc7968"
-  integrity sha512-TKz7B9/e8gkb2V88YwvAPu7Rp7yISNG+oML0zK8mDwSRZXlj1ubBHHG0b6sdpgDoAE6PnI4IhGdy2IEczCW7kA==
-  dependencies:
-    eventemitter3 "^4.0.0"
-
 "@floating-ui/core@^1.4.2":
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/@floating-ui/core/-/core-1.5.0.tgz#5c05c60d5ae2d05101c3021c1a2a350ddc027f8c"

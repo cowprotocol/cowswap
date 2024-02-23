@@ -13,7 +13,7 @@ import { PostOrderParams } from 'legacy/utils/trade'
 import { AppDataInfo, UploadAppDataParams } from 'modules/appData'
 import { GeneratePermitHook, IsTokenPermittableResult, useGetCachedPermit } from 'modules/permit'
 import { TradeConfirmActions } from 'modules/trade'
-import { SwapFlowAnalyticsContext } from 'modules/trade/utils/analytics'
+import { TradeFlowAnalyticsContext } from 'modules/trade/utils/analytics'
 
 import { EthFlowOrderExistsCallback } from '../hooks/useCheckEthFlowOrderExists'
 import { FlowType } from '../hooks/useFlowContext'
@@ -36,7 +36,7 @@ export interface BaseFlowContext {
   }
   sellTokenContract: Erc20 | null
   dispatch: AppDispatch
-  swapFlowAnalyticsContext: SwapFlowAnalyticsContext
+  swapFlowAnalyticsContext: TradeFlowAnalyticsContext
   orderParams: PostOrderParams
   appDataInfo: AppDataInfo
   tradeConfirmActions: TradeConfirmActions

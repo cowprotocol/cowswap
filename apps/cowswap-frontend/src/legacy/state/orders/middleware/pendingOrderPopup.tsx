@@ -1,5 +1,6 @@
 import { orderAnalytics } from '@cowprotocol/analytics'
 import { TokenWithLogo } from '@cowprotocol/common-const'
+import { isSellOrder } from '@cowprotocol/common-utils'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { MiddlewareAPI } from '@reduxjs/toolkit'
@@ -30,10 +31,22 @@ export function pendingOrderPopup(
 
   const order = orderObject.order
 
-  const { orderCreationHash, isHidden, class: orderClass, receiver } = order
+  const {
+    orderCreationHash,
+    isHidden,
+    receiver,
+    kind,
+    sellAmountBeforeFee,
+    sellAmount,
+    buyAmount,
+    inputToken,
+    outputToken,
+  } = order
 
-  const inputAmount = CurrencyAmount.fromRawAmount(TokenWithLogo.fromToken(order.inputToken), order.sellAmount)
-  const outputAmount = CurrencyAmount.fromRawAmount(TokenWithLogo.fromToken(order.outputToken), order.buyAmount)
+  const rawSellAmount = isSellOrder(kind) ? (sellAmountBeforeFee as string) : sellAmount
+
+  const inputAmount = CurrencyAmount.fromRawAmount(TokenWithLogo.fromToken(inputToken), rawSellAmount)
+  const outputAmount = CurrencyAmount.fromRawAmount(TokenWithLogo.fromToken(outputToken), buyAmount)
 
   showPendingOrderNotification({
     ...order,
@@ -47,11 +60,12 @@ export function pendingOrderPopup(
 
   if (skipAnalytics) return
 
+  const orderType = getUiOrderType(orderObject.order)
   if (orderCreationHash) {
     // EthFlow Order
-    orderAnalytics('Posted', orderClass, 'EthFlow')
+    orderAnalytics('Posted', orderType, 'EthFlow')
   } else if (!isHidden) {
     // Pending Order Popup, if it's not hidden
-    orderAnalytics('Posted', orderClass, 'Offchain')
+    orderAnalytics('Posted', orderType, 'Offchain')
   }
 }
