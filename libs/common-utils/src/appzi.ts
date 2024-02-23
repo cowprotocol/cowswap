@@ -1,7 +1,7 @@
 import ms from 'ms.macro'
 import ReactAppzi from 'react-appzi'
 import { isImTokenBrowser, majorBrowserVersion, userAgent } from './userAgent'
-import { environmentName, isProdLike } from './environments'
+import { isProdLike } from './environments'
 import { isInjectedWidget } from './isInjectedWidget'
 
 // Metamask IOS app uses a version from July 2019 which causes problems in appZi
@@ -109,7 +109,7 @@ type SurveyType = 'nps' | 'limit'
  * Opening of the modal is delegated to Appzi
  * It'll display only if the trigger rules are met
  */
-export function openNpsAppziSometimes(
+export function triggerAppziSurvey(
   data?: Omit<AppziCustomSettings, 'userTradedOrWaitedForLong' | 'isTestNps'>,
   surveyType: SurveyType = 'nps'
 ) {

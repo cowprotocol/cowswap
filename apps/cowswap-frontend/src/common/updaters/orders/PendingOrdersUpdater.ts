@@ -4,8 +4,8 @@ import { useCallback, useEffect, useMemo, useRef } from 'react'
 import {
   getExplorerOrderLink,
   isOrderInPendingTooLong,
-  openNpsAppziSometimes,
   timeSinceInSeconds,
+  triggerAppziSurvey,
 } from '@cowprotocol/common-utils'
 import { EthflowData, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { Command, UiOrderType } from '@cowprotocol/types'
@@ -270,7 +270,7 @@ function _triggerNps(pending: Order[], chainId: ChainId) {
     if (getUiOrderType(order) === UiOrderType.SWAP && isOrderInPendingTooLong(openSince)) {
       const explorerUrl = getExplorerOrderLink(chainId, orderId)
       // Trigger NPS display, controlled by Appzi
-      openNpsAppziSometimes({
+      triggerAppziSurvey({
         waitedTooLong: true,
         secondsSinceOpen: timeSinceInSeconds(openSince),
         explorerUrl,
