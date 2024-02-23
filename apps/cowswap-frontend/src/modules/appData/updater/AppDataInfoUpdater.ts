@@ -7,7 +7,7 @@ import { AppCodeWithWidgetMetadata } from 'modules/injectedWidget/hooks/useAppCo
 import { UtmParams } from 'modules/utm'
 
 import { appDataInfoAtom } from '../state/atoms'
-import { AppDataHooks, AppDataOrderClass } from '../types'
+import { AppDataHooks, AppDataOrderClass, AppDataPartnerFee } from '../types'
 import { buildAppData, BuildAppDataParams } from '../utils/buildAppData'
 import { getAppData } from '../utils/fullAppData'
 
@@ -18,6 +18,7 @@ export type UseAppDataParams = {
   orderClass: AppDataOrderClass
   utm: UtmParams | undefined
   hooks?: AppDataHooks
+  partnerFee?: AppDataPartnerFee
 }
 
 /**
@@ -31,6 +32,7 @@ export function AppDataInfoUpdater({
   orderClass,
   utm,
   hooks,
+  partnerFee,
 }: UseAppDataParams): void {
   // AppDataInfo, from Jotai
   const setAppDataInfo = useSetAtom(appDataInfoAtom)
@@ -45,7 +47,17 @@ export function AppDataInfoUpdater({
     }
 
     const { appCode, environment, widget } = appCodeWithWidgetMetadata
-    const params: BuildAppDataParams = { chainId, slippageBips, appCode, environment, orderClass, utm, hooks, widget }
+    const params: BuildAppDataParams = {
+      chainId,
+      slippageBips,
+      appCode,
+      environment,
+      orderClass,
+      utm,
+      hooks,
+      partnerFee,
+      widget,
+    }
 
     const updateAppData = async (): Promise<void> => {
       try {
@@ -61,7 +73,7 @@ export function AppDataInfoUpdater({
 
     // Chain the next update to avoid race conditions
     updateAppDataPromiseRef.current = updateAppDataPromiseRef.current.finally(updateAppData)
-  }, [appCodeWithWidgetMetadata, chainId, setAppDataInfo, slippageBips, orderClass, utm, hooks])
+  }, [appCodeWithWidgetMetadata, chainId, setAppDataInfo, slippageBips, orderClass, utm, hooks, partnerFee])
 }
 
 function getEnvByClass(orderClass: string): CowEnv | undefined {

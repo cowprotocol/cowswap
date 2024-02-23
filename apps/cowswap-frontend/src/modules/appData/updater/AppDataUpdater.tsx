@@ -4,6 +4,7 @@ import { percentToBps } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Percent } from '@uniswap/sdk-core'
 
+import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { useAppCodeWidgetAware } from 'modules/injectedWidget/hooks/useAppCodeWidgetAware'
 import { useUtm } from 'modules/utm'
 
@@ -26,6 +27,7 @@ export const AppDataUpdater = React.memo(({ slippage, orderClass }: AppDataUpdat
   const utm = useUtm()
   const hooks = useAppDataHooks()
   const appCodeWithWidgetMetadata = useAppCodeWidgetAware(appCode)
+  const { partnerFee } = useInjectedWidgetParams()
 
   if (!chainId) return null
 
@@ -37,6 +39,7 @@ export const AppDataUpdater = React.memo(({ slippage, orderClass }: AppDataUpdat
       orderClass={orderClass}
       utm={utm}
       hooks={hooks}
+      partnerFee={partnerFee}
     />
   )
 })
