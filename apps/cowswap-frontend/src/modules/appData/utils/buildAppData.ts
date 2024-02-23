@@ -12,7 +12,7 @@ export type BuildAppDataParams = {
   appCode: string
   environment?: string
   chainId: SupportedChainId
-  slippageBips: string
+  slippageBips: number
   orderClass: AppDataOrderClass
   referrerAccount?: string
   utm: UtmParams | undefined

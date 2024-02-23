@@ -14,7 +14,8 @@ export const COMMENTS_BY_PARAM_NAME: Record<string, string> = {
   sell: 'Sell token. Optionally add amount for sell orders',
   buy: 'Buy token. Optionally add amount for buy orders',
   enabledTradeTypes: 'swap, limit and/or advanced',
-  interfaceFeeBips: '0.5% - COMING SOON! Fill the form above if you are interested',
+  partnerFee:
+    'Partner fee, in Basis Points (BPS) and a receiver address - COMING SOON! Fill the form above if you are interested',
 }
 
 export const COMMENTS_BY_PARAM_NAME_TYPESCRIPT: Record<string, string> = {
@@ -29,7 +30,7 @@ export const VALUES_BY_PARAM_NAME: Record<string, string> = {
 export const SANITIZE_PARAMS = {
   appCode: 'My Cool App',
   provider: 'EIP-1271 Provider',
-  interfaceFeeBips: '50',
+  partnerFee: { bps: 30, recipient: '0x86e367465e2b7e8d26f4611d998bcbbe28e89679' },
 }
 
 export const REMOVE_PARAMS: (keyof CowSwapWidgetParams)[] = ['env']
