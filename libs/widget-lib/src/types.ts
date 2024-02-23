@@ -81,6 +81,11 @@ export enum TradeType {
   ADVANCED = 'advanced',
 }
 
+/**
+ * The partner fee
+ *
+ * Please contact https://cowprotocol.typeform.com/to/rONXaxHV
+ */
 export interface PartnerFee {
   /**
    * The fee in basis points (BPS). One basis point is equivalent to 0.01% (1/100th of a percent)
