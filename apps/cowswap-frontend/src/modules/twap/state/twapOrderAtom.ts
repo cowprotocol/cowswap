@@ -1,5 +1,6 @@
 import { atom } from 'jotai'
 
+import { FractionUtils } from '@cowprotocol/common-utils'
 import { walletInfoAtom } from '@cowprotocol/wallet'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
@@ -40,8 +41,7 @@ export const twapSlippageAdjustedBuyAmount = atom<CurrencyAmount<Token> | null>(
   const slippageAmount = outputCurrencyAmount.multiply(slippage)
   const buyAmount = outputCurrencyAmount.subtract(slippageAmount) as CurrencyAmount<Token>
 
-  // Always return at least 1 wei
-  return buyAmount.equalTo(0) ? CurrencyAmount.fromRawAmount(buyAmount.currency, 1) : buyAmount
+  return FractionUtils.amountToAtLeastOneWei(buyAmount)
 })
 
 export const twapOrderAtom = atom<TWAPOrder | null>((get) => {
