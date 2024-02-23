@@ -85,7 +85,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
   const isNativeInSwap = isNativeIn && !isWrappedOut
 
   const inputAmount = slippageAdjustedSellAmount || parsedAmount
-  const wrapUnwrapAmount = isNativeInSwap ? currencyAmountToTokenAmount(inputAmount) || undefined : inputAmount
+  const wrapUnwrapAmount = isNativeInSwap && inputAmount ? currencyAmountToTokenAmount(inputAmount) : inputAmount
   const hasEnoughWrappedBalanceForSwap = useHasEnoughWrappedBalanceForSwap(wrapUnwrapAmount)
   const wrapCallback = useWrapNativeFlow()
   const { state: approvalState } = useApproveState(slippageAdjustedSellAmount || null)

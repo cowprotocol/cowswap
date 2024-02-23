@@ -31,7 +31,7 @@ const defaultProps: RowFeeProps & RowFeeContentProps = {
   feeUsd: '(≈$42.93)',
   feeCurrencySymbol: 'GNO',
   get feeFiatValue() {
-    return currencyAmountToTokenAmount(this.fee?.multiply('100')) || null
+    return this.fee ? currencyAmountToTokenAmount(this.fee.multiply('100')) : null
   },
   get feeToken() {
     return (this.fee?.toExact() || '-') + ' ' + this.feeCurrencySymbol

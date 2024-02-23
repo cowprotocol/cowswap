@@ -39,16 +39,8 @@ export async function safeBundleFlow(
     throw new PriceImpactDeclineError()
   }
 
-  const {
-    account,
-    recipientAddressOrName,
-    sellToken,
-    buyToken,
-    inputAmount,
-    outputAmount,
-    class: orderClass,
-    isSafeWallet,
-  } = params.postOrderParams
+  const { account, recipientAddressOrName, sellToken, buyToken, inputAmount, outputAmount, isSafeWallet } =
+    params.postOrderParams
 
   // TODO: remove once we figure out what's adding this to appData in the first place
   if (appDataContainsHooks(params.postOrderParams.appData.fullAppData)) {
