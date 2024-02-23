@@ -8,7 +8,11 @@ import { Price } from '@uniswap/sdk-core'
 
 import { Order } from 'legacy/state/orders/actions'
 
-import { LimitOrdersSettingsState, updateLimitOrdersSettingsAtom } from 'modules/limitOrders'
+import {
+  limitOrdersDerivedStateAtom,
+  LimitOrdersSettingsState,
+  updateLimitOrdersSettingsAtom,
+} from 'modules/limitOrders'
 import { useUpdateLimitOrdersRawState } from 'modules/limitOrders/hooks/useLimitOrdersRawState'
 import { limitOrdersDeadlines } from 'modules/limitOrders/pure/DeadlineSelector/deadlines'
 import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
@@ -16,6 +20,7 @@ import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partial
 import { useAlternativeOrder, useHideAlternativeOrderModal } from 'common/state/alternativeOrder'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
+import { DEFAULT_TRADE_DERIVED_STATE } from '../../trade'
 import { useLimitOrdersDerivedState } from '../hooks/useLimitOrdersDerivedState'
 import { useUpdateActiveRate } from '../hooks/useUpdateActiveRate'
 
@@ -37,6 +42,7 @@ function useUpdateAlternativeRawState(): null {
   const updateRawState = useUpdateLimitOrdersRawState()
   const updatePartialFillOverride = useSetAtom(partiallyFillableOverrideAtom)
   const updateSettingsState = useSetAtom(updateLimitOrdersSettingsAtom)
+  const updateDerivedState = useSetAtom(limitOrdersDerivedStateAtom)
 
   const { receiver, owner } = alternativeOrder || {}
   // Use custom recipient address if set and != owner
@@ -46,6 +52,9 @@ function useUpdateAlternativeRawState(): null {
 
   useEffect(() => {
     if (alternativeOrder) {
+      // Reset existing derived state to avoid stale info
+      updateDerivedState({ ...DEFAULT_TRADE_DERIVED_STATE, isUnlocked: true })
+
       const {
         inputToken,
         outputToken,
@@ -89,6 +98,14 @@ function useSetAlternativeRate(): null {
   const [hasSetRate, setHasSetRate] = useState(false)
 
   useEffect(() => {
+    // Reset state when both currencies are null to prevent stale rates
+    if (!inputCurrencyAmount && !outputCurrencyAmount) {
+      setHasSetRate(false)
+    }
+  }, [inputCurrencyAmount, outputCurrencyAmount])
+
+  useEffect(() => {
+    // Update rate when rate has not been set yet
     if (!hasSetRate && inputCurrencyAmount && outputCurrencyAmount) {
       setHasSetRate(true)
 
