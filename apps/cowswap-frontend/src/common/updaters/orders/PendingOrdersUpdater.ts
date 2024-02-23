@@ -266,8 +266,9 @@ async function _updateOrders({
 function _triggerNps(pending: Order[], chainId: ChainId) {
   for (const order of pending) {
     const { openSince, id: orderId } = order
+    const orderType = getUiOrderType(order)
     // Check if there's any SWAP pending for more than `PENDING_TOO_LONG_TIME`
-    if (getUiOrderType(order) === UiOrderType.SWAP && isOrderInPendingTooLong(openSince)) {
+    if (orderType === UiOrderType.SWAP && isOrderInPendingTooLong(openSince)) {
       const explorerUrl = getExplorerOrderLink(chainId, orderId)
       // Trigger NPS display, controlled by Appzi
       triggerAppziSurvey({
@@ -275,7 +276,7 @@ function _triggerNps(pending: Order[], chainId: ChainId) {
         secondsSinceOpen: timeSinceInSeconds(openSince),
         explorerUrl,
         chainId,
-        orderType: getUiOrderType(order),
+        orderType,
       })
       // Break the loop, don't need to show more than once
       break
