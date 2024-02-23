@@ -18,6 +18,7 @@ type TokenInfo = {
 
 export type OnPostedOrderPayload = {
   orderUid: string
+  orderCreationHash?: string
   chainId: SupportedChainId
   owner: string
   kind: OrderKind
@@ -26,13 +27,10 @@ export type OnPostedOrderPayload = {
   outputAmount: bigint
   inputToken: TokenInfo
   outputToken: TokenInfo
+  isEthFlow?: boolean
   receiver?: string
 }
 export type OnExecutedOrderPayload = OrderUidInChain
-
-export type OnPostedEthFlowOrderPayload = OrderUidInChain & {
-  txHash: string
-}
 
 export type OnRejectedOrderPayload = OrderUidInChain & {
   reason: string

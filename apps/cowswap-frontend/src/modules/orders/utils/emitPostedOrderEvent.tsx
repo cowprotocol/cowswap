@@ -17,14 +17,27 @@ interface PendingOrderNotificationParams {
   outputAmount: CurrencyAmount<Token>
   orderCreationHash?: string
   isHidden?: boolean
+  isEthFlow?: boolean
 }
 
 export function emitPostedOrderEvent(params: PendingOrderNotificationParams) {
-  const { chainId, id, receiver, owner, uiOrderType, orderCreationHash, isHidden, inputAmount, outputAmount } = params
+  const {
+    chainId,
+    id,
+    receiver,
+    owner,
+    uiOrderType,
+    orderCreationHash,
+    isHidden,
+    inputAmount,
+    outputAmount,
+    isEthFlow,
+  } = params
 
   if (!isHidden) {
     const postedOrderPayload: OnPostedOrderPayload = {
-      orderUid: orderCreationHash || id,
+      orderUid: id,
+      orderCreationHash,
       chainId,
       owner,
       kind: params.kind,
@@ -42,6 +55,7 @@ export function emitPostedOrderEvent(params: PendingOrderNotificationParams) {
         name: outputAmount.currency.name || '',
       },
       receiver: receiver || undefined,
+      isEthFlow,
     }
 
     EVENT_EMITTER.emit(CowEvents.ON_POSTED_ORDER, postedOrderPayload)

@@ -13,7 +13,7 @@ export interface ToastMessagePayloads {
 
   [ToastMessageType.SWAP_POSTED_API]: {
     orderUid: string
-    // TODO: Potentially add all order info here, but lets keep it minimal for now
+    orderCreationHash?: string
   }
 
   [ToastMessageType.SWAP_SIGNING_ERROR]: {

@@ -116,7 +116,8 @@ export function useCreateTwapOrder() {
 
         emitPostedOrderEvent({
           chainId,
-          id: safeTxHash,
+          id: orderId,
+          orderCreationHash: safeTxHash,
           kind: OrderKind.SELL,
           receiver: twapOrder.receiver,
           inputAmount: twapOrder.sellAmount,

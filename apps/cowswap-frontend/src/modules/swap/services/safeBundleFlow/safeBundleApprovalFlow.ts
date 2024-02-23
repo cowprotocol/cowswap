@@ -124,7 +124,8 @@ export async function safeBundleApprovalFlow(
 
     emitPostedOrderEvent({
       chainId,
-      id: safeTx.safeTxHash,
+      id: orderId,
+      orderCreationHash: safeTx.safeTxHash,
       kind: OrderKind.SELL,
       receiver: recipientAddressOrName,
       inputAmount: currencyAmountToTokenAmount(inputAmount),

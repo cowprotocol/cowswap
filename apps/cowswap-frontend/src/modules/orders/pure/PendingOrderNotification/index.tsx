@@ -27,6 +27,7 @@ export interface PendingOrderNotificationProps {
   owner: string
   chainId: SupportedChainId
   orderUid: string
+  orderCreationHash?: string
   kind: OrderKind
   orderType: UiOrderType
   inputAmount: CurrencyAmount<Token>
@@ -36,7 +37,7 @@ export interface PendingOrderNotificationProps {
 }
 
 export function getPendingOrderNotificationToast(props: PendingOrderNotificationProps): OnToastMessagePayload {
-  const { owner, orderUid, kind, inputAmount, outputAmount, receiver, orderType } = props
+  const { owner, orderUid, orderCreationHash, kind, inputAmount, outputAmount, receiver, orderType } = props
 
   const toAddress = receiver && isAddress(receiver) ? shortenAddress(receiver) : receiver
 
@@ -69,12 +70,24 @@ export function getPendingOrderNotificationToast(props: PendingOrderNotification
     message: messagePrefix + message,
     data: {
       orderUid,
+      orderCreationHash,
     },
   }
 }
 
 export function PendingOrderNotification(props: PendingOrderNotificationProps) {
-  const { owner, chainId, isSafeWallet, orderUid, kind, orderType, inputAmount, outputAmount, receiver } = props
+  const {
+    owner,
+    chainId,
+    isSafeWallet,
+    orderUid,
+    orderCreationHash,
+    kind,
+    orderType,
+    inputAmount,
+    outputAmount,
+    receiver,
+  } = props
 
   const isSell = isSellOrder(kind)
   const toAddress = receiver && isAddress(receiver) ? shortenAddress(receiver) : receiver
@@ -83,10 +96,11 @@ export function PendingOrderNotification(props: PendingOrderNotificationProps) {
   const outputAmountElement = <TokenAmount amount={outputAmount} tokenSymbol={outputAmount.currency} />
 
   const tx = {
-    hash: orderUid,
-    hashType: isSafeWallet && !isCowOrder('transaction', orderUid) ? HashType.GNOSIS_SAFE_TX : HashType.ETHEREUM_TX,
+    hash: orderCreationHash || orderUid,
+    hashType:
+      isSafeWallet && !isCowOrder('transaction', orderCreationHash) ? HashType.GNOSIS_SAFE_TX : HashType.ETHEREUM_TX,
     safeTransaction: {
-      safeTxHash: orderUid,
+      safeTxHash: orderCreationHash || '',
       safe: owner,
     },
   }

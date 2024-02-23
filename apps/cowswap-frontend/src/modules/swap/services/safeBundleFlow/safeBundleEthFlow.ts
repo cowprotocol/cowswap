@@ -133,7 +133,8 @@ export async function safeBundleEthFlow(
 
     emitPostedOrderEvent({
       chainId,
-      id: safeTx.safeTxHash,
+      id: orderId,
+      orderCreationHash: safeTx.safeTxHash,
       kind: OrderKind.SELL,
       receiver: recipientAddressOrName,
       // TODO: check, should we use inputAmountWithSlippage instead?

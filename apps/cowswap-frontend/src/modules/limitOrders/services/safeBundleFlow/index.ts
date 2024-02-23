@@ -132,7 +132,8 @@ export async function safeBundleFlow(
 
     emitPostedOrderEvent({
       chainId,
-      id: safeTxHash,
+      id: orderId,
+      orderCreationHash: safeTxHash,
       kind: OrderKind.SELL,
       receiver: recipientAddressOrName,
       inputAmount: currencyAmountToTokenAmount(inputAmount),

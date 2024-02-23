@@ -1,12 +1,12 @@
-import { reportAppDataWithHooks } from '@cowprotocol/common-utils'
-import { CowEvents } from '@cowprotocol/events'
+import { currencyAmountToTokenAmount, reportAppDataWithHooks } from '@cowprotocol/common-utils'
+import { OrderKind } from '@cowprotocol/cow-sdk'
+import { UiOrderType } from '@cowprotocol/types'
 import { Percent } from '@uniswap/sdk-core'
-
-import { EVENT_EMITTER } from 'eventEmitter'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
 import { updateHooksOnAppData } from 'modules/appData'
+import { emitPostedOrderEvent } from 'modules/orders'
 import { appDataContainsHooks } from 'modules/permit/utils/appDataContainsHooks'
 import { signEthFlowOrderStep } from 'modules/swap/services/ethFlow/steps/signEthFlowOrderStep'
 import { EthFlowContext } from 'modules/swap/services/types'
@@ -36,9 +36,11 @@ export async function ethFlow(
     swapZeroFee,
   } = ethFlowContext
   const {
+    chainId,
     trade: { inputAmount, outputAmount },
   } = context
   const tradeAmounts = { inputAmount, outputAmount }
+  const { account, recipientAddressOrName } = orderParamsOriginal
 
   logTradeFlow('ETH FLOW', 'STEP 1: confirm price impact')
   if (priceImpactParams?.priceImpact && !(await confirmPriceImpactWithoutFee(priceImpactParams.priceImpact))) {
@@ -73,10 +75,17 @@ export async function ethFlow(
       }
     )
 
-    EVENT_EMITTER.emit(CowEvents.ON_POSTED_ETH_FLOW_ORDER, {
-      txHash: txReceipt.hash,
-      orderUid: order.id,
-      chainId: context.chainId,
+    emitPostedOrderEvent({
+      chainId,
+      id: orderId,
+      orderCreationHash: txReceipt.hash,
+      kind: OrderKind.SELL,
+      receiver: recipientAddressOrName,
+      inputAmount: currencyAmountToTokenAmount(inputAmount),
+      outputAmount: currencyAmountToTokenAmount(outputAmount),
+      owner: account,
+      uiOrderType: UiOrderType.SWAP,
+      isEthFlow: true,
     })
 
     logTradeFlow('ETH FLOW', 'STEP 5: add pending order step')
