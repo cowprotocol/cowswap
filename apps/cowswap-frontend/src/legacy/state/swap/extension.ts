@@ -1,4 +1,5 @@
 import { OrderKind } from '@cowprotocol/cow-sdk'
+import { PartnerFee } from '@cowprotocol/widget-lib'
 import { Currency, CurrencyAmount, TradeType } from '@uniswap/sdk-core'
 
 import JSBI from 'jsbi'
@@ -13,6 +14,7 @@ interface TradeParams {
   outputCurrency?: Currency | null
   quote?: QuoteInformationObject
   isWrapping: boolean
+  partnerFee?: PartnerFee
 }
 
 export const stringToCurrency = (amount: string, currency: Currency) =>
@@ -33,6 +35,7 @@ export function useTradeExactInWithFee({
   outputCurrency,
   quote,
   isWrapping,
+  partnerFee,
 }: Omit<TradeParams, 'inputCurrency'>) {
   // make sure we have a typed in amount, a fee, and a price
   // else we can assume the trade will be null
@@ -81,6 +84,7 @@ export function useTradeExactInWithFee({
     executionPrice,
     tradeType: TradeType.EXACT_INPUT,
     quoteId: quote.price.quoteId,
+    partnerFee,
   })
 }
 
@@ -93,6 +97,7 @@ export function useTradeExactOutWithFee({
   inputCurrency,
   quote,
   isWrapping,
+  partnerFee,
 }: Omit<TradeParams, 'outputCurrency'>) {
   if (!parsedOutputAmount || !inputCurrency || isWrapping || !quote?.fee || !quote?.price?.amount) return null
 
@@ -134,5 +139,6 @@ export function useTradeExactOutWithFee({
     executionPrice,
     tradeType: TradeType.EXACT_OUTPUT,
     quoteId: quote.price.quoteId,
+    partnerFee,
   })
 }

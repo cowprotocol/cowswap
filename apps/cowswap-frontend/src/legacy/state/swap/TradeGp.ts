@@ -1,5 +1,6 @@
 import { ONE_FRACTION } from '@cowprotocol/common-const'
 import { CanonicalMarketParams, getCanonicalMarket } from '@cowprotocol/common-utils'
+import { PartnerFee } from '@cowprotocol/widget-lib'
 import { Currency, CurrencyAmount, Percent, Price, TradeType } from '@uniswap/sdk-core'
 
 interface PriceInformation {
@@ -73,6 +74,7 @@ interface TradeGpConstructor {
   executionPrice: Price<Currency, Currency>
   tradeType: TradeType
   quoteId?: number
+  partnerFee: PartnerFee | undefined
 }
 
 /**
@@ -111,6 +113,11 @@ export default class TradeGp {
    */
   readonly quoteId?: number
 
+  /**
+   * The partner fee
+   */
+  readonly partnerFee?: PartnerFee
+
   public constructor({
     inputAmount,
     inputAmountWithFee,
@@ -121,6 +128,7 @@ export default class TradeGp {
     executionPrice,
     tradeType,
     quoteId,
+    partnerFee,
   }: TradeGpConstructor) {
     this.tradeType = tradeType
     this.inputAmount = inputAmount
@@ -131,6 +139,7 @@ export default class TradeGp {
     this.fee = fee
     this.executionPrice = executionPrice
     this.quoteId = quoteId
+    this.partnerFee = partnerFee
   }
   /**
    * Get the minimum amount that must be received from this trade for the given slippage tolerance

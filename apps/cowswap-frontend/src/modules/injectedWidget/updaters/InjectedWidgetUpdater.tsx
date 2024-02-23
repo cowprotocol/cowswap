@@ -60,16 +60,9 @@ export function InjectedWidgetUpdater() {
     const updateParamsListener = listenToMessageFromWindow(window, WidgetMethodsListen.UPDATE_PARAMS, (data) => {
       if (prevData.current && deepEqual(prevData.current, data)) return
 
-      // TODO: Remove, for now I just want to mock a hardcoded fee. Also, i know I shouldn't mutate the param, this code will be killed in next PR anyways
-      if (!data.appParams.partnerFee) {
-        data.appParams.partnerFee = {
-          bps: 35,
-          recipient: '0x79063d9173C09887d536924E2F6eADbaBAc099f5',
-        }
-      }
-
       // Update params
       prevData.current = data
+
       updateParams(data.appParams)
 
       // Navigate to the new path

@@ -22,6 +22,7 @@ import TradeGp from 'legacy/state/swap/TradeGp'
 import { isWrappingTrade } from 'legacy/state/swap/utils'
 import { Field } from 'legacy/state/types'
 
+import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { useNavigateOnCurrencySelection } from 'modules/trade/hooks/useNavigateOnCurrencySelection'
 import { useTradeNavigate } from 'modules/trade/hooks/useTradeNavigate'
 
@@ -241,17 +242,28 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
 
   const isWrapping = isWrappingTrade(inputCurrency, outputCurrency, chainId)
 
+  // TODO: Remove the default partner fee after testing
+  const {
+    partnerFee = {
+      bps: 35,
+      recipient: '0x79063d9173C09887d536924E2F6eADbaBAc099f5',
+    },
+  } = useInjectedWidgetParams()
+
+  console.log('partnerFee', partnerFee)
   const bestTradeExactIn = useTradeExactInWithFee({
     parsedAmount: isExactIn ? parsedAmount : undefined,
     outputCurrency,
     quote,
     isWrapping,
+    partnerFee,
   })
   const bestTradeExactOut = useTradeExactOutWithFee({
     parsedAmount: isExactIn ? undefined : parsedAmount,
     inputCurrency,
     quote,
     isWrapping,
+    partnerFee,
   })
 
   // TODO: rename v2Trade to just "trade" we dont have versions

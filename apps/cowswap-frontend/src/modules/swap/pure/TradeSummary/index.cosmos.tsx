@@ -24,6 +24,7 @@ const trade = new TradeGp({
   executionPrice: new Price(currency, currencyOut, 1, 4),
   tradeType: TradeType.EXACT_INPUT,
   quoteId: 10000,
+  partnerFee: { bps: 35, recipient: '0x1234567890123456789012345678901234567890' },
 })
 const defaultProps: TradeSummaryProps & TradeSummaryContentProps = {
   trade,
