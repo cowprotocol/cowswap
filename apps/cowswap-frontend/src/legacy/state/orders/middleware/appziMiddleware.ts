@@ -105,13 +105,22 @@ function _triggerNps(
     return
   }
 
-  openNpsAppziSometimes({
-    ...npsParams,
-    secondsSinceOpen: timeSinceInSeconds(openSince),
-    explorerUrl,
-    chainId,
-    orderType: uiOrderType,
-  })
+  openNpsAppziSometimes(
+    {
+      ...npsParams,
+      secondsSinceOpen: timeSinceInSeconds(openSince),
+      explorerUrl,
+      chainId,
+      orderType: uiOrderType,
+      account: order?.owner,
+      pendingOrderIds: getPendingOrderIds(store, chainId).join(','),
+    },
+    uiOrderType === UiOrderType.LIMIT ? 'limit' : 'nps' // Different survey exclusive for limit orders
+  )
+}
+
+function getPendingOrderIds(store: MiddlewareAPI<Dispatch<AnyAction>>, chainId: ChainId) {
+  return Object.keys(store.getState().orders[chainId]?.pending || {})
 }
 
 function getUiOrderTypeFromStore(store: MiddlewareAPI<Dispatch<AnyAction>>, chainId: any, id: any) {
