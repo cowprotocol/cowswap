@@ -43,6 +43,9 @@ export function useSetupSwapAmountsFromUrl() {
       onUserInput(Field.OUTPUT, buyAmount)
     }
 
-    cleanParams()
+    // Clean params only at least one of them is set
+    if (sellAmount || buyAmount) {
+      cleanParams()
+    }
   }, [params, onUserInput, cleanParams])
 }

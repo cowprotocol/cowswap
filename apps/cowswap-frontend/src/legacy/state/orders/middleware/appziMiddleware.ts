@@ -5,11 +5,12 @@ import {
   timeSinceInSeconds,
 } from '@cowprotocol/common-utils'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { UiOrderType } from '@cowprotocol/types'
 
 import { isAnyOf } from '@reduxjs/toolkit'
 import { AnyAction, Dispatch, Middleware, MiddlewareAPI } from 'redux'
 
-import { getUiOrderType, UiOrderType } from 'utils/orderUtils/getUiOrderType'
+import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { AppState } from '../../index'
 import * as OrderActions from '../actions'

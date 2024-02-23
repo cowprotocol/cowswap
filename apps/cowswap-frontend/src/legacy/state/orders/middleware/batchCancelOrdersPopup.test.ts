@@ -6,7 +6,10 @@ import { batchCancelOrdersPopup } from './batchCancelOrdersPopup'
 import { AppState } from '../../index'
 import { setPopupData } from '../helpers'
 
-const MOCK_ORDERS = [{ id: '0x001' }, { id: '0x002' }]
+const MOCK_ORDERS = [
+  { id: '0x001', order: { id: '0x001' } },
+  { id: '0x002', order: { id: '0x002' } },
+]
 
 const MOCK_POPUP_DATA = 'mock popup data'
 

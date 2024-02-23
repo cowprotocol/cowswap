@@ -8,6 +8,7 @@ import { useIsWindowVisible } from '@cowprotocol/common-hooks'
 import { getPromiseFulfilledValue, isSellOrder } from '@cowprotocol/common-utils'
 import { timestamp } from '@cowprotocol/contracts'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { UiOrderType } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
 
@@ -30,7 +31,7 @@ import { updatePendingOrderPricesAtom } from 'modules/orders/state/pendingOrders
 import { hasEnoughBalanceAndAllowance } from 'modules/tokens'
 
 import { getPriceQuality } from 'api/gnosisProtocol/api'
-import { getUiOrderType, UiOrderType } from 'utils/orderUtils/getUiOrderType'
+import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { PRICE_QUOTE_VALID_TO_TIME } from '../../constants/quote'
 import { useVerifiedQuotesEnabled } from '../../hooks/featureFlags/useVerifiedQuotesEnabled'

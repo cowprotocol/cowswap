@@ -77,13 +77,22 @@ export function CowSwapWidget({ params, provider, listeners }: CowSwapWidgetProp
 
     // TODO: Fix this https://github.com/cowprotocol/cowswap/issues/3810#issue-2127257473 (in meantime forcing full refresh as before)
     // const handler = widgetHandlerRef.current
-    // tryOrHandleError('Updating the provider', () => handler.updateProvider(provider))
+    // tryOrHandleError('Updating the provider', () => {
+    //   handler.updateProvider(provider)
+    //   if (paramsRef.current) {
+    //     handler.updateWidget(paramsRef.current)
+    //   }
+    // })
     const container = containerRef.current
     if (container) {
       tryOrHandleError('Updating the provider', () => {
+        // Destroy the old widget (if it exists)
+        widgetHandlerRef.current?.destroy()
+
+        // Re-create the widget
         widgetHandlerRef.current = createCowSwapWidget(
           container,
-          { ...params, provider: providerRef.current ?? undefined }, // Override params to add the provider
+          { ...params, provider: providerRef.current ?? undefined },
           listeners
         )
       })

@@ -34,7 +34,6 @@ export function pendingOrderPopup(
   const {
     orderCreationHash,
     isHidden,
-    class: orderClass,
     receiver,
     kind,
     sellAmountBeforeFee,
@@ -61,11 +60,12 @@ export function pendingOrderPopup(
 
   if (skipAnalytics) return
 
+  const orderType = getUiOrderType(orderObject.order)
   if (orderCreationHash) {
     // EthFlow Order
-    orderAnalytics('Posted', orderClass, 'EthFlow')
+    orderAnalytics('Posted', orderType, 'EthFlow')
   } else if (!isHidden) {
     // Pending Order Popup, if it's not hidden
-    orderAnalytics('Posted', orderClass, 'Offchain')
+    orderAnalytics('Posted', orderType, 'Offchain')
   }
 }
