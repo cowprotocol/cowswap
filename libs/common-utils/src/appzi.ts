@@ -54,6 +54,8 @@ type AppziCustomSettings = {
   env?: string
   chainId?: number
   orderType?: string
+  account?: string
+  pendingOrderIds?: string
 }
 
 type AppziSettings = {
