@@ -14,12 +14,12 @@ import { LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersS
 import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
 import { useNavigateToOpenOrdersTable } from 'modules/ordersTable'
 import { TradeConfirmActions } from 'modules/trade/hooks/useTradeConfirmActions'
+import { useHideAlternativeOrderModal } from 'modules/trade/state/alternativeOrder'
 import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
 
 import OperatorError from 'api/gnosisProtocol/errors/OperatorError'
 import { useConfirmPriceImpactWithoutFee } from 'common/hooks/useConfirmPriceImpactWithoutFee'
 import { useIsSafeApprovalBundle } from 'common/hooks/useIsSafeApprovalBundle'
-import { useHideAlternativeOrderModal } from 'common/state/alternativeOrder'
 import { TradeAmounts } from 'common/types'
 
 export function useHandleOrderPlacement(
@@ -115,7 +115,14 @@ export function useHandleOrderPlacement(
           tradeConfirmActions.onError(getSwapErrorMessage(error))
         }
       })
-  }, [tradeFn, tradeConfirmActions, updateLimitOrdersState, setPartiallyFillableOverride, hideAlternativeOrderModal])
+  }, [
+    tradeFn,
+    tradeConfirmActions,
+    updateLimitOrdersState,
+    setPartiallyFillableOverride,
+    hideAlternativeOrderModal,
+    navigateToOpenOrdersTable,
+  ])
 }
 
 function buildTradeAmounts(tradeContext: TradeFlowContext): TradeAmounts {

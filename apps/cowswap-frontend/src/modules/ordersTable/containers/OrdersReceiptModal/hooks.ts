@@ -3,8 +3,9 @@ import { useCallback, useMemo } from 'react'
 
 import { Command } from '@cowprotocol/types'
 
+import { useSetAlternativeOrder } from 'modules/trade/state/alternativeOrder'
+
 import { isPending } from 'common/hooks/useCategorizeRecentActivity'
-import { useSetAlternativeOrder } from 'common/state/alternativeOrder'
 import { getUiOrderType, UiOrderType } from 'utils/orderUtils/getUiOrderType'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 

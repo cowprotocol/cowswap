@@ -9,6 +9,7 @@ import { AccountElement } from 'legacy/components/Header/AccountElement'
 
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { useOpenTokenSelectWidget } from 'modules/tokensList'
+import { useIsAlternativeOrderModalVisible } from 'modules/trade/state/alternativeOrder'
 
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
@@ -16,7 +17,6 @@ import { useThrottleFn } from 'common/hooks/useThrottleFn'
 import { CurrencyArrowSeparator } from 'common/pure/CurrencyArrowSeparator'
 import { CurrencyInputPanel } from 'common/pure/CurrencyInputPanel'
 import { PoweredFooter } from 'common/pure/PoweredFooter'
-import { useIsAlternativeOrderModalVisible } from 'common/state/alternativeOrder'
 
 import * as styledEl from './styled'
 import { TradeWidgetProps } from './types'

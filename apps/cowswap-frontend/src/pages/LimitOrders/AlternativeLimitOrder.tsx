@@ -1,9 +1,9 @@
 import { useCallback } from 'react'
 
 import { LimitOrdersWidget } from 'modules/limitOrders'
+import { useHideAlternativeOrderModal } from 'modules/trade/state/alternativeOrder'
 
 import { NewModal } from 'common/pure/NewModal'
-import { useHideAlternativeOrderModal } from 'common/state/alternativeOrder'
 
 export function AlternativeLimitOrder() {
   const hideAlternativeOrderModal = useHideAlternativeOrderModal()

@@ -2,7 +2,7 @@ import { atom, Getter, PrimitiveAtom, SetStateAction, Setter, WritableAtom } fro
 
 import { isAlternativeOrderModalVisibleAtom } from './atoms'
 
-export function alternativeOrderAtomGetterFactory<AtomValue>(
+function alternativeOrderAtomGetterFactory<AtomValue>(
   regular: PrimitiveAtom<AtomValue>,
   alternative: PrimitiveAtom<AtomValue>
 ) {

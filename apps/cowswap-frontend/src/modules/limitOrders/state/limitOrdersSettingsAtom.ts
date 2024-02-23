@@ -7,8 +7,10 @@ import { Milliseconds, Timestamp } from 'types'
 
 import { defaultLimitOrderDeadline } from 'modules/limitOrders/pure/DeadlineSelector/deadlines'
 import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
-
-import { alternativeOrderAtomSetterFactory, alternativeOrderReadWriteAtomFactory } from 'common/state/alternativeOrder'
+import {
+  alternativeOrderAtomSetterFactory,
+  alternativeOrderReadWriteAtomFactory,
+} from 'modules/trade/state/alternativeOrder'
 
 export interface LimitOrdersSettingsState {
   readonly expertMode: boolean
