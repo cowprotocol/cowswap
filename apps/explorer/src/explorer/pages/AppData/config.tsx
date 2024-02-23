@@ -127,7 +127,7 @@ export const uiSchema = {
     quote: {
       slippageBips: {
         'ui:field': 'cField',
-        tooltip: 'Set the slippage in BIPS (e.g. "0.3").',
+        tooltip: 'Set the slippage in BPS (e.g. 50).',
       },
     },
   },

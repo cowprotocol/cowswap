@@ -14,7 +14,7 @@ import { getAppData } from '../utils/fullAppData'
 export type UseAppDataParams = {
   appCodeWithWidgetMetadata: AppCodeWithWidgetMetadata | null
   chainId: SupportedChainId
-  slippageBips: string
+  slippageBips: number
   orderClass: AppDataOrderClass
   utm: UtmParams | undefined
   hooks?: AppDataHooks
