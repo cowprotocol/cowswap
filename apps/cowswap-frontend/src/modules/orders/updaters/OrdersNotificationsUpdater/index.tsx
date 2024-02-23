@@ -6,9 +6,8 @@ import { useIsSafeWallet } from '@cowprotocol/wallet'
 
 import { EVENT_EMITTER } from 'eventEmitter'
 
-import { PendingOrderNotification } from 'common/pure/PendingOrderNotification'
-
-import { getPendingOrderNotificationProps } from './getPendingOrderNotificationProps'
+import { getPendingOrderNotificationToast, PendingOrderNotification } from '../../pure/PendingOrderNotification'
+import { getPendingOrderNotificationProps } from '../../pure/PendingOrderNotification/getPendingOrderNotificationProps'
 
 export function OrdersNotificationsUpdater() {
   const addSnackbar = useAddSnackbar()
@@ -18,7 +17,12 @@ export function OrdersNotificationsUpdater() {
     const listener: CowEventListener<CowEvents.ON_POSTED_ORDER> = {
       event: CowEvents.ON_POSTED_ORDER,
       handler(payload) {
-        const content = <PendingOrderNotification {...getPendingOrderNotificationProps(payload, isSafeWallet)} />
+        const props = getPendingOrderNotificationProps(payload, isSafeWallet)
+        const toastMessage = getPendingOrderNotificationToast(props)
+
+        const content = <PendingOrderNotification {...props} />
+
+        EVENT_EMITTER.emit(CowEvents.ON_TOAST_MESSAGE, toastMessage)
 
         addSnackbar({
           id: 'pending-order',

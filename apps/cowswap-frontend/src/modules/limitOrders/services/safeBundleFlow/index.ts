@@ -1,6 +1,5 @@
 import { currencyAmountToTokenAmount, reportAppDataWithHooks } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/cow-sdk'
-import { CowEvents } from '@cowprotocol/events'
 import { Command, UiOrderType } from '@cowprotocol/types'
 import { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import { Percent } from '@uniswap/sdk-core'
@@ -24,8 +23,6 @@ import { TradeFlowAnalyticsContext, tradeFlowAnalytics } from 'modules/trade/uti
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
 import { shouldZeroApprove as shouldZeroApproveFn } from 'modules/zeroApproval'
-
-import { UiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 const LOG_PREFIX = 'LIMIT ORDER SAFE BUNDLE FLOW'
 export async function safeBundleFlow(

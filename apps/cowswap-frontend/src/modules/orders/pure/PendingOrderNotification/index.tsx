@@ -1,6 +1,8 @@
 import { isAddress, isCowOrder, isSellOrder, shortenAddress } from '@cowprotocol/common-utils'
 import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
-import { TokenAmount } from '@cowprotocol/ui'
+import { OnToastMessagePayload, ToastMessageType } from '@cowprotocol/events'
+import { UiOrderType } from '@cowprotocol/types'
+import { formatTokenAmountWithSymbol, TokenAmount } from '@cowprotocol/ui'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
@@ -33,10 +35,8 @@ export interface PendingOrderNotificationProps {
   isSafeWallet: boolean
 }
 
-export function getPendingOrderNotificationToast(props: PendingOrderNotificationProps): OnToastMessagePayload | null {
-  const { orderId, kind, inputAmount, outputAmount, receiver, account, orderType } = props
-
-  if (!account) return null
+export function getPendingOrderNotificationToast(props: PendingOrderNotificationProps): OnToastMessagePayload {
+  const { owner, orderUid, kind, inputAmount, outputAmount, receiver, orderType } = props
 
   const toAddress = receiver && isAddress(receiver) ? shortenAddress(receiver) : receiver
 
@@ -61,19 +61,20 @@ export function getPendingOrderNotificationToast(props: PendingOrderNotification
     }
   })()
 
-  const message = toAddress && receiver ? `${baseMessage}. Receiver: ${toAddress}` : baseMessage
+  const receiverInfo = toAddress && receiver !== owner ? `Receiver: ${toAddress}` : ''
+  const message = receiverInfo ? `${baseMessage}. ${receiverInfo}` : baseMessage
 
   return {
     messageType: ToastMessageType.SWAP_POSTED_API,
     message: messagePrefix + message,
     data: {
-      orderUid: orderId,
+      orderUid,
     },
   }
 }
 
 export function PendingOrderNotification(props: PendingOrderNotificationProps) {
-  const { chainId, owner, isSafeWallet, orderUid, kind, orderType, inputAmount, outputAmount, receiver } = props
+  const { owner, chainId, isSafeWallet, orderUid, kind, orderType, inputAmount, outputAmount, receiver } = props
 
   const isSell = isSellOrder(kind)
   const toAddress = receiver && isAddress(receiver) ? shortenAddress(receiver) : receiver
@@ -103,7 +104,7 @@ export function PendingOrderNotification(props: PendingOrderNotificationProps) {
           Buy {outputAmountElement} for at most {inputAmountElement}
         </>
       )}
-      {toAddress && receiver && (
+      {toAddress && receiver && receiver !== owner && (
         <div>
           Receiver: <ExplorerLink id={receiver} label={toAddress} type="address" />
         </div>

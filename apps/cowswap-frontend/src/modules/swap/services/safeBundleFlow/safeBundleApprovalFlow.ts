@@ -1,5 +1,6 @@
 import { currencyAmountToTokenAmount, reportAppDataWithHooks } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/cow-sdk'
+import { UiOrderType } from '@cowprotocol/types'
 import { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import { Percent } from '@uniswap/sdk-core'
 
@@ -19,8 +20,6 @@ import { tradeFlowAnalytics } from 'modules/trade/utils/analytics'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
 import { shouldZeroApprove as shouldZeroApproveFn } from 'modules/zeroApproval'
-
-import { UiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 const LOG_PREFIX = 'SAFE APPROVAL BUNDLE FLOW'
 
@@ -48,7 +47,7 @@ export async function safeBundleApprovalFlow(
     tradeConfirmActions,
   } = input
 
-  const { chainId, trade: { inputAmount, outputAmount } } = context
+  const { chainId } = context
   const { appData, account, isSafeWallet, recipientAddressOrName, inputAmount, outputAmount } = orderParams
   const tradeAmounts = { inputAmount, outputAmount }
 

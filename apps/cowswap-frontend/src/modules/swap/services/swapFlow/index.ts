@@ -5,9 +5,9 @@ import {
   reportAppDataWithHooks,
   reportPermitWithDefaultSigner,
 } from '@cowprotocol/common-utils'
-import { CowEvents } from '@cowprotocol/events'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
+import { UiOrderType } from '@cowprotocol/types'
 import { Percent } from '@uniswap/sdk-core'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
@@ -23,8 +23,6 @@ import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { tradeFlowAnalytics } from 'modules/trade/utils/analytics'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
-
-import { UiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { presignOrderStep } from './steps/presignOrderStep'
 

@@ -1,11 +1,10 @@
 import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CowEvents, OnPostedOrderPayload } from '@cowprotocol/events'
+import { UiOrderType } from '@cowprotocol/types'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { EVENT_EMITTER } from 'eventEmitter'
 import { Nullish } from 'types'
-
-import { UiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 interface PendingOrderNotificationParams {
   chainId: SupportedChainId

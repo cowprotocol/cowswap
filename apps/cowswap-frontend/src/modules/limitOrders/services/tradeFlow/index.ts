@@ -1,6 +1,5 @@
 import { currencyAmountToTokenAmount, reportPermitWithDefaultSigner } from '@cowprotocol/common-utils'
-import { CowEvents } from '@cowprotocol/events'
-import { OrderClass, OrderKind } from '@cowprotocol/cow-sdk'
+import { OrderKind } from '@cowprotocol/cow-sdk'
 import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
 import { Command, UiOrderType } from '@cowprotocol/types'
 import { Percent } from '@uniswap/sdk-core'
@@ -21,8 +20,6 @@ import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { TradeFlowAnalyticsContext, tradeFlowAnalytics } from 'modules/trade/utils/analytics'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
-
-import { UiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 export async function tradeFlow(
   params: TradeFlowContext,

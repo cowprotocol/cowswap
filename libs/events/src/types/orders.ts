@@ -1,4 +1,5 @@
 import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { UiOrderType } from '@cowprotocol/types'
 
 export interface OrderUidInChain {
   orderUid: string
@@ -20,8 +21,7 @@ export type OnPostedOrderPayload = {
   chainId: SupportedChainId
   owner: string
   kind: OrderKind
-  // TODO: use UiOrderType
-  orderType: 'SWAP' | 'LIMIT' | 'TWAP'
+  orderType: UiOrderType
   inputAmount: bigint
   outputAmount: bigint
   inputToken: TokenInfo
