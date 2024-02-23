@@ -15,7 +15,6 @@ jest.mock('./batchCancelOrdersPopup')
 jest.mock('./batchExpireOrdersPopup')
 jest.mock('./batchPresignOrdersPopup')
 
-const storeMock = 'mock store' as unknown as MiddlewareAPI<Dispatch, AppState>
 const nextMock = jest.fn()
 const actionMock = mock<AnyAction>()
 
