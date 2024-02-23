@@ -12,6 +12,7 @@ import {
   LimitOrdersWidget,
   QuoteObserverUpdater,
   SetupLimitOrderAmountsFromUrlUpdater,
+  TriggerAppziLimitOrdersSurveyUpdater,
   useIsWidgetUnlocked,
 } from 'modules/limitOrders'
 import { OrdersTableWidget } from 'modules/ordersTable'
@@ -32,6 +33,7 @@ export default function LimitOrderPage() {
       <SetupLimitOrderAmountsFromUrlUpdater />
       <InitialPriceUpdater />
       <ExecutionPriceUpdater />
+      <TriggerAppziLimitOrdersSurveyUpdater />
       <styledEl.PageWrapper isUnlocked={isUnlocked}>
         <styledEl.PrimaryWrapper>
           <LimitOrdersWidget />

@@ -49,6 +49,7 @@ type AppziCustomSettings = {
   traded?: true
   created?: true
   cancelled?: true
+  openedLimitPage?: true
   // extra contextual data for statistics/debugging
   explorerUrl?: string
   env?: string
