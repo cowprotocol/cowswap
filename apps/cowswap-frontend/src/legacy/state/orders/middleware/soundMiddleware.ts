@@ -40,7 +40,9 @@ export const soundMiddleware: Middleware<Record<string, unknown>, AppState> = (s
       return result
     }
 
-    const updatedElements = isBatchFulfillOrderAction(action) ? action.payload.ordersData : action.payload.ids
+    const updatedElements = isBatchFulfillOrderAction(action)
+      ? action.payload.orders.map(({ uid }) => uid)
+      : action.payload.ids
     // no orders were executed/expired
     if (updatedElements.length === 0) {
       return result

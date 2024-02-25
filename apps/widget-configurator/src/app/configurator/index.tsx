@@ -87,7 +87,7 @@ const COW_LISTENERS: CowEventListeners = [
   },
 
   {
-    event: CowEvents.ON_EXECUTED_ORDER,
+    event: CowEvents.ON_FULFILLED_ORDER,
     handler: (event) => console.log(`[configurator:ON_EXECUTED_ORDER] ✅ Executed order ${event.orderUid}`),
   },
 ]

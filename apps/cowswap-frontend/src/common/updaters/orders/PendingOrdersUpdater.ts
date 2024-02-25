@@ -7,12 +7,12 @@ import {
   openNpsAppziSometimes,
   timeSinceInSeconds,
 } from '@cowprotocol/common-utils'
-import { EthflowData, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { EnrichedOrder, EthflowData, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { Command, UiOrderType } from '@cowprotocol/types'
 import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
 
 import { GetSafeInfo, useGetSafeInfo } from 'legacy/hooks/useGetSafeInfo'
-import { FulfillOrdersBatchParams, Order, OrderFulfillmentData, OrderStatus } from 'legacy/state/orders/actions'
+import { FulfillOrdersBatchParams, Order, OrderStatus } from 'legacy/state/orders/actions'
 import { LIMIT_OPERATOR_API_POLL_INTERVAL, MARKET_OPERATOR_API_POLL_INTERVAL } from 'legacy/state/orders/consts'
 import {
   AddOrUpdateOrdersCallback,
@@ -31,12 +31,13 @@ import {
 } from 'legacy/state/orders/hooks'
 import { OrderTransitionStatus } from 'legacy/state/orders/utils'
 
+import { emitFulfilledOrderEvent } from 'modules/orders'
 import { useAddOrderToSurplusQueue } from 'modules/swap/state/surplusModal'
 
 import { getOrder } from 'api/gnosisProtocol'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
-import { fetchOrderPopupData, OrderLogPopupMixData } from './utils'
+import { fetchOrderPopupData } from './utils'
 
 import { removeOrdersToCancelAtom } from '../../hooks/useMultipleOrdersCancellation/state'
 import { useTriggerTotalSurplusUpdateCallback } from '../../state/totalSurplusState'
@@ -192,11 +193,11 @@ async function _updateOrders({
   // Group resolved promises by status
   // Only pick the status that are final
   const { fulfilled, expired, cancelled, presigned } = unfilteredOrdersData.reduce<
-    Record<OrderTransitionStatus, OrderLogPopupMixData[]>
+    Record<OrderTransitionStatus, EnrichedOrder[]>
   >(
     (acc, orderData) => {
-      if (orderData && orderData.popupData) {
-        acc[orderData.status].push(orderData.popupData)
+      if (orderData && orderData.order) {
+        acc[orderData.status].push(orderData.order)
       }
       return acc
     },
@@ -205,7 +206,7 @@ async function _updateOrders({
 
   if (presigned.length > 0) {
     // Only mark as presigned the orders we were not aware of their new state
-    const presignedOrderIds = presigned as string[]
+    const presignedOrderIds = presigned.map(({ uid }) => uid)
     const ordersPresignaturePendingSigned = _getNewlyPreSignedOrders(orders, presignedOrderIds)
 
     if (ordersPresignaturePendingSigned.length > 0) {
@@ -219,7 +220,7 @@ async function _updateOrders({
 
   if (expired.length > 0) {
     expireOrdersBatch({
-      ids: expired as string[],
+      ids: expired.map(({ uid }) => uid),
       chainId,
       isSafeWallet,
     })
@@ -227,28 +228,23 @@ async function _updateOrders({
 
   if (cancelled.length > 0) {
     cancelOrdersBatch({
-      ids: cancelled as string[],
+      ids: cancelled.map(({ uid }) => uid),
       chainId,
       isSafeWallet,
     })
   }
 
   if (fulfilled.length > 0) {
-    const fulfilledOrders = fulfilled as OrderFulfillmentData[]
     // update redux state
     fulfillOrdersBatch({
-      ordersData: fulfilledOrders,
+      orders: fulfilled,
       chainId,
       isSafeWallet,
     })
     // add to surplus queue
-    fulfilledOrders.forEach(({ id, apiAdditionalInfo }) => {
-      if (
-        !apiAdditionalInfo ||
-        getUiOrderType({ fullAppData: apiAdditionalInfo.fullAppData, class: apiAdditionalInfo.class }) ===
-          UiOrderType.SWAP
-      ) {
-        addOrderToSurplusQueue(id)
+    fulfilled.forEach(({ uid, fullAppData, class: orderClass }) => {
+      if (getUiOrderType({ fullAppData, class: orderClass }) === UiOrderType.SWAP) {
+        addOrderToSurplusQueue(uid)
       }
     })
     // trigger total surplus update
@@ -320,10 +316,15 @@ export function PendingOrdersUpdater(): null {
   const fulfillOrdersBatch = useCallback(
     (fulfillOrdersBatchParams: FulfillOrdersBatchParams) => {
       _fulfillOrdersBatch(fulfillOrdersBatchParams)
+
+      fulfillOrdersBatchParams.orders.forEach((order) => {
+        emitFulfilledOrderEvent(order, chainId)
+      })
+
       // Remove orders from the cancelling queue (marked by checkbox in the orders table)
-      removeOrdersToCancel(fulfillOrdersBatchParams.ordersData.map((item) => item.id))
+      removeOrdersToCancel(fulfillOrdersBatchParams.orders.map(({ uid }) => uid))
     },
-    [_fulfillOrdersBatch, removeOrdersToCancel]
+    [chainId, _fulfillOrdersBatch, removeOrdersToCancel]
   )
 
   const updateOrders = useCallback(

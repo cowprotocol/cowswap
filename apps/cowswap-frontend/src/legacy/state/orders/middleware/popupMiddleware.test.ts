@@ -3,14 +3,12 @@ import { instance, mock, resetCalls, when } from 'ts-mockito'
 
 import { batchCancelOrdersPopup } from './batchCancelOrdersPopup'
 import { batchExpireOrdersPopup } from './batchExpireOrdersPopup'
-import { batchFulfillOrderPopup } from './batchFulfillOrderPopup'
 import { batchPresignOrdersPopup } from './batchPresignOrdersPopup'
 import { popupMiddleware } from './popupMiddleware'
 
 import { AppState } from '../../index'
 
 // Mock simple fns using raw jest
-jest.mock('./batchFulfillOrderPopup')
 jest.mock('./batchCancelOrdersPopup')
 jest.mock('./batchExpireOrdersPopup')
 jest.mock('./batchPresignOrdersPopup')
@@ -46,21 +44,6 @@ describe('popupMiddleware', () => {
 
       popupMiddleware(instance(mockStore))(nextMock)(instance(actionMock))
 
-      expect(batchFulfillOrderPopup).toHaveBeenCalledTimes(0)
-      expect(batchCancelOrdersPopup).toHaveBeenCalledTimes(0)
-      expect(batchExpireOrdersPopup).toHaveBeenCalledTimes(0)
-      expect(batchPresignOrdersPopup).toHaveBeenCalledTimes(0)
-    })
-
-    it('should call batchFulfillOrderPopup when is batch fulfill order action', () => {
-      when(actionMock.type).thenReturn('order/fullfillOrdersBatch')
-
-      popupMiddleware(instance(mockStore))(nextMock)(instance(actionMock))
-
-      // TODO: can't get this to work, mockStore is never matched
-      // expect(batchFulfillOrderPopup).toHaveBeenCalledWith(null, { chainId: 1 }, 'mock orders')
-
-      expect(batchFulfillOrderPopup).toHaveBeenCalledTimes(1)
       expect(batchCancelOrdersPopup).toHaveBeenCalledTimes(0)
       expect(batchExpireOrdersPopup).toHaveBeenCalledTimes(0)
       expect(batchPresignOrdersPopup).toHaveBeenCalledTimes(0)
@@ -74,7 +57,6 @@ describe('popupMiddleware', () => {
 
       // expect(batchCancelOrdersPopup).toHaveBeenCalledWith(null, { chainId: 1 }, 'mock orders')
 
-      expect(batchFulfillOrderPopup).toHaveBeenCalledTimes(0)
       expect(batchCancelOrdersPopup).toHaveBeenCalledTimes(1)
       expect(batchExpireOrdersPopup).toHaveBeenCalledTimes(0)
       expect(batchPresignOrdersPopup).toHaveBeenCalledTimes(0)
@@ -87,7 +69,6 @@ describe('popupMiddleware', () => {
 
       // expect(batchExpireOrdersPopup).toHaveBeenCalledWith(null, { chainId: 1 }, 'mock orders')
 
-      expect(batchFulfillOrderPopup).toHaveBeenCalledTimes(0)
       expect(batchCancelOrdersPopup).toHaveBeenCalledTimes(0)
       expect(batchExpireOrdersPopup).toHaveBeenCalledTimes(1)
       expect(batchPresignOrdersPopup).toHaveBeenCalledTimes(0)
@@ -100,7 +81,6 @@ describe('popupMiddleware', () => {
 
       // expect(batchPresignOrdersPopup).toHaveBeenCalledWith(null, { chainId: 1 }, 'mock orders')
 
-      expect(batchFulfillOrderPopup).toHaveBeenCalledTimes(0)
       expect(batchCancelOrdersPopup).toHaveBeenCalledTimes(0)
       expect(batchExpireOrdersPopup).toHaveBeenCalledTimes(0)
       expect(batchPresignOrdersPopup).toHaveBeenCalledTimes(1)

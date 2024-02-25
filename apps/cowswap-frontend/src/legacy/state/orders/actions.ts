@@ -148,7 +148,7 @@ export interface OrderFulfillmentData {
   fulfillmentTime: string
   transactionHash: string
   summary?: string
-  apiAdditionalInfo?: OrderInfoApi
+  order: EnrichedOrder
 }
 
 export interface AddOrUpdateOrdersParams {
@@ -164,7 +164,7 @@ export interface UpdateOrderParams {
 }
 
 export interface FulfillOrdersBatchParams {
-  ordersData: OrderFulfillmentData[]
+  orders: EnrichedOrder[]
   chainId: ChainId
   isSafeWallet: boolean
 }
