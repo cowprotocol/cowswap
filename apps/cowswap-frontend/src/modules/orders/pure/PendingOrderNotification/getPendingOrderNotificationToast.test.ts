@@ -24,6 +24,7 @@ const daiAmountWithDecimals = CurrencyAmount.fromRawAmount(DAI_MAINNET, '2123456
 const resultCommon = {
   messageType: ToastMessageType.SWAP_POSTED_API,
   data: {
+    orderCreationHash: undefined,
     orderUid: '0x123',
   },
 }
