@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 
 import { triggerAppziSurvey } from '@cowprotocol/common-utils'
 import { UiOrderType } from '@cowprotocol/types'
@@ -17,7 +17,18 @@ import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 export function TriggerAppziLimitOrdersSurveyUpdater(): null {
   const { account, chainId } = useWalletInfo()
   const orders = useOnlyPendingOrders(chainId)
-  const pendingOrderIds = orders.filter((order) => getUiOrderType(order) === UiOrderType.LIMIT && order.id).join(',')
+
+  const pendingOrderIds = useMemo(() => {
+    return orders
+      .reduce<string[]>((acc, order) => {
+        if (getUiOrderType(order) === UiOrderType.LIMIT) {
+          acc.push(order.id)
+        }
+
+        return acc
+      }, [])
+      .join(',')
+  }, [orders])
 
   useEffect(() => {
     if (account && chainId && pendingOrderIds) {
