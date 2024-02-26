@@ -22,6 +22,12 @@ export const ContainerBox = styled.div`
   box-shadow: ${({ theme }) => theme.boxShadow1};
   padding: 10px;
   position: relative;
+
+  .modalMode & {
+    border-radius: 0;
+    padding: 0;
+    box-shadow: none;
+  }
 `
 
 export const Header = styled.div`
@@ -31,6 +37,10 @@ export const Header = styled.div`
   padding: ${({ theme }) => (theme.isInjectedWidgetMode ? '0 7px' : '0 5px 0 0')};
   margin: 0;
   color: inherit;
+
+  .modalMode & {
+    display: none;
+  }
 `
 
 export const OuterContentWrapper = styled.div`

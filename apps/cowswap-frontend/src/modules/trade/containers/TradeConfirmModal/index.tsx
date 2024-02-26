@@ -23,6 +23,11 @@ const Container = styled.div`
   background: var(${UI.COLOR_PAPER});
   border-radius: var(${UI.BORDER_RADIUS_NORMAL});
   box-shadow: ${({ theme }) => theme.boxShadow1};
+
+  .modalMode & {
+    border-radius: 0;
+    box-shadow: none;
+  }
 `
 type CustomSubmittedContent = (order: Order | undefined, onDismiss: Command) => JSX.Element
 

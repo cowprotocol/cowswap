@@ -58,6 +58,10 @@ export const ContentWrapper = styled.div`
   gap: 10px;
   font-size: 14px;
   padding: 0 10px 10px;
+
+  .modalMode & {
+    padding: 0;
+  }
 `
 
 export const Header = styled.div`
