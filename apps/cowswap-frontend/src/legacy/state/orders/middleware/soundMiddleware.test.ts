@@ -41,7 +41,7 @@ describe('soundMiddleware', () => {
     })
 
     it('should not play a sound when there are orders but data to update for fulfill order action', () => {
-      when(actionMock.payload).thenReturn({ chainId: 1, ordersData: [] })
+      when(actionMock.payload).thenReturn({ chainId: 1, orders: [] })
       when(actionMock.type).thenReturn('order/fulfillOrder')
 
       soundMiddleware(instance(mockStore))(nextMock)(instance(actionMock))
@@ -87,7 +87,7 @@ describe('soundMiddleware', () => {
   })
   describe('fulfill order action', () => {
     it('should play a sound', () => {
-      when(actionMock.payload).thenReturn({ chainId: 1, ordersData: ['some data'] })
+      when(actionMock.payload).thenReturn({ chainId: 1, orders: ['some data'] })
       when(actionMock.type).thenReturn('order/fullfillOrdersBatch')
 
       soundMiddleware(instance(mockStore))(nextMock)(instance(actionMock))

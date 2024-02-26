@@ -7,7 +7,7 @@ export interface OrderUidInChain {
   // TODO: Potentially add all order info here, but lets keep it minimal for now
 }
 
-type TokenInfo = {
+export type TokenInfo = {
   chainId: number
   address: string
   name: string
