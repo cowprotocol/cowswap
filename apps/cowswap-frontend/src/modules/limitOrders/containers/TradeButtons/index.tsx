@@ -21,7 +21,6 @@ import { limitOrdersTradeButtonsMap } from './limitOrdersTradeButtonsMap'
 
 import { useLimitOrdersFormState } from '../../hooks/useLimitOrdersFormState'
 
-const DO_TRADE_TEXT = 'Place limit order'
 const CONFIRM_TEXT = 'Review limit order'
 
 export interface TradeButtonsProps {
@@ -40,9 +39,8 @@ export function TradeButtons(props: TradeButtonsProps) {
 
   const handleTrade = useHandleOrderPlacement(tradeContext, priceImpact, settingsState, tradeConfirmActions)
   const confirmTrade = tradeConfirmActions.onOpen
-  const isExpertMode = settingsState.expertMode
 
-  const defaultText = isExpertMode ? DO_TRADE_TEXT : CONFIRM_TEXT
+  const defaultText = CONFIRM_TEXT
 
   const tradeFormButtonContext = useTradeFormButtonContext(defaultText, { doTrade: handleTrade, confirmTrade })
 
@@ -63,11 +61,9 @@ export function TradeButtons(props: TradeButtonsProps) {
 
   return (
     <TradeFormButtons
-      doTradeText={DO_TRADE_TEXT}
       confirmText={CONFIRM_TEXT}
       validation={primaryFormValidation}
       context={tradeFormButtonContext}
-      isExpertMode={isExpertMode}
       isDisabled={!warningsAccepted}
     />
   )

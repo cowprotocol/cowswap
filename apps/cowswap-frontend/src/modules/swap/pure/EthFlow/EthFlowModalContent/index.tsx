@@ -15,7 +15,6 @@ import { NewModal, NewModalContentBottom, NewModalContentTop } from 'common/pure
 
 export interface EthFlowModalContentProps {
   state: EthFlowState
-  isExpertMode: boolean
   ethFlowContext: EthFlowContext
   ethFlowActions: EthFlowActions
   balanceChecks: BalanceChecks
@@ -23,11 +22,11 @@ export interface EthFlowModalContentProps {
   onDismiss: Command
 }
 export function EthFlowModalContent(props: EthFlowModalContentProps) {
-  const { ethFlowActions, state, isExpertMode, balanceChecks, onDismiss, wrappingPreview, ethFlowContext } = props
+  const { ethFlowActions, state, balanceChecks, onDismiss, wrappingPreview, ethFlowContext } = props
 
   const nativeSymbol = wrappingPreview.native.symbol || ''
   const wrappedSymbol = wrappingPreview.wrapped.symbol || ''
-  const { title, descriptions, buttonText } = ethFlowConfigs[state]({ isExpertMode, nativeSymbol, wrappedSymbol })
+  const { title, descriptions, buttonText } = ethFlowConfigs[state]({ nativeSymbol, wrappedSymbol })
 
   return (
     <NewModal title={title} onDismiss={onDismiss}>
@@ -43,7 +42,6 @@ export function EthFlowModalContent(props: EthFlowModalContentProps) {
       <NewModalContentBottom>
         <EthFlowModalBottomContent
           buttonText={buttonText}
-          isExpertMode={isExpertMode}
           state={state}
           ethFlowActions={ethFlowActions}
           ethFlowContext={ethFlowContext}

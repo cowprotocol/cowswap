@@ -9,7 +9,6 @@ import { defaultLimitOrderDeadline } from 'modules/limitOrders/pure/DeadlineSele
 import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
 
 export interface LimitOrdersSettingsState {
-  readonly expertMode: boolean
   readonly showRecipient: boolean
   readonly partialFillsEnabled: boolean
   readonly deadlineMilliseconds: Milliseconds
@@ -17,7 +16,6 @@ export interface LimitOrdersSettingsState {
 }
 
 export const defaultLimitOrdersSettings: LimitOrdersSettingsState = {
-  expertMode: false,
   showRecipient: false,
   partialFillsEnabled: true,
   deadlineMilliseconds: defaultLimitOrderDeadline.value,

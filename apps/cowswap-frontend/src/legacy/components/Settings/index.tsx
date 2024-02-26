@@ -1,13 +1,12 @@
 import { Command } from '@cowprotocol/types'
-import { RowFixed } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
+import { RowFixed, UI } from '@cowprotocol/ui'
 import { Percent } from '@uniswap/sdk-core'
 
 import { transparentize } from 'color2k'
 import styled from 'styled-components/macro'
 import { WithClassName } from 'types'
 
-import SettingsMod, { StyledMenuButton, MenuFlyout, StyledMenuIcon, EmojiWrapper } from './SettingsMod'
+import SettingsMod, { EmojiWrapper, MenuFlyout, StyledMenuButton, StyledMenuIcon } from './SettingsMod'
 
 const Settings = styled(SettingsMod)`
   ${MenuFlyout} {
@@ -132,7 +131,6 @@ const Settings = styled(SettingsMod)`
 
 export interface SettingsButtonProps {
   toggleSettings: Command
-  expertMode: boolean
 }
 
 export interface SettingsTabProp extends WithClassName {
@@ -140,17 +138,10 @@ export interface SettingsTabProp extends WithClassName {
   placeholderSlippage: Percent
 }
 
-function SettingsButton({ toggleSettings, expertMode }: SettingsButtonProps) {
+function SettingsButton({ toggleSettings }: SettingsButtonProps) {
   return (
     <StyledMenuButton onClick={toggleSettings} id="open-settings-dialog-button">
       <StyledMenuIcon />
-      {expertMode ? (
-        <EmojiWrapper>
-          <span role="img" aria-label="Expert Mode Turned On">
-            🥋
-          </span>
-        </EmojiWrapper>
-      ) : null}
     </StyledMenuButton>
   )
 }

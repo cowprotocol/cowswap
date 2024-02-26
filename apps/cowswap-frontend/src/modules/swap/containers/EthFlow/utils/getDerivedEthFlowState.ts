@@ -4,7 +4,7 @@ import { EthFlowState } from 'modules/swap/services/ethFlow/types'
 import { EthFlowContext } from 'modules/swap/state/EthFlow/ethFlowContextAtom'
 
 // returns derived ethflow state from current props
-export function getDerivedEthFlowState(context: EthFlowContext, isExpertMode: boolean): EthFlowState {
+export function getDerivedEthFlowState(context: EthFlowContext): EthFlowState {
   const approveActivityStatus = context.approve.txStatus
   const wrapActivityStatus = context.wrap.txStatus
   const needsApproval = context.approve.isNeeded
@@ -27,10 +27,6 @@ export function getDerivedEthFlowState(context: EthFlowContext, isExpertMode: bo
 
   // PENDING states
   if (wrapPending || approvePending) {
-    // expertMode only - both operations pending
-    if (isExpertMode && wrapPending && approvePending) {
-      return EthFlowState.WrapAndApprovePending
-    }
     // Only wrap is pending
     if (wrapPending) {
       return EthFlowState.WrapPending
@@ -40,10 +36,6 @@ export function getDerivedEthFlowState(context: EthFlowContext, isExpertMode: bo
   }
   // FAILED states
   if (approveExpired || wrapExpired) {
-    // expertMode only - BOTH operations failed
-    if (isExpertMode && approveExpired && wrapExpired) {
-      return EthFlowState.WrapAndApproveFailed
-    }
     // Only wrap failed
     if (wrapExpired) {
       return EthFlowState.WrapFailed
@@ -56,10 +48,6 @@ export function getDerivedEthFlowState(context: EthFlowContext, isExpertMode: bo
     // INSUFFICIENT approve state
     if (approveInsufficient) {
       return EthFlowState.ApproveInsufficient
-    }
-    // in expertMode and we need to wrap and swap
-    if (isExpertMode && needsApproval && wrapNeeded) {
-      return EthFlowState.WrapAndApproveNeeded
     }
     // Only wrap needed
     if (wrapNeeded) {

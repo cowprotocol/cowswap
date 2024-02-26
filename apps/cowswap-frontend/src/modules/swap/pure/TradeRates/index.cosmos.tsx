@@ -34,7 +34,6 @@ const rateInfoParams: RateInfoParams = {
 }
 const defaultProps: TradeRatesProps = {
   trade,
-  isExpertMode: false,
   allowsOffchainSigning: true,
   isFeeGreater: false,
   discount: 10,
