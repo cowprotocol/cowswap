@@ -5,7 +5,7 @@ export enum ToastMessageType {
   ORDER_CREATED = 'ORDER_CREATED',
   SWAP_SIGNING_ERROR = 'SWAP_SIGNING_ERROR',
   ORDER_FULFILLED = 'ORDER_FULFILLED',
-  SWAP_ORDER_CANCELLED = 'SWAP_ORDER_CANCELLED',
+  ORDER_CANCELLED = 'ORDER_CANCELLED',
 }
 
 export interface ToastMessagePayloads {
@@ -30,7 +30,7 @@ export interface ToastMessagePayloads {
     orderType: UiOrderType
   }
 
-  [ToastMessageType.SWAP_ORDER_CANCELLED]: {
+  [ToastMessageType.ORDER_CANCELLED]: {
     orderUid: string
   }
 }
