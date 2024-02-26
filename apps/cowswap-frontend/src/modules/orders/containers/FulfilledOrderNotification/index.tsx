@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
@@ -11,12 +11,20 @@ import { ExecutedSummary } from '../ExecutedSummary'
 interface FulfilledOrderNotificationProps {
   uid: string
   chainId: SupportedChainId
+  onToastMessage(message: string): void
 }
-export function FulfilledOrderNotification({ chainId, uid }: FulfilledOrderNotificationProps) {
+export function FulfilledOrderNotification({ chainId, uid, onToastMessage }: FulfilledOrderNotificationProps) {
+  const ref = useCallback(
+    (node: HTMLDivElement) => {
+      if (node) onToastMessage(node.innerText)
+    },
+    [onToastMessage]
+  )
+
   const order = useOrder({ chainId, id: uid })
   const parsedOrder = useMemo(() => (order ? parseOrder(order) : undefined), [order])
 
   if (!parsedOrder) return null
 
-  return <ExecutedSummary order={parsedOrder} />
+  return <ExecutedSummary ref={ref} order={parsedOrder} />
 }

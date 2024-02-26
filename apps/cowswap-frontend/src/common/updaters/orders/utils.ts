@@ -77,7 +77,7 @@ type PopupData = {
   order: EnrichedOrder
 }
 
-export async function fetchOrderPopupData(orderFromStore: Order, chainId: ChainId): Promise<PopupData | null> {
+export async function fetchAndClassifyOrder(orderFromStore: Order, chainId: ChainId): Promise<PopupData | null> {
   // Skip EthFlow creating orders
   if (orderFromStore.status === OrderStatus.CREATING) {
     return null

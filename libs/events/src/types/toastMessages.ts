@@ -1,8 +1,10 @@
+import { UiOrderType } from '@cowprotocol/types'
+
 export enum ToastMessageType {
   SWAP_ETH_FLOW_SENT_TX = 'SWAP_ETH_FLOW_SENT_TX',
-  SWAP_POSTED_API = 'SWAP_POSTED_API',
+  ORDER_CREATED = 'ORDER_CREATED',
   SWAP_SIGNING_ERROR = 'SWAP_SIGNING_ERROR',
-  SWAP_TRADE_EXECUTED = 'SWAP_TRADE_EXECUTED',
+  ORDER_FULFILLED = 'ORDER_FULFILLED',
   SWAP_ORDER_CANCELLED = 'SWAP_ORDER_CANCELLED',
 }
 
@@ -11,8 +13,9 @@ export interface ToastMessagePayloads {
     tx: string
   }
 
-  [ToastMessageType.SWAP_POSTED_API]: {
+  [ToastMessageType.ORDER_CREATED]: {
     orderUid: string
+    orderType: UiOrderType
     orderCreationHash?: string
   }
 
@@ -22,9 +25,9 @@ export interface ToastMessagePayloads {
     message: string
   }
 
-  [ToastMessageType.SWAP_TRADE_EXECUTED]: {
+  [ToastMessageType.ORDER_FULFILLED]: {
     orderUid: string
-    // TODO: Potentially add all trade info here, but lets keep it minimal for now
+    orderType: UiOrderType
   }
 
   [ToastMessageType.SWAP_ORDER_CANCELLED]: {

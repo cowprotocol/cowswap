@@ -1,15 +1,21 @@
+import { forwardRef } from 'react'
+
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
 import { getExecutedSummaryData } from 'utils/getExecutedSummaryData'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import * as styledEl from './styled'
 
-export function ExecutedSummary({ order }: { order: ParsedOrder }) {
+interface ExecutedSummaryProps {
+  order: ParsedOrder
+}
+
+export const ExecutedSummary = forwardRef<HTMLDivElement, ExecutedSummaryProps>(({ order }, ref) => {
   const { formattedFilledAmount, formattedSwappedAmount } = getExecutedSummaryData(order)
   const { surplusFiatValue, showFiatValue, surplusToken, surplusAmount } = useGetSurplusData(order)
 
   return (
-    <styledEl.SummaryWrapper>
+    <styledEl.SummaryWrapper ref={ref}>
       <div>
         Traded{' '}
         <styledEl.StyledTokenAmount amount={formattedFilledAmount} tokenSymbol={formattedFilledAmount.currency} /> for a
@@ -20,7 +26,6 @@ export function ExecutedSummary({ order }: { order: ParsedOrder }) {
       {!!surplusAmount && (
         <styledEl.SurplusWrapper>
           <span>Order surplus: </span>
-
           <styledEl.SurplusAmount>
             <styledEl.StyledTokenAmount amount={surplusAmount} tokenSymbol={surplusToken} />
             {showFiatValue && (
@@ -33,4 +38,4 @@ export function ExecutedSummary({ order }: { order: ParsedOrder }) {
       )}
     </styledEl.SummaryWrapper>
   )
-}
+})

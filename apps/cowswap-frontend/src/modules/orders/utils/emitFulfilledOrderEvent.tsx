@@ -3,7 +3,7 @@ import { CowEvents } from '@cowprotocol/events'
 
 import { EVENT_EMITTER } from 'eventEmitter'
 
-export function emitFulfilledOrderEvent(order: EnrichedOrder, chainId: SupportedChainId) {
+export function emitFulfilledOrderEvent(chainId: SupportedChainId, order: EnrichedOrder) {
   EVENT_EMITTER.emit(CowEvents.ON_FULFILLED_ORDER, {
     chainId,
     order,

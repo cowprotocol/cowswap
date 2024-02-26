@@ -37,7 +37,7 @@ import { useAddOrderToSurplusQueue } from 'modules/swap/state/surplusModal'
 import { getOrder } from 'api/gnosisProtocol'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
-import { fetchOrderPopupData } from './utils'
+import { fetchAndClassifyOrder } from './utils'
 
 import { removeOrdersToCancelAtom } from '../../hooks/useMultipleOrdersCancellation/state'
 import { useTriggerTotalSurplusUpdateCallback } from '../../state/totalSurplusState'
@@ -187,7 +187,7 @@ async function _updateOrders({
 
   // Iterate over pending orders fetching API data
   const unfilteredOrdersData = await Promise.all(
-    pending.map(async (orderFromStore) => fetchOrderPopupData(orderFromStore, chainId))
+    pending.map(async (orderFromStore) => fetchAndClassifyOrder(orderFromStore, chainId))
   )
 
   // Group resolved promises by status
@@ -318,7 +318,7 @@ export function PendingOrdersUpdater(): null {
       _fulfillOrdersBatch(fulfillOrdersBatchParams)
 
       fulfillOrdersBatchParams.orders.forEach((order) => {
-        emitFulfilledOrderEvent(order, chainId)
+        emitFulfilledOrderEvent(chainId, order)
       })
 
       // Remove orders from the cancelling queue (marked by checkbox in the orders table)

@@ -11,7 +11,7 @@ import { OrderTransitionStatus } from 'legacy/state/orders/utils'
 import { emitFulfilledOrderEvent } from 'modules/orders'
 import { useAddOrderToSurplusQueue } from 'modules/swap/state/surplusModal'
 
-import { fetchOrderPopupData } from './utils'
+import { fetchAndClassifyOrder } from './utils'
 
 /**
  * Updater for cancelled orders.
@@ -77,7 +77,7 @@ export function CancelledOrdersUpdater(): null {
 
         // Iterate over pending orders fetching operator order data, async
         const unfilteredOrdersData = await Promise.all(
-          pending.map(async (orderFromStore) => fetchOrderPopupData(orderFromStore, chainId))
+          pending.map(async (orderFromStore) => fetchAndClassifyOrder(orderFromStore, chainId))
         )
 
         // Group resolved promises by status
@@ -111,7 +111,7 @@ export function CancelledOrdersUpdater(): null {
           fulfilled.forEach((order) => {
             addOrderToSurplusQueue(order.uid)
 
-            emitFulfilledOrderEvent(order, chainId)
+            emitFulfilledOrderEvent(chainId, order)
           })
         }
       } finally {
