@@ -13,6 +13,7 @@ import { upsertListsAtom } from '../../state/tokenLists/tokenListsActionsAtom'
 import { atomWithStorage } from 'jotai/utils'
 import { atomWithPartialUpdate, isInjectedWidget } from '@cowprotocol/common-utils'
 import { getJotaiMergerStorage } from '@cowprotocol/core'
+import * as Sentry from '@sentry/browser'
 
 const { atom: lastUpdateTimeAtom, updateAtom: updateLastUpdateTimeAtom } = atomWithPartialUpdate(
   atomWithStorage<Record<SupportedChainId, number>>(
@@ -80,12 +81,24 @@ export function TokensListsUpdater({ chainId: currentChainId }: TokensListsUpdat
 
     fetch('https://api.country.is')
       .then((res) => res.json())
-      .then(({ country }) => {
+      .then(({ country, ip }) => {
         const isUsUser = country === 'US'
 
         if (isUsUser) {
           setEnvironment({ useCuratedListOnly: true })
           updateLastUpdateTime({ [chainId]: 0 })
+
+          const sentryError = Object.assign(new Error(), {
+            message: '',
+            name: 'USUserError',
+          })
+
+          Sentry.captureException(sentryError, {
+            tags: {
+              errorType: 'USUserError',
+            },
+            contexts: { ip },
+          })
         }
       })
     // eslint-disable-next-line react-hooks/exhaustive-deps
