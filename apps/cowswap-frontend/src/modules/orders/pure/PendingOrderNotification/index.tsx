@@ -6,23 +6,13 @@ import { OnPostedOrderPayload } from '@cowprotocol/events'
 import { TokenAmount } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
-import styled from 'styled-components/macro'
-
 import { EnhancedTransactionLink } from 'legacy/components/EnhancedTransactionLink'
 import { ExplorerLink } from 'legacy/components/ExplorerLink'
 import { HashType } from 'legacy/state/enhancedTransactions/reducer'
 
 import { ORDER_UI_TYPE_TITLES } from 'utils/orderUtils/getUiOrderType'
 
-const OrderLinkWrapper = styled.div`
-  margin-top: 15px;
-  text-decoration: underline;
-
-  &:hover,
-  &:hover a {
-    text-decoration: none !important;
-  }
-`
+import { OrderLinkWrapper } from '../commonStyled'
 
 export interface PendingOrderNotificationProps {
   payload: OnPostedOrderPayload
