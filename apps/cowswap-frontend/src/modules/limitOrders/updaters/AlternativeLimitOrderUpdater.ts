@@ -23,6 +23,7 @@ import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 import { DEFAULT_TRADE_DERIVED_STATE } from '../../trade'
 import { useLimitOrdersDerivedState } from '../hooks/useLimitOrdersDerivedState'
 import { useUpdateActiveRate } from '../hooks/useUpdateActiveRate'
+import { updateLimitRateAtom } from '../state/limitRateAtom'
 
 export function AlternativeLimitOrderUpdater(): null {
   // Update raw state and related settings once on load
@@ -93,6 +94,7 @@ function useUpdateAlternativeRawState(): null {
 
 function useSetAlternativeRate(): null {
   const updateRate = useUpdateActiveRate()
+  const updateLimitRateState = useSetAtom(updateLimitRateAtom)
   const { inputCurrencyAmount, outputCurrencyAmount } = useLimitOrdersDerivedState()
 
   const [hasSetRate, setHasSetRate] = useState(false)
@@ -109,10 +111,14 @@ function useSetAlternativeRate(): null {
     if (!hasSetRate && inputCurrencyAmount && outputCurrencyAmount) {
       setHasSetRate(true)
 
+      // Clear existing market rate
+      updateLimitRateState({ marketRate: null })
+
+      // Set new active rate
       const activeRate = new Price({ baseAmount: inputCurrencyAmount, quoteAmount: outputCurrencyAmount })
       updateRate({ activeRate, isTypedValue: false, isRateFromUrl: false, isAlternativeOrderRate: true })
     }
-  }, [inputCurrencyAmount, hasSetRate, outputCurrencyAmount, updateRate])
+  }, [inputCurrencyAmount, hasSetRate, outputCurrencyAmount, updateRate, updateLimitRateState])
 
   return null
 }
