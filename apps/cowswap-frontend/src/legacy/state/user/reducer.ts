@@ -23,8 +23,6 @@ export interface UserState {
   userDarkMode: boolean | null // the user's choice for dark mode or light mode
   userLocale: SupportedLocale | null
 
-  userExpertMode: boolean
-
   // TODO: mod, shouldn't be here
   recipientToggleVisible: boolean
 
@@ -54,7 +52,6 @@ export const initialState: UserState = {
   selectedWalletBackfilled: false,
   matchesDarkMode: false,
   userDarkMode: null,
-  userExpertMode: false,
   // TODO: mod, shouldn't be here
   recipientToggleVisible: false,
   userLocale: null,
@@ -83,10 +80,6 @@ const userSlice = createSlice({
     },
     updateMatchesDarkMode(state, action) {
       state.matchesDarkMode = action.payload.matchesDarkMode
-      state.timestamp = currentTimestamp()
-    },
-    updateUserExpertMode(state, action) {
-      state.userExpertMode = action.payload.userExpertMode
       state.timestamp = currentTimestamp()
     },
     updateUserLocale(state, action) {
@@ -164,7 +157,6 @@ export const {
   updateMatchesDarkMode,
   updateUserDarkMode,
   updateUserDeadline,
-  updateUserExpertMode,
   updateUserLocale,
   updateUserSlippageTolerance,
   updateRecipientToggleVisible,

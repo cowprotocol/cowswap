@@ -30,6 +30,7 @@ export interface TradeConfirmationProps {
   priceImpact: PriceImpact
   title: JSX.Element | string
   refreshInterval?: number
+  isPriceStatic?: boolean
   recipient: string | null
   buttonText?: React.ReactNode
   children?: JSX.Element
@@ -57,6 +58,7 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
     buttonText = 'Confirm',
     children,
     recipient,
+    isPriceStatic,
   } = frozenProps || props
 
   /**
@@ -128,7 +130,7 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
         {children}
         {/*Banners*/}
         {showRecipientWarning && <CustomRecipientWarningBanner orientation={BannerOrientation.Horizontal} />}
-        {isPriceChanged && <PriceUpdatedBanner onClick={resetPriceChanged} />}
+        {isPriceChanged && !isPriceStatic && <PriceUpdatedBanner onClick={resetPriceChanged} />}
         <ButtonPrimary onClick={handleConfirmClick} disabled={isButtonDisabled} buttonSize={ButtonSize.BIG}>
           {hasPendingTrade ? (
             <LongLoadText fontSize={15} fontWeight={500}>

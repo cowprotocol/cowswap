@@ -122,18 +122,6 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
       </TradeFormBlankButton>
     )
   },
-  [TradeFormValidation.ExpertApproveAndSwap]: (context, isDisabled = false) => {
-    const currency = context.derivedState.slippageAdjustedSellAmount?.currency
-    const tokenToApprove = currency && getWrappedToken(currency)
-
-    return (
-      <TradeFormBlankButton disabled={isDisabled} onClick={context.doTrade}>
-        <Trans>
-          Confirm (Approve&nbsp;{<TokenSymbol token={tokenToApprove} length={6} />}&nbsp;and {context.defaultText})
-        </Trans>
-      </TradeFormBlankButton>
-    )
-  },
   [TradeFormValidation.ApproveAndSwap]: (context, isDisabled = false) => {
     const currency = context.derivedState.slippageAdjustedSellAmount?.currency
     const tokenToApprove = currency && getWrappedToken(currency)

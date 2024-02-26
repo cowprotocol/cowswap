@@ -1,4 +1,4 @@
-import { useAtom, useAtomValue } from 'jotai'
+import { useAtomValue } from 'jotai'
 import React, { useMemo } from 'react'
 
 import { isSellOrder } from '@cowprotocol/common-utils'
@@ -8,7 +8,6 @@ import { Field } from 'legacy/state/types'
 import { LimitOrdersWarnings } from 'modules/limitOrders/containers/LimitOrdersWarnings'
 import { useLimitOrdersWidgetActions } from 'modules/limitOrders/containers/LimitOrdersWidget/hooks/useLimitOrdersWidgetActions'
 import { TradeButtons } from 'modules/limitOrders/containers/TradeButtons'
-import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
 import { TradeWidget, useTradePriceImpact } from 'modules/trade'
 import { BulletListItem, UnlockWidgetScreen } from 'modules/trade/pure/UnlockWidgetScreen'
 import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
@@ -76,10 +75,9 @@ export function LimitOrdersWidget() {
   const { feeAmount } = useAtomValue(limitRateAtom)
   const { isLoading: isRateLoading } = useTradeQuote()
   const rateInfoParams = useRateInfoParams(inputCurrencyAmount, outputCurrencyAmount)
-  const partiallyFillableOverride = useAtom(partiallyFillableOverrideAtom)
   const widgetActions = useLimitOrdersWidgetActions()
 
-  const { showRecipient: showRecipientSetting, expertMode: isExpertMode } = settingsState
+  const { showRecipient: showRecipientSetting } = settingsState
   const showRecipient = showRecipientSetting || !!recipient
 
   const priceImpact = useTradePriceImpact()
@@ -120,9 +118,7 @@ export function LimitOrdersWidget() {
     isUnlocked,
     isRateLoading,
     showRecipient,
-    isExpertMode,
     recipient,
-    partiallyFillableOverride,
     rateInfoParams,
     priceImpact,
     tradeContext,
@@ -143,14 +139,11 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
     isUnlocked,
     isRateLoading,
     widgetActions,
-    partiallyFillableOverride,
     showRecipient,
-    isExpertMode,
     recipient,
     rateInfoParams,
     priceImpact,
     tradeContext,
-    settingsState,
     feeAmount,
     localFormValidation,
     primaryFormValidation,
@@ -164,8 +157,6 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
 
     return isRateLoading
   }, [isRateLoading, inputCurrency, outputCurrency])
-
-  const isPartiallyFillable = settingsState.partialFillsEnabled
 
   const updateLimitOrdersState = useUpdateLimitOrdersRawState()
 
@@ -211,15 +202,6 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
           <styledEl.StyledRateInfo rateInfoParams={rateInfoParams} />
         </styledEl.FooterBox>
 
-        {isExpertMode && (
-          <styledEl.FooterBox>
-            <styledEl.StyledOrderType
-              isPartiallyFillable={isPartiallyFillable}
-              partiallyFillableOverride={partiallyFillableOverride}
-            />
-          </styledEl.FooterBox>
-        )}
-
         <LimitOrdersWarnings feeAmount={feeAmount} />
 
         <styledEl.TradeButtonBox>
@@ -238,7 +220,6 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
 
   const params = {
     compactView: false,
-    isExpertMode,
     recipient,
     showRecipient,
     isTradePriceUpdating,

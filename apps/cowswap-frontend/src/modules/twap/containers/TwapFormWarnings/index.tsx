@@ -37,7 +37,7 @@ import {
 } from '../../state/twapOrdersSettingsAtom'
 import { isPriceProtectionNotEnough } from '../../utils/isPriceProtectionNotEnough'
 
-const BUNDLE_APPROVAL_STATES = [TradeFormValidation.ApproveAndSwap, TradeFormValidation.ExpertApproveAndSwap]
+const BUNDLE_APPROVAL_STATES = [TradeFormValidation.ApproveAndSwap]
 
 interface TwapFormWarningsProps {
   localFormValidation: TwapFormState | null
