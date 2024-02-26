@@ -81,6 +81,7 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
         priceImpact={priceImpact}
         buttonText={buttonText}
         recipient={recipient}
+        isPriceStatic={true}
       >
         <>
           <LimitOrdersDetails
