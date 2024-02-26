@@ -55,7 +55,7 @@ describe('appziMiddleware', () => {
 
   describe('batch fulfill', () => {
     beforeEach(() => {
-      when(actionMock.payload).thenReturn({ chainId: 1, ordersData: [BASE_ORDER.order] })
+      when(actionMock.payload).thenReturn({ chainId: 1, orders: [BASE_ORDER.order] })
       when(actionMock.type).thenReturn('order/fullfillOrdersBatch')
       getUiOrderTypeMock.mockReturnValue(UiOrderType.SWAP)
       getOrderByOrderIdFromStateMock.mockReturnValue(BASE_ORDER as any)
