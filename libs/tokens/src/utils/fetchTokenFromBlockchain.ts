@@ -2,7 +2,7 @@ import { getContract } from '@cowprotocol/common-utils'
 import { Erc20, Erc20Abi } from '@cowprotocol/abis'
 import type { JsonRpcProvider } from '@ethersproject/providers'
 import { getAddress } from '@ethersproject/address'
-import { TokenInfo } from '@uniswap/token-lists'
+import { TokenInfo } from '@cowprotocol/types'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 export async function fetchTokenFromBlockchain(

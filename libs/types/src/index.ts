@@ -11,3 +11,12 @@ export enum UiOrderType {
   LIMIT = 'LIMIT',
   TWAP = 'TWAP',
 }
+
+export type TokenInfo = {
+  chainId: number
+  address: string
+  name: string
+  decimals: number
+  symbol: string
+  logoURI?: string
+}

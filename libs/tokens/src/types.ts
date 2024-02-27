@@ -1,5 +1,6 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import type { TokenInfo, TokenList as UniTokenList } from '@uniswap/token-lists'
+import type { TokenList as UniTokenList } from '@uniswap/token-lists'
+import { TokenInfo } from '@cowprotocol/types'
 
 export type ListSourceConfig = {
   widgetAppCode?: string
