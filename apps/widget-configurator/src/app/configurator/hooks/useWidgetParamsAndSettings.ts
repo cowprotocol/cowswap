@@ -1,7 +1,6 @@
 import { useMemo } from 'react'
 
-import type { CowSwapWidgetEnv, EthereumProvider } from '@cowprotocol/widget-lib'
-import { CowSwapWidgetProps } from '@cowprotocol/widget-react'
+import type { CowSwapWidgetEnv, CowSwapWidgetParams } from '@cowprotocol/widget-lib'
 
 import { isDev, isLocalHost, isVercel } from '../../../env'
 import { ConfiguratorState } from '../types'
@@ -14,10 +13,7 @@ const getEnv = (): CowSwapWidgetEnv => {
   return 'prod'
 }
 
-export function useWidgetParamsAndSettings(
-  provider: EthereumProvider | undefined,
-  configuratorState: ConfiguratorState
-) {
+export function useWidgetParams(configuratorState: ConfiguratorState): CowSwapWidgetParams {
   return useMemo(() => {
     const {
       chainId,
@@ -38,7 +34,7 @@ export function useWidgetParamsAndSettings(
       ...customColors,
     }
 
-    const params: CowSwapWidgetProps['params'] = {
+    const params: CowSwapWidgetParams = {
       appCode: 'CoW Widget: Configurator',
       width: '450px',
       height: '640px',

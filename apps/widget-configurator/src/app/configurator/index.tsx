@@ -32,7 +32,7 @@ import { useColorPaletteManager } from './hooks/useColorPaletteManager'
 import { useEmbedDialogState } from './hooks/useEmbedDialogState'
 import { useProvider } from './hooks/useProvider'
 import { useSyncWidgetNetwork } from './hooks/useSyncWidgetNetwork'
-import { useWidgetParamsAndSettings } from './hooks/useWidgetParamsAndSettings'
+import { useWidgetParams } from './hooks/useWidgetParamsAndSettings'
 import { ContentStyled, DrawerStyled, WalletConnectionWrapper, WrapperStyled } from './styled'
 import { ConfiguratorState, TokenListItem } from './types'
 
@@ -161,7 +161,7 @@ export function Configurator({ title }: { title: string }) {
     defaultColors: defaultPalette,
   }
 
-  const params = useWidgetParamsAndSettings(provider, state)
+  const params = useWidgetParams(state)
 
   useEffect(() => {
     web3Modal.setThemeMode(mode)
@@ -266,7 +266,7 @@ export function Configurator({ title }: { title: string }) {
               handleClose={handleDialogClose}
             />
             <br />
-            <CowSwapWidget provider={provider} params={params} listeners={COW_LISTENERS} />
+            <CowSwapWidget params={params} provider={provider} listeners={COW_LISTENERS} />
           </>
         )}
       </Box>
