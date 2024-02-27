@@ -31,8 +31,12 @@ import {
 } from 'legacy/state/orders/hooks'
 import { OrderTransitionStatus } from 'legacy/state/orders/utils'
 
-import { emitFulfilledOrderEvent, emitCancelledOrderEvent } from 'modules/orders'
-import { emitExpiredOrderEvent } from 'modules/orders'
+import {
+  emitFulfilledOrderEvent,
+  emitCancelledOrderEvent,
+  emitPresignedOrderEvent,
+  emitExpiredOrderEvent,
+} from 'modules/orders'
 import { useAddOrderToSurplusQueue } from 'modules/swap/state/surplusModal'
 
 import { getOrder } from 'api/gnosisProtocol'
@@ -54,9 +58,9 @@ import { useTriggerTotalSurplusUpdateCallback } from '../../state/totalSurplusSt
  * @returns ids of the pending orders that were pending for pre-sign, and we now know are pre-signed
  */
 function _getNewlyPreSignedOrders(allPendingOrders: Order[], signedOrdersIds: string[]) {
-  return allPendingOrders
-    .filter((order) => order.status === OrderStatus.PRESIGNATURE_PENDING && signedOrdersIds.includes(order.id))
-    .map((order) => order.id)
+  return allPendingOrders.filter(
+    (order) => order.status === OrderStatus.PRESIGNATURE_PENDING && signedOrdersIds.includes(order.id)
+  )
 }
 
 /**
@@ -212,9 +216,13 @@ async function _updateOrders({
 
     if (ordersPresignaturePendingSigned.length > 0) {
       presignOrders({
-        ids: ordersPresignaturePendingSigned,
+        ids: ordersPresignaturePendingSigned.map((order) => order.id),
         chainId,
         isSafeWallet,
+      })
+
+      ordersPresignaturePendingSigned.forEach((order) => {
+        emitPresignedOrderEvent({ chainId, orderUid: order.id, orderType: getUiOrderType(order) })
       })
     }
   }

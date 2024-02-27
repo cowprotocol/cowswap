@@ -7,6 +7,7 @@ export enum ToastMessageType {
   ORDER_FULFILLED = 'ORDER_FULFILLED',
   ORDER_CANCELLED = 'ORDER_CANCELLED',
   ORDER_EXPIRED = 'ORDER_EXPIRED',
+  ORDER_PRESIGNED = 'ORDER_PRESIGNED',
 }
 
 export interface ToastMessagePayloads {
@@ -37,6 +38,11 @@ export interface ToastMessagePayloads {
   }
 
   [ToastMessageType.ORDER_EXPIRED]: {
+    orderUid: string
+    orderType: UiOrderType
+  }
+
+  [ToastMessageType.ORDER_PRESIGNED]: {
     orderUid: string
     orderType: UiOrderType
   }
