@@ -32,6 +32,7 @@ export interface ToastMessagePayloads {
 
   [ToastMessageType.ORDER_CANCELLED]: {
     orderUid: string
+    orderType: UiOrderType
   }
 }
 

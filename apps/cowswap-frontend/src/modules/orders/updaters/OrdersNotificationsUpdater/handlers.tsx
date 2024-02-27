@@ -60,7 +60,8 @@ export const ORDERS_NOTIFICATION_HANDLERS: Record<CowEvents, OrdersNotifications
     icon: 'success',
     handler: (payload: OnCancelledOrderPayload) => {
       const onToastMessage = getToastMessageCallback(ToastMessageType.ORDER_CANCELLED, {
-        orderUid: payload.orderUid,
+        orderUid: payload.order.uid,
+        orderType: getUiOrderType(payload.order),
       })
 
       return <CancelledOrderNotification payload={payload} onToastMessage={onToastMessage} />

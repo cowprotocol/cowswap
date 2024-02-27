@@ -19,7 +19,11 @@ export interface PendingOrderNotificationProps {
 
 export function CancelledOrderNotification(props: PendingOrderNotificationProps) {
   const {
-    payload: { chainId, orderUid, transactionHash },
+    payload: {
+      chainId,
+      order: { uid: orderUid },
+      transactionHash,
+    },
     onToastMessage,
   } = props
 

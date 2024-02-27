@@ -32,6 +32,6 @@ export type OnFulfilledOrderPayload = {
 
 export type OnCancelledOrderPayload = {
   chainId: SupportedChainId
-  orderUid: string
+  order: EnrichedOrder
   transactionHash?: string
 }

@@ -236,7 +236,7 @@ async function _updateOrders({
     cancelled.forEach((order) => {
       emitCancelledOrderEvent({
         chainId,
-        orderUid: order.uid,
+        order,
       })
     })
   }
