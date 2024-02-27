@@ -81,25 +81,24 @@ export function TokensListsUpdater({ chainId: currentChainId }: TokensListsUpdat
 
     fetch('https://api.country.is')
       .then((res) => res.json())
-      .then(({ country, ip }) => {
+      .then(({ country }) => {
         const isUsUser = country === 'US'
 
         if (isUsUser) {
           setEnvironment({ useCuratedListOnly: true })
           updateLastUpdateTime({ [chainId]: 0 })
-
-          const sentryError = Object.assign(new Error(), {
-            message: '',
-            name: 'USUserError',
-          })
-
-          Sentry.captureException(sentryError, {
-            tags: {
-              errorType: 'USUserError',
-            },
-            contexts: { ip },
-          })
         }
+      })
+      .catch((error) => {
+        const sentryError = Object.assign(error, {
+          name: 'GeoBlockingError',
+        })
+
+        Sentry.captureException(sentryError, {
+          tags: {
+            errorType: 'GeoBlockingError',
+          },
+        })
       })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chainId])
