@@ -17,7 +17,6 @@ import * as styledEl from './styled'
 
 export interface TradeRatesProps {
   trade: TradeGp | undefined
-  isExpertMode: boolean
   allowedSlippage: Percent
   allowsOffchainSigning: boolean
   userAllowedSlippage: Percent | string
@@ -35,7 +34,6 @@ export const TradeRates = React.memo(function (props: TradeRatesProps) {
     isFeeGreater,
     fee,
     trade,
-    isExpertMode,
     allowsOffchainSigning,
     userAllowedSlippage,
     // discount,
@@ -57,7 +55,6 @@ export const TradeRates = React.memo(function (props: TradeRatesProps) {
       {showTradeBasicDetails && (
         <TradeBasicDetails
           allowedSlippage={userAllowedSlippage}
-          isExpertMode={isExpertMode}
           allowsOffchainSigning={allowsOffchainSigning}
           trade={trade}
           fee={fee}

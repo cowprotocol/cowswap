@@ -12,7 +12,7 @@ import useCowBalanceAndSubsidy from 'legacy/hooks/useCowBalanceAndSubsidy'
 import { useModalIsOpen } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
 import { Field } from 'legacy/state/types'
-import { useExpertModeManager, useUserSlippageTolerance } from 'legacy/state/user/hooks'
+import { useUserSlippageTolerance } from 'legacy/state/user/hooks'
 
 import { EthFlowModal, EthFlowProps } from 'modules/swap/containers/EthFlow'
 import { SwapModals, SwapModalsProps } from 'modules/swap/containers/SwapModals'
@@ -53,11 +53,8 @@ import {
 } from '../../hooks/useSwapState'
 import { ConfirmSwapModalSetup } from '../ConfirmSwapModalSetup'
 
-const BUTTON_STATES_TO_SHOW_BUNDLE_APPROVAL_BANNER = [
-  SwapButtonState.ApproveAndSwap,
-  SwapButtonState.ExpertApproveAndSwap,
-]
-const BUTTON_STATES_TO_SHOW_BUNDLE_WRAP_BANNER = [SwapButtonState.WrapAndSwap, SwapButtonState.ExpertWrapAndSwap]
+const BUTTON_STATES_TO_SHOW_BUNDLE_APPROVAL_BANNER = [SwapButtonState.ApproveAndSwap]
+const BUTTON_STATES_TO_SHOW_BUNDLE_WRAP_BANNER = [SwapButtonState.WrapAndSwap]
 
 export function SwapWidget() {
   const { chainId, account } = useWalletInfo()
@@ -71,7 +68,6 @@ export function SwapWidget() {
   const parsedAmounts = useSwapCurrenciesAmounts()
   const { isSupportedWallet, allowsOffchainSigning } = useWalletDetails()
   const isSwapUnsupported = useIsTradeUnsupported(currencies.INPUT, currencies.OUTPUT)
-  const [isExpertMode] = useExpertModeManager()
   const swapActions = useSwapActionHandlers()
   const subsidyAndBalance = useCowBalanceAndSubsidy()
   const userAllowedSlippage = useUserSlippageTolerance()
@@ -230,7 +226,6 @@ export function SwapWidget() {
     feeWarningAccepted,
     impactWarningAccepted,
     hideUnknownImpactWarning,
-    isExpertMode,
     showApprovalBundlingBanner,
     showWrapBundlingBanner,
     showSafeWcBundlingBanner,
@@ -253,7 +248,6 @@ export function SwapWidget() {
 
   const tradeRatesProps: TradeRatesProps = {
     trade,
-    isExpertMode,
     allowedSlippage,
     allowsOffchainSigning,
     userAllowedSlippage,
@@ -285,7 +279,6 @@ export function SwapWidget() {
     isTradePriceUpdating,
     priceImpact: priceImpactParams,
     disableQuotePolling: true,
-    isExpertMode,
     disablePriceImpact,
   }
 

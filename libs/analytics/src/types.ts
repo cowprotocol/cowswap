@@ -2,7 +2,6 @@ export enum Category {
   TRADE = 'Trade',
   LIST = 'Lists',
   CURRENCY_SELECT = 'Currency Select',
-  EXPERT_MODE = 'Expert mode',
   RECIPIENT_ADDRESS = 'Recipient address',
   ORDER_SLIPAGE_TOLERANCE = 'Order Slippage Tolerance',
   ORDER_EXPIRATION_TIME = 'Order Expiration Time',

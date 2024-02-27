@@ -3,20 +3,6 @@ import { debounce } from '@cowprotocol/common-utils'
 import { sendEvent } from '../googleAnalytics'
 import { Category } from '../types'
 
-export function toggleExpertModeAnalytics(enable: boolean) {
-  sendEvent({
-    category: Category.EXPERT_MODE,
-    action: `${enable ? 'Enable' : 'Disable'} Expert Mode`,
-  })
-}
-
-export function showExpertModeConfirmationAnalytics() {
-  sendEvent({
-    category: Category.EXPERT_MODE,
-    action: 'Show Confirmation',
-  })
-}
-
 export function toggleRecepientAddressAnalytics(enable: boolean) {
   sendEvent({
     category: Category.RECIPIENT_ADDRESS,
