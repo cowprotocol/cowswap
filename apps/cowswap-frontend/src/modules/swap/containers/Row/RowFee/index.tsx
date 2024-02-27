@@ -45,6 +45,8 @@ export interface RowFeeProps extends RowWithShowHelpersProps {
   fee?: CurrencyAmount<Currency>
   feeFiatValue: CurrencyAmount<Token> | null
   allowsOffchainSigning: boolean
+  noLabel?: boolean
+  showFiatOnly?: boolean
 }
 
 function isValidNonZeroAmount(value: string): boolean {
@@ -57,7 +59,15 @@ function isValidNonZeroAmount(value: string): boolean {
   }
 }
 
-export function RowFee({ trade, fee, feeFiatValue, allowsOffchainSigning, showHelpers }: RowFeeProps) {
+export function RowFee({
+  trade,
+  fee,
+  feeFiatValue,
+  allowsOffchainSigning,
+  showHelpers,
+  noLabel,
+  showFiatOnly,
+}: RowFeeProps) {
   const { realizedFee } = useMemo(() => computeTradePriceBreakdown(trade), [trade])
 
   const isEoaEthFlow = useIsEoaEthFlow()
@@ -88,7 +98,10 @@ export function RowFee({ trade, fee, feeFiatValue, allowsOffchainSigning, showHe
     const feeToken = isValidNonZeroAmount(smartFeeTokenValue)
       ? feeAmountWithCurrency
       : `🎉 Free!${isEoaEthFlow ? ' (+ gas)' : ''}`
-    const feeUsd = isValidNonZeroAmount(smartFeeFiatValue) ? smartFeeFiatValue && `(≈$${smartFeeFiatValue})` : ''
+    const feeUsd = isValidNonZeroAmount(smartFeeFiatValue)
+      ? `${showFiatOnly ? '' : '('}≈$${smartFeeFiatValue}${showFiatOnly ? '' : ')'}`
+      : ''
+
     const fullDisplayFee = FractionUtils.fractionLikeToExactString(displayFee) || '-'
 
     return {
@@ -98,8 +111,10 @@ export function RowFee({ trade, fee, feeFiatValue, allowsOffchainSigning, showHe
       fullDisplayFee,
       feeCurrencySymbol,
       tooltip,
+      noLabel,
+      showFiatOnly,
     }
-  }, [fee, feeFiatValue, isEoaEthFlow, realizedFee, showHelpers, tooltip])
+  }, [fee, feeFiatValue, isEoaEthFlow, realizedFee, showHelpers, tooltip, noLabel, showFiatOnly])
 
   return <RowFeeContent {...props} />
 }

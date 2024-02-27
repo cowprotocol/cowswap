@@ -24,11 +24,12 @@ interface TradeBasicDetailsProp extends BoxProps {
   allowsOffchainSigning: boolean
   trade?: TradeGp
   fee: CurrencyAmount<Currency>
+  fiatFeeOnly?: boolean
   isReviewSwap?: boolean
 }
 
 export function TradeBasicDetails(props: TradeBasicDetailsProp) {
-  const { trade, allowedSlippage, allowsOffchainSigning, fee, isReviewSwap, ...boxProps } = props
+  const { trade, allowedSlippage, allowsOffchainSigning, fee, isReviewSwap, fiatFeeOnly, ...boxProps } = props
   const allowedSlippagePercent = !(allowedSlippage instanceof Percent)
     ? INITIAL_ALLOWED_SLIPPAGE_PERCENT
     : allowedSlippage
@@ -40,6 +41,22 @@ export function TradeBasicDetails(props: TradeBasicDetailsProp) {
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
 
   const isExactIn = trade?.tradeType === TradeType.EXACT_INPUT
+
+  if (fiatFeeOnly) {
+    // Render and return only the fee's fiat value
+    return (
+      <LowerSectionWrapper {...boxProps}>
+        <RowFee
+          fee={fee}
+          feeFiatValue={feeFiatValue}
+          showHelpers={false}
+          noLabel={true}
+          showFiatOnly={true}
+          allowsOffchainSigning={allowsOffchainSigning}
+        />
+      </LowerSectionWrapper>
+    )
+  }
 
   const showRowSlippage =
     (isReviewSwap || isEoaEthFlow || !allowedSlippagePercent.equalTo(INITIAL_ALLOWED_SLIPPAGE_PERCENT)) &&
