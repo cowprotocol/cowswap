@@ -123,13 +123,13 @@ export function RowFee({
   return <RowFeeContent {...props} />
 }
 
-export interface PartnerRowPartnerFeeProps extends RowWithShowHelpersProps {
+export interface PartnerRowPartnerFeeProps {
   partnerFee: PartnerFee
   feeAmount?: CurrencyAmount<Currency>
   feeInFiat: CurrencyAmount<Token> | null
 }
 
-export function RowPartnerFee({ partnerFee, feeAmount, feeInFiat, showHelpers }: PartnerRowPartnerFeeProps) {
+export function RowPartnerFee({ partnerFee, feeAmount, feeInFiat }: PartnerRowPartnerFeeProps) {
   const props = useMemo(() => {
     const feeCurrencySymbol = feeAmount?.currency.symbol || '-' // TODO: Once we implement the computation of the fee, we should express it in the relevant fee currency (buy token for sell orders)
     const feeInFiatFormatted = formatFiatAmount(feeInFiat)
@@ -142,7 +142,6 @@ export function RowPartnerFee({ partnerFee, feeAmount, feeInFiat, showHelpers }:
 
     return {
       label: 'Partner fee',
-      showHelpers,
       feeToken: feeAmountWithCurrency,
       feeUsd,
       fullDisplayFee,
@@ -151,7 +150,7 @@ export function RowPartnerFee({ partnerFee, feeAmount, feeInFiat, showHelpers }:
         bpsToPercent(bps)
       )}%). Applied only if the trade is executed.`,
     }
-  }, [partnerFee, feeAmount, feeInFiat, showHelpers])
+  }, [partnerFee, feeAmount, feeInFiat])
 
-  return <RowFeeContent {...props} />
+  return <RowFeeContent {...props} showHelpers={true} />
 }

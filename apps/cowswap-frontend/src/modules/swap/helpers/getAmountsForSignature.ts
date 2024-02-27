@@ -41,17 +41,17 @@ function outputAmountForSignature(params: AmountForSignatureParams): CurrencyAmo
 
   if (featureFlags.swapZeroFee) {
     if (isSellOrder(kind)) {
-      return trade.outputAmount.multiply(slippageCoeff) // subtract slippage
+      return trade.outputAmountWithPartnerFee.multiply(slippageCoeff) // subtract slippage
     } else {
       return trade.outputAmountWithoutFee
     }
   }
 
   if (trade.tradeType === TradeType.EXACT_OUTPUT) {
-    return trade.outputAmount
+    return trade.outputAmountWithPartnerFee
   }
 
-  return trade.outputAmount.multiply(slippageCoeff) // subtract slippage
+  return trade.outputAmountWithPartnerFee.multiply(slippageCoeff) // subtract slippage
 }
 
 export interface AmountsForSignature {
