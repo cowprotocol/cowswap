@@ -242,13 +242,7 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
 
   const isWrapping = isWrappingTrade(inputCurrency, outputCurrency, chainId)
 
-  // TODO: Remove the default partner fee after testing
-  const {
-    partnerFee = {
-      bps: 35,
-      recipient: '0x79063d9173C09887d536924E2F6eADbaBAc099f5',
-    },
-  } = useInjectedWidgetParams()
+  const { partnerFee } = useInjectedWidgetParams()
 
   console.log('partnerFee', partnerFee)
   const bestTradeExactIn = useTradeExactInWithFee({
