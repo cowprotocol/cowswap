@@ -24,6 +24,7 @@ export function TradeSummary({ trade, ...restProps }: TradeSummaryProps) {
       {...restProps}
       trade={trade}
       fee={feeFiatValue}
+      partnerFee={trade.partnerFee}
       allowsOffchainSigning={allowsOffchainSigning}
     />
   )

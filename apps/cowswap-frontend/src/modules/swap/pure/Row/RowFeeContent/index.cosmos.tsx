@@ -24,20 +24,22 @@ const trade = new TradeGp({
   executionPrice: new Price(currency, currencyOut, 1, 4),
   tradeType: TradeType.EXACT_INPUT,
   quoteId: 10000,
+  partnerFee: { bps: 35, recipient: '0x1234567890123456789012345678901234567890' },
 })
 const defaultProps: RowFeeProps & RowFeeContentProps = {
+  label: 'Est. Fee',
   trade,
-  fee: CurrencyAmount.fromRawAmount(currency, fee * 10 ** 18),
+  feeAmount: CurrencyAmount.fromRawAmount(currency, fee * 10 ** 18),
   feeUsd: '(≈$42.93)',
   feeCurrencySymbol: 'GNO',
-  get feeFiatValue() {
-    return currencyAmountToTokenAmount(this.fee?.multiply('100')) || null
+  get feeInFiat() {
+    return currencyAmountToTokenAmount(this.feeAmount?.multiply('100')) || null
   },
   get feeToken() {
-    return (this.fee?.toExact() || '-') + ' ' + this.feeCurrencySymbol
+    return (this.feeAmount?.toExact() || '-') + ' ' + this.feeCurrencySymbol
   },
   get fullDisplayFee() {
-    return this.fee?.quotient.toString() || 'Unknown'
+    return this.feeAmount?.quotient.toString() || 'Unknown'
   },
   showHelpers: true,
   allowsOffchainSigning: true,
