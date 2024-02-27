@@ -17,7 +17,10 @@ export interface PresignedOrderNotificationProps {
 
 export function PresignedOrderNotification(props: PresignedOrderNotificationProps) {
   const {
-    payload: { chainId, orderUid },
+    payload: {
+      chainId,
+      order: { uid: orderUid },
+    },
     onToastMessage,
   } = props
 

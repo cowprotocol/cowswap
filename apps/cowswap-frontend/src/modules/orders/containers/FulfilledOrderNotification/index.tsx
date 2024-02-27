@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react'
 
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { OnFulfilledOrderPayload } from '@cowprotocol/events'
 import { TokenInfo } from '@cowprotocol/types'
 
 import { EnhancedTransactionLink } from 'legacy/components/EnhancedTransactionLink'
@@ -24,12 +24,15 @@ function SummaryTemplate({ inputAmount, outputAmount }: OrderSummaryTemplateProp
 }
 
 interface FulfilledOrderNotificationProps {
-  uid: string
-  chainId: SupportedChainId
+  payload: OnFulfilledOrderPayload
   onToastMessage(message: string): void
 }
 
-export function FulfilledOrderNotification({ chainId, uid, onToastMessage }: FulfilledOrderNotificationProps) {
+export function FulfilledOrderNotification({ payload, onToastMessage }: FulfilledOrderNotificationProps) {
+  const {
+    chainId,
+    order: { uid: orderUid },
+  } = payload
   const ref = useCallback(
     (node: HTMLDivElement) => {
       if (node) onToastMessage(node.innerText)
@@ -37,7 +40,7 @@ export function FulfilledOrderNotification({ chainId, uid, onToastMessage }: Ful
     [onToastMessage]
   )
 
-  const order = useOrder({ chainId, id: uid })
+  const order = useOrder({ chainId, id: orderUid })
   const surplusData = useGetSurplusData(order)
 
   const executedData = useMemo(() => {
@@ -49,7 +52,7 @@ export function FulfilledOrderNotification({ chainId, uid, onToastMessage }: Ful
   const { formattedFilledAmount, formattedSwappedAmount } = executedData
 
   const tx = {
-    hash: uid,
+    hash: orderUid,
     hashType: HashType.ETHEREUM_TX,
   }
 

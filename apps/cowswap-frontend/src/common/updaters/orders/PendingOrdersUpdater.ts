@@ -7,7 +7,12 @@ import {
   openNpsAppziSometimes,
   timeSinceInSeconds,
 } from '@cowprotocol/common-utils'
-import { EnrichedOrder, EthflowData, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import {
+  EnrichedOrder,
+  EthflowData,
+  SupportedChainId as ChainId,
+  OrderStatus as SdkOrderStatus,
+} from '@cowprotocol/cow-sdk'
 import { Command, UiOrderType } from '@cowprotocol/types'
 import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
 
@@ -46,22 +51,6 @@ import { fetchAndClassifyOrder } from './utils'
 
 import { removeOrdersToCancelAtom } from '../../hooks/useMultipleOrdersCancellation/state'
 import { useTriggerTotalSurplusUpdateCallback } from '../../state/totalSurplusState'
-
-/**
- * Return the ids of the orders that we are not yet aware that are signed.
- * This is, pre-sign orders, in state of "PRESIGNATURE_PENDING", for which we now know they are signed
- *
- * Used as an auxiliar method to detect which orders we should mark as pre-signed, so we change their state
- *
- * @param allPendingOrders All pending orders
- * @param signedOrdersIds ids of orders we know are already pre-signed
- * @returns ids of the pending orders that were pending for pre-sign, and we now know are pre-signed
- */
-function _getNewlyPreSignedOrders(allPendingOrders: Order[], signedOrdersIds: string[]) {
-  return allPendingOrders.filter(
-    (order) => order.status === OrderStatus.PRESIGNATURE_PENDING && signedOrdersIds.includes(order.id)
-  )
-}
 
 /**
  *
@@ -211,18 +200,19 @@ async function _updateOrders({
 
   if (presigned.length > 0) {
     // Only mark as presigned the orders we were not aware of their new state
-    const presignedOrderIds = presigned.map(({ uid }) => uid)
-    const ordersPresignaturePendingSigned = _getNewlyPreSignedOrders(orders, presignedOrderIds)
+    const ordersPresignaturePendingSigned = presigned.filter(
+      (order) => order.status === SdkOrderStatus.PRESIGNATURE_PENDING
+    )
 
     if (ordersPresignaturePendingSigned.length > 0) {
       presignOrders({
-        ids: ordersPresignaturePendingSigned.map((order) => order.id),
+        ids: ordersPresignaturePendingSigned.map((order) => order.uid),
         chainId,
         isSafeWallet,
       })
 
       ordersPresignaturePendingSigned.forEach((order) => {
-        emitPresignedOrderEvent({ chainId, orderUid: order.id, orderType: getUiOrderType(order) })
+        emitPresignedOrderEvent({ chainId, order })
       })
     }
   }

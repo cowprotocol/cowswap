@@ -16,23 +16,21 @@ import { EVENT_EMITTER } from 'eventEmitter'
 
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
-import { OrdersNotificationsContext } from './types'
-
 import { CancelledOrderNotification } from '../../containers/CancelledOrderNotification'
 import { ExpiredOrderNotification } from '../../containers/ExpiredOrderNotification'
 import { FulfilledOrderNotification } from '../../containers/FulfilledOrderNotification'
+import { PendingOrderNotification } from '../../containers/PendingOrderNotification'
 import { PresignedOrderNotification } from '../../containers/PresignedOrderNotification'
-import { PendingOrderNotification } from '../../pure/PendingOrderNotification'
 
-type OrdersNotificationsHandler<C> = {
+type OrdersNotificationsHandler = {
   icon: IconType
-  handler(payload: CowEventPayloads[keyof CowEventPayloads], context: C): JSX.Element | null
+  handler(payload: CowEventPayloads[keyof CowEventPayloads]): JSX.Element | null
 }
 
-export const ORDERS_NOTIFICATION_HANDLERS: Record<CowEvents, OrdersNotificationsHandler<OrdersNotificationsContext>> = {
+export const ORDERS_NOTIFICATION_HANDLERS: Record<CowEvents, OrdersNotificationsHandler> = {
   [CowEvents.ON_POSTED_ORDER]: {
     icon: 'success',
-    handler: (payload: OnPostedOrderPayload, context: OrdersNotificationsContext) => {
+    handler: (payload: OnPostedOrderPayload) => {
       const { orderUid, orderType } = payload
 
       const onToastMessage = getToastMessageCallback(ToastMessageType.ORDER_CREATED, {
@@ -40,24 +38,20 @@ export const ORDERS_NOTIFICATION_HANDLERS: Record<CowEvents, OrdersNotifications
         orderType,
       })
 
-      return (
-        <PendingOrderNotification
-          payload={payload}
-          isSafeWallet={context.isSafeWallet}
-          onToastMessage={onToastMessage}
-        />
-      )
+      return <PendingOrderNotification payload={payload} onToastMessage={onToastMessage} />
     },
   },
   [CowEvents.ON_FULFILLED_ORDER]: {
     icon: 'success',
-    handler: ({ order, chainId }: OnFulfilledOrderPayload) => {
+    handler: (payload: OnFulfilledOrderPayload) => {
+      const { order } = payload
+
       const onToastMessage = getToastMessageCallback(ToastMessageType.ORDER_FULFILLED, {
         orderUid: order.uid,
         orderType: getUiOrderType(order),
       })
 
-      return <FulfilledOrderNotification chainId={chainId} uid={order.uid} onToastMessage={onToastMessage} />
+      return <FulfilledOrderNotification payload={payload} onToastMessage={onToastMessage} />
     },
   },
   [CowEvents.ON_CANCELLED_ORDER]: {
@@ -86,8 +80,8 @@ export const ORDERS_NOTIFICATION_HANDLERS: Record<CowEvents, OrdersNotifications
     icon: 'success',
     handler: (payload: OnPresignedOrderPayload) => {
       const onToastMessage = getToastMessageCallback(ToastMessageType.ORDER_PRESIGNED, {
-        orderUid: payload.orderUid,
-        orderType: payload.orderType,
+        orderUid: payload.order.uid,
+        orderType: getUiOrderType(payload.order),
       })
 
       return <PresignedOrderNotification payload={payload} onToastMessage={onToastMessage} />

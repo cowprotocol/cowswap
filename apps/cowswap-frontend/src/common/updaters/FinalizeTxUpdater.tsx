@@ -29,6 +29,7 @@ import { partialOrderUpdate } from 'legacy/state/orders/utils'
 import { emitCancelledOrderEvent } from 'modules/orders'
 import { removeInFlightOrderIdAtom } from 'modules/swap/state/EthFlow/ethFlowInFlightOrderIdsAtom'
 
+import { getOrder } from 'api/gnosisProtocol'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 const DELAY_REMOVAL_ETH_FLOW_ORDER_ID_MILLISECONDS = ms`2m` // Delay removing the order ID since the creation time its mined (minor precaution just to avoid edge cases of delay in indexing times affect the collision detection
@@ -176,16 +177,20 @@ function finalizeOnChainCancellation(
   orderId: string,
   sellTokenSymbol: string
 ) {
-  const { chainId, isSafeWallet, dispatch, addPopup, cancelOrdersBatch, account } = params
+  const { chainId, isSafeWallet, dispatch, addPopup, cancelOrdersBatch } = params
 
   if (receipt.status === 1) {
     // If cancellation succeeded, mark order as cancelled
     cancelOrdersBatch({ chainId, ids: [orderId], isSafeWallet })
 
-    emitCancelledOrderEvent({
-      chainId,
-      orderUid: orderId,
-      transactionHash: hash,
+    getOrder(chainId, orderId).then((order) => {
+      if (!order) return
+
+      emitCancelledOrderEvent({
+        chainId,
+        order,
+        transactionHash: hash,
+      })
     })
   } else {
     // If cancellation failed:
