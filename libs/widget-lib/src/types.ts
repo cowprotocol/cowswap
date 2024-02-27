@@ -81,6 +81,23 @@ export enum TradeType {
   ADVANCED = 'advanced',
 }
 
+/**
+ * The partner fee
+ *
+ * Please contact https://cowprotocol.typeform.com/to/rONXaxHV
+ */
+export interface PartnerFee {
+  /**
+   * The fee in basis points (BPS). One basis point is equivalent to 0.01% (1/100th of a percent)
+   */
+  bps: number
+
+  /**
+   * The Ethereum address of the partner to receive the fee.
+   */
+  recipient: string
+}
+
 export interface CowSwapWidgetPalette {
   baseTheme: CowSwapTheme
   primary: string
@@ -143,12 +160,11 @@ export interface CowSwapWidgetParams {
   enabledTradeTypes?: TradeType[]
 
   /**
-   * The interface fee in basis points.
-   * For example: 1.5% = 150 bips
+   * The partner fee
    *
    * Please contact https://cowprotocol.typeform.com/to/rONXaxHV
    */
-  interfaceFeeBips?: string
+  partnerFee?: PartnerFee
 
   /**
    * Disables showing the confirmation modal you get after posting an order.

@@ -172,9 +172,9 @@ export function isRejectRequestProviderError(error: any) {
 }
 
 /**
- * Helper function that transforms a Percent instance into the correspondent BIPS value as a string
+ * Helper function that transforms a Percent instance into the correspondent BPS value as a string
  * @param percent
  */
-export function percentToBips(percent: Percent): string {
-  return percent.multiply('100').toSignificant()
+export function percentToBps(percent: Percent): number {
+  return Number(percent.multiply('100').toSignificant())
 }
