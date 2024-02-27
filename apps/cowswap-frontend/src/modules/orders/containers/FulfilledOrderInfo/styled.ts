@@ -26,6 +26,7 @@ export const SurplusWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  margin-top: 15px;
 
   > span:first-child {
     margin-right: 5px;

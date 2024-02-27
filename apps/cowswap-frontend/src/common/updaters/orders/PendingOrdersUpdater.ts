@@ -7,12 +7,7 @@ import {
   openNpsAppziSometimes,
   timeSinceInSeconds,
 } from '@cowprotocol/common-utils'
-import {
-  EnrichedOrder,
-  EthflowData,
-  SupportedChainId as ChainId,
-  OrderStatus as SdkOrderStatus,
-} from '@cowprotocol/cow-sdk'
+import { EnrichedOrder, EthflowData, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { Command, UiOrderType } from '@cowprotocol/types'
 import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
 
@@ -199,19 +194,27 @@ async function _updateOrders({
   )
 
   if (presigned.length > 0) {
-    // Only mark as presigned the orders we were not aware of their new state
-    const ordersPresignaturePendingSigned = presigned.filter(
-      (order) => order.status === SdkOrderStatus.PRESIGNATURE_PENDING
-    )
+    const presignedMap = presigned.reduce<{ [key: string]: EnrichedOrder }>((acc, order) => {
+      acc[order.uid] = order
+      return acc
+    }, {})
 
-    if (ordersPresignaturePendingSigned.length > 0) {
+    const presignedIds = presigned.map((order) => order.uid)
+
+    const newlyPreSignedOrders = orders
+      .filter((order) => {
+        return presignedIds.includes(order.id) && order.status === OrderStatus.PRESIGNATURE_PENDING
+      })
+      .map((order) => presignedMap[order.id])
+
+    if (newlyPreSignedOrders.length > 0) {
       presignOrders({
-        ids: ordersPresignaturePendingSigned.map((order) => order.uid),
+        ids: newlyPreSignedOrders.map((order) => order.uid),
         chainId,
         isSafeWallet,
       })
 
-      ordersPresignaturePendingSigned.forEach((order) => {
+      newlyPreSignedOrders.forEach((order) => {
         emitPresignedOrderEvent({ chainId, order })
       })
     }
