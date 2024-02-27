@@ -13,10 +13,11 @@ interface OrderSummaryProps {
   sellAmount: string
   buyAmount: string
   kind: OrderKind
+  children?: JSX.Element | string
 }
 
 export function OrderSummary(props: OrderSummaryProps) {
-  const { kind, sellAmount, buyAmount, outputToken, inputToken } = props
+  const { kind, sellAmount, buyAmount, outputToken, inputToken, children } = props
   const isSell = isSellOrder(kind)
 
   const inputAmount = useMemo(() => {
@@ -41,6 +42,7 @@ export function OrderSummary(props: OrderSummaryProps) {
           Buy {outputAmountElement} for at most {inputAmountElement}
         </>
       )}
+      {children}
     </div>
   )
 }

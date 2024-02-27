@@ -5,3 +5,4 @@ export { OrdersNotificationsUpdater } from './updaters/OrdersNotificationsUpdate
 export { emitPostedOrderEvent } from './utils/emitPostedOrderEvent'
 export { emitFulfilledOrderEvent } from './utils/emitFulfilledOrderEvent'
 export { emitCancelledOrderEvent } from './utils/emitCancelledOrderEvent'
+export { emitExpiredOrderEvent } from './utils/emitExpiredOrderEvent'

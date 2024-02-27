@@ -1,14 +1,12 @@
 import { AnyAction, Dispatch, MiddlewareAPI } from 'redux'
 import { instance, mock, resetCalls, when } from 'ts-mockito'
 
-import { batchExpireOrdersPopup } from './batchExpireOrdersPopup'
 import { batchPresignOrdersPopup } from './batchPresignOrdersPopup'
 import { popupMiddleware } from './popupMiddleware'
 
 import { AppState } from '../../index'
 
 // Mock simple fns using raw jest
-jest.mock('./batchExpireOrdersPopup')
 jest.mock('./batchPresignOrdersPopup')
 
 const nextMock = jest.fn()
@@ -42,18 +40,6 @@ describe('popupMiddleware', () => {
 
       popupMiddleware(instance(mockStore))(nextMock)(instance(actionMock))
 
-      expect(batchExpireOrdersPopup).toHaveBeenCalledTimes(0)
-      expect(batchPresignOrdersPopup).toHaveBeenCalledTimes(0)
-    })
-
-    it('should call batchExpireOrdersPopup when is batch expire order action', () => {
-      when(actionMock.type).thenReturn('order/expireOrdersBatch')
-
-      popupMiddleware(instance(mockStore))(nextMock)(instance(actionMock))
-
-      // expect(batchExpireOrdersPopup).toHaveBeenCalledWith(null, { chainId: 1 }, 'mock orders')
-
-      expect(batchExpireOrdersPopup).toHaveBeenCalledTimes(1)
       expect(batchPresignOrdersPopup).toHaveBeenCalledTimes(0)
     })
 
@@ -64,7 +50,6 @@ describe('popupMiddleware', () => {
 
       // expect(batchPresignOrdersPopup).toHaveBeenCalledWith(null, { chainId: 1 }, 'mock orders')
 
-      expect(batchExpireOrdersPopup).toHaveBeenCalledTimes(0)
       expect(batchPresignOrdersPopup).toHaveBeenCalledTimes(1)
     })
   })
