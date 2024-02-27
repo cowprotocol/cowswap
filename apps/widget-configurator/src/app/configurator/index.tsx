@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react'
+import { ChangeEvent, useContext, useEffect, useState } from 'react'
 
 import { CowEventListeners, CowEvents, ToastMessageType } from '@cowprotocol/events'
 import { TradeType } from '@cowprotocol/widget-lib'
@@ -9,6 +9,7 @@ import CodeIcon from '@mui/icons-material/Code'
 import EditIcon from '@mui/icons-material/Edit'
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft'
 import LanguageIcon from '@mui/icons-material/Language'
+import { Radio, RadioGroup, FormControlLabel, FormControl, FormLabel } from '@mui/material'
 import Box from '@mui/material/Box'
 import Divider from '@mui/material/Divider'
 import Drawer from '@mui/material/Drawer'
@@ -94,8 +95,17 @@ const COW_LISTENERS: CowEventListeners = [
 
 const UTM_PARAMS = 'utm_content=cow-widget-configurator&utm_medium=web&utm_source=widget.cow.fi'
 
+export type WidgetMode = 'dapp' | 'standalone'
+
 export function Configurator({ title }: { title: string }) {
   const { mode } = useContext(ColorModeContext)
+
+  const [widgetMode, setWidgetMode] = useState<WidgetMode>('dapp')
+  const isDappMode = widgetMode === 'dapp'
+
+  const selectWidgetMode = (event: ChangeEvent<HTMLInputElement>) => {
+    setWidgetMode(event.target.value as WidgetMode)
+  }
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(true)
 
@@ -161,7 +171,7 @@ export function Configurator({ title }: { title: string }) {
     defaultColors: defaultPalette,
   }
 
-  const params = useWidgetParams(state)
+  const params = useWidgetParams(state, isDappMode)
 
   useEffect(() => {
     web3Modal.setThemeMode(mode)
@@ -196,9 +206,18 @@ export function Configurator({ title }: { title: string }) {
           {title}
         </Typography>
 
-        <div style={WalletConnectionWrapper}>
-          <w3m-button />
-        </div>
+        <FormControl component="fieldset">
+          <FormLabel component="legend">Select Mode:</FormLabel>
+          <RadioGroup row aria-label="mode" name="mode" value={widgetMode} onChange={selectWidgetMode}>
+            <FormControlLabel value="dapp" control={<Radio />} label="Dapp mode" />
+            <FormControlLabel value="standalone" control={<Radio />} label="Standalone mode" />
+          </RadioGroup>
+        </FormControl>
+        {isDappMode && (
+          <div style={WalletConnectionWrapper}>
+            <w3m-button />
+          </div>
+        )}
 
         <ThemeControl />
 
@@ -266,7 +285,7 @@ export function Configurator({ title }: { title: string }) {
               handleClose={handleDialogClose}
             />
             <br />
-            <CowSwapWidget params={params} provider={provider} listeners={COW_LISTENERS} />
+            <CowSwapWidget params={params} provider={isDappMode ? provider : undefined} listeners={COW_LISTENERS} />
           </>
         )}
       </Box>
