@@ -37,6 +37,7 @@ export function TradeBasicDetails(props: TradeBasicDetailsProp) {
   // trades are null when there is a fee quote error e.g
   // so we can take both
   const feeFiatValue = useUsdAmount(fee).value
+  const partnerFeeFiatValue = useUsdAmount(trade?.partnerFeeAmount).value
   const isEoaEthFlow = useIsEoaEthFlow()
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
 
@@ -75,12 +76,13 @@ export function TradeBasicDetails(props: TradeBasicDetailsProp) {
         feeInFiat={feeFiatValue}
       />
 
-      {trade?.partnerFee && (
-        <RowPartnerFee showHelpers={true} partnerFee={trade.partnerFee} feeAmount={fee} feeInFiat={feeFiatValue} />
+      {trade?.partnerFeeAmount && trade.partnerFee && (
+        <RowPartnerFee
+          partnerFee={trade.partnerFee}
+          feeAmount={trade.partnerFeeAmount}
+          feeInFiat={partnerFeeFiatValue}
+        />
       )}
-
-      {/* TODO: delete */}
-      {!trade?.partnerFee && <>No partner fee</>}
 
       {isReviewSwap && (
         <>
@@ -92,7 +94,7 @@ export function TradeBasicDetails(props: TradeBasicDetailsProp) {
               {trade && (
                 <b>
                   <TokenAmount
-                    amount={isExactIn ? trade?.outputAmount : trade.inputAmountWithFee}
+                    amount={isExactIn ? trade?.outputAmountWithPartnerFee : trade.inputAmountWithFee}
                     tokenSymbol={isExactIn ? trade?.outputAmount.currency : trade.inputAmount.currency}
                     defaultValue="0"
                   />

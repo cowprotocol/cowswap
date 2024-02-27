@@ -50,10 +50,10 @@ export function _constructTradePrice({
 
 export function _minimumAmountOut(pct: Percent, trade: TradeGp) {
   if (trade.tradeType === TradeType.EXACT_OUTPUT) {
-    return trade.outputAmount
+    return trade.outputAmountWithPartnerFee
   }
 
-  return trade.outputAmount.multiply(ONE_FRACTION.subtract(pct))
+  return trade.outputAmountWithPartnerFee.multiply(ONE_FRACTION.subtract(pct))
 }
 
 export function _maximumAmountIn(pct: Percent, trade: TradeGp) {
@@ -70,11 +70,13 @@ interface TradeGpConstructor {
   inputAmountWithoutFee: CurrencyAmount<Currency>
   outputAmount: CurrencyAmount<Currency>
   outputAmountWithoutFee: CurrencyAmount<Currency>
+  outputAmountWithPartnerFee: CurrencyAmount<Currency>
   fee: FeeForTrade
   executionPrice: Price<Currency, Currency>
   tradeType: TradeType
   quoteId?: number
-  partnerFee: PartnerFee | undefined
+  partnerFee?: PartnerFee
+  partnerFeeAmount?: CurrencyAmount<Currency>
 }
 
 /**
@@ -97,6 +99,7 @@ export default class TradeGp {
    */
   readonly outputAmount: CurrencyAmount<Currency>
   readonly outputAmountWithoutFee: CurrencyAmount<Currency>
+  readonly outputAmountWithPartnerFee: CurrencyAmount<Currency>
   /**
    * Trade fee
    */
@@ -117,6 +120,10 @@ export default class TradeGp {
    * The partner fee
    */
   readonly partnerFee?: PartnerFee
+  /**
+   * The partner fee as token amount
+   */
+  readonly partnerFeeAmount?: CurrencyAmount<Currency>
 
   public constructor({
     inputAmount,
@@ -124,22 +131,26 @@ export default class TradeGp {
     inputAmountWithoutFee,
     outputAmount,
     outputAmountWithoutFee,
+    outputAmountWithPartnerFee,
     fee,
     executionPrice,
     tradeType,
     quoteId,
     partnerFee,
+    partnerFeeAmount,
   }: TradeGpConstructor) {
     this.tradeType = tradeType
     this.inputAmount = inputAmount
     this.inputAmountWithFee = inputAmountWithFee
     this.inputAmountWithoutFee = inputAmountWithoutFee
     this.outputAmountWithoutFee = outputAmountWithoutFee
+    this.outputAmountWithPartnerFee = outputAmountWithPartnerFee
     this.outputAmount = outputAmount
     this.fee = fee
     this.executionPrice = executionPrice
     this.quoteId = quoteId
     this.partnerFee = partnerFee
+    this.partnerFeeAmount = partnerFeeAmount
   }
   /**
    * Get the minimum amount that must be received from this trade for the given slippage tolerance

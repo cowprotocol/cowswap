@@ -1,3 +1,4 @@
+import { bpsToPercent } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { PartnerFee } from '@cowprotocol/widget-lib'
 import { Currency, CurrencyAmount, TradeType } from '@uniswap/sdk-core'
@@ -55,6 +56,8 @@ export function useTradeExactInWithFee({
 
   // external price output as Currency
   const outputAmount = stringToCurrency(quote.price.amount, outputCurrency)
+  const partnerFeeAmount = partnerFee ? outputAmount.multiply(bpsToPercent(partnerFee.bps)) : undefined
+  const outputAmountWithPartnerFee = partnerFeeAmount ? outputAmount.subtract(partnerFeeAmount) : outputAmount
 
   // set the Price object to attach to final Trade object
   // Price = (quote.price.amount) / inputAmountAdjustedForFee
@@ -80,11 +83,13 @@ export function useTradeExactInWithFee({
     inputAmountWithoutFee: parsedInputAmount,
     outputAmount,
     outputAmountWithoutFee,
+    outputAmountWithPartnerFee,
     fee,
     executionPrice,
     tradeType: TradeType.EXACT_INPUT,
     quoteId: quote.price.quoteId,
     partnerFee,
+    partnerFeeAmount,
   })
 }
 
@@ -135,6 +140,8 @@ export function useTradeExactOutWithFee({
     inputAmountWithoutFee,
     outputAmount: parsedOutputAmount,
     outputAmountWithoutFee: parsedOutputAmount,
+    // TODO
+    outputAmountWithPartnerFee: parsedOutputAmount,
     fee,
     executionPrice,
     tradeType: TradeType.EXACT_OUTPUT,
