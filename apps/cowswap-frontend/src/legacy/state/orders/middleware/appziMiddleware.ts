@@ -1,5 +1,6 @@
 import {
   getExplorerOrderLink,
+  getSurveyType,
   isOrderInPendingTooLong,
   timeSinceInSeconds,
   triggerAppziSurvey,
@@ -115,7 +116,7 @@ function _triggerAppzi(
       account: order?.owner,
       pendingOrderIds: getPendingOrderIds(store, chainId).join(','),
     },
-    uiOrderType === UiOrderType.LIMIT ? 'limit' : 'nps' // Different survey exclusive for limit orders
+    getSurveyType(uiOrderType)
   )
 }
 

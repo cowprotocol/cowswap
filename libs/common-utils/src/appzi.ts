@@ -3,6 +3,7 @@ import ReactAppzi from 'react-appzi'
 import { isImTokenBrowser, majorBrowserVersion, userAgent } from './userAgent'
 import { isProdLike } from './environments'
 import { isInjectedWidget } from './isInjectedWidget'
+import { UiOrderType } from '@cowprotocol/types'
 
 // Metamask IOS app uses a version from July 2019 which causes problems in appZi
 const OLD_CHROME_FROM_METAMASK_IOS_APP = 76
@@ -119,6 +120,10 @@ export function triggerAppziSurvey(
   const surveyData = surveyType === 'limit' ? LIMIT_SURVEY_DATA : NPS_DATA
 
   updateAppziSettings({ data: { ...data, ...surveyData } })
+}
+
+export function getSurveyType(orderType: UiOrderType | undefined): SurveyType {
+  return orderType === UiOrderType.LIMIT ? 'limit' : 'nps'
 }
 
 initialize()
