@@ -1,4 +1,4 @@
-import { PartnerFee } from '@cowprotocol/app-data/dist/generatedTypes/v1.0.0'
+import { PartnerFee } from '@cowprotocol/widget-lib'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
