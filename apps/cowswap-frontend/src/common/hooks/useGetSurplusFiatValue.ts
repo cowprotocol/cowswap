@@ -13,7 +13,7 @@ import { useSafeMemo } from 'common/hooks/useSafeMemo'
 import { getExecutedSummaryData } from 'utils/getExecutedSummaryData'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
-type SurplusData = {
+export type SurplusData = {
   surplusFiatValue: Nullish<CurrencyAmount<Currency>>
   surplusAmount: Nullish<CurrencyAmount<Currency>>
   surplusToken: Nullish<Currency>
