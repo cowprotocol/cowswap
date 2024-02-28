@@ -25,8 +25,10 @@ describe('Helpers to build ReceiveAmountInfo', () => {
           new TradeGp({
             inputAmount: currencyAmount18e(currency, amount),
             inputAmountWithFee: currencyAmount18e(currency, 0),
+            inputAmountWithPartnerFee: currencyAmount18e(currency, 0),
             inputAmountWithoutFee: currencyAmount18e(currency, amount),
             outputAmount: currencyAmount18e(currency, output),
+            outputAmountWithPartnerFee: currencyAmount18e(currency, output),
             outputAmountWithoutFee: currencyAmount18e(currency, output - 3),
             fee: { feeAsCurrency: currencyAmount18e(currency, 3), amount: '5000' },
             executionPrice: new Price(currency, currencyOut, 1, 4),
@@ -50,8 +52,10 @@ describe('Helpers to build ReceiveAmountInfo', () => {
         new TradeGp({
           inputAmount: currencyAmount18e(currency, amount),
           inputAmountWithFee: currencyAmount18e(currency, 0),
+          inputAmountWithPartnerFee: currencyAmount18e(currency, 0),
           inputAmountWithoutFee: currencyAmount18e(currency, amount),
           outputAmount: currencyAmount18e(currency, output),
+          outputAmountWithPartnerFee: currencyAmount18e(currency, output),
           outputAmountWithoutFee: currencyAmount18e(currency, output - 3),
           fee: { feeAsCurrency: currencyAmount18e(currency, 3), amount: '5000' },
           executionPrice: new Price(currency, currencyOut, 1, 4),
