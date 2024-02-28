@@ -44,6 +44,7 @@ const SummaryClickable = styled.div`
   font-size: inherit;
   opacity: 0.7;
   transition: opacity ${UI.ANIMATION_DURATION_SLOW} ease-in-out;
+  outline: none;
 
   &:hover {
     opacity: 1;
@@ -78,10 +79,11 @@ interface TradeDetailsAccordionProps {
   rateInfo: React.ReactNode
   feeSummary?: React.ReactNode // TODO: pass actual CurrencyAmount<Currency> here
   children?: React.ReactNode
+  open?: boolean
 }
 
-export const TradeDetailsAccordion = ({ rateInfo, feeSummary, children }: TradeDetailsAccordionProps) => {
-  const [isOpen, setIsOpen] = useState(false)
+export const TradeDetailsAccordion = ({ rateInfo, feeSummary, children, open = false }: TradeDetailsAccordionProps) => {
+  const [isOpen, setIsOpen] = useState(open)
 
   const toggleAccordion = () => {
     setIsOpen(!isOpen)
@@ -110,5 +112,3 @@ export const TradeDetailsAccordion = ({ rateInfo, feeSummary, children }: TradeD
     </Wrapper>
   )
 }
-
-export default TradeDetailsAccordion
