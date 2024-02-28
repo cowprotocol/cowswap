@@ -44,6 +44,7 @@ const SummaryClickable = styled.div`
   font-size: inherit;
   opacity: 0.7;
   transition: opacity ${UI.ANIMATION_DURATION_SLOW} ease-in-out;
+  outline: none;
 
   &:hover {
     opacity: 1;
