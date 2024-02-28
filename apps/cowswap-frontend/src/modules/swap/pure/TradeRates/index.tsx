@@ -1,13 +1,16 @@
 import React from 'react'
 
 import { genericPropsChecker } from '@cowprotocol/common-utils'
+import { FiatAmount } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import TradeGp from 'legacy/state/swap/TradeGp'
 
 import { RowDeadline } from 'modules/swap/containers/Row/RowDeadline'
 import { TradeBasicDetails } from 'modules/swap/containers/TradeBasicDetails'
+import { useUsdAmount } from 'modules/usdAmount'
 
+import { useSafeMemo } from 'common/hooks/useSafeMemo'
 import { RateInfoParams } from 'common/pure/RateInfo'
 import { TradeDetailsAccordion } from 'common/pure/TradeDetailsAccordion'
 
@@ -39,7 +42,6 @@ export const TradeRates = React.memo(function (props: TradeRatesProps) {
     userAllowedSlippage,
     // discount,
     rateInfoParams,
-    priceLabel = 'Rate',
     isReviewSwap = false,
     children,
   } = props
@@ -49,26 +51,21 @@ export const TradeRates = React.memo(function (props: TradeRatesProps) {
   const showTradeBasicDetails = (isFeeGreater || trade) && fee
   const showRowDeadline = !!trade
 
+  const feeFiatValue = useUsdAmount(fee).value
+  const partnerFeeFiatValue = useUsdAmount(trade?.partnerFeeAmount).value
+
+  const feeFiatTotal = useSafeMemo(() => {
+    return partnerFeeFiatValue && feeFiatValue ? partnerFeeFiatValue.add(feeFiatValue) : feeFiatValue
+  }, [partnerFeeFiatValue, feeFiatValue])
+
   if (!trade?.inputAmount && !trade?.outputAmount) return null
 
   return (
     <TradeDetailsAccordion
       rateInfo={showPrice && <styledEl.StyledRateInfo noLabel={true} stylized={true} rateInfoParams={rateInfoParams} />}
-      feeSummary={
-        showTradeBasicDetails && (
-          <TradeBasicDetails
-            allowedSlippage={userAllowedSlippage}
-            allowsOffchainSigning={allowsOffchainSigning}
-            trade={trade}
-            fee={fee}
-            fiatFeeOnly={true}
-          />
-        )
-      }
+      feeSummary={showTradeBasicDetails && <FiatAmount amount={feeFiatTotal} />}
     >
       <styledEl.Box>
-        {showPrice && <styledEl.StyledRateInfo label={priceLabel} stylized={true} rateInfoParams={rateInfoParams} />}
-
         {showTradeBasicDetails && (
           <TradeBasicDetails
             allowedSlippage={userAllowedSlippage}
@@ -78,7 +75,6 @@ export const TradeRates = React.memo(function (props: TradeRatesProps) {
             isReviewSwap={isReviewSwap}
           />
         )}
-
         {showRowDeadline && <RowDeadline />}
         {children}
       </styledEl.Box>

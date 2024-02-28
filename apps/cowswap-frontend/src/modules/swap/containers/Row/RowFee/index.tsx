@@ -47,7 +47,6 @@ export interface RowFeeProps extends RowWithShowHelpersProps {
   feeInFiat: CurrencyAmount<Token> | null
   allowsOffchainSigning: boolean
   noLabel?: boolean
-  showFiatOnly?: boolean
 }
 
 function isValidNonZeroAmount(value: string): boolean {
@@ -60,15 +59,7 @@ function isValidNonZeroAmount(value: string): boolean {
   }
 }
 
-export function RowFee({
-  trade,
-  feeAmount,
-  feeInFiat,
-  allowsOffchainSigning,
-  showHelpers,
-  noLabel,
-  showFiatOnly,
-}: RowFeeProps) {
+export function RowFee({ trade, feeAmount, feeInFiat, allowsOffchainSigning, showHelpers, noLabel }: RowFeeProps) {
   const swapZeroFee = useSwapZeroFee()
   const { realizedFee } = useMemo(() => computeTradePriceBreakdown(trade), [trade])
 
@@ -101,9 +92,7 @@ export function RowFee({
     const feeToken = isValidNonZeroAmount(displayFeeFormatted)
       ? feeAmountWithCurrency
       : `🎉 Free!${isEoaEthFlow ? ' (+ gas)' : ''}`
-    const feeUsd = isValidNonZeroAmount(feeInFiatFormatted)
-      ? `${showFiatOnly ? '' : '('}≈$${feeInFiatFormatted}${showFiatOnly ? '' : ')'}`
-      : ''
+    const feeUsd = isValidNonZeroAmount(feeInFiatFormatted) ? `(≈$${feeInFiatFormatted})` : ''
 
     const fullDisplayFee = FractionUtils.fractionLikeToExactString(displayFee) || '-'
 
@@ -116,9 +105,8 @@ export function RowFee({
       feeCurrencySymbol,
       tooltip,
       noLabel,
-      showFiatOnly,
     }
-  }, [feeAmount, feeInFiat, isEoaEthFlow, realizedFee, showHelpers, tooltip, noLabel, showFiatOnly, swapZeroFee])
+  }, [feeAmount, feeInFiat, isEoaEthFlow, realizedFee, showHelpers, tooltip, noLabel, swapZeroFee])
 
   return <RowFeeContent {...props} />
 }

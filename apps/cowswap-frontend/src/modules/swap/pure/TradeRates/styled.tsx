@@ -79,10 +79,6 @@ export const Discount = styled.span`
   }
 `
 
-export const LightText = styled.span`
-  font-weight: 300;
-`
-
 export const StyledRateInfo = styled(RateInfo)`
   font-size: 13px;
   font-weight: 500;

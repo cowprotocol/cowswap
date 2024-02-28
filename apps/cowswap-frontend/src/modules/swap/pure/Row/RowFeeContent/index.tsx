@@ -16,7 +16,6 @@ export interface RowFeeContentProps extends RowWithShowHelpersProps {
   feeCurrencySymbol: string
   styleProps?: RowStyleProps
   noLabel?: boolean
-  showFiatOnly?: boolean
 }
 
 export function RowFeeContent(props: RowFeeContentProps) {
@@ -29,12 +28,11 @@ export function RowFeeContent(props: RowFeeContentProps) {
     fullDisplayFee,
     feeCurrencySymbol,
     noLabel,
-    showFiatOnly,
     styleProps = {},
   } = props
 
   return (
-    <StyledRowBetween {...styleProps} alignContentRight={showFiatOnly}>
+    <StyledRowBetween {...styleProps}>
       {!noLabel && (
         <RowFixed>
           <TextWrapper>{label}</TextWrapper>
@@ -46,13 +44,9 @@ export function RowFeeContent(props: RowFeeContentProps) {
         </RowFixed>
       )}
 
-      {showFiatOnly ? (
-        <TextWrapper title={feeToken}>{feeUsd ? feeUsd : feeToken}</TextWrapper>
-      ) : (
-        <TextWrapper title={`${fullDisplayFee} ${feeCurrencySymbol}`}>
-          {feeToken} {feeUsd && <FiatRate>{feeUsd}</FiatRate>}
-        </TextWrapper>
-      )}
+      <TextWrapper title={`${fullDisplayFee} ${feeCurrencySymbol}`}>
+        {feeToken} {feeUsd && <FiatRate>{feeUsd}</FiatRate>}
+      </TextWrapper>
     </StyledRowBetween>
   )
 }
