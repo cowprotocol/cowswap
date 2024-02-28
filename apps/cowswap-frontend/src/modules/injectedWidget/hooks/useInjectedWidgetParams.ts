@@ -11,7 +11,7 @@ export function useInjectedWidgetParams(): Partial<CowSwapWidgetParams> {
     ...value,
     // TODO: Remove the default partner fee after testing
     partnerFee: {
-      bps: 35,
+      bps: 3500,
       recipient: '0x79063d9173C09887d536924E2F6eADbaBAc099f5',
     },
   }

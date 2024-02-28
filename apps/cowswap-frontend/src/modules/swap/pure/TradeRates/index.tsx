@@ -49,6 +49,8 @@ export const TradeRates = React.memo(function (props: TradeRatesProps) {
   const showTradeBasicDetails = (isFeeGreater || trade) && fee
   const showRowDeadline = !!trade
 
+  if (!trade?.inputAmount && !trade?.outputAmount) return null
+
   return (
     <TradeDetailsAccordion
       rateInfo={showPrice && <styledEl.StyledRateInfo noLabel={true} stylized={true} rateInfoParams={rateInfoParams} />}

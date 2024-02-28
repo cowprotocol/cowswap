@@ -244,7 +244,6 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
 
   const { partnerFee } = useInjectedWidgetParams()
 
-  console.log('partnerFee', partnerFee)
   const bestTradeExactIn = useTradeExactInWithFee({
     parsedAmount: isExactIn ? parsedAmount : undefined,
     outputCurrency,
