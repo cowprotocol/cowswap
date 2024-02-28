@@ -10,6 +10,7 @@ import { CloseIcon } from 'legacy/theme'
 import { TwapOrderItem } from 'modules/twap/types'
 
 import { isPending } from 'common/hooks/useCategorizeRecentActivity'
+import { ButtonSecondary } from 'common/pure/ButtonSecondary'
 import { Icon, IconType } from 'common/pure/Icon'
 import { InlineBanner } from 'common/pure/InlineBanner'
 import { BannerOrientation, CustomRecipientWarningBanner } from 'common/pure/InlineBanner/banners'
@@ -126,7 +127,11 @@ export function ReceiptModal({
       <styledEl.Wrapper>
         <styledEl.Header>
           <styledEl.Title>Order Receipt</styledEl.Title>
-          {showRecreateModal && <button onClick={showRecreateModal}>Recreate</button>}
+          {showRecreateModal && (
+            <ButtonSecondary variant={'light'} margin={'0 auto 0 10px'} minHeight={'28px'} onClick={showRecreateModal}>
+              Recreate this order
+            </ButtonSecondary>
+          )}
           <CloseIcon onClick={() => onDismiss()} />
         </styledEl.Header>
 
