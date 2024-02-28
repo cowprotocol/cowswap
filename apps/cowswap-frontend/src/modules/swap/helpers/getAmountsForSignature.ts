@@ -24,14 +24,14 @@ function inputAmountForSignature(params: AmountForSignatureParams): CurrencyAmou
     if (isSell) {
       return trade.inputAmount
     } else {
-      return trade.inputAmountWithFee.multiply(slippageCoeff) // add slippage
+      return trade.inputAmountWithPartnerFee.multiply(slippageCoeff) // add slippage
     }
   }
 
   if (isSell) {
-    return trade.inputAmountWithFee
+    return trade.inputAmountWithPartnerFee
   } else {
-    return trade.inputAmountWithoutFee.multiply(slippageCoeff) // add slippage
+    return trade.inputAmountWithPartnerFee.multiply(slippageCoeff) // add slippage
   }
 }
 

@@ -61,13 +61,14 @@ export function _maximumAmountIn(pct: Percent, trade: TradeGp) {
     return trade.inputAmount
   }
 
-  return trade.inputAmountWithFee.multiply(ONE_FRACTION.add(pct))
+  return trade.inputAmountWithPartnerFee.multiply(ONE_FRACTION.add(pct))
 }
 
 interface TradeGpConstructor {
   inputAmount: CurrencyAmount<Currency>
   inputAmountWithFee: CurrencyAmount<Currency>
   inputAmountWithoutFee: CurrencyAmount<Currency>
+  inputAmountWithPartnerFee: CurrencyAmount<Currency>
   outputAmount: CurrencyAmount<Currency>
   outputAmountWithoutFee: CurrencyAmount<Currency>
   outputAmountWithPartnerFee: CurrencyAmount<Currency>
@@ -94,6 +95,7 @@ export default class TradeGp {
   readonly inputAmount: CurrencyAmount<Currency>
   readonly inputAmountWithFee: CurrencyAmount<Currency>
   readonly inputAmountWithoutFee: CurrencyAmount<Currency>
+  readonly inputAmountWithPartnerFee: CurrencyAmount<Currency>
   /**
    * The output amount for the trade assuming no slippage.
    */
@@ -132,6 +134,7 @@ export default class TradeGp {
     outputAmount,
     outputAmountWithoutFee,
     outputAmountWithPartnerFee,
+    inputAmountWithPartnerFee,
     fee,
     executionPrice,
     tradeType,
@@ -143,6 +146,7 @@ export default class TradeGp {
     this.inputAmount = inputAmount
     this.inputAmountWithFee = inputAmountWithFee
     this.inputAmountWithoutFee = inputAmountWithoutFee
+    this.inputAmountWithPartnerFee = inputAmountWithPartnerFee
     this.outputAmountWithoutFee = outputAmountWithoutFee
     this.outputAmountWithPartnerFee = outputAmountWithPartnerFee
     this.outputAmount = outputAmount

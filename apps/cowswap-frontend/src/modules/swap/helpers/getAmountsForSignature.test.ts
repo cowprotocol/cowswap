@@ -1,7 +1,8 @@
 import { USDC_MAINNET, WETH_MAINNET } from '@cowprotocol/common-const'
 import { OrderKind } from '@cowprotocol/cow-sdk'
-import { Currency, CurrencyAmount, Percent, Price, TradeType } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Percent, TradeType } from '@uniswap/sdk-core'
 
+import { buildTradeExactInWithFee, buildTradeExactOutWithFee } from 'legacy/state/swap/extension'
 import TradeGp from 'legacy/state/swap/TradeGp'
 
 import { getAmountsForSignature } from './getAmountsForSignature'
@@ -11,32 +12,43 @@ interface TradeParams {
   inputAmount: CurrencyAmount<Currency>
   outputAmount: CurrencyAmount<Currency>
   feeAmount: CurrencyAmount<Currency>
+  partnerFeeBps: number
 }
 
-function getTrade(params: TradeParams): TradeGp {
-  const { tradeType, inputAmount, outputAmount, feeAmount } = params
+function getTrade(params: TradeParams): TradeGp | undefined {
+  const { tradeType, inputAmount, outputAmount, feeAmount, partnerFeeBps } = params
 
   const isExactInput = tradeType === TradeType.EXACT_INPUT
 
-  const executionPrice = new Price({
-    baseAmount: inputAmount,
-    quoteAmount: outputAmount,
-  })
+  const partnerFee = {
+    bps: partnerFeeBps,
+    recipient: '',
+  }
+  const quote = {
+    fee: { expirationDate: '', amount: feeAmount.quotient.toString() },
+    price: {
+      token: '',
+      amount: isExactInput ? outputAmount.quotient.toString() : inputAmount.quotient.toString(),
+      quoteId: 1,
+    },
+  }
 
-  return new TradeGp({
-    inputAmount,
-    inputAmountWithFee: isExactInput ? inputAmount.subtract(feeAmount) : inputAmount.add(feeAmount),
-    inputAmountWithoutFee: inputAmount,
-    outputAmount: isExactInput ? outputAmount.subtract(executionPrice.quote(feeAmount)) : outputAmount,
-    outputAmountWithoutFee: outputAmount,
-    fee: { feeAsCurrency: feeAmount, amount: feeAmount.toFixed() },
-    executionPrice,
-    tradeType,
-    quoteId: 1,
-  })
+  return isExactInput
+    ? buildTradeExactInWithFee({
+        parsedAmount: inputAmount,
+        outputCurrency: outputAmount.currency,
+        partnerFee,
+        quote,
+      })
+    : buildTradeExactOutWithFee({
+        parsedAmount: outputAmount,
+        inputCurrency: inputAmount.currency,
+        partnerFee,
+        quote,
+      })
 }
 
-describe('getAmountsForSignature()', () => {
+describe.each([0, 2000 /*20%*/])('getAmountsForSignature(), partner fee bps: %i', (partnerFeeBps) => {
   // 5%
   const allowedSlippage = new Percent(5, 100)
   // 3012 USDC
@@ -55,7 +67,9 @@ describe('getAmountsForSignature()', () => {
      * Output amount is calculated as: (outputAmount - fee) - slippage
      */
     it('Sell order', () => {
-      const trade = getTrade({ tradeType: TradeType.EXACT_INPUT, inputAmount, outputAmount, feeAmount })
+      const trade = getTrade({ tradeType: TradeType.EXACT_INPUT, inputAmount, outputAmount, feeAmount, partnerFeeBps })
+
+      if (!trade) throw new Error('No trade')
 
       const result = getAmountsForSignature({
         featureFlags,
@@ -67,9 +81,13 @@ describe('getAmountsForSignature()', () => {
       // Just subtracted fee from inputAmount, 3012 - 8 = 3004
       expect(result.inputAmount.toFixed()).toEqual('3004.000000')
 
-      // Fee in WETH = 0.005312084993359893
-      // outputAmount = (2 - 0.005312) - 5% = 1.89495
-      expect(result.outputAmount.toFixed()).toEqual('1.894953519256308100')
+      if (partnerFeeBps === 0) {
+        // outputAmount = 2 - 5% = 1.900000000000000000
+        expect(result.outputAmount.toFixed()).toEqual('1.900000000000000000')
+      } else {
+        // outputAmount = 2 - 5% - 20% = 1.520000000000000000
+        expect(result.outputAmount.toFixed()).toEqual('1.520000000000000000')
+      }
     })
 
     /**
@@ -77,7 +95,9 @@ describe('getAmountsForSignature()', () => {
      * Output amount is just what user entered
      */
     it('Buy order', () => {
-      const trade = getTrade({ tradeType: TradeType.EXACT_OUTPUT, inputAmount, outputAmount, feeAmount })
+      const trade = getTrade({ tradeType: TradeType.EXACT_OUTPUT, inputAmount, outputAmount, feeAmount, partnerFeeBps })
+
+      if (!trade) throw new Error('No trade')
 
       const result = getAmountsForSignature({
         featureFlags,
@@ -86,8 +106,14 @@ describe('getAmountsForSignature()', () => {
         kind: OrderKind.BUY,
       })
 
-      // inputAmount = (3012) + 5% = 3,162.6
-      expect(result.inputAmount.toFixed()).toEqual('3162.600000')
+      if (partnerFeeBps === 0) {
+        // inputAmount = (3012 + 8) + 5% = 3171.000000
+        expect(result.inputAmount.toFixed()).toEqual('3171.000000')
+      } else {
+        // inputAmount = (3012 + 8) + 5% + 20% = 3805.200000
+        expect(result.inputAmount.toFixed()).toEqual('3805.200000')
+      }
+
       // Output amount the same, because this is buy order
       expect(result.outputAmount.toFixed()).toEqual('2.000000000000000000')
     })
@@ -102,7 +128,9 @@ describe('getAmountsForSignature()', () => {
      * Output amount calculated as: outputAmount - slippage
      */
     it('Sell order', () => {
-      const trade = getTrade({ tradeType: TradeType.EXACT_INPUT, inputAmount, outputAmount, feeAmount })
+      const trade = getTrade({ tradeType: TradeType.EXACT_INPUT, inputAmount, outputAmount, feeAmount, partnerFeeBps })
+
+      if (!trade) throw new Error('No trade')
 
       const result = getAmountsForSignature({
         featureFlags,
@@ -114,8 +142,13 @@ describe('getAmountsForSignature()', () => {
       // Input amount the same, because we don't subtract fee
       expect(result.inputAmount.toFixed()).toEqual('3012.000000')
 
-      // outputAmount = 2 - 5% = 1.894953
-      expect(result.outputAmount.toFixed()).toEqual('1.894953519256308100')
+      if (partnerFeeBps === 0) {
+        // outputAmount = 2 - 5% = 1.900000000000000000
+        expect(result.outputAmount.toFixed()).toEqual('1.900000000000000000')
+      } else {
+        // outputAmount = 2 - 5% - 20% = 1.520000000000000000
+        expect(result.outputAmount.toFixed()).toEqual('1.520000000000000000')
+      }
     })
 
     /**
@@ -123,7 +156,9 @@ describe('getAmountsForSignature()', () => {
      * Output amount is just what user entered
      */
     it('Buy order', () => {
-      const trade = getTrade({ tradeType: TradeType.EXACT_OUTPUT, inputAmount, outputAmount, feeAmount })
+      const trade = getTrade({ tradeType: TradeType.EXACT_OUTPUT, inputAmount, outputAmount, feeAmount, partnerFeeBps })
+
+      if (!trade) throw new Error('No trade')
 
       const result = getAmountsForSignature({
         featureFlags,
@@ -132,8 +167,13 @@ describe('getAmountsForSignature()', () => {
         kind: OrderKind.BUY,
       })
 
-      // inputAmount = (3012 + 8) + 5% = 3,171
-      expect(result.inputAmount.toFixed()).toEqual('3171.000000')
+      if (partnerFeeBps === 0) {
+        // inputAmount = (3012 + 8) + 5% = 3171
+        expect(result.inputAmount.toFixed()).toEqual('3171.000000')
+      } else {
+        // inputAmount = (3012 + 8) + 5% + 20% = 3805.2
+        expect(result.inputAmount.toFixed()).toEqual('3805.200000')
+      }
 
       // Output amount the same, because this is buy order
       expect(result.outputAmount.toFixed()).toEqual('2.000000000000000000')

@@ -17,7 +17,7 @@ import { AppState } from 'legacy/state'
 import { useAppDispatch, useAppSelector } from 'legacy/state/hooks'
 import { useGetQuoteAndStatus, useQuote } from 'legacy/state/price/hooks'
 import { setRecipient, switchCurrencies, typeInput } from 'legacy/state/swap/actions'
-import { stringToCurrency, useTradeExactInWithFee, useTradeExactOutWithFee } from 'legacy/state/swap/extension'
+import { stringToCurrency, buildTradeExactInWithFee, buildTradeExactOutWithFee } from 'legacy/state/swap/extension'
 import TradeGp from 'legacy/state/swap/TradeGp'
 import { isWrappingTrade } from 'legacy/state/swap/utils'
 import { Field } from 'legacy/state/types'
@@ -27,6 +27,7 @@ import { useNavigateOnCurrencySelection } from 'modules/trade/hooks/useNavigateO
 import { useTradeNavigate } from 'modules/trade/hooks/useTradeNavigate'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
+import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
 import { useSwapSlippage } from './useSwapSlippage'
 
@@ -61,10 +62,10 @@ interface DerivedSwapInfo {
   currenciesIds: { [field in Field]?: string | null }
   currencyBalances: { [field in Field]?: CurrencyAmount<Currency> }
   parsedAmount: CurrencyAmount<Currency> | undefined
-  // TODO: remove duplications of the value (v2Trade?.maximumAmountIn(allowedSlippage))
+  // TODO: remove duplications of the value (trade?.maximumAmountIn(allowedSlippage))
   slippageAdjustedSellAmount: CurrencyAmount<Currency> | null
   inputError?: string
-  v2Trade: TradeGp | undefined
+  trade: TradeGp | undefined
   allowedSlippage: Percent
 }
 
@@ -244,23 +245,25 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
 
   const { partnerFee } = useInjectedWidgetParams()
 
-  const bestTradeExactIn = useTradeExactInWithFee({
-    parsedAmount: isExactIn ? parsedAmount : undefined,
-    outputCurrency,
-    quote,
-    isWrapping,
-    partnerFee,
-  })
-  const bestTradeExactOut = useTradeExactOutWithFee({
-    parsedAmount: isExactIn ? undefined : parsedAmount,
-    inputCurrency,
-    quote,
-    isWrapping,
-    partnerFee,
-  })
+  const trade = useSafeMemo(() => {
+    if (isWrapping) return undefined
 
-  // TODO: rename v2Trade to just "trade" we dont have versions
-  const v2Trade = isExactIn ? bestTradeExactIn : bestTradeExactOut
+    if (isExactIn) {
+      return buildTradeExactInWithFee({
+        parsedAmount,
+        outputCurrency,
+        quote,
+        partnerFee,
+      })
+    }
+
+    return buildTradeExactOutWithFee({
+      parsedAmount,
+      inputCurrency,
+      quote,
+      partnerFee,
+    })
+  }, [isExactIn, parsedAmount, inputCurrency, outputCurrency, quote, partnerFee, isWrapping])
 
   const currencyBalances = useMemo(
     () => ({
@@ -275,7 +278,7 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
   // const autoSlippageTolerance = useAutoSlippageTolerance(trade.trade)  // mod
   // const allowedSlippage = useUserSlippageToleranceWithDefault(autoSlippageTolerance) // mod
   const allowedSlippage = useSwapSlippage()
-  const slippageAdjustedSellAmount = v2Trade?.maximumAmountIn(allowedSlippage) || null
+  const slippageAdjustedSellAmount = trade?.maximumAmountIn(allowedSlippage) || null
 
   const inputError = useMemo(() => {
     let inputError: string | undefined
@@ -326,7 +329,7 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
         currencyBalances,
         parsedAmount,
         inputError,
-        v2Trade: v2Trade || undefined, // mod
+        trade,
         allowedSlippage,
         slippageAdjustedSellAmount: slippageAdjustedSellAmount,
       }
@@ -339,7 +342,7 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
       inputError,
       parsedAmount,
       // eslint-disable-next-line react-hooks/exhaustive-deps
-      JSON.stringify(v2Trade),
+      JSON.stringify(trade),
       slippageAdjustedSellAmount,
     ] // mod
   )

@@ -76,7 +76,7 @@ export function useSwapAmountsWithSlippage(): [
   CurrencyAmount<Currency> | undefined,
   CurrencyAmount<Currency> | undefined
 ] {
-  const { v2Trade: trade, allowedSlippage } = useDerivedSwapInfo()
+  const { trade, allowedSlippage } = useDerivedSwapInfo()
 
   const { INPUT, OUTPUT } = computeSlippageAdjustedAmounts(trade, allowedSlippage)
 
@@ -89,7 +89,7 @@ export function useBaseFlowContextSetup(): BaseFlowContextSetup {
   const { allowsOffchainSigning } = useWalletDetails()
   const gnosisSafeInfo = useGnosisSafeInfo()
   const { recipient } = useSwapState()
-  const { v2Trade: trade } = useDerivedSwapInfo()
+  const { trade } = useDerivedSwapInfo()
   const swapZeroFee = useSwapZeroFee()
 
   const appData = useAppData()

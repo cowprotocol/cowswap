@@ -52,7 +52,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
   const { isSupportedWallet } = useWalletDetails()
   const {
     slippageAdjustedSellAmount,
-    v2Trade: trade,
+    trade,
     parsedAmount,
     currencies,
     currenciesIds,
