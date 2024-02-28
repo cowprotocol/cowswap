@@ -32,9 +32,10 @@ const NETWORKS_WITHOUT_RESTRICTIONS = [SupportedChainId.SEPOLIA, SupportedChainI
 
 interface TokensListsUpdaterProps {
   chainId: SupportedChainId
+  isGeoBlockEnabled: boolean
 }
 
-export function TokensListsUpdater({ chainId: currentChainId }: TokensListsUpdaterProps) {
+export function TokensListsUpdater({ chainId: currentChainId, isGeoBlockEnabled }: TokensListsUpdaterProps) {
   const { chainId } = useAtomValue(environmentAtom)
   const setEnvironment = useSetAtom(updateEnvironmentAtom)
   const allTokensLists = useAtomValue(allListsSourcesAtom)
@@ -72,7 +73,7 @@ export function TokensListsUpdater({ chainId: currentChainId }: TokensListsUpdat
 
   // Check if a user is from US and use Uniswap list, because of the SEC regulations
   useEffect(() => {
-    if (isInjectedWidget()) return
+    if (!isGeoBlockEnabled || isInjectedWidget()) return
 
     if (NETWORKS_WITHOUT_RESTRICTIONS.includes(chainId)) {
       setEnvironment({ useCuratedListOnly: false })
@@ -101,7 +102,7 @@ export function TokensListsUpdater({ chainId: currentChainId }: TokensListsUpdat
         })
       })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId])
+  }, [chainId, isGeoBlockEnabled])
 
   return null
 }
