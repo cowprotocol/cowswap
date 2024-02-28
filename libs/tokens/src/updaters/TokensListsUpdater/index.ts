@@ -13,6 +13,7 @@ import { upsertListsAtom } from '../../state/tokenLists/tokenListsActionsAtom'
 import { atomWithStorage } from 'jotai/utils'
 import { atomWithPartialUpdate, isInjectedWidget } from '@cowprotocol/common-utils'
 import { getJotaiMergerStorage } from '@cowprotocol/core'
+import * as Sentry from '@sentry/browser'
 
 const { atom: lastUpdateTimeAtom, updateAtom: updateLastUpdateTimeAtom } = atomWithPartialUpdate(
   atomWithStorage<Record<SupportedChainId, number>>(
@@ -87,6 +88,17 @@ export function TokensListsUpdater({ chainId: currentChainId }: TokensListsUpdat
           setEnvironment({ useCuratedListOnly: true })
           updateLastUpdateTime({ [chainId]: 0 })
         }
+      })
+      .catch((error) => {
+        const sentryError = Object.assign(error, {
+          name: 'GeoBlockingError',
+        })
+
+        Sentry.captureException(sentryError, {
+          tags: {
+            errorType: 'GeoBlockingError',
+          },
+        })
       })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chainId])
