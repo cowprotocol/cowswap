@@ -62,6 +62,7 @@ export const TradeRates = React.memo(function (props: TradeRatesProps) {
 
   return (
     <TradeDetailsAccordion
+      open={isReviewSwap}
       rateInfo={showPrice && <styledEl.StyledRateInfo noLabel={true} stylized={true} rateInfoParams={rateInfoParams} />}
       feeSummary={showTradeBasicDetails && <FiatAmount amount={feeFiatTotal} />}
     >

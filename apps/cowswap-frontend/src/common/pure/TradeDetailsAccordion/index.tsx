@@ -79,10 +79,11 @@ interface TradeDetailsAccordionProps {
   rateInfo: React.ReactNode
   feeSummary?: React.ReactNode // TODO: pass actual CurrencyAmount<Currency> here
   children?: React.ReactNode
+  open?: boolean
 }
 
-export const TradeDetailsAccordion = ({ rateInfo, feeSummary, children }: TradeDetailsAccordionProps) => {
-  const [isOpen, setIsOpen] = useState(false)
+export const TradeDetailsAccordion = ({ rateInfo, feeSummary, children, open = false }: TradeDetailsAccordionProps) => {
+  const [isOpen, setIsOpen] = useState(open)
 
   const toggleAccordion = () => {
     setIsOpen(!isOpen)
@@ -111,5 +112,3 @@ export const TradeDetailsAccordion = ({ rateInfo, feeSummary, children }: TradeD
     </Wrapper>
   )
 }
-
-export default TradeDetailsAccordion
