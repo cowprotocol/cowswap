@@ -25,15 +25,7 @@ export function AlternativeLimitOrder() {
 
   return (
     <Wrapper>
-      <NewModal
-        title={'Recreate order'}
-        onDismiss={onDismiss}
-        modalMode
-        maxWidth={MODAL_MAX_WIDTH}
-        backgroundColor={UI.COLOR_PAPER_DARKER}
-        border={`1px solid var(${UI.COLOR_PAPER})`}
-        contentPadding={'10px'}
-      >
+      <NewModal modalMode title={'Recreate order'} onDismiss={onDismiss} maxWidth={MODAL_MAX_WIDTH}>
         <LimitOrdersWidget />
       </NewModal>
     </Wrapper>

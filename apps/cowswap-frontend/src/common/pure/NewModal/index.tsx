@@ -21,18 +21,17 @@ const ModalInner = styled.div`
 const Wrapper = styled.div<{
   maxWidth?: number | string
   minHeight?: number | string
-  backgroundColor?: string
-  border?: string
+  modalMode?: boolean
 }>`
   display: flex;
   width: 100%;
   height: 100%;
   margin: auto;
   overflow-y: auto;
-  background: ${({ backgroundColor }) => (backgroundColor ? `var(${backgroundColor})` : `var(${UI.COLOR_PAPER})`)};
+  background: ${({ modalMode }) => (modalMode ? `var(${UI.COLOR_PAPER_DARKER})` : `var(${UI.COLOR_PAPER})`)};
+  border: ${({ modalMode }) => (modalMode ? `1px solid var(${UI.COLOR_PAPER})` : 'none')};
   border-radius: var(${UI.BORDER_RADIUS_NORMAL});
   box-shadow: var(${UI.BOX_SHADOW});
-  border: ${({ border }) => (border ? border : 'none')};
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     margin: 0;
@@ -102,6 +101,10 @@ const NewModalContent = styled.div<{ padding?: string }>`
   height: 100%;
   padding: ${({ padding }) => padding || `0 var(${UI.PADDING_NORMAL}) var(${UI.PADDING_NORMAL})`};
 
+  &.modalMode {
+    padding: 10px;
+  }
+
   h1,
   h2,
   h3 {
@@ -155,28 +158,15 @@ export interface NewModalProps {
   minHeight?: number
   title?: string
   onDismiss?: Command
-  backgroundColor?: string
-  border?: string
   children?: React.ReactNode
   modalMode?: boolean
-  contentPadding?: string
 }
 
-export function NewModal({
-  maxWidth = 450,
-  minHeight = 350,
-  contentPadding,
-  backgroundColor,
-  border,
-  modalMode,
-  title,
-  children,
-  onDismiss,
-}: NewModalProps) {
+export function NewModal({ maxWidth = 450, minHeight = 350, modalMode, title, children, onDismiss }: NewModalProps) {
   const onDismissCallback = useCallback(() => onDismiss?.(), [onDismiss])
 
   return (
-    <Wrapper maxWidth={maxWidth} minHeight={minHeight} backgroundColor={backgroundColor} border={border}>
+    <Wrapper maxWidth={maxWidth} minHeight={minHeight} modalMode={modalMode}>
       <ModalInner>
         {!modalMode && <BackButtonStyled onClick={onDismissCallback} />}
         {title && (
@@ -190,9 +180,7 @@ export function NewModal({
           </Heading>
         )}
 
-        <NewModalContent padding={contentPadding} className={modalMode ? 'modalMode' : ''}>
-          {children}
-        </NewModalContent>
+        <NewModalContent className={modalMode ? 'modalMode' : ''}>{children}</NewModalContent>
       </ModalInner>
     </Wrapper>
   )
