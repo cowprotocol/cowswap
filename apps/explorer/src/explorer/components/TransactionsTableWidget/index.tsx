@@ -86,7 +86,7 @@ export const TransactionsTableWidget: React.FC<Props> = ({ txHash }) => {
     [tabViewSelected, updateQueryString]
   )
 
-  if (errorTxPresentInNetworkId && networkId != errorTxPresentInNetworkId) {
+  if (errorTxPresentInNetworkId && networkId !== errorTxPresentInNetworkId) {
     return <RedirectToNetwork networkId={errorTxPresentInNetworkId} />
   }
   if (redirectTo) {
