@@ -60,7 +60,7 @@ export const ContentWrapper = styled.div`
   padding: 0 10px 10px;
 
   .modalMode & {
-    padding: 0;
+    /* padding: 0; */
   }
 `
 

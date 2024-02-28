@@ -18,15 +18,21 @@ const ModalInner = styled.div`
   position: relative;
 `
 
-const Wrapper = styled.div<{ maxWidth?: number | string; minHeight?: number | string }>`
+const Wrapper = styled.div<{
+  maxWidth?: number | string
+  minHeight?: number | string
+  backgroundColor?: string
+  border?: string
+}>`
   display: flex;
   width: 100%;
   height: 100%;
   margin: auto;
   overflow-y: auto;
-  background: var(${UI.COLOR_PAPER});
+  background: ${({ backgroundColor }) => (backgroundColor ? `var(${backgroundColor})` : `var(${UI.COLOR_PAPER})`)};
   border-radius: var(${UI.BORDER_RADIUS_NORMAL});
   box-shadow: var(${UI.BOX_SHADOW});
+  border: ${({ border }) => (border ? border : 'none')};
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     margin: 0;
@@ -149,6 +155,8 @@ export interface NewModalProps {
   minHeight?: number
   title?: string
   onDismiss?: Command
+  backgroundColor?: string
+  border?: string
   children?: React.ReactNode
   modalMode?: boolean
   contentPadding?: string
@@ -158,6 +166,8 @@ export function NewModal({
   maxWidth = 450,
   minHeight = 350,
   contentPadding,
+  backgroundColor,
+  border,
   modalMode,
   title,
   children,
@@ -166,7 +176,7 @@ export function NewModal({
   const onDismissCallback = useCallback(() => onDismiss?.(), [onDismiss])
 
   return (
-    <Wrapper maxWidth={maxWidth} minHeight={minHeight}>
+    <Wrapper maxWidth={maxWidth} minHeight={minHeight} backgroundColor={backgroundColor} border={border}>
       <ModalInner>
         {!modalMode && <BackButtonStyled onClick={onDismissCallback} />}
         {title && (

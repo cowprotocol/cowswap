@@ -1,5 +1,7 @@
 import { useCallback } from 'react'
 
+import { UI } from '@cowprotocol/ui'
+
 import styled from 'styled-components/macro'
 
 import { LimitOrdersWidget } from 'modules/limitOrders'
@@ -28,6 +30,8 @@ export function AlternativeLimitOrder() {
         onDismiss={onDismiss}
         modalMode
         maxWidth={MODAL_MAX_WIDTH}
+        backgroundColor={UI.COLOR_PAPER_DARKER}
+        border={`1px solid var(${UI.COLOR_PAPER})`}
         contentPadding={'10px'}
       >
         <LimitOrdersWidget />

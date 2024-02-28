@@ -25,7 +25,6 @@ const Container = styled.div`
   box-shadow: ${({ theme }) => theme.boxShadow1};
 
   .modalMode & {
-    border-radius: 0;
     box-shadow: none;
   }
 `
