@@ -7,6 +7,7 @@ import {
   LIMIT_ORDER_SLIPPAGE,
   QuoteObserverUpdater,
   SetupLimitOrderAmountsFromUrlUpdater,
+  TriggerAppziLimitOrdersSurveyUpdater,
 } from 'modules/limitOrders'
 import { useIsAlternativeOrderModalVisible } from 'modules/trade/state/alternativeOrder'
 
@@ -31,6 +32,7 @@ export default function LimitOrderPage() {
         <>
           <InitialPriceUpdater />
           <SetupLimitOrderAmountsFromUrlUpdater />
+          <TriggerAppziLimitOrdersSurveyUpdater />
           <RegularLimitOrders />
         </>
       )}

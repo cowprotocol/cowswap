@@ -1,4 +1,4 @@
-import { isOrderInPendingTooLong, openNpsAppziSometimes } from '@cowprotocol/common-utils'
+import { isOrderInPendingTooLong, triggerAppziSurvey } from '@cowprotocol/common-utils'
 import { UiOrderType } from '@cowprotocol/types'
 
 import { AnyAction, Dispatch, MiddlewareAPI } from 'redux'
@@ -26,7 +26,7 @@ jest.mock('utils/orderUtils/getUiOrderType', () => {
 })
 
 const isOrderInPendingTooLongMock = jest.mocked(isOrderInPendingTooLong)
-const openNpsAppziSometimesMock = jest.mocked(openNpsAppziSometimes)
+const openNpsAppziSometimesMock = jest.mocked(triggerAppziSurvey)
 const getOrderByOrderIdFromStateMock = jest.mocked(getOrderByIdFromState)
 const getUiOrderTypeMock = jest.mocked(getUiOrderType)
 
