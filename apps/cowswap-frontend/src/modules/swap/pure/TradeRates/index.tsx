@@ -58,7 +58,7 @@ export const TradeRates = React.memo(function (props: TradeRatesProps) {
     return partnerFeeFiatValue && feeFiatValue ? partnerFeeFiatValue.add(feeFiatValue) : feeFiatValue
   }, [partnerFeeFiatValue, feeFiatValue])
 
-  if (!trade?.inputAmount && !trade?.outputAmount) return null
+  if (!feeFiatTotal || feeFiatTotal.equalTo(0)) return null
 
   return (
     <TradeDetailsAccordion
