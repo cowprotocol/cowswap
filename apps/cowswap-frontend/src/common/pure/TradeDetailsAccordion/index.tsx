@@ -71,7 +71,10 @@ const ToggleIcon = styled.div<{ isOpen: boolean }>`
     width: var(--size);
     height: var(--size);
     object-fit: contain;
-    fill: currentColor;
+
+    path {
+      fill: var(${UI.COLOR_TEXT});
+    }
   }
 `
 

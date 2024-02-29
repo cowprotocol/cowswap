@@ -77,7 +77,7 @@ export function TradeBasicDetails(props: TradeBasicDetailsProp) {
               {trade && (
                 <b>
                   <TokenAmount
-                    amount={isExactIn ? trade?.outputAmountWithPartnerFee : trade.inputAmountWithPartnerFee}
+                    amount={isExactIn ? trade?.outputAmountAfterFees : trade.inputAmountAfterFees}
                     tokenSymbol={isExactIn ? trade?.outputAmount.currency : trade.inputAmount.currency}
                     defaultValue="0"
                   />

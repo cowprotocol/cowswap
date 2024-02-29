@@ -15,12 +15,10 @@ function inputAmountForSignature(params: AmountForSignatureParams): CurrencyAmou
   const { trade, allowedSlippage, kind } = params
   const slippageCoeff = ONE_FRACTION.add(allowedSlippage)
 
-  const isSell = isSellOrder(kind)
-
-  if (isSell) {
+  if (isSellOrder(kind)) {
     return trade.inputAmount
   } else {
-    return trade.inputAmountWithPartnerFee.multiply(slippageCoeff) // add slippage
+    return trade.inputAmountAfterFees.multiply(slippageCoeff) // add slippage
   }
 }
 
@@ -29,7 +27,7 @@ function outputAmountForSignature(params: AmountForSignatureParams): CurrencyAmo
   const slippageCoeff = ONE_FRACTION.subtract(allowedSlippage)
 
   if (isSellOrder(kind)) {
-    return trade.outputAmountWithPartnerFee.multiply(slippageCoeff) // subtract slippage
+    return trade.outputAmountAfterFees.multiply(slippageCoeff) // subtract slippage
   } else {
     return trade.outputAmountWithoutFee
   }
