@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.61.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.60.0...cowswap-v1.61.0) (2024-02-29)
+
+
+### Features
+
+* **appzi:** new appzi survey for limit orders ([#3918](https://github.com/cowprotocol/cowswap/issues/3918)) ([99e004a](https://github.com/cowprotocol/cowswap/commit/99e004ad410aefacfd2090423ef2e480ed48302e))
+* **settings:** remove expert mode ([#3905](https://github.com/cowprotocol/cowswap/issues/3905)) ([4f98075](https://github.com/cowprotocol/cowswap/commit/4f98075dbcacdbf49e9f43fb2a0936411d6a7365))
+
+
+### Bug Fixes
+
+* always open hash links in new tab ([#3888](https://github.com/cowprotocol/cowswap/issues/3888)) ([0275de9](https://github.com/cowprotocol/cowswap/commit/0275de9f3ec04f697878b0507a5b09c8842aa7ba))
+* increase quote refresh interval for Swap and TWAP ([#3935](https://github.com/cowprotocol/cowswap/issues/3935)) ([55b5e22](https://github.com/cowprotocol/cowswap/commit/55b5e22b8ad0edba5e8c114fcd11f8caa39b5ab4))
+* **limit-orders:** price updated warning should not be displayed ([#3925](https://github.com/cowprotocol/cowswap/issues/3925)) ([7a5b64d](https://github.com/cowprotocol/cowswap/commit/7a5b64d9c0c0d7e44aa15502735c843d43bc1fc7))
+* **twap:** allow creating orders with 100% slippage ([#3897](https://github.com/cowprotocol/cowswap/issues/3897)) ([05a604d](https://github.com/cowprotocol/cowswap/commit/05a604d0fd92f0ca0295b1ccef0cf4c7725ab24c))
+
 ## [1.60.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.59.2...cowswap-v1.60.0) (2024-02-22)
 
 
