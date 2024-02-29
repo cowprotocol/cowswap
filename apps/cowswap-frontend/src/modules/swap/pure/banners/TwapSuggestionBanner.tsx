@@ -1,5 +1,4 @@
 import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
-// eslint-disable-next-line @nx/enforce-module-boundaries
 import { InlineBanner } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 

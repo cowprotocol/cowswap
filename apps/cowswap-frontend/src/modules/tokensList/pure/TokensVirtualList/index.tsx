@@ -1,7 +1,6 @@
 import { useCallback, useMemo, useRef } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
-// eslint-disable-next-line @nx/enforce-module-boundaries
 import { BannerOrientation, ExternalLink, InlineBanner, LINK_GUIDE_ADD_CUSTOM_TOKEN } from '@cowprotocol/ui'
 
 import { useVirtualizer } from '@tanstack/react-virtual'
