@@ -85,11 +85,6 @@ const Wrapper = styled.span<{
       orientation === BannerOrientation.Horizontal ? 'row' : 'column wrap'};
     gap: 10px;
     width: 100%;
-
-    /* ${({ theme }) => theme.mediaWidth.upToSmall`
-      flex-flow: column wrap;
-      gap: 16px;
-    `}; */
   }
 
   // Text content
@@ -121,10 +116,6 @@ const Wrapper = styled.span<{
     width: 100%;
     text-align: ${({ orientation = BannerOrientation.Vertical }) =>
       orientation === BannerOrientation.Horizontal ? 'left' : 'center'};
-
-    /* ${({ theme }) => theme.mediaWidth.upToSmall`
-      text-align: center;
-    `}; */
   }
 
   > span > span > i {
