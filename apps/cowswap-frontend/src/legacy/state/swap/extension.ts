@@ -54,8 +54,6 @@ export function buildTradeExactInWithFee({
 
   // external price output as Currency
   const outputAmount = stringToCurrency(quote.price.amount, outputCurrency)
-  const partnerFeeAmount = partnerFee ? outputAmount.multiply(bpsToPercent(partnerFee.bps)) : undefined
-  const outputAmountWithPartnerFee = partnerFeeAmount ? outputAmount.subtract(partnerFeeAmount) : outputAmount
 
   // set the Price object to attach to final Trade object
   // Price = (quote.price.amount) / inputAmountAdjustedForFee
@@ -75,14 +73,17 @@ export function buildTradeExactInWithFee({
   // useful for calculating fees in buy token
   const outputAmountWithoutFee = executionPrice.quote(parsedInputAmount)
 
+  const partnerFeeAmount = partnerFee ? outputAmountWithoutFee.multiply(bpsToPercent(partnerFee.bps)) : undefined
+  const outputAmountAfterFees = partnerFeeAmount ? outputAmount.subtract(partnerFeeAmount) : outputAmount
+
   return new TradeGp({
     inputAmount: parsedInputAmount,
     inputAmountWithFee: feeAdjustedAmount,
-    inputAmountWithPartnerFee: feeAdjustedAmount,
+    inputAmountAfterFees: feeAdjustedAmount,
     inputAmountWithoutFee: parsedInputAmount,
     outputAmount,
     outputAmountWithoutFee,
-    outputAmountWithPartnerFee,
+    outputAmountAfterFees,
     fee,
     executionPrice,
     tradeType: TradeType.EXACT_INPUT,
@@ -117,8 +118,9 @@ export function buildTradeExactOutWithFee({
   // We need to determine the fee after, as the parsedOutputAmount isn't known beforehand
   // Using feeInformation info, determine whether minimalFee greaterThan or lessThan feeRatio * sellAmount
   const inputAmountWithFee = inputAmountWithoutFee.add(feeAsCurrency)
-  const partnerFeeAmount = partnerFee ? inputAmountWithFee.multiply(bpsToPercent(partnerFee.bps)) : undefined
-  const inputAmountWithPartnerFee = partnerFeeAmount ? inputAmountWithFee.add(partnerFeeAmount) : inputAmountWithFee
+  // Partner fee
+  const partnerFeeAmount = partnerFee ? inputAmountWithoutFee.multiply(bpsToPercent(partnerFee.bps)) : undefined
+  const inputAmountAfterFees = partnerFeeAmount ? inputAmountWithFee.add(partnerFeeAmount) : inputAmountWithFee
 
   // per unit price
   const executionPrice = _constructTradePrice({
@@ -138,10 +140,10 @@ export function buildTradeExactOutWithFee({
     inputAmount: inputAmountWithFee,
     inputAmountWithFee,
     inputAmountWithoutFee,
-    inputAmountWithPartnerFee,
+    inputAmountAfterFees,
     outputAmount: parsedOutputAmount,
     outputAmountWithoutFee: parsedOutputAmount,
-    outputAmountWithPartnerFee: parsedOutputAmount,
+    outputAmountAfterFees: parsedOutputAmount,
     fee,
     executionPrice,
     tradeType: TradeType.EXACT_OUTPUT,

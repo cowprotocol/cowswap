@@ -81,8 +81,10 @@ describe.each([0, 2000 /*20%*/])('getAmountsForSignature(), partner fee bps: %i'
         // outputAmount = 2 - 5% = 1.900000000000000000
         expect(result.outputAmount.toFixed()).toEqual('1.900000000000000000')
       } else {
-        // outputAmount = 2 - 5% - 20% = 1.520000000000000000
-        expect(result.outputAmount.toFixed()).toEqual('1.520000000000000000')
+        // partnerFeeAmount = 2 * 20 / 100 = 0.4
+        // network fee in WETH = 0.005312084993359893
+        // outputAmount = (2 - 0.4 - 0.0053) - 5% = 1.518988015978695073
+        expect(result.outputAmount.toFixed()).toEqual('1.518988015978695073')
       }
     })
 
@@ -105,8 +107,9 @@ describe.each([0, 2000 /*20%*/])('getAmountsForSignature(), partner fee bps: %i'
         // inputAmount = (3012 + 8) + 5% = 3171
         expect(result.inputAmount.toFixed()).toEqual('3171.000000')
       } else {
-        // inputAmount = (3012 + 8) + 5% + 20% = 3805.2
-        expect(result.inputAmount.toFixed()).toEqual('3805.200000')
+        // partnerFeeAmount = 3012 * 20 / 100 = 602.4
+        // inputAmount = (3012 + 602.4 + 8) + 5% = 3803.520000
+        expect(result.inputAmount.toFixed()).toEqual('3803.520000')
       }
 
       // Output amount the same, because this is buy order
