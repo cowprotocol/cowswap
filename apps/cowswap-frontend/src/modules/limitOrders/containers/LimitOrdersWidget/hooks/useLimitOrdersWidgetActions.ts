@@ -1,4 +1,4 @@
-import { useAtomValue, useSetAtom } from 'jotai'
+import { useAtomValue } from 'jotai'
 import { useCallback } from 'react'
 
 import { changeSwapAmountAnalytics } from '@cowprotocol/analytics'
@@ -7,8 +7,8 @@ import { OrderKind } from '@cowprotocol/cow-sdk'
 
 import { Field } from 'legacy/state/types'
 
-import { updateLimitOrdersRawStateAtom } from 'modules/limitOrders'
 import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
+import { useUpdateLimitOrdersRawState } from 'modules/limitOrders/hooks/useLimitOrdersRawState'
 import { useUpdateCurrencyAmount } from 'modules/limitOrders/hooks/useUpdateCurrencyAmount'
 import { limitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
 import { TradeWidgetActions } from 'modules/trade'
@@ -22,7 +22,7 @@ export function useLimitOrdersWidgetActions(): TradeWidgetActions {
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
   const updateCurrencyAmount = useUpdateCurrencyAmount()
 
-  const updateLimitOrdersState = useSetAtom(updateLimitOrdersRawStateAtom)
+  const updateLimitOrdersState = useUpdateLimitOrdersRawState()
 
   const onCurrencySelection = useOnCurrencySelection()
 

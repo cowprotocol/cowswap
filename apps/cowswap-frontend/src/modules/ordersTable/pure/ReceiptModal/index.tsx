@@ -10,6 +10,7 @@ import { CloseIcon } from 'legacy/theme'
 import { TwapOrderItem } from 'modules/twap/types'
 
 import { isPending } from 'common/hooks/useCategorizeRecentActivity'
+import { ButtonSecondary } from 'common/pure/ButtonSecondary'
 import { Icon, IconType } from 'common/pure/Icon'
 import { InlineBanner } from 'common/pure/InlineBanner'
 import { BannerOrientation, CustomRecipientWarningBanner } from 'common/pure/InlineBanner/banners'
@@ -33,6 +34,7 @@ import { PriceField } from './PriceField'
 import { StatusField } from './StatusField'
 import * as styledEl from './styled'
 import { SurplusField } from './SurplusField'
+
 interface ReceiptProps {
   isOpen: boolean
   order: ParsedOrder
@@ -46,6 +48,7 @@ interface ReceiptProps {
   limitPrice: Fraction | null
   executionPrice: Fraction | null
   estimatedExecutionPrice: Fraction | null
+  showRecreateModal: Command | null
 }
 
 const FILLED_COMMON_TOOLTIP = 'How much of the order has been filled.'
@@ -97,6 +100,7 @@ export function ReceiptModal({
   executionPrice,
   estimatedExecutionPrice,
   receiverEnsName,
+  showRecreateModal,
 }: ReceiptProps) {
   // Check if Custom Recipient Warning Banner should be visible
   const isCustomRecipientWarningBannerVisible = !useIsReceiverWalletBannerHidden(order.id)
@@ -123,6 +127,11 @@ export function ReceiptModal({
       <styledEl.Wrapper>
         <styledEl.Header>
           <styledEl.Title>Order Receipt</styledEl.Title>
+          {showRecreateModal && (
+            <ButtonSecondary variant={'light'} margin={'0 auto 0 10px'} minHeight={'28px'} onClick={showRecreateModal}>
+              Recreate this order
+            </ButtonSecondary>
+          )}
           <CloseIcon onClick={() => onDismiss()} />
         </styledEl.Header>
 

@@ -4,8 +4,7 @@ import { setMaxSellTokensAnalytics } from '@cowprotocol/analytics'
 import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { formatInputAmount, getIsNativeToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { TokenAmount } from '@cowprotocol/ui'
-import { MouseoverTooltip } from '@cowprotocol/ui'
+import { MouseoverTooltip, TokenAmount } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
@@ -34,6 +33,7 @@ export interface CurrencyInputPanelProps extends Partial<BuiltItProps> {
   isChainIdUnsupported: boolean
   disabled?: boolean
   inputDisabled?: boolean
+  tokenSelectorDisabled?: boolean
   inputTooltip?: string
   showSetMax?: boolean
   maxBalance?: CurrencyAmount<Currency> | undefined
@@ -58,6 +58,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
     showSetMax = false,
     maxBalance,
     inputDisabled = false,
+    tokenSelectorDisabled = false,
     inputTooltip,
     onUserInput,
     allowsOffchainSigning,
@@ -153,6 +154,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
               }
               currency={disabled ? undefined : currency || undefined}
               loading={areCurrenciesLoading || disabled}
+              readonlyMode={tokenSelectorDisabled}
             />
           </div>
           <div>

@@ -3,10 +3,11 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { usePrevious } from '@cowprotocol/common-hooks'
 import { getRawCurrentChainIdFromUrl } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { useWalletInfo, switchChain } from '@cowprotocol/wallet'
+import { switchChain, useWalletInfo } from '@cowprotocol/wallet'
 import { useWeb3React } from '@web3-react/core'
 
 import { useTradeNavigate } from 'modules/trade/hooks/useTradeNavigate'
+import { useIsAlternativeOrderModalVisible } from 'modules/trade/state/alternativeOrder'
 import { getDefaultTradeRawState, TradeRawState } from 'modules/trade/types/TradeRawState'
 
 import { useResetStateWithSymbolDuplication } from './useResetStateWithSymbolDuplication'
@@ -36,6 +37,8 @@ export function useSetupTradeState(): void {
   const prevTradeStateFromUrl = usePrevious(tradeStateFromUrl)
 
   const currentChainId = !urlChainId ? prevProviderChainId || SupportedChainId.MAINNET : urlChainId
+
+  const isAlternativeModalVisible = useIsAlternativeOrderModalVisible()
 
   const switchNetworkInWallet = useCallback(
     (targetChainId: SupportedChainId) => {
@@ -99,6 +102,12 @@ export function useSetupTradeState(): void {
    *  - apply the URL changes only if user accepted network changes in the wallet
    */
   useEffect(() => {
+    // Do nothing when in alternative modal
+    // App should already be loaded by then
+    if (isAlternativeModalVisible) {
+      return
+    }
+
     const { inputCurrencyId, outputCurrencyId } = tradeStateFromUrl
     const providerAndUrlChainIdMismatch = currentChainId !== prevProviderChainId
 
