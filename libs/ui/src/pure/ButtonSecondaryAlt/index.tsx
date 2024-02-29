@@ -1,4 +1,4 @@
-import { UI } from '@cowprotocol/ui'
+import { UI } from '../../enum'
 
 import styled from 'styled-components/macro'
 

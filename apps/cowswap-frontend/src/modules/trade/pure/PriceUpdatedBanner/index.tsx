@@ -1,9 +1,9 @@
 import { UI } from '@cowprotocol/ui'
+import { InlineBanner } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
 
-import { InlineBanner } from '@cowprotocol/ui'
 
 const Wrapper = styled.div`
   display: flex;
