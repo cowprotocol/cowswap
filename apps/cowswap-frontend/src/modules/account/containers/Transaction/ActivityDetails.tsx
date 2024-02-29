@@ -6,7 +6,15 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useENS } from '@cowprotocol/ens'
 import { TokenLogo, useTokenBySymbolOrAddress } from '@cowprotocol/tokens'
 import { UiOrderType } from '@cowprotocol/types'
-import { ExternalLink, TokenAmount, UI } from '@cowprotocol/ui'
+import {
+  ExternalLink,
+  TokenAmount,
+  UI,
+  Icon,
+  IconType,
+  BannerOrientation,
+  CustomRecipientWarningBanner,
+} from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { OrderProgressBar } from 'legacy/components/OrderProgressBar'
@@ -19,8 +27,6 @@ import { EthFlowStepper } from 'modules/swap/containers/EthFlowStepper'
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
 import { isPending } from 'common/hooks/useCategorizeRecentActivity'
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
-import { Icon, IconType } from 'common/pure/Icon'
-import { BannerOrientation, CustomRecipientWarningBanner } from 'common/pure/InlineBanner/banners'
 import { RateInfo, RateInfoParams } from 'common/pure/RateInfo'
 import { SafeWalletLink } from 'common/pure/SafeWalletLink'
 import {

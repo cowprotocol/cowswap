@@ -1,4 +1,5 @@
 import { shortenAddress } from '@cowprotocol/common-utils'
+// eslint-disable-next-line @nx/enforce-module-boundaries
 import { ButtonSecondary } from '@cowprotocol/ui'
 import { Identicon } from '@cowprotocol/wallet'
 

@@ -1,4 +1,6 @@
 import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
+// eslint-disable-next-line @nx/enforce-module-boundaries
+import { InlineBanner } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import { NavLink } from 'react-router-dom'
@@ -9,7 +11,6 @@ import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRou
 import { parameterizeTradeSearch } from 'modules/trade/utils/parameterizeTradeSearch'
 
 import { Routes } from 'common/constants/routes'
-import { InlineBanner } from 'common/pure/InlineBanner'
 
 const StyledNavLink = styled(NavLink)`
   color: inherit;

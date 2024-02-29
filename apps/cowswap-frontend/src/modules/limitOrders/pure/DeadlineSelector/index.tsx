@@ -1,5 +1,6 @@
 import { ChangeEventHandler, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
+// eslint-disable-next-line @nx/enforce-module-boundaries
 import { ButtonPrimary, ButtonSecondary } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'

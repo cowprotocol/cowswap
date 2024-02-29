@@ -1,4 +1,4 @@
-import { UI } from '../../enum'
+import { UI } from '@cowprotocol/ui'
 import styled from 'styled-components'
 
 import PopoverMod, { Arrow as ArrowMod, PopoverContainer as PopoverContainerMod } from './PopoverMod'

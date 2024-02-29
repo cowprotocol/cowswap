@@ -2,7 +2,9 @@ import iconInformation from '@cowprotocol/assets/cow-swap/alert-circle.svg'
 import iconAlert from '@cowprotocol/assets/cow-swap/alert.svg'
 import iconDanger from '@cowprotocol/assets/cow-swap/alert.svg'
 import iconSuccess from '@cowprotocol/assets/cow-swap/check.svg'
-import { UI } from '@cowprotocol/ui'
+// import iconCoins from '@cowprotocol/assets/images/coins.svg'
+
+import { UI } from '../../enum'
 
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'

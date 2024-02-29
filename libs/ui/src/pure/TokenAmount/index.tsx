@@ -1,6 +1,6 @@
 import { LONG_PRECISION } from '@cowprotocol/common-const'
 import { FeatureFlag, formatTokenAmount, FractionUtils } from '@cowprotocol/common-utils'
-import { UI } from '../../enum'
+import { UI } from '@cowprotocol/ui'
 import styled from 'styled-components'
 import { FractionLike, Nullish } from '../../types'
 import { formatTokenSymbol, TokenNameAndSymbol, TokenSymbol } from '../TokenSymbol'

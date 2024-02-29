@@ -3,6 +3,7 @@ import { useMemo } from 'react'
 import Circle from '@cowprotocol/assets/images/blue-loader.svg'
 import { useENS } from '@cowprotocol/ens'
 import { Command } from '@cowprotocol/types'
+// eslint-disable-next-line @nx/enforce-module-boundaries
 import { ButtonSecondary } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'

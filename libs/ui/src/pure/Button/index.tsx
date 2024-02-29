@@ -5,7 +5,7 @@ import { ButtonProps } from 'rebass/styled-components'
 import styled from 'styled-components'
 
 import { RowBetween } from '../Row'
-import { ButtonSize, UI } from '../../enum'
+import { ButtonSize, UI } from '@cowprotocol/ui'
 
 import {
   ButtonConfirmedStyle as ButtonConfirmedStyleMod,

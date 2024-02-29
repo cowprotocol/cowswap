@@ -1,6 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react'
 
-import { ButtonSize, ButtonPrimary, BackButton, CenteredDots, LongLoadText } from '@cowprotocol/ui'
+import {
+  ButtonSize,
+  ButtonPrimary,
+  BackButton,
+  CenteredDots,
+  LongLoadText,
+  BannerOrientation,
+  CustomRecipientWarningBanner,
+} from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import ms from 'ms.macro'
@@ -9,7 +17,6 @@ import { useMediaQuery, upToMedium } from 'legacy/hooks/useMediaQuery'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
 import { CurrencyAmountPreview, CurrencyPreviewInfo } from 'common/pure/CurrencyInputPanel'
-import { BannerOrientation, CustomRecipientWarningBanner } from 'common/pure/InlineBanner/banners'
 
 import { QuoteCountdown } from './CountDown'
 import { useIsPriceChanged } from './hooks/useIsPriceChanged'

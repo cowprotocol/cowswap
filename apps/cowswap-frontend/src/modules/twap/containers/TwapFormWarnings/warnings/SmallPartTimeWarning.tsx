@@ -1,4 +1,5 @@
-import { InlineBanner } from 'common/pure/InlineBanner'
+// eslint-disable-next-line @nx/enforce-module-boundaries
+import { InlineBanner } from '@cowprotocol/ui'
 
 import { MINIMUM_PART_TIME } from '../../../const'
 import { deadlinePartsDisplay } from '../../../utils/deadlinePartsDisplay'

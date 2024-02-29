@@ -1,4 +1,4 @@
-import { UI } from '../../enum'
+import { UI } from '@cowprotocol/ui'
 import styled, { css, keyframes } from 'styled-components'
 
 export const loadingAnimation = keyframes`

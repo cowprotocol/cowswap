@@ -1,6 +1,7 @@
 import { ReactNode, useEffect, useRef } from 'react'
 
 import { Command } from '@cowprotocol/types'
+// eslint-disable-next-line @nx/enforce-module-boundaries
 import { ButtonPrimary, ButtonSecondary } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { isAddress } from '@ethersproject/address'

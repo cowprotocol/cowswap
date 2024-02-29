@@ -1,6 +1,7 @@
 import CowProtocolImage from '@cowprotocol/assets/cow-swap/cowprotocol.svg'
 import { useNetworkName } from '@cowprotocol/common-hooks'
 import { formatDateWithTimezone } from '@cowprotocol/common-utils'
+// eslint-disable-next-line @nx/enforce-module-boundaries
 import { ButtonSecondary } from '@cowprotocol/ui'
 import { ExternalLink } from '@cowprotocol/ui'
 
