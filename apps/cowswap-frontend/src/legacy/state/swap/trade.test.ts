@@ -53,11 +53,11 @@ describe('Swap PRICE Quote test', () => {
           // sell orders: we show user on UI inputAmount with no fee calculation
           inputAmount: currencyIn,
           inputAmountWithoutFee: currencyIn,
-          inputAmountWithPartnerFee: currencyIn,
+          inputAmountAfterFees: currencyIn,
           inputAmountWithFee: currencyIn.subtract(feeAsCurrency),
           outputAmountWithoutFee: currencyIn,
           outputAmount: currencyOut,
-          outputAmountWithPartnerFee: currencyOut,
+          outputAmountAfterFees: currencyOut,
           fee: {
             amount: MOCKED_FEE_AMOUNT.long,
             feeAsCurrency,
@@ -113,10 +113,10 @@ describe('Swap PRICE Quote test', () => {
           // fee is in selltoken so for buy orders we set inputAmount as inputAmountWithFee
           inputAmount: apiBuyPriceAsCurrencyWithFee,
           inputAmountWithFee: apiBuyPriceAsCurrencyWithFee,
-          inputAmountWithPartnerFee: apiBuyPriceAsCurrencyWithFee,
+          inputAmountAfterFees: apiBuyPriceAsCurrencyWithFee,
           inputAmountWithoutFee: apiBuyPriceAsCurrency,
           outputAmount: currencyOut,
-          outputAmountWithPartnerFee: currencyOut,
+          outputAmountAfterFees: currencyOut,
           outputAmountWithoutFee: currencyOut,
           fee: {
             amount: MOCKED_FEE_AMOUNT.long,

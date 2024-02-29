@@ -50,10 +50,10 @@ export function _constructTradePrice({
 
 export function _minimumAmountOut(pct: Percent, trade: TradeGp) {
   if (trade.tradeType === TradeType.EXACT_OUTPUT) {
-    return trade.outputAmountWithPartnerFee
+    return trade.outputAmountAfterFees
   }
 
-  return trade.outputAmountWithPartnerFee.multiply(ONE_FRACTION.subtract(pct))
+  return trade.outputAmountAfterFees.multiply(ONE_FRACTION.subtract(pct))
 }
 
 export function _maximumAmountIn(pct: Percent, trade: TradeGp) {
@@ -61,17 +61,17 @@ export function _maximumAmountIn(pct: Percent, trade: TradeGp) {
     return trade.inputAmount
   }
 
-  return trade.inputAmountWithPartnerFee.multiply(ONE_FRACTION.add(pct))
+  return trade.inputAmountAfterFees.multiply(ONE_FRACTION.add(pct))
 }
 
 interface TradeGpConstructor {
   inputAmount: CurrencyAmount<Currency>
   inputAmountWithFee: CurrencyAmount<Currency>
   inputAmountWithoutFee: CurrencyAmount<Currency>
-  inputAmountWithPartnerFee: CurrencyAmount<Currency>
+  inputAmountAfterFees: CurrencyAmount<Currency>
   outputAmount: CurrencyAmount<Currency>
   outputAmountWithoutFee: CurrencyAmount<Currency>
-  outputAmountWithPartnerFee: CurrencyAmount<Currency>
+  outputAmountAfterFees: CurrencyAmount<Currency>
   fee: FeeForTrade
   executionPrice: Price<Currency, Currency>
   tradeType: TradeType
@@ -95,13 +95,13 @@ export default class TradeGp {
   readonly inputAmount: CurrencyAmount<Currency>
   readonly inputAmountWithFee: CurrencyAmount<Currency>
   readonly inputAmountWithoutFee: CurrencyAmount<Currency>
-  readonly inputAmountWithPartnerFee: CurrencyAmount<Currency>
+  readonly inputAmountAfterFees: CurrencyAmount<Currency>
   /**
    * The output amount for the trade assuming no slippage.
    */
   readonly outputAmount: CurrencyAmount<Currency>
   readonly outputAmountWithoutFee: CurrencyAmount<Currency>
-  readonly outputAmountWithPartnerFee: CurrencyAmount<Currency>
+  readonly outputAmountAfterFees: CurrencyAmount<Currency>
   /**
    * Trade fee
    */
@@ -133,8 +133,8 @@ export default class TradeGp {
     inputAmountWithoutFee,
     outputAmount,
     outputAmountWithoutFee,
-    outputAmountWithPartnerFee,
-    inputAmountWithPartnerFee,
+    outputAmountAfterFees,
+    inputAmountAfterFees,
     fee,
     executionPrice,
     tradeType,
@@ -146,9 +146,9 @@ export default class TradeGp {
     this.inputAmount = inputAmount
     this.inputAmountWithFee = inputAmountWithFee
     this.inputAmountWithoutFee = inputAmountWithoutFee
-    this.inputAmountWithPartnerFee = inputAmountWithPartnerFee
+    this.inputAmountAfterFees = inputAmountAfterFees
     this.outputAmountWithoutFee = outputAmountWithoutFee
-    this.outputAmountWithPartnerFee = outputAmountWithPartnerFee
+    this.outputAmountAfterFees = outputAmountAfterFees
     this.outputAmount = outputAmount
     this.fee = fee
     this.executionPrice = executionPrice

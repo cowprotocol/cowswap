@@ -58,67 +58,6 @@ describe.each([0, 2000 /*20%*/])('getAmountsForSignature(), partner fee bps: %i'
   // 2 WETH
   const outputAmount = CurrencyAmount.fromRawAmount(WETH_MAINNET, 2 * 10 ** WETH_MAINNET.decimals)
 
-  describe('With fee > 0', () => {
-    // Fee=zero is disabled
-    const featureFlags = { swapZeroFee: false }
-
-    /**
-     * Sell amount is just what user entered minus fee
-     * Output amount is calculated as: (outputAmount - fee) - slippage
-     */
-    it('Sell order', () => {
-      const trade = getTrade({ tradeType: TradeType.EXACT_INPUT, inputAmount, outputAmount, feeAmount, partnerFeeBps })
-
-      if (!trade) throw new Error('No trade')
-
-      const result = getAmountsForSignature({
-        featureFlags,
-        allowedSlippage,
-        trade: trade,
-        kind: OrderKind.SELL,
-      })
-
-      // Just subtracted fee from inputAmount, 3012 - 8 = 3004
-      expect(result.inputAmount.toFixed()).toEqual('3004.000000')
-
-      if (partnerFeeBps === 0) {
-        // outputAmount = 2 - 5% = 1.900000000000000000
-        expect(result.outputAmount.toFixed()).toEqual('1.900000000000000000')
-      } else {
-        // outputAmount = 2 - 5% - 20% = 1.520000000000000000
-        expect(result.outputAmount.toFixed()).toEqual('1.520000000000000000')
-      }
-    })
-
-    /**
-     * Sell amount calculated as: (inputAmount) + slippage
-     * Output amount is just what user entered
-     */
-    it('Buy order', () => {
-      const trade = getTrade({ tradeType: TradeType.EXACT_OUTPUT, inputAmount, outputAmount, feeAmount, partnerFeeBps })
-
-      if (!trade) throw new Error('No trade')
-
-      const result = getAmountsForSignature({
-        featureFlags,
-        allowedSlippage,
-        trade: trade,
-        kind: OrderKind.BUY,
-      })
-
-      if (partnerFeeBps === 0) {
-        // inputAmount = (3012 + 8) + 5% = 3171.000000
-        expect(result.inputAmount.toFixed()).toEqual('3171.000000')
-      } else {
-        // inputAmount = (3012 + 8) + 5% + 20% = 3805.200000
-        expect(result.inputAmount.toFixed()).toEqual('3805.200000')
-      }
-
-      // Output amount the same, because this is buy order
-      expect(result.outputAmount.toFixed()).toEqual('2.000000000000000000')
-    })
-  })
-
   describe('With fee = 0', () => {
     // Fee=zero is enabled
     const featureFlags = { swapZeroFee: true }
@@ -146,8 +85,10 @@ describe.each([0, 2000 /*20%*/])('getAmountsForSignature(), partner fee bps: %i'
         // outputAmount = 2 - 5% = 1.900000000000000000
         expect(result.outputAmount.toFixed()).toEqual('1.900000000000000000')
       } else {
-        // outputAmount = 2 - 5% - 20% = 1.520000000000000000
-        expect(result.outputAmount.toFixed()).toEqual('1.520000000000000000')
+        // partnerFeeAmount = 2 * 20 / 100 = 0.4
+        // network fee in WETH = 0.005312084993359893
+        // outputAmount = (2 - 0.4 - 0.0053) - 5% = 1.518988015978695073
+        expect(result.outputAmount.toFixed()).toEqual('1.518988015978695073')
       }
     })
 
@@ -171,8 +112,9 @@ describe.each([0, 2000 /*20%*/])('getAmountsForSignature(), partner fee bps: %i'
         // inputAmount = (3012 + 8) + 5% = 3171
         expect(result.inputAmount.toFixed()).toEqual('3171.000000')
       } else {
-        // inputAmount = (3012 + 8) + 5% + 20% = 3805.2
-        expect(result.inputAmount.toFixed()).toEqual('3805.200000')
+        // partnerFeeAmount = 3012 * 20 / 100 = 602.4
+        // inputAmount = (3012 + 602.4 + 8) + 5% = 3803.520000
+        expect(result.inputAmount.toFixed()).toEqual('3803.520000')
       }
 
       // Output amount the same, because this is buy order

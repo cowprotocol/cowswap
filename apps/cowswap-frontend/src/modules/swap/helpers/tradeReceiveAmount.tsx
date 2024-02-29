@@ -31,8 +31,8 @@ export function getInputReceiveAmountInfo(trade: TradeGp): ReceiveAmountInfo {
         defaultValue="0"
       />
     ),
-    amountAfterFeesRaw: trade.inputAmountWithPartnerFee,
-    amountAfterFees: <TokenAmount amount={trade.inputAmountWithPartnerFee} defaultValue="0" />,
+    amountAfterFeesRaw: trade.inputAmountAfterFees,
+    amountAfterFees: <TokenAmount amount={trade.inputAmountAfterFees} defaultValue="0" />,
     feeAmount: <TokenAmount amount={feeAmountRaw} defaultValue="0" />,
     partnerFeeAmount: <TokenAmount amount={trade.partnerFeeAmount} defaultValue="0" />,
     partnerFeeAmountRaw: trade.partnerFeeAmount,
@@ -45,8 +45,8 @@ export function getOutputReceiveAmountInfo(trade: TradeGp): ReceiveAmountInfo {
   return {
     type: 'to',
     amountBeforeFees: <TokenAmount amount={trade.outputAmountWithoutFee} defaultValue="0" />,
-    amountAfterFeesRaw: trade.outputAmountWithPartnerFee,
-    amountAfterFees: <TokenAmount amount={trade.outputAmountWithPartnerFee} defaultValue="0" />,
+    amountAfterFeesRaw: trade.outputAmountAfterFees,
+    amountAfterFees: <TokenAmount amount={trade.outputAmountAfterFees} defaultValue="0" />,
     feeAmount: <TokenAmount amount={feeAmountRaw} defaultValue="0" />,
     partnerFeeAmount: <TokenAmount amount={trade.partnerFeeAmount} defaultValue="0" />,
     partnerFeeAmountRaw: trade.partnerFeeAmount,
