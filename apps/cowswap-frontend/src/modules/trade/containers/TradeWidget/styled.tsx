@@ -22,6 +22,10 @@ export const ContainerBox = styled.div`
   box-shadow: ${({ theme }) => theme.boxShadow1};
   padding: 10px;
   position: relative;
+
+  .modalMode & {
+    box-shadow: none;
+  }
 `
 
 export const Header = styled.div`
