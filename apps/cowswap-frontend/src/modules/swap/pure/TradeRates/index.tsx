@@ -1,20 +1,19 @@
 import React from 'react'
 
 import { genericPropsChecker } from '@cowprotocol/common-utils'
-import { FiatAmount } from '@cowprotocol/ui'
+import { FiatAmount, TokenAmount } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import TradeGp from 'legacy/state/swap/TradeGp'
 
 import { RowDeadline } from 'modules/swap/containers/Row/RowDeadline'
 import { TradeBasicDetails } from 'modules/swap/containers/TradeBasicDetails'
-import { useUsdAmount } from 'modules/usdAmount'
 
-import { useSafeMemo } from 'common/hooks/useSafeMemo'
 import { RateInfoParams } from 'common/pure/RateInfo'
 import { TradeDetailsAccordion } from 'common/pure/TradeDetailsAccordion'
 
 import * as styledEl from './styled'
+import { useFeeAmounts } from './useFeeAmounts'
 
 // const SUBSIDY_INFO_MESSAGE_EXTENDED =
 //   SUBSIDY_INFO_MESSAGE + '. Click on the discount button on the right for more info.'
@@ -51,20 +50,20 @@ export const TradeRates = React.memo(function (props: TradeRatesProps) {
   const showTradeBasicDetails = (isFeeGreater || trade) && fee
   const showRowDeadline = !!trade
 
-  const feeFiatValue = useUsdAmount(fee).value
-  const partnerFeeFiatValue = useUsdAmount(trade?.partnerFeeAmount).value
+  const { feeTotalAmount, feeUsdTotalAmount } = useFeeAmounts(trade)
 
-  const feeFiatTotal = useSafeMemo(() => {
-    return partnerFeeFiatValue && feeFiatValue ? partnerFeeFiatValue.add(feeFiatValue) : feeFiatValue
-  }, [partnerFeeFiatValue, feeFiatValue])
-
-  if (!feeFiatTotal || feeFiatTotal.equalTo(0)) return null
+  const feeSummary =
+    feeUsdTotalAmount && feeUsdTotalAmount.greaterThan(0) ? (
+      <FiatAmount amount={feeUsdTotalAmount} />
+    ) : (
+      <TokenAmount amount={feeTotalAmount} tokenSymbol={feeTotalAmount?.currency} />
+    )
 
   return (
     <TradeDetailsAccordion
       open={isReviewSwap}
       rateInfo={showPrice && <styledEl.StyledRateInfo noLabel={true} stylized={true} rateInfoParams={rateInfoParams} />}
-      feeSummary={showTradeBasicDetails && <FiatAmount amount={feeFiatTotal} />}
+      feeSummary={showTradeBasicDetails && feeSummary}
     >
       <styledEl.Box>
         {showTradeBasicDetails && (
