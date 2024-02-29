@@ -48,7 +48,7 @@ function getTrade(params: TradeParams): TradeGp | undefined {
       })
 }
 
-describe.each([0, 2000 /*20%*/])('getAmountsForSignature(), partner fee bps: %i', (partnerFeeBps) => {
+describe('getAmountsForSignature()', () => {
   // 5%
   const allowedSlippage = new Percent(5, 100)
   // 3012 USDC
@@ -57,68 +57,126 @@ describe.each([0, 2000 /*20%*/])('getAmountsForSignature(), partner fee bps: %i'
   const feeAmount = CurrencyAmount.fromRawAmount(USDC_MAINNET, 8 * 10 ** USDC_MAINNET.decimals)
   // 2 WETH
   const outputAmount = CurrencyAmount.fromRawAmount(WETH_MAINNET, 2 * 10 ** WETH_MAINNET.decimals)
+  const featureFlags = { swapZeroFee: true }
 
-  describe('With fee = 0', () => {
-    // Fee=zero is enabled
-    const featureFlags = { swapZeroFee: true }
+  describe('Given: Sell order', () => {
+    describe('When partner fee is not set', () => {
+      it('Then only slippage should be subtracted from output amount', () => {
+        const partnerFeeBps = 0
+        const trade = getTrade({
+          tradeType: TradeType.EXACT_INPUT,
+          inputAmount,
+          outputAmount,
+          feeAmount,
+          partnerFeeBps,
+        })
 
-    /**
-     * Sell amount is just what user entered
-     * Output amount calculated as: outputAmount - slippage
-     */
-    it('Sell order', () => {
-      const trade = getTrade({ tradeType: TradeType.EXACT_INPUT, inputAmount, outputAmount, feeAmount, partnerFeeBps })
+        if (!trade) throw new Error('No trade')
 
-      if (!trade) throw new Error('No trade')
+        const result = getAmountsForSignature({
+          featureFlags,
+          allowedSlippage,
+          trade: trade,
+          kind: OrderKind.SELL,
+        })
 
-      const result = getAmountsForSignature({
-        featureFlags,
-        allowedSlippage,
-        trade: trade,
-        kind: OrderKind.SELL,
-      })
+        // Input amount remains as it is (already included fee)
+        expect(result.inputAmount.toFixed()).toEqual('3012.000000')
 
-      // Input amount the same, because we don't subtract fee
-      expect(result.inputAmount.toFixed()).toEqual('3012.000000')
-
-      if (partnerFeeBps === 0) {
         // outputAmount = 2 - 5% = 1.900000000000000000
         expect(result.outputAmount.toFixed()).toEqual('1.900000000000000000')
-      } else {
+      })
+    })
+
+    describe('When partner fee is set (20%)', () => {
+      const partnerFeeBps = 2000 // 20%
+
+      it('Then both partner fee and slippage should be subtracted from output amount', () => {
+        const trade = getTrade({
+          tradeType: TradeType.EXACT_INPUT,
+          inputAmount,
+          outputAmount,
+          feeAmount,
+          partnerFeeBps,
+        })
+
+        if (!trade) throw new Error('No trade')
+
+        const result = getAmountsForSignature({
+          featureFlags,
+          allowedSlippage,
+          trade: trade,
+          kind: OrderKind.SELL,
+        })
+
+        // Input amount remains as it is (already included fee)
+        expect(result.inputAmount.toFixed()).toEqual('3012.000000')
+
         // partnerFeeAmount = 2 * 20 / 100 = 0.4
         // network fee in WETH = 0.005312084993359893
         // outputAmount = (2 - 0.4 - 0.0053) - 5% = 1.518988015978695073
         expect(result.outputAmount.toFixed()).toEqual('1.518988015978695073')
-      }
-    })
-
-    /**
-     * Sell amount calculated as: (inputAmount + fee) + slippage
-     * Output amount is just what user entered
-     */
-    it('Buy order', () => {
-      const trade = getTrade({ tradeType: TradeType.EXACT_OUTPUT, inputAmount, outputAmount, feeAmount, partnerFeeBps })
-
-      if (!trade) throw new Error('No trade')
-
-      const result = getAmountsForSignature({
-        featureFlags,
-        allowedSlippage,
-        trade: trade,
-        kind: OrderKind.BUY,
       })
+    })
+  })
 
-      if (partnerFeeBps === 0) {
+  describe('Given: Buy order', () => {
+    describe('When partner fee is not set', () => {
+      it('Then network fee and slippage should be added into input amount', () => {
+        const partnerFeeBps = 0
+        const trade = getTrade({
+          tradeType: TradeType.EXACT_OUTPUT,
+          inputAmount,
+          outputAmount,
+          feeAmount,
+          partnerFeeBps,
+        })
+
+        if (!trade) throw new Error('No trade')
+
+        const result = getAmountsForSignature({
+          featureFlags,
+          allowedSlippage,
+          trade: trade,
+          kind: OrderKind.BUY,
+        })
+
         // inputAmount = (3012 + 8) + 5% = 3171
         expect(result.inputAmount.toFixed()).toEqual('3171.000000')
-      } else {
+
+        // Output amount remains as it is inputted
+        expect(result.outputAmount.toFixed()).toEqual('2.000000000000000000')
+      })
+    })
+
+    describe('When partner fee is set (20%)', () => {
+      const partnerFeeBps = 2000 // 20%
+
+      it('Then partner fee, network fee, and slippage should be added into input amount', () => {
+        const trade = getTrade({
+          tradeType: TradeType.EXACT_OUTPUT,
+          inputAmount,
+          outputAmount,
+          feeAmount,
+          partnerFeeBps,
+        })
+
+        if (!trade) throw new Error('No trade')
+
+        const result = getAmountsForSignature({
+          featureFlags,
+          allowedSlippage,
+          trade: trade,
+          kind: OrderKind.BUY,
+        })
+
         // partnerFeeAmount = 3012 * 20 / 100 = 602.4
         // inputAmount = (3012 + 602.4 + 8) + 5% = 3803.520000
         expect(result.inputAmount.toFixed()).toEqual('3803.520000')
-      }
 
-      // Output amount the same, because this is buy order
-      expect(result.outputAmount.toFixed()).toEqual('2.000000000000000000')
+        // Output amount remains as it is inputted
+        expect(result.outputAmount.toFixed()).toEqual('2.000000000000000000')
+      })
     })
   })
 })
