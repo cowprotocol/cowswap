@@ -9,7 +9,7 @@ import { useENS } from '@cowprotocol/ens'
 import { useAreThereTokensWithSameSymbol, useTokenBySymbolOrAddress } from '@cowprotocol/tokens'
 import { Command } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Percent, TradeType } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/macro'
 
@@ -17,7 +17,7 @@ import { AppState } from 'legacy/state'
 import { useAppDispatch, useAppSelector } from 'legacy/state/hooks'
 import { useGetQuoteAndStatus, useQuote } from 'legacy/state/price/hooks'
 import { setRecipient, switchCurrencies, typeInput } from 'legacy/state/swap/actions'
-import { stringToCurrency, buildTradeExactInWithFee, buildTradeExactOutWithFee } from 'legacy/state/swap/extension'
+import { buildTradeExactInWithFee, buildTradeExactOutWithFee, stringToCurrency } from 'legacy/state/swap/extension'
 import TradeGp from 'legacy/state/swap/TradeGp'
 import { isWrappingTrade } from 'legacy/state/swap/utils'
 import { Field } from 'legacy/state/types'
@@ -123,8 +123,14 @@ export function useHighFeeWarning(trade?: TradeGp) {
   const [isHighFee, feePercentage] = useMemo(() => {
     if (!trade) return [false, undefined]
 
-    const { inputAmount, fee } = trade
-    const feePercentage = fee.feeAsCurrency.divide(inputAmount).asFraction
+    const { inputAmountWithoutFee, outputAmountWithoutFee, fee, partnerFeeAmount } = trade
+    const isExactInput = trade.tradeType === TradeType.EXACT_INPUT
+    const feeAsCurrency = isExactInput ? trade.executionPrice.quote(fee.feeAsCurrency) : fee.feeAsCurrency
+
+    const totalFeeAmount = partnerFeeAmount ? feeAsCurrency.add(partnerFeeAmount) : feeAsCurrency
+    const targetAmount = isExactInput ? outputAmountWithoutFee : inputAmountWithoutFee
+    const feePercentage = totalFeeAmount.divide(targetAmount).asFraction
+
     return [feePercentage.greaterThan(FEE_SIZE_THRESHOLD), feePercentage.multiply('100')]
   }, [trade])
 
