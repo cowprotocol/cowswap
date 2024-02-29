@@ -1,7 +1,9 @@
 import ms from 'ms.macro'
 import ReactAppzi from 'react-appzi'
 import { isImTokenBrowser, majorBrowserVersion, userAgent } from './userAgent'
-import { environmentName, isProdLike } from './environments'
+import { isProdLike } from './environments'
+import { isInjectedWidget } from './isInjectedWidget'
+import { UiOrderType } from '@cowprotocol/types'
 
 // Metamask IOS app uses a version from July 2019 which causes problems in appZi
 const OLD_CHROME_FROM_METAMASK_IOS_APP = 76
@@ -48,11 +50,14 @@ type AppziCustomSettings = {
   traded?: true
   created?: true
   cancelled?: true
+  openedLimitPage?: true
   // extra contextual data for statistics/debugging
   explorerUrl?: string
   env?: string
   chainId?: number
   orderType?: string
+  account?: string
+  pendingOrderIds?: string
 }
 
 type AppziSettings = {
@@ -94,12 +99,31 @@ const TEST_NPS_DATA: AppziCustomSettings = { isTestNps: true }
 // Either one or the other. If both are present, PROD takes precedence
 const NPS_DATA = isProdLike ? PROD_NPS_DATA : TEST_NPS_DATA
 
+// Limit orders survey trigger conditions
+const LIMIT_SURVEY_DATA_TEST = { isLimitSurveyTest: true }
+const LIMIT_SURVEY_DATA_PROD = { isLimitSurveyProd: true }
+
+const LIMIT_SURVEY_DATA = isProdLike ? LIMIT_SURVEY_DATA_PROD : LIMIT_SURVEY_DATA_TEST
+
+type SurveyType = 'nps' | 'limit'
+
 /**
  * Opening of the modal is delegated to Appzi
  * It'll display only if the trigger rules are met
  */
-export function openNpsAppziSometimes(data?: Omit<AppziCustomSettings, 'userTradedOrWaitedForLong' | 'isTestNps'>) {
-  updateAppziSettings({ data: { env: environmentName, ...data, ...NPS_DATA } })
+export function triggerAppziSurvey(
+  data?: Omit<AppziCustomSettings, 'userTradedOrWaitedForLong' | 'isTestNps'>,
+  surveyType: SurveyType = 'nps'
+) {
+  if (isInjectedWidget()) return
+
+  const surveyData = surveyType === 'limit' ? LIMIT_SURVEY_DATA : NPS_DATA
+
+  updateAppziSettings({ data: { ...data, ...surveyData } })
+}
+
+export function getSurveyType(orderType: UiOrderType | undefined): SurveyType {
+  return orderType === UiOrderType.LIMIT ? 'limit' : 'nps'
 }
 
 initialize()

@@ -10,17 +10,13 @@ export const TradeWidgetContainer = styledEl.Container
 
 export function TradeWidget(props: TradeWidgetProps) {
   const { id, slots, params, children: confirmModal } = props
-  const { disableQuotePolling = false, isExpertMode, disableNativeSelling = false } = params
+  const { disableQuotePolling = false, disableNativeSelling = false } = params
   const modals = TradeWidgetModals(confirmModal)
 
   return (
     <>
       <styledEl.Container id={id}>
-        <TradeWidgetUpdaters
-          disableQuotePolling={disableQuotePolling}
-          disableNativeSelling={disableNativeSelling}
-          isExpertMode={isExpertMode}
-        >
+        <TradeWidgetUpdaters disableQuotePolling={disableQuotePolling} disableNativeSelling={disableNativeSelling}>
           {slots.updaters}
         </TradeWidgetUpdaters>
 

@@ -143,4 +143,13 @@ export class FractionUtils {
 
     return new Fraction(JSBI.BigInt(numerator), JSBI.BigInt(denominator))
   }
+
+  /**
+   * When an amount equals zero, return 1 wei, otherwise return amount
+   *
+   * @param amount
+   */
+  static amountToAtLeastOneWei(amount: CurrencyAmount<Token>): CurrencyAmount<Token> {
+    return JSBI.EQ(amount.quotient, 0) ? CurrencyAmount.fromRawAmount(amount.currency, 1) : amount
+  }
 }

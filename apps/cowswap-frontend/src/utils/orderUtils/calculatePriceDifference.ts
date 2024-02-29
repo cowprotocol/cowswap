@@ -84,14 +84,6 @@ function calculatePriceDifferenceAux({
     difference.denominator
   )
 
-  // const priceUnits = `${referencePrice.quoteCurrency.symbol} per ${referencePrice.baseCurrency.symbol}`
-  // console.debug(`calculatePriceDifference`, {
-  //   market: `${targetPrice.baseCurrency.symbol}-${targetPrice.quoteCurrency.symbol}`,
-  //   targetPrice: `${targetPrice.toFixed(18)} ${priceUnits}`,
-  //   referencePrice: `${referencePrice.toFixed(18)} ${priceUnits}`,
-  //   differenceCurrency: `${differenceInQuoteToken.toSignificant(18)} ${differenceInQuoteToken.currency.symbol}`,
-  // })
-
   return { percentage, amount: differenceInQuoteToken }
 }
 

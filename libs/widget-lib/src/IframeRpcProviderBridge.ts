@@ -1,7 +1,13 @@
-import { EthereumProvider, JsonRpcRequest } from './types'
+import { listenToMessageFromWindow, postMessageToWindow, stopListeningToMessageFromWindow } from './messages'
+import {
+  EthereumProvider,
+  JsonRpcRequestMessage,
+  ProviderRpcRequestPayload,
+  ProviderRpcResponsePayload,
+  WidgetMethodsEmit,
+  WidgetMethodsListen,
+} from './types'
 
-const JSON_PRC_V = '2.0'
-const TARGET_ORIGIN = '*' // TODO: Change to CoW specific origin in production. https://github.com/cowprotocol/cowswap/issues/3828
 const EVENTS_TO_FORWARD_TO_IFRAME = ['connect', 'disconnect', 'close', 'chainChanged', 'accountsChanged']
 
 /**
@@ -18,7 +24,7 @@ export class IframeRpcProviderBridge {
   private ethereumProvider: EthereumProvider | null = null
 
   /** Stored JSON-RPC requests, to queue them when disconnected. */
-  private requestWaitingForConnection: { [key: string]: JsonRpcRequest } = {}
+  private requestWaitingForConnection: { [key: string]: JsonRpcRequestMessage } = {}
 
   /**
    * Creates an instance of IframeRpcProviderBridge.
@@ -33,37 +39,38 @@ export class IframeRpcProviderBridge {
   disconnect() {
     // Disconnect provider
     this.ethereumProvider = null
-    window.removeEventListener('message', this.processRpcCallFromWindow)
+    stopListeningToMessageFromWindow(window, WidgetMethodsEmit.PROVIDER_RPC_REQUEST, this.processRpcCallFromWindow)
   }
 
   /**
    * Handles the 'connect' event and sets up event listeners for Ethereum provider events.
-   * @param ethereumProvider - The Ethereum provider to connect.
+   * @param newProvider - The Ethereum provider to connect.
    */
-  onConnect(ethereumProvider: EthereumProvider) {
+  onConnect(newProvider: EthereumProvider) {
+    // Disconnect the previous provider
     if (this.ethereumProvider) {
       this.disconnect()
+    } else {
+      // Listen for messages coming to the main window (from the iFrame window)
+      listenToMessageFromWindow(window, WidgetMethodsEmit.PROVIDER_RPC_REQUEST, this.processRpcCallFromWindow)
     }
 
     // Save the provider
-    this.ethereumProvider = ethereumProvider
-
-    // Listen for messages coming to the main window (from the iFrame window)
-    window.addEventListener('message', this.processRpcCallFromWindow)
+    this.ethereumProvider = newProvider
 
     // Process pending requests
     this.processPendingRequests()
 
     // Register in the provider, the events that needs to be forwarded to the iFrame window
     EVENTS_TO_FORWARD_TO_IFRAME.forEach((event) => {
-      ethereumProvider.on(event, (e: unknown) => this.onRpcEventForwardToIframe(event, e))
+      newProvider.on(event, (params: unknown) => this.onProviderEvent(event, params))
     })
   }
 
   private processPendingRequests() {
     // Process pending requests
     Object.keys(this.requestWaitingForConnection).forEach((key) => {
-      this.processRequest(this.requestWaitingForConnection[key])
+      this.processRpcRequest(this.requestWaitingForConnection[key])
     })
 
     // Clear pending requests
@@ -74,53 +81,51 @@ export class IframeRpcProviderBridge {
    * Processes a JSON-RPC request and sends appropriate response or error via the content window.
    * @param request - The JSON-RPC request to be processed.
    */
-  processRequest(request: JsonRpcRequest) {
-    if (!this.ethereumProvider) return
-
+  processRpcRequest(request: JsonRpcRequestMessage) {
+    const { id, jsonrpc, method } = request
+    if (!this.ethereumProvider || !id) {
+      return
+    }
     const requestPromise =
-      request.method === 'enable' ? this.ethereumProvider.enable() : this.ethereumProvider.request(request)
+      method === 'enable' ? this.ethereumProvider.enable() : this.ethereumProvider.request({ ...request, id })
 
     // Do request, and forward the result or error to the iFrame window
     requestPromise
-      .then((result) => this.forwardRpcCallToIframe({ id: request.id, result }))
-      .catch((error) => this.forwardRpcCallToIframe({ id: request.id, error }))
+      .then((result) =>
+        this.forwardRpcResponseToIframe({
+          rpcResponse: { jsonrpc, id, result },
+        })
+      )
+      .catch((error) =>
+        this.forwardRpcResponseToIframe({
+          rpcResponse: { jsonrpc, id, error },
+        })
+      )
   }
 
-  private processRpcCallFromWindow = (event: MessageEvent): void => {
-    if (!isRpcCall(event)) {
-      return
-    }
-
+  private processRpcCallFromWindow = ({ rpcRequest }: ProviderRpcRequestPayload): void => {
     // If disconnected, ignore the message. Also persist the request
     if (!this.ethereumProvider) {
-      if (event.data.id) {
-        this.requestWaitingForConnection[event.data.id] = event.data
+      if (rpcRequest.id) {
+        this.requestWaitingForConnection[rpcRequest.id] = rpcRequest
       }
       return
     }
 
-    // Delegate the rpc call
-    this.processRequest(event.data)
+    this.processRpcRequest(rpcRequest)
   }
 
-  private onRpcEventForwardToIframe(event: string, params: unknown): void {
-    this.forwardRpcCallToIframe({ method: event, params: [params] })
+  private onProviderEvent(event: string, params: unknown): void {
+    postMessageToWindow(this.iframeWidow, WidgetMethodsListen.PROVIDER_ON_EVENT, {
+      event,
+      params,
+    })
   }
 
   /**
    * Forward a JSON-RPC message to the content window.
    */
-  private forwardRpcCallToIframe(params: { [key: string]: unknown }) {
-    this.iframeWidow.postMessage(
-      {
-        jsonrpc: JSON_PRC_V,
-        ...params,
-      },
-      TARGET_ORIGIN
-    )
+  private forwardRpcResponseToIframe(params: ProviderRpcResponsePayload) {
+    postMessageToWindow(this.iframeWidow, WidgetMethodsListen.PROVIDER_RPC_RESPONSE, params)
   }
-}
-
-function isRpcCall(event: MessageEvent) {
-  return event.data.jsonrpc === JSON_PRC_V
 }

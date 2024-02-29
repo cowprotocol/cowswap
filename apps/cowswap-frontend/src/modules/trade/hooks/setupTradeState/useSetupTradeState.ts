@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { usePrevious } from '@cowprotocol/common-hooks'
 import { getRawCurrentChainIdFromUrl } from '@cowprotocol/common-utils'
@@ -28,7 +28,7 @@ export function useSetupTradeState(): void {
   // When wallet is connected, and user navigates to the URL with a new chainId
   // We must change chainId in provider, and only then change the trade state
   // Since the network chaning process takes some time, we have to remember the state from URL
-  const [rememberedUrlState, setRememberedUrlState] = useState<TradeRawState | null>(null)
+  const rememberedUrlStateRef = useRef<TradeRawState | null>(null)
   const [isFirstLoad, setIsFirstLoad] = useState(true)
 
   const isWalletConnected = !!account
@@ -51,8 +51,11 @@ export function useSetupTradeState(): void {
   )
 
   const onProviderNetworkChanges = useCallback(() => {
+    const rememberedUrlState = rememberedUrlStateRef.current
+
     if (rememberedUrlState) {
-      setRememberedUrlState(null)
+      rememberedUrlStateRef.current = null
+
       tradeNavigate(rememberedUrlState.chainId, rememberedUrlState)
     } else {
       // When app loaded with connected wallet
@@ -111,20 +114,14 @@ export function useSetupTradeState(): void {
 
     const defaultState = getDefaultTradeRawState(currentChainId)
 
-    // While network change in progress
-    if (rememberedUrlState) {
-      // When only chainId is changed, then do nothing
-      if (onlyChainIdIsChanged) {
-        return
-        // When something besides chainId is changed, then reset remembered URL state
-      } else {
-        setRememberedUrlState(null)
-      }
+    // While network change in progress and only chainId is changed, then do nothing
+    if (rememberedUrlStateRef.current && onlyChainIdIsChanged) {
+      return
     }
 
     // Applying of the remembered state after network successfully changed
     if (isWalletConnected && providerAndUrlChainIdMismatch && prevTradeStateFromUrl) {
-      setRememberedUrlState(tradeStateFromUrl)
+      rememberedUrlStateRef.current = tradeStateFromUrl
       tradeNavigate(prevTradeStateFromUrl.chainId, prevTradeStateFromUrl)
       console.debug(
         '[TRADE STATE]',
@@ -162,7 +159,6 @@ export function useSetupTradeState(): void {
    * On:
    *  - chainId in URL changes
    *  - connector changes
-   *  - (rememberedUrlState)
    *
    * Note: useEagerlyConnect() changes connectors several times at the beginning
    *
@@ -180,14 +176,14 @@ export function useSetupTradeState(): void {
 
     if (!providerChainId || providerChainId === currentChainId) return
 
-    const targetChainId = rememberedUrlState?.chainId || currentChainId
+    const targetChainId = rememberedUrlStateRef.current?.chainId || currentChainId
 
     switchNetworkInWallet(targetChainId)
 
     console.debug('[TRADE STATE]', 'Set chainId to provider', { connector, urlChainId })
     // Triggering only when chainId in URL is changes, connector is changed or rememberedUrlState is changed
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [connector, urlChainId, rememberedUrlState])
+  }, [connector, urlChainId])
 
   /**
    * On chainId in provider changes
@@ -205,7 +201,10 @@ export function useSetupTradeState(): void {
 
     onProviderNetworkChanges()
 
-    console.debug('[TRADE STATE]', 'Provider changed chainId', { providerChainId, urlChanges: rememberedUrlState })
+    console.debug('[TRADE STATE]', 'Provider changed chainId', {
+      providerChainId,
+      urlChanges: rememberedUrlStateRef.current,
+    })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [onProviderNetworkChanges])
 

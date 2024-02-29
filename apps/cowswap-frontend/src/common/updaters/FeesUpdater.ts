@@ -28,7 +28,7 @@ import { getPriceQuality } from 'api/gnosisProtocol/api'
 import { useVerifiedQuotesEnabled } from '../hooks/featureFlags/useVerifiedQuotesEnabled'
 
 export const TYPED_VALUE_DEBOUNCE_TIME = 350
-export const SWAP_QUOTE_CHECK_INTERVAL = ms`10s` // Every 10s
+export const SWAP_QUOTE_CHECK_INTERVAL = ms`30s` // Every 30s
 const RENEW_FEE_QUOTES_BEFORE_EXPIRATION_TIME = ms`30s` // Will renew the quote if there's less than 30 seconds left for the quote to expire
 const WAITING_TIME_BETWEEN_EQUAL_REQUESTS = ms`5s` // Prevents from sending the same request to often (max, every 5s)
 
@@ -46,9 +46,6 @@ function wasQuoteCheckedRecently(lastQuoteCheck: number): boolean {
 function isExpiringSoon(quoteExpirationIsoDate: string, threshold: number): boolean {
   const feeExpirationDate = Date.parse(quoteExpirationIsoDate)
   const needRefetch = feeExpirationDate <= Date.now() + threshold
-
-  // const secondsLeft = (feeExpirationDate.valueOf() - Date.now()) / 1000
-  // console.log(`[state:price:updater] Fee isExpiring in ${secondsLeft}. Refetch?`, needRefetch)
 
   return needRefetch
 }

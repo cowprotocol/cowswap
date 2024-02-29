@@ -34,7 +34,9 @@ export function InfoBanner() {
       </div>
       <div className="content">
         Your order may not fill exactly when the market price reaches your limit price.{' '}
-        <HashLink to="/faq/limit-order#how-do-fees-work">Learn more</HashLink>
+        <HashLink target="_blank" to="/faq/limit-order#how-do-fees-work">
+          Learn more
+        </HashLink>
       </div>
 
       <styledEl.CloseIcon onClick={() => closeBanner()} />

@@ -9,7 +9,7 @@ import {
 } from '@web3-react/types'
 
 import { Command } from '@cowprotocol/types'
-import { IFrameEthereumProvider } from './IFrameEthereumProvider'
+import { WidgetEthereumProvider } from './WidgetEthereumProvider'
 import { isInjectedWidget, isRejectRequestProviderError } from '@cowprotocol/common-utils'
 
 type InjectedWalletProvider = Provider & {
@@ -186,7 +186,7 @@ export class InjectedWallet extends Connector {
   // Method to target a specific provider on window.ethereum or window.ethereum.providers if it exists
   private detectProvider(): InjectedWalletProvider | void {
     if (isInjectedWidget()) {
-      this.provider = new IFrameEthereumProvider() as InjectedWalletProvider
+      this.provider = new WidgetEthereumProvider() as InjectedWalletProvider
     } else {
       this.provider =
         this.detectOnEthereum(window.ethereum) || this.detectOnProvider(window.ethereum?.providers) || null

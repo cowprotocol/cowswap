@@ -27,7 +27,11 @@ export const CompatibilityIssuesWarning = React.memo((props: CompatibilityIssues
           <>
             <p>CoW Swap requires offline signatures, which is currently not supported by some wallets.</p>
             <p>
-              Read more in the <HashLink to="/faq/protocol#wallet-not-supported">FAQ</HashLink>.
+              Read more in the{' '}
+              <HashLink target="_blank" to="/faq/protocol#wallet-not-supported">
+                FAQ
+              </HashLink>
+              .
             </p>
           </>
         }

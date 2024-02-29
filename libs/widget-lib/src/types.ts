@@ -1,5 +1,22 @@
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { CowEventPayloadMap, CowEvents } from '@cowprotocol/events'
 export type { SupportedChainId } from '@cowprotocol/cow-sdk'
+
+export type CowSwapWidgetParams = Partial<CowSwapWidgetConfig>
+
+export enum WidgetMethodsEmit {
+  ACTIVATE = 'ACTIVATE',
+  UPDATE_HEIGHT = 'UPDATE_HEIGHT',
+  EMIT_COW_EVENT = 'EMIT_COW_EVENT',
+  PROVIDER_RPC_REQUEST = 'PROVIDER_RPC_REQUEST',
+}
+
+export enum WidgetMethodsListen {
+  UPDATE_PARAMS = 'UPDATE_PARAMS',
+  UPDATE_APP_DATA = 'UPDATE_APP_DATA',
+  PROVIDER_RPC_RESPONSE = 'PROVIDER_RPC_RESPONSE',
+  PROVIDER_ON_EVENT = 'PROVIDER_ON_EVENT',
+}
 
 export interface JsonRpcRequest {
   id: number
@@ -7,7 +24,7 @@ export interface JsonRpcRequest {
   params: unknown[]
 }
 
-// https://eips.ethereum.org/EIPS/eip-1193
+// https://eips.ethereum.org/EIPS/ei  p-1193
 export interface EthereumProvider {
   /**
    * Subscribes to Ethereum-related events.
@@ -140,7 +157,7 @@ interface CowSwapWidgetConfig {
 
   /**
    * Disables showing the toast messages.
-   * Some UI might want to disable it and subscribe to CowEvents.ON_TOAST_MESSAGE event to handle the toast messages itself.
+   * Some UI might want to disable it and subscribe to WidgetMethodsEmit.ON_TOAST_MESSAGE event to handle the toast messages itself.
    * Defaults to false.
    */
   disableToastMessages?: boolean
@@ -205,4 +222,92 @@ interface CowSwapWidgetConfig {
   }
 }
 
-export type CowSwapWidgetParams = Partial<CowSwapWidgetConfig>
+// Define types for event payloads
+export interface WidgetMethodsEmitPayloadMap {
+  [WidgetMethodsEmit.ACTIVATE]: void
+  [WidgetMethodsEmit.EMIT_COW_EVENT]: EmitCowEventPayload<CowEvents>
+  [WidgetMethodsEmit.UPDATE_HEIGHT]: UpdateWidgetHeightPayload
+  [WidgetMethodsEmit.PROVIDER_RPC_REQUEST]: ProviderRpcRequestPayload
+}
+
+export interface WidgetMethodsListenPayloadMap {
+  [WidgetMethodsListen.UPDATE_APP_DATA]: UpdateAppDataPayload
+  [WidgetMethodsListen.UPDATE_PARAMS]: UpdateParamsPayload
+  [WidgetMethodsListen.PROVIDER_RPC_RESPONSE]: ProviderRpcResponsePayload
+  [WidgetMethodsListen.PROVIDER_ON_EVENT]: ProviderOnEventPayload
+}
+
+export type WidgetMethodsEmitPayloads = WidgetMethodsEmitPayloadMap[WidgetMethodsEmit]
+export type WidgetMethodsListenPayloads = WidgetMethodsListenPayloadMap[WidgetMethodsListen]
+
+export interface UpdateParamsPayload {
+  urlParams: {
+    pathname: string
+    search: string
+  }
+  appParams: CowSwapWidgetParams
+}
+
+export interface UpdateAppDataPayload {
+  metaData?: {
+    appCode: string
+  }
+}
+
+export interface UpdateWidgetHeightPayload {
+  height?: number
+}
+
+export interface EmitCowEventPayload<T extends CowEvents> {
+  event: T
+  payload: CowEventPayloadMap[T]
+}
+
+export type WidgetMethodsEmitListener<T extends WidgetMethodsEmit> = T extends WidgetMethodsEmit
+  ? { event: T; handler: WidgetMethodHandler<T> }
+  : never
+
+export type WidgetMethodHandler<T extends WidgetMethodsEmit> = (payload: WidgetMethodsEmitPayloadMap[T]) => void
+
+export interface ProviderRpcRequestPayload {
+  rpcRequest: JsonRpcRequestMessage
+}
+
+export interface JsonRpcRequestMessage {
+  jsonrpc: '2.0'
+  // Optional in the request.
+  id?: number
+  method: string
+  params: unknown[]
+}
+
+export interface BaseJsonRpcResponseMessage {
+  // Required but null if not identified in request
+  id: number
+  jsonrpc: '2.0'
+}
+
+export interface JsonRpcSucessfulResponseMessage<TResult = unknown> extends BaseJsonRpcResponseMessage {
+  result: TResult
+}
+
+export interface JsonRpcError<TData = unknown> {
+  code: number
+  message: string
+  data?: TData
+}
+
+export interface JsonRpcErrorResponseMessage<TErrorData = unknown> extends BaseJsonRpcResponseMessage {
+  error: JsonRpcError<TErrorData>
+}
+
+export type ProviderRpcResponsePayload = {
+  rpcResponse: JsonRpcResponse
+}
+
+export type JsonRpcResponse = JsonRpcRequestMessage | JsonRpcErrorResponseMessage | JsonRpcSucessfulResponseMessage
+
+export interface ProviderOnEventPayload {
+  event: string
+  params: unknown
+}

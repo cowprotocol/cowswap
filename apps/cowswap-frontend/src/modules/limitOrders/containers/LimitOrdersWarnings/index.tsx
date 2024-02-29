@@ -11,7 +11,6 @@ import { Nullish } from 'types'
 import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
 import { useLimitOrdersFormState } from 'modules/limitOrders/hooks/useLimitOrdersFormState'
 import { useRateImpact } from 'modules/limitOrders/hooks/useRateImpact'
-import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import {
   limitOrdersWarningsAtom,
   updateLimitOrdersWarningsAtom,
@@ -34,7 +33,7 @@ import { calculatePercentageInRelationToReference } from 'utils/orderUtils/calcu
 
 import { RateImpactWarning } from '../../pure/RateImpactWarning'
 
-const FORM_STATES_TO_SHOW_BUNDLE_BANNER = [TradeFormValidation.ExpertApproveAndSwap, TradeFormValidation.ApproveAndSwap]
+const FORM_STATES_TO_SHOW_BUNDLE_BANNER = [TradeFormValidation.ApproveAndSwap]
 
 export interface LimitOrdersWarningsProps {
   feeAmount?: Nullish<CurrencyAmount<Currency>>
@@ -60,7 +59,6 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
 
   const { isPriceImpactAccepted, isRateImpactAccepted } = useAtomValue(limitOrdersWarningsAtom)
   const updateLimitOrdersWarnings = useSetAtom(updateLimitOrdersWarningsAtom)
-  const { expertMode } = useAtomValue(limitOrdersSettingsAtom)
 
   const localFormValidation = useLimitOrdersFormState()
   const primaryFormValidation = useGetTradeFormValidation()
@@ -74,8 +72,7 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
   const isBundling = primaryFormValidation && FORM_STATES_TO_SHOW_BUNDLE_BANNER.includes(primaryFormValidation)
 
   const canTrade = localFormValidation === null && (primaryFormValidation === null || isBundling) && !tradeQuote.error
-  const showPriceImpactWarning =
-    canTrade && !expertMode && !!account && !priceImpactParams.loading && !priceImpactParams.priceImpact
+  const showPriceImpactWarning = canTrade && !!account && !priceImpactParams.loading && !priceImpactParams.priceImpact
 
   const showRateImpactWarning =
     canTrade && inputCurrency && !isFractionFalsy(inputCurrencyAmount) && !isFractionFalsy(outputCurrencyAmount)

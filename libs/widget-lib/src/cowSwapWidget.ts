@@ -1,13 +1,9 @@
 import { CowEventListeners } from '@cowprotocol/events'
 import { IframeRpcProviderBridge } from './IframeRpcProviderBridge'
-import { CowSwapWidgetParams, EthereumProvider } from './types'
+import { CowSwapWidgetParams, EthereumProvider, WidgetMethodsEmit, WidgetMethodsListen } from './types'
 import { buildTradeAmountsQuery, buildWidgetPath, buildWidgetUrl } from './urlUtils'
 import { IframeCowEventEmitter } from './IframeCowEventEmitter'
-
-/**
- * Key for identifying the event associated with the CoW Swap Widget.
- */
-const COW_SWAP_WIDGET_EVENT_KEY = 'cowSwapWidget'
+import { WindowListener, listenToMessageFromWindow, postMessageToWindow, stopListeningWindowListener } from './messages'
 
 const DEFAULT_HEIGHT = '640px'
 const DEFAULT_WIDTH = '450px'
@@ -27,6 +23,7 @@ export interface CowSwapWidgetHandler {
   updateWidget: (params: CowSwapWidgetParams, listeners?: CowEventListeners) => void
   updateListeners: (newListeners?: CowEventListeners) => void
   updateProvider: (newProvider?: EthereumProvider) => void
+  destroy: () => void
 }
 
 /**
@@ -55,25 +52,39 @@ export function createCowSwapWidget(
     throw new Error('Iframe does not contain a window!')
   }
 
-  // 3. Post some initial messages to the iframe
-  //    - Send appCode
-  //    - Apply dynamic height adjustments
-  sendAppCode(iframeWindow, params.appCode)
-  applyDynamicHeight(iframe, params.height)
+  // 3. Send appCode (once the widget posts the ACTIVATE message)
+  const windowListeners: WindowListener[] = []
+  windowListeners.push(sendAppCodeOnActivation(iframeWindow, params.appCode))
 
-  // 4. Wire up the iframeRpcProviderBridge with the provider (so RPC calls flow back and forth)
+  // 4. Handle widget height changes
+  windowListeners.push(listenToHeightChanges(iframe, params.height))
+
+  // 5. Handle and forward widget events to the listeners
+  const iFrameCowEventEmitter = new IframeCowEventEmitter(window, listeners)
+
+  // 6. Wire up the iframeRpcProviderBridge with the provider (so RPC calls flow back and forth)
   let iframeRpcProviderBridge = updateProvider(iframeWindow, null, provider)
 
-  // 5. Schedule the uploading of the params, once the iframe is loaded
+  // 7. Schedule the uploading of the params, once the iframe is loaded
   iframe.addEventListener('load', () => updateWidgetParams(iframeWindow, params))
-  const iFrameCowEventEmitter = new IframeCowEventEmitter(listeners)
 
-  // 6. Return the handler, so the widget, listeners, and provider can be updated
+  // 8. Return the handler, so the widget, listeners, and provider can be updated
   return {
     updateWidget: (newParams: CowSwapWidgetParams) => updateWidgetParams(iframeWindow, newParams),
     updateListeners: (newListeners?: CowEventListeners) => iFrameCowEventEmitter.updateListeners(newListeners),
     updateProvider: (newProvider) => {
       iframeRpcProviderBridge = updateProvider(iframeWindow, iframeRpcProviderBridge, newProvider)
+    },
+
+    destroy: () => {
+      // Stop listening for cow events
+      iFrameCowEventEmitter.stopListeningIframe()
+
+      // Disconnect all listeners
+      windowListeners.forEach((listener) => window.removeEventListener('message', listener))
+
+      // Destroy the iframe
+      container.removeChild(iframe)
     },
   }
 }
@@ -136,57 +147,46 @@ function updateWidgetParams(contentWindow: Window, params: CowSwapWidgetParams) 
   const pathname = buildWidgetPath(params)
   const search = buildTradeAmountsQuery(params).toString()
 
-  contentWindow.postMessage(
-    {
-      key: COW_SWAP_WIDGET_EVENT_KEY,
-      method: 'update',
-      urlParams: {
-        pathname,
-        search,
-      },
-      appParams: {
-        ...params,
-        provider: undefined,
-      },
+  postMessageToWindow(contentWindow, WidgetMethodsListen.UPDATE_PARAMS, {
+    urlParams: {
+      pathname,
+      search,
     },
-    '*'
-  )
-}
-
-/**
- * Sends appCode to the contentWindow of the widget.
- *
- * @param contentWindow - Window object of the widget's iframe.
- * @param appCode - A unique identifier for the app.
- */
-function sendAppCode(contentWindow: Window, appCode: string | undefined) {
-  window.addEventListener('message', (event) => {
-    if (event.data.key !== COW_SWAP_WIDGET_EVENT_KEY || event.data.method !== 'activate') {
-      return
-    }
-
-    contentWindow.postMessage(
-      {
-        key: COW_SWAP_WIDGET_EVENT_KEY,
-        method: 'metaData',
-        metaData: appCode ? { appCode } : undefined,
-      },
-      '*'
-    )
+    appParams: {
+      ...params,
+      provider: undefined,
+    },
   })
 }
 
 /**
- * Applies dynamic height adjustments to the widget's iframe.
+ * Sends appCode to the contentWindow of the widget once the widget is activated.
+ *
+ * @param contentWindow - Window object of the widget's iframe.
+ * @param appCode - A unique identifier for the app.
+ */
+function sendAppCodeOnActivation(contentWindow: Window, appCode: string | undefined) {
+  const listener = listenToMessageFromWindow(window, WidgetMethodsEmit.ACTIVATE, () => {
+    // Stop listening for the ACTIVATE (once is enough)
+    stopListeningWindowListener(window, listener)
+
+    // Update the appData
+    postMessageToWindow(contentWindow, WidgetMethodsListen.UPDATE_APP_DATA, {
+      metaData: appCode ? { appCode } : undefined,
+    })
+  })
+
+  return listener
+}
+
+/**
+ * Listens for iframeHeight emitted by the widget, and applies dynamic height adjustments to the widget's iframe.
+ *
  * @param iframe - The HTMLIFrameElement of the widget.
  * @param defaultHeight - Default height for the widget.
  */
-function applyDynamicHeight(iframe: HTMLIFrameElement, defaultHeight = DEFAULT_HEIGHT) {
-  window.addEventListener('message', (event) => {
-    if (event.data.key !== COW_SWAP_WIDGET_EVENT_KEY || event.data.method !== 'iframeHeight') {
-      return
-    }
-
-    iframe.style.height = event.data.height ? `${event.data.height + HEIGHT_THRESHOLD}px` : defaultHeight
+function listenToHeightChanges(iframe: HTMLIFrameElement, defaultHeight = DEFAULT_HEIGHT): WindowListener {
+  return listenToMessageFromWindow(window, WidgetMethodsEmit.UPDATE_HEIGHT, (data) => {
+    iframe.style.height = data.height ? `${data.height + HEIGHT_THRESHOLD}px` : defaultHeight
   })
 }
