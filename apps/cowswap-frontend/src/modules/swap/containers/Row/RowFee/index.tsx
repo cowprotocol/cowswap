@@ -90,7 +90,7 @@ export function RowFee({ trade, feeAmount, feeInFiat, allowsOffchainSigning, sho
     }`
 
     const feeToken = isValidNonZeroAmount(displayFeeFormatted)
-      ? feeAmountWithCurrency
+      ? '≈ ' + feeAmountWithCurrency
       : `🎉 Free!${isEoaEthFlow ? ' (+ gas)' : ''}`
     const feeUsd = isValidNonZeroAmount(feeInFiatFormatted) ? `(≈$${feeInFiatFormatted})` : ''
 
