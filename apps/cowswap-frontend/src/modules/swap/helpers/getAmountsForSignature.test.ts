@@ -59,7 +59,7 @@ describe('getAmountsForSignature()', () => {
   const outputAmount = CurrencyAmount.fromRawAmount(WETH_MAINNET, 2 * 10 ** WETH_MAINNET.decimals)
   const featureFlags = { swapZeroFee: true }
 
-  describe('Given: Sell order', () => {
+  describe('Given: Sell 3012 USDC for 2 WETH, with a fee of 8 USDC and slippage 5%', () => {
     describe('When partner fee is not set', () => {
       it('Then only slippage should be subtracted from output amount', () => {
         const partnerFeeBps = 0
@@ -120,7 +120,7 @@ describe('getAmountsForSignature()', () => {
     })
   })
 
-  describe('Given: Buy order', () => {
+  describe('Given: Buy 2 WETH for 3012 USDC, with a fee of 8 USDC and slippage 5%', () => {
     describe('When partner fee is not set', () => {
       it('Then network fee and slippage should be added into input amount', () => {
         const partnerFeeBps = 0
