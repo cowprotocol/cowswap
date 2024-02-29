@@ -3,7 +3,7 @@ import { anonymizeLink } from '@cowprotocol/common-utils'
 import { externalLinkAnalytics, outboundLink } from '@cowprotocol/analytics'
 import styled from 'styled-components'
 import { ExternalLink as LinkIconFeather } from 'react-feather'
-import { UI } from '@cowprotocol/ui'
+import { UI } from '../../enum'
 
 export const StyledLink = styled.a`
   text-decoration: none;
