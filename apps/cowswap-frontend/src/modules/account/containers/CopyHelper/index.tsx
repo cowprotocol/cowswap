@@ -1,6 +1,5 @@
 import React, { useCallback } from 'react'
 
-// eslint-disable-next-line @nx/enforce-module-boundaries
 import { useCopyClipboard } from '@cowprotocol/common-hooks'
 
 import { Trans } from '@lingui/macro'

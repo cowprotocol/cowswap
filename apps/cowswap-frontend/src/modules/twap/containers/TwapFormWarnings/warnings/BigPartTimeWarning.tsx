@@ -1,4 +1,3 @@
-// eslint-disable-next-line @nx/enforce-module-boundaries
 import { InlineBanner } from '@cowprotocol/ui'
 
 import { MAX_PART_TIME } from '../../../const'
