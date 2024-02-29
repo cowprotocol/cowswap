@@ -2,7 +2,8 @@
 
 import { TokenAmount } from '@cowprotocol/ui'
 
-import { ProgressBarWrapper, ProgressBar } from 'modules/ordersTable/pure/OrdersTableContainer/OrderRow/styled'
+// TODO: bad import
+import { ProgressBar, ProgressBarWrapper } from 'modules/ordersTable/pure/OrdersTableContainer/OrderRow/styled'
 
 import { getFilledAmounts } from 'utils/orderUtils/getFilledAmounts'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
