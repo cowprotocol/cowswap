@@ -25,8 +25,16 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps) {
   const isEoaEthFlow = useIsEoaEthFlow()
 
   const { receiveAmountInfo, currency, subsidyAndBalance, allowsOffchainSigning } = props
-  const { type, amountAfterFees, amountBeforeFees, feeAmount, feeAmountRaw, partnerFeeAmount, partnerFeeAmountRaw } =
-    receiveAmountInfo
+  const {
+    type,
+    amountAfterFees,
+    amountAfterFeesRaw,
+    amountBeforeFees,
+    feeAmount,
+    feeAmountRaw,
+    partnerFeeAmount,
+    partnerFeeAmountRaw,
+  } = receiveAmountInfo
   const { subsidy } = subsidyAndBalance
   const { discount } = subsidy
 
@@ -87,14 +95,16 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps) {
           </styledEl.GreenText>
         </div>
       )}
-      <styledEl.TotalAmount>
-        <span>
-          <Trans>{type === 'from' ? 'From' : 'To'}</Trans>
-        </span>
-        <span>
-          {amountAfterFees} {<TokenSymbol token={currency} length={MAX_TOKEN_SYMBOL_LENGTH} />}
-        </span>
-      </styledEl.TotalAmount>
+      {amountAfterFeesRaw.greaterThan(0) && (
+        <styledEl.TotalAmount>
+          <span>
+            <Trans>{type === 'from' ? 'From' : 'To'}</Trans>
+          </span>
+          <span>
+            {amountAfterFees} {<TokenSymbol token={currency} length={MAX_TOKEN_SYMBOL_LENGTH} />}
+          </span>
+        </styledEl.TotalAmount>
+      )}
     </styledEl.Box>
   )
 }
