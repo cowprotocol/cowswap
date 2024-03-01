@@ -24,6 +24,7 @@ const Details = styled.div`
   flex-flow: row wrap;
   align-items: center;
   width: 100%;
+  margin: 6px 0 0;
 `
 
 const Summary = styled.div`
