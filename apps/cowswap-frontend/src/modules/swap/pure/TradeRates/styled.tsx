@@ -14,6 +14,10 @@ export const Box = styled.div<{ noMargin: boolean }>`
   margin: ${({ noMargin }) => (noMargin ? '0' : '6px 8px')};
 `
 
+export const FeeWrapper = styled.div`
+  margin: 0 6px;
+`
+
 export const Row = styled.div`
   display: flex;
   justify-content: space-between;

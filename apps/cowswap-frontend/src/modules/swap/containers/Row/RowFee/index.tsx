@@ -9,9 +9,7 @@ import TradeGp from 'legacy/state/swap/TradeGp'
 
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { RowFeeContent } from 'modules/swap/pure/Row/RowFeeContent'
-import { RowWithShowHelpersProps } from 'modules/swap/pure/Row/types'
 
-import { useSwapZeroFee } from 'common/hooks/featureFlags/useSwapZeroFee'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 export const GASLESS_FEE_TOOLTIP_MSG =
@@ -39,7 +37,7 @@ export function computeTradePriceBreakdown(trade?: TradeGp | null): {
   }
 }
 
-export interface RowFeeProps extends RowWithShowHelpersProps {
+export interface RowFeeProps {
   // Although fee is part of the trade, if the trade is invalid, then it will be undefined
   // Even for invalid trades, we want to display the fee, this is why there's another "fee" parameter
   trade?: TradeGp
@@ -59,8 +57,7 @@ function isValidNonZeroAmount(value: string): boolean {
   }
 }
 
-export function RowFee({ trade, feeAmount, feeInFiat, allowsOffchainSigning, showHelpers, noLabel }: RowFeeProps) {
-  const swapZeroFee = useSwapZeroFee()
+export function RowFee({ trade, feeAmount, feeInFiat, allowsOffchainSigning, noLabel }: RowFeeProps) {
   const { realizedFee } = useMemo(() => computeTradePriceBreakdown(trade), [trade])
 
   const isEoaEthFlow = useIsEoaEthFlow()
@@ -79,7 +76,7 @@ export function RowFee({ trade, feeAmount, feeInFiat, allowsOffchainSigning, sho
   // trades are null when there is a fee quote error e.g
   // so we can take both
   const props = useMemo(() => {
-    const label = swapZeroFee ? 'Est. fees' : 'Fees'
+    const label = 'Est. fees'
     const displayFee = realizedFee || feeAmount
     const feeCurrencySymbol = displayFee?.currency.symbol || '-'
     // TODO: delegate formatting to the view layer
@@ -98,7 +95,6 @@ export function RowFee({ trade, feeAmount, feeInFiat, allowsOffchainSigning, sho
 
     return {
       label,
-      showHelpers,
       feeToken,
       feeUsd,
       fullDisplayFee,
@@ -106,7 +102,7 @@ export function RowFee({ trade, feeAmount, feeInFiat, allowsOffchainSigning, sho
       tooltip,
       noLabel,
     }
-  }, [feeAmount, feeInFiat, isEoaEthFlow, realizedFee, showHelpers, tooltip, noLabel, swapZeroFee])
+  }, [feeAmount, feeInFiat, isEoaEthFlow, realizedFee, tooltip, noLabel])
 
   return <RowFeeContent {...props} />
 }
@@ -140,5 +136,5 @@ export function RowPartnerFee({ partnerFee, feeAmount, feeInFiat }: PartnerRowPa
     }
   }, [partnerFee, feeAmount, feeInFiat])
 
-  return <RowFeeContent {...props} showHelpers={true} />
+  return <RowFeeContent {...props} />
 }

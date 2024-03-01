@@ -357,9 +357,11 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
 export function useIsFeeGreaterThanInput({
   address,
   chainId,
+  trade,
 }: {
   address?: string | null
   chainId?: SupportedChainId
+  trade: TradeGp | undefined
 }): {
   isFeeGreater: boolean
   fee: CurrencyAmount<Currency> | null
@@ -367,10 +369,16 @@ export function useIsFeeGreaterThanInput({
   const quote = useQuote({ chainId, token: address })
   const feeToken = useTokenBySymbolOrAddress(address)
 
-  if (!quote || !feeToken) return { isFeeGreater: false, fee: null }
+  return useMemo(() => {
+    if (!quote || !feeToken || !trade) return { isFeeGreater: false, fee: null }
 
-  return {
-    isFeeGreater: quote.error === 'fee-exceeds-sell-amount',
-    fee: quote.fee ? stringToCurrency(quote.fee.amount, feeToken) : null,
-  }
+    const isSellOrder = trade.tradeType === TradeType.EXACT_INPUT
+    const amountAfterFees = isSellOrder ? trade.outputAmountAfterFees : trade.inputAmountAfterFees
+    const isQuoteError = quote.error === 'fee-exceeds-sell-amount'
+
+    return {
+      isFeeGreater: isQuoteError || amountAfterFees.equalTo(0) || amountAfterFees.lessThan(0),
+      fee: quote.fee ? stringToCurrency(quote.fee.amount, feeToken) : null,
+    }
+  }, [quote, trade, feeToken])
 }

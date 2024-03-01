@@ -9,9 +9,6 @@ interface AmountForSignatureParams {
   trade: TradeGp
   allowedSlippage: Percent
   kind: OrderKind
-  featureFlags: {
-    swapZeroFee: boolean | undefined
-  }
 }
 
 function inputAmountForSignature(params: AmountForSignatureParams): CurrencyAmount<Currency> {
