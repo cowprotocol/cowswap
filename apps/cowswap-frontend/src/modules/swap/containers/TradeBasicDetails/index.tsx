@@ -51,13 +51,7 @@ export function TradeBasicDetails(props: TradeBasicDetailsProp) {
   return (
     <LowerSectionWrapper {...boxProps}>
       {/* Fees */}
-      <RowFee
-        trade={trade}
-        showHelpers={true}
-        allowsOffchainSigning={allowsOffchainSigning}
-        feeAmount={fee}
-        feeInFiat={feeFiatValue}
-      />
+      <RowFee trade={trade} allowsOffchainSigning={allowsOffchainSigning} feeAmount={fee} feeInFiat={feeFiatValue} />
 
       {trade?.partnerFeeAmount && trade.partnerFee && (
         <RowPartnerFee
@@ -94,12 +88,7 @@ export function TradeBasicDetails(props: TradeBasicDetailsProp) {
 
       {/*Minimum receive*/}
       {showRowReceivedAfterSlippage && (
-        <RowReceivedAfterSlippage
-          trade={trade}
-          allowedSlippage={allowedSlippagePercent}
-          highlightAmount={isReviewSwap}
-          showHelpers={true}
-        >
+        <RowReceivedAfterSlippage trade={trade} allowedSlippage={allowedSlippagePercent} highlightAmount={isReviewSwap}>
           {isReviewSwap ? (
             <ReceiveAmountTitle>{isExactIn ? 'Minimum receive' : 'Maximum sent'}</ReceiveAmountTitle>
           ) : null}
