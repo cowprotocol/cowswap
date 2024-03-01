@@ -25,10 +25,11 @@ interface TradeBasicDetailsProp extends BoxProps {
   trade?: TradeGp
   fee: CurrencyAmount<Currency>
   isReviewSwap?: boolean
+  hideSlippage?: boolean
 }
 
 export function TradeBasicDetails(props: TradeBasicDetailsProp) {
-  const { trade, allowedSlippage, allowsOffchainSigning, fee, isReviewSwap, ...boxProps } = props
+  const { trade, allowedSlippage, allowsOffchainSigning, fee, isReviewSwap, hideSlippage, ...boxProps } = props
   const allowedSlippagePercent = !(allowedSlippage instanceof Percent)
     ? INITIAL_ALLOWED_SLIPPAGE_PERCENT
     : allowedSlippage
@@ -43,6 +44,7 @@ export function TradeBasicDetails(props: TradeBasicDetailsProp) {
   const isExactIn = trade?.tradeType === TradeType.EXACT_INPUT
 
   const showRowSlippage =
+    !hideSlippage &&
     (isReviewSwap || isEoaEthFlow || !allowedSlippagePercent.equalTo(INITIAL_ALLOWED_SLIPPAGE_PERCENT)) &&
     !isWrapOrUnwrap
 

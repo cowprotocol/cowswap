@@ -34,6 +34,7 @@ export interface SwapWarningsTopProps {
   buyingFiatAmount: CurrencyAmount<Currency> | null
   priceImpact: Percent | undefined
   tradeUrlParams: TradeUrlParams
+  isFeeGreater: boolean
   setFeeWarningAccepted(cb: (state: boolean) => boolean): void
   setImpactWarningAccepted(cb: (state: boolean) => boolean): void
 }
@@ -68,6 +69,7 @@ export const SwapWarningsTop = React.memo(function (props: SwapWarningsTopProps)
     buyingFiatAmount,
     priceImpact,
     tradeUrlParams,
+    isFeeGreater,
   } = props
 
   console.debug('SWAP WARNING RENDER TOP: ', props)
@@ -75,11 +77,13 @@ export const SwapWarningsTop = React.memo(function (props: SwapWarningsTopProps)
   return (
     <>
       {shouldZeroApprove && <ZeroApprovalWarning currency={trade?.inputAmount.currency} />}
-      <HighFeeWarning
-        trade={trade}
-        acceptedStatus={feeWarningAccepted}
-        acceptWarningCb={account ? () => setFeeWarningAccepted((state) => !state) : undefined}
-      />
+      {!isFeeGreater && (
+        <HighFeeWarning
+          trade={trade}
+          acceptedStatus={feeWarningAccepted}
+          acceptWarningCb={account ? () => setFeeWarningAccepted((state) => !state) : undefined}
+        />
+      )}
       {!hideUnknownImpactWarning && (
         <StyledNoImpactWarning
           isAccepted={impactWarningAccepted}
