@@ -3,7 +3,3 @@ export interface RowStyleProps {
   fontSize?: number
   alignContentRight?: boolean
 }
-
-export interface RowWithShowHelpersProps {
-  showHelpers: boolean
-}

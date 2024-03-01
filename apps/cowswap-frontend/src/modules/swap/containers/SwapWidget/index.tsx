@@ -231,6 +231,7 @@ export function SwapWidget() {
     buyingFiatAmount,
     priceImpact: priceImpactParams.priceImpact,
     tradeUrlParams,
+    isFeeGreater,
   }
 
   const swapWarningsBottomProps: SwapWarningsBottomProps = {

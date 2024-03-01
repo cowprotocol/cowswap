@@ -9,7 +9,6 @@ import TradeGp from 'legacy/state/swap/TradeGp'
 
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { RowFeeContent } from 'modules/swap/pure/Row/RowFeeContent'
-import { RowWithShowHelpersProps } from 'modules/swap/pure/Row/types'
 
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
@@ -38,7 +37,7 @@ export function computeTradePriceBreakdown(trade?: TradeGp | null): {
   }
 }
 
-export interface RowFeeProps extends RowWithShowHelpersProps {
+export interface RowFeeProps {
   // Although fee is part of the trade, if the trade is invalid, then it will be undefined
   // Even for invalid trades, we want to display the fee, this is why there's another "fee" parameter
   trade?: TradeGp
@@ -58,7 +57,7 @@ function isValidNonZeroAmount(value: string): boolean {
   }
 }
 
-export function RowFee({ trade, feeAmount, feeInFiat, allowsOffchainSigning, showHelpers, noLabel }: RowFeeProps) {
+export function RowFee({ trade, feeAmount, feeInFiat, allowsOffchainSigning, noLabel }: RowFeeProps) {
   const { realizedFee } = useMemo(() => computeTradePriceBreakdown(trade), [trade])
 
   const isEoaEthFlow = useIsEoaEthFlow()
@@ -96,7 +95,6 @@ export function RowFee({ trade, feeAmount, feeInFiat, allowsOffchainSigning, sho
 
     return {
       label,
-      showHelpers,
       feeToken,
       feeUsd,
       fullDisplayFee,
@@ -104,7 +102,7 @@ export function RowFee({ trade, feeAmount, feeInFiat, allowsOffchainSigning, sho
       tooltip,
       noLabel,
     }
-  }, [feeAmount, feeInFiat, isEoaEthFlow, realizedFee, showHelpers, tooltip, noLabel])
+  }, [feeAmount, feeInFiat, isEoaEthFlow, realizedFee, tooltip, noLabel])
 
   return <RowFeeContent {...props} />
 }
@@ -138,5 +136,5 @@ export function RowPartnerFee({ partnerFee, feeAmount, feeInFiat }: PartnerRowPa
     }
   }, [partnerFee, feeAmount, feeInFiat])
 
-  return <RowFeeContent {...props} showHelpers={true} />
+  return <RowFeeContent {...props} />
 }

@@ -61,6 +61,21 @@ export const TradeRates = React.memo(function (props: TradeRatesProps) {
       <TokenAmount amount={feeTotalAmount} tokenSymbol={feeTotalAmount?.currency} />
     )
 
+  const tradeBasicDetails = fee && (
+    <TradeBasicDetails
+      allowedSlippage={userAllowedSlippage}
+      allowsOffchainSigning={allowsOffchainSigning}
+      trade={trade}
+      fee={fee}
+      isReviewSwap={isReviewSwap}
+      hideSlippage={isFeeGreater}
+    />
+  )
+
+  if (fee && isFeeGreater) {
+    return <styledEl.FeeWrapper>{tradeBasicDetails}</styledEl.FeeWrapper>
+  }
+
   return (
     <TradeDetailsAccordion
       open={isReviewSwap}
@@ -68,15 +83,7 @@ export const TradeRates = React.memo(function (props: TradeRatesProps) {
       feeSummary={showTradeBasicDetails && feeSummary}
     >
       <styledEl.Box>
-        {showTradeBasicDetails && (
-          <TradeBasicDetails
-            allowedSlippage={userAllowedSlippage}
-            allowsOffchainSigning={allowsOffchainSigning}
-            trade={trade}
-            fee={fee}
-            isReviewSwap={isReviewSwap}
-          />
-        )}
+        {showTradeBasicDetails && tradeBasicDetails}
         {showRowDeadline && <RowDeadline />}
         {children}
       </styledEl.Box>
