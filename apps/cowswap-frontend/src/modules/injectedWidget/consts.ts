@@ -1,3 +1,3 @@
 export const COW_SWAP_WIDGET_EVENT_KEY = 'cowSwapWidget'
 
-export const PARTNER_FEE_MAX_BPS = 5000 // 50%
+export const PARTNER_FEE_MAX_BPS = 100 // 1%
