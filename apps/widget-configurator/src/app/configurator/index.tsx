@@ -26,6 +26,7 @@ import { CurrencyInputControl } from './controls/CurrencyInputControl'
 import { CurrentTradeTypeControl } from './controls/CurrentTradeTypeControl'
 import { NetworkControl, NetworkOption, NetworkOptions } from './controls/NetworkControl'
 import { PaletteControl } from './controls/PaletteControl'
+import { PartnerFeeControl } from './controls/PartnerFeeControl'
 import { ThemeControl } from './controls/ThemeControl'
 import { TokenListControl } from './controls/TokenListControl' // Adjust the import path as needed
 import { TradeModesControl } from './controls/TradeModesControl'
@@ -131,6 +132,11 @@ export function Configurator({ title }: { title: string }) {
   const tokenListsState = useState<TokenListItem[]>(DEFAULT_TOKEN_LISTS)
   const [tokenLists] = tokenListsState
 
+  const partnerFeePercentState = useState<number>(0)
+  const partnerFeeRecipientState = useState<string>('')
+  const [partnerFeePercent] = partnerFeePercentState
+  const [partnerFeeRecipient] = partnerFeeRecipientState
+
   const paletteManager = useColorPaletteManager(mode)
   const { colorPalette, defaultPalette } = paletteManager
 
@@ -169,6 +175,8 @@ export function Configurator({ title }: { title: string }) {
     tokenLists,
     customColors: colorPalette,
     defaultColors: defaultPalette,
+    partnerFeePercent,
+    partnerFeeRecipient,
   }
 
   const params = useWidgetParams(state, isDappMode)
@@ -240,6 +248,10 @@ export function Configurator({ title }: { title: string }) {
         />
 
         <CurrencyInputControl label="Buy token" tokenIdState={buyTokenState} tokenAmountState={buyTokenAmountState} />
+
+        <Divider variant="middle">Integrations</Divider>
+
+        <PartnerFeeControl feePercentState={partnerFeePercentState} recipientState={partnerFeeRecipientState} />
 
         {isDrawerOpen && (
           <Fab

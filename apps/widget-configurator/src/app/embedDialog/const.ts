@@ -30,7 +30,6 @@ export const VALUES_BY_PARAM_NAME: Record<string, string> = {
 export const SANITIZE_PARAMS = {
   appCode: 'My Cool App',
   provider: 'EIP-1271 Provider',
-  partnerFee: { bps: 30, recipient: 'your-ethereum-account' },
 }
 
 export const REMOVE_PARAMS: (keyof CowSwapWidgetParams)[] = ['env']
