@@ -28,7 +28,6 @@ import { useIsNativeIn } from 'modules/trade/hooks/useIsNativeInOrOut'
 import { useIsWrappedOut } from 'modules/trade/hooks/useIsWrappedInOrOut'
 import { useWrappedToken } from 'modules/trade/hooks/useWrappedToken'
 
-import { useFeatureFlags } from 'common/hooks/featureFlags/useFeatureFlags'
 import { useApproveState } from 'common/hooks/useApproveState'
 
 import { useSafeBundleEthFlowContext } from './useSafeBundleEthFlowContext'
@@ -66,7 +65,6 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
   const safeBundleEthFlowContext = useSafeBundleEthFlowContext()
   const { onCurrencySelection } = useSwapActionHandlers()
   const isBestQuoteLoading = useIsBestQuoteLoading()
-  const { swapZeroFee } = useFeatureFlags()
   const tradeConfirmActions = useTradeConfirmActions()
 
   const currencyIn = currencies[Field.INPUT]
@@ -108,7 +106,6 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
           trade,
           kind: trade?.tradeType === UniTradeType.EXACT_INPUT ? OrderKind.SELL : OrderKind.BUY,
           allowedSlippage,
-          featureFlags: { swapZeroFee },
         })
       : undefined
 
@@ -121,7 +118,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
     }
 
     return amounts
-  }, [trade, allowedSlippage, swapZeroFee])
+  }, [trade, allowedSlippage])
 
   const swapButtonState = getSwapButtonState({
     account,

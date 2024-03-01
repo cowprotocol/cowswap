@@ -57,7 +57,6 @@ describe('getAmountsForSignature()', () => {
   const feeAmount = CurrencyAmount.fromRawAmount(USDC_MAINNET, 8 * 10 ** USDC_MAINNET.decimals)
   // 2 WETH
   const outputAmount = CurrencyAmount.fromRawAmount(WETH_MAINNET, 2 * 10 ** WETH_MAINNET.decimals)
-  const featureFlags = { swapZeroFee: true }
 
   describe('Given: Sell 3012 USDC for 2 WETH, with a fee of 8 USDC and slippage 5%', () => {
     describe('When partner fee is not set', () => {
@@ -74,7 +73,6 @@ describe('getAmountsForSignature()', () => {
         if (!trade) throw new Error('No trade')
 
         const result = getAmountsForSignature({
-          featureFlags,
           allowedSlippage,
           trade: trade,
           kind: OrderKind.SELL,
@@ -103,7 +101,6 @@ describe('getAmountsForSignature()', () => {
         if (!trade) throw new Error('No trade')
 
         const result = getAmountsForSignature({
-          featureFlags,
           allowedSlippage,
           trade: trade,
           kind: OrderKind.SELL,
@@ -135,7 +132,6 @@ describe('getAmountsForSignature()', () => {
         if (!trade) throw new Error('No trade')
 
         const result = getAmountsForSignature({
-          featureFlags,
           allowedSlippage,
           trade: trade,
           kind: OrderKind.BUY,
@@ -164,7 +160,6 @@ describe('getAmountsForSignature()', () => {
         if (!trade) throw new Error('No trade')
 
         const result = getAmountsForSignature({
-          featureFlags,
           allowedSlippage,
           trade: trade,
           kind: OrderKind.BUY,
