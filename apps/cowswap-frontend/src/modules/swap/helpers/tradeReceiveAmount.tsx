@@ -19,6 +19,10 @@ export interface ReceiveAmountInfo {
 export function getInputReceiveAmountInfo(trade: TradeGp): ReceiveAmountInfo {
   const feeAmountRaw = trade.fee.feeAsCurrency
 
+  const inputAmountAfterFees = trade.inputAmountAfterFees.lessThan(0)
+    ? CurrencyAmount.fromRawAmount(trade.inputAmountAfterFees.currency, 0)
+    : trade.inputAmountAfterFees
+
   return {
     type: 'from',
     amountBeforeFees: (
@@ -31,8 +35,8 @@ export function getInputReceiveAmountInfo(trade: TradeGp): ReceiveAmountInfo {
         defaultValue="0"
       />
     ),
-    amountAfterFeesRaw: trade.inputAmountAfterFees,
-    amountAfterFees: <TokenAmount amount={trade.inputAmountAfterFees} defaultValue="0" />,
+    amountAfterFeesRaw: inputAmountAfterFees,
+    amountAfterFees: <TokenAmount amount={inputAmountAfterFees} defaultValue="0" />,
     feeAmount: <TokenAmount amount={feeAmountRaw} defaultValue="0" />,
     partnerFeeAmount: <TokenAmount amount={trade.partnerFeeAmount} defaultValue="0" />,
     partnerFeeAmountRaw: trade.partnerFeeAmount,
@@ -42,11 +46,16 @@ export function getInputReceiveAmountInfo(trade: TradeGp): ReceiveAmountInfo {
 
 export function getOutputReceiveAmountInfo(trade: TradeGp): ReceiveAmountInfo {
   const feeAmountRaw = trade.outputAmountWithoutFee?.subtract(trade.outputAmount)
+
+  const outputAmountAfterFees = trade.outputAmountAfterFees.lessThan(0)
+    ? CurrencyAmount.fromRawAmount(trade.outputAmountAfterFees.currency, 0)
+    : trade.outputAmountAfterFees
+
   return {
     type: 'to',
     amountBeforeFees: <TokenAmount amount={trade.outputAmountWithoutFee} defaultValue="0" />,
-    amountAfterFeesRaw: trade.outputAmountAfterFees,
-    amountAfterFees: <TokenAmount amount={trade.outputAmountAfterFees} defaultValue="0" />,
+    amountAfterFeesRaw: outputAmountAfterFees,
+    amountAfterFees: <TokenAmount amount={outputAmountAfterFees} defaultValue="0" />,
     feeAmount: <TokenAmount amount={feeAmountRaw} defaultValue="0" />,
     partnerFeeAmount: <TokenAmount amount={trade.partnerFeeAmount} defaultValue="0" />,
     partnerFeeAmountRaw: trade.partnerFeeAmount,

@@ -41,7 +41,7 @@ export const outputCurrencyInfoMock: CurrencyInfo = {
     amountAfterFeesRaw: CurrencyAmount.fromRawAmount(outputCurrency, 20 * 10 ** 18),
     feeAmount: '10',
     feeAmountRaw: CurrencyAmount.fromRawAmount(outputCurrency, 10 * 10 ** 18),
-    partnerFeeAmount: '25',
+    partnerFeeAmount: '0',
     partnerFeeAmountRaw: CurrencyAmount.fromRawAmount(outputCurrency, 0),
   },
   currency: outputCurrency,
