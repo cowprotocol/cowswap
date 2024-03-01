@@ -43,7 +43,6 @@ const defaultProps: RowFeeProps & RowFeeContentProps = {
   get fullDisplayFee() {
     return this.feeAmount?.quotient.toString() || 'Unknown'
   },
-  showHelpers: true,
   allowsOffchainSigning: true,
   tooltip: 'This is a tooltip that describes stuff. Stuff that is great. Great stuff. The best stuff on earth.',
 }
