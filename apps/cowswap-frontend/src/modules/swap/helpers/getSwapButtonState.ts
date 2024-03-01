@@ -1,4 +1,4 @@
-import { Token } from '@uniswap/sdk-core'
+import { Token, TradeType } from '@uniswap/sdk-core'
 
 import { QuoteError } from 'legacy/state/price/actions'
 import TradeGp from 'legacy/state/swap/TradeGp'
@@ -6,8 +6,6 @@ import TradeGp from 'legacy/state/swap/TradeGp'
 import { getEthFlowEnabled } from 'modules/swap/helpers/getEthFlowEnabled'
 
 import { ApprovalState } from 'common/hooks/useApproveState'
-
-import { AmountsForSignature } from './getAmountsForSignature'
 
 export enum SwapButtonState {
   SwapIsUnsupported = 'SwapIsUnsupported',
@@ -34,25 +32,24 @@ export enum SwapButtonState {
 }
 
 export interface SwapButtonStateParams {
+  trade: TradeGp | undefined | null
+  quoteError: QuoteError | undefined | null
   account: string | undefined
   isSupportedWallet: boolean
   isReadonlyGnosisSafeUser: boolean
   isSwapUnsupported: boolean
   isBundlingSupported: boolean
-  quoteError: QuoteError | undefined | null
   inputError?: string
   approvalState: ApprovalState
   feeWarningAccepted: boolean
   impactWarningAccepted: boolean
   isGettingNewQuote: boolean
   swapCallbackError: string | null
-  trade: TradeGp | undefined | null
   isNativeIn: boolean
   isSmartContractWallet: boolean | undefined
   isBestQuoteLoading: boolean
   wrappedToken: Token
   isPermitSupported: boolean
-  amountsForSignature: AmountsForSignature | undefined
 }
 
 const quoteErrorToSwapButtonState: { [key in QuoteError]: SwapButtonState | null } = {
@@ -66,7 +63,7 @@ const quoteErrorToSwapButtonState: { [key in QuoteError]: SwapButtonState | null
 }
 
 export function getSwapButtonState(input: SwapButtonStateParams): SwapButtonState {
-  const { quoteError, approvalState, isPermitSupported, amountsForSignature } = input
+  const { trade, quoteError, approvalState, isPermitSupported } = input
 
   // show approve flow when: no error on inputs, not approved or pending, or approved in current session
   // never show if price impact is above threshold
@@ -77,6 +74,9 @@ export function getSwapButtonState(input: SwapButtonStateParams): SwapButtonStat
 
   const isValid = !input.inputError && input.feeWarningAccepted && input.impactWarningAccepted
   const swapBlankState = !input.inputError && !input.trade
+
+  const isSellOrder = trade?.tradeType === TradeType.EXACT_INPUT
+  const amountAfterFees = isSellOrder ? trade?.outputAmountAfterFees : trade?.inputAmountAfterFees
 
   if (quoteError) {
     const quoteErrorState = quoteErrorToSwapButtonState[quoteError]
@@ -115,12 +115,12 @@ export function getSwapButtonState(input: SwapButtonStateParams): SwapButtonStat
     return SwapButtonState.SwapError
   }
 
-  if (!isValid || !!input.swapCallbackError) {
-    return SwapButtonState.SwapDisabled
+  if (amountAfterFees && (amountAfterFees.equalTo(0) || amountAfterFees.lessThan(0))) {
+    return SwapButtonState.FeesExceedFromAmount
   }
 
-  if (amountsForSignature?.outputAmount.lessThan(0)) {
-    return SwapButtonState.FeesExceedFromAmount
+  if (!isValid || !!input.swapCallbackError) {
+    return SwapButtonState.SwapDisabled
   }
 
   if (input.isNativeIn) {

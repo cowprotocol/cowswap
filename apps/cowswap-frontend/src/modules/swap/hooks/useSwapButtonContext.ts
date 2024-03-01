@@ -1,6 +1,5 @@
 import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
 import { currencyAmountToTokenAmount, getWrappedToken } from '@cowprotocol/common-utils'
-import { OrderKind } from '@cowprotocol/cow-sdk'
 import { useIsTradeUnsupported } from '@cowprotocol/tokens'
 import {
   useGnosisSafeInfo,
@@ -9,7 +8,7 @@ import {
   useWalletDetails,
   useWalletInfo,
 } from '@cowprotocol/wallet'
-import { Currency, CurrencyAmount, TradeType as UniTradeType } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
@@ -33,10 +32,6 @@ import { useApproveState } from 'common/hooks/useApproveState'
 import { useSafeBundleEthFlowContext } from './useSafeBundleEthFlowContext'
 import { useDerivedSwapInfo, useSwapActionHandlers } from './useSwapState'
 
-import { useSafeMemo } from '../../../common/hooks/useSafeMemo'
-import { getAmountsForSignature } from '../helpers/getAmountsForSignature'
-import { logSwapParams } from '../helpers/logSwapParams'
-
 export interface SwapButtonInput {
   feeWarningAccepted: boolean
   impactWarningAccepted: boolean
@@ -56,7 +51,6 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
     currencies,
     currenciesIds,
     inputError: swapInputError,
-    allowedSlippage,
   } = useDerivedSwapInfo()
   const toggleWalletModal = useToggleWalletModal()
   const swapFlowContext = useSwapFlowContext()
@@ -100,26 +94,6 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
   const isBundlingSupported = useIsBundlingSupported()
   const isPermitSupported = useTokenSupportsPermit(currencyIn, TradeType.SWAP)
 
-  const amountsForSignature = useSafeMemo(() => {
-    const amounts = trade
-      ? getAmountsForSignature({
-          trade,
-          kind: trade?.tradeType === UniTradeType.EXACT_INPUT ? OrderKind.SELL : OrderKind.BUY,
-          allowedSlippage,
-        })
-      : undefined
-
-    if (amounts) {
-      logSwapParams('amounts to sign', {
-        inputAmount: amounts.inputAmount.quotient.toString(),
-        outputAmount: amounts.outputAmount.quotient.toString(),
-        allowedSlippage: allowedSlippage?.toFixed(2),
-      })
-    }
-
-    return amounts
-  }, [trade, allowedSlippage])
-
   const swapButtonState = getSwapButtonState({
     account,
     isSupportedWallet,
@@ -139,7 +113,6 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
     trade,
     isBestQuoteLoading,
     isPermitSupported,
-    amountsForSignature,
   })
 
   return {
