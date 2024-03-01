@@ -83,6 +83,7 @@ export function AddressInputPanel({
   id,
   className = 'recipient-address-input',
   label,
+  disabled,
   placeholder,
   value,
   onChange,
@@ -90,6 +91,7 @@ export function AddressInputPanel({
   id?: string
   className?: string
   label?: ReactNode
+  disabled?: boolean
   placeholder?: string
   value: string
   onChange: (value: string) => void
@@ -135,6 +137,7 @@ export function AddressInputPanel({
               onChange={handleInput}
               value={value}
               onFocus={autofocus}
+              disabled={disabled}
             />
           </AutoColumn>
         </InputContainer>

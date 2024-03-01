@@ -9,10 +9,11 @@ export interface SetRecipientProps {
   recipient: string
   onChangeRecipient(recipient: string | null): void
   className?: string
+  disabled?: boolean
 }
 
 export function SetRecipient(props: SetRecipientProps) {
-  const { recipient, onChangeRecipient, className } = props
+  const { recipient, onChangeRecipient, className, disabled } = props
 
   return (
     <>
@@ -21,7 +22,7 @@ export function SetRecipient(props: SetRecipientProps) {
           <ArrowDown size="16" />
         </ArrowWrapper>
       </AutoRow>
-      <AddressInputPanel id="recipient" value={recipient} onChange={onChangeRecipient} />
+      <AddressInputPanel id="recipient" disabled={disabled} value={recipient} onChange={onChangeRecipient} />
     </>
   )
 }

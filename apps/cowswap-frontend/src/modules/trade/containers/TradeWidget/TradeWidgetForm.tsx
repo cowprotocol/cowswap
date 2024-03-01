@@ -15,6 +15,8 @@ import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetwo
 import { useThrottleFn } from 'common/hooks/useThrottleFn'
 import { CurrencyArrowSeparator } from 'common/pure/CurrencyArrowSeparator'
 import { CurrencyInputPanel } from 'common/pure/CurrencyInputPanel'
+import { InlineBanner } from 'common/pure/InlineBanner'
+import { BannerOrientation } from 'common/pure/InlineBanner/banners'
 import { PoweredFooter } from 'common/pure/PoweredFooter'
 
 import * as styledEl from './styled'
@@ -75,6 +77,8 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
     openTokenSelectWidget,
   }
 
+  const { hideConnectButton, partnerFee } = injectedWidgetParams
+
   /**
    * Reset recipient value only once at App start if it's not set in URL
    */
@@ -90,7 +94,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
       <styledEl.ContainerBox>
         <styledEl.Header>
           <TradeWidgetLinks isDropdown={isInjectedWidgetMode} />
-          {isInjectedWidgetMode && !injectedWidgetParams.hideConnectButton && (
+          {isInjectedWidgetMode && !hideConnectButton && (
             <AccountElement isWidgetMode={isInjectedWidgetMode} pendingActivities={pendingActivity} />
           )}
           {!lockScreen && settingsWidget}
@@ -139,7 +143,23 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
               />
             </div>
             {withRecipient && (
-              <styledEl.StyledRemoveRecipient recipient={recipient || ''} onChangeRecipient={onChangeRecipient} />
+              <>
+                <styledEl.StyledRemoveRecipient
+                  disabled={!!partnerFee?.recipient}
+                  recipient={recipient || ''}
+                  onChangeRecipient={onChangeRecipient}
+                />
+                {/*TODO: add UI here*/}
+                {!!partnerFee?.recipient && (
+                  <InlineBanner bannerType="alert" orientation={BannerOrientation.Horizontal}>
+                    Warning!
+                    <br />
+                    There is a partner fee: {partnerFee.bps / 100}%.
+                    <br />
+                    Recipient: {partnerFee.recipient}
+                  </InlineBanner>
+                )}
+              </>
             )}
 
             {isWrapOrUnwrap ? <WrapFlowActionButton /> : bottomContent}

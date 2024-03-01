@@ -38,15 +38,25 @@ export const BAD_RECIPIENT_ADDRESSES: { [address: string]: true } = {
 }
 
 export function useSwapState(): AppState['swap'] {
+  const { partnerFee } = useInjectedWidgetParams()
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
 
+  const partnerFeeRecipient = partnerFee?.recipient
   const state = useAppSelector((state) => state.swap)
 
   return useMemo(() => {
     return isProviderNetworkUnsupported
-      ? { ...state, [Field.INPUT]: { currencyId: undefined }, [Field.OUTPUT]: { currencyId: undefined } }
-      : state
-  }, [isProviderNetworkUnsupported, state])
+      ? {
+          ...state,
+          [Field.INPUT]: { currencyId: undefined },
+          [Field.OUTPUT]: { currencyId: undefined },
+        }
+      : {
+          ...state,
+          recipient: partnerFeeRecipient || state.recipient,
+          recipientAddress: partnerFeeRecipient || state.recipientAddress,
+        }
+  }, [isProviderNetworkUnsupported, state, partnerFeeRecipient])
 }
 
 export type Currencies = { [field in Field]?: Currency | null }
