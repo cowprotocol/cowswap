@@ -132,9 +132,9 @@ export function Configurator({ title }: { title: string }) {
   const tokenListsState = useState<TokenListItem[]>(DEFAULT_TOKEN_LISTS)
   const [tokenLists] = tokenListsState
 
-  const partnerFeePercentState = useState<number>(0)
+  const partnerFeeBpsState = useState<number>(0)
   const partnerFeeRecipientState = useState<string>('')
-  const [partnerFeePercent] = partnerFeePercentState
+  const [partnerFeeBps] = partnerFeeBpsState
   const [partnerFeeRecipient] = partnerFeeRecipientState
 
   const paletteManager = useColorPaletteManager(mode)
@@ -175,7 +175,7 @@ export function Configurator({ title }: { title: string }) {
     tokenLists,
     customColors: colorPalette,
     defaultColors: defaultPalette,
-    partnerFeePercent,
+    partnerFeeBps,
     partnerFeeRecipient,
   }
 
@@ -251,7 +251,7 @@ export function Configurator({ title }: { title: string }) {
 
         <Divider variant="middle">Integrations</Divider>
 
-        <PartnerFeeControl feePercentState={partnerFeePercentState} recipientState={partnerFeeRecipientState} />
+        <PartnerFeeControl feeBpsState={partnerFeeBpsState} recipientState={partnerFeeRecipientState} />
 
         {isDrawerOpen && (
           <Fab

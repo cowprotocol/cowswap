@@ -27,7 +27,7 @@ export function useWidgetParams(configuratorState: ConfiguratorState, isDappMode
       tokenLists,
       customColors,
       defaultColors,
-      partnerFeePercent,
+      partnerFeeBps,
       partnerFeeRecipient,
     } = configuratorState
 
@@ -63,7 +63,7 @@ export function useWidgetParams(configuratorState: ConfiguratorState, isDappMode
       hideConnectButton: isDappMode,
 
       partnerFee: {
-        bps: Math.ceil(partnerFeePercent * 100),
+        bps: partnerFeeBps,
         recipient: partnerFeeRecipient,
       },
     }

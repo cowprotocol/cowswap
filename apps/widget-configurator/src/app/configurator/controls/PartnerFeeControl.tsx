@@ -3,21 +3,21 @@ import { ChangeEvent, Dispatch, SetStateAction } from 'react'
 import TextField from '@mui/material/TextField'
 
 export interface PartnerFeeControlProps {
-  feePercentState: [number, Dispatch<SetStateAction<number>>]
+  feeBpsState: [number, Dispatch<SetStateAction<number>>]
   recipientState: [string, Dispatch<SetStateAction<string>>]
 }
 export function PartnerFeeControl(props: PartnerFeeControlProps) {
-  const { feePercentState, recipientState } = props
-  const [percent, setPercent] = feePercentState
+  const { feeBpsState, recipientState } = props
+  const [feeBps, setFeeBps] = feeBpsState
   const [recipient, setRecipient] = recipientState
 
   return (
     <>
       <TextField
         id="partnerFeePercent"
-        label="Partner fee percent"
-        value={percent}
-        onChange={(e: ChangeEvent<HTMLInputElement>) => setPercent(Number(e.target.value || 0))}
+        label="Partner fee BPS"
+        value={feeBps}
+        onChange={(e: ChangeEvent<HTMLInputElement>) => setFeeBps(Number(e.target.value || 0))}
         type="number"
         size="small"
       />
