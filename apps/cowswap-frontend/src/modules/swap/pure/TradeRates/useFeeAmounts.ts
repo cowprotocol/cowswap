@@ -23,5 +23,5 @@ export function useFeeAmounts(trade: TradeGp | undefined, fee: CurrencyAmount<Cu
     return partnerFeeFiatValue && feeFiatValue ? partnerFeeFiatValue.add(feeFiatValue) : feeFiatValue
   }, [partnerFeeFiatValue, feeFiatValue])
 
-  return { feeTotalAmount, feeUsdTotalAmount, feeFiatValue }
+  return { feeTotalAmount, feeUsdTotalAmount }
 }

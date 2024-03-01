@@ -50,7 +50,7 @@ export const TradeRates = React.memo(function (props: TradeRatesProps) {
   const showTradeBasicDetails = (isFeeGreater || trade) && fee
   const showRowDeadline = !!trade
 
-  const { feeTotalAmount, feeUsdTotalAmount, feeFiatValue } = useFeeAmounts(trade, fee)
+  const { feeTotalAmount, feeUsdTotalAmount } = useFeeAmounts(trade, fee)
 
   if (!feeTotalAmount && !feeUsdTotalAmount) return null
 
