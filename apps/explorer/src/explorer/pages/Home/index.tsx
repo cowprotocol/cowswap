@@ -9,6 +9,7 @@ import { TokensTableWidget } from '../../components/TokensTableWidget'
 import { Helmet } from 'react-helmet'
 import { APP_TITLE } from '../../const'
 import { SUBGRAPH_URLS } from '../../../consts/subgraphUrls'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 const Wrapper = styled(WrapperMod)`
   max-width: 140rem;
@@ -47,10 +48,17 @@ const SummaryWrapper = styled.section`
   }
 `
 
+const SHOW_TOKENS_TABLE: Record<SupportedChainId, boolean> = {
+  [SupportedChainId.MAINNET]: true,
+  [SupportedChainId.GNOSIS_CHAIN]: false, // Gchain data is not reliable
+  [SupportedChainId.SEPOLIA]: false, // No data for Sepolia
+}
+
 export const Home: React.FC = () => {
   const networkId = useNetworkId() || undefined
 
   const showCharts = !!networkId && SUBGRAPH_URLS[networkId] !== null
+  const showTokensTable = !!networkId && SHOW_TOKENS_TABLE[networkId]
 
   return (
     <Wrapper>
@@ -63,7 +71,7 @@ export const Home: React.FC = () => {
         {showCharts && (
           <>
             <StatsSummaryCardsWidget />
-            <TokensTableWidget networkId={networkId} />
+            {showTokensTable && <TokensTableWidget networkId={networkId} />}
           </>
         )}
       </SummaryWrapper>
