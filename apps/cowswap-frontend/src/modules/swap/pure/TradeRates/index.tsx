@@ -67,7 +67,7 @@ export const TradeRates = React.memo(function (props: TradeRatesProps) {
       rateInfo={showPrice && <styledEl.StyledRateInfo noLabel={true} stylized={true} rateInfoParams={rateInfoParams} />}
       feeSummary={showTradeBasicDetails && feeSummary}
     >
-      <styledEl.Box>
+      <styledEl.Box noMargin>
         {showTradeBasicDetails && (
           <TradeBasicDetails
             allowedSlippage={userAllowedSlippage}

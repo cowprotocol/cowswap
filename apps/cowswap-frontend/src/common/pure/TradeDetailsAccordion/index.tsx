@@ -13,9 +13,10 @@ const Wrapper = styled.div<{ isOpen: boolean }>`
   width: 100%;
   border: 1px solid var(${UI.COLOR_PAPER_DARKER});
   border-radius: 16px;
-  padding: 9px 10px;
+  padding: 10px;
   height: auto;
   font-size: 13px;
+  font-weight: var(${UI.FONT_WEIGHT_MEDIUM});
 `
 
 const Details = styled.div`
@@ -33,18 +34,25 @@ const Summary = styled.div`
   width: 100%;
   gap: 8px;
   font-size: inherit;
+  font-weight: inherit;
+
+  span {
+    font-size: inherit;
+    font-weight: inherit;
+  }
 `
 
-const SummaryClickable = styled.div`
+const SummaryClickable = styled.div<{ isOpen: boolean }>`
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 8px;
-  font-size: inherit;
-  opacity: 0.7;
+  gap: 7px;
+  opacity: ${({ isOpen }) => (isOpen ? 1 : 0.7)};
   transition: opacity ${UI.ANIMATION_DURATION_SLOW} ease-in-out;
   outline: none;
+  font-size: inherit;
+  font-weight: inherit;
 
   &:hover {
     opacity: 1;
@@ -104,7 +112,13 @@ export const TradeDetailsAccordion = ({ rateInfo, feeSummary, children, open = f
     <Wrapper isOpen={isOpen}>
       <Summary>
         {rateInfo}
-        <SummaryClickable onClick={toggleAccordion} onKeyDown={handleKeyDown} aria-expanded={isOpen} tabIndex={0}>
+        <SummaryClickable
+          onClick={toggleAccordion}
+          onKeyDown={handleKeyDown}
+          aria-expanded={isOpen}
+          tabIndex={0}
+          isOpen={isOpen}
+        >
           {!isOpen && feeSummary}
           <ToggleIcon isOpen={isOpen}>
             <SVG src={CarretIcon} title={isOpen ? 'Close' : 'Open'} />
