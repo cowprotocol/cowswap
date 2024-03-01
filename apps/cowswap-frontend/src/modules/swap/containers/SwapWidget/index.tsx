@@ -77,6 +77,7 @@ export function SwapWidget() {
   const { isFeeGreater, fee } = useIsFeeGreaterThanInput({
     chainId,
     address: currenciesIds.INPUT,
+    trade,
   })
 
   const inputToken = useMemo(() => {
