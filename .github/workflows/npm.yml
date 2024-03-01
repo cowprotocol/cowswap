@@ -8,6 +8,8 @@ on:
         required: true
         type: choice
         options:
+          - events
+          - types
           - permit-utils
           - widget-lib
           - widget-react
