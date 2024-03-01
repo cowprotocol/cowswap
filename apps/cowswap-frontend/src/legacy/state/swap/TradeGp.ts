@@ -13,7 +13,7 @@ interface FeeInformation {
   amount: string
 }
 
-export type FeeForTrade = { feeAsCurrency: CurrencyAmount<Currency> } & Pick<FeeInformation, 'amount'>
+export type FeeForTrade = { feeAsCurrency: CurrencyAmount<Currency> } & FeeInformation
 
 type TradeExecutionPrice = CanonicalMarketParams<CurrencyAmount<Currency> | undefined> & { price?: PriceInformation }
 
