@@ -108,7 +108,7 @@ export function getSwapButtonState(input: SwapButtonStateParams): SwapButtonStat
     return SwapButtonState.ReadonlyGnosisSafeUser
   }
 
-  if (isQuoteExpired(quote?.fee?.expirationDate) === true) {
+  if (isQuoteExpired(quote?.fee?.expirationDate) && !swapBlankState) {
     return SwapButtonState.QuoteExpired
   }
 
