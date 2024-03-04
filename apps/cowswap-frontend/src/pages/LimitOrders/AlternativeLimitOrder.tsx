@@ -23,7 +23,7 @@ export function AlternativeLimitOrder() {
 
   return (
     <Wrapper>
-      <NewModal modalMode title={'Recreate order'} onDismiss={onDismiss} maxWidth={MODAL_MAX_WIDTH}>
+      <NewModal modalMode title={'Recreate limit order'} onDismiss={onDismiss} maxWidth={MODAL_MAX_WIDTH}>
         <LimitOrdersWidget />
       </NewModal>
     </Wrapper>
