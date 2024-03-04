@@ -10,8 +10,8 @@ export function validatePartnerFee(input: PartnerFee | undefined): string[] | un
   const { bps, recipient } = input
 
   const feeTooHighError =
-    bps > PARTNER_FEE_MAX_BPS ? `Partner fee can not be more than ${PARTNER_FEE_MAX_BPS / 100}%!` : undefined
-  const feeTooLowError = bps < 0 ? 'Partner fee can not be less than 0%!' : undefined
+    bps > PARTNER_FEE_MAX_BPS ? `Partner fee can not be more than ${PARTNER_FEE_MAX_BPS} BPS!` : undefined
+  const feeTooLowError = bps < 0 ? 'Partner fee can not be less than 0!' : undefined
   const recipientError = validateRecipient(recipient)
 
   const errors = [feeTooHighError, feeTooLowError, recipientError].filter(isTruthy)
