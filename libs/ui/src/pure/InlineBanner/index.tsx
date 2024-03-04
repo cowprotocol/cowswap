@@ -1,11 +1,10 @@
 import { ReactNode } from 'react'
 
-import { UI } from '@cowprotocol/ui'
+import { UI } from '../../enum'
+import { Icon, IconType } from '../Icon'
+import { BannerOrientation } from './banners'
 
 import styled from 'styled-components/macro'
-
-import { Icon, IconType } from 'common/pure/Icon'
-import { BannerOrientation } from 'common/pure/InlineBanner/banners'
 
 export type BannerType = 'alert' | 'information' | 'success' | 'danger' | 'savings'
 
@@ -60,6 +59,8 @@ const Wrapper = styled.span<{
   orientation?: BannerOrientation
   iconSize?: number
   padding?: string
+  margin?: string
+  width?: string
 }>`
   display: flex;
   align-items: center;
@@ -68,13 +69,14 @@ const Wrapper = styled.span<{
   color: ${({ colorEnums }) => `var(${colorEnums.text})`};
   gap: 24px 10px;
   border-radius: ${({ borderRadius = '16px' }) => borderRadius};
-  margin: auto;
+  margin: ${({ margin = 'auto' }) => margin};
   padding: ${({ padding = '16px' }) => padding};
   font-size: 14px;
   font-weight: 400;
   line-height: 1.2;
-  width: 100%;
+  width: ${({ width = '100%' }) => width};
 
+  // Icon + Text content wrapper
   > span {
     display: flex;
     justify-content: center;
@@ -83,21 +85,31 @@ const Wrapper = styled.span<{
       orientation === BannerOrientation.Horizontal ? 'row' : 'column wrap'};
     gap: 10px;
     width: 100%;
-
-    ${({ theme }) => theme.mediaWidth.upToSmall`
-      flex-flow: column wrap;
-      gap: 16px;
-    `};
   }
 
-  > span > strong {
+  // Text content
+  > span > span {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    gap: 10px;
+    justify-content: ${({ orientation = BannerOrientation.Vertical }) =>
+      orientation === BannerOrientation.Horizontal ? 'flex-start' : 'center'};
+  }
+
+  > span > span a {
+    color: inherit;
+    text-decoration: underline;
+  }
+
+  > span > span > strong {
     display: flex;
     align-items: center;
     gap: 6px;
     color: ${({ colorEnums }) => `var(${colorEnums.text})`};
   }
 
-  > span > p {
+  > span > span > p {
     line-height: 1.4;
     margin: auto;
     padding: 0;
@@ -106,7 +118,7 @@ const Wrapper = styled.span<{
       orientation === BannerOrientation.Horizontal ? 'left' : 'center'};
   }
 
-  > span > i {
+  > span > span > i {
     font-style: normal;
     font-size: 32px;
     line-height: 1;
@@ -123,6 +135,8 @@ export type InlineBannerProps = {
   iconSize?: number
   iconPadding?: string
   padding?: string
+  margin?: string
+  width?: string
 }
 
 export function InlineBanner({
@@ -133,8 +147,10 @@ export function InlineBanner({
   borderRadius,
   orientation,
   iconSize,
-  iconPadding,
+  iconPadding = '0',
   padding,
+  margin,
+  width,
 }: InlineBannerProps) {
   const effectiveBannerType = bannerType || 'alert'
   const colorEnums = getColorEnums(effectiveBannerType)
@@ -146,6 +162,8 @@ export function InlineBanner({
       borderRadius={borderRadius}
       orientation={orientation}
       padding={padding}
+      margin={margin}
+      width={width}
     >
       <span>
         {!hideIcon && colorEnums.icon && (
@@ -158,7 +176,7 @@ export function InlineBanner({
           />
         )}
         {!hideIcon && colorEnums.iconText && <i>{colorEnums.iconText}</i>}
-        {children}
+        <span>{children}</span>
       </span>
     </Wrapper>
   )

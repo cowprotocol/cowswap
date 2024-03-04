@@ -1,7 +1,15 @@
 import { ExplorerDataType, getExplorerLink, isSellOrder, shortenAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
-import { ExternalLink, UI } from '@cowprotocol/ui'
+import {
+  UI,
+  Icon,
+  IconType,
+  ExternalLink,
+  InlineBanner,
+  BannerOrientation,
+  CustomRecipientWarningBanner,
+} from '@cowprotocol/ui'
 import { CurrencyAmount, Fraction, Token } from '@uniswap/sdk-core'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
@@ -10,9 +18,6 @@ import { CloseIcon } from 'legacy/theme'
 import { TwapOrderItem } from 'modules/twap/types'
 
 import { isPending } from 'common/hooks/useCategorizeRecentActivity'
-import { Icon, IconType } from 'common/pure/Icon'
-import { InlineBanner } from 'common/pure/InlineBanner'
-import { BannerOrientation, CustomRecipientWarningBanner } from 'common/pure/InlineBanner/banners'
 import { CowModal } from 'common/pure/Modal'
 import {
   useHideReceiverWalletBanner,

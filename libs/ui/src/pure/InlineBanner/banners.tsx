@@ -1,13 +1,11 @@
 import { Command } from '@cowprotocol/types'
-import { TokenAmount } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
-import { Nullish } from 'types'
-
-import { LinkStyledButton } from 'legacy/theme'
-
-import { ButtonSecondary } from '../ButtonSecondary'
+import { TokenAmount } from '../TokenAmount'
+import { Nullish } from '../../types'
+import { LinkStyledButton } from '../LinkStyledButton'
+import { ButtonSecondary } from '../Button'
 import { CowSwapSafeAppLink } from '../CowSwapSafeAppLink'
 
 import { InlineBanner, InlineBannerProps } from './index'

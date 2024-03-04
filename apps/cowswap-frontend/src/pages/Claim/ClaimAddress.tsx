@@ -12,7 +12,7 @@ import { useClaimDispatchers, useClaimState } from 'legacy/state/claim/hooks'
 import { ClaimCommonTypes } from 'legacy/state/claim/types'
 import { CustomLightSpinner, ThemedText } from 'legacy/theme'
 
-import { CheckAddress, InputField, InputFieldTitle, InputErrorText } from './styled'
+import { CheckAddress, InputErrorText, InputField, InputFieldTitle } from './styled'
 
 export type ClaimAddressProps = Pick<ClaimCommonTypes, 'account'> & {
   toggleWalletModal: Command | null
