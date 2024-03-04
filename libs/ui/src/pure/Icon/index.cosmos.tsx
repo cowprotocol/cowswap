@@ -1,8 +1,6 @@
-import { UI } from '@cowprotocol/ui'
-
 import styled from 'styled-components/macro'
-
-import { Icon, IconType } from './index'
+import { UI } from '../../enum'
+import { Icon, IconType } from '.'
 
 const Wrapper = styled.div`
   width: 400px;

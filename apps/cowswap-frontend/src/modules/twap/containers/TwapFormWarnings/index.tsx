@@ -2,6 +2,7 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
 import { modifySafeHandlerAnalytics } from '@cowprotocol/analytics'
+import { BundleTxApprovalBanner } from '@cowprotocol/ui'
 import { useIsSafeViaWc, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
@@ -12,7 +13,6 @@ import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFor
 import { useTradeQuoteFeeFiatAmount } from 'modules/tradeQuote'
 import { useShouldZeroApprove } from 'modules/zeroApproval'
 
-import { BundleTxApprovalBanner } from 'common/pure/InlineBanner/banners'
 import { ZeroApprovalWarning } from 'common/pure/ZeroApprovalWarning'
 
 import {
