@@ -129,9 +129,10 @@ export function useHighFeeWarning(trade?: TradeGp) {
 
     const totalFeeAmount = partnerFeeAmount ? feeAsCurrency.add(partnerFeeAmount) : feeAsCurrency
     const targetAmount = isExactInput ? outputAmountWithoutFee : inputAmountWithoutFee
-    const feePercentage = totalFeeAmount.divide(targetAmount).asFraction
+    const feePercentageRaw = totalFeeAmount.divide(targetAmount).asFraction
+    const feePercentage = isExactInput ? feePercentageRaw.multiply(100) : feePercentageRaw.subtract(100).multiply(-1)
 
-    return [feePercentage.greaterThan(FEE_SIZE_THRESHOLD), feePercentage.multiply('100')]
+    return [feePercentage.greaterThan(FEE_SIZE_THRESHOLD), feePercentage]
   }, [trade])
 
   // reset the state when users change swap params
