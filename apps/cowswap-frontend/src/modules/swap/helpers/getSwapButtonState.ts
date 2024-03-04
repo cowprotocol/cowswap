@@ -1,9 +1,11 @@
 import { Token } from '@uniswap/sdk-core'
 
 import { QuoteError } from 'legacy/state/price/actions'
+import { QuoteInformationObject } from 'legacy/state/price/reducer'
 import TradeGp from 'legacy/state/swap/TradeGp'
 
 import { getEthFlowEnabled } from 'modules/swap/helpers/getEthFlowEnabled'
+import { isQuoteExpired } from 'modules/tradeQuote/utils/isQuoteExpired'
 
 import { ApprovalState } from 'common/hooks/useApproveState'
 
@@ -18,6 +20,7 @@ export enum SwapButtonState {
   TransferToSmartContract = 'TransferToSmartContract',
   UnsupportedToken = 'UnsupportedToken',
   FetchQuoteError = 'FetchQuoteError',
+  QuoteExpired = 'QuoteExpired',
   OfflineBrowser = 'OfflineBrowser',
   Loading = 'Loading',
   WalletIsNotConnected = 'WalletIsNotConnected',
@@ -39,7 +42,7 @@ export interface SwapButtonStateParams {
   isReadonlyGnosisSafeUser: boolean
   isSwapUnsupported: boolean
   isBundlingSupported: boolean
-  quoteError: QuoteError | undefined | null
+  quote: QuoteInformationObject | undefined | null
   inputError?: string
   approvalState: ApprovalState
   feeWarningAccepted: boolean
@@ -66,7 +69,8 @@ const quoteErrorToSwapButtonState: { [key in QuoteError]: SwapButtonState | null
 }
 
 export function getSwapButtonState(input: SwapButtonStateParams): SwapButtonState {
-  const { quoteError, approvalState, isPermitSupported, amountsForSignature } = input
+  const { quote, approvalState, isPermitSupported, amountsForSignature } = input
+  const quoteError = quote?.error
 
   // show approve flow when: no error on inputs, not approved or pending, or approved in current session
   // never show if price impact is above threshold
@@ -102,6 +106,10 @@ export function getSwapButtonState(input: SwapButtonStateParams): SwapButtonStat
 
   if (input.isReadonlyGnosisSafeUser) {
     return SwapButtonState.ReadonlyGnosisSafeUser
+  }
+
+  if (isQuoteExpired(quote?.fee?.expirationDate) === true) {
+    return SwapButtonState.QuoteExpired
   }
 
   if (!input.isNativeIn && showApproveFlow) {

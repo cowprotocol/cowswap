@@ -89,7 +89,7 @@ export function useBaseFlowContextSetup(): BaseFlowContextSetup {
   const { allowsOffchainSigning } = useWalletDetails()
   const gnosisSafeInfo = useGnosisSafeInfo()
   const { recipient } = useSwapState()
-  const { v2Trade: trade } = useDerivedSwapInfo()
+  const { v2Trade: trade, allowedSlippage } = useDerivedSwapInfo()
   const swapZeroFee = useSwapZeroFee()
 
   const appData = useAppData()
@@ -107,7 +107,6 @@ export function useBaseFlowContextSetup(): BaseFlowContextSetup {
   const isSafeEthFlow = useIsSafeEthFlow()
   const getCachedPermit = useGetCachedPermit()
 
-  const { allowedSlippage } = useDerivedSwapInfo()
   const [inputAmountWithSlippage, outputAmountWithSlippage] = useSwapAmountsWithSlippage()
   const sellTokenContract = useTokenContract(getAddress(inputAmountWithSlippage?.currency) || undefined, true)
 
