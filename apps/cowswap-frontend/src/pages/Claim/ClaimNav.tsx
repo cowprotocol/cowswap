@@ -7,7 +7,7 @@ import { ClaimStatus } from 'legacy/state/claim/actions'
 import { useClaimDispatchers, useClaimState } from 'legacy/state/claim/hooks'
 import { ClaimCommonTypes } from 'legacy/state/claim/types'
 
-import { TopNav, ClaimAccount, ClaimAccountButtons } from './styled'
+import { ClaimAccount, ClaimAccountButtons, TopNav } from './styled'
 
 type ClaimNavProps = Pick<ClaimCommonTypes, 'account' | 'handleChangeAccount'>
 

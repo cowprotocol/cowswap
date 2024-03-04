@@ -1,8 +1,8 @@
 import { OrderKind } from '@cowprotocol/cow-sdk'
+import { SellNativeWarningBanner as Pure } from '@cowprotocol/ui'
 
 import { Field } from 'legacy/state/types'
 
-import { SellNativeWarningBanner as Pure } from 'common/pure/InlineBanner/banners'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 import { useDerivedTradeState } from '../../hooks/useDerivedTradeState'

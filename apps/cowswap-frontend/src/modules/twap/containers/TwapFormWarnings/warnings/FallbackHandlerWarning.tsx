@@ -1,10 +1,8 @@
-import { ExternalLink } from '@cowprotocol/ui'
+import { ExternalLink, InlineBanner } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
 import { UNSUPPORTED_SAFE_LINK } from 'modules/twap/const'
-
-import { InlineBanner } from 'common/pure/InlineBanner'
 
 const Wrapper = styled.div`
   display: flex;

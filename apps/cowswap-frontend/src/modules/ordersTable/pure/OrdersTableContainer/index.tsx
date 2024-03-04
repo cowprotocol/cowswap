@@ -3,15 +3,14 @@ import { ReactNode } from 'react'
 import cowMeditatingV2 from '@cowprotocol/assets/cow-swap/meditating-cow-v2.svg'
 import imageConnectWallet from '@cowprotocol/assets/cow-swap/wallet-plus.svg'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
-import { ExternalLink, UI } from '@cowprotocol/ui'
+import { ExternalLink } from '@cowprotocol/ui'
+import { UI, CowSwapSafeAppLink } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
 import { Web3Status } from 'modules/wallet/containers/Web3Status'
-
-import { CowSwapSafeAppLink } from 'common/pure/CowSwapSafeAppLink'
 
 import { OrdersTable, OrdersTableProps } from './OrdersTable'
 import { OrdersTabs, OrdersTabsProps } from './OrdersTabs'

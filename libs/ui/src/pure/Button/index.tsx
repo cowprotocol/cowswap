@@ -5,7 +5,6 @@ import { ButtonProps } from 'rebass/styled-components'
 import styled from 'styled-components'
 
 import { RowBetween } from '../Row'
-import { ButtonSize, UI } from '../../enum'
 
 import {
   ButtonConfirmedStyle as ButtonConfirmedStyleMod,
@@ -14,6 +13,7 @@ import {
   ButtonOutlined as ButtonOutlinedMod,
   ButtonPrimary as ButtonPrimaryMod,
 } from './ButtonMod'
+import { ButtonSize, UI } from '../../enum'
 
 export * from './ButtonMod'
 

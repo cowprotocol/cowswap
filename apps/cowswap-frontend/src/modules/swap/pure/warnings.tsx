@@ -2,6 +2,7 @@ import React from 'react'
 
 import { genericPropsChecker } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { BundleTxApprovalBanner, BundleTxSafeWcBanner, BundleTxWrapBanner } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
@@ -13,7 +14,6 @@ import { CompatibilityIssuesWarning } from 'modules/trade/pure/CompatibilityIssu
 import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
 import { TradeUrlParams } from 'modules/trade/types/TradeRawState'
 
-import { BundleTxApprovalBanner, BundleTxSafeWcBanner, BundleTxWrapBanner } from 'common/pure/InlineBanner/banners'
 import { ZeroApprovalWarning } from 'common/pure/ZeroApprovalWarning'
 
 import { TwapSuggestionBanner } from './banners/TwapSuggestionBanner'
