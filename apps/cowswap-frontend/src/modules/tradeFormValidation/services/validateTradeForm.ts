@@ -70,6 +70,14 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     if (!tradeQuote.response) {
       return TradeFormValidation.QuoteLoading
     }
+
+    if (
+      derivedTradeState.tradeType !== TradeType.LIMIT_ORDER &&
+      !tradeQuote.isLoading &&
+      isQuoteExpired(tradeQuote.response?.expiration)
+    ) {
+      return TradeFormValidation.QuoteExpired
+    }
   }
 
   if (!inputCurrencyBalance) {
@@ -89,15 +97,6 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
       return TradeFormValidation.ApproveAndSwap
     }
     return TradeFormValidation.ApproveRequired
-  }
-
-  if (
-    !isWrapUnwrap &&
-    derivedTradeState.tradeType !== TradeType.LIMIT_ORDER &&
-    !tradeQuote.isLoading &&
-    isQuoteExpired(tradeQuote.response?.expiration) === true
-  ) {
-    return TradeFormValidation.QuoteExpired
   }
 
   return null
