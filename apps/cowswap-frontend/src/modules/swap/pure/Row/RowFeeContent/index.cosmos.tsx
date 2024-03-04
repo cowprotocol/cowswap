@@ -1,7 +1,7 @@
 import { COW, GNO } from '@cowprotocol/common-const'
 import { currencyAmountToTokenAmount } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { CurrencyAmount, TradeType, Price } from '@uniswap/sdk-core'
+import { CurrencyAmount, Price, TradeType } from '@uniswap/sdk-core'
 
 import TradeGp from 'legacy/state/swap/TradeGp'
 
@@ -20,7 +20,11 @@ const trade = new TradeGp({
   inputAmountWithoutFee: CurrencyAmount.fromRawAmount(currency, amount * 10 ** 18),
   outputAmount: CurrencyAmount.fromRawAmount(currency, output * 10 ** 18),
   outputAmountWithoutFee: CurrencyAmount.fromRawAmount(currency, (output - 3) * 10 ** 18),
-  fee: { feeAsCurrency: CurrencyAmount.fromRawAmount(currency, 3 * 10 ** 18), amount: '50' },
+  fee: {
+    feeAsCurrency: CurrencyAmount.fromRawAmount(currency, 3 * 10 ** 18),
+    amount: '50',
+    expirationDate: new Date().toISOString(),
+  },
   executionPrice: new Price(currency, currencyOut, 1, 4),
   tradeType: TradeType.EXACT_INPUT,
   quoteId: 10000,

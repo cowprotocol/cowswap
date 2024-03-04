@@ -83,6 +83,11 @@ const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonsContext
       <Trans>Error loading price. Try again later.</Trans>
     </GreyCard>
   ),
+  [SwapButtonState.QuoteExpired]: () => (
+    <GreyCard style={{ textAlign: 'center' }}>
+      <Trans>Quote expired. Refreshing...</Trans>
+    </GreyCard>
+  ),
   [SwapButtonState.UnsupportedToken]: () => (
     <GreyCard style={{ textAlign: 'center' }}>
       <Trans>Unsupported token</Trans>
