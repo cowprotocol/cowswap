@@ -123,12 +123,12 @@ export function useHighFeeWarning(trade?: TradeGp) {
   const [isHighFee, feePercentage] = useMemo(() => {
     if (!trade) return [false, undefined]
 
-    const { inputAmountWithoutFee, outputAmountWithoutFee, fee, partnerFeeAmount } = trade
+    const { outputAmountWithoutFee, inputAmountAfterFees, fee, partnerFeeAmount } = trade
     const isExactInput = trade.tradeType === TradeType.EXACT_INPUT
     const feeAsCurrency = isExactInput ? trade.executionPrice.quote(fee.feeAsCurrency) : fee.feeAsCurrency
 
     const totalFeeAmount = partnerFeeAmount ? feeAsCurrency.add(partnerFeeAmount) : feeAsCurrency
-    const targetAmount = isExactInput ? outputAmountWithoutFee : inputAmountWithoutFee
+    const targetAmount = isExactInput ? outputAmountWithoutFee : inputAmountAfterFees
     const feePercentageRaw = totalFeeAmount.divide(targetAmount).asFraction
     const feePercentage = isExactInput ? feePercentageRaw.multiply(100) : feePercentageRaw.subtract(100).multiply(-1)
 
