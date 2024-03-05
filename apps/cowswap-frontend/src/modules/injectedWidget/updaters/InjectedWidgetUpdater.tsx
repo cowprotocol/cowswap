@@ -1,4 +1,4 @@
-import { useSetAtom } from 'jotai'
+import { useAtom, useSetAtom } from 'jotai'
 import { useEffect, useRef } from 'react'
 
 import { deepEqual } from '@cowprotocol/common-utils'
@@ -9,15 +9,20 @@ import {
   listenToMessageFromWindow,
   postMessageToWindow,
   stopListeningWindowListener,
+  CowSwapWidgetParams,
 } from '@cowprotocol/widget-lib'
 
 import { useNavigate } from 'react-router-dom'
 
+import { useFeatureFlags } from 'common/hooks/featureFlags/useFeatureFlags'
+
 import { IframeResizer } from './IframeResizer'
 
 import { COW_SWAP_WIDGET_EVENT_KEY } from '../consts'
+import { WidgetParamsErrorsScreen } from '../pure/WidgetParamsErrorsScreen'
 import { injectedWidgetMetaDataAtom } from '../state/injectedWidgetMetaDataAtom'
 import { injectedWidgetParamsAtom } from '../state/injectedWidgetParamsAtom'
+import { validateWidgetParams } from '../utils/validateWidgetParams'
 
 const messagesCache: { [method: string]: unknown } = {}
 
@@ -30,6 +35,12 @@ const cacheMessages = (event: MessageEvent) => {
   if (!method) return
 
   messagesCache[method] = event.data
+}
+
+const paramsWithoutPartnerFee = (params: CowSwapWidgetParams) => {
+  const { partnerFee: _, ...rest } = params
+
+  return rest
 }
 
 /**
@@ -46,7 +57,8 @@ const cacheMessages = (event: MessageEvent) => {
 })()
 
 export function InjectedWidgetUpdater() {
-  const updateParams = useSetAtom(injectedWidgetParamsAtom)
+  const { isPartnerFeeEnabled } = useFeatureFlags()
+  const [{ errors: validationErrors }, updateParams] = useAtom(injectedWidgetParamsAtom)
   const updateMetaData = useSetAtom(injectedWidgetMetaDataAtom)
 
   const navigate = useNavigate()
@@ -63,7 +75,15 @@ export function InjectedWidgetUpdater() {
       // Update params
       prevData.current = data
 
-      updateParams(data.appParams)
+      // Ignore partner fee value when feature flag is not enabled
+      const appParams = isPartnerFeeEnabled ? data.appParams : paramsWithoutPartnerFee(data.appParams)
+
+      const errors = validateWidgetParams(appParams)
+
+      updateParams({
+        params: appParams,
+        errors,
+      })
 
       // Navigate to the new path
       navigate(data.urlParams)
@@ -86,7 +106,12 @@ export function InjectedWidgetUpdater() {
       stopListeningWindowListener(window, updateParamsListener)
       stopListeningWindowListener(window, updateAppDataListener)
     }
-  }, [updateMetaData, navigate, updateParams])
+  }, [updateMetaData, navigate, updateParams, isPartnerFeeEnabled])
 
-  return <IframeResizer />
+  return (
+    <>
+      <WidgetParamsErrorsScreen errors={validationErrors} />
+      <IframeResizer />
+    </>
+  )
 }

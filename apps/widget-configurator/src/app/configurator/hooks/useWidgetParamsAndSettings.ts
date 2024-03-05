@@ -27,6 +27,8 @@ export function useWidgetParams(configuratorState: ConfiguratorState, isDappMode
       tokenLists,
       customColors,
       defaultColors,
+      partnerFeeBps,
+      partnerFeeRecipient,
     } = configuratorState
 
     const themeColors = {
@@ -59,6 +61,14 @@ export function useWidgetParams(configuratorState: ConfiguratorState, isDappMode
       },
 
       hideConnectButton: isDappMode,
+
+      partnerFee:
+        partnerFeeBps > 0
+          ? {
+              bps: partnerFeeBps,
+              recipient: partnerFeeRecipient,
+            }
+          : undefined,
     }
 
     return params

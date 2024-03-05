@@ -26,6 +26,7 @@ import { CurrencyInputControl } from './controls/CurrencyInputControl'
 import { CurrentTradeTypeControl } from './controls/CurrentTradeTypeControl'
 import { NetworkControl, NetworkOption, NetworkOptions } from './controls/NetworkControl'
 import { PaletteControl } from './controls/PaletteControl'
+import { PartnerFeeControl } from './controls/PartnerFeeControl'
 import { ThemeControl } from './controls/ThemeControl'
 import { TokenListControl } from './controls/TokenListControl' // Adjust the import path as needed
 import { TradeModesControl } from './controls/TradeModesControl'
@@ -41,6 +42,8 @@ import { ColorModeContext } from '../../theme/ColorModeContext'
 import { web3Modal } from '../../wagmiConfig'
 import { connectWalletToConfiguratorGA } from '../analytics'
 import { EmbedDialog } from '../embedDialog'
+
+const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 
 const DEFAULT_STATE = {
   sellToken: 'USDC',
@@ -131,6 +134,11 @@ export function Configurator({ title }: { title: string }) {
   const tokenListsState = useState<TokenListItem[]>(DEFAULT_TOKEN_LISTS)
   const [tokenLists] = tokenListsState
 
+  const partnerFeeBpsState = useState<number>(0)
+  const partnerFeeRecipientState = useState<string>(ZERO_ADDRESS)
+  const [partnerFeeBps] = partnerFeeBpsState
+  const [partnerFeeRecipient] = partnerFeeRecipientState
+
   const paletteManager = useColorPaletteManager(mode)
   const { colorPalette, defaultPalette } = paletteManager
 
@@ -169,6 +177,8 @@ export function Configurator({ title }: { title: string }) {
     tokenLists,
     customColors: colorPalette,
     defaultColors: defaultPalette,
+    partnerFeeBps,
+    partnerFeeRecipient,
   }
 
   const params = useWidgetParams(state, isDappMode)
@@ -240,6 +250,10 @@ export function Configurator({ title }: { title: string }) {
         />
 
         <CurrencyInputControl label="Buy token" tokenIdState={buyTokenState} tokenAmountState={buyTokenAmountState} />
+
+        <Divider variant="middle">Integrations</Divider>
+
+        <PartnerFeeControl feeBpsState={partnerFeeBpsState} recipientState={partnerFeeRecipientState} />
 
         {isDrawerOpen && (
           <Fab
