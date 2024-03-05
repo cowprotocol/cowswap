@@ -12,8 +12,14 @@ import { RowFeeContent } from 'modules/swap/pure/Row/RowFeeContent'
 
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
-export const GASLESS_FEE_TOOLTIP_MSG =
-  'On CoW Swap you sign your order (hence no gas costs!). The fees are covering your gas costs already.'
+export const GASLESS_FEE_TOOLTIP_MSG = (
+  <>
+    This covers the cost of executing your trade, including gas and any LP fees.
+    <br />
+    <br />
+    CoW Swap will try to lower this cost when possible
+  </>
+)
 
 export const PRESIGN_FEE_TOOLTIP_MSG =
   'These fees cover the gas costs for executing the order once it has been placed. However - since you are using a smart contract wallet - you will need to pay the gas for signing an on-chain tx in order to place it.'
@@ -76,7 +82,7 @@ export function RowFee({ trade, feeAmount, feeInFiat, allowsOffchainSigning, noL
   // trades are null when there is a fee quote error e.g
   // so we can take both
   const props = useMemo(() => {
-    const label = 'Est. fees'
+    const label = 'Network costs (est.)'
     const displayFee = realizedFee || feeAmount
     const feeCurrencySymbol = displayFee?.currency.symbol || '-'
     // TODO: delegate formatting to the view layer
@@ -125,14 +131,19 @@ export function RowPartnerFee({ partnerFee, feeAmount, feeInFiat }: PartnerRowPa
     const { bps } = partnerFee
 
     return {
-      label: 'Partner fee',
+      label: 'Total fee',
       feeToken: feeAmountWithCurrency,
       feeUsd,
       fullDisplayFee,
       feeCurrencySymbol,
-      tooltip: `Partner fee of ${bps} BPS (${formatPercent(
-        bpsToPercent(bps)
-      )}%). Applied only if the trade is executed.`,
+      tooltip: (
+        <>
+          This fee helps pay for maintenance & improvements to the swap experience.
+          <br />
+          <br />
+          The fee is {bps} BPS (${formatPercent(bpsToPercent(bps))}%), applied only if the trade is executed.
+        </>
+      ),
     }
   }, [partnerFee, feeAmount, feeInFiat])
 

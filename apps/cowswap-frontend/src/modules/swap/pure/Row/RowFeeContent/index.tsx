@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import { RowFixed } from '@cowprotocol/ui'
 import { MouseoverTooltipContent } from '@cowprotocol/ui'
 
@@ -9,7 +11,7 @@ import { FiatRate } from 'common/pure/RateInfo'
 
 export interface RowFeeContentProps {
   label: string
-  tooltip: string
+  tooltip: ReactNode
   feeToken: string
   feeUsd?: string
   fullDisplayFee: string
