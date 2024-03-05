@@ -27,6 +27,17 @@ export const PRESIGN_FEE_TOOLTIP_MSG =
 const getEthFlowFeeTooltipMsg = (native = 'a native currency') =>
   `Trades on CoW Swap usually don’t require you to pay gas in ${native}. However, when selling ${native}, you do have to pay a small gas fee to cover the cost of wrapping your ${native}.`
 
+const TOTAL_FEE_TOOLTIP_FREE = `Unlike other exchanges, CoW Swap doesn’t charge a fee for trading!`
+
+export const getTotalFeeTooltip = (bps: number) => (
+  <>
+    This fee helps pay for maintenance & improvements to the swap experience.
+    <br />
+    <br />
+    The fee is {bps} BPS (${formatPercent(bpsToPercent(bps))}%), applied only if the trade is executed.
+  </>
+)
+
 // computes price breakdown for the trade
 export function computeTradePriceBreakdown(trade?: TradeGp | null): {
   realizedFee: CurrencyAmount<Currency> | undefined | null
@@ -43,7 +54,7 @@ export function computeTradePriceBreakdown(trade?: TradeGp | null): {
   }
 }
 
-export interface RowFeeProps {
+export interface RowNetworkCostsProps {
   // Although fee is part of the trade, if the trade is invalid, then it will be undefined
   // Even for invalid trades, we want to display the fee, this is why there's another "fee" parameter
   trade?: TradeGp
@@ -63,7 +74,7 @@ function isValidNonZeroAmount(value: string): boolean {
   }
 }
 
-export function RowFee({ trade, feeAmount, feeInFiat, allowsOffchainSigning, noLabel }: RowFeeProps) {
+export function RowNetworkCosts({ trade, feeAmount, feeInFiat, allowsOffchainSigning, noLabel }: RowNetworkCostsProps) {
   const { realizedFee } = useMemo(() => computeTradePriceBreakdown(trade), [trade])
 
   const isEoaEthFlow = useIsEoaEthFlow()
@@ -92,9 +103,9 @@ export function RowFee({ trade, feeAmount, feeInFiat, allowsOffchainSigning, noL
       isEoaEthFlow ? ' + gas' : ''
     }`
 
-    const feeToken = isValidNonZeroAmount(displayFeeFormatted)
-      ? '≈ ' + feeAmountWithCurrency
-      : `🎉 Free!${isEoaEthFlow ? ' (+ gas)' : ''}`
+    const isFree = !isValidNonZeroAmount(displayFeeFormatted)
+
+    const feeToken = isFree ? `FREE${isEoaEthFlow ? ' (+ gas)' : ''}` : '≈ ' + feeAmountWithCurrency
     const feeUsd = isValidNonZeroAmount(feeInFiatFormatted) ? `(≈$${feeInFiatFormatted})` : ''
 
     const fullDisplayFee = FractionUtils.fractionLikeToExactString(displayFee) || '-'
@@ -103,6 +114,7 @@ export function RowFee({ trade, feeAmount, feeInFiat, allowsOffchainSigning, noL
       label,
       feeToken,
       feeUsd,
+      isFree,
       fullDisplayFee,
       feeCurrencySymbol,
       tooltip,
@@ -114,7 +126,7 @@ export function RowFee({ trade, feeAmount, feeInFiat, allowsOffchainSigning, noL
 }
 
 export interface PartnerRowPartnerFeeProps {
-  partnerFee: PartnerFee
+  partnerFee?: PartnerFee
   feeAmount?: CurrencyAmount<Currency>
   feeInFiat: CurrencyAmount<Token> | null
 }
@@ -128,22 +140,17 @@ export function RowPartnerFee({ partnerFee, feeAmount, feeInFiat }: PartnerRowPa
 
     const feeUsd = isValidNonZeroAmount(feeInFiatFormatted) ? feeInFiatFormatted && `(≈$${feeInFiatFormatted})` : ''
     const fullDisplayFee = FractionUtils.fractionLikeToExactString(feeAmount) || '-'
-    const { bps } = partnerFee
+    const { bps } = partnerFee || { bps: 0 }
+    const isFree = bps === 0
 
     return {
-      label: 'Total fee',
-      feeToken: feeAmountWithCurrency,
+      label: isFree ? 'Fee' : 'Total fee',
+      feeToken: isFree ? 'FREE' : feeAmountWithCurrency,
       feeUsd,
       fullDisplayFee,
       feeCurrencySymbol,
-      tooltip: (
-        <>
-          This fee helps pay for maintenance & improvements to the swap experience.
-          <br />
-          <br />
-          The fee is {bps} BPS (${formatPercent(bpsToPercent(bps))}%), applied only if the trade is executed.
-        </>
-      ),
+      isFree,
+      tooltip: isFree ? TOTAL_FEE_TOOLTIP_FREE : getTotalFeeTooltip(bps),
     }
   }, [partnerFee, feeAmount, feeInFiat])
 

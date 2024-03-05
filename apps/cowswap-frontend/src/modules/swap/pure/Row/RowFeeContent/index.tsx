@@ -18,10 +18,21 @@ export interface RowFeeContentProps {
   feeCurrencySymbol: string
   styleProps?: RowStyleProps
   noLabel?: boolean
+  isFree: boolean
 }
 
 export function RowFeeContent(props: RowFeeContentProps) {
-  const { label, tooltip, feeToken, feeUsd, fullDisplayFee, feeCurrencySymbol, noLabel, styleProps = {} } = props
+  const {
+    label,
+    tooltip,
+    isFree,
+    feeToken,
+    feeUsd,
+    fullDisplayFee,
+    feeCurrencySymbol,
+    noLabel,
+    styleProps = {},
+  } = props
 
   return (
     <StyledRowBetween {...styleProps}>
@@ -34,7 +45,7 @@ export function RowFeeContent(props: RowFeeContentProps) {
         </RowFixed>
       )}
 
-      <TextWrapper title={`${fullDisplayFee} ${feeCurrencySymbol}`}>
+      <TextWrapper title={`${fullDisplayFee} ${feeCurrencySymbol}`} success={isFree}>
         {feeToken} {feeUsd && <FiatRate>{feeUsd}</FiatRate>}
       </TextWrapper>
     </StyledRowBetween>
