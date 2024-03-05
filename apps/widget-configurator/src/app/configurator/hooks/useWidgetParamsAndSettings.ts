@@ -42,7 +42,7 @@ export function useWidgetParams(configuratorState: ConfiguratorState, isDappMode
       height: '640px',
       chainId,
       tokenLists: tokenLists.filter((list) => list.enabled).map((list) => list.url),
-      env: getEnv(),
+      baseUrl: { environment: getEnv() },
       tradeType: currentTradeType,
       sell: { asset: sellToken, amount: sellTokenAmount ? sellTokenAmount.toString() : undefined },
       buy: { asset: buyToken, amount: buyTokenAmount?.toString() },
