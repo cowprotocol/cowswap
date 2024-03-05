@@ -269,7 +269,7 @@ export function OrdersTableContainer({
   return (
     <OrdersBox>
       <Header>
-        <h2>Your Orders</h2>
+        <h2 id="my-orders">Your Orders</h2>
         <TabsContainer withSingleChild={!children}>
           {children || <div></div>}
           <OrdersTabs tabs={tabs} />

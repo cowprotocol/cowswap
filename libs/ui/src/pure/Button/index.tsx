@@ -10,7 +10,6 @@ import {
   ButtonConfirmedStyle as ButtonConfirmedStyleMod,
   ButtonEmpty as ButtonEmptyMod,
   ButtonGray as ButtonGrayMod,
-  ButtonOutlined as ButtonOutlinedMod,
   ButtonPrimary as ButtonPrimaryMod,
 } from './ButtonMod'
 import { ButtonSize, UI } from '../../enum'
@@ -120,36 +119,45 @@ export const ButtonSecondary = styled(ButtonPrimary)`
   transform: none;
 `
 
-export const ButtonOutlined = styled(ButtonOutlinedMod)`
-  // CSS overrides
-  ${({ theme }) => theme.buttonOutlined.background}
-  font-size: ${({ theme }) => theme.buttonOutlined.fontSize};
-  font-weight: ${({ theme }) => theme.buttonOutlined.fontWeight};
-  border: ${({ theme }) => theme.buttonOutlined.border};
-  box-shadow: ${({ theme }) => theme.buttonOutlined.boxShadow};
-  border-radius: ${({ theme }) => theme.buttonOutlined.borderRadius};
-  ${({ theme }) => theme.cursor};
-  overflow: hidden;
-  position: relative;
-  transition: box-shadow var(${UI.ANIMATION_DURATION}) ease-in-out, transform var(${UI.ANIMATION_DURATION}) ease-in-out;
+export const ButtonOutlined = styled.button<{ disabled?: boolean; margin?: string; minHeight?: number }>`
+  --fontSize: 13px;
+  cursor: pointer;
+  border-radius: 16px;
+  background: var(${UI.COLOR_PAPER});
+  color: var(${UI.COLOR_TEXT_OPACITY_70});
+  border: 1px solid var(${UI.COLOR_PAPER_DARKER});
+  font-size: var(--fontSize);
+  font-weight: 500;
+  padding: 5px 10px;
+  min-height: ${({ minHeight }) => (minHeight ? `${minHeight}px` : 'initial')};
+  margin: ${({ margin }) => margin || '0'};
+  transition: background var(${UI.ANIMATION_DURATION}) ease-in-out, color var(${UI.ANIMATION_DURATION}) ease-in-out,
+    border var(${UI.ANIMATION_DURATION}) ease-in-out, opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
 
-  > div {
-    font-size: inherit;
-    font-weight: inherit;
+  > svg {
+    margin: 0;
+    color: inherit;
+    width: var(--fontSize);
+    height: var(--fontSize);
   }
 
-  &:focus,
-  &:hover,
-  &:active {
-    box-shadow: none;
-    transform: translateY(3px);
+  > svg path {
+    fill: currentColor;
   }
+
+  &:hover {
+    background: var(${UI.COLOR_PAPER_DARKER});
+    color: var(${UI.COLOR_TEXT});
+    border: 1px solid var(${UI.COLOR_PAPER_DARKER});
+  }
+
   &:disabled {
-    background-color: ${({ theme }) => theme.disabled};
-    background-image: none;
-    border: 0;
+    opacity: ${({ disabled }) => (disabled ? 0.4 : 1)};
     cursor: auto;
-    animation: none;
   }
 `
 
@@ -243,21 +251,6 @@ export function ButtonDropdown({ disabled = false, children, ...rest }: { disabl
         <ChevronDown size={24} />
       </RowBetween>
     </ButtonPrimary>
-  )
-}
-
-export function ButtonDropdownLight({
-  disabled = false,
-  children,
-  ...rest
-}: { disabled?: boolean } & ButtonCustomProps) {
-  return (
-    <ButtonOutlined {...rest} disabled={disabled}>
-      <RowBetween>
-        <div style={{ display: 'flex', alignItems: 'center' }}>{children}</div>
-        <ChevronDown size={24} />
-      </RowBetween>
-    </ButtonOutlined>
   )
 }
 

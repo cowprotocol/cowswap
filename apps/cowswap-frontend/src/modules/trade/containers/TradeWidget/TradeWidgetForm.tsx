@@ -1,12 +1,18 @@
 import React, { useEffect } from 'react'
 
+import ICON_ORDERS from '@cowprotocol/assets/svg/orders.svg'
 import { isInjectedWidget, maxAmountSpend } from '@cowprotocol/common-utils'
+import { ButtonOutlined, MY_ORDERS_ID } from '@cowprotocol/ui'
 import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/macro'
+import SVG from 'react-inlinesvg'
+import { useLocation } from 'react-router-dom'
 
 import { AccountElement } from 'legacy/components/Header/AccountElement'
+import { upToLarge, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 
+import { useToggleAccountModal } from 'modules/account'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { useOpenTokenSelectWidget } from 'modules/tokensList'
 import { useIsAlternativeOrderModalVisible } from 'modules/trade/state/alternativeOrder'
@@ -25,6 +31,13 @@ import { useTradeStateFromUrl } from '../../hooks/setupTradeState/useTradeStateF
 import { useIsWrapOrUnwrap } from '../../hooks/useIsWrapOrUnwrap'
 import { TradeWidgetLinks } from '../TradeWidgetLinks'
 import { WrapFlowActionButton } from '../WrapFlowActionButton'
+
+const scrollToMyOrders = () => {
+  const element = document.getElementById(MY_ORDERS_ID)
+  if (element) {
+    element.scrollIntoView({ behavior: 'smooth' })
+  }
+}
 
 export function TradeWidgetForm(props: TradeWidgetProps) {
   const isInjectedWidgetMode = isInjectedWidget()
@@ -68,6 +81,8 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
   // Disable too frequent tokens switching
   const throttledOnSwitchTokens = useThrottleFn(onSwitchTokens, 500)
 
+  const isUpToLarge = useMediaQuery(upToLarge)
+
   const currencyInputCommonProps = {
     isChainIdUnsupported,
     chainId,
@@ -90,6 +105,18 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  const location = useLocation()
+  const isSwapMode = location.pathname.includes('/swap/')
+  const toggleAccountModal = useToggleAccountModal()
+
+  const handleClick = () => {
+    if (isSwapMode) {
+      toggleAccountModal()
+    } else {
+      scrollToMyOrders()
+    }
+  }
+
   return (
     <>
       <styledEl.ContainerBox>
@@ -98,6 +125,13 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
           {isInjectedWidgetMode && !injectedWidgetParams.hideConnectButton && (
             <AccountElement isWidgetMode={isInjectedWidgetMode} pendingActivities={pendingActivity} />
           )}
+
+          {isUpToLarge && (
+            <ButtonOutlined margin={'0 16px 0 auto'} onClick={handleClick}>
+              My orders <SVG src={ICON_ORDERS} />
+            </ButtonOutlined>
+          )}
+
           {!lockScreen && settingsWidget}
         </styledEl.Header>
 
