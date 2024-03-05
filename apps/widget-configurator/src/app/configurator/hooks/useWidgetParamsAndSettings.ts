@@ -62,10 +62,13 @@ export function useWidgetParams(configuratorState: ConfiguratorState, isDappMode
 
       hideConnectButton: isDappMode,
 
-      partnerFee: {
-        bps: partnerFeeBps,
-        recipient: partnerFeeRecipient,
-      },
+      partnerFee:
+        partnerFeeBps && partnerFeeBps > 0
+          ? {
+              bps: partnerFeeBps,
+              recipient: partnerFeeRecipient,
+            }
+          : undefined,
     }
 
     return params
