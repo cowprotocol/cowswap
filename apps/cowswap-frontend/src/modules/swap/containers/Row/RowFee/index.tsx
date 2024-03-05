@@ -15,7 +15,7 @@ import { RowFeeContent } from 'modules/swap/pure/Row/RowFeeContent'
 
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
-export const getTooltipNetworkCosts = (props: { isPresign: boolean; ethFlow: boolean; nativeSymbol?: string }) => {
+export const tooltipNetworkCosts = (props: { isPresign: boolean; ethFlow: boolean; nativeSymbol?: string }) => {
   const { isPresign, ethFlow, nativeSymbol = 'a native currency' } = props
   const requireGas = isPresign || ethFlow
 
@@ -43,14 +43,14 @@ export const PlusGas = styled.span`
   font-weight: 400;
 `
 
-const getLabelPlusGas = (label: string, plusGas?: boolean) => (
+const labelWithPlusGas = (label: string, plusGas?: boolean) => (
   <>
     {label}
     {plusGas && <PlusGas>&nbsp;+ gas</PlusGas>}
   </>
 )
 
-export const getTooltipPartnerFee = (bps: number) => (
+export const tooltipPartnerFee = (bps: number) => (
   <>
     This fee helps pay for maintenance & improvements to the swap experience.
     <br />
@@ -106,7 +106,7 @@ export function RowNetworkCosts({ trade, feeAmount, feeInFiat, allowsOffchainSig
   const isPresign = !isEoaEthFlow && !allowsOffchainSigning
   const props = useMemo(() => {
     const label = 'Network costs (est.)'
-    const tooltip = getTooltipNetworkCosts({
+    const tooltip = tooltipNetworkCosts({
       ethFlow: isEoaEthFlow,
       isPresign,
       nativeSymbol: native.symbol,
@@ -121,7 +121,7 @@ export function RowNetworkCosts({ trade, feeAmount, feeInFiat, allowsOffchainSig
     const isFree = !isValidNonZeroAmount(displayFeeFormatted)
 
     const requireGas = isEoaEthFlow || isPresign
-    const feeToken = getLabelPlusGas(isFree ? 'FREE' : '≈ ' + feeAmountWithCurrency, requireGas)
+    const feeToken = labelWithPlusGas(isFree ? 'FREE' : '≈ ' + feeAmountWithCurrency, requireGas)
     const feeUsd = isValidNonZeroAmount(feeInFiatFormatted) ? `(≈$${feeInFiatFormatted})` : ''
 
     const fullDisplayFee = FractionUtils.fractionLikeToExactString(displayFee) || '-'
@@ -166,7 +166,7 @@ export function RowPartnerFee({ partnerFee, feeAmount, feeInFiat }: PartnerRowPa
       fullDisplayFee,
       feeCurrencySymbol,
       isFree,
-      tooltip: isFree ? TOOLTIP_PARTNER_FEE_FREE : getTooltipPartnerFee(bps),
+      tooltip: isFree ? TOOLTIP_PARTNER_FEE_FREE : tooltipPartnerFee(bps),
     }
   }, [partnerFee, feeAmount, feeInFiat])
 
