@@ -139,10 +139,15 @@ export interface CowSwapWidgetParams {
    * Swap, Limit or Advanced (Twap).
    */
   tradeType?: TradeType
+
   /**
-   * The environment of the widget. Default: prod
+   * The base url of the widget implementation
+   *
+   * The parameter can have the URL directly, or an object with the environment property,
+   *
+   * The base URL will default to the production environment if not specified, so it will use https://swap.cow.fi by default.
    */
-  env?: CowSwapWidgetEnv
+  baseUrl?: string | { environment?: CowSwapWidgetEnv }
 
   /**
    * Sell token, and optionally the amount.
