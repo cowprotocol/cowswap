@@ -31,7 +31,7 @@ export interface UserState {
   // hides closed (inactive) positions across the app
   userHideClosedPositions: boolean
 
-  // user defined slippage tolerance in bips, used in all txns
+  // user defined slippage tolerance in bps, used in all txns
   userSlippageTolerance: number | 'auto'
   userSlippageToleranceHasBeenMigratedToAuto: boolean // temporary flag for migration status
 

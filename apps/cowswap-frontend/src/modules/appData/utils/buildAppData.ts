@@ -6,18 +6,26 @@ import { keccak256, toUtf8Bytes } from 'ethers/lib/utils'
 
 import { UtmParams } from 'modules/utm'
 
-import { AppDataHooks, AppDataInfo, AppDataOrderClass, AppDataRootSchema, AppDataWidget } from '../types'
+import {
+  AppDataHooks,
+  AppDataInfo,
+  AppDataOrderClass,
+  AppDataPartnerFee,
+  AppDataRootSchema,
+  AppDataWidget,
+} from '../types'
 
 export type BuildAppDataParams = {
   appCode: string
   environment?: string
   chainId: SupportedChainId
-  slippageBips: string
+  slippageBips: number
   orderClass: AppDataOrderClass
   referrerAccount?: string
   utm: UtmParams | undefined
   hooks?: AppDataHooks
   widget?: AppDataWidget
+  partnerFee?: AppDataPartnerFee
 }
 
 async function generateAppDataFromDoc(
@@ -38,6 +46,7 @@ export async function buildAppData({
   utm,
   hooks,
   widget,
+  partnerFee,
 }: BuildAppDataParams): Promise<AppDataInfo> {
   const referrerParams =
     referrerAccount && chainId === SupportedChainId.MAINNET ? { address: referrerAccount } : undefined
@@ -48,7 +57,7 @@ export async function buildAppData({
   const doc = await metadataApiSDK.generateAppDataDoc({
     appCode,
     environment,
-    metadata: { referrer: referrerParams, quote: quoteParams, orderClass, utm, hooks, widget },
+    metadata: { referrer: referrerParams, quote: quoteParams, orderClass, utm, hooks, widget, partnerFee },
   })
 
   const { fullAppData, appDataKeccak256 } = await generateAppDataFromDoc(doc)

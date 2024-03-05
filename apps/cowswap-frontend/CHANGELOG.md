@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.61.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.61.0...cowswap-v1.61.1) (2024-03-04)
+
+
+### Bug Fixes
+
+* **eth-flow:** prevent orders with expired quotes ([#3965](https://github.com/cowprotocol/cowswap/issues/3965)) ([f965020](https://github.com/cowprotocol/cowswap/commit/f965020cec5e0901138130e050939cc912ca4fd8))
+
 ## [1.61.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.60.0...cowswap-v1.61.0) (2024-02-29)
 
 

@@ -41,3 +41,5 @@ export type PostHooks = latest.PostHooks
 export type AppDataRootSchema = latest.AppDataRootSchema
 
 export type AppDataWidget = latest.Widget
+
+export type AppDataPartnerFee = latest.PartnerFee
