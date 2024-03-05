@@ -7,11 +7,11 @@ import QuestionHelper from 'legacy/components/QuestionHelper'
 
 import { RateInfo } from 'common/pure/RateInfo'
 
-export const Box = styled.div`
+export const Box = styled.div<{ noMargin: boolean }>`
   display: flex;
   flex-flow: column wrap;
   width: 100%;
-  margin: 6px 8px;
+  margin: ${({ noMargin }) => (noMargin ? '0' : '6px 8px')};
 `
 
 export const FeeWrapper = styled.div`
