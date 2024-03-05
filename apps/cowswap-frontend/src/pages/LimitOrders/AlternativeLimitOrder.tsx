@@ -1,5 +1,3 @@
-import { useCallback } from 'react'
-
 import styled from 'styled-components/macro'
 
 import { LimitOrdersWidget } from 'modules/limitOrders'
@@ -19,11 +17,9 @@ const Wrapper = styled.div`
 export function AlternativeLimitOrder() {
   const hideAlternativeOrderModal = useHideAlternativeOrderModal()
 
-  const onDismiss = useCallback(() => hideAlternativeOrderModal(), [hideAlternativeOrderModal])
-
   return (
     <Wrapper>
-      <NewModal modalMode title="Recreate limit order" onDismiss={onDismiss} maxWidth={MODAL_MAX_WIDTH}>
+      <NewModal modalMode title="Recreate limit order" onDismiss={hideAlternativeOrderModal} maxWidth={MODAL_MAX_WIDTH}>
         <LimitOrdersWidget />
       </NewModal>
     </Wrapper>
