@@ -43,6 +43,8 @@ import { web3Modal } from '../../wagmiConfig'
 import { connectWalletToConfiguratorGA } from '../analytics'
 import { EmbedDialog } from '../embedDialog'
 
+const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
+
 const DEFAULT_STATE = {
   sellToken: 'USDC',
   buyToken: 'COW',
@@ -133,7 +135,7 @@ export function Configurator({ title }: { title: string }) {
   const [tokenLists] = tokenListsState
 
   const partnerFeeBpsState = useState<number>(0)
-  const partnerFeeRecipientState = useState<string>('')
+  const partnerFeeRecipientState = useState<string>(ZERO_ADDRESS)
   const [partnerFeeBps] = partnerFeeBpsState
   const [partnerFeeRecipient] = partnerFeeRecipientState
 
