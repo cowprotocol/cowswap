@@ -31,8 +31,6 @@ export const StyledRowBetween = styled(RowBetween)<RowStyleProps>`
   }
 
   ${TextWrapper} {
-    // ${(success) => (success ? 'color: red !important;' : '')}
-
     font-size: ${({ fontSize = 13 }) => fontSize}px;
     font-weight: ${({ fontWeight = 500 }) => fontWeight};
     transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
