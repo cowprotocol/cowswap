@@ -72,21 +72,23 @@ export const TradeRates = React.memo(function (props: TradeRatesProps) {
     />
   )
 
-  if (fee && isFeeGreater) {
+  if (showPrice) {
+    return (
+      <TradeDetailsAccordion
+        open={isReviewSwap}
+        rateInfo={<styledEl.StyledRateInfo noLabel={true} stylized={true} rateInfoParams={rateInfoParams} />}
+        feeSummary={showTradeBasicDetails && feeSummary}
+      >
+        <styledEl.Box noMargin>
+          {showTradeBasicDetails && tradeBasicDetails}
+          {showRowDeadline && <RowDeadline />}
+          {children}
+        </styledEl.Box>
+      </TradeDetailsAccordion>
+    )
+  } else if (fee && isFeeGreater) {
     return <styledEl.FeeWrapper>{tradeBasicDetails}</styledEl.FeeWrapper>
   }
 
-  return (
-    <TradeDetailsAccordion
-      open={isReviewSwap}
-      rateInfo={showPrice && <styledEl.StyledRateInfo noLabel={true} stylized={true} rateInfoParams={rateInfoParams} />}
-      feeSummary={showTradeBasicDetails && feeSummary}
-    >
-      <styledEl.Box noMargin>
-        {showTradeBasicDetails && tradeBasicDetails}
-        {showRowDeadline && <RowDeadline />}
-        {children}
-      </styledEl.Box>
-    </TradeDetailsAccordion>
-  )
+  return null
 }, genericPropsChecker)
