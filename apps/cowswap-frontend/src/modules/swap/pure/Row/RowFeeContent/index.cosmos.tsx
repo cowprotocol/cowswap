@@ -38,6 +38,7 @@ const defaultProps: RowNetworkCostsProps & RowFeeContentProps = {
   feeAmount: CurrencyAmount.fromRawAmount(currency, fee * 10 ** 18),
   feeUsd: '(≈$42.93)',
   feeCurrencySymbol: 'GNO',
+  isFree: false,
   get feeInFiat() {
     return currencyAmountToTokenAmount(this.feeAmount?.multiply('100')) || null
   },

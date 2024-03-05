@@ -55,7 +55,7 @@ export const getTooltipPartnerFee = (bps: number) => (
     This fee helps pay for maintenance & improvements to the swap experience.
     <br />
     <br />
-    The fee is {bps} BPS (${formatPercent(bpsToPercent(bps))}%), applied only if the trade is executed.
+    The fee is {bps} BPS ({formatPercent(bpsToPercent(bps))}%), applied only if the trade is executed.
   </>
 )
 
