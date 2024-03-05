@@ -5,7 +5,7 @@ import { Order, PENDING_STATES } from 'legacy/state/orders/actions'
 import { getIsComposableCowOrder } from 'utils/orderUtils/getIsComposableCowOrder'
 import { getIsNotComposableCowOrder } from 'utils/orderUtils/getIsNotComposableCowOrder'
 
-import { TabOrderTypes } from '../../../pure/OrdersTableContainer'
+import { TabOrderTypes } from '../../../types'
 import { groupOrdersTable } from '../../../utils/groupOrdersTable'
 import { getParsedOrderFromTableItem, isParsedOrder, OrderTableItem } from '../../../utils/orderTableGroupUtils'
 

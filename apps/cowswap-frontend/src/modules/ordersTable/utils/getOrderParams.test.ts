@@ -4,7 +4,7 @@ import { BalancesAndAllowances } from 'modules/tokens'
 
 import { getOrderParams } from './getOrderParams'
 
-import { ordersMock } from '../orders.mock'
+import { ordersMock } from '../pure/OrdersTableContainer/orders.mock'
 
 describe('getOrderParams', () => {
   const BASE_ORDER = ordersMock[0]

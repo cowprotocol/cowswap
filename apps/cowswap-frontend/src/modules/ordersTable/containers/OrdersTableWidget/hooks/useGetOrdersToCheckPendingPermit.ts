@@ -8,7 +8,7 @@ import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import { OrdersTableList } from './useOrdersTableList'
 
-import { getOrderParams } from '../../../pure/OrdersTableContainer/utils/getOrderParams'
+import { getOrderParams } from '../../../utils/getOrderParams'
 import { isParsedOrder } from '../../../utils/orderTableGroupUtils'
 
 export function useGetOrdersToCheckPendingPermit(

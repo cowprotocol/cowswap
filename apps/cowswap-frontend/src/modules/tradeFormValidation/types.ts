@@ -25,6 +25,7 @@ export enum TradeFormValidation {
 
   // Quote loading indicator
   QuoteLoading,
+  QuoteExpired,
 
   // Balances
   BalancesNotLoaded,

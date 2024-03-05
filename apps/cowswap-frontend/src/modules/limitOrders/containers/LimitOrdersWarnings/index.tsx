@@ -2,6 +2,7 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import React, { useCallback, useEffect } from 'react'
 
 import { isFractionFalsy } from '@cowprotocol/common-utils'
+import { BundleTxApprovalBanner, BundleTxSafeWcBanner, SmallVolumeWarningBanner } from '@cowprotocol/ui'
 import { useIsSafeViaWc, useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -23,11 +24,6 @@ import { useTradeQuote } from 'modules/tradeQuote'
 import { useShouldZeroApprove } from 'modules/zeroApproval'
 
 import { HIGH_FEE_WARNING_PERCENTAGE } from 'common/constants/common'
-import {
-  BundleTxApprovalBanner,
-  BundleTxSafeWcBanner,
-  SmallVolumeWarningBanner,
-} from 'common/pure/InlineBanner/banners'
 import { ZeroApprovalWarning } from 'common/pure/ZeroApprovalWarning'
 import { calculatePercentageInRelationToReference } from 'utils/orderUtils/calculatePercentageInRelationToReference'
 

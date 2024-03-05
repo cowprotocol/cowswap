@@ -1,6 +1,5 @@
 import { CHRISTMAS_THEME_ENABLED } from '@cowprotocol/common-const'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
-import { OnlyUniswapListAvailableBanner } from '@cowprotocol/tokens'
 
 import ErrorBoundary from 'legacy/components/ErrorBoundary'
 import Footer from 'legacy/components/Footer'
@@ -32,7 +31,6 @@ export function App() {
 
       <styledEl.AppWrapper>
         <URLWarning />
-        <OnlyUniswapListAvailableBanner />
 
         <OrdersPanel />
 

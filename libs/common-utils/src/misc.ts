@@ -11,6 +11,8 @@ const PROVIDER_REJECT_REQUEST_CODES = [4001, -32000] // See https://eips.ethereu
 const PROVIDER_REJECT_REQUEST_ERROR_MESSAGES = [
   'User denied message signature',
   'User rejected',
+  'User denied',
+  'rejected transaction',
   'Transaction was rejected',
 ]
 

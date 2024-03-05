@@ -1,8 +1,8 @@
-import { UI } from '@cowprotocol/ui'
+import { UI } from '../../enum'
 
 import styled from 'styled-components/macro'
 
-export const ButtonSecondary = styled.button<{ padding?: string; minHeight?: string }>`
+export const ButtonSecondaryAlt = styled.button<{ padding?: string; minHeight?: string }>`
   background: var(${UI.COLOR_PRIMARY});
   color: var(${UI.COLOR_BUTTON_TEXT});
   font-size: 12px;

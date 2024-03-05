@@ -84,7 +84,7 @@ export const OrderAddressNotFound: React.FC = (): JSX.Element => {
   const location = useLocation()
   const navigate = useNavigate()
   const { referrer, data } = location.state || { referrer: null, data: null }
-  const wasRedirected = referrer ? true : false
+  const wasRedirected = !!referrer
   const showLinkData = referrer === 'tx' && data
   // used after refresh by remove referrer state if was redirected
   useEffect(() => {
@@ -120,7 +120,7 @@ export const OrderAddressNotFound: React.FC = (): JSX.Element => {
             <span>or</span>
             <Support href="https://discord.com/invite/cowprotocol" target="_blank" rel="noopener noreferrer">
               Get Support
-              <img src={SupportIcon} />
+              <img src={SupportIcon} alt="Support icon" />
             </Support>
           </SearchContent>
         </SearchSection>
