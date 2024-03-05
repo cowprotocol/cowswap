@@ -2,8 +2,11 @@ import { useMemo } from 'react'
 
 import { bpsToPercent, formatFiatAmount, formatTokenAmount } from '@cowprotocol/common-utils'
 import { FractionUtils, formatPercent, formatSymbol } from '@cowprotocol/common-utils'
+import { UI } from '@cowprotocol/ui'
 import { PartnerFee } from '@cowprotocol/widget-lib'
 import { Currency, CurrencyAmount, Token, TradeType } from '@uniswap/sdk-core'
+
+import styled from 'styled-components/macro'
 
 import TradeGp from 'legacy/state/swap/TradeGp'
 
@@ -12,24 +15,42 @@ import { RowFeeContent } from 'modules/swap/pure/Row/RowFeeContent'
 
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
-export const GASLESS_FEE_TOOLTIP_MSG = (
+export const getTooltipNetworkCosts = (props: { isPresign: boolean; ethFlow: boolean; nativeSymbol?: string }) => {
+  const { isPresign, ethFlow, nativeSymbol = 'a native currency' } = props
+  const requireGas = isPresign || ethFlow
+
+  return (
+    <>
+      This is the cost of settling your order on-chain
+      {!requireGas && ', including gas and any LP fees.'}.
+      <br />
+      <br />
+      CoW Swap will try to lower this cost where possible.
+      <br />
+      <br />
+      {isPresign && 'Because you are using a smart contract wallet'}
+      {ethFlow && `Because you are selling ${nativeSymbol} (native currency)`}
+      {(isPresign || ethFlow) && ', you will pay a separate gas cost for signing the order placement on-chain.'}
+    </>
+  )
+}
+
+const TOOLTIP_PARTNER_FEE_FREE = `Unlike other exchanges, CoW Swap doesn’t charge a fee for trading!`
+
+export const PlusGas = styled.span`
+  color: var(${UI.COLOR_TEXT2});
+  font-size: 11px;
+  font-weight: 400;
+`
+
+const getLabelPlusGas = (label: string, plusGas?: boolean) => (
   <>
-    This covers the cost of executing your trade, including gas and any LP fees.
-    <br />
-    <br />
-    CoW Swap will try to lower this cost when possible
+    {label}
+    {plusGas && <PlusGas>&nbsp;+ gas</PlusGas>}
   </>
 )
 
-export const PRESIGN_FEE_TOOLTIP_MSG =
-  'These fees cover the gas costs for executing the order once it has been placed. However - since you are using a smart contract wallet - you will need to pay the gas for signing an on-chain tx in order to place it.'
-
-const getEthFlowFeeTooltipMsg = (native = 'a native currency') =>
-  `Trades on CoW Swap usually don’t require you to pay gas in ${native}. However, when selling ${native}, you do have to pay a small gas fee to cover the cost of wrapping your ${native}.`
-
-const TOTAL_FEE_TOOLTIP_FREE = `Unlike other exchanges, CoW Swap doesn’t charge a fee for trading!`
-
-export const getTotalFeeTooltip = (bps: number) => (
+export const getTooltipPartnerFee = (bps: number) => (
   <>
     This fee helps pay for maintenance & improvements to the swap experience.
     <br />
@@ -80,32 +101,27 @@ export function RowNetworkCosts({ trade, feeAmount, feeInFiat, allowsOffchainSig
   const isEoaEthFlow = useIsEoaEthFlow()
   const native = useNativeCurrency()
 
-  const tooltip = useMemo(() => {
-    if (isEoaEthFlow) {
-      return getEthFlowFeeTooltipMsg(native.symbol)
-    } else if (allowsOffchainSigning) {
-      return GASLESS_FEE_TOOLTIP_MSG
-    } else {
-      return PRESIGN_FEE_TOOLTIP_MSG
-    }
-  }, [allowsOffchainSigning, isEoaEthFlow, native.symbol])
-
   // trades are null when there is a fee quote error e.g
   // so we can take both
+  const isPresign = !isEoaEthFlow && !allowsOffchainSigning
   const props = useMemo(() => {
     const label = 'Network costs (est.)'
+    const tooltip = getTooltipNetworkCosts({
+      ethFlow: isEoaEthFlow,
+      isPresign,
+      nativeSymbol: native.symbol,
+    })
     const displayFee = realizedFee || feeAmount
     const feeCurrencySymbol = displayFee?.currency.symbol || '-'
     // TODO: delegate formatting to the view layer
     const feeInFiatFormatted = formatFiatAmount(feeInFiat)
     const displayFeeFormatted = formatTokenAmount(displayFee)
-    const feeAmountWithCurrency = `${displayFeeFormatted} ${formatSymbol(feeCurrencySymbol)} ${
-      isEoaEthFlow ? ' + gas' : ''
-    }`
+    const feeAmountWithCurrency = `${displayFeeFormatted} ${formatSymbol(feeCurrencySymbol)}`
 
     const isFree = !isValidNonZeroAmount(displayFeeFormatted)
 
-    const feeToken = isFree ? `FREE${isEoaEthFlow ? ' (+ gas)' : ''}` : '≈ ' + feeAmountWithCurrency
+    const requireGas = isEoaEthFlow || isPresign
+    const feeToken = getLabelPlusGas(isFree ? 'FREE' : '≈ ' + feeAmountWithCurrency, requireGas)
     const feeUsd = isValidNonZeroAmount(feeInFiatFormatted) ? `(≈$${feeInFiatFormatted})` : ''
 
     const fullDisplayFee = FractionUtils.fractionLikeToExactString(displayFee) || '-'
@@ -120,7 +136,7 @@ export function RowNetworkCosts({ trade, feeAmount, feeInFiat, allowsOffchainSig
       tooltip,
       noLabel,
     }
-  }, [feeAmount, feeInFiat, isEoaEthFlow, realizedFee, tooltip, noLabel])
+  }, [feeAmount, feeInFiat, isEoaEthFlow, realizedFee, native, noLabel, isPresign])
 
   return <RowFeeContent {...props} />
 }
@@ -150,7 +166,7 @@ export function RowPartnerFee({ partnerFee, feeAmount, feeInFiat }: PartnerRowPa
       fullDisplayFee,
       feeCurrencySymbol,
       isFree,
-      tooltip: isFree ? TOTAL_FEE_TOOLTIP_FREE : getTotalFeeTooltip(bps),
+      tooltip: isFree ? TOOLTIP_PARTNER_FEE_FREE : getTooltipPartnerFee(bps),
     }
   }, [partnerFee, feeAmount, feeInFiat])
 

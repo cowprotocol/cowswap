@@ -12,7 +12,7 @@ import { FiatRate } from 'common/pure/RateInfo'
 export interface RowFeeContentProps {
   label: string
   tooltip: ReactNode
-  feeToken: string
+  feeToken: ReactNode
   feeUsd?: string
   fullDisplayFee: string
   feeCurrencySymbol: string
