@@ -9,9 +9,12 @@ import {
   listenToMessageFromWindow,
   postMessageToWindow,
   stopListeningWindowListener,
+  CowSwapWidgetParams,
 } from '@cowprotocol/widget-lib'
 
 import { useNavigate } from 'react-router-dom'
+
+import { useFeatureFlags } from 'common/hooks/featureFlags/useFeatureFlags'
 
 import { IframeResizer } from './IframeResizer'
 
@@ -34,6 +37,12 @@ const cacheMessages = (event: MessageEvent) => {
   messagesCache[method] = event.data
 }
 
+const paramsWithoutPartnerFee = (params: CowSwapWidgetParams) => {
+  const { partnerFee: _, ...rest } = params
+
+  return rest
+}
+
 /**
  * To avoid delays, immediately send an activation message and start listening messages
  */
@@ -48,6 +57,7 @@ const cacheMessages = (event: MessageEvent) => {
 })()
 
 export function InjectedWidgetUpdater() {
+  const { isPartnerFeeEnabled } = useFeatureFlags()
   const [{ errors: validationErrors }, updateParams] = useAtom(injectedWidgetParamsAtom)
   const updateMetaData = useSetAtom(injectedWidgetMetaDataAtom)
 
@@ -65,10 +75,13 @@ export function InjectedWidgetUpdater() {
       // Update params
       prevData.current = data
 
-      const errors = validateWidgetParams(data.appParams)
+      // Ignore partner fee value when feature flag is not enabled
+      const appParams = isPartnerFeeEnabled ? data.appParams : paramsWithoutPartnerFee(data.appParams)
+
+      const errors = validateWidgetParams(appParams)
 
       updateParams({
-        params: data.appParams,
+        params: appParams,
         errors,
       })
 
@@ -93,7 +106,7 @@ export function InjectedWidgetUpdater() {
       stopListeningWindowListener(window, updateParamsListener)
       stopListeningWindowListener(window, updateAppDataListener)
     }
-  }, [updateMetaData, navigate, updateParams])
+  }, [updateMetaData, navigate, updateParams, isPartnerFeeEnabled])
 
   return (
     <>
