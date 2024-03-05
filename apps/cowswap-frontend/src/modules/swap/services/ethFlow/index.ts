@@ -34,7 +34,6 @@ export async function ethFlow(
     orderParams: orderParamsOriginal,
     checkEthFlowOrderExists,
     addInFlightOrderId,
-    swapZeroFee,
   } = ethFlowContext
   const {
     trade: { inputAmount, outputAmount, fee },
@@ -59,12 +58,7 @@ export async function ethFlow(
   tradeConfirmActions.onSign(tradeAmounts)
 
   logTradeFlow('ETH FLOW', 'STEP 3: Get Unique Order Id (prevent collisions)')
-  const { orderId, orderParams } = await calculateUniqueOrderId(
-    orderParamsOriginal,
-    contract,
-    checkEthFlowOrderExists,
-    swapZeroFee
-  )
+  const { orderId, orderParams } = await calculateUniqueOrderId(orderParamsOriginal, contract, checkEthFlowOrderExists)
 
   try {
     // Do not proceed if fee is expired
