@@ -9,6 +9,8 @@ import { isQuoteExpired } from 'modules/tradeQuote/utils/isQuoteExpired'
 
 import { ApprovalState } from 'common/hooks/useApproveState'
 
+import { AmountsForSignature } from './getAmountsForSignature'
+
 export enum SwapButtonState {
   SwapIsUnsupported = 'SwapIsUnsupported',
   WalletIsUnsupported = 'WalletIsUnsupported',
@@ -54,6 +56,7 @@ export interface SwapButtonStateParams {
   isBestQuoteLoading: boolean
   wrappedToken: Token
   isPermitSupported: boolean
+  amountsForSignature: AmountsForSignature | undefined
 }
 
 const quoteErrorToSwapButtonState: { [key in QuoteError]: SwapButtonState | null } = {
@@ -67,7 +70,7 @@ const quoteErrorToSwapButtonState: { [key in QuoteError]: SwapButtonState | null
 }
 
 export function getSwapButtonState(input: SwapButtonStateParams): SwapButtonState {
-  const { trade, quote, approvalState, isPermitSupported } = input
+  const { trade, quote, approvalState, isPermitSupported, amountsForSignature } = input
   const quoteError = quote?.error
 
   // show approve flow when: no error on inputs, not approved or pending, or approved in current session
