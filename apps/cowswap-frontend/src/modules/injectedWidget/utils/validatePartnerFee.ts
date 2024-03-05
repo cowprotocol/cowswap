@@ -20,7 +20,7 @@ export function validatePartnerFee(input: PartnerFee | undefined): string[] | un
 }
 
 function validateRecipient(recipient: string): string | undefined {
-  if (!recipient) return undefined
+  if (!recipient) return 'Partner fee recipient must be set!'
 
   try {
     getAddress(recipient)

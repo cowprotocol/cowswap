@@ -11,13 +11,19 @@ export function PartnerFeeControl(props: PartnerFeeControlProps) {
   const [feeBps, setFeeBps] = feeBpsState
   const [recipient, setRecipient] = recipientState
 
+  const onFeeBpsChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const value = Math.ceil(Number(e.target.value || 0))
+
+    setFeeBps(value)
+  }
+
   return (
     <>
       <TextField
         id="partnerFeePercent"
         label="Partner fee BPS"
         value={feeBps}
-        onChange={(e: ChangeEvent<HTMLInputElement>) => setFeeBps(Number(e.target.value || 0))}
+        onChange={onFeeBpsChange}
         type="number"
         size="small"
       />

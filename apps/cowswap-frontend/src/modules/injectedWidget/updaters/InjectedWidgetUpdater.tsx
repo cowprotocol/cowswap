@@ -48,7 +48,7 @@ const cacheMessages = (event: MessageEvent) => {
 })()
 
 export function InjectedWidgetUpdater() {
-  const [{ errors }, updateParams] = useAtom(injectedWidgetParamsAtom)
+  const [{ errors: validationErrors }, updateParams] = useAtom(injectedWidgetParamsAtom)
   const updateMetaData = useSetAtom(injectedWidgetMetaDataAtom)
 
   const navigate = useNavigate()
@@ -97,7 +97,7 @@ export function InjectedWidgetUpdater() {
 
   return (
     <>
-      <WidgetParamsErrorsScreen errors={errors} />
+      <WidgetParamsErrorsScreen errors={validationErrors} />
       <IframeResizer />
     </>
   )
