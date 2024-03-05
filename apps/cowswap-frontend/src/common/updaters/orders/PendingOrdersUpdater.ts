@@ -203,7 +203,7 @@ async function _updateOrders({
 
     const newlyPreSignedOrders = orders
       .filter((order) => {
-        return presignedIds.includes(order.id) && order.status === OrderStatus.PRESIGNATURE_PENDING
+        return order.status === OrderStatus.PRESIGNATURE_PENDING && presignedIds.includes(order.id)
       })
       .map((order) => presignedMap[order.id])
 

@@ -21,18 +21,12 @@ export type OnPostedOrderPayload = {
   isEthFlow?: boolean
 }
 
-export type OnFulfilledOrderPayload = BaseOrderPayload & {
-  //
-}
+export type OnFulfilledOrderPayload = BaseOrderPayload
 
 export type OnCancelledOrderPayload = BaseOrderPayload & {
   transactionHash?: string
 }
 
-export type OnExpiredOrderPayload = BaseOrderPayload & {
-  //
-}
+export type OnExpiredOrderPayload = BaseOrderPayload
 
-export type OnPresignedOrderPayload = BaseOrderPayload & {
-  //
-}
+export type OnPresignedOrderPayload = BaseOrderPayload
