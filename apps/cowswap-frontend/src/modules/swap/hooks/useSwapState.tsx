@@ -371,14 +371,14 @@ export function useIsFeeGreaterThanInput({
   const feeToken = useTokenBySymbolOrAddress(address)
 
   return useMemo(() => {
-    if (!quote || !feeToken || !trade) return { isFeeGreater: false, fee: null }
+    if (!quote || !feeToken) return { isFeeGreater: false, fee: null }
 
-    const isSellOrder = trade.tradeType === TradeType.EXACT_INPUT
-    const amountAfterFees = isSellOrder ? trade.outputAmountAfterFees : trade.inputAmountAfterFees
+    const isSellOrder = trade?.tradeType === TradeType.EXACT_INPUT
+    const amountAfterFees = isSellOrder ? trade?.outputAmountAfterFees : trade?.inputAmountAfterFees
     const isQuoteError = quote.error === 'fee-exceeds-sell-amount'
 
     return {
-      isFeeGreater: isQuoteError || amountAfterFees.equalTo(0) || amountAfterFees.lessThan(0),
+      isFeeGreater: isQuoteError || (!!amountAfterFees && (amountAfterFees.equalTo(0) || amountAfterFees.lessThan(0))),
       fee: quote.fee ? stringToCurrency(quote.fee.amount, feeToken) : null,
     }
   }, [quote, trade, feeToken])
