@@ -24,5 +24,8 @@ export function useAlternativeOrder() {
 export function useSetAlternativeOrder() {
   const setAlternativeOrder = useSetAtom(alternativeOrderAtom)
 
-  return useCallback((order: Order | ParsedOrder) => setAlternativeOrder(order), [setAlternativeOrder])
+  return useCallback(
+    (order: Order | ParsedOrder, isEdit = false) => setAlternativeOrder({ order, isEdit }),
+    [setAlternativeOrder]
+  )
 }
