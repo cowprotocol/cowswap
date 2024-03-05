@@ -49,7 +49,7 @@ the [CoW Protocol Tutorial](https://learn.cow.fi/tutorial/simple-app-data).
 
 ## Partner fee
 
-> **Coming soon! Fill [this form](https://cowprotocol.typeform.com/to/rONXaxHV) if you are interested**
+> **Fill [this form](https://cowprotocol.typeform.com/to/rONXaxHV) if you are interested**
 
 You can add an additional fee that will be displayed and applied to the quoted amounts:
 
@@ -122,7 +122,7 @@ cowSwapWidget(document.getElementById('cowswap-widget'), {
 | `hideNetworkSelector` | `boolean`              | false                | Disables an opportunity to change the network from the widget UI.                                                                                                                                  |
 | `enabledTradeTypes`   | `Array<TradeType>`     | All are enabled      | CoW Swap provides three trading widgets: `swap`, `limit` and `advanced` orders. Using this option you can narrow down the list of available trading widgets.                                       |
 | `palette`             | `CowSwapWidgetPalette` | ---                  | Customizes the appearance of the widget. For example, you can change the main color of the background and text.                                                                                    |
-| `partnerFee`          | `PartnerFee`           | ---                  | The partner fee. Example `{ bps: 30, recipient: '0x86e367465e2b7e8d26f4611d998bcbbe28e89679' }`. Coming soon! Fill [this form](https://cowprotocol.typeform.com/to/rONXaxHV) if you are interested |
+| `partnerFee`          | `PartnerFee`           | ---                  | The partner fee. Example `{ bps: 30, recipient: '0x86e367465e2b7e8d26f4611d998bcbbe28e89679' }`. Fill [this form](https://cowprotocol.typeform.com/to/rONXaxHV) if you are interested |
 
 ## Widget updating
 
