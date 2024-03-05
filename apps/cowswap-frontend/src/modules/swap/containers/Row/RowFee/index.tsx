@@ -9,9 +9,7 @@ import TradeGp from 'legacy/state/swap/TradeGp'
 
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { RowFeeContent } from 'modules/swap/pure/Row/RowFeeContent'
-import { RowWithShowHelpersProps } from 'modules/swap/pure/Row/types'
 
-import { useSwapZeroFee } from 'common/hooks/featureFlags/useSwapZeroFee'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 export const GASLESS_FEE_TOOLTIP_MSG =
@@ -39,7 +37,7 @@ export function computeTradePriceBreakdown(trade?: TradeGp | null): {
   }
 }
 
-export interface RowFeeProps extends RowWithShowHelpersProps {
+export interface RowFeeProps {
   // Although fee is part of the trade, if the trade is invalid, then it will be undefined
   // Even for invalid trades, we want to display the fee, this is why there's another "fee" parameter
   trade?: TradeGp
@@ -47,7 +45,6 @@ export interface RowFeeProps extends RowWithShowHelpersProps {
   feeInFiat: CurrencyAmount<Token> | null
   allowsOffchainSigning: boolean
   noLabel?: boolean
-  showFiatOnly?: boolean
 }
 
 function isValidNonZeroAmount(value: string): boolean {
@@ -60,16 +57,7 @@ function isValidNonZeroAmount(value: string): boolean {
   }
 }
 
-export function RowFee({
-  trade,
-  feeAmount,
-  feeInFiat,
-  allowsOffchainSigning,
-  showHelpers,
-  noLabel,
-  showFiatOnly,
-}: RowFeeProps) {
-  const swapZeroFee = useSwapZeroFee()
+export function RowFee({ trade, feeAmount, feeInFiat, allowsOffchainSigning, noLabel }: RowFeeProps) {
   const { realizedFee } = useMemo(() => computeTradePriceBreakdown(trade), [trade])
 
   const isEoaEthFlow = useIsEoaEthFlow()
@@ -88,7 +76,7 @@ export function RowFee({
   // trades are null when there is a fee quote error e.g
   // so we can take both
   const props = useMemo(() => {
-    const label = swapZeroFee ? 'Est. fees' : 'Fees'
+    const label = 'Est. fees'
     const displayFee = realizedFee || feeAmount
     const feeCurrencySymbol = displayFee?.currency.symbol || '-'
     // TODO: delegate formatting to the view layer
@@ -99,37 +87,33 @@ export function RowFee({
     }`
 
     const feeToken = isValidNonZeroAmount(displayFeeFormatted)
-      ? feeAmountWithCurrency
+      ? '≈ ' + feeAmountWithCurrency
       : `🎉 Free!${isEoaEthFlow ? ' (+ gas)' : ''}`
-    const feeUsd = isValidNonZeroAmount(feeInFiatFormatted)
-      ? `${showFiatOnly ? '' : '('}≈$${feeInFiatFormatted}${showFiatOnly ? '' : ')'}`
-      : ''
+    const feeUsd = isValidNonZeroAmount(feeInFiatFormatted) ? `(≈$${feeInFiatFormatted})` : ''
 
     const fullDisplayFee = FractionUtils.fractionLikeToExactString(displayFee) || '-'
 
     return {
       label,
-      showHelpers,
       feeToken,
       feeUsd,
       fullDisplayFee,
       feeCurrencySymbol,
       tooltip,
       noLabel,
-      showFiatOnly,
     }
-  }, [feeAmount, feeInFiat, isEoaEthFlow, realizedFee, showHelpers, tooltip, noLabel, showFiatOnly, swapZeroFee])
+  }, [feeAmount, feeInFiat, isEoaEthFlow, realizedFee, tooltip, noLabel])
 
   return <RowFeeContent {...props} />
 }
 
-export interface PartnerRowPartnerFeeProps extends RowWithShowHelpersProps {
+export interface PartnerRowPartnerFeeProps {
   partnerFee: PartnerFee
   feeAmount?: CurrencyAmount<Currency>
   feeInFiat: CurrencyAmount<Token> | null
 }
 
-export function RowPartnerFee({ partnerFee, feeAmount, feeInFiat, showHelpers }: PartnerRowPartnerFeeProps) {
+export function RowPartnerFee({ partnerFee, feeAmount, feeInFiat }: PartnerRowPartnerFeeProps) {
   const props = useMemo(() => {
     const feeCurrencySymbol = feeAmount?.currency.symbol || '-' // TODO: Once we implement the computation of the fee, we should express it in the relevant fee currency (buy token for sell orders)
     const feeInFiatFormatted = formatFiatAmount(feeInFiat)
@@ -142,7 +126,6 @@ export function RowPartnerFee({ partnerFee, feeAmount, feeInFiat, showHelpers }:
 
     return {
       label: 'Partner fee',
-      showHelpers,
       feeToken: feeAmountWithCurrency,
       feeUsd,
       fullDisplayFee,
@@ -151,7 +134,7 @@ export function RowPartnerFee({ partnerFee, feeAmount, feeInFiat, showHelpers }:
         bpsToPercent(bps)
       )}%). Applied only if the trade is executed.`,
     }
-  }, [partnerFee, feeAmount, feeInFiat, showHelpers])
+  }, [partnerFee, feeAmount, feeInFiat])
 
   return <RowFeeContent {...props} />
 }

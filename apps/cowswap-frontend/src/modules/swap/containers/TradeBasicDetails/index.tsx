@@ -24,12 +24,12 @@ interface TradeBasicDetailsProp extends BoxProps {
   allowsOffchainSigning: boolean
   trade?: TradeGp
   fee: CurrencyAmount<Currency>
-  fiatFeeOnly?: boolean
   isReviewSwap?: boolean
+  hideSlippage?: boolean
 }
 
 export function TradeBasicDetails(props: TradeBasicDetailsProp) {
-  const { trade, allowedSlippage, allowsOffchainSigning, fee, isReviewSwap, fiatFeeOnly, ...boxProps } = props
+  const { trade, allowedSlippage, allowsOffchainSigning, fee, isReviewSwap, hideSlippage, ...boxProps } = props
   const allowedSlippagePercent = !(allowedSlippage instanceof Percent)
     ? INITIAL_ALLOWED_SLIPPAGE_PERCENT
     : allowedSlippage
@@ -37,28 +37,14 @@ export function TradeBasicDetails(props: TradeBasicDetailsProp) {
   // trades are null when there is a fee quote error e.g
   // so we can take both
   const feeFiatValue = useUsdAmount(fee).value
+  const partnerFeeFiatValue = useUsdAmount(trade?.partnerFeeAmount).value
   const isEoaEthFlow = useIsEoaEthFlow()
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
 
   const isExactIn = trade?.tradeType === TradeType.EXACT_INPUT
 
-  if (fiatFeeOnly) {
-    // Render and return only the fee's fiat value
-    return (
-      <LowerSectionWrapper {...boxProps}>
-        <RowFee
-          feeAmount={fee}
-          feeInFiat={feeFiatValue}
-          showHelpers={false}
-          noLabel={true}
-          showFiatOnly={true}
-          allowsOffchainSigning={allowsOffchainSigning}
-        />
-      </LowerSectionWrapper>
-    )
-  }
-
   const showRowSlippage =
+    !hideSlippage &&
     (isReviewSwap || isEoaEthFlow || !allowedSlippagePercent.equalTo(INITIAL_ALLOWED_SLIPPAGE_PERCENT)) &&
     !isWrapOrUnwrap
 
@@ -67,20 +53,15 @@ export function TradeBasicDetails(props: TradeBasicDetailsProp) {
   return (
     <LowerSectionWrapper {...boxProps}>
       {/* Fees */}
-      <RowFee
-        trade={trade}
-        showHelpers={true}
-        allowsOffchainSigning={allowsOffchainSigning}
-        feeAmount={fee}
-        feeInFiat={feeFiatValue}
-      />
+      <RowFee trade={trade} allowsOffchainSigning={allowsOffchainSigning} feeAmount={fee} feeInFiat={feeFiatValue} />
 
-      {trade?.partnerFee && (
-        <RowPartnerFee showHelpers={true} partnerFee={trade.partnerFee} feeAmount={fee} feeInFiat={feeFiatValue} />
+      {trade?.partnerFeeAmount && trade.partnerFee && (
+        <RowPartnerFee
+          partnerFee={trade.partnerFee}
+          feeAmount={trade.partnerFeeAmount}
+          feeInFiat={partnerFeeFiatValue}
+        />
       )}
-
-      {/* TODO: delete */}
-      {!trade?.partnerFee && <>No partner fee</>}
 
       {isReviewSwap && (
         <>
@@ -92,7 +73,7 @@ export function TradeBasicDetails(props: TradeBasicDetailsProp) {
               {trade && (
                 <b>
                   <TokenAmount
-                    amount={isExactIn ? trade?.outputAmount : trade.inputAmountWithFee}
+                    amount={isExactIn ? trade?.outputAmountAfterFees : trade.inputAmountAfterFees}
                     tokenSymbol={isExactIn ? trade?.outputAmount.currency : trade.inputAmount.currency}
                     defaultValue="0"
                   />
@@ -109,12 +90,7 @@ export function TradeBasicDetails(props: TradeBasicDetailsProp) {
 
       {/*Minimum receive*/}
       {showRowReceivedAfterSlippage && (
-        <RowReceivedAfterSlippage
-          trade={trade}
-          allowedSlippage={allowedSlippagePercent}
-          highlightAmount={isReviewSwap}
-          showHelpers={true}
-        >
+        <RowReceivedAfterSlippage trade={trade} allowedSlippage={allowedSlippagePercent} highlightAmount={isReviewSwap}>
           {isReviewSwap ? (
             <ReceiveAmountTitle>{isExactIn ? 'Minimum receive' : 'Maximum sent'}</ReceiveAmountTitle>
           ) : null}

@@ -29,7 +29,6 @@ import { BaseFlowContext } from 'modules/swap/services/types'
 import { TradeConfirmActions, useTradeConfirmActions } from 'modules/trade'
 import { TradeFlowAnalyticsContext } from 'modules/trade/utils/analytics'
 
-import { useSwapZeroFee } from 'common/hooks/featureFlags/useSwapZeroFee'
 import { useIsSafeApprovalBundle } from 'common/hooks/useIsSafeApprovalBundle'
 
 import { useIsSafeEthFlow } from './useIsSafeEthFlow'
@@ -65,9 +64,6 @@ interface BaseFlowContextSetup {
   addOrderCallback: AddOrderCallback
   dispatch: AppDispatch
   allowedSlippage: Percent
-  featureFlags: {
-    swapZeroFee: boolean | undefined
-  }
   tradeConfirmActions: TradeConfirmActions
   getCachedPermit: ReturnType<typeof useGetCachedPermit>
 }
@@ -76,7 +72,7 @@ export function useSwapAmountsWithSlippage(): [
   CurrencyAmount<Currency> | undefined,
   CurrencyAmount<Currency> | undefined
 ] {
-  const { v2Trade: trade, allowedSlippage } = useDerivedSwapInfo()
+  const { trade, allowedSlippage } = useDerivedSwapInfo()
 
   const { INPUT, OUTPUT } = computeSlippageAdjustedAmounts(trade, allowedSlippage)
 
@@ -89,8 +85,7 @@ export function useBaseFlowContextSetup(): BaseFlowContextSetup {
   const { allowsOffchainSigning } = useWalletDetails()
   const gnosisSafeInfo = useGnosisSafeInfo()
   const { recipient } = useSwapState()
-  const { v2Trade: trade } = useDerivedSwapInfo()
-  const swapZeroFee = useSwapZeroFee()
+  const { trade } = useDerivedSwapInfo()
 
   const appData = useAppData()
   const closeModals = useCloseModals()
@@ -136,7 +131,6 @@ export function useBaseFlowContextSetup(): BaseFlowContextSetup {
     addOrderCallback,
     dispatch,
     allowedSlippage,
-    featureFlags: { swapZeroFee },
     tradeConfirmActions,
     getCachedPermit,
   }
@@ -184,7 +178,6 @@ export function getFlowContext({ baseProps, sellToken, kind }: BaseGetFlowContex
     dispatch,
     flowType,
     sellTokenContract,
-    featureFlags,
     allowedSlippage,
     tradeConfirmActions,
     getCachedPermit,
@@ -228,7 +221,6 @@ export function getFlowContext({ baseProps, sellToken, kind }: BaseGetFlowContex
     trade,
     kind,
     allowedSlippage,
-    featureFlags,
   })
 
   const orderParams: PostOrderParams = {
@@ -249,7 +241,6 @@ export function getFlowContext({ baseProps, sellToken, kind }: BaseGetFlowContex
     partiallyFillable: false, // SWAP orders are always fill or kill - for now
     appData,
     quoteId: trade.quoteId,
-    featureFlags,
     isSafeWallet,
   }
 

@@ -18,8 +18,10 @@ const trade = new TradeGp({
   inputAmount: CurrencyAmount.fromRawAmount(currency, amount * 10 ** 18),
   inputAmountWithFee: CurrencyAmount.fromRawAmount(currency, (amount + fee) * 10 ** 18),
   inputAmountWithoutFee: CurrencyAmount.fromRawAmount(currency, amount * 10 ** 18),
+  inputAmountAfterFees: CurrencyAmount.fromRawAmount(currency, amount * 10 ** 18),
   outputAmount: CurrencyAmount.fromRawAmount(currency, output * 10 ** 18),
   outputAmountWithoutFee: CurrencyAmount.fromRawAmount(currency, (output - 3) * 10 ** 18),
+  outputAmountAfterFees: CurrencyAmount.fromRawAmount(currency, (output - 3) * 10 ** 18),
   fee: { feeAsCurrency: CurrencyAmount.fromRawAmount(currency, 3 * 10 ** 18), amount: '50' },
   executionPrice: new Price(currency, currencyOut, 1, 4),
   tradeType: TradeType.EXACT_INPUT,
@@ -41,7 +43,6 @@ const defaultProps: RowFeeProps & RowFeeContentProps = {
   get fullDisplayFee() {
     return this.feeAmount?.quotient.toString() || 'Unknown'
   },
-  showHelpers: true,
   allowsOffchainSigning: true,
   tooltip: 'This is a tooltip that describes stuff. Stuff that is great. Great stuff. The best stuff on earth.',
 }
