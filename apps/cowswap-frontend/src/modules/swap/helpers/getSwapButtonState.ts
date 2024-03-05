@@ -78,8 +78,7 @@ export function getSwapButtonState(input: SwapButtonStateParams): SwapButtonStat
     (approvalState === ApprovalState.NOT_APPROVED || approvalState === ApprovalState.PENDING)
 
   const isValid = !input.inputError && input.feeWarningAccepted && input.impactWarningAccepted
-  const swapBlankState = !input.inputError && !input.trade
-  const hasInput = amountsForSignature?.inputAmount.greaterThan(0) || amountsForSignature?.outputAmount.greaterThan(0)
+  const swapBlankState = !input.inputError && !trade
 
   const isSellOrder = trade?.tradeType === TradeType.EXACT_INPUT
   const amountAfterFees = isSellOrder ? trade?.outputAmountAfterFees : trade?.inputAmountAfterFees
@@ -110,7 +109,7 @@ export function getSwapButtonState(input: SwapButtonStateParams): SwapButtonStat
     return SwapButtonState.ReadonlyGnosisSafeUser
   }
 
-  if (isQuoteExpired(quote?.fee?.expirationDate) && !swapBlankState && hasInput) {
+  if (isQuoteExpired(quote?.fee?.expirationDate) && trade && !input.inputError) {
     return SwapButtonState.QuoteExpired
   }
 
