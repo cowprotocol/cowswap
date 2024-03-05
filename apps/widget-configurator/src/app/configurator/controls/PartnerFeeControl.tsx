@@ -1,4 +1,4 @@
-import { ChangeEvent, Dispatch, SetStateAction } from 'react'
+import { ChangeEvent, Dispatch, SetStateAction, useCallback } from 'react'
 
 import TextField from '@mui/material/TextField'
 
@@ -11,11 +11,14 @@ export function PartnerFeeControl(props: PartnerFeeControlProps) {
   const [feeBps, setFeeBps] = feeBpsState
   const [recipient, setRecipient] = recipientState
 
-  const onFeeBpsChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const value = Math.ceil(Number(e.target.value || 0))
+  const onFeeBpsChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      const value = Math.ceil(Number(e.target.value || 0))
 
-    setFeeBps(value)
-  }
+      setFeeBps(value)
+    },
+    [setFeeBps]
+  )
 
   return (
     <>
