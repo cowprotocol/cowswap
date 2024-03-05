@@ -67,7 +67,7 @@ const quoteErrorToSwapButtonState: { [key in QuoteError]: SwapButtonState | null
 }
 
 export function getSwapButtonState(input: SwapButtonStateParams): SwapButtonState {
-  const { trade, quote, approvalState, isPermitSupported, amountsForSignature } = input
+  const { trade, quote, approvalState, isPermitSupported } = input
   const quoteError = quote?.error
 
   // show approve flow when: no error on inputs, not approved or pending, or approved in current session

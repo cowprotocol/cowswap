@@ -104,6 +104,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
     isNativeIn: isNativeInSwap,
     wrappedToken,
     quote,
+    quoteError: quote?.error,
     inputError: swapInputError,
     approvalState,
     feeWarningAccepted,
