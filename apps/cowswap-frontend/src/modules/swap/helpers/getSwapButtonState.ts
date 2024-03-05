@@ -81,6 +81,7 @@ export function getSwapButtonState(input: SwapButtonStateParams): SwapButtonStat
 
   const isValid = !input.inputError && input.feeWarningAccepted && input.impactWarningAccepted
   const swapBlankState = !input.inputError && !input.trade
+  const hasInput = amountsForSignature?.inputAmount.greaterThan(0) || amountsForSignature?.outputAmount.greaterThan(0)
 
   if (quoteError) {
     const quoteErrorState = quoteErrorToSwapButtonState[quoteError]
@@ -108,7 +109,7 @@ export function getSwapButtonState(input: SwapButtonStateParams): SwapButtonStat
     return SwapButtonState.ReadonlyGnosisSafeUser
   }
 
-  if (isQuoteExpired(quote?.fee?.expirationDate) && !swapBlankState) {
+  if (isQuoteExpired(quote?.fee?.expirationDate) && !swapBlankState && hasInput) {
     return SwapButtonState.QuoteExpired
   }
 
