@@ -38,9 +38,9 @@ const cacheMessages = (event: MessageEvent) => {
 }
 
 const paramsWithoutPartnerFee = (params: CowSwapWidgetParams) => {
-  delete params.partnerFee
+  const { partnerFee: _, ...rest } = params
 
-  return params
+  return rest
 }
 
 /**
