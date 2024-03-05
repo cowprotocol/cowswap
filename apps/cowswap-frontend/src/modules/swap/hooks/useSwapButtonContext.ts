@@ -64,6 +64,12 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
   const currencyIn = currencies[Field.INPUT]
   const currencyOut = currencies[Field.OUTPUT]
 
+  const orderParams =
+    ethFlowContext?.orderParams ||
+    ethFlowContext?.orderParams ||
+    safeBundleApprovalFlowContext?.orderParams ||
+    safeBundleEthFlowContext?.orderParams
+
   const { quote, isGettingNewQuote } = useGetQuoteAndStatus({
     token: currenciesIds.INPUT,
     chainId,
@@ -114,6 +120,13 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
     trade,
     isBestQuoteLoading,
     isPermitSupported,
+    amountsForSignature:
+      orderParams?.inputAmount && orderParams?.outputAmount
+        ? {
+            inputAmount: orderParams?.inputAmount,
+            outputAmount: orderParams?.outputAmount,
+          }
+        : undefined,
   })
 
   return {
