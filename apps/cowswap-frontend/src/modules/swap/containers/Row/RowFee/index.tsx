@@ -22,7 +22,7 @@ export const tooltipNetworkCosts = (props: { isPresign: boolean; ethFlow: boolea
   return (
     <>
       This is the cost of settling your order on-chain
-      {!requireGas && ', including gas and any LP fees.'}.
+      {!requireGas && ', including gas and any LP fees'}.
       <br />
       <br />
       CoW Swap will try to lower this cost where possible.

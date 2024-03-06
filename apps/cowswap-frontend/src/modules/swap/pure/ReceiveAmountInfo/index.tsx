@@ -44,7 +44,7 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps) {
 
   const FeePercent = (
     <span>
-      <Trans>Fee</Trans>
+      <Trans>Network costs</Trans>
       {hasFee && discount ? ` [-${discount}%]` : ''}
     </span>
   )
@@ -53,7 +53,7 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps) {
     <styledEl.Box>
       <div>
         <span>
-          <Trans>Before fee</Trans>
+          <Trans>Before costs</Trans>
         </span>
         <span>
           {amountBeforeFees} {<TokenSymbol token={currency} length={MAX_TOKEN_SYMBOL_LENGTH} />}
@@ -86,7 +86,7 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps) {
       {allowsOffchainSigning && !isEoaEthFlow && (
         <div>
           <span>
-            <Trans>Gas cost</Trans>
+            <Trans>Fee</Trans>
           </span>
           <styledEl.GreenText>
             <strong>
