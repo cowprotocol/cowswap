@@ -117,15 +117,15 @@ export class TrezorConnector extends Connector {
   }
 
   private getCurrentAccount(): string {
-    if (!this.accounts) {
-      throw new Error('Cannot load Trezor accounts')
+    if (!this.accounts || this.accounts.length === 0) {
+      throw new Error('Cannot load Trezor accounts. Make sure that the Trezor device is connected.')
     }
 
     const currentAccountIndex = getHwAccount().index
     const account = this.accounts[currentAccountIndex]
 
     if (!account) {
-      throw new Error('Current Trezor account index is out of bounds')
+      throw new Error('Current Trezor account index is out of bounds.')
     }
 
     return account

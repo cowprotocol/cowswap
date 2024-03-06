@@ -83,6 +83,11 @@ const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonsContext
       <Trans>Error loading price. Try again later.</Trans>
     </GreyCard>
   ),
+  [SwapButtonState.QuoteExpired]: () => (
+    <GreyCard style={{ textAlign: 'center' }}>
+      <Trans>Quote expired. Refreshing...</Trans>
+    </GreyCard>
+  ),
   [SwapButtonState.UnsupportedToken]: () => (
     <GreyCard style={{ textAlign: 'center' }}>
       <Trans>Unsupported token</Trans>
@@ -137,13 +142,6 @@ const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonsContext
       <styledEl.SwapButtonBox>{props.swapInputError}</styledEl.SwapButtonBox>
     </ButtonError>
   ),
-  [SwapButtonState.ExpertModeSwap]: (props: SwapButtonsContext) => (
-    <ButtonError buttonSize={ButtonSize.BIG} onClick={props.handleSwap}>
-      <styledEl.SwapButtonBox>
-        <Trans>Swap</Trans>
-      </styledEl.SwapButtonBox>
-    </ButtonError>
-  ),
   [SwapButtonState.RegularSwap]: (props: SwapButtonsContext) => (
     <ButtonError buttonSize={ButtonSize.BIG} onClick={props.openSwapConfirm}>
       <styledEl.SwapButtonBox>
@@ -162,17 +160,6 @@ const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonsContext
       </styledEl.SwapButtonBox>
     </ButtonError>
   ),
-  [SwapButtonState.ExpertApproveAndSwap]: (props: SwapButtonsContext) => (
-    <ButtonError buttonSize={ButtonSize.BIG} onClick={props.handleSwap}>
-      <styledEl.SwapButtonBox>
-        <Trans>
-          Confirm (Approve{' '}
-          <TokenSymbol token={props.inputAmount?.currency && getWrappedToken(props.inputAmount.currency)} length={6} />{' '}
-          and Swap)
-        </Trans>
-      </styledEl.SwapButtonBox>
-    </ButtonError>
-  ),
   [SwapButtonState.WrapAndSwap]: (props: SwapButtonsContext) => (
     <ButtonError buttonSize={ButtonSize.BIG} onClick={props.openSwapConfirm}>
       <styledEl.SwapButtonBox>
@@ -180,27 +167,13 @@ const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonsContext
       </styledEl.SwapButtonBox>
     </ButtonError>
   ),
-  [SwapButtonState.ExpertWrapAndSwap]: (props: SwapButtonsContext) => (
-    <ButtonError buttonSize={ButtonSize.BIG} onClick={props.handleSwap}>
-      <styledEl.SwapButtonBox>
-        <Trans>
-          Confirm (Wrap&nbsp;{<TokenSymbol token={props.inputAmount?.currency} length={6} />}&nbsp;and Swap)
-        </Trans>
-      </styledEl.SwapButtonBox>
-    </ButtonError>
-  ),
-  [SwapButtonState.RegularEthFlowSwap]: (props: SwapButtonsContext) => (
-    <EthFlowSwapButton isExpertMode={false} {...props} />
-  ),
-  [SwapButtonState.ExpertModeEthFlowSwap]: (props: SwapButtonsContext) => (
-    <EthFlowSwapButton isExpertMode={true} {...props} />
-  ),
+  [SwapButtonState.RegularEthFlowSwap]: (props: SwapButtonsContext) => <EthFlowSwapButton {...props} />,
 }
 
-function EthFlowSwapButton(props: SwapButtonsContext & { isExpertMode: boolean }) {
+function EthFlowSwapButton(props: SwapButtonsContext) {
   return (
     <>
-      <ButtonError buttonSize={ButtonSize.BIG} onClick={props.isExpertMode ? props.handleSwap : props.openSwapConfirm}>
+      <ButtonError buttonSize={ButtonSize.BIG} onClick={props.openSwapConfirm}>
         <styledEl.SwapButtonBox>
           <Trans>Swap</Trans>
         </styledEl.SwapButtonBox>

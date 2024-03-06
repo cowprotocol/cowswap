@@ -20,15 +20,15 @@ export function useSwapDerivedState(): SwapDerivedState {
 
 export function useFillSwapDerivedState() {
   const { independentField, recipient, recipientAddress } = useSwapState()
-  const { v2Trade, currencyBalances, currencies, slippageAdjustedSellAmount, parsedAmount } = useDerivedSwapInfo()
+  const { trade, currencyBalances, currencies, slippageAdjustedSellAmount, parsedAmount } = useDerivedSwapInfo()
 
   const isSellTrade = independentField === Field.INPUT
   const inputCurrency = currencies.INPUT || null
   const outputCurrency = currencies.OUTPUT || null
   const inputCurrencyBalance = currencyBalances.INPUT || null
   const outputCurrencyBalance = currencyBalances.OUTPUT || null
-  const inputCurrencyAmount = isSellTrade ? parsedAmount : v2Trade?.inputAmountWithoutFee
-  const outputCurrencyAmount = !isSellTrade ? parsedAmount : v2Trade?.outputAmountWithoutFee
+  const inputCurrencyAmount = isSellTrade ? parsedAmount : trade?.inputAmountWithoutFee
+  const outputCurrencyAmount = !isSellTrade ? parsedAmount : trade?.outputAmountWithoutFee
 
   const {
     inputAmount: { value: inputCurrencyFiatAmount },

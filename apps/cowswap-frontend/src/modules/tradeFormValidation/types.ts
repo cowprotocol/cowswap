@@ -25,22 +25,18 @@ export enum TradeFormValidation {
 
   // Quote loading indicator
   QuoteLoading,
+  QuoteExpired,
 
   // Balances
   BalancesNotLoaded,
   BalanceInsufficient,
 
   // Approve
-  ExpertApproveAndSwap,
   ApproveAndSwap,
   ApproveRequired,
 
   // Native
   SellNativeToken,
-}
-
-export interface TradeFormValidationLocalContext {
-  isExpertMode: boolean
 }
 
 export interface TradeFormValidationCommonContext {
@@ -57,7 +53,7 @@ export interface TradeFormValidationCommonContext {
   isPermitSupported: boolean
 }
 
-export interface TradeFormValidationContext extends TradeFormValidationLocalContext, TradeFormValidationCommonContext {}
+export interface TradeFormValidationContext extends TradeFormValidationCommonContext {}
 
 export interface TradeFormButtonContext {
   defaultText: string

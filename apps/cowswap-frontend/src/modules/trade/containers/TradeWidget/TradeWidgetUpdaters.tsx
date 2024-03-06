@@ -14,12 +14,10 @@ import { RecipientAddressUpdater } from '../../updaters/RecipientAddressUpdater'
 
 export function TradeWidgetUpdaters({
   disableQuotePolling,
-  isExpertMode,
   disableNativeSelling,
   children,
 }: {
   disableQuotePolling: boolean
-  isExpertMode: boolean
   disableNativeSelling: boolean
   children: ReactNode
 }) {
@@ -33,7 +31,7 @@ export function TradeWidgetUpdaters({
 
       {!disableQuotePolling && <TradeQuoteUpdater />}
       <PriceImpactUpdater />
-      <TradeFormValidationUpdater isExpertMode={isExpertMode} />
+      <TradeFormValidationUpdater />
       <CommonTradeUpdater />
       {disableNativeSelling && <DisableNativeTokenSellingUpdater />}
       {children}

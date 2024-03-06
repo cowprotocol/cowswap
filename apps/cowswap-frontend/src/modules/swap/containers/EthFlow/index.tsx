@@ -9,7 +9,6 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useSingleActivityDescriptor } from 'legacy/hooks/useRecentActivity'
 import { WrapUnwrapCallback } from 'legacy/hooks/useWrapCallback'
-import { useIsExpertMode } from 'legacy/state/user/hooks'
 
 import { getDerivedEthFlowState } from 'modules/swap/containers/EthFlow/utils/getDerivedEthFlowState'
 import { EthFlowModalContent } from 'modules/swap/pure/EthFlow/EthFlowModalContent'
@@ -25,6 +24,7 @@ import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 import { useEthFlowActions } from './hooks/useEthFlowActions'
 import useRemainingNativeTxsAndCosts from './hooks/useRemainingNativeTxsAndCosts'
 import { useSetupEthFlow } from './hooks/useSetupEthFlow'
+
 export interface EthFlowProps {
   nativeInput?: CurrencyAmount<Currency>
   hasEnoughWrappedBalanceForSwap: boolean
@@ -41,7 +41,6 @@ export function EthFlowModal({
   hasEnoughWrappedBalanceForSwap,
 }: EthFlowProps) {
   const { chainId } = useWalletInfo()
-  const isExpertMode = useIsExpertMode()
   const native = useNativeCurrency()
   const wrapped = useWrappedToken()
   const { state: approvalState } = useApproveState(nativeInput || null)
@@ -71,7 +70,7 @@ export function EthFlowModal({
     nativeInput,
   })
 
-  const state = useMemo(() => getDerivedEthFlowState(ethFlowContext, isExpertMode), [isExpertMode, ethFlowContext])
+  const state = useMemo(() => getDerivedEthFlowState(ethFlowContext), [ethFlowContext])
 
   const wrappingPreview: WrappingPreviewProps = {
     native,
@@ -82,9 +81,6 @@ export function EthFlowModal({
   }
 
   useSetupEthFlow({
-    state,
-    ethFlowActions,
-    isExpertMode,
     hasEnoughWrappedBalanceForSwap,
     approvalState,
     approveActivity,
@@ -96,7 +92,6 @@ export function EthFlowModal({
   return (
     <EthFlowModalContent
       state={state}
-      isExpertMode={isExpertMode}
       ethFlowContext={ethFlowContext}
       ethFlowActions={ethFlowActions}
       balanceChecks={balanceChecks}

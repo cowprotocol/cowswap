@@ -96,6 +96,7 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
       </TradeFormBlankButton>
     )
   },
+  [TradeFormValidation.QuoteExpired]: { text: 'Quote expired. Refreshing...' },
   [TradeFormValidation.WalletNotConnected]: (context) => {
     return (
       <TradeFormBlankButton onClick={context.connectWallet || undefined} disabled={!context.connectWallet}>
@@ -119,18 +120,6 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
     return (
       <TradeFormBlankButton disabled={true}>
         <Trans>Insufficient&nbsp;{<TokenSymbol token={context.derivedState.inputCurrency} />}&nbsp;balance</Trans>
-      </TradeFormBlankButton>
-    )
-  },
-  [TradeFormValidation.ExpertApproveAndSwap]: (context, isDisabled = false) => {
-    const currency = context.derivedState.slippageAdjustedSellAmount?.currency
-    const tokenToApprove = currency && getWrappedToken(currency)
-
-    return (
-      <TradeFormBlankButton disabled={isDisabled} onClick={context.doTrade}>
-        <Trans>
-          Confirm (Approve&nbsp;{<TokenSymbol token={tokenToApprove} length={6} />}&nbsp;and {context.defaultText})
-        </Trans>
       </TradeFormBlankButton>
     )
   },

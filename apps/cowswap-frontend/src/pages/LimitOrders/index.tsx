@@ -1,50 +1,41 @@
-import { UiOrderType } from '@cowprotocol/types'
-import { useWalletInfo } from '@cowprotocol/wallet'
-
-import { useOrders } from 'legacy/state/orders/hooks'
-
 import { AppDataUpdater } from 'modules/appData'
 import {
+  AlternativeLimitOrderUpdater,
   ExecutionPriceUpdater,
   FillLimitOrdersDerivedStateUpdater,
   InitialPriceUpdater,
   LIMIT_ORDER_SLIPPAGE,
-  LimitOrdersWidget,
   QuoteObserverUpdater,
   SetupLimitOrderAmountsFromUrlUpdater,
-  useIsWidgetUnlocked,
+  TriggerAppziLimitOrdersSurveyUpdater,
 } from 'modules/limitOrders'
-import { OrdersTableWidget } from 'modules/ordersTable'
-import { TabOrderTypes } from 'modules/ordersTable/pure/OrdersTableContainer'
-import * as styledEl from 'modules/trade/pure/TradePageLayout'
+import { useIsAlternativeOrderModalVisible } from 'modules/trade/state/alternativeOrder'
+
+import { AlternativeLimitOrder } from './AlternativeLimitOrder'
+import { RegularLimitOrders } from './RegularLimitOrders'
 
 export default function LimitOrderPage() {
-  const { chainId, account } = useWalletInfo()
-  const allLimitOrders = useOrders(chainId, account, UiOrderType.LIMIT)
-
-  const isUnlocked = useIsWidgetUnlocked()
+  const isAlternative = useIsAlternativeOrderModalVisible()
 
   return (
     <>
       <AppDataUpdater orderClass="limit" slippage={LIMIT_ORDER_SLIPPAGE} />
       <QuoteObserverUpdater />
       <FillLimitOrdersDerivedStateUpdater />
-      <SetupLimitOrderAmountsFromUrlUpdater />
-      <InitialPriceUpdater />
       <ExecutionPriceUpdater />
-      <styledEl.PageWrapper isUnlocked={isUnlocked}>
-        <styledEl.PrimaryWrapper>
-          <LimitOrdersWidget />
-        </styledEl.PrimaryWrapper>
-
-        <styledEl.SecondaryWrapper>
-          <OrdersTableWidget
-            displayOrdersOnlyForSafeApp={false}
-            orderType={TabOrderTypes.LIMIT}
-            orders={allLimitOrders}
-          />
-        </styledEl.SecondaryWrapper>
-      </styledEl.PageWrapper>
+      {isAlternative ? (
+        <>
+          <AlternativeLimitOrderUpdater />
+          <AlternativeLimitOrder />
+        </>
+      ) : (
+        <>
+          <InitialPriceUpdater />
+          <SetupLimitOrderAmountsFromUrlUpdater />
+          <TriggerAppziLimitOrdersSurveyUpdater />
+          <RegularLimitOrders />
+        </>
+      )}
     </>
   )
 }
