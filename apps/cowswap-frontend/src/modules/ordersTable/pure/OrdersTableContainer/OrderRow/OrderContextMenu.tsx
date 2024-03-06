@@ -95,17 +95,17 @@ export function OrderContextMenu({
             <span>View on explorer</span>
           </ContextMenuLink>
         )}
-        {showCancellationModal && (
-          <ContextMenuItem $red onSelect={showCancellationModal}>
-            <Trash2 size={16} />
-            <span>Cancel order</span>
-          </ContextMenuItem>
-        )}
         {showRecreateModal && (
           // TODO: simplify
           <ContextMenuItem onSelect={showRecreateModal[0]}>
             {showRecreateModal[1] ? <Edit size={16} /> : <Repeat size={16} />}
             <span>{showRecreateModal[1] ? 'Edit' : 'Recreate'} order</span>
+          </ContextMenuItem>
+        )}
+        {showCancellationModal && (
+          <ContextMenuItem $red onSelect={showCancellationModal}>
+            <Trash2 size={16} />
+            <span>Cancel order</span>
           </ContextMenuItem>
         )}
       </ContextMenuList>
