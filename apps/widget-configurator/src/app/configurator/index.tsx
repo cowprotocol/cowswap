@@ -223,7 +223,7 @@ export function Configurator({ title }: { title: string }) {
             <FormControlLabel value="standalone" control={<Radio />} label="Standalone mode" />
           </RadioGroup>
         </FormControl>
-        {standaloneMode && (
+        {!standaloneMode && (
           <div style={WalletConnectionWrapper}>
             <w3m-button />
           </div>
