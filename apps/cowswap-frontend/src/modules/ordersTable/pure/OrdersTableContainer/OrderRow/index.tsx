@@ -7,7 +7,7 @@ import { getAddress, getEtherscanLink } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { Command, UiOrderType } from '@cowprotocol/types'
-import { Loader, TokenAmount, TokenSymbol, UI, ButtonSecondary } from '@cowprotocol/ui'
+import { ButtonSecondary, Loader, TokenAmount, TokenSymbol, UI } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
 
 import SVG from 'react-inlinesvg'
@@ -17,6 +17,7 @@ import { CREATING_STATES, OrderStatus } from 'legacy/state/orders/actions'
 import { PendingOrderPrices } from 'modules/orders/state/pendingOrdersPricesAtom'
 import { getIsEthFlowOrder } from 'modules/swap/containers/EthFlowStepper'
 
+import { isPending } from 'common/hooks/useCategorizeRecentActivity'
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 import { RateInfo } from 'common/pure/RateInfo'
 import { getQuoteCurrency } from 'common/services/getQuoteCurrency'
@@ -170,7 +171,7 @@ export function OrderRow({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const showCancellationModal = useMemo(() => orderActions.getShowCancellationModal(order), [order.id])
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const showRecreateModal = useMemo(() => orderActions.getShowRecreateModal(order), [order.id])
+  const showRecreateModal = useMemo(() => orderActions.getShowAlternativeOrderModal(order), [order.id])
 
   const withAllowanceWarning = hasEnoughAllowance === false && hasValidPendingPermit === false
   const withWarning =
@@ -381,7 +382,7 @@ export function OrderRow({
           activityUrl={activityUrl}
           openReceipt={onClick}
           showCancellationModal={showCancellationModal}
-          showRecreateModal={showRecreateModal}
+          showRecreateModal={showRecreateModal ? [showRecreateModal, isPending(order)] : null}
         />
       </styledEl.CellElement>
     </TableRow>

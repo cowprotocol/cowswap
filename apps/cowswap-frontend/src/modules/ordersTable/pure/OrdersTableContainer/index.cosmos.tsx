@@ -52,7 +52,7 @@ const orderActions: OrderActions = {
   approveOrderToken() {
     console.log('approveOrderToken ')
   },
-  getShowRecreateModal: function (_: ParsedOrder): Command | null {
+  getShowAlternativeOrderModal: function (_: ParsedOrder): Command | null {
     console.log(`getShowRecreateModal`)
     return null
   },
