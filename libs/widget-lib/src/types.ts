@@ -195,9 +195,13 @@ export interface CowSwapWidgetParams {
   hideNetworkSelector?: boolean
 
   /**
-   * Hides the connect buttons, and the connected account button. Defaults to false.
+   * Defines the widget mode.
+   *  - `true` (standalone mode): The widget is standalone, so it will use its own Ethereum provider. The user can connect from within the widget.
+   *  - `false` (dapp mode): The widget is embedded in a dapp which is responsible of providing the Ethereum provider. Therefore, there won't be a connect button in the widget as this should happen in the host app.
+   *
+   * Defaults to standalone.
    */
-  hideConnectButton?: boolean
+  standaloneMode?: boolean
 
   /**
    * The theme of the widget UI.

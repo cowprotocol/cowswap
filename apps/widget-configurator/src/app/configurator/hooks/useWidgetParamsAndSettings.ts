@@ -13,7 +13,7 @@ const getEnv = (): CowSwapWidgetEnv => {
   return 'prod'
 }
 
-export function useWidgetParams(configuratorState: ConfiguratorState, isDappMode: boolean): CowSwapWidgetParams {
+export function useWidgetParams(configuratorState: ConfiguratorState, standaloneMode: boolean): CowSwapWidgetParams {
   return useMemo(() => {
     const {
       chainId,
@@ -60,7 +60,7 @@ export function useWidgetParams(configuratorState: ConfiguratorState, isDappMode
         success: themeColors.success,
       },
 
-      hideConnectButton: isDappMode,
+      standaloneMode,
 
       partnerFee:
         partnerFeeBps > 0
@@ -72,5 +72,5 @@ export function useWidgetParams(configuratorState: ConfiguratorState, isDappMode
     }
 
     return params
-  }, [configuratorState, isDappMode])
+  }, [configuratorState, standaloneMode])
 }
