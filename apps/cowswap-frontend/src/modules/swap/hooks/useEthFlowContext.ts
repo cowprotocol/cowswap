@@ -10,15 +10,12 @@ import { FlowType, getFlowContext, useBaseFlowContextSetup } from 'modules/swap/
 import { EthFlowContext } from 'modules/swap/services/types'
 import { addInFlightOrderIdAtom } from 'modules/swap/state/EthFlow/ethFlowInFlightOrderIdsAtom'
 
-import { useSwapZeroFee } from 'common/hooks/featureFlags/useSwapZeroFee'
-
 import { useCheckEthFlowOrderExists } from './useCheckEthFlowOrderExists'
 
 export function useEthFlowContext(): EthFlowContext | null {
   const contract = useEthFlowContract()
   const baseProps = useBaseFlowContextSetup()
   const addTransaction = useTransactionAdder()
-  const swapZeroFee = useSwapZeroFee()
 
   const addInFlightOrderId = useSetAtom(addInFlightOrderIdAtom)
 
@@ -38,6 +35,5 @@ export function useEthFlowContext(): EthFlowContext | null {
     addTransaction,
     checkEthFlowOrderExists,
     addInFlightOrderId,
-    swapZeroFee,
   }
 }

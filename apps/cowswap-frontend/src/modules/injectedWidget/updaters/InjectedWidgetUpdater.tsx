@@ -1,16 +1,28 @@
-import { useSetAtom } from 'jotai'
-import { useCallback, useEffect, useRef } from 'react'
+import { useAtom, useSetAtom } from 'jotai'
+import { useEffect, useRef } from 'react'
 
 import { deepEqual } from '@cowprotocol/common-utils'
-import { WidgetMethodsEmit, WidgetMethodsListen, postMessageToWindow } from '@cowprotocol/widget-lib'
+import {
+  UpdateParamsPayload,
+  WidgetMethodsEmit,
+  WidgetMethodsListen,
+  listenToMessageFromWindow,
+  postMessageToWindow,
+  stopListeningWindowListener,
+  CowSwapWidgetParams,
+} from '@cowprotocol/widget-lib'
 
 import { useNavigate } from 'react-router-dom'
+
+import { useFeatureFlags } from 'common/hooks/featureFlags/useFeatureFlags'
 
 import { IframeResizer } from './IframeResizer'
 
 import { COW_SWAP_WIDGET_EVENT_KEY } from '../consts'
+import { WidgetParamsErrorsScreen } from '../pure/WidgetParamsErrorsScreen'
 import { injectedWidgetMetaDataAtom } from '../state/injectedWidgetMetaDataAtom'
 import { injectedWidgetParamsAtom } from '../state/injectedWidgetParamsAtom'
+import { validateWidgetParams } from '../utils/validateWidgetParams'
 
 const messagesCache: { [method: string]: unknown } = {}
 
@@ -23,6 +35,12 @@ const cacheMessages = (event: MessageEvent) => {
   if (!method) return
 
   messagesCache[method] = event.data
+}
+
+const paramsWithoutPartnerFee = (params: CowSwapWidgetParams) => {
+  const { partnerFee: _, ...rest } = params
+
+  return rest
 }
 
 /**
@@ -39,54 +57,61 @@ const cacheMessages = (event: MessageEvent) => {
 })()
 
 export function InjectedWidgetUpdater() {
-  const updateParams = useSetAtom(injectedWidgetParamsAtom)
+  const { isPartnerFeeEnabled } = useFeatureFlags()
+  const [{ errors: validationErrors }, updateParams] = useAtom(injectedWidgetParamsAtom)
   const updateMetaData = useSetAtom(injectedWidgetMetaDataAtom)
+
   const navigate = useNavigate()
-  const prevData = useRef(null)
+  const prevData = useRef<UpdateParamsPayload | null>(null)
 
-  const processEvent = useCallback(
-    (method: string, data: any) => {
-      switch (method) {
-        case WidgetMethodsListen.UPDATE_PARAMS:
-          if (prevData.current && deepEqual(prevData.current, data)) return
-
-          prevData.current = data
-          updateParams(data.appParams)
-          navigate(data.urlParams)
-          break
-
-        case WidgetMethodsListen.UPDATE_APP_DATA:
-          if (data.metaData) {
-            updateMetaData(data.metaData)
-          }
-          break
-      }
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
-  )
-
-  // Once app is loaded
   useEffect(() => {
     // Stop listening of message outside of React
     window.removeEventListener('message', cacheMessages)
 
+    // Start listening for messages inside of React
+    const updateParamsListener = listenToMessageFromWindow(window, WidgetMethodsListen.UPDATE_PARAMS, (data) => {
+      if (prevData.current && deepEqual(prevData.current, data)) return
+
+      // Update params
+      prevData.current = data
+
+      // Ignore partner fee value when feature flag is not enabled
+      const appParams = isPartnerFeeEnabled ? data.appParams : paramsWithoutPartnerFee(data.appParams)
+
+      const errors = validateWidgetParams(appParams)
+
+      updateParams({
+        params: appParams,
+        errors,
+      })
+
+      // Navigate to the new path
+      navigate(data.urlParams)
+    })
+
+    const updateAppDataListener = listenToMessageFromWindow(window, WidgetMethodsListen.UPDATE_APP_DATA, (data) => {
+      if (data.metaData) {
+        updateMetaData(data.metaData)
+      }
+    })
+
     // Process all cached messages
     Object.keys(messagesCache).forEach((method) => {
-      processEvent(method, messagesCache[method])
+      postMessageToWindow(window, method as any, messagesCache[method])
 
       delete messagesCache[method]
     })
 
-    // Start listening messages inside of React
-    window.addEventListener('message', (event) => {
-      const method = getEventMethod(event)
+    return () => {
+      stopListeningWindowListener(window, updateParamsListener)
+      stopListeningWindowListener(window, updateAppDataListener)
+    }
+  }, [updateMetaData, navigate, updateParams, isPartnerFeeEnabled])
 
-      if (!method) return
-
-      processEvent(method, event.data)
-    })
-  }, [processEvent])
-
-  return <IframeResizer />
+  return (
+    <>
+      <WidgetParamsErrorsScreen errors={validationErrors} />
+      <IframeResizer />
+    </>
+  )
 }

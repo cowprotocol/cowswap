@@ -3,6 +3,8 @@ import { useMemo } from 'react'
 
 import { limitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
 
+const FRACTION_DIGITS = 15
+
 export function useRateImpact(): number {
   const { activeRate, marketRate, isLoading, isLoadingMarketRate } = useAtomValue(limitRateAtom)
 
@@ -12,7 +14,12 @@ export function useRateImpact(): number {
 
     if (noActiveRate || noExecutionRate || isLoading || isLoadingMarketRate) return 0
 
-    const ratePercent = +activeRate.divide(marketRate).multiply(100).subtract(100).toFixed(1)
+    const ar = +activeRate.toFixed(FRACTION_DIGITS)
+    const mr = +marketRate.toFixed(FRACTION_DIGITS)
+    const ratio = ar / mr
+    const percent = ratio * 100 - 100
+
+    const ratePercent = +percent.toFixed(1)
 
     return !ratePercent || !Number.isFinite(ratePercent) || Number.isNaN(ratePercent) ? 0 : ratePercent
   }, [activeRate, marketRate, isLoading, isLoadingMarketRate])

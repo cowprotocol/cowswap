@@ -28,7 +28,12 @@ export function ZeroApprovalWarning({ currency }: ZeroApprovalWarningProps) {
     <WarningCard>
       <strong>Note:</strong> {symbol} specifically requires 2 approval transactions. The first resets your spending cap
       to 0, and the second sets your desired spending cap. To avoid this in the future, set your spending cap to CoW
-      Swap's recommended default amount. {faqLink && <Link to={faqLink}>Learn more</Link>}
+      Swap's recommended default amount.{' '}
+      {faqLink && (
+        <Link target="_blank" to={faqLink}>
+          Learn more
+        </Link>
+      )}
     </WarningCard>
   )
 }

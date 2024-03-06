@@ -64,53 +64,6 @@ export const MenuContent = styled(MenuList)`
   color: var(${UI.COLOR_TEXT_PAPER});
 `
 
-export const ExpertModeIndicator = styled.div`
-  display: inline-block;
-  position: relative;
-  width: 12px;
-  height: 24px;
-  font-size: 20px;
-  user-select: none;
-  margin-right: 17px;
-  animation: expertModeOn 3s normal forwards ease-in-out;
-  color: inherit;
-
-  > span:first-child {
-    position: absolute;
-    top: -10px;
-    z-index: 1;
-  }
-
-  > span:last-child {
-    position: absolute;
-    top: 2px;
-  }
-
-  @keyframes expertModeOn {
-    0% {
-      filter: none;
-    }
-    15% {
-      filter: sepia(1);
-    }
-    30% {
-      filter: sepia(0);
-    }
-    45% {
-      filter: sepia(1);
-    }
-    60% {
-      filter: sepia(0);
-    }
-    75% {
-      filter: sepia(1);
-    }
-    100% {
-      filter: sepia(0);
-    }
-  }
-`
-
 export const SettingsIcon = styled(SettingsIconRaw)`
   --size: var(${UI.ICON_SIZE_NORMAL});
   height: var(--size);

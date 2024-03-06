@@ -1,13 +1,16 @@
-import { OrderActions } from 'modules/ordersTable/pure/OrdersTableContainer/types'
+import { Command } from '@cowprotocol/types'
+
 import { BalancesAndAllowances } from 'modules/tokens'
 
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import { ordersMock } from './orders.mock'
+import { OrderActions } from './types'
 
 import { OrderTab } from '../../const/tabs'
+import { TabOrderTypes } from '../../types'
 
-import { OrdersTableContainer, TabOrderTypes } from './index'
+import { OrdersTableContainer } from './index'
 
 const tabs: OrderTab[] = [
   {
@@ -48,6 +51,10 @@ const orderActions: OrderActions = {
   },
   approveOrderToken() {
     console.log('approveOrderToken ')
+  },
+  getShowRecreateModal: function (_: ParsedOrder): Command | null {
+    console.log(`getShowRecreateModal`)
+    return null
   },
 }
 

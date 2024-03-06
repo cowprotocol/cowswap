@@ -45,12 +45,13 @@ const Wrapper = styled.div<{
   }
 `
 
-export type OrderStatusBoxProps = {
+type OrderStatusBoxProps = {
   order: ParsedOrder
   widthAuto?: boolean
   withWarning?: boolean
   onClick?: Command
 }
+
 export function OrderStatusBox({ order, widthAuto, withWarning, onClick }: OrderStatusBoxProps) {
   const { title, color, background } = getOrderStatusTitleAndColor(order)
   return (

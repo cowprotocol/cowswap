@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
 import AlertTriangle from '@cowprotocol/assets/cow-swap/alert.svg'
 import { ZERO_FRACTION } from '@cowprotocol/common-const'
@@ -7,7 +7,7 @@ import { getAddress, getEtherscanLink } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { Command, UiOrderType } from '@cowprotocol/types'
-import { Loader, TokenAmount, TokenSymbol, UI } from '@cowprotocol/ui'
+import { Loader, TokenAmount, TokenSymbol, UI, ButtonSecondary } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
 
 import SVG from 'react-inlinesvg'
@@ -15,20 +15,9 @@ import SVG from 'react-inlinesvg'
 import { CREATING_STATES, OrderStatus } from 'legacy/state/orders/actions'
 
 import { PendingOrderPrices } from 'modules/orders/state/pendingOrdersPricesAtom'
-import { EstimatedExecutionPrice } from 'modules/ordersTable/pure/OrdersTableContainer/OrderRow/EstimatedExecutionPrice'
-import { OrderContextMenu } from 'modules/ordersTable/pure/OrdersTableContainer/OrderRow/OrderContextMenu'
-import {
-  CheckboxCheckmark,
-  TableRow,
-  TableRowCheckbox,
-  TableRowCheckboxWrapper,
-} from 'modules/ordersTable/pure/OrdersTableContainer/styled'
-import { OrderActions } from 'modules/ordersTable/pure/OrdersTableContainer/types'
-import { OrderStatusBox } from 'modules/ordersTable/pure/OrderStatusBox'
 import { getIsEthFlowOrder } from 'modules/swap/containers/EthFlowStepper'
 
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
-import { ButtonSecondary } from 'common/pure/ButtonSecondary'
 import { RateInfo } from 'common/pure/RateInfo'
 import { getQuoteCurrency } from 'common/services/getQuoteCurrency'
 import { isOrderCancellable } from 'common/utils/isOrderCancellable'
@@ -39,9 +28,14 @@ import { getSellAmountWithFee } from 'utils/orderUtils/getSellAmountWithFee'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
+import { EstimatedExecutionPrice } from './EstimatedExecutionPrice'
+import { OrderContextMenu } from './OrderContextMenu'
 import * as styledEl from './styled'
 
-import { OrderParams } from '../utils/getOrderParams'
+import { OrderParams } from '../../../utils/getOrderParams'
+import { OrderStatusBox } from '../../OrderStatusBox'
+import { CheckboxCheckmark, TableRow, TableRowCheckbox, TableRowCheckboxWrapper } from '../styled'
+import { OrderActions } from '../types'
 
 const TIME_AGO_UPDATE_INTERVAL = 3000
 
@@ -173,7 +167,10 @@ export function OrderRow({
   const { inputCurrencyAmount, outputCurrencyAmount } = rateInfoParams
   const { estimatedExecutionPrice, feeAmount } = prices || {}
 
-  const showCancellationModal = orderActions.getShowCancellationModal(order)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const showCancellationModal = useMemo(() => orderActions.getShowCancellationModal(order), [order.id])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const showRecreateModal = useMemo(() => orderActions.getShowRecreateModal(order), [order.id])
 
   const withAllowanceWarning = hasEnoughAllowance === false && hasValidPendingPermit === false
   const withWarning =
@@ -384,6 +381,7 @@ export function OrderRow({
           activityUrl={activityUrl}
           openReceipt={onClick}
           showCancellationModal={showCancellationModal}
+          showRecreateModal={showRecreateModal}
         />
       </styledEl.CellElement>
     </TableRow>

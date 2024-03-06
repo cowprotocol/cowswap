@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
 import { useToggleSettingsMenu } from 'legacy/state/application/hooks'
-import { useIsExpertMode, useUserTransactionTTL } from 'legacy/state/user/hooks'
+import { useUserTransactionTTL } from 'legacy/state/user/hooks'
 
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { RowDeadlineContent } from 'modules/swap/pure/Row/RowDeadline'
@@ -13,7 +13,6 @@ export function RowDeadline() {
   const [userDeadline] = useUserTransactionTTL()
   const toggleSettings = useToggleSettingsMenu()
   const isEoaEthFlow = useIsEoaEthFlow()
-  const isExpertMode = useIsExpertMode()
   const nativeCurrency = useNativeCurrency()
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
 
@@ -24,14 +23,13 @@ export function RowDeadline() {
       symbols: [nativeCurrency.symbol],
       displayDeadline,
       isEoaEthFlow,
-      isExpertMode,
       isWrapOrUnwrap,
       toggleSettings,
       showSettingOnClick: true,
     }
-  }, [isEoaEthFlow, isExpertMode, isWrapOrUnwrap, nativeCurrency.symbol, toggleSettings, userDeadline])
+  }, [isEoaEthFlow, isWrapOrUnwrap, nativeCurrency.symbol, toggleSettings, userDeadline])
 
-  if ((!isEoaEthFlow && !isExpertMode) || isWrapOrUnwrap) {
+  if (!isEoaEthFlow || isWrapOrUnwrap) {
     return null
   }
 
