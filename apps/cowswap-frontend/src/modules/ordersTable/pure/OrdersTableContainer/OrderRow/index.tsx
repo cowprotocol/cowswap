@@ -172,9 +172,11 @@ export function OrderRow({
     return orderActions.getShowCancellationModal(order)
   }, [orderActions, order])
 
-  const showAlternativeOrderModal = useMemo(() => {
-    return orderActions.getShowAlternativeOrderModal(order)
-  }, [orderActions, order])
+  const alternativeOrderModalContext = useMemo(() => {
+    const showAlternativeOrderModal = orderActions.getShowAlternativeOrderModal(order)
+
+    return showAlternativeOrderModal ? { showAlternativeOrderModal, isEdit: isPending(order) } : null
+  }, [order, orderActions])
 
   const withAllowanceWarning = hasEnoughAllowance === false && hasValidPendingPermit === false
   const withWarning =
@@ -385,9 +387,7 @@ export function OrderRow({
           activityUrl={activityUrl}
           openReceipt={onClick}
           showCancellationModal={showCancellationModal}
-          alternativeOrderModalContext={
-            showAlternativeOrderModal ? [showAlternativeOrderModal, isPending(order)] : null
-          }
+          alternativeOrderModalContext={alternativeOrderModalContext}
         />
       </styledEl.CellElement>
     </TableRow>

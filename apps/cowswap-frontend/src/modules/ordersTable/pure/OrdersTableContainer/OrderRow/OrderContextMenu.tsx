@@ -70,7 +70,7 @@ export interface OrderContextMenuProps {
   activityUrl: string | undefined
   showCancellationModal: Command | null
   // TODO: make the props nicer
-  alternativeOrderModalContext: [Command, boolean] | null
+  alternativeOrderModalContext: { showAlternativeOrderModal: Command; isEdit: boolean } | null
 }
 
 export function OrderContextMenu({
@@ -96,10 +96,9 @@ export function OrderContextMenu({
           </ContextMenuLink>
         )}
         {alternativeOrderModalContext && (
-          // TODO: simplify
-          <ContextMenuItem onSelect={alternativeOrderModalContext[0]}>
-            {alternativeOrderModalContext[1] ? <Edit size={16} /> : <Repeat size={16} />}
-            <span>{alternativeOrderModalContext[1] ? 'Edit' : 'Recreate'} order</span>
+          <ContextMenuItem onSelect={alternativeOrderModalContext.showAlternativeOrderModal}>
+            {alternativeOrderModalContext.isEdit ? <Edit size={16} /> : <Repeat size={16} />}
+            <span>{alternativeOrderModalContext.isEdit ? 'Edit' : 'Recreate'} order</span>
           </ContextMenuItem>
         )}
         {showCancellationModal && (
