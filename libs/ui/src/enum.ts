@@ -91,12 +91,14 @@ export enum UI {
   // Misc
   MODAL_BACKDROP = '--cow-modal-backdrop',
   BORDER_RADIUS_NORMAL = '--cow-border-radius-normal',
+  BORDER_RADIUS_LARGE = '--cow-border-radius-large',
   PADDING_NORMAL = '--cow-padding-normal',
 
   // Icons
   ICON_SIZE_NORMAL = '--cow-icon-size-normal',
   ICON_SIZE_SMALL = '--cow-icon-size-small',
   ICON_SIZE_XSMALL = '--cow-icon-size-xsmall',
+  ICON_SIZE_TINY = '--cow-icon-size-tiny',
   ICON_SIZE_LARGE = '--cow-icon-size-large',
   ICON_COLOR_NORMAL = '--cow-icon-color-normal',
 
@@ -123,4 +125,5 @@ export enum UI {
 
   // Animation
   ANIMATION_DURATION = '--cow-animation-duration',
+  ANIMATION_DURATION_SLOW = '--cow-animation-duration-slow',
 }

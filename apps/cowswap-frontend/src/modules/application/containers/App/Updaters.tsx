@@ -11,6 +11,7 @@ import { EthFlowDeadlineUpdater, EthFlowSlippageUpdater } from 'modules/swap/sta
 import { useOnTokenListAddingError } from 'modules/tokensList'
 import { UsdPricesUpdater } from 'modules/usdAmount'
 
+import { useFeatureFlags } from 'common/hooks/featureFlags/useFeatureFlags'
 import { TotalSurplusUpdater } from 'common/state/totalSurplusState'
 import { ApplicationUpdater } from 'common/updaters/ApplicationUpdater'
 import { CancelReplaceTxUpdater } from 'common/updaters/CancelReplaceTxUpdater'
@@ -35,6 +36,7 @@ export function Updaters() {
   const { chainId, account } = useWalletInfo()
   const { tokenLists, appCode } = useInjectedWidgetParams()
   const onTokenListAddingError = useOnTokenListAddingError()
+  const { isGeoBlockEnabled } = useFeatureFlags()
 
   return (
     <>
@@ -64,8 +66,7 @@ export function Updaters() {
       <TotalSurplusUpdater />
       <UsdPricesUpdater />
       <OrdersNotificationsUpdater />
-
-      <TokensListsUpdater chainId={chainId} />
+      <TokensListsUpdater chainId={chainId} isGeoBlockEnabled={isGeoBlockEnabled} />
       <WidgetTokensListsUpdater
         tokenLists={tokenLists}
         appCode={appCode}

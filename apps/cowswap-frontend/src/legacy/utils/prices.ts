@@ -30,7 +30,7 @@ export function warningSeverity(priceImpact: Percent | undefined): WarningSeveri
   return 0
 }
 
-// computes the minimum amount out and maximum amount in for a trade given a user specified allowed slippage in bips
+// computes the minimum amount out and maximum amount in for a trade given a user specified allowed slippage in bps
 export function computeSlippageAdjustedAmounts(
   //   trade: Trade | undefined,
   trade: TradeGp | undefined,

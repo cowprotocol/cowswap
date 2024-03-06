@@ -85,7 +85,7 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
         recipient={recipient}
       >
         <>
-          <TradeRates {...tradeRatesProps} isReviewSwap={true}>
+          <TradeRates {...tradeRatesProps} isReviewSwap>
             <RecipientRow recipient={recipient} account={account} recipientAddressOrName={recipientAddressOrName} />
           </TradeRates>
           <HighFeeWarning trade={tradeRatesProps.trade} />

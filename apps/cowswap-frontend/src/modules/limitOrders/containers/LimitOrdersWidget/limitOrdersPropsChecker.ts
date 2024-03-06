@@ -5,7 +5,6 @@ import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
 import { TradeFlowContext } from 'modules/limitOrders/services/types'
 import { LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
-import { PartiallyFillableOverrideDispatcherType } from 'modules/limitOrders/state/partiallyFillableOverride'
 import { TradeWidgetActions } from 'modules/trade'
 import { TradeFormValidation } from 'modules/tradeFormValidation'
 
@@ -21,10 +20,7 @@ export interface LimitOrdersProps {
   isUnlocked: boolean
   isRateLoading: boolean
   showRecipient: boolean
-  isExpertMode: boolean
-
   recipient: string | null
-  partiallyFillableOverride: PartiallyFillableOverrideDispatcherType
 
   rateInfoParams: RateInfoParams
   priceImpact: PriceImpact
@@ -46,7 +42,6 @@ export function limitOrdersPropsChecker(a: LimitOrdersProps, b: LimitOrdersProps
     a.showRecipient === b.showRecipient &&
     a.recipient === b.recipient &&
     a.widgetActions === b.widgetActions &&
-    a.partiallyFillableOverride[0] === b.partiallyFillableOverride[0] &&
     checkRateInfoParams(a.rateInfoParams, b.rateInfoParams) &&
     checkPriceImpact(a.priceImpact, b.priceImpact) &&
     checkTradeFlowContext(a.tradeContext, b.tradeContext) &&

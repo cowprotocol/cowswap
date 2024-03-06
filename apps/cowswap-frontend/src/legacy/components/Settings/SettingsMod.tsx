@@ -1,13 +1,8 @@
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useRef } from 'react'
 
-import {
-  showExpertModeConfirmationAnalytics,
-  toggleExpertModeAnalytics,
-  toggleRecepientAddressAnalytics,
-} from '@cowprotocol/analytics'
+import { toggleRecepientAddressAnalytics } from '@cowprotocol/analytics'
 import { useOnClickOutside } from '@cowprotocol/common-hooks'
-import { RowBetween, RowFixed } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
+import { RowBetween, RowFixed, UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import { Settings } from 'react-feather'
@@ -20,10 +15,8 @@ import { Toggle } from 'legacy/components/Toggle'
 import TransactionSettings from 'legacy/components/TransactionSettings'
 import { useModalIsOpen, useToggleSettingsMenu } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
-import { useExpertModeManager, useRecipientToggleManager } from 'legacy/state/user/hooks'
+import { useRecipientToggleManager } from 'legacy/state/user/hooks'
 import { ThemedText } from 'legacy/theme'
-
-import { ExpertModeModal } from 'common/pure/ExpertModeModal'
 
 import { SettingsTabProp } from './index'
 
@@ -98,12 +91,6 @@ export default function SettingsTab({ className, placeholderSlippage, SettingsBu
   const open = useModalIsOpen(ApplicationModal.SETTINGS)
   const toggle = useToggleSettingsMenu()
 
-  const [expertMode, toggleExpertModeAux] = useExpertModeManager()
-  const toggleExpertMode = useCallback(() => {
-    toggleExpertModeAnalytics(!expertMode)
-    toggleExpertModeAux()
-  }, [toggleExpertModeAux, expertMode])
-
   const [recipientToggleVisible, toggleRecipientVisibilityAux] = useRecipientToggleManager()
   const toggleRecipientVisibility = useCallback(
     (value?: boolean) => {
@@ -115,32 +102,13 @@ export default function SettingsTab({ className, placeholderSlippage, SettingsBu
   )
 
   // show confirmation view before turning on
-  const [showConfirmation, setShowConfirmationAux] = useState(false)
-  const setShowConfirmation = useCallback(
-    (showConfirmation: boolean) => {
-      if (showConfirmation) {
-        showExpertModeConfirmationAnalytics()
-      }
-
-      setShowConfirmationAux(showConfirmation)
-    },
-    [setShowConfirmationAux]
-  )
 
   useOnClickOutside(node, open ? toggle : undefined)
 
   return (
     // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/30451
     <StyledMenu ref={node as any} className={className}>
-      <ExpertModeModal
-        isOpen={showConfirmation}
-        onDismiss={() => setShowConfirmation(false)}
-        onEnable={() => {
-          toggleExpertMode()
-          setShowConfirmation(false)
-        }}
-      />
-      <SettingsButton expertMode={expertMode} toggleSettings={toggle} />
+      <SettingsButton toggleSettings={toggle} />
       {open && (
         <MenuFlyout>
           <AutoColumn gap="md" style={{ padding: '1rem' }}>
@@ -151,34 +119,6 @@ export default function SettingsTab({ className, placeholderSlippage, SettingsBu
             <Text fontWeight={600} fontSize={14}>
               <Trans>Interface Settings</Trans>
             </Text>
-
-            <RowBetween>
-              <RowFixed>
-                <ThemedText.Black fontWeight={400} fontSize={14}>
-                  <Trans>Expert Mode</Trans>
-                </ThemedText.Black>
-                <QuestionHelper
-                  text={
-                    <Trans>Allow high price impact trades and skip the confirm screen. Use at your own risk.</Trans>
-                  }
-                />
-              </RowFixed>
-              <Toggle
-                id="toggle-expert-mode-button"
-                isActive={expertMode}
-                toggle={
-                  expertMode
-                    ? () => {
-                        toggleExpertMode()
-                        setShowConfirmation(false)
-                      }
-                    : () => {
-                        toggle()
-                        setShowConfirmation(true)
-                      }
-                }
-              />
-            </RowBetween>
 
             <RowBetween>
               <RowFixed>

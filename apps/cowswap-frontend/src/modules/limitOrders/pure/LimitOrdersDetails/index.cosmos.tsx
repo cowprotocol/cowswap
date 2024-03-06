@@ -35,7 +35,6 @@ const tradeContext: TradeFlowContext = {
     allowsOffchainSigning: true,
     partiallyFillable: true,
     appData: getAppData(),
-    featureFlags: { swapZeroFee: false },
     isSafeWallet: false,
   },
   rateImpact: 0,

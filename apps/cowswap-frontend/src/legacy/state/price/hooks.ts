@@ -5,15 +5,15 @@ import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { useDispatch, useSelector } from 'react-redux'
 
 import {
-  updateQuote,
-  UpdateQuoteParams,
   ClearQuoteParams,
   getNewQuote,
   GetQuoteParams,
   refreshQuote,
-  SetQuoteErrorParams,
-  setQuoteError,
   RefreshQuoteParams,
+  setQuoteError,
+  SetQuoteErrorParams,
+  updateQuote,
+  UpdateQuoteParams,
 } from './actions'
 import { QuoteInformationObject, QuotesMap } from './reducer'
 
