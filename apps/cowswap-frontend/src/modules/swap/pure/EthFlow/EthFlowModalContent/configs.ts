@@ -6,31 +6,16 @@ export interface EthFlowConfig {
   descriptions: string[]
 }
 
-const expertCommonDescription = 'Transaction signature required, please check your connected wallet.'
 const commonSingularTxProgressDescription = 'Transaction in progress. See below for live status updates.'
 const commonFailedSingularTxGasLimitDescription =
   'Check that you are providing a sufficient gas limit for the transaction in your wallet.'
 
 export const ethFlowConfigs: {
-  [key in EthFlowState]: (context: {
-    isExpertMode: boolean
-    nativeSymbol: string
-    wrappedSymbol: string
-  }) => EthFlowConfig
+  [key in EthFlowState]: (context: { nativeSymbol: string; wrappedSymbol: string }) => EthFlowConfig
 } = {
   /**
    * FAILED operations
-   * wrap/approve/both in expertMode failed
    */
-  [EthFlowState.WrapAndApproveFailed]: () => ({
-    title: 'Wrap and Approve failed!',
-    buttonText: 'Wrap and approve',
-    descriptions: [
-      'Both wrap and approve operations failed.',
-      'Check that you are providing a sufficient gas limit for both transactions in your wallet.',
-      'Click "Wrap and approve" to try again.',
-    ],
-  }),
   [EthFlowState.WrapFailed]: ({ nativeSymbol }) => ({
     title: `Wrap ${nativeSymbol} failed`,
     buttonText: `Wrap ${nativeSymbol}`,
@@ -51,13 +36,7 @@ export const ethFlowConfigs: {
   }),
   /**
    * PENDING operations
-   * wrap/approve/both in expertMode
    */
-  [EthFlowState.WrapAndApprovePending]: () => ({
-    title: 'Wrap and approve',
-    buttonText: '',
-    descriptions: ['Transactions in progress. See below for live status updates of each operation.'],
-  }),
   [EthFlowState.WrapPending]: ({ nativeSymbol }) => ({
     title: `Swap with Wrapped ${nativeSymbol}`,
     buttonText: '',
@@ -78,31 +57,19 @@ export const ethFlowConfigs: {
   }),
   /**
    * NEEDS operations
-   * need to wrap/approve/both in expertMode
    */
-  [EthFlowState.WrapAndApproveNeeded]: ({ nativeSymbol }) => ({
-    title: 'Wrap and approve',
-    buttonText: '',
-    descriptions: [
-      `2 pending on-chain transactions: ${nativeSymbol} wrap and approve. Please check your connected wallet for both signature requests.`,
-    ],
-  }),
-  [EthFlowState.WrapNeeded]: ({ isExpertMode, nativeSymbol, wrappedSymbol }) => ({
+  [EthFlowState.WrapNeeded]: ({ nativeSymbol, wrappedSymbol }) => ({
     title: `Swap with Wrapped ${nativeSymbol}`,
     buttonText: `Wrap ${nativeSymbol}`,
-    descriptions: isExpertMode
-      ? [expertCommonDescription]
-      : [
-          `To continue, click below to wrap your ${nativeSymbol} to ${wrappedSymbol} via an on-chain ERC20 transaction.`,
-        ],
+    descriptions: [
+      `To continue, click below to wrap your ${nativeSymbol} to ${wrappedSymbol} via an on-chain ERC20 transaction.`,
+    ],
   }),
-  [EthFlowState.ApproveNeeded]: ({ isExpertMode, wrappedSymbol }) => ({
+  [EthFlowState.ApproveNeeded]: ({ wrappedSymbol }) => ({
     title: `Approve ${wrappedSymbol}`,
     buttonText: `Approve ${wrappedSymbol}`,
     descriptions: [
-      isExpertMode
-        ? expertCommonDescription
-        : `It is required to do a one-time approval of ${wrappedSymbol} via an on-chain ERC20 Approve transaction.`,
+      `It is required to do a one-time approval of ${wrappedSymbol} via an on-chain ERC20 Approve transaction.`,
     ],
   }),
   [EthFlowState.SwapReady]: ({ wrappedSymbol }) => ({

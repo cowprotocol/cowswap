@@ -15,6 +15,8 @@ export interface LimitRateState {
   // To avoid price overriding when it's already set from useSetupLimitOrderAmountsFromUrl()
   readonly isRateFromUrl: boolean
   readonly typedValue: string | null
+  // Respect alternative order initial rate
+  readonly isAlternativeOrderRate: boolean
 }
 
 export const initLimitRateState = () => ({
@@ -28,6 +30,7 @@ export const initLimitRateState = () => ({
   isTypedValue: false,
   isRateFromUrl: false,
   typedValue: null,
+  isAlternativeOrderRate: false,
 })
 
 export const { atom: limitRateAtom, updateAtom: updateLimitRateAtom } = atomWithPartialUpdate(

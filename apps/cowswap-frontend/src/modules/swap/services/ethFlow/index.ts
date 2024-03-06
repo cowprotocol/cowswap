@@ -1,4 +1,4 @@
-import { currencyAmountToTokenAmount, reportAppDataWithHooks } from '@cowprotocol/common-utils'
+import { currencyAmountToTokenAmount, reportAppDataWithHooks, reportPlaceOrderWithExpiredQuote } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
 import { Percent } from '@uniswap/sdk-core'
@@ -14,6 +14,7 @@ import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { tradeFlowAnalytics } from 'modules/trade/utils/analytics'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
+import { isQuoteExpired } from 'modules/tradeQuote/utils/isQuoteExpired'
 
 import { calculateUniqueOrderId } from './steps/calculateUniqueOrderId'
 
@@ -33,11 +34,10 @@ export async function ethFlow(
     orderParams: orderParamsOriginal,
     checkEthFlowOrderExists,
     addInFlightOrderId,
-    swapZeroFee,
   } = ethFlowContext
   const {
     chainId,
-    trade: { inputAmount, outputAmount },
+    trade: { inputAmount, outputAmount, fee },
   } = context
   const tradeAmounts = { inputAmount, outputAmount }
   const { account, recipientAddressOrName } = orderParamsOriginal
@@ -60,14 +60,15 @@ export async function ethFlow(
   tradeConfirmActions.onSign(tradeAmounts)
 
   logTradeFlow('ETH FLOW', 'STEP 3: Get Unique Order Id (prevent collisions)')
-  const { orderId, orderParams } = await calculateUniqueOrderId(
-    orderParamsOriginal,
-    contract,
-    checkEthFlowOrderExists,
-    swapZeroFee
-  )
+  const { orderId, orderParams } = await calculateUniqueOrderId(orderParamsOriginal, contract, checkEthFlowOrderExists)
 
   try {
+    // Do not proceed if fee is expired
+    if (isQuoteExpired(fee.expirationDate)) {
+      reportPlaceOrderWithExpiredQuote({ ...orderParamsOriginal, fee })
+      throw new Error('Quote expired. Please refresh.')
+    }
+
     logTradeFlow('ETH FLOW', 'STEP 4: sign order')
     const { order, txReceipt } = await signEthFlowOrderStep(orderId, orderParams, contract, addInFlightOrderId).finally(
       () => {

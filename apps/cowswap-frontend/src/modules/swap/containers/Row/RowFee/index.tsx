@@ -1,15 +1,14 @@
 import { useMemo } from 'react'
 
-import { formatFiatAmount, formatTokenAmount } from '@cowprotocol/common-utils'
-import { FractionUtils } from '@cowprotocol/common-utils'
-import { formatSymbol } from '@cowprotocol/common-utils'
+import { bpsToPercent, formatFiatAmount, formatTokenAmount } from '@cowprotocol/common-utils'
+import { FractionUtils, formatPercent, formatSymbol } from '@cowprotocol/common-utils'
+import { PartnerFee } from '@cowprotocol/widget-lib'
 import { Currency, CurrencyAmount, Token, TradeType } from '@uniswap/sdk-core'
 
 import TradeGp from 'legacy/state/swap/TradeGp'
 
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { RowFeeContent } from 'modules/swap/pure/Row/RowFeeContent'
-import { RowWithShowHelpersProps } from 'modules/swap/pure/Row/types'
 
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
@@ -38,13 +37,14 @@ export function computeTradePriceBreakdown(trade?: TradeGp | null): {
   }
 }
 
-export interface RowFeeProps extends RowWithShowHelpersProps {
+export interface RowFeeProps {
   // Although fee is part of the trade, if the trade is invalid, then it will be undefined
   // Even for invalid trades, we want to display the fee, this is why there's another "fee" parameter
   trade?: TradeGp
-  fee?: CurrencyAmount<Currency>
-  feeFiatValue: CurrencyAmount<Token> | null
+  feeAmount?: CurrencyAmount<Currency>
+  feeInFiat: CurrencyAmount<Token> | null
   allowsOffchainSigning: boolean
+  noLabel?: boolean
 }
 
 function isValidNonZeroAmount(value: string): boolean {
@@ -57,7 +57,7 @@ function isValidNonZeroAmount(value: string): boolean {
   }
 }
 
-export function RowFee({ trade, fee, feeFiatValue, allowsOffchainSigning, showHelpers }: RowFeeProps) {
+export function RowFee({ trade, feeAmount, feeInFiat, allowsOffchainSigning, noLabel }: RowFeeProps) {
   const { realizedFee } = useMemo(() => computeTradePriceBreakdown(trade), [trade])
 
   const isEoaEthFlow = useIsEoaEthFlow()
@@ -76,30 +76,65 @@ export function RowFee({ trade, fee, feeFiatValue, allowsOffchainSigning, showHe
   // trades are null when there is a fee quote error e.g
   // so we can take both
   const props = useMemo(() => {
-    const displayFee = realizedFee || fee
+    const label = 'Est. fees'
+    const displayFee = realizedFee || feeAmount
     const feeCurrencySymbol = displayFee?.currency.symbol || '-'
     // TODO: delegate formatting to the view layer
-    const smartFeeFiatValue = formatFiatAmount(feeFiatValue)
-    const smartFeeTokenValue = formatTokenAmount(displayFee)
-    const feeAmountWithCurrency = `${smartFeeTokenValue} ${formatSymbol(feeCurrencySymbol)} ${
+    const feeInFiatFormatted = formatFiatAmount(feeInFiat)
+    const displayFeeFormatted = formatTokenAmount(displayFee)
+    const feeAmountWithCurrency = `${displayFeeFormatted} ${formatSymbol(feeCurrencySymbol)} ${
       isEoaEthFlow ? ' + gas' : ''
     }`
 
-    const feeToken = isValidNonZeroAmount(smartFeeTokenValue)
-      ? feeAmountWithCurrency
+    const feeToken = isValidNonZeroAmount(displayFeeFormatted)
+      ? '≈ ' + feeAmountWithCurrency
       : `🎉 Free!${isEoaEthFlow ? ' (+ gas)' : ''}`
-    const feeUsd = isValidNonZeroAmount(smartFeeFiatValue) ? smartFeeFiatValue && `(≈$${smartFeeFiatValue})` : ''
+    const feeUsd = isValidNonZeroAmount(feeInFiatFormatted) ? `(≈$${feeInFiatFormatted})` : ''
+
     const fullDisplayFee = FractionUtils.fractionLikeToExactString(displayFee) || '-'
 
     return {
-      showHelpers,
+      label,
       feeToken,
       feeUsd,
       fullDisplayFee,
       feeCurrencySymbol,
       tooltip,
+      noLabel,
     }
-  }, [fee, feeFiatValue, isEoaEthFlow, realizedFee, showHelpers, tooltip])
+  }, [feeAmount, feeInFiat, isEoaEthFlow, realizedFee, tooltip, noLabel])
+
+  return <RowFeeContent {...props} />
+}
+
+export interface PartnerRowPartnerFeeProps {
+  partnerFee: PartnerFee
+  feeAmount?: CurrencyAmount<Currency>
+  feeInFiat: CurrencyAmount<Token> | null
+}
+
+export function RowPartnerFee({ partnerFee, feeAmount, feeInFiat }: PartnerRowPartnerFeeProps) {
+  const props = useMemo(() => {
+    const feeCurrencySymbol = feeAmount?.currency.symbol || '-' // TODO: Once we implement the computation of the fee, we should express it in the relevant fee currency (buy token for sell orders)
+    const feeInFiatFormatted = formatFiatAmount(feeInFiat)
+    const displayFeeFormatted = formatTokenAmount(feeAmount)
+    const feeAmountWithCurrency = `${displayFeeFormatted} ${formatSymbol(feeCurrencySymbol)}`
+
+    const feeUsd = isValidNonZeroAmount(feeInFiatFormatted) ? feeInFiatFormatted && `(≈$${feeInFiatFormatted})` : ''
+    const fullDisplayFee = FractionUtils.fractionLikeToExactString(feeAmount) || '-'
+    const { bps } = partnerFee
+
+    return {
+      label: 'Partner fee',
+      feeToken: feeAmountWithCurrency,
+      feeUsd,
+      fullDisplayFee,
+      feeCurrencySymbol,
+      tooltip: `Partner fee of ${bps} BPS (${formatPercent(
+        bpsToPercent(bps)
+      )}%). Applied only if the trade is executed.`,
+    }
+  }, [partnerFee, feeAmount, feeInFiat])
 
   return <RowFeeContent {...props} />
 }

@@ -1,4 +1,4 @@
-import { FiatAmount, TokenAmount } from '@cowprotocol/ui'
+import { FiatAmount, TokenAmount, InlineBanner } from '@cowprotocol/ui'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { NavLink } from 'react-router-dom'
@@ -8,7 +8,6 @@ import { TradeUrlParams } from 'modules/trade/types/TradeRawState'
 import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRoute'
 
 import { Routes } from 'common/constants/routes'
-import { InlineBanner } from 'common/pure/InlineBanner'
 
 import { SwapAmountDifference } from '../../../state/swapAmountDifferenceAtom'
 

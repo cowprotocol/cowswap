@@ -1,4 +1,4 @@
-import { atom } from 'jotai'
+import { atom, Getter, Setter } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
 import { getJotaiIsolatedStorage } from '@cowprotocol/core'
@@ -7,9 +7,12 @@ import { Milliseconds, Timestamp } from 'types'
 
 import { defaultLimitOrderDeadline } from 'modules/limitOrders/pure/DeadlineSelector/deadlines'
 import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
+import {
+  alternativeOrderAtomSetterFactory,
+  alternativeOrderReadWriteAtomFactory,
+} from 'modules/trade/state/alternativeOrder'
 
 export interface LimitOrdersSettingsState {
-  readonly expertMode: boolean
   readonly showRecipient: boolean
   readonly partialFillsEnabled: boolean
   readonly deadlineMilliseconds: Milliseconds
@@ -17,28 +20,55 @@ export interface LimitOrdersSettingsState {
 }
 
 export const defaultLimitOrdersSettings: LimitOrdersSettingsState = {
-  expertMode: false,
   showRecipient: false,
   partialFillsEnabled: true,
   deadlineMilliseconds: defaultLimitOrderDeadline.value,
   customDeadlineTimestamp: null,
 }
 
-export const limitOrdersSettingsAtom = atomWithStorage<LimitOrdersSettingsState>(
+// regular
+const regularLimitOrdersSettingsAtom = atomWithStorage<LimitOrdersSettingsState>(
   'limit-orders-settings-atom:v2',
   defaultLimitOrdersSettings,
   getJotaiIsolatedStorage()
 )
+const regularUpdateLimitOrdersSettingsAtom = atom(
+  null,
+  partialFillsOverrideSetterFactory(regularLimitOrdersSettingsAtom)
+)
 
-export const updateLimitOrdersSettingsAtom = atom(null, (get, set, nextState: Partial<LimitOrdersSettingsState>) => {
-  set(limitOrdersSettingsAtom, () => {
-    const prevState = get(limitOrdersSettingsAtom)
+// alternative
+const alternativeLimitOrdersSettingsAtom = atom<LimitOrdersSettingsState>(defaultLimitOrdersSettings)
+const alternativeUpdateLimitOrdersSettingsAtom = atom(
+  null,
+  partialFillsOverrideSetterFactory(alternativeLimitOrdersSettingsAtom)
+)
 
-    if (nextState.partialFillsEnabled !== prevState.partialFillsEnabled) {
-      // Whenever `partialFillsEnabled` changes, reset `partiallyFillableOverrideAtom`
-      set(partiallyFillableOverrideAtom, undefined)
-    }
+// export
+export const limitOrdersSettingsAtom = alternativeOrderReadWriteAtomFactory(
+  regularLimitOrdersSettingsAtom,
+  alternativeLimitOrdersSettingsAtom
+)
+export const updateLimitOrdersSettingsAtom = atom(
+  null,
+  alternativeOrderAtomSetterFactory(regularUpdateLimitOrdersSettingsAtom, alternativeUpdateLimitOrdersSettingsAtom)
+)
 
-    return { ...prevState, ...nextState }
-  })
-})
+// utils
+
+function partialFillsOverrideSetterFactory(
+  atomToUpdate: typeof regularLimitOrdersSettingsAtom | typeof alternativeLimitOrdersSettingsAtom
+) {
+  return (get: Getter, set: Setter, nextState: Partial<LimitOrdersSettingsState>) => {
+    set(atomToUpdate, () => {
+      const prevState = get(atomToUpdate)
+
+      if (nextState.partialFillsEnabled !== prevState.partialFillsEnabled) {
+        // Whenever `partialFillsEnabled` changes, reset `partiallyFillableOverrideAtom`
+        set(partiallyFillableOverrideAtom, undefined)
+      }
+
+      return { ...prevState, ...nextState }
+    })
+  }
+}

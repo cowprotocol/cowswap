@@ -15,3 +15,10 @@ export function reportAppDataWithHooks(params: Record<any, any>): void {
     contexts: { params },
   })
 }
+
+export function reportPlaceOrderWithExpiredQuote(params: Record<any, any>): void {
+  Sentry.captureException('Attempt to place order with expired quote', {
+    tags: { errorType: 'placeOrderWithExpiredQuote' },
+    contexts: { params },
+  })
+}

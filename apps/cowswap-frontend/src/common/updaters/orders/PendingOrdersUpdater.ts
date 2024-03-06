@@ -4,8 +4,8 @@ import { useCallback, useEffect, useMemo, useRef } from 'react'
 import {
   getExplorerOrderLink,
   isOrderInPendingTooLong,
-  openNpsAppziSometimes,
   timeSinceInSeconds,
+  triggerAppziSurvey,
 } from '@cowprotocol/common-utils'
 import { EnrichedOrder, EthflowData, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { Command, UiOrderType } from '@cowprotocol/types'
@@ -269,16 +269,17 @@ async function _updateOrders({
 function _triggerNps(pending: Order[], chainId: ChainId) {
   for (const order of pending) {
     const { openSince, id: orderId } = order
+    const orderType = getUiOrderType(order)
     // Check if there's any SWAP pending for more than `PENDING_TOO_LONG_TIME`
-    if (getUiOrderType(order) === UiOrderType.SWAP && isOrderInPendingTooLong(openSince)) {
+    if (orderType === UiOrderType.SWAP && isOrderInPendingTooLong(openSince)) {
       const explorerUrl = getExplorerOrderLink(chainId, orderId)
       // Trigger NPS display, controlled by Appzi
-      openNpsAppziSometimes({
+      triggerAppziSurvey({
         waitedTooLong: true,
         secondsSinceOpen: timeSinceInSeconds(openSince),
         explorerUrl,
         chainId,
-        orderType: getUiOrderType(order),
+        orderType,
       })
       // Break the loop, don't need to show more than once
       break

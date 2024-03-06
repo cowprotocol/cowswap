@@ -30,16 +30,16 @@ function useAgnosticPermitDataIfUserHasNoAllowance(): PermitHookData | undefined
 }
 
 export function AppDataHooksUpdater(): null {
-  const { v2Trade } = useDerivedSwapInfo()
+  const { trade } = useDerivedSwapInfo()
   const updateAppDataHooks = useUpdateAppDataHooks()
   const permitData = useAgnosticPermitDataIfUserHasNoAllowance()
   const permitDataPrev = useRef<PermitHookData | undefined>(undefined)
-  const hasTradeInfo = !!v2Trade
+  const hasTradeInfo = !!trade
   // This is already covered up the dependency chain, but it still slips through some times
   // Adding this additional check here to try to prevent a race condition to ever allowing this to pass through
   const isSmartContractWallet = useIsSmartContractWallet()
   // Remove hooks if the order is selling native. There's no need for approval
-  const isNativeSell = v2Trade?.inputAmount.currency ? getIsNativeToken(v2Trade?.inputAmount.currency) : false
+  const isNativeSell = trade?.inputAmount.currency ? getIsNativeToken(trade?.inputAmount.currency) : false
 
   useEffect(() => {
     if (

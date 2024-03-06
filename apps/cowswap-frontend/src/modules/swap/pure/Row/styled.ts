@@ -17,6 +17,9 @@ export const StyledRowBetween = styled(RowBetween)<RowStyleProps>`
   gap: 3px;
   color: inherit;
 
+  // if prop alignContentRight is true, then set justify-content to flex-end
+  justify-content: ${({ alignContentRight }) => (alignContentRight ? 'flex-end' : 'space-between')};
+
   ${RowFixed} {
     gap: 4px;
     min-width: 150px;

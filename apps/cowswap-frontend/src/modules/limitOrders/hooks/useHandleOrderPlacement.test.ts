@@ -1,5 +1,3 @@
-import { useAtomValue, useSetAtom } from 'jotai'
-
 import { useIsBundlingSupported } from '@cowprotocol/wallet'
 
 import { renderHook } from '@testing-library/react-hooks'
@@ -10,19 +8,21 @@ import { useSafeBundleFlowContext } from 'modules/limitOrders/hooks/useSafeBundl
 import { safeBundleFlow } from 'modules/limitOrders/services/safeBundleFlow'
 import { tradeFlow } from 'modules/limitOrders/services/tradeFlow'
 import { TradeFlowContext } from 'modules/limitOrders/services/types'
+import { useNavigateToOpenOrdersTable } from 'modules/ordersTable'
 
 import { useNeedsApproval } from 'common/hooks/useNeedsApproval'
 import { TradeAmounts } from 'common/types'
 import { WithModalProvider } from 'utils/withModalProvider'
 
 import { useHandleOrderPlacement } from './useHandleOrderPlacement'
+import { useLimitOrdersRawState, useUpdateLimitOrdersRawState } from './useLimitOrdersRawState'
 
 import { TradeConfirmActions } from '../../trade'
-import { limitOrdersRawStateAtom, updateLimitOrdersRawStateAtom } from '../state/limitOrdersRawStateAtom'
 import { defaultLimitOrdersSettings } from '../state/limitOrdersSettingsAtom'
 
 jest.mock('modules/limitOrders/services/tradeFlow')
 jest.mock('modules/limitOrders/services/safeBundleFlow')
+jest.mock('modules/ordersTable')
 
 jest.mock('modules/limitOrders/hooks/useSafeBundleFlowContext')
 jest.mock('common/hooks/useNeedsApproval')
@@ -46,6 +46,9 @@ jest.mock('common/hooks/useAnalyticsReporter')
 
 const mockTradeFlow = tradeFlow as jest.MockedFunction<typeof tradeFlow>
 const mockSafeBundleFlow = safeBundleFlow as jest.MockedFunction<typeof safeBundleFlow>
+const mockUseNavigateToOpenOrdersTable = useNavigateToOpenOrdersTable as jest.MockedFunction<
+  typeof useNavigateToOpenOrdersTable
+>
 
 const mockUseSafeBundleFlowContext = useSafeBundleFlowContext as jest.MockedFunction<typeof useSafeBundleFlowContext>
 const mockUseNeedsApproval = useNeedsApproval as jest.MockedFunction<typeof useNeedsApproval>
@@ -85,13 +88,14 @@ describe('useHandleOrderPlacement', () => {
     mockUseSafeBundleFlowContext.mockImplementation(() => null)
     mockUseNeedsApproval.mockImplementation(() => false)
     mockIsBundlingSupported.mockImplementation(() => true)
+    mockUseNavigateToOpenOrdersTable.mockImplementation(() => () => {})
   })
 
   it('When a limit order placed, then the recipient value should be deleted', async () => {
     // Arrange
     renderHook(
       () => {
-        const updateLimitOrdersState = useSetAtom(updateLimitOrdersRawStateAtom)
+        const updateLimitOrdersState = useUpdateLimitOrdersRawState()
 
         updateLimitOrdersState({ recipient })
       },
@@ -99,7 +103,7 @@ describe('useHandleOrderPlacement', () => {
     )
 
     // Assert
-    const { result: limitOrdersStateResultBefore } = renderHook(() => useAtomValue(limitOrdersRawStateAtom), {
+    const { result: limitOrdersStateResultBefore } = renderHook(() => useLimitOrdersRawState(), {
       wrapper: WithModalProvider,
     })
     expect(limitOrdersStateResultBefore.current.recipient).toBe(recipient)
@@ -112,7 +116,7 @@ describe('useHandleOrderPlacement', () => {
     await result.current()
 
     // Assert
-    const { result: limitOrdersStateResultAfter } = renderHook(() => useAtomValue(limitOrdersRawStateAtom), {
+    const { result: limitOrdersStateResultAfter } = renderHook(() => useLimitOrdersRawState(), {
       wrapper: WithModalProvider,
     })
     expect(limitOrdersStateResultAfter.current.recipient).toBe(null)

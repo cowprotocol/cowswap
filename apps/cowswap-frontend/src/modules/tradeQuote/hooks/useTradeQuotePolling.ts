@@ -19,8 +19,7 @@ import { useQuoteParams } from './useQuoteParams'
 
 import { tradeQuoteParamsAtom } from '../state/tradeQuoteParamsAtom'
 
-// Every 10s
-export const PRICE_UPDATE_INTERVAL = 10_000
+export const PRICE_UPDATE_INTERVAL = ms`30s`
 const AMOUNT_CHANGE_DEBOUNCE_TIME = ms`300`
 
 // Solves the problem of multiple requests

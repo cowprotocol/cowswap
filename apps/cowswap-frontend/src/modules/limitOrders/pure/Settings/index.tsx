@@ -8,17 +8,11 @@ export interface SettingsProps {
 }
 
 export function Settings({ state, onStateChanged }: SettingsProps) {
-  const { expertMode, showRecipient, partialFillsEnabled } = state
+  const { showRecipient, partialFillsEnabled } = state
 
   return (
     <SettingsContainer>
       <SettingsTitle>Interface Settings</SettingsTitle>
-      <SettingsBox
-        title="Expert Mode"
-        tooltip="Allow high price impact trades and skip the confirm screen. Use at your own risk."
-        value={expertMode}
-        toggle={() => onStateChanged({ expertMode: !expertMode })}
-      />
 
       <SettingsBox
         title="Custom Recipient"

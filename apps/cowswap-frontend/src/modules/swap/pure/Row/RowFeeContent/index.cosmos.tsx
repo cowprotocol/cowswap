@@ -1,7 +1,7 @@
 import { COW, GNO } from '@cowprotocol/common-const'
 import { currencyAmountToTokenAmount } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { CurrencyAmount, TradeType, Price } from '@uniswap/sdk-core'
+import { CurrencyAmount, Price, TradeType } from '@uniswap/sdk-core'
 
 import TradeGp from 'legacy/state/swap/TradeGp'
 
@@ -18,28 +18,35 @@ const trade = new TradeGp({
   inputAmount: CurrencyAmount.fromRawAmount(currency, amount * 10 ** 18),
   inputAmountWithFee: CurrencyAmount.fromRawAmount(currency, (amount + fee) * 10 ** 18),
   inputAmountWithoutFee: CurrencyAmount.fromRawAmount(currency, amount * 10 ** 18),
+  inputAmountAfterFees: CurrencyAmount.fromRawAmount(currency, amount * 10 ** 18),
   outputAmount: CurrencyAmount.fromRawAmount(currency, output * 10 ** 18),
   outputAmountWithoutFee: CurrencyAmount.fromRawAmount(currency, (output - 3) * 10 ** 18),
-  fee: { feeAsCurrency: CurrencyAmount.fromRawAmount(currency, 3 * 10 ** 18), amount: '50' },
+  outputAmountAfterFees: CurrencyAmount.fromRawAmount(currency, (output - 3) * 10 ** 18),
+  fee: {
+    feeAsCurrency: CurrencyAmount.fromRawAmount(currency, 3 * 10 ** 18),
+    amount: '50',
+    expirationDate: new Date().toISOString(),
+  },
   executionPrice: new Price(currency, currencyOut, 1, 4),
   tradeType: TradeType.EXACT_INPUT,
   quoteId: 10000,
+  partnerFee: { bps: 35, recipient: '0x1234567890123456789012345678901234567890' },
 })
 const defaultProps: RowFeeProps & RowFeeContentProps = {
+  label: 'Est. Fee',
   trade,
-  fee: CurrencyAmount.fromRawAmount(currency, fee * 10 ** 18),
+  feeAmount: CurrencyAmount.fromRawAmount(currency, fee * 10 ** 18),
   feeUsd: '(≈$42.93)',
   feeCurrencySymbol: 'GNO',
-  get feeFiatValue() {
-    return this.fee ? currencyAmountToTokenAmount(this.fee.multiply('100')) : null
+  get feeInFiat() {
+    return this.feeAmount ? currencyAmountToTokenAmount(this.feeAmount.multiply('100')) : null
   },
   get feeToken() {
-    return (this.fee?.toExact() || '-') + ' ' + this.feeCurrencySymbol
+    return (this.feeAmount?.toExact() || '-') + ' ' + this.feeCurrencySymbol
   },
   get fullDisplayFee() {
-    return this.fee?.quotient.toString() || 'Unknown'
+    return this.feeAmount?.quotient.toString() || 'Unknown'
   },
-  showHelpers: true,
   allowsOffchainSigning: true,
   tooltip: 'This is a tooltip that describes stuff. Stuff that is great. Great stuff. The best stuff on earth.',
 }

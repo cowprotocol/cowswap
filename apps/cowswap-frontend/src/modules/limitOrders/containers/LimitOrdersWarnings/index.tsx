@@ -2,6 +2,7 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import React, { useCallback, useEffect } from 'react'
 
 import { isFractionFalsy } from '@cowprotocol/common-utils'
+import { BundleTxApprovalBanner, BundleTxSafeWcBanner, SmallVolumeWarningBanner } from '@cowprotocol/ui'
 import { useIsSafeViaWc, useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -11,7 +12,6 @@ import { Nullish } from 'types'
 import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
 import { useLimitOrdersFormState } from 'modules/limitOrders/hooks/useLimitOrdersFormState'
 import { useRateImpact } from 'modules/limitOrders/hooks/useRateImpact'
-import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import {
   limitOrdersWarningsAtom,
   updateLimitOrdersWarningsAtom,
@@ -24,17 +24,12 @@ import { useTradeQuote } from 'modules/tradeQuote'
 import { useShouldZeroApprove } from 'modules/zeroApproval'
 
 import { HIGH_FEE_WARNING_PERCENTAGE } from 'common/constants/common'
-import {
-  BundleTxApprovalBanner,
-  BundleTxSafeWcBanner,
-  SmallVolumeWarningBanner,
-} from 'common/pure/InlineBanner/banners'
 import { ZeroApprovalWarning } from 'common/pure/ZeroApprovalWarning'
 import { calculatePercentageInRelationToReference } from 'utils/orderUtils/calculatePercentageInRelationToReference'
 
 import { RateImpactWarning } from '../../pure/RateImpactWarning'
 
-const FORM_STATES_TO_SHOW_BUNDLE_BANNER = [TradeFormValidation.ExpertApproveAndSwap, TradeFormValidation.ApproveAndSwap]
+const FORM_STATES_TO_SHOW_BUNDLE_BANNER = [TradeFormValidation.ApproveAndSwap]
 
 export interface LimitOrdersWarningsProps {
   feeAmount?: Nullish<CurrencyAmount<Currency>>
@@ -60,7 +55,6 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
 
   const { isPriceImpactAccepted, isRateImpactAccepted } = useAtomValue(limitOrdersWarningsAtom)
   const updateLimitOrdersWarnings = useSetAtom(updateLimitOrdersWarningsAtom)
-  const { expertMode } = useAtomValue(limitOrdersSettingsAtom)
 
   const localFormValidation = useLimitOrdersFormState()
   const primaryFormValidation = useGetTradeFormValidation()
@@ -74,8 +68,7 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
   const isBundling = primaryFormValidation && FORM_STATES_TO_SHOW_BUNDLE_BANNER.includes(primaryFormValidation)
 
   const canTrade = localFormValidation === null && (primaryFormValidation === null || isBundling) && !tradeQuote.error
-  const showPriceImpactWarning =
-    canTrade && !expertMode && !!account && !priceImpactParams.loading && !priceImpactParams.priceImpact
+  const showPriceImpactWarning = canTrade && !!account && !priceImpactParams.loading && !priceImpactParams.priceImpact
 
   const showRateImpactWarning =
     canTrade && inputCurrency && !isFractionFalsy(inputCurrencyAmount) && !isFractionFalsy(outputCurrencyAmount)

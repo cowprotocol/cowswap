@@ -1,12 +1,11 @@
 import { UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
-import { Link, useLocation } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import styled from 'styled-components/macro'
 
-import { buildOrdersTableUrl } from 'modules/ordersTable/utils/buildOrdersTableUrl'
-
 import { OrderTab } from '../../const/tabs'
+import { useGetBuildOrdersTableUrl } from '../../hooks/useGetBuildOrdersTableUrl'
 
 const Tabs = styled.div`
   display: inline-block;
@@ -52,7 +51,7 @@ export interface OrdersTabsProps {
 }
 
 export function OrdersTabs({ tabs }: OrdersTabsProps) {
-  const location = useLocation()
+  const buildOrdersTableUrl = useGetBuildOrdersTableUrl()
   const activeTabIndex = Math.max(
     tabs.findIndex((i) => i.isActive),
     0
@@ -64,7 +63,7 @@ export function OrdersTabs({ tabs }: OrdersTabsProps) {
         <TabButton
           key={index}
           active={(index === activeTabIndex).toString()}
-          to={buildOrdersTableUrl(location, { tabId: tab.id, pageNumber: 1 })}
+          to={buildOrdersTableUrl({ tabId: tab.id, pageNumber: 1 })}
         >
           <Trans>{tab.title}</Trans> <span>({tab.count})</span>
         </TabButton>

@@ -1,18 +1,20 @@
-import { useAtom, useSetAtom } from 'jotai'
+import { useAtom } from 'jotai'
 import { useCallback } from 'react'
 
 import { getAddress } from '@cowprotocol/common-utils'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
+import { useUpdateLimitOrdersRawState } from 'modules/limitOrders/hooks/useLimitOrdersRawState'
 import { useSafeBundleFlowContext } from 'modules/limitOrders/hooks/useSafeBundleFlowContext'
 import { safeBundleFlow } from 'modules/limitOrders/services/safeBundleFlow'
 import { tradeFlow } from 'modules/limitOrders/services/tradeFlow'
 import { PriceImpactDeclineError, TradeFlowContext } from 'modules/limitOrders/services/types'
-import { updateLimitOrdersRawStateAtom } from 'modules/limitOrders/state/limitOrdersRawStateAtom'
 import { LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
+import { useNavigateToOpenOrdersTable } from 'modules/ordersTable'
 import { TradeConfirmActions } from 'modules/trade/hooks/useTradeConfirmActions'
+import { useHideAlternativeOrderModal } from 'modules/trade/state/alternativeOrder'
 import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
 
 import OperatorError from 'api/gnosisProtocol/errors/OperatorError'
@@ -27,7 +29,9 @@ export function useHandleOrderPlacement(
   tradeConfirmActions: TradeConfirmActions
 ): () => Promise<void> {
   const { confirmPriceImpactWithoutFee } = useConfirmPriceImpactWithoutFee()
-  const updateLimitOrdersState = useSetAtom(updateLimitOrdersRawStateAtom)
+  const updateLimitOrdersState = useUpdateLimitOrdersRawState()
+  const hideAlternativeOrderModal = useHideAlternativeOrderModal()
+  const navigateToOpenOrdersTable = useNavigateToOpenOrdersTable()
   const [partiallyFillableOverride, setPartiallyFillableOverride] = useAtom(partiallyFillableOverrideAtom)
   // tx bundling stuff
   const safeBundleFlowContext = useSafeBundleFlowContext(tradeContext)
@@ -97,6 +101,10 @@ export function useHandleOrderPlacement(
         updateLimitOrdersState({ recipient: null })
         // Reset override after successful order placement
         setPartiallyFillableOverride(undefined)
+        // Reset alternative mode if any
+        hideAlternativeOrderModal()
+        // Navigate to open orders
+        navigateToOpenOrdersTable()
       })
       .catch((error) => {
         if (error instanceof PriceImpactDeclineError) return
@@ -107,7 +115,14 @@ export function useHandleOrderPlacement(
           tradeConfirmActions.onError(getSwapErrorMessage(error))
         }
       })
-  }, [tradeFn, tradeConfirmActions, updateLimitOrdersState, setPartiallyFillableOverride])
+  }, [
+    tradeFn,
+    tradeConfirmActions,
+    updateLimitOrdersState,
+    setPartiallyFillableOverride,
+    hideAlternativeOrderModal,
+    navigateToOpenOrdersTable,
+  ])
 }
 
 function buildTradeAmounts(tradeContext: TradeFlowContext): TradeAmounts {
