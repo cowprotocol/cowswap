@@ -48,9 +48,6 @@ export type PostOrderParams = {
   appData: AppDataInfo
   class: OrderClass
   partiallyFillable: boolean
-  featureFlags: {
-    swapZeroFee: boolean | undefined
-  }
   quoteId?: number
   isSafeWallet: boolean
 }
@@ -66,26 +63,10 @@ export type UnsignedOrderAdditionalParams = PostOrderParams & {
 export function getOrderSubmitSummary(
   params: Pick<
     PostOrderParams,
-    | 'kind'
-    | 'account'
-    | 'inputAmount'
-    | 'outputAmount'
-    | 'recipient'
-    | 'recipientAddressOrName'
-    | 'feeAmount'
-    | 'featureFlags'
+    'kind' | 'account' | 'inputAmount' | 'outputAmount' | 'recipient' | 'recipientAddressOrName' | 'feeAmount'
   >
 ): string {
-  const {
-    kind,
-    account,
-    inputAmount,
-    outputAmount,
-    recipient,
-    recipientAddressOrName,
-    feeAmount,
-    featureFlags: { swapZeroFee },
-  } = params
+  const { kind, account, inputAmount, outputAmount, recipient, recipientAddressOrName, feeAmount } = params
 
   const sellToken = inputAmount.currency
   const buyToken = outputAmount.currency
@@ -94,7 +75,7 @@ export function getOrderSubmitSummary(
   const inputSymbol = formatSymbol(sellToken.symbol)
   const outputSymbol = formatSymbol(buyToken.symbol)
   // this already contains the fee in the fee amount when fee=0
-  const inputAmountValue = formatTokenAmount(feeAmount && !swapZeroFee ? inputAmount.add(feeAmount) : inputAmount)
+  const inputAmountValue = formatTokenAmount(feeAmount ? inputAmount.add(feeAmount) : inputAmount)
   const outputAmountValue = formatTokenAmount(outputAmount)
 
   const base = `Swap ${inputQuantifier}${inputAmountValue} ${inputSymbol} for ${outputQuantifier}${outputAmountValue} ${outputSymbol}`
@@ -130,8 +111,6 @@ export function getSignOrderParams(params: PostOrderParams): SignOrderParams {
     partiallyFillable,
     appData,
     quoteId,
-    feeAmount,
-    featureFlags: { swapZeroFee },
   } = params
   const sellTokenAddress = sellToken.address
 
@@ -142,7 +121,7 @@ export function getSignOrderParams(params: PostOrderParams): SignOrderParams {
   const isSellTrade = isSellOrder(kind)
 
   // fee adjusted input amount
-  const sellAmount = (swapZeroFee && isSellTrade ? sellAmountBeforeFee : inputAmount).quotient.toString(RADIX_DECIMAL)
+  const sellAmount = (isSellTrade ? sellAmountBeforeFee : inputAmount).quotient.toString(RADIX_DECIMAL)
   // slippage adjusted output amount
   const buyAmount = outputAmount.quotient.toString(RADIX_DECIMAL)
 
@@ -160,7 +139,7 @@ export function getSignOrderParams(params: PostOrderParams): SignOrderParams {
       buyAmount,
       validTo,
       appData: appData.appDataKeccak256,
-      feeAmount: (swapZeroFee ? '0' : feeAmount?.quotient.toString()) || '0',
+      feeAmount: '0',
       kind,
       receiver,
       partiallyFillable,

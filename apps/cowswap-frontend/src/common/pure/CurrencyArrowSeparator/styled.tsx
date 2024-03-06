@@ -5,10 +5,15 @@ import styled, { css } from 'styled-components/macro'
 
 import { loadingAnimationMixin } from './style-mixins'
 
-export const Box = styled.div<{ withRecipient: boolean; isCollapsed: boolean; hasSeparatorLine?: boolean }>`
+export const Box = styled.div<{
+  withRecipient: boolean
+  isCollapsed: boolean
+  hasSeparatorLine?: boolean
+  disabled: boolean
+}>`
   display: ${({ withRecipient }) => (withRecipient ? 'inline-flex' : 'block')};
   margin: ${({ withRecipient, isCollapsed }) => (withRecipient ? '0' : isCollapsed ? '-13px auto' : '2px auto')};
-  cursor: pointer;
+  cursor: ${({ disabled }) => (disabled ? 'inherit' : 'pointer')};
   color: inherit;
   position: relative;
   z-index: 2;
@@ -58,7 +63,7 @@ export const LoadingWrapper = styled.div<{ isLoading: boolean }>`
   ${({ isLoading }) => isLoading && loadingAnimationMixin}
 `
 
-export const ArrowDownIcon = styled(ArrowDown)`
+export const ArrowDownIcon = styled(ArrowDown)<{ disabled: boolean }>`
   display: block;
   margin: auto;
   stroke: currentColor;
@@ -66,7 +71,7 @@ export const ArrowDownIcon = styled(ArrowDown)`
   padding: 0;
   height: 100%;
   width: 20px;
-  cursor: pointer;
+  cursor: ${({ disabled }) => (disabled ? 'inherit' : 'pointer')};
   color: inherit;
 `
 

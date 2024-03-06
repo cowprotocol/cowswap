@@ -1,5 +1,4 @@
 import { useSetAtom } from 'jotai'
-import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
 import { WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
@@ -15,7 +14,7 @@ import { useTradeConfirmActions } from 'modules/trade'
 import { TradeApproveCallback } from 'common/containers/TradeApprove/useTradeApproveCallback'
 
 import { useDerivedSwapInfo, useSwapActionHandlers } from '../../../hooks/useSwapState'
-import { ethFlowContextAtom, updateEthFlowContextAtom } from '../../../state/EthFlow/ethFlowContextAtom'
+import { updateEthFlowContextAtom } from '../../../state/EthFlow/ethFlowContextAtom'
 
 export interface EthFlowActionCallbacks {
   approve: TradeApproveCallback
@@ -25,7 +24,6 @@ export interface EthFlowActionCallbacks {
 }
 
 export interface EthFlowActions {
-  expertModeFlow(): Promise<void>
   approve(): Promise<void>
   wrap(): Promise<void>
   swap(): Promise<void>
@@ -34,18 +32,12 @@ export interface EthFlowActions {
 
 export function useEthFlowActions(callbacks: EthFlowActionCallbacks): EthFlowActions {
   const { chainId } = useWalletInfo()
-  const { v2Trade: trade } = useDerivedSwapInfo()
+  const { trade } = useDerivedSwapInfo()
 
-  const ethFlowContext = useAtomValue(ethFlowContextAtom)
   const updateEthFlowContext = useSetAtom(updateEthFlowContextAtom)
 
   const { onCurrencySelection } = useSwapActionHandlers()
   const { onOpen: openSwapConfirmModal } = useTradeConfirmActions()
-
-  const {
-    approve: { isNeeded: isApproveNeeded },
-    wrap: { isNeeded: isWrapNeeded },
-  } = ethFlowContext
 
   return useMemo(() => {
     function sendTransaction(type: 'approve' | 'wrap', callback: () => Promise<string | undefined>): Promise<void> {
@@ -88,13 +80,6 @@ export function useEthFlowActions(callbacks: EthFlowActionCallbacks): EthFlowAct
       })
     }
 
-    const expertModeFlow = () => {
-      return Promise.all([
-        isApproveNeeded ? approve(false) : undefined, //
-        isWrapNeeded ? wrap(false) : undefined,
-      ]).then(() => void 0)
-    }
-
     const directSwap = () => {
       if (!chainId || !trade) return
 
@@ -107,17 +92,7 @@ export function useEthFlowActions(callbacks: EthFlowActionCallbacks): EthFlowAct
       swap,
       approve,
       wrap,
-      expertModeFlow,
       directSwap,
     }
-  }, [
-    callbacks,
-    isApproveNeeded,
-    isWrapNeeded,
-    chainId,
-    trade,
-    updateEthFlowContext,
-    onCurrencySelection,
-    openSwapConfirmModal,
-  ])
+  }, [callbacks, chainId, trade, updateEthFlowContext, onCurrencySelection, openSwapConfirmModal])
 }

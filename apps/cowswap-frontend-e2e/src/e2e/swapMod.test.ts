@@ -72,19 +72,6 @@ describe('Swap (mod)', () => {
     cy.get('#add-recipient-button').should('not.exist')
   })
 
-  describe('expert mode', () => {
-    beforeEach(() => {
-      cy.get('#open-settings-dialog-button').click()
-      cy.get('#toggle-expert-mode-button').click()
-      cy.get('#confirm-modal-input').type('confirm')
-      cy.get('#confirm-modal-button').click()
-    })
-
-    it('Expert mode is ON', () => {
-      cy.get(`[aria-label="Expert Mode Turned On"]`).should('be.visible')
-    })
-  })
-
   describe('recipient', () => {
     beforeEach(() => {
       cy.get('#open-settings-dialog-button').click()

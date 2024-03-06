@@ -198,12 +198,15 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
           onError={(): void => toggleInvalid({ appData: true })}
           schema={schema}
           uiSchema={uiSchema}
-        >
-          <></>
-        </Form>
+        />
         <AppDataWrapper>
           <div className="hidden-content">
-            <h2>💅 AppData prettified</h2>
+            <h2>
+              <span role="img" aria-label="Nail polish emoji">
+                💅
+              </span>{' '}
+              AppData prettified
+            </h2>
             <p>
               This is the generated and <strong>prettified</strong> file based on the input you provided on the form.
             </p>
@@ -211,7 +214,12 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
             <JsonContent content={fullAppDataPrettified} isError={!isValidAppData} />
             {fullAppData && (
               <>
-                <h2>ℹ️ AppData string</h2>
+                <h2>
+                  <span role="img" aria-label="Info icon emoji">
+                    ℹ️
+                  </span>
+                  AppData string
+                </h2>
                 <p>
                   This is the actual content that is hashed using <code>keccak-256</code> to get the{' '}
                   <strong>AppData hex</strong>.
@@ -229,7 +237,12 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
             )}
             {!!ipfsHashInfo && (
               <>
-                <h2>🐮 AppData hex</h2>
+                <h2>
+                  <span role="img" aria-label="Cow emoji">
+                    🐮
+                  </span>{' '}
+                  AppData hex
+                </h2>
                 <p>
                   This is the <code>keccak-256</code> hash of the above document represented in hexadecimal format.
                 </p>
@@ -249,7 +262,12 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
                   textToCopy={ipfsHashInfo.appDataHex}
                   contentsToDisplay={ipfsHashInfo.appDataHex}
                 />
-                <h2>🌍 IPFS CiD</h2>
+                <h2>
+                  <span role="img" aria-label="Earth emoji">
+                    🌍
+                  </span>{' '}
+                  IPFS CiD
+                </h2>
                 <p>
                   This is the{' '}
                   <a href="https://docs.ipfs.tech/concepts/content-addressing/" target="_blank" rel="noreferrer">

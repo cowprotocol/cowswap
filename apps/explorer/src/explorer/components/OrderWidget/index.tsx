@@ -25,7 +25,7 @@ export const OrderWidget: React.FC = () => {
     errors['trades'] = error
   }
 
-  if (errorOrderPresentInNetworkId && networkId != errorOrderPresentInNetworkId) {
+  if (errorOrderPresentInNetworkId && networkId !== errorOrderPresentInNetworkId) {
     return <RedirectToNetwork networkId={errorOrderPresentInNetworkId} />
   }
 

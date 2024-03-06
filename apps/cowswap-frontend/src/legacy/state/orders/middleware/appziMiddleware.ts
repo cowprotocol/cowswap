@@ -1,8 +1,9 @@
 import {
   getExplorerOrderLink,
+  getSurveyType,
   isOrderInPendingTooLong,
-  openNpsAppziSometimes,
   timeSinceInSeconds,
+  triggerAppziSurvey,
 } from '@cowprotocol/common-utils'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
@@ -30,7 +31,7 @@ export const appziMiddleware: Middleware<Record<string, unknown>, AppState> = (s
       orders: [{ uid }],
     } = action.payload
 
-    _triggerNps(store, chainId, uid, { traded: true })
+    _triggerAppzi(store, chainId, uid, { traded: true })
   } else if (isBatchExpireOrderAction(action)) {
     // Shows NPS feedback (or attempts to) when the order expired
     const {
@@ -38,7 +39,7 @@ export const appziMiddleware: Middleware<Record<string, unknown>, AppState> = (s
       ids: [id],
     } = action.payload
 
-    _triggerNps(store, chainId, id, { expired: true })
+    _triggerAppzi(store, chainId, id, { expired: true })
   } else if (isBatchPresignOrderAction(action)) {
     // For SC wallet orders, shows NPS feedback (or attempts to) only when the order was pre-signed
     const {
@@ -50,7 +51,7 @@ export const appziMiddleware: Middleware<Record<string, unknown>, AppState> = (s
 
     // Only for limit orders
     if (uiOrderType === UiOrderType.LIMIT) {
-      _triggerNps(store, chainId, id, { created: true })
+      _triggerAppzi(store, chainId, id, { created: true })
     }
   } else if (isPendingOrderAction(action)) {
     // For EOA orders, shows NPS feedback (or attempts to) when the order is placed
@@ -61,7 +62,7 @@ export const appziMiddleware: Middleware<Record<string, unknown>, AppState> = (s
 
     // Only for limit orders
     if (uiOrderType === UiOrderType.LIMIT) {
-      _triggerNps(store, chainId, order.id, { created: true }, order)
+      _triggerAppzi(store, chainId, order.id, { created: true }, order)
     }
   } else if (isBatchCancelOrderAction(action)) {
     const {
@@ -73,18 +74,18 @@ export const appziMiddleware: Middleware<Record<string, unknown>, AppState> = (s
 
     // Only for limit orders
     if (uiOrderType === UiOrderType.LIMIT) {
-      _triggerNps(store, chainId, id, { cancelled: true })
+      _triggerAppzi(store, chainId, id, { cancelled: true })
     }
   }
 
   return next(action)
 }
 
-function _triggerNps(
+function _triggerAppzi(
   store: MiddlewareAPI<Dispatch<AnyAction>>,
   chainId: ChainId,
   orderId: string,
-  npsParams: Parameters<typeof openNpsAppziSometimes>[0],
+  npsParams: Parameters<typeof triggerAppziSurvey>[0],
   _order?: OrderActions.SerializedOrder | undefined
 ) {
   const order = _order || getOrderByIdFromState(store.getState().orders[chainId], orderId)?.order
@@ -105,13 +106,22 @@ function _triggerNps(
     return
   }
 
-  openNpsAppziSometimes({
-    ...npsParams,
-    secondsSinceOpen: timeSinceInSeconds(openSince),
-    explorerUrl,
-    chainId,
-    orderType: uiOrderType,
-  })
+  triggerAppziSurvey(
+    {
+      ...npsParams,
+      secondsSinceOpen: timeSinceInSeconds(openSince),
+      explorerUrl,
+      chainId,
+      orderType: uiOrderType,
+      account: order?.owner,
+      pendingOrderIds: getPendingOrderIds(store, chainId).join(','),
+    },
+    getSurveyType(uiOrderType)
+  )
+}
+
+function getPendingOrderIds(store: MiddlewareAPI<Dispatch<AnyAction>>, chainId: ChainId) {
+  return Object.keys(store.getState().orders[chainId]?.pending || {})
 }
 
 function getUiOrderTypeFromStore(store: MiddlewareAPI<Dispatch<AnyAction>>, chainId: any, id: any) {

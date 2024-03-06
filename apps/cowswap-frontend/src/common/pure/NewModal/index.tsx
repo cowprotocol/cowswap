@@ -18,13 +18,18 @@ const ModalInner = styled.div`
   position: relative;
 `
 
-const Wrapper = styled.div<{ maxWidth?: number | string; minHeight?: number | string }>`
+const Wrapper = styled.div<{
+  maxWidth?: number | string
+  minHeight?: number | string
+  modalMode?: boolean
+}>`
   display: flex;
   width: 100%;
   height: 100%;
   margin: auto;
   overflow-y: auto;
-  background: var(${UI.COLOR_PAPER});
+  background: ${({ modalMode }) => (modalMode ? `var(${UI.COLOR_PAPER_DARKER})` : `var(${UI.COLOR_PAPER})`)};
+  border: ${({ modalMode }) => (modalMode ? `1px solid var(${UI.COLOR_PAPER})` : 'none')};
   border-radius: var(${UI.BORDER_RADIUS_NORMAL});
   box-shadow: var(${UI.BOX_SHADOW});
 
@@ -49,11 +54,12 @@ const Wrapper = styled.div<{ maxWidth?: number | string; minHeight?: number | st
 
 const Heading = styled.h2`
   display: flex;
+  flex-flow: row wrap;
   justify-content: space-between;
   width: 100%;
   height: auto;
   margin: 0;
-  padding: 18px 40px;
+  padding: 16px 20px 3px;
   font-size: var(${UI.FONT_SIZE_MEDIUM});
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -63,13 +69,10 @@ const Heading = styled.h2`
 `
 
 const IconX = styled.div`
-  position: absolute;
-  top: 16px;
-  right: 10px;
   cursor: pointer;
   opacity: 0.7;
   transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
-  margin: 0 0 0 auto;
+  margin: 0;
 
   > svg {
     width: var(${UI.ICON_SIZE_NORMAL});
@@ -88,7 +91,7 @@ const BackButtonStyled = styled(BackButton)`
   left: 10px;
 `
 
-const NewModalContent = styled.div<{ paddingTop?: number }>`
+const NewModalContent = styled.div<{ padding?: string }>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -96,15 +99,19 @@ const NewModalContent = styled.div<{ paddingTop?: number }>`
   flex: 1;
   width: 100%;
   height: 100%;
-  padding: 0 var(${UI.PADDING_NORMAL}) var(${UI.PADDING_NORMAL});
+  padding: ${({ padding }) => padding || `0 var(${UI.PADDING_NORMAL}) var(${UI.PADDING_NORMAL})`};
+
+  &.modalMode {
+    padding: 10px;
+  }
 
   h1,
   h2,
   h3 {
     width: 100%;
-    font-size: var(${UI.FONT_SIZE_LARGER});
+    font-size: var(${UI.FONT_SIZE_MEDIUM});
     font-weight: var(${UI.FONT_WEIGHT_BOLD});
-    text-align: center;
+    text-align: left;
     line-height: 1.4;
     margin: 0 auto;
   }
@@ -159,17 +166,21 @@ export function NewModal({ maxWidth = 450, minHeight = 350, modalMode, title, ch
   const onDismissCallback = useCallback(() => onDismiss?.(), [onDismiss])
 
   return (
-    <Wrapper maxWidth={maxWidth} minHeight={minHeight}>
+    <Wrapper maxWidth={maxWidth} minHeight={minHeight} modalMode={modalMode}>
       <ModalInner>
         {!modalMode && <BackButtonStyled onClick={onDismissCallback} />}
-        {title && <Heading>{title}</Heading>}
-        {modalMode && (
-          <IconX onClick={onDismissCallback}>
-            <SVG src={CLOSE_ICON} />
-          </IconX>
+        {title && (
+          <Heading>
+            {title}{' '}
+            {modalMode && (
+              <IconX onClick={onDismissCallback}>
+                <SVG src={CLOSE_ICON} />
+              </IconX>
+            )}
+          </Heading>
         )}
 
-        <NewModalContent>{children}</NewModalContent>
+        <NewModalContent className={modalMode ? 'modalMode' : ''}>{children}</NewModalContent>
       </ModalInner>
     </Wrapper>
   )
