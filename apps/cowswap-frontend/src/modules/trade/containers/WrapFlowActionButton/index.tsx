@@ -15,12 +15,6 @@ export function WrapFlowActionButton() {
   if (!tradeFormButtonContext) return null
 
   return (
-    <TradeFormButtons
-      doTradeText={doTradeText}
-      confirmText={confirmText}
-      validation={primaryFormValidation}
-      context={tradeFormButtonContext}
-      isExpertMode={false}
-    />
+    <TradeFormButtons confirmText={confirmText} validation={primaryFormValidation} context={tradeFormButtonContext} />
   )
 }

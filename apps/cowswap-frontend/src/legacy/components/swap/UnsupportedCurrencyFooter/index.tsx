@@ -14,7 +14,11 @@ const DEFAULT_DETAILS_TEXT = (
     CoW Swap does not support all tokens. Some tokens implement similar, but logically different ERC20 contract methods
     which do not operate optimally with CoW Protocol.
     <p>
-      For more information, please refer to the <HashLink to={UNSUPPORTED_TOKENS_FAQ_URL}>FAQ</HashLink>.
+      For more information, please refer to the{' '}
+      <HashLink target="_blank" to={UNSUPPORTED_TOKENS_FAQ_URL}>
+        FAQ
+      </HashLink>
+      .
     </p>
   </div>
 )

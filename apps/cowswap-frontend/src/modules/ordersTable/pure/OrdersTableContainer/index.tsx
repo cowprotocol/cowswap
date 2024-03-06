@@ -4,7 +4,7 @@ import cowMeditatingV2 from '@cowprotocol/assets/cow-swap/meditating-cow-v2.svg'
 import imageConnectWallet from '@cowprotocol/assets/cow-swap/wallet-plus.svg'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { ExternalLink } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
+import { UI, CowSwapSafeAppLink } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import SVG from 'react-inlinesvg'
@@ -12,10 +12,10 @@ import styled from 'styled-components/macro'
 
 import { Web3Status } from 'modules/wallet/containers/Web3Status'
 
-import { CowSwapSafeAppLink } from 'common/pure/CowSwapSafeAppLink'
-
 import { OrdersTable, OrdersTableProps } from './OrdersTable'
 import { OrdersTabs, OrdersTabsProps } from './OrdersTabs'
+
+import { TabOrderTypes } from '../../types'
 
 const OrdersBox = styled.div`
   background: ${({ theme }) => (theme.isInjectedWidgetMode ? `var(${UI.COLOR_PAPER})` : 'transparent')};
@@ -162,7 +162,7 @@ const ExternalArrow = styled.span`
     font-size: 11px;
   }
 `
-export interface OrdersProps extends OrdersTabsProps, OrdersTableProps {
+interface OrdersProps extends OrdersTabsProps, OrdersTableProps {
   isWalletConnected: boolean
   isOpenOrdersTab: boolean
   isSafeViaWc: boolean
@@ -170,11 +170,6 @@ export interface OrdersProps extends OrdersTabsProps, OrdersTableProps {
   pendingActivities: string[]
   children?: ReactNode
   orderType: TabOrderTypes
-}
-
-export enum TabOrderTypes {
-  LIMIT = 'limit',
-  ADVANCED = 'advanced',
 }
 
 export function OrdersTableContainer({

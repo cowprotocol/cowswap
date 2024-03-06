@@ -1,22 +1,20 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { selectAtom } from 'jotai/utils'
-import React, { useEffect, useMemo, useCallback, useRef, PropsWithChildren } from 'react'
+import React, { PropsWithChildren, useCallback, useEffect, useMemo, useRef } from 'react'
 
 import { Command } from '@cowprotocol/types'
 
 import { useRecentActivityLastPendingOrder } from 'legacy/hooks/useRecentActivity'
 import { Order } from 'legacy/state/orders/actions'
-import { useIsExpertMode } from 'legacy/state/user/hooks'
 
 import { FollowPendingTxPopupUI } from './FollowPendingTxPopupUI'
 
-import { useSetShowFollowPendingTxPopup } from '../../hooks/useSetShowFollowPendingTxPopup'
 import {
+  followPendingTxPopupAtom,
+  handleCloseOrderPopupAtom,
   handleFollowPendingTxPopupAtom,
   handleHidePopupPermanentlyAtom,
   showFollowTxPopupAtom,
-  followPendingTxPopupAtom,
-  handleCloseOrderPopupAtom,
 } from '../../state/followPendingTxPopupAtom'
 
 export function useLastPendingOrder(): { lastPendingOrder: Order | null; onClose: Command } {
@@ -65,19 +63,9 @@ const useShowingPopupFirstTime = (orderId: string | undefined) => {
 }
 
 export const FollowPendingTxPopup: React.FC<PropsWithChildren> = ({ children }): JSX.Element => {
-  const setShowFollowPendingTxPopup = useSetShowFollowPendingTxPopup()
   const setHidePendingTxPopupPermanently = useSetAtom(handleHidePopupPermanentlyAtom)
-  const isExpertMode = useIsExpertMode()
   const { lastPendingOrder, onClose } = useLastPendingOrder()
-  const { showPopup: showFollowPendingTxPopup, firstTimePopupOrderAppears } = useShowingPopupFirstTime(
-    lastPendingOrder?.id
-  )
-
-  useEffect(() => {
-    if (isExpertMode && lastPendingOrder && firstTimePopupOrderAppears) {
-      setShowFollowPendingTxPopup(true)
-    }
-  }, [isExpertMode, lastPendingOrder, firstTimePopupOrderAppears, setShowFollowPendingTxPopup])
+  const { showPopup: showFollowPendingTxPopup } = useShowingPopupFirstTime(lastPendingOrder?.id)
 
   return (
     <FollowPendingTxPopupUI

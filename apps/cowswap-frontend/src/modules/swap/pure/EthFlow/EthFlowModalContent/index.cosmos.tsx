@@ -71,7 +71,6 @@ function Custom() {
     defaultValue: EthFlowState.WrapNeeded,
   })
   const state = getStateFromDescription(stateDescription)
-  const [isExpertMode] = useValue('isExpertMode', { defaultValue: false })
   const balanceChecks = {
     isLowBalance: useValue('isLowBalance', { defaultValue: false })[0],
     txsRemaining: useValue('txsRemaining', { defaultValue: '' })[0],
@@ -101,7 +100,6 @@ function Custom() {
 
   const modalProps = getEthFlowModalContentProps({
     state,
-    isExpertMode,
     approveAction,
     wrapAction,
     balanceChecks,

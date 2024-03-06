@@ -1,4 +1,4 @@
-import { InlineBanner } from 'common/pure/InlineBanner'
+import { InlineBanner } from '@cowprotocol/ui'
 
 import { MINIMUM_PART_TIME } from '../../../const'
 import { deadlinePartsDisplay } from '../../../utils/deadlinePartsDisplay'

@@ -113,7 +113,6 @@ export function AdvancedOrdersWidget({ children, updaters, params, confirmConten
     showRecipient,
     isTradePriceUpdating,
     priceImpact,
-    isExpertMode: false, // TODO: bind value
     disablePriceImpact,
   }
 

@@ -3,12 +3,12 @@ import { useCallback } from 'react'
 
 import { isSellOrder } from '@cowprotocol/common-utils'
 
-import { updateLimitOrdersRawStateAtom } from 'modules/limitOrders'
 import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
+import { useUpdateLimitOrdersRawState } from 'modules/limitOrders/hooks/useLimitOrdersRawState'
 import { useUpdateCurrencyAmount } from 'modules/limitOrders/hooks/useUpdateCurrencyAmount'
 import { limitRateAtom, LimitRateState, updateLimitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
 
-type RateUpdateParams = Pick<LimitRateState, 'activeRate' | 'isTypedValue' | 'isRateFromUrl'>
+type RateUpdateParams = Pick<LimitRateState, 'activeRate' | 'isTypedValue' | 'isRateFromUrl' | 'isAlternativeOrderRate'>
 
 export interface UpdateRateCallback {
   (update: RateUpdateParams): void
@@ -17,15 +17,15 @@ export interface UpdateRateCallback {
 export function useUpdateActiveRate(): UpdateRateCallback {
   const { inputCurrencyAmount, outputCurrencyAmount, orderKind } = useLimitOrdersDerivedState()
   const rateState = useAtomValue(limitRateAtom)
-  const updateLimitOrdersState = useSetAtom(updateLimitOrdersRawStateAtom)
+  const updateLimitOrdersState = useUpdateLimitOrdersRawState()
   const updateCurrencyAmount = useUpdateCurrencyAmount()
   const updateRateState = useSetAtom(updateLimitRateAtom)
 
-  const { isRateFromUrl: currentIsRateFromUrl } = rateState
+  const { isRateFromUrl: currentIsRateFromUrl, isAlternativeOrderRate: currentIsAlternativeOrderRate } = rateState
 
   return useCallback(
     (update: RateUpdateParams) => {
-      const { activeRate, isRateFromUrl } = update
+      const { activeRate, isRateFromUrl, isAlternativeOrderRate } = update
 
       updateRateState(update)
 
@@ -33,7 +33,8 @@ export function useUpdateActiveRate(): UpdateRateCallback {
 
       if (activeRate) {
         // Don't update amounts when rate is set from URL. See useSetupLimitOrderAmountsFromUrl()
-        if (currentIsRateFromUrl || isRateFromUrl) {
+        // Don't update amounts when rate is set from AlternativeOrder. See AlternativeLimitOrderUpdater
+        if (currentIsRateFromUrl || isRateFromUrl || currentIsAlternativeOrderRate || isAlternativeOrderRate) {
           return
         }
 
@@ -55,11 +56,12 @@ export function useUpdateActiveRate(): UpdateRateCallback {
     },
     [
       updateRateState,
+      orderKind,
       currentIsRateFromUrl,
+      currentIsAlternativeOrderRate,
       updateCurrencyAmount,
       inputCurrencyAmount,
       outputCurrencyAmount,
-      orderKind,
       updateLimitOrdersState,
     ]
   )
