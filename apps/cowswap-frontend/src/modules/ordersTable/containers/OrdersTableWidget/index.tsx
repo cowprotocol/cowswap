@@ -16,7 +16,7 @@ import { PendingPermitUpdater, useGetOrdersPermitStatus } from 'modules/permit'
 import { useSetAlternativeOrder } from 'modules/trade/state/alternativeOrder'
 
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
-import { isPending, useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
+import { isCreating, isPending, useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
 import { ordersToCancelAtom, updateOrdersToCancelAtom } from 'common/hooks/useMultipleOrdersCancellation/state'
 import { CancellableOrder } from 'common/utils/isOrderCancellable'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
@@ -141,22 +141,22 @@ export function OrdersTableWidget({
     [allOrders, cancelOrder]
   )
 
-  const setOrderToRecreate = useSetAlternativeOrder()
-  const getShowRecreateModal = useCallback(
+  const setAlternativeOrder = useSetAlternativeOrder()
+  const getShowAlternativeOrderModal = useCallback(
     (order: ParsedOrder) => {
-      if (isPending(order) || getUiOrderType(order) !== UiOrderType.LIMIT) {
+      if (isCreating(order) || getUiOrderType(order) !== UiOrderType.LIMIT) {
         return null
       }
-      return () => setOrderToRecreate(order)
+      return () => setAlternativeOrder(order, isPending(order))
     },
-    [setOrderToRecreate]
+    [setAlternativeOrder]
   )
 
   const approveOrderToken = useOrdersTableTokenApprove()
 
   const orderActions: OrderActions = {
     getShowCancellationModal,
-    getShowRecreateModal,
+    getShowAlternativeOrderModal,
     selectReceiptOrder,
     toggleOrderForCancellation,
     toggleOrdersForCancellation,

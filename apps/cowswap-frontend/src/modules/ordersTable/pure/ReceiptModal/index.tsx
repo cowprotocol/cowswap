@@ -2,13 +2,13 @@ import { ExplorerDataType, getExplorerLink, isSellOrder, shortenAddress } from '
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
 import {
-  UI,
-  Icon,
-  IconType,
-  ExternalLink,
-  InlineBanner,
   BannerOrientation,
   CustomRecipientWarningBanner,
+  ExternalLink,
+  Icon,
+  IconType,
+  InlineBanner,
+  UI,
 } from '@cowprotocol/ui'
 import { CurrencyAmount, Fraction, Token } from '@uniswap/sdk-core'
 
@@ -52,7 +52,7 @@ interface ReceiptProps {
   limitPrice: Fraction | null
   executionPrice: Fraction | null
   estimatedExecutionPrice: Fraction | null
-  showRecreateModal: Command | null
+  showAlternativeModal: Command | null
 }
 
 const FILLED_COMMON_TOOLTIP = 'How much of the order has been filled.'
@@ -105,7 +105,7 @@ export function ReceiptModal({
   executionPrice,
   estimatedExecutionPrice,
   receiverEnsName,
-  showRecreateModal,
+  showAlternativeModal,
 }: ReceiptProps) {
   // Check if Custom Recipient Warning Banner should be visible
   const isCustomRecipientWarningBannerVisible = !useIsReceiverWalletBannerHidden(order.id)
@@ -133,8 +133,11 @@ export function ReceiptModal({
         <styledEl.Header>
           <div>
             <styledEl.Title>Order Receipt</styledEl.Title>
-            {showRecreateModal && (
-              <styledEl.LightButton onClick={showRecreateModal}>Recreate this order</styledEl.LightButton>
+            {showAlternativeModal && (
+              <styledEl.LightButton
+              onClick={showAlternativeModal}
+            >
+              {isPending(order) ? 'Edit' : 'Recreate'} this order</styledEl.LightButton>
             )}
           </div>
           <CloseIcon onClick={() => onDismiss()} />

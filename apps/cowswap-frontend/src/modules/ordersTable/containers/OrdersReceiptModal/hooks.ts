@@ -5,7 +5,7 @@ import { Command, UiOrderType } from '@cowprotocol/types'
 
 import { useSetAlternativeOrder } from 'modules/trade/state/alternativeOrder'
 
-import { isPending } from 'common/hooks/useCategorizeRecentActivity'
+import { isCreating, isPending } from 'common/hooks/useCategorizeRecentActivity'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
@@ -27,14 +27,14 @@ export function useSelectedOrder(): ParsedOrder | null {
   return order
 }
 
-export function useGetShowRecreateModal(order: ParsedOrder | null): Command | null {
-  const setOrderToRecreate = useSetAlternativeOrder()
+export function useGetShowAlternativeModal(order: ParsedOrder | null): Command | null {
+  const setAlternativeOrder = useSetAlternativeOrder()
 
   return useMemo(
     () =>
-      !order || isPending(order) || getUiOrderType(order) !== UiOrderType.LIMIT
+      !order || isCreating(order) || getUiOrderType(order) !== UiOrderType.LIMIT
         ? null
-        : () => setOrderToRecreate(order),
-    [order, setOrderToRecreate]
+        : () => setAlternativeOrder(order, isPending(order)),
+    [order, setAlternativeOrder]
   )
 }
