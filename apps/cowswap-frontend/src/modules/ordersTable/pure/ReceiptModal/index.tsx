@@ -225,7 +225,7 @@ export function ReceiptModal({
             {(!twapOrder || isTwapPartOrder) && (
               <>
                 <styledEl.Field>
-                  <FieldLabel label="Fee" tooltip={tooltips.NETWORK_COSTS} />
+                  <FieldLabel label="Network costs" tooltip={tooltips.NETWORK_COSTS} />
                   <FeeField order={order} />
                 </styledEl.Field>
               </>
