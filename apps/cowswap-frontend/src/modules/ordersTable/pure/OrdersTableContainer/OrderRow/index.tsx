@@ -172,7 +172,7 @@ export function OrderRow({
     return orderActions.getShowCancellationModal(order)
   }, [orderActions, order])
 
-  const showRecreateModal = useMemo(() => {
+  const showAlternativeOrderModal = useMemo(() => {
     return orderActions.getShowAlternativeOrderModal(order)
   }, [orderActions, order])
 
@@ -385,7 +385,9 @@ export function OrderRow({
           activityUrl={activityUrl}
           openReceipt={onClick}
           showCancellationModal={showCancellationModal}
-          showRecreateModal={showRecreateModal ? [showRecreateModal, isPending(order)] : null}
+          alternativeOrderModalContext={
+            showAlternativeOrderModal ? [showAlternativeOrderModal, isPending(order)] : null
+          }
         />
       </styledEl.CellElement>
     </TableRow>

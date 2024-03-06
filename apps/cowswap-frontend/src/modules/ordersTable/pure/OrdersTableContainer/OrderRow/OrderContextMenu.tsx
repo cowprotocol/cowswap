@@ -70,14 +70,14 @@ export interface OrderContextMenuProps {
   activityUrl: string | undefined
   showCancellationModal: Command | null
   // TODO: make the props nicer
-  showRecreateModal: [Command, boolean] | null
+  alternativeOrderModalContext: [Command, boolean] | null
 }
 
 export function OrderContextMenu({
   openReceipt,
   activityUrl,
   showCancellationModal,
-  showRecreateModal,
+  alternativeOrderModalContext,
 }: OrderContextMenuProps) {
   return (
     <Menu>
@@ -95,11 +95,11 @@ export function OrderContextMenu({
             <span>View on explorer</span>
           </ContextMenuLink>
         )}
-        {showRecreateModal && (
+        {alternativeOrderModalContext && (
           // TODO: simplify
-          <ContextMenuItem onSelect={showRecreateModal[0]}>
-            {showRecreateModal[1] ? <Edit size={16} /> : <Repeat size={16} />}
-            <span>{showRecreateModal[1] ? 'Edit' : 'Recreate'} order</span>
+          <ContextMenuItem onSelect={alternativeOrderModalContext[0]}>
+            {alternativeOrderModalContext[1] ? <Edit size={16} /> : <Repeat size={16} />}
+            <span>{alternativeOrderModalContext[1] ? 'Edit' : 'Recreate'} order</span>
           </ContextMenuItem>
         )}
         {showCancellationModal && (

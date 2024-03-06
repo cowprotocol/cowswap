@@ -9,7 +9,7 @@ import { useTwapOrderByChildId, useTwapOrderById } from 'modules/twap'
 
 import { calculatePrice } from 'utils/orderUtils/calculatePrice'
 
-import { useCloseReceiptModal, useGetShowAlternativeModal, useSelectedOrder } from './hooks'
+import { useCloseReceiptModal, useGetShowAlternativeOrderModal, useSelectedOrder } from './hooks'
 
 import { ReceiptModal } from '../../pure/ReceiptModal'
 
@@ -29,7 +29,7 @@ export function OrdersReceiptModal(props: OrdersReceiptModalProps) {
   const twapOrder = twapOrderById || twapOrderByChildId
   const isTwapPartOrder = !!twapOrderByChildId
 
-  const showAlternativeModal = useGetShowAlternativeModal(order)
+  const showAlternativeOrderModal = useGetShowAlternativeOrderModal(order)
 
   if (!chainId || !order) {
     return null
@@ -76,7 +76,7 @@ export function OrdersReceiptModal(props: OrdersReceiptModalProps) {
       isTwapPartOrder={isTwapPartOrder}
       isOpen={!!order}
       onDismiss={closeReceiptModal}
-      showAlternativeModal={showAlternativeModal}
+      showAlternativeOrderModal={showAlternativeOrderModal}
     />
   )
 }
