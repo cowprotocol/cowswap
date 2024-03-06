@@ -10,24 +10,18 @@ import { TradeFormBlankButton } from '../TradeFormBlankButton'
 export interface TradeFormButtonsProps {
   validation: TradeFormValidation | null
   context: TradeFormButtonContext
-  doTradeText: string
   confirmText: string
-  isExpertMode: boolean
   isDisabled?: boolean
 }
 
 export function TradeFormButtons(props: TradeFormButtonsProps) {
-  const { validation, context, isExpertMode, isDisabled, doTradeText, confirmText } = props
+  const { validation, context, isDisabled, confirmText } = props
 
   // When there are no validation errors
   if (validation === null) {
     return (
-      <TradeFormBlankButton
-        id="do-trade-button"
-        disabled={isDisabled}
-        onClick={() => (isExpertMode ? context.doTrade() : context.confirmTrade())}
-      >
-        {isExpertMode ? doTradeText : confirmText}
+      <TradeFormBlankButton id="do-trade-button" disabled={isDisabled} onClick={() => context.confirmTrade()}>
+        {confirmText}
       </TradeFormBlankButton>
     )
   }

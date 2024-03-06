@@ -30,10 +30,6 @@ const ethFlowActionsMock: EthFlowActions = {
     console.log('ETH FLOW: APPROVE')
     return Promise.resolve(undefined)
   },
-  expertModeFlow(): Promise<void> {
-    console.log('ETH FLOW: EXPERT MODE FLOW')
-    return Promise.resolve(undefined)
-  },
   swap(): Promise<void> {
     console.log('ETH FLOW: SWAP')
     return Promise.resolve(undefined)
@@ -50,7 +46,6 @@ const ethFlowActionsMock: EthFlowActions = {
 
 export interface EthParamsCaseParams {
   state?: EthFlowState
-  isExpertMode?: boolean
   approveAction?: EthFlowActionContext
   wrapAction?: EthFlowActionContext
   balanceChecks?: BalanceChecks
@@ -59,7 +54,6 @@ export interface EthParamsCaseParams {
 export function getEthFlowModalContentProps(params: EthParamsCaseParams = {}): EthFlowModalContentProps {
   return {
     state: params.state || EthFlowState.WrapNeeded,
-    isExpertMode: params.isExpertMode || false,
     ethFlowContext: {
       approve: { ...defaultEthFlowContext.approve, ...params.approveAction },
       wrap: { ...defaultEthFlowContext.wrap, ...params.wrapAction },

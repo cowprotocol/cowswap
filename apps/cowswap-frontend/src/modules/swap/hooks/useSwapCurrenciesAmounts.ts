@@ -10,7 +10,7 @@ import { useDerivedSwapInfo } from './useSwapState'
 
 export function useSwapCurrenciesAmounts(): ParsedAmounts {
   const { independentField } = useSwapState()
-  const { v2Trade: trade, parsedAmount } = useDerivedSwapInfo()
+  const { trade, parsedAmount } = useDerivedSwapInfo()
 
   const isInputIndependent = independentField === Field.INPUT
   const inputAmountWithoutFee = trade?.inputAmountWithoutFee

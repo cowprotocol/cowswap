@@ -3,8 +3,7 @@ import React from 'react'
 import { twapConversionAnalytics } from '@cowprotocol/analytics'
 
 import { useTradeConfirmActions } from 'modules/trade'
-import { TradeFormButtons, TradeFormValidation } from 'modules/tradeFormValidation'
-import { useTradeFormButtonContext } from 'modules/tradeFormValidation'
+import { TradeFormButtons, TradeFormValidation, useTradeFormButtonContext } from 'modules/tradeFormValidation'
 
 import { useAreWarningsAccepted } from '../../hooks/useAreWarningsAccepted'
 import { useTwapWarningsContext } from '../../hooks/useTwapWarningsContext'
@@ -47,12 +46,9 @@ export function ActionButtons({
 
   return (
     <TradeFormButtons
-      doTradeText="Place TWAP order"
       confirmText="Review TWAP order"
       validation={primaryFormValidation}
       context={tradeFormButtonContext}
-      // TODO: bind isExpertMode to settings
-      isExpertMode={false}
       isDisabled={!areWarningsAccepted}
     />
   )

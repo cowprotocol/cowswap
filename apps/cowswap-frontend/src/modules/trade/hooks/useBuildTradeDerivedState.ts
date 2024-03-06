@@ -3,6 +3,9 @@ import { Atom, useAtomValue } from 'jotai'
 import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
 import { tryParseFractionalAmount } from '@cowprotocol/common-utils'
 import { useTokenBySymbolOrAddress } from '@cowprotocol/tokens'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+
+import { Nullish } from 'types'
 
 import { ExtendedTradeRawState } from 'modules/trade/types/TradeRawState'
 import { useTradeUsdAmounts } from 'modules/usdAmount'
@@ -18,8 +21,8 @@ export function useBuildTradeDerivedState(stateAtom: Atom<ExtendedTradeRawState>
 
   const inputCurrency = useTokenBySymbolOrAddress(rawState.inputCurrencyId)
   const outputCurrency = useTokenBySymbolOrAddress(rawState.outputCurrencyId)
-  const inputCurrencyAmount = tryParseFractionalAmount(inputCurrency, rawState.inputCurrencyAmount)
-  const outputCurrencyAmount = tryParseFractionalAmount(outputCurrency, rawState.outputCurrencyAmount)
+  const inputCurrencyAmount = getCurrencyAmount(inputCurrency, rawState.inputCurrencyAmount)
+  const outputCurrencyAmount = getCurrencyAmount(outputCurrency, rawState.outputCurrencyAmount)
 
   const inputCurrencyBalance = useCurrencyAmountBalance(inputCurrency) || null
   const outputCurrencyBalance = useCurrencyAmountBalance(outputCurrency) || null
@@ -46,4 +49,16 @@ export function useBuildTradeDerivedState(stateAtom: Atom<ExtendedTradeRawState>
     inputCurrencyFiatAmount,
     outputCurrencyFiatAmount,
   })
+}
+
+function getCurrencyAmount(
+  currency: Nullish<Currency> | null,
+  currencyAmount: Nullish<string>
+): CurrencyAmount<Currency> | null {
+  if (!currency || !currencyAmount) {
+    return null
+  }
+  // State can be stored as a full string in atoms rather than a json with numerator/denominator
+  // Thus we try just that in case the first option fails
+  return tryParseFractionalAmount(currency, currencyAmount) || CurrencyAmount.fromRawAmount(currency, currencyAmount)
 }

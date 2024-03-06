@@ -1,4 +1,4 @@
-import { InlineBanner } from 'common/pure/InlineBanner'
+import { InlineBanner } from '@cowprotocol/ui'
 
 export function SmallPriceProtectionWarning() {
   return (
