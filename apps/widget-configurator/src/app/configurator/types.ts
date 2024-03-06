@@ -35,4 +35,6 @@ export interface ConfiguratorState {
   tokenLists: TokenListItem[]
   customColors: ColorPalette
   defaultColors: ColorPalette
+  partnerFeeBps: number
+  partnerFeeRecipient: string
 }

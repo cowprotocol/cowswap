@@ -8,10 +8,10 @@ import { Trans } from '@lingui/macro'
 import SVG from 'react-inlinesvg'
 
 import { ClaimStatus } from 'legacy/state/claim/actions'
-import { useClaimState, useClaimTimeInfo, useClaimLinks } from 'legacy/state/claim/hooks'
+import { useClaimLinks, useClaimState, useClaimTimeInfo } from 'legacy/state/claim/hooks'
 import { ClaimCommonTypes } from 'legacy/state/claim/types'
 
-import { IntroDescription, BannerExplainer } from './styled'
+import { BannerExplainer, IntroDescription } from './styled'
 
 type ClaimIntroductionProps = Pick<
   ClaimCommonTypes,

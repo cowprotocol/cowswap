@@ -1,4 +1,6 @@
+import { bpsToPercent } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/cow-sdk'
+import { PartnerFee } from '@cowprotocol/widget-lib'
 import { Currency, CurrencyAmount, TradeType } from '@uniswap/sdk-core'
 
 import JSBI from 'jsbi'
@@ -11,8 +13,8 @@ interface TradeParams {
   parsedAmount?: CurrencyAmount<Currency>
   inputCurrency?: Currency | null
   outputCurrency?: Currency | null
-  quote?: QuoteInformationObject
-  isWrapping: boolean
+  quote?: Pick<QuoteInformationObject, 'fee' | 'price'>
+  partnerFee?: PartnerFee
 }
 
 export const stringToCurrency = (amount: string, currency: Currency) =>
@@ -28,15 +30,15 @@ export const tryAtomsToCurrency = (atoms: string | undefined, currency: Currency
  * useTradeExactInWithFee
  * @description wraps useTradeExactIn and returns an extended trade object with the fee adjusted values
  */
-export function useTradeExactInWithFee({
+export function buildTradeExactInWithFee({
   parsedAmount: parsedInputAmount,
   outputCurrency,
   quote,
-  isWrapping,
+  partnerFee,
 }: Omit<TradeParams, 'inputCurrency'>) {
   // make sure we have a typed in amount, a fee, and a price
-  // else we can assume the trade will be null
-  if (!parsedInputAmount || !outputCurrency || isWrapping || !quote?.fee || !quote?.price?.amount) return null
+  // else we can assume the trade will be undefined
+  if (!parsedInputAmount || !outputCurrency || !quote?.fee || !quote?.price?.amount) return undefined
 
   const feeAsCurrency = stringToCurrency(quote.fee.amount, parsedInputAmount.currency)
   // Check that fee amount is not greater than the user's input amt
@@ -65,22 +67,29 @@ export function useTradeExactInWithFee({
   })
 
   // no price object or feeAdjusted amount? no trade
-  if (!executionPrice || !feeAdjustedAmount) return null
+  if (!executionPrice || !feeAdjustedAmount) return undefined
 
   // calculate our output without any fee, consuming price
   // useful for calculating fees in buy token
   const outputAmountWithoutFee = executionPrice.quote(parsedInputAmount)
 
+  const partnerFeeAmount = partnerFee ? outputAmountWithoutFee.multiply(bpsToPercent(partnerFee.bps)) : undefined
+  const outputAmountAfterFees = partnerFeeAmount ? outputAmount.subtract(partnerFeeAmount) : outputAmount
+
   return new TradeGp({
     inputAmount: parsedInputAmount,
     inputAmountWithFee: feeAdjustedAmount,
+    inputAmountAfterFees: feeAdjustedAmount,
     inputAmountWithoutFee: parsedInputAmount,
     outputAmount,
     outputAmountWithoutFee,
+    outputAmountAfterFees,
     fee,
     executionPrice,
     tradeType: TradeType.EXACT_INPUT,
     quoteId: quote.price.quoteId,
+    partnerFee,
+    partnerFeeAmount,
   })
 }
 
@@ -88,13 +97,13 @@ export function useTradeExactInWithFee({
  * useTradeExactOutWithFee
  * @description wraps useTradeExactIn and returns an extended trade object with the fee adjusted values
  */
-export function useTradeExactOutWithFee({
+export function buildTradeExactOutWithFee({
   parsedAmount: parsedOutputAmount,
   inputCurrency,
   quote,
-  isWrapping,
+  partnerFee,
 }: Omit<TradeParams, 'outputCurrency'>) {
-  if (!parsedOutputAmount || !inputCurrency || isWrapping || !quote?.fee || !quote?.price?.amount) return null
+  if (!parsedOutputAmount || !inputCurrency || !quote?.fee || !quote?.price?.amount) return undefined
 
   const feeAsCurrency = stringToCurrency(quote.fee.amount, inputCurrency)
   // set final fee object
@@ -109,6 +118,9 @@ export function useTradeExactOutWithFee({
   // We need to determine the fee after, as the parsedOutputAmount isn't known beforehand
   // Using feeInformation info, determine whether minimalFee greaterThan or lessThan feeRatio * sellAmount
   const inputAmountWithFee = inputAmountWithoutFee.add(feeAsCurrency)
+  // Partner fee
+  const partnerFeeAmount = partnerFee ? inputAmountWithoutFee.multiply(bpsToPercent(partnerFee.bps)) : undefined
+  const inputAmountAfterFees = partnerFeeAmount ? inputAmountWithFee.add(partnerFeeAmount) : inputAmountWithFee
 
   // per unit price
   const executionPrice = _constructTradePrice({
@@ -121,18 +133,22 @@ export function useTradeExactOutWithFee({
   })
 
   // no price object? no trade
-  if (!executionPrice) return null
+  if (!executionPrice) return undefined
 
   // We need to override the Trade object to use different values as we are intercepting initial inputs
   return new TradeGp({
     inputAmount: inputAmountWithFee,
     inputAmountWithFee,
     inputAmountWithoutFee,
+    inputAmountAfterFees,
     outputAmount: parsedOutputAmount,
     outputAmountWithoutFee: parsedOutputAmount,
+    outputAmountAfterFees: parsedOutputAmount,
     fee,
     executionPrice,
     tradeType: TradeType.EXACT_OUTPUT,
     quoteId: quote.price.quoteId,
+    partnerFee,
+    partnerFeeAmount,
   })
 }

@@ -1,7 +1,6 @@
 import { useMemo } from 'react'
 
-import type { CowSwapWidgetEnv, EthereumProvider } from '@cowprotocol/widget-lib'
-import { CowSwapWidgetProps } from '@cowprotocol/widget-react'
+import type { CowSwapWidgetEnv, CowSwapWidgetParams } from '@cowprotocol/widget-lib'
 
 import { isDev, isLocalHost, isVercel } from '../../../env'
 import { ConfiguratorState } from '../types'
@@ -14,10 +13,7 @@ const getEnv = (): CowSwapWidgetEnv => {
   return 'prod'
 }
 
-export function useWidgetParamsAndSettings(
-  provider: EthereumProvider | undefined,
-  configuratorState: ConfiguratorState
-) {
+export function useWidgetParams(configuratorState: ConfiguratorState, isDappMode: boolean): CowSwapWidgetParams {
   return useMemo(() => {
     const {
       chainId,
@@ -31,6 +27,8 @@ export function useWidgetParamsAndSettings(
       tokenLists,
       customColors,
       defaultColors,
+      partnerFeeBps,
+      partnerFeeRecipient,
     } = configuratorState
 
     const themeColors = {
@@ -38,7 +36,7 @@ export function useWidgetParamsAndSettings(
       ...customColors,
     }
 
-    const params: CowSwapWidgetProps['params'] = {
+    const params: CowSwapWidgetParams = {
       appCode: 'CoW Widget: Configurator',
       width: '450px',
       height: '640px',
@@ -62,9 +60,17 @@ export function useWidgetParamsAndSettings(
         success: themeColors.success,
       },
 
-      hideConnectButton: true,
+      hideConnectButton: isDappMode,
+
+      partnerFee:
+        partnerFeeBps > 0
+          ? {
+              bps: partnerFeeBps,
+              recipient: partnerFeeRecipient,
+            }
+          : undefined,
     }
 
     return params
-  }, [configuratorState])
+  }, [configuratorState, isDappMode])
 }

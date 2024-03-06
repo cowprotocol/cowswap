@@ -4,14 +4,14 @@ import { orderExpirationTimeAnalytics, slippageToleranceAnalytics } from '@cowpr
 import { DEFAULT_DEADLINE_FROM_NOW } from '@cowprotocol/common-const'
 import {
   DEFAULT_SLIPPAGE_BPS,
-  HIGH_ETH_FLOW_SLIPPAGE_BIPS,
+  HIGH_ETH_FLOW_SLIPPAGE_BPS,
   HIGH_SLIPPAGE_BPS,
   LOW_SLIPPAGE_BPS,
   MAX_SLIPPAGE_BPS,
   MIN_SLIPPAGE_BPS,
   MINIMUM_ETH_FLOW_DEADLINE_SECONDS,
   MINIMUM_ETH_FLOW_SLIPPAGE,
-  MINIMUM_ETH_FLOW_SLIPPAGE_BIPS,
+  MINIMUM_ETH_FLOW_SLIPPAGE_BPS,
   MINIMUM_ORDER_VALID_TO_TIME_SECONDS,
 } from '@cowprotocol/common-const'
 import { getWrappedToken } from '@cowprotocol/common-utils'
@@ -129,7 +129,7 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
     setSlippageError(false)
 
     if (value.length === 0) {
-      slippageToleranceAnalytics('Default', isEoaEthFlow ? MINIMUM_ETH_FLOW_SLIPPAGE_BIPS : DEFAULT_SLIPPAGE_BPS)
+      slippageToleranceAnalytics('Default', isEoaEthFlow ? MINIMUM_ETH_FLOW_SLIPPAGE_BPS : DEFAULT_SLIPPAGE_BPS)
       setUserSlippageTolerance(isEoaEthFlow ? MINIMUM_ETH_FLOW_SLIPPAGE : 'auto')
     } else {
       let v = value
@@ -146,10 +146,10 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
 
       if (
         !Number.isInteger(parsed) ||
-        parsed < (isEoaEthFlow ? MINIMUM_ETH_FLOW_SLIPPAGE_BIPS : MIN_SLIPPAGE_BPS) ||
+        parsed < (isEoaEthFlow ? MINIMUM_ETH_FLOW_SLIPPAGE_BPS : MIN_SLIPPAGE_BPS) ||
         parsed > MAX_SLIPPAGE_BPS
       ) {
-        slippageToleranceAnalytics('Default', isEoaEthFlow ? MINIMUM_ETH_FLOW_SLIPPAGE_BIPS : DEFAULT_SLIPPAGE_BPS)
+        slippageToleranceAnalytics('Default', isEoaEthFlow ? MINIMUM_ETH_FLOW_SLIPPAGE_BPS : DEFAULT_SLIPPAGE_BPS)
         setUserSlippageTolerance('auto')
         if (v !== '.') {
           setSlippageError(SlippageError.InvalidInput)
@@ -163,13 +163,11 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
 
   const tooLow =
     userSlippageTolerance !== 'auto' &&
-    userSlippageTolerance.lessThan(
-      new Percent(isEoaEthFlow ? MINIMUM_ETH_FLOW_SLIPPAGE_BIPS : LOW_SLIPPAGE_BPS, 10_000)
-    )
+    userSlippageTolerance.lessThan(new Percent(isEoaEthFlow ? MINIMUM_ETH_FLOW_SLIPPAGE_BPS : LOW_SLIPPAGE_BPS, 10_000))
   const tooHigh =
     userSlippageTolerance !== 'auto' &&
     userSlippageTolerance.greaterThan(
-      new Percent(isEoaEthFlow ? HIGH_ETH_FLOW_SLIPPAGE_BIPS : HIGH_SLIPPAGE_BPS, 10_000)
+      new Percent(isEoaEthFlow ? HIGH_ETH_FLOW_SLIPPAGE_BPS : HIGH_SLIPPAGE_BPS, 10_000)
     )
 
   function parseCustomDeadline(value: string) {

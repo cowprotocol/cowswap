@@ -5,14 +5,15 @@ import { CurrencyAmount } from '@uniswap/sdk-core'
 import JSBI from 'jsbi'
 
 import { PendingOrdersPrices } from 'modules/orders/state/pendingOrdersPricesAtom'
-import { ReceiptModal } from 'modules/ordersTable/pure/ReceiptModal'
-import { useTwapOrderById, useTwapOrderByChildId } from 'modules/twap'
+import { useTwapOrderByChildId, useTwapOrderById } from 'modules/twap'
 
 import { calculatePrice } from 'utils/orderUtils/calculatePrice'
 
-import { useCloseReceiptModal, useSelectedOrder } from './hooks'
+import { useCloseReceiptModal, useGetShowRecreateModal, useSelectedOrder } from './hooks'
 
-export type OrdersReceiptModalProps = {
+import { ReceiptModal } from '../../pure/ReceiptModal'
+
+type OrdersReceiptModalProps = {
   pendingOrdersPrices: PendingOrdersPrices
 }
 
@@ -27,6 +28,8 @@ export function OrdersReceiptModal(props: OrdersReceiptModalProps) {
   const twapOrderByChildId = useTwapOrderByChildId(order?.id)
   const twapOrder = twapOrderById || twapOrderByChildId
   const isTwapPartOrder = !!twapOrderByChildId
+
+  const showRecreateModal = useGetShowRecreateModal(order)
 
   if (!chainId || !order) {
     return null
@@ -73,6 +76,7 @@ export function OrdersReceiptModal(props: OrdersReceiptModalProps) {
       isTwapPartOrder={isTwapPartOrder}
       isOpen={!!order}
       onDismiss={closeReceiptModal}
+      showRecreateModal={showRecreateModal}
     />
   )
 }

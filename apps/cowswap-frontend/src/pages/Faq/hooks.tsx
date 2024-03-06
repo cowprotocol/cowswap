@@ -1,5 +1,9 @@
 import { useCallback, useState } from 'react'
 
+import { useLocation } from 'react-router'
+
+import { scrollToElement } from 'common/utils/scrollToElement'
+
 import { TocSection, TocItem } from '.'
 
 function getToc(node: HTMLDivElement) {
@@ -47,14 +51,28 @@ interface UseTocParams {
 }
 
 export function useToC(): UseTocParams {
+  const { hash } = useLocation()
   const [toc, setToc] = useState<TocSection[]>([])
 
-  const faqRef = useCallback((node: HTMLDivElement) => {
-    if (node !== null) {
-      const tocSections = getToc(node)
-      setToc(tocSections)
-    }
-  }, [])
+  const faqRef = useCallback(
+    (node: HTMLDivElement) => {
+      if (node !== null) {
+        const tocSections = getToc(node)
+        setToc(tocSections)
+
+        // Scroll to anchor if hash is present
+        // Timeout is needed to wait for the content to be rendered
+        setTimeout(() => {
+          const anchor = document.getElementById(hash.slice(1))
+
+          if (anchor) {
+            scrollToElement(anchor)
+          }
+        }, 100)
+      }
+    },
+    [hash]
+  )
 
   return { toc, faqRef }
 }

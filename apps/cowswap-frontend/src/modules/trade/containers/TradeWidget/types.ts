@@ -19,7 +19,6 @@ interface TradeWidgetParams {
   compactView: boolean
   showRecipient: boolean
   isTradePriceUpdating: boolean
-  isExpertMode: boolean
   priceImpact: PriceImpact
   disableQuotePolling?: boolean
   disableNativeSelling?: boolean

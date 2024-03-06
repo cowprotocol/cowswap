@@ -1,5 +1,6 @@
 import { ONE_FRACTION } from '@cowprotocol/common-const'
 import { CanonicalMarketParams, getCanonicalMarket } from '@cowprotocol/common-utils'
+import { PartnerFee } from '@cowprotocol/widget-lib'
 import { Currency, CurrencyAmount, Percent, Price, TradeType } from '@uniswap/sdk-core'
 
 interface PriceInformation {
@@ -13,7 +14,7 @@ interface FeeInformation {
   amount: string
 }
 
-export type FeeForTrade = { feeAsCurrency: CurrencyAmount<Currency> } & Pick<FeeInformation, 'amount'>
+export type FeeForTrade = { feeAsCurrency: CurrencyAmount<Currency> } & FeeInformation
 
 type TradeExecutionPrice = CanonicalMarketParams<CurrencyAmount<Currency> | undefined> & { price?: PriceInformation }
 
@@ -49,10 +50,10 @@ export function _constructTradePrice({
 
 export function _minimumAmountOut(pct: Percent, trade: TradeGp) {
   if (trade.tradeType === TradeType.EXACT_OUTPUT) {
-    return trade.outputAmount
+    return trade.outputAmountAfterFees
   }
 
-  return trade.outputAmount.multiply(ONE_FRACTION.subtract(pct))
+  return trade.outputAmountAfterFees.multiply(ONE_FRACTION.subtract(pct))
 }
 
 export function _maximumAmountIn(pct: Percent, trade: TradeGp) {
@@ -60,19 +61,23 @@ export function _maximumAmountIn(pct: Percent, trade: TradeGp) {
     return trade.inputAmount
   }
 
-  return trade.inputAmountWithFee.multiply(ONE_FRACTION.add(pct))
+  return trade.inputAmountAfterFees.multiply(ONE_FRACTION.add(pct))
 }
 
 interface TradeGpConstructor {
   inputAmount: CurrencyAmount<Currency>
   inputAmountWithFee: CurrencyAmount<Currency>
   inputAmountWithoutFee: CurrencyAmount<Currency>
+  inputAmountAfterFees: CurrencyAmount<Currency>
   outputAmount: CurrencyAmount<Currency>
   outputAmountWithoutFee: CurrencyAmount<Currency>
+  outputAmountAfterFees: CurrencyAmount<Currency>
   fee: FeeForTrade
   executionPrice: Price<Currency, Currency>
   tradeType: TradeType
   quoteId?: number
+  partnerFee?: PartnerFee
+  partnerFeeAmount?: CurrencyAmount<Currency>
 }
 
 /**
@@ -90,11 +95,13 @@ export default class TradeGp {
   readonly inputAmount: CurrencyAmount<Currency>
   readonly inputAmountWithFee: CurrencyAmount<Currency>
   readonly inputAmountWithoutFee: CurrencyAmount<Currency>
+  readonly inputAmountAfterFees: CurrencyAmount<Currency>
   /**
    * The output amount for the trade assuming no slippage.
    */
   readonly outputAmount: CurrencyAmount<Currency>
   readonly outputAmountWithoutFee: CurrencyAmount<Currency>
+  readonly outputAmountAfterFees: CurrencyAmount<Currency>
   /**
    * Trade fee
    */
@@ -111,26 +118,43 @@ export default class TradeGp {
    */
   readonly quoteId?: number
 
+  /**
+   * The partner fee
+   */
+  readonly partnerFee?: PartnerFee
+  /**
+   * The partner fee as token amount
+   */
+  readonly partnerFeeAmount?: CurrencyAmount<Currency>
+
   public constructor({
     inputAmount,
     inputAmountWithFee,
     inputAmountWithoutFee,
     outputAmount,
     outputAmountWithoutFee,
+    outputAmountAfterFees,
+    inputAmountAfterFees,
     fee,
     executionPrice,
     tradeType,
     quoteId,
+    partnerFee,
+    partnerFeeAmount,
   }: TradeGpConstructor) {
     this.tradeType = tradeType
     this.inputAmount = inputAmount
     this.inputAmountWithFee = inputAmountWithFee
     this.inputAmountWithoutFee = inputAmountWithoutFee
+    this.inputAmountAfterFees = inputAmountAfterFees
     this.outputAmountWithoutFee = outputAmountWithoutFee
+    this.outputAmountAfterFees = outputAmountAfterFees
     this.outputAmount = outputAmount
     this.fee = fee
     this.executionPrice = executionPrice
     this.quoteId = quoteId
+    this.partnerFee = partnerFee
+    this.partnerFeeAmount = partnerFeeAmount
   }
   /**
    * Get the minimum amount that must be received from this trade for the given slippage tolerance

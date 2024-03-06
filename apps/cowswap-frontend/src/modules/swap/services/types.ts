@@ -53,7 +53,6 @@ export type EthFlowContext = BaseFlowContext & {
   addTransaction: ReturnType<typeof useTransactionAdder>
   checkEthFlowOrderExists: EthFlowOrderExistsCallback
   addInFlightOrderId: (orderId: string) => void
-  swapZeroFee: boolean
 }
 
 export type BaseSafeFlowContext = BaseFlowContext & {

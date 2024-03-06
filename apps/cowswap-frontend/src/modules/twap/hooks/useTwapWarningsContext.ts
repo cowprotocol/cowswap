@@ -5,11 +5,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { useTradePriceImpact } from 'modules/trade'
 import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
 
-const NOT_BLOCKING_VALIDATIONS = [
-  TradeFormValidation.ExpertApproveAndSwap,
-  TradeFormValidation.ApproveAndSwap,
-  TradeFormValidation.ApproveRequired,
-]
+const NOT_BLOCKING_VALIDATIONS = [TradeFormValidation.ApproveAndSwap, TradeFormValidation.ApproveRequired]
 
 export interface TwapWarningsContext {
   canTrade: boolean
@@ -23,11 +19,8 @@ export function useTwapWarningsContext(): TwapWarningsContext {
   const priceImpactParams = useTradePriceImpact()
 
   return useMemo(() => {
-    // TODO: bind to settings
-    const expertMode = false
     const canTrade = !primaryFormValidation || NOT_BLOCKING_VALIDATIONS.includes(primaryFormValidation)
-    const showPriceImpactWarning =
-      canTrade && !expertMode && !priceImpactParams.loading && !priceImpactParams.priceImpact
+    const showPriceImpactWarning = canTrade && !priceImpactParams.loading && !priceImpactParams.priceImpact
     const walletIsNotConnected = !account
 
     return {
