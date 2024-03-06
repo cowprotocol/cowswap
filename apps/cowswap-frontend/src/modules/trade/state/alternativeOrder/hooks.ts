@@ -29,3 +29,12 @@ export function useSetAlternativeOrder() {
     [setAlternativeOrder]
   )
 }
+
+/**
+ * Returns the id of the order being edited, if it's an edit
+ */
+export function useReplacedOrderUid() {
+  const { order, isEdit } = useAlternativeOrder() || {}
+
+  return isEdit ? order?.id : undefined
+}
