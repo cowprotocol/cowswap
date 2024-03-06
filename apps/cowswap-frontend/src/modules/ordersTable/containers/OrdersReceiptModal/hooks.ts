@@ -27,7 +27,7 @@ export function useSelectedOrder(): ParsedOrder | null {
   return order
 }
 
-export function useGetShowAlternativeModal(order: ParsedOrder | null): Command | null {
+export function useGetShowAlternativeOrderModal(order: ParsedOrder | null): Command | null {
   const setAlternativeOrder = useSetAlternativeOrder()
 
   return useMemo(

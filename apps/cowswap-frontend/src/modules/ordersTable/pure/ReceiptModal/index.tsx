@@ -53,7 +53,7 @@ interface ReceiptProps {
   limitPrice: Fraction | null
   executionPrice: Fraction | null
   estimatedExecutionPrice: Fraction | null
-  showAlternativeModal: Command | null
+  showAlternativeOrderModal: Command | null
 }
 
 const FILLED_COMMON_TOOLTIP = 'How much of the order has been filled.'
@@ -105,7 +105,7 @@ export function ReceiptModal({
   executionPrice,
   estimatedExecutionPrice,
   receiverEnsName,
-  showAlternativeModal,
+  showAlternativeOrderModal,
 }: ReceiptProps) {
   // Check if Custom Recipient Warning Banner should be visible
   const isCustomRecipientWarningBannerVisible = !useIsReceiverWalletBannerHidden(order.id)
@@ -132,12 +132,12 @@ export function ReceiptModal({
       <styledEl.Wrapper>
         <styledEl.Header>
           <styledEl.Title>Order Receipt</styledEl.Title>
-          {showAlternativeModal && (
+          {showAlternativeOrderModal && (
             <ButtonSecondary
               variant={'light'}
               margin={'0 auto 0 10px'}
               minHeight={'28px'}
-              onClick={showAlternativeModal}
+              onClick={showAlternativeOrderModal}
             >
               {isPending(order) ? 'Edit' : 'Recreate'} this order
             </ButtonSecondary>
