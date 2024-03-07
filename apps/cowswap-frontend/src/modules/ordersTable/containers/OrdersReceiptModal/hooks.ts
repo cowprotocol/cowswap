@@ -7,7 +7,7 @@ import { useSetAlternativeOrder } from 'modules/trade/state/alternativeOrder'
 
 import { isCreating, isPending } from 'common/hooks/useCategorizeRecentActivity'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
-import { ParsedOrder } from 'utils/orderUtils/parseOrder'
+import { isOffchainOrder, ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import { receiptAtom, updateReceiptAtom } from '../../state/orderReceiptAtom'
 
@@ -32,7 +32,10 @@ export function useGetShowAlternativeOrderModal(order: ParsedOrder | null): Comm
 
   return useMemo(
     () =>
-      !order || isCreating(order) || getUiOrderType(order) !== UiOrderType.LIMIT
+      !order ||
+      isCreating(order) ||
+      getUiOrderType(order) !== UiOrderType.LIMIT ||
+      (isPending(order) && !isOffchainOrder(order))
         ? null
         : () => setAlternativeOrder(order, isPending(order)),
     [order, setAlternativeOrder]
