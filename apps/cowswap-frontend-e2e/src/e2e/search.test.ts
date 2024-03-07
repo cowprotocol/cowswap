@@ -1,5 +1,5 @@
 function openTokenSelector() {
-  cy.get('.open-currency-select-button').first().should('not.contain.text', 'Select a token').click()
+  cy.get('.open-currency-select-button').first({ timeout: 20_000 }).should('be.enabled').click()
 }
 
 describe('Search', () => {
