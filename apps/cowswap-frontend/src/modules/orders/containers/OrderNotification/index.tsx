@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react'
 
 import { isCowOrder, shortenOrderId } from '@cowprotocol/common-utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CowEvents, OnToastMessagePayload, ToastMessagePayloads, ToastMessageType } from '@cowprotocol/events'
 import { TokenInfo, UiOrderType } from '@cowprotocol/types'
 import { useIsSafeWallet } from '@cowprotocol/wallet'
@@ -41,21 +41,43 @@ const OrderLinkWrapper = styled.div`
   }
 `
 
+interface OrderInfo {
+  owner: string
+  kind: OrderKind
+  receiver?: string
+  inputAmount: bigint
+  outputAmount: bigint
+  inputToken: TokenInfo
+  outputToken: TokenInfo
+}
+
 export interface BaseOrderNotificationProps {
   title: JSX.Element | string
   messageType: ToastMessageType
   chainId: SupportedChainId
   orderUid: string
   orderType: UiOrderType
+  orderInfo?: OrderInfo
   transactionHash?: string
   children?: JSX.Element
 }
 
 export function OrderNotification(props: BaseOrderNotificationProps) {
-  const { title, orderUid, orderType, transactionHash, chainId, messageType, children } = props
+  const { title, orderUid, orderType, transactionHash, chainId, messageType, children, orderInfo } = props
 
   const isSafeWallet = useIsSafeWallet()
-  const order = useOrder({ chainId, id: orderUid })
+  const orderFromStore = useOrder({ chainId, id: orderInfo ? undefined : orderUid })
+  const order = useMemo(() => {
+    if (orderInfo) return orderInfo
+
+    if (!orderFromStore) return undefined
+
+    return {
+      ...orderFromStore,
+      inputAmount: orderFromStore?.sellAmount,
+      outputAmount: orderFromStore?.buyAmount,
+    }
+  }, [orderFromStore, orderInfo])
 
   const onToastMessage = useMemo(
     () =>
@@ -100,8 +122,8 @@ export function OrderNotification(props: BaseOrderNotificationProps) {
             kind={order.kind}
             inputToken={order.inputToken as TokenInfo}
             outputToken={order.outputToken as TokenInfo}
-            sellAmount={order.sellAmount}
-            buyAmount={order.buyAmount}
+            sellAmount={order.inputAmount}
+            buyAmount={order.outputAmount}
           />
         )}
         <ReceiverInfo receiver={order.receiver} owner={order.owner} />

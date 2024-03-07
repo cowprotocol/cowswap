@@ -33,6 +33,7 @@ export const ORDERS_NOTIFICATION_HANDLERS: Record<CowEvents, OrdersNotifications
           orderType={orderType}
           orderUid={orderUid}
           transactionHash={orderCreationHash}
+          orderInfo={payload}
           messageType={ToastMessageType.ORDER_CREATED}
         />
       )
