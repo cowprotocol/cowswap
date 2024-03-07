@@ -20,7 +20,7 @@ import { isCreating, isPending, useCategorizeRecentActivity } from 'common/hooks
 import { ordersToCancelAtom, updateOrdersToCancelAtom } from 'common/hooks/useMultipleOrdersCancellation/state'
 import { CancellableOrder } from 'common/utils/isOrderCancellable'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
-import { ParsedOrder } from 'utils/orderUtils/parseOrder'
+import { isOffchainOrder, ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import { useGetOrdersToCheckPendingPermit } from './hooks/useGetOrdersToCheckPendingPermit'
 import { OrdersTableList, useOrdersTableList } from './hooks/useOrdersTableList'
@@ -143,12 +143,14 @@ export function OrdersTableWidget({
 
   const setAlternativeOrder = useSetAlternativeOrder()
   const getShowAlternativeOrderModal = useCallback(
-    (order: ParsedOrder) => {
-      if (isCreating(order) || getUiOrderType(order) !== UiOrderType.LIMIT) {
-        return null
-      }
-      return () => setAlternativeOrder(order, isPending(order))
-    },
+    (order: ParsedOrder) =>
+      isCreating(order) ||
+      // show only for limit orders
+      getUiOrderType(order) !== UiOrderType.LIMIT ||
+      // do not show if pending onchain order
+      (isPending(order) && !isOffchainOrder(order))
+        ? null
+        : () => setAlternativeOrder(order, isPending(order)),
     [setAlternativeOrder]
   )
 
