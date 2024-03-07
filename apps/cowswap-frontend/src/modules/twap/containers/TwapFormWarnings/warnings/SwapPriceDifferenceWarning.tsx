@@ -62,7 +62,7 @@ export function SwapPriceDifferenceWarning({
         <>
           <strong>Trade Smart, Save More!</strong>
           <p>
-            Considering current market fees (
+            Considering current network costs (
             <b>
               <FiatAmount amount={feeFiatAmount} />
             </b>{' '}

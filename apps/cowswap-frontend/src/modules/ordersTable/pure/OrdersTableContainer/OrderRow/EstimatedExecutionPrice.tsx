@@ -172,7 +172,7 @@ export function UnlikelyToExecuteWarning(props: UnlikelyToExecuteWarningProps) {
         content={
           <styledEl.WarningContent>
             <h3>Order unlikely to execute</h3>
-            For this order, network fees would be <b>{feePercentage?.toFixed(2)}%</b>{' '}
+            For this order, network costs would be <b>{feePercentage?.toFixed(2)}%</b>{' '}
             <b>
               <i>
                 (<TokenAmount amount={feeAmount} round={false} tokenSymbol={feeAmount.currency} />)

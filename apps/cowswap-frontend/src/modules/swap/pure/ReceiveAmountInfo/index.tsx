@@ -39,13 +39,16 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps) {
   const { discount } = subsidy
 
   const typeString = type === 'from' ? '+' : '-'
-  const hasFee = feeAmountRaw && feeAmountRaw.greaterThan(0)
-  const hasPartnerFee = partnerFeeAmountRaw && partnerFeeAmountRaw.greaterThan(0)
+  const hasPartnerFee = !!partnerFeeAmountRaw && partnerFeeAmountRaw.greaterThan(0)
+  const hasNetworkFee = !!feeAmountRaw && feeAmountRaw.greaterThan(0)
+  const hasFee = hasNetworkFee || hasPartnerFee
+
+  const isEoaNotEthFlow = allowsOffchainSigning && !isEoaEthFlow
 
   const FeePercent = (
     <span>
-      <Trans>Fee</Trans>
-      {hasFee && discount ? ` [-${discount}%]` : ''}
+      <Trans>Network costs</Trans>
+      {hasNetworkFee && discount ? ` [-${discount}%]` : ''}
     </span>
   )
 
@@ -53,7 +56,7 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps) {
     <styledEl.Box>
       <div>
         <span>
-          <Trans>Before fee</Trans>
+          <Trans>Before costs</Trans>
         </span>
         <span>
           {amountBeforeFees} {<TokenSymbol token={currency} length={MAX_TOKEN_SYMBOL_LENGTH} />}
@@ -74,25 +77,23 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps) {
           </styledEl.GreenText>
         )}
       </div>
-      {hasPartnerFee && (
-        <div>
-          <Trans>Partner fee</Trans>
-          <span>
-            {typeString}
-            {partnerFeeAmount} {<TokenSymbol token={currency} length={MAX_TOKEN_SYMBOL_LENGTH} />}
-          </span>
-        </div>
-      )}
-      {allowsOffchainSigning && !isEoaEthFlow && (
+      {(isEoaNotEthFlow || hasPartnerFee) && (
         <div>
           <span>
-            <Trans>Gas cost</Trans>
+            <Trans>Fee</Trans>
           </span>
-          <styledEl.GreenText>
-            <strong>
-              <Trans>Free</Trans>
-            </strong>
-          </styledEl.GreenText>
+          {hasPartnerFee ? (
+            <span>
+              {typeString}
+              {partnerFeeAmount} {<TokenSymbol token={currency} length={MAX_TOKEN_SYMBOL_LENGTH} />}
+            </span>
+          ) : (
+            <styledEl.GreenText>
+              <strong>
+                <Trans>Free</Trans>
+              </strong>
+            </styledEl.GreenText>
+          )}
         </div>
       )}
       {amountAfterFeesRaw.greaterThan(0) && (

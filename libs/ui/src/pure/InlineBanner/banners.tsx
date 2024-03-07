@@ -76,7 +76,7 @@ export function SmallVolumeWarningBanner({ feePercentage, feeAmount }: SmallVolu
     <InlineBanner iconSize={32}>
       <strong>Small orders are unlikely to be executed</strong>
       <p>
-        For this order, network fees would be{' '}
+        For this order, network costs would be{' '}
         <b>
           {feePercentage?.toFixed(2)}% (
           <TokenAmount amount={feeAmount} tokenSymbol={feeAmount?.currency} />)
