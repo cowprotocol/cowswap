@@ -326,6 +326,8 @@ export default createReducer(initialState, (builder) =>
               isCancelling: isCancelling,
               class: orderObj.order.class || newOrder.class, // should never replace existing order class
               openSince: newOrder.openSince || orderObj.order.openSince,
+              // Necessary since `signingScheme` was added later, and local redux state prior to this change doesn't have it set
+              signingScheme: newOrder.signingScheme || orderObj.order.signingScheme,
               status,
             }
           : { ...newOrder, validTo }

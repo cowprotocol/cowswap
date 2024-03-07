@@ -1,5 +1,5 @@
 import { RADIX_DECIMAL } from '@cowprotocol/common-const'
-import { OrderClass, OrderKind } from '@cowprotocol/cow-sdk'
+import { OrderClass, OrderKind, SigningScheme } from '@cowprotocol/cow-sdk'
 import { Token } from '@uniswap/sdk-core'
 
 import { addPendingOrder, AddPendingOrderParams, Order, OrderStatus, SerializedOrder } from './actions'
@@ -63,6 +63,7 @@ export const generateOrder = ({ owner, sellToken, buyToken }: GenerateOrderParam
     partiallyFillable: false,
     // hacky typing..
     signature: (orderN++).toString().repeat(65 * 2), // 65 bytes encoded as hex without `0x` prefix. v + r + s from the spec
+    signingScheme: SigningScheme.EIP712,
     receiver: owner.replace('0x', ''),
     apiAdditionalInfo: undefined,
     class: OrderClass.MARKET,
@@ -117,6 +118,7 @@ export const mockOrderDispatches = {
         partiallyFillable: false,
         signature:
           '1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111',
+        signingScheme: SigningScheme.EIP712,
         receiver: '123',
         class: OrderClass.MARKET,
       },
