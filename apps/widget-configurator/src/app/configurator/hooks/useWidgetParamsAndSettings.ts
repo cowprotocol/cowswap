@@ -1,17 +1,24 @@
 import { useMemo } from 'react'
 
-import type { CowSwapWidgetEnv, CowSwapWidgetParams } from '@cowprotocol/widget-lib'
+import type { CowSwapWidgetParams } from '@cowprotocol/widget-lib'
 
 import { isDev, isLocalHost, isVercel } from '../../../env'
 import { ConfiguratorState } from '../types'
 
-const getEnv = (): CowSwapWidgetEnv => {
-  if (isLocalHost) return 'local'
-  if (isDev) return 'dev'
-  if (isVercel) return 'pr'
+const getBaseUrl = (): string => {
+  if (typeof window === 'undefined' || !window) return ''
 
-  return 'prod'
+  if (isLocalHost) return 'http://localhost:3000'
+  if (isDev) return 'https://dev.swap.cow.fi/'
+  if (isVercel) {
+    const prKey = window.location.hostname.replace('widget-configurator-git-', '').replace('-cowswap.vercel.app', '')
+    return `https://swap-dev-git-${prKey}-cowswap.vercel.app`
+  }
+
+  return 'https://swap.cow.fi'
 }
+
+const DEFAULT_BASE_URL = getBaseUrl()
 
 export function useWidgetParams(configuratorState: ConfiguratorState, standaloneMode: boolean): CowSwapWidgetParams {
   return useMemo(() => {
@@ -42,7 +49,7 @@ export function useWidgetParams(configuratorState: ConfiguratorState, standalone
       height: '640px',
       chainId,
       tokenLists: tokenLists.filter((list) => list.enabled).map((list) => list.url),
-      baseUrl: { environment: getEnv() },
+      baseUrl: DEFAULT_BASE_URL,
       tradeType: currentTradeType,
       sell: { asset: sellToken, amount: sellTokenAmount ? sellTokenAmount.toString() : undefined },
       buy: { asset: buyToken, amount: buyTokenAmount?.toString() },

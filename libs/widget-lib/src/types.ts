@@ -51,8 +51,6 @@ export interface EthereumProvider {
   enable(): Promise<void>
 }
 
-export type CowSwapWidgetEnv = 'local' | 'prod' | 'dev' | 'pr'
-
 export type CowSwapTheme = 'dark' | 'light'
 
 /**
@@ -147,7 +145,7 @@ export interface CowSwapWidgetParams {
    *
    * The base URL will default to the production environment if not specified, so it will use https://swap.cow.fi by default.
    */
-  baseUrl?: string | { environment?: CowSwapWidgetEnv }
+  baseUrl?: string
 
   /**
    * Sell token, and optionally the amount.
