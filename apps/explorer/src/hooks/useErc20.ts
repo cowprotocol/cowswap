@@ -44,54 +44,7 @@ async function _fetchErc20FromNetwork(params: {
   }
 }
 
-type UseErc20Params = { address?: string; networkId?: Network }
-
 type Return<E, V> = { isLoading: boolean; error?: E; value: V }
-
-/**
- * Fetches single erc20 token details for given network and address
- *
- * Tries to get it from globalState.
- * If not found, tries to get it from the network.
- * Saves to globalState if found.
- * Value is `null` when not found.
- * Returns `isLoading` to indicate whether fetching the value
- * Returns `error` with the error message, if any.
- */
-export function useErc20(params: UseErc20Params): Return<UiError, SingleErc20State> {
-  const { address, networkId } = params
-
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<UiError>()
-
-  const erc20 = useErc20State({ networkId, address })
-  const saveErc20s = useSaveErc20s(networkId)
-
-  const fetchAndUpdateState = useCallback(async (): Promise<void> => {
-    if (!address || !networkId) {
-      return
-    }
-
-    setIsLoading(true)
-
-    const fetched = await _fetchErc20FromNetwork({ address, networkId, setError })
-    if (fetched) {
-      saveErc20s([fetched])
-    }
-
-    setError(undefined)
-    setIsLoading(false)
-  }, [address, networkId, saveErc20s])
-
-  useEffect(() => {
-    // Only try to fetch it if not on global state
-    if (!erc20) {
-      fetchAndUpdateState()
-    }
-  }, [erc20, fetchAndUpdateState])
-
-  return { isLoading, error, value: erc20 }
-}
 
 export type UseMultipleErc20Params = { addresses: string[]; networkId?: Network }
 
