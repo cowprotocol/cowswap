@@ -6,6 +6,8 @@ import JSBI from 'jsbi'
 
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 
+import { getAppDataReplacedOrderUid } from 'modules/appData/utils/getAppDataReplacedOrderUid'
+
 import { ComposableCowInfo } from 'common/types'
 
 import { getOrderExecutedAmounts } from './getOrderExecutedAmounts'
@@ -50,7 +52,7 @@ export interface ParsedOrder {
   composableCowInfo?: ComposableCowInfo
   fullAppData: Order['fullAppData']
   signingScheme: SigningScheme
-
+  replacedOrderId?: string
   executionData: ParsedOrderExecutionData
 }
 
@@ -115,6 +117,7 @@ export const parseOrder = (order: Order): ParsedOrder => {
     fullAppData: order.fullAppData,
     executionData,
     signingScheme: order.signingScheme,
+    replacedOrderId: getAppDataReplacedOrderUid(order.fullAppData),
   }
 }
 
