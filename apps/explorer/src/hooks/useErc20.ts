@@ -4,19 +4,15 @@ import { TokenErc20 } from '@gnosis.pm/dex-js'
 
 import { Errors, Network, UiError } from 'types'
 
-import {
-  useErc20 as useErc20State,
-  useMultipleErc20s as useMultipleErc20sState,
-  useSaveErc20s,
-  SingleErc20State,
-} from 'state/erc20'
+import { SingleErc20State, useMultipleErc20s as useMultipleErc20sState, useSaveErc20s } from 'state/erc20'
 
 import { getErc20Info } from 'services/helpers'
 
-import { web3, erc20Api } from '../explorer/api'
+import { erc20Api, web3 } from '../explorer/api'
 
 import { NATIVE_TOKEN_PER_NETWORK } from 'const'
 import { isNativeToken, retry } from 'utils'
+import { useTokenList } from './useTokenList'
 
 async function _fetchErc20FromNetwork(params: {
   address: string
@@ -66,12 +62,28 @@ export function useMultipleErc20(
 
   const [isLoading, setIsLoading] = useState(false)
   const [errors, setErrors] = useState<Errors>({})
+  const { isLoading: isTokenListLoading, data: tokenListTokens } = useTokenList(networkId)
 
   const erc20s = useMultipleErc20sState({ networkId, addresses })
   const saveErc20s = useSaveErc20s(networkId)
 
+  const fromTokenList = useMemo(
+    () =>
+      addresses.reduce((acc, address) => {
+        const token = tokenListTokens[address.toLowerCase()]
+        if (token) {
+          acc[address] = token
+        }
+        return acc
+      }, {}),
+    [addresses, tokenListTokens]
+  )
+
   // check what on globalState has not been fetched yet
-  const toFetch = useMemo(() => addresses.filter((address) => !erc20s[address]), [addresses, erc20s])
+  const toFetch = useMemo(
+    () => (isTokenListLoading ? [] : addresses.filter((address) => !erc20s[address] && !fromTokenList[address])),
+    [addresses, erc20s, fromTokenList, isTokenListLoading]
+  )
   // flow control
   const running = useRef({ networkId, isRunning: false })
 
@@ -109,5 +121,5 @@ export function useMultipleErc20(
     }
   }, [updateErc20s, saveErc20s, networkId])
 
-  return { isLoading, error: errors, value: erc20s }
+  return { isLoading: isTokenListLoading || isLoading, error: errors, value: { ...erc20s, ...fromTokenList } }
 }
