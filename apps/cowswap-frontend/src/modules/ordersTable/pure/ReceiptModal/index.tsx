@@ -88,6 +88,7 @@ const tooltips: { [key: string]: string | JSX.Element } = {
       also be changed to <i>Fill or kill</i> through your order settings.
     </span>
   ),
+  REPLACED_ORDER: 'The current order was based on and replaced this order.',
 }
 
 const TWAP_PART_ORDER_EXISTS_STATES = new Set([OrderStatus.PENDING, OrderStatus.FULFILLED, OrderStatus.EXPIRED])
@@ -126,6 +127,7 @@ export function ReceiptModal({
   const inputLabel = isSell ? 'You sell' : 'You sell at most'
   const outputLabel = isSell ? 'You receive at least' : 'You receive exactly'
   const safeTxParams = twapOrder?.safeTxParams
+  const replacedOrderId = order.replacedOrderId
 
   return (
     <CowModal onDismiss={onDismiss} isOpen={isOpen}>
@@ -249,6 +251,13 @@ export function ReceiptModal({
               <FieldLabel label="Order type" tooltip={tooltips.ORDER_TYPE} />
               <OrderTypeField order={order} />
             </styledEl.Field>
+
+            {replacedOrderId && (
+              <styledEl.Field>
+                <FieldLabel label="Replaced order" tooltip={tooltips.REPLACED_ORDER} />
+                <IdField id={replacedOrderId} chainId={chainId} />
+              </styledEl.Field>
+            )}
 
             {/*TODO: add a link to explorer when it will support TWAP orders*/}
             {(!twapOrder || twapPartOrderExists) && (
