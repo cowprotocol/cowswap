@@ -105,9 +105,14 @@ export function Configurator({ title }: { title: string }) {
 
   const [widgetMode, setWidgetMode] = useState<WidgetMode>('dapp')
   const standaloneMode = widgetMode === 'standalone'
+  const [disableToastMessages, setDisableToastMessages] = useState<boolean>(false)
 
   const selectWidgetMode = (event: ChangeEvent<HTMLInputElement>) => {
     setWidgetMode(event.target.value as WidgetMode)
+  }
+
+  const selectDisableToastMessages = (event: ChangeEvent<HTMLInputElement>) => {
+    setDisableToastMessages(event.target.value === 'true')
   }
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(true)
@@ -179,6 +184,8 @@ export function Configurator({ title }: { title: string }) {
     defaultColors: defaultPalette,
     partnerFeeBps,
     partnerFeeRecipient,
+    standaloneMode,
+    disableToastMessages,
   }
 
   const params = useWidgetParams(state, standaloneMode)
@@ -254,6 +261,21 @@ export function Configurator({ title }: { title: string }) {
         <Divider variant="middle">Integrations</Divider>
 
         <PartnerFeeControl feeBpsState={partnerFeeBpsState} recipientState={partnerFeeRecipientState} />
+
+        <Divider variant="middle">Other settings</Divider>
+        <FormControl component="fieldset">
+          <FormLabel component="legend">Toast notifications:</FormLabel>
+          <RadioGroup
+            row
+            aria-label="mode"
+            name="mode"
+            value={disableToastMessages}
+            onChange={selectDisableToastMessages}
+          >
+            <FormControlLabel value="false" control={<Radio />} label="Self-contain in Widget" />
+            <FormControlLabel value="true" control={<Radio />} label="Dapp mode" />
+          </RadioGroup>
+        </FormControl>
 
         {isDrawerOpen && (
           <Fab
