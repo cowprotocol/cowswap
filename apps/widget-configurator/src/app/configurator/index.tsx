@@ -1,15 +1,16 @@
 import { ChangeEvent, useContext, useEffect, useState } from 'react'
 
-import { CowEventListeners, CowEvents, ToastMessageType } from '@cowprotocol/events'
+import { CowEventListeners, CowEvents, ToastMessageType, BaseToastMessagePayload } from '@cowprotocol/events'
 import { TradeType } from '@cowprotocol/widget-lib'
 import { CowSwapWidget } from '@cowprotocol/widget-react'
 
 import ChromeReaderModeIcon from '@mui/icons-material/ChromeReaderMode'
+import CloseIcon from '@mui/icons-material/Close'
 import CodeIcon from '@mui/icons-material/Code'
 import EditIcon from '@mui/icons-material/Edit'
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft'
 import LanguageIcon from '@mui/icons-material/Language'
-import { Radio, RadioGroup, FormControlLabel, FormControl, FormLabel } from '@mui/material'
+import { Radio, RadioGroup, FormControlLabel, FormControl, FormLabel, Snackbar, IconButton } from '@mui/material'
 import Box from '@mui/material/Box'
 import Divider from '@mui/material/Divider'
 import Drawer from '@mui/material/Drawer'
@@ -56,14 +57,6 @@ const COW_LISTENERS: CowEventListeners = [
   {
     event: CowEvents.ON_TOAST_MESSAGE,
     handler: (event) => {
-      // You can provide a simplistic way to handle toast messages (use the "message" to show it in your app)
-      console.info('[configurator:ON_TOAST_MESSAGE:simple] 🍞 Message:', event.message)
-    },
-  },
-
-  {
-    event: CowEvents.ON_TOAST_MESSAGE,
-    handler: (event) => {
       // You cn implement a more complex way to handle toast messages
       switch (event.messageType) {
         case ToastMessageType.SWAP_ETH_FLOW_SENT_TX:
@@ -101,6 +94,7 @@ const UTM_PARAMS = 'utm_content=cow-widget-configurator&utm_medium=web&utm_sourc
 export type WidgetMode = 'dapp' | 'standalone'
 
 export function Configurator({ title }: { title: string }) {
+  const [listeners, setListeners] = useState<CowEventListeners>(COW_LISTENERS)
   const { mode } = useContext(ColorModeContext)
 
   const [widgetMode, setWidgetMode] = useState<WidgetMode>('dapp')
@@ -200,6 +194,40 @@ export function Configurator({ title }: { title: string }) {
       connectWalletToConfiguratorGA()
     }
   }, [isConnected])
+
+  const [toasts, setToasts] = useState<string[]>([])
+  const toast = toasts.length > 0 ? toasts[0] : undefined
+
+  const openToast = (message: string) => {
+    setToasts((t) => [...t, message])
+  }
+
+  const handleClose = (event: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') {
+      return
+    }
+
+    setToasts((t) => t.slice(1))
+  }
+
+  useEffect(() => {
+    // Update listeners
+    const newListeners = [...COW_LISTENERS]
+    if (!disableToastMessages) {
+      openToast('Toast messages are enabled. Using Dapp mode toasts.')
+      newListeners.push({
+        event: CowEvents.ON_TOAST_MESSAGE,
+        handler: (event: BaseToastMessagePayload<ToastMessageType>) => {
+          // You can provide a simplistic way to handle toast messages (use the "message" to show it in your app)
+          openToast(event.message)
+        },
+      })
+    } else {
+      openToast('Disable, toast messages. Self-contained widget toasts.')
+    }
+
+    setListeners(newListeners)
+  }, [disableToastMessages])
 
   return (
     <Box sx={WrapperStyled}>
@@ -321,7 +349,7 @@ export function Configurator({ title }: { title: string }) {
               handleClose={handleDialogClose}
             />
             <br />
-            <CowSwapWidget params={params} provider={standaloneMode ? provider : undefined} listeners={COW_LISTENERS} />
+            <CowSwapWidget params={params} provider={standaloneMode ? provider : undefined} listeners={listeners} />
           </>
         )}
       </Box>
@@ -336,6 +364,17 @@ export function Configurator({ title }: { title: string }) {
         <CodeIcon sx={{ mr: 1 }} />
         View Embed Code
       </Fab>
+      <Snackbar
+        open={toasts.length > 0}
+        autoHideDuration={6000}
+        onClose={handleClose}
+        message={toast}
+        action={
+          <IconButton size="small" aria-label="close" color="inherit" onClick={handleClose}>
+            <CloseIcon fontSize="small" />
+          </IconButton>
+        }
+      />
     </Box>
   )
 }
