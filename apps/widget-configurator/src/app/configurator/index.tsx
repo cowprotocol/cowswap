@@ -104,7 +104,7 @@ export function Configurator({ title }: { title: string }) {
   const { mode } = useContext(ColorModeContext)
 
   const [widgetMode, setWidgetMode] = useState<WidgetMode>('dapp')
-  const isDappMode = widgetMode === 'dapp'
+  const standaloneMode = widgetMode === 'standalone'
 
   const selectWidgetMode = (event: ChangeEvent<HTMLInputElement>) => {
     setWidgetMode(event.target.value as WidgetMode)
@@ -181,7 +181,7 @@ export function Configurator({ title }: { title: string }) {
     partnerFeeRecipient,
   }
 
-  const params = useWidgetParams(state, isDappMode)
+  const params = useWidgetParams(state, standaloneMode)
 
   useEffect(() => {
     web3Modal.setThemeMode(mode)
@@ -223,7 +223,7 @@ export function Configurator({ title }: { title: string }) {
             <FormControlLabel value="standalone" control={<Radio />} label="Standalone mode" />
           </RadioGroup>
         </FormControl>
-        {isDappMode && (
+        {!standaloneMode && (
           <div style={WalletConnectionWrapper}>
             <w3m-button />
           </div>
@@ -299,7 +299,7 @@ export function Configurator({ title }: { title: string }) {
               handleClose={handleDialogClose}
             />
             <br />
-            <CowSwapWidget params={params} provider={isDappMode ? provider : undefined} listeners={COW_LISTENERS} />
+            <CowSwapWidget params={params} provider={standaloneMode ? provider : undefined} listeners={COW_LISTENERS} />
           </>
         )}
       </Box>
