@@ -95,8 +95,8 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
       <styledEl.ContainerBox>
         <styledEl.Header>
           {isAlternativeOrderModalVisible ? <div></div> : <TradeWidgetLinks isDropdown={isInjectedWidgetMode} />}
-          {isInjectedWidgetMode && !injectedWidgetParams.hideConnectButton && (
-            <AccountElement isWidgetMode={isInjectedWidgetMode} pendingActivities={pendingActivity} />
+          {isInjectedWidgetMode && injectedWidgetParams.standaloneMode && (
+            <AccountElement standaloneMode pendingActivities={pendingActivity} />
           )}
           {!lockScreen && settingsWidget}
         </styledEl.Header>

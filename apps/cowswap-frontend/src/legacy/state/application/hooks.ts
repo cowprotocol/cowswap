@@ -32,17 +32,17 @@ export function useCloseModal(_modal: ApplicationModal): Command {
 }
 export function useToggleWalletModal(): Command | null {
   const { active } = useWalletInfo()
-  const { hideConnectButton } = useInjectedWidgetParams()
+  const { standaloneMode } = useInjectedWidgetParams()
 
   const toggleWalletModal = useToggleModal(ApplicationModal.WALLET)
 
   return useMemo(() => {
-    if (!active || hideConnectButton) {
+    if (!active || !standaloneMode) {
       return null
     }
 
     return toggleWalletModal
-  }, [hideConnectButton, active, toggleWalletModal])
+  }, [standaloneMode, active, toggleWalletModal])
 }
 
 export function useToggleSettingsMenu(): Command {

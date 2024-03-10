@@ -14,11 +14,11 @@ import { Wrapper, BalanceText } from './styled'
 
 interface AccountElementProps {
   pendingActivities: string[]
-  isWidgetMode?: boolean
+  standaloneMode?: boolean
   className?: string
 }
 
-export function AccountElement({ className, isWidgetMode, pendingActivities }: AccountElementProps) {
+export function AccountElement({ className, standaloneMode, pendingActivities }: AccountElementProps) {
   const { account, chainId } = useWalletInfo()
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
   const userEthBalance = useNativeCurrencyAmount(chainId, account)
@@ -27,7 +27,7 @@ export function AccountElement({ className, isWidgetMode, pendingActivities }: A
 
   return (
     <Wrapper className={className} active={!!account} onClick={() => account && toggleAccountModal()}>
-      {!isWidgetMode && account && !isChainIdUnsupported && userEthBalance && chainId && (
+      {standaloneMode && account && !isChainIdUnsupported && userEthBalance && chainId && (
         <BalanceText>
           <TokenAmount amount={userEthBalance} tokenSymbol={{ symbol: nativeToken }} />
         </BalanceText>
