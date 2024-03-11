@@ -1,13 +1,13 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useCallback } from 'react'
 
 import ICON_ORDERS from '@cowprotocol/assets/svg/orders.svg'
+import { useIsSwapMode } from '@cowprotocol/common-hooks'
 import { isInjectedWidget, maxAmountSpend } from '@cowprotocol/common-utils'
 import { ButtonOutlined, MY_ORDERS_ID } from '@cowprotocol/ui'
 import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/macro'
 import SVG from 'react-inlinesvg'
-import { useLocation } from 'react-router-dom'
 
 import { AccountElement } from 'legacy/components/Header/AccountElement'
 import { upToLarge, useMediaQuery } from 'legacy/hooks/useMediaQuery'
@@ -82,6 +82,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
   const throttledOnSwitchTokens = useThrottleFn(onSwitchTokens, 500)
 
   const isUpToLarge = useMediaQuery(upToLarge)
+  const isSwapMode = useIsSwapMode()
 
   const currencyInputCommonProps = {
     isChainIdUnsupported,
@@ -105,17 +106,15 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const location = useLocation()
-  const isSwapMode = location.pathname.includes('/swap/')
   const toggleAccountModal = useToggleAccountModal()
 
-  const handleClick = () => {
+  const handleClick = useCallback(() => {
     if (isSwapMode) {
       toggleAccountModal()
     } else {
       scrollToMyOrders()
     }
-  }
+  }, [isSwapMode, toggleAccountModal])
 
   return (
     <>
