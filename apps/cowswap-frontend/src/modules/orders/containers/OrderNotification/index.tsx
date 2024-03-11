@@ -1,35 +1,28 @@
 import { useCallback, useMemo } from 'react'
 
 import { isCowOrder, shortenOrderId } from '@cowprotocol/common-utils'
-import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
-import { CowEvents, OnToastMessagePayload, ToastMessagePayloads, ToastMessageType } from '@cowprotocol/events'
+import { EnrichedOrder, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { ToastMessageType } from '@cowprotocol/events'
+import { useTokensByAddressMap } from '@cowprotocol/tokens'
 import { TokenInfo, UiOrderType } from '@cowprotocol/types'
 import { useIsSafeWallet } from '@cowprotocol/wallet'
 
-import { EVENT_EMITTER } from 'eventEmitter'
 import styled from 'styled-components/macro'
 
 import { EnhancedTransactionLink } from 'legacy/components/EnhancedTransactionLink'
 import { HashType } from 'legacy/state/enhancedTransactions/reducer'
 import { useOrder } from 'legacy/state/orders/hooks'
 
+import {
+  OrderInfo,
+  getToastMessageCallback,
+  mapEnrichedOrderToInfo,
+  mapStoreOrderToInfo,
+  isEnrichedOrder,
+} from './utils'
+
 import { OrderSummary } from '../../pure/OrderSummary'
 import { ReceiverInfo } from '../../pure/ReceiverInfo'
-
-function getToastMessageCallback(
-  messageType: ToastMessageType,
-  data: ToastMessagePayloads[typeof messageType]
-): (toastMessage: string) => void {
-  return (toastMessage: string) => {
-    const payload = {
-      messageType,
-      message: toastMessage,
-      data,
-    }
-
-    EVENT_EMITTER.emit(CowEvents.ON_TOAST_MESSAGE, payload as OnToastMessagePayload)
-  }
-}
 
 const OrderLinkWrapper = styled.div`
   margin-top: 15px;
@@ -41,23 +34,13 @@ const OrderLinkWrapper = styled.div`
   }
 `
 
-interface OrderInfo {
-  owner: string
-  kind: OrderKind
-  receiver?: string
-  inputAmount: bigint
-  outputAmount: bigint
-  inputToken: TokenInfo
-  outputToken: TokenInfo
-}
-
 export interface BaseOrderNotificationProps {
   title: JSX.Element | string
   messageType: ToastMessageType
   chainId: SupportedChainId
   orderUid: string
   orderType: UiOrderType
-  orderInfo?: OrderInfo
+  orderInfo?: OrderInfo | EnrichedOrder
   transactionHash?: string
   children?: JSX.Element
 }
@@ -66,18 +49,17 @@ export function OrderNotification(props: BaseOrderNotificationProps) {
   const { title, orderUid, orderType, transactionHash, chainId, messageType, children, orderInfo } = props
 
   const isSafeWallet = useIsSafeWallet()
+  const allTokens = useTokensByAddressMap()
+
   const orderFromStore = useOrder({ chainId, id: orderInfo ? undefined : orderUid })
+
   const order = useMemo(() => {
-    if (orderInfo) return orderInfo
-
-    if (!orderFromStore) return undefined
-
-    return {
-      ...orderFromStore,
-      inputAmount: orderFromStore?.sellAmount,
-      outputAmount: orderFromStore?.buyAmount,
+    if (orderInfo) {
+      return isEnrichedOrder(orderInfo) ? mapEnrichedOrderToInfo(orderInfo, allTokens) : orderInfo
     }
-  }, [orderFromStore, orderInfo])
+
+    return orderFromStore ? mapStoreOrderToInfo(orderFromStore) : undefined
+  }, [orderFromStore, orderInfo, allTokens])
 
   const onToastMessage = useMemo(
     () =>

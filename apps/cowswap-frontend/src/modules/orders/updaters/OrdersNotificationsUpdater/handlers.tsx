@@ -66,6 +66,7 @@ export const ORDERS_NOTIFICATION_HANDLERS: Record<CowEvents, OrdersNotifications
         <OrderNotification
           title="Order cancelled"
           chainId={chainId}
+          orderInfo={order}
           orderType={getUiOrderType(order)}
           orderUid={order.uid}
           transactionHash={transactionHash}

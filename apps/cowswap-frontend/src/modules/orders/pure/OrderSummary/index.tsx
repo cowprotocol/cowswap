@@ -12,8 +12,8 @@ import { BuyForAtMostTemplate, SellForAtLeastTemplate } from './summaryTemplates
 interface OrderSummaryProps {
   inputToken: TokenInfo
   outputToken: TokenInfo
-  sellAmount: string | bigint
-  buyAmount: string | bigint
+  sellAmount: bigint
+  buyAmount: bigint
   kind: OrderKind
   children?: JSX.Element | string
   customTemplate?: typeof SellForAtLeastTemplate

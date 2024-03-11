@@ -167,10 +167,13 @@ export function OrderRow({
   const { inputCurrencyAmount, outputCurrencyAmount } = rateInfoParams
   const { estimatedExecutionPrice, feeAmount } = prices || {}
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const showCancellationModal = useMemo(() => orderActions.getShowCancellationModal(order), [order.id])
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const showRecreateModal = useMemo(() => orderActions.getShowRecreateModal(order), [order.id])
+  const showCancellationModal = useMemo(() => {
+    return orderActions.getShowCancellationModal(order)
+  }, [orderActions, order])
+
+  const showRecreateModal = useMemo(() => {
+    return orderActions.getShowRecreateModal(order)
+  }, [orderActions, order])
 
   const withAllowanceWarning = hasEnoughAllowance === false && hasValidPendingPermit === false
   const withWarning =
