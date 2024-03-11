@@ -94,10 +94,9 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
   const shouldShowMyOrdersButton =
     isUpToLarge &&
     !alternativeOrderModalVisible &&
-    (!isSwapMode || isConnectedSwapMode) &&
-    ((isLimitOrderMode && isLimitOrdersUnlocked) ||
-      (isAdvancedMode && isAdvancedOrdersUnlocked) ||
-      (!isLimitOrderMode && !isAdvancedMode))
+    ((isSwapMode && isConnectedSwapMode) ||
+      (isLimitOrderMode && isLimitOrdersUnlocked) ||
+      (isAdvancedMode && isAdvancedOrdersUnlocked))
 
   const currencyInputCommonProps = {
     isChainIdUnsupported,
