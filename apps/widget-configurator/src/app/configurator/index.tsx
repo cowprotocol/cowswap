@@ -213,7 +213,7 @@ export function Configurator({ title }: { title: string }) {
   useEffect(() => {
     // Update listeners
     const newListeners = [...COW_LISTENERS]
-    if (!disableToastMessages) {
+    if (disableToastMessages) {
       openToast('Toast messages are enabled. Using Dapp mode toasts.')
       newListeners.push({
         event: CowEvents.ON_TOAST_MESSAGE,
