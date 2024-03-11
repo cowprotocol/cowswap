@@ -28,6 +28,7 @@ interface TradeWidgetParams {
 export interface TradeWidgetSlots {
   settingsWidget: ReactNode
   lockScreen?: ReactNode
+  topContent?: ReactNode
   middleContent?: ReactNode
   bottomContent?: ReactNode
   outerContent?: ReactNode

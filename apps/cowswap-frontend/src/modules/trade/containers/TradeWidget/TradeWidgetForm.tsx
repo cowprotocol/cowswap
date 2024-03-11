@@ -34,7 +34,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
   const { pendingActivity } = useCategorizeRecentActivity()
 
   const { slots, inputCurrencyInfo, outputCurrencyInfo, actions, params, disableOutput } = props
-  const { settingsWidget, lockScreen, middleContent, bottomContent, outerContent } = slots
+  const { settingsWidget, lockScreen, topContent, middleContent, bottomContent, outerContent } = slots
 
   const { onCurrencySelection, onUserInput, onSwitchTokens, onChangeRecipient } = actions
   const {
@@ -105,6 +105,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
           lockScreen
         ) : (
           <>
+            {topContent}
             <div>
               <CurrencyInputPanel
                 id="input-currency-input"
