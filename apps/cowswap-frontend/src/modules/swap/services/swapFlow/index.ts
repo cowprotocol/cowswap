@@ -116,7 +116,6 @@ export async function swapFlow(
     emitPostedOrderEvent({
       chainId,
       id: orderUid,
-      orderCreationHash: presignTx?.hash,
       kind: OrderKind.SELL,
       receiver: recipientAddressOrName,
       // TODO: check, should we use inputAmountWithSlippage instead?
