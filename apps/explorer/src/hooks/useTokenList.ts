@@ -1,4 +1,4 @@
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { ALL_SUPPORTED_CHAIN_IDS, SupportedChainId } from '@cowprotocol/cow-sdk'
 import useSWR from 'swr'
 import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
 import type { TokenInfo, TokenList } from '@uniswap/token-lists'
@@ -36,7 +36,7 @@ function useTokenListByUrl(tokenListUrl: string) {
   })
 }
 
-const SUPPORTED_CHAIN_IDS_SET = new Set(Object.values(SupportedChainId))
+const SUPPORTED_CHAIN_IDS_SET = new Set(ALL_SUPPORTED_CHAIN_IDS)
 
 function fetcher(tokenListUrl: string): Promise<TokenListPerNetwork> {
   return fetch(tokenListUrl)
