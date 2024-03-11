@@ -5,10 +5,10 @@ import styled from 'styled-components/macro'
 import { TokenAmount } from '../TokenAmount'
 import { Nullish } from '../../types'
 import { LinkStyledButton } from '../LinkStyledButton'
-import { ButtonSecondary } from '../Button'
 import { CowSwapSafeAppLink } from '../CowSwapSafeAppLink'
 
 import { InlineBanner, InlineBannerProps } from './index'
+import { ButtonSecondaryAlt } from '../ButtonSecondaryAlt'
 
 export enum BannerOrientation {
   Horizontal = 'horizontal',
@@ -92,6 +92,16 @@ export function SmallVolumeWarningBanner({ feePercentage, feeAmount }: SmallVolu
 
 type CustomRecipientBannerProps = InlineBannerProps & { onDismiss?: Command }
 
+const RecipientBannerContent = styled.div`
+  display: flex;
+  gap: 10px;
+  align-items: center;
+
+  > p {
+    margin: 0;
+  }
+`
+
 export function CustomRecipientWarningBanner({
   bannerType,
   borderRadius,
@@ -112,14 +122,16 @@ export function CustomRecipientWarningBanner({
       bannerType={bannerType}
       padding={padding}
     >
-      <p>
-        <strong>Caution:</strong> Order recipient address differs from order owner!
-      </p>
-      {onDismiss && (
-        <ButtonSecondary minHeight={'28px'} onClick={handleDismiss}>
-          Dismiss
-        </ButtonSecondary>
-      )}
+      <RecipientBannerContent>
+        <p>
+          <strong>Caution:</strong> Order recipient address differs from order owner!
+        </p>
+        {onDismiss && (
+          <ButtonSecondaryAlt minHeight={'28px'} onClick={handleDismiss}>
+            Dismiss
+          </ButtonSecondaryAlt>
+        )}
+      </RecipientBannerContent>
     </InlineBanner>
   )
 }
