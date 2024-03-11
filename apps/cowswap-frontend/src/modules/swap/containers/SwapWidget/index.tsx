@@ -31,7 +31,7 @@ import {
   SwapWarningsTop,
   SwapWarningsTopProps,
 } from 'modules/swap/pure/warnings'
-import { TradeWidget, TradeWidgetContainer, useTradePriceImpact } from 'modules/trade'
+import { TradeWidget, TradeWidgetContainer, TradeWidgetSlots, useTradePriceImpact } from 'modules/trade'
 import { useTradeRouteContext } from 'modules/trade/hooks/useTradeRouteContext'
 import { useWrappedToken } from 'modules/trade/hooks/useWrappedToken'
 import { useTradeUsdAmounts } from 'modules/usdAmount'
@@ -56,7 +56,11 @@ import { ConfirmSwapModalSetup } from '../ConfirmSwapModalSetup'
 const BUTTON_STATES_TO_SHOW_BUNDLE_APPROVAL_BANNER = [SwapButtonState.ApproveAndSwap]
 const BUTTON_STATES_TO_SHOW_BUNDLE_WRAP_BANNER = [SwapButtonState.WrapAndSwap]
 
-export function SwapWidget() {
+export interface SwapWidgetProps {
+  hooksEnabled: boolean
+}
+
+export function SwapWidget({ hooksEnabled }: SwapWidgetProps) {
   const { chainId, account } = useWalletInfo()
   const { slippageAdjustedSellAmount, allowedSlippage, currencies, currenciesIds, trade } = useDerivedSwapInfo()
   const parsedAmounts = useSwapCurrenciesAmounts()
@@ -253,10 +257,13 @@ export function SwapWidget() {
     rateInfoParams,
   }
 
-  const slots = {
+  const slots: TradeWidgetSlots = {
     settingsWidget: <SettingsTab placeholderSlippage={allowedSlippage} />,
+
+    topContent: hooksEnabled ? <div>Pre-hook</div> : undefined,
     bottomContent: (
       <>
+        {hooksEnabled && <>Post-hook </>}
         <TradeRates {...tradeRatesProps} />
         <SwapWarningsTop {...swapWarningsTopProps} />
         <SwapButtons {...swapButtonContext} />
