@@ -14,6 +14,7 @@ import { ApplicationModal } from 'legacy/state/application/reducer'
 import { Field } from 'legacy/state/types'
 import { useUserSlippageTolerance } from 'legacy/state/user/hooks'
 
+import { PreHookButton, PostHookButton } from 'modules/hooks'
 import { EthFlowModal, EthFlowProps } from 'modules/swap/containers/EthFlow'
 import { SwapModals, SwapModalsProps } from 'modules/swap/containers/SwapModals'
 import { SwapButtonState } from 'modules/swap/helpers/getSwapButtonState'
@@ -260,10 +261,10 @@ export function SwapWidget({ hooksEnabled }: SwapWidgetProps) {
   const slots: TradeWidgetSlots = {
     settingsWidget: <SettingsTab placeholderSlippage={allowedSlippage} />,
 
-    topContent: hooksEnabled ? <div>Pre-hook</div> : undefined,
+    topContent: hooksEnabled ? <PreHookButton /> : undefined,
     bottomContent: (
       <>
-        {hooksEnabled && <>Post-hook </>}
+        {hooksEnabled && <PostHookButton />}
         <TradeRates {...tradeRatesProps} />
         <SwapWarningsTop {...swapWarningsTopProps} />
         <SwapButtons {...swapButtonContext} />
