@@ -1,7 +1,7 @@
 import React, { useEffect, useCallback } from 'react'
 
 import ICON_ORDERS from '@cowprotocol/assets/svg/orders.svg'
-import { useIsSwapMode } from '@cowprotocol/common-hooks'
+import { useIsSwapMode, useIsLimitOrderMode, useIsAdvancedMode } from '@cowprotocol/common-hooks'
 import { isInjectedWidget, maxAmountSpend } from '@cowprotocol/common-utils'
 import { ButtonOutlined, MY_ORDERS_ID } from '@cowprotocol/ui'
 import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
@@ -13,7 +13,9 @@ import { AccountElement } from 'legacy/components/Header/AccountElement'
 import { upToLarge, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 
 import { useToggleAccountModal } from 'modules/account'
+import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders/hooks/useAdvancedOrdersDerivedState'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
+import { useIsWidgetUnlocked } from 'modules/limitOrders'
 import { useOpenTokenSelectWidget } from 'modules/tokensList'
 import { useIsAlternativeOrderModalVisible } from 'modules/trade/state/alternativeOrder'
 
@@ -83,7 +85,18 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
 
   const isUpToLarge = useMediaQuery(upToLarge)
   const isSwapMode = useIsSwapMode()
+  const isLimitOrderMode = useIsLimitOrderMode()
+  const isAdvancedMode = useIsAdvancedMode()
+  const { isUnlocked: isAdvancedOrdersUnlocked } = useAdvancedOrdersDerivedState()
+  const isLimitOrdersUnlocked = useIsWidgetUnlocked()
   const isConnectedSwapMode = !!account && isSwapMode
+
+  const shouldShowMyOrdersButton =
+    isUpToLarge &&
+    (!isSwapMode || isConnectedSwapMode) &&
+    ((isLimitOrderMode && isLimitOrdersUnlocked) ||
+      (isAdvancedMode && isAdvancedOrdersUnlocked) ||
+      (!isLimitOrderMode && !isAdvancedMode))
 
   const currencyInputCommonProps = {
     isChainIdUnsupported,
@@ -126,7 +139,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
             <AccountElement isWidgetMode={isInjectedWidgetMode} pendingActivities={pendingActivity} />
           )}
 
-          {isUpToLarge && (!isSwapMode || isConnectedSwapMode) && (
+          {shouldShowMyOrdersButton && (
             <ButtonOutlined margin={'0 16px 0 auto'} onClick={handleClick}>
               My orders <SVG src={ICON_ORDERS} />
             </ButtonOutlined>
