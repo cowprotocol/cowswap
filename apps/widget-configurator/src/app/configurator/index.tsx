@@ -188,7 +188,7 @@ export function Configurator({ title }: { title: string }) {
     disableToastMessages,
   }
 
-  const params = useWidgetParams(state, standaloneMode)
+  const params = useWidgetParams(state)
 
   useEffect(() => {
     web3Modal.setThemeMode(mode)
