@@ -60,7 +60,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
     disablePriceImpact,
   } = params
 
-  const { chainId } = useWalletInfo()
+  const { chainId, account } = useWalletInfo()
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
   const { allowsOffchainSigning } = useWalletDetails()
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
@@ -83,6 +83,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
 
   const isUpToLarge = useMediaQuery(upToLarge)
   const isSwapMode = useIsSwapMode()
+  const isConnectedSwapMode = !!account && isSwapMode
 
   const currencyInputCommonProps = {
     isChainIdUnsupported,
@@ -125,7 +126,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
             <AccountElement isWidgetMode={isInjectedWidgetMode} pendingActivities={pendingActivity} />
           )}
 
-          {!alternativeOrderModalVisible && isUpToLarge && (
+          {isUpToLarge && (!isSwapMode || isConnectedSwapMode) && (
             <ButtonOutlined margin={'0 16px 0 auto'} onClick={handleClick}>
               My orders <SVG src={ICON_ORDERS} />
             </ButtonOutlined>
