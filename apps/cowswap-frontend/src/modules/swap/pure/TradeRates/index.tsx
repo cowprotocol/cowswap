@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { genericPropsChecker } from '@cowprotocol/common-utils'
+import { FiatAmount, TokenAmount } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import TradeGp from 'legacy/state/swap/TradeGp'
@@ -9,8 +10,10 @@ import { RowDeadline } from 'modules/swap/containers/Row/RowDeadline'
 import { TradeBasicDetails } from 'modules/swap/containers/TradeBasicDetails'
 
 import { RateInfoParams } from 'common/pure/RateInfo'
+import { TradeDetailsAccordion } from 'common/pure/TradeDetailsAccordion'
 
 import * as styledEl from './styled'
+import { useFeeAmounts } from './useFeeAmounts'
 
 // const SUBSIDY_INFO_MESSAGE_EXTENDED =
 //   SUBSIDY_INFO_MESSAGE + '. Click on the discount button on the right for more info.'
@@ -38,7 +41,6 @@ export const TradeRates = React.memo(function (props: TradeRatesProps) {
     userAllowedSlippage,
     // discount,
     rateInfoParams,
-    priceLabel = 'Rate',
     isReviewSwap = false,
     children,
   } = props
@@ -48,37 +50,45 @@ export const TradeRates = React.memo(function (props: TradeRatesProps) {
   const showTradeBasicDetails = (isFeeGreater || trade) && fee
   const showRowDeadline = !!trade
 
-  return (
-    <styledEl.Box>
-      {showPrice && <styledEl.StyledRateInfo label={priceLabel} stylized={true} rateInfoParams={rateInfoParams} />}
-      {/* SLIPPAGE & FEE */}
-      {showTradeBasicDetails && (
-        <TradeBasicDetails
-          allowedSlippage={userAllowedSlippage}
-          allowsOffchainSigning={allowsOffchainSigning}
-          trade={trade}
-          fee={fee}
-          isReviewSwap={isReviewSwap}
-        />
-      )}
+  const { feeTotalAmount, feeUsdTotalAmount } = useFeeAmounts(trade, fee)
 
-      {/* TRANSACTION DEADLINE */}
-      {showRowDeadline && <RowDeadline />}
+  if (!feeTotalAmount && !feeUsdTotalAmount) return null
 
-      {/* DISCOUNTS */}
-      {/* TODO: Re-enable modal once subsidy is back */}
-      {/*
-      <styledEl.Row>
-        <div>
-          <span>Fees discount</span>
-          <InfoIcon content={SUBSIDY_INFO_MESSAGE_EXTENDED} />
-        </div>
-        <div>
-          <styledEl.Discount onClick={openCowSubsidyModal}>{discount}% discount</styledEl.Discount>
-        </div>
-      </styledEl.Row>
-      */}
-      {children}
-    </styledEl.Box>
+  const feeSummary =
+    feeUsdTotalAmount && feeUsdTotalAmount.greaterThan(0) ? (
+      <FiatAmount amount={feeUsdTotalAmount} />
+    ) : (
+      <TokenAmount amount={feeTotalAmount} tokenSymbol={feeTotalAmount?.currency} />
+    )
+
+  const tradeBasicDetails = fee && (
+    <TradeBasicDetails
+      allowedSlippage={userAllowedSlippage}
+      allowsOffchainSigning={allowsOffchainSigning}
+      trade={trade}
+      fee={fee}
+      isReviewSwap={isReviewSwap}
+      hideSlippage={isFeeGreater}
+    />
   )
+
+  if (showPrice) {
+    return (
+      <TradeDetailsAccordion
+        open={isReviewSwap}
+        rateInfo={<styledEl.StyledRateInfo noLabel={true} stylized={true} rateInfoParams={rateInfoParams} />}
+        feeSummary={showTradeBasicDetails && feeSummary}
+      >
+        <styledEl.Box noMargin>
+          {showTradeBasicDetails && tradeBasicDetails}
+          {showRowDeadline && <RowDeadline />}
+          {children}
+        </styledEl.Box>
+      </TradeDetailsAccordion>
+    )
+  } else if (fee && isFeeGreater) {
+    return <styledEl.FeeWrapper>{tradeBasicDetails}</styledEl.FeeWrapper>
+  }
+
+  return null
 }, genericPropsChecker)

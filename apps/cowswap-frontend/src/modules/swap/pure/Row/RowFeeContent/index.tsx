@@ -1,38 +1,51 @@
+import { ReactNode } from 'react'
+
 import { RowFixed } from '@cowprotocol/ui'
 import { MouseoverTooltipContent } from '@cowprotocol/ui'
 
 import { StyledRowBetween, TextWrapper } from 'modules/swap/pure/Row/styled'
-import { RowStyleProps, RowWithShowHelpersProps } from 'modules/swap/pure/Row/types'
+import { RowStyleProps } from 'modules/swap/pure/Row/types'
 import { StyledInfoIcon } from 'modules/swap/pure/styled'
 
-import { useSwapZeroFee } from 'common/hooks/featureFlags/useSwapZeroFee'
 import { FiatRate } from 'common/pure/RateInfo'
 
-export interface RowFeeContentProps extends RowWithShowHelpersProps {
-  tooltip: string
-  feeToken: string
+export interface RowFeeContentProps {
+  label: string
+  tooltip: ReactNode
+  feeToken: ReactNode
   feeUsd?: string
   fullDisplayFee: string
   feeCurrencySymbol: string
   styleProps?: RowStyleProps
+  noLabel?: boolean
+  isFree: boolean
 }
 
 export function RowFeeContent(props: RowFeeContentProps) {
-  const swapZeroFee = useSwapZeroFee()
-  const { showHelpers, tooltip, feeToken, feeUsd, fullDisplayFee, feeCurrencySymbol, styleProps = {} } = props
+  const {
+    label,
+    tooltip,
+    isFree,
+    feeToken,
+    feeUsd,
+    fullDisplayFee,
+    feeCurrencySymbol,
+    noLabel,
+    styleProps = {},
+  } = props
 
   return (
     <StyledRowBetween {...styleProps}>
-      <RowFixed>
-        <TextWrapper>{swapZeroFee ? 'Est. fees' : 'Fees'}</TextWrapper>
-        {showHelpers && (
+      {!noLabel && (
+        <RowFixed>
+          <TextWrapper>{label}</TextWrapper>
           <MouseoverTooltipContent content={tooltip} wrap>
             <StyledInfoIcon size={16} />
           </MouseoverTooltipContent>
-        )}
-      </RowFixed>
+        </RowFixed>
+      )}
 
-      <TextWrapper title={`${fullDisplayFee} ${feeCurrencySymbol}`}>
+      <TextWrapper title={`${fullDisplayFee} ${feeCurrencySymbol}`} success={isFree}>
         {feeToken} {feeUsd && <FiatRate>{feeUsd}</FiatRate>}
       </TextWrapper>
     </StyledRowBetween>

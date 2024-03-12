@@ -9,6 +9,7 @@ import { AccountElement } from 'legacy/components/Header/AccountElement'
 
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { useOpenTokenSelectWidget } from 'modules/tokensList'
+import { useIsAlternativeOrderModalVisible } from 'modules/trade/state/alternativeOrder'
 
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
@@ -29,6 +30,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
   const isInjectedWidgetMode = isInjectedWidget()
   const injectedWidgetParams = useInjectedWidgetParams()
 
+  const isAlternativeOrderModalVisible = useIsAlternativeOrderModalVisible()
   const { pendingActivity } = useCategorizeRecentActivity()
 
   const { slots, inputCurrencyInfo, outputCurrencyInfo, actions, params, disableOutput } = props
@@ -61,6 +63,8 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
   const maxBalance = maxAmountSpend(inputCurrencyInfo.balance || undefined, isSafeWallet)
   const showSetMax = maxBalance?.greaterThan(0) && !inputCurrencyInfo.amount?.equalTo(maxBalance)
 
+  const alternativeOrderModalVisible = useIsAlternativeOrderModalVisible()
+
   // Disable too frequent tokens switching
   const throttledOnSwitchTokens = useThrottleFn(onSwitchTokens, 500)
 
@@ -73,13 +77,14 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
     onUserInput,
     allowsOffchainSigning,
     openTokenSelectWidget,
+    tokenSelectorDisabled: alternativeOrderModalVisible,
   }
 
   /**
    * Reset recipient value only once at App start if it's not set in URL
    */
   useEffect(() => {
-    if (!hasRecipientInUrl) {
+    if (!hasRecipientInUrl && !isAlternativeOrderModalVisible) {
       onChangeRecipient(null)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -89,9 +94,9 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
     <>
       <styledEl.ContainerBox>
         <styledEl.Header>
-          <TradeWidgetLinks isDropdown={isInjectedWidgetMode} />
-          {isInjectedWidgetMode && !injectedWidgetParams.hideConnectButton && (
-            <AccountElement isWidgetMode={isInjectedWidgetMode} pendingActivities={pendingActivity} />
+          {isAlternativeOrderModalVisible ? <div></div> : <TradeWidgetLinks isDropdown={isInjectedWidgetMode} />}
+          {isInjectedWidgetMode && injectedWidgetParams.standaloneMode && (
+            <AccountElement standaloneMode pendingActivities={pendingActivity} />
           )}
           {!lockScreen && settingsWidget}
         </styledEl.Header>
@@ -115,10 +120,10 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
               <CurrencyArrowSeparator
                 isCollapsed={compactView}
                 hasSeparatorLine={!compactView}
-                border={!compactView}
                 onSwitchTokens={isChainIdUnsupported ? () => void 0 : throttledOnSwitchTokens}
                 withRecipient={withRecipient}
                 isLoading={isTradePriceUpdating}
+                disabled={isAlternativeOrderModalVisible}
               />
             </styledEl.CurrencySeparatorBox>
             <div>

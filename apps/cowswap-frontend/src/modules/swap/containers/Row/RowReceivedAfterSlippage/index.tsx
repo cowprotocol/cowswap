@@ -10,12 +10,10 @@ import TradeGp from 'legacy/state/swap/TradeGp'
 import { Field } from 'legacy/state/types'
 import { computeSlippageAdjustedAmounts } from 'legacy/utils/prices'
 
-import { RowWithShowHelpersProps } from 'modules/swap/pure/Row/typings'
-
 import { StyledRowBetween, TextWrapper } from '../../../pure/Row/styled'
 import { StyledInfoIcon } from '../../../pure/styled'
 
-export interface RowReceivedAfterSlippageProps extends RowWithShowHelpersProps {
+export interface RowReceivedAfterSlippageProps {
   trade: TradeGp
   allowedSlippage: Percent
   highlightAmount?: boolean
@@ -26,7 +24,6 @@ export interface RowReceivedAfterSlippageProps extends RowWithShowHelpersProps {
 export function RowReceivedAfterSlippage({
   trade,
   allowedSlippage,
-  showHelpers,
   highlightAmount,
   children,
   className,
@@ -45,17 +42,15 @@ export function RowReceivedAfterSlippage({
         {children || (
           <TextWrapper>
             {trade.tradeType === TradeType.EXACT_INPUT ? (
-              <Trans>Minimum received (incl. fee)</Trans>
+              <Trans>Minimum received (incl. costs)</Trans>
             ) : (
-              <Trans>Maximum sent (incl. fee)</Trans>
+              <Trans>Maximum sent (incl. costs)</Trans>
             )}
           </TextWrapper>
         )}
-        {showHelpers && (
-          <MouseoverTooltipContent content={getMinimumReceivedTooltip(allowedSlippage, isExactIn)} wrap>
-            <StyledInfoIcon size={16} />
-          </MouseoverTooltipContent>
-        )}
+        <MouseoverTooltipContent content={getMinimumReceivedTooltip(allowedSlippage, isExactIn)} wrap>
+          <StyledInfoIcon size={16} />
+        </MouseoverTooltipContent>
       </RowFixed>
 
       <TextWrapper textAlign="right">{highlightAmount ? <b>{Amount}</b> : Amount}</TextWrapper>

@@ -1,17 +1,15 @@
-import { useSetAtom } from 'jotai'
 import { useCallback, useLayoutEffect, useMemo } from 'react'
 
-import { tryParseCurrencyAmount } from '@cowprotocol/common-utils'
-import { FractionUtils } from '@cowprotocol/common-utils'
-import { getIntOrFloat } from '@cowprotocol/common-utils'
+import { FractionUtils, getIntOrFloat, tryParseCurrencyAmount } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { Price } from '@uniswap/sdk-core'
 
 import { useLocation, useNavigate } from 'react-router-dom'
 import { Writeable } from 'types'
 
-import { LimitOrdersRawState, updateLimitOrdersRawStateAtom } from 'modules/limitOrders'
+import { LimitOrdersRawState } from 'modules/limitOrders'
 import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
+import { useUpdateLimitOrdersRawState } from 'modules/limitOrders/hooks/useLimitOrdersRawState'
 import { useUpdateActiveRate } from 'modules/limitOrders/hooks/useUpdateActiveRate'
 import { TRADE_URL_BUY_AMOUNT_KEY, TRADE_URL_SELL_AMOUNT_KEY } from 'modules/trade/const/tradeUrl'
 
@@ -26,7 +24,7 @@ export function useSetupLimitOrderAmountsFromUrl() {
   const navigate = useNavigate()
   const { search, pathname } = useLocation()
   const params = useMemo(() => new URLSearchParams(search), [search])
-  const updateLimitOrdersState = useSetAtom(updateLimitOrdersRawStateAtom)
+  const updateLimitOrdersState = useUpdateLimitOrdersRawState()
   const updateRate = useUpdateActiveRate()
   const { inputCurrency, outputCurrency } = useLimitOrdersDerivedState()
 
@@ -74,7 +72,7 @@ export function useSetupLimitOrderAmountsFromUrl() {
 
       if (sellCurrencyAmount && buyCurrencyAmount) {
         const activeRate = new Price({ baseAmount: sellCurrencyAmount, quoteAmount: buyCurrencyAmount })
-        updateRate({ activeRate, isTypedValue: false, isRateFromUrl: true })
+        updateRate({ activeRate, isTypedValue: false, isRateFromUrl: true, isAlternativeOrderRate: false })
       }
     }
     // Trigger only when URL or assets are changed

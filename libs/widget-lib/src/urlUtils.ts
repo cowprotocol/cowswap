@@ -1,17 +1,16 @@
-import { COWSWAP_URLS } from './consts'
 import { CowSwapWidgetParams, TradeType } from './types'
 
 const EMPTY_TOKEN = '_'
 
-export function buildWidgetUrl(params: CowSwapWidgetParams): string {
-  const host = COWSWAP_URLS[params.env || 'prod']
+export function buildWidgetUrl(params: Partial<CowSwapWidgetParams>): string {
+  const host = typeof params.baseUrl === 'string' ? params.baseUrl : 'https://swap.cow.fi'
   const path = buildWidgetPath(params)
   const query = buildTradeAmountsQuery(params)
 
   return host + '/#' + path + '?' + query
 }
 
-export function buildWidgetPath(params: CowSwapWidgetParams): string {
+export function buildWidgetPath(params: Partial<CowSwapWidgetParams>): string {
   const { chainId = 1, sell, buy, tradeType = TradeType.SWAP } = params
 
   const assetsPath = [sell?.asset || EMPTY_TOKEN, buy?.asset || EMPTY_TOKEN].map(encodeURIComponent).join('/')
@@ -19,7 +18,7 @@ export function buildWidgetPath(params: CowSwapWidgetParams): string {
   return `/${chainId}/widget/${tradeType}/${assetsPath}`
 }
 
-export function buildTradeAmountsQuery(params: CowSwapWidgetParams): URLSearchParams {
+export function buildTradeAmountsQuery(params: Partial<CowSwapWidgetParams>): URLSearchParams {
   const { sell, buy, theme } = params
   const query = new URLSearchParams()
 

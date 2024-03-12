@@ -58,13 +58,7 @@ const BUTTON_STATES_TO_SHOW_BUNDLE_WRAP_BANNER = [SwapButtonState.WrapAndSwap]
 
 export function SwapWidget() {
   const { chainId, account } = useWalletInfo()
-  const {
-    slippageAdjustedSellAmount,
-    allowedSlippage,
-    currencies,
-    currenciesIds,
-    v2Trade: trade,
-  } = useDerivedSwapInfo()
+  const { slippageAdjustedSellAmount, allowedSlippage, currencies, currenciesIds, trade } = useDerivedSwapInfo()
   const parsedAmounts = useSwapCurrenciesAmounts()
   const { isSupportedWallet, allowsOffchainSigning } = useWalletDetails()
   const isSwapUnsupported = useIsTradeUnsupported(currencies.INPUT, currencies.OUTPUT)
@@ -83,6 +77,7 @@ export function SwapWidget() {
   const { isFeeGreater, fee } = useIsFeeGreaterThanInput({
     chainId,
     address: currenciesIds.INPUT,
+    trade,
   })
 
   const inputToken = useMemo(() => {
@@ -237,6 +232,7 @@ export function SwapWidget() {
     buyingFiatAmount,
     priceImpact: priceImpactParams.priceImpact,
     tradeUrlParams,
+    isFeeGreater,
   }
 
   const swapWarningsBottomProps: SwapWarningsBottomProps = {

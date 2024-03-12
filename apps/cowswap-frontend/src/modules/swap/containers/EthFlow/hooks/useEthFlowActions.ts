@@ -32,7 +32,7 @@ export interface EthFlowActions {
 
 export function useEthFlowActions(callbacks: EthFlowActionCallbacks): EthFlowActions {
   const { chainId } = useWalletInfo()
-  const { v2Trade: trade } = useDerivedSwapInfo()
+  const { trade } = useDerivedSwapInfo()
 
   const updateEthFlowContext = useSetAtom(updateEthFlowContextAtom)
 

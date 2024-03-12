@@ -38,6 +38,7 @@ import { PriceField } from './PriceField'
 import { StatusField } from './StatusField'
 import * as styledEl from './styled'
 import { SurplusField } from './SurplusField'
+
 interface ReceiptProps {
   isOpen: boolean
   order: ParsedOrder
@@ -51,15 +52,16 @@ interface ReceiptProps {
   limitPrice: Fraction | null
   executionPrice: Fraction | null
   estimatedExecutionPrice: Fraction | null
+  showRecreateModal: Command | null
 }
 
 const FILLED_COMMON_TOOLTIP = 'How much of the order has been filled.'
 
 const tooltips: { [key: string]: string | JSX.Element } = {
   LIMIT_PRICE: 'You will receive this price or better for your tokens.',
-  EXECUTION_PRICE: 'An order’s actual execution price will vary based on the market price and network fees.',
+  EXECUTION_PRICE: 'An order’s actual execution price will vary based on the market price and network costs.',
   EXECUTES_AT:
-    'Fees (incl. gas) are covered by filling your order when the market price is better than your limit price.',
+    'Network costs (incl. gas) are covered by filling your order when the market price is better than your limit price.',
   FILLED_TWAP: FILLED_COMMON_TOOLTIP,
   FILLED: (
     <span>
@@ -70,7 +72,8 @@ const tooltips: { [key: string]: string | JSX.Element } = {
     </span>
   ),
   SURPLUS: 'The amount of extra tokens you get on top of your limit price.',
-  FEE: 'CoW Protocol covers the fees by executing your order at a slightly better price than your limit price.',
+  NETWORK_COSTS:
+    'CoW Protocol covers the costs by executing your order at a slightly better price than your limit price.',
   CREATED: 'Your order was created on this date & time. It will remain open until it expires or is filled.',
   RECEIVER: 'The account address which will/did receive the bought amount.',
   EXPIRY:
@@ -102,6 +105,7 @@ export function ReceiptModal({
   executionPrice,
   estimatedExecutionPrice,
   receiverEnsName,
+  showRecreateModal,
 }: ReceiptProps) {
   // Check if Custom Recipient Warning Banner should be visible
   const isCustomRecipientWarningBannerVisible = !useIsReceiverWalletBannerHidden(order.id)
@@ -127,7 +131,12 @@ export function ReceiptModal({
     <CowModal onDismiss={onDismiss} isOpen={isOpen}>
       <styledEl.Wrapper>
         <styledEl.Header>
-          <styledEl.Title>Order Receipt</styledEl.Title>
+          <div>
+            <styledEl.Title>Order Receipt</styledEl.Title>
+            {showRecreateModal && (
+              <styledEl.LightButton onClick={showRecreateModal}>Recreate this order</styledEl.LightButton>
+            )}
+          </div>
           <CloseIcon onClick={() => onDismiss()} />
         </styledEl.Header>
 
@@ -215,7 +224,7 @@ export function ReceiptModal({
             {(!twapOrder || isTwapPartOrder) && (
               <>
                 <styledEl.Field>
-                  <FieldLabel label="Fee" tooltip={tooltips.FEE} />
+                  <FieldLabel label="Network costs" tooltip={tooltips.NETWORK_COSTS} />
                   <FeeField order={order} />
                 </styledEl.Field>
               </>

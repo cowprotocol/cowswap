@@ -45,13 +45,14 @@ export function useTradeApproveCallback(amountToApprove?: CurrencyAmount<Currenc
         .catch((error) => {
           console.error('Error setting the allowance for token', error)
 
-          if (!isRejectRequestProviderError(error)) {
+          if (isRejectRequestProviderError(error)) {
+            updateTradeApproveState({ error: 'User rejected approval transaction' })
+          } else {
             const errorCode = error?.code && typeof error.code === 'number' ? error.code : null
 
             approvalAnalytics('Error', symbol, errorCode)
+            updateTradeApproveState({ error: typeof error === 'string' ? error : error.message || error.toString() })
           }
-
-          updateTradeApproveState({ error: typeof error === 'string' ? error : error.message || error.toString() })
 
           throw error
         })

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react'
+import { ChangeEvent, useContext, useEffect, useState } from 'react'
 
 import { CowEventListeners, CowEvents, ToastMessageType } from '@cowprotocol/events'
 import { TradeType } from '@cowprotocol/widget-lib'
@@ -9,6 +9,7 @@ import CodeIcon from '@mui/icons-material/Code'
 import EditIcon from '@mui/icons-material/Edit'
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft'
 import LanguageIcon from '@mui/icons-material/Language'
+import { Radio, RadioGroup, FormControlLabel, FormControl, FormLabel } from '@mui/material'
 import Box from '@mui/material/Box'
 import Divider from '@mui/material/Divider'
 import Drawer from '@mui/material/Drawer'
@@ -25,6 +26,7 @@ import { CurrencyInputControl } from './controls/CurrencyInputControl'
 import { CurrentTradeTypeControl } from './controls/CurrentTradeTypeControl'
 import { NetworkControl, NetworkOption, NetworkOptions } from './controls/NetworkControl'
 import { PaletteControl } from './controls/PaletteControl'
+import { PartnerFeeControl } from './controls/PartnerFeeControl'
 import { ThemeControl } from './controls/ThemeControl'
 import { TokenListControl } from './controls/TokenListControl' // Adjust the import path as needed
 import { TradeModesControl } from './controls/TradeModesControl'
@@ -32,7 +34,7 @@ import { useColorPaletteManager } from './hooks/useColorPaletteManager'
 import { useEmbedDialogState } from './hooks/useEmbedDialogState'
 import { useProvider } from './hooks/useProvider'
 import { useSyncWidgetNetwork } from './hooks/useSyncWidgetNetwork'
-import { useWidgetParamsAndSettings } from './hooks/useWidgetParamsAndSettings'
+import { useWidgetParams } from './hooks/useWidgetParamsAndSettings'
 import { ContentStyled, DrawerStyled, WalletConnectionWrapper, WrapperStyled } from './styled'
 import { ConfiguratorState, TokenListItem } from './types'
 
@@ -40,6 +42,8 @@ import { ColorModeContext } from '../../theme/ColorModeContext'
 import { web3Modal } from '../../wagmiConfig'
 import { connectWalletToConfiguratorGA } from '../analytics'
 import { EmbedDialog } from '../embedDialog'
+
+const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 
 const DEFAULT_STATE = {
   sellToken: 'USDC',
@@ -94,8 +98,17 @@ const COW_LISTENERS: CowEventListeners = [
 
 const UTM_PARAMS = 'utm_content=cow-widget-configurator&utm_medium=web&utm_source=widget.cow.fi'
 
+export type WidgetMode = 'dapp' | 'standalone'
+
 export function Configurator({ title }: { title: string }) {
   const { mode } = useContext(ColorModeContext)
+
+  const [widgetMode, setWidgetMode] = useState<WidgetMode>('dapp')
+  const standaloneMode = widgetMode === 'standalone'
+
+  const selectWidgetMode = (event: ChangeEvent<HTMLInputElement>) => {
+    setWidgetMode(event.target.value as WidgetMode)
+  }
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(true)
 
@@ -120,6 +133,11 @@ export function Configurator({ title }: { title: string }) {
 
   const tokenListsState = useState<TokenListItem[]>(DEFAULT_TOKEN_LISTS)
   const [tokenLists] = tokenListsState
+
+  const partnerFeeBpsState = useState<number>(0)
+  const partnerFeeRecipientState = useState<string>(ZERO_ADDRESS)
+  const [partnerFeeBps] = partnerFeeBpsState
+  const [partnerFeeRecipient] = partnerFeeRecipientState
 
   const paletteManager = useColorPaletteManager(mode)
   const { colorPalette, defaultPalette } = paletteManager
@@ -159,9 +177,11 @@ export function Configurator({ title }: { title: string }) {
     tokenLists,
     customColors: colorPalette,
     defaultColors: defaultPalette,
+    partnerFeeBps,
+    partnerFeeRecipient,
   }
 
-  const params = useWidgetParamsAndSettings(provider, state)
+  const params = useWidgetParams(state, standaloneMode)
 
   useEffect(() => {
     web3Modal.setThemeMode(mode)
@@ -196,9 +216,18 @@ export function Configurator({ title }: { title: string }) {
           {title}
         </Typography>
 
-        <div style={WalletConnectionWrapper}>
-          <w3m-button />
-        </div>
+        <FormControl component="fieldset">
+          <FormLabel component="legend">Select Mode:</FormLabel>
+          <RadioGroup row aria-label="mode" name="mode" value={widgetMode} onChange={selectWidgetMode}>
+            <FormControlLabel value="dapp" control={<Radio />} label="Dapp mode" />
+            <FormControlLabel value="standalone" control={<Radio />} label="Standalone mode" />
+          </RadioGroup>
+        </FormControl>
+        {!standaloneMode && (
+          <div style={WalletConnectionWrapper}>
+            <w3m-button />
+          </div>
+        )}
 
         <ThemeControl />
 
@@ -221,6 +250,10 @@ export function Configurator({ title }: { title: string }) {
         />
 
         <CurrencyInputControl label="Buy token" tokenIdState={buyTokenState} tokenAmountState={buyTokenAmountState} />
+
+        <Divider variant="middle">Integrations</Divider>
+
+        <PartnerFeeControl feeBpsState={partnerFeeBpsState} recipientState={partnerFeeRecipientState} />
 
         {isDrawerOpen && (
           <Fab
@@ -266,7 +299,7 @@ export function Configurator({ title }: { title: string }) {
               handleClose={handleDialogClose}
             />
             <br />
-            <CowSwapWidget provider={provider} params={params} listeners={COW_LISTENERS} />
+            <CowSwapWidget params={params} provider={standaloneMode ? provider : undefined} listeners={COW_LISTENERS} />
           </>
         )}
       </Box>

@@ -1,9 +1,14 @@
 import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
+import { atomWithPartialUpdate } from '@cowprotocol/common-utils'
 import { getJotaiIsolatedStorage } from '@cowprotocol/core'
 import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 
+import {
+  alternativeOrderAtomSetterFactory,
+  alternativeOrderReadWriteAtomFactory,
+} from 'modules/trade/state/alternativeOrder'
 import { DEFAULT_TRADE_DERIVED_STATE, TradeDerivedState } from 'modules/trade/types/TradeDerivedState'
 import { ExtendedTradeRawState, getDefaultTradeRawState } from 'modules/trade/types/TradeRawState'
 
@@ -15,31 +20,61 @@ export interface LimitOrdersRawState extends ExtendedTradeRawState {
   readonly isUnlocked: boolean
 }
 
-export function getDefaultLimitOrdersState(chainId: SupportedChainId | null): LimitOrdersRawState {
+export function getDefaultLimitOrdersState(
+  chainId: SupportedChainId | null,
+  isUnlocked: boolean = false
+): LimitOrdersRawState {
   return {
     ...getDefaultTradeRawState(chainId),
     inputCurrencyAmount: null,
     outputCurrencyAmount: null,
     orderKind: OrderKind.SELL,
-    isUnlocked: false,
+    isUnlocked,
   }
 }
 
-export const limitOrdersRawStateAtom = atomWithStorage<LimitOrdersRawState>(
+// Regular form state
+
+const regularRawStateAtom = atomWithStorage<LimitOrdersRawState>(
   'limit-orders-atom:v4',
   getDefaultLimitOrdersState(null),
   getJotaiIsolatedStorage()
 )
 
-export const updateLimitOrdersRawStateAtom = atom(null, (get, set, nextState: Partial<LimitOrdersRawState>) => {
-  set(limitOrdersRawStateAtom, () => {
-    const prevState = get(limitOrdersRawStateAtom)
+const { updateAtom: regularUpdateRawStateAtom } = atomWithPartialUpdate(regularRawStateAtom)
 
-    return { ...prevState, ...nextState }
-  })
-})
-
-export const limitOrdersDerivedStateAtom = atom<LimitOrdersDerivedState>({
+const regularDerivedStateAtom = atom<LimitOrdersDerivedState>({
   ...DEFAULT_TRADE_DERIVED_STATE,
   isUnlocked: true,
 })
+
+// Alternative state for recreating/editing existing orders
+
+const alternativeRawStateAtom = atom<LimitOrdersRawState>(getDefaultLimitOrdersState(null, true))
+
+const { updateAtom: alternativeUpdateRawStateAtom } = atomWithPartialUpdate(alternativeRawStateAtom)
+
+const alternativeDerivedStateAtom = atom<LimitOrdersDerivedState>({
+  ...DEFAULT_TRADE_DERIVED_STATE,
+  isUnlocked: true,
+})
+
+// Pick atom according to type of form displayed
+
+export const limitOrdersRawStateAtom = alternativeOrderReadWriteAtomFactory<LimitOrdersRawState>(
+  regularRawStateAtom,
+  alternativeRawStateAtom
+)
+
+export const updateLimitOrdersRawStateAtom = atom(
+  null,
+  alternativeOrderAtomSetterFactory<
+    null, // pass null to indicate there is no getter
+    Partial<LimitOrdersRawState>
+  >(regularUpdateRawStateAtom, alternativeUpdateRawStateAtom)
+)
+
+export const limitOrdersDerivedStateAtom = alternativeOrderReadWriteAtomFactory<LimitOrdersDerivedState>(
+  regularDerivedStateAtom,
+  alternativeDerivedStateAtom
+)

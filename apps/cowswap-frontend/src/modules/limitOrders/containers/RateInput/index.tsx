@@ -2,7 +2,7 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { formatInputAmount, getAddress, isFractionFalsy } from '@cowprotocol/common-utils'
-import { TokenSymbol, Loader } from '@cowprotocol/ui'
+import { Loader, TokenSymbol } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { RefreshCw } from 'react-feather'
@@ -70,6 +70,7 @@ export function RateInput() {
       activeRate: isFractionFalsy(marketRate) ? initialRate : marketRate,
       isTypedValue: false,
       isRateFromUrl: false,
+      isAlternativeOrderRate: false,
     })
   }, [marketRate, initialRate, updateRate])
 
@@ -81,6 +82,7 @@ export function RateInput() {
         activeRate: toFraction(typedValue, isInverted),
         isTypedValue: true,
         isRateFromUrl: false,
+        isAlternativeOrderRate: false,
       })
     },
     [isInverted, updateRate, updateLimitRateState]

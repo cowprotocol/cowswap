@@ -1,8 +1,6 @@
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { CowEventPayloadMap, CowEvents } from '@cowprotocol/events'
+import { CowEventListeners, CowEventPayloadMap, CowEvents } from '@cowprotocol/events'
 export type { SupportedChainId } from '@cowprotocol/cow-sdk'
-
-export type CowSwapWidgetParams = Partial<CowSwapWidgetConfig>
 
 export enum WidgetMethodsEmit {
   ACTIVATE = 'ACTIVATE',
@@ -16,6 +14,12 @@ export enum WidgetMethodsListen {
   UPDATE_APP_DATA = 'UPDATE_APP_DATA',
   PROVIDER_RPC_RESPONSE = 'PROVIDER_RPC_RESPONSE',
   PROVIDER_ON_EVENT = 'PROVIDER_ON_EVENT',
+}
+
+export interface CowSwapWidgetProps {
+  params: CowSwapWidgetParams
+  provider?: EthereumProvider
+  listeners?: CowEventListeners
 }
 
 export interface JsonRpcRequest {
@@ -47,8 +51,6 @@ export interface EthereumProvider {
   enable(): Promise<void>
 }
 
-export type CowSwapWidgetEnv = 'local' | 'prod' | 'dev' | 'pr'
-
 export type CowSwapTheme = 'dark' | 'light'
 
 /**
@@ -77,6 +79,23 @@ export enum TradeType {
   ADVANCED = 'advanced',
 }
 
+/**
+ * The partner fee
+ *
+ * Please contact https://cowprotocol.typeform.com/to/rONXaxHV
+ */
+export interface PartnerFee {
+  /**
+   * The fee in basis points (BPS). One basis point is equivalent to 0.01% (1/100th of a percent)
+   */
+  bps: number
+
+  /**
+   * The Ethereum address of the partner to receive the fee.
+   */
+  recipient: string
+}
+
 export interface CowSwapWidgetPalette {
   baseTheme: CowSwapTheme
   primary: string
@@ -90,64 +109,65 @@ export interface CowSwapWidgetPalette {
   success: string
 }
 
-interface CowSwapWidgetConfig {
-  /**
-   * The width of the widget in pixels. Default: 400px
-   */
-  width: string
-  /**
-   * The height of the widget in pixels. Default: 600px
-   */
-  height: string
+export interface CowSwapWidgetParams {
   /**
    * The unique identifier of the widget consumer.
    * Please fill the for to let us know a little about you: https://cowprotocol.typeform.com/to/rONXaxHV
    */
   appCode: string
+
   /**
-   * The widget might be connected to a custom Ethereum provider.
+   * The width of the widget in pixels. Default: 400px
    */
-  provider: EthereumProvider
+  width?: string
+  /**
+   * The height of the widget in pixels. Default: 600px
+   */
+  height?: string
 
   /**
    * Network ID.
    */
-  chainId: SupportedChainId
+  chainId?: SupportedChainId
   /**
    * The token lists urls to use in the widget
    */
-  tokenLists: string[]
+  tokenLists?: string[]
   /**
    * Swap, Limit or Advanced (Twap).
    */
-  tradeType: TradeType
+  tradeType?: TradeType
+
   /**
-   * The environment of the widget. Default: prod
+   * The base url of the widget implementation
+   *
+   * The parameter can have the URL directly, or an object with the environment property,
+   *
+   * The base URL will default to the production environment if not specified, so it will use https://swap.cow.fi by default.
    */
-  env: CowSwapWidgetEnv
+  baseUrl?: string
 
   /**
    * Sell token, and optionally the amount.
    */
-  sell: TradeAsset
+  sell?: TradeAsset
 
   /**
    * Buy token, and optionally the amount.
    */
-  buy: TradeAsset
+  buy?: TradeAsset
 
   /**
    * Enables the ability to switch between trade types in the widget.
    */
-  enabledTradeTypes: TradeType[]
+  enabledTradeTypes?: TradeType[]
 
   /**
-   * The interface fee in basis points.
-   * For example: 1.5% = 150 bips
+   * The partner fee
    *
    * Please contact https://cowprotocol.typeform.com/to/rONXaxHV
    */
-  interfaceFeeBips: string
+  partnerFee?: PartnerFee
 
   /**
    * Disables showing the confirmation modal you get after posting an order.
@@ -165,32 +185,36 @@ interface CowSwapWidgetConfig {
   /**
    * Option to hide the logo in the widget.
    */
-  hideLogo: boolean
+  hideLogo?: boolean
 
   /**
    * Option to hide the network selector in the widget.
    */
-  hideNetworkSelector: boolean
+  hideNetworkSelector?: boolean
 
   /**
-   * Hides the connect buttons, and the connected account button. Defaults to false.
+   * Defines the widget mode.
+   *  - `true` (standalone mode): The widget is standalone, so it will use its own Ethereum provider. The user can connect from within the widget.
+   *  - `false` (dapp mode): The widget is embedded in a dapp which is responsible of providing the Ethereum provider. Therefore, there won't be a connect button in the widget as this should happen in the host app.
+   *
+   * Defaults to standalone.
    */
-  hideConnectButton?: boolean
+  standaloneMode?: boolean
 
   /**
    * The theme of the widget UI.
    */
-  theme: CowSwapTheme | CowSwapWidgetPalette
+  theme?: CowSwapTheme | CowSwapWidgetPalette
 
   /**
    * Allows to set a custom logo for the widget.
    */
-  logoUrl: string
+  logoUrl?: string
 
   /**
    * Customizable images for the widget.
    */
-  images: {
+  images?: {
     /**
      * The image to display when the orders table is empty (no orders yet). It defaults to "Yoga CoW" image.
      * Alternatively, you can use a URL to a custom image file, or set to null to disable the image.
@@ -246,6 +270,7 @@ export interface UpdateParamsPayload {
     search: string
   }
   appParams: CowSwapWidgetParams
+  hasProvider: boolean
 }
 
 export interface UpdateAppDataPayload {
