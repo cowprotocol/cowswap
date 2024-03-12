@@ -1,2 +1,1 @@
-export * from './smart/PreHookButton'
-export * from './smart/PostHookButton'
+export * from './smart/hookButtons'

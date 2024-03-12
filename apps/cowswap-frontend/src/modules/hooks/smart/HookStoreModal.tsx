@@ -1,3 +1,5 @@
+import { Command } from '@cowprotocol/types'
+
 import styled from 'styled-components/macro'
 
 import { NewModal } from 'common/pure/NewModal'
