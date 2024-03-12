@@ -53,6 +53,7 @@ function unwatchTxChanges(pendingHashes: string[], chainId: number) {
 
   for (const hash of pendingHashes) {
     try {
+      console.log('[CancelReplaceTxUpdater][unwatchTxChanges] Unsubscribe for', hash)
       blocknativeSdk.unsubscribe(hash)
     } catch (error: any) {
       console.error('[CancelReplaceTxUpdater][unwatchTxChanges] Failed to unsubscribe', { hash })
