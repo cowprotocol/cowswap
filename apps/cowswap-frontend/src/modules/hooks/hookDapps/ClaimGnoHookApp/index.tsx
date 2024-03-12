@@ -1,5 +1,7 @@
+import { CowEvents } from '@cowprotocol/events'
 import { ButtonPrimary, UI } from '@cowprotocol/ui'
 
+import { EVENT_EMITTER } from 'eventEmitter'
 import styled from 'styled-components/macro'
 
 import { HookDappInternal, HookDappType } from 'modules/hooks/types'
@@ -72,7 +74,20 @@ export function ClaimGnoHookApp() {
         </div>
         <Amount>52.30216 GNO</Amount>
       </Content>
-      <ButtonPrimary>+Add Pre-hook</ButtonPrimary>
+      <ButtonPrimary
+        onClick={() =>
+          EVENT_EMITTER.emit(CowEvents.ON_ADDED_HOOK, {
+            hook: {
+              callData: '0x00000000000',
+              gasLimit: '1234567',
+              target: '0x00000000001',
+            },
+            isPrehook: true,
+          })
+        }
+      >
+        +Add Pre-hook
+      </ButtonPrimary>
     </Wrapper>
   )
 }
