@@ -2,7 +2,15 @@ import { ReactNode } from 'react'
 
 import { latest } from '@cowprotocol/app-data'
 
-export type PermitHookData = latest.CoWHook
+interface HookInfoPayload {
+  hookDetails: CowHookDetails
+  isPreHook: boolean
+}
+
+export type OnAddedHookPayload = HookInfoPayload
+export type OnRemovedPayload = HookInfoPayload
+
+export type CowHook = latest.CoWHook
 
 export enum HookDappType {
   INTERNAL = 'INTERNAL',
@@ -10,6 +18,14 @@ export enum HookDappType {
 }
 
 export type HookDapp = HookDappInternal | HookDappIframe
+
+export interface CowHookDetails {
+  uuid: string
+  hook: CowHook
+  dapp: HookDapp
+}
+
+export type CowHookCreation = Omit<CowHookDetails, 'uuid'>
 
 export interface HookDappBase {
   name: string

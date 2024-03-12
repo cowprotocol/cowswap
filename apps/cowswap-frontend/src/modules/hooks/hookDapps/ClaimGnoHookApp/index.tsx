@@ -1,12 +1,11 @@
-import { CowEvents } from '@cowprotocol/events'
 import { ButtonPrimary, UI } from '@cowprotocol/ui'
 
-import { EVENT_EMITTER } from 'eventEmitter'
 import styled from 'styled-components/macro'
 
-import { HookDappInternal, HookDappType } from 'modules/hooks/types'
-
 import gnoLogo from './gnosis-logo.svg'
+
+import { useAddHook } from '../../hooks'
+import { HookDappInternal, HookDappType } from '../../types'
 
 const TITLE = 'Claim GNO from validators'
 const DESCRIPTION = 'Allows you to withdraw the rewards from your Gnosis validators.'
@@ -61,6 +60,7 @@ export const PRE_CLAIM_GNO: HookDappInternal = {
 }
 
 export function ClaimGnoHookApp() {
+  const addHook = useAddHook()
   return (
     <Wrapper>
       <Header>
@@ -76,14 +76,17 @@ export function ClaimGnoHookApp() {
       </Content>
       <ButtonPrimary
         onClick={() =>
-          EVENT_EMITTER.emit(CowEvents.ON_ADDED_HOOK, {
-            hook: {
-              callData: '0x00000000000',
-              gasLimit: '1234567',
-              target: '0x00000000001',
+          addHook(
+            {
+              hook: {
+                callData: '0x00000000000',
+                gasLimit: '1234567',
+                target: '0x00000000001',
+              },
+              dapp: PRE_CLAIM_GNO,
             },
-            isPreHook: true,
-          })
+            true
+          )
         }
       >
         +Add Pre-hook

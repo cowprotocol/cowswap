@@ -8,10 +8,13 @@ import styled from 'styled-components/macro'
 import { Link } from 'legacy/components/Link'
 import QuestionHelper from 'legacy/components/QuestionHelper'
 
+import { CloseIcon } from 'common/pure/CloseIcon'
+
 import { HookStoreModal } from './HookStoreModal'
 
-import { hooksAtom } from '../state/hooksAtom'
-import { PermitHookData } from '../types'
+import { useRemoveHook } from '../hooks'
+import { hooksDetailsAtom } from '../state/hookDetailsAtom'
+import { CowHookDetails } from '../types'
 
 const Wrapper = styled.div`
   display: flex;
@@ -41,14 +44,18 @@ const HookItemWrapper = styled.li``
 
 export function PreHookButton() {
   const [open, setOpen] = useState(false)
-  const hooks = useAtomValue(hooksAtom)
+  const hooks = useAtomValue(hooksDetailsAtom)
+  const removeHook = useRemoveHook()
   return (
     <>
-      <HookList>
-        {hooks.preHooks.map((hook) => (
-          <HookItem key={hook.callData} hook={hook} />
-        ))}
-      </HookList>
+      {hooks.preHooks.length > 0 && (
+        <HookList>
+          {hooks.preHooks.map((hookDetails, index) => (
+            <HookItem key={index} hookDetails={hookDetails} removeHook={removeHook} isPreHook />
+          ))}
+        </HookList>
+      )}
+
       <Wrapper>
         <ButtonGroup>
           <ButtonSecondaryAlt onClick={() => setOpen(true)}>🪝 Add Pre-hook</ButtonSecondaryAlt>{' '}
@@ -70,9 +77,18 @@ export function PreHookButton() {
 
 export function PostHookButton() {
   const [open, setOpen] = useState(false)
-  const hooks = useAtomValue(hooksAtom)
+  const hooks = useAtomValue(hooksDetailsAtom)
+  const removeHook = useRemoveHook()
+
   return (
     <>
+      {hooks.postHooks && (
+        <HookList>
+          {hooks.postHooks.map((hook, index) => (
+            <HookItem key={index} hookDetails={hook} removeHook={removeHook} isPreHook={false} />
+          ))}
+        </HookList>
+      )}
       <Wrapper>
         <ButtonGroup>
           <ButtonSecondaryAlt onClick={() => setOpen(true)}>🪝 Add Post-hook</ButtonSecondaryAlt>{' '}
@@ -80,9 +96,6 @@ export function PostHookButton() {
         </ButtonGroup>
       </Wrapper>
       {open && <HookStoreModal onDismiss={() => setOpen(false)} isPreHook={false} />}
-      {hooks.postHooks.map((hook) => (
-        <HookItem key={hook.callData} hook={hook} />
-      ))}
     </>
   )
 }
@@ -98,16 +111,20 @@ function HookTooltip({ isPreHook }: { isPreHook: boolean }) {
 }
 
 interface HookItemProp {
-  hook: PermitHookData
+  hookDetails: CowHookDetails
+  isPreHook: boolean
+  removeHook: (hookToRemove: CowHookDetails, isPreHook: boolean) => void
 }
 
-function HookItem({ hook }: HookItemProp) {
-  const { callData, gasLimit, target } = hook
+function HookItem({ hookDetails, isPreHook, removeHook }: HookItemProp) {
+  const { callData, gasLimit, target } = hookDetails.hook
   return (
     <HookItemWrapper>
+      <div>UUID: {hookDetails.uuid}</div>
       <div>target: {target}</div>
       <div>gasLimit: {gasLimit}</div>
       <div>callData: {callData} </div>
+      <CloseIcon onClick={() => removeHook(hookDetails, isPreHook)} />
     </HookItemWrapper>
   )
 }
