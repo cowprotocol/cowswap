@@ -137,7 +137,6 @@ export async function safeBundleEthFlow(
       orderCreationHash: safeTx.safeTxHash,
       kind: OrderKind.SELL,
       receiver: recipientAddressOrName,
-      // TODO: check, should we use inputAmountWithSlippage instead?
       inputAmount: currencyAmountToTokenAmount(inputAmount),
       outputAmount: currencyAmountToTokenAmount(outputAmount),
       owner: account,

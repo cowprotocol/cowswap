@@ -118,7 +118,6 @@ export async function swapFlow(
       id: orderUid,
       kind: OrderKind.SELL,
       receiver: recipientAddressOrName,
-      // TODO: check, should we use inputAmountWithSlippage instead?
       inputAmount: currencyAmountToTokenAmount(inputAmount),
       outputAmount: currencyAmountToTokenAmount(outputAmount),
       owner: account,
