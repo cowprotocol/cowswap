@@ -1,5 +1,10 @@
 import { useEffect, useMemo, useState } from 'react'
 
+import progressBarStep1 from '@cowprotocol/assets/cow-swap/progress-bar-step1.png'
+import progressBarStep1a from '@cowprotocol/assets/cow-swap/progress-bar-step1a.png'
+import progressBarStep2a from '@cowprotocol/assets/cow-swap/progress-bar-step2a.png'
+import progressBarStep2b from '@cowprotocol/assets/cow-swap/progress-bar-step2b.png'
+import progressBarStep3 from '@cowprotocol/assets/cow-swap/progress-bar-step3.png'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useIsSmartContractWallet } from '@cowprotocol/wallet'
 
@@ -172,11 +177,26 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
   const progressBar = () => {
     switch (newState) {
       case 'initial':
-        return <div>Your order has been submitted and will be included in the next solver auction.</div>
+        return (
+          <div>
+            <img src={progressBarStep1} alt="" />
+            <span>Your order has been submitted and will be included in the next solver auction.</span>
+          </div>
+        )
       case 'solving':
-        return <div>The auction has started! Solvers are competing to find the best solution for you...</div>
+        return (
+          <div>
+            <span>Imagine a count down here...</span>
+            <p>The auction has started! Solvers are competing to find the best solution for you...</p>
+          </div>
+        )
       case 'executing':
-        return <div>X solvers joined the competition! The winner is submitting your order on-chain...</div>
+        return (
+          <div>
+            <img src={progressBarStep3} alt="" />X solvers joined the competition! The winner is submitting your order
+            on-chain...
+          </div>
+        )
       case 'finished':
         return (
           <div>
@@ -195,11 +215,26 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
           </div>
         )
       case 'unfillable':
-        return <div>Your order’s price is currently out of market. You can wait or cancel the order. </div>
+        return (
+          <div>
+            <img src={progressBarStep1a} alt="" />
+            Your order’s price is currently out of market. You can wait or cancel the order.{' '}
+          </div>
+        )
       case 'delayed':
-        return <div>This is taking longer than expected! Solvers are still searching...</div>
+        return (
+          <div>
+            <img src={progressBarStep2a} alt="" />
+            This is taking longer than expected! Solvers are still searching...
+          </div>
+        )
       case 'submissionFailed':
-        return <div>The order could not be settled on-chain. Solvers are competing to find a new solution...</div>
+        return (
+          <div>
+            <img src={progressBarStep2b} alt="" />
+            The order could not be settled on-chain. Solvers are competing to find a new solution...
+          </div>
+        )
       default:
         return null
     }
