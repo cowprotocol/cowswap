@@ -50,7 +50,7 @@ export function PreHookButton() {
           </li>
         </List>
       </Wrapper>
-      {open && <HookStoreModal onDismiss={() => setOpen(false)} />}
+      {open && <HookStoreModal onDismiss={() => setOpen(false)} isPrehook />}
     </>
   )
 }
@@ -65,7 +65,7 @@ export function PostHookButton() {
           <HookTooltip isPrehook={false} />
         </ButtonGroup>
       </Wrapper>
-      {open && <HookStoreModal onDismiss={() => setOpen(false)} />}
+      {open && <HookStoreModal onDismiss={() => setOpen(false)} isPrehook={false} />}
     </>
   )
 }
