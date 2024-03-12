@@ -4,17 +4,24 @@ import { HookDapp, HookDappIframe, HookDappInternal, HookDappType } from './type
 
 const FAKE_URL = 'https://google.com'
 
+const FAKE_VERSION = 'v1.0.0'
+const FAKE_IMAGE = 'https://swap.cow.fi/images/og-meta-cowswap.png?v=2'
+
 const PRE_CURVE: HookDappIframe = {
   name: 'Withdraw from Curve Pools',
   description: 'Allow you to un-stake and withdraw funds from Curve',
   type: HookDappType.IFRAME,
   url: FAKE_URL,
+  image: FAKE_IMAGE,
+  version: FAKE_VERSION,
 }
 const PRE_NFT: HookDappIframe = {
   name: 'Wrap NFT',
   description: 'Wrap your NFT into an ERC20',
   type: HookDappType.IFRAME,
   url: FAKE_URL,
+  image: FAKE_IMAGE,
+  version: FAKE_VERSION,
 }
 
 const PRE_MAKER: HookDappIframe = {
@@ -22,6 +29,8 @@ const PRE_MAKER: HookDappIframe = {
   description: 'Borrow DAI by creating a Vault',
   type: HookDappType.IFRAME,
   url: FAKE_URL,
+  image: FAKE_IMAGE,
+  version: FAKE_VERSION,
 }
 
 const PRE_CLAIM_GNO: HookDappInternal = {
@@ -30,6 +39,8 @@ const PRE_CLAIM_GNO: HookDappInternal = {
   type: HookDappType.INTERNAL,
   path: '/hooks-dapps/pre/claim-gno',
   component: <>Hello!</>,
+  image: FAKE_IMAGE,
+  version: FAKE_VERSION,
 }
 
 // const PRE_TEST = {
@@ -46,6 +57,8 @@ const POST_BRIDGE: HookDappIframe = {
   description: 'Bridge tokes to another layer',
   type: HookDappType.IFRAME,
   url: FAKE_URL,
+  image: FAKE_IMAGE,
+  version: FAKE_VERSION,
 }
 
 const POST_MAKER: HookDappIframe = {
@@ -53,6 +66,8 @@ const POST_MAKER: HookDappIframe = {
   description: 'Return borrowed DAI',
   type: HookDappType.IFRAME,
   url: FAKE_URL,
+  image: FAKE_IMAGE,
+  version: FAKE_VERSION,
 }
 
 const POST_HOOK_DAAPS_ALL = [POST_BRIDGE, POST_MAKER]

@@ -11,6 +11,8 @@ export interface HookDappBase {
   name: string
   description: string
   type: HookDappType
+  version: string
+  image: string
 }
 
 export interface HookDappInternal extends HookDappBase {

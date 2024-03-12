@@ -1,16 +1,15 @@
+import { useCallback, useState } from 'react'
+
 import { Command } from '@cowprotocol/types'
 import { UI } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import styled from 'styled-components/macro'
 
-import { Link } from 'legacy/components/Link'
-
 import { NewModal } from 'common/pure/NewModal'
 
 import { POST_HOOK_REGISTRY, PRE_HOOK_REGISTRY } from '../hookRegistry'
 import { HookDapp } from '../types'
-import { isHookDappIframe } from '../utils'
 
 const MODAL_MAX_WIDTH = 450
 
@@ -36,6 +35,7 @@ const HookDappsList = styled.ul`
     width: 120px;
     max-height: 120px;
     height: 100%;
+    cursor: pointer;
   }
 
 `
@@ -82,6 +82,24 @@ const HookDappDetails = styled.div`
   }
 `
 
+export const Link = styled.button`
+  display: inline-block;
+  cursor: pointer;
+  margin: 0;
+  background: none;
+  border: none;
+  outline: none;
+  color: inherit;
+
+  font-weight: 600;
+  font-size: 12px;
+  text-decoration: underline;
+
+  &:hover {
+    text-decoration: none;
+  }
+`
+
 const Version = styled.div`
   position: absolute;
   top: 0;
@@ -100,46 +118,54 @@ interface HookStoreModal {
 
 export function HookStoreModal({ onDismiss, isPrehook }: HookStoreModal) {
   const { chainId } = useWalletInfo()
+  const [selectedDaap, setSelectedDapp] = useState<HookDapp | null>(null)
   const dapps = isPrehook ? PRE_HOOK_REGISTRY[chainId] : POST_HOOK_REGISTRY[chainId]
+
+  const title = selectedDaap ? selectedDaap.name : 'Hook Store'
+
+  const onDismissModal = useCallback(() => {
+    if (selectedDaap) {
+      setSelectedDapp(null)
+    } else {
+      onDismiss()
+    }
+  }, [onDismiss, selectedDaap])
 
   return (
     <Wrapper>
-      <NewModal modalMode title="Hook Store" onDismiss={onDismiss} maxWidth={MODAL_MAX_WIDTH}>
-        <HookDappsList>
-          {dapps.map((dapp) => (
-            <HookDappItem dapp={dapp} />
-          ))}
-        </HookDappsList>
+      <NewModal modalMode={!selectedDaap} title={title} onDismiss={onDismissModal} maxWidth={MODAL_MAX_WIDTH}>
+        {selectedDaap ? (
+          <>{selectedDaap.name}</>
+        ) : (
+          <HookDappsList>
+            {dapps.map((dapp) => (
+              <HookDappItem dapp={dapp} onSelect={setSelectedDapp} />
+            ))}
+          </HookDappsList>
+        )}
       </NewModal>
     </Wrapper>
   )
 }
 
-export function HookDappItem({ dapp }: { dapp: HookDapp }) {
-  const { name, description } = dapp
+export function HookDappItem({ dapp, onSelect }: { dapp: HookDapp; onSelect: (dapp: HookDapp) => void }) {
+  const { name, description, image, version } = dapp
 
-  const { url, component } = isHookDappIframe(dapp)
-    ? { url: dapp.url, component: undefined }
-    : { url: dapp.path, component: dapp.component }
+  // const { url, component } = isHookDappIframe(dapp)
+  //   ? { url: dapp.url, component: undefined }
+  //   : { url: dapp.path, component: dapp.component }
 
   return (
     <HookDappListItem>
       <div>
-        <Link href={url}>
-          <img src="https://swap.cow.fi/images/og-meta-cowswap.png?v=2" alt="CoW Swap Logo" />
-        </Link>
+        <img onClick={() => onSelect(dapp)} src={image} alt={name} />
       </div>
       <HookDappDetails>
         <h3>{name}</h3>
         <p>{description}</p>
-        {url && (
-          <div>
-            <Link href={url}>+ Add hook</Link>
-          </div>
-        )}
-        {component}
+        <Link onClick={() => onSelect(dapp)}>+ Add hook</Link>
 
-        <Version>v1.0.0</Version>
+        <Version>{version}</Version>
       </HookDappDetails>
     </HookDappListItem>
   )
