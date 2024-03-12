@@ -140,7 +140,7 @@ export function HookStoreModal({ onDismiss, isPreHook }: HookStoreModal) {
         ) : (
           <HookDappsList>
             {dapps.map((dapp) => (
-              <HookDappItem dapp={dapp} onSelect={setSelectedDapp} />
+              <HookDappItem key={dapp.name} dapp={dapp} onSelect={setSelectedDapp} />
             ))}
           </HookDappsList>
         )}
@@ -164,10 +164,6 @@ export function HookDaapUi({ dapp }: HookDappUiProps) {
 
 export function HookDappItem({ dapp, onSelect }: { dapp: HookDapp; onSelect: (dapp: HookDapp) => void }) {
   const { name, description, image, version } = dapp
-
-  // const { url, component } = isHookDappIframe(dapp)
-  //   ? { url: dapp.url, component: undefined }
-  //   : { url: dapp.path, component: dapp.component }
 
   return (
     <HookDappListItem>
