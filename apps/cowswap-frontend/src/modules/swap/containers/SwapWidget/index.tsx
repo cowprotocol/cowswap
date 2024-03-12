@@ -6,6 +6,7 @@ import { isFractionFalsy } from '@cowprotocol/common-utils'
 import { useIsTradeUnsupported } from '@cowprotocol/tokens'
 import { useIsSafeViaWc, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
+import { InfoIcon } from 'legacy/components/InfoIcon'
 import { NetworkAlert } from 'legacy/components/NetworkAlert/NetworkAlert'
 import SettingsTab from 'legacy/components/Settings'
 import useCowBalanceAndSubsidy from 'legacy/hooks/useCowBalanceAndSubsidy'
@@ -51,6 +52,7 @@ import {
   useSwapState,
   useUnknownImpactWarning,
 } from '../../hooks/useSwapState'
+import { NFAButton, NFAToggle, SwapSettings } from '../../pure/SwapSettings'
 import { ConfirmSwapModalSetup } from '../ConfirmSwapModalSetup'
 
 const BUTTON_STATES_TO_SHOW_BUNDLE_APPROVAL_BANNER = [SwapButtonState.ApproveAndSwap]
@@ -253,8 +255,21 @@ export function SwapWidget() {
     rateInfoParams,
   }
 
+  const [isNfaEnabled, setNfaEnabled] = useState(false)
+
+  const toggleNfa = useCallback(() => setNfaEnabled((prev) => !prev), [])
+
   const slots = {
-    settingsWidget: <SettingsTab placeholderSlippage={allowedSlippage} />,
+    settingsWidget: (
+      <SwapSettings>
+        <NFAButton>
+          <InfoIcon iconType="help" content="NFA (non financial advisory mode)," />
+          <span>NFA</span>
+          <NFAToggle isActive={isNfaEnabled} toggle={toggleNfa} />
+        </NFAButton>
+        <SettingsTab placeholderSlippage={allowedSlippage} />
+      </SwapSettings>
+    ),
     bottomContent: (
       <>
         <TradeRates {...tradeRatesProps} />
