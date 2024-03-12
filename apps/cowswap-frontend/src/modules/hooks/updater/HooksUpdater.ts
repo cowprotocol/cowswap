@@ -28,6 +28,6 @@ export function HooksUpdater(props: HooksUpdaterProps): null {
       eventEmitter.off(addedHookListener)
       eventEmitter.off(removedHookListener)
     }
-  }, [])
+  }, [eventEmitter])
   return null
 }
