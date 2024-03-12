@@ -11,6 +11,7 @@ const APPDATA_ORDER_CLASS_TO_UI_ORDER_TYPE_MAP: Record<string, UiOrderType> = {
   limit: UiOrderType.LIMIT,
   liquidity: UiOrderType.LIMIT,
   twap: UiOrderType.TWAP,
+  hooks: UiOrderType.HOOKS,
 }
 
 const API_ORDER_CLASS_TO_UI_ORDER_TYPE_MAP: Record<OrderClass, UiOrderType> = {
@@ -23,6 +24,7 @@ export const ORDER_UI_TYPE_TITLES: Record<UiOrderType, string> = {
   [UiOrderType.SWAP]: 'Swap',
   [UiOrderType.LIMIT]: 'Limit order',
   [UiOrderType.TWAP]: 'TWAP order',
+  [UiOrderType.HOOKS]: 'Hooks',
 }
 
 export type UiOrderTypeParams = Pick<Order, 'fullAppData' | 'composableCowInfo' | 'class'>

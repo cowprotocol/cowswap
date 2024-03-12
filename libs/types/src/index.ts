@@ -10,4 +10,5 @@ export enum UiOrderType {
   SWAP = 'SWAP',
   LIMIT = 'LIMIT',
   TWAP = 'TWAP',
+  HOOKS = 'HOOKS',
 }

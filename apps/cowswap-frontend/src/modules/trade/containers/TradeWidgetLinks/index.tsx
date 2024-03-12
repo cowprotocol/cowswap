@@ -33,6 +33,7 @@ const MENU_ITEMS: MenuItemConfig[] = [
   { route: Routes.SWAP, label: 'Swap' },
   { route: Routes.LIMIT_ORDER, label: 'Limit' },
   { route: Routes.ADVANCED_ORDERS, label: 'TWAP' },
+  { route: Routes.HOOKS, label: 'Hooks' },
 ]
 
 const TRADE_TYPE_TO_ROUTE: Record<TradeType, string> = {

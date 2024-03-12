@@ -3,9 +3,9 @@ import React, { useCallback } from 'react'
 import { Command } from '@cowprotocol/types'
 import { BackButton, UI } from '@cowprotocol/ui'
 
-import CLOSE_ICON from 'assets/icon/x.svg'
-import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
+
+import { CloseIcon } from '../CloseIcon'
 
 const ModalInner = styled.div`
   display: flex;
@@ -52,37 +52,20 @@ const Wrapper = styled.div<{
   }
 `
 
-const Heading = styled.h2`
+const Heading = styled.h2<{ modalMode?: boolean }>`
   display: flex;
   flex-flow: row wrap;
   justify-content: space-between;
   width: 100%;
   height: auto;
   margin: 0;
-  padding: 16px 20px 3px;
+  padding: 16px ${({ modalMode }) => (modalMode ? '20px' : '50px')} 3px;
   font-size: var(${UI.FONT_SIZE_MEDIUM});
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     position: sticky;
     top: 0;
   `}
-`
-
-const IconX = styled.div`
-  cursor: pointer;
-  opacity: 0.7;
-  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
-  margin: 0;
-
-  > svg {
-    width: var(${UI.ICON_SIZE_NORMAL});
-    height: var(${UI.ICON_SIZE_NORMAL});
-    color: var(${UI.ICON_COLOR_NORMAL});
-  }
-
-  &:hover {
-    opacity: 1;
-  }
 `
 
 const BackButtonStyled = styled(BackButton)`
@@ -170,13 +153,8 @@ export function NewModal({ maxWidth = 450, minHeight = 350, modalMode, title, ch
       <ModalInner>
         {!modalMode && <BackButtonStyled onClick={onDismissCallback} />}
         {title && (
-          <Heading>
-            {title}{' '}
-            {modalMode && (
-              <IconX onClick={onDismissCallback}>
-                <SVG src={CLOSE_ICON} />
-              </IconX>
-            )}
+          <Heading modalMode={modalMode}>
+            {title} {modalMode && <CloseIcon onClick={onDismissCallback} />}
           </Heading>
         )}
 

@@ -13,6 +13,7 @@ const ORDER_UI_TYPE_LABELS: Record<UiOrderType, string> = {
   [UiOrderType.SWAP]: 'Market',
   [UiOrderType.LIMIT]: 'Limit',
   [UiOrderType.TWAP]: 'TWAP',
+  [UiOrderType.HOOKS]: 'Hooks',
 }
 
 export function OrderTypeField({ order }: Props) {

@@ -7,7 +7,10 @@ import {
 import { OnToastMessagePayload } from './toastMessages'
 
 export enum CowEvents {
+  // Toasts
   ON_TOAST_MESSAGE = 'ON_TOAST_MESSAGE',
+
+  // Orders
   ON_POSTED_ORDER = 'ON_POSTED_ORDER',
   ON_POSTED_ETH_FLOW_ORDER = 'ON_POSTED_ETH_FLOW_ORDER',
   ON_EXECUTED_ORDER = 'ON_EXECUTED_ORDER',
