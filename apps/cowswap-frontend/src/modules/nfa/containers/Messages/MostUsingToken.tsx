@@ -16,7 +16,7 @@ export function MostUsingToken(props: MostUsingTokenProps) {
   const { isLoading, blockchainResult, externalApiResult, activeListsResult, inactiveListsResult } =
     useSearchToken(tokenAddress)
   const token = useMemo(() => {
-    return blockchainResult[0] || externalApiResult[0] || activeListsResult[0] || inactiveListsResult[0]
+    return externalApiResult[0] || blockchainResult[0] || activeListsResult[0] || inactiveListsResult[0]
   }, [blockchainResult, externalApiResult, activeListsResult, inactiveListsResult])
 
   if (isLoading) {
