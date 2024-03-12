@@ -1,6 +1,7 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { HookDapp, HookDappIframe, HookDappInternal, HookDappType } from './types'
+import { PRE_CLAIM_GNO } from './hookDapps/ClaimGnoHookApp'
+import { HookDapp, HookDappIframe, HookDappType } from './types'
 
 const FAKE_URL = 'https://google.com'
 
@@ -29,16 +30,6 @@ const PRE_MAKER: HookDappIframe = {
   description: 'Borrow DAI by creating a Vault',
   type: HookDappType.IFRAME,
   url: FAKE_URL,
-  image: FAKE_IMAGE,
-  version: FAKE_VERSION,
-}
-
-const PRE_CLAIM_GNO: HookDappInternal = {
-  name: 'Claim GNO ',
-  description: 'Borrow DAI by creating a Vault',
-  type: HookDappType.INTERNAL,
-  path: '/hooks-dapps/pre/claim-gno',
-  component: <>Hello!</>,
   image: FAKE_IMAGE,
   version: FAKE_VERSION,
 }
