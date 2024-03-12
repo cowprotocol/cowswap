@@ -172,19 +172,34 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
   const progressBar = () => {
     switch (newState) {
       case 'initial':
-        return <div>initial</div>
+        return <div>Your order has been submitted and will be included in the next solver auction.</div>
       case 'solving':
-        return <div>solving</div>
+        return <div>The auction has started! Solvers are competing to find the best solution for you...</div>
       case 'executing':
-        return <div>executing</div>
+        return <div>X solvers joined the competition! The winner is submitting your order on-chain...</div>
       case 'finished':
-        return <div>finished</div>
+        return (
+          <div>
+            You received 4.42 WETH!
+            <span>Solver ranking</span>
+            <ul>
+              <li>Quasimodo 4.42 WETH</li>
+              <li>1inch 4.416 WETH</li>
+              <li>Otex 4.4154 WETH</li>
+              <li>SeaSolver 4.414 WETH</li>
+              <li>Barter Solver 4.4 WETH</li>
+              <li>PLM 4.2 WETH</li>
+              <li>Propellerheads 4 WETH</li>
+            </ul>
+            <span>You would have gotten 0.26 WETH less on 1inch!</span>
+          </div>
+        )
       case 'unfillable':
-        return <div>unfillable</div>
+        return <div>Your order’s price is currently out of market. You can wait or cancel the order. </div>
       case 'delayed':
-        return <div>delayed</div>
+        return <div>This is taking longer than expected! Solvers are still searching...</div>
       case 'submissionFailed':
-        return <div>submissionFailed</div>
+        return <div>The order could not be settled on-chain. Solvers are competing to find a new solution...</div>
       default:
         return null
     }
