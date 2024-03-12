@@ -1,19 +1,36 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { HookDapp } from './types'
+import { HookDapp, HookDappIframe, HookDappInternal, HookDappType } from './types'
 
 const FAKE_URL = 'https://google.com'
 
-const PRE_CURVE = {
+const PRE_CURVE: HookDappIframe = {
   name: 'Withdraw from Curve Pools',
   description: 'Allow you to un-stake and withdraw funds from Curve',
+  type: HookDappType.IFRAME,
   url: FAKE_URL,
 }
-const PRE_NFT = { name: 'Wrap NFT', description: 'Wrap your NFT into an ERC20', url: FAKE_URL }
+const PRE_NFT: HookDappIframe = {
+  name: 'Wrap NFT',
+  description: 'Wrap your NFT into an ERC20',
+  type: HookDappType.IFRAME,
+  url: FAKE_URL,
+}
 
-const PRE_MAKER = { name: 'Create Maker Vault', description: 'Borrow DAI by creating a Vault', url: FAKE_URL }
+const PRE_MAKER: HookDappIframe = {
+  name: 'Create Maker Vault',
+  description: 'Borrow DAI by creating a Vault',
+  type: HookDappType.IFRAME,
+  url: FAKE_URL,
+}
 
-const PRE_CLAIM_GNO = { name: 'Claim GNO ', description: 'Borrow DAI by creating a Vault', url: FAKE_URL }
+const PRE_CLAIM_GNO: HookDappInternal = {
+  name: 'Claim GNO ',
+  description: 'Borrow DAI by creating a Vault',
+  type: HookDappType.INTERNAL,
+  path: '/hooks-dapps/pre/claim-gno',
+  component: <>Hello!</>,
+}
 
 // const PRE_TEST = {
 //   name: 'Claim GNO ',
@@ -24,15 +41,17 @@ const PRE_CLAIM_GNO = { name: 'Claim GNO ', description: 'Borrow DAI by creating
 
 const PRE_HOOK_DAAPS_ALL = [PRE_CURVE, PRE_NFT, PRE_MAKER, PRE_CLAIM_GNO]
 
-const POST_BRIDGE = {
+const POST_BRIDGE: HookDappIframe = {
   name: 'Bridge Tokens',
   description: 'Bridge tokes to another layer',
+  type: HookDappType.IFRAME,
   url: FAKE_URL,
 }
 
-const POST_MAKER = {
+const POST_MAKER: HookDappIframe = {
   name: 'Re-pay Maker Vault',
   description: 'Return borrowed DAI',
+  type: HookDappType.IFRAME,
   url: FAKE_URL,
 }
 

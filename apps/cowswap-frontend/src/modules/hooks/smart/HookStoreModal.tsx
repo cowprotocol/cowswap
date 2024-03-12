@@ -10,6 +10,7 @@ import { NewModal } from 'common/pure/NewModal'
 
 import { POST_HOOK_REGISTRY, PRE_HOOK_REGISTRY } from '../hookRegistry'
 import { HookDapp } from '../types'
+import { isHookDappIframe } from '../utils'
 
 const MODAL_MAX_WIDTH = 450
 
@@ -115,7 +116,12 @@ export function HookStoreModal({ onDismiss, isPrehook }: HookStoreModal) {
 }
 
 export function HookDappItem({ dapp }: { dapp: HookDapp }) {
-  const { name, description, url } = dapp
+  const { name, description } = dapp
+
+  const { url, component } = isHookDappIframe(dapp)
+    ? { url: dapp.url, component: undefined }
+    : { url: dapp.path, component: dapp.component }
+
   return (
     <HookDappListItem>
       <div>
@@ -126,9 +132,13 @@ export function HookDappItem({ dapp }: { dapp: HookDapp }) {
       <HookDappDetails>
         <h3>{name}</h3>
         <p>{description}</p>
-        <div>
-          <Link href={url}>+ Add hook</Link>
-        </div>
+        {url && (
+          <div>
+            <Link href={url}>+ Add hook</Link>
+          </div>
+        )}
+        {component}
+
         <Version>v1.0.0</Version>
       </HookDappDetails>
     </HookDappListItem>
