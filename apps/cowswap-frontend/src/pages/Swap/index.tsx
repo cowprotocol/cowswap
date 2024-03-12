@@ -1,3 +1,4 @@
+import { useAtom } from 'jotai/index'
 import React from 'react'
 
 import { WRAPPED_NATIVE_CURRENCIES as WETH } from '@cowprotocol/common-const'
@@ -16,6 +17,8 @@ import { Routes } from 'common/constants/routes'
 
 import { SwapPageWrapper } from './styled'
 
+import { nfaStateAtom } from '../../modules/swap/state/nfaState'
+
 export function SwapPage() {
   const params = useParams()
   const slippage = useSwapSlippage()
@@ -24,6 +27,8 @@ export function SwapPage() {
     return <SwapPageRedirect />
   }
 
+  const [isNfaEnabled] = useAtom(nfaStateAtom)
+
   return (
     <>
       <AppDataUpdater orderClass="market" slippage={slippage} />
@@ -31,7 +36,7 @@ export function SwapPage() {
       <SwapAmountsFromUrlUpdater />
       <SwapPageWrapper>
         <SwapWidget />
-        <Nfa />
+        {isNfaEnabled && <Nfa />}
       </SwapPageWrapper>
     </>
   )

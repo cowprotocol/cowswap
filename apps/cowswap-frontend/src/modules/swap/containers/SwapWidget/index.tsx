@@ -1,3 +1,4 @@
+import { useAtom } from 'jotai'
 import React, { useCallback, useMemo, useState } from 'react'
 
 import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
@@ -53,6 +54,7 @@ import {
   useUnknownImpactWarning,
 } from '../../hooks/useSwapState'
 import { NFAButton, NFAToggle, SwapSettings } from '../../pure/SwapSettings'
+import { nfaStateAtom } from '../../state/nfaState'
 import { ConfirmSwapModalSetup } from '../ConfirmSwapModalSetup'
 
 const BUTTON_STATES_TO_SHOW_BUNDLE_APPROVAL_BANNER = [SwapButtonState.ApproveAndSwap]
@@ -255,7 +257,7 @@ export function SwapWidget() {
     rateInfoParams,
   }
 
-  const [isNfaEnabled, setNfaEnabled] = useState(false)
+  const [isNfaEnabled, setNfaEnabled] = useAtom(nfaStateAtom)
 
   const toggleNfa = useCallback(() => setNfaEnabled((prev) => !prev), [])
 
@@ -263,7 +265,7 @@ export function SwapWidget() {
     settingsWidget: (
       <SwapSettings>
         <NFAButton>
-          <InfoIcon iconType="help" content="NFA (non financial advisory mode)," />
+          <InfoIcon iconType="help" content="NFA (non financial advisory mode)" />
           <span>NFA</span>
           <NFAToggle isActive={isNfaEnabled} toggle={toggleNfa} />
         </NFAButton>
