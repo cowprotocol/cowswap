@@ -1,5 +1,9 @@
 import { ReactNode } from 'react'
 
+import { latest } from '@cowprotocol/app-data'
+
+export type PermitHookData = latest.CoWHook
+
 export enum HookDappType {
   INTERNAL = 'INTERNAL',
   IFRAME = 'IFRAME',
