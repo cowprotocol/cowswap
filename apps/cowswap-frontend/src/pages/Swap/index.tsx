@@ -6,12 +6,15 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { Navigate, useLocation, useParams } from 'react-router-dom'
 
 import { AppDataUpdater } from 'modules/appData'
+import { Nfa } from 'modules/nfa'
 import { SwapWidget, SwapDerivedStateUpdater, SwapAmountsFromUrlUpdater } from 'modules/swap'
 import { useSwapSlippage } from 'modules/swap/hooks/useSwapSlippage'
 import { getDefaultTradeRawState } from 'modules/trade/types/TradeRawState'
 import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRoute'
 
 import { Routes } from 'common/constants/routes'
+
+import { SwapPageWrapper } from './styled'
 
 export function SwapPage() {
   const params = useParams()
@@ -26,7 +29,10 @@ export function SwapPage() {
       <AppDataUpdater orderClass="market" slippage={slippage} />
       <SwapDerivedStateUpdater />
       <SwapAmountsFromUrlUpdater />
-      <SwapWidget />
+      <SwapPageWrapper>
+        <SwapWidget />
+        <Nfa />
+      </SwapPageWrapper>
     </>
   )
 }
