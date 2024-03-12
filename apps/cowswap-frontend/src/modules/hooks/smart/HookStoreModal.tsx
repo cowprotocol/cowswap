@@ -10,6 +10,7 @@ import { NewModal } from 'common/pure/NewModal'
 
 import { POST_HOOK_REGISTRY, PRE_HOOK_REGISTRY } from '../hookRegistry'
 import { HookDapp } from '../types'
+import { isHookDappIframe } from '../utils'
 
 const MODAL_MAX_WIDTH = 450
 
@@ -135,7 +136,7 @@ export function HookStoreModal({ onDismiss, isPrehook }: HookStoreModal) {
     <Wrapper>
       <NewModal modalMode={!selectedDaap} title={title} onDismiss={onDismissModal} maxWidth={MODAL_MAX_WIDTH}>
         {selectedDaap ? (
-          <>{selectedDaap.name}</>
+          <HookDaapUi dapp={selectedDaap} />
         ) : (
           <HookDappsList>
             {dapps.map((dapp) => (
@@ -146,6 +147,19 @@ export function HookStoreModal({ onDismiss, isPrehook }: HookStoreModal) {
       </NewModal>
     </Wrapper>
   )
+}
+
+interface HookDappUiProps {
+  dapp: HookDapp
+}
+
+export function HookDaapUi({ dapp }: HookDappUiProps) {
+  if (isHookDappIframe(dapp)) {
+    // TODO: Create iFrame
+    return <>{dapp.name}</>
+  }
+
+  return dapp.component
 }
 
 export function HookDappItem({ dapp, onSelect }: { dapp: HookDapp; onSelect: (dapp: HookDapp) => void }) {
