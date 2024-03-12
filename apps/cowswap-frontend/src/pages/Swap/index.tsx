@@ -3,6 +3,7 @@ import React from 'react'
 import { WRAPPED_NATIVE_CURRENCIES as WETH } from '@cowprotocol/common-const'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { EVENT_EMITTER } from 'eventEmitter'
 import { Navigate, useLocation, useParams } from 'react-router-dom'
 
 import { AppDataUpdater } from 'modules/appData'
@@ -29,7 +30,7 @@ export function SwapPage({ hooksEnabled }: SwapPageProps) {
   return (
     <>
       <AppDataUpdater orderClass="market" slippage={slippage} />
-      <HooksUpdater />
+      <HooksUpdater eventEmitter={EVENT_EMITTER} />
       <SwapDerivedStateUpdater />
       <SwapAmountsFromUrlUpdater />
       <SwapWidget hooksEnabled={hooksEnabled} />
