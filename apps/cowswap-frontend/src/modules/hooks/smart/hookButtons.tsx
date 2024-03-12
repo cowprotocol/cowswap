@@ -46,7 +46,7 @@ export function PreHookButton() {
     <>
       <HookList>
         {hooks.preHooks.map((hook) => (
-          <HookItem hook={hook} />
+          <HookItem key={hook.callData} hook={hook} />
         ))}
       </HookList>
       <Wrapper>
@@ -70,6 +70,7 @@ export function PreHookButton() {
 
 export function PostHookButton() {
   const [open, setOpen] = useState(false)
+  const hooks = useAtomValue(hooksAtom)
   return (
     <>
       <Wrapper>
@@ -79,6 +80,9 @@ export function PostHookButton() {
         </ButtonGroup>
       </Wrapper>
       {open && <HookStoreModal onDismiss={() => setOpen(false)} isPreHook={false} />}
+      {hooks.postHooks.map((hook) => (
+        <HookItem key={hook.callData} hook={hook} />
+      ))}
     </>
   )
 }
