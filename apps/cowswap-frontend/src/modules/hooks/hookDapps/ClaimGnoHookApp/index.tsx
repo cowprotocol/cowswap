@@ -82,7 +82,7 @@ export function ClaimGnoHookApp() {
               gasLimit: '1234567',
               target: '0x00000000001',
             },
-            isPrehook: true,
+            isPreHook: true,
           })
         }
       >

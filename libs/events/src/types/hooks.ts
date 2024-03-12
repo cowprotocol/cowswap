@@ -2,7 +2,7 @@ import { PermitHookData } from '@cowprotocol/permit-utils'
 
 interface HookInfoPayload {
   hook: PermitHookData
-  isPrehook: boolean
+  isPreHook: boolean
 }
 
 export type OnAddedHookPayload = HookInfoPayload

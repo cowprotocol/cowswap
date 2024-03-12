@@ -114,13 +114,13 @@ const Version = styled.div`
 
 interface HookStoreModal {
   onDismiss: Command
-  isPrehook: boolean
+  isPreHook: boolean
 }
 
-export function HookStoreModal({ onDismiss, isPrehook }: HookStoreModal) {
+export function HookStoreModal({ onDismiss, isPreHook }: HookStoreModal) {
   const { chainId } = useWalletInfo()
   const [selectedDaap, setSelectedDapp] = useState<HookDapp | null>(null)
-  const dapps = isPrehook ? PRE_HOOK_REGISTRY[chainId] : POST_HOOK_REGISTRY[chainId]
+  const dapps = isPreHook ? PRE_HOOK_REGISTRY[chainId] : POST_HOOK_REGISTRY[chainId]
 
   const title = selectedDaap ? selectedDaap.name : 'Hook Store'
 

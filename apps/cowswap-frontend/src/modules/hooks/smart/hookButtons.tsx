@@ -1,3 +1,4 @@
+import { useAtomValue } from 'jotai'
 import { useState } from 'react'
 
 import { ButtonSecondaryAlt } from '@cowprotocol/ui'
@@ -8,6 +9,9 @@ import { Link } from 'legacy/components/Link'
 import QuestionHelper from 'legacy/components/QuestionHelper'
 
 import { HookStoreModal } from './HookStoreModal'
+
+import { hooksAtom } from '../state/hooksAtom'
+import { PermitHookData } from '../types'
 
 const Wrapper = styled.div`
   display: flex;
@@ -32,14 +36,23 @@ const List = styled.ul`
   font-size: 0.8rem;
 `
 
+const HookList = styled.ul``
+const HookItemWrapper = styled.li``
+
 export function PreHookButton() {
   const [open, setOpen] = useState(false)
+  const hooks = useAtomValue(hooksAtom)
   return (
     <>
+      <HookList>
+        {hooks.preHooks.map((hook) => (
+          <HookItem hook={hook} />
+        ))}
+      </HookList>
       <Wrapper>
         <ButtonGroup>
           <ButtonSecondaryAlt onClick={() => setOpen(true)}>🪝 Add Pre-hook</ButtonSecondaryAlt>{' '}
-          <HookTooltip isPrehook />
+          <HookTooltip isPreHook />
         </ButtonGroup>
         <List>
           <li>
@@ -50,7 +63,7 @@ export function PreHookButton() {
           </li>
         </List>
       </Wrapper>
-      {open && <HookStoreModal onDismiss={() => setOpen(false)} isPrehook />}
+      {open && <HookStoreModal onDismiss={() => setOpen(false)} isPreHook />}
     </>
   )
 }
@@ -62,20 +75,35 @@ export function PostHookButton() {
       <Wrapper>
         <ButtonGroup>
           <ButtonSecondaryAlt onClick={() => setOpen(true)}>🪝 Add Post-hook</ButtonSecondaryAlt>{' '}
-          <HookTooltip isPrehook={false} />
+          <HookTooltip isPreHook={false} />
         </ButtonGroup>
       </Wrapper>
-      {open && <HookStoreModal onDismiss={() => setOpen(false)} isPrehook={false} />}
+      {open && <HookStoreModal onDismiss={() => setOpen(false)} isPreHook={false} />}
     </>
   )
 }
 
-function HookTooltip({ isPrehook }: { isPrehook: boolean }) {
+function HookTooltip({ isPreHook }: { isPreHook: boolean }) {
   return (
     <QuestionHelper
-      text={`${isPrehook ? 'Pre' : 'Post'}-hook allow you to automatically execute any action action ${
-        isPrehook ? 'AFTER' : 'BEFORE'
+      text={`${isPreHook ? 'Pre' : 'Post'}-hook allow you to automatically execute any action action ${
+        isPreHook ? 'AFTER' : 'BEFORE'
       } your trade is executed`}
     />
+  )
+}
+
+interface HookItemProp {
+  hook: PermitHookData
+}
+
+function HookItem({ hook }: HookItemProp) {
+  const { callData, gasLimit, target } = hook
+  return (
+    <HookItemWrapper>
+      <div>target: {target}</div>
+      <div>gasLimit: {gasLimit}</div>
+      <div>callData: {callData} </div>
+    </HookItemWrapper>
   )
 }
