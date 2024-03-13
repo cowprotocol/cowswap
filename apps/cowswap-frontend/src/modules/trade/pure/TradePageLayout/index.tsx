@@ -9,7 +9,7 @@ export const PageWrapper = styled.div<{ isUnlocked: boolean }>`
   grid-template-rows: max-content;
   grid-column-gap: 20px;
 
-  ${({ theme }) => theme.mediaWidth.upToLargeAlt`
+  ${({ theme }) => theme.mediaWidth.upToLarge`
     display: flex;
     flex-flow: column wrap;
   `};

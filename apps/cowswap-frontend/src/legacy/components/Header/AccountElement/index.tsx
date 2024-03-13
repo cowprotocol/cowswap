@@ -27,7 +27,7 @@ export function AccountElement({ className, standaloneMode, pendingActivities }:
 
   return (
     <Wrapper className={className} active={!!account} onClick={() => account && toggleAccountModal()}>
-      {standaloneMode && account && !isChainIdUnsupported && userEthBalance && chainId && (
+      {standaloneMode !== false && account && !isChainIdUnsupported && userEthBalance && chainId && (
         <BalanceText>
           <TokenAmount amount={userEthBalance} tokenSymbol={{ symbol: nativeToken }} />
         </BalanceText>
