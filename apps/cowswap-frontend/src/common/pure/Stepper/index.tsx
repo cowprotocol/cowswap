@@ -116,7 +116,7 @@ const Wrapper = styled.div<{ maxWidth?: string; dotSize?: number }>`
   margin: 0 auto;
 `
 
-interface StepperProps {
+export interface StepperProps {
   steps: StepProps[]
   maxWidth?: string
   dotSize?: number
