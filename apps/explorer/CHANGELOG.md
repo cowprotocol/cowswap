@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.29.1](https://github.com/cowprotocol/cowswap/compare/explorer-v2.29.0...explorer-v2.29.1) (2024-03-13)
+
+
+### Bug Fixes
+
+* **explorer:** migrate to nodereal api from infura ([#4041](https://github.com/cowprotocol/cowswap/issues/4041)) ([c4ae5a2](https://github.com/cowprotocol/cowswap/commit/c4ae5a21d5429ccb8b2456848add5fb9b8a14f5d))
+
 ## [2.29.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.28.0...explorer-v2.29.0) (2024-03-12)
 
 
