@@ -31,6 +31,6 @@ export const SANITIZE_PARAMS = {
   provider: 'EIP-1271 Provider',
 }
 
-export const REMOVE_PARAMS: (keyof CowSwapWidgetParams)[] = ['env']
+export const REMOVE_PARAMS: (keyof CowSwapWidgetParams)[] = ['baseUrl']
 
 export const IMPORT_STATEMENT = `import { CowSwapWidget, CowSwapWidgetParams, TradeType }`

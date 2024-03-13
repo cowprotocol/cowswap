@@ -32,6 +32,12 @@ export const Header = styled.div`
   width: 100%;
   padding: 16px;
   z-index: 20;
+
+  > div {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
 `
 
 export const Title = styled.h3`
@@ -177,5 +183,23 @@ export const RateValue = styled.div``
 export const OrderTypeValue = styled.span`
   &:first-letter {
     text-transform: uppercase;
+  }
+`
+
+export const LightButton = styled.button`
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid transparent;
+  padding: 6px 14px;
+  border-radius: var(${UI.BORDER_RADIUS_NORMAL});
+  background-color: var(${UI.COLOR_PAPER_DARKER});
+  transition: border var(${UI.ANIMATION_DURATION}) ease-in-out,
+    background-color var(${UI.ANIMATION_DURATION}) ease-in-out;
+  cursor: pointer;
+  color: inherit;
+
+  &:hover {
+    border: 1px solid var(${UI.COLOR_PAPER_DARKER});
+    background-color: transparent;
   }
 `

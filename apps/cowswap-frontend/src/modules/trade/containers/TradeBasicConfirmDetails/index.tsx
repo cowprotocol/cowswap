@@ -39,7 +39,7 @@ export function TradeBasicConfirmDetails(props: Props) {
   const { inputCurrencyAmount } = rateInfoParams
 
   const priceLabel = additionalProps?.priceLabel || 'Price'
-  const minReceivedLabel = additionalProps?.minReceivedLabel || 'Min received (incl. fee)'
+  const minReceivedLabel = additionalProps?.minReceivedLabel || 'Min received (incl. costs)'
   const minReceivedTooltip = additionalProps?.minReceivedTooltip || 'This is the minimum amount that you will receive.'
 
   const minReceivedUsdAmount = useUsdAmount(minReceiveAmount).value

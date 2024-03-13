@@ -89,6 +89,7 @@ const Wrapper = styled.span<{
 
   // Text content
   > span > span {
+    width: 100%;
     display: flex;
     flex-flow: row wrap;
     align-items: center;
