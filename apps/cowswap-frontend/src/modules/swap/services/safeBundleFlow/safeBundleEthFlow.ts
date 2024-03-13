@@ -1,5 +1,5 @@
 import { Erc20 } from '@cowprotocol/abis'
-import { currencyAmountToTokenAmount, reportAppDataWithHooks } from '@cowprotocol/common-utils'
+import { reportAppDataWithHooks } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
 import { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
@@ -137,8 +137,8 @@ export async function safeBundleEthFlow(
       orderCreationHash: safeTx.safeTxHash,
       kind: OrderKind.SELL,
       receiver: recipientAddressOrName,
-      inputAmount: currencyAmountToTokenAmount(inputAmount),
-      outputAmount: currencyAmountToTokenAmount(outputAmount),
+      inputAmount,
+      outputAmount,
       owner: account,
       uiOrderType: UiOrderType.SWAP,
     })

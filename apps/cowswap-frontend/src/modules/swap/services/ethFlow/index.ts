@@ -1,4 +1,4 @@
-import { currencyAmountToTokenAmount, reportAppDataWithHooks, reportPlaceOrderWithExpiredQuote } from '@cowprotocol/common-utils'
+import { reportAppDataWithHooks, reportPlaceOrderWithExpiredQuote } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
 import { Percent } from '@uniswap/sdk-core'
@@ -82,8 +82,8 @@ export async function ethFlow(
       orderCreationHash: txReceipt.hash,
       kind: OrderKind.SELL,
       receiver: recipientAddressOrName,
-      inputAmount: currencyAmountToTokenAmount(inputAmount),
-      outputAmount: currencyAmountToTokenAmount(outputAmount),
+      inputAmount,
+      outputAmount,
       owner: account,
       uiOrderType: UiOrderType.SWAP,
       isEthFlow: true,

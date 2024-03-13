@@ -1,4 +1,4 @@
-import { currencyAmountToTokenAmount, reportPermitWithDefaultSigner } from '@cowprotocol/common-utils'
+import { reportPermitWithDefaultSigner } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
 import { Command, UiOrderType } from '@cowprotocol/types'
@@ -128,8 +128,8 @@ export async function tradeFlow(
       id: orderId,
       kind: OrderKind.SELL,
       receiver: recipientAddressOrName,
-      inputAmount: currencyAmountToTokenAmount(inputAmount),
-      outputAmount: currencyAmountToTokenAmount(outputAmount),
+      inputAmount,
+      outputAmount,
       owner: account,
       uiOrderType: UiOrderType.LIMIT,
     })

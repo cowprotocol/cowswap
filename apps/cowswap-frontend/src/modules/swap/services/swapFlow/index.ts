@@ -1,6 +1,5 @@
 import {
   getAddress,
-  currencyAmountToTokenAmount,
   getIsNativeToken,
   reportAppDataWithHooks,
   reportPermitWithDefaultSigner,
@@ -118,8 +117,8 @@ export async function swapFlow(
       id: orderUid,
       kind: OrderKind.SELL,
       receiver: recipientAddressOrName,
-      inputAmount: currencyAmountToTokenAmount(inputAmount),
-      outputAmount: currencyAmountToTokenAmount(outputAmount),
+      inputAmount,
+      outputAmount,
       owner: account,
       uiOrderType: UiOrderType.SWAP,
     })
