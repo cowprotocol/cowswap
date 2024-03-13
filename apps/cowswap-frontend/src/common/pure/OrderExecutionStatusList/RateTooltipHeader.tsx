@@ -38,7 +38,10 @@ interface RateTooltipHeaderProps {
 export function RateTooltipHeader({ isOpenOrdersTab }: RateTooltipHeaderProps) {
   return (
     <Content>
-      <p>Fees (incl. gas) are covered by filling your order when the market price is better than your limit price.</p>
+      <p>
+        Network costs (incl. gas) are covered by filling your order when the market price is better than your limit
+        price.
+      </p>
 
       {isOpenOrdersTab && (
         <>
