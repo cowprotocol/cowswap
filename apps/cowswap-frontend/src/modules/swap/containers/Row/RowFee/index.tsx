@@ -2,8 +2,11 @@ import { useMemo } from 'react'
 
 import { bpsToPercent, formatFiatAmount, formatTokenAmount } from '@cowprotocol/common-utils'
 import { FractionUtils, formatPercent, formatSymbol } from '@cowprotocol/common-utils'
+import { UI } from '@cowprotocol/ui'
 import { PartnerFee } from '@cowprotocol/widget-lib'
 import { Currency, CurrencyAmount, Token, TradeType } from '@uniswap/sdk-core'
+
+import styled from 'styled-components/macro'
 
 import TradeGp from 'legacy/state/swap/TradeGp'
 
@@ -12,14 +15,49 @@ import { RowFeeContent } from 'modules/swap/pure/Row/RowFeeContent'
 
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
-export const GASLESS_FEE_TOOLTIP_MSG =
-  'On CoW Swap you sign your order (hence no gas costs!). The fees are covering your gas costs already.'
+export const tooltipNetworkCosts = (props: { isPresign: boolean; ethFlow: boolean; nativeSymbol?: string }) => {
+  const { isPresign, ethFlow, nativeSymbol = 'a native currency' } = props
+  const requireGas = isPresign || ethFlow
 
-export const PRESIGN_FEE_TOOLTIP_MSG =
-  'These fees cover the gas costs for executing the order once it has been placed. However - since you are using a smart contract wallet - you will need to pay the gas for signing an on-chain tx in order to place it.'
+  return (
+    <>
+      This is the cost of settling your order on-chain
+      {!requireGas && ', including gas and any LP fees'}.
+      <br />
+      <br />
+      CoW Swap will try to lower this cost where possible.
+      <br />
+      <br />
+      {isPresign && 'Because you are using a smart contract wallet'}
+      {ethFlow && `Because you are selling ${nativeSymbol} (native currency)`}
+      {(isPresign || ethFlow) && ', you will pay a separate gas cost for signing the order placement on-chain.'}
+    </>
+  )
+}
 
-const getEthFlowFeeTooltipMsg = (native = 'a native currency') =>
-  `Trades on CoW Swap usually don’t require you to pay gas in ${native}. However, when selling ${native}, you do have to pay a small gas fee to cover the cost of wrapping your ${native}.`
+const TOOLTIP_PARTNER_FEE_FREE = `Unlike other exchanges, CoW Swap doesn’t charge a fee for trading!`
+
+export const PlusGas = styled.span`
+  color: var(${UI.COLOR_TEXT2});
+  font-size: 11px;
+  font-weight: 400;
+`
+
+const labelWithPlusGas = (label: string, plusGas?: boolean) => (
+  <>
+    {label}
+    {plusGas && <PlusGas>&nbsp;+ gas</PlusGas>}
+  </>
+)
+
+export const tooltipPartnerFee = (bps: number) => (
+  <>
+    This fee helps pay for maintenance & improvements to the swap experience.
+    <br />
+    <br />
+    The fee is {bps} BPS ({formatPercent(bpsToPercent(bps))}%), applied only if the trade is executed.
+  </>
+)
 
 // computes price breakdown for the trade
 export function computeTradePriceBreakdown(trade?: TradeGp | null): {
@@ -37,7 +75,7 @@ export function computeTradePriceBreakdown(trade?: TradeGp | null): {
   }
 }
 
-export interface RowFeeProps {
+export interface RowNetworkCostsProps {
   // Although fee is part of the trade, if the trade is invalid, then it will be undefined
   // Even for invalid trades, we want to display the fee, this is why there's another "fee" parameter
   trade?: TradeGp
@@ -57,38 +95,33 @@ function isValidNonZeroAmount(value: string): boolean {
   }
 }
 
-export function RowFee({ trade, feeAmount, feeInFiat, allowsOffchainSigning, noLabel }: RowFeeProps) {
+export function RowNetworkCosts({ trade, feeAmount, feeInFiat, allowsOffchainSigning, noLabel }: RowNetworkCostsProps) {
   const { realizedFee } = useMemo(() => computeTradePriceBreakdown(trade), [trade])
 
   const isEoaEthFlow = useIsEoaEthFlow()
   const native = useNativeCurrency()
 
-  const tooltip = useMemo(() => {
-    if (isEoaEthFlow) {
-      return getEthFlowFeeTooltipMsg(native.symbol)
-    } else if (allowsOffchainSigning) {
-      return GASLESS_FEE_TOOLTIP_MSG
-    } else {
-      return PRESIGN_FEE_TOOLTIP_MSG
-    }
-  }, [allowsOffchainSigning, isEoaEthFlow, native.symbol])
-
   // trades are null when there is a fee quote error e.g
   // so we can take both
+  const isPresign = !isEoaEthFlow && !allowsOffchainSigning
   const props = useMemo(() => {
-    const label = 'Est. fees'
+    const label = 'Network costs (est.)'
+    const tooltip = tooltipNetworkCosts({
+      ethFlow: isEoaEthFlow,
+      isPresign,
+      nativeSymbol: native.symbol,
+    })
     const displayFee = realizedFee || feeAmount
     const feeCurrencySymbol = displayFee?.currency.symbol || '-'
     // TODO: delegate formatting to the view layer
     const feeInFiatFormatted = formatFiatAmount(feeInFiat)
     const displayFeeFormatted = formatTokenAmount(displayFee)
-    const feeAmountWithCurrency = `${displayFeeFormatted} ${formatSymbol(feeCurrencySymbol)} ${
-      isEoaEthFlow ? ' + gas' : ''
-    }`
+    const feeAmountWithCurrency = `${displayFeeFormatted} ${formatSymbol(feeCurrencySymbol)}`
 
-    const feeToken = isValidNonZeroAmount(displayFeeFormatted)
-      ? '≈ ' + feeAmountWithCurrency
-      : `🎉 Free!${isEoaEthFlow ? ' (+ gas)' : ''}`
+    const isFree = !isValidNonZeroAmount(displayFeeFormatted)
+
+    const requireGas = isEoaEthFlow || isPresign
+    const feeToken = labelWithPlusGas(isFree ? 'FREE' : '≈ ' + feeAmountWithCurrency, requireGas)
     const feeUsd = isValidNonZeroAmount(feeInFiatFormatted) ? `(≈$${feeInFiatFormatted})` : ''
 
     const fullDisplayFee = FractionUtils.fractionLikeToExactString(displayFee) || '-'
@@ -97,18 +130,19 @@ export function RowFee({ trade, feeAmount, feeInFiat, allowsOffchainSigning, noL
       label,
       feeToken,
       feeUsd,
+      isFree,
       fullDisplayFee,
       feeCurrencySymbol,
       tooltip,
       noLabel,
     }
-  }, [feeAmount, feeInFiat, isEoaEthFlow, realizedFee, tooltip, noLabel])
+  }, [feeAmount, feeInFiat, isEoaEthFlow, realizedFee, native, noLabel, isPresign])
 
   return <RowFeeContent {...props} />
 }
 
 export interface PartnerRowPartnerFeeProps {
-  partnerFee: PartnerFee
+  partnerFee?: PartnerFee
   feeAmount?: CurrencyAmount<Currency>
   feeInFiat: CurrencyAmount<Token> | null
 }
@@ -122,17 +156,17 @@ export function RowPartnerFee({ partnerFee, feeAmount, feeInFiat }: PartnerRowPa
 
     const feeUsd = isValidNonZeroAmount(feeInFiatFormatted) ? feeInFiatFormatted && `(≈$${feeInFiatFormatted})` : ''
     const fullDisplayFee = FractionUtils.fractionLikeToExactString(feeAmount) || '-'
-    const { bps } = partnerFee
+    const { bps } = partnerFee || { bps: 0 }
+    const isFree = bps === 0
 
     return {
-      label: 'Partner fee',
-      feeToken: feeAmountWithCurrency,
+      label: isFree ? 'Fee' : 'Total fee',
+      feeToken: isFree ? 'FREE' : feeAmountWithCurrency,
       feeUsd,
       fullDisplayFee,
       feeCurrencySymbol,
-      tooltip: `Partner fee of ${bps} BPS (${formatPercent(
-        bpsToPercent(bps)
-      )}%). Applied only if the trade is executed.`,
+      isFree,
+      tooltip: isFree ? TOOLTIP_PARTNER_FEE_FREE : tooltipPartnerFee(bps),
     }
   }, [partnerFee, feeAmount, feeInFiat])
 

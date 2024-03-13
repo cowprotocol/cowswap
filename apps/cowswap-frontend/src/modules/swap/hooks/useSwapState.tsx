@@ -129,8 +129,7 @@ export function useHighFeeWarning(trade?: TradeGp) {
 
     const totalFeeAmount = partnerFeeAmount ? feeAsCurrency.add(partnerFeeAmount) : feeAsCurrency
     const targetAmount = isExactInput ? outputAmountWithoutFee : inputAmountAfterFees
-    const feePercentageRaw = totalFeeAmount.divide(targetAmount).asFraction
-    const feePercentage = isExactInput ? feePercentageRaw.multiply(100) : feePercentageRaw.subtract(100).multiply(-1)
+    const feePercentage = totalFeeAmount.divide(targetAmount).multiply(100).asFraction
 
     return [feePercentage.greaterThan(FEE_SIZE_THRESHOLD), feePercentage]
   }, [trade])

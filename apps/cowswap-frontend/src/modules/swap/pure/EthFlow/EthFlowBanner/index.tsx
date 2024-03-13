@@ -58,7 +58,7 @@ export function EthFlowBannerContent(props: EthFlowBannerContentProps) {
               This way, you&apos;ll take advantage of:
             </p>
             <ul>
-              <li>Lower overall fees</li>
+              <li>Lower overall network costs</li>
               <li>
                 Lower default slippage (instead of {MINIMUM_ETH_FLOW_SLIPPAGE.toSignificant(PERCENTAGE_PRECISION)}%
                 minimum)
