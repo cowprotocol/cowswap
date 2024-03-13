@@ -41,8 +41,6 @@ const PRE_MAKER: HookDappIframe = {
 //   url: FAKE_URL,
 // }
 
-const PRE_HOOK_DAAPS_ALL = [PRE_CURVE, PRE_NFT, PRE_MAKER, PRE_CLAIM_GNO]
-
 const POST_BRIDGE: HookDappIframe = {
   name: 'Bridge Tokens',
   description: 'Bridge tokes to another layer',
@@ -64,8 +62,8 @@ const POST_MAKER: HookDappIframe = {
 const POST_HOOK_DAAPS_ALL = [POST_BRIDGE, POST_MAKER]
 
 export const PRE_HOOK_REGISTRY: Record<SupportedChainId, HookDapp[]> = {
-  [SupportedChainId.MAINNET]: PRE_HOOK_DAAPS_ALL,
-  [SupportedChainId.GNOSIS_CHAIN]: PRE_HOOK_DAAPS_ALL,
+  [SupportedChainId.MAINNET]: [PRE_CURVE, PRE_NFT, PRE_MAKER],
+  [SupportedChainId.GNOSIS_CHAIN]: [PRE_CLAIM_GNO, PRE_CURVE, PRE_NFT, PRE_MAKER],
   [SupportedChainId.SEPOLIA]: [PRE_NFT],
 }
 
