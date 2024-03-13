@@ -1,6 +1,6 @@
 import { ChangeEvent, useContext, useEffect, useState } from 'react'
 
-import { CowEventListeners, CowEvents, ToastMessageType, BaseToastMessagePayload } from '@cowprotocol/events'
+import { CowEventListeners } from '@cowprotocol/events'
 import { TradeType } from '@cowprotocol/widget-lib'
 import { CowSwapWidget } from '@cowprotocol/widget-react'
 
@@ -22,7 +22,7 @@ import ListItemText from '@mui/material/ListItemText'
 import Typography from '@mui/material/Typography'
 import { useAccount, useNetwork } from 'wagmi'
 
-import { DEFAULT_TOKEN_LISTS, TRADE_MODES } from './consts'
+import { COW_LISTENERS, DEFAULT_TOKEN_LISTS, TRADE_MODES } from './consts'
 import { CurrencyInputControl } from './controls/CurrencyInputControl'
 import { CurrentTradeTypeControl } from './controls/CurrentTradeTypeControl'
 import { NetworkControl, NetworkOption, NetworkOptions } from './controls/NetworkControl'
@@ -35,6 +35,7 @@ import { useColorPaletteManager } from './hooks/useColorPaletteManager'
 import { useEmbedDialogState } from './hooks/useEmbedDialogState'
 import { useProvider } from './hooks/useProvider'
 import { useSyncWidgetNetwork } from './hooks/useSyncWidgetNetwork'
+import { useToastsManager } from './hooks/useToastsManager'
 import { useWidgetParams } from './hooks/useWidgetParamsAndSettings'
 import { ContentStyled, DrawerStyled, WalletConnectionWrapper, WrapperStyled } from './styled'
 import { ConfiguratorState, TokenListItem } from './types'
@@ -53,42 +54,6 @@ const DEFAULT_STATE = {
   buyAmount: 0,
 }
 
-const COW_LISTENERS: CowEventListeners = [
-  {
-    event: CowEvents.ON_TOAST_MESSAGE,
-    handler: (event) => {
-      // You cn implement a more complex way to handle toast messages
-      switch (event.messageType) {
-        case ToastMessageType.SWAP_ETH_FLOW_SENT_TX:
-          console.info('[configurator:ON_TOAST_MESSAGE:complex] 🍞 New eth flow order. Tx:', event.data.tx)
-          break
-        case ToastMessageType.SWAP_POSTED_API:
-          console.info('[configurator:ON_TOAST_MESSAGE:complex] 🍞 Posted order', event.data.orderUid)
-          break
-        // ... and so on
-        default:
-          console.info('[configurator:ON_TOAST_MESSAGE:complex] 🍞 Default', event.message, event.data)
-      }
-    },
-  },
-
-  {
-    event: CowEvents.ON_POSTED_ORDER,
-    handler: (event) => console.log('[configurator:ON_POSTED_ORDER] 💌 Posted order:', event.orderUid),
-  },
-
-  {
-    event: CowEvents.ON_CANCELLED_ORDER,
-    handler: (event) =>
-      console.log(`[configurator:ON_CANCELLED_ORDER] ❌ Cancelled order ${event.orderUid}. Reason: ${event.reason}`),
-  },
-
-  {
-    event: CowEvents.ON_EXECUTED_ORDER,
-    handler: (event) => console.log(`[configurator:ON_EXECUTED_ORDER] ✅ Executed order ${event.orderUid}`),
-  },
-]
-
 const UTM_PARAMS = 'utm_content=cow-widget-configurator&utm_medium=web&utm_source=widget.cow.fi'
 
 export type WidgetMode = 'dapp' | 'standalone'
@@ -99,14 +64,9 @@ export function Configurator({ title }: { title: string }) {
 
   const [widgetMode, setWidgetMode] = useState<WidgetMode>('dapp')
   const standaloneMode = widgetMode === 'standalone'
-  const [disableToastMessages, setDisableToastMessages] = useState<boolean>(false)
 
   const selectWidgetMode = (event: ChangeEvent<HTMLInputElement>) => {
     setWidgetMode(event.target.value as WidgetMode)
-  }
-
-  const selectDisableToastMessages = (event: ChangeEvent<HTMLInputElement>) => {
-    setDisableToastMessages(event.target.value === 'true')
   }
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(true)
@@ -142,6 +102,9 @@ export function Configurator({ title }: { title: string }) {
   const { colorPalette, defaultPalette } = paletteManager
 
   const { dialogOpen, handleDialogClose, handleDialogOpen } = useEmbedDialogState()
+
+  const { closeToast, toasts, selectDisableToastMessages, disableToastMessages } = useToastsManager(setListeners)
+  const firstToast = toasts?.[0]
 
   const LINKS = [
     { icon: <CodeIcon />, label: 'View embed code', onClick: () => handleDialogOpen() },
@@ -194,40 +157,6 @@ export function Configurator({ title }: { title: string }) {
       connectWalletToConfiguratorGA()
     }
   }, [isConnected])
-
-  const [toasts, setToasts] = useState<string[]>([])
-  const toast = toasts.length > 0 ? toasts[0] : undefined
-
-  const openToast = (message: string) => {
-    setToasts((t) => [...t, message])
-  }
-
-  const handleClose = (event: React.SyntheticEvent | Event, reason?: string) => {
-    if (reason === 'clickaway') {
-      return
-    }
-
-    setToasts((t) => t.slice(1))
-  }
-
-  useEffect(() => {
-    // Update listeners
-    const newListeners = [...COW_LISTENERS]
-    if (disableToastMessages) {
-      openToast('Toast messages are enabled. Using Dapp mode toasts.')
-      newListeners.push({
-        event: CowEvents.ON_TOAST_MESSAGE,
-        handler: (event: BaseToastMessagePayload<ToastMessageType>) => {
-          // You can provide a simplistic way to handle toast messages (use the "message" to show it in your app)
-          openToast(event.message)
-        },
-      })
-    } else {
-      openToast('Disable, toast messages. Self-contained widget toasts.')
-    }
-
-    setListeners(newListeners)
-  }, [disableToastMessages])
 
   return (
     <Box sx={WrapperStyled}>
@@ -365,12 +294,12 @@ export function Configurator({ title }: { title: string }) {
         View Embed Code
       </Fab>
       <Snackbar
-        open={toasts.length > 0}
-        autoHideDuration={6000}
-        onClose={handleClose}
-        message={toast}
+        open={!!firstToast}
+        autoHideDuration={6_000}
+        onClose={closeToast}
+        message={firstToast}
         action={
-          <IconButton size="small" aria-label="close" color="inherit" onClick={handleClose}>
+          <IconButton size="small" aria-label="close" color="inherit" onClick={closeToast}>
             <CloseIcon fontSize="small" />
           </IconButton>
         }
