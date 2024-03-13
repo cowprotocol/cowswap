@@ -52,14 +52,14 @@ const Wrapper = styled.div<{
   }
 `
 
-const Heading = styled.h2`
+const Heading = styled.h2<{ modalMode: boolean }>`
   display: flex;
   flex-flow: row wrap;
   justify-content: space-between;
   width: 100%;
   height: auto;
   margin: 0;
-  padding: 16px 20px 3px;
+  padding: ${({ modalMode }) => (modalMode ? '16px 20px 3px' : '16px 20px 3px 40px')};
   font-size: var(${UI.FONT_SIZE_MEDIUM});
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -87,7 +87,7 @@ const IconX = styled.div`
 
 const BackButtonStyled = styled(BackButton)`
   position: absolute;
-  top: 18px;
+  top: 14px;
   left: 10px;
 `
 
@@ -170,7 +170,7 @@ export function NewModal({ maxWidth = 450, minHeight = 350, modalMode, title, ch
       <ModalInner>
         {!modalMode && <BackButtonStyled onClick={onDismissCallback} />}
         {title && (
-          <Heading>
+          <Heading modalMode={!!modalMode}>
             {title}{' '}
             {modalMode && (
               <IconX onClick={onDismissCallback}>

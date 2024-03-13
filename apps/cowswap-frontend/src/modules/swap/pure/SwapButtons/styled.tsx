@@ -23,7 +23,7 @@ export function FeesExceedFromAmountMessage() {
     <RowBetween>
       <ButtonError buttonSize={ButtonSize.BIG} error id="swap-button" disabled>
         <Text fontSize={20} fontWeight={500}>
-          Fees exceed from amount
+          Costs exceed from amount
         </Text>
       </ButtonError>
     </RowBetween>

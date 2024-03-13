@@ -98,7 +98,7 @@ export function TwapConfirmModal() {
             isInvertedState={isInvertedState}
             slippage={slippage}
             additionalProps={{
-              priceLabel: 'Rate (incl. fee)',
+              priceLabel: 'Rate (incl. costs)',
               slippageLabel: 'Price protection',
               slippageTooltip: (
                 <>

@@ -51,8 +51,6 @@ export interface EthereumProvider {
   enable(): Promise<void>
 }
 
-export type CowSwapWidgetEnv = 'local' | 'prod' | 'dev' | 'pr'
-
 export type CowSwapTheme = 'dark' | 'light'
 
 /**
@@ -139,10 +137,15 @@ export interface CowSwapWidgetParams {
    * Swap, Limit or Advanced (Twap).
    */
   tradeType?: TradeType
+
   /**
-   * The environment of the widget. Default: prod
+   * The base url of the widget implementation
+   *
+   * The parameter can have the URL directly, or an object with the environment property,
+   *
+   * The base URL will default to the production environment if not specified, so it will use https://swap.cow.fi by default.
    */
-  env?: CowSwapWidgetEnv
+  baseUrl?: string
 
   /**
    * Sell token, and optionally the amount.
@@ -190,9 +193,13 @@ export interface CowSwapWidgetParams {
   hideNetworkSelector?: boolean
 
   /**
-   * Hides the connect buttons, and the connected account button. Defaults to false.
+   * Defines the widget mode.
+   *  - `true` (standalone mode): The widget is standalone, so it will use its own Ethereum provider. The user can connect from within the widget.
+   *  - `false` (dapp mode): The widget is embedded in a dapp which is responsible of providing the Ethereum provider. Therefore, there won't be a connect button in the widget as this should happen in the host app.
+   *
+   * Defaults to standalone.
    */
-  hideConnectButton?: boolean
+  standaloneMode?: boolean
 
   /**
    * The theme of the widget UI.
