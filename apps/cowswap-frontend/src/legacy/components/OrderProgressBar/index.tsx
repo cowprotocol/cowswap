@@ -19,6 +19,7 @@ import { ActivityDerivedState } from 'modules/account/containers/Transaction'
 
 import { getOrderStatus, OrderStatus } from 'api/cowProtocol/api'
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
+import { Stepper, StepProps } from 'common/pure/Stepper'
 
 import { ProgressBarWrapper } from './styled'
 
@@ -98,6 +99,30 @@ const ProgressImage = styled.img`
   width: 100%;
 `
 
+function CountDown() {
+  const [countdown, setCountdown] = useState(15)
+
+  useEffect(() => {
+    const timer = setInterval(() => setCountdown((c) => (c > 1 ? c - 1 : 0)), ms`1s`)
+
+    return () => clearInterval(timer)
+  }, [])
+
+  return (
+    <div>
+      <span>{countdown}</span>
+      <p>The auction has started! Solvers are competing to find the best solution for you...</p>
+    </div>
+  )
+}
+
+const steps: StepProps[] = [
+  { stepState: 'open', stepNumber: 1, label: 'placing' },
+  { stepState: 'open', stepNumber: 2, label: 'solving' },
+  { stepState: 'open', stepNumber: 3, label: 'executing' },
+  { stepState: 'open', stepNumber: 4, label: 'done' },
+]
+
 export function OrderProgressBar(props: OrderProgressBarProps) {
   const { activityDerivedState, chainId, hideWhenFinished = false, hash } = props
   const { order, isConfirmed, isUnfillable = false } = activityDerivedState
@@ -172,47 +197,55 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
     return () => clearTimeout(timeout)
   }, [isConfirmed])
 
-  // useEffect(() => {
-  //   if (isConfirmed) {
-  //     setExecutionState('confirmed')
-  //   } else if (isUnfillable) {
-  //     setExecutionState('unfillable')
-  //   } else if (elapsedSeconds <= COW_STATE_SECONDS) {
-  //     setExecutionState('cow')
-  //   } else if (elapsedSeconds <= EXPECTED_EXECUTION_TIME[chainId]) {
-  //     setExecutionState('amm')
-  //   } else {
-  //     setExecutionState('delayed')
-  //   }
-  // }, [elapsedSeconds, isConfirmed, isUnfillable, chainId])
-
   const progressBar = () => {
     switch (newState) {
-      case 'initial':
+      case 'initial': {
+        const localSteps = [...steps]
+        localSteps[0].stepState = 'loading'
         return (
           <div>
             <ProgressImage src={progressBarStep1} alt="" />
             <p>Your order has been submitted and will be included in the next solver auction.</p>
+            <Stepper steps={localSteps} />
           </div>
         )
-      case 'solving':
+      }
+      case 'solving': {
+        const localSteps = [...steps]
+        localSteps[0].stepState = 'finished'
+        localSteps[1].stepState = 'loading'
         return (
-          <div>
-            <span>Imagine a count down here...</span>
-            <p>The auction has started! Solvers are competing to find the best solution for you...</p>
-          </div>
+          <>
+            <CountDown />
+            <Stepper steps={localSteps} />
+          </>
         )
-      case 'executing':
+      }
+      case 'executing': {
+        const localSteps = [...steps]
+        localSteps[0].stepState = 'finished'
+        localSteps[1].stepState = 'finished'
+        localSteps[2].stepState = 'loading'
         return (
           <div>
             <ProgressImage src={progressBarStep3} alt="" />
             <p>
-              {solverCompetition?.length} solvers joined the competition! The winner is submitting your order
-              on-chain...
+              <strong>
+                {solverCompetition?.length} solver{solverCompetition && solverCompetition?.length > 1 && 's'} joined the
+                competition!
+              </strong>
             </p>
+            <p>The winner is submitting your order on-chain...</p>
+            <Stepper steps={localSteps} />
           </div>
         )
-      case 'finished':
+      }
+      case 'finished': {
+        const localSteps = [...steps]
+        localSteps[0].stepState = 'finished'
+        localSteps[1].stepState = 'finished'
+        localSteps[2].stepState = 'finished'
+        localSteps[3].stepState = 'finished'
         return (
           <div>
             <span>You received {solverCompetition && solverCompetition[0].buyAmount}!</span>
@@ -233,29 +266,44 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
                 {solverCompetition[1].solver}!
               </p>
             )}
+            <Stepper steps={localSteps} />
           </div>
         )
-      case 'unfillable':
+      }
+      case 'unfillable': {
+        const localSteps = [...steps]
+        localSteps[0].stepState = 'error'
         return (
           <div>
             <ProgressImage src={progressBarStep1a} alt="" />
             <p>Your order’s price is currently out of market. You can wait or cancel the order.</p>
+            <Stepper steps={localSteps} />
           </div>
         )
-      case 'delayed':
+      }
+      case 'delayed': {
+        const localSteps = [...steps]
+        localSteps[0].stepState = 'finished'
+        localSteps[1].stepState = 'loading'
         return (
           <div>
             <ProgressImage src={progressBarStep2a} alt="" />
             <p>This is taking longer than expected! Solvers are still searching...</p>
+            <Stepper steps={localSteps} />
           </div>
         )
-      case 'submissionFailed':
+      }
+      case 'submissionFailed': {
+        const localSteps = [...steps]
+        localSteps[0].stepState = 'loading'
         return (
           <div>
             <ProgressImage src={progressBarStep2b} alt="" />
             <p>The order could not be settled on-chain. Solvers are competing to find a new solution...</p>
+            <Stepper steps={localSteps} />
           </div>
         )
+      }
       default:
         return null
     }
