@@ -1,7 +1,6 @@
 import { useCallback, useMemo, useRef } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { BannerOrientation, ExternalLink, InlineBanner, LINK_GUIDE_ADD_CUSTOM_TOKEN } from '@cowprotocol/ui'
 
 import { useVirtualizer } from '@tanstack/react-virtual'
 import ms from 'ms.macro'
@@ -64,19 +63,6 @@ export function TokensVirtualList(props: TokensVirtualListProps) {
     <CommonListContainer id="tokens-list" ref={parentRef} onScroll={onScroll}>
       <styledEl.TokensInner ref={wrapperRef} style={{ height: virtualizer.getTotalSize() }}>
         <styledEl.TokensScroller style={{ transform: `translateY(${items[0]?.start ?? 0}px)` }}>
-          <InlineBanner
-            margin={'10px'}
-            width="auto"
-            orientation={BannerOrientation.Horizontal}
-            bannerType={'information'}
-          >
-            <p>
-              Can't find your token on the list?{' '}
-              <ExternalLink href={LINK_GUIDE_ADD_CUSTOM_TOKEN}>Read our guide</ExternalLink> on how to add custom
-              tokens.
-            </p>
-          </InlineBanner>
-
           {items.map((virtualRow) => {
             const token = sortedTokens[virtualRow.index]
             const addressLowerCase = token.address.toLowerCase()
