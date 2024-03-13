@@ -1,10 +1,17 @@
 import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
+import { SBCDepositContract, SBCDepositContractAbi } from '@cowprotocol/abis'
+import { useContract } from '@cowprotocol/common-hooks'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { useWalletInfo } from '@cowprotocol/wallet'
+
 import { v4 as uuidv4 } from 'uuid'
 
 import { hooksDetailsAtom } from '../state/hookDetailsAtom'
 import { CowHookCreation, CowHookDetails } from '../types'
+
+export const SBC_DEPOSIT_CONTRACT_ADDRESS = '0x0B98057eA310F4d31F2a452B414647007d1645d9'
 
 export function useAddHook() {
   const updateHooks = useSetAtom(hooksDetailsAtom)
@@ -47,5 +54,14 @@ export function useRemoveHook() {
       })
     },
     [updateHooks]
+  )
+}
+
+export function useSBCDepositContract(): SBCDepositContract | null {
+  const { chainId } = useWalletInfo()
+  return useContract<SBCDepositContract>(
+    chainId === SupportedChainId.GNOSIS_CHAIN ? SBC_DEPOSIT_CONTRACT_ADDRESS : undefined,
+    SBCDepositContractAbi,
+    true
   )
 }
