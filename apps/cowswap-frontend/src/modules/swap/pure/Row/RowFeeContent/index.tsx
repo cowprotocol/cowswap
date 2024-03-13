@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import { RowFixed } from '@cowprotocol/ui'
 import { MouseoverTooltipContent } from '@cowprotocol/ui'
 
@@ -9,17 +11,28 @@ import { FiatRate } from 'common/pure/RateInfo'
 
 export interface RowFeeContentProps {
   label: string
-  tooltip: string
-  feeToken: string
+  tooltip: ReactNode
+  feeToken: ReactNode
   feeUsd?: string
   fullDisplayFee: string
   feeCurrencySymbol: string
   styleProps?: RowStyleProps
   noLabel?: boolean
+  isFree: boolean
 }
 
 export function RowFeeContent(props: RowFeeContentProps) {
-  const { label, tooltip, feeToken, feeUsd, fullDisplayFee, feeCurrencySymbol, noLabel, styleProps = {} } = props
+  const {
+    label,
+    tooltip,
+    isFree,
+    feeToken,
+    feeUsd,
+    fullDisplayFee,
+    feeCurrencySymbol,
+    noLabel,
+    styleProps = {},
+  } = props
 
   return (
     <StyledRowBetween {...styleProps}>
@@ -32,7 +45,7 @@ export function RowFeeContent(props: RowFeeContentProps) {
         </RowFixed>
       )}
 
-      <TextWrapper title={`${fullDisplayFee} ${feeCurrencySymbol}`}>
+      <TextWrapper title={`${fullDisplayFee} ${feeCurrencySymbol}`} success={isFree}>
         {feeToken} {feeUsd && <FiatRate>{feeUsd}</FiatRate>}
       </TextWrapper>
     </StyledRowBetween>
