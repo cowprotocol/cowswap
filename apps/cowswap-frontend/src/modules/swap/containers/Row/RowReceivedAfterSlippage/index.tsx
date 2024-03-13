@@ -42,9 +42,9 @@ export function RowReceivedAfterSlippage({
         {children || (
           <TextWrapper>
             {trade.tradeType === TradeType.EXACT_INPUT ? (
-              <Trans>Minimum received (incl. fee)</Trans>
+              <Trans>Minimum received (incl. costs)</Trans>
             ) : (
-              <Trans>Maximum sent (incl. fee)</Trans>
+              <Trans>Maximum sent (incl. costs)</Trans>
             )}
           </TextWrapper>
         )}

@@ -125,8 +125,8 @@ export default function TokenFaq() {
               on-chain cancellation. For more information, check the Smart Contract implementation.
             </p>
 
-            <h3 id="why-does-the-ui-dapp-have-a-warning-fees-exceed-from-amount">
-              Why does the UI dapp have a warning &ldquo;Fees exceed From amount&rdquo;?
+            <h3 id="why-does-the-ui-dapp-have-a-warning-costs-exceed-from-amount">
+              Why does the UI dapp have a warning &ldquo;Costs exceed From amount&rdquo;?
             </h3>
 
             <p>

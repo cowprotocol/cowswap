@@ -8,7 +8,7 @@ import { BoxProps } from 'rebass'
 
 import TradeGp from 'legacy/state/swap/TradeGp'
 
-import { RowFee, RowPartnerFee } from 'modules/swap/containers/Row/RowFee'
+import { RowNetworkCosts, RowPartnerFee } from 'modules/swap/containers/Row/RowFee'
 import { RowReceivedAfterSlippage } from 'modules/swap/containers/Row/RowReceivedAfterSlippage'
 import { RowSlippage } from 'modules/swap/containers/Row/RowSlippage'
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
@@ -52,16 +52,22 @@ export function TradeBasicDetails(props: TradeBasicDetailsProp) {
 
   return (
     <LowerSectionWrapper {...boxProps}>
-      {/* Fees */}
-      <RowFee trade={trade} allowsOffchainSigning={allowsOffchainSigning} feeAmount={fee} feeInFiat={feeFiatValue} />
-
-      {trade?.partnerFeeAmount && trade.partnerFee && (
+      {/* Fee (partnerFee) */}
+      {trade && (
         <RowPartnerFee
           partnerFee={trade.partnerFee}
           feeAmount={trade.partnerFeeAmount}
           feeInFiat={partnerFeeFiatValue}
         />
       )}
+
+      {/* Network costs */}
+      <RowNetworkCosts
+        trade={trade}
+        allowsOffchainSigning={allowsOffchainSigning}
+        feeAmount={fee}
+        feeInFiat={feeFiatValue}
+      />
 
       {isReviewSwap && (
         <>
