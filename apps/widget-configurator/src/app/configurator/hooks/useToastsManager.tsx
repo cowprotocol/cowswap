@@ -6,9 +6,9 @@ import { COW_LISTENERS } from '../consts'
 
 export function useToastsManager(setListeners: (listeners: CowEventListeners) => void) {
   const [disableToastMessages, setDisableToastMessages] = useState<boolean>(false)
-  const [toasts, setToasts] = useState<string[]>([])
+  const [toasts, setToasts] = useState<(JSX.Element | string)[]>([])
 
-  const openToast = (message: string) => {
+  const openToast = (message: JSX.Element | string) => {
     setToasts((t) => [...t, message])
   }
 
@@ -37,7 +37,14 @@ export function useToastsManager(setListeners: (listeners: CowEventListeners) =>
         event: CowEvents.ON_TOAST_MESSAGE,
         handler: (event: BaseToastMessagePayload<ToastMessageType>) => {
           // You can provide a simplistic way to handle toast messages (use the "message" to show it in your app)
-          openToast(event.message)
+          const prettyMessage = (
+            <>
+              {event.message.split('\n').map((line, index) => (
+                <div key={index}>{line}</div>
+              ))}
+            </>
+          )
+          openToast(prettyMessage)
         },
       })
     } else {
