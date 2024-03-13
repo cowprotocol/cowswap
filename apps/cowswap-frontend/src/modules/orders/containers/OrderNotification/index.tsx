@@ -1,15 +1,11 @@
 import { useCallback, useMemo } from 'react'
 
-import { isCowOrder, shortenOrderId } from '@cowprotocol/common-utils'
+import { shortenOrderId } from '@cowprotocol/common-utils'
 import { EnrichedOrder, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ToastMessageType } from '@cowprotocol/events'
 import { useTokensByAddressMap } from '@cowprotocol/tokens'
 import { TokenInfo, UiOrderType } from '@cowprotocol/types'
-import { useIsSafeWallet } from '@cowprotocol/wallet'
 
-import styled from 'styled-components/macro'
-
-import { HashType } from 'legacy/state/enhancedTransactions/reducer'
 import { useOrder } from 'legacy/state/orders/hooks'
 
 import {
@@ -23,16 +19,6 @@ import {
 import { OrderSummary } from '../../pure/OrderSummary'
 import { ReceiverInfo } from '../../pure/ReceiverInfo'
 import { TransactionContentWithLink } from '../TransactionContentWithLink'
-
-const OrderLinkWrapper = styled.div`
-  margin-top: 15px;
-  text-decoration: underline;
-
-  &:hover,
-  &:hover a {
-    text-decoration: none !important;
-  }
-`
 
 export interface BaseOrderNotificationProps {
   title: JSX.Element | string
@@ -48,7 +34,6 @@ export interface BaseOrderNotificationProps {
 export function OrderNotification(props: BaseOrderNotificationProps) {
   const { title, orderUid, orderType, transactionHash, chainId, messageType, children, orderInfo } = props
 
-  const isSafeWallet = useIsSafeWallet()
   const allTokens = useTokensByAddressMap()
 
   const orderFromStore = useOrder({ chainId, id: orderInfo ? undefined : orderUid })
@@ -78,18 +63,6 @@ export function OrderNotification(props: BaseOrderNotificationProps) {
   )
 
   if (!order) return
-
-  const tx = {
-    hash: transactionHash || orderUid,
-    hashType:
-      isSafeWallet && transactionHash && !isCowOrder('transaction', transactionHash)
-        ? HashType.GNOSIS_SAFE_TX
-        : HashType.ETHEREUM_TX,
-    safeTransaction: {
-      safeTxHash: transactionHash || '',
-      safe: order.owner,
-    },
-  }
 
   return (
     <TransactionContentWithLink transactionHash={transactionHash} orderUid={orderUid}>
