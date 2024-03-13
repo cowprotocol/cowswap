@@ -33,8 +33,10 @@ import {
 } from 'legacy/hooks/useRecentActivity'
 
 import Activity from 'modules/account/containers/Transaction'
+import { useInjectedWidgetParams } from 'modules/injectedWidget'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
+import { useUnsupportedNetworksText } from 'common/hooks/useUnsupportedNetworksText'
 
 import { AccountIcon } from './AccountIcon'
 import {
@@ -58,7 +60,6 @@ import {
 } from './styled'
 import { SurplusCard } from './SurplusCard'
 
-import { useUnsupportedNetworksText } from '../../../../common/hooks/useUnsupportedNetworksText'
 import { useDisconnectWallet } from '../../hooks/useDisconnectWallet'
 import { CreationDateText } from '../Transaction/styled'
 
@@ -100,6 +101,7 @@ export function AccountDetails({
   const walletDetails = useWalletDetails()
   const disconnectWallet = useDisconnectWallet()
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
+  const { standaloneMode } = useInjectedWidgetParams()
 
   const explorerOrdersLink = account && getExplorerAddressLink(chainId, account)
   const explorerLabel = account ? getExplorerLabel(chainId, 'address', account) : undefined
@@ -188,15 +190,18 @@ export function AccountDetails({
                     </AddressLink>
                   )}
 
-                  {connection.type !== ConnectionType.GNOSIS_SAFE && (
-                    <WalletAction onClick={toggleWalletModal}>
-                      <Trans>Change Wallet</Trans>
-                    </WalletAction>
+                  {standaloneMode !== false && (
+                    <>
+                      {connection.type !== ConnectionType.GNOSIS_SAFE && (
+                        <WalletAction onClick={toggleWalletModal}>
+                          <Trans>Change Wallet</Trans>
+                        </WalletAction>
+                      )}
+                      <WalletAction onClick={handleDisconnectClick}>
+                        <Trans>Disconnect</Trans>
+                      </WalletAction>
+                    </>
                   )}
-
-                  <WalletAction onClick={handleDisconnectClick}>
-                    <Trans>Disconnect</Trans>
-                  </WalletAction>
                 </>
               )}
             </WalletSecondaryActions>

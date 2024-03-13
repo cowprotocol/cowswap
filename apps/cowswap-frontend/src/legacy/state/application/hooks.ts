@@ -6,8 +6,6 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { createAction } from '@reduxjs/toolkit'
 
-import { useInjectedWidgetParams } from 'modules/injectedWidget'
-
 import { addPopup, ApplicationModal, PopupContent, removePopup } from './reducer'
 
 import { useAppDispatch, useAppSelector } from '../hooks'
@@ -32,17 +30,12 @@ export function useCloseModal(_modal: ApplicationModal): Command {
 }
 export function useToggleWalletModal(): Command | null {
   const { active } = useWalletInfo()
-  const { standaloneMode } = useInjectedWidgetParams()
 
   const toggleWalletModal = useToggleModal(ApplicationModal.WALLET)
 
   return useMemo(() => {
-    if (!active || standaloneMode === false) {
-      return null
-    }
-
-    return toggleWalletModal
-  }, [standaloneMode, active, toggleWalletModal])
+    return active ? toggleWalletModal : null
+  }, [active, toggleWalletModal])
 }
 
 export function useToggleSettingsMenu(): Command {

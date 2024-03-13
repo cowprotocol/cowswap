@@ -94,7 +94,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
   const shouldShowMyOrdersButton =
     isUpToLarge &&
     !alternativeOrderModalVisible &&
-    ((isSwapMode && isConnectedSwapMode) ||
+    ((isConnectedSwapMode && injectedWidgetParams.standaloneMode !== true) ||
       (isLimitOrderMode && isLimitOrdersUnlocked) ||
       (isAdvancedMode && isAdvancedOrdersUnlocked))
 
