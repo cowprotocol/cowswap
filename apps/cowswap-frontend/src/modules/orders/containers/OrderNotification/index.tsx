@@ -9,7 +9,6 @@ import { useIsSafeWallet } from '@cowprotocol/wallet'
 
 import styled from 'styled-components/macro'
 
-import { EnhancedTransactionLink } from 'legacy/components/EnhancedTransactionLink'
 import { HashType } from 'legacy/state/enhancedTransactions/reducer'
 import { useOrder } from 'legacy/state/orders/hooks'
 
@@ -23,6 +22,7 @@ import {
 
 import { OrderSummary } from '../../pure/OrderSummary'
 import { ReceiverInfo } from '../../pure/ReceiverInfo'
+import { TransactionContentWithLink } from '../TransactionContentWithLink'
 
 const OrderLinkWrapper = styled.div`
   margin-top: 15px;
@@ -92,7 +92,7 @@ export function OrderNotification(props: BaseOrderNotificationProps) {
   }
 
   return (
-    <>
+    <TransactionContentWithLink transactionHash={transactionHash} orderUid={orderUid}>
       <div ref={ref}>
         <strong>{title}</strong>
         <br />
@@ -110,9 +110,6 @@ export function OrderNotification(props: BaseOrderNotificationProps) {
         )}
         <ReceiverInfo receiver={order.receiver} owner={order.owner} />
       </div>
-      <OrderLinkWrapper>
-        <EnhancedTransactionLink chainId={chainId} tx={tx} />
-      </OrderLinkWrapper>
-    </>
+    </TransactionContentWithLink>
   )
 }
