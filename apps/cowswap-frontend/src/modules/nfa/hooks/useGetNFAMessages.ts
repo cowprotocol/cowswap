@@ -28,5 +28,5 @@ export function useGetNFAMessages() {
     if (!data) return []
 
     return analyzeNfaSources(data, chainId)
-  }, [data])
+  }, [data, chainId])
 }

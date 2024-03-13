@@ -259,7 +259,7 @@ export function SwapWidget() {
 
   const [isNfaEnabled, setNfaEnabled] = useAtom(nfaStateAtom)
 
-  const toggleNfa = useCallback(() => setNfaEnabled((prev) => !prev), [])
+  const toggleNfa = useCallback(() => setNfaEnabled((prev) => !prev), [setNfaEnabled])
 
   const slots = {
     settingsWidget: (

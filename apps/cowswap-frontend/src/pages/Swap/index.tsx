@@ -22,12 +22,11 @@ import { nfaStateAtom } from '../../modules/swap/state/nfaState'
 export function SwapPage() {
   const params = useParams()
   const slippage = useSwapSlippage()
+  const [isNfaEnabled] = useAtom(nfaStateAtom)
 
   if (!params.chainId) {
     return <SwapPageRedirect />
   }
-
-  const [isNfaEnabled] = useAtom(nfaStateAtom)
 
   return (
     <>
