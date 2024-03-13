@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.29.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.28.0...explorer-v2.29.0) (2024-03-12)
+
+
+### Features
+
+* Introduce partner fee ([#3913](https://github.com/cowprotocol/cowswap/issues/3913)) ([dbae7ed](https://github.com/cowprotocol/cowswap/commit/dbae7ed38b690b538d9fbd50e13d04bb199e3437))
+
+
+### Bug Fixes
+
+* **explorer:** do not show tokens table on gchain ([#3948](https://github.com/cowprotocol/cowswap/issues/3948)) ([712e6db](https://github.com/cowprotocol/cowswap/commit/712e6dbeee799191102e4fb27bc43c72f19db1ed))
+
 ## [2.28.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.27.0...explorer-v2.28.0) (2024-02-01)
 
 
