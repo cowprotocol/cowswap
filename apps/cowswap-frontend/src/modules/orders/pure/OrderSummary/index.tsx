@@ -12,8 +12,8 @@ import { BuyForAtMostTemplate, SellForAtLeastTemplate } from './summaryTemplates
 interface OrderSummaryProps {
   inputToken: TokenInfo
   outputToken: TokenInfo
-  sellAmount: bigint
-  buyAmount: bigint
+  sellAmount: string
+  buyAmount: string
   kind: OrderKind
   children?: JSX.Element | string
   customTemplate?: typeof SellForAtLeastTemplate
@@ -24,11 +24,11 @@ export function OrderSummary(props: OrderSummaryProps) {
   const isSell = isSellOrder(kind)
 
   const inputAmount = useMemo(() => {
-    return CurrencyAmount.fromRawAmount(TokenWithLogo.fromToken(inputToken), sellAmount.toString())
+    return CurrencyAmount.fromRawAmount(TokenWithLogo.fromToken(inputToken), sellAmount)
   }, [inputToken, sellAmount])
 
   const outputAmount = useMemo(() => {
-    return CurrencyAmount.fromRawAmount(TokenWithLogo.fromToken(outputToken), buyAmount.toString())
+    return CurrencyAmount.fromRawAmount(TokenWithLogo.fromToken(outputToken), buyAmount)
   }, [buyAmount, outputToken])
 
   const inputAmountElement = <TokenAmount amount={inputAmount} tokenSymbol={inputAmount?.currency} />

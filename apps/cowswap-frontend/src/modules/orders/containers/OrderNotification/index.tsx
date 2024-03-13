@@ -104,8 +104,8 @@ export function OrderNotification(props: BaseOrderNotificationProps) {
             kind={order.kind}
             inputToken={order.inputToken as TokenInfo}
             outputToken={order.outputToken as TokenInfo}
-            sellAmount={order.inputAmount}
-            buyAmount={order.outputAmount}
+            sellAmount={order.inputAmount.toString()}
+            buyAmount={order.outputAmount.toString()}
           />
         )}
         <ReceiverInfo receiver={order.receiver} owner={order.owner} />
