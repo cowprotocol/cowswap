@@ -258,8 +258,8 @@ export type OrderStatus = {
   type: 'scheduled' | 'open' | 'active' | 'solved' | 'executing' | 'traded' | 'cancelled'
   value?: {
     solver: string
-    sellAmount: number
-    buyAmount: number
+    sellAmount: string
+    buyAmount: string
   }[]
 }
 
@@ -274,5 +274,5 @@ export async function getOrderStatus(chainId: ChainId, orderId: string): Promise
     return null
   }
 
-  return await response.json() // todo: arrange types etc
+  return await response.json()
 }
