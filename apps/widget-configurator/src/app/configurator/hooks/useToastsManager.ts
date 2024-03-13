@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useMemo, useState } from 'react'
+import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react'
 
 import { BaseToastMessagePayload, CowEventListeners, CowEvents, ToastMessageType } from '@cowprotocol/events'
 
@@ -12,18 +12,21 @@ export function useToastsManager(setListeners: (listeners: CowEventListeners) =>
     setToasts((t) => [...t, message])
   }
 
-  const closeToast = (_: unknown, reason?: string) => {
+  const closeToast = useCallback((_: unknown, reason?: string) => {
     if (reason === 'clickaway') {
       return
     }
 
     setToasts((t) => t.slice(1))
-  }
+  }, [])
 
-  const selectDisableToastMessages = (event: ChangeEvent<HTMLInputElement>) => {
-    closeToast(undefined)
-    setDisableToastMessages(event.target.value === 'true')
-  }
+  const selectDisableToastMessages = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      closeToast(undefined)
+      setDisableToastMessages(event.target.value === 'true')
+    },
+    [closeToast]
+  )
 
   useEffect(() => {
     // Update listeners
