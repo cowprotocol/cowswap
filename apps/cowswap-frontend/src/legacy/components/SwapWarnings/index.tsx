@@ -119,17 +119,17 @@ function _getWarningInfo(feePercentage?: Fraction) {
 const HighFeeWarningMessage = ({ feePercentage }: { feePercentage?: Fraction }) => (
   <div>
     <small>
-      Current fees on this network make up{' '}
+      Current network costs make up{' '}
       <u>
         <strong>{feePercentage?.toFixed(2)}%</strong>
       </u>{' '}
       of your swap amount.
       <br />
       <br />
-      Consider waiting for lower fees.
+      Consider waiting for lower network costs.
       <br />
       <br />
-      You may still move forward with this swap but a high percentage of it will be consumed by fees.
+      You may still move forward with this swap but a high percentage of it will be consumed by network costs.
     </small>
   </div>
 )
@@ -158,7 +158,7 @@ export const HighFeeWarning = (props: WarningProps) => {
     <WarningContainer {...props} level={level} isDarkMode={darkMode}>
       <div>
         <AlertTriangle size={24} />
-        Fees exceed {level}% of the swap amount!{' '}
+        Costs exceed {level}% of the swap amount!{' '}
         <MouseoverTooltipContent wrap content={<HighFeeWarningMessage feePercentage={feePercentage} />}>
           <ErrorStyledInfoIcon />
         </MouseoverTooltipContent>{' '}
