@@ -15,7 +15,6 @@ import { partialOrderUpdate } from 'legacy/state/orders/utils'
 import { signAndPostOrder } from 'legacy/utils/trade'
 
 import { updateHooksOnAppData } from 'modules/appData'
-import { handlePermit } from 'modules/permit'
 import { appDataContainsHooks } from 'modules/permit/utils/appDataContainsHooks'
 import { appDataContainsPermitSigner } from 'modules/permit/utils/appDataContainsPermitSigner'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
@@ -49,7 +48,8 @@ export async function swapFlow(
     return false
   }
 
-  const { orderParams, context, permitInfo, generatePermitHook, swapFlowAnalyticsContext, callbacks, dispatch } = input
+  const { orderParams, context, permitInfo, /*generatePermitHook,*/ swapFlowAnalyticsContext, callbacks, dispatch } =
+    input
   const { chainId, trade } = context
   const inputCurrency = trade.inputAmount.currency
   const cachedPermit = await getCachedPermit(getAddress(inputCurrency))
@@ -60,14 +60,18 @@ export async function swapFlow(
       tradeConfirmActions.requestPermitSignature(tradeAmounts)
     }
 
-    const { appData, account, isSafeWallet } = orderParams
-    orderParams.appData = await handlePermit({
-      appData,
-      account,
-      inputToken: inputCurrency,
-      permitInfo,
-      generatePermitHook,
-    })
+    const { appData, /*account,*/ isSafeWallet } = orderParams
+    orderParams.appData = appData
+
+    // FIXME: Uncomment "handlePermit" and fix. It removes the hooks because assumes permit are the only hooks we have in the order, which is not true. The permit logic needs a revisit now that we have a permit module
+    console.log('appData', appData)
+    // await handlePermit({
+    //   appData,
+    //   account,
+    //   inputToken: inputCurrency,
+    //   permitInfo,
+    //   generatePermitHook,
+    // })
 
     if (appDataContainsPermitSigner(orderParams.appData.fullAppData)) {
       reportPermitWithDefaultSigner(orderParams)
