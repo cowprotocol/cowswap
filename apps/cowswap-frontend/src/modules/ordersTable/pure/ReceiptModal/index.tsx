@@ -7,7 +7,6 @@ import {
   IconType,
   ExternalLink,
   InlineBanner,
-  ButtonSecondary,
   BannerOrientation,
   CustomRecipientWarningBanner,
 } from '@cowprotocol/ui'
@@ -132,12 +131,12 @@ export function ReceiptModal({
     <CowModal onDismiss={onDismiss} isOpen={isOpen}>
       <styledEl.Wrapper>
         <styledEl.Header>
-          <styledEl.Title>Order Receipt</styledEl.Title>
-          {showRecreateModal && (
-            <ButtonSecondary variant={'light'} margin={'0 auto 0 10px'} minHeight={'28px'} onClick={showRecreateModal}>
-              Recreate this order
-            </ButtonSecondary>
-          )}
+          <div>
+            <styledEl.Title>Order Receipt</styledEl.Title>
+            {showRecreateModal && (
+              <styledEl.LightButton onClick={showRecreateModal}>Recreate this order</styledEl.LightButton>
+            )}
+          </div>
           <CloseIcon onClick={() => onDismiss()} />
         </styledEl.Header>
 

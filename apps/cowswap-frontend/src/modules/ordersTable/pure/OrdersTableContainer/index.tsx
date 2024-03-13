@@ -4,7 +4,7 @@ import cowMeditatingV2 from '@cowprotocol/assets/cow-swap/meditating-cow-v2.svg'
 import imageConnectWallet from '@cowprotocol/assets/cow-swap/wallet-plus.svg'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { ExternalLink } from '@cowprotocol/ui'
-import { UI, CowSwapSafeAppLink } from '@cowprotocol/ui'
+import { UI, CowSwapSafeAppLink, MY_ORDERS_ID } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import SVG from 'react-inlinesvg'
@@ -269,7 +269,7 @@ export function OrdersTableContainer({
   return (
     <OrdersBox>
       <Header>
-        <h2>Your Orders</h2>
+        <h2 id={MY_ORDERS_ID}>Your Orders</h2>
         <TabsContainer withSingleChild={!children}>
           {children || <div></div>}
           <OrdersTabs tabs={tabs} />
