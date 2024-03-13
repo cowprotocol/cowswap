@@ -1,5 +1,4 @@
 import { reportAppDataWithHooks } from '@cowprotocol/common-utils'
-import { OrderKind } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
 import { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import { Percent } from '@uniswap/sdk-core'
@@ -48,7 +47,7 @@ export async function safeBundleApprovalFlow(
   } = input
 
   const { chainId } = context
-  const { appData, account, isSafeWallet, recipientAddressOrName, inputAmount, outputAmount } = orderParams
+  const { appData, account, isSafeWallet, recipientAddressOrName, inputAmount, outputAmount, kind } = orderParams
   const tradeAmounts = { inputAmount, outputAmount }
 
   tradeFlowAnalytics.approveAndPresign(swapFlowAnalyticsContext)
@@ -126,7 +125,7 @@ export async function safeBundleApprovalFlow(
       chainId,
       id: orderId,
       orderCreationHash: safeTx.safeTxHash,
-      kind: OrderKind.SELL,
+      kind,
       receiver: recipientAddressOrName,
       inputAmount,
       outputAmount,

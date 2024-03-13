@@ -1,5 +1,4 @@
 import { reportAppDataWithHooks } from '@cowprotocol/common-utils'
-import { OrderKind } from '@cowprotocol/cow-sdk'
 import { Command, UiOrderType } from '@cowprotocol/types'
 import { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import { Percent } from '@uniswap/sdk-core'
@@ -134,7 +133,7 @@ export async function safeBundleFlow(
       chainId,
       id: orderId,
       orderCreationHash: safeTxHash,
-      kind: OrderKind.SELL,
+      kind: postOrderParams.kind,
       receiver: recipientAddressOrName,
       inputAmount,
       outputAmount,

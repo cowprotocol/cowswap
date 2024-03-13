@@ -1,5 +1,4 @@
 import { reportPermitWithDefaultSigner } from '@cowprotocol/common-utils'
-import { OrderKind } from '@cowprotocol/cow-sdk'
 import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
 import { Command, UiOrderType } from '@cowprotocol/types'
 import { Percent } from '@uniswap/sdk-core'
@@ -126,7 +125,7 @@ export async function tradeFlow(
     emitPostedOrderEvent({
       chainId,
       id: orderId,
-      kind: OrderKind.SELL,
+      kind: postOrderParams.kind,
       receiver: recipientAddressOrName,
       inputAmount,
       outputAmount,

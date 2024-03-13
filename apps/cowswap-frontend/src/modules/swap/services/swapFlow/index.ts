@@ -4,7 +4,6 @@ import {
   reportAppDataWithHooks,
   reportPermitWithDefaultSigner,
 } from '@cowprotocol/common-utils'
-import { OrderKind } from '@cowprotocol/cow-sdk'
 import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
 import { UiOrderType } from '@cowprotocol/types'
 import { Percent } from '@uniswap/sdk-core'
@@ -60,7 +59,7 @@ export async function swapFlow(
       tradeConfirmActions.requestPermitSignature(tradeAmounts)
     }
 
-    const { appData, account, isSafeWallet, recipientAddressOrName, inputAmount, outputAmount } = orderParams
+    const { appData, account, isSafeWallet, recipientAddressOrName, inputAmount, outputAmount, kind } = orderParams
     orderParams.appData = await handlePermit({
       appData,
       account,
@@ -115,7 +114,7 @@ export async function swapFlow(
     emitPostedOrderEvent({
       chainId,
       id: orderUid,
-      kind: OrderKind.SELL,
+      kind,
       receiver: recipientAddressOrName,
       inputAmount,
       outputAmount,
