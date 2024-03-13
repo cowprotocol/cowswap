@@ -1,10 +1,9 @@
-import { COWSWAP_URLS } from './consts'
 import { CowSwapWidgetParams, TradeType } from './types'
 
 const EMPTY_TOKEN = '_'
 
 export function buildWidgetUrl(params: Partial<CowSwapWidgetParams>): string {
-  const host = COWSWAP_URLS[params.env || 'prod']
+  const host = typeof params.baseUrl === 'string' ? params.baseUrl : 'https://swap.cow.fi'
   const path = buildWidgetPath(params)
   const query = buildTradeAmountsQuery(params)
 
