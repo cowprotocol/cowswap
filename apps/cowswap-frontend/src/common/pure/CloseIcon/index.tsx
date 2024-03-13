@@ -24,11 +24,12 @@ const IconX = styled.div`
 
 export interface CloseIconProps {
   onClick: Command
+  className?: string
 }
 
-export function CloseIcon({ onClick }: CloseIconProps) {
+export function CloseIcon({ onClick, className }: CloseIconProps) {
   return (
-    <IconX onClick={onClick}>
+    <IconX onClick={onClick} className={className}>
       <SVG src={CLOSE_ICON} />
     </IconX>
   )
