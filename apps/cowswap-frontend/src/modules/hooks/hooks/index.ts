@@ -17,42 +17,45 @@ export function useHooks() {
   return useAtomValue(hooksAtom)
 }
 
-export function useAddHook() {
+export function useAddHook(): (hookToAdd: CowHookCreation, isPreHook: boolean) => CowHookDetails {
   const updateHooks = useSetAtom(hooksAtom)
 
   return useCallback(
-    (hookToAdd: CowHookCreation, isPreHook: boolean) => {
+    (hookToAdd, isPreHook) => {
       console.log('[hooks] Add ' + (isPreHook ? 'pre-hook' : 'post-hook'), hookToAdd, isPreHook)
       const uuid = uuidv4()
+      const hookDetails = { ...hookToAdd, uuid }
       updateHooks((hooks) => {
         if (isPreHook) {
-          return { preHooks: [...hooks.preHooks, { ...hookToAdd, uuid }], postHooks: hooks.postHooks }
+          return { preHooks: [...hooks.preHooks, hookDetails], postHooks: hooks.postHooks }
         } else {
-          return { preHooks: hooks.preHooks, postHooks: [...hooks.postHooks, { ...hookToAdd, uuid }] }
+          return { preHooks: hooks.preHooks, postHooks: [...hooks.postHooks, hookDetails] }
         }
       })
+
+      return hookDetails
     },
     [updateHooks]
   )
 }
 
-export function useRemoveHook() {
+export function useRemoveHook(): (uuid: string, isPreHook: boolean) => void {
   const updateHooks = useSetAtom(hooksAtom)
 
   return useCallback(
-    (hookToRemove: CowHookDetails, isPreHook: boolean) => {
-      console.log('[hooks] Remove ' + (isPreHook ? 'pre-hook' : 'post-hook'), hookToRemove, isPreHook)
+    (uuid, isPreHook) => {
+      console.log('[hooks] Remove ' + (isPreHook ? 'pre-hook' : 'post-hook'), uuid, isPreHook)
 
       updateHooks((hooks) => {
         if (isPreHook) {
           return {
-            preHooks: hooks.preHooks.filter((hook) => hook.uuid !== hookToRemove.uuid),
+            preHooks: hooks.preHooks.filter((hook) => hook.uuid !== uuid),
             postHooks: hooks.postHooks,
           }
         } else {
           return {
             preHooks: hooks.preHooks,
-            postHooks: hooks.postHooks.filter((hook) => hook.uuid !== hookToRemove.uuid),
+            postHooks: hooks.postHooks.filter((hook) => hook.uuid !== uuid),
           }
         }
       })

@@ -186,7 +186,7 @@ function HookTooltip({ isPreHook }: { isPreHook: boolean }) {
 interface HookItemProp {
   hookDetails: CowHookDetails
   isPreHook: boolean
-  removeHook: (hookToRemove: CowHookDetails, isPreHook: boolean) => void
+  removeHook: (uuid: string, isPreHook: boolean) => void
 }
 
 function HookItem({ hookDetails, isPreHook, removeHook }: HookItemProp) {
@@ -236,7 +236,7 @@ function HookItem({ hookDetails, isPreHook, removeHook }: HookItemProp) {
           <dd>{callData}</dd>
         </dl>
       )}
-      <CloseIcon onClick={() => removeHook(hookDetails, isPreHook)} />
+      <CloseIcon onClick={() => removeHook(hookDetails.uuid, isPreHook)} />
     </HookItemWrapper>
   )
 }
