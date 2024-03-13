@@ -37,7 +37,7 @@ export function useToggleWalletModal(): Command | null {
   const toggleWalletModal = useToggleModal(ApplicationModal.WALLET)
 
   return useMemo(() => {
-    if (!active || !standaloneMode) {
+    if (!active || standaloneMode === false) {
       return null
     }
 
