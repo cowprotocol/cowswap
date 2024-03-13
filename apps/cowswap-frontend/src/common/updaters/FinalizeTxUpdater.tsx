@@ -3,7 +3,9 @@ import { useEffect, useMemo } from 'react'
 
 import { useAddPriorityAllowance } from '@cowprotocol/balances-and-allowances'
 import { GetReceipt, useBlockNumber, useGetReceipt } from '@cowprotocol/common-hooks'
+import { getCowSoundError } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { useAddSnackbar } from '@cowprotocol/snackbars'
 import { Command } from '@cowprotocol/types'
 import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
 import { TransactionReceipt } from '@ethersproject/abstract-provider'
@@ -14,7 +16,6 @@ import ms from 'ms.macro'
 
 import { GetSafeInfo, useGetSafeInfo } from 'legacy/hooks/useGetSafeInfo'
 import { AppDispatch } from 'legacy/state'
-import { useAddPopup } from 'legacy/state/application/hooks'
 import {
   checkedTransaction,
   finalizeTransaction,
@@ -27,7 +28,7 @@ import { invalidateOrdersBatch } from 'legacy/state/orders/actions'
 import { CancelOrdersBatchCallback, useCancelOrdersBatch } from 'legacy/state/orders/hooks'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
 
-import { emitCancelledOrderEvent } from 'modules/orders'
+import { TransactionContentWithLink, emitCancelledOrderEvent } from 'modules/orders'
 import { removeInFlightOrderIdAtom } from 'modules/swap/state/EthFlow/ethFlowInFlightOrderIdsAtom'
 import { useGetTwapOrderById } from 'modules/twap/hooks/useGetTwapOrderById'
 
@@ -68,7 +69,7 @@ interface CheckEthereumTransactions {
   getReceipt: GetReceipt
   getSafeInfo: GetSafeInfo
   dispatch: AppDispatch
-  addPopup: ReturnType<typeof useAddPopup>
+  addSnackbar: ReturnType<typeof useAddSnackbar>
   addPriorityAllowance: ReturnType<typeof useAddPriorityAllowance>
   removeInFlightOrderId: (update: string) => void
   nativeCurrencySymbol: string
@@ -80,7 +81,7 @@ function finalizeEthereumTransaction(
   transaction: EnhancedTransactionDetails,
   params: CheckEthereumTransactions
 ) {
-  const { chainId, account, addPopup, dispatch, addPriorityAllowance } = params
+  const { chainId, account, addSnackbar, dispatch, addPriorityAllowance } = params
   const { hash } = transaction
 
   console.log(`[FinalizeTxUpdater] Transaction ${receipt.transactionHash} has been mined`, receipt, transaction)
@@ -124,16 +125,20 @@ function finalizeEthereumTransaction(
     return
   }
 
-  addPopup(
-    {
-      txn: {
-        hash: receipt.transactionHash,
-        success: receipt.status === 1 && transaction.replacementType !== 'cancel',
-        summary: transaction.summary,
-      },
-    },
-    hash
-  )
+  const isSuccess = receipt.status === 1 && transaction.replacementType !== 'cancel'
+  addSnackbar({
+    content: (
+      <TransactionContentWithLink transactionHash={transaction.hash}>
+        <>{transaction.summary}</>
+      </TransactionContentWithLink>
+    ),
+    id: transaction.hash,
+    icon: isSuccess ? 'success' : 'alert',
+  })
+
+  if (!isSuccess) {
+    getCowSoundError().play()
+  }
 }
 
 function finalizeEthFlowTx(
@@ -143,7 +148,7 @@ function finalizeEthFlowTx(
   hash: string
 ): void {
   const { orderId, subType } = ethFlowInfo
-  const { chainId, isSafeWallet, dispatch, addPopup, nativeCurrencySymbol } = params
+  const { chainId, isSafeWallet, dispatch, addSnackbar, nativeCurrencySymbol } = params
 
   // Remove inflight order ids, after a delay to avoid creating the same again in quick succession
   setTimeout(() => params.removeInFlightOrderId(orderId), DELAY_REMOVAL_ETH_FLOW_ORDER_ID_MILLISECONDS)
@@ -154,16 +159,17 @@ function finalizeEthFlowTx(
       // 1. Mark order as invalid
       dispatch(invalidateOrdersBatch({ chainId, ids: [orderId], isSafeWallet }))
       // 2. Show failure tx pop-up
-      addPopup(
-        {
-          txn: {
-            hash,
-            success: false,
-            summary: `Failed to place order selling ${nativeCurrencySymbol}`,
-          },
-        },
-        hash
-      )
+      addSnackbar({
+        content: (
+          <TransactionContentWithLink transactionHash={hash}>
+            <>Failed to place order selling ${nativeCurrencySymbol}</>
+          </TransactionContentWithLink>
+        ),
+        id: hash,
+        icon: 'alert',
+      })
+
+      getCowSoundError().play()
     }
   }
 
@@ -179,7 +185,7 @@ function finalizeOnChainCancellation(
   orderId: string,
   sellTokenSymbol: string
 ) {
-  const { chainId, isSafeWallet, dispatch, addPopup, cancelOrdersBatch, getTwapOrderById } = params
+  const { chainId, isSafeWallet, dispatch, addSnackbar, cancelOrdersBatch, getTwapOrderById } = params
 
   if (receipt.status === 1) {
     // If cancellation succeeded, mark order as cancelled
@@ -215,16 +221,17 @@ function finalizeOnChainCancellation(
       dispatch
     )
     // 2. Show failure tx pop-up
-    addPopup(
-      {
-        txn: {
-          hash,
-          success: false,
-          summary: `Failed to cancel order selling ${sellTokenSymbol}`,
-        },
-      },
-      hash
-    )
+    addSnackbar({
+      content: (
+        <TransactionContentWithLink transactionHash={hash}>
+          <>Failed to cancel order selling ${sellTokenSymbol}</>
+        </TransactionContentWithLink>
+      ),
+      id: hash,
+      icon: 'alert',
+    })
+
+    getCowSoundError().play()
   }
 }
 function checkEthereumTransactions(params: CheckEthereumTransactions): Command[] {
@@ -310,7 +317,7 @@ export function FinalizeTxUpdater(): null {
   const getSafeInfo = useGetSafeInfo()
   const addPriorityAllowance = useAddPriorityAllowance()
   const getTwapOrderById = useGetTwapOrderById()
-  const addPopup = useAddPopup()
+  const addSnackbar = useAddSnackbar()
   const removeInFlightOrderId = useSetAtom(removeInFlightOrderIdAtom)
   const nativeCurrencySymbol = useNativeCurrency().symbol || 'ETH'
 
@@ -334,7 +341,7 @@ export function FinalizeTxUpdater(): null {
       lastBlockNumber,
       getReceipt,
       getSafeInfo,
-      addPopup,
+      addSnackbar,
       dispatch,
       removeInFlightOrderId,
       nativeCurrencySymbol,
@@ -356,7 +363,7 @@ export function FinalizeTxUpdater(): null {
     transactions,
     lastBlockNumber,
     dispatch,
-    addPopup,
+    addSnackbar,
     getReceipt,
     getSafeInfo,
     removeInFlightOrderId,
