@@ -24,7 +24,7 @@ export function ReceiveAmount(props: ReceiveAmountProps) {
     <styledEl.ReceiveAmountBox>
       <div>
         <span>
-          <Trans>{type === 'from' ? 'From (incl. fee)' : 'Receive (incl. fee)'}</Trans>
+          <Trans>{type === 'from' ? 'From (incl. costs)' : 'Receive (incl. costs)'}</Trans>
         </span>
 
         <styledEl.QuestionHelperWrapped text={<ReceiveAmountInfoTooltip {...props} />} />

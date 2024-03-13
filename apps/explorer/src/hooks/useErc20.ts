@@ -4,19 +4,15 @@ import { TokenErc20 } from '@gnosis.pm/dex-js'
 
 import { Errors, Network, UiError } from 'types'
 
-import {
-  useErc20 as useErc20State,
-  useMultipleErc20s as useMultipleErc20sState,
-  useSaveErc20s,
-  SingleErc20State,
-} from 'state/erc20'
+import { SingleErc20State, useMultipleErc20s as useMultipleErc20sState, useSaveErc20s } from 'state/erc20'
 
 import { getErc20Info } from 'services/helpers'
 
-import { web3, erc20Api } from '../explorer/api'
+import { erc20Api, web3 } from '../explorer/api'
 
 import { NATIVE_TOKEN_PER_NETWORK } from 'const'
 import { isNativeToken, retry } from 'utils'
+import { useTokenList } from './useTokenList'
 
 async function _fetchErc20FromNetwork(params: {
   address: string
@@ -44,54 +40,7 @@ async function _fetchErc20FromNetwork(params: {
   }
 }
 
-type UseErc20Params = { address?: string; networkId?: Network }
-
 type Return<E, V> = { isLoading: boolean; error?: E; value: V }
-
-/**
- * Fetches single erc20 token details for given network and address
- *
- * Tries to get it from globalState.
- * If not found, tries to get it from the network.
- * Saves to globalState if found.
- * Value is `null` when not found.
- * Returns `isLoading` to indicate whether fetching the value
- * Returns `error` with the error message, if any.
- */
-export function useErc20(params: UseErc20Params): Return<UiError, SingleErc20State> {
-  const { address, networkId } = params
-
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<UiError>()
-
-  const erc20 = useErc20State({ networkId, address })
-  const saveErc20s = useSaveErc20s(networkId)
-
-  const fetchAndUpdateState = useCallback(async (): Promise<void> => {
-    if (!address || !networkId) {
-      return
-    }
-
-    setIsLoading(true)
-
-    const fetched = await _fetchErc20FromNetwork({ address, networkId, setError })
-    if (fetched) {
-      saveErc20s([fetched])
-    }
-
-    setError(undefined)
-    setIsLoading(false)
-  }, [address, networkId, saveErc20s])
-
-  useEffect(() => {
-    // Only try to fetch it if not on global state
-    if (!erc20) {
-      fetchAndUpdateState()
-    }
-  }, [erc20, fetchAndUpdateState])
-
-  return { isLoading, error, value: erc20 }
-}
 
 export type UseMultipleErc20Params = { addresses: string[]; networkId?: Network }
 
@@ -113,12 +62,28 @@ export function useMultipleErc20(
 
   const [isLoading, setIsLoading] = useState(false)
   const [errors, setErrors] = useState<Errors>({})
+  const { isLoading: isTokenListLoading, data: tokenListTokens } = useTokenList(networkId)
 
   const erc20s = useMultipleErc20sState({ networkId, addresses })
   const saveErc20s = useSaveErc20s(networkId)
 
+  const fromTokenList = useMemo(
+    () =>
+      addresses.reduce((acc, address) => {
+        const token = tokenListTokens[address.toLowerCase()]
+        if (token) {
+          acc[address] = token
+        }
+        return acc
+      }, {}),
+    [addresses, tokenListTokens]
+  )
+
   // check what on globalState has not been fetched yet
-  const toFetch = useMemo(() => addresses.filter((address) => !erc20s[address]), [addresses, erc20s])
+  const toFetch = useMemo(
+    () => (isTokenListLoading ? [] : addresses.filter((address) => !erc20s[address] && !fromTokenList[address])),
+    [addresses, erc20s, fromTokenList, isTokenListLoading]
+  )
   // flow control
   const running = useRef({ networkId, isRunning: false })
 
@@ -156,5 +121,5 @@ export function useMultipleErc20(
     }
   }, [updateErc20s, saveErc20s, networkId])
 
-  return { isLoading, error: errors, value: erc20s }
+  return { isLoading: isTokenListLoading || isLoading, error: errors, value: { ...erc20s, ...fromTokenList } }
 }
