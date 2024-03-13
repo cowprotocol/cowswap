@@ -50,12 +50,22 @@ function useProgressBarState(
   isConfirmed: boolean
 ): ProgressBarState {
   const [state, setState] = useState<ExecutionState>('initial')
-  const [, setCount] = useState<number | null>(null)
+  const [countdown, setCountdown] = useState<number | null>(null)
   const { data: orderStatus } = useOrderStatus(chainId, orderId)
 
   useEffect(() => {
-    let timerId: NodeJS.Timeout | undefined
+    let timer: NodeJS.Timeout | undefined
+    if (countdown) {
+      timer = setInterval(
+        () => countdown < Date.now() && setState((curr) => (curr === 'solving' ? 'delayed' : curr)),
+        ms`1s`
+      )
+    }
 
+    return () => timer && clearTimeout(timer)
+  }, [countdown])
+
+  useEffect(() => {
     if (isUnfillable) {
       setState('unfillable')
     } else if (!orderStatus || orderStatus.type === 'scheduled' || orderStatus.type === 'open') {
@@ -63,20 +73,7 @@ function useProgressBarState(
       // TODO: think about what to do when we come back to this state
     } else if (orderStatus.type === 'active') {
       setState('solving')
-      setCount(20)
-      timerId = setTimeout(
-        () =>
-          setCount((c) => {
-            if (c === null) {
-              return c
-            } else if (c === 0) {
-              setState('delayed')
-              return null
-            }
-            return c - 1
-          }),
-        ms`1s`
-      )
+      setCountdown(Date.now() + ms`15s`)
     } else if (orderStatus.type === 'solved' || orderStatus.type === 'executing') {
       setState('executing')
     } else if (orderStatus.type === 'traded' || isConfirmed) {
@@ -85,7 +82,7 @@ function useProgressBarState(
       setState('unfillable')
     }
 
-    return () => timerId && clearTimeout(timerId)
+    // return () => timerId && clearTimeout(timerId)
   }, [isConfirmed, isUnfillable, orderStatus])
 
   return { state, value: orderStatus?.value }
