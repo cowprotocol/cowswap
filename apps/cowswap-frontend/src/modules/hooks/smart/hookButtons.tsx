@@ -13,7 +13,7 @@ import { CloseIcon as CloseIconOriginal } from 'common/pure/CloseIcon'
 import { HookStoreModal } from './HookStoreModal'
 
 import { useRemoveHook } from '../hooks'
-import { hooksDetailsAtom } from '../state/hookDetailsAtom'
+import { hooksAtom } from '../state/hookDetailsAtom'
 import { CowHookDetails } from '../types'
 
 const Wrapper = styled.div`
@@ -117,7 +117,7 @@ const HookItemInfo = styled.div`
 
 export function PreHookButton() {
   const [open, setOpen] = useState(false)
-  const hooks = useAtomValue(hooksDetailsAtom)
+  const hooks = useAtomValue(hooksAtom)
   const removeHook = useRemoveHook()
   return (
     <>
@@ -150,7 +150,7 @@ export function PreHookButton() {
 
 export function PostHookButton() {
   const [open, setOpen] = useState(false)
-  const hooks = useAtomValue(hooksDetailsAtom)
+  const hooks = useAtomValue(hooksAtom)
   const removeHook = useRemoveHook()
 
   return (

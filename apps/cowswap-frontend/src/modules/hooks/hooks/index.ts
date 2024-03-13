@@ -1,4 +1,4 @@
-import { useSetAtom } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
 import { SBCDepositContract, SBCDepositContractAbi } from '@cowprotocol/abis'
@@ -8,13 +8,17 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { v4 as uuidv4 } from 'uuid'
 
-import { hooksDetailsAtom } from '../state/hookDetailsAtom'
+import { hooksAtom } from '../state/hookDetailsAtom'
 import { CowHookCreation, CowHookDetails } from '../types'
 
 export const SBC_DEPOSIT_CONTRACT_ADDRESS = '0x0B98057eA310F4d31F2a452B414647007d1645d9'
 
+export function useHooks() {
+  return useAtomValue(hooksAtom)
+}
+
 export function useAddHook() {
-  const updateHooks = useSetAtom(hooksDetailsAtom)
+  const updateHooks = useSetAtom(hooksAtom)
 
   return useCallback(
     (hookToAdd: CowHookCreation, isPreHook: boolean) => {
@@ -33,7 +37,7 @@ export function useAddHook() {
 }
 
 export function useRemoveHook() {
-  const updateHooks = useSetAtom(hooksDetailsAtom)
+  const updateHooks = useSetAtom(hooksAtom)
 
   return useCallback(
     (hookToRemove: CowHookDetails, isPreHook: boolean) => {
