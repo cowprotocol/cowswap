@@ -1,19 +1,37 @@
 import React from 'react'
 
 import { Command } from '@cowprotocol/types'
-import { Tooltip, TooltipProps } from '@cowprotocol/ui'
+import { Tooltip, TooltipProps, UI } from '@cowprotocol/ui'
 
+import { X } from 'react-feather'
 import { Text } from 'rebass'
 import styled from 'styled-components/macro'
 
 import { AutoColumn } from 'legacy/components/Column'
-import { StyledClose as IconClose } from 'legacy/components/Popups/styled'
 
 interface PopupContentProps {
   onCheck: Command
   onClose: Command
 }
 type FollowingTxPopupProps = Omit<TooltipProps, 'text'> & PopupContentProps
+
+const IconClose = styled(X)`
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  color: inherit;
+  opacity: 0.7;
+  transition: opacity ${UI.ANIMATION_DURATION} ease-in-out;
+
+  &:hover {
+    opacity: 1;
+    cursor: pointer;
+  }
+
+  svg {
+    stroke: currentColor;
+  }
+`
 
 const TooltipWrapper = styled(Tooltip)`
   > .arrow- {

@@ -19,7 +19,6 @@ import { HashRouter } from 'react-router-dom'
 import * as serviceWorkerRegistration from 'serviceWorkerRegistration'
 
 import AppziButton from 'legacy/components/AppziButton'
-import { Popups } from 'legacy/components/Popups'
 import Web3Provider from 'legacy/components/Web3Provider'
 import { cowSwapStore } from 'legacy/state'
 import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from 'legacy/theme'
@@ -75,7 +74,6 @@ function Main() {
                         </>
                       )}
 
-                      <Popups />
                       <SnackbarsWidget />
                       <App />
                     </WithLDProvider>
