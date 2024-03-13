@@ -135,6 +135,10 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
     }
   }, [_priceImpactParams, bothCurrenciesSet])
 
+  const onTokenSelectClick = useCallback(() => {
+    openTokenSelectWidget(selectedTokenAddress, (currency) => onCurrencySelection(field, currency))
+  }, [openTokenSelectWidget, selectedTokenAddress, onCurrencySelection, field])
+
   return (
     <styledEl.OuterWrapper>
       <styledEl.Wrapper
@@ -149,9 +153,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
         <styledEl.CurrencyInputBox>
           <div>
             <CurrencySelectButton
-              onClick={() =>
-                openTokenSelectWidget(selectedTokenAddress, (currency) => onCurrencySelection(field, currency))
-              }
+              onClick={onTokenSelectClick}
               currency={disabled ? undefined : currency || undefined}
               loading={areCurrenciesLoading || disabled}
               readonlyMode={tokenSelectorDisabled}
