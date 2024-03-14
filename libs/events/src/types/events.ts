@@ -6,6 +6,7 @@ import {
   OnPresignedOrderPayload,
 } from './orders'
 import { OnToastMessagePayload } from './toastMessages'
+import { OnTransactionPayload } from './transactions'
 
 export enum CowEvents {
   ON_TOAST_MESSAGE = 'ON_TOAST_MESSAGE',
@@ -14,6 +15,7 @@ export enum CowEvents {
   ON_CANCELLED_ORDER = 'ON_CANCELLED_ORDER',
   ON_EXPIRED_ORDER = 'ON_EXPIRED_ORDER',
   ON_PRESIGNED_ORDER = 'ON_PRESIGNED_ORDER',
+  ON_ONCHAIN_TRANSACTION = 'ON_ONCHAIN_TRANSACTION',
 }
 
 // Define types for event payloads
@@ -24,6 +26,7 @@ export interface CowEventPayloadMap {
   [CowEvents.ON_CANCELLED_ORDER]: OnCancelledOrderPayload
   [CowEvents.ON_EXPIRED_ORDER]: OnExpiredOrderPayload
   [CowEvents.ON_PRESIGNED_ORDER]: OnPresignedOrderPayload
+  [CowEvents.ON_ONCHAIN_TRANSACTION]: OnTransactionPayload
 }
 
 export type CowEventPayloads = CowEventPayloadMap[CowEvents]

@@ -3,9 +3,7 @@ import { useEffect, useMemo } from 'react'
 
 import { useAddPriorityAllowance } from '@cowprotocol/balances-and-allowances'
 import { GetReceipt, useBlockNumber, useGetReceipt } from '@cowprotocol/common-hooks'
-import { getCowSoundError } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { useAddSnackbar } from '@cowprotocol/snackbars'
 import { Command } from '@cowprotocol/types'
 import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
 import { TransactionReceipt } from '@ethersproject/abstract-provider'
@@ -28,11 +26,15 @@ import { invalidateOrdersBatch } from 'legacy/state/orders/actions'
 import { CancelOrdersBatchCallback, useCancelOrdersBatch } from 'legacy/state/orders/hooks'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
 
-import { TransactionContentWithLink, emitCancelledOrderEvent } from 'modules/orders'
+import { emitCancelledOrderEvent } from 'modules/orders'
 import { removeInFlightOrderIdAtom } from 'modules/swap/state/EthFlow/ethFlowInFlightOrderIdsAtom'
 import { useGetTwapOrderById } from 'modules/twap/hooks/useGetTwapOrderById'
 
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
+
+import { OnchainTransactionEventsUpdater } from './OnchainTransactionEventsUpdater'
+
+import { emitOnchainTransactionEvent } from '../utils/emitOnchainTransactionEvent'
 
 const DELAY_REMOVAL_ETH_FLOW_ORDER_ID_MILLISECONDS = ms`2m` // Delay removing the order ID since the creation time its mined (minor precaution just to avoid edge cases of delay in indexing times affect the collision detection
 
@@ -69,7 +71,6 @@ interface CheckEthereumTransactions {
   getReceipt: GetReceipt
   getSafeInfo: GetSafeInfo
   dispatch: AppDispatch
-  addSnackbar: ReturnType<typeof useAddSnackbar>
   addPriorityAllowance: ReturnType<typeof useAddPriorityAllowance>
   removeInFlightOrderId: (update: string) => void
   nativeCurrencySymbol: string
@@ -81,7 +82,7 @@ function finalizeEthereumTransaction(
   transaction: EnhancedTransactionDetails,
   params: CheckEthereumTransactions
 ) {
-  const { chainId, account, addSnackbar, dispatch, addPriorityAllowance } = params
+  const { chainId, account, dispatch, addPriorityAllowance } = params
   const { hash } = transaction
 
   console.log(`[FinalizeTxUpdater] Transaction ${receipt.transactionHash} has been mined`, receipt, transaction)
@@ -114,41 +115,40 @@ function finalizeEthereumTransaction(
   )
 
   if (transaction.ethFlow) {
-    finalizeEthFlowTx(transaction.ethFlow, receipt, params, hash)
+    finalizeEthFlowTx(transaction, receipt, params, hash)
     return
   }
 
   if (transaction.onChainCancellation) {
     const { orderId, sellTokenSymbol } = transaction.onChainCancellation
 
-    finalizeOnChainCancellation(receipt, params, hash, orderId, sellTokenSymbol)
+    finalizeOnChainCancellation(transaction, receipt, params, hash, orderId, sellTokenSymbol)
     return
   }
 
-  const isSuccess = receipt.status === 1 && transaction.replacementType !== 'cancel'
-  addSnackbar({
-    content: (
-      <TransactionContentWithLink transactionHash={transaction.hash}>
-        <>{transaction.summary}</>
-      </TransactionContentWithLink>
-    ),
-    id: transaction.hash,
-    icon: isSuccess ? 'success' : 'alert',
+  emitOnchainTransactionEvent({
+    receipt: {
+      to: receipt.to,
+      from: receipt.from,
+      contractAddress: receipt.contractAddress,
+      transactionHash: receipt.transactionHash,
+      blockNumber: receipt.blockNumber,
+      status: receipt.status,
+      replacementType: transaction.replacementType,
+    },
+    summary: transaction.summary || '',
   })
-
-  if (!isSuccess) {
-    getCowSoundError().play()
-  }
 }
 
 function finalizeEthFlowTx(
-  ethFlowInfo: { orderId: string; subType: 'creation' | 'cancellation' | 'refund' },
+  transaction: EnhancedTransactionDetails,
   receipt: TransactionReceipt,
   params: CheckEthereumTransactions,
   hash: string
 ): void {
+  const ethFlowInfo = transaction.ethFlow!
   const { orderId, subType } = ethFlowInfo
-  const { chainId, isSafeWallet, dispatch, addSnackbar, nativeCurrencySymbol } = params
+  const { chainId, isSafeWallet, dispatch, nativeCurrencySymbol } = params
 
   // Remove inflight order ids, after a delay to avoid creating the same again in quick succession
   setTimeout(() => params.removeInFlightOrderId(orderId), DELAY_REMOVAL_ETH_FLOW_ORDER_ID_MILLISECONDS)
@@ -159,33 +159,36 @@ function finalizeEthFlowTx(
       // 1. Mark order as invalid
       dispatch(invalidateOrdersBatch({ chainId, ids: [orderId], isSafeWallet }))
       // 2. Show failure tx pop-up
-      addSnackbar({
-        content: (
-          <TransactionContentWithLink transactionHash={hash}>
-            <>Failed to place order selling {nativeCurrencySymbol}</>
-          </TransactionContentWithLink>
-        ),
-        id: hash,
-        icon: 'alert',
-      })
 
-      getCowSoundError().play()
+      emitOnchainTransactionEvent({
+        receipt: {
+          to: receipt.to,
+          from: receipt.from,
+          contractAddress: receipt.contractAddress,
+          transactionHash: receipt.transactionHash,
+          blockNumber: receipt.blockNumber,
+          status: receipt.status,
+          replacementType: transaction.replacementType,
+        },
+        summary: `Failed to place order selling ${nativeCurrencySymbol}`,
+      })
     }
   }
 
   if (subType === 'cancellation') {
-    finalizeOnChainCancellation(receipt, params, hash, orderId, nativeCurrencySymbol)
+    finalizeOnChainCancellation(transaction, receipt, params, hash, orderId, nativeCurrencySymbol)
   }
 }
 
 function finalizeOnChainCancellation(
+  transaction: EnhancedTransactionDetails,
   receipt: TransactionReceipt,
   params: CheckEthereumTransactions,
   hash: string,
   orderId: string,
   sellTokenSymbol: string
 ) {
-  const { chainId, isSafeWallet, dispatch, addSnackbar, cancelOrdersBatch, getTwapOrderById } = params
+  const { chainId, isSafeWallet, dispatch, cancelOrdersBatch, getTwapOrderById } = params
 
   if (receipt.status === 1) {
     // If cancellation succeeded, mark order as cancelled
@@ -221,17 +224,18 @@ function finalizeOnChainCancellation(
       dispatch
     )
     // 2. Show failure tx pop-up
-    addSnackbar({
-      content: (
-        <TransactionContentWithLink transactionHash={hash}>
-          <>Failed to cancel order selling {sellTokenSymbol}</>
-        </TransactionContentWithLink>
-      ),
-      id: hash,
-      icon: 'alert',
+    emitOnchainTransactionEvent({
+      receipt: {
+        to: receipt.to,
+        from: receipt.from,
+        contractAddress: receipt.contractAddress,
+        transactionHash: receipt.transactionHash,
+        blockNumber: receipt.blockNumber,
+        status: receipt.status,
+        replacementType: transaction.replacementType,
+      },
+      summary: `Failed to cancel order selling ${sellTokenSymbol}`,
     })
-
-    getCowSoundError().play()
   }
 }
 function checkEthereumTransactions(params: CheckEthereumTransactions): Command[] {
@@ -304,7 +308,7 @@ function checkEthereumTransactions(params: CheckEthereumTransactions): Command[]
   })
 }
 
-export function FinalizeTxUpdater(): null {
+export function FinalizeTxUpdater() {
   const { provider } = useWeb3React()
   const { chainId, account } = useWalletInfo()
   const isSafeWallet = useIsSafeWallet()
@@ -317,7 +321,6 @@ export function FinalizeTxUpdater(): null {
   const getSafeInfo = useGetSafeInfo()
   const addPriorityAllowance = useAddPriorityAllowance()
   const getTwapOrderById = useGetTwapOrderById()
-  const addSnackbar = useAddSnackbar()
   const removeInFlightOrderId = useSetAtom(removeInFlightOrderIdAtom)
   const nativeCurrencySymbol = useNativeCurrency().symbol || 'ETH'
 
@@ -341,7 +344,6 @@ export function FinalizeTxUpdater(): null {
       lastBlockNumber,
       getReceipt,
       getSafeInfo,
-      addSnackbar,
       dispatch,
       removeInFlightOrderId,
       nativeCurrencySymbol,
@@ -363,7 +365,6 @@ export function FinalizeTxUpdater(): null {
     transactions,
     lastBlockNumber,
     dispatch,
-    addSnackbar,
     getReceipt,
     getSafeInfo,
     removeInFlightOrderId,
@@ -373,5 +374,9 @@ export function FinalizeTxUpdater(): null {
     getTwapOrderById,
   ])
 
-  return null
+  return (
+    <>
+      <OnchainTransactionEventsUpdater />
+    </>
+  )
 }

@@ -8,6 +8,8 @@ export enum ToastMessageType {
   ORDER_CANCELLED = 'ORDER_CANCELLED',
   ORDER_EXPIRED = 'ORDER_EXPIRED',
   ORDER_PRESIGNED = 'ORDER_PRESIGNED',
+  ONCHAIN_TRANSACTION_MINED = 'ONCHAIN_TRANSACTION_MINED',
+  ONCHAIN_TRANSACTION_FAILED = 'ONCHAIN_TRANSACTION_FAILED',
 }
 
 export interface ToastMessagePayloads {
@@ -45,6 +47,14 @@ export interface ToastMessagePayloads {
   [ToastMessageType.ORDER_PRESIGNED]: {
     orderUid: string
     orderType: UiOrderType
+  }
+
+  [ToastMessageType.ONCHAIN_TRANSACTION_MINED]: {
+    transactionHash: string
+  }
+
+  [ToastMessageType.ONCHAIN_TRANSACTION_FAILED]: {
+    transactionHash: string
   }
 }
 
