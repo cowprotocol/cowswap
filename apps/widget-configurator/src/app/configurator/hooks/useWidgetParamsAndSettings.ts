@@ -20,7 +20,7 @@ const getBaseUrl = (): string => {
 
 const DEFAULT_BASE_URL = getBaseUrl()
 
-export function useWidgetParams(configuratorState: ConfiguratorState, standaloneMode: boolean): CowSwapWidgetParams {
+export function useWidgetParams(configuratorState: ConfiguratorState): CowSwapWidgetParams {
   return useMemo(() => {
     const {
       chainId,
@@ -36,6 +36,8 @@ export function useWidgetParams(configuratorState: ConfiguratorState, standalone
       defaultColors,
       partnerFeeBps,
       partnerFeeRecipient,
+      standaloneMode,
+      disableToastMessages,
     } = configuratorState
 
     const themeColors = {
@@ -49,7 +51,7 @@ export function useWidgetParams(configuratorState: ConfiguratorState, standalone
       height: '640px',
       chainId,
       tokenLists: tokenLists.filter((list) => list.enabled).map((list) => list.url),
-      baseUrl: DEFAULT_BASE_URL,
+      baseUrl: 'https://swap-dev-git-feat-snackbars-from-events-11-cowswap.vercel.app', // TODO: Leave default DEFAULT_BASE_URL,
       tradeType: currentTradeType,
       sell: { asset: sellToken, amount: sellTokenAmount ? sellTokenAmount.toString() : undefined },
       buy: { asset: buyToken, amount: buyTokenAmount?.toString() },
@@ -68,6 +70,7 @@ export function useWidgetParams(configuratorState: ConfiguratorState, standalone
       },
 
       standaloneMode,
+      disableToastMessages,
 
       partnerFee:
         partnerFeeBps > 0
@@ -79,5 +82,5 @@ export function useWidgetParams(configuratorState: ConfiguratorState, standalone
     }
 
     return params
-  }, [configuratorState, standaloneMode])
+  }, [configuratorState])
 }
