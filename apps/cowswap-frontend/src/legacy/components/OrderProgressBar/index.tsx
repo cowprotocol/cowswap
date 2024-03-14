@@ -26,6 +26,8 @@ import { Stepper, StepProps } from 'common/pure/Stepper'
 
 import { ProgressBarWrapper } from './styled'
 
+import { AMM_LOGOS } from '../AMMsLogo'
+
 const REFRESH_INTERVAL_MS = ms`0.2s`
 const COW_STATE_SECONDS = ms`0.03s`
 const SHOW_CONFIRMED_MS = ms`4s`
@@ -266,7 +268,16 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
             <p>Solver ranking</p>
             <ol>
               {solverCompetition?.map((entry) => {
-                return <li key={entry.solver}>{entry.solver}</li>
+                const imageProps = AMM_LOGOS[entry.solver] || AMM_LOGOS.default
+
+                return (
+                  <li key={entry.solver}>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                      <img style={{ height: '20px', width: '20px', marginRight: '5px' }} {...imageProps} />
+                      <span>{entry.solver}</span>
+                    </div>
+                  </li>
+                )
               })}
             </ol>
             {/*{solverCompetition && solverCompetition.length > 1 && (*/}
