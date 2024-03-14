@@ -5,8 +5,11 @@ import progressBarStep1a from '@cowprotocol/assets/cow-swap/progress-bar-step1a.
 import progressBarStep2a from '@cowprotocol/assets/cow-swap/progress-bar-step2a.png'
 import progressBarStep2b from '@cowprotocol/assets/cow-swap/progress-bar-step2b.png'
 import progressBarStep3 from '@cowprotocol/assets/cow-swap/progress-bar-step3.png'
+import { isSellOrder } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { TokenAmount } from '@cowprotocol/ui'
 import { useIsSmartContractWallet } from '@cowprotocol/wallet'
+import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useTransition } from '@react-spring/web'
 import ms from 'ms.macro'
@@ -246,26 +249,32 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
         localSteps[1].stepState = 'finished'
         localSteps[2].stepState = 'finished'
         localSteps[3].stepState = 'finished'
+
+        const isSell = order && isSellOrder(order.kind)
+        const displayToken = isSell ? order?.outputToken : order?.inputToken
+        const solution = solverCompetition && solverCompetition[0]
+        const displayAmount =
+          displayToken &&
+          solution &&
+          CurrencyAmount.fromRawAmount(displayToken, isSell ? solution?.buyAmount : solution?.sellAmount)
         return (
           <div>
-            <span>You received {solverCompetition && solverCompetition[0].buyAmount}!</span>
+            <span>
+              You received <TokenAmount amount={displayAmount} tokenSymbol={displayToken} />!
+            </span>
 
             <p>Solver ranking</p>
-            <ul>
+            <ol>
               {solverCompetition?.map((entry) => {
-                return (
-                  <li key={entry.solver}>
-                    {entry.solver} - {entry.sellAmount} / {entry.buyAmount}
-                  </li>
-                )
+                return <li key={entry.solver}>{entry.solver}</li>
               })}
-            </ul>
-            {solverCompetition && solverCompetition.length > 1 && (
-              <p>
-                You would have gotten {solverCompetition[1].sellAmount} / {solverCompetition[1].sellAmount} on{' '}
-                {solverCompetition[1].solver}!
-              </p>
-            )}
+            </ol>
+            {/*{solverCompetition && solverCompetition.length > 1 && (*/}
+            {/*  <p>*/}
+            {/*    You would have gotten {solverCompetition[1].sellAmount} / {solverCompetition[1].sellAmount} on{' '}*/}
+            {/*    {solverCompetition[1].solver}!*/}
+            {/*  </p>*/}
+            {/*)}*/}
             <Stepper steps={localSteps} />
           </div>
         )
