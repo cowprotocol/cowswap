@@ -162,7 +162,7 @@ function finalizeEthFlowTx(
       addSnackbar({
         content: (
           <TransactionContentWithLink transactionHash={hash}>
-            <>Failed to place order selling ${nativeCurrencySymbol}</>
+            <>Failed to place order selling {nativeCurrencySymbol}</>
           </TransactionContentWithLink>
         ),
         id: hash,
@@ -224,7 +224,7 @@ function finalizeOnChainCancellation(
     addSnackbar({
       content: (
         <TransactionContentWithLink transactionHash={hash}>
-          <>Failed to cancel order selling ${sellTokenSymbol}</>
+          <>Failed to cancel order selling {sellTokenSymbol}</>
         </TransactionContentWithLink>
       ),
       id: hash,
