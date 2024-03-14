@@ -97,8 +97,14 @@ const HookItemInfo = styled.div`
   }
 
   dd {
+    display: flex;
+    align-items: center;
+    padding: 0;
+
     img {
       width: 20px;
+      vertical-align: middle;
+      margin-right: 10px;
     }
   }
 

@@ -1,15 +1,17 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 
+import { HookDappInternal, HookDappType } from '@cowprotocol/types'
 import { ButtonPrimary, UI } from '@cowprotocol/ui'
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { formatUnits } from 'ethers/lib/utils'
 import styled from 'styled-components/macro'
 
+import { HookDappApiContext } from 'modules/hooks/context'
+
 import gnoLogo from './gnosis-logo.svg'
 
-import { SBC_DEPOSIT_CONTRACT_ADDRESS, useAddHook, useSBCDepositContract } from '../../hooks'
-import { HookDappInternal, HookDappType } from '../../types'
+import { SBC_DEPOSIT_CONTRACT_ADDRESS, useSBCDepositContract } from '../../hooks'
 
 const TITLE = 'Claim GNO from validators'
 const DESCRIPTION = 'Allows you to withdraw the rewards from your Gnosis validators.'
@@ -19,6 +21,17 @@ const Wrapper = styled.div`
   flex-flow: column wrap;
 
   flex-grow: 1;
+`
+
+const Link = styled.button`
+  border: none;
+  padding: 0;
+  text-decoration: underline;
+  display: text;
+  cursor: pointer;
+  background: none;
+  color: white;
+  margin: 10px 0;
 `
 
 const Header = styled.div`
@@ -81,7 +94,7 @@ export const PRE_CLAIM_GNO: HookDappInternal = {
 }
 
 export function ClaimGnoHookApp() {
-  const addHook = useAddHook()
+  const hookDappApiContext = useContext(HookDappApiContext)
   const SbcDepositContract = useSBCDepositContract()
   const [claimable, setClaimable] = useState<BigNumber | undefined>(undefined)
   const [gasLimit, setGasLimit] = useState<BigNumber | undefined>(undefined)
@@ -120,11 +133,11 @@ export function ClaimGnoHookApp() {
   }, [SbcDepositContract, setClaimable])
 
   const clickOnAddHook = useCallback(() => {
-    if (!callData || !gasLimit) {
+    if (!callData || !gasLimit || !hookDappApiContext) {
       return
     }
 
-    addHook(
+    hookDappApiContext.addHook(
       {
         hook: {
           callData,
@@ -135,10 +148,14 @@ export function ClaimGnoHookApp() {
       },
       true
     )
-  }, [callData, gasLimit, addHook])
+  }, [callData, gasLimit, hookDappApiContext])
 
   if (!callData) {
     return 'Unsupported network. Please change to Gnosis Chain'
+  }
+
+  if (!hookDappApiContext) {
+    return 'Loading...'
   }
 
   return (
@@ -151,6 +168,14 @@ export function ClaimGnoHookApp() {
         <ClaimableAmount loading={loading} claimable={claimable} error={error} />
       </ContentWrapper>
       {claimable && !error && <ButtonPrimary onClick={clickOnAddHook}>+Add Pre-hook</ButtonPrimary>}
+      <Link
+        onClick={(e) => {
+          e.preventDefault()
+          hookDappApiContext.closeHookDaap()
+        }}
+      >
+        Close
+      </Link>
     </Wrapper>
   )
 }
