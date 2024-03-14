@@ -1,6 +1,6 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 
-import { Command } from '@cowprotocol/types'
+import { Command, HookDapp, HookDappApi } from '@cowprotocol/types'
 import { UI } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -8,8 +8,9 @@ import styled from 'styled-components/macro'
 
 import { NewModal } from 'common/pure/NewModal'
 
+import { HookDappApiContext } from '../context'
 import { POST_HOOK_REGISTRY, PRE_HOOK_REGISTRY } from '../hookRegistry'
-import { HookDapp } from '../types'
+import { useAddHook } from '../hooks'
 import { isHookDappIframe } from '../utils'
 
 const MODAL_MAX_WIDTH = 450
@@ -120,6 +121,8 @@ interface HookStoreModal {
 export function HookStoreModal({ onDismiss, isPreHook }: HookStoreModal) {
   const { chainId } = useWalletInfo()
   const [selectedDaap, setSelectedDapp] = useState<HookDapp | null>(null)
+  const addHook = useAddHook()
+
   const dapps = isPreHook ? PRE_HOOK_REGISTRY[chainId] : POST_HOOK_REGISTRY[chainId]
 
   const title = selectedDaap ? selectedDaap.name : 'Hook Store'
@@ -132,19 +135,32 @@ export function HookStoreModal({ onDismiss, isPreHook }: HookStoreModal) {
     }
   }, [onDismiss, selectedDaap])
 
+  const hookDaapApi = useMemo<HookDappApi>(() => {
+    return {
+      addHook: (hookToAdd, isPreHook) => {
+        const hook = addHook(hookToAdd, isPreHook)
+        onDismiss()
+        return hook
+      },
+      closeHookDaap: onDismissModal,
+    }
+  }, [addHook, onDismissModal, onDismiss])
+
   return (
     <Wrapper>
-      <NewModal modalMode={!selectedDaap} title={title} onDismiss={onDismissModal} maxWidth={MODAL_MAX_WIDTH}>
-        {selectedDaap ? (
-          <HookDaapUi dapp={selectedDaap} />
-        ) : (
-          <HookDappsList>
-            {dapps.map((dapp) => (
-              <HookDappItem key={dapp.name} dapp={dapp} onSelect={setSelectedDapp} />
-            ))}
-          </HookDappsList>
-        )}
-      </NewModal>
+      <HookDappApiContext.Provider value={hookDaapApi}>
+        <NewModal modalMode={!selectedDaap} title={title} onDismiss={onDismissModal} maxWidth={MODAL_MAX_WIDTH}>
+          {selectedDaap ? (
+            <HookDaapUi dapp={selectedDaap} />
+          ) : (
+            <HookDappsList>
+              {dapps.map((dapp) => (
+                <HookDappItem key={dapp.name} dapp={dapp} onSelect={setSelectedDapp} />
+              ))}
+            </HookDappsList>
+          )}
+        </NewModal>
+      </HookDappApiContext.Provider>
     </Wrapper>
   )
 }

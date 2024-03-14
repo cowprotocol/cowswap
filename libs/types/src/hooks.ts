@@ -1,6 +1,7 @@
 import { ReactNode } from 'react'
 
 import { latest } from '@cowprotocol/app-data'
+import { Command } from '.'
 
 interface HookInfoPayload {
   hookDetails: CowHookDetails
@@ -44,4 +45,12 @@ export interface HookDappInternal extends HookDappBase {
 export interface HookDappIframe extends HookDappBase {
   type: HookDappType.IFRAME
   url: string
+}
+
+export type AddHook = (hookToAdd: CowHookCreation, isPreHook: boolean) => CowHookDetails
+export type RemoveHook = (uuid: string, isPreHook: boolean) => void
+
+export interface HookDappApi {
+  addHook: AddHook
+  closeHookDaap: Command
 }

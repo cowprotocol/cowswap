@@ -1,6 +1,7 @@
 import { useAtomValue } from 'jotai'
 import { useState } from 'react'
 
+import { CowHookDetails } from '@cowprotocol/types'
 import { ButtonSecondaryAlt, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
@@ -14,7 +15,6 @@ import { HookStoreModal } from './HookStoreModal'
 
 import { useRemoveHook } from '../hooks'
 import { hooksAtom } from '../state/hookDetailsAtom'
-import { CowHookDetails } from '../types'
 
 const Wrapper = styled.div`
   display: flex;

@@ -1,7 +1,7 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { HookDapp, HookDappIframe, HookDappType } from '@cowprotocol/types'
 
 import { PRE_CLAIM_GNO } from './hookDapps/ClaimGnoHookApp'
-import { HookDapp, HookDappIframe, HookDappType } from './types'
 
 const FAKE_URL = 'https://google.com'
 
