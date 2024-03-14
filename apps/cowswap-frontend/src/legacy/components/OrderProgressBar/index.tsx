@@ -112,8 +112,8 @@ function CountDown() {
   }, [])
 
   return (
-    <div>
-      <span>{countdown}</span>
+    <div style={{ display: 'flex', flexDirection: 'column' }}>
+      <strong style={{ alignSelf: 'center', fontSize: '5em' }}>{countdown}</strong>
       <p>The auction has started! Solvers are competing to find the best solution for you...</p>
     </div>
   )
@@ -260,7 +260,7 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
         return (
           <div>
             <span>
-              You received <TokenAmount amount={displayAmount} tokenSymbol={displayToken} />!
+              You {isSell ? 'received' : 'sold'} <TokenAmount amount={displayAmount} tokenSymbol={displayToken} />!
             </span>
 
             <p>Solver ranking</p>
