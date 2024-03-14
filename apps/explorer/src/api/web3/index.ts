@@ -1,7 +1,7 @@
 import Web3 from 'web3'
 import { parseUserAgent } from 'detect-browser'
 
-import { ETH_NODE_URL, INFURA_ID } from 'const'
+import { ETH_NODE_URL, NODE_PROVIDER_ID } from 'const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 // TODO connect to mainnet if we need AUTOCONNECT at all
@@ -42,26 +42,10 @@ export function createWeb3Api(provider?: string): Web3 {
   return web3
 }
 
-const INFURA_NETWORK_NAME_MAP: Record<SupportedChainId, string> = {
-  [SupportedChainId.MAINNET]: 'Mainnet',
-  [SupportedChainId.GNOSIS_CHAIN]: 'xDai',
-  [SupportedChainId.SEPOLIA]: 'Sepolia',
-}
-
-function infuraProvider(networkId: SupportedChainId): string {
-  // INFURA_ID relies on mesa `config` file logic.
-  // We can be independent of that config by relying on the env var directly
-  if (!INFURA_ID) {
-    throw new Error(`INFURA_ID not set`)
-  }
-
-  const network = INFURA_NETWORK_NAME_MAP[networkId]
-
-  if (isWebsocketConnection()) {
-    return `wss://${network}.infura.io/ws/v3/${INFURA_ID}`
-  } else {
-    return `https://${network}.infura.io/v3/${INFURA_ID}`
-  }
+const PROVIDER_ENDPOINTS: Record<SupportedChainId, string> = {
+  [SupportedChainId.MAINNET]: 'https://eth-mainnet.nodereal.io/v1/' + NODE_PROVIDER_ID,
+  [SupportedChainId.GNOSIS_CHAIN]: 'https://rpc.gnosis.gateway.fm/',
+  [SupportedChainId.SEPOLIA]: 'https://eth-sepolia.nodereal.io/v1/' + NODE_PROVIDER_ID,
 }
 
 function isWebsocketConnection(): boolean {
@@ -84,16 +68,12 @@ function isWebsocketConnection(): boolean {
     return false
   }
 
-  return true
+  // TODO: fix this to return true when the issue with WSS is fixed
+  return false
 }
 
-// For now only infura provider is available
 export function getProviderByNetwork(networkId: SupportedChainId): string | undefined {
-  if (networkId === SupportedChainId.GNOSIS_CHAIN) {
-    return 'https://rpc.gnosis.gateway.fm/'
-  }
-
-  return infuraProvider(networkId)
+  return PROVIDER_ENDPOINTS[networkId]
 }
 
 // Approach 2: update the provider in a single web3 instance
