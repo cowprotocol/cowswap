@@ -1,6 +1,7 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { HookDapp, HookDappIframe, HookDappType } from '@cowprotocol/types'
 
+import { PRE_BUILD } from './hookDapps/BuildHookApp'
 import { PRE_CLAIM_GNO } from './hookDapps/ClaimGnoHookApp'
 import bridgeImg from './images/bridge.svg'
 import buildImg from './images/build.png'
@@ -70,15 +71,6 @@ const POST_MAKER: HookDappIframe = {
   type: HookDappType.IFRAME,
   url: FAKE_URL,
   image: daiImg,
-  version: FAKE_VERSION,
-}
-
-const PRE_BUILD: HookDappIframe = {
-  name: 'Build your own Pre-hook',
-  description: 'Add an arbitrary calldata to be executed before your hook',
-  type: HookDappType.IFRAME,
-  url: FAKE_URL,
-  image: buildImg,
   version: FAKE_VERSION,
 }
 
