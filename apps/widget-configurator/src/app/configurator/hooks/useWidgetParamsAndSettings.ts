@@ -51,7 +51,7 @@ export function useWidgetParams(configuratorState: ConfiguratorState): CowSwapWi
       height: '640px',
       chainId,
       tokenLists: tokenLists.filter((list) => list.enabled).map((list) => list.url),
-      baseUrl: 'https://swap-dev-git-feat-snackbars-from-events-8-cowswap.vercel.app', // TODO: Leave default DEFAULT_BASE_URL,
+      baseUrl: 'https://swap-dev-git-feat-snackbars-from-events-11-cowswap.vercel.app', // TODO: Leave default DEFAULT_BASE_URL,
       tradeType: currentTradeType,
       sell: { asset: sellToken, amount: sellTokenAmount ? sellTokenAmount.toString() : undefined },
       buy: { asset: buyToken, amount: buyTokenAmount?.toString() },
