@@ -2,6 +2,7 @@ import { ReactNode } from 'react'
 
 import { latest } from '@cowprotocol/app-data'
 import { Command } from '.'
+import { BigNumber } from 'ethers'
 
 interface HookInfoPayload {
   hookDetails: CowHookDetails
@@ -24,6 +25,9 @@ export interface CowHookDetails {
   uuid: string
   hook: CowHook
   dapp: HookDapp
+  output: {
+    amount: BigNumber
+  }
 }
 
 export type CowHookCreation = Omit<CowHookDetails, 'uuid'>

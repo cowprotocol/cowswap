@@ -80,8 +80,8 @@ const LoadingLabel = styled.div`
 //  - Master: 0x4fef25519256e24a1fc536f7677152da742fe3ef
 
 // Mocking for the DEMO
-// const TEST_CLAIM_ADDRESS = '0x0B98057eA310F4d31F2a452B414647007d1645d9'
-const TEST_CLAIM_ADDRESS = '0xd4f42a7ce74947db59678324fd3b05ac47063d1d'
+// https://gnosischa.in/validator/12345#withdrawals
+const TEST_CLAIM_ADDRESS = '0x60c0a957542b6236b292d6d53a1d7ec0a9c746e9'
 
 export const PRE_CLAIM_GNO: HookDappInternal = {
   name: TITLE,
@@ -133,7 +133,7 @@ export function ClaimGnoHookApp() {
   }, [SbcDepositContract, setClaimable])
 
   const clickOnAddHook = useCallback(() => {
-    if (!callData || !gasLimit || !hookDappApiContext) {
+    if (!callData || !gasLimit || !hookDappApiContext || !claimable) {
       return
     }
 
@@ -145,10 +145,14 @@ export function ClaimGnoHookApp() {
           target: SBC_DEPOSIT_CONTRACT_ADDRESS,
         },
         dapp: PRE_CLAIM_GNO,
+        output: {
+          // TODO: Model the potential output tokens. Ideally, this should be inferred by the calldata using a simulator such us Tenderly
+          amount: claimable,
+        },
       },
       true
     )
-  }, [callData, gasLimit, hookDappApiContext])
+  }, [callData, gasLimit, hookDappApiContext, claimable])
 
   if (!callData) {
     return 'Unsupported network. Please change to Gnosis Chain'

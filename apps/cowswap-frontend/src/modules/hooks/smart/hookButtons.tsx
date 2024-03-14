@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { CowHookDetails } from '@cowprotocol/types'
 import { ButtonSecondaryAlt, UI } from '@cowprotocol/ui'
 
+import { formatUnits } from 'ethers/lib/utils'
 import styled from 'styled-components/macro'
 
 import { Link } from 'legacy/components/Link'
@@ -196,7 +197,7 @@ interface HookItemProp {
 }
 
 function HookItem({ hookDetails, isPreHook, removeHook }: HookItemProp) {
-  const { uuid, hook, dapp } = hookDetails
+  const { uuid, hook, dapp, output } = hookDetails
   const { callData, gasLimit, target } = hook
 
   const [showDetails, setShowDetails] = useState(false)
@@ -214,7 +215,7 @@ function HookItem({ hookDetails, isPreHook, removeHook }: HookItemProp) {
           </dd>
 
           <dt>Amount</dt>
-          <dd>52.30216 GNO</dd>
+          <dd>{formatUnits(output.amount, 18)} GNO</dd>
         </dl>
       </HookItemInfo>
       <SeeDetailsButton
