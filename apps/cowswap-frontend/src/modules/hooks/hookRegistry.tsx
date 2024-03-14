@@ -2,26 +2,40 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { HookDapp, HookDappIframe, HookDappType } from '@cowprotocol/types'
 
 import { PRE_CLAIM_GNO } from './hookDapps/ClaimGnoHookApp'
+import bridgeImg from './images/bridge.svg'
+import buildImg from './images/build.png'
+import cowAMM from './images/cowAMM.png'
+import curveImg from './images/curve.svg'
+import daiImg from './images/dai.svg'
 
 const FAKE_URL = 'https://google.com'
 
 const FAKE_VERSION = 'v1.0.0'
-const FAKE_IMAGE = 'https://swap.cow.fi/images/og-meta-cowswap.png?v=2'
+// const FAKE_IMAGE = 'https://swap.cow.fi/images/og-meta-cowswap.png?v=2'
 
 const PRE_CURVE: HookDappIframe = {
   name: 'Withdraw from Curve Pools',
   description: 'Allow you to un-stake and withdraw funds from Curve',
   type: HookDappType.IFRAME,
   url: FAKE_URL,
-  image: FAKE_IMAGE,
+  image: curveImg,
   version: FAKE_VERSION,
 }
-const PRE_NFT: HookDappIframe = {
-  name: 'Wrap NFT',
-  description: 'Wrap your NFT into an ERC20',
+// const PRE_NFT: HookDappIframe = {
+//   name: 'Wrap NFT',
+//   description: 'Wrap your NFT into an ERC20',
+//   type: HookDappType.IFRAME,
+//   url: FAKE_URL,
+//   image: FAKE_IMAGE,
+//   version: FAKE_VERSION,
+// }
+
+const PRE_COWAMM: HookDappIframe = {
+  name: 'Cow AM: Remove liquidity',
+  description: 'Remove liquidity from your pool',
   type: HookDappType.IFRAME,
   url: FAKE_URL,
-  image: FAKE_IMAGE,
+  image: cowAMM,
   version: FAKE_VERSION,
 }
 
@@ -30,7 +44,7 @@ const PRE_MAKER: HookDappIframe = {
   description: 'Borrow DAI by creating a Vault',
   type: HookDappType.IFRAME,
   url: FAKE_URL,
-  image: FAKE_IMAGE,
+  image: daiImg,
   version: FAKE_VERSION,
 }
 
@@ -46,7 +60,7 @@ const POST_BRIDGE: HookDappIframe = {
   description: 'Bridge tokes to another layer',
   type: HookDappType.IFRAME,
   url: FAKE_URL,
-  image: FAKE_IMAGE,
+  image: bridgeImg,
   version: FAKE_VERSION,
 }
 
@@ -55,16 +69,34 @@ const POST_MAKER: HookDappIframe = {
   description: 'Return borrowed DAI',
   type: HookDappType.IFRAME,
   url: FAKE_URL,
-  image: FAKE_IMAGE,
+  image: daiImg,
   version: FAKE_VERSION,
 }
 
-const POST_HOOK_DAAPS_ALL = [POST_BRIDGE, POST_MAKER]
+const PRE_BUILD: HookDappIframe = {
+  name: 'Build your own Pre-hook',
+  description: 'Add an arbitrary calldata to be executed before your hook',
+  type: HookDappType.IFRAME,
+  url: FAKE_URL,
+  image: buildImg,
+  version: FAKE_VERSION,
+}
+
+const POST_BUILD: HookDappIframe = {
+  name: 'Build your own Post-hook',
+  description: 'Add an arbitrary calldata to be executed after your hook',
+  type: HookDappType.IFRAME,
+  url: FAKE_URL,
+  image: buildImg,
+  version: FAKE_VERSION,
+}
+
+const POST_HOOK_DAAPS_ALL = [POST_BRIDGE, POST_MAKER, POST_BUILD]
 
 export const PRE_HOOK_REGISTRY: Record<SupportedChainId, HookDapp[]> = {
-  [SupportedChainId.MAINNET]: [PRE_CURVE, PRE_NFT, PRE_MAKER],
-  [SupportedChainId.GNOSIS_CHAIN]: [PRE_CLAIM_GNO, PRE_CURVE, PRE_NFT, PRE_MAKER],
-  [SupportedChainId.SEPOLIA]: [PRE_NFT],
+  [SupportedChainId.MAINNET]: [PRE_CURVE, PRE_COWAMM, PRE_MAKER, PRE_BUILD],
+  [SupportedChainId.GNOSIS_CHAIN]: [PRE_CLAIM_GNO, PRE_CURVE, PRE_COWAMM, PRE_MAKER, PRE_BUILD],
+  [SupportedChainId.SEPOLIA]: [PRE_COWAMM, PRE_BUILD],
 }
 
 export const POST_HOOK_REGISTRY: Record<SupportedChainId, HookDapp[]> = {
