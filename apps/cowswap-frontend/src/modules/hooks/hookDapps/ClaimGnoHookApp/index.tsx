@@ -81,7 +81,7 @@ const LoadingLabel = styled.div`
 
 // Mocking for the DEMO
 // https://gnosischa.in/validator/12345#withdrawals
-const TEST_CLAIM_ADDRESS = '0x60c0a957542b6236b292d6d53a1d7ec0a9c746e9'
+const TEST_CLAIM_ADDRESS = '0x4354a28c70e33032619df646b6dd0d39d0c75916'
 
 export const PRE_CLAIM_GNO: HookDappInternal = {
   name: TITLE,

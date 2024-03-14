@@ -1,8 +1,10 @@
 import { useAtomValue } from 'jotai'
 import { useState } from 'react'
 
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CowHookDetails } from '@cowprotocol/types'
 import { ButtonSecondaryAlt, UI } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { formatUnits } from 'ethers/lib/utils'
 import styled from 'styled-components/macro'
@@ -40,7 +42,15 @@ const List = styled.ul`
   font-size: 0.8rem;
 `
 
-const SeeDetailsButton = styled.a``
+const CustomLink = styled.a`
+  margin: 0.5em 0;
+  padding: 0 10em;
+  text-decoration: none;
+
+  :hover {
+    text-decoration: underline;
+  }
+`
 
 const HookList = styled.ul`
   padding-right: 10px;
@@ -123,6 +133,7 @@ const HookItemInfo = styled.div`
 `
 
 export function PreHookButton() {
+  const { chainId } = useWalletInfo()
   const [open, setOpen] = useState(false)
   const hooks = useAtomValue(hooksAtom)
   const removeHook = useRemoveHook()
@@ -131,7 +142,7 @@ export function PreHookButton() {
       {hooks.preHooks.length > 0 && (
         <HookList>
           {hooks.preHooks.map((hookDetails, index) => (
-            <HookItem key={index} hookDetails={hookDetails} removeHook={removeHook} isPreHook />
+            <HookItem key={index} chainId={chainId} hookDetails={hookDetails} removeHook={removeHook} isPreHook />
           ))}
         </HookList>
       )}
@@ -156,6 +167,7 @@ export function PreHookButton() {
 }
 
 export function PostHookButton() {
+  const { chainId } = useWalletInfo()
   const [open, setOpen] = useState(false)
   const hooks = useAtomValue(hooksAtom)
   const removeHook = useRemoveHook()
@@ -165,7 +177,7 @@ export function PostHookButton() {
       {hooks.postHooks && (
         <HookList>
           {hooks.postHooks.map((hook, index) => (
-            <HookItem key={index} hookDetails={hook} removeHook={removeHook} isPreHook={false} />
+            <HookItem key={index} chainId={chainId} hookDetails={hook} removeHook={removeHook} isPreHook={false} />
           ))}
         </HookList>
       )}
@@ -191,12 +203,13 @@ function HookTooltip({ isPreHook }: { isPreHook: boolean }) {
 }
 
 interface HookItemProp {
+  chainId: SupportedChainId
   hookDetails: CowHookDetails
   isPreHook: boolean
   removeHook: (uuid: string, isPreHook: boolean) => void
 }
 
-function HookItem({ hookDetails, isPreHook, removeHook }: HookItemProp) {
+function HookItem({ chainId, hookDetails, isPreHook, removeHook }: HookItemProp) {
   const { uuid, hook, dapp, output } = hookDetails
   const { callData, gasLimit, target } = hook
 
@@ -218,15 +231,24 @@ function HookItem({ hookDetails, isPreHook, removeHook }: HookItemProp) {
           <dd>{formatUnits(output.amount, 18)} GNO</dd>
         </dl>
       </HookItemInfo>
-      <SeeDetailsButton
+
+      <CustomLink
+        target="_blank"
+        rel="noreferrer"
+        href={`https://dashboard.tenderly.co/gp-v2/watch-tower-prod/simulator/new?network=${chainId}&contractAddress=${target}&rawFunctionInput=${callData}`}
+      >
+        🧪 Simulate on Tenderly
+      </CustomLink>
+
+      <CustomLink
         onClick={(e) => {
           e.preventDefault()
           setShowDetails((details) => !details)
         }}
         href="#"
       >
-        See hook details
-      </SeeDetailsButton>
+        👀 See hook details
+      </CustomLink>
 
       {showDetails && (
         <dl>
