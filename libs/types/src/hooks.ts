@@ -3,6 +3,7 @@ import { ReactNode } from 'react'
 import { latest } from '@cowprotocol/app-data'
 import { Command } from '.'
 import { BigNumber } from 'ethers'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 interface HookInfoPayload {
   hookDetails: CowHookDetails
@@ -55,6 +56,8 @@ export type AddHook = (hookToAdd: CowHookCreation, isPreHook: boolean) => CowHoo
 export type RemoveHook = (uuid: string, isPreHook: boolean) => void
 
 export interface HookDappContext {
+  chainId: SupportedChainId
+  account?: string
   addHook: AddHook
   close: Command
 }

@@ -119,7 +119,7 @@ interface HookStoreModal {
 }
 
 export function HookStoreModal({ onDismiss, isPreHook }: HookStoreModal) {
-  const { chainId } = useWalletInfo()
+  const { chainId, account } = useWalletInfo()
   const [selectedDapp, setSelectedDapp] = useState<HookDapp | null>(null)
   const addHook = useAddHook()
 
@@ -137,6 +137,8 @@ export function HookStoreModal({ onDismiss, isPreHook }: HookStoreModal) {
 
   const hookDappContext = useMemo<HookDappContextType>(() => {
     return {
+      chainId,
+      account,
       addHook: (hookToAdd, isPreHook) => {
         const hook = addHook(hookToAdd, isPreHook)
         onDismiss()
@@ -144,7 +146,7 @@ export function HookStoreModal({ onDismiss, isPreHook }: HookStoreModal) {
       },
       close: onDismissModal,
     }
-  }, [addHook, onDismissModal, onDismiss])
+  }, [addHook, onDismissModal, onDismiss, chainId, account])
 
   return (
     <Wrapper>
