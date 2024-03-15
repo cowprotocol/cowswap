@@ -6,7 +6,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 
 import styled from 'styled-components/macro'
 
-import { HookDappApiContext } from 'modules/hooks/context'
+import { HookDappContext } from 'modules/hooks/context'
 
 import buildImg from '../../images/build.png'
 
@@ -100,7 +100,7 @@ const Row = styled.div`
 // `
 
 export function ClaimGnoHookApp() {
-  const hookDappApiContext = useContext(HookDappApiContext)
+  const hookDappContext = useContext(HookDappContext)
   const [hook, setHook] = useState<CowHook>({
     target: '',
     callData: '',
@@ -109,11 +109,11 @@ export function ClaimGnoHookApp() {
 
   const clickOnAddHook = useCallback(() => {
     const { callData, gasLimit, target } = hook
-    if (!hookDappApiContext || !callData || !gasLimit || !target) {
+    if (!hookDappContext || !callData || !gasLimit || !target) {
       return
     }
 
-    hookDappApiContext.addHook(
+    hookDappContext.addHook(
       {
         hook: hook,
         dapp: PRE_BUILD,
@@ -124,9 +124,9 @@ export function ClaimGnoHookApp() {
       },
       true
     )
-  }, [hook, hookDappApiContext])
+  }, [hook, hookDappContext])
 
-  if (!hookDappApiContext) {
+  if (!hookDappContext) {
     return 'Loading...'
   }
 
@@ -167,7 +167,7 @@ export function ClaimGnoHookApp() {
       <Link
         onClick={(e) => {
           e.preventDefault()
-          hookDappApiContext.closeHookDaap()
+          hookDappContext.close()
         }}
       >
         Close

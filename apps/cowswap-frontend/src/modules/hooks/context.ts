@@ -1,5 +1,5 @@
 import { createContext } from 'react'
 
-import { HookDappApi } from '@cowprotocol/types'
+import { HookDappContext as HookDappContextType } from '@cowprotocol/types'
 
-export const HookDappApiContext = createContext<HookDappApi | undefined>(undefined)
+export const HookDappContext = createContext<HookDappContextType | undefined>(undefined)

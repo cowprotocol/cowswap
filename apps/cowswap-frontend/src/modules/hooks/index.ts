@@ -1,3 +1,3 @@
 export * from './smart/hookButtons'
 export { useHooks } from './hooks'
-export { HookDappApiContext } from './context'
+export { HookDappContext } from './context'

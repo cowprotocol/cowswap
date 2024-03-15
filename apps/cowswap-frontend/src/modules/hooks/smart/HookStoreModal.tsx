@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from 'react'
 
-import { Command, HookDapp, HookDappApi } from '@cowprotocol/types'
+import { Command, HookDapp, HookDappContext as HookDappContextType } from '@cowprotocol/types'
 import { UI } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -8,7 +8,7 @@ import styled from 'styled-components/macro'
 
 import { NewModal } from 'common/pure/NewModal'
 
-import { HookDappApiContext } from '../context'
+import { HookDappContext } from '../context'
 import { POST_HOOK_REGISTRY, PRE_HOOK_REGISTRY } from '../hookRegistry'
 import { useAddHook } from '../hooks'
 import { isHookDappIframe } from '../utils'
@@ -120,38 +120,38 @@ interface HookStoreModal {
 
 export function HookStoreModal({ onDismiss, isPreHook }: HookStoreModal) {
   const { chainId } = useWalletInfo()
-  const [selectedDaap, setSelectedDapp] = useState<HookDapp | null>(null)
+  const [selectedDapp, setSelectedDapp] = useState<HookDapp | null>(null)
   const addHook = useAddHook()
 
   const dapps = isPreHook ? PRE_HOOK_REGISTRY[chainId] : POST_HOOK_REGISTRY[chainId]
 
-  const title = selectedDaap ? selectedDaap.name : 'Hook Store'
+  const title = selectedDapp ? selectedDapp.name : 'Hook Store'
 
   const onDismissModal = useCallback(() => {
-    if (selectedDaap) {
+    if (selectedDapp) {
       setSelectedDapp(null)
     } else {
       onDismiss()
     }
-  }, [onDismiss, selectedDaap])
+  }, [onDismiss, selectedDapp])
 
-  const hookDaapApi = useMemo<HookDappApi>(() => {
+  const hookDappContext = useMemo<HookDappContextType>(() => {
     return {
       addHook: (hookToAdd, isPreHook) => {
         const hook = addHook(hookToAdd, isPreHook)
         onDismiss()
         return hook
       },
-      closeHookDaap: onDismissModal,
+      close: onDismissModal,
     }
   }, [addHook, onDismissModal, onDismiss])
 
   return (
     <Wrapper>
-      <HookDappApiContext.Provider value={hookDaapApi}>
-        <NewModal modalMode={!selectedDaap} title={title} onDismiss={onDismissModal} maxWidth={MODAL_MAX_WIDTH}>
-          {selectedDaap ? (
-            <HookDaapUi dapp={selectedDaap} />
+      <HookDappContext.Provider value={hookDappContext}>
+        <NewModal modalMode={!selectedDapp} title={title} onDismiss={onDismissModal} maxWidth={MODAL_MAX_WIDTH}>
+          {selectedDapp ? (
+            <HookDappUi dapp={selectedDapp} />
           ) : (
             <HookDappsList>
               {dapps.map((dapp) => (
@@ -160,7 +160,7 @@ export function HookStoreModal({ onDismiss, isPreHook }: HookStoreModal) {
             </HookDappsList>
           )}
         </NewModal>
-      </HookDappApiContext.Provider>
+      </HookDappContext.Provider>
     </Wrapper>
   )
 }
@@ -169,7 +169,7 @@ interface HookDappUiProps {
   dapp: HookDapp
 }
 
-export function HookDaapUi({ dapp }: HookDappUiProps) {
+export function HookDappUi({ dapp }: HookDappUiProps) {
   if (isHookDappIframe(dapp)) {
     // TODO: Create iFrame
     return <>{dapp.name}</>

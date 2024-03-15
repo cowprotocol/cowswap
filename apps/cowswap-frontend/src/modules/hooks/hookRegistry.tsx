@@ -83,7 +83,7 @@ const POST_BUILD: HookDappIframe = {
   version: FAKE_VERSION,
 }
 
-const POST_HOOK_DAAPS_ALL = [POST_BRIDGE, POST_MAKER, POST_BUILD]
+const POST_HOOK_DAPPS_ALL = [POST_BRIDGE, POST_MAKER, POST_BUILD]
 
 export const PRE_HOOK_REGISTRY: Record<SupportedChainId, HookDapp[]> = {
   [SupportedChainId.MAINNET]: [PRE_CURVE, PRE_COWAMM, PRE_MAKER, PRE_BUILD],
@@ -92,7 +92,7 @@ export const PRE_HOOK_REGISTRY: Record<SupportedChainId, HookDapp[]> = {
 }
 
 export const POST_HOOK_REGISTRY: Record<SupportedChainId, HookDapp[]> = {
-  [SupportedChainId.MAINNET]: POST_HOOK_DAAPS_ALL,
-  [SupportedChainId.GNOSIS_CHAIN]: POST_HOOK_DAAPS_ALL,
+  [SupportedChainId.MAINNET]: POST_HOOK_DAPPS_ALL,
+  [SupportedChainId.GNOSIS_CHAIN]: POST_HOOK_DAPPS_ALL,
   [SupportedChainId.SEPOLIA]: [],
 }

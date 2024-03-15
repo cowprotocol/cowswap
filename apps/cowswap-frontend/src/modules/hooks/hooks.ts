@@ -9,7 +9,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { v4 as uuidv4 } from 'uuid'
 
-import { hooksAtom } from '../state/hookDetailsAtom'
+import { hooksAtom } from './state/hookDetailsAtom'
 
 export const SBC_DEPOSIT_CONTRACT_ADDRESS = '0x0B98057eA310F4d31F2a452B414647007d1645d9'
 

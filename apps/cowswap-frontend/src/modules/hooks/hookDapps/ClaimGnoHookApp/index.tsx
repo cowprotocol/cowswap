@@ -7,7 +7,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { formatUnits } from 'ethers/lib/utils'
 import styled from 'styled-components/macro'
 
-import { HookDappApiContext } from 'modules/hooks/context'
+import { HookDappContext } from 'modules/hooks/context'
 
 import gnoLogo from './gnosis-logo.svg'
 
@@ -94,7 +94,7 @@ export const PRE_CLAIM_GNO: HookDappInternal = {
 }
 
 export function ClaimGnoHookApp() {
-  const hookDappApiContext = useContext(HookDappApiContext)
+  const hookDappContext = useContext(HookDappContext)
   const SbcDepositContract = useSBCDepositContract()
   const [claimable, setClaimable] = useState<BigNumber | undefined>(undefined)
   const [gasLimit, setGasLimit] = useState<BigNumber | undefined>(undefined)
@@ -133,11 +133,11 @@ export function ClaimGnoHookApp() {
   }, [SbcDepositContract, setClaimable])
 
   const clickOnAddHook = useCallback(() => {
-    if (!callData || !gasLimit || !hookDappApiContext || !claimable) {
+    if (!callData || !gasLimit || !hookDappContext || !claimable) {
       return
     }
 
-    hookDappApiContext.addHook(
+    hookDappContext.addHook(
       {
         hook: {
           callData,
@@ -152,13 +152,13 @@ export function ClaimGnoHookApp() {
       },
       true
     )
-  }, [callData, gasLimit, hookDappApiContext, claimable])
+  }, [callData, gasLimit, hookDappContext, claimable])
 
   if (!callData) {
     return 'Unsupported network. Please change to Gnosis Chain'
   }
 
-  if (!hookDappApiContext) {
+  if (!hookDappContext) {
     return 'Loading...'
   }
 
@@ -175,7 +175,7 @@ export function ClaimGnoHookApp() {
       <Link
         onClick={(e) => {
           e.preventDefault()
-          hookDappApiContext.closeHookDaap()
+          hookDappContext.close()
         }}
       >
         Close

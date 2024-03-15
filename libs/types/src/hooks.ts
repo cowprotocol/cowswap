@@ -54,7 +54,7 @@ export interface HookDappIframe extends HookDappBase {
 export type AddHook = (hookToAdd: CowHookCreation, isPreHook: boolean) => CowHookDetails
 export type RemoveHook = (uuid: string, isPreHook: boolean) => void
 
-export interface HookDappApi {
+export interface HookDappContext {
   addHook: AddHook
-  closeHookDaap: Command
+  close: Command
 }
