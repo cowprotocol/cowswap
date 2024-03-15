@@ -16,6 +16,7 @@ import { CloseIcon as CloseIconOriginal } from 'common/pure/CloseIcon'
 
 import { HookStoreModal } from './HookStoreModal'
 
+import { HOOKS_TRAMPOLINE_ADDRESS } from '../const'
 import { useRemoveHook } from '../hooks'
 import { hooksAtom } from '../state/hookDetailsAtom'
 
@@ -235,7 +236,7 @@ function HookItem({ chainId, hookDetails, isPreHook, removeHook }: HookItemProp)
       <CustomLink
         target="_blank"
         rel="noreferrer"
-        href={`https://dashboard.tenderly.co/gp-v2/watch-tower-prod/simulator/new?network=${chainId}&contractAddress=${target}&rawFunctionInput=${callData}`}
+        href={`https://dashboard.tenderly.co/gp-v2/watch-tower-prod/simulator/new?network=${chainId}&contractAddress=${target}&rawFunctionInput=${callData}&from=${HOOKS_TRAMPOLINE_ADDRESS}`}
       >
         🧪 Simulate on Tenderly
       </CustomLink>
