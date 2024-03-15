@@ -1,8 +1,8 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { HookDapp, HookDappIframe, HookDappType } from '@cowprotocol/types'
 
-import { PRE_BUILD } from './hookDapps/BuildHookApp'
-import { PRE_CLAIM_GNO } from './hookDapps/ClaimGnoHookApp'
+import { PRE_BUILD } from './dapps/BuildHookApp'
+import { PRE_CLAIM_GNO } from './dapps/ClaimGnoHookApp'
 import bridgeImg from './images/bridge.svg'
 import buildImg from './images/build.png'
 import cowAMM from './images/cowAMM.png'

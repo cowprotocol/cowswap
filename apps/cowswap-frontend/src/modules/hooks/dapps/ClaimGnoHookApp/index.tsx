@@ -74,15 +74,6 @@ const LoadingLabel = styled.div`
   color: var(${UI.COLOR_TEXT2});
 `
 
-// SBCDepositContractProxy:
-//  - Proxy: 0x0B98057eA310F4d31F2a452B414647007d1645d9
-//      - https://gnosisscan.io/address/0x0B98057eA310F4d31F2a452B414647007d1645d9#readProxyContract
-//  - Master: 0x4fef25519256e24a1fc536f7677152da742fe3ef
-
-// Mocking for the DEMO
-// https://gnosischa.in/validator/12345#withdrawals
-const TEST_CLAIM_ADDRESS = '0x4354a28c70e33032619df646b6dd0d39d0c75916'
-
 export const PRE_CLAIM_GNO: HookDappInternal = {
   name: TITLE,
   description: DESCRIPTION,
@@ -93,6 +84,13 @@ export const PRE_CLAIM_GNO: HookDappInternal = {
   version: 'v0.1.1',
 }
 
+/**
+ * Dapp that creates the hook to the connected wallet GNO Rewards.
+ *
+ * Creates the call-data for invoking claimWithdrawal from SBCDepositContractProxy
+ *    - Proxy: 0x0B98057eA310F4d31F2a452B414647007d1645d9 (https://gnosisscan.io/address/0x0B98057eA310F4d31F2a452B414647007d1645d9#readProxyContract)
+ *    - Master: 0x4fef25519256e24a1fc536f7677152da742fe3ef
+ */
 export function ClaimGnoHookApp() {
   const hookDappContext = useContext(HookDappContext)
   const SbcDepositContract = useSBCDepositContract()
@@ -104,15 +102,15 @@ export function ClaimGnoHookApp() {
 
   const SbcDepositContractInterface = SbcDepositContract?.interface
   const callData = useMemo(() => {
-    if (!SbcDepositContractInterface) {
+    if (!SbcDepositContractInterface || !hookDappContext?.account) {
       return null
     }
 
-    return SbcDepositContractInterface.encodeFunctionData('claimWithdrawal', [TEST_CLAIM_ADDRESS])
-  }, [SbcDepositContractInterface])
+    return SbcDepositContractInterface.encodeFunctionData('claimWithdrawal', [hookDappContext.account])
+  }, [SbcDepositContractInterface, hookDappContext])
 
   useEffect(() => {
-    if (!SbcDepositContract) {
+    if (!SbcDepositContract || !hookDappContext?.account) {
       return
     }
     const handleError = (e: any) => {
@@ -121,7 +119,7 @@ export function ClaimGnoHookApp() {
     }
 
     // Get balance
-    SbcDepositContract.withdrawableAmount(TEST_CLAIM_ADDRESS)
+    SbcDepositContract.withdrawableAmount(hookDappContext.account)
       .then((claimable) => {
         console.log('[ClaimGnoHookApp] get claimable', claimable)
         setClaimable(claimable)
@@ -129,8 +127,8 @@ export function ClaimGnoHookApp() {
       .catch(handleError)
 
     // Get gas estimation
-    SbcDepositContract.estimateGas.claimWithdrawal(TEST_CLAIM_ADDRESS).then(setGasLimit).catch(handleError)
-  }, [SbcDepositContract, setClaimable])
+    SbcDepositContract.estimateGas.claimWithdrawal(hookDappContext.account).then(setGasLimit).catch(handleError)
+  }, [SbcDepositContract, setClaimable, hookDappContext])
 
   const clickOnAddHook = useCallback(() => {
     if (!callData || !gasLimit || !hookDappContext || !claimable) {
@@ -154,8 +152,12 @@ export function ClaimGnoHookApp() {
     )
   }, [callData, gasLimit, hookDappContext, claimable])
 
-  if (!callData) {
+  if (!SbcDepositContractInterface) {
     return 'Unsupported network. Please change to Gnosis Chain'
+  }
+
+  if (!hookDappContext?.account) {
+    return 'Connect your wallet first'
   }
 
   if (!hookDappContext) {
