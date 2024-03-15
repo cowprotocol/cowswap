@@ -2,8 +2,8 @@ import { ReactNode } from 'react'
 
 import { latest } from '@cowprotocol/app-data'
 import { Command } from '.'
-import { BigNumber } from 'ethers'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 interface HookInfoPayload {
   hookDetails: CowHookDetails
@@ -26,9 +26,7 @@ export interface CowHookDetails {
   uuid: string
   hook: CowHook
   dapp: HookDapp
-  output: {
-    amount: BigNumber
-  }
+  outputTokens?: CurrencyAmount<Currency>[]
 }
 
 export type CowHookCreation = Omit<CowHookDetails, 'uuid'>

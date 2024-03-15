@@ -2,7 +2,6 @@ import { useCallback, useContext, useState } from 'react'
 
 import { CowHook, HookDappInternal, HookDappType } from '@cowprotocol/types'
 import { ButtonPrimary } from '@cowprotocol/ui'
-import { BigNumber } from '@ethersproject/bignumber'
 
 import styled from 'styled-components/macro'
 
@@ -86,19 +85,6 @@ const Row = styled.div`
   }
 `
 
-// const Amount = styled.div`
-//   font-weight: 600;
-//   margin-top: 0.3em;
-// `
-
-// const ErrorLabel = styled.div`
-//   color: var(${UI.COLOR_RED});
-// `
-
-// const LoadingLabel = styled.div`
-//   color: var(${UI.COLOR_TEXT2});
-// `
-
 export function ClaimGnoHookApp() {
   const hookDappContext = useContext(HookDappContext)
   const [hook, setHook] = useState<CowHook>({
@@ -117,10 +103,7 @@ export function ClaimGnoHookApp() {
       {
         hook: hook,
         dapp: PRE_BUILD,
-        output: {
-          // TODO: Model the potential output tokens. Ideally, this should be inferred by the calldata using a simulator such us Tenderly
-          amount: BigNumber.from('10000000'),
-        },
+        outputTokens: undefined, // TODO: Simulate and extract the output tokens
       },
       true
     )

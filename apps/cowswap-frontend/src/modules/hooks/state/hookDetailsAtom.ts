@@ -1,8 +1,10 @@
-import { atomWithStorage } from 'jotai/utils'
+import { atom } from 'jotai'
 
 import { CowHookDetails } from '@cowprotocol/types'
 
-export const hooksAtom = atomWithStorage<{ preHooks: CowHookDetails[]; postHooks: CowHookDetails[] }>('hooks:v1', {
+// TODO: use atomWithStorage instead. This might require serializing and deserializing carefully (or remodel the state), as the internal hook Dapps have a component, and the hooks have output tokens. We might need createJSONStorage
+
+export const hooksAtom = atom<{ preHooks: CowHookDetails[]; postHooks: CowHookDetails[] }>({
   preHooks: [],
   postHooks: [],
 })

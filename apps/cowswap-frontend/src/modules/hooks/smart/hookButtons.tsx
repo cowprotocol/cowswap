@@ -3,10 +3,9 @@ import { useState } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CowHookDetails } from '@cowprotocol/types'
-import { ButtonSecondaryAlt, UI } from '@cowprotocol/ui'
+import { ButtonSecondaryAlt, TokenAmount, UI } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { formatUnits } from 'ethers/lib/utils'
 import styled from 'styled-components/macro'
 
 import { Link } from 'legacy/components/Link'
@@ -211,7 +210,7 @@ interface HookItemProp {
 }
 
 function HookItem({ chainId, hookDetails, isPreHook, removeHook }: HookItemProp) {
-  const { uuid, hook, dapp, output } = hookDetails
+  const { uuid, hook, dapp, outputTokens } = hookDetails
   const { callData, gasLimit, target } = hook
 
   const [showDetails, setShowDetails] = useState(false)
@@ -228,8 +227,16 @@ function HookItem({ chainId, hookDetails, isPreHook, removeHook }: HookItemProp)
             <img src={dapp.image} alt={dapp.name} /> <span>GNO</span>
           </dd>
 
-          <dt>Amount</dt>
-          <dd>{formatUnits(output.amount, 18)} GNO</dd>
+          {outputTokens && (
+            <>
+              <dt>Amount</dt>
+              <dd>
+                {outputTokens.map((token) => (
+                  <TokenAmount amount={token} tokenSymbol={token.currency} />
+                ))}
+              </dd>
+            </>
+          )}
         </dl>
       </HookItemInfo>
 

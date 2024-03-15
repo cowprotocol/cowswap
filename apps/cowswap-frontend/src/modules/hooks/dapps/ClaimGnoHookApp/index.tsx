@@ -1,8 +1,10 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 
+import { GNO } from '@cowprotocol/common-const'
 import { HookDappInternal, HookDappType } from '@cowprotocol/types'
 import { ButtonPrimary, UI } from '@cowprotocol/ui'
 import { BigNumber } from '@ethersproject/bignumber'
+import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { formatUnits } from 'ethers/lib/utils'
 import styled from 'styled-components/macro'
@@ -135,6 +137,7 @@ export function ClaimGnoHookApp() {
       return
     }
 
+    const gno = GNO[hookDappContext.chainId]
     hookDappContext.addHook(
       {
         hook: {
@@ -143,10 +146,7 @@ export function ClaimGnoHookApp() {
           target: SBC_DEPOSIT_CONTRACT_ADDRESS,
         },
         dapp: PRE_CLAIM_GNO,
-        output: {
-          // TODO: Model the potential output tokens. Ideally, this should be inferred by the calldata using a simulator such us Tenderly
-          amount: claimable,
-        },
+        outputTokens: [CurrencyAmount.fromRawAmount(gno, claimable.toString())],
       },
       true
     )
