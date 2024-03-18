@@ -6,6 +6,8 @@ import { transparentize } from 'color2k'
 import { Edit, FileText, Link2, MoreVertical, Repeat, Trash2 } from 'react-feather'
 import styled from 'styled-components/macro'
 
+import { AlternativeOrderModalContext } from '../../../containers/OrdersReceiptModal/hooks'
+
 export const ContextMenuButton = styled(MenuButton)`
   background: none;
   border: 0;
@@ -69,8 +71,7 @@ export interface OrderContextMenuProps {
   openReceipt: Command
   activityUrl: string | undefined
   showCancellationModal: Command | null
-  // TODO: make the props nicer
-  alternativeOrderModalContext: { showAlternativeOrderModal: Command; isEdit: boolean } | null
+  alternativeOrderModalContext: AlternativeOrderModalContext
 }
 
 export function OrderContextMenu({

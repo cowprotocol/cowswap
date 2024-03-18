@@ -27,17 +27,20 @@ export function useSelectedOrder(): ParsedOrder | null {
   return order
 }
 
-export function useGetShowAlternativeOrderModal(order: ParsedOrder | null): Command | null {
+export type AlternativeOrderModalContext = { showAlternativeOrderModal: Command; isEdit: boolean } | null
+
+export function useGetAlternativeOrderModalContext(order: ParsedOrder | null): AlternativeOrderModalContext {
   const setAlternativeOrder = useSetAlternativeOrder()
 
-  return useMemo(
-    () =>
-      !order ||
+  return useMemo(() => {
+    const isEdit = order && isPending(order)
+
+    return !order ||
       isCreating(order) ||
       getUiOrderType(order) !== UiOrderType.LIMIT ||
-      (isPending(order) && !isOffchainOrder(order))
-        ? null
-        : () => setAlternativeOrder(order, isPending(order)),
-    [order, setAlternativeOrder]
-  )
+      (isEdit && !isOffchainOrder(order)) ||
+      isEdit === null
+      ? null
+      : { showAlternativeOrderModal: () => setAlternativeOrder(order, isEdit), isEdit }
+  }, [order, setAlternativeOrder])
 }

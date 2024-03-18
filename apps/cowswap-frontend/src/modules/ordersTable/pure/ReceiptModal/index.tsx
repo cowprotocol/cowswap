@@ -39,6 +39,8 @@ import { StatusField } from './StatusField'
 import * as styledEl from './styled'
 import { SurplusField } from './SurplusField'
 
+import { AlternativeOrderModalContext } from '../../containers/OrdersReceiptModal/hooks'
+
 interface ReceiptProps {
   isOpen: boolean
   order: ParsedOrder
@@ -52,7 +54,7 @@ interface ReceiptProps {
   limitPrice: Fraction | null
   executionPrice: Fraction | null
   estimatedExecutionPrice: Fraction | null
-  showAlternativeOrderModal: Command | null
+  alternativeOrderModalContext: AlternativeOrderModalContext
 }
 
 const FILLED_COMMON_TOOLTIP = 'How much of the order has been filled.'
@@ -105,7 +107,7 @@ export function ReceiptModal({
   executionPrice,
   estimatedExecutionPrice,
   receiverEnsName,
-  showAlternativeOrderModal,
+  alternativeOrderModalContext,
 }: ReceiptProps) {
   // Check if Custom Recipient Warning Banner should be visible
   const isCustomRecipientWarningBannerVisible = !useIsReceiverWalletBannerHidden(order.id)
@@ -133,11 +135,10 @@ export function ReceiptModal({
         <styledEl.Header>
           <div>
             <styledEl.Title>Order Receipt</styledEl.Title>
-            {showAlternativeOrderModal && (
-              <styledEl.LightButton
-              onClick={showAlternativeOrderModal}
-            >
-              {isPending(order) ? 'Edit' : 'Recreate'} this order</styledEl.LightButton>
+            {alternativeOrderModalContext && (
+              <styledEl.LightButton onClick={alternativeOrderModalContext.showAlternativeOrderModal}>
+                {alternativeOrderModalContext.isEdit ? 'Edit' : 'Recreate'} this order
+              </styledEl.LightButton>
             )}
           </div>
           <CloseIcon onClick={() => onDismiss()} />
