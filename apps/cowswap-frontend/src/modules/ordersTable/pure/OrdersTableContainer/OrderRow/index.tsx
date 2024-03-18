@@ -17,7 +17,6 @@ import { CREATING_STATES, OrderStatus } from 'legacy/state/orders/actions'
 import { PendingOrderPrices } from 'modules/orders/state/pendingOrdersPricesAtom'
 import { getIsEthFlowOrder } from 'modules/swap/containers/EthFlowStepper'
 
-import { isPending } from 'common/hooks/useCategorizeRecentActivity'
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 import { RateInfo } from 'common/pure/RateInfo'
 import { getQuoteCurrency } from 'common/services/getQuoteCurrency'
@@ -171,12 +170,10 @@ export function OrderRow({
   const showCancellationModal = useMemo(() => {
     return orderActions.getShowCancellationModal(order)
   }, [orderActions, order])
-
-  const alternativeOrderModalContext = useMemo(() => {
-    const showAlternativeOrderModal = orderActions.getShowAlternativeOrderModal(order)
-
-    return showAlternativeOrderModal ? { showAlternativeOrderModal, isEdit: isPending(order) } : null
-  }, [order, orderActions])
+  const alternativeOrderModalContext = useMemo(
+    () => orderActions.getAlternativeOrderModalContext(order),
+    [order, orderActions]
+  )
 
   const withAllowanceWarning = hasEnoughAllowance === false && hasValidPendingPermit === false
   const withWarning =

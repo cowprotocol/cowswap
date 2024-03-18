@@ -30,17 +30,37 @@ export function useSelectedOrder(): ParsedOrder | null {
 export type AlternativeOrderModalContext = { showAlternativeOrderModal: Command; isEdit: boolean } | null
 
 export function useGetAlternativeOrderModalContext(order: ParsedOrder | null): AlternativeOrderModalContext {
+  const callback = useGetAlternativeOrderModalContextCallback()
+
+  return useMemo(() => callback(order), [callback, order])
+}
+
+export function useGetAlternativeOrderModalContextCallback(): (
+  order: ParsedOrder | null
+) => AlternativeOrderModalContext {
   const setAlternativeOrder = useSetAlternativeOrder()
 
-  return useMemo(() => {
-    const isEdit = order && isPending(order)
+  return useCallback(
+    (order: ParsedOrder | null) => getAlternativeOrderModalContext(order, setAlternativeOrder),
+    [setAlternativeOrder]
+  )
+}
 
-    return !order ||
-      isCreating(order) ||
-      getUiOrderType(order) !== UiOrderType.LIMIT ||
-      (isEdit && !isOffchainOrder(order)) ||
-      isEdit === null
-      ? null
-      : { showAlternativeOrderModal: () => setAlternativeOrder(order, isEdit), isEdit }
-  }, [order, setAlternativeOrder])
+function getAlternativeOrderModalContext(
+  order: ParsedOrder | null,
+  setAlternativeOrder: ReturnType<typeof useSetAlternativeOrder>
+): AlternativeOrderModalContext {
+  const isEdit = order && isPending(order)
+
+  if (
+    !order ||
+    isCreating(order) ||
+    getUiOrderType(order) !== UiOrderType.LIMIT ||
+    (isEdit && !isOffchainOrder(order)) ||
+    isEdit === null
+  ) {
+    return null
+  } else {
+    return { showAlternativeOrderModal: () => setAlternativeOrder(order, isEdit), isEdit }
+  }
 }
