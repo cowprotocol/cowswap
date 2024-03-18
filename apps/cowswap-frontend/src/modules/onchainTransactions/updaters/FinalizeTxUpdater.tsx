@@ -374,9 +374,5 @@ export function FinalizeTxUpdater() {
     getTwapOrderById,
   ])
 
-  return (
-    <>
-      <OnchainTransactionEventsUpdater />
-    </>
-  )
+  return <OnchainTransactionEventsUpdater />
 }
