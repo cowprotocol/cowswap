@@ -71,7 +71,7 @@ export const ORDERS_NOTIFICATION_HANDLERS: Record<CowEvents, OrdersNotifications
           orderInfo={order}
           orderType={orderType}
           orderUid={order.uid}
-          transactionHash={orderType === UiOrderType.TWAP ? transactionHash : undefined}
+          transactionHash={transactionHash}
           messageType={ToastMessageType.ORDER_CANCELLED}
         />
       )
