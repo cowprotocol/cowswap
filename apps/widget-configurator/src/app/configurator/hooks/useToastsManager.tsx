@@ -52,7 +52,7 @@ export function useToastsManager(setListeners: (listeners: CowEventListeners) =>
     }
 
     setListeners(newListeners)
-  }, [disableToastMessages])
+  }, [disableToastMessages, setListeners])
 
   return useMemo(() => {
     return {
