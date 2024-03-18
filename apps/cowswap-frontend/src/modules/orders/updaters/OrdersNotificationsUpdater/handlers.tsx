@@ -32,7 +32,6 @@ export const ORDERS_NOTIFICATION_HANDLERS: Record<CowEvents, OrdersNotifications
           chainId={chainId}
           orderType={orderType}
           orderUid={orderUid}
-          transactionHash={orderCreationHash}
           orderInfo={payload}
           messageType={ToastMessageType.ORDER_CREATED}
         />
@@ -69,7 +68,6 @@ export const ORDERS_NOTIFICATION_HANDLERS: Record<CowEvents, OrdersNotifications
           orderInfo={order}
           orderType={getUiOrderType(order)}
           orderUid={order.uid}
-          transactionHash={transactionHash}
           messageType={ToastMessageType.ORDER_CANCELLED}
         />
       )

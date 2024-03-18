@@ -131,6 +131,7 @@ export async function safeBundleFlow(
     emitPostedOrderEvent({
       chainId,
       id: orderId,
+      orderCreationHash: safeTx.safeTxHash,
       kind: postOrderParams.kind,
       receiver: recipientAddressOrName,
       inputAmount,
