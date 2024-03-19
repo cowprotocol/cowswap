@@ -29,7 +29,10 @@ export const addUserTokenAtom = atom(null, (get, set, tokens: TokenWithLogo[]) =
     [chainId]: {
       ...userAddedTokensState[chainId],
       ...tokens.reduce<{ [key: string]: Token }>((acc, token) => {
-        acc[token.address.toLowerCase()] = token
+        if (token.chainId === chainId) {
+          // Only add token if its chainId matches the current chainId
+          acc[token.address.toLowerCase()] = token
+        }
         return acc
       }, {}),
     },
