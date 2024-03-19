@@ -24,6 +24,7 @@ export type AddTransactionParams = WithChainId &
     EnhancedTransactionDetails,
     | 'hash'
     | 'hashType'
+    | 'nonce'
     | 'from'
     | 'approval'
     | 'presign'
@@ -53,7 +54,7 @@ export const checkedTransaction = createAction<{
   blockNumber: number
 }>('enhancedTransactions/checkedTransaction')
 
-export type ReplacementType = 'speedup' | 'cancel'
+export type ReplacementType = 'speedup' | 'cancel' | 'replaced'
 
 export const replaceTransaction = createAction<{
   chainId: number
