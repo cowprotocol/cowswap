@@ -12,6 +12,8 @@ import { useActivePopups, useRemovePopup } from 'legacy/state/application/hooks'
 import { useURLWarningVisible } from 'legacy/state/user/hooks'
 import { MEDIA_WIDTHS } from 'legacy/theme'
 
+import { useInjectedWidgetParams } from 'modules/injectedWidget'
+
 export const MobilePopupInner = styled.div`
   height: 99%;
   overflow-x: auto;
@@ -96,6 +98,12 @@ export function Popups() {
     },
     [activePopups, removePopup]
   )
+
+  const { disableToastMessages = false } = useInjectedWidgetParams()
+
+  if (disableToastMessages) {
+    return null
+  }
 
   return (
     <>
