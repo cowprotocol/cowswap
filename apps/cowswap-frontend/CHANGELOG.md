@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.62.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.61.1...cowswap-v1.62.0) (2024-03-12)
+
+
+### Features
+
+* add option to define the base URL for the widget ([#3991](https://github.com/cowprotocol/cowswap/issues/3991)) ([6b70572](https://github.com/cowprotocol/cowswap/commit/6b7057239c137b6b80f8277fdda7d8b06a5b2ed0))
+* **partner-fee:** validate, display and sign order with partner fee ([#3941](https://github.com/cowprotocol/cowswap/issues/3941)) ([036f5d7](https://github.com/cowprotocol/cowswap/commit/036f5d7a06eb9d461101b28d917cc8eba3ec4fc2))
+
+
+### Bug Fixes
+
+* **order-receipt:** fix recreate order button style ([#4019](https://github.com/cowprotocol/cowswap/issues/4019)) ([e023d65](https://github.com/cowprotocol/cowswap/commit/e023d653c6f063232926aaeb83e12dc428acfd39))
+* rebrand fee labels and improve tooltips ([#4005](https://github.com/cowprotocol/cowswap/issues/4005)) ([6488f52](https://github.com/cowprotocol/cowswap/commit/6488f52cf84604aae3a63320eee55d5768ef566c))
+* **recreate:** add limit to recreate limit order modal title ([#3988](https://github.com/cowprotocol/cowswap/issues/3988)) ([294bc5d](https://github.com/cowprotocol/cowswap/commit/294bc5d6b18cb4f659126aa5141cb9aa99c1ccab))
+* **swap:** no quote expired when there's no input ([#3985](https://github.com/cowprotocol/cowswap/issues/3985)) ([d32f07f](https://github.com/cowprotocol/cowswap/commit/d32f07fe47dd62243533f7336c04ecb8e9320d7b))
+* use trade object to determine expired quote rather than removed property ([#3994](https://github.com/cowprotocol/cowswap/issues/3994)) ([6c6db8e](https://github.com/cowprotocol/cowswap/commit/6c6db8ecbc86bb948ba0b7e4138f157aabf1e5d4))
+* use trade object to determine expired quote rather than removed property ([#3994](https://github.com/cowprotocol/cowswap/issues/3994)) ([#4003](https://github.com/cowprotocol/cowswap/issues/4003)) ([102f2ad](https://github.com/cowprotocol/cowswap/commit/102f2ad0691db4c6dc9dd69c7a2967f3b1807213))
+
 ## [1.61.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.61.0...cowswap-v1.61.1) (2024-03-04)
 
 

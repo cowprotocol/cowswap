@@ -1,3 +1,4 @@
+import { CowEventListeners, CowEvents, ToastMessageType } from '@cowprotocol/events'
 import { TradeType } from '@cowprotocol/widget-lib'
 
 import { TokenListItem } from './types'
@@ -56,3 +57,41 @@ export const DEFAULT_DARK_PALETTE = {
   info: '#428dff',
   success: '#00D897',
 }
+
+export const COW_LISTENERS: CowEventListeners = [
+  {
+    event: CowEvents.ON_TOAST_MESSAGE,
+    handler: (event) => {
+      // You cn implement a more complex way to handle toast messages
+      switch (event.messageType) {
+        case ToastMessageType.SWAP_ETH_FLOW_SENT_TX:
+          console.info('[configurator:ON_TOAST_MESSAGE:complex] 🍞 New eth flow order. Tx:', event.data.tx)
+          break
+        case ToastMessageType.ORDER_CREATED:
+          console.info('[configurator:ON_TOAST_MESSAGE:complex] 🍞 Posted order', event.data.orderUid)
+          break
+        // ... and so on
+        default:
+          console.info('[configurator:ON_TOAST_MESSAGE:complex] 🍞 Default', event.message, event.data)
+      }
+    },
+  },
+
+  {
+    event: CowEvents.ON_POSTED_ORDER,
+    handler: (event) => console.log('[configurator:ON_POSTED_ORDER] 💌 Posted order:', event.orderUid),
+  },
+
+  {
+    event: CowEvents.ON_CANCELLED_ORDER,
+    handler: (event) =>
+      console.log(
+        `[configurator:ON_CANCELLED_ORDER] ❌ Cancelled order ${event.order.uid}. Transaction hash: ${event.transactionHash}`
+      ),
+  },
+
+  {
+    event: CowEvents.ON_FULFILLED_ORDER,
+    handler: (event) => console.log(`[configurator:ON_FULFILLED_ORDER] ✅ Executed order ${event.order.uid}`),
+  },
+]

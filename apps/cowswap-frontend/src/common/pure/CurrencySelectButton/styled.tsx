@@ -33,7 +33,6 @@ export const CurrencySelectWrapper = styled.button<{ isLoading: boolean; $stubbe
   color: ${({ $stubbed }) => ($stubbed ? `var(${UI.COLOR_BUTTON_TEXT})` : `var(${UI.COLOR_TEXT_PAPER})`)};
   box-shadow: var(${UI.BOX_SHADOW_2});
   opacity: ${({ isLoading }) => (isLoading ? 0.6 : 1)};
-  pointer-events: ${({ readonlyMode }) => (readonlyMode ? 'none' : '')};
   border-radius: var(${UI.BORDER_RADIUS_NORMAL});
   padding: 6px;
   ${({ readonlyMode }) => (readonlyMode ? 'padding-right: 10px;' : '')}
