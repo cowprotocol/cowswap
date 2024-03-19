@@ -67,7 +67,7 @@ export const COW_LISTENERS: CowEventListeners = [
         case ToastMessageType.SWAP_ETH_FLOW_SENT_TX:
           console.info('[configurator:ON_TOAST_MESSAGE:complex] 🍞 New eth flow order. Tx:', event.data.tx)
           break
-        case ToastMessageType.SWAP_POSTED_API:
+        case ToastMessageType.ORDER_CREATED:
           console.info('[configurator:ON_TOAST_MESSAGE:complex] 🍞 Posted order', event.data.orderUid)
           break
         // ... and so on

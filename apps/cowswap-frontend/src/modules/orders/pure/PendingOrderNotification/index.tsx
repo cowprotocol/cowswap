@@ -1,11 +1,10 @@
-import { isAddress, isCowOrder, isSellOrder, shortenAddress } from '@cowprotocol/common-utils'
-import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
-import { OnToastMessagePayload, ToastMessageType } from '@cowprotocol/events'
-import { UiOrderType } from '@cowprotocol/types'
-import { formatTokenAmountWithSymbol, TokenAmount } from '@cowprotocol/ui'
-import { CurrencyAmount, Token } from '@uniswap/sdk-core'
+import { useCallback, useMemo } from 'react'
 
-import styled from 'styled-components/macro'
+import { TokenWithLogo } from '@cowprotocol/common-const'
+import { isAddress, isCowOrder, isSellOrder, shortenAddress } from '@cowprotocol/common-utils'
+import { OnPostedOrderPayload } from '@cowprotocol/events'
+import { TokenAmount } from '@cowprotocol/ui'
+import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { EnhancedTransactionLink } from 'legacy/components/EnhancedTransactionLink'
 import { ExplorerLink } from 'legacy/components/ExplorerLink'
@@ -13,81 +12,40 @@ import { HashType } from 'legacy/state/enhancedTransactions/reducer'
 
 import { ORDER_UI_TYPE_TITLES } from 'utils/orderUtils/getUiOrderType'
 
-const OrderLinkWrapper = styled.div`
-  margin-top: 15px;
-  text-decoration: underline;
-
-  &:hover,
-  &:hover a {
-    text-decoration: none !important;
-  }
-`
+import { OrderLinkWrapper } from '../commonStyled'
 
 export interface PendingOrderNotificationProps {
-  owner: string
-  chainId: SupportedChainId
-  orderUid: string
-  orderCreationHash?: string
-  kind: OrderKind
-  orderType: UiOrderType
-  inputAmount: CurrencyAmount<Token>
-  outputAmount: CurrencyAmount<Token>
-  receiver?: string
+  payload: OnPostedOrderPayload
   isSafeWallet: boolean
-}
-
-export function getPendingOrderNotificationToast(props: PendingOrderNotificationProps): OnToastMessagePayload {
-  const { owner, orderUid, orderCreationHash, kind, inputAmount, outputAmount, receiver, orderType } = props
-
-  const toAddress = receiver && isAddress(receiver) ? shortenAddress(receiver) : receiver
-
-  const inputAmountElement = formatTokenAmountWithSymbol({
-    amount: inputAmount,
-    tokenSymbol: inputAmount.currency,
-  })
-  const outputAmountElement = formatTokenAmountWithSymbol({
-    amount: outputAmount,
-    tokenSymbol: outputAmount.currency,
-  })
-
-  const messagePrefix = `${ORDER_UI_TYPE_TITLES[orderType]} submitted: `
-
-  const baseMessage = (() => {
-    const isSellOrder = kind === OrderKind.SELL
-
-    if (isSellOrder) {
-      return `Sell ${inputAmountElement} for at least ${outputAmountElement}`
-    } else {
-      return `Buy ${outputAmountElement} for at most ${inputAmountElement}`
-    }
-  })()
-
-  const receiverInfo = toAddress && receiver !== owner ? `Receiver: ${toAddress}` : ''
-  const message = receiverInfo ? `${baseMessage}. ${receiverInfo}` : baseMessage
-
-  return {
-    messageType: ToastMessageType.SWAP_POSTED_API,
-    message: messagePrefix + message,
-    data: {
-      orderUid,
-      orderCreationHash,
-    },
-  }
+  onToastMessage(message: string): void
 }
 
 export function PendingOrderNotification(props: PendingOrderNotificationProps) {
+  const { payload, isSafeWallet, onToastMessage } = props
+
   const {
-    owner,
-    chainId,
-    isSafeWallet,
-    orderUid,
-    orderCreationHash,
+    inputToken,
+    inputAmount: inputAmountRaw,
+    outputAmount: outputAmountRaw,
+    outputToken,
     kind,
-    orderType,
-    inputAmount,
-    outputAmount,
     receiver,
-  } = props
+    orderCreationHash,
+    orderUid,
+    owner,
+    orderType,
+    chainId,
+  } = payload
+
+  const inputAmount = useMemo(
+    () => CurrencyAmount.fromRawAmount(TokenWithLogo.fromToken(inputToken), inputAmountRaw.toString()),
+    [inputAmountRaw, inputToken]
+  )
+
+  const outputAmount = useMemo(
+    () => CurrencyAmount.fromRawAmount(TokenWithLogo.fromToken(outputToken), outputAmountRaw.toString()),
+    [outputAmountRaw, outputToken]
+  )
 
   const isSell = isSellOrder(kind)
   const toAddress = receiver && isAddress(receiver) ? shortenAddress(receiver) : receiver
@@ -105,24 +63,33 @@ export function PendingOrderNotification(props: PendingOrderNotificationProps) {
     },
   }
 
+  const ref = useCallback(
+    (node: HTMLDivElement) => {
+      if (node) onToastMessage(node.innerText)
+    },
+    [onToastMessage]
+  )
+
   return (
     <>
-      <strong>{ORDER_UI_TYPE_TITLES[orderType]} submitted</strong>
-      <br />
-      {isSell ? (
-        <>
-          Sell {inputAmountElement} for at least {outputAmountElement}
-        </>
-      ) : (
-        <>
-          Buy {outputAmountElement} for at most {inputAmountElement}
-        </>
-      )}
-      {toAddress && receiver && receiver !== owner && (
-        <div>
-          Receiver: <ExplorerLink id={receiver} label={toAddress} type="address" />
-        </div>
-      )}
+      <div ref={ref}>
+        <strong>{ORDER_UI_TYPE_TITLES[orderType]} submitted</strong>
+        <br />
+        {isSell ? (
+          <>
+            Sell {inputAmountElement} for at least {outputAmountElement}
+          </>
+        ) : (
+          <>
+            Buy {outputAmountElement} for at most {inputAmountElement}
+          </>
+        )}
+        {toAddress && receiver && receiver !== owner && (
+          <div>
+            Receiver: <ExplorerLink id={receiver} label={toAddress} type="address" />
+          </div>
+        )}
+      </div>
       <OrderLinkWrapper>
         <EnhancedTransactionLink chainId={chainId} tx={tx} />
       </OrderLinkWrapper>

@@ -3,6 +3,7 @@ import { useEffect } from 'react'
 
 import { USDC_MAINNET, WBTC } from '@cowprotocol/common-const'
 import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { TokenInfo } from '@cowprotocol/events'
 import { SnackbarPopup } from '@cowprotocol/snackbars'
 import { UiOrderType } from '@cowprotocol/types'
 import { GnosisSafeInfo, gnosisSafeInfoAtom } from '@cowprotocol/wallet'
@@ -71,15 +72,20 @@ function Custom({
         onExpire={() => console.log('expire')}
       >
         <PendingOrderNotification
-          owner={account}
-          chainId={SupportedChainId.MAINNET}
-          orderUid={orderId}
-          kind={kind}
-          receiver={receiver}
-          orderType={orderType}
-          inputAmount={inputAmount}
-          outputAmount={outputAmount}
+          payload={{
+            owner: account,
+            chainId: SupportedChainId.MAINNET,
+            orderUid: orderId,
+            kind,
+            receiver,
+            orderType,
+            inputAmount: BigInt(inputAmount.quotient.toString()),
+            outputAmount: BigInt(outputAmount.quotient.toString()),
+            inputToken: inputAmount.currency as TokenInfo,
+            outputToken: outputAmount.currency as TokenInfo,
+          }}
           isSafeWallet={isSafeWallet}
+          onToastMessage={(message) => console.log('onToastMessage', message)}
         />
       </SnackbarPopup>
     </Wrapper>
