@@ -1,6 +1,7 @@
 export * from './hooks/useTokensForOrdersList'
 export * from './hooks/useSWRProdOrders'
 export * from './utils/getTokensListFromOrders'
+export { TransactionContentWithLink } from './containers/TransactionContentWithLink'
 export { OrdersNotificationsUpdater } from './updaters/OrdersNotificationsUpdater'
 export { emitPostedOrderEvent } from './utils/emitPostedOrderEvent'
 export { emitFulfilledOrderEvent } from './utils/emitFulfilledOrderEvent'

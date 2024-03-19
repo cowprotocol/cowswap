@@ -74,6 +74,7 @@ export function useCloseModals(): Command {
   return useCallback(() => dispatch(setOpenModal(null)), [dispatch])
 }
 /**
+ * TODO: remove with the whole popups feature
  * @deprecated use @cowprotocol/snackbars instead
  */
 export function useAddPopup(): (content: PopupContent, key?: string, removeAfterMs?: number | null) => void {

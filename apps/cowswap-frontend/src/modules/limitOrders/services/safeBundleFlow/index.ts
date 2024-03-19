@@ -127,12 +127,11 @@ export async function safeBundleFlow(
     }
 
     const safeTx = await safeAppsSdk.txs.send({ txs: safeTransactionData })
-    const safeTxHash = safeTx.safeTxHash
 
     emitPostedOrderEvent({
       chainId,
       id: orderId,
-      orderCreationHash: safeTxHash,
+      orderCreationHash: safeTx.safeTxHash,
       kind: postOrderParams.kind,
       receiver: recipientAddressOrName,
       inputAmount,
