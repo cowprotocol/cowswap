@@ -114,4 +114,11 @@ export const ORDERS_NOTIFICATION_HANDLERS: Record<CowEvents, OrdersNotifications
       return null
     },
   },
+  [CowEvents.ON_ONCHAIN_TRANSACTION]: {
+    icon: 'success',
+    handler: () => {
+      // Handled in OnchainTransactionEventsUpdater
+      return null
+    },
+  },
 }

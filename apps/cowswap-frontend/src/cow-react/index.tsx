@@ -92,11 +92,7 @@ function Main() {
 function Toasts() {
   const { disableToastMessages = false } = useInjectedWidgetParams()
 
-  if (disableToastMessages) {
-    return null
-  }
-
-  return <SnackbarsWidget />
+  return <SnackbarsWidget hidden={disableToastMessages} />
 }
 
 const container = document.getElementById('root')
