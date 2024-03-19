@@ -1,5 +1,24 @@
 # Changelog
 
+## [2.29.1](https://github.com/cowprotocol/cowswap/compare/explorer-v2.29.0...explorer-v2.29.1) (2024-03-13)
+
+
+### Bug Fixes
+
+* **explorer:** migrate to nodereal api from infura ([#4041](https://github.com/cowprotocol/cowswap/issues/4041)) ([c4ae5a2](https://github.com/cowprotocol/cowswap/commit/c4ae5a21d5429ccb8b2456848add5fb9b8a14f5d))
+
+## [2.29.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.28.0...explorer-v2.29.0) (2024-03-12)
+
+
+### Features
+
+* Introduce partner fee ([#3913](https://github.com/cowprotocol/cowswap/issues/3913)) ([dbae7ed](https://github.com/cowprotocol/cowswap/commit/dbae7ed38b690b538d9fbd50e13d04bb199e3437))
+
+
+### Bug Fixes
+
+* **explorer:** do not show tokens table on gchain ([#3948](https://github.com/cowprotocol/cowswap/issues/3948)) ([712e6db](https://github.com/cowprotocol/cowswap/commit/712e6dbeee799191102e4fb27bc43c72f19db1ed))
+
 ## [2.28.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.27.0...explorer-v2.28.0) (2024-02-01)
 
 

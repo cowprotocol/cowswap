@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.6.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v0.5.0...widget-lib-v0.6.0) (2024-03-12)
+
+
+### Features
+
+* add option to define the base URL for the widget ([#3991](https://github.com/cowprotocol/cowswap/issues/3991)) ([6b70572](https://github.com/cowprotocol/cowswap/commit/6b7057239c137b6b80f8277fdda7d8b06a5b2ed0))
+* Introduce partner fee ([#3913](https://github.com/cowprotocol/cowswap/issues/3913)) ([dbae7ed](https://github.com/cowprotocol/cowswap/commit/dbae7ed38b690b538d9fbd50e13d04bb199e3437))
+
 ## [0.5.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v0.4.0...widget-lib-v0.5.0) (2024-02-22)
 
 
