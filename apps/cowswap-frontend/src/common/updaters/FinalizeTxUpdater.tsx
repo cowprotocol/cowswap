@@ -182,11 +182,12 @@ function finalizeOnChainCancellation(
     // If cancellation succeeded, mark order as cancelled
     cancelOrdersBatch({ chainId, ids: [orderId], isSafeWallet })
 
-    emitCancelledOrderEvent({
-      chainId,
-      orderUid: orderId,
-      transactionHash: hash,
-    })
+    // TODO: fix later
+    // emitCancelledOrderEvent({
+    //   chainId,
+    //   orderUid: orderId,
+    //   transactionHash: hash,
+    // })
   } else {
     // If cancellation failed:
     // 1. Update order state and remove the isCancelling flag and cancellationHash
