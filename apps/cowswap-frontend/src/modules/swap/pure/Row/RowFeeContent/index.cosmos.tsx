@@ -40,7 +40,7 @@ const defaultProps: RowNetworkCostsProps & RowFeeContentProps = {
   feeCurrencySymbol: 'GNO',
   isFree: false,
   get feeInFiat() {
-    return currencyAmountToTokenAmount(this.feeAmount?.multiply('100')) || null
+    return this.feeAmount ? currencyAmountToTokenAmount(this.feeAmount.multiply('100')) : null
   },
   get feeToken() {
     return (this.feeAmount?.toExact() || '-') + ' ' + this.feeCurrencySymbol

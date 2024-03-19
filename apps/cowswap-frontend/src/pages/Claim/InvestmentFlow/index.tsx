@@ -110,7 +110,7 @@ function _calculateTotalVCow(allClaims: ClaimWithInvestmentData[]) {
 
   // Sum up all the vCowAmount being claimed
   return allClaims.reduce<typeof zeroVCow>(
-    (total, { vCowAmount }) => total.add(currencyAmountToTokenAmount(vCowAmount) || zeroVCow),
+    (total, { vCowAmount }) => total.add(vCowAmount ? currencyAmountToTokenAmount(vCowAmount) : zeroVCow),
     zeroVCow
   )
 }

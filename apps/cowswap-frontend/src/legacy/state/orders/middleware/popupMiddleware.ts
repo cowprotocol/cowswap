@@ -7,8 +7,6 @@ import { batchCancelOrdersPopup } from './batchCancelOrdersPopup'
 import { batchExpireOrdersPopup } from './batchExpireOrdersPopup'
 import { batchFulfillOrderPopup } from './batchFulfillOrderPopup'
 import { batchPresignOrdersPopup } from './batchPresignOrdersPopup'
-import { pendingOrderPopup } from './pendingOrderPopup'
-import { updateOrderPopup } from './updateOrderPopup'
 
 import { AppState } from '../../index'
 import * as OrderActions from '../actions'
@@ -16,8 +14,6 @@ import { getOrderByIdFromState } from '../helpers'
 
 // action syntactic sugar
 // const isSingleOrderChangeAction = isAnyOf(OrderActions.addPendingOrder)
-const isPendingOrderAction = isAnyOf(OrderActions.addPendingOrder)
-const isUpdateOrderAction = isAnyOf(OrderActions.updateOrder)
 const isBatchOrderAction = isAnyOf(
   OrderActions.fulfillOrdersBatch,
   OrderActions.expireOrdersBatch,
@@ -29,11 +25,7 @@ const isBatchFulfillOrderAction = isAnyOf(OrderActions.fulfillOrdersBatch)
 export const popupMiddleware: Middleware<Record<string, unknown>, AppState> = (store) => (next) => (action) => {
   const result = next(action)
 
-  if (isPendingOrderAction(action)) {
-    pendingOrderPopup(store, action.payload)
-  } else if (isUpdateOrderAction(action)) {
-    updateOrderPopup(store, action.payload)
-  } else if (isBatchOrderAction(action)) {
+  if (isBatchOrderAction(action)) {
     const { chainId } = action.payload
 
     // use current state to lookup orders' data

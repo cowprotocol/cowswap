@@ -4,7 +4,7 @@ import { OnToastMessagePayload, ToastMessageType } from '@cowprotocol/events'
 import { UiOrderType } from '@cowprotocol/types'
 import { CurrencyAmount, Token, ChainId } from '@uniswap/sdk-core'
 
-import { PendingOrderNotificationProps, getPendingOrderNotificationToast } from '.'
+import { PendingOrderNotificationProps, getPendingOrderNotificationToast } from './index'
 
 const WETH_MAINNET = new Token(ChainId.MAINNET, WETH[1].address, 18, 'WETH', 'Wrapped Ether')
 const DAI_MAINNET = new Token(
@@ -24,6 +24,7 @@ const daiAmountWithDecimals = CurrencyAmount.fromRawAmount(DAI_MAINNET, '2123456
 const resultCommon = {
   messageType: ToastMessageType.SWAP_POSTED_API,
   data: {
+    orderCreationHash: undefined,
     orderUid: '0x123',
   },
 }
@@ -32,11 +33,11 @@ function getTestParams(overrides: Partial<PendingOrderNotificationProps> = {}): 
   return {
     inputAmount: wethAmount, // sell WETH
     outputAmount: daiAmount, // buy DAI
-    account: '0x123',
+    owner: '0x123',
     chainId: SupportedChainId.MAINNET,
     isSafeWallet: false,
     kind: OrderKind.SELL,
-    orderId: '0x123',
+    orderUid: '0x123',
     orderType: UiOrderType.LIMIT,
     ...overrides,
   }

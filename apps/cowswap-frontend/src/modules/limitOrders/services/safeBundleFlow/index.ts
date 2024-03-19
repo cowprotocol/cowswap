@@ -1,10 +1,8 @@
-import { reportAppDataWithHooks } from '@cowprotocol/common-utils'
-import { CowEvents } from '@cowprotocol/events'
+import { currencyAmountToTokenAmount, reportAppDataWithHooks } from '@cowprotocol/common-utils'
+import { OrderKind } from '@cowprotocol/cow-sdk'
 import { Command, UiOrderType } from '@cowprotocol/types'
 import { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import { Percent } from '@uniswap/sdk-core'
-
-import { EVENT_EMITTER } from 'eventEmitter'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
@@ -18,6 +16,7 @@ import { calculateLimitOrdersDeadline } from 'modules/limitOrders/utils/calculat
 import { buildApproveTx } from 'modules/operations/bundle/buildApproveTx'
 import { buildPresignTx } from 'modules/operations/bundle/buildPresignTx'
 import { buildZeroApproveTx } from 'modules/operations/bundle/buildZeroApproveTx'
+import { emitPostedOrderEvent } from 'modules/orders'
 import { appDataContainsHooks } from 'modules/permit/utils/appDataContainsHooks'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { TradeFlowAnalyticsContext, tradeFlowAnalytics } from 'modules/trade/utils/analytics'
@@ -40,7 +39,8 @@ export async function safeBundleFlow(
     throw new PriceImpactDeclineError()
   }
 
-  const { account, recipientAddressOrName, sellToken, buyToken, inputAmount } = params.postOrderParams
+  const { account, recipientAddressOrName, sellToken, buyToken, inputAmount, outputAmount, isSafeWallet } =
+    params.postOrderParams
 
   // TODO: remove once we figure out what's adding this to appData in the first place
   if (appDataContainsHooks(params.postOrderParams.appData.fullAppData)) {
@@ -63,7 +63,6 @@ export async function safeBundleFlow(
 
   const { chainId, postOrderParams, provider, erc20Contract, spender, dispatch, settlementContract, safeAppsSdk } =
     params
-  const { isSafeWallet } = postOrderParams
 
   const validTo = calculateLimitOrdersDeadline(settingsState)
 
@@ -129,7 +128,19 @@ export async function safeBundleFlow(
     }
 
     const safeTx = await safeAppsSdk.txs.send({ txs: safeTransactionData })
-    EVENT_EMITTER.emit(CowEvents.ON_POSTED_ORDER, { orderUid: orderId, chainId })
+    const safeTxHash = safeTx.safeTxHash
+
+    emitPostedOrderEvent({
+      chainId,
+      id: orderId,
+      orderCreationHash: safeTxHash,
+      kind: OrderKind.SELL,
+      receiver: recipientAddressOrName,
+      inputAmount: currencyAmountToTokenAmount(inputAmount),
+      outputAmount: currencyAmountToTokenAmount(outputAmount),
+      owner: account,
+      uiOrderType: UiOrderType.LIMIT,
+    })
 
     logTradeFlow(LOG_PREFIX, 'STEP 7: add safe tx hash and unhide order')
     partialOrderUpdate(
