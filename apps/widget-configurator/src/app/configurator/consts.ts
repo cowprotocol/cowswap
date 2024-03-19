@@ -85,7 +85,9 @@ export const COW_LISTENERS: CowEventListeners = [
   {
     event: CowEvents.ON_CANCELLED_ORDER,
     handler: (event) =>
-      console.log(`[configurator:ON_CANCELLED_ORDER] ❌ Cancelled order ${event.orderUid}. Reason: ${event.reason}`),
+      console.log(
+        `[configurator:ON_CANCELLED_ORDER] ❌ Cancelled order ${event.orderUid}. Transaction hash: ${event.transactionHash}`
+      ),
   },
 
   {
