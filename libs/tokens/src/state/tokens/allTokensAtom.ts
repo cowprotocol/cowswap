@@ -81,18 +81,22 @@ export const activeTokensAtom = atom<TokenWithLogo[]>((get) => {
   const tokensMap = get(tokensStateAtom)
   const nativeToken = NATIVE_CURRENCIES[chainId]
 
-  return tokenMapToListWithLogo({
-    [nativeToken.address.toLowerCase()]: nativeToken as TokenInfo,
-    ...tokensMap.activeTokens,
-    ...lowerCaseTokensMap(userAddedTokens[chainId]),
-    ...lowerCaseTokensMap(favouriteTokensState[chainId]),
-  })
+  return tokenMapToListWithLogo(
+    {
+      [nativeToken.address.toLowerCase()]: nativeToken as TokenInfo,
+      ...tokensMap.activeTokens,
+      ...lowerCaseTokensMap(userAddedTokens[chainId]),
+      ...lowerCaseTokensMap(favouriteTokensState[chainId]),
+    },
+    chainId
+  )
 })
 
 export const inactiveTokensAtom = atom<TokenWithLogo[]>((get) => {
+  const { chainId } = get(environmentAtom)
   const tokensMap = get(tokensStateAtom)
 
-  return tokenMapToListWithLogo(tokensMap.inactiveTokens)
+  return tokenMapToListWithLogo(tokensMap.inactiveTokens, chainId)
 })
 
 export const tokensByAddressAtom = atom<TokensByAddress>((get) => {
