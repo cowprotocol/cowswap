@@ -16,9 +16,8 @@ export type TokenInfo = {
   logoURI?: string
 }
 
-export type OnPostedOrderPayload = {
+export type BaseOrderPayload = {
   orderUid: string
-  orderCreationHash?: string
   chainId: SupportedChainId
   owner: string
   kind: OrderKind
@@ -27,16 +26,21 @@ export type OnPostedOrderPayload = {
   outputAmount: bigint
   inputToken: TokenInfo
   outputToken: TokenInfo
-  isEthFlow?: boolean
   receiver?: string
 }
+
+export type OnPostedOrderPayload = BaseOrderPayload & {
+  orderCreationHash?: string
+  isEthFlow?: boolean
+}
+
 export type OnFulfilledOrderPayload = {
   chainId: SupportedChainId
   order: EnrichedOrder
 }
 
-export type OnRejectedOrderPayload = OrderUidInChain & {
-  reason: string
-  errorCode?: number
-  // TODO: Potentially add all order info here, but lets keep it minimal for now
+export type OnCancelledOrderPayload = {
+  chainId: SupportedChainId
+  orderUid: string
+  transactionHash?: string
 }

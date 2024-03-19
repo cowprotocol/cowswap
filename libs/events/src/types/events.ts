@@ -1,8 +1,4 @@
-import {
-  OnFulfilledOrderPayload,
-  OnPostedOrderPayload,
-  OnRejectedOrderPayload as OnCancelledOrderPayload,
-} from './orders'
+import { OnFulfilledOrderPayload, OnPostedOrderPayload, OnCancelledOrderPayload } from './orders'
 import { OnToastMessagePayload } from './toastMessages'
 
 export enum CowEvents {

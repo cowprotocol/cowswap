@@ -26,6 +26,7 @@ import { invalidateOrdersBatch } from 'legacy/state/orders/actions'
 import { CancelOrdersBatchCallback, useCancelOrdersBatch } from 'legacy/state/orders/hooks'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
 
+import { emitCancelledOrderEvent } from 'modules/orders'
 import { removeInFlightOrderIdAtom } from 'modules/swap/state/EthFlow/ethFlowInFlightOrderIdsAtom'
 
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
@@ -175,11 +176,17 @@ function finalizeOnChainCancellation(
   orderId: string,
   sellTokenSymbol: string
 ) {
-  const { chainId, isSafeWallet, dispatch, addPopup, cancelOrdersBatch } = params
+  const { chainId, isSafeWallet, dispatch, addPopup, cancelOrdersBatch, account } = params
 
   if (receipt.status === 1) {
     // If cancellation succeeded, mark order as cancelled
     cancelOrdersBatch({ chainId, ids: [orderId], isSafeWallet })
+
+    emitCancelledOrderEvent({
+      chainId,
+      orderUid: orderId,
+      transactionHash: hash,
+    })
   } else {
     // If cancellation failed:
     // 1. Update order state and remove the isCancelling flag and cancellationHash

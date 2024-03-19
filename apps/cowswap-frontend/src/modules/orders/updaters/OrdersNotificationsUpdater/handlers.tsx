@@ -1,6 +1,7 @@
 import {
   CowEventPayloads,
   CowEvents,
+  OnCancelledOrderPayload,
   OnFulfilledOrderPayload,
   OnPostedOrderPayload,
   OnToastMessagePayload,
@@ -15,6 +16,7 @@ import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { OrdersNotificationsContext } from './types'
 
+import { CancelledOrderNotification } from '../../containers/CancelledOrderNotification'
 import { FulfilledOrderNotification } from '../../containers/FulfilledOrderNotification'
 import { PendingOrderNotification } from '../../pure/PendingOrderNotification'
 
@@ -54,17 +56,20 @@ export const ORDERS_NOTIFICATION_HANDLERS: Record<CowEvents, OrdersNotifications
       return <FulfilledOrderNotification chainId={chainId} uid={order.uid} onToastMessage={onToastMessage} />
     },
   },
+  [CowEvents.ON_CANCELLED_ORDER]: {
+    icon: 'success',
+    handler: (payload: OnCancelledOrderPayload) => {
+      const onToastMessage = getToastMessageCallback(ToastMessageType.ORDER_CANCELLED, {
+        orderUid: payload.orderUid,
+      })
+
+      return <CancelledOrderNotification payload={payload} onToastMessage={onToastMessage} />
+    },
+  },
   [CowEvents.ON_TOAST_MESSAGE]: {
     icon: 'success',
     handler: (info) => {
       console.debug('[ON_TOAST_MESSAGE]', info)
-      return null
-    },
-  },
-  // TODO: add handler
-  [CowEvents.ON_CANCELLED_ORDER]: {
-    icon: 'success',
-    handler: () => {
       return null
     },
   },
