@@ -3,7 +3,6 @@ import { useEffect } from 'react'
 
 import { USDC_MAINNET, WBTC } from '@cowprotocol/common-const'
 import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
-import { TokenInfo } from '@cowprotocol/events'
 import { SnackbarPopup } from '@cowprotocol/snackbars'
 import { TokenInfo } from '@cowprotocol/types'
 import { UiOrderType } from '@cowprotocol/types'
