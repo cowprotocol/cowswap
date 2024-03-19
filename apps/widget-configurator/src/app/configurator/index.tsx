@@ -1,15 +1,16 @@
 import { ChangeEvent, useContext, useEffect, useState } from 'react'
 
-import { CowEventListeners, CowEvents, ToastMessageType } from '@cowprotocol/events'
+import { CowEventListeners } from '@cowprotocol/events'
 import { TradeType } from '@cowprotocol/widget-lib'
 import { CowSwapWidget } from '@cowprotocol/widget-react'
 
 import ChromeReaderModeIcon from '@mui/icons-material/ChromeReaderMode'
+import CloseIcon from '@mui/icons-material/Close'
 import CodeIcon from '@mui/icons-material/Code'
 import EditIcon from '@mui/icons-material/Edit'
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft'
 import LanguageIcon from '@mui/icons-material/Language'
-import { Radio, RadioGroup, FormControlLabel, FormControl, FormLabel } from '@mui/material'
+import { Radio, RadioGroup, FormControlLabel, FormControl, FormLabel, Snackbar, IconButton } from '@mui/material'
 import Box from '@mui/material/Box'
 import Divider from '@mui/material/Divider'
 import Drawer from '@mui/material/Drawer'
@@ -21,7 +22,7 @@ import ListItemText from '@mui/material/ListItemText'
 import Typography from '@mui/material/Typography'
 import { useAccount, useNetwork } from 'wagmi'
 
-import { DEFAULT_TOKEN_LISTS, TRADE_MODES } from './consts'
+import { COW_LISTENERS, DEFAULT_TOKEN_LISTS, TRADE_MODES } from './consts'
 import { CurrencyInputControl } from './controls/CurrencyInputControl'
 import { CurrentTradeTypeControl } from './controls/CurrentTradeTypeControl'
 import { NetworkControl, NetworkOption, NetworkOptions } from './controls/NetworkControl'
@@ -34,6 +35,7 @@ import { useColorPaletteManager } from './hooks/useColorPaletteManager'
 import { useEmbedDialogState } from './hooks/useEmbedDialogState'
 import { useProvider } from './hooks/useProvider'
 import { useSyncWidgetNetwork } from './hooks/useSyncWidgetNetwork'
+import { useToastsManager } from './hooks/useToastsManager'
 import { useWidgetParams } from './hooks/useWidgetParamsAndSettings'
 import { ContentStyled, DrawerStyled, WalletConnectionWrapper, WrapperStyled } from './styled'
 import { ConfiguratorState, TokenListItem } from './types'
@@ -52,55 +54,12 @@ const DEFAULT_STATE = {
   buyAmount: 0,
 }
 
-const COW_LISTENERS: CowEventListeners = [
-  {
-    event: CowEvents.ON_TOAST_MESSAGE,
-    handler: (event) => {
-      // You can provide a simplistic way to handle toast messages (use the "message" to show it in your app)
-      console.info('[configurator:ON_TOAST_MESSAGE:simple] 🍞 Message:', event.message)
-    },
-  },
-
-  {
-    event: CowEvents.ON_TOAST_MESSAGE,
-    handler: (event) => {
-      // You cn implement a more complex way to handle toast messages
-      switch (event.messageType) {
-        case ToastMessageType.SWAP_ETH_FLOW_SENT_TX:
-          console.info('[configurator:ON_TOAST_MESSAGE:complex] 🍞 New eth flow order. Tx:', event.data.tx)
-          break
-        case ToastMessageType.SWAP_POSTED_API:
-          console.info('[configurator:ON_TOAST_MESSAGE:complex] 🍞 Posted order', event.data.orderUid)
-          break
-        // ... and so on
-        default:
-          console.info('[configurator:ON_TOAST_MESSAGE:complex] 🍞 Default', event.message, event.data)
-      }
-    },
-  },
-
-  {
-    event: CowEvents.ON_POSTED_ORDER,
-    handler: (event) => console.log('[configurator:ON_POSTED_ORDER] 💌 Posted order:', event.orderUid),
-  },
-
-  {
-    event: CowEvents.ON_CANCELLED_ORDER,
-    handler: (event) =>
-      console.log(`[configurator:ON_CANCELLED_ORDER] ❌ Cancelled order ${event.orderUid}. Reason: ${event.reason}`),
-  },
-
-  {
-    event: CowEvents.ON_FULFILLED_ORDER,
-    handler: (event) => console.log(`[configurator:ON_EXECUTED_ORDER] ✅ Executed order ${event.order.uid}`),
-  },
-]
-
 const UTM_PARAMS = 'utm_content=cow-widget-configurator&utm_medium=web&utm_source=widget.cow.fi'
 
 export type WidgetMode = 'dapp' | 'standalone'
 
 export function Configurator({ title }: { title: string }) {
+  const [listeners, setListeners] = useState<CowEventListeners>(COW_LISTENERS)
   const { mode } = useContext(ColorModeContext)
 
   const [widgetMode, setWidgetMode] = useState<WidgetMode>('dapp')
@@ -144,6 +103,9 @@ export function Configurator({ title }: { title: string }) {
 
   const { dialogOpen, handleDialogClose, handleDialogOpen } = useEmbedDialogState()
 
+  const { closeToast, toasts, selectDisableToastMessages, disableToastMessages } = useToastsManager(setListeners)
+  const firstToast = toasts?.[0]
+
   const LINKS = [
     { icon: <CodeIcon />, label: 'View embed code', onClick: () => handleDialogOpen() },
     { icon: <LanguageIcon />, label: 'Widget web', url: `https://cow.fi/widget/?${UTM_PARAMS}` },
@@ -179,9 +141,11 @@ export function Configurator({ title }: { title: string }) {
     defaultColors: defaultPalette,
     partnerFeeBps,
     partnerFeeRecipient,
+    standaloneMode,
+    disableToastMessages,
   }
 
-  const params = useWidgetParams(state, standaloneMode)
+  const params = useWidgetParams(state)
 
   useEffect(() => {
     web3Modal.setThemeMode(mode)
@@ -255,6 +219,21 @@ export function Configurator({ title }: { title: string }) {
 
         <PartnerFeeControl feeBpsState={partnerFeeBpsState} recipientState={partnerFeeRecipientState} />
 
+        <Divider variant="middle">Other settings</Divider>
+        <FormControl component="fieldset">
+          <FormLabel component="legend">Toast notifications:</FormLabel>
+          <RadioGroup
+            row
+            aria-label="mode"
+            name="mode"
+            value={disableToastMessages}
+            onChange={selectDisableToastMessages}
+          >
+            <FormControlLabel value="false" control={<Radio />} label="Self-contain in Widget" />
+            <FormControlLabel value="true" control={<Radio />} label="Dapp mode" />
+          </RadioGroup>
+        </FormControl>
+
         {isDrawerOpen && (
           <Fab
             size="small"
@@ -299,7 +278,7 @@ export function Configurator({ title }: { title: string }) {
               handleClose={handleDialogClose}
             />
             <br />
-            <CowSwapWidget params={params} provider={standaloneMode ? provider : undefined} listeners={COW_LISTENERS} />
+            <CowSwapWidget params={params} provider={standaloneMode ? provider : undefined} listeners={listeners} />
           </>
         )}
       </Box>
@@ -314,6 +293,17 @@ export function Configurator({ title }: { title: string }) {
         <CodeIcon sx={{ mr: 1 }} />
         View Embed Code
       </Fab>
+      <Snackbar
+        open={!!firstToast}
+        autoHideDuration={6_000}
+        onClose={closeToast}
+        message={firstToast}
+        action={
+          <IconButton size="small" aria-label="close" color="inherit" onClick={closeToast}>
+            <CloseIcon fontSize="small" />
+          </IconButton>
+        }
+      />
     </Box>
   )
 }
