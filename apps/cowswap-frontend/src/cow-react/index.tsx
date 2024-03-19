@@ -75,7 +75,6 @@ function Main() {
                         </>
                       )}
 
-                      <Popups />
                       <Toasts />
                       <App />
                     </WithLDProvider>
