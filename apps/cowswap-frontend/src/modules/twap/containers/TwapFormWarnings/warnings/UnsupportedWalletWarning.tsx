@@ -24,8 +24,7 @@ export function UnsupportedWalletWarning({ isSafeViaWc }: { isSafeViaWc: boolean
         support!
       </p>
       <p>
-        <strong>Note:</strong> If you are using the Safe App already but still see this, make sure your Safe is
-        deployed!
+        <strong>Note:</strong> If you are using a Safe but still see this message, ensure your Safe is deployed!
       </p>
     </InlineBanner>
   )
