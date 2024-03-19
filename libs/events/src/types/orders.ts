@@ -1,4 +1,4 @@
-import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { OrderKind, SupportedChainId, EnrichedOrder } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
 
 export interface OrderUidInChain {
@@ -30,7 +30,10 @@ export type OnPostedOrderPayload = {
   isEthFlow?: boolean
   receiver?: string
 }
-export type OnExecutedOrderPayload = OrderUidInChain
+export type OnFulfilledOrderPayload = {
+  chainId: SupportedChainId
+  order: EnrichedOrder
+}
 
 export type OnRejectedOrderPayload = OrderUidInChain & {
   reason: string

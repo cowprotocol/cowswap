@@ -74,7 +74,7 @@ export function computeOrderSummary({
 
 type PopupData = {
   status: OrderTransitionStatus
-  popupData?: OrderLogPopupMixData
+  order: EnrichedOrder
 }
 
 export async function fetchOrderPopupData(orderFromStore: Order, chainId: ChainId): Promise<PopupData | null> {
@@ -82,45 +82,21 @@ export async function fetchOrderPopupData(orderFromStore: Order, chainId: ChainI
   if (orderFromStore.status === OrderStatus.CREATING) {
     return null
   }
-  // Get order from API
-  let orderFromApi: EnrichedOrder | null = null
+
   try {
     const isComposableCowChildOrder = getIsComposableCowChildOrder(orderFromStore)
     // For ComposableCow child orders always request PROD order-book
-    orderFromApi = await getOrder(chainId, orderFromStore.id, isComposableCowChildOrder ? 'prod' : undefined)
+    const order = await getOrder(chainId, orderFromStore.id, isComposableCowChildOrder ? 'prod' : undefined)
+
+    if (!order) return null
+
+    const status = classifyOrder(order)
+
+    return { status, order }
   } catch (e: any) {
     console.debug(
       `[PendingOrdersUpdater] Failed to fetch order popup data on chain ${chainId} for order ${orderFromStore.id}`
     )
     return null
   }
-  const status = classifyOrder(orderFromApi)
-
-  let popupData = undefined
-
-  switch (status) {
-    case 'fulfilled':
-      popupData = {
-        id: orderFromStore.id,
-        fulfillmentTime: new Date().toISOString(),
-        transactionHash: '', // there's no need  for a txHash as we'll link the notification to the Explorer
-        summary: computeOrderSummary({ orderFromStore, orderFromApi }),
-        apiAdditionalInfo: orderFromApi
-          ? {
-              ...orderFromApi,
-            }
-          : undefined,
-      }
-      break
-    case 'expired':
-    case 'cancelled':
-    case 'presigned':
-      popupData = orderFromStore.id
-      break
-    default:
-      // No popup for other states
-      break
-  }
-
-  return { status, popupData }
 }

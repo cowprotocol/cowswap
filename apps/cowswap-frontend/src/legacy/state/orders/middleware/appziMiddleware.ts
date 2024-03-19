@@ -28,10 +28,10 @@ export const appziMiddleware: Middleware<Record<string, unknown>, AppState> = (s
     // Shows NPS feedback (or attempts to) when there's a successful trade
     const {
       chainId,
-      ordersData: [{ id }],
+      orders: [{ uid }],
     } = action.payload
 
-    _triggerAppzi(store, chainId, id, { traded: true })
+    _triggerAppzi(store, chainId, uid, { traded: true })
   } else if (isBatchExpireOrderAction(action)) {
     // Shows NPS feedback (or attempts to) when the order expired
     const {

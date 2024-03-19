@@ -1,5 +1,5 @@
 import {
-  OnExecutedOrderPayload,
+  OnFulfilledOrderPayload,
   OnPostedOrderPayload,
   OnRejectedOrderPayload as OnCancelledOrderPayload,
 } from './orders'
@@ -8,7 +8,7 @@ import { OnToastMessagePayload } from './toastMessages'
 export enum CowEvents {
   ON_TOAST_MESSAGE = 'ON_TOAST_MESSAGE',
   ON_POSTED_ORDER = 'ON_POSTED_ORDER',
-  ON_EXECUTED_ORDER = 'ON_EXECUTED_ORDER',
+  ON_FULFILLED_ORDER = 'ON_FULFILLED_ORDER',
   ON_CANCELLED_ORDER = 'ON_CANCELLED_ORDER',
 }
 
@@ -16,7 +16,7 @@ export enum CowEvents {
 export interface CowEventPayloadMap {
   [CowEvents.ON_TOAST_MESSAGE]: OnToastMessagePayload
   [CowEvents.ON_POSTED_ORDER]: OnPostedOrderPayload
-  [CowEvents.ON_EXECUTED_ORDER]: OnExecutedOrderPayload
+  [CowEvents.ON_FULFILLED_ORDER]: OnFulfilledOrderPayload
   [CowEvents.ON_CANCELLED_ORDER]: OnCancelledOrderPayload
 }
 
