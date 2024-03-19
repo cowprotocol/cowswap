@@ -6,6 +6,7 @@ export enum ToastMessageType {
   SWAP_SIGNING_ERROR = 'SWAP_SIGNING_ERROR',
   ORDER_FULFILLED = 'ORDER_FULFILLED',
   ORDER_CANCELLED = 'ORDER_CANCELLED',
+  ORDER_EXPIRED = 'ORDER_EXPIRED',
 }
 
 export interface ToastMessagePayloads {
@@ -32,6 +33,12 @@ export interface ToastMessagePayloads {
 
   [ToastMessageType.ORDER_CANCELLED]: {
     orderUid: string
+    orderType: UiOrderType
+  }
+
+  [ToastMessageType.ORDER_EXPIRED]: {
+    orderUid: string
+    orderType: UiOrderType
   }
 }
 

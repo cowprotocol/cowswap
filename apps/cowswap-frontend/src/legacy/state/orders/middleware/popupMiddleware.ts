@@ -1,7 +1,6 @@
 import { isAnyOf } from '@reduxjs/toolkit'
 import { Middleware } from 'redux'
 
-import { batchExpireOrdersPopup } from './batchExpireOrdersPopup'
 import { batchPresignOrdersPopup } from './batchPresignOrdersPopup'
 
 import { AppState } from '../../index'
@@ -24,10 +23,7 @@ export const popupMiddleware: Middleware<Record<string, unknown>, AppState> = (s
       return result
     }
 
-    if (action.type === 'order/expireOrdersBatch') {
-      // construct Expired Order Popups for each Order
-      batchExpireOrdersPopup(store, action.payload, ordersMap)
-    } else if (action.type === 'order/presignOrders') {
+    if (action.type === 'order/presignOrders') {
       batchPresignOrdersPopup(store, action.payload, ordersMap)
     }
   }

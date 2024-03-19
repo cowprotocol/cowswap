@@ -1,12 +1,6 @@
 import { OrderKind, SupportedChainId, EnrichedOrder } from '@cowprotocol/cow-sdk'
 import { TokenInfo, UiOrderType } from '@cowprotocol/types'
 
-export interface OrderUidInChain {
-  orderUid: string
-  chainId: SupportedChainId
-  // TODO: Potentially add all order info here, but lets keep it minimal for now
-}
-
 export type BaseOrderPayload = {
   orderUid: string
   chainId: SupportedChainId
@@ -32,6 +26,11 @@ export type OnFulfilledOrderPayload = {
 
 export type OnCancelledOrderPayload = {
   chainId: SupportedChainId
-  orderUid: string
+  order: EnrichedOrder
   transactionHash?: string
+}
+
+export type OnExpiredOrderPayload = {
+  chainId: SupportedChainId
+  order: EnrichedOrder
 }

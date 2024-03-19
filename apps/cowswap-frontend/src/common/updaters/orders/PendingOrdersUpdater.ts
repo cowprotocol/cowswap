@@ -31,7 +31,7 @@ import {
 } from 'legacy/state/orders/hooks'
 import { OrderTransitionStatus } from 'legacy/state/orders/utils'
 
-import { emitFulfilledOrderEvent, emitCancelledOrderEvent } from 'modules/orders'
+import { emitFulfilledOrderEvent, emitCancelledOrderEvent, emitExpiredOrderEvent } from 'modules/orders'
 import { useAddOrderToSurplusQueue } from 'modules/swap/state/surplusModal'
 
 import { getOrder } from 'api/gnosisProtocol'
@@ -224,6 +224,10 @@ async function _updateOrders({
       chainId,
       isSafeWallet,
     })
+
+    expired.forEach((order) => {
+      emitExpiredOrderEvent({ order, chainId })
+    })
   }
 
   if (cancelled.length > 0) {
@@ -236,7 +240,7 @@ async function _updateOrders({
     cancelled.forEach((order) => {
       emitCancelledOrderEvent({
         chainId,
-        orderUid: order.uid,
+        order,
       })
     })
   }

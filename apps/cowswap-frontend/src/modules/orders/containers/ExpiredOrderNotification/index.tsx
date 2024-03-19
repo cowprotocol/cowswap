@@ -1,7 +1,6 @@
 import { useCallback } from 'react'
 
-import { shortenOrderId } from '@cowprotocol/common-utils'
-import { OnCancelledOrderPayload } from '@cowprotocol/events'
+import { OnExpiredOrderPayload } from '@cowprotocol/events'
 import { TokenInfo } from '@cowprotocol/types'
 
 import { EnhancedTransactionLink } from 'legacy/components/EnhancedTransactionLink'
@@ -10,19 +9,17 @@ import { useOrder } from 'legacy/state/orders/hooks'
 
 import { OrderLinkWrapper } from '../../pure/commonStyled'
 import { OrderSummary } from '../../pure/OrderSummary'
-import { ReceiverInfo } from '../../pure/ReceiverInfo'
 
-export interface PendingOrderNotificationProps {
-  payload: OnCancelledOrderPayload
+export interface ExpiredOrderNotificationProps {
+  payload: OnExpiredOrderPayload
   onToastMessage(message: string): void
 }
 
-export function CancelledOrderNotification(props: PendingOrderNotificationProps) {
+export function ExpiredOrderNotification(props: ExpiredOrderNotificationProps) {
   const {
     payload: {
       chainId,
       order: { uid: orderUid },
-      transactionHash,
     },
     onToastMessage,
   } = props
@@ -39,29 +36,25 @@ export function CancelledOrderNotification(props: PendingOrderNotificationProps)
   if (!order) return
 
   const tx = {
-    hash: transactionHash || orderUid,
+    hash: orderUid,
     hashType: HashType.ETHEREUM_TX,
   }
 
   // TODO: do we need this?
-  // orderAnalytics('Canceled', getUiOrderType(payload.orderUid))
+  // orderAnalytics('Expired', getUiOrderType(orderObject.order))
 
   return (
     <>
       <div ref={ref}>
-        <strong>Order successfully cancelled</strong>
-        <br />
-        <p>
-          Order <strong>{shortenOrderId(orderUid)}</strong>:
-        </p>
         <OrderSummary
           kind={order.kind}
           inputToken={order.inputToken as TokenInfo}
           outputToken={order.outputToken as TokenInfo}
           sellAmount={order.sellAmount}
           buyAmount={order.buyAmount}
-        />
-        <ReceiverInfo receiver={order.receiver} owner={order.owner} />
+        >
+          <> expired</>
+        </OrderSummary>
       </div>
       <OrderLinkWrapper>
         <EnhancedTransactionLink chainId={chainId} tx={tx} />
