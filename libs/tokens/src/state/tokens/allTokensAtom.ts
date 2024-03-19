@@ -7,7 +7,7 @@ import { userAddedTokensAtom } from './userAddedTokensAtom'
 import { favouriteTokensAtom } from './favouriteTokensAtom'
 import { listsEnabledStateAtom, listsStatesListAtom } from '../tokenLists/tokenListsStateAtom'
 import { lowerCaseTokensMap } from '../../utils/lowerCaseTokensMap'
-import type { TokenInfo } from '@uniswap/token-lists'
+import { TokenInfo } from '@cowprotocol/types'
 
 export interface TokensByAddress {
   [address: string]: TokenWithLogo | undefined

@@ -1,17 +1,16 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback } from 'react'
 
-import { TokenWithLogo } from '@cowprotocol/common-const'
-import { isAddress, isSellOrder, shortenAddress, shortenOrderId } from '@cowprotocol/common-utils'
+import { shortenOrderId } from '@cowprotocol/common-utils'
 import { OnCancelledOrderPayload } from '@cowprotocol/events'
-import { TokenAmount } from '@cowprotocol/ui'
-import { CurrencyAmount } from '@uniswap/sdk-core'
+import { TokenInfo } from '@cowprotocol/types'
 
 import { EnhancedTransactionLink } from 'legacy/components/EnhancedTransactionLink'
-import { ExplorerLink } from 'legacy/components/ExplorerLink'
 import { HashType } from 'legacy/state/enhancedTransactions/reducer'
 import { useOrder } from 'legacy/state/orders/hooks'
 
 import { OrderLinkWrapper } from '../../pure/commonStyled'
+import { OrderSummary } from '../../pure/OrderSummary'
+import { ReceiverInfo } from '../../pure/ReceiverInfo'
 
 export interface PendingOrderNotificationProps {
   payload: OnCancelledOrderPayload
@@ -33,24 +32,7 @@ export function CancelledOrderNotification(props: PendingOrderNotificationProps)
 
   const order = useOrder({ chainId, id: orderUid })
 
-  const inputAmount = useMemo(() => {
-    if (!order) return null
-    return CurrencyAmount.fromRawAmount(TokenWithLogo.fromToken(order.inputToken), order.sellAmount)
-  }, [order])
-
-  const outputAmount = useMemo(() => {
-    if (!order) return null
-    return CurrencyAmount.fromRawAmount(TokenWithLogo.fromToken(order.outputToken), order.buyAmount)
-  }, [order])
-
   if (!order) return
-
-  const { receiver, kind, owner } = order
-  const isSell = isSellOrder(kind)
-  const toAddress = receiver && isAddress(receiver) ? shortenAddress(receiver) : receiver
-
-  const inputAmountElement = <TokenAmount amount={inputAmount} tokenSymbol={inputAmount?.currency} />
-  const outputAmountElement = <TokenAmount amount={outputAmount} tokenSymbol={outputAmount?.currency} />
 
   const tx = {
     hash: transactionHash || orderUid,
@@ -68,22 +50,14 @@ export function CancelledOrderNotification(props: PendingOrderNotificationProps)
         <p>
           Order <strong>{shortenOrderId(orderUid)}</strong>:
         </p>
-        <div>
-          {isSell ? (
-            <>
-              Sell {inputAmountElement} for at least {outputAmountElement}
-            </>
-          ) : (
-            <>
-              Buy {outputAmountElement} for at most {inputAmountElement}
-            </>
-          )}
-        </div>
-        {toAddress && receiver && receiver !== owner && (
-          <div>
-            Receiver: <ExplorerLink id={receiver} label={toAddress} type="address" />
-          </div>
-        )}
+        <OrderSummary
+          kind={order.kind}
+          inputToken={order.inputToken as TokenInfo}
+          outputToken={order.outputToken as TokenInfo}
+          sellAmount={order.sellAmount}
+          buyAmount={order.buyAmount}
+        />
+        <ReceiverInfo receiver={order.receiver} owner={order.owner} />
       </div>
       <OrderLinkWrapper>
         <EnhancedTransactionLink chainId={chainId} tx={tx} />
