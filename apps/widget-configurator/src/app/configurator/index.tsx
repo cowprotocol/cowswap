@@ -278,7 +278,7 @@ export function Configurator({ title }: { title: string }) {
               handleClose={handleDialogClose}
             />
             <br />
-            <CowSwapWidget params={params} provider={standaloneMode ? provider : undefined} listeners={listeners} />
+            <CowSwapWidget params={params} provider={!standaloneMode ? provider : undefined} listeners={listeners} />
           </>
         )}
       </Box>
