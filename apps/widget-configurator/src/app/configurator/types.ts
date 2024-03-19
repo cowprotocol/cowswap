@@ -37,4 +37,6 @@ export interface ConfiguratorState {
   defaultColors: ColorPalette
   partnerFeeBps: number
   partnerFeeRecipient: string
+  standaloneMode: boolean
+  disableToastMessages: boolean
 }
