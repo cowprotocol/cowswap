@@ -1,5 +1,4 @@
-import { currencyAmountToTokenAmount, reportAppDataWithHooks, reportPlaceOrderWithExpiredQuote } from '@cowprotocol/common-utils'
-import { OrderKind } from '@cowprotocol/cow-sdk'
+import { reportAppDataWithHooks, reportPlaceOrderWithExpiredQuote } from '@cowprotocol/common-utils'
 import { UiOrderType } from '@cowprotocol/types'
 import { Percent } from '@uniswap/sdk-core'
 
@@ -40,7 +39,7 @@ export async function ethFlow(
     trade: { inputAmount, outputAmount, fee },
   } = context
   const tradeAmounts = { inputAmount, outputAmount }
-  const { account, recipientAddressOrName } = orderParamsOriginal
+  const { account, recipientAddressOrName, kind } = orderParamsOriginal
 
   logTradeFlow('ETH FLOW', 'STEP 1: confirm price impact')
   if (priceImpactParams?.priceImpact && !(await confirmPriceImpactWithoutFee(priceImpactParams.priceImpact))) {
@@ -80,10 +79,10 @@ export async function ethFlow(
       chainId,
       id: orderId,
       orderCreationHash: txReceipt.hash,
-      kind: OrderKind.SELL,
+      kind,
       receiver: recipientAddressOrName,
-      inputAmount: currencyAmountToTokenAmount(inputAmount),
-      outputAmount: currencyAmountToTokenAmount(outputAmount),
+      inputAmount,
+      outputAmount,
       owner: account,
       uiOrderType: UiOrderType.SWAP,
       isEthFlow: true,

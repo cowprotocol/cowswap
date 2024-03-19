@@ -42,6 +42,7 @@ export const setErrorTradeConfirmAtom = atom(null, (get, set, error: string) => 
   set(tradeConfirmStateAtom, () => ({
     ...get(tradeConfirmStateAtom),
     error,
+    isOpen: false,
     pendingTrade: null,
     transactionHash: null,
     permitSignatureState: undefined,

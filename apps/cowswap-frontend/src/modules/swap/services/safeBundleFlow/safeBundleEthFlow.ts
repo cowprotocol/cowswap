@@ -1,6 +1,5 @@
 import { Erc20 } from '@cowprotocol/abis'
-import { currencyAmountToTokenAmount, reportAppDataWithHooks } from '@cowprotocol/common-utils'
-import { OrderKind } from '@cowprotocol/cow-sdk'
+import { reportAppDataWithHooks } from '@cowprotocol/common-utils'
 import { UiOrderType } from '@cowprotocol/types'
 import { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import { Percent } from '@uniswap/sdk-core'
@@ -48,7 +47,7 @@ export async function safeBundleEthFlow(
     tradeConfirmActions,
   } = input
 
-  const { account, recipientAddressOrName } = orderParams
+  const { account, recipientAddressOrName, kind } = orderParams
   const {
     inputAmountWithSlippage,
     chainId,
@@ -135,11 +134,10 @@ export async function safeBundleEthFlow(
       chainId,
       id: orderId,
       orderCreationHash: safeTx.safeTxHash,
-      kind: OrderKind.SELL,
+      kind,
       receiver: recipientAddressOrName,
-      // TODO: check, should we use inputAmountWithSlippage instead?
-      inputAmount: currencyAmountToTokenAmount(inputAmount),
-      outputAmount: currencyAmountToTokenAmount(outputAmount),
+      inputAmount,
+      outputAmount,
       owner: account,
       uiOrderType: UiOrderType.SWAP,
     })

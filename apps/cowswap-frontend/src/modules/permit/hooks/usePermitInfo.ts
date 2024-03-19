@@ -11,15 +11,20 @@ import { useWeb3React } from '@web3-react/core'
 
 import { Nullish } from 'types'
 
-import { TradeType } from 'modules/trade'
+import { TradeType } from 'modules/trade/hooks/useTradeTypeInfo'
 
 import { useIsPermitEnabled } from 'common/hooks/featureFlags/useIsPermitEnabled'
 
 import { usePreGeneratedPermitInfoForToken } from './usePreGeneratedPermitInfoForToken'
 
-import { ORDER_TYPE_SUPPORTS_PERMIT } from '../const'
 import { addPermitInfoForTokenAtom, permittableTokensAtom } from '../state/permittableTokensAtom'
 import { IsTokenPermittableResult } from '../types'
+
+const ORDER_TYPE_SUPPORTS_PERMIT: Record<TradeType, boolean> = {
+  [TradeType.SWAP]: true,
+  [TradeType.LIMIT_ORDER]: true,
+  [TradeType.ADVANCED_ORDERS]: false,
+}
 
 const UNSUPPORTED: PermitInfo = { type: 'unsupported', name: 'native' }
 

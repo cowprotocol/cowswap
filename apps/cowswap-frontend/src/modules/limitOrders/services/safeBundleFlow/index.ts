@@ -1,5 +1,4 @@
-import { currencyAmountToTokenAmount, reportAppDataWithHooks } from '@cowprotocol/common-utils'
-import { OrderKind } from '@cowprotocol/cow-sdk'
+import { reportAppDataWithHooks } from '@cowprotocol/common-utils'
 import { Command, UiOrderType } from '@cowprotocol/types'
 import { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import { Percent } from '@uniswap/sdk-core'
@@ -134,10 +133,10 @@ export async function safeBundleFlow(
       chainId,
       id: orderId,
       orderCreationHash: safeTxHash,
-      kind: OrderKind.SELL,
+      kind: postOrderParams.kind,
       receiver: recipientAddressOrName,
-      inputAmount: currencyAmountToTokenAmount(inputAmount),
-      outputAmount: currencyAmountToTokenAmount(outputAmount),
+      inputAmount,
+      outputAmount,
       owner: account,
       uiOrderType: UiOrderType.LIMIT,
     })

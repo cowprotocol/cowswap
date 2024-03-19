@@ -2,18 +2,6 @@ import { TokenAmount, FiatAmount } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-export const SummaryWrapper = styled.div`
-  font-size: 1rem;
-
-  > div {
-    margin-bottom: 1rem;
-
-    &:last-child {
-      margin-bottom: 0.6rem;
-    }
-  }
-`
-
 export const StyledTokenAmount = styled(TokenAmount)`
   font-size: 0.9rem;
   white-space: nowrap;
@@ -38,6 +26,7 @@ export const SurplusWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  margin-top: 15px;
 
   > span:first-child {
     margin-right: 5px;

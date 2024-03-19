@@ -28,7 +28,7 @@ export function useCancelTwapOrder(): (twapOrderId: string, order: Order) => Pro
         throw new Error('Context is not full to cancel TWAP order')
       }
 
-      const partOrder = twapPartOrders[twapOrderId].sort((a, b) => a.order.validTo - b.order.validTo)[0]
+      const partOrder = twapPartOrders[twapOrderId]?.sort((a, b) => a.order.validTo - b.order.validTo)[0]
       const partOrderId = partOrder?.uid
 
       const context = { composableCowContract, settlementContract, orderId: twapOrderId, partOrderId }

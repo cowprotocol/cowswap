@@ -22,6 +22,9 @@ const Overlay = styled.div`
 const List = styled.div`
   position: relative;
   z-index: 5;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 `
 
 const Host = styled.div`

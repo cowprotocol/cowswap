@@ -9,6 +9,7 @@ import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
 import { TransactionReceipt } from '@ethersproject/abstract-provider'
 import { useWeb3React } from '@web3-react/core'
 
+import { orderBookApi } from 'cowSdk'
 import ms from 'ms.macro'
 
 import { GetSafeInfo, useGetSafeInfo } from 'legacy/hooks/useGetSafeInfo'
@@ -28,6 +29,7 @@ import { partialOrderUpdate } from 'legacy/state/orders/utils'
 
 import { emitCancelledOrderEvent } from 'modules/orders'
 import { removeInFlightOrderIdAtom } from 'modules/swap/state/EthFlow/ethFlowInFlightOrderIdsAtom'
+import { useGetTwapOrderById } from 'modules/twap/hooks/useGetTwapOrderById'
 
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
@@ -62,6 +64,7 @@ interface CheckEthereumTransactions {
   isSafeWallet: boolean
   transactions: EnhancedTransactionDetails[]
   lastBlockNumber: number
+  getTwapOrderById: ReturnType<typeof useGetTwapOrderById>
   getReceipt: GetReceipt
   getSafeInfo: GetSafeInfo
   dispatch: AppDispatch
@@ -80,7 +83,7 @@ function finalizeEthereumTransaction(
   const { chainId, account, addPopup, dispatch, addPriorityAllowance } = params
   const { hash } = transaction
 
-  console.log(`[FinalizeTxUpdater] Transaction ${receipt.transactionHash} has been mined`, receipt)
+  console.log(`[FinalizeTxUpdater] Transaction ${receipt.transactionHash} has been mined`, receipt, transaction)
 
   // Once approval tx is mined, we add the priority allowance to immediately allow the user to place orders
   if (transaction.approval) {
@@ -176,18 +179,34 @@ function finalizeOnChainCancellation(
   orderId: string,
   sellTokenSymbol: string
 ) {
-  const { chainId, isSafeWallet, dispatch, addPopup, cancelOrdersBatch, account } = params
+  const { chainId, isSafeWallet, dispatch, addPopup, cancelOrdersBatch, getTwapOrderById } = params
 
   if (receipt.status === 1) {
     // If cancellation succeeded, mark order as cancelled
     cancelOrdersBatch({ chainId, ids: [orderId], isSafeWallet })
 
-    // TODO: fix later
-    // emitCancelledOrderEvent({
-    //   chainId,
-    //   orderUid: orderId,
-    //   transactionHash: hash,
-    // })
+    const twapOrder = getTwapOrderById(orderId)
+
+    if (twapOrder) {
+      emitCancelledOrderEvent({
+        chainId,
+        order: twapOrder,
+        transactionHash: hash,
+      })
+
+      return
+    }
+
+    // Since TWAP parts are living only on PROD env, we should check both envs
+    orderBookApi.getOrderMultiEnv(orderId, { chainId }).then((order) => {
+      if (!order) return
+
+      emitCancelledOrderEvent({
+        chainId,
+        order,
+        transactionHash: hash,
+      })
+    })
   } else {
     // If cancellation failed:
     // 1. Update order state and remove the isCancelling flag and cancellationHash
@@ -290,6 +309,7 @@ export function FinalizeTxUpdater(): null {
   const getReceipt = useGetReceipt(chainId)
   const getSafeInfo = useGetSafeInfo()
   const addPriorityAllowance = useAddPriorityAllowance()
+  const getTwapOrderById = useGetTwapOrderById()
   const addPopup = useAddPopup()
   const removeInFlightOrderId = useSetAtom(removeInFlightOrderIdAtom)
   const nativeCurrencySymbol = useNativeCurrency().symbol || 'ETH'
@@ -321,6 +341,7 @@ export function FinalizeTxUpdater(): null {
       cancelOrdersBatch,
       addPriorityAllowance,
       account,
+      getTwapOrderById,
     })
 
     return () => {
@@ -342,6 +363,7 @@ export function FinalizeTxUpdater(): null {
     nativeCurrencySymbol,
     cancelOrdersBatch,
     addPriorityAllowance,
+    getTwapOrderById,
   ])
 
   return null

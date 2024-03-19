@@ -48,22 +48,6 @@ import { removeOrdersToCancelAtom } from '../../hooks/useMultipleOrdersCancellat
 import { useTriggerTotalSurplusUpdateCallback } from '../../state/totalSurplusState'
 
 /**
- * Return the ids of the orders that we are not yet aware that are signed.
- * This is, pre-sign orders, in state of "PRESIGNATURE_PENDING", for which we now know they are signed
- *
- * Used as an auxiliar method to detect which orders we should mark as pre-signed, so we change their state
- *
- * @param allPendingOrders All pending orders
- * @param signedOrdersIds ids of orders we know are already pre-signed
- * @returns ids of the pending orders that were pending for pre-sign, and we now know are pre-signed
- */
-function _getNewlyPreSignedOrders(allPendingOrders: Order[], signedOrdersIds: string[]) {
-  return allPendingOrders.filter(
-    (order) => order.status === OrderStatus.PRESIGNATURE_PENDING && signedOrdersIds.includes(order.id)
-  )
-}
-
-/**
  *
  * Update the presign Gnosis Safe Tx information (if applies)
  */
@@ -210,19 +194,28 @@ async function _updateOrders({
   )
 
   if (presigned.length > 0) {
-    // Only mark as presigned the orders we were not aware of their new state
-    const presignedOrderIds = presigned.map(({ uid }) => uid)
-    const ordersPresignaturePendingSigned = _getNewlyPreSignedOrders(orders, presignedOrderIds)
+    const presignedMap = presigned.reduce<{ [key: string]: EnrichedOrder }>((acc, order) => {
+      acc[order.uid] = order
+      return acc
+    }, {})
 
-    if (ordersPresignaturePendingSigned.length > 0) {
+    const presignedIds = presigned.map((order) => order.uid)
+
+    const newlyPreSignedOrders = orders
+      .filter((order) => {
+        return order.status === OrderStatus.PRESIGNATURE_PENDING && presignedIds.includes(order.id)
+      })
+      .map((order) => presignedMap[order.id])
+
+    if (newlyPreSignedOrders.length > 0) {
       presignOrders({
-        ids: ordersPresignaturePendingSigned.map((order) => order.id),
+        ids: newlyPreSignedOrders.map((order) => order.uid),
         chainId,
         isSafeWallet,
       })
 
-      ordersPresignaturePendingSigned.forEach((order) => {
-        emitPresignedOrderEvent({ chainId, orderUid: order.id, orderType: getUiOrderType(order) })
+      newlyPreSignedOrders.forEach((order) => {
+        emitPresignedOrderEvent({ chainId, order })
       })
     }
   }
@@ -323,6 +316,7 @@ export function PendingOrdersUpdater(): null {
   // Ref, so we don't rerun useEffect
   const pendingRef = useRef(pending)
   pendingRef.current = pending
+
   const _fulfillOrdersBatch = useFulfillOrdersBatch()
   const expireOrdersBatch = useExpireOrdersBatch()
   const cancelOrdersBatch = useCancelOrdersBatch()
