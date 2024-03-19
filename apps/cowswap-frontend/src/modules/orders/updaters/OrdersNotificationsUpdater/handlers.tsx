@@ -9,7 +9,6 @@ import {
   ToastMessageType,
 } from '@cowprotocol/events'
 import { IconType } from '@cowprotocol/snackbars'
-import { UiOrderType } from '@cowprotocol/types'
 
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
@@ -33,7 +32,7 @@ export const ORDERS_NOTIFICATION_HANDLERS: Record<CowEvents, OrdersNotifications
           chainId={chainId}
           orderType={orderType}
           orderUid={orderUid}
-          transactionHash={orderType === UiOrderType.TWAP ? orderCreationHash : undefined}
+          transactionHash={orderCreationHash}
           orderInfo={payload}
           messageType={ToastMessageType.ORDER_CREATED}
         />
@@ -62,14 +61,13 @@ export const ORDERS_NOTIFICATION_HANDLERS: Record<CowEvents, OrdersNotifications
     icon: 'success',
     handler: (payload: OnCancelledOrderPayload) => {
       const { chainId, order, transactionHash } = payload
-      const orderType = getUiOrderType(order)
 
       return (
         <OrderNotification
           title="Order cancelled"
           chainId={chainId}
           orderInfo={order}
-          orderType={orderType}
+          orderType={getUiOrderType(order)}
           orderUid={order.uid}
           transactionHash={transactionHash}
           messageType={ToastMessageType.ORDER_CANCELLED}
