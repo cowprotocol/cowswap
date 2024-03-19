@@ -5,6 +5,7 @@ import {
   OnExpiredOrderPayload,
   OnFulfilledOrderPayload,
   OnPostedOrderPayload,
+  OnPresignedOrderPayload,
   OnToastMessagePayload,
   ToastMessagePayloads,
   ToastMessageType,
@@ -20,6 +21,7 @@ import { OrdersNotificationsContext } from './types'
 import { CancelledOrderNotification } from '../../containers/CancelledOrderNotification'
 import { ExpiredOrderNotification } from '../../containers/ExpiredOrderNotification'
 import { FulfilledOrderNotification } from '../../containers/FulfilledOrderNotification'
+import { PresignedOrderNotification } from '../../containers/PresignedOrderNotification'
 import { PendingOrderNotification } from '../../pure/PendingOrderNotification'
 
 type OrdersNotificationsHandler<C> = {
@@ -78,6 +80,17 @@ export const ORDERS_NOTIFICATION_HANDLERS: Record<CowEvents, OrdersNotifications
       })
 
       return <ExpiredOrderNotification payload={payload} onToastMessage={onToastMessage} />
+    },
+  },
+  [CowEvents.ON_PRESIGNED_ORDER]: {
+    icon: 'success',
+    handler: (payload: OnPresignedOrderPayload) => {
+      const onToastMessage = getToastMessageCallback(ToastMessageType.ORDER_PRESIGNED, {
+        orderUid: payload.orderUid,
+        orderType: payload.orderType,
+      })
+
+      return <PresignedOrderNotification payload={payload} onToastMessage={onToastMessage} />
     },
   },
   [CowEvents.ON_TOAST_MESSAGE]: {

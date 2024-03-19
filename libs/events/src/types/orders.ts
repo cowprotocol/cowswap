@@ -34,3 +34,9 @@ export type OnExpiredOrderPayload = {
   chainId: SupportedChainId
   order: EnrichedOrder
 }
+
+export type OnPresignedOrderPayload = {
+  chainId: SupportedChainId
+  orderUid: string
+  orderType: UiOrderType
+}

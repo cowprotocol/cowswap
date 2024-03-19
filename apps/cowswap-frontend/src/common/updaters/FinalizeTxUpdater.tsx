@@ -26,6 +26,7 @@ import { invalidateOrdersBatch } from 'legacy/state/orders/actions'
 import { CancelOrdersBatchCallback, useCancelOrdersBatch } from 'legacy/state/orders/hooks'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
 
+import { emitCancelledOrderEvent } from 'modules/orders'
 import { removeInFlightOrderIdAtom } from 'modules/swap/state/EthFlow/ethFlowInFlightOrderIdsAtom'
 
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
