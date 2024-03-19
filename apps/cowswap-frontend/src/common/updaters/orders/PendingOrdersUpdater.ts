@@ -31,8 +31,7 @@ import {
 } from 'legacy/state/orders/hooks'
 import { OrderTransitionStatus } from 'legacy/state/orders/utils'
 
-import { emitFulfilledOrderEvent, emitCancelledOrderEvent } from 'modules/orders'
-import { emitExpiredOrderEvent } from 'modules/orders'
+import { emitFulfilledOrderEvent, emitCancelledOrderEvent, emitExpiredOrderEvent } from 'modules/orders'
 import { useAddOrderToSurplusQueue } from 'modules/swap/state/surplusModal'
 
 import { getOrder } from 'api/gnosisProtocol'
