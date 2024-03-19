@@ -323,7 +323,6 @@ export function PendingOrdersUpdater(): null {
   // Ref, so we don't rerun useEffect
   const pendingRef = useRef(pending)
   pendingRef.current = pending
-
   const _fulfillOrdersBatch = useFulfillOrdersBatch()
   const expireOrdersBatch = useExpireOrdersBatch()
   const cancelOrdersBatch = useCancelOrdersBatch()
