@@ -109,16 +109,13 @@ export const Wrapper = styled.div`
 
   > button {
     height: auto;
-    border-radius: 21px;
+    border-radius: 19px;
     padding: 6px 12px;
     width: max-content;
     gap: 6px;
   }
 
   ${Web3StatusConnected} {
-    height: 100%;
-    width: 100%;
-
     > div > svg > path {
       stroke: currentColor;
       opacity: 0.7;

@@ -63,18 +63,14 @@ const FlyoutMenuContents = styled.div`
   }
 `
 const SelectorLabel = styled.div`
-  display: none;
+  display: block;
   flex: 1 1 auto;
-  margin: 0 2px 0 0;
+  margin: 0;
+  white-space: nowrap;
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-      display: none;
-    `};
-
-  @media screen and (min-width: ${MEDIA_WIDTHS.upToSmall}px) {
-    display: block;
-    margin-right: 4px;
-  }
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    display: none;
+  `};
 `
 const SelectorControls = styled.div<{ isChainIdUnsupported: boolean }>`
   align-items: center;
@@ -82,8 +78,9 @@ const SelectorControls = styled.div<{ isChainIdUnsupported: boolean }>`
   display: flex;
   font-weight: 500;
   justify-content: space-between;
+  gap: 6px;
 
-  :focus {
+  &:focus {
     background-color: ${({ theme }) => darken(theme.red1, 0.1)};
   }
 
@@ -97,7 +94,7 @@ const SelectorControls = styled.div<{ isChainIdUnsupported: boolean }>`
     width: 24px;
     height: 24px;
     object-fit: contain;
-    margin: 0 6px 0 0;
+    margin: 0;
   }
 
   &:hover {
@@ -130,7 +127,10 @@ const SelectorWrapper = styled.div`
   }
 `
 const StyledChevronDown = styled(ChevronDown)`
-  width: 16px;
+  width: 21px;
+  height: 21px;
+  margin: 0 0 0 -3px;
+  object-fit: contain;
 `
 const NetworkIcon = styled(AlertTriangle)`
   margin-left: 0.25rem;

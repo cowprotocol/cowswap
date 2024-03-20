@@ -5,6 +5,8 @@ import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { TokenAmount } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { upToLarge, useMediaQuery } from 'legacy/hooks/useMediaQuery'
+
 import { useToggleAccountModal } from 'modules/account'
 import { Web3Status } from 'modules/wallet/containers/Web3Status'
 
@@ -24,10 +26,11 @@ export function AccountElement({ className, standaloneMode, pendingActivities }:
   const userEthBalance = useNativeCurrencyAmount(chainId, account)
   const toggleAccountModal = useToggleAccountModal()
   const nativeToken = NATIVE_CURRENCIES[chainId].symbol
+  const isUpToLarge = useMediaQuery(upToLarge)
 
   return (
     <Wrapper className={className} active={!!account} onClick={() => account && toggleAccountModal()}>
-      {standaloneMode !== false && account && !isChainIdUnsupported && userEthBalance && chainId && (
+      {standaloneMode !== false && account && !isChainIdUnsupported && userEthBalance && chainId && !isUpToLarge && (
         <BalanceText>
           <TokenAmount amount={userEthBalance} tokenSymbol={{ symbol: nativeToken }} />
         </BalanceText>

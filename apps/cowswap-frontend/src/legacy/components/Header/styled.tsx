@@ -129,20 +129,6 @@ export const HeaderFrame = styled.div<{ showBackground: boolean }>`
   `};
 `
 
-export const HeaderElementUni = styled.div`
-  display: flex;
-  align-items: center;
-
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    flex-direction: row-reverse;
-    align-items: center;
-  `};
-
-  ${({ theme }) => theme.mediaWidth.upToVerySmall`
-    width: 115px;
-  `};
-`
-
 export const StyledNavLink = styled(StyledNavLinkUni)`
   transition: color var(${UI.ANIMATION_DURATION}) ease-in-out;
   color: inherit;
@@ -168,39 +154,31 @@ export const HeaderControls = styled(HeaderControlsUni)`
     height: auto;
     width: auto;
   `};
+
+  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+    gap: 0;
+  `};
 `
 
-export const HeaderElement = styled(HeaderElementUni)`
-  border-radius: 0;
+export const HeaderElement = styled.div`
+  display: flex;
+  align-items: center;
   gap: 12px;
-
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    flex-direction: row;
-    justify-content: flex-end;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    border-radius: 0;
-    height: 64px;
-    background-color: var(${UI.COLOR_PAPER});
-    border-top: 1px solid ${({ theme }) => theme.grey1};
-    backdrop-filter: blur(21px);
-    padding: 10px 16px;
-    gap: 8px;
-  `}
 `
 
 export const Wrapper = styled.div<{ isMobileMenuOpen: boolean }>`
   width: 100%;
 
   ${HeaderFrame} {
-    padding: 16px;
     display: flex;
-    grid-template-rows: max-content;
+    padding: 16px;
+    gap: 16px;
+
+    ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+      gap: 10px;
+    `};
 
     ${({ theme, isMobileMenuOpen }) => theme.mediaWidth.upToLarge`
-      grid-template-columns: unset;
 
       ${
         isMobileMenuOpen &&
@@ -423,8 +401,8 @@ export const LogoImage = styled.div<{ isMobileMenuOpen?: boolean }>`
   position: relative;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
-    height: 34px;
-    width: 106px;
+    height: 30px;
+    width: auto;
   `}
 
   ${({ theme, isMobileMenuOpen }) => theme.mediaWidth.upToLarge`

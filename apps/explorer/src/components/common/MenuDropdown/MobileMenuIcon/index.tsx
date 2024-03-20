@@ -12,6 +12,7 @@ const Wrapper = styled.div<{ isMobileMenuOpen: boolean }>`
   position: relative;
   width: 3.4rem;
   height: 1.8rem;
+
   ${media.mobile} {
     width: 2.8rem;
   }

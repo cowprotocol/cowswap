@@ -10,9 +10,9 @@ import { useNavigate } from 'react-router-dom'
 
 import CowBalanceButton from 'legacy/components/CowBalanceButton'
 import { NetworkSelector } from 'legacy/components/Header/NetworkSelector'
-import { upToLarge, upToSmall, useMediaQuery } from 'legacy/hooks/useMediaQuery'
+import { upToLarge, upToSmall, upToExtraSmall, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 import { useDarkModeManager } from 'legacy/state/user/hooks'
-import { cowSwapLogo, winterThemeHat } from 'legacy/theme/cowSwapAssets'
+import { cowSwapLogo, cowSwapIcon, winterThemeHat } from 'legacy/theme/cowSwapAssets'
 
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { MainMenuContext } from 'modules/mainMenu'
@@ -57,6 +57,7 @@ export default function Header() {
 
   const isUpToLarge = useMediaQuery(upToLarge)
   const isUpToSmall = useMediaQuery(upToSmall)
+  const isUpToExtraSmall = useMediaQuery(upToExtraSmall)
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const handleMobileMenuOnClick = useCallback(() => {
@@ -103,7 +104,7 @@ export default function Header() {
                   {injectedWidgetParams.logoUrl ? (
                     <CustomLogoImg src={injectedWidgetParams.logoUrl} alt="Logo" />
                   ) : (
-                    <SVG src={cowSwapLogo(darkMode)} />
+                    <SVG src={isUpToExtraSmall ? cowSwapIcon(darkMode) : cowSwapLogo(darkMode)} />
                   )}
                 </LogoImage>
 
@@ -124,7 +125,7 @@ export default function Header() {
           {!injectedWidgetParams.hideNetworkSelector && <NetworkSelector />}
 
           <HeaderElement>
-            {!isChainIdUnsupported && (
+            {!isChainIdUnsupported && !upToLarge && (
               <CowBalanceButton
                 onClick={() => navigate('/account')}
                 account={account}
