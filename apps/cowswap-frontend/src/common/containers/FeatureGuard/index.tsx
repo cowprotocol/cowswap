@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import { useFeatureFlags } from 'common/hooks/featureFlags/useFeatureFlags'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 
 interface FeatureGuardProps {
   featureFlag: string
