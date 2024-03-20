@@ -10,6 +10,7 @@ import { Helmet } from 'react-helmet'
 import { APP_TITLE } from '../../const'
 import { SUBGRAPH_URLS } from '../../../consts/subgraphUrls'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 
 const Wrapper = styled(WrapperMod)`
   max-width: 140rem;
@@ -57,8 +58,10 @@ const SHOW_TOKENS_TABLE: Record<SupportedChainId, boolean> = {
 export const Home: React.FC = () => {
   const networkId = useNetworkId() || undefined
 
-  const showCharts = !!networkId && SUBGRAPH_URLS[networkId] !== null
-  const showTokensTable = !!networkId && SHOW_TOKENS_TABLE[networkId]
+  const { isTheGraphEnabled } = useFeatureFlags()
+
+  const showCharts = !!networkId && isTheGraphEnabled && SUBGRAPH_URLS[networkId] !== null
+  const showTokensTable = !!networkId && isTheGraphEnabled && SHOW_TOKENS_TABLE[networkId]
 
   return (
     <Wrapper>
