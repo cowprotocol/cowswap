@@ -22,20 +22,23 @@ const Overlay = styled.div`
 const List = styled.div`
   position: relative;
   z-index: 5;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 `
 
-const Host = styled.div`
+const Host = styled.div<{ hidden$: boolean }>`
   position: fixed;
   top: 80px;
-  right: 20px;
+  right: ${({ hidden$ }) => (hidden$ ? '-9999px' : '20px')};
   z-index: 6;
   min-width: 300px;
   max-width: 800px;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${({ theme, hidden$ }) => theme.mediaWidth.upToSmall`
     width: 90%;
     left: 0;
-    right: 0;
+    right: ${hidden$ ? '-9999px' : '0'};
     margin: auto;
     top: 20px;
 
@@ -61,7 +64,18 @@ const icons: Record<IconType, ReactElement | undefined> = {
   custom: undefined,
 }
 
-export function SnackbarsWidget() {
+interface SnackbarsWidgetProps {
+  /**
+   * This prop might seem a bit hacky and this is true
+   * The problem in `OrderNotification` and `getToastMessageCallback` functions
+   * In widget mode with `disableToastMessages` option we want to display notifications on the integrator side
+   * To do that, we need to render `OrderNotification` but not display it in the widget
+   * Having this, we use this flag to artificially hide the widget
+   */
+  hidden?: boolean
+}
+
+export function SnackbarsWidget({ hidden }: SnackbarsWidgetProps) {
   const snackbarsState = useAtomValue(snackbarsAtom)
   const resetSnackbarsState = useResetAtom(snackbarsAtom)
   const removeSnackbar = useSetAtom(removeSnackbarAtom)
@@ -78,7 +92,7 @@ export function SnackbarsWidget() {
   )
 
   return (
-    <Host>
+    <Host hidden$={!!hidden}>
       <List>
         {snackbars.map((snackbar) => {
           const icon = snackbar.icon
@@ -96,7 +110,7 @@ export function SnackbarsWidget() {
           )
         })}
       </List>
-      {snackbars.length > 0 && <Overlay onClick={resetSnackbarsState} />}
+      {snackbars.length > 0 && !hidden && <Overlay onClick={resetSnackbarsState} />}
     </Host>
   )
 }

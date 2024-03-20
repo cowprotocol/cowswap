@@ -7,12 +7,12 @@ import {
   timeSinceInSeconds,
   triggerAppziSurvey,
 } from '@cowprotocol/common-utils'
-import { EthflowData, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { EnrichedOrder, EthflowData, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { Command, UiOrderType } from '@cowprotocol/types'
 import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
 
 import { GetSafeInfo, useGetSafeInfo } from 'legacy/hooks/useGetSafeInfo'
-import { FulfillOrdersBatchParams, Order, OrderFulfillmentData, OrderStatus } from 'legacy/state/orders/actions'
+import { FulfillOrdersBatchParams, Order, OrderStatus } from 'legacy/state/orders/actions'
 import { LIMIT_OPERATOR_API_POLL_INTERVAL, MARKET_OPERATOR_API_POLL_INTERVAL } from 'legacy/state/orders/consts'
 import {
   AddOrUpdateOrdersCallback,
@@ -31,31 +31,21 @@ import {
 } from 'legacy/state/orders/hooks'
 import { OrderTransitionStatus } from 'legacy/state/orders/utils'
 
+import {
+  emitFulfilledOrderEvent,
+  emitCancelledOrderEvent,
+  emitPresignedOrderEvent,
+  emitExpiredOrderEvent,
+} from 'modules/orders'
 import { useAddOrderToSurplusQueue } from 'modules/swap/state/surplusModal'
 
 import { getOrder } from 'api/gnosisProtocol'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
-import { fetchOrderPopupData, OrderLogPopupMixData } from './utils'
+import { fetchAndClassifyOrder } from './utils'
 
 import { removeOrdersToCancelAtom } from '../../hooks/useMultipleOrdersCancellation/state'
 import { useTriggerTotalSurplusUpdateCallback } from '../../state/totalSurplusState'
-
-/**
- * Return the ids of the orders that we are not yet aware that are signed.
- * This is, pre-sign orders, in state of "PRESIGNATURE_PENDING", for which we now know they are signed
- *
- * Used as an auxiliar method to detect which orders we should mark as pre-signed, so we change their state
- *
- * @param allPendingOrders All pending orders
- * @param signedOrdersIds ids of orders we know are already pre-signed
- * @returns ids of the pending orders that were pending for pre-sign, and we now know are pre-signed
- */
-function _getNewlyPreSignedOrders(allPendingOrders: Order[], signedOrdersIds: string[]) {
-  return allPendingOrders
-    .filter((order) => order.status === OrderStatus.PRESIGNATURE_PENDING && signedOrdersIds.includes(order.id))
-    .map((order) => order.id)
-}
 
 /**
  *
@@ -186,17 +176,17 @@ async function _updateOrders({
 
   // Iterate over pending orders fetching API data
   const unfilteredOrdersData = await Promise.all(
-    pending.map(async (orderFromStore) => fetchOrderPopupData(orderFromStore, chainId))
+    pending.map(async (orderFromStore) => fetchAndClassifyOrder(orderFromStore, chainId))
   )
 
   // Group resolved promises by status
   // Only pick the status that are final
   const { fulfilled, expired, cancelled, presigned } = unfilteredOrdersData.reduce<
-    Record<OrderTransitionStatus, OrderLogPopupMixData[]>
+    Record<OrderTransitionStatus, EnrichedOrder[]>
   >(
     (acc, orderData) => {
-      if (orderData && orderData.popupData) {
-        acc[orderData.status].push(orderData.popupData)
+      if (orderData && orderData.order) {
+        acc[orderData.status].push(orderData.order)
       }
       return acc
     },
@@ -204,51 +194,70 @@ async function _updateOrders({
   )
 
   if (presigned.length > 0) {
-    // Only mark as presigned the orders we were not aware of their new state
-    const presignedOrderIds = presigned as string[]
-    const ordersPresignaturePendingSigned = _getNewlyPreSignedOrders(orders, presignedOrderIds)
+    const presignedMap = presigned.reduce<{ [key: string]: EnrichedOrder }>((acc, order) => {
+      acc[order.uid] = order
+      return acc
+    }, {})
 
-    if (ordersPresignaturePendingSigned.length > 0) {
+    const presignedIds = presigned.map((order) => order.uid)
+
+    const newlyPreSignedOrders = orders
+      .filter((order) => {
+        return order.status === OrderStatus.PRESIGNATURE_PENDING && presignedIds.includes(order.id)
+      })
+      .map((order) => presignedMap[order.id])
+
+    if (newlyPreSignedOrders.length > 0) {
       presignOrders({
-        ids: ordersPresignaturePendingSigned,
+        ids: newlyPreSignedOrders.map((order) => order.uid),
         chainId,
         isSafeWallet,
+      })
+
+      newlyPreSignedOrders.forEach((order) => {
+        emitPresignedOrderEvent({ chainId, order })
       })
     }
   }
 
   if (expired.length > 0) {
     expireOrdersBatch({
-      ids: expired as string[],
+      ids: expired.map(({ uid }) => uid),
       chainId,
       isSafeWallet,
+    })
+
+    expired.forEach((order) => {
+      emitExpiredOrderEvent({ order, chainId })
     })
   }
 
   if (cancelled.length > 0) {
     cancelOrdersBatch({
-      ids: cancelled as string[],
+      ids: cancelled.map(({ uid }) => uid),
       chainId,
       isSafeWallet,
+    })
+
+    cancelled.forEach((order) => {
+      emitCancelledOrderEvent({
+        chainId,
+        order,
+      })
     })
   }
 
   if (fulfilled.length > 0) {
-    const fulfilledOrders = fulfilled as OrderFulfillmentData[]
     // update redux state
     fulfillOrdersBatch({
-      ordersData: fulfilledOrders,
+      orders: fulfilled,
       chainId,
       isSafeWallet,
     })
     // add to surplus queue
-    fulfilledOrders.forEach(({ id, apiAdditionalInfo }) => {
-      if (
-        !apiAdditionalInfo ||
-        getUiOrderType({ fullAppData: apiAdditionalInfo.fullAppData, class: apiAdditionalInfo.class }) ===
-          UiOrderType.SWAP
-      ) {
-        addOrderToSurplusQueue(id)
+    fulfilled.forEach(({ uid, fullAppData, class: orderClass }) => {
+      if (getUiOrderType({ fullAppData, class: orderClass }) === UiOrderType.SWAP) {
+        addOrderToSurplusQueue(uid)
       }
     })
     // trigger total surplus update
@@ -321,10 +330,15 @@ export function PendingOrdersUpdater(): null {
   const fulfillOrdersBatch = useCallback(
     (fulfillOrdersBatchParams: FulfillOrdersBatchParams) => {
       _fulfillOrdersBatch(fulfillOrdersBatchParams)
+
+      fulfillOrdersBatchParams.orders.forEach((order) => {
+        emitFulfilledOrderEvent(chainId, order)
+      })
+
       // Remove orders from the cancelling queue (marked by checkbox in the orders table)
-      removeOrdersToCancel(fulfillOrdersBatchParams.ordersData.map((item) => item.id))
+      removeOrdersToCancel(fulfillOrdersBatchParams.orders.map(({ uid }) => uid))
     },
-    [_fulfillOrdersBatch, removeOrdersToCancel]
+    [chainId, _fulfillOrdersBatch, removeOrdersToCancel]
   )
 
   const updateOrders = useCallback(

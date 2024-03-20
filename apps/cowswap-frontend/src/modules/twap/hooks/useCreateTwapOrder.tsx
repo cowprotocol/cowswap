@@ -10,10 +10,9 @@ import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 
-import { showPendingOrderNotification } from 'legacy/state/orders/middleware/showPendingOrderNotification'
-
 import { updateAdvancedOrdersAtom, useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
 import { useAppData, useUploadAppData } from 'modules/appData'
+import { emitPostedOrderEvent } from 'modules/orders'
 import { useTradeConfirmActions, useTradePriceImpact } from 'modules/trade'
 import { TradeFlowAnalyticsContext, tradeFlowAnalytics } from 'modules/trade/utils/analytics'
 
@@ -115,16 +114,16 @@ export function useCreateTwapOrder() {
 
         getCowSoundSend().play()
 
-        showPendingOrderNotification({
+        emitPostedOrderEvent({
           chainId,
-          id: safeTxHash,
+          id: orderId,
+          orderCreationHash: safeTxHash,
           kind: OrderKind.SELL,
           receiver: twapOrder.receiver,
           inputAmount: twapOrder.sellAmount,
           outputAmount: twapOrder.buyAmount,
           owner: account,
           uiOrderType: orderType,
-          isSafeWallet: true, // TWAP is always a safe wallet
         })
 
         orderAnalytics('Posted', orderType, 'Presign')

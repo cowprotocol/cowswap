@@ -6,6 +6,8 @@ import { GasPriceStrategyUpdater } from 'legacy/state/gas/gas-price-strategy-upd
 
 import { UploadToIpfsUpdater } from 'modules/appData/updater/UploadToIpfsUpdater'
 import { CowEventsUpdater, InjectedWidgetUpdater, useInjectedWidgetParams } from 'modules/injectedWidget'
+import { FinalizeTxUpdater } from 'modules/onchainTransactions'
+import { OrdersNotificationsUpdater } from 'modules/orders'
 import { EthFlowDeadlineUpdater, EthFlowSlippageUpdater } from 'modules/swap/state/EthFlow/updaters'
 import { useOnTokenListAddingError } from 'modules/tokensList'
 import { UsdPricesUpdater } from 'modules/usdAmount'
@@ -15,7 +17,6 @@ import { TotalSurplusUpdater } from 'common/state/totalSurplusState'
 import { ApplicationUpdater } from 'common/updaters/ApplicationUpdater'
 import { CancelReplaceTxUpdater } from 'common/updaters/CancelReplaceTxUpdater'
 import { FeesUpdater } from 'common/updaters/FeesUpdater'
-import { FinalizeTxUpdater } from 'common/updaters/FinalizeTxUpdater'
 import { GasUpdater } from 'common/updaters/GasUpdater'
 import { HwAccountIndexUpdater } from 'common/updaters/HwAccountIndexUpdater'
 import { LogsUpdater } from 'common/updaters/LogsUpdater'
@@ -64,6 +65,7 @@ export function Updaters() {
       <CowEventsUpdater />
       <TotalSurplusUpdater />
       <UsdPricesUpdater />
+      <OrdersNotificationsUpdater />
       <TokensListsUpdater chainId={chainId} isGeoBlockEnabled={isGeoBlockEnabled} />
       <WidgetTokensListsUpdater
         tokenLists={tokenLists}

@@ -19,7 +19,6 @@ import { HashRouter } from 'react-router-dom'
 import * as serviceWorkerRegistration from 'serviceWorkerRegistration'
 
 import AppziButton from 'legacy/components/AppziButton'
-import { Popups } from 'legacy/components/Popups'
 import Web3Provider from 'legacy/components/Web3Provider'
 import { cowSwapStore } from 'legacy/state'
 import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from 'legacy/theme'
@@ -28,6 +27,7 @@ import { App } from 'modules/application/containers/App'
 import { Updaters } from 'modules/application/containers/App/Updaters'
 import { WithLDProvider } from 'modules/application/containers/WithLDProvider'
 import { FortuneWidget } from 'modules/fortune/containers/FortuneWidget'
+import { useInjectedWidgetParams } from 'modules/injectedWidget'
 
 import { FeatureGuard } from 'common/containers/FeatureGuard'
 
@@ -75,8 +75,7 @@ function Main() {
                         </>
                       )}
 
-                      <Popups />
-                      <SnackbarsWidget />
+                      <Toasts />
                       <App />
                     </WithLDProvider>
                   </BlockNumberProvider>
@@ -88,6 +87,12 @@ function Main() {
       </Provider>
     </StrictMode>
   )
+}
+
+function Toasts() {
+  const { disableToastMessages = false } = useInjectedWidgetParams()
+
+  return <SnackbarsWidget hidden={disableToastMessages} />
 }
 
 const container = document.getElementById('root')

@@ -12,7 +12,7 @@ import enhancedTransactions from './enhancedTransactions/reducer'
 import gas from './gas/reducer'
 import { updateVersion } from './global/actions'
 import logs from './logs/slice'
-import { appziMiddleware, popupMiddleware, soundMiddleware } from './orders/middleware'
+import { appziMiddleware, soundMiddleware } from './orders/middleware'
 import orders from './orders/reducer'
 import { priceMiddleware } from './price/middleware'
 import price from './price/reducer'
@@ -42,7 +42,6 @@ export const cowSwapStore = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({ thunk: true, serializableCheck: false })
       .concat(save({ states: PERSISTED_KEYS, debounce: 1000 }))
-      .concat(popupMiddleware)
       .concat(cowTokenMiddleware)
       .concat(soundMiddleware)
       .concat(appziMiddleware)

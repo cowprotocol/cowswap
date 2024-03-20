@@ -7,7 +7,7 @@ import { userAddedTokensAtom } from './userAddedTokensAtom'
 import { favouriteTokensAtom } from './favouriteTokensAtom'
 import { listsEnabledStateAtom, listsStatesListAtom } from '../tokenLists/tokenListsStateAtom'
 import { lowerCaseTokensMap } from '../../utils/lowerCaseTokensMap'
-import type { TokenInfo } from '@uniswap/token-lists'
+import { TokenInfo } from '@cowprotocol/types'
 
 export interface TokensByAddress {
   [address: string]: TokenWithLogo | undefined
@@ -81,18 +81,22 @@ export const activeTokensAtom = atom<TokenWithLogo[]>((get) => {
   const tokensMap = get(tokensStateAtom)
   const nativeToken = NATIVE_CURRENCIES[chainId]
 
-  return tokenMapToListWithLogo({
-    [nativeToken.address.toLowerCase()]: nativeToken as TokenInfo,
-    ...tokensMap.activeTokens,
-    ...lowerCaseTokensMap(userAddedTokens[chainId]),
-    ...lowerCaseTokensMap(favouriteTokensState[chainId]),
-  })
+  return tokenMapToListWithLogo(
+    {
+      [nativeToken.address.toLowerCase()]: nativeToken as TokenInfo,
+      ...tokensMap.activeTokens,
+      ...lowerCaseTokensMap(userAddedTokens[chainId]),
+      ...lowerCaseTokensMap(favouriteTokensState[chainId]),
+    },
+    chainId
+  )
 })
 
 export const inactiveTokensAtom = atom<TokenWithLogo[]>((get) => {
+  const { chainId } = get(environmentAtom)
   const tokensMap = get(tokensStateAtom)
 
-  return tokenMapToListWithLogo(tokensMap.inactiveTokens)
+  return tokenMapToListWithLogo(tokensMap.inactiveTokens, chainId)
 })
 
 export const tokensByAddressAtom = atom<TokensByAddress>((get) => {

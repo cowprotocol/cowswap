@@ -39,7 +39,6 @@ import {
   OrderTypeKeys,
   PartialOrdersMap,
 } from './reducer'
-import { partialOrderUpdate } from './utils'
 import { deserializeOrder } from './utils/deserializeOrder'
 
 import { AppDispatch, AppState } from '../index'
@@ -319,13 +318,6 @@ export type UpdateOrderParams = {
   chainId: SupportedChainId
   order: Partial<Omit<Order, 'id'>> & Pick<Order, 'id'>
   isSafeWallet: boolean
-}
-
-export type UpdateOrderCallback = (params: UpdateOrderParams) => void
-
-export const usePartialUpdateOrder = (): UpdateOrderCallback => {
-  const dispatch = useDispatch<AppDispatch>()
-  return useCallback((params: UpdateOrderParams) => partialOrderUpdate(params, dispatch), [dispatch])
 }
 
 export const useFulfillOrdersBatch = (): FulfillOrdersBatchCallback => {

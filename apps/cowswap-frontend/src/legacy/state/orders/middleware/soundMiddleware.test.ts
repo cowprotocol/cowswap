@@ -41,7 +41,7 @@ describe('soundMiddleware', () => {
     })
 
     it('should not play a sound when there are orders but data to update for fulfill order action', () => {
-      when(actionMock.payload).thenReturn({ chainId: 1, ordersData: [] })
+      when(actionMock.payload).thenReturn({ chainId: 1, orders: [] })
       when(actionMock.type).thenReturn('order/fulfillOrder')
 
       soundMiddleware(instance(mockStore))(nextMock)(instance(actionMock))
@@ -87,7 +87,7 @@ describe('soundMiddleware', () => {
   })
   describe('fulfill order action', () => {
     it('should play a sound', () => {
-      when(actionMock.payload).thenReturn({ chainId: 1, ordersData: ['some data'] })
+      when(actionMock.payload).thenReturn({ chainId: 1, orders: ['some data'] })
       when(actionMock.type).thenReturn('order/fullfillOrdersBatch')
 
       soundMiddleware(instance(mockStore))(nextMock)(instance(actionMock))
@@ -162,40 +162,6 @@ describe('soundMiddleware', () => {
 
     it('should not play a sound when order is hidden', () => {
       when(actionMock.payload).thenReturn({ chainId: 1, ids: ['0x1'] })
-    })
-  })
-  describe('failed tx action', () => {
-    it('should play a sound when tx failed', () => {
-      when(actionMock.payload).thenReturn({ content: { txn: { success: false } } })
-      when(actionMock.type).thenReturn('application/addPopup')
-
-      soundMiddleware(instance(mockStore))(nextMock)(instance(actionMock))
-
-      expect(getCowSoundSuccess).toHaveBeenCalledTimes(0)
-      expect(getCowSoundError).toHaveBeenCalledTimes(1)
-      expect(getCowSoundSend).toHaveBeenCalledTimes(0)
-    })
-
-    it('should not play a sound when tx is successful', () => {
-      when(actionMock.payload).thenReturn({ content: { txn: { success: true } } })
-      when(actionMock.type).thenReturn('application/addPopup')
-
-      soundMiddleware(instance(mockStore))(nextMock)(instance(actionMock))
-
-      expect(getCowSoundSuccess).toHaveBeenCalledTimes(0)
-      expect(getCowSoundError).toHaveBeenCalledTimes(0)
-      expect(getCowSoundSend).toHaveBeenCalledTimes(0)
-    })
-
-    it('should not play a sound when tx content is not defined', () => {
-      when(actionMock.payload).thenReturn({ content: {} })
-      when(actionMock.type).thenReturn('application/addPopup')
-
-      soundMiddleware(instance(mockStore))(nextMock)(instance(actionMock))
-
-      expect(getCowSoundSuccess).toHaveBeenCalledTimes(0)
-      expect(getCowSoundError).toHaveBeenCalledTimes(0)
-      expect(getCowSoundSend).toHaveBeenCalledTimes(0)
     })
   })
   describe('update order action', () => {
