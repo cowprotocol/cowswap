@@ -1,6 +1,7 @@
 import { ComposableCoW, ComposableCoWAbi } from '@cowprotocol/abis'
-import { useContract } from '@cowprotocol/common-hooks'
 import { useWalletInfo } from '@cowprotocol/wallet'
+
+import { useContract } from 'common/hooks/useContract'
 
 import { COMPOSABLE_COW_ADDRESS } from '../const'
 

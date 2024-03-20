@@ -1,6 +1,5 @@
 import { useCallback } from 'react'
 
-import { useWETHContract } from '@cowprotocol/common-hooks'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -13,6 +12,8 @@ import {
   WrapUnwrapContext,
 } from 'legacy/hooks/useWrapCallback'
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
+
+import { useWETHContract } from 'common/hooks/useContract'
 
 import { useDerivedTradeState } from './useDerivedTradeState'
 import { useWrapNativeScreenState } from './useWrapNativeScreenState'

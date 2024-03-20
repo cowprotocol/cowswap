@@ -1,6 +1,5 @@
 import { useCallback, useMemo } from 'react'
 
-import { useTokenContract } from '@cowprotocol/common-hooks'
 import { calculateGasMargin, getIsNativeToken } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { MaxUint256 } from '@ethersproject/constants'
@@ -12,6 +11,7 @@ import { Nullish } from 'types'
 import { useTokenAllowance } from 'legacy/hooks/useTokenAllowance'
 
 import { ApprovalState } from 'common/hooks/useApproveState'
+import { useTokenContract } from 'common/hooks/useContract'
 
 export interface ApprovalStateForSpenderResult {
   approvalState: ApprovalState

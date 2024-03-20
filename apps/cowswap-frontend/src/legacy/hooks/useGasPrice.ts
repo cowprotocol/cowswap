@@ -1,10 +1,11 @@
 import { useMemo } from 'react'
 
-import { useContract } from '@cowprotocol/common-hooks'
 import { useENSAddress } from '@cowprotocol/ens'
 
 import JSBI from 'jsbi'
 import useSWR from 'swr'
+
+import { useContract } from 'common/hooks/useContract'
 
 const CHAIN_DATA_ABI = [
   {
