@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.63.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.62.0...cowswap-v1.63.0) (2024-03-20)
+
+
+### Features
+
+* **events:** fire on-chain transactions events ([#4045](https://github.com/cowprotocol/cowswap/issues/4045)) ([362b937](https://github.com/cowprotocol/cowswap/commit/362b9371e8d0ad09ea5501e5a58608c28eb5cf43))
+
+
+### Bug Fixes
+
+* **recreate:** fix 1h duration orders ([#4059](https://github.com/cowprotocol/cowswap/issues/4059)) ([d4d82fc](https://github.com/cowprotocol/cowswap/commit/d4d82fca355ac6ff316d7583cbe5de5d7def7fd1))
+* **twap:** add on TWAP wallet requirements note about Safe not deployed ([#4061](https://github.com/cowprotocol/cowswap/issues/4061)) ([1223e20](https://github.com/cowprotocol/cowswap/commit/1223e20d7d1b153b726d8033d0829e9fde90aa40))
+
 ## [1.62.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.61.1...cowswap-v1.62.0) (2024-03-12)
 
 
