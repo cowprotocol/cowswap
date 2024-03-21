@@ -250,7 +250,7 @@ function checkEthereumTransactions(params: CheckEthereumTransactions): Command[]
       const isTransactionOutdated = transaction.nonce === undefined || transaction.nonce < transactionsCount
 
       if (isTransactionOutdated) {
-        console.log('[FinalizeTxUpdater] Transaction is outdated, removing it from the store.', {
+        console.log('[FinalizeTxUpdater] Transaction is outdated, moving it to "replaced" state.', {
           hash,
           nonce: transaction.nonce,
           transactionsCount,
