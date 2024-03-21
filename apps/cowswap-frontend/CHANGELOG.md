@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.63.3](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.63.2...cowswap-v1.63.3) (2024-03-21)
+
+
+### Bug Fixes
+
+* show link to Explorer for twap orders ([#4075](https://github.com/cowprotocol/cowswap/issues/4075)) ([cab8652](https://github.com/cowprotocol/cowswap/commit/cab86522f8275ae24510e447add7db108ee1149c))
+
 ## [1.63.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.63.1...cowswap-v1.63.2) (2024-03-21)
 
 
