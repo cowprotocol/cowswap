@@ -379,6 +379,7 @@ export default createReducer(initialState, (builder) =>
             onchainOrderData: order.onchainOrderData,
             class: order.class,
             fullAppData: order.fullAppData,
+            signingScheme: order.signingScheme,
           }
 
           addOrderToState(state, chainId, uid, 'fulfilled', orderObject.order, isSafeWallet)
