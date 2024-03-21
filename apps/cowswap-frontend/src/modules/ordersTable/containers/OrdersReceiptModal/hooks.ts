@@ -3,7 +3,7 @@ import { useCallback, useMemo } from 'react'
 
 import { Command, UiOrderType } from '@cowprotocol/types'
 
-import { useSetAlternativeOrder } from 'modules/trade/state/alternativeOrder'
+import { IS_EDIT_ORDER_ENABLED, useSetAlternativeOrder } from 'modules/trade/state/alternativeOrder'
 
 import { isCreating, isPending } from 'common/hooks/useCategorizeRecentActivity'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
@@ -56,8 +56,8 @@ function getAlternativeOrderModalContext(
     !order ||
     isCreating(order) ||
     getUiOrderType(order) !== UiOrderType.LIMIT ||
-    (isEdit && !isOffchainOrder(order)) ||
-    isEdit === null
+    isEdit === null ||
+    (isEdit && (!isOffchainOrder(order) || !IS_EDIT_ORDER_ENABLED))
   ) {
     return null
   } else {
