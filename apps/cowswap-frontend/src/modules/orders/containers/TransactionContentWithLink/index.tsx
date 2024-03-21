@@ -20,19 +20,21 @@ interface TransactionContentWithLinkProps {
   transactionHash: string | undefined
   orderUid?: string
   children?: JSX.Element
+  isEthFlow?: boolean
 }
 export function TransactionContentWithLink(props: TransactionContentWithLinkProps) {
   const { chainId } = useWalletInfo()
   const safeInfo = useGnosisSafeInfo()
   const isSafeWallet = !!safeInfo
-  const { transactionHash, orderUid, children } = props
+  const { transactionHash, orderUid, children, isEthFlow } = props
+
+  const isOrder = isCowOrder('transaction', orderUid)
+  const isSafeOrder = !!(isSafeWallet && orderUid && !isCowOrder('transaction', orderUid))
+  const isSafeTx = !!(isSafeWallet && transactionHash && !isCowOrder('transaction', transactionHash))
 
   const tx = {
-    hash: transactionHash || orderUid || '',
-    hashType:
-      isSafeWallet && transactionHash && !isCowOrder('transaction', transactionHash)
-        ? HashType.GNOSIS_SAFE_TX
-        : HashType.ETHEREUM_TX,
+    hash: (isOrder && !isEthFlow ? orderUid : transactionHash || orderUid) || '',
+    hashType: (isSafeOrder || isSafeTx) && !isOrder ? HashType.GNOSIS_SAFE_TX : HashType.ETHEREUM_TX,
     safeTransaction: {
       safeTxHash: transactionHash || '',
       safe: safeInfo?.address || '',
