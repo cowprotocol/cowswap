@@ -98,7 +98,7 @@ export function StatusDetails(props: StatusDetailsProps) {
         isCancelling={isCancelling}
         isPresignaturePending={isPresignaturePending}
         isCreating={isCreating}
-        title={isReplaced ? 'Transaction was cancelled or speed up' : ''}
+        title={isReplaced ? 'Transaction was cancelled or sped up' : ''}
       >
         {isReplaced ? (
           <Info size={16} />
