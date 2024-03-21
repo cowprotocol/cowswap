@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom'
 
 import CowBalanceButton from 'legacy/components/CowBalanceButton'
 import { NetworkSelector } from 'legacy/components/Header/NetworkSelector'
-import { upToLarge, upToSmall, upToExtraSmall, useMediaQuery } from 'legacy/hooks/useMediaQuery'
+import { upToLarge, upToExtraSmall, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 import { useDarkModeManager } from 'legacy/state/user/hooks'
 import { cowSwapLogo, cowSwapIcon, winterThemeHat } from 'legacy/theme/cowSwapAssets'
 
@@ -56,7 +56,6 @@ export default function Header() {
   const navigate = useNavigate()
 
   const isUpToLarge = useMediaQuery(upToLarge)
-  const isUpToSmall = useMediaQuery(upToSmall)
   const isUpToExtraSmall = useMediaQuery(upToExtraSmall)
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
@@ -125,12 +124,14 @@ export default function Header() {
           {!injectedWidgetParams.hideNetworkSelector && <NetworkSelector />}
 
           <HeaderElement>
-            {!isChainIdUnsupported && !upToLarge && (
+            {!isChainIdUnsupported && (isMobileMenuOpen || !isUpToLarge) && (
               <CowBalanceButton
-                onClick={() => navigate('/account')}
+                onClick={() => {
+                  navigate('/account')
+                  handleMobileMenuOnClick()
+                }}
                 account={account}
                 chainId={chainId}
-                isUpToSmall={isUpToSmall}
               />
             )}
 

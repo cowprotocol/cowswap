@@ -54,9 +54,9 @@ const FlyoutMenuContents = styled.div`
   padding: 16px;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
-      top: 50px;
-      box-shadow: 0 0 0 100vh ${({ theme }) => transparentize(theme.black, 0.1)}};
-    `};
+    top: 50px;
+    box-shadow: 0 0 0 100vh ${({ theme }) => transparentize(theme.black, 0.1)}};
+  `};
 
   & > *:not(:last-child) {
     margin-bottom: 5px;
@@ -90,13 +90,6 @@ const SelectorControls = styled.div<{ isChainIdUnsupported: boolean }>`
   transition: border var(${UI.ANIMATION_DURATION}) ease-in-out;
   background: transparent;
 
-  > img {
-    width: 24px;
-    height: 24px;
-    object-fit: contain;
-    margin: 0;
-  }
-
   &:hover {
     border: 2px solid ${({ theme }) => transparentize(theme.text, 0.7)};
   }
@@ -110,13 +103,15 @@ const SelectorControls = styled.div<{ isChainIdUnsupported: boolean }>`
     `}
 `
 const SelectorLogo = styled.img<{ interactive?: boolean }>`
-  width: 24px;
-  height: 24px;
+  --size: 24px;
+  width: var(--size);
+  height: var(--size);
   margin-right: ${({ interactive }) => (interactive ? 8 : 0)}px;
+  object-fit: contain;
 
-  @media screen and (min-width: ${MEDIA_WIDTHS.upToSmall}px) {
-    margin-right: 8px;
-  }
+  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+    --size: 21px;
+  `};
 `
 const SelectorWrapper = styled.div`
   display: flex;

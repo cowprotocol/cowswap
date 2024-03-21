@@ -16,16 +16,19 @@ export const TitleMod = styled.a`
   align-items: center;
   pointer-events: auto;
   justify-self: flex-start;
+
+  &:hover {
+    cursor: pointer;
+  }
+
   ${({ theme }) => theme.mediaWidth.upToSmall`
     justify-self: center;
   `};
-  :hover {
-    cursor: pointer;
-  }
 `
 
 export const HeaderLinksMod = styled(Row)`
   justify-content: center;
+
   ${({ theme }) => theme.mediaWidth.upToMedium`
     display: none;
   `};
@@ -36,17 +39,6 @@ export const HeaderControlsUni = styled.div`
   flex-direction: row;
   align-items: center;
   justify-self: flex-end;
-
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    flex-direction: row;
-    justify-content: space-between;
-    justify-self: center;
-    max-width: 960px;
-    padding: 1rem;
-    z-index: 1;
-    height: 72px;
-    border-radius: 12px 12px 0 0;
-  `};
 `
 
 export const StyledNavLinkUni = styled(NavLink)`
@@ -154,16 +146,22 @@ export const HeaderControls = styled(HeaderControlsUni)`
     height: auto;
     width: auto;
   `};
-
-  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
-    gap: 0;
-  `};
 `
 
 export const HeaderElement = styled.div`
   display: flex;
   align-items: center;
   gap: 12px;
+
+  ${({ theme }) => theme.mediaWidth.upToTiny`
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: var(${UI.COLOR_PAPER});
+    padding: 5px;
+    justify-content: flex-end;
+  `};
 `
 
 export const Wrapper = styled.div<{ isMobileMenuOpen: boolean }>`
@@ -410,6 +408,7 @@ export const LogoImage = styled.div<{ isMobileMenuOpen?: boolean }>`
       isMobileMenuOpen &&
       css`
         height: 34px;
+        width: auto;
       `
     }
   `}
