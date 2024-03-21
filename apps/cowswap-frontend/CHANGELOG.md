@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.63.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.63.1...cowswap-v1.63.2) (2024-03-21)
+
+
+### Bug Fixes
+
+* display correct links for on-chain notifications ([#4072](https://github.com/cowprotocol/cowswap/issues/4072)) ([aef847f](https://github.com/cowprotocol/cowswap/commit/aef847f19e831a6badc81e95a3c008e716ab004c))
+
 ## [1.63.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.63.0...cowswap-v1.63.1) (2024-03-21)
 
 
