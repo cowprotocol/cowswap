@@ -25,7 +25,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
 
   const { inputCurrency, outputCurrency, inputCurrencyAmount, inputCurrencyBalance, recipient } = derivedTradeState
   const isBalanceGreaterThan1Atom = inputCurrencyBalance
-    ? BigInt(inputCurrencyBalance.quotient.toString()) > BigInt(1)
+    ? BigInt(inputCurrencyBalance.quotient.toString()) > BigInt(0)
     : false
   const canPlaceOrderWithoutBalance = isBalanceGreaterThan1Atom && isInsufficientBalanceOrderAllowed
   const isNativeIn = inputCurrency && getIsNativeToken(inputCurrency) && !isWrapUnwrap
