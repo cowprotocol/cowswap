@@ -21,7 +21,7 @@ import { AdvancedOrdersSettings } from '../AdvancedOrdersSettings'
 export const TWAP_BULLET_LIST_CONTENT: BulletListItem[] = [
   { content: 'Get the Time-Weighted Average Price by splitting your large order into parts' },
   { content: 'Customize your order size, expiration, and number of parts' },
-  { content: 'Always receive 100% of your order surplus' },
+  { content: 'Receive surplus of your order' },
   { content: 'Reduce your slippage by breaking big orders into smaller ones' },
 ]
 
