@@ -1,7 +1,6 @@
 import { useCallback } from 'react'
 
 import { Erc20 } from '@cowprotocol/abis'
-import { useTokenContract } from '@cowprotocol/common-hooks'
 import { calculateGasMargin, getIsNativeToken } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { BigNumber } from '@ethersproject/bignumber'
@@ -10,6 +9,8 @@ import { TransactionResponse } from '@ethersproject/providers'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
+
+import { useTokenContract } from './useContract'
 
 import { GAS_LIMIT_DEFAULT } from '../constants/common'
 
