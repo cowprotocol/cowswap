@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.63.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.63.0...cowswap-v1.63.1) (2024-03-21)
+
+
+### Bug Fixes
+
+* **explorer:** use feature flag to show charts and tokens table ([#4068](https://github.com/cowprotocol/cowswap/issues/4068)) ([9bff945](https://github.com/cowprotocol/cowswap/commit/9bff945c0f891aa5d6527a51c509b9f0802741d5))
+
 ## [1.63.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.62.0...cowswap-v1.63.0) (2024-03-20)
 
 

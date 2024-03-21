@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.29.2](https://github.com/cowprotocol/cowswap/compare/explorer-v2.29.1...explorer-v2.29.2) (2024-03-21)
+
+
+### Bug Fixes
+
+* **explorer:** use feature flag to show charts and tokens table ([#4068](https://github.com/cowprotocol/cowswap/issues/4068)) ([9bff945](https://github.com/cowprotocol/cowswap/commit/9bff945c0f891aa5d6527a51c509b9f0802741d5))
+
 ## [2.29.1](https://github.com/cowprotocol/cowswap/compare/explorer-v2.29.0...explorer-v2.29.1) (2024-03-13)
 
 
