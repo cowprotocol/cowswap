@@ -35,7 +35,7 @@ export const LIMIT_BULLET_LIST_CONTENT: BulletListItem[] = [
   { content: 'Set any limit price and time horizon' },
   { content: 'FREE order placement and cancellation' },
   { content: 'Place multiple orders using the same balance' },
-  { content: 'Always receive 100% of your order surplus' },
+  { content: 'Receive surplus of your order' },
   { content: 'Protection from MEV by default' },
   {
     content: (
