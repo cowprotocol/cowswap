@@ -21,6 +21,6 @@
     "widget-lib"
   ],
   "dependencies": {
-    "@cowprotocol/events": "^0.1.0"
+    "@cowprotocol/events": "^0.2.0"
   }
 }
