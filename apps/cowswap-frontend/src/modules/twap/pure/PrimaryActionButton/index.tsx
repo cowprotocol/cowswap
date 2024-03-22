@@ -19,11 +19,6 @@ const buttonsMap: Record<TwapFormState, (_context: PrimaryActionButtonContext) =
       Unsupported wallet
     </ButtonPrimary>
   ),
-  [TwapFormState.SELL_AMOUNT_TOO_SMALL]: () => (
-    <ButtonPrimary disabled={true} buttonSize={ButtonSize.BIG}>
-      Sell amount too small
-    </ButtonPrimary>
-  ),
   [TwapFormState.PART_TIME_INTERVAL_TOO_SHORT]: () => (
     <ButtonPrimary disabled={true} buttonSize={ButtonSize.BIG}>
       Interval time too short

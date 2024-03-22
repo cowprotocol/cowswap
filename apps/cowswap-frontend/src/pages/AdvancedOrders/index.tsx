@@ -5,8 +5,6 @@ import { OrdersTableWidget, TabOrderTypes } from 'modules/ordersTable'
 import * as styledEl from 'modules/trade/pure/TradePageLayout'
 import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
 import { TwapConfirmModal, TwapFormWidget, TwapUpdaters, useAllEmulatedOrders } from 'modules/twap'
-import { useTwapFormState } from 'modules/twap/hooks/useTwapFormState'
-import { TwapFormState } from 'modules/twap/pure/PrimaryActionButton/getTwapFormState'
 
 export default function AdvancedOrdersPage() {
   const { isUnlocked } = useAtomValue(advancedOrdersAtom)
@@ -14,13 +12,11 @@ export default function AdvancedOrdersPage() {
   const allEmulatedOrders = useAllEmulatedOrders()
 
   const primaryFormValidation = useGetTradeFormValidation()
-  const twapFormValidation = useTwapFormState()
 
   const disablePriceImpact =
     primaryFormValidation === TradeFormValidation.QuoteErrors ||
     primaryFormValidation === TradeFormValidation.CurrencyNotSupported ||
-    primaryFormValidation === TradeFormValidation.WrapUnwrapFlow ||
-    twapFormValidation === TwapFormState.SELL_AMOUNT_TOO_SMALL
+    primaryFormValidation === TradeFormValidation.WrapUnwrapFlow
 
   const advancedWidgetParams = { disablePriceImpact }
 

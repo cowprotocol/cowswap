@@ -15,12 +15,7 @@ import { useShouldZeroApprove } from 'modules/zeroApproval'
 
 import { ZeroApprovalWarning } from 'common/pure/ZeroApprovalWarning'
 
-import {
-  FallbackHandlerWarning,
-  SmallPartTimeWarning,
-  SmallPartVolumeWarning,
-  UnsupportedWalletWarning,
-} from './warnings'
+import { FallbackHandlerWarning, SmallPartTimeWarning, UnsupportedWalletWarning } from './warnings'
 import { BigPartTimeWarning } from './warnings/BigPartTimeWarning'
 import { SmallPriceProtectionWarning } from './warnings/SmallPriceProtectionWarning'
 import { SwapPriceDifferenceWarning } from './warnings/SwapPriceDifferenceWarning'
@@ -111,10 +106,6 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
 
         if (primaryFormValidation === TradeFormValidation.SellNativeToken) {
           return <SellNativeWarningBanner />
-        }
-
-        if (localFormValidation === TwapFormState.SELL_AMOUNT_TOO_SMALL) {
-          return <SmallPartVolumeWarning chainId={chainId} />
         }
 
         if (localFormValidation === TwapFormState.PART_TIME_INTERVAL_TOO_SHORT) {
