@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.0](https://github.com/cowprotocol/cowswap/compare/widget-react-v0.4.0...widget-react-v0.5.0) (2024-03-22)
+
+
+### Features
+
+* up widget-lib version ([#4085](https://github.com/cowprotocol/cowswap/issues/4085)) ([a64efee](https://github.com/cowprotocol/cowswap/commit/a64efeec97ef3309431c19653c3e35d085bc27ff))
+
 ## [0.4.0](https://github.com/cowprotocol/cowswap/compare/widget-react-v0.3.0...widget-react-v0.4.0) (2024-02-22)
 
 
