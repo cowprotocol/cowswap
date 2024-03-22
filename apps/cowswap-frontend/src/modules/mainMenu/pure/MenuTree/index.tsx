@@ -132,7 +132,6 @@ interface DropdownProps {
 
 const DropDown = ({ item, context }: DropdownProps) => {
   const { title, items, badge } = item
-  const isUpToMedium = useMediaQuery(upToMedium)
 
   return (
     <MenuDropdown title={title} badge={badge}>
@@ -146,21 +145,6 @@ const DropDown = ({ item, context }: DropdownProps) => {
                 <DropdownLink key={linkIndex} link={link} context={context} />
               ))}
             </MenuSection>
-
-            {/* Medium and down only to show the fortune widget and feedback button */}
-            {isUpToMedium && (
-              <>
-                <MenuSection>
-                  <FeatureGuard featureFlag="cowFortuneEnabled">
-                    <MenuTitle>Get your fortune cookie</MenuTitle>
-                    <FortuneWidget menuTitle="Get your fortune cookie" />
-                  </FeatureGuard>
-                </MenuSection>
-                <MenuSection>
-                  <AppziButton menuTitle="Give us feedback" />
-                </MenuSection>
-              </>
-            )}
           </>
         )
       })}
@@ -199,11 +183,27 @@ export interface MenuTreeProps {
 }
 
 export function MenuTree({ items = MAIN_MENU, isMobileMenuOpen, context }: MenuTreeProps) {
+  const isUpToMedium = useMediaQuery(upToMedium)
+
   return (
     <Wrapper isMobileMenuOpen={isMobileMenuOpen}>
       {items.map((menuItem, index) => {
         return <MenuItemWithDropDown key={index} menuItem={menuItem} context={context} />
       })}
+      {/* Medium and down only to show the fortune widget and feedback button */}
+      {isUpToMedium && (
+        <>
+          <MenuSection>
+            <FeatureGuard featureFlag="cowFortuneEnabled">
+              <MenuTitle>Get your fortune cookie</MenuTitle>
+              <FortuneWidget menuTitle="Get your fortune cookie" />
+            </FeatureGuard>
+          </MenuSection>
+          <MenuSection>
+            <AppziButton menuTitle="Give us feedback" />
+          </MenuSection>
+        </>
+      )}
     </Wrapper>
   )
 }
