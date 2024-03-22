@@ -69,7 +69,7 @@ function Main() {
                       <WalletUnsupportedNetworkBanner />
                       <Updaters />
 
-                      {!isInjectedWidgetMode && isUpToMedium && (
+                      {!isInjectedWidgetMode && !isUpToMedium && (
                         <>
                           <FeatureGuard featureFlag="cowFortuneEnabled">
                             <FortuneWidget />
