@@ -214,6 +214,7 @@ function finalizeOnChainCancellation(
       emitCancelledOrderEvent({
         chainId,
         order,
+        transactionHash: hash,
       })
     })
   } else {

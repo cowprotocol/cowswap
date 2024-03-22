@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v0.6.0...widget-lib-v0.7.0) (2024-03-22)
+
+
+### Features
+
+* up events lib version ([#4083](https://github.com/cowprotocol/cowswap/issues/4083)) ([02dbb0b](https://github.com/cowprotocol/cowswap/commit/02dbb0ba6f9f68a333a2fa2b78a961df4f301e36))
+
 ## [0.6.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v0.5.0...widget-lib-v0.6.0) (2024-03-12)
 
 

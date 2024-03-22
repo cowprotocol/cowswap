@@ -1,5 +1,39 @@
 # Changelog
 
+## [1.63.3](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.63.2...cowswap-v1.63.3) (2024-03-21)
+
+
+### Bug Fixes
+
+* show link to Explorer for twap orders ([#4075](https://github.com/cowprotocol/cowswap/issues/4075)) ([cab8652](https://github.com/cowprotocol/cowswap/commit/cab86522f8275ae24510e447add7db108ee1149c))
+
+## [1.63.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.63.1...cowswap-v1.63.2) (2024-03-21)
+
+
+### Bug Fixes
+
+* display correct links for on-chain notifications ([#4072](https://github.com/cowprotocol/cowswap/issues/4072)) ([aef847f](https://github.com/cowprotocol/cowswap/commit/aef847f19e831a6badc81e95a3c008e716ab004c))
+
+## [1.63.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.63.0...cowswap-v1.63.1) (2024-03-21)
+
+
+### Bug Fixes
+
+* **explorer:** use feature flag to show charts and tokens table ([#4068](https://github.com/cowprotocol/cowswap/issues/4068)) ([9bff945](https://github.com/cowprotocol/cowswap/commit/9bff945c0f891aa5d6527a51c509b9f0802741d5))
+
+## [1.63.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.62.0...cowswap-v1.63.0) (2024-03-20)
+
+
+### Features
+
+* **events:** fire on-chain transactions events ([#4045](https://github.com/cowprotocol/cowswap/issues/4045)) ([362b937](https://github.com/cowprotocol/cowswap/commit/362b9371e8d0ad09ea5501e5a58608c28eb5cf43))
+
+
+### Bug Fixes
+
+* **recreate:** fix 1h duration orders ([#4059](https://github.com/cowprotocol/cowswap/issues/4059)) ([d4d82fc](https://github.com/cowprotocol/cowswap/commit/d4d82fca355ac6ff316d7583cbe5de5d7def7fd1))
+* **twap:** add on TWAP wallet requirements note about Safe not deployed ([#4061](https://github.com/cowprotocol/cowswap/issues/4061)) ([1223e20](https://github.com/cowprotocol/cowswap/commit/1223e20d7d1b153b726d8033d0829e9fde90aa40))
+
 ## [1.62.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.61.1...cowswap-v1.62.0) (2024-03-12)
 
 

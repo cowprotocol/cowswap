@@ -7,7 +7,7 @@ import { getAddress, getEtherscanLink } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { Command, UiOrderType } from '@cowprotocol/types'
-import { Loader, TokenAmount, TokenSymbol, UI, ButtonSecondary } from '@cowprotocol/ui'
+import { ButtonSecondary, Loader, TokenAmount, TokenSymbol, UI } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
 
 import SVG from 'react-inlinesvg'
@@ -170,10 +170,10 @@ export function OrderRow({
   const showCancellationModal = useMemo(() => {
     return orderActions.getShowCancellationModal(order)
   }, [orderActions, order])
-
-  const showRecreateModal = useMemo(() => {
-    return orderActions.getShowRecreateModal(order)
-  }, [orderActions, order])
+  const alternativeOrderModalContext = useMemo(
+    () => orderActions.getAlternativeOrderModalContext(order),
+    [order, orderActions]
+  )
 
   const withAllowanceWarning = hasEnoughAllowance === false && hasValidPendingPermit === false
   const withWarning =
@@ -384,7 +384,7 @@ export function OrderRow({
           activityUrl={activityUrl}
           openReceipt={onClick}
           showCancellationModal={showCancellationModal}
-          showRecreateModal={showRecreateModal}
+          alternativeOrderModalContext={alternativeOrderModalContext}
         />
       </styledEl.CellElement>
     </TableRow>

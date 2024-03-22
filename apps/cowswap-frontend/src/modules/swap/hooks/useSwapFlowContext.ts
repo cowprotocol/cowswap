@@ -1,5 +1,4 @@
 import { GP_VAULT_RELAYER } from '@cowprotocol/common-const'
-import { useGP2SettlementContract } from '@cowprotocol/common-hooks'
 import { getWrappedToken } from '@cowprotocol/common-utils'
 import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -15,6 +14,8 @@ import {
 import { SwapFlowContext } from 'modules/swap/services/types'
 import { useEnoughBalanceAndAllowance } from 'modules/tokens'
 import { TradeType } from 'modules/trade'
+
+import { useGP2SettlementContract } from 'common/hooks/useContract'
 
 export function useSwapFlowContext(): SwapFlowContext | null {
   const contract = useGP2SettlementContract()

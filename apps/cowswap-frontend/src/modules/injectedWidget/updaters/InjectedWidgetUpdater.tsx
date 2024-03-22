@@ -1,20 +1,19 @@
 import { useAtom, useSetAtom } from 'jotai'
 import { useEffect, useRef } from 'react'
 
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { deepEqual } from '@cowprotocol/common-utils'
 import {
-  UpdateParamsPayload,
-  WidgetMethodsEmit,
-  WidgetMethodsListen,
+  CowSwapWidgetParams,
   listenToMessageFromWindow,
   postMessageToWindow,
   stopListeningWindowListener,
-  CowSwapWidgetParams,
+  UpdateParamsPayload,
+  WidgetMethodsEmit,
+  WidgetMethodsListen,
 } from '@cowprotocol/widget-lib'
 
 import { useNavigate } from 'react-router-dom'
-
-import { useFeatureFlags } from 'common/hooks/featureFlags/useFeatureFlags'
 
 import { IframeResizer } from './IframeResizer'
 

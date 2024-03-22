@@ -1,7 +1,6 @@
 import { useSetAtom } from 'jotai'
 
 import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
-import { useEthFlowContract } from '@cowprotocol/common-hooks'
 import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
@@ -9,6 +8,8 @@ import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 import { FlowType, getFlowContext, useBaseFlowContextSetup } from 'modules/swap/hooks/useFlowContext'
 import { EthFlowContext } from 'modules/swap/services/types'
 import { addInFlightOrderIdAtom } from 'modules/swap/state/EthFlow/ethFlowInFlightOrderIdsAtom'
+
+import { useEthFlowContract } from 'common/hooks/useContract'
 
 import { useCheckEthFlowOrderExists } from './useCheckEthFlowOrderExists'
 

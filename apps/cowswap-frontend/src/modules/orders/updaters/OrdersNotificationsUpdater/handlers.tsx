@@ -24,7 +24,7 @@ export const ORDERS_NOTIFICATION_HANDLERS: Record<CowEvents, OrdersNotifications
   [CowEvents.ON_POSTED_ORDER]: {
     icon: 'success',
     handler: (payload: OnPostedOrderPayload) => {
-      const { chainId, orderUid, orderType } = payload
+      const { chainId, orderUid, orderType, orderCreationHash, isEthFlow } = payload
 
       return (
         <OrderNotification
@@ -33,6 +33,8 @@ export const ORDERS_NOTIFICATION_HANDLERS: Record<CowEvents, OrdersNotifications
           orderType={orderType}
           orderUid={orderUid}
           orderInfo={payload}
+          transactionHash={orderCreationHash}
+          isEthFlow={isEthFlow}
           messageType={ToastMessageType.ORDER_CREATED}
         />
       )

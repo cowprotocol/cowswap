@@ -26,6 +26,7 @@ export type BuildAppDataParams = {
   hooks?: AppDataHooks
   widget?: AppDataWidget
   partnerFee?: AppDataPartnerFee
+  replacedOrderUid?: string
 }
 
 async function generateAppDataFromDoc(
@@ -47,17 +48,28 @@ export async function buildAppData({
   hooks,
   widget,
   partnerFee,
+  replacedOrderUid,
 }: BuildAppDataParams): Promise<AppDataInfo> {
   const referrerParams =
     referrerAccount && chainId === SupportedChainId.MAINNET ? { address: referrerAccount } : undefined
 
   const quoteParams = { slippageBips }
   const orderClass = { orderClass: orderClassName }
+  const replacedOrder = replacedOrderUid ? { uid: replacedOrderUid } : undefined
 
   const doc = await metadataApiSDK.generateAppDataDoc({
     appCode,
     environment,
-    metadata: { referrer: referrerParams, quote: quoteParams, orderClass, utm, hooks, widget, partnerFee },
+    metadata: {
+      referrer: referrerParams,
+      quote: quoteParams,
+      orderClass,
+      utm,
+      hooks,
+      widget,
+      partnerFee,
+      ...{ replacedOrder },
+    },
   })
 
   const { fullAppData, appDataKeccak256 } = await generateAppDataFromDoc(doc)

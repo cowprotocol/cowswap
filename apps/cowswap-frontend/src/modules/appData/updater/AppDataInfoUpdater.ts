@@ -19,6 +19,7 @@ export type UseAppDataParams = {
   utm: UtmParams | undefined
   hooks?: AppDataHooks
   partnerFee?: AppDataPartnerFee
+  replacedOrderUid?: string
 }
 
 /**
@@ -33,6 +34,7 @@ export function AppDataInfoUpdater({
   utm,
   hooks,
   partnerFee,
+  replacedOrderUid,
 }: UseAppDataParams): void {
   // AppDataInfo, from Jotai
   const setAppDataInfo = useSetAtom(appDataInfoAtom)
@@ -57,6 +59,7 @@ export function AppDataInfoUpdater({
       hooks,
       partnerFee,
       widget,
+      replacedOrderUid,
     }
 
     const updateAppData = async (): Promise<void> => {
@@ -73,7 +76,17 @@ export function AppDataInfoUpdater({
 
     // Chain the next update to avoid race conditions
     updateAppDataPromiseRef.current = updateAppDataPromiseRef.current.finally(updateAppData)
-  }, [appCodeWithWidgetMetadata, chainId, setAppDataInfo, slippageBips, orderClass, utm, hooks, partnerFee])
+  }, [
+    appCodeWithWidgetMetadata,
+    chainId,
+    setAppDataInfo,
+    slippageBips,
+    orderClass,
+    utm,
+    hooks,
+    partnerFee,
+    replacedOrderUid,
+  ])
 }
 
 function getEnvByClass(orderClass: string): CowEnv | undefined {

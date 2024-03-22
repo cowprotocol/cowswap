@@ -1,4 +1,4 @@
-import { OrderClass, OrderKind } from '@cowprotocol/cow-sdk'
+import { OrderClass, OrderKind, SigningScheme } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount, Price, Token } from '@uniswap/sdk-core'
 
 import BigNumber from 'bignumber.js'
@@ -49,6 +49,7 @@ export interface ParsedOrder {
   expirationTime: Date
   composableCowInfo?: ComposableCowInfo
   fullAppData: Order['fullAppData']
+  signingScheme: SigningScheme
 
   executionData: ParsedOrderExecutionData
 }
@@ -113,9 +114,14 @@ export const parseOrder = (order: Order): ParsedOrder => {
     expirationTime,
     fullAppData: order.fullAppData,
     executionData,
+    signingScheme: order.signingScheme,
   }
 }
 
 export function isParsedOrder(order: Order | ParsedOrder): order is ParsedOrder {
   return !!(order as ParsedOrder).executionData
+}
+
+export function isOffchainOrder(order: Order | ParsedOrder): boolean {
+  return order.signingScheme === SigningScheme.EIP712
 }
