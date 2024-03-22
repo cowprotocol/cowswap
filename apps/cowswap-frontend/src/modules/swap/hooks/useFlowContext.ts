@@ -1,6 +1,5 @@
 import { Erc20, Weth } from '@cowprotocol/abis'
 import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
-import { useTokenContract, useWETHContract } from '@cowprotocol/common-hooks'
 import { calculateValidTo, getAddress, getIsNativeToken } from '@cowprotocol/common-utils'
 import { OrderClass, OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useENSAddress } from '@cowprotocol/ens'
@@ -29,6 +28,7 @@ import { BaseFlowContext } from 'modules/swap/services/types'
 import { TradeConfirmActions, useTradeConfirmActions } from 'modules/trade'
 import { TradeFlowAnalyticsContext } from 'modules/trade/utils/analytics'
 
+import { useTokenContract, useWETHContract } from 'common/hooks/useContract'
 import { useIsSafeApprovalBundle } from 'common/hooks/useIsSafeApprovalBundle'
 
 import { useIsSafeEthFlow } from './useIsSafeEthFlow'

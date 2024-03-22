@@ -1,5 +1,4 @@
 import { ComposableCoW, Erc20 } from '@cowprotocol/abis'
-import { useTokenContract } from '@cowprotocol/common-hooks'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
@@ -9,6 +8,7 @@ import { CURRENT_BLOCK_FACTORY_ADDRESS } from 'modules/advancedOrders'
 import { useComposableCowContract } from 'modules/advancedOrders/hooks/useComposableCowContract'
 import { useNeedsZeroApproval } from 'modules/zeroApproval'
 
+import { useTokenContract } from 'common/hooks/useContract'
 import { useNeedsApproval } from 'common/hooks/useNeedsApproval'
 import { useTradeSpenderAddress } from 'common/hooks/useTradeSpenderAddress'
 

@@ -16,6 +16,7 @@ import { GlobalStyle, MainWrapper } from './styled'
 import { NetworkUpdater } from '../state/network/NetworkUpdater'
 import { RedirectMainnet, RedirectXdai } from '../state/network'
 import { CHAIN_INFO_ARRAY } from '@cowprotocol/common-const'
+import { WithLDProvider } from './components/common/WithLDProvider'
 
 const SENTRY_DSN = process.env.REACT_APP_EXPLORER_SENTRY_DSN
 const SENTRY_TRACES_SAMPLE_RATE = process.env.REACT_APP_SENTRY_TRACES_SAMPLE_RATE
@@ -115,18 +116,20 @@ const AppContent = (): JSX.Element => {
   return (
     <GenericLayout header={<Header />}>
       <React.Suspense fallback={null}>
-        <Routes>
-          <Route path={pathPrefix + '/'} element={<Home />} />
-          <Route path={pathPrefix + '/address/'} element={<Navigate to={pathPrefix + '/search/'} />} />
-          <Route path={pathPrefix + '/orders/'} element={<Navigate to={pathPrefix + '/search/'} />} />
-          <Route path={pathPrefix + '/tx/'} element={<Navigate to={pathPrefix + '/search/'} />} />
-          <Route path={pathPrefix + '/orders/:orderId'} element={<Order />} />
-          <Route path={pathPrefix + '/address/:address'} element={<UserDetails />} />
-          <Route path={pathPrefix + '/tx/:txHash'} element={<TransactionDetails />} />
-          <Route path={pathPrefix + '/search/:searchString?'} element={<SearchNotFound />} />
-          <Route path={pathPrefix + '/appdata'} element={<AppDataDetails />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <WithLDProvider>
+          <Routes>
+            <Route path={pathPrefix + '/'} element={<Home />} />
+            <Route path={pathPrefix + '/address/'} element={<Navigate to={pathPrefix + '/search/'} />} />
+            <Route path={pathPrefix + '/orders/'} element={<Navigate to={pathPrefix + '/search/'} />} />
+            <Route path={pathPrefix + '/tx/'} element={<Navigate to={pathPrefix + '/search/'} />} />
+            <Route path={pathPrefix + '/orders/:orderId'} element={<Order />} />
+            <Route path={pathPrefix + '/address/:address'} element={<UserDetails />} />
+            <Route path={pathPrefix + '/tx/:txHash'} element={<TransactionDetails />} />
+            <Route path={pathPrefix + '/search/:searchString?'} element={<SearchNotFound />} />
+            <Route path={pathPrefix + '/appdata'} element={<AppDataDetails />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </WithLDProvider>
       </React.Suspense>
     </GenericLayout>
   )

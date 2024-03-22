@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { useNetworkName } from '@cowprotocol/common-hooks'
 import { doesTokenMatchSymbolOrAddress } from '@cowprotocol/common-utils'
 import { useSearchToken } from '@cowprotocol/tokens'
-import { Loader, BannerOrientation, ExternalLink, InlineBanner, LINK_GUIDE_ADD_CUSTOM_TOKEN } from '@cowprotocol/ui'
+import { BannerOrientation, ExternalLink, InlineBanner, LINK_GUIDE_ADD_CUSTOM_TOKEN, Loader } from '@cowprotocol/ui'
+
+import { useNetworkName } from 'common/hooks/useNetworkName'
 
 import * as styledEl from './styled'
 
