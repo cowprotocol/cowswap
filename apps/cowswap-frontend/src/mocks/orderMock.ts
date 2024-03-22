@@ -1,6 +1,5 @@
 import { COW, GNO } from '@cowprotocol/common-const'
-import { OrderClass, SupportedChainId } from '@cowprotocol/cow-sdk'
-import { OrderKind } from '@cowprotocol/cow-sdk'
+import { OrderClass, OrderKind, SigningScheme, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 
@@ -33,5 +32,6 @@ export const getOrderMock = (chainId: SupportedChainId): Order => {
     fulfilledTransactionHash: '',
     sellAmountBeforeFee: 10000,
     signature: '0xsss',
+    signingScheme: SigningScheme.EIP712,
   }
 }

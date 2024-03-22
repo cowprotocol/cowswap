@@ -325,6 +325,8 @@ export default createReducer(initialState, (builder) =>
               isCancelling: isCancelling,
               class: orderObj.order.class || newOrder.class, // should never replace existing order class
               openSince: newOrder.openSince || orderObj.order.openSince,
+              // Necessary since `signingScheme` was added later, and local redux state prior to this change doesn't have it set
+              signingScheme: newOrder.signingScheme || orderObj.order.signingScheme,
               status,
             }
           : { ...newOrder, validTo }
@@ -377,6 +379,7 @@ export default createReducer(initialState, (builder) =>
             onchainOrderData: order.onchainOrderData,
             class: order.class,
             fullAppData: order.fullAppData,
+            signingScheme: order.signingScheme,
           }
 
           addOrderToState(state, chainId, uid, 'fulfilled', orderObject.order, isSafeWallet)
