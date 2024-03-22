@@ -65,13 +65,18 @@ const Wrapper = styled.div`
   `};
 `
 
-export default function Appzi() {
+interface AppziButtonProps {
+  menuTitle?: string
+}
+
+export default function Appzi({ menuTitle }: AppziButtonProps) {
   if (!isAppziEnabled) {
     return null
   }
 
   return (
     <Wrapper onClick={openFeedbackAppzi}>
+      {menuTitle && <span>{menuTitle}</span>}
       <SVG src={FeedbackIcon} description="Provide Feedback" />
     </Wrapper>
   )

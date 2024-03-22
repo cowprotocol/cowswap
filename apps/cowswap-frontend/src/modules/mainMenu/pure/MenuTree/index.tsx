@@ -3,10 +3,13 @@ import IMAGE_SUN from '@cowprotocol/assets/cow-swap/sun.svg'
 
 import SVG from 'react-inlinesvg'
 
+import AppziButton from 'legacy/components/AppziButton'
 import { HeaderLinks as Wrapper, StyledNavLink } from 'legacy/components/Header/styled'
 import MenuDropdown from 'legacy/components/MenuDropdown'
 import { MenuSection, MenuTitle } from 'legacy/components/MenuDropdown/styled'
+import { upToMedium, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 
+import { FortuneWidget } from 'modules/fortune/containers/FortuneWidget'
 import {
   CustomItem,
   DropDownItem,
@@ -21,6 +24,7 @@ import {
 import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRoute'
 
 import { RoutesValues } from 'common/constants/routes'
+import { FeatureGuard } from 'common/containers/FeatureGuard'
 
 import { MenuBadge, StyledExternalLink } from './styled'
 
@@ -93,6 +97,7 @@ function DarkModeButton({ context }: DarkModeButtonProps) {
   const { darkMode, toggleDarkMode, handleMobileMenuOnClick } = context
   const description = `${darkMode ? 'Sun/light' : 'Moon/dark'} mode icon`
   const label = (darkMode ? 'Light' : 'Dark') + ' Mode'
+
   return (
     <button
       onClick={() => {
@@ -127,6 +132,7 @@ interface DropdownProps {
 
 const DropDown = ({ item, context }: DropdownProps) => {
   const { title, items, badge } = item
+  const isUpToMedium = useMediaQuery(upToMedium)
 
   return (
     <MenuDropdown title={title} badge={badge}>
@@ -141,6 +147,20 @@ const DropDown = ({ item, context }: DropdownProps) => {
           </MenuSection>
         )
       })}
+
+      {isUpToMedium && (
+        <>
+          <MenuSection>
+            <FeatureGuard featureFlag="cowFortuneEnabled">
+              <MenuTitle>Get your fortune cookie</MenuTitle>
+              <FortuneWidget menuTitle="Get your fortune cookie" />
+            </FeatureGuard>
+          </MenuSection>
+          <MenuSection>
+            <AppziButton menuTitle="Give us feedback" />
+          </MenuSection>
+        </>
+      )}
     </MenuDropdown>
   )
 }

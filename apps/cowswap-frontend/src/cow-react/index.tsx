@@ -20,6 +20,7 @@ import * as serviceWorkerRegistration from 'serviceWorkerRegistration'
 
 import AppziButton from 'legacy/components/AppziButton'
 import Web3Provider from 'legacy/components/Web3Provider'
+import { upToMedium, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 import { cowSwapStore } from 'legacy/state'
 import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from 'legacy/theme'
 
@@ -51,6 +52,8 @@ function Main() {
     }
   }, [])
 
+  const isUpToMedium = useMediaQuery(upToMedium)
+
   return (
     <StrictMode>
       <FixedGlobalStyle />
@@ -66,7 +69,7 @@ function Main() {
                       <WalletUnsupportedNetworkBanner />
                       <Updaters />
 
-                      {!isInjectedWidgetMode && (
+                      {!isInjectedWidgetMode && isUpToMedium && (
                         <>
                           <FeatureGuard featureFlag="cowFortuneEnabled">
                             <FortuneWidget />

@@ -288,7 +288,11 @@ const StyledCloseIcon = styled(X)`
   }
 `
 
-export function FortuneWidget() {
+interface FortuneWidgetProps {
+  menuTitle?: string
+}
+
+export function FortuneWidget({ menuTitle }: FortuneWidgetProps) {
   const { openFortune } = useAtomValue(fortuneStateAtom)
   const lastCheckedFortune = useAtomValue(lastCheckedFortuneAtom)
   const updateOpenFortune = useSetAtom(updateOpenFortuneAtom)
@@ -401,7 +405,9 @@ export function FortuneWidget() {
           </FortuneBannerInner>
         </FortuneBanner>
       )}
-      <FortuneButton isDailyFortuneChecked={isDailyFortuneChecked} onClick={openFortuneModal}></FortuneButton>
+      <FortuneButton isDailyFortuneChecked={isDailyFortuneChecked} onClick={openFortuneModal}>
+        {menuTitle && <span>{menuTitle}</span>}
+      </FortuneButton>
       <Confetti start={isNewFortuneOpen} />
     </>
   )
