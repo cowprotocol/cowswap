@@ -88,15 +88,17 @@ const Wrapper = styled.div`
 interface AppziButtonProps {
   menuTitle?: string
   onClick?: () => void
+  isUpToMedium?: boolean
 }
 
-export default function Appzi({ menuTitle }: AppziButtonProps) {
+export default function Appzi({ menuTitle, onClick, isUpToMedium }: AppziButtonProps) {
   if (!isAppziEnabled) {
     return null
   }
 
   return (
-    <Wrapper onClick={openFeedbackAppzi}>
+    // <Wrapper onClick={openFeedbackAppzi}>
+    <Wrapper onClick={isUpToMedium ? onClick && openFeedbackAppzi : openFeedbackAppzi}>
       {menuTitle && <span>{menuTitle}</span>}
       <SVG src={FeedbackIcon} description="Provide Feedback" />
     </Wrapper>
