@@ -57,6 +57,14 @@ const FortuneButton = styled.div<{ isDailyFortuneChecked: boolean }>`
     display: flex;
     align-items: center;
     justify-content: space-between;
+    border-radius: 0px;
+    margin: 0px;
+    font-weight: 600;
+    font-size: 17px;
+    padding: 15px 10px;
+    color: inherit;
+    border-bottom: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
+    height: auto;
   `}
 
   &::before {
@@ -75,7 +83,8 @@ const FortuneButton = styled.div<{ isDailyFortuneChecked: boolean }>`
     z-index: -1;
 
     ${({ theme }) => theme.mediaWidth.upToMedium`
-      box-shadow: none;
+      content: none;
+      display: none;
     `}
   }
 
@@ -91,6 +100,14 @@ const FortuneButton = styled.div<{ isDailyFortuneChecked: boolean }>`
 
   &:hover::after {
     transform: scale(1.4);
+
+    ${({ theme }) => theme.mediaWidth.upToMedium`
+      transform: none;
+    `}
+  }
+
+  > span {
+    display: block;
   }
 
   @keyframes floating {
