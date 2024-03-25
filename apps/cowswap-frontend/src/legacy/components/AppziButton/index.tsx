@@ -87,6 +87,7 @@ const Wrapper = styled.div`
 
 interface AppziButtonProps {
   menuTitle?: string
+  onClick?: () => void
 }
 
 export default function Appzi({ menuTitle }: AppziButtonProps) {

@@ -317,6 +317,7 @@ const StyledCloseIcon = styled(X)`
 
 interface FortuneWidgetProps {
   menuTitle?: string
+  onClick?: () => void
 }
 
 export function FortuneWidget({ menuTitle }: FortuneWidgetProps) {

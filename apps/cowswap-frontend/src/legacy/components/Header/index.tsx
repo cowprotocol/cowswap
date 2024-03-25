@@ -117,7 +117,13 @@ export default function Header() {
               </UniIcon>
             </Title>
           )}
-          {<MenuTree isMobileMenuOpen={isMobileMenuOpen} context={menuContext} />}
+          {
+            <MenuTree
+              isMobileMenuOpen={isMobileMenuOpen}
+              context={menuContext}
+              handleMobileMenuOnClick={handleMobileMenuOnClick}
+            />
+          }
         </HeaderRow>
 
         <HeaderControls>

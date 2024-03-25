@@ -180,9 +180,10 @@ export interface MenuTreeProps {
   items?: MenuTreeItem[]
   context: MainMenuContext
   isMobileMenuOpen: boolean
+  handleMobileMenuOnClick(): void
 }
 
-export function MenuTree({ items = MAIN_MENU, isMobileMenuOpen, context }: MenuTreeProps) {
+export function MenuTree({ items = MAIN_MENU, isMobileMenuOpen, context, handleMobileMenuOnClick }: MenuTreeProps) {
   const isUpToMedium = useMediaQuery(upToMedium)
 
   return (
@@ -194,10 +195,10 @@ export function MenuTree({ items = MAIN_MENU, isMobileMenuOpen, context }: MenuT
       {isUpToMedium && (
         <>
           <FeatureGuard featureFlag="cowFortuneEnabled">
-            <FortuneWidget menuTitle="Get your fortune cookie" />
+            <FortuneWidget menuTitle="Get your fortune cookie" onClick={handleMobileMenuOnClick} />
           </FeatureGuard>
 
-          <AppziButton menuTitle="Give us feedback" />
+          <AppziButton menuTitle="Give us feedback" onClick={handleMobileMenuOnClick} />
         </>
       )}
     </Wrapper>
