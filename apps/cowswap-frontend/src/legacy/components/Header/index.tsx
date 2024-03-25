@@ -2,6 +2,7 @@ import React, { useCallback, useMemo, useState } from 'react'
 
 import { toggleDarkModeAnalytics } from '@cowprotocol/analytics'
 import { CHRISTMAS_THEME_ENABLED } from '@cowprotocol/common-const'
+import { addBodyClass, removeBodyClass } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -60,7 +61,15 @@ export default function Header() {
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const handleMobileMenuOnClick = useCallback(() => {
-    isUpToLarge && setIsMobileMenuOpen(!isMobileMenuOpen)
+    if (isUpToLarge) {
+      setIsMobileMenuOpen(!isMobileMenuOpen)
+
+      if (!isMobileMenuOpen) {
+        addBodyClass('noScroll')
+      } else {
+        removeBodyClass('noScroll')
+      }
+    }
   }, [isUpToLarge, isMobileMenuOpen])
 
   const tradeMenuContext = useMemo(() => {
