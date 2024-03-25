@@ -77,19 +77,12 @@ const Wrapper = styled.div`
     > svg {
       fill: ${({ theme }) => theme.white};
       transform: rotate(-360deg);
+
+      ${({ theme }) => theme.mediaWidth.upToMedium`
+        transform: none;
+    `};
     }
   }
-
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    left: 14px;
-    height: 38px;
-    width: 38px;
-    bottom: 11px;
-    right: initial;
-    z-index: 10;
-    box-shadow: none;
-    border-width: 3px;
-  `};
 `
 
 interface AppziButtonProps {
