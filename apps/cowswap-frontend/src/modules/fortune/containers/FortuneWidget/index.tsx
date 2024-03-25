@@ -153,10 +153,6 @@ const FortuneBanner = styled.div`
   animation: open var(${UI.ANIMATION_DURATION}) ease-in-out forwards;
   overflow: hidden;
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    top: 60px;
-  `}
-
   @keyframes open {
     from {
       transform: scale(0);
