@@ -302,7 +302,9 @@ const HeaderElement = styled.div`
   z-index: 10;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
-    display: none;
+    height: 48px;
+    justify-content: center;
+    background: var(${UI.COLOR_PAPER_DARKEST});
   `}
 `
 
@@ -315,7 +317,8 @@ const StyledCloseIcon = styled(X)`
   margin: 0 0 0 auto;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
-    --size: 42px;
+    --size: 34px;
+    margin: 0;
   `}
 
   &:hover {
