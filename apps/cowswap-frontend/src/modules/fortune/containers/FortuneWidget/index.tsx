@@ -1,11 +1,10 @@
 import { useAtom, useAtomValue } from 'jotai'
 import { useSetAtom } from 'jotai'
-import { useCallback, useMemo, useRef, useState } from 'react'
+import { useCallback, useMemo, useRef, useState, useEffect } from 'react'
 
 import { openFortuneCookieAnalytics, shareFortuneTwitterAnalytics } from '@cowprotocol/analytics'
 import fortuneCookieImage from '@cowprotocol/assets/cow-swap/fortune-cookie.png'
 import twitterImage from '@cowprotocol/assets/cow-swap/twitter.svg'
-import { useInterval } from '@cowprotocol/common-hooks'
 import { addBodyClass, removeBodyClass } from '@cowprotocol/common-utils'
 import { ExternalLink } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
@@ -346,7 +345,10 @@ export function FortuneWidget({ menuTitle }: FortuneWidgetProps) {
   const [isFortunedShared, setIsFortunedShared] = useState(false)
 
   const [today, setToday] = useState(new Date())
-  useInterval(() => setToday(new Date()), 2_000)
+
+  useEffect(() => {
+    setToday(new Date())
+  }, [])
 
   const checkboxRef = useRef<HTMLInputElement>(null)
 
