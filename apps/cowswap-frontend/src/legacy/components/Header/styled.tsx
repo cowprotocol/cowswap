@@ -361,6 +361,7 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
     flex-flow: column nowrap;
     justify-content: flex-start;
     align-items: flex-start;
+    z-index: 1001;
 `};
 `
 

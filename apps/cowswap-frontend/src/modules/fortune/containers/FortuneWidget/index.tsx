@@ -27,8 +27,6 @@ import {
 
 import { SuccessBanner } from 'pages/Claim/styled'
 
-const Wrapper = styled.div<{ onClick?: () => void }>``
-
 const FortuneButton = styled.div<{ isDailyFortuneChecked: boolean }>`
   --size: 64px;
   display: inline-block;
@@ -319,11 +317,9 @@ const StyledCloseIcon = styled(X)`
 
 interface FortuneWidgetProps {
   menuTitle?: string
-  onClick?: () => void
-  isUpToMedium?: boolean
 }
 
-export function FortuneWidget({ menuTitle, onClick, isUpToMedium }: FortuneWidgetProps) {
+export function FortuneWidget({ menuTitle }: FortuneWidgetProps) {
   const { openFortune } = useAtomValue(fortuneStateAtom)
   const lastCheckedFortune = useAtomValue(lastCheckedFortuneAtom)
   const updateOpenFortune = useSetAtom(updateOpenFortuneAtom)
@@ -390,7 +386,7 @@ export function FortuneWidget({ menuTitle, onClick, isUpToMedium }: FortuneWidge
   if (isFortunesFeatureDisabled && isDailyFortuneChecked && !openFortune) return null
 
   return (
-    <Wrapper onClick={isUpToMedium ? onClick : undefined}>
+    <>
       {openFortune && (
         <FortuneBanner>
           <FortuneBannerInner>
@@ -440,6 +436,6 @@ export function FortuneWidget({ menuTitle, onClick, isUpToMedium }: FortuneWidge
         {menuTitle && <span>{menuTitle}</span>}
       </FortuneButton>
       <Confetti start={isNewFortuneOpen} />
-    </Wrapper>
+    </>
   )
 }
