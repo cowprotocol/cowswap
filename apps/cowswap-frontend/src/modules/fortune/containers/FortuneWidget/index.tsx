@@ -96,6 +96,10 @@ const FortuneButton = styled.div<{ isDailyFortuneChecked: boolean }>`
     width: var(--size);
     height: var(--size);
     transition: transform var(${UI.ANIMATION_DURATION}) ease-in-out;
+
+    ${({ theme }) => theme.mediaWidth.upToMedium`
+      --size: 46px;
+    `}
   }
 
   &:hover::after {
