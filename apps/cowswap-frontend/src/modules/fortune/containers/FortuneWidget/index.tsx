@@ -153,6 +153,10 @@ const FortuneBanner = styled.div`
   animation: open var(${UI.ANIMATION_DURATION}) ease-in-out forwards;
   overflow: hidden;
 
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    top: 60px;
+  `}
+
   @keyframes open {
     from {
       transform: scale(0);
@@ -213,6 +217,11 @@ const FortuneTitle = styled.h2`
   font-weight: 700;
   color: inherit;
 
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    font-size: 16px;
+    margin: 16px auto 34px;
+  `}
+
   > i {
     font-size: 16px;
     text-transform: uppercase;
@@ -237,8 +246,8 @@ const FortuneText = styled.h3`
   background: ${({ theme }) => theme.white};
 
   // small device
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    font-size: 26px;
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    font-size: 21px;
   `}
 
   &:before {
@@ -291,6 +300,10 @@ const HeaderElement = styled.div`
   left: 0;
   height: 56px;
   z-index: 10;
+
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    display: none;
+  `}
 `
 
 const StyledCloseIcon = styled(X)`
