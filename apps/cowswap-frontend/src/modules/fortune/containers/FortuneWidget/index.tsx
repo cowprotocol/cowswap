@@ -1,6 +1,6 @@
 import { useAtom, useAtomValue } from 'jotai'
 import { useSetAtom } from 'jotai'
-import { useCallback, useMemo, useRef, useState, useEffect } from 'react'
+import { useCallback, useMemo, useRef, useState } from 'react'
 
 import { openFortuneCookieAnalytics, shareFortuneTwitterAnalytics } from '@cowprotocol/analytics'
 import fortuneCookieImage from '@cowprotocol/assets/cow-swap/fortune-cookie.png'
@@ -343,13 +343,6 @@ export function FortuneWidget({ menuTitle }: FortuneWidgetProps) {
   const openRandomFortune = useOpenRandomFortune()
   const [isNewFortuneOpen, setIsNewFortuneOpen] = useState(false)
   const [isFortunedShared, setIsFortunedShared] = useState(false)
-
-  const [today, setToday] = useState(new Date())
-
-  useEffect(() => {
-    setToday(new Date())
-  }, [])
-
   const checkboxRef = useRef<HTMLInputElement>(null)
 
   // TODO: add text
@@ -361,13 +354,14 @@ export function FortuneWidget({ menuTitle }: FortuneWidgetProps) {
     if (!lastCheckedFortune) return false
 
     const lastCheckedFortuneDate = new Date(lastCheckedFortune.checkTimestamp)
+    const today = new Date()
 
     return (
       lastCheckedFortuneDate.getUTCFullYear() === today.getUTCFullYear() &&
       lastCheckedFortuneDate.getUTCMonth() === today.getUTCMonth() &&
       lastCheckedFortuneDate.getUTCDate() === today.getUTCDate()
     )
-  }, [lastCheckedFortune, today])
+  }, [lastCheckedFortune])
 
   const closeModal = useCallback(() => {
     updateOpenFortune(null)
