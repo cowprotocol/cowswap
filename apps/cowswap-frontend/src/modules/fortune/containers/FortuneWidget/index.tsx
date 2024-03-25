@@ -48,9 +48,15 @@ const FortuneButton = styled.div<{ isDailyFortuneChecked: boolean }>`
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     --size: 52px;
-    left: 65px;
+    position: relative;
     right: initial;
-    bottom: 0;
+    bottom: initial;
+    transform: none;
+    animation: none;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   `}
 
   &::before {

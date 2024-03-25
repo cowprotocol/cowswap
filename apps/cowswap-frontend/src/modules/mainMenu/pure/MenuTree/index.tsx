@@ -193,15 +193,11 @@ export function MenuTree({ items = MAIN_MENU, isMobileMenuOpen, context }: MenuT
       {/* Medium and down only to show the fortune widget and feedback button */}
       {isUpToMedium && (
         <>
-          <MenuSection>
-            <FeatureGuard featureFlag="cowFortuneEnabled">
-              <MenuTitle>Get your fortune cookie</MenuTitle>
-              <FortuneWidget menuTitle="Get your fortune cookie" />
-            </FeatureGuard>
-          </MenuSection>
-          <MenuSection>
-            <AppziButton menuTitle="Give us feedback" />
-          </MenuSection>
+          <FeatureGuard featureFlag="cowFortuneEnabled">
+            <FortuneWidget menuTitle="Get your fortune cookie" />
+          </FeatureGuard>
+
+          <AppziButton menuTitle="Give us feedback" />
         </>
       )}
     </Wrapper>

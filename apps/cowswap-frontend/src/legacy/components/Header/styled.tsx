@@ -331,6 +331,10 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
       gap 36px;
       opacity: 0.7;
     `};
+
+    ${({ theme }) => theme.mediaWidth.upToMedium`
+     width: 100%;
+    `};
   }
 
   ${MenuTitle} {
