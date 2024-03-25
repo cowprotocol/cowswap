@@ -1,6 +1,6 @@
 import { useAtom, useAtomValue } from 'jotai'
 import { useSetAtom } from 'jotai'
-import { useCallback, useMemo, useRef, useState } from 'react'
+import { useCallback, useMemo, useRef, useState, useEffect } from 'react'
 
 import { openFortuneCookieAnalytics, shareFortuneTwitterAnalytics } from '@cowprotocol/analytics'
 import fortuneCookieImage from '@cowprotocol/assets/cow-swap/fortune-cookie.png'
@@ -11,6 +11,7 @@ import { ExternalLink } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
+import ReactDOM from 'react-dom'
 import { X } from 'react-feather'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
@@ -333,9 +334,10 @@ const StyledCloseIcon = styled(X)`
 
 interface FortuneWidgetProps {
   menuTitle?: string
+  injectToBody?: boolean
 }
 
-export function FortuneWidget({ menuTitle }: FortuneWidgetProps) {
+export function FortuneWidget({ menuTitle, injectToBody = false }: FortuneWidgetProps) {
   const { openFortune } = useAtomValue(fortuneStateAtom)
   const lastCheckedFortune = useAtomValue(lastCheckedFortuneAtom)
   const updateOpenFortune = useSetAtom(updateOpenFortuneAtom)
@@ -399,53 +401,71 @@ export function FortuneWidget({ menuTitle }: FortuneWidgetProps) {
     shareFortuneTwitterAnalytics()
   }, [setIsFortunesFeatureDisabled])
 
+  const [portalContainer, setPortalContainer] = useState<HTMLElement | null>(null)
+
+  useEffect(() => {
+    if (injectToBody) {
+      const div = document.createElement('div')
+      document.body.insertBefore(div, document.body.firstChild)
+      setPortalContainer(div)
+
+      return () => {
+        document.body.removeChild(div)
+      }
+    } else {
+      return () => {}
+    }
+  }, [injectToBody])
+
   if (isFortunesFeatureDisabled && isDailyFortuneChecked && !openFortune) return null
 
-  return (
+  const content = (
     <>
       {openFortune && (
         <FortuneBanner>
-          <FortuneBannerInner>
-            <HeaderElement>
-              <StyledCloseIcon onClick={closeModal}>Close</StyledCloseIcon>
-            </HeaderElement>
-            <FortuneTitle>
-              {isNewFortuneOpen ? (
-                <>
-                  CoW Fortune <i>of the day</i>
-                </>
-              ) : (
-                <>
-                  Already seen today's fortune? <br /> Return tomorrow for a fresh one!
-                </>
-              )}
-            </FortuneTitle>
-            <FortuneContent>
-              <FortuneText>{openFortune.text}</FortuneText>
-              <FortuneBannerActions>
-                <StyledExternalLink
-                  onClickOptional={onTweetShare}
-                  href={`https://twitter.com/intent/tweet?text=${twitterText}`}
-                >
-                  <SuccessBanner type={'Twitter'}>
-                    <span>
-                      <Trans>Share on Twitter</Trans>
-                    </span>
-                    <SVG src={twitterImage} description="Twitter" />
-                  </SuccessBanner>
-                </StyledExternalLink>
-                {!isNewFortuneOpen && !isFortunedShared && (
-                  <DontShowAgainBox>
-                    <label>
-                      {/*// TODO: tooltip with explanation*/}
-                      <input type="checkbox" ref={checkboxRef} />
-                      <span>Hide today's fortune cookie</span>
-                    </label>
-                  </DontShowAgainBox>
+          <FortuneBanner>
+            <FortuneBannerInner>
+              <HeaderElement>
+                <StyledCloseIcon onClick={closeModal}>Close</StyledCloseIcon>
+              </HeaderElement>
+              <FortuneTitle>
+                {isNewFortuneOpen ? (
+                  <>
+                    CoW Fortune <i>of the day</i>
+                  </>
+                ) : (
+                  <>
+                    Already seen today's fortune? <br /> Return tomorrow for a fresh one!
+                  </>
                 )}
-              </FortuneBannerActions>
-            </FortuneContent>
-          </FortuneBannerInner>
+              </FortuneTitle>
+              <FortuneContent>
+                <FortuneText>{openFortune.text}</FortuneText>
+                <FortuneBannerActions>
+                  <StyledExternalLink
+                    onClickOptional={onTweetShare}
+                    href={`https://twitter.com/intent/tweet?text=${twitterText}`}
+                  >
+                    <SuccessBanner type={'Twitter'}>
+                      <span>
+                        <Trans>Share on Twitter</Trans>
+                      </span>
+                      <SVG src={twitterImage} description="Twitter" />
+                    </SuccessBanner>
+                  </StyledExternalLink>
+                  {!isNewFortuneOpen && !isFortunedShared && (
+                    <DontShowAgainBox>
+                      <label>
+                        {/*// TODO: tooltip with explanation*/}
+                        <input type="checkbox" ref={checkboxRef} />
+                        <span>Hide today's fortune cookie</span>
+                      </label>
+                    </DontShowAgainBox>
+                  )}
+                </FortuneBannerActions>
+              </FortuneContent>
+            </FortuneBannerInner>
+          </FortuneBanner>
         </FortuneBanner>
       )}
       <FortuneButton isDailyFortuneChecked={isDailyFortuneChecked} onClick={openFortuneModal}>
@@ -454,4 +474,7 @@ export function FortuneWidget({ menuTitle }: FortuneWidgetProps) {
       <Confetti start={isNewFortuneOpen} />
     </>
   )
+
+  // Conditionally render the content directly or through a portal
+  return injectToBody && portalContainer ? ReactDOM.createPortal(content, portalContainer) : content
 }

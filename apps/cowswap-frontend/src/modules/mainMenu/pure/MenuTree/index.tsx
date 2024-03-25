@@ -195,7 +195,7 @@ export function MenuTree({ items = MAIN_MENU, isMobileMenuOpen, context, handleM
       {isUpToMedium && (
         <>
           <FeatureGuard featureFlag="cowFortuneEnabled">
-            <FortuneWidget menuTitle="Get your fortune cookie" />
+            <FortuneWidget menuTitle="Get your fortune cookie" injectToBody />
           </FeatureGuard>
 
           <AppziButton menuTitle="Give us feedback" onClick={handleMobileMenuOnClick} isUpToMedium={isUpToMedium} />
