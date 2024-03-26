@@ -1,7 +1,7 @@
-import React, { useEffect, useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
 
 import ICON_ORDERS from '@cowprotocol/assets/svg/orders.svg'
-import { useIsSwapMode, useIsLimitOrderMode, useIsAdvancedMode } from '@cowprotocol/common-hooks'
+import { useFeatureFlags, useIsAdvancedMode, useIsLimitOrderMode, useIsSwapMode } from '@cowprotocol/common-hooks'
 import { isInjectedWidget, maxAmountSpend } from '@cowprotocol/common-utils'
 import { ButtonOutlined, MY_ORDERS_ID } from '@cowprotocol/ui'
 import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
@@ -100,6 +100,9 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
 
   const showDropdown = shouldShowMyOrdersButton || isInjectedWidgetMode
 
+  const { isAprilFoolsEnabled } = useFeatureFlags()
+  const showBuyTokenSelector = !isAprilFoolsEnabled || !!outputCurrencyInfo.currency
+
   const currencyInputCommonProps = {
     isChainIdUnsupported,
     chainId,
@@ -165,33 +168,37 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
               />
             </div>
             {!isWrapOrUnwrap && middleContent}
-            <styledEl.CurrencySeparatorBox compactView={compactView} withRecipient={withRecipient}>
-              <CurrencyArrowSeparator
-                isCollapsed={compactView}
-                hasSeparatorLine={!compactView}
-                onSwitchTokens={isChainIdUnsupported ? () => void 0 : throttledOnSwitchTokens}
-                withRecipient={withRecipient}
-                isLoading={isTradePriceUpdating}
-                disabled={isAlternativeOrderModalVisible}
-              />
-            </styledEl.CurrencySeparatorBox>
-            <div>
-              <CurrencyInputPanel
-                id="output-currency-input"
-                inputDisabled={isEoaEthFlow || isWrapOrUnwrap || disableOutput}
-                inputTooltip={
-                  isEoaEthFlow
-                    ? t`You cannot edit this field when selling ${inputCurrencyInfo?.currency?.symbol}`
-                    : undefined
-                }
-                currencyInfo={
-                  isWrapOrUnwrap ? { ...outputCurrencyInfo, amount: inputCurrencyInfo.amount } : outputCurrencyInfo
-                }
-                priceImpactParams={!disablePriceImpact ? priceImpact : undefined}
-                topLabel={isWrapOrUnwrap ? undefined : outputCurrencyInfo.label}
-                {...currencyInputCommonProps}
-              />
-            </div>
+            {showBuyTokenSelector && (
+              <>
+                <styledEl.CurrencySeparatorBox compactView={compactView} withRecipient={withRecipient}>
+                  <CurrencyArrowSeparator
+                    isCollapsed={compactView}
+                    hasSeparatorLine={!compactView}
+                    onSwitchTokens={isChainIdUnsupported ? () => void 0 : throttledOnSwitchTokens}
+                    withRecipient={withRecipient}
+                    isLoading={isTradePriceUpdating}
+                    disabled={isAlternativeOrderModalVisible}
+                  />
+                </styledEl.CurrencySeparatorBox>
+                <div>
+                  <CurrencyInputPanel
+                    id="output-currency-input"
+                    inputDisabled={isEoaEthFlow || isWrapOrUnwrap || disableOutput}
+                    inputTooltip={
+                      isEoaEthFlow
+                        ? t`You cannot edit this field when selling ${inputCurrencyInfo?.currency?.symbol}`
+                        : undefined
+                    }
+                    currencyInfo={
+                      isWrapOrUnwrap ? { ...outputCurrencyInfo, amount: inputCurrencyInfo.amount } : outputCurrencyInfo
+                    }
+                    priceImpactParams={!disablePriceImpact ? priceImpact : undefined}
+                    topLabel={isWrapOrUnwrap ? undefined : outputCurrencyInfo.label}
+                    {...currencyInputCommonProps}
+                  />
+                </div>
+              </>
+            )}
             {withRecipient && (
               <styledEl.StyledRemoveRecipient recipient={recipient || ''} onChangeRecipient={onChangeRecipient} />
             )}
