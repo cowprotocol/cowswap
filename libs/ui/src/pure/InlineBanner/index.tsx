@@ -163,7 +163,7 @@ interface NonDismissableBannerProps extends InlineBannerPropsBase {
   bannerID?: never
 }
 
-type InlineBannerProps = DismissableBannerProps | NonDismissableBannerProps
+export type InlineBannerProps = DismissableBannerProps | NonDismissableBannerProps
 
 interface InlineBannerPropsBase {
   children?: ReactNode
