@@ -314,6 +314,7 @@ const StyledCloseIcon = styled(X)`
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     --size: 34px;
+    width: 100%;
     margin: 0;
   `}
 
