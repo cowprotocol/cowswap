@@ -39,7 +39,7 @@ export function AlternativeLimitOrderUpdater(): null {
 }
 
 function useUpdateAlternativeRawState(): null {
-  const alternativeOrder = useAlternativeOrder()
+  const { order: alternativeOrder } = useAlternativeOrder() || {}
   const updateRawState = useUpdateLimitOrdersRawState()
   const updatePartialFillOverride = useSetAtom(partiallyFillableOverrideAtom)
   const updateSettingsState = useSetAtom(updateLimitOrdersSettingsAtom)

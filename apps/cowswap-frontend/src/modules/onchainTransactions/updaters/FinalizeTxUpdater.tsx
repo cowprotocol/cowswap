@@ -80,7 +80,8 @@ interface CheckEthereumTransactions {
 function finalizeEthereumTransaction(
   receipt: TransactionReceipt,
   transaction: EnhancedTransactionDetails,
-  params: CheckEthereumTransactions
+  params: CheckEthereumTransactions,
+  safeTransactionHash?: string
 ) {
   const { chainId, account, dispatch, addPriorityAllowance } = params
   const { hash } = transaction
@@ -131,7 +132,7 @@ function finalizeEthereumTransaction(
       to: receipt.to,
       from: receipt.from,
       contractAddress: receipt.contractAddress,
-      transactionHash: receipt.transactionHash,
+      transactionHash: safeTransactionHash || receipt.transactionHash,
       blockNumber: receipt.blockNumber,
       status: receipt.status,
       replacementType: transaction.replacementType,
@@ -264,7 +265,7 @@ function checkEthereumTransactions(params: CheckEthereumTransactions): Command[]
             const { promise: receiptPromise } = getReceipt(transactionHash)
 
             receiptPromise
-              .then((newReceipt) => finalizeEthereumTransaction(newReceipt, transaction, params))
+              .then((newReceipt) => finalizeEthereumTransaction(newReceipt, transaction, params, hash))
               .catch((error) => {
                 if (!error.isCancelledError) {
                   console.error(

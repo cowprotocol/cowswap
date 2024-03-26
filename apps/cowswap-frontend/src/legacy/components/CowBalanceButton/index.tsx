@@ -25,14 +25,15 @@ export const Wrapper = styled.div<{ isLoading: boolean }>`
   transition: width var(${UI.ANIMATION_DURATION}) ease-in-out, border var(${UI.ANIMATION_DURATION}) ease-in-out;
   cursor: pointer;
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    height: 100%;
-    width: auto;
-    padding: 6px 12px 6px 8px;
+  ${({ theme }) => theme.mediaWidth.upToLarge`
+    position: absolute;
+    z-index: 1001;
+    right: 76px;
+    background: var(${UI.COLOR_PAPER_DARKER});
   `};
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
-    padding: 6px 8px;
+    right: 66px;
   `};
 
   &:hover {
@@ -77,26 +78,24 @@ interface CowBalanceButtonProps {
   account?: string | null | undefined
   chainId: ChainId | undefined
   onClick?: Command
-  isUpToSmall?: boolean
 }
 
-export default function CowBalanceButton({ onClick, isUpToSmall }: CowBalanceButtonProps) {
+export default function CowBalanceButton({ onClick }: CowBalanceButtonProps) {
   const { balance, isLoading } = useCombinedBalance()
 
   return (
     <Wrapper isLoading={isLoading} onClick={onClick}>
       <CowProtocolLogo />
-      {!isUpToSmall && (
-        <b>
-          <TokenAmount
-            round={true}
-            hideTokenSymbol={true}
-            amount={balance}
-            defaultValue="0"
-            tokenSymbol={{ symbol: '(v)COW' }}
-          />
-        </b>
-      )}
+
+      <b>
+        <TokenAmount
+          round={true}
+          hideTokenSymbol={true}
+          amount={balance}
+          defaultValue="0"
+          tokenSymbol={{ symbol: '(v)COW' }}
+        />
+      </b>
     </Wrapper>
   )
 }

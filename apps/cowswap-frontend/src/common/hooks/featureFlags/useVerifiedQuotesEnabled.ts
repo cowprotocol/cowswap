@@ -1,6 +1,5 @@
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-
-import { useFeatureFlags } from './useFeatureFlags'
 
 export function useVerifiedQuotesEnabled(chainId: SupportedChainId): boolean {
   const { verifyQuotesMainnet, verifyQuotesGnosis, verifyQuotesSepolia } = useFeatureFlags()

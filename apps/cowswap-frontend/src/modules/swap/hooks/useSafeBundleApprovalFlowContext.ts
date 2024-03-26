@@ -1,8 +1,9 @@
-import { useTokenContract } from '@cowprotocol/common-hooks'
 import { getWrappedToken } from '@cowprotocol/common-utils'
 
 import { FlowType } from 'modules/swap/hooks/useFlowContext'
 import { SafeBundleApprovalFlowContext } from 'modules/swap/services/types'
+
+import { useTokenContract } from 'common/hooks/useContract'
 
 import { useBaseSafeBundleFlowContext } from './useBaseSafeBundleFlowContext'
 

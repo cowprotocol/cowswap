@@ -9,11 +9,11 @@ import { TokenInfo, UiOrderType } from '@cowprotocol/types'
 import { useOrder } from 'legacy/state/orders/hooks'
 
 import {
-  OrderInfo,
   getToastMessageCallback,
+  isEnrichedOrder,
   mapEnrichedOrderToInfo,
   mapStoreOrderToInfo,
-  isEnrichedOrder,
+  OrderInfo,
 } from './utils'
 
 import { OrderSummary } from '../../pure/OrderSummary'
@@ -28,11 +28,12 @@ export interface BaseOrderNotificationProps {
   orderType: UiOrderType
   orderInfo?: OrderInfo | EnrichedOrder
   transactionHash?: string
+  isEthFlow?: boolean
   children?: JSX.Element
 }
 
 export function OrderNotification(props: BaseOrderNotificationProps) {
-  const { title, orderUid, orderType, transactionHash, chainId, messageType, children, orderInfo } = props
+  const { title, orderUid, orderType, transactionHash, chainId, messageType, children, orderInfo, isEthFlow } = props
 
   const allTokens = useTokensByAddressMap()
 
@@ -65,7 +66,7 @@ export function OrderNotification(props: BaseOrderNotificationProps) {
   if (!order) return
 
   return (
-    <TransactionContentWithLink transactionHash={transactionHash} orderUid={orderUid}>
+    <TransactionContentWithLink isEthFlow={isEthFlow} transactionHash={transactionHash} orderUid={orderUid}>
       <div ref={ref}>
         <strong>{title}</strong>
         <br />

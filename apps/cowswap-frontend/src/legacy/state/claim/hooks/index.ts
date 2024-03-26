@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { VCow } from '@cowprotocol/abis'
 import { TokenWithLogo, V_COW } from '@cowprotocol/common-const'
-import { useIsMounted, useVCowContract } from '@cowprotocol/common-hooks'
+import { useIsMounted } from '@cowprotocol/common-hooks'
 import { calculateGasMargin, formatTokenAmount, isAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId as ChainId, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useSingleContractMultipleData } from '@cowprotocol/multicall'
@@ -15,6 +15,8 @@ import { CurrencyAmount, Price, Token } from '@uniswap/sdk-core'
 import JSBI from 'jsbi'
 import ms from 'ms.macro'
 import { useDispatch, useSelector } from 'react-redux'
+
+import { useVCowContract } from 'common/hooks/useContract'
 
 import { PAID_CLAIM_TYPES } from './const'
 import { ClaimInput, ClaimType, RepoClaims, UserClaims, VCowPrices } from './types'

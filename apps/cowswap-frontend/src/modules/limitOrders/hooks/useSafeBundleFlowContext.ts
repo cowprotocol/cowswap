@@ -1,8 +1,8 @@
-import { useTokenContract } from '@cowprotocol/common-hooks'
 import { useSafeAppsSdk } from '@cowprotocol/wallet'
 
 import { SafeBundleFlowContext, TradeFlowContext } from 'modules/limitOrders/services/types'
 
+import { useTokenContract } from 'common/hooks/useContract'
 import { useTradeSpenderAddress } from 'common/hooks/useTradeSpenderAddress'
 
 export function useSafeBundleFlowContext(tradeContext: TradeFlowContext | null): SafeBundleFlowContext | null {

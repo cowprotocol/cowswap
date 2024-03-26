@@ -1,41 +1,39 @@
 import { useMemo } from 'react'
 
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import {
-  Erc20,
-  Erc721,
-  Erc1155,
-  Weth,
+  CoWSwapEthFlow,
+  CoWSwapEthFlowAbi,
   Eip2612Abi,
+  Erc1155,
+  Erc1155Abi,
+  Erc20,
   Erc20Abi,
   Erc20Bytes32Abi,
+  Erc721,
   Erc721Abi,
-  Erc1155Abi,
-  WethAbi,
   GPv2Settlement,
   GPv2SettlementAbi,
+  UniswapInterfaceMulticall,
   UniswapInterfaceMulticallAbi,
   VCow,
-  CoWSwapEthFlow,
   vCowAbi,
-  UniswapInterfaceMulticall,
-  CoWSwapEthFlowAbi,
+  Weth,
+  WethAbi,
 } from '@cowprotocol/abis'
-import { Contract } from '@ethersproject/contracts'
-import type { JsonRpcProvider } from '@ethersproject/providers'
-import { useWeb3React } from '@web3-react/core'
-
 import {
   COWSWAP_ETHFLOW_CONTRACT_ADDRESS,
   GP_SETTLEMENT_CONTRACT_ADDRESS,
-  V_COW_CONTRACT_ADDRESS,
   MULTICALL_ADDRESS,
+  V_COW_CONTRACT_ADDRESS,
   WRAPPED_NATIVE_CURRENCIES,
 } from '@cowprotocol/common-const'
 import { getContract, isEns, isProd, isStaging } from '@cowprotocol/common-utils'
-
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
+import { Contract } from '@ethersproject/contracts'
+import type { JsonRpcProvider } from '@ethersproject/providers'
 import { Web3Provider } from '@ethersproject/providers'
+import { useWeb3React } from '@web3-react/core'
 
 const { abi: MulticallABI } = UniswapInterfaceMulticallAbi
 
