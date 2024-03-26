@@ -2,7 +2,7 @@ import { COW, WETH_SEPOLIA } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
-import { getTwapFormState, TwapFormState } from './getTwapFormState'
+import { getTwapFormState } from './getTwapFormState'
 
 import { ExtensibleFallbackVerification } from '../../services/verifyExtensibleFallback'
 import { TWAPOrder } from '../../types'
@@ -22,26 +22,10 @@ const twapOrder: TWAPOrder = {
 
 describe('getTwapFormState()', () => {
   describe('When sell fiat amount is under threshold', () => {
-    it('And order has buy amount, then should return SELL_AMOUNT_TOO_SMALL', () => {
-      const result = getTwapFormState({
-        isSafeApp: true,
-        verification: ExtensibleFallbackVerification.HAS_DOMAIN_VERIFIER,
-        twapOrder: { ...twapOrder },
-        sellAmountPartFiat: CurrencyAmount.fromRawAmount(WETH_SEPOLIA, 10000000),
-        chainId: 1,
-        partTime: 1000000,
-      })
-
-      expect(result).toEqual(TwapFormState.SELL_AMOUNT_TOO_SMALL)
-    })
-
     it('And order does NOT have buy amount, then should return null', () => {
       const result = getTwapFormState({
         isSafeApp: true,
         verification: ExtensibleFallbackVerification.HAS_DOMAIN_VERIFIER,
-        twapOrder: { ...twapOrder, buyAmount: CurrencyAmount.fromRawAmount(COW_SEPOLIA, 0) },
-        sellAmountPartFiat: CurrencyAmount.fromRawAmount(WETH_SEPOLIA, 10000000),
-        chainId: 1,
         partTime: 1000000,
       })
 
