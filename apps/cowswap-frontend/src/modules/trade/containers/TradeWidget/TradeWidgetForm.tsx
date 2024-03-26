@@ -98,6 +98,8 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
       (isLimitOrderMode && isLimitOrdersUnlocked) ||
       (isAdvancedMode && isAdvancedOrdersUnlocked))
 
+  const showDropdown = shouldShowMyOrdersButton || isInjectedWidgetMode
+
   const currencyInputCommonProps = {
     isChainIdUnsupported,
     chainId,
@@ -134,7 +136,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
     <>
       <styledEl.ContainerBox>
         <styledEl.Header>
-          {isAlternativeOrderModalVisible ? <div></div> : <TradeWidgetLinks isDropdown={isInjectedWidgetMode} />}
+          {isAlternativeOrderModalVisible ? <div></div> : <TradeWidgetLinks isDropdown={showDropdown} />}
           {isInjectedWidgetMode && injectedWidgetParams.standaloneMode && (
             <AccountElement standaloneMode pendingActivities={pendingActivity} />
           )}

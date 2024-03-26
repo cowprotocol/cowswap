@@ -7,6 +7,8 @@ import { Trans } from '@lingui/macro'
 import ICON_WALLET from 'assets/icon/wallet.svg'
 import SVG from 'react-inlinesvg'
 
+import { upToTiny, upToExtraSmall, useMediaQuery } from 'legacy/hooks/useMediaQuery'
+
 import { NetworkIcon, Text, Web3StatusConnect, Web3StatusConnected, Web3StatusError } from './styled'
 
 import { FollowPendingTxPopup } from '../../containers/FollowPendingTxPopup'
@@ -26,6 +28,8 @@ export function Web3StatusInner(props: Web3StatusInnerProps) {
   const { account, pendingCount, chainId, error, ensName, connectionType, connectWallet } = props
 
   const hasPendingTransactions = !!pendingCount
+  const isUpToExtraSmall = useMediaQuery(upToExtraSmall)
+  const isUpToTiny = useMediaQuery(upToTiny)
 
   if (!chainId || !connectWallet) {
     return null
@@ -55,7 +59,7 @@ export function Web3StatusInner(props: Web3StatusInnerProps) {
             <Loader stroke="currentColor" />
           </RowBetween>
         ) : (
-          <Text>{ensName || shortenAddress(account)}</Text>
+          <Text>{ensName || shortenAddress(account, isUpToTiny ? 4 : isUpToExtraSmall ? 3 : 4)}</Text>
         )}
         {!hasPendingTransactions && <StatusIcon connectionType={connectionType} />}
       </Web3StatusConnected>

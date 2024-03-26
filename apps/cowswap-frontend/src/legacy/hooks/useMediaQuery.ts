@@ -19,6 +19,8 @@ export const useMediaQuery = (query: string) => {
 }
 
 export const upToSmall = `(max-width: ${MEDIA_WIDTHS.upToSmall}px)`
+export const upToExtraSmall = `(max-width: ${MEDIA_WIDTHS.upToExtraSmall}px)`
+export const upToTiny = `(max-width: ${MEDIA_WIDTHS.upToTiny}px)`
 export const MediumAndUp = `(min-width: ${MEDIA_WIDTHS.upToSmall + 1}px)`
 export const isMediumOnly = `(min-width: ${MEDIA_WIDTHS.upToSmall + 1}px) and (max-width: ${MEDIA_WIDTHS.upToMedium}px)`
 export const upToMedium = `(max-width: ${MEDIA_WIDTHS.upToMedium}px)`
