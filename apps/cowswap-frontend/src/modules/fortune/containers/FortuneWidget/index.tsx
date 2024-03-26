@@ -330,7 +330,7 @@ const StyledCloseIcon = styled(X)`
 
 interface FortuneWidgetProps {
   menuTitle?: string
-  isMobileMenuOpen: boolean
+  isMobileMenuOpen?: boolean
 }
 
 export function FortuneWidget({ menuTitle, isMobileMenuOpen }: FortuneWidgetProps) {
