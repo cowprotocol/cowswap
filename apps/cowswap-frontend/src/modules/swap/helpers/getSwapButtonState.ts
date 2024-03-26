@@ -30,7 +30,7 @@ export enum SwapButtonState {
   SwapWithWrappedToken = 'SwapWithWrappedToken',
   RegularEthFlowSwap = 'EthFlowSwap',
   ApproveAndSwap = 'ApproveAndSwap',
-
+  ImFeelingLucky = 'ImFeelingLucky',
   WrapAndSwap = 'WrapAndSwap',
 }
 
@@ -54,6 +54,7 @@ export interface SwapButtonStateParams {
   isBestQuoteLoading: boolean
   wrappedToken: Token
   isPermitSupported: boolean
+  isAprilFoolsEnabled: boolean
 }
 
 const quoteErrorToSwapButtonState: { [key in QuoteError]: SwapButtonState | null } = {
@@ -67,7 +68,7 @@ const quoteErrorToSwapButtonState: { [key in QuoteError]: SwapButtonState | null
 }
 
 export function getSwapButtonState(input: SwapButtonStateParams): SwapButtonState {
-  const { trade, quote, approvalState, isPermitSupported } = input
+  const { trade, quote, approvalState, isPermitSupported, isAprilFoolsEnabled } = input
   const quoteError = quote?.error
 
   // show approve flow when: no error on inputs, not approved or pending, or approved in current session
@@ -121,6 +122,9 @@ export function getSwapButtonState(input: SwapButtonStateParams): SwapButtonStat
   }
 
   if (input.inputError) {
+    if (isAprilFoolsEnabled && input.inputError === 'Select a token') {
+      return SwapButtonState.ImFeelingLucky
+    }
     return SwapButtonState.SwapError
   }
 

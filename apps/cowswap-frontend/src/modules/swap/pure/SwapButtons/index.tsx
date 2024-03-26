@@ -37,6 +37,7 @@ export interface SwapButtonsContext {
   swapInputError?: ReactNode
   onCurrencySelection: (field: Field, currency: Currency) => void
   recipientAddressOrName: string | null
+  imFeelingLucky: Command
 }
 
 const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonsContext) => JSX.Element } = {
@@ -157,6 +158,13 @@ const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonsContext
           <TokenSymbol token={props.inputAmount?.currency && getWrappedToken(props.inputAmount.currency)} length={6} />{' '}
           and Swap
         </Trans>
+      </styledEl.SwapButtonBox>
+    </ButtonError>
+  ),
+  [SwapButtonState.ImFeelingLucky]: (props: SwapButtonsContext) => (
+    <ButtonError buttonSize={ButtonSize.BIG} onClick={props.imFeelingLucky}>
+      <styledEl.SwapButtonBox>
+        <Trans>I'm feeling lucky 🍀</Trans>
       </styledEl.SwapButtonBox>
     </ButtonError>
   ),

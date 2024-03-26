@@ -1,6 +1,10 @@
+import { useCallback } from 'react'
+
 import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
+import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { currencyAmountToTokenAmount, getWrappedToken } from '@cowprotocol/common-utils'
-import { useIsTradeUnsupported } from '@cowprotocol/tokens'
+import { useAllTokens, useIsTradeUnsupported } from '@cowprotocol/tokens'
 import {
   useGnosisSafeInfo,
   useIsBundlingSupported,
@@ -25,6 +29,8 @@ import { SwapButtonsContext } from 'modules/swap/pure/SwapButtons'
 import { TradeType, useTradeConfirmActions, useWrapNativeFlow } from 'modules/trade'
 import { useIsNativeIn } from 'modules/trade/hooks/useIsNativeInOrOut'
 import { useIsWrappedOut } from 'modules/trade/hooks/useIsWrappedInOrOut'
+import { useTradeNavigate } from 'modules/trade/hooks/useTradeNavigate'
+import { useTradeState } from 'modules/trade/hooks/useTradeState'
 import { useWrappedToken } from 'modules/trade/hooks/useWrappedToken'
 
 import { useApproveState } from 'common/hooks/useApproveState'
@@ -87,12 +93,16 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
 
   const swapCallbackError = contextExists ? null : 'Missing dependencies'
 
+  const imFeelingLucky = useImFeelingLucky()
+
   const gnosisSafeInfo = useGnosisSafeInfo()
   const isReadonlyGnosisSafeUser = gnosisSafeInfo?.isReadOnly || false
   const isSwapUnsupported = useIsTradeUnsupported(currencyIn, currencyOut)
   const isSmartContractWallet = useIsSmartContractWallet()
   const isBundlingSupported = useIsBundlingSupported()
   const isPermitSupported = useTokenSupportsPermit(currencyIn, TradeType.SWAP)
+  const { isAprilFoolsEnabled } = useFeatureFlags()
+
 
   const swapButtonState = getSwapButtonState({
     account,
@@ -114,6 +124,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
     trade,
     isBestQuoteLoading,
     isPermitSupported,
+    isAprilFoolsEnabled,
   })
 
   return {
@@ -130,6 +141,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
     swapInputError,
     onCurrencySelection,
     recipientAddressOrName,
+    imFeelingLucky,
   }
 }
 
@@ -139,4 +151,34 @@ function useHasEnoughWrappedBalanceForSwap(inputAmount?: CurrencyAmount<Currency
 
   // is a native currency trade but wrapped token has enough balance
   return !!(wrappedBalance && inputAmount && !wrappedBalance.lessThan(inputAmount))
+}
+
+function useImFeelingLucky() {
+  const { state } = useTradeState()
+  const inputCurrencyId = state?.inputCurrencyId
+
+  // TODO: use the correct list
+  const tokens = useAllTokens().filter(
+    ({ symbol, address }) =>
+      symbol && !/uni|1inch|0x/.test(symbol) && symbol !== inputCurrencyId && address !== inputCurrencyId
+  )
+  const { chainId } = useWalletInfo()
+  const navigate = useTradeNavigate()
+
+  return useCallback(() => {
+    const selected = pickRandom(tokens)
+    navigate(chainId, {
+      inputCurrencyId: inputCurrencyId || NATIVE_CURRENCIES[chainId].symbol || null,
+      outputCurrencyId: selected?.symbol || null,
+    })
+  }, [chainId, navigate, inputCurrencyId, tokens])
+}
+
+function pickRandom<T>(list: T[]): T | undefined {
+  if (list.length === 0) {
+    return undefined
+  }
+
+  const randomIndex = Math.floor(Math.random() * list.length)
+  return list[randomIndex]
 }
