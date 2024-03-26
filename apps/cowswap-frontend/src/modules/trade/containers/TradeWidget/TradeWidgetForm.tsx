@@ -1,9 +1,10 @@
 import React, { useEffect, useCallback } from 'react'
 
 import ICON_ORDERS from '@cowprotocol/assets/svg/orders.svg'
+import ICON_TOKENS from '@cowprotocol/assets/svg/tokens.svg'
 import { useIsSwapMode, useIsLimitOrderMode, useIsAdvancedMode } from '@cowprotocol/common-hooks'
 import { isInjectedWidget, maxAmountSpend } from '@cowprotocol/common-utils'
-import { ButtonOutlined, MY_ORDERS_ID } from '@cowprotocol/ui'
+import { ButtonOutlined, MY_ORDERS_ID, InlineBanner, BannerOrientation, ExternalLink } from '@cowprotocol/ui'
 import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/macro'
@@ -161,6 +162,23 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
                 topLabel={isWrapOrUnwrap ? undefined : inputCurrencyInfo.label}
                 {...currencyInputCommonProps}
               />
+
+              {isLimitOrderMode && !isWrapOrUnwrap && (
+                <InlineBanner
+                  dismissable
+                  bannerID="limitOrders_zeroBalanceBanner"
+                  bannerType="success"
+                  orientation={BannerOrientation.Horizontal}
+                  customIcon={ICON_TOKENS}
+                  iconSize={32}
+                  margin={'10px 0 0'}
+                >
+                  <p>
+                    <b>NEW: </b>Place limit orders for higher than the balance in your wallet!{' '}
+                    <ExternalLink href="#">Learn more.</ExternalLink>
+                  </p>
+                </InlineBanner>
+              )}
             </div>
             {!isWrapOrUnwrap && middleContent}
             <styledEl.CurrencySeparatorBox compactView={compactView} withRecipient={withRecipient}>

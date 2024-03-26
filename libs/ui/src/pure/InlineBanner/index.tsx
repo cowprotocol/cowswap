@@ -1,8 +1,10 @@
-import { ReactNode } from 'react'
+import React, { ReactNode, useEffect, useState } from 'react'
 
 import { UI } from '../../enum'
 import { Icon, IconType } from '../Icon'
 import { BannerOrientation } from './banners'
+import { X } from 'react-feather'
+import SVG from 'react-inlinesvg'
 
 import styled from 'styled-components/macro'
 
@@ -10,6 +12,7 @@ export type BannerType = 'alert' | 'information' | 'success' | 'danger' | 'savin
 
 interface ColorEnums {
   icon?: IconType
+  iconColor?: string
   iconText?: string
   color: UI
   bg: string
@@ -31,6 +34,7 @@ const colorEnumsMap: Record<BannerType, ColorEnums> = {
   },
   success: {
     icon: IconType.SUCCESS,
+    iconColor: UI.COLOR_SUCCESS,
     color: UI.COLOR_SUCCESS_TEXT,
     bg: UI.COLOR_SUCCESS_BG,
     text: UI.COLOR_SUCCESS_TEXT,
@@ -61,16 +65,18 @@ const Wrapper = styled.span<{
   padding?: string
   margin?: string
   width?: string
+  dismissable?: boolean
 }>`
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
   background: ${({ colorEnums }) => `var(${colorEnums.bg})`};
   color: ${({ colorEnums }) => `var(${colorEnums.text})`};
   gap: 24px 10px;
   border-radius: ${({ borderRadius = '16px' }) => borderRadius};
   margin: ${({ margin = 'auto' }) => margin};
-  padding: ${({ padding = '16px' }) => padding};
+  padding: ${({ dismissable, padding = '16px' }) => (dismissable ? '16px 32px 16px 16px' : padding)};
   font-size: 14px;
   font-weight: 400;
   line-height: 1.2;
@@ -85,6 +91,10 @@ const Wrapper = styled.span<{
       orientation === BannerOrientation.Horizontal ? 'row' : 'column wrap'};
     gap: 10px;
     width: 100%;
+  }
+
+  > span > svg > path {
+    fill: ${({ colorEnums }) => `var(${colorEnums.iconColor})`};
   }
 
   // Text content
@@ -126,7 +136,36 @@ const Wrapper = styled.span<{
   }
 `
 
-export type InlineBannerProps = {
+const CloseIcon = styled(X)`
+  --size: 16px;
+  cursor: pointer;
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  stroke-width: 3px;
+  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
+  height: var(--size);
+  width: var(--size);
+  opacity: 0.6;
+
+  &:hover {
+    opacity: 1;
+  }
+`
+
+interface DismissableBannerProps extends InlineBannerPropsBase {
+  dismissable: true
+  bannerID: string
+}
+
+interface NonDismissableBannerProps extends InlineBannerPropsBase {
+  dismissable?: false
+  bannerID?: never
+}
+
+type InlineBannerProps = DismissableBannerProps | NonDismissableBannerProps
+
+interface InlineBannerPropsBase {
   children?: ReactNode
   className?: string
   hideIcon?: boolean
@@ -135,6 +174,7 @@ export type InlineBannerProps = {
   orientation?: BannerOrientation
   iconSize?: number
   iconPadding?: string
+  customIcon?: string
   padding?: string
   margin?: string
   width?: string
@@ -144,17 +184,42 @@ export function InlineBanner({
   children,
   className,
   hideIcon,
-  bannerType,
+  bannerType = 'information',
   borderRadius,
   orientation,
   iconSize,
   iconPadding = '0',
+  customIcon,
   padding,
   margin,
   width,
+  dismissable,
+  bannerID,
 }: InlineBannerProps) {
-  const effectiveBannerType = bannerType || 'alert'
-  const colorEnums = getColorEnums(effectiveBannerType)
+  const colorEnums = getColorEnums(bannerType)
+  const LOCAL_STORAGE_KEY = dismissable ? `${bannerID}` : undefined
+
+  const [showBanner, setShowBanner] = useState(() => {
+    if (dismissable && LOCAL_STORAGE_KEY) {
+      const storedVisibility = localStorage.getItem(LOCAL_STORAGE_KEY)
+      return storedVisibility !== 'false'
+    }
+    return true
+  })
+
+  useEffect(() => {
+    if (dismissable && LOCAL_STORAGE_KEY) {
+      localStorage.setItem(LOCAL_STORAGE_KEY, showBanner.toString())
+    }
+  }, [showBanner, LOCAL_STORAGE_KEY])
+
+  const closeBanner = () => {
+    if (dismissable && LOCAL_STORAGE_KEY) {
+      setShowBanner(false)
+    }
+  }
+
+  if (!showBanner && dismissable) return null
 
   return (
     <Wrapper
@@ -165,9 +230,12 @@ export function InlineBanner({
       padding={padding}
       margin={margin}
       width={width}
+      dismissable={dismissable}
     >
       <span>
-        {!hideIcon && colorEnums.icon && (
+        {!hideIcon && customIcon ? (
+          <SVG src={customIcon} width={iconSize} height={iconSize} />
+        ) : !hideIcon && colorEnums.icon ? (
           <Icon
             image={colorEnums.icon}
             size={iconSize}
@@ -175,10 +243,13 @@ export function InlineBanner({
             description={bannerType}
             padding={iconPadding}
           />
-        )}
-        {!hideIcon && colorEnums.iconText && <i>{colorEnums.iconText}</i>}
+        ) : !hideIcon && colorEnums.iconText ? (
+          <i>{colorEnums.iconText}</i>
+        ) : null}
         <span>{children}</span>
       </span>
+
+      {dismissable && <CloseIcon onClick={closeBanner} />}
     </Wrapper>
   )
 }
