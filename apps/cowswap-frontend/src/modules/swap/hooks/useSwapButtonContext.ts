@@ -3,7 +3,7 @@ import { useCallback } from 'react'
 import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
 import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
-import { currencyAmountToTokenAmount, getWrappedToken } from '@cowprotocol/common-utils'
+import { currencyAmountToTokenAmount, getImFeelingLuckySound, getWrappedToken } from '@cowprotocol/common-utils'
 import { useAllTokens, useIsTradeUnsupported } from '@cowprotocol/tokens'
 import {
   useGnosisSafeInfo,
@@ -167,6 +167,8 @@ function useImFeelingLucky() {
 
   return useCallback(() => {
     const selected = pickRandom(tokens)
+
+    getImFeelingLuckySound().play()
     navigate(chainId, {
       inputCurrencyId: inputCurrencyId || NATIVE_CURRENCIES[chainId].symbol || null,
       outputCurrencyId: selected?.symbol || null,
