@@ -330,9 +330,10 @@ const StyledCloseIcon = styled(X)`
 
 interface FortuneWidgetProps {
   menuTitle?: string
+  isMobileMenuOpen: boolean
 }
 
-export function FortuneWidget({ menuTitle }: FortuneWidgetProps) {
+export function FortuneWidget({ menuTitle, isMobileMenuOpen }: FortuneWidgetProps) {
   const { openFortune } = useAtomValue(fortuneStateAtom)
   const lastCheckedFortune = useAtomValue(lastCheckedFortuneAtom)
   const updateOpenFortune = useSetAtom(updateOpenFortuneAtom)
@@ -363,12 +364,16 @@ export function FortuneWidget({ menuTitle }: FortuneWidgetProps) {
   const closeModal = useCallback(() => {
     updateOpenFortune(null)
     setIsNewFortuneOpen(false)
-    removeBodyClass('noScroll')
+
+    // only remove body class if isMobileMenuOpen is false
+    if (!isMobileMenuOpen) {
+      removeBodyClass('noScroll')
+    }
 
     if (checkboxRef.current?.checked) {
       setIsFortunesFeatureDisabled(true)
     }
-  }, [updateOpenFortune, checkboxRef, setIsFortunesFeatureDisabled])
+  }, [updateOpenFortune, checkboxRef, setIsFortunesFeatureDisabled, isMobileMenuOpen])
 
   const openFortuneModal = useCallback(() => {
     setIsFortunedShared(false)
