@@ -122,7 +122,7 @@ export function getSwapButtonState(input: SwapButtonStateParams): SwapButtonStat
   }
 
   if (input.inputError) {
-    if (isAprilFoolsEnabled && input.inputError === 'Select a token') {
+    if (!isAprilFoolsEnabled && input.inputError === 'Select a token') {
       return SwapButtonState.ImFeelingLucky
     }
     return SwapButtonState.SwapError
