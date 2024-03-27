@@ -101,7 +101,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
   const showDropdown = shouldShowMyOrdersButton || isInjectedWidgetMode
 
   const { isAprilFoolsEnabled } = useFeatureFlags()
-  const showBuyTokenSelector = !isAprilFoolsEnabled || !!outputCurrencyInfo.currency
+  const showBuyTokenSelector = !isAprilFoolsEnabled || !!outputCurrencyInfo.currency || !account || !isSwapMode
 
   const currencyInputCommonProps = {
     isChainIdUnsupported,
