@@ -192,7 +192,7 @@ export function MenuTree({ items = MAIN_MENU, isMobileMenuOpen, context, handleM
         return <MenuItemWithDropDown key={index} menuItem={menuItem} context={context} />
       })}
       {/* Medium and down only to show the fortune widget and feedback button */}
-      {isUpToMedium && (
+      {isUpToMedium && isMobileMenuOpen && (
         <>
           <FeatureGuard featureFlag="cowFortuneEnabled">
             <FortuneWidget menuTitle="Get your fortune cookie" isMobileMenuOpen={isMobileMenuOpen} />
