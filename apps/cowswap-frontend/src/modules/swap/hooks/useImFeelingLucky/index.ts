@@ -32,7 +32,7 @@ export function useImFeelingLucky() {
     setWasImFeelingLuckyClicked(true)
     navigate(chainId, {
       inputCurrencyId: inputCurrencyId || NATIVE_CURRENCIES[chainId].symbol || null,
-      outputCurrencyId: selected?.symbol || null,
+      outputCurrencyId: selected?.address || null,
     })
   }, [tokens, setWasImFeelingLuckyClicked, navigate, chainId, inputCurrencyId])
 }
