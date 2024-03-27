@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { setMaxSellTokensAnalytics } from '@cowprotocol/analytics'
 import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
@@ -45,6 +45,7 @@ export interface CurrencyInputPanelProps extends Partial<BuiltItProps> {
   onUserInput: (field: Field, typedValue: string) => void
   openTokenSelectWidget(selectedToken: string | undefined, onCurrencySelection: (currency: Currency) => void): void
   topLabel?: string
+  wasImFeelingLuckyClicked?: boolean
 }
 
 export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
@@ -72,6 +73,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
       },
     },
     topLabel,
+    wasImFeelingLuckyClicked,
   } = props
 
   const { field, currency, balance, fiatAmount, amount, isIndependent, receiveAmountInfo } = currencyInfo
@@ -151,7 +153,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
         {topLabel && <styledEl.CurrencyTopLabel>{topLabel}</styledEl.CurrencyTopLabel>}
 
         <styledEl.CurrencyInputBox>
-          <div>
+          <div id={wasImFeelingLuckyClicked ? 'fuck' : 'yuck'}>
             <CurrencySelectButton
               onClick={onTokenSelectClick}
               currency={disabled ? undefined : currency || undefined}
@@ -185,14 +187,16 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
         </styledEl.CurrencyInputBox>
       </styledEl.Wrapper>
 
-      {receiveAmountInfo && currency && (
-        <ReceiveAmount
-          allowsOffchainSigning={allowsOffchainSigning}
-          currency={currency}
-          receiveAmountInfo={receiveAmountInfo}
-          subsidyAndBalance={subsidyAndBalance}
-        />
-      )}
-    </styledEl.OuterWrapper>
+      {
+        receiveAmountInfo && currency && (
+          <ReceiveAmount
+            allowsOffchainSigning={allowsOffchainSigning}
+            currency={currency}
+            receiveAmountInfo={receiveAmountInfo}
+            subsidyAndBalance={subsidyAndBalance}
+          />
+        )
+      }
+    </styledEl.OuterWrapper >
   )
 }

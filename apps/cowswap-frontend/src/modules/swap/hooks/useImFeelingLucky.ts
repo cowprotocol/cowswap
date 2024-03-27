@@ -1,3 +1,4 @@
+import { atom, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
 import { NATIVE_CURRENCIES, SWR_NO_REFRESH_OPTIONS, TokenWithLogo } from '@cowprotocol/common-const'
@@ -16,6 +17,7 @@ import { useTradeState } from 'modules/trade/hooks/useTradeState'
 export function useImFeelingLucky() {
   const { state } = useTradeState()
   const inputCurrencyId = state?.inputCurrencyId
+  const setWasImFeelingLuckyClicked = useSetAtom(wasImFeelingLuckyClickedAtom)
 
   const { chainId } = useWalletInfo()
   const navigate = useTradeNavigate()
@@ -26,11 +28,12 @@ export function useImFeelingLucky() {
     const selected = pickRandom(tokens)
 
     getImFeelingLuckySound().play()
+    setWasImFeelingLuckyClicked(true)
     navigate(chainId, {
       inputCurrencyId: inputCurrencyId || NATIVE_CURRENCIES[chainId].symbol || null,
       outputCurrencyId: selected?.symbol || null,
     })
-  }, [chainId, navigate, inputCurrencyId, tokens])
+  }, [tokens, setWasImFeelingLuckyClicked, navigate, chainId, inputCurrencyId])
 }
 
 function pickRandom<T>(list: T[]): T | undefined {
@@ -70,4 +73,15 @@ function useImFeelingLuckyTokens(chainId: SupportedChainId, sellTokenId: Nullish
 
 function sellTokenFilterFactory(sellTokenId: Nullish<string>) {
   return ({ symbol, address }: TokenWithLogo) => symbol !== sellTokenId && address !== sellTokenId
+}
+
+export const wasImFeelingLuckyClickedAtom = atom(false)
+
+export function useResetWasImFeelingLuckyClicked() {
+  const setAtom = useSetAtom(wasImFeelingLuckyClickedAtom)
+
+  return useCallback(() => {
+    console.log(`fuck-useResetWas...`)
+    return setAtom(false)
+  }, [setAtom])
 }

@@ -1,3 +1,4 @@
+import { useAtomValue } from 'jotai'
 import { useCallback, useEffect } from 'react'
 
 import ICON_ORDERS from '@cowprotocol/assets/svg/orders.svg'
@@ -16,6 +17,7 @@ import { useToggleAccountModal } from 'modules/account'
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders/hooks/useAdvancedOrdersDerivedState'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { useIsWidgetUnlocked } from 'modules/limitOrders'
+import { useResetWasImFeelingLuckyClicked, wasImFeelingLuckyClickedAtom } from 'modules/swap/hooks/useImFeelingLucky'
 import { useOpenTokenSelectWidget } from 'modules/tokensList'
 import { useIsAlternativeOrderModalVisible } from 'modules/trade/state/alternativeOrder'
 
@@ -78,6 +80,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
   const withRecipient = !isWrapOrUnwrap && (showRecipient || hasRecipientInUrl)
   const maxBalance = maxAmountSpend(inputCurrencyInfo.balance || undefined, isSafeWallet)
   const showSetMax = maxBalance?.greaterThan(0) && !inputCurrencyInfo.amount?.equalTo(maxBalance)
+  const wasImFeelingLuckyClicked = useAtomValue(wasImFeelingLuckyClickedAtom)
 
   const alternativeOrderModalVisible = useIsAlternativeOrderModalVisible()
 
@@ -104,6 +107,11 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
   const isAprilFoolsEnabled = useIsAprilFoolsEnabled()
 
   const showBuyTokenSelector = !isAprilFoolsEnabled || !!outputCurrencyInfo.currency || !account || !isSwapMode
+  const resetWasImFeelingLuckyClicked = useResetWasImFeelingLuckyClicked()
+
+  useEffect(() => {
+    !showBuyTokenSelector && resetWasImFeelingLuckyClicked()
+  }, [resetWasImFeelingLuckyClicked, showBuyTokenSelector])
 
   const currencyInputCommonProps = {
     isChainIdUnsupported,
@@ -196,6 +204,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
                     }
                     priceImpactParams={!disablePriceImpact ? priceImpact : undefined}
                     topLabel={isWrapOrUnwrap ? undefined : outputCurrencyInfo.label}
+                    wasImFeelingLuckyClicked={wasImFeelingLuckyClicked}
                     {...currencyInputCommonProps}
                   />
                 </div>
