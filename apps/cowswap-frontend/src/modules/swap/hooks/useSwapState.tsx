@@ -330,7 +330,7 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
     }
 
     return inputError
-  }, [account, currencies, parsedAmount, to, currencyBalances, slippageAdjustedSellAmount, inputCurrency, chainId])
+  }, [account, isUnsupportedNetwork, currencies, parsedAmount, to, currencyBalances, slippageAdjustedSellAmount, inputCurrency])
 
   return useMemo(
     () => {
