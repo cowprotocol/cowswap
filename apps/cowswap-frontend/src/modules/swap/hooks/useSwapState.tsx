@@ -117,7 +117,7 @@ export function useSwapActionHandlers(): SwapActions {
 export function useHighFeeWarning(trade?: TradeGp) {
   const { INPUT, OUTPUT, independentField } = useSwapState()
 
-  const [feeWarningAccepted, setFeeWarningAccepted] = useState<boolean>(false) // mod - high fee warning disable state
+  const [feeWarningAccepted, setFeeWarningAccepted] = useState<boolean>(false)
 
   // only considers inputAmount vs fee (fee is in input token)
   const [isHighFee, feePercentage] = useMemo(() => {
@@ -184,7 +184,8 @@ export function useUnknownImpactWarning() {
 
 // from the current swap inputs, compute the best trade and return it.
 export function useDerivedSwapInfo(): DerivedSwapInfo {
-  const { account, chainId } = useWalletInfo() // MOD: chainId
+  const { account, chainId } = useWalletInfo()
+  const isUnsupportedNetwork = useIsProviderNetworkUnsupported()
 
   const {
     independentField,
@@ -281,8 +282,8 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
 
   // allowed slippage is either auto slippage, or custom user defined slippage if auto slippage disabled
   // TODO: check whether we want to enable auto slippage tolerance
-  // const autoSlippageTolerance = useAutoSlippageTolerance(trade.trade)  // mod
-  // const allowedSlippage = useUserSlippageToleranceWithDefault(autoSlippageTolerance) // mod
+  // const autoSlippageTolerance = useAutoSlippageTolerance(trade.trade) 
+  // const allowedSlippage = useUserSlippageToleranceWithDefault(autoSlippageTolerance)
   const allowedSlippage = useSwapSlippage()
   const slippageAdjustedSellAmount = trade?.maximumAmountIn(allowedSlippage) || null
 
@@ -291,6 +292,10 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
 
     if (!account) {
       inputError = t`Connect Wallet`
+    }
+
+    if (isUnsupportedNetwork) {
+      return t`Unsupported network`
     }
 
     if (!currencies[Field.INPUT] || !currencies[Field.OUTPUT]) {
@@ -311,7 +316,7 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
     }
 
     // compare input balance to max input based on version
-    // const [balanceIn, amountIn] = [currencyBalances[Field.INPUT], trade.trade?.maximumAmountIn(allowedSlippage)] // mod
+    // const [balanceIn, amountIn] = [currencyBalances[Field.INPUT], trade.trade?.maximumAmountIn(allowedSlippage)]
     const balanceIn = currencyBalances[Field.INPUT]
     const amountIn = slippageAdjustedSellAmount
 
@@ -325,7 +330,7 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
     }
 
     return inputError
-  }, [account, slippageAdjustedSellAmount, currencies, currencyBalances, inputCurrency, parsedAmount, to]) // mod
+  }, [account, currencies, parsedAmount, to, currencyBalances, slippageAdjustedSellAmount, inputCurrency, chainId])
 
   return useMemo(
     () => {
@@ -350,7 +355,7 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
       // eslint-disable-next-line react-hooks/exhaustive-deps
       JSON.stringify(trade),
       slippageAdjustedSellAmount,
-    ] // mod
+    ]
   )
 }
 
