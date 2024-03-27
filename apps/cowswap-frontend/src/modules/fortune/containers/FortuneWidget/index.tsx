@@ -112,6 +112,8 @@ const FortuneButton = styled.div<{ isDailyFortuneChecked: boolean }>`
 
   > span {
     display: block;
+    line-height: 1;
+    text-align: left;
   }
 
   @keyframes floating {
