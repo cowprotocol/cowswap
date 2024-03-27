@@ -1,9 +1,14 @@
 import { useCallback } from 'react'
 
-import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
+import { NATIVE_CURRENCIES, SWR_NO_REFRESH_OPTIONS, TokenWithLogo } from '@cowprotocol/common-const'
 import { getImFeelingLuckySound } from '@cowprotocol/common-utils'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useAllTokens } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
+import { TokenList } from '@uniswap/token-lists'
+
+import useSWR from 'swr'
+import { Nullish } from 'types'
 
 import { useTradeNavigate } from 'modules/trade/hooks/useTradeNavigate'
 import { useTradeState } from 'modules/trade/hooks/useTradeState'
@@ -12,13 +17,10 @@ export function useImFeelingLucky() {
   const { state } = useTradeState()
   const inputCurrencyId = state?.inputCurrencyId
 
-  // TODO: use the correct list
-  const tokens = useAllTokens().filter(
-    ({ symbol, address }) =>
-      symbol && !/uni|1inch|0x/.test(symbol) && symbol !== inputCurrencyId && address !== inputCurrencyId
-  )
   const { chainId } = useWalletInfo()
   const navigate = useTradeNavigate()
+
+  const tokens = useImFeelingLuckyTokens(chainId, inputCurrencyId)
 
   return useCallback(() => {
     const selected = pickRandom(tokens)
@@ -38,4 +40,34 @@ function pickRandom<T>(list: T[]): T | undefined {
 
   const randomIndex = Math.floor(Math.random() * list.length)
   return list[randomIndex]
+}
+
+function useImFeelingLuckyTokens(chainId: SupportedChainId, sellTokenId: Nullish<string>): TokenWithLogo[] {
+  const isMainnet = chainId === SupportedChainId.MAINNET
+  const tokens = useAllTokens().filter(
+    ({ symbol, address }) =>
+      symbol && !/uni|1inch|0x/.test(symbol.toLowerCase()) && symbol !== sellTokenId && address !== sellTokenId
+  )
+
+  const { data } = useSWR<TokenWithLogo[]>(
+    isMainnet ? 'https://dpaste.com/3SCBYM7GS.txt' : null,
+    async (url) => {
+      const response = await fetch(url)
+
+      const list: TokenList = await response.json()
+
+      return list.tokens.map((t) => TokenWithLogo.fromToken(t))
+    },
+    { ...SWR_NO_REFRESH_OPTIONS, fallbackData: [] }
+  )
+
+  if (isMainnet && data) {
+    return data.filter(sellTokenFilterFactory(sellTokenId))
+  } else {
+    return tokens
+  }
+}
+
+function sellTokenFilterFactory(sellTokenId: Nullish<string>) {
+  return ({ symbol, address }: TokenWithLogo) => symbol !== sellTokenId && address !== sellTokenId
 }

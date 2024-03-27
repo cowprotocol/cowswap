@@ -17,6 +17,7 @@ import { Field } from 'legacy/state/types'
 
 import { useTokenSupportsPermit } from 'modules/permit'
 import { getSwapButtonState } from 'modules/swap/helpers/getSwapButtonState'
+import { useImFeelingLucky } from 'modules/swap/hooks/imFeelingLucky'
 import { useEthFlowContext } from 'modules/swap/hooks/useEthFlowContext'
 import { useHandleSwap } from 'modules/swap/hooks/useHandleSwap'
 import { useSafeBundleApprovalFlowContext } from 'modules/swap/hooks/useSafeBundleApprovalFlowContext'
@@ -30,7 +31,6 @@ import { useWrappedToken } from 'modules/trade/hooks/useWrappedToken'
 import { useIsAprilFoolsEnabled } from 'common/hooks/featureFlags/useIsAprilFoolsEnabled'
 import { useApproveState } from 'common/hooks/useApproveState'
 
-import { useImFeelingLucky } from './useImFeelingLucky'
 import { useSafeBundleEthFlowContext } from './useSafeBundleEthFlowContext'
 import { useDerivedSwapInfo, useSwapActionHandlers } from './useSwapState'
 
