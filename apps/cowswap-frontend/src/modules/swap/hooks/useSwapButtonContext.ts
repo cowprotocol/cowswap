@@ -1,9 +1,6 @@
-import { useCallback } from 'react'
-
 import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
-import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
-import { currencyAmountToTokenAmount, getImFeelingLuckySound, getWrappedToken } from '@cowprotocol/common-utils'
-import { useAllTokens, useIsTradeUnsupported } from '@cowprotocol/tokens'
+import { currencyAmountToTokenAmount, getWrappedToken } from '@cowprotocol/common-utils'
+import { useIsTradeUnsupported } from '@cowprotocol/tokens'
 import {
   useGnosisSafeInfo,
   useIsBundlingSupported,
@@ -28,13 +25,12 @@ import { SwapButtonsContext } from 'modules/swap/pure/SwapButtons'
 import { TradeType, useTradeConfirmActions, useWrapNativeFlow } from 'modules/trade'
 import { useIsNativeIn } from 'modules/trade/hooks/useIsNativeInOrOut'
 import { useIsWrappedOut } from 'modules/trade/hooks/useIsWrappedInOrOut'
-import { useTradeNavigate } from 'modules/trade/hooks/useTradeNavigate'
-import { useTradeState } from 'modules/trade/hooks/useTradeState'
 import { useWrappedToken } from 'modules/trade/hooks/useWrappedToken'
 
 import { useIsAprilFoolsEnabled } from 'common/hooks/featureFlags/useIsAprilFoolsEnabled'
 import { useApproveState } from 'common/hooks/useApproveState'
 
+import { useImFeelingLucky } from './useImFeelingLucky'
 import { useSafeBundleEthFlowContext } from './useSafeBundleEthFlowContext'
 import { useDerivedSwapInfo, useSwapActionHandlers } from './useSwapState'
 
@@ -150,36 +146,4 @@ function useHasEnoughWrappedBalanceForSwap(inputAmount?: CurrencyAmount<Currency
 
   // is a native currency trade but wrapped token has enough balance
   return !!(wrappedBalance && inputAmount && !wrappedBalance.lessThan(inputAmount))
-}
-
-function useImFeelingLucky() {
-  const { state } = useTradeState()
-  const inputCurrencyId = state?.inputCurrencyId
-
-  // TODO: use the correct list
-  const tokens = useAllTokens().filter(
-    ({ symbol, address }) =>
-      symbol && !/uni|1inch|0x/.test(symbol) && symbol !== inputCurrencyId && address !== inputCurrencyId
-  )
-  const { chainId } = useWalletInfo()
-  const navigate = useTradeNavigate()
-
-  return useCallback(() => {
-    const selected = pickRandom(tokens)
-
-    getImFeelingLuckySound().play()
-    navigate(chainId, {
-      inputCurrencyId: inputCurrencyId || NATIVE_CURRENCIES[chainId].symbol || null,
-      outputCurrencyId: selected?.symbol || null,
-    })
-  }, [chainId, navigate, inputCurrencyId, tokens])
-}
-
-function pickRandom<T>(list: T[]): T | undefined {
-  if (list.length === 0) {
-    return undefined
-  }
-
-  const randomIndex = Math.floor(Math.random() * list.length)
-  return list[randomIndex]
 }
