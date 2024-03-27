@@ -33,6 +33,7 @@ import { MAIN_MENU } from '../../constants/mainMenu'
 
 const ExtraMenuItemsWrapper = styled.div<{ isVisible: boolean }>`
   display: ${({ isVisible }) => (isVisible ? 'block' : 'none')};
+  width: 100%;
 `
 
 interface MenuImageProps {
