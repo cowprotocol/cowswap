@@ -186,6 +186,8 @@ export interface MenuTreeProps {
 export function MenuTree({ items = MAIN_MENU, isMobileMenuOpen, context, handleMobileMenuOnClick }: MenuTreeProps) {
   const isUpToMedium = useMediaQuery(upToMedium)
 
+  console.log('STATE OF MENU TREE ====== ', { isMobileMenuOpen, isUpToMedium })
+
   return (
     <Wrapper isMobileMenuOpen={isMobileMenuOpen}>
       {items.map((menuItem, index) => {
