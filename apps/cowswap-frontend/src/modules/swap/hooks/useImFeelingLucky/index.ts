@@ -80,8 +80,5 @@ export const wasImFeelingLuckyClickedAtom = atom(false)
 export function useResetWasImFeelingLuckyClicked() {
   const setAtom = useSetAtom(wasImFeelingLuckyClickedAtom)
 
-  return useCallback(() => {
-    console.log(`fuck-useResetWas...`)
-    return setAtom(false)
-  }, [setAtom])
+  return useCallback(() => setAtom(false), [setAtom])
 }
