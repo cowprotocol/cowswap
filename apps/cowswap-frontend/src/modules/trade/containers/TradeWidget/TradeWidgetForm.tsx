@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from 'react'
 
 import ICON_ORDERS from '@cowprotocol/assets/svg/orders.svg'
-import { useFeatureFlags, useIsAdvancedMode, useIsLimitOrderMode, useIsSwapMode } from '@cowprotocol/common-hooks'
+import { useIsAdvancedMode, useIsLimitOrderMode, useIsSwapMode } from '@cowprotocol/common-hooks'
 import { isInjectedWidget, maxAmountSpend } from '@cowprotocol/common-utils'
 import { ButtonOutlined, MY_ORDERS_ID } from '@cowprotocol/ui'
 import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
@@ -19,6 +19,7 @@ import { useIsWidgetUnlocked } from 'modules/limitOrders'
 import { useOpenTokenSelectWidget } from 'modules/tokensList'
 import { useIsAlternativeOrderModalVisible } from 'modules/trade/state/alternativeOrder'
 
+import { useIsAprilFoolsEnabled } from 'common/hooks/featureFlags/useIsAprilFoolsEnabled'
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useThrottleFn } from 'common/hooks/useThrottleFn'
@@ -100,7 +101,8 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
 
   const showDropdown = shouldShowMyOrdersButton || isInjectedWidgetMode
 
-  const { isAprilFoolsEnabled } = useFeatureFlags()
+  const isAprilFoolsEnabled = useIsAprilFoolsEnabled()
+
   const showBuyTokenSelector = !isAprilFoolsEnabled || !!outputCurrencyInfo.currency || !account || !isSwapMode
 
   const currencyInputCommonProps = {

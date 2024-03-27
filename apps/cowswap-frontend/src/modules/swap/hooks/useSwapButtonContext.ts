@@ -2,7 +2,6 @@ import { useCallback } from 'react'
 
 import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
 import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
-import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { currencyAmountToTokenAmount, getImFeelingLuckySound, getWrappedToken } from '@cowprotocol/common-utils'
 import { useAllTokens, useIsTradeUnsupported } from '@cowprotocol/tokens'
 import {
@@ -33,6 +32,7 @@ import { useTradeNavigate } from 'modules/trade/hooks/useTradeNavigate'
 import { useTradeState } from 'modules/trade/hooks/useTradeState'
 import { useWrappedToken } from 'modules/trade/hooks/useWrappedToken'
 
+import { useIsAprilFoolsEnabled } from 'common/hooks/featureFlags/useIsAprilFoolsEnabled'
 import { useApproveState } from 'common/hooks/useApproveState'
 
 import { useSafeBundleEthFlowContext } from './useSafeBundleEthFlowContext'
@@ -101,8 +101,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
   const isSmartContractWallet = useIsSmartContractWallet()
   const isBundlingSupported = useIsBundlingSupported()
   const isPermitSupported = useTokenSupportsPermit(currencyIn, TradeType.SWAP)
-  const { isAprilFoolsEnabled } = useFeatureFlags()
-
+  const isAprilFoolsEnabled = useIsAprilFoolsEnabled()
 
   const swapButtonState = getSwapButtonState({
     account,
