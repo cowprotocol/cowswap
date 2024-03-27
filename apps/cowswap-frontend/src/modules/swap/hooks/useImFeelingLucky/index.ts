@@ -64,7 +64,7 @@ function useImFeelingLuckyTokens(chainId: SupportedChainId, sellTokenId: Nullish
     { ...SWR_NO_REFRESH_OPTIONS, fallbackData: [] }
   )
 
-  if (isMainnet && data) {
+  if (isMainnet && data?.length) {
     return data.filter(sellTokenFilterFactory(sellTokenId))
   } else {
     return tokens
