@@ -4,7 +4,7 @@ import ICON_ORDERS from '@cowprotocol/assets/svg/orders.svg'
 import ICON_TOKENS from '@cowprotocol/assets/svg/tokens.svg'
 import { useIsSwapMode, useIsLimitOrderMode, useIsAdvancedMode } from '@cowprotocol/common-hooks'
 import { isInjectedWidget, maxAmountSpend } from '@cowprotocol/common-utils'
-import { ButtonOutlined, MY_ORDERS_ID, InlineBanner, BannerOrientation, ExternalLink } from '@cowprotocol/ui'
+import { ButtonOutlined, MY_ORDERS_ID, InlineBanner, BannerOrientation } from '@cowprotocol/ui'
 import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/macro'
@@ -174,8 +174,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
                   margin={'10px 0 0'}
                 >
                   <p>
-                    <b>NEW: </b>Place limit orders for higher than the balance in your wallet!{' '}
-                    <ExternalLink href="#">Learn more.</ExternalLink>
+                    <b>NEW: </b>Place orders for higher than available balance!
                   </p>
                 </InlineBanner>
               )}
