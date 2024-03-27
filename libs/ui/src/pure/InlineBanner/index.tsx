@@ -197,24 +197,24 @@ export function InlineBanner({
   bannerID,
 }: InlineBannerProps) {
   const colorEnums = getColorEnums(bannerType)
-  const LOCAL_STORAGE_KEY = dismissable ? `${bannerID}` : undefined
+  const localStorageKey = dismissable ? `${bannerID}` : undefined
 
   const [showBanner, setShowBanner] = useState(() => {
-    if (dismissable && LOCAL_STORAGE_KEY) {
-      const storedVisibility = localStorage.getItem(LOCAL_STORAGE_KEY)
+    if (dismissable && localStorageKey) {
+      const storedVisibility = localStorage.getItem(localStorageKey)
       return storedVisibility !== 'false'
     }
     return true
   })
 
   useEffect(() => {
-    if (dismissable && LOCAL_STORAGE_KEY) {
-      localStorage.setItem(LOCAL_STORAGE_KEY, showBanner.toString())
+    if (dismissable && localStorageKey) {
+      localStorage.setItem(localStorageKey, showBanner.toString())
     }
-  }, [showBanner, LOCAL_STORAGE_KEY])
+  }, [showBanner, localStorageKey])
 
   const closeBanner = () => {
-    if (dismissable && LOCAL_STORAGE_KEY) {
+    if (dismissable && localStorageKey) {
       setShowBanner(false)
     }
   }

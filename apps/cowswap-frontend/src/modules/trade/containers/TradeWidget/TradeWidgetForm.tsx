@@ -166,7 +166,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
               {isLimitOrderMode && !isWrapOrUnwrap && (
                 <InlineBanner
                   dismissable
-                  bannerID="limitOrders_zeroBalanceBanner"
+                  bannerID="limitOrdersZeroBalanceBanner:v0"
                   bannerType="success"
                   orientation={BannerOrientation.Horizontal}
                   customIcon={ICON_TOKENS}
@@ -174,7 +174,9 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
                   margin={'10px 0 0'}
                 >
                   <p>
-                    <b>NEW: </b>Place orders for higher than available balance!
+                    <b>NEW: </b>You can now place limit orders for amounts larger than your wallet balance. Partial fill
+                    orders will execute until you run out of sell tokens. Fill-or-kill orders will become active once
+                    you top up your balance.
                   </p>
                 </InlineBanner>
               )}
