@@ -6,13 +6,14 @@ import { getImFeelingLuckySound } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useAllTokens } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { TokenList } from '@uniswap/token-lists'
 
 import useSWR from 'swr'
 import { Nullish } from 'types'
 
 import { useTradeNavigate } from 'modules/trade/hooks/useTradeNavigate'
 import { useTradeState } from 'modules/trade/hooks/useTradeState'
+
+import luckyTokens from './luckyTokens.tokenlist.json'
 
 export function useImFeelingLucky() {
   const { state } = useTradeState()
@@ -53,14 +54,8 @@ function useImFeelingLuckyTokens(chainId: SupportedChainId, sellTokenId: Nullish
   )
 
   const { data } = useSWR<TokenWithLogo[]>(
-    isMainnet ? 'https://dpaste.com/3SCBYM7GS.txt' : null,
-    async (url) => {
-      const response = await fetch(url)
-
-      const list: TokenList = await response.json()
-
-      return list.tokens.map((t) => TokenWithLogo.fromToken(t))
-    },
+    'luckyTokens',
+    () => luckyTokens.tokens.map((t) => TokenWithLogo.fromToken(t)),
     { ...SWR_NO_REFRESH_OPTIONS, fallbackData: [] }
   )
 
