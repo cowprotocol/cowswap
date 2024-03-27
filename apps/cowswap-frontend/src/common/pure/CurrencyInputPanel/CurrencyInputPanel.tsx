@@ -153,12 +153,13 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
         {topLabel && <styledEl.CurrencyTopLabel>{topLabel}</styledEl.CurrencyTopLabel>}
 
         <styledEl.CurrencyInputBox>
-          <div id={wasImFeelingLuckyClicked ? 'fuck' : 'yuck'}>
+          <div>
             <CurrencySelectButton
               onClick={onTokenSelectClick}
               currency={disabled ? undefined : currency || undefined}
               loading={areCurrenciesLoading || disabled}
               readonlyMode={tokenSelectorDisabled}
+              wasImFeelingLuckyClicked={wasImFeelingLuckyClicked}
             />
           </div>
           <div>
@@ -187,16 +188,14 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
         </styledEl.CurrencyInputBox>
       </styledEl.Wrapper>
 
-      {
-        receiveAmountInfo && currency && (
-          <ReceiveAmount
-            allowsOffchainSigning={allowsOffchainSigning}
-            currency={currency}
-            receiveAmountInfo={receiveAmountInfo}
-            subsidyAndBalance={subsidyAndBalance}
-          />
-        )
-      }
-    </styledEl.OuterWrapper >
+      {receiveAmountInfo && currency && (
+        <ReceiveAmount
+          allowsOffchainSigning={allowsOffchainSigning}
+          currency={currency}
+          receiveAmountInfo={receiveAmountInfo}
+          subsidyAndBalance={subsidyAndBalance}
+        />
+      )}
+    </styledEl.OuterWrapper>
   )
 }
