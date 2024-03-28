@@ -55,6 +55,7 @@ export interface SwapButtonStateParams {
   wrappedToken: Token
   isPermitSupported: boolean
   isAprilFoolsEnabled: boolean
+  hasSellToken: boolean
 }
 
 const quoteErrorToSwapButtonState: { [key in QuoteError]: SwapButtonState | null } = {
@@ -122,7 +123,7 @@ export function getSwapButtonState(input: SwapButtonStateParams): SwapButtonStat
   }
 
   if (input.inputError) {
-    if (isAprilFoolsEnabled && input.inputError === 'Select a token') {
+    if (isAprilFoolsEnabled && input.inputError === 'Select a token' && input.hasSellToken) {
       return SwapButtonState.ImFeelingLucky
     }
     return SwapButtonState.SwapError

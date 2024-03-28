@@ -98,6 +98,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
   const isBundlingSupported = useIsBundlingSupported()
   const isPermitSupported = useTokenSupportsPermit(currencyIn, TradeType.SWAP)
   const isAprilFoolsEnabled = useIsAprilFoolsEnabled()
+  const hasSellToken = !!currencyIn
 
   const swapButtonState = getSwapButtonState({
     account,
@@ -120,6 +121,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
     isBestQuoteLoading,
     isPermitSupported,
     isAprilFoolsEnabled,
+    hasSellToken,
   })
 
   return {
