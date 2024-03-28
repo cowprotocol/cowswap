@@ -2,6 +2,7 @@ import IMAGE_MOON from '@cowprotocol/assets/cow-swap/moon.svg'
 import IMAGE_SUN from '@cowprotocol/assets/cow-swap/sun.svg'
 
 import SVG from 'react-inlinesvg'
+import styled from 'styled-components/macro'
 
 import AppziButton from 'legacy/components/AppziButton'
 import { HeaderLinks as Wrapper, StyledNavLink } from 'legacy/components/Header/styled'
@@ -30,9 +31,10 @@ import { MenuBadge, StyledExternalLink } from './styled'
 
 import { MAIN_MENU } from '../../constants/mainMenu'
 
-// Assets
-
-// TODO: decompose the file
+const ExtraMenuItemsWrapper = styled.div<{ isVisible: boolean }>`
+  display: ${({ isVisible }) => (isVisible ? 'block' : 'none')};
+  width: 100%;
+`
 
 interface MenuImageProps {
   title: string
@@ -192,14 +194,14 @@ export function MenuTree({ items = MAIN_MENU, isMobileMenuOpen, context, handleM
         return <MenuItemWithDropDown key={index} menuItem={menuItem} context={context} />
       })}
       {/* Medium and down only to show the fortune widget and feedback button */}
-      {isUpToMedium && (
-        <>
+      {isUpToMedium && isMobileMenuOpen && (
+        <ExtraMenuItemsWrapper isVisible={isMobileMenuOpen}>
           <FeatureGuard featureFlag="cowFortuneEnabled">
             <FortuneWidget menuTitle="Get your fortune cookie" isMobileMenuOpen={isMobileMenuOpen} />
           </FeatureGuard>
 
           <AppziButton menuTitle="Give us feedback" onClick={handleMobileMenuOnClick} isUpToMedium={isUpToMedium} />
-        </>
+        </ExtraMenuItemsWrapper>
       )}
     </Wrapper>
   )
