@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.64.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.64.0...cowswap-v1.64.1) (2024-03-28)
+
+
+### Bug Fixes
+
+* force release-please trigger cowswap release ([#4113](https://github.com/cowprotocol/cowswap/issues/4113)) ([7d6be88](https://github.com/cowprotocol/cowswap/commit/7d6be88e0e1b23b495f386637e0a156b46241bc1))
+
 ## [1.64.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.63.3...cowswap-v1.64.0) (2024-03-28)
 
 
