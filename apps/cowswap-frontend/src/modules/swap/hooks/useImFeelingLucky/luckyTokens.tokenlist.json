@@ -18,14 +18,6 @@
         },
         {
             "chainId": 1,
-            "address": "0xfad45e47083e4607302aa43c65fb3106f1cd7607",
-            "name": "Hoge Finance",
-            "symbol": "HOGE",
-            "decimals": 9,
-            "logoURI": "https://assets.coingecko.com/coins/images/14360/thumb/hoge.jpg?1696514046"
-        },
-        {
-            "chainId": 1,
             "address": "0x2de509bf0014ddf697b220be628213034d320ece",
             "name": "Don t Buy Inu",
             "symbol": "DBI",
@@ -47,14 +39,6 @@
             "symbol": "ELON",
             "decimals": 9,
             "logoURI": "https://assets.coingecko.com/coins/images/32642/thumb/ELONIUM.png?1698892015"
-        },
-        {
-            "chainId": 1,
-            "address": "0xcb2b9b5b136dc29feb0548dff315021b9b6c2ba0",
-            "name": "GigaToken",
-            "symbol": "GIGA",
-            "decimals": 18,
-            "logoURI": "https://assets.coingecko.com/coins/images/34899/thumb/Giga_Logo.png?1708020799"
         },
         {
             "chainId": 1,
@@ -95,14 +79,6 @@
             "symbol": "ELON",
             "decimals": 18,
             "logoURI": "https://assets.coingecko.com/coins/images/14962/thumb/6GxcPRo3_400x400.jpg?1696514622"
-        },
-        {
-            "chainId": 1,
-            "address": "0x74d2d73b455540b037298c0e0925bc702aedbe4a",
-            "name": "Schrodinger",
-            "symbol": "MEOW",
-            "decimals": 9,
-            "logoURI": "https://assets.coingecko.com/coins/images/19649/thumb/kitty_dinger.png?1696519077"
         },
         {
             "chainId": 1,
@@ -186,14 +162,6 @@
         },
         {
             "chainId": 1,
-            "address": "0xa2b4c0af19cc16a6cfacce81f192b024d625817d",
-            "name": "Kishu Inu",
-            "symbol": "KISHU",
-            "decimals": 9,
-            "logoURI": "https://assets.coingecko.com/coins/images/14890/thumb/uVLzCoP.png?1696514553"
-        },
-        {
-            "chainId": 1,
             "address": "0xf8ebf4849f1fa4faf0dff2106a173d3a6cb2eb3a",
             "name": "Troll",
             "symbol": "TROLL",
@@ -239,14 +207,6 @@
             "symbol": "VOLT",
             "decimals": 9,
             "logoURI": "https://assets.coingecko.com/coins/images/25201/thumb/logo200.png?1696524344"
-        },
-        {
-            "chainId": 1,
-            "address": "0x83249c6794bca5a77eb8c0af9f1a86e055459cea",
-            "name": "GigaSwap",
-            "symbol": "GIGA",
-            "decimals": 9,
-            "logoURI": "https://assets.coingecko.com/coins/images/26919/thumb/final_62fcaacdbcc9640975d3fb7c_822256.png?1696525976"
         },
         {
             "chainId": 1,
@@ -298,27 +258,11 @@
         },
         {
             "chainId": 1,
-            "address": "0x77a90b04d64189d4d09508612c09219bc6816bdc",
-            "name": "Toshi Tools",
-            "symbol": "TOSHI",
-            "decimals": 9,
-            "logoURI": "https://assets.coingecko.com/coins/images/28959/thumb/toshi_logo_200_by_200.png?1696527932"
-        },
-        {
-            "chainId": 1,
             "address": "0x49642110b712c1fd7261bc074105e9e44676c68f",
             "name": "DinoLFG",
             "symbol": "DINO",
             "decimals": 18,
             "logoURI": "https://assets.coingecko.com/coins/images/28239/thumb/F1giO3rXsAAFOsG.jpg?1696527242"
-        },
-        {
-            "chainId": 1,
-            "address": "0x562e362876c8aee4744fc2c6aac8394c312d215d",
-            "name": "Optimus AI",
-            "symbol": "OPTI",
-            "decimals": 9,
-            "logoURI": "https://assets.coingecko.com/coins/images/29328/thumb/photo_2023-11-14_22-41-11.png?1700091127"
         },
         {
             "chainId": 1,
@@ -418,14 +362,6 @@
         },
         {
             "chainId": 1,
-            "address": "0x9352ec6d3e8b54a96b6903a79635c1e2d298b101",
-            "name": "Bad Santa",
-            "symbol": "BAD",
-            "decimals": 9,
-            "logoURI": "https://assets.coingecko.com/coins/images/33271/thumb/IMG_20231128_155805_210.png?1701326565"
-        },
-        {
-            "chainId": 1,
             "address": "0xba386a4ca26b85fd057ab1ef86e3dc7bdeb5ce70",
             "name": "Jesus Coin",
             "symbol": "JESUS",
@@ -450,14 +386,6 @@
         },
         {
             "chainId": 1,
-            "address": "0xcf0c122c6b73ff809c693db761e7baebe62b6a2e",
-            "name": "FLOKI",
-            "symbol": "FLOKI",
-            "decimals": 9,
-            "logoURI": "https://assets.coingecko.com/coins/images/16746/thumb/PNG_image.png?1696516318"
-        },
-        {
-            "chainId": 1,
             "address": "0xaaee1a9723aadb7afa2810263653a34ba2c21c7a",
             "name": "Mog Coin",
             "symbol": "MOG",
@@ -479,14 +407,6 @@
             "symbol": "SMURFCAT",
             "decimals": 18,
             "logoURI": "https://assets.coingecko.com/coins/images/31751/thumb/SMURFCAT.png?1708079642"
-        },
-        {
-            "chainId": 1,
-            "address": "0x3ce1848f4ace979d31f7ed1921ee0b2689fce5a5",
-            "name": "omniBOT",
-            "symbol": "OMNI",
-            "decimals": 18,
-            "logoURI": "https://assets.coingecko.com/coins/images/31840/thumb/CG.png?1696530654"
         },
         {
             "chainId": 1,
@@ -522,14 +442,6 @@
         },
         {
             "chainId": 1,
-            "address": "0xd561a593d9dd8b9a0e3a487dfb517c9371d6dda7",
-            "name": "Meow Meme",
-            "symbol": "MEOW",
-            "decimals": 18,
-            "logoURI": "https://assets.coingecko.com/coins/images/36128/thumb/Meow_Meme_Coin.png?1710579427"
-        },
-        {
-            "chainId": 1,
             "address": "0x37dba54fdc402aff647ce06c66972f5d662c326d",
             "name": "MELON",
             "symbol": "MELON",
@@ -559,14 +471,6 @@
             "symbol": "KIBSHI",
             "decimals": 18,
             "logoURI": "https://assets.coingecko.com/coins/images/29335/thumb/foto_no_exif_%2811%29%282%29_%281%29.png?1696528285"
-        },
-        {
-            "chainId": 1,
-            "address": "0xd1e64bcc904cfdc19d0faba155a9edc69b4bcdae",
-            "name": "Pikamoon",
-            "symbol": "PIKA",
-            "decimals": 9,
-            "logoURI": "https://assets.coingecko.com/coins/images/36366/thumb/Pikamoon.png?1711336684"
         },
         {
             "chainId": 1,
@@ -610,14 +514,6 @@
         },
         {
             "chainId": 1,
-            "address": "0x9c2b4b0da5ebd20c29ef20758064554a55a88b68",
-            "name": "ByteAI",
-            "symbol": "BYTE",
-            "decimals": 18,
-            "logoURI": "https://assets.coingecko.com/coins/images/36432/thumb/photo_2024-03-20_20.40.45.jpeg?1711435137"
-        },
-        {
-            "chainId": 1,
             "address": "0xb9f599ce614feb2e1bbe58f180f370d05b39344e",
             "name": "PepeFork",
             "symbol": "PORK",
@@ -626,27 +522,11 @@
         },
         {
             "chainId": 1,
-            "address": "0x576e2bed8f7b46d34016198911cdf9886f78bea7",
-            "name": "MAGA",
-            "symbol": "TRUMP",
-            "decimals": 9,
-            "logoURI": "https://assets.coingecko.com/coins/images/31498/thumb/Maga-Trump-Logo-200px.png?1696530309"
-        },
-        {
-            "chainId": 1,
             "address": "0x77be1ba1cd2d7a63bffc772d361168cc327dd8bc",
             "name": "Meow Meow Coin",
             "symbol": "MEOW",
             "decimals": 9,
             "logoURI": "https://assets.coingecko.com/coins/images/35079/thumb/meow.jpeg?1707301706"
-        },
-        {
-            "chainId": 1,
-            "address": "0xd555498a524612c67f286df0e0a9a64a73a7cdc7",
-            "name": "DeFrogs",
-            "symbol": "DEFROGS",
-            "decimals": 18,
-            "logoURI": "https://assets.coingecko.com/coins/images/35080/thumb/defrogs.jpeg?1707303202"
         },
         {
             "chainId": 1,
@@ -719,14 +599,6 @@
             "symbol": "CATE",
             "decimals": 9,
             "logoURI": "https://assets.coingecko.com/coins/images/15364/thumb/logo.png?1696515013"
-        },
-        {
-            "chainId": 1,
-            "address": "0xd8fa690304d2b2824d918c0c7376e2823704557a",
-            "name": "SquidGrow",
-            "symbol": "SQUIDGROW",
-            "decimals": 9,
-            "logoURI": "https://assets.coingecko.com/coins/images/26573/thumb/Squidgrow-Logo.png?1696525645"
         },
         {
             "chainId": 1,
