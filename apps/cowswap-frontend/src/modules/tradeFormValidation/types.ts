@@ -51,6 +51,7 @@ export interface TradeFormValidationCommonContext {
   isSwapUnsupported: boolean
   isSafeReadonlyUser: boolean
   isPermitSupported: boolean
+  isInsufficientBalanceOrderAllowed: boolean
 }
 
 export interface TradeFormValidationContext extends TradeFormValidationCommonContext {}

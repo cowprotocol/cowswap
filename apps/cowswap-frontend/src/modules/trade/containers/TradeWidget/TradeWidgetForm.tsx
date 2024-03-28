@@ -2,9 +2,10 @@ import { useAtomValue } from 'jotai'
 import { useCallback, useEffect } from 'react'
 
 import ICON_ORDERS from '@cowprotocol/assets/svg/orders.svg'
+import ICON_TOKENS from '@cowprotocol/assets/svg/tokens.svg'
 import { useIsAdvancedMode, useIsLimitOrderMode, useIsSwapMode } from '@cowprotocol/common-hooks'
 import { isInjectedWidget, maxAmountSpend } from '@cowprotocol/common-utils'
-import { ButtonOutlined, MY_ORDERS_ID } from '@cowprotocol/ui'
+import { BannerOrientation, ButtonOutlined, ClosableBanner, InlineBanner, MY_ORDERS_ID } from '@cowprotocol/ui'
 import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/macro'
@@ -35,6 +36,8 @@ import { useTradeStateFromUrl } from '../../hooks/setupTradeState/useTradeStateF
 import { useIsWrapOrUnwrap } from '../../hooks/useIsWrapOrUnwrap'
 import { TradeWidgetLinks } from '../TradeWidgetLinks'
 import { WrapFlowActionButton } from '../WrapFlowActionButton'
+
+const ZERO_BANNER_STORAGE_KEY = 'limitOrdersZeroBalanceBanner:v0'
 
 const scrollToMyOrders = () => {
   const element = document.getElementById(MY_ORDERS_ID)
@@ -168,6 +171,25 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
                 topLabel={isWrapOrUnwrap ? undefined : inputCurrencyInfo.label}
                 {...currencyInputCommonProps}
               />
+
+              {isLimitOrderMode &&
+                !isWrapOrUnwrap &&
+                ClosableBanner(ZERO_BANNER_STORAGE_KEY, (onClose) => (
+                  <InlineBanner
+                    bannerType="success"
+                    orientation={BannerOrientation.Horizontal}
+                    customIcon={ICON_TOKENS}
+                    iconSize={32}
+                    margin={'10px 0 0'}
+                    onClose={onClose}
+                  >
+                    <p>
+                      <b>NEW: </b>You can now place limit orders for amounts larger than your wallet balance. Partial
+                      fill orders will execute until you run out of sell tokens. Fill-or-kill orders will become active
+                      once you top up your balance.
+                    </p>
+                  </InlineBanner>
+                ))}
             </div>
             {!isWrapOrUnwrap && middleContent}
             {!hideBuyTokenInput && (
