@@ -17,11 +17,10 @@ import { useToggleAccountModal } from 'modules/account'
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders/hooks/useAdvancedOrdersDerivedState'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { useIsWidgetUnlocked } from 'modules/limitOrders'
-import { useResetWasImFeelingLuckyClicked, wasImFeelingLuckyClickedAtom } from 'modules/swap/hooks/useImFeelingLucky'
+import { wasImFeelingLuckyClickedAtom } from 'modules/swap/hooks/useImFeelingLucky'
 import { useOpenTokenSelectWidget } from 'modules/tokensList'
 import { useIsAlternativeOrderModalVisible } from 'modules/trade/state/alternativeOrder'
 
-import { useIsAprilFoolsEnabled } from 'common/hooks/featureFlags/useIsAprilFoolsEnabled'
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useThrottleFn } from 'common/hooks/useThrottleFn'
@@ -63,6 +62,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
     priceImpact,
     recipient,
     disablePriceImpact,
+    hideBuyTokenInput,
   } = params
 
   const { chainId, account } = useWalletInfo()
@@ -104,14 +104,6 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
 
   const showDropdown = shouldShowMyOrdersButton || isInjectedWidgetMode
 
-  const isAprilFoolsEnabled = useIsAprilFoolsEnabled()
-
-  const showBuyTokenSelector = !isAprilFoolsEnabled || !!outputCurrencyInfo.currency || !account || !isSwapMode
-  const resetWasImFeelingLuckyClicked = useResetWasImFeelingLuckyClicked()
-
-  useEffect(() => {
-    !showBuyTokenSelector && resetWasImFeelingLuckyClicked()
-  }, [resetWasImFeelingLuckyClicked, showBuyTokenSelector])
 
   const currencyInputCommonProps = {
     isChainIdUnsupported,
@@ -178,7 +170,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
               />
             </div>
             {!isWrapOrUnwrap && middleContent}
-            {showBuyTokenSelector && (
+            {!hideBuyTokenInput && (
               <>
                 <styledEl.CurrencySeparatorBox compactView={compactView} withRecipient={withRecipient}>
                   <CurrencyArrowSeparator
