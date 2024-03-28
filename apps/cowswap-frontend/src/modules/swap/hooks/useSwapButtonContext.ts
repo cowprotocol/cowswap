@@ -99,6 +99,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
   const isPermitSupported = useTokenSupportsPermit(currencyIn, TradeType.SWAP)
   const isAprilFoolsEnabled = useIsAprilFoolsEnabled()
   const hasSellToken = !!currencyIn
+  const hasBuyToken = !!currencyOut
 
   const swapButtonState = getSwapButtonState({
     account,
@@ -122,6 +123,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
     isPermitSupported,
     isAprilFoolsEnabled,
     hasSellToken,
+    hasBuyToken,
   })
 
   return {

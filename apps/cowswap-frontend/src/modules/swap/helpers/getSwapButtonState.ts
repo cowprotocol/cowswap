@@ -56,6 +56,7 @@ export interface SwapButtonStateParams {
   isPermitSupported: boolean
   isAprilFoolsEnabled: boolean
   hasSellToken: boolean
+  hasBuyToken: boolean
 }
 
 const quoteErrorToSwapButtonState: { [key in QuoteError]: SwapButtonState | null } = {
@@ -69,7 +70,7 @@ const quoteErrorToSwapButtonState: { [key in QuoteError]: SwapButtonState | null
 }
 
 export function getSwapButtonState(input: SwapButtonStateParams): SwapButtonState {
-  const { trade, quote, approvalState, isPermitSupported, isAprilFoolsEnabled } = input
+  const { trade, quote, approvalState, isPermitSupported, isAprilFoolsEnabled, hasSellToken, hasBuyToken } = input
   const quoteError = quote?.error
 
   // show approve flow when: no error on inputs, not approved or pending, or approved in current session
@@ -81,9 +82,14 @@ export function getSwapButtonState(input: SwapButtonStateParams): SwapButtonStat
 
   const isValid = !input.inputError && input.feeWarningAccepted && input.impactWarningAccepted
   const swapBlankState = !input.inputError && !trade
+  const tokensSelected = hasSellToken && hasBuyToken
 
   const isSellOrder = trade?.tradeType === TradeType.EXACT_INPUT
-  const amountAfterFees = isSellOrder ? trade?.outputAmountAfterFees : trade?.inputAmountAfterFees
+  const amountAfterFees = tokensSelected
+    ? isSellOrder
+      ? trade?.outputAmountAfterFees
+      : trade?.inputAmountAfterFees
+    : undefined
 
   if (quoteError) {
     const quoteErrorState = quoteErrorToSwapButtonState[quoteError]
