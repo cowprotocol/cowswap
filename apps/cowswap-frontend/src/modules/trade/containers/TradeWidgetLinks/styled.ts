@@ -122,6 +122,7 @@ export const MenuItem = styled.div<{ isActive?: boolean; isDropdownVisible: bool
       css`
         padding: 16px;
         width: 100%;
+        margin-bottom: 20px;
       `}
   }
 `
@@ -135,8 +136,11 @@ export const SelectMenu = styled.div`
   z-index: 100;
   left: 0;
   top: 0;
-  padding: 16px;
   gap: ${({ theme }) => (theme.isInjectedWidgetMode ? '16px' : '24px')};
   background: var(${UI.COLOR_PAPER});
   border-radius: var(${UI.BORDER_RADIUS_NORMAL});
+`
+
+export const TradeWidgetContent = styled.div`
+  padding: 0 16px 16px 16px;
 `
