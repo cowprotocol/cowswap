@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import { UiOrderType } from '@cowprotocol/types'
 
 import { useRecentActivity } from 'legacy/hooks/useRecentActivity'
-import { Order, OrderStatus, PENDING_STATES } from 'legacy/state/orders/actions'
+import { CREATING_STATES, Order, OrderStatus, PENDING_STATES } from 'legacy/state/orders/actions'
 
 import { getIsFinalizedOrder } from 'utils/orderUtils/getIsFinalizedOrder'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
@@ -13,6 +13,8 @@ export const isPending = ({ status, replacementType }: { status: OrderStatus; re
 
   return PENDING_STATES.includes(status)
 }
+
+export const isCreating = ({ status }: { status: OrderStatus }) => CREATING_STATES.includes(status)
 
 export function useCategorizeRecentActivity() {
   // Returns all RECENT (last day) transaction and orders in 2 arrays: pending and confirmed

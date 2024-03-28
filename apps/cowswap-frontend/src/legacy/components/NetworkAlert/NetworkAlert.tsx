@@ -32,9 +32,16 @@ const BodyText = styled.div`
   }
 `
 const RootWrapper = styled.div`
+  display: flex;
+  flex-flow: column wrap;
   position: relative;
   margin-top: 16px;
   color: inherit;
+  gap: 10px;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    padding: 0 10px;
+  `}
 `
 
 const SHOULD_SHOW_ALERT = {

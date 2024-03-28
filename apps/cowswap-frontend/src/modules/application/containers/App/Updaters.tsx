@@ -1,5 +1,6 @@
 import { BalancesAndAllowancesUpdater } from '@cowprotocol/balances-and-allowances'
-import { WidgetTokensListsUpdater, TokensListsUpdater, UnsupportedTokensUpdater } from '@cowprotocol/tokens'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { TokensListsUpdater, UnsupportedTokensUpdater, WidgetTokensListsUpdater } from '@cowprotocol/tokens'
 import { useWalletInfo, WalletUpdater } from '@cowprotocol/wallet'
 
 import { GasPriceStrategyUpdater } from 'legacy/state/gas/gas-price-strategy-updater'
@@ -12,7 +13,6 @@ import { EthFlowDeadlineUpdater, EthFlowSlippageUpdater } from 'modules/swap/sta
 import { useOnTokenListAddingError } from 'modules/tokensList'
 import { UsdPricesUpdater } from 'modules/usdAmount'
 
-import { useFeatureFlags } from 'common/hooks/featureFlags/useFeatureFlags'
 import { TotalSurplusUpdater } from 'common/state/totalSurplusState'
 import { ApplicationUpdater } from 'common/updaters/ApplicationUpdater'
 import { CancelReplaceTxUpdater } from 'common/updaters/CancelReplaceTxUpdater'

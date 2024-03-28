@@ -1,11 +1,12 @@
 import { useMemo } from 'react'
 
-import { useTokenContract } from '@cowprotocol/common-hooks'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import ms from 'ms.macro'
 import useSWR from 'swr'
 import { Nullish } from 'types'
+
+import { useTokenContract } from 'common/hooks/useContract'
 
 const ALLOWANCES_SWR_CONFIG = { refreshInterval: ms`10s` }
 

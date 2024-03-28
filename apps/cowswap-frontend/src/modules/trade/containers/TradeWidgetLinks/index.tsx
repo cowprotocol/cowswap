@@ -10,6 +10,7 @@ import SVG from 'react-inlinesvg'
 import { matchPath, useLocation } from 'react-router-dom'
 
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
+// TODO: extract the component to common
 import { ModalHeader } from 'modules/tokensList/pure/ModalHeader'
 
 import { Routes, RoutesValues } from 'common/constants/routes'
@@ -113,7 +114,7 @@ export function TradeWidgetLinks({
       {isDropdownVisible && (
         <styledEl.SelectMenu>
           <ModalHeader onBack={handleMenuItemClick}>Trading mode</ModalHeader>
-          {menuItems}
+          <styledEl.TradeWidgetContent>{menuItems}</styledEl.TradeWidgetContent>
         </styledEl.SelectMenu>
       )}
     </>

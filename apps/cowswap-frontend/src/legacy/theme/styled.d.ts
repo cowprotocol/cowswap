@@ -51,7 +51,7 @@ interface ColorsUniswap {
   primary3: Color
   primary4: Color
   primary5: Color
-  
+
   // pinks
   secondary1: Color
   secondary2: Color
@@ -68,7 +68,6 @@ interface ColorsUniswap {
   blue1: Color
   blue2: Color
   blue4: Color
-
 }
 
 // Override colors
@@ -260,9 +259,8 @@ declare module 'styled-components' {
       color?: string
     }
     mediaWidth: {
+      upToTiny: ThemedCssFunction<DefaultTheme>
       upToExtraSmall: ThemedCssFunction<DefaultTheme>
-      // MOD
-      upToVerySmall: ThemedCssFunction<DefaultTheme>
       upToSmall: ThemedCssFunction<DefaultTheme>
       upToMedium: ThemedCssFunction<DefaultTheme>
       upToLarge: ThemedCssFunction<DefaultTheme>

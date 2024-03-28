@@ -22,7 +22,7 @@ export const Title = styled.h1`
   text-shadow: ${({ theme }) => theme.textShadow1};
   font-weight: 500;
 
-  ${({ theme }) => theme.mediaWidth.upToVerySmall`
+  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
     font-size: 24px;
   `}
 `

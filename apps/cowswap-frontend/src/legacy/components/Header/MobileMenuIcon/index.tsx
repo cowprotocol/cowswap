@@ -7,10 +7,16 @@ const Wrapper = styled.div<{ isMobileMenuOpen: boolean; height?: number; width?:
   z-index: 102;
   display: flex;
   cursor: pointer;
-  margin: 0 6px 0 16px;
+  margin: 0;
   position: relative;
   width: ${({ width = 34 }) => `${width}px`};
   height: ${({ height = 18 }) => `${height}px`};
+  flex: 0 0 auto;
+
+  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+    max-width: 24px;
+    width: 100%;
+  `}
 
   span {
     background-color: var(${UI.COLOR_TEXT});

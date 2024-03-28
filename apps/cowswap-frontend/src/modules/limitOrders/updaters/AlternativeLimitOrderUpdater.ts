@@ -39,7 +39,7 @@ export function AlternativeLimitOrderUpdater(): null {
 }
 
 function useUpdateAlternativeRawState(): null {
-  const alternativeOrder = useAlternativeOrder()
+  const { order: alternativeOrder } = useAlternativeOrder() || {}
   const updateRawState = useUpdateLimitOrdersRawState()
   const updatePartialFillOverride = useSetAtom(partiallyFillableOverrideAtom)
   const updateSettingsState = useSetAtom(updateLimitOrdersSettingsAtom)
@@ -165,7 +165,11 @@ function getDuration(order: Order | ParsedOrder): number {
  */
 function getMatchingDeadline(duration: number) {
   // Match duration with approximate time
-  return limitOrdersDeadlines.find(({ value }) => Math.round(value / duration) === 1)
+  return limitOrdersDeadlines.find(({ value }) => {
+    const ratio = value / duration
+    // If the ratio is +/-10% off of 1, consider it a match
+    return ratio > 0.9 && ratio < 1.1
+  })
 }
 
 /**

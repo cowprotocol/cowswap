@@ -2,7 +2,6 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback, useEffect, useMemo } from 'react'
 
 import { useTokensAllowances, useTokensBalances } from '@cowprotocol/balances-and-allowances'
-import { UiOrderType } from '@cowprotocol/types'
 import { useIsSafeViaWc, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useLocation, useNavigate } from 'react-router-dom'
@@ -13,13 +12,11 @@ import { Order } from 'legacy/state/orders/actions'
 import { pendingOrdersPricesAtom } from 'modules/orders/state/pendingOrdersPricesAtom'
 import { useGetSpotPrice } from 'modules/orders/state/spotPricesAtom'
 import { PendingPermitUpdater, useGetOrdersPermitStatus } from 'modules/permit'
-import { useSetAlternativeOrder } from 'modules/trade/state/alternativeOrder'
 
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
-import { isPending, useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
+import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
 import { ordersToCancelAtom, updateOrdersToCancelAtom } from 'common/hooks/useMultipleOrdersCancellation/state'
 import { CancellableOrder } from 'common/utils/isOrderCancellable'
-import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import { useGetOrdersToCheckPendingPermit } from './hooks/useGetOrdersToCheckPendingPermit'
@@ -37,7 +34,7 @@ import { OrderTableItem, tableItemsToOrders } from '../../utils/orderTableGroupU
 import { parseOrdersTableUrl } from '../../utils/parseOrdersTableUrl'
 import { MultipleCancellationMenu } from '../MultipleCancellationMenu'
 import { OrdersReceiptModal } from '../OrdersReceiptModal'
-import { useSelectReceiptOrder } from '../OrdersReceiptModal/hooks'
+import { useGetAlternativeOrderModalContextCallback, useSelectReceiptOrder } from '../OrdersReceiptModal/hooks'
 
 function getOrdersListByIndex(ordersList: OrdersTableList, id: string): OrderTableItem[] {
   return id === OPEN_TAB.id ? ordersList.pending : ordersList.history
@@ -141,22 +138,13 @@ export function OrdersTableWidget({
     [allOrders, cancelOrder]
   )
 
-  const setOrderToRecreate = useSetAlternativeOrder()
-  const getShowRecreateModal = useCallback(
-    (order: ParsedOrder) => {
-      if (isPending(order) || getUiOrderType(order) !== UiOrderType.LIMIT) {
-        return null
-      }
-      return () => setOrderToRecreate(order)
-    },
-    [setOrderToRecreate]
-  )
+  const getAlternativeOrderModalContext = useGetAlternativeOrderModalContextCallback()
 
   const approveOrderToken = useOrdersTableTokenApprove()
 
   const orderActions: OrderActions = {
     getShowCancellationModal,
-    getShowRecreateModal,
+    getAlternativeOrderModalContext,
     selectReceiptOrder,
     toggleOrderForCancellation,
     toggleOrdersForCancellation,

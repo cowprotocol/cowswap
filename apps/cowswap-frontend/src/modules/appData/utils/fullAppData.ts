@@ -3,7 +3,7 @@ import { EnvironmentName, environmentName } from '@cowprotocol/common-utils'
 import { AppDataInfo } from '../types'
 import { toKeccak256 } from '../utils/buildAppData'
 
-const DEFAULT_FULL_APP_DATA = '{"version":"1.0.0","appCode":"CoW Swap","metadata":{}}'
+const DEFAULT_FULL_APP_DATA = '{"version":"1.1.0","appCode":"CoW Swap","metadata":{}}'
 
 let appData: AppDataInfo = (() => {
   const fullAppData = getFullAppDataByEnv(environmentName)

@@ -24,5 +24,17 @@ export function useAlternativeOrder() {
 export function useSetAlternativeOrder() {
   const setAlternativeOrder = useSetAtom(alternativeOrderAtom)
 
-  return useCallback((order: Order | ParsedOrder) => setAlternativeOrder(order), [setAlternativeOrder])
+  return useCallback(
+    (order: Order | ParsedOrder, isEdit = false) => setAlternativeOrder({ order, isEdit }),
+    [setAlternativeOrder]
+  )
+}
+
+/**
+ * Returns the id of the order being edited, if it's an edit
+ */
+export function useReplacedOrderUid() {
+  const { order, isEdit } = useAlternativeOrder() || {}
+
+  return isEdit ? order?.id : undefined
 }

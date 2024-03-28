@@ -56,6 +56,7 @@ export type UnsignedOrderAdditionalParams = PostOrderParams & {
   orderId: string
   summary: string
   signature: string
+  signingScheme: SigningScheme
   isOnChain?: boolean
   orderCreationHash?: string
 }
@@ -162,6 +163,7 @@ export function mapUnsignedOrderToOrder({ unsignedOrder, additionalParams }: Map
     allowsOffchainSigning,
     isOnChain,
     signature,
+    signingScheme,
     sellAmountBeforeFee,
     orderCreationHash,
     quoteId,
@@ -191,6 +193,7 @@ export function mapUnsignedOrderToOrder({ unsignedOrder, additionalParams }: Map
 
     // Signature
     signature,
+    signingScheme,
 
     // Additional API info
     apiAdditionalInfo: undefined,
@@ -251,7 +254,7 @@ export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnse
 
     const pendingOrderParams: Order = mapUnsignedOrderToOrder({
       unsignedOrder,
-      additionalParams: { ...params, orderId, summary, signature },
+      additionalParams: { ...params, orderId, summary, signature, signingScheme },
     })
 
     return {

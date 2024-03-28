@@ -1,7 +1,6 @@
 import { useAtomValue } from 'jotai'
 
 import { GP_VAULT_RELAYER } from '@cowprotocol/common-const'
-import { useGP2SettlementContract } from '@cowprotocol/common-hooks'
 import { OrderClass } from '@cowprotocol/cow-sdk'
 import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
@@ -19,6 +18,8 @@ import { useGeneratePermitHook, useGetCachedPermit, usePermitInfo } from 'module
 import { useEnoughBalanceAndAllowance } from 'modules/tokens'
 import { TradeType } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
+
+import { useGP2SettlementContract } from 'common/hooks/useContract'
 
 import { useLimitOrdersDerivedState } from './useLimitOrdersDerivedState'
 
