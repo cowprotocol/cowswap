@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.64.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.63.3...cowswap-v1.64.0) (2024-03-28)
+
+
+### Features
+
+* **april-fools:** add `I'm Feeling Lucky` ([#4094](https://github.com/cowprotocol/cowswap/issues/4094)) ([895991b](https://github.com/cowprotocol/cowswap/commit/895991bbdaa6fb496483a8c369b1b0f445828db5))
+* **limit:** allow limit orders without balance ([#3742](https://github.com/cowprotocol/cowswap/issues/3742)) ([9c69a01](https://github.com/cowprotocol/cowswap/commit/9c69a011d4575a370eda9ae5bb11538cc9f2ac93))
+* **limit:** edit limit order (disabled) ([#4015](https://github.com/cowprotocol/cowswap/issues/4015)) ([a4e9c5b](https://github.com/cowprotocol/cowswap/commit/a4e9c5b545125104d699a878633ef3a54d82fb60))
+
 ## [1.63.3](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.63.2...cowswap-v1.63.3) (2024-03-21)
 
 
