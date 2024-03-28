@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useState } from 'react'
+import React, { ReactNode } from 'react'
 
 import { UI } from '../../enum'
 import { Icon, IconType } from '../Icon'
@@ -153,19 +153,7 @@ const CloseIcon = styled(X)`
   }
 `
 
-interface DismissableBannerProps extends InlineBannerPropsBase {
-  dismissable: true
-  bannerID: string
-}
-
-interface NonDismissableBannerProps extends InlineBannerPropsBase {
-  dismissable?: false
-  bannerID?: never
-}
-
-export type InlineBannerProps = DismissableBannerProps | NonDismissableBannerProps
-
-interface InlineBannerPropsBase {
+export interface InlineBannerProps {
   children?: ReactNode
   className?: string
   hideIcon?: boolean
@@ -178,6 +166,7 @@ interface InlineBannerPropsBase {
   padding?: string
   margin?: string
   width?: string
+  onClose?: () => void
 }
 
 export function InlineBanner({
@@ -193,33 +182,9 @@ export function InlineBanner({
   padding,
   margin,
   width,
-  dismissable,
-  bannerID,
+  onClose,
 }: InlineBannerProps) {
   const colorEnums = getColorEnums(bannerType)
-  const localStorageKey = dismissable ? `${bannerID}` : undefined
-
-  const [showBanner, setShowBanner] = useState(() => {
-    if (dismissable && localStorageKey) {
-      const storedVisibility = localStorage.getItem(localStorageKey)
-      return storedVisibility !== 'false'
-    }
-    return true
-  })
-
-  useEffect(() => {
-    if (dismissable && localStorageKey) {
-      localStorage.setItem(localStorageKey, showBanner.toString())
-    }
-  }, [showBanner, localStorageKey])
-
-  const closeBanner = () => {
-    if (dismissable && localStorageKey) {
-      setShowBanner(false)
-    }
-  }
-
-  if (!showBanner && dismissable) return null
 
   return (
     <Wrapper
@@ -230,7 +195,7 @@ export function InlineBanner({
       padding={padding}
       margin={margin}
       width={width}
-      dismissable={dismissable}
+      dismissable={!!onClose}
     >
       <span>
         {!hideIcon && customIcon ? (
@@ -249,7 +214,7 @@ export function InlineBanner({
         <span>{children}</span>
       </span>
 
-      {dismissable && <CloseIcon onClick={closeBanner} />}
+      {onClose && <CloseIcon onClick={onClose} />}
     </Wrapper>
   )
 }
