@@ -20,9 +20,14 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     tradeQuote,
     account,
     isPermitSupported,
+    isInsufficientBalanceOrderAllowed,
   } = context
 
   const { inputCurrency, outputCurrency, inputCurrencyAmount, inputCurrencyBalance, recipient } = derivedTradeState
+  const isBalanceGreaterThan1Atom = inputCurrencyBalance
+    ? BigInt(inputCurrencyBalance.quotient.toString()) > BigInt(0)
+    : false
+  const canPlaceOrderWithoutBalance = isBalanceGreaterThan1Atom && isInsufficientBalanceOrderAllowed
   const isNativeIn = inputCurrency && getIsNativeToken(inputCurrency) && !isWrapUnwrap
 
   const approvalRequired =
@@ -80,12 +85,14 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     }
   }
 
-  if (!inputCurrencyBalance) {
-    return TradeFormValidation.BalancesNotLoaded
-  }
+  if (!canPlaceOrderWithoutBalance) {
+    if (!inputCurrencyBalance) {
+      return TradeFormValidation.BalancesNotLoaded
+    }
 
-  if (inputCurrencyBalance.lessThan(inputCurrencyAmount)) {
-    return TradeFormValidation.BalanceInsufficient
+    if (inputCurrencyBalance.lessThan(inputCurrencyAmount)) {
+      return TradeFormValidation.BalanceInsufficient
+    }
   }
 
   if (isWrapUnwrap) {

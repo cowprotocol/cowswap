@@ -54,27 +54,23 @@ const FlyoutMenuContents = styled.div`
   padding: 16px;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
-      top: 50px;
-      box-shadow: 0 0 0 100vh ${({ theme }) => transparentize(theme.black, 0.1)}};
-    `};
+    top: 50px;
+    box-shadow: 0 0 0 100vh ${({ theme }) => transparentize(theme.black, 0.1)}};
+  `};
 
   & > *:not(:last-child) {
     margin-bottom: 5px;
   }
 `
 const SelectorLabel = styled.div`
-  display: none;
+  display: block;
   flex: 1 1 auto;
-  margin: 0 2px 0 0;
+  margin: 0;
+  white-space: nowrap;
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-      display: none;
-    `};
-
-  @media screen and (min-width: ${MEDIA_WIDTHS.upToSmall}px) {
-    display: block;
-    margin-right: 4px;
-  }
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    display: none;
+  `};
 `
 const SelectorControls = styled.div<{ isChainIdUnsupported: boolean }>`
   align-items: center;
@@ -82,8 +78,9 @@ const SelectorControls = styled.div<{ isChainIdUnsupported: boolean }>`
   display: flex;
   font-weight: 500;
   justify-content: space-between;
+  gap: 6px;
 
-  :focus {
+  &:focus {
     background-color: ${({ theme }) => darken(theme.red1, 0.1)};
   }
 
@@ -92,13 +89,6 @@ const SelectorControls = styled.div<{ isChainIdUnsupported: boolean }>`
   padding: 6px;
   transition: border var(${UI.ANIMATION_DURATION}) ease-in-out;
   background: transparent;
-
-  > img {
-    width: 24px;
-    height: 24px;
-    object-fit: contain;
-    margin: 0 6px 0 0;
-  }
 
   &:hover {
     border: 2px solid ${({ theme }) => transparentize(theme.text, 0.7)};
@@ -113,13 +103,15 @@ const SelectorControls = styled.div<{ isChainIdUnsupported: boolean }>`
     `}
 `
 const SelectorLogo = styled.img<{ interactive?: boolean }>`
-  width: 24px;
-  height: 24px;
+  --size: 24px;
+  width: var(--size);
+  height: var(--size);
   margin-right: ${({ interactive }) => (interactive ? 8 : 0)}px;
+  object-fit: contain;
 
-  @media screen and (min-width: ${MEDIA_WIDTHS.upToSmall}px) {
-    margin-right: 8px;
-  }
+  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+    --size: 21px;
+  `};
 `
 const SelectorWrapper = styled.div`
   display: flex;
@@ -130,7 +122,10 @@ const SelectorWrapper = styled.div`
   }
 `
 const StyledChevronDown = styled(ChevronDown)`
-  width: 16px;
+  width: 21px;
+  height: 21px;
+  margin: 0 0 0 -3px;
+  object-fit: contain;
 `
 const NetworkIcon = styled(AlertTriangle)`
   margin-left: 0.25rem;

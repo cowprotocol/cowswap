@@ -207,7 +207,7 @@ export const StepsWrapper = styled.div`
       max-width: 25%;
     `}
 
-    ${({ theme }) => theme.mediaWidth.upToVerySmall`
+    ${({ theme }) => theme.mediaWidth.upToExtraSmall`
       max-width: 20%;
     `}
   }

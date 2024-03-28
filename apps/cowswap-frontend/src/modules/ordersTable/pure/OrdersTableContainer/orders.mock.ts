@@ -1,5 +1,5 @@
 import { COW, DAI, GNO, USDC, WETH_GNOSIS_CHAIN } from '@cowprotocol/common-const'
-import { OrderClass, OrderKind } from '@cowprotocol/cow-sdk'
+import { OrderClass, OrderKind, SigningScheme } from '@cowprotocol/cow-sdk'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
 
@@ -28,6 +28,7 @@ export const ordersMock: ParsedOrder[] = [
     appData: '',
     partiallyFillable: false,
     signature: '',
+    signingScheme: SigningScheme.EIP712,
     class: OrderClass.MARKET,
     kind: OrderKind.SELL,
   },
@@ -50,6 +51,7 @@ export const ordersMock: ParsedOrder[] = [
     appData: '',
     partiallyFillable: false,
     signature: '',
+    signingScheme: SigningScheme.EIP712,
     class: OrderClass.MARKET,
     kind: OrderKind.SELL,
   },
@@ -72,6 +74,7 @@ export const ordersMock: ParsedOrder[] = [
     appData: '',
     partiallyFillable: false,
     signature: '',
+    signingScheme: SigningScheme.EIP712,
     class: OrderClass.MARKET,
     kind: OrderKind.SELL,
   },
@@ -94,6 +97,7 @@ export const ordersMock: ParsedOrder[] = [
     appData: '',
     partiallyFillable: false,
     signature: '',
+    signingScheme: SigningScheme.EIP712,
     class: OrderClass.MARKET,
     kind: OrderKind.SELL,
   },
@@ -116,6 +120,7 @@ export const ordersMock: ParsedOrder[] = [
     appData: '',
     partiallyFillable: false,
     signature: '',
+    signingScheme: SigningScheme.EIP712,
     class: OrderClass.MARKET,
     kind: OrderKind.SELL,
   },

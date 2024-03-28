@@ -11,9 +11,16 @@ const Header = styled.div`
   flex-direction: row;
   justify-content: space-between;
   font-weight: 500;
-  font-size: 20px;
-  padding: 20px;
+  padding: 16px;
+  align-items: center;
+  font-size: 17px;
   border-bottom: 1px solid var(${UI.COLOR_BORDER});
+
+  > div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 `
 
 export interface ModalHeaderProps {

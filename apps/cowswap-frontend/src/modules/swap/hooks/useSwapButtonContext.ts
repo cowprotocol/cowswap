@@ -19,6 +19,7 @@ import { useTokenSupportsPermit } from 'modules/permit'
 import { getSwapButtonState } from 'modules/swap/helpers/getSwapButtonState'
 import { useEthFlowContext } from 'modules/swap/hooks/useEthFlowContext'
 import { useHandleSwap } from 'modules/swap/hooks/useHandleSwap'
+import { useImFeelingLucky } from 'modules/swap/hooks/useImFeelingLucky'
 import { useSafeBundleApprovalFlowContext } from 'modules/swap/hooks/useSafeBundleApprovalFlowContext'
 import { useSwapFlowContext } from 'modules/swap/hooks/useSwapFlowContext'
 import { SwapButtonsContext } from 'modules/swap/pure/SwapButtons'
@@ -27,6 +28,7 @@ import { useIsNativeIn } from 'modules/trade/hooks/useIsNativeInOrOut'
 import { useIsWrappedOut } from 'modules/trade/hooks/useIsWrappedInOrOut'
 import { useWrappedToken } from 'modules/trade/hooks/useWrappedToken'
 
+import { useIsAprilFoolsEnabled } from 'common/hooks/featureFlags/useIsAprilFoolsEnabled'
 import { useApproveState } from 'common/hooks/useApproveState'
 
 import { useSafeBundleEthFlowContext } from './useSafeBundleEthFlowContext'
@@ -87,12 +89,17 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
 
   const swapCallbackError = contextExists ? null : 'Missing dependencies'
 
+  const imFeelingLucky = useImFeelingLucky()
+
   const gnosisSafeInfo = useGnosisSafeInfo()
   const isReadonlyGnosisSafeUser = gnosisSafeInfo?.isReadOnly || false
   const isSwapUnsupported = useIsTradeUnsupported(currencyIn, currencyOut)
   const isSmartContractWallet = useIsSmartContractWallet()
   const isBundlingSupported = useIsBundlingSupported()
   const isPermitSupported = useTokenSupportsPermit(currencyIn, TradeType.SWAP)
+  const isAprilFoolsEnabled = useIsAprilFoolsEnabled()
+  const hasSellToken = !!currencyIn
+  const hasBuyToken = !!currencyOut
 
   const swapButtonState = getSwapButtonState({
     account,
@@ -114,6 +121,9 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
     trade,
     isBestQuoteLoading,
     isPermitSupported,
+    isAprilFoolsEnabled,
+    hasSellToken,
+    hasBuyToken,
   })
 
   return {
@@ -130,6 +140,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
     swapInputError,
     onCurrencySelection,
     recipientAddressOrName,
+    imFeelingLucky,
   }
 }
 

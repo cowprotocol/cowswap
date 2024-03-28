@@ -95,30 +95,21 @@ export const NetworkIcon = styled(Activity)`
 
 export const Wrapper = styled.div`
   color: inherit;
-  height: ${({ theme }) => (theme.isInjectedWidgetMode ? 'initial' : '40px')};
+  height: ${({ theme }) => (theme.isInjectedWidgetMode ? 'initial' : '36px')};
   display: flex;
   padding: 0;
   margin: 0;
   justify-content: center;
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    width: auto;
-    height: 100%;
-    margin: 0 auto;
-  `};
-
   > button {
     height: auto;
-    border-radius: 21px;
+    border-radius: 19px;
     padding: 6px 12px;
     width: max-content;
     gap: 6px;
   }
 
   ${Web3StatusConnected} {
-    height: 100%;
-    width: 100%;
-
     > div > svg > path {
       stroke: currentColor;
       opacity: 0.7;

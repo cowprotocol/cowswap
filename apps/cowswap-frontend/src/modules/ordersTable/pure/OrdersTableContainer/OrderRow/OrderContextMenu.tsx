@@ -3,8 +3,10 @@ import { UI } from '@cowprotocol/ui'
 
 import { Menu, MenuButton, MenuItem, MenuList } from '@reach/menu-button'
 import { transparentize } from 'color2k'
-import { FileText, Link2, MoreVertical, Repeat, Trash2 } from 'react-feather'
+import { Edit, FileText, Link2, MoreVertical, Repeat, Trash2 } from 'react-feather'
 import styled from 'styled-components/macro'
+
+import { AlternativeOrderModalContext } from '../../../containers/OrdersReceiptModal/hooks'
 
 export const ContextMenuButton = styled(MenuButton)`
   background: none;
@@ -69,14 +71,14 @@ export interface OrderContextMenuProps {
   openReceipt: Command
   activityUrl: string | undefined
   showCancellationModal: Command | null
-  showRecreateModal: Command | null
+  alternativeOrderModalContext: AlternativeOrderModalContext
 }
 
 export function OrderContextMenu({
   openReceipt,
   activityUrl,
   showCancellationModal,
-  showRecreateModal,
+  alternativeOrderModalContext,
 }: OrderContextMenuProps) {
   return (
     <Menu>
@@ -94,16 +96,16 @@ export function OrderContextMenu({
             <span>View on explorer</span>
           </ContextMenuLink>
         )}
+        {alternativeOrderModalContext && (
+          <ContextMenuItem onSelect={alternativeOrderModalContext.showAlternativeOrderModal}>
+            {alternativeOrderModalContext.isEdit ? <Edit size={16} /> : <Repeat size={16} />}
+            <span>{alternativeOrderModalContext.isEdit ? 'Edit' : 'Recreate'} order</span>
+          </ContextMenuItem>
+        )}
         {showCancellationModal && (
           <ContextMenuItem $red onSelect={showCancellationModal}>
             <Trash2 size={16} />
             <span>Cancel order</span>
-          </ContextMenuItem>
-        )}
-        {showRecreateModal && (
-          <ContextMenuItem onSelect={showRecreateModal}>
-            <Repeat size={16} />
-            <span>Recreate order</span>
           </ContextMenuItem>
         )}
       </ContextMenuList>

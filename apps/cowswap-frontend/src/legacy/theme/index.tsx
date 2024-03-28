@@ -25,13 +25,13 @@ import { Colors } from './styled'
 export type TextProps = Omit<TextPropsOriginal, 'css'> & { override?: boolean }
 
 export const MEDIA_WIDTHS = {
+  upToTiny: 320,
   upToExtraSmall: 500,
   upToSmall: 720,
   upToMedium: 960,
   upToLarge: 1280,
   upToLargeAlt: 1390,
   upToExtraLarge: 2560,
-  upToVerySmall: 500,
 }
 
 // Migrating to a standard z-index system https://getbootstrap.com/docs/5.0/layout/z-index/

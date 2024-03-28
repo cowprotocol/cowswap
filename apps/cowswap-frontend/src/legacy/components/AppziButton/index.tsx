@@ -26,7 +26,23 @@ const Wrapper = styled.div`
   transition: background 0.5s ease-in-out, transform 0.5s ease-in-out;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
-    background: ${({ theme }) => transparentize(theme.bg2, 0.1)};
+    left: initial;
+    bottom: initial;
+    position: relative;
+    width: 100%;
+    right: initial;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 0px;
+    margin: 0px;
+    font-weight: 600;
+    font-size: 17px;
+    padding: 15px 10px;
+    color: inherit;
+    border-bottom: 1px solid var(--cow-color-text-opacity-10);
+    height: auto;
+    background: none;
   `};
 
   > svg {
@@ -40,6 +56,12 @@ const Wrapper = styled.div`
 
     ${({ theme }) => theme.mediaWidth.upToMedium`
       fill: ${({ theme }) => theme.white};
+      background: ${({ theme }) => transparentize(theme.bg2, 0.1)};
+      --size: 46px;
+      height: var(--size);
+      width: var(--size);
+      transform: none;
+      border-radius: calc(var(--size) / 3);
     `};
   }
 
@@ -47,31 +69,37 @@ const Wrapper = styled.div`
     background: ${({ theme }) => transparentize(theme.bg2, 0.1)};
     transform: translateY(-3px);
 
+    ${({ theme }) => theme.mediaWidth.upToMedium`
+      background: none;
+      transform: none;
+    `};
+
     > svg {
       fill: ${({ theme }) => theme.white};
       transform: rotate(-360deg);
+
+      ${({ theme }) => theme.mediaWidth.upToMedium`
+        transform: none;
+    `};
     }
   }
-
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    left: 14px;
-    height: 38px;
-    width: 38px;
-    bottom: 11px;
-    right: initial;
-    z-index: 10;
-    box-shadow: none;
-    border-width: 3px;
-  `};
 `
 
-export default function Appzi() {
+interface AppziButtonProps {
+  menuTitle?: string
+  onClick?: () => void
+  isUpToMedium?: boolean
+}
+
+export default function Appzi({ menuTitle, onClick, isUpToMedium }: AppziButtonProps) {
   if (!isAppziEnabled) {
     return null
   }
 
   return (
-    <Wrapper onClick={openFeedbackAppzi}>
+    // <Wrapper onClick={openFeedbackAppzi}>
+    <Wrapper onClick={isUpToMedium ? onClick && openFeedbackAppzi : openFeedbackAppzi}>
+      {menuTitle && <span>{menuTitle}</span>}
       <SVG src={FeedbackIcon} description="Provide Feedback" />
     </Wrapper>
   )
