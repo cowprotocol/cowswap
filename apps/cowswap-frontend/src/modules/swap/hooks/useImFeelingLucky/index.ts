@@ -13,7 +13,10 @@ import { Nullish } from 'types'
 import { useTradeNavigate } from 'modules/trade/hooks/useTradeNavigate'
 import { useTradeState } from 'modules/trade/hooks/useTradeState'
 
-import luckyTokens from './luckyTokens.tokenlist.json'
+import gchainAddresses from './gchainTokenAddresses.json'
+import mainnetLuckyTokens from './luckyTokens.tokenlist.json'
+
+const GCHAIN_ADDRESS = new Set(gchainAddresses)
 
 export function useImFeelingLucky() {
   const { state } = useTradeState()
@@ -48,22 +51,24 @@ function pickRandom<T>(list: T[]): T | undefined {
 
 function useImFeelingLuckyTokens(chainId: SupportedChainId, sellTokenId: Nullish<string>): TokenWithLogo[] {
   const isMainnet = chainId === SupportedChainId.MAINNET
-  const tokens = useAllTokens().filter(
-    ({ symbol, address }) =>
-      symbol && !/uni|1inch|0x/.test(symbol.toLowerCase()) && symbol !== sellTokenId && address !== sellTokenId
-  )
+  const isGchain = chainId === SupportedChainId.GNOSIS_CHAIN
 
-  const { data } = useSWR<TokenWithLogo[]>(
+  const tokens = useAllTokens()
+
+  const { data: mainnetList } = useSWR<TokenWithLogo[]>(
     'luckyTokens',
-    () => luckyTokens.tokens.map((t) => TokenWithLogo.fromToken(t)),
+    () => mainnetLuckyTokens.tokens.map((t) => TokenWithLogo.fromToken(t)),
     { ...SWR_NO_REFRESH_OPTIONS, fallbackData: [] }
   )
 
-  if (isMainnet && data?.length) {
-    return data.filter(sellTokenFilterFactory(sellTokenId))
-  } else {
+  if (isMainnet && mainnetList?.length) {
+    return mainnetList.filter(sellTokenFilterFactory(sellTokenId))
+  } else if (isGchain) {
     return tokens
+      .filter(({ address }) => GCHAIN_ADDRESS.has(address.toLowerCase()))
+      .filter(sellTokenFilterFactory(sellTokenId))
   }
+  return tokens.filter(sellTokenFilterFactory(sellTokenId))
 }
 
 function sellTokenFilterFactory(sellTokenId: Nullish<string>) {
