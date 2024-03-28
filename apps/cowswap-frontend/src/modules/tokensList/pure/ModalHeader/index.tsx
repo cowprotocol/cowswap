@@ -11,7 +11,7 @@ const Header = styled.div`
   flex-direction: row;
   justify-content: space-between;
   font-weight: 500;
-  padding: 0 0 14px;
+  padding: 16px;
   align-items: center;
   font-size: 17px;
   border-bottom: 1px solid var(${UI.COLOR_BORDER});
