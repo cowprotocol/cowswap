@@ -2,7 +2,7 @@ import { HTMLAttributes } from 'react'
 
 import { ChevronDown, Star } from 'react-feather'
 import { ButtonProps } from 'rebass/styled-components'
-import styled, { css } from 'styled-components'
+import styled from 'styled-components'
 
 import { RowBetween } from '../Row'
 
@@ -16,7 +16,7 @@ import { ButtonSize, UI } from '../../enum'
 
 export * from './ButtonMod'
 
-export const ButtonPrimary = styled(ButtonPrimaryMod)<{ variant?: string }>`
+export const ButtonPrimary = styled(ButtonPrimaryMod)`
   // CSS overrides
   background: var(${UI.COLOR_PRIMARY});
   color: var(${UI.COLOR_BUTTON_TEXT});
@@ -50,72 +50,6 @@ export const ButtonPrimary = styled(ButtonPrimaryMod)<{ variant?: string }>`
     animation: none;
     transform: none;
   }
-
-  // April Fools ONLY
-  ${({ variant }) =>
-    variant === 'ImFeelingLucky' &&
-    css`
-      transition: 0.2s all linear;
-      overflow: hidden;
-      padding: 0;
-      background-image: linear-gradient(to right, var(${UI.COLOR_PRIMARY}), var(${UI.COLOR_PRIMARY_LIGHTER}));
-      background-size: 200% 100%;
-      animation: gradientBackground 2s ease-in-out infinite;
-
-      > div {
-        position: relative;
-        z-index: 1;
-        height: 100%;
-        width: calc(100% - 8px);
-        top: 0px;
-        left: 0;
-        align-items: center;
-        display: flex;
-        justify-content: center;
-        border-radius: 14px;
-        background: inherit;
-        min-height: 50px;
-      }
-
-      &:after {
-        content: '';
-        position: absolute;
-        z-index: -2;
-        left: -50%;
-        top: -50%;
-        width: 200%;
-        height: 200%;
-        background-color: transparent;
-        background-repeat: no-repeat;
-        background-size: 50% 50%, 50% 50%;
-        background-position: 0 0, 100% 0, 100% 100%, 0 100%;
-        background-image: linear-gradient(
-          90deg,
-          rgba(255, 255, 255, 0) 0%,
-          rgba(255, 255, 255, 1) 50%,
-          rgba(255, 255, 255, 0) 100%
-        );
-        animation: luckyRotate 2s linear infinite;
-      }
-
-      @keyframes luckyRotate {
-        100% {
-          transform: rotate(360deg);
-        }
-      }
-
-      @keyframes gradientBackground {
-        0% {
-          background-position: 0% 50%;
-        }
-        50% {
-          background-position: 100% 50%;
-        }
-        100% {
-          background-position: 0% 50%;
-        }
-      }
-    `}
 `
 
 export const ButtonLight = styled(ButtonPrimary)`
@@ -287,7 +221,6 @@ const HoverIcon = styled.div`
 
 type ButtonCustomProps = ButtonProps & {
   buttonSize?: ButtonSize
-  variant?: string
 }
 
 export function ButtonConfirmed({

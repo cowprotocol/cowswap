@@ -30,7 +30,7 @@ export enum SwapButtonState {
   SwapWithWrappedToken = 'SwapWithWrappedToken',
   RegularEthFlowSwap = 'EthFlowSwap',
   ApproveAndSwap = 'ApproveAndSwap',
-  ImFeelingLucky = 'ImFeelingLucky',
+
   WrapAndSwap = 'WrapAndSwap',
 }
 
@@ -54,9 +54,6 @@ export interface SwapButtonStateParams {
   isBestQuoteLoading: boolean
   wrappedToken: Token
   isPermitSupported: boolean
-  isAprilFoolsEnabled: boolean
-  hasSellToken: boolean
-  hasBuyToken: boolean
 }
 
 const quoteErrorToSwapButtonState: { [key in QuoteError]: SwapButtonState | null } = {
@@ -70,7 +67,7 @@ const quoteErrorToSwapButtonState: { [key in QuoteError]: SwapButtonState | null
 }
 
 export function getSwapButtonState(input: SwapButtonStateParams): SwapButtonState {
-  const { trade, quote, approvalState, isPermitSupported, isAprilFoolsEnabled, hasSellToken, hasBuyToken } = input
+  const { trade, quote, approvalState, isPermitSupported } = input
   const quoteError = quote?.error
 
   // show approve flow when: no error on inputs, not approved or pending, or approved in current session
@@ -82,14 +79,9 @@ export function getSwapButtonState(input: SwapButtonStateParams): SwapButtonStat
 
   const isValid = !input.inputError && input.feeWarningAccepted && input.impactWarningAccepted
   const swapBlankState = !input.inputError && !trade
-  const tokensSelected = hasSellToken && hasBuyToken
 
   const isSellOrder = trade?.tradeType === TradeType.EXACT_INPUT
-  const amountAfterFees = tokensSelected
-    ? isSellOrder
-      ? trade?.outputAmountAfterFees
-      : trade?.inputAmountAfterFees
-    : undefined
+  const amountAfterFees = isSellOrder ? trade?.outputAmountAfterFees : trade?.inputAmountAfterFees
 
   if (quoteError) {
     const quoteErrorState = quoteErrorToSwapButtonState[quoteError]
@@ -129,9 +121,6 @@ export function getSwapButtonState(input: SwapButtonStateParams): SwapButtonStat
   }
 
   if (input.inputError) {
-    if (isAprilFoolsEnabled && input.inputError === 'Select a token' && input.hasSellToken) {
-      return SwapButtonState.ImFeelingLucky
-    }
     return SwapButtonState.SwapError
   }
 
