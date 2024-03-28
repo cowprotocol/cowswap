@@ -1,6 +1,6 @@
 import { CHRISTMAS_THEME_ENABLED } from '@cowprotocol/common-const'
 
-type SoundType = 'SEND' | 'SUCCESS' | 'SUCCESS_CLAIM' | 'ERROR'
+type SoundType = 'SEND' | 'SUCCESS' | 'SUCCESS_CLAIM' | 'ERROR' | 'IM_FEELING_LUCKY'
 type Sounds = Record<SoundType, string>
 
 const COW_SOUNDS: Sounds = {
@@ -8,6 +8,7 @@ const COW_SOUNDS: Sounds = {
   SUCCESS: '/audio/success.mp3',
   SUCCESS_CLAIM: '/audio/success-claim.mp3',
   ERROR: '/audio/error.mp3',
+  IM_FEELING_LUCKY: '/audio/slot-machine.mp3',
 }
 
 const SOUND_CACHE: Record<string, HTMLAudioElement | undefined> = {}
@@ -38,4 +39,8 @@ export function getCowSoundSuccessClaim(): HTMLAudioElement {
 
 export function getCowSoundError(): HTMLAudioElement {
   return getAudio('ERROR')
+}
+
+export function getImFeelingLuckySound(): HTMLAudioElement {
+  return getAudio('IM_FEELING_LUCKY')
 }
