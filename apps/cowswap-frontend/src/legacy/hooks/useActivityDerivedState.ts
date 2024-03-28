@@ -45,8 +45,9 @@ export function getActivityDerivedState(props: {
   const enhancedTransaction = isTransaction ? (activity as EnhancedTransactionDetails) : undefined
 
   // Calculate some convenient status flags
-  const isPending = status === ActivityStatus.PENDING
-  const isConfirmed = status === ActivityStatus.CONFIRMED
+  const isReplaced = enhancedTransaction?.replacementType === 'replaced'
+  const isPending = !isReplaced && status === ActivityStatus.PENDING
+  const isConfirmed = !isReplaced && status === ActivityStatus.CONFIRMED
 
   const activityLinkUrl = getActivityLinkUrl({ id, chainId, enhancedTransaction, order })
 
@@ -62,6 +63,7 @@ export function getActivityDerivedState(props: {
     isOrder,
     isPending,
     isConfirmed,
+    isReplaced,
     isPresignaturePending: status === ActivityStatus.PRESIGNATURE_PENDING,
     isExpired: status === ActivityStatus.EXPIRED,
     isCancelling: status === ActivityStatus.CANCELLING,

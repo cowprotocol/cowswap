@@ -8,7 +8,11 @@ import { CREATING_STATES, Order, OrderStatus, PENDING_STATES } from 'legacy/stat
 import { getIsFinalizedOrder } from 'utils/orderUtils/getIsFinalizedOrder'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
-export const isPending = ({ status }: { status: OrderStatus }) => PENDING_STATES.includes(status)
+export const isPending = ({ status, replacementType }: { status: OrderStatus; replacementType?: string }) => {
+  if (replacementType === 'replaced') return false
+
+  return PENDING_STATES.includes(status)
+}
 
 export const isCreating = ({ status }: { status: OrderStatus }) => CREATING_STATES.includes(status)
 

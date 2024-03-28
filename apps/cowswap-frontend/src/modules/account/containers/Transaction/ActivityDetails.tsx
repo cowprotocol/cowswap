@@ -371,7 +371,7 @@ export function ActivityDetails(props: {
             summary ?? id
           )}
 
-          {activityLinkUrl && (
+          {activityLinkUrl && enhancedTransaction?.replacementType !== 'replaced' && (
             <ActivityLink href={activityLinkUrl} disableMouseActions={disableMouseActions}>
               View details ↗
             </ActivityLink>

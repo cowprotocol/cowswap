@@ -6,7 +6,7 @@ export type OnTransactionPayload = {
     transactionHash: string
     blockNumber: number
     status?: number
-    replacementType?: 'speedup' | 'cancel'
+    replacementType?: 'speedup' | 'cancel' | 'replaced'
   }
   summary: string
 }

@@ -32,19 +32,16 @@ export function useHasPendingApproval(tokenAddress: string | undefined, spender:
       typeof spender === 'string' &&
       Object.keys(allTransactions).some((hash) => {
         const tx = allTransactions[hash]
-        if (!tx) return false
-        if (tx.receipt) {
-          return false
-        } else {
-          const approval = tx.approval
-          if (!approval) return false
+        if (!tx || tx.receipt || tx.replacementType) return false
 
-          return (
-            approval.spender.toLowerCase() === spender.toLowerCase() &&
-            approval.tokenAddress.toLowerCase() === tokenAddress &&
-            isTransactionRecent(tx)
-          )
-        }
+        const approval = tx.approval
+        if (!approval) return false
+
+        return (
+          approval.spender.toLowerCase() === spender.toLowerCase() &&
+          approval.tokenAddress.toLowerCase() === tokenAddress &&
+          isTransactionRecent(tx)
+        )
       }),
     [allTransactions, spender, tokenAddress]
   )

@@ -63,6 +63,7 @@ export interface ActivityDerivedState {
   isExpired: boolean
   isCancelling: boolean
   isCancelled: boolean
+  isReplaced: boolean
   isPresignaturePending: boolean
   isUnfillable?: boolean
   // EthFlow flags
