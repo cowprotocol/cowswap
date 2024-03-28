@@ -28,7 +28,7 @@ export function useTradeFormButtonContext(
   return useMemo(() => {
     if (!derivedState) return null
 
-    const context: TradeFormButtonContext = {
+    return {
       defaultText,
       derivedState,
       quote,
@@ -36,10 +36,6 @@ export function useTradeFormButtonContext(
       ...callbacks,
       wrapNativeFlow,
       connectWallet: toggleWalletModal,
-      isAprilFoolsEnabled: false,
-      imFeelingLucky: () => void 0,
     }
-
-    return context
   }, [defaultText, derivedState, quote, isSupportedWallet, callbacks, wrapNativeFlow, toggleWalletModal])
 }

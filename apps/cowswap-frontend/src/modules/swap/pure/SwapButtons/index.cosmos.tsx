@@ -27,7 +27,6 @@ const swapButtonsContext: SwapButtonsContext = {
   toggleWalletModal: () => void 0,
   hasEnoughWrappedBalanceForSwap: true,
   recipientAddressOrName: null,
-  imFeelingLucky: () => void 0
 }
 
 function useCustomProps(): SwapButtonsContext {
