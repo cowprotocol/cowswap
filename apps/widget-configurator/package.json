@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/widget-configurator",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "CoW Swap widget configurator",
   "main": "index.js",
   "author": "",
