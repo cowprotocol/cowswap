@@ -175,6 +175,7 @@ export default createReducer(initialState, (builder) =>
           chainId,
           oldHash,
           newHash,
+          type,
         })
         return
       }

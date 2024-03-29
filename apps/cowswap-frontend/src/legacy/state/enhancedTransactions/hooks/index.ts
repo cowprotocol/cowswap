@@ -70,32 +70,6 @@ export function useAllTransactionsDetails(filter?: TransactionFilter): EnhancedT
   }, [transactions, filter])
 }
 
-export type TransactionsByType = Record<HashType, EnhancedTransactionDetails[]>
-
-/**
- * Return all transactions grouped by type
- */
-export function useAllTransactionsByType(filter?: TransactionFilter): TransactionsByType {
-  const transactions = useAllTransactionsDetails(filter)
-
-  return useMemo(() => {
-    return transactions.reduce<TransactionsByType>(
-      (acc, tx) => {
-        const txs = acc[tx.hashType]
-        if (!txs) {
-          acc[tx.hashType] = []
-        }
-        acc[tx.hashType].push(tx)
-        return acc
-      },
-      {
-        [HashType.ETHEREUM_TX]: [],
-        [HashType.GNOSIS_SAFE_TX]: [],
-      }
-    )
-  }, [transactions])
-}
-
 /**
  * Return all transaction hashes
  */
