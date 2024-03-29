@@ -38,11 +38,7 @@ export const LIMIT_BULLET_LIST_CONTENT: BulletListItem[] = [
   { content: 'Receive surplus of your order' },
   { content: 'Protection from MEV by default' },
   {
-    content: (
-      <span>
-        NOW with&nbsp;<b>partial fills</b>&nbsp;support!
-      </span>
-    ),
+    content: <span>Place orders for higher than available balance!</span>,
   },
 ]
 

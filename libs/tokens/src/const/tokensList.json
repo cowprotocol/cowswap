@@ -11,6 +11,11 @@
       "source": "https://files.cow.fi/tokens/CoinGecko.json"
     },
     {
+      "priority": 13,
+      "enabledByDefault": true,
+      "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/imFeelingLucky/src/public/imFeelingLucky.json"
+    },
+    {
       "priority": 3,
       "source": "https://raw.githubusercontent.com/compound-finance/token-list/master/compound.tokenlist.json"
     },

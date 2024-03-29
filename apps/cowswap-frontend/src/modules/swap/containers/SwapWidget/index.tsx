@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
 import { NATIVE_CURRENCIES, TokenWithLogo } from '@cowprotocol/common-const'
@@ -18,6 +18,7 @@ import { EthFlowModal, EthFlowProps } from 'modules/swap/containers/EthFlow'
 import { SwapModals, SwapModalsProps } from 'modules/swap/containers/SwapModals'
 import { SwapButtonState } from 'modules/swap/helpers/getSwapButtonState'
 import { getInputReceiveAmountInfo, getOutputReceiveAmountInfo } from 'modules/swap/helpers/tradeReceiveAmount'
+import { useResetWasImFeelingLuckyClicked } from 'modules/swap/hooks/useImFeelingLucky'
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { useShowRecipientControls } from 'modules/swap/hooks/useShowRecipientControls'
 import { useSwapButtonContext } from 'modules/swap/hooks/useSwapButtonContext'
@@ -214,6 +215,14 @@ export function SwapWidget() {
   const nativeCurrencySymbol = useNativeCurrency().symbol || 'ETH'
   const wrappedCurrencySymbol = useWrappedToken().symbol || 'WETH'
 
+  const hideBuyTokenInput = swapButtonContext.swapButtonState === SwapButtonState.ImFeelingLucky
+
+  const resetWasImFeelingLuckyClicked = useResetWasImFeelingLuckyClicked()
+
+  useEffect(() => {
+    hideBuyTokenInput && resetWasImFeelingLuckyClicked()
+  }, [hideBuyTokenInput, resetWasImFeelingLuckyClicked])
+
   const swapWarningsTopProps: SwapWarningsTopProps = {
     chainId,
     trade,
@@ -276,6 +285,7 @@ export function SwapWidget() {
     priceImpact: priceImpactParams,
     disableQuotePolling: true,
     disablePriceImpact,
+    hideBuyTokenInput,
   }
 
   return (

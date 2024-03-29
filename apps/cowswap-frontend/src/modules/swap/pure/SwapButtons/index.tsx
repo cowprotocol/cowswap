@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react'
+import React, { ReactNode, useState } from 'react'
 
 import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { genericPropsChecker, getWrappedToken } from '@cowprotocol/common-utils'
@@ -12,6 +12,7 @@ import { Text } from 'rebass'
 
 import { GreyCard } from 'legacy/components/Card'
 import { AutoColumn } from 'legacy/components/Column'
+import Confetti from 'legacy/components/Confetti'
 import { WrapUnwrapCallback } from 'legacy/hooks/useWrapCallback'
 import { Field } from 'legacy/state/types'
 
@@ -37,9 +38,14 @@ export interface SwapButtonsContext {
   swapInputError?: ReactNode
   onCurrencySelection: (field: Field, currency: Currency) => void
   recipientAddressOrName: string | null
+  imFeelingLucky: Command
 }
 
-const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonsContext) => JSX.Element } = {
+interface EnhancedSwapButtonsContext extends SwapButtonsContext {
+  triggerConfetti: () => void // Now mandatory
+}
+
+const swapButtonStateMap: { [key in SwapButtonState]: (props: EnhancedSwapButtonsContext) => JSX.Element } = {
   [SwapButtonState.SwapIsUnsupported]: () => (
     <ButtonPrimary disabled={true} buttonSize={ButtonSize.BIG}>
       <Trans>Unsupported Token</Trans>
@@ -160,6 +166,22 @@ const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonsContext
       </styledEl.SwapButtonBox>
     </ButtonError>
   ),
+  [SwapButtonState.ImFeelingLucky]: (props: EnhancedSwapButtonsContext) => (
+    <ButtonError
+      buttonSize={ButtonSize.BIG}
+      onClick={() => {
+        props.imFeelingLucky()
+        props.triggerConfetti()
+      }}
+      variant={SwapButtonState.ImFeelingLucky}
+    >
+      <styledEl.SwapButtonBox>
+        <Trans>
+          I'm feeling lucky &nbsp; <styledEl.AnimateWave>🍀</styledEl.AnimateWave>
+        </Trans>
+      </styledEl.SwapButtonBox>
+    </ButtonError>
+  ),
   [SwapButtonState.WrapAndSwap]: (props: SwapButtonsContext) => (
     <ButtonError buttonSize={ButtonSize.BIG} onClick={props.openSwapConfirm}>
       <styledEl.SwapButtonBox>
@@ -189,6 +211,17 @@ function EthFlowSwapButton(props: SwapButtonsContext) {
 
 export const SwapButtons = React.memo(function (props: SwapButtonsContext) {
   console.debug('RENDER SWAP BUTTON: ', props)
+  const [showConfetti, setShowConfetti] = useState(false)
 
-  return <div id="swap-button">{swapButtonStateMap[props.swapButtonState](props)}</div>
+  const enhancedProps = {
+    ...props,
+    triggerConfetti: () => setShowConfetti(true),
+  }
+
+  return (
+    <div id="swap-button">
+      {swapButtonStateMap[props.swapButtonState](enhancedProps)}
+      {showConfetti && <Confetti start />}
+    </div>
+  )
 }, genericPropsChecker)

@@ -24,7 +24,7 @@ Prepare the config for the widget:
 
 ```ts
 const cowSwapWidgetParams: CowSwapWidgetParams = {
-  appCode: '<YOUR_APP_KEY>',
+  appCode: 'NAME-OF-YOU-APP', // Add here the name of your app. e.g. "Pig Swap"
   width: '600px',
   height: '700px',
   tradeType: 'swap',
