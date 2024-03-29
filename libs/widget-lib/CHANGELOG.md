@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.1](https://github.com/cowprotocol/cowswap/compare/widget-lib-v0.7.0...widget-lib-v0.7.1) (2024-03-22)
+
+
+### Bug Fixes
+
+* update widget-lib readme ([#4090](https://github.com/cowprotocol/cowswap/issues/4090)) ([014e321](https://github.com/cowprotocol/cowswap/commit/014e3210e4195c75a02f8a5e330b98d41a74149c))
+
 ## [0.7.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v0.6.0...widget-lib-v0.7.0) (2024-03-22)
 
 

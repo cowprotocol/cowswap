@@ -5,7 +5,8 @@ export const DEFAULT_TOKENS_LISTS: ListsSourcesByNetwork = tokensList
 
 // TODO: combined uniswap and lucky list
 // TODO: revert
-export const UNISWAP_TOKENS_LIST = 'https://dpaste.com/75C9XDTGP.txt' //'https://gateway.ipfs.io/ipns/tokens.uniswap.org'
+export const UNISWAP_TOKENS_LIST =
+  'https://raw.githubusercontent.com/cowprotocol/token-lists/imFeelingLucky/src/public/imFeelingLuckyUniswap.json' //'https://gateway.ipfs.io/ipns/tokens.uniswap.org'
 
 export const GNOSIS_UNISWAP_TOKENS_LIST =
   'https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/GnosisUniswapTokensList.json'
