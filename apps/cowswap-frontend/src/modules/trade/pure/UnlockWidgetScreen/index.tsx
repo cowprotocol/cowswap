@@ -5,11 +5,14 @@ import { ExternalLink } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
 
+import { FeatureGuard } from 'common/containers/FeatureGuard'
+
 import * as styledEl from './styled'
 
 export type BulletListItem = {
   content: string | React.ReactNode
   isNew?: boolean
+  featureFlag?: string
 }
 
 type UnlockWidgetProps = {
@@ -42,14 +45,18 @@ export function UnlockWidgetScreen({
 
       {items && (
         <styledEl.List>
-          {items.map(({ isNew, content }, index) => (
-            <li key={index} data-is-new={isNew || null}>
-              <span>
-                <SVG src={iconCompleted} />
-              </span>{' '}
-              {content}
-            </li>
-          ))}
+          {items.map(({ isNew, content, featureFlag }, index) => {
+            const item = (
+              <li key={index} data-is-new={isNew || null}>
+                <span>
+                  <SVG src={iconCompleted} />
+                </span>{' '}
+                {content}
+              </li>
+            )
+
+            return featureFlag ? <FeatureGuard featureFlag={featureFlag}>{item}</FeatureGuard> : item
+          })}
         </styledEl.List>
       )}
 
