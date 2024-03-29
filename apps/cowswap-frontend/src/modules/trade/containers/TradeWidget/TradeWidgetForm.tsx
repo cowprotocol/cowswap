@@ -22,6 +22,7 @@ import { wasImFeelingLuckyClickedAtom } from 'modules/swap/hooks/useImFeelingLuc
 import { useOpenTokenSelectWidget } from 'modules/tokensList'
 import { useIsAlternativeOrderModalVisible } from 'modules/trade/state/alternativeOrder'
 
+import { FeatureGuard } from 'common/containers/FeatureGuard'
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useThrottleFn } from 'common/hooks/useThrottleFn'
@@ -107,7 +108,6 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
 
   const showDropdown = shouldShowMyOrdersButton || isInjectedWidgetMode
 
-
   const currencyInputCommonProps = {
     isChainIdUnsupported,
     chainId,
@@ -172,24 +172,26 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
                 {...currencyInputCommonProps}
               />
 
-              {isLimitOrderMode &&
-                !isWrapOrUnwrap &&
-                ClosableBanner(ZERO_BANNER_STORAGE_KEY, (onClose) => (
-                  <InlineBanner
-                    bannerType="success"
-                    orientation={BannerOrientation.Horizontal}
-                    customIcon={ICON_TOKENS}
-                    iconSize={32}
-                    margin={'10px 0 0'}
-                    onClose={onClose}
-                  >
-                    <p>
-                      <b>NEW: </b>You can now place limit orders for amounts larger than your wallet balance. Partial
-                      fill orders will execute until you run out of sell tokens. Fill-or-kill orders will become active
-                      once you top up your balance.
-                    </p>
-                  </InlineBanner>
-                ))}
+              <FeatureGuard featureFlag="isZeroBalanceOrdersEnabled">
+                {isLimitOrderMode &&
+                  !isWrapOrUnwrap &&
+                  ClosableBanner(ZERO_BANNER_STORAGE_KEY, (onClose) => (
+                    <InlineBanner
+                      bannerType="success"
+                      orientation={BannerOrientation.Horizontal}
+                      customIcon={ICON_TOKENS}
+                      iconSize={32}
+                      margin={'10px 0 0'}
+                      onClose={onClose}
+                    >
+                      <p>
+                        <b>NEW: </b>You can now place limit orders for amounts larger than your wallet balance. Partial
+                        fill orders will execute until you run out of sell tokens. Fill-or-kill orders will become
+                        active once you top up your balance.
+                      </p>
+                    </InlineBanner>
+                  ))}
+              </FeatureGuard>
             </div>
             {!isWrapOrUnwrap && middleContent}
             {!hideBuyTokenInput && (
