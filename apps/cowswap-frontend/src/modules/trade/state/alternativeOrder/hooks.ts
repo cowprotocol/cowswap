@@ -1,6 +1,8 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
+import { alternativeModalAnalytics } from '@cowprotocol/analytics'
+
 import { Order } from 'legacy/state/orders/actions'
 
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
@@ -25,7 +27,11 @@ export function useSetAlternativeOrder() {
   const setAlternativeOrder = useSetAtom(alternativeOrderAtom)
 
   return useCallback(
-    (order: Order | ParsedOrder, isEdit = false) => setAlternativeOrder({ order, isEdit }),
+    (order: Order | ParsedOrder, isEdit = false) => {
+      alternativeModalAnalytics(isEdit, 'clicked')
+
+      return setAlternativeOrder({ order, isEdit })
+    },
     [setAlternativeOrder]
   )
 }
