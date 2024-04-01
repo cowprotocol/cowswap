@@ -1,11 +1,10 @@
-import { useAtomValue } from 'jotai'
-import { useCallback, useEffect } from 'react'
+import React, { useEffect, useCallback } from 'react'
 
 import ICON_ORDERS from '@cowprotocol/assets/svg/orders.svg'
 import ICON_TOKENS from '@cowprotocol/assets/svg/tokens.svg'
-import { useIsAdvancedMode, useIsLimitOrderMode, useIsSwapMode } from '@cowprotocol/common-hooks'
+import { useIsSwapMode, useIsLimitOrderMode, useIsAdvancedMode } from '@cowprotocol/common-hooks'
 import { isInjectedWidget, maxAmountSpend } from '@cowprotocol/common-utils'
-import { BannerOrientation, ButtonOutlined, ClosableBanner, InlineBanner, MY_ORDERS_ID } from '@cowprotocol/ui'
+import { ButtonOutlined, MY_ORDERS_ID, InlineBanner, BannerOrientation, ClosableBanner } from '@cowprotocol/ui'
 import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/macro'
@@ -18,7 +17,6 @@ import { useToggleAccountModal } from 'modules/account'
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders/hooks/useAdvancedOrdersDerivedState'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { useIsWidgetUnlocked } from 'modules/limitOrders'
-import { wasImFeelingLuckyClickedAtom } from 'modules/swap/hooks/useImFeelingLucky'
 import { useOpenTokenSelectWidget } from 'modules/tokensList'
 import { useIsAlternativeOrderModalVisible } from 'modules/trade/state/alternativeOrder'
 
@@ -66,7 +64,6 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
     priceImpact,
     recipient,
     disablePriceImpact,
-    hideBuyTokenInput,
   } = params
 
   const { chainId, account } = useWalletInfo()
@@ -84,7 +81,6 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
   const withRecipient = !isWrapOrUnwrap && (showRecipient || hasRecipientInUrl)
   const maxBalance = maxAmountSpend(inputCurrencyInfo.balance || undefined, isSafeWallet)
   const showSetMax = maxBalance?.greaterThan(0) && !inputCurrencyInfo.amount?.equalTo(maxBalance)
-  const wasImFeelingLuckyClicked = useAtomValue(wasImFeelingLuckyClickedAtom)
 
   const alternativeOrderModalVisible = useIsAlternativeOrderModalVisible()
 
@@ -194,38 +190,33 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
               </FeatureGuard>
             </div>
             {!isWrapOrUnwrap && middleContent}
-            {!hideBuyTokenInput && (
-              <>
-                <styledEl.CurrencySeparatorBox compactView={compactView} withRecipient={withRecipient}>
-                  <CurrencyArrowSeparator
-                    isCollapsed={compactView}
-                    hasSeparatorLine={!compactView}
-                    onSwitchTokens={isChainIdUnsupported ? () => void 0 : throttledOnSwitchTokens}
-                    withRecipient={withRecipient}
-                    isLoading={isTradePriceUpdating}
-                    disabled={isAlternativeOrderModalVisible}
-                  />
-                </styledEl.CurrencySeparatorBox>
-                <div>
-                  <CurrencyInputPanel
-                    id="output-currency-input"
-                    inputDisabled={isEoaEthFlow || isWrapOrUnwrap || disableOutput}
-                    inputTooltip={
-                      isEoaEthFlow
-                        ? t`You cannot edit this field when selling ${inputCurrencyInfo?.currency?.symbol}`
-                        : undefined
-                    }
-                    currencyInfo={
-                      isWrapOrUnwrap ? { ...outputCurrencyInfo, amount: inputCurrencyInfo.amount } : outputCurrencyInfo
-                    }
-                    priceImpactParams={!disablePriceImpact ? priceImpact : undefined}
-                    topLabel={isWrapOrUnwrap ? undefined : outputCurrencyInfo.label}
-                    wasImFeelingLuckyClicked={wasImFeelingLuckyClicked}
-                    {...currencyInputCommonProps}
-                  />
-                </div>
-              </>
-            )}
+            <styledEl.CurrencySeparatorBox compactView={compactView} withRecipient={withRecipient}>
+              <CurrencyArrowSeparator
+                isCollapsed={compactView}
+                hasSeparatorLine={!compactView}
+                onSwitchTokens={isChainIdUnsupported ? () => void 0 : throttledOnSwitchTokens}
+                withRecipient={withRecipient}
+                isLoading={isTradePriceUpdating}
+                disabled={isAlternativeOrderModalVisible}
+              />
+            </styledEl.CurrencySeparatorBox>
+            <div>
+              <CurrencyInputPanel
+                id="output-currency-input"
+                inputDisabled={isEoaEthFlow || isWrapOrUnwrap || disableOutput}
+                inputTooltip={
+                  isEoaEthFlow
+                    ? t`You cannot edit this field when selling ${inputCurrencyInfo?.currency?.symbol}`
+                    : undefined
+                }
+                currencyInfo={
+                  isWrapOrUnwrap ? { ...outputCurrencyInfo, amount: inputCurrencyInfo.amount } : outputCurrencyInfo
+                }
+                priceImpactParams={!disablePriceImpact ? priceImpact : undefined}
+                topLabel={isWrapOrUnwrap ? undefined : outputCurrencyInfo.label}
+                {...currencyInputCommonProps}
+              />
+            </div>
             {withRecipient && (
               <styledEl.StyledRemoveRecipient recipient={recipient || ''} onChangeRecipient={onChangeRecipient} />
             )}
