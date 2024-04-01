@@ -13,6 +13,7 @@ import { PriceImpactDeclineError, TradeFlowContext } from 'modules/limitOrders/s
 import { LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
 import { useNavigateToOpenOrdersTable } from 'modules/ordersTable'
+import { useCloseReceiptModal } from 'modules/ordersTable/containers/OrdersReceiptModal/hooks'
 import { TradeConfirmActions } from 'modules/trade/hooks/useTradeConfirmActions'
 import { useHideAlternativeOrderModal } from 'modules/trade/state/alternativeOrder'
 import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
@@ -31,6 +32,7 @@ export function useHandleOrderPlacement(
   const { confirmPriceImpactWithoutFee } = useConfirmPriceImpactWithoutFee()
   const updateLimitOrdersState = useUpdateLimitOrdersRawState()
   const hideAlternativeOrderModal = useHideAlternativeOrderModal()
+  const closeReceiptModal = useCloseReceiptModal()
   const navigateToOpenOrdersTable = useNavigateToOpenOrdersTable()
   const [partiallyFillableOverride, setPartiallyFillableOverride] = useAtom(partiallyFillableOverrideAtom)
   // tx bundling stuff
@@ -105,6 +107,8 @@ export function useHandleOrderPlacement(
         hideAlternativeOrderModal()
         // Navigate to open orders
         navigateToOpenOrdersTable()
+        // Close receipt modal
+        closeReceiptModal()
       })
       .catch((error) => {
         if (error instanceof PriceImpactDeclineError) return
@@ -122,6 +126,7 @@ export function useHandleOrderPlacement(
     setPartiallyFillableOverride,
     hideAlternativeOrderModal,
     navigateToOpenOrdersTable,
+    closeReceiptModal,
   ])
 }
 
