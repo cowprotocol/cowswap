@@ -11,7 +11,7 @@ export class FractionUtils {
   static serializeFractionToJSON(fraction: Nullish<Fraction>): string {
     if (!fraction) return ''
     const { numerator, denominator } = fraction
-    return JSON.stringify({ numerator: numerator + '', denominator: denominator + '' })
+    return JSON.stringify({ numerator: numerator.toString(), denominator: denominator.toString() })
   }
 
   static parseFractionFromJSON(s: Nullish<string>): Fraction | null {
