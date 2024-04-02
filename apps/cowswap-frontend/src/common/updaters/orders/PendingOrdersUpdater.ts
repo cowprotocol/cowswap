@@ -9,7 +9,7 @@ import {
 } from '@cowprotocol/common-utils'
 import { EnrichedOrder, EthflowData, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { Command, UiOrderType } from '@cowprotocol/types'
-import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
+import { GnosisSafeInfo, useGnosisSafeInfo, useWalletInfo } from '@cowprotocol/wallet'
 
 import { GetSafeTxInfo, useGetSafeTxInfo } from 'legacy/hooks/useGetSafeTxInfo'
 import { FulfillOrdersBatchParams, Order, OrderStatus } from 'legacy/state/orders/actions'
@@ -54,8 +54,10 @@ import { useTriggerTotalSurplusUpdateCallback } from '../../state/totalSurplusSt
 async function _updatePresignGnosisSafeTx(
   chainId: ChainId,
   allPendingOrders: Order[],
-  getSafeInfo: GetSafeTxInfo,
-  updatePresignGnosisSafeTx: UpdatePresignGnosisSafeTxCallback
+  getSafeTxInfo: GetSafeTxInfo,
+  updatePresignGnosisSafeTx: UpdatePresignGnosisSafeTxCallback,
+  cancelOrdersBatch: CancelOrdersBatchCallback,
+  safeInfo: GnosisSafeInfo | undefined
 ) {
   const getSafeTxPromises = allPendingOrders
     // Update orders that are pending for presingature
@@ -65,13 +67,34 @@ async function _updatePresignGnosisSafeTx(
       const presignGnosisSafeTxHash = order.presignGnosisSafeTxHash as string
       console.log('[PendingOrdersUpdater] Get Gnosis Transaction info for tx:', presignGnosisSafeTxHash)
 
-      const { promise: safeTransactionPromise } = getSafeInfo(presignGnosisSafeTxHash)
+      const { promise: safeTransactionPromise } = getSafeTxInfo(presignGnosisSafeTxHash)
 
       // Get safe info
       return safeTransactionPromise
         .then((safeTransaction) => {
-          console.log('[PendingOrdersUpdater] Update Gnosis Safe transaction info: ', safeTransaction)
-          updatePresignGnosisSafeTx({ orderId: order.id, chainId, safeTransaction })
+          const safeNonce = safeInfo?.nonce
+
+          /**
+           * If an order has a nonce lower than the current Safe nonce, it means that the proposed transaction was replaced by another one.
+           * In this case, we should cancel the order.
+           */
+          const isOrderTxReplaced = !!(safeNonce && safeTransaction.nonce < safeNonce && !safeTransaction.isExecuted)
+
+          if (isOrderTxReplaced) {
+            cancelOrdersBatch({
+              ids: [order.id],
+              chainId,
+              isSafeWallet: true,
+            })
+
+            console.warn('[PendingOrdersUpdater] Safe order tx was replaced, cancelling order:', order.id)
+          } else {
+            console.log('[PendingOrdersUpdater] Update Gnosis Safe transaction info: ', {
+              orderId: order.id,
+              safeTransaction,
+            })
+            updatePresignGnosisSafeTx({ orderId: order.id, chainId, safeTransaction })
+          }
         })
         .catch((error) => {
           if (!error.isCancelledError) {
@@ -144,7 +167,8 @@ interface UpdateOrdersParams {
   addOrderToSurplusQueue: (orderId: string) => void
   triggerTotalSurplusUpdate: Command | null
   updatePresignGnosisSafeTx: UpdatePresignGnosisSafeTxCallback
-  getSafeInfo: GetSafeTxInfo
+  getSafeTxInfo: GetSafeTxInfo
+  safeInfo: GnosisSafeInfo | undefined
 }
 
 async function _updateOrders({
@@ -161,7 +185,8 @@ async function _updateOrders({
   addOrderToSurplusQueue,
   triggerTotalSurplusUpdate,
   updatePresignGnosisSafeTx,
-  getSafeInfo,
+  getSafeTxInfo,
+  safeInfo,
 }: UpdateOrdersParams): Promise<void> {
   // Only check pending orders of current connected account
   const lowerCaseAccount = account.toLowerCase()
@@ -265,7 +290,14 @@ async function _updateOrders({
   }
 
   // Update the presign Gnosis Safe Tx info (if applies)
-  await _updatePresignGnosisSafeTx(chainId, orders, getSafeInfo, updatePresignGnosisSafeTx)
+  await _updatePresignGnosisSafeTx(
+    chainId,
+    orders,
+    getSafeTxInfo,
+    updatePresignGnosisSafeTx,
+    cancelOrdersBatch,
+    safeInfo
+  )
   // Update the creating EthFlow orders (if any)
   await _updateCreatingOrders(chainId, orders, isSafeWallet, addOrUpdateOrders)
 }
@@ -294,7 +326,8 @@ function _triggerNps(pending: Order[], chainId: ChainId) {
 }
 
 export function PendingOrdersUpdater(): null {
-  const isSafeWallet = useIsSafeWallet()
+  const safeInfo = useGnosisSafeInfo()
+  const isSafeWallet = !!safeInfo
   const { chainId, account } = useWalletInfo()
   const removeOrdersToCancel = useSetAtom(removeOrdersToCancelAtom)
 
@@ -325,7 +358,7 @@ export function PendingOrdersUpdater(): null {
   const addOrderToSurplusQueue = useAddOrderToSurplusQueue()
   const triggerTotalSurplusUpdate = useTriggerTotalSurplusUpdateCallback()
   const updatePresignGnosisSafeTx = useUpdatePresignGnosisSafeTx()
-  const getSafeInfo = useGetSafeTxInfo()
+  const getSafeTxInfo = useGetSafeTxInfo()
 
   const fulfillOrdersBatch = useCallback(
     (fulfillOrdersBatchParams: FulfillOrdersBatchParams) => {
@@ -364,7 +397,8 @@ export function PendingOrdersUpdater(): null {
           addOrderToSurplusQueue,
           triggerTotalSurplusUpdate,
           updatePresignGnosisSafeTx,
-          getSafeInfo,
+          getSafeTxInfo,
+          safeInfo,
         }).finally(() => {
           isUpdating.current = false
         })
@@ -380,7 +414,8 @@ export function PendingOrdersUpdater(): null {
       addOrderToSurplusQueue,
       triggerTotalSurplusUpdate,
       updatePresignGnosisSafeTx,
-      getSafeInfo,
+      getSafeTxInfo,
+      safeInfo,
     ]
   )
 
