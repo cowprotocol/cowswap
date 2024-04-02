@@ -1,3 +1,5 @@
+import React from 'react'
+
 import { getIsNativeToken, getWrappedToken } from '@cowprotocol/common-utils'
 import { TokenSymbol } from '@cowprotocol/ui'
 
