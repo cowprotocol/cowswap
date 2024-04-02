@@ -1,17 +1,25 @@
 import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
-import { mapSupportedNetworks } from '@cowprotocol/cow-sdk'
+import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { ListSourceConfig, ListsSourcesByNetwork, ListState, TokenListsState } from '../../types'
-import { DEFAULT_TOKENS_LISTS, UNISWAP_TOKENS_LIST } from '../../const/tokensLists'
+import { DEFAULT_TOKENS_LISTS, GNOSIS_UNISWAP_TOKENS_LIST, UNISWAP_TOKENS_LIST } from '../../const/tokensLists'
 import { environmentAtom } from '../environmentAtom'
 import { getJotaiMergerStorage } from '@cowprotocol/core'
 
-const UNISWAP_LIST_SOURCE: ListSourceConfig = {
-  priority: 1,
-  enabledByDefault: true,
-  source: UNISWAP_TOKENS_LIST,
+const getUniswapTokenListUrl = (chainId: number) => {
+  return chainId === SupportedChainId.GNOSIS_CHAIN ? GNOSIS_UNISWAP_TOKENS_LIST : UNISWAP_TOKENS_LIST
 }
+
+const curatedListSourceAtom = atom((get) => {
+  const UNISWAP_LIST_SOURCE: ListSourceConfig = {
+    priority: 1,
+    enabledByDefault: true,
+    source: getUniswapTokenListUrl(get(environmentAtom).chainId),
+  }
+
+  return UNISWAP_LIST_SOURCE
+})
 
 export const userAddedListsSourcesAtom = atomWithStorage<ListsSourcesByNetwork>(
   'userAddedTokenListsAtom:v3',
@@ -24,7 +32,7 @@ export const allListsSourcesAtom = atom((get) => {
   const userAddedTokenLists = get(userAddedListsSourcesAtom)
 
   if (useCuratedListOnly) {
-    return [UNISWAP_LIST_SOURCE, ...userAddedTokenLists[chainId]]
+    return [get(curatedListSourceAtom), ...userAddedTokenLists[chainId]]
   }
 
   return [...DEFAULT_TOKENS_LISTS[chainId], ...(userAddedTokenLists[chainId] || [])]
@@ -32,7 +40,7 @@ export const allListsSourcesAtom = atom((get) => {
 
 // Lists states
 export const listsStatesByChainAtom = atomWithStorage<TokenListsState>(
-  'allTokenListsInfoAtom:v4',
+  'allTokenListsInfoAtom:v3',
   mapSupportedNetworks({}),
   getJotaiMergerStorage()
 )
@@ -52,7 +60,8 @@ export const listsStatesMapAtom = atom((get) => {
   const listsSources = Object.keys(currentNetworkLists).filter((source) => {
     return useCuratedListOnly ? userAddedListSources[source] : true
   })
-  const lists = useCuratedListOnly ? [UNISWAP_TOKENS_LIST, ...listsSources] : listsSources
+
+  const lists = useCuratedListOnly ? [get(curatedListSourceAtom).source, ...listsSources] : listsSources
 
   return lists.reduce<{ [source: string]: ListState }>((acc, source) => {
     const list = currentNetworkLists[source]

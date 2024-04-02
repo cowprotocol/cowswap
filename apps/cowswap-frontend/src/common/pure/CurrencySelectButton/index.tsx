@@ -12,11 +12,10 @@ export interface CurrencySelectButtonProps {
   loading: boolean
   readonlyMode?: boolean
   onClick?(): void
-  wasImFeelingLuckyClicked?: boolean
 }
 
 export function CurrencySelectButton(props: CurrencySelectButtonProps) {
-  const { currency, onClick, loading, readonlyMode = false, wasImFeelingLuckyClicked = false } = props
+  const { currency, onClick, loading, readonlyMode = false } = props
   const $stubbed = !currency || false
 
   return (
@@ -27,7 +26,6 @@ export function CurrencySelectButton(props: CurrencySelectButtonProps) {
       onClick={onClick}
       isLoading={loading}
       $stubbed={$stubbed}
-      wasImFeelingLuckyClicked={wasImFeelingLuckyClicked}
     >
       {currency ? <TokenLogo token={currency} size={24} /> : <div></div>}
       <styledEl.CurrencySymbol className="token-symbol-container" $stubbed={$stubbed}>
