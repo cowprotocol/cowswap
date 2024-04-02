@@ -9,35 +9,55 @@ import { EthFlowStepperProps, SmartOrderStatus } from '..'
 import { StatusIconState } from '../StatusIcon'
 import { Step, ExplorerLinkStyled } from '../Step'
 
-export function Step1({ nativeTokenSymbol, order, creation }: EthFlowStepperProps) {
-  const { state, isExpired } = order
-  const isCreating = state === SmartOrderStatus.CREATING
-  const { hash, failed } = creation
+interface Step1Config {
+  icon: string
+  state: StatusIconState
+  label: string
+}
 
-  let label: string, stepState: StatusIconState, icon: string
+export function Step1(props: EthFlowStepperProps) {
+  const {
+    creation: { hash },
+  } = props
 
-  if (failed) {
-    label = 'Transaction failed'
-    stepState = 'error'
-    icon = X
-  } else if (isCreating) {
-    label = 'Sending ' + nativeTokenSymbol
-    if (isExpired) {
-      stepState = 'error'
-      icon = Exclamation
-    } else {
-      stepState = 'pending'
-      icon = Send
-    }
-  } else {
-    label = 'Sent ' + nativeTokenSymbol
-    stepState = 'success'
-    icon = Checkmark
-  }
+  const { label, state, icon } = getStepConfig(props)
 
   return (
-    <Step state={stepState} icon={icon} label={label}>
+    <Step state={state} icon={icon} label={label}>
       {hash && <ExplorerLinkStyled type="transaction" label="View transaction" id={hash} />}
     </Step>
   )
+}
+
+function getStepConfig({ order, creation, nativeTokenSymbol }: EthFlowStepperProps): Step1Config {
+  const { failed, cancelled, replaced } = creation
+  if (failed || cancelled || replaced) {
+    return {
+      icon: X,
+      state: 'error',
+      label: 'Transaction ' + (failed ? 'failed' : cancelled ? 'cancelled' : 'replaced'),
+    }
+  }
+
+  if (order.isExpired) {
+    return {
+      icon: Exclamation,
+      state: 'error',
+      label: 'Order Expired',
+    }
+  }
+
+  if (order.state === SmartOrderStatus.CREATING) {
+    return {
+      icon: Send,
+      state: 'pending',
+      label: 'Sending ' + nativeTokenSymbol,
+    }
+  }
+
+  return {
+    icon: Checkmark,
+    state: 'success',
+    label: 'Sent ' + nativeTokenSymbol,
+  }
 }

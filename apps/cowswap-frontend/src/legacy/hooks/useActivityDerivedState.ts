@@ -8,9 +8,11 @@ import { SafeInfoResponse } from '@safe-global/api-kit'
 import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/reducer'
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 
-import { ActivityDerivedState } from 'modules/account/containers/Transaction'
+import { ActivityDerivedState, OrderCreationTxInfo } from 'modules/account/containers/Transaction'
 
 import { ActivityDescriptors, ActivityStatus, ActivityType } from './useRecentActivity'
+
+import { useAllTransactions } from '../state/enhancedTransactions/hooks'
 
 export function useActivityDerivedState({
   chainId,
@@ -19,12 +21,32 @@ export function useActivityDerivedState({
   chainId: number | undefined
   activity: ActivityDescriptors
 }): ActivityDerivedState | null {
+  const allTransactions = useAllTransactions()
   const gnosisSafeInfo = useGnosisSafeInfo()
+
+  const orderCreationTxInfo: OrderCreationTxInfo | undefined = useMemo(() => {
+    const isOrder = activity.type === ActivityType.ORDER
+    const order = isOrder ? (activity.activity as Order) : undefined
+
+    if (order?.orderCreationHash) {
+      const orderCreationTx = allTransactions[order.orderCreationHash]
+      const orderCreationLinkedTx = orderCreationTx?.linkedTransactionHash
+        ? allTransactions[orderCreationTx.linkedTransactionHash]
+        : undefined
+
+      return {
+        orderCreationTx,
+        orderCreationLinkedTx,
+      }
+    }
+
+    return undefined
+  }, [allTransactions, activity])
 
   // Get some derived information about the activity. It helps to simplify the rendering of the subcomponents
   return useMemo(
-    () => getActivityDerivedState({ chainId, activityData: activity, gnosisSafeInfo }),
-    [chainId, activity, gnosisSafeInfo]
+    () => getActivityDerivedState({ chainId, activityData: activity, gnosisSafeInfo, orderCreationTxInfo }),
+    [chainId, activity, gnosisSafeInfo, orderCreationTxInfo]
   )
 }
 
@@ -32,8 +54,10 @@ export function getActivityDerivedState(props: {
   chainId?: number
   activityData: ActivityDescriptors | null
   gnosisSafeInfo?: SafeInfoResponse
+  orderCreationTxInfo?: OrderCreationTxInfo
 }): ActivityDerivedState | null {
-  const { chainId, activityData, gnosisSafeInfo } = props
+  const { chainId, activityData, gnosisSafeInfo, orderCreationTxInfo } = props
+
   if (!activityData || chainId === undefined) {
     return null
   }
@@ -44,10 +68,14 @@ export function getActivityDerivedState(props: {
   const order = isOrder ? (activity as Order) : undefined
   const enhancedTransaction = isTransaction ? (activity as EnhancedTransactionDetails) : undefined
 
+  // Eth-flow related
+  const isEthOrderCreationReplaced = orderCreationTxInfo?.orderCreationLinkedTx?.replacementType === 'replaced'
+  const isEthOrderCreationCancelled = orderCreationTxInfo?.orderCreationLinkedTx?.replacementType === 'cancel'
+
   // Calculate some convenient status flags
-  const isReplaced = enhancedTransaction?.replacementType === 'replaced'
-  const isPending = !isReplaced && status === ActivityStatus.PENDING
-  const isConfirmed = !isReplaced && status === ActivityStatus.CONFIRMED
+  const isReplaced = enhancedTransaction?.replacementType === 'replaced' || isEthOrderCreationReplaced
+  const isPending = !isReplaced && !isEthOrderCreationCancelled && status === ActivityStatus.PENDING
+  const isConfirmed = !isReplaced && !isEthOrderCreationCancelled && status === ActivityStatus.CONFIRMED
 
   const activityLinkUrl = getActivityLinkUrl({ id, chainId, enhancedTransaction, order })
 
@@ -67,7 +95,7 @@ export function getActivityDerivedState(props: {
     isPresignaturePending: status === ActivityStatus.PRESIGNATURE_PENDING,
     isExpired: status === ActivityStatus.EXPIRED,
     isCancelling: status === ActivityStatus.CANCELLING,
-    isCancelled: !isConfirmed && status === ActivityStatus.CANCELLED,
+    isCancelled: !isConfirmed && (status === ActivityStatus.CANCELLED || isEthOrderCreationCancelled),
     isUnfillable: (activity as Order).isUnfillable,
     isCreating: status === ActivityStatus.CREATING,
     isFailed: status === ActivityStatus.FAILED,
@@ -139,7 +167,6 @@ export function getActivityState({
 }: ActivityDerivedState): ActivityState {
   if (isPending) {
     if (enhancedTransaction) {
-      console.log('enhancedTransaction', enhancedTransaction)
       const { safeTransaction, transactionHash } = enhancedTransaction
       if (safeTransaction && !transactionHash) {
         return 'signing'
