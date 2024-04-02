@@ -23,7 +23,6 @@ interface TradeWidgetParams {
   disableQuotePolling?: boolean
   disableNativeSelling?: boolean
   disablePriceImpact: boolean
-  hideBuyTokenInput?: boolean
 }
 
 export interface TradeWidgetSlots {
