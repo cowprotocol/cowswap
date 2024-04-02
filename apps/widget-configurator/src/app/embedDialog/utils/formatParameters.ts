@@ -3,12 +3,7 @@ import { CowSwapWidgetParams } from '@cowprotocol/widget-lib'
 import { sanitizeParameters } from './sanitizeParameters'
 
 import { ColorPalette } from '../../configurator/types'
-import {
-  COMMENTS_BY_PARAM_NAME,
-  COMMENTS_BY_PARAM_NAME_TYPESCRIPT,
-  REMOVE_PARAMS,
-  VALUES_BY_PARAM_NAME,
-} from '../const'
+import { COMMENTS_BY_PARAM_NAME, COMMENTS_BY_PARAM_NAME_TYPESCRIPT, REMOVE_PARAMS } from '../const'
 
 export function formatParameters(
   params: CowSwapWidgetParams,
@@ -35,9 +30,7 @@ export function formatParameters(
 
   // Add values
   const tradeTypeValue = isTypescript ? 'TradeType.' + params.tradeType?.toUpperCase() : `"${params.tradeType}"`
-  const valuesByParamName: Record<string, string> = tradeTypeValue
-    ? { ...VALUES_BY_PARAM_NAME, tradeType: tradeTypeValue }
-    : VALUES_BY_PARAM_NAME
+  const valuesByParamName: Record<string, string> = tradeTypeValue ? { tradeType: tradeTypeValue } : {}
 
   let resultWithValues = Object.keys(valuesByParamName).reduce((acc, propName) => {
     return acc.replace(new RegExp(`("${propName}".* )(".*")(.*)$`, 'gm'), `$1${valuesByParamName[propName]}$3`)
