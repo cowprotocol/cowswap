@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.0.0...common-utils-v1.0.1) (2024-04-02)
+
+
+### Bug Fixes
+
+* **april-fools:** revert april fools ([#4116](https://github.com/cowprotocol/cowswap/issues/4116)) ([c8fb7d1](https://github.com/cowprotocol/cowswap/commit/c8fb7d1cb124f154e1b317c3e6fd503a65a12336))
+
 ## 1.0.0 (2024-03-29)
 
 
