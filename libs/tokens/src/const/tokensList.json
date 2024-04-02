@@ -61,6 +61,11 @@
       "priority": 2,
       "enabledByDefault": true,
       "source": "https://tokens.honeyswap.org"
+    },
+    {
+      "priority": 3,
+      "enabledByDefault": true,
+      "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/GnosisUniswapTokensList.json"
     }
   ],
   "11155111": [
