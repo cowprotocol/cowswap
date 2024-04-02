@@ -33,9 +33,8 @@ import { useGetTwapOrderById } from 'modules/twap/hooks/useGetTwapOrderById'
 
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
-import { OnchainTransactionEventsUpdater } from './OnchainTransactionEventsUpdater'
-
-import { emitOnchainTransactionEvent } from '../utils/emitOnchainTransactionEvent'
+import { emitOnchainTransactionEvent } from '../../utils/emitOnchainTransactionEvent'
+import { OnchainTransactionEventsUpdater } from '../OnchainTransactionEventsUpdater'
 
 const DELAY_REMOVAL_ETH_FLOW_ORDER_ID_MILLISECONDS = ms`2m` // Delay removing the order ID since the creation time its mined (minor precaution just to avoid edge cases of delay in indexing times affect the collision detection
 
