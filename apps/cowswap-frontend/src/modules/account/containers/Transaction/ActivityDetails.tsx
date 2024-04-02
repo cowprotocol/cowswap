@@ -67,6 +67,8 @@ function GnosisSafeTxDetails(props: {
     activityDerivedState
   const gnosisSafeThreshold = gnosisSafeInfo?.threshold
   const safeTransaction = enhancedTransaction?.safeTransaction || order?.presignGnosisSafeTx
+  const isReplaced = enhancedTransaction?.replacementType === 'replaced'
+
   if (!gnosisSafeThreshold || !gnosisSafeInfo || !safeTransaction) {
     return null
   }
@@ -119,12 +121,16 @@ function GnosisSafeTxDetails(props: {
       </span>
     ) : (
       <>
-        <span>
-          Enough signatures, <b>but not executed</b>
-        </span>
-        <TextAlert isPending={isPendingSignatures} isCancelled={isCancelled} isExpired={isExpired}>
-          Execute Safe transaction
-        </TextAlert>
+        {!isReplaced && (
+          <>
+            <span>
+              Enough signatures, <b>but not executed</b>
+            </span>
+            <TextAlert isPending={isPendingSignatures} isCancelled={isCancelled} isExpired={isExpired}>
+              Execute Safe transaction
+            </TextAlert>
+          </>
+        )}
       </>
     )
   } else {

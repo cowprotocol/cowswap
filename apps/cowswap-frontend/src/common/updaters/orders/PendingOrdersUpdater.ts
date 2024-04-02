@@ -11,7 +11,7 @@ import { EnrichedOrder, EthflowData, SupportedChainId as ChainId } from '@cowpro
 import { Command, UiOrderType } from '@cowprotocol/types'
 import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
 
-import { GetSafeInfo, useGetSafeInfo } from 'legacy/hooks/useGetSafeInfo'
+import { GetSafeTxInfo, useGetSafeTxInfo } from 'legacy/hooks/useGetSafeTxInfo'
 import { FulfillOrdersBatchParams, Order, OrderStatus } from 'legacy/state/orders/actions'
 import { LIMIT_OPERATOR_API_POLL_INTERVAL, MARKET_OPERATOR_API_POLL_INTERVAL } from 'legacy/state/orders/consts'
 import {
@@ -54,7 +54,7 @@ import { useTriggerTotalSurplusUpdateCallback } from '../../state/totalSurplusSt
 async function _updatePresignGnosisSafeTx(
   chainId: ChainId,
   allPendingOrders: Order[],
-  getSafeInfo: GetSafeInfo,
+  getSafeInfo: GetSafeTxInfo,
   updatePresignGnosisSafeTx: UpdatePresignGnosisSafeTxCallback
 ) {
   const getSafeTxPromises = allPendingOrders
@@ -144,7 +144,7 @@ interface UpdateOrdersParams {
   addOrderToSurplusQueue: (orderId: string) => void
   triggerTotalSurplusUpdate: Command | null
   updatePresignGnosisSafeTx: UpdatePresignGnosisSafeTxCallback
-  getSafeInfo: GetSafeInfo
+  getSafeInfo: GetSafeTxInfo
 }
 
 async function _updateOrders({
@@ -325,7 +325,7 @@ export function PendingOrdersUpdater(): null {
   const addOrderToSurplusQueue = useAddOrderToSurplusQueue()
   const triggerTotalSurplusUpdate = useTriggerTotalSurplusUpdateCallback()
   const updatePresignGnosisSafeTx = useUpdatePresignGnosisSafeTx()
-  const getSafeInfo = useGetSafeInfo()
+  const getSafeInfo = useGetSafeTxInfo()
 
   const fulfillOrdersBatch = useCallback(
     (fulfillOrdersBatchParams: FulfillOrdersBatchParams) => {

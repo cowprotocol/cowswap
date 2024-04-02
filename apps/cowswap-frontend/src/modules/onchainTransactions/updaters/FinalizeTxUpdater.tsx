@@ -5,14 +5,14 @@ import { useAddPriorityAllowance } from '@cowprotocol/balances-and-allowances'
 import { GetReceipt, useBlockNumber, useGetReceipt } from '@cowprotocol/common-hooks'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
-import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
+import { GnosisSafeInfo, useGnosisSafeInfo, useWalletInfo } from '@cowprotocol/wallet'
 import { TransactionReceipt } from '@ethersproject/abstract-provider'
 import { useWeb3React } from '@web3-react/core'
 
 import { orderBookApi } from 'cowSdk'
 import ms from 'ms.macro'
 
-import { GetSafeInfo, useGetSafeInfo } from 'legacy/hooks/useGetSafeInfo'
+import { GetSafeTxInfo, useGetSafeTxInfo } from 'legacy/hooks/useGetSafeTxInfo'
 import { AppDispatch } from 'legacy/state'
 import {
   checkedTransaction,
@@ -71,12 +71,13 @@ interface CheckEthereumTransactions {
   lastBlockNumber: number
   getTwapOrderById: ReturnType<typeof useGetTwapOrderById>
   getReceipt: GetReceipt
-  getSafeInfo: GetSafeInfo
+  getTxSafeInfo: GetSafeTxInfo
   dispatch: AppDispatch
   addPriorityAllowance: ReturnType<typeof useAddPriorityAllowance>
   removeInFlightOrderId: (update: string) => void
   nativeCurrencySymbol: string
   cancelOrdersBatch: CancelOrdersBatchCallback
+  safeInfo: GnosisSafeInfo | undefined
 }
 
 function finalizeEthereumTransaction(
@@ -242,33 +243,32 @@ function finalizeOnChainCancellation(
   }
 }
 function checkEthereumTransactions(params: CheckEthereumTransactions): Command[] {
-  const { transactions, chainId, lastBlockNumber, getReceipt, getSafeInfo, dispatch, transactionsCount } = params
+  const { transactions, chainId, lastBlockNumber, getReceipt, getTxSafeInfo, dispatch, transactionsCount, safeInfo } =
+    params
 
   return transactions.map((transaction) => {
     const { hash, hashType, receipt } = transaction
 
-    const handleTransactionFetchFail = () => {
-      const isTransactionOutdated = transaction.nonce === undefined || transaction.nonce < transactionsCount
+    const handleTransactionReplacement = () => {
+      console.log('[FinalizeTxUpdater] Transaction is outdated, moving it to "replaced" state.', { hash })
 
-      if (isTransactionOutdated) {
-        console.log('[FinalizeTxUpdater] Transaction is outdated, moving it to "replaced" state.', {
-          hash,
-          nonce: transaction.nonce,
-          transactionsCount,
-        })
-
-        dispatch(replaceTransaction({ chainId, oldHash: hash, newHash: hash, type: 'replaced' }))
-      }
+      dispatch(replaceTransaction({ chainId, oldHash: hash, newHash: hash, type: 'replaced' }))
     }
 
     if (hashType === HashType.GNOSIS_SAFE_TX) {
       // Get safe info and receipt
-      const { promise: safeTransactionPromise, cancel } = getSafeInfo(hash)
+      const { promise: safeTransactionPromise, cancel } = getTxSafeInfo(hash)
 
       // Get safe info
       safeTransactionPromise
         .then(async (safeTransaction) => {
           const { isExecuted, transactionHash } = safeTransaction
+          const safeNonce = safeInfo?.nonce
+
+          if (typeof safeNonce === 'number' && safeNonce > safeTransaction.nonce) {
+            handleTransactionReplacement()
+            return
+          }
 
           // If the safe transaction is executed, but we don't have a tx receipt yet
           if (isExecuted && !receipt) {
@@ -298,8 +298,6 @@ function checkEthereumTransactions(params: CheckEthereumTransactions): Command[]
           if (!error.isCancelledError) {
             console.error(`[FinalizeTxUpdater] Failed to check transaction hash: ${hash}`, error)
           }
-
-          handleTransactionFetchFail()
         })
 
       return cancel
@@ -321,7 +319,9 @@ function checkEthereumTransactions(params: CheckEthereumTransactions): Command[]
             console.error(`[FinalizeTxUpdater] Failed to get transaction receipt for tx: ${hash}`, error)
           }
 
-          handleTransactionFetchFail()
+          if (transaction.nonce === undefined || transaction.nonce < transactionsCount) {
+            handleTransactionReplacement()
+          }
         })
 
       return cancel
@@ -332,14 +332,15 @@ function checkEthereumTransactions(params: CheckEthereumTransactions): Command[]
 export function FinalizeTxUpdater() {
   const { provider } = useWeb3React()
   const { chainId, account } = useWalletInfo()
-  const isSafeWallet = useIsSafeWallet()
+  const safeInfo = useGnosisSafeInfo()
+  const isSafeWallet = !!safeInfo
   const lastBlockNumber = useBlockNumber()
   const accountLowerCase = account?.toLowerCase() || ''
 
   const dispatch = useAppDispatch()
   const cancelOrdersBatch = useCancelOrdersBatch()
   const getReceipt = useGetReceipt(chainId)
-  const getSafeInfo = useGetSafeInfo()
+  const getTxSafeInfo = useGetSafeTxInfo()
   const addPriorityAllowance = useAddPriorityAllowance()
   const getTwapOrderById = useGetTwapOrderById()
   const removeInFlightOrderId = useSetAtom(removeInFlightOrderIdAtom)
@@ -350,8 +351,9 @@ export function FinalizeTxUpdater() {
     if (!lastBlockNumber) {
       return
     }
-    return (tx: EnhancedTransactionDetails) =>
-      tx.from.toLowerCase() === accountLowerCase && shouldCheck(lastBlockNumber, tx)
+    return (tx: EnhancedTransactionDetails) => {
+      return tx.from.toLowerCase() === accountLowerCase && !tx.replacementType && shouldCheck(lastBlockNumber, tx)
+    }
   }, [accountLowerCase, lastBlockNumber])
   const transactions = useAllTransactionsDetails(shouldCheckFilter)
 
@@ -367,7 +369,7 @@ export function FinalizeTxUpdater() {
         isSafeWallet,
         lastBlockNumber,
         getReceipt,
-        getSafeInfo,
+        getTxSafeInfo,
         dispatch,
         removeInFlightOrderId,
         nativeCurrencySymbol,
@@ -376,6 +378,7 @@ export function FinalizeTxUpdater() {
         account,
         getTwapOrderById,
         transactionsCount,
+        safeInfo,
       })
     })
 
@@ -392,12 +395,13 @@ export function FinalizeTxUpdater() {
     lastBlockNumber,
     dispatch,
     getReceipt,
-    getSafeInfo,
+    getTxSafeInfo,
     removeInFlightOrderId,
     nativeCurrencySymbol,
     cancelOrdersBatch,
     addPriorityAllowance,
     getTwapOrderById,
+    safeInfo,
   ])
 
   return <OnchainTransactionEventsUpdater />
