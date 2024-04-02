@@ -13,6 +13,7 @@ const Tabs = styled.div`
   overflow: hidden;
   margin: 0;
   border: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
+  font-size: 13px;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     width: 100%;
