@@ -1,6 +1,7 @@
 import { useAtom } from 'jotai'
 import { useCallback } from 'react'
 
+import { alternativeModalAnalytics } from '@cowprotocol/analytics'
 import { getAddress } from '@cowprotocol/common-utils'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
@@ -15,7 +16,7 @@ import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partial
 import { useNavigateToOpenOrdersTable } from 'modules/ordersTable'
 import { useCloseReceiptModal } from 'modules/ordersTable/containers/OrdersReceiptModal/hooks'
 import { TradeConfirmActions } from 'modules/trade/hooks/useTradeConfirmActions'
-import { useHideAlternativeOrderModal } from 'modules/trade/state/alternativeOrder'
+import { useAlternativeOrder, useHideAlternativeOrderModal } from 'modules/trade/state/alternativeOrder'
 import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
 
 import OperatorError from 'api/gnosisProtocol/errors/OperatorError'
@@ -32,6 +33,7 @@ export function useHandleOrderPlacement(
   const { confirmPriceImpactWithoutFee } = useConfirmPriceImpactWithoutFee()
   const updateLimitOrdersState = useUpdateLimitOrdersRawState()
   const hideAlternativeOrderModal = useHideAlternativeOrderModal()
+  const { isEdit: isAlternativeOrderEdit } = useAlternativeOrder() || {}
   const closeReceiptModal = useCloseReceiptModal()
   const navigateToOpenOrdersTable = useNavigateToOpenOrdersTable()
   const [partiallyFillableOverride, setPartiallyFillableOverride] = useAtom(partiallyFillableOverrideAtom)
@@ -109,6 +111,11 @@ export function useHandleOrderPlacement(
         navigateToOpenOrdersTable()
         // Close receipt modal
         closeReceiptModal()
+
+        // Analytics event to track alternative modal usage, only if was using alternative modal
+        if (isAlternativeOrderEdit !== undefined) {
+          alternativeModalAnalytics(isAlternativeOrderEdit, 'placed')
+        }
       })
       .catch((error) => {
         if (error instanceof PriceImpactDeclineError) return
@@ -124,9 +131,10 @@ export function useHandleOrderPlacement(
     tradeConfirmActions,
     updateLimitOrdersState,
     setPartiallyFillableOverride,
-    hideAlternativeOrderModal,
+    isAlternativeOrderEdit,
     navigateToOpenOrdersTable,
     closeReceiptModal,
+    hideAlternativeOrderModal,
   ])
 }
 
