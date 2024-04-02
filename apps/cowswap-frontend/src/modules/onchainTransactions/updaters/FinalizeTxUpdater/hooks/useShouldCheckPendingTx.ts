@@ -12,29 +12,36 @@ export function useShouldCheckPendingTx() {
   const accountLowerCase = account?.toLowerCase() || ''
 
   return useCallback(
-    (tx: EnhancedTransactionDetails) => {
-      if (!lastBlockNumber) return false
-
-      return (
-        tx.from.toLowerCase() === accountLowerCase && !tx.replacementType && shouldCheckPendingTx(lastBlockNumber, tx)
-      )
-    },
+    (tx: EnhancedTransactionDetails) => shouldCheckPendingTx(lastBlockNumber, accountLowerCase, tx),
     [accountLowerCase, lastBlockNumber]
   )
 }
 
-function shouldCheckPendingTx(lastBlockNumber: number, tx: EnhancedTransactionDetails): boolean {
-  if (tx.receipt || !tx.lastCheckedBlockNumber) return false
+function shouldCheckPendingTx(
+  lastBlockNumber: number | undefined,
+  accountLowerCase: string,
+  tx: EnhancedTransactionDetails
+): boolean {
+  const isCurrentAccount = tx.from.toLowerCase() === accountLowerCase
+  const isReplaced = !!tx.replacementType
+  const isTxMined = !!tx.receipt
+
+  if (!isCurrentAccount || isReplaced || isTxMined) return false
+
+  // If a tx was never checked, we should check it
+  if (!tx.lastCheckedBlockNumber) return true
+
+  if (!lastBlockNumber) return false
 
   const blocksSinceCheck = lastBlockNumber - tx.lastCheckedBlockNumber
   if (blocksSinceCheck < 1) return false
 
-  const minutesPending = (new Date().getTime() - tx.addedTime) / 1000 / 60
-  // every 10 blocks if pending for longer than an hour
-  if (minutesPending > 60) return blocksSinceCheck > 9
-
-  // every 3 blocks if pending more than 5 minutes
+  const minutesPending = (Date.now() - tx.addedTime) / 1000 / 60
+  // every 3 blocks if pending for longer than 5 minutes
   if (minutesPending > 5) return blocksSinceCheck >= 3
+
+  // every 2 blocks if pending more than 1 minute
+  if (minutesPending > 1) return blocksSinceCheck >= 2
 
   // otherwise every block
   return true

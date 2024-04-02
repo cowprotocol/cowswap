@@ -2,9 +2,11 @@ import { useMemo } from 'react'
 
 import { MAXIMUM_ORDERS_TO_DISPLAY } from '@cowprotocol/common-const'
 import { getDateTimestamp } from '@cowprotocol/common-utils'
-import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { SupportedChainId, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
+
+import ms from 'ms.macro'
 
 import { isTransactionRecent, useAllTransactions, useTransactionsByHash } from 'legacy/state/enhancedTransactions/hooks'
 import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/reducer'
@@ -40,6 +42,16 @@ export enum ActivityStatus {
 enum TxReceiptStatus {
   PENDING,
   CONFIRMED,
+}
+
+const ONCHAIN_TX_TIMEOUT: Record<SupportedChainId, number> = {
+  [SupportedChainId.MAINNET]: ms`30m`,
+  [SupportedChainId.GNOSIS_CHAIN]: ms`15m`,
+  [SupportedChainId.SEPOLIA]: ms`5m`,
+}
+
+function isTxExpired(tx: EnhancedTransactionDetails, chainId: SupportedChainId): boolean {
+  return Date.now() - tx.addedTime > ONCHAIN_TX_TIMEOUT[chainId]
 }
 
 /**
@@ -87,14 +99,20 @@ export function useRecentActivity(): TransactionAndOrder[] {
             isNotOnChainCancellationTx(tx)
           )
         })
-        .map((tx) => ({
-          ...tx,
-          // we need to adjust Transaction object and add "id" + "status" to match Orders type
-          id: tx.hash,
-          status: tx.receipt ? OrderStatus.FULFILLED : OrderStatus.PENDING,
-        }))
+        .map((tx) => {
+          return {
+            ...tx,
+            // we need to adjust Transaction object and add "id" + "status" to match Orders type
+            id: tx.hash,
+            status: tx.receipt
+              ? OrderStatus.FULFILLED
+              : isTxExpired(tx, chainId)
+              ? OrderStatus.EXPIRED
+              : OrderStatus.PENDING,
+          }
+        })
     )
-  }, [account, allTransactions])
+  }, [chainId, account, allTransactions])
 
   return useMemo(
     () =>
@@ -119,7 +137,11 @@ type UseActivityDescriptionParams = {
   ids: string[]
 }
 
-export function createActivityDescriptor(tx?: EnhancedTransactionDetails, order?: Order): ActivityDescriptors | null {
+export function createActivityDescriptor(
+  chainId: SupportedChainId,
+  tx?: EnhancedTransactionDetails,
+  order?: Order
+): ActivityDescriptors | null {
   if (!tx && !order) return null
 
   let activity: EnhancedTransactionDetails | Order, type: ActivityType
@@ -163,9 +185,9 @@ export function createActivityDescriptor(tx?: EnhancedTransactionDetails, order?
     id = tx.hash
 
     const isReceiptConfirmed =
-      tx.receipt?.status === TxReceiptStatus.CONFIRMED || typeof tx.receipt?.status === 'undefined'
+      !!tx.receipt && (tx.receipt.status === TxReceiptStatus.CONFIRMED || typeof tx.receipt.status === 'undefined')
     const isCancelTx = tx?.replacementType === 'cancel'
-    isPending = !tx.receipt
+    isPending = !tx.receipt && !isTxExpired(tx, chainId)
     isPresignaturePending = false
     isConfirmed = !isPending && isReceiptConfirmed
     isCancelling = isCancelTx && isPending
@@ -221,7 +243,7 @@ export function useMultipleActivityDescriptors({ chainId, ids }: UseActivityDesc
     if (!chainId) return []
 
     return ids.reduce<ActivityDescriptors[]>((acc, id) => {
-      const activity = createActivityDescriptor(txs[id], orders?.[id])
+      const activity = createActivityDescriptor(chainId, txs[id], orders?.[id])
       if (activity) {
         acc.push(activity)
       }
@@ -244,7 +266,7 @@ export function useSingleActivityDescriptor({
 
   return useMemo(() => {
     if (!chainId) return null
-    return createActivityDescriptor(tx, order)
+    return createActivityDescriptor(chainId, tx, order)
   }, [chainId, order, tx])
 }
 

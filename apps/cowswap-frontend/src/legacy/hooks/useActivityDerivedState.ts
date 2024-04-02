@@ -154,7 +154,7 @@ export function getActivityState({
   }
 
   if (isExpired) {
-    return isOrder ? 'expired' : 'failed'
+    return 'expired'
   }
 
   if (isCancelling) {
