@@ -20,6 +20,7 @@ const Tabs = styled.div`
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: max-content;
+    font-size: 12px;
   `};
 `
 
@@ -29,7 +30,7 @@ const TabButton = styled(Link)<{ active: string }>`
   color: ${({ active }) => (active === 'true' ? `var(${UI.COLOR_TEXT_PAPER})` : 'inherit')};
   font-weight: ${({ active }) => (active === 'true' ? '600' : '400')};
   text-decoration: none;
-  font-size: 13px;
+  font-size: inherit;
   padding: 10px 24px;
   border: 0;
   outline: none;
