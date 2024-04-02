@@ -17,6 +17,7 @@ import { AppDispatch } from 'legacy/state'
 import {
   checkedTransaction,
   finalizeTransaction,
+  replaceTransaction,
   updateSafeTransaction,
 } from 'legacy/state/enhancedTransactions/actions'
 import { useAllTransactionsDetails } from 'legacy/state/enhancedTransactions/hooks'
@@ -64,6 +65,7 @@ export function shouldCheck(lastBlockNumber: number, tx: TxInterface): boolean {
 interface CheckEthereumTransactions {
   chainId: SupportedChainId
   account: string | undefined
+  transactionsCount: number
   isSafeWallet: boolean
   transactions: EnhancedTransactionDetails[]
   lastBlockNumber: number
@@ -240,10 +242,24 @@ function finalizeOnChainCancellation(
   }
 }
 function checkEthereumTransactions(params: CheckEthereumTransactions): Command[] {
-  const { transactions, chainId, lastBlockNumber, getReceipt, getSafeInfo, dispatch } = params
+  const { transactions, chainId, lastBlockNumber, getReceipt, getSafeInfo, dispatch, transactionsCount } = params
 
   return transactions.map((transaction) => {
     const { hash, hashType, receipt } = transaction
+
+    const handleTransactionFetchFail = () => {
+      const isTransactionOutdated = transaction.nonce === undefined || transaction.nonce < transactionsCount
+
+      if (isTransactionOutdated) {
+        console.log('[FinalizeTxUpdater] Transaction is outdated, moving it to "replaced" state.', {
+          hash,
+          nonce: transaction.nonce,
+          transactionsCount,
+        })
+
+        dispatch(replaceTransaction({ chainId, oldHash: hash, newHash: hash, type: 'replaced' }))
+      }
+    }
 
     if (hashType === HashType.GNOSIS_SAFE_TX) {
       // Get safe info and receipt
@@ -282,6 +298,8 @@ function checkEthereumTransactions(params: CheckEthereumTransactions): Command[]
           if (!error.isCancelledError) {
             console.error(`[FinalizeTxUpdater] Failed to check transaction hash: ${hash}`, error)
           }
+
+          handleTransactionFetchFail()
         })
 
       return cancel
@@ -302,6 +320,8 @@ function checkEthereumTransactions(params: CheckEthereumTransactions): Command[]
           if (!error.isCancelledError) {
             console.error(`[FinalizeTxUpdater] Failed to get transaction receipt for tx: ${hash}`, error)
           }
+
+          handleTransactionFetchFail()
         })
 
       return cancel
@@ -336,22 +356,27 @@ export function FinalizeTxUpdater() {
   const transactions = useAllTransactionsDetails(shouldCheckFilter)
 
   useEffect(() => {
-    if (!chainId || !provider || !lastBlockNumber) return
+    if (!chainId || !provider || !lastBlockNumber || !account) return
 
-    const promiseCancellations = checkEthereumTransactions({
-      transactions,
-      chainId,
-      isSafeWallet,
-      lastBlockNumber,
-      getReceipt,
-      getSafeInfo,
-      dispatch,
-      removeInFlightOrderId,
-      nativeCurrencySymbol,
-      cancelOrdersBatch,
-      addPriorityAllowance,
-      account,
-      getTwapOrderById,
+    let promiseCancellations: Command[] = []
+
+    provider.getTransactionCount(account).then((transactionsCount) => {
+      promiseCancellations = checkEthereumTransactions({
+        transactions,
+        chainId,
+        isSafeWallet,
+        lastBlockNumber,
+        getReceipt,
+        getSafeInfo,
+        dispatch,
+        removeInFlightOrderId,
+        nativeCurrencySymbol,
+        cancelOrdersBatch,
+        addPriorityAllowance,
+        account,
+        getTwapOrderById,
+        transactionsCount,
+      })
     })
 
     return () => {
