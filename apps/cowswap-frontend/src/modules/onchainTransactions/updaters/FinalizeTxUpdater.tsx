@@ -265,7 +265,7 @@ function checkEthereumTransactions(params: CheckEthereumTransactions): Command[]
           const { isExecuted, transactionHash } = safeTransaction
           const safeNonce = safeInfo?.nonce
 
-          if (typeof safeNonce === 'number' && safeNonce > safeTransaction.nonce) {
+          if (typeof safeNonce === 'number' && safeNonce > safeTransaction.nonce && !isExecuted) {
             handleTransactionReplacement()
             return
           }
