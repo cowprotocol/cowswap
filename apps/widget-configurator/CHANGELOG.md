@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.2](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v1.0.1...widget-configurator-v1.0.2) (2024-04-03)
+
+
+### Bug Fixes
+
+* **widget:** update widget code snippets ([#4144](https://github.com/cowprotocol/cowswap/issues/4144)) ([4734af2](https://github.com/cowprotocol/cowswap/commit/4734af27d089112478439604fd66d1968db59021))
+
 ## [1.0.1](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v1.0.0...widget-configurator-v1.0.1) (2024-04-02)
 
 
