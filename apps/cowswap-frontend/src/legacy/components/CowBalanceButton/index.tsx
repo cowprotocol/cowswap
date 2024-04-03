@@ -24,16 +24,26 @@ export const Wrapper = styled.div<{ isLoading: boolean }>`
   pointer-events: auto;
   transition: width var(${UI.ANIMATION_DURATION}) ease-in-out, border var(${UI.ANIMATION_DURATION}) ease-in-out;
   cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
 
   ${({ theme }) => theme.mediaWidth.upToLarge`
     position: absolute;
     z-index: 1001;
-    right: 76px;
+    right: 66px;
     background: var(${UI.COLOR_PAPER_DARKER});
   `};
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
-    right: 66px;
+    right: 56px;
+  `};
+
+  ${({ theme }) => theme.mediaWidth.upToTiny`
+    position: relative;
+    right: initial;
+    margin: 0 auto 0 0;
+    height: 36px;
+    padding: 6px;
   `};
 
   &:hover {
@@ -64,13 +74,11 @@ export const Wrapper = styled.div<{ isLoading: boolean }>`
 
     ${({ theme }) => theme.mediaWidth.upToMedium`
       overflow: hidden;
-      max-width: 100px;
       text-overflow: ellipsis;
     `};
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
-      overflow: visible;
-      max-width: initial;
+      max-width: 120px;
     `};
   }
 `
