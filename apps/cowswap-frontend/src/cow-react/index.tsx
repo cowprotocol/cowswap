@@ -56,7 +56,7 @@ function Main() {
   const isUpToMedium = useMediaQuery(upToMedium)
 
   const FooterButtonsWrapper = styled.div<{ isUpToMedium: boolean }>`
-    display: ${({ isUpToMedium }) => (!isUpToMedium ? 'block' : 'none')};
+    display: ${({ isUpToMedium }) => (isUpToMedium ? 'none' : 'block')};
   `
 
   return (
@@ -76,6 +76,7 @@ function Main() {
 
                       {!isInjectedWidgetMode && !isUpToMedium && (
                         <FooterButtonsWrapper isUpToMedium={isUpToMedium}>
+                          <h1>isUpToMedium: {isUpToMedium ? 'true' : 'false'}</h1>
                           <FeatureGuard featureFlag="cowFortuneEnabled">
                             <FortuneWidget />
                           </FeatureGuard>
