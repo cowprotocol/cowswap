@@ -1,7 +1,7 @@
 import type { JsonRpcProvider } from '@ethersproject/providers'
 
 import { getContract } from '@cowprotocol/common-utils'
-import { utils } from 'ethers'
+import { defaultAbiCoder } from '@ethersproject/abi'
 
 import { VERSION_ABIS } from '../abi/versionAbis'
 
@@ -24,7 +24,7 @@ export async function getVersion(tokenAddress: string, provider: JsonRpcProvider
       return response
     }
 
-    return utils.defaultAbiCoder.decode(['string'], response).toString()
+    return defaultAbiCoder.decode(['string'], response).toString()
   } catch (e) {
     return getVersion(tokenAddress, provider, index + 1)
   }
