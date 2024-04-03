@@ -2,6 +2,8 @@ import { useMemo } from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { getIsTxExpired } from 'modules/onchainTransactions/utils/getIsTxExpired'
+
 import { useAppSelector } from '../../hooks'
 import { EnhancedTransactionDetails } from '../reducer'
 
@@ -14,16 +16,9 @@ export function useAllTransactions(): { [txHash: string]: EnhancedTransactionDet
   return chainId ? state[chainId] ?? {} : {}
 }
 
-/**
- * Returns whether a transaction happened in the last day (86400 seconds * 1000 milliseconds / second)
- * @param tx to check for recency
- */
-export function isTransactionRecent(tx: EnhancedTransactionDetails): boolean {
-  return new Date().getTime() - tx.addedTime < 86_400_000
-}
-
 // returns whether a token has a pending approval transaction
 export function useHasPendingApproval(tokenAddress: string | undefined, spender: string | undefined): boolean {
+  const { chainId } = useWalletInfo()
   const allTransactions = useAllTransactions()
 
   return useMemo(
@@ -40,9 +35,9 @@ export function useHasPendingApproval(tokenAddress: string | undefined, spender:
         return (
           approval.spender.toLowerCase() === spender.toLowerCase() &&
           approval.tokenAddress.toLowerCase() === tokenAddress &&
-          isTransactionRecent(tx)
+          !getIsTxExpired(tx, chainId)
         )
       }),
-    [allTransactions, spender, tokenAddress]
+    [allTransactions, spender, tokenAddress, chainId]
   )
 }
