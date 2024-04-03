@@ -3,8 +3,8 @@ import { useEffect, useMemo } from 'react'
 
 import { GP_VAULT_RELAYER } from '@cowprotocol/common-const'
 import { getIsNativeToken, getWrappedToken } from '@cowprotocol/common-utils'
-import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
-import { DEFAULT_MIN_GAS_LIMIT, getTokenPermitInfo, PermitInfo } from '@cowprotocol/permit-utils'
+import { SupportedChainId, mapSupportedNetworks } from '@cowprotocol/cow-sdk'
+import { DEFAULT_MIN_GAS_LIMIT, PermitInfo, getTokenPermitInfo } from '@cowprotocol/permit-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
@@ -54,9 +54,8 @@ export function usePermitInfo(token: Nullish<Currency>, tradeType: Nullish<Trade
 
   const addPermitInfo = useAddPermitInfo()
   const permitInfo = _usePermitInfo(chainId, isPermitEnabled ? lowerCaseAddress : undefined)
-  const { permitInfo: preGeneratedInfo, isLoading: preGeneratedIsLoading } = usePreGeneratedPermitInfoForToken(
-    isPermitEnabled && !isNative ? token : undefined
-  )
+  const { permitInfo: preGeneratedInfo, isLoading: preGeneratedIsLoading } =
+    usePreGeneratedPermitInfoForToken(undefined)
 
   const spender = GP_VAULT_RELAYER[chainId]
 
