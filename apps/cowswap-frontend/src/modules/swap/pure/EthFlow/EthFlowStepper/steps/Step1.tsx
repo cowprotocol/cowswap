@@ -17,21 +17,24 @@ interface Step1Config {
 
 export function Step1(props: EthFlowStepperProps) {
   const {
-    creation: { hash },
+    creation: { hash, replaced },
   } = props
 
   const { label, state, icon } = getStepConfig(props)
 
   return (
     <Step state={state} icon={icon} label={label}>
-      {hash && <ExplorerLinkStyled type="transaction" label="View transaction" id={hash} />}
+      {hash && !replaced && <ExplorerLinkStyled type="transaction" label="View transaction" id={hash} />}
     </Step>
   )
 }
 
 function getStepConfig({ order, creation, nativeTokenSymbol }: EthFlowStepperProps): Step1Config {
   const { failed, cancelled, replaced } = creation
-  if (failed || cancelled || replaced) {
+
+  const isFilled = order.state === SmartOrderStatus.FILLED
+
+  if ((failed || cancelled || replaced) && !isFilled) {
     return {
       icon: X,
       state: 'error',

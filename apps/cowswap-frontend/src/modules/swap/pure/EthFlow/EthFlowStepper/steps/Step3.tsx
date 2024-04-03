@@ -33,7 +33,7 @@ export function Step3({ nativeTokenSymbol, tokenLabel, order, creation, refund, 
   const expiredBeforeCreate = isExpired && (isCreating || isIndexing)
   const isRefunded = refundFailed === false || cancellationFailed === false
 
-  const orderIsNotCreated = !!(creationFailed || creationCancelled || creationReplaced)
+  const orderIsNotCreated = !!(creationFailed || creationCancelled || creationReplaced) && !isFilled
   // Get the label, state and icon
   const {
     label,
