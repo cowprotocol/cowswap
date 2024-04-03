@@ -1,7 +1,8 @@
 import type { JsonRpcProvider } from '@ethersproject/providers'
 
-import { getContract } from '@cowprotocol/common-utils'
 import { defaultAbiCoder } from '@ethersproject/abi'
+
+import { getContract } from './getContract'
 
 import { VERSION_ABIS } from '../abi/versionAbis'
 
