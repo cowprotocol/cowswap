@@ -1,5 +1,5 @@
 {
-  "name": "@cowprotocol/snackbars",
+  "name": "snackbars",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/snackbars/src",
   "projectType": "library",
