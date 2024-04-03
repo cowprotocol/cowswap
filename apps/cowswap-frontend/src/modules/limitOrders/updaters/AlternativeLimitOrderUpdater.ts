@@ -2,6 +2,7 @@ import { useSetAtom } from 'jotai'
 import { useEffect, useState } from 'react'
 
 import { usePrevious } from '@cowprotocol/common-hooks'
+import { FractionUtils } from '@cowprotocol/common-utils'
 import { useENS } from '@cowprotocol/ens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Price } from '@uniswap/sdk-core'
@@ -115,7 +116,11 @@ function useSetAlternativeRate(): null {
       updateLimitRateState({ marketRate: null })
 
       // Set new active rate
-      const activeRate = new Price({ baseAmount: inputCurrencyAmount, quoteAmount: outputCurrencyAmount })
+      // The rate expects a raw fraction which is NOT a Price instace
+      const activeRate = FractionUtils.fromPrice(
+        new Price({ baseAmount: inputCurrencyAmount, quoteAmount: outputCurrencyAmount })
+      )
+
       updateRate({ activeRate, isTypedValue: false, isRateFromUrl: false, isAlternativeOrderRate: true })
     }
   }, [inputCurrencyAmount, hasSetRate, outputCurrencyAmount, updateRate, updateLimitRateState])

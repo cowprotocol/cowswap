@@ -16,6 +16,9 @@ import { getWalletTypeLabel } from '../api/utils/getWalletTypeLabel'
 import { useIsSmartContractWallet } from './hooks/useIsSmartContractWallet'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useENSName } from '@cowprotocol/ens'
+import ms from 'ms.macro'
+
+const SAFE_INFO_UPDATE_INTERVAL = ms`30s`
 
 // Smart contract wallets are filtered out by default, no need to add them to this list
 const UNSUPPORTED_WC_WALLETS = new Set(['DeFi Wallet', 'WallETH'])
@@ -65,20 +68,28 @@ function _useSafeInfo(walletInfo: WalletInfo): GnosisSafeInfo | undefined {
   const { isReadOnly } = useSafeAppsSdkInfo() || {}
 
   useEffect(() => {
-    if (chainId && account && provider) {
-      getSafeInfo(chainId, account, provider)
-        .then((_safeInfo) =>
-          setSafeInfo({
-            isReadOnly,
-            ..._safeInfo,
+    const update = () => {
+      if (chainId && account && provider) {
+        getSafeInfo(chainId, account, provider)
+          .then((_safeInfo) =>
+            setSafeInfo({
+              isReadOnly,
+              ..._safeInfo,
+            })
+          )
+          .catch((error) => {
+            console.debug(`[WalletUpdater] Address ${account} is likely not a Safe (API didn't return Safe info)`)
           })
-        )
-        .catch((error) => {
-          console.debug(`[WalletUpdater] Address ${account} is likely not a Safe (API didn't return Safe info)`)
-        })
-    } else {
-      setSafeInfo(undefined)
+      } else {
+        setSafeInfo(undefined)
+      }
     }
+
+    const interval = setInterval(update, SAFE_INFO_UPDATE_INTERVAL)
+
+    update()
+
+    return () => clearInterval(interval)
   }, [setSafeInfo, chainId, account, provider, isReadOnly])
 
   return safeInfo

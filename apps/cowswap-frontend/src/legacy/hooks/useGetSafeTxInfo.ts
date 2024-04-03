@@ -10,13 +10,13 @@ import { RetryResult } from 'types'
 
 const DEFAULT_RETRY_OPTIONS: RetryOptions = { n: 3, minWait: 1000, maxWait: 3000 }
 
-export type GetSafeInfo = (hash: string) => RetryResult<SafeMultisigTransactionResponse>
+export type GetSafeTxInfo = (hash: string) => RetryResult<SafeMultisigTransactionResponse>
 
-export function useGetSafeInfo(): GetSafeInfo {
+export function useGetSafeTxInfo(): GetSafeTxInfo {
   const { provider } = useWeb3React()
   const { chainId } = useWalletInfo()
 
-  const getSafeInfo = useCallback<GetSafeInfo>(
+  const getSafeInfo = useCallback<GetSafeTxInfo>(
     (hash) => {
       return retry(() => {
         if (!provider) {
