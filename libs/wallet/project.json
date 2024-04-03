@@ -1,5 +1,5 @@
 {
-  "name": "@cowprotocol/wallet",
+  "name": "wallet",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/wallet/src",
   "projectType": "library",

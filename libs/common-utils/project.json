@@ -1,5 +1,5 @@
 {
-  "name": "@cowprotocol/common-utils",
+  "name": "common-utils",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/common-utils/src",
   "projectType": "library",
