@@ -30,4 +30,5 @@ export const SANITIZE_PARAMS = {
 
 export const REMOVE_PARAMS: (keyof CowSwapWidgetParams)[] = ['baseUrl']
 
-export const IMPORT_STATEMENT = `import { CowSwapWidget, CowSwapWidgetParams, TradeType }`
+export const REACT_IMPORT_STATEMENT = `import { CowSwapWidget, CowSwapWidgetParams, TradeType }`
+export const IMPORT_STATEMENT = `import { createCowSwapWidget, CowSwapWidgetParams, TradeType }`
