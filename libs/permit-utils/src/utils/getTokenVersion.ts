@@ -1,0 +1,31 @@
+import type { JsonRpcProvider } from '@ethersproject/providers'
+
+import { getContract } from '@cowprotocol/common-utils'
+import { utils } from 'ethers'
+
+import { VERSION_ABIS } from '../abi/versionAbis'
+
+export async function getVersion(tokenAddress: string, provider: JsonRpcProvider, index = 0): Promise<string> {
+  const abi = VERSION_ABIS[index]
+
+  if (!abi) {
+    return '1'
+  }
+
+  try {
+    const contract = getContract(tokenAddress, abi, provider)
+    const data = contract.interface.encodeFunctionData(abi[0].name)
+    const response = await provider.call({ to: tokenAddress, data })
+
+    if (response === '0x' || Number.isNaN(Number(response))) {
+      return '1'
+    }
+    if (!response.startsWith('0x')) {
+      return response
+    }
+
+    return utils.defaultAbiCoder.decode(['string'], response).toString()
+  } catch (e) {
+    return getVersion(tokenAddress, provider, index + 1)
+  }
+}
