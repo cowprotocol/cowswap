@@ -2,7 +2,7 @@
   "name": "@cowprotocol/widget-configurator",
   "version": "1.0.1",
   "description": "CoW Swap widget configurator",
-  "main": "index.js",
+  "main": "src/main.tsx",
   "author": "",
   "license": "ISC",
   "scripts": {},
@@ -22,6 +22,5 @@
     ]
   },
   "dependencies": {},
-  "devDependencies": {},
-  "nx": {}
+  "devDependencies": {}
 }
