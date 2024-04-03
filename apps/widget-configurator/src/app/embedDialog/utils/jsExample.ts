@@ -7,7 +7,7 @@ import { COMMENTS_BEFORE_PARAMS, PROVIDER_PARAM_COMMENT } from '../const'
 
 export function jsExample(params: CowSwapWidgetParams, defaultPalette: ColorPalette): string {
   return `
-import { cowSwapWidget } from '@cowprotocol/widget-lib'
+import { createCowSwapWidget } from '@cowprotocol/widget-lib'
 
 const container = document.getElementById('<YOUR_CONTAINER>')
 
@@ -17,6 +17,6 @@ const params = ${formatParameters(params, 0, false, defaultPalette)}
 // ${PROVIDER_PARAM_COMMENT}
 const provider = window.ethereum
 
-const { updateParams } = cowSwapWidget(container, { params, provider })
+const { updateParams } = createCowSwapWidget(container, { params, provider })
   `
 }

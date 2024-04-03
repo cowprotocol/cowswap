@@ -17,6 +17,6 @@ const params: CowSwapWidgetParams = ${formatParameters(params, 0, true, defaultP
 // ${PROVIDER_PARAM_COMMENT}
 const provider = window.ethereum
 
-const { updateParams } = cowSwapWidget(container, { params, provider })
+const { updateParams } = createCowSwapWidget(container, { params, provider })
   `
 }
