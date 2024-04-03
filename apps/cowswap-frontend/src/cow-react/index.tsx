@@ -76,7 +76,6 @@ function Main() {
 
                       {!isInjectedWidgetMode && !isUpToMedium && (
                         <FooterButtonsWrapper isUpToMedium={isUpToMedium}>
-                          <h1>isUpToMedium: {isUpToMedium ? 'true' : 'false'}</h1>
                           <FeatureGuard featureFlag="cowFortuneEnabled">
                             <FortuneWidget />
                           </FeatureGuard>
