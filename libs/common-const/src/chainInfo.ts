@@ -2,8 +2,8 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { COW_PROTOCOL_LINK } from './common'
 
 import GnosisChainLogo from '@cowprotocol/assets/cow-swap/network-gnosis-chain-logo.svg'
-import SepoliaLogo from '@cowprotocol/assets/cow-swap/network-sepolia-logo.svg'
 import EthereumLogo from '@cowprotocol/assets/cow-swap/network-mainnet-logo.svg'
+import SepoliaLogo from '@cowprotocol/assets/cow-swap/network-sepolia-logo.svg'
 import { NATIVE_CURRENCIES } from './nativeAndWrappedTokens'
 import { TokenWithLogo } from './types'
 
@@ -51,7 +51,7 @@ export const CHAIN_INFO: ChainInfoMap = {
   },
   [SupportedChainId.GNOSIS_CHAIN]: {
     docs: 'https://docs.gnosischain.com',
-    bridge: 'https://omni.gnosischain.com/bridge',
+    bridge: 'https://bridge.gnosischain.com/',
     explorer: 'https://gnosisscan.io',
     infoLink: 'https://www.gnosischain.com',
     label: 'Gnosis Chain',
