@@ -11,7 +11,7 @@ const mockStore = mock<MiddlewareAPI<Dispatch, AppState>>()
 const nextMock = jest.fn()
 const actionMock = mock<AnyAction>()
 
-jest.mock('@cowprotocol/common-utils')
+jest.mock('modules/sounds')
 
 describe('soundMiddleware', () => {
   beforeEach(() => {
