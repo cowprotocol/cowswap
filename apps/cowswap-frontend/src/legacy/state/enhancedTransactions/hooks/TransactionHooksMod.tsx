@@ -2,8 +2,6 @@ import { useMemo } from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { getIsTxExpired } from 'modules/onchainTransactions/utils/getIsTxExpired'
-
 import { useAppSelector } from '../../hooks'
 import { EnhancedTransactionDetails } from '../reducer'
 
@@ -18,7 +16,6 @@ export function useAllTransactions(): { [txHash: string]: EnhancedTransactionDet
 
 // returns whether a token has a pending approval transaction
 export function useHasPendingApproval(tokenAddress: string | undefined, spender: string | undefined): boolean {
-  const { chainId } = useWalletInfo()
   const allTransactions = useAllTransactions()
 
   return useMemo(
@@ -27,17 +24,16 @@ export function useHasPendingApproval(tokenAddress: string | undefined, spender:
       typeof spender === 'string' &&
       Object.keys(allTransactions).some((hash) => {
         const tx = allTransactions[hash]
-        if (!tx || tx.receipt || tx.replacementType) return false
+        if (!tx || tx.receipt || tx.replacementType || tx.errorMessage) return false
 
         const approval = tx.approval
         if (!approval) return false
 
         return (
           approval.spender.toLowerCase() === spender.toLowerCase() &&
-          approval.tokenAddress.toLowerCase() === tokenAddress &&
-          !getIsTxExpired(tx, chainId)
+          approval.tokenAddress.toLowerCase() === tokenAddress
         )
       }),
-    [allTransactions, spender, tokenAddress, chainId]
+    [allTransactions, spender, tokenAddress]
   )
 }
