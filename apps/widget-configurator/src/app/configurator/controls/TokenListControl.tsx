@@ -1,13 +1,7 @@
 import React, { useState, useCallback, useMemo, Dispatch, SetStateAction } from 'react'
 
-import { Command } from '@cowprotocol/types'
-
 import {
   Checkbox,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
   Button,
   OutlinedInput,
   InputLabel,
@@ -15,11 +9,12 @@ import {
   MenuItem,
   FormControl,
   Select,
-  TextField,
   SelectChangeEvent,
   Chip,
   Box,
 } from '@mui/material'
+
+import { AddCustomListDialog } from './AddCustomListDialog'
 
 import { TokenListItem } from '../types'
 
@@ -36,81 +31,6 @@ const MenuProps = {
 
 type TokenListControlProps = {
   tokenListsState: [TokenListItem[], Dispatch<SetStateAction<TokenListItem[]>>]
-}
-
-type CustomList = {
-  url: string
-}
-
-type AddCustomListDialogProps = {
-  open: boolean
-  onClose: Command
-  onAdd: (newList: CustomList) => void
-}
-
-const AddCustomListDialog = ({ open, onClose, onAdd }: AddCustomListDialogProps) => {
-  const [customList, setCustomList] = useState<CustomList>({ url: '' })
-  const [errors, setErrors] = useState({ url: false })
-
-  const validateURL = (url: string) => {
-    const pattern = new RegExp(
-      '^(https?:\\/\\/)?' + // protocol
-        '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
-        '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
-        '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
-        '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
-        '(\\#[-a-z\\d_]*)?$',
-      'i'
-    ) // fragment locator
-    return !!pattern.test(url)
-  }
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { id, value } = e.target
-    setCustomList({ ...customList, [id]: value })
-
-    setErrors({ ...errors, url: !validateURL(value) })
-  }
-
-  const handleAdd = () => {
-    const isUrlValid = validateURL(customList.url)
-
-    setErrors({
-      url: !isUrlValid,
-    })
-
-    if (isUrlValid) {
-      onAdd(customList)
-      setCustomList({ url: '' }) // Reset the custom list
-      onClose()
-    }
-  }
-
-  return (
-    <Dialog open={open} onClose={onClose}>
-      <DialogTitle>Add Custom Token List</DialogTitle>
-      <DialogContent>
-        <TextField
-          error={errors.url}
-          margin="dense"
-          id="url"
-          label="List URL"
-          type="url"
-          fullWidth
-          variant="outlined"
-          value={customList.url}
-          onChange={handleInputChange}
-          helperText={errors.url && 'Enter a valid URL'}
-          required
-          autoComplete="off"
-        />
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose}>Cancel</Button>
-        <Button onClick={handleAdd}>Add</Button>
-      </DialogActions>
-    </Dialog>
-  )
 }
 
 export const TokenListControl = ({ tokenListsState }: TokenListControlProps) => {
@@ -132,7 +52,7 @@ export const TokenListControl = ({ tokenListsState }: TokenListControlProps) => 
   )
 
   const handleAddCustomList = useCallback(
-    (newList: CustomList) => {
+    (newList: { url: string }) => {
       const existing = tokenLists.find((list) => list.url.toLowerCase() === newList.url.toLowerCase())
 
       if (existing) return
