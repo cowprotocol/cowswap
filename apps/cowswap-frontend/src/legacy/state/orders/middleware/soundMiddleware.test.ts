@@ -1,7 +1,7 @@
-import { getCowSoundError, getCowSoundSend, getCowSoundSuccess } from '@cowprotocol/common-utils'
-
 import { AnyAction, Dispatch, MiddlewareAPI } from 'redux'
 import { instance, mock, resetCalls, when } from 'ts-mockito'
+
+import { getCowSoundError, getCowSoundSend, getCowSoundSuccess } from 'modules/sounds'
 
 import { soundMiddleware } from './soundMiddleware'
 
