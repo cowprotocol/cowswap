@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from 'react'
+import React, { ReactNode, useEffect, useRef, useState } from 'react'
 
 import { Command, TokenInfo } from '@cowprotocol/types'
 
@@ -44,8 +44,9 @@ export function AddCustomListDialog({
   const [customListUrl, setCustomListUrl] = useState<string>('')
   const [hasErrors, setHasErrors] = useState(false)
   const [hasJsonErrors, setHasJsonErrors] = useState(false)
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
 
-  const [customTokens, setCustomTokens] = useState<TokenInfo[]>(customTokensDefault)
+  const [customTokens, setCustomTokens] = useState<TokenInfo[]>([])
 
   const [tabIndex, setTabIndex] = useState(0)
 
@@ -105,9 +106,18 @@ export function AddCustomListDialog({
   }
 
   const addJsonExample = () => {
+    if (textareaRef.current) {
+      textareaRef.current.value = JSON.stringify(DEFAULT_CUSTOM_TOKENS, null, 2)
+    }
     setCustomTokens(DEFAULT_CUSTOM_TOKENS)
     setHasJsonErrors(false)
   }
+
+  useEffect(() => {
+    if (customTokensDefault.length) {
+      setCustomTokens(customTokensDefault)
+    }
+  }, [customTokensDefault])
 
   return (
     <Dialog open={open} onClose={onClose}>
@@ -136,11 +146,7 @@ export function AddCustomListDialog({
           />
         </CustomTabPanel>
         <CustomTabPanel value={tabIndex} index={1}>
-          <textarea
-            style={jsonTextAreaStyles as never}
-            value={JSON.stringify(customTokens, null, 4)}
-            onChange={handleJsonInputChange}
-          ></textarea>
+          <textarea ref={textareaRef} style={jsonTextAreaStyles as never} onChange={handleJsonInputChange}></textarea>
           <Button onClick={addJsonExample}>Add an example</Button>
           {hasJsonErrors && <FormHelperText error>Enter valid JSON</FormHelperText>}
         </CustomTabPanel>
