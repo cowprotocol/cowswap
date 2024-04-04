@@ -52,12 +52,12 @@ export const TokenListControl = ({ tokenListsState }: TokenListControlProps) => 
   )
 
   const handleAddCustomList = useCallback(
-    (newList: { url: string }) => {
-      const existing = tokenLists.find((list) => list.url.toLowerCase() === newList.url.toLowerCase())
+    (newListUrl: string) => {
+      const existing = tokenLists.find((list) => list.url.toLowerCase() === newListUrl.toLowerCase())
 
       if (existing) return
 
-      setTokenLists((prev) => [...prev, { ...newList, enabled: true }])
+      setTokenLists((prev) => [...prev, { url: newListUrl, enabled: true }])
     },
     [tokenLists, setTokenLists]
   )
