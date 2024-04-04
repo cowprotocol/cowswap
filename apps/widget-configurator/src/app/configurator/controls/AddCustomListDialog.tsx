@@ -1,8 +1,18 @@
 import React, { ReactNode, useState } from 'react'
 
-import { Command } from '@cowprotocol/types'
+import { Command, TokenInfo } from '@cowprotocol/types'
 
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Tab, TextField } from '@mui/material'
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  FormHelperText,
+  Tab,
+  TextField,
+} from '@mui/material'
 import Tabs from '@mui/material/Tabs'
 
 import { validateURL } from '../utils/validateURL'
@@ -18,38 +28,69 @@ const jsonTextAreaStyles = {
 type AddCustomListDialogProps = {
   open: boolean
   onClose: Command
-  onAdd: (newList: string) => void
+  onAddListUrl: (newListUrl: string) => void
+  onAddCustomTokens: (tokens: TokenInfo[]) => void
 }
 
-export function AddCustomListDialog({ open, onClose, onAdd }: AddCustomListDialogProps) {
+export function AddCustomListDialog({ open, onClose, onAddListUrl, onAddCustomTokens }: AddCustomListDialogProps) {
   const [customListUrl, setCustomListUrl] = useState<string>('')
   const [hasErrors, setHasErrors] = useState(false)
+  const [hasJsonErrors, setHasJsonErrors] = useState(false)
+
+  const [customTokens, setCustomTokens] = useState<TokenInfo[]>([])
+
   const [tabIndex, setTabIndex] = useState(0)
+
+  const resetForm = () => {
+    // Reset custom URL
+    setCustomListUrl('')
+    setHasErrors(false)
+
+    // Reset custom tokens
+    setCustomTokens([])
+    setHasJsonErrors(false)
+  }
 
   const handleTabChange = (_: React.SyntheticEvent, newValue: number) => {
     setTabIndex(newValue)
-
-    // Reset the custom list
-    setCustomListUrl('')
-    setHasErrors(false)
+    resetForm()
   }
 
   const handleUrlInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setCustomListUrl(e.target.value)
+    const value = e.target.value
 
-    setHasErrors(!validateURL(e.target.value))
+    setCustomListUrl(value)
+
+    setHasErrors(value ? !validateURL(value) : false)
   }
 
-  const handleAdd = () => {
-    const isUrlValid = validateURL(customListUrl)
+  const handleJsonInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setHasJsonErrors(false)
 
-    setHasErrors(!isUrlValid)
+    if (!e.target.value) return
 
-    if (isUrlValid) {
-      onAdd(customListUrl)
-      setCustomListUrl('') // Reset the custom list
-      onClose()
+    try {
+      const parsedTokens = JSON.parse(e.target.value)
+
+      if (Array.isArray(parsedTokens)) {
+        setCustomTokens(parsedTokens)
+      } else {
+        setHasJsonErrors(true)
+      }
+    } catch {
+      setHasJsonErrors(true)
     }
+  }
+
+  const handleSubmit = () => {
+    if (customListUrl) {
+      onAddListUrl(customListUrl)
+    } else if (customTokens.length) {
+      onAddCustomTokens(customTokens)
+    }
+
+    resetForm()
+    onClose()
   }
 
   return (
@@ -79,12 +120,15 @@ export function AddCustomListDialog({ open, onClose, onAdd }: AddCustomListDialo
           />
         </CustomTabPanel>
         <CustomTabPanel value={tabIndex} index={1}>
-          <textarea style={jsonTextAreaStyles}></textarea>
+          <textarea style={jsonTextAreaStyles} onChange={handleJsonInputChange}></textarea>
+          {hasJsonErrors && <FormHelperText error>Enter valid JSON</FormHelperText>}
         </CustomTabPanel>
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>Cancel</Button>
-        <Button onClick={handleAdd}>Add</Button>
+        <Button disabled={!hasErrors && !hasJsonErrors} onClick={handleSubmit}>
+          Add
+        </Button>
       </DialogActions>
     </Dialog>
   )

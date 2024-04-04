@@ -1,5 +1,7 @@
 import React, { useState, useCallback, useMemo, Dispatch, SetStateAction } from 'react'
 
+import { TokenInfo } from '@cowprotocol/types'
+
 import {
   Checkbox,
   Button,
@@ -30,41 +32,45 @@ const MenuProps = {
 }
 
 type TokenListControlProps = {
-  tokenListsState: [TokenListItem[], Dispatch<SetStateAction<TokenListItem[]>>]
+  tokenListUrlsState: [TokenListItem[], Dispatch<SetStateAction<TokenListItem[]>>]
 }
 
-export const TokenListControl = ({ tokenListsState }: TokenListControlProps) => {
-  const [tokenLists, setTokenLists] = tokenListsState
+export const TokenListControl = ({ tokenListUrlsState }: TokenListControlProps) => {
+  const [tokenListUrls, setTokenListUrls] = tokenListUrlsState
   const [dialogOpen, setDialogOpen] = useState(false)
 
   const handleChange = useCallback(
     (event: SelectChangeEvent<string[]>) => {
       const selected = event.target.value as string[]
 
-      setTokenLists((prev) =>
+      setTokenListUrls((prev) =>
         prev.map((list) => ({
           ...list,
           enabled: selected.includes(list.url),
         }))
       )
     },
-    [setTokenLists]
+    [setTokenListUrls]
   )
 
-  const handleAddCustomList = useCallback(
+  const handleAddListUrl = useCallback(
     (newListUrl: string) => {
-      const existing = tokenLists.find((list) => list.url.toLowerCase() === newListUrl.toLowerCase())
+      const existing = tokenListUrls.find((list) => list.url.toLowerCase() === newListUrl.toLowerCase())
 
       if (existing) return
 
-      setTokenLists((prev) => [...prev, { url: newListUrl, enabled: true }])
+      setTokenListUrls((prev) => [...prev, { url: newListUrl, enabled: true }])
     },
-    [tokenLists, setTokenLists]
+    [tokenListUrls, setTokenListUrls]
   )
+
+  const handleAddCustomTokens = useCallback((tokens: TokenInfo[]) => {
+    console.log('TODO', tokens)
+  }, [])
 
   const tokenListOptions = useMemo(
     () =>
-      tokenLists
+      tokenListUrls
         .sort((a, b) => {
           if (a.enabled) return -1
 
@@ -84,7 +90,7 @@ export const TokenListControl = ({ tokenListsState }: TokenListControlProps) => 
             />
           </MenuItem>
         )),
-    [tokenLists]
+    [tokenListUrls]
   )
 
   return (
@@ -96,7 +102,7 @@ export const TokenListControl = ({ tokenListsState }: TokenListControlProps) => 
             labelId="token-list-chip-label"
             id="token-list-chip-select"
             multiple
-            value={tokenLists.filter((list) => list.enabled).map((list) => list.url)}
+            value={tokenListUrls.filter((list) => list.enabled).map((list) => list.url)}
             onChange={handleChange}
             input={<OutlinedInput label="Active Token Lists" />}
             renderValue={(selected) => (
@@ -112,7 +118,12 @@ export const TokenListControl = ({ tokenListsState }: TokenListControlProps) => 
           </Select>
         </FormControl>
 
-        <AddCustomListDialog open={dialogOpen} onClose={() => setDialogOpen(false)} onAdd={handleAddCustomList} />
+        <AddCustomListDialog
+          open={dialogOpen}
+          onClose={() => setDialogOpen(false)}
+          onAddListUrl={handleAddListUrl}
+          onAddCustomTokens={handleAddCustomTokens}
+        />
       </div>
       <Button sx={{ width: '100%' }} variant="outlined" onClick={() => setDialogOpen(true)}>
         Add Custom List
