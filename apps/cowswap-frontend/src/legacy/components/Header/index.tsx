@@ -29,7 +29,6 @@ import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetwo
 import { AccountElement } from './AccountElement'
 import MobileMenuIcon from './MobileMenuIcon'
 import {
-  CustomLogoImg,
   HeaderControls,
   HeaderElement,
   HeaderModWrapper,
@@ -109,11 +108,7 @@ export default function Header() {
             <Title href={Routes.HOME} isMobileMenuOpen={isMobileMenuOpen}>
               <UniIcon>
                 <LogoImage isMobileMenuOpen={isMobileMenuOpen}>
-                  {injectedWidgetParams.logoUrl ? (
-                    <CustomLogoImg src={injectedWidgetParams.logoUrl} alt="Logo" />
-                  ) : (
-                    <SVG src={isUpToExtraSmall ? cowSwapIcon(darkMode) : cowSwapLogo(darkMode)} />
-                  )}
+                  <SVG src={isUpToExtraSmall ? cowSwapIcon(darkMode) : cowSwapLogo(darkMode)} />
                 </LogoImage>
 
                 {/* WINTER THEME ONLY */}
