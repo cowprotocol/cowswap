@@ -31,15 +31,14 @@ import { LimitOrdersConfirmModal } from '../LimitOrdersConfirmModal'
 import { RateInput } from '../RateInput'
 import { SettingsWidget } from '../SettingsWidget'
 
-const LIMIT_BULLET_LIST_CONTENT: BulletListItem[] = [
+export const LIMIT_BULLET_LIST_CONTENT: BulletListItem[] = [
   { content: 'Set any limit price and time horizon' },
   { content: 'FREE order placement and cancellation' },
   { content: 'Place multiple orders using the same balance' },
   { content: 'Receive surplus of your order' },
   { content: 'Protection from MEV by default' },
   {
-    featureFlag: 'isZeroBalanceOrdersEnabled',
-    content: 'Place orders for higher than available balance!',
+    content: <span>Place orders for higher than available balance!</span>,
   },
 ]
 
