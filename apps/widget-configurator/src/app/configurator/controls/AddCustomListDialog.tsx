@@ -15,6 +15,7 @@ import {
 } from '@mui/material'
 import Tabs from '@mui/material/Tabs'
 
+import { DEFAULT_CUSTOM_TOKENS } from '../consts'
 import { validateURL } from '../utils/validateURL'
 
 const jsonTextAreaStyles = {
@@ -28,16 +29,23 @@ const jsonTextAreaStyles = {
 type AddCustomListDialogProps = {
   open: boolean
   onClose: Command
+  customTokens: TokenInfo[]
   onAddListUrl: (newListUrl: string) => void
   onAddCustomTokens: (tokens: TokenInfo[]) => void
 }
 
-export function AddCustomListDialog({ open, onClose, onAddListUrl, onAddCustomTokens }: AddCustomListDialogProps) {
+export function AddCustomListDialog({
+  open,
+  onClose,
+  onAddListUrl,
+  onAddCustomTokens,
+  customTokens: customTokensDefault,
+}: AddCustomListDialogProps) {
   const [customListUrl, setCustomListUrl] = useState<string>('')
   const [hasErrors, setHasErrors] = useState(false)
   const [hasJsonErrors, setHasJsonErrors] = useState(false)
 
-  const [customTokens, setCustomTokens] = useState<TokenInfo[]>([])
+  const [customTokens, setCustomTokens] = useState<TokenInfo[]>(customTokensDefault)
 
   const [tabIndex, setTabIndex] = useState(0)
 
@@ -67,7 +75,10 @@ export function AddCustomListDialog({ open, onClose, onAddListUrl, onAddCustomTo
   const handleJsonInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setHasJsonErrors(false)
 
-    if (!e.target.value) return
+    if (!e.target.value) {
+      setCustomTokens([])
+      return
+    }
 
     try {
       const parsedTokens = JSON.parse(e.target.value)
@@ -85,12 +96,17 @@ export function AddCustomListDialog({ open, onClose, onAddListUrl, onAddCustomTo
   const handleSubmit = () => {
     if (customListUrl) {
       onAddListUrl(customListUrl)
+      resetForm()
     } else if (customTokens.length) {
       onAddCustomTokens(customTokens)
     }
 
-    resetForm()
     onClose()
+  }
+
+  const addJsonExample = () => {
+    setCustomTokens(DEFAULT_CUSTOM_TOKENS)
+    setHasJsonErrors(false)
   }
 
   return (
@@ -120,13 +136,18 @@ export function AddCustomListDialog({ open, onClose, onAddListUrl, onAddCustomTo
           />
         </CustomTabPanel>
         <CustomTabPanel value={tabIndex} index={1}>
-          <textarea style={jsonTextAreaStyles} onChange={handleJsonInputChange}></textarea>
+          <textarea
+            style={jsonTextAreaStyles as never}
+            value={JSON.stringify(customTokens, null, 4)}
+            onChange={handleJsonInputChange}
+          ></textarea>
+          <Button onClick={addJsonExample}>Add an example</Button>
           {hasJsonErrors && <FormHelperText error>Enter valid JSON</FormHelperText>}
         </CustomTabPanel>
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>Cancel</Button>
-        <Button disabled={!hasErrors && !hasJsonErrors} onClick={handleSubmit}>
+        <Button disabled={hasErrors || hasJsonErrors} onClick={handleSubmit}>
           Add
         </Button>
       </DialogActions>

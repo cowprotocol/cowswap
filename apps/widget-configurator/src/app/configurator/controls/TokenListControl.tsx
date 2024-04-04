@@ -33,10 +33,13 @@ const MenuProps = {
 
 type TokenListControlProps = {
   tokenListUrlsState: [TokenListItem[], Dispatch<SetStateAction<TokenListItem[]>>]
+  customTokensState: [TokenInfo[], Dispatch<SetStateAction<TokenInfo[]>>]
 }
 
-export const TokenListControl = ({ tokenListUrlsState }: TokenListControlProps) => {
+export const TokenListControl = ({ tokenListUrlsState, customTokensState }: TokenListControlProps) => {
   const [tokenListUrls, setTokenListUrls] = tokenListUrlsState
+  const [customTokens, setCustomTokens] = customTokensState
+
   const [dialogOpen, setDialogOpen] = useState(false)
 
   const handleChange = useCallback(
@@ -64,9 +67,12 @@ export const TokenListControl = ({ tokenListUrlsState }: TokenListControlProps) 
     [tokenListUrls, setTokenListUrls]
   )
 
-  const handleAddCustomTokens = useCallback((tokens: TokenInfo[]) => {
-    console.log('TODO', tokens)
-  }, [])
+  const handleAddCustomTokens = useCallback(
+    (tokens: TokenInfo[]) => {
+      setCustomTokens(tokens)
+    },
+    [setCustomTokens]
+  )
 
   const tokenListOptions = useMemo(
     () =>
@@ -121,6 +127,7 @@ export const TokenListControl = ({ tokenListUrlsState }: TokenListControlProps) 
         <AddCustomListDialog
           open={dialogOpen}
           onClose={() => setDialogOpen(false)}
+          customTokens={customTokens}
           onAddListUrl={handleAddListUrl}
           onAddCustomTokens={handleAddCustomTokens}
         />

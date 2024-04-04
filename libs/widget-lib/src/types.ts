@@ -96,6 +96,18 @@ export interface PartnerFee {
   recipient: string
 }
 
+/**
+ * ERC-20 token information
+ */
+export type TokenInfo = {
+  chainId: number
+  address: string
+  name: string
+  decimals: number
+  symbol: string
+  logoURI?: string
+}
+
 export interface CowSwapWidgetPalette {
   baseTheme: CowSwapTheme
   primary: string
@@ -237,6 +249,11 @@ export interface CowSwapWidgetParams {
      */
     orderError?: string | null
   }
+
+  /**
+   * In case when widget does not support some tokens, you can provide a list of tokens to be used in the widget
+   */
+  customTokens?: TokenInfo[]
 }
 
 // Define types for event payloads
