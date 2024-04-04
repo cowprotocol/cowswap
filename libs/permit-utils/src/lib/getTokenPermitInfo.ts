@@ -10,7 +10,7 @@ import { buildDaiLikePermitCallData, buildEip2162PermitCallData } from '../utils
 import { Eip712Domain, getEip712Domain } from '../utils/getEip712Domain'
 import { getPermitDeadline } from '../utils/getPermitDeadline'
 import { getTokenName } from '../utils/getTokenName'
-import { getVersion } from '../utils/getTokenVersion'
+import { getTokenPermitVersion } from '../utils/getTokenPermitVersion'
 
 const EIP_2162_PERMIT_PARAMS = {
   value: DEFAULT_PERMIT_VALUE,
@@ -110,7 +110,7 @@ async function actuallyCheckTokenIsPermittable(params: GetTokenPermitInfoParams)
     try {
       // Required by USDC-mainnet as its version is `2`.
       // There might be other tokens that need this as well.
-      version = await getVersion(tokenAddress, provider)
+      version = await getTokenPermitVersion(tokenAddress, provider)
     } catch (e) {
       // Not a problem, we can (try to) continue without it, and will default to `1` (part of the 1inch lib)
       console.debug(`[checkTokenIsPermittable] Failed to get version for ${tokenAddress} - ${tokenName}`, e)
