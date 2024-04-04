@@ -9,9 +9,12 @@ import { updateEnvironmentAtom } from '../../state/environmentAtom'
 import { useSetAtom } from 'jotai'
 import { useRemoveList } from '../../hooks/lists/useRemoveList'
 import { getFulfilledResults } from '../TokensListsUpdater/helpers'
+import { TokenInfo } from '@cowprotocol/types'
+import { WidgetVirtualListUpdater } from '../WidgetVirtualListUpdater'
 
 export interface CustomTokensListsUpdaterProps {
   tokenLists?: string[]
+  customTokens?: TokenInfo[]
   appCode?: string
   onTokenListAddingError(error: Error): void
 }
@@ -23,7 +26,7 @@ export interface CustomTokensListsUpdaterProps {
  * Important! Added token lists would be shown only for this widget, they are distinguished by `appCode`
  */
 export function WidgetTokensListsUpdater(props: CustomTokensListsUpdaterProps) {
-  const { tokenLists, appCode, onTokenListAddingError } = props
+  const { tokenLists, appCode, customTokens, onTokenListAddingError } = props
   const addList = useAddList()
   const removeList = useRemoveList()
   const allTokensLists = useAtomValue(allListsSourcesAtom)
@@ -100,5 +103,5 @@ export function WidgetTokensListsUpdater(props: CustomTokensListsUpdaterProps) {
     })
   }, [allTokensLists, removeList, appCode, tokenLists])
 
-  return null
+  return <WidgetVirtualListUpdater appCode={appCode} customTokens={customTokens} />
 }

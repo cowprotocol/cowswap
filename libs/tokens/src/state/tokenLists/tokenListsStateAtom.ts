@@ -2,7 +2,13 @@ import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { ListSourceConfig, ListsSourcesByNetwork, ListState, TokenListsState } from '../../types'
+import {
+  ListSourceConfig,
+  ListsSourcesByNetwork,
+  ListState,
+  TokenListsByChainState,
+  TokenListsState,
+} from '../../types'
 import { DEFAULT_TOKENS_LISTS, GNOSIS_UNISWAP_TOKENS_LIST, UNISWAP_TOKENS_LIST } from '../../const/tokensLists'
 import { environmentAtom } from '../environmentAtom'
 import { getJotaiMergerStorage } from '@cowprotocol/core'
@@ -39,7 +45,7 @@ export const allListsSourcesAtom = atom((get) => {
 })
 
 // Lists states
-export const listsStatesByChainAtom = atomWithStorage<TokenListsState>(
+export const listsStatesByChainAtom = atomWithStorage<TokenListsByChainState>(
   'allTokenListsInfoAtom:v3',
   mapSupportedNetworks({}),
   getJotaiMergerStorage()
@@ -47,11 +53,25 @@ export const listsStatesByChainAtom = atomWithStorage<TokenListsState>(
 
 export const tokenListsUpdatingAtom = atom<boolean>(false)
 
+/**
+ * Virtual lists are created programmatically
+ * For example: widget integrators can just pass TokenInfo[] array, and it will be converted to virtual list
+ * They are not stored in the local storage and always enabled
+ * We also don't show them in the tokens list settings
+ */
+export const virtualListsStateAtom = atom<TokenListsState>({})
+
 export const listsStatesMapAtom = atom((get) => {
   const { chainId, widgetAppCode, selectedLists, useCuratedListOnly } = get(environmentAtom)
   const allTokenListsInfo = get(listsStatesByChainAtom)
-  const currentNetworkLists = allTokenListsInfo[chainId] || {}
+  const virtualListsState = get(virtualListsStateAtom)
   const userAddedTokenLists = get(userAddedListsSourcesAtom)
+
+  const currentNetworkLists = {
+    ...allTokenListsInfo[chainId],
+    ...virtualListsState,
+  }
+
   const userAddedListSources = userAddedTokenLists[chainId].reduce<{ [key: string]: boolean }>((acc, list) => {
     acc[list.source] = true
     return acc
@@ -73,6 +93,12 @@ export const listsStatesMapAtom = atom((get) => {
 
     // In widget mode
     if (widgetAppCode) {
+      // Add virtual lists without any checks
+      if (virtualListsState[source]) {
+        acc[source] = list
+        return acc
+      }
+
       // If only selected lists should be shown
       if (selectedLists?.length) {
         if (selectedLists.includes(sourceLowerCased)) {
@@ -100,8 +126,9 @@ export const listsStatesListAtom = atom((get) => {
 export const listsEnabledStateAtom = atom((get) => {
   const allTokensLists = get(allListsSourcesAtom)
   const listStates = get(listsStatesMapAtom)
+  const virtualListsState = get(virtualListsStateAtom)
 
-  return allTokensLists.reduce<{ [source: string]: boolean }>((acc, tokenList) => {
+  const state = allTokensLists.reduce<{ [source: string]: boolean }>((acc, tokenList) => {
     const state = listStates[tokenList.source]
     const isActive = state?.isEnabled
 
@@ -109,4 +136,12 @@ export const listsEnabledStateAtom = atom((get) => {
 
     return acc
   }, {})
+
+  // Virtual lists are always enabled
+  const virtualLists = Object.keys(virtualListsState).reduce<Record<string, boolean>>((acc, source) => {
+    acc[source] = true
+    return acc
+  }, {})
+
+  return { ...state, ...virtualLists }
 })
