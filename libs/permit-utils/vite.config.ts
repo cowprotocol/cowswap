@@ -22,6 +22,7 @@ export default defineConfig({
       root: '../../../',
     }),
   ],
+
   // Uncomment this if you are using workers.
   // worker: {
   //  plugins: [
