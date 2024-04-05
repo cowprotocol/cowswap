@@ -9,6 +9,7 @@ import styled from 'styled-components/macro'
 
 import { Order } from 'legacy/state/orders/actions'
 
+import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { pendingOrdersPricesAtom } from 'modules/orders/state/pendingOrdersPricesAtom'
 import { useGetSpotPrice } from 'modules/orders/state/spotPricesAtom'
 import { PendingPermitUpdater, useGetOrdersPermitStatus } from 'modules/permit'
@@ -78,6 +79,7 @@ export function OrdersTableWidget({
   const selectReceiptOrder = useSelectReceiptOrder()
   const isSafeViaWc = useIsSafeViaWc()
   const ordersPermitStatus = useGetOrdersPermitStatus()
+  const injectedWidgetParams = useInjectedWidgetParams()
 
   const { currentTabId, currentPageNumber } = useMemo(() => {
     const params = parseOrdersTableUrl(location.search)
@@ -182,6 +184,7 @@ export function OrdersTableWidget({
           orderType={orderType}
           pendingActivities={pendingActivity}
           ordersPermitStatus={ordersPermitStatus}
+          injectedWidgetParams={injectedWidgetParams}
         >
           {isOpenOrdersTab && orders.length && <MultipleCancellationMenu pendingOrders={tableItemsToOrders(orders)} />}
         </OrdersTableContainer>
