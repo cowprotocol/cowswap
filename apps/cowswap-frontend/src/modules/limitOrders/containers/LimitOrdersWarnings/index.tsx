@@ -9,6 +9,7 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import styled from 'styled-components/macro'
 import { Nullish } from 'types'
 
+import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
 import { useLimitOrdersFormState } from 'modules/limitOrders/hooks/useLimitOrdersFormState'
 import { useRateImpact } from 'modules/limitOrders/hooks/useRateImpact'
@@ -64,6 +65,7 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
     useLimitOrdersDerivedState()
   const tradeQuote = useTradeQuote()
   const priceImpactParams = useTradePriceImpact()
+  const widgetParams = useInjectedWidgetParams()
 
   const isBundling = primaryFormValidation && FORM_STATES_TO_SHOW_BUNDLE_BANNER.includes(primaryFormValidation)
 
@@ -145,7 +147,7 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
       {/*// TODO: must be replaced by <NotificationBanner>*/}
       {showHighFeeWarning && <SmallVolumeWarningBanner feeAmount={feeAmount} feePercentage={feePercentage} />}
       {showApprovalBundlingBanner && <BundleTxApprovalBanner />}
-      {showSafeWcBundlingBanner && <BundleTxSafeWcBanner />}
+      {showSafeWcBundlingBanner && !widgetParams?.banners?.hideSafeWebAppBanner && <BundleTxSafeWcBanner />}
       {showNativeSellWarning && <SellNativeWarningBanner />}
     </Wrapper>
   ) : null
