@@ -26,6 +26,7 @@ import { COW_LISTENERS, DEFAULT_TOKEN_LISTS, TRADE_MODES } from './consts'
 import { CurrencyInputControl } from './controls/CurrencyInputControl'
 import { CurrentTradeTypeControl } from './controls/CurrentTradeTypeControl'
 import { CustomImagesControl } from './controls/CustomImagesControl'
+import { CustomSoundsControl } from './controls/CustomSoundsControl'
 import { NetworkControl, NetworkOption, NetworkOptions } from './controls/NetworkControl'
 import { PaletteControl } from './controls/PaletteControl'
 import { PartnerFeeControl } from './controls/PartnerFeeControl'
@@ -107,7 +108,9 @@ export function Configurator({ title }: { title: string }) {
   const [partnerFeeRecipient] = partnerFeeRecipientState
 
   const customImagesState = useState<CowSwapWidgetParams['images']>({})
+  const customSoundsState = useState<CowSwapWidgetParams['sounds']>({})
   const [customImages] = customImagesState
+  const [customSounds] = customSoundsState
 
   const paletteManager = useColorPaletteManager(mode)
   const { colorPalette, defaultPalette } = paletteManager
@@ -152,8 +155,9 @@ export function Configurator({ title }: { title: string }) {
     () => ({
       ...computedParams,
       images: customImages,
+      sounds: customSounds,
     }),
-    [computedParams, customImages]
+    [computedParams, customImages, customSounds]
   )
 
   useEffect(() => {
@@ -235,6 +239,8 @@ export function Configurator({ title }: { title: string }) {
         <Divider variant="middle">Customization</Divider>
 
         <CustomImagesControl state={customImagesState} />
+
+        <CustomSoundsControl state={customSoundsState} />
 
         <Divider variant="middle">Other settings</Divider>
         <FormControl component="fieldset">
