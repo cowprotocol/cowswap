@@ -1,6 +1,5 @@
 import { useEffect } from 'react'
 
-import { getCowSoundError } from '@cowprotocol/common-utils'
 import {
   CowEventListener,
   CowEvents,
@@ -13,6 +12,7 @@ import { useAddSnackbar } from '@cowprotocol/snackbars'
 import { EVENT_EMITTER } from 'eventEmitter'
 
 import { TransactionContentWithLink } from 'modules/orders'
+import { getCowSoundError } from 'modules/sounds'
 
 export function OnchainTransactionEventsUpdater() {
   const addSnackbar = useAddSnackbar()
