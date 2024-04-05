@@ -15,6 +15,7 @@ import { useToggleWalletModal } from 'legacy/state/application/hooks'
 import { useGetQuoteAndStatus, useIsBestQuoteLoading } from 'legacy/state/price/hooks'
 import { Field } from 'legacy/state/types'
 
+import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { useTokenSupportsPermit } from 'modules/permit'
 import { getSwapButtonState } from 'modules/swap/helpers/getSwapButtonState'
 import { useEthFlowContext } from 'modules/swap/hooks/useEthFlowContext'
@@ -60,6 +61,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
   const { onCurrencySelection } = useSwapActionHandlers()
   const isBestQuoteLoading = useIsBestQuoteLoading()
   const tradeConfirmActions = useTradeConfirmActions()
+  const { standaloneMode } = useInjectedWidgetParams()
 
   const currencyIn = currencies[Field.INPUT]
   const currencyOut = currencies[Field.OUTPUT]
@@ -130,6 +132,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
     swapInputError,
     onCurrencySelection,
     recipientAddressOrName,
+    widgetStandaloneMode: standaloneMode,
   }
 }
 

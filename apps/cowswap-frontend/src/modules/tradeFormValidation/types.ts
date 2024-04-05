@@ -61,6 +61,7 @@ export interface TradeFormButtonContext {
   derivedState: TradeDerivedState
   quote: TradeQuoteState
   isSupportedWallet: boolean
+  widgetStandaloneMode?: boolean
 
   doTrade(): void
   confirmTrade(): void

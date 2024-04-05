@@ -99,7 +99,10 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
   [TradeFormValidation.QuoteExpired]: { text: 'Quote expired. Refreshing...' },
   [TradeFormValidation.WalletNotConnected]: (context) => {
     return (
-      <TradeFormBlankButton onClick={context.connectWallet || undefined} disabled={!context.connectWallet}>
+      <TradeFormBlankButton
+        onClick={context.connectWallet || undefined}
+        disabled={!context.connectWallet || context.widgetStandaloneMode === false}
+      >
         <Trans>Connect Wallet</Trans>
       </TradeFormBlankButton>
     )
