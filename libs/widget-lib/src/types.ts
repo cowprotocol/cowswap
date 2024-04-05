@@ -205,11 +205,6 @@ export interface CowSwapWidgetParams {
   theme?: CowSwapTheme | CowSwapWidgetPalette
 
   /**
-   * Allows to set a custom logo for the widget.
-   */
-  logoUrl?: string
-
-  /**
    * Customizable images for the widget.
    */
   images?: {

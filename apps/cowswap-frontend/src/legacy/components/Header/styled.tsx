@@ -357,7 +357,7 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
     padding: 60px 8px;
     overflow-y: scroll;
     -webkit-overflow-scrolling: touch; // iOS scroll fix
-    transform: translate3d(0,0,0); // iOS scroll fix    
+    transform: translate3d(0,0,0); // iOS scroll fix
     flex-flow: column nowrap;
     justify-content: flex-start;
     align-items: flex-start;
@@ -432,10 +432,6 @@ export const UniIcon = styled.div`
   &:hover {
     transform: rotate(-5deg);
   }
-`
-
-export const CustomLogoImg = styled.img`
-  height: 100%;
 `
 
 export const HeaderRow = styled(RowFixed)`

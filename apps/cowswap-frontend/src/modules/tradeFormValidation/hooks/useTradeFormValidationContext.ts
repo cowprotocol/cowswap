@@ -1,6 +1,5 @@
 import { useMemo } from 'react'
 
-import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { useENSAddress } from '@cowprotocol/ens'
 import { useIsTradeUnsupported } from '@cowprotocol/tokens'
 import { useGnosisSafeInfo, useIsBundlingSupported, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
@@ -20,7 +19,6 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
   const { account } = useWalletInfo()
   const { state: derivedTradeState } = useDerivedTradeState()
   const tradeQuote = useTradeQuote()
-  const { isZeroBalanceOrdersEnabled } = useFeatureFlags()
 
   const { inputCurrency, outputCurrency, slippageAdjustedSellAmount, recipient, tradeType } = derivedTradeState || {}
   const { state: approvalState } = useApproveState(slippageAdjustedSellAmount)
@@ -37,7 +35,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
 
   const isPermitSupported = useTokenSupportsPermit(inputCurrency, tradeType)
 
-  const isInsufficientBalanceOrderAllowed = isZeroBalanceOrdersEnabled && tradeType === TradeType.LIMIT_ORDER
+  const isInsufficientBalanceOrderAllowed = tradeType === TradeType.LIMIT_ORDER
 
   const commonContext = {
     account,
