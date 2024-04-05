@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.64.3](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.64.2...cowswap-v1.64.3) (2024-04-02)
+
+
+### Bug Fixes
+
+* **april-fools:** revert april fools ([#4116](https://github.com/cowprotocol/cowswap/issues/4116)) ([c8fb7d1](https://github.com/cowprotocol/cowswap/commit/c8fb7d1cb124f154e1b317c3e6fd503a65a12336))
+
+## [1.64.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.64.1...cowswap-v1.64.2) (2024-03-29)
+
+
+### Bug Fixes
+
+* **limit-orders:** use ff for zero balance orders ([#4117](https://github.com/cowprotocol/cowswap/issues/4117)) ([28c60bd](https://github.com/cowprotocol/cowswap/commit/28c60bda7b8817ff7156e9e24f253f57da427b36))
+
 ## [1.64.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.64.0...cowswap-v1.64.1) (2024-03-28)
 
 

@@ -17,7 +17,7 @@ import * as Sentry from '@sentry/browser'
 
 const { atom: lastUpdateTimeAtom, updateAtom: updateLastUpdateTimeAtom } = atomWithPartialUpdate(
   atomWithStorage<Record<SupportedChainId, number>>(
-    'tokens:lastUpdateTimeAtom:v1',
+    'tokens:lastUpdateTimeAtom:v0',
     mapSupportedNetworks(0),
     getJotaiMergerStorage()
   )
@@ -28,7 +28,7 @@ const swrOptions: SWRConfiguration = {
   revalidateOnFocus: false,
 }
 
-const NETWORKS_WITHOUT_RESTRICTIONS = [SupportedChainId.SEPOLIA, SupportedChainId.GNOSIS_CHAIN]
+const NETWORKS_WITHOUT_RESTRICTIONS = [SupportedChainId.SEPOLIA]
 
 interface TokensListsUpdaterProps {
   chainId: SupportedChainId

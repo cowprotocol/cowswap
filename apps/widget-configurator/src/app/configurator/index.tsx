@@ -1,7 +1,7 @@
-import { ChangeEvent, useContext, useEffect, useState } from 'react'
+import { ChangeEvent, useContext, useEffect, useMemo, useState } from 'react'
 
 import { CowEventListeners } from '@cowprotocol/events'
-import { TradeType } from '@cowprotocol/widget-lib'
+import { CowSwapWidgetParams, TradeType, TokenInfo } from '@cowprotocol/widget-lib'
 import { CowSwapWidget } from '@cowprotocol/widget-react'
 
 import ChromeReaderModeIcon from '@mui/icons-material/ChromeReaderMode'
@@ -25,6 +25,8 @@ import { useAccount, useNetwork } from 'wagmi'
 import { COW_LISTENERS, DEFAULT_TOKEN_LISTS, TRADE_MODES } from './consts'
 import { CurrencyInputControl } from './controls/CurrencyInputControl'
 import { CurrentTradeTypeControl } from './controls/CurrentTradeTypeControl'
+import { CustomImagesControl } from './controls/CustomImagesControl'
+import { CustomSoundsControl } from './controls/CustomSoundsControl'
 import { NetworkControl, NetworkOption, NetworkOptions } from './controls/NetworkControl'
 import { PaletteControl } from './controls/PaletteControl'
 import { PartnerFeeControl } from './controls/PartnerFeeControl'
@@ -59,6 +61,12 @@ const UTM_PARAMS = 'utm_content=cow-widget-configurator&utm_medium=web&utm_sourc
 export type WidgetMode = 'dapp' | 'standalone'
 
 export function Configurator({ title }: { title: string }) {
+  const { isDisconnected, isConnected } = useAccount()
+  const network = useNetwork()
+  const provider = useProvider()
+
+  const walletChainId = network.chain?.id
+
   const [listeners, setListeners] = useState<CowEventListeners>(COW_LISTENERS)
   const { mode } = useContext(ColorModeContext)
 
@@ -90,13 +98,21 @@ export function Configurator({ title }: { title: string }) {
   const [buyToken] = buyTokenState
   const [buyTokenAmount] = buyTokenAmountState
 
-  const tokenListsState = useState<TokenListItem[]>(DEFAULT_TOKEN_LISTS)
-  const [tokenLists] = tokenListsState
+  const tokenListUrlsState = useState<TokenListItem[]>(DEFAULT_TOKEN_LISTS)
+  const customTokensState = useState<TokenInfo[]>([])
+  const [tokenListUrls] = tokenListUrlsState
+  const [customTokens] = customTokensState
 
   const partnerFeeBpsState = useState<number>(0)
   const partnerFeeRecipientState = useState<string>(ZERO_ADDRESS)
+
   const [partnerFeeBps] = partnerFeeBpsState
   const [partnerFeeRecipient] = partnerFeeRecipientState
+
+  const customImagesState = useState<CowSwapWidgetParams['images']>({})
+  const customSoundsState = useState<CowSwapWidgetParams['sounds']>({})
+  const [customImages] = customImagesState
+  const [customSounds] = customSoundsState
 
   const paletteManager = useColorPaletteManager(mode)
   const { colorPalette, defaultPalette } = paletteManager
@@ -116,15 +132,6 @@ export function Configurator({ title }: { title: string }) {
     },
   ]
 
-  const { isDisconnected, isConnected } = useAccount()
-  const network = useNetwork()
-
-  const walletChainId = network.chain?.id
-
-  useSyncWidgetNetwork(chainId, setNetworkControlState)
-
-  const provider = useProvider()
-
   // Don't change chainId in the widget URL if the user is connected to a wallet
   // Because useSyncWidgetNetwork() will send a request to change the network
   const state: ConfiguratorState = {
@@ -136,7 +143,7 @@ export function Configurator({ title }: { title: string }) {
     sellTokenAmount,
     buyToken,
     buyTokenAmount,
-    tokenLists,
+    tokenListUrls,
     customColors: colorPalette,
     defaultColors: defaultPalette,
     partnerFeeBps,
@@ -145,7 +152,16 @@ export function Configurator({ title }: { title: string }) {
     disableToastMessages,
   }
 
-  const params = useWidgetParams(state)
+  const computedParams = useWidgetParams(state)
+  const params = useMemo(
+    () => ({
+      ...computedParams,
+      images: customImages,
+      sounds: customSounds,
+      customTokens,
+    }),
+    [computedParams, customImages, customSounds, customTokens]
+  )
 
   useEffect(() => {
     web3Modal.setThemeMode(mode)
@@ -157,6 +173,8 @@ export function Configurator({ title }: { title: string }) {
       connectWalletToConfiguratorGA()
     }
   }, [isConnected])
+
+  useSyncWidgetNetwork(chainId, setNetworkControlState)
 
   return (
     <Box sx={WrapperStyled}>
@@ -193,6 +211,8 @@ export function Configurator({ title }: { title: string }) {
           </div>
         )}
 
+        <Divider variant="middle">General</Divider>
+
         <ThemeControl />
 
         <PaletteControl paletteManager={paletteManager} />
@@ -203,9 +223,7 @@ export function Configurator({ title }: { title: string }) {
 
         <NetworkControl state={networkControlState} />
 
-        <TokenListControl tokenListsState={tokenListsState} />
-
-        <Divider variant="middle">Token selection</Divider>
+        <Divider variant="middle">Tokens</Divider>
 
         <CurrencyInputControl
           label="Sell token"
@@ -215,9 +233,17 @@ export function Configurator({ title }: { title: string }) {
 
         <CurrencyInputControl label="Buy token" tokenIdState={buyTokenState} tokenAmountState={buyTokenAmountState} />
 
+        <TokenListControl tokenListUrlsState={tokenListUrlsState} customTokensState={customTokensState} />
+
         <Divider variant="middle">Integrations</Divider>
 
         <PartnerFeeControl feeBpsState={partnerFeeBpsState} recipientState={partnerFeeRecipientState} />
+
+        <Divider variant="middle">Customization</Divider>
+
+        <CustomImagesControl state={customImagesState} />
+
+        <CustomSoundsControl state={customSoundsState} />
 
         <Divider variant="middle">Other settings</Divider>
         <FormControl component="fieldset">

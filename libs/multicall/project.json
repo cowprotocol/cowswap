@@ -1,5 +1,5 @@
 {
-  "name": "@cowprotocol/multicall",
+  "name": "multicall",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/multicall/src",
   "projectType": "library",

@@ -1,6 +1,6 @@
-import { getCowSoundError, getCowSoundSuccess } from '@cowprotocol/common-utils'
-
 import { isAnyOf, Middleware } from '@reduxjs/toolkit'
+
+import { getCowSoundError, getCowSoundSuccess } from 'modules/sounds'
 
 import { setSwapVCowStatus, SwapVCowStatus } from './actions'
 

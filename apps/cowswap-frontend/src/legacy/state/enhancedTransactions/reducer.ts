@@ -12,6 +12,7 @@ import {
   updateSafeTransaction,
   ReplacementType,
   SerializableTransactionReceipt,
+  failSafeTransaction,
 } from './actions'
 
 export enum HashType {
@@ -55,6 +56,9 @@ export interface EnhancedTransactionDetails {
   // Cancelling/Replacing
   replacementType?: ReplacementType // if the user cancelled or speedup the tx it will be reflected here
   linkedTransactionHash?: string
+
+  // Error
+  errorMessage?: string
 
   class?: OrderClass // Flag to distinguish order class
 }
@@ -212,5 +216,15 @@ export default createReducer(initialState, (builder) =>
 
       // Update safe info
       tx.safeTransaction = safeTransaction
+    })
+
+    .addCase(failSafeTransaction, (transactions, { payload: { chainId, hash, errorMessage } }) => {
+      const tx = transactions[chainId]?.[hash]
+      if (!tx) {
+        console.warn('[failSafeTransaction] Unknown safe transaction', hash)
+        return
+      }
+
+      tx.errorMessage = errorMessage
     })
 )
