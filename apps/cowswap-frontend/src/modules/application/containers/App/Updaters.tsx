@@ -34,7 +34,7 @@ import { UserUpdater } from 'common/updaters/UserUpdater'
 
 export function Updaters() {
   const { chainId, account } = useWalletInfo()
-  const { tokenLists, appCode } = useInjectedWidgetParams()
+  const { tokenLists, appCode, customTokens } = useInjectedWidgetParams()
   const onTokenListAddingError = useOnTokenListAddingError()
   const { isGeoBlockEnabled } = useFeatureFlags()
 
@@ -69,6 +69,7 @@ export function Updaters() {
       <TokensListsUpdater chainId={chainId} isGeoBlockEnabled={isGeoBlockEnabled} />
       <WidgetTokensListsUpdater
         tokenLists={tokenLists}
+        customTokens={customTokens}
         appCode={appCode}
         onTokenListAddingError={onTokenListAddingError}
       />

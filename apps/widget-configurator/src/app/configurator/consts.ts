@@ -1,5 +1,5 @@
 import { CowEventListeners, CowEvents, ToastMessageType } from '@cowprotocol/events'
-import { TradeType } from '@cowprotocol/widget-lib'
+import { TradeType, TokenInfo } from '@cowprotocol/widget-lib'
 
 import { TokenListItem } from './types'
 
@@ -93,5 +93,24 @@ export const COW_LISTENERS: CowEventListeners = [
   {
     event: CowEvents.ON_FULFILLED_ORDER,
     handler: (event) => console.log(`[configurator:ON_FULFILLED_ORDER] ✅ Executed order ${event.order.uid}`),
+  },
+]
+
+export const DEFAULT_CUSTOM_TOKENS: TokenInfo[] = [
+  {
+    chainId: 1,
+    address: '0x69D29F1b0cC37d8d3B61583c99Ad0ab926142069',
+    name: 'ƎԀƎԀ',
+    decimals: 9,
+    symbol: 'ƎԀƎԀ',
+    logoURI: 'https://assets.coingecko.com/coins/images/31948/large/photo_2023-09-25_14-05-49.jpg?1696530754',
+  },
+  {
+    chainId: 1,
+    address: '0x9F9643209dCCe8D7399D7BF932354768069Ebc64',
+    name: 'Invest Club Global',
+    decimals: 18,
+    symbol: 'ICG',
+    logoURI: 'https://assets.coingecko.com/coins/images/34316/large/thatone_200%281%29.png?1704621005',
   },
 ]

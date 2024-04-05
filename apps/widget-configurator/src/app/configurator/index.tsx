@@ -1,7 +1,7 @@
 import { ChangeEvent, useContext, useEffect, useMemo, useState } from 'react'
 
 import { CowEventListeners } from '@cowprotocol/events'
-import { CowSwapWidgetParams, TradeType } from '@cowprotocol/widget-lib'
+import { CowSwapWidgetParams, TradeType, TokenInfo } from '@cowprotocol/widget-lib'
 import { CowSwapWidget } from '@cowprotocol/widget-react'
 
 import ChromeReaderModeIcon from '@mui/icons-material/ChromeReaderMode'
@@ -98,8 +98,10 @@ export function Configurator({ title }: { title: string }) {
   const [buyToken] = buyTokenState
   const [buyTokenAmount] = buyTokenAmountState
 
-  const tokenListsState = useState<TokenListItem[]>(DEFAULT_TOKEN_LISTS)
-  const [tokenLists] = tokenListsState
+  const tokenListUrlsState = useState<TokenListItem[]>(DEFAULT_TOKEN_LISTS)
+  const customTokensState = useState<TokenInfo[]>([])
+  const [tokenListUrls] = tokenListUrlsState
+  const [customTokens] = customTokensState
 
   const partnerFeeBpsState = useState<number>(0)
   const partnerFeeRecipientState = useState<string>(ZERO_ADDRESS)
@@ -141,7 +143,7 @@ export function Configurator({ title }: { title: string }) {
     sellTokenAmount,
     buyToken,
     buyTokenAmount,
-    tokenLists,
+    tokenListUrls,
     customColors: colorPalette,
     defaultColors: defaultPalette,
     partnerFeeBps,
@@ -156,8 +158,9 @@ export function Configurator({ title }: { title: string }) {
       ...computedParams,
       images: customImages,
       sounds: customSounds,
+      customTokens,
     }),
-    [computedParams, customImages, customSounds]
+    [computedParams, customImages, customSounds, customTokens]
   )
 
   useEffect(() => {
@@ -230,7 +233,7 @@ export function Configurator({ title }: { title: string }) {
 
         <CurrencyInputControl label="Buy token" tokenIdState={buyTokenState} tokenAmountState={buyTokenAmountState} />
 
-        <TokenListControl tokenListsState={tokenListsState} />
+        <TokenListControl tokenListUrlsState={tokenListUrlsState} customTokensState={customTokensState} />
 
         <Divider variant="middle">Integrations</Divider>
 
