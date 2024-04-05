@@ -5,7 +5,7 @@ import { getSafeWebUrl } from '@cowprotocol/core'
 import { useGnosisSafeInfo } from '@cowprotocol/wallet'
 import { SafeInfoResponse } from '@safe-global/api-kit'
 
-import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/reducer'
+import { EnhancedTransactionDetails, HashType } from 'legacy/state/enhancedTransactions/reducer'
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 
 import { ActivityDerivedState, OrderCreationTxInfo } from 'modules/account/containers/Transaction'
@@ -118,7 +118,14 @@ export function getActivityLinkUrl(params: {
   const { chainId, id, enhancedTransaction, order } = params
 
   if (enhancedTransaction) {
-    const { transactionHash, safeTransaction } = enhancedTransaction
+    const { transactionHash, hash, safeTransaction, hashType } = enhancedTransaction
+
+    /**
+     * This is a special case for Gnosis Safe transactions created via WC in a Safe with 1/1 signers
+     */
+    if (hashType === HashType.GNOSIS_SAFE_TX && hash) {
+      return getEtherscanLink(chainId, 'transaction', hash)
+    }
 
     if (transactionHash) {
       // It's an Ethereum transaction: Etherscan link

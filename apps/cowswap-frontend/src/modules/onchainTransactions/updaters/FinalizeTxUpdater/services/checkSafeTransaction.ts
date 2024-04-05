@@ -1,6 +1,7 @@
-import { failSafeTransaction, updateSafeTransaction } from 'legacy/state/enhancedTransactions/actions'
+import { updateSafeTransaction } from 'legacy/state/enhancedTransactions/actions'
 import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/reducer'
 
+import { checkOnChainTransaction } from './checkOnChainTransaction'
 import { finalizeEthereumTransaction } from './finalizeEthereumTransaction'
 import { handleTransactionReplacement } from './handleTransactionReplacement'
 
@@ -48,8 +49,13 @@ export function checkSafeTransaction(transaction: EnhancedTransactionDetails, pa
       dispatch(updateSafeTransaction({ chainId, safeTransaction, blockNumber: lastBlockNumber }))
     })
     .catch((error) => {
+      /**
+       * There is an exceptional behavior for Safes with 1/1 signers and immediate execution.
+       * In this case, Safe via WC returns on-chain tx hash instead of Safe tx hash.
+       * So, we fallback to check the on-chain transaction.
+       */
       if (error.message?.includes(SAFE_TX_NOT_FOUND_ERROR)) {
-        dispatch(failSafeTransaction({ chainId, hash, errorMessage: error.message }))
+        checkOnChainTransaction(transaction, params)
       }
 
       if (!error.isCancelledError) {
