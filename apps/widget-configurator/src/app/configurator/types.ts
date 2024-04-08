@@ -32,7 +32,7 @@ export interface ConfiguratorState {
   sellTokenAmount: number | undefined
   buyToken: string
   buyTokenAmount: number | undefined
-  tokenLists: TokenListItem[]
+  tokenListUrls: TokenListItem[]
   customColors: ColorPalette
   defaultColors: ColorPalette
   partnerFeeBps: number

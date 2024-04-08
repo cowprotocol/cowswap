@@ -61,11 +61,9 @@ export interface TradeFormButtonContext {
   derivedState: TradeDerivedState
   quote: TradeQuoteState
   isSupportedWallet: boolean
-  isAprilFoolsEnabled: boolean
 
   doTrade(): void
   confirmTrade(): void
   connectWallet: Command | null
   wrapNativeFlow(): void
-  imFeelingLucky(): void
 }

@@ -75,5 +75,6 @@ export default (
     orderActions={orderActions}
     orderType={TabOrderTypes.LIMIT}
     ordersPermitStatus={{}}
+    injectedWidgetParams={{}}
   />
 )

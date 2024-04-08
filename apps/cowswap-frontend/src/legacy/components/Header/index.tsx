@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router-dom'
 
 import CowBalanceButton from 'legacy/components/CowBalanceButton'
 import { NetworkSelector } from 'legacy/components/Header/NetworkSelector'
-import { upToLarge, upToExtraSmall, useMediaQuery } from 'legacy/hooks/useMediaQuery'
+import { upToLarge, upToExtraSmall, useMediaQuery, upToTiny } from 'legacy/hooks/useMediaQuery'
 import { useDarkModeManager } from 'legacy/state/user/hooks'
 import { cowSwapLogo, cowSwapIcon, winterThemeHat } from 'legacy/theme/cowSwapAssets'
 
@@ -29,7 +29,6 @@ import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetwo
 import { AccountElement } from './AccountElement'
 import MobileMenuIcon from './MobileMenuIcon'
 import {
-  CustomLogoImg,
   HeaderControls,
   HeaderElement,
   HeaderModWrapper,
@@ -58,6 +57,7 @@ export default function Header() {
 
   const isUpToLarge = useMediaQuery(upToLarge)
   const isUpToExtraSmall = useMediaQuery(upToExtraSmall)
+  const isUpToTiny = useMediaQuery(upToTiny)
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const handleMobileMenuOnClick = useCallback(() => {
@@ -109,11 +109,7 @@ export default function Header() {
             <Title href={Routes.HOME} isMobileMenuOpen={isMobileMenuOpen}>
               <UniIcon>
                 <LogoImage isMobileMenuOpen={isMobileMenuOpen}>
-                  {injectedWidgetParams.logoUrl ? (
-                    <CustomLogoImg src={injectedWidgetParams.logoUrl} alt="Logo" />
-                  ) : (
-                    <SVG src={isUpToExtraSmall ? cowSwapIcon(darkMode) : cowSwapLogo(darkMode)} />
-                  )}
+                  <SVG src={isUpToExtraSmall ? cowSwapIcon(darkMode) : cowSwapLogo(darkMode)} />
                 </LogoImage>
 
                 {/* WINTER THEME ONLY */}
@@ -139,7 +135,7 @@ export default function Header() {
           {!injectedWidgetParams.hideNetworkSelector && <NetworkSelector />}
 
           <HeaderElement>
-            {!isChainIdUnsupported && (isMobileMenuOpen || !isUpToLarge) && (
+            {!isChainIdUnsupported && (isMobileMenuOpen || !isUpToLarge || isUpToTiny) && (
               <CowBalanceButton
                 onClick={() => {
                   navigate('/account')

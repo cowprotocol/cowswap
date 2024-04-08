@@ -1,10 +1,12 @@
-import { updateSafeTransaction } from 'legacy/state/enhancedTransactions/actions'
+import { failSafeTransaction, updateSafeTransaction } from 'legacy/state/enhancedTransactions/actions'
 import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/reducer'
 
 import { finalizeEthereumTransaction } from './finalizeEthereumTransaction'
 import { handleTransactionReplacement } from './handleTransactionReplacement'
 
 import { CheckEthereumTransactions } from '../types'
+
+const SAFE_TX_NOT_FOUND_ERROR = 'No MultisigTransaction matches the given query'
 
 export function checkSafeTransaction(transaction: EnhancedTransactionDetails, params: CheckEthereumTransactions) {
   const { chainId, getTxSafeInfo, dispatch, safeInfo, getReceipt, lastBlockNumber } = params
@@ -46,6 +48,10 @@ export function checkSafeTransaction(transaction: EnhancedTransactionDetails, pa
       dispatch(updateSafeTransaction({ chainId, safeTransaction, blockNumber: lastBlockNumber }))
     })
     .catch((error) => {
+      if (error.message?.includes(SAFE_TX_NOT_FOUND_ERROR)) {
+        dispatch(failSafeTransaction({ chainId, hash, errorMessage: error.message }))
+      }
+
       if (!error.isCancelledError) {
         console.error(`[FinalizeTxUpdater] Failed to check transaction hash: ${hash}`, error)
       }

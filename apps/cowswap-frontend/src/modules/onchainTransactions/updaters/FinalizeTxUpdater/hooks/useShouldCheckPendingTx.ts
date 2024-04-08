@@ -25,8 +25,9 @@ function shouldCheckPendingTx(
   const isCurrentAccount = tx.from.toLowerCase() === accountLowerCase
   const isReplaced = !!(tx.replacementType || tx.linkedTransactionHash)
   const isTxMined = !!tx.receipt
+  const isFailed = !!tx.errorMessage
 
-  if (!isCurrentAccount || isReplaced || isTxMined) return false
+  if (!isCurrentAccount || isReplaced || isTxMined || isFailed) return false
 
   // If a tx was never checked, we should check it
   if (!tx.lastCheckedBlockNumber) return true

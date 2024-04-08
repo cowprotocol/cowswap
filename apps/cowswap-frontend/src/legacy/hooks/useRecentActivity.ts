@@ -6,12 +6,18 @@ import { SupportedChainId, SupportedChainId as ChainId } from '@cowprotocol/cow-
 import { UiOrderType } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import ms from 'ms.macro'
-
-import { isTransactionRecent, useAllTransactions, useTransactionsByHash } from 'legacy/state/enhancedTransactions/hooks'
+import { useAllTransactions, useTransactionsByHash } from 'legacy/state/enhancedTransactions/hooks'
 import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/reducer'
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 import { useCombinedPendingOrders, useOrder, useOrders, useOrdersById } from 'legacy/state/orders/hooks'
+
+/**
+ * Returns whether a transaction happened in the last day (86400 seconds * 1000 milliseconds / second)
+ * @param tx to check for recency
+ */
+function isTransactionRecent(tx: EnhancedTransactionDetails): boolean {
+  return new Date().getTime() - tx.addedTime < 86_400_000
+}
 
 export interface AddedOrder extends Order {
   addedTime: number
@@ -42,16 +48,6 @@ export enum ActivityStatus {
 enum TxReceiptStatus {
   PENDING,
   CONFIRMED,
-}
-
-const ONCHAIN_TX_TIMEOUT: Record<SupportedChainId, number> = {
-  [SupportedChainId.MAINNET]: ms`30m`,
-  [SupportedChainId.GNOSIS_CHAIN]: ms`15m`,
-  [SupportedChainId.SEPOLIA]: ms`5m`,
-}
-
-function isTxExpired(tx: EnhancedTransactionDetails, chainId: SupportedChainId): boolean {
-  return Date.now() - tx.addedTime > ONCHAIN_TX_TIMEOUT[chainId]
 }
 
 /**
@@ -104,15 +100,11 @@ export function useRecentActivity(): TransactionAndOrder[] {
             ...tx,
             // we need to adjust Transaction object and add "id" + "status" to match Orders type
             id: tx.hash,
-            status: tx.receipt
-              ? OrderStatus.FULFILLED
-              : isTxExpired(tx, chainId)
-              ? OrderStatus.EXPIRED
-              : OrderStatus.PENDING,
+            status: tx.receipt ? OrderStatus.FULFILLED : tx.errorMessage ? OrderStatus.FAILED : OrderStatus.PENDING,
           }
         })
     )
-  }, [chainId, account, allTransactions])
+  }, [account, allTransactions])
 
   return useMemo(
     () =>
@@ -187,13 +179,13 @@ export function createActivityDescriptor(
     const isReceiptConfirmed =
       !!tx.receipt && (tx.receipt.status === TxReceiptStatus.CONFIRMED || typeof tx.receipt.status === 'undefined')
     const isCancelTx = tx?.replacementType === 'cancel'
-    isPending = !tx.receipt && !isTxExpired(tx, chainId)
+    isPending = !tx.receipt
     isPresignaturePending = false
     isConfirmed = !isPending && isReceiptConfirmed
     isCancelling = isCancelTx && isPending
     isCancelled = isCancelTx && !isPending && isReceiptConfirmed
     isCreating = false
-    isFailed = false
+    isFailed = !!tx.errorMessage
 
     activity = tx
     type = ActivityType.TX
@@ -208,6 +200,8 @@ export function createActivityDescriptor(
 
   if (isCancelling) {
     status = ActivityStatus.CANCELLING
+  } else if (isFailed) {
+    status = ActivityStatus.FAILED
   } else if (isPending) {
     status = ActivityStatus.PENDING
   } else if (isPresignaturePending) {
@@ -218,8 +212,6 @@ export function createActivityDescriptor(
     status = ActivityStatus.CONFIRMED
   } else if (isCreating) {
     status = ActivityStatus.CREATING
-  } else if (isFailed) {
-    status = ActivityStatus.FAILED
   } else {
     status = ActivityStatus.EXPIRED
   }
