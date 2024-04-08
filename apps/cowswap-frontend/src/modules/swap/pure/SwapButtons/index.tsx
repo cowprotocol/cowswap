@@ -37,6 +37,7 @@ export interface SwapButtonsContext {
   swapInputError?: ReactNode
   onCurrencySelection: (field: Field, currency: Currency) => void
   recipientAddressOrName: string | null
+  widgetStandaloneMode?: boolean
 }
 
 const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonsContext) => JSX.Element } = {
@@ -107,7 +108,7 @@ const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonsContext
     <ButtonPrimary
       buttonSize={ButtonSize.BIG}
       onClick={props.toggleWalletModal || undefined}
-      disabled={!props.toggleWalletModal}
+      disabled={!props.toggleWalletModal || props.widgetStandaloneMode === false}
     >
       <styledEl.SwapButtonBox>Connect Wallet</styledEl.SwapButtonBox>
     </ButtonPrimary>
