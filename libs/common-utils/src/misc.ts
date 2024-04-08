@@ -1,4 +1,4 @@
-import { OrderKind, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { SupportedChainId as ChainId, OrderKind } from '@cowprotocol/cow-sdk'
 import { Percent } from '@uniswap/sdk-core'
 import { isSellOrder } from './isSellOrder'
 
@@ -162,8 +162,8 @@ export function isRejectRequestProviderError(error: any) {
     // Check for some specific messages returned by some wallets when rejecting requests
     const message = getProviderErrorMessage(error)
     if (
-      PROVIDER_REJECT_REQUEST_ERROR_MESSAGES.some((rejectMessage) =>
-        message.toLowerCase().includes(rejectMessage.toLowerCase())
+      PROVIDER_REJECT_REQUEST_ERROR_MESSAGES.some(
+        (rejectMessage) => message && rejectMessage && message.toLowerCase().includes(rejectMessage.toLowerCase())
       )
     ) {
       return true
