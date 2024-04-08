@@ -1,5 +1,7 @@
 import { CowEventListeners } from '@cowprotocol/events'
+import { IframeCowEventEmitter } from './IframeCowEventEmitter'
 import { IframeRpcProviderBridge } from './IframeRpcProviderBridge'
+import { WindowListener, listenToMessageFromWindow, postMessageToWindow, stopListeningWindowListener } from './messages'
 import {
   CowSwapWidgetParams,
   CowSwapWidgetProps,
@@ -8,8 +10,6 @@ import {
   WidgetMethodsListen,
 } from './types'
 import { buildWidgetPath, buildWidgetUrl, buildWidgetUrlQuery } from './urlUtils'
-import { IframeCowEventEmitter } from './IframeCowEventEmitter'
-import { WindowListener, listenToMessageFromWindow, postMessageToWindow, stopListeningWindowListener } from './messages'
 
 const DEFAULT_HEIGHT = '640px'
 const DEFAULT_WIDTH = '450px'
@@ -85,6 +85,8 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
     },
 
     destroy: () => {
+      // Disconnet rpc provider and unsubscribe to events
+      iframeRpcProviderBridge.disconnect()
       // Stop listening for cow events
       iFrameCowEventEmitter.stopListeningIframe()
 
