@@ -47,6 +47,12 @@ import { web3Modal } from '../../wagmiConfig'
 import { connectWalletToConfiguratorGA } from '../analytics'
 import { EmbedDialog } from '../embedDialog'
 
+declare global {
+  interface Window {
+    cowSwapWidgetParams?: Partial<CowSwapWidgetParams>
+  }
+}
+
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 
 const DEFAULT_STATE = {
@@ -159,6 +165,7 @@ export function Configurator({ title }: { title: string }) {
       images: customImages,
       sounds: customSounds,
       customTokens,
+      ...window.cowSwapWidgetParams,
     }),
     [computedParams, customImages, customSounds, customTokens]
   )

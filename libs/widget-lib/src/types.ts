@@ -121,6 +121,48 @@ export interface CowSwapWidgetPalette {
   success: string
 }
 
+export interface CowSwapWidgetSounds {
+  /**
+   * The sound to play when the order is executed. Defaults to world wide famous CoW Swap moooooooooo!
+   * Alternatively, you can use a URL to a custom sound file, or set to null to disable the sound.
+   */
+  postOrder?: string | null
+
+  /**
+   * The sound to play when the order is executed. Defaults to world wide famous CoW Swap happy moooooooooo!
+   * Alternatively, you can use a URL to a custom sound file, or set to null to disable the sound.
+   */
+  orderExecuted?: string | null
+
+  /**
+   * The sound to play when the order is executed. Defaults to world wide famous CoW Swap unhappy moooooooooo!
+   * Alternatively, you can use a URL to a custom sound file, or set to null to disable the sound.
+   */
+  orderError?: string | null
+}
+
+export interface CowSwapWidgetImages {
+  /**
+   * The image to display when the orders table is empty (no orders yet). It defaults to "Yoga CoW" image.
+   * Alternatively, you can use a URL to a custom image file, or set to null to disable the image.
+   */
+  emptyOrders?: string | null
+}
+
+export interface CowSwapWidgetBanners {
+  /**
+   * Banner text: "Use Safe web app..."
+   *
+   * Conditions for displaying the banner:
+   *  - Safe-like app is connected to CoW Swap via WalletConnect
+   *  - Selling native token via Swap
+   *  - Sell token needs approval
+   *
+   *  If the flag is set to true, the banner will not be displayed
+   */
+  hideSafeWebAppBanner?: boolean
+}
+
 export interface CowSwapWidgetParams {
   /**
    * The unique identifier of the widget consumer.
@@ -219,36 +261,17 @@ export interface CowSwapWidgetParams {
   /**
    * Customizable images for the widget.
    */
-  images?: {
-    /**
-     * The image to display when the orders table is empty (no orders yet). It defaults to "Yoga CoW" image.
-     * Alternatively, you can use a URL to a custom image file, or set to null to disable the image.
-     */
-    emptyOrders?: string | null
-  }
+  images?: CowSwapWidgetImages
 
   /**
    * Sounds configuration for the app.
    */
-  sounds?: {
-    /**
-     * The sound to play when the order is executed. Defaults to world wide famous CoW Swap moooooooooo!
-     * Alternatively, you can use a URL to a custom sound file, or set to null to disable the sound.
-     */
-    postOrder?: string | null
+  sounds?: CowSwapWidgetSounds
 
-    /**
-     * The sound to play when the order is executed. Defaults to world wide famous CoW Swap happy moooooooooo!
-     * Alternatively, you can use a URL to a custom sound file, or set to null to disable the sound.
-     */
-    orderExecuted?: string | null
-
-    /**
-     * The sound to play when the order is executed. Defaults to world wide famous CoW Swap unhappy moooooooooo!
-     * Alternatively, you can use a URL to a custom sound file, or set to null to disable the sound.
-     */
-    orderError?: string | null
-  }
+  /**
+   * Flags to control the display of banners in the widget.
+   */
+  banners?: CowSwapWidgetBanners
 
   /**
    * In case when widget does not support some tokens, you can provide a list of tokens to be used in the widget

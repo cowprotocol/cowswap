@@ -14,6 +14,7 @@ import { ApplicationModal } from 'legacy/state/application/reducer'
 import { Field } from 'legacy/state/types'
 import { useUserSlippageTolerance } from 'legacy/state/user/hooks'
 
+import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { EthFlowModal, EthFlowProps } from 'modules/swap/containers/EthFlow'
 import { SwapModals, SwapModalsProps } from 'modules/swap/containers/SwapModals'
 import { SwapButtonState } from 'modules/swap/helpers/getSwapButtonState'
@@ -70,7 +71,7 @@ export function SwapWidget() {
   const showRecipientControls = useShowRecipientControls(recipient)
   const isEoaEthFlow = useIsEoaEthFlow()
   const shouldZeroApprove = useShouldZeroApprove(slippageAdjustedSellAmount)
-
+  const widgetParams = useInjectedWidgetParams()
   const priceImpactParams = useTradePriceImpact()
 
   const isTradePriceUpdating = useTradePricesUpdate()
@@ -209,7 +210,8 @@ export function SwapWidget() {
   const showSafeWcWrapBundlingBanner = !showWrapBundlingBanner && isSafeViaWc && isSwapEth
 
   // Show the same banner when approval is needed or selling native token
-  const showSafeWcBundlingBanner = showSafeWcApprovalBundlingBanner || showSafeWcWrapBundlingBanner
+  const showSafeWcBundlingBanner =
+    (showSafeWcApprovalBundlingBanner || showSafeWcWrapBundlingBanner) && !widgetParams.banners?.hideSafeWebAppBanner
 
   const nativeCurrencySymbol = useNativeCurrency().symbol || 'ETH'
   const wrappedCurrencySymbol = useWrappedToken().symbol || 'WETH'
