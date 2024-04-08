@@ -30,6 +30,9 @@ type TxState = {
    * false: transaction succeeded
    */
   failed?: boolean
+  cancelled?: boolean
+  spedUp?: boolean
+  replaced?: boolean
 }
 
 export interface EthFlowStepperProps {

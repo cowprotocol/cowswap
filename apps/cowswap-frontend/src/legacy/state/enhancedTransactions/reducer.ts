@@ -174,7 +174,9 @@ export default createReducer(initialState, (builder) =>
         return
       }
 
-      if (allTxs[newHash]?.replacementType === type) {
+      const newTx = allTxs[newHash]
+
+      if (newTx?.replacementType === type || newTx?.linkedTransactionHash) {
         console.warn('[replaceTransaction] The new replacement hash was already added.', {
           chainId,
           oldHash,
@@ -192,6 +194,8 @@ export default createReducer(initialState, (builder) =>
         replacementType: type,
         linkedTransactionHash: oldHash,
       }
+
+      console.warn('[replaceTransaction] Transaction replaced', allTxs[newHash])
 
       allTxs[oldHash].linkedTransactionHash = newHash
     })

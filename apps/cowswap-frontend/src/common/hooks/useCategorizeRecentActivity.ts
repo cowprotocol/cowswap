@@ -2,7 +2,8 @@ import { useMemo } from 'react'
 
 import { UiOrderType } from '@cowprotocol/types'
 
-import { useRecentActivity } from 'legacy/hooks/useRecentActivity'
+import { AddedOrder, TransactionAndOrder, useRecentActivity } from 'legacy/hooks/useRecentActivity'
+import { useAllTransactions } from 'legacy/state/enhancedTransactions/hooks'
 import { CREATING_STATES, Order, OrderStatus, PENDING_STATES } from 'legacy/state/orders/actions'
 
 import { getIsFinalizedOrder } from 'utils/orderUtils/getIsFinalizedOrder'
@@ -19,28 +20,46 @@ export const isCreating = ({ status }: { status: OrderStatus }) => CREATING_STAT
 export function useCategorizeRecentActivity() {
   // Returns all RECENT (last day) transaction and orders in 2 arrays: pending and confirmed
   const allRecentActivity = useRecentActivity()
+  const allTransactions = useAllTransactions()
 
-  const [pendingActivity, confirmedActivity] = useMemo(
-    () =>
-      // Separate the array into 2: transitory (pending) and final (confirmed) states
-      allRecentActivity.reduce<[string[], string[]]>(
-        (acc, activity) => {
-          // Only display regular on-chain transactions (wrap, approval, etc) OR MARKET orders
-          if (!activity.class || getUiOrderType(activity as Order) === UiOrderType.SWAP) {
-            if (isPending(activity)) {
-              acc[0].push(activity.id)
-            } else if (getIsFinalizedOrder(activity)) {
-              acc[1].push(activity.id)
-            }
+  const [pendingActivity, confirmedActivity] = useMemo(() => {
+    // Separate the array into 2: transitory (pending) and final (confirmed) states
+    return allRecentActivity.reduce<[string[], string[]]>(
+      (acc, activity) => {
+        // Only display regular on-chain transactions (wrap, approval, etc) OR MARKET orders
+        if (!activity.class || getUiOrderType(activity as Order) === UiOrderType.SWAP) {
+          if (isEthFlowOrderNotCreated(allTransactions, activity)) {
+            acc[1].push(activity.id)
+          } else if (isPending(activity)) {
+            acc[0].push(activity.id)
+          } else if (getIsFinalizedOrder(activity)) {
+            acc[1].push(activity.id)
           }
-          return acc
-        },
-        [[], []]
-      ),
-
-    // Reducing unnecessary re-renders
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [JSON.stringify(allRecentActivity)]
-  )
+        }
+        return acc
+      },
+      [[], []]
+    )
+  }, [allRecentActivity, allTransactions])
   return { pendingActivity, confirmedActivity }
+}
+
+function isEthFlowOrderNotCreated(
+  transactions: ReturnType<typeof useAllTransactions>,
+  activity: TransactionAndOrder
+): boolean {
+  const order = activity as AddedOrder
+
+  if (!order?.orderCreationHash) return false
+
+  const orderCreationTx = transactions[order.orderCreationHash]
+  const orderCreationLinkedTx = orderCreationTx?.linkedTransactionHash
+    ? transactions[orderCreationTx.linkedTransactionHash]
+    : undefined
+
+  if (orderCreationLinkedTx) {
+    return orderCreationLinkedTx.replacementType === 'replaced' || orderCreationLinkedTx.replacementType === 'cancel'
+  }
+
+  return false
 }

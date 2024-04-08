@@ -22,7 +22,7 @@ const ExpiredMessage = styled.span`
 
 export function Step3({ nativeTokenSymbol, tokenLabel, order, creation, refund, cancellation }: EthFlowStepperProps) {
   const { state, isExpired, rejectedReason } = order
-  const { failed: creationFailed } = creation
+  const { failed: creationFailed, cancelled: creationCancelled, replaced: creationReplaced } = creation
   const { hash: refundHash, failed: refundFailed } = refund
   const { hash: cancellationHash, failed: cancellationFailed } = cancellation
 
@@ -33,13 +33,14 @@ export function Step3({ nativeTokenSymbol, tokenLabel, order, creation, refund, 
   const expiredBeforeCreate = isExpired && (isCreating || isIndexing)
   const isRefunded = refundFailed === false || cancellationFailed === false
 
+  const orderIsNotCreated = !!(creationFailed || creationCancelled || creationReplaced) && !isFilled
   // Get the label, state and icon
   const {
     label,
     state: stepState,
     icon,
   } = useMemo<StepProps>(() => {
-    if (creationFailed) {
+    if (orderIsNotCreated) {
       return {
         label: 'Receive ' + tokenLabel,
         state: 'not-started',
@@ -87,7 +88,16 @@ export function Step3({ nativeTokenSymbol, tokenLabel, order, creation, refund, 
       state: 'not-started',
       icon: Finish,
     }
-  }, [expiredBeforeCreate, isIndexing, isFilled, isRefunded, creationFailed, isIndexed, tokenLabel, nativeTokenSymbol])
+  }, [
+    expiredBeforeCreate,
+    isIndexing,
+    isFilled,
+    isRefunded,
+    orderIsNotCreated,
+    isIndexed,
+    tokenLabel,
+    nativeTokenSymbol,
+  ])
 
   const isRefunding = !!refundHash && refundFailed === undefined
   const isCanceling = !!cancellationHash && cancellationFailed === undefined
@@ -119,15 +129,15 @@ export function Step3({ nativeTokenSymbol, tokenLabel, order, creation, refund, 
   return (
     <Step state={stepState} icon={icon} label={label} crossOut={crossOut}>
       <>
-        {!creationFailed && isExpired && !(isSuccess || isOrderRejected) && (
+        {!orderIsNotCreated && isExpired && !(isSuccess || isOrderRejected) && (
           <ExpiredMessage>Order has expired</ExpiredMessage>
         )}
-        {!creationFailed &&
+        {!orderIsNotCreated &&
           !isRefunded &&
           wontReceiveToken &&
           !(refundHash || cancellationHash) &&
           cancellationFailed === undefined && <RefundMessage>Initiating {nativeTokenSymbol} Refund...</RefundMessage>}
-        {creationFailed && <RefundMessage>{nativeTokenSymbol} Refunded</RefundMessage>}
+        {orderIsNotCreated && <RefundMessage>{nativeTokenSymbol} Refunded</RefundMessage>}
         {refundLink}
       </>
     </Step>
