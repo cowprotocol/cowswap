@@ -17,6 +17,7 @@ import { createRoot } from 'react-dom/client'
 import { Provider } from 'react-redux'
 import { HashRouter } from 'react-router-dom'
 import * as serviceWorkerRegistration from 'serviceWorkerRegistration'
+import styled from 'styled-components/macro'
 
 import AppziButton from 'legacy/components/AppziButton'
 import Web3Provider from 'legacy/components/Web3Provider'
@@ -54,6 +55,10 @@ function Main() {
 
   const isUpToMedium = useMediaQuery(upToMedium)
 
+  const FooterButtonsWrapper = styled.div<{ isUpToMedium: boolean }>`
+    display: ${({ isUpToMedium }) => (isUpToMedium ? 'none' : 'block')};
+  `
+
   return (
     <StrictMode>
       <FixedGlobalStyle />
@@ -70,12 +75,12 @@ function Main() {
                       <Updaters />
 
                       {!isInjectedWidgetMode && !isUpToMedium && (
-                        <>
+                        <FooterButtonsWrapper isUpToMedium={isUpToMedium}>
                           <FeatureGuard featureFlag="cowFortuneEnabled">
                             <FortuneWidget />
                           </FeatureGuard>
                           <AppziButton />
-                        </>
+                        </FooterButtonsWrapper>
                       )}
 
                       <Toasts />

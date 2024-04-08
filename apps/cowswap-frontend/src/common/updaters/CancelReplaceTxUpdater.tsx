@@ -65,7 +65,10 @@ export function CancelReplaceTxUpdater(): null {
   const { chainId, account } = useWalletInfo()
   const dispatch = useAppDispatch()
   const accountLowerCase = account?.toLowerCase() || ''
-  const pendingHashes = useAllTransactionHashes((tx) => !tx.receipt && tx.from.toLowerCase() === accountLowerCase)
+  const pendingHashes = useAllTransactionHashes(
+    (tx) =>
+      !tx.receipt && !tx.replacementType && !tx.linkedTransactionHash && tx.from.toLowerCase() === accountLowerCase
+  )
 
   useEffect(() => {
     if (!chainId || !provider) return

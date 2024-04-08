@@ -118,7 +118,7 @@ const StepIcon = styled.div<{ status: StatusIconState }>`
 
 const Label = styled.span<{ status: StatusIconState; crossOut: boolean }>`
   --color: ${({ status, crossOut }) =>
-    status === 'pending'
+    status === 'pending' || status === 'not-started'
       ? `var(${UI.COLOR_TEXT})`
       : crossOut
       ? `var(${UI.COLOR_PAPER_DARKER})`
@@ -134,6 +134,7 @@ const Label = styled.span<{ status: StatusIconState; crossOut: boolean }>`
   text-decoration: ${({ crossOut }) => (crossOut ? 'line-through' : 'none')};
   display: flex;
   flex-flow: column wrap;
+  line-height: 1.3;
 
   // Sublabel text
   > span {
