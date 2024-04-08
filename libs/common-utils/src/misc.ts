@@ -140,7 +140,9 @@ export function hashCode(text: string): number {
  * with the error message
  */
 export function getProviderErrorMessage(error: any) {
-  return typeof error === 'string' ? error : error.message
+  if (typeof error === 'string') return error
+  if (error && 'message' in error) return error.message
+  return error?.toString()
 }
 
 /**
