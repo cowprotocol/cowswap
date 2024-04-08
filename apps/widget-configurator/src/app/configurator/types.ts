@@ -1,21 +1,10 @@
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
-import type { TradeType } from '@cowprotocol/widget-lib'
+import { CowSwapWidgetPaletteColors, TradeType } from '@cowprotocol/widget-lib'
 
 import { PaletteMode } from '@mui/material'
 
-export type ColorKeys =
-  | 'primary'
-  | 'background'
-  | 'paper'
-  | 'text'
-  | 'danger'
-  | 'warning'
-  | 'alert'
-  | 'info'
-  | 'success'
-
 export type ColorPalette = {
-  [key in ColorKeys]: string
+  [key in CowSwapWidgetPaletteColors]: string
 }
 
 export interface TokenListItem {

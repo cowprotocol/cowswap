@@ -1,14 +1,26 @@
-import type { CowSwapWidgetPalette } from '@cowprotocol/widget-lib'
+import { useMemo } from 'react'
 
-import { useInjectedWidgetParams } from './useInjectedWidgetParams'
+import { CowSwapWidgetPaletteParams, paletteKeyToQueryParam, WIDGET_PALETTE_COLORS } from '@cowprotocol/widget-lib'
+
+import { useLocation } from 'react-router-dom'
 
 // The theme palette provided by a consumer
-export function useInjectedWidgetPalette(): Partial<CowSwapWidgetPalette> | undefined {
-  const state = useInjectedWidgetParams()
+export function useInjectedWidgetPalette(): Partial<CowSwapWidgetPaletteParams> | undefined {
+  const { search } = useLocation()
 
-  return isCowSwapWidgetPallet(state.theme) ? state.theme : undefined
-}
+  return useMemo(() => {
+    const searchParams = new URLSearchParams(search)
 
-function isCowSwapWidgetPallet(palette: any): palette is CowSwapWidgetPalette {
-  return palette && typeof palette === 'object'
+    return WIDGET_PALETTE_COLORS.reduce<Partial<CowSwapWidgetPaletteParams>>((acc, param) => {
+      const queryKey = paletteKeyToQueryParam(param)
+      const value = searchParams.get(queryKey)
+
+      if (!value) return acc
+
+      return {
+        ...acc,
+        [param]: searchParams.get(queryKey),
+      }
+    }, {})
+  }, [search])
 }

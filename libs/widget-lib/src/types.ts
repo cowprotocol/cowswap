@@ -108,18 +108,23 @@ export type TokenInfo = {
   logoURI?: string
 }
 
-export interface CowSwapWidgetPalette {
-  baseTheme: CowSwapTheme
-  primary: string
-  background: string
-  paper: string
-  text: string
-  danger: string
-  warning: string
-  alert: string
-  info: string
-  success: string
-}
+export const WIDGET_PALETTE_COLORS = [
+  'primary',
+  'background',
+  'paper',
+  'text',
+  'danger',
+  'warning',
+  'alert',
+  'info',
+  'success',
+] as const
+
+export type CowSwapWidgetPaletteColors = (typeof WIDGET_PALETTE_COLORS)[number]
+
+export type CowSwapWidgetPaletteParams = { [K in CowSwapWidgetPaletteColors]: string }
+
+export type CowSwapWidgetPalette = { baseTheme: CowSwapTheme } & CowSwapWidgetPaletteParams
 
 export interface CowSwapWidgetSounds {
   /**
@@ -297,12 +302,15 @@ export interface WidgetMethodsListenPayloadMap {
 export type WidgetMethodsEmitPayloads = WidgetMethodsEmitPayloadMap[WidgetMethodsEmit]
 export type WidgetMethodsListenPayloads = WidgetMethodsListenPayloadMap[WidgetMethodsListen]
 
+export type CowSwapWidgetAppParams = Omit<CowSwapWidgetParams, 'theme'>
+
 export interface UpdateParamsPayload {
   urlParams: {
     pathname: string
+    // Contains theme and other query params
     search: string
   }
-  appParams: CowSwapWidgetParams
+  appParams: CowSwapWidgetAppParams
   hasProvider: boolean
 }
 

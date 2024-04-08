@@ -7,7 +7,7 @@ import {
   WidgetMethodsEmit,
   WidgetMethodsListen,
 } from './types'
-import { buildTradeAmountsQuery, buildWidgetPath, buildWidgetUrl } from './urlUtils'
+import { buildWidgetPath, buildWidgetUrl, buildWidgetUrlQuery } from './urlUtils'
 import { IframeCowEventEmitter } from './IframeCowEventEmitter'
 import { WindowListener, listenToMessageFromWindow, postMessageToWindow, stopListeningWindowListener } from './messages'
 
@@ -41,6 +41,7 @@ export interface CowSwapWidgetHandler {
 export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidgetProps): CowSwapWidgetHandler {
   const { params, provider: providerAux, listeners } = props
   let provider = providerAux
+  let currentParams = params
 
   // 1. Create a brand new iframe
   const iframe = createIframe(params)
@@ -69,11 +70,14 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
   let iframeRpcProviderBridge = updateProvider(iframeWindow, null, provider)
 
   // 7. Schedule the uploading of the params, once the iframe is loaded
-  iframe.addEventListener('load', () => updateParams(iframeWindow, params, provider))
+  iframe.addEventListener('load', () => updateParams(iframeWindow, currentParams, provider))
 
   // 8. Return the handler, so the widget, listeners, and provider can be updated
   return {
-    updateParams: (newParams: CowSwapWidgetParams) => updateParams(iframeWindow, newParams, provider),
+    updateParams: (newParams: CowSwapWidgetParams) => {
+      currentParams = newParams
+      updateParams(iframeWindow, currentParams, provider)
+    },
     updateListeners: (newListeners?: CowEventListeners) => iFrameCowEventEmitter.updateListeners(newListeners),
     updateProvider: (newProvider) => {
       provider = newProvider
@@ -151,16 +155,18 @@ function updateParams(contentWindow: Window, params: CowSwapWidgetParams, provid
   const hasProvider = !!provider
 
   const pathname = buildWidgetPath(params)
-  const search = buildTradeAmountsQuery(params).toString()
+  const search = buildWidgetUrlQuery(params).toString()
+
+  // Omit theme from appParams
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { theme, ...appParams } = params
 
   postMessageToWindow(contentWindow, WidgetMethodsListen.UPDATE_PARAMS, {
     urlParams: {
       pathname,
       search,
     },
-    appParams: {
-      ...params,
-    },
+    appParams,
     hasProvider,
   })
 }
