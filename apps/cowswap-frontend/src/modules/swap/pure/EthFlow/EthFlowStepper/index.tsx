@@ -71,7 +71,7 @@ export interface EthFlowStepperProps {
 
 const Wrapper = styled.div`
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: 0.8fr minmax(44px, 0.3fr) 0.8fr minmax(44px, 0.3fr) 0.8fr;
   grid-template-rows: max-content;
   align-items: flex-start;
   width: 100%;
