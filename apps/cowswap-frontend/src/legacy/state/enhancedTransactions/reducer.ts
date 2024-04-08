@@ -12,7 +12,6 @@ import {
   updateSafeTransaction,
   ReplacementType,
   SerializableTransactionReceipt,
-  failSafeTransaction,
 } from './actions'
 
 export enum HashType {
@@ -216,15 +215,5 @@ export default createReducer(initialState, (builder) =>
 
       // Update safe info
       tx.safeTransaction = safeTransaction
-    })
-
-    .addCase(failSafeTransaction, (transactions, { payload: { chainId, hash, errorMessage } }) => {
-      const tx = transactions[chainId]?.[hash]
-      if (!tx) {
-        console.warn('[failSafeTransaction] Unknown safe transaction', hash)
-        return
-      }
-
-      tx.errorMessage = errorMessage
     })
 )
