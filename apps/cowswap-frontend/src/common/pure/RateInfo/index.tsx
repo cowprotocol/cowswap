@@ -2,8 +2,7 @@ import React, { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'r
 
 import { getAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { FiatAmount, TokenAmount, TokenSymbol } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
+import { FiatAmount, TokenAmount, TokenSymbol, UI } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
@@ -134,6 +133,7 @@ export const FiatRate = styled.span`
   opacity: 0.7;
   font-weight: 400;
   text-align: right;
+  white-space: nowrap;
 `
 
 export function InvertRateControl({ onClick, className }: { onClick(): void; className?: string }) {
@@ -232,8 +232,8 @@ export function RateInfo({
           <span
             title={
               currentActiveRate.toFixed(rateOutputCurrency.decimals || DEFAULT_DECIMALS) +
-                ' ' +
-                rateOutputCurrency.symbol || ''
+              ' ' +
+              rateOutputCurrency.symbol || ''
             }
           >
             {prependSymbol && (
