@@ -88,7 +88,8 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
     !isConfirmScreen &&
     !showApprovalBundlingBanner &&
     isSafeViaWc &&
-    primaryFormValidation === TradeFormValidation.ApproveRequired
+    primaryFormValidation === TradeFormValidation.ApproveRequired &&
+    !widgetParams?.banners?.hideSafeWebAppBanner
 
   // TODO: implement Safe App EthFlow bundling for LIMIT and disable the warning in that case
   const showNativeSellWarning = primaryFormValidation === TradeFormValidation.SellNativeToken
@@ -147,7 +148,7 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
       {/*// TODO: must be replaced by <NotificationBanner>*/}
       {showHighFeeWarning && <SmallVolumeWarningBanner feeAmount={feeAmount} feePercentage={feePercentage} />}
       {showApprovalBundlingBanner && <BundleTxApprovalBanner />}
-      {showSafeWcBundlingBanner && !widgetParams?.banners?.hideSafeWebAppBanner && <BundleTxSafeWcBanner />}
+      {showSafeWcBundlingBanner && <BundleTxSafeWcBanner />}
       {showNativeSellWarning && <SellNativeWarningBanner />}
     </Wrapper>
   ) : null

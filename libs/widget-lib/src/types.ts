@@ -153,9 +153,10 @@ export interface CowSwapWidgetBanners {
   /**
    * Banner text: "Use Safe web app..."
    *
-   * Conditions of the banner displaying:
+   * Conditions for displaying the banner:
    *  - Safe-like app is connected to CoW Swap via WalletConnect
    *  - Selling native token via Swap
+   *  - Sell token needs approval
    *
    *  If the flag is set to true, the banner will not be displayed
    */
