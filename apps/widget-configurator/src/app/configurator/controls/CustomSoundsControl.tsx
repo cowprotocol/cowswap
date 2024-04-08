@@ -7,6 +7,8 @@ import TextField from '@mui/material/TextField'
 type CustomSounds = CowSwapWidgetParams['sounds']
 type WidgetSounds = keyof NonNullable<CowSwapWidgetParams['sounds']>
 
+const valueNullAsString = (value: string | undefined | null) => (value === null ? 'null' : value || '')
+
 export interface CustomSoundsControlProps {
   state: [CustomSounds, Dispatch<SetStateAction<CustomSounds>>]
 }
@@ -17,7 +19,8 @@ export function CustomSoundsControl({ state }: CustomSoundsControlProps) {
   const updateSoundCallback = useCallback(
     (type: WidgetSounds) => {
       return (e: ChangeEvent<HTMLInputElement>) => {
-        setCustomSounds((prevState) => ({ ...prevState, [type]: e.target.value || '' }))
+        const value = e.target.value
+        setCustomSounds((prevState) => ({ ...prevState, [type]: value === 'null' ? null : value || '' }))
       }
     },
     [setCustomSounds]
@@ -30,7 +33,7 @@ export function CustomSoundsControl({ state }: CustomSoundsControlProps) {
         margin="dense"
         id="postOrderSound"
         label="Submitted order sound URL"
-        value={customSound?.postOrder || ''}
+        value={valueNullAsString(customSound?.postOrder)}
         onChange={updateSoundCallback('postOrder')}
         size="small"
       />
@@ -39,7 +42,7 @@ export function CustomSoundsControl({ state }: CustomSoundsControlProps) {
         margin="dense"
         id="orderExecutedSound"
         label="Executed order sound URL"
-        value={customSound?.orderExecuted || ''}
+        value={valueNullAsString(customSound?.orderExecuted)}
         onChange={updateSoundCallback('orderExecuted')}
         size="small"
       />
@@ -48,7 +51,7 @@ export function CustomSoundsControl({ state }: CustomSoundsControlProps) {
         margin="dense"
         id="orderErrorSound"
         label="Failed order sound URL"
-        value={customSound?.orderError || ''}
+        value={valueNullAsString(customSound?.orderError)}
         onChange={updateSoundCallback('orderError')}
         size="small"
       />
