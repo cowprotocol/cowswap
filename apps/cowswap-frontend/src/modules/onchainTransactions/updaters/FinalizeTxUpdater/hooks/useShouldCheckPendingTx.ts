@@ -23,7 +23,7 @@ function shouldCheckPendingTx(
   tx: EnhancedTransactionDetails
 ): boolean {
   const isCurrentAccount = tx.from.toLowerCase() === accountLowerCase
-  const isReplaced = !!tx.replacementType
+  const isReplaced = !!(tx.replacementType || tx.linkedTransactionHash)
   const isTxMined = !!tx.receipt
   const isFailed = !!tx.errorMessage
 

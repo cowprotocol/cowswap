@@ -125,7 +125,7 @@ export function StatusDetails(props: StatusDetailsProps) {
         {isReplaced ? 'Replaced' : _getStateLabel(activityDerivedState)}
       </StatusLabel>
 
-      {showCancellationModal && isCancellable && (
+      {showCancellationModal && isCancellable && !isCancelled && (
         <StatusLabelBelow>
           <CancelButton onClick={showCancellationModal} />
         </StatusLabelBelow>

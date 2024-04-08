@@ -31,8 +31,8 @@ import { MenuBadge, StyledExternalLink } from './styled'
 
 import { MAIN_MENU } from '../../constants/mainMenu'
 
-const ExtraMenuItemsWrapper = styled.div<{ isVisible: boolean }>`
-  display: ${({ isVisible }) => (isVisible ? 'block' : 'none')};
+const ExtraMenuItemsWrapper = styled.div<{ isVisible: boolean; isUpToMedium: boolean }>`
+  display: ${({ isVisible, isUpToMedium }) => (isVisible && isUpToMedium ? 'block' : 'none')};
   width: 100%;
 `
 
@@ -195,7 +195,7 @@ export function MenuTree({ items = MAIN_MENU, isMobileMenuOpen, context, handleM
       })}
       {/* Medium and down only to show the fortune widget and feedback button */}
       {isUpToMedium && isMobileMenuOpen && (
-        <ExtraMenuItemsWrapper isVisible={isMobileMenuOpen}>
+        <ExtraMenuItemsWrapper isVisible={isMobileMenuOpen} isUpToMedium={isUpToMedium}>
           <FeatureGuard featureFlag="cowFortuneEnabled">
             <FortuneWidget menuTitle="Get your fortune cookie" isMobileMenuOpen={isMobileMenuOpen} />
           </FeatureGuard>
