@@ -139,9 +139,9 @@ export function hashCode(text: string): number {
  * Some providers return some description in the error.message, and some others the error message is itself a String
  * with the error message
  */
-export function getProviderErrorMessage(error: any) {
+export function getProviderErrorMessage(error: unknown): string | undefined {
   if (typeof error === 'string') return error
-  if (error && 'message' in error) return error.message
+  if (error && typeof error === 'object' && 'message' in error) return error.message as string
   return error?.toString()
 }
 
