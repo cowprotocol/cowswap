@@ -122,4 +122,8 @@ export const ORDERS_NOTIFICATION_HANDLERS: Record<CowEvents, OrdersNotifications
       return null
     },
   },
+  [CowEvents.ON_CHANGE_TRADE_PARAMS]: {
+    icon: 'success',
+    handler: () => null,
+  },
 }

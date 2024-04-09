@@ -19,7 +19,7 @@ export function useNotifyWidgetTrade() {
   useEffect(() => {
     if (!state?.tradeType) return
 
-    EVENT_EMITTER.emit(CowEvents.ON_TRADE_PARAMS, getTradeParamsEventPayload(state.tradeType, state))
+    EVENT_EMITTER.emit(CowEvents.ON_CHANGE_TRADE_PARAMS, getTradeParamsEventPayload(state.tradeType, state))
   }, [state])
 }
 

@@ -96,7 +96,7 @@ export const COW_LISTENERS: CowEventListeners = [
   },
 
   {
-    event: CowEvents.ON_TRADE_PARAMS,
+    event: CowEvents.ON_CHANGE_TRADE_PARAMS,
     handler: (event) => console.log(`[configurator:ON_TRADE_PARAMS] ✅ Trade params:`, event),
   },
 ]
