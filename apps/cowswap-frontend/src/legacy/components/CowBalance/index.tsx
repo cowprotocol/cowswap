@@ -6,7 +6,7 @@ import styled from 'styled-components/macro'
 import CowProtocolLogo from 'legacy/components/CowProtocolLogo'
 import { CowSubsidyInfoProps } from 'legacy/components/CowSubsidyModal'
 
-import { ClaimSummaryTitle, ClaimTotal, ClaimSummary as ClaimSummaryWrapper } from 'pages/Claim/styled'
+import { ClaimSummaryTitle, ClaimTotal, ClaimSummary as ClaimSummaryWrapper } from './styled'
 
 const Wrapper = styled(ClaimSummaryWrapper)`
   border-radius: 100px;

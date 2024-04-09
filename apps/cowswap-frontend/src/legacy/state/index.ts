@@ -4,7 +4,6 @@ import { configureStore, StateFromReducersMapObject } from '@reduxjs/toolkit'
 import { load, save } from 'redux-localstorage-simple'
 
 import application from './application/reducer'
-import claim from './claim/reducer'
 import connection from './connection/reducer'
 import { cowTokenMiddleware } from './cowToken/middleware'
 import cowToken from './cowToken/reducer'
@@ -31,7 +30,6 @@ const reducers = {
   price,
   gas,
   profile,
-  claim,
   cowToken,
 }
 
