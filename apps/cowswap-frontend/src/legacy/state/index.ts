@@ -16,7 +16,6 @@ import { appziMiddleware, soundMiddleware } from './orders/middleware'
 import orders from './orders/reducer'
 import { priceMiddleware } from './price/middleware'
 import price from './price/reducer'
-import profile from './profile/reducer'
 import swap from './swap/reducer'
 import user from './user/reducer'
 
@@ -30,7 +29,6 @@ const reducers = {
   orders,
   price,
   gas,
-  profile,
   claim,
   cowToken,
 }
