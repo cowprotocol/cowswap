@@ -1,5 +1,3 @@
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
-
 import { configureStore, StateFromReducersMapObject } from '@reduxjs/toolkit'
 import { load, save } from 'redux-localstorage-simple'
 
@@ -10,7 +8,6 @@ import { cowTokenMiddleware } from './cowToken/middleware'
 import cowToken from './cowToken/reducer'
 import enhancedTransactions from './enhancedTransactions/reducer'
 import gas from './gas/reducer'
-import { updateVersion } from './global/actions'
 import logs from './logs/slice'
 import { appziMiddleware, soundMiddleware } from './orders/middleware'
 import orders from './orders/reducer'
@@ -48,9 +45,6 @@ export const cowSwapStore = configureStore({
       .concat(priceMiddleware),
   preloadedState: load({ states: PERSISTED_KEYS, disableWarnings: process.env.NODE_ENV === 'test' }),
 })
-
-// this instantiates the app / reducers in several places using the default chainId
-cowSwapStore.dispatch(updateVersion({ chainId: SupportedChainId.MAINNET }))
 
 // TODO: this is new, should we enable it?
 // setupListeners(store.dispatch)

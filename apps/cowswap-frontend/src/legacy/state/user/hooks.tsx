@@ -19,7 +19,6 @@ import {
 import { SerializedToken } from './types'
 
 import { useAppDispatch, useAppSelector } from '../hooks'
-import { AppState } from '../index'
 import { setRecipient } from '../swap/actions'
 
 export function useIsDarkMode(): boolean {
@@ -154,10 +153,6 @@ export function useUserTransactionTTL(): [number, (slippage: number) => void] {
   )
 
   return [deadline, setUserDeadline]
-}
-
-export function useURLWarningVisible(): boolean {
-  return useAppSelector((state: AppState) => state.user.URLWarningVisible)
 }
 
 export function useOrderValidTo() {
