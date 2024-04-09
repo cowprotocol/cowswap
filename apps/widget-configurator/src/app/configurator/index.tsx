@@ -22,7 +22,7 @@ import ListItemText from '@mui/material/ListItemText'
 import Typography from '@mui/material/Typography'
 import { useAccount, useNetwork } from 'wagmi'
 
-import { COW_LISTENERS, DEFAULT_PARTNER_FEE_RECIPIENT, DEFAULT_TOKEN_LISTS, TRADE_MODES } from './consts'
+import { COW_LISTENERS, DEFAULT_PARTNER_FEE_RECIPIENT, DEFAULT_TOKEN_LISTS, TRADE_MODES, IS_IFRAME } from './consts'
 import { CurrencyInputControl } from './controls/CurrencyInputControl'
 import { CurrentTradeTypeControl } from './controls/CurrentTradeTypeControl'
 import { CustomImagesControl } from './controls/CustomImagesControl'
@@ -46,8 +46,6 @@ import { ColorModeContext } from '../../theme/ColorModeContext'
 import { web3Modal } from '../../wagmiConfig'
 import { connectWalletToConfiguratorGA } from '../analytics'
 import { EmbedDialog } from '../embedDialog'
-
-const IS_IFRAME = window.self !== window.top
 
 declare global {
   interface Window {
@@ -138,7 +136,7 @@ export function Configurator({ title }: { title: string }) {
   // Don't change chainId in the widget URL if the user is connected to a wallet
   // Because useSyncWidgetNetwork() will send a request to change the network
   const state: ConfiguratorState = {
-    chainId: isDisconnected || !walletChainId ? chainId : walletChainId,
+    chainId: IS_IFRAME ? undefined : isDisconnected || !walletChainId ? chainId : walletChainId,
     theme: mode,
     currentTradeType,
     enabledTradeTypes,
@@ -229,7 +227,7 @@ export function Configurator({ title }: { title: string }) {
 
         <CurrentTradeTypeControl state={tradeTypeState} />
 
-        <NetworkControl state={networkControlState} />
+        {!IS_IFRAME && <NetworkControl state={networkControlState} />}
 
         <Divider variant="middle">Tokens</Divider>
 
