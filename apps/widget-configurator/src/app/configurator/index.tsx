@@ -47,6 +47,8 @@ import { web3Modal } from '../../wagmiConfig'
 import { connectWalletToConfiguratorGA } from '../analytics'
 import { EmbedDialog } from '../embedDialog'
 
+const IS_IFRAME = window.self !== window.top
+
 declare global {
   interface Window {
     cowSwapWidgetParams?: Partial<CowSwapWidgetParams>
@@ -200,17 +202,21 @@ export function Configurator({ title }: { title: string }) {
           {title}
         </Typography>
 
-        <FormControl component="fieldset">
-          <FormLabel component="legend">Select Mode:</FormLabel>
-          <RadioGroup row aria-label="mode" name="mode" value={widgetMode} onChange={selectWidgetMode}>
-            <FormControlLabel value="dapp" control={<Radio />} label="Dapp mode" />
-            <FormControlLabel value="standalone" control={<Radio />} label="Standalone mode" />
-          </RadioGroup>
-        </FormControl>
-        {!standaloneMode && (
-          <div style={WalletConnectionWrapper}>
-            <w3m-button />
-          </div>
+        {!IS_IFRAME && (
+          <>
+            <FormControl component="fieldset">
+              <FormLabel component="legend">Select Mode:</FormLabel>
+              <RadioGroup row aria-label="mode" name="mode" value={widgetMode} onChange={selectWidgetMode}>
+                <FormControlLabel value="dapp" control={<Radio />} label="Dapp mode" />
+                <FormControlLabel value="standalone" control={<Radio />} label="Standalone mode" />
+              </RadioGroup>
+            </FormControl>
+            {!standaloneMode && (
+              <div style={WalletConnectionWrapper}>
+                <w3m-button />
+              </div>
+            )}
+          </>
         )}
 
         <Divider variant="middle">General</Divider>
@@ -306,7 +312,11 @@ export function Configurator({ title }: { title: string }) {
               handleClose={handleDialogClose}
             />
             <br />
-            <CowSwapWidget params={params} provider={!standaloneMode ? provider : undefined} listeners={listeners} />
+            <CowSwapWidget
+              params={params}
+              provider={!IS_IFRAME && !standaloneMode ? provider : undefined}
+              listeners={listeners}
+            />
           </>
         )}
       </Box>
