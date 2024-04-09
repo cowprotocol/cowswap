@@ -7,7 +7,7 @@ import { getBlockExplorerUrl, getIsNativeToken } from '@cowprotocol/common-utils
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { useAreThereTokensWithSameSymbol } from '@cowprotocol/tokens'
 import { Command } from '@cowprotocol/types'
-import { TokenAmount, TokenSymbol, Loader, TokenName } from '@cowprotocol/ui'
+import { Loader, TokenAmount, TokenName, TokenSymbol } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount, MaxUint256, Token } from '@uniswap/sdk-core'
 
@@ -184,12 +184,16 @@ export const TokensTableRow = ({
       <Cell>{fiatValue}</Cell>
 
       <Cell>
-        <ExtLink href={getBlockExplorerUrl(chainId, 'token', tokenData.address)}>
-          <TableButton>
-            <SVG src={EtherscanImage} title="View token contract" description="View token contract" />
-          </TableButton>
-        </ExtLink>
-        {displayApproveContent}
+        {displayApproveContent && (
+          <>
+            <ExtLink href={getBlockExplorerUrl(chainId, 'token', tokenData.address)}>
+              <TableButton>
+                <SVG src={EtherscanImage} title="View token contract" description="View token contract" />
+              </TableButton>
+            </ExtLink>
+            {displayApproveContent}
+          </>
+        )}
       </Cell>
     </>
   )
