@@ -3,6 +3,8 @@ import { TradeType, TokenInfo } from '@cowprotocol/widget-lib'
 
 import { TokenListItem } from './types'
 
+// CoW DAO address
+export const DEFAULT_PARTNER_FEE_RECIPIENT = '0xcA771eda0c70aA7d053aB1B25004559B918FE662'
 export const TRADE_MODES = [TradeType.SWAP, TradeType.LIMIT, TradeType.ADVANCED]
 
 // Sourced from https://tokenlists.org/
