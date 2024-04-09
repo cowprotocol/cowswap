@@ -22,7 +22,7 @@ import ListItemText from '@mui/material/ListItemText'
 import Typography from '@mui/material/Typography'
 import { useAccount, useNetwork } from 'wagmi'
 
-import { COW_LISTENERS, DEFAULT_TOKEN_LISTS, TRADE_MODES } from './consts'
+import { COW_LISTENERS, DEFAULT_PARTNER_FEE_RECIPIENT, DEFAULT_TOKEN_LISTS, TRADE_MODES } from './consts'
 import { CurrencyInputControl } from './controls/CurrencyInputControl'
 import { CurrentTradeTypeControl } from './controls/CurrentTradeTypeControl'
 import { CustomImagesControl } from './controls/CustomImagesControl'
@@ -52,8 +52,6 @@ declare global {
     cowSwapWidgetParams?: Partial<CowSwapWidgetParams>
   }
 }
-
-const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 
 const DEFAULT_STATE = {
   sellToken: 'USDC',
@@ -110,10 +108,7 @@ export function Configurator({ title }: { title: string }) {
   const [customTokens] = customTokensState
 
   const partnerFeeBpsState = useState<number>(0)
-  const partnerFeeRecipientState = useState<string>(ZERO_ADDRESS)
-
   const [partnerFeeBps] = partnerFeeBpsState
-  const [partnerFeeRecipient] = partnerFeeRecipientState
 
   const customImagesState = useState<CowSwapWidgetParams['images']>({})
   const customSoundsState = useState<CowSwapWidgetParams['sounds']>({})
@@ -153,7 +148,7 @@ export function Configurator({ title }: { title: string }) {
     customColors: colorPalette,
     defaultColors: defaultPalette,
     partnerFeeBps,
-    partnerFeeRecipient,
+    partnerFeeRecipient: DEFAULT_PARTNER_FEE_RECIPIENT,
     standaloneMode,
     disableToastMessages,
   }
@@ -244,7 +239,7 @@ export function Configurator({ title }: { title: string }) {
 
         <Divider variant="middle">Integrations</Divider>
 
-        <PartnerFeeControl feeBpsState={partnerFeeBpsState} recipientState={partnerFeeRecipientState} />
+        <PartnerFeeControl feeBpsState={partnerFeeBpsState} />
 
         <Divider variant="middle">Customization</Divider>
 

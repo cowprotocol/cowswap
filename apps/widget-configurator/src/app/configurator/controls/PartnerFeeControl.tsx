@@ -4,12 +4,10 @@ import TextField from '@mui/material/TextField'
 
 export interface PartnerFeeControlProps {
   feeBpsState: [number, Dispatch<SetStateAction<number>>]
-  recipientState: [string, Dispatch<SetStateAction<string>>]
 }
 export function PartnerFeeControl(props: PartnerFeeControlProps) {
-  const { feeBpsState, recipientState } = props
+  const { feeBpsState } = props
   const [feeBps, setFeeBps] = feeBpsState
-  const [recipient, setRecipient] = recipientState
 
   const onFeeBpsChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
@@ -28,14 +26,6 @@ export function PartnerFeeControl(props: PartnerFeeControlProps) {
         value={feeBps}
         onChange={onFeeBpsChange}
         type="number"
-        size="small"
-      />
-      <TextField
-        id="partnerFeeRecipient"
-        label="Partner fee recipient"
-        value={recipient}
-        onChange={(e: ChangeEvent<HTMLInputElement>) => setRecipient(e.target.value || '')}
-        type="text"
         size="small"
       />
     </>
