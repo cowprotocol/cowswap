@@ -9,41 +9,28 @@ import SVG from 'react-inlinesvg'
 
 import { upToTiny, upToExtraSmall, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 
-import { NetworkIcon, Text, Web3StatusConnect, Web3StatusConnected, Web3StatusError } from './styled'
+import { Text, Web3StatusConnect, Web3StatusConnected } from './styled'
 
 import { FollowPendingTxPopup } from '../../containers/FollowPendingTxPopup'
 import { StatusIcon } from '../StatusIcon'
 
 export interface Web3StatusInnerProps {
-  account?: string | null
-  chainId?: number
+  account?: string
   pendingCount: number
-  error?: string
   connectWallet: Command | null
   connectionType: ConnectionType
   ensName?: string | null
 }
 
 export function Web3StatusInner(props: Web3StatusInnerProps) {
-  const { account, pendingCount, chainId, error, ensName, connectionType, connectWallet } = props
+  const { account, pendingCount, ensName, connectionType, connectWallet } = props
 
   const hasPendingTransactions = !!pendingCount
   const isUpToExtraSmall = useMediaQuery(upToExtraSmall)
   const isUpToTiny = useMediaQuery(upToTiny)
 
-  if (!chainId || !connectWallet) {
+  if (!connectWallet) {
     return null
-  }
-
-  if (error) {
-    return (
-      <Web3StatusError>
-        <NetworkIcon />
-        <Text>
-          <Trans>Error</Trans>
-        </Text>
-      </Web3StatusError>
-    )
   }
 
   if (account) {

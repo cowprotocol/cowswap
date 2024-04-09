@@ -5,7 +5,6 @@ import { load, save } from 'redux-localstorage-simple'
 
 import application from './application/reducer'
 import claim from './claim/reducer'
-import connection from './connection/reducer'
 import { cowTokenMiddleware } from './cowToken/middleware'
 import cowToken from './cowToken/reducer'
 import enhancedTransactions from './enhancedTransactions/reducer'
@@ -23,7 +22,6 @@ import user from './user/reducer'
 const reducers = {
   application,
   user,
-  connection,
   swap,
   logs,
   transactions: enhancedTransactions, // replace transactions state by "enhancedTransactions"
