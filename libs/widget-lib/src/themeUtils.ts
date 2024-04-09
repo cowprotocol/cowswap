@@ -5,7 +5,3 @@ export function isCowSwapWidgetPalette(
 ): palette is CowSwapWidgetPalette {
   return Boolean(palette && typeof palette === 'object')
 }
-
-export function paletteKeyToQueryParam(key: keyof CowSwapWidgetPalette): string {
-  return `palette[${key}]`
-}

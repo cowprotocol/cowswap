@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import { CowSwapWidgetPaletteParams, paletteKeyToQueryParam, WIDGET_PALETTE_COLORS } from '@cowprotocol/widget-lib'
+import { CowSwapWidgetPaletteParams } from '@cowprotocol/widget-lib'
 
 import { useLocation } from 'react-router-dom'
 
@@ -10,17 +10,14 @@ export function useInjectedWidgetPalette(): Partial<CowSwapWidgetPaletteParams> 
 
   return useMemo(() => {
     const searchParams = new URLSearchParams(search)
+    const palette = searchParams.get('palette')
 
-    return WIDGET_PALETTE_COLORS.reduce<Partial<CowSwapWidgetPaletteParams>>((acc, param) => {
-      const queryKey = paletteKeyToQueryParam(param)
-      const value = searchParams.get(queryKey)
+    if (!palette) return undefined
 
-      if (!value) return acc
-
-      return {
-        ...acc,
-        [param]: searchParams.get(queryKey),
-      }
-    }, {})
+    try {
+      return JSON.parse(decodeURIComponent(palette))
+    } catch (e) {
+      console.error('Failed to parse palette from URL', e)
+    }
   }, [search])
 }
