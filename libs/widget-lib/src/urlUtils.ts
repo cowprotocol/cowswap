@@ -1,5 +1,5 @@
 import { CowSwapWidgetPalette, CowSwapWidgetParams, TradeType } from './types'
-import { isCowSwapWidgetPallet, paletteKeyToQueryParam } from './themeUtils'
+import { isCowSwapWidgetPalette, paletteKeyToQueryParam } from './themeUtils'
 
 const EMPTY_TOKEN = '_'
 
@@ -43,7 +43,7 @@ function addThemePaletteToQuery(query: URLSearchParams, params: Partial<CowSwapW
 
   if (!theme) return query
 
-  if (isCowSwapWidgetPallet(theme)) {
+  if (isCowSwapWidgetPalette(theme)) {
     for (const key in theme) {
       const paletteKey = key as keyof CowSwapWidgetPalette
 
