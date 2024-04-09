@@ -94,6 +94,11 @@ export const COW_LISTENERS: CowEventListeners = [
     event: CowEvents.ON_FULFILLED_ORDER,
     handler: (event) => console.log(`[configurator:ON_FULFILLED_ORDER] ✅ Executed order ${event.order.uid}`),
   },
+
+  {
+    event: CowEvents.ON_TRADE_PARAMS,
+    handler: (event) => console.log(`[configurator:ON_TRADE_PARAMS] ✅ Trade params:`, event),
+  },
 ]
 
 export const DEFAULT_CUSTOM_TOKENS: TokenInfo[] = [
