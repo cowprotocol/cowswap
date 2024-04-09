@@ -52,9 +52,7 @@ export function useColorPaletteManager(mode: PaletteMode): ColorPaletteManager {
   useEffect(() => {
     const newPalette = getCachedPalette(mode)
 
-    if (newPalette) {
-      updateColorPalette(newPalette)
-    }
+    updateColorPalette(newPalette || defaultPalette)
   }, [mode, defaultPalette])
 
   return { defaultPalette, colorPalette, setColorPalette, resetColorPalette }
