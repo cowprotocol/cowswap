@@ -1,7 +1,5 @@
 import { CowEventListeners } from '@cowprotocol/events'
-import { IframeCowEventEmitter } from './IframeCowEventEmitter'
 import { IframeRpcProviderBridge } from './IframeRpcProviderBridge'
-import { WindowListener, listenToMessageFromWindow, postMessageToWindow, stopListeningWindowListener } from './messages'
 import {
   CowSwapWidgetParams,
   CowSwapWidgetProps,
@@ -10,6 +8,9 @@ import {
   WidgetMethodsListen,
 } from './types'
 import { buildTradeAmountsQuery, buildWidgetPath, buildWidgetUrl } from './urlUtils'
+import { IframeCowEventEmitter } from './IframeCowEventEmitter'
+import { WindowListener, listenToMessageFromWindow, postMessageToWindow, stopListeningWindowListener } from './messages'
+import { IframeSafeSdkBridge } from './IframeSafeSdkBridge'
 
 const DEFAULT_HEIGHT = '640px'
 const DEFAULT_WIDTH = '450px'
@@ -71,7 +72,10 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
   // 7. Schedule the uploading of the params, once the iframe is loaded
   iframe.addEventListener('load', () => updateParams(iframeWindow, params, provider))
 
-  // 8. Return the handler, so the widget, listeners, and provider can be updated
+  // 8. Listen for messages from the iframe
+  const iframeSafeSdkBridge = new IframeSafeSdkBridge(window, iframeWindow)
+
+  // 9. Return the handler, so the widget, listeners, and provider can be updated
   return {
     updateParams: (newParams: CowSwapWidgetParams) => updateParams(iframeWindow, newParams, provider),
     updateListeners: (newListeners?: CowEventListeners) => iFrameCowEventEmitter.updateListeners(newListeners),
@@ -88,6 +92,9 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
 
       // Disconnect all listeners
       windowListeners.forEach((listener) => window.removeEventListener('message', listener))
+
+      // Stop listening for SDK messages
+      iframeSafeSdkBridge.stopListening()
 
       // Destroy the iframe
       container.removeChild(iframe)
