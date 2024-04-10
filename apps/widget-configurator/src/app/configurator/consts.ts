@@ -3,6 +3,8 @@ import { TradeType, TokenInfo, CowSwapWidgetPaletteParams } from '@cowprotocol/w
 
 import { TokenListItem } from './types'
 
+// CoW DAO address
+export const DEFAULT_PARTNER_FEE_RECIPIENT = '0xcA771eda0c70aA7d053aB1B25004559B918FE662'
 export const TRADE_MODES = [TradeType.SWAP, TradeType.LIMIT, TradeType.ADVANCED]
 
 // Sourced from https://tokenlists.org/
@@ -114,3 +116,5 @@ export const DEFAULT_CUSTOM_TOKENS: TokenInfo[] = [
     logoURI: 'https://assets.coingecko.com/coins/images/34316/large/thatone_200%281%29.png?1704621005',
   },
 ]
+
+export const IS_IFRAME = window.self !== window.top

@@ -40,6 +40,7 @@ const Summary = styled.div`
   span {
     font-size: inherit;
     font-weight: inherit;
+    white-space: nowrap;
   }
 `
 

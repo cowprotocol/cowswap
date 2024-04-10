@@ -1,4 +1,3 @@
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
 
 import { createAction } from '@reduxjs/toolkit'
@@ -69,9 +68,3 @@ export const updateSafeTransaction = createAction<{
   safeTransaction: SafeMultisigTransactionResponse
   blockNumber: number
 }>('enhancedTransactions/updateSafeTransaction')
-
-export const failSafeTransaction = createAction<{
-  chainId: SupportedChainId
-  hash: string
-  errorMessage: string
-}>('enhancedTransactions/failSafeTransaction')

@@ -13,7 +13,7 @@ export interface TokenListItem {
 }
 
 export interface ConfiguratorState {
-  chainId: SupportedChainId
+  chainId?: SupportedChainId
   theme: PaletteMode
   currentTradeType: TradeType
   enabledTradeTypes: TradeType[]
