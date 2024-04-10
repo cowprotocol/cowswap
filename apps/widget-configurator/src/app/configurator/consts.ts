@@ -116,3 +116,5 @@ export const DEFAULT_CUSTOM_TOKENS: TokenInfo[] = [
     logoURI: 'https://assets.coingecko.com/coins/images/34316/large/thatone_200%281%29.png?1704621005',
   },
 ]
+
+export const IS_IFRAME = window.self !== window.top
