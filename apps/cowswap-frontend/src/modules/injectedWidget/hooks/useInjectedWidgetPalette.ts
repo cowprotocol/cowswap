@@ -1,14 +1,23 @@
-import type { CowSwapWidgetPalette } from '@cowprotocol/widget-lib'
+import { useMemo } from 'react'
 
-import { useInjectedWidgetParams } from './useInjectedWidgetParams'
+import { CowSwapWidgetPaletteParams } from '@cowprotocol/widget-lib'
+
+import { useLocation } from 'react-router-dom'
 
 // The theme palette provided by a consumer
-export function useInjectedWidgetPalette(): Partial<CowSwapWidgetPalette> | undefined {
-  const state = useInjectedWidgetParams()
+export function useInjectedWidgetPalette(): Partial<CowSwapWidgetPaletteParams> | undefined {
+  const { search } = useLocation()
 
-  return isCowSwapWidgetPallet(state.theme) ? state.theme : undefined
-}
+  return useMemo(() => {
+    const searchParams = new URLSearchParams(search)
+    const palette = searchParams.get('palette')
 
-function isCowSwapWidgetPallet(palette: any): palette is CowSwapWidgetPalette {
-  return palette && typeof palette === 'object'
+    if (!palette) return undefined
+
+    try {
+      return JSON.parse(decodeURIComponent(palette))
+    } catch (e) {
+      console.error('Failed to parse palette from URL', e)
+    }
+  }, [search])
 }

@@ -1,5 +1,5 @@
 import { CowEventListeners, CowEvents, ToastMessageType } from '@cowprotocol/events'
-import { TradeType, TokenInfo } from '@cowprotocol/widget-lib'
+import { TradeType, TokenInfo, CowSwapWidgetPaletteParams } from '@cowprotocol/widget-lib'
 
 import { TokenListItem } from './types'
 
@@ -36,7 +36,7 @@ export const DEFAULT_TOKEN_LISTS: TokenListItem[] = [
 ]
 // TODO: Move default palette to a new lib that only exposes the palette colors.
 // This wayit can be consumed by both the configurator and the widget.
-export const DEFAULT_LIGHT_PALETTE = {
+export const DEFAULT_LIGHT_PALETTE: CowSwapWidgetPaletteParams = {
   primary: '#052b65',
   background: '#FFFFFF',
   paper: '#FFFFFF',
@@ -48,7 +48,7 @@ export const DEFAULT_LIGHT_PALETTE = {
   success: '#007B28',
 }
 
-export const DEFAULT_DARK_PALETTE = {
+export const DEFAULT_DARK_PALETTE: CowSwapWidgetPaletteParams = {
   primary: '#0d5ed9',
   background: '#303030',
   paper: '#0c264b',

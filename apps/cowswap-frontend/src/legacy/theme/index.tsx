@@ -19,6 +19,8 @@ import {
 
 import { useInjectedWidgetPalette } from 'modules/injectedWidget'
 
+import { ThemeFromUrlUpdater } from 'common/updaters/ThemeFromUrlUpdater'
+
 import { mapWidgetTheme } from './mapWidgetTheme'
 import { Colors } from './styled'
 
@@ -189,7 +191,12 @@ export default function ThemeProvider({ children }: { children?: React.ReactNode
     return defaultTheme
   }, [darkMode, injectedWidgetTheme])
 
-  return <StyledComponentsThemeProvider theme={themeObject}>{children}</StyledComponentsThemeProvider>
+  return (
+    <>
+      <ThemeFromUrlUpdater />
+      <StyledComponentsThemeProvider theme={themeObject}>{children}</StyledComponentsThemeProvider>
+    </>
+  )
 }
 
 export const FixedGlobalStyle = FixedGlobalStyleBase
