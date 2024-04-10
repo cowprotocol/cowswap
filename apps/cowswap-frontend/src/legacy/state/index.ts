@@ -10,7 +10,6 @@ import cowToken from './cowToken/reducer'
 import enhancedTransactions from './enhancedTransactions/reducer'
 import gas from './gas/reducer'
 import { updateVersion } from './global/actions'
-import logs from './logs/slice'
 import { appziMiddleware, soundMiddleware } from './orders/middleware'
 import orders from './orders/reducer'
 import { priceMiddleware } from './price/middleware'
@@ -23,7 +22,6 @@ const reducers = {
   application,
   user,
   swap,
-  logs,
   transactions: enhancedTransactions, // replace transactions state by "enhancedTransactions"
   orders,
   price,
