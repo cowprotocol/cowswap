@@ -19,7 +19,6 @@ import { CancelReplaceTxUpdater } from 'common/updaters/CancelReplaceTxUpdater'
 import { FeesUpdater } from 'common/updaters/FeesUpdater'
 import { GasUpdater } from 'common/updaters/GasUpdater'
 import { HwAccountIndexUpdater } from 'common/updaters/HwAccountIndexUpdater'
-import { LogsUpdater } from 'common/updaters/LogsUpdater'
 import {
   CancelledOrdersUpdater,
   ExpiredOrdersUpdater,
@@ -54,7 +53,6 @@ export function Updaters() {
       <GpOrdersUpdater />
       <GasUpdater />
       <GasPriceStrategyUpdater />
-      <LogsUpdater />
       <SentryUpdater />
       <UploadToIpfsUpdater />
       <EthFlowSlippageUpdater />
