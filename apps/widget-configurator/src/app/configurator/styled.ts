@@ -21,6 +21,7 @@ export const DrawerStyled = (theme: Theme) => ({
 })
 
 export const ContentStyled = {
+  width: '100%',
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
