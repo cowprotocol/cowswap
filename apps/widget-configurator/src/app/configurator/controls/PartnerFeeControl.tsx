@@ -27,6 +27,11 @@ export function PartnerFeeControl(props: PartnerFeeControlProps) {
         onChange={onFeeBpsChange}
         type="number"
         size="small"
+        inputProps={{
+          min: 0,
+          max: 100,
+          step: 1,
+        }}
       />
     </>
   )
