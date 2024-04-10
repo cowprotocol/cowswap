@@ -12,7 +12,7 @@ import { Command, UiOrderType } from '@cowprotocol/types'
 import { GnosisSafeInfo, useGnosisSafeInfo, useWalletInfo } from '@cowprotocol/wallet'
 
 import { GetSafeTxInfo, useGetSafeTxInfo } from 'legacy/hooks/useGetSafeTxInfo'
-import { FulfillOrdersBatchParams, Order, OrderStatus } from 'legacy/state/orders/actions'
+import { CREATING_STATES, FulfillOrdersBatchParams, Order, OrderStatus } from 'legacy/state/orders/actions'
 import { LIMIT_OPERATOR_API_POLL_INTERVAL, MARKET_OPERATOR_API_POLL_INTERVAL } from 'legacy/state/orders/consts'
 import {
   AddOrUpdateOrdersCallback,
@@ -32,10 +32,10 @@ import {
 import { OrderTransitionStatus } from 'legacy/state/orders/utils'
 
 import {
-  emitFulfilledOrderEvent,
   emitCancelledOrderEvent,
-  emitPresignedOrderEvent,
   emitExpiredOrderEvent,
+  emitFulfilledOrderEvent,
+  emitPresignedOrderEvent,
 } from 'modules/orders'
 import { useAddOrderToSurplusQueue } from 'modules/swap/state/surplusModal'
 
@@ -80,7 +80,7 @@ async function _updatePresignGnosisSafeTx(
            */
           const isOrderTxReplaced = !!(safeNonce && safeTransaction.nonce < safeNonce && !safeTransaction.isExecuted)
 
-          if (isOrderTxReplaced) {
+          if (CREATING_STATES.includes(order.status) && isOrderTxReplaced) {
             cancelOrdersBatch({
               ids: [order.id],
               chainId,
