@@ -2,14 +2,12 @@ import { useFetchFile } from '@cowprotocol/common-hooks'
 import { hashCode } from '@cowprotocol/common-utils'
 import { environmentName } from '@cowprotocol/common-utils'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { UI } from '@cowprotocol/ui'
+import { ClosableBanner, UI } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { AlertTriangle } from 'react-feather'
 import ReactMarkdown, { Components } from 'react-markdown'
 import styled from 'styled-components/macro'
-
-import { useAnnouncementVisible, useCloseAnnouncement } from 'legacy/state/profile/hooks'
 
 import URLWarningUni, { PhishAlert, StyledClose } from './URLWarningMod'
 
@@ -95,6 +93,8 @@ function Markdown(props: { children?: string }) {
   return <ReactMarkdown components={markdownComponents as Components}>{children}</ReactMarkdown>
 }
 
+const BANNER_STORAGE_KEY = 'announcementBannerClosed/'
+
 export default function URLWarning() {
   const { chainId = ChainId.MAINNET } = useWalletInfo()
 
@@ -102,21 +102,22 @@ export default function URLWarning() {
   const announcementText = useGetAnnouncement(chainId)
   const contentHash = announcementText ? hashCode(announcementText).toString() : undefined
 
-  const announcementVisible = useAnnouncementVisible(contentHash)
-  const closeAnnouncement = useCloseAnnouncement()
+  if (!announcementText) {
+    return null
+  }
 
-  const announcement = announcementVisible && announcementText && (
-    <>
-      <div style={{ display: 'flex' }}>
-        <AlertTriangle /> <Markdown>{announcementText}</Markdown>
-      </div>
-      <StyledClose size={12} onClick={() => closeAnnouncement(contentHash)} />
-    </>
-  )
-
-  return (
+  return ClosableBanner(BANNER_STORAGE_KEY + contentHash, (close) => (
     <Wrapper>
-      <URLWarningUni announcement={announcement} />
+      <URLWarningUni
+        announcement={
+          <>
+            <div style={{ display: 'flex' }}>
+              <AlertTriangle /> <Markdown>{announcementText}</Markdown>
+            </div>
+            <StyledClose size={12} onClick={close} />
+          </>
+        }
+      />
     </Wrapper>
-  )
+  ))
 }
