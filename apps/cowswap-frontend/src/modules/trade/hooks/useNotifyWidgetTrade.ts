@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 
 import { NATIVE_CURRENCY_ADDRESS } from '@cowprotocol/common-const'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
-import { CowEvents, OnTradeParamsPayload } from '@cowprotocol/events'
+import { AtomsAndUnits, CowEvents, OnTradeParamsPayload } from '@cowprotocol/events'
 import { TokenInfo, UiOrderType } from '@cowprotocol/types'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -32,15 +32,16 @@ const TradeTypeToUiOrderType: Record<TradeType, UiOrderType> = {
 function getTradeParamsEventPayload(tradeType: TradeType, state: TradeDerivedState): OnTradeParamsPayload {
   return {
     orderType: TradeTypeToUiOrderType[tradeType],
-    inputCurrency: currencyToTokenInfo(state.inputCurrency),
-    outputCurrency: currencyToTokenInfo(state.outputCurrency),
-    inputCurrencyAmount: currencyAmountToBigInt(state.inputCurrencyAmount),
-    outputCurrencyAmount: currencyAmountToBigInt(state.outputCurrencyAmount),
-    inputCurrencyBalance: currencyAmountToBigInt(state.inputCurrencyBalance),
-    outputCurrencyBalance: currencyAmountToBigInt(state.outputCurrencyBalance),
-    inputCurrencyFiatAmount: state.inputCurrencyFiatAmount?.toExact(),
-    outputCurrencyFiatAmount: state.outputCurrencyFiatAmount?.toExact(),
-    slippageAdjustedSellAmount: currencyAmountToBigInt(state.slippageAdjustedSellAmount),
+    sellToken: currencyToTokenInfo(state.inputCurrency),
+    buyToken: currencyToTokenInfo(state.outputCurrency),
+    sellTokenAmount: currencyAmountToAtomsAndUnits(state.inputCurrencyAmount),
+    buyTokenAmount: currencyAmountToAtomsAndUnits(state.outputCurrencyAmount),
+    sellTokenBalance: currencyAmountToAtomsAndUnits(state.inputCurrencyBalance),
+    buyTokenBalance: currencyAmountToAtomsAndUnits(state.outputCurrencyBalance),
+    sellTokenFiatAmount: state.inputCurrencyFiatAmount?.toExact(),
+    buyTokenFiatAmount: state.outputCurrencyFiatAmount?.toExact(),
+    maximumSendSellAmount: currencyAmountToAtomsAndUnits(state.slippageAdjustedSellAmount),
+    minimumReceiveBuyAmount: currencyAmountToAtomsAndUnits(state.slippageAdjustedBuyAmount),
     recipient: state.recipient || undefined,
     orderKind: state.orderKind,
   }
@@ -58,8 +59,11 @@ function currencyToTokenInfo(currency: Currency | null): TokenInfo | undefined {
   }
 }
 
-function currencyAmountToBigInt(currency: CurrencyAmount<Currency> | null): bigint | undefined {
+function currencyAmountToAtomsAndUnits(currency: CurrencyAmount<Currency> | null): AtomsAndUnits | undefined {
   if (!currency) return undefined
 
-  return BigInt(currency.quotient.toString())
+  return {
+    atoms: BigInt(currency.quotient.toString()),
+    units: currency.toExact(),
+  }
 }
