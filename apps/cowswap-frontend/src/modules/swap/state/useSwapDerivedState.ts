@@ -34,7 +34,7 @@ export function useFillSwapDerivedState() {
   const {
     inputAmount: { value: inputCurrencyFiatAmount },
     outputAmount: { value: outputCurrencyFiatAmount },
-  } = useTradeUsdAmounts(inputCurrencyAmount, outputCurrencyAmount)
+  } = useTradeUsdAmounts(inputCurrencyAmount, outputCurrencyAmount, undefined, undefined, true)
 
   const updateDerivedState = useSetAtom(swapDerivedStateAtom)
 
