@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.8.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v0.7.1...widget-lib-v0.8.0) (2024-04-11)
+
+
+### Features
+
+* **widget:** customize images ([#4159](https://github.com/cowprotocol/cowswap/issues/4159)) ([0b14b2b](https://github.com/cowprotocol/cowswap/commit/0b14b2b19279a1688f75dc4f2954b8c267e57c40))
+* **widget:** option to hide safe banner ([#4175](https://github.com/cowprotocol/cowswap/issues/4175)) ([84108f4](https://github.com/cowprotocol/cowswap/commit/84108f4362333f8638d8da7c4ad4849d9f5a796c))
+* **widget:** use custom tokens as virtual list ([#4164](https://github.com/cowprotocol/cowswap/issues/4164)) ([8424a33](https://github.com/cowprotocol/cowswap/commit/8424a337f2ea2fd21cc3cb664d2f91facace00fb))
+* **widget:** use theme colors from URL ([#4188](https://github.com/cowprotocol/cowswap/issues/4188)) ([1623b37](https://github.com/cowprotocol/cowswap/commit/1623b37a1b50499473cf82a7aa0dd8f73f63a415))
+
+
+### Bug Fixes
+
+* **widget:** call disconnect when destroying the widget ([#4181](https://github.com/cowprotocol/cowswap/issues/4181)) ([93a460a](https://github.com/cowprotocol/cowswap/commit/93a460a0082bc7039dea3cc5c376cc2038917966))
+
 ## [0.7.1](https://github.com/cowprotocol/cowswap/compare/widget-lib-v0.7.0...widget-lib-v0.7.1) (2024-03-22)
 
 

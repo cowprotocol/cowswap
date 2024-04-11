@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.1](https://github.com/cowprotocol/cowswap/compare/events-v1.0.0...events-v1.0.1) (2024-04-11)
+
+
+### Bug Fixes
+
+* remove outdated transactions ([#4062](https://github.com/cowprotocol/cowswap/issues/4062)) ([9fc63ed](https://github.com/cowprotocol/cowswap/commit/9fc63ed73b6b79f3df126b2f86ccdef3d2b817df))
+* **widget:** send trade params to widget integrator ([#4196](https://github.com/cowprotocol/cowswap/issues/4196)) ([0036a6b](https://github.com/cowprotocol/cowswap/commit/0036a6b3cd8ac8015a4271ea3477232d1a4e180d))
+
 ## 1.0.0 (2024-03-29)
 
 

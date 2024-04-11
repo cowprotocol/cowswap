@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.0](https://github.com/cowprotocol/cowswap/compare/widget-react-v0.5.0...widget-react-v0.6.0) (2024-04-11)
+
+
+### Features
+
+* make widget to use all space ([#4197](https://github.com/cowprotocol/cowswap/issues/4197)) ([3ab6cb9](https://github.com/cowprotocol/cowswap/commit/3ab6cb98f03e571670031248af9419f301bbdaf8))
+
 ## [0.5.0](https://github.com/cowprotocol/cowswap/compare/widget-react-v0.4.0...widget-react-v0.5.0) (2024-03-22)
 
 
