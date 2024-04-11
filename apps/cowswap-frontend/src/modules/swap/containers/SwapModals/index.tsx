@@ -12,8 +12,6 @@ export interface SwapModalsProps {
 export const SwapModals = React.memo(function (props: SwapModalsProps) {
   const { showNativeWrapModal } = props
 
-  console.debug('RENDER SWAP MODALS: ', props)
-
   return (
     <>
       {/* TODO: Re-enable modal once subsidy is back  */}
