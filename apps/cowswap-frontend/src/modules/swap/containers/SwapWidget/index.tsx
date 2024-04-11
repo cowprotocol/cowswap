@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 
 import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
 import { NATIVE_CURRENCIES, TokenWithLogo } from '@cowprotocol/common-const'
@@ -284,28 +284,25 @@ export function SwapWidget() {
     <>
       <SwapModals {...swapModalsProps} />
       <TradeWidgetContainer>
-        {showNativeWrapModal && <EthFlowModal {...ethFlowProps} />}
-        {!showNativeWrapModal && (
-          <TradeWidget
-            id="swap-page"
-            slots={slots}
-            actions={swapActions}
-            params={params}
-            inputCurrencyInfo={inputCurrencyInfo}
-            outputCurrencyInfo={outputCurrencyInfo}
-          >
-            <ConfirmSwapModalSetup
-              chainId={chainId}
-              recipientAddressOrName={swapButtonContext.recipientAddressOrName}
-              doTrade={swapButtonContext.handleSwap}
-              priceImpact={priceImpactParams}
-              inputCurrencyInfo={inputCurrencyPreviewInfo}
-              outputCurrencyInfo={outputCurrencyPreviewInfo}
-              tradeRatesProps={tradeRatesProps}
-              refreshInterval={SWAP_QUOTE_CHECK_INTERVAL}
-            />
-          </TradeWidget>
-        )}
+        <TradeWidget
+          id="swap-page"
+          slots={slots}
+          actions={swapActions}
+          params={params}
+          inputCurrencyInfo={inputCurrencyInfo}
+          outputCurrencyInfo={outputCurrencyInfo}
+          confirmModal={<ConfirmSwapModalSetup
+            chainId={chainId}
+            recipientAddressOrName={swapButtonContext.recipientAddressOrName}
+            doTrade={swapButtonContext.handleSwap}
+            priceImpact={priceImpactParams}
+            inputCurrencyInfo={inputCurrencyPreviewInfo}
+            outputCurrencyInfo={outputCurrencyPreviewInfo}
+            tradeRatesProps={tradeRatesProps}
+            refreshInterval={SWAP_QUOTE_CHECK_INTERVAL}
+          />}
+          genericModal={showNativeWrapModal && <EthFlowModal {...ethFlowProps} />}
+        />
         <NetworkAlert />
       </TradeWidgetContainer>
     </>
