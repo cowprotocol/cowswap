@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/cowprotocol/cowswap/compare/analytics-v1.0.0...analytics-v1.1.0) (2024-04-11)
+
+
+### Features
+
+* **recreate:** add analytics events for recreate modal ([#4134](https://github.com/cowprotocol/cowswap/issues/4134)) ([fb3a0b9](https://github.com/cowprotocol/cowswap/commit/fb3a0b962833be594f15fd54661bd16c2f482481))
+
 ## 1.0.0 (2024-03-29)
 
 

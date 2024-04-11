@@ -1,5 +1,25 @@
 # Changelog
 
+## [1.1.0](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v1.0.2...widget-configurator-v1.1.0) (2024-04-11)
+
+
+### Features
+
+* make widget to use all space ([#4197](https://github.com/cowprotocol/cowswap/issues/4197)) ([3ab6cb9](https://github.com/cowprotocol/cowswap/commit/3ab6cb98f03e571670031248af9419f301bbdaf8))
+* **widget:** customize images ([#4159](https://github.com/cowprotocol/cowswap/issues/4159)) ([0b14b2b](https://github.com/cowprotocol/cowswap/commit/0b14b2b19279a1688f75dc4f2954b8c267e57c40))
+* **widget:** option to disable sounds ([#4172](https://github.com/cowprotocol/cowswap/issues/4172)) ([a1d330d](https://github.com/cowprotocol/cowswap/commit/a1d330d46620d3724bb97fb03a07e9080966c1e4))
+* **widget:** option to hide safe banner ([#4175](https://github.com/cowprotocol/cowswap/issues/4175)) ([84108f4](https://github.com/cowprotocol/cowswap/commit/84108f4362333f8638d8da7c4ad4849d9f5a796c))
+* **widget:** use custom sounds in widget ([#4162](https://github.com/cowprotocol/cowswap/issues/4162)) ([0dfd679](https://github.com/cowprotocol/cowswap/commit/0dfd67946a1ed383a5ffeeadee3044e45bd92eb0))
+* **widget:** use custom tokens as virtual list ([#4164](https://github.com/cowprotocol/cowswap/issues/4164)) ([8424a33](https://github.com/cowprotocol/cowswap/commit/8424a337f2ea2fd21cc3cb664d2f91facace00fb))
+* **widget:** use theme colors from URL ([#4188](https://github.com/cowprotocol/cowswap/issues/4188)) ([1623b37](https://github.com/cowprotocol/cowswap/commit/1623b37a1b50499473cf82a7aa0dd8f73f63a415))
+
+
+### Bug Fixes
+
+* do not accept negative numbers for fee ([#4218](https://github.com/cowprotocol/cowswap/issues/4218)) ([1c70d13](https://github.com/cowprotocol/cowswap/commit/1c70d1349d4b656127bbae571795dda629f7fdf9))
+* **widget-cfg:** hardcode partner fee recipient address ([#4195](https://github.com/cowprotocol/cowswap/issues/4195)) ([d4ad993](https://github.com/cowprotocol/cowswap/commit/d4ad993c39c28e99ec36f326faac56fab6643ad6))
+* **widget:** send trade params to widget integrator ([#4196](https://github.com/cowprotocol/cowswap/issues/4196)) ([0036a6b](https://github.com/cowprotocol/cowswap/commit/0036a6b3cd8ac8015a4271ea3477232d1a4e180d))
+
 ## [1.0.2](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v1.0.1...widget-configurator-v1.0.2) (2024-04-03)
 
 

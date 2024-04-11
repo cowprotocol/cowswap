@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.0.1...tokens-v1.1.0) (2024-04-11)
+
+
+### Features
+
+* **widget:** use custom tokens as virtual list ([#4164](https://github.com/cowprotocol/cowswap/issues/4164)) ([8424a33](https://github.com/cowprotocol/cowswap/commit/8424a337f2ea2fd21cc3cb664d2f91facace00fb))
+
 ## [1.0.1](https://github.com/cowprotocol/cowswap/compare/tokens-v1.0.0...tokens-v1.0.1) (2024-04-02)
 
 
