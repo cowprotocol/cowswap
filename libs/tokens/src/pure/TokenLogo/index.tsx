@@ -6,12 +6,13 @@ import { uriToHttp } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, NativeCurrency } from '@uniswap/sdk-core'
 
-import { Slash } from 'react-feather'
 import styled, { css } from 'styled-components/macro'
 
 import { UI } from '@cowprotocol/ui'
 
+import { Slash } from 'react-feather'
 import { getTokenLogoUrls } from '../../utils/getTokenLogoUrls'
+import { SingleLetterLogo } from './SingleLetterLogo'
 
 const invalidUrlsAtom = atom<{ [url: string]: boolean }>({})
 
@@ -33,9 +34,8 @@ export const TokenLogoWrapper = styled.div<{ size?: number; sizeMobile?: number 
   }
 
   ${({ theme, sizeMobile }) => theme.mediaWidth.upToSmall`
-    ${
-      sizeMobile
-        ? css`
+    ${sizeMobile
+      ? css`
             border-radius: ${sizeMobile}px;
             width: ${sizeMobile}px;
             height: ${sizeMobile}px;
@@ -45,7 +45,7 @@ export const TokenLogoWrapper = styled.div<{ size?: number; sizeMobile?: number 
               border-radius: ${sizeMobile}px;
             }
           `
-        : ''
+      : ''
     }
   `}
 `
@@ -82,9 +82,18 @@ export function TokenLogo({ logoURI, token, className, size = 36, sizeMobile }: 
     setInvalidUrls((state) => ({ ...state, [currentUrl]: true }))
   }
 
+  const initial = token?.symbol?.[0] || token?.name?.[0]
+
   return (
     <TokenLogoWrapper className={className} size={size} sizeMobile={sizeMobile}>
-      {!currentUrl ? <Slash size={size} /> : <img alt="token logo" src={currentUrl} onError={onError} />}
+      {currentUrl ? (
+        <img alt="token logo" src={currentUrl} onError={onError} />
+      ) : initial ? (
+        <SingleLetterLogo size={size} initial={initial} />
+      ) : (
+        <Slash />
+      )}
     </TokenLogoWrapper>
   )
 }
+
