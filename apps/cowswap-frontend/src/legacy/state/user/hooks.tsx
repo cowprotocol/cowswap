@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react'
 
 import { L2_DEADLINE_FROM_NOW, NATIVE_CURRENCIES, SupportedLocale, TokenWithLogo } from '@cowprotocol/common-const'
-import { calculateValidTo, getIsNativeToken } from '@cowprotocol/common-utils'
+import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
 import { Currency, Percent } from '@uniswap/sdk-core'
@@ -153,11 +153,6 @@ export function useUserTransactionTTL(): [number, (slippage: number) => void] {
   )
 
   return [deadline, setUserDeadline]
-}
-
-export function useOrderValidTo() {
-  const [deadline] = useUserTransactionTTL()
-  return useMemo(() => ({ validTo: calculateValidTo(deadline), deadline }), [deadline])
 }
 
 export function useSelectedWallet(): string | undefined {

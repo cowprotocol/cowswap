@@ -2,7 +2,6 @@ import { useCallback } from 'react'
 
 import { isOnline } from '@cowprotocol/common-hooks'
 import {
-  calculateValidTo,
   CancelableResult,
   getPromiseFulfilledValue,
   getQuoteUnsupportedToken,
@@ -134,7 +133,7 @@ export function useRefetchQuoteCallback() {
     async (params: QuoteParamsForFetching) => {
       const { quoteParams, isPriceRefresh } = params
       // set the validTo time here
-      quoteParams.validTo = calculateValidTo(deadline)
+      quoteParams.validFor = deadline
       quoteParams.isEthFlow = isEoaEthFlow
 
       let quoteData: LegacyFeeQuoteParams | QuoteInformationObject = quoteParams

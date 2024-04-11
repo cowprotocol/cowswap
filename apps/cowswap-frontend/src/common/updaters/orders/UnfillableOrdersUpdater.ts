@@ -25,6 +25,7 @@ import {
   getRemainderAmount,
   isOrderUnfillable,
 } from 'legacy/state/orders/utils'
+import type { LegacyFeeQuoteParams } from 'legacy/state/price/types'
 import { getBestQuote } from 'legacy/utils/price'
 
 import { updatePendingOrderPricesAtom } from 'modules/orders/state/pendingOrdersPricesAtom'
@@ -256,10 +257,6 @@ async function _getOrderPrice(
     quoteToken,
     fromDecimals: order.inputToken.decimals,
     toDecimals: order.outputToken.decimals,
-    // Limit order may have arbitrary validTo, but API doesn't allow values greater than 1 hour
-    // To avoid ExcessiveValidTo error we use PRICE_QUOTE_VALID_TO_TIME
-    validTo:
-      order.class === 'limit' ? Math.round((Date.now() + PRICE_QUOTE_VALID_TO_TIME) / 1000) : timestamp(order.validTo),
     userAddress: order.owner,
     receiver: order.receiver,
     isEthFlow,
@@ -267,6 +264,16 @@ async function _getOrderPrice(
     appData: order.appData ?? undefined,
     appDataHash: order.appDataHash ?? undefined,
   }
+
+  const legacyFeeQuoteParams = quoteParams as LegacyFeeQuoteParams
+  // Limit order may have arbitrary validTo, but API doesn't allow values greater than 1 hour
+  // To avoid ExcessiveValidTo error we use PRICE_QUOTE_VALID_TO_TIME
+  if (order.class === 'limit') {
+    legacyFeeQuoteParams.validFor = Math.round(PRICE_QUOTE_VALID_TO_TIME / 1000)
+  } else {
+    legacyFeeQuoteParams.validTo = timestamp(order.validTo)
+  }
+
   try {
     return getBestQuote({ strategy, quoteParams, fetchFee: false, isPriceRefresh: false })
   } catch (e: any) {
