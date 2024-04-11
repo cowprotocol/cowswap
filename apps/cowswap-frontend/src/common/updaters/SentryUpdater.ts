@@ -6,38 +6,11 @@ import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import * as Sentry from '@sentry/browser'
 
-import { useAppSelector } from 'legacy/state/hooks'
-
 import { useTradeState } from 'modules/trade/hooks/useTradeState'
 
-/**
- * _getSentryChainId
- * @param appChainId - redux chainId (not necessarily connected to a wallet)
- * @param connectedChainId - wallet chainId
- * @returns string e.g "DISCONNECTED" | appChainId | connectedChainId
- */
-function _getSentryChainIdAndConnectionStatus(appChainId: number | null, connectedChainId: number | undefined): string {
-  // match connectedChainId type
-  const appChainNormalised = appChainId ?? undefined
-
-  let sentryChainId
-  if (connectedChainId) {
-    // user is browsing app disconnected from wallet
-    sentryChainId = connectedChainId
-  } else {
-    // connectedChainId takes precedence
-    sentryChainId = appChainNormalised
-  }
-
-  // if not connected, sentry doesn't accept undefined, use "DISCONNECTED"
-  return sentryChainId?.toString() || SentryTag.DISCONNECTED
-}
-
 export function SentryUpdater(): null {
-  const { account, chainId: connectedChainId } = useWalletInfo()
+  const { account, chainId } = useWalletInfo()
   const { walletName } = useWalletDetails()
-  // app chain id maintains state for users disconnected but browsing app
-  const disconnectedChainId = useAppSelector((state) => state.application.chainId)
   const windowVisible = useIsWindowVisible()
 
   const { state } = useTradeState()
@@ -46,7 +19,6 @@ export function SentryUpdater(): null {
 
   useEffect(() => {
     if (windowVisible) {
-      const chainId = _getSentryChainIdAndConnectionStatus(disconnectedChainId, connectedChainId)
       // setup scope/context/tags
       Sentry.configureScope(function (scope) {
         // setup a context
@@ -66,8 +38,7 @@ export function SentryUpdater(): null {
   }, [
     // user
     account,
-    connectedChainId,
-    disconnectedChainId,
+    chainId,
     walletName,
     // tokens
     inputCurrencyId,
