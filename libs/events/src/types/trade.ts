@@ -8,8 +8,8 @@ export type OnTradeParamsPayload = { orderType: UiOrderType } & Partial<{
   outputCurrencyAmount: bigint
   inputCurrencyBalance: bigint
   outputCurrencyBalance: bigint
-  inputCurrencyFiatAmount: bigint
-  outputCurrencyFiatAmount: bigint
+  inputCurrencyFiatAmount: string
+  outputCurrencyFiatAmount: string
   slippageAdjustedSellAmount: bigint
   orderKind: OrderKind
   recipient: string
