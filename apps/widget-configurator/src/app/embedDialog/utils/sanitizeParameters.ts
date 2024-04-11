@@ -1,6 +1,6 @@
-import { CowSwapWidgetPalette, CowSwapWidgetParams } from '@cowprotocol/widget-lib'
+import { CowSwapWidgetPalette, CowSwapWidgetPaletteColors, CowSwapWidgetParams } from '@cowprotocol/widget-lib'
 
-import { ColorKeys, ColorPalette } from '../../configurator/types'
+import { ColorPalette } from '../../configurator/types'
 import { SANITIZE_PARAMS } from '../const'
 
 export function sanitizeParameters(params: CowSwapWidgetParams, defaultPalette: ColorPalette) {
@@ -18,7 +18,7 @@ function sanitizePalette(params: CowSwapWidgetParams, defaultPalette: ColorPalet
   const palette = params.theme
 
   const paletteDiff = Object.keys(palette).reduce((acc, key: string) => {
-    const colorKey = key as ColorKeys
+    const colorKey = key as CowSwapWidgetPaletteColors
 
     if (defaultPalette[colorKey] !== palette[colorKey]) {
       acc[colorKey] = palette[colorKey]

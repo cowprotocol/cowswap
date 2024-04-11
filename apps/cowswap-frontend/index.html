@@ -102,6 +102,15 @@
         flex-flow: column wrap;
       }
 
+      #skeleton.skeleton-dark {
+        --colorBorder: rgb(236 241 248 / 15%);
+        --colorShimmerColor1: rgba(236, 241, 248, 0) 0;
+        --colorShimmerColor2: rgba(236, 241, 248, 0.1) 20%;
+        --colorShimmerColor3: rgba(255, 255, 255, 0.2) 50%;
+        --colorShimmerColor4: rgba(236, 241, 248, 0.1) 80%;
+        --colorShimmerColor5: rgba(236, 241, 248, 0) 100%;
+      }
+
       @media (prefers-color-scheme: dark) {
         #skeleton {
           --colorBorder: rgb(236 241 248 / 15%);
@@ -199,6 +208,20 @@
         <span class="cowprotocol-logo"></span>
       </div>
     </div>
+
+    <script>
+      (function(){
+        const search = window.location.hash ? window.location.hash.split('?')[1] : ''
+        const searchParams = new URLSearchParams(search)
+        const theme = searchParams.get('theme')
+
+        if (theme === 'dark') {
+          const skeleton = document.getElementById('skeleton')
+
+          if (skeleton) skeleton.classList.add('skeleton-dark')
+        }
+      })()
+    </script>
 
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>

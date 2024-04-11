@@ -28,7 +28,6 @@ import {
 } from 'common/updaters/orders'
 import { SpotPricesUpdater } from 'common/updaters/orders/SpotPricesUpdater'
 import { SentryUpdater } from 'common/updaters/SentryUpdater'
-import { ThemeFromUrlUpdater } from 'common/updaters/ThemeFromUrlUpdater'
 import { UserUpdater } from 'common/updaters/UserUpdater'
 
 export function Updaters() {
@@ -58,7 +57,6 @@ export function Updaters() {
       <EthFlowSlippageUpdater />
       <EthFlowDeadlineUpdater />
       <SpotPricesUpdater />
-      <ThemeFromUrlUpdater />
       <InjectedWidgetUpdater />
       <CowEventsUpdater />
       <TotalSurplusUpdater />

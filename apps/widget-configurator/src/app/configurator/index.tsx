@@ -300,7 +300,7 @@ export function Configurator({ title }: { title: string }) {
         </List>
       </Drawer>
 
-      <Box sx={ContentStyled}>
+      <Box sx={{ ...ContentStyled, pl: isDrawerOpen ? '300px' : 0 }}>
         {params && (
           <>
             <EmbedDialog

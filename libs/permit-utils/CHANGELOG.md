@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.2.0](https://github.com/cowprotocol/cowswap/compare/permit-utils-v0.1.2...permit-utils-v0.2.0) (2024-04-11)
+
+
+### Features
+
+* **widget:** customize images ([#4159](https://github.com/cowprotocol/cowswap/issues/4159)) ([0b14b2b](https://github.com/cowprotocol/cowswap/commit/0b14b2b19279a1688f75dc4f2954b8c267e57c40))
+
+
+### Bug Fixes
+
+* **permit:** gnosis chain permits ([#4152](https://github.com/cowprotocol/cowswap/issues/4152)) ([26b703f](https://github.com/cowprotocol/cowswap/commit/26b703f2a45715fce0c4418d1f45fdceab2a716e))
+
 ## [0.1.2](https://github.com/cowprotocol/cowswap/compare/permit-utils-v0.1.1...permit-utils-v0.1.2) (2024-02-01)
 
 

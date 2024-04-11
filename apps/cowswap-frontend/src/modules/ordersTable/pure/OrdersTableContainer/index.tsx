@@ -5,7 +5,7 @@ import imageConnectWallet from '@cowprotocol/assets/cow-swap/wallet-plus.svg'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { ExternalLink } from '@cowprotocol/ui'
 import { UI, CowSwapSafeAppLink, MY_ORDERS_ID } from '@cowprotocol/ui'
-import type { CowSwapWidgetParams } from '@cowprotocol/widget-lib'
+import type { CowSwapWidgetAppParams } from '@cowprotocol/widget-lib'
 
 import { Trans } from '@lingui/macro'
 import SVG from 'react-inlinesvg'
@@ -175,7 +175,7 @@ interface OrdersProps extends OrdersTabsProps, OrdersTableProps {
   pendingActivities: string[]
   children?: ReactNode
   orderType: TabOrderTypes
-  injectedWidgetParams: Partial<CowSwapWidgetParams>
+  injectedWidgetParams: Partial<CowSwapWidgetAppParams>
 }
 
 export function OrdersTableContainer({

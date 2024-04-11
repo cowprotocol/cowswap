@@ -1,12 +1,12 @@
 import { CHRISTMAS_THEME_ENABLED } from '@cowprotocol/common-const'
 import { jotaiStore } from '@cowprotocol/core'
-import { CowSwapWidgetParams } from '@cowprotocol/widget-lib'
+import { CowSwapWidgetAppParams } from '@cowprotocol/widget-lib'
 
 import { injectedWidgetParamsAtom } from 'modules/injectedWidget/state/injectedWidgetParamsAtom'
 
 type SoundType = 'SEND' | 'SUCCESS' | 'ERROR'
 type Sounds = Record<SoundType, string>
-type WidgetSounds = keyof NonNullable<CowSwapWidgetParams['sounds']>
+type WidgetSounds = keyof NonNullable<CowSwapWidgetAppParams['sounds']>
 
 const COW_SOUNDS: Sounds = {
   SEND: CHRISTMAS_THEME_ENABLED ? '/audio/send-winterTheme.mp3' : '/audio/send.mp3',

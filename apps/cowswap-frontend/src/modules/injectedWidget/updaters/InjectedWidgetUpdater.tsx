@@ -4,7 +4,7 @@ import { useEffect, useRef } from 'react'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { deepEqual } from '@cowprotocol/common-utils'
 import {
-  CowSwapWidgetParams,
+  CowSwapWidgetAppParams,
   listenToMessageFromWindow,
   postMessageToWindow,
   stopListeningWindowListener,
@@ -36,7 +36,7 @@ const cacheMessages = (event: MessageEvent) => {
   messagesCache[method] = event.data
 }
 
-const paramsWithoutPartnerFee = (params: CowSwapWidgetParams) => {
+const paramsWithoutPartnerFee = (params: CowSwapWidgetAppParams) => {
   const { partnerFee: _, ...rest } = params
 
   return rest

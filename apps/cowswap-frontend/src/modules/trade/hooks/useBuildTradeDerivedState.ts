@@ -34,6 +34,7 @@ export function useBuildTradeDerivedState(stateAtom: Atom<ExtendedTradeRawState>
 
   // In limit orders and advanced orders we don't have "real" buy orders
   const slippageAdjustedSellAmount = inputCurrencyAmount
+  const slippageAdjustedBuyAmount = outputCurrencyAmount
 
   return useSafeMemoObject({
     orderKind,
@@ -44,6 +45,7 @@ export function useBuildTradeDerivedState(stateAtom: Atom<ExtendedTradeRawState>
     inputCurrencyAmount,
     outputCurrencyAmount,
     slippageAdjustedSellAmount,
+    slippageAdjustedBuyAmount,
     inputCurrencyBalance,
     outputCurrencyBalance,
     inputCurrencyFiatAmount,

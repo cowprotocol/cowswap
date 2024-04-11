@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/cowprotocol/cowswap/compare/wallet-v1.0.0...wallet-v1.0.1) (2024-04-11)
+
+
+### Bug Fixes
+
+* **safe:** add replaced status to transactions ([#4125](https://github.com/cowprotocol/cowswap/issues/4125)) ([6714081](https://github.com/cowprotocol/cowswap/commit/671408195d9e8abef4e39dcc7a86b82bc3707556))
+
 ## 1.0.0 (2024-03-29)
 
 

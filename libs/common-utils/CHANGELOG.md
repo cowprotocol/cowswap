@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.1.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.0.1...common-utils-v1.1.0) (2024-04-11)
+
+
+### Features
+
+* **widget:** use custom sounds in widget ([#4162](https://github.com/cowprotocol/cowswap/issues/4162)) ([0dfd679](https://github.com/cowprotocol/cowswap/commit/0dfd67946a1ed383a5ffeeadee3044e45bd92eb0))
+
+
+### Bug Fixes
+
+* fix doesTokenMatchSymbolOrAddress app crash ([#4193](https://github.com/cowprotocol/cowswap/issues/4193)) ([721ff31](https://github.com/cowprotocol/cowswap/commit/721ff31a6b052f72073adcfd04717856d8530b2f))
+* **recreate:** fix recreate buy amount for pairs with different decimal precision ([#4129](https://github.com/cowprotocol/cowswap/issues/4129)) ([64ebbd5](https://github.com/cowprotocol/cowswap/commit/64ebbd53d22f4c6da052039789485aedf85c35a8))
+* sentry error toLowerCase ([#4191](https://github.com/cowprotocol/cowswap/issues/4191)) ([8fd5f19](https://github.com/cowprotocol/cowswap/commit/8fd5f19f5bbb3509212cd5d876c3a83f4330410b))
+
 ## [1.0.1](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.0.0...common-utils-v1.0.1) (2024-04-02)
 
 
