@@ -1,22 +1,9 @@
 import { ButtonSecondary } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 
-import { darken } from 'color2k'
-import { Activity } from 'react-feather'
 import styled, { css } from 'styled-components/macro'
 
 export const Web3StatusGeneric = styled(ButtonSecondary)``
-
-export const Web3StatusError = styled(Web3StatusGeneric)`
-  background-color: var(${UI.COLOR_DANGER});
-  border: 1px solid var(${UI.COLOR_DANGER});
-  color: ${({ theme }) => theme.white};
-  font-weight: 500;
-  :hover,
-  :focus {
-    background-color: ${({ theme }) => darken(theme.red1, 0.1)};
-  }
-`
 
 export const Web3StatusConnect = styled(Web3StatusGeneric)<{ faded?: boolean }>`
   > svg {
@@ -84,13 +71,6 @@ export const Text = styled.p`
   font-size: ${({ theme }) => (theme.isInjectedWidgetMode ? '15px' : '1rem')};
   width: fit-content;
   font-weight: 500;
-`
-
-export const NetworkIcon = styled(Activity)`
-  margin-left: 0.25rem;
-  margin-right: 0.5rem;
-  width: 16px;
-  height: 16px;
 `
 
 export const Wrapper = styled.div`
