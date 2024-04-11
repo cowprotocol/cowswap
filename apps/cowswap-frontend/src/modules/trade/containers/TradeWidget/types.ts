@@ -43,4 +43,5 @@ export interface TradeWidgetProps {
   params: TradeWidgetParams
   disableOutput?: boolean
   confirmModal?: ReactNode
+  genericModal?: ReactNode
 }

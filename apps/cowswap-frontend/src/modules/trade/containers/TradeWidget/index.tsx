@@ -8,9 +8,9 @@ import { TradeWidgetProps } from './types'
 export const TradeWidgetContainer = styledEl.Container
 
 export function TradeWidget(props: TradeWidgetProps) {
-  const { id, slots, params, confirmModal } = props
+  const { id, slots, params, confirmModal, genericModal } = props
   const { disableQuotePolling = false, disableNativeSelling = false } = params
-  const modals = TradeWidgetModals(confirmModal)
+  const modals = TradeWidgetModals(confirmModal, genericModal)
 
   return (
     <>

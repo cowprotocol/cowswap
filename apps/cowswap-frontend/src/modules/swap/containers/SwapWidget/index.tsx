@@ -284,7 +284,6 @@ export function SwapWidget() {
     <>
       <SwapModals {...swapModalsProps} />
       <TradeWidgetContainer>
-        {showNativeWrapModal && <EthFlowModal {...ethFlowProps} />}
         <TradeWidget
           id="swap-page"
           slots={slots}
@@ -302,6 +301,7 @@ export function SwapWidget() {
             tradeRatesProps={tradeRatesProps}
             refreshInterval={SWAP_QUOTE_CHECK_INTERVAL}
           />}
+          genericModal={showNativeWrapModal && <EthFlowModal {...ethFlowProps} />}
         />
         <NetworkAlert />
       </TradeWidgetContainer>
