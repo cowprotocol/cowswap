@@ -1,4 +1,4 @@
-import React, { ReactNode, useCallback, useEffect } from 'react'
+import { ReactNode, useCallback, useEffect } from 'react'
 
 import { useAddUserToken } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -7,10 +7,10 @@ import {
   ImportTokenModal,
   SelectTokenWidget,
   useSelectTokenWidgetState,
-  useUpdateSelectTokenWidgetState,
   useTokenListAddingError,
+  useUpdateSelectTokenWidgetState,
 } from 'modules/tokensList'
-import { useZeroApproveModalState, ZeroApprovalModal } from 'modules/zeroApproval'
+import { ZeroApprovalModal, useZeroApproveModalState } from 'modules/zeroApproval'
 
 import { TradeApproveModal } from 'common/containers/TradeApprove'
 import { useTradeApproveState } from 'common/hooks/useTradeApproveState'
