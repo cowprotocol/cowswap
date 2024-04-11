@@ -40,7 +40,8 @@ function getTradeParamsEventPayload(tradeType: TradeType, state: TradeDerivedSta
     outputCurrencyBalance: currencyAmountToBigInt(state.outputCurrencyBalance),
     inputCurrencyFiatAmount: state.inputCurrencyFiatAmount?.toExact(),
     outputCurrencyFiatAmount: state.outputCurrencyFiatAmount?.toExact(),
-    slippageAdjustedSellAmount: currencyAmountToBigInt(state.slippageAdjustedSellAmount),
+    maximumSendSellAmount: currencyAmountToBigInt(state.slippageAdjustedSellAmount),
+    minimumReceiveBuyAmount: currencyAmountToBigInt(state.slippageAdjustedBuyAmount),
     recipient: state.recipient || undefined,
     orderKind: state.orderKind,
   }
