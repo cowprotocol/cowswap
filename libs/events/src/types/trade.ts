@@ -1,25 +1,27 @@
 import { TokenInfo, UiOrderType } from '@cowprotocol/types'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 
+export type AtomsAndUnits = { atoms: bigint; units: string }
+
 export type OnTradeParamsPayload = { orderType: UiOrderType } & Partial<{
-  inputCurrency: TokenInfo
-  outputCurrency: TokenInfo
-  inputCurrencyAmount: bigint
-  outputCurrencyAmount: bigint
-  inputCurrencyBalance: bigint
-  outputCurrencyBalance: bigint
-  inputCurrencyFiatAmount: string
-  outputCurrencyFiatAmount: string
+  sellToken: TokenInfo
+  buyToken: TokenInfo
+  sellTokenAmount: AtomsAndUnits
+  buyTokenAmount: AtomsAndUnits
+  sellTokenBalance: AtomsAndUnits
+  buyTokenBalance: AtomsAndUnits
+  sellTokenFiatAmount: string
+  buyTokenFiatAmount: string
   /**
    * Sell amount including slippage and fees.
    * For sell orders, this value should be the same with inputCurrencyAmount
    */
-  maximumSendSellAmount: bigint
+  maximumSendSellAmount: AtomsAndUnits
   /**
    * Buy amount including slippage and fees.
    * For buy orders, this value should be the same with outputCurrencyAmount
    */
-  minimumReceiveBuyAmount: bigint
+  minimumReceiveBuyAmount: AtomsAndUnits
   orderKind: OrderKind
   recipient: string
 }>
