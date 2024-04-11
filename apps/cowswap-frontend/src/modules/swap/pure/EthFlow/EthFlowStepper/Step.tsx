@@ -12,7 +12,7 @@ export const ExplorerLinkStyled = styled(ExplorerLink)``
 
 const StepWrapper = styled.div`
   height: auto;
-  width: max-content;
+  width: auto;
   text-align: center;
   display: flex;
   flex-direction: column;

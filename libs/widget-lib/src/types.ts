@@ -96,17 +96,76 @@ export interface PartnerFee {
   recipient: string
 }
 
-export interface CowSwapWidgetPalette {
-  baseTheme: CowSwapTheme
-  primary: string
-  background: string
-  paper: string
-  text: string
-  danger: string
-  warning: string
-  alert: string
-  info: string
-  success: string
+/**
+ * ERC-20 token information
+ */
+export type TokenInfo = {
+  chainId: number
+  address: string
+  name: string
+  decimals: number
+  symbol: string
+  logoURI?: string
+}
+
+export const WIDGET_PALETTE_COLORS = [
+  'primary',
+  'background',
+  'paper',
+  'text',
+  'danger',
+  'warning',
+  'alert',
+  'info',
+  'success',
+] as const
+
+export type CowSwapWidgetPaletteColors = (typeof WIDGET_PALETTE_COLORS)[number]
+
+export type CowSwapWidgetPaletteParams = { [K in CowSwapWidgetPaletteColors]: string }
+
+export type CowSwapWidgetPalette = { baseTheme: CowSwapTheme } & CowSwapWidgetPaletteParams
+
+export interface CowSwapWidgetSounds {
+  /**
+   * The sound to play when the order is executed. Defaults to world wide famous CoW Swap moooooooooo!
+   * Alternatively, you can use a URL to a custom sound file, or set to null to disable the sound.
+   */
+  postOrder?: string | null
+
+  /**
+   * The sound to play when the order is executed. Defaults to world wide famous CoW Swap happy moooooooooo!
+   * Alternatively, you can use a URL to a custom sound file, or set to null to disable the sound.
+   */
+  orderExecuted?: string | null
+
+  /**
+   * The sound to play when the order is executed. Defaults to world wide famous CoW Swap unhappy moooooooooo!
+   * Alternatively, you can use a URL to a custom sound file, or set to null to disable the sound.
+   */
+  orderError?: string | null
+}
+
+export interface CowSwapWidgetImages {
+  /**
+   * The image to display when the orders table is empty (no orders yet). It defaults to "Yoga CoW" image.
+   * Alternatively, you can use a URL to a custom image file, or set to null to disable the image.
+   */
+  emptyOrders?: string | null
+}
+
+export interface CowSwapWidgetBanners {
+  /**
+   * Banner text: "Use Safe web app..."
+   *
+   * Conditions for displaying the banner:
+   *  - Safe-like app is connected to CoW Swap via WalletConnect
+   *  - Selling native token via Swap
+   *  - Sell token needs approval
+   *
+   *  If the flag is set to true, the banner will not be displayed
+   */
+  hideSafeWebAppBanner?: boolean
 }
 
 export interface CowSwapWidgetParams {
@@ -205,43 +264,24 @@ export interface CowSwapWidgetParams {
   theme?: CowSwapTheme | CowSwapWidgetPalette
 
   /**
-   * Allows to set a custom logo for the widget.
-   */
-  logoUrl?: string
-
-  /**
    * Customizable images for the widget.
    */
-  images?: {
-    /**
-     * The image to display when the orders table is empty (no orders yet). It defaults to "Yoga CoW" image.
-     * Alternatively, you can use a URL to a custom image file, or set to null to disable the image.
-     */
-    emptyOrders?: string | null
-  }
+  images?: CowSwapWidgetImages
 
   /**
    * Sounds configuration for the app.
    */
-  sounds?: {
-    /**
-     * The sound to play when the order is executed. Defaults to world wide famous CoW Swap moooooooooo!
-     * Alternatively, you can use a URL to a custom sound file, or set to null to disable the sound.
-     */
-    postOrder?: string | null
+  sounds?: CowSwapWidgetSounds
 
-    /**
-     * The sound to play when the order is executed. Defaults to world wide famous CoW Swap happy moooooooooo!
-     * Alternatively, you can use a URL to a custom sound file, or set to null to disable the sound.
-     */
-    orderExecuted?: string | null
+  /**
+   * Flags to control the display of banners in the widget.
+   */
+  banners?: CowSwapWidgetBanners
 
-    /**
-     * The sound to play when the order is executed. Defaults to world wide famous CoW Swap unhappy moooooooooo!
-     * Alternatively, you can use a URL to a custom sound file, or set to null to disable the sound.
-     */
-    orderError?: string | null
-  }
+  /**
+   * In case when widget does not support some tokens, you can provide a list of tokens to be used in the widget
+   */
+  customTokens?: TokenInfo[]
 }
 
 // Define types for event payloads
@@ -262,12 +302,15 @@ export interface WidgetMethodsListenPayloadMap {
 export type WidgetMethodsEmitPayloads = WidgetMethodsEmitPayloadMap[WidgetMethodsEmit]
 export type WidgetMethodsListenPayloads = WidgetMethodsListenPayloadMap[WidgetMethodsListen]
 
+export type CowSwapWidgetAppParams = Omit<CowSwapWidgetParams, 'theme'>
+
 export interface UpdateParamsPayload {
   urlParams: {
     pathname: string
+    // Contains theme and other query params
     search: string
   }
-  appParams: CowSwapWidgetParams
+  appParams: CowSwapWidgetAppParams
   hasProvider: boolean
 }
 

@@ -19,7 +19,6 @@ import { CancelReplaceTxUpdater } from 'common/updaters/CancelReplaceTxUpdater'
 import { FeesUpdater } from 'common/updaters/FeesUpdater'
 import { GasUpdater } from 'common/updaters/GasUpdater'
 import { HwAccountIndexUpdater } from 'common/updaters/HwAccountIndexUpdater'
-import { LogsUpdater } from 'common/updaters/LogsUpdater'
 import {
   CancelledOrdersUpdater,
   ExpiredOrdersUpdater,
@@ -29,12 +28,11 @@ import {
 } from 'common/updaters/orders'
 import { SpotPricesUpdater } from 'common/updaters/orders/SpotPricesUpdater'
 import { SentryUpdater } from 'common/updaters/SentryUpdater'
-import { ThemeFromUrlUpdater } from 'common/updaters/ThemeFromUrlUpdater'
 import { UserUpdater } from 'common/updaters/UserUpdater'
 
 export function Updaters() {
   const { chainId, account } = useWalletInfo()
-  const { tokenLists, appCode } = useInjectedWidgetParams()
+  const { tokenLists, appCode, customTokens } = useInjectedWidgetParams()
   const onTokenListAddingError = useOnTokenListAddingError()
   const { isGeoBlockEnabled } = useFeatureFlags()
 
@@ -54,13 +52,11 @@ export function Updaters() {
       <GpOrdersUpdater />
       <GasUpdater />
       <GasPriceStrategyUpdater />
-      <LogsUpdater />
       <SentryUpdater />
       <UploadToIpfsUpdater />
       <EthFlowSlippageUpdater />
       <EthFlowDeadlineUpdater />
       <SpotPricesUpdater />
-      <ThemeFromUrlUpdater />
       <InjectedWidgetUpdater />
       <CowEventsUpdater />
       <TotalSurplusUpdater />
@@ -69,6 +65,7 @@ export function Updaters() {
       <TokensListsUpdater chainId={chainId} isGeoBlockEnabled={isGeoBlockEnabled} />
       <WidgetTokensListsUpdater
         tokenLists={tokenLists}
+        customTokens={customTokens}
         appCode={appCode}
         onTokenListAddingError={onTokenListAddingError}
       />

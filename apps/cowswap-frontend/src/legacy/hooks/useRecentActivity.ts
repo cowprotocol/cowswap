@@ -2,14 +2,22 @@ import { useMemo } from 'react'
 
 import { MAXIMUM_ORDERS_TO_DISPLAY } from '@cowprotocol/common-const'
 import { getDateTimestamp } from '@cowprotocol/common-utils'
-import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { SupportedChainId, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { isTransactionRecent, useAllTransactions, useTransactionsByHash } from 'legacy/state/enhancedTransactions/hooks'
+import { useAllTransactions, useTransactionsByHash } from 'legacy/state/enhancedTransactions/hooks'
 import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/reducer'
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 import { useCombinedPendingOrders, useOrder, useOrders, useOrdersById } from 'legacy/state/orders/hooks'
+
+/**
+ * Returns whether a transaction happened in the last day (86400 seconds * 1000 milliseconds / second)
+ * @param tx to check for recency
+ */
+function isTransactionRecent(tx: EnhancedTransactionDetails): boolean {
+  return new Date().getTime() - tx.addedTime < 86_400_000
+}
 
 export interface AddedOrder extends Order {
   addedTime: number
@@ -87,12 +95,14 @@ export function useRecentActivity(): TransactionAndOrder[] {
             isNotOnChainCancellationTx(tx)
           )
         })
-        .map((tx) => ({
-          ...tx,
-          // we need to adjust Transaction object and add "id" + "status" to match Orders type
-          id: tx.hash,
-          status: tx.receipt ? OrderStatus.FULFILLED : OrderStatus.PENDING,
-        }))
+        .map((tx) => {
+          return {
+            ...tx,
+            // we need to adjust Transaction object and add "id" + "status" to match Orders type
+            id: tx.hash,
+            status: tx.receipt ? OrderStatus.FULFILLED : tx.errorMessage ? OrderStatus.FAILED : OrderStatus.PENDING,
+          }
+        })
     )
   }, [account, allTransactions])
 
@@ -119,7 +129,11 @@ type UseActivityDescriptionParams = {
   ids: string[]
 }
 
-export function createActivityDescriptor(tx?: EnhancedTransactionDetails, order?: Order): ActivityDescriptors | null {
+export function createActivityDescriptor(
+  chainId: SupportedChainId,
+  tx?: EnhancedTransactionDetails,
+  order?: Order
+): ActivityDescriptors | null {
   if (!tx && !order) return null
 
   let activity: EnhancedTransactionDetails | Order, type: ActivityType
@@ -163,7 +177,7 @@ export function createActivityDescriptor(tx?: EnhancedTransactionDetails, order?
     id = tx.hash
 
     const isReceiptConfirmed =
-      tx.receipt?.status === TxReceiptStatus.CONFIRMED || typeof tx.receipt?.status === 'undefined'
+      !!tx.receipt && (tx.receipt.status === TxReceiptStatus.CONFIRMED || typeof tx.receipt.status === 'undefined')
     const isCancelTx = tx?.replacementType === 'cancel'
     isPending = !tx.receipt
     isPresignaturePending = false
@@ -171,7 +185,7 @@ export function createActivityDescriptor(tx?: EnhancedTransactionDetails, order?
     isCancelling = isCancelTx && isPending
     isCancelled = isCancelTx && !isPending && isReceiptConfirmed
     isCreating = false
-    isFailed = false
+    isFailed = !!tx.errorMessage
 
     activity = tx
     type = ActivityType.TX
@@ -186,6 +200,8 @@ export function createActivityDescriptor(tx?: EnhancedTransactionDetails, order?
 
   if (isCancelling) {
     status = ActivityStatus.CANCELLING
+  } else if (isFailed) {
+    status = ActivityStatus.FAILED
   } else if (isPending) {
     status = ActivityStatus.PENDING
   } else if (isPresignaturePending) {
@@ -196,8 +212,6 @@ export function createActivityDescriptor(tx?: EnhancedTransactionDetails, order?
     status = ActivityStatus.CONFIRMED
   } else if (isCreating) {
     status = ActivityStatus.CREATING
-  } else if (isFailed) {
-    status = ActivityStatus.FAILED
   } else {
     status = ActivityStatus.EXPIRED
   }
@@ -221,7 +235,7 @@ export function useMultipleActivityDescriptors({ chainId, ids }: UseActivityDesc
     if (!chainId) return []
 
     return ids.reduce<ActivityDescriptors[]>((acc, id) => {
-      const activity = createActivityDescriptor(txs[id], orders?.[id])
+      const activity = createActivityDescriptor(chainId, txs[id], orders?.[id])
       if (activity) {
         acc.push(activity)
       }
@@ -244,7 +258,7 @@ export function useSingleActivityDescriptor({
 
   return useMemo(() => {
     if (!chainId) return null
-    return createActivityDescriptor(tx, order)
+    return createActivityDescriptor(chainId, tx, order)
   }, [chainId, order, tx])
 }
 

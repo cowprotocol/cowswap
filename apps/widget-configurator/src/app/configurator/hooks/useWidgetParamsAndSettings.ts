@@ -31,7 +31,7 @@ export function useWidgetParams(configuratorState: ConfiguratorState): CowSwapWi
       sellTokenAmount,
       buyToken,
       buyTokenAmount,
-      tokenLists,
+      tokenListUrls,
       customColors,
       defaultColors,
       partnerFeeBps,
@@ -47,27 +47,30 @@ export function useWidgetParams(configuratorState: ConfiguratorState): CowSwapWi
 
     const params: CowSwapWidgetParams = {
       appCode: 'CoW Widget: Configurator',
-      width: '450px',
+      width: '100%',
       height: '640px',
       chainId,
-      tokenLists: tokenLists.filter((list) => list.enabled).map((list) => list.url),
+      tokenLists: tokenListUrls.filter((list) => list.enabled).map((list) => list.url),
       baseUrl: DEFAULT_BASE_URL,
       tradeType: currentTradeType,
       sell: { asset: sellToken, amount: sellTokenAmount ? sellTokenAmount.toString() : undefined },
       buy: { asset: buyToken, amount: buyTokenAmount?.toString() },
       enabledTradeTypes,
-      theme: {
-        baseTheme: theme,
-        primary: themeColors.primary,
-        background: themeColors.background,
-        paper: themeColors.paper,
-        text: themeColors.text,
-        danger: themeColors.danger,
-        warning: themeColors.warning,
-        alert: themeColors.alert,
-        info: themeColors.info,
-        success: themeColors.success,
-      },
+      theme:
+        JSON.stringify(customColors) === JSON.stringify(defaultColors)
+          ? theme
+          : {
+              baseTheme: theme,
+              primary: themeColors.primary,
+              background: themeColors.background,
+              paper: themeColors.paper,
+              text: themeColors.text,
+              danger: themeColors.danger,
+              warning: themeColors.warning,
+              alert: themeColors.alert,
+              info: themeColors.info,
+              success: themeColors.success,
+            },
 
       standaloneMode,
       disableToastMessages,

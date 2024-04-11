@@ -14,14 +14,6 @@ export function useAllTransactions(): { [txHash: string]: EnhancedTransactionDet
   return chainId ? state[chainId] ?? {} : {}
 }
 
-/**
- * Returns whether a transaction happened in the last day (86400 seconds * 1000 milliseconds / second)
- * @param tx to check for recency
- */
-export function isTransactionRecent(tx: EnhancedTransactionDetails): boolean {
-  return new Date().getTime() - tx.addedTime < 86_400_000
-}
-
 // returns whether a token has a pending approval transaction
 export function useHasPendingApproval(tokenAddress: string | undefined, spender: string | undefined): boolean {
   const allTransactions = useAllTransactions()
@@ -32,19 +24,15 @@ export function useHasPendingApproval(tokenAddress: string | undefined, spender:
       typeof spender === 'string' &&
       Object.keys(allTransactions).some((hash) => {
         const tx = allTransactions[hash]
-        if (!tx) return false
-        if (tx.receipt) {
-          return false
-        } else {
-          const approval = tx.approval
-          if (!approval) return false
+        if (!tx || tx.receipt || tx.replacementType || tx.errorMessage) return false
 
-          return (
-            approval.spender.toLowerCase() === spender.toLowerCase() &&
-            approval.tokenAddress.toLowerCase() === tokenAddress &&
-            isTransactionRecent(tx)
-          )
-        }
+        const approval = tx.approval
+        if (!approval) return false
+
+        return (
+          approval.spender.toLowerCase() === spender.toLowerCase() &&
+          approval.tokenAddress.toLowerCase() === tokenAddress
+        )
       }),
     [allTransactions, spender, tokenAddress]
   )

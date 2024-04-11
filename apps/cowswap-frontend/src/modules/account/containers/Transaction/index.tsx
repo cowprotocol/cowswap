@@ -45,6 +45,10 @@ export function determinePillColour(status: ActivityStatus, type: ActivityType) 
   }
 }
 
+export interface OrderCreationTxInfo {
+  orderCreationTx: EnhancedTransactionDetails
+  orderCreationLinkedTx?: EnhancedTransactionDetails
+}
 /**
  * Object derived from the activity state
  */
@@ -63,6 +67,7 @@ export interface ActivityDerivedState {
   isExpired: boolean
   isCancelling: boolean
   isCancelled: boolean
+  isReplaced: boolean
   isPresignaturePending: boolean
   isUnfillable?: boolean
   // EthFlow flags
@@ -76,6 +81,9 @@ export interface ActivityDerivedState {
 
   // Gnosis Safe
   gnosisSafeInfo?: SafeInfoResponse
+
+  // Eth-flow order related transactions
+  orderCreationTxInfo?: OrderCreationTxInfo
 }
 
 export default function Activity({ activity }: { activity: ActivityDescriptors }) {

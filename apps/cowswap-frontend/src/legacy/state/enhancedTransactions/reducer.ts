@@ -23,6 +23,7 @@ export interface EnhancedTransactionDetails {
   hash: string // The hash of the transaction, normally Ethereum one, but not necessarily
   hashType: HashType // Transaction hash: could be Ethereum tx, or for multisigs could be some kind of hash identifying the order (i.e. Gnosis Safe)
   transactionHash?: string // Transaction hash. For EOA this field is immediately available, however, other wallets go through a process of offchain signing before the transactionHash is available
+  nonce: number
 
   // Params using for polling handling
   addedTime: number // Used to determine the polling frequency
@@ -54,6 +55,9 @@ export interface EnhancedTransactionDetails {
   // Cancelling/Replacing
   replacementType?: ReplacementType // if the user cancelled or speedup the tx it will be reflected here
   linkedTransactionHash?: string
+
+  // Error
+  errorMessage?: string
 
   class?: OrderClass // Flag to distinguish order class
 }
@@ -88,6 +92,7 @@ export default createReducer(initialState, (builder) =>
             from,
             hash,
             hashType,
+            nonce,
             approval,
             summary,
             presign,
@@ -110,6 +115,7 @@ export default createReducer(initialState, (builder) =>
         txs[hash] = {
           hash,
           transactionHash: hashType === HashType.ETHEREUM_TX ? hash : undefined,
+          nonce,
           hashType,
           addedTime: now(),
           from,
@@ -167,11 +173,14 @@ export default createReducer(initialState, (builder) =>
         return
       }
 
-      if (allTxs[newHash]) {
+      const newTx = allTxs[newHash]
+
+      if (newTx?.replacementType === type || newTx?.linkedTransactionHash) {
         console.warn('[replaceTransaction] The new replacement hash was already added.', {
           chainId,
           oldHash,
           newHash,
+          type,
         })
         return
       }
@@ -184,6 +193,8 @@ export default createReducer(initialState, (builder) =>
         replacementType: type,
         linkedTransactionHash: oldHash,
       }
+
+      console.warn('[replaceTransaction] Transaction replaced', allTxs[newHash])
 
       allTxs[oldHash].linkedTransactionHash = newHash
     })

@@ -5,21 +5,30 @@ import useMediaQuery from '@mui/material/useMediaQuery'
 
 import { ColorModeParams } from '../ColorModeContext'
 
+const THEME_STORAGE_KEY = 'widget-cfg-theme'
+
+const getThemeFromCache = () => localStorage.getItem(THEME_STORAGE_KEY) as PaletteMode
+
 export function useColorMode(): ColorModeParams {
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)')
-  const [mode, setMode] = useState<PaletteMode>(prefersDarkMode ? 'dark' : 'light')
+  const [mode, setMode] = useState<PaletteMode>(getThemeFromCache() || (prefersDarkMode ? 'dark' : 'light'))
+
+  const updateMode = (mode: PaletteMode) => {
+    setMode(mode)
+    localStorage.setItem(THEME_STORAGE_KEY, mode)
+  }
 
   return useMemo(
     () => ({
       mode,
       setMode: (mode: PaletteMode) => {
-        setMode(mode)
+        updateMode(mode)
       },
       toggleColorMode: () => {
-        setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'))
+        updateMode(mode === 'light' ? 'dark' : 'light')
       },
       setAutoMode: () => {
-        setMode(prefersDarkMode ? 'dark' : 'light')
+        updateMode(prefersDarkMode ? 'dark' : 'light')
       },
     }),
     [mode, prefersDarkMode]

@@ -20,6 +20,7 @@ export interface TradeDerivedState {
    * So, the final sell amount will be 552 COW + 2% = 563.04
    */
   readonly slippageAdjustedSellAmount: CurrencyAmount<Currency> | null
+  readonly slippageAdjustedBuyAmount: CurrencyAmount<Currency> | null
   readonly inputCurrencyBalance: CurrencyAmount<Currency> | null
   readonly outputCurrencyBalance: CurrencyAmount<Currency> | null
   readonly inputCurrencyFiatAmount: CurrencyAmount<Currency> | null
@@ -36,6 +37,7 @@ export const DEFAULT_TRADE_DERIVED_STATE: TradeDerivedState = {
   inputCurrencyAmount: null,
   outputCurrencyAmount: null,
   slippageAdjustedSellAmount: null,
+  slippageAdjustedBuyAmount: null,
   inputCurrencyBalance: null,
   outputCurrencyBalance: null,
   inputCurrencyFiatAmount: null,

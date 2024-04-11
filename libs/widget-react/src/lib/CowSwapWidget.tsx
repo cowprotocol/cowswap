@@ -98,5 +98,5 @@ export function CowSwapWidget(props: CowSwapWidgetProps) {
     )
   }
 
-  return <div ref={containerRef}></div>
+  return <div ref={containerRef} style={{ width: '100%' }}></div>
 }

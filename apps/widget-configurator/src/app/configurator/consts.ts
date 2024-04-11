@@ -1,8 +1,10 @@
 import { CowEventListeners, CowEvents, ToastMessageType } from '@cowprotocol/events'
-import { TradeType } from '@cowprotocol/widget-lib'
+import { TradeType, TokenInfo, CowSwapWidgetPaletteParams } from '@cowprotocol/widget-lib'
 
 import { TokenListItem } from './types'
 
+// CoW DAO address
+export const DEFAULT_PARTNER_FEE_RECIPIENT = '0xcA771eda0c70aA7d053aB1B25004559B918FE662'
 export const TRADE_MODES = [TradeType.SWAP, TradeType.LIMIT, TradeType.ADVANCED]
 
 // Sourced from https://tokenlists.org/
@@ -34,7 +36,7 @@ export const DEFAULT_TOKEN_LISTS: TokenListItem[] = [
 ]
 // TODO: Move default palette to a new lib that only exposes the palette colors.
 // This wayit can be consumed by both the configurator and the widget.
-export const DEFAULT_LIGHT_PALETTE = {
+export const DEFAULT_LIGHT_PALETTE: CowSwapWidgetPaletteParams = {
   primary: '#052b65',
   background: '#FFFFFF',
   paper: '#FFFFFF',
@@ -46,7 +48,7 @@ export const DEFAULT_LIGHT_PALETTE = {
   success: '#007B28',
 }
 
-export const DEFAULT_DARK_PALETTE = {
+export const DEFAULT_DARK_PALETTE: CowSwapWidgetPaletteParams = {
   primary: '#0d5ed9',
   background: '#303030',
   paper: '#0c264b',
@@ -94,4 +96,30 @@ export const COW_LISTENERS: CowEventListeners = [
     event: CowEvents.ON_FULFILLED_ORDER,
     handler: (event) => console.log(`[configurator:ON_FULFILLED_ORDER] ✅ Executed order ${event.order.uid}`),
   },
+
+  {
+    event: CowEvents.ON_CHANGE_TRADE_PARAMS,
+    handler: (event) => console.log(`[configurator:ON_TRADE_PARAMS] ✅ Trade params:`, event),
+  },
 ]
+
+export const DEFAULT_CUSTOM_TOKENS: TokenInfo[] = [
+  {
+    chainId: 1,
+    address: '0x69D29F1b0cC37d8d3B61583c99Ad0ab926142069',
+    name: 'ƎԀƎԀ',
+    decimals: 9,
+    symbol: 'ƎԀƎԀ',
+    logoURI: 'https://assets.coingecko.com/coins/images/31948/large/photo_2023-09-25_14-05-49.jpg?1696530754',
+  },
+  {
+    chainId: 1,
+    address: '0x9F9643209dCCe8D7399D7BF932354768069Ebc64',
+    name: 'Invest Club Global',
+    decimals: 18,
+    symbol: 'ICG',
+    logoURI: 'https://assets.coingecko.com/coins/images/34316/large/thatone_200%281%29.png?1704621005',
+  },
+]
+
+export const IS_IFRAME = window.self !== window.top

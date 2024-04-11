@@ -1,4 +1,4 @@
-import { OrderKind, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { SupportedChainId as ChainId, OrderKind } from '@cowprotocol/cow-sdk'
 import { Percent } from '@uniswap/sdk-core'
 import { isSellOrder } from './isSellOrder'
 
@@ -139,8 +139,10 @@ export function hashCode(text: string): number {
  * Some providers return some description in the error.message, and some others the error message is itself a String
  * with the error message
  */
-export function getProviderErrorMessage(error: any) {
-  return typeof error === 'string' ? error : error.message
+export function getProviderErrorMessage(error: unknown): string | undefined {
+  if (typeof error === 'string') return error
+  if (error && typeof error === 'object' && 'message' in error) return error.message as string
+  return error?.toString()
 }
 
 /**
@@ -162,8 +164,8 @@ export function isRejectRequestProviderError(error: any) {
     // Check for some specific messages returned by some wallets when rejecting requests
     const message = getProviderErrorMessage(error)
     if (
-      PROVIDER_REJECT_REQUEST_ERROR_MESSAGES.some((rejectMessage) =>
-        message.toLowerCase().includes(rejectMessage.toLowerCase())
+      PROVIDER_REJECT_REQUEST_ERROR_MESSAGES.some(
+        (rejectMessage) => message && rejectMessage && message.toLowerCase().includes(rejectMessage.toLowerCase())
       )
     ) {
       return true

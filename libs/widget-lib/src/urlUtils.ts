@@ -1,13 +1,13 @@
 import { CowSwapWidgetParams, TradeType } from './types'
+import { isCowSwapWidgetPalette } from './themeUtils'
 
 const EMPTY_TOKEN = '_'
 
 export function buildWidgetUrl(params: Partial<CowSwapWidgetParams>): string {
   const host = typeof params.baseUrl === 'string' ? params.baseUrl : 'https://swap.cow.fi'
   const path = buildWidgetPath(params)
-  const query = buildTradeAmountsQuery(params)
 
-  return host + '/#' + path + '?' + query
+  return host + '/#' + path + '?' + buildWidgetUrlQuery(params)
 }
 
 export function buildWidgetPath(params: Partial<CowSwapWidgetParams>): string {
@@ -18,9 +18,14 @@ export function buildWidgetPath(params: Partial<CowSwapWidgetParams>): string {
   return `/${chainId}/widget/${tradeType}/${assetsPath}`
 }
 
-export function buildTradeAmountsQuery(params: Partial<CowSwapWidgetParams>): URLSearchParams {
-  const { sell, buy, theme } = params
+export function buildWidgetUrlQuery(params: Partial<CowSwapWidgetParams>): URLSearchParams {
   const query = new URLSearchParams()
+
+  return addThemePaletteToQuery(addTradeAmountsToQuery(query, params), params)
+}
+
+function addTradeAmountsToQuery(query: URLSearchParams, params: Partial<CowSwapWidgetParams>): URLSearchParams {
+  const { sell, buy } = params
 
   if (sell?.amount) {
     query.append('sellAmount', sell.amount)
@@ -30,8 +35,19 @@ export function buildTradeAmountsQuery(params: Partial<CowSwapWidgetParams>): UR
     query.append('buyAmount', buy.amount)
   }
 
-  if (theme) {
-    query.append('theme', typeof theme === 'string' ? theme : theme.baseTheme)
+  return query
+}
+
+function addThemePaletteToQuery(query: URLSearchParams, params: Partial<CowSwapWidgetParams>): URLSearchParams {
+  const theme = params.theme
+
+  if (!theme) return query
+
+  if (isCowSwapWidgetPalette(theme)) {
+    query.append('palette', encodeURIComponent(JSON.stringify(theme)))
+    query.append('theme', theme.baseTheme)
+  } else {
+    query.append('theme', theme)
   }
 
   return query

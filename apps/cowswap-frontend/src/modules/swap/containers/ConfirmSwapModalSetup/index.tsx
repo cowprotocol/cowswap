@@ -56,7 +56,7 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
   const buttonText = useSwapConfirmButtonText(slippageAdjustedSellAmount)
 
   const submittedContent = (order: Order | undefined, onDismiss: Command) => {
-    const activity = createActivityDescriptor(undefined, order)
+    const activity = createActivityDescriptor(chainId, undefined, order)
     const activityDerivedState = getActivityDerivedState({ chainId, activityData: activity, gnosisSafeInfo })
 
     return (

@@ -15,6 +15,8 @@ import { AppDataInfoUpdater, UseAppDataParams } from './AppDataInfoUpdater'
 import { useAppCode, useAppDataHooks } from '../hooks'
 import { AppDataOrderClass } from '../types'
 
+const ORDERS_WITH_PARTNER_FEE: AppDataOrderClass[] = ['market']
+
 interface AppDataUpdaterProps {
   slippage: Percent
   orderClass: AppDataOrderClass
@@ -28,10 +30,12 @@ export const AppDataUpdater = React.memo(({ slippage, orderClass }: AppDataUpdat
   const utm = useUtm()
   const hooks = useAppDataHooks()
   const appCodeWithWidgetMetadata = useAppCodeWidgetAware(appCode)
-  const { partnerFee } = useInjectedWidgetParams()
+  const widgetParams = useInjectedWidgetParams()
   const replacedOrderUid = useReplacedOrderUid()
 
   if (!chainId) return null
+
+  const partnerFee = ORDERS_WITH_PARTNER_FEE.includes(orderClass) ? widgetParams.partnerFee : undefined
 
   return (
     <AppDataUpdaterMemo

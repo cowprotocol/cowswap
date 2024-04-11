@@ -1,10 +1,10 @@
 import { atom } from 'jotai'
 
-import type { CowSwapWidgetParams } from '@cowprotocol/widget-lib'
+import { CowSwapWidgetAppParams } from '@cowprotocol/widget-lib'
 
-export type WidgetParamsErrors = Partial<{ [key in keyof CowSwapWidgetParams]: string[] | undefined }>
+export type WidgetParamsErrors = Partial<{ [key in keyof CowSwapWidgetAppParams]: string[] | undefined }>
 
-export const injectedWidgetParamsAtom = atom<{ params: Partial<CowSwapWidgetParams>; errors: WidgetParamsErrors }>({
+export const injectedWidgetParamsAtom = atom<{ params: Partial<CowSwapWidgetAppParams>; errors: WidgetParamsErrors }>({
   params: {},
   errors: {},
 })

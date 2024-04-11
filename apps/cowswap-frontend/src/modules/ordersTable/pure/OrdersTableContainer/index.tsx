@@ -5,6 +5,7 @@ import imageConnectWallet from '@cowprotocol/assets/cow-swap/wallet-plus.svg'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { ExternalLink } from '@cowprotocol/ui'
 import { UI, CowSwapSafeAppLink, MY_ORDERS_ID } from '@cowprotocol/ui'
+import type { CowSwapWidgetAppParams } from '@cowprotocol/widget-lib'
 
 import { Trans } from '@lingui/macro'
 import SVG from 'react-inlinesvg'
@@ -47,6 +48,7 @@ const Content = styled.div`
     width: var(--size);
     height: var(--size);
     border-radius: var(--size);
+    overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -81,7 +83,6 @@ const Content = styled.div`
       height: 100%;
       object-fit: contain;
       display: inline;
-      padding: 16px;
     }
 
     > svg {
@@ -107,6 +108,10 @@ const Content = styled.div`
     text-align: center;
     color: inherit;
   }
+`
+
+const MeditatingCowImg = styled.img`
+  padding: 16px;
 `
 
 const Header = styled.div`
@@ -170,6 +175,7 @@ interface OrdersProps extends OrdersTabsProps, OrdersTableProps {
   pendingActivities: string[]
   children?: ReactNode
   orderType: TabOrderTypes
+  injectedWidgetParams: Partial<CowSwapWidgetAppParams>
 }
 
 export function OrdersTableContainer({
@@ -191,8 +197,11 @@ export function OrdersTableContainer({
   orderType,
   pendingActivities,
   ordersPermitStatus,
+  injectedWidgetParams,
 }: OrdersProps) {
   const content = () => {
+    const emptyOrdersImage = injectedWidgetParams.images?.emptyOrders
+
     if (!isWalletConnected) {
       return (
         <Content>
@@ -222,7 +231,11 @@ export function OrdersTableContainer({
       return (
         <Content>
           <span>
-            <img src={cowMeditatingV2} alt="Cow meditating ..." />
+            {emptyOrdersImage ? (
+              <img src={injectedWidgetParams.images?.emptyOrders || cowMeditatingV2} alt="There are no orders" />
+            ) : (
+              <MeditatingCowImg src={cowMeditatingV2} alt="Cow meditating ..." />
+            )}
           </span>
           <h3>
             <Trans>{isOpenOrdersTab ? 'No open orders' : 'No orders history'}</Trans>

@@ -1,13 +1,9 @@
 import React, { useState, useCallback, useMemo, Dispatch, SetStateAction } from 'react'
 
-import { Command } from '@cowprotocol/types'
+import { TokenInfo } from '@cowprotocol/types'
 
 import {
   Checkbox,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
   Button,
   OutlinedInput,
   InputLabel,
@@ -15,11 +11,12 @@ import {
   MenuItem,
   FormControl,
   Select,
-  TextField,
   SelectChangeEvent,
   Chip,
   Box,
 } from '@mui/material'
+
+import { AddCustomListDialog } from './AddCustomListDialog'
 
 import { TokenListItem } from '../types'
 
@@ -35,116 +32,51 @@ const MenuProps = {
 }
 
 type TokenListControlProps = {
-  tokenListsState: [TokenListItem[], Dispatch<SetStateAction<TokenListItem[]>>]
+  tokenListUrlsState: [TokenListItem[], Dispatch<SetStateAction<TokenListItem[]>>]
+  customTokensState: [TokenInfo[], Dispatch<SetStateAction<TokenInfo[]>>]
 }
 
-type CustomList = {
-  url: string
-}
+export const TokenListControl = ({ tokenListUrlsState, customTokensState }: TokenListControlProps) => {
+  const [tokenListUrls, setTokenListUrls] = tokenListUrlsState
+  const [customTokens, setCustomTokens] = customTokensState
 
-type AddCustomListDialogProps = {
-  open: boolean
-  onClose: Command
-  onAdd: (newList: CustomList) => void
-}
-
-const AddCustomListDialog = ({ open, onClose, onAdd }: AddCustomListDialogProps) => {
-  const [customList, setCustomList] = useState<CustomList>({ url: '' })
-  const [errors, setErrors] = useState({ url: false })
-
-  const validateURL = (url: string) => {
-    const pattern = new RegExp(
-      '^(https?:\\/\\/)?' + // protocol
-        '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
-        '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
-        '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
-        '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
-        '(\\#[-a-z\\d_]*)?$',
-      'i'
-    ) // fragment locator
-    return !!pattern.test(url)
-  }
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { id, value } = e.target
-    setCustomList({ ...customList, [id]: value })
-
-    setErrors({ ...errors, url: !validateURL(value) })
-  }
-
-  const handleAdd = () => {
-    const isUrlValid = validateURL(customList.url)
-
-    setErrors({
-      url: !isUrlValid,
-    })
-
-    if (isUrlValid) {
-      onAdd(customList)
-      setCustomList({ url: '' }) // Reset the custom list
-      onClose()
-    }
-  }
-
-  return (
-    <Dialog open={open} onClose={onClose}>
-      <DialogTitle>Add Custom Token List</DialogTitle>
-      <DialogContent>
-        <TextField
-          error={errors.url}
-          margin="dense"
-          id="url"
-          label="List URL"
-          type="url"
-          fullWidth
-          variant="outlined"
-          value={customList.url}
-          onChange={handleInputChange}
-          helperText={errors.url && 'Enter a valid URL'}
-          required
-          autoComplete="off"
-        />
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose}>Cancel</Button>
-        <Button onClick={handleAdd}>Add</Button>
-      </DialogActions>
-    </Dialog>
-  )
-}
-
-export const TokenListControl = ({ tokenListsState }: TokenListControlProps) => {
-  const [tokenLists, setTokenLists] = tokenListsState
   const [dialogOpen, setDialogOpen] = useState(false)
 
   const handleChange = useCallback(
     (event: SelectChangeEvent<string[]>) => {
       const selected = event.target.value as string[]
 
-      setTokenLists((prev) =>
+      setTokenListUrls((prev) =>
         prev.map((list) => ({
           ...list,
           enabled: selected.includes(list.url),
         }))
       )
     },
-    [setTokenLists]
+    [setTokenListUrls]
   )
 
-  const handleAddCustomList = useCallback(
-    (newList: CustomList) => {
-      const existing = tokenLists.find((list) => list.url.toLowerCase() === newList.url.toLowerCase())
+  const handleAddListUrl = useCallback(
+    (newListUrl: string) => {
+      const existing = tokenListUrls.find((list) => list.url.toLowerCase() === newListUrl.toLowerCase())
 
       if (existing) return
 
-      setTokenLists((prev) => [...prev, { ...newList, enabled: true }])
+      setTokenListUrls((prev) => [...prev, { url: newListUrl, enabled: true }])
     },
-    [tokenLists, setTokenLists]
+    [tokenListUrls, setTokenListUrls]
+  )
+
+  const handleAddCustomTokens = useCallback(
+    (tokens: TokenInfo[]) => {
+      setCustomTokens(tokens)
+    },
+    [setCustomTokens]
   )
 
   const tokenListOptions = useMemo(
     () =>
-      tokenLists
+      tokenListUrls
         .sort((a, b) => {
           if (a.enabled) return -1
 
@@ -164,7 +96,7 @@ export const TokenListControl = ({ tokenListsState }: TokenListControlProps) => 
             />
           </MenuItem>
         )),
-    [tokenLists]
+    [tokenListUrls]
   )
 
   return (
@@ -176,7 +108,7 @@ export const TokenListControl = ({ tokenListsState }: TokenListControlProps) => 
             labelId="token-list-chip-label"
             id="token-list-chip-select"
             multiple
-            value={tokenLists.filter((list) => list.enabled).map((list) => list.url)}
+            value={tokenListUrls.filter((list) => list.enabled).map((list) => list.url)}
             onChange={handleChange}
             input={<OutlinedInput label="Active Token Lists" />}
             renderValue={(selected) => (
@@ -192,7 +124,13 @@ export const TokenListControl = ({ tokenListsState }: TokenListControlProps) => 
           </Select>
         </FormControl>
 
-        <AddCustomListDialog open={dialogOpen} onClose={() => setDialogOpen(false)} onAdd={handleAddCustomList} />
+        <AddCustomListDialog
+          open={dialogOpen}
+          onClose={() => setDialogOpen(false)}
+          customTokens={customTokens}
+          onAddListUrl={handleAddListUrl}
+          onAddCustomTokens={handleAddCustomTokens}
+        />
       </div>
       <Button sx={{ width: '100%' }} variant="outlined" onClick={() => setDialogOpen(true)}>
         Add Custom List

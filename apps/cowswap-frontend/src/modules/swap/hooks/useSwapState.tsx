@@ -64,6 +64,7 @@ interface DerivedSwapInfo {
   parsedAmount: CurrencyAmount<Currency> | undefined
   // TODO: remove duplications of the value (trade?.maximumAmountIn(allowedSlippage))
   slippageAdjustedSellAmount: CurrencyAmount<Currency> | null
+  slippageAdjustedBuyAmount: CurrencyAmount<Currency> | null
   inputError?: string
   trade: TradeGp | undefined
   allowedSlippage: Percent
@@ -285,6 +286,7 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
   // const allowedSlippage = useUserSlippageToleranceWithDefault(autoSlippageTolerance) // mod
   const allowedSlippage = useSwapSlippage()
   const slippageAdjustedSellAmount = trade?.maximumAmountIn(allowedSlippage) || null
+  const slippageAdjustedBuyAmount = trade?.minimumAmountOut(allowedSlippage) || null
 
   const inputError = useMemo(() => {
     let inputError: string | undefined
@@ -337,7 +339,8 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
         inputError,
         trade,
         allowedSlippage,
-        slippageAdjustedSellAmount: slippageAdjustedSellAmount,
+        slippageAdjustedSellAmount,
+        slippageAdjustedBuyAmount,
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -350,6 +353,7 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
       // eslint-disable-next-line react-hooks/exhaustive-deps
       JSON.stringify(trade),
       slippageAdjustedSellAmount,
+      slippageAdjustedBuyAmount,
     ] // mod
   )
 }
