@@ -16,7 +16,7 @@ if (SENTRY_DSN) {
     integrations: [new Sentry.BrowserTracing()],
     release: 'CowSwap@v' + pkg.version,
     environment: environmentName,
-    ignoreErrors: [...SENTRY_IGNORED_GP_QUOTE_ERRORS],
+    ignoreErrors: [...SENTRY_IGNORED_GP_QUOTE_ERRORS, `Can't find variable: bytecode`],
 
     // Set tracesSampleRate to 1.0 to capture 100%
     // of transactions for performance monitoring.
