@@ -25,7 +25,7 @@ import {
   updateOpenFortuneAtom,
 } from 'modules/fortune/state/fortuneStateAtom'
 
-import { SuccessBanner } from 'pages/Claim/styled'
+import { SuccessBanner } from './styled'
 
 const FortuneButton = styled.div<{ isDailyFortuneChecked: boolean }>`
   --size: 64px;
