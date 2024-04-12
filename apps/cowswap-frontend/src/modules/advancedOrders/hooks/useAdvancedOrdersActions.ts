@@ -34,7 +34,7 @@ export function useAdvancedOrdersActions() {
         currency,
       })
       naviageOnCurrencySelection(field, currency)
-      updateQuoteState({ response: null })
+      updateQuoteState({ response: null, quoteParams: null })
     },
     [naviageOnCurrencySelection, updateCurrencyAmount, updateQuoteState]
   )
