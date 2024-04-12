@@ -27,4 +27,8 @@ export const SelectDropdown = styled.select`
       linear-gradient(to right, var(--cow-color-lightBlue-opacity-80), var(--cow-color-lightBlue-opacity-80)) 100% 0 /
         26px 100% no-repeat;
   }
+
+  option {
+    background: var(${UI.COLOR_PAPER});
+  }
 `
