@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.0.0...common-const-v1.1.0) (2024-04-11)
+
+
+### Features
+
+* **gnosis-chain:** update bridge info ([#4169](https://github.com/cowprotocol/cowswap/issues/4169)) ([d30718c](https://github.com/cowprotocol/cowswap/commit/d30718cb2c7c5dd4db249b54d7b90dfda49b901d))
+
 ## 1.0.0 (2024-03-29)
 
 

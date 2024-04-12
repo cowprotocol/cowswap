@@ -4,32 +4,29 @@ import { getChainInfo } from '@cowprotocol/common-const'
 import { isRejectRequestProviderError } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useAddSnackbar } from '@cowprotocol/snackbars'
-import { getWeb3ReactConnection } from '@cowprotocol/wallet'
 import { switchChain } from '@cowprotocol/wallet'
 import { useWeb3React } from '@web3-react/core'
 
 import { useCloseModal } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
-import { updateConnectionError } from 'legacy/state/connection/reducer'
-import { useAppDispatch } from 'legacy/state/hooks'
+
+import { useSetWalletConnectionError } from 'modules/wallet/hooks/useSetWalletConnectionError'
 
 import { useLegacySetChainIdToUrl } from './useLegacySetChainIdToUrl'
 
 export function useOnSelectNetwork(): (chainId: SupportedChainId, skipClose?: boolean) => Promise<void> {
   const { connector } = useWeb3React()
-  const dispatch = useAppDispatch()
   const addSnackbar = useAddSnackbar()
   const closeModal = useCloseModal(ApplicationModal.NETWORK_SELECTOR)
   const setChainIdToUrl = useLegacySetChainIdToUrl()
+  const setWalletConnectionError = useSetWalletConnectionError()
 
   return useCallback(
     async (targetChain: SupportedChainId, skipClose?: boolean) => {
       if (!connector) return
 
-      const connectionType = getWeb3ReactConnection(connector).type
-
       try {
-        dispatch(updateConnectionError({ connectionType, error: undefined }))
+        setWalletConnectionError(undefined)
         await switchChain(connector, targetChain)
 
         setChainIdToUrl(targetChain)
@@ -51,13 +48,13 @@ export function useOnSelectNetwork(): (chainId: SupportedChainId, skipClose?: bo
           ),
         })
 
-        dispatch(updateConnectionError({ connectionType, error: error.message }))
+        setWalletConnectionError(error.message)
       }
 
       if (!skipClose) {
         closeModal()
       }
     },
-    [connector, dispatch, addSnackbar, closeModal, setChainIdToUrl]
+    [connector, setWalletConnectionError, addSnackbar, closeModal, setChainIdToUrl]
   )
 }

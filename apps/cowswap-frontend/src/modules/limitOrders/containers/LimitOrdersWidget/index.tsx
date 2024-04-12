@@ -230,8 +230,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
       params={params}
       inputCurrencyInfo={inputCurrencyInfo}
       outputCurrencyInfo={outputCurrencyInfo}
-    >
-      {tradeContext && (
+      confirmModal={tradeContext && (
         <LimitOrdersConfirmModal
           recipient={recipient}
           tradeContext={tradeContext}
@@ -240,6 +239,6 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
           outputCurrencyInfo={outputCurrencyPreviewInfo}
         />
       )}
-    </TradeWidget>
+    />
   )
 }, limitOrdersPropsChecker)

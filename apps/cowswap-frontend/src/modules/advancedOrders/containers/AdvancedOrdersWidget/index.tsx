@@ -117,18 +117,15 @@ export function AdvancedOrdersWidget({ children, updaters, params, confirmConten
   }
 
   return (
-    <>
-      <TradeWidget
-        id="advanced-orders-page"
-        disableOutput={true}
-        slots={slots}
-        actions={actions}
-        params={tradeWidgetParams}
-        inputCurrencyInfo={inputCurrencyInfo}
-        outputCurrencyInfo={outputCurrencyInfo}
-      >
-        {confirmContent}
-      </TradeWidget>
-    </>
+    <TradeWidget
+      id="advanced-orders-page"
+      disableOutput={true}
+      slots={slots}
+      actions={actions}
+      params={tradeWidgetParams}
+      inputCurrencyInfo={inputCurrencyInfo}
+      outputCurrencyInfo={outputCurrencyInfo}
+      confirmModal={confirmContent}
+    />
   )
 }

@@ -2,6 +2,7 @@ import { Loader as SpinnerLoader, ButtonPrimary } from '@cowprotocol/ui'
 import { ExternalLink } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 
+import { lighten } from 'color2k'
 import SVG from 'react-inlinesvg'
 import styled, { css } from 'styled-components/macro'
 
@@ -9,8 +10,6 @@ import { CopyIcon as ClickToCopy } from 'legacy/components/Copy'
 
 import { Page, GdocsListStyle } from 'modules/application/pure/Page'
 import { AddToMetamask } from 'modules/wallet/containers/AddToMetamask'
-
-import { BannerExplainer } from 'pages/Claim/styled'
 
 export const Container = styled.div`
   max-width: 100%;
@@ -217,6 +216,108 @@ export const Card = styled.div<{ showLoader?: boolean }>`
 
     &:hover > svg {
       transform: translateX(2px);
+    }
+  }
+`
+
+const BannerExplainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 130px;
+  border-radius: 12px;
+  padding: 0 24px 0 20%;
+  background: ${({ theme }) => theme.bg8};
+  position: relative;
+  overflow: hidden;
+  border: 4px solid transparent;
+  transition: border var(${UI.ANIMATION_DURATION}) ease-in-out;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    padding: 24px;
+    height: auto;
+  `}
+
+  > span {
+    display: flex;
+    flex-flow: column wrap;
+    height: 100%;
+    flex: 1 1 auto;
+    align-items: flex-end;
+    justify-content: center;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      align-items: center;
+    `}
+  }
+
+  > span > b {
+    @supports (-webkit-background-clip: text) {
+      background: ${({ theme }) =>
+        `linear-gradient(80deg, ${theme.primary1}, ${lighten(theme.primary1, 0.2)}, ${theme.white}, #5ea2fb)`};
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    @supports not (-webkit-background-clip: text) {
+      color: ${({ theme }) => theme.white};
+    }
+
+    text-align: right;
+    font-size: 32px;
+    font-weight: 600;
+    margin: 0 0 6px;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      font-size: 19px;
+      text-align: center;
+    `}
+  }
+
+  > span > small {
+    color: ${({ theme }) => theme.white};
+    font-size: 16px;
+    font-weight: 400;
+    text-align: right;
+    padding: 0 0 0 20%;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      text-align: center;
+      padding: 0;
+    `}
+  }
+
+  > span > small > a {
+    color: inherit;
+  }
+
+  > svg {
+    width: auto;
+    height: 168%;
+    position: absolute;
+    left: -16%;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    mix-blend-mode: hard-light;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      display: none;
+    `}
+  }
+
+  > svg {
+    .stop1 {
+      stop-color: ${({ theme }) => theme.white};
+    }
+    .stop2 {
+      stop-color: ${({ theme }) => theme.white};
+      stop-opacity: 0.8;
+    }
+    .stop3 {
+      stop-color: ${({ theme }) => theme.white};
+      stop-opacity: 0;
     }
   }
 `

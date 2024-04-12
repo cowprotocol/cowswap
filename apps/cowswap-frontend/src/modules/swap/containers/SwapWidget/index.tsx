@@ -1,10 +1,11 @@
-import React, { useCallback, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 
 import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
 import { NATIVE_CURRENCIES, TokenWithLogo } from '@cowprotocol/common-const'
 import { isFractionFalsy } from '@cowprotocol/common-utils'
 import { useIsTradeUnsupported } from '@cowprotocol/tokens'
 import { useIsSafeViaWc, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
+import { TradeType } from '@cowprotocol/widget-lib'
 
 import { NetworkAlert } from 'legacy/components/NetworkAlert/NetworkAlert'
 import SettingsTab from 'legacy/components/Settings'
@@ -202,16 +203,19 @@ export function SwapWidget() {
   const showWrapBundlingBanner = BUTTON_STATES_TO_SHOW_BUNDLE_WRAP_BANNER.includes(swapButtonContext.swapButtonState)
 
   const isSafeViaWc = useIsSafeViaWc()
+  const isSwapEth = useIsSwapEth()
 
   const showSafeWcApprovalBundlingBanner =
     !showApprovalBundlingBanner && isSafeViaWc && swapButtonContext.swapButtonState === SwapButtonState.NeedApprove
 
-  const isSwapEth = useIsSwapEth()
   const showSafeWcWrapBundlingBanner = !showWrapBundlingBanner && isSafeViaWc && isSwapEth
 
   // Show the same banner when approval is needed or selling native token
   const showSafeWcBundlingBanner =
     (showSafeWcApprovalBundlingBanner || showSafeWcWrapBundlingBanner) && !widgetParams.banners?.hideSafeWebAppBanner
+
+  const showTwapSuggestionBanner =
+    !widgetParams.enabledTradeTypes || widgetParams.enabledTradeTypes.includes(TradeType.ADVANCED)
 
   const nativeCurrencySymbol = useNativeCurrency().symbol || 'ETH'
   const wrappedCurrencySymbol = useWrappedToken().symbol || 'WETH'
@@ -226,6 +230,7 @@ export function SwapWidget() {
     showApprovalBundlingBanner,
     showWrapBundlingBanner,
     showSafeWcBundlingBanner,
+    showTwapSuggestionBanner,
     nativeCurrencySymbol,
     wrappedCurrencySymbol,
     setFeeWarningAccepted,
@@ -284,28 +289,25 @@ export function SwapWidget() {
     <>
       <SwapModals {...swapModalsProps} />
       <TradeWidgetContainer>
-        {showNativeWrapModal && <EthFlowModal {...ethFlowProps} />}
-        {!showNativeWrapModal && (
-          <TradeWidget
-            id="swap-page"
-            slots={slots}
-            actions={swapActions}
-            params={params}
-            inputCurrencyInfo={inputCurrencyInfo}
-            outputCurrencyInfo={outputCurrencyInfo}
-          >
-            <ConfirmSwapModalSetup
-              chainId={chainId}
-              recipientAddressOrName={swapButtonContext.recipientAddressOrName}
-              doTrade={swapButtonContext.handleSwap}
-              priceImpact={priceImpactParams}
-              inputCurrencyInfo={inputCurrencyPreviewInfo}
-              outputCurrencyInfo={outputCurrencyPreviewInfo}
-              tradeRatesProps={tradeRatesProps}
-              refreshInterval={SWAP_QUOTE_CHECK_INTERVAL}
-            />
-          </TradeWidget>
-        )}
+        <TradeWidget
+          id="swap-page"
+          slots={slots}
+          actions={swapActions}
+          params={params}
+          inputCurrencyInfo={inputCurrencyInfo}
+          outputCurrencyInfo={outputCurrencyInfo}
+          confirmModal={<ConfirmSwapModalSetup
+            chainId={chainId}
+            recipientAddressOrName={swapButtonContext.recipientAddressOrName}
+            doTrade={swapButtonContext.handleSwap}
+            priceImpact={priceImpactParams}
+            inputCurrencyInfo={inputCurrencyPreviewInfo}
+            outputCurrencyInfo={outputCurrencyPreviewInfo}
+            tradeRatesProps={tradeRatesProps}
+            refreshInterval={SWAP_QUOTE_CHECK_INTERVAL}
+          />}
+          genericModal={showNativeWrapModal && <EthFlowModal {...ethFlowProps} />}
+        />
         <NetworkAlert />
       </TradeWidgetContainer>
     </>
