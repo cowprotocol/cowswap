@@ -193,7 +193,7 @@ export function useRefetchQuoteCallback() {
           buyDecimals: quoteData.toDecimals,
         })
         // Update quote
-        updateQuote({ ...quoteData, isBestQuote })
+        updateQuote({ ...quoteData, quoteValidTo: price.value.quoteValidTo, isBestQuote })
       }
 
       const handleError = (error: Error) => {

@@ -4,6 +4,7 @@ import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
+import { useGetQuoteAndStatus } from 'legacy/state/price/hooks'
 
 import { FlowType, getFlowContext, useBaseFlowContextSetup } from 'modules/swap/hooks/useFlowContext'
 import { EthFlowContext } from 'modules/swap/services/types'
@@ -18,13 +19,20 @@ export function useEthFlowContext(): EthFlowContext | null {
   const baseProps = useBaseFlowContextSetup()
   const addTransaction = useTransactionAdder()
 
+  const sellToken = baseProps.chainId ? NATIVE_CURRENCIES[baseProps.chainId as SupportedChainId] : undefined
+
+  const { quote } = useGetQuoteAndStatus({
+    token: sellToken?.symbol,
+    chainId: baseProps.chainId,
+  })
+
   const addInFlightOrderId = useSetAtom(addInFlightOrderIdAtom)
 
   const checkEthFlowOrderExists = useCheckEthFlowOrderExists()
 
   const baseContext = getFlowContext({
     baseProps,
-    sellToken: baseProps.chainId ? NATIVE_CURRENCIES[baseProps.chainId as SupportedChainId] : undefined,
+    sellToken,
     kind: OrderKind.SELL,
   })
 
@@ -33,6 +41,7 @@ export function useEthFlowContext(): EthFlowContext | null {
   return {
     ...baseContext,
     contract,
+    quote,
     addTransaction,
     checkEthFlowOrderExists,
     addInFlightOrderId,

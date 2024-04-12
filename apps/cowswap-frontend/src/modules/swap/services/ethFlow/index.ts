@@ -33,6 +33,7 @@ export async function ethFlow(
     orderParams: orderParamsOriginal,
     checkEthFlowOrderExists,
     addInFlightOrderId,
+    quote,
   } = ethFlowContext
   const {
     chainId,
@@ -63,7 +64,13 @@ export async function ethFlow(
 
   try {
     // Do not proceed if fee is expired
-    if (isQuoteExpired(fee.expirationDate)) {
+    if (
+      isQuoteExpired({
+        expirationDate: fee.expirationDate,
+        validFor: quote?.validFor,
+        quoteValidTo: quote?.quoteValidTo,
+      })
+    ) {
       reportPlaceOrderWithExpiredQuote({ ...orderParamsOriginal, fee })
       throw new Error('Quote expired. Please refresh.')
     }

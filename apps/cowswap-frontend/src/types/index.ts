@@ -27,6 +27,7 @@ export type FractionLike = Fraction | Price<Currency, Currency> | CurrencyAmount
 export interface PriceInformation {
   token: string
   amount: string | null
+  quoteValidTo?: number
   quoteId?: number
 }
 

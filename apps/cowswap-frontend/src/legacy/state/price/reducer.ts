@@ -25,6 +25,7 @@ export interface QuoteInformationObject extends LegacyFeeQuoteParams {
   price?: PriceInformation
   error?: QuoteError
   lastCheck: number
+  quoteValidTo?: number
 }
 
 // Map token addresses to their last quote information

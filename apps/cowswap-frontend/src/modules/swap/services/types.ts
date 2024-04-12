@@ -7,6 +7,7 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { AppDispatch } from 'legacy/state'
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 import { AddOrderCallback } from 'legacy/state/orders/hooks'
+import type { QuoteInformationObject } from 'legacy/state/price/reducer'
 import TradeGp from 'legacy/state/swap/TradeGp'
 import { PostOrderParams } from 'legacy/utils/trade'
 
@@ -53,6 +54,7 @@ export type EthFlowContext = BaseFlowContext & {
   addTransaction: ReturnType<typeof useTransactionAdder>
   checkEthFlowOrderExists: EthFlowOrderExistsCallback
   addInFlightOrderId: (orderId: string) => void
+  quote: QuoteInformationObject | undefined
 }
 
 export type BaseSafeFlowContext = BaseFlowContext & {

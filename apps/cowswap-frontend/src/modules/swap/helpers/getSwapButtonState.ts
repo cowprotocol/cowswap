@@ -109,7 +109,15 @@ export function getSwapButtonState(input: SwapButtonStateParams): SwapButtonStat
     return SwapButtonState.ReadonlyGnosisSafeUser
   }
 
-  if (isQuoteExpired(quote?.fee?.expirationDate) && trade && !input.inputError) {
+  if (
+    isQuoteExpired({
+      expirationDate: quote?.fee?.expirationDate,
+      validFor: quote?.validFor,
+      quoteValidTo: quote?.quoteValidTo,
+    }) &&
+    trade &&
+    !input.inputError
+  ) {
     return SwapButtonState.QuoteExpired
   }
 
