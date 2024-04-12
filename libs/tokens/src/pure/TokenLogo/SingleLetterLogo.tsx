@@ -1,5 +1,5 @@
-import { UI } from "@cowprotocol/ui"
-import styled from "styled-components/macro"
+import { UI } from '@cowprotocol/ui'
+import styled from 'styled-components/macro'
 
 const SingleLetterLogoWrapper = styled.div<{ size: number }>`
   width: ${({ size }) => size}px;

@@ -34,8 +34,9 @@ export const TokenLogoWrapper = styled.div<{ size?: number; sizeMobile?: number 
   }
 
   ${({ theme, sizeMobile }) => theme.mediaWidth.upToSmall`
-    ${sizeMobile
-      ? css`
+    ${
+      sizeMobile
+        ? css`
             border-radius: ${sizeMobile}px;
             width: ${sizeMobile}px;
             height: ${sizeMobile}px;
@@ -45,7 +46,7 @@ export const TokenLogoWrapper = styled.div<{ size?: number; sizeMobile?: number 
               border-radius: ${sizeMobile}px;
             }
           `
-      : ''
+        : ''
     }
   `}
 `
@@ -96,4 +97,3 @@ export function TokenLogo({ logoURI, token, className, size = 36, sizeMobile }: 
     </TokenLogoWrapper>
   )
 }
-
