@@ -12,12 +12,14 @@ export const DEFAULT_QUOTE_RESPONSE = {
   error: null,
   isLoading: false,
   quoteParams: null,
+  quoteDate: null,
 }
 export interface TradeQuoteState {
   response: OrderQuoteResponse | null
   error: GpQuoteError | null
   isLoading: boolean
   quoteParams: LegacyFeeQuoteParams | null
+  quoteDate: number | null
 }
 
 export const tradeQuoteAtom = atomWithReset<TradeQuoteState>(DEFAULT_QUOTE_RESPONSE)
@@ -26,6 +28,11 @@ export const updateTradeQuoteAtom = atom(null, (get, set, nextState: Partial<Tra
   set(tradeQuoteAtom, () => {
     const prevState = get(tradeQuoteAtom)
 
-    return { ...prevState, ...nextState }
+    return {
+      ...prevState,
+      ...nextState,
+      quoteParams: typeof nextState.quoteParams === 'undefined' ? prevState.quoteParams : nextState.quoteParams,
+      quoteDate: nextState.response ? Date.now() : null,
+    }
   })
 })

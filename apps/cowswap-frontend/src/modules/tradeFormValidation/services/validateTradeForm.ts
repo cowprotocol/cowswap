@@ -83,6 +83,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
         expirationDate: tradeQuote.response?.expiration,
         validFor: tradeQuote.quoteParams?.validFor,
         quoteValidTo: tradeQuote.response.quote.validTo,
+        quoteDate: tradeQuote.quoteDate,
       })
     ) {
       return TradeFormValidation.QuoteExpired

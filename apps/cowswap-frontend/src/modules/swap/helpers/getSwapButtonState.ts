@@ -114,6 +114,7 @@ export function getSwapButtonState(input: SwapButtonStateParams): SwapButtonStat
       expirationDate: quote?.fee?.expirationDate,
       validFor: quote?.validFor,
       quoteValidTo: quote?.quoteValidTo,
+      quoteDate: quote?.quoteDate,
     }) &&
     trade &&
     !input.inputError

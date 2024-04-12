@@ -25,6 +25,7 @@ export interface QuoteInformationObject extends LegacyFeeQuoteParams {
   price?: PriceInformation
   error?: QuoteError
   lastCheck: number
+  quoteDate?: number
   quoteValidTo?: number
 }
 
@@ -140,7 +141,11 @@ export default createReducer(initialState, (builder) =>
       const shouldUpdate = !(!isBestQuote && hasPrice)
 
       if (quoteInformation && shouldUpdate) {
-        quotes[chainId][sellToken] = { ...quoteInformation, ...payload }
+        quotes[chainId][sellToken] = {
+          ...quoteInformation,
+          ...payload,
+          quoteDate: Date.now(),
+        }
       }
 
       // Stop the loader

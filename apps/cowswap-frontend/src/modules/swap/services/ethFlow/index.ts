@@ -69,6 +69,7 @@ export async function ethFlow(
         expirationDate: fee.expirationDate,
         validFor: quote?.validFor,
         quoteValidTo: quote?.quoteValidTo,
+        quoteDate: quote?.quoteDate,
       })
     ) {
       reportPlaceOrderWithExpiredQuote({ ...orderParamsOriginal, fee })

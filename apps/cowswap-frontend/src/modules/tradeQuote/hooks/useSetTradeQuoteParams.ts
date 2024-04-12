@@ -15,7 +15,7 @@ export function useSetTradeQuoteParams(amount: CurrencyAmount<Currency> | null) 
   const context = useSafeMemoObject({ amount, updateTradeQuote, updateState })
 
   useEffect(() => {
-    context.updateTradeQuote({ response: null, error: null, quoteParams: null })
+    context.updateTradeQuote({ response: null, error: null })
     context.updateState({ amount: context.amount })
   }, [context])
 }

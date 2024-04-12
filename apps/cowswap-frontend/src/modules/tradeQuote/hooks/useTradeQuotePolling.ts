@@ -40,7 +40,7 @@ export function useTradeQuotePolling() {
 
   useLayoutEffect(() => {
     if (!quoteParams) {
-      updateQuoteState({ response: null, quoteParams: null, isLoading: false })
+      updateQuoteState({ response: null, isLoading: false })
       return
     }
 
