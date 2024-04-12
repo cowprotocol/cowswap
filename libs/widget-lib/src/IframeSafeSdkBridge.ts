@@ -8,8 +8,10 @@ export class IframeSafeSdkBridge {
       }
 
       if (isSafeMessageRequest(event.data)) {
+        console.debug('[IframeSafeSdkBridge] Safe SDK request: ' + event.data.method, event.data.id, event.data)
         this.appWindow.parent.postMessage(event.data, '*')
       } else if (isSafeMessageResponse(event.data)) {
+        console.debug('[IframeSafeSdkBridge] Safe SDK response', event.data.id, event.data)
         this.iframeWidow.postMessage(event.data, '*')
       }
     }
@@ -18,10 +20,12 @@ export class IframeSafeSdkBridge {
   }
 
   private startListening() {
+    console.debug('[IframeSafeSdkBridge] Start listening')
     this.appWindow.addEventListener('message', this.forwardSdkMessage)
   }
 
   public stopListening() {
+    console.debug('[IframeSafeSdkBridge] Stop listening')
     this.appWindow.removeEventListener('message', this.forwardSdkMessage)
   }
 }
