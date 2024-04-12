@@ -18,6 +18,8 @@ import {
   expireOrdersBatch,
   fulfillOrdersBatch,
   FulfillOrdersBatchParams,
+  invalidateOrdersBatch,
+  InvalidateOrdersBatchParams,
   Order,
   preSignOrders,
   requestOrderCancellation,
@@ -85,6 +87,7 @@ export type ExpireOrdersBatchCallback = (expireOrdersBatchParams: ExpireOrdersBa
 export type CancelOrderCallback = (cancelOrderParams: CancelOrderParams) => void
 export type SetOrderCancellationHashCallback = (setOrderCancellationHashParams: SetOrderCancellationHashParams) => void
 export type CancelOrdersBatchCallback = (cancelOrdersBatchParams: CancelOrdersBatchParams) => void
+export type InvalidateOrdersBatchCallback = (params: InvalidateOrdersBatchParams) => void
 export type PresignOrdersCallback = (fulfillOrderParams: PresignOrdersParams) => void
 export type UpdatePresignGnosisSafeTxCallback = (
   updatePresignGnosisSafeTxParams: UpdatePresignGnosisSafeTxParams
@@ -355,6 +358,12 @@ export const useCancelOrdersBatch = (): CancelOrdersBatchCallback => {
     (cancelOrdersBatchParams: CancelOrdersBatchParams) => dispatch(cancelOrdersBatch(cancelOrdersBatchParams)),
     [dispatch]
   )
+}
+
+export const useInvalidateOrdersBatch = (): InvalidateOrdersBatchCallback => {
+  const dispatch = useDispatch<AppDispatch>()
+
+  return useCallback((params: InvalidateOrdersBatchParams) => dispatch(invalidateOrdersBatch(params)), [dispatch])
 }
 
 export const useSetOrderCancellationHash = (): SetOrderCancellationHashCallback => {
