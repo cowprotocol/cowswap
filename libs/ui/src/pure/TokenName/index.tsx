@@ -13,6 +13,10 @@ const Wrapper = styled.span<{ length?: number }>`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+
+  :hover {
+    white-space: inherit;
+  }
 `
 
 export function TokenName({ token, className, length = 200 }: TokenNameProps) {
