@@ -1,9 +1,9 @@
 import { UI } from '@cowprotocol/ui'
 import styled from 'styled-components/macro'
 
-const SingleLetterLogoWrapper = styled.div<{ size: number }>`
-  width: ${({ size }) => size}px;
-  height: ${({ size }) => size}px;
+const SingleLetterLogoWrapper = styled.div`
+  width: 100%;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -12,9 +12,8 @@ const SingleLetterLogoWrapper = styled.div<{ size: number }>`
 
 type SingleLetterLogoProps = {
   initial: string
-  size: number
 }
 
-export function SingleLetterLogo({ initial, size }: SingleLetterLogoProps) {
-  return <SingleLetterLogoWrapper size={size}>{initial}</SingleLetterLogoWrapper>
+export function SingleLetterLogo({ initial }: SingleLetterLogoProps) {
+  return <SingleLetterLogoWrapper>{initial}</SingleLetterLogoWrapper>
 }

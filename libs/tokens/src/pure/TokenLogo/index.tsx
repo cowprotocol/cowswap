@@ -90,7 +90,7 @@ export function TokenLogo({ logoURI, token, className, size = 36, sizeMobile }: 
       {currentUrl ? (
         <img alt="token logo" src={currentUrl} onError={onError} />
       ) : initial ? (
-        <SingleLetterLogo size={size} initial={initial} />
+        <SingleLetterLogo initial={initial} />
       ) : (
         <Slash />
       )}
