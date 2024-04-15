@@ -4,10 +4,8 @@ import { TokenErc20 } from '@gnosis.pm/dex-js'
 
 import { Network } from 'types'
 
-import useGlobalState from 'hooks/useGlobalState'
-
-import { buildErc20Key, Erc20State } from '.'
-import { saveMultipleErc20 } from './actions'
+import { useAtomValue, useSetAtom } from 'jotai'
+import { addLoadedTokensToChainAtom, tokensLoadedFromChainAtom } from './atoms'
 
 export type SingleErc20State = TokenErc20 | null
 
@@ -19,20 +17,18 @@ type UseMultipleErc20Params = {
 /**
  * Syntactic sugar to get erc20s from global state
  */
-export const useMultipleErc20s = <State extends { erc20s: Erc20State }>(
-  params: UseMultipleErc20Params
-): Record<string, TokenErc20> => {
+export function useMultipleErc20s(params: UseMultipleErc20Params): Record<string, TokenErc20> {
   const { addresses, networkId } = params
-  const [{ erc20s }] = useGlobalState<State>()
+  const allErc20s = useAtomValue(tokensLoadedFromChainAtom)
+  const erc20s = networkId && allErc20s[networkId]
 
   return useMemo(() => {
-    if (!networkId) {
+    if (!networkId || !erc20s) {
       return {}
     }
 
     return addresses.reduce((acc, address) => {
-      const key = buildErc20Key(networkId, address)
-      const erc20 = erc20s.get(key)
+      const erc20 = erc20s[address.toLowerCase()]
 
       if (erc20) {
         acc[address] = erc20
@@ -49,15 +45,13 @@ export const useMultipleErc20s = <State extends { erc20s: Erc20State }>(
  *
  * @param networkId The network id
  */
-export const useSaveErc20s = <State extends { erc20s: Erc20State }>(
-  networkId?: Network
-): ((erc20s: TokenErc20[]) => void) => {
-  const [, dispatch] = useGlobalState<State>()
+export function useSaveErc20s(networkId?: Network): (erc20s: TokenErc20[]) => void {
+  const addLoadedTokensToChain = useSetAtom(addLoadedTokensToChainAtom)
 
   return useCallback(
     (erc20s: TokenErc20[]): void => {
-      networkId && dispatch(saveMultipleErc20(erc20s, networkId))
+      networkId && addLoadedTokensToChain({ chainId: networkId, tokens: erc20s })
     },
-    [dispatch, networkId]
+    [addLoadedTokensToChain, networkId]
   )
 }
