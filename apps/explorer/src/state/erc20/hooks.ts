@@ -11,27 +11,6 @@ import { saveMultipleErc20 } from './actions'
 
 export type SingleErc20State = TokenErc20 | null
 
-type UseErc20Params = {
-  address?: string
-  networkId?: Network
-}
-
-/**
- * Syntactic sugar to get erc20 from global state
- */
-export const useErc20 = <State extends { erc20s: Erc20State }>(params: UseErc20Params): SingleErc20State => {
-  const { address, networkId } = params
-
-  const [{ erc20s }] = useGlobalState<State>()
-
-  return useMemo(() => {
-    if (!address || !networkId) {
-      return null
-    }
-    return erc20s.get(buildErc20Key(networkId, address)) || null
-  }, [address, erc20s, networkId])
-}
-
 type UseMultipleErc20Params = {
   addresses: string[]
   networkId?: Network
@@ -41,7 +20,7 @@ type UseMultipleErc20Params = {
  * Syntactic sugar to get erc20s from global state
  */
 export const useMultipleErc20s = <State extends { erc20s: Erc20State }>(
-  params: UseMultipleErc20Params,
+  params: UseMultipleErc20Params
 ): Record<string, TokenErc20> => {
   const { addresses, networkId } = params
   const [{ erc20s }] = useGlobalState<State>()
@@ -71,7 +50,7 @@ export const useMultipleErc20s = <State extends { erc20s: Erc20State }>(
  * @param networkId The network id
  */
 export const useSaveErc20s = <State extends { erc20s: Erc20State }>(
-  networkId?: Network,
+  networkId?: Network
 ): ((erc20s: TokenErc20[]) => void) => {
   const [, dispatch] = useGlobalState<State>()
 
@@ -79,6 +58,6 @@ export const useSaveErc20s = <State extends { erc20s: Erc20State }>(
     (erc20s: TokenErc20[]): void => {
       networkId && dispatch(saveMultipleErc20(erc20s, networkId))
     },
-    [dispatch, networkId],
+    [dispatch, networkId]
   )
 }
