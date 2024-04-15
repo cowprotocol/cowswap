@@ -131,7 +131,7 @@ export const XDAI: TokenErc20 = {
   address: NATIVE_TOKEN_ADDRESS,
 }
 
-export const NATIVE_TOKEN_PER_NETWORK: Record<string, TokenErc20> = {
+export const NATIVE_TOKEN_PER_NETWORK: Record<SupportedChainId, TokenErc20> = {
   '1': ETH,
   '11155111': ETH,
   '100': XDAI,
