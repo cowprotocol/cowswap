@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { useWeb3React } from '@web3-react/core'
+import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import { Dispatch } from 'redux'
 
@@ -61,7 +61,7 @@ function unwatchTxChanges(pendingHashes: string[], chainId: number) {
 }
 
 export function CancelReplaceTxUpdater(): null {
-  const { provider } = useWeb3React()
+  const provider = useWalletProvider()
   const { chainId, account } = useWalletInfo()
   const dispatch = useAppDispatch()
   const accountLowerCase = account?.toLowerCase() || ''
@@ -71,7 +71,7 @@ export function CancelReplaceTxUpdater(): null {
   )
 
   useEffect(() => {
-    if (!chainId || !provider) return
+    if (!provider) return
     // Watch the mempool for cancellation/replacement of tx
     watchTxChanges(pendingHashes, chainId, dispatch)
 

@@ -3,7 +3,7 @@ import { useSetAtom } from 'jotai/index'
 import { useAddPriorityAllowance } from '@cowprotocol/balances-and-allowances'
 import { useBlockNumber, useGetReceipt } from '@cowprotocol/common-hooks'
 import { useGnosisSafeInfo, useWalletInfo } from '@cowprotocol/wallet'
-import { useWeb3React } from '@web3-react/core'
+import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import { useAsyncMemo } from 'use-async-memo'
 
@@ -20,7 +20,7 @@ import { CheckEthereumTransactions } from '../types'
 
 // TODO: rename to usePendingTransactionsContext
 export function useCheckEthereumTransactions(): CheckEthereumTransactions | null {
-  const { provider } = useWeb3React()
+  const provider = useWalletProvider()
   const { chainId, account } = useWalletInfo()
   const safeInfo = useGnosisSafeInfo()
   const isSafeWallet = !!safeInfo
@@ -37,7 +37,7 @@ export function useCheckEthereumTransactions(): CheckEthereumTransactions | null
 
   return useAsyncMemo(
     async () => {
-      if (!chainId || !provider || !lastBlockNumber || !account) return null
+      if (!provider || !lastBlockNumber || !account) return null
 
       const transactionsCount = await provider.getTransactionCount(account)
 

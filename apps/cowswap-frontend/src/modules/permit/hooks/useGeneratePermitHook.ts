@@ -9,7 +9,7 @@ import {
   PermitHookData,
 } from '@cowprotocol/permit-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { useWeb3React } from '@web3-react/core'
+import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import { useGetCachedPermit } from './useGetCachedPermit'
 
@@ -32,7 +32,7 @@ export function useGeneratePermitHook(): GeneratePermitHook {
   useAtomValue(userPermitCacheAtom)
 
   const { chainId } = useWalletInfo()
-  const { provider } = useWeb3React()
+  const provider = useWalletProvider()
 
   const spender = GP_VAULT_RELAYER[chainId]
 

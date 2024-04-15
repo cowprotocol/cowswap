@@ -30,10 +30,10 @@ import {
 import { getContract, isEns, isProd, isStaging } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
+import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { Contract } from '@ethersproject/contracts'
 import type { JsonRpcProvider } from '@ethersproject/providers'
 import { Web3Provider } from '@ethersproject/providers'
-import { useWeb3React } from '@web3-react/core'
 
 const { abi: MulticallABI } = UniswapInterfaceMulticallAbi
 
@@ -44,7 +44,7 @@ export function useContract<T extends Contract = Contract>(
   withSignerIfPossible = true,
   customProvider?: Web3Provider
 ): T | null {
-  const { provider: defaultProvider } = useWeb3React()
+  const defaultProvider = useWalletProvider()
   const { account, chainId } = useWalletInfo()
   const provider = customProvider || defaultProvider
 

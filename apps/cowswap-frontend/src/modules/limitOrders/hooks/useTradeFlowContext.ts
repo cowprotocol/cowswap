@@ -3,8 +3,8 @@ import { useAtomValue } from 'jotai'
 import { GP_VAULT_RELAYER } from '@cowprotocol/common-const'
 import { OrderClass } from '@cowprotocol/cow-sdk'
 import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
+import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
-import { useWeb3React } from '@web3-react/core'
 
 import { useDispatch } from 'react-redux'
 
@@ -24,7 +24,7 @@ import { useGP2SettlementContract } from 'common/hooks/useContract'
 import { useLimitOrdersDerivedState } from './useLimitOrdersDerivedState'
 
 export function useTradeFlowContext(): TradeFlowContext | null {
-  const { provider } = useWeb3React()
+  const provider = useWalletProvider()
   const { chainId, account } = useWalletInfo()
   const { allowsOffchainSigning } = useWalletDetails()
   const state = useLimitOrdersDerivedState()
@@ -47,7 +47,6 @@ export function useTradeFlowContext(): TradeFlowContext | null {
   const getCachedPermit = useGetCachedPermit()
 
   if (
-    !chainId ||
     !account ||
     !state.inputCurrencyAmount ||
     !state.outputCurrencyAmount ||
