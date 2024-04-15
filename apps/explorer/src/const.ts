@@ -133,7 +133,7 @@ export const XDAI: TokenErc20 = {
 
 export const NATIVE_TOKEN_PER_NETWORK: Record<string, TokenErc20> = {
   '1': ETH,
-  '5': ETH,
+  '11155111': ETH,
   '100': XDAI,
 }
 
