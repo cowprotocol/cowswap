@@ -1,22 +1,19 @@
 import { useState } from 'react'
 
 import { HoverTooltip } from '@cowprotocol/ui'
-import { Identicon, getWeb3ReactConnection, WalletDetails, getConnectionIcon } from '@cowprotocol/wallet'
-import { Connector } from '@web3-react/types'
+import { Identicon, WalletDetails } from '@cowprotocol/wallet'
 
 import { IconWrapper } from './styled'
 
 interface AccountIconProps {
-  connector: Connector
   walletDetails?: WalletDetails
   size?: number
   account?: string
 }
 
-export const AccountIcon = ({ connector, walletDetails, size = 16, account }: AccountIconProps) => {
+export const AccountIcon = ({ walletDetails, size = 16, account }: AccountIconProps) => {
   const [imageLoadError, setImageLoadError] = useState(false)
-  const connectionType = getWeb3ReactConnection(connector)
-  const iconURL = walletDetails?.icon || getConnectionIcon(connectionType.type)
+  const iconURL = walletDetails?.icon
   const isIdenticon = iconURL === 'Identicon'
 
   if (imageLoadError || isIdenticon) {
@@ -39,7 +36,7 @@ export const AccountIcon = ({ connector, walletDetails, size = 16, account }: Ac
 
   return (
     <IconWrapper size={size}>
-      <img src={iconURL} alt={`${connectionType.type} logo`} onError={() => setImageLoadError(true)} />
+      <img src={iconURL} alt="wallet logo" onError={() => setImageLoadError(true)} />
     </IconWrapper>
   )
 }

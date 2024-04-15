@@ -11,6 +11,7 @@ import { getBlockExplorerUrl, getProviderErrorMessage } from '@cowprotocol/commo
 import { TokenAmount, ButtonPrimary } from '@cowprotocol/ui'
 import { HoverTooltip } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
+import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 import { MetaMask } from '@web3-react/metamask'
@@ -48,7 +49,8 @@ import LockedGnoVesting from './LockedGnoVesting'
 const BLOCKS_TO_WAIT = 2
 
 export default function Profile() {
-  const { provider, connector } = useWeb3React()
+  const { connector } = useWeb3React()
+  const provider = useWalletProvider()
   const { account, chainId } = useWalletInfo()
   const previousAccount = usePrevious(account)
 

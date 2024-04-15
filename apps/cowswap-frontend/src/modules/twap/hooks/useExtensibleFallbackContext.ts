@@ -1,8 +1,8 @@
 import { GPv2Settlement } from '@cowprotocol/abis'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
+import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { Web3Provider } from '@ethersproject/providers'
-import { useWeb3React } from '@web3-react/core'
 
 import { useGP2SettlementContract } from 'common/hooks/useContract'
 
@@ -16,9 +16,9 @@ export interface ExtensibleFallbackContext {
 export function useExtensibleFallbackContext(): ExtensibleFallbackContext | null {
   const { chainId, account } = useWalletInfo()
   const settlementContract = useGP2SettlementContract()
-  const { provider } = useWeb3React()
+  const provider = useWalletProvider()
 
-  if (!account || !settlementContract || !provider || !chainId) return null
+  if (!account || !settlementContract || !provider) return null
 
   return { settlementContract, provider, chainId, safeAddress: account }
 }
