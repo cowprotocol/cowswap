@@ -51,9 +51,10 @@ import { Erc20Abi, Erc20Interface } from '@cowprotocol/abis'
 import { Contract } from '@ethersproject/contracts'
 import { BigNumber } from '@ethersproject/bignumber'
 
+import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { useSingleContractMultipleData } from '@cowprotocol/multicall'
 
-const { provider } = useWeb3React()
+const provider = useWalletProvider()
 
 const WETH_TOKEN_CONTRACT = new Contract(
   '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',

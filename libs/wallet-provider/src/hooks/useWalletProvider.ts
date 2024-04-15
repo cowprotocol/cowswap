@@ -1,5 +1,5 @@
-import { useWeb3React } from '@web3-react/core'
 import type { Web3Provider } from '@ethersproject/providers'
+import { useWeb3React } from '@web3-react/core'
 
 /**
  * TODO: replace by WAGMI

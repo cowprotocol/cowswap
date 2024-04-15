@@ -1,12 +1,13 @@
 import { EnsAbi, EnsRegistrar } from '@cowprotocol/abis'
 import { ENS_REGISTRAR_ADDRESSES } from '@cowprotocol/common-const'
 import { getContract } from '@cowprotocol/common-utils'
-import { useWeb3React } from '@web3-react/core'
+import { useWalletChainId, useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import useSWR from 'swr'
 
 export function useENSRegistrarContract(): EnsRegistrar | undefined {
-  const { provider, chainId } = useWeb3React()
+  const provider = useWalletProvider()
+  const chainId = useWalletChainId()
 
   const { data } = useSWR(['useENSRegistrarContract', provider, chainId], () => {
     if (!chainId || !provider) return undefined
