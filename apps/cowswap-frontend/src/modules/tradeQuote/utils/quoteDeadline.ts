@@ -17,6 +17,9 @@ interface QuoteExpirationInfo {
 
 /**
  * Because local time can be different from the server time, we need to calculate time offset and take it into account
+ *
+ * @param expirationDate the timestamp when the quote is no longer valid (from API response)
+ * @param deadlineParams the deadline parameters for the quote
  */
 export function isQuoteExpired({ expirationDate, deadlineParams }: QuoteExpirationInfo): boolean | undefined {
   const timeOffset = getQuoteTimeOffset(deadlineParams)
@@ -28,9 +31,18 @@ export function isQuoteExpired({ expirationDate, deadlineParams }: QuoteExpirati
   const expirationTime = new Date(expirationDate).getTime()
   const delta = (expirationTime - Date.now()) / 1000
 
+  /**
+   * The difference between the expiration time and the current time (including 5 sec threshold)
+   */
   return delta + timeOffset - EXPIRATION_TIME_THRESHOLD < 0
 }
 
+/**
+ * Calculate the time offset between the expected validTo and the actual quote validTo
+ * @param validFor duration of the quote
+ * @param quoteValidTo the timestamp when the quote is no longer valid (from API response)
+ * @param quoteDate the timestamp when the quote was created
+ */
 export function getQuoteTimeOffset({ validFor, quoteValidTo, quoteDate }: QuoteDeadlineParams): number | undefined {
   if (!validFor || !quoteValidTo || !quoteDate) return undefined
 
@@ -39,14 +51,15 @@ export function getQuoteTimeOffset({ validFor, quoteValidTo, quoteDate }: QuoteD
   return expectedValidTo - quoteValidTo
 }
 
-export function getOrderValidTo(deadline: number, { validFor, quoteValidTo, quoteDate }: QuoteDeadlineParams): number {
-  const timeOffset = getQuoteTimeOffset({ validFor, quoteValidTo, quoteDate })
+/**
+ * Calculate the validTo timestamp for the order
+ */
+export function getOrderValidTo(deadline: number, quoteDeadlineParams: QuoteDeadlineParams): number {
+  const timeOffset = getQuoteTimeOffset(quoteDeadlineParams)
 
   if (timeOffset === undefined) return 0
 
-  // Need the timestamp in seconds
   const now = Date.now() / 1000
-  // Must be an integer
   const validTo = Math.floor(deadline + now - timeOffset)
 
   // Should not be greater than what the contract supports
