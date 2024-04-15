@@ -173,6 +173,51 @@ export const TableHeader = styled(Row)`
   }
 `
 
+export const TokenText = styled.div`
+  display: flex;
+  align-items: center;
+  text-align: left;
+  margin: 0 0 0 12px;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  font-variant-numeric: tabular-nums;
+
+  > span {
+    display: flex;
+    flex-flow: column wrap;
+    align-items: center;
+    justify-content: flex-start;
+    max-width: inherit;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    gap: 2px;
+  }
+
+  > span > b {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+    font-weight: 600;
+    display: inline-block;
+  }
+
+  > span > i {
+    opacity: 0.6;
+    font-style: normal;
+    font-size: 14px;
+    font-weight: 500;
+    width: 100%;
+    display: inline-block;
+  }
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    font-size: 13px;
+  `};
+`
+
 export const Cell = styled.div`
   display: flex;
   gap: 8px;
@@ -195,14 +240,18 @@ export const Cell = styled.div`
 
   > a {
     text-decoration-color: transparent;
-    transition: text-decoration-color var(${UI.ANIMATION_DURATION}) ease-in-out;
+    transition: color var(${UI.ANIMATION_DURATION}) ease-in-out;
     overflow: hidden;
     display: flex;
     color: var(${UI.COLOR_TEXT});
 
     &:hover {
       color: var(${UI.COLOR_TEXT});
-      text-decoration-color: var(${UI.COLOR_TEXT});
+      text-decoration: none;
+    }
+
+    &:hover > ${TokenText} {
+      text-decoration: underline;
     }
   }
 `
@@ -296,51 +345,6 @@ export const Table = styled.div`
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     min-height: 250px;
-  `};
-`
-
-export const TokenText = styled.div`
-  display: flex;
-  align-items: center;
-  text-align: left;
-  margin: 0 0 0 12px;
-  font-size: 16px;
-  display: flex;
-  align-items: center;
-  font-variant-numeric: tabular-nums;
-
-  > span {
-    display: flex;
-    flex-flow: column wrap;
-    align-items: center;
-    justify-content: flex-start;
-    max-width: inherit;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    gap: 2px;
-  }
-
-  > span > b {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    width: 100%;
-    font-weight: 600;
-    display: inline-block;
-  }
-
-  > span > i {
-    opacity: 0.6;
-    font-style: normal;
-    font-size: 14px;
-    font-weight: 500;
-    width: 100%;
-    display: inline-block;
-  }
-
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    font-size: 13px;
   `};
 `
 
