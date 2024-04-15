@@ -12,7 +12,7 @@ import { UiOrderType } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
 
-import { FeeInformation, PriceInformation } from 'types'
+import { FeeInformation } from 'types'
 
 import { useGetGpPriceStrategy } from 'legacy/hooks/useGetGpPriceStrategy'
 import { GpPriceStrategy } from 'legacy/state/gas/atoms'
@@ -81,13 +81,8 @@ export function UnfillableOrdersUpdater(): null {
   )
 
   const updateIsUnfillableFlag = useCallback(
-    (
-      chainId: ChainId,
-      order: Order,
-      price: Required<Omit<PriceInformation, 'quoteId'>>,
-      fee: FeeInformation | null
-    ) => {
-      if (!fee?.amount || !price.amount) return
+    (chainId: ChainId, order: Order, priceAmount: string, fee: FeeInformation | null) => {
+      if (!fee?.amount) return
 
       const orderPrice = new Price(
         order.inputToken,
@@ -96,7 +91,7 @@ export function UnfillableOrdersUpdater(): null {
         order.buyAmount.toString()
       )
 
-      const marketPrice = getOrderMarketPrice(order, price.amount, fee.amount)
+      const marketPrice = getOrderMarketPrice(order, priceAmount, fee.amount)
       const estimatedExecutionPrice = getEstimatedExecutionPrice(order, marketPrice, fee.amount)
 
       const isSwap = getUiOrderType(order) === UiOrderType.SWAP
@@ -163,7 +158,7 @@ export function UnfillableOrdersUpdater(): null {
                 `[UnfillableOrdersUpdater::updateUnfillable] did we get any price? ${order.id.slice(0, 8)}|${index}`,
                 price ? price.amount : 'no :('
               )
-              price?.amount && updateIsUnfillableFlag(chainId, order, price, fee)
+              price?.amount && updateIsUnfillableFlag(chainId, order, price.amount, fee)
             } else {
               console.debug('[UnfillableOrdersUpdater::updateUnfillable] No price quote for', order.id.slice(0, 8))
             }

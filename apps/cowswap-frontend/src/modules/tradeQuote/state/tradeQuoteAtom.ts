@@ -7,7 +7,7 @@ import type { LegacyFeeQuoteParams } from 'legacy/state/price/types'
 
 import GpQuoteError from 'api/gnosisProtocol/errors/QuoteError'
 
-export const DEFAULT_QUOTE_RESPONSE = {
+export const DEFAULT_TRADE_QUOTE_STATE = {
   response: null,
   error: null,
   isLoading: false,
@@ -22,7 +22,7 @@ export interface TradeQuoteState {
   quoteDate: number | null
 }
 
-export const tradeQuoteAtom = atomWithReset<TradeQuoteState>(DEFAULT_QUOTE_RESPONSE)
+export const tradeQuoteAtom = atomWithReset<TradeQuoteState>(DEFAULT_TRADE_QUOTE_STATE)
 
 export const updateTradeQuoteAtom = atom(null, (get, set, nextState: Partial<TradeQuoteState>) => {
   set(tradeQuoteAtom, () => {
