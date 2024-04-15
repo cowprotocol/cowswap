@@ -144,7 +144,7 @@ export default createReducer(initialState, (builder) =>
         quotes[chainId][sellToken] = {
           ...quoteInformation,
           ...payload,
-          quoteDate: Date.now(),
+          quoteDate: Math.ceil(Date.now() / 1000),
         }
       }
 

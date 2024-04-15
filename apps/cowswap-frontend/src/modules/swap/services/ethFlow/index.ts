@@ -13,7 +13,7 @@ import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { tradeFlowAnalytics } from 'modules/trade/utils/analytics'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
-import { isQuoteExpired } from 'modules/tradeQuote/utils/isQuoteExpired'
+import { isQuoteExpired } from 'modules/tradeQuote'
 
 import { calculateUniqueOrderId } from './steps/calculateUniqueOrderId'
 
@@ -67,9 +67,11 @@ export async function ethFlow(
     if (
       isQuoteExpired({
         expirationDate: fee.expirationDate,
-        validFor: quote?.validFor,
-        quoteValidTo: quote?.quoteValidTo,
-        quoteDate: quote?.quoteDate,
+        deadlineParams: {
+          validFor: quote?.validFor,
+          quoteValidTo: quote?.quoteValidTo,
+          quoteDate: quote?.quoteDate,
+        },
       })
     ) {
       reportPlaceOrderWithExpiredQuote({ ...orderParamsOriginal, fee })

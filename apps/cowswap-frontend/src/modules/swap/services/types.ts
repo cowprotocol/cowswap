@@ -41,6 +41,7 @@ export interface BaseFlowContext {
   orderParams: PostOrderParams
   appDataInfo: AppDataInfo
   tradeConfirmActions: TradeConfirmActions
+  quote: QuoteInformationObject | undefined
 }
 
 export type SwapFlowContext = BaseFlowContext & {

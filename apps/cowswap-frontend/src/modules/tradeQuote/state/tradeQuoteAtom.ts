@@ -32,7 +32,7 @@ export const updateTradeQuoteAtom = atom(null, (get, set, nextState: Partial<Tra
       ...prevState,
       ...nextState,
       quoteParams: typeof nextState.quoteParams === 'undefined' ? prevState.quoteParams : nextState.quoteParams,
-      quoteDate: nextState.response ? Date.now() : null,
+      quoteDate: nextState.response ? Math.ceil(Date.now() / 1000) : null,
     }
   })
 })
