@@ -1,3 +1,1 @@
-export function walletProvider() {
-  return null
-}
+export { useWalletProvider } from './hooks/useWalletProvider'
