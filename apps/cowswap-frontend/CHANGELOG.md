@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.65.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.65.0...cowswap-v1.65.1) (2024-04-15)
+
+
+### Bug Fixes
+
+* **widget:** don't reset palette state while navigating ([#4239](https://github.com/cowprotocol/cowswap/issues/4239)) ([b963bc3](https://github.com/cowprotocol/cowswap/commit/b963bc32739084e729320c49c50f51e8aed86616))
+
 ## [1.65.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.64.3...cowswap-v1.65.0) (2024-04-11)
 
 
