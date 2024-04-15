@@ -41,12 +41,16 @@ function addTradeAmountsToQuery(query: URLSearchParams, params: Partial<CowSwapW
 function addThemePaletteToQuery(query: URLSearchParams, params: Partial<CowSwapWidgetParams>): URLSearchParams {
   const theme = params.theme
 
-  if (!theme) return query
+  if (!theme) {
+    query.append('palette', 'null')
+    return query
+  }
 
   if (isCowSwapWidgetPalette(theme)) {
     query.append('palette', encodeURIComponent(JSON.stringify(theme)))
     query.append('theme', theme.baseTheme)
   } else {
+    query.append('palette', 'null')
     query.append('theme', theme)
   }
 
