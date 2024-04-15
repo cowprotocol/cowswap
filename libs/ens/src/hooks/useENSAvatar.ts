@@ -11,6 +11,7 @@ import useSWR from 'swr'
 import { useENSResolver } from './useENSResolver'
 import { useWeb3React } from '@web3-react/core'
 import { Erc1155, Erc1155Abi, Erc721, Erc721Abi } from '@cowprotocol/abis'
+import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 /**
  * Returns the ENS avatar URI, if available.
@@ -164,10 +165,10 @@ function useERC1155Uri(
 }
 
 function useERC721Contract(address: string | undefined): Erc721 | undefined {
-  const { provider, chainId } = useWeb3React()
+  const provider = useWalletProvider()
 
-  const { data } = useSWR(['useERC721Contract', provider, chainId, address], () => {
-    if (!chainId || !provider || !address) return undefined
+  const { data } = useSWR(['useERC721Contract', provider, address], () => {
+    if (!provider || !address) return undefined
 
     return getContract(address, Erc721Abi, provider) as Erc721
   })
@@ -176,10 +177,10 @@ function useERC721Contract(address: string | undefined): Erc721 | undefined {
 }
 
 function useERC1155Contract(address: string | undefined): Erc1155 | undefined {
-  const { provider, chainId } = useWeb3React()
+  const provider = useWalletProvider()
 
-  const { data } = useSWR(['useERC1155Contract', provider, chainId, address], () => {
-    if (!chainId || !provider || !address) return undefined
+  const { data } = useSWR(['useERC1155Contract', provider, address], () => {
+    if (!provider || !address) return undefined
 
     return getContract(address, Erc1155Abi, provider) as Erc1155
   })

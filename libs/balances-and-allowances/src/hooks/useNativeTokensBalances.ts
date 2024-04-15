@@ -1,13 +1,13 @@
 import { useMemo } from 'react'
 
 import { getMulticallContract, useSingleContractMultipleData } from '@cowprotocol/multicall'
+import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { BigNumber } from '@ethersproject/bignumber'
-import { useWeb3React } from '@web3-react/core'
 
 type NativeBalances = { [account: string]: BigNumber | undefined }
 
 export function useNativeTokensBalances(accounts: string[] | undefined): NativeBalances | undefined {
-  const { provider } = useWeb3React()
+  const provider = useWalletProvider()
   const contract = provider ? getMulticallContract(provider) : undefined
   const params = useMemo(() => accounts?.map((account) => [account]), [accounts])
 

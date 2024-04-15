@@ -1,13 +1,12 @@
 import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 
 import { useIsWindowVisible } from './useIsWindowVisible'
-import { useWeb3React } from '@web3-react/core'
+import { useWalletChainId, useWalletProvider } from '@cowprotocol/wallet-provider'
 
 const MISSING_PROVIDER = Symbol()
 const BlockNumberContext = createContext<
   | {
       value?: number
-      fastForward(_block: number): void
     }
   | typeof MISSING_PROVIDER
 >(MISSING_PROVIDER)
@@ -25,12 +24,10 @@ export function useBlockNumber(): number | undefined {
   return useBlockNumberContext().value
 }
 
-export function useFastForwardBlockNumber(): (block: number) => void {
-  return useBlockNumberContext().fastForward
-}
-
 export function BlockNumberProvider({ children }: { children: ReactNode }) {
-  const { provider, chainId: activeChainId } = useWeb3React()
+  const provider = useWalletProvider()
+  const activeChainId = useWalletChainId()
+
   const [{ chainId, block }, setChainBlock] = useState<{ chainId?: number; block?: number }>({ chainId: activeChainId })
 
   const onBlock = useCallback(
@@ -78,7 +75,6 @@ export function BlockNumberProvider({ children }: { children: ReactNode }) {
   const value = useMemo(
     () => ({
       value: chainId === activeChainId ? block : undefined,
-      fastForward: (block: number) => setChainBlock({ chainId: activeChainId, block }),
     }),
     [activeChainId, block, chainId]
   )

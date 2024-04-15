@@ -12,6 +12,7 @@ import { TokenWithLogo } from '@cowprotocol/common-const'
 import { environmentAtom } from '../../state/environmentAtom'
 import { parseTokensFromApi } from '../../utils/parseTokensFromApi'
 import { fetchTokenFromBlockchain } from '../../utils/fetchTokenFromBlockchain'
+import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 const IN_LISTS_DEBOUNCE_TIME = ms`100ms`
 const IN_EXTERNALS_DEBOUNCE_TIME = ms`1s`
@@ -167,7 +168,7 @@ function useSearchTokensInApi(input: string | undefined, isTokenAlreadyFoundByAd
 
 function useFetchTokenFromBlockchain(input: string | undefined, isTokenAlreadyFoundByAddress: boolean) {
   const { chainId } = useAtomValue(environmentAtom)
-  const { provider } = useWeb3React()
+  const provider = useWalletProvider()
 
   return useSWR<TokenWithLogo | null>(['fetchTokenFromBlockchain', input], () => {
     if (isTokenAlreadyFoundByAddress || !input || !provider || !isAddress(input)) {
