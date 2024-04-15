@@ -112,6 +112,10 @@ export const MenuSection = styled.div`
     opacity: 0.8;
     transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
 
+    ${({ theme }) => theme.mediaWidth.upToLarge`
+      opacity: 1;
+    `};
+
     > svg,
     > img {
       width: 18px;
