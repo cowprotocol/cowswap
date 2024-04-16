@@ -3,8 +3,8 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { usePrevious } from '@cowprotocol/common-hooks'
 import { getRawCurrentChainIdFromUrl } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { switchChain, useWalletInfo } from '@cowprotocol/wallet'
-import { useWeb3React } from '@web3-react/core'
+import { useWalletInfo } from '@cowprotocol/wallet'
+import { useSwitchNetwork, useWeb3ModalProvider } from '@web3modal/ethers5/react'
 
 import { useTradeNavigate } from 'modules/trade/hooks/useTradeNavigate'
 import { useIsAlternativeOrderModalVisible } from 'modules/trade/state/alternativeOrder'
@@ -21,7 +21,8 @@ export function useSetupTradeState(): void {
   const { chainId: providerChainId, account } = useWalletInfo()
   const prevProviderChainId = usePrevious(providerChainId)
 
-  const { connector } = useWeb3React()
+  const { walletProvider } = useWeb3ModalProvider()
+  const { switchNetwork } = useSwitchNetwork()
   const tradeNavigate = useTradeNavigate()
   const tradeStateFromUrl = useTradeStateFromUrl()
   const { state, updateState } = useTradeState()
@@ -42,7 +43,7 @@ export function useSetupTradeState(): void {
 
   const switchNetworkInWallet = useCallback(
     (targetChainId: SupportedChainId) => {
-      switchChain(connector, targetChainId).catch((error: Error) => {
+      switchNetwork(targetChainId).catch((error: Error) => {
         // We are ignoring Gnosis safe context error
         // Because it's a normal situation when we are not in Gnosis safe App
         if (error.name === 'NoSafeContext') return
@@ -50,7 +51,7 @@ export function useSetupTradeState(): void {
         console.error('Network switching error: ', error)
       })
     },
-    [connector]
+    [switchNetwork]
   )
 
   const onProviderNetworkChanges = useCallback(() => {
@@ -167,7 +168,7 @@ export function useSetupTradeState(): void {
   /**
    * On:
    *  - chainId in URL changes
-   *  - connector changes
+   *  - walletProvider changes
    *
    * Note: useEagerlyConnect() changes connectors several times at the beginning
    *
@@ -189,10 +190,10 @@ export function useSetupTradeState(): void {
 
     switchNetworkInWallet(targetChainId)
 
-    console.debug('[TRADE STATE]', 'Set chainId to provider', { connector, urlChainId })
-    // Triggering only when chainId in URL is changes, connector is changed or rememberedUrlState is changed
+    console.debug('[TRADE STATE]', 'Set chainId to provider', { walletProvider, urlChainId })
+    // Triggering only when chainId in URL is changes, walletProvider is changed or rememberedUrlState is changed
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [connector, urlChainId])
+  }, [walletProvider, urlChainId])
 
   /**
    * On chainId in provider changes

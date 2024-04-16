@@ -1,12 +1,11 @@
 import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
-import { useIsSafeWallet, walletConnectConnectionV2 } from '@cowprotocol/wallet'
+import { useIsSafeWallet } from '@cowprotocol/wallet'
 import SafeApiKit from '@safe-global/api-kit'
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
-
-import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
+import { useWeb3ModalProvider } from '@web3modal/ethers5/react'
 
 import { useApproveCallback } from 'common/hooks/useApproveCallback'
 import { useSafeApiKit } from 'common/hooks/useSafeApiKit'
@@ -43,7 +42,8 @@ export function useZeroApprove(currency: Currency) {
   const amountToApprove = CurrencyAmount.fromRawAmount(currency, 0)
   const approveCallback = useApproveCallback(amountToApprove, spender)
   const safeApiKit = useSafeApiKit()
-  const isWalletConnect = useIsActiveWallet(walletConnectConnectionV2)
+  const { walletProviderType } = useWeb3ModalProvider()
+  const isWalletConnect = walletProviderType === 'walletConnect'
   const isSafeWallet = useIsSafeWallet()
 
   return useCallback(async () => {

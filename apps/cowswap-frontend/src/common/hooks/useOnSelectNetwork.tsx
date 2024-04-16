@@ -4,8 +4,7 @@ import { getChainInfo } from '@cowprotocol/common-const'
 import { isRejectRequestProviderError } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useAddSnackbar } from '@cowprotocol/snackbars'
-import { switchChain } from '@cowprotocol/wallet'
-import { useWeb3React } from '@web3-react/core'
+import { useSwitchNetwork } from '@web3modal/ethers5/react'
 
 import { useCloseModal } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
@@ -15,7 +14,7 @@ import { useSetWalletConnectionError } from 'modules/wallet/hooks/useSetWalletCo
 import { useLegacySetChainIdToUrl } from './useLegacySetChainIdToUrl'
 
 export function useOnSelectNetwork(): (chainId: SupportedChainId, skipClose?: boolean) => Promise<void> {
-  const { connector } = useWeb3React()
+  const { switchNetwork } = useSwitchNetwork()
   const addSnackbar = useAddSnackbar()
   const closeModal = useCloseModal(ApplicationModal.NETWORK_SELECTOR)
   const setChainIdToUrl = useLegacySetChainIdToUrl()
@@ -23,11 +22,9 @@ export function useOnSelectNetwork(): (chainId: SupportedChainId, skipClose?: bo
 
   return useCallback(
     async (targetChain: SupportedChainId, skipClose?: boolean) => {
-      if (!connector) return
-
       try {
         setWalletConnectionError(undefined)
-        await switchChain(connector, targetChain)
+        await switchNetwork(targetChain)
 
         setChainIdToUrl(targetChain)
       } catch (error: any) {
@@ -55,6 +52,6 @@ export function useOnSelectNetwork(): (chainId: SupportedChainId, skipClose?: bo
         closeModal()
       }
     },
-    [connector, setWalletConnectionError, addSnackbar, closeModal, setChainIdToUrl]
+    [switchNetwork, setWalletConnectionError, addSnackbar, closeModal, setChainIdToUrl]
   )
 }

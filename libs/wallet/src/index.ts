@@ -24,7 +24,6 @@ export * from './web3-react/utils/getIsHardWareWallet'
 export { accountsLoaders } from './api/utils/accountsLoaders'
 export { isChainAllowed } from './web3-react/utils/isChainAllowed'
 export { getWeb3ReactConnection } from './web3-react/utils/getWeb3ReactConnection'
-export { switchChain } from './web3-react/utils/switchChain'
 
 // Connectors
 export { injectedWidgetConnection } from './web3-react/connection/injectedWidget'
