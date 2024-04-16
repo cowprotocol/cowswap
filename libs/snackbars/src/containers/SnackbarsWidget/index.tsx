@@ -4,7 +4,7 @@ import styled from 'styled-components/macro'
 import { SnackbarPopup } from '../../pure/SnackbarPopup'
 import ms from 'ms.macro'
 import { AlertCircle, CheckCircle } from 'react-feather'
-import { ReactElement, useCallback, useMemo } from 'react'
+import { ReactElement, useCallback, useEffect, useMemo } from 'react'
 import { useResetAtom } from 'jotai/utils'
 import { UI } from '@cowprotocol/ui'
 
@@ -91,6 +91,12 @@ export function SnackbarsWidget({ hidden }: SnackbarsWidgetProps) {
     [removeSnackbar]
   )
 
+  const isOverlayDisplayed = snackbars.length > 0 && !hidden
+
+  useEffect(() => {
+    document.body.style.overflow = isOverlayDisplayed ? 'hidden' : ''
+  }, [isOverlayDisplayed])
+
   return (
     <Host hidden$={!!hidden}>
       <List>
@@ -110,7 +116,7 @@ export function SnackbarsWidget({ hidden }: SnackbarsWidgetProps) {
           )
         })}
       </List>
-      {snackbars.length > 0 && !hidden && <Overlay onClick={resetSnackbarsState} />}
+      {isOverlayDisplayed && <Overlay onClick={resetSnackbarsState} />}
     </Host>
   )
 }
