@@ -34,6 +34,7 @@ import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { FeatureGuard } from 'common/containers/FeatureGuard'
 
 import { WalletUnsupportedNetworkBanner } from '../common/containers/WalletUnsupportedNetworkBanner'
+import { initWeb3Modal } from '../web3ModalConfig'
 
 // Node removeChild hackaround
 // based on: https://github.com/facebook/react/issues/11538#issuecomment-417504600
@@ -42,6 +43,8 @@ nodeRemoveChildFix()
 if (window.ethereum) {
   window.ethereum.autoRefreshOnNetworkChange = false
 }
+
+initWeb3Modal()
 
 function Main() {
   const isInjectedWidgetMode = isInjectedWidget()
