@@ -1,7 +1,6 @@
 import { INPUT_OUTPUT_EXPLANATION, MINIMUM_ETH_FLOW_SLIPPAGE, PERCENTAGE_PRECISION } from '@cowprotocol/common-const'
 import { Command } from '@cowprotocol/types'
-import { RowFixed } from '@cowprotocol/ui'
-import { MouseoverTooltipContent } from '@cowprotocol/ui'
+import { MouseoverTooltipContent, RowFixed } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
@@ -28,19 +27,20 @@ export const ClickableText = styled.button`
 
 export const getNativeSlippageTooltip = (symbols: (string | undefined)[] | undefined) => (
   <Trans>
-    <p>
-      When selling {symbols?.[0] || 'a native currency'}, the minimum slippage tolerance is set to{' '}
-      {MINIMUM_ETH_FLOW_SLIPPAGE.toSignificant(PERCENTAGE_PRECISION)}% to ensure a high likelihood of order matching,
-      even in volatile market conditions.
-    </p>
-    <p>Orders on CoW Swap are always protected from MEV, so your slippage tolerance cannot be exploited.</p>
+    When selling {symbols?.[0] || 'a native currency'}, the minimum slippage tolerance is set to{' '}
+    {MINIMUM_ETH_FLOW_SLIPPAGE.toSignificant(PERCENTAGE_PRECISION)}% to ensure a high likelihood of order matching,
+    even in volatile market conditions.
+    <br /><br />
+    Orders on CoW Swap are always protected from MEV, so your slippage tolerance cannot be exploited.
   </Trans>
 )
 export const getNonNativeSlippageTooltip = () => (
   <Trans>
-    <p>Your slippage is MEV protected: all orders are submitted with tight spread (0.1%) on-chain.</p>
-    <p>The slippage you pick here enables a resubmission of your order in case of unfavourable price movements.</p>
-    <p>{INPUT_OUTPUT_EXPLANATION}</p>
+    Your slippage is MEV protected: all orders are submitted with tight spread (0.1%) on-chain.
+    <br /><br />
+    The slippage you pick here enables a resubmission of your order in case of unfavourable price movements.
+    <br /><br />
+    {INPUT_OUTPUT_EXPLANATION}
   </Trans>
 )
 

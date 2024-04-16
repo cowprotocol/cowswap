@@ -1,7 +1,6 @@
 import { INPUT_OUTPUT_EXPLANATION, MINIMUM_ETH_FLOW_DEADLINE_SECONDS } from '@cowprotocol/common-const'
 import { Command } from '@cowprotocol/types'
-import { RowFixed } from '@cowprotocol/ui'
-import { MouseoverTooltipContent } from '@cowprotocol/ui'
+import { MouseoverTooltipContent, RowFixed } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 
@@ -14,21 +13,19 @@ import { StyledInfoIcon, TransactionText } from 'modules/swap/pure/styled'
 export function getNativeOrderDeadlineTooltip(symbols: (string | undefined)[] | undefined) {
   return (
     <Trans>
-      <p>
-        {symbols?.[0] || 'Native currency (e.g ETH)'} orders require a minimum transaction expiration time threshold of{' '}
-        {MINIMUM_ETH_FLOW_DEADLINE_SECONDS / 60} minutes to ensure the best swapping experience. Orders not matched
-        after the threshold time are automatically refunded.
-      </p>
+      {symbols?.[0] || 'Native currency (e.g ETH)'} orders require a minimum transaction expiration time threshold of{' '}
+      {MINIMUM_ETH_FLOW_DEADLINE_SECONDS / 60} minutes to ensure the best swapping experience.
+      <br /><br />
+      Orders not matched
+      after the threshold time are automatically refunded.
     </Trans>
   )
 }
 export function getNonNativeOrderDeadlineTooltip() {
   return (
     <Trans>
-      <p>
-        Your swap expires and will not execute if it is pending for longer than the selected duration.
-        {INPUT_OUTPUT_EXPLANATION}
-      </p>
+      Your swap expires and will not execute if it is pending for longer than the selected duration.
+      {INPUT_OUTPUT_EXPLANATION}
     </Trans>
   )
 }
