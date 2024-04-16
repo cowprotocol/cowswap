@@ -17,6 +17,7 @@ import { useIsSmartContractWallet } from './hooks/useIsSmartContractWallet'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useENSName } from '@cowprotocol/ens'
 import ms from 'ms.macro'
+import { useWeb3ModalAccount } from '@web3modal/ethers5/react'
 
 const SAFE_INFO_UPDATE_INTERVAL = ms`30s`
 
@@ -28,16 +29,16 @@ function _checkIsSupportedWallet(walletName?: string): boolean {
 }
 
 function _useWalletInfo(): WalletInfo {
-  const { account, chainId, isActive: active } = useWeb3React()
+  const { address, chainId, isConnected: active } = useWeb3ModalAccount()
   const isChainIdUnsupported = !!chainId && !(chainId in SupportedChainId)
 
   return useMemo(
     () => ({
       chainId: isChainIdUnsupported || !chainId ? getCurrentChainIdFromUrl() : chainId,
       active,
-      account,
+      account: address,
     }),
-    [chainId, active, account, isChainIdUnsupported]
+    [chainId, active, address, isChainIdUnsupported]
   )
 }
 

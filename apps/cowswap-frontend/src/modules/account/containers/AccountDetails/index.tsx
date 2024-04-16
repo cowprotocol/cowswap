@@ -22,6 +22,7 @@ import {
   getIsHardWareWallet,
 } from '@cowprotocol/wallet'
 import { useWeb3React } from '@web3-react/core'
+import { useDisconnect } from '@web3modal/ethers5/react'
 
 import { Trans } from '@lingui/macro'
 
@@ -60,7 +61,6 @@ import {
 } from './styled'
 import { SurplusCard } from './SurplusCard'
 
-import { useDisconnectWallet } from '../../hooks/useDisconnectWallet'
 import { CreationDateText } from '../Transaction/styled'
 
 export const DATE_FORMAT_OPTION: Intl.DateTimeFormatOptions = {
@@ -99,7 +99,7 @@ export function AccountDetails({
   const { account, chainId } = useWalletInfo()
   const { connector } = useWeb3React()
   const walletDetails = useWalletDetails()
-  const disconnectWallet = useDisconnectWallet()
+  const { disconnect: disconnectWallet } = useDisconnect()
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
   const { standaloneMode } = useInjectedWidgetParams()
 

@@ -57,7 +57,7 @@
             "position": "before"
           },
           {
-            "pattern": "{@cowprotocol,@cowprotocol,@uniswap,@safe-global,@ethersproject,@web3-react}/**",
+            "pattern": "{@cowprotocol,@cowprotocol,@uniswap,@safe-global,@ethersproject,@web3-react,@web3modal}/**",
             "group": "external",
             "position": "before"
           },
