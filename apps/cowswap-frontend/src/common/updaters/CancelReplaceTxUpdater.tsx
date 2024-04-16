@@ -7,6 +7,7 @@ import { Dispatch } from 'redux'
 
 import { replaceTransaction } from 'legacy/state/enhancedTransactions/actions'
 import { useAllTransactionHashes } from 'legacy/state/enhancedTransactions/hooks'
+import { HashType } from 'legacy/state/enhancedTransactions/reducer'
 import { useAppDispatch } from 'legacy/state/hooks'
 
 import { sdk } from 'api/blocknative'
@@ -67,7 +68,7 @@ export function CancelReplaceTxUpdater(): null {
   const accountLowerCase = account?.toLowerCase() || ''
   const pendingHashes = useAllTransactionHashes(
     (tx) =>
-      !tx.receipt && !tx.replacementType && !tx.linkedTransactionHash && tx.from.toLowerCase() === accountLowerCase
+      !tx.receipt && !tx.replacementType && !tx.linkedTransactionHash && tx.hashType === HashType.ETHEREUM_TX && tx.from.toLowerCase() === accountLowerCase
   )
 
   useEffect(() => {
