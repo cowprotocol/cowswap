@@ -1,19 +1,19 @@
+import * as Sentry from '@sentry/browser'
 import { useAtomValue, useSetAtom } from 'jotai'
-import useSWR, { SWRConfiguration } from 'swr'
-import { useEffect } from 'react'
-
-import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
-
-import { allListsSourcesAtom, tokenListsUpdatingAtom } from '../../state/tokenLists/tokenListsStateAtom'
-import { fetchTokenList } from '../../services/fetchTokenList'
-import { environmentAtom, updateEnvironmentAtom } from '../../state/environmentAtom'
-import { getFulfilledResults, getIsTimeToUpdate, TOKENS_LISTS_UPDATER_INTERVAL } from './helpers'
-import { ListState } from '../../types'
-import { upsertListsAtom } from '../../state/tokenLists/tokenListsActionsAtom'
 import { atomWithStorage } from 'jotai/utils'
+import { useEffect } from 'react'
+import useSWR, { SWRConfiguration } from 'swr'
+
 import { atomWithPartialUpdate, isInjectedWidget } from '@cowprotocol/common-utils'
 import { getJotaiMergerStorage } from '@cowprotocol/core'
-import * as Sentry from '@sentry/browser'
+import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
+
+import { fetchTokenList } from '../../services/fetchTokenList'
+import { environmentAtom, updateEnvironmentAtom } from '../../state/environmentAtom'
+import { upsertListsAtom } from '../../state/tokenLists/tokenListsActionsAtom'
+import { allListsSourcesAtom, tokenListsUpdatingAtom } from '../../state/tokenLists/tokenListsStateAtom'
+import { ListState } from '../../types'
+import { getFulfilledResults, getIsTimeToUpdate, TOKENS_LISTS_UPDATER_INTERVAL } from './helpers'
 
 const { atom: lastUpdateTimeAtom, updateAtom: updateLastUpdateTimeAtom } = atomWithPartialUpdate(
   atomWithStorage<Record<SupportedChainId, number>>(
@@ -34,6 +34,8 @@ interface TokensListsUpdaterProps {
   chainId: SupportedChainId
   isGeoBlockEnabled: boolean
 }
+
+const ERRORS_TO_IGNORE = /(failed to fetch)|(load failed)/i
 
 export function TokensListsUpdater({ chainId: currentChainId, isGeoBlockEnabled }: TokensListsUpdaterProps) {
   const { chainId } = useAtomValue(environmentAtom)
@@ -91,6 +93,8 @@ export function TokensListsUpdater({ chainId: currentChainId, isGeoBlockEnabled 
         }
       })
       .catch((error) => {
+        if (ERRORS_TO_IGNORE.test(error?.toString())) return
+
         const sentryError = Object.assign(error, {
           name: 'GeoBlockingError',
         })
