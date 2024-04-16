@@ -70,7 +70,7 @@ export async function ethFlow(
         deadlineParams: {
           validFor: quote?.validFor,
           quoteValidTo: quote?.quoteValidTo,
-          quoteDate: quote?.quoteDate,
+          localQuoteTimestamp: quote?.localQuoteTimestamp,
         },
       })
     ) {

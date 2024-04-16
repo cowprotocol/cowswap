@@ -227,7 +227,7 @@ export function getFlowContext({ baseProps, sellToken, kind }: BaseGetFlowContex
   const validTo = getOrderValidTo(deadline, {
     validFor: quote?.validFor,
     quoteValidTo: quote?.quoteValidTo,
-    quoteDate: quote?.quoteDate,
+    localQuoteTimestamp: quote?.localQuoteTimestamp,
   })
 
   const amountsForSignature = getAmountsForSignature({

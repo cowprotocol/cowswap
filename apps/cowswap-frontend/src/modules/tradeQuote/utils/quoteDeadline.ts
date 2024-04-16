@@ -7,7 +7,7 @@ const EXPIRATION_TIME_THRESHOLD = 5 // 5 seconds
 export interface QuoteDeadlineParams {
   validFor: Nullish<number>
   quoteValidTo: Nullish<number>
-  quoteDate: Nullish<number>
+  localQuoteTimestamp: Nullish<number>
 }
 
 interface QuoteExpirationInfo {
@@ -41,12 +41,16 @@ export function isQuoteExpired({ expirationDate, deadlineParams }: QuoteExpirati
  * Calculate the time offset between the expected validTo and the actual quote validTo
  * @param validFor duration of the quote
  * @param quoteValidTo the timestamp when the quote is no longer valid (from API response)
- * @param quoteDate the timestamp when the quote was created
+ * @param localQuoteTimestamp the timestamp when the quote was created
  */
-export function getQuoteTimeOffset({ validFor, quoteValidTo, quoteDate }: QuoteDeadlineParams): number | undefined {
-  if (!validFor || !quoteValidTo || !quoteDate) return undefined
+export function getQuoteTimeOffset({
+  validFor,
+  quoteValidTo,
+  localQuoteTimestamp,
+}: QuoteDeadlineParams): number | undefined {
+  if (!validFor || !quoteValidTo || !localQuoteTimestamp) return undefined
 
-  const expectedValidTo = quoteDate + validFor
+  const expectedValidTo = localQuoteTimestamp + validFor
 
   return expectedValidTo - quoteValidTo
 }

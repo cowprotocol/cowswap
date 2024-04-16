@@ -12,14 +12,14 @@ export const DEFAULT_TRADE_QUOTE_STATE = {
   error: null,
   isLoading: false,
   quoteParams: null,
-  quoteDate: null,
+  localQuoteTimestamp: null,
 }
 export interface TradeQuoteState {
   response: OrderQuoteResponse | null
   error: GpQuoteError | null
   isLoading: boolean
   quoteParams: LegacyFeeQuoteParams | null
-  quoteDate: number | null
+  localQuoteTimestamp: number | null
 }
 
 export const tradeQuoteAtom = atomWithReset<TradeQuoteState>(DEFAULT_TRADE_QUOTE_STATE)
@@ -32,7 +32,7 @@ export const updateTradeQuoteAtom = atom(null, (get, set, nextState: Partial<Tra
       ...prevState,
       ...nextState,
       quoteParams: typeof nextState.quoteParams === 'undefined' ? prevState.quoteParams : nextState.quoteParams,
-      quoteDate: nextState.response ? Math.ceil(Date.now() / 1000) : null,
+      localQuoteTimestamp: nextState.response ? Math.ceil(Date.now() / 1000) : null,
     }
   })
 })

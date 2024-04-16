@@ -13,7 +13,7 @@ export function TradeQuoteUpdater() {
     getQuoteTimeOffset({
       validFor: quoteState.quoteParams?.validFor,
       quoteValidTo: quoteState.response?.quote.validTo,
-      quoteDate: quoteState.quoteDate,
+      localQuoteTimestamp: quoteState.localQuoteTimestamp,
     })
   )
 

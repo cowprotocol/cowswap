@@ -12,6 +12,6 @@ export function calculateLimitOrdersDeadline(
     : getOrderValidTo(settingsState.deadlineMilliseconds / 1000, {
         validFor: quoteState.quoteParams?.validFor,
         quoteValidTo: quoteState.response?.quote.validTo,
-        quoteDate: quoteState.quoteDate,
+        localQuoteTimestamp: quoteState.localQuoteTimestamp,
       })
 }

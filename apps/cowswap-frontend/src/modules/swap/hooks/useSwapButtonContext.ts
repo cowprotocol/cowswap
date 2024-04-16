@@ -100,7 +100,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
   const quoteDeadlineParams: QuoteDeadlineParams = {
     validFor: quote?.validFor,
     quoteValidTo: quote?.quoteValidTo,
-    quoteDate: quote?.quoteDate,
+    localQuoteTimestamp: quote?.localQuoteTimestamp,
   }
 
   const swapButtonState = getSwapButtonState({

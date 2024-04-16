@@ -84,7 +84,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
         deadlineParams: {
           validFor: tradeQuote.quoteParams?.validFor,
           quoteValidTo: tradeQuote.response.quote.validTo,
-          quoteDate: tradeQuote.quoteDate,
+          localQuoteTimestamp: tradeQuote.localQuoteTimestamp,
         },
       })
     ) {

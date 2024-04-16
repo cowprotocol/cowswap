@@ -25,7 +25,7 @@ export interface QuoteInformationObject extends LegacyFeeQuoteParams {
   price?: PriceInformation
   error?: QuoteError
   lastCheck: number
-  quoteDate?: number
+  localQuoteTimestamp?: number
   quoteValidTo?: number
 }
 
@@ -144,7 +144,7 @@ export default createReducer(initialState, (builder) =>
         quotes[chainId][sellToken] = {
           ...quoteInformation,
           ...payload,
-          quoteDate: Math.ceil(Date.now() / 1000),
+          localQuoteTimestamp: Math.ceil(Date.now() / 1000),
         }
       }
 
