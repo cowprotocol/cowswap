@@ -6,7 +6,6 @@ import { Web3StatusInner } from '../../pure/Web3StatusInner'
 import { Wrapper } from '../../pure/Web3StatusInner/styled'
 import { AccountSelectorModal } from '../AccountSelectorModal'
 import { useCloseFollowTxPopupIfNotPendingOrder } from '../FollowPendingTxPopup'
-import { WalletModal } from '../WalletModal'
 
 export interface Web3StatusProps {
   pendingActivities: string[]
@@ -31,7 +30,6 @@ export function Web3Status({ pendingActivities, className }: Web3StatusProps) {
         connectWallet={openConnectWalletModal}
         connectionType={connectionType}
       />
-      <WalletModal />
       <AccountSelectorModal />
     </Wrapper>
   )
