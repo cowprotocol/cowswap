@@ -133,7 +133,6 @@ export default function Header() {
 
         <HeaderControls>
           {!injectedWidgetParams.hideNetworkSelector && <NetworkSelector />}
-
           <HeaderElement>
             {!isChainIdUnsupported && (isMobileMenuOpen || !isUpToLarge || isUpToTiny) && (
               <CowBalanceButton

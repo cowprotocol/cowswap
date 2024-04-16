@@ -160,10 +160,6 @@ export function useOrderValidTo() {
   return useMemo(() => ({ validTo: calculateValidTo(deadline), deadline }), [deadline])
 }
 
-export function useSelectedWallet(): string | undefined {
-  return useAppSelector(({ user: { selectedWallet } }) => selectedWallet)
-}
-
 export function serializeToken(token: Currency | TokenWithLogo): SerializedToken {
   const address = getIsNativeToken(token) ? NATIVE_CURRENCIES[token.chainId as SupportedChainId].address : token.address
 

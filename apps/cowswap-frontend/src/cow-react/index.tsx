@@ -11,6 +11,7 @@ import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { nodeRemoveChildFix } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
 import { SnackbarsWidget } from '@cowprotocol/snackbars'
+import { initWeb3Modal } from '@cowprotocol/wallet-provider'
 
 import { LanguageProvider } from 'i18n'
 import { createRoot } from 'react-dom/client'
@@ -20,6 +21,7 @@ import * as serviceWorkerRegistration from 'serviceWorkerRegistration'
 import styled from 'styled-components/macro'
 
 import AppziButton from 'legacy/components/AppziButton'
+import Web3Provider from 'legacy/components/Web3Provider'
 import { upToMedium, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 import { cowSwapStore } from 'legacy/state'
 import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from 'legacy/theme'
@@ -33,7 +35,6 @@ import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { FeatureGuard } from 'common/containers/FeatureGuard'
 
 import { WalletUnsupportedNetworkBanner } from '../common/containers/WalletUnsupportedNetworkBanner'
-import { initWeb3Modal } from '../web3ModalConfig'
 
 // Node removeChild hackaround
 // based on: https://github.com/facebook/react/issues/11538#issuecomment-417504600
@@ -68,27 +69,29 @@ function Main() {
         <AtomProvider store={jotaiStore}>
           <HashRouter>
             <LanguageProvider>
-              <ThemeProvider>
-                <ThemedGlobalStyle />
-                <BlockNumberProvider>
-                  <WithLDProvider>
-                    <WalletUnsupportedNetworkBanner />
-                    <Updaters />
+              <Web3Provider>
+                <ThemeProvider>
+                  <ThemedGlobalStyle />
+                  <BlockNumberProvider>
+                    <WithLDProvider>
+                      <WalletUnsupportedNetworkBanner />
+                      <Updaters />
 
-                    {!isInjectedWidgetMode && !isUpToMedium && (
-                      <FooterButtonsWrapper isUpToMedium={isUpToMedium}>
-                        <FeatureGuard featureFlag="cowFortuneEnabled">
-                          <FortuneWidget />
-                        </FeatureGuard>
-                        <AppziButton />
-                      </FooterButtonsWrapper>
-                    )}
+                      {!isInjectedWidgetMode && !isUpToMedium && (
+                        <FooterButtonsWrapper isUpToMedium={isUpToMedium}>
+                          <FeatureGuard featureFlag="cowFortuneEnabled">
+                            <FortuneWidget />
+                          </FeatureGuard>
+                          <AppziButton />
+                        </FooterButtonsWrapper>
+                      )}
 
-                    <Toasts />
-                    <App />
-                  </WithLDProvider>
-                </BlockNumberProvider>
-              </ThemeProvider>
+                      <Toasts />
+                      <App />
+                    </WithLDProvider>
+                  </BlockNumberProvider>
+                </ThemeProvider>
+              </Web3Provider>
             </LanguageProvider>
           </HashRouter>
         </AtomProvider>

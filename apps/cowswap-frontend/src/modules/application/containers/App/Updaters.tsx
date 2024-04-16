@@ -14,7 +14,6 @@ import { useOnTokenListAddingError } from 'modules/tokensList'
 import { UsdPricesUpdater } from 'modules/usdAmount'
 
 import { TotalSurplusUpdater } from 'common/state/totalSurplusState'
-import { ApplicationUpdater } from 'common/updaters/ApplicationUpdater'
 import { CancelReplaceTxUpdater } from 'common/updaters/CancelReplaceTxUpdater'
 import { FeesUpdater } from 'common/updaters/FeesUpdater'
 import { GasUpdater } from 'common/updaters/GasUpdater'
@@ -41,7 +40,6 @@ export function Updaters() {
       <WalletUpdater />
       <HwAccountIndexUpdater />
       <UserUpdater />
-      <ApplicationUpdater />
       <FinalizeTxUpdater />
       <CancelReplaceTxUpdater />
       <PendingOrdersUpdater />

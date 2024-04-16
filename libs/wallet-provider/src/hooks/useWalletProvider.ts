@@ -1,11 +1,13 @@
-import { useWeb3React } from '@web3-react/core'
-import type { Web3Provider } from '@ethersproject/providers'
+import { Web3Provider } from '@ethersproject/providers'
+import { useWeb3ModalProvider } from '@web3modal/ethers5/react'
+import { useMemo } from 'react'
 
-/**
- * TODO: replace by WAGMI
- */
-export function useWalletProvider(): Web3Provider | undefined {
-  const { provider } = useWeb3React()
+export function useWalletProvider() {
+  const { walletProvider } = useWeb3ModalProvider()
 
-  return provider
+  return useMemo(() => {
+    if (!walletProvider) return undefined
+
+    return new Web3Provider(walletProvider)
+  }, [walletProvider])
 }
