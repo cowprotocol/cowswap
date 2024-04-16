@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import { UI } from '@cowprotocol/ui'
+import { UI } from '../../enum'
 
 import { AlertTriangle, X } from 'react-feather'
 import styled from 'styled-components/macro'
