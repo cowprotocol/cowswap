@@ -16,7 +16,7 @@ export function InvalidLocalTimeWarning() {
 
   return (
     <GlobalWarning>
-      Local device time does not match real time, CoW Swap will most likely not work correctly. Please synchronize the
+      Local device time does not match real time, CoW Swap most likely will not work correctly. Please synchronize the
       time settings on your device with the real time.
     </GlobalWarning>
   )
