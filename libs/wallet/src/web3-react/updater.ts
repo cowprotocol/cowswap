@@ -107,13 +107,11 @@ export function WalletUpdater() {
 
   // Update wallet info
   useEffect(() => {
-    console.log('[WalletUpdater] setWalletInfo', walletInfo)
     setWalletInfo(walletInfo)
   }, [walletInfo, setWalletInfo])
 
   // Update wallet details
   useEffect(() => {
-    console.log('[WalletUpdater] setWalletDetails', walletDetails)
     const walletType = getWalletType({ gnosisSafeInfo, isSmartContractWallet: walletDetails.isSmartContractWallet })
     setWalletDetails({
       walletName: getWalletTypeLabel(walletType), // Fallback wallet name, will be overridden by below line if something exists.
@@ -123,7 +121,6 @@ export function WalletUpdater() {
 
   // Update Gnosis Safe info
   useEffect(() => {
-    console.log('[WalletUpdater] setGnosisSafeInfo', gnosisSafeInfo)
     setGnosisSafeInfo(gnosisSafeInfo)
   }, [gnosisSafeInfo, setGnosisSafeInfo])
 

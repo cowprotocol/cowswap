@@ -17,7 +17,7 @@ import { StatusIcon } from '../StatusIcon'
 export interface Web3StatusInnerProps {
   account?: string
   pendingCount: number
-  connectWallet: Command | null
+  connectWallet: Command
   connectionType: ConnectionType
   ensName?: string | null
 }
@@ -28,10 +28,6 @@ export function Web3StatusInner(props: Web3StatusInnerProps) {
   const hasPendingTransactions = !!pendingCount
   const isUpToExtraSmall = useMediaQuery(upToExtraSmall)
   const isUpToTiny = useMediaQuery(upToTiny)
-
-  if (!connectWallet) {
-    return null
-  }
 
   if (account) {
     return (

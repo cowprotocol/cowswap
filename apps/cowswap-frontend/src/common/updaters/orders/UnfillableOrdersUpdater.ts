@@ -141,8 +141,6 @@ export function UnfillableOrdersUpdater(): null {
       }
 
       pending.forEach((order, index) => {
-        console.debug(`[UnfillableOrdersUpdater] Check order`, order)
-
         const currencyAmount = CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount)
         const { enoughBalance } = hasEnoughBalanceAndAllowance({
           account,
@@ -181,7 +179,6 @@ export function UnfillableOrdersUpdater(): null {
       })
     } finally {
       isUpdating.current = false
-      console.debug(`[UnfillableOrdersUpdater] Checked pending orders in ${Date.now() - startTime}ms`)
     }
   }, [
     account,

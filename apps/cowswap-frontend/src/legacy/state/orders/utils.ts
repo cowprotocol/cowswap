@@ -97,33 +97,19 @@ export function classifyOrder(
   > | null
 ): OrderTransitionStatus {
   if (!order) {
-    console.debug(`[state::orders::classifyOrder] unknown order`)
     return 'unknown'
   } else if (isOrderFulfilled(order)) {
-    console.debug(
-      `[state::orders::classifyOrder] fulfilled order ${order.uid.slice(0, 10)} ${order.executedBuyAmount} | ${
-        order.executedSellAmountBeforeFees
-      }`
-    )
     return 'fulfilled'
   } else if (isOrderCancelled(order)) {
-    console.debug(`[state::orders::classifyOrder] cancelled order ${order.uid.slice(0, 10)}`)
     return 'cancelled'
   } else if (isOrderExpired(order)) {
-    console.debug(
-      `[state::orders::classifyOrder] expired order ${order.uid.slice(0, 10)}`,
-      new Date(order.validTo * 1000)
-    )
     return 'expired'
   } else if (isPresignPending(order)) {
-    console.debug(`[state::orders::classifyOrder] presignPending order ${order.uid.slice(0, 10)}`)
     return 'presignaturePending'
   } else if (isOrderPresigned(order)) {
-    console.debug(`[state::orders::classifyOrder] presigned order ${order.uid.slice(0, 10)}`)
     return 'presigned'
   }
 
-  console.debug(`[state::orders::classifyOrder] pending order ${order.uid.slice(0, 10)}`)
   return 'pending'
 }
 
