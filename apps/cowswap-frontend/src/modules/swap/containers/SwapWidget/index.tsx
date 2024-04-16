@@ -35,9 +35,11 @@ import {
 import { TradeWidget, TradeWidgetContainer, useTradePriceImpact } from 'modules/trade'
 import { useTradeRouteContext } from 'modules/trade/hooks/useTradeRouteContext'
 import { useWrappedToken } from 'modules/trade/hooks/useWrappedToken'
+import { getQuoteTimeOffset } from 'modules/tradeQuote'
 import { useTradeUsdAmounts } from 'modules/usdAmount'
 import { useShouldZeroApprove } from 'modules/zeroApproval'
 
+import { useSetLocalTimeOffset } from 'common/containers/InvalidLocalTimeWarning/localTimeOffsetState'
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 import { SWAP_QUOTE_CHECK_INTERVAL } from 'common/updaters/FeesUpdater'
@@ -279,6 +281,8 @@ export function SwapWidget() {
     disableQuotePolling: true,
     disablePriceImpact,
   }
+
+  useSetLocalTimeOffset(getQuoteTimeOffset(swapButtonContext.quoteDeadlineParams))
 
   return (
     <>

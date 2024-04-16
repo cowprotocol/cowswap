@@ -17,6 +17,7 @@ import { Field } from 'legacy/state/types'
 
 import { EthFlowBanner } from 'modules/swap/containers/EthFlow/EthFlowBanner'
 import { SwapButtonState } from 'modules/swap/helpers/getSwapButtonState'
+import { QuoteDeadlineParams } from 'modules/tradeQuote'
 
 import { TradeApproveButton } from 'common/containers/TradeApprove/TradeApproveButton'
 
@@ -38,6 +39,7 @@ export interface SwapButtonsContext {
   onCurrencySelection: (field: Field, currency: Currency) => void
   recipientAddressOrName: string | null
   widgetStandaloneMode?: boolean
+  quoteDeadlineParams: QuoteDeadlineParams
 }
 
 const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonsContext) => JSX.Element } = {

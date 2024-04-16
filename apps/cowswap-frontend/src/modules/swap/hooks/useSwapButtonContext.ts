@@ -27,6 +27,7 @@ import { TradeType, useTradeConfirmActions, useWrapNativeFlow } from 'modules/tr
 import { useIsNativeIn } from 'modules/trade/hooks/useIsNativeInOrOut'
 import { useIsWrappedOut } from 'modules/trade/hooks/useIsWrappedInOrOut'
 import { useWrappedToken } from 'modules/trade/hooks/useWrappedToken'
+import { QuoteDeadlineParams } from 'modules/tradeQuote'
 
 import { useApproveState } from 'common/hooks/useApproveState'
 
@@ -96,6 +97,12 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
   const isBundlingSupported = useIsBundlingSupported()
   const isPermitSupported = useTokenSupportsPermit(currencyIn, TradeType.SWAP)
 
+  const quoteDeadlineParams: QuoteDeadlineParams = {
+    validFor: quote?.validFor,
+    quoteValidTo: quote?.quoteValidTo,
+    quoteDate: quote?.quoteDate,
+  }
+
   const swapButtonState = getSwapButtonState({
     account,
     isSupportedWallet,
@@ -116,6 +123,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
     trade,
     isBestQuoteLoading,
     isPermitSupported,
+    quoteDeadlineParams,
   })
 
   return {
@@ -133,6 +141,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
     onCurrencySelection,
     recipientAddressOrName,
     widgetStandaloneMode: standaloneMode,
+    quoteDeadlineParams,
   }
 }
 
