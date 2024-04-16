@@ -4,7 +4,7 @@ import { isInjectedWidget } from '@cowprotocol/common-utils'
 import ErrorBoundary from 'legacy/components/ErrorBoundary'
 import Footer from 'legacy/components/Footer'
 import Header from 'legacy/components/Header'
-import URLWarning from 'legacy/components/Header/URLWarning'
+import { URLWarning } from 'legacy/components/Header/URLWarning'
 import TopLevelModals from 'legacy/components/TopLevelModals'
 import DarkModeQueryParamReader from 'legacy/theme'
 
