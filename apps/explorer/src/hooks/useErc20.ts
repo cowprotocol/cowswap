@@ -72,7 +72,7 @@ export function useMultipleErc20(
   )
 
   // If native token is in the list of tokens to be fetched, memoize it here
-  const native = useMemo(
+  const nativeState = useMemo(
     () =>
       addresses.reduce<Record<string, TokenErc20> | undefined>((native, address) => {
         if (native) return native
@@ -149,6 +149,6 @@ export function useMultipleErc20(
   return {
     isLoading: isTokenListLoading || isLoading,
     error: errors,
-    value: { ...erc20s, ...fromTokenList, ...native },
+    value: { ...erc20s, ...fromTokenList, ...nativeState },
   }
 }
