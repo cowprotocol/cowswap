@@ -1,7 +1,7 @@
 import { useWalletDetails, useWalletInfo, getWeb3ReactConnection } from '@cowprotocol/wallet'
 import { useWeb3React } from '@web3-react/core'
 
-import { useToggleWalletModal } from 'legacy/state/application/hooks'
+import { useWeb3Modal } from '@web3modal/ethers5/react'
 
 import { Web3StatusInner } from '../../pure/Web3StatusInner'
 import { Wrapper } from '../../pure/Web3StatusInner/styled'
@@ -19,7 +19,8 @@ export function Web3Status({ pendingActivities, className }: Web3StatusProps) {
   const { ensName } = useWalletDetails()
   const connectionType = getWeb3ReactConnection(connector).type
 
-  const toggleWalletModal = useToggleWalletModal()
+  const { open: openConnectWalletModal } = useWeb3Modal()
+
   useCloseFollowTxPopupIfNotPendingOrder()
 
   if (!active) {
@@ -32,7 +33,7 @@ export function Web3Status({ pendingActivities, className }: Web3StatusProps) {
         pendingCount={pendingActivities.length}
         account={account}
         ensName={ensName}
-        connectWallet={toggleWalletModal}
+        connectWallet={openConnectWalletModal}
         connectionType={connectionType}
       />
       <WalletModal />

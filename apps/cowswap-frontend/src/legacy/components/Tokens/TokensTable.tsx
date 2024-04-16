@@ -6,9 +6,9 @@ import { useFilterTokens, usePrevious } from '@cowprotocol/common-hooks'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
+import { useWeb3Modal } from '@web3modal/ethers5/react'
 
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
-import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
 import { usePendingApprovalModal } from 'common/hooks/usePendingApprovalModal'
 import { CowModal } from 'common/pure/Modal'
@@ -58,7 +58,7 @@ export default function TokenTable({
   prevQuery,
   debouncedQuery,
 }: TokenTableParams) {
-  const toggleWalletModal = useToggleWalletModal()
+  const { open: toggleWalletModal } = useWeb3Modal()
   const tableRef = useRef<HTMLTableElement | null>(null)
 
   // reset pagination when user is in a page > 1, searching and deletes query

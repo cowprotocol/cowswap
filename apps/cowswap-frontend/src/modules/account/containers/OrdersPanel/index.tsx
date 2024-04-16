@@ -4,10 +4,9 @@ import { ReactComponent as Close } from '@cowprotocol/assets/images/x.svg'
 import { UI } from '@cowprotocol/ui'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
+import { useWeb3Modal } from '@web3modal/ethers5/react'
 import { transparentize } from 'color2k'
 import styled from 'styled-components/macro'
-
-import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
 import { toggleAccountSelectorModalAtom } from 'modules/wallet/containers/AccountSelectorModal/state'
 
@@ -129,7 +128,7 @@ const Wrapper = styled.div`
 export function OrdersPanel() {
   const { active } = useWalletInfo()
   const { ensName } = useWalletDetails()
-  const toggleWalletModal = useToggleWalletModal()
+  const { open: toggleWalletModal } = useWeb3Modal()
   const toggleAccountSelectorModal = useSetAtom(toggleAccountSelectorModalAtom)
   const { isOpen } = useAccountModalState()
   const { pendingActivity, confirmedActivity } = useCategorizeRecentActivity()
