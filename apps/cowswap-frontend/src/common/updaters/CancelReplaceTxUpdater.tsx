@@ -68,7 +68,7 @@ export function CancelReplaceTxUpdater(): null {
   const accountLowerCase = account?.toLowerCase() || ''
   const pendingHashes = useAllTransactionHashes(
     (tx) =>
-      !tx.receipt && !tx.replacementType && !tx.linkedTransactionHash && tx.hashType === HashType.ETHEREUM_TX && tx.from.toLowerCase() === accountLowerCase
+      !!tx.hash && !tx.receipt && !tx.replacementType && !tx.linkedTransactionHash && tx.hashType === HashType.ETHEREUM_TX && tx.from.toLowerCase() === accountLowerCase
   )
 
   useEffect(() => {
