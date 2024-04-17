@@ -1,5 +1,4 @@
-import { useWalletDetails, useWalletInfo, getWeb3ReactConnection } from '@cowprotocol/wallet'
-import { useWeb3React } from '@web3-react/core'
+import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { useWeb3Modal } from '@web3modal/ethers5/react'
 
 import { Web3StatusInner } from '../../pure/Web3StatusInner'
@@ -12,10 +11,8 @@ export interface Web3StatusProps {
   className?: string
 }
 export function Web3Status({ pendingActivities, className }: Web3StatusProps) {
-  const { connector } = useWeb3React()
   const { account } = useWalletInfo()
   const { ensName } = useWalletDetails()
-  const connectionType = getWeb3ReactConnection(connector).type
 
   const { open: openConnectWalletModal } = useWeb3Modal()
 
@@ -28,7 +25,6 @@ export function Web3Status({ pendingActivities, className }: Web3StatusProps) {
         account={account}
         ensName={ensName}
         connectWallet={openConnectWalletModal}
-        connectionType={connectionType}
       />
       <AccountSelectorModal />
     </Wrapper>

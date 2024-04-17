@@ -1,10 +1,7 @@
-import { useWeb3React } from '@web3-react/core'
+import { useWeb3ModalAccount } from '@web3modal/ethers5/react'
 
-/**
- * TODO: replace by WAGMI
- */
 export function useWalletChainId(): number | undefined {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWeb3ModalAccount()
 
   return chainId
 }

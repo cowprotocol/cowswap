@@ -1,29 +1,40 @@
 import { shortenAddress } from '@cowprotocol/common-utils'
 import { Command } from '@cowprotocol/types'
 import { Loader, RowBetween } from '@cowprotocol/ui'
-import { ConnectionType } from '@cowprotocol/wallet'
+import { Identicon } from '@cowprotocol/wallet'
 
 import { Trans } from '@lingui/macro'
 import ICON_WALLET from 'assets/icon/wallet.svg'
 import SVG from 'react-inlinesvg'
+import styled from 'styled-components/macro'
 
 import { upToTiny, upToExtraSmall, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 
 import { Text, Web3StatusConnect, Web3StatusConnected } from './styled'
 
 import { FollowPendingTxPopup } from '../../containers/FollowPendingTxPopup'
-import { StatusIcon } from '../StatusIcon'
+
+const IconWrapper = styled.div<{ size?: number }>`
+  ${({ theme }) => theme.flexColumnNoWrap};
+  align-items: center;
+  justify-content: center;
+
+  & > img,
+  span {
+    height: 16px;
+    width: 16px;
+  }
+`
 
 export interface Web3StatusInnerProps {
   account?: string
   pendingCount: number
   connectWallet: Command
-  connectionType: ConnectionType
   ensName?: string | null
 }
 
 export function Web3StatusInner(props: Web3StatusInnerProps) {
-  const { account, pendingCount, ensName, connectionType, connectWallet } = props
+  const { account, pendingCount, ensName, connectWallet } = props
 
   const hasPendingTransactions = !!pendingCount
   const isUpToExtraSmall = useMediaQuery(upToExtraSmall)
@@ -44,7 +55,11 @@ export function Web3StatusInner(props: Web3StatusInnerProps) {
         ) : (
           <Text>{ensName || shortenAddress(account, isUpToTiny ? 4 : isUpToExtraSmall ? 3 : 4)}</Text>
         )}
-        {!hasPendingTransactions && <StatusIcon connectionType={connectionType} />}
+        {!hasPendingTransactions && (
+          <IconWrapper>
+            <Identicon />
+          </IconWrapper>
+        )}
       </Web3StatusConnected>
     )
   }

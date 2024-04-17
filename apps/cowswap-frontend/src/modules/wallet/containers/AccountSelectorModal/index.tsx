@@ -4,18 +4,9 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useNativeTokensBalances } from '@cowprotocol/balances-and-allowances'
 import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { useAddSnackbar } from '@cowprotocol/snackbars'
-import {
-  accountsLoaders,
-  hwAccountIndexAtom,
-  getConnectionIcon,
-  getConnectionName,
-  AccountIndexSelect,
-  HardWareWallet,
-  getWeb3ReactConnection,
-  useWalletInfo,
-} from '@cowprotocol/wallet'
+import { hwAccountIndexAtom, AccountIndexSelect, useWalletInfo, WalletAccountsLoader } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
-import { useWeb3React } from '@web3-react/core'
+import { useWalletInfo as useWeb3WalletInfo } from '@web3modal/ethers5/react'
 
 import { Trans } from '@lingui/macro'
 
@@ -32,17 +23,17 @@ export function AccountSelectorModal() {
   const closeModal = useSetAtom(toggleAccountSelectorModalAtom)
 
   const [hwAccountIndex, setHwAccountIndex] = useAtom(hwAccountIndexAtom)
-  const { connector } = useWeb3React()
   const addSnackbar = useAddSnackbar()
+  const { walletInfo } = useWeb3WalletInfo()
 
   const nativeToken = NATIVE_CURRENCIES[chainId]
 
-  const connectionType = useMemo(() => getWeb3ReactConnection(connector).type, [connector])
+  const walletIcon = walletInfo?.icon
+  const walletName = walletInfo?.name
 
-  const walletIcon = useMemo(() => getConnectionIcon(connectionType), [connectionType])
-  const walletName = useMemo(() => getConnectionName(connectionType), [connectionType])
-
-  const accountsLoader = useMemo(() => accountsLoaders[connectionType as HardWareWallet], [connectionType])
+  // TODO: FIXME
+  // const accountsLoader = useMemo(() => accountsLoaders[connectionType as HardWareWallet], [connectionType])
+  const accountsLoader: WalletAccountsLoader | undefined = undefined as unknown as WalletAccountsLoader
 
   const [accountsList, setAccountsList] = useState<string[] | null>(null)
 

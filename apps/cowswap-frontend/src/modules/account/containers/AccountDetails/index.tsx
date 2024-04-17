@@ -1,4 +1,4 @@
-import { Fragment, useMemo } from 'react'
+import { Fragment } from 'react'
 
 import { CHAIN_INFO } from '@cowprotocol/common-const'
 import {
@@ -11,17 +11,12 @@ import {
 import { Command } from '@cowprotocol/types'
 import { ExternalLink } from '@cowprotocol/ui'
 import {
-  ConnectionType,
   useWalletInfo,
-  getConnectionName,
   getIsCoinbaseWallet,
-  getIsMetaMask,
   useWalletDetails,
   useIsWalletConnect,
-  getWeb3ReactConnection,
-  getIsHardWareWallet,
+  useIsMetaMask,
 } from '@cowprotocol/wallet'
-import { useWeb3React } from '@web3-react/core'
 import { useDisconnect } from '@web3modal/ethers5/react'
 
 import { Trans } from '@lingui/macro'
@@ -97,7 +92,6 @@ export function AccountDetails({
   forceHardwareWallet,
 }: AccountDetailsProps) {
   const { account, chainId } = useWalletInfo()
-  const { connector } = useWeb3React()
   const walletDetails = useWalletDetails()
   const { disconnect: disconnectWallet } = useDisconnect()
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
@@ -111,9 +105,8 @@ export function AccountDetails({
   const activityTotalCount = activities?.length || 0
 
   const isWalletConnect = useIsWalletConnect()
-  const isMetaMask = getIsMetaMask()
+  const isMetaMask = useIsMetaMask()
   const isCoinbaseWallet = getIsCoinbaseWallet()
-  const connection = useMemo(() => getWeb3ReactConnection(connector), [connector])
   const isInjectedMobileBrowser = (isMetaMask || isCoinbaseWallet) && isMobile
 
   const unsupportedNetworksText = useUnsupportedNetworksText()
@@ -121,7 +114,7 @@ export function AccountDetails({
   if (!toggleWalletModal) return null
 
   function formatConnectorName() {
-    const name = walletDetails?.walletName || getConnectionName(connection.type, getIsMetaMask())
+    const name = walletDetails?.walletName
     // In case the wallet is connected via WalletConnect and has wallet name set, add the suffix to be clear
     // This to avoid confusion for instance when using Metamask mobile
     // When name is not set, it defaults to WalletConnect already
@@ -142,7 +135,10 @@ export function AccountDetails({
   }
 
   const networkLabel = CHAIN_INFO[chainId].label
-  const isHardWareWallet = forceHardwareWallet || getIsHardWareWallet(connection.type)
+  // TODO: FIXME  const isHardWareWallet = forceHardwareWallet || getIsHardWareWallet(connection.type)
+  const isHardWareWallet = forceHardwareWallet
+  // TODO: FIXME the condition used to be connection.type !== ConnectionType.GNOSIS_SAFE
+  const isWalletChangingAllowed = true
 
   return (
     <Wrapper>
@@ -192,7 +188,7 @@ export function AccountDetails({
 
                   {standaloneMode !== false && (
                     <>
-                      {connection.type !== ConnectionType.GNOSIS_SAFE && (
+                      {isWalletChangingAllowed && (
                         <WalletAction onClick={toggleWalletModal}>
                           <Trans>Change Wallet</Trans>
                         </WalletAction>

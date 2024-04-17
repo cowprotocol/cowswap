@@ -4,9 +4,9 @@ import { addTokenToMetamaskAnalytics } from '@cowprotocol/analytics'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { getWrappedToken } from '@cowprotocol/common-utils'
 import { getTokenLogoUrls } from '@cowprotocol/tokens'
-import { getIsMetaMask } from '@cowprotocol/wallet'
+import { useIsMetaMask } from '@cowprotocol/wallet'
 import { Currency } from '@uniswap/sdk-core'
-import { useWeb3React } from '@web3-react/core'
+import { useWeb3ModalProvider } from '@web3modal/ethers5/react'
 
 import { AddToMetamask as AddToMetamaskPure } from '../../pure/AddToMetamask'
 
@@ -18,8 +18,8 @@ export type AddToMetamaskProps = {
 
 export function AddToMetamask(props: AddToMetamaskProps) {
   const { currency, shortLabel, className } = props
-  const { connector } = useWeb3React()
-  const isMetamask = getIsMetaMask()
+  const isMetaMask = useIsMetaMask()
+  const { walletProvider } = useWeb3ModalProvider()
 
   const [success, setSuccess] = useState<boolean | undefined>()
 
@@ -27,13 +27,22 @@ export function AddToMetamask(props: AddToMetamaskProps) {
   const logoURL = getTokenLogoUrls(token as TokenWithLogo)[0]
 
   const addToken = useCallback(() => {
-    if (!token?.symbol || !connector.watchAsset) return
-    connector
-      .watchAsset({
-        address: token.address,
-        symbol: token.symbol,
-        decimals: token.decimals,
-        image: logoURL,
+    if (!token?.symbol || !walletProvider) return
+
+    walletProvider
+      .request({
+        method: 'wallet_watchAsset',
+        params: [
+          {
+            type: 'ERC20', // Initially only supports ERC20, but eventually more!
+            options: {
+              address: token.address,
+              symbol: token.symbol,
+              decimals: token.decimals,
+              image: logoURL,
+            },
+          },
+        ],
       })
       .then(() => {
         addTokenToMetamaskAnalytics('Succeeded', token.symbol)
@@ -43,9 +52,9 @@ export function AddToMetamask(props: AddToMetamaskProps) {
         addTokenToMetamaskAnalytics('Failed', token.symbol)
         setSuccess(false)
       })
-  }, [connector, logoURL, token])
+  }, [walletProvider, logoURL, token])
 
-  if (!currency || !isMetamask) {
+  if (!currency || !isMetaMask) {
     return null
   }
 
