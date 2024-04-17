@@ -27,7 +27,7 @@ export function AddToMetamask(props: AddToMetamaskProps) {
   const logoURL = getTokenLogoUrls(token as TokenWithLogo)[0]
 
   const addToken = useCallback(() => {
-    if (!token?.symbol || !walletProvider) return
+    if (!token?.symbol || !walletProvider?.request) return
 
     walletProvider
       .request({

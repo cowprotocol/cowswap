@@ -6,8 +6,7 @@ import React, { StrictMode, useCallback, useContext, ReactNode, useEffect } from
 import IMAGE_MOON from '@cowprotocol/assets/cow-swap/moon.svg'
 import IMAGE_SUN from '@cowprotocol/assets/cow-swap/sun.svg'
 import { BlockNumberProvider } from '@cowprotocol/common-hooks'
-import { WalletUpdater, injectedConnection } from '@cowprotocol/wallet'
-import { Web3ReactProvider } from '@web3-react/core'
+import { WalletUpdater } from '@cowprotocol/wallet'
 
 import { LanguageProvider } from 'i18n'
 import SVG from 'react-inlinesvg'
@@ -87,9 +86,6 @@ export const DemoContainer = styled.div`
 
 const chainId = 5
 
-const { connector, hooks } = injectedConnection
-connector.activate(chainId)
-
 const Fixture = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const skeleton = document.getElementById('swap-skeleton')
@@ -104,16 +100,14 @@ const Fixture = ({ children }: { children: ReactNode }) => {
           <ThemeProvider>
             <ThemedGlobalStyle />
             <LanguageProvider>
-              <Web3ReactProvider connectors={[[connector, hooks]]} network={chainId}>
-                <BlockNumberProvider>
-                  <WalletUpdater />
-                  <Wrapper>
-                    <DarkModeToggle>
-                      <WrapperInner>{children}</WrapperInner>
-                    </DarkModeToggle>
-                  </Wrapper>
-                </BlockNumberProvider>
-              </Web3ReactProvider>
+              <BlockNumberProvider>
+                <WalletUpdater />
+                <Wrapper>
+                  <DarkModeToggle>
+                    <WrapperInner>{children}</WrapperInner>
+                  </DarkModeToggle>
+                </Wrapper>
+              </BlockNumberProvider>
             </LanguageProvider>
           </ThemeProvider>
         </HashRouter>
