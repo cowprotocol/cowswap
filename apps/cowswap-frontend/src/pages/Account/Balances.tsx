@@ -84,7 +84,7 @@ export default function Profile() {
   )
 
   const isCardsLoading = useMemo(() => {
-    let output = isVCowLoading || isLockedGnoLoading || !provider
+    let output = isVCowLoading || isLockedGnoLoading
 
     // remove loader after 5 sec in any case
     setTimeout(() => {
@@ -92,7 +92,7 @@ export default function Profile() {
     }, 5000)
 
     return output
-  }, [isLockedGnoLoading, isVCowLoading, provider])
+  }, [isLockedGnoLoading, isVCowLoading])
 
   // Init modal hooks
   const { handleSetError, handleCloseError, ErrorModal } = useErrorModal()
