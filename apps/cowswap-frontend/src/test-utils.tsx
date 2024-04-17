@@ -4,8 +4,6 @@ import { createStore } from 'jotai/vanilla'
 import { ReactElement, ReactNode, useMemo } from 'react'
 
 import { isInjectedWidget } from '@cowprotocol/common-utils'
-import { initializeConnector, Web3ReactHooks, Web3ReactProvider } from '@web3-react/core'
-import { Connector } from '@web3-react/types'
 
 import { i18n } from '@lingui/core'
 import { I18nProvider } from '@lingui/react'
@@ -51,28 +49,10 @@ const customRender = (ui: ReactElement) => render(ui, { wrapper: WithProviders }
 export * from '@testing-library/react'
 export { customRender as render }
 
-class MockedConnector extends Connector {
-  activate(): Promise<void> {
-    return Promise.resolve()
-  }
-
-  getActions() {
-    return this.actions
-  }
-}
-
-export const [mockedConnector, mockedConnectorHooks] = initializeConnector<MockedConnector>(
-  (actions) => new MockedConnector(actions)
-)
-
 export function WithMockedWeb3({ children, location }: { children?: ReactNode; location?: LocationDescriptorObject }) {
-  const connectors: [Connector, Web3ReactHooks][] = [[mockedConnector, mockedConnectorHooks]]
-
   return (
     <MemoryRouter initialEntries={location ? [location] : undefined}>
-      <Provider store={cowSwapStore}>
-        <Web3ReactProvider connectors={connectors}>{children}</Web3ReactProvider>
-      </Provider>
+      <Provider store={cowSwapStore}>{children}</Provider>
     </MemoryRouter>
   )
 }
