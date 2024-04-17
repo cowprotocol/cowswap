@@ -11,9 +11,10 @@ import { Contract } from '@ethersproject/contracts'
 import { getProviderOrSigner } from '@cowprotocol/common-utils'
 import { ARGENT_WALLET_DETECTOR_ADDRESS } from '@cowprotocol/common-const'
 import { ArgentWalletDetectorAbi } from '@cowprotocol/abis'
+import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 function useCheckIsSmartContract(): boolean | undefined {
-  const { provider } = useWeb3React()
+  const provider = useWalletProvider()
   const { account } = useWalletInfo()
 
   const { data } = useSWR(['isSmartContract', account, provider], async () => {
@@ -55,7 +56,7 @@ export function useIsSmartContractWallet(): boolean | undefined {
 }
 
 function useIsArgentWallet(): boolean {
-  const { provider } = useWeb3React()
+  const provider = useWalletProvider()
   const { account, chainId } = useWalletInfo()
   const argentWalletContract = useMemo(() => {
     if (!provider) return null

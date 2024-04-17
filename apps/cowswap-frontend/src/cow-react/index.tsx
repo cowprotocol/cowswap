@@ -21,7 +21,6 @@ import * as serviceWorkerRegistration from 'serviceWorkerRegistration'
 import styled from 'styled-components/macro'
 
 import AppziButton from 'legacy/components/AppziButton'
-import Web3Provider from 'legacy/components/Web3Provider'
 import { upToMedium, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 import { cowSwapStore } from 'legacy/state'
 import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from 'legacy/theme'
@@ -69,29 +68,27 @@ function Main() {
         <AtomProvider store={jotaiStore}>
           <HashRouter>
             <LanguageProvider>
-              <Web3Provider>
-                <ThemeProvider>
-                  <ThemedGlobalStyle />
-                  <BlockNumberProvider>
-                    <WithLDProvider>
-                      <WalletUnsupportedNetworkBanner />
-                      <Updaters />
+              <ThemeProvider>
+                <ThemedGlobalStyle />
+                <BlockNumberProvider>
+                  <WithLDProvider>
+                    <WalletUnsupportedNetworkBanner />
+                    <Updaters />
 
-                      {!isInjectedWidgetMode && !isUpToMedium && (
-                        <FooterButtonsWrapper isUpToMedium={isUpToMedium}>
-                          <FeatureGuard featureFlag="cowFortuneEnabled">
-                            <FortuneWidget />
-                          </FeatureGuard>
-                          <AppziButton />
-                        </FooterButtonsWrapper>
-                      )}
+                    {!isInjectedWidgetMode && !isUpToMedium && (
+                      <FooterButtonsWrapper isUpToMedium={isUpToMedium}>
+                        <FeatureGuard featureFlag="cowFortuneEnabled">
+                          <FortuneWidget />
+                        </FeatureGuard>
+                        <AppziButton />
+                      </FooterButtonsWrapper>
+                    )}
 
-                      <Toasts />
-                      <App />
-                    </WithLDProvider>
-                  </BlockNumberProvider>
-                </ThemeProvider>
-              </Web3Provider>
+                    <Toasts />
+                    <App />
+                  </WithLDProvider>
+                </BlockNumberProvider>
+              </ThemeProvider>
             </LanguageProvider>
           </HashRouter>
         </AtomProvider>

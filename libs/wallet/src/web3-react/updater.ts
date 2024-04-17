@@ -18,6 +18,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useENSName } from '@cowprotocol/ens'
 import ms from 'ms.macro'
 import { useWeb3ModalAccount } from '@web3modal/ethers5/react'
+import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 const SAFE_INFO_UPDATE_INTERVAL = ms`30s`
 
@@ -63,7 +64,7 @@ function _useWalletDetails(account?: string): WalletDetails {
 }
 
 function _useSafeInfo(walletInfo: WalletInfo): GnosisSafeInfo | undefined {
-  const { provider } = useWeb3React()
+  const provider = useWalletProvider()
   const { account, chainId } = walletInfo
   const [safeInfo, setSafeInfo] = useState<GnosisSafeInfo>()
   const { isReadOnly } = useSafeAppsSdkInfo() || {}
