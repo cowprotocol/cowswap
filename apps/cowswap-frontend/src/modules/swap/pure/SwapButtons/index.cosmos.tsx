@@ -27,6 +27,11 @@ const swapButtonsContext: SwapButtonsContext = {
   toggleWalletModal: () => void 0,
   hasEnoughWrappedBalanceForSwap: true,
   recipientAddressOrName: null,
+  quoteDeadlineParams: {
+    validFor: 0,
+    quoteValidTo: 0,
+    localQuoteTimestamp: 0,
+  },
 }
 
 function useCustomProps(): SwapButtonsContext {

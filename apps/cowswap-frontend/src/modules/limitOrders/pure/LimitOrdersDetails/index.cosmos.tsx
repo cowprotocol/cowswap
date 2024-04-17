@@ -7,6 +7,7 @@ import { CurrencyAmount } from '@uniswap/sdk-core'
 import { getAppData } from 'modules/appData'
 import { defaultLimitOrdersSettings } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { initLimitRateState } from 'modules/limitOrders/state/limitRateAtom'
+import { DEFAULT_TRADE_QUOTE_STATE } from 'modules/tradeQuote'
 
 import { TradeFlowContext } from '../../services/types'
 
@@ -43,6 +44,7 @@ const tradeContext: TradeFlowContext = {
   chainId: 1,
   dispatch: (() => void 0) as any,
   allowsOffchainSigning: true,
+  quoteState: DEFAULT_TRADE_QUOTE_STATE,
 }
 
 const rateInfoParams = {

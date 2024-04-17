@@ -25,6 +25,7 @@ export async function getFullQuote({ quoteParams }: { quoteParams: LegacyFeeQuot
     amount: isSell ? quote.buyAmount : quote.sellAmount,
     token: isSell ? quote.buyToken : quote.sellToken,
     quoteId: quoteId ?? undefined,
+    quoteValidTo: quote.validTo,
   }
   const fee = {
     amount: quote.feeAmount,
