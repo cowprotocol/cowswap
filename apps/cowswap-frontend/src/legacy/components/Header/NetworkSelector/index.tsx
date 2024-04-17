@@ -165,7 +165,7 @@ export function NetworkSelector() {
   const onSelectChain = useOnSelectNetwork()
   const isUpToMedium = useMediaQuery(upToMedium)
 
-  if (!provider || isSmartContractWallet || isTallyWallet) {
+  if (isSmartContractWallet || isTallyWallet) {
     return null
   }
 

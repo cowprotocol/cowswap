@@ -1,6 +1,7 @@
-import React, { useMemo } from 'react'
+import React, { useEffect, useMemo } from 'react'
 
 import { isInjectedWidget } from '@cowprotocol/common-utils'
+import { useWeb3ModalTheme } from '@web3modal/ethers5/react'
 
 import { Text, TextProps as TextPropsOriginal } from 'rebass'
 import styled, {
@@ -179,6 +180,11 @@ export function theme(darkmode: boolean, isInjectedWidgetMode: boolean): Default
 export default function ThemeProvider({ children }: { children?: React.ReactNode }) {
   const darkMode = useIsDarkMode()
   const injectedWidgetTheme = useInjectedWidgetPalette()
+  const { setThemeMode } = useWeb3ModalTheme()
+
+  useEffect(() => {
+    setThemeMode(darkMode ? 'dark' : 'light')
+  }, [darkMode, setThemeMode])
 
   const themeObject = useMemo(() => {
     const widgetMode = isInjectedWidget()
