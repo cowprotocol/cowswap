@@ -1,22 +1,22 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
-import { Network, UiError } from 'types'
-import { useMultipleErc20 } from 'hooks/useErc20'
-import { updateWeb3Provider } from 'api/web3'
-import { web3 } from '../explorer/api'
-import { getAccountOrders, getTxOrders, Order } from 'api/operator'
+import { ALL_SUPPORTED_CHAIN_IDS } from '@cowprotocol/cow-sdk'
+import { Order, getAccountOrders, getTxOrders } from 'api/operator'
 import { GetTxOrdersParams, RawOrder } from 'api/operator/types'
-import { useNetworkId } from 'state/network'
-import { transformOrder } from 'utils'
-import { ORDERS_QUERY_INTERVAL } from '../explorer/const'
+import { updateWeb3Provider } from 'api/web3'
 import { Props as ExplorerLinkProps } from 'components/common/BlockExplorerLink'
+import { useMultipleErc20 } from 'hooks/useErc20'
 import {
+  GetOrderApi,
   GetOrderResult,
   MultipleOrders,
-  GetOrderApi,
   tryGetOrderOnAllNetworksAndEnvironments,
 } from 'services/helpers/tryGetOrderOnAllNetworks'
-import { ALL_SUPPORTED_CHAIN_IDS } from '@cowprotocol/cow-sdk'
+import { useNetworkId } from 'state/network'
+import { Network, UiError } from 'types'
+import { transformOrder } from 'utils'
+import { web3 } from '../explorer/api'
+import { ORDERS_QUERY_INTERVAL } from '../explorer/const'
 
 function isObjectEmpty(object: Record<string, unknown>): boolean {
   // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
@@ -93,8 +93,8 @@ function useOrdersWithTokenInfo(networkId: Network | undefined): UseOrdersWithTo
     }
 
     const newOrders = orders.map((order) => {
-      order.buyToken = valueErc20s[order.buyTokenAddress] || order.buyToken
-      order.sellToken = valueErc20s[order.sellTokenAddress] || order.sellToken
+      order.buyToken = valueErc20s[order.buyTokenAddress.toLowerCase()] || order.buyToken
+      order.sellToken = valueErc20s[order.sellTokenAddress.toLowerCase()] || order.sellToken
 
       return order
     })

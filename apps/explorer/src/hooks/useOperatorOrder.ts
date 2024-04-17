@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 
-import { Order, getOrder, GetOrderParams } from 'api/operator'
+import { getOrder, GetOrderParams, Order } from 'api/operator'
 
 import { getShortOrderId, transformOrder } from 'utils'
 import { Command } from '@cowprotocol/types'
@@ -132,8 +132,8 @@ export function useOrderAndErc20s(orderId: string, updateInterval = 0): UseOrder
   }
 
   if (order && value) {
-    order.buyToken = value[order?.buyTokenAddress || '']
-    order.sellToken = value[order?.sellTokenAddress || '']
+    order.buyToken = value[order?.buyTokenAddress?.toLowerCase() || '']
+    order.sellToken = value[order?.sellTokenAddress?.toLowerCase() || '']
   }
 
   return { order, isLoading: isOrderLoading || areErc20Loading, errors, errorOrderPresentInNetworkId }
