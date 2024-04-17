@@ -9,7 +9,6 @@ import { useENSName } from './useENSName'
 import { useENSResolverContract } from './useENSResolverContract'
 import useSWR from 'swr'
 import { useENSResolver } from './useENSResolver'
-import { useWeb3React } from '@web3-react/core'
 import { Erc1155, Erc1155Abi, Erc721, Erc721Abi } from '@cowprotocol/abis'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 

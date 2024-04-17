@@ -1,8 +1,6 @@
 import { useSetAtom } from 'jotai'
 import { useEffect, useMemo, useState } from 'react'
 
-import { useWeb3React } from '@web3-react/core'
-
 import { getSafeInfo } from '@cowprotocol/core'
 import { getCurrentChainIdFromUrl } from '@cowprotocol/common-utils'
 

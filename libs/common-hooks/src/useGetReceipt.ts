@@ -1,7 +1,6 @@
 import { useCallback } from 'react'
 
 import { TransactionReceipt } from '@ethersproject/abstract-provider'
-import { useWeb3React } from '@web3-react/core'
 import { Command } from '@cowprotocol/types'
 
 import { retry, RetryableError, RetryOptions } from '@cowprotocol/common-utils'

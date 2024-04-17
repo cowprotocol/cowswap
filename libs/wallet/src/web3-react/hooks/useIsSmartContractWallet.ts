@@ -1,7 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
 
-import { useWeb3React } from '@web3-react/core'
-
 import useSWR from 'swr'
 import { useAsyncMemo } from 'use-async-memo'
 import { useWalletInfo } from '../../api/hooks'
