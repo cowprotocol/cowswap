@@ -51,6 +51,10 @@ function isLoadFailedError(error: SentryErrorEvent): boolean {
     return false
   }
 
+  return searchBreadcrumbs(breadcrumbs, isErroneousBreadcrumb)
+}
+
+function searchBreadcrumbs(breadcrumbs: Sentry.Breadcrumb[], isThisTheBreadcrumbWeWant: CheckBreadcrumb) {
   const now = Date.now()
 
   // We go from the back since the last breadcrumb is most likely the erroneous one
@@ -63,13 +67,15 @@ function isLoadFailedError(error: SentryErrorEvent): boolean {
       break
     }
 
-    if (isErroneousBreadcrumb(breadcrumb)) {
+    if (isThisTheBreadcrumbWeWant(breadcrumb)) {
       return true
     }
   }
 
   return false
 }
+
+type CheckBreadcrumb = (breadcrumb: Sentry.Breadcrumb) => boolean
 
 const TYPE_ERROR_FETCH_FAILED_VALUES = new Set([
   'Failed to fetch',
