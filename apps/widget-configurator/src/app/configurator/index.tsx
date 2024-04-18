@@ -20,7 +20,6 @@ import ListItemButton from '@mui/material/ListItemButton'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
 import Typography from '@mui/material/Typography'
-import { Button } from 'rebass'
 import { useAccount, useNetwork } from 'wagmi'
 
 import { COW_LISTENERS, DEFAULT_PARTNER_FEE_RECIPIENT, DEFAULT_TOKEN_LISTS, TRADE_MODES, IS_IFRAME } from './consts'
@@ -66,7 +65,6 @@ const UTM_PARAMS = 'utm_content=cow-widget-configurator&utm_medium=web&utm_sourc
 export type WidgetMode = 'dapp' | 'standalone'
 
 export function Configurator({ title }: { title: string }) {
-  const [hide, setHide] = useState(false)
   const { isDisconnected, isConnected } = useAccount()
   const network = useNetwork()
   const provider = useProvider()
@@ -180,28 +178,8 @@ export function Configurator({ title }: { title: string }) {
 
   useSyncWidgetNetwork(chainId, setNetworkControlState)
 
-  const toogleHideButton = (
-    <Button
-      onClick={() => {
-        setHide(!hide)
-      }}
-    >
-      {hide ? 'Show' : 'Hide'}
-    </Button>
-  )
-
-  if (hide) {
-    return (
-      <>
-        {toogleHideButton}
-        <p>Widget is hidden</p>
-      </>
-    )
-  }
-
   return (
     <Box sx={WrapperStyled}>
-      {toogleHideButton}
       {!isDrawerOpen && (
         <Fab
           size="medium"
