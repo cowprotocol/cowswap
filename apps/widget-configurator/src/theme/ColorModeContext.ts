@@ -57,7 +57,7 @@ export const globalStyles = (theme: Theme, mode: PaletteMode) => ({
     backgroundImage: mode === 'dark' && theme.palette.cow.gradient,
   },
   'w3m-modal': {
-    zIndex: 13333200,
+    zIndex: 1200,
   },
 })
 
