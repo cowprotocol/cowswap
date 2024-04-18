@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.0.2](https://github.com/cowprotocol/cowswap/compare/ui-v1.0.1...ui-v1.0.2) (2024-04-18)
+
+
+### Bug Fixes
+
+* long token names ([#4235](https://github.com/cowprotocol/cowswap/issues/4235)) ([45e1a88](https://github.com/cowprotocol/cowswap/commit/45e1a88754ba55c6481c1eb4c230102067f0696a))
+* style select dropdown background ([#4231](https://github.com/cowprotocol/cowswap/issues/4231)) ([a764f7a](https://github.com/cowprotocol/cowswap/commit/a764f7ae5e25d3c59884ef043e31e67e56f64216))
+* **trade:** take time offset into account for quote and order validTo ([#4236](https://github.com/cowprotocol/cowswap/issues/4236)) ([7184ad4](https://github.com/cowprotocol/cowswap/commit/7184ad4655c3ae74fde084e306426fc49a11a360))
+
 ## [1.0.1](https://github.com/cowprotocol/cowswap/compare/ui-v1.0.0...ui-v1.0.1) (2024-04-02)
 
 

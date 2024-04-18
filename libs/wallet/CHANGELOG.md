@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.2](https://github.com/cowprotocol/cowswap/compare/wallet-v1.0.1...wallet-v1.0.2) (2024-04-18)
+
+
+### Bug Fixes
+
+* **wallet:** reset safe info when there's no safe data ([#4246](https://github.com/cowprotocol/cowswap/issues/4246)) ([06aa91c](https://github.com/cowprotocol/cowswap/commit/06aa91c3ec8e63e3ed76e623a21ad567b669b062))
+* **widget:** adjust rpc timeout conditions ([#4232](https://github.com/cowprotocol/cowswap/issues/4232)) ([4fa95dd](https://github.com/cowprotocol/cowswap/commit/4fa95dd8d21c7277ac3e4af6f17cadfd337e78f4))
+
 ## [1.0.1](https://github.com/cowprotocol/cowswap/compare/wallet-v1.0.0...wallet-v1.0.1) (2024-04-11)
 
 
