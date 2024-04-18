@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.65.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.65.1...cowswap-v1.65.2) (2024-04-18)
+
+
+### Bug Fixes
+
+* **approve:** remove Metamask special approve flow ([#4244](https://github.com/cowprotocol/cowswap/issues/4244)) ([6d13b22](https://github.com/cowprotocol/cowswap/commit/6d13b223e9cc916a41a9735e9a930880e4a80d15))
+* **blocknative:** fix blocknative invalid tx hash ([#4258](https://github.com/cowprotocol/cowswap/issues/4258)) ([2994b50](https://github.com/cowprotocol/cowswap/commit/2994b501aafb0e232c9cc32514f8d708ee5ebbb7))
+* display initial for tokens without image ([#4230](https://github.com/cowprotocol/cowswap/issues/4230)) ([ca7d62c](https://github.com/cowprotocol/cowswap/commit/ca7d62c1469bb54a6955d3007a779b23ea3985e6))
+* **sentry:** ignore apple devices TypeError ([#4252](https://github.com/cowprotocol/cowswap/issues/4252)) ([33f697b](https://github.com/cowprotocol/cowswap/commit/33f697bd267646b39266831792fb0dc560b8d218))
+* **tooltips:** replace tooltip &lt;p&gt; with <br /> ([#4253](https://github.com/cowprotocol/cowswap/issues/4253)) ([ed5f9d2](https://github.com/cowprotocol/cowswap/commit/ed5f9d2346206f194eeeb791a3cb1237d8b934d2))
+* **trade:** take time offset into account for quote and order validTo ([#4236](https://github.com/cowprotocol/cowswap/issues/4236)) ([7184ad4](https://github.com/cowprotocol/cowswap/commit/7184ad4655c3ae74fde084e306426fc49a11a360))
+
 ## [1.65.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.65.0...cowswap-v1.65.1) (2024-04-15)
 
 

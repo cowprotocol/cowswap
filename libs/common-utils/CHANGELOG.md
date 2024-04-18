@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.1.0...common-utils-v1.1.1) (2024-04-18)
+
+
+### Bug Fixes
+
+* **trade:** take time offset into account for quote and order validTo ([#4236](https://github.com/cowprotocol/cowswap/issues/4236)) ([7184ad4](https://github.com/cowprotocol/cowswap/commit/7184ad4655c3ae74fde084e306426fc49a11a360))
+
 ## [1.1.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.0.1...common-utils-v1.1.0) (2024-04-11)
 
 
