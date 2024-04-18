@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.8.1](https://github.com/cowprotocol/cowswap/compare/widget-react-v0.8.0...widget-react-v0.8.1) (2024-04-18)
+
+
+### Bug Fixes
+
+* rearrange widget imports ([b297608](https://github.com/cowprotocol/cowswap/commit/b297608ff3005295322cbd58a19d3fb7c00f5653))
+* cleanup widget to prevent memory leaks ([#4262][https://github.com/cowprotocol/cowswap/pull/4262])
+
 ## [0.8.0](https://github.com/cowprotocol/cowswap/compare/widget-react-v0.7.0...widget-react-v0.8.0) (2024-04-15)
 
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.29.3](https://github.com/cowprotocol/cowswap/compare/explorer-v2.29.2...explorer-v2.29.3) (2024-04-18)
+
+
+### Bug Fixes
+
+* **explorer:** fix tokens not loaded on explorer ([#4245](https://github.com/cowprotocol/cowswap/issues/4245)) ([6546008](https://github.com/cowprotocol/cowswap/commit/6546008956b50d99294b26962c4c385e47c3b6d2))
+
 ## [2.29.2](https://github.com/cowprotocol/cowswap/compare/explorer-v2.29.1...explorer-v2.29.2) (2024-03-21)
 
 
