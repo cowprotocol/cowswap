@@ -17,6 +17,8 @@ import {
   useIsWalletConnect,
   useIsMetaMask,
 } from '@cowprotocol/wallet'
+import { SAFE_CONNECTOR_UID } from '@cowprotocol/wallet-provider'
+import { useWalletInfo as useWeb3WalletInfo } from '@web3modal/ethers5/react'
 import { useDisconnect } from '@web3modal/ethers5/react'
 
 import { Trans } from '@lingui/macro'
@@ -93,6 +95,7 @@ export function AccountDetails({
 }: AccountDetailsProps) {
   const { account, chainId } = useWalletInfo()
   const walletDetails = useWalletDetails()
+  const { walletInfo } = useWeb3WalletInfo()
   const { disconnect: disconnectWallet } = useDisconnect()
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
   const { standaloneMode } = useInjectedWidgetParams()
@@ -137,8 +140,7 @@ export function AccountDetails({
   const networkLabel = CHAIN_INFO[chainId].label
   // TODO: FIXME  const isHardWareWallet = forceHardwareWallet || getIsHardWareWallet(connection.type)
   const isHardWareWallet = forceHardwareWallet
-  // TODO: FIXME the condition used to be connection.type !== ConnectionType.GNOSIS_SAFE
-  const isWalletChangingAllowed = true
+  const isWalletChangingAllowed = walletInfo?.uuid !== SAFE_CONNECTOR_UID
 
   return (
     <Wrapper>

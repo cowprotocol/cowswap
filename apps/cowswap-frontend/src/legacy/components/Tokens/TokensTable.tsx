@@ -4,9 +4,9 @@ import { BalancesState } from '@cowprotocol/balances-and-allowances'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useFilterTokens, usePrevious } from '@cowprotocol/common-hooks'
 import { CurrencyAmount } from '@uniswap/sdk-core'
+import { useWeb3Modal } from '@web3modal/ethers5/react'
 
 import { Trans } from '@lingui/macro'
-import { useWeb3Modal } from '@web3modal/ethers5/react'
 
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
 

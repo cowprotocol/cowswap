@@ -1,7 +1,7 @@
 import { CHAIN_INFO, RPC_URLS } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-
 import { createWeb3Modal, defaultConfig } from '@web3modal/ethers5/react'
+import { addSafeAppConnector } from './connectors/safeAppConnector'
 
 const projectId = '7bd490257c3457cc6a5ebcc02066c21a'
 
@@ -40,4 +40,6 @@ export function initWeb3Modal() {
     projectId,
     enableAnalytics: false,
   })
+
+  addSafeAppConnector()
 }

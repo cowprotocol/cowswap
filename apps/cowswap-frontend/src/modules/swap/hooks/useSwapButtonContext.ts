@@ -9,7 +9,6 @@ import {
   useWalletInfo,
 } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
-
 import { useWeb3Modal } from '@web3modal/ethers5/react'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'

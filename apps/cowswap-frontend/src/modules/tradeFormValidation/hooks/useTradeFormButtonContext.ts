@@ -1,7 +1,6 @@
 import { useMemo } from 'react'
 
 import { useWalletDetails } from '@cowprotocol/wallet'
-
 import { useWeb3Modal } from '@web3modal/ethers5/react'
 
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
