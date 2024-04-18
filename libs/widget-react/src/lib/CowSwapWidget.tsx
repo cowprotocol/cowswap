@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-import {
-  createCowSwapWidget,
-  EthereumProvider,
-  CowSwapWidgetHandler,
-  CowSwapWidgetProps,
-  CowSwapWidgetParams,
-} from '@cowprotocol/widget-lib'
 import type { CowEventListeners } from '@cowprotocol/events'
+import {
+  CowSwapWidgetHandler,
+  CowSwapWidgetParams,
+  CowSwapWidgetProps,
+  EthereumProvider,
+  createCowSwapWidget,
+} from '@cowprotocol/widget-lib'
 
 import { Command } from '@cowprotocol/types'
 
