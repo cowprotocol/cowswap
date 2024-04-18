@@ -2,13 +2,39 @@ import * as Sentry from '@sentry/react'
 import { ErrorEvent as SentryErrorEvent } from '@sentry/types'
 
 export function beforeSend(event: SentryErrorEvent, _hint: Sentry.EventHint) {
-  if (shouldIgnoreErrorBasedOnBreadcrumbs(event)) {
+  if (shouldIgnoreErrorBasedOnExtra(event)) {
+    console.debug('Sentry: Ignoring error based on extra', event)
+    return null
+  } else if (shouldIgnoreErrorBasedOnBreadcrumbs(event)) {
     console.debug('Sentry: Ignoring error based on breadcrumbs', event)
     return null
   } else {
     return event
   }
 }
+
+/**
+ * Ignore sentry errors that are unhandled exceptions and have extra serialized that similar to:
+ *
+ * {
+ *   code: -32000,
+ *   message: header not found
+ * }
+ */
+function shouldIgnoreErrorBasedOnExtra(error: SentryErrorEvent): boolean {
+  const serialized = error.extra?.__serialized__
+
+  return Boolean(
+    serialized &&
+      typeof serialized === 'object' &&
+      'code' in serialized &&
+      serialized.code &&
+      typeof serialized.code === 'number' &&
+      EXTRA_ERROR_CODES_TO_IGNORE.has(serialized.code)
+  )
+}
+
+const EXTRA_ERROR_CODES_TO_IGNORE = new Set([-32000, 4001])
 
 /**
  * Detects whether given error is a load failed error
@@ -34,6 +60,7 @@ function shouldIgnoreErrorBasedOnBreadcrumbs(error: SentryErrorEvent): boolean {
 function isTypeError(type: string, value: string | undefined): boolean {
   return !!value && type === 'TypeError' && TYPE_ERROR_FETCH_FAILED_VALUES.has(value)
 }
+
 function isUnhandledRejectionError(type: string): boolean {
   return type === 'UnhandledRejection'
 }
