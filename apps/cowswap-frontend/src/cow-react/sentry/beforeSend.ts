@@ -2,8 +2,8 @@ import * as Sentry from '@sentry/react'
 import { ErrorEvent as SentryErrorEvent } from '@sentry/types'
 
 export function beforeSend(event: SentryErrorEvent, _hint: Sentry.EventHint) {
-  if (shouldIgnoreError(event)) {
-    console.debug('Sentry: Ignoring error', event)
+  if (shouldIgnoreErrorBasedOnBreadcrumbs(event)) {
+    console.debug('Sentry: Ignoring error based on breadcrumbs', event)
     return null
   } else {
     return event
@@ -15,7 +15,7 @@ export function beforeSend(event: SentryErrorEvent, _hint: Sentry.EventHint) {
  *
  * Adapted from https://gist.github.com/jeengbe/4bc86f05a41a1831e6abf2369579cc7a
  */
-function shouldIgnoreError(error: SentryErrorEvent): boolean {
+function shouldIgnoreErrorBasedOnBreadcrumbs(error: SentryErrorEvent): boolean {
   const exception = error.exception?.values?.[0]
   const breadcrumbs = error.breadcrumbs
 
