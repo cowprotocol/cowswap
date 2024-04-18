@@ -34,7 +34,7 @@ function shouldIgnoreErrorBasedOnExtra(error: SentryErrorEvent): boolean {
   )
 }
 
-const EXTRA_ERROR_CODES_TO_IGNORE = new Set([-32000, 4001])
+const EXTRA_ERROR_CODES_TO_IGNORE = new Set([-32000, 4001, -32603])
 
 /**
  * Detects whether given error is a load failed error
