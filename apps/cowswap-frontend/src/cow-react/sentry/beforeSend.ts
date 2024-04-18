@@ -2,8 +2,8 @@ import * as Sentry from '@sentry/react'
 import { ErrorEvent as SentryErrorEvent } from '@sentry/types'
 
 export function beforeSend(event: SentryErrorEvent, _hint: Sentry.EventHint) {
-  if (isLoadFailedError(event)) {
-    console.debug('Sentry: Ignoring Apple device load failed error', event)
+  if (shouldIgnoreError(event)) {
+    console.debug('Sentry: Ignoring error', event)
     return null
   } else {
     return event
@@ -15,23 +15,30 @@ export function beforeSend(event: SentryErrorEvent, _hint: Sentry.EventHint) {
  *
  * Adapted from https://gist.github.com/jeengbe/4bc86f05a41a1831e6abf2369579cc7a
  */
-function isLoadFailedError(error: SentryErrorEvent): boolean {
+function shouldIgnoreError(error: SentryErrorEvent): boolean {
   const exception = error.exception?.values?.[0]
   const breadcrumbs = error.breadcrumbs
 
   if (
-    exception?.type !== 'TypeError' ||
-    !exception?.value ||
-    !TYPE_ERROR_FETCH_FAILED_VALUES.has(exception.value) ||
-    !breadcrumbs
+    !exception?.type ||
+    !breadcrumbs ||
+    !isTypeError(exception.type, exception?.value) ||
+    !isUnhandledRejectionError(exception.type)
   ) {
     return false
   }
 
-  return searchBreadcrumbs(breadcrumbs, isErroneousBreadcrumb)
+  return searchBreadcrumbs(breadcrumbs, [isFetchError, isMetamaskRpcError])
 }
 
-function searchBreadcrumbs(breadcrumbs: Sentry.Breadcrumb[], isThisTheBreadcrumbWeWant: CheckBreadcrumb) {
+function isTypeError(type: string, value: string | undefined): boolean {
+  return !!value && type === 'TypeError' && TYPE_ERROR_FETCH_FAILED_VALUES.has(value)
+}
+function isUnhandledRejectionError(type: string): boolean {
+  return type === 'UnhandledRejection'
+}
+
+function searchBreadcrumbs(breadcrumbs: Sentry.Breadcrumb[], checkBreadcrumbs: CheckBreadcrumb[]) {
   const now = Date.now()
 
   // We go from the back since the last breadcrumb is most likely the erroneous one
@@ -44,7 +51,7 @@ function searchBreadcrumbs(breadcrumbs: Sentry.Breadcrumb[], isThisTheBreadcrumb
       break
     }
 
-    if (isThisTheBreadcrumbWeWant(breadcrumb)) {
+    if (checkBreadcrumbs.some((fn) => fn(breadcrumb))) {
       return true
     }
   }
@@ -60,7 +67,7 @@ const TYPE_ERROR_FETCH_FAILED_VALUES = new Set([
   'Load failed',
 ])
 
-function isErroneousBreadcrumb(breadcrumb: Sentry.Breadcrumb): boolean {
+function isFetchError(breadcrumb: Sentry.Breadcrumb): boolean {
   if (breadcrumb.level !== 'error' || (breadcrumb.category !== 'xhr' && breadcrumb.category !== 'fetch')) {
     return false
   }
@@ -73,3 +80,10 @@ function isErroneousBreadcrumb(breadcrumb: Sentry.Breadcrumb): boolean {
 
 const URLS_TO_IGNORE_FETCH_ERRORS =
   /(twnodes\.com)|(assets\/cow-no-connection)|(api\.blocknative\.com)|(api\.country\.is)|(nodereal\.io)|(wallet\.coinbase\.com)|(cowprotocol\/cowswap-banner)/i
+
+function isMetamaskRpcError(breadcrumb: Sentry.Breadcrumb): boolean {
+  if (breadcrumb.level !== 'error' || !breadcrumb.message) {
+    return false
+  }
+  return /MetaMask.*RPC Error/i.test(breadcrumb.message)
+}
