@@ -1,5 +1,4 @@
-import { TokenSymbol } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
+import { TokenName, TokenSymbol, UI } from '@cowprotocol/ui'
 
 import { AlertCircle } from 'react-feather'
 import styled from 'styled-components/macro'
@@ -45,7 +44,7 @@ export const StyledTokenSymbol = styled(TokenSymbol)`
   font-size: 20px;
 `
 
-export const TokenName = styled.div`
+export const StyledTokenName = styled(TokenName)`
   color: inherit;
   opacity: 0.6;
   transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;

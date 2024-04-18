@@ -28,7 +28,7 @@ export function Step2({ order, cancellation, creation }: EthFlowStepperProps) {
     icon,
     error,
   } = useMemo<Step2Config>(() => {
-    if ((rejectedReason || creationCancelled || creationReplaced) && !isFilled) {
+    if ((rejectedReason || creationCancelled || (creationReplaced && isCreating)) && !isFilled) {
       return {
         label: 'Order Creation Failed',
         error: rejectedReason,

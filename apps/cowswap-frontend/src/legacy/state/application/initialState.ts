@@ -1,3 +1,3 @@
 import { ApplicationState } from './reducer'
 
-export const initialState: ApplicationState = { chainId: null, openModal: null }
+export const initialState: ApplicationState = { openModal: null }

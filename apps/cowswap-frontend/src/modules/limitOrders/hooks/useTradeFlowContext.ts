@@ -79,6 +79,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
     permitInfo: !enoughAllowance ? permitInfo : undefined,
     generatePermitHook,
     getCachedPermit,
+    quoteState,
     postOrderParams: {
       class: OrderClass.LIMIT,
       kind: state.orderKind,

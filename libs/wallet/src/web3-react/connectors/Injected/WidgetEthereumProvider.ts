@@ -25,9 +25,10 @@ import {
   listenToMessageFromWindow,
   postMessageToWindow,
 } from '@cowprotocol/widget-lib'
+import ms from 'ms.macro'
 
-// By default timeout is 60 seconds
-const DEFAULT_TIMEOUT_MILLISECONDS = 60000
+// By default timeout is 10 minutes
+const DEFAULT_TIMEOUT_MILLISECONDS = ms`10m`
 
 const JSON_RPC_VERSION = '2.0'
 
@@ -202,7 +203,7 @@ export class WidgetEthereumProvider extends EventEmitter<IFrameEthereumProviderE
     // Delete the completer within the timeout and reject the promise.
     setTimeout(() => {
       if (this.completers[id]) {
-        this.completers[id].reject(new Error(`RPC ID "${id}" timed out after ${this.timeoutMilliseconds} milliseconds`))
+        this.completers[id].reject(new Error('Request timed out. Please try again and submit it faster.'))
         delete this.completers[id]
       }
     }, this.timeoutMilliseconds)

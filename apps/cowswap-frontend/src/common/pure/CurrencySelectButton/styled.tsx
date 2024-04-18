@@ -25,7 +25,7 @@ export const CurrencySelectWrapper = styled.button<{ isLoading: boolean; $stubbe
   display: flex;
   justify-content: space-between;
   align-items: center;
-  cursor: pointer;
+  cursor: ${({ readonlyMode }) => (readonlyMode ? '' : 'pointer')};
   gap: 6px;
   border: 0;
   outline: none;
@@ -40,14 +40,10 @@ export const CurrencySelectWrapper = styled.button<{ isLoading: boolean; $stubbe
   max-width: 190px;
 
   &:hover {
-    // TODO: Check what 'readonlyMode' does and proper style it.
-    color: ${({ $stubbed }) => ($stubbed ? `var(${UI.COLOR_BUTTON_TEXT})` : `var(${UI.COLOR_BUTTON_TEXT})`)};
+    color: ${({ $stubbed, readonlyMode }) =>
+      readonlyMode ? '' : $stubbed ? `var(${UI.COLOR_BUTTON_TEXT})` : `var(${UI.COLOR_BUTTON_TEXT})`};
     background: ${({ readonlyMode, $stubbed }) =>
-      readonlyMode
-        ? `var(${UI.COLOR_DANGER});`
-        : $stubbed
-        ? `var(${UI.COLOR_PRIMARY_LIGHTER});`
-        : `var(${UI.COLOR_PRIMARY});`};
+      readonlyMode ? '' : $stubbed ? `var(${UI.COLOR_PRIMARY_LIGHTER});` : `var(${UI.COLOR_PRIMARY});`};
   }
 
   &:hover ${ArrowDown} > path {

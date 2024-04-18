@@ -1,7 +1,6 @@
 import { useMemo } from 'react'
 
-import { bpsToPercent, formatFiatAmount, formatTokenAmount } from '@cowprotocol/common-utils'
-import { FractionUtils, formatPercent, formatSymbol } from '@cowprotocol/common-utils'
+import { FractionUtils, bpsToPercent, formatFiatAmount, formatPercent, formatSymbol, formatTokenAmount } from '@cowprotocol/common-utils'
 import { UI } from '@cowprotocol/ui'
 import { PartnerFee } from '@cowprotocol/widget-lib'
 import { Currency, CurrencyAmount, Token, TradeType } from '@uniswap/sdk-core'
@@ -26,8 +25,7 @@ export const tooltipNetworkCosts = (props: { isPresign: boolean; ethFlow: boolea
       <br />
       <br />
       CoW Swap will try to lower this cost where possible.
-      <br />
-      <br />
+      {(isPresign || ethFlow) && <><br /><br /></>}
       {isPresign && 'Because you are using a smart contract wallet'}
       {ethFlow && `Because you are selling ${nativeSymbol} (native currency)`}
       {(isPresign || ethFlow) && ', you will pay a separate gas cost for signing the order placement on-chain.'}

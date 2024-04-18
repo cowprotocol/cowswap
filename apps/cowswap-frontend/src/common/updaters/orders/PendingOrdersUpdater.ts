@@ -12,13 +12,15 @@ import { Command, UiOrderType } from '@cowprotocol/types'
 import { GnosisSafeInfo, useGnosisSafeInfo, useWalletInfo } from '@cowprotocol/wallet'
 
 import { GetSafeTxInfo, useGetSafeTxInfo } from 'legacy/hooks/useGetSafeTxInfo'
-import { FulfillOrdersBatchParams, Order, OrderStatus } from 'legacy/state/orders/actions'
+import { useAllTransactions } from 'legacy/state/enhancedTransactions/hooks'
+import { CREATING_STATES, FulfillOrdersBatchParams, Order, OrderStatus } from 'legacy/state/orders/actions'
 import { LIMIT_OPERATOR_API_POLL_INTERVAL, MARKET_OPERATOR_API_POLL_INTERVAL } from 'legacy/state/orders/consts'
 import {
   AddOrUpdateOrdersCallback,
   CancelOrdersBatchCallback,
   ExpireOrdersBatchCallback,
   FulfillOrdersBatchCallback,
+  InvalidateOrdersBatchCallback,
   PresignOrdersCallback,
   UpdatePresignGnosisSafeTxCallback,
   useAddOrUpdateOrders,
@@ -26,16 +28,17 @@ import {
   useCombinedPendingOrders,
   useExpireOrdersBatch,
   useFulfillOrdersBatch,
+  useInvalidateOrdersBatch,
   usePresignOrders,
   useUpdatePresignGnosisSafeTx,
 } from 'legacy/state/orders/hooks'
 import { OrderTransitionStatus } from 'legacy/state/orders/utils'
 
 import {
-  emitFulfilledOrderEvent,
   emitCancelledOrderEvent,
-  emitPresignedOrderEvent,
   emitExpiredOrderEvent,
+  emitFulfilledOrderEvent,
+  emitPresignedOrderEvent,
 } from 'modules/orders'
 import { useAddOrderToSurplusQueue } from 'modules/swap/state/surplusModal'
 
@@ -80,7 +83,7 @@ async function _updatePresignGnosisSafeTx(
            */
           const isOrderTxReplaced = !!(safeNonce && safeTransaction.nonce < safeNonce && !safeTransaction.isExecuted)
 
-          if (isOrderTxReplaced) {
+          if (CREATING_STATES.includes(order.status) && isOrderTxReplaced) {
             cancelOrdersBatch({
               ids: [order.id],
               chainId,
@@ -161,6 +164,7 @@ interface UpdateOrdersParams {
   // Actions
   addOrUpdateOrders: AddOrUpdateOrdersCallback
   fulfillOrdersBatch: FulfillOrdersBatchCallback
+  invalidateOrdersBatch: InvalidateOrdersBatchCallback
   expireOrdersBatch: ExpireOrdersBatchCallback
   cancelOrdersBatch: CancelOrdersBatchCallback
   presignOrders: PresignOrdersCallback
@@ -169,6 +173,7 @@ interface UpdateOrdersParams {
   updatePresignGnosisSafeTx: UpdatePresignGnosisSafeTxCallback
   getSafeTxInfo: GetSafeTxInfo
   safeInfo: GnosisSafeInfo | undefined
+  allTransactions: ReturnType<typeof useAllTransactions>
 }
 
 async function _updateOrders({
@@ -181,12 +186,14 @@ async function _updateOrders({
   fulfillOrdersBatch,
   expireOrdersBatch,
   cancelOrdersBatch,
+  invalidateOrdersBatch,
   presignOrders,
   addOrderToSurplusQueue,
   triggerTotalSurplusUpdate,
   updatePresignGnosisSafeTx,
   getSafeTxInfo,
   safeInfo,
+  allTransactions,
 }: UpdateOrdersParams): Promise<void> {
   // Only check pending orders of current connected account
   const lowerCaseAccount = account.toLowerCase()
@@ -289,6 +296,16 @@ async function _updateOrders({
     triggerTotalSurplusUpdate?.()
   }
 
+  const replacedOrCancelledEthFlowOrders = getReplacedOrCancelledEthFlowOrders(orders, allTransactions)
+
+  if (replacedOrCancelledEthFlowOrders.length > 0) {
+    invalidateOrdersBatch({
+      ids: replacedOrCancelledEthFlowOrders.map(({ id }) => id),
+      chainId,
+      isSafeWallet,
+    })
+  }
+
   // Update the presign Gnosis Safe Tx info (if applies)
   await _updatePresignGnosisSafeTx(
     chainId,
@@ -300,6 +317,28 @@ async function _updateOrders({
   )
   // Update the creating EthFlow orders (if any)
   await _updateCreatingOrders(chainId, orders, isSafeWallet, addOrUpdateOrders)
+}
+
+function getReplacedOrCancelledEthFlowOrders(
+  orders: Order[],
+  allTransactions: UpdateOrdersParams['allTransactions']
+): Order[] {
+  return orders.filter((order) => {
+    if (!order.orderCreationHash || order.status !== OrderStatus.CREATING) return false
+
+    const { orderCreationHash } = order
+
+    const creationTx = orderCreationHash ? allTransactions[orderCreationHash] : undefined
+    const creationLinkedTx = creationTx?.linkedTransactionHash
+      ? allTransactions[creationTx.linkedTransactionHash]
+      : undefined
+
+    if (!creationLinkedTx?.replacementType) return false
+
+    const { replacementType } = creationLinkedTx
+
+    return replacementType !== 'speedup'
+  })
 }
 
 // Check if there is any order pending for a long time
@@ -354,10 +393,12 @@ export function PendingOrdersUpdater(): null {
   const expireOrdersBatch = useExpireOrdersBatch()
   const cancelOrdersBatch = useCancelOrdersBatch()
   const addOrUpdateOrders = useAddOrUpdateOrders()
+  const invalidateOrdersBatch = useInvalidateOrdersBatch()
   const presignOrders = usePresignOrders()
   const addOrderToSurplusQueue = useAddOrderToSurplusQueue()
   const triggerTotalSurplusUpdate = useTriggerTotalSurplusUpdateCallback()
   const updatePresignGnosisSafeTx = useUpdatePresignGnosisSafeTx()
+  const allTransactions = useAllTransactions()
   const getSafeTxInfo = useGetSafeTxInfo()
 
   const fulfillOrdersBatch = useCallback(
@@ -391,6 +432,7 @@ export function PendingOrdersUpdater(): null {
           orders: pendingRef.current.filter((order) => getUiOrderType(order) === uiOrderType),
           addOrUpdateOrders,
           fulfillOrdersBatch,
+          invalidateOrdersBatch,
           expireOrdersBatch,
           cancelOrdersBatch,
           presignOrders,
@@ -399,6 +441,7 @@ export function PendingOrdersUpdater(): null {
           updatePresignGnosisSafeTx,
           getSafeTxInfo,
           safeInfo,
+          allTransactions,
         }).finally(() => {
           isUpdating.current = false
         })
@@ -410,12 +453,14 @@ export function PendingOrdersUpdater(): null {
       fulfillOrdersBatch,
       expireOrdersBatch,
       cancelOrdersBatch,
+      invalidateOrdersBatch,
       presignOrders,
       addOrderToSurplusQueue,
       triggerTotalSurplusUpdate,
       updatePresignGnosisSafeTx,
       getSafeTxInfo,
       safeInfo,
+      allTransactions,
     ]
   )
 

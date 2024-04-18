@@ -12,7 +12,7 @@ import { UiOrderType } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
 
-import { FeeInformation, PriceInformation } from 'types'
+import { FeeInformation } from 'types'
 
 import { useGetGpPriceStrategy } from 'legacy/hooks/useGetGpPriceStrategy'
 import { GpPriceStrategy } from 'legacy/state/gas/atoms'
@@ -25,6 +25,7 @@ import {
   getRemainderAmount,
   isOrderUnfillable,
 } from 'legacy/state/orders/utils'
+import type { LegacyFeeQuoteParams } from 'legacy/state/price/types'
 import { getBestQuote } from 'legacy/utils/price'
 
 import { updatePendingOrderPricesAtom } from 'modules/orders/state/pendingOrdersPricesAtom'
@@ -80,13 +81,8 @@ export function UnfillableOrdersUpdater(): null {
   )
 
   const updateIsUnfillableFlag = useCallback(
-    (
-      chainId: ChainId,
-      order: Order,
-      price: Required<Omit<PriceInformation, 'quoteId'>>,
-      fee: FeeInformation | null
-    ) => {
-      if (!fee?.amount || !price.amount) return
+    (chainId: ChainId, order: Order, priceAmount: string, fee: FeeInformation | null) => {
+      if (!fee?.amount) return
 
       const orderPrice = new Price(
         order.inputToken,
@@ -95,7 +91,7 @@ export function UnfillableOrdersUpdater(): null {
         order.buyAmount.toString()
       )
 
-      const marketPrice = getOrderMarketPrice(order, price.amount, fee.amount)
+      const marketPrice = getOrderMarketPrice(order, priceAmount, fee.amount)
       const estimatedExecutionPrice = getEstimatedExecutionPrice(order, marketPrice, fee.amount)
 
       const isSwap = getUiOrderType(order) === UiOrderType.SWAP
@@ -162,7 +158,7 @@ export function UnfillableOrdersUpdater(): null {
                 `[UnfillableOrdersUpdater::updateUnfillable] did we get any price? ${order.id.slice(0, 8)}|${index}`,
                 price ? price.amount : 'no :('
               )
-              price?.amount && updateIsUnfillableFlag(chainId, order, price, fee)
+              price?.amount && updateIsUnfillableFlag(chainId, order, price.amount, fee)
             } else {
               console.debug('[UnfillableOrdersUpdater::updateUnfillable] No price quote for', order.id.slice(0, 8))
             }
@@ -256,10 +252,6 @@ async function _getOrderPrice(
     quoteToken,
     fromDecimals: order.inputToken.decimals,
     toDecimals: order.outputToken.decimals,
-    // Limit order may have arbitrary validTo, but API doesn't allow values greater than 1 hour
-    // To avoid ExcessiveValidTo error we use PRICE_QUOTE_VALID_TO_TIME
-    validTo:
-      order.class === 'limit' ? Math.round((Date.now() + PRICE_QUOTE_VALID_TO_TIME) / 1000) : timestamp(order.validTo),
     userAddress: order.owner,
     receiver: order.receiver,
     isEthFlow,
@@ -267,6 +259,16 @@ async function _getOrderPrice(
     appData: order.appData ?? undefined,
     appDataHash: order.appDataHash ?? undefined,
   }
+
+  const legacyFeeQuoteParams = quoteParams as LegacyFeeQuoteParams
+  // Limit order may have arbitrary validTo, but API doesn't allow values greater than 1 hour
+  // To avoid ExcessiveValidTo error we use PRICE_QUOTE_VALID_TO_TIME
+  if (order.class === 'limit') {
+    legacyFeeQuoteParams.validFor = Math.round(PRICE_QUOTE_VALID_TO_TIME / 1000)
+  } else {
+    legacyFeeQuoteParams.validTo = timestamp(order.validTo)
+  }
+
   try {
     return getBestQuote({ strategy, quoteParams, fetchFee: false, isPriceRefresh: false })
   } catch (e: any) {

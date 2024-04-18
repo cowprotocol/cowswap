@@ -16,7 +16,7 @@ import { QuoteInformationObject } from 'legacy/state/price/reducer'
 import { LegacyFeeQuoteParams } from 'legacy/state/price/types'
 import { isWrappingTrade } from 'legacy/state/swap/utils'
 import { Field } from 'legacy/state/types'
-import { useOrderValidTo } from 'legacy/state/user/hooks'
+import { useUserTransactionTTL } from 'legacy/state/user/hooks'
 
 import { useAppData } from 'modules/appData'
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
@@ -156,7 +156,7 @@ export function FeesUpdater(): null {
 
   const isWindowVisible = useIsWindowVisible()
   const isOnline = useIsOnline()
-  const { validTo } = useOrderValidTo()
+  const [deadline] = useUserTransactionTTL()
 
   // prevents things like "USDC" being used as an address
   const sellTokenAddressInvalid = sellCurrency && !getIsNativeToken(sellCurrency) && !isAddress(sellCurrencyId)
@@ -203,7 +203,7 @@ export function FeesUpdater(): null {
       amount: amount.quotient.toString(),
       receiver,
       userAddress: account,
-      validTo,
+      validFor: deadline,
       isEthFlow,
       priceQuality: getPriceQuality({ verifyQuote: verifiedQuotesEnabled && enoughBalance }),
       appData: appData?.fullAppData,
@@ -275,7 +275,7 @@ export function FeesUpdater(): null {
     setQuoteError,
     account,
     receiver,
-    validTo,
+    deadline,
     buyTokenAddressInvalid,
     sellTokenAddressInvalid,
     enoughBalance,

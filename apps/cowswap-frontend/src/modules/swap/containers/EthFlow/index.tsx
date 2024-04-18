@@ -25,6 +25,7 @@ import { useEthFlowActions } from './hooks/useEthFlowActions'
 import useRemainingNativeTxsAndCosts from './hooks/useRemainingNativeTxsAndCosts'
 import { useSetupEthFlow } from './hooks/useSetupEthFlow'
 
+
 export interface EthFlowProps {
   nativeInput?: CurrencyAmount<Currency>
   hasEnoughWrappedBalanceForSwap: boolean
@@ -85,9 +86,8 @@ export function EthFlowModal({
     approvalState,
     approveActivity,
     wrapActivity,
+    onDismiss
   })
-
-  console.debug('ETH FLOW MODAL RENDER', ethFlowContext, state)
 
   return (
     <EthFlowModalContent

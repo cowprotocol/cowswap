@@ -57,7 +57,7 @@ export async function tradeFlow(
     throw new PriceImpactDeclineError()
   }
 
-  const validTo = calculateLimitOrdersDeadline(settingsState)
+  const validTo = calculateLimitOrdersDeadline(settingsState, params.quoteState)
 
   try {
     logTradeFlow('LIMIT ORDER FLOW', 'STEP 2: handle permit')

@@ -1,21 +1,21 @@
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { TokenErc20, UNLIMITED_ORDER_AMOUNT } from '@gnosis.pm/dex-js'
 import BigNumber from 'bignumber.js'
 import BN from 'bn.js'
-import { TokenErc20, UNLIMITED_ORDER_AMOUNT } from '@gnosis.pm/dex-js'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 export {
-  UNLIMITED_ORDER_AMOUNT,
-  FEE_DENOMINATOR,
-  BATCH_TIME,
-  MAX_BATCH_ID,
-  FEE_PERCENTAGE,
-  DEFAULT_PRECISION,
-  ZERO,
-  ONE,
-  TWO,
-  TEN,
-  ALLOWANCE_MAX_VALUE,
   ALLOWANCE_FOR_ENABLED_TOKEN,
+  ALLOWANCE_MAX_VALUE,
+  BATCH_TIME,
+  DEFAULT_PRECISION,
+  FEE_DENOMINATOR,
+  FEE_PERCENTAGE,
+  MAX_BATCH_ID,
+  ONE,
+  TEN,
+  TWO,
+  UNLIMITED_ORDER_AMOUNT,
+  ZERO,
 } from '@gnosis.pm/dex-js'
 
 export const DEFAULT_TIMEOUT = 5000
@@ -131,10 +131,10 @@ export const XDAI: TokenErc20 = {
   address: NATIVE_TOKEN_ADDRESS,
 }
 
-export const NATIVE_TOKEN_PER_NETWORK: Record<string, TokenErc20> = {
-  '1': ETH,
-  '5': ETH,
-  '100': XDAI,
+export const NATIVE_TOKEN_PER_NETWORK: Record<SupportedChainId, TokenErc20> = {
+  [SupportedChainId.MAINNET]: ETH,
+  [SupportedChainId.SEPOLIA]: ETH,
+  [SupportedChainId.GNOSIS_CHAIN]: XDAI,
 }
 
 export const TENDERLY_API_URL = 'https://api.tenderly.co/api/v1/public-contract'

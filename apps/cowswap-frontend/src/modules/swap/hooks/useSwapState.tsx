@@ -242,12 +242,6 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
     chainId,
   })
 
-  // purely for debugging
-  useEffect(() => {
-    console.debug('[useDerivedSwapInfo] Price quote: ', quote?.price?.amount)
-    console.debug('[useDerivedSwapInfo] Fee quote: ', quote?.fee?.amount)
-  }, [quote])
-
   const isWrapping = isWrappingTrade(inputCurrency, outputCurrency, chainId)
 
   const { partnerFee } = useInjectedWidgetParams()

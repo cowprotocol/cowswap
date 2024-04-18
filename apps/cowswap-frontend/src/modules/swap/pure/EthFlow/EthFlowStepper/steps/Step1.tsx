@@ -33,8 +33,9 @@ function getStepConfig({ order, creation, nativeTokenSymbol }: EthFlowStepperPro
   const { failed, cancelled, replaced } = creation
 
   const isFilled = order.state === SmartOrderStatus.FILLED
+  const isCreating = order.state === SmartOrderStatus.CREATING
 
-  if ((failed || cancelled || replaced) && !isFilled) {
+  if ((failed || cancelled || (replaced && isCreating)) && !isFilled) {
     return {
       icon: X,
       state: 'error',
@@ -42,7 +43,7 @@ function getStepConfig({ order, creation, nativeTokenSymbol }: EthFlowStepperPro
     }
   }
 
-  if (order.state === SmartOrderStatus.CREATING) {
+  if (isCreating) {
     if (order.isExpired) {
       return {
         icon: Exclamation,

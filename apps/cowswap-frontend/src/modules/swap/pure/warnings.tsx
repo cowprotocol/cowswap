@@ -29,6 +29,7 @@ export interface SwapWarningsTopProps {
   showWrapBundlingBanner: boolean
   shouldZeroApprove: boolean
   showSafeWcBundlingBanner: boolean
+  showTwapSuggestionBanner: boolean
   nativeCurrencySymbol: string
   wrappedCurrencySymbol: string
   buyingFiatAmount: CurrencyAmount<Currency> | null
@@ -61,6 +62,7 @@ export const SwapWarningsTop = React.memo(function (props: SwapWarningsTopProps)
     showApprovalBundlingBanner,
     showWrapBundlingBanner,
     showSafeWcBundlingBanner,
+    showTwapSuggestionBanner,
     nativeCurrencySymbol,
     wrappedCurrencySymbol,
     setFeeWarningAccepted,
@@ -98,13 +100,15 @@ export const SwapWarningsTop = React.memo(function (props: SwapWarningsTopProps)
         <BundleTxSafeWcBanner nativeCurrencySymbol={nativeCurrencySymbol} supportsWrapping />
       )}
 
-      <TwapSuggestionBanner
-        chainId={chainId}
-        priceImpact={priceImpact}
-        buyingFiatAmount={buyingFiatAmount}
-        tradeUrlParams={tradeUrlParams}
-        sellAmount={trade?.inputAmount.toExact()}
-      />
+      {showTwapSuggestionBanner && (
+        <TwapSuggestionBanner
+          chainId={chainId}
+          priceImpact={priceImpact}
+          buyingFiatAmount={buyingFiatAmount}
+          tradeUrlParams={tradeUrlParams}
+          sellAmount={trade?.inputAmount.toExact()}
+        />
+      )}
     </>
   )
 }, genericPropsChecker)

@@ -10,10 +10,11 @@ import { Connector } from '@web3-react/types'
 
 import { useModalIsOpen, useToggleWalletModal } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
-import { updateConnectionError } from 'legacy/state/connection/reducer'
-import { useAppDispatch, useAppSelector } from 'legacy/state/hooks'
+import { useAppDispatch } from 'legacy/state/hooks'
 import { updateSelectedWallet } from 'legacy/state/user/reducer'
 
+import { useSetWalletConnectionError } from '../../hooks/useSetWalletConnectionError'
+import { useWalletConnectionError } from '../../hooks/useWalletConnectionError'
 import { WalletModal as WalletModalPure, WalletModalView } from '../../pure/WalletModal'
 import { toggleAccountSelectorModalAtom } from '../AccountSelectorModal/state'
 
@@ -21,13 +22,12 @@ export function WalletModal() {
   const dispatch = useAppDispatch()
   const { connector } = useWeb3React()
   const { chainId, account, active: isActive } = useWalletInfo()
+  const setWalletConnectionError = useSetWalletConnectionError()
 
   const [walletView, setWalletView] = useState<WalletModalView>('account')
 
   const [pendingConnector, setPendingConnector] = useState<Connector | undefined>()
-  const pendingError = useAppSelector((state) =>
-    pendingConnector ? state.connection.errorByConnectionType[getWeb3ReactConnection(pendingConnector).type] : undefined
-  )
+  const pendingError = useWalletConnectionError()
 
   const walletModalOpen = useModalIsOpen(ApplicationModal.WALLET)
   const toggleWalletModal = useToggleWalletModal()
@@ -45,10 +45,10 @@ export function WalletModal() {
 
   useEffect(() => {
     if (pendingConnector && walletView !== 'pending') {
-      updateConnectionError({ connectionType: getWeb3ReactConnection(pendingConnector).type, error: undefined })
+      setWalletConnectionError(undefined)
       setPendingConnector(undefined)
     }
-  }, [pendingConnector, walletView])
+  }, [pendingConnector, walletView, setWalletConnectionError])
 
   const activePrevious = usePrevious(isActive)
   const connectorPrevious = usePrevious(connector)
@@ -87,7 +87,7 @@ export function WalletModal() {
       try {
         setPendingConnector(connector)
         setWalletView('pending')
-        dispatch(updateConnectionError({ connectionType, error: undefined }))
+        setWalletConnectionError(undefined)
 
         await connector.activate(getCurrentChainIdFromUrl())
 
@@ -99,18 +99,14 @@ export function WalletModal() {
       } catch (error: any) {
         console.error(`[tryActivation] web3-react connection error`, error)
         dispatch(updateSelectedWallet({ wallet: undefined }))
-        dispatch(
-          updateConnectionError({
-            connectionType,
-            error:
-              typeof error === 'string'
-                ? error
-                : error.message || (typeof error === 'object' ? JSON.stringify(error) : error.toString()),
-          })
+        setWalletConnectionError(
+          typeof error === 'string'
+            ? error
+            : error.message || (typeof error === 'object' ? JSON.stringify(error) : error.toString())
         )
       }
     },
-    [chainId, dispatch, toggleAccountSelectorModal]
+    [chainId, dispatch, toggleAccountSelectorModal, setWalletConnectionError]
   )
 
   if (!toggleWalletModal) {

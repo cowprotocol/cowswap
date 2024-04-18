@@ -25,7 +25,6 @@ export const COMMENTS_BY_PARAM_NAME_TYPESCRIPT: Record<string, string> = {
 
 export const SANITIZE_PARAMS = {
   appCode: 'My Cool App',
-  provider: 'EIP-1271 Provider',
 }
 
 export const REMOVE_PARAMS: (keyof CowSwapWidgetParams)[] = ['baseUrl']
