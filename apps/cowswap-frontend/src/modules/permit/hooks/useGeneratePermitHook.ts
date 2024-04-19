@@ -69,7 +69,7 @@ export function useGeneratePermitHook(): GeneratePermitHook {
         nonce,
       })
 
-      storePermit({ ...permitParams, hookData })
+      hookData && storePermit({ ...permitParams, hookData })
 
       return hookData
     },
