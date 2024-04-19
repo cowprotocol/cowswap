@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.29.4](https://github.com/cowprotocol/cowswap/compare/explorer-v2.29.3...explorer-v2.29.4) (2024-04-19)
+
+
+### Bug Fixes
+
+* **explorer:** add sepolia token list ([#4280](https://github.com/cowprotocol/cowswap/issues/4280)) ([1def104](https://github.com/cowprotocol/cowswap/commit/1def104caf6a05cf0788b42a5ba4ac7f377d8f9f))
+
 ## [2.29.3](https://github.com/cowprotocol/cowswap/compare/explorer-v2.29.2...explorer-v2.29.3) (2024-04-18)
 
 
