@@ -1,7 +1,7 @@
-import { ALL_SUPPORTED_CHAIN_IDS, SupportedChainId } from '@cowprotocol/cow-sdk'
-import useSWR from 'swr'
 import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
+import { ALL_SUPPORTED_CHAIN_IDS, SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { TokenInfo, TokenList } from '@uniswap/token-lists'
+import useSWR from 'swr'
 
 type TokenListByAddress = Record<string, TokenInfo>
 type TokenListPerNetwork = Record<SupportedChainId, TokenListByAddress>
@@ -14,10 +14,10 @@ const INITIAL_TOKEN_LIST_PER_NETWORK: TokenListPerNetwork = {
 
 export function useTokenList(chainId: SupportedChainId | undefined): { data: TokenListByAddress; isLoading: boolean } {
   const { data: cowSwapList, isLoading: isCowListLoading } = useTokenListByUrl(
-    'https://files.cow.fi/tokens/CowSwap.json'
+    chainId !== SupportedChainId.SEPOLIA ? 'https://files.cow.fi/tokens/CowSwap.json' : ''
   )
   const { data: coingeckoList, isLoading: isCoingeckoListLoading } = useTokenListByUrl(
-    'https://tokens.coingecko.com/uniswap/all.json'
+    chainId !== SupportedChainId.SEPOLIA ? 'https://tokens.coingecko.com/uniswap/all.json' : ''
   )
   const { data: honeyswapList, isLoading: isHoneyswapListLoading } = useTokenListByUrl(
     chainId === SupportedChainId.GNOSIS_CHAIN ? 'https://tokens.honeyswap.org' : ''
