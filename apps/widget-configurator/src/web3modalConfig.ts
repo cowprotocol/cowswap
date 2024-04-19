@@ -17,13 +17,10 @@ const metadata = {
 
 const ethersConfig = defaultConfig({
   metadata,
-
-  /*Optional*/
   enableEIP6963: true,
   enableInjected: true,
-  enableCoinbase: true, // true by default
-  rpcUrl: '...', // used for the Coinbase SDK
-  defaultChainId: 1,
+  enableCoinbase: false,
+  defaultChainId: SupportedChainId.MAINNET,
 })
 
 export function initWeb3Modal() {
@@ -42,6 +39,6 @@ export function initWeb3Modal() {
       }
     }),
     projectId,
-    enableAnalytics: true, // Optional - defaults to your Cloud configuration
+    enableAnalytics: false,
   })
 }
