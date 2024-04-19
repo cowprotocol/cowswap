@@ -2,6 +2,7 @@ import { CHAIN_INFO, RPC_URLS } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { createWeb3Modal, defaultConfig } from '@web3modal/ethers5/react'
 import { addSafeAppConnector } from './connectors/safeAppConnector'
+import { addTrezorConnector } from './connectors/trezor/trezorConnector'
 
 const projectId = '7bd490257c3457cc6a5ebcc02066c21a'
 
@@ -23,7 +24,7 @@ const ethersConfig = defaultConfig({
 })
 
 export function initWeb3Modal() {
-  createWeb3Modal({
+  const modal = createWeb3Modal({
     ethersConfig,
     chains: Object.keys(CHAIN_INFO).map((_chainId) => {
       const chainId = +_chainId as SupportedChainId
@@ -42,4 +43,7 @@ export function initWeb3Modal() {
   })
 
   addSafeAppConnector()
+  addTrezorConnector()
+
+  return modal
 }

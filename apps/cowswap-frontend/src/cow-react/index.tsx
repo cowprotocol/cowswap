@@ -11,7 +11,6 @@ import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { nodeRemoveChildFix } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
 import { SnackbarsWidget } from '@cowprotocol/snackbars'
-import { initWeb3Modal } from '@cowprotocol/wallet-provider'
 
 import { LanguageProvider } from 'i18n'
 import { createRoot } from 'react-dom/client'
@@ -35,6 +34,8 @@ import { FeatureGuard } from 'common/containers/FeatureGuard'
 
 import { WalletUnsupportedNetworkBanner } from '../common/containers/WalletUnsupportedNetworkBanner'
 
+import '../web3Modal'
+
 // Node removeChild hackaround
 // based on: https://github.com/facebook/react/issues/11538#issuecomment-417504600
 nodeRemoveChildFix()
@@ -42,8 +43,6 @@ nodeRemoveChildFix()
 if (window.ethereum) {
   window.ethereum.autoRefreshOnNetworkChange = false
 }
-
-initWeb3Modal()
 
 function Main() {
   const isInjectedWidgetMode = isInjectedWidget()

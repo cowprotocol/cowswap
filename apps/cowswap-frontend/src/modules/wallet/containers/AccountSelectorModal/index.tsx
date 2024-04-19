@@ -4,7 +4,8 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useNativeTokensBalances } from '@cowprotocol/balances-and-allowances'
 import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { useAddSnackbar } from '@cowprotocol/snackbars'
-import { hwAccountIndexAtom, AccountIndexSelect, useWalletInfo } from '@cowprotocol/wallet'
+import { AccountIndexSelect, useWalletInfo } from '@cowprotocol/wallet'
+import { hwAccountIndexAtom, useAccountsLoader } from '@cowprotocol/wallet-provider'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { useWalletInfo as useWeb3WalletInfo } from '@web3modal/ethers5/react'
 
@@ -31,9 +32,7 @@ export function AccountSelectorModal() {
   const walletIcon = walletInfo?.icon
   const walletName = walletInfo?.name
 
-  // TODO: FIXME
-  // const accountsLoader = useMemo(() => accountsLoaders[connectionType as HardWareWallet], [connectionType])
-  const accountsLoader = undefined as unknown as any
+  const accountsLoader = useAccountsLoader()
 
   const [accountsList, setAccountsList] = useState<string[] | null>(null)
 
