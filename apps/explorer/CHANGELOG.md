@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.29.5](https://github.com/cowprotocol/cowswap/compare/explorer-v2.29.4...explorer-v2.29.5) (2024-04-22)
+
+
+### Bug Fixes
+
+* **explorer:** fix browser crashing ([#4287](https://github.com/cowprotocol/cowswap/issues/4287)) ([879b5eb](https://github.com/cowprotocol/cowswap/commit/879b5eba4644401864349f944472e5e5757430e1))
+
 ## [2.29.4](https://github.com/cowprotocol/cowswap/compare/explorer-v2.29.3...explorer-v2.29.4) (2024-04-19)
 
 
