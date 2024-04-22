@@ -1,7 +1,6 @@
 import { useMemo } from 'react'
 
-import { useWalletDetails } from '@cowprotocol/wallet'
-import { useWeb3Modal } from '@web3modal/ethers5/react'
+import { useOpenWalletModal, useWalletDetails } from '@cowprotocol/wallet'
 
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { useWrapNativeFlow } from 'modules/trade'
@@ -23,7 +22,7 @@ export function useTradeFormButtonContext(
   const wrapNativeFlow = useWrapNativeFlow()
   const { isSupportedWallet } = useWalletDetails()
   const quote = useTradeQuote()
-  const { open: toggleWalletModal } = useWeb3Modal()
+  const toggleWalletModal = useOpenWalletModal()
   const { standaloneMode } = useInjectedWidgetParams()
 
   return useMemo(() => {

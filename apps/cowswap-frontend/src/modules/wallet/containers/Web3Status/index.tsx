@@ -1,5 +1,4 @@
-import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
-import { useWeb3Modal } from '@web3modal/ethers5/react'
+import { useOpenWalletModal, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { Web3StatusInner } from '../../pure/Web3StatusInner'
 import { Wrapper } from '../../pure/Web3StatusInner/styled'
@@ -14,7 +13,7 @@ export function Web3Status({ pendingActivities, className }: Web3StatusProps) {
   const { account } = useWalletInfo()
   const { ensName } = useWalletDetails()
 
-  const { open: openConnectWalletModal } = useWeb3Modal()
+  const openConnectWalletModal = useOpenWalletModal()
 
   useCloseFollowTxPopupIfNotPendingOrder()
 

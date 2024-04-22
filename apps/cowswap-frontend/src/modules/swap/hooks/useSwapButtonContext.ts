@@ -5,11 +5,11 @@ import {
   useGnosisSafeInfo,
   useIsBundlingSupported,
   useIsSmartContractWallet,
+  useOpenWalletModal,
   useWalletDetails,
   useWalletInfo,
 } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
-import { useWeb3Modal } from '@web3modal/ethers5/react'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { useGetQuoteAndStatus, useIsBestQuoteLoading } from 'legacy/state/price/hooks'
@@ -53,7 +53,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
     currenciesIds,
     inputError: swapInputError,
   } = useDerivedSwapInfo()
-  const { open: toggleWalletModal } = useWeb3Modal()
+  const toggleWalletModal = useOpenWalletModal()
   const swapFlowContext = useSwapFlowContext()
   const ethFlowContext = useEthFlowContext()
   const safeBundleApprovalFlowContext = useSafeBundleApprovalFlowContext()
