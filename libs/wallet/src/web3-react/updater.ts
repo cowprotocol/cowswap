@@ -17,6 +17,7 @@ import { useENSName } from '@cowprotocol/ens'
 import ms from 'ms.macro'
 import { useWeb3ModalAccount } from '@web3modal/ethers5/react'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
+import { useLocation } from 'react-router-dom'
 
 const SAFE_INFO_UPDATE_INTERVAL = ms`30s`
 
@@ -30,15 +31,20 @@ function _checkIsSupportedWallet(walletName?: string): boolean {
 function _useWalletInfo(): WalletInfo {
   const { address, chainId, isConnected: active } = useWeb3ModalAccount()
   const isChainIdUnsupported = !!chainId && !(chainId in SupportedChainId)
+  const location = useLocation()
 
-  return useMemo(
-    () => ({
+  return useMemo(() => {
+    return {
       chainId: isChainIdUnsupported || !chainId ? getCurrentChainIdFromUrl() : chainId,
       active,
       account: address,
-    }),
-    [chainId, active, address, isChainIdUnsupported]
-  )
+    }
+    /**
+     * The hook should be recalculated when location changes,
+     * because when wallet is not connected, we should rely on the URL to get the chainId
+     */
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chainId, active, address, isChainIdUnsupported, location])
 }
 
 function _useWalletDetails(account?: string): WalletDetails {
