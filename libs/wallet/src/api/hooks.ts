@@ -3,9 +3,7 @@ import { useAtomValue } from 'jotai'
 import { gnosisSafeInfoAtom, walletDetailsAtom, walletDisplayedAddress, walletInfoAtom } from './state'
 import { GnosisSafeInfo, WalletDetails, WalletInfo } from './types'
 
-import { useIsSafeApp } from '../web3-react/hooks/useWalletMetadata'
-import { useWeb3Modal } from '@web3modal/ethers5/react'
-import { useCallback } from 'react'
+import { useIsSafeApp } from '../web3modal/hooks/useWalletMetadata'
 
 export function useWalletInfo(): WalletInfo {
   return useAtomValue(walletInfoAtom)
@@ -28,12 +26,4 @@ export function useIsBundlingSupported(): boolean {
   // Pending a custom RPC endpoint implementation on Safe side to allow
   // tx bundling via WalletConnect
   return useIsSafeApp()
-}
-
-export function useOpenWalletModal() {
-  const { open: openWalletModal } = useWeb3Modal()
-
-  return useCallback(() => {
-    openWalletModal({ view: 'Connect' })
-  }, [openWalletModal])
 }
