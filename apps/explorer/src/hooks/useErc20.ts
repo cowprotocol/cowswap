@@ -140,10 +140,6 @@ export function useMultipleErc20(
     if (!running.current.isRunning || running.current.networkId !== networkId) {
       updateErc20s()
     }
-
-    return () => {
-      running.current.isRunning = false
-    }
   }, [updateErc20s, saveErc20s, networkId])
 
   return {
