@@ -8,7 +8,7 @@ import { updateLimitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
 import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
 import { useTradeQuote } from 'modules/tradeQuote'
 
-export const LIMIT_ORDERS_PRICE_SLIPPAGE = new Percent(1, 10) // 0.1%
+const LIMIT_ORDERS_PRICE_SLIPPAGE = new Percent(1, 10) // 0.1%
 
 export function QuoteObserverUpdater() {
   const { response } = useTradeQuote()
