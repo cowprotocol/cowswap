@@ -29,15 +29,18 @@ import { SpotPricesUpdater } from 'common/updaters/orders/SpotPricesUpdater'
 import { SentryUpdater } from 'common/updaters/SentryUpdater'
 import { UserUpdater } from 'common/updaters/UserUpdater'
 
+import { useIsDarkMode } from '../../../../legacy/state/user/hooks'
+
 export function Updaters() {
   const { chainId, account } = useWalletInfo()
   const { tokenLists, appCode, customTokens } = useInjectedWidgetParams()
   const onTokenListAddingError = useOnTokenListAddingError()
   const { isGeoBlockEnabled } = useFeatureFlags()
+  const darkMode = useIsDarkMode()
 
   return (
     <>
-      <WalletUpdater />
+      <WalletUpdater darkMode={darkMode} />
       <HwAccountIndexUpdater />
       <UserUpdater />
       <FinalizeTxUpdater />

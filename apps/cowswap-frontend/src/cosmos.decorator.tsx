@@ -84,8 +84,6 @@ export const DemoContainer = styled.div`
   padding: 10px;
 `
 
-const chainId = 5
-
 const Fixture = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const skeleton = document.getElementById('swap-skeleton')
@@ -101,7 +99,7 @@ const Fixture = ({ children }: { children: ReactNode }) => {
             <ThemedGlobalStyle />
             <LanguageProvider>
               <BlockNumberProvider>
-                <WalletUpdater />
+                <WalletUpdater darkMode={false} />
                 <Wrapper>
                   <DarkModeToggle>
                     <WrapperInner>{children}</WrapperInner>

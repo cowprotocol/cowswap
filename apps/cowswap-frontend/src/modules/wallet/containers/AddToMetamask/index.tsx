@@ -5,8 +5,8 @@ import { TokenWithLogo } from '@cowprotocol/common-const'
 import { getWrappedToken } from '@cowprotocol/common-utils'
 import { getTokenLogoUrls } from '@cowprotocol/tokens'
 import { useIsMetaMask } from '@cowprotocol/wallet'
+import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { Currency } from '@uniswap/sdk-core'
-import { useWeb3ModalProvider } from '@web3modal/ethers5/react'
 
 import { AddToMetamask as AddToMetamaskPure } from '../../pure/AddToMetamask'
 
@@ -19,7 +19,7 @@ export type AddToMetamaskProps = {
 export function AddToMetamask(props: AddToMetamaskProps) {
   const { currency, shortLabel, className } = props
   const isMetaMask = useIsMetaMask()
-  const { walletProvider } = useWeb3ModalProvider()
+  const walletProvider = useWalletProvider()
 
   const [success, setSuccess] = useState<boolean | undefined>()
 
@@ -27,23 +27,20 @@ export function AddToMetamask(props: AddToMetamaskProps) {
   const logoURL = getTokenLogoUrls(token as TokenWithLogo)[0]
 
   const addToken = useCallback(() => {
-    if (!token?.symbol || !walletProvider?.request) return
+    if (!token?.symbol || !walletProvider) return
 
     walletProvider
-      .request({
-        method: 'wallet_watchAsset',
-        params: [
-          {
-            type: 'ERC20', // Initially only supports ERC20, but eventually more!
-            options: {
-              address: token.address,
-              symbol: token.symbol,
-              decimals: token.decimals,
-              image: logoURL,
-            },
+      .send('wallet_watchAsset', [
+        {
+          type: 'ERC20', // Initially only supports ERC20, but eventually more!
+          options: {
+            address: token.address,
+            symbol: token.symbol,
+            decimals: token.decimals,
+            image: logoURL,
           },
-        ],
-      })
+        },
+      ])
       .then(() => {
         addTokenToMetamaskAnalytics('Succeeded', token.symbol)
         setSuccess(true)

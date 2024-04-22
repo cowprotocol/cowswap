@@ -15,7 +15,7 @@ import { useIsSmartContractWallet } from './hooks/useIsSmartContractWallet'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useENSName } from '@cowprotocol/ens'
 import ms from 'ms.macro'
-import { useWeb3ModalAccount } from '@web3modal/ethers5/react'
+import { useWeb3ModalAccount, useWeb3ModalTheme } from '@web3modal/ethers5/react'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { useLocation } from 'react-router-dom'
 
@@ -101,7 +101,7 @@ function _useSafeInfo(walletInfo: WalletInfo): GnosisSafeInfo | undefined {
   return safeInfo
 }
 
-export function WalletUpdater() {
+export function WalletUpdater({ darkMode }: { darkMode: boolean }) {
   const walletInfo = _useWalletInfo()
   const walletDetails = _useWalletDetails(walletInfo.account)
   const gnosisSafeInfo = _useSafeInfo(walletInfo)
@@ -109,6 +109,8 @@ export function WalletUpdater() {
   const setWalletInfo = useSetAtom(walletInfoAtom)
   const setWalletDetails = useSetAtom(walletDetailsAtom)
   const setGnosisSafeInfo = useSetAtom(gnosisSafeInfoAtom)
+
+  const { setThemeMode } = useWeb3ModalTheme()
 
   // Update wallet info
   useEffect(() => {
@@ -128,6 +130,11 @@ export function WalletUpdater() {
   useEffect(() => {
     setGnosisSafeInfo(gnosisSafeInfo)
   }, [gnosisSafeInfo, setGnosisSafeInfo])
+
+  // Sync web3modal theme with the app theme
+  useEffect(() => {
+    setThemeMode(darkMode ? 'dark' : 'light')
+  }, [darkMode, setThemeMode])
 
   return null
 }

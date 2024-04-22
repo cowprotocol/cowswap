@@ -4,8 +4,7 @@ import { getChainInfo } from '@cowprotocol/common-const'
 import { isRejectRequestProviderError } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useAddSnackbar } from '@cowprotocol/snackbars'
-import { useWalletInfo } from '@cowprotocol/wallet'
-import { useSwitchNetwork } from '@web3modal/ethers5/react'
+import { useSwitchNetwork, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useCloseModal } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
@@ -18,7 +17,7 @@ import { useLegacySetChainIdToUrl } from './useLegacySetChainIdToUrl'
 
 export function useOnSelectNetwork(): (chainId: SupportedChainId, skipClose?: boolean) => Promise<void> {
   const { active } = useWalletInfo()
-  const { switchNetwork } = useSwitchNetwork()
+  const switchNetwork = useSwitchNetwork()
   const tradeNavigate = useTradeNavigate()
   const addSnackbar = useAddSnackbar()
   const closeModal = useCloseModal(ApplicationModal.NETWORK_SELECTOR)

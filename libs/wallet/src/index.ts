@@ -10,6 +10,9 @@ export * from './web3modal/hooks/useIsMetaMask'
 export * from './web3modal/hooks/useSafeAppsSdk'
 export * from './web3modal/hooks/useIsSmartContractWallet'
 export * from './web3modal/hooks/useIsProviderNetworkUnsupported'
+export * from './web3modal/hooks/useIsWalletChangingAllowed'
+export * from './web3modal/hooks/useDisconnect'
+export * from './web3modal/hooks/useSwitchNetwork'
 
 // Updater
 export * from './web3modal/updater'

@@ -3,8 +3,8 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { usePrevious } from '@cowprotocol/common-hooks'
 import { getRawCurrentChainIdFromUrl } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { useWalletInfo } from '@cowprotocol/wallet'
-import { useSwitchNetwork, useWeb3ModalProvider } from '@web3modal/ethers5/react'
+import { useSwitchNetwork, useWalletInfo } from '@cowprotocol/wallet'
+import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import { useTradeNavigate } from 'modules/trade/hooks/useTradeNavigate'
 import { useIsAlternativeOrderModalVisible } from 'modules/trade/state/alternativeOrder'
@@ -21,8 +21,8 @@ export function useSetupTradeState(): void {
   const { chainId: providerChainId, account } = useWalletInfo()
   const prevProviderChainId = usePrevious(providerChainId)
 
-  const { walletProvider } = useWeb3ModalProvider()
-  const { switchNetwork } = useSwitchNetwork()
+  const walletProvider = useWalletProvider()
+  const switchNetwork = useSwitchNetwork()
   const tradeNavigate = useTradeNavigate()
   const tradeStateFromUrl = useTradeStateFromUrl()
   const { state, updateState } = useTradeState()
@@ -169,9 +169,7 @@ export function useSetupTradeState(): void {
    * On:
    *  - chainId in URL changes
    *  - walletProvider changes
-   *
-   * Note: useEagerlyConnect() changes connectors several times at the beginning
-   *
+
    * 1. When chainId in URL is changed, then set it to the provider
    * 2. If provider's chainId is the same with chainId in URL, then do nothing
    * 3. When the URL state is remembered, then set it's chainId to the provider

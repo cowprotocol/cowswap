@@ -4,10 +4,9 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useNativeTokensBalances } from '@cowprotocol/balances-and-allowances'
 import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { useAddSnackbar } from '@cowprotocol/snackbars'
-import { AccountIndexSelect, useWalletInfo } from '@cowprotocol/wallet'
+import { AccountIndexSelect, useWalletInfo, useWalletMetaData } from '@cowprotocol/wallet'
 import { hwAccountIndexAtom, useAccountsLoader } from '@cowprotocol/wallet-provider'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
-import { useWalletInfo as useWeb3WalletInfo } from '@web3modal/ethers5/react'
 
 import { Trans } from '@lingui/macro'
 
@@ -25,12 +24,9 @@ export function AccountSelectorModal() {
 
   const [hwAccountIndex, setHwAccountIndex] = useAtom(hwAccountIndexAtom)
   const addSnackbar = useAddSnackbar()
-  const { walletInfo } = useWeb3WalletInfo()
+  const { walletName, icon: walletIcon } = useWalletMetaData()
 
   const nativeToken = NATIVE_CURRENCIES[chainId]
-
-  const walletIcon = walletInfo?.icon
-  const walletName = walletInfo?.name
 
   const accountsLoader = useAccountsLoader()
 

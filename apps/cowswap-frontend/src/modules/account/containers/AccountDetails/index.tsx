@@ -16,11 +16,11 @@ import {
   useWalletDetails,
   useIsWalletConnect,
   useIsMetaMask,
+  useIsWalletChangingAllowed,
+  useDisconnect,
 } from '@cowprotocol/wallet'
 import { useIsProviderNetworkUnsupported } from '@cowprotocol/wallet'
-import { SAFE_CONNECTOR_UID, useAccountsLoader } from '@cowprotocol/wallet-provider'
-import { useWalletInfo as useWeb3WalletInfo } from '@web3modal/ethers5/react'
-import { useDisconnect } from '@web3modal/ethers5/react'
+import { useAccountsLoader } from '@cowprotocol/wallet-provider'
 
 import { Trans } from '@lingui/macro'
 
@@ -95,8 +95,7 @@ export function AccountDetails({
 }: AccountDetailsProps) {
   const { account, chainId } = useWalletInfo()
   const walletDetails = useWalletDetails()
-  const { walletInfo } = useWeb3WalletInfo()
-  const { disconnect: disconnectWallet } = useDisconnect()
+  const disconnectWallet = useDisconnect()
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
   const { standaloneMode } = useInjectedWidgetParams()
 
@@ -107,6 +106,7 @@ export function AccountDetails({
   const activitiesGroupedByDate = groupActivitiesByDay(activities)
   const activityTotalCount = activities?.length || 0
 
+  const isWalletChangingAllowed = useIsWalletChangingAllowed()
   const accountsLoader = useAccountsLoader()
   const isWalletConnect = useIsWalletConnect()
   const isMetaMask = useIsMetaMask()
@@ -140,7 +140,6 @@ export function AccountDetails({
 
   const networkLabel = CHAIN_INFO[chainId].label
   const isHardWareWallet = forceHardwareWallet || !!accountsLoader
-  const isWalletChangingAllowed = walletInfo?.uuid !== SAFE_CONNECTOR_UID
 
   return (
     <Wrapper>
