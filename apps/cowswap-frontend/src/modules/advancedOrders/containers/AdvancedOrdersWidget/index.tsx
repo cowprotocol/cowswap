@@ -18,7 +18,7 @@ import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 
 import { AdvancedOrdersSettings } from '../AdvancedOrdersSettings'
 
-export const TWAP_BULLET_LIST_CONTENT: BulletListItem[] = [
+const TWAP_BULLET_LIST_CONTENT: BulletListItem[] = [
   { content: 'Get the Time-Weighted Average Price by splitting your large order into parts' },
   { content: 'Customize your order size, expiration, and number of parts' },
   { content: 'Receive surplus of your order' },
