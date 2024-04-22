@@ -8,9 +8,11 @@ export interface WalletAccountsLoader {
 export const accountsLoaders: Record<string, WalletAccountsLoader> = {
   [TREZOR_CONNECTOR_ID]: {
     getAccounts() {
-      return trezorProvider.getAccounts()
+      return trezorProvider?.getAccounts() || null
     },
     loadMoreAccounts() {
+      if (!trezorProvider) throw new Error('Trezor provider is not initialized')
+
       return trezorProvider.loadMoreAccounts()
     },
   },
