@@ -17,6 +17,7 @@ import {
   useIsWalletConnect,
   useIsMetaMask,
 } from '@cowprotocol/wallet'
+import { useIsProviderNetworkUnsupported } from '@cowprotocol/wallet'
 import { SAFE_CONNECTOR_UID, useAccountsLoader } from '@cowprotocol/wallet-provider'
 import { useWalletInfo as useWeb3WalletInfo } from '@web3modal/ethers5/react'
 import { useDisconnect } from '@web3modal/ethers5/react'
@@ -33,7 +34,6 @@ import {
 import Activity from 'modules/account/containers/Transaction'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 
-import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useUnsupportedNetworksText } from 'common/hooks/useUnsupportedNetworksText'
 
 import { AccountIcon } from './AccountIcon'

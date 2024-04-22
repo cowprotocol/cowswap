@@ -1,9 +1,8 @@
 import { UI } from '@cowprotocol/ui'
+import { useIsProviderNetworkUnsupported } from '@cowprotocol/wallet'
 
 import { AlertCircle } from 'react-feather'
 import styled from 'styled-components/macro'
-
-import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
 import { useUnsupportedNetworksText } from '../../hooks/useUnsupportedNetworksText'
 

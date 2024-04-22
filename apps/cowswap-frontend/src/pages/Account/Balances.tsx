@@ -11,6 +11,7 @@ import { getBlockExplorerUrl, getProviderErrorMessage } from '@cowprotocol/commo
 import { TokenAmount, ButtonPrimary } from '@cowprotocol/ui'
 import { MouseoverTooltipContent } from '@cowprotocol/ui'
 import { useIsMetaMask, useWalletInfo } from '@cowprotocol/wallet'
+import { useIsProviderNetworkUnsupported } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -23,7 +24,6 @@ import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
 import { SwapVCowStatus } from 'legacy/state/cowToken/actions'
 import { useVCowData, useSwapVCowCallback, useSetSwapVCowStatus, useSwapVCowStatus } from 'legacy/state/cowToken/hooks'
 
-import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useModalState } from 'common/hooks/useModalState'
 import { ConfirmationPendingContent } from 'common/pure/ConfirmationPendingContent'
 import { HelpCircle } from 'common/pure/HelpCircle'

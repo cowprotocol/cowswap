@@ -6,6 +6,7 @@ import { useDebounce, useOnClickOutside, usePrevious, useTheme } from '@cowproto
 import { isAddress, isTruthy } from '@cowprotocol/common-utils'
 import { useTokensByAddressMap, useFavouriteTokens, useResetFavouriteTokens } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
+import { useIsProviderNetworkUnsupported } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import { Trans, t } from '@lingui/macro'
@@ -15,8 +16,6 @@ import TokensTable from 'legacy/components/Tokens/TokensTable'
 import { CloseIcon } from 'legacy/theme'
 
 import { PageTitle } from 'modules/application/containers/PageTitle'
-
-import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
 import {
   Menu,

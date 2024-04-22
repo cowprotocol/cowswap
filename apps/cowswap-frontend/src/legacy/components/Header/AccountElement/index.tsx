@@ -4,13 +4,12 @@ import { useNativeCurrencyAmount } from '@cowprotocol/balances-and-allowances'
 import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { TokenAmount } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
+import { useIsProviderNetworkUnsupported } from '@cowprotocol/wallet'
 
 import { upToLarge, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 
 import { useToggleAccountModal } from 'modules/account'
 import { Web3Status } from 'modules/wallet/containers/Web3Status'
-
-import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
 import { Wrapper, BalanceText } from './styled'
 

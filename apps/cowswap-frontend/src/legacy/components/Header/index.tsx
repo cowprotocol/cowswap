@@ -5,6 +5,7 @@ import { CHRISTMAS_THEME_ENABLED } from '@cowprotocol/common-const'
 import { addBodyClass, removeBodyClass } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
+import { useIsProviderNetworkUnsupported } from '@cowprotocol/wallet'
 
 import SVG from 'react-inlinesvg'
 import { useNavigate } from 'react-router-dom'
@@ -24,7 +25,6 @@ import { getDefaultTradeRawState } from 'modules/trade/types/TradeRawState'
 
 import { Routes } from 'common/constants/routes'
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
-import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
 import { AccountElement } from './AccountElement'
 import MobileMenuIcon from './MobileMenuIcon'

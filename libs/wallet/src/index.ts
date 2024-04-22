@@ -9,6 +9,7 @@ export * from './web3modal/hooks/useIsWalletConnect'
 export * from './web3modal/hooks/useIsMetaMask'
 export * from './web3modal/hooks/useSafeAppsSdk'
 export * from './web3modal/hooks/useIsSmartContractWallet'
+export * from './web3modal/hooks/useIsProviderNetworkUnsupported'
 
 // Updater
 export * from './web3modal/updater'

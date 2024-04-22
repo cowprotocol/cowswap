@@ -9,6 +9,7 @@ import { useENS } from '@cowprotocol/ens'
 import { useAreThereTokensWithSameSymbol, useTokenBySymbolOrAddress } from '@cowprotocol/tokens'
 import { Command } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
+import { useIsProviderNetworkUnsupported } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount, Percent, TradeType } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/macro'
@@ -26,7 +27,6 @@ import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { useNavigateOnCurrencySelection } from 'modules/trade/hooks/useNavigateOnCurrencySelection'
 import { useTradeNavigate } from 'modules/trade/hooks/useTradeNavigate'
 
-import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
 import { useSwapSlippage } from './useSwapSlippage'

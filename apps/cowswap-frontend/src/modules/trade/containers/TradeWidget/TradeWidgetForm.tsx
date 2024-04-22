@@ -6,6 +6,7 @@ import { useIsSwapMode, useIsLimitOrderMode, useIsAdvancedMode } from '@cowproto
 import { isInjectedWidget, maxAmountSpend } from '@cowprotocol/common-utils'
 import { ButtonOutlined, MY_ORDERS_ID, InlineBanner, BannerOrientation, ClosableBanner } from '@cowprotocol/ui'
 import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
+import { useIsProviderNetworkUnsupported } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/macro'
 import SVG from 'react-inlinesvg'
@@ -21,7 +22,6 @@ import { useOpenTokenSelectWidget } from 'modules/tokensList'
 import { useIsAlternativeOrderModalVisible } from 'modules/trade/state/alternativeOrder'
 
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
-import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useThrottleFn } from 'common/hooks/useThrottleFn'
 import { CurrencyArrowSeparator } from 'common/pure/CurrencyArrowSeparator'
 import { CurrencyInputPanel } from 'common/pure/CurrencyInputPanel'
@@ -102,7 +102,6 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
       (isAdvancedMode && isAdvancedOrdersUnlocked))
 
   const showDropdown = shouldShowMyOrdersButton || isInjectedWidgetMode
-
 
   const currencyInputCommonProps = {
     isChainIdUnsupported,
