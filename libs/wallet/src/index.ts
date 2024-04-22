@@ -1,7 +1,6 @@
 import './types.d.ts'
 
 export * from './api/types'
-export * from './assets'
 
 // Hooks
 export * from './api/hooks'

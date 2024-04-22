@@ -1,9 +1,9 @@
 import React, { useContext } from 'react'
 
+import MetaMaskLogo from '@cowprotocol/assets/cow-swap/metamask.png'
 import { Command } from '@cowprotocol/types'
 import { UI } from '@cowprotocol/ui'
 import { RowFixed, TokenSymbol } from '@cowprotocol/ui'
-import { MetaMaskLogo } from '@cowprotocol/wallet'
 import { Currency } from '@uniswap/sdk-core'
 
 import { CheckCircle } from 'react-feather'
