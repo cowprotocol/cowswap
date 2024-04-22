@@ -69,15 +69,12 @@ function useUpdatePending(props: UseUpdatePendingProps) {
 
   return useCallback(async () => {
     if (isUpdating.current) {
-      console.debug('[SpotPricesUpdater] Update in progress, skipping')
       return
     }
 
     if (!isWindowVisibleRef.current) {
       return
     }
-
-    console.debug('[SpotPricesUpdater] Starting update')
 
     // Lock updates
     isUpdating.current = true
@@ -92,8 +89,6 @@ function useUpdatePending(props: UseUpdatePendingProps) {
           }
 
           const price = FractionUtils.toPrice(fraction, inputCurrency, outputCurrency)
-
-          console.debug(`[SpotPricesUpdater] Got new price for ${key}`, price.toFixed(6))
 
           updateSpotPrices({
             chainId,

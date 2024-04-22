@@ -56,8 +56,6 @@ export const sdk = !BLOCKNATIVE_API_KEY
         })
       }
 
-      console.info(`[blocknative] BlocknativeSdk initialized on chain ${networkId}`)
-
       return acc
     }, {})
 

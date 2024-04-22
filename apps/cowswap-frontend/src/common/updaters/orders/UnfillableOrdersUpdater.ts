@@ -124,7 +124,6 @@ export function UnfillableOrdersUpdater(): null {
       return
     }
 
-    const startTime = Date.now()
     try {
       isUpdating.current = true
 
@@ -134,13 +133,9 @@ export function UnfillableOrdersUpdater(): null {
 
       if (pending.length === 0) {
         return
-      } else {
-        console.debug(
-          `[UnfillableOrdersUpdater] Checking new market price for ${pending.length} orders, account ${account} and network ${chainId}`
-        )
       }
 
-      pending.forEach((order, index) => {
+      pending.forEach((order) => {
         const currencyAmount = CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount)
         const { enoughBalance } = hasEnoughBalanceAndAllowance({
           account,
@@ -156,13 +151,7 @@ export function UnfillableOrdersUpdater(): null {
               const price = getPromiseFulfilledValue(promisedPrice, null)
               const fee = getPromiseFulfilledValue(promisedFee, null)
 
-              console.debug(
-                `[UnfillableOrdersUpdater::updateUnfillable] did we get any price? ${order.id.slice(0, 8)}|${index}`,
-                price ? price.amount : 'no :('
-              )
               price?.amount && updateIsUnfillableFlag(chainId, order, price, fee)
-            } else {
-              console.debug('[UnfillableOrdersUpdater::updateUnfillable] No price quote for', order.id.slice(0, 8))
             }
           })
           .catch((e) => {
@@ -195,11 +184,9 @@ export function UnfillableOrdersUpdater(): null {
 
   useEffect(() => {
     if (!chainId || !account || !isWindowVisible) {
-      console.debug('[UnfillableOrdersUpdater] No need to fetch unfillable orders')
       return
     }
 
-    console.debug('[UnfillableOrdersUpdater] Periodically check for unfillable orders')
     updatePendingRef.current()
     const interval = setInterval(() => updatePendingRef.current(), PENDING_ORDERS_PRICE_CHECK_POLL_INTERVAL)
     return () => clearInterval(interval)
@@ -238,9 +225,6 @@ async function _getOrderPrice(
   }
 
   const isEthFlow = order.sellToken === NATIVE_CURRENCY_ADDRESS
-  if (isEthFlow) {
-    console.debug('[UnfillableOrderUpdater] - Native sell swap detected. Using wrapped token address for quotes')
-  }
 
   const quoteParams = {
     chainId,
