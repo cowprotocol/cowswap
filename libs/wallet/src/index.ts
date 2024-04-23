@@ -13,6 +13,8 @@ export * from './web3modal/hooks/useIsProviderNetworkUnsupported'
 export * from './web3modal/hooks/useIsWalletChangingAllowed'
 export * from './web3modal/hooks/useDisconnect'
 export * from './web3modal/hooks/useSwitchNetwork'
+export * from './web3modal/hooks/useHwAccountIndex'
+export * from './web3modal/hooks/useAccountsLoader'
 
 // Updater
 export * from './web3modal/updater'
@@ -29,3 +31,6 @@ export * from './api/utils/connection'
 export * from './api/state'
 export * from './api/state'
 export { useOpenWalletModal } from './web3modal/hooks/useOpenWalletModal'
+
+// Web3Modal
+export { initWeb3Modal } from './web3modal/web3ModalConfig'

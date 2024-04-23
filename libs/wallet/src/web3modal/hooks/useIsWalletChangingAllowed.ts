@@ -1,8 +1,7 @@
-import { useWalletInfo } from '@web3modal/ethers5/react'
-import { SAFE_CONNECTOR_UID } from '@cowprotocol/wallet-provider'
+import { useIsSafeApp } from './useWalletMetadata'
 
 export function useIsWalletChangingAllowed(): boolean {
-  const { walletInfo } = useWalletInfo()
+  const isSafeApp = useIsSafeApp()
 
-  return walletInfo?.uuid !== SAFE_CONNECTOR_UID
+  return !isSafeApp
 }

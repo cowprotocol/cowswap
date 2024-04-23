@@ -18,9 +18,9 @@ import {
   useIsMetaMask,
   useIsWalletChangingAllowed,
   useDisconnect,
+  useAccountsLoader,
 } from '@cowprotocol/wallet'
 import { useIsProviderNetworkUnsupported } from '@cowprotocol/wallet'
-import { useAccountsLoader } from '@cowprotocol/wallet-provider'
 
 import { Trans } from '@lingui/macro'
 

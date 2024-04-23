@@ -1,13 +1,11 @@
-import { useAtom } from 'jotai'
 import { useEffect } from 'react'
 
-import { useWalletInfo } from '@cowprotocol/wallet'
-import { hwAccountIndexAtom, useAccountsLoader } from '@cowprotocol/wallet-provider'
+import { useAccountsLoader, useHwAccountIndex, useWalletInfo } from '@cowprotocol/wallet'
 
 import { web3Modal } from '../../web3Modal'
 
 export function HwAccountIndexUpdater() {
-  const [hwAccountIndex, setHwAccountIndex] = useAtom(hwAccountIndexAtom)
+  const [hwAccountIndex, setHwAccountIndex] = useHwAccountIndex()
   const { chainId, account, active } = useWalletInfo()
 
   const accountsLoader = useAccountsLoader()

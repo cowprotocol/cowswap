@@ -1,11 +1,16 @@
-import { useAtom, useAtomValue, useSetAtom } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { useNativeTokensBalances } from '@cowprotocol/balances-and-allowances'
 import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { useAddSnackbar } from '@cowprotocol/snackbars'
-import { AccountIndexSelect, useWalletInfo, useWalletMetaData } from '@cowprotocol/wallet'
-import { hwAccountIndexAtom, useAccountsLoader } from '@cowprotocol/wallet-provider'
+import {
+  AccountIndexSelect,
+  useAccountsLoader,
+  useHwAccountIndex,
+  useWalletInfo,
+  useWalletMetaData,
+} from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
@@ -22,7 +27,7 @@ export function AccountSelectorModal() {
   const { isOpen } = useAtomValue(accountSelectorModalAtom)
   const closeModal = useSetAtom(toggleAccountSelectorModalAtom)
 
-  const [hwAccountIndex, setHwAccountIndex] = useAtom(hwAccountIndexAtom)
+  const [hwAccountIndex, setHwAccountIndex] = useHwAccountIndex()
   const addSnackbar = useAddSnackbar()
   const { walletName, icon: walletIcon } = useWalletMetaData()
 

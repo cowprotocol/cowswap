@@ -1,6 +1,6 @@
 import { jotaiStore } from '@cowprotocol/core'
 
-import { hwAccountIndexAtom } from './state'
+import { hwAccountIndexAtom } from '../../hwAccountIndexState'
 
 export const TREZOR_DERIVATION_PATH = `m/44'/60'/0'/0`
 
