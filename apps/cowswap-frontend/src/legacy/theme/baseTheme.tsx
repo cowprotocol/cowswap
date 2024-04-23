@@ -542,6 +542,10 @@ export const UniThemedGlobalStyle = css`
     // Animation
     ${UI.ANIMATION_DURATION}: 0.1s;
     ${UI.ANIMATION_DURATION_SLOW}: 0.2s;
+
+    // web3modal theme
+    --wui-color-modal-bg: var(${UI.COLOR_PAPER}) !important;
+    --wui-color-fg-100: var(${UI.COLOR_TEXT}) !important;
   }
 
   body {
