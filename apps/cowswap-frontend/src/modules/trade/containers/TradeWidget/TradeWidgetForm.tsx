@@ -2,7 +2,6 @@ import React, { useEffect, useCallback } from 'react'
 
 import ICON_ORDERS from '@cowprotocol/assets/svg/orders.svg'
 import ICON_TOKENS from '@cowprotocol/assets/svg/tokens.svg'
-import { useIsSwapMode, useIsLimitOrderMode, useIsAdvancedMode } from '@cowprotocol/common-hooks'
 import { isInjectedWidget, maxAmountSpend } from '@cowprotocol/common-utils'
 import { ButtonOutlined, MY_ORDERS_ID, InlineBanner, BannerOrientation, ClosableBanner } from '@cowprotocol/ui'
 import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
@@ -32,6 +31,7 @@ import { TradeWidgetProps } from './types'
 
 import { useTradeStateFromUrl } from '../../hooks/setupTradeState/useTradeStateFromUrl'
 import { useIsWrapOrUnwrap } from '../../hooks/useIsWrapOrUnwrap'
+import { TradeType, useTradeTypeInfo } from '../../hooks/useTradeTypeInfo'
 import { TradeWidgetLinks } from '../TradeWidgetLinks'
 import { WrapFlowActionButton } from '../WrapFlowActionButton'
 
@@ -86,23 +86,24 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
   // Disable too frequent tokens switching
   const throttledOnSwitchTokens = useThrottleFn(onSwitchTokens, 500)
 
-  const isUpToLarge = useMediaQuery(upToLarge)
-  const isSwapMode = useIsSwapMode()
-  const isLimitOrderMode = useIsLimitOrderMode()
-  const isAdvancedMode = useIsAdvancedMode()
+  const tradeTypeInfo = useTradeTypeInfo()
   const { isUnlocked: isAdvancedOrdersUnlocked } = useAdvancedOrdersDerivedState()
   const isLimitOrdersUnlocked = useIsWidgetUnlocked()
+  const isUpToLarge = useMediaQuery(upToLarge)
+
+  const isSwapMode = tradeTypeInfo?.tradeType === TradeType.SWAP
+  const isLimitOrderMode = tradeTypeInfo?.tradeType === TradeType.LIMIT_ORDER
+  const isAdvancedMode = tradeTypeInfo?.tradeType === TradeType.ADVANCED_ORDERS
   const isConnectedSwapMode = !!account && isSwapMode
 
   const shouldShowMyOrdersButton =
-    isUpToLarge &&
     !alternativeOrderModalVisible &&
+    (!isInjectedWidgetMode && isConnectedSwapMode ? isUpToLarge : true) &&
     ((isConnectedSwapMode && injectedWidgetParams.standaloneMode !== true) ||
-      (isLimitOrderMode && isLimitOrdersUnlocked) ||
-      (isAdvancedMode && isAdvancedOrdersUnlocked))
+      (isLimitOrderMode && isUpToLarge && isLimitOrdersUnlocked) ||
+      (isAdvancedMode && isUpToLarge && isAdvancedOrdersUnlocked))
 
   const showDropdown = shouldShowMyOrdersButton || isInjectedWidgetMode
-
 
   const currencyInputCommonProps = {
     isChainIdUnsupported,

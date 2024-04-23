@@ -6,7 +6,7 @@ import { UnsupportedTokensState } from '../../types'
 import { getJotaiMergerStorage } from '@cowprotocol/core'
 
 export const unsupportedTokensAtom = atomWithStorage<Record<SupportedChainId, UnsupportedTokensState>>(
-  'unsupportedTokensAtom:v1',
+  'unsupportedTokensAtom:v2',
   mapSupportedNetworks({}),
   getJotaiMergerStorage()
 )
