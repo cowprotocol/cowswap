@@ -17,6 +17,7 @@ import { useUserSlippageTolerance } from 'legacy/state/user/hooks'
 
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { EthFlowModal, EthFlowProps } from 'modules/swap/containers/EthFlow'
+import { SafeTokenBanner } from 'modules/swap/containers/SafeTokenBanner'
 import { SwapModals, SwapModalsProps } from 'modules/swap/containers/SwapModals'
 import { SwapButtonState } from 'modules/swap/helpers/getSwapButtonState'
 import { getInputReceiveAmountInfo, getOutputReceiveAmountInfo } from 'modules/swap/helpers/tradeReceiveAmount'
@@ -268,6 +269,7 @@ export function SwapWidget() {
       <>
         <TradeRates {...tradeRatesProps} />
         <SwapWarningsTop {...swapWarningsTopProps} />
+        <SafeTokenBanner sellTokenAddress={inputToken?.address} buyTokenAddress={outputToken?.address} />
         <SwapButtons {...swapButtonContext} />
         <SwapWarningsBottom {...swapWarningsBottomProps} />
       </>
@@ -300,16 +302,18 @@ export function SwapWidget() {
           params={params}
           inputCurrencyInfo={inputCurrencyInfo}
           outputCurrencyInfo={outputCurrencyInfo}
-          confirmModal={<ConfirmSwapModalSetup
-            chainId={chainId}
-            recipientAddressOrName={swapButtonContext.recipientAddressOrName}
-            doTrade={swapButtonContext.handleSwap}
-            priceImpact={priceImpactParams}
-            inputCurrencyInfo={inputCurrencyPreviewInfo}
-            outputCurrencyInfo={outputCurrencyPreviewInfo}
-            tradeRatesProps={tradeRatesProps}
-            refreshInterval={SWAP_QUOTE_CHECK_INTERVAL}
-          />}
+          confirmModal={
+            <ConfirmSwapModalSetup
+              chainId={chainId}
+              recipientAddressOrName={swapButtonContext.recipientAddressOrName}
+              doTrade={swapButtonContext.handleSwap}
+              priceImpact={priceImpactParams}
+              inputCurrencyInfo={inputCurrencyPreviewInfo}
+              outputCurrencyInfo={outputCurrencyPreviewInfo}
+              tradeRatesProps={tradeRatesProps}
+              refreshInterval={SWAP_QUOTE_CHECK_INTERVAL}
+            />
+          }
           genericModal={showNativeWrapModal && <EthFlowModal {...ethFlowProps} />}
         />
         <NetworkAlert />

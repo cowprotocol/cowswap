@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.66.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.65.2...cowswap-v1.66.0) (2024-04-23)
+
+
+### Features
+
+* **swap:** display warning for safe token ([#4290](https://github.com/cowprotocol/cowswap/issues/4290)) ([1e20da6](https://github.com/cowprotocol/cowswap/commit/1e20da6ae9ba4647a139f526ae0548ea67f9180e))
+* **swap:** improve read only message for safe ([#4296](https://github.com/cowprotocol/cowswap/issues/4296)) ([e58aee3](https://github.com/cowprotocol/cowswap/commit/e58aee39c3d85f267218a8575f85f7495dc8d290))
+
+
+### Bug Fixes
+
+* **swap:** display order button in the widget top ([#4297](https://github.com/cowprotocol/cowswap/issues/4297)) ([16d1def](https://github.com/cowprotocol/cowswap/commit/16d1def3fbb1a3bb803cf2e1978dcd96668f8bc9))
+
 ## [1.65.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.65.1...cowswap-v1.65.2) (2024-04-18)
 
 
