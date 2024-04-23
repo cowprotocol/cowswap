@@ -50,7 +50,6 @@ export function useAnalyticsReporter() {
   const { pathname, search } = useLocation()
 
   const { chainId, account } = useWalletInfo()
-  // TODO: check if the value is correct
   const { walletName } = useWalletDetails()
   const injectedWidgetMetaData = useInjectedWidgetMetaData()
   const prevAccount = usePrevious(account)

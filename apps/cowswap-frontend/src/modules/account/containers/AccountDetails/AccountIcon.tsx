@@ -13,7 +13,6 @@ interface AccountIconProps {
 
 export const AccountIcon = ({ walletDetails, size = 16, account }: AccountIconProps) => {
   const [imageLoadError, setImageLoadError] = useState(false)
-  // TODO: check if the icon is correct
   const iconURL = walletDetails?.icon
   const isIdenticon = iconURL === 'Identicon'
 
