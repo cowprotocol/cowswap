@@ -4,6 +4,7 @@ import { TokensListsUpdater, UnsupportedTokensUpdater, WidgetTokensListsUpdater 
 import { useWalletInfo, WalletUpdater } from '@cowprotocol/wallet'
 
 import { GasPriceStrategyUpdater } from 'legacy/state/gas/gas-price-strategy-updater'
+import { useIsDarkMode } from 'legacy/state/user/hooks'
 
 import { UploadToIpfsUpdater } from 'modules/appData/updater/UploadToIpfsUpdater'
 import { CowEventsUpdater, InjectedWidgetUpdater, useInjectedWidgetParams } from 'modules/injectedWidget'
@@ -28,8 +29,6 @@ import {
 import { SpotPricesUpdater } from 'common/updaters/orders/SpotPricesUpdater'
 import { SentryUpdater } from 'common/updaters/SentryUpdater'
 import { UserUpdater } from 'common/updaters/UserUpdater'
-
-import { useIsDarkMode } from '../../../../legacy/state/user/hooks'
 
 export function Updaters() {
   const { chainId, account } = useWalletInfo()
