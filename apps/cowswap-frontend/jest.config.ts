@@ -6,11 +6,14 @@ export default {
   preset: '../../jest.preset.js',
   transform: {
     '^(?!.*\\.(js|jsx|ts|tsx|css|json)$)': '@nx/react/plugins/jest',
-    '^.+\\.[tj]sx?$': ['babel-jest', { presets: ['@nx/react/babel'] }],
+    '^.+\\.[tj]sx?$': [
+      'babel-jest',
+      { presets: ['@nx/react/babel'], plugins: [['@babel/plugin-proposal-private-methods', { loose: true }]] },
+    ],
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   coverageDirectory: '../../coverage/cowswap',
   setupFilesAfterEnv: ['../../jest.setup.ts'],
   setupFiles: ['dotenv/config'],
-  transformIgnorePatterns: ['node_modules/(?!@ledgerhq/connect-kit-loader)'],
+  transformIgnorePatterns: ['node_modules/(?!@web3modal)/'],
 }
