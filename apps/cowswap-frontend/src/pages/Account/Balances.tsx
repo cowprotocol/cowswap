@@ -12,7 +12,6 @@ import { TokenAmount, ButtonPrimary } from '@cowprotocol/ui'
 import { MouseoverTooltipContent } from '@cowprotocol/ui'
 import { useIsMetaMask, useWalletInfo } from '@cowprotocol/wallet'
 import { useIsProviderNetworkUnsupported } from '@cowprotocol/wallet'
-import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
@@ -47,7 +46,6 @@ import LockedGnoVesting from './LockedGnoVesting'
 const BLOCKS_TO_WAIT = 2
 
 export default function Profile() {
-  const provider = useWalletProvider()
   const { account, chainId } = useWalletInfo()
   const previousAccount = usePrevious(account)
 

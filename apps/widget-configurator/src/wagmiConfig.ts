@@ -1,4 +1,5 @@
 import { createWeb3Modal, defaultWagmiConfig } from '@web3modal/wagmi/react'
+
 import { gnosis, mainnet, sepolia } from 'wagmi/chains'
 
 const WC_PROJECT_ID = process.env.REACT_APP_WC_PROJECT_ID
