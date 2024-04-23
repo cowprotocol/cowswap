@@ -7,6 +7,10 @@ export class IframeSafeSdkBridge {
         return
       }
 
+      if (event.origin === window.location.origin) {
+        return
+      }
+
       if (isSafeMessageRequest(event.data)) {
         this.appWindow.parent.postMessage(event.data, '*')
       } else if (isSafeMessageResponse(event.data)) {
