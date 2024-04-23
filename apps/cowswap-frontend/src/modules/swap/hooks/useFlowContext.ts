@@ -1,6 +1,6 @@
 import { Erc20, Weth } from '@cowprotocol/abis'
 import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
-import { calculateValidTo, getAddress, getIsNativeToken } from '@cowprotocol/common-utils'
+import { getAddress, getIsNativeToken } from '@cowprotocol/common-utils'
 import { OrderClass, OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useENSAddress } from '@cowprotocol/ens'
 import { Command, UiOrderType } from '@cowprotocol/types'
@@ -15,6 +15,8 @@ import { useDispatch } from 'react-redux'
 import { AppDispatch } from 'legacy/state'
 import { useCloseModals } from 'legacy/state/application/hooks'
 import { AddOrderCallback, useAddPendingOrder } from 'legacy/state/orders/hooks'
+import { useGetQuoteAndStatus } from 'legacy/state/price/hooks'
+import type { QuoteInformationObject } from 'legacy/state/price/reducer'
 import TradeGp from 'legacy/state/swap/TradeGp'
 import { useUserTransactionTTL } from 'legacy/state/user/hooks'
 import { computeSlippageAdjustedAmounts } from 'legacy/utils/prices'
@@ -34,6 +36,7 @@ import { useIsSafeApprovalBundle } from 'common/hooks/useIsSafeApprovalBundle'
 import { useIsSafeEthFlow } from './useIsSafeEthFlow'
 import { useDerivedSwapInfo, useSwapState } from './useSwapState'
 
+import { getOrderValidTo } from '../../tradeQuote/utils/quoteDeadline'
 import { getAmountsForSignature } from '../helpers/getAmountsForSignature'
 
 export enum FlowType {
@@ -66,6 +69,7 @@ interface BaseFlowContextSetup {
   allowedSlippage: Percent
   tradeConfirmActions: TradeConfirmActions
   getCachedPermit: ReturnType<typeof useGetCachedPermit>
+  quote: QuoteInformationObject | undefined
 }
 
 export function useSwapAmountsWithSlippage(): [
@@ -85,7 +89,11 @@ export function useBaseFlowContextSetup(): BaseFlowContextSetup {
   const { allowsOffchainSigning } = useWalletDetails()
   const gnosisSafeInfo = useGnosisSafeInfo()
   const { recipient } = useSwapState()
-  const { trade, allowedSlippage } = useDerivedSwapInfo()
+  const { trade, allowedSlippage, currenciesIds } = useDerivedSwapInfo()
+  const { quote } = useGetQuoteAndStatus({
+    token: currenciesIds.INPUT,
+    chainId,
+  })
 
   const appData = useAppData()
   const closeModals = useCloseModals()
@@ -132,6 +140,7 @@ export function useBaseFlowContextSetup(): BaseFlowContextSetup {
     allowedSlippage,
     tradeConfirmActions,
     getCachedPermit,
+    quote,
   }
 }
 
@@ -180,6 +189,7 @@ export function getFlowContext({ baseProps, sellToken, kind }: BaseGetFlowContex
     allowedSlippage,
     tradeConfirmActions,
     getCachedPermit,
+    quote,
   } = baseProps
 
   if (
@@ -214,7 +224,11 @@ export function getFlowContext({ baseProps, sellToken, kind }: BaseGetFlowContex
     orderType: UiOrderType.SWAP,
   }
 
-  const validTo = calculateValidTo(deadline)
+  const validTo = getOrderValidTo(deadline, {
+    validFor: quote?.validFor,
+    quoteValidTo: quote?.quoteValidTo,
+    localQuoteTimestamp: quote?.localQuoteTimestamp,
+  })
 
   const amountsForSignature = getAmountsForSignature({
     trade,
@@ -266,5 +280,6 @@ export function getFlowContext({ baseProps, sellToken, kind }: BaseGetFlowContex
     appDataInfo: appData,
     sellTokenContract,
     tradeConfirmActions,
+    quote,
   }
 }

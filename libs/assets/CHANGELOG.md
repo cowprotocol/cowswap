@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/cowprotocol/cowswap/compare/assets-v1.0.0...assets-v1.1.0) (2024-04-23)
+
+
+### Features
+
+* **swap:** display warning for safe token ([#4290](https://github.com/cowprotocol/cowswap/issues/4290)) ([1e20da6](https://github.com/cowprotocol/cowswap/commit/1e20da6ae9ba4647a139f526ae0548ea67f9180e))
+
 ## 1.0.0 (2024-03-29)
 
 

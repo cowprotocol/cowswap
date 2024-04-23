@@ -4,7 +4,7 @@ import { isInjectedWidget } from '@cowprotocol/common-utils'
 import ErrorBoundary from 'legacy/components/ErrorBoundary'
 import Footer from 'legacy/components/Footer'
 import Header from 'legacy/components/Header'
-import URLWarning from 'legacy/components/Header/URLWarning'
+import { URLWarning } from 'legacy/components/Header/URLWarning'
 import TopLevelModals from 'legacy/components/TopLevelModals'
 import DarkModeQueryParamReader from 'legacy/theme'
 
@@ -12,6 +12,7 @@ import { OrdersPanel } from 'modules/account'
 import { useInitializeUtm } from 'modules/utm'
 import { WinterFooter } from 'modules/winterEdition'
 
+import { InvalidLocalTimeWarning } from 'common/containers/InvalidLocalTimeWarning'
 import { useAnalyticsReporter } from 'common/hooks/useAnalyticsReporter'
 import RedirectAnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers/RedirectAnySwapAffectedUsers'
 
@@ -31,6 +32,7 @@ export function App() {
 
       <styledEl.AppWrapper>
         <URLWarning />
+        <InvalidLocalTimeWarning />
 
         <OrdersPanel />
 

@@ -25,6 +25,8 @@ export interface QuoteInformationObject extends LegacyFeeQuoteParams {
   price?: PriceInformation
   error?: QuoteError
   lastCheck: number
+  localQuoteTimestamp?: number
+  quoteValidTo?: number
 }
 
 // Map token addresses to their last quote information
@@ -139,7 +141,11 @@ export default createReducer(initialState, (builder) =>
       const shouldUpdate = !(!isBestQuote && hasPrice)
 
       if (quoteInformation && shouldUpdate) {
-        quotes[chainId][sellToken] = { ...quoteInformation, ...payload }
+        quotes[chainId][sellToken] = {
+          ...quoteInformation,
+          ...payload,
+          localQuoteTimestamp: Math.ceil(Date.now() / 1000),
+        }
       }
 
       // Stop the loader

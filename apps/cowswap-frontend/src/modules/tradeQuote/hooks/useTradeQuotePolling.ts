@@ -62,7 +62,7 @@ export function useTradeQuotePolling() {
             return
           }
 
-          updateQuoteState({ response: data, isLoading: false, error: null })
+          updateQuoteState({ response: data, quoteParams, isLoading: false, error: null })
         })
         .catch((error: GpQuoteError) => {
           console.log('[useGetQuote]:: fetchQuote error', error)

@@ -5,7 +5,7 @@ import { QuoteInformationObject } from 'legacy/state/price/reducer'
 import TradeGp from 'legacy/state/swap/TradeGp'
 
 import { getEthFlowEnabled } from 'modules/swap/helpers/getEthFlowEnabled'
-import { isQuoteExpired } from 'modules/tradeQuote/utils/isQuoteExpired'
+import { isQuoteExpired, QuoteDeadlineParams } from 'modules/tradeQuote'
 
 import { ApprovalState } from 'common/hooks/useApproveState'
 
@@ -54,6 +54,7 @@ export interface SwapButtonStateParams {
   isBestQuoteLoading: boolean
   wrappedToken: Token
   isPermitSupported: boolean
+  quoteDeadlineParams: QuoteDeadlineParams
 }
 
 const quoteErrorToSwapButtonState: { [key in QuoteError]: SwapButtonState | null } = {
@@ -109,7 +110,14 @@ export function getSwapButtonState(input: SwapButtonStateParams): SwapButtonStat
     return SwapButtonState.ReadonlyGnosisSafeUser
   }
 
-  if (isQuoteExpired(quote?.fee?.expirationDate) && trade && !input.inputError) {
+  if (
+    isQuoteExpired({
+      expirationDate: quote?.fee?.expirationDate,
+      deadlineParams: input.quoteDeadlineParams,
+    }) &&
+    trade &&
+    !input.inputError
+  ) {
     return SwapButtonState.QuoteExpired
   }
 

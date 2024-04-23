@@ -17,6 +17,7 @@ import { useUserSlippageTolerance } from 'legacy/state/user/hooks'
 
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { EthFlowModal, EthFlowProps } from 'modules/swap/containers/EthFlow'
+import { SafeTokenBanner } from 'modules/swap/containers/SafeTokenBanner'
 import { SwapModals, SwapModalsProps } from 'modules/swap/containers/SwapModals'
 import { SwapButtonState } from 'modules/swap/helpers/getSwapButtonState'
 import { getInputReceiveAmountInfo, getOutputReceiveAmountInfo } from 'modules/swap/helpers/tradeReceiveAmount'
@@ -36,9 +37,11 @@ import {
 import { TradeWidget, TradeWidgetContainer, useTradePriceImpact } from 'modules/trade'
 import { useTradeRouteContext } from 'modules/trade/hooks/useTradeRouteContext'
 import { useWrappedToken } from 'modules/trade/hooks/useWrappedToken'
+import { getQuoteTimeOffset } from 'modules/tradeQuote'
 import { useTradeUsdAmounts } from 'modules/usdAmount'
 import { useShouldZeroApprove } from 'modules/zeroApproval'
 
+import { useSetLocalTimeOffset } from 'common/containers/InvalidLocalTimeWarning/localTimeOffsetState'
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 import { SWAP_QUOTE_CHECK_INTERVAL } from 'common/updaters/FeesUpdater'
@@ -266,6 +269,7 @@ export function SwapWidget() {
       <>
         <TradeRates {...tradeRatesProps} />
         <SwapWarningsTop {...swapWarningsTopProps} />
+        <SafeTokenBanner sellTokenAddress={inputToken?.address} buyTokenAddress={outputToken?.address} />
         <SwapButtons {...swapButtonContext} />
         <SwapWarningsBottom {...swapWarningsBottomProps} />
       </>
@@ -285,6 +289,8 @@ export function SwapWidget() {
     disablePriceImpact,
   }
 
+  useSetLocalTimeOffset(getQuoteTimeOffset(swapButtonContext.quoteDeadlineParams))
+
   return (
     <>
       <SwapModals {...swapModalsProps} />
@@ -296,16 +302,18 @@ export function SwapWidget() {
           params={params}
           inputCurrencyInfo={inputCurrencyInfo}
           outputCurrencyInfo={outputCurrencyInfo}
-          confirmModal={<ConfirmSwapModalSetup
-            chainId={chainId}
-            recipientAddressOrName={swapButtonContext.recipientAddressOrName}
-            doTrade={swapButtonContext.handleSwap}
-            priceImpact={priceImpactParams}
-            inputCurrencyInfo={inputCurrencyPreviewInfo}
-            outputCurrencyInfo={outputCurrencyPreviewInfo}
-            tradeRatesProps={tradeRatesProps}
-            refreshInterval={SWAP_QUOTE_CHECK_INTERVAL}
-          />}
+          confirmModal={
+            <ConfirmSwapModalSetup
+              chainId={chainId}
+              recipientAddressOrName={swapButtonContext.recipientAddressOrName}
+              doTrade={swapButtonContext.handleSwap}
+              priceImpact={priceImpactParams}
+              inputCurrencyInfo={inputCurrencyPreviewInfo}
+              outputCurrencyInfo={outputCurrencyPreviewInfo}
+              tradeRatesProps={tradeRatesProps}
+              refreshInterval={SWAP_QUOTE_CHECK_INTERVAL}
+            />
+          }
           genericModal={showNativeWrapModal && <EthFlowModal {...ethFlowProps} />}
         />
         <NetworkAlert />

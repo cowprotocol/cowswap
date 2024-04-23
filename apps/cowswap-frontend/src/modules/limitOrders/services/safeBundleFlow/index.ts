@@ -63,7 +63,7 @@ export async function safeBundleFlow(
   const { chainId, postOrderParams, provider, erc20Contract, spender, dispatch, settlementContract, safeAppsSdk } =
     params
 
-  const validTo = calculateLimitOrdersDeadline(settingsState)
+  const validTo = calculateLimitOrdersDeadline(settingsState, params.quoteState)
 
   try {
     // For now, bundling ALWAYS includes 2 steps: approve and presign.

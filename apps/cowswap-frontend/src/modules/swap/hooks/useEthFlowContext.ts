@@ -18,13 +18,15 @@ export function useEthFlowContext(): EthFlowContext | null {
   const baseProps = useBaseFlowContextSetup()
   const addTransaction = useTransactionAdder()
 
+  const sellToken = baseProps.chainId ? NATIVE_CURRENCIES[baseProps.chainId as SupportedChainId] : undefined
+
   const addInFlightOrderId = useSetAtom(addInFlightOrderIdAtom)
 
   const checkEthFlowOrderExists = useCheckEthFlowOrderExists()
 
   const baseContext = getFlowContext({
     baseProps,
-    sellToken: baseProps.chainId ? NATIVE_CURRENCIES[baseProps.chainId as SupportedChainId] : undefined,
+    sellToken,
     kind: OrderKind.SELL,
   })
 

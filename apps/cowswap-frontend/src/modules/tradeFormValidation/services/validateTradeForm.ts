@@ -1,7 +1,7 @@
 import { getIsNativeToken, isAddress, isFractionFalsy } from '@cowprotocol/common-utils'
 
 import { TradeType } from 'modules/trade'
-import { isQuoteExpired } from 'modules/tradeQuote/utils/isQuoteExpired'
+import { isQuoteExpired } from 'modules/tradeQuote'
 
 import { ApprovalState } from 'common/hooks/useApproveState'
 
@@ -79,7 +79,14 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     if (
       derivedTradeState.tradeType !== TradeType.LIMIT_ORDER &&
       !tradeQuote.isLoading &&
-      isQuoteExpired(tradeQuote.response?.expiration)
+      isQuoteExpired({
+        expirationDate: tradeQuote.response?.expiration,
+        deadlineParams: {
+          validFor: tradeQuote.quoteParams?.validFor,
+          quoteValidTo: tradeQuote.response.quote.validTo,
+          localQuoteTimestamp: tradeQuote.localQuoteTimestamp,
+        },
+      })
     ) {
       return TradeFormValidation.QuoteExpired
     }

@@ -55,7 +55,7 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
   const { account, recipient, recipientAddressOrName, partiallyFillable } = tradeContext.postOrderParams
   const { feeAmount, activeRate, marketRate } = limitRateState
 
-  const validTo = calculateLimitOrdersDeadline(settingsState)
+  const validTo = calculateLimitOrdersDeadline(settingsState, tradeContext.quoteState)
   const expiryDate = new Date(validTo * 1000)
   const isInvertedState = useState(false)
   const [isInverted] = isInvertedState

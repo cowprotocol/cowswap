@@ -5,6 +5,8 @@ import { getAddress, getIsNativeToken } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
+import ms from 'ms.macro'
+
 import { LegacyFeeQuoteParams } from 'legacy/state/price/types'
 
 import { useAppData } from 'modules/appData'
@@ -13,6 +15,8 @@ import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
 
 import { getPriceQuality } from 'api/gnosisProtocol/api'
 import { useVerifiedQuotesEnabled } from 'common/hooks/featureFlags/useVerifiedQuotesEnabled'
+
+const DEFAULT_QUOTE_TTL = ms`30m` / 1000
 
 export function useQuoteParams(amount: string | null): LegacyFeeQuoteParams | undefined {
   const { chainId, account } = useWalletInfo()
@@ -51,6 +55,7 @@ export function useQuoteParams(amount: string | null): LegacyFeeQuoteParams | un
       priceQuality: getPriceQuality({ verifyQuote: verifiedQuotesEnabled && enoughBalance }),
       appData: appData?.fullAppData,
       appDataHash: appData?.appDataKeccak256,
+      validFor: DEFAULT_QUOTE_TTL,
     }
 
     return params

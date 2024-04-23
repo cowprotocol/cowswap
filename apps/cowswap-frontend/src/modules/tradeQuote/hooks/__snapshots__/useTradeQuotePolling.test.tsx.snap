@@ -12,7 +12,7 @@ exports[`useTradeQuotePolling() When wallet is NOT connected Then the "useAddres
   "receiver": "0x0000000000000000000000000000000000000000",
   "sellAmountBeforeFee": "10000000",
   "sellToken": "0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14",
-  "validTo": undefined,
+  "validFor": 1800,
 }
 `;
 
@@ -28,6 +28,6 @@ exports[`useTradeQuotePolling() When wallet is connected Then should put account
   "receiver": "0x333333f332a06ecb5d20d35da44ba07986d6e203",
   "sellAmountBeforeFee": "10000000",
   "sellToken": "0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14",
-  "validTo": undefined,
+  "validFor": 1800,
 }
 `;

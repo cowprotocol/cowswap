@@ -1,8 +1,10 @@
 import { useSetAtom } from 'jotai'
 import { useEffect, useMemo, useState } from 'react'
 
-import { getSafeInfo } from '@cowprotocol/core'
 import { getCurrentChainIdFromUrl } from '@cowprotocol/common-utils'
+import { getSafeInfo } from '@cowprotocol/core'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { useENSName } from '@cowprotocol/ens'
 
 import { useSafeAppsSdkInfo } from './hooks/useSafeAppsSdkInfo'
 import { useWalletMetaData } from './hooks/useWalletMetadata'
@@ -12,8 +14,6 @@ import { GnosisSafeInfo, WalletDetails, WalletInfo } from '../api/types'
 import { getWalletType } from '../api/utils/getWalletType'
 import { getWalletTypeLabel } from '../api/utils/getWalletTypeLabel'
 import { useIsSmartContractWallet } from './hooks/useIsSmartContractWallet'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { useENSName } from '@cowprotocol/ens'
 import ms from 'ms.macro'
 import { useWeb3ModalAccount, useWeb3ModalTheme } from '@web3modal/ethers5/react'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
@@ -85,6 +85,7 @@ function _useSafeInfo(walletInfo: WalletInfo): GnosisSafeInfo | undefined {
           )
           .catch((error) => {
             console.debug(`[WalletUpdater] Address ${account} is likely not a Safe (API didn't return Safe info)`)
+            setSafeInfo(undefined)
           })
       } else {
         setSafeInfo(undefined)

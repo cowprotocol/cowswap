@@ -17,6 +17,7 @@ interface FeeQuoteParams extends Pick<EnrichedOrder, 'sellToken' | 'buyToken' | 
   amount: string
   userAddress?: string | null
   receiver?: string | null
+  validFor?: number
   validTo?: number
 }
 

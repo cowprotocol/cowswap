@@ -1,5 +1,26 @@
 # Changelog
 
+## [2.29.5](https://github.com/cowprotocol/cowswap/compare/explorer-v2.29.4...explorer-v2.29.5) (2024-04-22)
+
+
+### Bug Fixes
+
+* **explorer:** fix browser crashing ([#4287](https://github.com/cowprotocol/cowswap/issues/4287)) ([879b5eb](https://github.com/cowprotocol/cowswap/commit/879b5eba4644401864349f944472e5e5757430e1))
+
+## [2.29.4](https://github.com/cowprotocol/cowswap/compare/explorer-v2.29.3...explorer-v2.29.4) (2024-04-19)
+
+
+### Bug Fixes
+
+* **explorer:** add sepolia token list ([#4280](https://github.com/cowprotocol/cowswap/issues/4280)) ([1def104](https://github.com/cowprotocol/cowswap/commit/1def104caf6a05cf0788b42a5ba4ac7f377d8f9f))
+
+## [2.29.3](https://github.com/cowprotocol/cowswap/compare/explorer-v2.29.2...explorer-v2.29.3) (2024-04-18)
+
+
+### Bug Fixes
+
+* **explorer:** fix tokens not loaded on explorer ([#4245](https://github.com/cowprotocol/cowswap/issues/4245)) ([6546008](https://github.com/cowprotocol/cowswap/commit/6546008956b50d99294b26962c4c385e47c3b6d2))
+
 ## [2.29.2](https://github.com/cowprotocol/cowswap/compare/explorer-v2.29.1...explorer-v2.29.2) (2024-03-21)
 
 
