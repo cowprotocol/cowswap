@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.10.1](https://github.com/cowprotocol/cowswap/compare/widget-lib-v0.10.0...widget-lib-v0.10.1) (2024-04-23)
+
+
+### Bug Fixes
+
+* **widget:** ignore self-fired events in Safe sdk bridge ([#4271](https://github.com/cowprotocol/cowswap/issues/4271)) ([b11eab7](https://github.com/cowprotocol/cowswap/commit/b11eab7ad5dff65bee8ffa2be8aef2fa913af5f2))
+
 ## [0.10.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v0.9.0...widget-lib-v0.10.0) (2024-04-15)
 
 
