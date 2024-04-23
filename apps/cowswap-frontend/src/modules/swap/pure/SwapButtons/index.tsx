@@ -1,14 +1,16 @@
-import React, { ReactNode } from 'react'
+import React, { ReactNode, useCallback, useState } from 'react'
 
 import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { genericPropsChecker, getWrappedToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
-import { AutoRow, ButtonError, ButtonPrimary, ButtonSize, TokenSymbol } from '@cowprotocol/ui'
+import { AutoRow, ButtonError, ButtonPrimary, ButtonSize, TokenSymbol, Tooltip } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
+import { AlertCircle } from 'react-feather'
 import { Text } from 'rebass'
+import styled from 'styled-components'
 
 import { GreyCard } from 'legacy/components/Card'
 import { AutoColumn } from 'legacy/components/Column'
@@ -22,6 +24,9 @@ import { QuoteDeadlineParams } from 'modules/tradeQuote'
 import { TradeApproveButton } from 'common/containers/TradeApprove/TradeApproveButton'
 
 import * as styledEl from './styled'
+
+const WarningIcon = styled(AlertCircle)`;
+`
 
 export type HandleSwapCallback = Command
 export interface SwapButtonsContext {
@@ -115,11 +120,7 @@ const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonsContext
       <styledEl.SwapButtonBox>Connect Wallet</styledEl.SwapButtonBox>
     </ButtonPrimary>
   ),
-  [SwapButtonState.ReadonlyGnosisSafeUser]: () => (
-    <ButtonPrimary disabled={true} buttonSize={ButtonSize.BIG}>
-      <Trans>Read Only</Trans>
-    </ButtonPrimary>
-  ),
+  [SwapButtonState.ReadonlyGnosisSafeUser]: () => <SafeReadOnlyButton />,
   [SwapButtonState.NeedApprove]: (props: SwapButtonsContext) => (
     <AutoRow style={{ flexWrap: 'nowrap', width: '100%' }}>
       <AutoColumn style={{ width: '100%' }} gap="12px">
@@ -195,3 +196,53 @@ export const SwapButtons = React.memo(function (props: SwapButtonsContext) {
 
   return <div id="swap-button">{swapButtonStateMap[props.swapButtonState](props)}</div>
 }, genericPropsChecker)
+
+function SafeReadOnlyButton() {
+  const [show, setShow] = useState(false)
+  const [mouseLeaveTimeout, setMouseLeaveTimeout] = useState<NodeJS.Timeout | null>(null)
+
+  const open = useCallback(() => {
+    setShow(true)
+    if (mouseLeaveTimeout) {
+      clearTimeout(mouseLeaveTimeout)
+    }
+  }, [setShow, mouseLeaveTimeout])
+
+  const close = useCallback(() => {
+    const timeout = setTimeout(() => {
+      setShow(false)
+    }, 400)
+
+    setMouseLeaveTimeout(timeout)
+  }, [setShow])
+
+  return (
+    <div onMouseEnter={open} onMouseLeave={close}>
+      <ButtonPrimary disabled={true} buttonSize={ButtonSize.BIG} title="Please, connect owner">
+        <Tooltip
+          show={show}
+          text={
+            <>
+              <p>
+                Your Safe is not connected with an owner, hence you are in a read-only mode and won't be able to place
+                an order.
+              </p>
+              <p>Please, make sure the connected wallet is one of the owners of this Safe.</p>
+              <div style={{ display: 'flex', gap: '10px' }}>
+                <div>
+                  <WarningIcon size={16} />
+                </div>
+                <div>
+                  After solving the issue above, <strong>you will need to refresh the website</strong> to exit read-only
+                  mode.
+                </div>
+              </div>
+            </>
+          }
+        >
+          <Trans>Please, connect owner </Trans>
+        </Tooltip>
+      </ButtonPrimary>
+    </div>
+  )
+}
