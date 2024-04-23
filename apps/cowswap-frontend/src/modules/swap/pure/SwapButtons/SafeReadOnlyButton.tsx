@@ -3,6 +3,14 @@ import React, { useCallback, useState } from 'react'
 import { ButtonPrimary, ButtonSize, Tooltip } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
+import { HelpCircle } from 'react-feather'
+import styled from 'styled-components/macro'
+
+const Container = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+`
 
 export function SafeReadOnlyButton() {
   const [show, setShow] = useState(false)
@@ -36,7 +44,10 @@ export function SafeReadOnlyButton() {
             </div>
           }
         >
-          <Trans>Connect signer</Trans>
+          <Container>
+            <Trans>Connect signer</Trans>
+            <HelpCircle size={18} />
+          </Container>
         </Tooltip>
       </ButtonPrimary>
     </div>

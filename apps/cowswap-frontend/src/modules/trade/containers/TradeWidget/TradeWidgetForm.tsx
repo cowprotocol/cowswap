@@ -98,10 +98,10 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
 
   const shouldShowMyOrdersButton =
     !alternativeOrderModalVisible &&
-    (!isInjectedWidgetMode ? isUpToLarge : true) &&
+    (!isInjectedWidgetMode && isConnectedSwapMode ? isUpToLarge : true) &&
     ((isConnectedSwapMode && injectedWidgetParams.standaloneMode !== true) ||
-      (isLimitOrderMode && isLimitOrdersUnlocked) ||
-      (isAdvancedMode && isAdvancedOrdersUnlocked))
+      (isLimitOrderMode && isUpToLarge && isLimitOrdersUnlocked) ||
+      (isAdvancedMode && isUpToLarge && isAdvancedOrdersUnlocked))
 
   const showDropdown = shouldShowMyOrdersButton || isInjectedWidgetMode
 
