@@ -11,7 +11,7 @@ import ms from 'ms.macro'
 import useSWR, { SWRConfiguration } from 'swr'
 
 import { getCowProtocolNativePrice } from '../apis/getCowProtocolNativePrice'
-import { fetchCurrencyUsdPrice } from '../services/fetchCurrencyUsdPrice'
+import { getCowProtocolUsdPrice } from '../apis/getCowProtocolUsdPrice'
 import {
   currenciesUsdPriceQueueAtom,
   setUsdPricesLoadingAtom,
@@ -90,7 +90,7 @@ async function processQueue(queue: Token[], getUsdcPrice: () => Promise<Fraction
       }
 
       try {
-        const price = await fetchCurrencyUsdPrice(currency, getUsdcPrice)
+        const price = await getCowProtocolUsdPrice(currency, getUsdcPrice)
         if (price) {
           state.price = price
           state.updatedAt = Date.now()

@@ -11,14 +11,10 @@ import { JotaiTestProvider } from 'test-utils'
 
 import { UsdPricesUpdater } from './UsdPricesUpdater'
 
-import * as coingeckoApi from '../apis/getCoingeckoUsdPrice'
-import * as cowProtocolApi from '../apis/getCowProtocolUsdPrice'
-import * as services from '../services/fetchCurrencyUsdPrice'
+import * as services from '../apis/getCowProtocolUsdPrice'
 import { currenciesUsdPriceQueueAtom, UsdRawPrices, usdRawPricesAtom } from '../state/usdRawPricesAtom'
 
-const mockGetCoingeckoUsdPrice = jest.spyOn(coingeckoApi, 'getCoingeckoUsdPrice')
-const mockGetCowProtocolUsdPrice = jest.spyOn(cowProtocolApi, 'getCowProtocolUsdPrice')
-const mockFetchCurrencyUsdPrice = jest.spyOn(services, 'fetchCurrencyUsdPrice')
+const mockFetchCurrencyUsdPrice = jest.spyOn(services, 'getCowProtocolUsdPrice')
 
 const USDC = USDC_MAINNET
 const COW = COWS[SupportedChainId.MAINNET]
@@ -129,33 +125,5 @@ describe('UsdPricesUpdater', () => {
       currency: COW,
       updatedAt: expect.any(Number),
     })
-  })
-
-  it('Should use Coingecko API by default', async () => {
-    const price = 3.5
-
-    mockGetCoingeckoUsdPrice.mockImplementation(() => Promise.resolve(price))
-
-    const state = await performTest()
-
-    expect(state[usdcAddress].price).toBe(price)
-    expect(state[cowAddress].price).toBe(price)
-
-    expect(mockGetCoingeckoUsdPrice).toHaveBeenCalledTimes(2)
-    expect(mockGetCowProtocolUsdPrice).toHaveBeenCalledTimes(0)
-  })
-
-  it('Should fallback to CowProtocol API when Coingecko is down', async () => {
-    const price = 7.22
-
-    mockGetCowProtocolUsdPrice.mockImplementation(() => Promise.resolve(price))
-    mockGetCoingeckoUsdPrice.mockImplementation(() => Promise.reject(new Error('Server error')))
-
-    const state = await performTest()
-
-    expect(state[usdcAddress].price).toBe(price)
-    expect(state[cowAddress].price).toBe(price)
-
-    expect(mockGetCowProtocolUsdPrice).toHaveBeenCalledTimes(2)
   })
 })
