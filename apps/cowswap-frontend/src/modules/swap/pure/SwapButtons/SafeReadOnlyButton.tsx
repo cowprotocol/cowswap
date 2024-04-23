@@ -26,16 +26,16 @@ export function SafeReadOnlyButton() {
 
   return (
     <div onMouseEnter={open} onMouseLeave={close}>
-      <ButtonPrimary disabled={true} buttonSize={ButtonSize.BIG} title="Please, connect owner">
+      <ButtonPrimary disabled={true} buttonSize={ButtonSize.BIG} title="Please, connect signer">
         <Tooltip
           show={show}
           text={
             <>
               <p>
-                Your Safe is not connected with an owner, hence you are in a read-only mode and won't be able to place
+                Your Safe is not connected with a signer, hence you are in a read-only mode and won't be able to place
                 an order.
               </p>
-              <p>Please, make sure the connected wallet is one of the owners of this Safe.</p>
+              <p>Please, make sure the connected wallet is one of the signers of this Safe.</p>
               <div style={{ display: 'flex', gap: '10px' }}>
                 <div>
                   <AlertCircle size={16} />
@@ -48,7 +48,7 @@ export function SafeReadOnlyButton() {
             </>
           }
         >
-          <Trans>Please, connect owner </Trans>
+          <Trans>Please, connect signer </Trans>
         </Tooltip>
       </ButtonPrimary>
     </div>
