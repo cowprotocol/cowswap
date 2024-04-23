@@ -26,7 +26,7 @@ export function SafeReadOnlyButton() {
 
   return (
     <div onMouseEnter={open} onMouseLeave={close}>
-      <ButtonPrimary disabled={true} buttonSize={ButtonSize.BIG} title="Please, connect signer">
+      <ButtonPrimary disabled={true} buttonSize={ButtonSize.BIG} title="Connect signer">
         <Tooltip
           show={show}
           text={
@@ -48,7 +48,7 @@ export function SafeReadOnlyButton() {
             </>
           }
         >
-          <Trans>Please, connect signer </Trans>
+          <Trans>Connect signer</Trans>
         </Tooltip>
       </ButtonPrimary>
     </div>
