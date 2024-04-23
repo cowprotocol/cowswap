@@ -18,8 +18,6 @@ export function SafeTokenBanner({ sellTokenAddress, buyTokenAddress }: SafeToken
   const isSafeTokenSelected =
     sellTokenAddress?.toLowerCase() === SAFE_TOKEN || buyTokenAddress?.toLowerCase() === SAFE_TOKEN
 
-  console.log('isSafeTokenSelected', { sellTokenAddress, buyTokenAddress, isSafeTokenSelected })
-
   if (!showSafeTokenWarning || !isSafeTokenSelected) {
     return null
   }
