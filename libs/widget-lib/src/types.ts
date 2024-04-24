@@ -5,6 +5,7 @@ export type { SupportedChainId } from '@cowprotocol/cow-sdk'
 export enum WidgetMethodsEmit {
   ACTIVATE = 'ACTIVATE',
   UPDATE_HEIGHT = 'UPDATE_HEIGHT',
+  SET_FULL_HEIGHT = 'SET_FULL_HEIGHT',
   EMIT_COW_EVENT = 'EMIT_COW_EVENT',
   PROVIDER_RPC_REQUEST = 'PROVIDER_RPC_REQUEST',
 }
@@ -289,6 +290,7 @@ export interface WidgetMethodsEmitPayloadMap {
   [WidgetMethodsEmit.ACTIVATE]: void
   [WidgetMethodsEmit.EMIT_COW_EVENT]: EmitCowEventPayload<CowEvents>
   [WidgetMethodsEmit.UPDATE_HEIGHT]: UpdateWidgetHeightPayload
+  [WidgetMethodsEmit.SET_FULL_HEIGHT]: SetWidgetFullHeightPayload
   [WidgetMethodsEmit.PROVIDER_RPC_REQUEST]: ProviderRpcRequestPayload
 }
 
@@ -322,6 +324,10 @@ export interface UpdateAppDataPayload {
 
 export interface UpdateWidgetHeightPayload {
   height?: number
+}
+
+export interface SetWidgetFullHeightPayload {
+  isUpToSmall?: boolean
 }
 
 export interface EmitCowEventPayload<T extends CowEvents> {
