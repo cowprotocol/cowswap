@@ -60,11 +60,7 @@ export function Modal({
   }, [onDismiss, setOpenModal])
 
   useEffect(() => {
-    if (isOpen) {
-      setOpenModal(true)
-    } else {
-      setOpenModal(false)
-    }
+    setOpenModal(isOpen)
   }, [isOpen, setOpenModal])
 
   return (
