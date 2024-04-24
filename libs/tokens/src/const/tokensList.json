@@ -66,6 +66,11 @@
       "priority": 3,
       "enabledByDefault": true,
       "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/GnosisUniswapTokensList.json"
+    },
+    {
+      "priority": 4,
+      "enabledByDefault": true,
+      "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/GnosisCoingeckoTokensList.json"
     }
   ],
   "11155111": [
