@@ -117,6 +117,19 @@ export const CowModal = styled(Modal)<{
       border-radius: 0;
     `}
 
+    ${({ theme }) =>
+      theme.isInjectedWidgetMode &&
+      theme.mediaWidth.upToLarge`
+      margin: 20px 0 0 0;
+      align-self: start;
+    `}
+
+    ${({ theme }) =>
+      theme.isInjectedWidgetMode &&
+      theme.mediaWidth.upToSmall`
+      margin: 0;
+    `}
+
     ${HeaderRow} {
       ${({ theme }) => theme.mediaWidth.upToSmall`
         position: fixed;
