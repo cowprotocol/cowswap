@@ -54,7 +54,7 @@ const SidebarBackground = styled.div`
   z-index: 4;
   width: 100%;
   height: 100%;
-  background: ${({ theme }) => transparentize(theme.black, 0.1)};
+  background: ${({ theme }) => (theme.isInjectedWidgetMode ? 'transparent' : transparentize(theme.black, 0.1))};
   backdrop-filter: blur(3px);
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
