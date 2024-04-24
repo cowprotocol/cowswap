@@ -17,7 +17,7 @@ import { TOKENS_LISTS_UPDATER_INTERVAL, getFulfilledResults, getIsTimeToUpdate }
 
 const { atom: lastUpdateTimeAtom, updateAtom: updateLastUpdateTimeAtom } = atomWithPartialUpdate(
   atomWithStorage<Record<SupportedChainId, number>>(
-    'tokens:lastUpdateTimeAtom:v0',
+    'tokens:lastUpdateTimeAtom:v1',
     mapSupportedNetworks(0),
     getJotaiMergerStorage()
   )
