@@ -21,6 +21,7 @@ import { QuoteDeadlineParams } from 'modules/tradeQuote'
 
 import { TradeApproveButton } from 'common/containers/TradeApprove/TradeApproveButton'
 
+import { SafeReadOnlyButton } from './SafeReadOnlyButton'
 import * as styledEl from './styled'
 
 export type HandleSwapCallback = Command
@@ -115,11 +116,7 @@ const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonsContext
       <styledEl.SwapButtonBox>Connect Wallet</styledEl.SwapButtonBox>
     </ButtonPrimary>
   ),
-  [SwapButtonState.ReadonlyGnosisSafeUser]: () => (
-    <ButtonPrimary disabled={true} buttonSize={ButtonSize.BIG}>
-      <Trans>Read Only</Trans>
-    </ButtonPrimary>
-  ),
+  [SwapButtonState.ReadonlyGnosisSafeUser]: () => <SafeReadOnlyButton />,
   [SwapButtonState.NeedApprove]: (props: SwapButtonsContext) => (
     <AutoRow style={{ flexWrap: 'nowrap', width: '100%' }}>
       <AutoColumn style={{ width: '100%' }} gap="12px">

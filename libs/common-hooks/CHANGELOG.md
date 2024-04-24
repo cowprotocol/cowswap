@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/cowprotocol/cowswap/compare/common-hooks-v1.0.0...common-hooks-v1.0.1) (2024-04-23)
+
+
+### Bug Fixes
+
+* **swap:** display order button in the widget top ([#4297](https://github.com/cowprotocol/cowswap/issues/4297)) ([16d1def](https://github.com/cowprotocol/cowswap/commit/16d1def3fbb1a3bb803cf2e1978dcd96668f8bc9))
+
 ## 1.0.0 (2024-03-29)
 
 
