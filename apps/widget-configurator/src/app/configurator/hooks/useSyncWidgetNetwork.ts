@@ -13,8 +13,9 @@ export function useSyncWidgetNetwork(
   const { chainId: walletChainId, isConnected } = useWeb3ModalAccount()
   const { switchNetwork } = useSwitchNetwork()
   const walletChainIdRef = useRef(walletChainId)
-  const currentChainId = useRef(chainId)
+  const currentChainIdRef = useRef(chainId)
   walletChainIdRef.current = walletChainId
+  currentChainIdRef.current = chainId
 
   // Bind network control to wallet network
   useEffect(() => {
@@ -23,7 +24,7 @@ export function useSyncWidgetNetwork(
     const newNetwork = getNetworkOption(walletChainId)
 
     if (newNetwork) {
-      currentChainId.current = walletChainId
+      currentChainIdRef.current = walletChainId
       setNetworkControlState(newNetwork)
     }
   }, [isConnected, walletChainId, setNetworkControlState])
@@ -34,7 +35,7 @@ export function useSyncWidgetNetwork(
       !switchNetwork ||
       !isConnected ||
       walletChainIdRef.current === chainId ||
-      currentChainId.current === walletChainIdRef.current
+      currentChainIdRef.current === walletChainIdRef.current
     )
       return
 
