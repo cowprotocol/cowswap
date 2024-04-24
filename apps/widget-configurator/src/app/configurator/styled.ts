@@ -41,4 +41,5 @@ export const WalletConnectionWrapper = {
   display: 'flex',
   justifyContent: 'center',
   margin: '0 auto 1rem',
+  width: '100%',
 }
