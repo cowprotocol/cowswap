@@ -110,7 +110,6 @@
     "@use-gesture/react": "^10.2.23",
     "@walletconnect/ethereum-provider": "^2.10.2",
     "@web3modal/ethers5": "^4.1.9",
-    "@web3modal/wagmi": "^3.2.0-alpha.1",
     "bnc-sdk": "^4.6.0",
     "buffer": "^6.0.3",
     "cids": "^1.0.0",
@@ -195,8 +194,6 @@
     "use-async-memo": "^1.2.4",
     "use-count-up": "^2.2.5",
     "use-resize-observer": "^8.0.0",
-    "viem": "1.16.6",
-    "wagmi": "^1.4.12",
     "web-vitals": "^2.1.4",
     "web3modal": "1.9.0"
   },

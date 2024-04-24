@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react'
 
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { useAccount, useNetwork, useSwitchNetwork } from 'wagmi'
+import { useWeb3ModalAccount, useSwitchNetwork } from '@web3modal/ethers5/react'
 
 import { getNetworkOption, NetworkOption } from '../controls/NetworkControl'
 
@@ -10,28 +10,35 @@ export function useSyncWidgetNetwork(
   chainId: SupportedChainId,
   setNetworkControlState: (option: NetworkOption) => void
 ) {
-  const { isDisconnected } = useAccount()
-  const network = useNetwork()
+  const { chainId: walletChainId, isConnected } = useWeb3ModalAccount()
   const { switchNetwork } = useSwitchNetwork()
-  const walletChainId = network.chain?.id
   const walletChainIdRef = useRef(walletChainId)
+  const currentChainIdRef = useRef(chainId)
   walletChainIdRef.current = walletChainId
+  currentChainIdRef.current = chainId
 
   // Bind network control to wallet network
   useEffect(() => {
-    if (isDisconnected || !walletChainId) return
+    if (!isConnected || !walletChainId) return
 
     const newNetwork = getNetworkOption(walletChainId)
 
     if (newNetwork) {
+      currentChainIdRef.current = walletChainId
       setNetworkControlState(newNetwork)
     }
-  }, [isDisconnected, walletChainId, setNetworkControlState])
+  }, [isConnected, walletChainId, setNetworkControlState])
 
   // Send a request to switch network when user changes network in the configurator
   useEffect(() => {
-    if (!switchNetwork || isDisconnected || walletChainIdRef.current === chainId) return
+    if (
+      !switchNetwork ||
+      !isConnected ||
+      walletChainIdRef.current === chainId ||
+      currentChainIdRef.current === walletChainIdRef.current
+    )
+      return
 
     switchNetwork(chainId)
-  }, [chainId, isDisconnected, switchNetwork, setNetworkControlState])
+  }, [chainId, isConnected, switchNetwork, setNetworkControlState])
 }
