@@ -27,7 +27,7 @@ export function useGetCachedPermit(): (tokenAddress: Nullish<string>) => Promise
         // Static account should never need to pre-check the nonce as it'll never change once cached
         const nonce = account ? await eip2162Utils.getTokenNonce(tokenAddress, account) : undefined
 
-        const permitParams = { chainId, tokenAddress: tokenAddress, account, nonce }
+        const permitParams = { chainId, tokenAddress, account, nonce }
 
         return getCachedPermit(permitParams)
       } catch (e) {
