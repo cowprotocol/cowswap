@@ -1,6 +1,5 @@
 import { CHAIN_INFO, RPC_URLS } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-
 import { createWeb3Modal, defaultConfig } from '@web3modal/ethers5/react'
 
 const WC_PROJECT_ID = process.env.REACT_APP_WC_PROJECT_ID

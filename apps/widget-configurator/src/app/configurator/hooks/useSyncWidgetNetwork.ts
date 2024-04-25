@@ -1,7 +1,6 @@
 import { useEffect, useRef } from 'react'
 
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
-
 import { useWeb3ModalAccount, useSwitchNetwork } from '@web3modal/ethers5/react'
 
 import { getNetworkOption, NetworkOption } from '../controls/NetworkControl'
