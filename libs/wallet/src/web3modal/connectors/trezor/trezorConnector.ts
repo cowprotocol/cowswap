@@ -3,7 +3,7 @@ import type { Provider } from '@web3modal/scaffold-utils/dist/types/exports/ethe
 import type { TrezorProvider } from './TrezorProvider'
 
 import { ConnectorController, Connector, AccountController } from '@web3modal/core'
-import { getCurrentChainIdFromUrl } from '@cowprotocol/common-utils'
+import { getCurrentChainIdFromUrl, isMobile } from '@cowprotocol/common-utils'
 import { RPC_URLS } from '@cowprotocol/common-const'
 import { lazyLoadedProvider } from '../lazyLoadedProvider'
 
@@ -22,6 +22,8 @@ const trezorConfig: Parameters<TrezorConnect['init']>[0] = {
 export let trezorProvider: TrezorProvider | null = null
 
 export function addTrezorConnector() {
+  if (isMobile) return
+
   const connector: Connector = {
     id: 'eip6963',
     type: 'EXTERNAL',
