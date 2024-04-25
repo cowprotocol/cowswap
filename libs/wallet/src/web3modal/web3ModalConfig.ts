@@ -35,7 +35,7 @@ export function initWeb3Modal() {
         name: info.label,
         rpcUrl: RPC_URLS[chainId],
         explorerUrl: info.explorer,
-        currency: info.nativeCurrency.address,
+        currency: info.nativeCurrency.symbol || '',
       }
     }),
     projectId,
