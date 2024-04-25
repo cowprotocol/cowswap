@@ -27,7 +27,7 @@ export const ContentStyled = {
   alignItems: 'center',
   flexFlow: 'column',
   flex: '1 1 auto',
-  margin: '4.2rem auto',
+  margin: '0 auto',
 
   '> iframe': {
     border: 0,

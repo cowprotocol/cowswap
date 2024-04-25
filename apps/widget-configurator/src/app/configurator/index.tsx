@@ -297,7 +297,7 @@ export function Configurator({ title }: { title: string }) {
         </List>
       </Drawer>
 
-      <Box sx={{ ...ContentStyled, pl: isDrawerOpen ? '300px' : 0 }}>
+      <Box sx={{ ...ContentStyled, pl: isDrawerOpen ? '290px' : 0 }}>
         {params && (
           <>
             <EmbedDialog
@@ -306,7 +306,6 @@ export function Configurator({ title }: { title: string }) {
               open={dialogOpen}
               handleClose={handleDialogClose}
             />
-            <br />
             <CowSwapWidget
               params={params}
               provider={!IS_IFRAME && !standaloneMode ? provider : undefined}

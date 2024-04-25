@@ -1,4 +1,5 @@
-import React from 'react'
+import { useSetAtom } from 'jotai'
+import React, { useCallback, useEffect } from 'react'
 
 import { isMobile } from '@cowprotocol/common-utils'
 import { Command } from '@cowprotocol/types'
@@ -9,6 +10,8 @@ import { useGesture } from '@use-gesture/react'
 import styled from 'styled-components/macro'
 
 import { CloseIcon, ContentWrapper, HeaderRow, HoverText, StyledDialogContent, StyledDialogOverlay } from './styled'
+
+import { openModalState } from '../../state/openModalState'
 
 export * from './styled'
 interface ModalProps {
@@ -33,6 +36,7 @@ export function Modal({
   className,
   children,
 }: ModalProps) {
+  const setOpenModal = useSetAtom(openModalState)
   const fadeTransition = useTransition(isOpen, {
     config: { duration: 200 },
     from: { opacity: 0 },
@@ -50,6 +54,15 @@ export function Modal({
     },
   })
 
+  const onDismissCallback = useCallback(() => {
+    onDismiss()
+    setOpenModal(false)
+  }, [onDismiss, setOpenModal])
+
+  useEffect(() => {
+    setOpenModal(isOpen)
+  }, [isOpen, setOpenModal])
+
   return (
     <>
       {fadeTransition((props, item) => {
@@ -58,7 +71,7 @@ export function Modal({
             <StyledDialogOverlay
               className={className}
               style={props}
-              onDismiss={onDismiss}
+              onDismiss={onDismissCallback}
               initialFocusRef={initialFocusRef}
               dangerouslyBypassFocusLock={true}
             >
