@@ -32,8 +32,6 @@ import {
   TokenSearchInput,
 } from './styled'
 
-import { CardsLoader, CardsSpinner } from '../styled'
-
 export enum PageViewKeys {
   ALL_TOKENS = 'ALL_TOKENS',
   FAVORITE_TOKENS = 'FAVORITE_TOKENS',
@@ -102,14 +100,6 @@ export default function TokensOverview() {
       tokensData = formattedTokens
     } else if (selectedView === PageViewKeys.FAVORITE_TOKENS) {
       tokensData = favouriteTokens
-    }
-
-    if (!provider) {
-      return (
-        <CardsLoader>
-          <CardsSpinner size="42px" />
-        </CardsLoader>
-      )
     }
 
     return (
