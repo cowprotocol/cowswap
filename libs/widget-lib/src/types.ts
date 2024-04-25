@@ -93,7 +93,7 @@ export interface PartnerFee {
   /**
    * The Ethereum address of the partner to receive the fee.
    */
-  recipient: string
+  recipient: string | Record<SupportedChainId, string>
 }
 
 /**

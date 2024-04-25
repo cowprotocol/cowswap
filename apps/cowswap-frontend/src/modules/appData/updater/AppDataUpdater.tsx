@@ -1,7 +1,9 @@
 import React from 'react'
 
 import { percentToBps } from '@cowprotocol/common-utils'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
+import { PartnerFee } from '@cowprotocol/widget-lib'
 import { Percent } from '@uniswap/sdk-core'
 
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
@@ -16,6 +18,21 @@ import { useAppCode, useAppDataHooks } from '../hooks'
 import { AppDataOrderClass } from '../types'
 
 const ORDERS_WITH_PARTNER_FEE: AppDataOrderClass[] = ['market']
+
+const mapPartnerFee = (
+  partnerFee: PartnerFee | undefined,
+  orderClass: AppDataOrderClass,
+  chainId: SupportedChainId
+) => {
+  if (!partnerFee || !ORDERS_WITH_PARTNER_FEE.includes(orderClass)) return undefined
+
+  const { recipient } = partnerFee
+
+  return {
+    bps: partnerFee.bps,
+    recipient: typeof recipient === 'string' ? recipient : recipient[chainId],
+  }
+}
 
 interface AppDataUpdaterProps {
   slippage: Percent
@@ -35,8 +52,6 @@ export const AppDataUpdater = React.memo(({ slippage, orderClass }: AppDataUpdat
 
   if (!chainId) return null
 
-  const partnerFee = ORDERS_WITH_PARTNER_FEE.includes(orderClass) ? widgetParams.partnerFee : undefined
-
   return (
     <AppDataUpdaterMemo
       appCodeWithWidgetMetadata={appCodeWithWidgetMetadata}
@@ -45,7 +60,7 @@ export const AppDataUpdater = React.memo(({ slippage, orderClass }: AppDataUpdat
       orderClass={orderClass}
       utm={utm}
       hooks={hooks}
-      partnerFee={partnerFee}
+      partnerFee={mapPartnerFee(widgetParams.partnerFee, orderClass, chainId)}
       replacedOrderUid={replacedOrderUid}
     />
   )
