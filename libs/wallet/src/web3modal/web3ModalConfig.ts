@@ -7,10 +7,10 @@ import { addTrezorConnector } from './connectors/trezor/trezorConnector'
 const projectId = '7bd490257c3457cc6a5ebcc02066c21a'
 
 const metadata = {
-  name: 'CoW Swap test',
-  description: 'CoW Swap test',
+  name: 'CoW Swap',
+  description: 'CoW Swap | The smartest way to trade cryptocurrencies',
   url: 'https://swap.cow.fi',
-  icons: ['https://cow.fi/images/logo.svg'],
+  icons: ['https://swap.cow.fi/favicon.png'],
 }
 
 const ethersConfig = defaultConfig({
