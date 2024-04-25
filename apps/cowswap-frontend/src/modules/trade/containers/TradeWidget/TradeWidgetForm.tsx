@@ -16,6 +16,7 @@ import { useToggleAccountModal } from 'modules/account'
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders/hooks/useAdvancedOrdersDerivedState'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { useIsWidgetUnlocked } from 'modules/limitOrders'
+import { SetRecipient } from 'modules/swap/containers/SetRecipient'
 import { useOpenTokenSelectWidget } from 'modules/tokensList'
 import { useIsAlternativeOrderModalVisible } from 'modules/trade/state/alternativeOrder'
 
@@ -189,12 +190,11 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
                 ))}
             </div>
             {!isWrapOrUnwrap && middleContent}
-            <styledEl.CurrencySeparatorBox compactView={compactView} withRecipient={withRecipient}>
+            <styledEl.CurrencySeparatorBox compactView={compactView}>
               <CurrencyArrowSeparator
                 isCollapsed={compactView}
                 hasSeparatorLine={!compactView}
                 onSwitchTokens={isChainIdUnsupported ? () => void 0 : throttledOnSwitchTokens}
-                withRecipient={withRecipient}
                 isLoading={isTradePriceUpdating}
                 disabled={isAlternativeOrderModalVisible}
               />
@@ -216,9 +216,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
                 {...currencyInputCommonProps}
               />
             </div>
-            {withRecipient && (
-              <styledEl.StyledRemoveRecipient recipient={recipient || ''} onChangeRecipient={onChangeRecipient} />
-            )}
+            {withRecipient && <SetRecipient recipient={recipient || ''} onChangeRecipient={onChangeRecipient} />}
 
             {isWrapOrUnwrap ? <WrapFlowActionButton /> : bottomContent}
           </>
