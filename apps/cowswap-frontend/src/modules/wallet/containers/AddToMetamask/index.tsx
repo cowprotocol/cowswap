@@ -30,17 +30,15 @@ export function AddToMetamask(props: AddToMetamaskProps) {
     if (!token?.symbol || !walletProvider) return
 
     walletProvider
-      .send('wallet_watchAsset', [
-        {
-          type: 'ERC20', // Initially only supports ERC20, but eventually more!
-          options: {
-            address: token.address,
-            symbol: token.symbol,
-            decimals: token.decimals,
-            image: logoURL,
-          },
+      .send('wallet_watchAsset', {
+        type: 'ERC20', // Initially only supports ERC20, but eventually more!
+        options: {
+          address: token.address,
+          symbol: token.symbol,
+          decimals: token.decimals,
+          image: logoURL,
         },
-      ])
+      } as never)
       .then(() => {
         addTokenToMetamaskAnalytics('Succeeded', token.symbol)
         setSuccess(true)
