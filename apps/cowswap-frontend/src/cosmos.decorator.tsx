@@ -20,6 +20,8 @@ import { cowSwapStore } from 'legacy/state'
 import { useDarkModeManager } from 'legacy/state/user/hooks'
 import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from 'legacy/theme'
 
+import './web3Modal'
+
 const DarkModeToggleButton = styled.button`
   display: flex;
   align-items: center;

@@ -18,7 +18,7 @@ export function mockEthFlowPendingTxs() {
       hash: WrapPendingTxHashMock,
       hashType: HashType.ETHEREUM_TX,
       from: '0xfb3c7eb936cAA12B5A884d612393969A557d4307',
-      chainId: 5,
+      chainId: 11155111,
       summary: 'Wrap 0.02 WETH to Ether',
     })
   )
@@ -29,14 +29,14 @@ export function mockEthFlowPendingTxs() {
       hash: WrapSuccessfulTxHashMock,
       hashType: HashType.ETHEREUM_TX,
       from: '0xfb3c7eb936cAA12B5A884d612393969A557d4307',
-      chainId: 5,
+      chainId: 11155111,
       summary: 'Wrap 0.02 WETH to Ether',
     })
   )
   cowSwapStore.dispatch(
     finalizeTransaction({
       hash: WrapSuccessfulTxHashMock,
-      chainId: 5,
+      chainId: 11155111,
       receipt: {
         to: '',
         from: '',
@@ -56,14 +56,14 @@ export function mockEthFlowPendingTxs() {
       hash: WrapErrorTxHashMock,
       hashType: HashType.ETHEREUM_TX,
       from: '0xfb3c7eb936cAA12B5A884d612393969A557d4307',
-      chainId: 5,
+      chainId: 11155111,
       summary: 'Wrap 0.02 WETH to Ether',
     })
   )
   cowSwapStore.dispatch(
     finalizeTransaction({
       hash: WrapErrorTxHashMock,
-      chainId: 5,
+      chainId: 11155111,
       receipt: {
         to: '',
         from: '',
@@ -84,7 +84,7 @@ export function mockEthFlowPendingTxs() {
       hash: ApprovePendingTxHashMock,
       hashType: HashType.ETHEREUM_TX,
       from: '0xfb3c7eb936cAA12B5A884d612393969A557d4307',
-      chainId: 5,
+      chainId: 11155111,
       approval: {
         tokenAddress: '0x02ABBDbAaa7b1BB64B5c878f7ac17f8DDa169532',
         spender: '0xC92E8bdf79f0507f65a392b0ab4667716BFE0110',
@@ -100,7 +100,7 @@ export function mockEthFlowPendingTxs() {
       hash: ApproveSuccessfulTxHashMock,
       hashType: HashType.ETHEREUM_TX,
       from: '0xfb3c7eb936cAA12B5A884d612393969A557d4307',
-      chainId: 5,
+      chainId: 11155111,
       approval: {
         tokenAddress: '0x02ABBDbAaa7b1BB64B5c878f7ac17f8DDa169532',
         spender: '0xC92E8bdf79f0507f65a392b0ab4667716BFE0110',
@@ -112,7 +112,7 @@ export function mockEthFlowPendingTxs() {
   cowSwapStore.dispatch(
     finalizeTransaction({
       hash: ApproveSuccessfulTxHashMock,
-      chainId: 5,
+      chainId: 11155111,
       receipt: {
         to: '',
         from: '',
@@ -132,7 +132,7 @@ export function mockEthFlowPendingTxs() {
       hash: ApproveErrorTxHashMock,
       hashType: HashType.ETHEREUM_TX,
       from: '0xfb3c7eb936cAA12B5A884d612393969A557d4307',
-      chainId: 5,
+      chainId: 11155111,
       approval: {
         tokenAddress: '0x02ABBDbAaa7b1BB64B5c878f7ac17f8DDa169532',
         spender: '0xC92E8bdf79f0507f65a392b0ab4667716BFE0110',
@@ -144,7 +144,7 @@ export function mockEthFlowPendingTxs() {
   cowSwapStore.dispatch(
     finalizeTransaction({
       hash: ApproveErrorTxHashMock,
-      chainId: 5,
+      chainId: 11155111,
       receipt: {
         to: '',
         from: '',

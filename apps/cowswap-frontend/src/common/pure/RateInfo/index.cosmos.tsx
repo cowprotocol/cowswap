@@ -13,7 +13,7 @@ const GNO_SEPOLIA = GNO[SupportedChainId.GNOSIS_CHAIN]
 const COW_SEPOLIA = COW[SupportedChainId.GNOSIS_CHAIN]
 
 const rateInfoParams = {
-  chainId: 5,
+  chainId: 11155111,
   inputCurrencyAmount: CurrencyAmount.fromRawAmount(inputCurrency, 123 * 10 ** 18),
   outputCurrencyAmount: CurrencyAmount.fromRawAmount(outputCurrency, 456 * 10 ** 18),
   activeRateFiatAmount: CurrencyAmount.fromRawAmount(outputCurrency, 2 * 10 ** 18),

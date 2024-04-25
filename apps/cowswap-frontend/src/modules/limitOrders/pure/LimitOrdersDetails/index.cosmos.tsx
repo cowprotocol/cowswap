@@ -48,7 +48,7 @@ const tradeContext: TradeFlowContext = {
 }
 
 const rateInfoParams = {
-  chainId: 5,
+  chainId: 11155111,
   inputCurrencyAmount: CurrencyAmount.fromRawAmount(outputCurrency, 123 * 10 ** 18),
   outputCurrencyAmount: CurrencyAmount.fromRawAmount(outputCurrency, 456 * 10 ** 18),
   activeRateFiatAmount: CurrencyAmount.fromRawAmount(outputCurrency, 2 * 10 ** 18),
