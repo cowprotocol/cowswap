@@ -7,8 +7,8 @@ import { ConnectionType } from '../../api/types'
 import { getConnectionName, getIsTrustWallet } from '../../api/utils/connection'
 import { InjectedWallet } from '../connectors/Injected'
 import { WalletConnectLabeledOption } from '../containers/WalletConnectLabeledOption'
-import { ConnectionOptionProps, Web3ReactConnection } from '../types'
 import { useIsActiveConnection } from '../hooks/useIsActiveConnection'
+import { ConnectionOptionProps, Web3ReactConnection } from '../types'
 
 const WALLET_LINK = 'https://trustwallet.com/'
 const BASE_PROPS = {

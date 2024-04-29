@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react'
-import styled, { css, FlattenSimpleInterpolation } from 'styled-components'
+
 import { faCopy } from '@fortawesome/free-regular-svg-icons'
 import { faCheck } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import CopyToClipboard from 'react-copy-to-clipboard'
+import styled, { css, FlattenSimpleInterpolation } from 'styled-components/macro'
+import { media } from 'theme/styles/media'
 
 import { DISPLAY_TEXT_COPIED_CHECK } from '../../../explorer/const'
-import { media } from 'theme/styles/media'
 
 // Why is `copied` not a boolean?
 //   Because it's passed down to parent component (`FontAwesomeIcon`) and

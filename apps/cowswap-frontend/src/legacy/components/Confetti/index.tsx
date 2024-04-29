@@ -2,7 +2,6 @@ import { useWindowSize } from '@cowprotocol/common-hooks'
 
 import ReactConfetti from 'react-confetti'
 
-// eslint-disable-next-line react/prop-types
 export default function Confetti({ start, variant }: { start: boolean; variant?: string }) {
   const { width, height } = useWindowSize()
 

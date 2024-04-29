@@ -20,10 +20,7 @@ export interface LimitOrdersRawState extends ExtendedTradeRawState {
   readonly isUnlocked: boolean
 }
 
-export function getDefaultLimitOrdersState(
-  chainId: SupportedChainId | null,
-  isUnlocked: boolean = false
-): LimitOrdersRawState {
+export function getDefaultLimitOrdersState(chainId: SupportedChainId | null, isUnlocked = false): LimitOrdersRawState {
   return {
     ...getDefaultTradeRawState(chainId),
     inputCurrencyAmount: null,

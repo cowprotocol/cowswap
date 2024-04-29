@@ -1,5 +1,9 @@
 import { CowEventListeners } from '@cowprotocol/events'
+
+import { IframeCowEventEmitter } from './IframeCowEventEmitter'
 import { IframeRpcProviderBridge } from './IframeRpcProviderBridge'
+import { IframeSafeSdkBridge } from './IframeSafeSdkBridge'
+import { WindowListener, listenToMessageFromWindow, postMessageToWindow, stopListeningWindowListener } from './messages'
 import {
   CowSwapWidgetParams,
   CowSwapWidgetProps,
@@ -8,9 +12,6 @@ import {
   WidgetMethodsListen,
 } from './types'
 import { buildWidgetPath, buildWidgetUrl, buildWidgetUrlQuery } from './urlUtils'
-import { IframeCowEventEmitter } from './IframeCowEventEmitter'
-import { WindowListener, listenToMessageFromWindow, postMessageToWindow, stopListeningWindowListener } from './messages'
-import { IframeSafeSdkBridge } from './IframeSafeSdkBridge'
 
 const DEFAULT_HEIGHT = '640px'
 const DEFAULT_WIDTH = '450px'
@@ -167,8 +168,7 @@ function updateParams(contentWindow: Window, params: CowSwapWidgetParams, provid
   const search = buildWidgetUrlQuery(params).toString()
 
   // Omit theme from appParams
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { theme, ...appParams } = params
+  const { theme: _theme, ...appParams } = params
 
   postMessageToWindow(contentWindow, WidgetMethodsListen.UPDATE_PARAMS, {
     urlParams: {

@@ -1,10 +1,10 @@
 import React from 'react'
-import styled from 'styled-components'
-import Grid, { GridSize } from '@material-ui/core/Grid'
-import { media } from 'theme/styles/media'
 
+import Grid, { GridSize } from '@material-ui/core/Grid'
+import styled from 'styled-components/macro'
 import { COLOURS } from 'styles'
 import { Theme } from 'theme'
+import { media } from 'theme/styles/media'
 
 const { white, fadedGreyishWhite, blackLight } = COLOURS
 

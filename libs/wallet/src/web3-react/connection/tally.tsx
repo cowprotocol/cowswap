@@ -6,8 +6,8 @@ import { ConnectWalletOption } from '../../api/pure/ConnectWalletOption'
 import { ConnectionType } from '../../api/types'
 import { getConnectionName } from '../../api/utils/connection'
 import { InjectedWallet } from '../connectors/Injected'
-import { ConnectionOptionProps, Web3ReactConnection } from '../types'
 import { useIsActiveConnection } from '../hooks/useIsActiveConnection'
+import { ConnectionOptionProps, Web3ReactConnection } from '../types'
 
 const WALLET_LINK = 'https://chrome.google.com/webstore/detail/taho/eajafomhmkipbjmfmhebemolkcicgfmd'
 const BASE_PROPS = {

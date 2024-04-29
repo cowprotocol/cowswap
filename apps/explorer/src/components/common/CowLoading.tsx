@@ -1,7 +1,8 @@
 import React from 'react'
-import styled, { keyframes } from 'styled-components'
-import SVG from 'react-inlinesvg'
+
 import CowLoadingSVG from 'assets/img/CoW-loading.svg'
+import SVG from 'react-inlinesvg'
+import styled, { keyframes } from 'styled-components/macro'
 
 export const WrapperCenter = styled.div`
   display: flex;
@@ -14,7 +15,7 @@ const CowAnimation = keyframes`
   0%,
   100% {
     transform: scale(0.95) translateX(1px);
-    opacity: 0.4;    
+    opacity: 0.4;
   }
   50% {
     transform: scale(1);

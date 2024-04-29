@@ -1,5 +1,8 @@
 import { initializeConnector } from '@web3-react/core'
 import { MetaMask } from '@web3-react/metamask'
+import { AddEthereumChainParameter } from '@web3-react/types'
+
+import { onError } from './onError'
 
 import { default as InjectedImage } from '../../api/assets/arrow-right.svg'
 import { default as InjectedImageDark } from '../../api/assets/arrow-right.svg'
@@ -7,11 +10,10 @@ import { default as MetamaskImage } from '../../api/assets/metamask.png'
 import { ConnectWalletOption } from '../../api/pure/ConnectWalletOption'
 import { ConnectionType } from '../../api/types'
 import { getConnectionName } from '../../api/utils/connection'
+import { useIsActiveConnection } from '../hooks/useIsActiveConnection'
 import { ConnectionOptionProps, Web3ReactConnection } from '../types'
 
-import { onError } from './onError'
-import { useIsActiveConnection } from '../hooks/useIsActiveConnection'
-import { AddEthereumChainParameter } from '@web3-react/types'
+
 
 class MetaMaskEnhanced extends MetaMask {
   /**

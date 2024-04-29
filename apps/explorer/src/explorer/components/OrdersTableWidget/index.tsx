@@ -1,16 +1,18 @@
 import React from 'react'
-import styled from 'styled-components'
 
-import ExplorerTabs from '../common/ExplorerTabs/ExplorerTabs'
-import TablePagination from '../common/TablePagination'
-import { TabItemInterface } from '../../../components/common/Tabs/Tabs'
-import { useTable } from './useTable'
-import { OrdersTableWithData } from './OrdersTableWithData'
+import styled from 'styled-components/macro'
+
 import { OrdersTableContext, BlockchainNetwork } from './context/OrdersTableContext'
-import { useGetAccountOrders } from '../../../hooks/useGetOrders'
+import { OrdersTableWithData } from './OrdersTableWithData'
+import { useTable } from './useTable'
+
 import Spinner from '../../../components/common/Spinner'
+import { TabItemInterface } from '../../../components/common/Tabs/Tabs'
 import { ConnectionStatus } from '../../../components/ConnectionStatus'
 import { Notification } from '../../../components/Notification'
+import { useGetAccountOrders } from '../../../hooks/useGetOrders'
+import ExplorerTabs from '../common/ExplorerTabs/ExplorerTabs'
+import TablePagination from '../common/TablePagination'
 
 const StyledTabLoader = styled.span`
   padding-left: 4px;

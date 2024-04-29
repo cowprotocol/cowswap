@@ -1,17 +1,20 @@
-import { useEffect, useMemo, useState } from 'react'
 import { useAtomValue } from 'jotai'
-import { activeTokensAtom, inactiveTokensAtom } from '../../state/tokens/allTokensAtom'
-import { useDebounce } from '@cowprotocol/common-hooks'
-import { useWeb3React } from '@web3-react/core'
-import { isAddress } from '@cowprotocol/common-utils'
-import ms from 'ms.macro'
-import { getTokenSearchFilter } from '../../utils/getTokenSearchFilter'
-import useSWR from 'swr'
-import { searchTokensInApi } from '../../services/searchTokensInApi'
+import { useEffect, useMemo, useState } from 'react'
+
 import { TokenWithLogo } from '@cowprotocol/common-const'
+import { useDebounce } from '@cowprotocol/common-hooks'
+import { isAddress } from '@cowprotocol/common-utils'
+import { useWeb3React } from '@web3-react/core'
+
+import ms from 'ms.macro'
+import useSWR from 'swr'
+
+import { searchTokensInApi } from '../../services/searchTokensInApi'
 import { environmentAtom } from '../../state/environmentAtom'
-import { parseTokensFromApi } from '../../utils/parseTokensFromApi'
+import { activeTokensAtom, inactiveTokensAtom } from '../../state/tokens/allTokensAtom'
 import { fetchTokenFromBlockchain } from '../../utils/fetchTokenFromBlockchain'
+import { getTokenSearchFilter } from '../../utils/getTokenSearchFilter'
+import { parseTokensFromApi } from '../../utils/parseTokensFromApi'
 
 const IN_LISTS_DEBOUNCE_TIME = ms`100ms`
 const IN_EXTERNALS_DEBOUNCE_TIME = ms`1s`

@@ -1,8 +1,10 @@
 import React from 'react'
-import { Navigate, useLocation } from 'react-router-dom'
 
-import { Network } from 'types'
 import { CHAIN_INFO } from '@cowprotocol/common-const'
+
+import { Navigate, useLocation } from 'react-router-dom'
+import { Network } from 'types'
+
 import { NETWORK_PREFIXES } from './const'
 
 const NETWORK_PATH_MATCH_REGEX = new RegExp(`/(${NETWORK_PREFIXES})?/?(.*)`)

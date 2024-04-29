@@ -1,17 +1,20 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { Helmet } from 'react-helmet'
+
 import { faCode, faListUl } from '@fortawesome/free-solid-svg-icons'
-import { useQuery, useUpdateQueryString } from '../../../hooks/useQuery'
-import EncodePage from './EncodePage'
+import { Helmet } from 'react-helmet'
+
+
+
+import { FormProps } from './config'
 import DecodePage from './DecodePage'
+import EncodePage from './EncodePage'
+import { StyledExplorerTabs, Wrapper } from './styled'
+
 import TabIcon from '../../../components/common/Tabs/TabIcon'
 import { TabItemInterface } from '../../../components/common/Tabs/Tabs'
-
-import { ContentCard as Content, Title } from '../styled'
-import { FormProps } from './config'
-
-import { StyledExplorerTabs, Wrapper } from './styled'
+import { useQuery, useUpdateQueryString } from '../../../hooks/useQuery'
 import { APP_TITLE, TAB_QUERY_PARAM_KEY } from '../../const'
+import { ContentCard as Content, Title } from '../styled'
 
 export enum TabView {
   ENCODE = 1,

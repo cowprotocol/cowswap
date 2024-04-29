@@ -1,13 +1,17 @@
 import React, { useEffect } from 'react'
-import useGlobalState from '../../hooks/useGlobalState'
-import { useNetworkId } from './hooks'
+
+import { CHAIN_INFO } from '@cowprotocol/common-const'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+
 import { useLocation } from 'react-router-dom'
+
 import { setNetwork } from './actions'
+import { NETWORK_PREFIXES } from './const'
+import { useNetworkId } from './hooks'
+
 import { updateWeb3Provider } from '../../api/web3'
 import { web3 } from '../../explorer/api'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { CHAIN_INFO } from '@cowprotocol/common-const'
-import { NETWORK_PREFIXES } from './const'
+import useGlobalState from '../../hooks/useGlobalState'
 
 const MAINNET_PREFIX = CHAIN_INFO[SupportedChainId.MAINNET].urlAlias
 const NETWORK_PREFIXES_RAW: [SupportedChainId, string][] = Object.keys(CHAIN_INFO).map((key) => {

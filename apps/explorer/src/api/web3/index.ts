@@ -1,7 +1,8 @@
-import Web3 from 'web3'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { ETH_NODE_URL, NODE_PROVIDER_ID } from 'const'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import Web3 from 'web3'
+
 
 // TODO connect to mainnet if we need AUTOCONNECT at all
 export const getDefaultProvider = (): string | null => (process.env.NODE_ENV === 'test' ? null : ETH_NODE_URL)

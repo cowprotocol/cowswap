@@ -2,13 +2,14 @@ import React from 'react'
 
 // also exported from '@storybook/react' if you can deal with breaking changes in 6.1
 import { Meta, Story } from '@storybook/react/types-6-0'
-
-import { GenericLayout, Props } from '.'
 import { Router, ThemeToggler } from 'storybook/decorators'
 import { LoremIpsum } from 'storybook/LoremIpsum'
-import { Navigation } from './Navigation'
-import { Header } from './Header'
+
 import { Footer, FooterType } from './Footer'
+import { Header } from './Header'
+import { Navigation } from './Navigation'
+
+import { GenericLayout, Props } from '.'
 
 export default {
   title: 'Layout/GenericLayout',

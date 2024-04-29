@@ -1,8 +1,8 @@
 import React from 'react'
-import styled from 'styled-components'
 
-import { getImageUrl, RequireContextMock, safeTokenName } from 'utils'
 import unknownTokenImg from 'assets/img/unknown-token.png'
+import styled from 'styled-components/macro'
+import { getImageUrl, RequireContextMock, safeTokenName } from 'utils'
 
 const Wrapper = styled.img<WrapperProps>`
   width: 2.8rem;

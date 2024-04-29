@@ -1,3 +1,4 @@
+import { getChainInfo, RPC_URLS } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Connector } from '@web3-react/types'
 
@@ -6,7 +7,6 @@ import { isChainAllowed } from './isChainAllowed'
 
 import { ConnectionType } from '../../api/types'
 import { getIsWalletConnect } from '../hooks/useIsWalletConnect'
-import { getChainInfo, RPC_URLS } from '@cowprotocol/common-const'
 
 function getRpcUrls(chainId: SupportedChainId): [string] {
   if (chainId === SupportedChainId.GNOSIS_CHAIN) {

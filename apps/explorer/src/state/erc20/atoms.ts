@@ -1,7 +1,9 @@
-import { SupportedChainId, mapSupportedNetworks } from '@cowprotocol/cow-sdk'
-import { TokenErc20 } from '@gnosis.pm/dex-js'
 import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
+
+import { SupportedChainId, mapSupportedNetworks } from '@cowprotocol/cow-sdk'
+
+import { TokenErc20 } from '@gnosis.pm/dex-js'
 
 export type TokensLoadedFromChain = Record<SupportedChainId, Record<string, TokenErc20>>
 

@@ -1,9 +1,9 @@
 import { SupportedChainId as ChainId, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { COW_CONTRACT_ADDRESS, V_COW_CONTRACT_ADDRESS } from './common'
-import { TokenWithLogo } from './types'
 import { cowprotocolTokenLogoUrl } from './cowprotocolTokenLogoUrl'
 import { WETH_MAINNET } from './nativeAndWrappedTokens'
+import { TokenWithLogo } from './types'
 
 // Mainnet
 export const USDT = new TokenWithLogo(

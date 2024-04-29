@@ -1,6 +1,6 @@
-import styled from 'styled-components'
-
+import styled from 'styled-components/macro'
 import { media } from 'theme/styles/media'
+
 import StyledUserDetailsTable from '../../common/StyledUserDetailsTable'
 
 export const WrapperUserDetailsTable = styled(StyledUserDetailsTable)`

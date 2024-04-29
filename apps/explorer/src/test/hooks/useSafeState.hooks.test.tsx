@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
+
+import useSafeState from 'hooks/useSafeState'
 import ReactDOM from 'react-dom'
 import { act } from 'react-dom/test-utils'
 
-import useSafeState from 'hooks/useSafeState'
 
 interface TestComponentI {
   safeUpdate?: boolean

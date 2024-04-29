@@ -1,9 +1,10 @@
 import { useAtomValue, useSetAtom } from 'jotai'
-import { addListAtom } from '../../state/tokenLists/tokenListsActionsAtom'
 import { useCallback } from 'react'
-import { ListState } from '../../types'
-import { listsStatesByChainAtom } from '../../state/tokenLists/tokenListsStateAtom'
+
 import { environmentAtom } from '../../state/environmentAtom'
+import { addListAtom } from '../../state/tokenLists/tokenListsActionsAtom'
+import { listsStatesByChainAtom } from '../../state/tokenLists/tokenListsStateAtom'
+import { ListState } from '../../types'
 
 const TOKEN_LISTS_CONTENT_LIMIT = 5000
 

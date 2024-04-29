@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components'
+import styled, { css } from 'styled-components/macro'
 
 export const BaseCard = styled.div<{ noPadding?: boolean }>`
   background-color: ${({ theme }): string => theme.bg1};

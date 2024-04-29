@@ -1,7 +1,8 @@
 import React, { ReactElement, useState } from 'react'
-import styled, { css } from 'styled-components'
 
 import { Meta, Story } from '@storybook/react'
+import styled, { css } from 'styled-components/macro'
+
 import { GlobalStyles, ThemeToggler } from '../../../../storybook/decorators'
 
 import { Dropdown, DropdownProps, DropdownOption, DropdownDirection, DropdownPosition } from './index'

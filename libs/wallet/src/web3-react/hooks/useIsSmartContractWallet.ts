@@ -1,16 +1,18 @@
 import { useEffect, useMemo, useState } from 'react'
 
+import { ArgentWalletDetectorAbi } from '@cowprotocol/abis'
+import { ARGENT_WALLET_DETECTOR_ADDRESS } from '@cowprotocol/common-const'
+import { getProviderOrSigner } from '@cowprotocol/common-utils'
+import { Contract } from '@ethersproject/contracts'
 import { useWeb3React } from '@web3-react/core'
 
 import useSWR from 'swr'
 import { useAsyncMemo } from 'use-async-memo'
-import { useWalletInfo } from '../../api/hooks'
+
 import { useIsSafeWallet, useWalletMetaData } from './useWalletMetadata'
+
+import { useWalletInfo } from '../../api/hooks'
 import { getIsAmbireWallet } from '../../api/utils/connection'
-import { Contract } from '@ethersproject/contracts'
-import { getProviderOrSigner } from '@cowprotocol/common-utils'
-import { ARGENT_WALLET_DETECTOR_ADDRESS } from '@cowprotocol/common-const'
-import { ArgentWalletDetectorAbi } from '@cowprotocol/abis'
 
 function useCheckIsSmartContract(): boolean | undefined {
   const { provider } = useWeb3React()

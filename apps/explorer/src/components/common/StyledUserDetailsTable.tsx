@@ -1,6 +1,5 @@
-import styled from 'styled-components'
-
 import { SimpleTable, Props as SimpleTableProps } from 'components/common/SimpleTable'
+import styled from 'styled-components/macro'
 
 export interface Props {
   showBorderTable?: boolean

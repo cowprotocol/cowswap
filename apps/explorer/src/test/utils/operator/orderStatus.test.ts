@@ -1,11 +1,13 @@
-import { RawOrder } from 'api/operator'
-import { PENDING_ORDERS_BUFFER } from '../../../explorer/const'
+import { OrderStatus, OrderKind } from '@cowprotocol/cow-sdk'
 
 import { getOrderStatus } from 'utils'
 
+import { RawOrder } from 'api/operator'
+
+import { PENDING_ORDERS_BUFFER } from '../../../explorer/const'
 import { RAW_ORDER } from '../../data'
 import { mockTimes, DATE } from '../../testHelpers'
-import { OrderStatus, OrderKind } from '@cowprotocol/cow-sdk'
+
 
 function _getCurrentTimestamp(): number {
   return Math.floor(Date.now() / 1000)

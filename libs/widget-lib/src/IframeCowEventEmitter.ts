@@ -1,6 +1,7 @@
 import { SimpleCowEventEmitter, CowEventListener, CowEventListeners, CowEvents } from '@cowprotocol/events'
-import { WidgetMethodsEmit } from './types'
+
 import { WindowListener, listenToMessageFromWindow, stopListeningWindowListener } from './messages'
+import { WidgetMethodsEmit } from './types'
 
 export class IframeCowEventEmitter {
   private eventEmitter: SimpleCowEventEmitter = new SimpleCowEventEmitter()

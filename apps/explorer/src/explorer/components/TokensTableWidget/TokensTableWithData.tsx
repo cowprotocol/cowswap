@@ -1,11 +1,12 @@
 import React, { useContext, useState, useEffect } from 'react'
 
-import { EmptyItemWrapper } from '../../../components/common/StyledUserDetailsTable'
-import useFirstRender from '../../../hooks/useFirstRender'
 import { TokensTableContext } from './context/TokensTableContext'
+
+import CowLoading from '../../../components/common/CowLoading'
+import { EmptyItemWrapper } from '../../../components/common/StyledUserDetailsTable'
 import TokenTable from '../../../components/token/TokenTable'
 import { DEFAULT_TIMEOUT } from '../../../const'
-import CowLoading from '../../../components/common/CowLoading'
+import useFirstRender from '../../../hooks/useFirstRender'
 
 export const TokensTableWithData: React.FC = () => {
   const { data: tokens, networkId, tableState } = useContext(TokensTableContext)

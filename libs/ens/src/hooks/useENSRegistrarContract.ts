@@ -1,7 +1,8 @@
-import { getContract } from '@cowprotocol/common-utils'
-import { ENS_REGISTRAR_ADDRESSES } from '@cowprotocol/common-const'
 import { EnsAbi, EnsRegistrar } from '@cowprotocol/abis'
+import { ENS_REGISTRAR_ADDRESSES } from '@cowprotocol/common-const'
+import { getContract } from '@cowprotocol/common-utils'
 import { useWeb3React } from '@web3-react/core'
+
 import useSWR from 'swr'
 
 export function useENSRegistrarContract(): EnsRegistrar | undefined {

@@ -1,5 +1,6 @@
-import { Web3ReactConnection } from '../types'
 import { useWeb3React } from '@web3-react/core'
+
+import { Web3ReactConnection } from '../types'
 
 export const useIsActiveConnection = (selectedWallet: string | undefined, connection: Web3ReactConnection) => {
   const { account } = useWeb3React()

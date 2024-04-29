@@ -1,19 +1,22 @@
-import * as Sentry from '@sentry/browser'
 import { useAtomValue, useSetAtom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 import { useEffect } from 'react'
-import useSWR, { SWRConfiguration } from 'swr'
+
 
 import { atomWithPartialUpdate, isInjectedWidget } from '@cowprotocol/common-utils'
 import { getJotaiMergerStorage } from '@cowprotocol/core'
 import { SupportedChainId, mapSupportedNetworks } from '@cowprotocol/cow-sdk'
+
+import * as Sentry from '@sentry/browser'
+import useSWR, { SWRConfiguration } from 'swr'
+
+import { TOKENS_LISTS_UPDATER_INTERVAL, getFulfilledResults, getIsTimeToUpdate } from './helpers'
 
 import { fetchTokenList } from '../../services/fetchTokenList'
 import { environmentAtom, updateEnvironmentAtom } from '../../state/environmentAtom'
 import { upsertListsAtom } from '../../state/tokenLists/tokenListsActionsAtom'
 import { allListsSourcesAtom, tokenListsUpdatingAtom } from '../../state/tokenLists/tokenListsStateAtom'
 import { ListState } from '../../types'
-import { TOKENS_LISTS_UPDATER_INTERVAL, getFulfilledResults, getIsTimeToUpdate } from './helpers'
 
 const { atom: lastUpdateTimeAtom, updateAtom: updateLastUpdateTimeAtom } = atomWithPartialUpdate(
   atomWithStorage<Record<SupportedChainId, number>>(

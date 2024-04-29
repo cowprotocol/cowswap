@@ -1,10 +1,12 @@
 import { LONG_PRECISION } from '@cowprotocol/common-const'
 import { FeatureFlag, formatTokenAmount, FractionUtils } from '@cowprotocol/common-utils'
+
+import styled from 'styled-components/macro'
+
+import { AMOUNTS_FORMATTING_FEATURE_FLAG } from '../../consts'
 import { UI } from '../../enum'
-import styled from 'styled-components'
 import { FractionLike, Nullish } from '../../types'
 import { formatTokenSymbol, TokenNameAndSymbol, TokenSymbol } from '../TokenSymbol'
-import { AMOUNTS_FORMATTING_FEATURE_FLAG } from '../../consts'
 
 export const Wrapper = styled.span<{ highlight: boolean; lowVolumeWarning?: boolean }>`
   background: ${({ lowVolumeWarning, highlight }) =>

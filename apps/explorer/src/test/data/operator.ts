@@ -1,9 +1,11 @@
+import { OrderClass, OrderStatus, OrderKind, SigningScheme } from '@cowprotocol/cow-sdk'
+
 import BigNumber from 'bignumber.js'
 
 import { Order, RawOrder, RawTrade } from 'api/operator'
 
 import { USDT, WETH } from './erc20s'
-import { OrderClass, OrderStatus, OrderKind, SigningScheme } from '@cowprotocol/cow-sdk'
+
 import { ZERO_BIG_NUMBER } from '../../const'
 
 export const RAW_ORDER = {

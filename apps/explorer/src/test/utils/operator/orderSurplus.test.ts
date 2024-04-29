@@ -1,11 +1,10 @@
+import { OrderKind } from '@cowprotocol/cow-sdk'
+
 import BigNumber from 'bignumber.js'
-
-import { TEN_BIG_NUMBER, ZERO_BIG_NUMBER } from '../../../const'
-
 import { getOrderSurplus, ZERO_SURPLUS } from 'utils'
 
+import { TEN_BIG_NUMBER, ZERO_BIG_NUMBER } from '../../../const'
 import { RAW_ORDER } from '../../data'
-import { OrderKind } from '@cowprotocol/cow-sdk'
 
 const TWENTY_PERCENT = new BigNumber('0.2')
 const TWENTY_FIVE_PERCENT = new BigNumber('0.25')

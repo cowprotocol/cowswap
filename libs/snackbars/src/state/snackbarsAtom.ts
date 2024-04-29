@@ -1,6 +1,6 @@
 import { atom } from 'jotai'
-import { ReactElement } from 'react'
 import { atomWithReset } from 'jotai/utils'
+import { ReactElement } from 'react'
 
 export type IconType = 'success' | 'alert' | 'custom'
 

@@ -1,4 +1,5 @@
 import useSWR, { SWRResponse } from 'swr'
+
 import { useENSRegistrarContract } from './useENSRegistrarContract'
 
 export function useENSResolver(node: string | undefined): SWRResponse<string | undefined> {

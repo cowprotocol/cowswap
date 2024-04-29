@@ -1,8 +1,8 @@
 import { MAINNET_PROVIDER } from '@cowprotocol/common-const'
 import { contenthashToUri, parseENSAddress, resolveENSContentHash, uriToHttp } from '@cowprotocol/common-utils'
 
-import { validateTokenList } from '../utils/validateTokenList'
 import { ListSourceConfig, ListState } from '../types'
+import { validateTokenList } from '../utils/validateTokenList'
 
 /**
  * Refactored version of apps/cowswap-frontend/src/lib/hooks/useTokenList/fetchTokenList.ts

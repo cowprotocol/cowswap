@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+
 import IndexModule, { SearchOptions } from 'flexsearch'
 
 const SEARCH_INDEX = new IndexModule.Index({ tokenize: 'forward' })

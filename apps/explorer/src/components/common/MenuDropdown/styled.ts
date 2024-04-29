@@ -1,7 +1,7 @@
-import styled, { css, FlattenSimpleInterpolation } from 'styled-components'
-import { media, ResetButtonCSS } from 'theme/styles'
-import Icon from 'components/Icon'
 import InternalExternalMenuLink from 'components/common/MenuDropdown/InternalExternalLink'
+import Icon from 'components/Icon'
+import styled, { css, FlattenSimpleInterpolation } from 'styled-components/macro'
+import { media, ResetButtonCSS } from 'theme/styles'
 
 export const Wrapper = styled.div<{ isMobileMenuOpen: boolean }>`
   width: 100%;

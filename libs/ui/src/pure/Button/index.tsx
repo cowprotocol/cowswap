@@ -2,9 +2,7 @@ import { HTMLAttributes } from 'react'
 
 import { ChevronDown, Star } from 'react-feather'
 import { ButtonProps } from 'rebass/styled-components'
-import styled from 'styled-components'
-
-import { RowBetween } from '../Row'
+import styled from 'styled-components/macro'
 
 import {
   ButtonConfirmedStyle as ButtonConfirmedStyleMod,
@@ -12,7 +10,9 @@ import {
   ButtonGray as ButtonGrayMod,
   ButtonPrimary as ButtonPrimaryMod,
 } from './ButtonMod'
+
 import { ButtonSize, UI } from '../../enum'
+import { RowBetween } from '../Row'
 
 export * from './ButtonMod'
 

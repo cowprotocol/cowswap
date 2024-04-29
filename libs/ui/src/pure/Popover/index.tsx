@@ -1,7 +1,8 @@
-import { UI } from '../../enum'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 
 import PopoverMod, { Arrow as ArrowMod, PopoverContainer as PopoverContainerMod, PopoverProps } from './PopoverMod'
+
+import { UI } from '../../enum'
 
 export * from './PopoverMod'
 

@@ -1,16 +1,19 @@
 import React, { useCallback, useState, useEffect } from 'react'
-import styled from 'styled-components'
-import { Link } from 'react-router-dom'
 
-import { abbreviateString } from '../../../utils'
-import { Network } from '../../../types'
-import { BlockchainNetwork } from './context/OrdersTableContext'
-import { Order, getAccountOrders } from '../../../api/operator'
-import CowLoading from '../../../components/common/CowLoading'
-import { BlockExplorerLink } from '../../../components/common/BlockExplorerLink'
-import { MEDIA } from '../../../const'
-import { ALL_SUPPORTED_CHAIN_IDS, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CHAIN_INFO, getChainInfo } from '@cowprotocol/common-const'
+import { ALL_SUPPORTED_CHAIN_IDS, SupportedChainId } from '@cowprotocol/cow-sdk'
+
+import { Link } from 'react-router-dom'
+import styled from 'styled-components/macro'
+
+import { BlockchainNetwork } from './context/OrdersTableContext'
+
+import { Order, getAccountOrders } from '../../../api/operator'
+import { BlockExplorerLink } from '../../../components/common/BlockExplorerLink'
+import CowLoading from '../../../components/common/CowLoading'
+import { MEDIA } from '../../../const'
+import { Network } from '../../../types'
+import { abbreviateString } from '../../../utils'
 
 const Wrapper = styled.div`
   display: flex;

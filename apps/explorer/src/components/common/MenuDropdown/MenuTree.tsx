@@ -1,12 +1,14 @@
 import React from 'react'
 
+import { Command } from '@cowprotocol/types'
+
 import { MAIN_MENU } from 'components/common/MenuDropdown/mainMenu'
+import MobileMenuIcon from 'components/common/MenuDropdown/MobileMenuIcon'
 import { Wrapper, MenuContainer, AnchorMenuLink } from 'components/common/MenuDropdown/styled'
 import { MenuItemKind, MenuTreeItem } from 'components/common/MenuDropdown/types'
-import DropDown from '.'
-import MobileMenuIcon from 'components/common/MenuDropdown/MobileMenuIcon'
 
-import { Command } from '@cowprotocol/types'
+import DropDown from '.'
+
 
 interface MenuItemWithDropDownProps {
   menuItem: MenuTreeItem

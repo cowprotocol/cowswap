@@ -1,7 +1,7 @@
 import React from 'react'
 
-import { Network, UiError } from '../../../../types'
 import { Order } from '../../../../api/operator'
+import { Network, UiError } from '../../../../types'
 
 export type BlockchainNetwork = Network | undefined
 

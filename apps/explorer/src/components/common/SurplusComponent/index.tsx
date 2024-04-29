@@ -1,11 +1,12 @@
 import React from 'react'
-import styled, { css, FlattenSimpleInterpolation } from 'styled-components'
-import { formatPercentage, Surplus } from 'utils'
+
+import { IconDefinition } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { TokenErc20 } from '@gnosis.pm/dex-js'
 import { TokenAmount } from 'components/token/TokenAmount'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { IconDefinition } from '@fortawesome/free-solid-svg-icons'
 import { MAX_SURPLUS_PERCENTAGE } from 'const'
+import styled, { css, FlattenSimpleInterpolation } from 'styled-components/macro'
+import { formatPercentage, Surplus } from 'utils'
 
 const IconWrapper = styled(FontAwesomeIcon)`
   padding: 0 0.5rem 0 0;

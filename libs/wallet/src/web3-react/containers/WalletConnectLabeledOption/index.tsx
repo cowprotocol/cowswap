@@ -1,11 +1,12 @@
+import { Connector } from '@web3-react/types'
+
 import { ConnectWalletOption } from '../../../api/pure/ConnectWalletOption'
 import { ConnectionType } from '../../../api/types'
 import { getConnectionName } from '../../../api/utils/connection'
 import { WC_DISABLED_TEXT } from '../../../constants'
 import { walletConnectConnectionV2 } from '../../connection/walletConnectV2'
-import { useWalletMetaData } from '../../hooks/useWalletMetadata'
-import { Connector } from '@web3-react/types'
 import { useIsActiveConnection } from '../../hooks/useIsActiveConnection'
+import { useWalletMetaData } from '../../hooks/useWalletMetadata'
 
 type TryActivation = (connector: Connector) => void
 
