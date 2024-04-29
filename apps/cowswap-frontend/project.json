@@ -86,7 +86,7 @@
     "i18n:extract": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "NODE_ENV=development npx lingui extract --locale en-US"
+        "command": "cross-env NODE_ENV=development npx lingui extract --locale en-US"
       },
       "inputs": ["{workspaceRoot}/apps/**/*.{ts,tsx,jsx}", "{workspaceRoot}/libs/**/*.{ts,tsx,jsx}"],
       "outputs": ["{projectRoot}/src/locales/*.po"]
