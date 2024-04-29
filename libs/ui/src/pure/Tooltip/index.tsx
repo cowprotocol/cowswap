@@ -1,4 +1,4 @@
-import { ReactNode, useCallback, useState } from 'react'
+import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 
 import styled from 'styled-components'
 
@@ -49,19 +49,67 @@ export function MouseoverTooltip({ children, ...rest }: Omit<TooltipProps, 'show
 export function MouseoverTooltipContent({
   content,
   children,
-  onOpen: openCallback = undefined,
+  onOpen = undefined,
   disableHover,
   ...rest
 }: Omit<TooltipContentProps, 'show'>) {
+  const [sticky, setSticky] = useState(false)
   const [show, setShow] = useState(false)
+
+  const divRef = useRef<HTMLDivElement>(null);
   const open = useCallback(() => {
     setShow(true)
-    openCallback?.()
-  }, [openCallback])
-  const close = useCallback(() => setShow(false), [setShow])
+    onOpen?.()
+  }, [onOpen])
+
+  const close = useCallback(() => {
+    if (!sticky) {
+      setShow(false)
+    }
+  }, [setShow, sticky])
+
+  const toggleSticky = useCallback< React.MouseEventHandler<HTMLDivElement>>((event) => {
+    event.stopPropagation()
+    if (show) {
+      setSticky(sticky => {
+        if (sticky) {
+          // Tooltip was visible, but sticky. Closing it.
+          close()
+          return false
+        } else {
+          // Tooltip was visible, and not sticky. Making it sticky.
+          return true
+        }
+      })      
+    } else {
+      // Tooltip was not visible. Making it visible and sticky.
+      setSticky(true)
+      open()
+    }    
+  }, [close, open, setSticky, show])
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (sticky && divRef.current && !divRef.current.contains(event.target as Node)) {
+        setSticky(false)
+        setShow(false)
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [toggleSticky, setShow, sticky]);
+
+  
+
+  const c = disableHover ? null : <div ref={divRef}>{content}</div>
+
   return (
-    <TooltipContent {...rest} show={show} content={disableHover ? null : content}>
-      <div onMouseEnter={open} onMouseLeave={close}>
+    <TooltipContent {...rest} show={show} content={c}>
+      <div onMouseEnter={open} onMouseLeave={close} onClick={toggleSticky} >
+
         {children}
       </div>
     </TooltipContent>
