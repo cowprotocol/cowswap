@@ -5,8 +5,10 @@ import { UI } from '@cowprotocol/ui'
 import { PartnerFee } from '@cowprotocol/widget-lib'
 import { Currency, CurrencyAmount, Token, TradeType } from '@uniswap/sdk-core'
 
+import ReactMarkdown, { Components } from 'react-markdown'
 import styled from 'styled-components/macro'
 
+import { markdownComponents } from 'legacy/components/Markdown/components'
 import TradeGp from 'legacy/state/swap/TradeGp'
 
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
@@ -143,9 +145,11 @@ export interface PartnerRowPartnerFeeProps {
   partnerFee?: PartnerFee
   feeAmount?: CurrencyAmount<Currency>
   feeInFiat: CurrencyAmount<Token> | null
+  label?: string
+  tooltipMarkdown?: string
 }
 
-export function RowPartnerFee({ partnerFee, feeAmount, feeInFiat }: PartnerRowPartnerFeeProps) {
+export function RowPartnerFee({ partnerFee, feeAmount, feeInFiat, label, tooltipMarkdown }: PartnerRowPartnerFeeProps) {
   const props = useMemo(() => {
     const feeCurrencySymbol = feeAmount?.currency.symbol || '-' // TODO: Once we implement the computation of the fee, we should express it in the relevant fee currency (buy token for sell orders)
     const feeInFiatFormatted = formatFiatAmount(feeInFiat)
@@ -157,16 +161,18 @@ export function RowPartnerFee({ partnerFee, feeAmount, feeInFiat }: PartnerRowPa
     const { bps } = partnerFee || { bps: 0 }
     const isFree = bps === 0
 
+    const markdownContent = tooltipMarkdown ? <ReactMarkdown components={markdownComponents as Components}>{tooltipMarkdown}</ReactMarkdown> : undefined
+
     return {
-      label: isFree ? 'Fee' : 'Total fee',
+      label: label ? label : isFree ? 'Fee' : 'Total fee',
       feeToken: isFree ? 'FREE' : feeAmountWithCurrency,
       feeUsd,
       fullDisplayFee,
       feeCurrencySymbol,
       isFree,
-      tooltip: isFree ? TOOLTIP_PARTNER_FEE_FREE : tooltipPartnerFee(bps),
+      tooltip: markdownContent ? markdownContent : isFree ? TOOLTIP_PARTNER_FEE_FREE : tooltipPartnerFee(bps),
     }
-  }, [partnerFee, feeAmount, feeInFiat])
+  }, [partnerFee, feeAmount, feeInFiat, label, tooltipMarkdown])
 
   return <RowFeeContent {...props} />
 }
