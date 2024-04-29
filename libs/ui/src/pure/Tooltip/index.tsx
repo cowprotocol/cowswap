@@ -62,19 +62,19 @@ export function MouseoverTooltipContent({
     onOpen?.()
   }, [onOpen])
 
-  const close = useCallback(() => {
-    if (!sticky) {
+  const close = useCallback((force = false) => {
+    if (!sticky || force) {
       setShow(false)
     }
   }, [setShow, sticky])
 
-  const toggleSticky = useCallback< React.MouseEventHandler<HTMLDivElement>>((event) => {
+  const toggleSticky = useCallback<React.MouseEventHandler<HTMLDivElement>>((event) => {
     event.stopPropagation()
     if (show) {
       setSticky(sticky => {
         if (sticky) {
           // Tooltip was visible, but sticky. Closing it.
-          close()
+          close(true)
           return false
         } else {
           // Tooltip was visible, and not sticky. Making it sticky.
@@ -108,7 +108,7 @@ export function MouseoverTooltipContent({
 
   return (
     <TooltipContent {...rest} show={show} content={c}>
-      <div onMouseEnter={open} onMouseLeave={close} onClick={toggleSticky} >
+      <div onMouseEnter={open} onMouseLeave={() => close()} onClick={toggleSticky} >
 
         {children}
       </div>
