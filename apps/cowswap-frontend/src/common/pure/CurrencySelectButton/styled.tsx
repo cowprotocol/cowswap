@@ -1,4 +1,4 @@
-import { ReactComponent as DropDown } from '@cowprotocol/assets/images/dropdown.svg'
+import DropDown from '@cowprotocol/assets/images/dropdown.svg?react'
 import { UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'

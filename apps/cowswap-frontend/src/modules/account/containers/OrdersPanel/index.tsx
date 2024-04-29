@@ -1,6 +1,6 @@
 import { useSetAtom } from 'jotai'
 
-import { ReactComponent as Close } from '@cowprotocol/assets/images/x.svg'
+import Close from '@cowprotocol/assets/images/x.svg?react'
 import { UI } from '@cowprotocol/ui'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
