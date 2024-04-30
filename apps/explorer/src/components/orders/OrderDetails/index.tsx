@@ -1,28 +1,30 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import styled from 'styled-components'
+
+import { Command } from '@cowprotocol/types'
+
+import CowLoading from 'components/common/CowLoading'
+import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
+import { EmptyItemWrapper } from 'components/common/StyledUserDetailsTable'
+import { TabItemInterface } from 'components/common/Tabs/Tabs'
+import { ConnectionStatus } from 'components/ConnectionStatus'
+import { Notification } from 'components/Notification'
+import { DetailsTable } from 'components/orders/DetailsTable'
+import RedirectToSearch from 'components/RedirectToSearch'
+import { useQuery, useUpdateQueryString } from 'hooks/useQuery'
+import styled from 'styled-components/macro'
+import { media } from 'theme/styles/media'
+import { Errors } from 'types'
+import { formatPercentage } from 'utils'
 
 import { Order, Trade } from 'api/operator'
-import { Errors } from 'types'
 
-import { formatPercentage } from 'utils'
 import { FillsTableContext } from './context/FillsTableContext'
-import { media } from 'theme/styles/media'
-import { useQuery, useUpdateQueryString } from 'hooks/useQuery'
-import { DetailsTable } from 'components/orders/DetailsTable'
-import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
-import RedirectToSearch from 'components/RedirectToSearch'
-import { Notification } from 'components/Notification'
-import { ConnectionStatus } from 'components/ConnectionStatus'
-import { TabItemInterface } from 'components/common/Tabs/Tabs'
-import { EmptyItemWrapper } from 'components/common/StyledUserDetailsTable'
-import CowLoading from 'components/common/CowLoading'
+import { FillsTableWithData } from './FillsTableWithData'
+
+import ExplorerTabs from '../../../explorer/components/common/ExplorerTabs/ExplorerTabs'
 import TablePagination, { PaginationWrapper } from '../../../explorer/components/common/TablePagination'
 import { useTable } from '../../../explorer/components/TokensTableWidget/useTable'
-import ExplorerTabs from '../../../explorer/components/common/ExplorerTabs/ExplorerTabs'
-
-import { FillsTableWithData } from './FillsTableWithData'
 import { TAB_QUERY_PARAM_KEY } from '../../../explorer/const'
-import { Command } from '@cowprotocol/types'
 
 const TitleUid = styled(RowWithCopyButton)`
   color: ${({ theme }): string => theme.grey};

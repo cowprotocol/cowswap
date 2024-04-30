@@ -1,16 +1,17 @@
 import React from 'react'
+
 // also exported from '@storybook/react' if you can deal with breaking changes in 6.1
 import { Story, Meta } from '@storybook/react/types-6-0'
 import BigNumber from 'bignumber.js'
+import { ONE_BIG_NUMBER } from 'const'
 import { add, sub } from 'date-fns'
-
 import { GlobalStyles, NetworkDecorator, Router, ThemeToggler } from 'storybook/decorators'
 
-import { ONE_BIG_NUMBER } from 'const'
+
+import { RICH_ORDER } from '../../../test/data'
 
 import { DetailsTable, Props } from '.'
 
-import { RICH_ORDER } from '../../../test/data'
 
 export default {
   title: 'orders/DetailsTable',

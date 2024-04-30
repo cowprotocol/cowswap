@@ -1,7 +1,9 @@
-import { Network } from 'types'
-import { Contract, Trace } from 'api/tenderly/types'
 import { useCallback, useEffect, useState } from 'react'
+
+import { Network } from 'types'
+
 import { getTransactionContracts, getTransactionTrace } from 'api/tenderly'
+import { Contract, Trace } from 'api/tenderly/types'
 
 type LoadingData<T> = {
   data: T

@@ -1,5 +1,5 @@
-import { TokenInfo, UiOrderType } from '@cowprotocol/types'
 import { OrderKind } from '@cowprotocol/cow-sdk'
+import { TokenInfo, UiOrderType } from '@cowprotocol/types'
 
 export type AtomsAndUnits = { atoms: bigint; units: string }
 

@@ -4,9 +4,10 @@ import { useMemo } from 'react'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { doesTokenMatchSymbolOrAddress } from '@cowprotocol/common-utils'
 
-import { tokenListsUpdatingAtom } from '../../state/tokenLists/tokenListsStateAtom'
 import { useSearchToken } from './useSearchToken'
 import { useTokenBySymbolOrAddress } from './useTokenBySymbolOrAddress'
+
+import { tokenListsUpdatingAtom } from '../../state/tokenLists/tokenListsStateAtom'
 
 export function useSearchNonExistentToken(tokenId: string | null): TokenWithLogo | null {
   const tokenListsUpdating = useAtomValue(tokenListsUpdatingAtom)

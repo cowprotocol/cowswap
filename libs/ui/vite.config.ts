@@ -2,9 +2,9 @@
 import { joinPathFragments } from '@nx/devkit'
 import react from '@vitejs/plugin-react-swc'
 import { defineConfig } from 'vite'
+import macrosPlugin from 'vite-plugin-babel-macros'
 import dts from 'vite-plugin-dts'
 import viteTsConfigPaths from 'vite-tsconfig-paths'
-import macrosPlugin from 'vite-plugin-babel-macros'
 
 export default defineConfig({
   cacheDir: '../../../node_modules/.vite/ui',
@@ -13,8 +13,7 @@ export default defineConfig({
     macrosPlugin(),
     dts({
       entryRoot: 'src',
-      tsConfigFilePath: joinPathFragments(__dirname, 'tsconfig.lib.json'),
-      skipDiagnostics: true,
+      tsconfigPath: joinPathFragments(__dirname, 'tsconfig.lib.json'),
     }),
     react(),
     viteTsConfigPaths({

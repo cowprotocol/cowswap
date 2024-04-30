@@ -1,9 +1,7 @@
 import React from 'react'
+
 // also exported from '@storybook/react' if you can deal with breaking changes in 6.1
 import { Story, Meta } from '@storybook/react/types-6-0'
-
-import { BlockExplorerLink, Props } from '.'
-import { Network } from 'types'
 import {
   ADDRESS_ACCOUNT_XDAI,
   ADDRESS_GNOSIS_PROTOCOL_XDAI,
@@ -12,6 +10,10 @@ import {
   TX_EXAMPLE,
   TX_XDAI,
 } from 'storybook/data'
+import { Network } from 'types'
+
+import { BlockExplorerLink, Props } from '.'
+
 
 const networkIds = Object.values(Network).filter(Number.isInteger)
 

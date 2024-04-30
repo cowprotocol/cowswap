@@ -1,6 +1,7 @@
 import { atom } from 'jotai'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+
 import { atomWithPartialUpdate, getCurrentChainIdFromUrl } from '@cowprotocol/common-utils'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 interface TokensModuleEnvironment {
   chainId: SupportedChainId

@@ -1,10 +1,11 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
+import { Command } from '@cowprotocol/types'
+
 import { Options, Placement } from '@popperjs/core'
 import { Portal } from '@reach/portal'
 import { usePopper } from 'react-popper'
-import styled, { DefaultTheme, StyledComponent } from 'styled-components'
-import { Command } from '@cowprotocol/types'
+import styled, { DefaultTheme, StyledComponent } from 'styled-components/macro'
 
 import { PopoverContainerProps } from './index'
 

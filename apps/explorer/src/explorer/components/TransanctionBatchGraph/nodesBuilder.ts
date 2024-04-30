@@ -1,6 +1,10 @@
-import { Network } from '../../../types'
-import { Order } from '../../../api/operator'
+import { getChainInfo } from '@cowprotocol/common-const'
+import { isSellOrder } from '@cowprotocol/common-utils'
+import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
+
+import BigNumber from 'bignumber.js'
 import { ElementDefinition } from 'cytoscape'
+
 import ElementsBuilder, { buildGridLayout } from './elementsBuilder'
 import {
   BuildNodesFn,
@@ -12,16 +16,16 @@ import {
   TypeEdgeOnTx,
   TypeNodeOnTx,
 } from './types'
+
+import { Order } from '../../../api/operator'
+import { Account, ALIAS_TRADER_NAME, Trade, Transfer } from '../../../api/tenderly'
+import { APP_NAME, NATIVE_TOKEN_ADDRESS_LOWERCASE, WRAPPED_NATIVE_ADDRESS } from '../../../const'
+import { SingleErc20State } from '../../../state/erc20'
+import { Network } from '../../../types'
 import { abbreviateString, FormatAmountPrecision, formattingAmountPrecision } from '../../../utils'
 import { getExplorerUrl } from '../../../utils/getExplorerUrl'
 import { SPECIAL_ADDRESSES, TOKEN_SYMBOL_UNKNOWN } from '../../const'
-import BigNumber from 'bignumber.js'
-import { Account, ALIAS_TRADER_NAME, Trade, Transfer } from '../../../api/tenderly'
-import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
-import { APP_NAME, NATIVE_TOKEN_ADDRESS_LOWERCASE, WRAPPED_NATIVE_ADDRESS } from '../../../const'
-import { SingleErc20State } from '../../../state/erc20'
-import { getChainInfo } from '@cowprotocol/common-const'
-import { isSellOrder } from '@cowprotocol/common-utils'
+
 
 const PROTOCOL_NAME = APP_NAME
 const INTERNAL_NODE_NAME = `${APP_NAME} Buffer`

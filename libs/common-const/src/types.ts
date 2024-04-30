@@ -1,5 +1,5 @@
-import { Token } from '@uniswap/sdk-core'
 import { TokenInfo } from '@cowprotocol/types'
+import { Token } from '@uniswap/sdk-core'
 
 export class TokenWithLogo extends Token {
   static fromToken(token: Token | TokenInfo, logoURI?: string): TokenWithLogo {

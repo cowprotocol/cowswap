@@ -1,6 +1,6 @@
 import { useSetAtom } from 'jotai'
 
-import { ReactComponent as Close } from '@cowprotocol/assets/images/x.svg'
+import Close from '@cowprotocol/assets/images/x.svg?react'
 import { UI } from '@cowprotocol/ui'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
@@ -102,7 +102,7 @@ const Header = styled.div`
   }
 `
 
-const CloseIcon = styled(Close)`
+const CloseIcon = styled((props) => <Close {...props} />)`
   opacity: 0.6;
   transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
   stroke: var(${UI.COLOR_TEXT});

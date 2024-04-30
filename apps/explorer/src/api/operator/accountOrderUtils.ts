@@ -1,8 +1,9 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { EnrichedOrder } from '@cowprotocol/cow-sdk'
+
+import { orderBookSDK } from 'cowSdk'
 
 import { GetAccountOrdersParams, RawOrder } from './types'
-import { orderBookSDK } from 'cowSdk'
-import { EnrichedOrder } from '@cowprotocol/cow-sdk'
 
 /**
  * Gets a list of orders of one user paginated

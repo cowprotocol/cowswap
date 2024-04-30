@@ -1,7 +1,9 @@
 import React, { Context, useContext } from 'react'
-import styled, { css } from 'styled-components'
+
 import { faChevronRight, faChevronLeft } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import styled, { css } from 'styled-components/macro'
+
 import { media } from '../../../../theme/styles/media'
 import { Dropdown, DropdownOption } from '../Dropdown'
 
@@ -109,7 +111,6 @@ type PaginationProps<T> = {
   fixedResultsPerPage?: boolean
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const TablePagination: React.FC<PaginationProps<any>> = ({ context, fixedResultsPerPage }) => {
   const {
     isLoading,

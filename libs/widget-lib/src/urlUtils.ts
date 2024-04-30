@@ -1,5 +1,5 @@
-import { CowSwapWidgetParams, TradeType } from './types'
 import { isCowSwapWidgetPalette } from './themeUtils'
+import { CowSwapWidgetParams, TradeType } from './types'
 
 const EMPTY_TOKEN = '_'
 

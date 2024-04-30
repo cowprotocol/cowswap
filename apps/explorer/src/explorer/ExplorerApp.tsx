@@ -1,22 +1,24 @@
 import React from 'react'
-import { BrowserRouter, HashRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom'
 
-import { withGlobalContext } from '../hooks/useGlobalState'
-import { INITIAL_STATE, rootReducer } from './state'
+import { CHAIN_INFO_ARRAY } from '@cowprotocol/common-const'
 
-import { GenericLayout } from '../components/layout'
-import { Header } from './layout/Header'
-
-import { useAnalyticsReporter } from '../components/analytics'
 import * as Sentry from '@sentry/react'
 import { Integrations } from '@sentry/tracing'
-import { environmentName } from '../utils/env'
-import { version } from '../../package.json'
-import { GlobalStyle, MainWrapper } from './styled'
-import { NetworkUpdater } from '../state/network/NetworkUpdater'
-import { RedirectMainnet, RedirectXdai } from '../state/network'
-import { CHAIN_INFO_ARRAY } from '@cowprotocol/common-const'
+import { BrowserRouter, HashRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom'
+
 import { WithLDProvider } from './components/common/WithLDProvider'
+import { Header } from './layout/Header'
+import { INITIAL_STATE, rootReducer } from './state'
+import { GlobalStyle, MainWrapper } from './styled'
+
+import { version } from '../../package.json'
+import { useAnalyticsReporter } from '../components/analytics'
+import { GenericLayout } from '../components/layout'
+import { withGlobalContext } from '../hooks/useGlobalState'
+import { RedirectMainnet, RedirectXdai } from '../state/network'
+import { NetworkUpdater } from '../state/network/NetworkUpdater'
+import { environmentName } from '../utils/env'
+
 
 const SENTRY_DSN = process.env.REACT_APP_EXPLORER_SENTRY_DSN
 const SENTRY_TRACES_SAMPLE_RATE = process.env.REACT_APP_SENTRY_TRACES_SAMPLE_RATE

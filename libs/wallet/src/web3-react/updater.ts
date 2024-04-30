@@ -1,13 +1,15 @@
-import { useWeb3React } from '@web3-react/core'
 import { useSetAtom } from 'jotai'
-import ms from 'ms.macro'
 import { useEffect, useMemo, useState } from 'react'
 
 import { getCurrentChainIdFromUrl } from '@cowprotocol/common-utils'
 import { getSafeInfo } from '@cowprotocol/core'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useENSName } from '@cowprotocol/ens'
+import { useWeb3React } from '@web3-react/core'
 
+import ms from 'ms.macro'
+
+import { useIsSmartContractWallet } from './hooks/useIsSmartContractWallet'
 import { useSafeAppsSdkInfo } from './hooks/useSafeAppsSdkInfo'
 import { useWalletMetaData } from './hooks/useWalletMetadata'
 
@@ -15,7 +17,6 @@ import { gnosisSafeInfoAtom, walletDetailsAtom, walletInfoAtom } from '../api/st
 import { GnosisSafeInfo, WalletDetails, WalletInfo } from '../api/types'
 import { getWalletType } from '../api/utils/getWalletType'
 import { getWalletTypeLabel } from '../api/utils/getWalletTypeLabel'
-import { useIsSmartContractWallet } from './hooks/useIsSmartContractWallet'
 
 const SAFE_INFO_UPDATE_INTERVAL = ms`30s`
 
@@ -76,7 +77,7 @@ function _useSafeInfo(walletInfo: WalletInfo): GnosisSafeInfo | undefined {
               ..._safeInfo,
             })
           )
-          .catch((error) => {
+          .catch(() => {
             console.debug(`[WalletUpdater] Address ${account} is likely not a Safe (API didn't return Safe info)`)
             setSafeInfo(undefined)
           })

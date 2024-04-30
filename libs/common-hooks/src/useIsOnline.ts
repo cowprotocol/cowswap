@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useState } from 'react'
 
+import { getTimeoutAbortController } from '@cowprotocol/common-utils'
+
 import ms from 'ms.macro'
 
-import { getTimeoutAbortController } from '@cowprotocol/common-utils'
 
 const CONNECTIVITY_CHECK_POLLING_TIME = ms`30s`
 const CONNECTIVITY_CHECK_TIMEOUT = ms`15s`

@@ -1,9 +1,9 @@
-import { ReactComponent as DropDown } from '@cowprotocol/assets/images/dropdown.svg'
+import DropDown from '@cowprotocol/assets/images/dropdown.svg?react'
 import { UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-export const ArrowDown = styled(DropDown)<{ $stubbed?: boolean }>`
+export const ArrowDown = styled((props) => <DropDown {...props} />)<{ $stubbed?: boolean }>`
   margin: 0 3px;
   width: 12px;
   height: 7px;

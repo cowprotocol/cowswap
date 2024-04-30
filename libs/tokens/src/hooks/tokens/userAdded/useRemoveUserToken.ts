@@ -1,5 +1,7 @@
-import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useSetAtom } from 'jotai'
+
+import { TokenWithLogo } from '@cowprotocol/common-const'
+
 import { removeUserTokenAtom } from '../../../state/tokens/userAddedTokensAtom'
 
 export function useRemoveUserToken(): (token: TokenWithLogo) => void {

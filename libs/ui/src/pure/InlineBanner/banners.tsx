@@ -2,13 +2,15 @@ import { Command } from '@cowprotocol/types'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
-import { TokenAmount } from '../TokenAmount'
+
 import { Nullish } from '../../types'
-import { LinkStyledButton } from '../LinkStyledButton'
+import { ButtonSecondaryAlt } from '../ButtonSecondaryAlt'
 import { CowSwapSafeAppLink } from '../CowSwapSafeAppLink'
+import { LinkStyledButton } from '../LinkStyledButton'
+import { TokenAmount } from '../TokenAmount'
 
 import { InlineBanner, InlineBannerProps } from './index'
-import { ButtonSecondaryAlt } from '../ButtonSecondaryAlt'
+
 
 export enum BannerOrientation {
   Horizontal = 'horizontal',

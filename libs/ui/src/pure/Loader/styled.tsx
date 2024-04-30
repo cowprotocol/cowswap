@@ -1,5 +1,6 @@
+import styled, { css, keyframes } from 'styled-components/macro'
+
 import { UI } from '../../enum'
-import styled, { css, keyframes } from 'styled-components'
 
 export const loadingAnimation = keyframes`
   0% {

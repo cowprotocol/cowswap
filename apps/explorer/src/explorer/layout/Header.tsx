@@ -1,13 +1,15 @@
 import React, { useState, useCallback, useEffect } from 'react'
 
+import { CHAIN_INFO } from '@cowprotocol/common-const'
+
+import { MenuTree } from '../../components/common/MenuDropdown/MenuTree'
 import { Header as GenericHeader } from '../../components/layout/GenericLayout/Header'
 import { NetworkSelector } from '../../components/NetworkSelector'
-import { useNetworkId } from '../../state/network'
-import { FlexWrap } from '../pages/styled'
 import { useMediaBreakpoint } from '../../hooks/useMediaBreakPoint'
-import { MenuTree } from '../../components/common/MenuDropdown/MenuTree'
+import { useNetworkId } from '../../state/network'
 import { addBodyClass, removeBodyClass } from '../../utils/toggleBodyClass'
-import { CHAIN_INFO } from '@cowprotocol/common-const'
+import { FlexWrap } from '../pages/styled'
+
 
 export const Header: React.FC = () => {
   const isMobile = useMediaBreakpoint(['xs', 'sm'])

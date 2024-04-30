@@ -1,8 +1,10 @@
 import React from 'react'
+
 import { Helmet } from 'react-helmet'
 
-import { OrderAddressNotFound } from '../../components/orders/OrderNotFound'
 import { Wrapper } from './styled'
+
+import { OrderAddressNotFound } from '../../components/orders/OrderNotFound'
 import { APP_TITLE } from '../const'
 
 const SearchNotFound: React.FC = () => {

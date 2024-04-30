@@ -1,9 +1,11 @@
 /// <reference types="vitest" />
-import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react-swc'
-import viteTsConfigPaths from 'vite-tsconfig-paths'
+import { defineConfig } from 'vite'
 import dts from 'vite-plugin-dts'
+import viteTsConfigPaths from 'vite-tsconfig-paths'
+
 import * as path from 'path'
+
 import { getReactProcessEnv } from '../../tools/getReactProcessEnv'
 
 export default defineConfig(({ mode }) => {
@@ -17,8 +19,7 @@ export default defineConfig(({ mode }) => {
     plugins: [
       dts({
         entryRoot: 'src',
-        tsConfigFilePath: path.join(__dirname, 'tsconfig.lib.json'),
-        skipDiagnostics: true,
+        tsconfigPath: path.join(__dirname, 'tsconfig.lib.json'),
       }),
       react(),
       viteTsConfigPaths({

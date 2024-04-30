@@ -1,12 +1,15 @@
 import { useAtomValue, useSetAtom } from 'jotai'
-import { IconType, removeSnackbarAtom, snackbarsAtom } from '../../state/snackbarsAtom'
-import styled from 'styled-components/macro'
-import { SnackbarPopup } from '../../pure/SnackbarPopup'
+import { useResetAtom } from 'jotai/utils'
+import { ReactElement, useCallback, useEffect, useMemo } from 'react'
+
+import { UI } from '@cowprotocol/ui'
+
 import ms from 'ms.macro'
 import { AlertCircle, CheckCircle } from 'react-feather'
-import { ReactElement, useCallback, useEffect, useMemo } from 'react'
-import { useResetAtom } from 'jotai/utils'
-import { UI } from '@cowprotocol/ui'
+import styled from 'styled-components/macro'
+
+import { SnackbarPopup } from '../../pure/SnackbarPopup'
+import { IconType, removeSnackbarAtom, snackbarsAtom } from '../../state/snackbarsAtom'
 
 const Overlay = styled.div`
   display: none;

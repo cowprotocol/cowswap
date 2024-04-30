@@ -1,12 +1,13 @@
 import { useCallback, useEffect, useState } from 'react'
+
 import { gql } from '@apollo/client'
-import { subDays, subHours, startOfToday, startOfYesterday } from 'date-fns'
-import { Network, UiError } from 'types'
-import { NATIVE_TOKEN_PER_NETWORK } from 'const'
 import { TokenErc20 } from '@gnosis.pm/dex-js'
-import { UTCTimestamp } from 'lightweight-charts'
-import { getPercentageDifference, isNativeToken } from 'utils'
+import { NATIVE_TOKEN_PER_NETWORK } from 'const'
 import { subgraphApiSDK } from 'cowSdk'
+import { subDays, subHours, startOfToday, startOfYesterday } from 'date-fns'
+import { UTCTimestamp } from 'lightweight-charts'
+import { Network, UiError } from 'types'
+import { getPercentageDifference, isNativeToken } from 'utils'
 
 export function useGetTokens(networkId: Network | undefined): GetTokensResult {
   const [isLoading, setIsLoading] = useState(false)

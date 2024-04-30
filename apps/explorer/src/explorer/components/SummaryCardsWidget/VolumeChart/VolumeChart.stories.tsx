@@ -1,12 +1,14 @@
 import React from 'react'
-import { Story, Meta } from '@storybook/react'
-import styled from 'styled-components'
 
-import { GlobalStyles, ThemeToggler } from '../../../../storybook/decorators'
+import { Story, Meta } from '@storybook/react'
+import styled from 'styled-components/macro'
+
+import { buildVolumeData } from './useGetVolumeData'
 import { VolumeChart, VolumeChartProps } from './VolumeChart'
 import { VolumePeriod } from './VolumeChartWidget'
 import volumeDataJson from './volumeData.json'
-import { buildVolumeData } from './useGetVolumeData'
+
+import { GlobalStyles, ThemeToggler } from '../../../../storybook/decorators'
 
 export default {
   title: 'ExplorerApp/Chart',

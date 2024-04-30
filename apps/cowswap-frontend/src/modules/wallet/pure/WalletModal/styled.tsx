@@ -1,4 +1,4 @@
-import { ReactComponent as Close } from '@cowprotocol/assets/images/x.svg'
+import Close from '@cowprotocol/assets/images/x.svg?react'
 import { ExternalLink } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 
@@ -36,7 +36,7 @@ export const NewToEthereum = () => (
   </Blurb>
 )
 
-export const CloseColor = styled(Close)`
+export const CloseColor = styled((props) => <Close {...props} />)`
   color: inherit;
 
   path {

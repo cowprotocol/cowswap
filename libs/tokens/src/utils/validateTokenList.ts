@@ -1,5 +1,5 @@
-import type { TokenList } from '@uniswap/token-lists'
 import { TokenInfo } from '@cowprotocol/types'
+import type { TokenList } from '@uniswap/token-lists'
 
 import type { Ajv, ValidateFunction } from 'ajv'
 

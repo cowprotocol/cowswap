@@ -1,6 +1,8 @@
-import { GetOrderParams, RawOrder, RawTrade, GetTxOrdersParams, WithNetworkId } from './types'
-import { orderBookSDK } from 'cowSdk'
 import { Address, UID } from '@cowprotocol/cow-sdk'
+
+import { orderBookSDK } from 'cowSdk'
+
+import { GetOrderParams, RawOrder, RawTrade, GetTxOrdersParams, WithNetworkId } from './types'
 
 export { getAccountOrders } from './accountOrderUtils'
 

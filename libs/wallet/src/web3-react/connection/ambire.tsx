@@ -2,7 +2,6 @@ import { default as AmbireImage } from '../../api/assets/ambire.svg'
 import { ConnectionType } from '../../api/types'
 import { getIsAmbireWallet } from '../../api/utils/connection'
 import { WalletConnectLabeledOption } from '../containers/WalletConnectLabeledOption'
-
 import { ConnectionOptionProps } from '../types'
 
 const ambireOption = {

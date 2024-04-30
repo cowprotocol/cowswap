@@ -1,6 +1,7 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { TokenWithLogo } from './types'
+
 import { cowprotocolTokenLogoUrl } from './cowprotocolTokenLogoUrl'
+import { TokenWithLogo } from './types'
 
 export const NATIVE_CURRENCY_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
 

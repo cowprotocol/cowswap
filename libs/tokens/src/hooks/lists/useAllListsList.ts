@@ -1,7 +1,9 @@
 import { useAtomValue } from 'jotai'
+
+import { useVirtualLists } from './useVirtualLists'
+
 import { listsStatesListAtom } from '../../state/tokenLists/tokenListsStateAtom'
 import { ListState } from '../../types'
-import { useVirtualLists } from './useVirtualLists'
 
 export function useAllListsList(): ListState[] {
   const virtualLists = useVirtualLists()

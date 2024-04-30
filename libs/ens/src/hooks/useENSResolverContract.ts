@@ -1,6 +1,7 @@
-import { getContract } from '@cowprotocol/common-utils'
 import { EnsPublicResolver, EnsPublicResolverAbi } from '@cowprotocol/abis'
+import { getContract } from '@cowprotocol/common-utils'
 import { useWeb3React } from '@web3-react/core'
+
 import useSWR from 'swr'
 
 export function useENSResolverContract(address: string | undefined): EnsPublicResolver | undefined {

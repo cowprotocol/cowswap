@@ -1,9 +1,10 @@
 import { ReactNode, useCallback, useEffect } from 'react'
+
 import { UI } from '@cowprotocol/ui'
 
-import styled from 'styled-components/macro'
-import { X } from 'react-feather'
 import { animated, useSpring } from '@react-spring/web'
+import { X } from 'react-feather'
+import styled from 'styled-components/macro'
 
 const Wrapper = styled.div`
   display: inline-block;

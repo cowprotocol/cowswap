@@ -1,5 +1,8 @@
 import React, { DOMAttributes, useState, useCallback, createRef, ReactElement } from 'react'
-import styled, { FlattenSimpleInterpolation } from 'styled-components'
+
+import { Command } from '@cowprotocol/types'
+
+import styled, { FlattenSimpleInterpolation } from 'styled-components/macro'
 
 import {
   BaseCard,
@@ -11,9 +14,8 @@ import {
   DropdownItemProps,
   DropdownItemCSS,
 } from './styled'
-import useOnClickOutside from '../../../../hooks/useOnClickOutside'
 
-import { Command } from '@cowprotocol/types'
+import useOnClickOutside from '../../../../hooks/useOnClickOutside'
 
 export enum DropdownPosition {
   center,

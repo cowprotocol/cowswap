@@ -1,6 +1,7 @@
 import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
 import { ALL_SUPPORTED_CHAIN_IDS, SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { TokenInfo, TokenList } from '@uniswap/token-lists'
+
 import useSWR from 'swr'
 
 type TokenListByAddress = Record<string, TokenInfo>

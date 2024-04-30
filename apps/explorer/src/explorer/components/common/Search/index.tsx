@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react'
+
 import { Wrapper, Button, Input, SearchIcon, Placeholder } from './Search.styled'
+
+import searchImg from '../../../../assets/img/search2.svg'
 import { useSearchSubmit } from '../../../../hooks/useSearchSubmit'
 
 // assets
-import searchImg from '../../../../assets/img/search2.svg'
 
 interface SearchProps extends React.HTMLAttributes<HTMLFormElement> {
   searchString?: string

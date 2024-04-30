@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+
 import { Command } from '@cowprotocol/types'
 
 /**
