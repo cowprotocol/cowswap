@@ -63,9 +63,10 @@ export function MouseoverTooltipContent({
   }, [onOpen])
 
   const close = useCallback((force = false) => {
-    if (!sticky || force) {
-      setShow(false)
-    }
+    if (sticky && !force) return
+
+    setSticky(false)
+    setShow(false)
   }, [setShow, sticky])
 
   const toggleSticky = useCallback<React.MouseEventHandler<HTMLDivElement>>((event) => {
@@ -88,6 +89,7 @@ export function MouseoverTooltipContent({
     }    
   }, [close, open, setSticky, show])
 
+  // Remove the stickiness when clicking outside the tooltip
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (sticky && divRef.current && !divRef.current.contains(event.target as Node)) {
@@ -101,6 +103,20 @@ export function MouseoverTooltipContent({
       document.removeEventListener('click', handleClickOutside);
     };
   }, [toggleSticky, setShow, sticky]);
+
+  // Remove the stickiness when scrolling
+  useEffect(() => {
+    const handleScroll = () => {
+      if (sticky) {
+        close(true)
+      }
+    }
+    
+    document.addEventListener('scroll', handleScroll);
+    return () => {
+      document.removeEventListener('scroll', handleScroll);
+    }
+  }, [sticky])
 
   
 
