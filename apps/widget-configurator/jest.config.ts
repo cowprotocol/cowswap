@@ -6,7 +6,7 @@ export default {
     '^.+\\.[tj]sx?$': ['babel-jest', { presets: ['@nx/react/babel'] }],
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  coverageDirectory: '../../coverage/cowswap',
+  coverageDirectory: '../../coverage/widget-configurator',
   setupFilesAfterEnv: ['../../jest.setup.ts'],
   setupFiles: ['dotenv/config'],
 }
