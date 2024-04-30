@@ -34,13 +34,19 @@ export function CustomLink(props: CustomLinkProps) {
   const { url, label: title, type = 'internal', onClick, utmContent } = props
   const { rel, target } = getAnchorRel(type)
 
-  const [LinkComponent, defaultUtm] = utmContent ? [LinkWithUtm, { ...CONFIG.utm, utmContent }] : [Link, undefined]
+  if (utmContent) {
+    return (
+      <LinkWithUtm href={url} rel={rel} onClick={onClick} passHref defaultUtm={{ ...CONFIG.utm, utmContent }}>
+        <span rel={rel} onClick={onClick}>
+          {title}
+        </span>
+      </LinkWithUtm>
+    )
+  }
 
   return (
-    <LinkComponent href={url} passHref defaultUtm={defaultUtm}>
-      <a target={target} rel={rel} onClick={onClick}>
-        {title}
-      </a>
-    </LinkComponent>
+    <Link href={url} target={target} rel={rel} onClick={onClick} passHref>
+      {title}
+    </Link>
   )
 }

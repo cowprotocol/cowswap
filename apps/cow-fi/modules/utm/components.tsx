@@ -5,6 +5,7 @@ import { addUtmToUrl, hasUtmCodes } from 'modules/utm/utils'
 
 interface LinkWithUtmProps extends React.PropsWithChildren<LinkProps> {
   defaultUtm: UtmParams
+  rel?: string
 }
 
 export function LinkWithUtm(p: LinkWithUtmProps): JSX.Element {
@@ -26,10 +27,10 @@ export function LinkWithUtm(p: LinkWithUtmProps): JSX.Element {
   )
 }
 
-function getUtm(...utms: UtmParams[]): UtmParams | null {
+function getUtm(...utms: (UtmParams | undefined)[]): UtmParams | null {
   for (const utm of utms) {
     if (hasUtmCodes(utm)) {
-      return utm
+      return utm || null
     }
   }
 
