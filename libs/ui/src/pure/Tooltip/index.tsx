@@ -120,10 +120,10 @@ export function MouseoverTooltipContent({
 
   
 
-  const c = disableHover ? null : <div ref={divRef}>{content}</div>
+  const tooltipContent = disableHover ? null : <div ref={divRef}>{content}</div>
 
   return (
-    <TooltipContent {...rest} show={show} content={c}>
+    <TooltipContent {...rest} show={show} content={tooltipContent}>
       <div onMouseEnter={open} onMouseLeave={() => close()} onClick={toggleSticky} >
 
         {children}
