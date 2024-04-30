@@ -7,8 +7,6 @@ import { ArticleContent } from '@/components/Article'
 
 const DATA_CACHE_TIME_SECONDS = 10 * 60 // 10 minutes
 
-
-
 export interface BlogPostProps {
   article: Article
 }
@@ -17,7 +15,7 @@ export default function BlogPostPage({ article }: BlogPostProps) {
   return <ArticleContent article={article} />
 }
 
-type ArticleQuery = { articleSlug: string}
+type ArticleQuery = { articleSlug: string }
 
 export const getStaticPaths: GetStaticPaths<ArticleQuery> = async () => {
   const allSlugs = await getAllArticleSlugs()
@@ -25,13 +23,13 @@ export const getStaticPaths: GetStaticPaths<ArticleQuery> = async () => {
   return {
     fallback: false,
     paths: allSlugs.map((articleSlug) => ({
-      params: { articleSlug }
+      params: { articleSlug },
     })),
   }
 }
 
 export const getStaticProps: GetStaticProps<BlogPostProps, ArticleQuery> = async ({ params }) => {
-  const article = await getArticleBySlug(params.articleSlug)
+  const article = params ? await getArticleBySlug(params.articleSlug) : null
 
   if (!article) {
     return {

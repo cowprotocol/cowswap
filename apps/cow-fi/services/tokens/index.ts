@@ -49,7 +49,7 @@ export async function getTokensInfo(): Promise<TokenInfo[]> {
 export async function getTokenDetails(coingeckoId: string): Promise<TokenDetails> {
   const id = coingeckoId.toLowerCase()
   const tokensRaw = await _getAllTokensData()
-  return tokensRaw.find(({ id: _id }) => _id === id)
+  return tokensRaw.find(({ id: _id }) => _id === id) as TokenDetails
 }
 
 // Just a quick experiment. Not using for now
@@ -70,7 +70,7 @@ function _getDescriptionFilePaths(): string[] {
   return fs.readdirSync(DESCRIPTIONS_DIR_PATH, 'utf-8')
 }
 
-async function fetchWithBackoff(url) {
+async function fetchWithBackoff(url: string) {
   return backOff(
     () => {
       console.log(`Fetching ${url}`)
@@ -100,7 +100,7 @@ async function _getAllTokensData(): Promise<TokenDetails[]> {
 
   // Enhance description and transform to token details
   const tokens = tokenRawData
-    .map((tokenRaw) => {
+    .map((tokenRaw: TokenDetails) => {
       if (!descriptionFiles.includes(tokenRaw.id)) {
         return undefined
       }
@@ -122,17 +122,17 @@ function _getTokenDescription(id: string): string {
 
 function _getTokenMetaDescription(token: TokenDetails): string {
   if (!token) {
-    throw new Error("Token details are required.");
+    throw new Error('Token details are required.')
   }
 
-  const { name, symbol, priceUsd, volume, change24h, marketCap } = token;
-  const change24hTrimmed = parseFloat(change24h).toFixed(2);
-  const isIncrease = parseFloat(change24h) >= 0;
-  const changeDirection = isIncrease ? 'increase ▲' : 'decrease ▼';
-  const randomIndex = Math.floor(Math.random() * META_DESCRIPTION_TEMPLATES.length);
-  const chosenTemplate = META_DESCRIPTION_TEMPLATES[randomIndex];
+  const { name, symbol, priceUsd, volume, change24h, marketCap } = token
+  const change24hTrimmed = parseFloat(change24h as string).toFixed(2)
+  const isIncrease = parseFloat(change24h as string) >= 0
+  const changeDirection = isIncrease ? 'increase ▲' : 'decrease ▼'
+  const randomIndex = Math.floor(Math.random() * META_DESCRIPTION_TEMPLATES.length)
+  const chosenTemplate = META_DESCRIPTION_TEMPLATES[randomIndex]
 
-  return chosenTemplate({ name, symbol, changeDirection, priceUsd, change24hTrimmed, volume, marketCap });
+  return chosenTemplate({ name, symbol, changeDirection, priceUsd, change24hTrimmed, volume, marketCap })
 }
 
 function _toTokenDetails(tokenRaw: any, description: string): TokenDetails {

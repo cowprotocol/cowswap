@@ -1,7 +1,7 @@
 import { CopyIcon, CopyMessage, CopyWrapper } from '@/components/TokenDetails/index.styles'
 import { useEffect, useState } from 'react'
 
-export const CopyToClipboard = ({ text }) => {
+export const CopyToClipboard = ({ text }: { text: string }) => {
   const [copied, setCopied] = useState(false)
 
   const copyToClipboard = async () => {
@@ -10,7 +10,7 @@ export const CopyToClipboard = ({ text }) => {
   }
 
   useEffect(() => {
-    let timer = null
+    let timer: ReturnType<typeof setTimeout> | null = null
 
     if (copied) {
       timer = setTimeout(() => {
@@ -18,7 +18,9 @@ export const CopyToClipboard = ({ text }) => {
       }, 3000)
     }
 
-    return () => clearTimeout(timer)
+    return () => {
+      timer && clearTimeout(timer)
+    }
   }, [copied])
 
   return (

@@ -43,7 +43,9 @@ export function ChartSection({ platforms }: ChartSectionProps) {
   return (
     <ChartContainer>
       <ParentSize>
-        {({ width }) => <Chart prices={prices} timePeriod={TimePeriod.DAY} width={width} height={350} />}
+        {({ width }: { width: number }) => (
+          <Chart prices={prices} timePeriod={TimePeriod.DAY} width={width} height={350} />
+        )}
       </ParentSize>
     </ChartContainer>
   )

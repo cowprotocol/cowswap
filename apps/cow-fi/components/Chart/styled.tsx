@@ -36,11 +36,11 @@ export const MissingPriceCaption = styled.div`
   color: ${Color.grey3};
 `
 
-export const StyledUpArrow = styled(ArrowUpRight)`
+export const StyledUpArrow = styled((props) => <ArrowUpRight {...props} />)`
   color: ${Color.success};
 `
 
-export const StyledDownArrow = styled(ArrowDownRight)`
+export const StyledDownArrow = styled((props) => <ArrowDownRight {...props} />)`
   color: ${Color.danger};
 `
 

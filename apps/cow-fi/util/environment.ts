@@ -45,8 +45,7 @@ export function checkEnvironment(host: string, path: string): EnvironmentChecks 
 const { isLocal, isDev, isPr, isProd } = checkEnvironmentUsingWindow()
 
 function checkEnvironmentUsingWindow() {
-  const [host, pathname] =
-    typeof window !== 'undefined' ? [window.location.host, window.location.pathname] : [undefined, undefined]
+  const [host, pathname] = typeof window !== 'undefined' ? [window.location.host, window.location.pathname] : ['', '']
   return checkEnvironment(host, pathname)
 }
 

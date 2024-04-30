@@ -67,7 +67,7 @@ export function TokenDetails({ token }: TokenDetailProps) {
 
         <DetailHeading>
           <TokenTitle>
-            <img src={image.large} alt={`${name} (${symbol})`} />
+            <img src={image.large!} alt={`${name} (${symbol})`} />
             <h1>{name}</h1>
             <span>{symbol}</span>
           </TokenTitle>
@@ -160,7 +160,7 @@ export function TokenDetails({ token }: TokenDetailProps) {
 
       <StickyContent>
         <SwapWidgetWrapper>
-          <SwapWidget tokenSymbol={symbol} tokenImage={image.large} platforms={platforms} tokenId={id} />
+          <SwapWidget tokenSymbol={symbol} tokenImage={image.large!} platforms={platforms} tokenId={id} />
         </SwapWidgetWrapper>
       </StickyContent>
     </Wrapper>

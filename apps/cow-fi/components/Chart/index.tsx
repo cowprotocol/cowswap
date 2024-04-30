@@ -41,8 +41,8 @@ export enum TimePeriod {
 }
 
 export type ChartProps = {
-  width?: number
-  height?: number
+  width: number
+  height: number
   prices: any
   timePeriod: TimePeriod
 }
@@ -204,7 +204,7 @@ export function Chart({ prices, height, width, timePeriod }: ChartProps) {
       const { x } = localPoint(event) || { x: 0 }
       const x0 = timeScale.invert(x) // get timestamp from the scalexw
       const index = bisect(
-        prices.map((x) => x.timestamp),
+        prices.map((x: { timestamp: number }) => x.timestamp),
         x0,
         1
       )

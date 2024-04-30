@@ -216,7 +216,7 @@ export const CowBar = styled.div<TCowBar>`
   }
 `
 
-function getNetworkConfig(networkID) {
+function getNetworkConfig(networkID: string) {
   switch (networkID) {
     case 'UNIV3':
       return { label: 'Uniswap V3', color: '#FF008A' }
@@ -256,7 +256,11 @@ function getNetworkConfig(networkID) {
 
 export default function CowSlider() {
   const [activeBatch, setActiveBatch] = useState(1)
-  const { summary, description, metrics, visual, link, bars } = batches.find((b) => b.id === activeBatch)
+  const batch = batches.find((b) => b.id === activeBatch)
+
+  if (!batch) return null
+
+  const { summary, description, metrics, visual, link, bars } = batch
 
   return (
     <Wrapper>

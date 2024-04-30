@@ -39,13 +39,18 @@ export const StyledBreadcrumbs = styled.div`
   }
 `
 
-export const Breadcrumbs = ({ crumbs }) => (
+interface Crumb {
+  text: string
+  href?: string
+}
+
+export const Breadcrumbs = ({ crumbs }: { crumbs: Crumb[] }) => (
   <StyledBreadcrumbs>
     {crumbs.map((crumb, i) => (
       <React.Fragment key={i}>
         {i < crumbs.length - 1 ? (
           <>
-            <Link href={crumb.href}>{crumb.text}</Link>
+            <Link href={crumb.href || ''}>{crumb.text}</Link>
             <img className="breadcrumbs-arrow" src="/images/arrow-next-right.svg" alt="Breadcrumbs arrow" />
           </>
         ) : (

@@ -147,7 +147,7 @@ export const Section = styled.section<{
     ${Media.mobile} {
       padding: 5.6rem 3.2rem 0;
     }
-    
+
   `}
 
   ${({ mobileSwitchOrder }) =>
@@ -484,7 +484,6 @@ export const CardItem = styled.div<{
   fontSize?: number
   fontSizeMobile?: number
   equalHeight?: boolean
-  
 }>`
   display: flex;
   flex-flow: column wrap;
@@ -493,7 +492,8 @@ export const CardItem = styled.div<{
   justify-content: ${({ contentCentered }) => (contentCentered ? 'center' : 'flex-start')};
   background: ${({ background, variant }) => {
     if (background) return background
-    else if (variant === 'outlined-dark' || variant === 'cowamm-card-light' || variant === 'cowamm-card-dark') return 'transparent'
+    else if (variant === 'outlined-dark' || variant === 'cowamm-card-light' || variant === 'cowamm-card-dark')
+      return 'transparent'
     else return Color.white
   }};
   box-shadow: ${({ variant }) =>
@@ -501,12 +501,11 @@ export const CardItem = styled.div<{
       ? 'none'
       : '0 1rem 2.4rem rgba(0,0,0,.05)'};
   border: ${({ variant }) => (variant === 'outlined-dark' ? `0.1rem solid ${Color.border}` : 'none')};
-  color ${({color, variant}) => {
+  color ${({ color, variant }) => {
     if (color) return color
     else if (variant === 'outlined-dark') return Color.text2
     else if (variant === 'cowamm-card-light' || variant === 'cowamm-card-dark') return Color.cowammWhite
     else return Color.text1
-    
   }};
   border-radius: ${({ borderRadius }) => (typeof borderRadius !== 'undefined' ? `${borderRadius}rem` : '2.4rem')};
   padding: ${({ padding }) => (typeof padding !== 'undefined' ? `${padding}rem` : '3.4rem')};
@@ -660,13 +659,13 @@ export const CardItem = styled.div<{
 
   > img,
   > svg {
-    --size: ${({ imageHeight }) => (imageHeight ? `${imageHeight}rem` : '12rem')};
+    --size: ${({ imageHeight }: { imageHeight: number }) => (imageHeight ? `${imageHeight}rem` : '12rem')};
     width: var(--size);
     height: var(--size);
     margin-bottom: 2.4rem;
   }
 
-  > h4, > p, > span { 
+  > h4, > p, > span {
     color: ${variant === 'cowamm-card-dark' ? Color.cowammBlack : Color.cowammWhite};
   }
 `}

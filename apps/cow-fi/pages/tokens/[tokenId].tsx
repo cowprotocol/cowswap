@@ -12,9 +12,9 @@ export type TokenDetailPageProps = TokenDetailProps
 
 export default function TokenDetailsPage({ token }: TokenDetailPageProps) {
   const { name, symbol, metaDescription, change24h, priceUsd } = token
-  const change24 = parseFloat(change24h)
+  const change24 = parseFloat(change24h as string)
   const change24hFormatted = change24.toFixed(2)
-  const isIncrease = parseFloat(change24h) >= 0
+  const isIncrease = parseFloat(change24h as string) >= 0
   const priceChangeEmoji = isIncrease ? '🟢' : '🔴'
   const changeDirection = isIncrease ? '▲' : '▼'
   const metaTitle = `${priceChangeEmoji} ${name} (${symbol}) $${priceUsd} (${change24hFormatted}% ${changeDirection}) - ${CONFIG.metatitle_tokenDetail}`
@@ -36,7 +36,7 @@ export default function TokenDetailsPage({ token }: TokenDetailPageProps) {
   )
 }
 
-type TokenQuery = { tokenId: string}
+type TokenQuery = { tokenId: string }
 
 export const getStaticPaths: GetStaticPaths<TokenQuery> = async () => {
   const tokenIds = await getTokensIds()
@@ -48,7 +48,7 @@ export const getStaticPaths: GetStaticPaths<TokenQuery> = async () => {
 }
 
 export const getStaticProps: GetStaticProps<TokenDetailProps, TokenQuery> = async ({ params }) => {
-  const token = await getTokenDetails(params.tokenId)
+  const token = params ? await getTokenDetails(params.tokenId) : null
 
   if (!token) {
     return {

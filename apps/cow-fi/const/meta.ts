@@ -72,3 +72,5 @@ export const META_DESCRIPTION_TEMPLATES = [
   ({ name, symbol, priceUsd, change24hTrimmed, volume, marketCap }: MetaTokenDetails) =>
     `Latest on ${name} (${symbol}): priced at $${priceUsd}. Experienced a ${change24hTrimmed}% change in 24h. Trading volume: $${volume}. Their market cap: $${marketCap}. Learn more.`,
 ]
+
+export type SiteConfig = typeof CONFIG

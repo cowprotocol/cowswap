@@ -5,7 +5,7 @@ import Layout from '@/components/Layout'
 import { getJobs } from 'services/greenhouse'
 import { Careers } from '@/components/Careers'
 
-export default function Jobs({ jobsData }) {
+export default function Jobs({ jobsData }: { jobsData: any }) {
   return (
     <>
       <Head>

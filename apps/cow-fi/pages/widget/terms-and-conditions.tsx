@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import Layout from '@/components/Layout'
 import { GetStaticProps } from 'next'
-import { CONFIG } from '@/const/meta'
+import { CONFIG, SiteConfig } from '@/const/meta'
 import styled from 'styled-components'
 import { Color } from '@/styles/variables'
 
@@ -34,7 +34,7 @@ const Content = styled.div`
   }
 `
 
-export default function TermsAndConditionsPage({siteConfigData}) {
+export default function TermsAndConditionsPage({ siteConfigData }: { siteConfigData: SiteConfig }) {
   const pageTitle = `Widget - ${siteConfigData.title}`
   const pageDescription =
     'Integrate the CoW Swap widget to bring seamless, MEV-protected trading to your website or dApp.'
@@ -43,11 +43,11 @@ export default function TermsAndConditionsPage({siteConfigData}) {
     <Layout fullWidthGradientVariant>
       <Head>
         <title>{pageTitle}</title>
-        <meta key="description" name="description" content={pageDescription}/>
-        <meta key="ogTitle" property="og:title" content={pageTitle}/>
-        <meta key="ogDescription" property="og:description" content={pageDescription}/>
-        <meta key="twitterTitle" name="twitter:title" content={pageTitle}/>
-        <meta key="twitterDescription" name="twitter:description" content={pageDescription}/>
+        <meta key="description" name="description" content={pageDescription} />
+        <meta key="ogTitle" property="og:title" content={pageTitle} />
+        <meta key="ogDescription" property="og:description" content={pageDescription} />
+        <meta key="twitterTitle" name="twitter:title" content={pageTitle} />
+        <meta key="twitterDescription" name="twitter:description" content={pageDescription} />
       </Head>
 
       <Content>
@@ -202,37 +202,57 @@ export default function TermsAndConditionsPage({siteConfigData}) {
           <h2>Partner Fee Program</h2>
           <h3>Partner Fee</h3>
 
-          <p>Partners may participate in the Provider's Partner Fee Program ("Program"). The Program enables Partners to
+          <p>
+            Partners may participate in the Provider's Partner Fee Program ("Program"). The Program enables Partners to
             earn fees on trades their users execute through the Widget. For comprehensive details and conditions of the
-            Partner Fee Program, please refer to the dedicated <a target="_blank" rel="noreferrer" href="https://docs.cow.fi/cow-protocol/tutorials/widget#partner-fee">
+            Partner Fee Program, please refer to the dedicated{' '}
+            <a target="_blank" rel="noreferrer" href="https://docs.cow.fi/cow-protocol/tutorials/widget#partner-fee">
               Widget documentation page under the "Partner Fee" section
-            </a>.</p>
-          <p>To list a token on the Widget and earn fees on associated transactions, the token must have a listing on <a target="_blank" rel="noreferrer" href="https://www.coingecko.com">https://www.coingecko.com/</a>
-            {' '}as it appears on the site.</p>
+            </a>
+            .
+          </p>
+          <p>
+            To list a token on the Widget and earn fees on associated transactions, the token must have a listing on{' '}
+            <a target="_blank" rel="noreferrer" href="https://www.coingecko.com">
+              https://www.coingecko.com/
+            </a>{' '}
+            as it appears on the site.
+          </p>
           <h3>Service Fee</h3>
-          <p>The Provider will retain a service fee ("Service Fee") from the total fees earned by the Partner. Specific
-            terms and conditions regarding the Service Fee are outlined in the <a target="_blank" rel="noreferrer" href="https://docs.cow.fi/cow-protocol/tutorials/widget#partner-fee">
-              Widget's dedicated documentation page under the "Partner Fee" section</a>.</p>
+          <p>
+            The Provider will retain a service fee ("Service Fee") from the total fees earned by the Partner. Specific
+            terms and conditions regarding the Service Fee are outlined in the{' '}
+            <a target="_blank" rel="noreferrer" href="https://docs.cow.fi/cow-protocol/tutorials/widget#partner-fee">
+              Widget's dedicated documentation page under the "Partner Fee" section
+            </a>
+            .
+          </p>
           <p>The Provider reserves the right to adjust the Service Fee charged to the Partner with prior notice.</p>
           <h3>Partner Fee Payment at the Provider’s Discretion</h3>
-          <p>The Provider retains sole and absolute discretion in determining whether the transactions on the Widget are
+          <p>
+            The Provider retains sole and absolute discretion in determining whether the transactions on the Widget are
             eligible for Partner Fee. The Provider may choose not to issue Partner Fees for any reason, including but
-            not limited to:</p>
+            not limited to:
+          </p>
           <ul>
-            <li>Suspected Fraud or Scam Activity: Transactions involving tokens deemed fraudulent or potentially
-              involved in scams;
+            <li>
+              Suspected Fraud or Scam Activity: Transactions involving tokens deemed fraudulent or potentially involved
+              in scams;
             </li>
-            <li>Abnormal or Manipulative Trading: Trading activity aimed at exploiting the Widget or Partner Fee
-              program;
+            <li>
+              Abnormal or Manipulative Trading: Trading activity aimed at exploiting the Widget or Partner Fee program;
             </li>
-            <li>Other Inappropriate Activity: Any other scenarios where the Provider considers Partner Fee payment to be
+            <li>
+              Other Inappropriate Activity: Any other scenarios where the Provider considers Partner Fee payment to be
               unsuitable or against the best interests of the Widget or Program.
             </li>
           </ul>
 
           <h3>Program Changes and Termination</h3>
-          <p>The Provider may make amendments to the Program at any time. Additionally, the Provider reserves the right
-            to modify or terminate the Program at any time, with or without notice.</p>
+          <p>
+            The Provider may make amendments to the Program at any time. Additionally, the Provider reserves the right
+            to modify or terminate the Program at any time, with or without notice.
+          </p>
 
           <h2>Warranties and Limitations</h2>
           <p>The Widget is provided "as is" without warranty of any kind, express or implied.</p>

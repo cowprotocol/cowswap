@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import Head from 'next/head'
 import { GetStaticProps } from 'next'
-import { CONFIG } from '@/const/meta'
+import { CONFIG, SiteConfig } from '@/const/meta'
 import { Color, Font, TextColor } from 'styles/variables'
 import {
   CardItem,
@@ -274,21 +274,16 @@ const CONTENT = {
   ],
 }
 
-export default function CoWAMMPage({ siteConfigData }) {
+export default function CoWAMMPage({ siteConfigData }: { siteConfigData: SiteConfig }) {
   const { social } = siteConfigData
 
   // Filter out Discord/Forum social links
-  let socialFiltered = {}
+  let socialFiltered: Record<string, any> = {}
   Object.entries(social).forEach(([key, value]) => {
     if (key !== 'forum' && key !== 'github') {
       socialFiltered[key] = value
     }
   })
-
-  const [openFaqIndex, setOpenFaqIndex] = useState(null)
-  const handleFaqClick = (index) => {
-    setOpenFaqIndex(openFaqIndex === index ? null : index)
-  }
 
   const pageTitle = `CoW AMM - The First MEV-Capturing AMM`
   const pageDescription = 'CoW AMM eliminates LVR once and for all by using batch auctions to send surplus to LPs.'
@@ -608,7 +603,7 @@ export default function CoWAMMPage({ siteConfigData }) {
             >
               {CONTENT.faqContent.map(({ title, content }, index) => (
                 <details key={index}>
-                  <summary onClick={handleFaqClick}>{title}</summary>
+                  <summary>{title}</summary>
                   <div>{content}</div>
                 </details>
               ))}

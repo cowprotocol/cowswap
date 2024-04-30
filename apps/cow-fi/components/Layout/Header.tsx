@@ -148,10 +148,10 @@ const Menu = styled.ol<{ isLight?: boolean; isLightCoWAMM?: boolean; isSticky?: 
       css`
         background: transparent;
         border: 0.1rem solid ${isLightCoWAMM ? Color.cowammBlack : Color.darkBlue};
-        color: ${isLightCoWAMM ? Color.cowammBlack : Color.darkBlue};};
+        color: ${isLightCoWAMM ? Color.cowammBlack : Color.darkBlue};
 
         &:hover {
-          color: ${isLightCoWAMM ? Color.cowammBlack : Color.darkBlue};};
+          color: ${isLightCoWAMM ? Color.cowammBlack : Color.darkBlue};
         }
       `}
 
@@ -326,7 +326,7 @@ export default function Header({ isLight = false, isLightCoWAMM = false }: Props
   const toggleBodyScroll = () => {
     !menuVisible ? document.body.classList.add('noScroll') : document.body.classList.remove('noScroll')
   }
-  const handleClick = ({ label }) => {
+  const handleClick = ({ label }: { label: string }) => {
     // log GA event
     sendGAEventHandler({ category: GAEventCategories.NAVIGATION, action: `Header menu clicked: ${label}` })
 

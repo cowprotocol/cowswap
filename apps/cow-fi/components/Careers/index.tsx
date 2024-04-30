@@ -5,7 +5,7 @@ import { Section, Title, SubTitle, TitleSmall, LinkContainer, Card } from '@/com
 import { DropDown, ExternalLink } from 'styles/global.styles'
 import SVG from 'react-inlinesvg'
 
-export function Careers({ jobsData }) {
+export function Careers({ jobsData }: { jobsData: any }) {
   const [department, setDepartment] = useState('All')
   const handleDepartmentChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setDepartment(e.target.value)
@@ -55,7 +55,7 @@ export function Careers({ jobsData }) {
         ? Object.keys(jobsData).map((deptName: string) => (
             <Section key={deptName} margin={'0 0 1.6rem'}>
               <SubTitle>{deptName}</SubTitle>
-              {jobsData[deptName].map(({ absolute_url, title, location }, index) => (
+              {jobsData[deptName].map(({ absolute_url, title, location }: any, index: number) => (
                 <LinkContainer key={index} href={absolute_url} target="_blank" rel="noopener nofollow noreferrer">
                   <b>{title}</b>
                   <i>{location.name}</i>
@@ -67,7 +67,7 @@ export function Careers({ jobsData }) {
         : jobsCount > 0 && (
             <Section margin={'0 0 1.6rem'}>
               <SubTitle>{department}</SubTitle>
-              {jobsData[department].map(({ absolute_url, title, location }, index) => (
+              {jobsData[department].map(({ absolute_url, title, location }: any, index: number) => (
                 <LinkContainer key={index} href={absolute_url} target="_blank" rel="noopener nofollow noreferrer">
                   <b>{title}</b>
                   <i>{location.name}</i>

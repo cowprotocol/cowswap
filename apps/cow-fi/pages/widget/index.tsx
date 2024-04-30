@@ -10,7 +10,7 @@ import {
   SubTitle,
 } from '@/components/Home/index.styles'
 import Layout from '@/components/Layout'
-import { CONFIG } from '@/const/meta'
+import { CONFIG, SiteConfig } from '@/const/meta'
 import { IMAGE_PATH } from '@/const/paths'
 import { CowSwapWidget, CowSwapWidgetParams } from '@cowprotocol/widget-react'
 import { WidgetEvents } from 'lib/analytics/GAEvents'
@@ -172,11 +172,11 @@ const widgetParams: CowSwapWidgetParams = {
   standaloneMode: true,
 }
 
-export default function WidgetPage({ siteConfigData }) {
+export default function WidgetPage({ siteConfigData }: { siteConfigData: SiteConfig }) {
   const { social } = siteConfigData
 
   // Filter out Discord/Forum social links
-  let socialFiltered = {}
+  let socialFiltered: Record<string, any> = {}
   Object.entries(social).forEach(([key, value]) => {
     if (key !== 'forum' && key !== 'github') {
       socialFiltered[key] = value
@@ -314,7 +314,7 @@ export default function WidgetPage({ siteConfigData }) {
                     imageWidth={4}
                     imageRounded
                     variant="iconWithText"
-                    style={{ background: comingSoon && Color.grey }}
+                    style={{ background: comingSoon ? Color.grey : '' }}
                   >
                     <img
                       style={{ opacity: comingSoon ? 0.5 : 1 }}

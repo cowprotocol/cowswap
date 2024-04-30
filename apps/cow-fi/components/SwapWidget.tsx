@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, ChangeEvent } from 'react'
 import styled from 'styled-components'
 import { Color } from 'styles/variables'
 import { Button } from '@/components/Button'
@@ -212,7 +212,7 @@ export const SwapWidget = ({ tokenId, tokenSymbol, tokenImage, platforms }: Swap
   const [amount, setAmount] = useState(0)
 
   const [isOpen, setIsOpen] = useState(false)
-  const handleSelect = (network) => {
+  const handleSelect = (network: string | null) => {
     setNetwork(network)
     setIsOpen(false)
   }
@@ -223,7 +223,7 @@ export const SwapWidget = ({ tokenId, tokenSymbol, tokenImage, platforms }: Swap
     else if (platforms.xdai.contractAddress) setNetwork(Networks.XDAI)
   }, [platforms])
 
-  const handleInputChange = (event) => {
+  const handleInputChange = (event: ChangeEvent<any>) => {
     let value = event.target.value
 
     // Remove leading minus sign if present
@@ -288,9 +288,9 @@ export const SwapWidget = ({ tokenId, tokenSymbol, tokenImage, platforms }: Swap
         <DropdownHeader onClick={() => setIsOpen(!isOpen)}>
           <img
             src={`/images/${network === Networks.ETHEREUM ? 'ethereum' : 'gnosis-chain'}.svg`}
-            alt={NETWORK_MAP[network]}
+            alt={network ? NETWORK_MAP[network] : ''}
           />
-          <b>{NETWORK_MAP[network]}</b>
+          <b>{network ? NETWORK_MAP[network] : ''}</b>
         </DropdownHeader>
         {isOpen && (
           <DropdownBody>

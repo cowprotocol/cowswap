@@ -2,7 +2,7 @@ import Head from 'next/head'
 import { GetStaticProps } from 'next'
 import styled from 'styled-components'
 import { transparentize } from 'polished'
-import { CONFIG } from '@/const/meta'
+import { CONFIG, SiteConfig } from '@/const/meta'
 import { DAO_CONTENT as CONTENT } from '@/data/siteContent/daos'
 import { Media, Color, Font } from 'styles/variables'
 import {
@@ -184,11 +184,11 @@ const SwiperSlideWrapper = styled.div`
 
 const DATA_CACHE_TIME_SECONDS = 5 * 60 // Cache 5min
 
-export default function ForDAOs({ siteConfigData }) {
+export default function ForDAOs({ siteConfigData }: { siteConfigData: SiteConfig }) {
   const { social } = siteConfigData
 
   // Filter out Discord/Forum social links
-  let socialFiltered = {}
+  let socialFiltered: Record<string, any> = {}
   Object.entries(social).forEach(([key, value]) => {
     if (key !== 'forum' && key !== 'github') {
       socialFiltered[key] = value

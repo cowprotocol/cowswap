@@ -11,6 +11,7 @@
       "@cowprotocol/widget-react": ["../../libs/widget-react/src/index.ts"],
       "@cowprotocol/events": ["../../libs/events/src/index.ts"],
       "@cowprotocol/widget-lib": ["../../libs/widget-lib/src/index.ts"],
+      "@cowprotocol/types": ["../../libs/types/src/index.ts"],
     },
     "jsx": "preserve",
     "allowJs": true,

@@ -1,12 +1,12 @@
 import Head from 'next/head'
 import Link from 'next/link'
 import { GetStaticProps } from 'next'
-import { CONFIG } from '@/const/meta'
+import { CONFIG, SiteConfig } from '@/const/meta'
 import { Title, Section } from '@/components/Layout/index.styles'
 import Layout from '@/components/Layout'
 
 // pages/404.js
-export default function Custom404({ siteConfigData }) {
+export default function Custom404({ siteConfigData }: { siteConfigData: SiteConfig }) {
   const { title } = siteConfigData
 
   return (
