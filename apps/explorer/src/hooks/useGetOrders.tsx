@@ -1,9 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 
 import { ALL_SUPPORTED_CHAIN_IDS } from '@cowprotocol/cow-sdk'
-import { Order, getAccountOrders, getTxOrders } from 'api/operator'
-import { GetTxOrdersParams, RawOrder } from 'api/operator/types'
-import { updateWeb3Provider } from 'api/web3'
+
 import { Props as ExplorerLinkProps } from 'components/common/BlockExplorerLink'
 import { useMultipleErc20 } from 'hooks/useErc20'
 import {
@@ -15,6 +13,11 @@ import {
 import { useNetworkId } from 'state/network'
 import { Network, UiError } from 'types'
 import { transformOrder } from 'utils'
+
+import { Order, getAccountOrders, getTxOrders } from 'api/operator'
+import { GetTxOrdersParams, RawOrder } from 'api/operator/types'
+import { updateWeb3Provider } from 'api/web3'
+
 import { web3 } from '../explorer/api'
 import { ORDERS_QUERY_INTERVAL } from '../explorer/const'
 

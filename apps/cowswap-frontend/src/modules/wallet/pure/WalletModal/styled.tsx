@@ -36,7 +36,7 @@ export const NewToEthereum = () => (
   </Blurb>
 )
 
-export const CloseColor = styled(Close)`
+export const CloseColor = styled((props) => <Close {...props} />)`
   color: inherit;
 
   path {

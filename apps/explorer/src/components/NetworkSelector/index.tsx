@@ -1,8 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { faCheck } from '@fortawesome/free-solid-svg-icons'
-import { SelectorContainer, OptionsContainer, Option, NetworkLabel, StyledFAIcon } from './NetworkSelector.styled'
+
 import { CHAIN_INFO, getChainInfo } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+
+import { faCheck } from '@fortawesome/free-solid-svg-icons'
+
+import { SelectorContainer, OptionsContainer, Option, NetworkLabel, StyledFAIcon } from './NetworkSelector.styled'
+
 import { usePathSuffix } from '../../state/network'
 
 type networkSelectorProps = {

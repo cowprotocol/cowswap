@@ -1,17 +1,12 @@
 import React, { ReactNode, CSSProperties, useCallback, PropsWithChildren } from 'react'
+
 import { State, Placement } from '@popperjs/core'
-import styled from 'styled-components'
-import { isElement, isFragment } from 'react-is'
-import SVG from 'react-inlinesvg'
-
-// assets
 import questionImg from 'assets/img/question.svg'
-
-// components
 import Portal from 'components/Portal'
-
-// hooks
 import { usePopperOnClick, usePopperDefault, TOOLTIP_OFFSET } from 'hooks/usePopper'
+import SVG from 'react-inlinesvg'
+import { isElement, isFragment } from 'react-is'
+import styled from 'styled-components/macro'
 
 const CustomSvgIcon = styled(SVG)`
   width: 1.4rem;
@@ -181,7 +176,7 @@ const Wrapper = <C extends keyof JSX.IntrinsicElements | React.ComponentType = '
 
   //  if as not provided and can't clone single element
   //  use div
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   const TargetComponent = (as || 'div') as keyof JSX.IntrinsicElements | React.ComponentType<any>
 
   return (

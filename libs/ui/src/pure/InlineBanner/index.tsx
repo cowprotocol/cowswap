@@ -1,12 +1,13 @@
 import React, { ReactNode } from 'react'
 
-import { UI } from '../../enum'
-import { Icon, IconType } from '../Icon'
-import { BannerOrientation } from './banners'
 import { X } from 'react-feather'
 import SVG from 'react-inlinesvg'
-
 import styled from 'styled-components/macro'
+
+import { BannerOrientation } from './banners'
+
+import { UI } from '../../enum'
+import { Icon, IconType } from '../Icon'
 
 export type BannerType = 'alert' | 'information' | 'success' | 'danger' | 'savings'
 

@@ -1,15 +1,14 @@
 import { Stylesheet } from 'cytoscape'
-import styled, { css, DefaultTheme } from 'styled-components'
+import styled, { css, DefaultTheme } from 'styled-components/macro'
 
-import TraderIcon from '../../../assets/img/Trader.svg'
-import SpecialIcon from '../../../assets/img/Trader-variant.svg'
 import CowProtocolIcon from '../../../assets/img/CoW-protocol.svg'
 import DexIcon from '../../../assets/img/Dex.svg'
 import TokenIcon from '../../../assets/img/eth-network.svg'
-
+import SpecialIcon from '../../../assets/img/Trader-variant.svg'
+import TraderIcon from '../../../assets/img/Trader.svg'
+import { ArrowIconCSS } from '../../../components/icons/cssIcons'
 import { MEDIA } from '../../../const'
 import { Dropdown } from '../common/Dropdown'
-import { ArrowIconCSS } from '../../../components/icons/cssIcons'
 
 export const FloatingWrapper = styled.div`
   position: absolute;

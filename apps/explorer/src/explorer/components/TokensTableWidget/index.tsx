@@ -1,22 +1,25 @@
 import React, { useEffect, useState } from 'react'
-import styled from 'styled-components'
+
+import styled from 'styled-components/macro'
+
 import { BlockchainNetwork, TokensTableContext } from './context/TokensTableContext'
-import { useNetworkId } from '../../../state/network'
-import { Token, useGetTokens } from '../../../hooks/useGetTokens'
-import { useFlexSearch } from '../../../hooks/useFlexSearch'
 import { TokensTableWithData } from './TokensTableWithData'
-import { TabItemInterface } from '../../../components/common/Tabs/Tabs'
-import ExplorerTabs from '../common/ExplorerTabs/ExplorerTabs'
-import TablePagination from '../common/TablePagination'
-import { ConnectionStatus } from '../../../components/ConnectionStatus'
-import { TabList } from '../../../components/common/Tabs/Tabs'
 import { useTable } from './useTable'
-import { TableSearch } from '../../../components/common/TableSearch/TableSearch'
-import { media } from '../../../theme/styles/media'
+
+import { CardRow } from '../../../components/common/CardRow'
 import CowLoading from '../../../components/common/CowLoading'
 import { EmptyItemWrapper } from '../../../components/common/StyledUserDetailsTable'
+import { TableSearch } from '../../../components/common/TableSearch/TableSearch'
+import { TabItemInterface } from '../../../components/common/Tabs/Tabs'
+import { TabList } from '../../../components/common/Tabs/Tabs'
+import { ConnectionStatus } from '../../../components/ConnectionStatus'
+import { useFlexSearch } from '../../../hooks/useFlexSearch'
+import { Token, useGetTokens } from '../../../hooks/useGetTokens'
+import { useNetworkId } from '../../../state/network'
+import { media } from '../../../theme/styles/media'
 import { ScrollBarStyle } from '../../styled'
-import { CardRow } from '../../../components/common/CardRow'
+import ExplorerTabs from '../common/ExplorerTabs/ExplorerTabs'
+import TablePagination from '../common/TablePagination'
 
 const WrapperExtraComponents = styled.div`
   align-items: center;

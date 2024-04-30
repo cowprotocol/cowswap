@@ -1,11 +1,12 @@
 import React, { useContext, useState, useEffect } from 'react'
 
-import { EmptyItemWrapper } from '../../../components/common/StyledUserDetailsTable'
-import useFirstRender from '../../../hooks/useFirstRender'
 import { TransactionsTableContext } from './context/TransactionsTableContext'
+
+import CowLoading from '../../../components/common/CowLoading'
+import { EmptyItemWrapper } from '../../../components/common/StyledUserDetailsTable'
 import TransactionTable from '../../../components/transaction/TransactionTable'
 import { DEFAULT_TIMEOUT } from '../../../const'
-import CowLoading from '../../../components/common/CowLoading'
+import useFirstRender from '../../../hooks/useFirstRender'
 
 export const TransactionsTableWithData: React.FC = () => {
   const {

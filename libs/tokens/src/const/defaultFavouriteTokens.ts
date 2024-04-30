@@ -1,5 +1,3 @@
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { TokensMap } from '../types'
 import {
   COW,
   DAI,
@@ -15,6 +13,9 @@ import {
   WETH_GNOSIS_CHAIN,
   WRAPPED_NATIVE_CURRENCIES,
 } from '@cowprotocol/common-const'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+
+import { TokensMap } from '../types'
 
 const tokensListToMap = (list: TokenWithLogo[]) =>
   list.reduce<TokensMap>((acc, token) => {

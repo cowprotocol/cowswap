@@ -1,13 +1,16 @@
-import { accountAddressesInvolved, getAliasFromAddress, PublicTrade, Transfer } from '../../../api/tenderly'
-import { SingleErc20State } from '../../../state/erc20'
 import BigNumber from 'bignumber.js'
-import { getExplorerUrl } from '../../../utils/getExplorerUrl'
-import { TransactionData } from '../../../hooks/useTransactionData'
-import { Network } from '../../../types'
-import { Order } from '../../../api/operator'
+
 import { getContractTrades, getTokenAddress } from './nodesBuilder'
-import { abbreviateString } from '../../../utils'
 import { Accounts, Dict, Settlement } from './types'
+
+import { Order } from '../../../api/operator'
+import { accountAddressesInvolved, getAliasFromAddress, PublicTrade, Transfer } from '../../../api/tenderly'
+import { TransactionData } from '../../../hooks/useTransactionData'
+import { SingleErc20State } from '../../../state/erc20'
+import { Network } from '../../../types'
+import { abbreviateString } from '../../../utils'
+import { getExplorerUrl } from '../../../utils/getExplorerUrl'
+
 
 /**
  * Group transfers by token, from and to

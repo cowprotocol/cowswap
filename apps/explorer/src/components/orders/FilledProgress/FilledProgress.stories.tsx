@@ -1,18 +1,17 @@
 import React from 'react'
-import BigNumber from 'bignumber.js'
-// also exported from '@storybook/react' if you can deal with breaking changes in 6.1
-import { Story, Meta } from '@storybook/react/types-6-0'
 
+import { OrderKind } from '@cowprotocol/cow-sdk'
+
+import { Story, Meta } from '@storybook/react/types-6-0'
+import BigNumber from 'bignumber.js'
+import { ONE_BIG_NUMBER } from 'const'
 import { GlobalStyles, ThemeToggler } from 'storybook/decorators'
 
 import { Order } from 'api/operator'
 
-import { ONE_BIG_NUMBER } from 'const'
+import { RICH_ORDER } from '../../../test/data'
 
 import { FilledProgress, Props } from '.'
-
-import { RICH_ORDER } from '../../../test/data'
-import { OrderKind } from '@cowprotocol/cow-sdk'
 
 export default {
   title: 'Orders/FilledProgress',

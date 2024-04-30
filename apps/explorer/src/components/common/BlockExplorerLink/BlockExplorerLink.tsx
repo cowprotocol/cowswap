@@ -1,10 +1,10 @@
 import React, { ReactElement } from 'react'
 
-import { Network } from 'types'
 import { ExternalLink } from 'components/analytics/ExternalLink'
 import LogoWrapper, { LOGO_MAP } from 'components/common/LogoWrapper'
-
+import { Network } from 'types'
 import { abbreviateString } from 'utils'
+
 import { BlockExplorerLinkType, getExplorerUrl } from 'utils/getExplorerUrl'
 
 export interface Props {

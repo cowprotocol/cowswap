@@ -1,5 +1,6 @@
-import { ListsSourcesByNetwork } from '../types'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+
+import { ListsSourcesByNetwork } from '../types'
 
 /**
  * Context: https://github.com/cowprotocol/cowswap/pull/3881#issuecomment-1953522918

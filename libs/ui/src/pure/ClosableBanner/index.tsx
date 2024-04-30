@@ -1,7 +1,8 @@
-import { atomWithStorage } from 'jotai/utils'
-import { getJotaiMergerStorage } from '@cowprotocol/core'
 import { useAtom } from 'jotai'
+import { atomWithStorage } from 'jotai/utils'
 import { useCallback } from 'react'
+
+import { getJotaiMergerStorage } from '@cowprotocol/core'
 
 // true - when banner closed
 type ClosableBannersState = Record<string, true | undefined>

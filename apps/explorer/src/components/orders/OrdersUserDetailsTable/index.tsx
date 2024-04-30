@@ -1,28 +1,30 @@
 import React, { useState, useEffect } from 'react'
-import styled from 'styled-components'
-import { media } from 'theme/styles/media'
+
 import { faExchangeAlt } from '@fortawesome/free-solid-svg-icons'
 import { safeTokenName } from '@gnosis.pm/dex-js'
+import { DateDisplay } from 'components/common/DateDisplay'
+import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
+import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
+import Spinner from 'components/common/Spinner'
+import { TokenDisplay } from 'components/common/TokenDisplay'
+import TradeOrderType from 'components/common/TradeOrderType'
+import Icon from 'components/Icon'
+import { HelpTooltip } from 'components/Tooltip'
+import { useNetworkId } from 'state/network'
+import styled from 'styled-components/macro'
+import { media } from 'theme/styles/media'
+import { getOrderLimitPrice, formatCalculatedPriceToDisplay, formattedAmount, FormatAmountPrecision } from 'utils'
 
 import { Order } from 'api/operator'
-import { useNetworkId } from 'state/network'
 
-import { DateDisplay } from 'components/common/DateDisplay'
-import { TokenDisplay } from 'components/common/TokenDisplay'
-import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
-import { getOrderLimitPrice, formatCalculatedPriceToDisplay, formattedAmount, FormatAmountPrecision } from 'utils'
-import { StatusLabel } from '../StatusLabel'
-import { HelpTooltip } from 'components/Tooltip'
+import { OrderSurplusDisplayStyledByRow } from './OrderSurplusTooltipStyledByRow'
+
+import { TextWithTooltip } from '../../../explorer/components/common/TextWithTooltip'
 import StyledUserDetailsTable, {
   Props as StyledUserDetailsTableProps,
   EmptyItemWrapper,
 } from '../../common/StyledUserDetailsTable'
-import Icon from 'components/Icon'
-import TradeOrderType from 'components/common/TradeOrderType'
-import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
-import { TextWithTooltip } from '../../../explorer/components/common/TextWithTooltip'
-import Spinner from 'components/common/Spinner'
-import { OrderSurplusDisplayStyledByRow } from './OrderSurplusTooltipStyledByRow'
+import { StatusLabel } from '../StatusLabel'
 
 const Wrapper = styled(StyledUserDetailsTable)`
   > thead > tr,

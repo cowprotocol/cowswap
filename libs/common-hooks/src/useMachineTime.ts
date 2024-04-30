@@ -1,4 +1,5 @@
 import { useState } from 'react'
+
 import { useInterval } from './useInterval'
 
 export const useMachineTimeMs = (updateInterval: number): number => {

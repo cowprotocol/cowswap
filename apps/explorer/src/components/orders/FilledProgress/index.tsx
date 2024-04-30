@@ -1,15 +1,18 @@
 import React from 'react'
-import styled from 'styled-components'
-import { media } from 'theme/styles/media'
-import { Order } from 'api/operator'
-import { safeTokenName } from 'utils'
-import { ProgressBar } from 'components/common/ProgressBar'
-import { OrderPriceDisplay } from '../OrderPriceDisplay'
-import { TokenAmount } from 'components/token/TokenAmount'
-import { Amount, Percentage, SurplusComponent } from 'components/common/SurplusComponent'
-import { isSellOrder } from '@cowprotocol/common-utils'
 
+import { isSellOrder } from '@cowprotocol/common-utils'
 import { Command } from '@cowprotocol/types'
+
+import { ProgressBar } from 'components/common/ProgressBar'
+import { Amount, Percentage, SurplusComponent } from 'components/common/SurplusComponent'
+import { TokenAmount } from 'components/token/TokenAmount'
+import styled from 'styled-components/macro'
+import { media } from 'theme/styles/media'
+import { safeTokenName } from 'utils'
+
+import { Order } from 'api/operator'
+
+import { OrderPriceDisplay } from '../OrderPriceDisplay'
 
 export type Props = {
   order: Order

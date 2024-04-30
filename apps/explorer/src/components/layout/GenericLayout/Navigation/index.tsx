@@ -1,7 +1,7 @@
-import styled from 'styled-components'
 import * as CSS from 'csstype'
-import { media } from 'theme/styles/media'
+import styled from 'styled-components/macro'
 import { BASE_COLOURS } from 'theme'
+import { media } from 'theme/styles/media'
 
 export const Navigation = styled.ol<Partial<CSS.Properties & { isActive: boolean }>>`
   list-style: none;

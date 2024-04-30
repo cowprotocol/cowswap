@@ -1,6 +1,6 @@
+import { defaultAbiCoder } from '@ethersproject/abi'
 import type { JsonRpcProvider } from '@ethersproject/providers'
 
-import { defaultAbiCoder } from '@ethersproject/abi'
 
 import { getContract } from './getContract'
 

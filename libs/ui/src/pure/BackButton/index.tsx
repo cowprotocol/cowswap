@@ -1,9 +1,11 @@
 import { useEffect } from 'react'
 
+import { Command } from '@cowprotocol/types'
+
 import { ArrowLeft } from 'react-feather'
 import styled from 'styled-components/macro'
+
 import { UI } from '../../enum'
-import { Command } from '@cowprotocol/types'
 
 const BackIcon = styled(ArrowLeft)<{ onClick: Command }>`
   cursor: pointer;

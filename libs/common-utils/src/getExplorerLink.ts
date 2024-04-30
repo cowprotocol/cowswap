@@ -1,5 +1,5 @@
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CHAIN_INFO } from '@cowprotocol/common-const'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 export enum ExplorerDataType {
   TRANSACTION = 'transaction',

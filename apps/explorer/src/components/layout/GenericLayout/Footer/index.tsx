@@ -1,17 +1,15 @@
 import React from 'react'
-import styled from 'styled-components'
-import { media } from 'theme/styles/media'
 
-// Components
-import LogoWrapper, { LOGO_MAP } from 'components/common/LogoWrapper'
-// Hooks
-import { useNetworkId } from 'state/network'
-
-// Config
-import { footerConfig } from '../Footer/config'
-import { Network } from 'types'
-import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
 import { COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS, COW_PROTOCOL_VAULT_RELAYER_ADDRESS } from '@cowprotocol/cow-sdk'
+
+import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
+import LogoWrapper, { LOGO_MAP } from 'components/common/LogoWrapper'
+import { useNetworkId } from 'state/network'
+import styled from 'styled-components/macro'
+import { media } from 'theme/styles/media'
+import { Network } from 'types'
+
+import { footerConfig } from '../Footer/config'
 
 const FooterStyled = styled.footer`
   display: flex;

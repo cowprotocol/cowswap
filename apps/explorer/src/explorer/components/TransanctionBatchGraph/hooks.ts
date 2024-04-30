@@ -1,20 +1,23 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+
 import Cytoscape, { EdgeDataDefinition, ElementDefinition, NodeDataDefinition, Stylesheet } from 'cytoscape'
+
 import { LAYOUTS } from './layouts'
-import useWindowSizes from '../../../hooks/useWindowSizes'
-import { HEIGHT_HEADER_FOOTER } from '../../const'
+import { buildContractViewNodes, buildTokenViewNodes, getTokenAddress } from './nodesBuilder'
+import { BuildSettlementParams, buildTradesBasedSettlement, buildTransfersBasedSettlement } from './settlementBuilder'
+import { CustomLayoutOptions, GetTxBatchTradesResult, PopperInstance, ViewType } from './types'
 import { bindPopper, removePopper, updateLayout } from './utils'
+
+import { Order } from '../../../api/operator'
+import { traceToTransfersAndTrades } from '../../../api/tenderly'
+import UnknownToken from '../../../assets/img/question1.svg'
+import { useMultipleErc20 } from '../../../hooks/useErc20'
+import { useQuery, useUpdateQueryString } from '../../../hooks/useQuery'
+import { useTransactionData } from '../../../hooks/useTransactionData'
+import useWindowSizes from '../../../hooks/useWindowSizes'
 import { Network } from '../../../types'
 import { getImageUrl } from '../../../utils'
-import UnknownToken from '../../../assets/img/question1.svg'
-import { buildContractViewNodes, buildTokenViewNodes, getTokenAddress } from './nodesBuilder'
-import { CustomLayoutOptions, GetTxBatchTradesResult, PopperInstance, ViewType } from './types'
-import { useQuery, useUpdateQueryString } from '../../../hooks/useQuery'
-import { Order } from '../../../api/operator'
-import { useTransactionData } from '../../../hooks/useTransactionData'
-import { BuildSettlementParams, buildTradesBasedSettlement, buildTransfersBasedSettlement } from './settlementBuilder'
-import { traceToTransfersAndTrades } from '../../../api/tenderly'
-import { useMultipleErc20 } from '../../../hooks/useErc20'
+import { HEIGHT_HEADER_FOOTER } from '../../const'
 
 export type UseCytoscapeParams = {
   txBatchData: GetTxBatchTradesResult

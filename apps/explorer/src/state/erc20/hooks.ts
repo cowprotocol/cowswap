@@ -1,10 +1,9 @@
+import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback, useMemo } from 'react'
 
 import { TokenErc20 } from '@gnosis.pm/dex-js'
-
 import { Network } from 'types'
 
-import { useAtomValue, useSetAtom } from 'jotai'
 import { addLoadedTokensToChainAtom, tokensLoadedFromChainAtom } from './atoms'
 
 export type SingleErc20State = TokenErc20 | null

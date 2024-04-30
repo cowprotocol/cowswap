@@ -6,8 +6,8 @@ import {
   OnPresignedOrderPayload,
 } from './orders'
 import { OnToastMessagePayload } from './toastMessages'
-import { OnTransactionPayload } from './transactions'
 import { OnTradeParamsPayload } from './trade'
+import { OnTransactionPayload } from './transactions'
 
 export enum CowEvents {
   ON_TOAST_MESSAGE = 'ON_TOAST_MESSAGE',

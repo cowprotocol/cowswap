@@ -1,12 +1,11 @@
 import React from 'react'
-import styled from 'styled-components'
-import { abbreviateString, getImageAddress, isNativeToken } from 'utils'
+
 import { TokenErc20 } from '@gnosis.pm/dex-js'
-
-import { Network } from 'types'
-
 import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
 import TokenImg from 'components/common/TokenImg'
+import styled from 'styled-components/macro'
+import { Network } from 'types'
+import { abbreviateString, getImageAddress, isNativeToken } from 'utils'
 
 export type Props = { erc20: TokenErc20; network: Network; showAbbreviated?: boolean }
 

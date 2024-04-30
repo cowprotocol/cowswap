@@ -1,25 +1,24 @@
 import React, { useEffect, useRef, useState } from 'react'
-import styled, { DefaultTheme, useTheme } from 'styled-components'
-import { createChart, IChartApi } from 'lightweight-charts'
-import BigNumber from 'bignumber.js'
+
 import { formatPrice, TokenErc20 } from '@gnosis.pm/dex-js'
+import BigNumber from 'bignumber.js'
+import { getColorBySign } from 'components/common/Card/card.utils'
+import { TokenDisplay } from 'components/common/TokenDisplay'
 import { format, fromUnixTime, startOfToday } from 'date-fns'
-
 import { Token } from 'hooks/useGetTokens'
+import { createChart, IChartApi } from 'lightweight-charts'
 import { useNetworkId } from 'state/network'
+import styled, { DefaultTheme, useTheme } from 'styled-components/macro'
+import { media } from 'theme/styles/media'
 
+import ShimmerBar from '../../../explorer/components/common/ShimmerBar'
+import { TextWithTooltip } from '../../../explorer/components/common/TextWithTooltip'
+import { numberFormatter } from '../../../explorer/components/SummaryCardsWidget/utils'
+import { TableState } from '../../../explorer/components/TokensTableWidget/useTable'
 import StyledUserDetailsTable, {
   StyledUserDetailsTableProps,
   EmptyItemWrapper,
 } from '../../common/StyledUserDetailsTable'
-
-import { media } from 'theme/styles/media'
-import { getColorBySign } from 'components/common/Card/card.utils'
-import { TokenDisplay } from 'components/common/TokenDisplay'
-import { numberFormatter } from '../../../explorer/components/SummaryCardsWidget/utils'
-import ShimmerBar from '../../../explorer/components/common/ShimmerBar'
-import { TableState } from '../../../explorer/components/TokensTableWidget/useTable'
-import { TextWithTooltip } from '../../../explorer/components/common/TextWithTooltip'
 
 const Wrapper = styled(StyledUserDetailsTable)`
   > thead {

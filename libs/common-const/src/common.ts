@@ -1,10 +1,10 @@
+import { ethFlowBarnJson, ethFlowProdJson } from '@cowprotocol/abis'
 import {
   COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS,
   COW_PROTOCOL_VAULT_RELAYER_ADDRESS,
   IpfsConfig,
   SupportedChainId,
 } from '@cowprotocol/cow-sdk'
-import { ethFlowBarnJson, ethFlowProdJson } from '@cowprotocol/abis'
 import { Fraction, Percent } from '@uniswap/sdk-core'
 
 import BigNumber from 'bignumber.js'

@@ -1,10 +1,10 @@
 import { ReactNode, useCallback, useState } from 'react'
 
-import styled from 'styled-components'
+import { Command } from '@cowprotocol/types'
+
+import styled from 'styled-components/macro'
 
 import Popover, { PopoverProps } from '../Popover'
-
-import { Command } from '@cowprotocol/types'
 
 export const TooltipContainer = styled.div`
   max-width: 320px;

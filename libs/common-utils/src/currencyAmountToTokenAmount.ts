@@ -1,4 +1,5 @@
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
+
 import { getIsNativeToken } from './getIsNativeToken'
 import { getWrappedToken } from './getWrappedToken'
 

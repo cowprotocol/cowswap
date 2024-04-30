@@ -1,11 +1,12 @@
 import React from 'react'
-import { formatDistanceToNowStrict, format } from 'date-fns'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+
 import { faClock } from '@fortawesome/free-regular-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Placement } from '@popperjs/core'
-import styled from 'styled-components'
 import { Tooltip } from 'components/Tooltip'
+import { formatDistanceToNowStrict, format } from 'date-fns'
 import { usePopperOnClick } from 'hooks/usePopper'
+import styled from 'styled-components/macro'
 
 const Wrapper = styled.div`
   display: flex;

@@ -1,12 +1,13 @@
 import React, { PropsWithChildren, useMemo } from 'react'
+
+import { useThemeMode } from 'hooks/useThemeManager'
 import {
   DefaultTheme,
   isStyledComponent,
   StyledComponent,
   ThemeProvider as StyledComponentsThemeProvider,
-} from 'styled-components'
+} from 'styled-components/macro'
 
-import { useThemeMode } from 'hooks/useThemeManager'
 import { getFonts, getThemePalette, mediaWidthTemplates as mediaQueries } from './styles'
 
 export * from './styles'

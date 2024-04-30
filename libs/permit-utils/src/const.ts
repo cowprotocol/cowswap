@@ -1,5 +1,6 @@
 import { MaxUint256 } from '@ethersproject/constants'
 import { Wallet } from '@ethersproject/wallet'
+
 import ms from 'ms.macro'
 
 // PK used only for signing permit requests for quoting and identifying token 'permittability'

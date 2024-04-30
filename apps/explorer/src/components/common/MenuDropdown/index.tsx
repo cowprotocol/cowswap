@@ -1,12 +1,14 @@
 import React, { useState, createRef } from 'react'
-import { MenuFlyout, Content, MenuSection, MenuTitle, ButtonMenuItem } from 'components/common/MenuDropdown/styled'
+
 import IMAGE_CARRET_DOWN from 'assets/img/carret-down.svg'
-import SVG from 'react-inlinesvg'
+import { MenuFlyout, Content, MenuSection, MenuTitle, ButtonMenuItem } from 'components/common/MenuDropdown/styled'
 import { useMediaBreakpoint } from 'hooks/useMediaBreakPoint'
 import useOnClickOutside from 'hooks/useOnClickOutside'
-import { DropDownItem, MenuItemKind } from './types'
+import SVG from 'react-inlinesvg'
+
 import InternalExternalMenuLink from './InternalExternalLink'
 import { MenuTreeProps } from './MenuTree'
+import { DropDownItem, MenuItemKind } from './types'
 
 interface MenuProps {
   title: string

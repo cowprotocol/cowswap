@@ -1,11 +1,9 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import Form, { FormValidation } from '@rjsf/core'
-import { JSONSchema7 } from 'json-schema'
+
 import { IpfsHashInfo, stringifyDeterministic } from '@cowprotocol/app-data'
 
-import { RowWithCopyButton } from '../../../components/common/RowWithCopyButton'
-
-import AppDataWrapper from '../../../components/common/AppDataWrapper'
+import Form, { FormValidation } from '@rjsf/core'
+import { JSONSchema7 } from 'json-schema'
 
 import {
   CustomField,
@@ -16,8 +14,12 @@ import {
   transformErrors,
   uiSchema,
 } from './config'
-import { TabData } from './index'
+
+import AppDataWrapper from '../../../components/common/AppDataWrapper'
+import { RowWithCopyButton } from '../../../components/common/RowWithCopyButton'
 import { metadataApiSDK } from '../../../cowSdk'
+
+import { TabData } from './index'
 
 type EncodeProps = {
   tabData: TabData

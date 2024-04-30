@@ -4,15 +4,17 @@ import { useMemo } from 'react'
 import { cowprotocolTokenLogoUrl, NATIVE_CURRENCY_ADDRESS, TokenWithLogo } from '@cowprotocol/common-const'
 import { uriToHttp } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { UI } from '@cowprotocol/ui'
 import { Currency, NativeCurrency } from '@uniswap/sdk-core'
 
+import { Slash } from 'react-feather'
 import styled, { css } from 'styled-components/macro'
 
-import { UI } from '@cowprotocol/ui'
 
-import { Slash } from 'react-feather'
-import { getTokenLogoUrls } from '../../utils/getTokenLogoUrls'
+
 import { SingleLetterLogo } from './SingleLetterLogo'
+
+import { getTokenLogoUrls } from '../../utils/getTokenLogoUrls'
 
 const invalidUrlsAtom = atom<{ [url: string]: boolean }>({})
 

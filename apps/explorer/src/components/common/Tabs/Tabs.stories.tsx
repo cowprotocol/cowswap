@@ -2,9 +2,9 @@ import React from 'react'
 
 import { Meta, Story } from '@storybook/react/types-6-0'
 import { GlobalStyles, ThemeToggler } from 'storybook/decorators'
+import { DARK_COLOURS } from 'theme'
 
 import Tabs, { getTabTheme, Props as TabsProps } from './Tabs'
-import { DARK_COLOURS } from 'theme'
 
 export default {
   title: 'Common/Tabs',

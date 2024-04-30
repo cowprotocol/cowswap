@@ -1,8 +1,7 @@
+import { TokenErc20 } from '@gnosis.pm/dex-js'
 import BigNumber from 'bignumber.js'
-
 import { isTokenErc20, formattedAmount } from 'utils'
 
-import { TokenErc20 } from '@gnosis.pm/dex-js'
 
 const WEthToken: TokenErc20 = {
   symbol: 'WETH',

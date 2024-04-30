@@ -1,14 +1,13 @@
 import React from 'react'
-import BigNumber from 'bignumber.js'
-// also exported from '@storybook/react' if you can deal with breaking changes in 6.1
-import { Story, Meta } from '@storybook/react/types-6-0'
 
+import { Story, Meta } from '@storybook/react/types-6-0'
+import BigNumber from 'bignumber.js'
+import { ZERO_BIG_NUMBER } from 'const'
 import { GlobalStyles, ThemeToggler } from 'storybook/decorators'
 
-import { GasFeeDisplay, Props } from '.'
-
 import { RICH_ORDER, WETH } from '../../../test/data'
-import { ZERO_BIG_NUMBER } from 'const'
+
+import { GasFeeDisplay, Props } from '.'
 
 export default {
   title: 'orders/GasFeeDisplay',

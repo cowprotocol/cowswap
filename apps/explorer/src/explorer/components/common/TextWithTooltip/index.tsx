@@ -1,6 +1,7 @@
 import React from 'react'
+
 import { Placement } from '@popperjs/core'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 
 import { Tooltip } from '../../../../components/Tooltip'
 import { usePopperDefault } from '../../../../hooks/usePopper'

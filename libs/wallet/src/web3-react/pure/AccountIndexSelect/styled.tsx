@@ -1,6 +1,7 @@
+import { ButtonSecondary } from '@cowprotocol/ui'
+
 import styled from 'styled-components/macro'
 
-import { ButtonSecondary } from '@cowprotocol/ui'
 
 export const Wrapper = styled.div`
   ${({ theme }) => theme.flexColumnNoWrap};

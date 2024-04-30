@@ -1,26 +1,31 @@
 import React, { useEffect, useState } from 'react'
-import { faExchangeAlt, faSpinner } from '@fortawesome/free-solid-svg-icons'
-
-import { Order } from 'api/operator'
 
 import { Command } from '@cowprotocol/types'
-import { DateDisplay } from 'components/common/DateDisplay'
-import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
-import { getOrderLimitPrice, formatCalculatedPriceToDisplay, formattedAmount, FormatAmountPrecision } from 'utils'
-import { getShortOrderId } from 'utils/operator'
-import { HelpTooltip } from 'components/Tooltip'
-import { StyledUserDetailsTableProps, EmptyItemWrapper } from '../../common/StyledUserDetailsTable'
-import Icon from 'components/Icon'
-import TradeOrderType from 'components/common/TradeOrderType'
-import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
-import { StatusLabel } from 'components/orders/StatusLabel'
-import { TextWithTooltip } from '../../../explorer/components/common/TextWithTooltip'
-import { TokenDisplay } from 'components/common/TokenDisplay'
-import { useNetworkId } from 'state/network'
-import { safeTokenName } from '@gnosis.pm/dex-js'
+
+import { faExchangeAlt, faSpinner } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { HeaderTitle, HeaderValue, WrapperUserDetailsTable } from './styled'
+import { safeTokenName } from '@gnosis.pm/dex-js'
+import { DateDisplay } from 'components/common/DateDisplay'
+import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
+import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
+import { TokenDisplay } from 'components/common/TokenDisplay'
+import TradeOrderType from 'components/common/TradeOrderType'
+import Icon from 'components/Icon'
 import { OrderSurplusDisplayStyledByRow } from 'components/orders/OrdersUserDetailsTable/OrderSurplusTooltipStyledByRow'
+import { StatusLabel } from 'components/orders/StatusLabel'
+import { HelpTooltip } from 'components/Tooltip'
+import { useNetworkId } from 'state/network'
+import { getOrderLimitPrice, formatCalculatedPriceToDisplay, formattedAmount, FormatAmountPrecision } from 'utils'
+
+import { Order } from 'api/operator'
+import { getShortOrderId } from 'utils/operator'
+
+
+import { HeaderTitle, HeaderValue, WrapperUserDetailsTable } from './styled'
+
+import { TextWithTooltip } from '../../../explorer/components/common/TextWithTooltip'
+import { StyledUserDetailsTableProps, EmptyItemWrapper } from '../../common/StyledUserDetailsTable'
+
 
 function getLimitPrice(order: Order, isPriceInverted: boolean): string {
   if (!order.buyToken || !order.sellToken) return '-'

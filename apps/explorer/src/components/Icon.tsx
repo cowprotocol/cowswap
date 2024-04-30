@@ -1,5 +1,5 @@
-import styled from 'styled-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import styled from 'styled-components/macro'
 
 const Icon = styled(FontAwesomeIcon)`
   background: ${({ theme }): string => theme.grey}33; /* 33==20% transparency in hex */
