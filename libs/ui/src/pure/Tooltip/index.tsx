@@ -57,7 +57,7 @@ export function MouseoverTooltipContent({
 }: Omit<TooltipContentProps, 'show'>) {
   const [sticky, setSticky] = useState(false)
   const [show, setShow] = useState(false)
-  const cancelCloseRef = useRef<(() => void) | null>()
+  const cancelCloseRef = useRef<Command | null>()
 
   const divRef = useRef<HTMLDivElement>(null);
   const open = useCallback(() => {
