@@ -3,13 +3,14 @@ import Link from 'next/link'
 import React from 'react'
 import styled from 'styled-components'
 
-import Layout from '@/components/Layout'
-import Head from 'next/head'
+import { CardWrapper, CardItem } from '@/components/Home/index.styles'
 
-import { Section, SectionContent, SubTitle, CardWrapper, CardItem } from '@/components/Home/index.styles'
+import { Section, SectionContent, SubTitle } from '@/components/Home/index.styles'
 
 import { Color } from '@/styles/variables'
-import { Category } from 'services/cms'
+
+import { Article, Category } from 'services/cms'
+import { ArticleList } from './Article'
 
 const CategoryContentWrapper = styled.article`
   a {
@@ -58,43 +59,39 @@ interface CategoryContentProps {
 
 export function CategoryContent({ category }: CategoryContentProps) {
   const { id } = category
-  const { name, slug, description, image, articles, backgroundColor, textColor } = category?.attributes || {}
-  const shareImageUrl = image?.data?.attributes?.url
+  const { name, slug, description, image, articles } = category?.attributes || {}
 
   return (
     <>
-      <Head>
-        <title>{name} CoW</title>
+      <Section fullWidth padding="0 8rem 4rem 8rem">
+        <SectionContent flow="column">
+          <div className="container">
+            <h3>{name}</h3>
+            <SubTitle color={Color.text1} lineHeight={1.4} maxWidth={70}>
+              {description}
+            </SubTitle>
+          </div>
+        </SectionContent>
+      </Section>
 
-        <meta name="description" content={description} key="description" />
-        <meta property="og:description" content={description} key="og-description" />
-        <meta property="og:title" content={name} key="og-title" />
-        <meta name="twitter:title" content={name} key="twitter-title" />
-        {shareImageUrl && (
-          <>
-            <meta key="ogImage" property="og:image" content={shareImageUrl} />
-            <meta key="twitterImage" name="twitter:image" content={shareImageUrl} />
-          </>
-        )}
-      </Head>
+      <Section fullWidth colorVariant={'white'} flow="column" gap={14} padding="4rem 8rem 12rem 8rem">
+        <SectionContent flow={'row'} maxWidth={100} textAlign={'left'}>
+          <div className="container">
+            <h3>Articles</h3>
 
-      <Layout fullWidthGradientVariant={false}>
-        <CategoryContentWrapper data-slug={slug} data-id={id}>
-          <code>{JSON.stringify(category)}</code>
+            <CategoryContentWrapper data-slug={slug} data-id={id}>
+              <ArticleList articles={articles?.data as Article[]} />
 
-          <h1>{name}</h1>
-          {/* <ArticleSubtitle dateIso={publishedAt} authorsBio={authorsBio} />
-          <p>{description}</p>
-
-          {blocks && (
-          <ArticleBlocksWrapper>
-            {blocks.map(block => <ArticleBlockComponent key={block.id} block={block} />)}
-          </ArticleBlocksWrapper>
-          )} */}
-
-          <Link href="/learn">Go back</Link>
-        </CategoryContentWrapper>
-      </Layout>
+              {/*
+            // TODO: Useful for debugging. Please let me have it here for now until first release :)
+            <pre style={{ lineHeight: '1.5em' }}>
+              {JSON.stringify(category, null, 2)}
+            </pre>
+            */}
+            </CategoryContentWrapper>
+          </div>
+        </SectionContent>
+      </Section>
     </>
   )
 }
