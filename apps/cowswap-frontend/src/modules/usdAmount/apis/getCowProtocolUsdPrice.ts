@@ -19,7 +19,11 @@ export async function getCowProtocolUsdPrice(
 
     if (tokenPrice.equalTo(0)) return null
 
-    return usdPrice.divide(tokenPrice)
+    const value = usdPrice.divide(tokenPrice)
+
+    console.log('[UsdPricesUpdater]: Fetched cowprotocol price', value.toFixed(6), currency.symbol)
+
+    return value
   }
 
   return null

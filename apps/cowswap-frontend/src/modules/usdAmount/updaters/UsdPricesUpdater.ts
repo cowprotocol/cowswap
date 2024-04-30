@@ -94,9 +94,10 @@ async function processQueue(queue: Token[], getUsdcPrice: () => Promise<Fraction
         if (price) {
           state.price = price
           state.updatedAt = Date.now()
+          console.debug(`[UsdPricesUpdater]: Fetched price for`, currency.symbol, price?.toFixed(6))
         }
       } catch (e) {
-        console.debug(`[UsdPricesUpdater]: Failed to fetch price for `, currency.address)
+        console.debug(`[UsdPricesUpdater]: Failed to fetch price for`, currency.symbol)
       }
 
       return { [currency.address.toLowerCase()]: state }
