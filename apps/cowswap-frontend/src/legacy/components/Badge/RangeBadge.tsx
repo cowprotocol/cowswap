@@ -1,10 +1,11 @@
 
+import { HoverTooltip } from '@cowprotocol/ui'
+
 import { Trans } from '@lingui/macro'
 import { AlertCircle } from 'react-feather'
 import styled from 'styled-components/macro'
 
 import Badge, { BadgeVariant } from 'legacy/components/Badge'
-import { HoverTooltip } from '../../../../../../libs/ui/src/pure/Tooltip'
 
 const BadgeWrapper = styled.div`
   font-size: 14px;
