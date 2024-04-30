@@ -1,4 +1,4 @@
-import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
+import { ReactNode, useCallback, useRef, useState } from 'react'
 
 import styled from 'styled-components'
 
@@ -6,7 +6,7 @@ import Popover, { PopoverProps } from '../Popover'
 
 import { Command } from '@cowprotocol/types'
 
-const TOOLTIP_CLOSE_DELAY = 300
+const TOOLTIP_CLOSE_DELAY = 300 // in milliseconds
 
 export const TooltipContainer = styled.div`
   max-width: 320px;
