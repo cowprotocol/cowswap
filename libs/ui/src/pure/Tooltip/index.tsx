@@ -40,6 +40,8 @@ export interface HoverTooltipProps extends Omit<PopoverProps, 'content' | 'show'
 /**
  * Tooltip that appears when hovering over the children
  * 
+ * @see HelpTooltip as an alternative if you need to show a tooltip with a question mark icon (or icon of your choice)
+ * @see InfoTooltip as an alternative if you need to show a tooltip with an info icon
  * @see Tooltip as an alternative if you need to control when the tooltip is shown 
  * 
  * @param props 

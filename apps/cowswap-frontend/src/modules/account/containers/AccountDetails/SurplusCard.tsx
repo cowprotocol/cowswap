@@ -1,11 +1,9 @@
-import { FiatAmount, TokenAmount } from '@cowprotocol/ui'
+import { FiatAmount, HelpTooltip, QuestionTooltipIconWrapper, TokenAmount } from '@cowprotocol/ui'
 import { ExternalLink } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 
 import { transparentize } from 'color2k'
 import styled from 'styled-components/macro'
-
-import QuestionTooltip, { QuestionWrapper } from 'legacy/components/QuestionHelper'
 
 import { useUsdAmount } from 'modules/usdAmount'
 
@@ -130,7 +128,7 @@ export function SurplusCard() {
       margin: 3px auto 0;
     }
 
-    ${QuestionWrapper} {
+    ${QuestionTooltipIconWrapper} {
       opacity: 0.5;
       transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
 
@@ -147,7 +145,7 @@ export function SurplusCard() {
           <span>
             <i>
               Your total surplus{' '}
-              <QuestionTooltip
+              <HelpTooltip
                 text={`The total surplus CoW Swap has generated for you in ${nativeSymbol} across all your trades since March 2023`}
               />
             </i>

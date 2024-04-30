@@ -1,9 +1,8 @@
-import { UI } from '@cowprotocol/ui'
+import { HelpTooltip, UI } from '@cowprotocol/ui'
 
 import { transparentize } from 'color2k'
 import styled from 'styled-components/macro'
 
-import QuestionTooltip from 'legacy/components/QuestionHelper'
 
 import { RateWrapper } from 'common/pure/RateInfo'
 
@@ -44,7 +43,7 @@ export const WarningContent = styled.div`
   }
 `
 
-export const StyledQuestionHelper = styled(QuestionTooltip)`
+export const StyledQuestionHelper = styled(HelpTooltip)`
   margin: 0;
 `
 

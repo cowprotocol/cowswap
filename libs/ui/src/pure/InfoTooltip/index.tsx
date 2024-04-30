@@ -30,13 +30,13 @@ const StyledTooltipContainer = styled(TooltipContainer)`
   background: transparent;
 `
 
-export interface InfoIconProps {
+export interface InfoTooltipProps {
   content: ReactNode
   iconType?: 'info' | 'help'
   className?: string
 }
 
-export function InfoIcon({ content, iconType = 'info', className }: InfoIconProps) {
+export function InfoTooltip({ content, iconType = 'info', className }: InfoTooltipProps) {
   const tooltipContent = <StyledTooltipContainer>{content}</StyledTooltipContainer>
 
   return (

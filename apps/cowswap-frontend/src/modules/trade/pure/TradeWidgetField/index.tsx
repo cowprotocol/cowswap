@@ -1,10 +1,10 @@
 import React from 'react'
 
 import { renderTooltip } from '@cowprotocol/ui'
+import { HelpTooltip } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 
-import QuestionTooltip from 'legacy/components/QuestionHelper'
 
 import { Content, ErrorText, TradeWidgetFieldBox, TradeWidgetFieldLabel } from './styled'
 
@@ -27,7 +27,7 @@ export function TradeWidgetField(props: TradeWidgetFieldProps) {
     <TradeWidgetFieldBox className={className} hasPrefix={hasPrefix}>
       <TradeWidgetFieldLabel>
         <Trans>{label}</Trans>
-        {tooltip && <QuestionTooltip text={tooltipElement} />}
+        {tooltip && <HelpTooltip text={tooltipElement} />}
       </TradeWidgetFieldLabel>
       <Content>{children}</Content>
       {error && <ErrorText type={error.type}>{error.text}</ErrorText>}

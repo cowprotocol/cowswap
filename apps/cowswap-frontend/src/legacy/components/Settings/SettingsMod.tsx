@@ -2,7 +2,7 @@ import { useCallback, useRef } from 'react'
 
 import { toggleRecepientAddressAnalytics } from '@cowprotocol/analytics'
 import { useOnClickOutside } from '@cowprotocol/common-hooks'
-import { RowBetween, RowFixed, UI } from '@cowprotocol/ui'
+import { HelpTooltip, RowBetween, RowFixed, UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import { Settings } from 'react-feather'
@@ -10,7 +10,6 @@ import { Text } from 'rebass'
 import styled from 'styled-components/macro'
 
 import { AutoColumn } from 'legacy/components/Column'
-import QuestionTooltip from 'legacy/components/QuestionHelper'
 import { Toggle } from 'legacy/components/Toggle'
 import TransactionSettings from 'legacy/components/TransactionSettings'
 import { useModalIsOpen, useToggleSettingsMenu } from 'legacy/state/application/hooks'
@@ -125,7 +124,7 @@ export default function SettingsTab({ className, placeholderSlippage, SettingsBu
                 <ThemedText.Black fontWeight={400} fontSize={14}>
                   <Trans>Custom Recipient</Trans>
                 </ThemedText.Black>
-                <QuestionTooltip
+                <HelpTooltip
                   text={
                     <Trans>Allows you to choose a destination address for the swap other than the connected one.</Trans>
                   }

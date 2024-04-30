@@ -1,15 +1,14 @@
 import { ReactNode } from 'react'
 
 import QuestionImage from '@cowprotocol/assets/svg/question.svg'
-import { HoverTooltip, HoverTooltipProps, UI } from '@cowprotocol/ui'
-import { renderTooltip } from '@cowprotocol/ui'
+import { HoverTooltip, HoverTooltipProps, UI, renderTooltip } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
-const DefaultQuestionMark = <SVG src={QuestionImage} />
+const DefaultQuestionIcon = <SVG src={QuestionImage} />
 
-export const QuestionWrapper = styled.div`
+export const QuestionTooltipIconWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -33,7 +32,7 @@ export const QuestionWrapper = styled.div`
   }
 `
 
-const QuestionHelperContainer = styled.span`
+const HelpTooltipContainer = styled.span`
   margin-left: 4px;
   display: flex;
   align-items: center;
@@ -41,12 +40,12 @@ const QuestionHelperContainer = styled.span`
 `
 
 
-interface QuestionTooltipProps extends Omit<HoverTooltipProps, 'QuestionMark'| 'children' | 'content'> {
+export interface HelpTooltipProps extends Omit<HoverTooltipProps, 'QuestionMark'| 'children' | 'content'> {
   text: ReactNode
   Icon?: JSX.Element
 }
 
-export default function QuestionTooltip({ text, Icon, className, ...props }: QuestionTooltipProps) {
+export function HelpTooltip({ text, Icon, className, ...props }: HelpTooltipProps) {
   const tooltip = renderTooltip(text, props)
 
   const content = (
@@ -55,16 +54,16 @@ export default function QuestionTooltip({ text, Icon, className, ...props }: Que
     </div>
   )
 
-  const QuestionMark = () => Icon || DefaultQuestionMark
+  const HelpIcon = () => Icon || DefaultQuestionIcon
 
   return (
-    <QuestionHelperContainer className={className}>
+    <HelpTooltipContainer className={className}>
       <HoverTooltip {...props} content={content} wrapInContainer>
-        <QuestionWrapper>
-          <QuestionMark />
-        </QuestionWrapper>
+        <QuestionTooltipIconWrapper>
+          <HelpIcon />
+        </QuestionTooltipIconWrapper>
       </HoverTooltip>
-    </QuestionHelperContainer>
+    </HelpTooltipContainer>
   )
 }
 
