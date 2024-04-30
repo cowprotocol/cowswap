@@ -53,7 +53,7 @@ export function RateImpactIndicator({ rateImpact, inputCurrency }: RateImpactPro
   )
 
   return (
-    <MouseoverTooltipContent wrap={false} content={tooltipContent} placement="bottom">
+    <MouseoverTooltipContent wrapInContainer={false} content={tooltipContent} placement="bottom">
       <PercentBox isPositive={isPositive} isTooLowRate={isTooLowRate}>
         <span>
           ({isPositive && !hugePositiveImpact ? '+' : ''}

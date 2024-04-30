@@ -84,7 +84,7 @@ export function RowSlippageContent(props: RowSlippageContentProps) {
             <SlippageTextContents isEoaEthFlow={isEoaEthFlow} slippageLabel={slippageLabel} />
           )}
         </TextWrapper>
-        <MouseoverTooltipContent wrap content={tooltipContent}>
+        <MouseoverTooltipContent wrapInContainer content={tooltipContent}>
           <StyledInfoIcon size={16} />
         </MouseoverTooltipContent>
       </RowFixed>

@@ -40,7 +40,7 @@ export function InfoIcon({ content, iconType = 'info', className }: InfoIconProp
   const tooltipContent = <StyledTooltipContainer>{content}</StyledTooltipContainer>
 
   return (
-    <MouseoverTooltipContent wrap={false} content={tooltipContent} placement="bottom">
+    <MouseoverTooltipContent wrapInContainer={false} content={tooltipContent} placement="bottom">
       <StyledIcon>
         {iconType === 'info' ? (
           <Info className={className} size={16} />

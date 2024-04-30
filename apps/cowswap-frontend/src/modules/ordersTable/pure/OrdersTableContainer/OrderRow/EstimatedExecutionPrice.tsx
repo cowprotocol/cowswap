@@ -118,7 +118,7 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
         <span>{content}</span>
       ) : (
         <MouseoverTooltipContent
-          wrap={true}
+          wrapInContainer={true}
           content={
             <styledEl.ExecuteInformationTooltip>
               {!isNegativeDifference ? (
@@ -165,7 +165,7 @@ export function UnlikelyToExecuteWarning(props: UnlikelyToExecuteWarningProps) {
   return (
     <styledEl.WarningIndicator hasBackground={false}>
       <MouseoverTooltipContent
-        wrap={true}
+        wrapInContainer={true}
         placement="bottom"
         bgColor={`var(${UI.COLOR_ALERT_BG})`}
         color={`var(${UI.COLOR_ALERT_TEXT})`}

@@ -59,7 +59,7 @@ export function RowDeadlineContent(props: RowDeadlineProps) {
             <DeadlineTextContents isEoaEthFlow={isEoaEthFlow} />
           )}
         </TextWrapper>
-        <MouseoverTooltipContent wrap content={deadlineTooltipContent}>
+        <MouseoverTooltipContent wrapInContainer content={deadlineTooltipContent}>
           <StyledInfoIcon size={16} />
         </MouseoverTooltipContent>
       </RowFixed>

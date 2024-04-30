@@ -48,7 +48,7 @@ export function RowReceivedAfterSlippage({
             )}
           </TextWrapper>
         )}
-        <MouseoverTooltipContent content={getMinimumReceivedTooltip(allowedSlippage, isExactIn)} wrap>
+        <MouseoverTooltipContent content={getMinimumReceivedTooltip(allowedSlippage, isExactIn)} wrapInContainer>
           <StyledInfoIcon size={16} />
         </MouseoverTooltipContent>
       </RowFixed>

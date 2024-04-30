@@ -39,7 +39,7 @@ export const FeesDiscount: React.FC<FeesDiscountProps> = ({ onClick, ...boxProps
           <Trans>Fees discount</Trans>{' '}
           <MouseoverTooltipContent
             content={SUBSIDY_INFO_MESSAGE + '. Click on the discount button on the right for more info.'}
-            wrap
+            wrapInContainer
           >
             <StyledInfoIcon />
           </MouseoverTooltipContent>

@@ -142,7 +142,7 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allo
             <b>
               <TokenAmount amount={allocated} defaultValue="0" tokenSymbol={allocated.currency} />
               <MouseoverTooltipContent
-                wrap
+                wrapInContainer
                 content={
                   <VestingBreakdown>
                     <span>
@@ -170,7 +170,7 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allo
             <i>
               Claimable{' '}
               <MouseoverTooltipContent
-                wrap
+                wrapInContainer
                 content={
                   <div>
                     <p>

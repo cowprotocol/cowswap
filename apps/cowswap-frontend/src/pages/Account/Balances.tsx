@@ -235,7 +235,7 @@ export default function Profile() {
                   </i>
                   <b>
                     <TokenAmount amount={total} defaultValue="0" tokenSymbol={vCowToken} />{' '}
-                    <MouseoverTooltipContent content={tooltipText.balanceBreakdown} wrap>
+                    <MouseoverTooltipContent content={tooltipText.balanceBreakdown} wrapInContainer>
                       <HelpCircle size={14} />
                     </MouseoverTooltipContent>
                   </b>
@@ -245,7 +245,7 @@ export default function Profile() {
                 <BalanceDisplay titleSize={18} altColor={true}>
                   <i>
                     Vested{' '}
-                    <MouseoverTooltipContent content={tooltipText.vested} wrap>
+                    <MouseoverTooltipContent content={tooltipText.vested} wrapInContainer>
                       <HelpCircle size={14} />
                     </MouseoverTooltipContent>
                   </i>

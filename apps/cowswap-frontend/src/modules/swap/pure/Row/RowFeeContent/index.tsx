@@ -39,7 +39,7 @@ export function RowFeeContent(props: RowFeeContentProps) {
       {!noLabel && (
         <RowFixed>
           <TextWrapper>{label}</TextWrapper>
-          <MouseoverTooltipContent content={tooltip} wrap>
+          <MouseoverTooltipContent content={tooltip} wrapInContainer>
             <StyledInfoIcon size={16} />
           </MouseoverTooltipContent>
         </RowFixed>

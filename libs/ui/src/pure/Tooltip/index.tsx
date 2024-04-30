@@ -16,14 +16,14 @@ export const TooltipContainer = styled.div`
 `
 
 export interface TooltipProps extends Omit<PopoverProps, 'content' | 'PopoverContainer' | 'Arrow'> {
-  text: ReactNode
+  text: ReactNode,
 }
 
 interface TooltipContentProps extends Omit<PopoverProps, 'content' | 'PopoverContainer' | 'Arrow'> {
   content: ReactNode
   onOpen?: Command
   // whether to wrap the content in a `TooltipContainer`
-  wrap?: boolean
+  wrapInContainer?: boolean
   disableHover?: boolean // disable the hover and content display
 }
 
@@ -31,7 +31,7 @@ export function Tooltip({ text, className, ...rest }: TooltipProps) {
   return <Popover className={className} content={<TooltipContainer>{text}</TooltipContainer>} {...rest} />
 }
 
-export function TooltipContent({ content, wrap = false, ...rest }: TooltipContentProps) {
+function TooltipContent({ content, wrapInContainer: wrap = false, ...rest }: TooltipContentProps) {
   return <Popover content={wrap ? <TooltipContainer>{content}</TooltipContainer> : content} {...rest} />
 }
 
