@@ -60,7 +60,7 @@ const GlobalStyles = createGlobalStyle`
     font-display: swap;
   }
 
-  html, body {  
+  html, body {
     width: 100%;
     min-height: 100vh;
     min-width: 300px;
@@ -109,9 +109,13 @@ const GlobalStyles = createGlobalStyle`
     box-sizing: inherit;
   }
 
-  a {   
+  a {
     text-decoration: underline;
     cursor: pointer;
+  }
+
+  a:has(> .blank-button) {
+    text-decoration: none;
   }
 
   h1, h2, h3, p, b, i, strong {
@@ -146,12 +150,12 @@ const GlobalStyles = createGlobalStyle`
   }
 
   input {
-    
+
     &::placeholder {
       color: inherit;
       font-size: inherit;
     }
-    
+
     &:focus::placeholder {
       color: transparent;
     }
@@ -164,7 +168,7 @@ const GlobalStyles = createGlobalStyle`
       opacity: 0.8;
     }
   }
-  
+
   .noScroll {
     overflow: hidden!important;
     position: fixed!important;
@@ -173,7 +177,7 @@ const GlobalStyles = createGlobalStyle`
 
   .mobileOnly {
     display: none !important;
-    
+
     ${Media.mobile} {
       display: block !important;
     }
@@ -208,8 +212,8 @@ const GlobalStyles = createGlobalStyle`
 
 .zoomSlideIn {
   animation-name: zoomSlideIn;
-  animation-duration: 1.2s; 
-  animation-fill-mode: forwards; 
+  animation-duration: 1.2s;
+  animation-fill-mode: forwards;
 }
 
 `

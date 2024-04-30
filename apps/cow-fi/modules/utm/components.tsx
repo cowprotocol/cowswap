@@ -1,11 +1,12 @@
-import { useMemo } from 'react'
+import { AnchorHTMLAttributes, useMemo } from 'react'
 import Link, { LinkProps } from 'next/link'
 import { UtmParams, useUtm } from 'modules/utm'
 import { addUtmToUrl, hasUtmCodes } from 'modules/utm/utils'
 
-interface LinkWithUtmProps extends React.PropsWithChildren<LinkProps> {
+interface LinkWithUtmProps
+  extends Pick<AnchorHTMLAttributes<HTMLElement>, 'rel' | 'target'>,
+    React.PropsWithChildren<LinkProps> {
   defaultUtm: UtmParams
-  rel?: string
 }
 
 export function LinkWithUtm(p: LinkWithUtmProps): JSX.Element {
@@ -21,7 +22,7 @@ export function LinkWithUtm(p: LinkWithUtmProps): JSX.Element {
   }, [utm, defaultUtm, href])
 
   return (
-    <Link href={newHref} as={as} {...props}>
+    <Link href={newHref} as={as} target="_blank" rel="noopener nofollow" {...props}>
       {children}
     </Link>
   )

@@ -660,7 +660,6 @@ export default function CoWAMMPage({ siteConfigData }) {
                     })
                   }
                   variant={ButtonVariant.COWAMM_LIGHTBLUE}
-                  href="#"
                   paddingTB={3}
                   paddingLR={4.2}
                   borderRadius={0}
@@ -668,8 +667,6 @@ export default function CoWAMMPage({ siteConfigData }) {
                   fontSizeMobile={2.1}
                   fontWeight={500}
                   label="Get In Touch"
-                  target="_blank"
-                  rel="noreferrer nofollow"
                 />
               </LinkWithUtm>
             </ButtonWrapper>

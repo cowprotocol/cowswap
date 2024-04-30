@@ -56,9 +56,7 @@ export const DAO_CONTENT = {
             defaultUtm={{ ...CONFIG.utm, utmContent: 'daos-page' }}
             passHref
           >
-            <a target="_blank" rel="nofollow noreferrer">
-              Milkman bot
-            </a>
+            Milkman bot
           </LinkWithUtm>
           . Set the maximum deviation you&apos;ll accept, and Milkman will do the rest.
         </>
@@ -88,9 +86,7 @@ export const DAO_CONTENT = {
       description: (
         <>
           <LinkWithUtm href="https://dump.services/" defaultUtm={{ ...CONFIG.utm, utmContent: 'daos-page' }} passHref>
-            <a target="_blank" rel="nofollow noreferrer">
-              Dump.services
-            </a>
+            Dump.services
           </LinkWithUtm>
           , a collaboration between CoW Swap and Yearn, allows DAOs and traders to sell multiple tokens in a single
           transaction.

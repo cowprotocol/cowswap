@@ -217,7 +217,6 @@ export default function ForDAOs({ siteConfigData }) {
         <meta key="twitterTitle" name="twitter:title" content={pageTitle} />
         <meta key="twitterDescription" name="twitter:description" content={pageDescription} />
       </Head>
-
       <Section fullWidth padding={'8rem 8rem 4rem'} paddingMobile={'0 2.4rem 4rem'}>
         <SectionContent flow="column">
           <div>
@@ -237,7 +236,6 @@ export default function ForDAOs({ siteConfigData }) {
           </div>
         </SectionContent>
       </Section>
-
       <Section fullWidth padding={'0'} paddingMobile={'0'}>
         <TrustedBy>
           <p>Trusted by</p>
@@ -255,7 +253,6 @@ export default function ForDAOs({ siteConfigData }) {
           </ul>
         </TrustedBy>
       </Section>
-
       <Section fullWidth colorVariant={'dark'} id="benefits">
         <SectionContent>
           <SwiperSlideWrapper>
@@ -303,7 +300,7 @@ export default function ForDAOs({ siteConfigData }) {
           </SwiperSlideWrapper>
         </SectionContent>
       </Section>
-
+      // SS
       <Section fullWidth>
         <SectionContent flow={'column'}>
           <div className="container">
@@ -328,12 +325,11 @@ export default function ForDAOs({ siteConfigData }) {
               defaultUtm={{ ...CONFIG.utm, utmContent: 'daos-page' }}
               passHref
             >
-              <Button paddingLR={4.2} label="Explore Advanced Order Types" target="_blank" rel="noopener nofollow" />
+              <Button paddingLR={4.2} label="Explore Advanced Order Types" />
             </LinkWithUtm>
           </div>
         </SectionContent>
       </Section>
-
       <Section fullWidth colorVariant={'dark'}>
         <SectionContent>
           <div>
@@ -346,16 +342,12 @@ export default function ForDAOs({ siteConfigData }) {
                 .map(({ description, icon, title, link }, index) => (
                   <CardItem key={index} variant="outlined-dark" gap={3.6} imageFullSize textCentered>
                     <LinkWithUtm href={link} defaultUtm={{ ...CONFIG.utm, utmContent: 'daos-page' }} passHref>
-                      <a target="_blank" rel="nofollow noreferrer">
-                        <img src={icon} alt={title} />
-                      </a>
+                      <img src={icon} alt={title} />
                     </LinkWithUtm>
                     <span>
                       <p>{description}</p>
                       <LinkWithUtm href={link} defaultUtm={{ ...CONFIG.utm, utmContent: 'daos-page' }} passHref>
-                        <a href={link} target="_blank" rel="nofollow noreferrer">
-                          Case study
-                        </a>
+                        Case study
                       </LinkWithUtm>
                     </span>
                   </CardItem>
@@ -378,9 +370,7 @@ export default function ForDAOs({ siteConfigData }) {
                     className="iconOnly"
                   >
                     <LinkWithUtm href={link} defaultUtm={{ ...CONFIG.utm, utmContent: 'daos-page' }} passHref>
-                      <a href={link} target="_blank" rel="nofollow noreferrer" title={title}>
-                        <img src={icon} alt={title} />
-                      </a>
+                      <img src={icon} alt={title} />
                     </LinkWithUtm>
                   </CardItem>
                 ))}
@@ -388,7 +378,6 @@ export default function ForDAOs({ siteConfigData }) {
           </div>
         </SectionContent>
       </Section>
-
       <Section fullWidth>
         <SectionContent flow={'column'}>
           <div>

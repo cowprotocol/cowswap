@@ -74,18 +74,16 @@ function TokenItem({ token, index }: TokenItemProps) {
     <ListItem key={id}>
       <span>{index + 1}</span>
 
-      <Link href={`/tokens/${id}`} passHref>
-        <TokenLink>
-          {image.large && image.large !== 'missing_large.png' ? (
-            <img src={image.large} alt={name} />
-          ) : (
-            <PlacerholderImage />
-          )}
-          <span>
-            {name} <i>({symbol})</i>
-          </span>
-        </TokenLink>
-      </Link>
+      <TokenLink href={`/tokens/${id}`}>
+        {image.large && image.large !== 'missing_large.png' ? (
+          <img src={image.large} alt={name} />
+        ) : (
+          <PlacerholderImage />
+        )}
+        <span>
+          {name} <i>({symbol})</i>
+        </span>
+      </TokenLink>
 
       <ListItemValue>{priceUsd ? `$${priceUsd}` : '-'}</ListItemValue>
       <ListItemValue color={getPriceChangeColor(change24h)}>

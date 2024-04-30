@@ -57,9 +57,7 @@ export function TokenDetails({ token }: TokenDetailProps) {
                   href="https://forum.cow.fi/t/cip-draft-testing-fee-models-for-cow-protocol/1984/3"
                   passHref
                 >
-                  <a target="_blank" rel="noreferrer">
-                    on the forum
-                  </a>
+                  on the forum
                 </LinkWithUtm>
               </p>
             }

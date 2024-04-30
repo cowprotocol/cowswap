@@ -135,7 +135,7 @@ const Menu = styled.ol<{ isLight?: boolean; isLightCoWAMM?: boolean; isSticky?: 
   }
 
   // any buttons or links right after menu
-  + a {
+  + a > span {
     background: transparent;
     border: 0.1rem solid
       ${({ isLightCoWAMM, isLight }) =>
@@ -378,8 +378,6 @@ export default function Header({ isLight = false, isLightCoWAMM = false }: Props
                   minHeight={4.8}
                   fontSize={1.6}
                   label={'Trade on CoW Swap'}
-                  target="_blank"
-                  rel="noopener nofollow"
                 />
               </LinkWithUtm>
               <MenuToggle

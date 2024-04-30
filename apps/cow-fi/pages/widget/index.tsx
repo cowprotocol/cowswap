@@ -25,44 +25,44 @@ import { Color, Font, Media } from 'styles/variables'
 const ArrowDrawn = '/images/arrow-drawn.svg'
 
 const StickySectionTitle = styled.div`
-position: sticky;
-top: 12rem;
-margin: 0 auto auto;
+  position: sticky;
+  top: 12rem;
+  margin: 0 auto auto;
 
-${Media.mobile} {
-  position: relative;
-  top: initial;
-}
+  ${Media.mobile} {
+    position: relative;
+    top: initial;
+  }
 `
 
 const WidgetContainer = styled.div`
-display: flex;
-width: 100%;
-flex-flow: column wrap;
-justify-content: flex-start;
-align-items: center;
-gap: 1.6rem;
-
-&::before {
-  color: ${Color.darkBlue};
-  font-size: 2.1rem;
-  font-weight: ${Font.weightBold};
-  content: 'Try it out!';
-  background: url(${ArrowDrawn}) no-repeat center 2.5rem / 2.4rem 5rem;
-  width: 12rem;
-  height: 7.5rem;
-  margin: 0 auto;
   display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  transform: rotateZ(-15deg);
-}
+  width: 100%;
+  flex-flow: column wrap;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 1.6rem;
 
-${Media.mobile} {
-  > iframe {
-    width: 100%;
+  &::before {
+    color: ${Color.darkBlue};
+    font-size: 2.1rem;
+    font-weight: ${Font.weightBold};
+    content: 'Try it out!';
+    background: url(${ArrowDrawn}) no-repeat center 2.5rem / 2.4rem 5rem;
+    width: 12rem;
+    height: 7.5rem;
+    margin: 0 auto;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    transform: rotateZ(-15deg);
   }
-}
+
+  ${Media.mobile} {
+    > iframe {
+      width: 100%;
+    }
+  }
 `
 
 const DAO_LOGOS_PATH = '/images/dao-logos/'
@@ -169,7 +169,7 @@ const DATA_CACHE_TIME_SECONDS = 5 * 60 // Cache 5min
 const widgetParams: CowSwapWidgetParams = {
   appCode: 'CoW Protocol: Widget Demo',
   theme: 'light',
-  standaloneMode: true
+  standaloneMode: true,
 }
 
 export default function WidgetPage({ siteConfigData }) {
@@ -220,8 +220,6 @@ export default function WidgetPage({ siteConfigData }) {
                   paddingLR={4.2}
                   fontSizeMobile={2.1}
                   label="Configure widget"
-                  target="_blank"
-                  rel="noopener nofollow"
                 />
               </LinkWithUtm>
 
@@ -232,8 +230,6 @@ export default function WidgetPage({ siteConfigData }) {
               >
                 <Button
                   onClick={() => sendGAEventHandler(WidgetEvents.READ_DOCS)}
-                  target="_blank"
-                  rel="noopener nofollow"
                   paddingLR={4.2}
                   fontSizeMobile={2.1}
                   label="Read docs"
@@ -360,9 +356,7 @@ export default function WidgetPage({ siteConfigData }) {
                     defaultUtm={{ ...CONFIG.utm, utmContent: `widget-page-partner-${title}` }}
                     passHref
                   >
-                    <a href={link} target="_blank" rel="nofollow noreferrer" title={title}>
-                      <img src={icon} alt={title} />
-                    </a>
+                    <img src={icon} alt={title} />
                   </LinkWithUtm>
                 </CardItem>
               ))}
@@ -387,8 +381,6 @@ export default function WidgetPage({ siteConfigData }) {
                   paddingLR={4.2}
                   label="Talk to us"
                   fontSizeMobile={2.1}
-                  target="_blank"
-                  rel="noopener nofollow"
                 />
               </LinkWithUtm>
 
@@ -399,8 +391,6 @@ export default function WidgetPage({ siteConfigData }) {
               >
                 <Button
                   onClick={() => sendGAEventHandler(WidgetEvents.READ_DOCS)}
-                  target="_blank"
-                  rel="noopener nofollow"
                   paddingLR={4.2}
                   fontSizeMobile={2.1}
                   label="Read docs"
@@ -408,10 +398,7 @@ export default function WidgetPage({ siteConfigData }) {
                 />
               </LinkWithUtm>
 
-              <Link
-                href={CONFIG.url.widgetTnC}
-                passHref
-              >
+              <Link href={CONFIG.url.widgetTnC} passHref>
                 <Button
                   onClick={() => sendGAEventHandler(WidgetEvents.READ_TERMS)}
                   paddingLR={1}
@@ -433,7 +420,8 @@ export default function WidgetPage({ siteConfigData }) {
               <strong>* Important Disclaimer:</strong> Use of this widget is subject to the laws and regulations of your
               jurisdiction. You are solely responsible for ensuring compliance, and the provider is not liable for any
               legal consequences or issues arising from your failure to adhere. Using the widget indicates acceptance of
-              the <CustomLink url="/widget/terms-and-conditions" label="Terms and Conditions" />; if you do not agree, refrain from using it.
+              the <CustomLink url="/widget/terms-and-conditions" label="Terms and Conditions" />; if you do not agree,
+              refrain from using it.
             </SubTitle>
           </div>
         </SectionContent>

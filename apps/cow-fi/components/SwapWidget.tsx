@@ -330,7 +330,7 @@ export const SwapWidget = ({ tokenId, tokenSymbol, tokenImage, platforms }: Swap
         href={onSwap()}
         passHref
       >
-        <Button target="_blank" rel="noreferrer" label={`Swap ${tokenSymbol}`} fontSize={1.6} minHeight={4.2} />
+        <Button label={`Swap ${tokenSymbol}`} fontSize={1.6} minHeight={4.2} />
       </LinkWithUtm>
     </Wrapper>
   )

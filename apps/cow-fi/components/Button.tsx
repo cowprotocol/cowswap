@@ -35,7 +35,7 @@ type ButtonProps = {
   onClick?: (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void
 }
 
-const Wrapper = styled.a<Omit<ButtonProps, 'href' | 'label' | 'target' | 'rel'>>`
+const Wrapper = styled.span<Omit<ButtonProps, 'href' | 'label' | 'target' | 'rel'>>`
   display: flex;
   background: ${Color.darkBlue};
   flex-flow: row;
@@ -200,7 +200,7 @@ export const Button = forwardRef<HTMLAnchorElement, ButtonProps>(
       paddingMobileTB,
       marginTB,
       variant,
-      href = '#',
+      href,
       label,
       target,
       rel,
@@ -225,6 +225,8 @@ export const Button = forwardRef<HTMLAnchorElement, ButtonProps>(
           variant,
           minHeight,
         }}
+        as={href ? 'a' : 'span'}
+        className={href ? '' : 'blank-button'}
         href={href}
         target={target}
         rel={rel}
