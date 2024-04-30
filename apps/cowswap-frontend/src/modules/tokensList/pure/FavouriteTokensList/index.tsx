@@ -1,7 +1,6 @@
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { TokenLogo } from '@cowprotocol/tokens'
-import { TokenSymbol } from '@cowprotocol/ui'
-import { InfoTooltip } from '@cowprotocol/ui'
+import { HelpTooltip, TokenSymbol } from '@cowprotocol/ui'
 
 import * as styledEl from './styled'
 
@@ -17,8 +16,8 @@ export function FavouriteTokensList(props: FavouriteTokensListProps) {
   return (
     <div>
       <styledEl.Header>
-        <h4>Favorite tokens</h4>
-        <InfoTooltip iconType="help" content="Your favorite saved tokens. Edit this list in your account page." />
+        <h4>Favorite tokens</h4>        
+        <HelpTooltip text="Your favorite saved tokens. Edit this list in your account page." />
       </styledEl.Header>
       <styledEl.List>
         {tokens.map((token) => {

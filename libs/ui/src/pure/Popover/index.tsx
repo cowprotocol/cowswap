@@ -1,11 +1,11 @@
 
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { Options, Placement } from '@popperjs/core'
 import { Portal } from '@reach/portal'
 import { usePopper } from 'react-popper'
 import { Arrow, PopoverContainer, ReferenceElement } from './styled'
-import { useInterval } from '@cowprotocol/common-hooks'
+import { Command } from '@cowprotocol/types'
 
 
 export interface PopoverContainerProps {
@@ -84,29 +84,29 @@ export default function Popover(props: PopoverProps) {
 }
 
 
-// // TODO: reuse hook from @cowprotocol/common-hooks
-// // Currently it's not possible because of dependency inversion
-// function useInterval(callback: Command, delay: null | number, leading = true) {
-//   const savedCallback = useRef<Command>()
+// TODO: reuse hook from @cowprotocol/common-hooks
+// Currently it's not possible because of dependency inversion
+function useInterval(callback: Command, delay: null | number, leading = true) {
+  const savedCallback = useRef<Command>()
 
-//   // Remember the latest callback.
-//   useEffect(() => {
-//     savedCallback.current = callback
-//   }, [callback])
+  // Remember the latest callback.
+  useEffect(() => {
+    savedCallback.current = callback
+  }, [callback])
 
-//   // Set up the interval.
-//   useEffect(() => {
-//     function tick() {
-//       const { current } = savedCallback
-//       current && current()
-//     }
+  // Set up the interval.
+  useEffect(() => {
+    function tick() {
+      const { current } = savedCallback
+      current && current()
+    }
 
-//     if (delay !== null) {
-//       if (leading) tick()
-//       const id = setInterval(tick, delay)
-//       return () => clearInterval(id)
-//     }
-//     return
-//   }, [delay, leading])
-// }
+    if (delay !== null) {
+      if (leading) tick()
+      const id = setInterval(tick, delay)
+      return () => clearInterval(id)
+    }
+    return
+  }, [delay, leading])
+}
 
