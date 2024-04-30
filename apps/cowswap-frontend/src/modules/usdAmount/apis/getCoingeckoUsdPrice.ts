@@ -18,7 +18,7 @@ export const COINGECK_PLATFORMS: Record<SupportedChainId, string | null> = {
   [SupportedChainId.SEPOLIA]: null,
 }
 
-const BASE_URL = 'https://api.coingecko.com/api/v3/simple/token_price'
+const BASE_URL = 'https://cow-web-services-git-feat-usd-proxy-cowswap.vercel.app/api/serverless/coingeckoProxy'
 const VS_CURRENCY = 'usd'
 /**
  * This is a text of 429 HTTP code
@@ -63,7 +63,7 @@ export async function getCoingeckoUsdPrice(currency: Token): Promise<Fraction | 
     vs_currencies: VS_CURRENCY,
   }
 
-  const url = `${BASE_URL}/${platform}?${new URLSearchParams(params)}`
+  const url = `${BASE_URL}/token_price/${platform}?${new URLSearchParams(params)}`
 
   return fetchRateLimitted(url)
     .then((res) => {
