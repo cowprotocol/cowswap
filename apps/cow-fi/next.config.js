@@ -1,6 +1,3 @@
-//@ts-check
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const { composePlugins, withNx } = require('@nx/next')
 
 /**
@@ -17,8 +14,6 @@ const nextConfig = {
     // For other options, see https://styled-components.com/docs/tooling#babel-plugin
     styledComponents: true,
   },
-
-  distDir: '../../build/cow-fi',
 }
 
 const plugins = [
