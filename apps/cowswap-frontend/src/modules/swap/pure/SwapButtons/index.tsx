@@ -116,7 +116,13 @@ const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonsContext
       <styledEl.SwapButtonBox>Connect Wallet</styledEl.SwapButtonBox>
     </ButtonPrimary>
   ),
-  [SwapButtonState.ReadonlyGnosisSafeUser]: () => <SafeReadOnlyButton />,
+  [SwapButtonState.ReadonlyGnosisSafeUser]: () => (
+    <AutoRow style={{ flexWrap: 'nowrap', width: '100%' }}>
+      <AutoColumn style={{ width: '100%' }} gap="12px">
+        <SafeReadOnlyButton />
+      </AutoColumn>
+    </AutoRow>
+  ),
   [SwapButtonState.NeedApprove]: (props: SwapButtonsContext) => (
     <AutoRow style={{ flexWrap: 'nowrap', width: '100%' }}>
       <AutoColumn style={{ width: '100%' }} gap="12px">

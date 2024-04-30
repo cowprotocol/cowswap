@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { TooltipText } from '@cowprotocol/ui'
+import { Tooltip } from '@cowprotocol/ui'
 import { Identicon, getWeb3ReactConnection, WalletDetails, getConnectionIcon } from '@cowprotocol/wallet'
 import { Connector } from '@web3-react/types'
 
@@ -29,11 +29,11 @@ export const AccountIcon = ({ connector, walletDetails, size = 16, account }: Ac
 
   if (walletDetails && !walletDetails.isSupportedWallet) {
     return (
-      <TooltipText text="This wallet is not yet supported">
+      <Tooltip wrapInContainer  content="This wallet is not yet supported">
         <IconWrapper role="img" aria-label="Warning sign. Wallet not supported">
           ⚠️
         </IconWrapper>
-      </TooltipText>
+      </Tooltip>
     )
   }
 

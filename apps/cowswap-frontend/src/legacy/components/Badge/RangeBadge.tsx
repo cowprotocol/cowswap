@@ -1,10 +1,10 @@
-import { TooltipText } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import { AlertCircle } from 'react-feather'
 import styled from 'styled-components/macro'
 
 import Badge, { BadgeVariant } from 'legacy/components/Badge'
+import { Tooltip } from '../../../../../../libs/ui/src/pure/Tooltip'
 
 const BadgeWrapper = styled.div`
   font-size: 14px;
@@ -35,7 +35,7 @@ export default function RangeBadge({
   return (
     <BadgeWrapper>
       {removed ? (
-        <TooltipText text={<Trans>Your position has 0 liquidity, and is not earning fees.</Trans>}>
+        <Tooltip wrapInContainer content={<Trans>Your position has 0 liquidity, and is not earning fees.</Trans>}>
           <Badge variant={BadgeVariant.DEFAULT}>
             <AlertCircle width={14} height={14} />
             &nbsp;
@@ -43,10 +43,10 @@ export default function RangeBadge({
               <Trans>Closed</Trans>
             </BadgeText>
           </Badge>
-        </TooltipText>
+        </Tooltip>
       ) : inRange ? (
-        <TooltipText
-          text={
+        <Tooltip wrapInContainer 
+          content={
             <Trans>
               The price of this pool is within your selected range. Your position is currently earning fees.
             </Trans>
@@ -58,10 +58,10 @@ export default function RangeBadge({
               <Trans>In range</Trans>
             </BadgeText>
           </Badge>
-        </TooltipText>
+        </Tooltip>
       ) : (
-        <TooltipText
-          text={
+        <Tooltip wrapInContainer 
+          content={
             <Trans>
               The price of this pool is outside of your selected range. Your position is not currently earning fees.
             </Trans>
@@ -74,7 +74,7 @@ export default function RangeBadge({
               <Trans>Out of range</Trans>
             </BadgeText>
           </Badge>
-        </TooltipText>
+        </Tooltip>
       )}
     </BadgeWrapper>
   )

@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react'
 
 import { useBlockNumber, useIsOnline } from '@cowprotocol/common-hooks'
 import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
-import { UI } from '@cowprotocol/ui'
+import { Tooltip, UI } from '@cowprotocol/ui'
 import { RowFixed } from '@cowprotocol/ui'
-import { TooltipText, ExternalLink } from '@cowprotocol/ui'
+import { ExternalLink } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Trans } from '@lingui/macro'
@@ -193,8 +193,8 @@ export function Polling() {
             {priceGwei ? (
               <RowFixed style={{ marginRight: '8px' }}>
                 <ThemedText.Main fontSize="11px" mr="8px">
-                  <TooltipText
-                    text={
+                  <Tooltip wrapInContainer 
+                    content={
                       <Trans>
                         The current fast gas amount for sending a transaction on L1. Gas fees are paid in
                         Ethereum&apos;s native currency Ether (ETH) and denominated in GWEI.
@@ -202,7 +202,7 @@ export function Polling() {
                     }
                   >
                     {priceGwei.toString()} <Trans>gwei</Trans>
-                  </TooltipText>
+                  </Tooltip>
                 </ThemedText.Main>
                 <StyledGasDot />
               </RowFixed>
@@ -214,11 +214,11 @@ export function Polling() {
                 chainId && blockNumber ? getExplorerLink(chainId, blockNumber.toString(), ExplorerDataType.BLOCK) : ''
               }
             >
-              <TooltipText
-                text={<Trans>The most recent block number on this network. Prices update on every block.</Trans>}
+              <Tooltip wrapInContainer 
+                content={<Trans>The most recent block number on this network. Prices update on every block.</Trans>}
               >
                 {blockNumber}&ensp;
-              </TooltipText>
+              </Tooltip>
             </ExternalLink>
           </StyledPollingNumber>
           <StyledPollingDot warning={warning}>{isMounting && <Spinner warning={warning} />}</StyledPollingDot>{' '}

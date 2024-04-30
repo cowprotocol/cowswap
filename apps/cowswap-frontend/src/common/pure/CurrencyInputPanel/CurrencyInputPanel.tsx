@@ -4,7 +4,7 @@ import { setMaxSellTokensAnalytics } from '@cowprotocol/analytics'
 import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { formatInputAmount, getIsNativeToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { TooltipText, TokenAmount } from '@cowprotocol/ui'
+import { TokenAmount, Tooltip } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
@@ -160,7 +160,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
             />
           </div>
           <div>
-            {inputTooltip ? <TooltipText text={inputTooltip}>{numericalInput}</TooltipText> : numericalInput}
+            {inputTooltip ? <Tooltip wrapInContainer content={inputTooltip}>{numericalInput}</Tooltip> : numericalInput}
           </div>
         </styledEl.CurrencyInputBox>
 
