@@ -168,6 +168,11 @@ export interface CowSwapWidgetBanners {
   hideSafeWebAppBanner?: boolean
 }
 
+export interface CowSwapWidgetContent {
+  feeLabel?: string
+  feeTooltipMarkdown?: string
+}
+
 export interface CowSwapWidgetParams {
   /**
    * The unique identifier of the widget consumer.
@@ -282,6 +287,11 @@ export interface CowSwapWidgetParams {
    * In case when widget does not support some tokens, you can provide a list of tokens to be used in the widget
    */
   customTokens?: TokenInfo[]
+
+  /**
+   * Customizable labels and content for the widget.
+   */
+  content?: CowSwapWidgetContent
 }
 
 // Define types for event payloads
