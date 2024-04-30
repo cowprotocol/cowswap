@@ -82,22 +82,6 @@ export function useWidgetParams(configuratorState: ConfiguratorState): CowSwapWi
               recipient: partnerFeeRecipient,
             }
           : undefined,
-
-      content: {
-        // TODO: Don't merge with this. This comment should be reverted.
-        feeLabel: "Anxo's cut",
-        feeTooltipMarkdown: `\
-Anxo has been working hard lately, and need to pay his bills.
-Anxo is a good guy, so you should pay him.
-
-This fee won't contribute to anything useful, but it will make Anxo happy.
-## Why
-Think about it
-
-## Read more
-[don't read more](https://google.com)
-`,
-      },
     }
 
     return params
