@@ -31,23 +31,24 @@ export function Tooltip({ text, className, ...rest }: TooltipProps) {
   return <Popover className={className} content={<TooltipContainer>{text}</TooltipContainer>} {...rest} />
 }
 
-function TooltipContent({ content, wrapInContainer: wrap = false, ...rest }: TooltipContentProps) {
-  return <Popover content={wrap ? <TooltipContainer>{content}</TooltipContainer> : content} {...rest} />
-}
-
 export function MouseoverTooltip({ children, text, ...rest }: Omit<TooltipProps, 'show'>) {
   return (
     <MouseoverTooltipContent content={text} {...rest} >{children}</MouseoverTooltipContent>
   )
 }
 
-export function MouseoverTooltipContent({
-  content,
-  children,
-  onOpen = undefined,
-  disableHover,
-  ...rest
-}: Omit<TooltipContentProps, 'show'>) {
+export function MouseoverTooltipContent(props: Omit<TooltipContentProps, 'show'>) {
+  const {
+    content,
+    children,
+    onOpen = undefined,
+    disableHover,
+    wrapInContainer = false,
+    ...rest
+  } = props
+
+  // { text, className, ...rest }: TooltipProps
+
   const [show, setShow] = useState(false)
   const cancelCloseRef = useRef<Command | null>()
 
@@ -101,13 +102,18 @@ export function MouseoverTooltipContent({
     }
   }, [close, open, show])
 
-  const tooltipContent = disableHover ? null : <div ref={divRef} onMouseEnter={stopDelayedClose} onMouseLeave={() => close()}>{content}</div>
+  
+  const tooltipContent = disableHover ? null : (
+    <div ref={divRef} onMouseEnter={stopDelayedClose} onMouseLeave={() => close()}>
+      {wrapInContainer ? <TooltipContainer>{content}</TooltipContainer> : content}
+    </div>
+  )
   return (
-    <TooltipContent {...rest} show={show} content={tooltipContent}>
+    <Popover show={show} content={tooltipContent} {...rest}> 
       <div onMouseEnter={open} onMouseLeave={() => close()} onClick={toggleTooltip}>
         {children}
       </div>
-    </TooltipContent>
+    </Popover>
   )
 }
 
