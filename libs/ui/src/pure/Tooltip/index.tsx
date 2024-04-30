@@ -55,7 +55,6 @@ export function MouseoverTooltipContent({
   disableHover,
   ...rest
 }: Omit<TooltipContentProps, 'show'>) {
-  const [sticky, setSticky] = useState(false)
   const [show, setShow] = useState(false)
   const cancelCloseRef = useRef<Command | null>()
 
@@ -66,80 +65,32 @@ export function MouseoverTooltipContent({
   }, [onOpen])
 
   // Close the tooltip
-  const close = useCallback((props: {force: boolean, delayed: boolean}) => {
-    const {force, delayed} = props
-    if (sticky && !force) return
-
-    const closeSticky = () => {
-      cancelCloseRef.current = null
-      setSticky(false)
-      setShow(false)
-    }
-    
-
+  const close = useCallback((eager = false) => {      
     // Cancel any previous scheduled close
     if (cancelCloseRef.current) {
       cancelCloseRef.current() 
     }
 
-    // Create a delayed timeout
-    const timeout = setTimeout(closeSticky, delayed ? TOOLTIP_CLOSE_DELAY : 0)
-    cancelCloseRef.current = () => {
+    const closeNow = () => {
       cancelCloseRef.current = null
-      clearTimeout(timeout)
+      setShow(false)
     }
-    return () => cancelCloseRef.current && cancelCloseRef.current()
-  }, [setShow, sticky])
 
-  // Toggle the stickiness
-  const toggleSticky = useCallback<React.MouseEventHandler<HTMLDivElement>>((event) => {
-    event.stopPropagation()
-    if (show) {
-      setSticky(sticky => {
-        if (sticky) {
-          // Tooltip was visible, but sticky. Closing it.
-          close({ force: true, delayed: false})
-          return false
-        } else {
-          // Tooltip was visible, and not sticky. Making it sticky.
-          return true
-        }
-      })      
+    if (eager) {
+      // Close eagerly
+      closeNow()
     } else {
-      // Tooltip was not visible. Making it visible and sticky.
-      setSticky(true)
-      open()
-    }    
-  }, [close, open, setSticky, show])
+      // Close after a delay
+      const closeTimeout = setTimeout(closeNow, TOOLTIP_CLOSE_DELAY)
 
-  // Remove the stickiness when clicking outside the tooltip
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (sticky && divRef.current && !divRef.current.contains(event.target as Node)) {
-        setSticky(false)
-        setShow(false)
-      }
-    };
-
-    document.addEventListener('click', handleClickOutside);
-    return () => {
-      document.removeEventListener('click', handleClickOutside);
-    };
-  }, [toggleSticky, setShow, sticky]);
-
-  // Remove the stickiness when scrolling
-  useEffect(() => {
-    const handleScroll = () => {
-      if (sticky) {
-        close({ force: true, delayed: false})
+      cancelCloseRef.current = () => {
+        cancelCloseRef.current = null
+        clearTimeout(closeTimeout)
       }
     }
-    
-    document.addEventListener('scroll', handleScroll);
-    return () => {
-      document.removeEventListener('scroll', handleScroll);
-    }
-  }, [sticky])
+
+    return () => cancelCloseRef.current && cancelCloseRef.current()
+  }, [setShow])
 
   // Stop the delayed close when hovering the tooltip
   const stopDelayedClose = useCallback(() => {
@@ -149,14 +100,18 @@ export function MouseoverTooltipContent({
     }
   }, [])
 
-  
+  const toggleTooltip = useCallback(() => {
+    if (show) {
+      close(true)
+    } else {
+      open()
+    }
+  }, [close, open, show])
 
-  const tooltipContent = disableHover ? null : <div ref={divRef} onMouseEnter={stopDelayedClose} onMouseLeave={() => close({ force: false, delayed: true })}>{content}</div>
-
+  const tooltipContent = disableHover ? null : <div ref={divRef} onMouseEnter={stopDelayedClose} onMouseLeave={() => close()}>{content}</div>
   return (
     <TooltipContent {...rest} show={show} content={tooltipContent}>
-      <div onMouseEnter={open} onMouseLeave={() => close({force: false, delayed: true })} onClick={toggleSticky} >
-
+      <div onMouseEnter={open} onMouseLeave={() => close()} onClick={toggleTooltip}>
         {children}
       </div>
     </TooltipContent>
