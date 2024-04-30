@@ -3,7 +3,7 @@ import { ReactNode } from 'react'
 import { UI } from '@cowprotocol/ui'
 import { HoverTooltip, TooltipContainer } from '@cowprotocol/ui'
 
-import { Info, HelpCircle } from 'react-feather'
+import { Info } from 'react-feather'
 import styled from 'styled-components/macro'
 
 const StyledIcon = styled.div`
@@ -32,21 +32,16 @@ const StyledTooltipContainer = styled(TooltipContainer)`
 
 export interface InfoTooltipProps {
   content: ReactNode
-  iconType?: 'info' | 'help'
   className?: string
 }
 
-export function InfoTooltip({ content, iconType = 'info', className }: InfoTooltipProps) {
+export function InfoTooltip({ content, className }: InfoTooltipProps) {
   const tooltipContent = <StyledTooltipContainer>{content}</StyledTooltipContainer>
 
   return (
     <HoverTooltip wrapInContainer={false} content={tooltipContent} placement="bottom">
       <StyledIcon>
-        {iconType === 'info' ? (
-          <Info className={className} size={16} />
-        ) : (
-          <HelpCircle className={className} size={16} />
-        )}
+        <Info className={className} size={16} />
       </StyledIcon>
     </HoverTooltip>
   )
