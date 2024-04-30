@@ -10,7 +10,7 @@ import { X } from 'react-feather'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
-import QuestionHelper, { QuestionWrapper } from 'legacy/components/QuestionHelper'
+import QuestionTooltip, { QuestionWrapper } from 'legacy/components/QuestionHelper'
 
 import { PendingOrdersPrices } from 'modules/orders/state/pendingOrdersPricesAtom'
 import { SpotPricesKeyParams } from 'modules/orders/state/spotPricesAtom'
@@ -320,7 +320,7 @@ export function OrdersTable({
               <HeaderElement doubleRow>
                 <span>
                   <Trans>
-                    Order executes at <QuestionHelper text={<RateTooltipHeader />} />
+                    Order executes at <QuestionTooltip text={<RateTooltipHeader />} />
                   </Trans>
                 </span>
                 <i>
@@ -341,7 +341,7 @@ export function OrdersTable({
               <HeaderElement hasBackground>
                 <span>
                   <Trans>
-                    Executes at <QuestionHelper text={<RateTooltipHeader isOpenOrdersTab={isOpenOrdersTab} />} />
+                    Executes at <QuestionTooltip text={<RateTooltipHeader isOpenOrdersTab={isOpenOrdersTab} />} />
                   </Trans>
                 </span>
               </HeaderElement>
@@ -351,7 +351,7 @@ export function OrdersTable({
               <HeaderElement>
                 <span>
                   <Trans>
-                    Execution price <QuestionHelper text={<RateTooltipHeader />} />
+                    Execution price <QuestionTooltip text={<RateTooltipHeader />} />
                   </Trans>
                 </span>
               </HeaderElement>

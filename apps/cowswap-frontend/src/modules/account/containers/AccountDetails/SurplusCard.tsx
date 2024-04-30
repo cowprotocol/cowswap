@@ -5,7 +5,7 @@ import { UI } from '@cowprotocol/ui'
 import { transparentize } from 'color2k'
 import styled from 'styled-components/macro'
 
-import QuestionHelper, { QuestionWrapper } from 'legacy/components/QuestionHelper'
+import QuestionTooltip, { QuestionWrapper } from 'legacy/components/QuestionHelper'
 
 import { useUsdAmount } from 'modules/usdAmount'
 
@@ -147,7 +147,7 @@ export function SurplusCard() {
           <span>
             <i>
               Your total surplus{' '}
-              <QuestionHelper
+              <QuestionTooltip
                 text={`The total surplus CoW Swap has generated for you in ${nativeSymbol} across all your trades since March 2023`}
               />
             </i>

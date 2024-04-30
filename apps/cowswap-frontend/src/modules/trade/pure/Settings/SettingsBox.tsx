@@ -4,7 +4,7 @@ import { Command } from '@cowprotocol/types'
 
 import { Trans } from '@lingui/macro'
 
-import QuestionHelper from 'legacy/components/QuestionHelper'
+import QuestionTooltip from 'legacy/components/QuestionHelper'
 import { Toggle } from 'legacy/components/Toggle'
 
 import { SettingsBoxTitle, SettingsBoxWrapper } from './styled'
@@ -22,7 +22,7 @@ export function SettingsBox({ title, tooltip, value, toggle, disabled = false }:
     <SettingsBoxWrapper disabled={disabled}>
       <SettingsBoxTitle>
         <Trans>{title}</Trans>
-        <QuestionHelper text={<Trans>{tooltip}</Trans>} />
+        <QuestionTooltip text={<Trans>{tooltip}</Trans>} />
       </SettingsBoxTitle>
       <Toggle isActive={value} toggle={toggle} />
     </SettingsBoxWrapper>

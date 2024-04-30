@@ -3,7 +3,7 @@ import { UI } from '@cowprotocol/ui'
 import { Repeat } from 'react-feather'
 import styled from 'styled-components/macro'
 
-import QuestionHelper from 'legacy/components/QuestionHelper'
+import QuestionTooltip from 'legacy/components/QuestionHelper'
 
 import { RateInfo } from 'common/pure/RateInfo'
 
@@ -60,7 +60,7 @@ export const PriceSwitchButton = styled(Repeat)`
   line-height: 0;
 `
 
-export const QuestionHelperWrapped = styled(QuestionHelper)`
+export const QuestionHelperWrapped = styled(QuestionTooltip)`
   display: inline-block;
   vertical-align: middle;
   line-height: 0;

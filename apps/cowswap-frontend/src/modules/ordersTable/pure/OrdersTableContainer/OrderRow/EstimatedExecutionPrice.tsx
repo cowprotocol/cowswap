@@ -2,7 +2,7 @@ import AlertTriangle from '@cowprotocol/assets/cow-swap/alert.svg'
 import { ZERO_FRACTION } from '@cowprotocol/common-const'
 import { UI } from '@cowprotocol/ui'
 import { SymbolElement, TokenAmount, TokenAmountProps } from '@cowprotocol/ui'
-import { MouseoverTooltipContent } from '@cowprotocol/ui'
+import { Tooltip } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Fraction, Percent } from '@uniswap/sdk-core'
 
 import { darken } from 'color2k'
@@ -117,7 +117,7 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
       ) : !absoluteDifferenceAmount ? (
         <span>{content}</span>
       ) : (
-        <MouseoverTooltipContent
+        <Tooltip
           wrapInContainer={true}
           content={
             <styledEl.ExecuteInformationTooltip>
@@ -141,7 +141,7 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
           placement="top"
         >
           {content}
-        </MouseoverTooltipContent>
+        </Tooltip>
       )}
       {feeWarning && !isNegativeDifference && (
         <UnlikelyToExecuteWarning feePercentage={percentageFee} feeAmount={amountFee} />
@@ -164,7 +164,7 @@ export function UnlikelyToExecuteWarning(props: UnlikelyToExecuteWarningProps) {
 
   return (
     <styledEl.WarningIndicator hasBackground={false}>
-      <MouseoverTooltipContent
+      <Tooltip
         wrapInContainer={true}
         placement="bottom"
         bgColor={`var(${UI.COLOR_ALERT_BG})`}
@@ -183,7 +183,7 @@ export function UnlikelyToExecuteWarning(props: UnlikelyToExecuteWarningProps) {
         }
       >
         <SVG src={AlertTriangle} description="Alert" width="14" height="13" />
-      </MouseoverTooltipContent>
+      </Tooltip>
     </styledEl.WarningIndicator>
   )
 }

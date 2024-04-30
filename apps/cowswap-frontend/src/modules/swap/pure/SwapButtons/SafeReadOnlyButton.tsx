@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react'
 
-import { ButtonPrimary, ButtonSize, Tooltip } from '@cowprotocol/ui'
+import { ButtonPrimary, ButtonSize, TooltipText } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import { HelpCircle } from 'react-feather'
@@ -34,7 +34,7 @@ export function SafeReadOnlyButton() {
   return (
     <div onMouseEnter={open} onMouseLeave={close}>
       <ButtonPrimary disabled={true} buttonSize={ButtonSize.BIG} title="Connect signer">
-        <Tooltip
+        <TooltipText
           show={show}
           text={
             <div>
@@ -48,7 +48,7 @@ export function SafeReadOnlyButton() {
             <Trans>Connect signer</Trans>
             <HelpCircle size={18} />
           </Container>
-        </Tooltip>
+        </TooltipText>
       </ButtonPrimary>
     </div>
   )

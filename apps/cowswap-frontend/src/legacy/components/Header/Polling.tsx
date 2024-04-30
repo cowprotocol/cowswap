@@ -4,7 +4,7 @@ import { useBlockNumber, useIsOnline } from '@cowprotocol/common-hooks'
 import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
 import { UI } from '@cowprotocol/ui'
 import { RowFixed } from '@cowprotocol/ui'
-import { MouseoverTooltip, ExternalLink } from '@cowprotocol/ui'
+import { TooltipText, ExternalLink } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Trans } from '@lingui/macro'
@@ -193,7 +193,7 @@ export function Polling() {
             {priceGwei ? (
               <RowFixed style={{ marginRight: '8px' }}>
                 <ThemedText.Main fontSize="11px" mr="8px">
-                  <MouseoverTooltip
+                  <TooltipText
                     text={
                       <Trans>
                         The current fast gas amount for sending a transaction on L1. Gas fees are paid in
@@ -202,7 +202,7 @@ export function Polling() {
                     }
                   >
                     {priceGwei.toString()} <Trans>gwei</Trans>
-                  </MouseoverTooltip>
+                  </TooltipText>
                 </ThemedText.Main>
                 <StyledGasDot />
               </RowFixed>
@@ -214,11 +214,11 @@ export function Polling() {
                 chainId && blockNumber ? getExplorerLink(chainId, blockNumber.toString(), ExplorerDataType.BLOCK) : ''
               }
             >
-              <MouseoverTooltip
+              <TooltipText
                 text={<Trans>The most recent block number on this network. Prices update on every block.</Trans>}
               >
                 {blockNumber}&ensp;
-              </MouseoverTooltip>
+              </TooltipText>
             </ExternalLink>
           </StyledPollingNumber>
           <StyledPollingDot warning={warning}>{isMounting && <Spinner warning={warning} />}</StyledPollingDot>{' '}

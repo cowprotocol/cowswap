@@ -1,5 +1,5 @@
 import { UNSUPPORTED_TOKENS_FAQ_URL } from '@cowprotocol/common-const'
-import { MouseoverTooltip } from '@cowprotocol/ui'
+import { TooltipText } from '@cowprotocol/ui'
 
 import ICON_GAS_FREE from 'assets/icon/gas-free.svg'
 import SVG from 'react-inlinesvg'
@@ -70,12 +70,12 @@ function TagDescriptor({ tags, children }: { children?: React.ReactNode; tags: T
   return (
     <styledEl.TagContainer>
       {tags.map((tag) => (
-        <MouseoverTooltip key={tag.id} text={tag.description}>
+        <TooltipText key={tag.id} text={tag.description}>
           <styledEl.Tag tag={tag}>
             {tag.icon ? <SVG src={tag.icon} title={tag.name} /> : null}
             {tag.name}
           </styledEl.Tag>
-        </MouseoverTooltip>
+        </TooltipText>
       ))}
       {children}
     </styledEl.TagContainer>

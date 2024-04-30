@@ -1,13 +1,11 @@
 import { ReactNode } from 'react'
 
 import QuestionImage from '@cowprotocol/assets/svg/question.svg'
-import { UI } from '@cowprotocol/ui'
+import { Tooltip, TooltipProps, UI } from '@cowprotocol/ui'
 import { renderTooltip } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
-
-import QuestionHelperMod, { QuestionHelperProps } from './QuestionHelperMod'
 
 const DefaultQuestionMark = <SVG src={QuestionImage} />
 
@@ -35,13 +33,38 @@ export const QuestionWrapper = styled.div`
   }
 `
 
-interface EnhancedQuestionHelperProps extends Omit<QuestionHelperProps, 'QuestionMark'> {
+const QuestionHelperContainer = styled.span`
+  margin-left: 4px;
+  display: flex;
+  align-items: center;
+  color: inherit;
+`
+
+
+interface QuestionTooltipProps extends Omit<TooltipProps, 'QuestionMark'| 'children' | 'content'> {
   text: ReactNode
   Icon?: JSX.Element
 }
 
-export default function QuestionHelper({ text, Icon, ...props }: EnhancedQuestionHelperProps) {
+export default function QuestionTooltip({ text, Icon, className, ...props }: QuestionTooltipProps) {
   const tooltip = renderTooltip(text, props)
 
-  return <QuestionHelperMod {...props} text={tooltip} QuestionMark={() => Icon || DefaultQuestionMark} />
+  const content = (
+    <div>
+      {tooltip}
+    </div>
+  )
+
+  const QuestionMark = () => Icon || DefaultQuestionMark
+
+  return (
+    <QuestionHelperContainer className={className}>
+      <Tooltip {...props} content={content} wrapInContainer>
+        <QuestionWrapper>
+          <QuestionMark />
+        </QuestionWrapper>
+      </Tooltip>
+    </QuestionHelperContainer>
+  )
 }
+

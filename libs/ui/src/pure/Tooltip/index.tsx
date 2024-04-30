@@ -15,29 +15,29 @@ export const TooltipContainer = styled.div`
   word-break: break-word;
 `
 
-export interface TooltipProps extends Omit<PopoverProps, 'content' | 'PopoverContainer' | 'Arrow'> {
-  text: ReactNode,
-}
-
-interface TooltipContentProps extends Omit<PopoverProps, 'content' | 'PopoverContainer' | 'Arrow'> {
+export interface TooltipProps extends Omit<PopoverProps, 'content' | 'PopoverContainer' | 'Arrow' | 'show'>  {
+  /**
+   * The content of the tooltip
+   */
   content: ReactNode
+
+  /**
+   * Callback to be called when the tooltip is opened
+   */
   onOpen?: Command
-  // whether to wrap the content in a `TooltipContainer`
+  
+  /**
+   * Whether to wrap the content in a container
+   */
   wrapInContainer?: boolean
-  disableHover?: boolean // disable the hover and content display
+
+  /**
+   * Whether to disable the hover and content display
+   */
+  disableHover?: boolean
 }
 
-export function Tooltip({ text, className, ...rest }: TooltipProps) {
-  return <Popover className={className} content={<TooltipContainer>{text}</TooltipContainer>} {...rest} />
-}
-
-export function MouseoverTooltip({ children, text, ...rest }: Omit<TooltipProps, 'show'>) {
-  return (
-    <MouseoverTooltipContent content={text} {...rest} >{children}</MouseoverTooltipContent>
-  )
-}
-
-export function MouseoverTooltipContent(props: Omit<TooltipContentProps, 'show'>) {
+export function Tooltip(props: TooltipProps) {
   const {
     content,
     children,
@@ -116,6 +116,23 @@ export function MouseoverTooltipContent(props: Omit<TooltipContentProps, 'show'>
     </Popover>
   )
 }
+
+export interface TextTooltipProps extends Omit<TooltipProps, 'content'> {
+  /**
+   * The text to display in the tooltip
+   */
+  text: ReactNode,
+}
+
+/**
+ * Tooltip that displays text
+ * 
+ * @deprecated use Tooltip instead with `wrapInContainer` set to `true`
+ */
+export function TooltipText({ text, ...rest }: TextTooltipProps) {  
+  return <Tooltip wrapInContainer content={text} {...rest} />
+}
+
 
 export function renderTooltip(tooltip: ReactNode | ((params?: any) => ReactNode), params?: any): ReactNode {
   if (typeof tooltip === 'function') {

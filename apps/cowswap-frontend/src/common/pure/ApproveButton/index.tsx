@@ -3,7 +3,7 @@ import { useContext, useMemo } from 'react'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { Command } from '@cowprotocol/types'
 import { ButtonSize, Loader, TokenSymbol, AutoRow, ButtonConfirmed } from '@cowprotocol/ui'
-import { MouseoverTooltip } from '@cowprotocol/ui'
+import { TooltipText } from '@cowprotocol/ui'
 import { Currency } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
@@ -46,7 +46,7 @@ export function ApproveButton(props: ApproveButtonProps) {
               Allow CoW Swap to use your <TokenSymbol token={currency} />
             </Trans>
           </span>
-          <MouseoverTooltip
+          <TooltipText
             text={
               <Trans>
                 You must give the CoW Protocol smart contracts permission to use your <TokenSymbol token={currency} />.
@@ -55,7 +55,7 @@ export function ApproveButton(props: ApproveButtonProps) {
             }
           >
             {isPending ? <Loader stroke={theme.text1} /> : <HelpCircle size="24" />}
-          </MouseoverTooltip>
+          </TooltipText>
         </>
       )
     }

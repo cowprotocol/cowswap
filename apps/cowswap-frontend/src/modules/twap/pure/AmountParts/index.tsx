@@ -6,7 +6,7 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { Trans } from '@lingui/macro'
 import { Nullish } from 'types'
 
-import QuestionHelper from 'legacy/components/QuestionHelper'
+import QuestionTooltip from 'legacy/components/QuestionHelper'
 
 import { LabelTooltipItems } from 'modules/twap'
 
@@ -28,7 +28,7 @@ function TradeAmountPreview(props: TradeAmountPreviewProps) {
     <styledEl.Part>
       <styledEl.Label>
         <Trans>{label}</Trans>
-        <QuestionHelper text={tooltip} />
+        <QuestionTooltip text={tooltip} />
       </styledEl.Label>
 
       <styledEl.Amount amount={amount} tokenSymbol={amount?.currency} />

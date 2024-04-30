@@ -35,7 +35,7 @@ import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from 'modules/s
 
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
-import QuestionHelper from '../QuestionHelper'
+import QuestionTooltip from '../QuestionHelper'
 
 // MOD imports
 
@@ -211,7 +211,7 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
           <ThemedText.Black fontWeight={400} fontSize={14}>
             <Trans>MEV protected slippage</Trans>
           </ThemedText.Black>
-          <QuestionHelper
+          <QuestionTooltip
             text={
               // <Trans>Your transaction will revert if the price changes unfavorably by more than this percentage.</Trans>
               isEoaEthFlow
@@ -297,7 +297,7 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
             <ThemedText.Black fontSize={14} fontWeight={400}>
               <Trans>Swap deadline</Trans>
             </ThemedText.Black>
-            <QuestionHelper
+            <QuestionTooltip
               text={
                 <Trans>
                   {isEoaEthFlow

@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { Command } from '@cowprotocol/types'
-import { Tooltip, TooltipProps, UI } from '@cowprotocol/ui'
+import { TooltipText, TextTooltipProps, UI } from '@cowprotocol/ui'
 
 import { X } from 'react-feather'
 import { Text } from 'rebass'
@@ -13,7 +13,7 @@ interface PopupContentProps {
   onCheck: Command
   onClose: Command
 }
-type FollowingTxPopupProps = Omit<TooltipProps, 'text'> & PopupContentProps
+type FollowingTxPopupProps = Omit<TextTooltipProps, 'text'> & PopupContentProps
 
 const IconClose = styled(X)`
   position: absolute;
@@ -33,7 +33,7 @@ const IconClose = styled(X)`
   }
 `
 
-const TooltipWrapper = styled(Tooltip)`
+const TooltipWrapper = styled(TooltipText)`
   > .arrow- {
     z-index: 1;
   }

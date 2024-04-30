@@ -9,7 +9,7 @@ import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
 import { InfoIcon } from 'legacy/components/InfoIcon'
-import QuestionHelper from 'legacy/components/QuestionHelper'
+import QuestionTooltip from 'legacy/components/QuestionHelper'
 
 import { ExecutionPriceTooltip } from 'modules/limitOrders/pure/ExecutionPriceTooltip'
 import { OrderType } from 'modules/limitOrders/pure/OrderType'
@@ -81,7 +81,7 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
                 <SVG src={ArrowDownImage} />
               </ArrowDownRight>
               <p>order executes at</p>{' '}
-              <QuestionHelper
+              <QuestionTooltip
                 text={
                   <ExecutionPriceTooltip
                     isInverted={isInverted}
