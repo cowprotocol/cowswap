@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 
 import { RowFixed } from '@cowprotocol/ui'
-import { Tooltip } from '@cowprotocol/ui'
+import { HoverTooltip } from '@cowprotocol/ui'
 
 import { StyledRowBetween, TextWrapper } from 'modules/swap/pure/Row/styled'
 import { RowStyleProps } from 'modules/swap/pure/Row/types'
@@ -39,9 +39,9 @@ export function RowFeeContent(props: RowFeeContentProps) {
       {!noLabel && (
         <RowFixed>
           <TextWrapper>{label}</TextWrapper>
-          <Tooltip content={tooltip} wrapInContainer>
+          <HoverTooltip content={tooltip} wrapInContainer>
             <StyledInfoIcon size={16} />
-          </Tooltip>
+          </HoverTooltip>
         </RowFixed>
       )}
 

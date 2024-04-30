@@ -15,7 +15,7 @@ export const TooltipContainer = styled.div`
   word-break: break-word;
 `
 
-export interface TooltipProps extends Omit<PopoverProps, 'content' | 'PopoverContainer' | 'Arrow' | 'show'>  {
+export interface HoverTooltipProps extends Omit<PopoverProps, 'content' | 'show'>  {
   /**
    * The content of the tooltip
    */
@@ -37,7 +37,15 @@ export interface TooltipProps extends Omit<PopoverProps, 'content' | 'PopoverCon
   disableHover?: boolean
 }
 
-export function Tooltip(props: TooltipProps) {
+/**
+ * Tooltip that appears when hovering over the children
+ * 
+ * @see Tooltip as an alternative if you need to control when the tooltip is shown 
+ * 
+ * @param props 
+ * @returns 
+ */
+export function HoverTooltip(props: HoverTooltipProps) {
   const {
     content,
     children,
@@ -117,20 +125,38 @@ export function Tooltip(props: TooltipProps) {
   )
 }
 
-export interface TextTooltipProps extends Omit<TooltipProps, 'content'> {
+export interface TooltipProps extends Omit<PopoverProps, 'content'> {
   /**
-   * The text to display in the tooltip
+   * Shows the tooltip
    */
-  text: ReactNode,
+  show: boolean,
+
+  /**
+   * Whether to wrap the content in a container
+   */
+  wrapInContainer?: boolean
+
+  /**
+   * The content of the tooltip
+   */
+  content: ReactNode
 }
 
+
 /**
- * Tooltip that displays text
+ * Tooltip that displays text when the passed `show` prop is true.
  * 
- * @deprecated use Tooltip instead with `wrapInContainer` set to `true`
+ * IMPORTANT: Don't use it if you need to show the tooltip when you hover on one element. For that use `HoverTooltip`
+ * @see HoverTooltip as an alternative if you need to show the tooltip on hover
  */
-export function TooltipText({ text, ...rest }: TextTooltipProps) {  
-  return <Tooltip wrapInContainer content={text} {...rest} />
+export function Tooltip({ content, className, wrapInContainer, ...rest }: TooltipProps) {  
+  return (
+    <Popover 
+      className={className} 
+      content={wrapInContainer ? <TooltipContainer>{content}</TooltipContainer> : content} 
+      {...rest} 
+    />
+  )
 }
 
 

@@ -1,5 +1,5 @@
 import { formatPercent } from '@cowprotocol/common-utils'
-import { Loader, Tooltip } from '@cowprotocol/ui'
+import { Loader, HoverTooltip } from '@cowprotocol/ui'
 import { Percent } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/macro'
@@ -39,9 +39,9 @@ export function PriceImpactIndicator(props: PriceImpactIndicatorProps) {
       {priceImpact ? (
         <PriceImpactWrapper priceImpact$={priceImpact}>
           {' '}
-          <Tooltip wrapInContainer content={t`Price impact due to current liquidity levels`}>
+          <HoverTooltip wrapInContainer content={t`Price impact due to current liquidity levels`}>
             ({formatPercent(priceImpact.multiply(-1))}%)
-          </Tooltip>
+          </HoverTooltip>
         </PriceImpactWrapper>
       ) : null}
       {priceImpactLoading && <LoaderStyled size="14px" />}

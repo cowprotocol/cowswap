@@ -1,6 +1,6 @@
 import { INPUT_OUTPUT_EXPLANATION, MINIMUM_ETH_FLOW_SLIPPAGE, PERCENTAGE_PRECISION } from '@cowprotocol/common-const'
 import { Command } from '@cowprotocol/types'
-import { Tooltip, RowFixed } from '@cowprotocol/ui'
+import { HoverTooltip, RowFixed } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
@@ -84,9 +84,9 @@ export function RowSlippageContent(props: RowSlippageContentProps) {
             <SlippageTextContents isEoaEthFlow={isEoaEthFlow} slippageLabel={slippageLabel} />
           )}
         </TextWrapper>
-        <Tooltip wrapInContainer content={tooltipContent}>
+        <HoverTooltip wrapInContainer content={tooltipContent}>
           <StyledInfoIcon size={16} />
-        </Tooltip>
+        </HoverTooltip>
       </RowFixed>
       <TextWrapper textAlign="right">
         {showSettingOnClick ? (

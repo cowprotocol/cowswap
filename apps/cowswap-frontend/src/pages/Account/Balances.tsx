@@ -9,7 +9,7 @@ import { usePrevious } from '@cowprotocol/common-hooks'
 import { useBlockNumber } from '@cowprotocol/common-hooks'
 import { getBlockExplorerUrl, getProviderErrorMessage } from '@cowprotocol/common-utils'
 import { TokenAmount, ButtonPrimary } from '@cowprotocol/ui'
-import { Tooltip } from '@cowprotocol/ui'
+import { HoverTooltip } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
@@ -235,9 +235,9 @@ export default function Profile() {
                   </i>
                   <b>
                     <TokenAmount amount={total} defaultValue="0" tokenSymbol={vCowToken} />{' '}
-                    <Tooltip content={tooltipText.balanceBreakdown} wrapInContainer>
+                    <HoverTooltip content={tooltipText.balanceBreakdown} wrapInContainer>
                       <HelpCircle size={14} />
-                    </Tooltip>
+                    </HoverTooltip>
                   </b>
                 </span>
               </BalanceDisplay>
@@ -245,9 +245,9 @@ export default function Profile() {
                 <BalanceDisplay titleSize={18} altColor={true}>
                   <i>
                     Vested{' '}
-                    <Tooltip content={tooltipText.vested} wrapInContainer>
+                    <HoverTooltip content={tooltipText.vested} wrapInContainer>
                       <HelpCircle size={14} />
-                    </Tooltip>
+                    </HoverTooltip>
                   </i>
                   <b>
                     <TokenAmount amount={shouldUpdate ? undefined : vested} defaultValue="0" />

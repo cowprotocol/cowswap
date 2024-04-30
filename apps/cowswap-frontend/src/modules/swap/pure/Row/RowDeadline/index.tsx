@@ -1,6 +1,6 @@
 import { INPUT_OUTPUT_EXPLANATION, MINIMUM_ETH_FLOW_DEADLINE_SECONDS } from '@cowprotocol/common-const'
 import { Command } from '@cowprotocol/types'
-import { Tooltip, RowFixed } from '@cowprotocol/ui'
+import { HoverTooltip, RowFixed } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 
@@ -59,9 +59,9 @@ export function RowDeadlineContent(props: RowDeadlineProps) {
             <DeadlineTextContents isEoaEthFlow={isEoaEthFlow} />
           )}
         </TextWrapper>
-        <Tooltip wrapInContainer content={deadlineTooltipContent}>
+        <HoverTooltip wrapInContainer content={deadlineTooltipContent}>
           <StyledInfoIcon size={16} />
-        </Tooltip>
+        </HoverTooltip>
       </RowFixed>
       <TextWrapper textAlign="right">
         {showSettingOnClick ? (

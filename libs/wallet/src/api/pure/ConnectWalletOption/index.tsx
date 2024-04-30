@@ -2,7 +2,7 @@ import React from 'react'
 
 import styled from 'styled-components/macro'
 
-import { Tooltip, UI } from '@cowprotocol/ui'
+import { HoverTooltip, UI } from '@cowprotocol/ui'
 import { Command } from '@cowprotocol/types'
 
 import { TooltipText, ExternalLink } from '@cowprotocol/ui'
@@ -159,11 +159,11 @@ export function ConnectWalletOption({
 
   if (link) {
     const externalLink = <ExternalLink href={link}>{content}</ExternalLink>
-    return tooltipText ? <Tooltip wrapInContainer content={tooltipText}>{externalLink}</Tooltip> : externalLink
+    return tooltipText ? <HoverTooltip wrapInContainer content={tooltipText}>{externalLink}</HoverTooltip> : externalLink
   }
 
   if (tooltipText) {
-    return <Tooltip wrapInContainer  content={tooltipText}>{content}</Tooltip>
+    return <HoverTooltip wrapInContainer  content={tooltipText}>{content}</HoverTooltip>
   }
 
   return content

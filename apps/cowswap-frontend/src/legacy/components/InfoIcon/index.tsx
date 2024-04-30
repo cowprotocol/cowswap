@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 
 import { UI } from '@cowprotocol/ui'
-import { Tooltip, TooltipContainer } from '@cowprotocol/ui'
+import { HoverTooltip, TooltipContainer } from '@cowprotocol/ui'
 
 import { Info, HelpCircle } from 'react-feather'
 import styled from 'styled-components/macro'
@@ -40,7 +40,7 @@ export function InfoIcon({ content, iconType = 'info', className }: InfoIconProp
   const tooltipContent = <StyledTooltipContainer>{content}</StyledTooltipContainer>
 
   return (
-    <Tooltip wrapInContainer={false} content={tooltipContent} placement="bottom">
+    <HoverTooltip wrapInContainer={false} content={tooltipContent} placement="bottom">
       <StyledIcon>
         {iconType === 'info' ? (
           <Info className={className} size={16} />
@@ -48,6 +48,6 @@ export function InfoIcon({ content, iconType = 'info', className }: InfoIconProp
           <HelpCircle className={className} size={16} />
         )}
       </StyledIcon>
-    </Tooltip>
+    </HoverTooltip>
   )
 }

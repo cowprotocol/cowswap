@@ -1,5 +1,5 @@
 import { AutoRow } from '@cowprotocol/ui'
-import { Tooltip } from '@cowprotocol/ui'
+import { HoverTooltip } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
@@ -37,12 +37,12 @@ export const FeesDiscount: React.FC<FeesDiscountProps> = ({ onClick, ...boxProps
       <Text fontWeight={500} fontSize={14} alignItems={'center'}>
         <AutoRow>
           <Trans>Fees discount</Trans>{' '}
-          <Tooltip
+          <HoverTooltip
             content={SUBSIDY_INFO_MESSAGE + '. Click on the discount button on the right for more info.'}
             wrapInContainer
           >
             <StyledInfoIcon />
-          </Tooltip>
+          </HoverTooltip>
         </AutoRow>
       </Text>
 

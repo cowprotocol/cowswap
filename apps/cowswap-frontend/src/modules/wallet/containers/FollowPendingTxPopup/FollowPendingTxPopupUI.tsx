@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { Command } from '@cowprotocol/types'
-import { TooltipText, TextTooltipProps, UI } from '@cowprotocol/ui'
+import { Tooltip, TooltipProps, UI } from '@cowprotocol/ui'
 
 import { X } from 'react-feather'
 import { Text } from 'rebass'
@@ -13,7 +13,7 @@ interface PopupContentProps {
   onCheck: Command
   onClose: Command
 }
-type FollowingTxPopupProps = Omit<TextTooltipProps, 'text'> & PopupContentProps
+type FollowingTxPopupProps = Omit<TooltipProps, 'content'> & PopupContentProps
 
 const IconClose = styled(X)`
   position: absolute;
@@ -33,7 +33,7 @@ const IconClose = styled(X)`
   }
 `
 
-const TooltipWrapper = styled(TooltipText)`
+const TooltipWrapper = styled(Tooltip)`
   > .arrow- {
     z-index: 1;
   }
@@ -124,10 +124,15 @@ export function FollowPendingTxPopupUI({
   ...rest
 }: FollowingTxPopupProps): JSX.Element {
   return (
-    <TooltipWrapper show={show} placement="left" text={<PopupContent onClose={onClose} onCheck={onCheck} />} {...rest}>
-      <div onClick={onClose} onKeyDown={onClose} role="button" tabIndex={0}>
-        {children}
-      </div>
+    <TooltipWrapper 
+      show={show} 
+      placement="left" 
+      wrapInContainer 
+      content={<PopupContent onClose={onClose} onCheck={onCheck} />} 
+      {...rest}>
+        <div onClick={onClose} onKeyDown={onClose} role="button" tabIndex={0}>
+          {children}
+        </div>
     </TooltipWrapper>
   )
 }

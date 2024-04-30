@@ -1,5 +1,5 @@
 
-import { ButtonPrimary, ButtonSize, Tooltip } from '@cowprotocol/ui'
+import { ButtonPrimary, ButtonSize, HoverTooltip } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import { HelpCircle } from 'react-feather'
@@ -11,7 +11,7 @@ const Container = styled.div`
   gap: 10px;
 `
 
-const TooltipWrapper = styled(Tooltip)`
+const TooltipWrapper = styled(HoverTooltip)`
   width: 100%;
   color: red !important;
   z-index: 9876;

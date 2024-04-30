@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 
 import QuestionImage from '@cowprotocol/assets/svg/question.svg'
-import { Tooltip, TooltipProps, UI } from '@cowprotocol/ui'
+import { HoverTooltip, HoverTooltipProps, UI } from '@cowprotocol/ui'
 import { renderTooltip } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
@@ -41,7 +41,7 @@ const QuestionHelperContainer = styled.span`
 `
 
 
-interface QuestionTooltipProps extends Omit<TooltipProps, 'QuestionMark'| 'children' | 'content'> {
+interface QuestionTooltipProps extends Omit<HoverTooltipProps, 'QuestionMark'| 'children' | 'content'> {
   text: ReactNode
   Icon?: JSX.Element
 }
@@ -59,11 +59,11 @@ export default function QuestionTooltip({ text, Icon, className, ...props }: Que
 
   return (
     <QuestionHelperContainer className={className}>
-      <Tooltip {...props} content={content} wrapInContainer>
+      <HoverTooltip {...props} content={content} wrapInContainer>
         <QuestionWrapper>
           <QuestionMark />
         </QuestionWrapper>
-      </Tooltip>
+      </HoverTooltip>
     </QuestionHelperContainer>
   )
 }

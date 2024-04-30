@@ -18,7 +18,7 @@ import {
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
 import { ButtonSize, TokenAmount, ButtonPrimary } from '@cowprotocol/ui'
-import { Tooltip } from '@cowprotocol/ui'
+import { HoverTooltip } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
 
@@ -141,7 +141,7 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allo
             <i>COW vesting from locked GNO</i>
             <b>
               <TokenAmount amount={allocated} defaultValue="0" tokenSymbol={allocated.currency} />
-              <Tooltip
+              <HoverTooltip
                 wrapInContainer
                 content={
                   <VestingBreakdown>
@@ -161,7 +161,7 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allo
                 }
               >
                 <HelpCircle size={14} />
-              </Tooltip>
+              </HoverTooltip>
             </b>
           </span>
         </BalanceDisplay>
@@ -169,7 +169,7 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allo
           <BalanceDisplay titleSize={18} altColor={true}>
             <i>
               Claimable{' '}
-              <Tooltip
+              <HoverTooltip
                 wrapInContainer
                 content={
                   <div>
@@ -182,7 +182,7 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allo
                 }
               >
                 <HelpCircle size={14} />
-              </Tooltip>
+              </HoverTooltip>
             </i>
             <b>
               <TokenAmount amount={vested.subtract(claimed)} defaultValue="0" />

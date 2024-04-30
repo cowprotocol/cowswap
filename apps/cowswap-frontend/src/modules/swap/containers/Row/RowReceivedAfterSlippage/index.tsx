@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 
 import { getMinimumReceivedTooltip } from '@cowprotocol/common-utils'
-import { Tooltip, RowFixed, TokenAmount } from '@cowprotocol/ui'
+import { HoverTooltip, RowFixed, TokenAmount } from '@cowprotocol/ui'
 import { Percent, TradeType } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
@@ -48,9 +48,9 @@ export function RowReceivedAfterSlippage({
             )}
           </TextWrapper>
         )}
-        <Tooltip content={getMinimumReceivedTooltip(allowedSlippage, isExactIn)} wrapInContainer>
+        <HoverTooltip content={getMinimumReceivedTooltip(allowedSlippage, isExactIn)} wrapInContainer>
           <StyledInfoIcon size={16} />
-        </Tooltip>
+        </HoverTooltip>
       </RowFixed>
 
       <TextWrapper textAlign="right">{highlightAmount ? <b>{Amount}</b> : Amount}</TextWrapper>
