@@ -1,10 +1,12 @@
-import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
+import { ReactNode, useCallback, useRef, useState } from 'react'
 
 import styled from 'styled-components'
 
 import Popover, { PopoverProps } from '../Popover'
 
 import { Command } from '@cowprotocol/types'
+
+const TOOLTIP_CLOSE_DELAY = 300 // in milliseconds
 
 export const TooltipContainer = styled.div`
   max-width: 320px;
@@ -33,16 +35,9 @@ export function TooltipContent({ content, wrap = false, ...rest }: TooltipConten
   return <Popover content={wrap ? <TooltipContainer>{content}</TooltipContainer> : content} {...rest} />
 }
 
-export function MouseoverTooltip({ children, ...rest }: Omit<TooltipProps, 'show'>) {
-  const [show, setShow] = useState(false)
-  const open = useCallback(() => setShow(true), [setShow])
-  const close = useCallback(() => setShow(false), [setShow])
+export function MouseoverTooltip({ children, text, ...rest }: Omit<TooltipProps, 'show'>) {
   return (
-    <Tooltip {...rest} show={show}>
-      <div onMouseEnter={open} onMouseLeave={close}>
-        {children}
-      </div>
-    </Tooltip>
+    <MouseoverTooltipContent content={text} {...rest} >{children}</MouseoverTooltipContent>
   )
 }
 
@@ -53,8 +48,8 @@ export function MouseoverTooltipContent({
   disableHover,
   ...rest
 }: Omit<TooltipContentProps, 'show'>) {
-  const [sticky, setSticky] = useState(false)
   const [show, setShow] = useState(false)
+  const cancelCloseRef = useRef<Command | null>()
 
   const divRef = useRef<HTMLDivElement>(null);
   const open = useCallback(() => {
@@ -62,54 +57,54 @@ export function MouseoverTooltipContent({
     onOpen?.()
   }, [onOpen])
 
-  const close = useCallback((force = false) => {
-    if (!sticky || force) {
+  // Close the tooltip
+  const close = useCallback((eager = false) => {      
+    // Cancel any previous scheduled close
+    if (cancelCloseRef.current) {
+      cancelCloseRef.current() 
+    }
+
+    const closeNow = () => {
+      cancelCloseRef.current = null
       setShow(false)
     }
-  }, [setShow, sticky])
 
-  const toggleSticky = useCallback<React.MouseEventHandler<HTMLDivElement>>((event) => {
-    event.stopPropagation()
-    if (show) {
-      setSticky(sticky => {
-        if (sticky) {
-          // Tooltip was visible, but sticky. Closing it.
-          close(true)
-          return false
-        } else {
-          // Tooltip was visible, and not sticky. Making it sticky.
-          return true
-        }
-      })      
+    if (eager) {
+      // Close eagerly
+      closeNow()
     } else {
-      // Tooltip was not visible. Making it visible and sticky.
-      setSticky(true)
-      open()
-    }    
-  }, [close, open, setSticky, show])
+      // Close after a delay
+      const closeTimeout = setTimeout(closeNow, TOOLTIP_CLOSE_DELAY)
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (sticky && divRef.current && !divRef.current.contains(event.target as Node)) {
-        setSticky(false)
-        setShow(false)
+      cancelCloseRef.current = () => {
+        cancelCloseRef.current = null
+        clearTimeout(closeTimeout)
       }
-    };
+    }
 
-    document.addEventListener('click', handleClickOutside);
-    return () => {
-      document.removeEventListener('click', handleClickOutside);
-    };
-  }, [toggleSticky, setShow, sticky]);
+    return () => cancelCloseRef.current && cancelCloseRef.current()
+  }, [setShow])
 
-  
+  // Stop the delayed close when hovering the tooltip
+  const stopDelayedClose = useCallback(() => {
+    // Cancel any previous scheduled close
+    if (cancelCloseRef.current) {
+      cancelCloseRef.current()
+    }
+  }, [])
 
-  const c = disableHover ? null : <div ref={divRef}>{content}</div>
+  const toggleTooltip = useCallback(() => {
+    if (show) {
+      close(true)
+    } else {
+      open()
+    }
+  }, [close, open, show])
 
+  const tooltipContent = disableHover ? null : <div ref={divRef} onMouseEnter={stopDelayedClose} onMouseLeave={() => close()}>{content}</div>
   return (
-    <TooltipContent {...rest} show={show} content={c}>
-      <div onMouseEnter={open} onMouseLeave={() => close()} onClick={toggleSticky} >
-
+    <TooltipContent {...rest} show={show} content={tooltipContent}>
+      <div onMouseEnter={open} onMouseLeave={() => close()} onClick={toggleTooltip}>
         {children}
       </div>
     </TooltipContent>
