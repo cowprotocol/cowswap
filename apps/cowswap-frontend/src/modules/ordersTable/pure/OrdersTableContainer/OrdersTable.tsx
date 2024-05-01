@@ -2,7 +2,8 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import iconOrderExecution from '@cowprotocol/assets/cow-swap/orderExecution.svg'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { UI } from '@cowprotocol/ui'
+import { QuestionTooltipIconWrapper, UI } from '@cowprotocol/ui'
+import { HelpTooltip } from '@cowprotocol/ui'
 import { Currency, Price } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
@@ -10,7 +11,6 @@ import { X } from 'react-feather'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
-import QuestionHelper, { QuestionWrapper } from 'legacy/components/QuestionHelper'
 
 import { PendingOrdersPrices } from 'modules/orders/state/pendingOrdersPricesAtom'
 import { SpotPricesKeyParams } from 'modules/orders/state/spotPricesAtom'
@@ -97,7 +97,7 @@ const HeaderElement = styled.div<{ doubleRow?: boolean; hasBackground?: boolean 
     }
   `}
 
-  ${QuestionWrapper} {
+  ${QuestionTooltipIconWrapper} {
     opacity: 0.5;
     transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
 
@@ -320,7 +320,7 @@ export function OrdersTable({
               <HeaderElement doubleRow>
                 <span>
                   <Trans>
-                    Order executes at <QuestionHelper text={<RateTooltipHeader />} />
+                    Order executes at <HelpTooltip text={<RateTooltipHeader />} />
                   </Trans>
                 </span>
                 <i>
@@ -341,7 +341,7 @@ export function OrdersTable({
               <HeaderElement hasBackground>
                 <span>
                   <Trans>
-                    Executes at <QuestionHelper text={<RateTooltipHeader isOpenOrdersTab={isOpenOrdersTab} />} />
+                    Executes at <HelpTooltip text={<RateTooltipHeader isOpenOrdersTab={isOpenOrdersTab} />} />
                   </Trans>
                 </span>
               </HeaderElement>
@@ -351,7 +351,7 @@ export function OrdersTable({
               <HeaderElement>
                 <span>
                   <Trans>
-                    Execution price <QuestionHelper text={<RateTooltipHeader />} />
+                    Execution price <HelpTooltip text={<RateTooltipHeader />} />
                   </Trans>
                 </span>
               </HeaderElement>

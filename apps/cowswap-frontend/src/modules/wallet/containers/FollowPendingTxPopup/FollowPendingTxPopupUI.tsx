@@ -13,7 +13,7 @@ interface PopupContentProps {
   onCheck: Command
   onClose: Command
 }
-type FollowingTxPopupProps = Omit<TooltipProps, 'text'> & PopupContentProps
+type FollowingTxPopupProps = Omit<TooltipProps, 'content'> & PopupContentProps
 
 const IconClose = styled(X)`
   position: absolute;
@@ -124,10 +124,15 @@ export function FollowPendingTxPopupUI({
   ...rest
 }: FollowingTxPopupProps): JSX.Element {
   return (
-    <TooltipWrapper show={show} placement="left" text={<PopupContent onClose={onClose} onCheck={onCheck} />} {...rest}>
-      <div onClick={onClose} onKeyDown={onClose} role="button" tabIndex={0}>
-        {children}
-      </div>
+    <TooltipWrapper 
+      show={show} 
+      placement="left" 
+      wrapInContainer 
+      content={<PopupContent onClose={onClose} onCheck={onCheck} />} 
+      {...rest}>
+        <div onClick={onClose} onKeyDown={onClose} role="button" tabIndex={0}>
+          {children}
+        </div>
     </TooltipWrapper>
   )
 }

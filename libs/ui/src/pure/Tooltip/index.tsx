@@ -1,10 +1,11 @@
-import { ReactNode, useCallback, useRef, useState } from 'react'
+import { MouseEvent, ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 
 import styled from 'styled-components'
 
 import Popover, { PopoverProps } from '../Popover'
 
 import { Command } from '@cowprotocol/types'
+import { isMobile } from '@cowprotocol/common-utils'
 
 const TOOLTIP_CLOSE_DELAY = 300 // in milliseconds
 
@@ -15,50 +16,64 @@ export const TooltipContainer = styled.div`
   word-break: break-word;
 `
 
-export interface TooltipProps extends Omit<PopoverProps, 'content' | 'PopoverContainer' | 'Arrow'> {
-  text: ReactNode
-}
-
-interface TooltipContentProps extends Omit<PopoverProps, 'content' | 'PopoverContainer' | 'Arrow'> {
+export interface HoverTooltipProps extends Omit<PopoverProps, 'content' | 'show'>  {
+  /**
+   * The content of the tooltip
+   */
   content: ReactNode
+
+  /**
+   * Callback to be called when the tooltip is opened
+   */
   onOpen?: Command
-  // whether to wrap the content in a `TooltipContainer`
-  wrap?: boolean
-  disableHover?: boolean // disable the hover and content display
+  
+  /**
+   * Whether to wrap the content in a container
+   */
+  wrapInContainer?: boolean
+
+  /**
+   * Whether to disable the hover and content display
+   */
+  disableHover?: boolean
 }
 
-export function Tooltip({ text, className, ...rest }: TooltipProps) {
-  return <Popover className={className} content={<TooltipContainer>{text}</TooltipContainer>} {...rest} />
-}
+/**
+ * Tooltip that appears when hovering over the children
+ * 
+ * @see HelpTooltip as an alternative if you need to show a tooltip with a question mark icon (or icon of your choice)
+ * @see InfoTooltip as an alternative if you need to show a tooltip with an info icon
+ * @see Tooltip as an alternative if you need to control when the tooltip is shown 
+ * 
+ * @param props 
+ * @returns 
+ */
+export function HoverTooltip(props: HoverTooltipProps) {
+  const {
+    content,
+    children,
+    onOpen = undefined,
+    disableHover,
+    wrapInContainer = false,
+    ...rest
+  } = props
 
-export function TooltipContent({ content, wrap = false, ...rest }: TooltipContentProps) {
-  return <Popover content={wrap ? <TooltipContainer>{content}</TooltipContainer> : content} {...rest} />
-}
+  // { text, className, ...rest }: TooltipProps
 
-export function MouseoverTooltip({ children, text, ...rest }: Omit<TooltipProps, 'show'>) {
-  return (
-    <MouseoverTooltipContent content={text} {...rest} >{children}</MouseoverTooltipContent>
-  )
-}
-
-export function MouseoverTooltipContent({
-  content,
-  children,
-  onOpen = undefined,
-  disableHover,
-  ...rest
-}: Omit<TooltipContentProps, 'show'>) {
   const [show, setShow] = useState(false)
   const cancelCloseRef = useRef<Command | null>()
 
   const divRef = useRef<HTMLDivElement>(null);
-  const open = useCallback(() => {
+  const open = useCallback((e: MouseEvent<HTMLDivElement>) => {
+    e.preventDefault()
     setShow(true)
     onOpen?.()
   }, [onOpen])
 
   // Close the tooltip
-  const close = useCallback((eager = false) => {      
+  const close = useCallback((e: MouseEvent<HTMLDivElement> | null, eager = false) => {      
+    e && e.preventDefault()
+
     // Cancel any previous scheduled close
     if (cancelCloseRef.current) {
       cancelCloseRef.current() 
@@ -93,23 +108,78 @@ export function MouseoverTooltipContent({
     }
   }, [])
 
-  const toggleTooltip = useCallback(() => {
+  const toggleTooltip = useCallback((e: MouseEvent<HTMLDivElement>) => {
+    e.preventDefault()
     if (show) {
-      close(true)
+      close(e, true)
     } else {
-      open()
+      open(e)
     }
   }, [close, open, show])
 
-  const tooltipContent = disableHover ? null : <div ref={divRef} onMouseEnter={stopDelayedClose} onMouseLeave={() => close()}>{content}</div>
+   // Hide tooltip when scrolling
+   useEffect(() => {
+    const handleScroll = () => {
+      if (show) {
+        close(null, true)
+      }
+    }
+
+    document.addEventListener('scroll', handleScroll);
+    return () => {
+      document.removeEventListener('scroll', handleScroll);
+    }
+  }, [show])
+
+  
+  const tooltipContent = disableHover ? null : (
+    <div ref={divRef} onMouseEnter={stopDelayedClose} onMouseLeave={close}>
+      {wrapInContainer ? <TooltipContainer>{content}</TooltipContainer> : content}
+    </div>
+  )
   return (
-    <TooltipContent {...rest} show={show} content={tooltipContent}>
-      <div onMouseEnter={open} onMouseLeave={() => close()} onClick={toggleTooltip}>
+    <Popover show={show} content={tooltipContent} {...rest}> 
+      <div onMouseEnter={open} onMouseLeave={close} onClick={isMobile ? undefined : toggleTooltip}>
         {children}
       </div>
-    </TooltipContent>
+    </Popover>
   )
 }
+
+export interface TooltipProps extends Omit<PopoverProps, 'content'> {
+  /**
+   * Shows the tooltip
+   */
+  show: boolean,
+
+  /**
+   * Whether to wrap the content in a container
+   */
+  wrapInContainer?: boolean
+
+  /**
+   * The content of the tooltip
+   */
+  content: ReactNode
+}
+
+
+/**
+ * Tooltip that displays text when the passed `show` prop is true.
+ * 
+ * IMPORTANT: Don't use it if you need to show the tooltip when you hover on one element. For that use `HoverTooltip`
+ * @see HoverTooltip as an alternative if you need to show the tooltip on hover
+ */
+export function Tooltip({ content, className, wrapInContainer, ...rest }: TooltipProps) {  
+  return (
+    <Popover 
+      className={className} 
+      content={wrapInContainer ? <TooltipContainer>{content}</TooltipContainer> : content} 
+      {...rest} 
+    />
+  )
+}
+
 
 export function renderTooltip(tooltip: ReactNode | ((params?: any) => ReactNode), params?: any): ReactNode {
   if (typeof tooltip === 'function') {
