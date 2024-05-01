@@ -1,10 +1,11 @@
-import { ReactNode, useCallback, useRef, useState } from 'react'
+import { MouseEvent, ReactNode, useCallback, useRef, useState } from 'react'
 
 import styled from 'styled-components'
 
 import Popover, { PopoverProps } from '../Popover'
 
 import { Command } from '@cowprotocol/types'
+import { isMobile } from '@cowprotocol/common-utils'
 
 const TOOLTIP_CLOSE_DELAY = 300 // in milliseconds
 
@@ -63,13 +64,16 @@ export function HoverTooltip(props: HoverTooltipProps) {
   const cancelCloseRef = useRef<Command | null>()
 
   const divRef = useRef<HTMLDivElement>(null);
-  const open = useCallback(() => {
+  const open = useCallback((e: MouseEvent<HTMLDivElement>) => {
+    e.preventDefault()
     setShow(true)
     onOpen?.()
   }, [onOpen])
 
   // Close the tooltip
-  const close = useCallback((eager = false) => {      
+  const close = useCallback((e: MouseEvent<HTMLDivElement>, eager = false) => {      
+    e.preventDefault()
+
     // Cancel any previous scheduled close
     if (cancelCloseRef.current) {
       cancelCloseRef.current() 
@@ -104,23 +108,24 @@ export function HoverTooltip(props: HoverTooltipProps) {
     }
   }, [])
 
-  const toggleTooltip = useCallback(() => {
+  const toggleTooltip = useCallback((e: MouseEvent<HTMLDivElement>) => {
+    e.preventDefault()
     if (show) {
-      close(true)
+      close(e, true)
     } else {
-      open()
+      open(e)
     }
   }, [close, open, show])
 
   
   const tooltipContent = disableHover ? null : (
-    <div ref={divRef} onMouseEnter={stopDelayedClose} onMouseLeave={() => close()}>
+    <div ref={divRef} onMouseEnter={stopDelayedClose} onMouseLeave={close}>
       {wrapInContainer ? <TooltipContainer>{content}</TooltipContainer> : content}
     </div>
   )
   return (
     <Popover show={show} content={tooltipContent} {...rest}> 
-      <div onMouseEnter={open} onMouseLeave={() => close()} onClick={toggleTooltip}>
+      <div onMouseEnter={open} onMouseLeave={close} onClick={isMobile ? undefined : toggleTooltip}>
         {children}
       </div>
     </Popover>
