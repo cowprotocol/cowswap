@@ -22,6 +22,7 @@ import {
 
 const swrOptions: SWRConfiguration = {
   refreshInterval: ms`60s`,
+  focusThrottleInterval: ms`30s`,
   refreshWhenHidden: false,
   refreshWhenOffline: false,
   revalidateOnFocus: true,
