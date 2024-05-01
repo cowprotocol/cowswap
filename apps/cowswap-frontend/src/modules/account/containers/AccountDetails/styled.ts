@@ -1,5 +1,5 @@
 import { Command } from '@cowprotocol/types'
-import { ButtonSecondary } from '@cowprotocol/ui'
+import { ButtonSecondary, QuestionTooltipIconWrapper } from '@cowprotocol/ui'
 import { ExternalLink, StyledLink } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 
@@ -8,7 +8,6 @@ import styled from 'styled-components/macro'
 
 import { YellowCard } from 'legacy/components/Card'
 import { CopyIcon, TransactionStatusText } from 'legacy/components/Copy'
-import { QuestionWrapper } from 'legacy/components/QuestionHelper'
 
 import {
   StatusLabelWrapper,
@@ -569,7 +568,7 @@ export const SurplusCardWrapper = styled.div`
     margin: 3px auto 0;
   }
 
-  ${QuestionWrapper} {
+  ${QuestionTooltipIconWrapper} {
     opacity: 0.5;
     transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
 

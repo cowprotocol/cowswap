@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
 import { Command } from '@cowprotocol/types'
-import { MouseoverTooltipContent } from '@cowprotocol/ui'
+import { HoverTooltip } from '@cowprotocol/ui'
 import { Fraction } from '@uniswap/sdk-core'
 
 import { AlertTriangle } from 'react-feather'
@@ -159,9 +159,9 @@ export const HighFeeWarning = (props: WarningProps) => {
       <div>
         <AlertTriangle size={24} />
         Costs exceed {level}% of the swap amount!{' '}
-        <MouseoverTooltipContent wrap content={<HighFeeWarningMessage feePercentage={feePercentage} />}>
+        <HoverTooltip wrapInContainer content={<HighFeeWarningMessage feePercentage={feePercentage} />}>
           <ErrorStyledInfoIcon />
-        </MouseoverTooltipContent>{' '}
+        </HoverTooltip>{' '}
       </div>
 
       {acceptWarningCb && (

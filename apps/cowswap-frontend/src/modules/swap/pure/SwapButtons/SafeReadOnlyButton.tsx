@@ -1,6 +1,5 @@
-import React, { useCallback, useState } from 'react'
 
-import { ButtonPrimary, ButtonSize, Tooltip } from '@cowprotocol/ui'
+import { ButtonPrimary, ButtonSize, HoverTooltip } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import { HelpCircle } from 'react-feather'
@@ -12,44 +11,29 @@ const Container = styled.div`
   gap: 10px;
 `
 
+const TooltipWrapper = styled(HoverTooltip)`
+  width: 100%;
+  color: red !important;
+  z-index: 9876;
+`
+
 export function SafeReadOnlyButton() {
-  const [show, setShow] = useState(false)
-  const [mouseLeaveTimeout, setMouseLeaveTimeout] = useState<NodeJS.Timeout | null>(null)
-
-  const open = useCallback(() => {
-    setShow(true)
-    if (mouseLeaveTimeout) {
-      clearTimeout(mouseLeaveTimeout)
-    }
-  }, [setShow, mouseLeaveTimeout])
-
-  const close = useCallback(() => {
-    const timeout = setTimeout(() => {
-      setShow(false)
-    }, 400)
-
-    setMouseLeaveTimeout(timeout)
-  }, [setShow])
-
   return (
-    <div onMouseEnter={open} onMouseLeave={close}>
-      <ButtonPrimary disabled={true} buttonSize={ButtonSize.BIG} title="Connect signer">
-        <Tooltip
-          show={show}
-          text={
+      <TooltipWrapper wrapInContainer
+          content={
             <div>
               Your Safe is not connected with a signer.
               <br />
               To place an order, you must connect using a signer of the Safe and refresh the page.
             </div>
           }
-        >
+        >          
+        <ButtonPrimary disabled={true} buttonSize={ButtonSize.BIG} title="Connect signer">
           <Container>
-            <Trans>Connect signer</Trans>
-            <HelpCircle size={18} />
-          </Container>
-        </Tooltip>
-      </ButtonPrimary>
-    </div>
+              <Trans>Connect signer</Trans>
+              <HelpCircle size={18} />
+            </Container>        
+        </ButtonPrimary>
+      </TooltipWrapper>
   )
 }

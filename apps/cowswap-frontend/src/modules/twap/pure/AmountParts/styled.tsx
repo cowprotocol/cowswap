@@ -1,9 +1,7 @@
-import { FiatAmount, TokenAmount } from '@cowprotocol/ui'
+import { FiatAmount, QuestionTooltipIconWrapper, TokenAmount } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
-
-import { QuestionWrapper } from 'legacy/components/QuestionHelper'
 
 import { TradeWidgetFieldBox, TradeWidgetFieldLabel } from 'modules/trade/pure/TradeWidgetField/styled'
 
@@ -24,7 +22,7 @@ export const Part = styled(TradeWidgetFieldBox)`
 `
 
 export const Label = styled(TradeWidgetFieldLabel)`
-  ${QuestionWrapper} {
+  ${QuestionTooltipIconWrapper} {
     opacity: 0.5;
     transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
 

@@ -1,8 +1,7 @@
-import { UI } from '@cowprotocol/ui'
+import { QuestionTooltipIconWrapper, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-import { QuestionWrapper } from 'legacy/components/QuestionHelper'
 
 import { RateInfo } from 'common/pure/RateInfo'
 
@@ -16,7 +15,7 @@ export const Row = styled.div`
     grid-gap: 6px;
   `}
 
-  ${QuestionWrapper} {
+  ${QuestionTooltipIconWrapper} {
     opacity: 0.5;
     transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
 

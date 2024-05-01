@@ -1,4 +1,4 @@
-import { InfoIcon } from 'legacy/components/InfoIcon'
+import { InfoTooltip } from '@cowprotocol/ui'
 
 import * as styledEl from './styled'
 
@@ -13,7 +13,7 @@ export function FieldLabel({ label, tooltip, prefix }: Props) {
     <styledEl.Label>
       {prefix}
       <styledEl.LabelText>{label}</styledEl.LabelText>
-      {tooltip && <InfoIcon content={tooltip} />}
+      {tooltip && <InfoTooltip content={tooltip} />}
     </styledEl.Label>
   )
 }

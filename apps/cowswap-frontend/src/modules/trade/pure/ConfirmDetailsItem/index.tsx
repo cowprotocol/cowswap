@@ -1,10 +1,10 @@
 import { ReactNode } from 'react'
 
 import { RowFixed } from '@cowprotocol/ui'
+import { InfoTooltip } from '@cowprotocol/ui'
 
 import { CornerDownRight } from 'react-feather'
 
-import { InfoIcon } from 'legacy/components/InfoIcon'
 
 import { TimelineDot } from 'modules/trade/pure/Row/styled'
 
@@ -32,7 +32,7 @@ export function ConfirmDetailsItem(props: ConfirmDetailsItemProps) {
         <Row>
           <RowFixed>
             {label && <Label labelOpacity={labelOpacity}>{label}</Label>}
-            {tooltip && <InfoIcon content={tooltip} />}
+            {tooltip && <InfoTooltip content={tooltip} />}
           </RowFixed>
 
           <Content>{children}</Content>

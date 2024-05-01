@@ -1,12 +1,12 @@
 import { ReactNode } from 'react'
 
 import { UI } from '@cowprotocol/ui'
+import { InfoTooltip } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import { AlertTriangle } from 'react-feather'
 import styled from 'styled-components/macro'
 
-import { InfoIcon } from 'legacy/components/InfoIcon'
 
 export enum TradeWarningType {
   LOW = 'LOW',
@@ -90,7 +90,7 @@ const AlertIcon = styled(AlertTriangle)`
   margin-right: 5px;
 `
 
-const StyledInfoIcon = styled(InfoIcon)`
+const StyledInfoIcon = styled(InfoTooltip)`
   opacity: 0.5;
 `
 
