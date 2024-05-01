@@ -2,7 +2,7 @@ import { SupportedChainId, mapSupportedNetworks } from '@cowprotocol/cow-sdk'
 import { Fraction, Token } from '@uniswap/sdk-core'
 
 import { RateLimitError, UnknownCurrencyError } from '../apis/errors'
-import { COINGECKO_PLATFORMS, getCoingeckoUsdPrice } from '../apis/getCoingeckoUsdPrice'
+import { getCoingeckoUsdPrice } from '../apis/getCoingeckoUsdPrice'
 import { getCowProtocolUsdPrice } from '../apis/getCowProtocolUsdPrice'
 import { DEFILLAMA_PLATFORMS, DEFILLAMA_RATE_LIMIT_TIMEOUT, getDefillamaUsdPrice } from '../apis/getDefillamaUsdPrice'
 
@@ -15,13 +15,8 @@ let defillamaRateLimitHitTimestamp: null | number = null
 const coingeckoUnknownCurrencies: Record<SupportedChainId, UnknownCurrencies> = mapSupportedNetworks({})
 const defillamaUnknownCurrencies: Record<SupportedChainId, UnknownCurrencies> = mapSupportedNetworks({})
 
-function getShouldSkipCoingecko(currency: Token): boolean {
-  return getShouldSkipPriceSource(
-    currency,
-    COINGECKO_PLATFORMS,
-    coingeckoUnknownCurrencies,
-    coingeckoRateLimitHitTimestamp
-  )
+function getShouldSkipCoingecko(_currency: Token): boolean {
+  return true
 }
 
 function getShouldSkipDefillama(currency: Token): boolean {
