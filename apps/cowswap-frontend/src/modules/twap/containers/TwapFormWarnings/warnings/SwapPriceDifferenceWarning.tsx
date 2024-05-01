@@ -49,7 +49,7 @@ export function SwapPriceDifferenceWarning({
     <InlineBanner bannerType={'savings'}>
       {isTwapBetter ? (
         <>
-        <strong>Maximizing Your Gains! </strong>
+          <strong>Maximizing Your Gains! </strong>
           <p>
             You could gain an extra{' '}
             <b>

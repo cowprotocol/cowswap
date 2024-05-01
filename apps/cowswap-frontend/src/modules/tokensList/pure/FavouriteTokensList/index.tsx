@@ -16,7 +16,7 @@ export function FavouriteTokensList(props: FavouriteTokensListProps) {
   return (
     <div>
       <styledEl.Header>
-        <h4>Favorite tokens</h4>        
+        <h4>Favorite tokens</h4>
         <HelpTooltip text="Your favorite saved tokens. Edit this list in your account page." />
       </styledEl.Header>
       <styledEl.List>
