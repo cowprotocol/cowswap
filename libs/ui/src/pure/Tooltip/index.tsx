@@ -1,4 +1,4 @@
-import { MouseEvent, ReactNode, useCallback, useRef, useState } from 'react'
+import { MouseEvent, ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 
 import styled from 'styled-components'
 
@@ -71,8 +71,8 @@ export function HoverTooltip(props: HoverTooltipProps) {
   }, [onOpen])
 
   // Close the tooltip
-  const close = useCallback((e: MouseEvent<HTMLDivElement>, eager = false) => {      
-    e.preventDefault()
+  const close = useCallback((e: MouseEvent<HTMLDivElement> | null, eager = false) => {      
+    e && e.preventDefault()
 
     // Cancel any previous scheduled close
     if (cancelCloseRef.current) {
@@ -116,6 +116,20 @@ export function HoverTooltip(props: HoverTooltipProps) {
       open(e)
     }
   }, [close, open, show])
+
+   // Hide tooltip when scrolling
+   useEffect(() => {
+    const handleScroll = () => {
+      if (show) {
+        close(null, true)
+      }
+    }
+
+    document.addEventListener('scroll', handleScroll);
+    return () => {
+      document.removeEventListener('scroll', handleScroll);
+    }
+  }, [show])
 
   
   const tooltipContent = disableHover ? null : (
