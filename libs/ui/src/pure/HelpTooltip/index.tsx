@@ -1,7 +1,8 @@
 import { ReactNode } from 'react'
 
+import { UI } from '../../enum'
+import { HoverTooltip, HoverTooltipProps, renderTooltip } from '../Tooltip'
 import QuestionImage from '@cowprotocol/assets/svg/question.svg'
-import { HoverTooltip, HoverTooltipProps, UI, renderTooltip } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
