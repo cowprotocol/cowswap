@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.67.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.66.0...cowswap-v1.67.0) (2024-05-01)
+
+
+### Features
+
+* allow to modify the label of the fee and its tooltip ([a5dd0ba](https://github.com/cowprotocol/cowswap/commit/a5dd0baf19e6831fc135dd6c089e66ea0edd14f4))
+* hide tooltips on scroll ([8d68cb1](https://github.com/cowprotocol/cowswap/commit/8d68cb1a8e58a9d8fd1dffc57143828c55e3222e))
+* improve UX for tooltips on mobile ([8d68cb1](https://github.com/cowprotocol/cowswap/commit/8d68cb1a8e58a9d8fd1dffc57143828c55e3222e))
+* unify all tooltips so the behavior is coherent ([8d68cb1](https://github.com/cowprotocol/cowswap/commit/8d68cb1a8e58a9d8fd1dffc57143828c55e3222e))
+
 ## [1.66.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.65.2...cowswap-v1.66.0) (2024-04-23)
 
 

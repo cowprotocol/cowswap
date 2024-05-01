@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.1.0](https://github.com/cowprotocol/cowswap/compare/wallet-v1.0.2...wallet-v1.1.0) (2024-05-01)
+
+
+### Features
+
+* hide tooltips on scroll ([8d68cb1](https://github.com/cowprotocol/cowswap/commit/8d68cb1a8e58a9d8fd1dffc57143828c55e3222e))
+* improve UX for tooltips on mobile ([8d68cb1](https://github.com/cowprotocol/cowswap/commit/8d68cb1a8e58a9d8fd1dffc57143828c55e3222e))
+* unify all tooltips so the behavior is coherent ([8d68cb1](https://github.com/cowprotocol/cowswap/commit/8d68cb1a8e58a9d8fd1dffc57143828c55e3222e))
+
 ## [1.0.2](https://github.com/cowprotocol/cowswap/compare/wallet-v1.0.1...wallet-v1.0.2) (2024-04-18)
 
 
