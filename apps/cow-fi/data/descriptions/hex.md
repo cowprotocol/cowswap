@@ -1,0 +1,9 @@
+<h2>What is HEX (HEX)?</h2>
+<p>Launched in 2019 by Richard Heart, HEX is a unique blockchain innovation that introduces the concept of a Certificate of Deposit (CoD) to the crypto world. Moo! What does that mean for you? Well, it means HEX operates as a blockchain-based time deposit, where your HEX tokens earn interest over time. It's built on the Ethereum network as an ERC20 token, giving it the power and security of this well-established blockchain.</p>
+
+<p>Users can stake their HEX tokens to earn a share of the new HEX coin issuance or inflation. HEX smart contract rewards users for staking larger amounts for extended periods. But beware of the bull horns! Ending a stake early might attract penalties. HEX was also distributed to Bitcoin holders at a ratio of 10,000 HEX per 1 BTC, offering a fantastic way for BTC holders to diversify their portfolio.</p>
+
+<p>The HEX smart contract adds a twist to the traditional CoD: At the end of the first year, any HEX coins unclaimed by Bitcoin holders were distributed among active HEX stakers. This brilliant move not only encouraged wider adoption of HEX but also boosted the overall value of the ecosystem. Moving forward, HEX aims to maintain a maximum annual inflation rate of 3.69%, keeping it attractive as a store of value.</p>
+
+<h3>Where can you swap or trade HEX (HEX)?</h3>
+<p>Interested in time-locking your value with HEX? You can start your journey at <a href="https://swap.cow.fi/" rel="noopener" target="_blank">CoW Swap</a> - a Meta DEX aggregator that provides a seamless trading experience. Not only can you buy and sell HEX using gasless orders, but you can also take advantage of MEV (Maximal Extractable Value) protection. CoW Swap integrates multiple DEXes to ensure you get the most competitive prices, thereby acting as a DexAggregator of the DexAggregators. It's time to herd up and join the revolution in decentralized finance!</p>

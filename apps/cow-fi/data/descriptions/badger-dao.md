@@ -1,0 +1,11 @@
+<h2>What is Badger DAO (BADGER)?</h2>
+
+<p>Greetin's, folks! Have you ever heard of the Badger DAO, and it’s BADGER token? It's a neat little cattle in the cryptocurrency world that's aiming to bring Bitcoin into the Ethereum fold. The Badger DAO was created with a mission to develop an entire <a href="https://en.wikipedia.org/wiki/Decentralized_finance" rel="nofollow noreferrer noopener" target="_blank">DeFi</a> product ecosystem, with the unique twist of focusing on BTC as the main reserve asset, rather than ETH. In simple terms, it's looking to connect Bitcoin and Ethereum in ways never done before. Yeehaw!</p>
+
+<p>During its launch, two main products were introduced, namely Sett and DIGG. Sett is a DeFi aggregator, helping users earn yield by depositing tokenized BTC. On the other hand, DIGG is a synthetic Bitcoin on Ethereum’s blockchain, aiming to remove centralized third parties. This platform is all about collaboration and openness, with a decentralized community of developers (Badge Builders) dedicated to integrating Bitcoin across different smart contract platforms. And yes, it's an open source project - every code line is out in the open for all to see and use.</p>
+
+<p>Now, when it comes to the unique features of Badger DAO, the project takes a lot of pride in its community-driven approach. Before any products are developed, they're first pitched to, voted on, and approved by token holders. And, to make things more interesting, users can earn additional BADGER tokens as well as partake in developer mining. Who doesn't love a little extra moo-lah, right?</p>
+
+<h3>Where can you swap or trade Badger DAO (BADGER)?</h3>
+
+<p>Ready to jump into the fray? Here's the fun part! You can swap or trade BADGER tokens on CoW Swap. CoW Swap, aggregates all the DEXes where the BADGER token is available, allowing for gasless orders that are settled peer-to-peer or into any on-chain liquidity source. What's more, CoW Swap provides MEV protection, safeguarding your transactions against MEV Bots  who might want to squeeze a profit from transaction reordering. So, strap on your cowboy boots and start trading on <a href="https://swap.cow.fi/" rel="noopener" target="_blank">CoW Swap</a> now. Happy trading and moo-ving those tokens, partner!</p>
