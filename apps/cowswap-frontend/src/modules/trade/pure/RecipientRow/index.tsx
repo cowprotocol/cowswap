@@ -1,10 +1,10 @@
 import React from 'react'
 
 import { isAddress, shortenAddress } from '@cowprotocol/common-utils'
+import { InfoTooltip } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-import { InfoIcon } from 'legacy/components/InfoIcon'
 
 const Row = styled.div`
   display: flex;
@@ -30,7 +30,7 @@ export function RecipientRow(props: RecipientRowProps) {
         <Row>
           <div>
             <span>Recipient</span>{' '}
-            <InfoIcon
+            <InfoTooltip
               content={
                 'The tokens received from this order will automatically be sent to this address. No need to do a second transaction!'
               }

@@ -3,11 +3,11 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { formatInputAmount, getAddress, isFractionFalsy } from '@cowprotocol/common-utils'
 import { Loader, TokenSymbol } from '@cowprotocol/ui'
+import { HelpTooltip } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { RefreshCw } from 'react-feather'
 
-import QuestionHelper from 'legacy/components/QuestionHelper'
 
 import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
 import { useRateImpact } from 'modules/limitOrders/hooks/useRateImpact'
@@ -182,7 +182,7 @@ export function RateInput() {
             {isLoadingMarketRate ? (
               <Loader size="14px" style={{ margin: '0 0 -2px 7px' }} />
             ) : executionPrice ? (
-              <QuestionHelper
+              <HelpTooltip
                 text={
                   <ExecutionPriceTooltip
                     isInverted={isInverted}

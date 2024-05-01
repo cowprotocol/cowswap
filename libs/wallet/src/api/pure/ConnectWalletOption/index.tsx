@@ -2,10 +2,10 @@ import React from 'react'
 
 import styled from 'styled-components/macro'
 
-import { UI } from '@cowprotocol/ui'
+import { HoverTooltip, UI } from '@cowprotocol/ui'
 import { Command } from '@cowprotocol/types'
 
-import { MouseoverTooltip, ExternalLink } from '@cowprotocol/ui'
+import { ExternalLink } from '@cowprotocol/ui'
 
 const InfoCard = styled.button<{ isActive?: boolean }>`
   background-color: ${({ theme, isActive }) => (isActive ? theme.bg3 : theme.bg2)};
@@ -159,11 +159,11 @@ export function ConnectWalletOption({
 
   if (link) {
     const externalLink = <ExternalLink href={link}>{content}</ExternalLink>
-    return tooltipText ? <MouseoverTooltip text={tooltipText}>{externalLink}</MouseoverTooltip> : externalLink
+    return tooltipText ? <HoverTooltip wrapInContainer content={tooltipText}>{externalLink}</HoverTooltip> : externalLink
   }
 
   if (tooltipText) {
-    return <MouseoverTooltip text={tooltipText}>{content}</MouseoverTooltip>
+    return <HoverTooltip wrapInContainer  content={tooltipText}>{content}</HoverTooltip>
   }
 
   return content
