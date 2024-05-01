@@ -3,10 +3,8 @@ import { ErrorEvent as SentryErrorEvent } from '@sentry/types'
 
 export function beforeSend(event: SentryErrorEvent, _hint: Sentry.EventHint) {
   if (shouldIgnoreErrorBasedOnExtra(event)) {
-    console.debug('Sentry: Ignoring error based on extra', event)
     return null
   } else if (shouldIgnoreErrorBasedOnBreadcrumbs(event)) {
-    console.debug('Sentry: Ignoring error based on breadcrumbs', event)
     return null
   } else {
     return event
