@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.68.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.68.1...cowswap-v1.68.2) (2024-05-02)
+
+
+### Bug Fixes
+
+* fix ipfs relative paths ([#4400](https://github.com/cowprotocol/cowswap/issues/4400)) ([322d72a](https://github.com/cowprotocol/cowswap/commit/322d72a8e9eb4ef01402af6c7df4dc0cf0ab0428))
+
 ## [1.68.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.68.0...cowswap-v1.68.1) (2024-05-02)
 
 
