@@ -1,5 +1,9 @@
 import { CowEventListeners } from '@cowprotocol/events'
+
+import { IframeCowEventEmitter } from './IframeCowEventEmitter'
 import { IframeRpcProviderBridge } from './IframeRpcProviderBridge'
+import { IframeSafeSdkBridge } from './IframeSafeSdkBridge'
+import { WindowListener, listenToMessageFromWindow, postMessageToWindow, stopListeningWindowListener } from './messages'
 import {
   CowSwapWidgetParams,
   CowSwapWidgetProps,
@@ -8,9 +12,6 @@ import {
   WidgetMethodsListen,
 } from './types'
 import { buildWidgetPath, buildWidgetUrl, buildWidgetUrlQuery } from './urlUtils'
-import { IframeCowEventEmitter } from './IframeCowEventEmitter'
-import { WindowListener, listenToMessageFromWindow, postMessageToWindow, stopListeningWindowListener } from './messages'
-import { IframeSafeSdkBridge } from './IframeSafeSdkBridge'
 
 const DEFAULT_HEIGHT = '640px'
 const DEFAULT_WIDTH = '450px'
@@ -62,7 +63,7 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
   windowListeners.push(sendAppCodeOnActivation(iframeWindow, params.appCode))
 
   // 4. Handle widget height changes
-  windowListeners.push(listenToHeightChanges(iframe, params.height))
+  windowListeners.push(...listenToHeightChanges(iframe, params.height))
 
   // 5. Handle and forward widget events to the listeners
   const iFrameCowEventEmitter = new IframeCowEventEmitter(window, listeners)
@@ -167,8 +168,7 @@ function updateParams(contentWindow: Window, params: CowSwapWidgetParams, provid
   const search = buildWidgetUrlQuery(params).toString()
 
   // Omit theme from appParams
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { theme, ...appParams } = params
+  const { theme: _theme, ...appParams } = params
 
   postMessageToWindow(contentWindow, WidgetMethodsListen.UPDATE_PARAMS, {
     urlParams: {
@@ -206,8 +206,13 @@ function sendAppCodeOnActivation(contentWindow: Window, appCode: string | undefi
  * @param iframe - The HTMLIFrameElement of the widget.
  * @param defaultHeight - Default height for the widget.
  */
-function listenToHeightChanges(iframe: HTMLIFrameElement, defaultHeight = DEFAULT_HEIGHT): WindowListener {
-  return listenToMessageFromWindow(window, WidgetMethodsEmit.UPDATE_HEIGHT, (data) => {
-    iframe.style.height = data.height ? `${data.height + HEIGHT_THRESHOLD}px` : defaultHeight
-  })
+function listenToHeightChanges(iframe: HTMLIFrameElement, defaultHeight = DEFAULT_HEIGHT): WindowListener[] {
+  return [
+    listenToMessageFromWindow(window, WidgetMethodsEmit.UPDATE_HEIGHT, (data) => {
+      iframe.style.height = data.height ? `${data.height + HEIGHT_THRESHOLD}px` : defaultHeight
+    }),
+    listenToMessageFromWindow(window, WidgetMethodsEmit.SET_FULL_HEIGHT, ({ isUpToSmall }) => {
+      iframe.style.height = isUpToSmall ? defaultHeight : `${document.body.offsetHeight}px`
+    }),
+  ]
 }

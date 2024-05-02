@@ -1,12 +1,14 @@
 import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
+
+import { TokenWithLogo } from '@cowprotocol/common-const'
+import { getJotaiMergerStorage } from '@cowprotocol/core'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
+import { DEFAULT_FAVOURITE_TOKENS } from '../../const/defaultFavouriteTokens'
 import { TokensMap } from '../../types'
 import { environmentAtom } from '../environmentAtom'
-import { TokenWithLogo } from '@cowprotocol/common-const'
-import { DEFAULT_FAVOURITE_TOKENS } from '../../const/defaultFavouriteTokens'
-import { getJotaiMergerStorage } from '@cowprotocol/core'
+
 
 export const favouriteTokensAtom = atomWithStorage<Record<SupportedChainId, TokensMap>>(
   'favouriteTokensAtom:v1',

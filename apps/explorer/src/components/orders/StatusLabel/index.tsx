@@ -1,7 +1,5 @@
 import React from 'react'
-import BigNumber from 'bignumber.js'
-import styled, { DefaultTheme, css, keyframes, FlattenSimpleInterpolation } from 'styled-components'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+
 import {
   faCheckCircle,
   faCircleNotch,
@@ -11,9 +9,12 @@ import {
   faKey,
   faCircleHalfStroke,
 } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import BigNumber from 'bignumber.js'
+import styled, { DefaultTheme, css, keyframes, FlattenSimpleInterpolation } from 'styled-components/macro'
+import { capitalize, formatPercentage } from 'utils'
 
 import { OrderStatus } from 'api/operator'
-import { capitalize, formatPercentage } from 'utils'
 
 type CustomOrderStatus = OrderStatus | 'partially filled'
 type DisplayProps = { status: CustomOrderStatus }

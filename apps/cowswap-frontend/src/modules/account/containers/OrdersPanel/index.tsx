@@ -1,6 +1,6 @@
 import { useSetAtom } from 'jotai'
 
-import { ReactComponent as Close } from '@cowprotocol/assets/images/x.svg'
+import Close from '@cowprotocol/assets/images/x.svg?react'
 import { UI } from '@cowprotocol/ui'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
@@ -54,7 +54,7 @@ const SidebarBackground = styled.div`
   z-index: 4;
   width: 100%;
   height: 100%;
-  background: ${({ theme }) => transparentize(theme.black, 0.1)};
+  background: ${({ theme }) => (theme.isInjectedWidgetMode ? 'transparent' : transparentize(theme.black, 0.1))};
   backdrop-filter: blur(3px);
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -102,7 +102,7 @@ const Header = styled.div`
   }
 `
 
-const CloseIcon = styled(Close)`
+const CloseIcon = styled((props) => <Close {...props} />)`
   opacity: 0.6;
   transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
   stroke: var(${UI.COLOR_TEXT});

@@ -1,6 +1,7 @@
 import { cowprotocolTokenLogoUrl, TokenWithLogo } from '@cowprotocol/common-const'
 import { uriToHttp } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+
 import { trustTokenLogoUrl } from './trustTokenLogoUrl'
 
 export function getTokenLogoUrls(token: TokenWithLogo | undefined): string[] {

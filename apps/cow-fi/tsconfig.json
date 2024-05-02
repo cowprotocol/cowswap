@@ -1,0 +1,52 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/components/*": ["components/*"],
+      "@/const/*": ["const/*"],
+      "@/pages/*": ["pages/*"],
+      "@/styles/*": ["styles/*"],
+      "@/data/*": ["data/*"],
+      "@cowprotocol/widget-react": ["../../libs/widget-react/src/index.ts"],
+      "@cowprotocol/events": ["../../libs/events/src/index.ts"],
+      "@cowprotocol/widget-lib": ["../../libs/widget-lib/src/index.ts"],
+      "@cowprotocol/types": ["../../libs/types/src/index.ts"],
+    },
+    "jsx": "preserve",
+    "allowJs": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "types": [
+      "jest",
+      "node"
+    ]
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.js",
+    "**/*.jsx",
+    "../../apps/cow-fi/.next/types/**/*.ts",
+    "../../dist/apps/cow-fi/.next/types/**/*.ts",
+    "next-env.d.ts",
+    ".next/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "jest.config.ts",
+    "**/*.spec.ts",
+    "**/*.test.ts"
+  ]
+}

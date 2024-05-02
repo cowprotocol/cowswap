@@ -20,7 +20,7 @@ import ListItemButton from '@mui/material/ListItemButton'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
 import Typography from '@mui/material/Typography'
-import { useAccount, useNetwork } from 'wagmi'
+import { useWeb3ModalAccount, useWeb3ModalTheme } from '@web3modal/ethers5/react'
 
 import { COW_LISTENERS, DEFAULT_PARTNER_FEE_RECIPIENT, DEFAULT_TOKEN_LISTS, TRADE_MODES, IS_IFRAME } from './consts'
 import { CurrencyInputControl } from './controls/CurrencyInputControl'
@@ -43,7 +43,6 @@ import { ContentStyled, DrawerStyled, WalletConnectionWrapper, WrapperStyled } f
 import { ConfiguratorState, TokenListItem } from './types'
 
 import { ColorModeContext } from '../../theme/ColorModeContext'
-import { web3Modal } from '../../wagmiConfig'
 import { connectWalletToConfiguratorGA } from '../analytics'
 import { EmbedDialog } from '../embedDialog'
 
@@ -65,11 +64,9 @@ const UTM_PARAMS = 'utm_content=cow-widget-configurator&utm_medium=web&utm_sourc
 export type WidgetMode = 'dapp' | 'standalone'
 
 export function Configurator({ title }: { title: string }) {
-  const { isDisconnected, isConnected } = useAccount()
-  const network = useNetwork()
+  const { setThemeMode } = useWeb3ModalTheme()
+  const { chainId: walletChainId, isConnected } = useWeb3ModalAccount()
   const provider = useProvider()
-
-  const walletChainId = network.chain?.id
 
   const [listeners, setListeners] = useState<CowEventListeners>(COW_LISTENERS)
   const { mode } = useContext(ColorModeContext)
@@ -136,7 +133,7 @@ export function Configurator({ title }: { title: string }) {
   // Don't change chainId in the widget URL if the user is connected to a wallet
   // Because useSyncWidgetNetwork() will send a request to change the network
   const state: ConfiguratorState = {
-    chainId: IS_IFRAME ? undefined : isDisconnected || !walletChainId ? chainId : walletChainId,
+    chainId: IS_IFRAME ? undefined : !isConnected || !walletChainId ? chainId : walletChainId,
     theme: mode,
     currentTradeType,
     enabledTradeTypes,
@@ -166,8 +163,8 @@ export function Configurator({ title }: { title: string }) {
   )
 
   useEffect(() => {
-    web3Modal.setThemeMode(mode)
-  }, [mode])
+    setThemeMode(mode)
+  }, [setThemeMode, mode])
 
   // Fire an event to GA when user connect a wallet
   useEffect(() => {
@@ -300,7 +297,7 @@ export function Configurator({ title }: { title: string }) {
         </List>
       </Drawer>
 
-      <Box sx={{ ...ContentStyled, pl: isDrawerOpen ? '300px' : 0 }}>
+      <Box sx={{ ...ContentStyled, pl: isDrawerOpen ? '290px' : 0 }}>
         {params && (
           <>
             <EmbedDialog
@@ -309,7 +306,6 @@ export function Configurator({ title }: { title: string }) {
               open={dialogOpen}
               handleClose={handleDialogClose}
             />
-            <br />
             <CowSwapWidget
               params={params}
               provider={!IS_IFRAME && !standaloneMode ? provider : undefined}

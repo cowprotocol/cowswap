@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react'
+
 import { AnyAppDataDocVersion } from '@cowprotocol/app-data'
-import { useNetworkId } from 'state/network'
-import { metadataApiSDK } from 'cowSdk'
+
 import { DEFAULT_IPFS_READ_URI } from 'const'
+import { metadataApiSDK } from 'cowSdk'
+import { useNetworkId } from 'state/network'
 
 export const useAppData = (
   appDataHash: string,

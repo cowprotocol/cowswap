@@ -1,13 +1,17 @@
 import React from 'react'
+
 // also exported from '@storybook/react' if you can deal with breaking changes in 6.1
+import { OrderKind } from '@cowprotocol/cow-sdk'
+
 import { Story, Meta } from '@storybook/react/types-6-0'
-import TransactionTable, { Props as TransactionTableProps } from '.'
 import BigNumber from 'bignumber.js'
 import { GlobalStyles, ThemeToggler, Router, NetworkDecorator } from 'storybook/decorators'
 
 import { Order } from 'api/operator'
+
 import { RICH_ORDER, TUSD, WETH } from '../../../test/data'
-import { OrderKind } from '@cowprotocol/cow-sdk'
+
+import TransactionTable, { Props as TransactionTableProps } from '.'
 
 export default {
   title: 'transaction/TransactionTable',

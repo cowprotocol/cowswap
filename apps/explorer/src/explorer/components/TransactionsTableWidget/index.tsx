@@ -1,22 +1,24 @@
 import React, { useCallback, useEffect, useState } from 'react'
+
 import { faListUl, faProjectDiagram } from '@fortawesome/free-solid-svg-icons'
 
-import { useQuery, useUpdateQueryString } from '../../../hooks/useQuery'
 import { BlockchainNetwork, TransactionsTableContext } from './context/TransactionsTableContext'
-import { useGetTxOrders, useTxOrderExplorerLink } from '../../../hooks/useGetOrders'
-import RedirectToSearch from '../../../components/RedirectToSearch'
-import { RedirectToNetwork, useNetworkId } from '../../../state/network'
-import { Order } from '../../../api/operator'
 import { TransactionsTableWithData } from './TransactionsTableWithData'
-import { TabIcon, TabItemInterface } from '../../../components/common/Tabs/Tabs'
-import ExplorerTabs from '../common/ExplorerTabs/ExplorerTabs'
-import { FlexContainer, Title, TitleAddress } from '../../pages/styled'
+
+import { Order } from '../../../api/operator'
 import { BlockExplorerLink } from '../../../components/common/BlockExplorerLink'
+import CowLoading from '../../../components/common/CowLoading'
+import { TabIcon, TabItemInterface } from '../../../components/common/Tabs/Tabs'
 import { ConnectionStatus } from '../../../components/ConnectionStatus'
 import { Notification } from '../../../components/Notification'
-import { TransactionBatchGraph } from '../TransanctionBatchGraph'
-import CowLoading from '../../../components/common/CowLoading'
+import RedirectToSearch from '../../../components/RedirectToSearch'
+import { useGetTxOrders, useTxOrderExplorerLink } from '../../../hooks/useGetOrders'
+import { useQuery, useUpdateQueryString } from '../../../hooks/useQuery'
+import { RedirectToNetwork, useNetworkId } from '../../../state/network'
 import { TAB_QUERY_PARAM_KEY } from '../../const'
+import { FlexContainer, Title, TitleAddress } from '../../pages/styled'
+import ExplorerTabs from '../common/ExplorerTabs/ExplorerTabs'
+import { TransactionBatchGraph } from '../TransanctionBatchGraph'
 
 interface Props {
   txHash: string

@@ -1,6 +1,8 @@
 import { useAtomValue } from 'jotai'
-import { favouriteTokensListAtom } from '../../../state/tokens/favouriteTokensAtom'
+
 import { TokenWithLogo } from '@cowprotocol/common-const'
+
+import { favouriteTokensListAtom } from '../../../state/tokens/favouriteTokensAtom'
 
 export function useFavouriteTokens(): TokenWithLogo[] {
   return useAtomValue(favouriteTokensListAtom)

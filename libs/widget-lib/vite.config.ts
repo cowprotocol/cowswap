@@ -31,8 +31,7 @@ export default defineConfig(({ command }) => {
     plugins: [
       dts({
         entryRoot: 'src',
-        tsConfigFilePath: joinPathFragments(__dirname, 'tsconfig.lib.json'),
-        skipDiagnostics: true,
+        tsconfigPath: joinPathFragments(__dirname, 'tsconfig.lib.json'),
       }),
 
       viteTsConfigPaths({

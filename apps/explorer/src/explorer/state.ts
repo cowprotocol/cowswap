@@ -1,7 +1,7 @@
+import combineReducers from 'combine-reducers'
+
 import { GLOBAL_INITIAL_STATE, globalRootReducer, GlobalState } from '../state'
 import { reducer as networkReducer } from '../state/network'
-
-import combineReducers from 'combine-reducers'
 import { Network } from '../types'
 
 export type ExplorerAppState = GlobalState & {

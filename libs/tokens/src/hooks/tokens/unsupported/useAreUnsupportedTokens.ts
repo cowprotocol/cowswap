@@ -1,4 +1,5 @@
 import { useCallback } from 'react'
+
 import { useIsUnsupportedToken } from './useIsUnsupportedToken'
 
 type NullishAddress = string | null | undefined

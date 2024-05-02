@@ -5,8 +5,8 @@ import { ConnectWalletOption } from '../../api/pure/ConnectWalletOption'
 import { ConnectionType } from '../../api/types'
 import { getConnectionName } from '../../api/utils/connection'
 import { TrezorConnector } from '../connectors/TrezorConnector'
-import { ConnectionOptionProps, Web3ReactConnection } from '../types'
 import { useIsActiveConnection } from '../hooks/useIsActiveConnection'
+import { ConnectionOptionProps, Web3ReactConnection } from '../types'
 
 const BASE_PROPS = {
   color: '#4196FC',

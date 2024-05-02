@@ -1,8 +1,11 @@
-import { useEffect } from 'react'
-import { ListState } from '../../types'
 import { useSetAtom } from 'jotai/index'
-import { virtualListsStateAtom } from '../../state/tokenLists/tokenListsStateAtom'
+import { useEffect } from 'react'
+
 import { TokenInfo } from '@cowprotocol/types'
+
+import { virtualListsStateAtom } from '../../state/tokenLists/tokenListsStateAtom'
+import { ListState } from '../../types'
+
 
 const VIRTUAL_LIST_SOURCE = 'widgetCustomTokens'
 const VIRTUAL_LIST_NAME = 'Widget custom tokens'

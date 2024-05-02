@@ -1,8 +1,8 @@
-import styled from 'styled-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { media } from 'theme/styles/media'
 import { ArrowIconCSS } from 'components/icons/cssIcons'
 import { NavLink } from 'react-router-dom'
+import styled from 'styled-components/macro'
+import { media } from 'theme/styles/media'
 
 export const SelectorContainer = styled.div`
   display: flex;

@@ -1,9 +1,9 @@
-import { ReactComponent as Close } from '@cowprotocol/assets/images/x.svg'
+import Close from '@cowprotocol/assets/images/x.svg?react'
 import { UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-export const CloseIcon = styled(Close)`
+export const CloseIcon = styled((props) => <Close {...props} />)`
   opacity: 0.6;
   transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
   stroke: var(${UI.COLOR_TEXT});

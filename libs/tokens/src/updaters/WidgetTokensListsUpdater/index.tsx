@@ -1,15 +1,18 @@
-import { ListState } from '../../types'
-import { useAddList } from '../../hooks/lists/useAddList'
+import { useSetAtom } from 'jotai'
 import { useAtomValue } from 'jotai/index'
-import { allListsSourcesAtom } from '../../state/tokenLists/tokenListsStateAtom'
 import { useEffect, useMemo } from 'react'
+
+import { TokenInfo } from '@cowprotocol/types'
+
 import useSWR from 'swr'
+
+import { useAddList } from '../../hooks/lists/useAddList'
+import { useRemoveList } from '../../hooks/lists/useRemoveList'
 import { fetchTokenList } from '../../services/fetchTokenList'
 import { updateEnvironmentAtom } from '../../state/environmentAtom'
-import { useSetAtom } from 'jotai'
-import { useRemoveList } from '../../hooks/lists/useRemoveList'
+import { allListsSourcesAtom } from '../../state/tokenLists/tokenListsStateAtom'
+import { ListState } from '../../types'
 import { getFulfilledResults } from '../TokensListsUpdater/helpers'
-import { TokenInfo } from '@cowprotocol/types'
 import { WidgetVirtualListUpdater } from '../WidgetVirtualListUpdater'
 
 export interface CustomTokensListsUpdaterProps {

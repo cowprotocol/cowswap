@@ -1,6 +1,8 @@
-import { TheGraphApiImpl, TheGraphApiImplParams, TheGraphApi } from './TheGraphApi'
-import { CacheMixin } from 'api/proxy'
 import { PRICES_CACHE_TIME } from 'const'
+
+import { CacheMixin } from 'api/proxy'
+
+import { TheGraphApiImpl, TheGraphApiImplParams, TheGraphApi } from './TheGraphApi'
 
 export class TheGraphApiProxy extends TheGraphApiImpl {
   private cache: CacheMixin

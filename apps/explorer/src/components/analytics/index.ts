@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useNetworkId } from 'state/network'
 import { useEffect } from 'react'
-import { UaEventOptions } from 'react-ga4/types/ga4'
+
 import { isMobile } from 'react-device-detect'
+import { UaEventOptions } from 'react-ga4/types/ga4'
+import { useNetworkId } from 'state/network'
 import { getCLS, getFCP, getFID, getLCP, Metric } from 'web-vitals'
 
 import GoogleAnalyticsProvider from './GoogleAnalyticsProvider'

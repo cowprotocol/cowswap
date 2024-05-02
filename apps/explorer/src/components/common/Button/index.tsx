@@ -1,7 +1,7 @@
 import React from 'react'
-import styled, { css } from 'styled-components'
-import { ThemeValue, variants } from 'styled-theming'
 
+import styled, { css } from 'styled-components/macro'
+import { ThemeValue, variants } from 'styled-theming'
 import { BASE_STYLES, COLOURS } from 'styles'
 import ThemeProvider, { Theme } from 'theme'
 

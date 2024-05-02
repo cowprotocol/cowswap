@@ -1,3 +1,5 @@
+import { isInjectedWidget, isRejectRequestProviderError } from '@cowprotocol/common-utils'
+import { Command } from '@cowprotocol/types'
 import {
   Actions,
   AddEthereumChainParameter,
@@ -8,9 +10,8 @@ import {
   RequestArguments,
 } from '@web3-react/types'
 
-import { Command } from '@cowprotocol/types'
 import { WidgetEthereumProvider } from './WidgetEthereumProvider'
-import { isInjectedWidget, isRejectRequestProviderError } from '@cowprotocol/common-utils'
+
 
 type InjectedWalletProvider = Provider & {
   isConnected: () => boolean

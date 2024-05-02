@@ -1,5 +1,6 @@
-import { Currency } from '@uniswap/sdk-core'
 import { getAddress } from '@cowprotocol/common-utils'
+import { Currency } from '@uniswap/sdk-core'
+
 import { useAreUnsupportedTokens } from './useAreUnsupportedTokens'
 
 type NullishCurrency = Currency | null | undefined

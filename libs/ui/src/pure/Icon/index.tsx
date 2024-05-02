@@ -3,10 +3,10 @@ import iconAlert from '@cowprotocol/assets/cow-swap/alert.svg'
 import iconDanger from '@cowprotocol/assets/cow-swap/alert.svg'
 import iconSuccess from '@cowprotocol/assets/cow-swap/check.svg'
 
-import { UI } from '../../enum'
-
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
+
+import { UI } from '../../enum'
 
 export enum IconType {
   ALERT = 'ALERT',

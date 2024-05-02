@@ -53,11 +53,10 @@
       }
     },
     "test": {
-      "executor": "@nx/vite:test",
-      "outputs": ["{workspaceRoot}/coverage/apps/widget-configurator"],
+      "executor": "@nx/jest:jest",
       "options": {
         "passWithNoTests": true,
-        "reportsDirectory": "../../coverage/apps/widget-configurator"
+        "jestConfig": "apps/widget-configurator/jest.config.ts"
       }
     },
     "lint": {

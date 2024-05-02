@@ -1,5 +1,6 @@
+import styled from 'styled-components/macro'
+
 import { UI } from '../../enum'
-import styled from 'styled-components'
 
 export const SelectDropdown = styled.select`
   border-radius: 12px;

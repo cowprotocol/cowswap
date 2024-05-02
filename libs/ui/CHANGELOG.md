@@ -14,7 +14,6 @@
 
 ## [1.0.2](https://github.com/cowprotocol/cowswap/compare/ui-v1.0.1...ui-v1.0.2) (2024-04-18)
 
-
 ### Bug Fixes
 
 * long token names ([#4235](https://github.com/cowprotocol/cowswap/issues/4235)) ([45e1a88](https://github.com/cowprotocol/cowswap/commit/45e1a88754ba55c6481c1eb4c230102067f0696a))
@@ -23,13 +22,11 @@
 
 ## [1.0.1](https://github.com/cowprotocol/cowswap/compare/ui-v1.0.0...ui-v1.0.1) (2024-04-02)
 
-
 ### Bug Fixes
 
 * **april-fools:** revert april fools ([#4116](https://github.com/cowprotocol/cowswap/issues/4116)) ([c8fb7d1](https://github.com/cowprotocol/cowswap/commit/c8fb7d1cb124f154e1b317c3e6fd503a65a12336))
 
 ## 1.0.0 (2024-03-29)
-
 
 ### Features
 
@@ -39,7 +36,6 @@
 * style improvements ([#3884](https://github.com/cowprotocol/cowswap/issues/3884)) ([f4d5e17](https://github.com/cowprotocol/cowswap/commit/f4d5e175df0b8090ec68f83af607e3ae407c64e2))
 * **trade:** update trade confirm modal design ([#3750](https://github.com/cowprotocol/cowswap/issues/3750)) ([43660e4](https://github.com/cowprotocol/cowswap/commit/43660e4eed07f855562d7250c9d0d359591add59))
 * **widget:** emit toast for posting orders ([#3837](https://github.com/cowprotocol/cowswap/issues/3837)) ([44749fc](https://github.com/cowprotocol/cowswap/commit/44749fc19a392bba0055c856b6990e354729f31a))
-
 
 ### Bug Fixes
 

@@ -1,7 +1,8 @@
 import React from 'react'
 
-import ExplorerApp from './ExplorerApp'
 import { createRoot } from 'react-dom/client'
+
+import ExplorerApp from './ExplorerApp'
 
 const container = document.getElementById('root')
 if (container !== null) {

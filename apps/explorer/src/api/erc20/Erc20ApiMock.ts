@@ -1,11 +1,11 @@
-import BN from 'bn.js'
 import { assert } from '@gnosis.pm/dex-js'
-
-import { Receipt } from 'types'
+import BN from 'bn.js'
 import { ZERO, ALLOWANCE_MAX_VALUE } from 'const'
-import { RECEIPT } from '../../test/data'
+import { Receipt } from 'types'
 import { logDebug } from 'utils'
+
 import { waitAndSendReceipt } from 'utils/mock'
+
 import {
   Erc20Api,
   NameParams,
@@ -18,6 +18,8 @@ import {
   TransferParams,
   TransferFromParams,
 } from './Erc20Api'
+
+import { RECEIPT } from '../../test/data'
 
 interface Balances {
   [userAddress: string]: { [tokenAddress: string]: BN }

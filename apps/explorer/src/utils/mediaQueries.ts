@@ -1,4 +1,5 @@
 import { Command } from '@cowprotocol/types'
+
 import { media } from 'theme/styles/media'
 
 export type Breakpoints = 'xl' | 'lg' | 'md' | 'sm' | 'xs'

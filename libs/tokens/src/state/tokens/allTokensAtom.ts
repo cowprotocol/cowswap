@@ -1,13 +1,17 @@
 import { atom } from 'jotai'
-import { environmentAtom } from '../environmentAtom'
-import { TokensMap } from '../../types'
+
 import { NATIVE_CURRENCIES, TokenWithLogo } from '@cowprotocol/common-const'
-import { tokenMapToListWithLogo } from '../../utils/tokenMapToListWithLogo'
-import { userAddedTokensAtom } from './userAddedTokensAtom'
-import { favouriteTokensAtom } from './favouriteTokensAtom'
-import { listsEnabledStateAtom, listsStatesListAtom } from '../tokenLists/tokenListsStateAtom'
-import { lowerCaseTokensMap } from '../../utils/lowerCaseTokensMap'
 import { TokenInfo } from '@cowprotocol/types'
+
+import { favouriteTokensAtom } from './favouriteTokensAtom'
+import { userAddedTokensAtom } from './userAddedTokensAtom'
+
+import { TokensMap } from '../../types'
+import { lowerCaseTokensMap } from '../../utils/lowerCaseTokensMap'
+import { tokenMapToListWithLogo } from '../../utils/tokenMapToListWithLogo'
+import { environmentAtom } from '../environmentAtom'
+import { listsEnabledStateAtom, listsStatesListAtom } from '../tokenLists/tokenListsStateAtom'
+
 
 export interface TokensByAddress {
   [address: string]: TokenWithLogo | undefined

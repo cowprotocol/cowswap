@@ -1,11 +1,9 @@
 import React from 'react'
 
-import styled from 'styled-components/macro'
-
-import { HoverTooltip, UI } from '@cowprotocol/ui'
 import { Command } from '@cowprotocol/types'
+import { ExternalLink, HoverTooltip, UI } from '@cowprotocol/ui'
 
-import { ExternalLink } from '@cowprotocol/ui'
+import styled from 'styled-components/macro'
 
 const InfoCard = styled.button<{ isActive?: boolean }>`
   background-color: ${({ theme, isActive }) => (isActive ? theme.bg3 : theme.bg2)};

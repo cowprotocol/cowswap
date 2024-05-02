@@ -1,4 +1,5 @@
 import { ElementDefinition } from 'cytoscape'
+
 import { InfoTooltip, Node, TypeEdgeOnTx, TypeNodeOnTx } from './types'
 
 export default class ElementsBuilder {

@@ -1,16 +1,16 @@
 // Util functions that only pertain to/deal with operator API related stuff
-import BigNumber from 'bignumber.js'
-
-import { calculatePrice, invertPrice, TokenErc20 } from '@gnosis.pm/dex-js'
+import { isSellOrder } from '@cowprotocol/common-utils'
 import { Trade as TradeMetaData } from '@cowprotocol/cow-sdk'
 
+import { calculatePrice, invertPrice, TokenErc20 } from '@gnosis.pm/dex-js'
+import BigNumber from 'bignumber.js'
 import { FILLED_ORDER_EPSILON, ONE_BIG_NUMBER, ZERO_BIG_NUMBER } from 'const'
+import { formatSmartMaxPrecision, formattingAmountPrecision } from 'utils'
 
 import { Order, OrderStatus, RawOrder, Trade } from 'api/operator/types'
 
-import { formatSmartMaxPrecision, formattingAmountPrecision } from 'utils'
 import { PENDING_ORDERS_BUFFER } from '../explorer/const'
-import { isSellOrder } from '@cowprotocol/common-utils'
+
 
 function isOrderFilled(order: RawOrder): boolean {
   const { kind, executedBuyAmount, sellAmount, executedSellAmount, buyAmount, executedFeeAmount } = order

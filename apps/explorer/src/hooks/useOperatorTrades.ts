@@ -1,8 +1,11 @@
-import { getTrades, Order, RawTrade, Trade } from 'api/operator'
 import { useCallback, useEffect, useState } from 'react'
+
 import { useNetworkId } from 'state/network'
 import { Network, UiError } from 'types'
 import { transformTrade } from 'utils'
+
+import { getTrades, Order, RawTrade, Trade } from 'api/operator'
+
 import { web3 } from '../explorer/api'
 
 type Result = {

@@ -1,9 +1,11 @@
-import { Account, Contract, Trade, Transfer } from '../../../api/tenderly'
-import { ElementDefinition, LayoutOptions } from 'cytoscape'
-import { Network } from '../../../types'
-import { SingleErc20State } from '../../../state/erc20'
-
 import { Command } from '@cowprotocol/types'
+
+import { ElementDefinition, LayoutOptions } from 'cytoscape'
+
+import { Account, Contract, Trade, Transfer } from '../../../api/tenderly'
+import { SingleErc20State } from '../../../state/erc20'
+import { Network } from '../../../types'
+
 
 export enum TypeNodeOnTx {
   NetworkNode = 'networkNode',

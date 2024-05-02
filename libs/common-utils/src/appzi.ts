@@ -1,9 +1,11 @@
+import { UiOrderType } from '@cowprotocol/types'
+
 import ms from 'ms.macro'
 import ReactAppzi from 'react-appzi'
-import { isImTokenBrowser, majorBrowserVersion, userAgent } from './userAgent'
+
 import { isProdLike } from './environments'
 import { isInjectedWidget } from './isInjectedWidget'
-import { UiOrderType } from '@cowprotocol/types'
+import { isImTokenBrowser, majorBrowserVersion, userAgent } from './userAgent'
 
 // Metamask IOS app uses a version from July 2019 which causes problems in appZi
 const OLD_CHROME_FROM_METAMASK_IOS_APP = 76

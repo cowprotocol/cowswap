@@ -1,14 +1,17 @@
 import React, { useCallback, useEffect } from 'react'
-import AppDataWrapper from 'components/common/AppDataWrapper'
+
 import { AnyAppDataDocVersion } from '@cowprotocol/app-data'
+
+import AppDataWrapper from 'components/common/AppDataWrapper'
 import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
-import { Notification } from 'components/Notification'
 import Spinner from 'components/common/Spinner'
+import { Notification } from 'components/Notification'
 import { DEFAULT_IPFS_READ_URI, IPFS_INVALID_APP_IDS } from 'const'
 import { appDataHexToCid, fetchDocFromAppDataHex } from 'hooks/useAppData'
 import useSafeState from 'hooks/useSafeState'
+import styled from 'styled-components/macro'
+
 import { decodeFullAppData } from 'utils/decodeFullAppData'
-import styled from 'styled-components'
 
 type Props = {
   appData: string

@@ -1,10 +1,11 @@
+import { CHAIN_INFO } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { getAddress } from '@ethersproject/address'
 import { AddressZero } from '@ethersproject/constants'
 import { Contract, ContractInterface } from '@ethersproject/contracts'
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers'
+
 import { getExplorerOrderLink } from './explorer'
-import { CHAIN_INFO } from '@cowprotocol/common-const'
 
 const ORDER_ID_SHORT_LENGTH = 8
 

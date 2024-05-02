@@ -1,5 +1,6 @@
-import { DATE } from './data'
 import BN from 'bn.js'
+
+import { DATE } from './data'
 export * from './data'
 
 export function mockTimes(dateToUse: Date = DATE): void {

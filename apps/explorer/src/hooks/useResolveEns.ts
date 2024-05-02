@@ -1,6 +1,8 @@
-import { isAddress } from 'web3-utils'
 import { useState, useEffect } from 'react'
+
 import { isEns } from 'utils'
+import { isAddress } from 'web3-utils'
+
 import { web3 } from '../explorer/api'
 
 interface AddressAccount {

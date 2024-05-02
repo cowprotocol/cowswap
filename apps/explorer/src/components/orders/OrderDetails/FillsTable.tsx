@@ -1,33 +1,34 @@
 import React, { useMemo } from 'react'
-import styled, { useTheme } from 'styled-components'
-import { faExchangeAlt } from '@fortawesome/free-solid-svg-icons'
-import { useNetworkId } from 'state/network'
-import { Order, Trade } from 'api/operator'
-import { abbreviateString } from 'utils'
-import { useMultipleErc20 } from 'hooks/useErc20'
 
+import { isSellOrder } from '@cowprotocol/common-utils'
+import { Command } from '@cowprotocol/types'
+
+import { faArrowAltCircleUp as faIcon } from '@fortawesome/free-regular-svg-icons'
+import { faExchangeAlt } from '@fortawesome/free-solid-svg-icons'
+import { calculatePrice, TokenErc20 } from '@gnosis.pm/dex-js'
+import BigNumber from 'bignumber.js'
+import { DateDisplay } from 'components/common/DateDisplay'
+import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
+import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
+import { SurplusComponent } from 'components/common/SurplusComponent'
+import Icon from 'components/Icon'
+import { TokenAmount } from 'components/token/TokenAmount'
+import { TEN_BIG_NUMBER } from 'const'
+import { useMultipleErc20 } from 'hooks/useErc20'
+import { useNetworkId } from 'state/network'
+import styled, { useTheme } from 'styled-components/macro'
+import { media } from 'theme/styles/media'
+import { abbreviateString } from 'utils'
+
+import { Order, Trade } from 'api/operator'
+
+import ShimmerBar from '../../../explorer/components/common/ShimmerBar'
+import { TableState } from '../../../explorer/components/TokensTableWidget/useTable'
 import StyledUserDetailsTable, {
   EmptyItemWrapper,
   StyledUserDetailsTableProps,
 } from '../../common/StyledUserDetailsTable'
-
-import { media } from 'theme/styles/media'
-import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
-import { DateDisplay } from 'components/common/DateDisplay'
-import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
-import { TableState } from '../../../explorer/components/TokensTableWidget/useTable'
 import { FilledProgress } from '../FilledProgress'
-import { TokenAmount } from 'components/token/TokenAmount'
-import Icon from 'components/Icon'
-import { faArrowAltCircleUp as faIcon } from '@fortawesome/free-regular-svg-icons'
-import { calculatePrice, TokenErc20 } from '@gnosis.pm/dex-js'
-import { TEN_BIG_NUMBER } from 'const'
-import BigNumber from 'bignumber.js'
-import ShimmerBar from '../../../explorer/components/common/ShimmerBar'
-import { SurplusComponent } from 'components/common/SurplusComponent'
-import { isSellOrder } from '@cowprotocol/common-utils'
-
-import { Command } from '@cowprotocol/types'
 
 const Wrapper = styled(StyledUserDetailsTable)`
   > thead {

@@ -1,9 +1,11 @@
 import { useEffect } from 'react'
 
+import { Command } from '@cowprotocol/types'
+
 import { ArrowLeft } from 'react-feather'
 import styled from 'styled-components/macro'
+
 import { UI } from '../../enum'
-import { Command } from '@cowprotocol/types'
 
 const BackIcon = styled(ArrowLeft)<{ onClick: Command }>`
   cursor: pointer;
@@ -17,9 +19,10 @@ const BackIcon = styled(ArrowLeft)<{ onClick: Command }>`
 `
 
 interface BackButtonProps {
-  onClick(): void
   size?: number
   className?: string
+
+  onClick(): void
 }
 
 export function BackButton(props: BackButtonProps) {

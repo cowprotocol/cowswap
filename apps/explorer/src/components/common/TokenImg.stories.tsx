@@ -1,11 +1,13 @@
 import React from 'react'
+
 // also exported from '@storybook/react' if you can deal with breaking changes in 6.1
 import { Story, Meta } from '@storybook/react/types-6-0'
-import { TokenImg, Props } from './TokenImg'
 import { WETH_ADDRESS_MAINNET, WXDAI_ADDRESS_XDAI } from 'const'
-import { Frame } from './Frame'
-import styled from 'styled-components'
 import { ADDRESS_GNO_XDAI } from 'storybook/data'
+import styled from 'styled-components/macro'
+
+import { Frame } from './Frame'
+import { TokenImg, Props } from './TokenImg'
 
 export default {
   title: 'Common/TokenImg',

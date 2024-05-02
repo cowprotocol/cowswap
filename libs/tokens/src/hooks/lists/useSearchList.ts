@@ -1,8 +1,10 @@
-import useSWR, { SWRResponse } from 'swr'
-import { fetchTokenList } from '../../services/fetchTokenList'
 import { useAtomValue } from 'jotai'
-import { allListsSourcesAtom, listsStatesMapAtom } from '../../state/tokenLists/tokenListsStateAtom'
 import { useMemo } from 'react'
+
+import useSWR, { SWRResponse } from 'swr'
+
+import { fetchTokenList } from '../../services/fetchTokenList'
+import { allListsSourcesAtom, listsStatesMapAtom } from '../../state/tokenLists/tokenListsStateAtom'
 import { ListState } from '../../types'
 
 export type ListSearchResponse =

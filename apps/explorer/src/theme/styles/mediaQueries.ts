@@ -1,4 +1,4 @@
-import { ThemedCssFunction, DefaultTheme, CSSObject, css, FlattenSimpleInterpolation } from 'styled-components'
+import { ThemedCssFunction, DefaultTheme, CSSObject, css, FlattenSimpleInterpolation } from 'styled-components/macro'
 
 const PORTRAIT = 'portrait'
 const LANDSCAPE = 'landscape'

@@ -1,4 +1,5 @@
 import styled from 'styled-components/macro'
+
 import { sanitizeTokenName } from './sanitizeTokenName'
 
 export type TokenNameProps = {

@@ -1,8 +1,10 @@
-import BALANCES from '../../data/erc20Balances'
-import ALLOWANCES from '../../data/erc20Allowances'
+import BN from 'bn.js'
+import { TxOptionalParams } from 'types'
+
 import { Erc20Api } from 'api/erc20/Erc20Api'
 import { Erc20ApiMock } from 'api/erc20/Erc20ApiMock'
-import { TxOptionalParams } from 'types'
+
+import { ZERO, ALLOWANCE_MAX_VALUE } from '../../../const'
 import {
   USER_1,
   TOKEN_1,
@@ -16,8 +18,8 @@ import {
   unregisteredTokens,
   FEE_TOKEN,
 } from '../../data'
-import { ZERO, ALLOWANCE_MAX_VALUE } from '../../../const'
-import BN from 'bn.js'
+import ALLOWANCES from '../../data/erc20Allowances'
+import BALANCES from '../../data/erc20Balances'
 import { clone } from '../../testHelpers'
 
 const NETWORK_ID = 0

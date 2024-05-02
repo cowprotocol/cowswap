@@ -1,4 +1,5 @@
 import { Network } from 'types'
+
 import { SetNetworkType } from './actions'
 
 export type ReducerActionType = SetNetworkType

@@ -1,7 +1,8 @@
-import styled, { css, FlattenSimpleInterpolation } from 'styled-components'
-import SVG from 'react-inlinesvg'
-import { media } from '../../../../theme/styles/media'
 import * as CSS from 'csstype'
+import SVG from 'react-inlinesvg'
+import styled, { css, FlattenSimpleInterpolation } from 'styled-components/macro'
+
+import { media } from '../../../../theme/styles/media'
 
 export const Wrapper = styled.form`
   display: flex;

@@ -140,14 +140,12 @@ const DropDown = ({ item, context }: DropdownProps) => {
       {items?.map((item, index) => {
         const { sectionTitle, links } = item
         return (
-          <>
-            <MenuSection key={index}>
-              {sectionTitle && <MenuTitle>{sectionTitle}</MenuTitle>}
-              {links.map((link, linkIndex) => (
-                <DropdownLink key={linkIndex} link={link} context={context} />
-              ))}
-            </MenuSection>
-          </>
+          <MenuSection key={index}>
+            {sectionTitle && <MenuTitle>{sectionTitle}</MenuTitle>}
+            {links.map((link, linkIndex) => (
+              <DropdownLink key={linkIndex} link={link} context={context} />
+            ))}
+          </MenuSection>
         )
       })}
     </MenuDropdown>

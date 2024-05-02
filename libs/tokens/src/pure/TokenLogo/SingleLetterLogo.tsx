@@ -1,4 +1,5 @@
 import { UI } from '@cowprotocol/ui'
+
 import styled from 'styled-components/macro'
 
 const SingleLetterLogoWrapper = styled.div`

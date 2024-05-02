@@ -1,33 +1,31 @@
 import React from 'react'
-import styled from 'styled-components'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faFill, faProjectDiagram } from '@fortawesome/free-solid-svg-icons'
-import { media } from 'theme/styles/media'
-
-import { Order } from 'api/operator'
-
-import { capitalize } from 'utils'
-
-import { HelpTooltip } from 'components/Tooltip'
-
-import { SimpleTable } from 'components/common/SimpleTable'
-import Spinner from 'components/common/Spinner'
-
-import { AmountsDisplay } from 'components/orders/AmountsDisplay'
-import { DateDisplay } from 'components/common/DateDisplay'
-import { OrderPriceDisplay } from 'components/orders/OrderPriceDisplay'
-import { FilledProgress } from 'components/orders/FilledProgress'
-import { OrderSurplusDisplay } from 'components/orders/OrderSurplusDisplay'
-import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
-import { StatusLabel } from 'components/orders/StatusLabel'
-import { GasFeeDisplay } from 'components/orders/GasFeeDisplay'
-import { sendEvent } from 'components/analytics'
-import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
-import DecodeAppData from 'components/AppData/DecodeAppData'
-import { TAB_QUERY_PARAM_KEY } from '../../../explorer/const'
-import { getUiOrderType } from 'utils/getUiOrderType'
 
 import { Command } from '@cowprotocol/types'
+
+import { faFill, faProjectDiagram } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { sendEvent } from 'components/analytics'
+import DecodeAppData from 'components/AppData/DecodeAppData'
+import { DateDisplay } from 'components/common/DateDisplay'
+import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
+import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
+import { SimpleTable } from 'components/common/SimpleTable'
+import Spinner from 'components/common/Spinner'
+import { AmountsDisplay } from 'components/orders/AmountsDisplay'
+import { FilledProgress } from 'components/orders/FilledProgress'
+import { GasFeeDisplay } from 'components/orders/GasFeeDisplay'
+import { OrderPriceDisplay } from 'components/orders/OrderPriceDisplay'
+import { OrderSurplusDisplay } from 'components/orders/OrderSurplusDisplay'
+import { StatusLabel } from 'components/orders/StatusLabel'
+import { HelpTooltip } from 'components/Tooltip'
+import styled from 'styled-components/macro'
+import { media } from 'theme/styles/media'
+import { capitalize } from 'utils'
+
+import { Order } from 'api/operator'
+import { getUiOrderType } from 'utils/getUiOrderType'
+
+import { TAB_QUERY_PARAM_KEY } from '../../../explorer/const'
 
 const Table = styled(SimpleTable)`
   > tbody > tr {

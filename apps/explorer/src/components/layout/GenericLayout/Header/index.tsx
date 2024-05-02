@@ -1,11 +1,11 @@
 import React, { PropsWithChildren } from 'react'
-import styled from 'styled-components'
+
+import LogoImage from 'assets/img/CowProtocol-logo-white.svg'
+import { Link } from 'react-router-dom'
+import styled from 'styled-components/macro'
 import { media } from 'theme/styles/media'
 
-import { Link } from 'react-router-dom'
-
 // Assets
-import LogoImage from 'assets/img/CowProtocol-logo-white.svg'
 
 const HeaderStyled = styled.header`
   height: auto;

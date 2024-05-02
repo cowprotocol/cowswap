@@ -1,0 +1,11 @@
+<h2>What is Gitcoin (GTC)?</h2>
+
+<p>Moo! Welcome to the world of Gitcoin (GTC), an innovative platform designed to support builders and creators engaged in meaningful open-source work. Positioned as a breeding ground for the future of the open internet, Gitcoin fosters the growth of Web3 tools, technologies, and networks, creating a thriving ecosystem for open-source projects. With GTC, Gitcoin's governance token, the community gets to drive and shape the platform's direction. This is decentralization at its best, making sure everyone has a say in the project's future! GTC was launched in May 2021 to create and fund a DAO (Decentralized Autonomous Organization) that would govern Gitcoin.</p>
+
+<p>Founded by Kevin Owocki and Scott Moore, Gitcoin stands out for its unique focus on community building around open source projects. As of June 2021, the platform boasts over 160,000 active developers monthly, more than 1,600 projects created, and over $20 million funded for open-source projects. The project’s vision is the "Quadratic Lands," a digital ecosystem that emphasizes digital democracy and robust community building. Gitcoin is setting the pace for a new wave of open-source development in the crypto space.</p>
+
+<p>The security of the Gitcoin network is top-notch, owing to its robust governance model which is a fork of the COMP/UNI governance system. It's important to note that GTC has no economic value, as stated in the token’s introductory blog post. Instead, it plays a crucial role in Gitcoin's ecosystem, enhancing the democratic functioning and development of the platform.</p>
+
+<h3>Where can you swap or trade Gitcoin (GTC)?</h3>
+
+<p>For those eager to join this exciting project, you can swap or trade Gitcoin (GTC) on <a href="https://swap.cow.fi/" rel="noopener" target="_blank">CoW Swap</a>. CoW Swap is a Meta DEX aggregator providing a seamless trading experience by sourcing the best trading price from multiple on-chain liquidity sources, effectively acting as a DexAggregator of the DexAggregators! Furthermore, it offers MEV protection, ensuring a fairer, more transparent trading experience. So, why wait? Step into the future of open-source development with Gitcoin (GTC) on CoW Swap today. Moo!</p>

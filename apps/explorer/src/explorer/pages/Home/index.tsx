@@ -1,16 +1,19 @@
 import React from 'react'
-import { Search } from '../../components/common/Search'
-import { Wrapper as WrapperMod } from '../styled'
-import styled from 'styled-components'
-import { media } from '../../../theme'
-import { StatsSummaryCardsWidget } from '../../components/SummaryCardsWidget'
-import { useNetworkId } from '../../../state/network'
-import { TokensTableWidget } from '../../components/TokensTableWidget'
-import { Helmet } from 'react-helmet'
-import { APP_TITLE } from '../../const'
-import { SUBGRAPH_URLS } from '../../../consts/subgraphUrls'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+
+import { Helmet } from 'react-helmet'
+import styled from 'styled-components/macro'
+
+import { SUBGRAPH_URLS } from '../../../consts/subgraphUrls'
+import { useNetworkId } from '../../../state/network'
+import { media } from '../../../theme'
+import { Search } from '../../components/common/Search'
+import { StatsSummaryCardsWidget } from '../../components/SummaryCardsWidget'
+import { TokensTableWidget } from '../../components/TokensTableWidget'
+import { APP_TITLE } from '../../const'
+import { Wrapper as WrapperMod } from '../styled'
 
 const Wrapper = styled(WrapperMod)`
   max-width: 140rem;

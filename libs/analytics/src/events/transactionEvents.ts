@@ -1,4 +1,5 @@
 import { UiOrderType } from '@cowprotocol/types'
+
 import { sendEvent } from '../googleAnalytics'
 import { PixelEvent, sendAllPixels } from '../pixel'
 import { Category } from '../types'

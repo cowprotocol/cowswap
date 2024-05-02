@@ -1,11 +1,12 @@
 import React from 'react'
+
 // also exported from '@storybook/react' if you can deal with breaking changes in 6.1
 import { Story, Meta } from '@storybook/react/types-6-0'
-
+import BigNumber from 'bignumber.js'
 import { GlobalStyles, ThemeToggler } from 'storybook/decorators'
 
 import { StatusLabel, Props } from '.'
-import BigNumber from 'bignumber.js'
+
 
 export default {
   title: 'Orders/StatusLabel',

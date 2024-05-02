@@ -1,6 +1,7 @@
-const path = require('path')
-const fs = require('fs')
 const YAML = require('yaml')
+
+const fs = require('fs')
+const path = require('path')
 
 const CUSTOM_FOLDER_PATH = 'custom/'
 const CONFIG_FILE_OVERRIDE_NAME = 'config'

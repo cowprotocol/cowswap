@@ -1,9 +1,10 @@
-import styled from 'styled-components'
-import { ContentCard as Content, Wrapper as WrapperTemplate } from '../styled'
-import { media } from '../../../theme/styles/media'
-import AppDataWrapper from '../../../components/common/AppDataWrapper'
-import ExplorerTabs from '../../components/common/ExplorerTabs/ExplorerTabs'
 import { transparentize } from 'polished'
+import styled from 'styled-components/macro'
+
+import AppDataWrapper from '../../../components/common/AppDataWrapper'
+import { media } from '../../../theme/styles/media'
+import ExplorerTabs from '../../components/common/ExplorerTabs/ExplorerTabs'
+import { ContentCard as Content, Wrapper as WrapperTemplate } from '../styled'
 
 export const StyledExplorerTabs = styled(ExplorerTabs)`
   margin: 1.6rem auto 0;

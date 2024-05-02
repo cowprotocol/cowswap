@@ -1,5 +1,5 @@
-import { buildWidgetUrl } from './urlUtils'
 import { TradeType } from './types'
+import { buildWidgetUrl } from './urlUtils'
 
 const chainId = 1
 const tradeType = TradeType.SWAP

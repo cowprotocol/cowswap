@@ -1,5 +1,10 @@
+import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
+
 import { APP_NAME, NATIVE_TOKEN_ADDRESS_LOWERCASE, TENDERLY_API_URL } from 'const'
+import { abbreviateString } from 'utils'
+
 import { fetchQuery } from 'api/baseApi'
+
 import {
   Account,
   Contract,
@@ -11,9 +16,8 @@ import {
   TxTradesAndTransfers,
   TypeOfTrace,
 } from './types'
-import { abbreviateString } from 'utils'
+
 import { SPECIAL_ADDRESSES } from '../../explorer/const'
-import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 export const ALIAS_TRADER_NAME = 'Trader'
 const COW_PROTOCOL_CONTRACT_NAME = 'GPv2Settlement'

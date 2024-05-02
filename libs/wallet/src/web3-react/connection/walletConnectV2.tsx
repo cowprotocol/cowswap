@@ -2,22 +2,17 @@ import { useState, useSyncExternalStore } from 'react'
 
 import { RPC_URLS } from '@cowprotocol/common-const'
 import { getCurrentChainIdFromUrl } from '@cowprotocol/common-utils'
-
 import { ALL_SUPPORTED_CHAIN_IDS, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Command } from '@cowprotocol/types'
 import { initializeConnector, Web3ReactHooks } from '@web3-react/core'
 import { Web3ReactStore } from '@web3-react/types'
 
-import { default as WalletConnectV2Image } from '../../api/assets/walletConnectIcon.svg'
-
 import { ASYNC_CUSTOM_PROVIDER_EVENT, AsyncConnector } from './asyncConnector'
-import { Command } from '@cowprotocol/types'
-
-import { ConnectionOptionProps, Web3ReactConnection } from '../types'
-
 import { onError } from './onError'
+
+import { default as WalletConnectV2Image } from '../../api/assets/walletConnectIcon.svg'
+import { ConnectWalletOption } from '../../api/pure/ConnectWalletOption'
 import { ConnectionType } from '../../api/types'
-import { useWalletMetaData } from '../hooks/useWalletMetadata'
-import { useIsActiveConnection } from '../hooks/useIsActiveConnection'
 import {
   getConnectionName,
   getIsAlphaWallet,
@@ -26,7 +21,9 @@ import {
   getIsZengoWallet,
 } from '../../api/utils/connection'
 import { WC_DISABLED_TEXT, WC_PROJECT_ID } from '../../constants'
-import { ConnectWalletOption } from '../../api/pure/ConnectWalletOption'
+import { useIsActiveConnection } from '../hooks/useIsActiveConnection'
+import { useWalletMetaData } from '../hooks/useWalletMetadata'
+import { ConnectionOptionProps, Web3ReactConnection } from '../types'
 
 export const walletConnectV2Option = {
   color: '#4196FC',

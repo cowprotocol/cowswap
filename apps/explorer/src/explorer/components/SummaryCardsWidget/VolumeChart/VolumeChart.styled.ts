@@ -1,7 +1,7 @@
-import styled, { keyframes } from 'styled-components'
+import styled, { keyframes } from 'styled-components/macro'
 
-import { media } from '../../../../theme/styles/media'
 import GraphSkeleton from '../../../../assets/img/graph-skeleton.svg'
+import { media } from '../../../../theme/styles/media'
 import ShimmerBar from '../../common/ShimmerBar'
 
 const frameAnimation = keyframes`
