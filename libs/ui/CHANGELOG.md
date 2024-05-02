@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/cowprotocol/cowswap/compare/ui-v1.1.0...ui-v1.2.0) (2024-05-02)
+
+
+### Features
+
+* **cms:** markup Category page and display all articles ([#4334](https://github.com/cowprotocol/cowswap/issues/4334)) ([57a9657](https://github.com/cowprotocol/cowswap/commit/57a965717ec5f5d7058b3ff23963256206744a22))
+
 ## [1.1.0](https://github.com/cowprotocol/cowswap/compare/ui-v1.0.2...ui-v1.1.0) (2024-05-01)
 
 

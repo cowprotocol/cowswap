@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.2.0](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v1.1.0...widget-configurator-v1.2.0) (2024-05-02)
+
+
+### Features
+
+* **widget-cfg:** update web3modal ([#4272](https://github.com/cowprotocol/cowswap/issues/4272)) ([badb43b](https://github.com/cowprotocol/cowswap/commit/badb43bda3e4d361c381c55ab3d373c7cced3f2c))
+
+
+### Bug Fixes
+
+* **widget:** fix modals displaying ([#4308](https://github.com/cowprotocol/cowswap/issues/4308)) ([2750b2f](https://github.com/cowprotocol/cowswap/commit/2750b2fd6c848ced889cef2d3ce16bf59f77afcb))
+
 ## [1.1.0](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v1.0.2...widget-configurator-v1.1.0) (2024-04-11)
 
 
