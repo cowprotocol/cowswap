@@ -1,5 +1,24 @@
 # Changelog
 
+## [1.2.0](https://github.com/cowprotocol/cowswap/compare/ui-v1.1.0...ui-v1.2.0) (2024-05-02)
+
+
+### Features
+
+* **cms:** markup Category page and display all articles ([#4334](https://github.com/cowprotocol/cowswap/issues/4334)) ([57a9657](https://github.com/cowprotocol/cowswap/commit/57a965717ec5f5d7058b3ff23963256206744a22))
+
+## [1.1.0](https://github.com/cowprotocol/cowswap/compare/ui-v1.0.2...ui-v1.1.0) (2024-05-01)
+
+
+### Features
+
+* allow to modify the label of the fee and its tooltip ([a5dd0ba](https://github.com/cowprotocol/cowswap/commit/a5dd0baf19e6831fc135dd6c089e66ea0edd14f4))
+* delay closing and allow user to hover on it to click on a link or copy text ([1d984cf](https://github.com/cowprotocol/cowswap/commit/1d984cf1ab5e668784820fc3d63235febc008d56))
+* hide tooltips on scroll ([8d68cb1](https://github.com/cowprotocol/cowswap/commit/8d68cb1a8e58a9d8fd1dffc57143828c55e3222e))
+* improve UX for tooltips on mobile ([8d68cb1](https://github.com/cowprotocol/cowswap/commit/8d68cb1a8e58a9d8fd1dffc57143828c55e3222e))
+* **tooltip:** make tooltips sticky ([#4330](https://github.com/cowprotocol/cowswap/issues/4330)) ([e2d815b](https://github.com/cowprotocol/cowswap/commit/e2d815b1a4864dbb8cf8589dce4e4032ef533209))
+* unify all tooltips so the behavior is coherent ([8d68cb1](https://github.com/cowprotocol/cowswap/commit/8d68cb1a8e58a9d8fd1dffc57143828c55e3222e))
+
 ## [1.0.2](https://github.com/cowprotocol/cowswap/compare/ui-v1.0.1...ui-v1.0.2) (2024-04-18)
 
 ### Bug Fixes

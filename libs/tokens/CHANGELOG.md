@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.1.1...tokens-v1.2.0) (2024-05-02)
+
+
+### Features
+
+* add coingecko token list to Gnosis chain ([#4305](https://github.com/cowprotocol/cowswap/issues/4305)) ([41d5067](https://github.com/cowprotocol/cowswap/commit/41d5067c7227a321f582a381e039e05997b79908))
+
 ## [1.1.1](https://github.com/cowprotocol/cowswap/compare/tokens-v1.1.0...tokens-v1.1.1) (2024-04-18)
 
 

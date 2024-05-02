@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.9.0](https://github.com/cowprotocol/cowswap/compare/widget-react-v0.8.2...widget-react-v0.9.0) (2024-05-01)
+
+
+### Features
+
+* allow to specify your own fee label and tooltip ([#4350](https://github.com/cowprotocol/cowswap/issues/4350)) ([e5955d4](https://github.com/cowprotocol/cowswap/commit/e5955d479e099f6e1f68ec0531d57fe26a59f63d))
+
 ## [0.8.2](https://github.com/cowprotocol/cowswap/compare/widget-react-v0.8.1...widget-react-v0.8.2) (2024-04-23)
 
 

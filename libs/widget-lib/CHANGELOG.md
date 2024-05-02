@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.11.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v0.10.1...widget-lib-v0.11.0) (2024-05-01)
+
+
+### Features
+
+* allow to modify the label of the fee and its tooltip ([a5dd0ba](https://github.com/cowprotocol/cowswap/commit/a5dd0baf19e6831fc135dd6c089e66ea0edd14f4))
+
 ## [0.10.1](https://github.com/cowprotocol/cowswap/compare/widget-lib-v0.10.0...widget-lib-v0.10.1) (2024-04-23)
 
 

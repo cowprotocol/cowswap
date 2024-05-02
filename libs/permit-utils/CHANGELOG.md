@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.1](https://github.com/cowprotocol/cowswap/compare/permit-utils-v0.2.0...permit-utils-v0.2.1) (2024-05-02)
+
+
+### Bug Fixes
+
+* **sentry:** fix unhandled permit failure ([#4275](https://github.com/cowprotocol/cowswap/issues/4275)) ([a774983](https://github.com/cowprotocol/cowswap/commit/a7749831a4874536423d6f65b1e17bfae8571d27))
+
 ## [0.2.0](https://github.com/cowprotocol/cowswap/compare/permit-utils-v0.1.2...permit-utils-v0.2.0) (2024-04-11)
 
 
