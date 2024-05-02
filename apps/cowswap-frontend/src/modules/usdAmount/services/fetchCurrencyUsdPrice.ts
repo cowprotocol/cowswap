@@ -2,7 +2,7 @@ import { SupportedChainId, mapSupportedNetworks } from '@cowprotocol/cow-sdk'
 import { Fraction, Token } from '@uniswap/sdk-core'
 
 import { RateLimitError, UnknownCurrencyError } from '../apis/errors'
-import { COINGECKO_PLATFORMS, getCoingeckoUsdPrice } from '../apis/getCoingeckoUsdPrice'
+import { COINGECKO_PLATFORMS, COINGECKO_RATE_LIMIT_TIMEOUT, getCoingeckoUsdPrice } from '../apis/getCoingeckoUsdPrice'
 import { getCowProtocolUsdPrice } from '../apis/getCowProtocolUsdPrice'
 import { DEFILLAMA_PLATFORMS, DEFILLAMA_RATE_LIMIT_TIMEOUT, getDefillamaUsdPrice } from '../apis/getDefillamaUsdPrice'
 
@@ -20,7 +20,8 @@ function getShouldSkipCoingecko(currency: Token): boolean {
     currency,
     COINGECKO_PLATFORMS,
     coingeckoUnknownCurrencies,
-    coingeckoRateLimitHitTimestamp
+    coingeckoRateLimitHitTimestamp,
+    COINGECKO_RATE_LIMIT_TIMEOUT
   )
 }
 
@@ -29,7 +30,8 @@ function getShouldSkipDefillama(currency: Token): boolean {
     currency,
     DEFILLAMA_PLATFORMS,
     defillamaUnknownCurrencies,
-    defillamaRateLimitHitTimestamp
+    defillamaRateLimitHitTimestamp,
+    DEFILLAMA_RATE_LIMIT_TIMEOUT
   )
 }
 
@@ -37,7 +39,8 @@ function getShouldSkipPriceSource(
   currency: Token,
   platforms: Record<SupportedChainId, string | null>,
   unknownCurrenciesMap: UnknownCurrenciesMap,
-  rateLimitTimestamp: null | number
+  rateLimitTimestamp: null | number,
+  timeout: number
 ): boolean {
   const chainId = currency.chainId as SupportedChainId
 
@@ -45,7 +48,7 @@ function getShouldSkipPriceSource(
 
   if (unknownCurrenciesMap[chainId][currency.address.toLowerCase()]) return true
 
-  return !!rateLimitTimestamp && Date.now() - rateLimitTimestamp < DEFILLAMA_RATE_LIMIT_TIMEOUT
+  return !!rateLimitTimestamp && Date.now() - rateLimitTimestamp < timeout
 }
 
 /**
