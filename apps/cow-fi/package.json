@@ -5,7 +5,10 @@
   "main": "index.js",
   "author": "",
   "license": "ISC",
-  "scripts": {},
+  "scripts": {
+    "start:cowfi": "cd ../../ && nx run cow-fi:dev",
+    "build:cowfi": "cd ../../ && nx build cow-fi"
+  },
   "browser": {
     "crypto": false
   },
