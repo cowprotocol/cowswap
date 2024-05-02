@@ -55,7 +55,7 @@ jobs:
         run: yarn install --frozen-lockfile
 
       - name: Build Web Apps
-        run: yarn ipfs:build
+        run: yarn ipfs
 
       - name: 'Deploy to IPFS with infura'
         run: yarn ipfs:publish
