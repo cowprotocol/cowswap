@@ -56,6 +56,3 @@ jobs:
 
       - name: Build Web Apps
         run: yarn ipfs
-
-      - name: 'Deploy to IPFS with infura'
-        run: yarn ipfs:publish
