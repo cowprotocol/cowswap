@@ -6,7 +6,7 @@ import ms from 'ms.macro'
 
 import { fetchWithRateLimit } from 'common/utils/fetch'
 
-import { RateLimitError, UnknownCurrencyError } from './errors'
+import { RateLimitError, UnknownCurrencyError, UnsupportedPlatformError } from './errors'
 
 interface DefillamaUsdQuote {
   coins: {
@@ -47,7 +47,7 @@ export const DEFILLAMA_RATE_LIMIT_TIMEOUT = ms`1m`
 export async function getDefillamaUsdPrice(currency: Token): Promise<Fraction | null> {
   const platform = DEFILLAMA_PLATFORMS[currency.chainId as SupportedChainId]
 
-  if (!platform) throw new Error('UnsupportedDefillamaPlatformError')
+  if (!platform) throw new UnsupportedPlatformError({ cause: `Defillama does not support chain '${currency.chainId}'` })
 
   const key = `${platform}:${currency.address}`.toLowerCase()
   const url = `${BASE_URL}/${key}`
@@ -56,7 +56,7 @@ export async function getDefillamaUsdPrice(currency: Token): Promise<Fraction | 
     .then((res) => res.json())
     .catch((error) => {
       if (error.message.includes(FAILED_FETCH_ERROR)) {
-        throw new RateLimitError()
+        throw new RateLimitError({ cause: error })
       }
 
       return Promise.reject(error)
@@ -65,7 +65,9 @@ export async function getDefillamaUsdPrice(currency: Token): Promise<Fraction | 
       const value = res.coins[key]?.price
 
       if (value === undefined) {
-        throw new UnknownCurrencyError()
+        throw new UnknownCurrencyError({
+          cause: `Defillama did not return a price for '${currency.address}' on chain '${currency.chainId}'`,
+        })
       }
       console.log('[UsdPricesUpdater]: Fetched defillama price', value, currency.symbol)
       return typeof value === 'number' ? FractionUtils.fromNumber(value) : null

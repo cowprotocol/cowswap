@@ -6,7 +6,7 @@ import ms from 'ms.macro'
 
 import { fetchWithRateLimit } from 'common/utils/fetch'
 
-import { RateLimitError, UnknownCurrencyError } from './errors'
+import { RateLimitError, UnknownCurrencyError, UnsupportedPlatformError } from './errors'
 
 type SuccessCoingeckoUsdQuoteResponse = {
   [address: string]: {
@@ -47,7 +47,7 @@ export const COINGECKO_RATE_LIMIT_TIMEOUT = ms`1m`
 export async function getCoingeckoUsdPrice(currency: Token): Promise<Fraction | null> {
   const platform = COINGECKO_PLATFORMS[currency.chainId as SupportedChainId]
 
-  if (!platform) throw new Error('UnsupporedCoingeckoPlatformError')
+  if (!platform) throw new UnsupportedPlatformError({ cause: `Coingecko does not support chain '${currency.chainId}'` })
 
   const params = {
     contract_addresses: currency.address,
@@ -60,7 +60,7 @@ export async function getCoingeckoUsdPrice(currency: Token): Promise<Fraction | 
     .then((res) => res.json())
     .catch((error) => {
       if (error.message.includes(FAILED_FETCH_ERROR)) {
-        throw new RateLimitError()
+        throw new RateLimitError({ cause: error })
       }
       console.log('[UsdPricesUpdater]: Something failed?', error)
 
@@ -69,9 +69,9 @@ export async function getCoingeckoUsdPrice(currency: Token): Promise<Fraction | 
     .then((res: SuccessCoingeckoUsdQuoteResponse | ErrorCoingeckoResponse) => {
       if (isErrorResponse(res)) {
         if (res.status.error_code === 429) {
-          throw new RateLimitError()
+          throw new RateLimitError({ cause: res })
         } else {
-          throw new Error(res.status.error_message)
+          throw new Error(res.status.error_message, { cause: res })
         }
       }
 
@@ -80,7 +80,9 @@ export async function getCoingeckoUsdPrice(currency: Token): Promise<Fraction | 
       // If coingecko API returns an empty response
       // It means Coingecko doesn't know about the currency
       if (value === undefined) {
-        throw new UnknownCurrencyError()
+        throw new UnknownCurrencyError({
+          cause: `Coingecko did not return a price for '${currency.address}' on chain '${currency.chainId}'`,
+        })
       }
       console.log('[UsdPricesUpdater]: Fetched coingecko price', value, currency.symbol)
       return typeof value === 'number' ? FractionUtils.fromNumber(value) : null

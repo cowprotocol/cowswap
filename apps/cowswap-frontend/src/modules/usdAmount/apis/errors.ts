@@ -1,11 +1,17 @@
 export class RateLimitError extends Error {
-  constructor() {
-    super('RateLimitError')
+  constructor(options?: ErrorOptions) {
+    super('RateLimitError', options)
   }
 }
 
 export class UnknownCurrencyError extends Error {
-  constructor() {
-    super('UnknownCurrencyError')
+  constructor(options?: ErrorOptions) {
+    super('UnknownCurrencyError', options)
+  }
+}
+
+export class UnsupportedPlatformError extends Error {
+  constructor(options?: ErrorOptions) {
+    super('UnsupportedPlatformError', options)
   }
 }
