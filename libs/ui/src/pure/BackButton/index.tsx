@@ -19,9 +19,10 @@ const BackIcon = styled(ArrowLeft)<{ onClick: Command }>`
 `
 
 interface BackButtonProps {
-  onClick(): void
   size?: number
   className?: string
+
+  onClick(): void
 }
 
 export function BackButton(props: BackButtonProps) {

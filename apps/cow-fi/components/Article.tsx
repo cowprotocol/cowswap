@@ -49,7 +49,7 @@ const ArticleItemWrapper = styled.li`
   padding: 2.5rem;
   color: ${Color.text1};
 
-  a {
+  a.link {
     font-size: 2rem;
     text-decoration: none;
     color: ${Color.darkBlue};
@@ -115,7 +115,9 @@ export function ArticleItem({ article }: ArticleItemProps) {
   // TODO: For details: seo, §
   return (
     <ArticleItemWrapper key={slug} data-slug={slug} data-id={article.id}>
-      <Link href={`/learn/articles/${slug}`}>{title}</Link>
+      <Link className="link" href={`/learn/articles/${slug}`} passHref>
+        {title}
+      </Link>
       <ArticleSubtitle dateIso={publishedAt!} authorsBio={authorsBio} />
       <ArticleDescription>{description}</ArticleDescription>
     </ArticleItemWrapper>
@@ -152,7 +154,7 @@ export function ArticleContent({ article }: ArticleProps) {
 
       <Layout fullWidthGradientVariant={false}>
         <ArticleContentWrapper data-slug={slug} data-id={id}>
-          <code>{JSON.stringify(article)}</code>
+          <pre style={{ lineHeight: '1.5em', fontSize: '14px' }}>{JSON.stringify(article, null, 2)}</pre>
 
           <h1>{title}</h1>
           <ArticleSubtitle dateIso={publishedAt!} authorsBio={authorsBio} />

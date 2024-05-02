@@ -194,20 +194,34 @@ async function getBySlugAux(slug: string, endpoint: '/categories' | '/articles')
   }
   const entity = endpoint.slice(1, -1)
 
+  const populate =
+    endpoint === '/categories'
+      ? {
+          // Category
+          'populate[articles][populate][0]': 'authorsBio',
+          'populate[articles][populate][1]': 'seo',
+        }
+      : {
+          // Article
+          'populate[0]': 'cover',
+          'populate[1]': 'blocks',
+          'populate[2]': 'seo',
+          'populate[3]': 'authorsBio',
+        }
+
   console.log(`[getArticleBySlug] get ${entity} for slug ${slug}`)
   const { data, error } = await client.GET(endpoint, {
     params: {
-      // Use the query https://docs.strapi.io/dev-docs/api/rest/interactive-query-builder
       query: {
         // Filter by slug
         'filters[slug][$eq]': slug,
 
-        // Populate
-        populate: 'authorsBio',
-
         // Pagination
         'pagination[page]': 1,
         'pagination[pageSize]': 2, // Get 2 items to check for duplicates
+
+        // Populate: Use the query https://docs.strapi.io/dev-docs/api/rest/interactive-query-builder
+        ...populate,
       },
     },
   })

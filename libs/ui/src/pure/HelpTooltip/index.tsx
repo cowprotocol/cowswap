@@ -1,11 +1,12 @@
 import { ReactNode } from 'react'
 
-import { UI } from '../../enum'
-import { HoverTooltip, HoverTooltipProps, renderTooltip } from '../Tooltip'
 import QuestionImage from '@cowprotocol/assets/svg/question.svg'
 
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
+
+import { UI } from '../../enum'
+import { HoverTooltip, HoverTooltipProps, renderTooltip } from '../Tooltip'
 
 const DefaultQuestionIcon = <SVG src={QuestionImage} />
 
@@ -40,8 +41,7 @@ const HelpTooltipContainer = styled.span`
   color: inherit;
 `
 
-
-export interface HelpTooltipProps extends Omit<HoverTooltipProps, 'QuestionMark'| 'children' | 'content'> {
+export interface HelpTooltipProps extends Omit<HoverTooltipProps, 'QuestionMark' | 'children' | 'content'> {
   text: ReactNode
   Icon?: JSX.Element
 }
@@ -49,11 +49,7 @@ export interface HelpTooltipProps extends Omit<HoverTooltipProps, 'QuestionMark'
 export function HelpTooltip({ text, Icon, className, ...props }: HelpTooltipProps) {
   const tooltip = renderTooltip(text, props)
 
-  const content = (
-    <div>
-      {tooltip}
-    </div>
-  )
+  const content = <div>{tooltip}</div>
 
   const HelpIcon = () => Icon || DefaultQuestionIcon
 
@@ -67,4 +63,3 @@ export function HelpTooltip({ text, Icon, className, ...props }: HelpTooltipProp
     </HelpTooltipContainer>
   )
 }
-
