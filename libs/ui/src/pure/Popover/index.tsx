@@ -1,10 +1,12 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
+import { Command } from '@cowprotocol/types'
+
 import { Options, Placement } from '@popperjs/core'
 import { Portal } from '@reach/portal'
 import { usePopper } from 'react-popper'
+
 import { Arrow, PopoverContainer, ReferenceElement } from './styled'
-import { Command } from '@cowprotocol/types'
 
 export interface PopoverContainerProps {
   show: boolean
@@ -19,15 +21,7 @@ export interface PopoverProps extends PopoverContainerProps, Omit<React.HTMLAttr
 }
 
 export default function Popover(props: PopoverProps) {
-  const {
-    content,
-    show,
-    children,
-    placement = 'auto',
-    bgColor,
-    color,
-    className
-  }= props
+  const { content, show, children, placement = 'auto', bgColor, color, className } = props
 
   const [referenceElement, setReferenceElement] = useState<HTMLDivElement | null>(null)
   const [popperElement, setPopperElement] = useState<HTMLDivElement | null>(null)
@@ -81,7 +75,6 @@ export default function Popover(props: PopoverProps) {
   )
 }
 
-
 // TODO: reuse hook from @cowprotocol/common-hooks
 // Currently it's not possible because of dependency inversion
 function useInterval(callback: Command, delay: null | number, leading = true) {
@@ -107,4 +100,3 @@ function useInterval(callback: Command, delay: null | number, leading = true) {
     return
   }, [delay, leading])
 }
-

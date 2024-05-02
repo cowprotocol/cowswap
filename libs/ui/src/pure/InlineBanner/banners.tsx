@@ -11,7 +11,6 @@ import { TokenAmount } from '../TokenAmount'
 
 import { InlineBanner, InlineBannerProps } from './index'
 
-
 export enum BannerOrientation {
   Horizontal = 'horizontal',
   Vertical = 'vertical',
