@@ -70,6 +70,6 @@ export async function getDefillamaUsdPrice(currency: Token): Promise<Fraction | 
         })
       }
       console.log('[UsdPricesUpdater]: Fetched defillama price', value, currency.symbol)
-      return typeof value === 'number' ? FractionUtils.fromNumber(value) : null
+      return FractionUtils.fromNumber(value)
     })
 }

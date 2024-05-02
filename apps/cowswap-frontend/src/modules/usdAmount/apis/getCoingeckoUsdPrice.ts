@@ -85,7 +85,7 @@ export async function getCoingeckoUsdPrice(currency: Token): Promise<Fraction | 
         })
       }
       console.log('[UsdPricesUpdater]: Fetched coingecko price', value, currency.symbol)
-      return typeof value === 'number' ? FractionUtils.fromNumber(value) : null
+      return FractionUtils.fromNumber(value)
     })
 }
 
