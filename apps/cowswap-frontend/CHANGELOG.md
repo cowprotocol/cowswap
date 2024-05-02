@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.68.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.68.0...cowswap-v1.68.1) (2024-05-02)
+
+
+### Bug Fixes
+
+* deploy to IPFS automatically ([#4397](https://github.com/cowprotocol/cowswap/issues/4397)) ([754066c](https://github.com/cowprotocol/cowswap/commit/754066c6f58c2195fa392442136205b05ad52cc7))
+
 ## [1.68.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.67.0...cowswap-v1.68.0) (2024-05-02)
 
 
