@@ -72,7 +72,7 @@ const Wrapper = styled.span<Omit<ButtonProps, 'href' | 'label' | 'target' | 'rel
 
   &:hover {
     background: ${({ variant }) => (variant === ButtonVariant.OUTLINE ? Color.darkBlue : Color.text1)};
-    color: ${Color.lightBlue};
+    color: ${Color.lightBlue}!important;
   }
 
   ${({ variant }) =>
@@ -94,11 +94,11 @@ const Wrapper = styled.span<Omit<ButtonProps, 'href' | 'label' | 'target' | 'rel
     variant === ButtonVariant.TEXT &&
     css`
     background: transparent;
-    color: ${Color.darkBlue};
+    color: ${Color.darkBlue}!important;
 
     &:hover {
       background: transparent;
-      color: ${Color.darkBlue};
+      color: ${Color.darkBlue}!important;
       text-decoration: underline;
   `}
 
@@ -113,7 +113,7 @@ const Wrapper = styled.span<Omit<ButtonProps, 'href' | 'label' | 'target' | 'rel
     variant === ButtonVariant.LIGHT &&
     css`
       background: ${Color.lightBlue};
-      color: ${Color.darkBlue};
+      color: ${Color.darkBlue}!important;
     `}
 
   ${({ variant }) =>
@@ -126,12 +126,12 @@ const Wrapper = styled.span<Omit<ButtonProps, 'href' | 'label' | 'target' | 'rel
 ${({ variant }) =>
     variant === ButtonVariant.COWAMM_LIGHTBLUE &&
     css`
-      background: ${Color.cowammLightBlue};
-      color: ${Color.cowammBlack};
+      background: ${Color.cowammLightBlue}!important;
+      color: ${Color.cowammBlack}!important;
 
       &:hover {
-        background: ${lighten(0.2, Color.cowammLightBlue)};
-        color: ${Color.cowammBlack};
+        background: ${lighten(0.2, Color.cowammLightBlue)}!important;
+        color: ${Color.cowammBlack}!important;
       }
     `}
 
@@ -139,12 +139,12 @@ ${({ variant }) =>
     variant === ButtonVariant.COWAMM_OUTLINE_LIGHT &&
     css`
       background: transparent;
-      color: ${Color.cowammWhite};
-      border: 0.1rem solid ${Color.cowammWhite};
+      color: ${Color.cowammWhite}!important;
+      border: 0.1rem solid ${Color.cowammWhite}!important;
 
       &:hover {
-        background: ${Color.cowammWhite};
-        color: ${Color.cowammBlack};
+        background: ${Color.cowammWhite}!important;
+        color: ${Color.cowammBlack}!important;
       }
     `}
 
@@ -153,12 +153,12 @@ ${({ variant }) =>
     css`
       min-height: 3.6rem;
       background: transparent;
-      color: ${Color.cowammWhite};
-      border: 0.1rem solid ${Color.cowammWhite};
+      color: ${Color.cowammWhite}!important;
+      border: 0.1rem solid ${Color.cowammWhite}!important;
 
       &:hover {
-        background: ${Color.cowammWhite};
-        color: ${Color.cowammBlack};
+        background: ${Color.cowammWhite}!important;
+        color: ${Color.cowammBlack}!important;
       }
     `}
 `
