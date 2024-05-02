@@ -35,7 +35,6 @@
     "postinstall": "yarn run patch-package && yarn i18n",
     "analyze-build": "cross-env ANALYZE_BUNDLE=true ANALYZE_BUNDLE_TEMPLATE=sunburst yarn build"
   },
-  
   "browser": {
     "crypto": false
   },
