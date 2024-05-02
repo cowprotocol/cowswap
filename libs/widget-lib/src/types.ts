@@ -94,7 +94,7 @@ export interface PartnerFee {
   /**
    * The Ethereum address of the partner to receive the fee.
    */
-  recipient: string
+  recipient: string | Record<SupportedChainId, string>
 }
 
 /**
@@ -167,6 +167,11 @@ export interface CowSwapWidgetBanners {
    *  If the flag is set to true, the banner will not be displayed
    */
   hideSafeWebAppBanner?: boolean
+}
+
+export interface CowSwapWidgetContent {
+  feeLabel?: string
+  feeTooltipMarkdown?: string
 }
 
 export interface CowSwapWidgetParams {
@@ -283,6 +288,11 @@ export interface CowSwapWidgetParams {
    * In case when widget does not support some tokens, you can provide a list of tokens to be used in the widget
    */
   customTokens?: TokenInfo[]
+
+  /**
+   * Customizable labels and content for the widget.
+   */
+  content?: CowSwapWidgetContent
 }
 
 // Define types for event payloads

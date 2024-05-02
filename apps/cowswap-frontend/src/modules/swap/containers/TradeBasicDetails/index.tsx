@@ -8,6 +8,7 @@ import { BoxProps } from 'rebass'
 
 import TradeGp from 'legacy/state/swap/TradeGp'
 
+import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { RowNetworkCosts, RowPartnerFee } from 'modules/swap/containers/Row/RowFee'
 import { RowReceivedAfterSlippage } from 'modules/swap/containers/Row/RowReceivedAfterSlippage'
 import { RowSlippage } from 'modules/swap/containers/Row/RowSlippage'
@@ -40,6 +41,7 @@ export function TradeBasicDetails(props: TradeBasicDetailsProp) {
   const partnerFeeFiatValue = useUsdAmount(trade?.partnerFeeAmount).value
   const isEoaEthFlow = useIsEoaEthFlow()
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
+  const { content } = useInjectedWidgetParams()
 
   const isExactIn = trade?.tradeType === TradeType.EXACT_INPUT
 
@@ -58,6 +60,8 @@ export function TradeBasicDetails(props: TradeBasicDetailsProp) {
           partnerFee={trade.partnerFee}
           feeAmount={trade.partnerFeeAmount}
           feeInFiat={partnerFeeFiatValue}
+          label={content?.feeLabel || undefined}
+          tooltipMarkdown={content?.feeTooltipMarkdown}
         />
       )}
 

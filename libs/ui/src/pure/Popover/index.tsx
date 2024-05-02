@@ -1,10 +1,10 @@
-import styled from 'styled-components/macro'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
-import PopoverMod, { Arrow as ArrowMod, PopoverContainer as PopoverContainerMod, PopoverProps } from './PopoverMod'
-
-import { UI } from '../../enum'
-
-export * from './PopoverMod'
+import { Options, Placement } from '@popperjs/core'
+import { Portal } from '@reach/portal'
+import { usePopper } from 'react-popper'
+import { Arrow, PopoverContainer, ReferenceElement } from './styled'
+import { Command } from '@cowprotocol/types'
 
 export interface PopoverContainerProps {
   show: boolean
@@ -12,29 +12,99 @@ export interface PopoverContainerProps {
   color?: string
 }
 
-const PopoverContainer = styled(PopoverContainerMod)<PopoverContainerProps>`
-  background: ${({ bgColor }) => bgColor || `var(${UI.COLOR_PAPER_DARKER})`};
-  color: ${({ color }) => color || `var(${UI.COLOR_TEXT_PAPER})`};
-  box-shadow: var(${UI.BOX_SHADOW});
-  border: 1px solid ${({ bgColor }) => bgColor || `var(${UI.COLOR_PAPER_DARKEST})`};
-  border-radius: 12px;
-  padding: 6px 3px;
-  z-index: 10;
-  font-size: 13px;
-  backdrop-filter: blur(20px);
-
-  > div div {
-    font-size: inherit;
-  }
-`
-
-const Arrow = styled(ArrowMod)<Omit<PopoverContainerProps, 'color' | 'show'>>`
-  ::before {
-    background: ${({ bgColor }) => bgColor || `var(${UI.COLOR_PAPER_DARKER})`};
-    border: 1px solid ${({ bgColor }) => bgColor || `var(${UI.COLOR_PAPER_DARKEST})`};
-  }
-`
-
-export default function Popover(props: Omit<PopoverProps, 'PopoverContainer' | 'Arrow'>) {
-  return <PopoverMod {...props} Arrow={Arrow} PopoverContainer={PopoverContainer} />
+export interface PopoverProps extends PopoverContainerProps, Omit<React.HTMLAttributes<HTMLDivElement>, 'content'> {
+  content: React.ReactNode
+  children: React.ReactNode
+  placement?: Placement
 }
+
+export default function Popover(props: PopoverProps) {
+  const {
+    content,
+    show,
+    children,
+    placement = 'auto',
+    bgColor,
+    color,
+    className
+  }= props
+
+  const [referenceElement, setReferenceElement] = useState<HTMLDivElement | null>(null)
+  const [popperElement, setPopperElement] = useState<HTMLDivElement | null>(null)
+  const [arrowElement, setArrowElement] = useState<HTMLDivElement | null>(null)
+
+  const options = useMemo(
+    (): Options => ({
+      placement,
+      strategy: 'fixed',
+      modifiers: [
+        { name: 'offset', options: { offset: [8, 8] } },
+        { name: 'arrow', options: { element: arrowElement } },
+        { name: 'preventOverflow', options: { padding: 8 } },
+      ],
+    }),
+    [arrowElement, placement]
+  )
+
+  const { styles, update, attributes } = usePopper(referenceElement, popperElement, options)
+
+  const updateCallback = useCallback(() => {
+    update && update()
+  }, [update])
+
+  useInterval(updateCallback, show ? 100 : null)
+
+  return (
+    <>
+      <ReferenceElement ref={setReferenceElement as any}>{children}</ReferenceElement>
+      <Portal>
+        <PopoverContainer
+          className={className}
+          show={show}
+          ref={setPopperElement as any}
+          style={styles.popper}
+          {...attributes.popper}
+          bgColor={bgColor}
+          color={color}
+        >
+          {content}
+          <Arrow
+            className={`arrow-${attributes.popper?.['data-popper-placement'] ?? ''}`}
+            ref={setArrowElement as any}
+            style={styles.arrow}
+            bgColor={bgColor}
+            {...attributes.arrow}
+          />
+        </PopoverContainer>
+      </Portal>
+    </>
+  )
+}
+
+
+// TODO: reuse hook from @cowprotocol/common-hooks
+// Currently it's not possible because of dependency inversion
+function useInterval(callback: Command, delay: null | number, leading = true) {
+  const savedCallback = useRef<Command>()
+
+  // Remember the latest callback.
+  useEffect(() => {
+    savedCallback.current = callback
+  }, [callback])
+
+  // Set up the interval.
+  useEffect(() => {
+    function tick() {
+      const { current } = savedCallback
+      current && current()
+    }
+
+    if (delay !== null) {
+      if (leading) tick()
+      const id = setInterval(tick, delay)
+      return () => clearInterval(id)
+    }
+    return
+  }, [delay, leading])
+}
+

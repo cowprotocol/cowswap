@@ -1,8 +1,8 @@
 import { UI } from '@cowprotocol/ui'
+import { HelpTooltip } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-import QuestionHelper from 'legacy/components/QuestionHelper'
 
 export const ReceiveAmountBox = styled.div`
   display: flex;
@@ -38,7 +38,7 @@ export const ReceiveAmountValue = styled.span`
   font-size: 21px;
 `
 
-export const QuestionHelperWrapped = styled(QuestionHelper)`
+export const QuestionHelperWrapped = styled(HelpTooltip)`
   display: inline-block;
   vertical-align: bottom;
   line-height: 0;

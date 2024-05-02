@@ -15,7 +15,7 @@ import {
   MINIMUM_ORDER_VALID_TO_TIME_SECONDS,
 } from '@cowprotocol/common-const'
 import { getWrappedToken } from '@cowprotocol/common-utils'
-import { RowBetween, RowFixed } from '@cowprotocol/ui'
+import { HelpTooltip, RowBetween, RowFixed } from '@cowprotocol/ui'
 import { FancyButton } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -34,8 +34,6 @@ import { getNativeOrderDeadlineTooltip, getNonNativeOrderDeadlineTooltip } from 
 import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from 'modules/swap/pure/Row/RowSlippageContent'
 
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
-
-import QuestionHelper from '../QuestionHelper'
 
 // MOD imports
 
@@ -211,7 +209,7 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
           <ThemedText.Black fontWeight={400} fontSize={14}>
             <Trans>MEV protected slippage</Trans>
           </ThemedText.Black>
-          <QuestionHelper
+          <HelpTooltip
             text={
               // <Trans>Your transaction will revert if the price changes unfavorably by more than this percentage.</Trans>
               isEoaEthFlow
@@ -297,7 +295,7 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
             <ThemedText.Black fontSize={14} fontWeight={400}>
               <Trans>Swap deadline</Trans>
             </ThemedText.Black>
-            <QuestionHelper
+            <HelpTooltip
               text={
                 <Trans>
                   {isEoaEthFlow

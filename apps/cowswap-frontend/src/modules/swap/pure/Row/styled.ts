@@ -1,13 +1,13 @@
 import { UI } from '@cowprotocol/ui'
 import { RowBetween, RowFixed } from '@cowprotocol/ui'
-import { MouseoverTooltipContent } from '@cowprotocol/ui'
+import { HoverTooltip } from '@cowprotocol/ui'
 
 import { Text } from 'rebass'
 import styled from 'styled-components/macro'
 
 import { RowStyleProps } from './types'
 
-const StyledMouseoverTooltipContent = styled(MouseoverTooltipContent)``
+const StyledHoverTooltip = styled(HoverTooltip)``
 export const TextWrapper = styled(Text)<{ success?: boolean }>`
   ${({ success }) => (success ? `color: var(${UI.COLOR_GREEN}) !important;` : 'color: inherit;')}
 `
@@ -53,7 +53,7 @@ export const StyledRowBetween = styled(RowBetween)<RowStyleProps>`
     }
   }
 
-  ${StyledMouseoverTooltipContent} {
+  ${StyledHoverTooltip} {
     background-color: ${({ theme }) => theme.bg3};
     color: inherit;
   }

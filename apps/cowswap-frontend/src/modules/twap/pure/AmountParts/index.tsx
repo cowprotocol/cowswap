@@ -1,12 +1,10 @@
 import React, { ReactNode } from 'react'
 
-import { renderTooltip } from '@cowprotocol/ui'
+import { HelpTooltip, renderTooltip } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
 import { Nullish } from 'types'
-
-import QuestionHelper from 'legacy/components/QuestionHelper'
 
 import { LabelTooltipItems } from 'modules/twap'
 
@@ -28,7 +26,7 @@ function TradeAmountPreview(props: TradeAmountPreviewProps) {
     <styledEl.Part>
       <styledEl.Label>
         <Trans>{label}</Trans>
-        <QuestionHelper text={tooltip} />
+        <HelpTooltip text={tooltip} />
       </styledEl.Label>
 
       <styledEl.Amount amount={amount} tokenSymbol={amount?.currency} />

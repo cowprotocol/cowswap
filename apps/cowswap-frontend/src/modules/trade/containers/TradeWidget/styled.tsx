@@ -2,8 +2,6 @@ import { UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-import { SetRecipient } from 'modules/swap/containers/SetRecipient'
-
 export const Container = styled.div`
   width: 100%;
   max-width: ${({ theme }) => theme.appBody.maxWidth.swap};
@@ -41,13 +39,9 @@ export const OuterContentWrapper = styled.div`
   margin-top: 10px;
 `
 
-export const CurrencySeparatorBox = styled.div<{ withRecipient: boolean; compactView: boolean }>`
+export const CurrencySeparatorBox = styled.div<{ compactView: boolean }>`
   display: flex;
   justify-content: space-between;
   margin: ${({ compactView }) => (compactView ? '-5px 0' : '0')};
-  padding: ${({ withRecipient }) => (withRecipient ? '0 10px' : '0')};
-`
-
-export const StyledRemoveRecipient = styled(SetRecipient)`
-  margin: 15px 0;
+  padding: 0;
 `
