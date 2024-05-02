@@ -64,24 +64,10 @@
         "jestConfig": "apps/cowswap-frontend/jest.config.ts"
       }
     },
-    "build:ipfs": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": [
-          {
-            "command": "export PUBLIC_URL=\".\""
-          },
-          {
-            "command": "nx run cowswap-frontend:build"
-          }
-        ],
-        "parallel": false
-      }
-    },
     "ipfs": {
       "executor": "nx:run-commands",
       "dependsOn": [
-        "build:ipfs"
+        "build"
       ],
       "options": {
         "command": "npx ipfs-deploy build/cowswap -p pinata -O"
