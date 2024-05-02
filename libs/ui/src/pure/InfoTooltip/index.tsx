@@ -1,10 +1,10 @@
 import { ReactNode } from 'react'
 
-import { HoverTooltip, TooltipContainer } from '../Tooltip'
-
 import { Info } from 'react-feather'
 import styled from 'styled-components/macro'
+
 import { UI } from '../../enum'
+import { HoverTooltip, TooltipContainer } from '../Tooltip'
 
 const StyledIcon = styled.div`
   display: inline-block;

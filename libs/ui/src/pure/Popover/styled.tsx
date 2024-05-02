@@ -1,8 +1,8 @@
+import styled from 'styled-components/macro'
+
 import { UI } from '../../enum'
 
-import styled from 'styled-components'
-
-import type {PopoverContainerProps} from './index'
+import type { PopoverContainerProps } from './index'
 
 export const ReferenceElement = styled.div`
   display: inline-block;
@@ -27,7 +27,6 @@ export const PopoverContainer = styled.div<PopoverContainerProps>`
     font-size: inherit;
   }
 `
-
 
 export const Arrow = styled.div<Omit<PopoverContainerProps, 'color' | 'show'>>`
   width: 8px;

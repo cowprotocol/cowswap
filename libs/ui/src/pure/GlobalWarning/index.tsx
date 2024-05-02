@@ -1,6 +1,5 @@
 import { ReactNode } from 'react'
 
-
 import { AlertTriangle, X } from 'react-feather'
 import styled from 'styled-components/macro'
 
