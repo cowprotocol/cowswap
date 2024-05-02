@@ -18,7 +18,7 @@ export const COINGECK_PLATFORMS: Record<SupportedChainId, string | null> = {
   [SupportedChainId.SEPOLIA]: null,
 }
 
-const BASE_URL = 'https://cow-web-services.vercel.app/api/serverless/coingeckoProxy'
+const BASE_URL = 'https://cow-web-services.vercel.app/api/serverless/proxies/coingecko'
 const VS_CURRENCY = 'usd'
 /**
  * This is a text of 429 HTTP code
