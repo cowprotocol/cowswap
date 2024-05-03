@@ -18,6 +18,7 @@ function _getExplorerUrlByEnvironment() {
   return {
     [ChainId.MAINNET]: baseUrl,
     [ChainId.GNOSIS_CHAIN]: `${baseUrl}/gc`,
+    [ChainId.ARBITRUM_ONE]: `${baseUrl}/arb1`,
     [ChainId.SEPOLIA]: `${baseUrl}/sepolia`,
   }
 }
@@ -50,6 +51,7 @@ enum Explorers {
   Explorer = 'Explorer',
   Blockscout = 'Blockscout',
   Etherscan = 'Etherscan',
+  Arbiscan = 'Arbiscan',
 }
 
 // Used for GA ExternalLink detection
@@ -60,6 +62,8 @@ export function detectExplorer(href: string) {
     return Explorers.Blockscout
   } else if (href.includes('etherscan')) {
     return Explorers.Etherscan
+  } else if (href.includes('arbiscan')) {
+    return Explorers.Arbiscan
   } else {
     return undefined
   }

@@ -69,15 +69,18 @@ export const GP_SETTLEMENT_CONTRACT_ADDRESS = COW_PROTOCOL_SETTLEMENT_CONTRACT_A
 
 export const GP_VAULT_RELAYER = COW_PROTOCOL_VAULT_RELAYER_ADDRESS
 
+// TODO: check consumers are aware this is not present on all chains
 export const V_COW_CONTRACT_ADDRESS: Record<SupportedChainId, string> = {
   [SupportedChainId.MAINNET]: '0xd057b63f5e69cf1b929b356b579cba08d7688048',
   [SupportedChainId.GNOSIS_CHAIN]: '0xc20C9C13E853fc64d054b73fF21d3636B2d97eaB',
+  [SupportedChainId.ARBITRUM_ONE]: '', // doesn't exist!
   [SupportedChainId.SEPOLIA]: '0x21d06a222bbb94ec1406a0a8ba86b4d761bc9864',
 }
 
 export const COW_CONTRACT_ADDRESS: Record<SupportedChainId, string> = {
   [SupportedChainId.MAINNET]: '0xDEf1CA1fb7FBcDC777520aa7f396b4E015F497aB',
   [SupportedChainId.GNOSIS_CHAIN]: '0x177127622c4A00F3d409B75571e12cB3c8973d3c',
+  [SupportedChainId.ARBITRUM_ONE]: '0xcb8b5cd20bdcaea9a010ac1f8d835824f5c87a04',
   [SupportedChainId.SEPOLIA]: '0x0625aFB445C3B6B7B929342a04A22599fd5dBB59',
 }
 
@@ -118,15 +121,18 @@ export const GNOSIS_FORUM_ROADTODECENT_LINK = 'https://forum.gnosis.io/t/gpv2-ro
 export const MEV_TOTAL = '606 Million'
 export const FLASHBOTS_LINK = 'https://explore.flashbots.net/'
 
+// TODO: test gas prices for all networks
 export const GAS_PRICE_UPDATE_THRESHOLD = ms`5s`
 export const GAS_FEE_ENDPOINTS: Record<SupportedChainId, string> = {
   [SupportedChainId.MAINNET]: 'https://api.blocknative.com/gasprices/blockprices',
   [SupportedChainId.GNOSIS_CHAIN]: 'https://gnosis.blockscout.com/api/v1/gas-price-oracle',
+  [SupportedChainId.ARBITRUM_ONE]: 'https://arbitrum.blockscout.com/api/v1/gas-price-oracle',
   [SupportedChainId.SEPOLIA]: '',
 }
 export const GAS_API_KEYS: Record<SupportedChainId, string> = {
   [SupportedChainId.MAINNET]: process.env.REACT_APP_BLOCKNATIVE_API_KEY || '',
   [SupportedChainId.GNOSIS_CHAIN]: '',
+  [SupportedChainId.ARBITRUM_ONE]: '',
   [SupportedChainId.SEPOLIA]: '',
 }
 
