@@ -12,12 +12,14 @@ interface Claim {
 const indexFiles: Record<SupportedChainId, string[]> = {
   [SupportedChainId.MAINNET]: mainnetIndex,
   [SupportedChainId.GNOSIS_CHAIN]: gnosisChainIndex,
-  [SupportedChainId.SEPOLIA]: [], // TODO SEPOLIA: check it
+  [SupportedChainId.ARBITRUM_ONE]: [],
+  [SupportedChainId.SEPOLIA]: [],
 }
 
 const chainNames: Record<SupportedChainId, string> = {
   [SupportedChainId.MAINNET]: 'mainnet',
   [SupportedChainId.GNOSIS_CHAIN]: 'gnosisChain',
+  [SupportedChainId.ARBITRUM_ONE]: '',
   [SupportedChainId.SEPOLIA]: '', // TODO SEPOLIA: check it
 }
 
