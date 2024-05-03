@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.68.4](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.68.3...cowswap-v1.68.4) (2024-05-03)
+
+
+### Bug Fixes
+
+* **widget:** improve PartnerFeeDiscarded error ([#4405](https://github.com/cowprotocol/cowswap/issues/4405)) ([2053e98](https://github.com/cowprotocol/cowswap/commit/2053e980adaac7a422a30933e2ce635ea32c2727))
+
 ## [1.68.3](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.68.2...cowswap-v1.68.3) (2024-05-03)
 
 
