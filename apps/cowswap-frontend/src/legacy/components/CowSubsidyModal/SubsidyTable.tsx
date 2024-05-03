@@ -1,10 +1,9 @@
 import { V_COW } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { TokenAmount } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
+import { TokenAmount, UI } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
-import { transparentize, lighten } from 'color2k'
+import { lighten, transparentize } from 'color2k'
 import styled from 'styled-components/macro'
 
 import { useIsDarkMode } from 'legacy/state/user/hooks'
@@ -162,6 +161,8 @@ const vCowToken = V_COW[SupportedChainId.MAINNET]
 
 function SubsidyTable({ discount }: CowSubsidy) {
   const darkMode = useIsDarkMode()
+
+  if (!vCowToken) return null
 
   return (
     <StyledSubsidyTable>
