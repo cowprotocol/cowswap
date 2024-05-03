@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 
 import { Erc1155, Erc1155Abi, Erc721, Erc721Abi } from '@cowprotocol/abis'
 import { safeNamehash, uriToHttp, isAddress, isZero, getContract } from '@cowprotocol/common-utils'
-import { useWalletProvider } from '@cowprotocol/wallet-provider'
+import { useWalletChainId, useWalletProvider } from '@cowprotocol/wallet-provider'
 import { BigNumber } from '@ethersproject/bignumber'
 import { hexZeroPad } from '@ethersproject/bytes'
 import { namehash } from '@ethersproject/hash'
@@ -12,7 +12,6 @@ import useSWR from 'swr'
 import { useENSName } from './useENSName'
 import { useENSResolver } from './useENSResolver'
 import { useENSResolverContract } from './useENSResolverContract'
-
 
 /**
  * Returns the ENS avatar URI, if available.
@@ -166,10 +165,11 @@ function useERC1155Uri(
 }
 
 function useERC721Contract(address: string | undefined): Erc721 | undefined {
+  const chainId = useWalletChainId()
   const provider = useWalletProvider()
 
-  const { data } = useSWR(['useERC721Contract', provider, address], () => {
-    if (!provider || !address) return undefined
+  const { data } = useSWR(['useERC721Contract', provider, chainId, address], () => {
+    if (!chainId || !provider || !address) return undefined
 
     return getContract(address, Erc721Abi, provider) as Erc721
   })
@@ -178,10 +178,11 @@ function useERC721Contract(address: string | undefined): Erc721 | undefined {
 }
 
 function useERC1155Contract(address: string | undefined): Erc1155 | undefined {
+  const chainId = useWalletChainId()
   const provider = useWalletProvider()
 
-  const { data } = useSWR(['useERC1155Contract', provider, address], () => {
-    if (!provider || !address) return undefined
+  const { data } = useSWR(['useERC1155Contract', provider, chainId, address], () => {
+    if (!chainId || !provider || !address) return undefined
 
     return getContract(address, Erc1155Abi, provider) as Erc1155
   })
