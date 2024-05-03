@@ -8,3 +8,6 @@ export const UNISWAP_TOKENS_LIST = 'https://gateway.ipfs.io/ipns/tokens.uniswap.
 
 export const GNOSIS_UNISWAP_TOKENS_LIST =
   'https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/GnosisUniswapTokensList.json'
+
+// TODO: add a uniswap mapped token list for arbitrum
+// TODO: review token lists for arbitrum
