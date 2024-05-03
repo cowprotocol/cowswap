@@ -72,37 +72,30 @@ export function fetchCurrencyUsdPrice(
   }
 
   function getCowPrice(currency: Token): Promise<Fraction | null> {
-    return getCowProtocolUsdPrice(currency, getUsdcPrice)
-  }
-
-  const request = shouldSkipCoingecko
-    ? shouldSkipDefillama
-      ? getCowPrice(currency)
-      : getDefillamaUsdPrice(currency).catch(
-          handleErrorFactory(
-            currency,
-            defillamaRateLimitHitTimestamp,
-            defillamaUnknownCurrencies,
-            getShouldSkipCoingecko(currency) ? getCowPrice : getCoingeckoUsdPrice
-          )
-        )
-    : getCoingeckoUsdPrice(currency).catch(
-        handleErrorFactory(
-          currency,
-          coingeckoRateLimitHitTimestamp,
-          coingeckoUnknownCurrencies,
-          getShouldSkipDefillama(currency) ? getCowPrice : getDefillamaUsdPrice
-        )
-      )
-
-  return request
-    .catch((error) => {
+    return getCowProtocolUsdPrice(currency, getUsdcPrice).catch((error) => {
       console.error('Cannot fetch USD price', { error })
       return Promise.reject(error)
     })
-    .then((result) => {
-      return result
-    })
+  }
+
+  // No coingecko. Try Defillama, then cow
+  if (shouldSkipCoingecko) {
+    return getDefillamaUsdPrice(currency).catch(
+      handleErrorFactory(currency, defillamaRateLimitHitTimestamp, defillamaUnknownCurrencies, getCowPrice)
+    )
+  }
+  // No Defillama. Try coingecko, then cow
+  if (shouldSkipDefillama) {
+    return getCoingeckoUsdPrice(currency).catch(
+      handleErrorFactory(currency, coingeckoRateLimitHitTimestamp, coingeckoUnknownCurrencies, getCowPrice)
+    )
+  }
+  // Both coingecko and defillama available. Try coingecko, then defillama, then cow
+  return getCoingeckoUsdPrice(currency)
+    .catch(
+      handleErrorFactory(currency, coingeckoRateLimitHitTimestamp, coingeckoUnknownCurrencies, getDefillamaUsdPrice)
+    )
+    .catch(handleErrorFactory(currency, defillamaRateLimitHitTimestamp, defillamaUnknownCurrencies, getCowPrice))
 }
 
 function handleErrorFactory(
