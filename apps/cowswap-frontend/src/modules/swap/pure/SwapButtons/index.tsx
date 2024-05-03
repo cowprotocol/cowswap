@@ -194,7 +194,5 @@ function EthFlowSwapButton(props: SwapButtonsContext) {
 }
 
 export const SwapButtons = React.memo(function (props: SwapButtonsContext) {
-  console.debug('RENDER SWAP BUTTON: ', props)
-
   return <div id="swap-button">{swapButtonStateMap[props.swapButtonState](props)}</div>
 }, genericPropsChecker)
