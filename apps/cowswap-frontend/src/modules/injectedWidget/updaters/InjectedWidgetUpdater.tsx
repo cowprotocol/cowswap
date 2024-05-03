@@ -53,7 +53,7 @@ export function InjectedWidgetUpdater() {
   const [
     {
       errors: validationErrors,
-      params: { partnerFee },
+      params: { partnerFee, appCode },
     },
     updateParams,
   ] = useAtom(injectedWidgetParamsAtom)
@@ -108,9 +108,11 @@ export function InjectedWidgetUpdater() {
 
   // Log an error when partnerFee was set and then discarded
   useEffect(() => {
-    if (prevPartnerFee || !partnerFee) {
+    if (!appCode) return
+
+    if (prevPartnerFee && !partnerFee) {
       const sentryError = Object.assign(
-        new Error(`BPS: ${prevPartnerFee?.bps}, recipient: ${prevPartnerFee?.recipient}`),
+        new Error(`AppCode: ${appCode}, BPS: ${prevPartnerFee.bps}, recipient: ${prevPartnerFee.recipient}`),
         {
           name: 'PartnerFeeDiscarded',
         }
@@ -122,7 +124,7 @@ export function InjectedWidgetUpdater() {
         },
       })
     }
-  }, [partnerFee, prevPartnerFee])
+  }, [appCode, partnerFee, prevPartnerFee])
 
   return (
     <>
