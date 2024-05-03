@@ -62,7 +62,6 @@ export async function getCoingeckoUsdPrice(currency: Token): Promise<Fraction | 
       if (error.message.includes(FAILED_FETCH_ERROR)) {
         throw new RateLimitError({ cause: error })
       }
-      console.log('[UsdPricesUpdater]: Something failed?', error)
 
       return Promise.reject(error)
     })
@@ -84,7 +83,7 @@ export async function getCoingeckoUsdPrice(currency: Token): Promise<Fraction | 
           cause: `Coingecko did not return a price for '${currency.address}' on chain '${currency.chainId}'`,
         })
       }
-      console.log('[UsdPricesUpdater]: Fetched coingecko price', value, currency.symbol)
+
       return FractionUtils.fromNumber(value)
     })
 }

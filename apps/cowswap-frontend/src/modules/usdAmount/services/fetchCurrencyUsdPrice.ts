@@ -107,15 +107,12 @@ function handleErrorFactory(
   return (error) => {
     if (error instanceof RateLimitError) {
       rateLimitTimestamp = Date.now()
-      console.error('[UsdPricesUpdater]: request limit reached', currency.symbol)
     } else if (error instanceof UnknownCurrencyError) {
       // Mark currency as unknown
       unknownCurrenciesMap[currency.chainId as SupportedChainId][currency.address.toLowerCase()] = true
-      console.error('[UsdPricesUpdater]: unknown currency', currency.symbol, error)
     } else {
-      console.error('[UsdPricesUpdater]: Cannot fetch price', currency.symbol, error)
     }
-    console.error('[UsdPricesUpdater]: Using fallback', currency.symbol)
+
     return fetchPriceFallback(currency)
   }
 }

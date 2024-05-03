@@ -69,7 +69,7 @@ export async function getDefillamaUsdPrice(currency: Token): Promise<Fraction | 
           cause: `Defillama did not return a price for '${currency.address}' on chain '${currency.chainId}'`,
         })
       }
-      console.log('[UsdPricesUpdater]: Fetched defillama price', value, currency.symbol)
+
       return FractionUtils.fromNumber(value)
     })
 }
