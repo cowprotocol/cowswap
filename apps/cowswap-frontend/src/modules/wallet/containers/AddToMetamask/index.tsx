@@ -5,8 +5,8 @@ import { TokenWithLogo } from '@cowprotocol/common-const'
 import { getWrappedToken } from '@cowprotocol/common-utils'
 import { getTokenLogoUrls } from '@cowprotocol/tokens'
 import { getIsMetaMask } from '@cowprotocol/wallet'
+import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { Currency } from '@uniswap/sdk-core'
-import { useWeb3React } from '@web3-react/core'
 
 import { AddToMetamask as AddToMetamaskPure } from '../../pure/AddToMetamask'
 
@@ -18,7 +18,7 @@ export type AddToMetamaskProps = {
 
 export function AddToMetamask(props: AddToMetamaskProps) {
   const { currency, shortLabel, className } = props
-  const { connector } = useWeb3React()
+  const provider = useWalletProvider()
   const isMetamask = getIsMetaMask()
 
   const [success, setSuccess] = useState<boolean | undefined>()
@@ -27,13 +27,17 @@ export function AddToMetamask(props: AddToMetamaskProps) {
   const logoURL = getTokenLogoUrls(token as TokenWithLogo)[0]
 
   const addToken = useCallback(() => {
-    if (!token?.symbol || !connector.watchAsset) return
-    connector
-      .watchAsset({
-        address: token.address,
-        symbol: token.symbol,
-        decimals: token.decimals,
-        image: logoURL,
+    if (!token?.symbol || !provider?.provider?.request) return
+
+    provider.provider
+      .request({
+        method: 'wallet_watchAsset',
+        params: {
+          address: token.address,
+          symbol: token.symbol,
+          decimals: token.decimals,
+          image: logoURL,
+        } as never,
       })
       .then(() => {
         addTokenToMetamaskAnalytics('Succeeded', token.symbol)
@@ -43,7 +47,7 @@ export function AddToMetamask(props: AddToMetamaskProps) {
         addTokenToMetamaskAnalytics('Failed', token.symbol)
         setSuccess(false)
       })
-  }, [connector, logoURL, token])
+  }, [provider, logoURL, token])
 
   if (!currency || !isMetamask) {
     return null
