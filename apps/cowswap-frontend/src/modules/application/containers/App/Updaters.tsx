@@ -2,6 +2,7 @@ import { BalancesAndAllowancesUpdater } from '@cowprotocol/balances-and-allowanc
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { TokensListsUpdater, UnsupportedTokensUpdater, WidgetTokensListsUpdater } from '@cowprotocol/tokens'
 import { useWalletInfo, WalletUpdater } from '@cowprotocol/wallet'
+import { HwAccountIndexUpdater } from '@cowprotocol/wallet'
 
 import { GasPriceStrategyUpdater } from 'legacy/state/gas/gas-price-strategy-updater'
 
@@ -17,7 +18,6 @@ import { TotalSurplusUpdater } from 'common/state/totalSurplusState'
 import { CancelReplaceTxUpdater } from 'common/updaters/CancelReplaceTxUpdater'
 import { FeesUpdater } from 'common/updaters/FeesUpdater'
 import { GasUpdater } from 'common/updaters/GasUpdater'
-import { HwAccountIndexUpdater } from 'common/updaters/HwAccountIndexUpdater'
 import {
   CancelledOrdersUpdater,
   ExpiredOrdersUpdater,

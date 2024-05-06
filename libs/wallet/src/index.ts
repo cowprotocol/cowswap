@@ -16,6 +16,7 @@ export * from './web3-react/hooks/useSwitchNetwork'
 
 // Updater
 export * from './web3-react/updater'
+export * from './web3-react/updaters/HwAccountIndexUpdater'
 
 // Components
 export * from './api/container/Identicon'
