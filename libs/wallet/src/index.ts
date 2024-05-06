@@ -13,6 +13,7 @@ export * from './web3-react/hooks/useIsSmartContractWallet'
 export * from './web3-react/hooks/useActivateConnector'
 export * from './web3-react/hooks/useDisconnectWallet'
 export * from './web3-react/hooks/useSwitchNetwork'
+export * from './web3-react/hooks/useConnectionType'
 
 // Updater
 export * from './web3-react/updater'

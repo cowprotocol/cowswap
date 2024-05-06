@@ -1,4 +1,4 @@
-import { Fragment, useMemo } from 'react'
+import { Fragment } from 'react'
 
 import { CHAIN_INFO } from '@cowprotocol/common-const'
 import {
@@ -18,11 +18,10 @@ import {
   getIsMetaMask,
   useWalletDetails,
   useIsWalletConnect,
-  getWeb3ReactConnection,
   getIsHardWareWallet,
   useDisconnectWallet,
+  useConnectionType,
 } from '@cowprotocol/wallet'
-import { useWeb3React } from '@web3-react/core'
 
 import { Trans } from '@lingui/macro'
 
@@ -99,7 +98,7 @@ export function AccountDetails({
   forceHardwareWallet,
 }: AccountDetailsProps) {
   const { account, chainId } = useWalletInfo()
-  const { connector } = useWeb3React()
+  const connectionType = useConnectionType()
   const walletDetails = useWalletDetails()
   const dispatch = useAppDispatch()
   const disconnectWallet = useDisconnectWallet()
@@ -116,13 +115,12 @@ export function AccountDetails({
   const isWalletConnect = useIsWalletConnect()
   const isMetaMask = getIsMetaMask()
   const isCoinbaseWallet = getIsCoinbaseWallet()
-  const connection = useMemo(() => getWeb3ReactConnection(connector), [connector])
   const isInjectedMobileBrowser = (isMetaMask || isCoinbaseWallet) && isMobile
 
   const unsupportedNetworksText = useUnsupportedNetworksText()
 
   function formatConnectorName() {
-    const name = walletDetails?.walletName || getConnectionName(connection.type, getIsMetaMask())
+    const name = walletDetails?.walletName || getConnectionName(connectionType, getIsMetaMask())
     // In case the wallet is connected via WalletConnect and has wallet name set, add the suffix to be clear
     // This to avoid confusion for instance when using Metamask mobile
     // When name is not set, it defaults to WalletConnect already
@@ -143,7 +141,7 @@ export function AccountDetails({
   }
 
   const networkLabel = CHAIN_INFO[chainId].label
-  const isHardWareWallet = forceHardwareWallet || getIsHardWareWallet(connection.type)
+  const isHardWareWallet = forceHardwareWallet || getIsHardWareWallet(connectionType)
 
   return (
     <Wrapper>
@@ -193,7 +191,7 @@ export function AccountDetails({
 
                   {standaloneMode !== false && (
                     <>
-                      {connection.type !== ConnectionType.GNOSIS_SAFE && (
+                      {connectionType !== ConnectionType.GNOSIS_SAFE && (
                         <WalletAction onClick={toggleWalletModal}>
                           <Trans>Change Wallet</Trans>
                         </WalletAction>
