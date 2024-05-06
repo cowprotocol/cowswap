@@ -20,6 +20,7 @@ import {
   useIsWalletConnect,
   getWeb3ReactConnection,
   getIsHardWareWallet,
+  useDisconnectWallet,
 } from '@cowprotocol/wallet'
 import { useWeb3React } from '@web3-react/core'
 
@@ -31,6 +32,8 @@ import {
   groupActivitiesByDay,
   useMultipleActivityDescriptors,
 } from 'legacy/hooks/useRecentActivity'
+import { useAppDispatch } from 'legacy/state/hooks'
+import { updateSelectedWallet } from 'legacy/state/user/reducer'
 
 import Activity from 'modules/account/containers/Transaction'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
@@ -60,7 +63,6 @@ import {
 } from './styled'
 import { SurplusCard } from './SurplusCard'
 
-import { useDisconnectWallet } from '../../hooks/useDisconnectWallet'
 import { CreationDateText } from '../Transaction/styled'
 
 export const DATE_FORMAT_OPTION: Intl.DateTimeFormatOptions = {
@@ -99,6 +101,7 @@ export function AccountDetails({
   const { account, chainId } = useWalletInfo()
   const { connector } = useWeb3React()
   const walletDetails = useWalletDetails()
+  const dispatch = useAppDispatch()
   const disconnectWallet = useDisconnectWallet()
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
   const { standaloneMode } = useInjectedWidgetParams()
@@ -136,6 +139,7 @@ export function AccountDetails({
   const handleDisconnectClick = () => {
     disconnectWallet()
     handleCloseOrdersPanel()
+    dispatch(updateSelectedWallet({ wallet: undefined }))
   }
 
   const networkLabel = CHAIN_INFO[chainId].label

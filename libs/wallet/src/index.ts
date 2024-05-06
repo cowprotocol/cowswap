@@ -11,6 +11,7 @@ export * from './web3-react/hooks/useIsWalletConnect'
 export * from './web3-react/hooks/useSafeAppsSdk'
 export * from './web3-react/hooks/useIsSmartContractWallet'
 export * from './web3-react/hooks/useActivateConnector'
+export * from './web3-react/hooks/useDisconnectWallet'
 
 // Updater
 export * from './web3-react/updater'
