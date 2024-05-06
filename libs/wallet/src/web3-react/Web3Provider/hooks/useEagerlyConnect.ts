@@ -7,10 +7,9 @@ import {
   injectedWidgetConnection,
   networkConnection,
   gnosisSafeConnection,
+  ConnectionType,
 } from '@cowprotocol/wallet'
 import { Connector } from '@web3-react/types'
-
-import { useAppSelector } from '../../../state/hooks'
 
 async function connect(connector: Connector) {
   const chainId = getCurrentChainIdFromUrl()
@@ -26,10 +25,7 @@ async function connect(connector: Connector) {
   }
 }
 
-export function useEagerlyConnect() {
-  const selectedWalletBackfilled = useAppSelector((state) => state.user.selectedWalletBackfilled)
-  const selectedWallet = useAppSelector((state) => state.user.selectedWallet)
-
+export function useEagerlyConnect(selectedWallet: ConnectionType | undefined, selectedWalletBackfilled: boolean) {
   useEffect(() => {
     if (isInjectedWidget()) {
       connect(injectedWidgetConnection.connector)

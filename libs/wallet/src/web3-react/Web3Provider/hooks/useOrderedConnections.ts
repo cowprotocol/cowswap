@@ -3,13 +3,10 @@ import { useMemo } from 'react'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { BACKFILLABLE_WALLETS, ConnectionType, getWeb3ReactConnection } from '@cowprotocol/wallet'
 
-import { useAppSelector } from 'legacy/state/hooks'
-
 const SELECTABLE_WALLETS = [...BACKFILLABLE_WALLETS]
 
 // TODO: The logic looks very similar with useEagerlyConnect
-export function useOrderedConnections() {
-  const selectedWallet = useAppSelector((state) => state.user.selectedWallet)
+export function useOrderedConnections(selectedWallet: ConnectionType | undefined) {
   return useMemo(() => {
     const orderedConnectionTypes: ConnectionType[] = []
 

@@ -4,13 +4,14 @@ import 'inter-ui'
 import '@cowprotocol/analytics'
 import './sentry'
 import { Provider as AtomProvider } from 'jotai'
-import { useEffect, StrictMode } from 'react'
+import { useEffect, StrictMode, ReactNode } from 'react'
 
 import { BlockNumberProvider } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { nodeRemoveChildFix } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
 import { SnackbarsWidget } from '@cowprotocol/snackbars'
+import { Web3Provider } from '@cowprotocol/wallet'
 
 import { LanguageProvider } from 'i18n'
 import { createRoot } from 'react-dom/client'
@@ -20,9 +21,9 @@ import * as serviceWorkerRegistration from 'serviceWorkerRegistration'
 import styled from 'styled-components/macro'
 
 import AppziButton from 'legacy/components/AppziButton'
-import Web3Provider from 'legacy/components/Web3Provider'
 import { upToMedium, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 import { cowSwapStore } from 'legacy/state'
+import { useAppSelector } from 'legacy/state/hooks'
 import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from 'legacy/theme'
 
 import { App } from 'modules/application/containers/App'
@@ -66,7 +67,7 @@ function Main() {
         <AtomProvider store={jotaiStore}>
           <HashRouter>
             <LanguageProvider>
-              <Web3Provider>
+              <Web3ProviderInstance>
                 <ThemeProvider>
                   <ThemedGlobalStyle />
                   <BlockNumberProvider>
@@ -88,12 +89,23 @@ function Main() {
                     </WithLDProvider>
                   </BlockNumberProvider>
                 </ThemeProvider>
-              </Web3Provider>
+              </Web3ProviderInstance>
             </LanguageProvider>
           </HashRouter>
         </AtomProvider>
       </Provider>
     </StrictMode>
+  )
+}
+
+function Web3ProviderInstance({ children }: { children: ReactNode }) {
+  const selectedWalletBackfilled = useAppSelector((state) => state.user.selectedWalletBackfilled)
+  const selectedWallet = useAppSelector((state) => state.user.selectedWallet)
+
+  return (
+    <Web3Provider selectedWalletBackfilled={selectedWalletBackfilled} selectedWallet={selectedWallet}>
+      {children}
+    </Web3Provider>
   )
 }
 

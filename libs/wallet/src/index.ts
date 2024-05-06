@@ -32,6 +32,7 @@ export { getWeb3ReactConnection } from './web3-react/utils/getWeb3ReactConnectio
 export { switchChain } from './web3-react/utils/switchChain'
 
 // Connectors
+export { Web3Provider } from './web3-react/Web3Provider'
 export { injectedWidgetConnection } from './web3-react/connection/injectedWidget'
 export { networkConnection } from './web3-react/connection/network'
 export { gnosisSafeConnection } from './web3-react/connection/safe'
