@@ -27,14 +27,8 @@ export function useCloseModal(_modal: ApplicationModal): Command {
   const dispatch = useAppDispatch()
   return useCallback(() => dispatch(setOpenModal(null)), [dispatch])
 }
-export function useToggleWalletModal(): Command | null {
-  const { active } = useWalletInfo()
-
-  const toggleWalletModal = useToggleModal(ApplicationModal.WALLET)
-
-  return useMemo(() => {
-    return active ? toggleWalletModal : null
-  }, [active, toggleWalletModal])
+export function useToggleWalletModal(): Command {
+  return useToggleModal(ApplicationModal.WALLET)
 }
 
 export function useToggleSettingsMenu(): Command {

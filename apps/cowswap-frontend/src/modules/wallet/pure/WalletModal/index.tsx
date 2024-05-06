@@ -1,6 +1,6 @@
 import { Command } from '@cowprotocol/types'
 import { AutoRow } from '@cowprotocol/ui'
-import { Connector } from '@web3-react/types'
+import { TryActivation } from '@cowprotocol/wallet'
 
 import { Trans } from '@lingui/macro'
 
@@ -14,35 +14,32 @@ import { CloseIcon, ContentWrapper, CowModal, HeaderRow, HoverText } from 'commo
 
 import { CloseColor, OptionGrid, TermsWrapper, UpperSection, Wrapper } from './styled'
 
-import { ConnectWalletOptions, TryActivation } from '../../containers/ConnectWalletOptions'
+import { ConnectWalletOptions } from '../../containers/ConnectWalletOptions'
 import { PendingView } from '../PendingView'
 
 export type WalletModalView = 'options' | 'account' | 'pending'
 
 interface WalletModalProps {
   isOpen: boolean
-  toggleModal: Command
+  onDismiss: Command
   view: WalletModalView
   openOptions: Command
   tryConnection: Command
   pendingError: string | undefined
-
-  // TODO: Remove dependency web3-react
-  pendingConnector: Connector | undefined
   tryActivation: TryActivation
   account: string | undefined
 }
 
 export function WalletModal(props: WalletModalProps) {
-  const { isOpen, toggleModal, view, openOptions, pendingError, tryActivation, tryConnection, pendingConnector } = props
+  const { isOpen, onDismiss, view, openOptions, pendingError, tryActivation, tryConnection } = props
 
   const isPending = view === 'pending'
 
   return (
-    <CowModal maxWidth={600} isOpen={isOpen} onDismiss={toggleModal} minHeight={false} maxHeight={90}>
+    <CowModal maxWidth={600} isOpen={isOpen} onDismiss={onDismiss} minHeight={false} maxHeight={90}>
       <Wrapper>
         <UpperSection>
-          <CloseIcon onClick={toggleModal}>
+          <CloseIcon onClick={onDismiss}>
             <CloseColor />
           </CloseIcon>
           {!isPending && (
@@ -54,7 +51,7 @@ export function WalletModal(props: WalletModalProps) {
           )}
           <ContentWrapper>
             <AutoColumn gap="16px">
-              {isPending && pendingConnector && (
+              {isPending && (
                 <PendingView openOptions={openOptions} error={pendingError} tryConnection={tryConnection} />
               )}
               {!isPending && (

@@ -82,7 +82,7 @@ export interface AccountDetailsProps {
   confirmedTransactions: string[]
   ENSName?: string
   forceHardwareWallet?: boolean
-  toggleWalletModal: Command | null
+  toggleWalletModal: Command
   toggleAccountSelectorModal: Command
   handleCloseOrdersPanel: Command
 }
@@ -118,8 +118,6 @@ export function AccountDetails({
 
   const unsupportedNetworksText = useUnsupportedNetworksText()
 
-  if (!toggleWalletModal) return null
-
   function formatConnectorName() {
     const name = walletDetails?.walletName || getConnectionName(connection.type, getIsMetaMask())
     // In case the wallet is connected via WalletConnect and has wallet name set, add the suffix to be clear
@@ -138,7 +136,6 @@ export function AccountDetails({
   const handleDisconnectClick = () => {
     disconnectWallet()
     handleCloseOrdersPanel()
-    toggleWalletModal()
   }
 
   const networkLabel = CHAIN_INFO[chainId].label

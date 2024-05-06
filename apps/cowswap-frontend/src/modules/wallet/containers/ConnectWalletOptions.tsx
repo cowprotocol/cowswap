@@ -17,12 +17,10 @@ import {
   getIsCoinbaseWallet,
   getIsInjected,
   getIsMetaMask,
+  TryActivation,
 } from '@cowprotocol/wallet'
-import { Connector } from '@web3-react/types'
 
 import { useSelectedWallet } from 'legacy/state/user/hooks'
-
-export type TryActivation = (connector: Connector) => void
 
 export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActivation }) {
   const isInjected = getIsInjected()

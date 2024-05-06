@@ -17,7 +17,7 @@ import { StatusIcon } from '../StatusIcon'
 export interface Web3StatusInnerProps {
   account?: string
   pendingCount: number
-  connectWallet: Command | null
+  connectWallet: Command
   connectionType: ConnectionType
   ensName?: string | null
 }

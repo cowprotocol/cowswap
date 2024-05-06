@@ -65,6 +65,6 @@ export interface TradeFormButtonContext {
 
   doTrade(): void
   confirmTrade(): void
-  connectWallet: Command | null
+  connectWallet: Command
   wrapNativeFlow(): void
 }
