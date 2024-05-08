@@ -74,7 +74,7 @@ export const NotificationBell = styled.div<{ hasNotification?: boolean }>`
     height: var(--size);
     border-radius: var(--size);
     transition: background var(${UI.ANIMATION_DURATION}) ease-in-out;
-    background: ${({ hasNotification = true }) => (hasNotification ? `var(${UI.COLOR_DANGER})` : 'inherit')};
+    background: ${({ hasNotification }) => (hasNotification ? `var(${UI.COLOR_DANGER})` : 'inherit')};
   }
 
   > svg {
@@ -165,7 +165,7 @@ export const NotificationList = styled.div`
   height: auto;
   width: 100%;
   margin: 0;
-  padding: 20px;
+  padding: 16px;
 
   > h4 {
     font-size: 14px;
@@ -182,24 +182,51 @@ export const NotificationList = styled.div`
   }
 `
 
-export const NotificationCard = styled.div`
+export const NotificationThumb = styled.div`
+  width: var(--imageSize);
+  height: var(--imageSize);
+  border-radius: var(--imageSize);
+  object-fit: cover;
+  position: relative;
+
+  > img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: inherit;
+  }
+`
+
+export const NotificationCard = styled.div<{ isRead?: boolean }>`
   --imageSize: 42px;
   display: grid;
   grid-template-columns:
     var(--imageSize)
     1fr;
-  background: var(${UI.COLOR_PAPER_DARKER});
+  background: ${({ isRead }) => (isRead ? `var(${UI.COLOR_PAPER})` : `var(${UI.COLOR_PAPER_DARKER})`)};
   margin: 0;
   padding: 16px;
-  border-radius: 12px;
+  border-radius: 21px;
   gap: 16px;
   color: var(${UI.COLOR_TEXT});
+  position: relative;
+  border: 1px solid ${({ isRead }) => (isRead ? `var(${UI.COLOR_TEXT_OPACITY_10})` : 'transparent')};
 
-  > img {
-    width: var(--imageSize);
-    height: var(--imageSize);
-    border-radius: var(--imageSize);
-    object-fit: contain;
+  ${NotificationThumb} {
+    &::after {
+      content: '';
+      --size: 8px;
+      box-sizing: content-box;
+      position: absolute;
+      top: -3px;
+      right: 0;
+      width: var(--size);
+      height: var(--size);
+      border-radius: var(--size);
+      transition: background var(${UI.ANIMATION_DURATION}) ease-in-out;
+      border: ${({ isRead }) => (isRead ? '2px solid transparent' : `2px solid var(${UI.COLOR_PAPER})`)};
+      background: ${({ isRead }) => (isRead ? 'transparent' : `var(${UI.COLOR_DANGER})`)};
+    }
   }
 
   > span {
@@ -216,7 +243,8 @@ export const NotificationCard = styled.div`
   }
 
   > span > p {
-    font-size: 13px;
+    font-size: 14px;
+    line-height: 1.3;
     color: var(${UI.COLOR_TEXT_OPACITY_70});
     margin: 0;
   }
