@@ -37,14 +37,6 @@ export const Wrapper = styled.div<{ active: boolean }>`
   pointer-events: auto;
   width: auto;
 
-  /* :focus {
-    border: 1px solid blue;
-  } */
-
-  /* &:hover {
-    border: 2px solid var(${UI.COLOR_TEXT_OPACITY_25});
-  } */
-
   ${({ theme }) => theme.mediaWidth.upToMedium`
     height: 100%;
   `}
@@ -139,6 +131,7 @@ export const SidebarHeader = styled.div`
 
   > h3 {
     font-size: 16px;
+    font-weight: var(${UI.FONT_WEIGHT_BOLD});
     margin: 0;
     line-height: 1;
   }
@@ -169,14 +162,14 @@ export const SidebarHeader = styled.div`
 export const NotificationList = styled.div`
   display: grid;
   grid-template-columns: 1fr;
-  height: 100%;
+  height: auto;
   width: 100%;
   margin: 0;
   padding: 20px;
 
   > h4 {
-    font-size: 13px;
-    font-weight: 500;
+    font-size: 14px;
+    font-weight: var(${UI.FONT_WEIGHT_MEDIUM});
     margin: 0 0 16px;
     opacity: 0.7;
   }
@@ -185,7 +178,7 @@ export const NotificationList = styled.div`
     display: flex;
     flex-flow: column wrap;
     gap: 16px;
-    margin: 0 0 50px;
+    margin: 0 0 35px;
   }
 `
 

@@ -43,7 +43,7 @@ const NOTIFICATIONS_DATA = [
       {
         id: 2,
         title: 'Get 10,000 CoWPoints',
-        description: 'That could mean 10,000 points to save on your next trade. T&Cs apply.',
+        description: 'That could mean 10,000 points to save on your next trade. T&Cs apply. Learn more.',
         image: 'https://via.placeholder.com/150',
         link: 'https://cow.fi',
       },
@@ -71,7 +71,6 @@ const NOTIFICATIONS_DATA = [
         image: 'https://via.placeholder.com/150',
         link: 'https://cow.fi',
       },
-
       {
         id: 5,
         title: 'Get 10,000 CoWPoints',
@@ -79,7 +78,6 @@ const NOTIFICATIONS_DATA = [
         image: 'https://via.placeholder.com/150',
         link: 'https://cow.fi',
       },
-
       {
         id: 6,
         title: 'Get 10,000 CoWPoints',
@@ -87,9 +85,15 @@ const NOTIFICATIONS_DATA = [
         image: 'https://via.placeholder.com/150',
         link: 'https://cow.fi',
       },
-
       {
         id: 7,
+        title: 'Get 10,000 CoWPoints',
+        description: 'That could mean 10,000 points to save on your next trade. T&Cs apply.',
+        image: 'https://via.placeholder.com/150',
+        link: 'https://cow.fi',
+      },
+      {
+        id: 8,
         title: 'Get 10,000 CoWPoints',
         description: 'That could mean 10,000 points to save on your next trade. T&Cs apply.',
         image: 'https://via.placeholder.com/150',
