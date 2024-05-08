@@ -19,7 +19,7 @@ import {
   groupNotificationsByDate,
   markNotificationsAsReadAtom,
   useAccountNotifications,
-  useUnreadNotifications
+  useUnreadNotifications,
 } from 'modules/notifications'
 import { Web3Status } from 'modules/wallet/containers/Web3Status'
 
@@ -34,11 +34,11 @@ import {
   NotificationThumb,
   Sidebar,
   SidebarHeader,
-  Wrapper
+  Wrapper,
 } from './styled'
 
 const DATE_FORMAT_OPTION: Intl.DateTimeFormatOptions = {
-  dateStyle: 'long'
+  dateStyle: 'long',
 }
 
 interface AccountElementProps {
@@ -131,26 +131,32 @@ export const NotificationSidebar = forwardRef<HTMLDivElement, NotificationSideba
                 <h4>{group.date.toLocaleString(undefined, DATE_FORMAT_OPTION)}</h4>
                 <div key={group.date.getTime()}>
                   {group.notifications.map(({ id, thumbnail, title, description, url }) => {
-                    const target = url ? (url.includes('swap.cow.fi') || url.startsWith('/') ? '_parent' : '_blank') : undefined
+                    const target = url
+                      ? url.includes(window.location.host) || url.startsWith('/')
+                        ? '_parent'
+                        : '_blank'
+                      : undefined
 
-                    return <NotificationCard
-                      key={id}
-                      isRead={!unreadNotifications[id]}
-                      href={url || undefined}
-                      target={target}
-                      rel={target === '_blank' ? 'noopener noreferrer' : ''}
-                    >
-                      {thumbnail && (
-                        <NotificationThumb>
-                          <img src={thumbnail} alt={title} />
-                        </NotificationThumb>
-                      )}
-                      <span>
-                        <strong>{title}</strong>
-                        <p>{description}</p>
-                      </span>
-                    </NotificationCard>
-                  }}
+                    return (
+                      <NotificationCard
+                        key={id}
+                        isRead={!unreadNotifications[id]}
+                        href={url || undefined}
+                        target={target}
+                        rel={target === '_blank' ? 'noopener noreferrer' : ''}
+                      >
+                        {thumbnail && (
+                          <NotificationThumb>
+                            <img src={thumbnail} alt={title} />
+                          </NotificationThumb>
+                        )}
+                        <span>
+                          <strong>{title}</strong>
+                          <p>{description}</p>
+                        </span>
+                      </NotificationCard>
+                    )
+                  })}
                 </div>
               </>
             ))}
