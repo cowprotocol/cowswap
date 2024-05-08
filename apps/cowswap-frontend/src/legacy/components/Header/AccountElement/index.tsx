@@ -166,7 +166,9 @@ interface NotificationSidebarProps {
 
 export const NotificationSidebar = forwardRef<HTMLDivElement, NotificationSidebarProps>(
   ({ isOpen, onClose, children }, ref) => {
-    if (!isOpen) return null
+    {
+      isOpen ? children : null
+    }
 
     return (
       <Sidebar ref={ref} isOpen={isOpen}>
