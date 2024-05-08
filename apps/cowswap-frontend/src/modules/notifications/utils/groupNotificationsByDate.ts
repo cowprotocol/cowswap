@@ -1,6 +1,6 @@
 import { getDateTimestamp } from '@cowprotocol/common-utils'
 
-import { NotificationModel } from 'modules/notifications'
+import { NotificationModel } from '../types'
 
 type NotificationByDate = {
   date: Date
