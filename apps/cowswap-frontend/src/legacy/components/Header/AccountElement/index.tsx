@@ -12,7 +12,10 @@ import { Web3Status } from 'modules/wallet/containers/Web3Status'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
-import { Wrapper, BalanceText } from './styled'
+import { Wrapper, BalanceText, NotificationBell } from './styled'
+
+import SVG from 'react-inlinesvg'
+import ICON_NOTIFICATION from '@cowprotocol/assets/images/notification.svg'
 
 interface AccountElementProps {
   pendingActivities: string[]
@@ -29,13 +32,16 @@ export function AccountElement({ className, standaloneMode, pendingActivities }:
   const isUpToLarge = useMediaQuery(upToLarge)
 
   return (
-    <Wrapper className={className} active={!!account} onClick={() => account && toggleAccountModal()}>
+    <Wrapper className={className} active={!!account}>
       {standaloneMode !== false && account && !isChainIdUnsupported && userEthBalance && chainId && !isUpToLarge && (
         <BalanceText>
           <TokenAmount amount={userEthBalance} tokenSymbol={{ symbol: nativeToken }} />
         </BalanceText>
       )}
-      <Web3Status pendingActivities={pendingActivities} />
+      <Web3Status pendingActivities={pendingActivities} onClick={() => account && toggleAccountModal()} />
+      <NotificationBell>
+        <SVG src={ICON_NOTIFICATION} />
+      </NotificationBell>
     </Wrapper>
   )
 }

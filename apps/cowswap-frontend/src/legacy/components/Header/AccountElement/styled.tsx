@@ -57,3 +57,37 @@ export const Wrapper = styled.div<{ active: boolean }>`
     border: 0!important;
   `}
 `
+
+export const NotificationBell = styled.div<{ hasNotification?: boolean }>`
+  --size: 18px;
+  width: var(--size);
+  height: var(--size);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  margin: auto 10px auto 8px;
+  position: relative;
+
+  &::after {
+    content: '';
+    --size: 8px;
+    border: 2px solid var(${UI.COLOR_PAPER});
+    box-sizing: content-box;
+    position: absolute;
+    top: -3px;
+    right: -4px;
+    width: var(--size);
+    height: var(--size);
+    border-radius: var(--size);
+    transition: background var(${UI.ANIMATION_DURATION}) ease-in-out;
+    background: ${({ hasNotification = true }) => (hasNotification ? `var(${UI.COLOR_DANGER})` : 'inherit')};
+  }
+
+  > svg {
+    width: var(--size);
+    height: var(--size);
+    object-fit: contain;
+  }
+`

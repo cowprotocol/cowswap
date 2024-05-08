@@ -8,12 +8,14 @@ import { Wrapper } from '../../pure/Web3StatusInner/styled'
 import { AccountSelectorModal } from '../AccountSelectorModal'
 import { useCloseFollowTxPopupIfNotPendingOrder } from '../FollowPendingTxPopup'
 import { WalletModal } from '../WalletModal'
+import { on } from 'events'
 
 export interface Web3StatusProps {
   pendingActivities: string[]
   className?: string
+  onClick?: () => void
 }
-export function Web3Status({ pendingActivities, className }: Web3StatusProps) {
+export function Web3Status({ pendingActivities, className, onClick }: Web3StatusProps) {
   const { connector } = useWeb3React()
   const { account, active } = useWalletInfo()
   const { ensName } = useWalletDetails()
@@ -27,7 +29,7 @@ export function Web3Status({ pendingActivities, className }: Web3StatusProps) {
   }
 
   return (
-    <Wrapper className={className}>
+    <Wrapper className={className} onClick={onClick}>
       <Web3StatusInner
         pendingCount={pendingActivities.length}
         account={account}
