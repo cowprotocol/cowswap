@@ -197,7 +197,7 @@ export const NotificationThumb = styled.div`
   }
 `
 
-export const NotificationCard = styled.div<{ isRead?: boolean }>`
+export const NotificationCard = styled.a<{ isRead?: boolean }>`
   --imageSize: 42px;
   display: grid;
   grid-template-columns:
@@ -211,6 +211,13 @@ export const NotificationCard = styled.div<{ isRead?: boolean }>`
   color: var(${UI.COLOR_TEXT});
   position: relative;
   border: 1px solid ${({ isRead }) => (isRead ? `var(${UI.COLOR_TEXT_OPACITY_10})` : 'transparent')};
+  cursor: pointer;
+  transition: background var(${UI.ANIMATION_DURATION}) ease-in-out;
+  text-decoration: none;
+
+  &:hover {
+    background: var(${UI.COLOR_PAPER_DARKEST});
+  }
 
   ${NotificationThumb} {
     &::after {
@@ -234,12 +241,14 @@ export const NotificationCard = styled.div<{ isRead?: boolean }>`
     flex-flow: row wrap;
     align-items: center;
     gap: 10px;
+    text-decoration: inherit;
   }
 
   > span > strong {
     font-size: 15px;
     font-weight: 600;
     color: inherit;
+    text-decoration: inherit;
   }
 
   > span > p {
@@ -247,5 +256,6 @@ export const NotificationCard = styled.div<{ isRead?: boolean }>`
     line-height: 1.3;
     color: var(${UI.COLOR_TEXT_OPACITY_70});
     margin: 0;
+    text-decoration: inherit;
   }
 `

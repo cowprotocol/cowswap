@@ -182,11 +182,12 @@ export const NotificationSidebar = forwardRef<HTMLDivElement, NotificationSideba
             <>
               <h4>{group.date}</h4>
               <div key={group.date}>
-                {group.items.map(({ id, image, title, description }) => (
+                {group.items.map(({ id, image, title, description, link }) => (
                   <NotificationCard
                     key={id}
-                    // TEMP: randomly mark cards as read
-                    isRead={Math.random() > 0.5}
+                    // TEMP: mark the first 3 cards as unread
+                    isRead={id > 3}
+                    href={link}
                   >
                     <NotificationThumb>
                       <img src={image} alt={title} />
