@@ -1,5 +1,5 @@
 import { useSetAtom } from 'jotai'
-import React, { useState, useRef, forwardRef, useCallback, useMemo, useEffect } from 'react'
+import React, { forwardRef, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import ICON_DOUBLE_ARROW_RIGHT from '@cowprotocol/assets/images/double-arrow-right.svg'
 import ICON_NOTIFICATION from '@cowprotocol/assets/images/notification.svg'
@@ -19,7 +19,7 @@ import {
   groupNotificationsByDate,
   markNotificationsAsReadAtom,
   useAccountNotifications,
-  useUnreadNotifications,
+  useUnreadNotifications
 } from 'modules/notifications'
 import { Web3Status } from 'modules/wallet/containers/Web3Status'
 
@@ -27,18 +27,18 @@ import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetwo
 
 import { NotificationSettings } from './NotificationSettings'
 import {
-  Wrapper,
   BalanceText,
   NotificationBell,
+  NotificationCard,
+  NotificationList,
+  NotificationThumb,
   Sidebar,
   SidebarHeader,
-  NotificationList,
-  NotificationCard,
-  NotificationThumb,
+  Wrapper
 } from './styled'
 
 const DATE_FORMAT_OPTION: Intl.DateTimeFormatOptions = {
-  dateStyle: 'long',
+  dateStyle: 'long'
 }
 
 interface AccountElementProps {
@@ -130,8 +130,16 @@ export const NotificationSidebar = forwardRef<HTMLDivElement, NotificationSideba
               <>
                 <h4>{group.date.toLocaleString(undefined, DATE_FORMAT_OPTION)}</h4>
                 <div key={group.date.getTime()}>
-                  {group.notifications.map(({ id, thumbnail, title, description, url }) => (
-                    <NotificationCard key={id} isRead={!unreadNotifications[id]} href={url || undefined}>
+                  {group.notifications.map(({ id, thumbnail, title, description, url }) => {
+                    const target = url ? (url.includes('swap.cow.fi') || url.startsWith('/') ? '_parent' : '_blank') : undefined
+
+                    return <NotificationCard
+                      key={id}
+                      isRead={!unreadNotifications[id]}
+                      href={url || undefined}
+                      target={target}
+                      rel={target === '_blank' ? 'noopener noreferrer' : ''}
+                    >
                       {thumbnail && (
                         <NotificationThumb>
                           <img src={thumbnail} alt={title} />
@@ -142,7 +150,7 @@ export const NotificationSidebar = forwardRef<HTMLDivElement, NotificationSideba
                         <p>{description}</p>
                       </span>
                     </NotificationCard>
-                  ))}
+                  }}
                 </div>
               </>
             ))}

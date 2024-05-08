@@ -110,7 +110,7 @@ export const Sidebar = styled.div<{ isOpen: boolean }>`
   border-top: 2px solid var(${UI.COLOR_PAPER_DARKEST});
   padding: 0;
   box-shadow: 0 6px 30px rgba(0, 0, 0, 0.12);
-  transform: ${({ isOpen }) => (isOpen ? 'translateX(0)' : 'translateX(100%)')};
+  transform: ${({ isOpen }) => (isOpen ? 'translateX(0)' : 'translateX(102%)')};
   transition: transform 0.3s ease-in-out;
   z-index: 10000;
   border-top-left-radius: 16px;
