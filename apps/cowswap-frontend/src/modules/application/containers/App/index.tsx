@@ -9,7 +9,6 @@ import TopLevelModals from 'legacy/components/TopLevelModals'
 import DarkModeQueryParamReader from 'legacy/theme'
 
 import { OrdersPanel } from 'modules/account'
-import { NotificationsList } from 'modules/notifications'
 import { useInitializeUtm } from 'modules/utm'
 import { WinterFooter } from 'modules/winterEdition'
 
@@ -34,7 +33,6 @@ export function App() {
       <styledEl.AppWrapper>
         <URLWarning />
         <InvalidLocalTimeWarning />
-        <NotificationsList />
 
         <OrdersPanel />
 

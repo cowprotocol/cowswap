@@ -65,7 +65,6 @@ export const NotificationBell = styled.div<{ hasNotification?: boolean }>`
   &::after {
     content: '';
     --size: 8px;
-    border: 2px solid var(${UI.COLOR_PAPER});
     box-sizing: content-box;
     position: absolute;
     top: -3px;
@@ -74,7 +73,8 @@ export const NotificationBell = styled.div<{ hasNotification?: boolean }>`
     height: var(--size);
     border-radius: var(--size);
     transition: background var(${UI.ANIMATION_DURATION}) ease-in-out;
-    background: ${({ hasNotification }) => (hasNotification ? `var(${UI.COLOR_DANGER})` : 'inherit')};
+    border: ${({ hasNotification }) => (hasNotification ? `2px solid var(${UI.COLOR_PAPER})` : '')};
+    background: ${({ hasNotification }) => (hasNotification ? `var(${UI.COLOR_DANGER})` : 'transparent')};
   }
 
   > svg {

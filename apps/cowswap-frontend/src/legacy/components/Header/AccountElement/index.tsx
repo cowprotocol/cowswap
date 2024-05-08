@@ -1,4 +1,5 @@
-import React, { useState, useRef, forwardRef, useCallback } from 'react'
+import { useSetAtom } from 'jotai'
+import React, { useState, useRef, forwardRef, useCallback, useMemo, useEffect } from 'react'
 
 import ICON_DOUBLE_ARROW_RIGHT from '@cowprotocol/assets/images/double-arrow-right.svg'
 import ICON_NOTIFICATION from '@cowprotocol/assets/images/notification.svg'
@@ -14,6 +15,12 @@ import SVG from 'react-inlinesvg'
 import { upToLarge, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 
 import { useToggleAccountModal } from 'modules/account'
+import {
+  groupNotificationsByDate,
+  markNotificationsAsReadAtom,
+  useAccountNotifications,
+  useUnreadNotifications,
+} from 'modules/notifications'
 import { Web3Status } from 'modules/wallet/containers/Web3Status'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
@@ -30,91 +37,8 @@ import {
   NotificationThumb,
 } from './styled'
 
-const NOTIFICATIONS_DATA = [
-  {
-    date: 'May 6',
-    items: [
-      {
-        id: 1,
-        title: 'Get 10,000 CoWPoints',
-        description: 'That could mean 10,000 points to save on your next trade. T&Cs apply. Learn more.',
-        image: 'https://picsum.photos/168/168',
-        link: 'https://cow.fi',
-      },
-      {
-        id: 2,
-        title: 'Get 10,000 CoWPoints',
-        description: 'That could mean 10,000 points to save on your next trade. T&Cs apply. Learn more.',
-        image: 'https://picsum.photos/168/168',
-        link: 'https://cow.fi',
-      },
-    ],
-  },
-  {
-    date: 'May 1',
-    items: [
-      {
-        id: 3,
-        title: 'Get 10,000 CoWPoints',
-        description: 'That could mean 10,000 points to save on your next trade. T&Cs apply.',
-        image: 'https://picsum.photos/168/168',
-        link: 'https://cow.fi',
-      },
-    ],
-  },
-  {
-    date: 'April 30',
-    items: [
-      {
-        id: 4,
-        title: 'Get 10,000 CoWPoints',
-        description: 'That could mean 10,000 points to save on your next trade. T&Cs apply.',
-        image: 'https://picsum.photos/168/168',
-        link: 'https://cow.fi',
-      },
-      {
-        id: 5,
-        title: 'Get 10,000 CoWPoints',
-        description: 'That could mean 10,000 points to save on your next trade. T&Cs apply.',
-        image: 'https://picsum.photos/168/168',
-        link: 'https://cow.fi',
-      },
-      {
-        id: 6,
-        title: 'Get 10,000 CoWPoints',
-        description: 'That could mean 10,000 points to save on your next trade. T&Cs apply.',
-        image: 'https://picsum.photos/168/168',
-        link: 'https://cow.fi',
-      },
-      {
-        id: 7,
-        title: 'Get 10,000 CoWPoints',
-        description: 'That could mean 10,000 points to save on your next trade. T&Cs apply.',
-        image: 'https://picsum.photos/168/168',
-        link: 'https://cow.fi',
-      },
-      {
-        id: 8,
-        title: 'Get 10,000 CoWPoints',
-        description: 'That could mean 10,000 points to save on your next trade. T&Cs apply.',
-        image: 'https://picsum.photos/168/168',
-        link: 'https://cow.fi',
-      },
-    ],
-  },
-] as DateGroup[]
-
-interface Notification {
-  id: number
-  title: string
-  description: string
-  image: string
-  link: string
-}
-
-interface DateGroup {
-  date: string
-  items: Notification[]
+const DATE_FORMAT_OPTION: Intl.DateTimeFormatOptions = {
+  dateStyle: 'long',
 }
 
 interface AccountElementProps {
@@ -128,6 +52,8 @@ export function AccountElement({ className, standaloneMode, pendingActivities }:
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
   const userEthBalance = useNativeCurrencyAmount(chainId, account)
   const toggleAccountModal = useToggleAccountModal()
+  const unreadNotifications = useUnreadNotifications()
+  const unreadNotificationsCount = Object.keys(unreadNotifications).length
   const nativeToken = NATIVE_CURRENCIES[chainId].symbol
   const isUpToLarge = useMediaQuery(upToLarge)
 
@@ -147,7 +73,7 @@ export function AccountElement({ className, standaloneMode, pendingActivities }:
           </BalanceText>
         )}
         <Web3Status pendingActivities={pendingActivities} onClick={() => account && toggleAccountModal()} />
-        <NotificationBell onClick={() => setSidebarOpen(true)} hasNotification={true}>
+        <NotificationBell onClick={() => setSidebarOpen(true)} hasNotification={unreadNotificationsCount > 0}>
           <SVG src={ICON_NOTIFICATION} />
         </NotificationBell>
       </Wrapper>
@@ -166,9 +92,23 @@ interface NotificationSidebarProps {
 export const NotificationSidebar = forwardRef<HTMLDivElement, NotificationSidebarProps>(({ isOpen, onClose }, ref) => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
 
+  const { account } = useWalletInfo()
+
+  const unreadNotifications = useUnreadNotifications()
+  const markNotificationsAsRead = useSetAtom(markNotificationsAsReadAtom)
+  const notifications = useAccountNotifications()
+
+  const groups = useMemo(() => (notifications ? groupNotificationsByDate(notifications) : null), [notifications])
+
   const toggleSettingsOpen = useCallback(() => {
     setIsSettingsOpen((prev) => !prev)
   }, [])
+
+  useEffect(() => {
+    if (!isOpen || !account || !notifications) return
+
+    markNotificationsAsRead(account, notifications.map(({ id }) => id) || [])
+  }, [isOpen, account, notifications])
 
   if (!isOpen) return null
 
@@ -186,24 +126,21 @@ export const NotificationSidebar = forwardRef<HTMLDivElement, NotificationSideba
             <h3>Notifications</h3>
           </SidebarHeader>
           <NotificationList>
-            {NOTIFICATIONS_DATA.map((group) => (
+            {groups?.map((group) => (
               <>
-                <h4>{group.date}</h4>
-                <div key={group.date}>
-                  {group.items.map(({ id, image, title, description, link }) => (
-                    <NotificationCard
-                      key={id}
-                      // TEMP: mark the first 3 cards as unread
-                      isRead={id > 3}
-                      href={link}
-                    >
-                      <NotificationThumb>
-                        <img src={image} alt={title} />
-                      </NotificationThumb>
+                <h4>{group.date.toLocaleString(undefined, DATE_FORMAT_OPTION)}</h4>
+                <div key={group.date.getTime()}>
+                  {group.notifications.map(({ id, thumbnail, title, description, url }) => (
+                    <NotificationCard key={id} isRead={!unreadNotifications[id]} href={url || undefined}>
+                      {thumbnail && (
+                        <NotificationThumb>
+                          <img src={thumbnail} alt={title} />
+                        </NotificationThumb>
+                      )}
                       <span>
-                      <strong>{title}</strong>
-                      <p>{description}</p>
-                    </span>
+                        <strong>{title}</strong>
+                        <p>{description}</p>
+                      </span>
                     </NotificationCard>
                   ))}
                 </div>
