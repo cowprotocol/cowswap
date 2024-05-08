@@ -27,6 +27,7 @@ import {
   SidebarHeader,
   NotificationList,
   NotificationCard,
+  NotificationThumb,
 } from './styled'
 
 const NOTIFICATIONS_DATA = [
@@ -37,14 +38,14 @@ const NOTIFICATIONS_DATA = [
         id: 1,
         title: 'Get 10,000 CoWPoints',
         description: 'That could mean 10,000 points to save on your next trade. T&Cs apply. Learn more.',
-        image: 'https://via.placeholder.com/150',
+        image: 'https://picsum.photos/168/168',
         link: 'https://cow.fi',
       },
       {
         id: 2,
         title: 'Get 10,000 CoWPoints',
-        description: 'That could mean 10,000 points to save on your next trade. T&Cs apply.',
-        image: 'https://via.placeholder.com/150',
+        description: 'That could mean 10,000 points to save on your next trade. T&Cs apply. Learn more.',
+        image: 'https://picsum.photos/168/168',
         link: 'https://cow.fi',
       },
     ],
@@ -56,7 +57,7 @@ const NOTIFICATIONS_DATA = [
         id: 3,
         title: 'Get 10,000 CoWPoints',
         description: 'That could mean 10,000 points to save on your next trade. T&Cs apply.',
-        image: 'https://via.placeholder.com/150',
+        image: 'https://picsum.photos/168/168',
         link: 'https://cow.fi',
       },
     ],
@@ -68,31 +69,35 @@ const NOTIFICATIONS_DATA = [
         id: 4,
         title: 'Get 10,000 CoWPoints',
         description: 'That could mean 10,000 points to save on your next trade. T&Cs apply.',
-        image: 'https://via.placeholder.com/150',
+        image: 'https://picsum.photos/168/168',
         link: 'https://cow.fi',
       },
-
       {
         id: 5,
         title: 'Get 10,000 CoWPoints',
         description: 'That could mean 10,000 points to save on your next trade. T&Cs apply.',
-        image: 'https://via.placeholder.com/150',
+        image: 'https://picsum.photos/168/168',
         link: 'https://cow.fi',
       },
-
       {
         id: 6,
         title: 'Get 10,000 CoWPoints',
         description: 'That could mean 10,000 points to save on your next trade. T&Cs apply.',
-        image: 'https://via.placeholder.com/150',
+        image: 'https://picsum.photos/168/168',
         link: 'https://cow.fi',
       },
-
       {
         id: 7,
         title: 'Get 10,000 CoWPoints',
         description: 'That could mean 10,000 points to save on your next trade. T&Cs apply.',
-        image: 'https://via.placeholder.com/150',
+        image: 'https://picsum.photos/168/168',
+        link: 'https://cow.fi',
+      },
+      {
+        id: 8,
+        title: 'Get 10,000 CoWPoints',
+        description: 'That could mean 10,000 points to save on your next trade. T&Cs apply.',
+        image: 'https://picsum.photos/168/168',
         link: 'https://cow.fi',
       },
     ],
@@ -142,7 +147,7 @@ export function AccountElement({ className, standaloneMode, pendingActivities }:
           </BalanceText>
         )}
         <Web3Status pendingActivities={pendingActivities} onClick={() => account && toggleAccountModal()} />
-        <NotificationBell onClick={() => setSidebarOpen(true)}>
+        <NotificationBell onClick={() => setSidebarOpen(true)} hasNotification={true}>
           <SVG src={ICON_NOTIFICATION} />
         </NotificationBell>
       </Wrapper>
@@ -185,13 +190,20 @@ export const NotificationSidebar = forwardRef<HTMLDivElement, NotificationSideba
               <>
                 <h4>{group.date}</h4>
                 <div key={group.date}>
-                  {group.items.map(({ id, image, title, description }) => (
-                    <NotificationCard key={id}>
-                      <img src={image} alt={title} />
+                  {group.items.map(({ id, image, title, description, link }) => (
+                    <NotificationCard
+                      key={id}
+                      // TEMP: mark the first 3 cards as unread
+                      isRead={id > 3}
+                      href={link}
+                    >
+                      <NotificationThumb>
+                        <img src={image} alt={title} />
+                      </NotificationThumb>
                       <span>
-                        <strong>{title}</strong>
-                        <p>{description}</p>
-                      </span>
+                      <strong>{title}</strong>
+                      <p>{description}</p>
+                    </span>
                     </NotificationCard>
                   ))}
                 </div>
