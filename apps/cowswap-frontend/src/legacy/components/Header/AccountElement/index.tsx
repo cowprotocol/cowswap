@@ -14,12 +14,95 @@ import { useOnClickOutside } from '@cowprotocol/common-hooks'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
-import { Wrapper, BalanceText, NotificationBell, Sidebar, SidebarHeader } from './styled'
+import {
+  Wrapper,
+  BalanceText,
+  NotificationBell,
+  Sidebar,
+  SidebarHeader,
+  NotificationList,
+  NotificationCard,
+} from './styled'
 
 import SVG from 'react-inlinesvg'
 import ICON_NOTIFICATION from '@cowprotocol/assets/images/notification.svg'
 import ICON_DOUBLE_ARROW_RIGHT from '@cowprotocol/assets/images/double-arrow-right.svg'
 import ICON_SETTINGS from '@cowprotocol/assets/images/settings.svg'
+
+const NOTIFICATIONS_DATA = [
+  {
+    date: 'May 6',
+    items: [
+      {
+        id: 1,
+        title: 'Get 10,000 CoWPoints',
+        description: 'That could mean 10,000 points to save on your next trade. T&Cs apply. Learn more.',
+        link: 'https://cow.fi',
+      },
+      {
+        id: 2,
+        title: 'Get 10,000 CoWPoints',
+        description: 'That could mean 10,000 points to save on your next trade. T&Cs apply.',
+        link: 'https://cow.fi',
+      },
+    ],
+  },
+  {
+    date: 'May 1',
+    items: [
+      {
+        id: 3,
+        title: 'Get 10,000 CoWPoints',
+        description: 'That could mean 10,000 points to save on your next trade. T&Cs apply.',
+        link: 'https://cow.fi',
+      },
+    ],
+  },
+  {
+    date: 'April 30',
+    items: [
+      {
+        id: 4,
+        title: 'Get 10,000 CoWPoints',
+        description: 'That could mean 10,000 points to save on your next trade. T&Cs apply.',
+        link: 'https://cow.fi',
+      },
+
+      {
+        id: 5,
+        title: 'Get 10,000 CoWPoints',
+        description: 'That could mean 10,000 points to save on your next trade. T&Cs apply.',
+        link: 'https://cow.fi',
+      },
+
+      {
+        id: 6,
+        title: 'Get 10,000 CoWPoints',
+        description: 'That could mean 10,000 points to save on your next trade. T&Cs apply.',
+        link: 'https://cow.fi',
+      },
+
+      {
+        id: 7,
+        title: 'Get 10,000 CoWPoints',
+        description: 'That could mean 10,000 points to save on your next trade. T&Cs apply.',
+        link: 'https://cow.fi',
+      },
+    ],
+  },
+] as DateGroup[]
+
+interface Notification {
+  id: number
+  title: string
+  description: string
+  link: string
+}
+
+interface DateGroup {
+  date: string
+  items: Notification[]
+}
 
 interface AccountElementProps {
   pendingActivities: string[]
@@ -80,8 +163,23 @@ export const NotificationSidebar = forwardRef<HTMLDivElement, NotificationSideba
             <SVG src={ICON_SETTINGS} />
           </span>
           <h3>Notifications</h3>
-          {children}
         </SidebarHeader>
+        <NotificationList>
+          {NOTIFICATIONS_DATA.map((group) => (
+            <>
+              <h4>{group.date}</h4>
+              <div key={group.date}>
+                {group.items.map((item) => (
+                  <NotificationCard key={item.id}>
+                    <strong>{item.title}</strong>
+                    <p>{item.description}</p>
+                  </NotificationCard>
+                ))}
+              </div>
+            </>
+          ))}
+        </NotificationList>
+        {children}
       </Sidebar>
     )
   }

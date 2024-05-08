@@ -102,19 +102,26 @@ export const Sidebar = styled.div<{ isOpen: boolean }>`
   background: var(${UI.COLOR_PAPER});
   border-left: 2px solid var(${UI.COLOR_PAPER_DARKEST});
   border-top: 2px solid var(${UI.COLOR_PAPER_DARKEST});
-  padding: 20px;
+  padding: 0;
   box-shadow: 0 6px 30px rgba(0, 0, 0, 0.12);
   transform: ${({ isOpen }) => (isOpen ? 'translateX(0)' : 'translateX(100%)')};
   transition: transform 0.3s ease-in-out;
   z-index: 10000;
   border-top-left-radius: 16px;
+  overflow-y: auto;
 `
 
 export const SidebarHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 16px;
+  width: 100%;
+  background: var(${UI.COLOR_PAPER});
+  position: sticky;
+  top: 0;
+  padding: 20px;
+  margin: 0;
+  z-index: 10;
 
   > h3 {
     font-size: 16px;
@@ -142,5 +149,47 @@ export const SidebarHeader = styled.div`
 
   > span > svg:hover {
     opacity: 1;
+  }
+`
+
+export const NotificationList = styled.div`
+  display: grid;
+  grid-template-columns: 1fr;
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 20px;
+
+  > h4 {
+    font-size: 13px;
+    font-weight: 500;
+    margin: 0 0 16px;
+    opacity: 0.7;
+  }
+
+  > div {
+    display: flex;
+    flex-flow: column wrap;
+    gap: 16px;
+    margin: 0 0 50px;
+  }
+`
+
+export const NotificationCard = styled.div`
+  background: var(${UI.COLOR_PAPER_DARKER});
+  margin: 0;
+  padding: 10px;
+  border-radius: 12px;
+  color: var(${UI.COLOR_TEXT});
+
+  > strong {
+    font-size: 15px;
+    font-weight: bold;
+    color: inherit;
+  }
+
+  > p {
+    font-size: 13px;
+    color: var(${UI.COLOR_TEXT_OPACITY_70});
   }
 `
