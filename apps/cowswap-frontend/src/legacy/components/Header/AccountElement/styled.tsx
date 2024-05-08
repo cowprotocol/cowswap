@@ -6,8 +6,9 @@ import styled from 'styled-components/macro'
 export const BalanceText = styled(Text)`
   font-weight: 500;
   font-size: 13px;
-  padding: 0 6px 0 12px;
+  padding: 0 9px 0 11px;
   min-width: initial;
+  color: var(${UI.COLOR_TEXT_OPACITY_70});
 
   ${({ theme }) => theme.mediaWidth.upToExtraSmall`
     display: none;
@@ -29,7 +30,6 @@ export const Wrapper = styled.div<{ active: boolean }>`
   flex-direction: row;
   align-items: center;
   white-space: nowrap;
-  cursor: pointer;
   background-color: ${({ theme, active }) => (!active ? theme.bg1 : theme.bg1)};
   border-radius: 21px;
   border: 2px solid transparent;
@@ -37,13 +37,13 @@ export const Wrapper = styled.div<{ active: boolean }>`
   pointer-events: auto;
   width: auto;
 
-  :focus {
+  /* :focus {
     border: 1px solid blue;
-  }
+  } */
 
-  &:hover {
+  /* &:hover {
     border: 2px solid var(${UI.COLOR_TEXT_OPACITY_25});
-  }
+  } */
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     height: 100%;
@@ -89,6 +89,20 @@ export const NotificationBell = styled.div<{ hasNotification?: boolean }>`
     width: var(--size);
     height: var(--size);
     object-fit: contain;
+    color: var(${UI.COLOR_TEXT_OPACITY_50});
+    transition: color var(${UI.ANIMATION_DURATION}) ease-in-out;
+
+    > path {
+      fill: currentColor;
+    }
+
+    &:hover {
+      color: var(${UI.COLOR_TEXT});
+
+      &::after {
+        opacity: 1;
+      }
+    }
   }
 `
 
@@ -176,20 +190,41 @@ export const NotificationList = styled.div`
 `
 
 export const NotificationCard = styled.div`
+  --imageSize: 42px;
+  display: grid;
+  grid-template-columns:
+    var(--imageSize)
+    1fr;
   background: var(${UI.COLOR_PAPER_DARKER});
   margin: 0;
-  padding: 10px;
+  padding: 16px;
   border-radius: 12px;
+  gap: 16px;
   color: var(${UI.COLOR_TEXT});
 
-  > strong {
+  > img {
+    width: var(--imageSize);
+    height: var(--imageSize);
+    border-radius: var(--imageSize);
+    object-fit: contain;
+  }
+
+  > span {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    gap: 10px;
+  }
+
+  > span > strong {
     font-size: 15px;
-    font-weight: bold;
+    font-weight: 600;
     color: inherit;
   }
 
-  > p {
+  > span > p {
     font-size: 13px;
     color: var(${UI.COLOR_TEXT_OPACITY_70});
+    margin: 0;
   }
 `

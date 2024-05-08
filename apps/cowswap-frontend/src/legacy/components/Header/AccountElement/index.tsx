@@ -37,12 +37,14 @@ const NOTIFICATIONS_DATA = [
         id: 1,
         title: 'Get 10,000 CoWPoints',
         description: 'That could mean 10,000 points to save on your next trade. T&Cs apply. Learn more.',
+        image: 'https://via.placeholder.com/150',
         link: 'https://cow.fi',
       },
       {
         id: 2,
         title: 'Get 10,000 CoWPoints',
         description: 'That could mean 10,000 points to save on your next trade. T&Cs apply.',
+        image: 'https://via.placeholder.com/150',
         link: 'https://cow.fi',
       },
     ],
@@ -54,6 +56,7 @@ const NOTIFICATIONS_DATA = [
         id: 3,
         title: 'Get 10,000 CoWPoints',
         description: 'That could mean 10,000 points to save on your next trade. T&Cs apply.',
+        image: 'https://via.placeholder.com/150',
         link: 'https://cow.fi',
       },
     ],
@@ -65,6 +68,7 @@ const NOTIFICATIONS_DATA = [
         id: 4,
         title: 'Get 10,000 CoWPoints',
         description: 'That could mean 10,000 points to save on your next trade. T&Cs apply.',
+        image: 'https://via.placeholder.com/150',
         link: 'https://cow.fi',
       },
 
@@ -72,6 +76,7 @@ const NOTIFICATIONS_DATA = [
         id: 5,
         title: 'Get 10,000 CoWPoints',
         description: 'That could mean 10,000 points to save on your next trade. T&Cs apply.',
+        image: 'https://via.placeholder.com/150',
         link: 'https://cow.fi',
       },
 
@@ -79,6 +84,7 @@ const NOTIFICATIONS_DATA = [
         id: 6,
         title: 'Get 10,000 CoWPoints',
         description: 'That could mean 10,000 points to save on your next trade. T&Cs apply.',
+        image: 'https://via.placeholder.com/150',
         link: 'https://cow.fi',
       },
 
@@ -86,6 +92,7 @@ const NOTIFICATIONS_DATA = [
         id: 7,
         title: 'Get 10,000 CoWPoints',
         description: 'That could mean 10,000 points to save on your next trade. T&Cs apply.',
+        image: 'https://via.placeholder.com/150',
         link: 'https://cow.fi',
       },
     ],
@@ -96,6 +103,7 @@ interface Notification {
   id: number
   title: string
   description: string
+  image: string
   link: string
 }
 
@@ -169,10 +177,13 @@ export const NotificationSidebar = forwardRef<HTMLDivElement, NotificationSideba
             <>
               <h4>{group.date}</h4>
               <div key={group.date}>
-                {group.items.map((item) => (
-                  <NotificationCard key={item.id}>
-                    <strong>{item.title}</strong>
-                    <p>{item.description}</p>
+                {group.items.map(({ id, image, title, description }) => (
+                  <NotificationCard key={id}>
+                    <img src={image} alt={title} />
+                    <span>
+                      <strong>{title}</strong>
+                      <p>{description}</p>
+                    </span>
                   </NotificationCard>
                 ))}
               </div>
