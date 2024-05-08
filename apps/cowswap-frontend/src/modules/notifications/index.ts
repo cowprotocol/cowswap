@@ -1,6 +1,2 @@
-export { ConnectTelegram } from './containers/ConnectTelegram'
-export { groupNotificationsByDate } from './utils/groupNotificationsByDate'
-export { readNotificationsAtom, markNotificationsAsReadAtom } from './state/readNotificationsAtom'
-export { useAccountNotifications } from './hooks/useAccountNotifications'
-export { useUnreadNotifications } from './hooks/useUnreadNotifications'
-export * from './types'
+export { NotificationSidebar } from './containers/NotificationSidebar'
+export { NotificationBell } from './containers/NotificationBell'

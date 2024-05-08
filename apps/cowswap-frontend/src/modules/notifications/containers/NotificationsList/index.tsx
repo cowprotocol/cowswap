@@ -1,0 +1,72 @@
+import { useSetAtom } from 'jotai/index'
+import React, { ReactNode, useEffect, useMemo } from 'react'
+
+import { useWalletInfo } from '@cowprotocol/wallet'
+
+import { ListWrapper, NotificationCard, NotificationThumb } from './styled'
+
+import { useAccountNotifications } from '../../hooks/useAccountNotifications'
+import { useUnreadNotifications } from '../../hooks/useUnreadNotifications'
+import { markNotificationsAsReadAtom } from '../../state/readNotificationsAtom'
+import { groupNotificationsByDate } from '../../utils/groupNotificationsByDate'
+
+const DATE_FORMAT_OPTION: Intl.DateTimeFormatOptions = {
+  dateStyle: 'long',
+}
+
+export function NotificationsList({ children }: { children: ReactNode }) {
+  const { account } = useWalletInfo()
+  const notifications = useAccountNotifications()
+  const unreadNotifications = useUnreadNotifications()
+  const markNotificationsAsRead = useSetAtom(markNotificationsAsReadAtom)
+
+  const groups = useMemo(() => (notifications ? groupNotificationsByDate(notifications) : null), [notifications])
+
+  useEffect(() => {
+    if (!account || !notifications) return
+
+    markNotificationsAsRead(account, notifications.map(({ id }) => id) || [])
+  }, [account, notifications])
+
+  return (
+    <>
+      {children}
+      <ListWrapper>
+        {groups?.map((group) => (
+          <>
+            <h4>{group.date.toLocaleString(undefined, DATE_FORMAT_OPTION)}</h4>
+            <div key={group.date.getTime()}>
+              {group.notifications.map(({ id, thumbnail, title, description, url }) => {
+                const target = url
+                  ? url.includes(window.location.host) || url.startsWith('/')
+                    ? '_parent'
+                    : '_blank'
+                  : undefined
+
+                return (
+                  <NotificationCard
+                    key={id}
+                    isRead={!unreadNotifications[id]}
+                    href={url || undefined}
+                    target={target}
+                    rel={target === '_blank' ? 'noopener noreferrer' : ''}
+                  >
+                    {thumbnail && (
+                      <NotificationThumb>
+                        <img src={thumbnail} alt={title} />
+                      </NotificationThumb>
+                    )}
+                    <span>
+                      <strong>{title}</strong>
+                      <p>{description}</p>
+                    </span>
+                  </NotificationCard>
+                )
+              })}
+            </div>
+          </>
+        ))}
+      </ListWrapper>
+    </>
+  )
+}
