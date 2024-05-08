@@ -39,7 +39,7 @@ const NOTIFICATIONS_DATA = [
         title: 'Get 10,000 CoWPoints',
         description: 'That could mean 10,000 points to save on your next trade. T&Cs apply. Learn more.',
         image: 'https://picsum.photos/168/168',
-        link: 'https://cow.fi',
+        link: 'https://swap.cow.fi',
       },
       {
         id: 2,
@@ -58,7 +58,7 @@ const NOTIFICATIONS_DATA = [
         title: 'Get 10,000 CoWPoints',
         description: 'That could mean 10,000 points to save on your next trade. T&Cs apply.',
         image: 'https://picsum.photos/168/168',
-        link: 'https://cow.fi',
+        link: 'https://balancer.fi',
       },
     ],
   },
@@ -184,22 +184,28 @@ export const NotificationSidebar = forwardRef<HTMLDivElement, NotificationSideba
             <>
               <h4>{group.date}</h4>
               <div key={group.date}>
-                {group.items.map(({ id, image, title, description, link }) => (
-                  <NotificationCard
-                    key={id}
-                    // TEMP: mark the first 3 cards as unread
-                    isRead={id > 3}
-                    href={link}
-                  >
-                    <NotificationThumb>
-                      <img src={image} alt={title} />
-                    </NotificationThumb>
-                    <span>
-                      <strong>{title}</strong>
-                      <p>{description}</p>
-                    </span>
-                  </NotificationCard>
-                ))}
+                {group.items.map(({ id, image, title, description, link }) => {
+                  // Corrected: Determine target based on the link provided
+                  const target = link.includes('swap.cow.fi') || link.startsWith('/') ? '_parent' : '_blank'
+
+                  return (
+                    <NotificationCard
+                      key={id}
+                      isRead={id > 3}
+                      href={link}
+                      target={target}
+                      rel={target === '_blank' ? 'noopener noreferrer' : ''}
+                    >
+                      <NotificationThumb>
+                        <img src={image} alt={title} />
+                      </NotificationThumb>
+                      <span>
+                        <strong>{title}</strong>
+                        <p>{description}</p>
+                      </span>
+                    </NotificationCard>
+                  )
+                })}
               </div>
             </>
           ))}
