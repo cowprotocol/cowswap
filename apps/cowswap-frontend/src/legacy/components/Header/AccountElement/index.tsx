@@ -1,19 +1,24 @@
-import React, { useState, useRef, forwardRef, ReactNode, Ref } from 'react'
+import React, { useState, useRef, forwardRef, useCallback } from 'react'
 
+import ICON_DOUBLE_ARROW_RIGHT from '@cowprotocol/assets/images/double-arrow-right.svg'
+import ICON_NOTIFICATION from '@cowprotocol/assets/images/notification.svg'
+import ICON_SETTINGS from '@cowprotocol/assets/images/settings.svg'
 import { useNativeCurrencyAmount } from '@cowprotocol/balances-and-allowances'
 import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
+import { useOnClickOutside } from '@cowprotocol/common-hooks'
 import { TokenAmount } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
+
+import SVG from 'react-inlinesvg'
 
 import { upToLarge, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 
 import { useToggleAccountModal } from 'modules/account'
 import { Web3Status } from 'modules/wallet/containers/Web3Status'
 
-import { useOnClickOutside } from '@cowprotocol/common-hooks'
-
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
+import { NotificationSettings } from './NotificationSettings'
 import {
   Wrapper,
   BalanceText,
@@ -23,11 +28,6 @@ import {
   NotificationList,
   NotificationCard,
 } from './styled'
-
-import SVG from 'react-inlinesvg'
-import ICON_NOTIFICATION from '@cowprotocol/assets/images/notification.svg'
-import ICON_DOUBLE_ARROW_RIGHT from '@cowprotocol/assets/images/double-arrow-right.svg'
-import ICON_SETTINGS from '@cowprotocol/assets/images/settings.svg'
 
 const NOTIFICATIONS_DATA = [
   {
@@ -156,42 +156,50 @@ export function AccountElement({ className, standaloneMode, pendingActivities }:
 interface NotificationSidebarProps {
   isOpen: boolean
   onClose: () => void
-  children?: ReactNode
 }
 
-export const NotificationSidebar = forwardRef<HTMLDivElement, NotificationSidebarProps>(
-  ({ isOpen, onClose, children }, ref) => {
-    if (!isOpen) return null
+export const NotificationSidebar = forwardRef<HTMLDivElement, NotificationSidebarProps>(({ isOpen, onClose }, ref) => {
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false)
 
-    return (
-      <Sidebar ref={ref} isOpen={isOpen}>
-        <SidebarHeader>
-          <span>
-            <SVG src={ICON_DOUBLE_ARROW_RIGHT} onClick={onClose} />
-            <SVG src={ICON_SETTINGS} />
-          </span>
-          <h3>Notifications</h3>
-        </SidebarHeader>
-        <NotificationList>
-          {NOTIFICATIONS_DATA.map((group) => (
-            <>
-              <h4>{group.date}</h4>
-              <div key={group.date}>
-                {group.items.map(({ id, image, title, description }) => (
-                  <NotificationCard key={id}>
-                    <img src={image} alt={title} />
-                    <span>
-                      <strong>{title}</strong>
-                      <p>{description}</p>
-                    </span>
-                  </NotificationCard>
-                ))}
-              </div>
-            </>
-          ))}
-        </NotificationList>
-        {children}
-      </Sidebar>
-    )
-  }
-)
+  const toggleSettingsOpen = useCallback(() => {
+    setIsSettingsOpen((prev) => !prev)
+  }, [])
+
+  if (!isOpen) return null
+
+  return (
+    <Sidebar ref={ref} isOpen={isOpen}>
+      {isSettingsOpen ? (
+        <NotificationSettings toggleSettingsOpen={toggleSettingsOpen} />
+      ) : (
+        <>
+          <SidebarHeader>
+            <span>
+              <SVG src={ICON_DOUBLE_ARROW_RIGHT} onClick={onClose} />
+              <SVG src={ICON_SETTINGS} onClick={toggleSettingsOpen} />
+            </span>
+            <h3>Notifications</h3>
+          </SidebarHeader>
+          <NotificationList>
+            {NOTIFICATIONS_DATA.map((group) => (
+              <>
+                <h4>{group.date}</h4>
+                <div key={group.date}>
+                  {group.items.map(({ id, image, title, description }) => (
+                    <NotificationCard key={id}>
+                      <img src={image} alt={title} />
+                      <span>
+                        <strong>{title}</strong>
+                        <p>{description}</p>
+                      </span>
+                    </NotificationCard>
+                  ))}
+                </div>
+              </>
+            ))}
+          </NotificationList>
+        </>
+      )}
+    </Sidebar>
+  )
+})

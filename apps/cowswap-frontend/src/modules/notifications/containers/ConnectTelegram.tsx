@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { cmsClient } from 'cmsClient'
+import { CheckCircle } from 'react-feather'
 
 interface TelegramData {
   auth_date: number
@@ -46,8 +47,22 @@ export function ConnectTelegram() {
     telegramWrapperRef.current!.appendChild(scriptElement)
   }, [])
 
+  useEffect(() => {
+    if (!isTgSubscribed) return
+
+    const prevIframe = document.getElementById('telegram-login-cowNotificationsBot')
+
+    if (prevIframe) {
+      prevIframe.parentNode!.removeChild(prevIframe)
+    }
+  }, [isTgSubscribed])
+
   if (isTgSubscribed) {
-    return <div>Telegram connected</div>
+    return (
+      <div>
+        Connected <CheckCircle size={15} />
+      </div>
+    )
   }
 
   return <div ref={telegramWrapperRef}></div>
