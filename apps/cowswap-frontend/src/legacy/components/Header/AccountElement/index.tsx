@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import ReactDOM from 'react-dom'
 
 import { useNativeCurrencyAmount } from '@cowprotocol/balances-and-allowances'
 import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
@@ -40,10 +41,13 @@ export function AccountElement({ className, standaloneMode, pendingActivities }:
           </BalanceText>
         )}
         <Web3Status pendingActivities={pendingActivities} onClick={() => account && toggleAccountModal()} />
-        <NotificationBell onClick={() => setSidebarOpen(true)} />
+        {account && <NotificationBell onClick={() => setSidebarOpen(true)} />}
       </Wrapper>
 
-      <NotificationSidebar isOpen={isSidebarOpen} onClose={() => setSidebarOpen(false)} />
+      {ReactDOM.createPortal(
+        <NotificationSidebar isOpen={isSidebarOpen} onClose={() => setSidebarOpen(false)} />,
+        document.body
+      )}
     </>
   )
 }

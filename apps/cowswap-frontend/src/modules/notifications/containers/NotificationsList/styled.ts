@@ -31,6 +31,7 @@ export const NotificationThumb = styled.div`
   border-radius: var(--imageSize);
   object-fit: cover;
   position: relative;
+  background: var(${UI.COLOR_PAPER_DARKER});
 
   > img {
     width: 100%;
@@ -81,10 +82,11 @@ export const NotificationCard = styled.a<{ isRead?: boolean }>`
 
   > span {
     display: flex;
-    flex-flow: row wrap;
-    align-items: center;
+    flex-flow: column wrap;
+    align-items: flex-start;
     gap: 10px;
     text-decoration: inherit;
+    width: 100%;
   }
 
   > span > strong {
@@ -92,6 +94,7 @@ export const NotificationCard = styled.a<{ isRead?: boolean }>`
     font-weight: 600;
     color: inherit;
     text-decoration: inherit;
+    word-break: break-all;
   }
 
   > span > p {
@@ -100,5 +103,6 @@ export const NotificationCard = styled.a<{ isRead?: boolean }>`
     color: var(${UI.COLOR_TEXT_OPACITY_70});
     margin: 0;
     text-decoration: inherit;
+    word-break: break-all;
   }
 `
