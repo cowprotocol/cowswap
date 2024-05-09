@@ -86,6 +86,7 @@ export const NotificationCard = styled.a<{ isRead?: boolean }>`
     align-items: flex-start;
     gap: 10px;
     text-decoration: inherit;
+    width: 100%;
   }
 
   > span > strong {
@@ -93,6 +94,7 @@ export const NotificationCard = styled.a<{ isRead?: boolean }>`
     font-weight: 600;
     color: inherit;
     text-decoration: inherit;
+    word-break: break-all;
   }
 
   > span > p {
@@ -101,5 +103,6 @@ export const NotificationCard = styled.a<{ isRead?: boolean }>`
     color: var(${UI.COLOR_TEXT_OPACITY_70});
     margin: 0;
     text-decoration: inherit;
+    word-break: break-all;
   }
 `
