@@ -24,7 +24,7 @@ export function useUnreadNotifications(): UnreadNotifications {
       const readNotifications = readNotificationsState[account]
 
       return notifications.reduce<UnreadNotifications>((acc, notification) => {
-        const isRead = readNotifications.includes(notification.id)
+        const isRead = readNotifications?.includes(notification.id)
 
         if (!isRead) {
           acc[notification.id] = true

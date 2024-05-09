@@ -25,7 +25,9 @@ export function NotificationsList({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (!account || !notifications) return
 
-    markNotificationsAsRead(account, notifications.map(({ id }) => id) || [])
+    setTimeout(() => {
+      markNotificationsAsRead(account, notifications.map(({ id }) => id) || [])
+    }, 2000)
   }, [account, notifications])
 
   return (
