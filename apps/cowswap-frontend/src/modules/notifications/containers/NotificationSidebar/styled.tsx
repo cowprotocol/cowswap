@@ -20,7 +20,7 @@ const IconBase = styled(SVG)<{ size?: string; opacity?: string }>`
   opacity: ${({ opacity }) => opacity || 0.5};
   fill: currentColor;
   transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out, background var(${UI.ANIMATION_DURATION}) ease-in-out;
-  padding: 10px;
+  padding: 8px;
   box-sizing: content-box;
   border-radius: ${({ size }) => size || '18px'};
 
@@ -86,7 +86,7 @@ export const SidebarHeader = styled.div<SidebarHeaderProps>`
   background: var(${UI.COLOR_PAPER});
   position: sticky;
   top: 0;
-  padding: 10px 16px 6px 6px;
+  padding: 10px 16px 6px 8px;
   margin: 0;
   z-index: 10;
 
