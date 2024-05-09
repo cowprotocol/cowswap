@@ -36,7 +36,7 @@ export function NotificationSidebar({ isOpen, onClose }: NotificationSidebarProp
     <Sidebar ref={sidebarRef} isOpen={isOpen}>
       {isSettingsOpen ? (
         <NotificationSettings>
-          <SidebarHeader alignLeft>
+          <SidebarHeader isArrowNav>
             <span>
               <ArrowLeft onClick={toggleSettingsOpen} />
             </span>

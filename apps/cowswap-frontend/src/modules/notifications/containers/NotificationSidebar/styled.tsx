@@ -11,15 +11,14 @@ interface IconProps {
   onClick?: () => void
 }
 
-const IconBase = styled(SVG)`
-  --size: 18px;
-  width: var(--size);
-  height: var(--size);
+const IconBase = styled(SVG)<{ size?: string; opacity?: string }>`
+  width: ${({ size }) => size || '18px'}; /* Apply the size prop to width directly */
+  height: ${({ size }) => size || '18px'}; /* Apply the size prop to height directly */
   object-fit: contain;
   margin: auto;
   cursor: pointer;
-  opacity: 0.5;
-  fill: currentColor;
+  opacity: ${({ opacity }) => opacity || 0.5}; /* Correctly applying the opacity */
+  fill: currentColor; /* This ensures that the color inside the SVG is controlled by the 'color' CSS property of the parent */
   transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
 
   &:hover {
@@ -27,7 +26,7 @@ const IconBase = styled(SVG)`
   }
 
   > path {
-    fill: currentColor;
+    fill: inherit; /* Ensuring the paths inside the SVG inherit the fill color */
   }
 `
 
@@ -39,7 +38,9 @@ export const DoubleArrowRightIcon = ({ onClick }: IconProps) => (
 
 export const CloseIcon = ({ onClick }: IconProps) => <IconBase src={ICON_CLOSE_X} onClick={onClick} />
 
-export const ArrowLeft = ({ onClick }: IconProps) => <IconBase src={ICON_ARROW} onClick={onClick} />
+export const ArrowLeft = ({ onClick }: IconProps) => (
+  <IconBase src={ICON_ARROW} onClick={onClick} size="14px" opacity="1" />
+)
 
 export const Sidebar = styled.div<{ isOpen: boolean }>`
   --width: 390px;
@@ -69,14 +70,14 @@ export const Sidebar = styled.div<{ isOpen: boolean }>`
 `
 
 interface SidebarHeaderProps {
-  alignLeft?: boolean
+  isArrowNav?: boolean
 }
 
 export const SidebarHeader = styled.div<SidebarHeaderProps>`
   display: flex;
   align-items: center;
-  justify-content: ${({ alignLeft }) => (alignLeft ? 'flex-start' : 'space-between')};
-  gap: 10px;
+  justify-content: ${({ isArrowNav }) => (isArrowNav ? 'flex-start' : 'space-between')};
+  gap: ${({ isArrowNav }) => (isArrowNav ? '21px' : '10px')};
   width: 100%;
   background: var(${UI.COLOR_PAPER});
   position: sticky;
@@ -85,14 +86,14 @@ export const SidebarHeader = styled.div<SidebarHeaderProps>`
   margin: 0;
   z-index: 10;
 
-  ${({ theme, alignLeft }) => theme.mediaWidth.upToSmall`
+  ${({ theme, isArrowNav }) => theme.mediaWidth.upToSmall`
     flex-flow: row-reverse;
-    flex-flow: ${alignLeft ? 'row' : 'row-reverse'};
+    flex-flow: ${isArrowNav ? 'row' : 'row-reverse'};
     padding: 16px;
   `};
 
   > h3 {
-    font-size: 16px;
+    font-size: 18px;
     font-weight: var(${UI.FONT_WEIGHT_BOLD});
     margin: 0;
     line-height: 1;
@@ -104,8 +105,8 @@ export const SidebarHeader = styled.div<SidebarHeaderProps>`
     gap: 16px;
     color: var(${UI.COLOR_TEXT});
 
-    ${({ theme, alignLeft }) => theme.mediaWidth.upToSmall`
-      flex-flow: ${alignLeft ? 'row' : 'row-reverse'};
+    ${({ theme, isArrowNav }) => theme.mediaWidth.upToSmall`
+      flex-flow: ${isArrowNav ? 'row' : 'row-reverse'};
     `};
   }
 `
