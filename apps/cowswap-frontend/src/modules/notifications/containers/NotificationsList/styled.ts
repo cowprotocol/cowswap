@@ -31,6 +31,7 @@ export const NotificationThumb = styled.div`
   border-radius: var(--imageSize);
   object-fit: cover;
   position: relative;
+  background: var(${UI.COLOR_PAPER_DARKER});
 
   > img {
     width: 100%;
@@ -81,8 +82,8 @@ export const NotificationCard = styled.a<{ isRead?: boolean }>`
 
   > span {
     display: flex;
-    flex-flow: row wrap;
-    align-items: center;
+    flex-flow: column wrap;
+    align-items: flex-start;
     gap: 10px;
     text-decoration: inherit;
   }

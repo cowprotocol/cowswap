@@ -40,7 +40,7 @@ export function AccountElement({ className, standaloneMode, pendingActivities }:
           </BalanceText>
         )}
         <Web3Status pendingActivities={pendingActivities} onClick={() => account && toggleAccountModal()} />
-        <NotificationBell onClick={() => setSidebarOpen(true)} />
+        {account && <NotificationBell onClick={() => setSidebarOpen(true)} />}
       </Wrapper>
 
       <NotificationSidebar isOpen={isSidebarOpen} onClose={() => setSidebarOpen(false)} />

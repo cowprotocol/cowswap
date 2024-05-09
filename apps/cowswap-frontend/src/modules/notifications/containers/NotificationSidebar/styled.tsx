@@ -1,6 +1,39 @@
 import { UI } from '@cowprotocol/ui'
+import SVG from 'react-inlinesvg'
+import ICON_SETTINGS from '@cowprotocol/assets/images/settings.svg'
+import ICON_DOUBLE_ARROW_RIGHT from '@cowprotocol/assets/images/double-arrow-right.svg'
 
 import styled from 'styled-components/macro'
+
+interface IconProps {
+  onClick?: () => void
+}
+
+const IconBase = styled(SVG)`
+  --size: 18px;
+  width: var(--size);
+  height: var(--size);
+  object-fit: contain;
+  margin: auto;
+  cursor: pointer;
+  opacity: 0.5;
+  fill: currentColor;
+  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
+
+  &:hover {
+    opacity: 1;
+  }
+
+  > path {
+    fill: currentColor;
+  }
+`
+
+export const SettingsIcon = ({ onClick }: IconProps) => <IconBase src={ICON_SETTINGS} onClick={onClick} />
+
+export const DoubleArrowRightIcon = ({ onClick }: IconProps) => (
+  <IconBase src={ICON_DOUBLE_ARROW_RIGHT} onClick={onClick} />
+)
 
 export const Sidebar = styled.div<{ isOpen: boolean }>`
   --width: 390px;
@@ -46,20 +79,5 @@ export const SidebarHeader = styled.div<{ alignLeft?: boolean }>`
     align-items: center;
     gap: 16px;
     color: var(${UI.COLOR_TEXT});
-  }
-
-  > span > svg {
-    --size: 17px;
-    width: var(--size);
-    height: var(--size);
-    object-fit: contain;
-    margin: auto;
-    cursor: pointer;
-    opacity: 0.5;
-    transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
-  }
-
-  > span > svg:hover {
-    opacity: 1;
   }
 `

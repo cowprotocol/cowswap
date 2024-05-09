@@ -1,13 +1,11 @@
 import React, { useCallback, useRef, useState } from 'react'
 
-import ICON_DOUBLE_ARROW_RIGHT from '@cowprotocol/assets/images/double-arrow-right.svg'
-import ICON_SETTINGS from '@cowprotocol/assets/images/settings.svg'
 import { useOnClickOutside } from '@cowprotocol/common-hooks'
 
 import { ArrowLeft } from 'react-feather'
 import SVG from 'react-inlinesvg'
 
-import { Sidebar, SidebarHeader } from './styled'
+import { Sidebar, SidebarHeader, DoubleArrowRightIcon, SettingsIcon } from './styled'
 
 import { NotificationSettings } from '../NotificationSettings'
 import { NotificationsList } from '../NotificationsList'
@@ -40,7 +38,7 @@ export function NotificationSidebar({ isOpen, onClose }: NotificationSidebarProp
         <NotificationSettings>
           <SidebarHeader alignLeft>
             <span>
-              <ArrowLeft size="18" onClick={toggleSettingsOpen} />
+              <ArrowLeft onClick={toggleSettingsOpen} />
             </span>
             <h3>Settings</h3>
           </SidebarHeader>
@@ -49,8 +47,8 @@ export function NotificationSidebar({ isOpen, onClose }: NotificationSidebarProp
         <NotificationsList>
           <SidebarHeader>
             <span>
-              <SVG src={ICON_DOUBLE_ARROW_RIGHT} onClick={onDismiss} />
-              <SVG src={ICON_SETTINGS} onClick={toggleSettingsOpen} />
+              <DoubleArrowRightIcon onClick={onDismiss} />
+              <SettingsIcon onClick={toggleSettingsOpen} />
             </span>
             <h3>Notifications</h3>
           </SidebarHeader>
