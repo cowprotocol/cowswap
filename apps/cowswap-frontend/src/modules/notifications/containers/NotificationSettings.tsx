@@ -4,12 +4,20 @@ import styled from 'styled-components/macro'
 
 import { ConnectTelegram } from './ConnectTelegram'
 
-const Option = styled.div`
-  text-align: left;
-  margin: 0 20px;
+const OptionsList = styled.div`
+  display: flex;
+  flex-flow: column wrap;
+  padding: 16px;
+`
 
-  h4 {
-    margin: 0 0 10px 0;
+const Option = styled.div`
+  display: flex;
+  flex-flow: column wrap;
+  text-align: left;
+  gap: 10px;
+
+  > h4 {
+    margin: 0;
   }
 `
 
@@ -19,12 +27,15 @@ interface NotificationSettingsProps {
 
 export function NotificationSettings({ children }: NotificationSettingsProps) {
   return (
-    <div>
+    <>
       {children}
-      <Option>
-        <h4>Telegram</h4>
-        <ConnectTelegram />
-      </Option>
-    </div>
+
+      <OptionsList>
+        <Option>
+          <h4>Telegram</h4>
+          <ConnectTelegram />
+        </Option>
+      </OptionsList>
+    </>
   )
 }

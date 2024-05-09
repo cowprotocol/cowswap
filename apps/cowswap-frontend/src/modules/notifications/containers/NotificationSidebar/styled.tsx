@@ -12,21 +12,25 @@ interface IconProps {
 }
 
 const IconBase = styled(SVG)<{ size?: string; opacity?: string }>`
-  width: ${({ size }) => size || '18px'}; /* Apply the size prop to width directly */
-  height: ${({ size }) => size || '18px'}; /* Apply the size prop to height directly */
+  width: ${({ size }) => size || '18px'};
+  height: ${({ size }) => size || '18px'};
   object-fit: contain;
   margin: auto;
   cursor: pointer;
-  opacity: ${({ opacity }) => opacity || 0.5}; /* Correctly applying the opacity */
-  fill: currentColor; /* This ensures that the color inside the SVG is controlled by the 'color' CSS property of the parent */
-  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
+  opacity: ${({ opacity }) => opacity || 0.5};
+  fill: currentColor;
+  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out, background var(${UI.ANIMATION_DURATION}) ease-in-out;
+  padding: 10px;
+  box-sizing: content-box;
+  border-radius: ${({ size }) => size || '18px'};
 
   &:hover {
     opacity: 1;
+    background: var(${UI.COLOR_PAPER_DARKER});
   }
 
   > path {
-    fill: inherit; /* Ensuring the paths inside the SVG inherit the fill color */
+    fill: inherit;
   }
 `
 
@@ -82,7 +86,7 @@ export const SidebarHeader = styled.div<SidebarHeaderProps>`
   background: var(${UI.COLOR_PAPER});
   position: sticky;
   top: 0;
-  padding: 20px;
+  padding: 10px 16px 6px 6px;
   margin: 0;
   z-index: 10;
 
@@ -102,7 +106,7 @@ export const SidebarHeader = styled.div<SidebarHeaderProps>`
   > span {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 0;
     color: var(${UI.COLOR_TEXT});
 
     ${({ theme, isArrowNav }) => theme.mediaWidth.upToSmall`
