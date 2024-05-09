@@ -7,7 +7,7 @@ import useSWR, { SWRConfiguration } from 'swr'
 import { NotificationModel } from '../types'
 
 const swrOptions: SWRConfiguration = {
-  refreshInterval: ms`30s`,
+  refreshInterval: ms`1m`,
   refreshWhenHidden: false,
   refreshWhenOffline: false,
   revalidateOnFocus: true,
