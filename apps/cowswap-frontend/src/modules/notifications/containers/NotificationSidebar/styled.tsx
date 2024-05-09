@@ -3,7 +3,7 @@ import SVG from 'react-inlinesvg'
 import ICON_SETTINGS from '@cowprotocol/assets/images/settings.svg'
 import ICON_DOUBLE_ARROW_RIGHT from '@cowprotocol/assets/images/double-arrow-right.svg'
 import ICON_CLOSE_X from '@cowprotocol/assets/images/x.svg'
-import ICON_ARROW from '@cowprotocol/assets/cow-swap/arrow.svg'
+import ICON_ARROW from '@cowprotocol/assets/images/arrow-left.svg'
 
 import styled from 'styled-components/macro'
 
@@ -31,10 +31,6 @@ const IconBase = styled(SVG)`
   }
 `
 
-const StyledArrowLeft = styled(IconBase)`
-  transform: rotate(180deg);
-`
-
 export const SettingsIcon = ({ onClick }: IconProps) => <IconBase src={ICON_SETTINGS} onClick={onClick} />
 
 export const DoubleArrowRightIcon = ({ onClick }: IconProps) => (
@@ -43,7 +39,7 @@ export const DoubleArrowRightIcon = ({ onClick }: IconProps) => (
 
 export const CloseIcon = ({ onClick }: IconProps) => <IconBase src={ICON_CLOSE_X} onClick={onClick} />
 
-export const ArrowLeft = ({ onClick }: IconProps) => <StyledArrowLeft src={ICON_ARROW} onClick={onClick} />
+export const ArrowLeft = ({ onClick }: IconProps) => <IconBase src={ICON_ARROW} onClick={onClick} />
 
 export const Sidebar = styled.div<{ isOpen: boolean }>`
   --width: 390px;
