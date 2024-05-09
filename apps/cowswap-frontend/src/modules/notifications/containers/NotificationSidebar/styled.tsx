@@ -3,6 +3,7 @@ import SVG from 'react-inlinesvg'
 import ICON_SETTINGS from '@cowprotocol/assets/images/settings.svg'
 import ICON_DOUBLE_ARROW_RIGHT from '@cowprotocol/assets/images/double-arrow-right.svg'
 import ICON_CLOSE_X from '@cowprotocol/assets/images/x.svg'
+import ICON_ARROW from '@cowprotocol/assets/cow-swap/arrow.svg'
 
 import styled from 'styled-components/macro'
 
@@ -30,6 +31,10 @@ const IconBase = styled(SVG)`
   }
 `
 
+const StyledArrowLeft = styled(IconBase)`
+  transform: rotate(180deg);
+`
+
 export const SettingsIcon = ({ onClick }: IconProps) => <IconBase src={ICON_SETTINGS} onClick={onClick} />
 
 export const DoubleArrowRightIcon = ({ onClick }: IconProps) => (
@@ -37,6 +42,8 @@ export const DoubleArrowRightIcon = ({ onClick }: IconProps) => (
 )
 
 export const CloseIcon = ({ onClick }: IconProps) => <IconBase src={ICON_CLOSE_X} onClick={onClick} />
+
+export const ArrowLeft = ({ onClick }: IconProps) => <StyledArrowLeft src={ICON_ARROW} onClick={onClick} />
 
 export const Sidebar = styled.div<{ isOpen: boolean }>`
   --width: 390px;
@@ -65,7 +72,11 @@ export const Sidebar = styled.div<{ isOpen: boolean }>`
   `};
 `
 
-export const SidebarHeader = styled.div<{ alignLeft?: boolean }>`
+interface SidebarHeaderProps {
+  alignLeft?: boolean
+}
+
+export const SidebarHeader = styled.div<SidebarHeaderProps>`
   display: flex;
   align-items: center;
   justify-content: ${({ alignLeft }) => (alignLeft ? 'flex-start' : 'space-between')};
@@ -78,8 +89,9 @@ export const SidebarHeader = styled.div<{ alignLeft?: boolean }>`
   margin: 0;
   z-index: 10;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${({ theme, alignLeft }) => theme.mediaWidth.upToSmall`
     flex-flow: row-reverse;
+    flex-flow: ${alignLeft ? 'row' : 'row-reverse'};
     padding: 16px;
   `};
 
@@ -96,8 +108,8 @@ export const SidebarHeader = styled.div<{ alignLeft?: boolean }>`
     gap: 16px;
     color: var(${UI.COLOR_TEXT});
 
-    ${({ theme }) => theme.mediaWidth.upToSmall`
-      flex-flow: row-reverse;
+    ${({ theme, alignLeft }) => theme.mediaWidth.upToSmall`
+      flex-flow: ${alignLeft ? 'row' : 'row-reverse'};
     `};
   }
 `

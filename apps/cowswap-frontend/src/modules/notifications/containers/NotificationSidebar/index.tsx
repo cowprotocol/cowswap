@@ -2,10 +2,7 @@ import React, { useCallback, useRef, useState } from 'react'
 
 import { useOnClickOutside } from '@cowprotocol/common-hooks'
 
-import { ArrowLeft } from 'react-feather'
-import SVG from 'react-inlinesvg'
-
-import { Sidebar, SidebarHeader, DoubleArrowRightIcon, SettingsIcon, CloseIcon } from './styled'
+import { Sidebar, SidebarHeader, DoubleArrowRightIcon, SettingsIcon, CloseIcon, ArrowLeft } from './styled'
 
 import { NotificationSettings } from '../NotificationSettings'
 import { NotificationsList } from '../NotificationsList'
