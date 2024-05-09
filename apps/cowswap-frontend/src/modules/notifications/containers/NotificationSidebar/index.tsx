@@ -5,10 +5,11 @@ import { useOnClickOutside } from '@cowprotocol/common-hooks'
 import { ArrowLeft } from 'react-feather'
 import SVG from 'react-inlinesvg'
 
-import { Sidebar, SidebarHeader, DoubleArrowRightIcon, SettingsIcon } from './styled'
+import { Sidebar, SidebarHeader, DoubleArrowRightIcon, SettingsIcon, CloseIcon } from './styled'
 
 import { NotificationSettings } from '../NotificationSettings'
 import { NotificationsList } from '../NotificationsList'
+import { upToSmall, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 
 interface NotificationSidebarProps {
   isOpen: boolean
@@ -30,6 +31,8 @@ export function NotificationSidebar({ isOpen, onClose }: NotificationSidebarProp
     setIsSettingsOpen((prev) => !prev)
   }, [])
 
+  const isMobile = useMediaQuery(upToSmall)
+
   if (!isOpen) return null
 
   return (
@@ -47,7 +50,8 @@ export function NotificationSidebar({ isOpen, onClose }: NotificationSidebarProp
         <NotificationsList>
           <SidebarHeader>
             <span>
-              <DoubleArrowRightIcon onClick={onDismiss} />
+              {!isMobile && <DoubleArrowRightIcon onClick={onDismiss} />}
+              {isMobile && <CloseIcon onClick={onDismiss} />}
               <SettingsIcon onClick={toggleSettingsOpen} />
             </span>
             <h3>Notifications</h3>

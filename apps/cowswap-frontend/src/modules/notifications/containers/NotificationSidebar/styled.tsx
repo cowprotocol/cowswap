@@ -2,6 +2,7 @@ import { UI } from '@cowprotocol/ui'
 import SVG from 'react-inlinesvg'
 import ICON_SETTINGS from '@cowprotocol/assets/images/settings.svg'
 import ICON_DOUBLE_ARROW_RIGHT from '@cowprotocol/assets/images/double-arrow-right.svg'
+import ICON_CLOSE_X from '@cowprotocol/assets/images/x.svg'
 
 import styled from 'styled-components/macro'
 
@@ -35,6 +36,8 @@ export const DoubleArrowRightIcon = ({ onClick }: IconProps) => (
   <IconBase src={ICON_DOUBLE_ARROW_RIGHT} onClick={onClick} />
 )
 
+export const CloseIcon = ({ onClick }: IconProps) => <IconBase src={ICON_CLOSE_X} onClick={onClick} />
+
 export const Sidebar = styled.div<{ isOpen: boolean }>`
   --width: 390px;
   position: fixed;
@@ -52,6 +55,14 @@ export const Sidebar = styled.div<{ isOpen: boolean }>`
   z-index: 10000;
   border-top-left-radius: 16px;
   overflow-y: auto;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    width: 100%;
+    position: fixed;
+    top: 0;
+    border: 0;
+    border-radius: 0;
+  `};
 `
 
 export const SidebarHeader = styled.div<{ alignLeft?: boolean }>`
@@ -67,6 +78,11 @@ export const SidebarHeader = styled.div<{ alignLeft?: boolean }>`
   margin: 0;
   z-index: 10;
 
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    flex-flow: row-reverse;
+    padding: 16px;
+  `};
+
   > h3 {
     font-size: 16px;
     font-weight: var(${UI.FONT_WEIGHT_BOLD});
@@ -79,5 +95,9 @@ export const SidebarHeader = styled.div<{ alignLeft?: boolean }>`
     align-items: center;
     gap: 16px;
     color: var(${UI.COLOR_TEXT});
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      flex-flow: row-reverse;
+    `};
   }
 `
