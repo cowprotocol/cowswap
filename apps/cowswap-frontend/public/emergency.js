@@ -8,6 +8,41 @@ if (window.location.host === 'barn.cowswap.exchange') {
 }
 
 /**
+ * Remove old versions of the local storage atom stores
+ * We rely on the fact that store names are in the format {name}Atom:v{version}
+ * Since outdated versions of the stores are not used anymore, we should remove them to not exceed the storage limit
+ */
+;(function () {
+  const atomStoreRegex = /Atom\:v\d/
+
+  // Find the latest version of each store
+  const storePerVersion = Object.keys(localStorage)
+    // Take only the atom stores with versions
+    .filter((key) => key.match(atomStoreRegex))
+    .reduce((acc, key) => {
+      const [name, version] = key.split(':v')
+      const versionNum = +version
+
+      // Find the latest version of the store
+      if (!acc[name] || acc[name] < versionNum) {
+        acc[name] = versionNum
+      }
+
+      return acc
+    }, {})
+
+  // Remove all the old versions
+  Object.keys(storePerVersion).forEach((name) => {
+    const version = storePerVersion[name]
+
+    for (let i = 0; i < version; i++) {
+      localStorage.removeItem(`${name}:v${i}`)
+    }
+    console.log(name, version)
+  })
+})()
+
+/**
  * In case of problems with the service worker cache we can urgently reset the cache.
  * Just set resetCacheInCaseOfEmergency to true and release a new version
  */
