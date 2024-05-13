@@ -1,7 +1,11 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 
 import { gnosisSafeInfoAtom, walletDetailsAtom, walletDisplayedAddress, walletInfoAtom } from './state'
-import { multiInjectedProvidersAtom, selectedEip6963ProviderAtom } from './state/multiInjectedProvidersAtom'
+import {
+  multiInjectedProvidersAtom,
+  selectedEip6963ProviderAtom,
+  selectedEip6963ProviderRdnsAtom,
+} from './state/multiInjectedProvidersAtom'
 import { GnosisSafeInfo, WalletDetails, WalletInfo } from './types'
 
 import { useIsSafeApp } from '../web3-react/hooks/useWalletMetadata'
@@ -34,16 +38,13 @@ export function useMultiInjectedProviders() {
 }
 
 export function useSetEip6963Provider() {
-  return useSetAtom(selectedEip6963ProviderAtom)
+  return useSetAtom(selectedEip6963ProviderRdnsAtom)
 }
 
-export function useSelectedEip6963ProviderUuid() {
-  return useAtomValue(selectedEip6963ProviderAtom)
+export function useSelectedEip6963ProviderRdns() {
+  return useAtomValue(selectedEip6963ProviderRdnsAtom)
 }
 
 export function useSelectedEip6963ProviderInfo() {
-  const providers = useMultiInjectedProviders()
-  const selectedProviderId = useSelectedEip6963ProviderUuid()
-
-  return selectedProviderId ? providers.find((p) => p.info.uuid === selectedProviderId) : null
+  return useAtomValue(selectedEip6963ProviderAtom)
 }

@@ -1,8 +1,11 @@
 import { useEffect } from 'react'
 
 import { getCurrentChainIdFromUrl, isInjectedWidget } from '@cowprotocol/common-utils'
+import { jotaiStore } from '@cowprotocol/core'
 import { Connector } from '@web3-react/types'
 
+import { useSelectedEip6963ProviderInfo, useSetEip6963Provider } from '../../../api/hooks'
+import { selectedEip6963ProviderRdnsAtom } from '../../../api/state/multiInjectedProvidersAtom'
 import { BACKFILLABLE_WALLETS, ConnectionType } from '../../../api/types'
 import { injectedWalletConnection } from '../../connection/injectedWallet'
 import { networkConnection } from '../../connection/network'
@@ -24,6 +27,9 @@ async function connect(connector: Connector) {
 }
 
 export function useEagerlyConnect(selectedWallet: ConnectionType | undefined, selectedWalletBackfilled: boolean) {
+  const selectedEip6963ProviderInfo = useSelectedEip6963ProviderInfo()
+  const setEip6963Provider = useSetEip6963Provider()
+
   useEffect(() => {
     if (isInjectedWidget()) {
       connect(injectedWalletConnection.connector)
@@ -37,6 +43,15 @@ export function useEagerlyConnect(selectedWallet: ConnectionType | undefined, se
     connect(networkConnection.connector)
 
     if (selectedWallet) {
+      const connection = getWeb3ReactConnection(selectedWallet)
+      const cachedProviderRdns = jotaiStore.get(selectedEip6963ProviderRdnsAtom)
+
+      /**
+       * Skip activation if an injected eip6963 provider was previously selected
+       * Because it will be activated in the next useEffect() block
+       */
+      if (connection.type === ConnectionType.INJECTED && cachedProviderRdns) return
+
       connect(getWeb3ReactConnection(selectedWallet).connector)
     } else if (!selectedWalletBackfilled) {
       BACKFILLABLE_WALLETS.map(getWeb3ReactConnection)
@@ -45,4 +60,24 @@ export function useEagerlyConnect(selectedWallet: ConnectionType | undefined, se
     }
     // The dependency list is empty so this is only run once on mount
   }, [])
+
+  /**
+   * Activate the selected eip6963 provider
+   */
+  useEffect(() => {
+    if (!selectedWallet) return
+
+    const connection = getWeb3ReactConnection(selectedWallet)
+
+    if (connection.type === ConnectionType.INJECTED && selectedEip6963ProviderInfo) {
+      const { provider, info } = selectedEip6963ProviderInfo
+      const { connector } = injectedWalletConnection
+
+      connector.provider = provider
+      connector.onConnect = () => setEip6963Provider(info.rdns)
+      connector.onDisconnect = () => setEip6963Provider(null)
+
+      connect(connector)
+    }
+  }, [selectedEip6963ProviderInfo, selectedWallet, setEip6963Provider])
 }

@@ -18,6 +18,7 @@ export class InjectedWallet extends Connector {
   walletUrl: string
   searchKeywords: string[]
   eagerConnection?: boolean
+  onConnect?: Command
   onDisconnect?: Command
 
   constructor({ actions, onError, walletUrl, searchKeywords }: injectedWalletConstructorArgs) {
@@ -127,6 +128,7 @@ export class InjectedWallet extends Connector {
 
         const { chainId } = data
         this.actions.update({ chainId: parseChainId(chainId) })
+        this.onConnect?.()
       })
 
       const onDisconnect = (error: ProviderRpcError): void => {

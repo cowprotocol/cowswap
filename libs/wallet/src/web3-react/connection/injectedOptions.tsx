@@ -4,7 +4,7 @@ import { injectedWalletConnection } from './injectedWallet'
 
 import { default as InjectedImage, default as InjectedImageDark } from '../../api/assets/arrow-right.svg'
 import { default as MetamaskImage } from '../../api/assets/metamask.png'
-import { useSelectedEip6963ProviderUuid, useSetEip6963Provider } from '../../api/hooks'
+import { useSelectedEip6963ProviderRdns, useSetEip6963Provider } from '../../api/hooks'
 import { ConnectWalletOption } from '../../api/pure/ConnectWalletOption'
 import { ConnectionType, EIP6963ProviderDetail } from '../../api/types'
 import { getConnectionName } from '../../api/utils/connection'
@@ -76,14 +76,15 @@ interface Eip6963OptionProps {
 
 export function Eip6963Option({ tryActivation, providerDetails: { provider, info } }: Eip6963OptionProps) {
   const setEip6963Provider = useSetEip6963Provider()
-  const selectedUuid = useSelectedEip6963ProviderUuid()
-  const isActive = selectedUuid === info.uuid
+  const selectedRdns = useSelectedEip6963ProviderRdns()
+  const isActive = selectedRdns === info.rdns
 
   const onClick = useCallback(() => {
     injectedWalletConnection.connector.provider = provider
+    injectedWalletConnection.connector.onConnect = () => setEip6963Provider(info.rdns)
     injectedWalletConnection.connector.onDisconnect = () => setEip6963Provider(null)
 
-    setEip6963Provider(info.uuid)
+    setEip6963Provider(info.rdns)
     tryActivation(injectedWalletConnection.connector)
   }, [provider, tryActivation, setEip6963Provider])
 
@@ -91,7 +92,7 @@ export function Eip6963Option({ tryActivation, providerDetails: { provider, info
     <ConnectWalletOption
       onClick={onClick}
       isActive={isActive}
-      id={`wallet${info.uuid}`}
+      id={`wallet${info.rdns}`}
       color="#E8831D"
       icon={info.icon}
       header={info.name}

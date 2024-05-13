@@ -44,7 +44,7 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
           {multiInjectedProviders.map((providerInfo) => {
             return (
               <Eip6963Option
-                key={providerInfo.info.uuid}
+                key={providerInfo.info.rdns}
                 tryActivation={tryActivation}
                 providerDetails={providerInfo}
               />
