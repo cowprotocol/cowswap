@@ -1,7 +1,9 @@
-import { useWeb3React } from '@web3-react/core'
 import { useCallback } from 'react'
-import { switchChain } from '@cowprotocol/wallet'
+
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { useWeb3React } from '@web3-react/core'
+
+import { switchChain } from '../utils/switchChain'
 
 export function useSwitchNetwork() {
   const { connector } = useWeb3React()
