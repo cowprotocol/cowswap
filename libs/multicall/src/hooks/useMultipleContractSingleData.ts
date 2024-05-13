@@ -5,7 +5,7 @@ import { Interface, Result } from '@ethersproject/abi'
 
 import useSWR, { SWRConfiguration, SWRResponse } from 'swr'
 
-import { multiCall, MultiCallOptions } from '../multiCall'
+import { multiCall, MultiCallOptions } from '../multicall'
 
 export function useMultipleContractSingleData<T = Result>(
   addresses: string[],
