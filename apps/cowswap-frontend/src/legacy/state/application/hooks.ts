@@ -1,7 +1,6 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback } from 'react'
 
 import { Command } from '@cowprotocol/types'
-import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { createAction } from '@reduxjs/toolkit'
 
@@ -27,6 +26,7 @@ export function useCloseModal(_modal: ApplicationModal): Command {
   const dispatch = useAppDispatch()
   return useCallback(() => dispatch(setOpenModal(null)), [dispatch])
 }
+
 export function useToggleWalletModal(): Command {
   return useToggleModal(ApplicationModal.WALLET)
 }
