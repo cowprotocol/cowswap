@@ -5,10 +5,8 @@ import { useWeb3React } from '@web3-react/core'
 
 import { useSafeAppsSdk } from './useSafeAppsSdk'
 
-import { default as AlphaImage } from '../../api/assets/alpha.svg'
 import { useGnosisSafeInfo, useSelectedEip6963ProviderInfo } from '../../api/hooks'
 import { ConnectionType } from '../../api/types'
-import { getIsAlphaWallet } from '../../api/utils/connection'
 import { getWeb3ReactConnection } from '../utils/getWeb3ReactConnection'
 
 const SAFE_APP_NAME = 'Safe App'
@@ -31,10 +29,6 @@ export interface WalletMetaData {
 }
 
 function getWcWalletIcon(meta: any) {
-  if (getIsAlphaWallet(meta.name)) {
-    return AlphaImage
-  }
-
   return meta.icons?.length > 0 ? meta.icons[0] : undefined
 }
 
