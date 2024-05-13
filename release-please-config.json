@@ -17,6 +17,14 @@
       "draft": false,
       "prerelease": false
     },
+    "apps/cow-fi": {
+      "changelog-path": "CHANGELOG.md",
+      "release-type": "node",
+      "bump-minor-pre-major": false,
+      "bump-patch-for-minor-pre-major": false,
+      "draft": false,
+      "prerelease": false
+    },
     "apps/widget-configurator": {
       "changelog-path": "CHANGELOG.md",
       "release-type": "node",
