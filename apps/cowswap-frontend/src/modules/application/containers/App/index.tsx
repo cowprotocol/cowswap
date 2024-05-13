@@ -8,6 +8,8 @@ import { URLWarning } from 'legacy/components/Header/URLWarning'
 import TopLevelModals from 'legacy/components/TopLevelModals'
 import DarkModeQueryParamReader from 'legacy/theme'
 
+import Development from 'pages/Development'
+
 import { OrdersPanel } from 'modules/account'
 import { useInitializeUtm } from 'modules/utm'
 import { WinterFooter } from 'modules/winterEdition'
@@ -29,6 +31,9 @@ export function App() {
     <ErrorBoundary>
       <RedirectAnySwapAffectedUsers />
       <DarkModeQueryParamReader />
+
+      {/* Temporary development */}
+      <Development />
 
       <styledEl.AppWrapper>
         <URLWarning />
