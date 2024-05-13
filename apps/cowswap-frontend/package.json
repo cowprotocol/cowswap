@@ -1,13 +1,11 @@
 {
   "name": "@cowprotocol/cowswap",
-  "version": "1.67.0",
+  "version": "1.68.5",
   "description": "CoW Swap",
   "main": "index.js",
   "author": "",
   "license": "ISC",
   "scripts": {
-    "ipfs:build": "cross-env PUBLIC_URL=\".\" yarn build",
-    "ipfs:publish": "npx ipfs-deploy build -p pinata -O",
     "patch-package": "npx patch-package",
     "cosmos:clear": "rm -rf ./public/cosmos",
     "cosmos:run": "yarn run _cosmos:run",
