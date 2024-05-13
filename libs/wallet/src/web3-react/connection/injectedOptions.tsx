@@ -1,11 +1,6 @@
 import { useCallback } from 'react'
 
-import { initializeConnector } from '@web3-react/core'
-import { MetaMask } from '@web3-react/metamask'
-import { AddEthereumChainParameter } from '@web3-react/types'
-
-import { injectedWidgetConnection } from './injectedWidget'
-import { onError } from './onError'
+import { injectedWalletConnection } from './injectedWallet'
 
 import { default as InjectedImage, default as InjectedImageDark } from '../../api/assets/arrow-right.svg'
 import { default as MetamaskImage } from '../../api/assets/metamask.png'
@@ -14,20 +9,7 @@ import { ConnectWalletOption } from '../../api/pure/ConnectWalletOption'
 import { ConnectionType, EIP6963ProviderDetail } from '../../api/types'
 import { getConnectionName } from '../../api/utils/connection'
 import { useIsActiveConnection } from '../hooks/useIsActiveConnection'
-import { ConnectionOptionProps, TryActivation, Web3ReactConnection } from '../types'
-
-class MetaMaskEnhanced extends MetaMask {
-  /**
-   * The trick is to override the activate method in order to call it without parameters
-   * Because if we call it as activate(chainId)
-   * It will request network change if the wallet is connected to a different chain
-   *
-   * @param chain when number, it means the initial request to connect, otherwise it's a request to change network
-   */
-  activate(chain: number | AddEthereumChainParameter): Promise<void> {
-    return super.activate(typeof chain === 'number' ? undefined : chain)
-  }
-}
+import { ConnectionOptionProps, TryActivation } from '../types'
 
 const METAMASK_DEEP_LINK = 'https://metamask.app.link/dapp/'
 
@@ -62,15 +44,6 @@ export const metamaskInjectedOption = {
   header: 'MetaMask',
 }
 
-const [web3Injected, web3InjectedHooks] = initializeConnector<MetaMaskEnhanced>(
-  (actions) => new MetaMaskEnhanced({ actions, onError })
-)
-export const injectedConnection: Web3ReactConnection = {
-  connector: web3Injected,
-  hooks: web3InjectedHooks,
-  type: ConnectionType.INJECTED,
-}
-
 export function InstallMetaMaskOption() {
   return <ConnectWalletOption {...metamaskInstallOption} />
 }
@@ -81,29 +54,17 @@ export function OpenMetaMaskMobileOption() {
   )
 }
 
-export function MetaMaskOption({ selectedWallet, tryActivation }: ConnectionOptionProps) {
-  const isActive = useIsActiveConnection(selectedWallet, injectedConnection)
-
-  return (
-    <ConnectWalletOption
-      {...metamaskInjectedOption}
-      isActive={isActive}
-      onClick={() => tryActivation(injectedConnection.connector)}
-    />
-  )
-}
-
 export function InjectedOption({ darkMode, tryActivation, selectedWallet }: ConnectionOptionProps) {
   const options = darkMode ? injectedOptionDark : injectedOption
 
-  const isActive = useIsActiveConnection(selectedWallet, injectedConnection)
+  const isActive = useIsActiveConnection(selectedWallet, injectedWalletConnection)
 
   return (
     <ConnectWalletOption
       {...options}
       isActive={isActive}
       header={getConnectionName(ConnectionType.INJECTED)}
-      onClick={() => tryActivation(injectedConnection.connector)}
+      onClick={() => tryActivation(injectedWalletConnection.connector)}
     />
   )
 }
@@ -119,11 +80,11 @@ export function Eip6963Option({ tryActivation, providerDetails: { provider, info
   const isActive = selectedUuid === info.uuid
 
   const onClick = useCallback(() => {
-    injectedWidgetConnection.connector.provider = provider
-    injectedWidgetConnection.connector.onDisconnect = () => setEip6963Provider(null)
+    injectedWalletConnection.connector.provider = provider
+    injectedWalletConnection.connector.onDisconnect = () => setEip6963Provider(null)
 
     setEip6963Provider(info.uuid)
-    tryActivation(injectedWidgetConnection.connector)
+    tryActivation(injectedWalletConnection.connector)
   }, [provider, tryActivation, setEip6963Provider])
 
   return (

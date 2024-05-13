@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 
+import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { useWeb3React } from '@web3-react/core'
 
 import { useSafeAppsSdk } from './useSafeAppsSdk'
@@ -70,10 +71,19 @@ export function useWalletMetaData(): WalletMetaData {
       return METADATA_DISCONNECTED
     }
 
-    if (connectionType === ConnectionType.INJECTED_WIDGET && selectedEip6963Provider) {
-      return {
-        icon: selectedEip6963Provider.info.icon,
-        walletName: selectedEip6963Provider.info.name,
+    if (connectionType === ConnectionType.INJECTED) {
+      if (isInjectedWidget()) {
+        return {
+          walletName: 'CoW Swap widget',
+          icon: 'Identicon',
+        }
+      }
+
+      if (selectedEip6963Provider) {
+        return {
+          icon: selectedEip6963Provider.info.icon,
+          walletName: selectedEip6963Provider.info.name,
+        }
       }
     }
 

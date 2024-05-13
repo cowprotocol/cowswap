@@ -3,6 +3,10 @@ import { ConnectionType } from '@cowprotocol/wallet'
 
 import { createSlice } from '@reduxjs/toolkit'
 
+import { userWalletMigration } from './userWalletMigration'
+
+userWalletMigration()
+
 export interface UserState {
   // We want the user to be able to define which wallet they want to use, even if there are multiple connected wallets via web3-react.
   // If a user had previously connected a wallet but didn't have a wallet override set (because they connected prior to this field being added),

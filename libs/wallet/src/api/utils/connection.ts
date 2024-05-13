@@ -9,7 +9,6 @@ import { ConnectionType } from '../types'
 
 const connectionTypeToName: Record<ConnectionType, string> = {
   [ConnectionType.INJECTED]: 'Injected',
-  [ConnectionType.INJECTED_WIDGET]: 'CoW Swap widget',
   [ConnectionType.COINBASE_WALLET]: 'Coinbase Wallet',
   [ConnectionType.WALLET_CONNECT_V2]: 'WalletConnect',
   [ConnectionType.NETWORK]: 'Network',
@@ -27,7 +26,6 @@ const IDENTICON_KEY = 'Identicon'
 
 const connectionTypeToIcon: Record<ConnectionType, 'Identicon' | string> = {
   [ConnectionType.INJECTED]: IDENTICON_KEY,
-  [ConnectionType.INJECTED_WIDGET]: IDENTICON_KEY,
   [ConnectionType.GNOSIS_SAFE]: IDENTICON_KEY,
   [ConnectionType.NETWORK]: IDENTICON_KEY,
   [ConnectionType.ZENGO]: IDENTICON_KEY,

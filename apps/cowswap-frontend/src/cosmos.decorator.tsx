@@ -6,7 +6,7 @@ import React, { StrictMode, useCallback, useContext, ReactNode, useEffect } from
 import IMAGE_MOON from '@cowprotocol/assets/cow-swap/moon.svg'
 import IMAGE_SUN from '@cowprotocol/assets/cow-swap/sun.svg'
 import { BlockNumberProvider } from '@cowprotocol/common-hooks'
-import { WalletUpdater, injectedConnection } from '@cowprotocol/wallet'
+import { WalletUpdater, injectedWalletConnection } from '@cowprotocol/wallet'
 import { Web3ReactProvider } from '@web3-react/core'
 
 import { LanguageProvider } from 'i18n'
@@ -37,7 +37,6 @@ const DarkModeToggle = ({ children }: { children?: ReactNode }) => {
   const [darkMode, toggleDarkModeAux] = useDarkModeManager()
   const toggleDarkMode = useCallback(() => {
     toggleDarkModeAux()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [toggleDarkModeAux, darkMode])
   const label = (darkMode ? 'Light' : 'Dark') + ' Mode'
   const description = `${darkMode ? 'Sun/light' : 'Moon/dark'} mode icon`
@@ -87,7 +86,7 @@ export const DemoContainer = styled.div`
 
 const chainId = 5
 
-const { connector, hooks } = injectedConnection
+const { connector, hooks } = injectedWalletConnection
 connector.activate(chainId)
 
 const Fixture = ({ children }: { children: ReactNode }) => {

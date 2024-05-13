@@ -11,7 +11,7 @@ export function useOrderedConnections(selectedWallet: ConnectionType | undefined
     const orderedConnectionTypes: ConnectionType[] = []
 
     if (isInjectedWidget()) {
-      orderedConnectionTypes.push(ConnectionType.INJECTED_WIDGET)
+      orderedConnectionTypes.push(ConnectionType.INJECTED)
     }
 
     // Always attempt to use to Gnosis Safe first, as we can't know if we're in a SafeContext.

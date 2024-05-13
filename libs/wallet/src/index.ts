@@ -33,18 +33,18 @@ export { switchChain } from './web3-react/utils/switchChain'
 
 // Connectors
 export { Web3Provider } from './web3-react/Web3Provider'
-export { injectedWidgetConnection } from './web3-react/connection/injectedWidget'
+export { injectedWalletConnection } from './web3-react/connection/injectedWallet'
 export { networkConnection } from './web3-react/connection/network'
 export { gnosisSafeConnection } from './web3-react/connection/safe'
+export { walletConnectConnectionV2 } from './web3-react/connection/walletConnectV2'
 
 // Connect options
 export {
   InjectedOption,
   InstallMetaMaskOption,
-  MetaMaskOption,
   OpenMetaMaskMobileOption,
   Eip6963Option,
-} from './web3-react/connection/injected'
+} from './web3-react/connection/injectedOptions'
 
 export { ConnectWalletOption } from './api/pure/ConnectWalletOption'
 export { InstallKeystoneOption, KeystoneOption } from './web3-react/connection/keystone'
@@ -59,7 +59,3 @@ export { CoinbaseWalletOption } from './web3-react/connection/coinbase'
 // TODO: this export is discussable, however it's already used outside
 export * from './api/state'
 export * from './api/state'
-
-// Connections
-export { injectedConnection } from './web3-react/connection/injected'
-export { walletConnectConnectionV2 } from './web3-react/connection/walletConnectV2'

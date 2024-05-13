@@ -5,7 +5,6 @@ export * from './eip6963-types'
 
 export enum ConnectionType {
   INJECTED = 'INJECTED',
-  INJECTED_WIDGET = 'INJECTED_WIDGET',
   COINBASE_WALLET = 'COINBASE_WALLET',
   WALLET_CONNECT_V2 = 'WALLET_CONNECT_V2',
   NETWORK = 'NETWORK',

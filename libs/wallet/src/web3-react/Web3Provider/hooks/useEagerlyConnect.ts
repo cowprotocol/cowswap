@@ -4,7 +4,7 @@ import { getCurrentChainIdFromUrl, isInjectedWidget } from '@cowprotocol/common-
 import {
   BACKFILLABLE_WALLETS,
   getWeb3ReactConnection,
-  injectedWidgetConnection,
+  injectedWalletConnection,
   networkConnection,
   gnosisSafeConnection,
   ConnectionType,
@@ -28,7 +28,7 @@ async function connect(connector: Connector) {
 export function useEagerlyConnect(selectedWallet: ConnectionType | undefined, selectedWalletBackfilled: boolean) {
   useEffect(() => {
     if (isInjectedWidget()) {
-      connect(injectedWidgetConnection.connector)
+      connect(injectedWalletConnection.connector)
     }
 
     // Try to connect to Gnosis Safe only when the app is opened in an iframe
