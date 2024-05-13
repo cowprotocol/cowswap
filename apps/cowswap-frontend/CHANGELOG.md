@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.68.5](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.68.4...cowswap-v1.68.5) (2024-05-13)
+
+
+### Bug Fixes
+
+* clean outdated localStorage stores ([#4413](https://github.com/cowprotocol/cowswap/issues/4413)) ([a193338](https://github.com/cowprotocol/cowswap/commit/a193338717134d5a2f3a9c02a73b865553e99d38))
+
 ## [1.68.4](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.68.3...cowswap-v1.68.4) (2024-05-03)
 
 
