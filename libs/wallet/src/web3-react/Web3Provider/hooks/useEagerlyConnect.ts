@@ -7,6 +7,7 @@ import { Connector } from '@web3-react/types'
 import { useSelectedEip6963ProviderInfo, useSetEip6963Provider } from '../../../api/hooks'
 import { selectedEip6963ProviderRdnsAtom } from '../../../api/state/multiInjectedProvidersAtom'
 import { BACKFILLABLE_WALLETS, ConnectionType } from '../../../api/types'
+import { getIsInjected } from '../../../api/utils/connection'
 import { injectedWalletConnection } from '../../connection/injectedWallet'
 import { networkConnection } from '../../connection/network'
 import { gnosisSafeConnection } from '../../connection/safe'
@@ -31,12 +32,14 @@ export function useEagerlyConnect(selectedWallet: ConnectionType | undefined, se
   const setEip6963Provider = useSetEip6963Provider()
 
   useEffect(() => {
-    if (isInjectedWidget()) {
+    const isIframe = window.top !== window.self
+
+    if (isInjectedWidget() || (isIframe && getIsInjected())) {
       connect(injectedWalletConnection.connector)
     }
 
     // Try to connect to Gnosis Safe only when the app is opened in an iframe
-    if (window.top !== window.self) {
+    if (isIframe) {
       connect(gnosisSafeConnection.connector)
     }
 
