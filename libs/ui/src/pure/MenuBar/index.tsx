@@ -1,5 +1,26 @@
 import React, { useState, useRef } from 'react'
 import styled from 'styled-components/macro'
+
+import {
+  RootNavItem,
+  MenuBarWrapper,
+  MenuBarInner,
+  NavDaoTriggerElement,
+  DropdownMenu,
+  DropdownContent,
+  DropdownContentItemButton,
+  DropdownContentItemImage,
+  DropdownContentItemIcon,
+  DropdownContentItemText,
+  DropdownContentItemTitle,
+  DropdownContentItemDescription,
+  GlobalSettingsWrapper,
+  GlobalSettingsButton,
+  NavItems,
+  StyledDropdownContentItem,
+  RightAligned,
+} from './styled'
+
 import SVG from 'react-inlinesvg'
 import { UI, Logo, LOGO_MAP } from '@cowprotocol/ui'
 import { useOnClickOutside } from '@cowprotocol/common-hooks'
@@ -20,288 +41,6 @@ const SETTINGS_ITEMS = [
   { label: 'Account Settings', href: '#account-settings' },
   { label: 'Theme', href: '#theme' },
 ]
-
-const MenuBarWrapper = styled.div`
-  display: flex;
-  width: 100%;
-  padding: 10px;
-  z-index: 10;
-
-  // temporary
-  position: sticky;
-  top: 0;
-`
-
-const MenuBarInner = styled.div<{ themeMode: string }>`
-  --height: 56px;
-  --width: 100%;
-  --bgColor: rgba(255, 248, 247, 0.6);
-  --bgColor: ${({ themeMode }) => (themeMode === 'dark' ? '#333' : 'rgba(255, 248, 247, 0.6)')};
-  --borderRadius: 28px;
-  --blur: 16px;
-
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  padding: 8px 4px;
-  gap: 8px;
-  height: var(--height);
-  width: var(--width);
-  background: var(--bgColor);
-  backdrop-filter: blur(var(--blur));
-  border-radius: var(--borderRadius);
-`
-
-interface NavDaoTriggerElementProps {
-  isActive: boolean
-}
-
-const NavDaoTriggerElement = styled.div<NavDaoTriggerElementProps>`
-  --size: 42px;
-  --defaultFill: grey;
-  --activeBackground: #555; // Active background color
-  --activeFill: #fff; // Active fill color
-
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: center;
-  align-items: center;
-  gap: 16px;
-  height: var(--size);
-  width: var(--size);
-  border-radius: 50%;
-  background: ${({ isActive }) => (isActive ? 'var(--activeBackground)' : 'transparent')};
-  color: ${({ isActive }) => (isActive ? 'var(--activeFill)' : 'var(--defaultFill)')};
-  cursor: pointer;
-  transition: background 0.2s, fill 0.2s;
-
-  &:hover {
-    background: var(--activeBackground);
-    color: ${({ isActive }) => (isActive ? 'var(--activeFill)' : 'var(--defaultFill)')};
-  }
-
-  > svg {
-    --size: 50%;
-    height: var(--size);
-    width: var(--size);
-    object-fit: contain;
-    color: currentColor;
-    margin: auto;
-  }
-
-  > svg path {
-    fill: currentColor;
-  }
-`
-
-const NavItems = styled.ul`
-  --marginLeft: 20px;
-
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: flex-start;
-  align-items: center;
-  gap: 4px;
-  list-style-type: none;
-  margin: 0 auto 0 var(--marginLeft);
-  padding: 0;
-`
-
-const DropdownContent = styled.div<{ isOpen: boolean; alignRight?: boolean }>`
-  --dropdownOffset: 12px;
-  display: ${({ isOpen }) => (isOpen ? 'block' : 'none')};
-  position: absolute;
-  background: rgba(255, 248, 247, 1);
-  backdrop-filter: blur(15px);
-  z-index: 1000;
-  top: calc(100% + var(--dropdownOffset));
-  right: ${({ alignRight }) => (alignRight ? 0 : 'initial')};
-  left: ${({ alignRight }) => (alignRight ? 'initial' : 0)};
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
-  padding: 4px;
-  position: absolute;
-  min-width: 300px;
-  width: max-content;
-  max-width: 530px;
-  height: auto;
-  border-radius: 28px;
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: calc(-2 * var(--dropdownOffset));
-    left: 0;
-    border: var(--dropdownOffset) solid transparent;
-    width: 100%;
-  }
-`
-
-const StyledDropdownContentItem = styled.a`
-  display: flex;
-  align-items: center;
-  padding: 8px 12px;
-  text-decoration: none;
-  color: inherit;
-  transition: background-color 0.2s ease-in-out;
-  border-radius: 24px;
-  min-height: 56px;
-  gap: 10px;
-
-  &:hover {
-    background-color: #e0e0e0;
-  }
-
-  > svg {
-    display: block;
-    --size: 20px;
-    height: var(--size);
-    width: auto;
-    margin: 0 5px 0 auto;
-    object-fit: contain;
-    color: inherit;
-  }
-
-  > svg path {
-    fill: transparent;
-  }
-
-  &:hover > svg {
-    fill: currentColor;
-  }
-
-  &:hover > svg path {
-    fill: currentColor;
-  }
-`
-
-const DropdownContentItemIcon = styled.img`
-  width: 56px;
-  height: 100%;
-  object-fit: contain;
-`
-
-const DropdownContentItemImage = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-  width: auto;
-  height: 56px;
-`
-
-const DropdownContentItemText = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-`
-
-const DropdownContentItemTitle = styled.span`
-  font-weight: bold;
-  font-size: 18px;
-`
-
-const DropdownContentItemDescription = styled.span`
-  font-size: 14px;
-  color: #666;
-`
-
-const DropdownContentItemButton = styled.button`
-  ${StyledDropdownContentItem};
-`
-
-const DropdownMenu = styled.div`
-  position: relative;
-  display: inline-block;
-`
-
-const RootNavItem = styled.a<{ isOpen?: boolean }>`
-  color: black;
-  font-size: 16px;
-  padding: 12px 16px;
-  border-radius: 32px;
-  border: none;
-  text-decoration: none;
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: center;
-  align-items: center;
-  background: transparent;
-  transition: background 0.2s ease-in-out;
-  cursor: pointer;
-  gap: 5px;
-
-  &:hover {
-    background-color: #9c8d8d;
-  }
-
-  > svg {
-    --size: 12px;
-    height: var(--size);
-    width: var(--size);
-    object-fit: contain;
-    margin-left: auto;
-    fill: currentColor;
-    transform: ${({ isOpen }) => (isOpen ? 'rotate(180deg)' : 'rotate(0deg)')};
-    transition: transform var(${UI.ANIMATION_DURATION}) ease-in-out;
-  }
-`
-
-const RightAligned = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 16px;
-  margin: 0 0 0 auto;
-`
-
-const GlobalSettingsWrapper = styled.div`
-  position: relative;
-`
-
-const GlobalSettingsButton = styled.button`
-  --size: 42px;
-  --defaultFill: grey;
-  --activeBackground: #555; // Active background color
-  --activeFill: #fff; // Active fill color
-
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: center;
-  align-items: center;
-  gap: 16px;
-  height: var(--size);
-  width: var(--size);
-  border-radius: 50%;
-  border: 0;
-  background: transparent;
-  cursor: pointer;
-  transition: background 0.2s, fill 0.2s;
-
-  > svg {
-    --size: 65%;
-    height: var(--size);
-    width: var(--size);
-    color: currentColor;
-    object-fit: contain;
-    margin: auto;
-  }
-
-  > svg path {
-    stroke: currentColor;
-  }
-
-  &:hover {
-    background: var(--activeBackground);
-
-    > svg {
-      color: var(--activeFill);
-    }
-  }
-`
 
 interface NavItemProps {
   item: MenuItem
@@ -328,6 +67,7 @@ interface DropdownMenuItem {
   icon?: string
   description?: string
   isButton?: boolean
+  children?: DropdownMenuItem[]
   logoVariant?: keyof typeof LOGO_MAP
 }
 
@@ -336,12 +76,14 @@ interface DropdownMenuContent {
   items?: DropdownMenuItem[]
 }
 
-const NavItem = ({ item, isClickable = true }: NavItemProps & { isClickable?: boolean }) => {
+// General root nav item
+const NavItem = ({ item, isClickable = false }: NavItemProps & { isClickable?: boolean }) => {
   const [isOpen, setIsOpen] = useState(false)
   const handleToggle = () => setIsOpen((prevIsOpen) => !prevIsOpen)
 
   return (
     <>
+      {/* If children are present, render a dropdown */}
       {item.children ? (
         <GenericDropdown
           isOpen={isOpen}
@@ -353,6 +95,7 @@ const NavItem = ({ item, isClickable = true }: NavItemProps & { isClickable?: bo
           interaction={isClickable ? 'click' : 'hover'}
         />
       ) : (
+        // If no children are present, render a simple nav item
         <RootNavItem href={item.href}>{item.label}</RootNavItem>
       )}
     </>
@@ -360,8 +103,36 @@ const NavItem = ({ item, isClickable = true }: NavItemProps & { isClickable?: bo
 }
 
 const DropdownContentItem: React.FC<{ item: DropdownMenuItem; theme: 'light' | 'dark' }> = ({ item, theme }) => {
+  const [isChildrenVisible, setIsChildrenVisible] = useState(false)
+
+  const handleToggleChildrenVisibility = (event: React.MouseEvent) => {
+    // Prevent the link from navigating
+    event.preventDefault()
+    // Stop the event from propagating further
+    event.stopPropagation()
+    // Toggle the visibility of the children
+    setIsChildrenVisible(!isChildrenVisible)
+  }
+
+  // First check if the item has children and handle that case
+  if (item.children) {
+    // If children are present, render a nested dropdown (3rd level)
+    return (
+      <StyledDropdownContentItem onClick={handleToggleChildrenVisibility}>
+        <DropdownContentItemText>
+          <DropdownContentItemTitle>{item.label}</DropdownContentItemTitle>
+          {item.description && <DropdownContentItemDescription>{item.description}</DropdownContentItemDescription>}
+        </DropdownContentItemText>
+        {isChildrenVisible && (
+          <DropdownContentWrapper isThirdLevel content={{ title: undefined, items: item.children }} />
+        )}
+        <SVG src={isChildrenVisible ? IMG_ICON_CARRET_DOWN : IMG_ICON_ARROW_RIGHT} />
+      </StyledDropdownContentItem>
+    )
+  }
+
+  // Handling for items with a logo variant
   if (item.logoVariant) {
-    // When logoVariant is specified, use the Logo component
     return (
       <StyledDropdownContentItem href={item.href}>
         <Logo product={item.logoVariant} themeMode={theme} />
@@ -369,8 +140,10 @@ const DropdownContentItem: React.FC<{ item: DropdownMenuItem; theme: 'light' | '
         <SVG src={IMG_ICON_ARROW_RIGHT} />
       </StyledDropdownContentItem>
     )
-  } else if (item.icon) {
-    // When an icon URL is specified, use an img element
+  }
+
+  // Handling for items with an icon
+  if (item.icon) {
     return (
       <StyledDropdownContentItem href={item.href}>
         <DropdownContentItemImage>
@@ -380,11 +153,14 @@ const DropdownContentItem: React.FC<{ item: DropdownMenuItem; theme: 'light' | '
         <SVG src={IMG_ICON_ARROW_RIGHT} />
       </StyledDropdownContentItem>
     )
-  } else if (item.isButton) {
+  }
+
+  // Handling for button items
+  if (item.isButton) {
     return <DropdownContentItemButton onClick={(e) => e.preventDefault()}>{item.label}</DropdownContentItemButton>
   }
 
-  // If no logo or icon is provided, you might want to handle this case differently
+  // If no logo, icon, or children are provided, handle case differently
   return null
 }
 
@@ -419,10 +195,11 @@ interface DropdownProps {
   interaction: 'hover' | 'click'
 }
 
+// Root nav item with a dropdown
 const GenericDropdown: React.FC<DropdownProps> = ({ isOpen, content, onTrigger, interaction }) => {
   if (!content.title) {
-    // Handle rendering differently or display a default title
-    content.title = 'Default Title'
+    // Handle the case where the title is missing
+    throw new Error('Dropdown content must have a title')
   }
 
   // This component uses onMouseEnter and onMouseLeave for hover, onClick for click
@@ -431,6 +208,7 @@ const GenericDropdown: React.FC<DropdownProps> = ({ isOpen, content, onTrigger, 
 
   return (
     <DropdownMenu {...interactionProps}>
+      {/* Render the root nav item that triggers the dropdown */}
       <RootNavItem as="button" aria-haspopup="true" aria-expanded={isOpen} isOpen={isOpen}>
         <span>{content.title}</span>
         {content.items && <SVG src={IMG_ICON_CARRET_DOWN} />}
@@ -440,17 +218,41 @@ const GenericDropdown: React.FC<DropdownProps> = ({ isOpen, content, onTrigger, 
   )
 }
 
-const DropdownContentWrapper: React.FC<{ content: DropdownMenuContent }> = ({ content }) => {
+const DropdownContentWrapper: React.FC<{
+  content: DropdownMenuContent
+  isThirdLevel?: boolean
+  isVisible?: boolean
+}> = ({ content, isThirdLevel, isVisible = true }) => {
+  const [isThirdLevelVisible, setIsThirdLevelVisible] = useState(false)
+
+  const handleToggleThirdLevelVisibility = (event: React.MouseEvent) => {
+    event.preventDefault() // Prevent default navigation
+    event.stopPropagation() // Stop propagation to avoid closing dropdown accidentally
+    setIsThirdLevelVisible((prevVisible) => !prevVisible) // Toggle third level visibility
+    console.log('Third level visibility:', !isThirdLevelVisible) // Debug log
+  }
+
   return (
-    <DropdownContent isOpen={true}>
+    <DropdownContent isOpen={isVisible} isThirdLevel={isThirdLevel}>
       {content.items?.map((item, index) => (
-        <StyledDropdownContentItem key={index} href={item.href}>
+        <StyledDropdownContentItem
+          key={index}
+          onClick={item.children ? handleToggleThirdLevelVisibility : undefined}
+          href={item.href}
+        >
           {item.icon && <DropdownContentItemIcon src={item.icon} alt="" />}
           <DropdownContentItemText>
             <DropdownContentItemTitle>{item.label}</DropdownContentItemTitle>
             {item.description && <DropdownContentItemDescription>{item.description}</DropdownContentItemDescription>}
           </DropdownContentItemText>
           <SVG src={IMG_ICON_ARROW_RIGHT} />
+          {item.children && isThirdLevelVisible && (
+            <DropdownContentWrapper
+              content={{ title: undefined, items: item.children }}
+              isThirdLevel
+              isVisible={isThirdLevelVisible}
+            />
+          )}
         </StyledDropdownContentItem>
       ))}
     </DropdownContent>
