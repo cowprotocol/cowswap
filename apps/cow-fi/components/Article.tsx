@@ -1,11 +1,9 @@
 import Link from 'next/link'
 
 import React from 'react'
-import Head from 'next/head'
-import Layout from '@/components/Layout'
-import ReactMarkdown, { Components } from 'react-markdown'
+import ReactMarkdown from 'react-markdown'
 
-import { Color, Media } from '@/styles/variables'
+import { Color } from '@/styles/variables'
 import {
   Article,
   ArticleBlock,
@@ -52,7 +50,7 @@ const ArticleItemWrapper = styled.li`
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   margin: 1.5rem 0;
   padding: 2.5rem;
-  color: ${Color.text1};
+  color: ${Color.text1};  
 
   a.link {
     font-size: 2rem;
@@ -69,15 +67,32 @@ const ArticleBlocksWrapper = styled.ul`
   list-style-type: none;
   padding: 0;
 
+  p, p a, strong {
+    font-size: 1.8rem;
+  }
 
   p {
-    font-size: 2rem;
     line-height: 1.8;
-    margin: 2.15rem 0;    
+    margin: 2rem 0;
+  }
 
-    a {
-      font-size: 2rem;
-    }
+  h2 {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 2.5rem 0 1.5rem 0;
+  }
+
+  li {
+    line-height: 32px;
+    margin: 1.5rem 0;
+  }
+
+  img {
+    max-width: 100%;
+  }
+
+  strong {
+    color: ${Color.text1};
   }
 `
 
@@ -201,14 +216,19 @@ export function ArticleContent({ article }: ArticleProps) {
         </SectionContent>
       </Section>
 
+      
       {/* <Section fullWidth colorVariant={'white'} flow="column" gap={14} padding="4rem 8rem 12rem 8rem">
         <SectionContent flow={'row'} maxWidth={100} textAlign={'left'}>
           <div className="container">
             <h3>DEBUG DATA</h3>
+            <ArticleContentWrapper>
+
             <pre style={{ lineHeight: '1.5em', fontSize: '14px' }}>{JSON.stringify(article, null, 2)}</pre> 
+            </ArticleContentWrapper>
           </div>
         </SectionContent>
-      </Section> */}
+      </Section>  */}
+     
     </>    
   )
 }
