@@ -18,7 +18,7 @@ export interface EIP6963ProviderDetail {
 
 // https://eips.ethereum.org/EIPS/eip-1193
 export type EIP1193Provider = EventEmitter & {
-  isConnected: () => boolean
+  isConnected?: () => boolean
   request<T>(args: RequestArguments): Promise<T>
   enable?: Command
 }

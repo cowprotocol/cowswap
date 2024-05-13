@@ -6,7 +6,6 @@ import { onError } from './onError'
 import { default as KeystoneImage } from '../../api/assets/keystone.svg'
 import { ConnectWalletOption } from '../../api/pure/ConnectWalletOption'
 import { ConnectionType } from '../../api/types'
-import { getConnectionName } from '../../api/utils/connection'
 import { useIsActiveConnection } from '../hooks/useIsActiveConnection'
 import { ConnectionOptionProps, Web3ReactConnection } from '../types'
 
@@ -50,7 +49,6 @@ export function KeystoneOption({ selectedWallet, tryActivation }: ConnectionOpti
       {...keystoneOption}
       isActive={isActive}
       clickable={!isActive}
-      header={getConnectionName(ConnectionType.KEYSTONE, true)}
       onClick={() => tryActivation(keystoneConnection.connector)}
     />
   )

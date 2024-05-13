@@ -12,7 +12,7 @@ const [web3Injected, web3InjectedHooks] = initializeConnector<InjectedWallet>(
       searchKeywords: [],
     })
 )
-export const injectedWidgetConnection: Web3ReactConnection = {
+export const injectedWidgetConnection: Web3ReactConnection<InjectedWallet> = {
   connector: web3Injected,
   hooks: web3InjectedHooks,
   type: ConnectionType.INJECTED_WIDGET,

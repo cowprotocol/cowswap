@@ -13,6 +13,7 @@ import {
   HardWareWallet,
   useWalletInfo,
   useConnectionType,
+  useWalletDetails,
 } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -33,11 +34,23 @@ export function AccountSelectorModal() {
   const [hwAccountIndex, setHwAccountIndex] = useAtom(hwAccountIndexAtom)
   const connectionType = useConnectionType()
   const addSnackbar = useAddSnackbar()
+  const walletDetails = useWalletDetails()
 
   const nativeToken = NATIVE_CURRENCIES[chainId]
 
-  const walletIcon = useMemo(() => getConnectionIcon(connectionType), [connectionType])
-  const walletName = useMemo(() => getConnectionName(connectionType), [connectionType])
+  const { walletName, walletIcon } = useMemo(() => {
+    if (walletDetails) {
+      const { walletName, icon } = walletDetails
+
+      if (walletName && icon) {
+        return { walletName, walletIcon: icon }
+      }
+    }
+    return {
+      walletIcon: getConnectionIcon(connectionType),
+      walletName: getConnectionName(connectionType),
+    }
+  }, [connectionType, walletDetails])
 
   const accountsLoader = useMemo(() => accountsLoaders[connectionType as HardWareWallet], [connectionType])
 

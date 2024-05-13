@@ -8,7 +8,7 @@ import WalletConnectIcon from '../assets/walletConnectIcon.svg'
 import { ConnectionType } from '../types'
 
 const connectionTypeToName: Record<ConnectionType, string> = {
-  [ConnectionType.INJECTED]: 'injected',
+  [ConnectionType.INJECTED]: 'Injected',
   [ConnectionType.INJECTED_WIDGET]: 'CoW Swap widget',
   [ConnectionType.COINBASE_WALLET]: 'Coinbase Wallet',
   [ConnectionType.WALLET_CONNECT_V2]: 'WalletConnect',
@@ -19,7 +19,6 @@ const connectionTypeToName: Record<ConnectionType, string> = {
   [ConnectionType.ALPHA]: 'Alpha',
   [ConnectionType.TALLY]: 'Tally',
   [ConnectionType.TRUST]: 'Trust',
-  // [ConnectionType.LEDGER]: 'Ledger',
   [ConnectionType.KEYSTONE]: 'Keystone',
   [ConnectionType.TREZOR]: 'Trezor',
 }
@@ -37,7 +36,6 @@ const connectionTypeToIcon: Record<ConnectionType, 'Identicon' | string> = {
   [ConnectionType.COINBASE_WALLET]: CoinbaseWalletIcon,
   [ConnectionType.TRUST]: TrustIcon,
   [ConnectionType.TALLY]: TallyIcon,
-  // [ConnectionType.LEDGER]: LedgerIcon,
   [ConnectionType.TREZOR]: TrezorIcon,
   [ConnectionType.KEYSTONE]: KeystoneImage,
   [ConnectionType.WALLET_CONNECT_V2]: WalletConnectIcon,
@@ -46,9 +44,8 @@ const connectionTypeToIcon: Record<ConnectionType, 'Identicon' | string> = {
 export function getConnectionIcon(connectionType: ConnectionType): string {
   return connectionTypeToIcon[connectionType]
 }
-export function getConnectionName(connectionType: ConnectionType, isMetaMask?: boolean): string {
-  if (connectionType === ConnectionType.INJECTED && isMetaMask) return 'MetaMask'
 
+export function getConnectionName(connectionType: ConnectionType): string {
   return connectionTypeToName[connectionType]
 }
 

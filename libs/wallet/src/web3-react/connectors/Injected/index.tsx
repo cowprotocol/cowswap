@@ -1,24 +1,10 @@
 import { isInjectedWidget, isRejectRequestProviderError } from '@cowprotocol/common-utils'
 import { Command } from '@cowprotocol/types'
-import {
-  Actions,
-  AddEthereumChainParameter,
-  Connector,
-  Provider,
-  ProviderConnectInfo,
-  ProviderRpcError,
-  RequestArguments,
-} from '@web3-react/types'
+import { Actions, AddEthereumChainParameter, Connector, ProviderConnectInfo, ProviderRpcError } from '@web3-react/types'
 
 import { WidgetEthereumProvider } from './WidgetEthereumProvider'
 
-
-type InjectedWalletProvider = Provider & {
-  isConnected: () => boolean
-  request<T>(args: RequestArguments): Promise<T>
-  enable?: Command
-  on: (event: string, args: unknown) => unknown
-}
+import type { EIP1193Provider } from '../../../api/eip6963-types'
 
 interface injectedWalletConstructorArgs {
   actions: Actions
@@ -27,21 +13,12 @@ interface injectedWalletConstructorArgs {
   searchKeywords: string[]
 }
 
-function parseChainId(chainId: string | number): number {
-  if (typeof chainId === 'number') return chainId
-
-  if (!chainId.startsWith('0x')) {
-    return Number(chainId)
-  }
-
-  return Number.parseInt(chainId, 16)
-}
-
 export class InjectedWallet extends Connector {
-  provider?: InjectedWalletProvider
+  provider?: EIP1193Provider
   walletUrl: string
   searchKeywords: string[]
   eagerConnection?: boolean
+  onDisconnect?: Command
 
   constructor({ actions, onError, walletUrl, searchKeywords }: injectedWalletConstructorArgs) {
     super(actions, onError)
@@ -141,7 +118,7 @@ export class InjectedWallet extends Connector {
 
   // Based on https://github.com/Uniswap/web3-react/blob/de97c00c378b7909dfbd8a06558ed12e1f796caa/packages/metamask/src/index.ts#L54 with some changes
   private async isomorphicInitialize(): Promise<void> {
-    // Mod: we have a custom method to detect a Injected provider based on passed keywords array
+    // Mod: we have a custom method to detect Injected provider based on passed keywords array
     const provider = this.detectProvider()
 
     if (provider) {
@@ -153,7 +130,6 @@ export class InjectedWallet extends Connector {
       })
 
       const onDisconnect = (error: ProviderRpcError): void => {
-        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         this.provider?.request({ method: 'PUBLIC_disconnectSite' })
 
         this.actions.resetState()
@@ -180,14 +156,18 @@ export class InjectedWallet extends Connector {
   // Mod: Added custom method
   // Just reset state on deactivate
   async deactivate(): Promise<void> {
+    this.provider = undefined
+    this.onDisconnect?.()
     this.actions.resetState()
   }
 
   // Mod: Added custom method
   // Method to target a specific provider on window.ethereum or window.ethereum.providers if it exists
-  private detectProvider(): InjectedWalletProvider | void {
+  private detectProvider(): EIP1193Provider | void {
+    if (this.provider) return this.provider
+
     if (isInjectedWidget()) {
-      this.provider = new WidgetEthereumProvider() as InjectedWalletProvider
+      this.provider = new WidgetEthereumProvider() as EIP1193Provider
     } else {
       this.provider =
         this.detectOnEthereum(window.ethereum) || this.detectOnProvider(window.ethereum?.providers) || null
@@ -234,7 +214,18 @@ export class InjectedWallet extends Connector {
         Failed to get account with eth_requestAccounts method
         Trying with eth_accounts method
       `)
+
       return provider.request({ method: 'eth_accounts' }) as Promise<string[]>
     }
   }
+}
+
+function parseChainId(chainId: string | number): number {
+  if (typeof chainId === 'number') return chainId
+
+  if (!chainId.startsWith('0x')) {
+    return Number(chainId)
+  }
+
+  return Number.parseInt(chainId, 16)
 }

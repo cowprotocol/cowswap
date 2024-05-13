@@ -1,19 +1,20 @@
+import { useCallback } from 'react'
+
 import { initializeConnector } from '@web3-react/core'
 import { MetaMask } from '@web3-react/metamask'
 import { AddEthereumChainParameter } from '@web3-react/types'
 
+import { injectedWidgetConnection } from './injectedWidget'
 import { onError } from './onError'
 
-import { default as InjectedImage } from '../../api/assets/arrow-right.svg'
-import { default as InjectedImageDark } from '../../api/assets/arrow-right.svg'
+import { default as InjectedImage, default as InjectedImageDark } from '../../api/assets/arrow-right.svg'
 import { default as MetamaskImage } from '../../api/assets/metamask.png'
+import { useSelectedEip6963ProviderUuid, useSetEip6963Provider } from '../../api/hooks'
 import { ConnectWalletOption } from '../../api/pure/ConnectWalletOption'
-import { ConnectionType } from '../../api/types'
+import { ConnectionType, EIP6963ProviderDetail } from '../../api/types'
 import { getConnectionName } from '../../api/utils/connection'
 import { useIsActiveConnection } from '../hooks/useIsActiveConnection'
-import { ConnectionOptionProps, Web3ReactConnection } from '../types'
-
-
+import { ConnectionOptionProps, TryActivation, Web3ReactConnection } from '../types'
 
 class MetaMaskEnhanced extends MetaMask {
   /**
@@ -87,7 +88,6 @@ export function MetaMaskOption({ selectedWallet, tryActivation }: ConnectionOpti
     <ConnectWalletOption
       {...metamaskInjectedOption}
       isActive={isActive}
-      header={getConnectionName(ConnectionType.INJECTED, true)}
       onClick={() => tryActivation(injectedConnection.connector)}
     />
   )
@@ -102,8 +102,38 @@ export function InjectedOption({ darkMode, tryActivation, selectedWallet }: Conn
     <ConnectWalletOption
       {...options}
       isActive={isActive}
-      header={getConnectionName(ConnectionType.INJECTED, false)}
+      header={getConnectionName(ConnectionType.INJECTED)}
       onClick={() => tryActivation(injectedConnection.connector)}
+    />
+  )
+}
+
+interface Eip6963OptionProps {
+  tryActivation: TryActivation
+  providerDetails: EIP6963ProviderDetail
+}
+
+export function Eip6963Option({ tryActivation, providerDetails: { provider, info } }: Eip6963OptionProps) {
+  const setEip6963Provider = useSetEip6963Provider()
+  const selectedUuid = useSelectedEip6963ProviderUuid()
+  const isActive = selectedUuid === info.uuid
+
+  const onClick = useCallback(() => {
+    injectedWidgetConnection.connector.provider = provider
+    injectedWidgetConnection.connector.onDisconnect = () => setEip6963Provider(null)
+
+    setEip6963Provider(info.uuid)
+    tryActivation(injectedWidgetConnection.connector)
+  }, [provider, tryActivation, setEip6963Provider])
+
+  return (
+    <ConnectWalletOption
+      onClick={onClick}
+      isActive={isActive}
+      id={`wallet${info.uuid}`}
+      color="#E8831D"
+      icon={info.icon}
+      header={info.name}
     />
   )
 }

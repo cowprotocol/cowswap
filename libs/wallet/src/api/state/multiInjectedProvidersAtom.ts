@@ -1,10 +1,14 @@
 import { atom } from 'jotai'
+import { atomWithStorage } from 'jotai/utils'
 
 import { jotaiStore } from '@cowprotocol/core'
 
 import { EIP6963AnnounceProviderEvent, EIP6963ProviderDetail } from '../eip6963-types'
 
-export const multiInjectedProvidersAtom = atom<EIP6963ProviderDetail[]>(window.ethereum ? [window.ethereum] : [])
+export const multiInjectedProvidersAtom = atom<EIP6963ProviderDetail[]>([])
+
+// UUID of the selected EIP-6963 provider
+export const selectedEip6963ProviderAtom = atomWithStorage<string | null>('selectedEip6963ProviderAtom:v1', null)
 
 window.addEventListener('eip6963:announceProvider', (event: Event) => {
   const providerEvent = event as EIP6963AnnounceProviderEvent
@@ -15,7 +19,7 @@ window.addEventListener('eip6963:announceProvider', (event: Event) => {
 
     if (existingProvider) return prev
 
-    return [...prev, newProvider]
+    return [newProvider, ...prev]
   })
 })
 

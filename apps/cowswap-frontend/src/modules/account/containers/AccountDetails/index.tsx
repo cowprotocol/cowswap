@@ -120,7 +120,7 @@ export function AccountDetails({
   const unsupportedNetworksText = useUnsupportedNetworksText()
 
   function formatConnectorName() {
-    const name = walletDetails?.walletName || getConnectionName(connectionType, getIsMetaMask())
+    const name = walletDetails?.walletName || getConnectionName(connectionType)
     // In case the wallet is connected via WalletConnect and has wallet name set, add the suffix to be clear
     // This to avoid confusion for instance when using Metamask mobile
     // When name is not set, it defaults to WalletConnect already

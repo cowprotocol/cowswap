@@ -5,7 +5,7 @@ import { useWeb3React } from '@web3-react/core'
 import { useSafeAppsSdk } from './useSafeAppsSdk'
 
 import { default as AlphaImage } from '../../api/assets/alpha.svg'
-import { useGnosisSafeInfo } from '../../api/hooks'
+import { useGnosisSafeInfo, useSelectedEip6963ProviderInfo } from '../../api/hooks'
 import { ConnectionType } from '../../api/types'
 import { getIsAlphaWallet } from '../../api/utils/connection'
 import { getWeb3ReactConnection } from '../utils/getWeb3ReactConnection'
@@ -62,11 +62,19 @@ function getWcPeerMetadata(provider: any | undefined): WalletMetaData {
 // FIXME: I notice this function is not calculating always correctly the walletName. Out of scope of this PR to fix. "getConnnectionName" might help
 export function useWalletMetaData(): WalletMetaData {
   const { connector, provider, account } = useWeb3React()
+  const selectedEip6963Provider = useSelectedEip6963ProviderInfo()
   const connectionType = getWeb3ReactConnection(connector).type
 
   return useMemo<WalletMetaData>(() => {
     if (!account) {
       return METADATA_DISCONNECTED
+    }
+
+    if (connectionType === ConnectionType.INJECTED_WIDGET && selectedEip6963Provider) {
+      return {
+        icon: selectedEip6963Provider.info.icon,
+        walletName: selectedEip6963Provider.info.name,
+      }
     }
 
     if (connectionType === ConnectionType.WALLET_CONNECT_V2) {
@@ -83,7 +91,7 @@ export function useWalletMetaData(): WalletMetaData {
     }
 
     return METADATA_DISCONNECTED
-  }, [connectionType, provider, account])
+  }, [connectionType, provider, account, selectedEip6963Provider])
 }
 
 /**
