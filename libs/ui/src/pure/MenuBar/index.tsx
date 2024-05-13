@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react'
 import styled from 'styled-components/macro'
 import SVG from 'react-inlinesvg'
-import { Logo, LOGO_MAP } from '@cowprotocol/ui'
+import { UI, Logo, LOGO_MAP } from '@cowprotocol/ui'
 import { useOnClickOutside } from '@cowprotocol/common-hooks'
 import IMG_ICON_MENU_DOTS from '@cowprotocol/assets/images/menu-grid-dots.svg'
 import IMG_ICON_ARROW_RIGHT from '@cowprotocol/assets/images/arrow-right.svg'
@@ -45,7 +45,7 @@ const MenuBarInner = styled.div<{ themeMode: string }>`
   justify-content: space-between;
   align-items: center;
   padding: 8px 4px;
-  gap: 16px;
+  gap: 8px;
   height: var(--height);
   width: var(--width);
   background: var(--bgColor);
@@ -82,7 +82,7 @@ const NavDaoTriggerElement = styled.div<NavDaoTriggerElementProps>`
   }
 
   > svg {
-    --size: 65%;
+    --size: 50%;
     height: var(--size);
     width: var(--size);
     object-fit: contain;
@@ -217,7 +217,7 @@ const DropdownMenu = styled.div`
   display: inline-block;
 `
 
-const RootNavItem = styled.a`
+const RootNavItem = styled.a<{ isOpen?: boolean }>`
   color: black;
   font-size: 16px;
   padding: 12px 16px;
@@ -244,6 +244,8 @@ const RootNavItem = styled.a`
     object-fit: contain;
     margin-left: auto;
     fill: currentColor;
+    transform: ${({ isOpen }) => (isOpen ? 'rotate(180deg)' : 'rotate(0deg)')};
+    transition: transform var(${UI.ANIMATION_DURATION}) ease-in-out;
   }
 `
 
@@ -330,7 +332,7 @@ interface DropdownMenuItem {
 }
 
 interface DropdownMenuContent {
-  title: string | undefined // Allow title to be undefined
+  title: string | undefined
   items?: DropdownMenuItem[]
 }
 
@@ -429,7 +431,7 @@ const GenericDropdown: React.FC<DropdownProps> = ({ isOpen, content, onTrigger, 
 
   return (
     <DropdownMenu {...interactionProps}>
-      <RootNavItem as="button" aria-haspopup="true" aria-expanded={isOpen}>
+      <RootNavItem as="button" aria-haspopup="true" aria-expanded={isOpen} isOpen={isOpen}>
         <span>{content.title}</span>
         {content.items && <SVG src={IMG_ICON_CARRET_DOWN} />}
       </RootNavItem>
