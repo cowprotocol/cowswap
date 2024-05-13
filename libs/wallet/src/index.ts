@@ -3,6 +3,7 @@ import './types.d.ts'
 export * from './api/types'
 export * from './web3-react/types'
 export * from './assets'
+export * from './constants'
 
 // Hooks
 export * from './api/hooks'
