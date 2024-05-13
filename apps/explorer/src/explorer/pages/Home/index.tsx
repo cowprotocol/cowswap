@@ -1,8 +1,8 @@
 import React from 'react'
 
-import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
+import { useFlags } from 'launchdarkly-react-client-sdk'
 import { Helmet } from 'react-helmet'
 import styled from 'styled-components/macro'
 
@@ -61,7 +61,7 @@ const SHOW_TOKENS_TABLE: Record<SupportedChainId, boolean> = {
 export const Home: React.FC = () => {
   const networkId = useNetworkId() || undefined
 
-  const { isTheGraphEnabled } = useFeatureFlags()
+  const { isTheGraphEnabled } = useFlags()
 
   const showCharts = !!networkId && isTheGraphEnabled && SUBGRAPH_URLS[networkId] !== null
   const showTokensTable = !!networkId && isTheGraphEnabled && SHOW_TOKENS_TABLE[networkId]
