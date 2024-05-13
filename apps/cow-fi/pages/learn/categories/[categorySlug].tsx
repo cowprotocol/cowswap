@@ -14,6 +14,7 @@ import { CategoryContent, CategoryList } from '@/components/Category'
 import { CONFIG } from '@/const/meta'
 import SocialList from '@/components/SocialList'
 import Link from 'next/link'
+import { GetInTouchSection } from '@/components/Article'
 
 const DATA_CACHE_TIME_SECONDS = 10 * 60 // 10 minutes
 
@@ -64,17 +65,7 @@ export default function CategoryPage({ category, categories }: CategoryPageProps
         </SectionContent>
       </Section>
 
-      <Section fullWidth>
-        <SectionContent flow={'column'}>
-          <div>
-            <h3>Get in touch</h3>
-            <SubTitle maxWidth={60} color={Color.text1} lineHeight={1.4}>
-              You would like to suggest or even make your own article, reach out on Twitter or Discord!
-            </SubTitle>
-            <SocialList social={CONFIG.social} color={Color.darkBlue} />
-          </div>
-        </SectionContent>
-      </Section>
+      <GetInTouchSection />
     </Layout>
   )
 }
