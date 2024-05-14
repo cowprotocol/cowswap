@@ -29,14 +29,17 @@ export async function getAccountOrders(params: GetAccountOrdersParams): Promise<
   }
 
   const ordersPromise = state.prodHasNext
-    ? orderBookSDK.getOrders({ owner, offset, limit: limitPlusOne }, { chainId: networkId })
+    ? orderBookSDK.getOrders({ owner, offset, limit: limitPlusOne }, { chainId: networkId }).catch((error) => {
+        console.error('[getAccountOrders] Error getting PROD orders for account', owner, networkId, error)
+        return []
+      })
     : []
 
   const ordersPromiseBarn = state.barnHasNext
     ? orderBookSDK
         .getOrders({ owner, offset, limit: limitPlusOne }, { chainId: networkId, env: 'staging' })
         .catch((error) => {
-          console.error('[getAccountOrders] Error getting orders for account ', owner, error)
+          console.error('[getAccountOrders] Error getting orders for account', owner, networkId, error)
           return []
         })
     : []
