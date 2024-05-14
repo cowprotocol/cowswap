@@ -13,7 +13,7 @@ const RPC_URL_ENVS: Record<SupportedChainId, string | undefined> = {
 const DEFAULT_RPC_URL: Record<SupportedChainId, { url: string; usesInfura: boolean }> = {
   [SupportedChainId.MAINNET]: { url: `https://mainnet.infura.io/v3/${INFURA_KEY}`, usesInfura: true },
   [SupportedChainId.GNOSIS_CHAIN]: { url: `https://rpc.gnosis.gateway.fm`, usesInfura: false },
-  [SupportedChainId.ARBITRUM_ONE]: { url: `https://arb1.arbitrum.io/rpc`, usesInfura: false },
+  [SupportedChainId.ARBITRUM_ONE]: { url: `https://arbitrum.llamarpc.com`, usesInfura: false },
   [SupportedChainId.SEPOLIA]: { url: `https://sepolia.infura.io/v3/${INFURA_KEY}`, usesInfura: true },
 }
 
