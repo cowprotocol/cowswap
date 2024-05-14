@@ -21,9 +21,7 @@ export function useTokenList(chainId: SupportedChainId | undefined): { data: Tok
       : 'https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/CowSwapSepolia.json'
   )
   const { data: coingeckoList, isLoading: isCoingeckoListLoading } = useTokenListByUrl(
-    chainId === SupportedChainId.MAINNET || chainId === SupportedChainId.ARBITRUM_ONE
-      ? 'https://tokens.coingecko.com/uniswap/all.json'
-      : ''
+    chainId === SupportedChainId.MAINNET ? 'https://tokens.coingecko.com/uniswap/all.json' : ''
   )
   const { data: honeyswapList, isLoading: isHoneyswapListLoading } = useTokenListByUrl(
     chainId === SupportedChainId.GNOSIS_CHAIN ? 'https://tokens.honeyswap.org' : ''

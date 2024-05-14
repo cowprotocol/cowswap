@@ -29,7 +29,7 @@ export async function getAccountOrders(params: GetAccountOrdersParams): Promise<
 
   const ordersPromise = state.prodHasNext
     ? orderBookSDK.getOrders({ owner, offset, limit: limitPlusOne }, { chainId: networkId }).catch((error) => {
-        console.error('[getAccountOrders] Error getting PROD orders for account ', owner, error)
+        console.error('[getAccountOrders] Error getting PROD orders for account', owner, networkId, error)
         return []
       })
     : []
