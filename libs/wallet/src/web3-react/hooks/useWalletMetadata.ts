@@ -9,6 +9,7 @@ import { useGnosisSafeInfo } from '../../api/hooks'
 import { ConnectionType } from '../../api/types'
 import { getIsAlphaWallet } from '../../api/utils/connection'
 import { getWeb3ReactConnection } from '../utils/getWeb3ReactConnection'
+import { useSafeAppsSdkInfo } from './useSafeAppsSdkInfo'
 
 const SAFE_APP_NAME = 'Safe App'
 
@@ -109,7 +110,10 @@ export function useIsSafeApp(): boolean {
  * regardless of the connection method (WalletConnect or inside Safe as an App)
  */
 export function useIsSafeWallet(): boolean {
-  return !!useGnosisSafeInfo()
+  const { safeAddress } = useSafeAppsSdkInfo() || {}
+  const hasSafeInfo = !!useGnosisSafeInfo()
+
+  return !!safeAddress || hasSafeInfo
 }
 
 /**
