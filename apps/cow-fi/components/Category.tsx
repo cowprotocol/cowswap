@@ -74,11 +74,13 @@ export function CategoryContent({ category }: CategoryContentProps) {
         </SectionContent>
       </Section>
 
+      
       <Section fullWidth colorVariant={'white'} flow="column" gap={14} padding="4rem 8rem 12rem 8rem">
         <SectionContent flow={'row'} maxWidth={100} textAlign={'left'}>
           <div className="container">
             <h3>Articles</h3>
 
+            {articles ? (
             <CategoryContentWrapper data-slug={slug} data-id={id}>
               <ArticleList articles={articles?.data as Article[]} />
 
@@ -89,6 +91,11 @@ export function CategoryContent({ category }: CategoryContentProps) {
             </pre>
             */}
             </CategoryContentWrapper>
+              
+            ): (
+              <>There are no articles for this category yet.</>
+            )}
+
           </div>
         </SectionContent>
       </Section>

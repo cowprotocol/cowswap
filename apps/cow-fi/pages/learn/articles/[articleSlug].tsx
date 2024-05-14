@@ -16,24 +16,25 @@ export interface BlogPostProps {
 
 export default function BlogPostPage({ article }: BlogPostProps) {
   const { id } = article
-  const { title, description, slug, seo, cover } =
-    article?.attributes || {}
-  const { metaTitle, shareImage, metaDescription } = seo || {}
-  const shareImageUrl = shareImage?.data?.attributes?.url || cover?.data?.attributes?.url
-
+  const { title, description, slug, seo, cover } = article?.attributes || {}
+  const { metaTitle, metaDescription, shareImage } = seo || {}
+  
+  const ogTitle = metaTitle || title
+  const ogDescription = metaDescription || description
+  const ogImage = shareImage?.data?.attributes?.url || cover?.data?.attributes?.url
   return (
     <Layout fullWidthGradientVariant={true} data-article-id={id} data-slug={slug}>
       <Head>
         <title>{title}</title>
 
-        <meta name="description" content={metaDescription || description} key="description" />
-        <meta property="og:description" content={metaDescription || description} key="og-description" />
-        <meta property="og:title" content={metaTitle || title} key="og-title" />
-        <meta name="twitter:title" content={title} key="twitter-title" />
-        {shareImageUrl && (
+        <meta name="description" content={ogDescription} key="description" />
+        <meta property="og:description" content={ogDescription} key="og-description" />
+        <meta property="og:title" content={ogTitle} key="og-title" />
+        <meta name="twitter:title" content={ogTitle} key="twitter-title" />
+        {ogImage && (
           <>
-            <meta key="ogImage" property="og:image" content={shareImageUrl} />
-            <meta key="twitterImage" name="twitter:image" content={shareImageUrl} />
+            <meta key="ogImage" property="og:image" content={ogImage} />
+            <meta key="twitterImage" name="twitter:image" content={ogImage} />
           </>
         )}
       </Head>
