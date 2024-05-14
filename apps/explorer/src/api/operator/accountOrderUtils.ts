@@ -1,5 +1,4 @@
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { EnrichedOrder } from '@cowprotocol/cow-sdk'
+import { EnrichedOrder, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { orderBookSDK } from 'cowSdk'
 
@@ -30,7 +29,7 @@ export async function getAccountOrders(params: GetAccountOrdersParams): Promise<
 
   const ordersPromise = state.prodHasNext
     ? orderBookSDK.getOrders({ owner, offset, limit: limitPlusOne }, { chainId: networkId }).catch((error) => {
-        console.error('[getAccountOrders] Error getting PROD orders for account', owner, networkId, error)
+        console.error('[getAccountOrders] Error getting PROD orders for account ', owner, error)
         return []
       })
     : []
@@ -39,7 +38,7 @@ export async function getAccountOrders(params: GetAccountOrdersParams): Promise<
     ? orderBookSDK
         .getOrders({ owner, offset, limit: limitPlusOne }, { chainId: networkId, env: 'staging' })
         .catch((error) => {
-          console.error('[getAccountOrders] Error getting orders for account', owner, networkId, error)
+          console.error('[getAccountOrders] Error getting BARN orders for account', owner, networkId, error)
           return []
         })
     : []
