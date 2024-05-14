@@ -1,6 +1,4 @@
-import React, { useState, useRef } from 'react'
-import styled from 'styled-components/macro'
-
+import React, { useState, useEffect, useRef } from 'react'
 import {
   RootNavItem,
   MenuBarWrapper,
@@ -20,9 +18,8 @@ import {
   StyledDropdownContentItem,
   RightAligned,
 } from './styled'
-
 import SVG from 'react-inlinesvg'
-import { UI, Logo, LOGO_MAP } from '@cowprotocol/ui'
+import { Logo, LOGO_MAP } from '@cowprotocol/ui'
 import { useOnClickOutside } from '@cowprotocol/common-hooks'
 import IMG_ICON_MENU_DOTS from '@cowprotocol/assets/images/menu-grid-dots.svg'
 import IMG_ICON_ARROW_RIGHT from '@cowprotocol/assets/images/arrow-right.svg'
@@ -33,13 +30,14 @@ const DAO_NAV_ITEMS: MenuItem[] = [
   { href: 'https://cow.fi/#cowswap', logoVariant: 'cowSwap' },
   { href: 'https://cow.fi/#cowprotocol', logoVariant: 'cowSwap' },
   { href: 'https://cow.fi/#cowamm', logoVariant: 'cowProtocol' },
-  { href: 'https://cow.fi/#mevblocker', logoVariant: 'cowProtocol' },
+  { href: 'https://cow.fi/', logoVariant: 'cowProtocol' },
 ]
 
-const SETTINGS_ITEMS = [
+const SETTINGS_ITEMS: MenuItem[] = [
   { label: 'Preferences', href: '#preferences' },
   { label: 'Account Settings', href: '#account-settings' },
   { label: 'Theme', href: '#theme' },
+  { label: 'Language', href: '#language' },
 ]
 
 interface NavItemProps {
@@ -53,6 +51,7 @@ export interface MenuItem {
   children?: DropdownMenuItem[]
   logoVariant?: keyof typeof LOGO_MAP // Optional logo variant
   icon?: string // Path to the icon image
+  isButton?: boolean
 }
 
 interface MenuBarProps {
@@ -63,7 +62,7 @@ interface MenuBarProps {
 
 interface DropdownMenuItem {
   href?: string
-  label?: string // Update this line
+  label?: string
   icon?: string
   description?: string
   isButton?: boolean
@@ -83,85 +82,111 @@ const NavItem = ({ item, isClickable = false }: NavItemProps & { isClickable?: b
 
   return (
     <>
-      {/* If children are present, render a dropdown */}
       {item.children ? (
         <GenericDropdown
           isOpen={isOpen}
-          content={{
-            title: item.label,
-            items: item.children,
-          }}
+          content={{ title: item.label, items: item.children }}
           onTrigger={handleToggle}
           interaction={isClickable ? 'click' : 'hover'}
         />
       ) : (
-        // If no children are present, render a simple nav item
         <RootNavItem href={item.href}>{item.label}</RootNavItem>
       )}
     </>
   )
 }
 
-const DropdownContentItem: React.FC<{ item: DropdownMenuItem; theme: 'light' | 'dark' }> = ({ item, theme }) => {
+const DropdownContentItem: React.FC<{ item: DropdownMenuItem; theme: 'light' | 'dark'; closeMenu: () => void }> = ({
+  item,
+  theme,
+  closeMenu,
+}) => {
   const [isChildrenVisible, setIsChildrenVisible] = useState(false)
 
-  const handleToggleChildrenVisibility = (event: React.MouseEvent) => {
-    // Prevent the link from navigating
+  const handleToggleChildrenVisibility = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    console.log('Clicked item to toggle visibility')
     event.preventDefault()
-    // Stop the event from propagating further
     event.stopPropagation()
-    // Toggle the visibility of the children
     setIsChildrenVisible(!isChildrenVisible)
   }
 
-  // First check if the item has children and handle that case
-  if (item.children) {
-    // If children are present, render a nested dropdown (3rd level)
-    return (
-      <StyledDropdownContentItem onClick={handleToggleChildrenVisibility}>
-        <DropdownContentItemText>
-          <DropdownContentItemTitle>{item.label}</DropdownContentItemTitle>
-          {item.description && <DropdownContentItemDescription>{item.description}</DropdownContentItemDescription>}
-        </DropdownContentItemText>
-        {isChildrenVisible && (
-          <DropdownContentWrapper isThirdLevel content={{ title: undefined, items: item.children }} />
-        )}
-        <SVG src={isChildrenVisible ? IMG_ICON_CARRET_DOWN : IMG_ICON_ARROW_RIGHT} />
-      </StyledDropdownContentItem>
-    )
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    console.log('Clicked button')
+    e.preventDefault()
+    closeMenu()
   }
 
-  // Handling for items with a logo variant
-  if (item.logoVariant) {
-    return (
-      <StyledDropdownContentItem href={item.href}>
-        <Logo product={item.logoVariant} themeMode={theme} />
+  const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    console.log('Clicked link')
+    closeMenu()
+  }
+
+  const renderLinkItem = (content: React.ReactNode, href?: string) => (
+    <StyledDropdownContentItem as="a" href={href} onClick={handleLinkClick}>
+      {content}
+      <SVG src={IMG_ICON_ARROW_RIGHT} />
+    </StyledDropdownContentItem>
+  )
+
+  const renderButtonItem = (content: React.ReactNode) => (
+    <StyledDropdownContentItem as="button" onClick={handleClick}>
+      {content}
+    </StyledDropdownContentItem>
+  )
+
+  const renderNestedDropdown = () => (
+    <>
+      <StyledDropdownContentItem as="div" onClick={handleToggleChildrenVisibility}>
+        {renderContentItemText()}
+        {renderIcon(isChildrenVisible ? IMG_ICON_CARRET_DOWN : IMG_ICON_ARROW_RIGHT)}
+      </StyledDropdownContentItem>
+      {isChildrenVisible && (
+        <DropdownContentWrapper isThirdLevel content={{ title: undefined, items: item.children }} />
+      )}
+    </>
+  )
+
+  const renderContentItemText = () => (
+    <DropdownContentItemText>
+      <DropdownContentItemTitle>{item.label}</DropdownContentItemTitle>
+      {item.description && <DropdownContentItemDescription>{item.description}</DropdownContentItemDescription>}
+    </DropdownContentItemText>
+  )
+
+  const renderIcon = (src: string) => <SVG src={src} />
+
+  const renderLogoVariant = () => {
+    const logoVariant = item.logoVariant || 'cowSwapLightMode'
+    return renderLinkItem(
+      <>
+        <Logo product={logoVariant as keyof typeof LOGO_MAP} themeMode={theme} />
         {item.label && <span>{item.label}</span>}
-        <SVG src={IMG_ICON_ARROW_RIGHT} />
-      </StyledDropdownContentItem>
+      </>,
+      item.href
     )
   }
 
-  // Handling for items with an icon
-  if (item.icon) {
-    return (
-      <StyledDropdownContentItem href={item.href}>
+  const renderIconItem = () =>
+    renderLinkItem(
+      <>
         <DropdownContentItemImage>
           <img src={item.icon} alt={item.label} style={{ width: '100%', height: '100%' }} />
         </DropdownContentItemImage>
         {item.label && <span>{item.label}</span>}
-        <SVG src={IMG_ICON_ARROW_RIGHT} />
-      </StyledDropdownContentItem>
+      </>,
+      item.href
     )
-  }
 
-  // Handling for button items
-  if (item.isButton) {
-    return <DropdownContentItemButton onClick={(e) => e.preventDefault()}>{item.label}</DropdownContentItemButton>
-  }
+  const renderButtonItemContent = () => (
+    <DropdownContentItemButton onClick={handleClick}>{item.label}</DropdownContentItemButton>
+  )
 
-  // If no logo, icon, or children are provided, handle case differently
-  return null
+  if (item.children) return renderNestedDropdown()
+  if (item.logoVariant) return renderLogoVariant()
+  if (item.icon) return renderIconItem()
+  if (item.isButton) return renderButtonItem(renderButtonItemContent())
+
+  return renderLinkItem(renderContentItemText(), item.href)
 }
 
 const NavDaoTrigger: React.FC<{
@@ -170,7 +195,27 @@ const NavDaoTrigger: React.FC<{
   theme: 'light' | 'dark'
 }> = ({ isOpen, setIsOpen, theme }) => {
   const triggerRef = useRef<HTMLDivElement>(null)
-  useOnClickOutside(triggerRef, () => setIsOpen(false))
+  const dropdownRef = useRef<HTMLDivElement>(null)
+
+  const handleClickOutside = (event: MouseEvent) => {
+    if (
+      triggerRef.current &&
+      !triggerRef.current.contains(event.target as Node) &&
+      dropdownRef.current &&
+      !dropdownRef.current.contains(event.target as Node)
+    ) {
+      setIsOpen(false)
+    }
+  }
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [])
+
+  const closeMenu = () => setIsOpen(false)
 
   return (
     <>
@@ -178,9 +223,9 @@ const NavDaoTrigger: React.FC<{
         <SVG src={IMG_ICON_MENU_DOTS} />
       </NavDaoTriggerElement>
       {isOpen && (
-        <DropdownContent isOpen={true}>
+        <DropdownContent isOpen={true} ref={dropdownRef}>
           {DAO_NAV_ITEMS.map((item, index) => (
-            <DropdownContentItem key={index} item={item} theme={theme} />
+            <DropdownContentItem key={index} item={item} theme={theme} closeMenu={closeMenu} />
           ))}
         </DropdownContent>
       )}
@@ -198,17 +243,14 @@ interface DropdownProps {
 // Root nav item with a dropdown
 const GenericDropdown: React.FC<DropdownProps> = ({ isOpen, content, onTrigger, interaction }) => {
   if (!content.title) {
-    // Handle the case where the title is missing
     throw new Error('Dropdown content must have a title')
   }
 
-  // This component uses onMouseEnter and onMouseLeave for hover, onClick for click
   const interactionProps =
     interaction === 'hover' ? { onMouseEnter: onTrigger, onMouseLeave: onTrigger } : { onClick: onTrigger }
 
   return (
     <DropdownMenu {...interactionProps}>
-      {/* Render the root nav item that triggers the dropdown */}
       <RootNavItem as="button" aria-haspopup="true" aria-expanded={isOpen} isOpen={isOpen}>
         <span>{content.title}</span>
         {content.items && <SVG src={IMG_ICON_CARRET_DOWN} />}
@@ -222,14 +264,13 @@ const DropdownContentWrapper: React.FC<{
   content: DropdownMenuContent
   isThirdLevel?: boolean
   isVisible?: boolean
-}> = ({ content, isThirdLevel, isVisible = true }) => {
+}> = ({ content, isThirdLevel = false, isVisible = true }) => {
   const [isThirdLevelVisible, setIsThirdLevelVisible] = useState(false)
 
   const handleToggleThirdLevelVisibility = (event: React.MouseEvent) => {
-    event.preventDefault() // Prevent default navigation
-    event.stopPropagation() // Stop propagation to avoid closing dropdown accidentally
-    setIsThirdLevelVisible((prevVisible) => !prevVisible) // Toggle third level visibility
-    console.log('Third level visibility:', !isThirdLevelVisible) // Debug log
+    event.preventDefault()
+    event.stopPropagation()
+    setIsThirdLevelVisible((prevVisible) => !prevVisible)
   }
 
   return (
@@ -287,16 +328,18 @@ const GlobalSettingsDropdown: React.FC = () => {
 }
 
 export const MenuBar = ({ navItems, theme, productVariant }: MenuBarProps) => {
-  const [isDaoOpen, setDaoOpen] = useState(false)
+  const [isDaoOpen, setIsDaoOpen] = useState(false)
   const menuRef = useRef(null)
 
-  useOnClickOutside(menuRef, () => setDaoOpen(false))
+  useOnClickOutside(menuRef, () => setIsDaoOpen(false))
+
+  const validProductVariant = (productVariant || 'cowSwapLightMode') as keyof typeof LOGO_MAP
 
   return (
     <MenuBarWrapper ref={menuRef}>
       <MenuBarInner themeMode={theme}>
-        <NavDaoTrigger isOpen={isDaoOpen} setIsOpen={setDaoOpen} theme={theme} />
-        <Logo product={productVariant} themeMode={theme} />
+        <NavDaoTrigger isOpen={isDaoOpen} setIsOpen={setIsDaoOpen} theme={theme} />
+        <Logo product={validProductVariant} themeMode={theme} />
         <NavItems>
           {navItems.map((item, index) => (
             <NavItem key={index} item={item} />

@@ -191,6 +191,10 @@ export const DropdownContentItemDescription = styled.span`
 
 export const DropdownContentItemButton = styled.button`
   ${StyledDropdownContentItem};
+  background: red;
+  width: 100%;
+  border: 0;
+  border-radius: 24px;
 `
 
 export const DropdownMenu = styled.div`
