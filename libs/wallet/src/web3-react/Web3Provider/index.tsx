@@ -10,15 +10,14 @@ import { ConnectionType } from '../../api/types'
 import { getConnectionName } from '../../api/utils/connection'
 import { Web3ReactConnection } from '../types'
 
-export function Web3Provider({
-  children,
-  selectedWallet,
-  selectedWalletBackfilled,
-}: {
+interface Web3ProviderProps {
   children: ReactNode
+  // @see UserState in ../../../../../apps/cowswap-frontend/src/legacy/state/user/reducer.ts
   selectedWallet: ConnectionType | undefined
   selectedWalletBackfilled: boolean
-}) {
+}
+
+export function Web3Provider({ children, selectedWallet, selectedWalletBackfilled }: Web3ProviderProps) {
   useEagerlyConnect(selectedWallet, selectedWalletBackfilled)
 
   const connections = useOrderedConnections(selectedWallet)
