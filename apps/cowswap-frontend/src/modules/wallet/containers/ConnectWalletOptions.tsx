@@ -43,6 +43,7 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
             return (
               <Eip6963Option
                 key={providerInfo.info.rdns}
+                selectedWallet={selectedWallet}
                 tryActivation={tryActivation}
                 providerDetails={providerInfo}
               />

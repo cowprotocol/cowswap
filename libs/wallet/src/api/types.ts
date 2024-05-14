@@ -12,8 +12,6 @@ export enum ConnectionType {
   TREZOR = 'TREZOR',
 }
 
-export const BACKFILLABLE_WALLETS = [ConnectionType.INJECTED]
-
 export interface WalletInfo {
   chainId: SupportedChainId
   account?: string

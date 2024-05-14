@@ -134,13 +134,10 @@ export const walletConnectConnectionV2 = createWc2Connection()
 export function WalletConnectV2Option({ selectedWallet, tryActivation }: ConnectionOptionProps) {
   const isActive = useIsActiveConnection(selectedWallet, walletConnectConnectionV2)
 
-  const tooltipText = !isActive ? WC_DISABLED_TEXT : undefined
-
   return (
     <ConnectWalletOption
       {...walletConnectV2Option}
       isActive={isActive}
-      tooltipText={tooltipText}
       clickable={!isActive}
       onClick={() => tryActivation(walletConnectConnectionV2.connector)}
       header={getConnectionName(ConnectionType.WALLET_CONNECT_V2)}

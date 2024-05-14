@@ -70,14 +70,19 @@ export function InjectedOption({ darkMode, tryActivation, selectedWallet }: Conn
 }
 
 interface Eip6963OptionProps {
+  selectedWallet: string | undefined
   tryActivation: TryActivation
   providerDetails: EIP6963ProviderDetail
 }
 
-export function Eip6963Option({ tryActivation, providerDetails: { provider, info } }: Eip6963OptionProps) {
+export function Eip6963Option({
+  tryActivation,
+  selectedWallet,
+  providerDetails: { provider, info },
+}: Eip6963OptionProps) {
   const setEip6963Provider = useSetEip6963Provider()
   const selectedRdns = useSelectedEip6963ProviderRdns()
-  const isActive = selectedRdns === info.rdns
+  const isActive = useIsActiveConnection(selectedWallet, injectedWalletConnection) && selectedRdns === info.rdns
 
   const onClick = useCallback(() => {
     injectedWalletConnection.connector.provider = provider

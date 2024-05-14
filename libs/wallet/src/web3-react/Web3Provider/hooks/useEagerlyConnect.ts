@@ -6,7 +6,7 @@ import { Connector } from '@web3-react/types'
 
 import { useSelectedEip6963ProviderInfo, useSetEip6963Provider } from '../../../api/hooks'
 import { selectedEip6963ProviderRdnsAtom } from '../../../api/state/multiInjectedProvidersAtom'
-import { BACKFILLABLE_WALLETS, ConnectionType } from '../../../api/types'
+import { ConnectionType } from '../../../api/types'
 import { getIsInjected } from '../../../api/utils/connection'
 import { injectedWalletConnection } from '../../connection/injectedWallet'
 import { networkConnection } from '../../connection/network'
@@ -27,7 +27,7 @@ async function connect(connector: Connector) {
   }
 }
 
-export function useEagerlyConnect(selectedWallet: ConnectionType | undefined, selectedWalletBackfilled: boolean) {
+export function useEagerlyConnect(selectedWallet: ConnectionType | undefined) {
   const selectedEip6963ProviderInfo = useSelectedEip6963ProviderInfo()
   const setEip6963Provider = useSetEip6963Provider()
 
@@ -56,10 +56,6 @@ export function useEagerlyConnect(selectedWallet: ConnectionType | undefined, se
       if (connection.type === ConnectionType.INJECTED && cachedProviderRdns) return
 
       connect(getWeb3ReactConnection(selectedWallet).connector)
-    } else if (!selectedWalletBackfilled) {
-      BACKFILLABLE_WALLETS.map(getWeb3ReactConnection)
-        .map((connection) => connection.connector)
-        .forEach(connect)
     }
     // The dependency list is empty so this is only run once on mount
   }, [])
