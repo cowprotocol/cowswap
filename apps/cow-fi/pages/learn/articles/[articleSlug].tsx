@@ -16,12 +16,10 @@ export interface BlogPostProps {
 
 export default function BlogPostPage({ article }: BlogPostProps) {
   const { id } = article
-  const { title, description, slug, seo } =
+  const { title, description, slug, seo, cover } =
     article?.attributes || {}
   const { metaTitle, shareImage, metaDescription } = seo || {}
-  const shareImageUrl = shareImage?.data?.attributes?.url
-
-  // TODO: Add SEO information
+  const shareImageUrl = shareImage?.data?.attributes?.url || cover?.data?.attributes?.url
 
   return (
     <Layout fullWidthGradientVariant={true} data-article-id={id} data-slug={slug}>
