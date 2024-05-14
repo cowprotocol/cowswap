@@ -1,15 +1,13 @@
 import { useEffect } from 'react'
 
 import { getCurrentChainIdFromUrl, isInjectedWidget } from '@cowprotocol/common-utils'
-import {
-  BACKFILLABLE_WALLETS,
-  getWeb3ReactConnection,
-  injectedWidgetConnection,
-  networkConnection,
-  gnosisSafeConnection,
-  ConnectionType,
-} from '@cowprotocol/wallet'
 import { Connector } from '@web3-react/types'
+
+import { BACKFILLABLE_WALLETS, ConnectionType } from '../../../api/types'
+import { injectedWidgetConnection } from '../../connection/injectedWidget'
+import { networkConnection } from '../../connection/network'
+import { gnosisSafeConnection } from '../../connection/safe'
+import { getWeb3ReactConnection } from '../../utils/getWeb3ReactConnection'
 
 async function connect(connector: Connector) {
   const chainId = getCurrentChainIdFromUrl()
@@ -46,5 +44,5 @@ export function useEagerlyConnect(selectedWallet: ConnectionType | undefined, se
         .forEach(connect)
     }
     // The dependency list is empty so this is only run once on mount
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [])
 }

@@ -1,7 +1,9 @@
 import { useMemo } from 'react'
 
 import { isInjectedWidget } from '@cowprotocol/common-utils'
-import { BACKFILLABLE_WALLETS, ConnectionType, getWeb3ReactConnection } from '@cowprotocol/wallet'
+
+import { BACKFILLABLE_WALLETS, ConnectionType } from '../../../api/types'
+import { getWeb3ReactConnection } from '../../utils/getWeb3ReactConnection'
 
 const SELECTABLE_WALLETS = [...BACKFILLABLE_WALLETS]
 
