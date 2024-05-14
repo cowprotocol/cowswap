@@ -47,6 +47,7 @@ const PROVIDER_ENDPOINTS: Record<SupportedChainId, string> = {
   [SupportedChainId.MAINNET]: 'https://eth-mainnet.nodereal.io/v1/' + NODE_PROVIDER_ID,
   [SupportedChainId.GNOSIS_CHAIN]: 'https://rpc.gnosis.gateway.fm/',
   [SupportedChainId.SEPOLIA]: 'https://eth-sepolia.nodereal.io/v1/' + NODE_PROVIDER_ID,
+  [SupportedChainId.ARBITRUM_ONE]: 'wss://arbitrum-one-rpc.publicnode.com', // TODO: should we use nodereal here too?
 }
 
 export function getProviderByNetwork(networkId: SupportedChainId): string | undefined {
