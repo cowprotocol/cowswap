@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/cowprotocol/cowswap/compare/wallet-v1.1.0...wallet-v1.2.0) (2024-05-14)
+
+
+### Features
+
+* support counterfactual safes ([#4063](https://github.com/cowprotocol/cowswap/issues/4063)) ([43f86b8](https://github.com/cowprotocol/cowswap/commit/43f86b889b963341f2214a23ee21ae49ae550a8f))
+
 ## [1.1.0](https://github.com/cowprotocol/cowswap/compare/wallet-v1.0.2...wallet-v1.1.0) (2024-05-01)
 
 

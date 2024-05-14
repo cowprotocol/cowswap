@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.69.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.68.5...cowswap-v1.69.0) (2024-05-14)
+
+
+### Features
+
+* support counterfactual safes ([461b83a](https://github.com/cowprotocol/cowswap/commit/461b83a139509ef308e3d147e7674f53ca52fe73))
+
 ## [1.68.5](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.68.4...cowswap-v1.68.5) (2024-05-13)
 
 
