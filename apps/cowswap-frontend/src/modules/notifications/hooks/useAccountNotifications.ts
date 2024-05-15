@@ -10,7 +10,7 @@ const swrOptions: SWRConfiguration = {
   refreshInterval: ms`1m`,
   refreshWhenHidden: false,
   refreshWhenOffline: false,
-  revalidateOnFocus: true,
+  revalidateOnFocus: false,
 }
 
 export function useAccountNotifications() {

@@ -8,7 +8,7 @@ export const ListWrapper = styled.div`
   height: auto;
   width: 100%;
   margin: 0;
-  padding: 16px;
+  padding: 12px;
 
   > h4 {
     font-size: 14px;
@@ -21,7 +21,7 @@ export const ListWrapper = styled.div`
 export const NotificationsListWrapper = styled.div`
   display: flex;
   flex-flow: column wrap;
-  gap: 16px;
+  gap: 12px;
   margin: 0 0 35px;
 `
 
@@ -42,14 +42,14 @@ export const NotificationThumb = styled.div`
 `
 
 export const NotificationCard = styled.a<{ isRead?: boolean; noImage?: boolean }>`
-  --imageSize: 42px;
+  --imageSize: 50px;
   display: grid;
   grid-template-columns: ${({ noImage }) => (noImage ? '1fr' : 'var(--imageSize) 1fr')};
   background: ${({ isRead }) => (isRead ? `var(${UI.COLOR_PAPER})` : `var(${UI.COLOR_PAPER_DARKER})`)};
   margin: 0;
-  padding: 16px;
+  padding: 12px;
   border-radius: 21px;
-  gap: 16px;
+  gap: 12px;
   color: var(${UI.COLOR_TEXT});
   position: relative;
   border: 1px solid ${({ isRead }) => (isRead ? `var(${UI.COLOR_TEXT_OPACITY_10})` : 'transparent')};
