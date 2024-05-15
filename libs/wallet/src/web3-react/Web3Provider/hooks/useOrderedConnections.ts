@@ -3,8 +3,8 @@ import { useMemo } from 'react'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 
 import { ConnectionType } from '../../../api/types'
+import { getIsInjected } from '../../../api/utils/connection'
 import { getWeb3ReactConnection } from '../../utils/getWeb3ReactConnection'
-import { getIsInjected } from '@cowprotocol/wallet'
 
 const isIframe = window.top !== window.self
 
