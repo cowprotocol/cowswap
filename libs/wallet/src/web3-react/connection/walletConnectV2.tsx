@@ -14,7 +14,7 @@ import { default as WalletConnectV2Image } from '../../api/assets/walletConnectI
 import { ConnectWalletOption } from '../../api/pure/ConnectWalletOption'
 import { ConnectionType } from '../../api/types'
 import { getConnectionName } from '../../api/utils/connection'
-import { WC_DISABLED_TEXT, WC_PROJECT_ID } from '../../constants'
+import { WC_PROJECT_ID } from '../../constants'
 import { useIsActiveConnection } from '../hooks/useIsActiveConnection'
 import { ConnectionOptionProps, Web3ReactConnection } from '../types'
 
