@@ -11,6 +11,8 @@ export type SharedRichTextComponent = Schemas['SharedRichTextComponent']
 export type SharedSliderComponent = Schemas['SharedSliderComponent']
 export type SharedVideoEmbedComponent = Schemas['SharedVideoEmbedComponent']
 export type Category = Schemas['CategoryListResponseDataItem']
+export type ArticleCover = Schemas['Article']['cover']
+export type ArticleBlocks = Schemas['Article']['blocks']
 
 export type ArticleBlock =
   | SharedMediaComponent
@@ -28,7 +30,7 @@ export function isSharedQuoteComponent(component: ArticleBlock): component is Sh
 }
 
 export function isSharedRichTextComponent(component: ArticleBlock): component is SharedRichTextComponent {
-  return component.__component === 'SharedRichTextComponent'
+  return component.__component === 'shared.rich-text'
 }
 
 export function isSharedSliderComponent(component: ArticleBlock): component is SharedMediaComponent {
