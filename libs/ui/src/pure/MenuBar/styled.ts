@@ -88,24 +88,20 @@ export const DropdownContent = styled.div<{ isOpen: boolean; isThirdLevel?: bool
   --dropdownOffset: 12px;
   display: ${({ isOpen }) => (isOpen ? 'block' : 'none')};
   flex: ${({ isThirdLevel }) => (isThirdLevel ? '1 1 100%;' : 'initial')};
-  position: absolute;
-  background: rgba(255, 248, 247, 1);
-  background: ${({ isThirdLevel }) =>
-    isThirdLevel ? 'yellow' : 'rgba(255, 248, 247, 1)'}; // temp if isThirdLevel, use yellow background
-  backdrop-filter: blur(15px);
-  z-index: 1000;
-  top: calc(100% + var(--dropdownOffset));
-  right: ${({ alignRight }) => (alignRight ? 0 : 'initial')};
-  left: ${({ alignRight }) => (alignRight ? 'initial' : 0)};
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
+  background: ${({ isThirdLevel }) => (isThirdLevel ? 'rgba(255, 248, 247, 1)' : 'rgba(255, 248, 247, 1)')};
+  backdrop-filter: blur(15px);
+  z-index: 1000;
+  top: ${({ isThirdLevel }) => (isThirdLevel ? 'initial' : 'calc(100% + var(--dropdownOffset))')};
+  right: ${({ alignRight }) => (alignRight ? 0 : 'initial')};
+  left: ${({ alignRight }) => (alignRight ? 'initial' : 0)};
   padding: ${({ isThirdLevel }) => (isThirdLevel ? '8px' : '4px')};
-  position: absolute;
   position: ${({ isThirdLevel }) => (isThirdLevel ? 'relative' : 'absolute')};
   min-width: ${({ isThirdLevel }) => (isThirdLevel ? '200px' : '300px')};
   width: ${({ isThirdLevel }) => (isThirdLevel ? '100%' : 'max-content')};
-  max-width: ${({ isThirdLevel }) => (isThirdLevel ? '400px' : '530px')};
+  max-width: ${({ isThirdLevel }) => (isThirdLevel ? '100%' : '530px')};
   height: auto;
   border-radius: 28px;
 
@@ -136,7 +132,7 @@ export const StyledDropdownContentItem = styled.a<{ isOpen?: boolean }>`
     background-color: #e0e0e0;
 
     > svg.arrow-icon-right {
-      display: block;
+      opacity: 1;
     }
   }
 
@@ -149,10 +145,11 @@ export const StyledDropdownContentItem = styled.a<{ isOpen?: boolean }>`
     object-fit: contain;
     color: inherit;
     transform: ${({ isOpen }) => (isOpen ? 'rotate(180deg)' : 'rotate(0deg)')};
-    transition: transform 0.2s ease-in-out;
+    transition: transform 0.2s ease-in-out, opacity 0.2s ease-in-out;
 
     &.arrow-icon-right {
-      display: none;
+      opacity: 0;
+      transform: none;
     }
   }
 
