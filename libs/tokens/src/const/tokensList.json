@@ -82,7 +82,7 @@
     {
       "priority": 2,
       "enabledByDefault": true,
-      "source": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/arbitrum/tokenlist.json"
+      "source": "https://tokens.coingecko.com/arbitrum-one/all.json"
     }
   ],
   "11155111": [
