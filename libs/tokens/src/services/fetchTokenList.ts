@@ -6,8 +6,8 @@ import {
   resolveENSContentHash,
   uriToHttp,
 } from '@cowprotocol/common-utils'
-
 import { TokenList } from '@uniswap/token-lists'
+
 import { ListSourceConfig, ListState } from '../types'
 import { validateTokenList } from '../utils/validateTokenList'
 
