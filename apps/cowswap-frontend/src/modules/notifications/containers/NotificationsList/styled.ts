@@ -16,13 +16,13 @@ export const ListWrapper = styled.div`
     margin: 0 0 16px;
     opacity: 0.7;
   }
+`
 
-  > div {
-    display: flex;
-    flex-flow: column wrap;
-    gap: 16px;
-    margin: 0 0 35px;
-  }
+export const NotificationsListWrapper = styled.div`
+  display: flex;
+  flex-flow: column wrap;
+  gap: 16px;
+  margin: 0 0 35px;
 `
 
 export const NotificationThumb = styled.div`
@@ -102,5 +102,18 @@ export const NotificationCard = styled.a<{ isRead?: boolean; noImage?: boolean }
     margin: 0;
     text-decoration: inherit;
     word-break: break-all;
+  }
+`
+
+export const NoNotifications = styled.div`
+  display: flex;
+  flex-flow: column wrap;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 30px;
+  opacity: 0.7;
+
+  > h4 {
+    margin: 0;
   }
 `
