@@ -8,7 +8,7 @@ type Account = string
 type ReadNotificationsState = Record<Account, number[]>
 
 export const readNotificationsAtom = atomWithStorage<ReadNotificationsState>(
-  'readNotificationsAtom:v1',
+  'readNotificationsAtom:v0',
   {},
   getJotaiIsolatedStorage()
 )
