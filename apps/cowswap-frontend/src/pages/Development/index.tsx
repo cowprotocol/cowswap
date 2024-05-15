@@ -1,4 +1,4 @@
-import { MenuBar, MenuItem } from '@cowprotocol/ui'
+import { MenuBar, MenuItem, ButtonSecondary as Button } from '@cowprotocol/ui'
 
 import IMG_ICON_SETTINGS_GLOBAL from '@cowprotocol/assets/images/settings-global.svg'
 
@@ -39,6 +39,20 @@ const NAV_ITEMS: MenuItem[] = [
   },
 ]
 
+const additionalContent = (
+  <>
+    <Button>Button 1</Button>
+    <Button>Button 2</Button>
+  </>
+)
+
 export default function Development() {
-  return <MenuBar navItems={NAV_ITEMS} theme={THEME_MODE} productVariant={PRODUCT_VARIANT} />
+  return (
+    <MenuBar
+      navItems={NAV_ITEMS}
+      theme={THEME_MODE}
+      productVariant={PRODUCT_VARIANT}
+      additionalContent={additionalContent}
+    />
+  )
 }

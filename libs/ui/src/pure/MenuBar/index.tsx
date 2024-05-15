@@ -58,6 +58,7 @@ interface MenuBarProps {
   navItems: MenuItem[]
   theme: 'light' | 'dark'
   productVariant: keyof typeof LOGO_MAP
+  additionalContent?: React.ReactNode // New prop for additional content
 }
 
 interface DropdownMenuItem {
@@ -270,7 +271,7 @@ const GlobalSettingsDropdown: React.FC = () => {
               <DropdownContentItemText>
                 <DropdownContentItemTitle>{item.label}</DropdownContentItemTitle>
               </DropdownContentItemText>
-              <SVG src={IMG_ICON_ARROW_RIGHT} />
+              <SVG src={IMG_ICON_ARROW_RIGHT} className="arrow-icon-right" />
             </StyledDropdownContentItem>
           ))}
         </DropdownContent>
@@ -280,7 +281,7 @@ const GlobalSettingsDropdown: React.FC = () => {
 }
 
 // MenuBar Component
-export const MenuBar = ({ navItems, theme, productVariant }: MenuBarProps) => {
+export const MenuBar = ({ navItems, theme, productVariant, additionalContent }: MenuBarProps) => {
   const [isDaoOpen, setIsDaoOpen] = useState(false)
   const menuRef = useRef(null)
 
@@ -299,6 +300,7 @@ export const MenuBar = ({ navItems, theme, productVariant }: MenuBarProps) => {
           ))}
         </NavItems>
         <RightAligned>
+          {additionalContent}
           <GlobalSettingsDropdown />
         </RightAligned>
       </MenuBarInner>
