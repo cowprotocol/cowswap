@@ -104,41 +104,39 @@ const DropdownContentItem: React.FC<{ item: DropdownMenuItem; theme: 'light' | '
   const [isChildrenVisible, setIsChildrenVisible] = useState(false)
 
   const handleToggleChildrenVisibility = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    console.log('Clicked item to toggle visibility')
     event.preventDefault()
     event.stopPropagation()
     setIsChildrenVisible(!isChildrenVisible)
   }
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    console.log('Clicked button')
     e.preventDefault()
     closeMenu()
   }
 
   const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    console.log('Clicked link')
     closeMenu()
   }
 
   const renderLinkItem = (content: React.ReactNode, href?: string) => (
-    <StyledDropdownContentItem as="a" href={href} onClick={handleLinkClick}>
+    <StyledDropdownContentItem as="a" href={href} onClick={handleLinkClick} isOpen={isChildrenVisible}>
       {content}
-      <SVG src={IMG_ICON_ARROW_RIGHT} />
+      {!item.children && <SVG src={IMG_ICON_ARROW_RIGHT} className="arrow-icon-right" />}
     </StyledDropdownContentItem>
   )
 
   const renderButtonItem = (content: React.ReactNode) => (
-    <StyledDropdownContentItem as="button" onClick={handleClick}>
+    <StyledDropdownContentItem as="button" onClick={handleClick} isOpen={isChildrenVisible}>
       {content}
+      {!item.children && <SVG src={IMG_ICON_ARROW_RIGHT} className="arrow-icon-right" />}
     </StyledDropdownContentItem>
   )
 
   const renderNestedDropdown = () => (
     <>
-      <StyledDropdownContentItem as="div" onClick={handleToggleChildrenVisibility}>
+      <StyledDropdownContentItem as="div" onClick={handleToggleChildrenVisibility} isOpen={isChildrenVisible}>
         {renderContentItemText()}
-        {renderIcon(isChildrenVisible ? IMG_ICON_CARRET_DOWN : IMG_ICON_ARROW_RIGHT)}
+        <SVG src={IMG_ICON_CARRET_DOWN} />
       </StyledDropdownContentItem>
       {isChildrenVisible && (
         <DropdownContentWrapper isThirdLevel content={{ title: undefined, items: item.children }} />
@@ -152,8 +150,6 @@ const DropdownContentItem: React.FC<{ item: DropdownMenuItem; theme: 'light' | '
       {item.description && <DropdownContentItemDescription>{item.description}</DropdownContentItemDescription>}
     </DropdownContentItemText>
   )
-
-  const renderIcon = (src: string) => <SVG src={src} />
 
   const renderLogoVariant = () => {
     const logoVariant = item.logoVariant || 'cowSwapLightMode'
@@ -170,7 +166,7 @@ const DropdownContentItem: React.FC<{ item: DropdownMenuItem; theme: 'light' | '
     renderLinkItem(
       <>
         <DropdownContentItemImage>
-          <img src={item.icon} alt={item.label} style={{ width: '100%', height: '100%' }} />
+          <img src={item.icon} alt={item.label} />
         </DropdownContentItemImage>
         {item.label && <span>{item.label}</span>}
       </>,
@@ -280,13 +276,15 @@ const DropdownContentWrapper: React.FC<{
           key={index}
           onClick={item.children ? handleToggleThirdLevelVisibility : undefined}
           href={item.href}
+          isOpen={isThirdLevelVisible}
         >
           {item.icon && <DropdownContentItemIcon src={item.icon} alt="" />}
           <DropdownContentItemText>
             <DropdownContentItemTitle>{item.label}</DropdownContentItemTitle>
             {item.description && <DropdownContentItemDescription>{item.description}</DropdownContentItemDescription>}
           </DropdownContentItemText>
-          <SVG src={IMG_ICON_ARROW_RIGHT} />
+          {item.children && <SVG src={IMG_ICON_CARRET_DOWN} />}
+          {!item.children && <SVG src={IMG_ICON_ARROW_RIGHT} className="arrow-icon-right" />}
           {item.children && isThirdLevelVisible && (
             <DropdownContentWrapper
               content={{ title: undefined, items: item.children }}

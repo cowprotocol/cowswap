@@ -119,7 +119,7 @@ export const DropdownContent = styled.div<{ isOpen: boolean; isThirdLevel?: bool
   }
 `
 
-export const StyledDropdownContentItem = styled.a`
+export const StyledDropdownContentItem = styled.a<{ isOpen?: boolean }>`
   display: flex;
   flex-flow: row wrap;
   align-items: center;
@@ -130,9 +130,14 @@ export const StyledDropdownContentItem = styled.a`
   border-radius: 24px;
   min-height: 56px;
   gap: 10px;
+  position: relative;
 
   &:hover {
     background-color: #e0e0e0;
+
+    > svg.arrow-icon-right {
+      display: block;
+    }
   }
 
   > svg {
@@ -143,17 +148,15 @@ export const StyledDropdownContentItem = styled.a`
     margin: 0 5px 0 auto;
     object-fit: contain;
     color: inherit;
+    transform: ${({ isOpen }) => (isOpen ? 'rotate(180deg)' : 'rotate(0deg)')};
+    transition: transform 0.2s ease-in-out;
+
+    &.arrow-icon-right {
+      display: none;
+    }
   }
 
   > svg path {
-    fill: transparent;
-  }
-
-  &:hover > svg {
-    fill: currentColor;
-  }
-
-  &:hover > svg path {
     fill: currentColor;
   }
 `
