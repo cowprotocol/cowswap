@@ -2,11 +2,12 @@ import React, { useCallback, useRef, useState } from 'react'
 
 import { useOnClickOutside } from '@cowprotocol/common-hooks'
 
-import { Sidebar, SidebarHeader, DoubleArrowRightIcon, SettingsIcon, CloseIcon, ArrowLeft } from './styled'
+import { upToSmall, useMediaQuery } from 'legacy/hooks/useMediaQuery'
+
+import { Sidebar, SidebarHeader, DoubleArrowRightIcon, CloseIcon, ArrowLeft } from './styled'
 
 import { NotificationSettings } from '../NotificationSettings'
 import { NotificationsList } from '../NotificationsList'
-import { upToSmall, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 
 interface NotificationSidebarProps {
   isOpen: boolean
@@ -49,7 +50,8 @@ export function NotificationSidebar({ isOpen, onClose }: NotificationSidebarProp
             <span>
               {!isMobile && <DoubleArrowRightIcon onClick={onDismiss} />}
               {isMobile && <CloseIcon onClick={onDismiss} />}
-              <SettingsIcon onClick={toggleSettingsOpen} />
+              {/*TODO: uncomment this once we have Telegram integration done*/}
+              {/*<SettingsIcon onClick={toggleSettingsOpen} />*/}
             </span>
             <h3>Notifications</h3>
           </SidebarHeader>
