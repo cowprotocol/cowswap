@@ -41,12 +41,10 @@ export const NotificationThumb = styled.div`
   }
 `
 
-export const NotificationCard = styled.a<{ isRead?: boolean }>`
+export const NotificationCard = styled.a<{ isRead?: boolean; noImage?: boolean }>`
   --imageSize: 42px;
   display: grid;
-  grid-template-columns:
-    var(--imageSize)
-    1fr;
+  grid-template-columns: ${({ noImage }) => (noImage ? '1fr' : 'var(--imageSize) 1fr')};
   background: ${({ isRead }) => (isRead ? `var(${UI.COLOR_PAPER})` : `var(${UI.COLOR_PAPER_DARKER})`)};
   margin: 0;
   padding: 16px;

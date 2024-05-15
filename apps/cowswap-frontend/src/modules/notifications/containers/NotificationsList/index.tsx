@@ -51,6 +51,7 @@ export function NotificationsList({ children }: { children: ReactNode }) {
                     isRead={!unreadNotifications[id]}
                     href={url || undefined}
                     target={target}
+                    noImage={!thumbnail}
                     rel={target === '_blank' ? 'noopener noreferrer' : ''}
                   >
                     {thumbnail && (
