@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
-import ReactDOM from 'react-dom'
 
 import { useNativeCurrencyAmount } from '@cowprotocol/balances-and-allowances'
 import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { TokenAmount } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
+
+import ReactDOM from 'react-dom'
 
 import { upToLarge, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 

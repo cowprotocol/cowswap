@@ -1,10 +1,10 @@
-import { UI } from '@cowprotocol/ui'
-import SVG from 'react-inlinesvg'
-import ICON_SETTINGS from '@cowprotocol/assets/images/settings.svg'
-import ICON_DOUBLE_ARROW_RIGHT from '@cowprotocol/assets/images/double-arrow-right.svg'
-import ICON_CLOSE_X from '@cowprotocol/assets/images/x.svg'
 import ICON_ARROW from '@cowprotocol/assets/images/arrow-left.svg'
+import ICON_DOUBLE_ARROW_RIGHT from '@cowprotocol/assets/images/double-arrow-right.svg'
+import ICON_SETTINGS from '@cowprotocol/assets/images/settings.svg'
+import ICON_CLOSE_X from '@cowprotocol/assets/images/x.svg'
+import { UI } from '@cowprotocol/ui'
 
+import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
 interface IconProps {
