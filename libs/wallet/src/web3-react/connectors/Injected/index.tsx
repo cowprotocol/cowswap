@@ -119,7 +119,7 @@ export class InjectedWallet extends Connector {
 
   // Based on https://github.com/Uniswap/web3-react/blob/de97c00c378b7909dfbd8a06558ed12e1f796caa/packages/metamask/src/index.ts#L54 with some changes
   private async isomorphicInitialize(): Promise<void> {
-    // Mod: we have a custom method to detect Injected provider based on passed keywords array
+    // We have a custom method to detect Injected provider based on passed keywords array
     const provider = this.detectProvider()
 
     if (provider) {
