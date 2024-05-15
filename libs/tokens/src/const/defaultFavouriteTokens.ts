@@ -55,7 +55,6 @@ export const DEFAULT_FAVOURITE_TOKENS: Record<SupportedChainId, TokensMap> = {
   ]),
   [SupportedChainId.ARBITRUM_ONE]: tokensListToMap([
     USDC_ARBITRUM_ONE,
-    COW[SupportedChainId.ARBITRUM_ONE],
     USDT,
     WRAPPED_NATIVE_CURRENCIES[SupportedChainId.ARBITRUM_ONE],
     WBTC_ARBITRUM_ONE,
