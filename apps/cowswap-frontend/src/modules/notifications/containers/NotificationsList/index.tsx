@@ -27,7 +27,7 @@ export function NotificationsList({ children }: { children: ReactNode }) {
 
     setTimeout(() => {
       markNotificationsAsRead(account, notifications.map(({ id }) => id) || [])
-    }, 2000)
+    }, 1000)
   }, [account, notifications])
 
   return (
