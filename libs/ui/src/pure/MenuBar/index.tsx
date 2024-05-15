@@ -49,15 +49,15 @@ export interface MenuItem {
   label?: string
   type?: 'dropdown'
   children?: DropdownMenuItem[]
-  logoVariant?: keyof typeof LOGO_MAP // Optional logo variant
-  icon?: string // Path to the icon image
+  logoVariant?: keyof typeof LOGO_MAP
+  icon?: string
   isButton?: boolean
 }
 
 interface MenuBarProps {
   navItems: MenuItem[]
   theme: 'light' | 'dark'
-  productVariant: keyof typeof LOGO_MAP // e.g., 'cowSwap', 'cowProtocol', etc.
+  productVariant: keyof typeof LOGO_MAP
 }
 
 interface DropdownMenuItem {
@@ -75,46 +75,45 @@ interface DropdownMenuContent {
   items?: DropdownMenuItem[]
 }
 
-// General root nav item
+interface DropdownProps {
+  isOpen: boolean
+  content: DropdownMenuContent
+  onTrigger: () => void
+  interaction: 'hover' | 'click'
+}
+
+// NavItem Component
 const NavItem = ({ item, isClickable = false }: NavItemProps & { isClickable?: boolean }) => {
   const [isOpen, setIsOpen] = useState(false)
   const handleToggle = () => setIsOpen((prevIsOpen) => !prevIsOpen)
 
-  return (
-    <>
-      {item.children ? (
-        <GenericDropdown
-          isOpen={isOpen}
-          content={{ title: item.label, items: item.children }}
-          onTrigger={handleToggle}
-          interaction={isClickable ? 'click' : 'hover'}
-        />
-      ) : (
-        <RootNavItem href={item.href}>{item.label}</RootNavItem>
-      )}
-    </>
+  return item.children ? (
+    <GenericDropdown
+      isOpen={isOpen}
+      content={{ title: item.label, items: item.children }}
+      onTrigger={handleToggle}
+      interaction={isClickable ? 'click' : 'hover'}
+    />
+  ) : (
+    <RootNavItem href={item.href}>{item.label}</RootNavItem>
   )
 }
 
+// DropdownContentItem Component
 const DropdownContentItem: React.FC<{ item: DropdownMenuItem; theme: 'light' | 'dark'; closeMenu: () => void }> = ({
   item,
   theme,
   closeMenu,
 }) => {
   const [isChildrenVisible, setIsChildrenVisible] = useState(false)
-
-  const handleToggleChildrenVisibility = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+  const handleToggleChildrenVisibility = (event: React.MouseEvent<HTMLDivElement>) => {
     event.preventDefault()
     event.stopPropagation()
     setIsChildrenVisible(!isChildrenVisible)
   }
 
-  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault()
-    closeMenu()
-  }
-
   const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault()
     closeMenu()
   }
 
@@ -125,66 +124,43 @@ const DropdownContentItem: React.FC<{ item: DropdownMenuItem; theme: 'light' | '
     </StyledDropdownContentItem>
   )
 
-  const renderButtonItem = (content: React.ReactNode) => (
-    <StyledDropdownContentItem as="button" onClick={handleClick} isOpen={isChildrenVisible}>
-      {content}
-      {!item.children && <SVG src={IMG_ICON_ARROW_RIGHT} className="arrow-icon-right" />}
-    </StyledDropdownContentItem>
+  const renderItemContent = () => (
+    <>
+      {item.logoVariant ? (
+        <Logo product={item.logoVariant as keyof typeof LOGO_MAP} themeMode={theme} />
+      ) : item.icon ? (
+        <DropdownContentItemImage>
+          <img src={item.icon} alt={item.label} />
+        </DropdownContentItemImage>
+      ) : null}
+      <DropdownContentItemText>
+        <DropdownContentItemTitle>{item.label}</DropdownContentItemTitle>
+        {item.description && <DropdownContentItemDescription>{item.description}</DropdownContentItemDescription>}
+      </DropdownContentItemText>
+    </>
   )
 
-  const renderNestedDropdown = () => (
+  return item.children ? (
     <>
       <StyledDropdownContentItem as="div" onClick={handleToggleChildrenVisibility} isOpen={isChildrenVisible}>
-        {renderContentItemText()}
+        {renderItemContent()}
         <SVG src={IMG_ICON_CARRET_DOWN} />
       </StyledDropdownContentItem>
       {isChildrenVisible && (
         <DropdownContentWrapper isThirdLevel content={{ title: undefined, items: item.children }} />
       )}
     </>
+  ) : item.isButton ? (
+    <StyledDropdownContentItem as="button" onClick={() => closeMenu()} isOpen={isChildrenVisible}>
+      {renderItemContent()}
+      {!item.children && <SVG src={IMG_ICON_ARROW_RIGHT} className="arrow-icon-right" />}
+    </StyledDropdownContentItem>
+  ) : (
+    renderLinkItem(renderItemContent(), item.href)
   )
-
-  const renderContentItemText = () => (
-    <DropdownContentItemText>
-      <DropdownContentItemTitle>{item.label}</DropdownContentItemTitle>
-      {item.description && <DropdownContentItemDescription>{item.description}</DropdownContentItemDescription>}
-    </DropdownContentItemText>
-  )
-
-  const renderLogoVariant = () => {
-    const logoVariant = item.logoVariant || 'cowSwapLightMode'
-    return renderLinkItem(
-      <>
-        <Logo product={logoVariant as keyof typeof LOGO_MAP} themeMode={theme} />
-        {item.label && <span>{item.label}</span>}
-      </>,
-      item.href
-    )
-  }
-
-  const renderIconItem = () =>
-    renderLinkItem(
-      <>
-        <DropdownContentItemImage>
-          <img src={item.icon} alt={item.label} />
-        </DropdownContentItemImage>
-        {item.label && <span>{item.label}</span>}
-      </>,
-      item.href
-    )
-
-  const renderButtonItemContent = () => (
-    <DropdownContentItemButton onClick={handleClick}>{item.label}</DropdownContentItemButton>
-  )
-
-  if (item.children) return renderNestedDropdown()
-  if (item.logoVariant) return renderLogoVariant()
-  if (item.icon) return renderIconItem()
-  if (item.isButton) return renderButtonItem(renderButtonItemContent())
-
-  return renderLinkItem(renderContentItemText(), item.href)
 }
 
+// NavDaoTrigger Component
 const NavDaoTrigger: React.FC<{
   isOpen: boolean
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
@@ -193,23 +169,7 @@ const NavDaoTrigger: React.FC<{
   const triggerRef = useRef<HTMLDivElement>(null)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
-  const handleClickOutside = (event: MouseEvent) => {
-    if (
-      triggerRef.current &&
-      !triggerRef.current.contains(event.target as Node) &&
-      dropdownRef.current &&
-      !dropdownRef.current.contains(event.target as Node)
-    ) {
-      setIsOpen(false)
-    }
-  }
-
-  useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
-  }, [])
+  useOnClickOutside(triggerRef, () => setIsOpen(false))
 
   const closeMenu = () => setIsOpen(false)
 
@@ -229,14 +189,7 @@ const NavDaoTrigger: React.FC<{
   )
 }
 
-interface DropdownProps {
-  isOpen: boolean
-  content: DropdownMenuContent
-  onTrigger: () => void
-  interaction: 'hover' | 'click'
-}
-
-// Root nav item with a dropdown
+// GenericDropdown Component
 const GenericDropdown: React.FC<DropdownProps> = ({ isOpen, content, onTrigger, interaction }) => {
   if (!content.title) {
     throw new Error('Dropdown content must have a title')
@@ -256,13 +209,13 @@ const GenericDropdown: React.FC<DropdownProps> = ({ isOpen, content, onTrigger, 
   )
 }
 
+// DropdownContentWrapper Component
 const DropdownContentWrapper: React.FC<{
   content: DropdownMenuContent
   isThirdLevel?: boolean
   isVisible?: boolean
 }> = ({ content, isThirdLevel = false, isVisible = true }) => {
   const [isThirdLevelVisible, setIsThirdLevelVisible] = useState(false)
-
   const handleToggleThirdLevelVisibility = (event: React.MouseEvent) => {
     event.preventDefault()
     event.stopPropagation()
@@ -298,6 +251,7 @@ const DropdownContentWrapper: React.FC<{
   )
 }
 
+// GlobalSettingsDropdown Component
 const GlobalSettingsDropdown: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false)
   const buttonRef = useRef<HTMLButtonElement>(null)
@@ -325,6 +279,7 @@ const GlobalSettingsDropdown: React.FC = () => {
   )
 }
 
+// MenuBar Component
 export const MenuBar = ({ navItems, theme, productVariant }: MenuBarProps) => {
   const [isDaoOpen, setIsDaoOpen] = useState(false)
   const menuRef = useRef(null)

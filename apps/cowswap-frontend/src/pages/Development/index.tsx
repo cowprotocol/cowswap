@@ -40,9 +40,5 @@ const NAV_ITEMS: MenuItem[] = [
 ]
 
 export default function Development() {
-  return (
-    <>
-      <MenuBar navItems={NAV_ITEMS} theme={THEME_MODE} productVariant={PRODUCT_VARIANT} />
-    </>
-  )
+  return <MenuBar navItems={NAV_ITEMS} theme={THEME_MODE} productVariant={PRODUCT_VARIANT} />
 }
