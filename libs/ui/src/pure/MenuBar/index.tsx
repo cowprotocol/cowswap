@@ -122,6 +122,7 @@ const DropdownContentItem: React.FC<{ item: DropdownMenuItem; theme: 'light' | '
   closeMenu,
 }) => {
   const [isChildrenVisible, setIsChildrenVisible] = useState(false)
+
   const handleToggleChildrenVisibility = (event: React.MouseEvent<HTMLDivElement>) => {
     event.preventDefault()
     event.stopPropagation()
@@ -145,21 +146,28 @@ const DropdownContentItem: React.FC<{ item: DropdownMenuItem; theme: 'light' | '
     </StyledDropdownContentItem>
   )
 
-  const renderItemContent = () => (
-    <>
-      {item.logoVariant ? (
-        <Logo product={item.logoVariant as keyof typeof LOGO_MAP} themeMode={theme} />
-      ) : item.icon ? (
-        <DropdownContentItemImage>
-          <img src={item.icon} alt={item.label} />
-        </DropdownContentItemImage>
-      ) : null}
-      <DropdownContentItemText>
-        <DropdownContentItemTitle>{item.label}</DropdownContentItemTitle>
-        {item.description && <DropdownContentItemDescription>{item.description}</DropdownContentItemDescription>}
-      </DropdownContentItemText>
-    </>
-  )
+  const renderItemContent = () => {
+    // Determine the correct logo variant
+    const logoVariant = item.logoVariant
+      ? `${item.logoVariant}${theme.charAt(0).toUpperCase()}${theme.slice(1)}Mode`
+      : null
+
+    return (
+      <>
+        {logoVariant && LOGO_MAP[logoVariant] ? (
+          <Logo product={logoVariant as keyof typeof LOGO_MAP} themeMode={theme} />
+        ) : item.icon ? (
+          <DropdownContentItemImage>
+            <img src={item.icon} alt={item.label} />
+          </DropdownContentItemImage>
+        ) : null}
+        <DropdownContentItemText>
+          <DropdownContentItemTitle>{item.label}</DropdownContentItemTitle>
+          {item.description && <DropdownContentItemDescription>{item.description}</DropdownContentItemDescription>}
+        </DropdownContentItemText>
+      </>
+    )
+  }
 
   return item.children ? (
     <>
