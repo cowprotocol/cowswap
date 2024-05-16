@@ -17,7 +17,7 @@ export default function App(props: AppProps) {
   const CURRENT_URL = `${CONFIG.url.root}${router.asPath}`
 
   return (
-      <WithLDProvider>
+      <>
         <Head>
           {/* Prevent indexing of development and preview environments */}
           {(process.env.NEXT_PUBLIC_ENVIRONMENT === 'DEVELOPMENT' ||
@@ -43,9 +43,11 @@ export default function App(props: AppProps) {
         <GlobalStyles />
         <Analytics />
         <ApolloProvider client={apolloClient}>
-          <Component {...pageProps} />
+          <WithLDProvider>
+            <Component {...pageProps} />
+          </WithLDProvider>
         </ApolloProvider>
-      </WithLDProvider>
+      </>
     
   )
 }
