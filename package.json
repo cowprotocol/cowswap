@@ -14,7 +14,7 @@
     "start:widget": "nx run widget-configurator:serve",
     "start:cosmos": "nx run cowswap-frontend:cosmos:run",
     "start:explorer": "nx run explorer:serve",
-    "start:cowfi": "nx run cow-fi:dev",
+    "start:cowfi": "PORT=3001 nx run cow-fi:dev",
     "build": "yarn run build:cowswap",
     "build:all": "nx run-many -t build",
     "build:cowswap": "nx build cowswap-frontend",
