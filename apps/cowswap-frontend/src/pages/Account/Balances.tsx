@@ -10,7 +10,7 @@ import { useBlockNumber } from '@cowprotocol/common-hooks'
 import { getBlockExplorerUrl, getProviderErrorMessage } from '@cowprotocol/common-utils'
 import { TokenAmount, ButtonPrimary } from '@cowprotocol/ui'
 import { HoverTooltip } from '@cowprotocol/ui'
-import { getIsMetaMask, useWalletInfo } from '@cowprotocol/wallet'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -38,7 +38,7 @@ import {
   VestingBreakdown,
   CardsLoader,
   CardsSpinner,
-  StyledAddToMetamask,
+  StyledWatchAssetInWallet,
 } from 'pages/Account/styled'
 
 import LockedGnoVesting from './LockedGnoVesting'
@@ -58,8 +58,6 @@ export default function Profile() {
 
   const setSwapVCowStatus = useSetSwapVCowStatus()
   const swapVCowStatus = useSwapVCowStatus()
-
-  const isMetaMask = getIsMetaMask()
 
   // Locked GNO balance
   const { loading: isLockedGnoLoading, ...lockedGnoBalances } = useCowFromLockedGnoBalances()
@@ -288,13 +286,15 @@ export default function Profile() {
                 View contract ↗
               </ExtLink>
 
-              {isMetaMask && !isProviderNetworkUnsupported && <StyledAddToMetamask shortLabel currency={currencyCOW} />}
-
-              {!isMetaMask && (
-                <CopyHelper toCopy={COW_CONTRACT_ADDRESS[chainId]}>
-                  <div title="Click to copy token contract address">Copy contract</div>
-                </CopyHelper>
-              )}
+              <StyledWatchAssetInWallet
+                shortLabel
+                currency={currencyCOW}
+                fallback={
+                  <CopyHelper toCopy={COW_CONTRACT_ADDRESS[chainId]}>
+                    <div title="Click to copy token contract address">Copy contract</div>
+                  </CopyHelper>
+                }
+              />
 
               <Link to={`/swap?outputCurrency=${COW_CONTRACT_ADDRESS[chainId]}`}>Buy COW</Link>
             </CardActions>

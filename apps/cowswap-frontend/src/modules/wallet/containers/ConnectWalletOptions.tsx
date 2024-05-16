@@ -2,7 +2,7 @@ import { useTheme } from '@cowprotocol/common-hooks'
 import { isMobile } from '@cowprotocol/common-utils'
 import {
   CoinbaseWalletOption,
-  InjectedOption,
+  InjectedOption as DefaultInjectedOption,
   InstallMetaMaskOption,
   OpenMetaMaskMobileOption,
   TrezorOption,
@@ -12,49 +12,22 @@ import {
   useMultiInjectedProviders,
   Eip6963Option,
   COINBASE_WALLET_RDNS,
+  getIsInjectedMobileBrowser,
+  EIP6963ProviderDetail,
 } from '@cowprotocol/wallet'
 
 import { useSelectedWallet } from 'legacy/state/user/hooks'
 
 export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActivation }) {
-  const isInjected = getIsInjected()
   const selectedWallet = useSelectedWallet()
   const multiInjectedProviders = useMultiInjectedProviders()
   const { darkMode } = useTheme()
 
   const hasCoinbaseEip6963 = multiInjectedProviders.some((provider) => provider.info.rdns === COINBASE_WALLET_RDNS)
 
-  const isInjectedMobileBrowser = isMobile && isInjected
+  const isInjectedMobileBrowser = getIsInjectedMobileBrowser()
 
   const connectionProps = { darkMode, selectedWallet, tryActivation }
-
-  let injectedOption
-  if (!isInjected) {
-    if (!isMobile) {
-      injectedOption = <InstallMetaMaskOption />
-    } else {
-      injectedOption = <OpenMetaMaskMobileOption />
-    }
-  } else {
-    if (multiInjectedProviders.length) {
-      injectedOption = (
-        <>
-          {multiInjectedProviders.map((providerInfo) => {
-            return (
-              <Eip6963Option
-                key={providerInfo.info.rdns}
-                selectedWallet={selectedWallet}
-                tryActivation={tryActivation}
-                providerDetails={providerInfo}
-              />
-            )
-          })}
-        </>
-      )
-    } else {
-      injectedOption = <InjectedOption {...connectionProps} />
-    }
-  }
 
   const coinbaseWalletOption = (!hasCoinbaseEip6963 && <CoinbaseWalletOption {...connectionProps} />) ?? null
   const walletConnectionV2Option = (!isInjectedMobileBrowser && <WalletConnectV2Option {...connectionProps} />) ?? null
@@ -62,10 +35,51 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
 
   return (
     <>
-      {injectedOption}
+      <InjectedOptions connectionProps={connectionProps} multiInjectedProviders={multiInjectedProviders} />
       {walletConnectionV2Option}
       {coinbaseWalletOption}
       {trezorOption}
     </>
   )
+}
+
+interface InjectedOptionsProps {
+  multiInjectedProviders: EIP6963ProviderDetail[]
+
+  connectionProps: {
+    darkMode: boolean
+    tryActivation: TryActivation
+    selectedWallet: string | undefined
+  }
+}
+
+function InjectedOptions({ connectionProps, multiInjectedProviders }: InjectedOptionsProps) {
+  const isInjected = getIsInjected()
+
+  if (!isInjected) {
+    if (!isMobile) {
+      return <InstallMetaMaskOption />
+    } else {
+      return <OpenMetaMaskMobileOption />
+    }
+  } else {
+    if (multiInjectedProviders.length) {
+      return (
+        <>
+          {multiInjectedProviders.map((providerInfo) => {
+            return (
+              <Eip6963Option
+                key={providerInfo.info.rdns}
+                selectedWallet={connectionProps.selectedWallet}
+                tryActivation={connectionProps.tryActivation}
+                providerDetails={providerInfo}
+              />
+            )
+          })}
+        </>
+      )
+    }
+
+    return <DefaultInjectedOption {...connectionProps} />
+  }
 }

@@ -8,6 +8,7 @@ import {
 } from './state/multiInjectedProvidersAtom'
 import { GnosisSafeInfo, WalletDetails, WalletInfo } from './types'
 
+import { _WATCH_ASSET_SUPPORED_WALLETS } from '../constants'
 import { useIsSafeApp } from '../web3-react/hooks/useWalletMetadata'
 
 export function useWalletInfo(): WalletInfo {
@@ -47,4 +48,13 @@ export function useSelectedEip6963ProviderRdns() {
 
 export function useSelectedEip6963ProviderInfo() {
   return useAtomValue(selectedEip6963ProviderAtom)
+}
+
+export function useIsAssetWatchingSupported(): boolean {
+  const info = useSelectedEip6963ProviderInfo()
+
+  if (!info) return false
+
+  // TODO: check other wallets and extend the array
+  return _WATCH_ASSET_SUPPORED_WALLETS.includes(info.info.rdns)
 }

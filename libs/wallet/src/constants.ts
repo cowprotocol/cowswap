@@ -6,3 +6,9 @@ export const WC_PROJECT_ID = process.env.REACT_APP_WC_PROJECT_ID || 'a6cc11517a1
 export const COINBASE_WALLET_RDNS = 'com.coinbase.wallet'
 
 export const TRUST_WALLET_RDNS = 'com.trustwallet.app'
+
+export const METAMASK_RDNS = 'io.metamask'
+
+export const RABBY_RDNS = 'io.rabby'
+
+export const _WATCH_ASSET_SUPPORED_WALLETS = [METAMASK_RDNS, RABBY_RDNS]

@@ -9,7 +9,7 @@ import styled, { css } from 'styled-components/macro'
 import { CopyIcon as ClickToCopy } from 'legacy/components/Copy'
 
 import { Page, GdocsListStyle } from 'modules/application/pure/Page'
-import { AddToMetamask } from 'modules/wallet/containers/AddToMetamask'
+import { WatchAssetInWallet } from 'modules/wallet/containers/WatchAssetInWallet'
 
 export const Container = styled.div`
   max-width: 100%;
@@ -81,7 +81,7 @@ const linkMixin = css`
   }
 `
 
-export const StyledAddToMetamask = styled(AddToMetamask)`
+export const StyledWatchAssetInWallet = styled(WatchAssetInWallet)`
   border: 0;
   min-height: initial;
   border-radius: initial;

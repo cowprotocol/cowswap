@@ -1,3 +1,5 @@
+import { isMobile } from '@cowprotocol/common-utils'
+
 import CoinbaseWalletIcon from '../assets/coinbase.svg'
 import TrezorIcon from '../assets/trezor.svg'
 import WalletConnectIcon from '../assets/walletConnectIcon.svg'
@@ -35,12 +37,8 @@ export function getIsInjected(): boolean {
   return Boolean(window.ethereum)
 }
 
-export function getIsMetaMask(): boolean {
-  return window.ethereum?.isMetaMask ?? false
-}
-
-export function getIsCoinbaseWallet(): boolean {
-  return (window.ethereum as { isCoinbaseWallet: boolean })?.isCoinbaseWallet ?? false
+export function getIsInjectedMobileBrowser(): boolean {
+  return getIsInjected() && isMobile
 }
 
 export function getIsAmbireWallet(name: string | undefined): boolean {

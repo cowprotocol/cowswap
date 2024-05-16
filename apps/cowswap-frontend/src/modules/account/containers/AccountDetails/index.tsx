@@ -1,25 +1,18 @@
 import { Fragment } from 'react'
 
 import { CHAIN_INFO } from '@cowprotocol/common-const'
-import {
-  getEtherscanLink,
-  getExplorerLabel,
-  shortenAddress,
-  getExplorerAddressLink,
-  isMobile,
-} from '@cowprotocol/common-utils'
+import { getEtherscanLink, getExplorerLabel, shortenAddress, getExplorerAddressLink } from '@cowprotocol/common-utils'
 import { Command } from '@cowprotocol/types'
 import { ExternalLink } from '@cowprotocol/ui'
 import {
   ConnectionType,
   useWalletInfo,
-  getIsCoinbaseWallet,
-  getIsMetaMask,
   useWalletDetails,
   useIsWalletConnect,
   getIsHardWareWallet,
   useDisconnectWallet,
   useConnectionType,
+  getIsInjectedMobileBrowser,
 } from '@cowprotocol/wallet'
 
 import { Trans } from '@lingui/macro'
@@ -112,9 +105,7 @@ export function AccountDetails({
   const activityTotalCount = activities?.length || 0
 
   const isWalletConnect = useIsWalletConnect()
-  const isMetaMask = getIsMetaMask()
-  const isCoinbaseWallet = getIsCoinbaseWallet()
-  const isInjectedMobileBrowser = (isMetaMask || isCoinbaseWallet) && isMobile
+  const isInjectedMobileBrowser = getIsInjectedMobileBrowser()
 
   const unsupportedNetworksText = useUnsupportedNetworksText()
 
