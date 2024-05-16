@@ -34,8 +34,9 @@ export function useEagerlyConnect(selectedWallet: ConnectionType | undefined) {
 
   useEffect(() => {
     const isIframe = window.top !== window.self
+    const isInjectedActivated = isInjectedWidget() || (isIframe && getIsInjected())
 
-    if (isInjectedWidget() || (isIframe && getIsInjected())) {
+    if (isInjectedActivated) {
       connect(injectedWalletConnection.connector)
     }
 
@@ -60,6 +61,8 @@ export function useEagerlyConnect(selectedWallet: ConnectionType | undefined) {
       }
 
       connect(connection.connector)
+    } else if (!isInjectedActivated) {
+      connect(injectedWalletConnection.connector)
     }
     // The dependency list is empty so this is only run once on mount
   }, [])
