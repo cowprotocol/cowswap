@@ -13,67 +13,73 @@ interface LogoInfo {
   color?: string // Optional color attribute for SVG
 }
 
-export type ThemedLogo = Record<CowSwapTheme, { default: LogoInfo, logoOnly?: LogoInfo }>
+export type ThemedLogo = Record<CowSwapTheme, { default: LogoInfo; logoIconOnly?: LogoInfo }>
 
-export type ProductVariant = 
-  'cowSwap' |
-  'cowProtocol'
+export type ProductVariant = 'cowSwap' | 'cowProtocol'
 
-
-  const LOGOS: Record<ProductVariant, ThemedLogo>  = {
-    // CoW Swap
-    cowSwap: {
-      light: {
-        default: {
-          src: LOGO_COWSWAP,
-          alt: 'CoW Swap light mode',
-          color: '#012F7A',
-        },
-        logoOnly: {
-          src: LOGO_ICON_COW,
-          alt: 'CoW Swap icon only light mode',
-          color: '#012F7A',
-        }
+const LOGOS: Record<ProductVariant, ThemedLogo> = {
+  // CoW Swap
+  cowSwap: {
+    light: {
+      default: {
+        src: LOGO_COWSWAP,
+        alt: 'CoW Swap light mode',
+        color: '#012F7A',
       },
-
-      dark: {
-        default: {
-          src: LOGO_COWSWAP,
-          alt: 'CoW Swap dark mode',
-          color: '#65D9FF',
-        },
-        logoOnly: {
-          src: LOGO_ICON_COW,
-          alt: 'CoW Swap icon only dark mode',
-          color: '#65D9FF',
-        }
-      }
-    },
-  
-  
-    // CoW Protocol
-    cowProtocol: {
-      light: {
-        default: {
-          src: LOGO_COWPROTOCOL,
-          alt: 'CoW Protocol light mode',
-          color: '#000000',
-        }
+      logoIconOnly: {
+        src: LOGO_ICON_COW,
+        alt: 'CoW Swap icon only light mode',
+        color: '#012F7A',
       },
-      dark: {
-        default: {
-          src: LOGO_COWPROTOCOL,
-          alt: 'CoW Protocol dark mode',
-          color: '#FFFFFF',
-        }
-      }
     },
-  }
+
+    dark: {
+      default: {
+        src: LOGO_COWSWAP,
+        alt: 'CoW Swap dark mode',
+        color: '#65D9FF',
+      },
+      logoIconOnly: {
+        src: LOGO_ICON_COW,
+        alt: 'CoW Swap icon only dark mode',
+        color: '#65D9FF',
+      },
+    },
+  },
+
+  // CoW Protocol
+  cowProtocol: {
+    light: {
+      default: {
+        src: LOGO_COWPROTOCOL,
+        alt: 'CoW Protocol light mode',
+        color: '#000000',
+      },
+      logoIconOnly: {
+        src: LOGO_ICON_COW,
+        alt: 'CoW Protocol icon only light mode',
+        color: '#000000',
+      },
+    },
+    dark: {
+      default: {
+        src: LOGO_COWPROTOCOL,
+        alt: 'CoW Protocol dark mode',
+        color: '#FFFFFF',
+      },
+      logoIconOnly: {
+        src: LOGO_ICON_COW,
+        alt: 'CoW Protocol icon only dark mode',
+        color: '#FFFFFF',
+      },
+    },
+  },
+}
 
 export interface LogoProps {
   variant: ProductVariant
   theme: CowSwapTheme
-  logoOnly: boolean
+  logoIconOnly: boolean
 }
 
 const Wrapper = styled.span<{ color?: string }>`
@@ -100,9 +106,9 @@ const Wrapper = styled.span<{ color?: string }>`
   }
 `
 
-export const ProductLogo: React.FC<LogoProps> = ({ variant, theme: themeMode, logoOnly }) => {
+export const ProductLogo: React.FC<LogoProps> = ({ variant, theme: themeMode, logoIconOnly }) => {
   const logoForTheme = LOGOS[variant][themeMode]
-  const logoInfo = logoOnly && logoForTheme.logoOnly ? logoForTheme.logoOnly : logoForTheme.default
+  const logoInfo = logoIconOnly && logoForTheme.logoIconOnly ? logoForTheme.logoIconOnly : logoForTheme.default
 
   return (
     <Wrapper color={logoInfo.color}>

@@ -190,6 +190,7 @@ export const DropdownContent = styled.div<DropdownContentProps>`
     css`
       max-width: 100%;
       width: 100%;
+      position: fixed;
     `}
 
   ${({ mobileMode, isNavItemDropdown }) =>

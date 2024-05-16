@@ -160,7 +160,7 @@ const DropdownContentItem: React.FC<{ item: DropdownMenuItem; theme: CowSwapThem
     return (
       <>
         {productVariant ? (
-          <ProductLogo variant={productVariant} theme={theme} logoOnly={false} />
+          <ProductLogo variant={productVariant} theme={theme} logoIconOnly={false} />
         ) : icon ? (
           <DropdownContentItemImage>
             <img src={icon} alt={label} />
@@ -372,7 +372,7 @@ export const MenuBar = (props: MenuBarProps) => {
     <MenuBarWrapper ref={menuRef}>
       <MenuBarInner themeMode={theme}>
         <NavDaoTrigger isOpen={isDaoOpen} setIsOpen={setIsDaoOpen} theme={theme} mobileMode={isMobile} />
-        <ProductLogo variant={productVariant} theme={theme} logoOnly={isMobile} />
+        <ProductLogo variant={productVariant} theme={theme} logoIconOnly={isMobile} />
 
         {/* Only render NavItems if the screen size is large */}
         {!isMobile && (
