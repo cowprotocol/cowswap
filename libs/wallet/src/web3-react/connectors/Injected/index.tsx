@@ -57,10 +57,10 @@ export class InjectedWallet extends Connector {
             ? desiredChainIdOrChainParameters
             : desiredChainIdOrChainParameters?.chainId
 
-        this.onConnect?.()
-
         // if there's no desired chain, or it's equal to the received, update
         if (!desiredChainId || receivedChainId === desiredChainId) {
+          this.onConnect?.()
+
           return this.actions.update({ chainId: receivedChainId, accounts })
         }
 
@@ -82,6 +82,9 @@ export class InjectedWallet extends Connector {
             }
 
             throw error
+          })
+          .then(() => {
+            this.onConnect?.()
           })
       })
       .catch((error: Error) => {
@@ -126,15 +129,18 @@ export class InjectedWallet extends Connector {
     const provider = this.detectProvider()
 
     if (provider) {
+      const doesProviderMatches = () => this.provider === provider
+
       provider.on('connect', (data: ProviderConnectInfo): void => {
-        if (!data) return
+        if (!data || !doesProviderMatches()) return
 
         const { chainId } = data
         this.actions.update({ chainId: parseChainId(chainId) })
       })
 
       const onDisconnect = (error: ProviderRpcError): void => {
-        console.log('TTTTT2')
+        if (!doesProviderMatches()) return
+
         this.provider?.request({ method: 'PUBLIC_disconnectSite' })
 
         this.deactivate()
@@ -145,10 +151,14 @@ export class InjectedWallet extends Connector {
       provider.on('close', onDisconnect)
 
       provider.on('chainChanged', (chainId: string): void => {
+        if (!doesProviderMatches()) return
+
         this.actions.update({ chainId: parseChainId(chainId) })
       })
 
       provider.on('accountsChanged', (accounts: string[]): void => {
+        if (!doesProviderMatches()) return
+
         if (accounts.length === 0) {
           this.actions.resetState()
         } else {
