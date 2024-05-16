@@ -7,6 +7,7 @@ import { useSafeAppsSdk } from './useSafeAppsSdk'
 
 import { useGnosisSafeInfo, useSelectedEip6963ProviderInfo } from '../../api/hooks'
 import { ConnectionType } from '../../api/types'
+import { getConnectionIcon, getConnectionName } from '../../api/utils/connection'
 import { getWeb3ReactConnection } from '../utils/getWeb3ReactConnection'
 
 const SAFE_APP_NAME = 'Safe App'
@@ -94,7 +95,10 @@ export function useWalletMetaData(): WalletMetaData {
       return METADATA_SAFE
     }
 
-    return METADATA_DISCONNECTED
+    return {
+      icon: getConnectionIcon(connectionType),
+      walletName: getConnectionName(connectionType),
+    }
   }, [connectionType, provider, account, selectedEip6963Provider])
 }
 

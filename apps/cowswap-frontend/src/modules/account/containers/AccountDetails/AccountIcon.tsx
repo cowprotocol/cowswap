@@ -26,7 +26,7 @@ export const AccountIcon = ({ walletDetails, size = 16, account }: AccountIconPr
 
   if (walletDetails && !walletDetails.isSupportedWallet) {
     return (
-      <HoverTooltip wrapInContainer  content="This wallet is not yet supported">
+      <HoverTooltip wrapInContainer content="This wallet is not yet supported">
         <IconWrapper role="img" aria-label="Warning sign. Wallet not supported">
           ⚠️
         </IconWrapper>
