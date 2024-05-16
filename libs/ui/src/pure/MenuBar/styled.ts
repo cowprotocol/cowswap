@@ -1,4 +1,4 @@
-import styled from 'styled-components/macro'
+import styled, { css } from 'styled-components/macro'
 import { UI } from '@cowprotocol/ui'
 
 export const MenuBarWrapper = styled.div`
@@ -15,7 +15,6 @@ export const MenuBarWrapper = styled.div`
 export const MenuBarInner = styled.div<{ themeMode: string }>`
   --height: 56px;
   --width: 100%;
-  --bgColor: rgba(255, 248, 247, 0.6);
   --bgColor: ${({ themeMode }) => (themeMode === 'dark' ? '#333' : 'rgba(255, 248, 247, 0.6)')};
   --borderRadius: 28px;
   --blur: 16px;
@@ -46,6 +45,8 @@ export const NavDaoTriggerElement = styled.div<{ isActive: boolean }>`
   gap: 16px;
   height: var(--size);
   width: var(--size);
+  min-width: var(--size);
+  min-height: var(--size);
   border-radius: 50%;
   background: ${({ isActive }) => (isActive ? 'var(--activeBackground)' : 'transparent')};
   color: ${({ isActive }) => (isActive ? 'var(--activeFill)' : 'var(--defaultFill)')};
@@ -71,8 +72,50 @@ export const NavDaoTriggerElement = styled.div<{ isActive: boolean }>`
   }
 `
 
-export const NavItems = styled.ul`
+export const MobileMenuTrigger = styled.div<{ theme: string }>`
+  --size: 42px;
+  --defaultFill: grey;
+  --activeBackground: #555; // Active background color
+  --activeFill: #fff; // Active fill color
+
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  height: var(--size);
+  width: var(--size);
+  min-width: var(--size);
+  min-height: var(--size);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--defaultFill);
+  cursor: pointer;
+  transition: background 0.2s, fill 0.2s;
+
+  &:hover {
+    background: var(--activeBackground);
+  }
+
+  > svg {
+    --size: 50%;
+    height: var(--size);
+    width: var(--size);
+    object-fit: contain;
+    color: currentColor;
+    margin: auto;
+  }
+
+  > svg path {
+    fill: currentColor;
+  }
+`
+
+export const NavItems = styled.ul<{ mobileMode?: boolean; themeMode: string }>`
   --marginLeft: 20px;
+  --bgColor: ${({ themeMode }) => (themeMode === 'dark' ? '#333' : 'rgba(255, 248, 247, 0.6)')};
+  --borderRadius: 28px;
+  --blur: 16px;
 
   display: flex;
   flex-flow: row wrap;
@@ -82,9 +125,46 @@ export const NavItems = styled.ul`
   list-style-type: none;
   margin: 0 auto 0 var(--marginLeft);
   padding: 0;
+
+  ${({ mobileMode }) =>
+    mobileMode &&
+    css`
+      flex-flow: column wrap;
+      align-items: flex-start;
+      margin: 16px auto;
+      width: calc(100% - 20px);
+      position: absolute;
+      top: 56px;
+      left: 10px;
+      z-index: 1000;
+      box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+      /* padding: 16px; */
+      border-radius: 28px;
+      background: var(--bgColor);
+      backdrop-filter: blur(var(--blur));
+      border-radius: var(--borderRadius);
+
+      padding: 16px 16px 100px;
+      overflow-y: scroll;
+      min-height: 100vh;
+      height: 100vh;
+
+      > div {
+        width: 100%;
+        position: relative;
+      }
+    `}
 `
 
-export const DropdownContent = styled.div<{ isOpen: boolean; isThirdLevel?: boolean; alignRight?: boolean }>`
+interface DropdownContentProps {
+  isOpen: boolean
+  isThirdLevel?: boolean
+  alignRight?: boolean
+  mobileMode?: boolean
+  isNavItemDropdown?: boolean
+}
+
+export const DropdownContent = styled.div<DropdownContentProps>`
   --dropdownOffset: 12px;
   display: ${({ isOpen }) => (isOpen ? 'block' : 'none')};
   flex: ${({ isThirdLevel }) => (isThirdLevel ? '1 1 100%;' : 'initial')};
@@ -94,16 +174,35 @@ export const DropdownContent = styled.div<{ isOpen: boolean; isThirdLevel?: bool
   background: ${({ isThirdLevel }) => (isThirdLevel ? 'rgba(255, 248, 247, 1)' : 'rgba(255, 248, 247, 1)')};
   backdrop-filter: blur(15px);
   z-index: 1000;
-  top: ${({ isThirdLevel }) => (isThirdLevel ? 'initial' : 'calc(100% + var(--dropdownOffset))')};
-  right: ${({ alignRight }) => (alignRight ? 0 : 'initial')};
-  left: ${({ alignRight }) => (alignRight ? 'initial' : 0)};
   padding: ${({ isThirdLevel }) => (isThirdLevel ? '8px' : '4px')};
-  position: ${({ isThirdLevel }) => (isThirdLevel ? 'relative' : 'absolute')};
   min-width: ${({ isThirdLevel }) => (isThirdLevel ? '200px' : '300px')};
   width: ${({ isThirdLevel }) => (isThirdLevel ? '100%' : 'max-content')};
   max-width: ${({ isThirdLevel }) => (isThirdLevel ? '100%' : '530px')};
   height: auto;
   border-radius: 28px;
+  position: ${({ isThirdLevel }) => (isThirdLevel ? 'relative' : 'absolute')};
+  top: ${({ isThirdLevel }) => (isThirdLevel ? 'initial' : 'calc(100% + var(--dropdownOffset))')};
+  right: ${({ alignRight }) => (alignRight ? 0 : 'initial')};
+  left: ${({ alignRight }) => (alignRight ? 'initial' : 0)};
+
+  ${({ mobileMode }) =>
+    mobileMode &&
+    css`
+      max-width: 100%;
+      width: 100%;
+    `}
+
+  ${({ mobileMode, isNavItemDropdown }) =>
+    mobileMode &&
+    isNavItemDropdown &&
+    css`
+      position: relative;
+      top: initial;
+      right: initial;
+      left: initial;
+      background: transparent;
+      backdrop-filter: none;
+    `}
 
   &::before {
     content: '';
@@ -127,6 +226,7 @@ export const StyledDropdownContentItem = styled.a<{ isOpen?: boolean }>`
   min-height: 56px;
   gap: 10px;
   position: relative;
+  width: 100%;
 
   &:hover {
     background-color: #e0e0e0;
@@ -197,13 +297,19 @@ export const DropdownContentItemButton = styled.button`
   border-radius: 24px;
 `
 
-export const DropdownMenu = styled.div`
+export const DropdownMenu = styled.div<{ mobileMode?: boolean }>`
   position: relative;
   display: inline-block;
+
+  ${({ mobileMode }) =>
+    mobileMode &&
+    css`
+      width: 100%;
+    `}
 `
 
-export const RootNavItem = styled.a<{ isOpen?: boolean }>`
-  color: black;
+export const RootNavItem = styled.a<{ isOpen?: boolean; mobileMode?: boolean }>`
+  color: inherit;
   font-size: 16px;
   padding: 12px 16px;
   border-radius: 32px;
@@ -221,6 +327,14 @@ export const RootNavItem = styled.a<{ isOpen?: boolean }>`
   &:hover {
     background-color: #9c8d8d;
   }
+
+  ${({ mobileMode }) =>
+    mobileMode &&
+    css`
+      width: 100%;
+      align-items: center;
+      justify-content: left;
+    `}
 
   > svg {
     --size: 12px;
@@ -267,7 +381,7 @@ export const GlobalSettingsButton = styled.button`
   transition: background 0.2s, fill 0.2s;
 
   > svg {
-    --size: 65%;
+    --size: 75%;
     height: var(--size);
     width: var(--size);
     color: currentColor;

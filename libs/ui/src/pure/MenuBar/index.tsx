@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useRef } from 'react'
+import { upToLarge, useMediaQuery } from '../../../../../apps/cowswap-frontend/src/legacy/hooks/useMediaQuery'
 import {
   RootNavItem,
   MenuBarWrapper,
@@ -17,6 +18,7 @@ import {
   NavItems,
   StyledDropdownContentItem,
   RightAligned,
+  MobileMenuTrigger,
 } from './styled'
 import SVG from 'react-inlinesvg'
 import { Logo, LOGO_MAP } from '@cowprotocol/ui'
@@ -25,6 +27,11 @@ import IMG_ICON_MENU_DOTS from '@cowprotocol/assets/images/menu-grid-dots.svg'
 import IMG_ICON_ARROW_RIGHT from '@cowprotocol/assets/images/arrow-right.svg'
 import IMG_ICON_CARRET_DOWN from '@cowprotocol/assets/images/carret-down.svg'
 import IMG_ICON_SETTINGS_GLOBAL from '@cowprotocol/assets/images/settings-global.svg'
+import IMG_ICON_MENU_HAMBURGER from '@cowprotocol/assets/images/menu-hamburger.svg'
+import IMG_ICON_X from '@cowprotocol/assets/images/x.svg'
+
+import { addBodyClass, removeBodyClass } from '@cowprotocol/common-utils'
+import { is } from '@react-spring/shared'
 
 const DAO_NAV_ITEMS: MenuItem[] = [
   { href: 'https://cow.fi/#cowswap', logoVariant: 'cowSwap' },
@@ -58,7 +65,7 @@ interface MenuBarProps {
   navItems: MenuItem[]
   theme: 'light' | 'dark'
   productVariant: keyof typeof LOGO_MAP
-  additionalContent?: React.ReactNode // New prop for additional content
+  additionalContent?: React.ReactNode
 }
 
 interface DropdownMenuItem {
@@ -84,7 +91,11 @@ interface DropdownProps {
 }
 
 // NavItem Component
-const NavItem = ({ item, isClickable = false }: NavItemProps & { isClickable?: boolean }) => {
+const NavItem = ({
+  item,
+  isClickable = false,
+  isMobileMode = false,
+}: NavItemProps & { isClickable?: boolean; isMobileMode?: boolean }) => {
   const [isOpen, setIsOpen] = useState(false)
   const handleToggle = () => setIsOpen((prevIsOpen) => !prevIsOpen)
 
@@ -93,10 +104,14 @@ const NavItem = ({ item, isClickable = false }: NavItemProps & { isClickable?: b
       isOpen={isOpen}
       content={{ title: item.label, items: item.children }}
       onTrigger={handleToggle}
-      interaction={isClickable ? 'click' : 'hover'}
+      interaction={isClickable || isMobileMode ? 'click' : 'hover'}
+      mobileMode={isMobileMode}
+      isNavItemDropdown={true} // Indicate this is a NavItem dropdown
     />
   ) : (
-    <RootNavItem href={item.href}>{item.label}</RootNavItem>
+    <RootNavItem href={item.href} mobileMode={isMobileMode}>
+      {item.label}
+    </RootNavItem>
   )
 }
 
@@ -114,6 +129,11 @@ const DropdownContentItem: React.FC<{ item: DropdownMenuItem; theme: 'light' | '
   }
 
   const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault()
+    closeMenu()
+  }
+
+  const handleButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
     closeMenu()
   }
@@ -148,14 +168,14 @@ const DropdownContentItem: React.FC<{ item: DropdownMenuItem; theme: 'light' | '
         <SVG src={IMG_ICON_CARRET_DOWN} />
       </StyledDropdownContentItem>
       {isChildrenVisible && (
-        <DropdownContentWrapper isThirdLevel content={{ title: undefined, items: item.children }} />
+        <DropdownContentWrapper isThirdLevel content={{ title: undefined, items: item.children }} mobileMode={true} />
       )}
     </>
   ) : item.isButton ? (
-    <StyledDropdownContentItem as="button" onClick={() => closeMenu()} isOpen={isChildrenVisible}>
+    <DropdownContentItemButton onClick={handleButtonClick}>
       {renderItemContent()}
       {!item.children && <SVG src={IMG_ICON_ARROW_RIGHT} className="arrow-icon-right" />}
-    </StyledDropdownContentItem>
+    </DropdownContentItemButton>
   ) : (
     renderLinkItem(renderItemContent(), item.href)
   )
@@ -166,7 +186,8 @@ const NavDaoTrigger: React.FC<{
   isOpen: boolean
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
   theme: 'light' | 'dark'
-}> = ({ isOpen, setIsOpen, theme }) => {
+  mobileMode: boolean
+}> = ({ isOpen, setIsOpen, theme, mobileMode }) => {
   const triggerRef = useRef<HTMLDivElement>(null)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
@@ -180,7 +201,7 @@ const NavDaoTrigger: React.FC<{
         <SVG src={IMG_ICON_MENU_DOTS} />
       </NavDaoTriggerElement>
       {isOpen && (
-        <DropdownContent isOpen={true} ref={dropdownRef}>
+        <DropdownContent isOpen={true} ref={dropdownRef} mobileMode={mobileMode}>
           {DAO_NAV_ITEMS.map((item, index) => (
             <DropdownContentItem key={index} item={item} theme={theme} closeMenu={closeMenu} />
           ))}
@@ -191,7 +212,14 @@ const NavDaoTrigger: React.FC<{
 }
 
 // GenericDropdown Component
-const GenericDropdown: React.FC<DropdownProps> = ({ isOpen, content, onTrigger, interaction }) => {
+const GenericDropdown: React.FC<DropdownProps & { mobileMode?: boolean; isNavItemDropdown?: boolean }> = ({
+  isOpen,
+  content,
+  onTrigger,
+  interaction,
+  mobileMode,
+  isNavItemDropdown,
+}) => {
   if (!content.title) {
     throw new Error('Dropdown content must have a title')
   }
@@ -200,12 +228,14 @@ const GenericDropdown: React.FC<DropdownProps> = ({ isOpen, content, onTrigger, 
     interaction === 'hover' ? { onMouseEnter: onTrigger, onMouseLeave: onTrigger } : { onClick: onTrigger }
 
   return (
-    <DropdownMenu {...interactionProps}>
-      <RootNavItem as="button" aria-haspopup="true" aria-expanded={isOpen} isOpen={isOpen}>
+    <DropdownMenu {...interactionProps} mobileMode={mobileMode}>
+      <RootNavItem as="button" aria-haspopup="true" aria-expanded={isOpen} isOpen={isOpen} mobileMode={mobileMode}>
         <span>{content.title}</span>
         {content.items && <SVG src={IMG_ICON_CARRET_DOWN} />}
       </RootNavItem>
-      {isOpen && <DropdownContentWrapper content={content} />}
+      {isOpen && (
+        <DropdownContentWrapper content={content} mobileMode={mobileMode} isNavItemDropdown={isNavItemDropdown} />
+      )}
     </DropdownMenu>
   )
 }
@@ -215,7 +245,9 @@ const DropdownContentWrapper: React.FC<{
   content: DropdownMenuContent
   isThirdLevel?: boolean
   isVisible?: boolean
-}> = ({ content, isThirdLevel = false, isVisible = true }) => {
+  mobileMode?: boolean
+  isNavItemDropdown?: boolean // Add this prop here
+}> = ({ content, isThirdLevel = false, isVisible = true, mobileMode = false, isNavItemDropdown = false }) => {
   const [isThirdLevelVisible, setIsThirdLevelVisible] = useState(false)
   const handleToggleThirdLevelVisibility = (event: React.MouseEvent) => {
     event.preventDefault()
@@ -224,7 +256,12 @@ const DropdownContentWrapper: React.FC<{
   }
 
   return (
-    <DropdownContent isOpen={isVisible} isThirdLevel={isThirdLevel}>
+    <DropdownContent
+      isOpen={isVisible}
+      isThirdLevel={isThirdLevel}
+      mobileMode={mobileMode}
+      isNavItemDropdown={isNavItemDropdown} // Ensure it's passed down here
+    >
       {content.items?.map((item, index) => (
         <StyledDropdownContentItem
           key={index}
@@ -244,6 +281,8 @@ const DropdownContentWrapper: React.FC<{
               content={{ title: undefined, items: item.children }}
               isThirdLevel
               isVisible={isThirdLevelVisible}
+              mobileMode={mobileMode}
+              isNavItemDropdown={isNavItemDropdown} // Ensure it's passed down here
             />
           )}
         </StyledDropdownContentItem>
@@ -252,8 +291,12 @@ const DropdownContentWrapper: React.FC<{
   )
 }
 
+interface GlobalSettingsDropdownProps {
+  mobileMode: boolean
+}
+
 // GlobalSettingsDropdown Component
-const GlobalSettingsDropdown: React.FC = () => {
+const GlobalSettingsDropdown = ({ mobileMode }: GlobalSettingsDropdownProps) => {
   const [isOpen, setIsOpen] = useState(false)
   const buttonRef = useRef<HTMLButtonElement>(null)
 
@@ -265,7 +308,7 @@ const GlobalSettingsDropdown: React.FC = () => {
         <SVG src={IMG_ICON_SETTINGS_GLOBAL} />
       </GlobalSettingsButton>
       {isOpen && (
-        <DropdownContent isOpen={true} alignRight>
+        <DropdownContent isOpen={true} alignRight mobileMode={mobileMode}>
           {SETTINGS_ITEMS.map((item, index) => (
             <StyledDropdownContentItem key={index} href={item.href}>
               <DropdownContentItemText>
@@ -283,27 +326,80 @@ const GlobalSettingsDropdown: React.FC = () => {
 // MenuBar Component
 export const MenuBar = ({ navItems, theme, productVariant, additionalContent }: MenuBarProps) => {
   const [isDaoOpen, setIsDaoOpen] = useState(false)
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const menuRef = useRef(null)
+  const mobileMenuRef = useRef(null)
 
   useOnClickOutside(menuRef, () => setIsDaoOpen(false))
+  useOnClickOutside(mobileMenuRef, () => setIsMobileMenuOpen(false))
 
-  const validProductVariant = (productVariant || 'cowSwapLightMode') as keyof typeof LOGO_MAP
+  const isMobile = useMediaQuery(upToLarge)
+
+  // Construct the base and mobile product variants
+  const baseProductVariant = `${productVariant}${theme.charAt(0).toUpperCase()}${theme.slice(1)}Mode`
+  const iconOnlyVariant = `${productVariant}IconOnly${theme.charAt(0).toUpperCase()}${theme.slice(1)}Mode`
+
+  // Determine the appropriate logo variant
+  const logoVariant = isMobile && LOGO_MAP[iconOnlyVariant] ? iconOnlyVariant : baseProductVariant
+
+  console.log('Using logo variant:', logoVariant) // Log to verify correct variant
+
+  const handleMobileMenuToggle = () => {
+    setIsMobileMenuOpen((prevState) => !prevState)
+  }
+
+  // Add/remove noScroll class to body when mobile menu is opened/closed
+  React.useEffect(() => {
+    if (isMobileMenuOpen || isDaoOpen) {
+      addBodyClass('noScroll')
+    } else {
+      removeBodyClass('noScroll')
+    }
+
+    return () => {
+      removeBodyClass('noScroll')
+    }
+  }, [isMobileMenuOpen, isDaoOpen])
 
   return (
     <MenuBarWrapper ref={menuRef}>
       <MenuBarInner themeMode={theme}>
-        <NavDaoTrigger isOpen={isDaoOpen} setIsOpen={setIsDaoOpen} theme={theme} />
-        <Logo product={validProductVariant} themeMode={theme} />
-        <NavItems>
-          {navItems.map((item, index) => (
-            <NavItem key={index} item={item} />
-          ))}
-        </NavItems>
+        <NavDaoTrigger isOpen={isDaoOpen} setIsOpen={setIsDaoOpen} theme={theme} mobileMode={isMobile} />
+        <Logo product={logoVariant} themeMode={theme} />
+
+        {/* Only render NavItems if the screen size is large */}
+        {!isMobile && (
+          <NavItems themeMode={theme}>
+            {navItems.map((item, index) => (
+              <NavItem key={index} item={item} isMobileMode={isMobile} />
+            ))}
+          </NavItems>
+        )}
+
         <RightAligned>
           {additionalContent}
-          <GlobalSettingsDropdown />
+
+          {/* if is not large show hamburger menu icon */}
+          {isMobile && (
+            <MobileMenuTrigger theme={theme} onClick={handleMobileMenuToggle}>
+              <SVG src={isMobileMenuOpen ? IMG_ICON_X : IMG_ICON_MENU_HAMBURGER} />
+            </MobileMenuTrigger>
+          )}
+
+          <GlobalSettingsDropdown mobileMode={isMobile} />
         </RightAligned>
       </MenuBarInner>
+
+      {/* Mobile Menu */}
+      {isMobile && isMobileMenuOpen && (
+        <NavItems mobileMode={isMobile} ref={mobileMenuRef} themeMode={theme}>
+          <div>
+            {navItems.map((item, index) => (
+              <NavItem key={index} item={item} isMobileMode={isMobile} />
+            ))}
+          </div>
+        </NavItems>
+      )}
     </MenuBarWrapper>
   )
 }

@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components/macro'
 import SVG from 'react-inlinesvg'
 
+import LOGO_ICON_COW from '@cowprotocol/assets/images/logo-icon-cow.svg'
 import LOGO_COWSWAP from '@cowprotocol/assets/images/logo-cowswap.svg'
 import LOGO_COWPROTOCOL from '@cowprotocol/assets/images/logo-cowprotocol.svg'
 
@@ -15,6 +16,11 @@ export const LOGO_MAP: { [key: string]: LogoInfo } = {
   cowSwapLightMode: {
     src: LOGO_COWSWAP,
     alt: 'CoW Swap light mode',
+    color: '#012F7A',
+  },
+  cowSwapIconOnlyLightMode: {
+    src: LOGO_ICON_COW,
+    alt: 'CoW Swap icon only light mode',
     color: '#012F7A',
   },
   cowSwapDarkMode: {
@@ -32,7 +38,6 @@ export const LOGO_MAP: { [key: string]: LogoInfo } = {
     alt: 'CoW Protocol dark mode',
     color: '#FFFFFF',
   },
-  // Additional variants can be added here
 }
 
 interface LogoProps {
@@ -49,24 +54,31 @@ const LogoWrapper = styled.span<{ color?: string }>`
   justify-content: center;
   align-items: center;
   gap: 8px;
-  color: var(--color); // This sets the text color, not the SVG fill color directly.
+  color: var(--color);
 
   > svg {
     height: 100%;
     min-height: var(--maxHeight);
     width: auto;
     color: inherit;
-    fill: currentColor; // Ensure SVGs use the current color inherited from the parent.
+    fill: currentColor;
   }
 
   > svg path {
-    fill: currentColor; // Ensure SVGs use the current color inherited from the parent.
+    fill: currentColor;
   }
 `
 
 export const Logo: React.FC<LogoProps> = ({ product, themeMode }) => {
-  const variant = `${product}${themeMode.charAt(0).toUpperCase()}${themeMode.slice(1)}Mode` // Constructs the correct variant key
-  const logoInfo = LOGO_MAP[variant as keyof typeof LOGO_MAP]
+  // Directly use the provided product as the variant key
+  const logoInfo = LOGO_MAP[product as keyof typeof LOGO_MAP]
+
+  console.log('Logo component rendered', { product, themeMode, logoInfo })
+
+  if (!logoInfo) {
+    console.error(`Logo variant ${product} not found in LOGO_MAP`)
+    return null
+  }
 
   return (
     <LogoWrapper color={logoInfo.color}>
