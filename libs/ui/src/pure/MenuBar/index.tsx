@@ -21,7 +21,7 @@ import {
   MobileMenuTrigger,
 } from './styled'
 import SVG from 'react-inlinesvg'
-import { Logo, LOGO_MAP } from '@cowprotocol/ui'
+import { ProductLogo, ProductVariant } from '@cowprotocol/ui'
 import { useOnClickOutside } from '@cowprotocol/common-hooks'
 import IMG_ICON_MENU_DOTS from '@cowprotocol/assets/images/menu-grid-dots.svg'
 import IMG_ICON_ARROW_RIGHT from '@cowprotocol/assets/images/arrow-right.svg'
@@ -31,6 +31,7 @@ import IMG_ICON_MENU_HAMBURGER from '@cowprotocol/assets/images/menu-hamburger.s
 import IMG_ICON_X from '@cowprotocol/assets/images/x.svg'
 
 import { addBodyClass, removeBodyClass } from '@cowprotocol/common-utils'
+import { CowSwapTheme } from '@cowprotocol/widget-lib'
 
 // NavItem Component: Handles individual navigation items, toggles dropdowns based on presence of children.
 // DropdownContentItem Component: Renders items within dropdowns, constructs logo variants based on the theme.
@@ -41,10 +42,10 @@ import { addBodyClass, removeBodyClass } from '@cowprotocol/common-utils'
 // MenuBar Component: Main component managing the menu bar, handles mobile and desktop modes, toggles no-scroll class based on menu state.
 
 const DAO_NAV_ITEMS: MenuItem[] = [
-  { href: 'https://cow.fi/#cowswap', logoVariant: 'cowSwap' },
-  { href: 'https://cow.fi/#cowprotocol', logoVariant: 'cowSwap' },
-  { href: 'https://cow.fi/#cowamm', logoVariant: 'cowProtocol' },
-  { href: 'https://cow.fi/', logoVariant: 'cowProtocol' },
+  { href: 'https://cow.fi/#cowswap', productVariant: 'cowSwap' },
+  { href: 'https://cow.fi/#cowprotocol', productVariant: 'cowSwap' },
+  { href: 'https://cow.fi/#cowamm', productVariant: 'cowProtocol' },
+  { href: 'https://cow.fi/', productVariant: 'cowProtocol' },
 ]
 
 const SETTINGS_ITEMS: MenuItem[] = [
@@ -64,15 +65,15 @@ export interface MenuItem {
   label?: string
   type?: 'dropdown'
   children?: DropdownMenuItem[]
-  logoVariant?: keyof typeof LOGO_MAP
+  productVariant?: ProductVariant
   icon?: string
   isButton?: boolean
 }
 
 interface MenuBarProps {
   navItems: MenuItem[]
-  theme: 'light' | 'dark'
-  productVariant: keyof typeof LOGO_MAP
+  theme: CowSwapTheme
+  productVariant: ProductVariant
   additionalContent?: React.ReactNode
 }
 
@@ -83,7 +84,7 @@ interface DropdownMenuItem {
   description?: string
   isButton?: boolean
   children?: DropdownMenuItem[]
-  logoVariant?: keyof typeof LOGO_MAP
+  productVariant?: ProductVariant
 }
 
 interface DropdownMenuContent {
@@ -124,7 +125,7 @@ const NavItem = ({
 }
 
 // Component for items within dropdowns
-const DropdownContentItem: React.FC<{ item: DropdownMenuItem; theme: 'light' | 'dark'; closeMenu: () => void }> = ({
+const DropdownContentItem: React.FC<{ item: DropdownMenuItem; theme: CowSwapTheme; closeMenu: () => void }> = ({
   item,
   theme,
   closeMenu,
@@ -155,23 +156,19 @@ const DropdownContentItem: React.FC<{ item: DropdownMenuItem; theme: 'light' | '
   )
 
   const renderItemContent = () => {
-    // Determine the correct logo variant
-    const logoVariant = item.logoVariant
-      ? `${item.logoVariant}${theme.charAt(0).toUpperCase()}${theme.slice(1)}Mode`
-      : null
-
+    const { productVariant, icon, label, description } = item
     return (
       <>
-        {logoVariant && LOGO_MAP[logoVariant] ? (
-          <Logo product={logoVariant as keyof typeof LOGO_MAP} themeMode={theme} />
-        ) : item.icon ? (
+        {productVariant ? (
+          <ProductLogo variant={productVariant} theme={theme} logoOnly={false} />
+        ) : icon ? (
           <DropdownContentItemImage>
-            <img src={item.icon} alt={item.label} />
+            <img src={icon} alt={label} />
           </DropdownContentItemImage>
         ) : null}
         <DropdownContentItemText>
-          <DropdownContentItemTitle>{item.label}</DropdownContentItemTitle>
-          {item.description && <DropdownContentItemDescription>{item.description}</DropdownContentItemDescription>}
+          <DropdownContentItemTitle>{label}</DropdownContentItemTitle>
+          {description && <DropdownContentItemDescription>{description}</DropdownContentItemDescription>}
         </DropdownContentItemText>
       </>
     )
@@ -201,7 +198,7 @@ const DropdownContentItem: React.FC<{ item: DropdownMenuItem; theme: 'light' | '
 const NavDaoTrigger: React.FC<{
   isOpen: boolean
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
-  theme: 'light' | 'dark'
+  theme: CowSwapTheme
   mobileMode: boolean
 }> = ({ isOpen, setIsOpen, theme, mobileMode }) => {
   const triggerRef = useRef<HTMLDivElement>(null)
@@ -340,7 +337,8 @@ const GlobalSettingsDropdown = ({ mobileMode }: GlobalSettingsDropdownProps) => 
 }
 
 // Main MenuBar component
-export const MenuBar = ({ navItems, theme, productVariant, additionalContent }: MenuBarProps) => {
+export const MenuBar = (props: MenuBarProps) => {
+  const { navItems, theme, productVariant: productVariant, additionalContent } = props
   const [isDaoOpen, setIsDaoOpen] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const menuRef = useRef(null)
@@ -350,15 +348,6 @@ export const MenuBar = ({ navItems, theme, productVariant, additionalContent }: 
   useOnClickOutside(mobileMenuRef, () => setIsMobileMenuOpen(false))
 
   const isMobile = useMediaQuery(upToLarge)
-
-  // Construct the base and mobile product variants
-  const baseProductVariant = `${productVariant}${theme.charAt(0).toUpperCase()}${theme.slice(1)}Mode`
-  const iconOnlyVariant = `${productVariant}IconOnly${theme.charAt(0).toUpperCase()}${theme.slice(1)}Mode`
-
-  // Determine the appropriate logo variant
-  const logoVariant = isMobile && LOGO_MAP[iconOnlyVariant] ? iconOnlyVariant : baseProductVariant
-
-  console.log('Using logo variant:', logoVariant) // Log to verify correct variant
 
   const handleMobileMenuToggle = () => {
     setIsMobileMenuOpen((prevState) => !prevState)
@@ -383,7 +372,7 @@ export const MenuBar = ({ navItems, theme, productVariant, additionalContent }: 
     <MenuBarWrapper ref={menuRef}>
       <MenuBarInner themeMode={theme}>
         <NavDaoTrigger isOpen={isDaoOpen} setIsOpen={setIsDaoOpen} theme={theme} mobileMode={isMobile} />
-        <Logo product={logoVariant} themeMode={theme} />
+        <ProductLogo variant={productVariant} theme={theme} logoOnly={isMobile} />
 
         {/* Only render NavItems if the screen size is large */}
         {!isMobile && (
