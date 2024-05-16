@@ -28,6 +28,8 @@ function getRpcUrl(chainId: SupportedChainId): string {
   const envKey = `REACT_APP_NETWORK_URL_${chainId}`
   const rpcUrl = RPC_URL_ENVS[chainId]
 
+  console.debug(`getRpcUrl`, envKey, rpcUrl, RPC_URL_ENVS, DEFAULT_RPC_URL)
+
   if (rpcUrl) {
     return rpcUrl
   }
