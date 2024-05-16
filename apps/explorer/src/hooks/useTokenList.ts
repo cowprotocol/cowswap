@@ -27,7 +27,7 @@ export function useTokenList(chainId: SupportedChainId | undefined): { data: Tok
     chainId === SupportedChainId.GNOSIS_CHAIN ? 'https://tokens.honeyswap.org' : ''
   )
   const { data: arbitrumOneList, isLoading: isArbitrumOneListLoading } = useTokenListByUrl(
-    chainId === SupportedChainId.GNOSIS_CHAIN ? 'https://tokens.coingecko.com/arbitrum-one/all.json' : ''
+    chainId === SupportedChainId.ARBITRUM_ONE ? 'https://tokens.coingecko.com/arbitrum-one/all.json' : ''
   )
 
   const data = chainId ? { ...coingeckoList, ...honeyswapList, ...cowSwapList, ...arbitrumOneList }[chainId] : {}
