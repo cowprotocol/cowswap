@@ -1,4 +1,5 @@
 import { EnsAbi, EnsRegistrar } from '@cowprotocol/abis'
+import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
 import { getContract } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletChainId, useWalletProvider } from '@cowprotocol/wallet-provider'
@@ -15,15 +16,19 @@ export function useENSRegistrarContract(): EnsRegistrar | undefined {
   const provider = useWalletProvider()
   const chainId = useWalletChainId()
 
-  const { data } = useSWR(['useENSRegistrarContract', provider, chainId], () => {
-    if (!chainId || !provider) return undefined
+  const { data } = useSWR(
+    ['useENSRegistrarContract', provider, chainId],
+    () => {
+      if (!chainId || !provider) return undefined
 
-    const address = ENS_REGISTRAR_ADDRESSES[chainId as SupportedChainId]
+      const address = ENS_REGISTRAR_ADDRESSES[chainId as SupportedChainId]
 
-    if (!address) return undefined
+      if (!address) return undefined
 
-    return getContract(address, EnsAbi, provider) as EnsRegistrar
-  })
+      return getContract(address, EnsAbi, provider) as EnsRegistrar
+    },
+    SWR_NO_REFRESH_OPTIONS
+  )
 
   return data
 }
