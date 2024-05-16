@@ -55,9 +55,7 @@ export function WatchAssetInWallet(props: WatchAssetInWalletProps) {
       })
   }, [provider, logoURL, token])
 
-  if (!currency || !icon || !walletName || isProviderNetworkUnsupported) return null
-
-  if (!isAssetWatchingSupported) {
+  if (!currency || !icon || !walletName || isProviderNetworkUnsupported || !isAssetWatchingSupported) {
     return fallback || null
   }
 
