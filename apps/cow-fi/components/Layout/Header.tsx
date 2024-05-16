@@ -1,4 +1,4 @@
-import { useState, forwardRef } from 'react'
+import { useState, forwardRef, useEffect, useMemo } from 'react'
 import styled, { css } from 'styled-components'
 import Link from 'next/link'
 import { transparentize } from 'polished'
@@ -12,6 +12,7 @@ import { HEADER_LINKS } from '@/const/menu'
 import { LinkWithUtm } from 'modules/utm'
 import { sendGAEventHandler } from 'lib/analytics/sendGAEvent'
 import { NavigationEvents, GAEventCategories } from 'lib/analytics/GAEvents'
+import { useFeatureFlags } from 'hooks/useFeatureFlags'
 
 const LogoImage = '/images/logo.svg'
 const LogoImageThemedCoWAMM = '/images/logo-themed-cowamm.svg'
@@ -323,6 +324,14 @@ export default function Header({ isLight = false, isLightCoWAMM = false }: Props
   const swapURL = CONFIG.url.swap
   const isTouch = useMediaQuery(`(max-width: ${Media.mediumEnd})`)
   const [menuVisible, setIsMenuVisible] = useState(false)
+
+  const { isLearnVisible } = useFeatureFlags()
+
+  const headerLinks = useMemo(() => {
+    return isLearnVisible ? HEADER_LINKS : HEADER_LINKS.filter((link) => link.label !== 'Learn')
+  }, [isLearnVisible])
+  
+
   const toggleBodyScroll = () => {
     !menuVisible ? document.body.classList.add('noScroll') : document.body.classList.remove('noScroll')
   }
@@ -348,7 +357,7 @@ export default function Header({ isLight = false, isLightCoWAMM = false }: Props
               </Link>
 
               <Menu menuVisible={menuVisible} isLight={isLight} isLightCoWAMM={isLightCoWAMM} isSticky={!inView}>
-                {HEADER_LINKS.map((link, index) => (
+                {headerLinks.map((link, index) => (
                   <li key={index}>
                     <CustomLink {...link} onClick={() => handleClick({ label: link.label })} />
                   </li>

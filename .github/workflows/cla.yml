@@ -1,4 +1,4 @@
-name: "cla"
+name: 'cla'
 
 on:
   issue_comment:
@@ -10,7 +10,7 @@ jobs:
   cla:
     runs-on: ubuntu-latest
     steps:
-      - name: "Get Team Members"
+      - name: 'Get Team Members'
         id: team
         uses: actions/github-script@v6
         with:
@@ -23,14 +23,14 @@ jobs:
             );
             return members.map(m => m.login).join(",");
 
-      - name: "CLA Assistant"
+      - name: 'CLA Assistant'
         if: (github.event.comment.body == 'recheck' || github.event.comment.body == 'I have read the CLA Document and I hereby sign the CLA') || github.event_name == 'pull_request_target'
         uses: contributor-assistant/github-action@v2.1.3-beta
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PERSONAL_ACCESS_TOKEN : ${{ secrets.ORG_TOKEN }}
+          PERSONAL_ACCESS_TOKEN: ${{ secrets.ORG_TOKEN }}
         with:
           branch: 'cla-signatures'
           path-to-signatures: 'signatures/version1/cla.json'
-          path-to-document: 'https://github.com/cowprotocol/cla/blob/main/Nomev%20Labs%20CLA.md'
+          path-to-document: 'https://github.com/cowprotocol/cla/blob/main/Cow%20Services%20CLA.md'
           allowlist: '${{ steps.team.outputs.result }},*[bot],lint-action,dependabot,mergify'
