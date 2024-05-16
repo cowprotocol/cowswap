@@ -1,6 +1,5 @@
 import { useMemo } from 'react'
 
-import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { useWeb3React } from '@web3-react/core'
 
 import { useSafeAppsSdk } from './useSafeAppsSdk'
@@ -56,7 +55,7 @@ function getWcPeerMetadata(provider: any | undefined): WalletMetaData {
 }
 
 // FIXME: I notice this function is not calculating always correctly the walletName. Out of scope of this PR to fix. "getConnnectionName" might help
-export function useWalletMetaData(): WalletMetaData {
+export function useWalletMetaData(standaloneMode?: boolean): WalletMetaData {
   const { connector, provider, account } = useWeb3React()
   const selectedEip6963Provider = useSelectedEip6963ProviderInfo()
   const connectionType = getWeb3ReactConnection(connector).type
@@ -67,7 +66,7 @@ export function useWalletMetaData(): WalletMetaData {
     }
 
     if (connectionType === ConnectionType.INJECTED) {
-      if (isInjectedWidget()) {
+      if (standaloneMode === false) {
         return {
           walletName: 'CoW Swap widget',
           icon: 'Identicon',
@@ -99,7 +98,7 @@ export function useWalletMetaData(): WalletMetaData {
       icon: getConnectionIcon(connectionType),
       walletName: getConnectionName(connectionType),
     }
-  }, [connectionType, provider, account, selectedEip6963Provider])
+  }, [connectionType, provider, account, selectedEip6963Provider, standaloneMode])
 }
 
 /**
