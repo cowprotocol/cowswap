@@ -1,6 +1,7 @@
 import { MenuBar, MenuItem, ButtonSecondary as Button } from '@cowprotocol/ui'
 
 import IMG_ICON_SETTINGS_GLOBAL from '@cowprotocol/assets/images/settings-global.svg'
+import IMG_ICON_BRANDED_DOT_RED from '@cowprotocol/assets/images/icon-branded-dot-red.svg'
 
 const THEME_MODE = 'light'
 const PRODUCT_VARIANT = 'cowSwap'
@@ -10,9 +11,14 @@ const NAV_ITEMS: MenuItem[] = [
     href: '#',
     label: 'Trade',
     children: [
-      { href: '#', label: 'Swap', description: 'Trade tokens' },
-      { href: '#', label: 'Limit order' },
-      { href: '#', label: 'TWAP' },
+      { icon: IMG_ICON_BRANDED_DOT_RED, href: '#', label: 'Swap', description: 'Trade tokens' },
+      { icon: IMG_ICON_BRANDED_DOT_RED, href: '#', label: 'Limit order', description: 'Set your own price' },
+      {
+        icon: IMG_ICON_BRANDED_DOT_RED,
+        href: '#',
+        label: 'TWAP',
+        description: 'Place orders with a time-weighted average price',
+      },
     ],
   },
   { href: '#', label: 'Account' },

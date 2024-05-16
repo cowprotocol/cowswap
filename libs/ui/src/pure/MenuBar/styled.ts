@@ -348,13 +348,19 @@ export const RootNavItem = styled.a<{ isOpen?: boolean; mobileMode?: boolean }>`
   }
 `
 
-export const RightAligned = styled.div`
+export const RightAligned = styled.div<{ mobileMode?: boolean }>`
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
   align-items: center;
   gap: 16px;
   margin: 0 0 0 auto;
+
+  ${({ mobileMode }) =>
+    mobileMode &&
+    css`
+      gap: 10px;
+    `}
 `
 
 export const GlobalSettingsWrapper = styled.div`

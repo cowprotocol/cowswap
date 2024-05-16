@@ -102,8 +102,8 @@ interface DropdownProps {
 const NavItem = ({
   item,
   isClickable = false,
-  isMobileMode = false,
-}: NavItemProps & { isClickable?: boolean; isMobileMode?: boolean }) => {
+  mobileMode = false,
+}: NavItemProps & { isClickable?: boolean; mobileMode?: boolean }) => {
   const [isOpen, setIsOpen] = useState(false)
   const handleToggle = () => setIsOpen((prevIsOpen) => !prevIsOpen)
 
@@ -112,12 +112,12 @@ const NavItem = ({
       isOpen={isOpen}
       content={{ title: item.label, items: item.children }}
       onTrigger={handleToggle}
-      interaction={isClickable || isMobileMode ? 'click' : 'hover'}
-      mobileMode={isMobileMode}
+      interaction={isClickable || mobileMode ? 'click' : 'hover'}
+      mobileMode={mobileMode}
       isNavItemDropdown={true} // Indicate this is a NavItem dropdown
     />
   ) : (
-    <RootNavItem href={item.href} mobileMode={isMobileMode}>
+    <RootNavItem href={item.href} mobileMode={mobileMode}>
       {item.label}
     </RootNavItem>
   )
@@ -389,21 +389,20 @@ export const MenuBar = ({ navItems, theme, productVariant, additionalContent }: 
         {!isMobile && (
           <NavItems themeMode={theme}>
             {navItems.map((item, index) => (
-              <NavItem key={index} item={item} isMobileMode={isMobile} />
+              <NavItem key={index} item={item} mobileMode={isMobile} />
             ))}
           </NavItems>
         )}
 
+        {/* Always show GlobalSettingsDropdown and MobileMenuTrigger */}
         <RightAligned>
-          {additionalContent}
+          {!isMobile && additionalContent}
 
-          {/* if is not large show hamburger menu icon */}
           {isMobile && (
             <MobileMenuTrigger theme={theme} onClick={handleMobileMenuToggle}>
               <SVG src={isMobileMenuOpen ? IMG_ICON_X : IMG_ICON_MENU_HAMBURGER} />
             </MobileMenuTrigger>
           )}
-
           <GlobalSettingsDropdown mobileMode={isMobile} />
         </RightAligned>
       </MenuBarInner>
@@ -413,8 +412,10 @@ export const MenuBar = ({ navItems, theme, productVariant, additionalContent }: 
         <NavItems mobileMode={isMobile} ref={mobileMenuRef} themeMode={theme}>
           <div>
             {navItems.map((item, index) => (
-              <NavItem key={index} item={item} isMobileMode={isMobile} />
+              <NavItem key={index} item={item} mobileMode={isMobile} />
             ))}
+            {/* Render additional content within the NavItems in mobile view */}
+            {additionalContent}
           </div>
         </NavItems>
       )}
