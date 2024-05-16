@@ -42,10 +42,10 @@ export function checkEnvironment(host: string, path: string): EnvironmentChecks 
   }
 }
 
-const { isLocal, isDev, isPr, isStaging, isProd, isEns, isBarn } = checkEnvironment(
-  window.location.host,
-  window.location.pathname
-)
+const { isLocal, isDev, isPr, isStaging, isProd, isEns, isBarn } =
+  typeof window !== 'undefined'
+    ? checkEnvironment(window.location.host, window.location.pathname)
+    : { isLocal: false, isDev: false, isPr: false, isStaging: false, isProd: false, isEns: false, isBarn: false }
 
 export const ALL_ENVIRONMENTS: EnvironmentName[] = [
   'local',

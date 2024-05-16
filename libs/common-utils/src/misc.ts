@@ -56,6 +56,7 @@ export function getPromiseFulfilledValue<T, E = undefined>(
 }
 
 export const registerOnWindow = (registerMapping: Record<string, any>) => {
+  if (typeof window === 'undefined') return
   Object.entries(registerMapping).forEach(([key, value]) => {
     ;(window as any)[key] = value
   })

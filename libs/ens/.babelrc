@@ -15,6 +15,7 @@
         "pure": true,
         "ssr": true
       }
-    ]
+    ],
+    "babel-plugin-macros"
   ]
 }

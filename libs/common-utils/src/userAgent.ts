@@ -1,6 +1,6 @@
 import { UAParser } from 'ua-parser-js'
 
-const userAgentRaw = window.navigator.userAgent
+const userAgentRaw = typeof window !== 'undefined' ? window.navigator.userAgent : ''
 const parser = new UAParser(userAgentRaw)
 const { type } = parser.getDevice()
 
