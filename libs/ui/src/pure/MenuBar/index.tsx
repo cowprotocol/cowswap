@@ -31,7 +31,14 @@ import IMG_ICON_MENU_HAMBURGER from '@cowprotocol/assets/images/menu-hamburger.s
 import IMG_ICON_X from '@cowprotocol/assets/images/x.svg'
 
 import { addBodyClass, removeBodyClass } from '@cowprotocol/common-utils'
-import { is } from '@react-spring/shared'
+
+// NavItem Component: Handles individual navigation items, toggles dropdowns based on presence of children.
+// DropdownContentItem Component: Renders items within dropdowns, constructs logo variants based on the theme.
+// NavDaoTrigger Component: Manages the DAO menu trigger and its dropdown content.
+// GenericDropdown Component: Used for dropdowns in navigation items, determines hover or click interaction.
+// DropdownContentWrapper Component: Manages nested dropdown content, including third-level items.
+// GlobalSettingsDropdown Component: Handles the global settings dropdown menu.
+// MenuBar Component: Main component managing the menu bar, handles mobile and desktop modes, toggles no-scroll class based on menu state.
 
 const DAO_NAV_ITEMS: MenuItem[] = [
   { href: 'https://cow.fi/#cowswap', logoVariant: 'cowSwap' },
@@ -47,6 +54,7 @@ const SETTINGS_ITEMS: MenuItem[] = [
   { label: 'Language', href: '#language' },
 ]
 
+// Type definitions for navigation items
 interface NavItemProps {
   item: MenuItem
 }
@@ -90,7 +98,7 @@ interface DropdownProps {
   interaction: 'hover' | 'click'
 }
 
-// NavItem Component
+// Component for individual navigation items
 const NavItem = ({
   item,
   isClickable = false,
@@ -115,7 +123,7 @@ const NavItem = ({
   )
 }
 
-// DropdownContentItem Component
+// Component for items within dropdowns
 const DropdownContentItem: React.FC<{ item: DropdownMenuItem; theme: 'light' | 'dark'; closeMenu: () => void }> = ({
   item,
   theme,
@@ -189,7 +197,7 @@ const DropdownContentItem: React.FC<{ item: DropdownMenuItem; theme: 'light' | '
   )
 }
 
-// NavDaoTrigger Component
+// Component for the DAO menu trigger
 const NavDaoTrigger: React.FC<{
   isOpen: boolean
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
@@ -219,7 +227,7 @@ const NavDaoTrigger: React.FC<{
   )
 }
 
-// GenericDropdown Component
+// Generic dropdown component used for NavItem dropdowns
 const GenericDropdown: React.FC<DropdownProps & { mobileMode?: boolean; isNavItemDropdown?: boolean }> = ({
   isOpen,
   content,
@@ -248,7 +256,7 @@ const GenericDropdown: React.FC<DropdownProps & { mobileMode?: boolean; isNavIte
   )
 }
 
-// DropdownContentWrapper Component
+// Wrapper component for dropdown content, handling nested dropdowns
 const DropdownContentWrapper: React.FC<{
   content: DropdownMenuContent
   isThirdLevel?: boolean
@@ -303,7 +311,7 @@ interface GlobalSettingsDropdownProps {
   mobileMode: boolean
 }
 
-// GlobalSettingsDropdown Component
+// Component for the global settings dropdown
 const GlobalSettingsDropdown = ({ mobileMode }: GlobalSettingsDropdownProps) => {
   const [isOpen, setIsOpen] = useState(false)
   const buttonRef = useRef<HTMLButtonElement>(null)
@@ -331,7 +339,7 @@ const GlobalSettingsDropdown = ({ mobileMode }: GlobalSettingsDropdownProps) => 
   )
 }
 
-// MenuBar Component
+// Main MenuBar component
 export const MenuBar = ({ navItems, theme, productVariant, additionalContent }: MenuBarProps) => {
   const [isDaoOpen, setIsDaoOpen] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
@@ -358,16 +366,18 @@ export const MenuBar = ({ navItems, theme, productVariant, additionalContent }: 
 
   // Add/remove noScroll class to body when mobile menu is opened/closed
   React.useEffect(() => {
-    if (isMobileMenuOpen || isDaoOpen) {
-      addBodyClass('noScroll')
-    } else {
-      removeBodyClass('noScroll')
+    if (isMobile) {
+      if (isMobileMenuOpen || isDaoOpen) {
+        addBodyClass('noScroll')
+      } else {
+        removeBodyClass('noScroll')
+      }
     }
 
     return () => {
       removeBodyClass('noScroll')
     }
-  }, [isMobileMenuOpen, isDaoOpen])
+  }, [isMobile, isMobileMenuOpen, isDaoOpen])
 
   return (
     <MenuBarWrapper ref={menuRef}>
