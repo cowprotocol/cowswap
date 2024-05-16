@@ -370,13 +370,13 @@ export const MenuBar = (props: MenuBarProps) => {
 
   return (
     <MenuBarWrapper ref={menuRef}>
-      <MenuBarInner themeMode={theme}>
+      <MenuBarInner theme={theme}>
         <NavDaoTrigger isOpen={isDaoOpen} setIsOpen={setIsDaoOpen} theme={theme} mobileMode={isMobile} />
         <ProductLogo variant={productVariant} theme={theme} logoIconOnly={isMobile} />
 
         {/* Only render NavItems if the screen size is large */}
         {!isMobile && (
-          <NavItems themeMode={theme}>
+          <NavItems theme={theme}>
             {navItems.map((item, index) => (
               <NavItem key={index} item={item} mobileMode={isMobile} />
             ))}
@@ -398,7 +398,7 @@ export const MenuBar = (props: MenuBarProps) => {
 
       {/* Mobile Menu */}
       {isMobile && isMobileMenuOpen && (
-        <NavItems mobileMode={isMobile} ref={mobileMenuRef} themeMode={theme}>
+        <NavItems mobileMode={isMobile} ref={mobileMenuRef} theme={theme}>
           <div>
             {navItems.map((item, index) => (
               <NavItem key={index} item={item} mobileMode={isMobile} />

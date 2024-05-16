@@ -1,5 +1,6 @@
 import styled, { css } from 'styled-components/macro'
 import { UI } from '@cowprotocol/ui'
+import { CowSwapTheme } from '@cowprotocol/widget-lib'
 
 export const MenuBarWrapper = styled.div`
   display: flex;
@@ -12,10 +13,10 @@ export const MenuBarWrapper = styled.div`
   top: 0;
 `
 
-export const MenuBarInner = styled.div<{ themeMode: string }>`
+export const MenuBarInner = styled.div<{ theme: CowSwapTheme }>`
   --height: 56px;
   --width: 100%;
-  --bgColor: ${({ themeMode }) => (themeMode === 'dark' ? '#333' : 'rgba(255, 248, 247, 0.6)')};
+  --bgColor: ${({ theme }) => (theme === 'dark' ? '#333' : 'rgba(255, 248, 247, 0.6)')};
   --borderRadius: 28px;
   --blur: 16px;
 
@@ -72,7 +73,7 @@ export const NavDaoTriggerElement = styled.div<{ isActive: boolean }>`
   }
 `
 
-export const MobileMenuTrigger = styled.div<{ theme: string }>`
+export const MobileMenuTrigger = styled.div<{ theme: CowSwapTheme }>`
   --size: 42px;
   --defaultFill: grey;
   --activeBackground: #555; // Active background color
@@ -111,9 +112,9 @@ export const MobileMenuTrigger = styled.div<{ theme: string }>`
   }
 `
 
-export const NavItems = styled.ul<{ mobileMode?: boolean; themeMode: string }>`
+export const NavItems = styled.ul<{ mobileMode?: boolean; theme: CowSwapTheme }>`
   --marginLeft: 20px;
-  --bgColor: ${({ themeMode }) => (themeMode === 'dark' ? '#333' : 'rgba(255, 248, 247, 0.6)')};
+  --bgColor: ${({ theme }) => (theme === 'dark' ? '#333' : 'rgba(255, 248, 247, 0.6)')};
   --borderRadius: 28px;
   --blur: 16px;
 
