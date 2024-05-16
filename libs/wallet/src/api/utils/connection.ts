@@ -40,11 +40,3 @@ export function getIsInjected(): boolean {
 export function getIsInjectedMobileBrowser(): boolean {
   return getIsInjected() && isMobile
 }
-
-export function getIsAmbireWallet(name: string | undefined): boolean {
-  return name?.toLocaleLowerCase().includes('ambire') || false
-}
-
-export function getIsTallyWallet(provider: any, name?: string): boolean {
-  return provider?.isTally || name?.toLocaleLowerCase().includes('tally') || false
-}

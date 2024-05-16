@@ -2,7 +2,7 @@ import { useRef } from 'react'
 
 import { getChainInfo } from '@cowprotocol/common-const'
 import { UI } from '@cowprotocol/ui'
-import { getIsTallyWallet, useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
+import { useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import { Trans } from '@lingui/macro'
@@ -158,14 +158,13 @@ export function NetworkSelector() {
   const closeModal = useCloseModal(ApplicationModal.NETWORK_SELECTOR)
   const toggleModal = useToggleModal(ApplicationModal.NETWORK_SELECTOR)
   const isSmartContractWallet = useIsSmartContractWallet()
-  const isTallyWallet = getIsTallyWallet(provider?.provider)
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
   const info = getChainInfo(chainId)
 
   const onSelectChain = useOnSelectNetwork()
   const isUpToMedium = useMediaQuery(upToMedium)
 
-  if (!provider || isSmartContractWallet || isTallyWallet) {
+  if (!provider || isSmartContractWallet) {
     return null
   }
 
