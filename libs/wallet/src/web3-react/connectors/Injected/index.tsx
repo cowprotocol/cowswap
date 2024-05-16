@@ -58,8 +58,9 @@ export class InjectedWallet extends Connector {
             : desiredChainIdOrChainParameters?.chainId
 
         // if there's no desired chain, or it's equal to the received, update
-        if (!desiredChainId || receivedChainId === desiredChainId)
+        if (!desiredChainId || receivedChainId === desiredChainId) {
           return this.actions.update({ chainId: receivedChainId, accounts })
+        }
 
         const desiredChainIdHex = `0x${desiredChainId.toString(16)}`
 
@@ -128,13 +129,12 @@ export class InjectedWallet extends Connector {
 
         const { chainId } = data
         this.actions.update({ chainId: parseChainId(chainId) })
-        this.onConnect?.()
       })
 
       const onDisconnect = (error: ProviderRpcError): void => {
         this.provider?.request({ method: 'PUBLIC_disconnectSite' })
 
-        this.actions.resetState()
+        this.deactivate()
         this.onError?.(error)
       }
 
@@ -152,11 +152,11 @@ export class InjectedWallet extends Connector {
           this.actions.update({ accounts })
         }
       })
+
+      this.onConnect?.()
     }
   }
 
-  // Mod: Added custom method
-  // Just reset state on deactivate
   async deactivate(): Promise<void> {
     this.provider = undefined
     this.onDisconnect?.()

@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 import { getCurrentChainIdFromUrl, isInjectedWidget } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
@@ -28,6 +28,7 @@ async function connect(connector: Connector) {
 }
 
 export function useEagerlyConnect(selectedWallet: ConnectionType | undefined) {
+  const [tryConnectEip6963Provider, setTryConnectEip6963Provider] = useState(false)
   const selectedEip6963ProviderInfo = useSelectedEip6963ProviderInfo()
   const setEip6963Provider = useSetEip6963Provider()
 
@@ -53,9 +54,12 @@ export function useEagerlyConnect(selectedWallet: ConnectionType | undefined) {
        * Skip activation if an injected eip6963 provider was previously selected
        * Because it will be activated in the next useEffect() block
        */
-      if (connection.type === ConnectionType.INJECTED && cachedProviderRdns) return
+      if (connection.type === ConnectionType.INJECTED && cachedProviderRdns) {
+        setTryConnectEip6963Provider(true)
+        return
+      }
 
-      connect(getWeb3ReactConnection(selectedWallet).connector)
+      connect(connection.connector)
     }
     // The dependency list is empty so this is only run once on mount
   }, [])
@@ -64,7 +68,7 @@ export function useEagerlyConnect(selectedWallet: ConnectionType | undefined) {
    * Activate the selected eip6963 provider
    */
   useEffect(() => {
-    if (!selectedWallet) return
+    if (!selectedWallet || !tryConnectEip6963Provider) return
 
     const connection = getWeb3ReactConnection(selectedWallet)
 
@@ -76,7 +80,8 @@ export function useEagerlyConnect(selectedWallet: ConnectionType | undefined) {
       connector.onConnect = () => setEip6963Provider(info.rdns)
       connector.onDisconnect = () => setEip6963Provider(null)
 
+      setTryConnectEip6963Provider(false)
       connect(connector)
     }
-  }, [selectedEip6963ProviderInfo, selectedWallet, setEip6963Provider])
+  }, [selectedEip6963ProviderInfo, selectedWallet, setEip6963Provider, tryConnectEip6963Provider])
 }

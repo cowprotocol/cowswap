@@ -89,7 +89,6 @@ export function Eip6963Option({
     injectedWalletConnection.connector.onConnect = () => setEip6963Provider(info.rdns)
     injectedWalletConnection.connector.onDisconnect = () => setEip6963Provider(null)
 
-    setEip6963Provider(info.rdns)
     tryActivation(injectedWalletConnection.connector)
   }, [provider, tryActivation, setEip6963Provider])
 
