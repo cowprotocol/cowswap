@@ -57,6 +57,8 @@ export class InjectedWallet extends Connector {
             ? desiredChainIdOrChainParameters
             : desiredChainIdOrChainParameters?.chainId
 
+        this.onConnect?.()
+
         // if there's no desired chain, or it's equal to the received, update
         if (!desiredChainId || receivedChainId === desiredChainId) {
           return this.actions.update({ chainId: receivedChainId, accounts })
@@ -132,6 +134,7 @@ export class InjectedWallet extends Connector {
       })
 
       const onDisconnect = (error: ProviderRpcError): void => {
+        console.log('TTTTT2')
         this.provider?.request({ method: 'PUBLIC_disconnectSite' })
 
         this.deactivate()
@@ -152,12 +155,18 @@ export class InjectedWallet extends Connector {
           this.actions.update({ accounts })
         }
       })
-
-      this.onConnect?.()
     }
   }
 
   async deactivate(): Promise<void> {
+    if (this.provider) {
+      this.provider.removeAllListeners('connect')
+      this.provider.removeAllListeners('disconnect')
+      this.provider.removeAllListeners('close')
+      this.provider.removeAllListeners('chainChanged')
+      this.provider.removeAllListeners('accountsChanged')
+    }
+
     this.provider = undefined
     this.onDisconnect?.()
     this.actions.resetState()
