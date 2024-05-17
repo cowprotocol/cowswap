@@ -82,7 +82,8 @@ export function Eip6963Option({
 }: Eip6963OptionProps) {
   const setEip6963Provider = useSetEip6963Provider()
   const selectedRdns = useSelectedEip6963ProviderRdns()
-  const isActive = useIsActiveConnection(selectedWallet, injectedWalletConnection) && selectedRdns === info.rdns
+  const isActive =
+    useIsActiveConnection(selectedWallet, injectedWalletConnection) && !!selectedWallet && selectedRdns === info.rdns
 
   const onClick = useCallback(() => {
     injectedWalletConnection.connector.provider = provider
