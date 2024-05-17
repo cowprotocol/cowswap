@@ -1,5 +1,6 @@
 import { Dispatch, SetStateAction } from 'react'
 
+import { CHAIN_INFO } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import FormControl from '@mui/material/FormControl'
@@ -12,11 +13,10 @@ export type NetworkOption = {
   label: string
 }
 
-export const NetworkOptions: NetworkOption[] = [
-  { chainId: SupportedChainId.MAINNET, label: 'Ethereum' },
-  { chainId: SupportedChainId.GNOSIS_CHAIN, label: 'Gnosis Chain' },
-  { chainId: SupportedChainId.SEPOLIA, label: 'Sepolia' },
-]
+export const NetworkOptions: NetworkOption[] = Object.keys(CHAIN_INFO).map<NetworkOption>((key) => {
+  const chainId = key as unknown as SupportedChainId
+  return ({ chainId, label: CHAIN_INFO[chainId].label })
+})
 
 const DEFAULT_CHAIN_ID = NetworkOptions[0].chainId
 
