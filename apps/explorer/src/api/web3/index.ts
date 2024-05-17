@@ -47,7 +47,7 @@ const PROVIDER_ENDPOINTS: Record<SupportedChainId, string> = {
   [SupportedChainId.MAINNET]: 'https://eth-mainnet.nodereal.io/v1/' + NODE_PROVIDER_ID,
   [SupportedChainId.GNOSIS_CHAIN]: 'https://rpc.gnosis.gateway.fm/',
   [SupportedChainId.SEPOLIA]: 'https://eth-sepolia.nodereal.io/v1/' + NODE_PROVIDER_ID,
-  [SupportedChainId.ARBITRUM_ONE]: 'https://open-platform.nodereal.io/' + NODE_PROVIDER_ID + '/arbitrum-nitro/',
+  [SupportedChainId.ARBITRUM_ONE]: 'https://open-platform.nodereal.io/' + NODE_PROVIDER_ID + '/arbitrum-nitro',
 }
 
 export function getProviderByNetwork(networkId: SupportedChainId): string | undefined {
