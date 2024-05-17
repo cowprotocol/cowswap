@@ -11,6 +11,8 @@ import { getIsWalletConnect } from '../hooks/useIsWalletConnect'
 function getRpcUrls(chainId: SupportedChainId): [string] {
   if (chainId === SupportedChainId.GNOSIS_CHAIN) {
     return ['https://rpc.gnosischain.com/']
+  } else if (chainId === SupportedChainId.ARBITRUM_ONE) {
+    return ['https://arbitrum.llamarpc.com']
   }
 
   return [RPC_URLS[chainId]]
