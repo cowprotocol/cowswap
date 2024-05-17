@@ -114,6 +114,8 @@ export function getExplorerLabel(chainId: SupportedChainId, type: BlockExplorerL
     return 'View on Explorer'
   } else if (chainId === SupportedChainId.GNOSIS_CHAIN) {
     return 'View on Gnosisscan'
+  } else if (chainId === SupportedChainId.ARBITRUM_ONE) {
+    return 'View on Arbiscan'
   } else {
     return 'View on Etherscan'
   }
