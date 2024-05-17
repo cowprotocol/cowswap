@@ -25,7 +25,10 @@ export async function getTxOrders(params: GetTxOrdersParams): Promise<RawOrder[]
 
   console.log(`[getTxOrders] Fetching tx orders on network ${networkId}`)
 
-  const orderPromises = orderBookSDK.getTxOrders(txHash, { chainId: networkId, backoffOpts })
+  const orderPromises = orderBookSDK.getTxOrders(txHash, { chainId: networkId, backoffOpts }).catch((error) => {
+    console.error('[getTxOrders] Error getting PROD orders', networkId, txHash, error)
+    return []
+  })
   const orderPromisesBarn = orderBookSDK
     .getTxOrders(txHash, {
       chainId: networkId,
@@ -33,7 +36,7 @@ export async function getTxOrders(params: GetTxOrdersParams): Promise<RawOrder[]
       backoffOpts,
     })
     .catch((error) => {
-      console.error('[getTxOrders] Error getting the orders for Barn', error)
+      console.error('[getTxOrders] Error getting BARN orders', networkId, txHash, error)
       return []
     })
 
