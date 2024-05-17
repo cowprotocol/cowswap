@@ -4,6 +4,7 @@ import {
   COW_PROTOCOL_VAULT_RELAYER_ADDRESS,
   IpfsConfig,
   SupportedChainId,
+  mapSupportedNetworks,
 } from '@cowprotocol/cow-sdk'
 import { Fraction, Percent } from '@uniswap/sdk-core'
 
@@ -52,17 +53,9 @@ export const APP_TITLE = 'CoW Swap | The smartest way to trade cryptocurrencies'
 
 type Env = 'barn' | 'prod'
 
-export const COWSWAP_ETHFLOW_CONTRACT_ADDRESS: Record<Env, Partial<Record<SupportedChainId, string>>> = {
-  prod: {
-    [SupportedChainId.MAINNET]: EthFlowProd[SupportedChainId.MAINNET].address,
-    [SupportedChainId.GNOSIS_CHAIN]: EthFlowProd[SupportedChainId.GNOSIS_CHAIN].address,
-    [SupportedChainId.SEPOLIA]: EthFlowProd[SupportedChainId.SEPOLIA].address,
-  },
-  barn: {
-    [SupportedChainId.MAINNET]: EthFlowBarn[SupportedChainId.MAINNET].address,
-    [SupportedChainId.GNOSIS_CHAIN]: EthFlowBarn[SupportedChainId.GNOSIS_CHAIN].address,
-    [SupportedChainId.SEPOLIA]: EthFlowBarn[SupportedChainId.SEPOLIA].address,
-  },
+export const COWSWAP_ETHFLOW_CONTRACT_ADDRESS: Record<Env, Record<SupportedChainId, string>> = {
+  prod: mapSupportedNetworks((chain) => EthFlowProd[chain].address),
+  barn: mapSupportedNetworks((chain) => EthFlowBarn[chain].address),
 }
 
 export const GP_SETTLEMENT_CONTRACT_ADDRESS = COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS

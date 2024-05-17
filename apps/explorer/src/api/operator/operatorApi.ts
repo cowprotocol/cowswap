@@ -6,6 +6,8 @@ import { GetOrderParams, GetTxOrdersParams, RawOrder, RawTrade, WithNetworkId } 
 
 export { getAccountOrders } from './accountOrderUtils'
 
+const backoffOpts = { numOfAttempts: 2 }
+
 /**
  * Gets a single order by id
  */
@@ -23,11 +25,17 @@ export async function getTxOrders(params: GetTxOrdersParams): Promise<RawOrder[]
 
   console.log(`[getTxOrders] Fetching tx orders on network ${networkId}`)
 
-  const orderPromises = orderBookSDK.getTxOrders(txHash, { chainId: networkId })
-  const orderPromisesBarn = orderBookSDK.getTxOrders(txHash, { chainId: networkId, env: 'staging' }).catch((error) => {
-    console.error('[getTxOrders] Error getting the orders for Barn', error)
-    return []
-  })
+  const orderPromises = orderBookSDK.getTxOrders(txHash, { chainId: networkId, backoffOpts })
+  const orderPromisesBarn = orderBookSDK
+    .getTxOrders(txHash, {
+      chainId: networkId,
+      env: 'staging',
+      backoffOpts,
+    })
+    .catch((error) => {
+      console.error('[getTxOrders] Error getting the orders for Barn', error)
+      return []
+    })
 
   // sdk not merging array responses yet
   const orders = await Promise.all([orderPromises, orderPromisesBarn])
