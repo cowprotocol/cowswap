@@ -12,6 +12,7 @@ import {
   USDC_MAINNET,
   USDC_SEPOLIA,
   USDT,
+  USDT_ARBITRUM_ONE,
   WBTC,
   WBTC_ARBITRUM_ONE,
   WBTC_GNOSIS_CHAIN,
@@ -55,7 +56,7 @@ export const DEFAULT_FAVOURITE_TOKENS: Record<SupportedChainId, TokensMap> = {
   ]),
   [SupportedChainId.ARBITRUM_ONE]: tokensListToMap([
     USDC_ARBITRUM_ONE,
-    USDT,
+    USDT_ARBITRUM_ONE,
     WRAPPED_NATIVE_CURRENCIES[SupportedChainId.ARBITRUM_ONE],
     WBTC_ARBITRUM_ONE,
     DAI_ARBITRUM_ONE,
