@@ -64,6 +64,8 @@ export const Sidebar = styled.div<{ isOpen: boolean }>`
   border-top-left-radius: 16px;
   overflow-y: auto;
 
+  ${({ theme }) => theme.colorScrollbar};
+
   ${({ theme }) => theme.mediaWidth.upToSmall`
     width: 100%;
     position: fixed;

@@ -73,7 +73,7 @@ export function NotificationsList({ children }: { children: ReactNode }) {
         {groups?.length === 0 && (
           <NoNotifications>
             <h4>Nothing new yet</h4>
-            <p>As soon as anything important or interesting happens, we will definitely let you know</p>
+            <p>As soon as anything important or interesting happens, we will definitely let you know.</p>
           </NoNotifications>
         )}
       </ListWrapper>

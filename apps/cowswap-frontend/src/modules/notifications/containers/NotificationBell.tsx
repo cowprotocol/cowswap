@@ -14,7 +14,7 @@ const Icon = styled.div<{ hasNotification?: boolean }>`
   width: var(--size);
   height: var(--size);
   position: relative;
-  display: flex;
+  display: ${({ theme }) => (theme.isInjectedWidgetMode ? 'none' : 'flex')};
   align-items: center;
   justify-content: center;
   cursor: pointer;
