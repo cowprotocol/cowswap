@@ -7,7 +7,7 @@ import { Connector } from '@web3-react/types'
 import { useSelectedEip6963ProviderInfo, useSetEip6963Provider } from '../../../api/hooks'
 import { selectedEip6963ProviderRdnsAtom } from '../../../api/state/multiInjectedProvidersAtom'
 import { ConnectionType } from '../../../api/types'
-import { getIsInjected } from '../../../api/utils/connection'
+import { getIsInjectedMobileBrowser } from '../../../api/utils/connection'
 import { injectedWalletConnection } from '../../connection/injectedWallet'
 import { networkConnection } from '../../connection/network'
 import { gnosisSafeConnection } from '../../connection/safe'
@@ -34,9 +34,8 @@ export function useEagerlyConnect(selectedWallet: ConnectionType | undefined) {
 
   useEffect(() => {
     const isIframe = window.top !== window.self
-    const isInjectedActivated = isInjectedWidget() || (isIframe && getIsInjected())
 
-    if (isInjectedActivated) {
+    if (isInjectedWidget() || getIsInjectedMobileBrowser()) {
       connect(injectedWalletConnection.connector)
     }
 
@@ -61,8 +60,6 @@ export function useEagerlyConnect(selectedWallet: ConnectionType | undefined) {
       }
 
       connect(connection.connector)
-    } else if (!isInjectedActivated) {
-      connect(injectedWalletConnection.connector)
     }
     // The dependency list is empty so this is only run once on mount
   }, [])
