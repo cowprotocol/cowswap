@@ -1,6 +1,5 @@
-import { FiatAmount, HelpTooltip, QuestionTooltipIconWrapper, TokenAmount } from '@cowprotocol/ui'
-import { ExternalLink } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { ExternalLink, FiatAmount, HelpTooltip, QuestionTooltipIconWrapper, TokenAmount, UI } from '@cowprotocol/ui'
 
 import { transparentize } from 'color2k'
 import styled from 'styled-components/macro'
@@ -12,12 +11,17 @@ import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 import { InfoCard } from './styled'
 
+const DEFAULT_START_DATE = 'March 2023'
+const ARBITRUM_ONE_START_DATE = 'May 2024'
+
 export function SurplusCard() {
   const { surplusAmount, isLoading } = useTotalSurplus()
 
   const showSurplusAmount = surplusAmount && surplusAmount.greaterThan(0)
   const surplusUsdAmount = useUsdAmount(showSurplusAmount ? surplusAmount : undefined).value
-  const nativeSymbol = useNativeCurrency()?.symbol || 'ETH'
+  const native = useNativeCurrency()
+  const nativeSymbol = native.symbol || 'ETH'
+  const isArbitrumOne = native.chainId === SupportedChainId.ARBITRUM_ONE
 
   const Wrapper = styled.div`
     margin: 12px auto 24px;
@@ -146,7 +150,7 @@ export function SurplusCard() {
             <i>
               Your total surplus{' '}
               <HelpTooltip
-                text={`The total surplus CoW Swap has generated for you in ${nativeSymbol} across all your trades since March 2023`}
+                text={`The total surplus CoW Swap has generated for you in ${nativeSymbol} across all your trades since ${isArbitrumOne ? ARBITRUM_ONE_START_DATE : DEFAULT_START_DATE}`}
               />
             </i>
           </span>
