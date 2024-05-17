@@ -11,4 +11,4 @@ export const METAMASK_RDNS = 'io.metamask'
 
 export const RABBY_RDNS = 'io.rabby'
 
-export const _WATCH_ASSET_SUPPORED_WALLETS = [METAMASK_RDNS, RABBY_RDNS]
+export const WATCH_ASSET_SUPPORED_WALLETS = [METAMASK_RDNS]
