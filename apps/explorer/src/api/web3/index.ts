@@ -5,13 +5,10 @@ import Web3 from 'web3'
 
 import type { HttpProvider } from 'web3-core'
 
-// TODO connect to mainnet if we need AUTOCONNECT at all
-export const getDefaultProvider = (): string | null => (process.env.NODE_ENV === 'test' ? null : ETH_NODE_URL)
-
 const web3cache: { [key: string]: Web3 } = {}
 
 export function createWeb3Api(provider?: string): Web3 {
-  const _provider = provider || getProviderByNetwork(SupportedChainId.MAINNET) || ''
+  const _provider = provider || getProviderByNetwork(SupportedChainId.MAINNET)
 
   if (web3cache[_provider]) {
     return web3cache[_provider]
