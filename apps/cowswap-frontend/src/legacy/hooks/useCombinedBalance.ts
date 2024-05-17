@@ -24,7 +24,7 @@ function useCowBalance() {
  */
 export function useCombinedBalance() {
   const { chainId, account } = useWalletInfo()
-  const { total: vCowBalance } = useVCowData()
+  const { isLoading: isVCowLoading, total: vCowBalance } = useVCowData()
   // const { allocated, claimed } = useCowFromLockedGnoBalances()
   const cowBalance = useCowBalance()
 
@@ -39,7 +39,7 @@ export function useCombinedBalance() {
   return useMemo(() => {
     let tmpBalance = JSBI.BigInt(0)
 
-    const isLoading = !!(account && (!vCowBalance /* || !lockedGnoBalance */ || !cowBalance))
+    const isLoading = !!(account && (isVCowLoading /* || !lockedGnoBalance */ || !cowBalance))
 
     const cow = COW[chainId]
 
