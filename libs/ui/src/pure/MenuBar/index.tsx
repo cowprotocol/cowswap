@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect, RefObject } from 'react'
 import { upToLarge, useMediaQuery } from '../../../../../apps/cowswap-frontend/src/legacy/hooks/useMediaQuery'
 import {
   RootNavItem,
@@ -49,8 +49,8 @@ const DAO_NAV_ITEMS: MenuItem[] = [
 ]
 
 const SETTINGS_ITEMS: MenuItem[] = [
-  { label: 'Preferences', href: '#preferences' },
-  { label: 'Account Settings', href: '#account-settings' },
+  { label: 'Preferences', href: 'https://google.com/' },
+  { label: 'Account Settings', href: 'https://cow.fi/' },
   { label: 'Theme', href: '#theme' },
   { label: 'Language', href: '#language' },
 ]
@@ -139,8 +139,11 @@ const DropdownContentItem: React.FC<{ item: DropdownMenuItem; theme: CowSwapThem
   }
 
   const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault()
-    closeMenu()
+    if (!item.children) {
+      closeMenu()
+    } else {
+      e.preventDefault()
+    }
   }
 
   const handleButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -204,7 +207,9 @@ const NavDaoTrigger: React.FC<{
   const triggerRef = useRef<HTMLDivElement>(null)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
-  useOnClickOutside(triggerRef, () => setIsOpen(false))
+  useOnClickOutside([triggerRef as RefObject<HTMLElement>, dropdownRef as RefObject<HTMLElement>], () =>
+    setIsOpen(false)
+  )
 
   const closeMenu = () => setIsOpen(false)
 
@@ -259,13 +264,19 @@ const DropdownContentWrapper: React.FC<{
   isThirdLevel?: boolean
   isVisible?: boolean
   mobileMode?: boolean
-  isNavItemDropdown?: boolean // Add this prop here
+  isNavItemDropdown?: boolean
 }> = ({ content, isThirdLevel = false, isVisible = true, mobileMode = false, isNavItemDropdown = false }) => {
   const [isThirdLevelVisible, setIsThirdLevelVisible] = useState(false)
-  const handleToggleThirdLevelVisibility = (event: React.MouseEvent) => {
+
+  const handleToggleThirdLevelVisibility = (event: React.MouseEvent<HTMLDivElement>) => {
     event.preventDefault()
     event.stopPropagation()
     setIsThirdLevelVisible((prevVisible) => !prevVisible)
+  }
+
+  const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    // Allow default behavior for anchor elements
+    e.stopPropagation() // Prevent the click event from propagating to the outside click handler
   }
 
   return (
@@ -273,47 +284,57 @@ const DropdownContentWrapper: React.FC<{
       isOpen={isVisible}
       isThirdLevel={isThirdLevel}
       mobileMode={mobileMode}
-      isNavItemDropdown={isNavItemDropdown} // Ensure it's passed down here
+      isNavItemDropdown={isNavItemDropdown}
     >
-      {content.items?.map((item, index) => (
-        <StyledDropdownContentItem
-          key={index}
-          onClick={item.children ? handleToggleThirdLevelVisibility : undefined}
-          href={item.href}
-          isOpen={isThirdLevelVisible}
-        >
-          {item.icon && <DropdownContentItemIcon src={item.icon} alt="" />}
-          <DropdownContentItemText>
-            <DropdownContentItemTitle>{item.label}</DropdownContentItemTitle>
-            {item.description && <DropdownContentItemDescription>{item.description}</DropdownContentItemDescription>}
-          </DropdownContentItemText>
-          {item.children && <SVG src={IMG_ICON_CARRET_DOWN} />}
-          {!item.children && <SVG src={IMG_ICON_ARROW_RIGHT} className="arrow-icon-right" />}
-          {item.children && isThirdLevelVisible && (
-            <DropdownContentWrapper
-              content={{ title: undefined, items: item.children }}
-              isThirdLevel
-              isVisible={isThirdLevelVisible}
-              mobileMode={mobileMode}
-              isNavItemDropdown={isNavItemDropdown} // Ensure it's passed down here
-            />
-          )}
-        </StyledDropdownContentItem>
-      ))}
+      {content.items?.map((item, index) => {
+        const hasChildren = !!item.children
+        const Tag = hasChildren ? 'div' : 'a'
+        return (
+          <StyledDropdownContentItem
+            key={index}
+            href={!hasChildren ? item.href : undefined} // Set href only for items without children
+            isOpen={isThirdLevelVisible}
+            as={Tag}
+            onClick={(e: React.MouseEvent<HTMLDivElement | HTMLAnchorElement>) => {
+              if (hasChildren) {
+                handleToggleThirdLevelVisibility(e as React.MouseEvent<HTMLDivElement>)
+              } else {
+                handleLinkClick(e as React.MouseEvent<HTMLAnchorElement>)
+              }
+            }}
+          >
+            {item.icon && <DropdownContentItemIcon src={item.icon} alt="" />}
+            <DropdownContentItemText>
+              <DropdownContentItemTitle>{item.label}</DropdownContentItemTitle>
+              {item.description && <DropdownContentItemDescription>{item.description}</DropdownContentItemDescription>}
+            </DropdownContentItemText>
+            {item.children && <SVG src={IMG_ICON_CARRET_DOWN} />}
+            {!item.children && <SVG src={IMG_ICON_ARROW_RIGHT} className="arrow-icon-right" />}
+            {item.children && isThirdLevelVisible && (
+              <DropdownContentWrapper
+                content={{ title: undefined, items: item.children }}
+                isThirdLevel
+                isVisible={isThirdLevelVisible}
+                mobileMode={mobileMode}
+                isNavItemDropdown={isNavItemDropdown}
+              />
+            )}
+          </StyledDropdownContentItem>
+        )
+      })}
     </DropdownContent>
   )
 }
 
-interface GlobalSettingsDropdownProps {
-  mobileMode: boolean
-}
-
 // Component for the global settings dropdown
-const GlobalSettingsDropdown = ({ mobileMode }: GlobalSettingsDropdownProps) => {
+const GlobalSettingsDropdown = ({ mobileMode }: { mobileMode: boolean }) => {
   const [isOpen, setIsOpen] = useState(false)
   const buttonRef = useRef<HTMLButtonElement>(null)
+  const dropdownRef = useRef<HTMLDivElement>(null)
 
-  useOnClickOutside(buttonRef, () => setIsOpen(false))
+  useOnClickOutside([buttonRef as RefObject<HTMLElement>, dropdownRef as RefObject<HTMLElement>], () =>
+    setIsOpen(false)
+  )
 
   return (
     <GlobalSettingsWrapper>
@@ -321,7 +342,7 @@ const GlobalSettingsDropdown = ({ mobileMode }: GlobalSettingsDropdownProps) => 
         <SVG src={IMG_ICON_SETTINGS_GLOBAL} />
       </GlobalSettingsButton>
       {isOpen && (
-        <DropdownContent isOpen={true} alignRight mobileMode={mobileMode}>
+        <DropdownContent isOpen={true} ref={dropdownRef} alignRight mobileMode={mobileMode}>
           {SETTINGS_ITEMS.map((item, index) => (
             <StyledDropdownContentItem key={index} href={item.href}>
               <DropdownContentItemText>
@@ -344,8 +365,8 @@ export const MenuBar = (props: MenuBarProps) => {
   const menuRef = useRef(null)
   const mobileMenuRef = useRef(null)
 
-  useOnClickOutside(menuRef, () => setIsDaoOpen(false))
-  useOnClickOutside(mobileMenuRef, () => setIsMobileMenuOpen(false))
+  useOnClickOutside([menuRef as RefObject<HTMLElement>], () => setIsDaoOpen(false))
+  useOnClickOutside([mobileMenuRef as RefObject<HTMLElement>], () => setIsMobileMenuOpen(false))
 
   const isMobile = useMediaQuery(upToLarge)
 
