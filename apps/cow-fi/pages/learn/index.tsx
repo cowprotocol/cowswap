@@ -73,18 +73,20 @@ export default function LearnPage({ categories, articles }: LearnProps) {
         </SectionContent>
       </Section>
 
-      <Section fullWidth colorVariant={'white'} flow="column" gap={14}>
-        <SectionContent flow={'row'} maxWidth={100} textAlign={'left'}>
-          <div className="container">
-            <h3>Latest articles</h3>
-            <SubTitle lineHeight={1.4} textAlign={'left'}>
-              Every week we publish new articles about CoW DAO ecosystem. Stay tuned!
-            </SubTitle>
+      {articles && (
+        <Section fullWidth colorVariant={'white'} flow="column" gap={14}>
+          <SectionContent flow={'row'} maxWidth={100} textAlign={'left'}>
+            <div className="container">
+              <h3>Latest articles</h3>
+              <SubTitle lineHeight={1.4} textAlign={'left'}>
+                Every week we publish new articles about CoW DAO ecosystem. Stay tuned!
+              </SubTitle>
 
-            <ArticleList articles={articles} />
-          </div>
-        </SectionContent>
-      </Section>
+              <ArticleList articles={articles} />
+            </div>
+          </SectionContent>
+        </Section>
+      )}
 
       <GetInTouchSection />
     </Layout>

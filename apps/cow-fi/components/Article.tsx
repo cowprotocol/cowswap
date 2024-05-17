@@ -143,8 +143,6 @@ export function ArticleItem({ article }: ArticleItemProps) {
   if (!article.attributes) return null
 
   const { slug, title, description, publishedAt, categories, cover, authorsBio } = article.attributes
-
-  // TODO: For details: seo, §
   return (
     <ArticleItemWrapper key={slug} data-slug={slug} data-id={article.id}>
       <Link className="link" href={`/learn/articles/${slug}`} passHref>

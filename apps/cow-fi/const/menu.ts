@@ -9,7 +9,7 @@ export interface FooterLinkGroup {
 
 export const HEADER_LINKS: CustomLinkProps[] = [
   { label: 'DAOs', url: url.daos },
-  // { label: 'Learn', url: '/learn' },
+  { label: 'Learn', url: '/learn' },
   { label: 'Widget', url: url.widget },
   { label: 'CoW AMM', url: url.cowamm },
   { label: 'MEV Blocker', url: url.mevBlocker, type: 'external', utmContent: 'header-link-mevblocker' },
@@ -36,7 +36,7 @@ export const FOOTER_LINK_GROUPS: FooterLinkGroup[] = [
     label: 'CoW Protocol',
     links: [
       { label: 'About', url: '/#about' },
-      // { label: 'Learn', url: '/learn' },
+      { label: 'Learn', url: '/learn' },
       { label: 'CoW Swap', url: 'https://swap.cow.fi/#/about', type: 'external', utmContent },
       { label: 'Analytics', url: url.analytics, type: 'external' },
       { label: 'CoW Swap FAQ', url: 'https://swap.cow.fi/#/faq', type: 'external', utmContent },

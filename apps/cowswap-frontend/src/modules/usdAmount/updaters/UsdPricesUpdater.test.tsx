@@ -13,10 +13,12 @@ import { UsdPricesUpdater } from './UsdPricesUpdater'
 
 import * as coingeckoApi from '../apis/getCoingeckoUsdPrice'
 import * as cowProtocolApi from '../apis/getCowProtocolUsdPrice'
+import * as defillamaApi from '../apis/getDefillamaUsdPrice'
 import * as services from '../services/fetchCurrencyUsdPrice'
 import { currenciesUsdPriceQueueAtom, UsdRawPrices, usdRawPricesAtom } from '../state/usdRawPricesAtom'
 
 const mockGetCoingeckoUsdPrice = jest.spyOn(coingeckoApi, 'getCoingeckoUsdPrice')
+const mockGetDefillamaUsdPrice = jest.spyOn(defillamaApi, 'getDefillamaUsdPrice')
 const mockGetCowProtocolUsdPrice = jest.spyOn(cowProtocolApi, 'getCowProtocolUsdPrice')
 const mockFetchCurrencyUsdPrice = jest.spyOn(services, 'fetchCurrencyUsdPrice')
 
@@ -143,12 +145,29 @@ describe('UsdPricesUpdater', () => {
 
     expect(mockGetCoingeckoUsdPrice).toHaveBeenCalledTimes(2)
     expect(mockGetCowProtocolUsdPrice).toHaveBeenCalledTimes(0)
+    expect(mockGetDefillamaUsdPrice).toHaveBeenCalledTimes(0)
   })
 
-  it('Should fallback to CowProtocol API when Coingecko is down', async () => {
+  it('Should fallback to Defillama API when Coingecko is down', async () => {
+    const price = 7.22
+
+    mockGetDefillamaUsdPrice.mockImplementation(() => Promise.resolve(price))
+    mockGetCoingeckoUsdPrice.mockImplementation(() => Promise.reject(new Error('Server error')))
+
+    const state = await performTest()
+
+    expect(state[usdcAddress].price).toBe(price)
+    expect(state[cowAddress].price).toBe(price)
+
+    expect(mockGetDefillamaUsdPrice).toHaveBeenCalledTimes(2)
+    expect(mockGetCowProtocolUsdPrice).toHaveBeenCalledTimes(0)
+  })
+
+  it('Should fallback to CoW Protocol API when Coingecko and Defillama are down', async () => {
     const price = 7.22
 
     mockGetCowProtocolUsdPrice.mockImplementation(() => Promise.resolve(price))
+    mockGetDefillamaUsdPrice.mockImplementation(() => Promise.reject(new Error('Server error')))
     mockGetCoingeckoUsdPrice.mockImplementation(() => Promise.reject(new Error('Server error')))
 
     const state = await performTest()
