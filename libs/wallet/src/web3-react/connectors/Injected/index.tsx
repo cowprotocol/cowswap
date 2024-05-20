@@ -14,7 +14,7 @@ interface injectedWalletConstructorArgs {
 }
 
 export class InjectedWallet extends Connector {
-  provider?: EIP1193Provider
+  provider?: EIP1193Provider = undefined
   walletUrl: string
   searchKeywords: string[]
   eagerConnection?: boolean
