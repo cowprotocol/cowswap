@@ -6,9 +6,13 @@
   "targets": {
     "build": {
       "executor": "@nx/vite:build",
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "defaultConfiguration": "production",
-      "dependsOn": ["i18n"],
+      "dependsOn": [
+        "i18n"
+      ],
       "options": {
         "outputPath": "build/cowswap"
       },
@@ -60,11 +64,24 @@
         "jestConfig": "apps/cowswap-frontend/jest.config.ts"
       }
     },
+    "ipfs": {
+      "executor": "nx:run-commands",
+      "dependsOn": [
+        "build"
+      ],
+      "options": {
+        "command": "npx ipfs-deploy build/cowswap -p pinata -O"
+      }
+    },
     "lint": {
       "executor": "@nx/linter:eslint",
-      "outputs": ["{options.outputFile}"],
+      "outputs": [
+        "{options.outputFile}"
+      ],
       "options": {
-        "lintFilePatterns": ["apps/cowswap-frontend/**/*.{ts,tsx,js,jsx}"]
+        "lintFilePatterns": [
+          "apps/cowswap-frontend/**/*.{ts,tsx,js,jsx}"
+        ]
       }
     },
     "serve-static": {
@@ -73,23 +90,33 @@
         "buildTarget": "cowswap-frontend:build"
       }
     },
-
     "i18n": {
       "executor": "nx:run-commands",
-      "dependsOn": ["i18n:extract"],
+      "dependsOn": [
+        "i18n:extract"
+      ],
       "options": {
         "command": "npx lingui compile"
       },
-      "inputs": ["{projectRoot}/src/locales/*.po"],
-      "outputs": ["{projectRoot}/src/locales/*.js"]
+      "inputs": [
+        "{projectRoot}/src/locales/*.po"
+      ],
+      "outputs": [
+        "{projectRoot}/src/locales/*.js"
+      ]
     },
     "i18n:extract": {
       "executor": "nx:run-commands",
       "options": {
         "command": "cross-env NODE_ENV=development npx lingui extract --locale en-US"
       },
-      "inputs": ["{workspaceRoot}/apps/**/*.{ts,tsx,jsx}", "{workspaceRoot}/libs/**/*.{ts,tsx,jsx}"],
-      "outputs": ["{projectRoot}/src/locales/*.po"]
+      "inputs": [
+        "{workspaceRoot}/apps/**/*.{ts,tsx,jsx}",
+        "{workspaceRoot}/libs/**/*.{ts,tsx,jsx}"
+      ],
+      "outputs": [
+        "{projectRoot}/src/locales/*.po"
+      ]
     }
   },
   "tags": []

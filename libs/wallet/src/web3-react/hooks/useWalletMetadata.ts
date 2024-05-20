@@ -4,6 +4,7 @@ import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { useWeb3React } from '@web3-react/core'
 
 import { useSafeAppsSdk } from './useSafeAppsSdk'
+import { useSafeAppsSdkInfo } from './useSafeAppsSdkInfo'
 
 import { default as AlphaImage } from '../../api/assets/alpha.svg'
 import { useGnosisSafeInfo, useSelectedEip6963ProviderInfo } from '../../api/hooks'
@@ -127,7 +128,10 @@ export function useIsSafeApp(): boolean {
  * regardless of the connection method (WalletConnect or inside Safe as an App)
  */
 export function useIsSafeWallet(): boolean {
-  return !!useGnosisSafeInfo()
+  const { safeAddress } = useSafeAppsSdkInfo() || {}
+  const hasSafeInfo = !!useGnosisSafeInfo()
+
+  return !!safeAddress || hasSafeInfo
 }
 
 /**

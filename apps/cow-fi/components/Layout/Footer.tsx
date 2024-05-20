@@ -6,6 +6,8 @@ import SocialList from 'components/SocialList'
 import { CustomLink } from '../CustomLink'
 import { FOOTER_LINK_GROUPS } from '@/const/menu'
 import { CONFIG } from '@/const/meta'
+import { useMemo } from 'react'
+import { useFeatureFlags } from 'hooks/useFeatureFlags'
 
 const LogoImage = '/images/logo-light.svg'
 const LogoLightImageThemedCoWAMM = '/images/logo-light-themed-cowamm.svg'
@@ -170,9 +172,26 @@ const FooterDisclaimer = styled.div`
 `
 
 function FooterMenu() {
+  const { isLearnVisible } = useFeatureFlags()
+
+  const footerLinkGroups = useMemo(() => {
+    if (isLearnVisible) return FOOTER_LINK_GROUPS
+    
+    const [overview, cowProtocol, developers] = FOOTER_LINK_GROUPS
+    
+    return [
+      overview,
+      {
+        ...cowProtocol,
+        links: cowProtocol.links.filter(({ label }) => label !== 'Learn')
+      },
+      developers
+    ]
+  }, [isLearnVisible])
+
   return (
     <MenuSection>
-      {FOOTER_LINK_GROUPS.map(({ label: title, links }, index) => (
+      {footerLinkGroups.map(({ label: title, links }, index) => (
         <MenuWrapper key={index}>
           <b>{title}</b>
           <Menu>

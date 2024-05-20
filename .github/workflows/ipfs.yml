@@ -2,7 +2,7 @@ name: ipfs
 
 on:
   push:
-    tags: [v*]
+    tags: [cowswap-v*]
 
 env:
   REACT_APP_SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
@@ -55,7 +55,4 @@ jobs:
         run: yarn install --frozen-lockfile
 
       - name: Build Web Apps
-        run: yarn ipfs:build
-
-      - name: 'Deploy to IPFS with infura'
-        run: yarn ipfs:publish
+        run: yarn ipfs
