@@ -18,8 +18,15 @@ export function groupNotificationsByDate(notifications: NotificationModel[]): No
     mapByTimestamp[timestamp] = (mapByTimestamp[timestamp] || []).concat(notification)
   })
 
-  return Object.keys(mapByTimestamp).map((strTimestamp) => {
-    const timestamp = Number(strTimestamp)
-    return { date: new Date(timestamp), notifications: mapByTimestamp[timestamp].reverse() }
-  })
+  return Object.keys(mapByTimestamp)
+    .map((strTimestamp) => {
+      const timestamp = Number(strTimestamp)
+      return {
+        date: new Date(timestamp),
+        notifications: mapByTimestamp[timestamp].sort(
+          (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        ),
+      }
+    })
+    .sort((a, b) => b.date.getTime() - a.date.getTime())
 }
