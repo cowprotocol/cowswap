@@ -3,6 +3,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ETH_NODE_URL, NODE_PROVIDER_ID } from 'const'
 import Web3 from 'web3'
 
+import type { HttpProvider } from 'web3-core'
 
 // TODO connect to mainnet if we need AUTOCONNECT at all
 export const getDefaultProvider = (): string | null => (process.env.NODE_ENV === 'test' ? null : ETH_NODE_URL)
@@ -62,7 +63,12 @@ export function updateWeb3Provider(web3: Web3, networkId?: SupportedChainId | nu
   }
 
   const provider = getProviderByNetwork(networkId)
-  console.log('[api:web3] updateWeb3Provider', provider, networkId)
+
+  if (web3.currentProvider === provider || (web3.currentProvider as HttpProvider)?.host === provider) {
+    return
+  }
+
+  console.log('[api:web3] updateWeb3Provider', web3.currentProvider, provider, networkId)
 
   provider && web3.setProvider(provider)
 }

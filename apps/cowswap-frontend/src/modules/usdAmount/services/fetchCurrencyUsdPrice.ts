@@ -1,30 +1,54 @@
 import { SupportedChainId, mapSupportedNetworks } from '@cowprotocol/cow-sdk'
 import { Fraction, Token } from '@uniswap/sdk-core'
 
-import {
-  COINGECK_PLATFORMS,
-  COINGECKO_RATE_LIMIT_TIMEOUT,
-  CoingeckoRateLimitError,
-  CoingeckoUnknownCurrency,
-  getCoingeckoUsdPrice,
-} from '../apis/getCoingeckoUsdPrice'
+import { RateLimitError, UnknownCurrencyError } from '../apis/errors'
+import { COINGECKO_PLATFORMS, COINGECKO_RATE_LIMIT_TIMEOUT, getCoingeckoUsdPrice } from '../apis/getCoingeckoUsdPrice'
 import { getCowProtocolUsdPrice } from '../apis/getCowProtocolUsdPrice'
+import { DEFILLAMA_PLATFORMS, DEFILLAMA_RATE_LIMIT_TIMEOUT, getDefillamaUsdPrice } from '../apis/getDefillamaUsdPrice'
 
 type UnknownCurrencies = { [address: string]: true }
+type UnknownCurrenciesMap = Record<SupportedChainId, UnknownCurrencies>
 
 let coingeckoRateLimitHitTimestamp: null | number = null
+let defillamaRateLimitHitTimestamp: null | number = null
 
 const coingeckoUnknownCurrencies: Record<SupportedChainId, UnknownCurrencies> = mapSupportedNetworks({})
+const defillamaUnknownCurrencies: Record<SupportedChainId, UnknownCurrencies> = mapSupportedNetworks({})
 
 function getShouldSkipCoingecko(currency: Token): boolean {
+  return getShouldSkipPriceSource(
+    currency,
+    COINGECKO_PLATFORMS,
+    coingeckoUnknownCurrencies,
+    coingeckoRateLimitHitTimestamp,
+    COINGECKO_RATE_LIMIT_TIMEOUT
+  )
+}
+
+function getShouldSkipDefillama(currency: Token): boolean {
+  return getShouldSkipPriceSource(
+    currency,
+    DEFILLAMA_PLATFORMS,
+    defillamaUnknownCurrencies,
+    defillamaRateLimitHitTimestamp,
+    DEFILLAMA_RATE_LIMIT_TIMEOUT
+  )
+}
+
+function getShouldSkipPriceSource(
+  currency: Token,
+  platforms: Record<SupportedChainId, string | null>,
+  unknownCurrenciesMap: UnknownCurrenciesMap,
+  rateLimitTimestamp: null | number,
+  timeout: number
+): boolean {
   const chainId = currency.chainId as SupportedChainId
 
-  if (!COINGECK_PLATFORMS[chainId]) return true
+  if (!platforms[chainId]) return true
 
-  // Don't use Coingecko for unknown currencies
-  if (coingeckoUnknownCurrencies[chainId][currency.address.toLowerCase()]) return true
+  if (unknownCurrenciesMap[chainId][currency.address.toLowerCase()]) return true
 
-  return !!coingeckoRateLimitHitTimestamp && Date.now() - coingeckoRateLimitHitTimestamp < COINGECKO_RATE_LIMIT_TIMEOUT
+  return !!rateLimitTimestamp && Date.now() - rateLimitTimestamp < timeout
 }
 
 /**
@@ -37,33 +61,58 @@ export function fetchCurrencyUsdPrice(
   getUsdcPrice: () => Promise<Fraction | null>
 ): Promise<Fraction | null> {
   const shouldSkipCoingecko = getShouldSkipCoingecko(currency)
+  const shouldSkipDefillama = getShouldSkipDefillama(currency)
 
   if (coingeckoRateLimitHitTimestamp && !shouldSkipCoingecko) {
     coingeckoRateLimitHitTimestamp = null
   }
 
-  const request = shouldSkipCoingecko
-    ? getCowProtocolUsdPrice(currency, getUsdcPrice)
-    : getCoingeckoUsdPrice(currency).catch((error) => {
-        if (error instanceof CoingeckoRateLimitError) {
-          coingeckoRateLimitHitTimestamp = Date.now()
-          console.error('Coingecko request limit reached')
-        } else if (error instanceof CoingeckoUnknownCurrency) {
-          // Mark currency as unknown for Coingecko
-          coingeckoUnknownCurrencies[currency.chainId as SupportedChainId][currency.address.toLowerCase()] = true
-        } else {
-          console.error('Cannot fetch coingecko price', error)
-        }
+  if (defillamaRateLimitHitTimestamp && !shouldSkipDefillama) {
+    defillamaRateLimitHitTimestamp = null
+  }
 
-        return getCowProtocolUsdPrice(currency, getUsdcPrice)
-      })
-
-  return request
-    .catch((error) => {
+  function getCowPrice(currency: Token): Promise<Fraction | null> {
+    return getCowProtocolUsdPrice(currency, getUsdcPrice).catch((error) => {
       console.error('Cannot fetch USD price', { error })
       return Promise.reject(error)
     })
-    .then((result) => {
-      return result
-    })
+  }
+
+  // No coingecko. Try Defillama, then cow
+  if (shouldSkipCoingecko) {
+    return getDefillamaUsdPrice(currency).catch(
+      handleErrorFactory(currency, defillamaRateLimitHitTimestamp, defillamaUnknownCurrencies, getCowPrice)
+    )
+  }
+  // No Defillama. Try coingecko, then cow
+  if (shouldSkipDefillama) {
+    return getCoingeckoUsdPrice(currency).catch(
+      handleErrorFactory(currency, coingeckoRateLimitHitTimestamp, coingeckoUnknownCurrencies, getCowPrice)
+    )
+  }
+  // Both coingecko and defillama available. Try coingecko, then defillama, then cow
+  return getCoingeckoUsdPrice(currency)
+    .catch(
+      handleErrorFactory(currency, coingeckoRateLimitHitTimestamp, coingeckoUnknownCurrencies, getDefillamaUsdPrice)
+    )
+    .catch(handleErrorFactory(currency, defillamaRateLimitHitTimestamp, defillamaUnknownCurrencies, getCowPrice))
+}
+
+function handleErrorFactory(
+  currency: Token,
+  rateLimitTimestamp: null | number,
+  unknownCurrenciesMap: UnknownCurrenciesMap,
+  fetchPriceFallback: (currency: Token) => Promise<Fraction | null>
+): ((reason: any) => Fraction | PromiseLike<Fraction | null> | null) | null | undefined {
+  return (error) => {
+    if (error instanceof RateLimitError) {
+      rateLimitTimestamp = Date.now()
+    } else if (error instanceof UnknownCurrencyError) {
+      // Mark currency as unknown
+      unknownCurrenciesMap[currency.chainId as SupportedChainId][currency.address.toLowerCase()] = true
+    } else {
+    }
+
+    return fetchPriceFallback(currency)
+  }
 }

@@ -1,5 +1,47 @@
 # Changelog
 
+## [1.68.5](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.68.4...cowswap-v1.68.5) (2024-05-13)
+
+
+### Bug Fixes
+
+* clean outdated localStorage stores ([#4413](https://github.com/cowprotocol/cowswap/issues/4413)) ([a193338](https://github.com/cowprotocol/cowswap/commit/a193338717134d5a2f3a9c02a73b865553e99d38))
+
+## [1.68.4](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.68.3...cowswap-v1.68.4) (2024-05-03)
+
+
+### Bug Fixes
+
+* **widget:** improve PartnerFeeDiscarded error ([#4405](https://github.com/cowprotocol/cowswap/issues/4405)) ([2053e98](https://github.com/cowprotocol/cowswap/commit/2053e980adaac7a422a30933e2ce635ea32c2727))
+
+## [1.68.3](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.68.2...cowswap-v1.68.3) (2024-05-03)
+
+
+### Bug Fixes
+
+* **widget:** log an error when partnerFee was discarded ([#4403](https://github.com/cowprotocol/cowswap/issues/4403)) ([4131598](https://github.com/cowprotocol/cowswap/commit/413159818fc0e44315041dba2daf73a87d021d53))
+
+## [1.68.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.68.1...cowswap-v1.68.2) (2024-05-02)
+
+
+### Bug Fixes
+
+* fix ipfs relative paths ([#4400](https://github.com/cowprotocol/cowswap/issues/4400)) ([322d72a](https://github.com/cowprotocol/cowswap/commit/322d72a8e9eb4ef01402af6c7df4dc0cf0ab0428))
+
+## [1.68.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.68.0...cowswap-v1.68.1) (2024-05-02)
+
+
+### Bug Fixes
+
+* deploy to IPFS automatically ([#4397](https://github.com/cowprotocol/cowswap/issues/4397)) ([754066c](https://github.com/cowprotocol/cowswap/commit/754066c6f58c2195fa392442136205b05ad52cc7))
+
+## [1.68.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.67.0...cowswap-v1.68.0) (2024-05-02)
+
+
+### Features
+
+* add coingecko token list to Gnosis chain ([#4365](https://github.com/cowprotocol/cowswap/issues/4365)) ([9bc853f](https://github.com/cowprotocol/cowswap/commit/9bc853fd4089669d9bb046d6bb8fc2fe60c0ffe0))
+
 ## [1.67.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.66.0...cowswap-v1.67.0) (2024-05-01)
 
 

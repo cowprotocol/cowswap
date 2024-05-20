@@ -1,10 +1,9 @@
 import { useAtom, useSetAtom } from 'jotai'
 import { useEffect, useRef } from 'react'
 
-import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { usePrevious } from '@cowprotocol/common-hooks'
 import { deepEqual } from '@cowprotocol/common-utils'
 import {
-  CowSwapWidgetAppParams,
   listenToMessageFromWindow,
   postMessageToWindow,
   stopListeningWindowListener,
@@ -13,6 +12,7 @@ import {
   WidgetMethodsListen,
 } from '@cowprotocol/widget-lib'
 
+import * as Sentry from '@sentry/browser'
 import { useNavigate } from 'react-router-dom'
 
 import { IframeResizer } from './IframeResizer'
@@ -36,12 +36,6 @@ const cacheMessages = (event: MessageEvent) => {
   messagesCache[method] = event.data
 }
 
-const paramsWithoutPartnerFee = (params: CowSwapWidgetAppParams) => {
-  const { partnerFee: _, ...rest } = params
-
-  return rest
-}
-
 /**
  * To avoid delays, immediately send an activation message and start listening messages
  */
@@ -56,10 +50,16 @@ const paramsWithoutPartnerFee = (params: CowSwapWidgetAppParams) => {
 })()
 
 export function InjectedWidgetUpdater() {
-  const { isPartnerFeeEnabled } = useFeatureFlags()
-  const [{ errors: validationErrors }, updateParams] = useAtom(injectedWidgetParamsAtom)
+  const [
+    {
+      errors: validationErrors,
+      params: { partnerFee, appCode },
+    },
+    updateParams,
+  ] = useAtom(injectedWidgetParamsAtom)
   const updateMetaData = useSetAtom(injectedWidgetMetaDataAtom)
 
+  const prevPartnerFee = usePrevious(partnerFee)
   const navigate = useNavigate()
   const prevData = useRef<UpdateParamsPayload | null>(null)
 
@@ -74,8 +74,7 @@ export function InjectedWidgetUpdater() {
       // Update params
       prevData.current = data
 
-      // Ignore partner fee value when feature flag is not enabled
-      const appParams = isPartnerFeeEnabled ? data.appParams : paramsWithoutPartnerFee(data.appParams)
+      const appParams = data.appParams
 
       const errors = validateWidgetParams(appParams)
 
@@ -105,7 +104,27 @@ export function InjectedWidgetUpdater() {
       stopListeningWindowListener(window, updateParamsListener)
       stopListeningWindowListener(window, updateAppDataListener)
     }
-  }, [updateMetaData, navigate, updateParams, isPartnerFeeEnabled])
+  }, [updateMetaData, navigate, updateParams])
+
+  // Log an error when partnerFee was set and then discarded
+  useEffect(() => {
+    if (!appCode) return
+
+    if (prevPartnerFee && !partnerFee) {
+      const sentryError = Object.assign(
+        new Error(`AppCode: ${appCode}, BPS: ${prevPartnerFee.bps}, recipient: ${prevPartnerFee.recipient}`),
+        {
+          name: 'PartnerFeeDiscarded',
+        }
+      )
+
+      Sentry.captureException(sentryError, {
+        tags: {
+          errorType: 'PartnerFeeDiscarded',
+        },
+      })
+    }
+  }, [appCode, partnerFee, prevPartnerFee])
 
   return (
     <>

@@ -1,6 +1,8 @@
 import { CmsClient, components } from '@cowprotocol/cms'
 import { PaginationParam } from 'types'
 
+import { toQueryParams } from 'util/queryParams'
+
 const PAGE_SIZE = 50
 
 type Schemas = components['schemas']
@@ -11,6 +13,8 @@ export type SharedRichTextComponent = Schemas['SharedRichTextComponent']
 export type SharedSliderComponent = Schemas['SharedSliderComponent']
 export type SharedVideoEmbedComponent = Schemas['SharedVideoEmbedComponent']
 export type Category = Schemas['CategoryListResponseDataItem']
+export type ArticleCover = Schemas['Article']['cover']
+export type ArticleBlocks = Schemas['Article']['blocks']
 
 export type ArticleBlock =
   | SharedMediaComponent
@@ -28,7 +32,7 @@ export function isSharedQuoteComponent(component: ArticleBlock): component is Sh
 }
 
 export function isSharedRichTextComponent(component: ArticleBlock): component is SharedRichTextComponent {
-  return component.__component === 'SharedRichTextComponent'
+  return component.__component === 'shared.rich-text'
 }
 
 export function isSharedSliderComponent(component: ArticleBlock): component is SharedMediaComponent {
@@ -196,33 +200,56 @@ async function getBySlugAux(slug: string, endpoint: '/categories' | '/articles')
 
   const populate =
     endpoint === '/categories'
-      ? {
-          // Category
-          'populate[articles][populate][0]': 'authorsBio',
-          'populate[articles][populate][1]': 'seo',
+      ? // Category
+        {
+          articles: {
+            populate: {
+              authorsBio: {
+                fields: ['name'],
+              },
+              seo: '*',
+            },
+          },
         }
-      : {
-          // Article
-          'populate[0]': 'cover',
-          'populate[1]': 'blocks',
-          'populate[2]': 'seo',
-          'populate[3]': 'authorsBio',
+      : // Articles
+        {
+          cover: {
+            fields: ['url', 'width', 'height', 'alternativeText'],
+          },
+          blocks: '*',
+          seo: {
+            fields: ['metaTitle', 'metaDescription'],
+            populate: {
+              shareImage: {
+                fields: ['url'],
+              },
+            },
+          },
+          authorsBio: {
+            fields: ['name'],
+          },
         }
 
-  console.log(`[getArticleBySlug] get ${entity} for slug ${slug}`)
+  const query = toQueryParams({
+    filters: {
+      slug: {
+        $eq: slug,
+      },
+    },
+
+    pagination: {
+      page: 1,
+      pageSize: 2,
+    },
+
+    populate,
+  })
+
+  console.log(`[getArticleBySlug] get ${entity} for slug ${slug}`, query)
+
   const { data, error } = await client.GET(endpoint, {
     params: {
-      query: {
-        // Filter by slug
-        'filters[slug][$eq]': slug,
-
-        // Pagination
-        'pagination[page]': 1,
-        'pagination[pageSize]': 2, // Get 2 items to check for duplicates
-
-        // Populate: Use the query https://docs.strapi.io/dev-docs/api/rest/interactive-query-builder
-        ...populate,
-      },
+      query,
     },
   })
 
