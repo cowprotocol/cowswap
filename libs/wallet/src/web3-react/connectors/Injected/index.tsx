@@ -15,10 +15,11 @@ interface injectedWalletConstructorArgs {
 
 export class InjectedWallet extends Connector {
   provider?: EIP1193Provider = undefined
+  prevProvider?: EIP1193Provider = undefined
   walletUrl: string
   searchKeywords: string[]
   eagerConnection?: boolean
-  onConnect?: Command
+  onConnect?(provider: EIP1193Provider): void
   onDisconnect?: Command
 
   constructor({ actions, onError, walletUrl, searchKeywords }: injectedWalletConstructorArgs) {
@@ -57,7 +58,7 @@ export class InjectedWallet extends Connector {
 
         // if there's no desired chain, or it's equal to the received, update
         if (!desiredChainId || receivedChainId === desiredChainId) {
-          this.onConnect?.()
+          this.onConnect?.(this.provider)
 
           return this.actions.update({ chainId: receivedChainId, accounts })
         }
@@ -82,7 +83,9 @@ export class InjectedWallet extends Connector {
             throw error
           })
           .then(() => {
-            this.onConnect?.()
+            if (this.provider) {
+              this.onConnect?.(this.provider)
+            }
           })
       })
       .catch((error: Error) => {
@@ -158,7 +161,15 @@ export class InjectedWallet extends Connector {
         if (!doesProviderMatches()) return
 
         if (accounts.length === 0) {
-          this.actions.resetState()
+          // When one of EIP6963 providers is disconnected try to switch to the previous one
+          if (this.prevProvider && this.provider !== this.prevProvider) {
+            this.provider = this.prevProvider
+            this.prevProvider = undefined
+
+            this.activate()
+          } else {
+            this.actions.resetState()
+          }
         } else {
           this.actions.update({ accounts })
         }

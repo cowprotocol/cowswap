@@ -6,7 +6,7 @@ import { default as InjectedImage, default as InjectedImageDark } from '../../ap
 import { default as MetamaskImage } from '../../api/assets/metamask.png'
 import { useSelectedEip6963ProviderRdns, useSetEip6963Provider } from '../../api/hooks'
 import { ConnectWalletOption } from '../../api/pure/ConnectWalletOption'
-import { ConnectionType, EIP6963ProviderDetail } from '../../api/types'
+import { ConnectionType, type EIP1193Provider, EIP6963ProviderDetail } from '../../api/types'
 import { getConnectionName } from '../../api/utils/connection'
 import { useIsActiveConnection } from '../hooks/useIsActiveConnection'
 import { ConnectionOptionProps, TryActivation } from '../types'
@@ -73,12 +73,14 @@ interface Eip6963OptionProps {
   selectedWallet: string | undefined
   tryActivation: TryActivation
   providerDetails: EIP6963ProviderDetail
+  providers: EIP6963ProviderDetail[]
 }
 
 export function Eip6963Option({
   tryActivation,
   selectedWallet,
   providerDetails: { provider, info },
+  providers,
 }: Eip6963OptionProps) {
   const setEip6963Provider = useSetEip6963Provider()
   const selectedRdns = useSelectedEip6963ProviderRdns()
@@ -86,12 +88,23 @@ export function Eip6963Option({
     useIsActiveConnection(selectedWallet, injectedWalletConnection) && !!selectedWallet && selectedRdns === info.rdns
 
   const onClick = useCallback(() => {
+    // Save the previous provider in case the user disconnects to switch back to it
+    if (injectedWalletConnection.connector.provider) {
+      injectedWalletConnection.connector.prevProvider = injectedWalletConnection.connector.provider
+    }
+
     injectedWalletConnection.connector.provider = provider
-    injectedWalletConnection.connector.onConnect = () => setEip6963Provider(info.rdns)
+    injectedWalletConnection.connector.onConnect = (_provider: EIP1193Provider) => {
+      const connected = providers.find((p) => p.provider === _provider)
+
+      if (connected) {
+        setEip6963Provider(connected.info.rdns)
+      }
+    }
     injectedWalletConnection.connector.onDisconnect = () => setEip6963Provider(null)
 
     tryActivation(injectedWalletConnection.connector)
-  }, [provider, tryActivation, setEip6963Provider])
+  }, [provider, tryActivation, setEip6963Provider, providers])
 
   return (
     <ConnectWalletOption

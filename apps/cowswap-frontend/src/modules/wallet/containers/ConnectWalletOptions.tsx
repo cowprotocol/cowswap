@@ -70,6 +70,7 @@ function InjectedOptions({ connectionProps, multiInjectedProviders }: InjectedOp
             return (
               <Eip6963Option
                 key={providerInfo.info.rdns}
+                providers={multiInjectedProviders}
                 selectedWallet={connectionProps.selectedWallet}
                 tryActivation={connectionProps.tryActivation}
                 providerDetails={providerInfo}
