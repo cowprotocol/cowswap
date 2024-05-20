@@ -147,7 +147,7 @@ export function AccountDetails({
                   }
                 }}
               >
-                <AccountIcon walletDetails={walletDetails} size={24} account={account} />
+                <AccountIcon size={24} account={account} />
 
                 {(ENSName || account) && (
                   <WalletNameAddress>{ENSName ? ENSName : account && shortenAddress(account)}</WalletNameAddress>

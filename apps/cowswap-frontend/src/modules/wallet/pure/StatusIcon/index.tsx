@@ -17,13 +17,15 @@ const IconWrapper = styled.div<{ size?: number }>`
 
 export interface StatusIconProps {
   connectionType: ConnectionType
+  account?: string
+  size?: number
 }
 
-export function StatusIcon({ connectionType }: StatusIconProps) {
+export function StatusIcon({ connectionType, account, size = 16 }: StatusIconProps) {
   let image
   switch (connectionType) {
     case ConnectionType.INJECTED:
-      image = <Identicon />
+      image = <Identicon account={account} />
       break
     case ConnectionType.WALLET_CONNECT_V2:
       image = <img src={WalletConnectIcon} alt="WalletConnect" />
@@ -33,5 +35,5 @@ export function StatusIcon({ connectionType }: StatusIconProps) {
       break
   }
 
-  return <IconWrapper size={16}>{image}</IconWrapper>
+  return <IconWrapper size={size}>{image}</IconWrapper>
 }
