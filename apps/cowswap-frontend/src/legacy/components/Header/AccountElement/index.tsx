@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 
 import { useNativeCurrencyAmount } from '@cowprotocol/balances-and-allowances'
 import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { TokenAmount } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -30,6 +31,7 @@ export function AccountElement({ className, standaloneMode, pendingActivities }:
   const toggleAccountModal = useToggleAccountModal()
   const nativeToken = NATIVE_CURRENCIES[chainId].symbol
   const isUpToLarge = useMediaQuery(upToLarge)
+  const { isNotificationsFeedEnabled } = useFeatureFlags()
 
   const [isSidebarOpen, setSidebarOpen] = useState(false)
 
@@ -42,7 +44,7 @@ export function AccountElement({ className, standaloneMode, pendingActivities }:
           </BalanceText>
         )}
         <Web3Status pendingActivities={pendingActivities} onClick={() => account && toggleAccountModal()} />
-        {account && <NotificationBell onClick={() => setSidebarOpen(true)} />}
+        {account && isNotificationsFeedEnabled && <NotificationBell onClick={() => setSidebarOpen(true)} />}
       </Wrapper>
 
       {ReactDOM.createPortal(
