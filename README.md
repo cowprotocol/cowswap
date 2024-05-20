@@ -63,6 +63,20 @@ yarn start:explorer
 yarn build:explorer
 ```
 
+# 🐄 cow.fi
+
+Start CoW.fi on http://localhost:3001
+
+### Start
+```bash
+yarn start:cowfi
+```
+
+### Build
+```bash
+yarn build:cowfi
+```
+
 
 # 🖼️ Widget Configurator
 

@@ -38,7 +38,7 @@ function parseChainId(chainId: string | number): number {
 }
 
 export class InjectedWallet extends Connector {
-  provider?: InjectedWalletProvider
+  provider?: InjectedWalletProvider = undefined
   walletUrl: string
   searchKeywords: string[]
   eagerConnection?: boolean
