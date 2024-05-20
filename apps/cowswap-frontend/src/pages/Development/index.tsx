@@ -1,4 +1,4 @@
-import { MenuBar, MenuItem, ButtonSecondary as Button } from '@cowprotocol/ui'
+import { MenuBar, MenuItem, ButtonSecondary as Button, Footer } from '@cowprotocol/ui'
 
 import IMG_ICON_SETTINGS_GLOBAL from '@cowprotocol/assets/images/settings-global.svg'
 import IMG_ICON_BRANDED_DOT_RED from '@cowprotocol/assets/images/icon-branded-dot-red.svg'
@@ -52,13 +52,76 @@ const additionalContent = (
   </>
 )
 
+const FOOTER_DESCRIPTION =
+  'CoW DAO is an open organization of developers, market makers, and community contributors on a mission to protect users from the dangers of DeFi.'
+
+const FOOTER_NAV_ITEMS: MenuItem[] = [
+  {
+    label: 'About',
+    children: [
+      { href: '#', label: 'Governance' },
+      { href: '#', label: 'Token' },
+      { href: '#', label: 'Grants' },
+      { href: '#', label: 'Careers' },
+      { href: '#', label: 'Brand Kit' },
+    ],
+  },
+  {
+    label: 'Legal',
+    children: [
+      { href: '#', label: 'Terms & Conditions' },
+      { href: '#', label: 'Cookie Policy' },
+      { href: '#', label: 'Privacy Policy' },
+    ],
+  },
+  {
+    label: 'Products',
+    children: [
+      { href: '#', label: 'CoW Swap' },
+      { href: '#', label: 'CoW Protocol' },
+      { href: '#', label: 'CoW AMM' },
+      { href: '#', label: 'MEV Blocker' },
+      { href: '#', label: 'Explorer' },
+      { href: '#', label: 'Widget' },
+      { href: '#', label: 'Hooks Store' },
+    ],
+  },
+  {
+    href: '#',
+    label: 'Help',
+    children: [
+      { href: '#', label: 'Dev Docs' },
+      { href: '#', label: 'FAQ / Knowledge base' },
+      { href: '#', label: 'Send Feedback' },
+      { href: '#', label: 'Report Scams' },
+    ],
+  },
+  {
+    label: 'Misc.',
+    children: [
+      { href: '#', label: 'Swag Store' },
+      { href: '#', label: 'Token Charts' },
+      { href: '#', label: 'For DAOs' },
+    ],
+  },
+]
+
 export default function Development() {
   return (
-    <MenuBar
-      navItems={NAV_ITEMS}
-      theme={THEME_MODE}
-      productVariant={PRODUCT_VARIANT}
-      additionalContent={additionalContent}
-    />
+    <>
+      <MenuBar
+        navItems={NAV_ITEMS}
+        theme={THEME_MODE}
+        productVariant={PRODUCT_VARIANT}
+        additionalContent={additionalContent}
+      />
+
+      <Footer
+        description={FOOTER_DESCRIPTION}
+        navItems={FOOTER_NAV_ITEMS}
+        theme={THEME_MODE}
+        productVariant={PRODUCT_VARIANT}
+      />
+    </>
   )
 }

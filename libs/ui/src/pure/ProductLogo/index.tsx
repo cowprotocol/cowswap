@@ -15,7 +15,7 @@ interface LogoInfo {
 
 export type ThemedLogo = Record<CowSwapTheme, { default: LogoInfo; logoIconOnly?: LogoInfo }>
 
-export type ProductVariant = 'cowSwap' | 'cowProtocol'
+export type ProductVariant = 'cowSwap' | 'cowProtocol' | 'mevBlocker' | 'cowAmm'
 
 const LOGOS: Record<ProductVariant, ThemedLogo> = {
   // CoW Swap
@@ -74,17 +74,76 @@ const LOGOS: Record<ProductVariant, ThemedLogo> = {
       },
     },
   },
+
+  // MEV Blocker
+  mevBlocker: {
+    light: {
+      default: {
+        src: LOGO_COWSWAP,
+        alt: 'MEV Blocker light mode',
+        color: '#012F7A',
+      },
+      logoIconOnly: {
+        src: LOGO_ICON_COW,
+        alt: 'MEV Blocker icon only light mode',
+        color: '#012F7A',
+      },
+    },
+    dark: {
+      default: {
+        src: LOGO_COWSWAP,
+        alt: 'MEV Blocker dark mode',
+        color: '#65D9FF',
+      },
+      logoIconOnly: {
+        src: LOGO_ICON_COW,
+        alt: 'MEV Blocker icon only dark mode',
+        color: '#65D9FF',
+      },
+    },
+  },
+
+  // CoW AMM
+  cowAmm: {
+    light: {
+      default: {
+        src: LOGO_COWSWAP,
+        alt: 'CoW AMM light mode',
+        color: '#012F7A',
+      },
+      logoIconOnly: {
+        src: LOGO_ICON_COW,
+        alt: 'CoW AMM icon only light mode',
+        color: '#012F7A',
+      },
+    },
+    dark: {
+      default: {
+        src: LOGO_COWSWAP,
+        alt: 'CoW AMM dark mode',
+        color: '#65D9FF',
+      },
+      logoIconOnly: {
+        src: LOGO_ICON_COW,
+        alt: 'CoW AMM icon only dark mode',
+        color: '#65D9FF',
+      },
+    },
+  },
 }
 
 export interface LogoProps {
   variant: ProductVariant
   theme: CowSwapTheme
   logoIconOnly: boolean
+  overrideColor?: string // Optional override color
+  height?: number
 }
 
-const Wrapper = styled.span<{ color?: string }>`
-  --maxHeight: 24px;
+const Wrapper = styled.span<{ color?: string; hoverColor?: string; height?: number }>`
+  --height: ${({ height }) => height || 24}px;
   --color: ${({ color }) => color || 'black'};
+  --hoverColor: ${({ hoverColor }) => hoverColor};
 
   display: flex;
   flex-direction: row;
@@ -92,10 +151,10 @@ const Wrapper = styled.span<{ color?: string }>`
   align-items: center;
   gap: 8px;
   color: var(--color);
+  height: var(--height);
 
   > svg {
     height: 100%;
-    min-height: var(--maxHeight);
     width: auto;
     color: inherit;
     fill: currentColor;
@@ -104,14 +163,19 @@ const Wrapper = styled.span<{ color?: string }>`
   > svg path {
     fill: currentColor;
   }
+
+  &:hover {
+    color: var(--hoverColor);
+  }
 `
 
-export const ProductLogo: React.FC<LogoProps> = ({ variant, theme: themeMode, logoIconOnly }) => {
+export const ProductLogo = ({ variant, theme: themeMode, logoIconOnly, overrideColor, height }: LogoProps) => {
   const logoForTheme = LOGOS[variant][themeMode]
   const logoInfo = logoIconOnly && logoForTheme.logoIconOnly ? logoForTheme.logoIconOnly : logoForTheme.default
+  const initialColor = overrideColor || logoInfo.color
 
   return (
-    <Wrapper color={logoInfo.color}>
+    <Wrapper color={initialColor} hoverColor={logoInfo.color} height={height}>
       <SVG src={logoInfo.src} description={logoInfo.alt} />
     </Wrapper>
   )
