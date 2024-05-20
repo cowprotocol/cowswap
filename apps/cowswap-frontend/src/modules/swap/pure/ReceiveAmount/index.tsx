@@ -1,3 +1,4 @@
+import { TokenAmount } from '@cowprotocol/ui'
 import { Currency } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
@@ -17,8 +18,8 @@ export interface ReceiveAmountProps {
 }
 
 export function ReceiveAmount(props: ReceiveAmountProps) {
-  const { type, amountAfterFees, amountAfterFeesRaw } = props.receiveAmountInfo
-  const title = amountAfterFeesRaw.toExact() + ' ' + props.currency.symbol
+  const { type, amountAfterFees } = props.receiveAmountInfo
+  const title = amountAfterFees.toExact() + ' ' + props.currency.symbol
 
   return (
     <styledEl.ReceiveAmountBox>
@@ -30,7 +31,9 @@ export function ReceiveAmount(props: ReceiveAmountProps) {
         <styledEl.QuestionHelperWrapped text={<ReceiveAmountInfoTooltip {...props} />} />
       </div>
       <div>
-        <styledEl.ReceiveAmountValue title={title}>{amountAfterFees}</styledEl.ReceiveAmountValue>
+        <styledEl.ReceiveAmountValue title={title}>
+          <TokenAmount amount={amountAfterFees} defaultValue="0" />
+        </styledEl.ReceiveAmountValue>
       </div>
     </styledEl.ReceiveAmountBox>
   )
