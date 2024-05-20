@@ -47,7 +47,7 @@ const scrollToMyOrders = () => {
 
 export function TradeWidgetForm(props: TradeWidgetProps) {
   const isInjectedWidgetMode = isInjectedWidget()
-  const injectedWidgetParams = useInjectedWidgetParams()
+  const { standaloneMode } = useInjectedWidgetParams()
 
   const isAlternativeOrderModalVisible = useIsAlternativeOrderModalVisible()
   const { pendingActivity } = useCategorizeRecentActivity()
@@ -100,7 +100,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
   const shouldShowMyOrdersButton =
     !alternativeOrderModalVisible &&
     (!isInjectedWidgetMode && isConnectedSwapMode ? isUpToLarge : true) &&
-    ((isConnectedSwapMode && injectedWidgetParams.standaloneMode !== true) ||
+    ((isConnectedSwapMode && standaloneMode !== true) ||
       (isLimitOrderMode && isUpToLarge && isLimitOrdersUnlocked) ||
       (isAdvancedMode && isUpToLarge && isAdvancedOrdersUnlocked))
 
@@ -125,7 +125,6 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
     if (!hasRecipientInUrl && !isAlternativeOrderModalVisible) {
       onChangeRecipient(null)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const toggleAccountModal = useToggleAccountModal()
@@ -143,7 +142,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
       <styledEl.ContainerBox>
         <styledEl.Header>
           {isAlternativeOrderModalVisible ? <div></div> : <TradeWidgetLinks isDropdown={showDropdown} />}
-          {isInjectedWidgetMode && injectedWidgetParams.standaloneMode && (
+          {isInjectedWidgetMode && standaloneMode && (
             <AccountElement standaloneMode pendingActivities={pendingActivity} />
           )}
 

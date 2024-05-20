@@ -22,7 +22,7 @@ import TradeGp from 'legacy/state/swap/TradeGp'
 import { isWrappingTrade } from 'legacy/state/swap/utils'
 import { Field } from 'legacy/state/types'
 
-import { useInjectedWidgetParams } from 'modules/injectedWidget'
+import { useWidgetPartnerFee } from 'modules/injectedWidget'
 import { useNavigateOnCurrencySelection } from 'modules/trade/hooks/useNavigateOnCurrencySelection'
 import { useTradeNavigate } from 'modules/trade/hooks/useTradeNavigate'
 
@@ -244,7 +244,7 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
 
   const isWrapping = isWrappingTrade(inputCurrency, outputCurrency, chainId)
 
-  const { partnerFee } = useInjectedWidgetParams()
+  const partnerFee = useWidgetPartnerFee()
 
   const trade = useSafeMemo(() => {
     if (isWrapping) return undefined
@@ -337,14 +337,14 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
         slippageAdjustedBuyAmount,
       }
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
     [
       allowedSlippage,
       currencyBalances,
       currenciesIds,
       inputError,
       parsedAmount,
-      // eslint-disable-next-line react-hooks/exhaustive-deps
+
       JSON.stringify(trade),
       slippageAdjustedSellAmount,
       slippageAdjustedBuyAmount,

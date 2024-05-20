@@ -75,7 +75,7 @@ export function SwapWidget() {
   const showRecipientControls = useShowRecipientControls(recipient)
   const isEoaEthFlow = useIsEoaEthFlow()
   const shouldZeroApprove = useShouldZeroApprove(slippageAdjustedSellAmount)
-  const widgetParams = useInjectedWidgetParams()
+  const { enabledTradeTypes, banners: widgetBanners } = useInjectedWidgetParams()
   const priceImpactParams = useTradePriceImpact()
 
   const isTradePriceUpdating = useTradePricesUpdate()
@@ -215,10 +215,9 @@ export function SwapWidget() {
 
   // Show the same banner when approval is needed or selling native token
   const showSafeWcBundlingBanner =
-    (showSafeWcApprovalBundlingBanner || showSafeWcWrapBundlingBanner) && !widgetParams.banners?.hideSafeWebAppBanner
+    (showSafeWcApprovalBundlingBanner || showSafeWcWrapBundlingBanner) && !widgetBanners?.hideSafeWebAppBanner
 
-  const showTwapSuggestionBanner =
-    !widgetParams.enabledTradeTypes || widgetParams.enabledTradeTypes.includes(TradeType.ADVANCED)
+  const showTwapSuggestionBanner = !enabledTradeTypes || enabledTradeTypes.includes(TradeType.ADVANCED)
 
   const nativeCurrencySymbol = useNativeCurrency().symbol || 'ETH'
   const wrappedCurrencySymbol = useWrappedToken().symbol || 'WETH'

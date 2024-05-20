@@ -8,3 +8,5 @@ export const injectedWidgetParamsAtom = atom<{ params: Partial<CowSwapWidgetAppP
   params: {},
   errors: {},
 })
+
+export const injectedWidgetPartnerFeeAtom = atom((get) => get(injectedWidgetParamsAtom).params.partnerFee)

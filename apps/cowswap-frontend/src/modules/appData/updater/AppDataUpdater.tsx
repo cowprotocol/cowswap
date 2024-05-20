@@ -6,7 +6,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { PartnerFee } from '@cowprotocol/widget-lib'
 import { Percent } from '@uniswap/sdk-core'
 
-import { useInjectedWidgetParams } from 'modules/injectedWidget'
+import { useWidgetPartnerFee } from 'modules/injectedWidget'
 import { useAppCodeWidgetAware } from 'modules/injectedWidget/hooks/useAppCodeWidgetAware'
 import { useReplacedOrderUid } from 'modules/trade/state/alternativeOrder'
 import { useUtm } from 'modules/utm'
@@ -47,7 +47,7 @@ export const AppDataUpdater = React.memo(({ slippage, orderClass }: AppDataUpdat
   const utm = useUtm()
   const hooks = useAppDataHooks()
   const appCodeWithWidgetMetadata = useAppCodeWidgetAware(appCode)
-  const widgetParams = useInjectedWidgetParams()
+  const partnerFee = useWidgetPartnerFee()
   const replacedOrderUid = useReplacedOrderUid()
 
   if (!chainId) return null
@@ -60,7 +60,7 @@ export const AppDataUpdater = React.memo(({ slippage, orderClass }: AppDataUpdat
       orderClass={orderClass}
       utm={utm}
       hooks={hooks}
-      partnerFee={mapPartnerFee(widgetParams.partnerFee, orderClass, chainId)}
+      partnerFee={mapPartnerFee(partnerFee, orderClass, chainId)}
       replacedOrderUid={replacedOrderUid}
     />
   )
