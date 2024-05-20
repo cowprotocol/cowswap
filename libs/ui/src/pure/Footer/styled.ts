@@ -1,22 +1,23 @@
-import styled from 'styled-components/macro'
+import styled, { css } from 'styled-components/macro'
 import { CowSwapTheme } from '@cowprotocol/widget-lib'
 import { Color } from '@cowprotocol/ui'
 
-export const FooterContainer = styled.footer<{ theme: CowSwapTheme }>`
+export const FooterContainer = styled.footer<{ theme: CowSwapTheme; expanded: boolean }>`
   --bgColor: ${({ theme }) => Color(theme).neutral10};
   --color: ${({ theme }) => Color(theme).neutral50};
   --colorTitle: ${({ theme }) => Color(theme).neutral98};
   background: var(--bgColor);
   color: var(--color);
-  padding: 20px 0;
+  padding: ${({ expanded }) => (expanded ? '134px 0 0' : '0')};
   text-align: left;
+  transition: padding 0.3s ease;
 `
 
 export const FooterContent = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 20px;
-  padding: 0 50px;
+  padding: 0 24px;
 `
 
 export const FooterSection = styled.div`
@@ -97,13 +98,13 @@ export const FooterBottom = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 50px;
+  padding: 24px;
   gap: 24px;
 `
 
 export const FooterBottomLogos = styled.div`
   display: flex;
-  gap: 10px;
+  gap: 28px;
   height: auto;
   margin: 0 auto 0 0;
 
@@ -121,4 +122,28 @@ export const BottomText = styled.p`
 
 export const Description = styled.p`
   margin-bottom: 10px;
+`
+
+export const BottomRight = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  flex: 1 1 auto;
+  margin: 0 0 0 auto;
+  gap: 10px;
+`
+
+export const ToggleFooterButton = styled.button<{ expanded: boolean }>`
+  --size: 22px;
+  height: var(--size);
+  width: var(--size);
+  object-fit: contain;
+  background: transparent;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 0;
+  transition: transform 0.3s ease-in-out;
+  transform: ${({ expanded }) => (expanded ? 'rotate(90deg)' : 'rotate(0deg)')};
 `

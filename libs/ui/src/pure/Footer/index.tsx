@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { ProductLogo } from '@cowprotocol/ui'
 import { MenuItem } from '@cowprotocol/ui'
 import {
@@ -16,6 +17,8 @@ import {
   FooterBottom,
   BottomText,
   FooterBottomLogos,
+  BottomRight,
+  ToggleFooterButton,
 } from './styled'
 
 import { FooterAnimation } from './footerAnimation'
@@ -27,6 +30,8 @@ import IMG_ICON_SOCIAL_X from '@cowprotocol/assets/images/icon-social-x.svg'
 import IMG_ICON_SOCIAL_DISCORD from '@cowprotocol/assets/images/icon-social-discord.svg'
 import IMG_ICON_SOCIAL_GITHUB from '@cowprotocol/assets/images/icon-social-github.svg'
 import IMG_ICON_SOCIAL_FORUM from '@cowprotocol/assets/images/icon-social-forum.svg'
+
+import IMG_ICON_ARROW_RIGHT_CIRCULAR from '@cowprotocol/assets/images/arrow-right-circular.svg'
 
 interface FooterProps {
   description?: string
@@ -43,52 +48,62 @@ const SOCIAL_LINKS: { href: string; label: string; icon: string }[] = [
 ]
 
 const PRODUCT_LOGO_LINKS: { href: string; label: string; productVariant: ProductVariant }[] = [
-  { href: 'https://swap.cow.fi/', label: 'CoW Swap', productVariant: 'cowSwap' },
-  { href: 'https://cow.fi/', label: 'CoW Protocol', productVariant: 'cowProtocol' },
-  { href: 'https://mevblocker.com', label: 'MEV Blocker', productVariant: 'mevBlocker' },
-  { href: 'https://cow.fi/cow-amm', label: 'CoW AMM', productVariant: 'cowAmm' },
+  { href: 'https://swap.cow.fi/', label: 'CoW Swap', productVariant: ProductVariant.CowSwap },
+  { href: 'https://cow.fi/', label: 'CoW Protocol', productVariant: ProductVariant.CowProtocol },
+  { href: 'https://mevblocker.com', label: 'MEV Blocker', productVariant: ProductVariant.MevBlocker },
+  { href: 'https://cow.fi/cow-amm', label: 'CoW AMM', productVariant: ProductVariant.CowAmm },
 ]
 
-export const Footer = ({ description, navItems, theme, productVariant }: FooterProps) => {
+export const Footer = ({ description, navItems, theme }: FooterProps) => {
+  const [isFooterExpanded, setIsFooterExpanded] = useState(true)
+
+  const toggleFooter = () => {
+    setIsFooterExpanded(!isFooterExpanded)
+  }
+
   return (
-    <FooterContainer theme={theme}>
-      <FooterContent>
-        <FooterSection>
-          <FooterLogo>
-            <ProductLogo variant={productVariant} theme={theme} logoIconOnly={false} />
-          </FooterLogo>
-          {description && <Description>{description}</Description>}
-          <FooterIcons>
-            {SOCIAL_LINKS.map((social, index) => (
-              <SocialIconLink key={index} href={social.href} target="_blank" rel="noopener noreferrer">
-                <SVG src={social.icon} title={social.label} />
-              </SocialIconLink>
-            ))}
-          </FooterIcons>
-        </FooterSection>
-
-        <LinkListWrapper>
-          {navItems.map((item, index) => (
-            <LinkListGroup key={index}>
-              <SectionTitle>{item.label}</SectionTitle>
-              <LinkList>
-                {item.children?.map((child, childIndex) => (
-                  <li key={childIndex}>
-                    <Link href={child.href || '#'} target="_blank" rel="noopener noreferrer">
-                      {child.label}
-                    </Link>
-                  </li>
+    <FooterContainer theme={theme} expanded={isFooterExpanded}>
+      {isFooterExpanded && (
+        <>
+          <FooterContent>
+            <FooterSection>
+              <FooterLogo>
+                <ProductLogo variant={ProductVariant.CowProtocol} theme={theme} logoIconOnly={false} height={48} />
+              </FooterLogo>
+              {description && <Description>{description}</Description>}
+              <FooterIcons>
+                {SOCIAL_LINKS.map((social, index) => (
+                  <SocialIconLink key={index} href={social.href} target="_blank" rel="noopener noreferrer">
+                    <SVG src={social.icon} title={social.label} />
+                  </SocialIconLink>
                 ))}
-              </LinkList>
-            </LinkListGroup>
-          ))}
-        </LinkListWrapper>
-      </FooterContent>
+              </FooterIcons>
+            </FooterSection>
 
-      <FooterAnimation theme={theme} />
+            <LinkListWrapper>
+              {navItems.map((item, index) => (
+                <LinkListGroup key={index}>
+                  <SectionTitle>{item.label}</SectionTitle>
+                  <LinkList>
+                    {item.children?.map((child, childIndex) => (
+                      <li key={childIndex}>
+                        <Link href={child.href || '#'} target="_blank" rel="noopener noreferrer">
+                          {child.label}
+                        </Link>
+                      </li>
+                    ))}
+                  </LinkList>
+                </LinkListGroup>
+              ))}
+            </LinkListWrapper>
+          </FooterContent>
+
+          <FooterAnimation theme={theme} />
+        </>
+      )}
 
       <FooterBottom>
-        <BottomText>&copy; CoW DAO - {new Date().getFullYear()}</BottomText>
+        <BottomText>&copy; CoW DAO – {new Date().getFullYear()}</BottomText>
         <FooterBottomLogos>
           {PRODUCT_LOGO_LINKS.map((product, index) => (
             <a key={index} href={product.href} target="_blank" rel="noopener noreferrer">
@@ -97,11 +112,18 @@ export const Footer = ({ description, navItems, theme, productVariant }: FooterP
                 theme={theme}
                 logoIconOnly={false}
                 overrideColor={Color(theme).neutral50}
+                overrideHoverColor={Color(theme).neutral98}
                 height={20}
               />
             </a>
           ))}
         </FooterBottomLogos>
+
+        <BottomRight>
+          <ToggleFooterButton onClick={toggleFooter} expanded={isFooterExpanded}>
+            <SVG src={IMG_ICON_ARROW_RIGHT_CIRCULAR} title="Toggle Footer" />
+          </ToggleFooterButton>
+        </BottomRight>
       </FooterBottom>
     </FooterContainer>
   )

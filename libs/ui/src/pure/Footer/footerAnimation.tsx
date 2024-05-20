@@ -27,6 +27,7 @@ const FooterAnimationContainer = styled.div<{ theme: CowSwapTheme }>`
   white-space: nowrap;
   color: var(--color);
   margin: 50px 0;
+  overflow: hidden;
 
   &:hover > div {
     animation-play-state: paused;

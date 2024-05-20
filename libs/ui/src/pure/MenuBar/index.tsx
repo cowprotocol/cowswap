@@ -42,10 +42,10 @@ import { CowSwapTheme } from '@cowprotocol/widget-lib'
 // MenuBar Component: Main component managing the menu bar, handles mobile and desktop modes, toggles no-scroll class based on menu state.
 
 const DAO_NAV_ITEMS: MenuItem[] = [
-  { href: 'https://cow.fi/#cowswap', productVariant: 'cowSwap' },
-  { href: 'https://cow.fi/#cowprotocol', productVariant: 'cowSwap' },
-  { href: 'https://cow.fi/#cowamm', productVariant: 'cowProtocol' },
-  { href: 'https://cow.fi/', productVariant: 'cowProtocol' },
+  { href: 'https://cow.fi/#cowswap', productVariant: ProductVariant.CowSwap },
+  { href: 'https://cow.fi/#cowprotocol', productVariant: ProductVariant.CowProtocol },
+  { href: 'https://cow.fi/#cowamm', productVariant: ProductVariant.CowAmm },
+  { href: 'https://cow.fi/', productVariant: ProductVariant.CowDao },
 ]
 
 const SETTINGS_ITEMS: MenuItem[] = [
