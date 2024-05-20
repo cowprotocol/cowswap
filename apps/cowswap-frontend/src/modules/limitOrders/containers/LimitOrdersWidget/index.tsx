@@ -5,6 +5,7 @@ import { isSellOrder } from '@cowprotocol/common-utils'
 
 import { Field } from 'legacy/state/types'
 
+import { useWidgetPartnerFee } from 'modules/injectedWidget'
 import { LimitOrdersWarnings } from 'modules/limitOrders/containers/LimitOrdersWarnings'
 import { useLimitOrdersWidgetActions } from 'modules/limitOrders/containers/LimitOrdersWidget/hooks/useLimitOrdersWidgetActions'
 import { TradeButtons } from 'modules/limitOrders/containers/TradeButtons'
@@ -16,6 +17,7 @@ import { useSetTradeQuoteParams, useTradeQuote } from 'modules/tradeQuote'
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 
+import { getReceiveAmountInfo } from './helpers/tradeReceiveAmount'
 import { LimitOrdersProps, limitOrdersPropsChecker } from './limitOrdersPropsChecker'
 import * as styledEl from './styled'
 
@@ -72,6 +74,7 @@ export function LimitOrdersWidget() {
   const { isLoading: isRateLoading } = useTradeQuote()
   const rateInfoParams = useRateInfoParams(inputCurrencyAmount, outputCurrencyAmount)
   const widgetActions = useLimitOrdersWidgetActions()
+  const parnerFee = useWidgetPartnerFee()
 
   const { showRecipient: showRecipientSetting } = settingsState
   const showRecipient = showRecipientSetting || !!recipient
@@ -92,8 +95,9 @@ export function LimitOrdersWidget() {
     isIndependent: isSell,
     balance: inputCurrencyBalance,
     fiatAmount: inputCurrencyFiatAmount,
-    receiveAmountInfo: null,
+    receiveAmountInfo: !isSell ? getReceiveAmountInfo('from', inputCurrencyAmount, parnerFee) : null,
   }
+
   const outputCurrencyInfo: CurrencyInfo = {
     field: Field.OUTPUT,
     label: isSell ? 'Receive at least' : 'Buy exactly',
@@ -102,7 +106,7 @@ export function LimitOrdersWidget() {
     isIndependent: !isSell,
     balance: outputCurrencyBalance,
     fiatAmount: outputCurrencyFiatAmount,
-    receiveAmountInfo: null,
+    receiveAmountInfo: isSell ? getReceiveAmountInfo('to', outputCurrencyAmount, parnerFee) : null,
   }
 
   const localFormValidation = useLimitOrdersFormState()
@@ -230,15 +234,17 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
       params={params}
       inputCurrencyInfo={inputCurrencyInfo}
       outputCurrencyInfo={outputCurrencyInfo}
-      confirmModal={tradeContext && (
-        <LimitOrdersConfirmModal
-          recipient={recipient}
-          tradeContext={tradeContext}
-          priceImpact={priceImpact}
-          inputCurrencyInfo={inputCurrencyPreviewInfo}
-          outputCurrencyInfo={outputCurrencyPreviewInfo}
-        />
-      )}
+      confirmModal={
+        tradeContext && (
+          <LimitOrdersConfirmModal
+            recipient={recipient}
+            tradeContext={tradeContext}
+            priceImpact={priceImpact}
+            inputCurrencyInfo={inputCurrencyPreviewInfo}
+            outputCurrencyInfo={outputCurrencyPreviewInfo}
+          />
+        )
+      }
     />
   )
 }, limitOrdersPropsChecker)

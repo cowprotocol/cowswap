@@ -49,21 +49,23 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps) {
           <TokenAmount amount={amountBeforeFees} tokenSymbol={amountBeforeFees?.currency} defaultValue="0" />
         </span>
       </div>
-      <div>
-        {discount ? <styledEl.GreenText>{FeePercent}</styledEl.GreenText> : FeePercent}
-        {hasFee ? (
-          <span>
-            {typeString}
-            <TokenAmount amount={feeAmount} tokenSymbol={feeAmount?.currency} defaultValue="0" />
-          </span>
-        ) : (
-          <styledEl.GreenText>
-            <strong>
-              <Trans>Free</Trans>
-            </strong>
-          </styledEl.GreenText>
-        )}
-      </div>
+      {feeAmount && (
+        <div>
+          {discount ? <styledEl.GreenText>{FeePercent}</styledEl.GreenText> : FeePercent}
+          {hasFee ? (
+            <span>
+              {typeString}
+              <TokenAmount amount={feeAmount} tokenSymbol={feeAmount?.currency} defaultValue="0" />
+            </span>
+          ) : (
+            <styledEl.GreenText>
+              <strong>
+                <Trans>Free</Trans>
+              </strong>
+            </styledEl.GreenText>
+          )}
+        </div>
+      )}
       {(isEoaNotEthFlow || hasPartnerFee) && (
         <div>
           <span>
