@@ -103,9 +103,6 @@ export const MEDIA = {
   },
 }
 
-export const NODE_PROVIDER_ID = process.env.NODE_PROVIDER_ID || 'ed3c6720eb3f470e9ceac8f8f12e8b14'
-export const ETH_NODE_URL = process.env.ETH_NODE_URL || 'wss://eth-mainnet.nodereal.io/ws/v1/' + NODE_PROVIDER_ID
-
 export const WETH_ADDRESS_MAINNET = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'
 export const WXDAI_ADDRESS_XDAI = '0xe91D153E0b41518A2Ce8Dd3D7944Fa863463a97d'
 export const WXDAI_ADDRESS_ARBITRUM_ONE = '0x82af49447d8a07e3bd95bd0d56f35241523fbab1'
