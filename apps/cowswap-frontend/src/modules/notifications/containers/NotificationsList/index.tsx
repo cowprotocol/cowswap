@@ -1,8 +1,6 @@
 import { useSetAtom } from 'jotai/index'
 import React, { ReactNode, useEffect, useMemo } from 'react'
 
-import { useWalletInfo } from '@cowprotocol/wallet'
-
 import { ListWrapper, NoNotifications, NotificationCard, NotificationsListWrapper, NotificationThumb } from './styled'
 
 import { useAccountNotifications } from '../../hooks/useAccountNotifications'
@@ -15,7 +13,6 @@ const DATE_FORMAT_OPTION: Intl.DateTimeFormatOptions = {
 }
 
 export function NotificationsList({ children }: { children: ReactNode }) {
-  const { account } = useWalletInfo()
   const notifications = useAccountNotifications()
   const unreadNotifications = useUnreadNotifications()
   const markNotificationsAsRead = useSetAtom(markNotificationsAsReadAtom)
@@ -23,12 +20,12 @@ export function NotificationsList({ children }: { children: ReactNode }) {
   const groups = useMemo(() => (notifications ? groupNotificationsByDate(notifications) : null), [notifications])
 
   useEffect(() => {
-    if (!account || !notifications) return
+    if (!notifications) return
 
     setTimeout(() => {
-      markNotificationsAsRead(account, notifications.map(({ id }) => id) || [])
+      markNotificationsAsRead(notifications.map(({ id }) => id) || [])
     }, 1000)
-  }, [account, notifications])
+  }, [notifications])
 
   return (
     <>

@@ -3,25 +3,16 @@ import { atomWithStorage } from 'jotai/utils'
 
 import { getJotaiIsolatedStorage } from '@cowprotocol/core'
 
-type Account = string
-
-type ReadNotificationsState = Record<Account, number[]>
-
-export const readNotificationsAtom = atomWithStorage<ReadNotificationsState>(
+export const readNotificationsAtom = atomWithStorage<number[]>(
   'readNotificationsAtom:v0',
-  {},
+  [],
   getJotaiIsolatedStorage()
 )
 
-export const markNotificationsAsReadAtom = atom(null, (get, set, account: string, ids: number[]) => {
+export const markNotificationsAsReadAtom = atom(null, (get, set, ids: number[]) => {
   const state = get(readNotificationsAtom)
 
-  const accountState = state[account] || []
+  state.push(...ids.filter((id) => !state.includes(id)))
 
-  accountState.push(...ids.filter((id) => !accountState.includes(id)))
-
-  set(readNotificationsAtom, {
-    ...state,
-    [account]: accountState,
-  })
+  set(readNotificationsAtom, state)
 })
