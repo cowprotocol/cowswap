@@ -1,14 +1,8 @@
-import { Currency, CurrencyAmount, TradeType } from '@uniswap/sdk-core'
+import { CurrencyAmount, TradeType } from '@uniswap/sdk-core'
 
 import TradeGp from 'legacy/state/swap/TradeGp'
 
-export interface ReceiveAmountInfo {
-  type: 'from' | 'to'
-  amountBeforeFees: CurrencyAmount<Currency> | undefined
-  amountAfterFees: CurrencyAmount<Currency>
-  feeAmount: CurrencyAmount<Currency> | undefined
-  partnerFeeAmount: CurrencyAmount<Currency> | undefined
-}
+import { ReceiveAmountInfo } from 'modules/trade/types'
 
 export function getInputReceiveAmountInfo(trade: TradeGp): ReceiveAmountInfo {
   const inputAmountAfterFees = trade.inputAmountAfterFees.lessThan(0)

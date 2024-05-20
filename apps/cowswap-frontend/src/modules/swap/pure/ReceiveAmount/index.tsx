@@ -5,8 +5,8 @@ import { Trans } from '@lingui/macro'
 
 import { BalanceAndSubsidy } from 'legacy/hooks/useCowBalanceAndSubsidy'
 
-import { ReceiveAmountInfo } from 'modules/swap/helpers/tradeReceiveAmount'
 import { ReceiveAmountInfoTooltip } from 'modules/swap/pure/ReceiveAmountInfo'
+import { ReceiveAmountInfo } from 'modules/trade/types'
 
 import * as styledEl from './styled'
 

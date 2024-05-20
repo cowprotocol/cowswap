@@ -4,7 +4,7 @@ import { areFractionsEqual } from '@cowprotocol/common-utils'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
 import { SwapFormProps } from 'modules/swap/containers/SwapWidget/types'
-import { ReceiveAmountInfo } from 'modules/swap/helpers/tradeReceiveAmount'
+import { ReceiveAmountInfo } from 'modules/trade/types'
 
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 
