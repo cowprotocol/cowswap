@@ -1,14 +1,9 @@
 import { ReactNode } from 'react'
 
-import { FiatAmount, getTokenAmountTitle, RowFixed, TokenAmount, UI } from '@cowprotocol/ui'
-import { HoverTooltip } from '@cowprotocol/ui'
+import { FiatAmount, getTokenAmountTitle, InfoTooltip, RowBetween, RowFixed, TokenAmount, UI } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
-
-import { StyledRowBetween, TextWrapper } from 'modules/swap/pure/Row/styled'
-import { RowStyleProps } from 'modules/swap/pure/Row/types'
-import { StyledInfoIcon } from 'modules/swap/pure/styled'
 
 import { FiatRate } from 'common/pure/RateInfo'
 
@@ -18,48 +13,61 @@ const PlusGas = styled.span`
   font-weight: 400;
 `
 
+const Label = styled.span`
+  font-weight: 400;
+  margin-right: 5px;
+  opacity: 0.7;
+`
+
+const FreeLabel = styled.span`
+  color: var(${UI.COLOR_GREEN});
+`
+
+const Wrapper = styled(RowBetween)`
+  margin-bottom: 5px;
+`
+
 export interface RowFeeContentProps {
   label: string
   tooltip: ReactNode
   feeAmount?: CurrencyAmount<Currency>
   feeInFiat: CurrencyAmount<Token> | null
-  styleProps?: RowStyleProps
+  feeIsApproximate?: boolean
   noLabel?: boolean
   requireGas?: boolean
   isFree: boolean
 }
 
 export function RowFeeContent(props: RowFeeContentProps) {
-  const { label, tooltip, feeAmount, feeInFiat, isFree, noLabel, requireGas, styleProps = {} } = props
+  const { label, tooltip, feeAmount, feeInFiat, isFree, feeIsApproximate, noLabel, requireGas } = props
 
   const tokenSymbol = feeAmount?.currency
 
   return (
-    <StyledRowBetween {...styleProps}>
+    <Wrapper>
       {!noLabel && (
         <RowFixed>
-          <TextWrapper>{label}</TextWrapper>
-          <HoverTooltip content={tooltip} wrapInContainer>
-            <StyledInfoIcon size={16} />
-          </HoverTooltip>
+          <Label>{label}</Label>
+          <InfoTooltip content={tooltip} />
         </RowFixed>
       )}
 
-      <TextWrapper title={getTokenAmountTitle({ amount: feeAmount, tokenSymbol })} success={isFree}>
+      <div title={getTokenAmountTitle({ amount: feeAmount, tokenSymbol })}>
         {isFree ? (
-          'FREE'
+          <FreeLabel>FREE</FreeLabel>
         ) : (
           <>
+            {feeIsApproximate ? '≈ ' : ''}
             <TokenAmount amount={feeAmount} tokenSymbol={tokenSymbol} />
             {requireGas && <PlusGas>&nbsp;+ gas</PlusGas>}
           </>
         )}{' '}
         {feeInFiat && (
           <FiatRate>
-            <FiatAmount amount={feeInFiat} />
+            (<FiatAmount amount={feeInFiat} />)
           </FiatRate>
         )}
-      </TextWrapper>
-    </StyledRowBetween>
+      </div>
+    </Wrapper>
   )
 }

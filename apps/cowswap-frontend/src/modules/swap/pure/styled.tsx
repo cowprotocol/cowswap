@@ -18,21 +18,6 @@ export const LowerSectionWrapper = styled(RowBetween).attrs((props) => ({
   }
 `
 
-export const BottomGrouping = styled.div`
-  > div > button {
-    align-self: stretch;
-  }
-
-  div > svg,
-  div > svg > path {
-    stroke: currentColor;
-  }
-`
-export const LightGreyText = styled.span`
-  font-weight: 400;
-  color: var(${UI.COLOR_TEXT_OPACITY_70});
-`
-
 export const StyledInfoIcon = styled(Info)`
   color: inherit;
   opacity: 0.6;

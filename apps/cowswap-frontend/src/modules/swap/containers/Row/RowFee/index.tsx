@@ -1,16 +1,12 @@
 import { useMemo } from 'react'
 
-import { FractionUtils, bpsToPercent, formatPercent } from '@cowprotocol/common-utils'
-import { PartnerFee } from '@cowprotocol/widget-lib'
+import { FractionUtils } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount, Token, TradeType } from '@uniswap/sdk-core'
 
-import ReactMarkdown, { Components } from 'react-markdown'
-
-import { markdownComponents } from 'legacy/components/Markdown/components'
 import TradeGp from 'legacy/state/swap/TradeGp'
 
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
-import { RowFeeContent } from 'modules/swap/pure/Row/RowFeeContent'
+import { RowFeeContent } from 'modules/trade'
 
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
@@ -37,17 +33,6 @@ const tooltipNetworkCosts = (props: { isPresign: boolean; ethFlow: boolean; nati
     </>
   )
 }
-
-const TOOLTIP_PARTNER_FEE_FREE = `Unlike other exchanges, CoW Swap doesn’t charge a fee for trading!`
-
-const tooltipPartnerFee = (bps: number) => (
-  <>
-    This fee helps pay for maintenance & improvements to the swap experience.
-    <br />
-    <br />
-    The fee is {bps} BPS ({formatPercent(bpsToPercent(bps))}%), applied only if the trade is executed.
-  </>
-)
 
 // computes price breakdown for the trade
 function computeTradePriceBreakdown(trade?: TradeGp | null): {
@@ -107,34 +92,5 @@ export function RowNetworkCosts({ trade, feeAmount, feeInFiat, allowsOffchainSig
     }
   }, [feeAmount, feeInFiat, isEoaEthFlow, realizedFee, native, noLabel, isPresign])
 
-  return <RowFeeContent {...props} />
-}
-
-export interface PartnerRowPartnerFeeProps {
-  partnerFee?: PartnerFee
-  feeAmount?: CurrencyAmount<Currency>
-  feeInFiat: CurrencyAmount<Token> | null
-  label?: string
-  tooltipMarkdown?: string
-}
-
-export function RowPartnerFee({ partnerFee, feeAmount, feeInFiat, label, tooltipMarkdown }: PartnerRowPartnerFeeProps) {
-  const props = useMemo(() => {
-    const { bps } = partnerFee || { bps: 0 }
-    const isFree = bps === 0
-
-    const markdownContent = tooltipMarkdown ? (
-      <ReactMarkdown components={markdownComponents as Components}>{tooltipMarkdown}</ReactMarkdown>
-    ) : undefined
-
-    return {
-      label: label ? label : isFree ? 'Fee' : 'Total fee',
-      tooltip: markdownContent || (isFree ? TOOLTIP_PARTNER_FEE_FREE : tooltipPartnerFee(bps)),
-      feeAmount,
-      feeInFiat,
-      isFree,
-    }
-  }, [partnerFee, feeAmount, feeInFiat, label, tooltipMarkdown])
-
-  return <RowFeeContent {...props} />
+  return <RowFeeContent {...props} feeIsApproximate />
 }
