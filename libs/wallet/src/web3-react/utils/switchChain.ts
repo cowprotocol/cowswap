@@ -17,7 +17,7 @@ function getRpcUrls(chainId: SupportedChainId): [string] {
 const WALLET_RPC_SUGGESTION: Record<SupportedChainId, string | null> = {
   [SupportedChainId.MAINNET]: null,
   [SupportedChainId.GNOSIS_CHAIN]: 'https://rpc.gnosischain.com/',
-  [SupportedChainId.ARBITRUM_ONE]: 'https://arbitrum-mainnet.infura.io',
+  [SupportedChainId.ARBITRUM_ONE]: 'https://arb1.arbitrum.io/rpc',
   [SupportedChainId.SEPOLIA]: null,
 }
 
