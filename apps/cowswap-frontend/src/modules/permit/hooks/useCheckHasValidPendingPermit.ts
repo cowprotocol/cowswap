@@ -3,8 +3,8 @@ import { useCallback } from 'react'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { checkIsCallDataAValidPermit, getPermitUtilsInstance, PermitInfo } from '@cowprotocol/permit-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
+import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { Web3Provider } from '@ethersproject/providers'
-import { useWeb3React } from '@web3-react/core'
 
 import { getAppDataHooks } from 'modules/appData'
 
@@ -20,7 +20,7 @@ import { CheckHasValidPendingPermit } from '../types'
  */
 export function useCheckHasValidPendingPermit(): CheckHasValidPendingPermit {
   const { chainId } = useWalletInfo()
-  const { provider } = useWeb3React()
+  const provider = useWalletProvider()
   const getPermitInfo = useGetPermitInfo(chainId)
   const { allPermitInfo, isLoading: preGeneratedIsLoading } = usePreGeneratedPermitInfo()
 

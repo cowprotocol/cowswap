@@ -4,7 +4,6 @@ import EtherscanImage from '@cowprotocol/assets/cow-swap/etherscan-icon.svg'
 import { GP_VAULT_RELAYER, TokenWithLogo } from '@cowprotocol/common-const'
 import { useTheme } from '@cowprotocol/common-hooks'
 import { getBlockExplorerUrl, getIsNativeToken } from '@cowprotocol/common-utils'
-import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { useAreThereTokensWithSameSymbol } from '@cowprotocol/tokens'
 import { Command } from '@cowprotocol/types'
 import { Loader, TokenAmount, TokenName, TokenSymbol } from '@cowprotocol/ui'
@@ -43,7 +42,7 @@ type DataRowParams = {
   balance?: CurrencyAmount<Token> | undefined
   openApproveModal: (tokenSymbol?: string) => void
   closeApproveModal: Command
-  toggleWalletModal: Command | null
+  toggleWalletModal: Command
 }
 
 export const TokensTableRow = ({
@@ -54,7 +53,7 @@ export const TokensTableRow = ({
   openApproveModal,
   toggleWalletModal,
 }: DataRowParams) => {
-  const { account, chainId = ChainId.MAINNET } = useWalletInfo()
+  const { account, chainId } = useWalletInfo()
   const areThereTokensWithSameSymbol = useAreThereTokensWithSameSymbol()
 
   const theme = useTheme()
@@ -83,7 +82,7 @@ export const TokensTableRow = ({
   const handleApprove = useCallback(async () => {
     handleCloseError()
 
-    if (!account && toggleWalletModal) {
+    if (!account) {
       toggleWalletModal()
       return
     }

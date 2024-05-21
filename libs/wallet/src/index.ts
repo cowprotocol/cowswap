@@ -10,9 +10,14 @@ export * from './web3-react/hooks/useWalletMetadata'
 export * from './web3-react/hooks/useIsWalletConnect'
 export * from './web3-react/hooks/useSafeAppsSdk'
 export * from './web3-react/hooks/useIsSmartContractWallet'
+export * from './web3-react/hooks/useActivateConnector'
+export * from './web3-react/hooks/useDisconnectWallet'
+export * from './web3-react/hooks/useSwitchNetwork'
+export * from './web3-react/hooks/useConnectionType'
 
 // Updater
 export * from './web3-react/updater'
+export * from './web3-react/updaters/HwAccountIndexUpdater'
 
 // Components
 export * from './api/container/Identicon'
@@ -27,6 +32,7 @@ export { getWeb3ReactConnection } from './web3-react/utils/getWeb3ReactConnectio
 export { switchChain } from './web3-react/utils/switchChain'
 
 // Connectors
+export { Web3Provider } from './web3-react/Web3Provider'
 export { injectedWidgetConnection } from './web3-react/connection/injectedWidget'
 export { networkConnection } from './web3-react/connection/network'
 export { gnosisSafeConnection } from './web3-react/connection/safe'

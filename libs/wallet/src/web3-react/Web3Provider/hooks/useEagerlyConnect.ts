@@ -1,16 +1,13 @@
 import { useEffect } from 'react'
 
 import { getCurrentChainIdFromUrl, isInjectedWidget } from '@cowprotocol/common-utils'
-import {
-  BACKFILLABLE_WALLETS,
-  getWeb3ReactConnection,
-  injectedWidgetConnection,
-  networkConnection,
-  gnosisSafeConnection,
-} from '@cowprotocol/wallet'
 import { Connector } from '@web3-react/types'
 
-import { useAppSelector } from '../../../state/hooks'
+import { BACKFILLABLE_WALLETS, ConnectionType } from '../../../api/types'
+import { injectedWidgetConnection } from '../../connection/injectedWidget'
+import { networkConnection } from '../../connection/network'
+import { gnosisSafeConnection } from '../../connection/safe'
+import { getWeb3ReactConnection } from '../../utils/getWeb3ReactConnection'
 
 async function connect(connector: Connector) {
   const chainId = getCurrentChainIdFromUrl()
@@ -26,10 +23,7 @@ async function connect(connector: Connector) {
   }
 }
 
-export function useEagerlyConnect() {
-  const selectedWalletBackfilled = useAppSelector((state) => state.user.selectedWalletBackfilled)
-  const selectedWallet = useAppSelector((state) => state.user.selectedWallet)
-
+export function useEagerlyConnect(selectedWallet: ConnectionType | undefined, selectedWalletBackfilled: boolean) {
   useEffect(() => {
     if (isInjectedWidget()) {
       connect(injectedWidgetConnection.connector)
@@ -50,5 +44,5 @@ export function useEagerlyConnect() {
         .forEach(connect)
     }
     // The dependency list is empty so this is only run once on mount
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [])
 }
