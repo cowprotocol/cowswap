@@ -1,7 +1,6 @@
 import React from 'react'
 
 import { genericPropsChecker } from '@cowprotocol/common-utils'
-import { FiatAmount, TokenAmount } from '@cowprotocol/ui'
 import { useWalletDetails } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
@@ -15,9 +14,6 @@ import { TradeDetailsAccordion } from 'common/pure/TradeDetailsAccordion'
 
 import * as styledEl from './styled'
 import { useFeeAmounts } from './useFeeAmounts'
-
-// const SUBSIDY_INFO_MESSAGE_EXTENDED =
-//   SUBSIDY_INFO_MESSAGE + '. Click on the discount button on the right for more info.'
 
 export interface TradeRatesProps {
   trade: TradeGp | undefined
@@ -40,13 +36,6 @@ export const TradeRates = React.memo(function (props: TradeRatesProps) {
 
   if (!feeTotalAmount && !feeUsdTotalAmount) return null
 
-  const feeSummary =
-    feeUsdTotalAmount && feeUsdTotalAmount.greaterThan(0) ? (
-      <FiatAmount amount={feeUsdTotalAmount} />
-    ) : (
-      <TokenAmount amount={feeTotalAmount} tokenSymbol={feeTotalAmount?.currency} />
-    )
-
   const tradeBasicDetails = fee && (
     <TradeBasicDetails
       allowedSlippage={userAllowedSlippage}
@@ -63,7 +52,8 @@ export const TradeRates = React.memo(function (props: TradeRatesProps) {
       <TradeDetailsAccordion
         open={isReviewSwap}
         rateInfo={<styledEl.StyledRateInfo noLabel={true} stylized={true} rateInfoParams={rateInfoParams} />}
-        feeSummary={showTradeBasicDetails && feeSummary}
+        feeUsdTotalAmount={feeUsdTotalAmount}
+        feeTotalAmount={feeTotalAmount}
       >
         <styledEl.Box noMargin>
           {showTradeBasicDetails && tradeBasicDetails}

@@ -32,6 +32,7 @@ import { DeadlineInput } from '../DeadlineInput'
 import { LimitOrdersConfirmModal } from '../LimitOrdersConfirmModal'
 import { RateInput } from '../RateInput'
 import { SettingsWidget } from '../SettingsWidget'
+import { TradeRates } from '../TradeRates'
 
 export const LIMIT_BULLET_LIST_CONTENT: BulletListItem[] = [
   { content: 'Set any limit price and time horizon' },
@@ -74,7 +75,7 @@ export function LimitOrdersWidget() {
   const { isLoading: isRateLoading } = useTradeQuote()
   const rateInfoParams = useRateInfoParams(inputCurrencyAmount, outputCurrencyAmount)
   const widgetActions = useLimitOrdersWidgetActions()
-  const parnerFee = useWidgetPartnerFee()
+  const partnerFee = useWidgetPartnerFee()
 
   const { showRecipient: showRecipientSetting } = settingsState
   const showRecipient = showRecipientSetting || !!recipient
@@ -95,7 +96,7 @@ export function LimitOrdersWidget() {
     isIndependent: isSell,
     balance: inputCurrencyBalance,
     fiatAmount: inputCurrencyFiatAmount,
-    receiveAmountInfo: !isSell ? getReceiveAmountInfo('from', inputCurrencyAmount, parnerFee) : null,
+    receiveAmountInfo: !isSell ? getReceiveAmountInfo('from', inputCurrencyAmount, partnerFee) : null,
   }
 
   const outputCurrencyInfo: CurrencyInfo = {
@@ -106,11 +107,16 @@ export function LimitOrdersWidget() {
     isIndependent: !isSell,
     balance: outputCurrencyBalance,
     fiatAmount: outputCurrencyFiatAmount,
-    receiveAmountInfo: isSell ? getReceiveAmountInfo('to', outputCurrencyAmount, parnerFee) : null,
+    receiveAmountInfo: isSell ? getReceiveAmountInfo('to', outputCurrencyAmount, partnerFee) : null,
   }
 
   const localFormValidation = useLimitOrdersFormState()
   const primaryFormValidation = useGetTradeFormValidation()
+
+  const partnerFeeAmount =
+    (isSell
+      ? outputCurrencyInfo.receiveAmountInfo?.partnerFeeAmount
+      : inputCurrencyInfo.receiveAmountInfo?.partnerFeeAmount) || null
 
   const props: LimitOrdersProps = {
     inputCurrencyInfo,
@@ -127,6 +133,7 @@ export function LimitOrdersWidget() {
     widgetActions,
     localFormValidation,
     primaryFormValidation,
+    partnerFeeAmount,
   }
 
   return <LimitOrders {...props} />
@@ -147,6 +154,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
     feeAmount,
     localFormValidation,
     primaryFormValidation,
+    partnerFeeAmount,
   } = props
 
   const inputCurrency = inputCurrencyInfo.currency
@@ -199,7 +207,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
     bottomContent: (
       <>
         <styledEl.FooterBox>
-          <styledEl.StyledRateInfo rateInfoParams={rateInfoParams} />
+          <TradeRates partnerFeeAmount={partnerFeeAmount} rateInfoParams={rateInfoParams} />
         </styledEl.FooterBox>
 
         <LimitOrdersWarnings feeAmount={feeAmount} />

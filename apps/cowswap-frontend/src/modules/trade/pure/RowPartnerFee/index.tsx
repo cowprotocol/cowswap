@@ -23,7 +23,7 @@ const tooltipPartnerFee = (bps: number) => (
 
 export interface PartnerRowPartnerFeeProps {
   partnerFee?: PartnerFee
-  feeAmount?: CurrencyAmount<Currency>
+  feeAmount?: CurrencyAmount<Currency> | null
   feeInFiat: CurrencyAmount<Token> | null
   label?: string
   tooltipMarkdown?: string

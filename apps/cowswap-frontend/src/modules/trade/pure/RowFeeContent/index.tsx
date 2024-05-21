@@ -30,7 +30,7 @@ const Wrapper = styled(RowBetween)`
 export interface RowFeeContentProps {
   label: string
   tooltip: ReactNode
-  feeAmount?: CurrencyAmount<Currency>
+  feeAmount?: CurrencyAmount<Currency> | null
   feeInFiat: CurrencyAmount<Token> | null
   feeIsApproximate?: boolean
   noLabel?: boolean
