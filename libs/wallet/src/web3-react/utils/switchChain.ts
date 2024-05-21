@@ -9,13 +9,16 @@ import { ConnectionType } from '../../api/types'
 import { getIsWalletConnect } from '../hooks/useIsWalletConnect'
 
 function getRpcUrls(chainId: SupportedChainId): [string] {
-  if (chainId === SupportedChainId.GNOSIS_CHAIN) {
-    return ['https://rpc.gnosischain.com/']
-  } else if (chainId === SupportedChainId.ARBITRUM_ONE) {
-    return ['https://arbitrum.llamarpc.com']
-  }
+  const rpcUrl = WALLET_RPC_SUGGESTION[chainId] || RPC_URLS[chainId]
 
-  return [RPC_URLS[chainId]]
+  return [rpcUrl]
+}
+
+const WALLET_RPC_SUGGESTION: Record<SupportedChainId, string | null> = {
+  [SupportedChainId.MAINNET]: null,
+  [SupportedChainId.GNOSIS_CHAIN]: 'https://rpc.gnosischain.com/',
+  [SupportedChainId.ARBITRUM_ONE]: 'https://arbitrum.llamarpc.com',
+  [SupportedChainId.SEPOLIA]: null,
 }
 
 export const switchChain = async (connector: Connector, chainId: SupportedChainId) => {
