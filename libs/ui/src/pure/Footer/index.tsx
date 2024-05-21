@@ -1,6 +1,6 @@
 import { useState, ReactNode, useEffect, useRef } from 'react'
-import { ProductLogo } from '@cowprotocol/ui'
-import { MenuItem } from '@cowprotocol/ui'
+import { ProductLogo, MenuItem, themeMapper } from '@cowprotocol/ui'
+
 import {
   FooterContainer,
   FooterContent,
@@ -24,6 +24,7 @@ import {
 import { FooterAnimation } from './footerAnimation'
 import { ProductVariant, Color } from '@cowprotocol/ui'
 
+import { ThemeProvider, DefaultTheme } from 'styled-components'
 import SVG from 'react-inlinesvg'
 
 import IMG_ICON_SOCIAL_X from '@cowprotocol/assets/images/icon-social-x.svg'
@@ -76,75 +77,77 @@ export const Footer = ({ description, navItems, theme, additionalFooterContent, 
   }, [isFooterExpanded])
 
   return (
-    <FooterContainer ref={footerRef} theme={theme} expanded={isFooterExpanded}>
-      {isFooterExpanded && (
-        <>
-          <FooterContent>
-            <FooterDescriptionSection>
-              <FooterLogo>
-                <ProductLogo
-                  variant={ProductVariant.CowDao}
-                  theme={theme}
-                  height={32}
-                  overrideColor={Color.neutral100}
-                  overrideHoverColor={Color.neutral80}
-                />
-              </FooterLogo>
-              {description && <Description>{description}</Description>}
-              <SocialIconsWrapper>
-                {SOCIAL_LINKS.map((social, index) => (
-                  <SocialIconLink key={index} href={social.href} target="_blank" rel="noopener noreferrer">
-                    <SVG src={social.icon} title={social.label} />
-                  </SocialIconLink>
+    <ThemeProvider theme={themeMapper(theme)}>
+      <FooterContainer ref={footerRef} theme={theme as any} expanded={isFooterExpanded}>
+        {isFooterExpanded && (
+          <>
+            <FooterContent>
+              <FooterDescriptionSection>
+                <FooterLogo>
+                  <ProductLogo
+                    variant={ProductVariant.CowDao}
+                    theme={theme}
+                    height={32}
+                    overrideColor={Color.neutral100}
+                    overrideHoverColor={Color.neutral80}
+                  />
+                </FooterLogo>
+                {description && <Description>{description}</Description>}
+                <SocialIconsWrapper>
+                  {SOCIAL_LINKS.map((social, index) => (
+                    <SocialIconLink key={index} href={social.href} target="_blank" rel="noopener noreferrer">
+                      <SVG src={social.icon} title={social.label} />
+                    </SocialIconLink>
+                  ))}
+                </SocialIconsWrapper>
+              </FooterDescriptionSection>
+
+              <LinkListWrapper>
+                {navItems.map((item, index) => (
+                  <LinkListGroup key={index}>
+                    <SectionTitle>{item.label}</SectionTitle>
+                    <LinkList>
+                      {item.children?.map((child, childIndex) => (
+                        <li key={childIndex}>
+                          <Link href={child.href || '#'} target="_blank" rel="noopener noreferrer">
+                            {child.label}
+                          </Link>
+                        </li>
+                      ))}
+                    </LinkList>
+                  </LinkListGroup>
                 ))}
-              </SocialIconsWrapper>
-            </FooterDescriptionSection>
+              </LinkListWrapper>
+            </FooterContent>
 
-            <LinkListWrapper>
-              {navItems.map((item, index) => (
-                <LinkListGroup key={index}>
-                  <SectionTitle>{item.label}</SectionTitle>
-                  <LinkList>
-                    {item.children?.map((child, childIndex) => (
-                      <li key={childIndex}>
-                        <Link href={child.href || '#'} target="_blank" rel="noopener noreferrer">
-                          {child.label}
-                        </Link>
-                      </li>
-                    ))}
-                  </LinkList>
-                </LinkListGroup>
-              ))}
-            </LinkListWrapper>
-          </FooterContent>
+            <FooterAnimation theme={theme} />
+          </>
+        )}
+        <FooterBottom>
+          <BottomText>&copy; CoW DAO – {new Date().getFullYear()}</BottomText>
+          <FooterBottomLogos>
+            {PRODUCT_LOGO_LINKS.map((product, index) => (
+              <a key={index} href={product.href} target="_blank" rel="noopener noreferrer">
+                <ProductLogo
+                  variant={product.productVariant}
+                  theme={theme}
+                  logoIconOnly={false}
+                  overrideColor={Color.neutral50}
+                  overrideHoverColor={Color.neutral98}
+                  height={20}
+                />
+              </a>
+            ))}
+          </FooterBottomLogos>
 
-          <FooterAnimation theme={theme} />
-        </>
-      )}
-      <FooterBottom>
-        <BottomText>&copy; CoW DAO – {new Date().getFullYear()}</BottomText>
-        <FooterBottomLogos>
-          {PRODUCT_LOGO_LINKS.map((product, index) => (
-            <a key={index} href={product.href} target="_blank" rel="noopener noreferrer">
-              <ProductLogo
-                variant={product.productVariant}
-                theme={theme}
-                logoIconOnly={false}
-                overrideColor={Color.neutral50}
-                overrideHoverColor={Color.neutral98}
-                height={20}
-              />
-            </a>
-          ))}
-        </FooterBottomLogos>
-
-        <BottomRight>
-          {additionalFooterContent && additionalFooterContent}
-          <ToggleFooterButton onClick={toggleFooter} expanded={isFooterExpanded}>
-            <SVG src={IMG_ICON_ARROW_RIGHT_CIRCULAR} title="Toggle Footer" />
-          </ToggleFooterButton>
-        </BottomRight>
-      </FooterBottom>
-    </FooterContainer>
+          <BottomRight>
+            {additionalFooterContent && additionalFooterContent}
+            <ToggleFooterButton onClick={toggleFooter} expanded={isFooterExpanded}>
+              <SVG src={IMG_ICON_ARROW_RIGHT_CIRCULAR} title="Toggle Footer" />
+            </ToggleFooterButton>
+          </BottomRight>
+        </FooterBottom>
+      </FooterContainer>
+    </ThemeProvider>
   )
 }

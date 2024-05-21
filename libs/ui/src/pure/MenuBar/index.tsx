@@ -21,7 +21,7 @@ import {
   MobileMenuTrigger,
 } from './styled'
 import SVG from 'react-inlinesvg'
-import { ProductLogo, ProductVariant } from '@cowprotocol/ui'
+import { ProductLogo, ProductVariant, themeMapper } from '@cowprotocol/ui'
 import { useOnClickOutside } from '@cowprotocol/common-hooks'
 import IMG_ICON_MENU_DOTS from '@cowprotocol/assets/images/menu-grid-dots.svg'
 import IMG_ICON_ARROW_RIGHT from '@cowprotocol/assets/images/arrow-right.svg'
@@ -32,6 +32,7 @@ import IMG_ICON_X from '@cowprotocol/assets/images/x.svg'
 
 import { addBodyClass, removeBodyClass } from '@cowprotocol/common-utils'
 import { CowSwapTheme } from '@cowprotocol/widget-lib'
+import { ThemeProvider, DefaultTheme } from 'styled-components'
 
 // NavItem Component: Handles individual navigation items, toggles dropdowns based on presence of children.
 // DropdownContentItem Component: Renders items within dropdowns, constructs logo variants based on the theme.
@@ -390,45 +391,47 @@ export const MenuBar = (props: MenuBarProps) => {
   }, [isMobile, isMobileMenuOpen, isDaoOpen])
 
   return (
-    <MenuBarWrapper ref={menuRef}>
-      <MenuBarInner theme={theme}>
-        <NavDaoTrigger isOpen={isDaoOpen} setIsOpen={setIsDaoOpen} theme={theme} mobileMode={isMobile} />
-        <ProductLogo variant={productVariant} theme={theme} logoIconOnly={isMobile} />
+    <ThemeProvider theme={themeMapper(theme)}>
+      <MenuBarWrapper ref={menuRef}>
+        <MenuBarInner theme={theme}>
+          <NavDaoTrigger isOpen={isDaoOpen} setIsOpen={setIsDaoOpen} theme={theme} mobileMode={isMobile} />
+          <ProductLogo variant={productVariant} theme={theme} logoIconOnly={isMobile} />
 
-        {/* Only render NavItems if the screen size is large */}
-        {!isMobile && (
-          <NavItems theme={theme}>
-            {navItems.map((item, index) => (
-              <NavItem key={index} item={item} mobileMode={isMobile} />
-            ))}
+          {/* Only render NavItems if the screen size is large */}
+          {!isMobile && (
+            <NavItems theme={theme}>
+              {navItems.map((item, index) => (
+                <NavItem key={index} item={item} mobileMode={isMobile} />
+              ))}
+            </NavItems>
+          )}
+
+          {/* Always show GlobalSettingsDropdown and MobileMenuTrigger */}
+          <RightAligned>
+            {!isMobile && additionalContent}
+
+            {isMobile && (
+              <MobileMenuTrigger theme={theme} onClick={handleMobileMenuToggle}>
+                <SVG src={isMobileMenuOpen ? IMG_ICON_X : IMG_ICON_MENU_HAMBURGER} />
+              </MobileMenuTrigger>
+            )}
+            <GlobalSettingsDropdown mobileMode={isMobile} />
+          </RightAligned>
+        </MenuBarInner>
+
+        {/* Mobile Menu */}
+        {isMobile && isMobileMenuOpen && (
+          <NavItems mobileMode={isMobile} ref={mobileMenuRef} theme={theme}>
+            <div>
+              {navItems.map((item, index) => (
+                <NavItem key={index} item={item} mobileMode={isMobile} />
+              ))}
+              {/* Render additional content within the NavItems in mobile view */}
+              {additionalContent}
+            </div>
           </NavItems>
         )}
-
-        {/* Always show GlobalSettingsDropdown and MobileMenuTrigger */}
-        <RightAligned>
-          {!isMobile && additionalContent}
-
-          {isMobile && (
-            <MobileMenuTrigger theme={theme} onClick={handleMobileMenuToggle}>
-              <SVG src={isMobileMenuOpen ? IMG_ICON_X : IMG_ICON_MENU_HAMBURGER} />
-            </MobileMenuTrigger>
-          )}
-          <GlobalSettingsDropdown mobileMode={isMobile} />
-        </RightAligned>
-      </MenuBarInner>
-
-      {/* Mobile Menu */}
-      {isMobile && isMobileMenuOpen && (
-        <NavItems mobileMode={isMobile} ref={mobileMenuRef} theme={theme}>
-          <div>
-            {navItems.map((item, index) => (
-              <NavItem key={index} item={item} mobileMode={isMobile} />
-            ))}
-            {/* Render additional content within the NavItems in mobile view */}
-            {additionalContent}
-          </div>
-        </NavItems>
-      )}
-    </MenuBarWrapper>
+      </MenuBarWrapper>
+    </ThemeProvider>
   )
 }
