@@ -112,13 +112,9 @@ export function getEtherscanLink(chainId: SupportedChainId, type: BlockExplorerL
 export function getExplorerLabel(chainId: SupportedChainId, type: BlockExplorerLinkType, data?: string): string {
   if (isCowOrder(type, data)) {
     return 'View on Explorer'
-  } else if (chainId === SupportedChainId.GNOSIS_CHAIN) {
-    return 'View on Gnosisscan'
-  } else if (chainId === SupportedChainId.ARBITRUM_ONE) {
-    return 'View on Arbiscan'
-  } else {
-    return 'View on Etherscan'
   }
+
+  return `View on ${CHAIN_INFO[chainId].explorerTitle}`
 }
 
 // Shortens OrderID (or any string really) removing initial 2 characters e.g 0x
