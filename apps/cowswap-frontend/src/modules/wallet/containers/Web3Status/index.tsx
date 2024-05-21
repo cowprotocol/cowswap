@@ -11,8 +11,9 @@ import { WalletModal } from '../WalletModal'
 export interface Web3StatusProps {
   pendingActivities: string[]
   className?: string
+  onClick?: () => void
 }
-export function Web3Status({ pendingActivities, className }: Web3StatusProps) {
+export function Web3Status({ pendingActivities, className, onClick }: Web3StatusProps) {
   const connectionType = useConnectionType()
   const { account } = useWalletInfo()
   const { ensName } = useWalletDetails()
@@ -21,7 +22,7 @@ export function Web3Status({ pendingActivities, className }: Web3StatusProps) {
   useCloseFollowTxPopupIfNotPendingOrder()
 
   return (
-    <Wrapper className={className}>
+    <Wrapper className={className} onClick={onClick}>
       <Web3StatusInner
         pendingCount={pendingActivities.length}
         account={account}
