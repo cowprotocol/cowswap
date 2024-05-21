@@ -60,7 +60,7 @@ const ScrollingContentWrapper = styled.div`
     align-items: center;
     justify-content: center;
     height: inherit;
-    font-size: inherit;
+    font-size: 95%;
     font-weight: 700;
     color: inherit;
   }

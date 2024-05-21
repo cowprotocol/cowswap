@@ -1,6 +1,6 @@
-import styled, { css } from 'styled-components/macro'
+import styled from 'styled-components/macro'
 import { CowSwapTheme } from '@cowprotocol/widget-lib'
-import { Color } from '@cowprotocol/ui'
+import { Color, Media } from '@cowprotocol/ui'
 
 export const FooterContainer = styled.footer<{ theme: CowSwapTheme; expanded: boolean }>`
   --bgColor: ${({ theme }) => Color(theme).neutral10};
@@ -11,28 +11,49 @@ export const FooterContainer = styled.footer<{ theme: CowSwapTheme; expanded: bo
   padding: ${({ expanded }) => (expanded ? '134px 0 0' : '0')};
   text-align: left;
   transition: padding 0.3s ease;
+  font-size: 18px;
+
+  ${Media.upToSmall} {
+    padding: ${({ expanded }) => (expanded ? '54px 0 0' : '0')};
+  }
 `
 
 export const FooterContent = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: 0.7fr 1fr;
   gap: 20px;
-  padding: 0 24px;
+  padding: 0 48px;
+
+  ${Media.upToLarge} {
+    grid-template-columns: 1fr;
+    gap: 56px;
+  }
+
+  ${Media.upToSmall} {
+    padding: 0 24px;
+  }
 `
 
-export const FooterSection = styled.div`
-  margin: 10px;
+export const FooterDescriptionSection = styled.div`
+  display: flex;
+  flex-flow: column wrap;
+  gap: 40px;
+  max-width: 400px;
+  width: 100%;
+
+  ${Media.upToLarge} {
+    max-width: 100%;
+  }
 `
 
 export const FooterLogo = styled.div`
   display: flex;
   align-items: center;
-  margin-bottom: 10px;
 `
 
-export const FooterIcons = styled.div`
+export const SocialIconsWrapper = styled.div`
   display: flex;
-  gap: 10px;
+  gap: 16px;
 `
 
 export const SocialIconLink = styled.a`
@@ -47,6 +68,11 @@ export const SocialIconLink = styled.a`
   height: var(--size);
   width: var(--size);
   padding: calc(var(--size) / 4);
+  transition: background 0.2s ease-in-out;
+
+  &:hover {
+    background: var(--colorTitle);
+  }
 
   > svg {
     height: 100%;
@@ -63,25 +89,50 @@ export const SectionTitle = styled.h4`
 
 export const LinkListWrapper = styled.div`
   column-count: 3;
-  column-gap: 10px;
-  width: 100%;
+  column-gap: 70px;
+  width: max-content;
+  margin: 0 0 0 auto;
   color: inherit;
+
+  ${Media.upToLarge} {
+    width: 100%;
+  }
+
+  ${Media.upToSmall} {
+    column-count: initial;
+    column-gap: initial;
+  }
 `
 
 export const LinkListGroup = styled.div`
   break-inside: avoid;
-  margin: 0;
-  padding: 10px;
+  margin: 0 0 40px;
+  padding: 0;
   color: inherit;
+  display: flex;
+  flex-flow: column wrap;
+  gap: 20px;
 `
 
 export const LinkList = styled.ul`
   list-style-type: none;
   padding: 0;
+  margin: 0;
   color: inherit;
+  gap: 10px;
+  display: flex;
+  flex-flow: column wrap;
+  font-size: 18px;
+
+  ${Media.upToSmall} {
+    gap: 16px;
+  }
 
   > li {
-    margin-bottom: 5px;
+    margin: 0;
+    padding: 0;
+    color: inherit;
+    font-size: inherit;
   }
 `
 
@@ -90,7 +141,7 @@ export const Link = styled.a`
   text-decoration: none;
 
   &:hover {
-    color: #fff;
+    color: var(--colorTitle);
   }
 `
 
@@ -100,6 +151,11 @@ export const FooterBottom = styled.div`
   align-items: center;
   padding: 24px;
   gap: 24px;
+  font-size: 14px;
+
+  ${Media.upToLarge} {
+    flex-flow: column wrap;
+  }
 `
 
 export const FooterBottomLogos = styled.div`
@@ -107,6 +163,14 @@ export const FooterBottomLogos = styled.div`
   gap: 28px;
   height: auto;
   margin: 0 auto 0 0;
+
+  ${Media.upToLarge} {
+    width: 100%;
+    margin: 24px auto;
+    justify-content: center;
+    flex-flow: row wrap;
+    gap: 56px;
+  }
 
   > a {
     display: flex;
@@ -121,7 +185,8 @@ export const BottomText = styled.p`
 `
 
 export const Description = styled.p`
-  margin-bottom: 10px;
+  margin: 0;
+  line-height: 1.5;
 `
 
 export const BottomRight = styled.div`
@@ -131,6 +196,12 @@ export const BottomRight = styled.div`
   flex: 1 1 auto;
   margin: 0 0 0 auto;
   gap: 10px;
+
+  ${Media.upToLarge} {
+    margin: 0;
+    width: 100%;
+    justify-content: flex-start;
+  }
 `
 
 export const ToggleFooterButton = styled.button<{ expanded: boolean }>`
@@ -145,5 +216,9 @@ export const ToggleFooterButton = styled.button<{ expanded: boolean }>`
   font-size: 16px;
   padding: 0;
   transition: transform 0.3s ease-in-out;
-  transform: ${({ expanded }) => (expanded ? 'rotate(90deg)' : 'rotate(0deg)')};
+  transform: ${({ expanded }) => (expanded ? 'rotate(-90deg)' : 'rotate(0deg)')};
+
+  ${Media.upToLarge} {
+    margin: 0 0 0 auto;
+  }
 `

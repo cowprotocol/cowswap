@@ -1,4 +1,11 @@
-import { MenuBar, MenuItem, ButtonSecondary as Button, Footer, ProductVariant } from '@cowprotocol/ui'
+import {
+  MenuBar,
+  MenuItem,
+  ButtonSecondary as Button,
+  Footer,
+  ProductVariant,
+  GlobalCoWDAOStyles,
+} from '@cowprotocol/ui'
 
 import IMG_ICON_SETTINGS_GLOBAL from '@cowprotocol/assets/images/settings-global.svg'
 import IMG_ICON_BRANDED_DOT_RED from '@cowprotocol/assets/images/icon-branded-dot-red.svg'
@@ -109,6 +116,9 @@ const FOOTER_NAV_ITEMS: MenuItem[] = [
 export default function Development() {
   return (
     <>
+      {/* Temp location for GlobalStyle */}
+      <GlobalCoWDAOStyles />
+
       <MenuBar
         navItems={NAV_ITEMS}
         theme={THEME_MODE}
@@ -121,6 +131,12 @@ export default function Development() {
         navItems={FOOTER_NAV_ITEMS}
         theme={THEME_MODE}
         productVariant={PRODUCT_VARIANT}
+        additionalFooterContent={
+          <>
+            <div>COMPONENT 1</div>
+            <b>COMPONENT 2</b>
+          </>
+        }
       />
     </>
   )

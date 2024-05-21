@@ -170,7 +170,7 @@ const LOGOS: Record<ProductVariant, ThemedLogo> = {
 export interface LogoProps {
   variant: ProductVariant
   theme: CowSwapTheme
-  logoIconOnly: boolean
+  logoIconOnly?: boolean
   overrideColor?: string // Optional override color
   overrideHoverColor?: string // Optional override hover color
   height?: number

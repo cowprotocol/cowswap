@@ -1,13 +1,13 @@
-import { useState } from 'react'
+import { useState, ReactNode } from 'react'
 import { ProductLogo } from '@cowprotocol/ui'
 import { MenuItem } from '@cowprotocol/ui'
 import {
   FooterContainer,
   FooterContent,
   FooterLogo,
-  FooterSection,
+  FooterDescriptionSection,
   Description,
-  FooterIcons,
+  SocialIconsWrapper,
   SocialIconLink,
   SectionTitle,
   LinkListWrapper,
@@ -30,6 +30,7 @@ import IMG_ICON_SOCIAL_X from '@cowprotocol/assets/images/icon-social-x.svg'
 import IMG_ICON_SOCIAL_DISCORD from '@cowprotocol/assets/images/icon-social-discord.svg'
 import IMG_ICON_SOCIAL_GITHUB from '@cowprotocol/assets/images/icon-social-github.svg'
 import IMG_ICON_SOCIAL_FORUM from '@cowprotocol/assets/images/icon-social-forum.svg'
+import IMG_ICON_SOCIAL_SNAPSHOT from '@cowprotocol/assets/images/icon-social-snapshot.svg'
 
 import IMG_ICON_ARROW_RIGHT_CIRCULAR from '@cowprotocol/assets/images/arrow-right-circular.svg'
 
@@ -38,6 +39,7 @@ interface FooterProps {
   navItems: MenuItem[]
   theme: 'light' | 'dark'
   productVariant: ProductVariant
+  additionalFooterContent?: ReactNode // Add this line
 }
 
 const SOCIAL_LINKS: { href: string; label: string; icon: string }[] = [
@@ -45,6 +47,7 @@ const SOCIAL_LINKS: { href: string; label: string; icon: string }[] = [
   { href: '#', label: 'Discord', icon: IMG_ICON_SOCIAL_DISCORD },
   { href: 'https://github.com/cowprotocol', label: 'GitHub', icon: IMG_ICON_SOCIAL_GITHUB },
   { href: 'https://forum.cow.fi/', label: 'Forum', icon: IMG_ICON_SOCIAL_FORUM },
+  { href: 'https://snapshot.org/#/cow.eth', label: 'Snapshot', icon: IMG_ICON_SOCIAL_SNAPSHOT },
 ]
 
 const PRODUCT_LOGO_LINKS: { href: string; label: string; productVariant: ProductVariant }[] = [
@@ -54,7 +57,7 @@ const PRODUCT_LOGO_LINKS: { href: string; label: string; productVariant: Product
   { href: 'https://cow.fi/cow-amm', label: 'CoW AMM', productVariant: ProductVariant.CowAmm },
 ]
 
-export const Footer = ({ description, navItems, theme }: FooterProps) => {
+export const Footer = ({ description, navItems, theme, additionalFooterContent }: FooterProps) => {
   const [isFooterExpanded, setIsFooterExpanded] = useState(true)
 
   const toggleFooter = () => {
@@ -66,19 +69,25 @@ export const Footer = ({ description, navItems, theme }: FooterProps) => {
       {isFooterExpanded && (
         <>
           <FooterContent>
-            <FooterSection>
+            <FooterDescriptionSection>
               <FooterLogo>
-                <ProductLogo variant={ProductVariant.CowProtocol} theme={theme} logoIconOnly={false} height={48} />
+                <ProductLogo
+                  variant={ProductVariant.CowDao}
+                  theme={theme}
+                  height={32}
+                  overrideColor={Color(theme).neutral100}
+                  overrideHoverColor={Color(theme).neutral80}
+                />
               </FooterLogo>
               {description && <Description>{description}</Description>}
-              <FooterIcons>
+              <SocialIconsWrapper>
                 {SOCIAL_LINKS.map((social, index) => (
                   <SocialIconLink key={index} href={social.href} target="_blank" rel="noopener noreferrer">
                     <SVG src={social.icon} title={social.label} />
                   </SocialIconLink>
                 ))}
-              </FooterIcons>
-            </FooterSection>
+              </SocialIconsWrapper>
+            </FooterDescriptionSection>
 
             <LinkListWrapper>
               {navItems.map((item, index) => (
@@ -120,6 +129,7 @@ export const Footer = ({ description, navItems, theme }: FooterProps) => {
         </FooterBottomLogos>
 
         <BottomRight>
+          {additionalFooterContent && additionalFooterContent}
           <ToggleFooterButton onClick={toggleFooter} expanded={isFooterExpanded}>
             <SVG src={IMG_ICON_ARROW_RIGHT_CIRCULAR} title="Toggle Footer" />
           </ToggleFooterButton>
