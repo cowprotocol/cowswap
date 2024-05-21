@@ -3,7 +3,6 @@ import React, { useContext } from 'react'
 import { Command } from '@cowprotocol/types'
 import { UI } from '@cowprotocol/ui'
 import { RowFixed, TokenSymbol } from '@cowprotocol/ui'
-import { MetaMaskLogo } from '@cowprotocol/wallet'
 import { Currency } from '@uniswap/sdk-core'
 
 import { CheckCircle } from 'react-feather'
@@ -55,27 +54,29 @@ const CheckCircleCustom = styled(CheckCircle)`
   margin: 0 10px 0 0;
 `
 
-export type AddToMetamaskProps = {
+export type WatchAssetInWalletProps = {
   currency: Currency | undefined
+  walletIcon: string
+  walletName: string
   shortLabel?: boolean
   addToken: Command
   success?: boolean
   className?: string
 }
-export function AddToMetamask(props: AddToMetamaskProps) {
-  const { className, currency, shortLabel, addToken, success } = props
+export function WatchAssetInWallet(props: WatchAssetInWalletProps) {
+  const { className, walletIcon, walletName, currency, shortLabel, addToken, success } = props
   const theme = useContext(ThemeContext)
 
   return (
     <ButtonCustom className={className} onClick={addToken}>
       {!success ? (
         <RowFixed>
-          <StyledIcon src={MetaMaskLogo} />{' '}
+          <StyledIcon src={walletIcon} />{' '}
           {shortLabel ? (
             'Add token'
           ) : (
             <>
-              Add <TokenSymbol token={currency} /> to Metamask
+              Add <TokenSymbol token={currency} /> to {walletName}
             </>
           )}
         </RowFixed>

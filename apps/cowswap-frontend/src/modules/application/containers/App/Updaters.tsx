@@ -31,13 +31,13 @@ import { UserUpdater } from 'common/updaters/UserUpdater'
 
 export function Updaters() {
   const { chainId, account } = useWalletInfo()
-  const { tokenLists, appCode, customTokens } = useInjectedWidgetParams()
+  const { tokenLists, appCode, customTokens, standaloneMode } = useInjectedWidgetParams()
   const onTokenListAddingError = useOnTokenListAddingError()
   const { isGeoBlockEnabled } = useFeatureFlags()
 
   return (
     <>
-      <WalletUpdater />
+      <WalletUpdater standaloneMode={standaloneMode} />
       <HwAccountIndexUpdater />
       <UserUpdater />
       <FinalizeTxUpdater />

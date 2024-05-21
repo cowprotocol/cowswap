@@ -1,26 +1,18 @@
 import { Fragment } from 'react'
 
 import { CHAIN_INFO } from '@cowprotocol/common-const'
-import {
-  getEtherscanLink,
-  getExplorerLabel,
-  shortenAddress,
-  getExplorerAddressLink,
-  isMobile,
-} from '@cowprotocol/common-utils'
+import { getEtherscanLink, getExplorerLabel, shortenAddress, getExplorerAddressLink } from '@cowprotocol/common-utils'
 import { Command } from '@cowprotocol/types'
 import { ExternalLink } from '@cowprotocol/ui'
 import {
   ConnectionType,
   useWalletInfo,
-  getConnectionName,
-  getIsCoinbaseWallet,
-  getIsMetaMask,
   useWalletDetails,
   useIsWalletConnect,
   getIsHardWareWallet,
   useDisconnectWallet,
   useConnectionType,
+  getIsInjectedMobileBrowser,
 } from '@cowprotocol/wallet'
 
 import { Trans } from '@lingui/macro'
@@ -113,14 +105,12 @@ export function AccountDetails({
   const activityTotalCount = activities?.length || 0
 
   const isWalletConnect = useIsWalletConnect()
-  const isMetaMask = getIsMetaMask()
-  const isCoinbaseWallet = getIsCoinbaseWallet()
-  const isInjectedMobileBrowser = (isMetaMask || isCoinbaseWallet) && isMobile
+  const isInjectedMobileBrowser = getIsInjectedMobileBrowser()
 
   const unsupportedNetworksText = useUnsupportedNetworksText()
 
   function formatConnectorName() {
-    const name = walletDetails?.walletName || getConnectionName(connectionType)
+    const name = walletDetails?.walletName
     // In case the wallet is connected via WalletConnect and has wallet name set, add the suffix to be clear
     // This to avoid confusion for instance when using Metamask mobile
     // When name is not set, it defaults to WalletConnect already
@@ -157,7 +147,7 @@ export function AccountDetails({
                   }
                 }}
               >
-                <AccountIcon walletDetails={walletDetails} size={24} account={account} />
+                <AccountIcon size={24} account={account} />
 
                 {(ENSName || account) && (
                   <WalletNameAddress>{ENSName ? ENSName : account && shortenAddress(account)}</WalletNameAddress>

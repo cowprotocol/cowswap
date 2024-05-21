@@ -40,7 +40,7 @@ const WithProviders = ({ children }: { children?: ReactNode }) => {
     <LanguageProvider>
       <MockedI18nProvider>
         <Provider store={cowSwapStore}>
-          <Web3Provider selectedWallet={undefined} selectedWalletBackfilled={false}>
+          <Web3Provider selectedWallet={undefined}>
             <MockThemeProvider>{children}</MockThemeProvider>
           </Web3Provider>
         </Provider>

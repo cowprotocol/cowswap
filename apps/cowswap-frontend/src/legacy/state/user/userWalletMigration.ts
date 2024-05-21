@@ -18,7 +18,6 @@ export function userWalletMigration() {
     const parsedStore = JSON.parse(store)
 
     delete parsedStore['selectedWallet']
-    delete parsedStore['selectedWalletBackfilled']
 
     localStorage.setItem(storeName, JSON.stringify(parsedStore))
   } catch (e) {

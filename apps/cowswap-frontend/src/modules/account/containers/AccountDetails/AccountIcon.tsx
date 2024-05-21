@@ -1,32 +1,36 @@
 import { useState } from 'react'
 
 import { HoverTooltip } from '@cowprotocol/ui'
-import { Identicon, WalletDetails } from '@cowprotocol/wallet'
+import { useConnectionType, useWalletDetails } from '@cowprotocol/wallet'
+
+import { StatusIcon } from 'modules/wallet/pure/StatusIcon'
 
 import { IconWrapper } from './styled'
 
 interface AccountIconProps {
-  walletDetails?: WalletDetails
   size?: number
   account?: string
 }
 
-export const AccountIcon = ({ walletDetails, size = 16, account }: AccountIconProps) => {
+export const AccountIcon = ({ size = 16, account }: AccountIconProps) => {
+  const walletDetails = useWalletDetails()
+  const connectionType = useConnectionType()
   const [imageLoadError, setImageLoadError] = useState(false)
-  const iconURL = walletDetails?.icon
-  const isIdenticon = iconURL === 'Identicon'
 
-  if (imageLoadError || isIdenticon) {
+  const { icon, walletName } = walletDetails
+  const isIdenticon = icon === 'Identicon'
+
+  if (imageLoadError || isIdenticon || !icon) {
     return (
       <IconWrapper size={size}>
-        <Identicon size={size} account={account} />
+        <StatusIcon size={size} account={account} connectionType={connectionType} />
       </IconWrapper>
     )
   }
 
   if (walletDetails && !walletDetails.isSupportedWallet) {
     return (
-      <HoverTooltip wrapInContainer  content="This wallet is not yet supported">
+      <HoverTooltip wrapInContainer content="This wallet is not yet supported">
         <IconWrapper role="img" aria-label="Warning sign. Wallet not supported">
           ⚠️
         </IconWrapper>
@@ -36,7 +40,7 @@ export const AccountIcon = ({ walletDetails, size = 16, account }: AccountIconPr
 
   return (
     <IconWrapper size={size}>
-      <img src={iconURL} alt="wallet logo" onError={() => setImageLoadError(true)} />
+      <img src={icon} alt={walletName || connectionType} onError={() => setImageLoadError(true)} />
     </IconWrapper>
   )
 }

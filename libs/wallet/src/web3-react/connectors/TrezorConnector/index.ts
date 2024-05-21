@@ -63,7 +63,7 @@ export class TrezorConnector extends Connector {
       return
     }
 
-    // Skip when wallet already on the requested network
+    // Skip when wallet is already on the requested network
     if (this.activatedNetwork === desiredChainId && !indexChanged) {
       return
     }

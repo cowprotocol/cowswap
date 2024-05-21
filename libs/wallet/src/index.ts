@@ -48,12 +48,8 @@ export {
 } from './web3-react/connection/injectedOptions'
 
 export { ConnectWalletOption } from './api/pure/ConnectWalletOption'
-export { InstallKeystoneOption, KeystoneOption } from './web3-react/connection/keystone'
 export { TrezorOption } from './web3-react/connection/trezor'
-export { TrustWalletOption } from './web3-react/connection/trust'
 export { WalletConnectV2Option } from './web3-react/connection/walletConnectV2'
-export { AlphaOption } from './web3-react/connection/alpha'
-export { AmbireOption } from './web3-react/connection/ambire'
 export { CoinbaseWalletOption } from './web3-react/connection/coinbase'
 
 // State

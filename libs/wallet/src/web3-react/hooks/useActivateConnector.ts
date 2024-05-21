@@ -9,6 +9,8 @@ import { getIsHardWareWallet } from '../utils/getIsHardWareWallet'
 import { getWeb3ReactConnection } from '../utils/getWeb3ReactConnection'
 
 export interface ConnectorActivationContext {
+  skipNetworkChanging?: boolean
+
   beforeActivation(): void
 
   afterActivation(isHardWareWallet: boolean, connectionType: ConnectionType): void
@@ -17,6 +19,7 @@ export interface ConnectorActivationContext {
 }
 
 export function useActivateConnector({
+  skipNetworkChanging,
   beforeActivation,
   afterActivation,
   onActivationError,
@@ -38,7 +41,7 @@ export function useActivateConnector({
         setPendingConnector(connector)
         beforeActivation()
 
-        await connector.activate(getCurrentChainIdFromUrl())
+        await connector.activate(skipNetworkChanging ? undefined : getCurrentChainIdFromUrl())
 
         afterActivation(isHardWareWallet, connectionType)
       } catch (error: any) {
@@ -47,7 +50,7 @@ export function useActivateConnector({
         onActivationError(error)
       }
     },
-    [chainId, pendingConnector]
+    [chainId, pendingConnector, skipNetworkChanging]
   )
 
   return {

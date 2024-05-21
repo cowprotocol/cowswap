@@ -7,16 +7,6 @@ The library contains only two hooks:
 Those hooks are actually wrappers around `useWeb3React()` from `@web3-react/core`.  
 Once we decide to use other library, we can easily replace it.  
 
-## Quick start
-
-```
-npm install @cowprotocol/wallet-provider --save
-```
-
-```
-yarn add @cowprotocol/wallet-provider
-```
-
 ## Developers
 
 #### Test

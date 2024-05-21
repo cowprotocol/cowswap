@@ -9,7 +9,7 @@ export const multiInjectedProvidersAtom = atom<EIP6963ProviderDetail[]>([])
 
 // RDNS of the selected EIP-6963 provider
 export const selectedEip6963ProviderRdnsAtom = atomWithStorage<string | null>(
-  'selectedEip6963ProviderAtom:v1',
+  'selectedEip6963ProviderAtom:v0',
   null,
   getJotaiIsolatedStorage()
 )

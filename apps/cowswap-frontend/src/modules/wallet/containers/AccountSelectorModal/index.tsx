@@ -7,8 +7,6 @@ import { useAddSnackbar } from '@cowprotocol/snackbars'
 import {
   accountsLoaders,
   hwAccountIndexAtom,
-  getConnectionIcon,
-  getConnectionName,
   AccountIndexSelect,
   HardWareWallet,
   useWalletInfo,
@@ -34,23 +32,9 @@ export function AccountSelectorModal() {
   const [hwAccountIndex, setHwAccountIndex] = useAtom(hwAccountIndexAtom)
   const connectionType = useConnectionType()
   const addSnackbar = useAddSnackbar()
-  const walletDetails = useWalletDetails()
+  const { walletName, icon: walletIcon } = useWalletDetails()
 
   const nativeToken = NATIVE_CURRENCIES[chainId]
-
-  const { walletName, walletIcon } = useMemo(() => {
-    if (walletDetails) {
-      const { walletName, icon } = walletDetails
-
-      if (walletName && icon) {
-        return { walletName, walletIcon: icon }
-      }
-    }
-    return {
-      walletIcon: getConnectionIcon(connectionType),
-      walletName: getConnectionName(connectionType),
-    }
-  }, [connectionType, walletDetails])
 
   const accountsLoader = useMemo(() => accountsLoaders[connectionType as HardWareWallet], [connectionType])
 

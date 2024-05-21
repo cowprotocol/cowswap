@@ -99,14 +99,9 @@ function Main() {
 }
 
 function Web3ProviderInstance({ children }: { children: ReactNode }) {
-  const selectedWalletBackfilled = useAppSelector((state) => state.user.selectedWalletBackfilled)
   const selectedWallet = useAppSelector((state) => state.user.selectedWallet)
 
-  return (
-    <Web3Provider selectedWalletBackfilled={selectedWalletBackfilled} selectedWallet={selectedWallet}>
-      {children}
-    </Web3Provider>
-  )
+  return <Web3Provider selectedWallet={selectedWallet}>{children}</Web3Provider>
 }
 
 function Toasts() {
