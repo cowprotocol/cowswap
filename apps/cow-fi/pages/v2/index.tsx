@@ -20,6 +20,7 @@ export default function HomeLanding({ siteConfigData }: HomeLandingProps) {
           {siteConfigData.title} - {siteConfigData.descriptionShort}
         </title>
       </Head>
+      This is the new CoW DAO landing page
     </LayoutV2>
   )
 }
