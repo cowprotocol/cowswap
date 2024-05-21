@@ -6,7 +6,7 @@ import styled from 'styled-components/macro'
 import { AMOUNTS_FORMATTING_FEATURE_FLAG } from '../../consts'
 import { UI } from '../../enum'
 import { FractionLike, Nullish } from '../../types'
-import { formatTokenSymbol, TokenNameAndSymbol, TokenSymbol } from '../TokenSymbol'
+import { TokenNameAndSymbol, TokenSymbol } from '../TokenSymbol'
 
 export const Wrapper = styled.span<{ highlight: boolean; lowVolumeWarning?: boolean }>`
   background: ${({ lowVolumeWarning, highlight }) =>
@@ -43,8 +43,7 @@ export function TokenAmount({
   hideTokenSymbol,
   opacitySymbol,
 }: TokenAmountProps) {
-  const title =
-    FractionUtils.fractionLikeToExactString(amount, LONG_PRECISION) + (tokenSymbol ? ` ${tokenSymbol.symbol}` : '')
+  const title = getTokenAmountTitle({ amount, tokenSymbol })
 
   if (!amount) return null
 
@@ -65,23 +64,6 @@ export function TokenAmount({
   )
 }
 
-export type FormatTokenAmountWithSymbolParams = Omit<TokenAmountProps, 'className' | 'opacitySymbol'>
-
-export function formatTokenAmountWithSymbol(props: FormatTokenAmountWithSymbolParams): string | null {
-  const { amount, defaultValue, tokenSymbol, round, hideTokenSymbol } = props
-
-  if (!amount) {
-    return null
-  }
-
-  const symbol = hideTokenSymbol || !tokenSymbol ? null : formatTokenSymbol({ token: tokenSymbol })
-
-  const roundedAmount = round ? FractionUtils.round(amount) : amount
-
-  const formattedAmount = formatTokenAmount(roundedAmount) || defaultValue
-  if (!formattedAmount) {
-    return null
-  }
-
-  return symbol ? `${formattedAmount} ${symbol}` : formattedAmount
+export function getTokenAmountTitle({ amount, tokenSymbol }: Pick<TokenAmountProps, 'amount' | 'tokenSymbol'>): string {
+  return FractionUtils.fractionLikeToExactString(amount, LONG_PRECISION) + (tokenSymbol ? ` ${tokenSymbol.symbol}` : '')
 }
