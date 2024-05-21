@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react'
+import { useCallback, useRef, RefObject } from 'react'
 
 import { toggleRecepientAddressAnalytics } from '@cowprotocol/analytics'
 import { useOnClickOutside } from '@cowprotocol/common-hooks'
@@ -86,7 +86,7 @@ export const MenuFlyout = styled.span`
 `
 
 export default function SettingsTab({ className, placeholderSlippage, SettingsButton }: SettingsTabProp) {
-  const node = useRef<HTMLDivElement>()
+  const node = useRef<HTMLDivElement>(null)
   const open = useModalIsOpen(ApplicationModal.SETTINGS)
   const toggle = useToggleSettingsMenu()
 
@@ -102,7 +102,7 @@ export default function SettingsTab({ className, placeholderSlippage, SettingsBu
 
   // show confirmation view before turning on
 
-  useOnClickOutside(node, open ? toggle : undefined)
+  useOnClickOutside([node], open ? toggle : undefined)
 
   return (
     // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/30451

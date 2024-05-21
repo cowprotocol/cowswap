@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, useCallback, useRef, ChangeEventHandler } from 'react'
+import { useEffect, useMemo, useState, useCallback, useRef, ChangeEventHandler, RefObject } from 'react'
 
 import { useTokensBalances } from '@cowprotocol/balances-and-allowances'
 import { TokenWithLogo } from '@cowprotocol/common-const'
@@ -93,8 +93,8 @@ export default function TokensOverview() {
     setIsMenuOpen(false)
   }, [])
 
-  const node = useRef<HTMLDivElement>()
-  useOnClickOutside(node, isMenuOpen ? toggleMenu : undefined)
+  const node = useRef<HTMLDivElement>(null)
+  useOnClickOutside([node], isMenuOpen ? toggleMenu : undefined)
 
   const renderTableContent = useCallback(() => {
     let tokensData: TokenWithLogo[] = []

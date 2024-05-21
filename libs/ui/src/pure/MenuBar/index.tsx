@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, RefObject } from 'react'
+import React, { useState, useRef, RefObject } from 'react'
 import { upToLarge, useMediaQuery } from '../../../../../apps/cowswap-frontend/src/legacy/hooks/useMediaQuery'
 import {
   RootNavItem,
