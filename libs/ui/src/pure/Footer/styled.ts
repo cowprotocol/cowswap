@@ -3,9 +3,9 @@ import { CowSwapTheme } from '@cowprotocol/widget-lib'
 import { Color, Media } from '@cowprotocol/ui'
 
 export const FooterContainer = styled.footer<{ theme: CowSwapTheme; expanded: boolean }>`
-  --bgColor: ${({ theme }) => Color(theme).neutral10};
-  --color: ${({ theme }) => Color(theme).neutral50};
-  --colorTitle: ${({ theme }) => Color(theme).neutral98};
+  --bgColor: ${({ theme }) => Color.neutral10};
+  --color: ${({ theme }) => Color.neutral50};
+  --colorTitle: ${({ theme }) => Color.neutral98};
   background: var(--bgColor);
   color: var(--color);
   padding: ${({ expanded }) => (expanded ? '134px 0 0' : '0')};
@@ -195,7 +195,7 @@ export const BottomRight = styled.div`
   align-items: center;
   flex: 1 1 auto;
   margin: 0 0 0 auto;
-  gap: 10px;
+  gap: 16px;
 
   ${Media.upToLarge} {
     margin: 0;
@@ -205,7 +205,7 @@ export const BottomRight = styled.div`
 `
 
 export const ToggleFooterButton = styled.button<{ expanded: boolean }>`
-  --size: 22px;
+  --size: 24px;
   height: var(--size);
   width: var(--size);
   object-fit: contain;

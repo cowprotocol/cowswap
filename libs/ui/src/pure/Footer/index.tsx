@@ -1,4 +1,4 @@
-import { useState, ReactNode } from 'react'
+import { useState, ReactNode, useEffect } from 'react'
 import { ProductLogo } from '@cowprotocol/ui'
 import { MenuItem } from '@cowprotocol/ui'
 import {
@@ -39,7 +39,8 @@ interface FooterProps {
   navItems: MenuItem[]
   theme: 'light' | 'dark'
   productVariant: ProductVariant
-  additionalFooterContent?: ReactNode // Add this line
+  additionalFooterContent?: ReactNode
+  expanded?: boolean
 }
 
 const SOCIAL_LINKS: { href: string; label: string; icon: string }[] = [
@@ -57,8 +58,8 @@ const PRODUCT_LOGO_LINKS: { href: string; label: string; productVariant: Product
   { href: 'https://cow.fi/cow-amm', label: 'CoW AMM', productVariant: ProductVariant.CowAmm },
 ]
 
-export const Footer = ({ description, navItems, theme, additionalFooterContent }: FooterProps) => {
-  const [isFooterExpanded, setIsFooterExpanded] = useState(true)
+export const Footer = ({ description, navItems, theme, additionalFooterContent, expanded = false }: FooterProps) => {
+  const [isFooterExpanded, setIsFooterExpanded] = useState(expanded)
 
   const toggleFooter = () => {
     setIsFooterExpanded(!isFooterExpanded)
@@ -75,8 +76,8 @@ export const Footer = ({ description, navItems, theme, additionalFooterContent }
                   variant={ProductVariant.CowDao}
                   theme={theme}
                   height={32}
-                  overrideColor={Color(theme).neutral100}
-                  overrideHoverColor={Color(theme).neutral80}
+                  overrideColor={Color.neutral100}
+                  overrideHoverColor={Color.neutral80}
                 />
               </FooterLogo>
               {description && <Description>{description}</Description>}
@@ -120,8 +121,8 @@ export const Footer = ({ description, navItems, theme, additionalFooterContent }
                 variant={product.productVariant}
                 theme={theme}
                 logoIconOnly={false}
-                overrideColor={Color(theme).neutral50}
-                overrideHoverColor={Color(theme).neutral98}
+                overrideColor={Color.neutral50}
+                overrideHoverColor={Color.neutral98}
                 height={20}
               />
             </a>

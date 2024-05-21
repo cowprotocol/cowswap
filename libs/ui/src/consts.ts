@@ -57,8 +57,8 @@ export const Font = {
   },
 }
 
-export const Color = (theme: CowSwapTheme) => ({
-  neutral100: theme === 'dark' ? '#FFFFFF' : '#FFFFFF',
+export const Color = {
+  neutral100: '#FFFFFF',
   neutral98: '#FFF8F7',
   neutral95: '#FFEDEC',
   neutral90: '#F0DEDE',
@@ -71,7 +71,7 @@ export const Color = (theme: CowSwapTheme) => ({
   neutral20: '#382E2E',
   neutral10: '#23191A',
   neutral0: '#000000',
-})
+}
 
 export const GlobalCoWDAOStyles = createGlobalStyle(
   ({ theme = 'dark' }: { theme: CowSwapTheme }) => css`
@@ -177,8 +177,8 @@ export const GlobalCoWDAOStyles = createGlobalStyle(
       font-family: ${Font.family};
       margin: 0;
       padding: 0;
-      background-color: ${Color(theme).neutral90};
-      color: ${Color(theme).neutral100};
+      background-color: ${Color.neutral90};
+      color: ${Color.neutral100};
     }
   `
 )

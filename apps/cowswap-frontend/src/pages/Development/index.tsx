@@ -7,8 +7,14 @@ import {
   GlobalCoWDAOStyles,
 } from '@cowprotocol/ui'
 
+import { FeatureGuard } from 'common/containers/FeatureGuard'
+import { FortuneWidget } from 'modules/fortune/containers/FortuneWidget'
+import AppziButton from 'legacy/components/AppziButton'
+
 import IMG_ICON_SETTINGS_GLOBAL from '@cowprotocol/assets/images/settings-global.svg'
 import IMG_ICON_BRANDED_DOT_RED from '@cowprotocol/assets/images/icon-branded-dot-red.svg'
+
+import { isInjectedWidget } from '@cowprotocol/common-utils'
 
 const THEME_MODE = 'light'
 const PRODUCT_VARIANT = ProductVariant.CowSwap
@@ -114,6 +120,13 @@ const FOOTER_NAV_ITEMS: MenuItem[] = [
 ]
 
 export default function Development() {
+  const isInjectedWidgetMode = isInjectedWidget()
+
+  // Don't render the menu bar and footer in injected widget mode
+  if (isInjectedWidgetMode) {
+    return null
+  }
+
   return (
     <>
       {/* Temp location for GlobalStyle */}
@@ -133,8 +146,10 @@ export default function Development() {
         productVariant={PRODUCT_VARIANT}
         additionalFooterContent={
           <>
-            <div>COMPONENT 1</div>
-            <b>COMPONENT 2</b>
+            {/* <FeatureGuard featureFlag="cowFortuneEnabled"> */}
+            <FortuneWidget />
+            {/* </FeatureGuard> */}
+            <AppziButton />
           </>
         }
       />

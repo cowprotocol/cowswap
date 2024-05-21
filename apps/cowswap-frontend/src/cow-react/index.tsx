@@ -7,7 +7,7 @@ import { Provider as AtomProvider } from 'jotai'
 import { useEffect, StrictMode } from 'react'
 
 import { BlockNumberProvider } from '@cowprotocol/common-hooks'
-import { isInjectedWidget } from '@cowprotocol/common-utils'
+
 import { nodeRemoveChildFix } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
 import { SnackbarsWidget } from '@cowprotocol/snackbars'
@@ -17,21 +17,17 @@ import { createRoot } from 'react-dom/client'
 import { Provider } from 'react-redux'
 import { HashRouter } from 'react-router-dom'
 import * as serviceWorkerRegistration from 'serviceWorkerRegistration'
-import styled from 'styled-components/macro'
 
-import AppziButton from 'legacy/components/AppziButton'
 import Web3Provider from 'legacy/components/Web3Provider'
-import { upToMedium, useMediaQuery } from 'legacy/hooks/useMediaQuery'
+
 import { cowSwapStore } from 'legacy/state'
 import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from 'legacy/theme'
 
 import { App } from 'modules/application/containers/App'
 import { Updaters } from 'modules/application/containers/App/Updaters'
 import { WithLDProvider } from 'modules/application/containers/WithLDProvider'
-import { FortuneWidget } from 'modules/fortune/containers/FortuneWidget'
-import { useInjectedWidgetParams } from 'modules/injectedWidget'
 
-import { FeatureGuard } from 'common/containers/FeatureGuard'
+import { useInjectedWidgetParams } from 'modules/injectedWidget'
 
 import { WalletUnsupportedNetworkBanner } from '../common/containers/WalletUnsupportedNetworkBanner'
 
@@ -44,20 +40,12 @@ if (window.ethereum) {
 }
 
 function Main() {
-  const isInjectedWidgetMode = isInjectedWidget()
-
   useEffect(() => {
     const skeleton = document.getElementById('skeleton')
     if (skeleton) {
       skeleton.parentNode?.removeChild(skeleton)
     }
   }, [])
-
-  const isUpToMedium = useMediaQuery(upToMedium)
-
-  const FooterButtonsWrapper = styled.div<{ isUpToMedium: boolean }>`
-    display: ${({ isUpToMedium }) => (isUpToMedium ? 'none' : 'block')};
-  `
 
   return (
     <StrictMode>
@@ -73,15 +61,6 @@ function Main() {
                     <WithLDProvider>
                       <WalletUnsupportedNetworkBanner />
                       <Updaters />
-
-                      {!isInjectedWidgetMode && !isUpToMedium && (
-                        <FooterButtonsWrapper isUpToMedium={isUpToMedium}>
-                          <FeatureGuard featureFlag="cowFortuneEnabled">
-                            <FortuneWidget />
-                          </FeatureGuard>
-                          <AppziButton />
-                        </FooterButtonsWrapper>
-                      )}
 
                       <Toasts />
                       <App />
