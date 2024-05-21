@@ -2,7 +2,7 @@ import { SupportedChainId as ChainId, UID } from '@cowprotocol/cow-sdk'
 
 import { isBarn, isDev, isLocal, isPr, isStaging } from './environments'
 
-function _getExplorerUrlByEnvironment() {
+function _getExplorerUrlByEnvironment(): Record<ChainId, string> {
   let baseUrl: string | undefined
   if (isLocal || isDev || isPr) {
     baseUrl = process.env.REACT_APP_EXPLORER_URL_DEV || 'https://dev.explorer.cow.fi'
