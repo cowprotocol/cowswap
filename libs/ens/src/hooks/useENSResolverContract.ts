@@ -1,17 +1,23 @@
 import { EnsPublicResolver, EnsPublicResolverAbi } from '@cowprotocol/abis'
+import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
 import { getContract } from '@cowprotocol/common-utils'
-import { useWeb3React } from '@web3-react/core'
+import { useWalletChainId, useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import useSWR from 'swr'
 
 export function useENSResolverContract(address: string | undefined): EnsPublicResolver | undefined {
-  const { provider, chainId } = useWeb3React()
+  const provider = useWalletProvider()
+  const chainId = useWalletChainId()
 
-  const { data } = useSWR(['useENSResolverContract', provider, chainId, address], () => {
-    if (!chainId || !provider || !address) return undefined
+  const { data } = useSWR(
+    ['useENSResolverContract', provider, chainId, address],
+    () => {
+      if (!chainId || !provider || !address) return undefined
 
-    return getContract(address, EnsPublicResolverAbi, provider) as EnsPublicResolver
-  })
+      return getContract(address, EnsPublicResolverAbi, provider) as EnsPublicResolver
+    },
+    SWR_NO_REFRESH_OPTIONS
+  )
 
   return data
 }

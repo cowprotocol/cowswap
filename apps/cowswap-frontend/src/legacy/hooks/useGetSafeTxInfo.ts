@@ -3,8 +3,8 @@ import { useCallback } from 'react'
 import { retry, RetryOptions } from '@cowprotocol/common-utils'
 import { getSafeTransaction } from '@cowprotocol/core'
 import { useWalletInfo } from '@cowprotocol/wallet'
+import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
-import { useWeb3React } from '@web3-react/core'
 
 import { RetryResult } from 'types'
 
@@ -13,7 +13,7 @@ const DEFAULT_RETRY_OPTIONS: RetryOptions = { n: 3, minWait: 1000, maxWait: 3000
 export type GetSafeTxInfo = (hash: string) => RetryResult<SafeMultisigTransactionResponse>
 
 export function useGetSafeTxInfo(): GetSafeTxInfo {
-  const { provider } = useWeb3React()
+  const provider = useWalletProvider()
   const { chainId } = useWalletInfo()
 
   const getSafeInfo = useCallback<GetSafeTxInfo>(

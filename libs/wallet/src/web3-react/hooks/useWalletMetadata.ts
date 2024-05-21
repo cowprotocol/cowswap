@@ -5,10 +5,9 @@ import { useWeb3React } from '@web3-react/core'
 import { useSafeAppsSdk } from './useSafeAppsSdk'
 import { useSafeAppsSdkInfo } from './useSafeAppsSdkInfo'
 
-import { default as AlphaImage } from '../../api/assets/alpha.svg'
-import { useGnosisSafeInfo } from '../../api/hooks'
+import { useGnosisSafeInfo, useSelectedEip6963ProviderInfo } from '../../api/hooks'
 import { ConnectionType } from '../../api/types'
-import { getIsAlphaWallet } from '../../api/utils/connection'
+import { getConnectionIcon, getConnectionName } from '../../api/utils/connection'
 import { getWeb3ReactConnection } from '../utils/getWeb3ReactConnection'
 
 const SAFE_APP_NAME = 'Safe App'
@@ -31,10 +30,6 @@ export interface WalletMetaData {
 }
 
 function getWcWalletIcon(meta: any) {
-  if (getIsAlphaWallet(meta.name)) {
-    return AlphaImage
-  }
-
   return meta.icons?.length > 0 ? meta.icons[0] : undefined
 }
 
@@ -61,13 +56,30 @@ function getWcPeerMetadata(provider: any | undefined): WalletMetaData {
 }
 
 // FIXME: I notice this function is not calculating always correctly the walletName. Out of scope of this PR to fix. "getConnnectionName" might help
-export function useWalletMetaData(): WalletMetaData {
+export function useWalletMetaData(standaloneMode?: boolean): WalletMetaData {
   const { connector, provider, account } = useWeb3React()
+  const selectedEip6963Provider = useSelectedEip6963ProviderInfo()
   const connectionType = getWeb3ReactConnection(connector).type
 
   return useMemo<WalletMetaData>(() => {
     if (!account) {
       return METADATA_DISCONNECTED
+    }
+
+    if (connectionType === ConnectionType.INJECTED) {
+      if (standaloneMode === false) {
+        return {
+          walletName: 'CoW Swap widget',
+          icon: 'Identicon',
+        }
+      }
+
+      if (selectedEip6963Provider) {
+        return {
+          icon: selectedEip6963Provider.info.icon,
+          walletName: selectedEip6963Provider.info.name,
+        }
+      }
     }
 
     if (connectionType === ConnectionType.WALLET_CONNECT_V2) {
@@ -83,8 +95,11 @@ export function useWalletMetaData(): WalletMetaData {
       return METADATA_SAFE
     }
 
-    return METADATA_DISCONNECTED
-  }, [connectionType, provider, account])
+    return {
+      icon: getConnectionIcon(connectionType),
+      walletName: getConnectionName(connectionType),
+    }
+  }, [connectionType, provider, account, selectedEip6963Provider, standaloneMode])
 }
 
 /**

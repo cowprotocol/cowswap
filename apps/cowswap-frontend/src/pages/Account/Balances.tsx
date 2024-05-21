@@ -11,9 +11,8 @@ import { getBlockExplorerUrl, getProviderErrorMessage } from '@cowprotocol/commo
 import { TokenAmount, ButtonPrimary } from '@cowprotocol/ui'
 import { HoverTooltip } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
+import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { CurrencyAmount } from '@uniswap/sdk-core'
-import { useWeb3React } from '@web3-react/core'
-import { MetaMask } from '@web3-react/metamask'
 
 import { Trans } from '@lingui/macro'
 import SVG from 'react-inlinesvg'
@@ -39,7 +38,7 @@ import {
   VestingBreakdown,
   CardsLoader,
   CardsSpinner,
-  StyledAddToMetamask,
+  StyledWatchAssetInWallet,
 } from 'pages/Account/styled'
 
 import LockedGnoVesting from './LockedGnoVesting'
@@ -48,7 +47,7 @@ import LockedGnoVesting from './LockedGnoVesting'
 const BLOCKS_TO_WAIT = 2
 
 export default function Profile() {
-  const { provider, connector } = useWeb3React()
+  const provider = useWalletProvider()
   const { account, chainId } = useWalletInfo()
   const previousAccount = usePrevious(account)
 
@@ -59,8 +58,6 @@ export default function Profile() {
 
   const setSwapVCowStatus = useSetSwapVCowStatus()
   const swapVCowStatus = useSwapVCowStatus()
-
-  const isMetaMask = (connector as MetaMask)?.provider?.isMetaMask
 
   // Locked GNO balance
   const { loading: isLockedGnoLoading, ...lockedGnoBalances } = useCowFromLockedGnoBalances()
@@ -289,13 +286,15 @@ export default function Profile() {
                 View contract ↗
               </ExtLink>
 
-              {isMetaMask && !isProviderNetworkUnsupported && <StyledAddToMetamask shortLabel currency={currencyCOW} />}
-
-              {!isMetaMask && (
-                <CopyHelper toCopy={COW_CONTRACT_ADDRESS[chainId]}>
-                  <div title="Click to copy token contract address">Copy contract</div>
-                </CopyHelper>
-              )}
+              <StyledWatchAssetInWallet
+                shortLabel
+                currency={currencyCOW}
+                fallback={
+                  <CopyHelper toCopy={COW_CONTRACT_ADDRESS[chainId]}>
+                    <div title="Click to copy token contract address">Copy contract</div>
+                  </CopyHelper>
+                }
+              />
 
               <Link to={`/swap?outputCurrency=${COW_CONTRACT_ADDRESS[chainId]}`}>Buy COW</Link>
             </CardActions>

@@ -1,10 +1,10 @@
 import { useMemo } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { useWeb3React } from '@web3-react/core'
+import { useWalletChainId } from '@cowprotocol/wallet-provider'
 
 export function useIsProviderNetworkUnsupported(): boolean {
-  const { chainId } = useWeb3React()
+  const chainId = useWalletChainId()
 
   return useMemo(() => {
     if (!chainId) return false

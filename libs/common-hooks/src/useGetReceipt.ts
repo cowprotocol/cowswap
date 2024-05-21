@@ -3,9 +3,8 @@ import { useCallback } from 'react'
 import { retry, RetryableError, RetryOptions } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
+import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { TransactionReceipt } from '@ethersproject/abstract-provider'
-import { useWeb3React } from '@web3-react/core'
-
 
 const DEFAULT_RETRY_OPTIONS: RetryOptions = { n: 3, minWait: 1000, maxWait: 3000 }
 const RETRY_OPTIONS_BY_CHAIN_ID: { [chainId: number]: RetryOptions } = {}
@@ -18,7 +17,7 @@ interface RetryResult<T> {
 export type GetReceipt = (hash: string) => RetryResult<TransactionReceipt>
 
 export function useGetReceipt(chainId: SupportedChainId): GetReceipt {
-  const { provider } = useWeb3React()
+  const provider = useWalletProvider()
 
   const getReceipt = useCallback<GetReceipt>(
     (hash) => {

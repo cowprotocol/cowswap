@@ -1,19 +1,20 @@
 import { useAtom } from 'jotai'
 import { useEffect, useMemo, useRef } from 'react'
 
-import { getIsHardWareWallet, getWeb3ReactConnection, hwAccountIndexAtom, useWalletInfo } from '@cowprotocol/wallet'
 import { useWeb3React } from '@web3-react/core'
 
-import { useAppSelector } from 'legacy/state/hooks'
+import { useWalletInfo } from '../../api/hooks'
+import { hwAccountIndexAtom } from '../../api/state'
+import { getIsHardWareWallet } from '../utils/getIsHardWareWallet'
+import { getWeb3ReactConnection } from '../utils/getWeb3ReactConnection'
 
 const indexChanged = true
 
 export function HwAccountIndexUpdater() {
   const [hwAccountIndex, setHwAccountIndex] = useAtom(hwAccountIndexAtom)
-  const { chainId } = useWalletInfo()
+  const { chainId, account } = useWalletInfo()
   const { connector, isActive } = useWeb3React()
   const connectorRef = useRef(connector)
-  const selectedWallet = useAppSelector((state) => state.user.selectedWallet)
 
   connectorRef.current = connector
 
@@ -39,11 +40,11 @@ export function HwAccountIndexUpdater() {
   }, [isActive, hwAccountIndex, connectionType, chainId])
 
   useEffect(() => {
-    if (selectedWallet) return
+    if (account) return
 
     console.debug('[Hardware wallet] reset account index to 0')
     setHwAccountIndex(0)
-  }, [setHwAccountIndex, selectedWallet])
+  }, [setHwAccountIndex, account])
 
   return null
 }

@@ -41,10 +41,10 @@ function _useWalletInfo(): WalletInfo {
   )
 }
 
-function _useWalletDetails(account?: string): WalletDetails {
+function _useWalletDetails(account?: string, standaloneMode?: boolean): WalletDetails {
   const { ENSName: ensName } = useENSName(account ?? undefined)
   const isSmartContractWallet = useIsSmartContractWallet()
-  const { walletName, icon } = useWalletMetaData()
+  const { walletName, icon } = useWalletMetaData(standaloneMode)
 
   return useMemo(() => {
     return {
@@ -96,9 +96,12 @@ function _useSafeInfo(walletInfo: WalletInfo): GnosisSafeInfo | undefined {
   return safeInfo
 }
 
-export function WalletUpdater() {
+interface WalletUpdaterProps {
+  standaloneMode?: boolean
+}
+export function WalletUpdater({ standaloneMode }: WalletUpdaterProps) {
   const walletInfo = _useWalletInfo()
-  const walletDetails = _useWalletDetails(walletInfo.account)
+  const walletDetails = _useWalletDetails(walletInfo.account, standaloneMode)
   const gnosisSafeInfo = _useSafeInfo(walletInfo)
 
   const setWalletInfo = useSetAtom(walletInfoAtom)
