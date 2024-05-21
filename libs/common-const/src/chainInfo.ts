@@ -43,7 +43,7 @@ export const CHAIN_INFO: ChainInfoMap = {
   [SupportedChainId.ARBITRUM_ONE]: {
     docs: 'https://docs.arbitrum.io',
     bridge: 'https://bridge.arbitrum.io',
-    explorer: 'https://arbiscan.io/',
+    explorer: 'https://arbiscan.io',
     infoLink: 'https://arbitrum.io',
     label: 'Arbitrum One',
     addressPrefix: 'arb1',
