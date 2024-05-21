@@ -9,7 +9,6 @@ import { TradeType } from '@cowprotocol/widget-lib'
 
 import { NetworkAlert } from 'legacy/components/NetworkAlert/NetworkAlert'
 import SettingsTab from 'legacy/components/Settings'
-import useCowBalanceAndSubsidy from 'legacy/hooks/useCowBalanceAndSubsidy'
 import { useModalIsOpen } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
 import { Field } from 'legacy/state/types'
@@ -65,10 +64,9 @@ export function SwapWidget() {
   const { chainId, account } = useWalletInfo()
   const { slippageAdjustedSellAmount, allowedSlippage, currencies, currenciesIds, trade } = useDerivedSwapInfo()
   const parsedAmounts = useSwapCurrenciesAmounts()
-  const { isSupportedWallet, allowsOffchainSigning } = useWalletDetails()
+  const { isSupportedWallet } = useWalletDetails()
   const isSwapUnsupported = useIsTradeUnsupported(currencies.INPUT, currencies.OUTPUT)
   const swapActions = useSwapActionHandlers()
-  const subsidyAndBalance = useCowBalanceAndSubsidy()
   const userAllowedSlippage = useUserSlippageTolerance()
   const swapState = useSwapState()
   const { independentField, recipient } = swapState
@@ -253,12 +251,9 @@ export function SwapWidget() {
 
   const tradeRatesProps: TradeRatesProps = {
     trade,
-    allowedSlippage,
-    allowsOffchainSigning,
     userAllowedSlippage,
     isFeeGreater,
     fee,
-    discount: subsidyAndBalance.subsidy.discount || 0,
     rateInfoParams,
   }
 

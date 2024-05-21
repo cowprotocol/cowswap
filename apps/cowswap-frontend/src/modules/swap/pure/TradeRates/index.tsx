@@ -2,6 +2,7 @@ import React from 'react'
 
 import { genericPropsChecker } from '@cowprotocol/common-utils'
 import { FiatAmount, TokenAmount } from '@cowprotocol/ui'
+import { useWalletDetails } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import TradeGp from 'legacy/state/swap/TradeGp'
@@ -20,36 +21,21 @@ import { useFeeAmounts } from './useFeeAmounts'
 
 export interface TradeRatesProps {
   trade: TradeGp | undefined
-  allowedSlippage: Percent
-  allowsOffchainSigning: boolean
   userAllowedSlippage: Percent | string
   isFeeGreater: boolean
-  discount: number
   fee: CurrencyAmount<Currency> | null
   rateInfoParams: RateInfoParams
-  priceLabel?: string
   isReviewSwap?: boolean
   children?: JSX.Element
 }
 
 export const TradeRates = React.memo(function (props: TradeRatesProps) {
-  const {
-    isFeeGreater,
-    fee,
-    trade,
-    allowsOffchainSigning,
-    userAllowedSlippage,
-    // discount,
-    rateInfoParams,
-    isReviewSwap = false,
-    children,
-  } = props
-  // const openCowSubsidyModal = useOpenModal(ApplicationModal.COW_SUBSIDY)
+  const { isFeeGreater, fee, trade, userAllowedSlippage, rateInfoParams, isReviewSwap = false, children } = props
 
   const showPrice = !!trade
   const showTradeBasicDetails = (isFeeGreater || trade) && fee
-  const showRowDeadline = !!trade
 
+  const { allowsOffchainSigning } = useWalletDetails()
   const { feeTotalAmount, feeUsdTotalAmount } = useFeeAmounts(trade, fee)
 
   if (!feeTotalAmount && !feeUsdTotalAmount) return null
@@ -81,7 +67,7 @@ export const TradeRates = React.memo(function (props: TradeRatesProps) {
       >
         <styledEl.Box noMargin>
           {showTradeBasicDetails && tradeBasicDetails}
-          {showRowDeadline && <RowDeadline />}
+          <RowDeadline />
           {children}
         </styledEl.Box>
       </TradeDetailsAccordion>
