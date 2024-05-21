@@ -11,10 +11,16 @@ export class FeatureFlag {
       return true
     }
 
-    return localStorage.getItem(name)
+    if (typeof window !== 'undefined' && window.localStorage) {
+      return localStorage.getItem(name)
+    }
+
+    return null
   }
 
   static set(name: string, value: string) {
-    localStorage.setItem(name, value)
+    if (typeof window !== 'undefined' && window.localStorage) {
+      localStorage.setItem(name, value)
+    }
   }
 }
