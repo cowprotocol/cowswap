@@ -1,5 +1,5 @@
 import { useState, ReactNode, useEffect, useRef } from 'react'
-import { ProductLogo, MenuItem, themeMapper } from '@cowprotocol/ui'
+import { ProductLogo, MenuItem, themeMapper, ProductVariant, Color } from '@cowprotocol/ui'
 
 import {
   FooterContainer,
@@ -22,9 +22,8 @@ import {
 } from './styled'
 
 import { FooterAnimation } from './footerAnimation'
-import { ProductVariant, Color } from '@cowprotocol/ui'
 
-import { ThemeProvider, DefaultTheme } from 'styled-components'
+import { ThemeProvider } from 'styled-components'
 import SVG from 'react-inlinesvg'
 
 import IMG_ICON_SOCIAL_X from '@cowprotocol/assets/images/icon-social-x.svg'
