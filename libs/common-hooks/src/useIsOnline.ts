@@ -4,13 +4,12 @@ import { getTimeoutAbortController } from '@cowprotocol/common-utils'
 
 import ms from 'ms.macro'
 
-
 const CONNECTIVITY_CHECK_POLLING_TIME = ms`30s`
 const CONNECTIVITY_CHECK_TIMEOUT = ms`15s`
-const IS_SUPPORTED = navigator.onLine !== undefined
+const IS_SUPPORTED = typeof window !== 'undefined' && navigator.onLine !== undefined
 
 export function isOnline() {
-  return window.navigator.onLine || !IS_SUPPORTED
+  return typeof window !== 'undefined' && (window.navigator.onLine || !IS_SUPPORTED)
 }
 
 /**
@@ -49,7 +48,7 @@ export function useIsOnline(): boolean {
       const connected = await hasConnectivity()
 
       if (isCancelled) {
-        // Discard theconnectivity check result
+        // Discard the connectivity check result
         return
       }
 
@@ -79,12 +78,14 @@ export function useIsOnline(): boolean {
 
   // Subscribe to changes of online/offline status
   useEffect(() => {
-    window.addEventListener('online', updateOnlineState)
-    window.addEventListener('offline', updateOnlineState)
+    if (typeof window !== 'undefined') {
+      window.addEventListener('online', updateOnlineState)
+      window.addEventListener('offline', updateOnlineState)
 
-    return () => {
-      window.removeEventListener('online', updateOnlineState)
-      window.removeEventListener('offline', updateOnlineState)
+      return () => {
+        window.removeEventListener('online', updateOnlineState)
+        window.removeEventListener('offline', updateOnlineState)
+      }
     }
   }, [updateOnlineState])
 
