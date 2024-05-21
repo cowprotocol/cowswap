@@ -10,10 +10,10 @@ export function changeWalletAnalytics(walletName: string) {
 }
 
 type AddTokenActions = 'Succeeded' | 'Failed'
-export function addTokenToMetamaskAnalytics(action: AddTokenActions, symbol: string | undefined) {
+export function watchAssetInWalletAnalytics(action: AddTokenActions, symbol: string | undefined) {
   sendEvent({
     category: Category.WALLET,
-    action: `Add token to Metamask ${action}`,
+    action: `Watch asset in wallet ${action}`,
     label: symbol,
   })
 }

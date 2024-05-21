@@ -8,6 +8,8 @@ import { ApplicationModal } from 'legacy/state/application/reducer'
 import { useAppDispatch } from 'legacy/state/hooks'
 import { updateSelectedWallet } from 'legacy/state/user/reducer'
 
+import { useAccountModalState } from 'modules/account'
+
 import { useSetWalletConnectionError } from '../../hooks/useSetWalletConnectionError'
 import { useWalletConnectionError } from '../../hooks/useWalletConnectionError'
 import { WalletModal as WalletModalPure, WalletModalView } from '../../pure/WalletModal'
@@ -29,6 +31,10 @@ export function WalletModal() {
 
   const openOptions = useCallback(() => setWalletView('options'), [setWalletView])
 
+  const { isOpen: isAccountModalOpen } = useAccountModalState()
+  // Wallet changing currently is only possible through the account modal
+  const isWalletChangingFlow = isAccountModalOpen
+
   useEffect(() => {
     if (walletModalOpen) {
       setWalletView(account ? 'account' : 'options')
@@ -44,6 +50,7 @@ export function WalletModal() {
   const { tryActivation, retryPendingActivation } = useActivateConnector(
     useMemo(
       () => ({
+        skipNetworkChanging: isWalletChangingFlow,
         beforeActivation() {
           setWalletView('pending')
           setWalletConnectionError(undefined)
@@ -67,7 +74,7 @@ export function WalletModal() {
           )
         },
       }),
-      []
+      [isWalletChangingFlow]
     )
   )
 

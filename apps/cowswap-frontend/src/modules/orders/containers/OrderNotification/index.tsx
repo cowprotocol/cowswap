@@ -73,15 +73,16 @@ export function OrderNotification(props: BaseOrderNotificationProps) {
         <p>
           Order <strong>{shortenOrderId(orderUid)}</strong>:
         </p>
-        {children || (
-          <OrderSummary
-            kind={order.kind}
-            inputToken={order.inputToken as TokenInfo}
-            outputToken={order.outputToken as TokenInfo}
-            sellAmount={order.inputAmount.toString()}
-            buyAmount={order.outputAmount.toString()}
-          />
-        )}
+        {children ||
+          (order.inputToken && order.outputToken ? (
+            <OrderSummary
+              kind={order.kind}
+              inputToken={order.inputToken as TokenInfo}
+              outputToken={order.outputToken as TokenInfo}
+              sellAmount={order.inputAmount.toString()}
+              buyAmount={order.outputAmount.toString()}
+            />
+          ) : null)}
         <ReceiverInfo receiver={order.receiver} owner={order.owner} />
       </div>
     </TransactionContentWithLink>

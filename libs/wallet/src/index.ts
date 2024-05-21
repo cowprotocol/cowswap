@@ -3,6 +3,7 @@ import './types.d.ts'
 export * from './api/types'
 export * from './web3-react/types'
 export * from './assets'
+export * from './constants'
 
 // Hooks
 export * from './api/hooks'
@@ -33,32 +34,25 @@ export { switchChain } from './web3-react/utils/switchChain'
 
 // Connectors
 export { Web3Provider } from './web3-react/Web3Provider'
-export { injectedWidgetConnection } from './web3-react/connection/injectedWidget'
+export { injectedWalletConnection } from './web3-react/connection/injectedWallet'
 export { networkConnection } from './web3-react/connection/network'
 export { gnosisSafeConnection } from './web3-react/connection/safe'
+export { walletConnectConnectionV2 } from './web3-react/connection/walletConnectV2'
 
 // Connect options
 export {
   InjectedOption,
   InstallMetaMaskOption,
-  MetaMaskOption,
   OpenMetaMaskMobileOption,
-} from './web3-react/connection/injected'
+  Eip6963Option,
+} from './web3-react/connection/injectedOptions'
 
-export { InstallKeystoneOption, KeystoneOption } from './web3-react/connection/keystone'
-// export { LedgerOption } from './web3-react/connection/ledger'
+export { ConnectWalletOption } from './api/pure/ConnectWalletOption'
 export { TrezorOption } from './web3-react/connection/trezor'
-export { TrustWalletOption } from './web3-react/connection/trust'
 export { WalletConnectV2Option } from './web3-react/connection/walletConnectV2'
-export { AlphaOption } from './web3-react/connection/alpha'
-export { AmbireOption } from './web3-react/connection/ambire'
 export { CoinbaseWalletOption } from './web3-react/connection/coinbase'
 
 // State
 // TODO: this export is discussable, however it's already used outside
 export * from './api/state'
 export * from './api/state'
-
-// Connections
-export { injectedConnection } from './web3-react/connection/injected'
-export { walletConnectConnectionV2 } from './web3-react/connection/walletConnectV2'

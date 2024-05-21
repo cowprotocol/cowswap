@@ -12,13 +12,11 @@ import { Web3ReactConnection } from '../types'
 
 interface Web3ProviderProps {
   children: ReactNode
-  // @see UserState in ../../../../../apps/cowswap-frontend/src/legacy/state/user/reducer.ts
   selectedWallet: ConnectionType | undefined
-  selectedWalletBackfilled: boolean
 }
 
-export function Web3Provider({ children, selectedWallet, selectedWalletBackfilled }: Web3ProviderProps) {
-  useEagerlyConnect(selectedWallet, selectedWalletBackfilled)
+export function Web3Provider({ children, selectedWallet }: Web3ProviderProps) {
+  useEagerlyConnect(selectedWallet)
 
   const connections = useOrderedConnections(selectedWallet)
   const connectors: [Connector, Web3ReactHooks][] = connections

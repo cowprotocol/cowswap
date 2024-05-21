@@ -7,12 +7,11 @@ import { useAddSnackbar } from '@cowprotocol/snackbars'
 import {
   accountsLoaders,
   hwAccountIndexAtom,
-  getConnectionIcon,
-  getConnectionName,
   AccountIndexSelect,
   HardWareWallet,
   useWalletInfo,
   useConnectionType,
+  useWalletDetails,
 } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -33,11 +32,9 @@ export function AccountSelectorModal() {
   const [hwAccountIndex, setHwAccountIndex] = useAtom(hwAccountIndexAtom)
   const connectionType = useConnectionType()
   const addSnackbar = useAddSnackbar()
+  const { walletName, icon: walletIcon } = useWalletDetails()
 
   const nativeToken = NATIVE_CURRENCIES[chainId]
-
-  const walletIcon = useMemo(() => getConnectionIcon(connectionType), [connectionType])
-  const walletName = useMemo(() => getConnectionName(connectionType), [connectionType])
 
   const accountsLoader = useMemo(() => accountsLoaders[connectionType as HardWareWallet], [connectionType])
 
