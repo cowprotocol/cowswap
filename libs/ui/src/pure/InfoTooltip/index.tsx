@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 
 import { Info } from 'react-feather'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { UI } from '../../enum'
 import { HoverTooltip, TooltipContainer } from '../Tooltip'

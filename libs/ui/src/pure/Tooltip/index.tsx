@@ -3,7 +3,7 @@ import { MouseEvent, ReactNode, useCallback, useEffect, useRef, useState } from 
 import { isMobile } from '@cowprotocol/common-utils'
 import { Command } from '@cowprotocol/types'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import Popover, { PopoverProps } from '../Popover'
 

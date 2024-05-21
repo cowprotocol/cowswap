@@ -1,5 +1,5 @@
 import React, { useState, useRef, RefObject } from 'react'
-import { upToLarge, useMediaQuery } from '../../../../../apps/cowswap-frontend/src/legacy/hooks/useMediaQuery'
+
 import {
   RootNavItem,
   MenuBarWrapper,
@@ -21,8 +21,8 @@ import {
   MobileMenuTrigger,
 } from './styled'
 import SVG from 'react-inlinesvg'
-import { ProductLogo, ProductVariant, themeMapper } from '@cowprotocol/ui'
-import { useOnClickOutside } from '@cowprotocol/common-hooks'
+import { ProductLogo, ProductVariant, themeMapper, Media } from '@cowprotocol/ui'
+import { useOnClickOutside, useMediaQuery } from '@cowprotocol/common-hooks'
 import IMG_ICON_MENU_DOTS from '@cowprotocol/assets/images/menu-grid-dots.svg'
 import IMG_ICON_ARROW_RIGHT from '@cowprotocol/assets/images/arrow-right.svg'
 import IMG_ICON_CARRET_DOWN from '@cowprotocol/assets/images/carret-down.svg'
@@ -369,7 +369,7 @@ export const MenuBar = (props: MenuBarProps) => {
   useOnClickOutside([menuRef as RefObject<HTMLElement>], () => setIsDaoOpen(false))
   useOnClickOutside([mobileMenuRef as RefObject<HTMLElement>], () => setIsMobileMenuOpen(false))
 
-  const isMobile = useMediaQuery(upToLarge)
+  const isMobile = useMediaQuery(Media.upToLarge)
 
   const handleMobileMenuToggle = () => {
     setIsMobileMenuOpen((prevState) => !prevState)

@@ -2,7 +2,7 @@ import React, { ReactNode } from 'react'
 
 import { X } from 'react-feather'
 import SVG from 'react-inlinesvg'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { BannerOrientation } from './banners'
 

@@ -26,7 +26,7 @@ export const themeMapper = (theme: CowSwapTheme): DefaultTheme => ({
   mode: theme,
 })
 
-const MEDIA_WIDTHS = {
+export const MEDIA_WIDTHS = {
   upToTiny: 320,
   upToExtraSmall: 500,
   upToSmall: 720,

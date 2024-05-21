@@ -2,7 +2,7 @@ import { HTMLAttributes } from 'react'
 
 import { ChevronDown, Star } from 'react-feather'
 import { ButtonProps } from 'rebass/styled-components'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import {
   ButtonConfirmedStyle as ButtonConfirmedStyleMod,

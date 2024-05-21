@@ -14,6 +14,7 @@ function getRegex(env: EnvironmentName) {
   const regex = process.env[`REACT_APP_DOMAIN_REGEX_${env.toUpperCase()}`] || DEFAULT_ENVIRONMENTS_REGEX[env]
   return new RegExp(regex, 'i')
 }
+
 export interface EnvironmentChecks {
   isProd: boolean
   isEns: boolean
@@ -42,10 +43,25 @@ export function checkEnvironment(host: string, path: string): EnvironmentChecks 
   }
 }
 
-const { isLocal, isDev, isPr, isStaging, isProd, isEns, isBarn } = checkEnvironment(
-  window.location.host,
-  window.location.pathname
-)
+// Default values for environments
+let isLocal = false
+let isDev = false
+let isPr = false
+let isStaging = false
+let isProd = false
+let isEns = false
+let isBarn = false
+
+if (typeof window !== 'undefined') {
+  const envChecks = checkEnvironment(window.location.host, window.location.pathname)
+  isLocal = envChecks.isLocal
+  isDev = envChecks.isDev
+  isPr = envChecks.isPr
+  isStaging = envChecks.isStaging
+  isProd = envChecks.isProd
+  isEns = envChecks.isEns
+  isBarn = envChecks.isBarn
+}
 
 export const ALL_ENVIRONMENTS: EnvironmentName[] = [
   'local',
@@ -81,6 +97,8 @@ export const environmentName: EnvironmentName | undefined = (function () {
 const isProdLike = isProd || isEns || isStaging || isBarn
 const isBarnBackendEnv = isLocal || isDev || isPr || isBarn
 
-registerOnWindow({ environment: environmentName })
+if (typeof window !== 'undefined') {
+  registerOnWindow({ environment: environmentName })
+}
 
 export { isLocal, isDev, isPr, isBarn, isStaging, isProd, isEns, isProdLike, isBarnBackendEnv }

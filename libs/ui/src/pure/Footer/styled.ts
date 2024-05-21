@@ -1,4 +1,4 @@
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 import { CowSwapTheme } from '@cowprotocol/widget-lib'
 import { Color, Media } from '@cowprotocol/ui'
 

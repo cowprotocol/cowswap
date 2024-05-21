@@ -10,10 +10,10 @@ import { isImTokenBrowser, majorBrowserVersion, userAgent } from './userAgent'
 // Metamask IOS app uses a version from July 2019 which causes problems in appZi
 const OLD_CHROME_FROM_METAMASK_IOS_APP = 76
 const isOldChrome =
-  userAgent.browser.name === 'Chrome' && majorBrowserVersion && majorBrowserVersion <= OLD_CHROME_FROM_METAMASK_IOS_APP
+  userAgent.browser?.name === 'Chrome' && majorBrowserVersion && majorBrowserVersion <= OLD_CHROME_FROM_METAMASK_IOS_APP
 
 const isFeedbackEnabled = process.env.REACT_APP_FEEDBACK_ENABLED_DEV === 'true' || process.env.NODE_ENV === 'production'
-const isImTokenIosBrowser = isImTokenBrowser && userAgent.os.name === 'iOS'
+const isImTokenIosBrowser = isImTokenBrowser && userAgent.os?.name === 'iOS'
 export const isAppziEnabled = !isOldChrome && !isImTokenIosBrowser && isFeedbackEnabled
 
 const PROD_FEEDBACK_KEY = 'f7591eca-72f7-4888-b15f-e7ff5fcd60cd'
@@ -71,20 +71,28 @@ function initialize() {
   if (isAppziEnabled) {
     ReactAppzi.initialize(APPZI_TOKEN)
 
-    window.appziSettings = window.appziSettings || {}
+    if (typeof window !== 'undefined') {
+      window.appziSettings = window.appziSettings || {}
+    }
   }
 }
 
 function updateAppziSettings({ data = {}, userId = '' }: AppziSettings) {
-  window.appziSettings = { ...(window.appziSettings || {}), data, userId }
+  if (typeof window !== 'undefined') {
+    window.appziSettings = { ...(window.appziSettings || {}), data, userId }
+  }
 }
 
 export function openFeedbackAppzi() {
-  window.appzi?.openWidget(FEEDBACK_KEY)
+  if (typeof window !== 'undefined') {
+    window.appzi?.openWidget(FEEDBACK_KEY)
+  }
 }
 
 export function openNpsAppzi() {
-  window.appzi?.openWidget(NPS_KEY)
+  if (typeof window !== 'undefined') {
+    window.appzi?.openWidget(NPS_KEY)
+  }
 }
 
 export function isOrderInPendingTooLong(openSince: number | undefined): boolean {

@@ -1,24 +1,42 @@
 const { composePlugins, withNx } = require('@nx/next')
 
-/**
- * @type {import('@nx/next/plugins/with-nx').WithNxOptions}
- **/
 const nextConfig = {
   nx: {
-    // Set this to true if you would like to to use SVGR
-    // See: https://github.com/gregberge/svgr
     svgr: false,
   },
-
   compiler: {
-    // For other options, see https://styled-components.com/docs/tooling#babel-plugin
     styledComponents: true,
+  },
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        module: false,
+      }
+    }
+
+    config.module.rules.push(
+      {
+        test: /\.(woff|woff2|eot|ttf|otf)$/,
+        type: 'asset/resource',
+        generator: {
+          filename: 'static/fonts/[hash][ext][query]',
+        },
+      },
+      {
+        test: /\.(png|jpg|gif|svg)$/,
+        type: 'asset/resource',
+        generator: {
+          filename: 'static/images/[hash][ext][query]',
+        },
+      }
+    )
+
+    return config
   },
 }
 
-const plugins = [
-  // Add more Next.js plugins to this list if needed.
-  withNx,
-]
+const plugins = [withNx]
 
 module.exports = composePlugins(...plugins)(nextConfig)

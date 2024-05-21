@@ -1,7 +1,7 @@
 import { Command } from '@cowprotocol/types'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 import { Nullish } from '../../types'
 import { ButtonSecondaryAlt } from '../ButtonSecondaryAlt'

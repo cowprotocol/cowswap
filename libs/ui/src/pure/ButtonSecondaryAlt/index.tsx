@@ -1,5 +1,4 @@
-import styled from 'styled-components/macro'
-
+import styled from 'styled-components'
 import { UI } from '../../enum'
 
 export const ButtonSecondaryAlt = styled.button<{ padding?: string; minHeight?: string }>`
