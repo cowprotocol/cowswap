@@ -194,8 +194,8 @@ export const GlobalCoWDAOStyles = createGlobalStyle(
       font-family: ${Font.family};
       margin: 0;
       padding: 0;
-      background-color: ${Color.neutral90};
-      color: ${Color.neutral100};
+      background-color: ${Color.neutral98};
+      color: ${Color.neutral0};
     }
   `
 )
