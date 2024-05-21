@@ -1,7 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-
 import { getTimeoutAbortController } from '@cowprotocol/common-utils'
-
 import ms from 'ms.macro'
 
 const CONNECTIVITY_CHECK_POLLING_TIME = ms`30s`
@@ -70,7 +68,7 @@ export function useIsOnline(): boolean {
     }
   }, [online])
 
-  // Update the online status purely base on the browser info
+  // Update the online status purely based on the browser info
   const updateOnlineState = useCallback(() => {
     const onlineNew = isOnline()
     setOnline(onlineNew)
@@ -86,6 +84,9 @@ export function useIsOnline(): boolean {
         window.removeEventListener('online', updateOnlineState)
         window.removeEventListener('offline', updateOnlineState)
       }
+    } else {
+      // Ensure the useEffect cleanup function always returns undefined if window is not defined
+      return undefined
     }
   }, [updateOnlineState])
 
