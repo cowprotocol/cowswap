@@ -3,30 +3,49 @@ import React from 'react'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
+import { Nullish } from 'types'
 
 import { useInjectedWidgetParams, useWidgetPartnerFee } from 'modules/injectedWidget'
-import { RowPartnerFee } from 'modules/trade'
+import { ReceiveAmountInfo, RowPartnerFee } from 'modules/trade'
 import { useUsdAmount } from 'modules/usdAmount'
 
-import { RateInfo, RateInfoParams } from 'common/pure/RateInfo'
+import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
+import { RateInfo } from 'common/pure/RateInfo'
 import { TradeDetailsAccordion } from 'common/pure/TradeDetailsAccordion'
+
+import { useLimitOrdersDerivedState } from '../../hooks/useLimitOrdersDerivedState'
 
 const StyledRateInfo = styled(RateInfo)`
   min-height: 24px;
 `
 
+const preferAmountAfterFees = (
+  amountAfterFees: Nullish<CurrencyAmount<Currency>>,
+  amount: Nullish<CurrencyAmount<Currency>>
+) => (amountAfterFees?.currency === amount?.currency ? amountAfterFees : amount)
+
 export interface TradeRatesProps {
-  rateInfoParams: RateInfoParams
-  partnerFeeAmount: CurrencyAmount<Currency> | null
+  receiveAmountInfo: ReceiveAmountInfo | null
 }
 
-export function TradeRates({ partnerFeeAmount, rateInfoParams }: TradeRatesProps) {
+export function TradeRates({ receiveAmountInfo }: TradeRatesProps) {
+  const partnerFeeAmount = receiveAmountInfo?.partnerFeeAmount || null
+  const amountAfterFees = receiveAmountInfo?.amountAfterFees || null
+
+  const { inputCurrencyAmount, outputCurrencyAmount } = useLimitOrdersDerivedState()
+
+  /**
+   * Calculate rate info taking into account fees
+   */
+  const rateInfoParams = useRateInfoParams(
+    preferAmountAfterFees(amountAfterFees, inputCurrencyAmount),
+    preferAmountAfterFees(amountAfterFees, outputCurrencyAmount)
+  )
   const partnerFee = useWidgetPartnerFee()
   const partnerFeeFiatValue = useUsdAmount(partnerFeeAmount).value
   const { content } = useInjectedWidgetParams()
 
-  // TODO: substract partner fee from rateInfoParams
-  const rateInfo = <StyledRateInfo rateInfoParams={rateInfoParams} />
+  const rateInfo = <StyledRateInfo rateInfoParams={rateInfoParams} noLabel={true} />
 
   return (
     <TradeDetailsAccordion

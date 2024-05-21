@@ -31,8 +31,6 @@ export interface LimitOrdersProps {
 
   localFormValidation: LimitOrdersFormState | null
   primaryFormValidation: TradeFormValidation | null
-
-  partnerFeeAmount: CurrencyAmount<Currency> | null
 }
 
 export function limitOrdersPropsChecker(a: LimitOrdersProps, b: LimitOrdersProps): boolean {
@@ -49,7 +47,6 @@ export function limitOrdersPropsChecker(a: LimitOrdersProps, b: LimitOrdersProps
     checkTradeFlowContext(a.tradeContext, b.tradeContext) &&
     genericPropsChecker(a.settingsState, b.settingsState) &&
     checkCurrencyAmount(a.feeAmount, b.feeAmount) &&
-    checkCurrencyAmount(a.partnerFeeAmount, b.partnerFeeAmount) &&
     a.localFormValidation === b.localFormValidation &&
     a.primaryFormValidation === b.primaryFormValidation
   )
