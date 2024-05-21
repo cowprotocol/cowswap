@@ -1,13 +1,15 @@
-import styled from 'styled-components'
-import SVG from 'react-inlinesvg'
 
-import LOGO_ICON_COW from '@cowprotocol/assets/images/logo-icon-cow.svg'
-import LOGO_COWSWAP from '@cowprotocol/assets/images/logo-cowswap.svg'
-import LOGO_COWPROTOCOL from '@cowprotocol/assets/images/logo-cowprotocol.svg'
 import LOGO_COWDAO from '@cowprotocol/assets/images/logo-cowdao.svg'
+import LOGO_COWPROTOCOL from '@cowprotocol/assets/images/logo-cowprotocol.svg'
+import LOGO_COWSWAP from '@cowprotocol/assets/images/logo-cowswap.svg'
+import LOGO_ICON_COW from '@cowprotocol/assets/images/logo-icon-cow.svg'
 import LOGO_MEVBLOCKER from '@cowprotocol/assets/images/logo-mevblocker.svg'
 
-import { CowSwapTheme } from '@cowprotocol/widget-lib'
+import SVG from 'react-inlinesvg'
+import styled from 'styled-components'
+
+import { CowSwapTheme } from '../../types'
+
 
 export enum ProductVariant {
   CowSwap = 'cowSwap',

@@ -1,5 +1,6 @@
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CowEventListeners, CowEventPayloadMap, CowEvents } from '@cowprotocol/events'
+import { CowSwapTheme } from '@cowprotocol/ui'
 export type { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 export enum WidgetMethodsEmit {
@@ -51,8 +52,6 @@ export interface EthereumProvider {
    */
   enable(): Promise<void>
 }
-
-export type CowSwapTheme = 'dark' | 'light'
 
 /**
  *Trade asset parameters, for example:

@@ -1,6 +1,7 @@
 import styled from 'styled-components'
-import { CowSwapTheme } from '@cowprotocol/widget-lib'
+
 import { Color, Media } from '../../consts'
+import { CowSwapTheme } from '../../types'
 
 export const FooterContainer = styled.footer<{ theme: CowSwapTheme; expanded: boolean }>`
   --bgColor: ${Color.neutral10};
