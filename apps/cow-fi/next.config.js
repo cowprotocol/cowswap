@@ -30,6 +30,19 @@ const nextConfig = {
         generator: {
           filename: 'static/images/[hash][ext][query]',
         },
+      },
+      {
+        test: /\.[tj]sx?$/,
+        exclude: /node_modules/,
+        use: [
+          {
+            loader: 'babel-loader',
+            options: {
+              presets: ['next/babel'],
+              plugins: ['babel-plugin-macros'],
+            },
+          },
+        ],
       }
     )
 
