@@ -215,8 +215,12 @@ export const ToggleFooterButton = styled.button<{ expanded: boolean }>`
   cursor: pointer;
   font-size: 16px;
   padding: 0;
-  transition: transform 0.3s ease-in-out;
+  transition: transform 0.5s ease-in-out, color 0.2s ease-in-out;
   transform: ${({ expanded }) => (expanded ? 'rotate(-90deg)' : 'rotate(0deg)')};
+
+  &:hover {
+    color: var(--colorTitle);
+  }
 
   ${Media.upToLarge} {
     margin: 0 0 0 auto;
