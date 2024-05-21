@@ -17,10 +17,10 @@ export const AccountIcon = ({ size = 16, account }: AccountIconProps) => {
   const connectionType = useConnectionType()
   const [imageLoadError, setImageLoadError] = useState(false)
 
-  const iconURL = walletDetails?.icon
-  const isIdenticon = iconURL === 'Identicon'
+  const { icon, walletName } = walletDetails
+  const isIdenticon = icon === 'Identicon'
 
-  if (imageLoadError || isIdenticon || !iconURL) {
+  if (imageLoadError || isIdenticon || !icon) {
     return (
       <IconWrapper size={size}>
         <StatusIcon size={size} account={account} connectionType={connectionType} />
@@ -40,7 +40,7 @@ export const AccountIcon = ({ size = 16, account }: AccountIconProps) => {
 
   return (
     <IconWrapper size={size}>
-      <img src={iconURL} alt="wallet logo" onError={() => setImageLoadError(true)} />
+      <img src={icon} alt={walletName || connectionType} onError={() => setImageLoadError(true)} />
     </IconWrapper>
   )
 }
