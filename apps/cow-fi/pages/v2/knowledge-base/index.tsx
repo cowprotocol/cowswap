@@ -7,7 +7,7 @@ import styled from 'styled-components'
 import { CONFIG } from '@/const/meta'
 
 import LayoutV2 from '@/components/Layout/LayoutV2'
-import { Link } from 'react-feather'
+import { Category, getCategories } from 'services/cms'
 
 const DATA_CACHE_TIME_SECONDS = 5 * 60 // Cache 5min
 
@@ -60,28 +60,28 @@ const FEATURED_ARTICLES = [
   },
 ]
 
-const TOPICS = [
-  {
-    title: 'Getting started',
-    bgColor: '#FF4500',
-    iconColor: '#800020',
-    textColor: Color.neutral100,
-    link: '/getting-started',
-  },
-  {
-    title: 'Crypto basics',
-    bgColor: '#FF69B4',
-    iconColor: '#000080',
-    textColor: Color.neutral0,
-    link: '/crypto-basics',
-  },
-  { title: 'MEV', bgColor: '#FFD700', iconColor: '#FF4500', textColor: Color.neutral0, link: '/mev' },
-  { title: 'Guides', bgColor: '#00BFFF', iconColor: '#0B6623', textColor: Color.neutral0, link: '/guides' },
-  { title: 'Governance', bgColor: '#000080', iconColor: '#00BFFF', textColor: Color.neutral100, link: '/governance' },
-  { title: 'Token', bgColor: '#0B6623', iconColor: '#FFD700', textColor: Color.neutral100, link: '/token' },
-  { title: 'Docs', bgColor: '#FFDAB9', iconColor: '#0B6623', textColor: Color.neutral0, link: '/docs' },
-  { title: 'FAQ', bgColor: '#800020', iconColor: '#FF4500', textColor: Color.neutral100, link: '/faq' },
-]
+// const TOPICS = [
+//   {
+//     title: 'Getting started',
+//     bgColor: '#FF4500',
+//     iconColor: '#800020',
+//     textColor: Color.neutral100,
+//     link: '/getting-started',
+//   },
+//   {
+//     title: 'Crypto basics',
+//     bgColor: '#FF69B4',
+//     iconColor: '#000080',
+//     textColor: Color.neutral0,
+//     link: '/crypto-basics',
+//   },
+//   { title: 'MEV', bgColor: '#FFD700', iconColor: '#FF4500', textColor: Color.neutral0, link: '/mev' },
+//   { title: 'Guides', bgColor: '#00BFFF', iconColor: '#0B6623', textColor: Color.neutral0, link: '/guides' },
+//   { title: 'Governance', bgColor: '#000080', iconColor: '#00BFFF', textColor: Color.neutral100, link: '/governance' },
+//   { title: 'Token', bgColor: '#0B6623', iconColor: '#FFD700', textColor: Color.neutral100, link: '/token' },
+//   { title: 'Docs', bgColor: '#FFDAB9', iconColor: '#0B6623', textColor: Color.neutral0, link: '/docs' },
+//   { title: 'FAQ', bgColor: '#800020', iconColor: '#FF4500', textColor: Color.neutral100, link: '/faq' },
+// ]
 
 const PODCASTS = [
   { title: 'CoW Hooks: you are in control!', link: '/podcast/cow-hooks' },
@@ -130,6 +130,15 @@ const MEDIA_COVERAGE = [
 
 interface KnowledgeBaseProps {
   siteConfigData: typeof CONFIG
+  categories: {
+    name: string
+    slug: string
+    description: string
+    bgColor: string
+    textColor: string
+    link: string
+    iconColor: string
+  }[]
 }
 
 const Wrapper = styled.div`
@@ -260,9 +269,9 @@ const ArticleDescription = styled.p`
   color: ${Color.neutral0};
 `
 
-const TopicList = styled.div`
+const TopicList = styled.div<{ columns?: number }>`
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: ${({ columns }) => `repeat(${columns || 4}, 1fr)`};
   gap: 32px;
   width: 100%;
 `
@@ -375,7 +384,7 @@ const LinkItem = styled.a`
   }
 `
 
-export default function KnowledgeBase({ siteConfigData }: KnowledgeBaseProps) {
+export default function KnowledgeBase({ siteConfigData, categories }: KnowledgeBaseProps) {
   return (
     <LayoutV2>
       <Head>
@@ -413,22 +422,20 @@ export default function KnowledgeBase({ siteConfigData }: KnowledgeBaseProps) {
           </ContainerCardSection>
 
           <ContainerCardSection>
-            {' '}
             <ContainerCardSectionTop>
               <h3>Topics</h3>
             </ContainerCardSectionTop>
-            <TopicList>
-              {TOPICS.map((topic, index) => (
-                <TopicCard key={index} bgColor={topic.bgColor} textColor={topic.textColor} href={topic.link}>
-                  <TopicImage iconColor={topic.iconColor}></TopicImage>
-                  <h5>{topic.title}</h5>
+            <TopicList columns={3}>
+              {categories.map(({ name, bgColor, textColor, iconColor, link }, index) => (
+                <TopicCard key={index} bgColor={bgColor} textColor={textColor} href={link}>
+                  <TopicImage iconColor={iconColor}></TopicImage>
+                  <h5>{name}</h5>
                 </TopicCard>
               ))}
             </TopicList>
           </ContainerCardSection>
 
           <ContainerCardSection>
-            {' '}
             <ContainerCardSectionTop>
               <h3>Podcasts & Spaces</h3>
               <button>View all</button>
@@ -484,10 +491,23 @@ export default function KnowledgeBase({ siteConfigData }: KnowledgeBaseProps) {
 
 export const getStaticProps: GetStaticProps<KnowledgeBaseProps> = async () => {
   const siteConfigData = CONFIG
+  const categoriesResponse = await getCategories()
+
+  const categories =
+    categoriesResponse?.map((category: Category) => ({
+      name: category?.attributes?.name || '',
+      slug: category?.attributes?.slug || '',
+      description: category?.attributes?.description || '',
+      bgColor: category?.attributes?.backgroundColor || '#fff',
+      textColor: category?.attributes?.textColor || '#000',
+      link: `/topic/${category?.attributes?.slug}`,
+      iconColor: '#fff',
+    })) || []
 
   return {
     props: {
       siteConfigData,
+      categories,
     },
     revalidate: DATA_CACHE_TIME_SECONDS,
   }
