@@ -2,10 +2,11 @@ import React, { ReactElement } from 'react'
 
 import { ExternalLink } from 'components/analytics/ExternalLink'
 import LogoWrapper, { LOGO_MAP } from 'components/common/LogoWrapper'
-import { Network } from 'types'
 import { abbreviateString } from 'utils'
 
+import { CHAIN_INFO } from '@cowprotocol/common-const'
 import { BlockExplorerLinkType, getBlockExplorerUrl } from '@cowprotocol/common-utils'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 export interface Props {
   /**
@@ -19,7 +20,7 @@ export interface Props {
   /**
    * network number | chain id
    */
-  networkId?: number
+  networkId?: SupportedChainId
   /**
    * label to replace textContent generated from identifier
    */
@@ -60,7 +61,7 @@ export const BlockExplorerLink: React.FC<Props> = (props: Props) => {
       <span>{label}</span>
       {showLogo && (
         <LogoWrapper
-          title={`Open it on ${networkId === Network.GNOSIS_CHAIN ? 'Gnosisscan' : 'Etherscan'}`}
+          title={`Open it on ${CHAIN_INFO[networkId].explorerTitle}`}
           src={LOGO_MAP.etherscan}
         />
       )}
