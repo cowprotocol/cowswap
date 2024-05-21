@@ -36,16 +36,29 @@ export const MEDIA_WIDTHS = {
   upToExtraLarge: 2560,
 }
 
+const getMediaQuery = (query: string, useMediaPrefix = true) => {
+  return useMediaPrefix ? `@media ${query}` : query
+}
+
 export const Media = {
-  upToTiny: `@media (max-width: ${MEDIA_WIDTHS.upToTiny}px)`,
-  upToExtraSmall: `@media (max-width: ${MEDIA_WIDTHS.upToExtraSmall}px)`,
-  upToSmall: `@media (max-width: ${MEDIA_WIDTHS.upToSmall}px)`,
-  MediumAndUp: `@media (min-width: ${MEDIA_WIDTHS.upToSmall + 1}px)`,
-  isMediumOnly: `@media (min-width: ${MEDIA_WIDTHS.upToSmall + 1}px) and (max-width: ${MEDIA_WIDTHS.upToMedium}px)`,
-  upToMedium: `@media (max-width: ${MEDIA_WIDTHS.upToMedium}px)`,
-  isLargeOnly: `@media (min-width: ${MEDIA_WIDTHS.upToMedium + 1}px) and (max-width: ${MEDIA_WIDTHS.upToLarge}px)`,
-  upToLarge: `@media (max-width: ${MEDIA_WIDTHS.upToLarge}px)`,
-  LargeAndUp: `@media (min-width: ${MEDIA_WIDTHS.upToLarge + 1}px)`,
+  upToTiny: (useMediaPrefix = true) => getMediaQuery(`(max-width: ${MEDIA_WIDTHS.upToTiny}px)`, useMediaPrefix),
+  upToExtraSmall: (useMediaPrefix = true) =>
+    getMediaQuery(`(max-width: ${MEDIA_WIDTHS.upToExtraSmall}px)`, useMediaPrefix),
+  upToSmall: (useMediaPrefix = true) => getMediaQuery(`(max-width: ${MEDIA_WIDTHS.upToSmall}px)`, useMediaPrefix),
+  MediumAndUp: (useMediaPrefix = true) => getMediaQuery(`(min-width: ${MEDIA_WIDTHS.upToSmall + 1}px)`, useMediaPrefix),
+  isMediumOnly: (useMediaPrefix = true) =>
+    getMediaQuery(
+      `(min-width: ${MEDIA_WIDTHS.upToSmall + 1}px) and (max-width: ${MEDIA_WIDTHS.upToMedium}px)`,
+      useMediaPrefix
+    ),
+  upToMedium: (useMediaPrefix = true) => getMediaQuery(`(max-width: ${MEDIA_WIDTHS.upToMedium}px)`, useMediaPrefix),
+  isLargeOnly: (useMediaPrefix = true) =>
+    getMediaQuery(
+      `(min-width: ${MEDIA_WIDTHS.upToMedium + 1}px) and (max-width: ${MEDIA_WIDTHS.upToLarge}px)`,
+      useMediaPrefix
+    ),
+  upToLarge: (useMediaPrefix = true) => getMediaQuery(`(max-width: ${MEDIA_WIDTHS.upToLarge}px)`, useMediaPrefix),
+  LargeAndUp: (useMediaPrefix = true) => getMediaQuery(`(min-width: ${MEDIA_WIDTHS.upToLarge + 1}px)`, useMediaPrefix),
 }
 
 export const Font = {

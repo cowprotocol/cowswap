@@ -13,7 +13,7 @@ export const FooterContainer = styled.footer<{ theme: CowSwapTheme; expanded: bo
   transition: padding 0.3s ease;
   font-size: 18px;
 
-  ${Media.upToSmall} {
+  ${Media.upToSmall()} {
     padding: ${({ expanded }) => (expanded ? '54px 0 0' : '0')};
   }
 `
@@ -24,12 +24,12 @@ export const FooterContent = styled.div`
   gap: 20px;
   padding: 0 48px;
 
-  ${Media.upToLarge} {
+  ${Media.upToLarge()} {
     grid-template-columns: 1fr;
     gap: 56px;
   }
 
-  ${Media.upToSmall} {
+  ${Media.upToSmall()} {
     padding: 0 24px;
   }
 `
@@ -41,7 +41,7 @@ export const FooterDescriptionSection = styled.div`
   max-width: 400px;
   width: 100%;
 
-  ${Media.upToLarge} {
+  ${Media.upToLarge()} {
     max-width: 100%;
   }
 `
@@ -94,11 +94,11 @@ export const LinkListWrapper = styled.div`
   margin: 0 0 0 auto;
   color: inherit;
 
-  ${Media.upToLarge} {
+  ${Media.upToLarge()} {
     width: 100%;
   }
 
-  ${Media.upToSmall} {
+  ${Media.upToSmall()} {
     column-count: initial;
     column-gap: initial;
   }
@@ -124,7 +124,7 @@ export const LinkList = styled.ul`
   flex-flow: column wrap;
   font-size: 18px;
 
-  ${Media.upToSmall} {
+  ${Media.upToSmall()} {
     gap: 16px;
   }
 
@@ -153,7 +153,7 @@ export const FooterBottom = styled.div`
   gap: 24px;
   font-size: 14px;
 
-  ${Media.upToLarge} {
+  ${Media.upToLarge()} {
     flex-flow: column wrap;
   }
 `
@@ -164,7 +164,7 @@ export const FooterBottomLogos = styled.div`
   height: auto;
   margin: 0 auto 0 0;
 
-  ${Media.upToLarge} {
+  ${Media.upToLarge()} {
     width: 100%;
     margin: 24px auto;
     justify-content: center;
@@ -197,7 +197,7 @@ export const BottomRight = styled.div`
   margin: 0 0 0 auto;
   gap: 16px;
 
-  ${Media.upToLarge} {
+  ${Media.upToLarge()} {
     margin: 0;
     width: 100%;
     justify-content: flex-start;
@@ -222,7 +222,7 @@ export const ToggleFooterButton = styled.button<{ expanded: boolean }>`
     color: var(--colorTitle);
   }
 
-  ${Media.upToLarge} {
+  ${Media.upToLarge()} {
     margin: 0 0 0 auto;
   }
 `

@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components'
-import { UI, Color } from '@cowprotocol/ui'
+import { Color } from '@cowprotocol/ui'
 import { CowSwapTheme } from '@cowprotocol/widget-lib'
 
 export const MenuBarWrapper = styled.div`
