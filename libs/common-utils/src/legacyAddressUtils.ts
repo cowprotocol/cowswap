@@ -64,27 +64,28 @@ export type BlockExplorerLinkType =
   | 'block'
   | 'token-transfer'
   | 'composable-order'
+  | 'event'
+  | 'contract'
 
 function getEtherscanUrl(chainId: SupportedChainId, data: string, type: BlockExplorerLinkType): string {
   const basePath = CHAIN_INFO[chainId].explorer
 
   switch (type) {
-    case 'transaction': {
+    case 'transaction':
       return `${basePath}/tx/${data}`
-    }
-    case 'token': {
+    case 'token':
       return `${basePath}/token/${data}`
-    }
-    case 'block': {
+    case 'block':
       return `${basePath}/block/${data}`
-    }
-    case 'token-transfer': {
+    case 'token-transfer':
       return `${basePath}/address/${data}#tokentxns`
-    }
+    case 'event':
+      return `${basePath}/tx/${data}#eventlog`
+    case 'contract':
+      return `${basePath}/address/${data}#code`
     case 'address':
-    default: {
+    default:
       return `${basePath}/address/${data}`
-    }
   }
 }
 
