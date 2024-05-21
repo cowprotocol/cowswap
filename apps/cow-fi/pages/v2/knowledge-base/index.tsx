@@ -7,6 +7,7 @@ import styled from 'styled-components'
 import { CONFIG } from '@/const/meta'
 
 import LayoutV2 from '@/components/Layout/LayoutV2'
+import { Link } from 'react-feather'
 
 const DATA_CACHE_TIME_SECONDS = 5 * 60 // Cache 5min
 
@@ -15,35 +16,47 @@ const FEATURED_ARTICLES = [
     title: 'What is a Sandwich Attack? — MEV Attacks Explained',
     description: 'Sandwich attacks make up the majority of harmful MEV extraction',
     color: '#0B6623',
+    link: '/article/sandwich-attack',
+    linkExternal: false,
   },
   {
     title: 'What is a Smart Contract?',
     description:
       'Smart Contracts enable the majority of decentralized apps and are critical to modern blockchain ecosystems',
     color: '#FFD700',
+    link: '/article/smart-contract',
+    linkExternal: false,
   },
   {
     title: 'CoW DAO April 2024 Highlights',
     description:
       'Welcome back to CoW DAO highlights, where we break down the most notable developments of the last few weeks at CoW DAO.',
     color: '#FF69B4',
+    link: '/article/cow-dao-april-2024',
+    linkExternal: false,
   },
   {
     title: 'What is a Sandwich Attack? — MEV Attacks Explained',
     description: 'Sandwich attacks make up the majority of harmful MEV extraction',
     color: '#800020',
+    link: '/article/sandwich-attack',
+    linkExternal: false,
   },
   {
     title: 'What is a Smart Contract?',
     description:
       'Smart Contracts enable the majority of decentralized apps and are critical to modern blockchain ecosystems',
     color: '#00BFFF',
+    link: '/article/smart-contract',
+    linkExternal: false,
   },
   {
     title: 'CoW DAO April 2024 Highlights',
     description:
       'Welcome back to CoW DAO highlights, where we break down the most notable developments of the last few weeks at CoW DAO.',
     color: '#FF4500',
+    link: '/article/cow-dao-april-2024',
+    linkExternal: false,
   },
 ]
 
@@ -68,6 +81,51 @@ const TOPICS = [
   { title: 'Token', bgColor: '#0B6623', iconColor: '#FFD700', textColor: Color.neutral100, link: '/token' },
   { title: 'Docs', bgColor: '#FFDAB9', iconColor: '#0B6623', textColor: Color.neutral0, link: '/docs' },
   { title: 'FAQ', bgColor: '#800020', iconColor: '#FF4500', textColor: Color.neutral100, link: '/faq' },
+]
+
+const PODCASTS = [
+  { title: 'CoW Hooks: you are in control!', link: '/podcast/cow-hooks' },
+  { title: 'CoW Swap for DAOs', link: '/podcast/cow-swap-for-daos' },
+  { title: 'Introducing surplus-capturing limit orders', link: '/podcast/surplus-limit-orders' },
+  { title: 'Tally Recipes for CoW Swaps', link: '/podcast/tally-recipes' },
+]
+
+const SPACES = [
+  { title: 'CoW Swap Introduces “I’m Feeling Lucky” Mode for DeFi Trades', link: '/space/feeling-lucky' },
+  { title: 'CoW Protocol February 2024 Highlights', link: '/space/feb-2024-highlights' },
+  { title: 'How to Add Custom Tokens on CoW Swap', link: '/space/custom-tokens' },
+  { title: 'What is Loss-Versus-Rebalancing (LVR)?', link: '/space/lvr' },
+]
+
+const MEDIA_COVERAGE = [
+  {
+    title: 'CoW DAO unveils AMM aimed at protecting liquidity',
+    publisher: 'The Block',
+    image: '/path/to/image1.png',
+    link: '/media/amm-liquidity',
+    linkExternal: true,
+  },
+  {
+    title: 'Ethereum projects unite to protect users from MEV-induced high prices',
+    publisher: 'Cointelegraph',
+    image: '/path/to/image2.png',
+    link: '/media/mev-protection',
+    linkExternal: true,
+  },
+  {
+    title: 'MEV Blocker Wants to Help You Outrun the Front-Runners',
+    publisher: 'Coindesk',
+    image: '/path/to/image3.png',
+    link: '/media/mev-blocker',
+    linkExternal: true,
+  },
+  {
+    title: 'Vitalik Buterin Sells MKR Tokens as MakerDAO Co-Founder Pushes for Solana-based ‘NewChain’',
+    publisher: 'Decrypt',
+    image: '/path/to/image4.png',
+    link: '/media/vitalik-sells-mkr',
+    linkExternal: true,
+  },
 ]
 
 interface KnowledgeBaseProps {
@@ -151,20 +209,21 @@ const ContainerCardSectionTop = styled.div`
   }
 `
 
-const ArticleList = styled.div`
+const ArticleList = styled.div<{ columns?: number }>`
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 32px;
+  grid-template-columns: repeat(${({ columns }) => columns || 3}, 1fr);
+  gap: 64px 32px;
   justify-content: space-between;
   width: 100%;
 `
 
-const ArticleCard = styled.div`
+const ArticleCard = styled.a`
   display: flex;
   flex-direction: column;
   padding: 0;
   border-radius: 20px;
   width: 100%;
+  text-decoration: none;
 
   h4 {
     font-size: 28px;
@@ -182,10 +241,10 @@ const ArticleCard = styled.div`
   }
 `
 
-const ArticleImage = styled.div<{ color: string }>`
+const ArticleImage = styled.div<{ color?: string }>`
   width: 100%;
   height: 200px;
-  background: ${({ color }) => color || Color.neutral90};
+  background: ${({ color }) => color || Color.neutral70};
   border-radius: 20px;
 `
 
@@ -248,6 +307,74 @@ const TopicImage = styled.div<{ iconColor: string }>`
   }
 `
 
+const LinkSection = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  background: ${Color.neutral100};
+  border-radius: 28px;
+  padding: 24px;
+  width: 100%;
+  gap: 24px;
+`
+
+const LinkColumn = styled.div`
+  display: flex;
+  flex-flow: column wrap;
+  gap: 0;
+  width: 100%;
+
+  > h5 {
+    font-size: 21px;
+    font-weight: ${Font.weight.bold};
+    color: ${Color.neutral0};
+    margin: 0 0 16px;
+    line-height: 1.2;
+  }
+`
+
+const LinkItem = styled.a`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  font-size: 18px;
+  border-radius: 36px;
+  padding: 4px 8px 4px 16px;
+  text-decoration: none;
+  color: ${Color.neutral50};
+  transition: color 0.2s ease-in-out;
+  line-height: 1.2;
+
+  &:hover {
+    color: ${Color.neutral0};
+    background: ${Color.neutral80};
+
+    > span {
+      color: ${Color.neutral0};
+      background: ${Color.neutral100};
+      transform: translateX(3px);
+    }
+  }
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  > span {
+    --size: 48px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: var(--size);
+    width: var(--size);
+    color: ${Color.neutral50};
+    transition: color 0.2s ease-in-out;
+    border-radius: 24px;
+    font-size: 24px;
+    transition: transform 0.2s ease-in-out;
+  }
+`
+
 export default function KnowledgeBase({ siteConfigData }: KnowledgeBaseProps) {
   return (
     <LayoutV2>
@@ -270,11 +397,16 @@ export default function KnowledgeBase({ siteConfigData }: KnowledgeBaseProps) {
               <button>View all articles</button>
             </ContainerCardSectionTop>
             <ArticleList>
-              {FEATURED_ARTICLES.map((article, index) => (
-                <ArticleCard key={index}>
-                  <ArticleImage color={article.color}></ArticleImage>
-                  <ArticleTitle>{article.title}</ArticleTitle>
-                  <ArticleDescription>{article.description}</ArticleDescription>
+              {FEATURED_ARTICLES.map(({ title, description, color, link, linkExternal }, index) => (
+                <ArticleCard
+                  key={index}
+                  href={link}
+                  target={linkExternal ? '_blank' : '_self'}
+                  rel={linkExternal ? 'noopener' : ''}
+                >
+                  <ArticleImage color={color}></ArticleImage>
+                  <ArticleTitle>{title}</ArticleTitle>
+                  <ArticleDescription>{description}</ArticleDescription>
                 </ArticleCard>
               ))}
             </ArticleList>
@@ -293,6 +425,56 @@ export default function KnowledgeBase({ siteConfigData }: KnowledgeBaseProps) {
                 </TopicCard>
               ))}
             </TopicList>
+          </ContainerCardSection>
+
+          <ContainerCardSection>
+            {' '}
+            <ContainerCardSectionTop>
+              <h3>Podcasts & Spaces</h3>
+              <button>View all</button>
+            </ContainerCardSectionTop>
+            <LinkSection>
+              <LinkColumn>
+                <h5>Podcasts</h5>
+                {PODCASTS.map((podcast, index) => (
+                  <LinkItem key={index} href={podcast.link}>
+                    {podcast.title}
+                    <span>→</span>
+                  </LinkItem>
+                ))}
+              </LinkColumn>
+
+              <LinkColumn>
+                <h5>Spaces</h5>
+                {SPACES.map((space, index) => (
+                  <LinkItem key={index} href={space.link}>
+                    {space.title}
+                    <span>→</span>
+                  </LinkItem>
+                ))}
+              </LinkColumn>
+            </LinkSection>
+          </ContainerCardSection>
+
+          <ContainerCardSection>
+            <ContainerCardSectionTop>
+              <h3>Media coverage</h3>
+              <button>View all</button>
+            </ContainerCardSectionTop>
+            <ArticleList columns={4}>
+              {MEDIA_COVERAGE.map(({ image, title, publisher, link, linkExternal }, index) => (
+                <ArticleCard
+                  key={index}
+                  href={link}
+                  target={linkExternal ? '_blank' : '_self'}
+                  rel={linkExternal ? 'noopener' : ''}
+                >
+                  <ArticleImage>{image && <img src={image} alt={title} />}</ArticleImage>
+                  <ArticleTitle>{title}</ArticleTitle>
+                  <ArticleDescription>Published by {publisher}</ArticleDescription>
+                </ArticleCard>
+              ))}
+            </ArticleList>
           </ContainerCardSection>
         </ContainerCard>
       </Wrapper>
