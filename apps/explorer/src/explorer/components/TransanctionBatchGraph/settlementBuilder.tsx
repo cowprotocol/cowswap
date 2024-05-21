@@ -3,13 +3,13 @@ import BigNumber from 'bignumber.js'
 import { getContractTrades, getTokenAddress } from './nodesBuilder'
 import { Accounts, Dict, Settlement } from './types'
 
+import { getBlockExplorerUrl } from '@cowprotocol/common-utils'
 import { Order } from '../../../api/operator'
 import { accountAddressesInvolved, getAliasFromAddress, PublicTrade, Transfer } from '../../../api/tenderly'
 import { TransactionData } from '../../../hooks/useTransactionData'
 import { SingleErc20State } from '../../../state/erc20'
 import { Network } from '../../../types'
 import { abbreviateString } from '../../../utils'
-import { getExplorerUrl } from '../../../utils/getExplorerUrl'
 
 
 /**
@@ -86,7 +86,7 @@ export function buildTransfersBasedSettlement(params: BuildSettlementParams): Se
     }
   })
   Object.values(accountsWithReceiver).forEach((account) => {
-    if (account.address) account.href = getExplorerUrl(networkId, 'address', account.address)
+    if (account.address) account.href = getBlockExplorerUrl(networkId, 'address', account.address)
   })
 
   const tokenAddresses = transfersWithKind.map((transfer: Transfer): string => transfer.token)
@@ -139,7 +139,7 @@ export function buildTradesBasedSettlement(params: BuildSettlementParams): Settl
     acc[address] = {
       alias: symbol || abbreviateString(address, 6, 4),
       address,
-      href: getExplorerUrl(networkId, 'token', address),
+      href: getBlockExplorerUrl(networkId, 'token', address),
     }
 
     return acc

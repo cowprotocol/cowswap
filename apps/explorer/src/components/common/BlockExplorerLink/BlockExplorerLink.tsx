@@ -5,7 +5,7 @@ import LogoWrapper, { LOGO_MAP } from 'components/common/LogoWrapper'
 import { Network } from 'types'
 import { abbreviateString } from 'utils'
 
-import { BlockExplorerLinkType, getExplorerUrl } from 'utils/getExplorerUrl'
+import { BlockExplorerLinkType, getBlockExplorerUrl } from '@cowprotocol/common-utils'
 
 export interface Props {
   /**
@@ -52,7 +52,7 @@ export const BlockExplorerLink: React.FC<Props> = (props: Props) => {
     return null
   }
 
-  const url = getExplorerUrl(networkId, type, identifier)
+  const url = getBlockExplorerUrl(networkId, type, identifier)
   const label = labelProp || (useUrlAsLabel && url) || abbreviateString(identifier, 6, 4)
 
   return (
