@@ -1,4 +1,4 @@
-import { useState, ReactNode, useEffect } from 'react'
+import { useState, ReactNode, useEffect, useRef } from 'react'
 import { ProductLogo } from '@cowprotocol/ui'
 import { MenuItem } from '@cowprotocol/ui'
 import {
@@ -60,13 +60,23 @@ const PRODUCT_LOGO_LINKS: { href: string; label: string; productVariant: Product
 
 export const Footer = ({ description, navItems, theme, additionalFooterContent, expanded = false }: FooterProps) => {
   const [isFooterExpanded, setIsFooterExpanded] = useState(expanded)
+  const footerRef = useRef<HTMLDivElement>(null)
 
   const toggleFooter = () => {
     setIsFooterExpanded(!isFooterExpanded)
   }
 
+  useEffect(() => {
+    if (isFooterExpanded && footerRef.current) {
+      footerRef.current.scrollIntoView({ behavior: 'smooth' })
+    } else if (!isFooterExpanded && footerRef.current) {
+      const offset = footerRef.current.getBoundingClientRect().top + window.pageYOffset - 80
+      window.scrollTo({ top: offset, behavior: 'smooth' })
+    }
+  }, [isFooterExpanded])
+
   return (
-    <FooterContainer theme={theme} expanded={isFooterExpanded}>
+    <FooterContainer ref={footerRef} theme={theme} expanded={isFooterExpanded}>
       {isFooterExpanded && (
         <>
           <FooterContent>
@@ -111,7 +121,6 @@ export const Footer = ({ description, navItems, theme, additionalFooterContent, 
           <FooterAnimation theme={theme} />
         </>
       )}
-
       <FooterBottom>
         <BottomText>&copy; CoW DAO – {new Date().getFullYear()}</BottomText>
         <FooterBottomLogos>

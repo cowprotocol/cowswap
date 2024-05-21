@@ -32,7 +32,7 @@ import { SuccessBanner } from './styled'
 const FortuneButton = styled.div<{ isDailyFortuneChecked: boolean }>`
   --size: 32px;
   display: flex;
-  z-index: 10;
+
   width: var(--size);
   height: var(--size);
   text-align: center;

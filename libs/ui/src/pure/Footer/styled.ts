@@ -3,9 +3,9 @@ import { CowSwapTheme } from '@cowprotocol/widget-lib'
 import { Color, Media } from '@cowprotocol/ui'
 
 export const FooterContainer = styled.footer<{ theme: CowSwapTheme; expanded: boolean }>`
-  --bgColor: ${({ theme }) => Color.neutral10};
-  --color: ${({ theme }) => Color.neutral50};
-  --colorTitle: ${({ theme }) => Color.neutral98};
+  --bgColor: ${Color.neutral10};
+  --color: ${Color.neutral50};
+  --colorTitle: ${Color.neutral98};
   background: var(--bgColor);
   color: var(--color);
   padding: ${({ expanded }) => (expanded ? '134px 0 0' : '0')};

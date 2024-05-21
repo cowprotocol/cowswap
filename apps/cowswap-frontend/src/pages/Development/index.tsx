@@ -5,6 +5,7 @@ import {
   Footer,
   ProductVariant,
   GlobalCoWDAOStyles,
+  Color,
 } from '@cowprotocol/ui'
 
 import { FeatureGuard } from 'common/containers/FeatureGuard'
@@ -15,6 +16,8 @@ import IMG_ICON_SETTINGS_GLOBAL from '@cowprotocol/assets/images/settings-global
 import IMG_ICON_BRANDED_DOT_RED from '@cowprotocol/assets/images/icon-branded-dot-red.svg'
 
 import { isInjectedWidget } from '@cowprotocol/common-utils'
+
+import styled from 'styled-components/macro'
 
 const THEME_MODE = 'light'
 const PRODUCT_VARIANT = ProductVariant.CowSwap
@@ -119,6 +122,12 @@ const FOOTER_NAV_ITEMS: MenuItem[] = [
   },
 ]
 
+const DEMO_CONTENT = styled.div`
+  width: 100%;
+  background: ${Color.neutral90};
+  height: 75vh;
+`
+
 export default function Development() {
   const isInjectedWidgetMode = isInjectedWidget()
 
@@ -138,6 +147,8 @@ export default function Development() {
         productVariant={PRODUCT_VARIANT}
         additionalContent={additionalContent}
       />
+
+      <DEMO_CONTENT />
 
       <Footer
         description={FOOTER_DESCRIPTION}

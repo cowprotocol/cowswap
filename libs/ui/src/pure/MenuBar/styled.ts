@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components/macro'
-import { UI } from '@cowprotocol/ui'
+import { UI, Color } from '@cowprotocol/ui'
 import { CowSwapTheme } from '@cowprotocol/widget-lib'
 
 export const MenuBarWrapper = styled.div`
@@ -17,6 +17,7 @@ export const MenuBarInner = styled.div<{ theme: CowSwapTheme }>`
   --height: 56px;
   --width: 100%;
   --bgColor: ${({ theme }) => (theme === 'dark' ? '#333' : 'rgba(255, 248, 247, 0.6)')};
+  --color: ${({ theme }) => (theme === 'dark' ? Color.neutral100 : Color.neutral0)};
   --borderRadius: 28px;
   --blur: 16px;
 
@@ -31,6 +32,7 @@ export const MenuBarInner = styled.div<{ theme: CowSwapTheme }>`
   background: var(--bgColor);
   backdrop-filter: blur(var(--blur));
   border-radius: var(--borderRadius);
+  color: var(--color);
 `
 
 export const NavDaoTriggerElement = styled.div<{ isActive: boolean }>`
