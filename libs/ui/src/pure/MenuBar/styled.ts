@@ -348,7 +348,7 @@ export const RootNavItem = styled.a<{ isOpen?: boolean; mobileMode?: boolean }>`
     margin-left: auto;
     fill: currentColor;
     transform: ${({ isOpen }) => (isOpen ? 'rotate(180deg)' : 'rotate(0deg)')};
-    transition: transform var(${UI.ANIMATION_DURATION}) ease-in-out;
+    transition: transform 0.2s ease-in-out;
   }
 `
 
