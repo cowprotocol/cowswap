@@ -84,5 +84,7 @@ export function useGP2SettlementContract(): GPv2Settlement | null {
 
 export function useVCowContract() {
   const { chainId } = useWalletInfo()
-  return useContract<VCow>(chainId ? V_COW_CONTRACT_ADDRESS[chainId] : undefined, vCowAbi, true)
+  const vCowAddress = V_COW_CONTRACT_ADDRESS[chainId] || undefined
+
+  return useContract<VCow>(vCowAddress, vCowAbi, true)
 }

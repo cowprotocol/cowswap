@@ -48,7 +48,7 @@ class GasFeeApi {
 
   getHeaders(chainId: ChainId): { headers?: Headers } {
     const headers: { [key: string]: any } = {}
-    const apiKey = GAS_API_KEYS[chainId] || ''
+    const apiKey = GAS_API_KEYS[chainId]
 
     if (apiKey) {
       headers.headers = new Headers({
