@@ -62,11 +62,10 @@ export const GP_SETTLEMENT_CONTRACT_ADDRESS = COW_PROTOCOL_SETTLEMENT_CONTRACT_A
 
 export const GP_VAULT_RELAYER = COW_PROTOCOL_VAULT_RELAYER_ADDRESS
 
-// TODO: check consumers are aware this is not present on all chains
-export const V_COW_CONTRACT_ADDRESS: Record<SupportedChainId, string> = {
+export const V_COW_CONTRACT_ADDRESS: Record<SupportedChainId, string | null> = {
   [SupportedChainId.MAINNET]: '0xd057b63f5e69cf1b929b356b579cba08d7688048',
   [SupportedChainId.GNOSIS_CHAIN]: '0xc20C9C13E853fc64d054b73fF21d3636B2d97eaB',
-  [SupportedChainId.ARBITRUM_ONE]: '', // doesn't exist!
+  [SupportedChainId.ARBITRUM_ONE]: null, // doesn't exist!
   [SupportedChainId.SEPOLIA]: '0x21d06a222bbb94ec1406a0a8ba86b4d761bc9864',
 }
 
@@ -122,11 +121,11 @@ export const GAS_FEE_ENDPOINTS: Record<SupportedChainId, string> = {
   [SupportedChainId.ARBITRUM_ONE]: 'https://arbitrum.blockscout.com/api/v1/gas-price-oracle',
   [SupportedChainId.SEPOLIA]: '',
 }
-export const GAS_API_KEYS: Record<SupportedChainId, string> = {
-  [SupportedChainId.MAINNET]: process.env.REACT_APP_BLOCKNATIVE_API_KEY || '',
-  [SupportedChainId.GNOSIS_CHAIN]: '',
-  [SupportedChainId.ARBITRUM_ONE]: '',
-  [SupportedChainId.SEPOLIA]: '',
+export const GAS_API_KEYS: Record<SupportedChainId, string | null> = {
+  [SupportedChainId.MAINNET]: process.env.REACT_APP_BLOCKNATIVE_API_KEY || null,
+  [SupportedChainId.GNOSIS_CHAIN]: null,
+  [SupportedChainId.ARBITRUM_ONE]: null,
+  [SupportedChainId.SEPOLIA]: null,
 }
 
 export const UNSUPPORTED_TOKENS_FAQ_URL = '/faq/trading#what-token-pairs-does-cowswap-allow-to-trade'
