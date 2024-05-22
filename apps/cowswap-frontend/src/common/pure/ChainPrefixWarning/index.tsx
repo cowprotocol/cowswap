@@ -8,7 +8,7 @@ const NetworkImg = styled.img`
   height: 12px;
 `
 
-const Label = styled.span<{color: string}>`
+const Label = styled.span<{ color: string }>`
   display: inline-block;
   background-color: white;
   border: 2px ${({ color }) => color} solid;
@@ -17,33 +17,34 @@ const Label = styled.span<{color: string}>`
 `
 
 const Format = styled.strong`
-
   font-family: monospace;
   color: ${({ theme }) => theme.text3};
 
   white-space: nowrap;
-  
 `
-
-
 
 type ChainPrefixWarningProps = {
   chainPrefixWarning: string
   chainInfo: BaseChainInfo
 }
 export default function ChainPrefixWarning({ chainPrefixWarning, chainInfo }: ChainPrefixWarningProps) {
-  const { label, addressPrefix, logoUrl, color,  } = chainInfo
+  const { label, addressPrefix, logoUrl, color } = chainInfo
   return (
     <WarningCard>
-      <div>
-        The recipient address you inputted had the chain prefix <strong>{chainPrefixWarning}</strong>, which is not 
-        not the expected for the network you are in.
-      </div>
       <p>
-      You are connected to
-      <Label color={color}><NetworkImg src={logoUrl} /> {label}</Label>
+        The recipient address you inputted had the chain prefix <strong>{chainPrefixWarning}</strong>, which is not not
+        the expected for the network you are in.
       </p>
-      <p>Please, make sure your address follows the format <Format>{addressPrefix}:&lt;your-address&gt;</Format> or make sure it is compatible with <strong>{label}</strong> network.</p>
+      <p>
+        You are connected to
+        <Label color={color}>
+          <NetworkImg src={logoUrl} /> {label}
+        </Label>
+      </p>
+      <p>
+        Please, make sure your address follows the format <Format>{addressPrefix}:&lt;your-address&gt;</Format> or make
+        sure it is compatible with <strong>{label}</strong> network.
+      </p>
     </WarningCard>
   )
 }
