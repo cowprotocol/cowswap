@@ -86,11 +86,13 @@ export function LimitOrdersWidget() {
     [isSell, inputCurrencyAmount, outputCurrencyAmount]
   )
 
+  const hasPartnerFee = +(partnerFee?.bps || 0) > 0
+
   useSetTradeQuoteParams(quoteAmount)
 
   const inputCurrencyInfo: CurrencyInfo = {
     field: Field.INPUT,
-    label: isSell ? 'Sell amount' : 'You sell at most',
+    label: isSell ? 'Sell amount' : hasPartnerFee ? 'Expected sell amount' : 'You sell at most',
     currency: inputCurrency,
     amount: inputCurrencyAmount,
     isIndependent: isSell,
@@ -101,7 +103,7 @@ export function LimitOrdersWidget() {
 
   const outputCurrencyInfo: CurrencyInfo = {
     field: Field.OUTPUT,
-    label: isSell ? 'Receive at least' : 'Buy exactly',
+    label: isSell ? (hasPartnerFee ? 'Receive (before fees)' : 'Receive at least') : 'Buy exactly',
     currency: outputCurrency,
     amount: outputCurrencyAmount,
     isIndependent: !isSell,
