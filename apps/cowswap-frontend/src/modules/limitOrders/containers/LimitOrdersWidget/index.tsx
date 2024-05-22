@@ -153,6 +153,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
 
   const inputCurrency = inputCurrencyInfo.currency
   const outputCurrency = outputCurrencyInfo.currency
+  const receiveAmountInfo = inputCurrencyInfo.receiveAmountInfo || outputCurrencyInfo.receiveAmountInfo
 
   const isTradePriceUpdating = useMemo(() => {
     if (!inputCurrency || !outputCurrency) return false
@@ -201,7 +202,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
     bottomContent: (
       <>
         <styledEl.FooterBox>
-          <TradeRates receiveAmountInfo={inputCurrencyInfo.receiveAmountInfo || outputCurrencyInfo.receiveAmountInfo} />
+          <TradeRates receiveAmountInfo={receiveAmountInfo} />
         </styledEl.FooterBox>
 
         <LimitOrdersWarnings feeAmount={feeAmount} />
@@ -242,6 +243,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
             recipient={recipient}
             tradeContext={tradeContext}
             priceImpact={priceImpact}
+            receiveAmountInfo={receiveAmountInfo}
             inputCurrencyInfo={inputCurrencyPreviewInfo}
             outputCurrencyInfo={outputCurrencyPreviewInfo}
           />

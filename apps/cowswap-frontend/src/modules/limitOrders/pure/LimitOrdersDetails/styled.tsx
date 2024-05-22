@@ -2,11 +2,11 @@ import { QuestionTooltipIconWrapper, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-
 import { RateInfo } from 'common/pure/RateInfo'
 
 export const DetailsRow = styled.div`
   display: flex;
+  width: 100%;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
