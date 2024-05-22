@@ -7,7 +7,8 @@ import styled from 'styled-components'
 import { CONFIG } from '@/const/meta'
 
 import LayoutV2 from '@/components/Layout/LayoutV2'
-import { Category, getCategories } from 'services/cms'
+import { Category, getCategories, getArticles, Article } from 'services/cms'
+import { SearchBar } from '@/components/SearchBar'
 
 const DATA_CACHE_TIME_SECONDS = 5 * 60 // Cache 5min
 
@@ -128,7 +129,7 @@ const MEDIA_COVERAGE = [
   },
 ]
 
-interface KnowledgeBaseProps {
+interface LearnProps {
   siteConfigData: typeof CONFIG
   categories: {
     name: string
@@ -139,6 +140,7 @@ interface KnowledgeBaseProps {
     link: string
     iconColor: string
   }[]
+  articles: Article[]
 }
 
 const Wrapper = styled.div`
@@ -158,36 +160,6 @@ const Wrapper = styled.div`
 
   h2 {
     font-size: 67px;
-  }
-`
-
-const SearchBar = styled.input`
-  padding: 16px 24px;
-  min-height: 56px;
-  border: 2px solid transparent;
-  font-size: 21px;
-  color: ${Color.neutral60};
-  margin: 16px 0;
-  max-width: 970px;
-  width: 100%;
-  background: ${Color.neutral90};
-  border-radius: 56px;
-  appearance: none;
-  font-weight: ${Font.weight.medium};
-  transition: border 0.2s ease-in-out;
-
-  &:focus {
-    outline: none;
-    border: 2px solid ${Color.neutral50};
-  }
-
-  &::placeholder {
-    color: inherit;
-    transition: color 0.2s ease-in-out;
-  }
-
-  &:focus::placeholder {
-    color: transparent;
   }
 `
 
@@ -491,7 +463,7 @@ const CTAButton = styled.a`
   }
 `
 
-export default function KnowledgeBase({ siteConfigData, categories }: KnowledgeBaseProps) {
+export default function Learn({ siteConfigData, categories, articles }: LearnProps) {
   return (
     <LayoutV2>
       <Head>
@@ -504,7 +476,7 @@ export default function KnowledgeBase({ siteConfigData, categories }: KnowledgeB
         <h1>Knowledge Base</h1>
         <h2>Hi, how can we help?</h2>
 
-        <SearchBar placeholder="Search any topic..." />
+        <SearchBar articles={articles} />
 
         <ContainerCard>
           <ContainerCardSection>
@@ -605,9 +577,10 @@ export default function KnowledgeBase({ siteConfigData, categories }: KnowledgeB
   )
 }
 
-export const getStaticProps: GetStaticProps<KnowledgeBaseProps> = async () => {
+export const getStaticProps: GetStaticProps<LearnProps> = async () => {
   const siteConfigData = CONFIG
   const categoriesResponse = await getCategories()
+  const articles = await getArticles()
 
   const categories =
     categoriesResponse?.map((category: Category) => ({
@@ -624,6 +597,7 @@ export const getStaticProps: GetStaticProps<KnowledgeBaseProps> = async () => {
     props: {
       siteConfigData,
       categories,
+      articles,
     },
     revalidate: DATA_CACHE_TIME_SECONDS,
   }
