@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.70.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.69.0...cowswap-v1.70.0) (2024-05-22)
+
+
+### Features
+
+* notifications feed ([#4409](https://github.com/cowprotocol/cowswap/issues/4409)) ([d6f2987](https://github.com/cowprotocol/cowswap/commit/d6f2987b57e3b5bd90d029aca0215134ec1a050b))
+* **usd-estimation:** add defillama price source ([#4341](https://github.com/cowprotocol/cowswap/issues/4341)) ([96a0343](https://github.com/cowprotocol/cowswap/commit/96a03437710b807c966debdaa8ce5219ddaff7a4))
+* **wallets:** support eip6963 multi-injected providers ([#4416](https://github.com/cowprotocol/cowswap/issues/4416)) ([85a78bb](https://github.com/cowprotocol/cowswap/commit/85a78bbfe9b0a8fe5428b25aba0b38944b10987d))
+
+
+### Bug Fixes
+
+* **notifications:** don't fail when CMS API is down ([#4464](https://github.com/cowprotocol/cowswap/issues/4464)) ([6ba4e76](https://github.com/cowprotocol/cowswap/commit/6ba4e76d89304cea1941ba77dd9d976911338288))
+* **twap:** lower minimum sell amount ([#4428](https://github.com/cowprotocol/cowswap/issues/4428)) ([fb9e91b](https://github.com/cowprotocol/cowswap/commit/fb9e91ba5e46a2df3bef15842a5da9a1cfa6d534))
+* **widget-cfg:** don't request network switching with standalone mode ([#4463](https://github.com/cowprotocol/cowswap/issues/4463)) ([41ef4cc](https://github.com/cowprotocol/cowswap/commit/41ef4cc83358c17742fb3e5472e1aa8dc19d475d))
+
 ## [1.69.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.68.5...cowswap-v1.69.0) (2024-05-14)
 
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.29.6](https://github.com/cowprotocol/cowswap/compare/explorer-v2.29.5...explorer-v2.29.6) (2024-05-22)
+
+
+### Bug Fixes
+
+* **explorer:** reduce retries for tx orders requests ([#4438](https://github.com/cowprotocol/cowswap/issues/4438)) ([2ee1a8d](https://github.com/cowprotocol/cowswap/commit/2ee1a8dfa79aed6d68a89feae7a3c757addcbdf0))
+
 ## [2.29.5](https://github.com/cowprotocol/cowswap/compare/explorer-v2.29.4...explorer-v2.29.5) (2024-04-22)
 
 
