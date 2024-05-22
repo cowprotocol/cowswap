@@ -1,21 +1,49 @@
 import { BaseChainInfo } from '@cowprotocol/common-const'
 
 import { WarningCard } from '../WarningCard'
+import styled from 'styled-components/macro'
 
-type Props = {
+const NetworkImg = styled.img`
+  width: 12px;
+  height: 12px;
+`
+
+const Label = styled.span<{color: string}>`
+  display: inline-block;
+  background-color: white;
+  border: 2px ${({ color }) => color} solid;
+  padding: 4px 4px;
+  margin: 0 0 0 0.5em;
+`
+
+const Format = styled.strong`
+
+  font-family: monospace;
+  color: ${({ theme }) => theme.text3};
+
+  white-space: nowrap;
+  
+`
+
+
+
+type ChainPrefixWarningProps = {
   chainPrefixWarning: string
   chainInfo: BaseChainInfo
 }
-export default function ChainPrefixWarning({ chainPrefixWarning, chainInfo }: Props) {
+export default function ChainPrefixWarning({ chainPrefixWarning, chainInfo }: ChainPrefixWarningProps) {
+  const { label, addressPrefix, logoUrl, color,  } = chainInfo
   return (
-    <div style={{ margin: 10 }}>
-      <WarningCard>
-        <div>
-          The recipient address you inputted had the chainPrefix <strong>{chainPrefixWarning}</strong>, but your wallet
-          is on {chainInfo.label} which uses the chain prefix <strong>{chainInfo.addressPrefix}</strong>. Please,
-          double-check that the recipient address is for the correct network.
-        </div>
-      </WarningCard>
-    </div>
+    <WarningCard>
+      <div>
+        The recipient address you inputted had the chain prefix <strong>{chainPrefixWarning}</strong>, which is not 
+        not the expected for the network you are in ({label}).
+      </div>
+      <p>
+      You are connected to
+      <Label color={color}><NetworkImg src={logoUrl} /> {label}</Label>
+      </p>
+      <p>Please, make sure your address follows the format <Format>{addressPrefix}:&lt;your-address&gt;</Format> or make sure it is compatible with <strong>{label}</strong> network.</p>
+    </WarningCard>
   )
 }
