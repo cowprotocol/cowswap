@@ -37,7 +37,7 @@ export default function ChainPrefixWarning({ chainPrefixWarning, chainInfo }: Ch
     <WarningCard>
       <div>
         The recipient address you inputted had the chain prefix <strong>{chainPrefixWarning}</strong>, which is not 
-        not the expected for the network you are in ({label}).
+        not the expected for the network you are in.
       </div>
       <p>
       You are connected to
