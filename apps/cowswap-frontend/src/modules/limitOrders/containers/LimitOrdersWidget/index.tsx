@@ -70,7 +70,6 @@ export function LimitOrdersWidget() {
   } = useLimitOrdersDerivedState()
   const settingsState = useAtomValue(limitOrdersSettingsAtom)
   const isSell = isSellOrder(orderKind)
-  const tradeContext = useTradeFlowContext()
   const { feeAmount } = useAtomValue(limitRateAtom)
   const { isLoading: isRateLoading } = useTradeQuote()
   const rateInfoParams = useRateInfoParams(inputCurrencyAmount, outputCurrencyAmount)
@@ -112,6 +111,7 @@ export function LimitOrdersWidget() {
     receiveAmountInfo: isSell ? getReceiveAmountInfo('to', outputCurrencyAmount, partnerFee) : null,
   }
 
+  const tradeContext = useTradeFlowContext(inputCurrencyInfo.receiveAmountInfo, outputCurrencyInfo.receiveAmountInfo)
   const localFormValidation = useLimitOrdersFormState()
   const primaryFormValidation = useGetTradeFormValidation()
 
