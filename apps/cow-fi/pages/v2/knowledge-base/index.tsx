@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import { GetStaticProps } from 'next'
-import { Font, Color } from '@cowprotocol/ui'
+import { Font, Color, Media } from '@cowprotocol/ui'
 
 import styled from 'styled-components'
 
@@ -164,7 +164,7 @@ const Wrapper = styled.div`
 const SearchBar = styled.input`
   padding: 16px 24px;
   min-height: 56px;
-  border: 0;
+  border: 2px solid transparent;
   font-size: 21px;
   color: ${Color.neutral60};
   margin: 16px 0;
@@ -174,11 +174,20 @@ const SearchBar = styled.input`
   border-radius: 56px;
   appearance: none;
   font-weight: ${Font.weight.medium};
+  transition: border 0.2s ease-in-out;
 
-  // outline color border
   &:focus {
     outline: none;
     border: 2px solid ${Color.neutral50};
+  }
+
+  &::placeholder {
+    color: inherit;
+    transition: color 0.2s ease-in-out;
+  }
+
+  &:focus::placeholder {
+    color: transparent;
   }
 `
 
@@ -192,6 +201,11 @@ const ContainerCard = styled.div`
   padding: 60px;
   border-radius: 60px;
   background: ${Color.neutral90};
+
+  ${Media.upToMedium()} {
+    padding: 24px;
+    gap: 16px;
+  }
 `
 
 const ContainerCardSection = styled.div`
@@ -218,12 +232,16 @@ const ContainerCardSectionTop = styled.div`
   }
 `
 
-const ArticleList = styled.div<{ columns?: number }>`
+const ArticleList = styled.div<{ columns?: number; columnsMobile?: number }>`
   display: grid;
   grid-template-columns: repeat(${({ columns }) => columns || 3}, 1fr);
   gap: 64px 32px;
   justify-content: space-between;
   width: 100%;
+
+  ${Media.upToMedium()} {
+    grid-template-columns: repeat(${({ columnsMobile }) => columnsMobile || 1}, 1fr);
+  }
 `
 
 const ArticleCard = styled.a`
@@ -269,11 +287,16 @@ const ArticleDescription = styled.p`
   color: ${Color.neutral0};
 `
 
-const TopicList = styled.div<{ columns?: number }>`
+const TopicList = styled.div<{ columns?: number; columnsMobile?: number }>`
   display: grid;
   grid-template-columns: ${({ columns }) => `repeat(${columns || 4}, 1fr)`};
   gap: 32px;
   width: 100%;
+
+  ${Media.upToMedium()} {
+    grid-template-columns: ${({ columnsMobile }) => `repeat(${columnsMobile || 1}, 1fr)`};
+    gap: 16px;
+  }
 `
 
 const TopicCard = styled.a<{ bgColor: string; textColor: string }>`
@@ -283,7 +306,7 @@ const TopicCard = styled.a<{ bgColor: string; textColor: string }>`
   justify-content: center;
   background: ${({ bgColor }) => bgColor || Color.neutral90};
   color: ${({ textColor }) => textColor || Color.neutral0};
-  padding: 40px 20px;
+  padding: 56px 20px;
   border-radius: 20px;
   text-align: center;
   font-size: 24px;
@@ -291,15 +314,23 @@ const TopicCard = styled.a<{ bgColor: string; textColor: string }>`
   text-decoration: none;
   border: 4px solid transparent;
   transition: border 0.2s ease-in-out;
+  gap: 56px;
 
   &:hover {
     border: 4px solid ${Color.neutral40};
+  }
+
+  ${Media.upToMedium()} {
+    padding: 32px 16px;
+    gap: 32px;
   }
 
   > h5 {
     font-size: inherit;
     font-weight: inherit;
     color: inherit;
+    padding: 0;
+    margin: 0;
   }
 `
 
@@ -316,14 +347,18 @@ const TopicImage = styled.div<{ iconColor: string }>`
   }
 `
 
-const LinkSection = styled.div`
+const LinkSection = styled.div<{ columns?: number; columnsMobile?: number }>`
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: ${({ columns }) => `repeat(${columns || 2}, 1fr)`};
   background: ${Color.neutral100};
   border-radius: 28px;
   padding: 24px;
   width: 100%;
   gap: 24px;
+
+  ${Media.upToMedium()} {
+    grid-template-columns: ${({ columnsMobile }) => `repeat(${columnsMobile || 1}, 1fr)`};
+  }
 `
 
 const LinkColumn = styled.div`
@@ -381,6 +416,78 @@ const LinkItem = styled.a`
     border-radius: 24px;
     font-size: 24px;
     transition: transform 0.2s ease-in-out;
+  }
+`
+
+const CTASectionWrapper = styled.section`
+  display: flex;
+  flex-flow: column wrap;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  gap: 28px;
+  padding: 0 24px;
+  background: transparent;
+  text-align: center;
+  margin: 100px 0;
+`
+
+const CTAImage = styled.div<{ bgColor?: string }>`
+  --size: 100px;
+  width: var(--size);
+  height: var(--size);
+  border-radius: var(--size);
+  background: ${({ bgColor }) => bgColor || Color.neutral50};
+  padding: 0;
+
+  > img,
+  svg {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+`
+
+const CTATitle = styled.h6`
+  font-size: 48px;
+  font-weight: ${Font.weight.bold};
+  color: ${Color.neutral0};
+  margin: 0;
+  line-height: 1.2;
+  white-space: wrap;
+
+  ${Media.upToMedium()} {
+    font-size: 38px;
+  }
+`
+
+const CTASubtitle = styled.p`
+  font-size: 28px;
+  color: ${Color.neutral30};
+  margin: 0;
+  line-height: 1.2;
+`
+
+const CTAButton = styled.a`
+  --height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--height);
+  padding: 12px 24px;
+  font-size: 24px;
+  font-weight: ${Font.weight.medium};
+  color: ${Color.neutral98};
+  background: ${Color.neutral0};
+  border: none;
+  border-radius: var(--height);
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.2s ease-in-out, color 0.2s ease-in-out;
+
+  &:hover {
+    color: ${Color.neutral100};
+    background: ${Color.neutral20};
   }
 `
 
@@ -484,6 +591,15 @@ export default function KnowledgeBase({ siteConfigData, categories }: KnowledgeB
             </ArticleList>
           </ContainerCardSection>
         </ContainerCard>
+
+        <CTASectionWrapper>
+          <CTAImage bgColor={'#00A1FF'}></CTAImage>
+          <CTASubtitle>Explore, learn, integrate</CTASubtitle>
+          <CTATitle>CoW DAO documentation</CTATitle>
+          <CTAButton href="/docs" target="_self">
+            Read the docs
+          </CTAButton>
+        </CTASectionWrapper>
       </Wrapper>
     </LayoutV2>
   )
