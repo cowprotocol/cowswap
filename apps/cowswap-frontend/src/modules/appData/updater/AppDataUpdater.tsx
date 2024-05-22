@@ -17,7 +17,7 @@ import { AppDataInfoUpdater, UseAppDataParams } from './AppDataInfoUpdater'
 import { useAppCode, useAppDataHooks } from '../hooks'
 import { AppDataOrderClass } from '../types'
 
-const ORDERS_WITH_PARTNER_FEE: AppDataOrderClass[] = ['market']
+const ORDERS_WITH_PARTNER_FEE: AppDataOrderClass[] = ['market', 'limit']
 
 const mapPartnerFee = (
   partnerFee: PartnerFee | undefined,
