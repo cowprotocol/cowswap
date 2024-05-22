@@ -1,6 +1,11 @@
-import { ChangeEvent, ReactNode, useCallback } from 'react'
+import { ChangeEvent, ReactNode, useCallback, useState } from 'react'
 
-import { getBlockExplorerUrl as getExplorerLink } from '@cowprotocol/common-utils'
+import { getChainInfo } from '@cowprotocol/common-const'
+import {
+  getBlockExplorerUrl as getExplorerLink,
+  isPrefixedAddress,
+  parsePrefixedAddress,
+} from '@cowprotocol/common-utils'
 import { useENS } from '@cowprotocol/ens'
 import { RowBetween } from '@cowprotocol/ui'
 import { ExternalLink } from '@cowprotocol/ui'
@@ -12,7 +17,9 @@ import styled from 'styled-components/macro'
 
 import { AutoColumn } from 'legacy/components/Column'
 
+import ChainPrefixWarning from 'common/pure/ChainPrefixWarning'
 import { autofocus } from 'common/utils/autofocus'
+
 
 const InputPanel = styled.div`
   ${({ theme }) => theme.flexColumnNoWrap}
@@ -95,22 +102,38 @@ export function AddressInputPanel({
   onChange: (value: string) => void
 }) {
   const { chainId } = useWalletInfo()
-
+  const chainInfo = getChainInfo(chainId)
   const { address, loading, name } = useENS(value)
+  const [chainPrefixWarning, setChainPrefixWarning] = useState('')
 
   const handleInput = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
       const input = event.target.value
-      const withoutSpaces = input.replace(/\s+/g, '')
-      onChange(withoutSpaces)
+      setChainPrefixWarning('')
+      let value = input.replace(/\s+/g, '')
+
+      if (isPrefixedAddress(value)) {
+        const { prefix, address } = parsePrefixedAddress(value)
+
+        if (prefix && chainInfo?.addressPrefix !== prefix) {
+          setChainPrefixWarning(prefix)
+        }
+
+        if (address) {
+          value = address
+        }
+      }
+
+      onChange(value)
     },
-    [onChange]
+    [onChange, chainInfo?.addressPrefix]
   )
 
   const error = Boolean(value.length > 0 && !loading && !address)
 
   return (
     <InputPanel id={id}>
+      {chainPrefixWarning && <ChainPrefixWarning chainPrefixWarning={chainPrefixWarning} chainInfo={chainInfo} />}
       <ContainerRow error={error}>
         <InputContainer>
           <AutoColumn gap="md">

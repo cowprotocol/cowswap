@@ -15,6 +15,7 @@ export interface BaseChainInfo {
   readonly infoLink: string
   readonly logoUrl: string
   readonly name: string
+  readonly addressPrefix: string
   readonly label: string
   readonly urlAlias: string
   readonly helpCenterUrl?: string
@@ -32,6 +33,7 @@ export const CHAIN_INFO: ChainInfoMap = {
     infoLink: COW_PROTOCOL_LINK,
     label: 'Ethereum',
     name: 'mainnet',
+    addressPrefix: 'eth',
     explorerTitle: 'Etherscan',
     urlAlias: '',
     logoUrl: EthereumLogo,
@@ -44,6 +46,7 @@ export const CHAIN_INFO: ChainInfoMap = {
     infoLink: COW_PROTOCOL_LINK,
     label: 'Sepolia',
     name: 'sepolia',
+    addressPrefix: 'sep',
     explorerTitle: 'Etherscan',
     urlAlias: 'sepolia',
     logoUrl: SepoliaLogo,
@@ -57,6 +60,7 @@ export const CHAIN_INFO: ChainInfoMap = {
     infoLink: 'https://www.gnosischain.com',
     label: 'Gnosis Chain',
     name: 'gnosis_chain',
+    addressPrefix: 'gno',
     explorerTitle: 'Gnosisscan',
     urlAlias: 'gc',
     logoUrl: GnosisChainLogo,
