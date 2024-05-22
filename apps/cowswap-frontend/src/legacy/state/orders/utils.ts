@@ -1,7 +1,9 @@
+import type { LatestAppDataDocVersion } from '@cowprotocol/app-data'
 import { ONE_HUNDRED_PERCENT, PENDING_ORDERS_BUFFER, ZERO_FRACTION } from '@cowprotocol/common-const'
 import { bpsToPercent, buildPriceFromCurrencyAmounts, isSellOrder } from '@cowprotocol/common-utils'
 import { EnrichedOrder, OrderKind, OrderStatus } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
+import type { PartnerFee } from '@cowprotocol/widget-lib'
 import { Currency, CurrencyAmount, Percent, Price, Token } from '@uniswap/sdk-core'
 
 import JSBI from 'jsbi'
@@ -376,14 +378,19 @@ export function partialOrderUpdate({ chainId, order, isSafeWallet }: UpdateOrder
   dispatch(updateOrder(params))
 }
 
+export function getOrderPartnerFee(fullAppData: EnrichedOrder['fullAppData']): PartnerFee | undefined {
+  const appData = decodeAppData(fullAppData) as LatestAppDataDocVersion
+
+  return appData?.metadata?.partnerFee
+}
+
 export function getOrderAmountsWithPartnerFee(
   fullAppData: EnrichedOrder['fullAppData'],
   sellAmount: CurrencyAmount<Token>,
   buyAmount: CurrencyAmount<Token>,
   isSellOrder: boolean
 ): { inputCurrencyAmount: CurrencyAmount<Token>; outputCurrencyAmount: CurrencyAmount<Token> } {
-  const appData = decodeAppData(fullAppData)
-  const partnerFee = appData?.metadata?.partnerFee
+  const partnerFee = getOrderPartnerFee(fullAppData)
 
   if (!partnerFee) {
     return {

@@ -13,9 +13,9 @@ import {
 import { CurrencyAmount, Fraction, Token } from '@uniswap/sdk-core'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
+import { getOrderPartnerFee } from 'legacy/state/orders/utils'
 import { CloseIcon } from 'legacy/theme'
 
-import { decodeAppData } from 'modules/appData/utils/decodeAppData'
 import { TwapOrderItem } from 'modules/twap/types'
 
 import { isPending } from 'common/hooks/useCategorizeRecentActivity'
@@ -131,8 +131,7 @@ export function ReceiptModal({
   const outputLabel = isSell ? 'You receive at least' : 'You receive exactly'
   const safeTxParams = twapOrder?.safeTxParams
 
-  const appData = decodeAppData(order.fullAppData)
-  const partnerFee = appData?.metadata?.partnerFee
+  const partnerFee = getOrderPartnerFee(order.fullAppData)
 
   return (
     <CowModal onDismiss={onDismiss} isOpen={isOpen}>

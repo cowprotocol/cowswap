@@ -17,6 +17,7 @@ import { useFeeAmounts } from './useFeeAmounts'
 
 export interface TradeRatesProps {
   trade: TradeGp | undefined
+  allowedSlippage: Percent
   userAllowedSlippage: Percent | string
   isFeeGreater: boolean
   fee: CurrencyAmount<Currency> | null

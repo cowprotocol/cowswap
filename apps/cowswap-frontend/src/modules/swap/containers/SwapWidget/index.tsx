@@ -252,6 +252,7 @@ export function SwapWidget() {
   const tradeRatesProps: TradeRatesProps = {
     trade,
     userAllowedSlippage,
+    allowedSlippage,
     isFeeGreater,
     fee,
     rateInfoParams,
