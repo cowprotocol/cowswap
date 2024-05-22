@@ -1,4 +1,4 @@
-import { ChangeEvent, ReactNode, useCallback, useState } from 'react'
+import { ChangeEvent, ReactNode, useCallback, useEffect, useState } from 'react'
 
 import { getChainInfo } from '@cowprotocol/common-const'
 import {
@@ -19,7 +19,6 @@ import { AutoColumn } from 'legacy/components/Column'
 
 import ChainPrefixWarning from 'common/pure/ChainPrefixWarning'
 import { autofocus } from 'common/utils/autofocus'
-
 
 const InputPanel = styled.div`
   ${({ theme }) => theme.flexColumnNoWrap}
@@ -128,6 +127,13 @@ export function AddressInputPanel({
     },
     [onChange, chainInfo?.addressPrefix]
   )
+
+  // clear warning if chainId changes and we are now on the right network
+  useEffect(() => {
+    if (chainPrefixWarning && chainPrefixWarning === chainInfo?.addressPrefix) {
+      setChainPrefixWarning('')
+    }
+  }, [chainId, chainPrefixWarning])
 
   const error = Boolean(value.length > 0 && !loading && !address)
 
