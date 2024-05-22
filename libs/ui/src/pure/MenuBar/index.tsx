@@ -32,7 +32,7 @@ import IMG_ICON_X from '@cowprotocol/assets/images/x.svg'
 
 import { addBodyClass, removeBodyClass } from '@cowprotocol/common-utils'
 import { CowSwapTheme } from '@cowprotocol/widget-lib'
-import styled, { ThemeProvider } from 'styled-components'
+import { ThemeProvider } from 'styled-components'
 
 // NavItem Component: Handles individual navigation items, toggles dropdowns based on presence of children.
 // DropdownContentItem Component: Renders items within dropdowns, constructs logo variants based on the theme.
@@ -394,13 +394,13 @@ export const MenuBar = (props: MenuBarProps) => {
   return (
     <ThemeProvider theme={styledTheme}>
       <MenuBarWrapper ref={menuRef}>
-        <MenuBarInner theme={theme}>
+        <MenuBarInner theme={styledTheme}>
           <NavDaoTrigger isOpen={isDaoOpen} setIsOpen={setIsDaoOpen} theme={theme} mobileMode={isMobile} />
           <ProductLogo variant={productVariant} theme={theme} logoIconOnly={isMobile} />
 
           {/* Only render NavItems if the screen size is large */}
           {!isMobile && (
-            <NavItems theme={theme}>
+            <NavItems theme={styledTheme}>
               {navItems.map((item, index) => (
                 <NavItem key={index} item={item} mobileMode={isMobile} />
               ))}
@@ -412,7 +412,7 @@ export const MenuBar = (props: MenuBarProps) => {
             {!isMobile && additionalContent}
 
             {isMobile && (
-              <MobileMenuTrigger theme={theme} onClick={handleMobileMenuToggle}>
+              <MobileMenuTrigger theme={styledTheme} onClick={handleMobileMenuToggle}>
                 <SVG src={isMobileMenuOpen ? IMG_ICON_X : IMG_ICON_MENU_HAMBURGER} />
               </MobileMenuTrigger>
             )}
@@ -422,7 +422,7 @@ export const MenuBar = (props: MenuBarProps) => {
 
         {/* Mobile Menu */}
         {isMobile && isMobileMenuOpen && (
-          <NavItems mobileMode={isMobile} ref={mobileMenuRef} theme={theme}>
+          <NavItems mobileMode={isMobile} ref={mobileMenuRef} theme={styledTheme}>
             <div>
               {navItems.map((item, index) => (
                 <NavItem key={index} item={item} mobileMode={isMobile} />
