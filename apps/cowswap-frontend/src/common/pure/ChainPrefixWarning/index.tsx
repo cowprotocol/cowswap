@@ -3,6 +3,13 @@ import { BaseChainInfo } from '@cowprotocol/common-const'
 import { WarningCard } from '../WarningCard'
 import styled from 'styled-components/macro'
 
+const Wrapper = styled(WarningCard)`
+  p {
+    margin-block-start: 0.3em;
+    margin-block-end: 0.3em;
+  }
+`
+
 const NetworkImg = styled.img`
   width: 12px;
   height: 12px;
@@ -30,7 +37,7 @@ type ChainPrefixWarningProps = {
 export default function ChainPrefixWarning({ chainPrefixWarning, chainInfo }: ChainPrefixWarningProps) {
   const { label, addressPrefix, logoUrl, color } = chainInfo
   return (
-    <WarningCard>
+    <Wrapper>
       <p>
         The recipient address you inputted had the chain prefix <strong>{chainPrefixWarning}</strong>, which is not not
         the expected for the network you are in.
@@ -42,9 +49,9 @@ export default function ChainPrefixWarning({ chainPrefixWarning, chainInfo }: Ch
         </Label>
       </p>
       <p>
-        Please, make sure your address follows the format <Format>{addressPrefix}:&lt;your-address&gt;</Format> or make
-        sure it is compatible with <strong>{label}</strong> network.
+        Please, make sure your address follows the format <Format>{addressPrefix}:&lt;your-address&gt;</Format> or
+        double-check if it is compatible with <strong>{label}</strong> network.
       </p>
-    </WarningCard>
+    </Wrapper>
   )
 }
