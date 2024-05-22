@@ -13,10 +13,11 @@ const Wrapper = styled(WarningCard)`
 const NetworkImg = styled.img`
   width: 15px;
   height: 15px;
+  margin-right: 0.5em;
 `
 
 const Label = styled.span<{ color: string }>`
-  display: inline-block;
+  display: inline-flex;
   background-color: white;
   border: 2px ${({ color }) => color} solid;
   padding: 4px 4px;
