@@ -42,6 +42,7 @@ const rateInfoParams: RateInfoParams = {
 const defaultProps: TradeRatesProps = {
   trade,
   isFeeGreater: false,
+  allowedSlippage: new Percent(2, 10_000),
   userAllowedSlippage: new Percent(12, 10_000),
   fee: CurrencyAmount.fromRawAmount(currency, fee * 10 ** 18),
   rateInfoParams,

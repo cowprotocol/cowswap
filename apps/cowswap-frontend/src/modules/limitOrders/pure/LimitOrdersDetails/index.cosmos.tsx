@@ -7,12 +7,12 @@ import { CurrencyAmount } from '@uniswap/sdk-core'
 import { getAppData } from 'modules/appData'
 import { defaultLimitOrdersSettings } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { initLimitRateState } from 'modules/limitOrders/state/limitRateAtom'
+import { ReceiveAmountInfo } from 'modules/trade'
 import { DEFAULT_TRADE_QUOTE_STATE } from 'modules/tradeQuote'
 
 import { TradeFlowContext } from '../../services/types'
 
 import { LimitOrdersDetails } from './index'
-import { ReceiveAmountInfo } from 'modules/trade'
 
 const inputCurrency = COW[SupportedChainId.MAINNET]
 const outputCurrency = GNO[SupportedChainId.MAINNET]
