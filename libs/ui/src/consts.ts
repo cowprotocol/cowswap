@@ -1,9 +1,5 @@
-import { CowSwapTheme } from '@cowprotocol/widget-lib'
-import { createGlobalStyle, css, DefaultTheme } from 'styled-components'
 
 // Fonts
-import FONT_STUDIO_FEIXEN_REGULAR from '@cowprotocol/assets/fonts/StudioFeixenSans-Regular.woff2'
-import FONT_STUDIO_FEIXEN_REGULAR_ITALIC from '@cowprotocol/assets/fonts/StudioFeixenSans-RegularItalic.woff2'
 import FONT_STUDIO_FEIXEN_BOLD from '@cowprotocol/assets/fonts/StudioFeixenSans-Bold.woff2'
 import FONT_STUDIO_FEIXEN_BOLD_ITALIC from '@cowprotocol/assets/fonts/StudioFeixenSans-BoldItalic.woff2'
 import FONT_STUDIO_FEIXEN_BOOK from '@cowprotocol/assets/fonts/StudioFeixenSans-Book.woff2'
@@ -12,10 +8,16 @@ import FONT_STUDIO_FEIXEN_LIGHT from '@cowprotocol/assets/fonts/StudioFeixenSans
 import FONT_STUDIO_FEIXEN_LIGHT_ITALIC from '@cowprotocol/assets/fonts/StudioFeixenSans-LightItalic.woff2'
 import FONT_STUDIO_FEIXEN_MEDIUM from '@cowprotocol/assets/fonts/StudioFeixenSans-Medium.woff2'
 import FONT_STUDIO_FEIXEN_MEDIUM_ITALIC from '@cowprotocol/assets/fonts/StudioFeixenSans-MediumItalic.woff2'
+import FONT_STUDIO_FEIXEN_REGULAR from '@cowprotocol/assets/fonts/StudioFeixenSans-Regular.woff2'
+import FONT_STUDIO_FEIXEN_REGULAR_ITALIC from '@cowprotocol/assets/fonts/StudioFeixenSans-RegularItalic.woff2'
 import FONT_STUDIO_FEIXEN_SEMIBOLD from '@cowprotocol/assets/fonts/StudioFeixenSans-Semibold.woff2'
 import FONT_STUDIO_FEIXEN_SEMIBOLD_ITALIC from '@cowprotocol/assets/fonts/StudioFeixenSans-SemiboldItalic.woff2'
 import FONT_STUDIO_FEIXEN_ULTRALIGHT from '@cowprotocol/assets/fonts/StudioFeixenSans-Ultralight.woff2'
 import FONT_STUDIO_FEIXEN_ULTRALIGHT_ITALIC from '@cowprotocol/assets/fonts/StudioFeixenSans-UltralightItalic.woff2'
+
+import { createGlobalStyle, css, DefaultTheme } from 'styled-components'
+
+import { CowSwapTheme } from './types'
 
 export const AMOUNTS_FORMATTING_FEATURE_FLAG = 'highlight-amounts-formatting'
 export const SAFE_COW_APP_LINK = 'https://app.safe.global/share/safe-app?appUrl=https%3A%2F%2Fswap.cow.fi&chain=eth'

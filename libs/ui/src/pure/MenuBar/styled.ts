@@ -1,6 +1,7 @@
 import styled, { css } from 'styled-components'
-import { Color } from '@cowprotocol/ui'
-import { CowSwapTheme } from '@cowprotocol/widget-lib'
+
+import { Color } from '../../consts'
+import { CowSwapTheme } from '../../types'
 
 export const MenuBarWrapper = styled.div`
   display: flex;

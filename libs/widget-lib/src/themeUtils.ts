@@ -1,4 +1,6 @@
-import { CowSwapTheme, CowSwapWidgetPalette } from './types'
+import type { CowSwapTheme } from '@cowprotocol/ui'
+
+import { CowSwapWidgetPalette } from './types'
 
 export function isCowSwapWidgetPalette(
   palette: CowSwapTheme | CowSwapWidgetPalette | undefined

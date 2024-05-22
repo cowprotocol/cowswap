@@ -1,38 +1,42 @@
-import React, { useState, useRef, RefObject } from 'react'
+import React, { RefObject, useRef, useState } from 'react'
 
-import {
-  RootNavItem,
-  MenuBarWrapper,
-  MenuBarInner,
-  NavDaoTriggerElement,
-  DropdownMenu,
-  DropdownContent,
-  DropdownContentItemButton,
-  DropdownContentItemImage,
-  DropdownContentItemIcon,
-  DropdownContentItemText,
-  DropdownContentItemTitle,
-  DropdownContentItemDescription,
-  GlobalSettingsWrapper,
-  GlobalSettingsButton,
-  NavItems,
-  StyledDropdownContentItem,
-  RightAligned,
-  MobileMenuTrigger,
-} from './styled'
-import SVG from 'react-inlinesvg'
-import { ProductLogo, ProductVariant, themeMapper, Media } from '@cowprotocol/ui'
-import { useOnClickOutside, useMediaQuery } from '@cowprotocol/common-hooks'
-import IMG_ICON_MENU_DOTS from '@cowprotocol/assets/images/menu-grid-dots.svg'
 import IMG_ICON_ARROW_RIGHT from '@cowprotocol/assets/images/arrow-right.svg'
 import IMG_ICON_CARRET_DOWN from '@cowprotocol/assets/images/carret-down.svg'
-import IMG_ICON_SETTINGS_GLOBAL from '@cowprotocol/assets/images/settings-global.svg'
+import IMG_ICON_MENU_DOTS from '@cowprotocol/assets/images/menu-grid-dots.svg'
 import IMG_ICON_MENU_HAMBURGER from '@cowprotocol/assets/images/menu-hamburger.svg'
+import IMG_ICON_SETTINGS_GLOBAL from '@cowprotocol/assets/images/settings-global.svg'
 import IMG_ICON_X from '@cowprotocol/assets/images/x.svg'
-
+import { useMediaQuery, useOnClickOutside } from '@cowprotocol/common-hooks'
 import { addBodyClass, removeBodyClass } from '@cowprotocol/common-utils'
-import { CowSwapTheme } from '@cowprotocol/widget-lib'
+
+import SVG from 'react-inlinesvg'
 import { ThemeProvider } from 'styled-components'
+
+import {
+  DropdownContent,
+  DropdownContentItemButton,
+  DropdownContentItemDescription,
+  DropdownContentItemIcon,
+  DropdownContentItemImage,
+  DropdownContentItemText,
+  DropdownContentItemTitle,
+  DropdownMenu,
+  GlobalSettingsButton,
+  GlobalSettingsWrapper,
+  MenuBarInner,
+  MenuBarWrapper,
+  MobileMenuTrigger,
+  NavDaoTriggerElement,
+  NavItems,
+  RightAligned,
+  RootNavItem,
+  StyledDropdownContentItem,
+} from './styled'
+
+
+import { Media, themeMapper } from '../../consts'
+import { CowSwapTheme } from '../../types'
+import { ProductLogo, ProductVariant } from '../ProductLogo'
 
 // NavItem Component: Handles individual navigation items, toggles dropdowns based on presence of children.
 // DropdownContentItem Component: Renders items within dropdowns, constructs logo variants based on the theme.
