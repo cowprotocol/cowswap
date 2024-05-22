@@ -17,6 +17,8 @@ import { UpdateOrderParams } from './hooks'
 import { AppDispatch } from '../index'
 import { serializeToken } from '../user/hooks'
 
+const FILLED_PERCENTAGE_THRESHOLD = 0.999
+
 export type OrderTransitionStatus =
   | 'unknown'
   | 'fulfilled'
@@ -29,17 +31,19 @@ export type OrderTransitionStatus =
 /**
  * An order is considered fulfilled if all sellAmount has been sold, for sell orders
  * or all buyAmount has been bought, for buy orders
+ *
+ * Since order might be filled with a small difference, we consider it fulfilled if it's at least 99.9% filled
  */
 export function isOrderFulfilled(
   order: Pick<EnrichedOrder, 'buyAmount' | 'sellAmount' | 'executedBuyAmount' | 'executedSellAmountBeforeFees' | 'kind'>
 ): boolean {
   const { buyAmount, sellAmount, executedBuyAmount, executedSellAmountBeforeFees, kind } = order
 
-  if (isSellOrder(kind)) {
-    return sellAmount === executedSellAmountBeforeFees
-  } else {
-    return buyAmount === executedBuyAmount
-  }
+  const filledPercent = isSellOrder(kind)
+    ? +executedSellAmountBeforeFees / +sellAmount
+    : +executedBuyAmount / +buyAmount
+
+  return filledPercent > FILLED_PERCENTAGE_THRESHOLD
 }
 
 /**
