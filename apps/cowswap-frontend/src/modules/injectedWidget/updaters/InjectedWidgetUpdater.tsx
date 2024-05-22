@@ -84,7 +84,7 @@ export function InjectedWidgetUpdater() {
       })
 
       // Navigate to the new path
-      navigate(data.urlParams)
+      navigate(data.urlParams, { replace: true })
     })
 
     const updateAppDataListener = listenToMessageFromWindow(window, WidgetMethodsListen.UPDATE_APP_DATA, (data) => {
