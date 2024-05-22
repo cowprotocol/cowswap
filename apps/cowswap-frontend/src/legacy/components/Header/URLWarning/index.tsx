@@ -32,16 +32,12 @@ function useGetAnnouncement(chainId: number): string | undefined {
 
   if (error) {
     console.error('[URLWarning] Error getting the announcement text: ', error)
-  } else {
-    console.debug('[URLWarning] Announcement text', announcementText)
   }
 
   const envAnnouncementText = envError ? undefined : envFile?.trim()
 
   if (envError) {
     console.error(`[URLWarning] Error getting the env ${env} announcement text: `, envError)
-  } else {
-    console.debug(`[URLWarning] Env ${env} announcement text`, envAnnouncementText)
   }
 
   return announcementText || envAnnouncementText

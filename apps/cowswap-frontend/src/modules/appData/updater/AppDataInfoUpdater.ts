@@ -65,7 +65,6 @@ export function AppDataInfoUpdater({
     const updateAppData = async (): Promise<void> => {
       try {
         const { doc, fullAppData, appDataKeccak256 } = await buildAppData(params)
-        console.debug(`[useAppData] appDataInfo`, fullAppData)
 
         setAppDataInfo({ doc, fullAppData, appDataKeccak256, env: getEnvByClass(orderClass) })
       } catch (e: any) {

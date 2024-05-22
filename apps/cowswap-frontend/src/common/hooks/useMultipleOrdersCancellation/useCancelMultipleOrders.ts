@@ -2,14 +2,14 @@ import { useCallback } from 'react'
 
 import { OrderSigningUtils } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { useWeb3React } from '@web3-react/core'
+import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import { orderBookApi } from 'cowSdk'
 
 import { CancellableOrder, isOrderCancellable } from 'common/utils/isOrderCancellable'
 
 export function useCancelMultipleOrders(): (orders: CancellableOrder[]) => Promise<void> {
-  const { provider } = useWeb3React()
+  const provider = useWalletProvider()
   const { chainId } = useWalletInfo()
 
   return useCallback(
@@ -17,7 +17,7 @@ export function useCancelMultipleOrders(): (orders: CancellableOrder[]) => Promi
       const notCancellableOrders = ordersToCancel.filter((order) => !isOrderCancellable(order))
       const signer = provider?.getSigner()
 
-      if (!chainId || !signer) return
+      if (!signer) return
 
       if (notCancellableOrders.length) {
         throw new Error('Some orders can not be cancelled!')

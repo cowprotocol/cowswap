@@ -21,7 +21,8 @@ import {
 } from '../state/usdRawPricesAtom'
 
 const swrOptions: SWRConfiguration = {
-  refreshInterval: ms`30s`,
+  refreshInterval: ms`60s`,
+  focusThrottleInterval: ms`30s`,
   refreshWhenHidden: false,
   refreshWhenOffline: false,
   revalidateOnFocus: true,
@@ -96,7 +97,7 @@ async function processQueue(queue: Token[], getUsdcPrice: () => Promise<Fraction
           state.updatedAt = Date.now()
         }
       } catch (e) {
-        console.debug(`[UsdPricesUpdater]: Failed to fetch price for `, currency.address)
+        console.debug(`[UsdPricesUpdater]: Failed to fetch price for`, currency.symbol)
       }
 
       return { [currency.address.toLowerCase()]: state }

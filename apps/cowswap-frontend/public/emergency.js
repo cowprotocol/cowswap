@@ -13,13 +13,13 @@ if (window.location.host === 'barn.cowswap.exchange') {
  * Since outdated versions of the stores are not used anymore, we should remove them to not exceed the storage limit
  */
 ;(function () {
-  const atomStoreRegex = /^(.+Atom):v(\d{1,3})$/
+  const storeRegex = /^(.+):v(\d{1,3})$/
 
   // Find the latest version of each store
   const storePerVersion = Object.keys(localStorage)
     // Take only the atom stores with versions
     .reduce((acc, key) => {
-      const match = key.match(atomStoreRegex)
+      const match = key.match(storeRegex)
 
       if (!match) return acc
 

@@ -36,14 +36,16 @@ export function FulfilledOrderInfo({ chainId, orderUid }: ExecutedSummaryProps) 
 
   return (
     <>
-      <OrderSummary
-        kind={order.kind}
-        inputToken={formattedFilledAmount.currency as TokenInfo}
-        outputToken={formattedSwappedAmount.currency as TokenInfo}
-        sellAmount={formattedFilledAmount.quotient.toString()}
-        buyAmount={formattedSwappedAmount.quotient.toString()}
-        customTemplate={FulfilledSummaryTemplate}
-      />
+      {formattedFilledAmount.currency && formattedSwappedAmount.currency && (
+        <OrderSummary
+          kind={order.kind}
+          inputToken={formattedFilledAmount.currency as TokenInfo}
+          outputToken={formattedSwappedAmount.currency as TokenInfo}
+          sellAmount={formattedFilledAmount.quotient.toString()}
+          buyAmount={formattedSwappedAmount.quotient.toString()}
+          customTemplate={FulfilledSummaryTemplate}
+        />
+      )}
       {!!surplusAmount && (
         <styledEl.SurplusWrapper>
           <span>Order surplus: </span>

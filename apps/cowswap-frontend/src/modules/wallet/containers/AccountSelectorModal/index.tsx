@@ -7,15 +7,13 @@ import { useAddSnackbar } from '@cowprotocol/snackbars'
 import {
   accountsLoaders,
   hwAccountIndexAtom,
-  getConnectionIcon,
-  getConnectionName,
   AccountIndexSelect,
   HardWareWallet,
-  getWeb3ReactConnection,
   useWalletInfo,
+  useConnectionType,
+  useWalletDetails,
 } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
-import { useWeb3React } from '@web3-react/core'
 
 import { Trans } from '@lingui/macro'
 
@@ -32,15 +30,11 @@ export function AccountSelectorModal() {
   const closeModal = useSetAtom(toggleAccountSelectorModalAtom)
 
   const [hwAccountIndex, setHwAccountIndex] = useAtom(hwAccountIndexAtom)
-  const { connector } = useWeb3React()
+  const connectionType = useConnectionType()
   const addSnackbar = useAddSnackbar()
+  const { walletName, icon: walletIcon } = useWalletDetails()
 
   const nativeToken = NATIVE_CURRENCIES[chainId]
-
-  const connectionType = useMemo(() => getWeb3ReactConnection(connector).type, [connector])
-
-  const walletIcon = useMemo(() => getConnectionIcon(connectionType), [connectionType])
-  const walletName = useMemo(() => getConnectionName(connectionType), [connectionType])
 
   const accountsLoader = useMemo(() => accountsLoaders[connectionType as HardWareWallet], [connectionType])
 

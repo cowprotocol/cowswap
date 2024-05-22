@@ -24,7 +24,7 @@ const trezorConfig: Parameters<TrezorConnect['init']>[0] = {
 const ACCOUNTS_LIMIT = 100
 
 export class TrezorConnector extends Connector {
-  public customProvider?: TrezorProvider
+  public customProvider?: TrezorProvider = undefined
 
   private currentAccountIndex = 0
 
@@ -63,7 +63,7 @@ export class TrezorConnector extends Connector {
       return
     }
 
-    // Skip when wallet already on the requested network
+    // Skip when wallet is already on the requested network
     if (this.activatedNetwork === desiredChainId && !indexChanged) {
       return
     }

@@ -2366,10 +2366,10 @@
     json-stringify-deterministic "^1.0.8"
     multiformats "^9.6.4"
 
-"@cowprotocol/cms@^0.2.2":
-  version "0.2.2"
-  resolved "https://registry.yarnpkg.com/@cowprotocol/cms/-/cms-0.2.2.tgz#6041f8468fab23911c846b2dd0072e209073b089"
-  integrity sha512-kpILhi3N7EaFFaFUXpJnkpEYUmUu7EdU9SVCxBHwqCcvIO4Yw8qhCr3aUPgRI6reCNqMEnNai3EPjyoNzD2bKg==
+"@cowprotocol/cms@^0.3.0-RC.2":
+  version "0.3.0-RC.2"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/cms/-/cms-0.3.0-RC.2.tgz#40de093397c618a923bfc4ca42ec2c8ac3a830f9"
+  integrity sha512-vHNDjeuS27z7htmuWd/w1DYEcLXN9T7HorEs0Ky1x1r8NTyBIgJyUWh/v7oc85LfYv2RQmq2pmXIPaYxhNeWXQ==
   dependencies:
     openapi-fetch "^0.9.3"
 
@@ -2383,10 +2383,10 @@
   resolved "https://registry.yarnpkg.com/@cowprotocol/cow-runner-game/-/cow-runner-game-0.2.9.tgz#3f94b3f370bd114f77db8b1d238cba3ef4e9d644"
   integrity sha512-rX7HnoV+HYEEkBaqVUsAkGGo0oBrExi+d6Io+8nQZYwZk+IYLmS9jdcIObsLviM2h4YX8+iin6NuKl35AaiHmg==
 
-"@cowprotocol/cow-sdk@^5.0.0":
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/@cowprotocol/cow-sdk/-/cow-sdk-5.0.0.tgz#16252d3f27e90f94944b60c284bfd3ce2724938f"
-  integrity sha512-ZdNN5GJe+amyfKFG9Fg/8pNHjvV9IxjeNsUh3gw1eUqpcao2elcaeuSogi8TEaSlbVh6PXa5l+QRHdJIjUqplQ==
+"@cowprotocol/cow-sdk@^5.2.1":
+  version "5.2.1"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/cow-sdk/-/cow-sdk-5.2.1.tgz#a53eb2b0e7439602bd3ba8ce7d085e12f24b1c3c"
+  integrity sha512-s3h/7YL3UdPDh5q7+Q1WCDR8cJuhJXk8rGeEzdqtSBhFMvb6ErzGvXCkYOg/K9rKpIa7sfQkKkVAS1PWc9h2pQ==
   dependencies:
     "@cowprotocol/contracts" "^1.4.0"
     "@ethersproject/abstract-signer" "^5.7.0"

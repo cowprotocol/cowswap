@@ -41,10 +41,10 @@ function _useWalletInfo(): WalletInfo {
   )
 }
 
-function _useWalletDetails(account?: string): WalletDetails {
+function _useWalletDetails(account?: string, standaloneMode?: boolean): WalletDetails {
   const { ENSName: ensName } = useENSName(account ?? undefined)
   const isSmartContractWallet = useIsSmartContractWallet()
-  const { walletName, icon } = useWalletMetaData()
+  const { walletName, icon } = useWalletMetaData(standaloneMode)
 
   return useMemo(() => {
     return {
@@ -96,9 +96,12 @@ function _useSafeInfo(walletInfo: WalletInfo): GnosisSafeInfo | undefined {
   return safeInfo
 }
 
-export function WalletUpdater() {
+interface WalletUpdaterProps {
+  standaloneMode?: boolean
+}
+export function WalletUpdater({ standaloneMode }: WalletUpdaterProps) {
   const walletInfo = _useWalletInfo()
-  const walletDetails = _useWalletDetails(walletInfo.account)
+  const walletDetails = _useWalletDetails(walletInfo.account, standaloneMode)
   const gnosisSafeInfo = _useSafeInfo(walletInfo)
 
   const setWalletInfo = useSetAtom(walletInfoAtom)
@@ -107,13 +110,11 @@ export function WalletUpdater() {
 
   // Update wallet info
   useEffect(() => {
-    console.log('[WalletUpdater] setWalletInfo', walletInfo)
     setWalletInfo(walletInfo)
   }, [walletInfo, setWalletInfo])
 
   // Update wallet details
   useEffect(() => {
-    console.log('[WalletUpdater] setWalletDetails', walletDetails)
     const walletType = getWalletType({ gnosisSafeInfo, isSmartContractWallet: walletDetails.isSmartContractWallet })
     setWalletDetails({
       walletName: getWalletTypeLabel(walletType), // Fallback wallet name, will be overridden by below line if something exists.
@@ -123,7 +124,6 @@ export function WalletUpdater() {
 
   // Update Gnosis Safe info
   useEffect(() => {
-    console.log('[WalletUpdater] setGnosisSafeInfo', gnosisSafeInfo)
     setGnosisSafeInfo(gnosisSafeInfo)
   }, [gnosisSafeInfo, setGnosisSafeInfo])
 

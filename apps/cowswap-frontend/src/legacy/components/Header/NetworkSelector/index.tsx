@@ -2,8 +2,8 @@ import { useRef } from 'react'
 
 import { getChainInfo } from '@cowprotocol/common-const'
 import { UI } from '@cowprotocol/ui'
-import { getIsTallyWallet, useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
-import { useWeb3React } from '@web3-react/core'
+import { useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
+import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import { Trans } from '@lingui/macro'
 import { darken, transparentize } from 'color2k'
@@ -150,7 +150,7 @@ const NetworkAlertLabel = styled.div`
 `
 
 export function NetworkSelector() {
-  const { provider } = useWeb3React()
+  const provider = useWalletProvider()
   const { chainId } = useWalletInfo()
   const node = useRef<HTMLDivElement>(null)
   const isOpen = useModalIsOpen(ApplicationModal.NETWORK_SELECTOR)
@@ -158,16 +158,13 @@ export function NetworkSelector() {
   const closeModal = useCloseModal(ApplicationModal.NETWORK_SELECTOR)
   const toggleModal = useToggleModal(ApplicationModal.NETWORK_SELECTOR)
   const isSmartContractWallet = useIsSmartContractWallet()
-  const isTallyWallet = getIsTallyWallet(provider?.provider)
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
   const info = getChainInfo(chainId)
 
   const onSelectChain = useOnSelectNetwork()
-
-  // Mod: Detect viewport changes and set isUpToMedium
   const isUpToMedium = useMediaQuery(upToMedium)
 
-  if (!chainId || !provider || isSmartContractWallet || isTallyWallet) {
+  if (!provider || isSmartContractWallet) {
     return null
   }
 
