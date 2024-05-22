@@ -16,7 +16,12 @@ import {
   ArticleTitle,
   ArticleDescription,
   ContainerCardSectionTop,
+  Breadcrumbs,
+  ArticleCount,
+  Pagination,
 } from './styled'
+
+const LEARN_PATH = '/v2/learn/'
 
 const DATA_CACHE_TIME_SECONDS = 5 * 60 // Cache 5min
 const ITEMS_PER_PAGE = 24
@@ -59,54 +64,6 @@ const Wrapper = styled.div`
   }
 `
 
-const Breadcrumbs = styled.div`
-  display: flex;
-  justify-content: flex-start;
-  font-size: 21px;
-  padding: 16px;
-  color: ${Color.neutral50};
-
-  a {
-    color: ${Color.neutral50};
-    text-decoration: none;
-    margin-right: 8px;
-
-    &:after {
-      content: '→';
-      margin-left: 8px;
-    }
-
-    &:last-child:after {
-      content: '';
-    }
-  }
-`
-
-const ArticleCount = styled.p`
-  font-size: 16px;
-  color: ${Color.neutral50};
-`
-
-const Pagination = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 8px;
-  font-size: 21px;
-
-  a {
-    padding: 8px 16px;
-    background: ${Color.neutral90};
-    color: ${Color.neutral0};
-    text-decoration: none;
-    border-radius: 8px;
-
-    &.active {
-      background: ${Color.neutral50};
-    }
-  }
-`
-
 export default function ArticlesPage({ siteConfigData, articles, totalArticles, currentPage }: ArticlesPageProps) {
   const totalPages = Math.ceil(totalArticles / ITEMS_PER_PAGE)
 
@@ -135,7 +92,7 @@ export default function ArticlesPage({ siteConfigData, articles, totalArticles, 
           <ContainerCardSection>
             <ArticleList>
               {articles.map((article) => (
-                <ArticleCard key={article.id} href={`/article/${article.attributes?.slug}`}>
+                <ArticleCard key={article.id} href={`${LEARN_PATH}${article.attributes?.slug}`}>
                   <ArticleImage></ArticleImage> {/* Remove color prop here */}
                   <ArticleTitle>{article.attributes?.title}</ArticleTitle>
                   <ArticleDescription>{article.attributes?.description}</ArticleDescription>

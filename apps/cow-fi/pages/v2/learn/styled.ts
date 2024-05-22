@@ -1,19 +1,20 @@
 import styled from 'styled-components'
 import { Font, Color, Media } from '@cowprotocol/ui'
 
-export const ContainerCard = styled.div`
+export const ContainerCard = styled.div<{ bgColor?: string; gap?: number; gapMobile?: number }>`
   display: flex;
   flex-flow: row wrap;
   justify-content: center;
-  gap: 100px;
+  gap: ${({ gap }) => gap || 100}px;
   margin: 24px 0;
   width: 100%;
   padding: 60px;
   border-radius: 60px;
-  background: ${Color.neutral90};
+  background: ${({ bgColor }) => bgColor || Color.neutral90};
 
   ${Media.upToMedium()} {
     padding: 48px 32px;
+    gap: ${({ gapMobile }) => gapMobile || 100}px;
   }
 `
 
@@ -301,5 +302,53 @@ export const CTAButton = styled.a`
   &:hover {
     color: ${Color.neutral100};
     background: ${Color.neutral20};
+  }
+`
+
+export const Breadcrumbs = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  font-size: 21px;
+  padding: 16px;
+  color: ${Color.neutral50};
+
+  a {
+    color: ${Color.neutral50};
+    text-decoration: none;
+    margin-right: 8px;
+
+    &:after {
+      content: '→';
+      margin-left: 8px;
+    }
+
+    &:last-child:after {
+      content: '';
+    }
+  }
+`
+
+export const ArticleCount = styled.p`
+  font-size: 16px;
+  color: ${Color.neutral50};
+`
+
+export const Pagination = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  font-size: 21px;
+
+  a {
+    padding: 8px 16px;
+    background: ${Color.neutral90};
+    color: ${Color.neutral0};
+    text-decoration: none;
+    border-radius: 8px;
+
+    &.active {
+      background: ${Color.neutral50};
+    }
   }
 `
