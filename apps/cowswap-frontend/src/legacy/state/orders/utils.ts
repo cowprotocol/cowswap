@@ -1,10 +1,12 @@
 import { ONE_HUNDRED_PERCENT, PENDING_ORDERS_BUFFER, ZERO_FRACTION } from '@cowprotocol/common-const'
-import { buildPriceFromCurrencyAmounts, isSellOrder } from '@cowprotocol/common-utils'
+import { bpsToPercent, buildPriceFromCurrencyAmounts, isSellOrder } from '@cowprotocol/common-utils'
 import { EnrichedOrder, OrderKind, OrderStatus } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
-import { Currency, CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Percent, Price, Token } from '@uniswap/sdk-core'
 
 import JSBI from 'jsbi'
+
+import { decodeAppData } from 'modules/appData/utils/decodeAppData'
 
 import { getIsComposableCowParentOrder } from 'utils/orderUtils/getIsComposableCowParentOrder'
 import { getOrderSurplus } from 'utils/orderUtils/getOrderSurplus'
@@ -227,7 +229,14 @@ export function getEstimatedExecutionPrice(
   // Always use original amounts for building the limit price, as this will never change
   const inputAmount = CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount.toString())
   const outputAmount = CurrencyAmount.fromRawAmount(order.outputToken, order.buyAmount.toString())
-  const limitPrice = buildPriceFromCurrencyAmounts(inputAmount, outputAmount)
+  // Take partner fee into account when calculating the limit price
+  const { inputCurrencyAmount, outputCurrencyAmount } = getOrderAmountsWithPartnerFee(
+    order.fullAppData,
+    inputAmount,
+    outputAmount,
+    isSellOrder(order.kind)
+  )
+  const limitPrice = buildPriceFromCurrencyAmounts(inputCurrencyAmount, outputCurrencyAmount)
 
   if (getUiOrderType(order) === UiOrderType.SWAP) {
     return limitPrice
@@ -373,4 +382,35 @@ export function partialOrderUpdate({ chainId, order, isSafeWallet }: UpdateOrder
     isSafeWallet,
   }
   dispatch(updateOrder(params))
+}
+
+export function getOrderAmountsWithPartnerFee(
+  fullAppData: EnrichedOrder['fullAppData'],
+  sellAmount: CurrencyAmount<Token>,
+  buyAmount: CurrencyAmount<Token>,
+  isSellOrder: boolean
+): { inputCurrencyAmount: CurrencyAmount<Token>; outputCurrencyAmount: CurrencyAmount<Token> } {
+  const appData = decodeAppData(fullAppData)
+  const partnerFee = appData?.metadata?.partnerFee
+
+  if (!partnerFee) {
+    return {
+      inputCurrencyAmount: sellAmount,
+      outputCurrencyAmount: buyAmount,
+    }
+  }
+
+  const partnerFeePercent = bpsToPercent(partnerFee.bps)
+
+  if (isSellOrder) {
+    return {
+      inputCurrencyAmount: sellAmount,
+      outputCurrencyAmount: buyAmount.divide(ONE_HUNDRED_PERCENT.subtract(partnerFeePercent)),
+    }
+  }
+
+  return {
+    inputCurrencyAmount: sellAmount.divide(ONE_HUNDRED_PERCENT.add(partnerFeePercent)),
+    outputCurrencyAmount: buyAmount,
+  }
 }

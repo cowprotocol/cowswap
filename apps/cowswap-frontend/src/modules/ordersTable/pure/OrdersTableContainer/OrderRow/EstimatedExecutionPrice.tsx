@@ -150,12 +150,12 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
   )
 }
 
-export type UnlikelyToExecuteWarningProps = {
+type UnlikelyToExecuteWarningProps = {
   feePercentage?: Percent
   feeAmount?: CurrencyAmount<Currency>
 }
 
-export function UnlikelyToExecuteWarning(props: UnlikelyToExecuteWarningProps) {
+function UnlikelyToExecuteWarning(props: UnlikelyToExecuteWarningProps) {
   const { feePercentage, feeAmount } = props
 
   if (!feePercentage || !feeAmount) {
