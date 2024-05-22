@@ -55,8 +55,8 @@ const SummaryWrapper = styled.section`
 const SHOW_TOKENS_TABLE: Record<SupportedChainId, boolean> = {
   [SupportedChainId.MAINNET]: true,
   [SupportedChainId.GNOSIS_CHAIN]: false, // Gchain data is not reliable
-  [SupportedChainId.ARBITRUM_ONE]: false,
-  [SupportedChainId.SEPOLIA]: false,
+  [SupportedChainId.ARBITRUM_ONE]: false, // No data for Arbitrum one
+  [SupportedChainId.SEPOLIA]: false, // No data for Sepolia
 }
 
 export const Home: React.FC = () => {
