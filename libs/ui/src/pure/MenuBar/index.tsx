@@ -1,5 +1,4 @@
-import React, { useState, useRef, RefObject } from 'react'
-
+import React, { useState, useRef, RefObject, useCallback } from 'react'
 import {
   RootNavItem,
   MenuBarWrapper,
@@ -34,14 +33,6 @@ import { addBodyClass, removeBodyClass } from '@cowprotocol/common-utils'
 import { CowSwapTheme } from '@cowprotocol/widget-lib'
 import { ThemeProvider } from 'styled-components'
 
-// NavItem Component: Handles individual navigation items, toggles dropdowns based on presence of children.
-// DropdownContentItem Component: Renders items within dropdowns, constructs logo variants based on the theme.
-// NavDaoTrigger Component: Manages the DAO menu trigger and its dropdown content.
-// GenericDropdown Component: Used for dropdowns in navigation items, determines hover or click interaction.
-// DropdownContentWrapper Component: Manages nested dropdown content, including third-level items.
-// GlobalSettingsDropdown Component: Handles the global settings dropdown menu.
-// MenuBar Component: Main component managing the menu bar, handles mobile and desktop modes, toggles no-scroll class based on menu state.
-
 const DAO_NAV_ITEMS: MenuItem[] = [
   { href: 'https://cow.fi/#cowswap', productVariant: ProductVariant.CowSwap },
   { href: 'https://cow.fi/#cowprotocol', productVariant: ProductVariant.CowProtocol },
@@ -56,7 +47,6 @@ const SETTINGS_ITEMS: MenuItem[] = [
   { label: 'Language', href: '#language' },
 ]
 
-// Type definitions for navigation items
 interface NavItemProps {
   item: MenuItem
 }
@@ -100,7 +90,6 @@ interface DropdownProps {
   interaction: 'hover' | 'click'
 }
 
-// Component for individual navigation items
 const NavItem = ({
   item,
   isClickable = false,
@@ -116,7 +105,7 @@ const NavItem = ({
       onTrigger={handleToggle}
       interaction={isClickable || mobileMode ? 'click' : 'hover'}
       mobileMode={mobileMode}
-      isNavItemDropdown={true} // Indicate this is a NavItem dropdown
+      isNavItemDropdown={true}
     />
   ) : (
     <RootNavItem href={item.href} mobileMode={mobileMode}>
@@ -125,7 +114,6 @@ const NavItem = ({
   )
 }
 
-// Component for items within dropdowns
 const DropdownContentItem: React.FC<{ item: DropdownMenuItem; theme: CowSwapTheme; closeMenu: () => void }> = ({
   item,
   theme,
@@ -198,7 +186,6 @@ const DropdownContentItem: React.FC<{ item: DropdownMenuItem; theme: CowSwapThem
   )
 }
 
-// Component for the DAO menu trigger
 const NavDaoTrigger: React.FC<{
   isOpen: boolean
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
@@ -230,7 +217,6 @@ const NavDaoTrigger: React.FC<{
   )
 }
 
-// Generic dropdown component used for NavItem dropdowns
 const GenericDropdown: React.FC<DropdownProps & { mobileMode?: boolean; isNavItemDropdown?: boolean }> = ({
   isOpen,
   content,
@@ -259,7 +245,6 @@ const GenericDropdown: React.FC<DropdownProps & { mobileMode?: boolean; isNavIte
   )
 }
 
-// Wrapper component for dropdown content, handling nested dropdowns
 const DropdownContentWrapper: React.FC<{
   content: DropdownMenuContent
   isThirdLevel?: boolean
@@ -276,8 +261,7 @@ const DropdownContentWrapper: React.FC<{
   }
 
   const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    // Allow default behavior for anchor elements
-    e.stopPropagation() // Prevent the click event from propagating to the outside click handler
+    e.stopPropagation()
   }
 
   return (
@@ -293,7 +277,7 @@ const DropdownContentWrapper: React.FC<{
         return (
           <StyledDropdownContentItem
             key={index}
-            href={!hasChildren ? item.href : undefined} // Set href only for items without children
+            href={!hasChildren ? item.href : undefined}
             isOpen={isThirdLevelVisible}
             as={Tag}
             onClick={(e: React.MouseEvent<HTMLDivElement | HTMLAnchorElement>) => {
@@ -327,7 +311,6 @@ const DropdownContentWrapper: React.FC<{
   )
 }
 
-// Component for the global settings dropdown
 const GlobalSettingsDropdown = ({ mobileMode }: { mobileMode: boolean }) => {
   const [isOpen, setIsOpen] = useState(false)
   const buttonRef = useRef<HTMLButtonElement>(null)
@@ -358,25 +341,27 @@ const GlobalSettingsDropdown = ({ mobileMode }: { mobileMode: boolean }) => {
   )
 }
 
-// Main MenuBar component
 export const MenuBar = (props: MenuBarProps) => {
   const { navItems, theme, productVariant: productVariant, additionalContent } = props
   const [isDaoOpen, setIsDaoOpen] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const menuRef = useRef(null)
   const mobileMenuRef = useRef(null)
+  const mobileMenuTriggerRef = useRef<HTMLDivElement>(null)
   const styledTheme = themeMapper(theme)
 
   useOnClickOutside([menuRef as RefObject<HTMLElement>], () => setIsDaoOpen(false))
-  useOnClickOutside([mobileMenuRef as RefObject<HTMLElement>], () => setIsMobileMenuOpen(false))
+  useOnClickOutside([mobileMenuRef as RefObject<HTMLElement>, mobileMenuTriggerRef as RefObject<HTMLElement>], () =>
+    setIsMobileMenuOpen(false)
+  )
 
   const isMobile = useMediaQuery(Media.upToLarge(false))
 
-  const handleMobileMenuToggle = () => {
-    setIsMobileMenuOpen((prevState) => !prevState)
+  const handleMobileMenuToggle = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation() // Stop the event from bubbling up
+    setIsMobileMenuOpen(!isMobileMenuOpen) // Directly set to opposite of current state
   }
 
-  // Add/remove noScroll class to body when mobile menu is opened/closed
   React.useEffect(() => {
     if (isMobile) {
       if (isMobileMenuOpen || isDaoOpen) {
@@ -398,7 +383,6 @@ export const MenuBar = (props: MenuBarProps) => {
           <NavDaoTrigger isOpen={isDaoOpen} setIsOpen={setIsDaoOpen} theme={theme} mobileMode={isMobile} />
           <ProductLogo variant={productVariant} theme={theme} logoIconOnly={isMobile} />
 
-          {/* Only render NavItems if the screen size is large */}
           {!isMobile && (
             <NavItems theme={styledTheme}>
               {navItems.map((item, index) => (
@@ -407,12 +391,11 @@ export const MenuBar = (props: MenuBarProps) => {
             </NavItems>
           )}
 
-          {/* Always show GlobalSettingsDropdown and MobileMenuTrigger */}
           <RightAligned>
             {!isMobile && additionalContent}
 
             {isMobile && (
-              <MobileMenuTrigger theme={styledTheme} onClick={handleMobileMenuToggle}>
+              <MobileMenuTrigger ref={mobileMenuTriggerRef} theme={styledTheme} onClick={handleMobileMenuToggle}>
                 <SVG src={isMobileMenuOpen ? IMG_ICON_X : IMG_ICON_MENU_HAMBURGER} />
               </MobileMenuTrigger>
             )}
@@ -420,14 +403,12 @@ export const MenuBar = (props: MenuBarProps) => {
           </RightAligned>
         </MenuBarInner>
 
-        {/* Mobile Menu */}
         {isMobile && isMobileMenuOpen && (
           <NavItems mobileMode={isMobile} ref={mobileMenuRef} theme={styledTheme}>
             <div>
               {navItems.map((item, index) => (
                 <NavItem key={index} item={item} mobileMode={isMobile} />
               ))}
-              {/* Render additional content within the NavItems in mobile view */}
               {additionalContent}
             </div>
           </NavItems>
