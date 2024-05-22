@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.1.0...common-const-v1.2.0) (2024-05-22)
+
+
+### Features
+
+* **wallets:** support eip6963 multi-injected providers ([#4416](https://github.com/cowprotocol/cowswap/issues/4416)) ([85a78bb](https://github.com/cowprotocol/cowswap/commit/85a78bbfe9b0a8fe5428b25aba0b38944b10987d))
+
 ## [1.1.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.0.0...common-const-v1.1.0) (2024-04-11)
 
 
