@@ -21,7 +21,7 @@ const Label = styled.span<{ color: string }>`
   border: 2px ${({ color }) => color} solid;
   padding: 4px 4px;
   margin: 0 0 0 0.5em;
-  border-radius: 1rem;
+  border-radius: 8px;
 `
 
 const Format = styled.strong`
