@@ -23,6 +23,7 @@
     "build:cowfi": "nx build cow-fi",
     "build:cosmos": "nx run cowswap-frontend:build:cosmos",
     "ci:build": "yarn run build:cowswap && yarn run build-widget",
+    "nx": "npx nx run",
     "ipfs": "nx run cowswap-frontend:ipfs",
     "i18n": "nx run-many -t i18n",
     "preview": "nx run cowswap-frontend:preview",
