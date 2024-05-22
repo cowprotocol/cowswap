@@ -11,6 +11,7 @@ import { decodeAppData } from 'modules/appData/utils/decodeAppData'
 import { getIsComposableCowParentOrder } from 'utils/orderUtils/getIsComposableCowParentOrder'
 import { getOrderSurplus } from 'utils/orderUtils/getOrderSurplus'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
+import type { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import { Order, updateOrder, UpdateOrderParams as UpdateOrderParamsAction } from './actions'
 import { OUT_OF_MARKET_PRICE_DELTA_PERCENTAGE } from './consts'
@@ -226,17 +227,8 @@ export function getEstimatedExecutionPrice(
 ): Price<Currency, Currency> | null {
   // Build CurrencyAmount and Price instances
   const feeAmount = CurrencyAmount.fromRawAmount(order.inputToken, fee)
-  // Always use original amounts for building the limit price, as this will never change
-  const inputAmount = CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount.toString())
-  const outputAmount = CurrencyAmount.fromRawAmount(order.outputToken, order.buyAmount.toString())
   // Take partner fee into account when calculating the limit price
-  const { inputCurrencyAmount, outputCurrencyAmount } = getOrderAmountsWithPartnerFee(
-    order.fullAppData,
-    inputAmount,
-    outputAmount,
-    isSellOrder(order.kind)
-  )
-  const limitPrice = buildPriceFromCurrencyAmounts(inputCurrencyAmount, outputCurrencyAmount)
+  const limitPrice = getOrderLimitPriceWithPartnerFee(order)
 
   if (getUiOrderType(order) === UiOrderType.SWAP) {
     return limitPrice
@@ -413,4 +405,18 @@ export function getOrderAmountsWithPartnerFee(
     inputCurrencyAmount: sellAmount.divide(ONE_HUNDRED_PERCENT.add(partnerFeePercent)),
     outputCurrencyAmount: buyAmount,
   }
+}
+
+export function getOrderLimitPriceWithPartnerFee(order: Order | ParsedOrder): Price<Currency, Currency> {
+  const inputAmount = CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount.toString())
+  const outputAmount = CurrencyAmount.fromRawAmount(order.outputToken, order.buyAmount.toString())
+
+  const { inputCurrencyAmount, outputCurrencyAmount } = getOrderAmountsWithPartnerFee(
+    order.fullAppData,
+    inputAmount,
+    outputAmount,
+    isSellOrder(order.kind)
+  )
+
+  return buildPriceFromCurrencyAmounts(inputCurrencyAmount, outputCurrencyAmount)
 }

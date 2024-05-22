@@ -2,7 +2,7 @@ import { useENS } from '@cowprotocol/ens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
-import JSBI from 'jsbi'
+import { getOrderLimitPriceWithPartnerFee } from 'legacy/state/orders/utils'
 
 import { PendingOrdersPrices } from 'modules/orders/state/pendingOrdersPricesAtom'
 import { useTwapOrderByChildId, useTwapOrderById } from 'modules/twap'
@@ -41,15 +41,8 @@ export function OrdersReceiptModal(props: OrdersReceiptModalProps) {
   const sellAmountCurrency = CurrencyAmount.fromRawAmount(inputToken, sellAmount.toString())
   const buyAmountCurrency = CurrencyAmount.fromRawAmount(outputToken, buyAmount.toString())
 
-  // Limit price
-  const limitPrice = calculatePrice({
-    buyAmount: JSBI.BigInt(buyAmount.toString()),
-    sellAmount: JSBI.BigInt(sellAmount.toString()),
-    inputToken,
-    outputToken,
-  })
+  const limitPrice = getOrderLimitPriceWithPartnerFee(order)
 
-  // Execution price
   const executionPrice = calculatePrice({
     buyAmount: executedBuyAmount,
     sellAmount: executedSellAmount,
