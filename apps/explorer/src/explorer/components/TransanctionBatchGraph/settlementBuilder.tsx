@@ -1,9 +1,10 @@
+import { getBlockExplorerUrl } from '@cowprotocol/common-utils'
+
 import BigNumber from 'bignumber.js'
 
 import { getContractTrades, getTokenAddress } from './nodesBuilder'
 import { Accounts, Dict, Settlement } from './types'
 
-import { getBlockExplorerUrl } from '@cowprotocol/common-utils'
 import { Order } from '../../../api/operator'
 import { accountAddressesInvolved, getAliasFromAddress, PublicTrade, Transfer } from '../../../api/tenderly'
 import { TransactionData } from '../../../hooks/useTransactionData'
