@@ -56,7 +56,13 @@ module.exports = [
               name: 'styled-components',
               message: 'Please import from styled-components/macro.',
             },
+            {
+              name: 'react-router-dom',
+              importNames: ['useNavigate'],
+              message: "Please import useNavigate from our own common package instead: 'common/hooks/useNavigate'",
+            },
           ],
+
           patterns: [
             {
               group: ['**/dist'],
