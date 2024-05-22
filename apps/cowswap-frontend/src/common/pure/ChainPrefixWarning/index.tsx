@@ -11,8 +11,8 @@ const Wrapper = styled(WarningCard)`
 `
 
 const NetworkImg = styled.img`
-  width: 12px;
-  height: 12px;
+  width: 15px;
+  height: 15px;
 `
 
 const Label = styled.span<{ color: string }>`
@@ -21,6 +21,7 @@ const Label = styled.span<{ color: string }>`
   border: 2px ${({ color }) => color} solid;
   padding: 4px 4px;
   margin: 0 0 0 0.5em;
+  border-radius: 1rem;
 `
 
 const Format = styled.strong`
