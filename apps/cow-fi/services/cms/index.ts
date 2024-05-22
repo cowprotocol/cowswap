@@ -7,6 +7,19 @@ const PAGE_SIZE = 50
 
 type Schemas = components['schemas']
 export type Article = Schemas['ArticleListResponseDataItem']
+
+export type ArticleListResponse = {
+  data: Article[]
+  meta: {
+    pagination: {
+      page: number
+      pageSize: number
+      pageCount: number
+      total: number
+    }
+  }
+}
+
 export type SharedMediaComponent = Schemas['SharedMediaComponent']
 export type SharedQuoteComponent = Schemas['SharedQuoteComponent']
 export type SharedRichTextComponent = Schemas['SharedRichTextComponent']
@@ -57,8 +70,8 @@ export const client = CmsClient({
  * @returns Slugs
  */
 async function getArticlesSlugs(params: PaginationParam = {}): Promise<string[]> {
-  const articles = await getArticles(params)
-  return articles.map((article) => article.attributes!.slug!)
+  const articlesResponse = await getArticles(params)
+  return articlesResponse.data.map((article: Article) => article.attributes!.slug!)
 }
 
 /**
@@ -133,9 +146,10 @@ export async function getAllCategorySlugs(): Promise<string[]> {
  *
  * @returns Articles for the given page
  */
-export async function getArticles({ page = 0, pageSize = PAGE_SIZE }: PaginationParam = {}): Promise<Article[]> {
-  console.log('[getArticles] fetching page', page)
-
+export async function getArticles({
+  page = 0,
+  pageSize = PAGE_SIZE,
+}: PaginationParam = {}): Promise<ArticleListResponse> {
   const { data, error, response } = await client.GET('/articles', {
     params: {
       query: {
@@ -158,7 +172,7 @@ export async function getArticles({ page = 0, pageSize = PAGE_SIZE }: Pagination
     throw error
   }
 
-  return data.data
+  return { data: data.data, meta: data.meta }
 }
 
 /**
