@@ -9,6 +9,7 @@ import { CONFIG } from '@/const/meta'
 import LayoutV2 from '@/components/Layout/LayoutV2'
 import { Category, getCategories, getArticles, Article } from 'services/cms'
 import { SearchBar } from '@/components/SearchBar'
+import { ArrowButton } from '@/components/ArrowButton'
 
 const DATA_CACHE_TIME_SECONDS = 5 * 60 // Cache 5min
 
@@ -151,15 +152,26 @@ const Wrapper = styled.div`
   max-width: 1600px;
   width: 100%;
   margin: 76px auto 0;
+  gap: 24px;
 
   h1 {
     font-size: 28px;
     font-weight: ${Font.weight.medium};
     color: ${Color.neutral50};
+    text-align: center;
+
+    ${Media.upToMedium()} {
+      font-size: 18px;
+    }
   }
 
   h2 {
     font-size: 67px;
+    text-align: center;
+
+    ${Media.upToMedium()} {
+      font-size: 38px;
+    }
   }
 `
 
@@ -167,7 +179,7 @@ const ContainerCard = styled.div`
   display: flex;
   flex-flow: row wrap;
   justify-content: center;
-  gap: 24px;
+  gap: 100px;
   margin: 24px 0;
   width: 100%;
   padding: 60px;
@@ -175,15 +187,14 @@ const ContainerCard = styled.div`
   background: ${Color.neutral90};
 
   ${Media.upToMedium()} {
-    padding: 24px;
-    gap: 16px;
+    padding: 48px 32px;
   }
 `
 
 const ContainerCardSection = styled.div`
   display: flex;
   flex-flow: row wrap;
-  gap: 24px;
+  gap: 42px;
   width: 100%;
   justify-content: space-between;
   align-items: center;
@@ -201,6 +212,10 @@ const ContainerCardSectionTop = styled.div`
     font-size: 38px;
     font-weight: ${Font.weight.bold};
     color: ${Color.neutral10};
+
+    ${Media.upToMedium()} {
+      font-size: 28px;
+    }
   }
 `
 
@@ -482,7 +497,7 @@ export default function Learn({ siteConfigData, categories, articles }: LearnPro
           <ContainerCardSection>
             <ContainerCardSectionTop>
               <h3>Featured articles</h3>
-              <button>View all articles</button>
+              <ArrowButton link="/articles" text="View all articles" />
             </ContainerCardSectionTop>
             <ArticleList>
               {FEATURED_ARTICLES.map(({ title, description, color, link, linkExternal }, index) => (
@@ -517,7 +532,7 @@ export default function Learn({ siteConfigData, categories, articles }: LearnPro
           <ContainerCardSection>
             <ContainerCardSectionTop>
               <h3>Podcasts & Spaces</h3>
-              <button>View all</button>
+              <ArrowButton link="/articles" text="View all" />
             </ContainerCardSectionTop>
             <LinkSection>
               <LinkColumn>
@@ -545,7 +560,7 @@ export default function Learn({ siteConfigData, categories, articles }: LearnPro
           <ContainerCardSection>
             <ContainerCardSectionTop>
               <h3>Media coverage</h3>
-              <button>View all</button>
+              <ArrowButton link="/articles" text="View all" />
             </ContainerCardSectionTop>
             <ArticleList columns={4}>
               {MEDIA_COVERAGE.map(({ image, title, publisher, link, linkExternal }, index) => (

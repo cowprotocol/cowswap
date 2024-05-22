@@ -11,6 +11,10 @@ const SearchBarContainer = styled.div`
   max-width: 970px;
   margin: 16px 0;
   position: relative;
+
+  ${Media.upToMedium()} {
+    padding: 0 16px;
+  }
 `
 
 const Input = styled.input`
@@ -25,6 +29,11 @@ const Input = styled.input`
   appearance: none;
   font-weight: ${Font.weight.medium};
   transition: border 0.2s ease-in-out;
+
+  ${Media.upToMedium()} {
+    font-size: 18px;
+    padding: 16px 50px 16px 24px;
+  }
 
   &:focus {
     outline: none;
@@ -54,6 +63,11 @@ const SearchResults = styled.div`
   border: 1px solid ${Color.neutral80};
   font-size: 15px;
   z-index: 10;
+
+  ${Media.upToMedium()} {
+    left: 16px;
+    max-width: calc(100% - 32px);
+  }
 `
 
 const SearchResultsInner = styled.div`
@@ -80,6 +94,10 @@ const ResultItem = styled.a`
     background: ${Color.neutral80};
     border-radius: 24px;
   }
+
+  &:active {
+    color: ${Color.neutral0};
+  }
 `
 
 const HighlightedText = styled.span`
@@ -104,13 +122,18 @@ const CloseIcon = styled.div`
   cursor: pointer;
   background: ${Color.neutral90};
   color: ${Color.neutral60};
-  padding: 7px;
+  padding: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
   width: var(--size);
   height: var(--size);
   border-radius: var(--size);
+
+  ${Media.upToMedium()} {
+    --size: 28px;
+    right: 28px;
+  }
 
   &:hover {
     background: ${Color.neutral80};
@@ -121,12 +144,6 @@ const CloseIcon = styled.div`
     height: 100%;
     fill: currentColor;
   }
-
-  /* &::before {
-    content: '×';
-    font-size: 24px;
-    color: ${Color.neutral60};
-  } */
 `
 
 interface SearchBarProps {
@@ -169,7 +186,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ articles }) => {
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         onFocus={() => setIsFocused(true)}
-        onBlur={() => setIsFocused(false)}
+        onBlur={() => setTimeout(() => setIsFocused(false), 200)}
       />
       {query && (
         <CloseIcon onClick={handleClear}>

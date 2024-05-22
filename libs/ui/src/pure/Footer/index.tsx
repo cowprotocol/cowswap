@@ -61,17 +61,22 @@ const PRODUCT_LOGO_LINKS: { href: string; label: string; productVariant: Product
 export const Footer = ({ description, navItems, theme, additionalFooterContent, expanded = false }: FooterProps) => {
   const [isFooterExpanded, setIsFooterExpanded] = useState(expanded)
   const footerRef = useRef<HTMLDivElement>(null)
+  const hasMounted = useRef(false)
 
   const toggleFooter = () => {
     setIsFooterExpanded(!isFooterExpanded)
   }
 
   useEffect(() => {
-    if (isFooterExpanded && footerRef.current) {
-      footerRef.current.scrollIntoView({ behavior: 'smooth' })
-    } else if (!isFooterExpanded && footerRef.current) {
-      const offset = footerRef.current.getBoundingClientRect().top + window.pageYOffset - 80
-      window.scrollTo({ top: offset, behavior: 'smooth' })
+    if (hasMounted.current) {
+      if (isFooterExpanded && footerRef.current) {
+        footerRef.current.scrollIntoView({ behavior: 'smooth' })
+      } else if (!isFooterExpanded && footerRef.current) {
+        const offset = footerRef.current.getBoundingClientRect().top + window.pageYOffset - 80
+        window.scrollTo({ top: offset, behavior: 'smooth' })
+      }
+    } else {
+      hasMounted.current = true
     }
   }, [isFooterExpanded])
 
