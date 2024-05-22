@@ -1,4 +1,4 @@
-import { CowSwapTheme } from '@cowprotocol/ui'
+import type { CowSwapTheme } from '@cowprotocol/ui'
 
 import { CowSwapWidgetPalette } from './types'
 

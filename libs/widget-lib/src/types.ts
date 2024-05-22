@@ -1,6 +1,6 @@
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CowEventListeners, CowEventPayloadMap, CowEvents } from '@cowprotocol/events'
-import { CowSwapTheme } from '@cowprotocol/ui'
+import type { CowSwapTheme } from '@cowprotocol/ui'
 export type { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 export enum WidgetMethodsEmit {
