@@ -18,6 +18,7 @@ import { MEDIA_WIDTHS } from 'legacy/theme'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useOnSelectNetwork } from 'common/hooks/useOnSelectNetwork'
 import { NetworksList } from 'common/pure/NetworksList'
+import { useIsDarkMode } from 'legacy/state/user/hooks'
 
 const FlyoutHeader = styled.div`
   color: inherit;
@@ -163,6 +164,8 @@ export function NetworkSelector() {
 
   const onSelectChain = useOnSelectNetwork()
   const isUpToMedium = useMediaQuery(upToMedium)
+  const isDarkMode = useIsDarkMode()
+  const logoUrl = isDarkMode ? info.logo.dark : info.logo.light
 
   if (!provider || isSmartContractWallet) {
     return null
@@ -178,7 +181,7 @@ export function NetworkSelector() {
       <SelectorControls isChainIdUnsupported={isChainIdUnsupported}>
         {!isChainIdUnsupported ? (
           <>
-            <SelectorLogo src={info?.logoUrl} />
+            <SelectorLogo src={logoUrl} />
             <SelectorLabel>{info?.label}</SelectorLabel>
             <StyledChevronDown />
           </>
@@ -196,7 +199,7 @@ export function NetworkSelector() {
             <FlyoutHeader>
               <Trans>Select a network</Trans>
             </FlyoutHeader>
-            <NetworksList currentChainId={isChainIdUnsupported ? null : chainId} onSelectChain={onSelectChain} />
+            <NetworksList currentChainId={isChainIdUnsupported ? null : chainId} isDarkMode={isDarkMode} onSelectChain={onSelectChain} />
           </FlyoutMenuContents>
         </FlyoutMenu>
       )}
