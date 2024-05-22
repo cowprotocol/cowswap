@@ -48,9 +48,6 @@ const FortuneButton = styled.div<{ isDailyFortuneChecked: boolean }>`
     color: ${Color.neutral100};
   }
 
-  ${Media.upToMedium} {
-  }
-
   > span {
     display: block;
     line-height: 1;

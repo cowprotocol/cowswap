@@ -78,6 +78,7 @@ const ScrollingContentWrapper = styled.div`
 export const FooterAnimation = ({ theme }: { theme: CowSwapTheme }) => {
   const containerRef = useRef<HTMLDivElement>(null)
   const contentRef = useRef<HTMLDivElement>(null)
+  const styledTheme = themeMapper(theme)
 
   useEffect(() => {
     if (containerRef.current && contentRef.current) {
@@ -93,8 +94,8 @@ export const FooterAnimation = ({ theme }: { theme: CowSwapTheme }) => {
   }, [])
 
   return (
-    <ThemeProvider theme={themeMapper(theme)}>
-      <FooterAnimationContainer theme={theme} ref={containerRef}>
+    <ThemeProvider theme={styledTheme}>
+      <FooterAnimationContainer theme={styledTheme} ref={containerRef}>
         <ScrollingContent ref={contentRef}>
           <ScrollingContentWrapper>
             <b>MOOOOOOOOOOOOOOOOOO</b>

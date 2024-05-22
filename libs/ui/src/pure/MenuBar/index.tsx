@@ -32,7 +32,7 @@ import IMG_ICON_X from '@cowprotocol/assets/images/x.svg'
 
 import { addBodyClass, removeBodyClass } from '@cowprotocol/common-utils'
 import { CowSwapTheme } from '@cowprotocol/widget-lib'
-import { ThemeProvider } from 'styled-components'
+import styled, { ThemeProvider } from 'styled-components'
 
 // NavItem Component: Handles individual navigation items, toggles dropdowns based on presence of children.
 // DropdownContentItem Component: Renders items within dropdowns, constructs logo variants based on the theme.
@@ -365,6 +365,7 @@ export const MenuBar = (props: MenuBarProps) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const menuRef = useRef(null)
   const mobileMenuRef = useRef(null)
+  const styledTheme = themeMapper(theme)
 
   useOnClickOutside([menuRef as RefObject<HTMLElement>], () => setIsDaoOpen(false))
   useOnClickOutside([mobileMenuRef as RefObject<HTMLElement>], () => setIsMobileMenuOpen(false))
@@ -391,7 +392,7 @@ export const MenuBar = (props: MenuBarProps) => {
   }, [isMobile, isMobileMenuOpen, isDaoOpen])
 
   return (
-    <ThemeProvider theme={themeMapper(theme)}>
+    <ThemeProvider theme={styledTheme}>
       <MenuBarWrapper ref={menuRef}>
         <MenuBarInner theme={theme}>
           <NavDaoTrigger isOpen={isDaoOpen} setIsOpen={setIsDaoOpen} theme={theme} mobileMode={isMobile} />
