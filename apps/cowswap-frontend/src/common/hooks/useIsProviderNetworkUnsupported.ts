@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 
 import { useWalletChainId } from '@cowprotocol/wallet-provider'
 
-import { useAvailableChains } from './useAvailableChains'
+import { useAvailableChains } from '@cowprotocol/common-hooks'
 
 export function useIsProviderNetworkUnsupported(): boolean {
   const chainId = useWalletChainId()

@@ -1,8 +1,9 @@
 import { useMemo } from 'react'
 
-import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { getAvailableChains } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+
+import { useFeatureFlags } from './index'
 
 export function useAvailableChains(): SupportedChainId[] {
   const { isArbitrumOneEnabled } = useFeatureFlags()

@@ -1,3 +1,4 @@
+export * from './useAvailableChains'
 export * from './useDebounce'
 export * from './usePrevious'
 export * from './useParsedQueryString'

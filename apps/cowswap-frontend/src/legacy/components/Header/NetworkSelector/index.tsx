@@ -16,7 +16,7 @@ import { ApplicationModal } from 'legacy/state/application/reducer'
 import { useIsDarkMode } from 'legacy/state/user/hooks'
 import { MEDIA_WIDTHS } from 'legacy/theme'
 
-import { useAvailableChains } from 'common/hooks/useAvailableChains'
+import { useAvailableChains } from '@cowprotocol/common-hooks'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useOnSelectNetwork } from 'common/hooks/useOnSelectNetwork'
 import { NetworksList } from 'common/pure/NetworksList'
@@ -202,7 +202,12 @@ export function NetworkSelector() {
             <FlyoutHeader>
               <Trans>Select a network</Trans>
             </FlyoutHeader>
-            <NetworksList currentChainId={isChainIdUnsupported ? null : chainId} isDarkMode={isDarkMode} onSelectChain={onSelectChain} availableChains={availableChains} />
+            <NetworksList
+              currentChainId={isChainIdUnsupported ? null : chainId}
+              isDarkMode={isDarkMode}
+              onSelectChain={onSelectChain}
+              availableChains={availableChains}
+            />
           </FlyoutMenuContents>
         </FlyoutMenu>
       )}
