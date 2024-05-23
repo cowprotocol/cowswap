@@ -7,15 +7,14 @@ import {
   parsePrefixedAddress,
 } from '@cowprotocol/common-utils'
 import { useENS } from '@cowprotocol/ens'
-import { RowBetween } from '@cowprotocol/ui'
-import { ExternalLink } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
+import { ExternalLink, RowBetween, UI } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { t, Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
 
 import { AutoColumn } from 'legacy/components/Column'
+import { useIsDarkMode } from 'legacy/state/user/hooks'
 
 import ChainPrefixWarning from 'common/pure/ChainPrefixWarning'
 import { autofocus } from 'common/utils/autofocus'
@@ -104,6 +103,7 @@ export function AddressInputPanel({
   const chainInfo = getChainInfo(chainId)
   const { address, loading, name } = useENS(value)
   const [chainPrefixWarning, setChainPrefixWarning] = useState('')
+  const isDarkMode = useIsDarkMode()
 
   const handleInput = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
@@ -139,7 +139,7 @@ export function AddressInputPanel({
 
   return (
     <InputPanel id={id}>
-      {chainPrefixWarning && <ChainPrefixWarning chainPrefixWarning={chainPrefixWarning} chainInfo={chainInfo} />}
+      {chainPrefixWarning && <ChainPrefixWarning chainPrefixWarning={chainPrefixWarning} chainInfo={chainInfo} isDarkMode={isDarkMode} />}
       <ContainerRow error={error}>
         <InputContainer>
           <AutoColumn gap="md">
