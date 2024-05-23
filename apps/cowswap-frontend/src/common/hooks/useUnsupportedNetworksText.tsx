@@ -1,8 +1,8 @@
 import { getChainInfo } from '@cowprotocol/common-const'
+import { useAvailableChains } from '@cowprotocol/common-hooks'
 
 import { Trans } from '@lingui/macro'
 
-import { useAvailableChains } from '@cowprotocol/common-hooks'
 
 export function useUnsupportedNetworksText(): JSX.Element {
   const availableChains = useAvailableChains()

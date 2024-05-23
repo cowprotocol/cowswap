@@ -1,6 +1,7 @@
 import { useRef } from 'react'
 
 import { getChainInfo } from '@cowprotocol/common-const'
+import { useAvailableChains } from '@cowprotocol/common-hooks'
 import { UI } from '@cowprotocol/ui'
 import { useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
@@ -16,7 +17,6 @@ import { ApplicationModal } from 'legacy/state/application/reducer'
 import { useIsDarkMode } from 'legacy/state/user/hooks'
 import { MEDIA_WIDTHS } from 'legacy/theme'
 
-import { useAvailableChains } from '@cowprotocol/common-hooks'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useOnSelectNetwork } from 'common/hooks/useOnSelectNetwork'
 import { NetworksList } from 'common/pure/NetworksList'
