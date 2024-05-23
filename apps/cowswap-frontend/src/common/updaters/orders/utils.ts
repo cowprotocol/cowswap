@@ -1,17 +1,13 @@
 import { formatSymbol, formatTokenAmount, isSellOrder, shortenAddress } from '@cowprotocol/common-utils'
 import { EnrichedOrder, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 
-import { Order, OrderFulfillmentData, OrderStatus } from 'legacy/state/orders/actions'
+import { Order, OrderStatus } from 'legacy/state/orders/actions'
 import { classifyOrder, OrderTransitionStatus } from 'legacy/state/orders/utils'
 import { stringToCurrency } from 'legacy/state/swap/extension'
 
 import { getOrder } from 'api/gnosisProtocol'
 import { getIsComposableCowChildOrder } from 'utils/orderUtils/getIsComposableCowChildOrder'
 import { getUiOrderType, ORDER_UI_TYPE_TITLES, UiOrderTypeParams } from 'utils/orderUtils/getUiOrderType'
-
-type OrderID = string
-
-export type OrderLogPopupMixData = OrderFulfillmentData | OrderID
 
 export function computeOrderSummary({
   orderFromStore,
@@ -87,6 +83,16 @@ export async function fetchAndClassifyOrder(orderFromStore: Order, chainId: Chai
     const isComposableCowChildOrder = getIsComposableCowChildOrder(orderFromStore)
     // For ComposableCow child orders always request PROD order-book
     const order = await getOrder(chainId, orderFromStore.id, isComposableCowChildOrder ? 'prod' : undefined)
+
+    // TODO: remove after test
+    if (
+      order?.uid ===
+      '0xfbc02116477e1d722ce60e5306fcbbd8c9738ca4541ccfbef72fd86db9dd4c98fb3c7eb936caa12b5a884d612393969a557d430766583061'
+    ) {
+      order.executedSellAmount = '499989000000000000'
+      order.executedSellAmountBeforeFees = '499989000000000000'
+      order.status = 'open' as any
+    }
 
     if (!order) return null
 
