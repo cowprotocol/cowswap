@@ -67,7 +67,11 @@ const mediaWidthTemplates: { [width in keyof typeof MEDIA_WIDTHS]: typeof css } 
   {}
 ) as any
 
-export function getTheme(darkMode: boolean): DefaultThemeUniswap {
+interface ExtendedDefaultThemeUniswap extends DefaultThemeUniswap {
+  mode: 'light' | 'dark'
+}
+
+export function getTheme(darkMode: boolean): ExtendedDefaultThemeUniswap {
   return {
     ...colors(darkMode),
 
@@ -92,6 +96,8 @@ export function getTheme(darkMode: boolean): DefaultThemeUniswap {
       display: flex;
       flex-flow: row nowrap;
     `,
+
+    mode: darkMode ? 'dark' : 'light',
   }
 }
 
@@ -173,6 +179,8 @@ export function theme(darkmode: boolean, isInjectedWidgetMode: boolean): Default
     // Override Theme
     ...baseThemeVariables(darkmode, colorsTheme),
     mediaWidth: mediaWidthTemplates,
+
+    mode: darkmode ? 'dark' : 'light',
   }
 }
 

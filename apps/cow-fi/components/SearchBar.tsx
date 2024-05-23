@@ -226,7 +226,11 @@ export const SearchBar: React.FC<SearchBarProps> = ({ articles }) => {
   const highlightQuery = (text: string, query: string) => {
     const parts = text.split(new RegExp(`(${query})`, 'gi'))
     return parts.map((part, index) =>
-      part.toLowerCase() === query.toLowerCase() ? <HighlightedText key={index}>{part}</HighlightedText> : part
+      part.toLowerCase() === query.toLowerCase() ? (
+        <HighlightedText key={index}>{part}</HighlightedText>
+      ) : (
+        <span key={index}>{part}</span>
+      )
     )
   }
 

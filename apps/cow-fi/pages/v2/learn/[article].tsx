@@ -113,7 +113,8 @@ const BodyContent = styled.div`
   }
 
   > p,
-  > ul {
+  > ul,
+  > ol {
     margin-bottom: 16px;
     font-size: 21px;
     line-height: 1.4;
@@ -123,12 +124,12 @@ const BodyContent = styled.div`
     }
   }
 
-  > ul {
-    list-style: disc;
+  > ul,
+  > ol {
     padding-left: 20px;
 
     > li {
-      margin: 0 0 16px;
+      margin: 0 0 24px;
       font-size: inherit;
     }
   }
