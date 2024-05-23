@@ -1,14 +1,16 @@
 import { useMemo } from 'react'
 
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletChainId } from '@cowprotocol/wallet-provider'
+
+import { useAvailableChains } from './useAvailableChains'
 
 export function useIsProviderNetworkUnsupported(): boolean {
   const chainId = useWalletChainId()
+  const availableChains = useAvailableChains()
 
   return useMemo(() => {
     if (!chainId) return false
 
-    return !(chainId in SupportedChainId)
-  }, [chainId])
+    return availableChains.indexOf(chainId) === -1
+  }, [chainId, availableChains])
 }

@@ -16,6 +16,7 @@ import { ApplicationModal } from 'legacy/state/application/reducer'
 import { useIsDarkMode } from 'legacy/state/user/hooks'
 import { MEDIA_WIDTHS } from 'legacy/theme'
 
+import { useAvailableChains } from 'common/hooks/useAvailableChains'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useOnSelectNetwork } from 'common/hooks/useOnSelectNetwork'
 import { NetworksList } from 'common/pure/NetworksList'
@@ -150,6 +151,7 @@ const NetworkAlertLabel = styled.div`
   }
 `
 
+
 export function NetworkSelector() {
   const provider = useWalletProvider()
   const { chainId } = useWalletInfo()
@@ -166,6 +168,8 @@ export function NetworkSelector() {
   const isUpToMedium = useMediaQuery(upToMedium)
   const isDarkMode = useIsDarkMode()
   const logoUrl = isDarkMode ? info.logo.dark : info.logo.light
+
+  const availableChains = useAvailableChains()
 
   if (!provider || isSmartContractWallet) {
     return null
@@ -199,7 +203,7 @@ export function NetworkSelector() {
             <FlyoutHeader>
               <Trans>Select a network</Trans>
             </FlyoutHeader>
-            <NetworksList currentChainId={isChainIdUnsupported ? null : chainId} isDarkMode={isDarkMode} onSelectChain={onSelectChain} />
+            <NetworksList currentChainId={isChainIdUnsupported ? null : chainId} isDarkMode={isDarkMode} onSelectChain={onSelectChain} availableChains={availableChains} />
           </FlyoutMenuContents>
         </FlyoutMenu>
       )}
