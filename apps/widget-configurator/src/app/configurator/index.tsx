@@ -1,7 +1,8 @@
 import { ChangeEvent, useContext, useEffect, useMemo, useState } from 'react'
 
+import { getAvailableChains } from '@cowprotocol/common-utils'
 import { CowEventListeners } from '@cowprotocol/events'
-import { CowSwapWidgetParams, TradeType, TokenInfo } from '@cowprotocol/widget-lib'
+import { CowSwapWidgetParams, SupportedChainId, TokenInfo, TradeType } from '@cowprotocol/widget-lib'
 import { CowSwapWidget } from '@cowprotocol/widget-react'
 
 import ChromeReaderModeIcon from '@mui/icons-material/ChromeReaderMode'
@@ -10,7 +11,7 @@ import CodeIcon from '@mui/icons-material/Code'
 import EditIcon from '@mui/icons-material/Edit'
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft'
 import LanguageIcon from '@mui/icons-material/Language'
-import { Radio, RadioGroup, FormControlLabel, FormControl, FormLabel, Snackbar, IconButton } from '@mui/material'
+import { FormControl, FormControlLabel, FormLabel, IconButton, Radio, RadioGroup, Snackbar } from '@mui/material'
 import Box from '@mui/material/Box'
 import Divider from '@mui/material/Divider'
 import Drawer from '@mui/material/Drawer'
@@ -21,8 +22,9 @@ import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
 import Typography from '@mui/material/Typography'
 import { useWeb3ModalAccount, useWeb3ModalTheme } from '@web3modal/ethers5/react'
+import { useFlags } from 'launchdarkly-react-client-sdk'
 
-import { COW_LISTENERS, DEFAULT_PARTNER_FEE_RECIPIENT, DEFAULT_TOKEN_LISTS, TRADE_MODES, IS_IFRAME } from './consts'
+import { COW_LISTENERS, DEFAULT_PARTNER_FEE_RECIPIENT, DEFAULT_TOKEN_LISTS, IS_IFRAME, TRADE_MODES } from './consts'
 import { CurrencyInputControl } from './controls/CurrencyInputControl'
 import { CurrentTradeTypeControl } from './controls/CurrentTradeTypeControl'
 import { CustomImagesControl } from './controls/CustomImagesControl'
@@ -31,7 +33,7 @@ import { NetworkControl, NetworkOption, NetworkOptions } from './controls/Networ
 import { PaletteControl } from './controls/PaletteControl'
 import { PartnerFeeControl } from './controls/PartnerFeeControl'
 import { ThemeControl } from './controls/ThemeControl'
-import { TokenListControl } from './controls/TokenListControl' // Adjust the import path as needed
+import { TokenListControl } from './controls/TokenListControl'
 import { TradeModesControl } from './controls/TradeModesControl'
 import { useColorPaletteManager } from './hooks/useColorPaletteManager'
 import { useEmbedDialogState } from './hooks/useEmbedDialogState'
@@ -41,6 +43,7 @@ import { useToastsManager } from './hooks/useToastsManager'
 import { useWidgetParams } from './hooks/useWidgetParamsAndSettings'
 import { ContentStyled, DrawerStyled, WalletConnectionWrapper, WrapperStyled } from './styled'
 import { ConfiguratorState, TokenListItem } from './types'
+
 
 import { ColorModeContext } from '../../theme/ColorModeContext'
 import { connectWalletToConfiguratorGA } from '../analytics'
@@ -175,6 +178,9 @@ export function Configurator({ title }: { title: string }) {
 
   useSyncWidgetNetwork(chainId, setNetworkControlState, standaloneMode)
 
+  const { isArbitrumOneEnabled } = useFlags()
+  const availableChains = useMemo(() => getAvailableChains(isArbitrumOneEnabled ? undefined : [SupportedChainId.ARBITRUM_ONE]), [isArbitrumOneEnabled])
+
   return (
     <Box sx={WrapperStyled}>
       {!isDrawerOpen && (
@@ -224,7 +230,7 @@ export function Configurator({ title }: { title: string }) {
 
         <CurrentTradeTypeControl state={tradeTypeState} />
 
-        {!IS_IFRAME && <NetworkControl state={networkControlState} standaloneMode={standaloneMode} />}
+        {!IS_IFRAME && <NetworkControl state={networkControlState} standaloneMode={standaloneMode} availableChains={availableChains} />}
 
         <Divider variant="middle">Tokens</Divider>
 
