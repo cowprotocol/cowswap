@@ -19,8 +19,10 @@ module.exports = [
       import: eslintImport,
     },
   },
+
+  // All Project's rules
   {
-    files: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx'],
+    files: ['**/*.{ts,tsx,js,jsx}'],
     rules: {
       '@nx/enforce-module-boundaries': [
         'error',
@@ -55,11 +57,6 @@ module.exports = [
             {
               name: 'styled-components',
               message: 'Please import from styled-components/macro.',
-            },
-            {
-              name: 'react-router-dom',
-              importNames: ['useNavigate'],
-              message: "Please import useNavigate from our own common package instead: 'common/hooks/useNavigate'",
             },
           ],
 
@@ -129,6 +126,36 @@ module.exports = [
       'no-var': 'error',
     },
   },
+
+  // CoW Swap's rules
+  {
+    files: ['apps/cowswap-frontend/**/*.{ts,tsx,js,jsx}'],
+    rules: {      
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            {
+              name: 'react-router-dom',
+              importNames: ['useNavigate'],
+              message: "Please import useNavigate from our own common package instead: 'common/hooks/useNavigate'",
+            },
+          ],
+
+          patterns: [
+            {
+              group: ['**/dist'],
+              message: 'Do not import from dist/ - this is an implementation detail, and breaks tree-shaking.',
+            },
+            {
+              group: ['!styled-components/macro'],
+            },
+          ],
+        },
+      ],
+    },
+  },
+  
   ...compat.config({ extends: ['plugin:@nx/typescript'] }).map((config) => ({
     ...config,
     files: ['**/*.ts', '**/*.tsx'],
