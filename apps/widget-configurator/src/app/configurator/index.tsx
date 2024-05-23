@@ -1,8 +1,8 @@
 import { ChangeEvent, useContext, useEffect, useMemo, useState } from 'react'
 
-import { getAvailableChains } from '@cowprotocol/common-utils'
+import { useAvailableChains } from '@cowprotocol/common-hooks'
 import { CowEventListeners } from '@cowprotocol/events'
-import { CowSwapWidgetParams, SupportedChainId, TokenInfo, TradeType } from '@cowprotocol/widget-lib'
+import { CowSwapWidgetParams, TokenInfo, TradeType } from '@cowprotocol/widget-lib'
 import { CowSwapWidget } from '@cowprotocol/widget-react'
 
 import ChromeReaderModeIcon from '@mui/icons-material/ChromeReaderMode'
@@ -22,7 +22,6 @@ import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
 import Typography from '@mui/material/Typography'
 import { useWeb3ModalAccount, useWeb3ModalTheme } from '@web3modal/ethers5/react'
-import { useFlags } from 'launchdarkly-react-client-sdk'
 
 import { COW_LISTENERS, DEFAULT_PARTNER_FEE_RECIPIENT, DEFAULT_TOKEN_LISTS, IS_IFRAME, TRADE_MODES } from './consts'
 import { CurrencyInputControl } from './controls/CurrencyInputControl'
@@ -43,7 +42,6 @@ import { useToastsManager } from './hooks/useToastsManager'
 import { useWidgetParams } from './hooks/useWidgetParamsAndSettings'
 import { ContentStyled, DrawerStyled, WalletConnectionWrapper, WrapperStyled } from './styled'
 import { ConfiguratorState, TokenListItem } from './types'
-
 
 import { ColorModeContext } from '../../theme/ColorModeContext'
 import { connectWalletToConfiguratorGA } from '../analytics'
@@ -178,8 +176,7 @@ export function Configurator({ title }: { title: string }) {
 
   useSyncWidgetNetwork(chainId, setNetworkControlState, standaloneMode)
 
-  const { isArbitrumOneEnabled } = useFlags()
-  const availableChains = useMemo(() => getAvailableChains(isArbitrumOneEnabled ? undefined : [SupportedChainId.ARBITRUM_ONE]), [isArbitrumOneEnabled])
+  const availableChains = useAvailableChains()
 
   return (
     <Box sx={WrapperStyled}>
@@ -230,7 +227,13 @@ export function Configurator({ title }: { title: string }) {
 
         <CurrentTradeTypeControl state={tradeTypeState} />
 
-        {!IS_IFRAME && <NetworkControl state={networkControlState} standaloneMode={standaloneMode} availableChains={availableChains} />}
+        {!IS_IFRAME && (
+          <NetworkControl
+            state={networkControlState}
+            standaloneMode={standaloneMode}
+            availableChains={availableChains}
+          />
+        )}
 
         <Divider variant="middle">Tokens</Divider>
 

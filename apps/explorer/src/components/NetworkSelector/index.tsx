@@ -1,14 +1,11 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 import { CHAIN_INFO, getChainInfo } from '@cowprotocol/common-const'
-import { getAvailableChains } from '@cowprotocol/common-utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { useAvailableChains } from '@cowprotocol/common-hooks'
 
 import { faCheck } from '@fortawesome/free-solid-svg-icons'
-import { useFlags } from 'launchdarkly-react-client-sdk'
 
 import { NetworkLabel, Option, OptionsContainer, SelectorContainer, StyledFAIcon } from './NetworkSelector.styled'
-
 
 import { usePathSuffix } from '../../state/network'
 
@@ -24,8 +21,7 @@ export const NetworkSelector: React.FC<networkSelectorProps> = ({ networkId }) =
   const currentNetworkName = currentNetwork.label.toLowerCase()
   const [open, setOpen] = useState(false)
   const pathSuffix = usePathSuffix()
-  const { isArbitrumOneEnabled } = useFlags()
-  const availableChains = useMemo(() => getAvailableChains(isArbitrumOneEnabled ? undefined : [SupportedChainId.ARBITRUM_ONE]), [isArbitrumOneEnabled])
+  const availableChains = useAvailableChains()
 
   useEffect(() => {
     const closeOpenSelector = (e: MouseEvent | KeyboardEvent): void => {
