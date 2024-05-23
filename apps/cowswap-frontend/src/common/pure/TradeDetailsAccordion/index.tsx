@@ -131,11 +131,18 @@ export const TradeDetailsAccordion = ({
         >
           {!isOpen && (
             <>
-              Fee
               {feeUsdTotalAmount && feeUsdTotalAmount.greaterThan(0) ? (
-                <FiatAmount amount={feeUsdTotalAmount} />
+                <>
+                  Fee <FiatAmount amount={feeUsdTotalAmount} />
+                </>
               ) : (
-                <TokenAmount amount={feeTotalAmount} tokenSymbol={feeTotalAmount?.currency} />
+                <>
+                  {feeTotalAmount && (
+                    <>
+                      Fee <TokenAmount amount={feeTotalAmount} tokenSymbol={feeTotalAmount?.currency} />
+                    </>
+                  )}
+                </>
               )}
             </>
           )}

@@ -37,8 +37,6 @@ export function TradeRates({ open, receiveAmountInfo, children }: TradeRatesProp
 
   const rateInfo = <StyledRateInfo rateInfoParams={rateInfoParams} noLabel={true} />
 
-  if (!receiveAmountInfo) return null
-
   return (
     <TradeDetailsAccordion
       open={open}

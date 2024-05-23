@@ -71,18 +71,20 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
   return (
     <Wrapper>
       <TradeRates open receiveAmountInfo={receiveAmountInfo}>
-        <styledEl.DetailsRow>
-          <ReceiveAmountTitle>{isSell ? 'Expected to receive' : 'Expected to sell'}</ReceiveAmountTitle>
-          <div>
-            <b>
-              <TokenAmount
-                amount={receiveAmountInfo?.amountAfterFees}
-                tokenSymbol={receiveAmountInfo?.amountAfterFees.currency}
-                defaultValue="0"
-              />
-            </b>
-          </div>
-        </styledEl.DetailsRow>
+        {receiveAmountInfo && (
+          <styledEl.DetailsRow>
+            <ReceiveAmountTitle>{isSell ? 'Expected to receive' : 'Expected to sell'}</ReceiveAmountTitle>
+            <div>
+              <b>
+                <TokenAmount
+                  amount={receiveAmountInfo.amountAfterFees}
+                  tokenSymbol={receiveAmountInfo.amountAfterFees.currency}
+                  defaultValue="0"
+                />
+              </b>
+            </div>
+          </styledEl.DetailsRow>
+        )}
         <DividerHorizontal />
         {ordersTableFeatures.DISPLAY_EXECUTION_TIME && executionPrice && (
           <styledEl.DetailsRow>
