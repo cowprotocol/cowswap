@@ -13,12 +13,12 @@ import styled from 'styled-components/macro'
 import { upToMedium, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 import { useCloseModal, useModalIsOpen, useOpenModal, useToggleModal } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
+import { useIsDarkMode } from 'legacy/state/user/hooks'
 import { MEDIA_WIDTHS } from 'legacy/theme'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useOnSelectNetwork } from 'common/hooks/useOnSelectNetwork'
 import { NetworksList } from 'common/pure/NetworksList'
-import { useIsDarkMode } from 'legacy/state/user/hooks'
 
 const FlyoutHeader = styled.div`
   color: inherit;
