@@ -54,6 +54,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
     !state.outputCurrency ||
     !provider ||
     !settlementContract ||
+    !quoteState.response ||
     !appData
   ) {
     return null
@@ -64,7 +65,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
   const sellToken = state.inputCurrency as Token
   const buyToken = state.outputCurrency as Token
   const feeAmount = CurrencyAmount.fromRawAmount(state.inputCurrency, 0)
-  const quoteId = quoteState.response?.id || undefined
+  const quoteId = quoteState.response.id || undefined
 
   const partiallyFillable = settingsState.partialFillsEnabled
 
