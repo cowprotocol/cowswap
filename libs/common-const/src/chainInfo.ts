@@ -1,4 +1,5 @@
-import ArbitrumOneLogo from '@cowprotocol/assets/cow-swap/network-arbitrum-one-logo.svg'
+import ArbitrumOneLogoLight from '@cowprotocol/assets/cow-swap/network-arbitrum-one-logo-blue.svg'
+import ArbitrumOneLogoDark from '@cowprotocol/assets/cow-swap/network-arbitrum-one-logo-white.svg'
 import GnosisChainLogo from '@cowprotocol/assets/cow-swap/network-gnosis-chain-logo.svg'
 import EthereumLogo from '@cowprotocol/assets/cow-swap/network-mainnet-logo.svg'
 import SepoliaLogo from '@cowprotocol/assets/cow-swap/network-sepolia-logo.svg'
@@ -13,7 +14,7 @@ export interface BaseChainInfo {
   readonly bridge?: string
   readonly explorer: string
   readonly infoLink: string
-  readonly logoUrl: string
+  readonly logo: { light: string; dark: string }
   readonly name: string
   readonly addressPrefix: string
   readonly label: string
@@ -36,7 +37,7 @@ export const CHAIN_INFO: ChainInfoMap = {
     addressPrefix: 'eth',
     explorerTitle: 'Etherscan',
     urlAlias: '',
-    logoUrl: EthereumLogo,
+    logo: { light: EthereumLogo, dark: EthereumLogo },
     color: '#62688F',
     nativeCurrency: NATIVE_CURRENCIES[SupportedChainId.MAINNET],
   },
@@ -50,7 +51,7 @@ export const CHAIN_INFO: ChainInfoMap = {
     name: 'arbitrum_one',
     explorerTitle: 'Arbiscan',
     urlAlias: 'abr1',
-    logoUrl: ArbitrumOneLogo,
+    logo: { light: ArbitrumOneLogoLight, dark: ArbitrumOneLogoDark },
     color: '#1B4ADD',
     nativeCurrency: NATIVE_CURRENCIES[SupportedChainId.ARBITRUM_ONE],
   },
@@ -64,7 +65,7 @@ export const CHAIN_INFO: ChainInfoMap = {
     addressPrefix: 'gno',
     explorerTitle: 'Gnosisscan',
     urlAlias: 'gc',
-    logoUrl: GnosisChainLogo,
+    logo: { light: GnosisChainLogo, dark: GnosisChainLogo },
     color: '#07795B',
     nativeCurrency: NATIVE_CURRENCIES[SupportedChainId.GNOSIS_CHAIN],
   },
@@ -77,7 +78,7 @@ export const CHAIN_INFO: ChainInfoMap = {
     addressPrefix: 'sep',
     explorerTitle: 'Etherscan',
     urlAlias: 'sepolia',
-    logoUrl: SepoliaLogo,
+    logo: { light: SepoliaLogo, dark: SepoliaLogo },
     color: '#C12FF2',
     nativeCurrency: NATIVE_CURRENCIES[SupportedChainId.SEPOLIA],
   },
