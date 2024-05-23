@@ -40,10 +40,10 @@ const Wrapper = styled.div`
   align-items: center;
   max-width: 1600px;
   width: 100%;
-  margin: 76px auto 0;
+  margin: 32px auto 0;
   gap: 24px;
 
-  h1 {
+  > h1 {
     font-size: 28px;
     font-weight: ${Font.weight.medium};
     color: ${Color.neutral50};
@@ -54,7 +54,7 @@ const Wrapper = styled.div`
     }
   }
 
-  h2 {
+  > h2 {
     font-size: 67px;
     text-align: center;
 
@@ -76,9 +76,9 @@ export default function ArticlesPage({ siteConfigData, articles, totalArticles, 
       <Wrapper>
         <SearchBar articles={articles} />
 
-        <ContainerCard>
+        <ContainerCard gap={42} gapMobile={24}>
           <ContainerCardSectionTop>
-            <Breadcrumbs>
+            <Breadcrumbs padding={'0'}>
               <a href="/Learn">Learn</a>
               <h1>All articles</h1>
             </Breadcrumbs>
@@ -100,15 +100,15 @@ export default function ArticlesPage({ siteConfigData, articles, totalArticles, 
               ))}
             </ArticleList>
           </ContainerCardSection>
-        </ContainerCard>
 
-        <Pagination>
-          {Array.from({ length: totalPages }, (_, i) => (
-            <a key={i} href={`?page=${i + 1}`} className={i + 1 === currentPage ? 'active' : ''}>
-              {i + 1}
-            </a>
-          ))}
-        </Pagination>
+          <Pagination>
+            {Array.from({ length: totalPages }, (_, i) => (
+              <a key={i} href={`?page=${i + 1}`} className={i + 1 === currentPage ? 'active' : ''}>
+                {i + 1}
+              </a>
+            ))}
+          </Pagination>
+        </ContainerCard>
       </Wrapper>
     </LayoutV2>
   )

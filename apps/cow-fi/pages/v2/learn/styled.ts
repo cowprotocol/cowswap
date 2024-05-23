@@ -314,19 +314,24 @@ export const CTAButton = styled.a`
   }
 `
 
-export const Breadcrumbs = styled.div`
+export const Breadcrumbs = styled.div<{ padding?: string }>`
   display: flex;
   justify-content: flex-start;
   font-size: 16px;
   line-height: 1.2;
-  padding: 0 0 24px;
+  padding: ${({ padding }) => padding || '0 0 24px'};
   color: ${Color.neutral50};
 
   ${Media.upToMedium()} {
     flex-flow: column wrap;
     gap: 8px;
-
     font-size: 14px;
+  }
+
+  > h1 {
+    font-size: inherit;
+    margin: 0;
+    line-height: inherit;
   }
 
   > a {
@@ -364,17 +369,38 @@ export const Pagination = styled.div`
   justify-content: center;
   align-items: center;
   gap: 8px;
-  font-size: 21px;
+  margin: 24px auto 0;
+  padding: 4px;
+  background: ${Color.neutral100};
+  border-radius: 21px;
+  width: min-content;
 
-  a {
-    padding: 8px 16px;
-    background: ${Color.neutral90};
-    color: ${Color.neutral0};
+  > a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: inherit;
     text-decoration: none;
-    border-radius: 8px;
+    font-size: 16px;
+    font-weight: ${Font.weight.medium};
+    color: ${Color.neutral0};
+    background: transparent;
+    transition: background 0.2s, color 0.2s;
+
+    &:hover {
+      background: ${Color.neutral80};
+    }
 
     &.active {
-      background: ${Color.neutral50};
+      background: ${Color.neutral0};
+      color: ${Color.neutral100};
     }
+  }
+
+  span {
+    font-size: 16px;
+    color: ${Color.neutral60};
   }
 `
