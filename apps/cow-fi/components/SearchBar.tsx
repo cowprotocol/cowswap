@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import styled from 'styled-components'
 import { Font, Color, Media } from '@cowprotocol/ui'
 import { Article } from 'services/cms'
 
 import SVG from 'react-inlinesvg'
 import IMG_ICON_X from '@cowprotocol/assets/images/x.svg'
+import IMG_ICON_SEARCH from '@cowprotocol/assets/images/icon-search.svg'
 
 const SearchBarContainer = styled.div`
   width: 100%;
@@ -17,8 +18,26 @@ const SearchBarContainer = styled.div`
   }
 `
 
+const InputContainer = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+`
+
+const SearchIcon = styled.div`
+  position: absolute;
+  left: 24px;
+  width: 24px;
+  height: 24px;
+  color: ${Color.neutral60};
+
+  ${Media.upToMedium()} {
+    left: 16px;
+  }
+`
+
 const Input = styled.input`
-  padding: 16px 64px 16px 24px;
+  padding: 16px 64px 16px 64px;
   min-height: 56px;
   border: 2px solid transparent;
   font-size: 21px;
@@ -32,7 +51,7 @@ const Input = styled.input`
 
   ${Media.upToMedium()} {
     font-size: 18px;
-    padding: 16px 50px 16px 24px;
+    padding: 16px 50px 16px 50px;
   }
 
   &:focus {
@@ -76,7 +95,7 @@ const SearchResultsInner = styled.div`
   padding-right: 10px;
 `
 
-const ResultItem = styled.a`
+const ResultItem = styled.a<{ isSelected: boolean }>`
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -85,10 +104,8 @@ const ResultItem = styled.a`
   color: ${Color.neutral0};
   line-height: 1.2;
   padding: 10px;
-
-  &:last-child {
-    border-bottom: none;
-  }
+  background: ${({ isSelected }) => (isSelected ? Color.neutral80 : 'transparent')};
+  border-radius: ${({ isSelected }) => (isSelected ? '24px' : '0')};
 
   &:hover {
     background: ${Color.neutral80};
@@ -101,7 +118,7 @@ const ResultItem = styled.a`
 `
 
 const HighlightedText = styled.span`
-  background-color: yellow;
+  background: yellow;
 `
 
 const SearchResultsInfo = styled.div`
@@ -154,6 +171,46 @@ export const SearchBar: React.FC<SearchBarProps> = ({ articles }) => {
   const [query, setQuery] = useState('')
   const [filteredArticles, setFilteredArticles] = useState<Article[]>([])
   const [isFocused, setIsFocused] = useState(false)
+  const [highlightedIndex, setHighlightedIndex] = useState(-1)
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setIsFocused(false)
+        setQuery('')
+        setFilteredArticles([])
+        inputRef.current?.blur() // Remove focus from the input
+      }
+    }
+
+    document.addEventListener('keydown', handleEscape)
+    return () => {
+      document.removeEventListener('keydown', handleEscape)
+    }
+  }, [])
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (isFocused) {
+        if (e.key === 'ArrowDown') {
+          setHighlightedIndex((prevIndex) => (prevIndex + 1) % filteredArticles.length)
+        } else if (e.key === 'ArrowUp') {
+          setHighlightedIndex((prevIndex) => (prevIndex - 1 + filteredArticles.length) % filteredArticles.length)
+        } else if (e.key === 'Enter') {
+          if (highlightedIndex >= 0 && highlightedIndex < filteredArticles.length) {
+            const selectedArticle = filteredArticles[highlightedIndex]
+            window.location.href = `/v2/learn/${selectedArticle.attributes?.slug}`
+          }
+        }
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [isFocused, highlightedIndex, filteredArticles])
 
   useEffect(() => {
     if (query.trim()) {
@@ -176,31 +233,42 @@ export const SearchBar: React.FC<SearchBarProps> = ({ articles }) => {
   const handleClear = () => {
     setQuery('')
     setFilteredArticles([])
+    setHighlightedIndex(-1)
   }
 
   return (
     <SearchBarContainer>
-      <Input
-        type="text"
-        placeholder="Search any topic..."
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        onFocus={() => setIsFocused(true)}
-        onBlur={() => setTimeout(() => setIsFocused(false), 200)}
-      />
-      {query && (
-        <CloseIcon onClick={handleClear}>
-          <SVG src={IMG_ICON_X} title="Close search" />
-        </CloseIcon>
-      )}
+      <InputContainer>
+        <SearchIcon>
+          <SVG src={IMG_ICON_SEARCH} title="Search" />
+        </SearchIcon>
+        <Input
+          ref={inputRef}
+          type="text"
+          placeholder="Hi, how can we help you?"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setTimeout(() => setIsFocused(false), 200)}
+        />
+        {query && (
+          <CloseIcon onClick={handleClear}>
+            <SVG src={IMG_ICON_X} title="Close search" />
+          </CloseIcon>
+        )}
+      </InputContainer>
       {isFocused && filteredArticles.length > 0 && (
         <SearchResults>
           <SearchResultsInfo>
             {filteredArticles.length} result{filteredArticles.length > 1 ? 's' : ''}
           </SearchResultsInfo>
           <SearchResultsInner>
-            {filteredArticles.map((article) => (
-              <ResultItem key={article.id} href={`learn/${article.attributes?.slug}`}>
+            {filteredArticles.map((article, index) => (
+              <ResultItem
+                key={article.id}
+                href={`/v2/learn/${article.attributes?.slug}`}
+                isSelected={index === highlightedIndex}
+              >
                 {highlightQuery(article.attributes?.title || '', query)}
               </ResultItem>
             ))}

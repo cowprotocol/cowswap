@@ -2,19 +2,29 @@ import styled from 'styled-components'
 import { CowSwapTheme } from '@cowprotocol/widget-lib'
 import { Color, Media } from '../../consts'
 
-export const FooterContainer = styled.footer<{ theme: CowSwapTheme; expanded: boolean }>`
+export const FooterContainer = styled.footer<{ theme: CowSwapTheme; expanded: boolean; hasTouchFooter: boolean }>`
   --bgColor: ${Color.neutral10};
   --color: ${Color.neutral50};
   --colorTitle: ${Color.neutral98};
   background: var(--bgColor);
   color: var(--color);
-  padding: ${({ expanded }) => (expanded ? '134px 0 0' : '0')};
+  padding: ${({ expanded, hasTouchFooter }) =>
+    !expanded && hasTouchFooter ? '68px 0 0' : expanded ? '134px 0 0' : '0'};
   text-align: left;
   transition: padding 0.3s ease;
   font-size: 18px;
 
   ${Media.upToSmall()} {
     padding: ${({ expanded }) => (expanded ? '54px 0 0' : '0')};
+
+    padding: ${({ expanded, hasTouchFooter }) =>
+      !expanded && hasTouchFooter
+        ? '120px 0 0'
+        : expanded && hasTouchFooter
+        ? '120px 0 0'
+        : expanded
+        ? '54px 0 0'
+        : '0'};
   }
 `
 

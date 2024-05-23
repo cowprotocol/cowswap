@@ -4,16 +4,28 @@ import styled from 'styled-components'
 import { Font, Color, Media } from '@cowprotocol/ui'
 import { CONFIG } from '@/const/meta'
 import LayoutV2 from '@/components/Layout/LayoutV2'
-import { getArticleBySlug, getAllArticleSlugs, Article } from 'services/cms'
-import { ArticleSharedRichTextComponent, ArticleSubtitle } from '@/components/Article'
+import { getArticles, getArticleBySlug, getAllArticleSlugs, Article, SharedRichTextComponent } from 'services/cms'
+import ReactMarkdown from 'react-markdown'
+import { formatDate } from 'util/formatDate'
+import { SearchBar } from '@/components/SearchBar'
 
-import { Breadcrumbs, ContainerCard } from './styled'
+import {
+  Breadcrumbs,
+  ContainerCard,
+  ContainerCardSection,
+  ContainerCardSectionTop,
+  ArticleList,
+  ArticleCard,
+  ArticleImage,
+  ArticleTitle,
+} from './styled'
 
 const DATA_CACHE_TIME_SECONDS = 5 * 60 // Cache 5min
 
 interface ArticlePageProps {
   siteConfigData: typeof CONFIG
   article: Article
+  articles: Article[]
 }
 
 const Wrapper = styled.div`
@@ -22,9 +34,14 @@ const Wrapper = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
-  margin: 76px auto 0;
+  margin: 24px auto 0;
   gap: 24px;
   max-width: 1600px;
+
+  ${Media.upToMedium()} {
+    margin: 0 auto;
+    gap: 0;
+  }
 `
 
 const ArticleContent = styled.div`
@@ -41,18 +58,32 @@ const StickyMenu = styled.div`
   width: 100%;
   max-width: var(--maxWidth);
   height: min-content;
+  min-height: 240px;
   flex: 1;
   position: sticky;
   top: 100px;
   background: ${Color.neutral100};
-  padding: 20px;
+  color: ${Color.neutral0};
+  padding: 30px 24px;
   border-radius: 32px;
+
+  ${Media.upToMedium()} {
+    --maxWidth: 100%;
+  }
+
+  > b {
+    display: block;
+    font-size: 18px;
+    font-weight: ${Font.weight.bold};
+    color: ${Color.neutral10};
+    margin: 0 0 24px;
+  }
 `
 
 const Title = styled.h1`
-  font-size: 36px;
+  font-size: 67px;
   font-weight: ${Font.weight.bold};
-  color: ${Color.neutral0};
+  color: ${Color.neutral10};
   margin-bottom: 16px;
 
   ${Media.upToMedium()} {
@@ -70,23 +101,99 @@ const BodyContent = styled.div`
     border-radius: 10px;
     margin-top: 20px;
   }
+
+  a {
+    color: ${Color.neutral20};
+    text-decoration: underline;
+    transition: color 0.2s ease-in-out;
+
+    &:hover {
+      color: ${Color.neutral40};
+    }
+  }
+
+  > p,
+  > ul {
+    margin-bottom: 16px;
+    font-size: 21px;
+    line-height: 1.4;
+
+    ${Media.upToMedium()} {
+      font-size: 18px;
+    }
+  }
+
+  > ul {
+    list-style: disc;
+    padding-left: 20px;
+
+    > li {
+      margin: 0 0 16px;
+      font-size: inherit;
+    }
+  }
+
+  > blockquote {
+    margin: 24px 0;
+    padding: 8px 24px;
+    background: ${Color.neutral90};
+    border-left: 4px solid ${Color.neutral20};
+    color: ${Color.neutral20};
+    font-style: italic;
+    font-size: inherit;
+
+    > p {
+      line-height: 1.6;
+    }
+  }
+
+  > h2,
+  > h3,
+  > h4,
+  > h5,
+  > h6 {
+    font-weight: bold;
+    margin: 56px 0 32px;
+  }
+
+  > h2 {
+    font-size: 38px;
+  }
+
+  > h3 {
+    font-size: 32px;
+  }
+
+  > h4 {
+    font-size: 28px;
+  }
+
+  > h5 {
+    font-size: 24px;
+  }
+
+  > h6 {
+    font-size: 20px;
+  }
 `
 
 const RelatedArticles = styled.div`
   font-size: 18px;
   color: ${Color.neutral0};
 
-  ul {
-    list-style: none;
-    padding: 0;
+  > ul {
+    list-style: disc;
+    padding: 0 0 0 20px;
 
-    li {
-      margin-bottom: 8px;
+    > li {
+      margin: 0 0 16px;
+      color: inherit;
     }
 
-    a {
-      color: ${Color.neutral0};
+    > li > a {
+      color: inherit;
       text-decoration: none;
+      line-height: 1.2;
 
       &:hover {
         text-decoration: underline;
@@ -95,8 +202,66 @@ const RelatedArticles = styled.div`
   }
 `
 
-export default function ArticlePage({ siteConfigData, article }: ArticlePageProps) {
-  const { title, blocks, publishedAt, authorsBio } = article.attributes || {}
+const ArticleSubtitleWrapper = styled.div`
+  color: ${Color.neutral40};
+  font-weight: ${Font.weight.bold};
+  font-size: 16px;
+  display: flex;
+  flex-flow: row wrap;
+  gap: 10px;
+  margin: 34px 0;
+
+  > div span {
+    font-weight: normal;
+  }
+`
+
+export function ArticleSubtitle({ dateIso, content }: { dateIso: string; content: string }) {
+  const date = new Date(dateIso)
+  const readTime = calculateReadTime(content)
+
+  return (
+    <ArticleSubtitleWrapper>
+      <div>
+        <span>{readTime}</span>
+      </div>
+      <div>·</div>
+      <div>
+        <span>Published {formatDate(date)}</span>
+      </div>
+    </ArticleSubtitleWrapper>
+  )
+}
+
+export function ArticleSharedRichTextComponent({ sharedRichText }: { sharedRichText: SharedRichTextComponent }) {
+  return <ReactMarkdown>{sharedRichText.body}</ReactMarkdown>
+}
+
+function calculateReadTime(text: string): string {
+  const wordsPerMinute = 200 // Average case.
+  const textLength = text.split(/\s+/).length // Split by words
+  const time = Math.ceil(textLength / wordsPerMinute)
+  return `${time} min read`
+}
+
+function isRichTextComponent(block: any): block is SharedRichTextComponent {
+  return block.body !== undefined
+}
+
+function getRandomArticles(articles: Article[], count: number): Article[] {
+  const shuffled = articles.sort(() => 0.5 - Math.random())
+  return shuffled.slice(0, count)
+}
+
+export default function ArticlePage({
+  siteConfigData,
+  article,
+  articles,
+  randomArticles,
+  relatedArticles,
+}: ArticlePageProps & { randomArticles: Article[]; relatedArticles: Article[] }) {
+  const { title, blocks, publishedAt } = article.attributes || {}
+  const content = blocks?.map((block) => (isRichTextComponent(block) ? block.body : '')).join(' ') || ''
 
   return (
     <LayoutV2>
@@ -107,7 +272,8 @@ export default function ArticlePage({ siteConfigData, article }: ArticlePageProp
       </Head>
 
       <Wrapper>
-        <ContainerCard gap={80}>
+        <SearchBar articles={articles} />
+        <ContainerCard gap={62} gapMobile={42}>
           <ArticleContent>
             <Breadcrumbs>
               <a href="/v2/learn">Learn</a>
@@ -115,41 +281,59 @@ export default function ArticlePage({ siteConfigData, article }: ArticlePageProp
             </Breadcrumbs>
 
             <Title>{title}</Title>
-            <ArticleSubtitle dateIso={publishedAt!} authorsBio={authorsBio} />
+            <ArticleSubtitle dateIso={publishedAt!} content={content} />
             <BodyContent>
               {blocks &&
-                blocks.map((block) => <ArticleSharedRichTextComponent key={block.id} sharedRichText={block} />)}{' '}
+                blocks.map((block) =>
+                  isRichTextComponent(block) ? (
+                    <ArticleSharedRichTextComponent key={block.id} sharedRichText={block} />
+                  ) : null
+                )}
             </BodyContent>
           </ArticleContent>
 
           <StickyMenu>
-            <h2>Related Articles</h2>
+            <b>Related Articles</b>
             <RelatedArticles>
               <ul>
-                {/* Example of related articles, replace with real data */}
-                <li>
-                  <a href={`/article/related-article-1`}>Related Article 1</a>
-                </li>
-                <li>
-                  <a href={`/article/related-article-2`}>Related Article 2</a>
-                </li>
-                <li>
-                  <a href={`/article/related-article-3`}>Related Article 3</a>
-                </li>
+                {relatedArticles.map((article) => (
+                  <li key={article.id}>
+                    <a href={`/article/${article.attributes?.slug}`}>{article.attributes?.title}</a>
+                  </li>
+                ))}
               </ul>
             </RelatedArticles>
           </StickyMenu>
         </ContainerCard>
+
+        {/* Read More Section */}
+        <ContainerCard bgColor={Color.neutral98} touchFooter>
+          <ContainerCardSection>
+            <ContainerCardSectionTop>
+              <h3>Read more</h3>
+            </ContainerCardSectionTop>
+            <ArticleList>
+              {randomArticles.map((article) => {
+                const coverData = article.attributes?.cover?.data
+                const imageUrl = coverData?.attributes?.url
+
+                return (
+                  <ArticleCard key={article.id} href={`/article/${article.attributes?.slug}`}>
+                    {imageUrl && (
+                      <ArticleImage>
+                        <img src={imageUrl} alt={article.attributes?.title ?? 'Article Image'} />
+                      </ArticleImage>
+                    )}
+                    <ArticleTitle>{article.attributes?.title}</ArticleTitle>
+                  </ArticleCard>
+                )
+              })}
+            </ArticleList>
+          </ContainerCardSection>
+        </ContainerCard>
       </Wrapper>
     </LayoutV2>
   )
-}
-
-export const getStaticPaths: GetStaticPaths = async () => {
-  const slugs = await getAllArticleSlugs()
-  const paths = slugs.map((slug) => ({ params: { article: slug } }))
-
-  return { paths, fallback: false }
 }
 
 export const getStaticProps: GetStaticProps<ArticlePageProps> = async ({ params }) => {
@@ -161,11 +345,26 @@ export const getStaticProps: GetStaticProps<ArticlePageProps> = async ({ params 
     return { notFound: true }
   }
 
+  const articlesResponse = await getArticles()
+  const articles = articlesResponse.data
+  const randomArticles = getRandomArticles(articles, 3)
+  const relatedArticles = getRandomArticles(articles, 7)
+
   return {
     props: {
       siteConfigData,
       article,
+      articles,
+      randomArticles,
+      relatedArticles,
     },
     revalidate: DATA_CACHE_TIME_SECONDS,
   }
+}
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const slugs = await getAllArticleSlugs()
+  const paths = slugs.map((slug) => ({ params: { article: slug } }))
+
+  return { paths, fallback: false }
 }

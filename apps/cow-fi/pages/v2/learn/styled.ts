@@ -1,18 +1,20 @@
 import styled from 'styled-components'
 import { Font, Color, Media } from '@cowprotocol/ui'
 
-export const ContainerCard = styled.div<{ bgColor?: string; gap?: number; gapMobile?: number }>`
+export const ContainerCard = styled.div<{ bgColor?: string; gap?: number; gapMobile?: number; touchFooter?: boolean }>`
   display: flex;
   flex-flow: row wrap;
   justify-content: center;
   gap: ${({ gap }) => gap || 100}px;
-  margin: 24px 0;
+  margin: ${({ touchFooter }) => (touchFooter ? '0 0 -65px' : '24px 0')};
   width: 100%;
   padding: 60px;
   border-radius: 60px;
   background: ${({ bgColor }) => bgColor || Color.neutral90};
+  position: relative;
 
   ${Media.upToMedium()} {
+    flex-flow: column wrap;
     padding: 48px 32px;
     gap: ${({ gapMobile }) => gapMobile || 100}px;
   }
@@ -87,6 +89,13 @@ export const ArticleImage = styled.div<{ color?: string }>`
   height: 200px;
   background: ${({ color }) => color || Color.neutral70};
   border-radius: 20px;
+
+  > img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: inherit;
+  }
 `
 
 export const ArticleTitle = styled.h4`
@@ -308,14 +317,27 @@ export const CTAButton = styled.a`
 export const Breadcrumbs = styled.div`
   display: flex;
   justify-content: flex-start;
-  font-size: 21px;
-  padding: 16px;
+  font-size: 16px;
+  line-height: 1.2;
+  padding: 0 0 24px;
   color: ${Color.neutral50};
 
-  a {
+  ${Media.upToMedium()} {
+    flex-flow: column wrap;
+    gap: 8px;
+
+    font-size: 14px;
+  }
+
+  > a {
     color: ${Color.neutral50};
     text-decoration: none;
     margin-right: 8px;
+    transition: color 0.2s ease-in-out;
+
+    &:hover {
+      color: ${Color.neutral0};
+    }
 
     &:after {
       content: '→';
@@ -325,6 +347,10 @@ export const Breadcrumbs = styled.div`
     &:last-child:after {
       content: '';
     }
+  }
+
+  > span {
+    color: ${Color.neutral0};
   }
 `
 

@@ -41,6 +41,7 @@ interface FooterProps {
   productVariant: ProductVariant
   additionalFooterContent?: ReactNode
   expanded?: boolean
+  hasTouchFooter?: boolean
 }
 
 const SOCIAL_LINKS: { href: string; label: string; icon: string }[] = [
@@ -58,7 +59,14 @@ const PRODUCT_LOGO_LINKS: { href: string; label: string; productVariant: Product
   { href: 'https://cow.fi/cow-amm', label: 'CoW AMM', productVariant: ProductVariant.CowAmm },
 ]
 
-export const Footer = ({ description, navItems, theme, additionalFooterContent, expanded = false }: FooterProps) => {
+export const Footer = ({
+  description,
+  navItems,
+  theme,
+  additionalFooterContent,
+  expanded = false,
+  hasTouchFooter = false,
+}: FooterProps) => {
   const [isFooterExpanded, setIsFooterExpanded] = useState(expanded)
   const footerRef = useRef<HTMLDivElement>(null)
   const hasMounted = useRef(false)
@@ -82,7 +90,7 @@ export const Footer = ({ description, navItems, theme, additionalFooterContent, 
 
   return (
     <ThemeProvider theme={themeMapper(theme)}>
-      <FooterContainer ref={footerRef} theme={theme as any} expanded={isFooterExpanded}>
+      <FooterContainer ref={footerRef} theme={theme as any} expanded={isFooterExpanded} hasTouchFooter={hasTouchFooter}>
         {isFooterExpanded && (
           <>
             <FooterContent>

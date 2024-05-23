@@ -50,7 +50,7 @@ const ArticleItemWrapper = styled.li`
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   margin: 1.5rem 0;
   padding: 2.5rem;
-  color: ${Color.text1};  
+  color: ${Color.text1};
 
   a.link {
     font-size: 2rem;
@@ -67,7 +67,9 @@ const ArticleBlocksWrapper = styled.ul`
   list-style-type: none;
   padding: 0;
 
-  p, p a, strong {
+  p,
+  p a,
+  strong {
     font-size: 1.8rem;
   }
 
@@ -154,30 +156,26 @@ export function ArticleItem({ article }: ArticleItemProps) {
   )
 }
 
-
-
 export interface ArticleProps {
   article: Article
 }
 
 function CoverImage({ cover }: { cover: ArticleCover | undefined }) {
   if (!cover || !cover?.data?.attributes) return null
-  const { url, width, height, alternativeText  } = cover?.data?.attributes
+  const { url, width, height, alternativeText } = cover?.data?.attributes
 
   if (!url || !width || !height) return null
 
   const actualWidth = Math.min(width, IMAGE_WIDTH)
   const actualHeight = (actualWidth / width) * height
-  return (
-    <img src={url} alt={alternativeText || "cover"} width={actualWidth} height={actualHeight} />
-  )
+  return <img src={url} alt={alternativeText || 'cover'} width={actualWidth} height={actualHeight} />
 }
 
 export function ArticleContent({ article }: ArticleProps) {
   const { title, description, publishedAt, seo, authorsBio, blocks, categories, cover, createdBy } =
     article?.attributes || {}
   const { shareImage } = seo || {}
-  const shareImageUrl = shareImage?.data?.attributes?.url  
+  const shareImageUrl = shareImage?.data?.attributes?.url
 
   return (
     <>
@@ -189,11 +187,9 @@ export function ArticleContent({ article }: ArticleProps) {
               {description}
             </SubTitle>
             <ArticleSubtitle dateIso={publishedAt!} authorsBio={authorsBio} />
-          </div> 
+          </div>
         </SectionContent>
       </Section>
-
-      
 
       <Section fullWidth colorVariant={'white'} flow="column" gap={14} padding="4rem 8rem 12rem 8rem">
         <SectionContent flow={'row'} maxWidth={100} textAlign={'left'}>
@@ -201,20 +197,19 @@ export function ArticleContent({ article }: ArticleProps) {
             <CoverImage cover={cover} />
 
             <ArticleContentWrapper>
-                {blocks && (
-                  <ArticleBlocksWrapper>
-                    {blocks.map((block) => (
-                      <ArticleBlockComponent key={block.id} block={block} />
-                    ))}
-                  </ArticleBlocksWrapper>
-                )}
-                <Link href="/learn">Go back</Link>
-              </ArticleContentWrapper>
+              {blocks && (
+                <ArticleBlocksWrapper>
+                  {blocks.map((block) => (
+                    <ArticleBlockComponent key={block.id} block={block} />
+                  ))}
+                </ArticleBlocksWrapper>
+              )}
+              <Link href="/learn">Go back</Link>
+            </ArticleContentWrapper>
           </div>
         </SectionContent>
       </Section>
 
-      
       {/* <Section fullWidth colorVariant={'white'} flow="column" gap={14} padding="4rem 8rem 12rem 8rem">
         <SectionContent flow={'row'} maxWidth={100} textAlign={'left'}>
           <div className="container">
@@ -226,8 +221,7 @@ export function ArticleContent({ article }: ArticleProps) {
           </div>
         </SectionContent>
       </Section>  */}
-     
-    </>    
+    </>
   )
 }
 
@@ -242,6 +236,7 @@ export interface ArticleDateProps {
       }
     | undefined
 }
+
 export function ArticleSubtitle({ dateIso, authorsBio }: ArticleDateProps) {
   const date = new Date(dateIso)
   const author = authorsBio?.data?.attributes?.name

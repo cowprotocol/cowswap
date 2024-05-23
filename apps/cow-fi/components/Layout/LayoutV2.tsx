@@ -122,6 +122,7 @@ export default function LayoutV2({ children }: LayoutProps) {
         theme={THEME_MODE}
         productVariant={PRODUCT_VARIANT}
         expanded
+        hasTouchFooter
       />
     </>
   )
