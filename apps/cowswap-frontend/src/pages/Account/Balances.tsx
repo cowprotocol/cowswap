@@ -5,7 +5,7 @@ import CowImage from '@cowprotocol/assets/cow-swap/cow_v2.svg'
 import vCOWImage from '@cowprotocol/assets/cow-swap/vCOW.png'
 import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
 import { COW, COW_CONTRACT_ADDRESS, V_COW } from '@cowprotocol/common-const'
-import { useBlockNumber, usePrevious } from '@cowprotocol/common-hooks'
+import { usePrevious } from '@cowprotocol/common-hooks'
 import { getBlockExplorerUrl, getProviderErrorMessage } from '@cowprotocol/common-utils'
 import { ButtonPrimary, HoverTooltip, TokenAmount } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -21,6 +21,7 @@ import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
 import { SwapVCowStatus } from 'legacy/state/cowToken/actions'
 import { useSetSwapVCowStatus, useSwapVCowCallback, useSwapVCowStatus, useVCowData } from 'legacy/state/cowToken/hooks'
 
+import { useBlockNumber } from 'common/hooks/useBlockNumber'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useModalState } from 'common/hooks/useModalState'
 import { ConfirmationPendingContent } from 'common/pure/ConfirmationPendingContent'
@@ -36,7 +37,7 @@ import {
   ConvertWrapper,
   ExtLink,
   StyledWatchAssetInWallet,
-  VestingBreakdown,
+  VestingBreakdown
 } from 'pages/Account/styled'
 
 import LockedGnoVesting from './LockedGnoVesting'
@@ -196,8 +197,6 @@ export default function Profile() {
     }
   }, [account, isSwapInitial, previousAccount, setSwapVCowStatus])
 
-
-
   return (
     <>
       <CowModal isOpen={isModalOpen} onDismiss={closeModal}>
@@ -254,9 +253,7 @@ export default function Profile() {
               </ConvertWrapper>
 
               <CardActions>
-                <ExtLink href={getBlockExplorerUrl(chainId, 'token', vCowToken.address)}>
-                  View contract ↗
-                </ExtLink>
+                <ExtLink href={getBlockExplorerUrl(chainId, 'token', vCowToken.address)}>View contract ↗</ExtLink>
                 <CopyHelper toCopy={vCowToken.address}>
                   <div title="Click to copy token contract address">Copy contract</div>
                 </CopyHelper>
