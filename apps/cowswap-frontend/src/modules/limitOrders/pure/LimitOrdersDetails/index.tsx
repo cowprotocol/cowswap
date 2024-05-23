@@ -29,7 +29,6 @@ const Wrapper = styled.div`
   font-size: 13px;
   font-weight: 400;
   color: inherit;
-  padding: 8px;
   gap: 10px;
 `
 
