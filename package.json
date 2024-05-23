@@ -172,6 +172,7 @@
     "polished": "^4.0.5",
     "polyfill-object.fromentries": "^1.0.1",
     "popper-max-size-modifier": "^0.2.0",
+    "qs": "^6.12.1",
     "react": "18.2.0",
     "react-appzi": "^1.0.4",
     "react-confetti": "^6.1.0",

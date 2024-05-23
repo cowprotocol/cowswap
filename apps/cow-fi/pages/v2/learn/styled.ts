@@ -1,10 +1,16 @@
 import styled from 'styled-components'
 import { Font, Color, Media } from '@cowprotocol/ui'
 
-export const ContainerCard = styled.div<{ bgColor?: string; gap?: number; gapMobile?: number; touchFooter?: boolean }>`
+export const ContainerCard = styled.div<{
+  bgColor?: string
+  gap?: number
+  gapMobile?: number
+  touchFooter?: boolean
+  centerContent?: boolean
+}>`
   display: flex;
   flex-flow: row wrap;
-  justify-content: center;
+  justify-content: ${({ centerContent }) => (centerContent ? 'center' : 'flex-start')};
   gap: ${({ gap }) => gap || 100}px;
   margin: ${({ touchFooter }) => (touchFooter ? '0 0 -65px' : '24px 0')};
   width: 100%;
@@ -37,6 +43,7 @@ export const ContainerCardSectionTop = styled.div`
   justify-content: space-between;
   align-items: center;
 
+  > h1,
   > h3 {
     font-size: 38px;
     font-weight: ${Font.weight.bold};

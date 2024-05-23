@@ -214,7 +214,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ articles }) => {
 
   useEffect(() => {
     if (query.trim()) {
-      const filtered = articles.filter((article) =>
+      const filtered = (articles || []).filter((article) =>
         article.attributes?.title?.toLowerCase().includes(query.toLowerCase())
       )
       setFilteredArticles(filtered)

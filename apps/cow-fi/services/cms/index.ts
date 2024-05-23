@@ -1,5 +1,6 @@
 import { CmsClient, components } from '@cowprotocol/cms'
 import { PaginationParam } from 'types'
+import qs from 'qs'
 
 import { toQueryParams } from 'util/queryParams'
 
@@ -149,7 +150,12 @@ export async function getAllCategorySlugs(): Promise<string[]> {
 export async function getArticles({
   page = 0,
   pageSize = PAGE_SIZE,
-}: PaginationParam = {}): Promise<ArticleListResponse> {
+  filters = {},
+}: PaginationParam & { filters?: any } = {}): Promise<ArticleListResponse> {
+  const querySerializer = (params: any) => {
+    return qs.stringify(params, { encodeValuesOnly: true, arrayFormat: 'brackets' })
+  }
+
   const { data, error, response } = await client.GET('/articles', {
     params: {
       query: {
@@ -158,17 +164,18 @@ export async function getArticles({
         'populate[1]': 'blocks',
         'populate[2]': 'seo',
         'populate[3]': 'authorsBio',
-
         // Pagination
         'pagination[page]': page,
         'pagination[pageSize]': pageSize,
         sort: 'publishedAt:desc',
+        filters,
       },
     },
+    querySerializer,
   })
 
   if (error) {
-    console.error(`Error ${response.status} getting articles: ${response.url}. Page${page}`, error)
+    console.error(`Error ${response.status} getting articles: ${response.url}. Page ${page}`, error)
     throw error
   }
 
@@ -224,6 +231,7 @@ async function getBySlugAux(slug: string, endpoint: '/categories' | '/articles')
               seo: '*',
             },
           },
+          image: { fields: ['url'] }, // Ensure the image is populated
         }
       : // Articles
         {
@@ -259,7 +267,7 @@ async function getBySlugAux(slug: string, endpoint: '/categories' | '/articles')
     populate,
   })
 
-  console.log(`[getArticleBySlug] get ${entity} for slug ${slug}`, query)
+  console.log(`[getBySlugAux] get ${entity} for slug ${slug}`, query)
 
   const { data, error } = await client.GET(endpoint, {
     params: {

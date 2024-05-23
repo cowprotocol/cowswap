@@ -294,7 +294,7 @@ export default function ArticlePage({
 
       <Wrapper>
         <SearchBar articles={articles} />
-        <ContainerCard gap={62} gapMobile={42}>
+        <ContainerCard gap={62} gapMobile={42} centerContent>
           <ArticleContent>
             <Breadcrumbs>
               <a href="/v2/learn">Learn</a>

@@ -18,7 +18,7 @@ export default function BlogPostPage({ article }: BlogPostProps) {
   const { id } = article
   const { title, description, slug, seo, cover } = article?.attributes || {}
   const { metaTitle, metaDescription, shareImage } = seo || {}
-  
+
   const ogTitle = metaTitle || title
   const ogDescription = metaDescription || description
   const ogImage = shareImage?.data?.attributes?.url || cover?.data?.attributes?.url
@@ -41,11 +41,9 @@ export default function BlogPostPage({ article }: BlogPostProps) {
 
       <ArticleContent article={article} />
 
-
       <GetInTouchSection />
     </Layout>
   )
-  
 }
 
 type ArticleQuery = { articleSlug: string }
