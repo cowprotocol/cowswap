@@ -6,6 +6,7 @@ import LOGO_COWSWAP from '@cowprotocol/assets/images/logo-cowswap.svg'
 import LOGO_COWPROTOCOL from '@cowprotocol/assets/images/logo-cowprotocol.svg'
 import LOGO_COWDAO from '@cowprotocol/assets/images/logo-cowdao.svg'
 import LOGO_MEVBLOCKER from '@cowprotocol/assets/images/logo-mevblocker.svg'
+import LOGO_COWAMM from '@cowprotocol/assets/images/logo-cowamm.svg'
 
 import { CowSwapTheme } from '@cowprotocol/widget-lib'
 
@@ -116,24 +117,24 @@ const LOGOS: Record<ProductVariant, ThemedLogo> = {
       default: {
         src: LOGO_MEVBLOCKER,
         alt: 'MEV Blocker light mode',
-        color: '#012F7A',
+        color: '#EC4612',
       },
       logoIconOnly: {
         src: LOGO_ICON_COW,
         alt: 'MEV Blocker icon only light mode',
-        color: '#012F7A',
+        color: '#EC4612',
       },
     },
     dark: {
       default: {
         src: LOGO_MEVBLOCKER,
         alt: 'MEV Blocker dark mode',
-        color: '#65D9FF',
+        color: '#EC4612',
       },
       logoIconOnly: {
         src: LOGO_ICON_COW,
         alt: 'MEV Blocker icon only dark mode',
-        color: '#65D9FF',
+        color: '#EC4612',
       },
     },
   },
@@ -142,7 +143,7 @@ const LOGOS: Record<ProductVariant, ThemedLogo> = {
   [ProductVariant.CowAmm]: {
     light: {
       default: {
-        src: LOGO_COWSWAP,
+        src: LOGO_COWAMM,
         alt: 'CoW AMM light mode',
         color: '#012F7A',
       },
@@ -154,14 +155,14 @@ const LOGOS: Record<ProductVariant, ThemedLogo> = {
     },
     dark: {
       default: {
-        src: LOGO_COWSWAP,
+        src: LOGO_COWAMM,
         alt: 'CoW AMM dark mode',
-        color: '#65D9FF',
+        color: '#007CDB',
       },
       logoIconOnly: {
         src: LOGO_ICON_COW,
         alt: 'CoW AMM icon only dark mode',
-        color: '#65D9FF',
+        color: '#007CDB',
       },
     },
   },

@@ -87,7 +87,7 @@ const Title = styled.h1`
   margin-bottom: 16px;
 
   ${Media.upToMedium()} {
-    font-size: 24px;
+    font-size: 37px;
   }
 `
 
@@ -159,22 +159,42 @@ const BodyContent = styled.div`
 
   > h2 {
     font-size: 38px;
+
+    ${Media.upToMedium()} {
+      font-size: 24px;
+    }
   }
 
   > h3 {
     font-size: 32px;
+
+    ${Media.upToMedium()} {
+      font-size: 22px;
+    }
   }
 
   > h4 {
     font-size: 28px;
+
+    ${Media.upToMedium()} {
+      font-size: 20px;
+    }
   }
 
   > h5 {
     font-size: 24px;
+
+    ${Media.upToMedium()} {
+      font-size: 18px;
+    }
   }
 
   > h6 {
     font-size: 20px;
+
+    ${Media.upToMedium()} {
+      font-size: 16px;
+    }
   }
 `
 

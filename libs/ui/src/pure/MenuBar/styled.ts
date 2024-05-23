@@ -7,8 +7,6 @@ export const MenuBarWrapper = styled.div`
   width: 100%;
   padding: 10px;
   z-index: 10;
-
-  // temporary
   position: sticky;
   top: 0;
 `
@@ -16,10 +14,15 @@ export const MenuBarWrapper = styled.div`
 export const MenuBarInner = styled.div<{ theme: CowSwapTheme }>`
   --height: 56px;
   --width: 100%;
-  --bgColor: ${({ theme }) => (theme === 'dark' ? '#333' : 'rgba(255, 248, 247, 0.6)')};
-  --color: ${({ theme }) => (theme === 'dark' ? Color.neutral100 : Color.neutral0)};
+  --bgColor: ${({ theme }) => (theme.mode === 'dark' ? Color.neutral10 : 'rgba(255, 248, 247, 0.6)')};
+  --color: ${({ theme }) => (theme.mode === 'dark' ? Color.neutral98 : Color.neutral0)};
   --borderRadius: 28px;
   --blur: 16px;
+
+  // Elements
+  --defaultFill: ${({ theme }) => (theme.mode === 'dark' ? Color.neutral60 : Color.neutral50)};
+  --activeBackground: ${({ theme }) => (theme.mode === 'dark' ? Color.neutral30 : Color.neutral50)};
+  --activeFill: ${({ theme }) => (theme.mode === 'dark' ? Color.neutral100 : Color.neutral0)};
 
   display: flex;
   flex-direction: row;
@@ -37,9 +40,6 @@ export const MenuBarInner = styled.div<{ theme: CowSwapTheme }>`
 
 export const NavDaoTriggerElement = styled.div<{ isActive: boolean }>`
   --size: 42px;
-  --defaultFill: grey;
-  --activeBackground: #555; // Active background color
-  --activeFill: #fff; // Active fill color
 
   display: flex;
   flex-flow: row wrap;
@@ -58,7 +58,7 @@ export const NavDaoTriggerElement = styled.div<{ isActive: boolean }>`
 
   &:hover {
     background: var(--activeBackground);
-    color: ${({ isActive }) => (isActive ? 'var(--activeFill)' : 'var(--defaultFill)')};
+    color: var(--activeFill);
   }
 
   > svg {
@@ -77,9 +77,6 @@ export const NavDaoTriggerElement = styled.div<{ isActive: boolean }>`
 
 export const MobileMenuTrigger = styled.div<{ theme: CowSwapTheme }>`
   --size: 42px;
-  --defaultFill: grey;
-  --activeBackground: #555; // Active background color
-  --activeFill: #fff; // Active fill color
 
   display: flex;
   flex-flow: row wrap;
@@ -92,7 +89,7 @@ export const MobileMenuTrigger = styled.div<{ theme: CowSwapTheme }>`
   min-height: var(--size);
   border-radius: 50%;
   background: transparent;
-  color: var(--defaultFill);
+  color: inherit;
   cursor: pointer;
   transition: background 0.2s, fill 0.2s;
 
@@ -116,14 +113,13 @@ export const MobileMenuTrigger = styled.div<{ theme: CowSwapTheme }>`
 
 export const NavItems = styled.ul<{ mobileMode?: boolean; theme: CowSwapTheme }>`
   --marginLeft: 20px;
-  --bgColor: ${({ theme }) => (theme === 'dark' ? '#333' : 'rgba(255, 248, 247, 0.6)')};
   --borderRadius: 28px;
   --blur: 16px;
 
   display: flex;
   flex-flow: row wrap;
   justify-content: flex-start;
-  align-items: center;
+  align-items: stretch;
   gap: 4px;
   list-style-type: none;
   margin: 0 auto 0 var(--marginLeft);
@@ -169,12 +165,13 @@ interface DropdownContentProps {
 
 export const DropdownContent = styled.div<DropdownContentProps>`
   --dropdownOffset: 12px;
+
   display: ${({ isOpen }) => (isOpen ? 'block' : 'none')};
   flex: ${({ isThirdLevel }) => (isThirdLevel ? '1 1 100%;' : 'initial')};
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
-  background: ${({ isThirdLevel }) => (isThirdLevel ? 'rgba(255, 248, 247, 1)' : 'rgba(255, 248, 247, 1)')};
+  background: ${({ isThirdLevel }) => (isThirdLevel ? 'transparent' : 'var(--bgColor)')};
   backdrop-filter: blur(15px);
   z-index: 1000;
   padding: ${({ isThirdLevel }) => (isThirdLevel ? '8px' : '4px')};
@@ -187,6 +184,7 @@ export const DropdownContent = styled.div<DropdownContentProps>`
   top: ${({ isThirdLevel }) => (isThirdLevel ? 'initial' : 'calc(100% + var(--dropdownOffset))')};
   right: ${({ alignRight }) => (alignRight ? 0 : 'initial')};
   left: ${({ alignRight }) => (alignRight ? 'initial' : 0)};
+  cursor: pointer;
 
   ${({ mobileMode }) =>
     mobileMode &&
@@ -233,7 +231,7 @@ export const StyledDropdownContentItem = styled.a<{ isOpen?: boolean }>`
   width: 100%;
 
   &:hover {
-    background-color: #e0e0e0;
+    background-color: var(--activeBackground);
 
     > svg.arrow-icon-right {
       opacity: 1;
@@ -280,7 +278,7 @@ export const DropdownContentItemImage = styled.div`
 export const DropdownContentItemText = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 10px;
 `
 
 export const DropdownContentItemTitle = styled.span`
@@ -290,7 +288,8 @@ export const DropdownContentItemTitle = styled.span`
 
 export const DropdownContentItemDescription = styled.span`
   font-size: 14px;
-  color: #666;
+  color: var(--defaultFill);
+  line-height: 1.2;
 `
 
 export const DropdownContentItemButton = styled.button`
@@ -329,7 +328,7 @@ export const RootNavItem = styled.a<{ isOpen?: boolean; mobileMode?: boolean }>`
   gap: 5px;
 
   &:hover {
-    background-color: #9c8d8d;
+    background: var(--activeBackground);
   }
 
   ${({ mobileMode }) =>
@@ -373,9 +372,6 @@ export const GlobalSettingsWrapper = styled.div`
 
 export const GlobalSettingsButton = styled.button`
   --size: 42px;
-  --defaultFill: grey;
-  --activeBackground: #555; // Active background color
-  --activeFill: #fff; // Active fill color
 
   display: flex;
   flex-flow: row wrap;
@@ -389,6 +385,7 @@ export const GlobalSettingsButton = styled.button`
   background: transparent;
   cursor: pointer;
   transition: background 0.2s, fill 0.2s;
+  color: inherit;
 
   > svg {
     --size: 75%;
@@ -405,6 +402,7 @@ export const GlobalSettingsButton = styled.button`
 
   &:hover {
     background: var(--activeBackground);
+    color: var(--activeFill);
 
     > svg {
       color: var(--activeFill);

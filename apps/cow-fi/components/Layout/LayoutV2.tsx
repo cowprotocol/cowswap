@@ -4,7 +4,7 @@ import styled from 'styled-components/macro'
 import IMG_ICON_SETTINGS_GLOBAL from '@cowprotocol/assets/images/settings-global.svg'
 import IMG_ICON_BRANDED_DOT_RED from '@cowprotocol/assets/images/icon-branded-dot-red.svg'
 
-const THEME_MODE = 'light'
+const THEME_MODE = 'dark'
 const PRODUCT_VARIANT = ProductVariant.CowProtocol
 
 const NAV_ITEMS: MenuItem[] = [

@@ -37,7 +37,7 @@ const DAO_NAV_ITEMS: MenuItem[] = [
   { href: 'https://cow.fi/#cowswap', productVariant: ProductVariant.CowSwap },
   { href: 'https://cow.fi/#cowprotocol', productVariant: ProductVariant.CowProtocol },
   { href: 'https://cow.fi/#cowamm', productVariant: ProductVariant.CowAmm },
-  { href: 'https://cow.fi/', productVariant: ProductVariant.CowDao },
+  { href: 'https://cow.fi/', productVariant: ProductVariant.MevBlocker },
 ]
 
 const SETTINGS_ITEMS: MenuItem[] = [
@@ -348,7 +348,11 @@ export const MenuBar = (props: MenuBarProps) => {
   const menuRef = useRef(null)
   const mobileMenuRef = useRef(null)
   const mobileMenuTriggerRef = useRef<HTMLDivElement>(null)
-  const styledTheme = themeMapper(theme)
+
+  const styledTheme = {
+    ...themeMapper(theme),
+    mode: theme,
+  }
 
   useOnClickOutside([menuRef as RefObject<HTMLElement>], () => setIsDaoOpen(false))
   useOnClickOutside([mobileMenuRef as RefObject<HTMLElement>, mobileMenuTriggerRef as RefObject<HTMLElement>], () =>
