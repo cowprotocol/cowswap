@@ -17,6 +17,7 @@ export function getReceiveAmountInfo(
       amountBeforeFees: amount,
       ...amountsAfterFees,
       feeAmount: undefined,
+      customTitle: type === 'to' ? 'Receive (incl. fees)' : 'From (incl. fees)',
     }
   }
 

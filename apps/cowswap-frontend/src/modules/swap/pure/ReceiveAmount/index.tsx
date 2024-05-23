@@ -18,14 +18,14 @@ export interface ReceiveAmountProps {
 }
 
 export function ReceiveAmount(props: ReceiveAmountProps) {
-  const { type, amountAfterFees } = props.receiveAmountInfo
+  const { type, amountAfterFees, customTitle } = props.receiveAmountInfo
   const title = amountAfterFees.toExact() + ' ' + props.currency.symbol
 
   return (
     <styledEl.ReceiveAmountBox>
       <div>
         <span>
-          <Trans>{type === 'from' ? 'From (incl. costs)' : 'Receive (incl. costs)'}</Trans>
+          <Trans>{customTitle || (type === 'from' ? 'From (incl. costs)' : 'Receive (incl. costs)')}</Trans>
         </span>
 
         <styledEl.QuestionHelperWrapped text={<ReceiveAmountInfoTooltip {...props} />} />

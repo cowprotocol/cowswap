@@ -131,6 +131,7 @@ export const TradeDetailsAccordion = ({
         >
           {!isOpen && (
             <>
+              Fee
               {feeUsdTotalAmount && feeUsdTotalAmount.greaterThan(0) ? (
                 <FiatAmount amount={feeUsdTotalAmount} />
               ) : (
