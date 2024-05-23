@@ -1,7 +1,8 @@
 import { BaseChainInfo } from '@cowprotocol/common-const'
 
-import { WarningCard } from '../WarningCard'
 import styled from 'styled-components/macro'
+
+import { WarningCard } from '../WarningCard'
 
 const Wrapper = styled(WarningCard)`
   p {
