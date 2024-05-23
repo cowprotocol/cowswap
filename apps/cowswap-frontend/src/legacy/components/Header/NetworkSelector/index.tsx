@@ -151,7 +151,6 @@ const NetworkAlertLabel = styled.div`
   }
 `
 
-
 export function NetworkSelector() {
   const provider = useWalletProvider()
   const { chainId } = useWalletInfo()
