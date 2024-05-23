@@ -216,14 +216,14 @@ export const DropdownContent = styled.div<DropdownContentProps>`
   }
 `
 
-export const StyledDropdownContentItem = styled.a<{ isOpen?: boolean }>`
+export const StyledDropdownContentItem = styled.a<{ isOpen?: boolean; isThirdLevel?: boolean }>`
   display: flex;
   flex-flow: row wrap;
   align-items: center;
-  padding: 8px 12px;
+  padding: ${({ isThirdLevel }) => (isThirdLevel ? '16px 16px' : '8px 12px')};
   text-decoration: none;
   color: inherit;
-  transition: background-color 0.2s ease-in-out;
+  transition: background 0.2s ease-in-out;
   border-radius: 24px;
   min-height: 56px;
   gap: 10px;
@@ -231,7 +231,7 @@ export const StyledDropdownContentItem = styled.a<{ isOpen?: boolean }>`
   width: 100%;
 
   &:hover {
-    background-color: var(--activeBackground);
+    background: ${({ isThirdLevel }) => (isThirdLevel ? 'var(--bgColor)' : 'var(--activeBackground)')};
 
     > svg.arrow-icon-right {
       opacity: 1;
@@ -278,12 +278,13 @@ export const DropdownContentItemImage = styled.div`
 export const DropdownContentItemText = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 4px;
 `
 
 export const DropdownContentItemTitle = styled.span`
   font-weight: bold;
   font-size: 18px;
+  line-height: 1.2;
 `
 
 export const DropdownContentItemDescription = styled.span`
@@ -303,6 +304,13 @@ export const DropdownContentItemButton = styled.button`
 export const DropdownMenu = styled.div<{ mobileMode?: boolean }>`
   position: relative;
   display: inline-block;
+  border-radius: inherit;
+  border-radius: var(--borderRadius);
+  color: inherit;
+
+  &:hover {
+    background: var(--activeBackground);
+  }
 
   ${({ mobileMode }) =>
     mobileMode &&
@@ -315,7 +323,7 @@ export const RootNavItem = styled.a<{ isOpen?: boolean; mobileMode?: boolean }>`
   color: inherit;
   font-size: 16px;
   padding: 12px 16px;
-  border-radius: 32px;
+  border-radius: var(--borderRadius);
   border: none;
   text-decoration: none;
   display: flex;
@@ -326,6 +334,7 @@ export const RootNavItem = styled.a<{ isOpen?: boolean; mobileMode?: boolean }>`
   transition: background 0.2s ease-in-out;
   cursor: pointer;
   gap: 5px;
+  color: inherit;
 
   &:hover {
     background: var(--activeBackground);

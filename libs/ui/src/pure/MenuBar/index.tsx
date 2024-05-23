@@ -279,6 +279,7 @@ const DropdownContentWrapper: React.FC<{
             key={index}
             href={!hasChildren ? item.href : undefined}
             isOpen={isThirdLevelVisible}
+            isThirdLevel={isThirdLevel}
             as={Tag}
             onClick={(e: React.MouseEvent<HTMLDivElement | HTMLAnchorElement>) => {
               if (hasChildren) {
