@@ -31,7 +31,7 @@ export const DEFAULT_TOKEN_LISTS: TokenListItem[] = [
   { url: 'https://raw.githubusercontent.com/SetProtocol/uniswap-tokenlist/main/set.tokenlist.json', enabled: false },
   { url: 'https://synths.snx.eth.link', enabled: false },
   { url: 'https://testnet.tokenlist.eth.link', enabled: false },
-  { url: 'https://gateway.ipfs.io/ipns/tokens.uniswap.org', enabled: false },
+  { url: 'https://cloudflare-ipfs.com/ipns/tokens.uniswap.org', enabled: false },
   { url: 'https://wrapped.tokensoft.eth.link', enabled: false },
 ]
 // TODO: Move default palette to a new lib that only exposes the palette colors.
