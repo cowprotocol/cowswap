@@ -1,3 +1,4 @@
+export * from './address'
 export * from './amountFormat/index'
 export * from './anonymizeLink'
 export * from './appzi'
