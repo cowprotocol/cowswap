@@ -1,3 +1,4 @@
+import React from 'react'
 import Head from 'next/head'
 import { GetStaticPaths, GetStaticProps } from 'next'
 import styled from 'styled-components'
@@ -237,6 +238,33 @@ const ArticleSubtitleWrapper = styled.div`
   }
 `
 
+const CategoryTags = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 24px;
+  font-size: 16px;
+  color: ${Color.neutral10};
+  font-weight: ${Font.weight.medium};
+
+  a {
+    display: inline-block;
+    padding: 8px 12px;
+    background: ${Color.neutral98};
+    border-radius: 16px;
+    text-decoration: none;
+    transition: background 0.2s ease-in-out, color 0.2s ease-in-out;
+    color: inherit;
+    font-weight: inherit;
+    font-size: inherit;
+
+    &:hover {
+      background: ${Color.neutral10};
+      color: ${Color.neutral98};
+    }
+  }
+`
+
 export function ArticleSubtitle({ dateIso, content }: { dateIso: string; content: string }) {
   const date = new Date(dateIso)
   const readTime = calculateReadTime(content)
@@ -281,7 +309,7 @@ export default function ArticlePage({
   randomArticles,
   relatedArticles,
 }: ArticlePageProps & { randomArticles: Article[]; relatedArticles: Article[] }) {
-  const { title, blocks, publishedAt } = article.attributes || {}
+  const { title, blocks, publishedAt, categories } = article.attributes || {}
   const content = blocks?.map((block) => (isRichTextComponent(block) ? block.body : '')).join(' ') || ''
 
   return (
@@ -301,7 +329,18 @@ export default function ArticlePage({
               <span>{title}</span>
             </Breadcrumbs>
 
+            {categories && Array.isArray(categories.data) && categories.data.length > 0 && (
+              <CategoryTags>
+                {categories.data.map((category) => (
+                  <a key={category.id} href={`/v2/learn/topic/${category.attributes?.slug ?? ''}`}>
+                    {category.attributes?.name ?? ''}
+                  </a>
+                ))}
+              </CategoryTags>
+            )}
+
             <Title>{title}</Title>
+
             <ArticleSubtitle dateIso={publishedAt!} content={content} />
             <BodyContent>
               {blocks &&

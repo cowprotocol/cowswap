@@ -81,23 +81,28 @@ async function getArticlesSlugs(params: PaginationParam = {}): Promise<string[]>
  * @returns Slugs
  */
 export async function getAllArticleSlugs(): Promise<string[]> {
-  // Fetch all pages
-  const allSlugs = []
-  let page = 0
-  while (true) {
-    const slugs = await getArticlesSlugs({ page, pageSize: PAGE_SIZE + 1 }) // Get one extra to check if there's more pages
-    const hasMorePages = slugs.length > PAGE_SIZE
-    allSlugs.push(hasMorePages ? slugs.slice(0, -1) : slugs)
-
-    if (!hasMorePages) {
-      break
-    }
-
-    // Keep fetching while there's more pages
-    page++
+  const querySerializer = (params: any) => {
+    return qs.stringify(params, { encodeValuesOnly: true, arrayFormat: 'brackets' })
   }
 
-  return allSlugs.flat()
+  const { data, error, response } = await client.GET('/articles', {
+    params: {
+      query: {
+        fields: ['slug'],
+        'pagination[pageSize]': 100, // Adjust the page size as needed
+      },
+    },
+    querySerializer,
+  })
+
+  if (error) {
+    console.error(`Error ${response.status} getting article slugs: ${response.url}`, error)
+    throw error
+  }
+
+  return data.data
+    .filter((article: Article) => article.attributes) // Ensure attributes are defined
+    .map((article: Article) => article.attributes!.slug) // Non-null assertion since we have already filtered
 }
 
 /**
@@ -193,7 +198,35 @@ export async function getArticles({
  * @returns Article with the given slug
  */
 export async function getArticleBySlug(slug: string): Promise<Article | null> {
-  return getBySlugAux(slug, '/articles')
+  const querySerializer = (params: any) => {
+    return qs.stringify(params, { encodeValuesOnly: true, arrayFormat: 'brackets' })
+  }
+
+  const { data, error, response } = await client.GET(`/articles`, {
+    params: {
+      query: {
+        filters: {
+          slug: {
+            $eq: slug,
+          },
+        },
+        populate: ['cover', 'blocks', 'seo', 'authorsBio', 'categories'],
+      },
+    },
+    querySerializer,
+  })
+
+  if (error) {
+    console.error(`Error ${response.status} getting article by slug: ${response.url}`, error)
+    throw error
+  }
+
+  const articles = data.data
+  if (articles.length === 0) {
+    return null
+  }
+
+  return articles[0]
 }
 
 /**
