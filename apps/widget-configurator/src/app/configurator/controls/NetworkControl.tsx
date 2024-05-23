@@ -24,7 +24,13 @@ const LABEL = 'Network'
 
 export const getNetworkOption = (chainId: SupportedChainId) => NetworkOptions.find((item) => item.chainId === chainId)
 
-export function NetworkControl({ state }: { state: [NetworkOption, Dispatch<SetStateAction<NetworkOption>>] }) {
+export function NetworkControl({
+  state,
+  standaloneMode,
+}: {
+  standaloneMode: boolean
+  state: [NetworkOption, Dispatch<SetStateAction<NetworkOption>>]
+}) {
   const [network, setNetwork] = state
 
   const switchNetwork = (chainId: number) => {
@@ -37,7 +43,7 @@ export function NetworkControl({ state }: { state: [NetworkOption, Dispatch<SetS
   }
 
   return (
-    <FormControl sx={{ width: '100%' }}>
+    <FormControl sx={{ width: '100%' }} disabled={standaloneMode}>
       <InputLabel>{LABEL}</InputLabel>
       <Select
         id="controllable-states-network"
@@ -45,6 +51,7 @@ export function NetworkControl({ state }: { state: [NetworkOption, Dispatch<SetS
         onChange={(event) => switchNetwork(event.target.value as number)}
         autoWidth
         label={LABEL}
+        disabled={standaloneMode}
         size="small"
       >
         {NetworkOptions.map((option) => (

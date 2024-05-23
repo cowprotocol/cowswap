@@ -19,7 +19,15 @@ export function useAccountNotifications() {
   const { data: notifications } = useSWR<NotificationModel[]>(
     account ? `/notification-list/${account}` : null,
     (url: string | null) => {
-      return url ? cmsClient.GET(url).then((res: { data: NotificationModel[] }) => res.data) : null
+      return url
+        ? cmsClient
+            .GET(url)
+            .then((res: { data: NotificationModel[] }) => res.data)
+            .catch((error: Error) => {
+              console.error('Failed to fetch notifications', error)
+              return []
+            })
+        : null
     },
     swrOptions
   )

@@ -173,7 +173,7 @@ export function Configurator({ title }: { title: string }) {
     }
   }, [isConnected])
 
-  useSyncWidgetNetwork(chainId, setNetworkControlState)
+  useSyncWidgetNetwork(chainId, setNetworkControlState, standaloneMode)
 
   return (
     <Box sx={WrapperStyled}>
@@ -224,7 +224,7 @@ export function Configurator({ title }: { title: string }) {
 
         <CurrentTradeTypeControl state={tradeTypeState} />
 
-        {!IS_IFRAME && <NetworkControl state={networkControlState} />}
+        {!IS_IFRAME && <NetworkControl state={networkControlState} standaloneMode={standaloneMode} />}
 
         <Divider variant="middle">Tokens</Divider>
 
