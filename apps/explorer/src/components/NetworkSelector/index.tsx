@@ -1,11 +1,14 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 
 import { CHAIN_INFO, getChainInfo } from '@cowprotocol/common-const'
+import { getAvailableChains } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { faCheck } from '@fortawesome/free-solid-svg-icons'
+import { useFlags } from 'launchdarkly-react-client-sdk'
 
-import { SelectorContainer, OptionsContainer, Option, NetworkLabel, StyledFAIcon } from './NetworkSelector.styled'
+import { NetworkLabel, Option, OptionsContainer, SelectorContainer, StyledFAIcon } from './NetworkSelector.styled'
+
 
 import { usePathSuffix } from '../../state/network'
 
@@ -21,6 +24,8 @@ export const NetworkSelector: React.FC<networkSelectorProps> = ({ networkId }) =
   const currentNetworkName = currentNetwork.label.toLowerCase()
   const [open, setOpen] = useState(false)
   const pathSuffix = usePathSuffix()
+  const { isArbitrumOneEnabled } = useFlags()
+  const availableChains = useMemo(() => getAvailableChains(isArbitrumOneEnabled ? undefined : [SupportedChainId.ARBITRUM_ONE]), [isArbitrumOneEnabled])
 
   useEffect(() => {
     const closeOpenSelector = (e: MouseEvent | KeyboardEvent): void => {
@@ -51,8 +56,7 @@ export const NetworkSelector: React.FC<networkSelectorProps> = ({ networkId }) =
       <span className={`arrow ${open && 'open'}`} />
       {open && (
         <OptionsContainer width={selectContainer.current?.offsetWidth || 0}>
-          {Object.keys(CHAIN_INFO).map((_itemNetworkId) => {
-            const itemNetworkId = +_itemNetworkId as unknown as SupportedChainId
+          {availableChains.map((itemNetworkId) => {
             const network = CHAIN_INFO[itemNetworkId]
 
             /**
