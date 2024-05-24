@@ -4,7 +4,12 @@ import { atomWithStorage } from 'jotai/utils'
 import { getJotaiMergerStorage } from '@cowprotocol/core'
 import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { DEFAULT_TOKENS_LISTS, GNOSIS_UNISWAP_TOKENS_LIST, UNISWAP_TOKENS_LIST } from '../../const/tokensLists'
+import {
+  ARBITRUM_ONE_TOKENS_LIST,
+  DEFAULT_TOKENS_LISTS,
+  GNOSIS_UNISWAP_TOKENS_LIST,
+  UNISWAP_TOKENS_LIST,
+} from '../../const/tokensLists'
 import {
   ListSourceConfig,
   ListsSourcesByNetwork,
@@ -15,7 +20,13 @@ import {
 import { environmentAtom } from '../environmentAtom'
 
 const getUniswapTokenListUrl = (chainId: number) => {
-  return chainId === SupportedChainId.GNOSIS_CHAIN ? GNOSIS_UNISWAP_TOKENS_LIST : UNISWAP_TOKENS_LIST
+  if (chainId === SupportedChainId.GNOSIS_CHAIN) {
+    return GNOSIS_UNISWAP_TOKENS_LIST
+  } else if (chainId === SupportedChainId.ARBITRUM_ONE) {
+    return ARBITRUM_ONE_TOKENS_LIST
+  } else {
+    return UNISWAP_TOKENS_LIST
+  }
 }
 
 const curatedListSourceAtom = atom((get) => {
