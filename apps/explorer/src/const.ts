@@ -2,7 +2,6 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { TokenErc20, UNLIMITED_ORDER_AMOUNT } from '@gnosis.pm/dex-js'
 import BigNumber from 'bignumber.js'
-import BN from 'bn.js'
 
 export {
   ALLOWANCE_FOR_ENABLED_TOKEN,
@@ -28,15 +27,6 @@ export const ONE_HUNDRED_BIG_NUMBER = new BigNumber(100)
 
 // Value used on formatSmart's smallLimit for integer values, such as raw token amounts
 export const MINIMUM_ATOM_VALUE = '1'
-
-// How much of the order needs to be matched to consider it filled
-// Will divide the total sell amount by this factor.
-// E.g.: Sell = 500; ORDER_FILLED_FACTOR = 100 (1%) => 500/100 => 5
-// ∴ when the amount is < 5 the order will be considered filled.
-export const ORDER_FILLED_FACTOR = new BN(10000) // 0.01%
-// Similar to the ORDER_FILLED_FACTOR, but for the explorer, and using a different calculation
-// Order is considered `filled` when less than FILLED_ORDER_EPSILON is left
-export const FILLED_ORDER_EPSILON = new BigNumber('0.0001') // == 0.01%
 
 export const APP_NAME = 'CoW Protocol'
 
