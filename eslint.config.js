@@ -14,9 +14,18 @@ module.exports = [
   {
     plugins: {
       '@nx': nxEslintPlugin,
-      'react-hooks': reactHooks,
       'unused-imports': unusedImports,
       import: eslintImport,
+    },
+  },
+  {
+    ...js.configs.recommended,
+    files: ['**/*.ts', '**/*.tsx'],
+    plugins: {
+      'react-hooks': reactHooks,
+    },
+    rules: {
+      ...reactHooks.configs.recommended.rules,
     },
   },
   {
