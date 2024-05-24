@@ -19,21 +19,18 @@ import {
 } from '../../types'
 import { environmentAtom } from '../environmentAtom'
 
-const getUniswapTokenListUrl = (chainId: number) => {
-  if (chainId === SupportedChainId.GNOSIS_CHAIN) {
-    return GNOSIS_UNISWAP_TOKENS_LIST
-  } else if (chainId === SupportedChainId.ARBITRUM_ONE) {
-    return ARBITRUM_ONE_TOKENS_LIST
-  } else {
-    return UNISWAP_TOKENS_LIST
-  }
+const UNISWAP_TOKEN_LIST_URL: Record<SupportedChainId, string> = {
+  [SupportedChainId.MAINNET]: UNISWAP_TOKENS_LIST,
+  [SupportedChainId.GNOSIS_CHAIN]: GNOSIS_UNISWAP_TOKENS_LIST,
+  [SupportedChainId.ARBITRUM_ONE]: ARBITRUM_ONE_TOKENS_LIST,
+  [SupportedChainId.SEPOLIA]: UNISWAP_TOKENS_LIST,
 }
 
 const curatedListSourceAtom = atom((get) => {
   const UNISWAP_LIST_SOURCE: ListSourceConfig = {
     priority: 1,
     enabledByDefault: true,
-    source: getUniswapTokenListUrl(get(environmentAtom).chainId),
+    source: UNISWAP_TOKEN_LIST_URL[get(environmentAtom).chainId],
   }
 
   return UNISWAP_LIST_SOURCE
