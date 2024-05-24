@@ -1,7 +1,6 @@
 import { useSetAtom } from 'jotai/index'
 
 import { useAddPriorityAllowance } from '@cowprotocol/balances-and-allowances'
-import { useBlockNumber, useGetReceipt } from '@cowprotocol/common-hooks'
 import { useGnosisSafeInfo, useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
@@ -14,6 +13,8 @@ import { useCancelOrdersBatch } from 'legacy/state/orders/hooks'
 import { removeInFlightOrderIdAtom } from 'modules/swap/state/EthFlow/ethFlowInFlightOrderIdsAtom'
 import { useGetTwapOrderById } from 'modules/twap/hooks/useGetTwapOrderById'
 
+import { useBlockNumber } from 'common/hooks/useBlockNumber'
+import { useGetReceipt } from 'common/hooks/useGetReceipt'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 import { CheckEthereumTransactions } from '../types'

@@ -2,7 +2,6 @@ import { useSetAtom } from 'jotai/index'
 import { useCallback, useEffect } from 'react'
 
 import { GAS_PRICE_UPDATE_THRESHOLD } from '@cowprotocol/common-const'
-import { useBlockNumber } from '@cowprotocol/common-hooks'
 import { gasPriceAtom } from '@cowprotocol/core'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -13,6 +12,8 @@ import { updateGasPrices, UpdateGasPrices } from 'legacy/state/gas/actions'
 import { useGasPrices } from 'legacy/state/gas/hooks'
 
 import { gasFeeApi } from 'api/gasPrices'
+
+import { useBlockNumber } from '../hooks/useBlockNumber'
 
 function needsGasUpdate(now: number, lastUpdated: number, threshold: number) {
   return now - lastUpdated > threshold

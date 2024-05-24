@@ -36,9 +36,11 @@ const Format = styled.strong`
 type ChainPrefixWarningProps = {
   chainPrefixWarning: string
   chainInfo: BaseChainInfo
+  isDarkMode: boolean
 }
-export default function ChainPrefixWarning({ chainPrefixWarning, chainInfo }: ChainPrefixWarningProps) {
-  const { label, addressPrefix, logoUrl, color } = chainInfo
+export default function ChainPrefixWarning({ chainPrefixWarning, chainInfo, isDarkMode }: ChainPrefixWarningProps) {
+  const { label, addressPrefix, logo, color } = chainInfo
+  const logoUrl = isDarkMode ? logo.dark : logo.light
   return (
     <Wrapper>
       <p>

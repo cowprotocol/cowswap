@@ -1,17 +1,14 @@
+import { RPC_URLS } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { ETH_NODE_URL, NODE_PROVIDER_ID } from 'const'
 import Web3 from 'web3'
 
 import type { HttpProvider } from 'web3-core'
 
-// TODO connect to mainnet if we need AUTOCONNECT at all
-export const getDefaultProvider = (): string | null => (process.env.NODE_ENV === 'test' ? null : ETH_NODE_URL)
-
 const web3cache: { [key: string]: Web3 } = {}
 
 export function createWeb3Api(provider?: string): Web3 {
-  const _provider = provider || getDefaultProvider() || ''
+  const _provider = provider || getProviderByNetwork(SupportedChainId.MAINNET)
 
   if (web3cache[_provider]) {
     return web3cache[_provider]
@@ -43,14 +40,8 @@ export function createWeb3Api(provider?: string): Web3 {
   return web3
 }
 
-const PROVIDER_ENDPOINTS: Record<SupportedChainId, string> = {
-  [SupportedChainId.MAINNET]: 'https://eth-mainnet.nodereal.io/v1/' + NODE_PROVIDER_ID,
-  [SupportedChainId.GNOSIS_CHAIN]: 'https://rpc.gnosis.gateway.fm/',
-  [SupportedChainId.SEPOLIA]: 'https://eth-sepolia.nodereal.io/v1/' + NODE_PROVIDER_ID,
-}
-
-export function getProviderByNetwork(networkId: SupportedChainId): string | undefined {
-  return PROVIDER_ENDPOINTS[networkId]
+export function getProviderByNetwork(networkId: SupportedChainId): string {
+  return RPC_URLS[networkId]
 }
 
 // Approach 2: update the provider in a single web3 instance
