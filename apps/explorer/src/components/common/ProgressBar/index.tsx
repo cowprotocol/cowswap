@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { PercentDisplay } from '@cowprotocol/ui'
+import { PercentDisplay } from '@cowprotocol/ui/pure/PercentDisplay'
 
 import styled from 'styled-components/macro'
 
