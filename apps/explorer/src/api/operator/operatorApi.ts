@@ -14,16 +14,7 @@ const backoffOpts = { numOfAttempts: 2 }
 export async function getOrder(params: GetOrderParams): Promise<RawOrder | null> {
   const { networkId, orderId } = params
 
-  return orderBookSDK.getOrderMultiEnv(orderId, { chainId: networkId }).then((order) => {
-    // TODO: remove after test
-    if (order) {
-      order.executedSellAmount = '499989000000000000'
-      order.executedSellAmountBeforeFees = '499989000000000000'
-      order.status = 'open' as any
-    }
-
-    return order
-  })
+  return orderBookSDK.getOrderMultiEnv(orderId, { chainId: networkId })
 }
 
 /**
