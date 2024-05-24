@@ -18,7 +18,7 @@ import {
   ArticleImage,
   ArticleTitle,
   ArticleDescription,
-} from './../styled'
+} from '../../styled'
 
 const Wrapper = styled.div`
   display: flex;

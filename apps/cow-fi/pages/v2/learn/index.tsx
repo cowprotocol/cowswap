@@ -32,7 +32,8 @@ import {
   CTASubtitle,
   CTATitle,
   CTAButton,
-} from './styled'
+  ContainerCardSectionTopTitle,
+} from '../styled'
 
 const DATA_CACHE_TIME_SECONDS = 5 * 60 // Cache 5min
 
@@ -84,29 +85,6 @@ const FEATURED_ARTICLES = [
     linkExternal: false,
   },
 ]
-
-// const TOPICS = [
-//   {
-//     title: 'Getting started',
-//     bgColor: '#FF4500',
-//     iconColor: '#800020',
-//     textColor: Color.neutral100,
-//     link: '/getting-started',
-//   },
-//   {
-//     title: 'Crypto basics',
-//     bgColor: '#FF69B4',
-//     iconColor: '#000080',
-//     textColor: Color.neutral0,
-//     link: '/crypto-basics',
-//   },
-//   { title: 'MEV', bgColor: '#FFD700', iconColor: '#FF4500', textColor: Color.neutral0, link: '/mev' },
-//   { title: 'Guides', bgColor: '#00BFFF', iconColor: '#0B6623', textColor: Color.neutral0, link: '/guides' },
-//   { title: 'Governance', bgColor: '#000080', iconColor: '#00BFFF', textColor: Color.neutral100, link: '/governance' },
-//   { title: 'Token', bgColor: '#0B6623', iconColor: '#FFD700', textColor: Color.neutral100, link: '/token' },
-//   { title: 'Docs', bgColor: '#FFDAB9', iconColor: '#0B6623', textColor: Color.neutral0, link: '/docs' },
-//   { title: 'FAQ', bgColor: '#800020', iconColor: '#FF4500', textColor: Color.neutral100, link: '/faq' },
-// ]
 
 const PODCASTS = [
   { title: 'CoW Hooks: you are in control!', link: '/podcast/cow-hooks' },
@@ -216,7 +194,7 @@ export default function Learn({ siteConfigData, categories, articles }: LearnPro
         <ContainerCard>
           <ContainerCardSection>
             <ContainerCardSectionTop>
-              <h3>Featured articles</h3>
+              <ContainerCardSectionTopTitle>Featured articles</ContainerCardSectionTopTitle>
               <ArrowButton link="/articles" text="View all articles" />
             </ContainerCardSectionTop>
             <ArticleList>
@@ -237,7 +215,7 @@ export default function Learn({ siteConfigData, categories, articles }: LearnPro
 
           <ContainerCardSection>
             <ContainerCardSectionTop>
-              <h3>Topics</h3>
+              <ContainerCardSectionTopTitle>Topics</ContainerCardSectionTopTitle>
             </ContainerCardSectionTop>
             <TopicList columns={3}>
               {categories.map(({ name, bgColor, textColor, iconColor, link }, index) => (
@@ -251,7 +229,7 @@ export default function Learn({ siteConfigData, categories, articles }: LearnPro
 
           <ContainerCardSection>
             <ContainerCardSectionTop>
-              <h3>Podcasts & Spaces</h3>
+              <ContainerCardSectionTopTitle>Podcasts & Spaces</ContainerCardSectionTopTitle>
               <ArrowButton link="/articles" text="View all" />
             </ContainerCardSectionTop>
             <LinkSection>
@@ -279,7 +257,7 @@ export default function Learn({ siteConfigData, categories, articles }: LearnPro
 
           <ContainerCardSection>
             <ContainerCardSectionTop>
-              <h3>Media coverage</h3>
+              <ContainerCardSectionTopTitle>Media coverage</ContainerCardSectionTopTitle>
               <ArrowButton link="/articles" text="View all" />
             </ContainerCardSectionTop>
             <ArticleList columns={4}>

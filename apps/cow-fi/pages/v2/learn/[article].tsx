@@ -19,7 +19,7 @@ import {
   ArticleCard,
   ArticleImage,
   ArticleTitle,
-} from './styled'
+} from '../styled'
 
 const DATA_CACHE_TIME_SECONDS = 5 * 60 // Cache 5min
 
@@ -358,7 +358,7 @@ export default function ArticlePage({
               <ul>
                 {relatedArticles.map((article) => (
                   <li key={article.id}>
-                    <a href={`/article/${article.attributes?.slug}`}>{article.attributes?.title}</a>
+                    <a href={`/v2/learn/${article.attributes?.slug}`}>{article.attributes?.title}</a>
                   </li>
                 ))}
               </ul>

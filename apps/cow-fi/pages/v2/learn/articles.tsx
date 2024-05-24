@@ -19,7 +19,7 @@ import {
   Breadcrumbs,
   ArticleCount,
   Pagination,
-} from './styled'
+} from '../styled'
 
 const LEARN_PATH = '/v2/learn/'
 

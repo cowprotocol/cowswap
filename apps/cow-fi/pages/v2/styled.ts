@@ -3,6 +3,7 @@ import { Font, Color, Media } from '@cowprotocol/ui'
 
 export const ContainerCard = styled.div<{
   bgColor?: string
+  color?: string
   gap?: number
   gapMobile?: number
   touchFooter?: boolean
@@ -18,6 +19,7 @@ export const ContainerCard = styled.div<{
   border-radius: 60px;
   background: ${({ bgColor }) => bgColor || Color.neutral90};
   position: relative;
+  color: ${({ color }) => color || Color.neutral0};
 
   ${Media.upToMedium()} {
     flex-flow: column wrap;
@@ -33,25 +35,51 @@ export const ContainerCardSection = styled.div`
   width: 100%;
   justify-content: space-between;
   align-items: center;
+  color: inherit;
 `
 
-export const ContainerCardSectionTop = styled.div`
+export const ContainerCardSectionTop = styled.div<{ columnWrap?: boolean; padding?: string }>`
   display: flex;
-  flex-flow: row wrap;
-  gap: 24px;
+  flex-flow: ${({ columnWrap }) => (columnWrap ? 'column wrap' : 'row wrap')};
+  gap: 60px;
   width: 100%;
   justify-content: space-between;
   align-items: center;
+  color: inherit;
+  padding: ${({ padding }) => padding || '0'};
+`
 
-  > h1,
-  > h3 {
-    font-size: 38px;
-    font-weight: ${Font.weight.bold};
-    color: ${Color.neutral10};
+// create a containercardsection top title component and a description one that replaces the h1 and h3 and small and allow for passing fontSize and color
+export const ContainerCardSectionTopTitle = styled.h3<{
+  fontSize?: number
+  fontSizeMobile?: number
+  color?: string
+  textAlign?: string
+}>`
+  font-size: ${({ fontSize }) => fontSize || 38}px;
+  font-weight: ${Font.weight.bold};
+  color: ${({ color }) => color || 'inherit'};
+  text-align: ${({ textAlign }) => textAlign || 'left'};
+  line-height: 1.2;
 
-    ${Media.upToMedium()} {
-      font-size: 28px;
-    }
+  ${Media.upToMedium()} {
+    font-size: ${({ fontSizeMobile }) => fontSizeMobile || 28}px;
+  }
+`
+
+export const ContainerCardSectionTopDescription = styled.small<{
+  fontSize?: number
+  fontSizeMobile?: number
+  color?: string
+  textAlign?: string
+}>`
+  font-size: ${({ fontSize }) => fontSize || 28}px;
+  color: ${({ color }) => color || 'inherit'};
+  text-align: ${({ textAlign }) => textAlign || 'left'};
+  line-height: 1.2;
+
+  ${Media.upToMedium()} {
+    font-size: ${({ fontSizeMobile }) => fontSizeMobile || 18}px;
   }
 `
 
@@ -129,7 +157,7 @@ export const TopicList = styled.div<{ columns?: number; columnsMobile?: number }
   }
 `
 
-export const TopicCard = styled.a<{ bgColor: string; textColor: string }>`
+export const TopicCard = styled.a<{ bgColor?: string; textColor?: string }>`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -154,27 +182,29 @@ export const TopicCard = styled.a<{ bgColor: string; textColor: string }>`
     padding: 32px 16px;
     gap: 32px;
   }
-
-  > h5 {
-    font-size: inherit;
-    font-weight: inherit;
-    color: inherit;
-    padding: 0;
-    margin: 0;
-  }
 `
 
-export const TopicImage = styled.div<{ iconColor: string }>`
-  width: 100px;
-  height: 100px;
+export const TopicImage = styled.div<{ iconColor: string; large?: boolean }>`
+  --size: ${({ large }) => (large ? '290px' : '132px')};
+  width: var(--size);
+  height: var(--size);
+  border-radius: var(--size);
   background: ${({ iconColor }) => iconColor || Color.neutral90};
   color: ${({ iconColor }) => iconColor || Color.neutral90};
-  border-radius: 50%;
-  margin-bottom: 16px;
+  margin: 0 0 16px;
 
   svg {
     fill: currentColor;
   }
+`
+
+export const TopicTitle = styled.h5<{ fontSize?: number }>`
+  font-size: ${({ fontSize }) => fontSize || 28}px;
+  font-weight: ${Font.weight.medium};
+  color: ${Color.neutral0};
+  padding: 0;
+  margin: 0;
+  line-height: 1.2;
 `
 
 export const LinkSection = styled.div<{ columns?: number; columnsMobile?: number }>`
@@ -409,5 +439,39 @@ export const Pagination = styled.div`
   span {
     font-size: 16px;
     color: ${Color.neutral60};
+  }
+`
+
+export const SectionTitleWrapper = styled.div<{ color?: string }>`
+  --color: ${Color.neutral20};
+  display: flex;
+  flex-flow: column wrap;
+  align-items: center;
+  color: ${({ color }) => color || Color.neutral20};
+  margin: 100px 0 56px;
+  text-align: center;
+  width: 100%;
+  gap: 32px;
+`
+
+export const SectionTitleText = styled.h5`
+  font-size: 90px;
+  font-weight: ${Font.weight.bold};
+  color: inherit;
+  line-height: 1.2;
+  margin: 0;
+`
+
+export const SectionTitleIcon = styled.div`
+  --size: 64px;
+  width: 100%;
+  object-fit: contain;
+  color: inherit;
+
+  > svg {
+    width: 100%;
+    height: 100%;
+    max-height: var(--size);
+    fill: currentColor;
   }
 `

@@ -19,7 +19,9 @@ import {
   TopicList,
   TopicCard,
   TopicImage,
-} from './styled'
+  ContainerCardSectionTopTitle,
+  TopicTitle,
+} from '../styled'
 
 const DATA_CACHE_TIME_SECONDS = 5 * 60 // Cache 5min
 
@@ -86,14 +88,14 @@ export default function Topics({ siteConfigData, categories, articles }: TopicsP
         <ContainerCard touchFooter>
           <ContainerCardSection>
             <ContainerCardSectionTop>
-              <h3>Topics</h3>
+              <ContainerCardSectionTopTitle>Topics</ContainerCardSectionTopTitle>
               <ArrowButton link="/v2/learn" text="Overview" />
             </ContainerCardSectionTop>
             <TopicList columns={3}>
               {categories.map(({ name, bgColor, textColor, iconColor, link }, index) => (
                 <TopicCard key={index} bgColor={bgColor} textColor={textColor} href={link}>
                   <TopicImage iconColor={iconColor}></TopicImage>
-                  <h5>{name}</h5>
+                  <TopicTitle>{name}</TopicTitle>
                 </TopicCard>
               ))}
             </TopicList>
