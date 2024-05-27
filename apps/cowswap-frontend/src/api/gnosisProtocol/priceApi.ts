@@ -1,6 +1,6 @@
 import { RAW_CODE_LINK } from '@cowprotocol/common-const'
 import { environmentName } from '@cowprotocol/common-utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { SupportedChainId, mapSupportedNetworks } from '@cowprotocol/cow-sdk'
 
 import { GpPriceStrategy } from 'legacy/state/gas/atoms'
 
@@ -9,11 +9,7 @@ const STRATEGY_URL_BASE = RAW_CODE_LINK + '/configuration/config/'
 const ENV_BASE = environmentName !== 'production' ? 'barn' : environmentName
 const STRATEGY_URL = STRATEGY_URL_BASE + ENV_BASE + '/strategies'
 
-const STRATEGY_API_URL: Record<SupportedChainId, string> = {
-  [SupportedChainId.MAINNET]: STRATEGY_URL + '/strategy-1.json',
-  [SupportedChainId.GNOSIS_CHAIN]: STRATEGY_URL + '/strategy-100.json',
-  [SupportedChainId.SEPOLIA]: STRATEGY_URL + '/strategy-11155111.json',
-}
+const STRATEGY_API_URL = mapSupportedNetworks((chainId: SupportedChainId) => `${STRATEGY_URL}/strategy-${chainId}.json`)
 
 export type PriceStrategy = {
   primary: GpPriceStrategy
