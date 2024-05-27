@@ -1,4 +1,3 @@
-import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
 import { changeSwapAmountAnalytics } from '@cowprotocol/analytics'
@@ -9,7 +8,7 @@ import { Field } from 'legacy/state/types'
 import { useNavigateOnCurrencySelection } from 'modules/trade/hooks/useNavigateOnCurrencySelection'
 import { useSwitchTokensPlaces } from 'modules/trade/hooks/useSwitchTokensPlaces'
 import { useUpdateCurrencyAmount } from 'modules/trade/hooks/useUpdateCurrencyAmount'
-import { updateTradeQuoteAtom } from 'modules/tradeQuote'
+import { useResetTradeQuote } from 'modules/tradeQuote'
 
 import { useAdvancedOrdersDerivedState } from './useAdvancedOrdersDerivedState'
 import { useUpdateAdvancedOrdersRawState } from './useAdvancedOrdersRawState'
@@ -20,7 +19,7 @@ export function useAdvancedOrdersActions() {
 
   const naviageOnCurrencySelection = useNavigateOnCurrencySelection()
   const updateCurrencyAmount = useUpdateCurrencyAmount()
-  const updateQuoteState = useSetAtom(updateTradeQuoteAtom)
+  const resetTradeQuote = useResetTradeQuote()
 
   const updateAdvancedOrdersState = useUpdateAdvancedOrdersRawState()
 
@@ -34,9 +33,9 @@ export function useAdvancedOrdersActions() {
         currency,
       })
       naviageOnCurrencySelection(field, currency)
-      updateQuoteState({ response: null })
+      resetTradeQuote()
     },
-    [naviageOnCurrencySelection, updateCurrencyAmount, updateQuoteState]
+    [naviageOnCurrencySelection, updateCurrencyAmount, resetTradeQuote]
   )
 
   const onUserInput = useCallback(
@@ -64,8 +63,8 @@ export function useAdvancedOrdersActions() {
 
   const onSwitchTokens = useCallback(() => {
     onSwitchTokensDefault()
-    updateQuoteState({ response: null })
-  }, [updateQuoteState, onSwitchTokensDefault])
+    resetTradeQuote()
+  }, [resetTradeQuote, onSwitchTokensDefault])
 
   return {
     onCurrencySelection,

@@ -5,11 +5,12 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
 
-import { updateTradeQuoteAtom } from '../state/tradeQuoteAtom'
+import { useUpdateTradeQuote } from './useUpdateTradeQuote'
+
 import { tradeQuoteParamsAtom } from '../state/tradeQuoteParamsAtom'
 
 export function useSetTradeQuoteParams(amount: CurrencyAmount<Currency> | null) {
-  const updateTradeQuote = useSetAtom(updateTradeQuoteAtom)
+  const updateTradeQuote = useUpdateTradeQuote()
   const updateState = useSetAtom(tradeQuoteParamsAtom)
 
   const context = useSafeMemoObject({ amount, updateTradeQuote, updateState })
