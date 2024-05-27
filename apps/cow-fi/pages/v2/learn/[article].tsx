@@ -19,6 +19,7 @@ import {
   ArticleCard,
   ArticleImage,
   ArticleTitle,
+  ContainerCardSectionTopTitle,
 } from '@/styles/styled'
 
 const DATA_CACHE_TIME_SECONDS = 5 * 60 // Cache 5min
@@ -370,7 +371,7 @@ export default function ArticlePage({
         <ContainerCard bgColor={Color.neutral98} touchFooter>
           <ContainerCardSection>
             <ContainerCardSectionTop>
-              <h3>Read more</h3>
+              <ContainerCardSectionTopTitle>Read more</ContainerCardSectionTopTitle>
             </ContainerCardSectionTop>
             <ArticleList>
               {randomArticles.map((article) => {
