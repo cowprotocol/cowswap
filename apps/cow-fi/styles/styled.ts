@@ -39,6 +39,52 @@ export const ContainerCardSection = styled.div<{ padding?: string }>`
   padding: ${({ padding }) => padding || '0'};
 `
 
+export const ContainerCardSectionTop = styled.div<{ columnWrap?: boolean; padding?: string; maxWidth?: number }>`
+  display: flex;
+  flex-flow: ${({ columnWrap }) => (columnWrap ? 'column wrap' : 'row wrap')};
+  gap: 60px;
+  width: 100%;
+  max-width: ${({ maxWidth }) => (maxWidth ? `${maxWidth}px` : '100%')};
+  justify-content: space-between;
+  align-items: center;
+  color: inherit;
+  padding: ${({ padding }) => padding || '0'};
+  margin: 0 auto;
+`
+
+export const ContainerCardSectionTopTitle = styled.h3<{
+  fontSize?: number
+  fontSizeMobile?: number
+  color?: string
+  textAlign?: string
+}>`
+  font-size: ${({ fontSize }) => fontSize || 38}px;
+  font-weight: ${Font.weight.bold};
+  color: ${({ color }) => color || 'inherit'};
+  text-align: ${({ textAlign }) => textAlign || 'left'};
+  line-height: 1.2;
+
+  ${Media.upToMedium()} {
+    font-size: ${({ fontSizeMobile }) => fontSizeMobile || 38}px;
+  }
+`
+
+export const ContainerCardSectionTopDescription = styled.small<{
+  fontSize?: number
+  fontSizeMobile?: number
+  color?: string
+  textAlign?: string
+}>`
+  font-size: ${({ fontSize }) => fontSize || 28}px;
+  color: ${({ color }) => color || 'inherit'};
+  text-align: ${({ textAlign }) => textAlign || 'left'};
+  line-height: 1.5;
+
+  ${Media.upToMedium()} {
+    font-size: ${({ fontSizeMobile }) => fontSizeMobile || 21}px;
+  }
+`
+
 export const ArticleList = styled.div<{ columns?: number; columnsMobile?: number }>`
   display: grid;
   grid-template-columns: repeat(${({ columns }) => columns || 3}, 1fr);
