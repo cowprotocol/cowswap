@@ -46,6 +46,8 @@ export function useTradeFlowContext(): TradeFlowContext | null {
   const generatePermitHook = useGeneratePermitHook()
   const getCachedPermit = useGetCachedPermit()
 
+  const isQuoteReady = !!quoteState.response && !quoteState.isLoading && !!quoteState.localQuoteTimestamp
+
   if (
     !account ||
     !state.inputCurrencyAmount ||
@@ -54,6 +56,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
     !state.outputCurrency ||
     !provider ||
     !settlementContract ||
+    !isQuoteReady ||
     !appData
   ) {
     return null
