@@ -43,6 +43,7 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
    * After the confirmation modal opens, the trade context should not be recreated.
    * In order to prevent this, we use useMemo to keep the trade context the same when the modal was opened.
    */
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const tradeContext = useMemo(() => tradeContextInitial, [])
 
   const { account } = useWalletInfo()
