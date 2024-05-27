@@ -589,7 +589,7 @@ export const SectionTitleDescription = styled.p<{ maxWidth?: number; color?: str
 `
 
 export const SectionTitleIcon = styled.div<{ size?: number }>`
-  --size: ${({ size }) => `${size}px` || '64px'};
+  --size: ${({ size }) => (size ? `${size}px` : '64px')};
   width: 100%;
   object-fit: contain;
   color: inherit;
