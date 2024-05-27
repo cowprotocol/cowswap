@@ -39,51 +39,6 @@ export const ContainerCardSection = styled.div<{ padding?: string }>`
   padding: ${({ padding }) => padding || '0'};
 `
 
-export const ContainerCardSectionTop = styled.div<{ columnWrap?: boolean; padding?: string }>`
-  display: flex;
-  flex-flow: ${({ columnWrap }) => (columnWrap ? 'column wrap' : 'row wrap')};
-  gap: 60px;
-  width: 100%;
-  justify-content: space-between;
-  align-items: center;
-  color: inherit;
-  padding: ${({ padding }) => padding || '0'};
-`
-
-// create a containercardsection top title component and a description one that replaces the h1 and h3 and small and allow for passing fontSize and color
-export const ContainerCardSectionTopTitle = styled.h3<{
-  fontSize?: number
-  fontSizeMobile?: number
-  color?: string
-  textAlign?: string
-}>`
-  font-size: ${({ fontSize }) => fontSize || 38}px;
-  font-weight: ${Font.weight.bold};
-  color: ${({ color }) => color || 'inherit'};
-  text-align: ${({ textAlign }) => textAlign || 'left'};
-  line-height: 1.2;
-
-  ${Media.upToMedium()} {
-    font-size: ${({ fontSizeMobile }) => fontSizeMobile || 38}px;
-  }
-`
-
-export const ContainerCardSectionTopDescription = styled.small<{
-  fontSize?: number
-  fontSizeMobile?: number
-  color?: string
-  textAlign?: string
-}>`
-  font-size: ${({ fontSize }) => fontSize || 28}px;
-  color: ${({ color }) => color || 'inherit'};
-  text-align: ${({ textAlign }) => textAlign || 'left'};
-  line-height: 1.5;
-
-  ${Media.upToMedium()} {
-    font-size: ${({ fontSizeMobile }) => fontSizeMobile || 21}px;
-  }
-`
-
 export const ArticleList = styled.div<{ columns?: number; columnsMobile?: number }>`
   display: grid;
   grid-template-columns: repeat(${({ columns }) => columns || 3}, 1fr);
@@ -168,6 +123,7 @@ interface TopicCardProps {
   asProp?: string
   padding?: string
   contentAlign?: string
+  gap?: number
 }
 
 export const TopicCard = styled.a.attrs<TopicCardProps>(({ asProp }) => ({
@@ -177,7 +133,7 @@ export const TopicCard = styled.a.attrs<TopicCardProps>(({ asProp }) => ({
   grid-template-columns: ${({ columns }) => columns || '1fr'};
   flex-flow: ${({ horizontal }) => (horizontal ? 'row wrap' : 'column wrap')};
   align-items: ${({ contentAlign }) => (contentAlign === 'left' ? 'flex-start' : 'center')};
-  justify-content: center;
+  justify-content: flex-start;
   background: ${({ bgColor }) => bgColor || Color.neutral90};
   color: ${({ textColor }) => textColor || Color.neutral0};
   padding: ${({ padding }) => padding || '56px 20px'};
@@ -188,7 +144,7 @@ export const TopicCard = styled.a.attrs<TopicCardProps>(({ asProp }) => ({
   text-decoration: none;
   border: 4px solid transparent;
   transition: border 0.2s ease-in-out;
-  gap: 56px;
+  gap: ${({ gap }) => (typeof gap === 'number' ? `${gap}px` : '56px')};
   max-width: 100%;
 
   &:hover {
@@ -259,10 +215,15 @@ export const TopicImage = styled.div<{
   }
 `
 
-export const TopicTitle = styled.h5<{ fontSize?: number; fontSizeMobile?: number; fontWeight?: number }>`
+export const TopicTitle = styled.h5<{
+  fontSize?: number
+  fontSizeMobile?: number
+  fontWeight?: number
+  color?: string
+}>`
   font-size: ${({ fontSize }) => fontSize || 28}px;
-  font-weight: ${({ fontWeight }) => fontWeight || Font.weight.medium};
-  color: inherit;
+  font-weight: ${({ fontWeight }) => fontWeight || Font.weight.bold};
+  color: ${({ color }) => color || 'inherit'};
   padding: 0;
   margin: 0;
   line-height: 1.2;
@@ -549,42 +510,69 @@ export const Pagination = styled.div`
   }
 `
 
-export const SectionTitleWrapper = styled.div<{ color?: string; maxWidth?: number }>`
+export const SectionTitleWrapper = styled.div<{
+  color?: string
+  maxWidth?: number
+  gap?: number
+  padding?: string
+  rowWrap?: boolean
+}>`
   --color: ${Color.neutral20};
   display: flex;
   flex-flow: column wrap;
+  flex-flow: ${({ rowWrap }) => (rowWrap ? 'row wrap' : 'column wrap')};
   align-items: center;
-  color: ${({ color }) => color || Color.neutral20};
+  color: ${({ color }) => color || 'inherit'};
   margin: 100px auto 56px;
   text-align: center;
   width: 100%;
   max-width: ${({ maxWidth }) => (maxWidth ? `${maxWidth}px` : '100%')};
-  gap: 32px;
-`
-
-export const SectionTitleText = styled.h5`
-  font-size: 90px;
-  font-weight: ${Font.weight.bold};
-  color: inherit;
-  line-height: 1.2;
-  margin: 0;
+  gap: ${({ gap }) => gap || 32}px;
+  padding: ${({ padding }) => padding || '0'};
 
   ${Media.upToMedium()} {
-    font-size: 38px;
+    margin: 56px auto 32px;
   }
 `
 
-export const SectionTitleDescription = styled.p<{ maxWidth?: number; color?: string }>`
-  font-size: 38px;
+export const SectionTitleText = styled.h5<{
+  fontSize?: number
+  fontSizeMobile?: number
+  fontWeight?: number
+  color?: string
+  as?: string
+  textAlign?: string
+}>`
+  font-size: ${({ fontSize }) => fontSize || 90}px;
+  font-weight: ${({ fontWeight }) => fontWeight || Font.weight.bold};
+  color: ${({ color }) => color || 'inherit'};
+  margin: 0;
+  text-align: ${({ textAlign }) => textAlign || 'center'};
+  line-height: 1.2;
+
+  ${Media.upToMedium()} {
+    font-size: ${({ fontSizeMobile }) => fontSizeMobile || 38}px;
+  }
+`
+
+export const SectionTitleDescription = styled.p<{
+  maxWidth?: number
+  color?: string
+  fontSize?: number
+  fontSizeMobile?: number
+  textAlign?: string
+}>`
+  font-size: ${({ fontSize }) => fontSize || 38}px;
   color: ${({ color }) => color || Color.neutral50};
   font-weight: ${Font.weight.medium};
   margin: 0;
   line-height: 1.2;
+  text-align: ${({ textAlign }) => textAlign || 'center'};
   width: 100%;
   max-width: ${({ maxWidth }) => maxWidth || 800}px;
 
   ${Media.upToMedium()} {
-    font-size: 21px;
+    font-size: ${({ fontSizeMobile }) => fontSizeMobile || 21}px;
   }
 `
 
@@ -594,11 +582,43 @@ export const SectionTitleIcon = styled.div<{ size?: number }>`
   object-fit: contain;
   color: inherit;
 
-  > svg {
+  > span {
+    height: var(--size);
+    width: 100%;
+    color: inherit;
+  }
+
+  svg {
     width: 100%;
     height: 100%;
     max-height: var(--size);
     fill: currentColor;
+  }
+`
+
+export const SectionImage = styled.div<{
+  width?: number
+  minHeight?: number | string
+  bgColor?: string
+}>`
+  width: 100%;
+  max-width: ${({ width }) => (width ? `${width}px` : '100%')};
+  min-height: ${({ minHeight }) => (typeof minHeight === 'number' ? `${minHeight}px` : minHeight || '600px')};
+  margin: 0 auto;
+  padding: 0;
+  background: ${({ bgColor }) => bgColor || 'transparent'};
+  border-radius: 32px;
+
+  ${Media.upToMedium()} {
+    min-height: 300px;
+    max-width: 100%;
+  }
+
+  > img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: inherit;
   }
 `
 

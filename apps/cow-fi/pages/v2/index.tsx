@@ -15,9 +15,6 @@ import { getCategories, getArticles, Category, ArticleListResponse } from 'servi
 import {
   ContainerCard,
   ContainerCardSection,
-  ContainerCardSectionTop,
-  ContainerCardSectionTopTitle,
-  ContainerCardSectionTopDescription,
   TopicList,
   TopicCard,
   TopicImage,
@@ -127,9 +124,7 @@ export default function HomeLanding({ siteConfigData }: HomeLandingProps) {
             <TopicList columns={2}>
               <TopicCard contentAlign={'left'} bgColor="#490072" textColor="#F996EE" padding={'32px'} asProp="div">
                 <TopicCardInner contentAlign="left">
-                  <TopicTitle fontSize={51} fontWeight={Font.weight.bold}>
-                    CoW Protocol
-                  </TopicTitle>
+                  <TopicTitle fontSize={51}>CoW Protocol</TopicTitle>
                   <TopicDescription fontSize={28} color="#F996EE">
                     Open-source, permissionless DEX innovation
                   </TopicDescription>
@@ -144,9 +139,7 @@ export default function HomeLanding({ siteConfigData }: HomeLandingProps) {
 
               <TopicCard contentAlign={'left'} bgColor="#65D9FF" textColor="#012F7A" padding={'32px'} asProp="div">
                 <TopicCardInner contentAlign="left">
-                  <TopicTitle fontSize={51} fontWeight={Font.weight.bold}>
-                    CoW Swap
-                  </TopicTitle>
+                  <TopicTitle fontSize={51}>CoW Swap</TopicTitle>
                   <TopicDescription fontSize={28} color="#012F7A">
                     The DEX that lets you do what you want
                   </TopicDescription>
@@ -161,9 +154,7 @@ export default function HomeLanding({ siteConfigData }: HomeLandingProps) {
 
               <TopicCard contentAlign={'left'} bgColor="#194D06" textColor="#BCEC79" padding={'32px'} asProp="div">
                 <TopicCardInner contentAlign="left">
-                  <TopicTitle fontSize={51} fontWeight={Font.weight.bold}>
-                    CoW AMM
-                  </TopicTitle>
+                  <TopicTitle fontSize={51}>CoW AMM</TopicTitle>
                   <TopicDescription fontSize={28} color="#BCEC79">
                     The first MEV-capturing AMM
                   </TopicDescription>
@@ -253,15 +244,15 @@ export default function HomeLanding({ siteConfigData }: HomeLandingProps) {
 
         <ContainerCard bgColor={Color.neutral10} color={Color.neutral98}>
           <ContainerCardSection>
-            <ContainerCardSectionTop columnWrap padding="150px 0">
+            <SectionTitleWrapper padding="150px 0">
               <ProductLogo variant={ProductVariant.CowProtocol} theme="dark" logoIconOnly height={60} />
-              <ContainerCardSectionTopTitle fontSize={90} textAlign="center">
+              <SectionTitleText fontSize={90} textAlign="center">
                 New to the barn?
-              </ContainerCardSectionTopTitle>
-              <ContainerCardSectionTopDescription fontSize={28} color={Color.neutral60} textAlign="center">
+              </SectionTitleText>
+              <SectionTitleDescription fontSize={28} color={Color.neutral60} textAlign="center">
                 The green pastures of CoW DAO are the friendliest place in all of DeFi... Welcome!
-              </ContainerCardSectionTopDescription>
-            </ContainerCardSectionTop>
+              </SectionTitleDescription>
+            </SectionTitleWrapper>
 
             <TopicList columns={3}>
               <TopicCard textColor="#000000" href="/knowledge-base">
