@@ -1,3 +1,4 @@
+import { BFF_BASE_URL } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { gql, GraphQLClient } from 'graphql-request'
@@ -55,7 +56,7 @@ const SEARCH_TOKENS = gql`
   }
 `
 
-const BASE_URL = 'https://cow-web-services.vercel.app/api/serverless/proxy'
+const BASE_URL = `${BFF_BASE_URL}/proxies/tokens`
 const GQL_CLIENT = new GraphQLClient(BASE_URL)
 
 export async function searchTokensInApi(searchQuery: string): Promise<TokenSearchFromApiResult[]> {
