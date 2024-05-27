@@ -53,5 +53,5 @@ export function useCombinedBalance() {
     const balance = CurrencyAmount.fromRawAmount(cow, tmpBalance)
 
     return { balance, isLoading }
-  }, [vCowBalance, /* lockedGnoBalance, */ cowBalance, chainId, account])
+  }, [vCowBalance, /* lockedGnoBalance, */ cowBalance, chainId, account, isVCowLoading])
 }
