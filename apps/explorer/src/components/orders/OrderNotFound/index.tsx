@@ -9,6 +9,7 @@ import styled from 'styled-components/macro'
 
 import { Search } from '../../../explorer/components/common/Search'
 
+
 const Title = styled.h1`
   margin: 0.55rem 0 2.5rem;
   font-weight: ${({ theme }): string => theme.fontBold};

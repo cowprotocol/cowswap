@@ -7,7 +7,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import SVG from 'react-inlinesvg'
-import { useNavigate } from 'react-router-dom'
+
 
 import CowBalanceButton from 'legacy/components/CowBalanceButton'
 import { NetworkSelector } from 'legacy/components/Header/NetworkSelector'
@@ -25,6 +25,7 @@ import { getDefaultTradeRawState } from 'modules/trade/types/TradeRawState'
 import { Routes } from 'common/constants/routes'
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
+import { useNavigate } from 'common/hooks/useNavigate'
 
 import { AccountElement } from './AccountElement'
 import MobileMenuIcon from './MobileMenuIcon'

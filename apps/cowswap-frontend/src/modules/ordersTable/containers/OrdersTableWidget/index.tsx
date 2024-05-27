@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo } from 'react'
 import { useTokensAllowances, useTokensBalances } from '@cowprotocol/balances-and-allowances'
 import { useIsSafeViaWc, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import styled from 'styled-components/macro'
 
 import { Order } from 'legacy/state/orders/actions'
@@ -17,6 +17,7 @@ import { PendingPermitUpdater, useGetOrdersPermitStatus } from 'modules/permit'
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
 import { ordersToCancelAtom, updateOrdersToCancelAtom } from 'common/hooks/useMultipleOrdersCancellation/state'
+import { useNavigate } from 'common/hooks/useNavigate'
 import { CancellableOrder } from 'common/utils/isOrderCancellable'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 

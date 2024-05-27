@@ -1,7 +1,9 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useLayoutEffect } from 'react'
 
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
+
+import { useNavigate } from 'common/hooks/useNavigate'
 
 import { utmAtom } from './state'
 import { UtmParams } from './types'
