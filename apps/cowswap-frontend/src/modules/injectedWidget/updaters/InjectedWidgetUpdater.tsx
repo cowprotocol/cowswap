@@ -13,7 +13,8 @@ import {
 } from '@cowprotocol/widget-lib'
 
 import * as Sentry from '@sentry/browser'
-import { useNavigate } from 'react-router-dom'
+
+import { useNavigate } from 'common/hooks/useNavigate'
 
 import { IframeResizer } from './IframeResizer'
 
@@ -36,18 +37,18 @@ const cacheMessages = (event: MessageEvent) => {
   messagesCache[method] = event.data
 }
 
-/**
- * To avoid delays, immediately send an activation message and start listening messages
- */
-;(function initInjectedWidget() {
-  const isInIframe = window.top !== window.self
+  /**
+   * To avoid delays, immediately send an activation message and start listening messages
+   */
+  ; (function initInjectedWidget() {
+    const isInIframe = window.top !== window.self
 
-  if (!window.top || !isInIframe) return
+    if (!window.top || !isInIframe) return
 
-  window.addEventListener('message', cacheMessages)
+    window.addEventListener('message', cacheMessages)
 
-  postMessageToWindow(window.top, WidgetMethodsEmit.ACTIVATE, void 0)
-})()
+    postMessageToWindow(window.top, WidgetMethodsEmit.ACTIVATE, void 0)
+  })()
 
 export function InjectedWidgetUpdater() {
   const [
