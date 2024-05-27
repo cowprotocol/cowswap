@@ -23,6 +23,7 @@ import {
   SectionTitleWrapper,
   SectionTitleIcon,
   SectionTitleText,
+  SectionTitleDescription,
 } from './styled'
 
 import SVG from 'react-inlinesvg'
@@ -111,6 +112,21 @@ export default function HomeLanding({ siteConfigData }: HomeLandingProps) {
       <Wrapper>
         <h1>Don&apos;t get milked!</h1>
         <h2>CoW DAO protects users from the dangers of DeFi</h2>
+
+        <ContainerCard bgColor={Color.neutral90}>
+          <ContainerCardSection>
+            <SectionTitleWrapper>
+              <SectionTitleIcon>
+                <SVG src={IMG_ICON_FAQ} />
+              </SectionTitleIcon>
+              <SectionTitleText>Governance</SectionTitleText>
+              <SectionTitleDescription>
+                By getting involved, you can further CoW DAO&apos;s mission of creating the most protective products on
+                Ethereum
+              </SectionTitleDescription>
+            </SectionTitleWrapper>
+          </ContainerCardSection>
+        </ContainerCard>
 
         <ContainerCard bgColor={Color.neutral10} color={Color.neutral98}>
           <ContainerCardSection>

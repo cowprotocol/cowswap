@@ -462,6 +462,15 @@ export const SectionTitleText = styled.h5`
   margin: 0;
 `
 
+export const SectionTitleDescription = styled.p<{ maxWidth?: number; color?: string }>`
+  font-size: 28px;
+  color: ${({ color }) => color || Color.neutral50};
+  margin: 0;
+  line-height: 1.2;
+  width: 100%;
+  max-width: ${({ maxWidth }) => maxWidth || 800}px;
+`
+
 export const SectionTitleIcon = styled.div`
   --size: 64px;
   width: 100%;

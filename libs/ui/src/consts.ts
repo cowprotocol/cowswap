@@ -1,5 +1,6 @@
 import { CowSwapTheme } from '@cowprotocol/widget-lib'
 import { createGlobalStyle, css, DefaultTheme } from 'styled-components'
+// import { ButtonSize } from './enum'
 
 // Fonts
 import FONT_STUDIO_FEIXEN_REGULAR from '@cowprotocol/assets/fonts/StudioFeixenSans-Regular.woff2'
@@ -205,3 +206,20 @@ export const GlobalCoWDAOStyles = createGlobalStyle(
     }
   `
 )
+
+// export const THEME = (theme: CowSwapTheme) => {
+//   return {
+//     buttonSizes: {
+//       [ButtonSize.BIG]: css`
+//         font-size: 26px;
+//         min-height: 60px;
+//       `,
+//       [ButtonSize.DEFAULT]: css`
+//         font-size: 16px;
+//       `,
+//       [ButtonSize.SMALL]: css`
+//         font-size: 12px;
+//       `,
+//     },
+//   }
+// }
