@@ -1,6 +1,13 @@
 import React, { useMemo } from 'react'
 
 import { isInjectedWidget } from '@cowprotocol/common-utils'
+import {
+  colors as colorsBaseTheme,
+  Colors,
+  FixedGlobalStyle as FixedGlobalStyleBase,
+  MEDIA_WIDTHS,
+  themeMapper,
+} from '@cowprotocol/ui'
 
 import { Text, TextProps as TextPropsOriginal } from 'rebass'
 import styled, {
@@ -11,30 +18,14 @@ import styled, {
 } from 'styled-components/macro'
 
 import { useIsDarkMode } from 'legacy/state/user/hooks'
-import {
-  colors as colorsBaseTheme,
-  FixedGlobalStyle as FixedGlobalStyleBase,
-  themeVariables as baseThemeVariables,
-} from 'legacy/theme/baseTheme'
 
 import { useInjectedWidgetPalette } from 'modules/injectedWidget'
 
 import { ThemeFromUrlUpdater } from 'common/updaters/ThemeFromUrlUpdater'
 
 import { mapWidgetTheme } from './mapWidgetTheme'
-import { Colors } from './styled'
 
 export type TextProps = Omit<TextPropsOriginal, 'css'> & { override?: boolean }
-
-export const MEDIA_WIDTHS = {
-  upToTiny: 320,
-  upToExtraSmall: 500,
-  upToSmall: 720,
-  upToMedium: 960,
-  upToLarge: 1280,
-  upToLargeAlt: 1390,
-  upToExtraLarge: 2560,
-}
 
 // Migrating to a standard z-index system https://getbootstrap.com/docs/5.0/layout/z-index/
 // Please avoid using deprecated numbers
@@ -170,18 +161,7 @@ export const ThemedText = {
 }
 
 export function theme(darkmode: boolean, isInjectedWidgetMode: boolean): DefaultTheme {
-  const colorsTheme = colors(darkmode)
-  return {
-    ...getTheme(darkmode),
-    ...colorsTheme,
-    isInjectedWidgetMode,
-
-    // Override Theme
-    ...baseThemeVariables(darkmode, colorsTheme),
-    mediaWidth: mediaWidthTemplates,
-
-    mode: darkmode ? 'dark' : 'light',
-  }
+  return themeMapper(darkmode ? 'dark' : 'light', isInjectedWidgetMode)
 }
 
 export default function ThemeProvider({ children }: { children?: React.ReactNode }) {
@@ -209,5 +189,4 @@ export default function ThemeProvider({ children }: { children?: React.ReactNode
 
 export const FixedGlobalStyle = FixedGlobalStyleBase
 
-export { ThemedGlobalStyle } from './baseTheme'
 export * from './components'

@@ -2,11 +2,10 @@ import { HTMLAttributes } from 'react'
 
 import { ChevronDown, Star } from 'react-feather'
 import { ButtonProps } from 'rebass/styled-components'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 
 import {
   ButtonConfirmedStyle as ButtonConfirmedStyleMod,
-  ButtonEmpty as ButtonEmptyMod,
   ButtonGray as ButtonGrayMod,
   ButtonPrimary as ButtonPrimaryMod,
 } from './ButtonMod'
@@ -184,10 +183,6 @@ export const ButtonErrorStyle = styled(ButtonPrimary)`
     background: var(${UI.COLOR_DANGER});
     color: var(${UI.COLOR_BUTTON_TEXT});
   }
-`
-
-export const ButtonEmpty = styled(ButtonEmptyMod)`
-  // CSS overrides
 `
 
 export const FancyButton = styled.button`

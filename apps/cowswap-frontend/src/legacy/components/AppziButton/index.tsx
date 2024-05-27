@@ -1,6 +1,6 @@
 import FeedbackIcon from '@cowprotocol/assets/cow-swap/feedback.svg'
-import { isAppziEnabled, openFeedbackAppzi } from '@cowprotocol/common-utils'
 
+import { isAppziEnabled, openFeedbackAppzi } from 'appzi'
 import { transparentize } from 'color2k'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'

@@ -1,7 +1,7 @@
 import { useRef } from 'react'
 
 import { getChainInfo } from '@cowprotocol/common-const'
-import { UI } from '@cowprotocol/ui'
+import { MEDIA_WIDTHS, UI } from '@cowprotocol/ui'
 import { getIsTallyWallet, useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
 import { useWeb3React } from '@web3-react/core'
 
@@ -13,7 +13,6 @@ import styled from 'styled-components/macro'
 import { upToMedium, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 import { useCloseModal, useModalIsOpen, useOpenModal, useToggleModal } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
-import { MEDIA_WIDTHS } from 'legacy/theme'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useOnSelectNetwork } from 'common/hooks/useOnSelectNetwork'

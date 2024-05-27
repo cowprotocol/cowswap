@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 
 export const StyledSVG = styled.svg<{ size: string; stroke?: string }>`
   animation: 2s rotate linear infinite;

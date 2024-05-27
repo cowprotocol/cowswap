@@ -4,7 +4,7 @@ import { externalLinkAnalytics, outboundLink } from '@cowprotocol/analytics'
 import { anonymizeLink } from '@cowprotocol/common-utils'
 
 import { ExternalLink as LinkIconFeather } from 'react-feather'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 
 import { UI } from '../../enum'
 
@@ -48,7 +48,7 @@ const LinkIconWrapper = styled.a`
     text-decoration: none;
   }
 `
-export const LinkIcon = styled(LinkIconFeather)`
+export const LinkIcon = styled(LinkIconFeather as any)`
   height: 16px;
   width: 18px;
   margin: 0 10px 0 0;

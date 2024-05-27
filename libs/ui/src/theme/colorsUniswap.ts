@@ -1,4 +1,4 @@
-import { Colors } from 'legacy/theme/styled'
+import { Colors } from './typings'
 
 export function colorsUniswap(darkMode: boolean): Colors {
   return {

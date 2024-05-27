@@ -1,11 +1,11 @@
 import { ReactNode } from 'react'
 
 import { AlertTriangle, X } from 'react-feather'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 
 import { UI } from '../../enum'
 
-const StyledClose = styled(X)`
+const StyledClose = styled(X as any)`
   :hover {
     cursor: pointer;
   }

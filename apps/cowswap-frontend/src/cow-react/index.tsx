@@ -7,10 +7,10 @@ import { Provider as AtomProvider } from 'jotai'
 import { useEffect, StrictMode } from 'react'
 
 import { BlockNumberProvider } from '@cowprotocol/common-hooks'
-
 import { nodeRemoveChildFix } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
 import { SnackbarsWidget } from '@cowprotocol/snackbars'
+import { ThemedGlobalStyle } from '@cowprotocol/ui'
 
 import { LanguageProvider } from 'i18n'
 import { createRoot } from 'react-dom/client'
@@ -19,14 +19,12 @@ import { HashRouter } from 'react-router-dom'
 import * as serviceWorkerRegistration from 'serviceWorkerRegistration'
 
 import Web3Provider from 'legacy/components/Web3Provider'
-
 import { cowSwapStore } from 'legacy/state'
-import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from 'legacy/theme'
+import ThemeProvider, { FixedGlobalStyle } from 'legacy/theme'
 
 import { App } from 'modules/application/containers/App'
 import { Updaters } from 'modules/application/containers/App/Updaters'
 import { WithLDProvider } from 'modules/application/containers/WithLDProvider'
-
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 
 import { WalletUnsupportedNetworkBanner } from '../common/containers/WalletUnsupportedNetworkBanner'

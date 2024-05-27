@@ -1,3 +1,6 @@
+import IMG_ICON_BRANDED_DOT_RED from '@cowprotocol/assets/images/icon-branded-dot-red.svg'
+import IMG_ICON_SETTINGS_GLOBAL from '@cowprotocol/assets/images/settings-global.svg'
+import { isInjectedWidget } from '@cowprotocol/common-utils'
 import {
   MenuBar,
   MenuItem,
@@ -8,16 +11,13 @@ import {
   Color,
 } from '@cowprotocol/ui'
 
-import { FeatureGuard } from 'common/containers/FeatureGuard'
-import { FortuneWidget } from 'modules/fortune/containers/FortuneWidget'
+import styled from 'styled-components/macro'
+
 import AppziButton from 'legacy/components/AppziButton'
 
-import IMG_ICON_SETTINGS_GLOBAL from '@cowprotocol/assets/images/settings-global.svg'
-import IMG_ICON_BRANDED_DOT_RED from '@cowprotocol/assets/images/icon-branded-dot-red.svg'
+import { FortuneWidget } from 'modules/fortune/containers/FortuneWidget'
 
-import { isInjectedWidget } from '@cowprotocol/common-utils'
-
-import styled from 'styled-components/macro'
+import { CoWDAOFonts } from 'common/styles/CoWDAOFonts'
 
 const THEME_MODE = 'light'
 const PRODUCT_VARIANT = ProductVariant.CowSwap
@@ -136,10 +136,12 @@ export default function Development() {
     return null
   }
 
+  const GlobalStyls = GlobalCoWDAOStyles(CoWDAOFonts)
+
   return (
     <>
       {/* Temp location for GlobalStyle */}
-      <GlobalCoWDAOStyles />
+      <GlobalStyls />
 
       <MenuBar
         navItems={NAV_ITEMS}

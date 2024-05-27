@@ -1,13 +1,14 @@
 import { MouseEventHandler, useCallback, useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { useTheme } from '@cowprotocol/common-hooks'
 import { useFavouriteTokens, useToggleFavouriteToken } from '@cowprotocol/tokens'
 import { ButtonStar } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 import { Token } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
+
+import { useTheme } from 'common/hooks/useTheme'
 
 export const StyledButtonStar = styled(ButtonStar)`
   z-index: 9;

@@ -21,7 +21,7 @@ import {
   TopicImage,
   ContainerCardSectionTopTitle,
   TopicTitle,
-} from '../styled'
+} from '@/styles/styled'
 
 const DATA_CACHE_TIME_SECONDS = 5 * 60 // Cache 5min
 

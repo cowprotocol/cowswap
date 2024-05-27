@@ -1,4 +1,3 @@
-import { useTheme } from '@cowprotocol/common-hooks'
 import { isMobile } from '@cowprotocol/common-utils'
 import {
   AlphaOption,
@@ -21,6 +20,8 @@ import {
 import { Connector } from '@web3-react/types'
 
 import { useSelectedWallet } from 'legacy/state/user/hooks'
+
+import { useTheme } from 'common/hooks/useTheme'
 
 export type TryActivation = (connector: Connector) => void
 

@@ -1,5 +1,7 @@
-import styled from 'styled-components'
 import { CowSwapTheme } from '@cowprotocol/widget-lib'
+
+import styled from 'styled-components/macro'
+
 import { Color, Media } from '../../consts'
 
 export const FooterContainer = styled.footer<{ theme: CowSwapTheme; expanded: boolean; hasTouchFooter: boolean }>`

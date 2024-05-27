@@ -1,4 +1,18 @@
-import React, { useState, useRef, RefObject, useCallback } from 'react'
+import React, { useState, useRef, RefObject } from 'react'
+
+import IMG_ICON_ARROW_RIGHT from '@cowprotocol/assets/images/arrow-right.svg'
+import IMG_ICON_CARRET_DOWN from '@cowprotocol/assets/images/carret-down.svg'
+import IMG_ICON_MENU_DOTS from '@cowprotocol/assets/images/menu-grid-dots.svg'
+import IMG_ICON_MENU_HAMBURGER from '@cowprotocol/assets/images/menu-hamburger.svg'
+import IMG_ICON_SETTINGS_GLOBAL from '@cowprotocol/assets/images/settings-global.svg'
+import IMG_ICON_X from '@cowprotocol/assets/images/x.svg'
+import { useOnClickOutside, useMediaQuery } from '@cowprotocol/common-hooks'
+import { addBodyClass, removeBodyClass } from '@cowprotocol/common-utils'
+import { CowSwapTheme } from '@cowprotocol/widget-lib'
+
+import SVG from 'react-inlinesvg'
+import { ThemeProvider } from 'styled-components/macro'
+
 import {
   RootNavItem,
   MenuBarWrapper,
@@ -19,19 +33,9 @@ import {
   RightAligned,
   MobileMenuTrigger,
 } from './styled'
-import SVG from 'react-inlinesvg'
-import { ProductLogo, ProductVariant, themeMapper, Media } from '@cowprotocol/ui'
-import { useOnClickOutside, useMediaQuery } from '@cowprotocol/common-hooks'
-import IMG_ICON_MENU_DOTS from '@cowprotocol/assets/images/menu-grid-dots.svg'
-import IMG_ICON_ARROW_RIGHT from '@cowprotocol/assets/images/arrow-right.svg'
-import IMG_ICON_CARRET_DOWN from '@cowprotocol/assets/images/carret-down.svg'
-import IMG_ICON_SETTINGS_GLOBAL from '@cowprotocol/assets/images/settings-global.svg'
-import IMG_ICON_MENU_HAMBURGER from '@cowprotocol/assets/images/menu-hamburger.svg'
-import IMG_ICON_X from '@cowprotocol/assets/images/x.svg'
 
-import { addBodyClass, removeBodyClass } from '@cowprotocol/common-utils'
-import { CowSwapTheme } from '@cowprotocol/widget-lib'
-import { ThemeProvider } from 'styled-components'
+import { Media, themeMapper } from '../../consts'
+import { ProductLogo, ProductVariant } from '../ProductLogo'
 
 const DAO_NAV_ITEMS: MenuItem[] = [
   { href: 'https://cow.fi/#cowswap', productVariant: ProductVariant.CowSwap },
