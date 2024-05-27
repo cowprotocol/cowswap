@@ -5,7 +5,7 @@ import IMG_ICON_CROWN_COW from '@cowprotocol/assets/images/icon-crown-cow.svg'
 import IMG_ICON_GOVERNANCE from '@cowprotocol/assets/images/icon-governance.svg'
 import IMG_ICON_BULB_COW from '@cowprotocol/assets/images/icon-bulb-cow.svg'
 
-import styled, { createGlobalStyle } from 'styled-components'
+import styled from 'styled-components'
 
 import { CONFIG } from '@/const/meta'
 
@@ -82,12 +82,6 @@ interface HomeLandingProps {
   articles: ArticleListResponse['data']
 }
 
-const GlobalStyle = createGlobalStyle`
-  body {
-    background: ${Color.neutral90};  
-  }
-`
-
 const Wrapper = styled.div`
   display: flex;
   flex-flow: column wrap;
@@ -101,14 +95,12 @@ const Wrapper = styled.div`
 
 export default function HomeLanding({ siteConfigData }: HomeLandingProps) {
   return (
-    <LayoutV2>
+    <LayoutV2 bgColor={Color.neutral90}>
       <Head>
         <title>
           {siteConfigData.title} - {siteConfigData.descriptionShort}
         </title>
       </Head>
-
-      <GlobalStyle />
 
       <Wrapper>
         <HeroContainer variant="secondary" maxWidth={1300}>

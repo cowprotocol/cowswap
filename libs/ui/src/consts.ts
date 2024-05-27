@@ -166,7 +166,7 @@ type GlobalCowDAOFonts = {
   FONT_STUDIO_FEIXEN_ULTRALIGHT_ITALIC: GlobalFontConfig
 }
 
-export const GlobalCoWDAOStyles = (fonts: GlobalCowDAOFonts) =>
+export const GlobalCoWDAOStyles = (fonts: GlobalCowDAOFonts, bgColor?: string) =>
   createGlobalStyle(
     ({ theme = 'dark' }: { theme: CowSwapTheme }) => css`
       @font-face {
@@ -271,7 +271,7 @@ export const GlobalCoWDAOStyles = (fonts: GlobalCowDAOFonts) =>
         font-family: ${Font.family};
         margin: 0;
         padding: 0;
-        background-color: ${Color.neutral98};
+        background: ${bgColor ? bgColor : Color.neutral98};
         color: ${Color.neutral0};
       }
     `

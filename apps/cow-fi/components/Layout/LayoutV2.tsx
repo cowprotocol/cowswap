@@ -3,6 +3,7 @@ import styled from 'styled-components/macro'
 
 import IMG_ICON_BRANDED_DOT_RED from '@cowprotocol/assets/images/icon-branded-dot-red.svg'
 import { CoWDAOFonts } from '@/styles/CoWDAOFonts'
+import { bg } from 'make-plural'
 
 const THEME_MODE = 'dark'
 const PRODUCT_VARIANT = ProductVariant.CowProtocol
@@ -108,14 +109,15 @@ const Wrapper = styled.div`
 
 interface LayoutProps {
   children: React.ReactNode
+  bgColor?: string
 }
 
-export default function LayoutV2({ children }: LayoutProps) {
-  const GlobalStyls = GlobalCoWDAOStyles(CoWDAOFonts)
+export default function LayoutV2({ children, bgColor }: LayoutProps) {
+  const GlobalStyles = GlobalCoWDAOStyles(CoWDAOFonts, bgColor)
 
   return (
     <>
-      <GlobalStyls />
+      <GlobalStyles />
       <MenuBar navItems={NAV_ITEMS} theme={THEME_MODE} productVariant={PRODUCT_VARIANT} />
       <Wrapper>{children}</Wrapper>
       <Footer

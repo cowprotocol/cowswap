@@ -111,7 +111,6 @@ export async function getAllArticleSlugs(): Promise<string[]> {
  * @returns All categories
  */
 export async function getCategories(): Promise<Category[]> {
-  console.log('[getCategories] get all categories')
   const { data, error, response } = await client.GET('/categories', {
     params: {
       query: {
@@ -300,7 +299,7 @@ async function getBySlugAux(slug: string, endpoint: '/categories' | '/articles')
     populate,
   })
 
-  console.log(`[getBySlugAux] get ${entity} for slug ${slug}`, query)
+  // console.log(`[getBySlugAux] get ${entity} for slug ${slug}`, query)
 
   const { data, error } = await client.GET(endpoint, {
     params: {

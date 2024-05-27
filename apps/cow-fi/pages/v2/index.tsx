@@ -4,7 +4,7 @@ import { Font, Color, Media, ProductLogo, ProductVariant } from '@cowprotocol/ui
 import IMG_COW_HERO_HOME from '@cowprotocol/assets/images/cow-hero-home.svg'
 import IMG_ICON_GOVERNANCE from '@cowprotocol/assets/images/icon-governance.svg'
 
-import styled, { createGlobalStyle } from 'styled-components'
+import styled from 'styled-components'
 
 import { CONFIG } from '@/const/meta'
 
@@ -76,12 +76,6 @@ interface HomeLandingProps {
   articles: ArticleListResponse['data']
 }
 
-const GlobalStyle = createGlobalStyle`
-  body {
-    background-color: ${Color.neutral90};  
-  }
-`
-
 const Wrapper = styled.div`
   display: flex;
   flex-flow: column wrap;
@@ -95,14 +89,12 @@ const Wrapper = styled.div`
 
 export default function HomeLanding({ siteConfigData }: HomeLandingProps) {
   return (
-    <LayoutV2>
+    <LayoutV2 bgColor={Color.neutral90}>
       <Head>
         <title>
           {siteConfigData.title} - {siteConfigData.descriptionShort}
         </title>
       </Head>
-
-      <GlobalStyle />
 
       <Wrapper>
         <HeroContainer>
