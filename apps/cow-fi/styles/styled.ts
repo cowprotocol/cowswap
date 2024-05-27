@@ -1,6 +1,5 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { Font, Color, Media } from '@cowprotocol/ui'
-import { max } from 'date-fns'
 
 export const ContainerCard = styled.div<{
   bgColor?: string
@@ -589,8 +588,8 @@ export const SectionTitleDescription = styled.p<{ maxWidth?: number; color?: str
   }
 `
 
-export const SectionTitleIcon = styled.div`
-  --size: 64px;
+export const SectionTitleIcon = styled.div<{ size?: number }>`
+  --size: ${({ size }) => `${size}px` || '64px'};
   width: 100%;
   object-fit: contain;
   color: inherit;
@@ -603,7 +602,7 @@ export const SectionTitleIcon = styled.div`
   }
 `
 
-export const HeroContainer = styled.div`
+export const HeroContainer = styled.div<{ variant?: string; maxWidth?: number }>`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -611,9 +610,20 @@ export const HeroContainer = styled.div`
   position: relative;
   min-height: 60vh;
   width: 100%;
+  max-width: ${({ maxWidth }) => (maxWidth ? `${maxWidth}px` : '100%')};
   background: transparent;
   padding: 0 20px;
   overflow: hidden;
+  margin: 0 auto;
+
+  ${({ variant }) =>
+    variant === 'secondary' &&
+    css`
+      flex-direction: row;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 74px;
+    `}
 `
 
 export const HeroBackground = styled.div<{ imageHeight?: string }>`
@@ -632,15 +642,21 @@ export const HeroBackground = styled.div<{ imageHeight?: string }>`
   }
 `
 
-export const HeroContent = styled.div`
+export const HeroContent = styled.div<{ variant?: string }>`
   position: relative;
   z-index: 2;
-  text-align: center;
+  text-align: ${({ variant }) => (variant === 'secondary' ? 'left' : 'center')};
   color: ${Color.neutral0};
   gap: 32px;
   display: flex;
   flex-flow: column wrap;
   max-width: 100%;
+
+  ${({ variant }) =>
+    variant === 'secondary' &&
+    `
+    align-items: flex-start;
+  `}
 `
 
 export const HeroTitle = styled.h1<{
@@ -648,6 +664,7 @@ export const HeroTitle = styled.h1<{
   fontSizeMobile?: number
   fontWeight?: number
   color?: string
+  as?: string
 }>`
   font-size: ${({ fontSize }) => fontSize || 150}px;
   font-weight: ${({ fontWeight }) => fontWeight || Font.weight.bold};
@@ -660,19 +677,131 @@ export const HeroTitle = styled.h1<{
   }
 `
 
-export const HeroSubtitle = styled.p`
+export const HeroSubtitle = styled.p<{ variant?: string; color?: string }>`
+  --color: ${({ color }) => color || Color.neutral10};
   font-size: 28px;
   font-weight: ${Font.weight.bold};
-  background: ${Color.neutral100};
-  color: ${Color.neutral10};
-  padding: 18px 24px;
-  border-radius: 32px;
+  background: ${({ variant }) => (variant === 'pill' ? Color.neutral100 : 'transparent')};
+  color: var(--color);
+  padding: ${({ variant }) => (variant === 'pill' ? '8px 16px' : '0')};
+  border-radius: ${({ variant }) => (variant === 'pill' ? '32px' : '0')};
+  border-bottom: ${({ variant }) => (variant === 'pill' ? 'none' : `4px solid var(--color)`)};
   width: max-content;
   max-width: 100%;
-  margin: 0 auto;
+  margin: ${({ variant }) => (variant === 'pill' ? '0 auto' : '0')};
   line-height: 1.5;
 
   ${Media.upToMedium()} {
     font-size: 21px;
+  }
+`
+
+export const HeroDescription = styled.p<{ fontSize?: number; fontSizeMobile?: number }>`
+  font-size: ${({ fontSize }) => fontSize || 28}px;
+  font-weight: ${Font.weight.medium};
+  color: ${Color.neutral10};
+  margin: 16px 0;
+  line-height: 1.5;
+
+  ${Media.upToMedium()} {
+    font-size: ${({ fontSizeMobile }) => fontSizeMobile || 21}px;
+  }
+`
+
+export const HeroButton = styled.a<{ background?: string; color?: string }>`
+  display: inline-block;
+  padding: 16px 24px;
+  font-size: 27px;
+  font-weight: ${Font.weight.medium};
+  color: ${({ color }) => color || Color.neutral98};
+  background: ${({ background }) => background || Color.neutral10};
+  text-decoration: none;
+  border-radius: 32px;
+  line-height: 1.2;
+  text-align: center;
+  width: max-content;
+  transition: opacity 0.2s ease-in-out;
+
+  &:hover {
+    opacity: 0.8;
+  }
+`
+
+export const HeroImage = styled.div<{ width?: number }>`
+  width: 100%;
+  height: 100%;
+  max-width: ${({ width }) => `${width}px` || '100%'};
+  margin: 0 auto;
+  padding: 0;
+
+  ${Media.upToMedium()} {
+  }
+`
+
+export const MetricsCard = styled.div<{
+  bgColor?: string
+  color?: string
+  columns?: number
+  columnsMobile?: number
+  touchFooter?: boolean
+}>`
+  --paddingBottomOffset: ${({ touchFooter }) => (touchFooter ? '140px' : '60px')};
+  display: grid;
+  grid-template-columns: ${({ columns }) => `repeat(${columns || 3}, 1fr)`};
+  gap: 0;
+  width: 100%;
+  padding: 60px 60px var(--paddingBottomOffset);
+  border-radius: 60px;
+  background: ${({ bgColor }) => bgColor || Color.neutral90};
+  color: ${({ color }) => color || Color.neutral0};
+  position: relative;
+  margin: ${({ touchFooter }) => (touchFooter ? '0 0 calc(-1 * var(--paddingBottomOffset))' : '24px 0')};
+
+  ${Media.upToMedium()} {
+    grid-template-columns: ${({ columnsMobile }) => `repeat(${columnsMobile || 1}, 1fr)`};
+    gap: 16px;
+  }
+`
+
+export const MetricsItem = styled.div<{ dividerColor?: string }>`
+  display: flex;
+  flex-flow: column wrap;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+
+  &:not(:last-child)::after {
+    content: '';
+    width: 2px;
+    height: 100%;
+    padding: 0;
+    margin: 0 16px;
+    background: ${({ dividerColor }) => dividerColor || Color.neutral80};
+
+    ${Media.upToMedium()} {
+      width: 100%;
+      height: 2px;
+      margin: 16px 0;
+    }
+  }
+
+  > h2 {
+    font-size: 48px;
+    font-weight: ${Font.weight.bold};
+    margin: 0;
+    color: inherit;
+  }
+
+  > p {
+    font-size: 21px;
+    font-weight: ${Font.weight.medium};
+    line-height: 1.3;
+    color: inherit;
+    margin: 0;
+    max-width: 50%;
+
+    ${Media.upToMedium()} {
+      max-width: 100%;
+    }
   }
 `

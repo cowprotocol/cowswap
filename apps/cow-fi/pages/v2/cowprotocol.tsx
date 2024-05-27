@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import { GetStaticProps } from 'next'
 import { Font, Color, Media, ProductLogo, ProductVariant } from '@cowprotocol/ui'
-import IMG_COW_HERO_HOME from '@cowprotocol/assets/images/cow-hero-home.svg'
+import IMG_ICON_CROWN_ICON from '@cowprotocol/assets/images/icon-crown-cow.svg'
 import IMG_ICON_GOVERNANCE from '@cowprotocol/assets/images/icon-governance.svg'
 
 import styled, { createGlobalStyle } from 'styled-components'
@@ -30,10 +30,14 @@ import {
   SectionTitleDescription,
   TopicCardInner,
   HeroContainer,
-  HeroBackground,
+  HeroImage,
+  HeroButton,
+  HeroDescription,
   HeroContent,
   HeroTitle,
   HeroSubtitle,
+  MetricsCard,
+  MetricsItem,
 } from '@/styles/styled'
 
 import SVG from 'react-inlinesvg'
@@ -81,7 +85,7 @@ interface HomeLandingProps {
 
 const GlobalStyle = createGlobalStyle`
   body {
-    background-color: ${Color.neutral90};  
+    background: ${Color.neutral90};  
   }
 `
 
@@ -108,20 +112,50 @@ export default function HomeLanding({ siteConfigData }: HomeLandingProps) {
       <GlobalStyle />
 
       <Wrapper>
-        <HeroContainer>
-          <HeroBackground>
-            <SVG src={IMG_COW_HERO_HOME} />
-          </HeroBackground>
-          <HeroContent>
-            <HeroTitle>Don&apos;t get milked!</HeroTitle>
-            <HeroSubtitle variant={'pill'}>CoW DAO protects users from the dangers of DeFi</HeroSubtitle>
+        <HeroContainer variant="secondary" maxWidth={1300}>
+          <HeroContent variant="secondary">
+            <HeroSubtitle color={'#66018E'}>CoW Protocol</HeroSubtitle>
+            <HeroTitle fontSize={67} fontSizeMobile={38} as="h2">
+              Do what you want, build what you want
+            </HeroTitle>
+            <HeroDescription>
+              CoW Protocol has the largest solver competition and the most advanced builder framework on the market
+            </HeroDescription>
+            <HeroButton background={'#66018E'} color={'#F996EE'} href="/start-building">
+              Start building
+            </HeroButton>
           </HeroContent>
+          <HeroImage width={470}>
+            <img src={IMG_ICON_GOVERNANCE} alt="CoW Protocol" />
+          </HeroImage>
         </HeroContainer>
 
-        <ContainerCard bgColor={Color.neutral100}>
+        <MetricsCard bgColor="#F996EE" color="#66018E" columns={3} touchFooter>
+          <MetricsItem dividerColor="#ED60E9">
+            <h2>18</h2>
+            <p>active solvers settling batches</p>
+          </MetricsItem>
+          <MetricsItem dividerColor="#ED60E9">
+            <h2>1 in 4</h2>
+            <p>user trades go through CoW Protocol</p>
+          </MetricsItem>
+          <MetricsItem dividerColor="#ED60E9">
+            <h2>83</h2>
+            <p>average NPS score for users of CoW Protocol</p>
+          </MetricsItem>
+        </MetricsCard>
+
+        <ContainerCard bgColor={Color.neutral98}>
           <ContainerCardSection>
             <SectionTitleWrapper color={Color.neutral0} maxWidth={1100}>
-              <SectionTitleText>CoW DAO develops the most user-protective products in Ethereum</SectionTitleText>
+              <SectionTitleIcon size={98}>
+                <SVG src={IMG_ICON_CROWN_ICON} />
+              </SectionTitleIcon>
+              <SectionTitleText>The leading intents-based DEX aggregator</SectionTitleText>
+              <SectionTitleDescription maxWidth={900}>
+                CoW Protocol uses an intents-based trading system alongside batch auctions to bring surplus-capturing,
+                MEV protected swaps to users.
+              </SectionTitleDescription>
             </SectionTitleWrapper>
 
             <TopicList columns={2}>
