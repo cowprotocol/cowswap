@@ -56,6 +56,8 @@ export function useTradeFlowContext(
   const partiallyFillable = settingsState.partialFillsEnabled
 
   return useMemo(() => {
+    const isQuoteReady = !!quoteState.response && !quoteState.isLoading && !!quoteState.localQuoteTimestamp
+
     if (
       !account ||
       !inputAmount ||
@@ -65,6 +67,7 @@ export function useTradeFlowContext(
       !state.outputCurrency ||
       !provider ||
       !settlementContract ||
+      !isQuoteReady ||
       !appData
     ) {
       return null

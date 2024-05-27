@@ -12,22 +12,25 @@ interface Claim {
 const indexFiles: Record<SupportedChainId, string[]> = {
   [SupportedChainId.MAINNET]: mainnetIndex,
   [SupportedChainId.GNOSIS_CHAIN]: gnosisChainIndex,
-  [SupportedChainId.SEPOLIA]: [], // TODO SEPOLIA: check it
+  [SupportedChainId.ARBITRUM_ONE]: [],
+  [SupportedChainId.SEPOLIA]: [],
 }
 
-const chainNames: Record<SupportedChainId, string> = {
+const chainNames: Record<SupportedChainId, string | null> = {
   [SupportedChainId.MAINNET]: 'mainnet',
   [SupportedChainId.GNOSIS_CHAIN]: 'gnosisChain',
-  [SupportedChainId.SEPOLIA]: '', // TODO SEPOLIA: check it
+  [SupportedChainId.ARBITRUM_ONE]: null,
+  [SupportedChainId.SEPOLIA]: null,
 }
 
 const DISTRO_REPO_BRANCH_NAME = 'main'
 
 export const fetchClaim = async (address: string, chainId: SupportedChainId): Promise<Claim | null> => {
-  const lowerCaseAddress = address.toLowerCase()
-
-  const indexFile = indexFiles[chainId]
   const chainName = chainNames[chainId]
+  if (!chainName) return null // no claim for this chain
+
+  const lowerCaseAddress = address.toLowerCase()
+  const indexFile = indexFiles[chainId]
   const chunkIndex = lookupChunkIndex(indexFile, lowerCaseAddress)
   if (chunkIndex === -1) return null // address is lower than the lowest address in the index, which means it's ineligible
 

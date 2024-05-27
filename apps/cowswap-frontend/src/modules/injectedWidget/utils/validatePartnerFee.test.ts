@@ -60,6 +60,7 @@ describe('validatePartnerFee()', () => {
         bps: 100,
         recipient: {
           [SupportedChainId.MAINNET]: '0x0000000000000000000000000000000000000000',
+          [SupportedChainId.ARBITRUM_ONE]: '0x0000000000000000000000000000000000000000',
           [SupportedChainId.GNOSIS_CHAIN]: 'rtrth',
           [SupportedChainId.SEPOLIA]: '0x0000000000000000000000000000000000000000',
         },
@@ -75,6 +76,7 @@ describe('validatePartnerFee()', () => {
         bps: 100,
         recipient: {
           [SupportedChainId.MAINNET]: '0x0000000000000000000000000000000000000000',
+          [SupportedChainId.ARBITRUM_ONE]: '0x0000000000000000000000000000000000000000',
           [SupportedChainId.GNOSIS_CHAIN]: '0x0000000000000000000000000000000000000000',
           [SupportedChainId.SEPOLIA]: '0x0000000000000000000000000000000000000000',
         },

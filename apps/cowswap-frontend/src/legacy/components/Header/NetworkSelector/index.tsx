@@ -1,6 +1,7 @@
 import { useRef } from 'react'
 
 import { getChainInfo } from '@cowprotocol/common-const'
+import { useAvailableChains } from '@cowprotocol/common-hooks'
 import { UI } from '@cowprotocol/ui'
 import { useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
@@ -13,6 +14,7 @@ import styled from 'styled-components/macro'
 import { upToMedium, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 import { useCloseModal, useModalIsOpen, useOpenModal, useToggleModal } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
+import { useIsDarkMode } from 'legacy/state/user/hooks'
 import { MEDIA_WIDTHS } from 'legacy/theme'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
@@ -163,6 +165,10 @@ export function NetworkSelector() {
 
   const onSelectChain = useOnSelectNetwork()
   const isUpToMedium = useMediaQuery(upToMedium)
+  const isDarkMode = useIsDarkMode()
+  const logoUrl = isDarkMode ? info.logo.dark : info.logo.light
+
+  const availableChains = useAvailableChains()
 
   if (!provider || isSmartContractWallet) {
     return null
@@ -178,7 +184,7 @@ export function NetworkSelector() {
       <SelectorControls isChainIdUnsupported={isChainIdUnsupported}>
         {!isChainIdUnsupported ? (
           <>
-            <SelectorLogo src={info?.logoUrl} />
+            <SelectorLogo src={logoUrl} />
             <SelectorLabel>{info?.label}</SelectorLabel>
             <StyledChevronDown />
           </>
@@ -196,7 +202,12 @@ export function NetworkSelector() {
             <FlyoutHeader>
               <Trans>Select a network</Trans>
             </FlyoutHeader>
-            <NetworksList currentChainId={isChainIdUnsupported ? null : chainId} onSelectChain={onSelectChain} />
+            <NetworksList
+              currentChainId={isChainIdUnsupported ? null : chainId}
+              isDarkMode={isDarkMode}
+              onSelectChain={onSelectChain}
+              availableChains={availableChains}
+            />
           </FlyoutMenuContents>
         </FlyoutMenu>
       )}

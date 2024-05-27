@@ -1,8 +1,8 @@
 import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 
+import { useIsWindowVisible } from '@cowprotocol/common-hooks'
 import { useWalletChainId, useWalletProvider } from '@cowprotocol/wallet-provider'
 
-import { useIsWindowVisible } from './useIsWindowVisible'
 
 const MISSING_PROVIDER = Symbol()
 const BlockNumberContext = createContext<

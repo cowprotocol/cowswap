@@ -116,9 +116,9 @@ const AppContent = (): JSX.Element => {
   useAnalyticsReporter(location, 'Explorer')
 
   return (
-    <GenericLayout header={<Header />}>
-      <React.Suspense fallback={null}>
-        <WithLDProvider>
+    <WithLDProvider>
+      <GenericLayout header={<Header />}>
+        <React.Suspense fallback={null}>
           <Routes>
             <Route path={pathPrefix + '/'} element={<Home />} />
             <Route path={pathPrefix + '/address/'} element={<Navigate to={pathPrefix + '/search/'} />} />
@@ -131,9 +131,9 @@ const AppContent = (): JSX.Element => {
             <Route path={pathPrefix + '/appdata'} element={<AppDataDetails />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
-        </WithLDProvider>
-      </React.Suspense>
-    </GenericLayout>
+        </React.Suspense>
+      </GenericLayout>
+    </WithLDProvider>
   )
 }
 
