@@ -1,8 +1,9 @@
 import Head from 'next/head'
 import { GetStaticProps } from 'next'
 import { Font, Color, Media, ProductLogo, ProductVariant } from '@cowprotocol/ui'
+import IMG_COW_HERO_HOME from '@cowprotocol/assets/images/cow-hero-home.svg'
 
-import styled from 'styled-components'
+import styled, { createGlobalStyle } from 'styled-components'
 
 import { CONFIG } from '@/const/meta'
 
@@ -20,10 +21,18 @@ import {
   TopicCard,
   TopicImage,
   TopicTitle,
+  TopicDescription,
+  TopicButton,
   SectionTitleWrapper,
   SectionTitleIcon,
   SectionTitleText,
   SectionTitleDescription,
+  TopicCardInner,
+  HeroContainer,
+  HeroBackground,
+  HeroContent,
+  HeroTitle,
+  HeroSubtitle,
 } from './styled'
 
 import SVG from 'react-inlinesvg'
@@ -69,6 +78,12 @@ interface HomeLandingProps {
   articles: ArticleListResponse['data']
 }
 
+const GlobalStyle = createGlobalStyle`
+  body {
+    background-color: ${Color.neutral90};  
+  }
+`
+
 const Wrapper = styled.div`
   display: flex;
   flex-flow: column wrap;
@@ -78,26 +93,6 @@ const Wrapper = styled.div`
   width: 100%;
   margin: 76px auto 0;
   gap: 24px;
-
-  h1 {
-    font-size: 28px;
-    font-weight: ${Font.weight.medium};
-    color: ${Color.neutral50};
-    text-align: center;
-
-    ${Media.upToMedium()} {
-      font-size: 18px;
-    }
-  }
-
-  h2 {
-    font-size: 67px;
-    text-align: center;
-
-    ${Media.upToMedium()} {
-      font-size: 38px;
-    }
-  }
 `
 
 export default function HomeLanding({ siteConfigData }: HomeLandingProps) {
@@ -109,22 +104,141 @@ export default function HomeLanding({ siteConfigData }: HomeLandingProps) {
         </title>
       </Head>
 
-      <Wrapper>
-        <h1>Don&apos;t get milked!</h1>
-        <h2>CoW DAO protects users from the dangers of DeFi</h2>
+      <GlobalStyle />
 
-        <ContainerCard bgColor={Color.neutral90}>
+      <Wrapper>
+        <HeroContainer>
+          <HeroBackground>
+            <SVG src={IMG_COW_HERO_HOME} />
+          </HeroBackground>
+          <HeroContent>
+            <HeroTitle>Don&apos;t get milked!</HeroTitle>
+            <HeroSubtitle>CoW DAO protects users from the dangers of DeFi</HeroSubtitle>
+          </HeroContent>
+        </HeroContainer>
+
+        <ContainerCard bgColor={Color.neutral100}>
+          <ContainerCardSection>
+            <SectionTitleWrapper color={Color.neutral0} maxWidth={1100}>
+              <SectionTitleText>CoW DAO develops the most user-protective products in Ethereum</SectionTitleText>
+            </SectionTitleWrapper>
+
+            <TopicList columns={2}>
+              <TopicCard contentAlign={'left'} bgColor="#490072" textColor="#F996EE" padding={'32px'} asProp="div">
+                <TopicCardInner contentAlign="left">
+                  <TopicTitle fontSize={51} fontWeight={Font.weight.bold}>
+                    CoW Protocol
+                  </TopicTitle>
+                  <TopicDescription fontSize={28}>Open-source, permissionless DEX innovation</TopicDescription>
+                  <TopicButton bgColor="#F996EE" color="#490072">
+                    Start building
+                  </TopicButton>
+                </TopicCardInner>
+                <TopicImage iconColor="#8702AA" bgColor="transparent" margin={'0 0 0 auto'} height={187} width={'auto'}>
+                  <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />
+                </TopicImage>
+              </TopicCard>
+
+              <TopicCard contentAlign={'left'} bgColor="#65D9FF" textColor="#012F7A" padding={'32px'} asProp="div">
+                <TopicCardInner contentAlign="left">
+                  <TopicTitle fontSize={51} fontWeight={Font.weight.bold}>
+                    CoW Swap
+                  </TopicTitle>
+                  <TopicDescription fontSize={28}>The DEX that lets you do what you want</TopicDescription>
+                  <TopicButton bgColor="#012F7A" color="#65D9FF">
+                    Start swapping
+                  </TopicButton>
+                </TopicCardInner>
+                <TopicImage iconColor="#CCF8FF" bgColor="transparent" margin={'0 0 0 auto'} height={187} width={'auto'}>
+                  <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />
+                </TopicImage>
+              </TopicCard>
+
+              <TopicCard contentAlign={'left'} bgColor="#194D06" textColor="#BCEC79" padding={'32px'} asProp="div">
+                <TopicCardInner contentAlign="left">
+                  <TopicTitle fontSize={51} fontWeight={Font.weight.bold}>
+                    CoW AMM
+                  </TopicTitle>
+                  <TopicDescription fontSize={28}>The first MEV-capturing AMM</TopicDescription>
+                  <TopicButton bgColor="#BCEC79" color="#194D06">
+                    Deposit liquidity
+                  </TopicButton>
+                </TopicCardInner>
+                <TopicImage iconColor="#408A13" bgColor="transparent" margin={'0 0 0 auto'} height={187} width={'auto'}>
+                  <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />
+                </TopicImage>
+              </TopicCard>
+
+              <TopicCard contentAlign={'left'} bgColor="#FEE7CF" textColor="#EC4612" padding={'32px'} asProp="div">
+                <TopicCardInner contentAlign="left">
+                  <TopicTitle fontSize={51} fontWeight={Font.weight.bold}>
+                    MEV Blocker
+                  </TopicTitle>
+                  <TopicDescription fontSize={28}>The best MEV protection under the sun</TopicDescription>
+                  <TopicButton bgColor="#EC4612" color="#FEE7CF">
+                    Get protected
+                  </TopicButton>
+                </TopicCardInner>
+                <TopicImage iconColor="#FDC99F" bgColor="transparent" margin={'0 0 0 auto'} height={187} width={'auto'}>
+                  <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />
+                </TopicImage>
+              </TopicCard>
+            </TopicList>
+          </ContainerCardSection>
+        </ContainerCard>
+
+        <ContainerCard bgColor={'transparent'}>
           <ContainerCardSection>
             <SectionTitleWrapper>
               <SectionTitleIcon>
                 <SVG src={IMG_ICON_FAQ} />
               </SectionTitleIcon>
               <SectionTitleText>Governance</SectionTitleText>
-              <SectionTitleDescription>
+              <SectionTitleDescription maxWidth={900}>
                 By getting involved, you can further CoW DAO&apos;s mission of creating the most protective products on
                 Ethereum
               </SectionTitleDescription>
             </SectionTitleWrapper>
+
+            <TopicList columns={1} maxWidth={1000}>
+              <TopicCard columns="2fr auto" horizontal asProp="div">
+                <TopicCardInner contentAlign="left">
+                  <TopicTitle fontSize={67}>Forum</TopicTitle>
+                  <TopicDescription fontSize={28}>
+                    CoW Protocol users sign an "intent to trade" message instead of directly executing orders on-chain
+                    (like on Uniswap). This lets solvers trade on behalf of the user.
+                  </TopicDescription>
+                  <TopicButton href="/knowledge-base">Learn more</TopicButton>
+                </TopicCardInner>
+                <TopicImage iconColor="#FF4500" large />
+              </TopicCard>
+
+              <TopicCard columns={'auto 2fr'} horizontal asProp="div">
+                <TopicImage iconColor="#4B0082" large />
+
+                <TopicCardInner contentAlign={'left'}>
+                  <TopicTitle fontSize={67}>Token</TopicTitle>
+                  <TopicDescription fontSize={28}>
+                    Professional third parties known as “solvers” find the most optimal path for each trade and protect
+                    assets from MEV
+                  </TopicDescription>
+                  <TopicButton href="/docs">Learn more</TopicButton>
+                </TopicCardInner>
+              </TopicCard>
+
+              <TopicCard columns={'2fr auto'} horizontal asProp="div">
+                <TopicCardInner contentAlign={'left'}>
+                  <TopicTitle fontSize={67}>Snapshot</TopicTitle>
+                  <TopicDescription fontSize={28}>
+                    CoW Protocol collects intents into a batch and then auctions it off to solvers. The solver that can
+                    provide the most surplus for users gets to settle the batch.
+                  </TopicDescription>
+                  <TopicButton href="https://discord.com">Learn more</TopicButton>
+                </TopicCardInner>
+
+                <TopicImage iconColor="#1E90FF" large />
+              </TopicCard>
+            </TopicList>
           </ContainerCardSection>
         </ContainerCard>
 
@@ -159,8 +273,8 @@ export default function HomeLanding({ siteConfigData }: HomeLandingProps) {
           </ContainerCardSection>
         </ContainerCard>
 
-        <ContainerCard bgColor={Color.neutral90} touchFooter>
-          <ContainerCardSection>
+        <ContainerCard bgColor={'transparent'} touchFooter>
+          <ContainerCardSection padding={'0 0 100px'}>
             <SectionTitleWrapper>
               <SectionTitleIcon>
                 <SVG src={IMG_ICON_FAQ} />
