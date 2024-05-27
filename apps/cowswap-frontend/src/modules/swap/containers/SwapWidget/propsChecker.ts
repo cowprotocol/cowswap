@@ -14,7 +14,7 @@ function isReceiveAmountInfoEqual(prev: ReceiveAmountInfo | null, next: ReceiveA
   }
 
   return (
-    areFractionsEqual(prev.feeAmount, next.feeAmount) &&
+    areFractionsEqual(prev.networkFeeAmount, next.networkFeeAmount) &&
     areFractionsEqual(prev.amountBeforeFees, next.amountBeforeFees) &&
     areFractionsEqual(prev.amountAfterFees, next.amountAfterFees)
   )

@@ -52,7 +52,7 @@ const receiveAmountInfo: ReceiveAmountInfo = {
   type: 'from',
   amountBeforeFees: CurrencyAmount.fromRawAmount(outputCurrency, 400 * 10 ** 18),
   amountAfterFees: CurrencyAmount.fromRawAmount(outputCurrency, 390 * 10 ** 18),
-  feeAmount: CurrencyAmount.fromRawAmount(outputCurrency, 10 * 10 ** 18),
+  networkFeeAmount: CurrencyAmount.fromRawAmount(outputCurrency, 10 * 10 ** 18),
   partnerFeeAmount: undefined,
 }
 

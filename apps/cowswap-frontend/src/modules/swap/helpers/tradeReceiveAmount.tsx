@@ -17,7 +17,7 @@ export function getInputReceiveAmountInfo(trade: TradeGp): ReceiveAmountInfo {
         : trade.inputAmountWithoutFee,
     amountAfterFees: inputAmountAfterFees,
     partnerFeeAmount: trade.partnerFeeAmount,
-    feeAmount: trade.fee.feeAsCurrency,
+    networkFeeAmount: trade.fee.feeAsCurrency,
   }
 }
 
@@ -31,6 +31,6 @@ export function getOutputReceiveAmountInfo(trade: TradeGp): ReceiveAmountInfo {
     amountBeforeFees: trade.outputAmountWithoutFee,
     amountAfterFees: outputAmountAfterFees,
     partnerFeeAmount: trade.partnerFeeAmount,
-    feeAmount: trade.outputAmountWithoutFee?.subtract(trade.outputAmount),
+    networkFeeAmount: trade.outputAmountWithoutFee?.subtract(trade.outputAmount),
   }
 }

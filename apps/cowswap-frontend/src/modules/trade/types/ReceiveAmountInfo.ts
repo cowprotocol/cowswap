@@ -5,6 +5,6 @@ export interface ReceiveAmountInfo {
   customTitle?: string
   amountBeforeFees: CurrencyAmount<Currency> | undefined
   amountAfterFees: CurrencyAmount<Currency>
-  feeAmount: CurrencyAmount<Currency> | undefined
+  networkFeeAmount: CurrencyAmount<Currency> | undefined
   partnerFeeAmount: CurrencyAmount<Currency> | undefined
 }

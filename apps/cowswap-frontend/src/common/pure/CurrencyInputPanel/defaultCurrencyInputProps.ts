@@ -25,7 +25,7 @@ export const defaultCurrencyInputPanelProps: CurrencyInputPanelProps & { priceIm
       type: 'from',
       amountBeforeFees: CurrencyAmount.fromRawAmount(currency, 30 * 10 ** 18),
       amountAfterFees: CurrencyAmount.fromRawAmount(currency, 20 * 10 ** 18),
-      feeAmount: CurrencyAmount.fromRawAmount(currency, 10 * 10 ** 18),
+      networkFeeAmount: CurrencyAmount.fromRawAmount(currency, 10 * 10 ** 18),
       partnerFeeAmount: CurrencyAmount.fromRawAmount(currency, 0),
     },
     currency,

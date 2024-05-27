@@ -37,7 +37,7 @@ describe('Helpers to build ReceiveAmountInfo', () => {
 
         expect(value.amountAfterFees.toExact()).toBe('0')
         expect(value.amountBeforeFees?.toExact()).toBe(undefined)
-        expect(value.feeAmount?.toExact()).toBe('3')
+        expect(value.networkFeeAmount?.toExact()).toBe('3')
         expect(value.type).toBe('from')
       })
     })
@@ -63,7 +63,7 @@ describe('Helpers to build ReceiveAmountInfo', () => {
 
       expect(value.amountAfterFees.toExact()).toBe('250')
       expect(value.amountBeforeFees?.toExact()).toBe('247')
-      expect(value.feeAmount?.toExact()).toBe('-3')
+      expect(value.networkFeeAmount?.toExact()).toBe('-3')
       expect(value.type).toBe('to')
     })
   })
