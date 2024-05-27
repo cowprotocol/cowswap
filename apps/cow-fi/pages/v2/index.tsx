@@ -130,7 +130,9 @@ export default function HomeLanding({ siteConfigData }: HomeLandingProps) {
                   <TopicTitle fontSize={51} fontWeight={Font.weight.bold}>
                     CoW Protocol
                   </TopicTitle>
-                  <TopicDescription fontSize={28}>Open-source, permissionless DEX innovation</TopicDescription>
+                  <TopicDescription fontSize={28} color="#F996EE">
+                    Open-source, permissionless DEX innovation
+                  </TopicDescription>
                   <TopicButton bgColor="#F996EE" color="#490072">
                     Start building
                   </TopicButton>
@@ -145,7 +147,9 @@ export default function HomeLanding({ siteConfigData }: HomeLandingProps) {
                   <TopicTitle fontSize={51} fontWeight={Font.weight.bold}>
                     CoW Swap
                   </TopicTitle>
-                  <TopicDescription fontSize={28}>The DEX that lets you do what you want</TopicDescription>
+                  <TopicDescription fontSize={28} color="#012F7A">
+                    The DEX that lets you do what you want
+                  </TopicDescription>
                   <TopicButton bgColor="#012F7A" color="#65D9FF">
                     Start swapping
                   </TopicButton>
@@ -160,7 +164,9 @@ export default function HomeLanding({ siteConfigData }: HomeLandingProps) {
                   <TopicTitle fontSize={51} fontWeight={Font.weight.bold}>
                     CoW AMM
                   </TopicTitle>
-                  <TopicDescription fontSize={28}>The first MEV-capturing AMM</TopicDescription>
+                  <TopicDescription fontSize={28} color="#BCEC79">
+                    The first MEV-capturing AMM
+                  </TopicDescription>
                   <TopicButton bgColor="#BCEC79" color="#194D06">
                     Deposit liquidity
                   </TopicButton>
@@ -175,7 +181,9 @@ export default function HomeLanding({ siteConfigData }: HomeLandingProps) {
                   <TopicTitle fontSize={51} fontWeight={Font.weight.bold}>
                     MEV Blocker
                   </TopicTitle>
-                  <TopicDescription fontSize={28}>The best MEV protection under the sun</TopicDescription>
+                  <TopicDescription fontSize={28} color="#EC4612">
+                    The best MEV protection under the sun
+                  </TopicDescription>
                   <TopicButton bgColor="#EC4612" color="#FEE7CF">
                     Get protected
                   </TopicButton>
