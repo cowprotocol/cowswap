@@ -105,7 +105,7 @@ export const TransactionsTableWidget: React.FC<Props> = ({ txHash }) => {
         <Title>Transaction details</Title>
         <TitleAddress
           textToCopy={txHash}
-          contentsToDisplay={<BlockExplorerLink type="tx" networkId={networkId} identifier={txHash} showLogo />}
+          contentsToDisplay={<BlockExplorerLink type="transaction" networkId={networkId} identifier={txHash} showLogo />}
         />
       </FlexContainer>
       <ConnectionStatus />

@@ -4,6 +4,7 @@ import {
   COW_PROTOCOL_VAULT_RELAYER_ADDRESS,
   IpfsConfig,
   SupportedChainId,
+  mapSupportedNetworks,
 } from '@cowprotocol/cow-sdk'
 import { Fraction, Percent } from '@uniswap/sdk-core'
 
@@ -52,32 +53,26 @@ export const APP_TITLE = 'CoW Swap | The smartest way to trade cryptocurrencies'
 
 type Env = 'barn' | 'prod'
 
-export const COWSWAP_ETHFLOW_CONTRACT_ADDRESS: Record<Env, Partial<Record<SupportedChainId, string>>> = {
-  prod: {
-    [SupportedChainId.MAINNET]: EthFlowProd[SupportedChainId.MAINNET].address,
-    [SupportedChainId.GNOSIS_CHAIN]: EthFlowProd[SupportedChainId.GNOSIS_CHAIN].address,
-    [SupportedChainId.SEPOLIA]: EthFlowProd[SupportedChainId.SEPOLIA].address,
-  },
-  barn: {
-    [SupportedChainId.MAINNET]: EthFlowBarn[SupportedChainId.MAINNET].address,
-    [SupportedChainId.GNOSIS_CHAIN]: EthFlowBarn[SupportedChainId.GNOSIS_CHAIN].address,
-    [SupportedChainId.SEPOLIA]: EthFlowBarn[SupportedChainId.SEPOLIA].address,
-  },
+export const COWSWAP_ETHFLOW_CONTRACT_ADDRESS: Record<Env, Record<SupportedChainId, string>> = {
+  prod: mapSupportedNetworks((chain) => EthFlowProd[chain].address),
+  barn: mapSupportedNetworks((chain) => EthFlowBarn[chain].address),
 }
 
 export const GP_SETTLEMENT_CONTRACT_ADDRESS = COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS
 
 export const GP_VAULT_RELAYER = COW_PROTOCOL_VAULT_RELAYER_ADDRESS
 
-export const V_COW_CONTRACT_ADDRESS: Record<SupportedChainId, string> = {
+export const V_COW_CONTRACT_ADDRESS: Record<SupportedChainId, string | null> = {
   [SupportedChainId.MAINNET]: '0xd057b63f5e69cf1b929b356b579cba08d7688048',
   [SupportedChainId.GNOSIS_CHAIN]: '0xc20C9C13E853fc64d054b73fF21d3636B2d97eaB',
+  [SupportedChainId.ARBITRUM_ONE]: null, // doesn't exist!
   [SupportedChainId.SEPOLIA]: '0x21d06a222bbb94ec1406a0a8ba86b4d761bc9864',
 }
 
 export const COW_CONTRACT_ADDRESS: Record<SupportedChainId, string> = {
   [SupportedChainId.MAINNET]: '0xDEf1CA1fb7FBcDC777520aa7f396b4E015F497aB',
   [SupportedChainId.GNOSIS_CHAIN]: '0x177127622c4A00F3d409B75571e12cB3c8973d3c',
+  [SupportedChainId.ARBITRUM_ONE]: '0xcb8b5cd20bdcaea9a010ac1f8d835824f5c87a04',
   [SupportedChainId.SEPOLIA]: '0x0625aFB445C3B6B7B929342a04A22599fd5dBB59',
 }
 
@@ -118,16 +113,19 @@ export const GNOSIS_FORUM_ROADTODECENT_LINK = 'https://forum.gnosis.io/t/gpv2-ro
 export const MEV_TOTAL = '606 Million'
 export const FLASHBOTS_LINK = 'https://explore.flashbots.net/'
 
+// TODO: test gas prices for all networks
 export const GAS_PRICE_UPDATE_THRESHOLD = ms`5s`
 export const GAS_FEE_ENDPOINTS: Record<SupportedChainId, string> = {
   [SupportedChainId.MAINNET]: 'https://api.blocknative.com/gasprices/blockprices',
   [SupportedChainId.GNOSIS_CHAIN]: 'https://gnosis.blockscout.com/api/v1/gas-price-oracle',
+  [SupportedChainId.ARBITRUM_ONE]: 'https://arbitrum.blockscout.com/api/v1/gas-price-oracle',
   [SupportedChainId.SEPOLIA]: '',
 }
-export const GAS_API_KEYS: Record<SupportedChainId, string> = {
-  [SupportedChainId.MAINNET]: process.env.REACT_APP_BLOCKNATIVE_API_KEY || '',
-  [SupportedChainId.GNOSIS_CHAIN]: '',
-  [SupportedChainId.SEPOLIA]: '',
+export const GAS_API_KEYS: Record<SupportedChainId, string | null> = {
+  [SupportedChainId.MAINNET]: process.env.REACT_APP_BLOCKNATIVE_API_KEY || null,
+  [SupportedChainId.GNOSIS_CHAIN]: null,
+  [SupportedChainId.ARBITRUM_ONE]: null,
+  [SupportedChainId.SEPOLIA]: null,
 }
 
 export const UNSUPPORTED_TOKENS_FAQ_URL = '/faq/trading#what-token-pairs-does-cowswap-allow-to-trade'

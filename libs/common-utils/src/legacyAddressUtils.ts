@@ -64,27 +64,28 @@ export type BlockExplorerLinkType =
   | 'block'
   | 'token-transfer'
   | 'composable-order'
+  | 'event'
+  | 'contract'
 
 function getEtherscanUrl(chainId: SupportedChainId, data: string, type: BlockExplorerLinkType): string {
   const basePath = CHAIN_INFO[chainId].explorer
 
   switch (type) {
-    case 'transaction': {
+    case 'transaction':
       return `${basePath}/tx/${data}`
-    }
-    case 'token': {
+    case 'token':
       return `${basePath}/token/${data}`
-    }
-    case 'block': {
+    case 'block':
       return `${basePath}/block/${data}`
-    }
-    case 'token-transfer': {
+    case 'token-transfer':
       return `${basePath}/address/${data}#tokentxns`
-    }
+    case 'event':
+      return `${basePath}/tx/${data}#eventlog`
+    case 'contract':
+      return `${basePath}/address/${data}#code`
     case 'address':
-    default: {
+    default:
       return `${basePath}/address/${data}`
-    }
   }
 }
 
@@ -112,11 +113,9 @@ export function getEtherscanLink(chainId: SupportedChainId, type: BlockExplorerL
 export function getExplorerLabel(chainId: SupportedChainId, type: BlockExplorerLinkType, data?: string): string {
   if (isCowOrder(type, data)) {
     return 'View on Explorer'
-  } else if (chainId === SupportedChainId.GNOSIS_CHAIN) {
-    return 'View on Gnosisscan'
-  } else {
-    return 'View on Etherscan'
   }
+
+  return `View on ${CHAIN_INFO[chainId].explorerTitle}`
 }
 
 // Shortens OrderID (or any string really) removing initial 2 characters e.g 0x

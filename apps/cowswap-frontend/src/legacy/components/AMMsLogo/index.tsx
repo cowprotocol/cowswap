@@ -62,6 +62,7 @@ const ETH_AMM_LOGOS = [SushiImage, OneInchImage, ParaSwapImage, UniswapImage, Cu
 const LogosPerNetwork: Record<SupportedChainId, Array<Image>> = {
   [SupportedChainId.MAINNET]: ETH_AMM_LOGOS,
   [SupportedChainId.SEPOLIA]: ETH_AMM_LOGOS,
+  [SupportedChainId.ARBITRUM_ONE]: ETH_AMM_LOGOS, // TODO: review actual AMMs on arbitrum
   [SupportedChainId.GNOSIS_CHAIN]: [
     SushiImage,
     BaoSwapImage,
