@@ -1,5 +1,6 @@
 import styled from 'styled-components'
 import { Font, Color, Media } from '@cowprotocol/ui'
+import { max } from 'date-fns'
 
 export const ContainerCard = styled.div<{
   bgColor?: string
@@ -28,7 +29,7 @@ export const ContainerCard = styled.div<{
   }
 `
 
-export const ContainerCardSection = styled.div`
+export const ContainerCardSection = styled.div<{ padding?: string }>`
   display: flex;
   flex-flow: row wrap;
   gap: 42px;
@@ -36,6 +37,7 @@ export const ContainerCardSection = styled.div`
   justify-content: space-between;
   align-items: center;
   color: inherit;
+  padding: ${({ padding }) => padding || '0'};
 `
 
 export const ContainerCardSectionTop = styled.div<{ columnWrap?: boolean; padding?: string }>`
@@ -145,11 +147,13 @@ export const ArticleDescription = styled.p`
   color: ${Color.neutral0};
 `
 
-export const TopicList = styled.div<{ columns?: number; columnsMobile?: number }>`
+export const TopicList = styled.div<{ columns?: number; columnsMobile?: number; maxWidth?: number }>`
   display: grid;
-  grid-template-columns: ${({ columns }) => `repeat(${columns || 4}, 1fr)`};
+  grid-template-columns: ${({ columns }) => `repeat(${columns || 3}, 1fr)`};
   gap: 32px;
   width: 100%;
+  max-width: ${({ maxWidth }) => (maxWidth ? `${maxWidth}px` : '100%')};
+  margin: 0 auto;
 
   ${Media.upToMedium()} {
     grid-template-columns: ${({ columnsMobile }) => `repeat(${columnsMobile || 1}, 1fr)`};
@@ -157,14 +161,27 @@ export const TopicList = styled.div<{ columns?: number; columnsMobile?: number }
   }
 `
 
-export const TopicCard = styled.a<{ bgColor?: string; textColor?: string }>`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+interface TopicCardProps {
+  bgColor?: string
+  textColor?: string
+  horizontal?: boolean
+  columns?: string
+  asProp?: string
+  padding?: string
+  contentAlign?: string
+}
+
+export const TopicCard = styled.a.attrs<TopicCardProps>(({ asProp }) => ({
+  as: asProp || 'a',
+}))<TopicCardProps>`
+  display: ${({ columns }) => (columns ? 'grid' : 'flex')};
+  grid-template-columns: ${({ columns }) => columns || '1fr'};
+  flex-flow: ${({ horizontal }) => (horizontal ? 'row wrap' : 'column wrap')};
+  align-items: ${({ contentAlign }) => (contentAlign === 'left' ? 'flex-start' : 'center')};
   justify-content: center;
   background: ${({ bgColor }) => bgColor || Color.neutral90};
   color: ${({ textColor }) => textColor || Color.neutral0};
-  padding: 56px 20px;
+  padding: ${({ padding }) => padding || '56px 20px'};
   border-radius: 20px;
   text-align: center;
   font-size: 24px;
@@ -175,36 +192,98 @@ export const TopicCard = styled.a<{ bgColor?: string; textColor?: string }>`
   gap: 56px;
 
   &:hover {
-    border: 4px solid ${Color.neutral40};
+    border: ${({ asProp }) => (asProp === 'div' ? '4px solid transparent' : `4px solid ${Color.neutral40}`)};
   }
 
   ${Media.upToMedium()} {
     padding: 32px 16px;
     gap: 32px;
   }
+
+  ${({ asProp }) =>
+    asProp === 'div' &&
+    `
+    &:hover {
+      border: 4px solid transparent;
+    }
+  `}
 `
 
-export const TopicImage = styled.div<{ iconColor: string; large?: boolean }>`
+export const TopicCardInner = styled.div<{ contentAlign?: string }>`
+  display: flex;
+  flex-flow: column wrap;
+  gap: 16px;
+  text-align: ${({ contentAlign }) => contentAlign || 'center'};
+  align-items: ${({ contentAlign }) =>
+    contentAlign === 'left' ? 'flex-start' : contentAlign === 'right' ? 'flex-end' : 'center'};
+`
+
+export const TopicImage = styled.div<{
+  iconColor: string
+  large?: boolean
+  bgColor?: string
+  margin?: string
+  height?: number | string
+  width?: number | string
+}>`
   --size: ${({ large }) => (large ? '290px' : '132px')};
-  width: var(--size);
-  height: var(--size);
+  width: ${({ width }) => (typeof width === 'number' ? `${width}px` : width || 'var(--size)')};
+  height: ${({ height }) => (typeof height === 'number' ? `${height}px` : height || 'var(--size)')};
   border-radius: var(--size);
-  background: ${({ iconColor }) => iconColor || Color.neutral90};
+  background: ${({ bgColor, iconColor }) => bgColor || iconColor || Color.neutral90};
   color: ${({ iconColor }) => iconColor || Color.neutral90};
-  margin: 0 0 16px;
+  margin: ${({ margin }) => margin || '0 0 16px'};
+
+  > span {
+    height: inherit;
+    width: inherit;
+    color: inherit;
+  }
 
   svg {
     fill: currentColor;
   }
 `
 
-export const TopicTitle = styled.h5<{ fontSize?: number }>`
+export const TopicTitle = styled.h5<{ fontSize?: number; fontWeight?: number }>`
   font-size: ${({ fontSize }) => fontSize || 28}px;
-  font-weight: ${Font.weight.medium};
-  color: ${Color.neutral0};
+  font-weight: ${({ fontWeight }) => fontWeight || Font.weight.medium};
+  color: inherit;
   padding: 0;
   margin: 0;
   line-height: 1.2;
+`
+
+export const TopicDescription = styled.p<{
+  fontSize?: number
+  fontWeight?: string
+  color?: string
+}>`
+  font-size: ${({ fontSize }) => fontSize || 16}px;
+  color: ${({ color }) => color || 'inherit'};
+  font-weight: ${({ fontWeight }) => fontWeight || Font.weight.medium};
+  line-height: 1.4;
+  margin: 16px 0;
+  text-align: inherit;
+`
+
+export const TopicButton = styled.a<{ fontSize?: number; bgColor?: string; color?: string }>`
+  display: inline-block;
+  padding: 16px 24px;
+  font-size: ${({ fontSize }) => fontSize || 21}px;
+  font-weight: ${Font.weight.medium};
+  color: ${({ color }) => color || Color.neutral98};
+  background-color: ${({ bgColor }) => bgColor || Color.neutral10};
+  text-decoration: none;
+  border-radius: 32px;
+  line-height: 1.2;
+  text-align: center;
+  width: max-content;
+  transition: opacity 0.2s ease-in-out;
+
+  &:hover {
+    opacity: 0.8;
+  }
 `
 
 export const LinkSection = styled.div<{ columns?: number; columnsMobile?: number }>`
@@ -442,15 +521,16 @@ export const Pagination = styled.div`
   }
 `
 
-export const SectionTitleWrapper = styled.div<{ color?: string }>`
+export const SectionTitleWrapper = styled.div<{ color?: string; maxWidth?: number }>`
   --color: ${Color.neutral20};
   display: flex;
   flex-flow: column wrap;
   align-items: center;
   color: ${({ color }) => color || Color.neutral20};
-  margin: 100px 0 56px;
+  margin: 100px auto 56px;
   text-align: center;
   width: 100%;
+  max-width: ${({ maxWidth }) => (maxWidth ? `${maxWidth}px` : '100%')};
   gap: 32px;
 `
 
@@ -463,8 +543,9 @@ export const SectionTitleText = styled.h5`
 `
 
 export const SectionTitleDescription = styled.p<{ maxWidth?: number; color?: string }>`
-  font-size: 28px;
+  font-size: 38px;
   color: ${({ color }) => color || Color.neutral50};
+  font-weight: ${Font.weight.medium};
   margin: 0;
   line-height: 1.2;
   width: 100%;
@@ -482,5 +563,77 @@ export const SectionTitleIcon = styled.div`
     height: 100%;
     max-height: var(--size);
     fill: currentColor;
+  }
+`
+
+export const HeroContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  min-height: 60vh;
+  width: 100%;
+  background: transparent;
+  padding: 0 20px;
+  overflow: hidden;
+`
+
+export const HeroBackground = styled.div<{ imageHeight?: string }>`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+
+  > img,
+  > svg {
+    object-fit: contain;
+    width: 100%;
+    height: 100%;
+  }
+`
+
+export const HeroContent = styled.div`
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  color: ${Color.neutral0};
+  gap: 32px;
+  display: flex;
+  flex-flow: column wrap;
+`
+
+export const HeroTitle = styled.h1<{
+  fontSize?: number
+  fontSizeMobile?: number
+  fontWeight?: number
+  color?: string
+}>`
+  font-size: ${({ fontSize }) => fontSize || 150}px;
+  font-weight: ${({ fontWeight }) => fontWeight || Font.weight.bold};
+  color: ${({ color }) => color || Color.neutral10};
+  margin: 0;
+  line-height: 1.2;
+
+  ${Media.upToMedium()} {
+    font-size: ${({ fontSizeMobile }) => fontSizeMobile || 67}px;
+  }
+`
+
+export const HeroSubtitle = styled.p`
+  font-size: 28px;
+  font-weight: ${Font.weight.bold};
+  background: ${Color.neutral100};
+  color: ${Color.neutral10};
+  padding: 18px 24px;
+  border-radius: 32px;
+  width: max-content;
+  max-width: 70%;
+  margin: 0 auto;
+
+  ${Media.upToMedium()} {
+    font-size: 18px;
   }
 `
