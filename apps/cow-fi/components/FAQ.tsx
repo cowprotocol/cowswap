@@ -18,7 +18,7 @@ const Wrapper = styled.div`
   font-weight: ${Font.weight.bold};
 
   ${Media.upToMedium()} {
-    font-size: 20px;
+    --titleSize: 20px;
   }
 
   a {
@@ -98,8 +98,7 @@ const Wrapper = styled.div`
     padding: 0 33% var(--padding) var(--padding);
 
     ${Media.upToMedium()} {
-      padding: 0 0 62px 0;
-      font-size: 20px;
+      padding: 0 var(--padding) var(--padding) var(--padding);
     }
   }
 
