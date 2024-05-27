@@ -2,6 +2,7 @@ import Head from 'next/head'
 import { GetStaticProps } from 'next'
 import { Font, Color, Media, ProductLogo, ProductVariant } from '@cowprotocol/ui'
 import IMG_COW_HERO_HOME from '@cowprotocol/assets/images/cow-hero-home.svg'
+import IMG_ICON_GOVERNANCE from '@cowprotocol/assets/images/icon-governance.svg'
 
 import styled, { createGlobalStyle } from 'styled-components'
 
@@ -191,7 +192,7 @@ export default function HomeLanding({ siteConfigData }: HomeLandingProps) {
           <ContainerCardSection>
             <SectionTitleWrapper>
               <SectionTitleIcon>
-                <SVG src={IMG_ICON_FAQ} />
+                <SVG src={IMG_ICON_GOVERNANCE} />
               </SectionTitleIcon>
               <SectionTitleText>Governance</SectionTitleText>
               <SectionTitleDescription maxWidth={900}>
@@ -210,11 +211,11 @@ export default function HomeLanding({ siteConfigData }: HomeLandingProps) {
                   </TopicDescription>
                   <TopicButton href="/knowledge-base">Learn more</TopicButton>
                 </TopicCardInner>
-                <TopicImage iconColor="#FF4500" large />
+                <TopicImage iconColor="#FF4500" large orderReverseMobile />
               </TopicCard>
 
               <TopicCard columns={'auto 2fr'} horizontal asProp="div">
-                <TopicImage iconColor="#4B0082" large />
+                <TopicImage iconColor="#4B0082" large orderReverseMobile />
 
                 <TopicCardInner contentAlign={'left'}>
                   <TopicTitle fontSize={67}>Token</TopicTitle>
@@ -236,7 +237,7 @@ export default function HomeLanding({ siteConfigData }: HomeLandingProps) {
                   <TopicButton href="https://discord.com">Learn more</TopicButton>
                 </TopicCardInner>
 
-                <TopicImage iconColor="#1E90FF" large />
+                <TopicImage iconColor="#1E90FF" large orderReverseMobile />
               </TopicCard>
             </TopicList>
           </ContainerCardSection>

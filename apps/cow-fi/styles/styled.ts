@@ -24,7 +24,7 @@ export const ContainerCard = styled.div<{
 
   ${Media.upToMedium()} {
     flex-flow: column wrap;
-    padding: 48px 32px;
+    padding: 48px 21px;
     gap: ${({ gapMobile }) => gapMobile || 100}px;
   }
 `
@@ -65,7 +65,7 @@ export const ContainerCardSectionTopTitle = styled.h3<{
   line-height: 1.2;
 
   ${Media.upToMedium()} {
-    font-size: ${({ fontSizeMobile }) => fontSizeMobile || 28}px;
+    font-size: ${({ fontSizeMobile }) => fontSizeMobile || 38}px;
   }
 `
 
@@ -78,10 +78,10 @@ export const ContainerCardSectionTopDescription = styled.small<{
   font-size: ${({ fontSize }) => fontSize || 28}px;
   color: ${({ color }) => color || 'inherit'};
   text-align: ${({ textAlign }) => textAlign || 'left'};
-  line-height: 1.2;
+  line-height: 1.5;
 
   ${Media.upToMedium()} {
-    font-size: ${({ fontSizeMobile }) => fontSizeMobile || 18}px;
+    font-size: ${({ fontSizeMobile }) => fontSizeMobile || 21}px;
   }
 `
 
@@ -190,6 +190,7 @@ export const TopicCard = styled.a.attrs<TopicCardProps>(({ asProp }) => ({
   border: 4px solid transparent;
   transition: border 0.2s ease-in-out;
   gap: 56px;
+  max-width: 100%;
 
   &:hover {
     border: ${({ asProp }) => (asProp === 'div' ? '4px solid transparent' : `4px solid ${Color.neutral40}`)};
@@ -198,6 +199,8 @@ export const TopicCard = styled.a.attrs<TopicCardProps>(({ asProp }) => ({
   ${Media.upToMedium()} {
     padding: 32px 16px;
     gap: 32px;
+    display: flex;
+    flex-flow: column wrap;
   }
 
   ${({ asProp }) =>
@@ -225,14 +228,26 @@ export const TopicImage = styled.div<{
   margin?: string
   height?: number | string
   width?: number | string
+  heightMobile?: number | string
+  widthMobile?: number | string
+  orderReverseMobile?: boolean
 }>`
   --size: ${({ large }) => (large ? '290px' : '132px')};
   width: ${({ width }) => (typeof width === 'number' ? `${width}px` : width || 'var(--size)')};
+  max-width: 100%;
   height: ${({ height }) => (typeof height === 'number' ? `${height}px` : height || 'var(--size)')};
   border-radius: var(--size);
   background: ${({ bgColor, iconColor }) => bgColor || iconColor || Color.neutral90};
   color: ${({ iconColor }) => iconColor || Color.neutral90};
   margin: ${({ margin }) => margin || '0 0 16px'};
+
+  ${Media.upToMedium()} {
+    width: ${({ widthMobile }) =>
+      typeof widthMobile === 'number' ? `${widthMobile}px` : widthMobile || 'var(--size)'};
+    height: ${({ heightMobile }) =>
+      typeof heightMobile === 'number' ? `${heightMobile}px` : heightMobile || 'var(--size)'};
+    order: ${({ orderReverseMobile }) => (orderReverseMobile ? -1 : 'initial')};
+  }
 
   > span {
     height: inherit;
@@ -245,29 +260,39 @@ export const TopicImage = styled.div<{
   }
 `
 
-export const TopicTitle = styled.h5<{ fontSize?: number; fontWeight?: number }>`
+export const TopicTitle = styled.h5<{ fontSize?: number; fontSizeMobile?: number; fontWeight?: number }>`
   font-size: ${({ fontSize }) => fontSize || 28}px;
   font-weight: ${({ fontWeight }) => fontWeight || Font.weight.medium};
   color: inherit;
   padding: 0;
   margin: 0;
   line-height: 1.2;
+
+  ${Media.upToMedium()} {
+    font-size: ${({ fontSizeMobile }) => fontSizeMobile || 28}px;
+    font-weight: ${({ fontWeight }) => fontWeight || Font.weight.bold};
+  }
 `
 
 export const TopicDescription = styled.p<{
   fontSize?: number
+  fontSizeMobile?: number
   fontWeight?: string
   color?: string
 }>`
   font-size: ${({ fontSize }) => fontSize || 16}px;
-  color: ${({ color }) => color || 'inherit'};
+  color: ${({ color }) => color || Color.neutral50};
   font-weight: ${({ fontWeight }) => fontWeight || Font.weight.medium};
   line-height: 1.4;
   margin: 16px 0;
   text-align: inherit;
+
+  ${Media.upToMedium()} {
+    font-size: ${({ fontSizeMobile }) => fontSizeMobile || 16}px;
+  }
 `
 
-export const TopicButton = styled.a<{ fontSize?: number; bgColor?: string; color?: string }>`
+export const TopicButton = styled.a<{ fontSize?: number; fontSizeMobile?: number; bgColor?: string; color?: string }>`
   display: inline-block;
   padding: 16px 24px;
   font-size: ${({ fontSize }) => fontSize || 21}px;
@@ -280,6 +305,10 @@ export const TopicButton = styled.a<{ fontSize?: number; bgColor?: string; color
   text-align: center;
   width: max-content;
   transition: opacity 0.2s ease-in-out;
+
+  ${Media.upToMedium()} {
+    font-size: ${({ fontSizeMobile }) => fontSizeMobile || 16}px;
+  }
 
   &:hover {
     opacity: 0.8;
@@ -540,6 +569,10 @@ export const SectionTitleText = styled.h5`
   color: inherit;
   line-height: 1.2;
   margin: 0;
+
+  ${Media.upToMedium()} {
+    font-size: 38px;
+  }
 `
 
 export const SectionTitleDescription = styled.p<{ maxWidth?: number; color?: string }>`
@@ -550,6 +583,10 @@ export const SectionTitleDescription = styled.p<{ maxWidth?: number; color?: str
   line-height: 1.2;
   width: 100%;
   max-width: ${({ maxWidth }) => maxWidth || 800}px;
+
+  ${Media.upToMedium()} {
+    font-size: 21px;
+  }
 `
 
 export const SectionTitleIcon = styled.div`
@@ -603,6 +640,7 @@ export const HeroContent = styled.div`
   gap: 32px;
   display: flex;
   flex-flow: column wrap;
+  max-width: 100%;
 `
 
 export const HeroTitle = styled.h1<{
@@ -630,10 +668,11 @@ export const HeroSubtitle = styled.p`
   padding: 18px 24px;
   border-radius: 32px;
   width: max-content;
-  max-width: 70%;
+  max-width: 100%;
   margin: 0 auto;
+  line-height: 1.5;
 
   ${Media.upToMedium()} {
-    font-size: 18px;
+    font-size: 21px;
   }
 `
