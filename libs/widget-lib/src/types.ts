@@ -1,6 +1,6 @@
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CowEventListeners, CowEventPayloadMap, CowEvents } from '@cowprotocol/events'
-export type { SupportedChainId } from '@cowprotocol/cow-sdk'
+export { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 export enum WidgetMethodsEmit {
   ACTIVATE = 'ACTIVATE',

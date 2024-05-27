@@ -1,5 +1,6 @@
 import { Dispatch, SetStateAction } from 'react'
 
+import { CHAIN_INFO } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import FormControl from '@mui/material/FormControl'
@@ -12,11 +13,11 @@ export type NetworkOption = {
   label: string
 }
 
-export const NetworkOptions: NetworkOption[] = [
-  { chainId: SupportedChainId.MAINNET, label: 'Ethereum' },
-  { chainId: SupportedChainId.GNOSIS_CHAIN, label: 'Gnosis Chain' },
-  { chainId: SupportedChainId.SEPOLIA, label: 'Sepolia' },
-]
+export const NetworkOptions: NetworkOption[] = Object.keys(CHAIN_INFO).map<NetworkOption>((key) => {
+  const chainId = +key as SupportedChainId
+  return ({ chainId, label: CHAIN_INFO[chainId].label })
+})
+
 
 const DEFAULT_CHAIN_ID = NetworkOptions[0].chainId
 
@@ -24,7 +25,17 @@ const LABEL = 'Network'
 
 export const getNetworkOption = (chainId: SupportedChainId) => NetworkOptions.find((item) => item.chainId === chainId)
 
-export function NetworkControl({ state }: { state: [NetworkOption, Dispatch<SetStateAction<NetworkOption>>] }) {
+type NetworkControlProps = {
+  standaloneMode: boolean
+  state: [NetworkOption, Dispatch<SetStateAction<NetworkOption>>]
+  availableChains: SupportedChainId[]
+}
+
+export function NetworkControl({
+  state,
+  standaloneMode,
+  availableChains
+}: NetworkControlProps) {
   const [network, setNetwork] = state
 
   const switchNetwork = (chainId: number) => {
@@ -36,8 +47,9 @@ export function NetworkControl({ state }: { state: [NetworkOption, Dispatch<SetS
     }
   }
 
+
   return (
-    <FormControl sx={{ width: '100%' }}>
+    <FormControl sx={{ width: '100%' }} disabled={standaloneMode}>
       <InputLabel>{LABEL}</InputLabel>
       <Select
         id="controllable-states-network"
@@ -45,13 +57,21 @@ export function NetworkControl({ state }: { state: [NetworkOption, Dispatch<SetS
         onChange={(event) => switchNetwork(event.target.value as number)}
         autoWidth
         label={LABEL}
+        disabled={standaloneMode}
         size="small"
       >
-        {NetworkOptions.map((option) => (
-          <MenuItem key={option.chainId} value={option.chainId}>
-            {option.label}
-          </MenuItem>
-        ))}
+        {availableChains.map((chainId) => {
+          const option = NetworkOptions.find(o => o.chainId === chainId)
+
+          if (!option) return null
+
+          return (
+            <MenuItem key={option.chainId} value={option.chainId}>
+              {option.label}
+            </MenuItem>
+          )
+
+        })}
       </Select>
     </FormControl>
   )

@@ -39,6 +39,7 @@ const HelpTooltipContainer = styled.span`
   display: flex;
   align-items: center;
   color: inherit;
+  pointer-events: auto;
 `
 
 export interface HelpTooltipProps extends Omit<HoverTooltipProps, 'QuestionMark' | 'children' | 'content'> {

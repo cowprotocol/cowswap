@@ -9,7 +9,8 @@ import useSWR from 'swr'
 const ENS_REGISTRAR_ADDRESSES: Record<SupportedChainId, string | null> = {
   [SupportedChainId.MAINNET]: '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
   [SupportedChainId.GNOSIS_CHAIN]: null,
-  [SupportedChainId.SEPOLIA]: '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e', // from https://docs.ens.domains/ens-deployments
+  [SupportedChainId.SEPOLIA]: '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
+  [SupportedChainId.ARBITRUM_ONE]: null,
 }
 
 export function useENSRegistrarContract(): EnsRegistrar | undefined {

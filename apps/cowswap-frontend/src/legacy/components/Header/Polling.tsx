@@ -1,10 +1,8 @@
 import { useEffect, useState } from 'react'
 
-import { useBlockNumber, useIsOnline } from '@cowprotocol/common-hooks'
+import { useIsOnline } from '@cowprotocol/common-hooks'
 import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
-import { HoverTooltip, UI } from '@cowprotocol/ui'
-import { RowFixed } from '@cowprotocol/ui'
-import { ExternalLink } from '@cowprotocol/ui'
+import { ExternalLink, HoverTooltip, RowFixed, UI } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Trans } from '@lingui/macro'
@@ -13,6 +11,8 @@ import styled, { keyframes } from 'styled-components/macro'
 
 import useGasPrice from 'legacy/hooks/useGasPrice'
 import { ThemedText } from 'legacy/theme'
+
+import { useBlockNumber } from 'common/hooks/useBlockNumber'
 
 import { ChainConnectivityWarning } from './ChainConnectivityWarning'
 
@@ -33,6 +33,7 @@ export const StyledPolling = styled.div<{ warning: boolean }>`
 export const StyledPollingNumber = styled(ThemedText.Small)<{ breathe: boolean; hovering: boolean }>`
   transition: opacity 0.25s ease;
   opacity: ${({ breathe, hovering }) => (hovering ? 0.7 : breathe ? 1 : 0.5)};
+
   :hover {
     opacity: 1;
   }
@@ -40,6 +41,7 @@ export const StyledPollingNumber = styled(ThemedText.Small)<{ breathe: boolean; 
   a {
     color: unset;
   }
+
   a:hover {
     text-decoration: none;
     color: unset;
@@ -193,7 +195,8 @@ export function Polling() {
             {priceGwei ? (
               <RowFixed style={{ marginRight: '8px' }}>
                 <ThemedText.Main fontSize="11px" mr="8px">
-                  <HoverTooltip wrapInContainer 
+                  <HoverTooltip
+                    wrapInContainer
                     content={
                       <Trans>
                         The current fast gas amount for sending a transaction on L1. Gas fees are paid in
@@ -214,7 +217,8 @@ export function Polling() {
                 chainId && blockNumber ? getExplorerLink(chainId, blockNumber.toString(), ExplorerDataType.BLOCK) : ''
               }
             >
-              <HoverTooltip wrapInContainer 
+              <HoverTooltip
+                wrapInContainer
                 content={<Trans>The most recent block number on this network. Prices update on every block.</Trans>}
               >
                 {blockNumber}&ensp;

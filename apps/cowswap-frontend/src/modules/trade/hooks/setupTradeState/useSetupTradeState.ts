@@ -75,6 +75,7 @@ export function useSetupTradeState(): void {
       tradeNavigate(providerChainId, getDefaultTradeRawState(providerChainId))
     }
     // Triggering only when chainId was changed in the provider
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [providerChainId, prevProviderChainId])
 
   /**
@@ -161,6 +162,7 @@ export function useSetupTradeState(): void {
     console.debug('[TRADE STATE]', 'Applying a new state from URL', tradeStateFromUrl)
 
     // Triggering only on changes from URL
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tradeStateFromUrl])
 
   /**
@@ -190,6 +192,7 @@ export function useSetupTradeState(): void {
 
     console.debug('[TRADE STATE]', 'Set chainId to provider', { provider, urlChainId })
     // Triggering only when chainId in URL is changes, provider is changed or rememberedUrlState is changed
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [provider, urlChainId])
 
   /**
@@ -212,6 +215,7 @@ export function useSetupTradeState(): void {
       providerChainId,
       urlChanges: rememberedUrlStateRef.current,
     })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [onProviderNetworkChanges])
 
   /**

@@ -1,14 +1,15 @@
-import React, { useCallback, useState, useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import { CHAIN_INFO, getChainInfo } from '@cowprotocol/common-const'
-import { ALL_SUPPORTED_CHAIN_IDS, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { useAvailableChains } from '@cowprotocol/common-hooks'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { Link } from 'react-router-dom'
 import styled from 'styled-components/macro'
 
 import { BlockchainNetwork } from './context/OrdersTableContext'
 
-import { Order, getAccountOrders } from '../../../api/operator'
+import { getAccountOrders, Order } from '../../../api/operator'
 import { BlockExplorerLink } from '../../../components/common/BlockExplorerLink'
 import CowLoading from '../../../components/common/CowLoading'
 import { MEDIA } from '../../../const'
@@ -28,6 +29,7 @@ const Wrapper = styled.div`
     align-items: center;
     justify-content: center;
     flex-direction: column;
+
     p {
       margin-top: 0;
     }
@@ -36,9 +38,11 @@ const Wrapper = styled.div`
   ul {
     padding: 0;
     margin: 0;
+
     > li {
       list-style: none;
       padding-bottom: 1.5rem;
+
       :last-child {
         padding-bottom: 0;
       }
@@ -53,6 +57,7 @@ const StyledBlockExplorerLink = styled(BlockExplorerLink)`
     justify-content: center;
   }
 `
+
 interface OrdersInNetwork {
   network: number
 }
@@ -146,24 +151,27 @@ export const useSearchInAnotherNetwork = (
   const [isLoading, setIsLoading] = useState(true)
   const isOrdersLengthZero = !orders || orders.length === 0
   const [error, setError] = useState<string | null>(null)
+  const availableChains = useAvailableChains()
 
   const fetchAnotherNetworks = useCallback(
     async (_networkId: Network) => {
       setIsLoading(true)
       setError(null)
-      const promises = ALL_SUPPORTED_CHAIN_IDS.filter((net) => net !== _networkId).map((network) =>
-        getAccountOrders({ networkId: network, owner: ownerAddress, offset: 0, limit: 1 })
-          .then((response) => {
-            if (!response.orders.length) return
+      const promises = availableChains
+        .filter((net) => net !== _networkId)
+        .map((network) =>
+          getAccountOrders({ networkId: network, owner: ownerAddress, offset: 0, limit: 1 })
+            .then((response) => {
+              if (!response.orders.length) return
 
-            return { network }
-          })
-          .catch((e) => {
-            // Msg for when there are no orders on any network and a request has failed
-            setError('An error has occurred while requesting the data.')
-            console.error(`Failed to fetch order in ${Network[network]}`, e)
-          })
-      )
+              return { network }
+            })
+            .catch((e) => {
+              // Msg for when there are no orders on any network and a request has failed
+              setError('An error has occurred while requesting the data.')
+              console.error(`Failed to fetch order in ${Network[network]}`, e)
+            })
+        )
 
       const networksHaveOrders = (await Promise.allSettled(promises)).filter(
         (e) => e.status === 'fulfilled' && e.value?.network

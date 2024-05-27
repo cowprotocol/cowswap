@@ -14,13 +14,22 @@ module.exports = [
   {
     plugins: {
       '@nx': nxEslintPlugin,
-      'react-hooks': reactHooks,
       'unused-imports': unusedImports,
       import: eslintImport,
     },
   },
 
   // All Project's rules
+  {
+    ...js.configs.recommended,
+    files: ['**/*.ts', '**/*.tsx'],
+    plugins: {
+      'react-hooks': reactHooks,
+    },
+    rules: {
+      ...reactHooks.configs.recommended.rules,
+    },
+  },
   {
     files: ['**/*.{ts,tsx,js,jsx}'],
     rules: {
@@ -130,7 +139,7 @@ module.exports = [
   // CoW Swap's rules
   {
     files: ['apps/cowswap-frontend/**/*.{ts,tsx,js,jsx}'],
-    rules: {      
+    rules: {
       'no-restricted-imports': [
         'error',
         {
@@ -155,7 +164,7 @@ module.exports = [
       ],
     },
   },
-  
+
   ...compat.config({ extends: ['plugin:@nx/typescript'] }).map((config) => ({
     ...config,
     files: ['**/*.ts', '**/*.tsx'],
