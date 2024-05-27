@@ -3,7 +3,6 @@ import { PercentDisplay } from '@cowprotocol/ui'
 
 import { ProgressBar, ProgressBarWrapper } from 'modules/ordersTable/pure/OrdersTableContainer/OrderRow/styled'
 
-import { PercentDisplay } from 'common/pure/PercentDisplay'
 import { getFilledAmounts } from 'utils/orderUtils/getFilledAmounts'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
