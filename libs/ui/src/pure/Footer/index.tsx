@@ -1,6 +1,16 @@
 import { useState, ReactNode, useEffect, useRef } from 'react'
-import { ProductLogo, MenuItem, themeMapper, ProductVariant, Color } from '@cowprotocol/ui'
 
+import IMG_ICON_ARROW_RIGHT_CIRCULAR from '@cowprotocol/assets/images/arrow-right-circular.svg'
+import IMG_ICON_SOCIAL_DISCORD from '@cowprotocol/assets/images/icon-social-discord.svg'
+import IMG_ICON_SOCIAL_FORUM from '@cowprotocol/assets/images/icon-social-forum.svg'
+import IMG_ICON_SOCIAL_GITHUB from '@cowprotocol/assets/images/icon-social-github.svg'
+import IMG_ICON_SOCIAL_SNAPSHOT from '@cowprotocol/assets/images/icon-social-snapshot.svg'
+import IMG_ICON_SOCIAL_X from '@cowprotocol/assets/images/icon-social-x.svg'
+
+import SVG from 'react-inlinesvg'
+import { ThemeProvider } from 'styled-components/macro'
+
+import { FooterAnimation } from './footerAnimation'
 import {
   FooterContainer,
   FooterContent,
@@ -21,18 +31,9 @@ import {
   ToggleFooterButton,
 } from './styled'
 
-import { FooterAnimation } from './footerAnimation'
-
-import { ThemeProvider } from 'styled-components'
-import SVG from 'react-inlinesvg'
-
-import IMG_ICON_SOCIAL_X from '@cowprotocol/assets/images/icon-social-x.svg'
-import IMG_ICON_SOCIAL_DISCORD from '@cowprotocol/assets/images/icon-social-discord.svg'
-import IMG_ICON_SOCIAL_GITHUB from '@cowprotocol/assets/images/icon-social-github.svg'
-import IMG_ICON_SOCIAL_FORUM from '@cowprotocol/assets/images/icon-social-forum.svg'
-import IMG_ICON_SOCIAL_SNAPSHOT from '@cowprotocol/assets/images/icon-social-snapshot.svg'
-
-import IMG_ICON_ARROW_RIGHT_CIRCULAR from '@cowprotocol/assets/images/arrow-right-circular.svg'
+import { Color, themeMapper } from '../../consts'
+import { MenuItem } from '../MenuBar'
+import { ProductLogo, ProductVariant } from '../ProductLogo'
 
 interface FooterProps {
   description?: string

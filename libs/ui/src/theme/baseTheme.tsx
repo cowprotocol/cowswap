@@ -1,15 +1,12 @@
-import Cursor1 from '@cowprotocol/assets/cow-swap/cursor1.gif'
-import Cursor2 from '@cowprotocol/assets/cow-swap/cursor2.gif'
-import Cursor3 from '@cowprotocol/assets/cow-swap/cursor3.gif'
-import Cursor4 from '@cowprotocol/assets/cow-swap/cursor4.gif'
-import { UI, ButtonSize } from '@cowprotocol/ui'
 import { getContrastText } from '@cowprotocol/ui-utils'
 
 import { transparentize, lighten, darken } from 'color2k'
 import { createGlobalStyle, css } from 'styled-components/macro'
 
-import { colorsUniswap } from 'legacy/theme/colorsUniswap'
-import { Colors } from 'legacy/theme/styled'
+import { colorsUniswap } from './colorsUniswap'
+import { Colors } from './typings'
+
+import { ButtonSize, UI } from '../enum'
 
 // TODO: This shouldn't be in the base theme
 // Modal override items
@@ -198,24 +195,6 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
     util: {
       invertImageForDarkMode: darkMode ? 'filter: invert(1) grayscale(1);' : null,
     },
-    cursor: css`
-      cursor: url(${Cursor1}), auto;
-      animation: cursor 1s infinite;
-      @keyframes cursor {
-        0% {
-          cursor: url(${Cursor1}), auto;
-        }
-        25% {
-          cursor: url(${Cursor2}), auto;
-        }
-        50% {
-          cursor: url(${Cursor3}), auto;
-        }
-        75% {
-          cursor: url(${Cursor4}), auto;
-        }
-      }
-    `,
     appBody: {
       maxWidth: {
         swap: '470px',
@@ -242,24 +221,6 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
         box-shadow: inset 1px 0px 1px -1px hsla(0, 0%, 100%, 0.4);
       `,
     },
-    dancingCow: css`
-      background: url(${Cursor1}), no-repeat;
-      animation: dancingCow 1s infinite;
-      @keyframes dancingCow {
-        0% {
-          background: url(${Cursor1}), no-repeat;
-        }
-        25% {
-          background: url(${Cursor2}), no-repeat;
-        }
-        50% {
-          background: url(${Cursor3}), no-repeat;
-        }
-        75% {
-          background: url(${Cursor4}), no-repeat;
-        }
-      }
-    `,
     card: {
       background: css`
         background: linear-gradient(145deg, ${colorsTheme.bg3}, ${colorsTheme.bg1});
@@ -605,13 +566,12 @@ export const ThemedGlobalStyle = createGlobalStyle`
     ${({ theme }) => theme.mediaWidth.upToSmall`
       align-items: flex-start;
     `}
+    a {
+      text-decoration: none;
 
-  a {
-    text-decoration: none;
-
-    :hover {
-      text-decoration: underline;
+      :hover {
+        text-decoration: underline;
+      }
     }
   }
-
 `

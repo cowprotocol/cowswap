@@ -13,6 +13,7 @@
       "@cowprotocol/widget-lib": ["../../libs/widget-lib/src/index.ts"],
       "@cowprotocol/types": ["../../libs/types/src/index.ts"],
       "@cowprotocol/ui": ["../../libs/ui/src/index.ts"],
+      "@cowprotocol/ui-utils": ["../../libs/ui-utils/src/index.ts"],
       "@cowprotocol/assets/*": ["../../libs/assets/src/*"],
       "@cowprotocol/core": ["../../libs/core/src/index.ts"],
       "@cowprotocol/analytics": ["../../libs/analytics/src/index.ts"],

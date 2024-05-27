@@ -1,4 +1,3 @@
-import { useTheme } from '@cowprotocol/common-hooks'
 import { ExternalLink } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
@@ -10,6 +9,7 @@ import { ThemedText } from 'legacy/theme'
 
 import { CopyHelper } from 'modules/account/containers/CopyHelper'
 
+import { useTheme } from 'common/hooks/useTheme'
 import { Modal } from 'common/pure/Modal'
 
 const ContentWrapper = styled(Column)`

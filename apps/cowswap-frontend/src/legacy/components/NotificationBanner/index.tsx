@@ -1,11 +1,9 @@
 import { useEffect, useState } from 'react'
 
-import { UI } from '@cowprotocol/ui'
+import { MEDIA_WIDTHS, UI } from '@cowprotocol/ui'
 
 import { X } from 'react-feather'
 import styled from 'styled-components/macro'
-
-import { MEDIA_WIDTHS } from 'legacy/theme'
 
 import { useNotificationState } from 'common/hooks/useNotificationState'
 

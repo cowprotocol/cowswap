@@ -1,11 +1,10 @@
 import { useAtomValue } from 'jotai'
 import { useLayoutEffect, useRef } from 'react'
 
+import { MEDIA_WIDTHS } from '@cowprotocol/ui'
 import { WidgetMethodsEmit, postMessageToWindow } from '@cowprotocol/widget-lib'
 
 import { openModalState } from 'common/state/openModalState'
-
-import { MEDIA_WIDTHS } from '../../../legacy/theme'
 
 export function IframeResizer() {
   const isModalOpen = useAtomValue(openModalState)

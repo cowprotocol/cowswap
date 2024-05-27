@@ -1,9 +1,12 @@
 import { useEffect, useRef } from 'react'
-import styled, { keyframes, ThemeProvider, DefaultTheme } from 'styled-components/macro'
-import { CowSwapTheme } from '@cowprotocol/widget-lib'
-import { themeMapper } from '@cowprotocol/ui'
-import SVG from 'react-inlinesvg'
+
 import IMG_FLYING_WINK_COW_DARK from '@cowprotocol/assets/images/flying-wink-cow-dark-mode.svg'
+import { CowSwapTheme } from '@cowprotocol/widget-lib'
+
+import SVG from 'react-inlinesvg'
+import styled, { keyframes, ThemeProvider } from 'styled-components/macro'
+
+import { themeMapper } from '../../consts'
 
 const scrollHorizontal = keyframes`
   0% {

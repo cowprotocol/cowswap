@@ -24,7 +24,7 @@ import {
   SectionTitleIcon,
   SectionTitleText,
   SectionTitleDescription,
-} from './styled'
+} from '@/styles/styled'
 
 import SVG from 'react-inlinesvg'
 import IMG_ICON_FAQ from '@cowprotocol/assets/images/icon-faq.svg'

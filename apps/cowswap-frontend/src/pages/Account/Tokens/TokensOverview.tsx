@@ -1,8 +1,8 @@
-import { useEffect, useMemo, useState, useCallback, useRef, ChangeEventHandler, RefObject } from 'react'
+import { useEffect, useMemo, useState, useCallback, useRef, ChangeEventHandler } from 'react'
 
 import { useTokensBalances } from '@cowprotocol/balances-and-allowances'
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { useDebounce, useOnClickOutside, usePrevious, useTheme } from '@cowprotocol/common-hooks'
+import { useDebounce, useOnClickOutside, usePrevious } from '@cowprotocol/common-hooks'
 import { isAddress, isTruthy } from '@cowprotocol/common-utils'
 import { useTokensByAddressMap, useFavouriteTokens, useResetFavouriteTokens } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -17,6 +17,7 @@ import { CloseIcon } from 'legacy/theme'
 import { PageTitle } from 'modules/application/containers/PageTitle'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
+import { useTheme } from 'common/hooks/useTheme'
 
 import {
   Menu,

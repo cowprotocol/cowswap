@@ -6,6 +6,7 @@ import React, { StrictMode, useCallback, useContext, ReactNode, useEffect } from
 import IMAGE_MOON from '@cowprotocol/assets/cow-swap/moon.svg'
 import IMAGE_SUN from '@cowprotocol/assets/cow-swap/sun.svg'
 import { BlockNumberProvider } from '@cowprotocol/common-hooks'
+import { ThemedGlobalStyle } from '@cowprotocol/ui'
 import { WalletUpdater, injectedConnection } from '@cowprotocol/wallet'
 import { Web3ReactProvider } from '@web3-react/core'
 
@@ -19,7 +20,7 @@ import { ThemeContext } from 'styled-components/macro'
 
 import { cowSwapStore } from 'legacy/state'
 import { useDarkModeManager } from 'legacy/state/user/hooks'
-import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from 'legacy/theme'
+import ThemeProvider, { FixedGlobalStyle } from 'legacy/theme'
 
 const DarkModeToggleButton = styled.button`
   display: flex;
@@ -37,7 +38,6 @@ const DarkModeToggle = ({ children }: { children?: ReactNode }) => {
   const [darkMode, toggleDarkModeAux] = useDarkModeManager()
   const toggleDarkMode = useCallback(() => {
     toggleDarkModeAux()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [toggleDarkModeAux, darkMode])
   const label = (darkMode ? 'Light' : 'Dark') + ' Mode'
   const description = `${darkMode ? 'Sun/light' : 'Moon/dark'} mode icon`

@@ -1,22 +1,8 @@
 import { CowSwapTheme } from '@cowprotocol/widget-lib'
-import { createGlobalStyle, css, DefaultTheme } from 'styled-components'
-// import { ButtonSize } from './enum'
 
-// Fonts
-import FONT_STUDIO_FEIXEN_REGULAR from '@cowprotocol/assets/fonts/StudioFeixenSans-Regular.woff2'
-import FONT_STUDIO_FEIXEN_REGULAR_ITALIC from '@cowprotocol/assets/fonts/StudioFeixenSans-RegularItalic.woff2'
-import FONT_STUDIO_FEIXEN_BOLD from '@cowprotocol/assets/fonts/StudioFeixenSans-Bold.woff2'
-import FONT_STUDIO_FEIXEN_BOLD_ITALIC from '@cowprotocol/assets/fonts/StudioFeixenSans-BoldItalic.woff2'
-import FONT_STUDIO_FEIXEN_BOOK from '@cowprotocol/assets/fonts/StudioFeixenSans-Book.woff2'
-import FONT_STUDIO_FEIXEN_BOOK_ITALIC from '@cowprotocol/assets/fonts/StudioFeixenSans-BookItalic.woff2'
-import FONT_STUDIO_FEIXEN_LIGHT from '@cowprotocol/assets/fonts/StudioFeixenSans-Light.woff2'
-import FONT_STUDIO_FEIXEN_LIGHT_ITALIC from '@cowprotocol/assets/fonts/StudioFeixenSans-LightItalic.woff2'
-import FONT_STUDIO_FEIXEN_MEDIUM from '@cowprotocol/assets/fonts/StudioFeixenSans-Medium.woff2'
-import FONT_STUDIO_FEIXEN_MEDIUM_ITALIC from '@cowprotocol/assets/fonts/StudioFeixenSans-MediumItalic.woff2'
-import FONT_STUDIO_FEIXEN_SEMIBOLD from '@cowprotocol/assets/fonts/StudioFeixenSans-Semibold.woff2'
-import FONT_STUDIO_FEIXEN_SEMIBOLD_ITALIC from '@cowprotocol/assets/fonts/StudioFeixenSans-SemiboldItalic.woff2'
-import FONT_STUDIO_FEIXEN_ULTRALIGHT from '@cowprotocol/assets/fonts/StudioFeixenSans-Ultralight.woff2'
-import FONT_STUDIO_FEIXEN_ULTRALIGHT_ITALIC from '@cowprotocol/assets/fonts/StudioFeixenSans-UltralightItalic.woff2'
+import { createGlobalStyle, css, DefaultTheme, DefaultThemeUniswap } from 'styled-components/macro'
+
+import { colors, themeVariables as baseThemeVariables } from './theme'
 
 export const AMOUNTS_FORMATTING_FEATURE_FLAG = 'highlight-amounts-formatting'
 export const SAFE_COW_APP_LINK = 'https://app.safe.global/share/safe-app?appUrl=https%3A%2F%2Fswap.cow.fi&chain=eth'
@@ -29,9 +15,55 @@ declare module 'styled-components' {
   }
 }
 
-export const themeMapper = (theme: CowSwapTheme): DefaultTheme => ({
-  mode: theme,
-})
+export const themeMapper = (theme: CowSwapTheme, isInjectedWidgetMode = false): DefaultTheme => {
+  const darkmode = theme === 'dark'
+  const colorsTheme = colors(darkmode)
+  return {
+    ...getTheme(darkmode),
+    ...colorsTheme,
+    isInjectedWidgetMode,
+
+    // Override Theme
+    ...baseThemeVariables(darkmode, colorsTheme),
+    mediaWidth: mediaWidthTemplates,
+
+    mode: darkmode ? 'dark' : 'light',
+  }
+}
+
+interface ExtendedDefaultThemeUniswap extends DefaultThemeUniswap {
+  mode: 'light' | 'dark'
+}
+
+export function getTheme(darkMode: boolean): ExtendedDefaultThemeUniswap {
+  return {
+    ...colors(darkMode),
+
+    grids: {
+      sm: 8,
+      md: 12,
+      lg: 24,
+    },
+
+    //shadows
+    shadow1: darkMode ? '#000' : '#2F80ED',
+
+    // media queries
+    mediaWidth: mediaWidthTemplates,
+
+    // css snippets
+    flexColumnNoWrap: css`
+      display: flex;
+      flex-flow: column nowrap;
+    `,
+    flexRowNoWrap: css`
+      display: flex;
+      flex-flow: row nowrap;
+    `,
+
+    mode: darkMode ? 'dark' : 'light',
+  }
+}
 
 export const MEDIA_WIDTHS = {
   upToTiny: 320,
@@ -42,6 +74,18 @@ export const MEDIA_WIDTHS = {
   upToLargeAlt: 1390,
   upToExtraLarge: 2560,
 }
+
+const mediaWidthTemplates: { [width in keyof typeof MEDIA_WIDTHS]: typeof css } = Object.keys(MEDIA_WIDTHS).reduce(
+  (accumulator, size) => {
+    ;(accumulator as any)[size] = (a: any, b: any, c: any) => css`
+      @media (max-width: ${(MEDIA_WIDTHS as any)[size]}px) {
+        ${css(a, b, c)}
+      }
+    `
+    return accumulator
+  },
+  {}
+) as any
 
 const getMediaQuery = (query: string, useMediaPrefix = true) => {
   return useMediaPrefix ? `@media ${query}` : query
@@ -97,115 +141,141 @@ export const Color = {
   neutral0: '#000000',
 }
 
-export const GlobalCoWDAOStyles = createGlobalStyle(
-  ({ theme = 'dark' }: { theme: CowSwapTheme }) => css`
-    @font-face {
-      font-family: 'studiofeixen';
-      src: url(${FONT_STUDIO_FEIXEN_ULTRALIGHT}) format('woff2');
-      font-weight: ${Font.weight.ultralight};
-      font-style: normal;
+type GlobalFontConfig =
+  | string
+  | {
+      fontFamily: string
+      fontWeight?: number
+      fontStyle?: string
     }
 
-    @font-face {
-      font-family: 'studiofeixen';
-      src: url(${FONT_STUDIO_FEIXEN_ULTRALIGHT_ITALIC}) format('woff2');
-      font-weight: ${Font.weight.ultralight};
-      font-style: italic;
-    }
+type GlobalCowDAOFonts = {
+  FONT_STUDIO_FEIXEN_BOLD: GlobalFontConfig
+  FONT_STUDIO_FEIXEN_BOLD_ITALIC: GlobalFontConfig
+  FONT_STUDIO_FEIXEN_BOOK: GlobalFontConfig
+  FONT_STUDIO_FEIXEN_BOOK_ITALIC: GlobalFontConfig
+  FONT_STUDIO_FEIXEN_LIGHT: GlobalFontConfig
+  FONT_STUDIO_FEIXEN_LIGHT_ITALIC: GlobalFontConfig
+  FONT_STUDIO_FEIXEN_MEDIUM: GlobalFontConfig
+  FONT_STUDIO_FEIXEN_MEDIUM_ITALIC: GlobalFontConfig
+  FONT_STUDIO_FEIXEN_REGULAR: GlobalFontConfig
+  FONT_STUDIO_FEIXEN_REGULAR_ITALIC: GlobalFontConfig
+  FONT_STUDIO_FEIXEN_SEMIBOLD: GlobalFontConfig
+  FONT_STUDIO_FEIXEN_SEMIBOLD_ITALIC: GlobalFontConfig
+  FONT_STUDIO_FEIXEN_ULTRALIGHT: GlobalFontConfig
+  FONT_STUDIO_FEIXEN_ULTRALIGHT_ITALIC: GlobalFontConfig
+}
 
-    @font-face {
-      font-family: 'studiofeixen';
-      src: url(${FONT_STUDIO_FEIXEN_LIGHT}) format('woff2');
-      font-weight: ${Font.weight.light};
-      font-style: normal;
-    }
+export const GlobalCoWDAOStyles = (fonts: GlobalCowDAOFonts) =>
+  createGlobalStyle(
+    ({ theme = 'dark' }: { theme: CowSwapTheme }) => css`
+      @font-face {
+        font-family: 'studiofeixen';
+        src: url(${fonts.FONT_STUDIO_FEIXEN_ULTRALIGHT}) format('woff2');
+        font-weight: ${Font.weight.ultralight};
+        font-style: normal;
+      }
 
-    @font-face {
-      font-family: 'studiofeixen';
-      src: url(${FONT_STUDIO_FEIXEN_LIGHT_ITALIC}) format('woff2');
-      font-weight: ${Font.weight.light};
-      font-style: italic;
-    }
+      @font-face {
+        font-family: 'studiofeixen';
+        src: url(${fonts.FONT_STUDIO_FEIXEN_ULTRALIGHT_ITALIC}) format('woff2');
+        font-weight: ${Font.weight.ultralight};
+        font-style: italic;
+      }
 
-    @font-face {
-      font-family: 'studiofeixen';
-      src: url(${FONT_STUDIO_FEIXEN_REGULAR}) format('woff2');
-      font-weight: ${Font.weight.regular};
-      font-style: normal;
-    }
+      @font-face {
+        font-family: 'studiofeixen';
+        src: url(${fonts.FONT_STUDIO_FEIXEN_LIGHT}) format('woff2');
+        font-weight: ${Font.weight.light};
+        font-style: normal;
+      }
 
-    @font-face {
-      font-family: 'studiofeixen';
-      src: url(${FONT_STUDIO_FEIXEN_REGULAR_ITALIC}) format('woff2');
-      font-weight: ${Font.weight.regular};
-      font-style: italic;
-    }
+      @font-face {
+        font-family: 'studiofeixen';
+        src: url(${fonts.FONT_STUDIO_FEIXEN_LIGHT_ITALIC}) format('woff2');
+        font-weight: ${Font.weight.light};
+        font-style: italic;
+      }
 
-    @font-face {
-      font-family: 'studiofeixen';
-      src: url(${FONT_STUDIO_FEIXEN_BOOK}) format('woff2');
-      font-weight: ${Font.weight.book};
-      font-style: normal;
-    }
+      @font-face {
+        font-family: 'studiofeixen';
+        src: url(${fonts.FONT_STUDIO_FEIXEN_REGULAR}) format('woff2');
+        font-weight: ${Font.weight.regular};
+        font-style: normal;
+      }
 
-    @font-face {
-      font-family: 'studiofeixen';
-      src: url(${FONT_STUDIO_FEIXEN_BOOK_ITALIC}) format('woff2');
-      font-weight: ${Font.weight.book};
-      font-style: italic;
-    }
+      @font-face {
+        font-family: 'studiofeixen';
+        src: url(${fonts.FONT_STUDIO_FEIXEN_REGULAR_ITALIC}) format('woff2');
+        font-weight: ${Font.weight.regular};
+        font-style: italic;
+      }
 
-    @font-face {
-      font-family: 'studiofeixen';
-      src: url(${FONT_STUDIO_FEIXEN_MEDIUM}) format('woff2');
-      font-weight: ${Font.weight.medium};
-      font-style: normal;
-    }
+      @font-face {
+        font-family: 'studiofeixen';
+        src: url(${fonts.FONT_STUDIO_FEIXEN_BOOK}) format('woff2');
+        font-weight: ${Font.weight.book};
+        font-style: normal;
+      }
 
-    @font-face {
-      font-family: 'studiofeixen';
-      src: url(${FONT_STUDIO_FEIXEN_MEDIUM_ITALIC}) format('woff2');
-      font-weight: ${Font.weight.medium};
-      font-style: italic;
-    }
+      @font-face {
+        font-family: 'studiofeixen';
+        src: url(${fonts.FONT_STUDIO_FEIXEN_BOOK_ITALIC}) format('woff2');
+        font-weight: ${Font.weight.book};
+        font-style: italic;
+      }
 
-    @font-face {
-      font-family: 'studiofeixen';
-      src: url(${FONT_STUDIO_FEIXEN_SEMIBOLD}) format('woff2');
-      font-weight: ${Font.weight.semibold};
-      font-style: normal;
-    }
+      @font-face {
+        font-family: 'studiofeixen';
+        src: url(${fonts.FONT_STUDIO_FEIXEN_MEDIUM}) format('woff2');
+        font-weight: ${Font.weight.medium};
+        font-style: normal;
+      }
 
-    @font-face {
-      font-family: 'studiofeixen';
-      src: url(${FONT_STUDIO_FEIXEN_SEMIBOLD_ITALIC}) format('woff2');
-      font-weight: ${Font.weight.semibold};
-      font-style: italic;
-    }
+      @font-face {
+        font-family: 'studiofeixen';
+        src: url(${fonts.FONT_STUDIO_FEIXEN_MEDIUM_ITALIC}) format('woff2');
+        font-weight: ${Font.weight.medium};
+        font-style: italic;
+      }
 
-    @font-face {
-      font-family: 'studiofeixen';
-      src: url(${FONT_STUDIO_FEIXEN_BOLD}) format('woff2');
-      font-weight: ${Font.weight.bold};
-      font-style: normal;
-    }
+      @font-face {
+        font-family: 'studiofeixen';
+        src: url(${fonts.FONT_STUDIO_FEIXEN_SEMIBOLD}) format('woff2');
+        font-weight: ${Font.weight.semibold};
+        font-style: normal;
+      }
 
-    @font-face {
-      font-family: 'studiofeixen';
-      src: url(${FONT_STUDIO_FEIXEN_BOLD_ITALIC}) format('woff2');
-      font-weight: ${Font.weight.bold};
-      font-style: italic;
-    }
+      @font-face {
+        font-family: 'studiofeixen';
+        src: url(${fonts.FONT_STUDIO_FEIXEN_SEMIBOLD_ITALIC}) format('woff2');
+        font-weight: ${Font.weight.semibold};
+        font-style: italic;
+      }
 
-    body {
-      font-family: ${Font.family};
-      margin: 0;
-      padding: 0;
-      background-color: ${Color.neutral98};
-      color: ${Color.neutral0};
-    }
-  `
-)
+      @font-face {
+        font-family: 'studiofeixen';
+        src: url(${fonts.FONT_STUDIO_FEIXEN_BOLD}) format('woff2');
+        font-weight: ${Font.weight.bold};
+        font-style: normal;
+      }
+
+      @font-face {
+        font-family: 'studiofeixen';
+        src: url(${fonts.FONT_STUDIO_FEIXEN_BOLD_ITALIC}) format('woff2');
+        font-weight: ${Font.weight.bold};
+        font-style: italic;
+      }
+
+      body {
+        font-family: ${Font.family};
+        margin: 0;
+        padding: 0;
+        background-color: ${Color.neutral98};
+        color: ${Color.neutral0};
+      }
+    `
+  )
 
 // export const THEME = (theme: CowSwapTheme) => {
 //   return {

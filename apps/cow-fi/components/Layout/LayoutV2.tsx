@@ -2,6 +2,7 @@ import { MenuBar, MenuItem, Footer, ProductVariant, GlobalCoWDAOStyles } from '@
 import styled from 'styled-components/macro'
 
 import IMG_ICON_BRANDED_DOT_RED from '@cowprotocol/assets/images/icon-branded-dot-red.svg'
+import { CoWDAOFonts } from '@/styles/CoWDAOFonts'
 
 const THEME_MODE = 'dark'
 const PRODUCT_VARIANT = ProductVariant.CowProtocol
@@ -110,9 +111,11 @@ interface LayoutProps {
 }
 
 export default function LayoutV2({ children }: LayoutProps) {
+  const GlobalStyls = GlobalCoWDAOStyles(CoWDAOFonts)
+
   return (
     <>
-      <GlobalCoWDAOStyles />
+      <GlobalStyls />
       <MenuBar navItems={NAV_ITEMS} theme={THEME_MODE} productVariant={PRODUCT_VARIANT} />
       <Wrapper>{children}</Wrapper>
       <Footer

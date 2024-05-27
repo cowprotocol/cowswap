@@ -3,13 +3,11 @@ import { useSetAtom } from 'jotai'
 import { useCallback, useMemo, useRef, useState } from 'react'
 
 import { openFortuneCookieAnalytics, shareFortuneTwitterAnalytics } from '@cowprotocol/analytics'
-
-import IMAGE_ICON_FORTUNE_COOKIE from '@cowprotocol/assets/images/icon-fortune-cookie.svg'
-
 import twitterImage from '@cowprotocol/assets/cow-swap/twitter.svg'
+import IMAGE_ICON_FORTUNE_COOKIE from '@cowprotocol/assets/images/icon-fortune-cookie.svg'
 import { addBodyClass, removeBodyClass } from '@cowprotocol/common-utils'
 import { ExternalLink } from '@cowprotocol/ui'
-import { UI, Media, Color } from '@cowprotocol/ui'
+import { UI, Color } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import ReactDOM from 'react-dom'

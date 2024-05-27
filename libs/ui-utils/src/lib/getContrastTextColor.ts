@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 import { hasBadContrast } from 'color2k'
 
 const contrastStandard = 'aa' // Options: 'decorative', 'readable', 'aa', 'aaa'

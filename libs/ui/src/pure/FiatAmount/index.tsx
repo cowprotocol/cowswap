@@ -1,7 +1,7 @@
 import { LONG_PRECISION } from '@cowprotocol/common-const'
 import { FeatureFlag, formatFiatAmount, FractionUtils } from '@cowprotocol/common-utils'
 
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 
 import { AMOUNTS_FORMATTING_FEATURE_FLAG } from '../../consts'
 import { FractionLike, Nullish } from '../../types'

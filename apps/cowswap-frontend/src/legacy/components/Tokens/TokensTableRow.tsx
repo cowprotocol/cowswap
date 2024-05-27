@@ -2,7 +2,6 @@ import { useCallback, useMemo } from 'react'
 
 import EtherscanImage from '@cowprotocol/assets/cow-swap/etherscan-icon.svg'
 import { GP_VAULT_RELAYER, TokenWithLogo } from '@cowprotocol/common-const'
-import { useTheme } from '@cowprotocol/common-hooks'
 import { getBlockExplorerUrl, getIsNativeToken } from '@cowprotocol/common-utils'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { useAreThereTokensWithSameSymbol } from '@cowprotocol/tokens'
@@ -21,6 +20,7 @@ import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRou
 import { Routes } from 'common/constants/routes'
 import { useApproveCallback } from 'common/hooks/useApproveCallback'
 import { ApprovalState, useApproveState } from 'common/hooks/useApproveState'
+import { useTheme } from 'common/hooks/useTheme'
 import { CardsSpinner, ExtLink } from 'pages/Account/styled'
 
 import BalanceCell from './BalanceCell'

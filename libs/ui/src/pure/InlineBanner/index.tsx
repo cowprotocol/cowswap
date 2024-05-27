@@ -2,7 +2,7 @@ import React, { ReactNode } from 'react'
 
 import { X } from 'react-feather'
 import SVG from 'react-inlinesvg'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 
 import { BannerOrientation } from './banners'
 
@@ -137,7 +137,7 @@ const Wrapper = styled.span<{
   }
 `
 
-const CloseIcon = styled(X)`
+const CloseIcon = styled(X as any)`
   --size: 16px;
   cursor: pointer;
   position: absolute;

@@ -2,6 +2,7 @@ import React, { ErrorInfo, PropsWithChildren } from 'react'
 
 import { sendError } from '@cowprotocol/analytics'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
+import { MEDIA_WIDTHS } from '@cowprotocol/ui'
 
 import * as Sentry from '@sentry/react'
 import styled from 'styled-components/macro'
@@ -10,7 +11,6 @@ import { ChunkLoadError } from 'legacy/components/ErrorBoundary/ChunkLoadError'
 import { ErrorWithStackTrace } from 'legacy/components/ErrorBoundary/ErrorWithStackTrace'
 import Footer from 'legacy/components/Footer'
 import { HeaderRow, LogoImage, UniIcon } from 'legacy/components/Header/styled'
-import { MEDIA_WIDTHS } from 'legacy/theme'
 
 import { Page } from 'modules/application/pure/Page'
 

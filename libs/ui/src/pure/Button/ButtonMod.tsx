@@ -1,7 +1,7 @@
 import { darken } from 'color2k'
 import { ChevronDown } from 'react-feather'
 import { Button as RebassButton, ButtonProps as ButtonPropsOriginal } from 'rebass/styled-components'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 
 import { ButtonSize } from '../../enum'
 import { RowBetween } from '../Row'

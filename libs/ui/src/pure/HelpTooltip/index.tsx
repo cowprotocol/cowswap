@@ -3,7 +3,7 @@ import { ReactNode } from 'react'
 import QuestionImage from '@cowprotocol/assets/svg/question.svg'
 
 import SVG from 'react-inlinesvg'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 
 import { UI } from '../../enum'
 import { HoverTooltip, HoverTooltipProps, renderTooltip } from '../Tooltip'

@@ -2,10 +2,13 @@ import { UiOrderType } from '@cowprotocol/types'
 
 import ms from 'ms.macro'
 import ReactAppzi from 'react-appzi'
-
-import { isProdLike } from './environments'
-import { isInjectedWidget } from './isInjectedWidget'
-import { isImTokenBrowser, majorBrowserVersion, userAgent } from './userAgent'
+import {
+  isImTokenBrowser,
+  isInjectedWidget,
+  isProdLike,
+  majorBrowserVersion,
+  userAgent,
+} from '@cowprotocol/common-utils'
 
 // Metamask IOS app uses a version from July 2019 which causes problems in appZi
 const OLD_CHROME_FROM_METAMASK_IOS_APP = 76
@@ -21,9 +24,8 @@ const TEST_FEEDBACK_KEY = '6da8bf10-4904-4952-9a34-12db70e9194e'
 const PROD_NPS_KEY = '55872789-593b-4c6c-9e49-9b5c7693e90a'
 const TEST_NPS_KEY = '5b794318-f81c-4dac-83ba-15a6e4c9353d'
 
-export const FEEDBACK_KEY =
-  process.env.REACT_APP_APPZI_FEEDBACK_KEY || isProdLike ? PROD_FEEDBACK_KEY : TEST_FEEDBACK_KEY
-export const NPS_KEY = process.env.REACT_APP_APPZI_NPS_KEY || isProdLike ? PROD_NPS_KEY : TEST_NPS_KEY
+const FEEDBACK_KEY = process.env.REACT_APP_APPZI_FEEDBACK_KEY || isProdLike ? PROD_FEEDBACK_KEY : TEST_FEEDBACK_KEY
+const NPS_KEY = process.env.REACT_APP_APPZI_NPS_KEY || isProdLike ? PROD_NPS_KEY : TEST_NPS_KEY
 
 const APPZI_TOKEN = process.env.REACT_APP_APPZI_TOKEN || '5ju0G'
 

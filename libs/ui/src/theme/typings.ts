@@ -1,127 +1,127 @@
-import { ButtonSize } from '@cowprotocol/ui'
+import { ButtonSize } from '../enum'
 
-export type Color = string
+type ColorValue = string
 
 interface ColorsUniswap {
   darkMode: boolean
 
   // V3 =======================
-  primary: Color
-  secondary: Color
-  background: Color
-  paper: Color
+  primary: ColorValue
+  secondary: ColorValue
+  background: ColorValue
+  paper: ColorValue
 
-  text: Color
-  secondaryText: Color
-  disabledText: Color
+  text: ColorValue
+  secondaryText: ColorValue
+  disabledText: ColorValue
 
-  error: Color
-  warning: Color
-  info: Color
-  success: Color
+  error: ColorValue
+  warning: ColorValue
+  info: ColorValue
+  success: ColorValue
   // ===========================
 
   // base
-  white: Color
-  black: Color
+  white: ColorValue
+  black: ColorValue
 
   // text
-  text1: Color
-  text2: Color
-  text3: Color
-  text4: Color
-  text5: Color
-  text6: Color
+  text1: ColorValue
+  text2: ColorValue
+  text3: ColorValue
+  text4: ColorValue
+  text5: ColorValue
+  text6: ColorValue
 
   // backgrounds / greys
-  bg0: Color
-  bg1: Color
-  bg2: Color
-  bg3: Color
-  bg4: Color
-  bg5: Color
-  bg6: Color
-  bg7: Color
+  bg0: ColorValue
+  bg1: ColorValue
+  bg2: ColorValue
+  bg3: ColorValue
+  bg4: ColorValue
+  bg5: ColorValue
+  bg6: ColorValue
+  bg7: ColorValue
 
-  modalBG: Color
-  advancedBG: Color
+  modalBG: ColorValue
+  advancedBG: ColorValue
 
-  primary1: Color
-  primary2: Color
-  primary3: Color
-  primary4: Color
-  primary5: Color
+  primary1: ColorValue
+  primary2: ColorValue
+  primary3: ColorValue
+  primary4: ColorValue
+  primary5: ColorValue
 
   // pinks
-  secondary1: Color
-  secondary2: Color
-  secondary3: Color
+  secondary1: ColorValue
+  secondary2: ColorValue
+  secondary3: ColorValue
 
   // other
-  red1: Color
-  red2: Color
-  red3: Color
-  green1: Color
-  yellow1: Color
-  yellow2: Color
-  yellow3: Color
-  blue1: Color
-  blue2: Color
-  blue4: Color
+  red1: ColorValue
+  red2: ColorValue
+  red3: ColorValue
+  green1: ColorValue
+  yellow1: ColorValue
+  yellow2: ColorValue
+  yellow3: ColorValue
+  blue1: ColorValue
+  blue2: ColorValue
+  blue4: ColorValue
 }
 
 // Override colors
 export interface Colors extends ColorsUniswap {
-  bg8: Color
-  purple: Color
-  yellow: Color
-  redShade: Color
-  textLink: Color
-  greenShade: Color
-  blueShade: Color
-  blueShade2: Color
-  blueShade3: Color
-  blue2: Color
-  orange: Color
-  success: Color
-  danger: Color
-  pending: Color
-  attention: Color
-  border: Color
-  border2: Color
-  disabled: Color
-  scrollbarBg: Color
-  scrollbarThumb: Color
-  tableHeadBG: Color
-  tableRowBG: Color
-  info: Color
-  information: Color
-  warning: Color
-  alert: Color
-  alert2: Color
-  error: Color
-  infoText: Color
-  warningText: Color
-  errorText: Color
-  cardBackground: Color
-  cardBorder: Color
-  cardShadow1: Color
-  cardShadow2: Color
-  blueDark1: Color
-  blueDark2: Color
-  blueLight1: Color
-  grey1: Color
-  red1: Color
-  paperCustom: Color
-  paperDarkerCustom: Color
-  paperDarkestCustom: Color
-  paperLighterCustom: Color
+  bg8: ColorValue
+  purple: ColorValue
+  yellow: ColorValue
+  redShade: ColorValue
+  textLink: ColorValue
+  greenShade: ColorValue
+  blueShade: ColorValue
+  blueShade2: ColorValue
+  blueShade3: ColorValue
+  blue2: ColorValue
+  orange: ColorValue
+  success: ColorValue
+  danger: ColorValue
+  pending: ColorValue
+  attention: ColorValue
+  border: ColorValue
+  border2: ColorValue
+  disabled: ColorValue
+  scrollbarBg: ColorValue
+  scrollbarThumb: ColorValue
+  tableHeadBG: ColorValue
+  tableRowBG: ColorValue
+  info: ColorValue
+  information: ColorValue
+  warning: ColorValue
+  alert: ColorValue
+  alert2: ColorValue
+  error: ColorValue
+  infoText: ColorValue
+  warningText: ColorValue
+  errorText: ColorValue
+  cardBackground: ColorValue
+  cardBorder: ColorValue
+  cardShadow1: ColorValue
+  cardShadow2: ColorValue
+  blueDark1: ColorValue
+  blueDark2: ColorValue
+  blueLight1: ColorValue
+  grey1: ColorValue
+  red1: ColorValue
+  paperCustom: ColorValue
+  paperDarkerCustom: ColorValue
+  paperDarkestCustom: ColorValue
+  paperLighterCustom: ColorValue
 }
 
 declare module 'styled-components' {
   // Copy of DefaultTheme in '../../theme/styled'
   export interface DefaultThemeUniswap extends ColorsUniswap {
-    grids: Grids
+    grids: any
 
     // shadows
     shadow1: string
@@ -151,11 +151,11 @@ declare module 'styled-components' {
     gradient1: string
     gradient2: string
     input: {
-      bg1: Color
+      bg1: ColorValue
     }
     button: {
-      bg1: Color
-      text1: Color
+      bg1: ColorValue
+      text1: ColorValue
     }
     util: {
       invertImageForDarkMode: string | null
@@ -183,7 +183,6 @@ declare module 'styled-components' {
       background: FlattenSimpleInterpolation
       boxShadow: FlattenSimpleInterpolation
     }
-    dancingCow: FlattenSimpleInterpolation
     iconGradientBorder: FlattenSimpleInterpolation
     card: {
       background: FlattenSimpleInterpolation
