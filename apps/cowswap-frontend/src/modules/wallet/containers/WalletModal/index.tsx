@@ -74,7 +74,7 @@ export function WalletModal() {
           )
         },
       }),
-      [isWalletChangingFlow]
+      [isWalletChangingFlow, closeWalletModal, dispatch, setWalletConnectionError, toggleAccountSelectorModal]
     )
   )
 

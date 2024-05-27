@@ -37,6 +37,7 @@ const DarkModeToggle = ({ children }: { children?: ReactNode }) => {
   const [darkMode, toggleDarkModeAux] = useDarkModeManager()
   const toggleDarkMode = useCallback(() => {
     toggleDarkModeAux()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [toggleDarkModeAux, darkMode])
   const label = (darkMode ? 'Light' : 'Dark') + ' Mode'
   const description = `${darkMode ? 'Sun/light' : 'Moon/dark'} mode icon`

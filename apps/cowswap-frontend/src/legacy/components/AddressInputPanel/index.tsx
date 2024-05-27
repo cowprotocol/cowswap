@@ -101,6 +101,7 @@ export function AddressInputPanel({
 }) {
   const { chainId } = useWalletInfo()
   const chainInfo = getChainInfo(chainId)
+  const addressPrefix = chainInfo?.addressPrefix
   const { address, loading, name } = useENS(value)
   const [chainPrefixWarning, setChainPrefixWarning] = useState('')
   const isDarkMode = useIsDarkMode()
@@ -114,7 +115,7 @@ export function AddressInputPanel({
       if (isPrefixedAddress(value)) {
         const { prefix, address } = parsePrefixedAddress(value)
 
-        if (prefix && chainInfo?.addressPrefix !== prefix) {
+        if (prefix && addressPrefix !== prefix) {
           setChainPrefixWarning(prefix)
         }
 
@@ -125,15 +126,15 @@ export function AddressInputPanel({
 
       onChange(value)
     },
-    [onChange, chainInfo?.addressPrefix]
+    [onChange, addressPrefix]
   )
 
   // clear warning if chainId changes and we are now on the right network
   useEffect(() => {
-    if (chainPrefixWarning && chainPrefixWarning === chainInfo?.addressPrefix) {
+    if (chainPrefixWarning && chainPrefixWarning === addressPrefix) {
       setChainPrefixWarning('')
     }
-  }, [chainId, chainPrefixWarning])
+  }, [chainId, chainPrefixWarning, addressPrefix])
 
   const error = Boolean(value.length > 0 && !loading && !address)
 
