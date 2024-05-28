@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Defaults, Color, Font, Media } from 'styles/variables'
+import { Color, Media, Font } from '@cowprotocol/ui'
 
 export const SectionH1 = styled.h1<{
   fontSize?: number
@@ -14,13 +14,13 @@ export const SectionH1 = styled.h1<{
   && {
     ${({ fontSize }) => fontSize && `font-size: ${fontSize}rem;`}
     ${({ textAlign }) => textAlign && `text-align: ${textAlign};`}
-    font-weight: ${({ fontWeight }) => (fontWeight ? fontWeight : Font.weightMedium)};
+    font-weight: ${({ fontWeight }) => (fontWeight ? fontWeight : Font.weight.bold)};
     line-height: ${({ lineHeight }) => (lineHeight ? lineHeight : 1.2)};
     ${({ color }) => color && `color: ${color};`}
     max-width: ${({ maxWidth }) => (maxWidth ? `${maxWidth}rem` : '100%')};
     margin: ${({ margin }) => (margin ? `${margin}` : '0 auto')};
 
-    ${Media.mobile} {
+    ${Media.upToMedium()} {
       font-size: ${({ fontSizeMobile }) => fontSizeMobile && `${fontSizeMobile}rem`};
     }
   }
@@ -38,13 +38,13 @@ export const SectionH3 = styled.h3<{
   && {
     ${({ fontSize }) => fontSize && `font-size: ${fontSize}rem;`}
     ${({ textAlign }) => textAlign && `text-align: ${textAlign};`}
-    font-weight: ${({ fontWeight }) => (fontWeight ? fontWeight : Font.weightMedium)};
+    font-weight: ${({ fontWeight }) => (fontWeight ? fontWeight : Font.weight.bold)};
     line-height: ${({ lineHeight }) => (lineHeight ? lineHeight : 1.2)};
     ${({ color }) => color && `color: ${color};`}
     max-width: ${({ maxWidth }) => (maxWidth ? `${maxWidth}rem` : '100%')};
     font-family: ${({ font }) => (font ? font : 'inherit')};
 
-    ${Media.mobile} {
+    ${Media.upToMedium()} {
       // get the font size from the parent and divide by 1.5 to get the mobile size
       font-size: calc(${({ fontSize }) => fontSize}rem / 1.5);
     }
@@ -71,8 +71,7 @@ export const Section = styled.section<{
 }>`
   display: flex;
   width: 100%;
-  max-width: ${({ maxWidth, fullWidth }) =>
-    fullWidth ? '100%' : maxWidth ? `${maxWidth}rem` : `${Defaults.pageMaxWidth}rem`};
+  max-width: ${({ maxWidth, fullWidth }) => (fullWidth ? '100%' : maxWidth ? `${maxWidth}rem` : '126rem')};
   min-height: 100%;
   flex-flow: ${({ flow }) => (flow === 'column' ? 'column wrap' : 'row')};
   gap: ${({ gap }) => (gap ? `${gap}rem` : '8rem')};
@@ -88,130 +87,104 @@ export const Section = styled.section<{
   }};
   background: ${({ colorVariant }) =>
     colorVariant === 'dark'
-      ? Color.darkBlue
+      ? Color.neutral10
       : colorVariant === 'white'
-      ? Color.white
+      ? Color.neutral100
       : colorVariant === 'grey'
-      ? Color.grey
+      ? Color.neutral10
       : colorVariant === 'dark-gradient'
-      ? Color.gradient2
-      : colorVariant === 'cowamm-light'
-      ? Color.cowammSand
-      : colorVariant === 'cowamm-light-white'
-      ? Color.cowammWhite
-      : colorVariant === 'cowamm-dark'
-      ? Color.cowammBlack
+      ? Color.neutral0
       : 'transparent'};
   border-radius: ${({ borderRadius }) => (borderRadius ? `${borderRadius}rem` : '0')};
   box-shadow: ${({ boxShadow }) => (boxShadow ? '0 1rem 2.4rem rgba(0,0,0,.05)' : 'none')};
 
   &,
   a {
-    color: ${({ colorVariant }) =>
-      colorVariant === 'dark'
-        ? Color.lightBlue
-        : colorVariant === 'white'
-        ? Color.darkBlue
-        : colorVariant === 'cowamm-light' || colorVariant === 'cowamm-light-white'
-        ? Color.cowammBlack
-        : colorVariant === 'cowamm-dark'
-        ? Color.cowammWhite
-        : 'inherit'};
-  }
+    color: ${({ colorVariant }) => (colorVariant === 'dark' ? Color.neutral100 : Color.neutral0)} ${Media.upToLarge()} {
+      padding: ${({ paddingMobile, firstSection }) =>
+        firstSection ? '100rem 2.4rem 14rem' : paddingMobile ? `${paddingMobile}` : 'inherit'};
+    }
 
-  ${Media.desktopDown} {
-    padding: ${({ paddingMobile, firstSection }) =>
-      firstSection ? '0 2.4rem 14rem' : paddingMobile ? `${paddingMobile}` : 'inherit'};
-  }
+    ${Media.upToMedium()} {
+      height: auto;
+      max-width: 100%;
+      min-height: initial;
+      flex-flow: column wrap;
+      gap: ${({ gapMobile }) => (gapMobile ? `${gapMobile}rem` : '8rem')};
+      padding: ${({ paddingMobile }) => (paddingMobile ? `${paddingMobile}` : '14rem 2.4rem')};
+    }
 
-  ${Media.mobile} {
-    height: auto;
-    max-width: 100%;
-    min-height: initial;
-    flex-flow: column wrap;
-    gap: ${({ gapMobile }) => (gapMobile ? `${gapMobile}rem` : '8rem')};
-    padding: ${({ paddingMobile }) => (paddingMobile ? `${paddingMobile}` : '14rem 2.4rem')};
-  }
+    .text-weight-light {
+      font-weight: ${Font.weight.light};
+    }
 
-  .text-weight-light {
-    font-weight: ${Font.weightLight};
-  }
-
-  // Hero specific styling
-  ${({ hero, breakMedium }) =>
-    (hero || breakMedium) &&
-    `
+    // Hero specific styling
+    ${({ hero, breakMedium }) =>
+      (hero || breakMedium) &&
+      `
     margin: 0 auto;
     min-height: 90rem;
-    ${Color.gradientMesh};
 
-    ${Media.mediumDown} {
-      padding: 3.2rem 0;
+    ${Media.upToMedium()} {
+      padding: 5.6rem 3.2rem 0;
       min-height: initial;
       flex-flow: column wrap;
     }
 
-    ${Media.mobile} {
-      padding: 5.6rem 3.2rem 0;
-    }
-
   `}
 
-  ${({ mobileSwitchOrder }) =>
-    mobileSwitchOrder &&
-    `
+    ${({ mobileSwitchOrder }) =>
+      mobileSwitchOrder &&
+      `
     > div:first-child {
-      ${Media.mobile} {
+      ${Media.upToMedium()} {
         order: 2;
       }
     }
   `}
 
   ${({ mobileSwitchOrder }) =>
-    mobileSwitchOrder &&
-    `
+      mobileSwitchOrder &&
+      `
     > div:last-child {
-      ${Media.mobile} {
+      ${Media.upToMedium()} {
         order: 1;
       }
     }
   `}
 
   ${({ mediumSwitchOrder }) =>
-    mediumSwitchOrder &&
-    `
+      mediumSwitchOrder &&
+      `
     > div:first-child {
-      ${Media.mediumDown} {
+      ${Media.upToMedium()} {
         order: 2;
       }
     }
   `}
 
   ${({ mediumSwitchOrder }) =>
-    mediumSwitchOrder &&
-    `
+      mediumSwitchOrder &&
+      `
     > div:last-child {
-      ${Media.mediumDown} {
+      ${Media.upToMedium()} {
         order: 1;
       }
     }
   `}
 
   h1, h2, h3 {
-    color: ${({ colorVariant }) =>
-      colorVariant === 'white'
-        ? Color.darkBlue
-        : colorVariant === 'grey'
-        ? Color.darkBlue
-        : colorVariant === 'dark-gradient'
-        ? Color.lightBlue
-        : colorVariant === 'dark'
-        ? Color.lightBlue
-        : colorVariant === 'cowamm-light'
-        ? Color.cowammBlack
-        : colorVariant === 'cowamm-dark'
-        ? Color.cowammWhite
-        : Color.darkBlue};
+      color: ${({ colorVariant }) =>
+        colorVariant === 'white'
+          ? Color.neutral0
+          : colorVariant === 'grey'
+          ? Color.neutral0
+          : colorVariant === 'dark-gradient'
+          ? Color.neutral100
+          : colorVariant === 'dark'
+          ? Color.neutral100
+          : Color.neutral0};
+    }
   }
 `
 
@@ -232,8 +205,7 @@ export const SectionContent = styled.div<{
   display: flex;
   position: relative;
   width: 100%;
-  max-width: ${({ maxWidth, fullWidth }) =>
-    fullWidth ? '100%' : maxWidth ? `${maxWidth}rem` : `${Defaults.pageMaxWidth}rem`};
+  max-width: ${({ maxWidth, fullWidth }) => (fullWidth ? '100%' : maxWidth ? `${maxWidth}rem` : '126rem')};
   margin: ${({ margin }) => (margin ? `${margin}` : '0 auto')};
   gap: ${({ gap }) => (gap ? `${gap}rem` : '6rem')};
   padding: ${({ padding }) => (padding ? `${padding}` : '0')};
@@ -245,13 +217,13 @@ export const SectionContent = styled.div<{
     display: grid;
     grid-template-columns: repeat(2, 1fr);
 
-    ${Media.mobile} {
+    ${Media.upToMedium()} {
       flex-flow: row wrap;
       grid-template-columns: 1fr;
     }
   `}
 
-  ${Media.mobile} {
+  ${Media.upToMedium()} {
     flex-flow: row wrap;
     justify-content: center;
   }
@@ -259,7 +231,7 @@ export const SectionContent = styled.div<{
   ${({ hero }) =>
     hero &&
     `
-    ${Media.mediumDown} {
+    ${Media.upToMedium()} {
       margin: 16rem 2.4rem 0;
     }
   `}
@@ -267,7 +239,7 @@ export const SectionContent = styled.div<{
   ${({ reverseOrderMobile }) =>
     reverseOrderMobile &&
     `
-      ${Media.mobile} {
+      ${Media.upToMedium()} {
         flex-flow: ${reverseOrderMobile};
       }
   `};
@@ -291,7 +263,7 @@ export const SectionContent = styled.div<{
       height: max-content;
     `}
 
-    ${Media.mobile} {
+    ${Media.upToMedium()} {
       flex: 1 1 auto;
       gap: 3.2rem;
     }
@@ -305,7 +277,7 @@ export const SectionContent = styled.div<{
     variant === 'banner' &&
     `
     border-radius: 1.6rem;
-    background: ${Color.darkBlue4};
+    background: ${Color.neutral0};
     padding: 0;
 
       > div {
@@ -316,12 +288,12 @@ export const SectionContent = styled.div<{
   h1, h2, h3 {
     font-size: 5rem;
     line-height: 1.2;
-    font-weight: ${Font.weightNormal};
+    font-weight: ${Font.weight.regular};
     text-align: ${({ textAlign }) => (textAlign ? textAlign : 'center')};
     width: 100%;
     z-index: 1;
 
-    ${Media.mediumDown} {
+    ${Media.upToMedium()} {
       font-size: 4rem;
       text-align: center;
     }
@@ -336,7 +308,7 @@ export const SectionContent = styled.div<{
       font-weight: 600;
       text-align: left;
 
-      ${Media.mediumDown} {
+      ${Media.upToMedium()} {
         font-size: 4rem;
         text-align: center;
       }
@@ -345,14 +317,14 @@ export const SectionContent = styled.div<{
 
   h3 {
     font-size: 6rem;
-    font-weight: ${Font.weightMedium};
+    font-weight: ${Font.weight.bold};
 
     &::selection {
       background-clip: initial;
       -webkit-text-fill-color: initial;
     }
 
-    ${Media.desktopDown} {
+    ${Media.upToLarge()} {
       font-size: 3.8rem;
     }
   }
@@ -362,7 +334,7 @@ export const Separator = styled.div<{ bgColor?: string; borderSize?: number; mar
   width: 100%;
   max-width: ${({ maxWidth }) => (maxWidth ? `${maxWidth}rem` : '100%')};
   height: ${({ borderSize }) => (borderSize ? `${borderSize}rem` : '0.1rem')};
-  background: ${({ bgColor }) => (bgColor ? bgColor : Color.gradient)};
+  background: ${({ bgColor }) => (bgColor ? bgColor : Color.neutral0)};
   margin: ${({ margin }) => (margin ? `${margin}` : '0 auto')};
 `
 
@@ -373,7 +345,7 @@ export const StepWrapper = styled.div`
   gap: 1.8rem;
   margin: 2.6rem auto 0;
 
-  ${Media.mediumDown} {
+  ${Media.upToMedium()} {
     display: flex;
     flex-flow: column wrap;
   }
@@ -382,12 +354,11 @@ export const StepWrapper = styled.div`
 export const StepContainer = styled.div<{ imageWidth?: number }>`
   display: flex;
   flex-flow: column wrap;
-  background: ${Color.darkBlue2};
-  box-shadow: ${Defaults.boxShadow};
+  background: ${Color.neutral0};
   border-radius: 1.2rem;
   padding: 3.4rem;
 
-  ${Media.mediumDown} {
+  ${Media.upToMedium()} {
     padding: 2.4rem;
   }
 
@@ -397,13 +368,13 @@ export const StepContainer = styled.div<{ imageWidth?: number }>`
     border-radius: 3.6rem;
     margin: 0 0 1.6rem;
     padding: 0;
-    background: ${Color.darkBlue};
+    background: ${Color.neutral0};
     display: flex;
     align-items: center;
     justify-content: center;
-    color: ${Color.lightBlue};
+    color: ${Color.neutral100};
     font-size: 1.8rem;
-    font-weight: ${Font.weightBold};
+    font-weight: ${Font.weight.bold};
   }
 
   > img {
@@ -415,15 +386,15 @@ export const StepContainer = styled.div<{ imageWidth?: number }>`
     margin: 0 auto 1.6rem;
     flex: 0 1 auto;
 
-    ${Media.mediumDown} {
+    ${Media.upToMedium()} {
       height: 8rem;
     }
   }
 
   > p {
     font-size: 1.6rem;
-    color: ${Color.text2};
-    font-weight: ${Font.weightNormal};
+    color: ${Color.neutral10};
+    font-weight: ${Font.weight.regular};
     line-height: 1.6;
     margin: 1.6rem auto;
     text-align: center;
@@ -433,8 +404,7 @@ export const StepContainer = styled.div<{ imageWidth?: number }>`
   > p > b {
     font-size: 3.4rem;
     display: block;
-    color: ${Color.lightBlue};
-    background: ${Color.gradient};
+    color: ${Color.neutral100};
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -468,7 +438,7 @@ export const CardWrapper = styled.div<{
   margin: ${({ margin }) => (margin ? `${margin}` : '0 auto')};
   justify-content: center;
 
-  ${Media.mediumDown} {
+  ${Media.upToMedium()} {
     grid-template-columns: ${({ horizontalGridMobile }) =>
       horizontalGridMobile ? `repeat(${horizontalGridMobile}, 1fr)` : 'repeat(1, 1fr)'};
   }
@@ -499,20 +469,18 @@ export const CardItem = styled.div<{
   justify-content: ${({ contentCentered }) => (contentCentered ? 'center' : 'flex-start')};
   background: ${({ background, variant }) => {
     if (background) return background
-    else if (variant === 'outlined-dark' || variant === 'cowamm-card-light' || variant === 'cowamm-card-dark')
-      return 'transparent'
-    else return Color.white
+    else if (variant === 'outlined-dark') return 'transparent'
+    else return Color.neutral100
   }};
   box-shadow: ${({ variant }) =>
     variant === 'outlined-dark' || variant === 'cowamm-card-light' || variant === 'cowamm-card-dark'
       ? 'none'
       : '0 1rem 2.4rem rgba(0,0,0,.05)'};
-  border: ${({ variant }) => (variant === 'outlined-dark' ? `0.1rem solid ${Color.border}` : 'none')};
-  color ${({ color, variant }) => {
+  border: ${({ variant }) => (variant === 'outlined-dark' ? `0.1rem solid ${Color.neutral50}` : 'none')};
+  color: ${({ color, variant }) => {
     if (color) return color
-    else if (variant === 'outlined-dark') return Color.text2
-    else if (variant === 'cowamm-card-light' || variant === 'cowamm-card-dark') return Color.cowammWhite
-    else return Color.text1
+    else if (variant === 'outlined-dark') return Color.neutral70
+    else return Color.neutral0
   }};
   border-radius: ${({ borderRadius }) => (typeof borderRadius !== 'undefined' ? `${borderRadius}rem` : '2.4rem')};
   padding: ${({ padding }) => (typeof padding !== 'undefined' ? `${padding}rem` : '3.4rem')};
@@ -522,7 +490,7 @@ export const CardItem = styled.div<{
   position: relative;
   line-height: 1.1;
 
-  ${Media.mobile} {
+  ${Media.upToMedium()} {
     font-size: ${({ fontSizeMobile }) => (fontSizeMobile ? `${fontSizeMobile}rem` : '1.6rem')};
   }
 
@@ -562,11 +530,11 @@ export const CardItem = styled.div<{
     ${({ imageRounded }) => (imageRounded ? `border-radius: var(--height);` : '')}
     background: transparent;
     object-fit: contain;
-    background: ${Color.lightBlue};
+    background: ${Color.neutral100};
     display: flex;
     align-items: center;
     justify-content: center;
-    color: ${Color.darkBlue};
+    color: ${Color.neutral0};
     font-weight: bold;
     font-size: 2.5rem;
   }
@@ -584,12 +552,13 @@ export const CardItem = styled.div<{
   > h4 {
     font-size: 2.4rem;
     line-height: 1.2;
-    font-weight: ${Font.weightBold};
+    font-weight: ${Font.weight.bold};
     margin: 0;
-    &, a {
+    &,
+    a {
       color: ${({ color, variant }) => {
         if (color) return color
-        return variant === 'outlined-dark' ? Color.lightBlue : Color.darkBlue
+        return variant === 'outlined-dark' ? Color.neutral100 : Color.neutral0
       }};
     }
   }
@@ -603,7 +572,7 @@ export const CardItem = styled.div<{
     gap: 1.6rem;
     font-size: inherit;
 
-    ${Media.mobile} {
+    ${Media.upToMedium()} {
       height: auto;
     }
   }
@@ -616,7 +585,7 @@ export const CardItem = styled.div<{
   }
 
   > span > a {
-    color: ${Color.lightBlue};
+    color: ${Color.neutral100};
   }
 
   > span > span > a {
@@ -645,37 +614,12 @@ export const CardItem = styled.div<{
       > p,
       > span > p {
         font-size: 2.2rem;
-        font-weight: ${Font.weightMedium};
+        font-weight: ${Font.weight.bold};
         line-height: 1.2;
-        color: ${Color.darkBlue};
+        color: ${Color.neutral0};
         margin: auto 0;
       }
     `}
-
-  ${({ variant }) =>
-    (variant === 'cowamm-card-light' || variant === 'cowamm-card-dark') &&
-    `
-  &:before {
-    content: '';
-    position: relative;
-    height: 0.2rem;
-    margin: 0 auto 2rem;
-    width: 100%;
-    background: ${variant === 'cowamm-card-dark' ? Color.cowammBlack : Color.cowammWhite};
-  }
-
-  > img,
-  > svg {
-    --size: ${({ imageHeight }: { imageHeight: number }) => (imageHeight ? `${imageHeight}rem` : '12rem')};
-    width: var(--size);
-    height: var(--size);
-    margin-bottom: 2.4rem;
-  }
-
-  > h4, > p, > span {
-    color: ${variant === 'cowamm-card-dark' ? Color.cowammBlack : Color.cowammWhite};
-  }
-`}
 `
 
 export const TopGradient = styled.div`
@@ -702,8 +646,8 @@ export const SubTitle = styled.p<{
 }>`
   display: inline-block;
   font-size: ${({ fontSize }) => (fontSize ? `${fontSize}rem` : '2.2rem')};
-  color: ${({ color }) => (color ? color : Color.text2)};
-  font-weight: ${Font.weightNormal};
+  color: ${({ color }) => (color ? color : Color.neutral10)};
+  font-weight: ${Font.weight.regular};
   line-height: ${({ lineHeight }) => (lineHeight ? lineHeight : 1.6)};
   text-align: ${({ textAlign }) => (textAlign ? textAlign : 'center')};
   max-width: ${({ maxWidth }) => maxWidth && `${maxWidth}rem`};
@@ -711,7 +655,7 @@ export const SubTitle = styled.p<{
   width: 100%;
   z-index: 1;
 
-  ${Media.mediumDown} {
+  ${Media.upToMedium()} {
     font-size: ${({ fontSizeMobile }) => (fontSizeMobile ? `${fontSizeMobile}rem` : '1.8rem')};
     text-align: ${({ textAlignMobile }) => (textAlignMobile ? textAlignMobile : 'center')};
   }
@@ -743,12 +687,12 @@ export const SectionImage = styled.div<{
     `
     margin: 0 0 0 9.6rem;
 
-    ${Media.mobile} {
+    ${Media.upToMedium()} {
       margin: 4.2rem 0 9rem;;
     }
   `}
 
-  ${Media.mediumDown} {
+  ${Media.upToMedium()} {
     /* height: initial; */
 
     ${({ centerMobile }) =>
@@ -759,7 +703,7 @@ export const SectionImage = styled.div<{
     `}
   }
 
-  ${Media.mobile} {
+  ${Media.upToMedium()} {
     width: ${({ widthMobile }) => (widthMobile ? widthMobile : '100%')};
   }
 
@@ -779,13 +723,12 @@ export const Metrics = styled.div`
   margin: 0 auto;
   justify-content: center;
   gap: 12rem;
-  background: ${Color.darkBlue2};
-  box-shadow: ${Defaults.boxShadow};
+  background: ${Color.neutral0};
   padding: 4.2rem;
   border-radius: 1.2rem;
   justify-content: space-between;
 
-  ${Media.mobile} {
+  ${Media.upToMedium()} {
     gap: 4rem;
   }
 
@@ -797,7 +740,7 @@ export const Metrics = styled.div`
     flex-flow: column wrap;
     gap: 1.6rem;
 
-    ${Media.mobile} {
+    ${Media.upToMedium()} {
       width: 100%;
       align-items: center;
       gap: 2.4rem;
@@ -806,8 +749,7 @@ export const Metrics = styled.div`
 
   > div > b {
     font-size: 6rem;
-    font-weight: ${Font.weightNormal};
-    background: ${Color.gradient};
+    font-weight: ${Font.weight.regular};
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -818,11 +760,11 @@ export const Metrics = styled.div`
       -webkit-text-fill-color: initial;
     }
 
-    ${Media.mediumDown} {
+    ${Media.upToMedium()} {
       font-size: 5rem;
     }
 
-    ${Media.mobile} {
+    ${Media.upToMedium()} {
       text-align: center;
     }
   }
@@ -830,7 +772,7 @@ export const Metrics = styled.div`
   > div > i {
     font-style: normal;
     font-size: 1.5rem;
-    color: ${Color.text2};
+    color: ${Color.neutral10};
   }
 `
 
@@ -843,7 +785,7 @@ export const IconList = styled.ol`
   padding: 0;
   gap: 7rem 10rem;
 
-  ${Media.mobile} {
+  ${Media.upToMedium()} {
     grid-template-columns: 1fr;
   }
 `
@@ -857,7 +799,7 @@ export const IconListItem = styled.li<{ icon?: string }>`
   justify-items: flex-start;
   align-content: flex-start;
 
-  ${Media.mobile} {
+  ${Media.upToMedium()} {
     display: flex;
   }
 
@@ -872,7 +814,7 @@ export const IconListItem = styled.li<{ icon?: string }>`
       margin: -0.1rem 0 0;
       background: url(${icon}) no-repeat top/contain;
 
-      ${Media.mobile} {
+      ${Media.upToMedium()} {
         margin: 0 auto 2.4rem;
       }
     `};
@@ -888,9 +830,9 @@ export const IconListItem = styled.li<{ icon?: string }>`
   > span > b {
     font-size: 2.8rem;
     line-height: 1.2;
-    font-weight: ${Font.weightMedium};
+    font-weight: ${Font.weight.bold};
 
-    ${Media.mobile} {
+    ${Media.upToMedium()} {
       font-size: 2.6rem;
       text-align: center;
     }
@@ -899,9 +841,9 @@ export const IconListItem = styled.li<{ icon?: string }>`
   > span > p {
     font-size: 1.8rem;
     line-height: 1.6;
-    color: ${Color.text2};
+    color: ${Color.neutral10};
 
-    ${Media.mobile} {
+    ${Media.upToMedium()} {
       text-align: center;
     }
   }
@@ -909,9 +851,9 @@ export const IconListItem = styled.li<{ icon?: string }>`
 
 export const CheckList = styled.ol`
   list-style-type: none;
-  color: ${Color.text2};
-  font-weight: ${Font.weightNormal};
-  font-size: ${Font.sizeDefault};
+  color: ${Color.neutral10};
+  font-weight: ${Font.weight.regular};
+  font-size: 1.6rem;
   gap: 1.2rem;
   display: flex;
   flex-flow: column wrap;
@@ -943,14 +885,14 @@ export const TrustedBy = styled.div`
   justify-content: center;
   gap: 2rem;
   margin: 5rem auto 3rem;
-  border-top: 0.1rem solid ${Color.border};
+  border-top: 0.1rem solid ${Color.neutral50};
   padding: 5rem 0 0;
   width: 100%;
   font-size: 3.2rem;
-  color: ${Color.text1};
-  font-weight: ${Font.weightNormal};
+  color: ${Color.neutral0};
+  font-weight: ${Font.weight.regular};
 
-  ${Media.mobile} {
+  ${Media.upToMedium()} {
     flex-flow: column wrap;
     gap: 1.6rem;
     font-size: 2.6rem;
@@ -973,7 +915,7 @@ export const TrustedBy = styled.div`
     gap: 3rem;
     position: relative;
 
-    ${Media.mobile} {
+    ${Media.upToMedium()} {
       width: 100%;
     }
   }
@@ -986,7 +928,7 @@ export const TrustedBy = styled.div`
     height: 100%;
     width: 100%;
     font-size: 2.6rem;
-    color: ${Color.text1};
+    color: ${Color.neutral0};
     position: absolute;
     top: 0;
     left: 0;
@@ -996,7 +938,7 @@ export const TrustedBy = styled.div`
     opacity: 0;
     gap: 1.2rem;
 
-    ${Media.mobile} {
+    ${Media.upToMedium()} {
       font-size: 1.8rem;
     }
   }
@@ -1019,20 +961,20 @@ export const TrustedBy = styled.div`
     width: 100%;
     object-fit: contain;
 
-    ${Media.mobile} {
+    ${Media.upToMedium()} {
       height: 70%;
       width: auto;
     }
 
     > g {
-      fill: ${Color.darkBlue};
+      fill: ${Color.neutral0};
     }
   }
 
   > ul > li > strong {
-    font-weight: ${Font.weightBold};
+    font-weight: ${Font.weight.bold};
     white-space: nowrap;
-    color: ${Color.darkBlue};
+    color: ${Color.neutral0};
   }
 
   @keyframes slide {
@@ -1068,7 +1010,7 @@ export const IntegrationList = styled.span`
   justify-content: center;
   align-items: center;
 
-  ${Media.mediumDown} {
+  ${Media.upToMedium()} {
     width: 100%;
   }
 
@@ -1080,7 +1022,7 @@ export const IntegrationList = styled.span`
     gap: 3rem;
     grid-template-columns: repeat(3, 1fr);
 
-    ${Media.mediumDown} {
+    ${Media.upToMedium()} {
       display: flex;
       flex-flow: row wrap;
       justify-content: center;
@@ -1095,7 +1037,7 @@ export const IntegrationList = styled.span`
     height: 12rem;
     display: flex;
 
-    ${Media.mobile} {
+    ${Media.upToMedium()} {
       width: 9rem;
       height: 9rem;
     }
@@ -1107,13 +1049,13 @@ export const IntegrationList = styled.span`
     justify-content: center;
     font-size: 1.6rem;
     padding: 0;
-    background: ${Color.darkBlue3};
+    background: ${Color.neutral0};
     border-radius: 6rem;
     width: 100%;
     height: 100%;
     transition: transform 0.8s ease-in-out;
 
-    ${Media.mobile} {
+    ${Media.upToMedium()} {
       border-radius: 4.5rem;
     }
 

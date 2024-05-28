@@ -273,6 +273,12 @@ export const GlobalCoWDAOStyles = (fonts: GlobalCowDAOFonts, bgColor?: string) =
         padding: 0;
         background: ${bgColor ? bgColor : Color.neutral98};
         color: ${Color.neutral0};
+        scroll-behavior: smooth;
+        font-variant: none;
+        text-rendering: geometricPrecision;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
       }
     `
   )

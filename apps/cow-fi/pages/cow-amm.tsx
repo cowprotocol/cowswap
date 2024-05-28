@@ -1,15 +1,10 @@
 import Head from 'next/head'
 import { GetStaticProps } from 'next'
-import { Font, Color, Media, ProductLogo, ProductVariant } from '@cowprotocol/ui'
+import { Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
 import IMG_ICON_CROWN_COW from '@cowprotocol/assets/images/icon-crown-cow.svg'
 import IMG_ICON_GOVERNANCE from '@cowprotocol/assets/images/icon-governance.svg'
 import IMG_ICON_BULB_COW from '@cowprotocol/assets/images/icon-bulb-cow.svg'
 import IMG_ICON_BUILD_WITH_COW from '@cowprotocol/assets/images/icon-build-with-cow.svg'
-import IMG_ICON_SECURE from '@cowprotocol/assets/images/icon-secure.svg'
-import IMG_ICON_OWL from '@cowprotocol/assets/images/icon-owl.svg'
-import IMG_ICON_GHOST from '@cowprotocol/assets/images/icon-ghost.svg'
-import IMG_LOGO_SAFE from '@cowprotocol/assets/images/logo-safe.svg'
-import IMG_LOGO_OASIS from '@cowprotocol/assets/images/logo-oasis.svg'
 
 import styled from 'styled-components'
 
@@ -122,7 +117,7 @@ export default function Page({ siteConfigData }: PageProps) {
               Protect your liquidity
             </HeroButton>
           </HeroContent>
-          <HeroImage width={470} color={'#194D05'}>
+          <HeroImage width={470} color={'#194D05'} marginMobile="24px auto 56px">
             <SVG src={IMG_ICON_GOVERNANCE} />
           </HeroImage>
         </HeroContainer>
@@ -152,7 +147,7 @@ export default function Page({ siteConfigData }: PageProps) {
             </SectionTitleWrapper>
 
             <TopicList columns={1} maxWidth={1470}>
-              <TopicCard columns="1fr auto" gap={100} horizontal asProp="div" bgColor="transparent">
+              <TopicCard columns="1fr auto" gap={100} horizontal asProp="div" bgColor="transparent" paddingMobile={'0'}>
                 <TopicCardInner contentAlign="left">
                   <TopicDescription fontSize={28} color={Color.neutral95}>
                     Liquidity providers expect their tokens to earn yield, but the dirty little secret of AMMs is that
@@ -176,7 +171,7 @@ export default function Page({ siteConfigData }: PageProps) {
 
         <ContainerCard bgColor={'transparent'}>
           <ContainerCardSection>
-            <SectionTitleWrapper padding="150px 0 0" maxWidth={1170} color={Color.neutral10}>
+            <SectionTitleWrapper padding="150px 0 0" marginMobile="0 auto" maxWidth={1170} color={Color.neutral10}>
               <SectionTitleIcon size={128}>
                 <SVG src={IMG_ICON_BULB_COW} />
               </SectionTitleIcon>
@@ -277,7 +272,7 @@ export default function Page({ siteConfigData }: PageProps) {
             </SectionTitleWrapper>
 
             <TopicList columns={1} maxWidth={1470}>
-              <TopicCard columns="1fr auto" gap={100} horizontal asProp="div" bgColor="transparent">
+              <TopicCard columns="1fr auto" gap={100} horizontal asProp="div" bgColor="transparent" paddingMobile="0">
                 <TopicCardInner contentAlign="left">
                   <TopicDescription fontSize={28}>
                     CoW AMM LPs don't have to worry about LVR, which costs CF-AMM LPs 5-7% of their liquidity, on
@@ -304,7 +299,7 @@ export default function Page({ siteConfigData }: PageProps) {
             </SectionTitleWrapper>
 
             <TopicList columns={1} maxWidth={1470}>
-              <TopicCard columns="1fr auto" gap={100} horizontal asProp="div" bgColor="transparent">
+              <TopicCard columns="1fr auto" gap={100} horizontal asProp="div" bgColor="transparent" paddingMobile="0">
                 <TopicImage iconColor="#194D05" width={590} height={590} heightMobile={300} orderReverseMobile />
                 <TopicCardInner contentAlign="left">
                   <TopicTitle fontSize={67}>Support DAO token liquidity without the stick-up</TopicTitle>
@@ -317,7 +312,7 @@ export default function Page({ siteConfigData }: PageProps) {
                 </TopicCardInner>
               </TopicCard>
 
-              <TopicCard columns="1fr auto" gap={100} horizontal asProp="div" bgColor="transparent">
+              <TopicCard columns="1fr auto" gap={100} horizontal asProp="div" bgColor="transparent" paddingMobile="0">
                 <TopicCardInner contentAlign="left">
                   <TopicTitle fontSize={67}>Unlock the power of passive investing</TopicTitle>
                   <TopicDescription fontSize={28} color={Color.neutral50}>

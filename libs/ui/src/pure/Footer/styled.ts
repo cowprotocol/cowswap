@@ -145,6 +145,7 @@ export const LinkList = styled.ul`
     padding: 0;
     color: inherit;
     font-size: inherit;
+    line-height: 1;
   }
 `
 

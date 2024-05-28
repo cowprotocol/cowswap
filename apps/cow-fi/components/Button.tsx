@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components'
-import { Defaults, Color, Font, Media } from 'styles/variables'
+import { Color, Media, Font } from '@cowprotocol/ui'
 import React, { forwardRef } from 'react'
 import { lighten } from 'polished'
 
@@ -37,27 +37,27 @@ type ButtonProps = {
 
 const Wrapper = styled.span<Omit<ButtonProps, 'href' | 'label' | 'target' | 'rel'>>`
   display: flex;
-  background: ${Color.darkBlue};
+  background: ${Color.neutral0};
   flex-flow: row;
   border: 0.1rem solid transparent;
-  color: ${Color.lightBlue};
+  color: ${Color.neutral100};
   padding-top: ${({ paddingTB }) => (paddingTB ? `${paddingTB}rem` : '0')};
   padding-bottom: ${({ paddingTB }) => (paddingTB ? `${paddingTB}rem` : '0')};
   padding-left: ${({ paddingLR }) => (paddingLR ? `${paddingLR}rem` : '2.4rem')};
   padding-right: ${({ paddingLR }) => (paddingLR ? `${paddingLR}rem` : '2.4rem')};
   margin: ${({ marginTB }) => (marginTB ? `${marginTB}rem 0` : '0')};
   box-sizing: border-box;
-  border-radius: ${({ borderRadius }) => `${borderRadius ?? Defaults.borderRadius}`};
+  border-radius: ${({ borderRadius }) => `${borderRadius ?? '1.6rem'}`};
   min-height: ${({ minHeight }) => (minHeight ? `${minHeight}rem` : '5.6rem')};
   align-items: center;
   font-size: ${({ fontSize }) => (fontSize ? `${fontSize}rem` : '2.2rem')};
-  font-weight: ${({ fontWeight }) => (fontWeight ? fontWeight : Font.weightMedium)};
+  font-weight: ${({ fontWeight }) => (fontWeight ? fontWeight : Font.weight.bold)};
   justify-content: center;
   transition: color 0.2s ease-in-out, background 0.2s ease-in-out;
   white-space: ${({ wrapText }) => (wrapText ? 'initial' : 'nowrap')};
   text-decoration: none;
 
-  ${Media.mobile} {
+  ${Media.upToMedium()} {
     max-width: 100%;
     white-space: pre-wrap;
     line-height: 1.1;
@@ -71,16 +71,16 @@ const Wrapper = styled.span<Omit<ButtonProps, 'href' | 'label' | 'target' | 'rel
   }
 
   &:hover {
-    background: ${({ variant }) => (variant === ButtonVariant.OUTLINE ? Color.darkBlue : Color.text1)};
-    color: ${Color.lightBlue}!important;
+    background: ${({ variant }) => (variant === ButtonVariant.OUTLINE ? Color.neutral0 : Color.neutral0)};
+    color: ${Color.neutral100}!important;
   }
 
   ${({ variant }) =>
     variant === ButtonVariant.OUTLINE &&
     css`
       background: transparent;
-      border: 0.1rem solid ${Color.darkBlue};
-      color: ${Color.darkBlue};
+      border: 0.1rem solid ${Color.neutral0};
+      color: ${Color.neutral0};
     `}
 
   ${({ variant, borderRadius }) =>
@@ -94,11 +94,11 @@ const Wrapper = styled.span<Omit<ButtonProps, 'href' | 'label' | 'target' | 'rel
     variant === ButtonVariant.TEXT &&
     css`
     background: transparent;
-    color: ${Color.darkBlue}!important;
+    color: ${Color.neutral0}!important;
 
     &:hover {
       background: transparent;
-      color: ${Color.darkBlue}!important;
+      color: ${Color.neutral0}!important;
       text-decoration: underline;
   `}
 
@@ -106,60 +106,21 @@ const Wrapper = styled.span<Omit<ButtonProps, 'href' | 'label' | 'target' | 'rel
     variant === ButtonVariant.TEXT_LIGHT &&
     css`
       background: transparent;
-      color: ${Color.lightBlue};
+      color: ${Color.neutral100};
     `}
 
   ${({ variant }) =>
     variant === ButtonVariant.LIGHT &&
     css`
-      background: ${Color.lightBlue};
-      color: ${Color.darkBlue}!important;
+      background: ${Color.neutral100};
+      color: ${Color.neutral0}!important;
     `}
 
   ${({ variant }) =>
     variant === ButtonVariant.OUTLINE_LIGHT &&
     css`
       background: transparent;
-      border: 0.1rem solid ${Color.lightBlue};
-    `}
-
-${({ variant }) =>
-    variant === ButtonVariant.COWAMM_LIGHTBLUE &&
-    css`
-      background: ${Color.cowammLightBlue}!important;
-      color: ${Color.cowammBlack}!important;
-
-      &:hover {
-        background: ${lighten(0.2, Color.cowammLightBlue)}!important;
-        color: ${Color.cowammBlack}!important;
-      }
-    `}
-
-${({ variant }) =>
-    variant === ButtonVariant.COWAMM_OUTLINE_LIGHT &&
-    css`
-      background: transparent;
-      color: ${Color.cowammWhite}!important;
-      border: 0.1rem solid ${Color.cowammWhite}!important;
-
-      &:hover {
-        background: ${Color.cowammWhite}!important;
-        color: ${Color.cowammBlack}!important;
-      }
-    `}
-
-${({ variant }) =>
-    variant === ButtonVariant.COWAMM_OUTLINE_SMALL &&
-    css`
-      min-height: 3.6rem;
-      background: transparent;
-      color: ${Color.cowammWhite}!important;
-      border: 0.1rem solid ${Color.cowammWhite}!important;
-
-      &:hover {
-        background: ${Color.cowammWhite}!important;
-        color: ${Color.cowammBlack}!important;
-      }
+      border: 0.1rem solid ${Color.neutral100};
     `}
 `
 
@@ -176,7 +137,7 @@ export const ButtonWrapper = styled.div<{ center?: boolean }>`
     align-items: center;
   `}
 
-  ${Media.mediumDown} {
+  ${Media.upToMedium()} {
     flex-flow: column wrap;
     justify-content: center;
 

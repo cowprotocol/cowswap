@@ -125,7 +125,7 @@ export default function Page({ siteConfigData }: PageProps) {
               Start building
             </HeroButton>
           </HeroContent>
-          <HeroImage width={470} height={470} color={'#012F7A'}>
+          <HeroImage width={470} height={470} color={'#012F7A'} marginMobile="24px auto 56px">
             <SVG src={IMG_ICON_BULB_COW} />
           </HeroImage>
         </HeroContainer>
@@ -151,9 +151,7 @@ export default function Page({ siteConfigData }: PageProps) {
               <SectionTitleIcon multiple size={80}>
                 <SVG src={IMG_ICON_UNICORN} />
                 <ProductLogo variant={ProductVariant.CowProtocol} theme="dark" logoIconOnly />
-                <span className="image-reverse">
-                  <SVG src={IMG_ICON_UNICORN} />
-                </span>
+                <SVG src={IMG_ICON_UNICORN} className="image-reverse" />
               </SectionTitleIcon>
 
               <SectionTitleText>CoW Swap is different</SectionTitleText>

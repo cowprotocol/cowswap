@@ -1,5 +1,6 @@
 import styled, { css } from 'styled-components'
 import { Font, Color, Media } from '@cowprotocol/ui'
+import { transparentize } from 'color2k'
 
 export const ContainerCard = styled.div<{
   bgColor?: string
@@ -168,6 +169,7 @@ interface TopicCardProps {
   columns?: string
   asProp?: string
   padding?: string
+  paddingMobile?: string
   contentAlign?: string
   gap?: number
 }
@@ -198,7 +200,7 @@ export const TopicCard = styled.a.attrs<TopicCardProps>(({ asProp }) => ({
   }
 
   ${Media.upToMedium()} {
-    padding: 32px 16px;
+    padding: ${({ paddingMobile }) => paddingMobile || '32px 16px'};
     gap: 32px;
     display: flex;
     flex-flow: column wrap;
@@ -579,7 +581,9 @@ export const SectionTitleWrapper = styled.div<{
   maxWidth?: number
   gap?: number
   padding?: string
+  paddingMobile?: string
   margin?: string
+  marginMobile?: string
   rowWrap?: boolean
 }>`
   --color: ${Color.neutral20};
@@ -596,7 +600,8 @@ export const SectionTitleWrapper = styled.div<{
   padding: ${({ padding }) => padding || '0'};
 
   ${Media.upToMedium()} {
-    margin: 56px auto 32px;
+    margin: ${({ marginMobile }) => marginMobile || '56px auto 32px'};
+    padding: ${({ paddingMobile }) => paddingMobile || '0'};
   }
 `
 
@@ -656,6 +661,7 @@ export const SectionTitleButton = styled.a<{ bgColor?: string; color?: string }>
   text-align: center;
   width: max-content;
   transition: opacity 0.2s ease-in-out;
+  max-width: 100%;
 
   &:hover {
     opacity: 0.8;
@@ -716,7 +722,12 @@ export const SectionImage = styled.div<{
   }
 `
 
-export const HeroContainer = styled.div<{ variant?: string; maxWidth?: number; padding?: string }>`
+export const HeroContainer = styled.div<{
+  variant?: string
+  maxWidth?: number
+  padding?: string
+  paddingMobile?: string
+}>`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -729,6 +740,10 @@ export const HeroContainer = styled.div<{ variant?: string; maxWidth?: number; p
   padding: ${({ padding }) => padding || '0 20px'};
   overflow: hidden;
   margin: 0 auto;
+
+  ${Media.upToMedium()} {
+    padding: ${({ paddingMobile }) => paddingMobile || '0 20px'};
+  }
 
   ${({ variant }) =>
     variant === 'secondary' &&
@@ -852,13 +867,23 @@ export const HeroButton = styled.a<{ background?: string; color?: string }>`
   }
 `
 
-export const HeroImage = styled.div<{ width?: number; height?: number; color?: string }>`
+export const HeroImage = styled.div<{
+  width?: number
+  height?: number
+  color?: string
+  margin?: string
+  marginMobile?: string
+}>`
   width: 100%;
   height: ${({ height }) => (height ? `${height}px` : 'auto')};
   max-width: ${({ width }) => `${width}px` || '100%'};
-  margin: 0 auto;
+  margin: ${({ margin }) => margin || '0 auto'};
   padding: 0;
   color: ${({ color }) => color || Color.neutral0};
+
+  ${Media.upToMedium()} {
+    margin: ${({ marginMobile }) => marginMobile || '0 auto'};
+  }
 
   > img,
   > svg {
@@ -932,6 +957,274 @@ export const MetricsItem = styled.div<{ dividerColor?: string }>`
 
     ${Media.upToMedium()} {
       max-width: 100%;
+    }
+  }
+`
+
+export const TrustedBy = styled.div`
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  padding: 0;
+  width: 100%;
+  font-size: 3.2rem;
+  color: ${Color.neutral0};
+  font-weight: ${Font.weight.regular};
+
+  ${Media.upToMedium()} {
+    flex-flow: column wrap;
+    gap: 1.6rem;
+    font-size: 2.6rem;
+    text-align: center;
+  }
+
+  > ul {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: flex-start;
+    justify-content: flex-start;
+    margin: 0;
+    padding: 0;
+    height: 5rem;
+    width: 34rem;
+    overflow: hidden;
+    gap: 3rem;
+    position: relative;
+
+    ${Media.upToMedium()} {
+      width: 100%;
+    }
+  }
+
+  > ul > li {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    font-size: 2.6rem;
+    color: ${Color.neutral0};
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    transform: translateY(-100%);
+    animation: slide 9s ease 0s infinite normal forwards;
+    opacity: 0;
+    gap: 1.2rem;
+
+    ${Media.upToMedium()} {
+      font-size: 1.8rem;
+    }
+  }
+
+  > ul > li:nth-child(1) {
+    animation-delay: 0s;
+  }
+
+  > ul > li:nth-child(2) {
+    animation-delay: 3s;
+  }
+
+  > ul > li:nth-child(3) {
+    animation-delay: 6s;
+  }
+
+  > ul > li > svg {
+    display: flex;
+    height: 100%;
+    width: 100%;
+    object-fit: contain;
+
+    ${Media.upToMedium()} {
+      height: 70%;
+      width: auto;
+    }
+
+    > g {
+      fill: ${Color.neutral0};
+    }
+  }
+
+  > ul > li > strong {
+    font-weight: ${Font.weight.bold};
+    white-space: nowrap;
+    color: ${Color.neutral0};
+  }
+
+  @keyframes slide {
+    0% {
+      transform: translateY(-100%);
+      opacity: 0;
+    }
+    10% {
+      transform: translateY(0%);
+      opacity: 1;
+    }
+    30% {
+      transform: translateY(0%);
+      opacity: 1;
+    }
+    40% {
+      transform: translateY(100%);
+      opacity: 0;
+    }
+    100% {
+      transform: translateY(100%);
+      opacity: 0;
+    }
+  }
+`
+
+// From legacy cow.fi
+export const SwiperSlideWrapper = styled.div`
+  --swiper-navigation-color: ${Color.neutral0};
+  --swiper-theme-color: ${Color.neutral0};
+  --swiper-pagination-bullet-inactive-color: ${Color.neutral0};
+  --swiper-pagination-bullet-size: 1.2rem;
+
+  display: flex;
+  flex-flow: column wrap;
+  width: 100%;
+  overflow: hidden;
+
+  .daoSwiper {
+    position: relative;
+    padding: 0 0 5rem; // Fix for swiper pagination
+
+    ${Media.upToMedium()} {
+      overflow-x: visible;
+    }
+
+    &::before,
+    &::after {
+      content: '';
+      height: 100%;
+      width: 16rem;
+      position: absolute;
+      left: 0;
+      top: 0;
+      background: linear-gradient(90deg, ${Color.neutral10}, ${transparentize('white', 1)} 100%);
+      z-index: 10;
+
+      ${Media.upToMedium()} {
+        display: none;
+        content: none;
+      }
+    }
+
+    &::after {
+      background: linear-gradient(270deg, ${Color.neutral10}, ${transparentize('white', 1)} 100%);
+      left: initial;
+      right: 0;
+    }
+  }
+
+  .daoSwiper {
+    display: flex;
+    flex-flow: column wrap;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .daoSwiper > .swiper-wrapper {
+    max-width: 80%;
+    align-items: flex-start;
+    justify-content: flex-start;
+
+    ${Media.upToMedium()} {
+      max-width: 100%;
+      align-items: stretch;
+    }
+  }
+
+  .daoSwiper > .swiper-wrapper > .swiper-slide {
+    height: 49rem;
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+    border-radius: 6rem;
+    border: 0.1rem solid grey;
+    color: ${Color.neutral70};
+    font-size: 2.4rem;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    align-items: center;
+    justify-content: flex-start;
+    overflow: hidden;
+
+    ${Media.upToMedium()} {
+      height: auto;
+      max-width: 95%;
+      display: flex;
+      flex-flow: column wrap;
+    }
+
+    > img {
+      max-width: 100%;
+      height: 100%;
+      object-fit: cover;
+
+      ${Media.upToMedium()} {
+        height: 12rem;
+        width: 100%;
+        margin: 0 auto 2.4rem;
+      }
+    }
+
+    > span {
+      display: flex;
+      flex-flow: column wrap;
+      padding: 5.6rem;
+      gap: 2.4rem;
+
+      ${Media.upToMedium()} {
+        padding: 0 3.2rem 4.6rem;
+      }
+    }
+
+    > span > h4 {
+      margin: 0;
+      font-size: 3.4rem;
+      line-height: 1.2;
+      color: ${Color.neutral100};
+      font-weight: ${Font.weight.bold};
+
+      ${Media.upToMedium()} {
+        font-size: 2.4rem;
+      }
+    }
+
+    > span > p {
+      font-size: 1.8rem;
+      line-height: 1.4;
+
+      ${Media.upToMedium()} {
+        font-size: 1.6rem;
+      }
+    }
+  }
+
+  .swiper-button-next {
+    z-index: 20;
+    color: ${Color.neutral100};
+
+    ${Media.upToMedium()} {
+      left: initial;
+      right: 5px;
+    }
+  }
+
+  .swiper-button-prev {
+    z-index: 20;
+    color: ${Color.neutral100};
+
+    ${Media.upToMedium()} {
+      left: 5px;
+      right: initial;
     }
   }
 `

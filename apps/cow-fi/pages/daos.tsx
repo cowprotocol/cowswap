@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { transparentize } from 'polished'
 import { CONFIG, SiteConfig } from '@/const/meta'
 import { DAO_CONTENT as CONTENT } from '@/data/siteContent/daos'
-import { Media, Color, Font } from 'styles/variables'
+
 import {
   Section,
   SectionH1,
@@ -14,11 +14,12 @@ import {
   CardItem,
   TrustedBy,
 } from '@/components/Home/index.styles'
-import Layout from '@/components/Layout'
+import LayoutV2 from '@/components/Layout/LayoutV2'
 import SocialList from '@/components/SocialList'
 import { LinkWithUtm } from 'modules/utm'
 import { Button } from '@/components/Button'
 import SVG from 'react-inlinesvg'
+import { Color, Media, Font } from '@cowprotocol/ui'
 
 import 'swiper/css'
 import 'swiper/css/pagination'
@@ -27,9 +28,9 @@ import { Swiper, SwiperSlide } from 'swiper/react'
 import { Autoplay, Pagination, Navigation } from 'swiper/modules'
 
 const SwiperSlideWrapper = styled.div`
-  --swiper-navigation-color: ${Color.lightBlue};
-  --swiper-theme-color: ${Color.lightBlue};
-  --swiper-pagination-bullet-inactive-color: ${Color.lightBlue};
+  --swiper-navigation-color: ${Color.neutral0};
+  --swiper-theme-color: ${Color.neutral0};
+  --swiper-pagination-bullet-inactive-color: ${Color.neutral0};
   --swiper-pagination-bullet-size: 1.2rem;
 
   display: flex;
@@ -41,7 +42,7 @@ const SwiperSlideWrapper = styled.div`
     position: relative;
     padding: 0 0 5rem; // Fix for swiper pagination
 
-    ${Media.mobile} {
+    ${Media.upToMedium()} {
       overflow-x: visible;
     }
 
@@ -53,17 +54,17 @@ const SwiperSlideWrapper = styled.div`
       position: absolute;
       left: 0;
       top: 0;
-      background: linear-gradient(90deg, ${Color.darkBlue}, ${transparentize(1, Color.darkBlue)} 100%);
+      background: linear-gradient(90deg, ${Color.neutral10}, ${transparentize(1, 'white')} 100%);
       z-index: 10;
 
-      ${Media.mobile} {
+      ${Media.upToMedium()} {
         display: none;
         content: none;
       }
     }
 
     &::after {
-      background: linear-gradient(270deg, ${Color.darkBlue}, ${transparentize(1, Color.darkBlue)} 100%);
+      background: linear-gradient(270deg, ${Color.neutral10}, ${transparentize(1, 'white')} 100%);
       left: initial;
       right: 0;
     }
@@ -81,7 +82,7 @@ const SwiperSlideWrapper = styled.div`
     align-items: flex-start;
     justify-content: flex-start;
 
-    ${Media.mobile} {
+    ${Media.upToMedium()} {
       max-width: 100%;
       align-items: stretch;
     }
@@ -93,8 +94,8 @@ const SwiperSlideWrapper = styled.div`
     max-width: 100%;
     margin: 0 auto;
     border-radius: 6rem;
-    border: 0.1rem solid ${Color.border};
-    color: ${Color.lightBlue};
+    border: 0.1rem solid grey;
+    color: ${Color.neutral70};
     font-size: 2.4rem;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -102,7 +103,7 @@ const SwiperSlideWrapper = styled.div`
     justify-content: flex-start;
     overflow: hidden;
 
-    ${Media.mediumDown} {
+    ${Media.upToMedium()} {
       height: auto;
       max-width: 95%;
       display: flex;
@@ -114,7 +115,7 @@ const SwiperSlideWrapper = styled.div`
       height: 100%;
       object-fit: cover;
 
-      ${Media.mediumDown} {
+      ${Media.upToMedium()} {
         height: 12rem;
         width: 100%;
         margin: 0 auto 2.4rem;
@@ -127,7 +128,7 @@ const SwiperSlideWrapper = styled.div`
       padding: 5.6rem;
       gap: 2.4rem;
 
-      ${Media.mediumDown} {
+      ${Media.upToMedium()} {
         padding: 0 3.2rem 4.6rem;
       }
     }
@@ -136,19 +137,10 @@ const SwiperSlideWrapper = styled.div`
       margin: 0;
       font-size: 3.4rem;
       line-height: 1.2;
-      color: ${Color.lightBlue};
-      font-weight: ${Font.weightMedium};
-      background: ${Color.gradient};
-      background-clip: text;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      color: ${Color.neutral100};
+      font-weight: ${Font.weight.bold};
 
-      &::selection {
-        background-clip: initial;
-        -webkit-text-fill-color: initial;
-      }
-
-      ${Media.mobile} {
+      ${Media.upToMedium()} {
         font-size: 2.4rem;
       }
     }
@@ -157,7 +149,7 @@ const SwiperSlideWrapper = styled.div`
       font-size: 1.8rem;
       line-height: 1.4;
 
-      ${Media.mobile} {
+      ${Media.upToMedium()} {
         font-size: 1.6rem;
       }
     }
@@ -165,8 +157,9 @@ const SwiperSlideWrapper = styled.div`
 
   .swiper-button-next {
     z-index: 20;
+    color: ${Color.neutral100};
 
-    ${Media.mobile} {
+    ${Media.upToMedium()} {
       left: initial;
       right: 5px;
     }
@@ -174,8 +167,9 @@ const SwiperSlideWrapper = styled.div`
 
   .swiper-button-prev {
     z-index: 20;
+    color: ${Color.neutral100};
 
-    ${Media.mobile} {
+    ${Media.upToMedium()} {
       left: 5px;
       right: initial;
     }
@@ -208,7 +202,7 @@ export default function ForDAOs({ siteConfigData }: { siteConfigData: SiteConfig
     'CoW Swap protects DAOs from MEV and ensures they get the best prices for their treasury trades.'
 
   return (
-    <Layout fullWidthGradientVariant={true}>
+    <LayoutV2 bgColor={Color.neutral90}>
       <Head>
         <title>{pageTitle}</title>
         <meta key="description" name="description" content={pageDescription} />
@@ -217,7 +211,7 @@ export default function ForDAOs({ siteConfigData }: { siteConfigData: SiteConfig
         <meta key="twitterTitle" name="twitter:title" content={pageTitle} />
         <meta key="twitterDescription" name="twitter:description" content={pageDescription} />
       </Head>
-      <Section fullWidth padding={'8rem 8rem 4rem'} paddingMobile={'0 2.4rem 4rem'}>
+      <Section firstSection fullWidth padding={'8rem 8rem 4rem'} paddingMobile={'0 2.4rem 4rem'}>
         <SectionContent flow="column">
           <div>
             <SectionH1 fontSize={7} fontSizeMobile={4}>
@@ -229,7 +223,7 @@ export default function ForDAOs({ siteConfigData }: { siteConfigData: SiteConfig
                 Choose CoW Swap
               </span>
             </SectionH1>
-            <SubTitle color={Color.text1} fontSize={3} lineHeight={1.4} maxWidth={60}>
+            <SubTitle color={Color.neutral20} fontSize={3} lineHeight={1.4} maxWidth={60}>
               The smartest DAOs trust CoW Swap with their most-important trades
             </SubTitle>
             <Button href="#benefits" onClick={handleCTAClick} paddingLR={4.2} fontSizeMobile={2.1} label="Learn why" />
@@ -257,7 +251,7 @@ export default function ForDAOs({ siteConfigData }: { siteConfigData: SiteConfig
         <SectionContent>
           <SwiperSlideWrapper>
             <h3>Expert trading for expert DAOs</h3>
-            <SubTitle color={Color.lightBlue} lineHeight={1.4} maxWidth={80}>
+            <SubTitle color={Color.neutral100} lineHeight={1.4} maxWidth={80}>
               CoW Swap is the only DEX built to solve the unique challenges faced by DAOs
             </SubTitle>
             <Swiper
@@ -305,7 +299,7 @@ export default function ForDAOs({ siteConfigData }: { siteConfigData: SiteConfig
         <SectionContent flow={'column'}>
           <div className="container">
             <h3>Advanced order types</h3>
-            <SubTitle color={Color.text1} lineHeight={1.4} maxWidth={70}>
+            <SubTitle color={Color.neutral0} lineHeight={1.4} maxWidth={70}>
               CoW Swap&apos;s many order types help you get better prices for your trades, manage token launches,
               facilitate buybacks, and much more
             </SubTitle>
@@ -382,14 +376,14 @@ export default function ForDAOs({ siteConfigData }: { siteConfigData: SiteConfig
         <SectionContent flow={'column'}>
           <div>
             <h3>Get in touch</h3>
-            <SubTitle maxWidth={60} color={Color.text1} lineHeight={1.4}>
+            <SubTitle maxWidth={60} color={Color.neutral30} lineHeight={1.4}>
               Learn more about how CoW Protocol can help your DAO by reaching out on Twitter or Discord
             </SubTitle>
-            <SocialList social={socialFiltered} color={Color.darkBlue} />
+            <SocialList social={socialFiltered} color={Color.neutral10} />
           </div>
         </SectionContent>
       </Section>
-    </Layout>
+    </LayoutV2>
   )
 }
 
