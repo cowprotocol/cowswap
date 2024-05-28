@@ -122,8 +122,8 @@ export default function HomeLanding({ siteConfigData }: HomeLandingProps) {
               Start building
             </HeroButton>
           </HeroContent>
-          <HeroImage width={470}>
-            <img src={IMG_ICON_GOVERNANCE} alt="CoW Protocol" />
+          <HeroImage width={470} color={'#66018E'}>
+            <SVG src={IMG_ICON_GOVERNANCE} />
           </HeroImage>
         </HeroContainer>
 
@@ -185,11 +185,11 @@ export default function HomeLanding({ siteConfigData }: HomeLandingProps) {
                     Learn more
                   </TopicButton>
                 </TopicCardInner>
-                <TopicImage iconColor="#66018E" width={590} height={590} orderReverseMobile />
+                <TopicImage iconColor="#66018E" width={590} height={590} heightMobile={300} orderReverseMobile />
               </TopicCard>
 
               <TopicCard columns="1fr auto" gap={100} horizontal asProp="div">
-                <TopicImage iconColor="#66018E" width={590} height={590} orderReverseMobile />
+                <TopicImage iconColor="#66018E" width={590} height={590} heightMobile={300} orderReverseMobile />
                 <TopicCardInner contentAlign="left">
                   <TopicTitle fontSize={67}>Solvers</TopicTitle>
                   <TopicDescription fontSize={28}>
@@ -213,7 +213,7 @@ export default function HomeLanding({ siteConfigData }: HomeLandingProps) {
                     Learn more
                   </TopicButton>
                 </TopicCardInner>
-                <TopicImage iconColor="#66018E" width={590} height={590} orderReverseMobile />
+                <TopicImage iconColor="#66018E" width={590} height={590} heightMobile={300} orderReverseMobile />
               </TopicCard>
             </TopicList>
           </ContainerCardSection>

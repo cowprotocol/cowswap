@@ -243,11 +243,17 @@ export const TopicImage = styled.div<{
   margin: ${({ margin }) => margin || '0 0 16px'};
 
   ${Media.upToMedium()} {
-    width: ${({ widthMobile }) =>
-      typeof widthMobile === 'number' ? `${widthMobile}px` : widthMobile || 'var(--size)'};
-    height: ${({ heightMobile }) =>
-      typeof heightMobile === 'number' ? `${heightMobile}px` : heightMobile || 'var(--size)'};
+    width: 100%;
+    height: ${({ heightMobile, height }) =>
+      heightMobile
+        ? typeof heightMobile === 'number'
+          ? `${heightMobile}px`
+          : heightMobile
+        : typeof height === 'number'
+        ? `${height}px`
+        : height || 'var(--size)'};
     order: ${({ orderReverseMobile }) => (orderReverseMobile ? -1 : 'initial')};
+    max-width: 100%;
   }
 
   > span {
@@ -799,15 +805,13 @@ export const HeroButton = styled.a<{ background?: string; color?: string }>`
   }
 `
 
-export const HeroImage = styled.div<{ width?: number }>`
+export const HeroImage = styled.div<{ width?: number; color?: string }>`
   width: 100%;
   height: 100%;
   max-width: ${({ width }) => `${width}px` || '100%'};
   margin: 0 auto;
   padding: 0;
-
-  ${Media.upToMedium()} {
-  }
+  color: ${({ color }) => color || Color.neutral0};
 `
 
 export const MetricsCard = styled.div<{
