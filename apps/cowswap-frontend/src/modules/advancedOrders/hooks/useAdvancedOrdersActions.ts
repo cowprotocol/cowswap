@@ -5,9 +5,12 @@ import { Currency } from '@uniswap/sdk-core'
 
 import { Field } from 'legacy/state/types'
 
-import { useNavigateOnCurrencySelection } from 'modules/trade/hooks/useNavigateOnCurrencySelection'
-import { useSwitchTokensPlaces } from 'modules/trade/hooks/useSwitchTokensPlaces'
-import { useUpdateCurrencyAmount } from 'modules/trade/hooks/useUpdateCurrencyAmount'
+import {
+  useNavigateOnCurrencySelection,
+  useSwitchTokensPlaces,
+  useTradeState,
+  useUpdateCurrencyAmount,
+} from 'modules/trade'
 import { useResetTradeQuote } from 'modules/tradeQuote'
 
 import { useAdvancedOrdersDerivedState } from './useAdvancedOrdersDerivedState'
@@ -16,6 +19,7 @@ import { useUpdateAdvancedOrdersRawState } from './useAdvancedOrdersRawState'
 // TODO: this should be also unified for each trade widget (swap, limit, advanced)
 export function useAdvancedOrdersActions() {
   const { inputCurrency } = useAdvancedOrdersDerivedState()
+  const { updateState } = useTradeState()
 
   const naviageOnCurrencySelection = useNavigateOnCurrencySelection()
   const updateCurrencyAmount = useUpdateCurrencyAmount()
@@ -46,8 +50,12 @@ export function useAdvancedOrdersActions() {
         currency: inputCurrency,
         field,
       })
+
+      if (field === Field.INPUT) {
+        updateState?.({ outputCurrencyAmount: null })
+      }
     },
-    [inputCurrency, updateCurrencyAmount]
+    [updateState, inputCurrency, updateCurrencyAmount]
   )
 
   const onChangeRecipient = useCallback(

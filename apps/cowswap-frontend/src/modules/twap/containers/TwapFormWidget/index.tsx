@@ -5,7 +5,7 @@ import { openAdvancedOrdersTabAnalytics, twapWalletCompatibilityAnalytics } from
 import { renderTooltip } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { useAdvancedOrdersDerivedState, useAdvancedOrdersRawState } from 'modules/advancedOrders'
+import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 import { useTradeState } from 'modules/trade/hooks/useTradeState'
 import { TradeNumberInput } from 'modules/trade/pure/TradeNumberInput'
@@ -49,7 +49,6 @@ export function TwapFormWidget() {
   const buyAmount = useAtomValue(twapSlippageAdjustedBuyAmount)
 
   const { inputCurrencyAmount, outputCurrencyAmount } = useAdvancedOrdersDerivedState()
-  const { inputCurrencyAmount: rawInputCurrencyAmount } = useAdvancedOrdersRawState()
   const { updateState } = useTradeState()
   const isFallbackHandlerRequired = useIsFallbackHandlerRequired()
   const isFallbackHandlerCompatible = useIsFallbackHandlerCompatible()
@@ -73,11 +72,6 @@ export function TwapFormWidget() {
     customDeadline,
     isCustomDeadline,
   }
-
-  // Reset output amount when num of parts or input amount are changed
-  useEffect(() => {
-    updateState?.({ outputCurrencyAmount: null })
-  }, [updateState, numberOfPartsValue, rawInputCurrencyAmount])
 
   // Reset warnings flags once on start
   useEffect(() => {
@@ -106,9 +100,10 @@ export function TwapFormWidget() {
       onSlippageInput: (value: number | null) => updateSettingsState({ slippageValue: value }),
       onNumOfPartsInput: (value: number | null) => {
         updateSettingsState({ numberOfPartsValue: value || DEFAULT_NUM_OF_PARTS })
+        updateState?.({ outputCurrencyAmount: null })
       },
     }
-  }, [updateSettingsState])
+  }, [updateSettingsState, updateState])
 
   return (
     <>

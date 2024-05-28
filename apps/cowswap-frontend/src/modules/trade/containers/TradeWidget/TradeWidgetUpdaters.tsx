@@ -16,7 +16,7 @@ interface TradeWidgetUpdatersProps {
   disableQuotePolling: boolean
   disableNativeSelling: boolean
   children: ReactNode
-  tradeQuoteStateOverride?: TradeQuoteState
+  tradeQuoteStateOverride?: TradeQuoteState | null
 }
 
 export function TradeWidgetUpdaters({
