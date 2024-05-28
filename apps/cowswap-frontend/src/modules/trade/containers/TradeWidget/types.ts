@@ -22,7 +22,7 @@ interface TradeWidgetParams {
   showRecipient: boolean
   isTradePriceUpdating: boolean
   priceImpact: PriceImpact
-  tradeQuoteStateOverride?: TradeQuoteState
+  tradeQuoteStateOverride?: TradeQuoteState | null
   disableQuotePolling?: boolean
   disableNativeSelling?: boolean
   disablePriceImpact: boolean

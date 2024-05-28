@@ -19,7 +19,6 @@ import { EthFlowModal, EthFlowProps } from 'modules/swap/containers/EthFlow'
 import { SafeTokenBanner } from 'modules/swap/containers/SafeTokenBanner'
 import { SwapModals, SwapModalsProps } from 'modules/swap/containers/SwapModals'
 import { SwapButtonState } from 'modules/swap/helpers/getSwapButtonState'
-import { getInputReceiveAmountInfo, getOutputReceiveAmountInfo } from 'modules/swap/helpers/tradeReceiveAmount'
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { useShowRecipientControls } from 'modules/swap/hooks/useShowRecipientControls'
 import { useSwapButtonContext } from 'modules/swap/hooks/useSwapButtonContext'
@@ -77,6 +76,7 @@ export function SwapWidget() {
   const { enabledTradeTypes, banners: widgetBanners } = useInjectedWidgetParams()
   const priceImpactParams = useTradePriceImpact()
   const tradeQuoteStateOverride = useTradeQuoteStateFromLegacy()
+  const receiveAmountInfo = useReceiveAmountInfo()
 
   const isTradePriceUpdating = useTradePricesUpdate()
   const { isFeeGreater, fee } = useIsFeeGreaterThanInput({
@@ -126,7 +126,7 @@ export function SwapWidget() {
     isIndependent: isSellTrade,
     balance: inputCurrencyBalance,
     fiatAmount: inputUsdValue,
-    receiveAmountInfo: !isSellTrade && trade ? getInputReceiveAmountInfo(trade) : null,
+    receiveAmountInfo,
   }
 
   const outputCurrencyInfo: CurrencyInfo = {
@@ -136,7 +136,7 @@ export function SwapWidget() {
     isIndependent: !isSellTrade,
     balance: outputCurrencyBalance,
     fiatAmount: outputUsdValue,
-    receiveAmountInfo: isSellTrade && trade ? getOutputReceiveAmountInfo(trade) : null,
+    receiveAmountInfo,
   }
 
   const inputCurrencyPreviewInfo = {
@@ -153,32 +153,6 @@ export function SwapWidget() {
     label: isSellTrade ? 'Receive (before fees)' : 'Buy exactly',
   }
 
-  const newReceiveAmountInfo = useReceiveAmountInfo()
-
-  console.log('[COMPARSION RESULT]', {
-    buy: {
-      amountAfterFees:
-        newReceiveAmountInfo?.amountAfterFees.toExact() ===
-        inputCurrencyInfo.receiveAmountInfo?.amountAfterFees.toExact(),
-      amountBeforeFees:
-        newReceiveAmountInfo?.amountBeforeFees?.toExact() ===
-        inputCurrencyInfo.receiveAmountInfo?.amountBeforeFees?.toExact(),
-      partnerFeeAmount:
-        newReceiveAmountInfo?.partnerFeeAmount?.toExact() ===
-        inputCurrencyInfo.receiveAmountInfo?.partnerFeeAmount?.toExact(),
-    },
-    sell: {
-      amountAfterFees:
-        newReceiveAmountInfo?.amountAfterFees.toExact() ===
-        outputCurrencyInfo.receiveAmountInfo?.amountAfterFees.toExact(),
-      amountBeforeFees:
-        newReceiveAmountInfo?.amountBeforeFees?.toExact() ===
-        outputCurrencyInfo.receiveAmountInfo?.amountBeforeFees?.toExact(),
-      partnerFeeAmount:
-        newReceiveAmountInfo?.partnerFeeAmount?.toExact() ===
-        outputCurrencyInfo.receiveAmountInfo?.partnerFeeAmount?.toExact(),
-    },
-  })
   const buyingFiatAmount = useMemo(
     () => (isSellTrade ? outputCurrencyInfo.fiatAmount : inputCurrencyInfo.fiatAmount),
     [isSellTrade, outputCurrencyInfo.fiatAmount, inputCurrencyInfo.fiatAmount]
