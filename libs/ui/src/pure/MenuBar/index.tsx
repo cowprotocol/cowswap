@@ -70,6 +70,7 @@ interface MenuBarProps {
   theme: CowSwapTheme
   productVariant: ProductVariant
   additionalContent?: React.ReactNode
+  showGlobalSettings?: boolean
 }
 
 interface DropdownMenuItem {
@@ -347,7 +348,7 @@ const GlobalSettingsDropdown = ({ mobileMode }: { mobileMode: boolean }) => {
 }
 
 export const MenuBar = (props: MenuBarProps) => {
-  const { navItems, theme, productVariant: productVariant, additionalContent } = props
+  const { navItems, theme, productVariant: productVariant, additionalContent, showGlobalSettings } = props
   const [isDaoOpen, setIsDaoOpen] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const menuRef = useRef(null)
@@ -408,7 +409,7 @@ export const MenuBar = (props: MenuBarProps) => {
                 <SVG src={isMobileMenuOpen ? IMG_ICON_X : IMG_ICON_MENU_HAMBURGER} />
               </MobileMenuTrigger>
             )}
-            <GlobalSettingsDropdown mobileMode={isMobile} />
+            {showGlobalSettings && <GlobalSettingsDropdown mobileMode={isMobile} />}
           </RightAligned>
         </MenuBarInner>
 

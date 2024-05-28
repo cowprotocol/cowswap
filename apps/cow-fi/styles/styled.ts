@@ -213,13 +213,14 @@ export const TopicCard = styled.a.attrs<TopicCardProps>(({ asProp }) => ({
   `}
 `
 
-export const TopicCardInner = styled.div<{ contentAlign?: string }>`
+export const TopicCardInner = styled.div<{ contentAlign?: string; gap?: number; height?: string }>`
   display: flex;
   flex-flow: column wrap;
-  gap: 16px;
+  gap: ${({ gap }) => (typeof gap === 'number' ? `${gap}px` : '16px')};
   text-align: ${({ contentAlign }) => contentAlign || 'center'};
   align-items: ${({ contentAlign }) =>
     contentAlign === 'left' ? 'flex-start' : contentAlign === 'right' ? 'flex-end' : 'center'};
+  height: ${({ height }) => height || 'auto'};
 `
 
 export const TopicImage = styled.div<{
@@ -293,16 +294,23 @@ export const TopicDescription = styled.p<{
   fontSizeMobile?: number
   fontWeight?: string
   color?: string
+  margin?: string
 }>`
   font-size: ${({ fontSize }) => fontSize || 16}px;
-  color: ${({ color }) => color || Color.neutral50};
+  color: ${({ color }) => color || 'inherit'};
   font-weight: ${({ fontWeight }) => fontWeight || Font.weight.medium};
   line-height: 1.4;
-  margin: 16px 0;
+  margin: ${({ margin }) => margin || '16px 0'};
   text-align: inherit;
 
   ${Media.upToMedium()} {
     font-size: ${({ fontSizeMobile }) => fontSizeMobile || 16}px;
+  }
+
+  > table {
+    > td:nth-child(odd) {
+      padding: 0 16px 0 0;
+    }
   }
 `
 
@@ -595,6 +603,7 @@ export const SectionTitleText = styled.h5<{
   fontSizeMobile?: number
   fontWeight?: number
   color?: string
+  maxWidth?: number
   as?: string
   textAlign?: string
 }>`
@@ -604,6 +613,7 @@ export const SectionTitleText = styled.h5<{
   margin: 0;
   text-align: ${({ textAlign }) => textAlign || 'center'};
   line-height: 1.2;
+  max-width: ${({ maxWidth }) => (maxWidth ? `${maxWidth}px` : '100%')};
 
   ${Media.upToMedium()} {
     font-size: ${({ fontSizeMobile }) => fontSizeMobile || 38}px;
@@ -611,7 +621,7 @@ export const SectionTitleText = styled.h5<{
 `
 
 export const SectionTitleDescription = styled.p<{
-  maxWidth?: number
+  maxWidth?: number | string
   color?: string
   fontSize?: number
   fontSizeMobile?: number
@@ -624,7 +634,7 @@ export const SectionTitleDescription = styled.p<{
   line-height: 1.2;
   text-align: ${({ textAlign }) => textAlign || 'center'};
   width: 100%;
-  max-width: ${({ maxWidth }) => maxWidth || 800}px;
+  max-width: ${({ maxWidth }) => (typeof maxWidth === 'number' ? `${maxWidth}px` : maxWidth || '100%')};
 
   ${Media.upToMedium()} {
     font-size: ${({ fontSizeMobile }) => fontSizeMobile || 21}px;
@@ -704,7 +714,7 @@ export const SectionImage = styled.div<{
   }
 `
 
-export const HeroContainer = styled.div<{ variant?: string; maxWidth?: number }>`
+export const HeroContainer = styled.div<{ variant?: string; maxWidth?: number; padding?: string }>`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -714,7 +724,7 @@ export const HeroContainer = styled.div<{ variant?: string; maxWidth?: number }>
   width: 100%;
   max-width: ${({ maxWidth }) => (maxWidth ? `${maxWidth}px` : '100%')};
   background: transparent;
-  padding: 0 20px;
+  padding: ${({ padding }) => padding || '0 20px'};
   overflow: hidden;
   margin: 0 auto;
 
@@ -744,12 +754,12 @@ export const HeroBackground = styled.div<{ imageHeight?: string }>`
   }
 `
 
-export const HeroContent = styled.div<{ variant?: string }>`
+export const HeroContent = styled.div<{ variant?: string; gap?: number }>`
   position: relative;
   z-index: 2;
   text-align: ${({ variant }) => (variant === 'secondary' ? 'left' : 'center')};
   color: ${Color.neutral0};
-  gap: 32px;
+  gap: ${({ gap }) => gap || 32}px;
   display: flex;
   flex-flow: column wrap;
   max-width: 100%;
@@ -803,10 +813,16 @@ export const HeroDescription = styled.p<{ fontSize?: number; fontSizeMobile?: nu
   font-weight: ${Font.weight.medium};
   color: ${Color.neutral10};
   margin: 16px 0;
+  padding: 0;
   line-height: 1.5;
 
   ${Media.upToMedium()} {
     font-size: ${({ fontSizeMobile }) => fontSizeMobile || 21}px;
+  }
+
+  > ol {
+    padding: 0 0 0 24px;
+    font-size: inherit;
   }
 `
 
@@ -814,7 +830,7 @@ export const HeroButton = styled.a<{ background?: string; color?: string }>`
   display: inline-block;
   padding: 16px 24px;
   font-size: 27px;
-  font-weight: ${Font.weight.medium};
+  font-weight: ${Font.weight.bold};
   color: ${({ color }) => color || Color.neutral98};
   background: ${({ background }) => background || Color.neutral10};
   text-decoration: none;
@@ -852,7 +868,7 @@ export const MetricsCard = styled.div<{
   columnsMobile?: number
   touchFooter?: boolean
 }>`
-  --paddingBottomOffset: ${({ touchFooter }) => (touchFooter ? '140px' : '60px')};
+  --paddingBottomOffset: ${({ touchFooter }) => (touchFooter ? '160px' : '60px')};
   display: grid;
   grid-template-columns: ${({ columns }) => `repeat(${columns || 3}, 1fr)`};
   gap: 0;
