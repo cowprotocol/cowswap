@@ -33,7 +33,7 @@ import {
   SwapWarningsTop,
   SwapWarningsTopProps,
 } from 'modules/swap/pure/warnings'
-import { TradeWidget, TradeWidgetContainer, useTradePriceImpact } from 'modules/trade'
+import { TradeWidget, TradeWidgetContainer, useReceiveAmountInfo, useTradePriceImpact } from 'modules/trade'
 import { useTradeRouteContext } from 'modules/trade/hooks/useTradeRouteContext'
 import { useWrappedToken } from 'modules/trade/hooks/useWrappedToken'
 import { getQuoteTimeOffset } from 'modules/tradeQuote'
@@ -153,6 +153,32 @@ export function SwapWidget() {
     label: isSellTrade ? 'Receive (before fees)' : 'Buy exactly',
   }
 
+  const newReceiveAmountInfo = useReceiveAmountInfo()
+
+  console.log('[COMPARSION RESULT]', {
+    buy: {
+      amountAfterFees:
+        newReceiveAmountInfo?.amountAfterFees.toExact() ===
+        inputCurrencyInfo.receiveAmountInfo?.amountAfterFees.toExact(),
+      amountBeforeFees:
+        newReceiveAmountInfo?.amountBeforeFees?.toExact() ===
+        inputCurrencyInfo.receiveAmountInfo?.amountBeforeFees?.toExact(),
+      partnerFeeAmount:
+        newReceiveAmountInfo?.partnerFeeAmount?.toExact() ===
+        inputCurrencyInfo.receiveAmountInfo?.partnerFeeAmount?.toExact(),
+    },
+    sell: {
+      amountAfterFees:
+        newReceiveAmountInfo?.amountAfterFees.toExact() ===
+        outputCurrencyInfo.receiveAmountInfo?.amountAfterFees.toExact(),
+      amountBeforeFees:
+        newReceiveAmountInfo?.amountBeforeFees?.toExact() ===
+        outputCurrencyInfo.receiveAmountInfo?.amountBeforeFees?.toExact(),
+      partnerFeeAmount:
+        newReceiveAmountInfo?.partnerFeeAmount?.toExact() ===
+        outputCurrencyInfo.receiveAmountInfo?.partnerFeeAmount?.toExact(),
+    },
+  })
   const buyingFiatAmount = useMemo(
     () => (isSellTrade ? outputCurrencyInfo.fiatAmount : inputCurrencyInfo.fiatAmount),
     [isSellTrade, outputCurrencyInfo.fiatAmount, inputCurrencyInfo.fiatAmount]

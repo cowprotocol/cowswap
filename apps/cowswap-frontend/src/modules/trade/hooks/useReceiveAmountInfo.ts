@@ -2,54 +2,123 @@ import { useMemo } from 'react'
 
 import { bpsToPercent, isSellOrder } from '@cowprotocol/common-utils'
 import { PartnerFee } from '@cowprotocol/widget-lib'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
 
 import { useWidgetPartnerFee } from 'modules/injectedWidget'
+import { useTradeQuote } from 'modules/tradeQuote'
 
 import { useDerivedTradeState } from './useDerivedTradeState'
 
-// import { useTradeQuote } from '../../tradeQuote'
 import { ReceiveAmountInfo } from '../types'
+
+interface ReceiveAmountInfoContext {
+  isSell: boolean
+  quotePrice: Price<Currency, Currency>
+  networkFeeAmount: CurrencyAmount<Currency>
+  inputAmountAfterNetworkFees: CurrencyAmount<Currency>
+  outputAmountAfterNetworkFees: CurrencyAmount<Currency>
+  partnerFee: PartnerFee | undefined
+}
 
 export function useReceiveAmountInfo(): ReceiveAmountInfo | null {
   const { state } = useDerivedTradeState()
-  // const { response, isLoading } = useTradeQuote()
+  const { response: quoteResponse } = useTradeQuote()
   const partnerFee = useWidgetPartnerFee()
 
   return useMemo(() => {
-    const isSell = !!state?.orderKind && isSellOrder(state.orderKind)
-    const amount = isSell ? state?.outputCurrencyAmount : state?.inputCurrencyAmount
+    if (!state) return null
 
-    if (!amount) return null
+    const isSell = isSellOrder(state.orderKind)
+    const { inputCurrency, outputCurrency } = state
 
-    const type = isSell ? 'to' : 'from'
+    const quote = quoteResponse?.quote
 
-    const { amountAfterPartnerFee, partnerFeeAmount } = getAmountAfterPartnerFees(type, amount, partnerFee)
+    if (!inputCurrency || !outputCurrency || !quote) return null
+
+    const networkFeeAmount = CurrencyAmount.fromRawAmount(inputCurrency, quote.feeAmount)
+
+    const inputAmountAfterNetworkFees = CurrencyAmount.fromRawAmount(inputCurrency, quote.sellAmount)
+    const outputAmountAfterNetworkFees = CurrencyAmount.fromRawAmount(outputCurrency, quote.buyAmount)
+
+    // Fees exceed amount
+    if (networkFeeAmount.greaterThan(inputAmountAfterNetworkFees)) return null
+
+    const quotePrice = new Price<Currency, Currency>({
+      baseAmount: inputAmountAfterNetworkFees,
+      quoteAmount: outputAmountAfterNetworkFees,
+    })
+
+    if (!quotePrice) return null
+
+    return getReceiveAmountInfo({
+      isSell,
+      quotePrice,
+      networkFeeAmount,
+      inputAmountAfterNetworkFees,
+      outputAmountAfterNetworkFees,
+      partnerFee,
+    })
+  }, [state, partnerFee, quoteResponse])
+}
+
+function getReceiveAmountInfo(context: ReceiveAmountInfoContext): ReceiveAmountInfo {
+  const {
+    isSell,
+    quotePrice,
+    networkFeeAmount,
+    inputAmountAfterNetworkFees,
+    outputAmountAfterNetworkFees,
+    partnerFee,
+  } = context
+
+  const type = isSell ? 'to' : 'from'
+
+  if (isSell) {
+    const amountAfterFees = quotePrice.quote(inputAmountAfterNetworkFees.add(networkFeeAmount))
+
+    const partnerFeeAmount = partnerFeeBpsToAmount(partnerFee?.bps, amountAfterFees)
+
+    if (partnerFeeAmount.equalTo(0)) {
+      return {
+        type,
+        amountBeforeFees: amountAfterFees,
+        amountAfterFees: quotePrice.quote(inputAmountAfterNetworkFees),
+        networkFeeAmount,
+        partnerFeeAmount,
+      }
+    }
 
     return {
       type,
-      amountBeforeFees: amount,
-      amountAfterFees: amountAfterPartnerFee,
-      networkFeeAmount: undefined, // TODO: add network fee from quote
+      amountBeforeFees: amountAfterFees,
+      amountAfterFees: outputAmountAfterNetworkFees.subtract(partnerFeeAmount),
+      networkFeeAmount,
       partnerFeeAmount,
     }
-  }, [state, partnerFee])
+  } else {
+    const amountAfterFees = inputAmountAfterNetworkFees.add(networkFeeAmount)
+    const partnerFeeAmount = partnerFeeBpsToAmount(partnerFee?.bps, inputAmountAfterNetworkFees)
+
+    if (partnerFeeAmount.equalTo(0)) {
+      return {
+        type,
+        amountBeforeFees: inputAmountAfterNetworkFees,
+        amountAfterFees,
+        networkFeeAmount,
+        partnerFeeAmount,
+      }
+    }
+
+    return {
+      type,
+      amountBeforeFees: inputAmountAfterNetworkFees,
+      amountAfterFees: amountAfterFees.add(partnerFeeAmount),
+      networkFeeAmount,
+      partnerFeeAmount,
+    }
+  }
 }
 
-function getAmountAfterPartnerFees(
-  type: ReceiveAmountInfo['type'],
-  amount: CurrencyAmount<Currency>,
-  partnerFee: PartnerFee | undefined
-) {
-  const partnerFeeAmount = partnerFee ? amount.multiply(bpsToPercent(partnerFee.bps)) : undefined
-  const amountAfterPartnerFee = partnerFeeAmount
-    ? type === 'to'
-      ? amount.subtract(partnerFeeAmount)
-      : amount.add(partnerFeeAmount)
-    : amount
-
-  return {
-    amountAfterPartnerFee,
-    partnerFeeAmount,
-  }
+function partnerFeeBpsToAmount(bps: number | undefined, amount: CurrencyAmount<Currency>): CurrencyAmount<Currency> {
+  return bps ? amount.multiply(bpsToPercent(bps)) : CurrencyAmount.fromRawAmount(amount.currency, 0)
 }
