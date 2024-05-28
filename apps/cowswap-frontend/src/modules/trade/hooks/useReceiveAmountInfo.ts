@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 
 import { bpsToPercent, isSellOrder } from '@cowprotocol/common-utils'
+import type { OrderParameters } from '@cowprotocol/cow-sdk'
 import { PartnerFee } from '@cowprotocol/widget-lib'
 import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
 
@@ -13,10 +14,15 @@ import { ReceiveAmountInfo } from '../types'
 
 interface ReceiveAmountInfoContext {
   isSell: boolean
-  quotePrice: Price<Currency, Currency>
   networkFeeAmount: CurrencyAmount<Currency>
-  inputAmountAfterNetworkFees: CurrencyAmount<Currency>
-  outputAmountAfterNetworkFees: CurrencyAmount<Currency>
+  beforeNetworkCosts: {
+    sellAmount: CurrencyAmount<Currency>
+    buyAmount: CurrencyAmount<Currency>
+  }
+  afterNetworkCosts: {
+    sellAmount: CurrencyAmount<Currency>
+    buyAmount: CurrencyAmount<Currency>
+  }
   partnerFee: PartnerFee | undefined
 }
 
@@ -28,94 +34,91 @@ export function useReceiveAmountInfo(): ReceiveAmountInfo | null {
   return useMemo(() => {
     if (!state) return null
 
-    const isSell = isSellOrder(state.orderKind)
     const { inputCurrency, outputCurrency } = state
 
     const quote = quoteResponse?.quote
 
     if (!inputCurrency || !outputCurrency || !quote) return null
 
-    const networkFeeAmount = CurrencyAmount.fromRawAmount(inputCurrency, quote.feeAmount)
-
-    const inputAmountAfterNetworkFees = CurrencyAmount.fromRawAmount(inputCurrency, quote.sellAmount)
-    const outputAmountAfterNetworkFees = CurrencyAmount.fromRawAmount(outputCurrency, quote.buyAmount)
-
-    // Fees exceed amount
-    if (networkFeeAmount.greaterThan(inputAmountAfterNetworkFees)) return null
-
-    const quotePrice = new Price<Currency, Currency>({
-      baseAmount: inputAmountAfterNetworkFees,
-      quoteAmount: outputAmountAfterNetworkFees,
-    })
-
-    if (!quotePrice) return null
-
     return getReceiveAmountInfo({
-      isSell,
-      quotePrice,
-      networkFeeAmount,
-      inputAmountAfterNetworkFees,
-      outputAmountAfterNetworkFees,
+      ...getReceiveAmountInfoContext(quote, inputCurrency, outputCurrency),
       partnerFee,
     })
   }, [state, partnerFee, quoteResponse])
 }
 
-function getReceiveAmountInfo(context: ReceiveAmountInfoContext): ReceiveAmountInfo {
-  const {
-    isSell,
-    quotePrice,
+/**
+ * Wraps raw values from the quote API into a context object that can be used to calculate receive amounts
+ *
+ * @param orderParams - DTO from quote API that contains the fee and amounts information
+ * @param inputCurrency - Currency of the input amount
+ * @param outputCurrency - Currency of the output amount
+ */
+export function getReceiveAmountInfoContext(
+  orderParams: OrderParameters,
+  inputCurrency: Currency,
+  outputCurrency: Currency
+): Omit<ReceiveAmountInfoContext, 'partnerFee'> {
+  /**
+   * Wrap raw values into CurrencyAmount objects
+   * We also make amounts names more specific with "beforeNetworkCosts" and "afterNetworkCosts"
+   */
+  const networkFeeAmount = CurrencyAmount.fromRawAmount(inputCurrency, orderParams.feeAmount)
+  const sellAmountBeforeNetworkCosts = CurrencyAmount.fromRawAmount(inputCurrency, orderParams.sellAmount)
+  const buyAmountAfterNetworkCosts = CurrencyAmount.fromRawAmount(outputCurrency, orderParams.buyAmount)
+
+  const quotePrice = new Price<Currency, Currency>({
+    baseAmount: sellAmountBeforeNetworkCosts,
+    quoteAmount: buyAmountAfterNetworkCosts,
+  })
+
+  const sellAmountAfterNetworkCosts = sellAmountBeforeNetworkCosts.add(networkFeeAmount)
+  const buyAmountBeforeNetworkCosts = quotePrice.quote(sellAmountAfterNetworkCosts)
+
+  return {
+    isSell: isSellOrder(orderParams.kind),
     networkFeeAmount,
-    inputAmountAfterNetworkFees,
-    outputAmountAfterNetworkFees,
-    partnerFee,
-  } = context
+    beforeNetworkCosts: {
+      sellAmount: sellAmountBeforeNetworkCosts,
+      buyAmount: buyAmountBeforeNetworkCosts,
+    },
+    afterNetworkCosts: {
+      sellAmount: sellAmountAfterNetworkCosts,
+      buyAmount: buyAmountAfterNetworkCosts,
+    },
+  }
+}
+
+/**
+ * Calculates the receive-amounts information based on the context (which is derived from the quote API response)
+ * @param context
+ */
+export function getReceiveAmountInfo(context: ReceiveAmountInfoContext): ReceiveAmountInfo {
+  const { isSell, beforeNetworkCosts, afterNetworkCosts, networkFeeAmount, partnerFee } = context
 
   const type = isSell ? 'to' : 'from'
 
-  if (isSell) {
-    const amountAfterFees = quotePrice.quote(inputAmountAfterNetworkFees.add(networkFeeAmount))
+  /**
+   * Partner fee is always added on the surplus token, for sell-orders it's buy token, for buy-orders it's sell token
+   */
+  const partnerFeeAmount = partnerFeeBpsToAmount(
+    partnerFee?.bps,
+    isSell ? beforeNetworkCosts.buyAmount : beforeNetworkCosts.sellAmount
+  )
 
-    const partnerFeeAmount = partnerFeeBpsToAmount(partnerFee?.bps, amountAfterFees)
-
-    if (partnerFeeAmount.equalTo(0)) {
-      return {
-        type,
-        amountBeforeFees: amountAfterFees,
-        amountAfterFees: quotePrice.quote(inputAmountAfterNetworkFees),
-        networkFeeAmount,
-        partnerFeeAmount,
-      }
-    }
-
-    return {
-      type,
-      amountBeforeFees: amountAfterFees,
-      amountAfterFees: outputAmountAfterNetworkFees.subtract(partnerFeeAmount),
-      networkFeeAmount,
-      partnerFeeAmount,
-    }
-  } else {
-    const amountAfterFees = inputAmountAfterNetworkFees.add(networkFeeAmount)
-    const partnerFeeAmount = partnerFeeBpsToAmount(partnerFee?.bps, inputAmountAfterNetworkFees)
-
-    if (partnerFeeAmount.equalTo(0)) {
-      return {
-        type,
-        amountBeforeFees: inputAmountAfterNetworkFees,
-        amountAfterFees,
-        networkFeeAmount,
-        partnerFeeAmount,
-      }
-    }
-
-    return {
-      type,
-      amountBeforeFees: inputAmountAfterNetworkFees,
-      amountAfterFees: amountAfterFees.add(partnerFeeAmount),
-      networkFeeAmount,
-      partnerFeeAmount,
-    }
+  return {
+    type,
+    networkFeeAmount,
+    partnerFeeAmount,
+    ...(isSell
+      ? {
+          amountBeforeFees: beforeNetworkCosts.buyAmount,
+          amountAfterFees: afterNetworkCosts.buyAmount.subtract(partnerFeeAmount),
+        }
+      : {
+          amountBeforeFees: beforeNetworkCosts.sellAmount,
+          amountAfterFees: afterNetworkCosts.sellAmount.add(partnerFeeAmount),
+        }),
   }
 }
 
