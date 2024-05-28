@@ -28,14 +28,14 @@ export const ContainerCard = styled.div<{
   }
 `
 
-export const ContainerCardSection = styled.div<{ padding?: string }>`
+export const ContainerCardSection = styled.div<{ padding?: string; gap?: number }>`
   display: flex;
   flex-flow: row wrap;
-  gap: 42px;
   width: 100%;
   justify-content: space-between;
   align-items: center;
   color: inherit;
+  gap: ${({ gap }) => gap || 42}px;
   padding: ${({ padding }) => padding || '0'};
 `
 
@@ -569,6 +569,7 @@ export const SectionTitleWrapper = styled.div<{
   maxWidth?: number
   gap?: number
   padding?: string
+  margin?: string
   rowWrap?: boolean
 }>`
   --color: ${Color.neutral20};
@@ -577,7 +578,7 @@ export const SectionTitleWrapper = styled.div<{
   flex-flow: ${({ rowWrap }) => (rowWrap ? 'row wrap' : 'column wrap')};
   align-items: center;
   color: ${({ color }) => color || 'inherit'};
-  margin: 100px auto 56px;
+  margin: ${({ margin }) => margin || '100px auto 56px'};
   text-align: center;
   width: 100%;
   max-width: ${({ maxWidth }) => (maxWidth ? `${maxWidth}px` : '100%')};
@@ -630,6 +631,25 @@ export const SectionTitleDescription = styled.p<{
   }
 `
 
+export const SectionTitleButton = styled.a<{ bgColor?: string; color?: string }>`
+  display: inline-block;
+  padding: 16px 24px;
+  font-size: 27px;
+  font-weight: ${Font.weight.bold};
+  color: ${({ color }) => color || Color.neutral98};
+  background: ${({ bgColor }) => bgColor || Color.neutral10};
+  text-decoration: none;
+  border-radius: 32px;
+  line-height: 1.2;
+  text-align: center;
+  width: max-content;
+  transition: opacity 0.2s ease-in-out;
+
+  &:hover {
+    opacity: 0.8;
+  }
+`
+
 export const SectionTitleIcon = styled.div<{ size?: number; multiple?: boolean }>`
   --size: ${({ size }) => (size ? `${size}px` : '64px')};
   width: 100%;
@@ -651,6 +671,10 @@ export const SectionTitleIcon = styled.div<{ size?: number; multiple?: boolean }
     height: 100%;
     max-height: var(--size);
     fill: currentColor;
+  }
+
+  .image-reverse {
+    transform: scaleX(-1);
   }
 `
 
@@ -805,13 +829,20 @@ export const HeroButton = styled.a<{ background?: string; color?: string }>`
   }
 `
 
-export const HeroImage = styled.div<{ width?: number; color?: string }>`
+export const HeroImage = styled.div<{ width?: number; height?: number; color?: string }>`
   width: 100%;
-  height: 100%;
+  height: ${({ height }) => (height ? `${height}px` : 'auto')};
   max-width: ${({ width }) => `${width}px` || '100%'};
   margin: 0 auto;
   padding: 0;
   color: ${({ color }) => color || Color.neutral0};
+
+  > img,
+  > svg {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
 `
 
 export const MetricsCard = styled.div<{
