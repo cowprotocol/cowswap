@@ -2,9 +2,13 @@ import { atom } from 'jotai'
 
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
+import { advancedOrdersDerivedStateAtom } from 'modules/advancedOrders'
+import { injectedWidgetPartnerFeeAtom } from 'modules/injectedWidget/state/injectedWidgetParamsAtom'
+import { getReceiveAmountInfo, getReceiveAmountInfoContext, ReceiveAmountInfo } from 'modules/trade'
+import { tradeQuoteAtom } from 'modules/tradeQuote'
+
 import { twapOrdersSettingsAtom } from './twapOrdersSettingsAtom'
 
-import { advancedOrdersDerivedStateAtom } from '../../advancedOrders'
 import { DEFAULT_NUM_OF_PARTS } from '../const'
 
 export interface PartsState {
@@ -13,14 +17,31 @@ export interface PartsState {
   outputPartAmount: CurrencyAmount<Currency> | null
   inputFiatAmount: CurrencyAmount<Currency> | null
   outputFiatAmount: CurrencyAmount<Currency> | null
+  receiveAmountInfo: ReceiveAmountInfo | null
 }
 
 export const partsStateAtom = atom<PartsState>((get) => {
   const { numberOfPartsValue } = get(twapOrdersSettingsAtom)
-  const { inputCurrencyAmount, outputCurrencyAmount, inputCurrencyFiatAmount, outputCurrencyFiatAmount } =
-    get(advancedOrdersDerivedStateAtom)
+  const { response: quoteResponse } = get(tradeQuoteAtom)
+  const partnerFee = get(injectedWidgetPartnerFeeAtom)
+  const {
+    inputCurrency,
+    outputCurrency,
+    inputCurrencyAmount,
+    outputCurrencyAmount,
+    inputCurrencyFiatAmount,
+    outputCurrencyFiatAmount,
+  } = get(advancedOrdersDerivedStateAtom)
 
   const divider = numberOfPartsValue || DEFAULT_NUM_OF_PARTS
+
+  const receiveAmountInfo =
+    quoteResponse && inputCurrency && outputCurrency
+      ? getReceiveAmountInfo({
+          ...getReceiveAmountInfoContext(quoteResponse.quote, inputCurrency, outputCurrency),
+          partnerFee,
+        })
+      : null
 
   return {
     numberOfPartsValue,
@@ -28,5 +49,6 @@ export const partsStateAtom = atom<PartsState>((get) => {
     outputPartAmount: outputCurrencyAmount?.divide(divider) || null,
     inputFiatAmount: inputCurrencyFiatAmount?.divide(divider) || null,
     outputFiatAmount: outputCurrencyFiatAmount?.divide(divider) || null,
+    receiveAmountInfo,
   }
 })

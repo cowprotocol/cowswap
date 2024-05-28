@@ -17,10 +17,11 @@ interface TradeAmountPreviewProps {
   fiatAmount: Nullish<CurrencyAmount<Currency>>
   label: JSX.Element
   tooltip: ReactNode
+  children?: ReactNode
 }
 
 function TradeAmountPreview(props: TradeAmountPreviewProps) {
-  const { amount, fiatAmount, label, tooltip } = props
+  const { amount, fiatAmount, label, tooltip, children } = props
 
   return (
     <styledEl.Part>
@@ -31,12 +32,20 @@ function TradeAmountPreview(props: TradeAmountPreviewProps) {
 
       <styledEl.Amount amount={amount} tokenSymbol={amount?.currency} />
       <styledEl.Fiat amount={fiatAmount} />
+      {children}
     </styledEl.Part>
   )
 }
 
 export function AmountParts({ partsState, labels }: { partsState: PartsState; labels: LabelTooltipItems }) {
-  const { numberOfPartsValue, inputPartAmount, outputPartAmount, inputFiatAmount, outputFiatAmount } = partsState
+  const {
+    numberOfPartsValue,
+    inputPartAmount,
+    outputPartAmount,
+    inputFiatAmount,
+    outputFiatAmount,
+    receiveAmountInfo,
+  } = partsState
   const { sellAmount, buyAmount } = labels
 
   return (
@@ -61,7 +70,18 @@ export function AmountParts({ partsState, labels }: { partsState: PartsState; la
         tooltip={renderTooltip(buyAmount.tooltip)}
         amount={outputPartAmount}
         fiatAmount={outputFiatAmount}
-      />
+      >
+        {/*TODO: add styles*/}
+        <div>
+          <styledEl.Label>
+            <Trans>Receive (incl. costs)</Trans>
+          </styledEl.Label>
+          <styledEl.Amount
+            amount={receiveAmountInfo?.amountAfterFees}
+            tokenSymbol={receiveAmountInfo?.amountAfterFees?.currency}
+          />
+        </div>
+      </TradeAmountPreview>
     </styledEl.Wrapper>
   )
 }
