@@ -1,4 +1,11 @@
-import { AppData, AppDataHash, EnrichedOrder, PriceQuality, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import {
+  AppData,
+  AppDataHash,
+  EnrichedOrder,
+  OrderQuoteResponse,
+  PriceQuality,
+  SupportedChainId as ChainId,
+} from '@cowprotocol/cow-sdk'
 
 type GpPriceStrategy = 'COWSWAP' | 'LEGACY'
 
@@ -25,7 +32,7 @@ export interface LegacyQuoteParams {
   quoteParams: LegacyFeeQuoteParams
   strategy: GpPriceStrategy
   fetchFee: boolean
-  previousFee?: FeeInformation
+  previousResponse?: OrderQuoteResponse
   isPriceRefresh: boolean
 }
 

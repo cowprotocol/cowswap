@@ -6,7 +6,6 @@ import {
   getPromiseFulfilledValue,
   getQuoteUnsupportedToken,
   isPromiseFulfilled,
-  isSellOrder,
   onlyResolvesLast,
 } from '@cowprotocol/common-utils'
 import { PriceQuality } from '@cowprotocol/cow-sdk'
@@ -20,7 +19,6 @@ import { LegacyFeeQuoteParams, LegacyQuoteParams } from 'legacy/state/price/type
 import { useUserTransactionTTL } from 'legacy/state/user/hooks'
 import { getBestQuote, getFastQuote, QuoteResult } from 'legacy/utils/price'
 
-import { logSwapParams } from 'modules/swap/helpers/logSwapParams'
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 
 import { ApiErrorCodes, isValidOperatorError } from 'api/gnosisProtocol/errors/OperatorError'
@@ -38,7 +36,7 @@ interface HandleQuoteErrorParams {
 
 type QuoteParamsForFetching = Omit<LegacyQuoteParams, 'strategy'>
 
-export function handleQuoteError({ quoteData, error, addUnsupportedToken }: HandleQuoteErrorParams): QuoteError {
+function handleQuoteError({ quoteData, error, addUnsupportedToken }: HandleQuoteErrorParams): QuoteError {
   if (isValidOperatorError(error)) {
     switch (error.type) {
       case ApiErrorCodes.UnsupportedToken: {
@@ -148,18 +146,28 @@ export function useRefetchQuoteCallback() {
           return
         }
 
-        const [price, fee] = data as QuoteResult
+        const [price, quoteResponsePromise] = data as QuoteResult
+
+        const quoteResponse = getPromiseFulfilledValue(quoteResponsePromise, undefined)
+
+        const fee = quoteResponse
+          ? {
+              expirationDate: quoteResponse.expiration,
+              amount: quoteResponse.quote.feeAmount,
+            }
+          : undefined
 
         quoteData = {
           ...quoteParams,
-          fee: getPromiseFulfilledValue(fee, undefined),
+          response: quoteResponse,
+          fee,
           price: getPromiseFulfilledValue(price, undefined),
         }
         // check the promise fulfilled values
         // handle if rejected
-        if (!isPromiseFulfilled(fee)) {
+        if (!isPromiseFulfilled(quoteResponsePromise)) {
           // fee error takes precedence
-          throw fee.reason
+          throw quoteResponsePromise.reason
         } else if (!isPromiseFulfilled(price)) {
           throw price.reason
         }
@@ -185,18 +193,11 @@ export function useRefetchQuoteCallback() {
           removeGpUnsupportedToken(previouslyUnsupportedToken)
         }
 
-        logSwapParams('quote', {
-          sellAmount: isSellOrder(quoteData.kind) ? quoteData.amount : price.value.amount,
-          buyAmount: !isSellOrder(quoteData.kind) ? quoteData.amount : price.value.amount,
-          feeAmount: fee.value.amount,
-          sellDecimals: quoteData.fromDecimals,
-          buyDecimals: quoteData.toDecimals,
-        })
         // Update quote
         updateQuote({ ...quoteData, quoteValidTo: price.value.quoteValidTo, isBestQuote })
       }
 
-      const handleError = (error: Error) => {
+      const handleError = (error: GpQuoteError) => {
         // handle any errors in quote fetch
         // we re-use the quoteData object in scope to save values into state
         const quoteError = handleQuoteError({
@@ -209,6 +210,7 @@ export function useRefetchQuoteCallback() {
         setQuoteError({
           ...quoteData,
           error: quoteError,
+          originalError: isValidQuoteError(error) ? error : undefined,
         })
       }
 

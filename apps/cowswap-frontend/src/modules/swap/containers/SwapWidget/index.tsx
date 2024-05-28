@@ -55,6 +55,7 @@ import {
   useSwapState,
   useUnknownImpactWarning,
 } from '../../hooks/useSwapState'
+import { useTradeQuoteStateFromLegacy } from '../../hooks/useTradeQuoteStateFromLegacy'
 import { ConfirmSwapModalSetup } from '../ConfirmSwapModalSetup'
 
 const BUTTON_STATES_TO_SHOW_BUNDLE_APPROVAL_BANNER = [SwapButtonState.ApproveAndSwap]
@@ -75,6 +76,7 @@ export function SwapWidget() {
   const shouldZeroApprove = useShouldZeroApprove(slippageAdjustedSellAmount)
   const { enabledTradeTypes, banners: widgetBanners } = useInjectedWidgetParams()
   const priceImpactParams = useTradePriceImpact()
+  const tradeQuoteStateOverride = useTradeQuoteStateFromLegacy()
 
   const isTradePriceUpdating = useTradePricesUpdate()
   const { isFeeGreater, fee } = useIsFeeGreaterThanInput({
@@ -281,6 +283,7 @@ export function SwapWidget() {
     isTradePriceUpdating,
     priceImpact: priceImpactParams,
     disableQuotePolling: true,
+    tradeQuoteStateOverride,
     disablePriceImpact,
   }
 
