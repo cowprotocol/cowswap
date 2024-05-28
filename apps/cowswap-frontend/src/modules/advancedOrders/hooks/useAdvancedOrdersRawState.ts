@@ -8,6 +8,6 @@ export function useAdvancedOrdersRawState(): ExtendedTradeRawState {
   return useAtomValue(advancedOrdersAtom)
 }
 
-export function useUpdateAdvancedOrdersRawState(): (update: Partial<ExtendedTradeRawState>) => void {
+export function useUpdateAdvancedOrdersRawState() {
   return useSetAtom(updateAdvancedOrdersAtom)
 }

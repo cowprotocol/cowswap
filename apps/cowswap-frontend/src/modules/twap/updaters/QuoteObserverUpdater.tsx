@@ -2,7 +2,6 @@ import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
 import { usePrevious } from '@cowprotocol/common-hooks'
-import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Field } from 'legacy/state/types'
 
@@ -11,6 +10,7 @@ import { useUpdateCurrencyAmount } from 'modules/trade/hooks/useUpdateCurrencyAm
 import { useTradeQuote } from 'modules/tradeQuote'
 
 import { partsStateAtom } from '../state/partsStateAtom'
+import { getReceiveAmountInfoContext } from 'modules/trade'
 
 export function QuoteObserverUpdater() {
   const { state } = useDerivedTradeState()
@@ -19,12 +19,13 @@ export function QuoteObserverUpdater() {
   const prevNumberOfParts = usePrevious(numberOfPartsValue)
 
   const updateCurrencyAmount = useUpdateCurrencyAmount()
+  const inputCurrency = state?.inputCurrency
   const outputCurrency = state?.outputCurrency
 
   const quoteBuyAmount = useMemo(() => {
     const numOfPartsChanged = numberOfPartsValue !== prevNumberOfParts
 
-    if (!response || !outputCurrency || !numberOfPartsValue || isLoading) {
+    if (!response || !inputCurrency || !outputCurrency || !numberOfPartsValue || isLoading) {
       return null
     }
 
@@ -32,9 +33,11 @@ export function QuoteObserverUpdater() {
       return null
     }
 
-    const { buyAmount } = response.quote
-    const currencyValue = CurrencyAmount.fromRawAmount(outputCurrency, buyAmount)
-    const adjustedForParts = currencyValue.multiply(numberOfPartsValue)
+    const {
+      beforeNetworkCosts: { buyAmount },
+    } = getReceiveAmountInfoContext(response.quote, inputCurrency, outputCurrency)
+
+    const adjustedForParts = buyAmount.multiply(numberOfPartsValue)
 
     return adjustedForParts.quotient.toString()
   }, [isLoading, numberOfPartsValue, outputCurrency, prevNumberOfParts, response])
@@ -49,7 +52,7 @@ export function QuoteObserverUpdater() {
       currency: outputCurrency,
       field: Field.OUTPUT,
     })
-  }, [outputCurrency, response, updateCurrencyAmount, quoteBuyAmount])
+  }, [inputCurrency, outputCurrency, response, updateCurrencyAmount, quoteBuyAmount])
 
   return null
 }
