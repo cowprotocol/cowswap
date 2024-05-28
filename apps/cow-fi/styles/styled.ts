@@ -258,6 +258,8 @@ export const TopicImage = styled.div<{
 
   svg {
     fill: currentColor;
+    height: inherit;
+    width: inherit;
   }
 `
 
@@ -302,7 +304,7 @@ export const TopicButton = styled.a<{ fontSize?: number; fontSizeMobile?: number
   display: inline-block;
   padding: 16px 24px;
   font-size: ${({ fontSize }) => fontSize || 21}px;
-  font-weight: ${Font.weight.medium};
+  font-weight: ${Font.weight.bold};
   color: ${({ color }) => color || Color.neutral98};
   background-color: ${({ bgColor }) => bgColor || Color.neutral10};
   text-decoration: none;
@@ -622,20 +624,24 @@ export const SectionTitleDescription = styled.p<{
   }
 `
 
-export const SectionTitleIcon = styled.div<{ size?: number }>`
+export const SectionTitleIcon = styled.div<{ size?: number; multiple?: boolean }>`
   --size: ${({ size }) => (size ? `${size}px` : '64px')};
   width: 100%;
   object-fit: contain;
   color: inherit;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
 
   > span {
     height: var(--size);
-    width: 100%;
+    width: ${({ multiple }) => (multiple ? 'auto' : '100%')};
     color: inherit;
   }
 
   svg {
-    width: 100%;
+    width: ${({ multiple }) => (multiple ? 'auto' : '100%')};
     height: 100%;
     max-height: var(--size);
     fill: currentColor;
