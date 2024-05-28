@@ -4,7 +4,12 @@ import { atomWithStorage } from 'jotai/utils'
 import { getJotaiMergerStorage } from '@cowprotocol/core'
 import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { DEFAULT_TOKENS_LISTS, GNOSIS_UNISWAP_TOKENS_LIST, UNISWAP_TOKENS_LIST } from '../../const/tokensLists'
+import {
+  ARBITRUM_ONE_TOKENS_LIST,
+  DEFAULT_TOKENS_LISTS,
+  GNOSIS_UNISWAP_TOKENS_LIST,
+  UNISWAP_TOKENS_LIST,
+} from '../../const/tokensLists'
 import {
   ListSourceConfig,
   ListsSourcesByNetwork,
@@ -14,15 +19,18 @@ import {
 } from '../../types'
 import { environmentAtom } from '../environmentAtom'
 
-const getUniswapTokenListUrl = (chainId: number) => {
-  return chainId === SupportedChainId.GNOSIS_CHAIN ? GNOSIS_UNISWAP_TOKENS_LIST : UNISWAP_TOKENS_LIST
+const UNISWAP_TOKEN_LIST_URL: Record<SupportedChainId, string> = {
+  [SupportedChainId.MAINNET]: UNISWAP_TOKENS_LIST,
+  [SupportedChainId.GNOSIS_CHAIN]: GNOSIS_UNISWAP_TOKENS_LIST,
+  [SupportedChainId.ARBITRUM_ONE]: ARBITRUM_ONE_TOKENS_LIST,
+  [SupportedChainId.SEPOLIA]: UNISWAP_TOKENS_LIST,
 }
 
 const curatedListSourceAtom = atom((get) => {
   const UNISWAP_LIST_SOURCE: ListSourceConfig = {
     priority: 1,
     enabledByDefault: true,
-    source: getUniswapTokenListUrl(get(environmentAtom).chainId),
+    source: UNISWAP_TOKEN_LIST_URL[get(environmentAtom).chainId],
   }
 
   return UNISWAP_LIST_SOURCE
