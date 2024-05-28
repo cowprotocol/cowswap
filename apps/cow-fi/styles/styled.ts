@@ -308,7 +308,7 @@ export const TopicDescription = styled.p<{
   }
 
   > table {
-    > td:nth-child(odd) {
+    > tr > td:nth-child(odd) {
       padding: 0 16px 0 0;
     }
   }
@@ -628,7 +628,7 @@ export const SectionTitleDescription = styled.p<{
   textAlign?: string
 }>`
   font-size: ${({ fontSize }) => fontSize || 38}px;
-  color: ${({ color }) => color || Color.neutral50};
+  color: ${({ color }) => color || 'inherit'};
   font-weight: ${Font.weight.medium};
   margin: 0;
   line-height: 1.2;
@@ -731,10 +731,15 @@ export const HeroContainer = styled.div<{ variant?: string; maxWidth?: number; p
   ${({ variant }) =>
     variant === 'secondary' &&
     css`
-      flex-direction: row;
+      flex-flow: row nowrap;
       align-items: flex-start;
       justify-content: space-between;
       gap: 74px;
+
+      ${Media.upToMedium()} {
+        flex-flow: column wrap;
+        gap: 32px;
+      }
     `}
 `
 

@@ -186,7 +186,7 @@ export default function Learn({ siteConfigData, categories, articles }: LearnPro
       </Head>
 
       <Wrapper>
-        <h1>Knowledge Base</h1>
+        <h1>Learn - Knowledge Base</h1>
         <h2>Hi, how can we help?</h2>
 
         <SearchBar articles={articles} />
@@ -301,7 +301,7 @@ export const getStaticProps: GetStaticProps<LearnProps> = async () => {
       description: category?.attributes?.description || '',
       bgColor: category?.attributes?.backgroundColor || '#fff',
       textColor: category?.attributes?.textColor || '#000',
-      link: `/topic/${category?.attributes?.slug}`,
+      link: `/learn/topic/${category?.attributes?.slug}`,
       iconColor: '#fff',
     })) || []
 

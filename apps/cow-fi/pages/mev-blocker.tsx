@@ -114,7 +114,7 @@ export default function HomeLanding({ siteConfigData }: HomeLandingProps) {
       <Wrapper>
         <HeroContainer variant="secondary" maxWidth={1300} padding={'0 0 75px'}>
           <HeroContent variant="secondary">
-            <HeroSubtitle color={'#EC4612'}>MEVBlocker</HeroSubtitle>
+            <HeroSubtitle color={'#EC4612'}>MEV Blocker</HeroSubtitle>
             <HeroTitle fontSize={51} fontSizeMobile={38} as="h2">
               The best MEV protection under the sun
             </HeroTitle>
@@ -159,7 +159,7 @@ export default function HomeLanding({ siteConfigData }: HomeLandingProps) {
               </SectionTitleIcon>
 
               <SectionTitleText maxWidth={900}>Broad spectrum MEV defense</SectionTitleText>
-              <SectionTitleDescription maxWidth={'100%'}>
+              <SectionTitleDescription maxWidth={'100%'} color={Color.neutral50}>
                 MEV bots have extracted more than $1.38 billion from well-meaning Ethereum users across a variety of use
                 cases (trading, providing liquidity, minting NFTs, etc). MEV Blocker is an RPC endpoint that supports
                 these users by offering:
@@ -221,15 +221,15 @@ export default function HomeLanding({ siteConfigData }: HomeLandingProps) {
           </ContainerCardSection>
         </ContainerCard>
 
-        <ContainerCard bgColor={'transparent'}>
+        <ContainerCard bgColor={'transparent'} color={Color.neutral10}>
           <ContainerCardSection>
-            <SectionTitleWrapper color={Color.neutral0} maxWidth={800} gap={56}>
+            <SectionTitleWrapper maxWidth={800} gap={56}>
               <SectionTitleIcon multiple size={80}>
                 <ProductLogo variant={ProductVariant.CowProtocol} theme="dark" logoIconOnly />
               </SectionTitleIcon>
 
               <SectionTitleText>Get Protected</SectionTitleText>
-              <SectionTitleDescription color={Color.neutral0}>
+              <SectionTitleDescription>
                 Add this RPC endpoint to your wallet to enjoy the full benefits of MEV Blocker
               </SectionTitleDescription>
             </SectionTitleWrapper>
@@ -290,7 +290,7 @@ export default function HomeLanding({ siteConfigData }: HomeLandingProps) {
                 </TopicCardInner>
               </TopicCard>
             </TopicList>
-            <SectionTitleWrapper margin={'32px auto'}>
+            <SectionTitleWrapper margin={'56px auto'}>
               <SectionTitleDescription fontSize={28} color={Color.neutral0} maxWidth={700}>
                 Having trouble? Check your wallet's documentation for instructions on how to update your RPC endpoint
               </SectionTitleDescription>
@@ -375,186 +375,54 @@ export default function HomeLanding({ siteConfigData }: HomeLandingProps) {
           </ContainerCardSection>
         </ContainerCard>
 
-        <ContainerCard bgColor={'transparent'}>
+        <ContainerCard bgColor={'transparent'} color={Color.neutral10}>
           <ContainerCardSection>
-            <SectionTitleWrapper padding="150px 0 0" maxWidth={1300} color={Color.neutral10}>
+            <SectionTitleWrapper padding="150px 0 0" maxWidth={1300}>
               <SectionTitleIcon size={100}>
                 <ProductLogo variant={ProductVariant.CowProtocol} theme="light" logoIconOnly />
               </SectionTitleIcon>
               <SectionTitleText fontSize={90} textAlign="center">
-                The DEX of choice for whales, DAOs, and pros
+                Don&apos;t let your friends get burned by MEV
               </SectionTitleText>
+
+              <SectionTitleButton bgColor="#EC4612" color="#FEE7CF" href="/">
+                Add to wallet
+              </SectionTitleButton>
             </SectionTitleWrapper>
-
-            <TopicList columns={4}>
-              <TopicCard
-                contentAlign={'left'}
-                bgColor="#EC4612"
-                textColor={Color.neutral100}
-                padding={'32px'}
-                asProp="div"
-              >
-                <TopicCardInner contentAlign="left">
-                  <TopicTitle color={Color.neutral100} fontSize={51}>
-                    $2,500
-                  </TopicTitle>
-                  <TopicDescription fontSize={21} color="#FEE7CF">
-                    Average trade size (more than 2x Uniswap&apos;s)
-                  </TopicDescription>
-                </TopicCardInner>
-              </TopicCard>
-
-              <TopicCard
-                contentAlign={'left'}
-                bgColor="#EC4612"
-                textColor={Color.neutral100}
-                padding={'32px'}
-                asProp="div"
-              >
-                <TopicCardInner contentAlign="left">
-                  <TopicTitle color={Color.neutral100} fontSize={51}>
-                    39%
-                  </TopicTitle>
-                  <TopicDescription fontSize={21} color="#FEE7CF">
-                    Market share among smart contract wallets
-                  </TopicDescription>
-                </TopicCardInner>
-              </TopicCard>
-
-              <TopicCard
-                contentAlign={'left'}
-                bgColor="#EC4612"
-                textColor={Color.neutral100}
-                padding={'32px'}
-                asProp="div"
-              >
-                <TopicCardInner contentAlign="left">
-                  <TopicTitle color={Color.neutral100} fontSize={51}>
-                    42%
-                  </TopicTitle>
-                  <TopicDescription fontSize={21} color="#FEE7CF">
-                    Monthly user retention rate – the highest in DeFi
-                  </TopicDescription>
-                </TopicCardInner>
-              </TopicCard>
-
-              <TopicCard
-                contentAlign={'left'}
-                bgColor="#EC4612"
-                textColor={Color.neutral100}
-                padding={'32px'}
-                asProp="div"
-              >
-                <TopicCardInner contentAlign="left">
-                  <TopicTitle color={Color.neutral100} fontSize={51}>
-                    #1
-                  </TopicTitle>
-                  <TopicDescription fontSize={21} color="#FEE7CF">
-                    Intents-based trading platform
-                  </TopicDescription>
-                </TopicCardInner>
-              </TopicCard>
-            </TopicList>
           </ContainerCardSection>
         </ContainerCard>
 
-        <ContainerCard bgColor={'transparent'}>
+        <ContainerCard bgColor={'#EC4612'} color="#FEE7CF">
           <ContainerCardSection>
-            <SectionTitleWrapper maxWidth={878} color={Color.neutral10}>
+            <SectionTitleWrapper>
+              <SectionTitleIcon size={100}>
+                <ProductLogo variant={ProductVariant.CowProtocol} theme="dark" logoIconOnly />
+              </SectionTitleIcon>
               <SectionTitleText fontSize={90} textAlign="center">
-                Twitter buzz
-              </SectionTitleText>
-            </SectionTitleWrapper>
-
-            <TopicList columns={3} maxWidth={900}>
-              <TopicCard bgColor={Color.neutral100} padding={'0'} gap={16} asProp="div">
-                <TopicCardInner>
-                  <blockquote className="twitter-tweet" data-dnt="true">
-                    <a href="https://twitter.com/koeppelmann/status/1729455013007684035">Loading X...</a>
-                  </blockquote>
-                </TopicCardInner>
-              </TopicCard>
-
-              <TopicCard bgColor={Color.neutral100} padding={'0'} gap={16} asProp="div">
-                <TopicCardInner>
-                  <blockquote className="twitter-tweet" data-dnt="true">
-                    <a href="https://twitter.com/nomos_paradox/status/1738489297815142736">Loading X...</a>
-                  </blockquote>
-                </TopicCardInner>
-              </TopicCard>
-
-              <TopicCard bgColor={Color.neutral100} padding={'0'} gap={16} asProp="div">
-                <TopicCardInner>
-                  <blockquote className="twitter-tweet" data-dnt="true">
-                    <a href="https://twitter.com/passivenodeinc1/status/1485204781153107973">Loading X...</a>
-                  </blockquote>
-                </TopicCardInner>
-              </TopicCard>
-            </TopicList>
-          </ContainerCardSection>
-        </ContainerCard>
-
-        <ContainerCard bgColor={'transparent'}>
-          <ContainerCardSection>
-            <SectionTitleWrapper maxWidth={878} color={Color.neutral10}>
-              <SectionTitleText fontSize={90} textAlign="center">
-                Case studies
+                Jointly formulated
               </SectionTitleText>
             </SectionTitleWrapper>
 
             <TopicList columns={3}>
-              <TopicCard bgColor={Color.neutral100} padding={'52px'} gap={16} asProp="div">
-                <TopicImage iconColor="#FEE7CF" bgColor="transparent" height={96} width={'auto'}>
-                  <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />
-                </TopicImage>
-                <TopicCardInner>
-                  <TopicTitle fontSize={38}>Aave</TopicTitle>
-                  <TopicDescription fontSize={21}>
-                    Aave DAO used CoW Swap to swap over $4 million directly into Balancer liquidity pool
-                  </TopicDescription>
-
-                  <TopicButton bgColor="#FEE7CF" color="#EC4612" fontSize={27}>
-                    Read more
-                  </TopicButton>
-                </TopicCardInner>
+              <TopicCard bgColor="#FEE7CF" textColor="#EC4612" href="/">
+                <TopicImage iconColor="#EC4612" large></TopicImage>
+                <TopicTitle fontSize={38}>Agnostic Relay</TopicTitle>
               </TopicCard>
 
-              <TopicCard bgColor={Color.neutral100} padding={'52px'} gap={16} asProp="div">
-                <TopicImage iconColor="#FEE7CF" bgColor="transparent" height={96} width={'auto'}>
-                  <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />
-                </TopicImage>
-                <TopicCardInner>
-                  <TopicTitle fontSize={38}>ENS</TopicTitle>
-                  <TopicDescription fontSize={21}>
-                    Aave DAO used CoW Swap to swap over $4 million directly into Balancer liquidity pool
-                  </TopicDescription>
-
-                  <TopicButton bgColor="#FEE7CF" color="#EC4612" fontSize={27}>
-                    Read more
-                  </TopicButton>
-                </TopicCardInner>
+              <TopicCard bgColor="#FEE7CF" textColor="#EC4612" href="/">
+                <TopicImage iconColor="#EC4612" large></TopicImage>
+                <TopicTitle fontSize={38}>Beaver Build</TopicTitle>
               </TopicCard>
 
-              <TopicCard bgColor={Color.neutral100} padding={'52px'} gap={16} asProp="div">
-                <TopicImage iconColor="#FEE7CF" bgColor="transparent" height={96} width={'auto'}>
-                  <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />
-                </TopicImage>
-                <TopicCardInner>
-                  <TopicTitle fontSize={38}>Nexus Mutual</TopicTitle>
-                  <TopicDescription fontSize={21}>
-                    Aave DAO used CoW Swap to swap over $4 million directly into Balancer liquidity pool
-                  </TopicDescription>
-
-                  <TopicButton bgColor="#FEE7CF" color="#EC4612" fontSize={27}>
-                    Read more
-                  </TopicButton>
-                </TopicCardInner>
+              <TopicCard bgColor="#FEE7CF" textColor="#EC4612" href="/">
+                <TopicImage iconColor="#EC4612" large></TopicImage>
+                <TopicTitle fontSize={38}>CoW DAO</TopicTitle>
               </TopicCard>
             </TopicList>
           </ContainerCardSection>
         </ContainerCard>
 
-        <ContainerCard bgColor={'transparent'} touchFooter>
+        <ContainerCard bgColor={Color.neutral90} color={Color.neutral20} touchFooter>
           <ContainerCardSection padding={'0 0 100px'}>
             <SectionTitleWrapper>
               <SectionTitleIcon>
@@ -567,7 +435,6 @@ export default function HomeLanding({ siteConfigData }: HomeLandingProps) {
           </ContainerCardSection>
         </ContainerCard>
       </Wrapper>
-
       <script async src="https://platform.twitter.com/widgets.js"></script>
     </LayoutV2>
   )

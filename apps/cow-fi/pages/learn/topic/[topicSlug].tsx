@@ -108,7 +108,7 @@ export default function TopicPage({ category, articles }: TopicPageProps) {
 
         <ContainerCard gap={42} gapMobile={24} touchFooter>
           <Breadcrumbs padding={'0'}>
-            <a href="/topics/">Topic</a>
+            <a href="/learn/topics/">Topic</a>
             <span>{name}</span>
           </Breadcrumbs>
 
