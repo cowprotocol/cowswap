@@ -261,12 +261,14 @@ export const TopicImage = styled.div<{
     height: inherit;
     width: inherit;
     color: inherit;
+    max-width: 100%;
   }
 
   svg {
     fill: currentColor;
     height: inherit;
     width: inherit;
+    max-width: 100%;
   }
 `
 

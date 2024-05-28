@@ -62,7 +62,7 @@ const FAQ_DATA = [
   },
 ]
 
-interface HomeLandingProps {
+interface PageProps {
   siteConfigData: typeof CONFIG
   categories: {
     name: string
@@ -87,7 +87,7 @@ const Wrapper = styled.div`
   gap: 24px;
 `
 
-export default function HomeLanding({ siteConfigData }: HomeLandingProps) {
+export default function Page({ siteConfigData }: PageProps) {
   return (
     <LayoutV2 bgColor={Color.neutral90}>
       <Head>
@@ -282,7 +282,7 @@ export default function HomeLanding({ siteConfigData }: HomeLandingProps) {
   )
 }
 
-export const getStaticProps: GetStaticProps<HomeLandingProps> = async () => {
+export const getStaticProps: GetStaticProps<PageProps> = async () => {
   const siteConfigData = CONFIG
   const categoriesResponse = await getCategories()
   const articlesResponse = await getArticles()
