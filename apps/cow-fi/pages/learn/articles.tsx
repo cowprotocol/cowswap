@@ -21,7 +21,7 @@ import {
   Pagination,
 } from '@/styles/styled'
 
-const LEARN_PATH = '/v2/learn/'
+const LEARN_PATH = '/learn/'
 
 const DATA_CACHE_TIME_SECONDS = 5 * 60 // Cache 5min
 const ITEMS_PER_PAGE = 24

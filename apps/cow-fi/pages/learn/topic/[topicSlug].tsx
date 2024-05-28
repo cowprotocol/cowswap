@@ -108,7 +108,7 @@ export default function TopicPage({ category, articles }: TopicPageProps) {
 
         <ContainerCard gap={42} gapMobile={24} touchFooter>
           <Breadcrumbs padding={'0'}>
-            <a href="/v2/topics/">Topic</a>
+            <a href="/topics/">Topic</a>
             <span>{name}</span>
           </Breadcrumbs>
 
@@ -121,7 +121,7 @@ export default function TopicPage({ category, articles }: TopicPageProps) {
               )}
               <h1>{name}</h1>
             </CategoryTitle>
-            <ArrowButton link="/v2/learn/topics" text="All topics" />
+            <ArrowButton link="/learn/topics" text="All topics" />
           </ContainerCardSectionTop>
 
           <ContainerCardSection>
@@ -138,7 +138,7 @@ export default function TopicPage({ category, articles }: TopicPageProps) {
                 return (
                   <ArticleCard
                     key={article.id}
-                    href={`/v2/learn/${article.attributes?.slug}`}
+                    href={`/learn/${article.attributes?.slug}`}
                     target="_self"
                     rel="noopener"
                   >

@@ -326,14 +326,14 @@ export default function ArticlePage({
         <ContainerCard gap={62} gapMobile={42} centerContent>
           <ArticleContent>
             <Breadcrumbs>
-              <a href="/v2/learn">Learn</a>
+              <a href="/learn">Learn</a>
               <span>{title}</span>
             </Breadcrumbs>
 
             {categories && Array.isArray(categories.data) && categories.data.length > 0 && (
               <CategoryTags>
                 {categories.data.map((category) => (
-                  <a key={category.id} href={`/v2/learn/topic/${category.attributes?.slug ?? ''}`}>
+                  <a key={category.id} href={`/learn/topic/${category.attributes?.slug ?? ''}`}>
                     {category.attributes?.name ?? ''}
                   </a>
                 ))}
@@ -359,7 +359,7 @@ export default function ArticlePage({
               <ul>
                 {relatedArticles.map((article) => (
                   <li key={article.id}>
-                    <a href={`/v2/learn/${article.attributes?.slug}`}>{article.attributes?.title}</a>
+                    <a href={`/learn/${article.attributes?.slug}`}>{article.attributes?.title}</a>
                   </li>
                 ))}
               </ul>

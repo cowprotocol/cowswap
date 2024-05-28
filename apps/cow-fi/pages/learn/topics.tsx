@@ -89,7 +89,7 @@ export default function Topics({ siteConfigData, categories, articles }: TopicsP
           <ContainerCardSection>
             <ContainerCardSectionTop>
               <ContainerCardSectionTopTitle>Topics</ContainerCardSectionTopTitle>
-              <ArrowButton link="/v2/learn" text="Overview" />
+              <ArrowButton link="/learn" text="Overview" />
             </ContainerCardSectionTop>
             <TopicList columns={3}>
               {categories.map(({ name, bgColor, textColor, iconColor, link }, index) => (
@@ -118,7 +118,7 @@ export const getStaticProps: GetStaticProps<TopicsProps> = async () => {
       description: category?.attributes?.description || '',
       bgColor: category?.attributes?.backgroundColor || '#fff',
       textColor: category?.attributes?.textColor || '#000',
-      link: `/v2/learn/topic/${category?.attributes?.slug}`,
+      link: `/learn/topic/${category?.attributes?.slug}`,
       iconColor: '#fff',
     })) || []
 
