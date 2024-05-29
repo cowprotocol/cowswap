@@ -1,33 +1,218 @@
+import { useState } from 'react'
+import { getJobs } from 'services/greenhouse'
 import Head from 'next/head'
 import { GetStaticProps } from 'next'
-import { CONFIG } from '@/const/meta'
-import Layout from '@/components/Layout'
-import { getJobs } from 'services/greenhouse'
-import { Careers } from '@/components/Careers'
+import { Font, Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
 
-export default function Jobs({ jobsData }: { jobsData: any }) {
+import styled from 'styled-components'
+
+import { CONFIG } from '@/const/meta'
+
+import LayoutV2 from '@/components/Layout/LayoutV2'
+
+import {
+  ContainerCard,
+  ContainerCardSection,
+  TopicList,
+  TopicCard,
+  TopicTitle,
+  TopicButton,
+  TopicDescription,
+  SectionTitleWrapper,
+  SectionTitleIcon,
+  SectionTitleText,
+  SectionTitleDescription,
+  TopicCardInner,
+  // DropDown,
+} from '@/styles/styled'
+
+const DATA_CACHE_TIME_SECONDS = 5 * 60 // Cache 5min
+
+interface PageProps {
+  siteConfigData: typeof CONFIG
+  jobsData: any
+}
+
+const Wrapper = styled.div`
+  display: flex;
+  flex-flow: column wrap;
+  justify-content: center;
+  align-items: center;
+  max-width: 1600px;
+  width: 100%;
+  margin: 76px auto 0;
+  gap: 24px;
+`
+
+export default function Page({ siteConfigData, jobsData }: PageProps) {
+  const [department, setDepartment] = useState('All')
+  const handleDepartmentChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setDepartment(e.target.value)
+  }
+
+  const jobsCount = Object.keys(jobsData).reduce((acc, cur) => acc + jobsData[cur].length, 0)
+  const departments = Object.keys(jobsData).map((deptsName: string) => deptsName)
+  const jobsCountForDepartment = department === 'All' ? jobsCount : jobsData[department].length
+
   return (
-    <>
+    <LayoutV2 bgColor={Color.neutral90}>
       <Head>
-        <title>Careers - {CONFIG.title}</title>
+        <title>
+          {siteConfigData.title} - {siteConfigData.descriptionShort}
+        </title>
       </Head>
-      <Layout>
-        <Careers jobsData={jobsData} />
-      </Layout>
-    </>
+
+      <Wrapper>
+        <ContainerCard bgColor={'transparent'} color={Color.neutral10} padding="0 60px 60px">
+          <ContainerCardSection>
+            <SectionTitleWrapper maxWidth={900} margin="0 auto 56px">
+              <SectionTitleIcon size={60}>
+                <ProductLogo variant={ProductVariant.CowProtocol} theme="dark" logoIconOnly />
+              </SectionTitleIcon>
+              <SectionTitleText fontSize={62}>Want to build the future of decentralized trading?</SectionTitleText>
+              <SectionTitleDescription fontSize={24} color={Color.neutral40} fontWeight={Font.weight.regular}>
+                We are an ambitious, fast growing and international team working at the forefront of DeFi. We believe
+                that we can make markets both more efficient and fair, by building the ultimate batch auction settlement
+                layer across EVM compatible blockchains.
+              </SectionTitleDescription>
+            </SectionTitleWrapper>
+
+            <SectionTitleWrapper maxWidth={900} margin="0 auto">
+              <SectionTitleText fontSize={32}>
+                We&apos;re currently hiring for {jobsCountForDepartment} position{jobsCountForDepartment > 1 && 's'}
+                {department !== 'All' && ` in ${department}`}:
+              </SectionTitleText>
+            </SectionTitleWrapper>
+
+            {jobsCount < 1 && <p>There are currently no open positions.</p>}
+            {/* {jobsCount > 0 && department.length > 0 && (
+              <>
+                <DropDown maxWidth={600} margin="0 auto">
+                  <select onChange={handleDepartmentChange}>
+                    <option value="All" selected>
+                      All ({jobsCount})
+                    </option>
+                    {departments.map((department) => (
+                      <option key={department} value={department}>
+                        {department} ({jobsData[department].length})
+                      </option>
+                    ))}
+                  </select>
+                </DropDown>
+              </>
+            )} */}
+
+            <TopicList columns={2} maxWidth={900} margin="16px auto 0">
+              {jobsCount > 0 &&
+                (department === 'All'
+                  ? Object.keys(jobsData).map((deptName: string) => (
+                      <>
+                        {jobsData[deptName].map(({ absolute_url, title, location }: any, index: number) => (
+                          <TopicCard
+                            key={index}
+                            contentAlign={'left'}
+                            bgColor={Color.neutral100}
+                            padding={'32px'}
+                            gap={16}
+                            asProp="div"
+                            height="100%"
+                          >
+                            <TopicCardInner contentAlign="left" height="100%">
+                              <TopicTitle fontSize={16} color={Color.neutral50}>
+                                {deptName}
+                              </TopicTitle>
+                              <TopicTitle fontSize={34}>{title}</TopicTitle>
+                              <TopicDescription fontSize={18} color={Color.neutral40} margin="0 0 24px">
+                                {location.name}
+                              </TopicDescription>
+                              <TopicButton
+                                margin="auto auto 0 0"
+                                href={absolute_url}
+                                target="_blank"
+                                rel="noopener nofollow noreferrer"
+                              >
+                                Apply
+                              </TopicButton>
+                            </TopicCardInner>
+                          </TopicCard>
+                        ))}
+                      </>
+                    ))
+                  : jobsCount > 0 && (
+                      <>
+                        <h4>{department}</h4>
+                        {jobsData[department].map(({ absolute_url, title, location }: any, index: number) => (
+                          <TopicCard
+                            key={index}
+                            contentAlign={'left'}
+                            bgColor={Color.neutral100}
+                            padding={'32px'}
+                            gap={16}
+                            asProp="div"
+                          >
+                            <TopicCardInner contentAlign="left">
+                              <TopicTitle>{title}</TopicTitle>
+                              <TopicDescription fontSize={18} color={Color.neutral40} margin="0">
+                                {location.name}
+                              </TopicDescription>
+                              <a href={absolute_url} target="_blank" rel="noopener nofollow noreferrer">
+                                Apply
+                              </a>
+                            </TopicCardInner>
+                          </TopicCard>
+                        ))}
+                      </>
+                    ))}
+
+              <TopicCard
+                bgColor={'#BCEC79'}
+                textColor="#194D05"
+                padding={'32px'}
+                gap={16}
+                asProp="div"
+                height="100%"
+                fullWidth
+              >
+                <TopicCardInner contentAlign="left" height="100%">
+                  <TopicTitle fontSize={34}>💸 Refer a friend and earn 6,000 in USDC or USD!</TopicTitle>
+
+                  <TopicDescription fontSize={24} fontWeight={Font.weight.regular} margin="0 0 24px">
+                    Know someone who is not just looking for a job but for a great opportunity to grow? Refer them to us
+                    to earn $6,000 in USDC or USD.{' '}
+                  </TopicDescription>
+                  <TopicButton bgColor="#194D05" color="#BCEC79" href="/careers/refer-to-earn">
+                    Refer-to-Earn details
+                  </TopicButton>
+                </TopicCardInner>
+              </TopicCard>
+            </TopicList>
+
+            <SectionTitleWrapper maxWidth={900} margin="32px auto">
+              <SectionTitleText fontSize={24}>
+                {jobsCount < 1 &&
+                  'Currently there are no open positions. Convinced you can contribute to Cow Protocol?'}
+                {jobsCount > 0 && "Can't find the position you're looking for?"}{' '}
+                <a href={CONFIG.social.discord.url} target="_blank" rel="noopener nofollow">
+                  Get in touch
+                </a>
+              </SectionTitleText>
+            </SectionTitleWrapper>
+          </ContainerCardSection>
+        </ContainerCard>
+      </Wrapper>
+    </LayoutV2>
   )
 }
 
-export const getStaticProps: GetStaticProps = async () => {
-  const jobsData = await getJobs()
+export const getStaticProps: GetStaticProps<PageProps> = async () => {
   const siteConfigData = CONFIG
+  const jobsData = await getJobs()
 
   return {
-    props: { jobsData, siteConfigData },
-
-    // Next.js will attempt to re-generate the page:
-    // - When a request comes in
-    // - At most once every 3600 seconds (1 hour)
-    revalidate: 3600, // In seconds
+    props: {
+      siteConfigData,
+      jobsData,
+    },
+    revalidate: DATA_CACHE_TIME_SECONDS,
   }
 }

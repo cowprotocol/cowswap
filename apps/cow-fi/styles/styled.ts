@@ -184,14 +184,16 @@ interface TopicCardProps {
   paddingMobile?: string
   contentAlign?: string
   gap?: number
+  height?: string
+  fullWidth?: boolean
 }
 
 export const TopicCard = styled.a.attrs<TopicCardProps>(({ asProp }) => ({
   as: asProp || 'a',
 }))<TopicCardProps>`
-  display: ${({ columns }) => (columns ? 'grid' : 'flex')};
-  grid-template-columns: ${({ columns }) => columns || '1fr'};
-  flex-flow: ${({ horizontal }) => (horizontal ? 'row wrap' : 'column wrap')};
+  display: ${({ columns, fullWidth }) => (fullWidth ? 'block' : columns ? 'grid' : 'flex')};
+  grid-template-columns: ${({ columns, fullWidth }) => (fullWidth ? '1fr' : columns || '1fr')};
+  flex-flow: ${({ horizontal, fullWidth }) => (fullWidth ? 'column nowrap' : horizontal ? 'row wrap' : 'column wrap')};
   align-items: ${({ contentAlign }) => (contentAlign === 'left' ? 'flex-start' : 'center')};
   justify-content: flex-start;
   background: ${({ bgColor }) => bgColor || Color.neutral90};
@@ -206,6 +208,8 @@ export const TopicCard = styled.a.attrs<TopicCardProps>(({ asProp }) => ({
   transition: border 0.2s ease-in-out;
   gap: ${({ gap }) => (typeof gap === 'number' ? `${gap}px` : '56px')};
   max-width: 100%;
+  height: ${({ height }) => height || 'initial'};
+  grid-column: ${({ fullWidth }) => (fullWidth ? '1 / -1' : 'auto')}; /* New line for full width */
 
   &:hover {
     border: ${({ asProp }) => (asProp === 'div' ? '4px solid transparent' : `4px solid ${Color.neutral40}`)};
@@ -214,7 +218,7 @@ export const TopicCard = styled.a.attrs<TopicCardProps>(({ asProp }) => ({
   ${Media.upToMedium()} {
     padding: ${({ paddingMobile }) => paddingMobile || '32px 16px'};
     gap: 32px;
-    display: flex;
+    display: ${({ fullWidth }) => (fullWidth ? 'block' : 'flex')};
     flex-flow: column wrap;
   }
 
@@ -310,7 +314,7 @@ export const TopicTitle = styled.h5<{
 export const TopicDescription = styled.p<{
   fontSize?: number
   fontSizeMobile?: number
-  fontWeight?: string
+  fontWeight?: number
   color?: string
   margin?: string
 }>`
@@ -336,9 +340,12 @@ export const TopicButton = styled.a<{
   bgColor?: string
   color?: string
   disabled?: boolean
+  padding?: string
+  margin?: string
 }>`
   display: inline-block;
-  padding: 16px 24px;
+  padding: ${({ padding }) => padding || '16px 24px'};
+  margin: ${({ margin }) => margin || 'initial'};
   font-size: ${({ fontSize }) => fontSize || 21}px;
   font-weight: ${Font.weight.bold};
   color: ${({ color, disabled }) => (disabled ? transparentize(Color.neutral10, 0.5) : color || Color.neutral98)};
@@ -652,11 +659,12 @@ export const SectionTitleDescription = styled.p<{
   color?: string
   fontSize?: number
   fontSizeMobile?: number
+  fontWeight?: number
   textAlign?: string
 }>`
   font-size: ${({ fontSize }) => fontSize || 38}px;
   color: ${({ color }) => color || 'inherit'};
-  font-weight: ${Font.weight.medium};
+  font-weight: ${({ fontWeight }) => fontWeight || Font.weight.medium};
   margin: 0;
   line-height: 1.2;
   text-align: ${({ textAlign }) => textAlign || 'center'};
@@ -1507,6 +1515,61 @@ export const CategoryTags = styled.div`
     &:hover {
       background: ${Color.neutral10};
       color: ${Color.neutral98};
+    }
+  }
+`
+
+export const DropDown = styled.div<{ maxWidth?: number; margin?: string }>`
+  border: 0.1rem solid ${transparentize(Color.neutral100, 0.9)};
+  border-radius: 0.6rem;
+  width: ${({ maxWidth }) => (maxWidth ? `${maxWidth}px` : '100%')};
+  padding: 0;
+  background: ${Color.neutral0};
+  color: ${Color.neutral100};
+  font-size: 1.8rem;
+  margin: ${({ margin }) => margin || '0 0 2.4rem'};
+  display: flex;
+  flex-flow: row nowrap;
+  position: relative;
+
+  &::after {
+    content: '▼';
+    position: absolute;
+    border: 0;
+    color: inherit;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    pointer-events: none;
+    margin: auto;
+    height: 100%;
+    top: 0;
+    bottom: 0;
+    right: 1.2rem;
+    cursor: pointer;
+  }
+
+  > select {
+    appearance: none;
+    cursor: pointer;
+    height: 100%;
+    padding: 1.2rem;
+    width: 100%;
+    display: block;
+    color: inherit;
+    font-family: inherit;
+    font-size: inherit;
+    border: 0;
+    border-radius: inherit;
+    background: ${transparentize(Color.neutral0, 0.9)};
+
+    &:focus {
+      outline: none;
+    }
+
+    > option {
+      background-color: ${Color.neutral0};
+      color: ${Color.neutral0};
     }
   }
 `

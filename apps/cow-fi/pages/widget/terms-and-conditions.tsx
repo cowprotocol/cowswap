@@ -8,7 +8,14 @@ import { CONFIG } from '@/const/meta'
 
 import LayoutV2 from '@/components/Layout/LayoutV2'
 
-import { ContainerCard, ArticleContent, Breadcrumbs, ArticleMainTitle, BodyContent } from '@/styles/styled'
+import {
+  ContainerCard,
+  ArticleContent,
+  Breadcrumbs,
+  ArticleMainTitle,
+  BodyContent,
+  ArticleDescription,
+} from '@/styles/styled'
 
 const DATA_CACHE_TIME_SECONDS = 5 * 60 // Cache 5min
 

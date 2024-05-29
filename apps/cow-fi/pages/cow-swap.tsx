@@ -13,7 +13,6 @@ import { CONFIG } from '@/const/meta'
 
 import LayoutV2 from '@/components/Layout/LayoutV2'
 import FAQ from '@/components/FAQ'
-import { getCategories, getArticles, Category, ArticleListResponse } from 'services/cms'
 
 import {
   ContainerCard,
