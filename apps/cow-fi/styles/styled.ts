@@ -9,6 +9,7 @@ export const ContainerCard = styled.div<{
   gapMobile?: number
   touchFooter?: boolean
   centerContent?: boolean
+  padding?: string
 }>`
   display: flex;
   flex-flow: row wrap;
@@ -16,7 +17,7 @@ export const ContainerCard = styled.div<{
   gap: ${({ gap }) => gap || 100}px;
   margin: ${({ touchFooter }) => (touchFooter ? '0 0 -65px' : '24px 0')};
   width: 100%;
-  padding: 60px;
+  padding: ${({ padding }) => padding || '60px'};
   border-radius: 60px;
   background: ${({ bgColor }) => bgColor || Color.neutral90};
   position: relative;
@@ -148,17 +149,24 @@ export const ArticleDescription = styled.p`
   color: ${Color.neutral0};
 `
 
-export const TopicList = styled.div<{ columns?: number; columnsMobile?: number; maxWidth?: number }>`
+export const TopicList = styled.div<{
+  columns?: number
+  columnsMobile?: number
+  maxWidth?: number
+  gap?: number
+  gapMobile?: number
+  margin?: string
+}>`
   display: grid;
   grid-template-columns: ${({ columns }) => `repeat(${columns || 3}, 1fr)`};
-  gap: 32px;
+  gap: ${({ gap }) => (gap ? `${gap}px` : '32px')};
   width: 100%;
   max-width: ${({ maxWidth }) => (maxWidth ? `${maxWidth}px` : '100%')};
-  margin: 0 auto;
+  margin: ${({ margin }) => margin || '0 auto'};
 
   ${Media.upToMedium()} {
     grid-template-columns: ${({ columnsMobile }) => `repeat(${columnsMobile || 1}, 1fr)`};
-    gap: 16px;
+    gap: ${({ gapMobile }) => (gapMobile ? `${gapMobile}px` : '16px')};
   }
 `
 
@@ -834,10 +842,10 @@ export const HeroSubtitle = styled.p<{ variant?: string; color?: string }>`
   }
 `
 
-export const HeroDescription = styled.p<{ fontSize?: number; fontSizeMobile?: number }>`
+export const HeroDescription = styled.p<{ fontSize?: number; fontSizeMobile?: number; color?: string }>`
   font-size: ${({ fontSize }) => fontSize || 28}px;
   font-weight: ${Font.weight.medium};
-  color: ${Color.neutral10};
+  color: ${({ color }) => color || Color.neutral10};
   margin: 16px 0;
   padding: 0;
   line-height: 1.5;
@@ -850,6 +858,12 @@ export const HeroDescription = styled.p<{ fontSize?: number; fontSizeMobile?: nu
     padding: 0 0 0 24px;
     font-size: inherit;
   }
+`
+
+export const HeroButtonWrapper = styled.div<{ gap?: number }>`
+  display: flex;
+  gap: ${({ gap }) => gap || 56}px;
+  margin: 32px 0;
 `
 
 export const HeroButton = styled.a<{ background?: string; color?: string }>`
@@ -1231,6 +1245,36 @@ export const SwiperSlideWrapper = styled.div`
     ${Media.upToMedium()} {
       left: 5px;
       right: initial;
+    }
+  }
+`
+
+export const WidgetContainer = styled.div`
+  display: flex;
+  width: 100%;
+  flex-flow: column wrap;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 1.6rem;
+
+  &::before {
+    color: ${Color.neutral0};
+    font-size: 2.1rem;
+    font-weight: ${Font.weight.bold};
+    content: 'Try it out!';
+    background: url('/images/arrow-drawn.svg') no-repeat center 2.5rem / 2.4rem 5rem;
+    width: 12rem;
+    height: 7.5rem;
+    margin: 0 auto;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    transform: rotateZ(-15deg);
+  }
+
+  ${Media.upToMedium()} {
+    > iframe {
+      width: 100%;
     }
   }
 `
