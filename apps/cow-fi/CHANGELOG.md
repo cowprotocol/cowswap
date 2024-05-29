@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.1.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.0.0...cow-fi-v1.1.0) (2024-05-29)
+
+
+### Features
+
+* **arbitrum:** add arbitrum_one ([#4407](https://github.com/cowprotocol/cowswap/issues/4407)) ([166e33f](https://github.com/cowprotocol/cowswap/commit/166e33f3c494972738b154cf844584dd78e12c7d))
+
+
+### Bug Fixes
+
+* navigate with widget awareness ([#4471](https://github.com/cowprotocol/cowswap/issues/4471)) ([f0c4134](https://github.com/cowprotocol/cowswap/commit/f0c41344eea751006a4fe0b66865b2c5c30a5310))
+
 ## 1.0.0 (2024-05-22)
 
 
