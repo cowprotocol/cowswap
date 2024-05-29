@@ -315,64 +315,6 @@ export default function Page({ siteConfigData }: PageProps) {
           </ContainerCardSection>
         </ContainerCard>
 
-        <ContainerCard bgColor={'transparent'}>
-          <ContainerCardSection>
-            <SectionTitleWrapper padding="150px 0 0" maxWidth={878} color={Color.neutral10}>
-              <SectionTitleIcon size={128}>
-                <SVG src={IMG_ICON_BULB_COW} />
-              </SectionTitleIcon>
-              <SectionTitleText fontSize={90} textAlign="center">
-                Powering innovation across DeFi
-              </SectionTitleText>
-            </SectionTitleWrapper>
-
-            <TopicList columns={3}>
-              <TopicCard contentAlign={'left'} bgColor="#66018E" textColor="#F996EE" padding={'32px'} asProp="div">
-                <TopicImage iconColor="#8702AA" bgColor="transparent" height={96} width={'auto'}>
-                  <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />
-                </TopicImage>
-                <TopicCardInner contentAlign="left">
-                  <TopicTitle color={Color.neutral100} fontSize={38}>
-                    Liquidations
-                  </TopicTitle>
-                  <TopicDescription fontSize={21} color="#F996EE">
-                    Info about liquidations goes here. Info about liquidations goes here. Info about liquidations goes
-                    here.
-                  </TopicDescription>
-                </TopicCardInner>
-              </TopicCard>
-
-              <TopicCard contentAlign={'left'} bgColor="#66018E" textColor="#F996EE" padding={'32px'} asProp="div">
-                <TopicImage iconColor="#8702AA" bgColor="transparent" height={96} width={'auto'}>
-                  <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />
-                </TopicImage>
-                <TopicCardInner contentAlign="left">
-                  <TopicTitle color={Color.neutral100} fontSize={38}>
-                    Solver infrastructure
-                  </TopicTitle>
-                  <TopicDescription fontSize={21} color="#F996EE">
-                    CoW Protocol maintains the most robust network of solvers in DeFi, with more being added every day.
-                  </TopicDescription>
-                </TopicCardInner>
-              </TopicCard>
-
-              <TopicCard contentAlign={'left'} bgColor="#66018E" textColor="#F996EE" padding={'32px'} asProp="div">
-                <TopicImage iconColor="#8702AA" bgColor="transparent" height={96} width={'auto'}>
-                  <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />
-                </TopicImage>
-                <TopicCardInner contentAlign="left">
-                  <TopicTitle color={Color.neutral100} fontSize={38}>
-                    Rebalancing portfolios
-                  </TopicTitle>
-                  <TopicDescription fontSize={21} color="#F996EE">
-                    Info about rebalancing portfolios goes here. Info about rebalancing portfolios goes here.
-                  </TopicDescription>
-                </TopicCardInner>
-              </TopicCard>
-            </TopicList>
-          </ContainerCardSection>
-        </ContainerCard>
-
         <ContainerCard bgColor={Color.neutral10} color={Color.neutral98}>
           <ContainerCardSection>
             <SectionTitleWrapper padding="150px 0 0">
@@ -385,235 +327,58 @@ export default function Page({ siteConfigData }: PageProps) {
             </SectionTitleWrapper>
 
             <TopicList columns={3}>
-              <TopicCard contentAlign={'center'} bgColor={Color.neutral98} padding={'42px'} href="/">
-                <TopicImage
-                  iconColor={Color.neutral20}
-                  bgColor={'transparent'}
-                  width={'100%'}
-                  height={54}
-                  margin={'auto'}
-                >
-                  <SVG src={IMG_LOGO_SAFE} />
-                </TopicImage>
-              </TopicCard>
-
-              <TopicCard contentAlign={'center'} bgColor={Color.neutral98} padding={'42px'} href="/">
-                <TopicImage
-                  iconColor={Color.neutral20}
-                  bgColor={'transparent'}
-                  width={'100%'}
-                  height={54}
-                  margin={'auto'}
-                >
-                  <SVG src={IMG_LOGO_OASIS} />
-                </TopicImage>
-              </TopicCard>
-
-              <TopicCard contentAlign={'center'} bgColor={Color.neutral98} padding={'42px'} href="/">
-                <TopicImage
-                  iconColor={Color.neutral20}
-                  bgColor={'transparent'}
-                  width={'100%'}
-                  height={54}
-                  margin={'auto'}
-                >
-                  <SVG src={IMG_LOGO_SAFE} />
-                </TopicImage>
-              </TopicCard>
-
-              <TopicCard contentAlign={'center'} bgColor={Color.neutral98} padding={'42px'} gap={12} asProp="div">
-                <TopicImage iconColor="#8702AA" bgColor={'transparent'} height={128}>
-                  <SVG src={IMG_ICON_OWL} />
-                </TopicImage>
-                <TopicCardInner contentAlign="center">
-                  <TopicTitle fontSize={51}>Yearn</TopicTitle>
-                  <TopicDescription fontSize={21}>
-                    Aave DAO used CoW Swap to swap over $4 million directly into Balancer liquidity pool
-                  </TopicDescription>
-                  <TopicButton bgColor="#490072" color="#F996EE">
-                    Learn more
-                  </TopicButton>
-                </TopicCardInner>
-              </TopicCard>
-
-              <TopicCard contentAlign={'center'} bgColor={Color.neutral98} padding={'42px'} gap={12} asProp="div">
-                <TopicImage iconColor="#8702AA" bgColor={'transparent'} height={128}>
-                  <SVG src={IMG_ICON_GHOST} />
-                </TopicImage>
-                <TopicCardInner contentAlign="center">
-                  <TopicTitle fontSize={51}>Giveth</TopicTitle>
-                  <TopicDescription fontSize={21}>
-                    Aave DAO used CoW Swap to swap over $4 million directly into Balancer liquidity pool
-                  </TopicDescription>
-                  <TopicButton bgColor="#490072" color="#F996EE">
-                    Learn more
-                  </TopicButton>
-                </TopicCardInner>
-              </TopicCard>
-
-              <TopicCard contentAlign={'center'} bgColor={Color.neutral98} padding={'42px'} gap={12} asProp="div">
-                <TopicImage iconColor="#8702AA" bgColor={'transparent'} height={128}>
-                  <SVG src={IMG_ICON_GHOST} />
-                </TopicImage>
-                <TopicCardInner contentAlign="center">
-                  <TopicTitle fontSize={51}>Balancer</TopicTitle>
-                  <TopicDescription fontSize={21}>
-                    Aave DAO used CoW Swap to swap over $4 million directly into Balancer liquidity pool
-                  </TopicDescription>
-                  <TopicButton bgColor="#490072" color="#F996EE">
-                    Learn more
-                  </TopicButton>
-                </TopicCardInner>
-              </TopicCard>
-
-              <TopicCard contentAlign={'center'} bgColor={Color.neutral98} padding={'42px'} href="/">
-                <TopicImage
-                  iconColor={Color.neutral20}
-                  bgColor={'transparent'}
-                  width={'100%'}
-                  height={54}
-                  margin={'auto'}
-                >
-                  <SVG src={IMG_LOGO_SAFE} />
-                </TopicImage>
-              </TopicCard>
-
-              <TopicCard contentAlign={'center'} bgColor={Color.neutral98} padding={'42px'} href="/">
-                <TopicImage
-                  iconColor={Color.neutral20}
-                  bgColor={'transparent'}
-                  width={'100%'}
-                  height={54}
-                  margin={'auto'}
-                >
-                  <SVG src={IMG_LOGO_OASIS} />
-                </TopicImage>
-              </TopicCard>
-
-              <TopicCard contentAlign={'center'} bgColor={Color.neutral98} padding={'42px'} href="/">
-                <TopicImage
-                  iconColor={Color.neutral20}
-                  bgColor={'transparent'}
-                  width={'100%'}
-                  height={54}
-                  margin={'auto'}
-                >
-                  <SVG src={IMG_LOGO_SAFE} />
-                </TopicImage>
-              </TopicCard>
-            </TopicList>
-          </ContainerCardSection>
-        </ContainerCard>
-
-        <ContainerCard bgColor={'transparent'}>
-          <ContainerCardSection>
-            <SectionTitleWrapper color={Color.neutral10} maxWidth={1100}>
-              <SectionTitleIcon size={114}>
-                <SVG src={IMG_ICON_BUILD_WITH_COW} />
-              </SectionTitleIcon>
-              <SectionTitleText>Build with CoW Protocol</SectionTitleText>
-            </SectionTitleWrapper>
-
-            <TopicList columns={2}>
-              <TopicCard contentAlign={'left'} bgColor="#66018E" textColor="#F996EE" padding={'32px'} asProp="div">
-                <TopicCardInner contentAlign="left">
-                  <TopicTitle fontSize={38} color={Color.neutral100}>
-                    For developers
-                  </TopicTitle>
-                  <TopicDescription fontSize={21} color="#F996EE">
-                    As an open-source protocol, building on top of CoW Protocol is permissionless. Thanks to
-                    comprehensive documentation and even a live coding environment, integrating the protocol is easy.
-                  </TopicDescription>
-                  <TopicButton bgColor="#ED60E9" color="#66018E" fontSize={27}>
-                    Read the docs
-                  </TopicButton>
-                </TopicCardInner>
-                <TopicImage iconColor="#8702AA" bgColor="transparent" margin={'0 0 0 auto'} height={187} width={'auto'}>
-                  <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />
-                </TopicImage>
-              </TopicCard>
-
-              <TopicCard contentAlign={'left'} bgColor="#66018E" textColor="#F996EE" padding={'32px'} asProp="div">
-                <TopicCardInner contentAlign="left">
-                  <TopicTitle fontSize={38} color={Color.neutral100}>
-                    For DeFi projects
-                  </TopicTitle>
-                  <TopicDescription fontSize={21} color="#F996EE">
-                    The worry-free DEX can power swaps and intent-based transactions for any DeFi project or use-case.
-                  </TopicDescription>
-                  <TopicButton bgColor="#ED60E9" color="#66018E" fontSize={27}>
-                    Read the docs
-                  </TopicButton>
-                </TopicCardInner>
-                <TopicImage iconColor="#8702AA" bgColor="transparent" margin={'0 0 0 auto'} height={187} width={'auto'}>
-                  <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />
-                </TopicImage>
-              </TopicCard>
-
-              <TopicCard contentAlign={'left'} bgColor="#66018E" textColor="#F996EE" padding={'32px'} asProp="div">
-                <TopicCardInner contentAlign="left">
-                  <TopicTitle fontSize={38} color={Color.neutral100}>
-                    For dummies
-                  </TopicTitle>
-                  <TopicDescription fontSize={21} color="#F996EE">
-                    Want to bring the most advanced swap features in DeFi directly to your website, dApp, or project?
-                  </TopicDescription>
-                  <TopicButton bgColor="#ED60E9" color="#66018E" fontSize={27}>
-                    Integrate the widget
-                  </TopicButton>
-                </TopicCardInner>
-                <TopicImage iconColor="#8702AA" bgColor="transparent" margin={'0 0 0 auto'} height={187} width={'auto'}>
-                  <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />
-                </TopicImage>
-              </TopicCard>
-
-              <TopicCard contentAlign={'left'} bgColor="#66018E" textColor="#F996EE" padding={'32px'} asProp="div">
-                <TopicCardInner contentAlign="left">
-                  <TopicTitle fontSize={38} color={Color.neutral100}>
-                    For anyone
-                  </TopicTitle>
-                  <TopicDescription fontSize={21} color="#F996EE">
-                    The CoW Grants program has given out over $100,000 to community contributors and to innovative
-                    projects built on top of CoW Protocol.
-                  </TopicDescription>
-                  <TopicButton bgColor="#ED60E9" color="#66018E" fontSize={27}>
-                    Apply for a grant
-                  </TopicButton>
-                </TopicCardInner>
-                <TopicImage iconColor="#8702AA" bgColor="transparent" margin={'0 0 0 auto'} height={187} width={'auto'}>
-                  <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />
-                </TopicImage>
-              </TopicCard>
-            </TopicList>
-          </ContainerCardSection>
-        </ContainerCard>
-
-        <ContainerCard bgColor={'transparent'}>
-          <ContainerCardSection>
-            <SectionTitleWrapper>
-              <SectionTitleIcon size={100}>
-                <SVG src={IMG_ICON_SECURE} />
-              </SectionTitleIcon>
-              <SectionTitleText fontSize={90} textAlign="center">
-                Secure & battle-tested
-              </SectionTitleText>
-            </SectionTitleWrapper>
-
-            <TopicList columns={3}>
-              <TopicCard bgColor="#66018E" textColor={Color.neutral100} href="/">
-                <TopicImage iconColor="#F996EE" large></TopicImage>
-                <TopicTitle fontSize={38}>Programmatic orders</TopicTitle>
-              </TopicCard>
-
-              <TopicCard bgColor="#66018E" textColor={Color.neutral100} href="/">
-                <TopicImage iconColor="#F996EE" large></TopicImage>
-                <TopicTitle fontSize={38}>CoW Hooks</TopicTitle>
-              </TopicCard>
-
-              <TopicCard bgColor="#66018E" textColor={Color.neutral100} href="/">
-                <TopicImage iconColor="#F996EE" large></TopicImage>
-                <TopicTitle fontSize={38}>Smart orders</TopicTitle>
-              </TopicCard>
+              {CONTENT.trustedDAOs.map((dao, index) => {
+                const isPng = dao.icon.endsWith('.png')
+                return dao.description ? (
+                  <TopicCard
+                    key={index}
+                    contentAlign={'center'}
+                    bgColor={Color.neutral20}
+                    padding={'24px'}
+                    gap={12}
+                    asProp="div"
+                  >
+                    <TopicImage iconColor={Color.neutral98} bgColor={'transparent'} height={100}>
+                      {isPng ? (
+                        <img src={dao.icon} alt={dao.title} style={{ maxWidth: '100%' }} />
+                      ) : (
+                        <SVG src={dao.icon} />
+                      )}
+                    </TopicImage>
+                    <TopicCardInner contentAlign="center">
+                      <TopicTitle fontSize={28} color={Color.neutral98}>
+                        {dao.title}
+                      </TopicTitle>
+                      <TopicDescription fontSize={18} color={Color.neutral70}>
+                        {dao.description}
+                      </TopicDescription>
+                      <TopicButton href={dao.link}>Learn more</TopicButton>
+                    </TopicCardInner>
+                  </TopicCard>
+                ) : (
+                  <TopicCard
+                    key={index}
+                    contentAlign={'center'}
+                    bgColor={Color.neutral20}
+                    padding={'10px'}
+                    href={dao.link}
+                  >
+                    <TopicImage
+                      iconColor={Color.neutral0}
+                      bgColor={'transparent'}
+                      width={'100%'}
+                      height={75}
+                      margin={'auto'}
+                    >
+                      {isPng ? (
+                        <img src={dao.icon} alt={dao.title} style={{ maxWidth: '100%' }} />
+                      ) : (
+                        <SVG src={dao.icon} />
+                      )}
+                    </TopicImage>
+                  </TopicCard>
+                )
+              })}
             </TopicList>
           </ContainerCardSection>
         </ContainerCard>

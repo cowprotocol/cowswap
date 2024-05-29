@@ -165,6 +165,7 @@ export const TopicList = styled.div<{ columns?: number; columnsMobile?: number; 
 interface TopicCardProps {
   bgColor?: string
   textColor?: string
+  borderColor?: string
   horizontal?: boolean
   columns?: string
   asProp?: string
@@ -190,7 +191,7 @@ export const TopicCard = styled.a.attrs<TopicCardProps>(({ asProp }) => ({
   font-size: 24px;
   font-weight: ${Font.weight.bold};
   text-decoration: none;
-  border: 4px solid transparent;
+  border: ${({ borderColor }) => (borderColor ? `4px solid ${borderColor}` : '4px solid transparent')};
   transition: border 0.2s ease-in-out;
   gap: ${({ gap }) => (typeof gap === 'number' ? `${gap}px` : '56px')};
   max-width: 100%;
@@ -266,10 +267,12 @@ export const TopicImage = styled.div<{
     max-width: 100%;
   }
 
-  svg {
+  svg,
+  img {
     fill: currentColor;
     height: inherit;
     width: inherit;
+    object-fit: contain;
     max-width: 100%;
   }
 `
@@ -556,7 +559,7 @@ export const Pagination = styled.div`
     text-decoration: none;
     font-size: 16px;
     font-weight: ${Font.weight.medium};
-    color: ${Color.neutral0};
+    color: ${Color.neutral100};
     background: transparent;
     transition: background 0.2s, color 0.2s;
 
@@ -565,7 +568,7 @@ export const Pagination = styled.div`
     }
 
     &.active {
-      background: ${Color.neutral0};
+      background: ${Color.neutral100};
       color: ${Color.neutral100};
     }
   }
@@ -1084,13 +1087,15 @@ export const TrustedBy = styled.div`
 export const SwiperSlideWrapper = styled.div`
   --swiper-navigation-color: ${Color.neutral0};
   --swiper-theme-color: ${Color.neutral0};
-  --swiper-pagination-bullet-inactive-color: ${Color.neutral0};
+  --swiper-pagination-bullet-inactive-color: ${Color.neutral100};
+  --swiper-pagination-color: ${Color.neutral100};
   --swiper-pagination-bullet-size: 1.2rem;
 
   display: flex;
   flex-flow: column wrap;
   width: 100%;
   overflow: hidden;
+  position: relative;
 
   .daoSwiper {
     position: relative;
