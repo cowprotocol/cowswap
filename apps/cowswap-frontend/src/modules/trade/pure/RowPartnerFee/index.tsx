@@ -26,10 +26,18 @@ export interface PartnerRowPartnerFeeProps {
   feeAmount?: CurrencyAmount<Currency> | null
   feeInFiat: CurrencyAmount<Token> | null
   label?: string
+  marginBottom?: number
   tooltipMarkdown?: string
 }
 
-export function RowPartnerFee({ partnerFee, feeAmount, feeInFiat, label, tooltipMarkdown }: PartnerRowPartnerFeeProps) {
+export function RowPartnerFee({
+  partnerFee,
+  feeAmount,
+  feeInFiat,
+  label,
+  tooltipMarkdown,
+  marginBottom,
+}: PartnerRowPartnerFeeProps) {
   const props = useMemo(() => {
     const { bps } = partnerFee || { bps: 0 }
     const isFree = bps === 0
@@ -44,8 +52,9 @@ export function RowPartnerFee({ partnerFee, feeAmount, feeInFiat, label, tooltip
       feeAmount,
       feeInFiat,
       isFree,
+      marginBottom,
     }
-  }, [partnerFee, feeAmount, feeInFiat, label, tooltipMarkdown])
+  }, [partnerFee, feeAmount, feeInFiat, label, tooltipMarkdown, marginBottom])
 
   return <RowFeeContent {...props} />
 }
