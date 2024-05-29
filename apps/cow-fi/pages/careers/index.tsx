@@ -63,7 +63,7 @@ export default function Page({ siteConfigData, jobsData }: PageProps) {
       </Head>
 
       <Wrapper>
-        <ContainerCard bgColor={'transparent'} color={Color.neutral10} padding="0 60px 60px">
+        <ContainerCard bgColor={Color.neutral90} color={Color.neutral10} padding="0 60px 60px" touchFooter>
           <ContainerCardSection>
             <SectionTitleWrapper maxWidth={900} margin="0 auto 56px">
               <SectionTitleIcon size={60}>
