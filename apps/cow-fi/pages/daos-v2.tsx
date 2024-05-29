@@ -45,6 +45,7 @@ import {
   MetricsItem,
   TrustedBy,
   SwiperSlideWrapper,
+  SectionTitleButton,
 } from '@/styles/styled'
 
 import { DAO_CONTENT as CONTENT } from '@/data/siteContent/daos'
@@ -302,6 +303,15 @@ export default function Page({ siteConfigData }: PageProps) {
                 </TopicCardInner>
               </TopicCard>
             </TopicList>
+
+            <SectionTitleButton
+              href="https://blog.cow.fi/list/advanced-order-types-b391bd4390cb?utm_content=daos-page&utm_medium=web&utm_source=cow.fi"
+              target="_blank"
+              rel="noopener noreferrer"
+              margin="24px auto 0"
+            >
+              Explore advanced order types
+            </SectionTitleButton>
           </ContainerCardSection>
         </ContainerCard>
 

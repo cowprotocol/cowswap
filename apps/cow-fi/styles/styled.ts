@@ -648,7 +648,7 @@ export const SectionTitleDescription = styled.p<{
   }
 `
 
-export const SectionTitleButton = styled.a<{ bgColor?: string; color?: string }>`
+export const SectionTitleButton = styled.a<{ bgColor?: string; color?: string; margin?: string }>`
   display: inline-block;
   padding: 16px 24px;
   font-size: 27px;
@@ -662,6 +662,7 @@ export const SectionTitleButton = styled.a<{ bgColor?: string; color?: string }>
   width: max-content;
   transition: opacity 0.2s ease-in-out;
   max-width: 100%;
+  margin: ${({ margin }) => margin || '0'};
 
   &:hover {
     opacity: 0.8;
