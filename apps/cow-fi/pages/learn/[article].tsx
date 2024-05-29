@@ -20,6 +20,13 @@ import {
   ArticleImage,
   ArticleTitle,
   ContainerCardSectionTopTitle,
+  ArticleContent,
+  BodyContent,
+  ArticleMainTitle,
+  ArticleSubtitleWrapper,
+  CategoryTags,
+  StickyMenu,
+  RelatedArticles,
 } from '@/styles/styled'
 
 const DATA_CACHE_TIME_SECONDS = 5 * 60 // Cache 5min
@@ -43,226 +50,6 @@ const Wrapper = styled.div`
   ${Media.upToMedium()} {
     margin: 0 auto;
     gap: 0;
-  }
-`
-
-const ArticleContent = styled.div`
-  --maxWidth: 725px;
-  width: 100%;
-  max-width: var(--maxWidth);
-  flex: 3;
-  padding: 0;
-  border-radius: 20px;
-`
-
-const StickyMenu = styled.div`
-  --maxWidth: 344px;
-  width: 100%;
-  max-width: var(--maxWidth);
-  height: min-content;
-  min-height: 240px;
-  flex: 1;
-  position: sticky;
-  top: 100px;
-  background: ${Color.neutral100};
-  color: ${Color.neutral0};
-  padding: 30px 24px;
-  border-radius: 32px;
-
-  ${Media.upToMedium()} {
-    --maxWidth: 100%;
-  }
-
-  > b {
-    display: block;
-    font-size: 18px;
-    font-weight: ${Font.weight.bold};
-    color: ${Color.neutral10};
-    margin: 0 0 24px;
-  }
-`
-
-const Title = styled.h1`
-  font-size: 67px;
-  font-weight: ${Font.weight.bold};
-  color: ${Color.neutral10};
-  margin-bottom: 16px;
-
-  ${Media.upToMedium()} {
-    font-size: 37px;
-  }
-`
-
-const BodyContent = styled.div`
-  font-size: 18px;
-  line-height: 1.6;
-  color: ${Color.neutral0};
-
-  img {
-    max-width: 100%;
-    border-radius: 10px;
-    margin-top: 20px;
-  }
-
-  a {
-    color: ${Color.neutral20};
-    text-decoration: underline;
-    transition: color 0.2s ease-in-out;
-
-    &:hover {
-      color: ${Color.neutral40};
-    }
-  }
-
-  > p,
-  > ul,
-  > ol {
-    margin-bottom: 16px;
-    font-size: 21px;
-    line-height: 1.4;
-
-    ${Media.upToMedium()} {
-      font-size: 18px;
-    }
-  }
-
-  > ul,
-  > ol {
-    padding-left: 20px;
-
-    > li {
-      margin: 0 0 24px;
-      font-size: inherit;
-    }
-  }
-
-  > blockquote {
-    margin: 24px 0;
-    padding: 8px 24px;
-    background: ${Color.neutral90};
-    border-left: 4px solid ${Color.neutral20};
-    color: ${Color.neutral20};
-    font-style: italic;
-    font-size: inherit;
-
-    > p {
-      line-height: 1.6;
-    }
-  }
-
-  > h2,
-  > h3,
-  > h4,
-  > h5,
-  > h6 {
-    font-weight: bold;
-    margin: 56px 0 32px;
-  }
-
-  > h2 {
-    font-size: 38px;
-
-    ${Media.upToMedium()} {
-      font-size: 24px;
-    }
-  }
-
-  > h3 {
-    font-size: 32px;
-
-    ${Media.upToMedium()} {
-      font-size: 22px;
-    }
-  }
-
-  > h4 {
-    font-size: 28px;
-
-    ${Media.upToMedium()} {
-      font-size: 20px;
-    }
-  }
-
-  > h5 {
-    font-size: 24px;
-
-    ${Media.upToMedium()} {
-      font-size: 18px;
-    }
-  }
-
-  > h6 {
-    font-size: 20px;
-
-    ${Media.upToMedium()} {
-      font-size: 16px;
-    }
-  }
-`
-
-const RelatedArticles = styled.div`
-  font-size: 18px;
-  color: ${Color.neutral0};
-
-  > ul {
-    list-style: disc;
-    padding: 0 0 0 20px;
-
-    > li {
-      margin: 0 0 16px;
-      color: inherit;
-    }
-
-    > li > a {
-      color: inherit;
-      text-decoration: none;
-      line-height: 1.2;
-
-      &:hover {
-        text-decoration: underline;
-      }
-    }
-  }
-`
-
-const ArticleSubtitleWrapper = styled.div`
-  color: ${Color.neutral40};
-  font-weight: ${Font.weight.bold};
-  font-size: 16px;
-  display: flex;
-  flex-flow: row wrap;
-  gap: 10px;
-  margin: 34px 0;
-
-  > div span {
-    font-weight: normal;
-  }
-`
-
-const CategoryTags = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 24px;
-  font-size: 16px;
-  color: ${Color.neutral10};
-  font-weight: ${Font.weight.medium};
-
-  a {
-    display: inline-block;
-    padding: 8px 12px;
-    background: ${Color.neutral98};
-    border-radius: 16px;
-    text-decoration: none;
-    transition: background 0.2s ease-in-out, color 0.2s ease-in-out;
-    color: inherit;
-    font-weight: inherit;
-    font-size: inherit;
-
-    &:hover {
-      background: ${Color.neutral10};
-      color: ${Color.neutral98};
-    }
   }
 `
 
@@ -340,7 +127,7 @@ export default function ArticlePage({
               </CategoryTags>
             )}
 
-            <Title>{title}</Title>
+            <ArticleMainTitle>{title}</ArticleMainTitle>
 
             <ArticleSubtitle dateIso={publishedAt!} content={content} />
             <BodyContent>

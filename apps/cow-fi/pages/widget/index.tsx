@@ -1,170 +1,87 @@
-import { Button, ButtonVariant, ButtonWrapper } from '@/components/Button'
-import { CustomLink } from '@/components/CustomLink'
-import {
-  CardItem,
-  CardWrapper,
-  Section,
-  SectionContent,
-  SectionH1,
-  SectionImage,
-  SubTitle,
-} from '@/components/Home/index.styles'
-import Layout from '@/components/Layout'
-import { CONFIG, SiteConfig } from '@/const/meta'
-import { IMAGE_PATH } from '@/const/paths'
-import { CowSwapWidget, CowSwapWidgetParams } from '@cowprotocol/widget-react'
-import { WidgetEvents } from 'lib/analytics/GAEvents'
-import { sendGAEventHandler } from 'lib/analytics/sendGAEvent'
-import { LinkWithUtm } from 'modules/utm'
-import { GetStaticProps } from 'next'
 import Head from 'next/head'
-import Link from 'next/link'
+import { GetStaticProps } from 'next'
+import { Font, Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
+
+import IMG_ICON_OWL from '@cowprotocol/assets/images/icon-owl.svg'
+import IMG_ICON_GHOST from '@cowprotocol/assets/images/icon-ghost.svg'
+
 import styled from 'styled-components'
-import { Color, Font, Media } from 'styles/variables'
 
-const ArrowDrawn = '/images/arrow-drawn.svg'
+import { CONFIG } from '@/const/meta'
 
-const StickySectionTitle = styled.div`
-  position: sticky;
-  top: 12rem;
-  margin: 0 auto auto;
+import LayoutV2 from '@/components/Layout/LayoutV2'
+import FAQ from '@/components/FAQ'
+import { getCategories, getArticles, Category, ArticleListResponse } from 'services/cms'
+import { CowSwapWidget, CowSwapWidgetParams } from '@cowprotocol/widget-react'
 
-  ${Media.mobile} {
-    position: relative;
-    top: initial;
-  }
-`
+import {
+  ContainerCard,
+  ContainerCardSection,
+  TopicList,
+  TopicCard,
+  TopicImage,
+  TopicTitle,
+  TopicDescription,
+  SectionTitleWrapper,
+  SectionTitleIcon,
+  SectionTitleText,
+  SectionTitleDescription,
+  TopicCardInner,
+  HeroContainer,
+  HeroDescription,
+  HeroContent,
+  HeroTitle,
+  HeroSubtitle,
+  WidgetContainer,
+  HeroButton,
+  HeroButtonWrapper,
+} from '@/styles/styled'
 
-const WidgetContainer = styled.div`
-  display: flex;
-  width: 100%;
-  flex-flow: column wrap;
-  justify-content: flex-start;
-  align-items: center;
-  gap: 1.6rem;
+import { DAO_CONTENT as CONTENT } from '@/data/siteContent/daos'
 
-  &::before {
-    color: ${Color.darkBlue};
-    font-size: 2.1rem;
-    font-weight: ${Font.weightBold};
-    content: 'Try it out!';
-    background: url(${ArrowDrawn}) no-repeat center 2.5rem / 2.4rem 5rem;
-    width: 12rem;
-    height: 7.5rem;
-    margin: 0 auto;
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    transform: rotateZ(-15deg);
-  }
-
-  ${Media.mobile} {
-    > iframe {
-      width: 100%;
-    }
-  }
-`
-
-const DAO_LOGOS_PATH = '/images/dao-logos/'
-
-const CONTENT = {
-  configuratorURL: 'https://widget.cow.fi/',
-  calendlyURL: 'https://cowprotocol.typeform.com/to/rONXaxHV',
-  docsURL: 'https://docs.cow.fi/cow-protocol/tutorials/widget',
-  everyBell: [
-    {
-      icon: `${IMAGE_PATH}/protection.svg`,
-      title: 'Full Protection from MEV',
-      description:
-        "CoW Swap offers the best MEV protection in the land. Thanks to a delegated trading model that relies on experts to execute swaps, traders can rest assured that they're safe from the MEV bots.",
-    },
-    {
-      icon: `${IMAGE_PATH}/surplus.svg`,
-      title: 'Surplus-Capturing Orders',
-      description:
-        'Every order is surplus-capturing and traders usually earn a little extra in their sell token with each swap.',
-    },
-    {
-      icon: `${IMAGE_PATH}/gasless.svg`,
-      title: 'Gasless Trading',
-      description:
-        'All gas fees are paid in the sell token for swaps and even for token approvals. Users can enjoy ETH-free trading every time, even with brand-new wallets.',
-    },
-  ],
-  trustedDAOs: [
-    { icon: `${DAO_LOGOS_PATH}aave.svg`, title: 'Aave', link: 'https://aave.com/' },
-    { icon: `${DAO_LOGOS_PATH}nexus.svg`, title: 'Nexus Mutual', link: 'https://nexusmutual.io/' },
-    { icon: `${DAO_LOGOS_PATH}ens.svg`, title: 'ENS', link: 'https://ens.domains/' },
-    { icon: `${DAO_LOGOS_PATH}karpatkey.svg`, title: 'Karpatkey', link: 'https://www.karpatkey.com/' },
-    { icon: `${DAO_LOGOS_PATH}maker.svg`, title: 'MakerDAO', link: 'https://makerdao.com/' },
-    { icon: `${DAO_LOGOS_PATH}lido.svg`, title: 'Lido', link: 'https://lido.fi/' },
-    { icon: `${DAO_LOGOS_PATH}yearn.svg`, title: 'Yearn', link: 'https://yearn.finance/' },
-    { icon: `${DAO_LOGOS_PATH}gnosis.svg`, title: 'Gnosis', link: 'https://www.gnosis.io/' },
-    { icon: `${DAO_LOGOS_PATH}synthetix.svg`, title: 'Synthetix', link: 'https://synthetix.io/' },
-    { icon: `${DAO_LOGOS_PATH}balancer.svg`, title: 'Balancer', link: 'https://balancer.fi/' },
-    { icon: `${DAO_LOGOS_PATH}aura.svg`, title: 'Aura', link: 'https://aura.finance/' },
-    { icon: `${DAO_LOGOS_PATH}vitadao.svg`, title: 'VitaDAO', link: 'https://www.vitadao.com/' },
-    { icon: `${DAO_LOGOS_PATH}polygon.svg`, title: 'Polygon', link: 'https://polygon.technology/' },
-    { icon: `${DAO_LOGOS_PATH}pleasrdao.svg`, title: 'PleasrDAO', link: 'https://pleasr.org/' },
-    { icon: `${DAO_LOGOS_PATH}olympus.svg`, title: 'Olympus', link: 'https://www.olympusdao.finance/' },
-    { icon: `${DAO_LOGOS_PATH}dxdao.svg`, title: 'DxDAO', link: 'https://dxdao.eth.limo/' },
-    { icon: `${DAO_LOGOS_PATH}mstables.svg`, title: 'mStables', link: 'https://mstable.org/' },
-    { icon: `${DAO_LOGOS_PATH}index.svg`, title: 'Index', link: 'https://indexcoop.com/' },
-    { icon: `${DAO_LOGOS_PATH}rhino.svg`, title: 'Rhino', link: 'https://rhino.fi/' },
-    { icon: `${DAO_LOGOS_PATH}jpgd.svg`, title: 'JPGD', link: 'https://jpegd.io/' },
-    { icon: `${DAO_LOGOS_PATH}benddao.svg`, title: 'BendDAO', link: 'https://www.benddao.xyz/' },
-    { icon: `${DAO_LOGOS_PATH}alchemix.svg`, title: 'Alchemix', link: 'https://alchemix.fi/' },
-    { icon: `${DAO_LOGOS_PATH}stargate.svg`, title: 'Stargate', link: 'https://stargate.io/' },
-    { icon: `${DAO_LOGOS_PATH}shapeshift.svg`, title: 'ShapeShift', link: 'https://shapeshift.com/' },
-    { icon: `${DAO_LOGOS_PATH}stakedao.svg`, title: 'StakeDAO', link: 'https://stakedao.org/' },
-    { icon: `${DAO_LOGOS_PATH}cryptex.svg`, title: 'Cryptex', link: 'https://cryptex.finance/' },
-    { icon: `${DAO_LOGOS_PATH}frax.svg`, title: 'Frax', link: 'https://frax.finance/' },
-    { icon: `${DAO_LOGOS_PATH}dfx.svg`, title: 'DFX', link: 'https://dfx.finance/' },
-    { icon: `${DAO_LOGOS_PATH}reflexer.svg`, title: 'Reflexer', link: 'https://www.reflexer.finance/' },
-    { icon: `${DAO_LOGOS_PATH}citydao.svg`, title: 'CityDAO', link: 'https://citydao.io/' },
-    { icon: `${DAO_LOGOS_PATH}threshold.svg`, title: 'Threshold', link: 'https://threshold.network/' },
-    { icon: `${DAO_LOGOS_PATH}krausehouse.svg`, title: 'KrauseHouse', link: 'https://krausehouse.ca/' },
-    { icon: `${DAO_LOGOS_PATH}tokenlon.svg`, title: 'Tokenlon', link: 'https://tokenlon.im/' },
-    { icon: `${DAO_LOGOS_PATH}idle.svg`, title: 'Idle', link: 'https://idle.finance/' },
-    { icon: `${DAO_LOGOS_PATH}teller.svg`, title: 'Teller', link: 'https://teller.finance/' },
-    { icon: `${DAO_LOGOS_PATH}sherlock.svg`, title: 'Sherlock', link: 'https://sherlock.xyz/' },
-    { icon: `${DAO_LOGOS_PATH}badgerdao.svg`, title: 'BadgerDAO', link: 'https://badger.finance/' },
-    { icon: `${DAO_LOGOS_PATH}solace.svg`, title: 'Solace', link: 'https://solace.fi/' },
-    { icon: `${DAO_LOGOS_PATH}dreamdao.png`, title: 'DreamDAO', link: 'https://dreamdao.io/' },
-    { icon: `${DAO_LOGOS_PATH}ondo.svg`, title: 'Ondo', link: 'https://ondo.finance/' },
-    { icon: `${DAO_LOGOS_PATH}abracadabra.png`, title: 'Abracadabra', link: 'https://abracadabra.money/' },
-    { icon: `${DAO_LOGOS_PATH}aragon.svg`, title: 'Aragorn', link: 'https://aragon.org/' },
-  ],
-  featureItems: [
-    {
-      description: 'Live styling configurator',
-    },
-    {
-      description: 'Easy install with a snippet of code',
-    },
-    {
-      description: 'External wallet management - use your own wallet connection',
-    },
-    {
-      description: 'Internal wallet management - no wallet connection needed',
-    },
-    {
-      description: 'Configurable token lists',
-    },
-    {
-      description: 'Custom-tailored fees',
-    },
-    {
-      description: 'Fully responsive, from 320px and up',
-    },
-    {
-      description: 'Feature-adaptive display',
-      comingSoon: true,
-    },
-  ],
-}
+import SVG from 'react-inlinesvg'
+import IMG_ICON_FAQ from '@cowprotocol/assets/images/icon-faq.svg'
 
 const DATA_CACHE_TIME_SECONDS = 5 * 60 // Cache 5min
+
+const FAQ_DATA = [
+  {
+    question: 'What is CoW DAO?',
+    answer: 'CoW DAO is ...',
+  },
+  {
+    question: 'What is CoW Swap?',
+    answer:
+      'CoW Protocol is a fully permissionless trading protocol that leverages batch auctions as its price finding mechanism. CoW Protocol uses batch auctions to maximize liquidity via Coincidence of Wants (CoWs) in addition to tapping all available on-chain liquidity whenever needed.',
+  },
+  {
+    question: 'What is MEV Blocker?',
+    answer: 'MEV Blocker is ...',
+  },
+  {
+    question: 'What is CoW AMM?',
+    answer: 'CoW AMM is ...',
+  },
+  {
+    question: 'Where does the name come from?',
+    answer: 'The name comes from ...',
+  },
+]
+
+const FEATURE_ITEMS = [
+  'Live styling configurator',
+  'Easy install with a snippet of code',
+  'External wallet management - use your own wallet connection',
+  'Internal wallet management - no wallet connection needed',
+  'Configurable token lists',
+  'Custom-tailored fees',
+  'Fully responsive, from 320px and up',
+  'Feature-adaptive display',
+]
+
+interface PageProps {
+  siteConfigData: typeof CONFIG
+}
 
 const widgetParams: CowSwapWidgetParams = {
   appCode: 'CoW Protocol: Widget Demo',
@@ -172,265 +89,281 @@ const widgetParams: CowSwapWidgetParams = {
   standaloneMode: true,
 }
 
-export default function WidgetPage({ siteConfigData }: { siteConfigData: SiteConfig }) {
-  const { social } = siteConfigData
+const Wrapper = styled.div`
+  display: flex;
+  flex-flow: column wrap;
+  justify-content: center;
+  align-items: center;
+  max-width: 1600px;
+  width: 100%;
+  margin: 76px auto 0;
+  gap: 24px;
+`
 
-  // Filter out Discord/Forum social links
-  let socialFiltered: Record<string, any> = {}
-  Object.entries(social).forEach(([key, value]) => {
-    if (key !== 'forum' && key !== 'github') {
-      socialFiltered[key] = value
-    }
-  })
-
-  const pageTitle = `Widget - ${siteConfigData.title}`
-  const pageDescription =
-    'Integrate the CoW Swap widget to bring seamless, MEV-protected trading to your website or dApp.'
-
+export default function Page({ siteConfigData }: PageProps) {
   return (
-    <Layout fullWidthGradientVariant>
+    <LayoutV2 bgColor={Color.neutral90}>
       <Head>
-        <title>{pageTitle}</title>
-        <meta key="description" name="description" content={pageDescription} />
-        <meta key="ogTitle" property="og:title" content={pageTitle} />
-        <meta key="ogDescription" property="og:description" content={pageDescription} />
-        <meta key="twitterTitle" name="twitter:title" content={pageTitle} />
-        <meta key="twitterDescription" name="twitter:description" content={pageDescription} />
+        <title>
+          {siteConfigData.title} - {siteConfigData.descriptionShort}
+        </title>
       </Head>
 
-      <Section firstSection>
-        <SectionContent sticky>
-          <div>
-            <SectionH1 fontSize={6.8} fontSizeMobile={4} lineHeight={1} textAlign={'left'}>
+      <Wrapper>
+        <HeroContainer variant="secondary" maxWidth={1300} padding="0 0 72px">
+          <HeroContent variant="secondary">
+            <HeroSubtitle color={'#66018E'}>Widget</HeroSubtitle>
+            <HeroTitle fontSize={52} fontSizeMobile={38} as="h2">
               Bring reliable, MEV-protected swaps to your users
-            </SectionH1>
-            <SubTitle color={Color.text1} fontSize={2} lineHeight={1.6} maxWidth={60} textAlign="left">
+            </HeroTitle>
+            <HeroDescription color={Color.neutral30}>
               Integrate the CoW Swap widget to bring seamless, MEV-protected trading to your website or dApp. Delight
-              your users while adding an extra revenue stream for your project - it&apos;s a win-win.
-            </SubTitle>
+              your users while adding an extra revenue stream for your project - it's a win-win.
+            </HeroDescription>
 
-            <ButtonWrapper>
-              <LinkWithUtm
-                href={CONTENT.configuratorURL}
-                defaultUtm={{ ...CONFIG.utm, utmContent: 'widget-page-configure-widget-cta-hero' }}
-                passHref
+            <HeroButtonWrapper>
+              <HeroButton
+                href="https://widget.cow.fi/?utm_content=widget-page-configure-widget-cta-hero&utm_medium=web&utm_source=cow.fi"
+                target="_blank"
+                rel="noopener noreferrer"
               >
-                <Button
-                  onClick={() => sendGAEventHandler(WidgetEvents.CONFIGURE_WIDGET)}
-                  paddingLR={4.2}
-                  fontSizeMobile={2.1}
-                  label="Configure widget"
-                />
-              </LinkWithUtm>
+                {' '}
+                Configure widget{' '}
+              </HeroButton>
 
-              <LinkWithUtm
-                href={CONTENT.docsURL}
-                defaultUtm={{ ...CONFIG.utm, utmContent: 'widget-page-readdocs-cta-hero' }}
-                passHref
+              <HeroButton
+                background="transparent"
+                color={Color.neutral20}
+                href="https://docs.cow.fi/cow-protocol/tutorials/widget?utm_content=widget-page-readdocs-cta-hero&utm_medium=web&utm_source=cow.fi"
+                target="_blank"
+                rel="noopener noreferrer"
               >
-                <Button
-                  onClick={() => sendGAEventHandler(WidgetEvents.READ_DOCS)}
-                  paddingLR={4.2}
-                  fontSizeMobile={2.1}
-                  label="Read docs"
-                  variant={ButtonVariant.TEXT}
-                />
-              </LinkWithUtm>
-            </ButtonWrapper>
-          </div>
-        </SectionContent>
+                {' '}
+                Read docs
+              </HeroButton>
+            </HeroButtonWrapper>
+          </HeroContent>
 
-        <SectionContent flow="column">
-          <div>
-            <WidgetContainer id="COW-WIDGET">
-              <CowSwapWidget params={widgetParams} />
-            </WidgetContainer>
-          </div>
-        </SectionContent>
-      </Section>
+          <WidgetContainer id="COW-WIDGET">
+            <CowSwapWidget params={widgetParams} />
+          </WidgetContainer>
+        </HeroContainer>
 
-      <Section fullWidth colorVariant={'dark-gradient'} flow="column" gap={14}>
-        <SectionContent flow={'row'} maxWidth={100} textAlign={'left'}>
-          <div className="container">
-            <h3>Earn Revenue for Your Project</h3>
-            <SubTitle lineHeight={1.4} textAlign={'left'}>
-              You may collect revenue when users trade with your widget.*
-            </SubTitle>
-          </div>
-          <SectionImage>
-            <img src={`${IMAGE_PATH}/eth-circles.svg`} alt="Make Money with CoW Swap" width="340" height="214" />
-          </SectionImage>
-        </SectionContent>
+        <ContainerCard bgColor={Color.neutral10} color={Color.neutral100}>
+          <ContainerCardSection>
+            <SectionTitleWrapper>
+              <SectionTitleIcon size={100}>
+                <ProductLogo variant={ProductVariant.CowProtocol} theme="light" logoIconOnly />
+              </SectionTitleIcon>
+              <SectionTitleText>Integrate now</SectionTitleText>
+            </SectionTitleWrapper>
 
-        <SectionContent flow={'row'} maxWidth={100} textAlign={'left'} reverseOrderMobile={'column-reverse'}>
-          <SectionImage>
-            <img src={`${IMAGE_PATH}/eth-blocks.svg`} alt="Integrate With Ease" width="340" height="214" />
-          </SectionImage>
-          <div className="container">
-            <h3>Integrate With Ease</h3>
-            <SubTitle lineHeight={1.4} textAlign={'left'} textAlignMobile={'center'}>
-              The CoW Swap widget is quick to install and easy to customize. Add the widget to your site in under 5
-              minutes by copy-pasting a few lines of code. Contact our team for implementation details.
-            </SubTitle>
-          </div>
-        </SectionContent>
-      </Section>
+            <TopicList columns={1} maxWidth={1000}>
+              <TopicCard
+                columns="1fr auto"
+                gap={100}
+                horizontal
+                asProp="div"
+                bgColor={'transparent'}
+                textColor={Color.neutral100}
+              >
+                <TopicCardInner contentAlign="left">
+                  <TopicTitle fontSize={48}>Earn Revenue for Your Project</TopicTitle>
+                  <TopicDescription fontSize={24} color={Color.neutral80}>
+                    You may collect revenue when users trade with your widget.*
+                  </TopicDescription>
+                </TopicCardInner>
+                <TopicImage width={400} height={400} heightMobile={300} orderReverseMobile bgColor="transparent">
+                  <img src="images/eth-circles.svg" alt="Make Money with CoW Swap" width="340" height="214" />
+                </TopicImage>
+              </TopicCard>
 
-      <Section fullWidth>
-        <SectionContent flow={'column'}>
-          <div className="container">
-            <h3>Every Bell, Whistle, and Moo</h3>
-            <SubTitle lineHeight={1.4} maxWidth={85} color={Color.text1}>
-              With the CoW Swap widget, you can offer your users everything you know and love about CoW Swap, and more.
-              Oh, and yes… it does come with the “moo”.
-            </SubTitle>
+              <TopicCard
+                columns="1fr auto"
+                gap={100}
+                horizontal
+                asProp="div"
+                bgColor="transparent"
+                textColor={Color.neutral100}
+              >
+                <TopicImage width={400} height={400} heightMobile={300} orderReverseMobile bgColor="transparent">
+                  <img src="images//eth-blocks.svg" alt="Integrate With Ease" width="340" height="214" />
+                </TopicImage>
+                <TopicCardInner contentAlign="left">
+                  <TopicTitle fontSize={67}>Integrate With Ease</TopicTitle>
+                  <TopicDescription fontSize={24} color={Color.neutral80}>
+                    The CoW Swap widget is quick to install and easy to customize. Add the widget to your site in under
+                    5 minutes by copy-pasting a few lines of code. Contact our team for implementation details.
+                  </TopicDescription>
+                </TopicCardInner>
+              </TopicCard>
+            </TopicList>
+          </ContainerCardSection>
+        </ContainerCard>
 
-            <CardWrapper maxWidth={100} gap={3.8}>
-              {CONTENT.everyBell.map(({ icon, title, description }, index) => (
-                <CardItem key={index} imageHeight={5} imageRounded>
-                  <img src={icon} alt="image" />
-                  <h4>{title}</h4>
-                  <p>{description}</p>
-                </CardItem>
-              ))}
-            </CardWrapper>
-          </div>
-        </SectionContent>
-      </Section>
+        <ContainerCard bgColor={'transparent'} color={Color.neutral10}>
+          <ContainerCardSection>
+            <SectionTitleWrapper maxWidth={900}>
+              <SectionTitleIcon size={60}>
+                <ProductLogo variant={ProductVariant.CowProtocol} theme="dark" logoIconOnly />
+              </SectionTitleIcon>
+              <SectionTitleText fontSize={62}>Every Bell, Whistle, and Moo</SectionTitleText>
+              <SectionTitleDescription fontSize={24} color={Color.neutral40}>
+                With the CoW Swap widget, you can offer your users everything you know and love about CoW Swap, and
+                more. Oh, and yes… it does come with the “moo”.
+              </SectionTitleDescription>
+            </SectionTitleWrapper>
 
-      <Section fullWidth colorVariant={'grey'}>
-        <SectionContent flow="row" variant={'grid-2'}>
-          <StickySectionTitle>
-            <h3>Everything You&apos;d Want in a Widget</h3>
-          </StickySectionTitle>
-          <div>
-            <CardWrapper gap={2.4} horizontalGrid={1}>
-              {CONTENT.featureItems
-                .sort((a, b) => (a.comingSoon ? 1 : 0) - (b.comingSoon ? 1 : 0)) // Show coming soon items last
-                .map(({ description, comingSoon }, index) => (
-                  <CardItem
-                    key={index}
-                    imageHeight={4}
-                    imageWidth={4}
-                    imageRounded
-                    variant="iconWithText"
-                    style={{ background: comingSoon ? Color.grey : '' }}
-                  >
-                    <img
-                      style={{ opacity: comingSoon ? 0.5 : 1 }}
-                      alt={description || 'icon'}
-                      src={comingSoon ? `${IMAGE_PATH}/icons/coming-soon.svg` : `${IMAGE_PATH}/icons/check-color.svg`}
-                    />
-                    <p>{description}</p>
-                  </CardItem>
-                ))}
-            </CardWrapper>
-          </div>
-        </SectionContent>
-      </Section>
+            <TopicList columns={3}>
+              <TopicCard contentAlign={'left'} bgColor={Color.neutral100} padding={'32px'} gap={16} asProp="div">
+                <TopicImage bgColor="transparent" height={75} width={'auto'}>
+                  <SVG src="images/protection.svg" />
+                </TopicImage>
+                <TopicCardInner contentAlign="left">
+                  <TopicTitle>Full Protection from MEV</TopicTitle>
+                  <TopicDescription fontSize={18} color={Color.neutral40} margin="0">
+                    CoW Swap offers the best MEV protection in the land. Thanks to a delegated trading model that relies
+                    on experts to execute swaps, traders can rest assured that they're safe from the MEV bots.
+                  </TopicDescription>
+                </TopicCardInner>
+              </TopicCard>
 
-      <Section fullWidth colorVariant={'dark'}>
-        <SectionContent flow={'column'}>
-          <div>
-            <h3>Trusted by the Best in the Field</h3>
-            <SubTitle lineHeight={1.4} maxWidth={80}>
-              As a trusted name in the DeFi ecosystem, CoW Swap has handled almost $30 billion in trading volume. Whales
-              and DAOs like Aave, ENS, and Gnosis execute their largest treasury swaps on the greener pastures of CoW
-              Swap.
-            </SubTitle>
+              <TopicCard contentAlign={'left'} bgColor={Color.neutral100} padding={'32px'} gap={16} asProp="div">
+                <TopicImage bgColor="transparent" height={75} width={'auto'}>
+                  <SVG src="images/surplus.svg" />
+                </TopicImage>
+                <TopicCardInner contentAlign="left">
+                  <TopicTitle>Surplus-Capturing Orders</TopicTitle>
+                  <TopicDescription fontSize={18} color={Color.neutral40} margin="0">
+                    Every order is surplus-capturing and traders usually earn a little extra in their sell token with
+                    each swap.
+                  </TopicDescription>
+                </TopicCardInner>
+              </TopicCard>
 
-            <CardWrapper maxWidth={85} horizontalGrid={8} horizontalGridMobile={4}>
-              {CONTENT.trustedDAOs.map(({ icon, title, link }, index) => (
-                <CardItem
+              <TopicCard contentAlign={'left'} bgColor={Color.neutral100} padding={'32px'} gap={16} asProp="div">
+                <TopicImage bgColor="transparent" height={75} width={'auto'}>
+                  <SVG src="images/gasless.svg" />
+                </TopicImage>
+                <TopicCardInner contentAlign="left">
+                  <TopicTitle>Gasless Trading</TopicTitle>
+                  <TopicDescription fontSize={18} color={Color.neutral40} margin="0">
+                    All gas fees are paid in the sell token for swaps and even for token approvals. Users can enjoy
+                    ETH-free trading every time, even with brand-new wallets.
+                  </TopicDescription>
+                </TopicCardInner>
+              </TopicCard>
+            </TopicList>
+          </ContainerCardSection>
+        </ContainerCard>
+
+        <ContainerCard bgColor={Color.neutral100} color={Color.neutral10}>
+          <ContainerCardSection>
+            <SectionTitleWrapper maxWidth={900}>
+              <SectionTitleIcon size={60}>
+                <ProductLogo variant={ProductVariant.CowProtocol} theme="dark" logoIconOnly />
+              </SectionTitleIcon>
+              <SectionTitleText fontSize={62}>Everything You'd Want in a Widget</SectionTitleText>
+            </SectionTitleWrapper>
+
+            <TopicList columns={4} columnsMobile={2}>
+              {FEATURE_ITEMS.map((item, index) => (
+                <TopicCard
                   key={index}
-                  padding={1.2}
-                  imageFullSize
-                  variant="outlined-dark"
-                  gap={3.6}
-                  textCentered
-                  contentCentered
-                  className="iconOnly"
+                  contentAlign={'left'}
+                  bgColor={Color.neutral90}
+                  padding={'24px'}
+                  gap={12}
+                  asProp="div"
                 >
-                  <LinkWithUtm
-                    href={link}
-                    defaultUtm={{ ...CONFIG.utm, utmContent: `widget-page-partner-${title}` }}
-                    passHref
-                  >
-                    <img src={icon} alt={title} />
-                  </LinkWithUtm>
-                </CardItem>
+                  <TopicImage bgColor="transparent" height={42} width={'auto'}>
+                    <SVG src="images/icons/check-color.svg" />
+                  </TopicImage>
+                  <TopicCardInner contentAlign="left">
+                    <TopicTitle fontSize={23} fontWeight={Font.weight.medium}>
+                      {item}
+                    </TopicTitle>
+                  </TopicCardInner>
+                </TopicCard>
               ))}
-            </CardWrapper>
-          </div>
-        </SectionContent>
-      </Section>
+            </TopicList>
+          </ContainerCardSection>
+        </ContainerCard>
 
-      <Section>
-        <SectionContent flow="column">
-          <div className="container">
-            <h3>Integrate in 5 Minutes or less</h3>
+        <ContainerCard bgColor={Color.neutral10} color={Color.neutral98}>
+          <ContainerCardSection>
+            <SectionTitleWrapper>
+              <SectionTitleIcon multiple>
+                <SVG src={IMG_ICON_OWL} />
+                <ProductLogo variant={ProductVariant.CowProtocol} theme="dark" logoIconOnly height={60} />
+                <SVG src={IMG_ICON_GHOST} />
+              </SectionTitleIcon>
+              <SectionTitleText fontSize={90}>Trusted by the best</SectionTitleText>
+            </SectionTitleWrapper>
 
-            <ButtonWrapper center>
-              <LinkWithUtm
-                href={CONTENT.calendlyURL}
-                defaultUtm={{ ...CONFIG.utm, utmContent: 'widget-page-footerCTA-talk-to-us' }}
-                passHref
-              >
-                <Button
-                  onClick={() => sendGAEventHandler(WidgetEvents.TALK_TO_US)}
-                  paddingLR={4.2}
-                  label="Talk to us"
-                  fontSizeMobile={2.1}
-                />
-              </LinkWithUtm>
+            <TopicList columns={7} columnsMobile={2} maxWidth={1000} gap={10} margin="0 auto 100px">
+              {CONTENT.trustedDAOs.map((dao, index) => {
+                const isPng = dao.icon.endsWith('.png')
+                return (
+                  <TopicCard
+                    key={index}
+                    contentAlign={'center'}
+                    bgColor={Color.neutral20}
+                    padding={'10px'}
+                    href={dao.link}
+                  >
+                    <TopicImage
+                      iconColor={Color.neutral0}
+                      bgColor={'transparent'}
+                      width={'100%'}
+                      height={48}
+                      margin={'auto'}
+                    >
+                      {isPng ? (
+                        <img src={dao.icon} alt={dao.title} style={{ maxWidth: '100%' }} />
+                      ) : (
+                        <SVG src={dao.icon} />
+                      )}
+                    </TopicImage>
+                  </TopicCard>
+                )
+              })}
+            </TopicList>
+          </ContainerCardSection>
+        </ContainerCard>
 
-              <LinkWithUtm
-                href={CONTENT.docsURL}
-                defaultUtm={{ ...CONFIG.utm, utmContent: 'widget-page-footerCTA-read-docs' }}
-                passHref
-              >
-                <Button
-                  onClick={() => sendGAEventHandler(WidgetEvents.READ_DOCS)}
-                  paddingLR={4.2}
-                  fontSizeMobile={2.1}
-                  label="Read docs"
-                  variant={ButtonVariant.TEXT}
-                />
-              </LinkWithUtm>
+        <ContainerCard bgColor={'transparent'} color={Color.neutral10} padding="0">
+          <ContainerCardSection padding={'0'}>
+            <SectionTitleWrapper>
+              <SectionTitleIcon>
+                <SVG src={IMG_ICON_FAQ} />
+              </SectionTitleIcon>
+              <SectionTitleText>FAQs</SectionTitleText>
+            </SectionTitleWrapper>
 
-              <Link href={CONFIG.url.widgetTnC} passHref>
-                <Button
-                  onClick={() => sendGAEventHandler(WidgetEvents.READ_TERMS)}
-                  paddingLR={1}
-                  fontSizeMobile={2.1}
-                  label="Terms & Conditions"
-                  variant={ButtonVariant.TEXT}
-                />
-              </Link>
-            </ButtonWrapper>
-          </div>
-        </SectionContent>
-      </Section>
+            <FAQ faqs={FAQ_DATA} />
+          </ContainerCardSection>
+        </ContainerCard>
 
-      {/* Disclaimer */}
-      <Section padding="0" paddingMobile="0 1.6rem">
-        <SectionContent flow="column">
-          <div className="container">
-            <SubTitle lineHeight={1.4} maxWidth={80} fontSize={1.3} fontSizeMobile={1.3} color={Color.text1}>
-              <strong>* Important Disclaimer:</strong> Use of this widget is subject to the laws and regulations of your
-              jurisdiction. You are solely responsible for ensuring compliance, and the provider is not liable for any
-              legal consequences or issues arising from your failure to adhere. Using the widget indicates acceptance of
-              the <CustomLink url="/widget/terms-and-conditions" label="Terms and Conditions" />; if you do not agree,
-              refrain from using it.
-            </SubTitle>
-          </div>
-        </SectionContent>
-      </Section>
-    </Layout>
+        <ContainerCard bgColor={'transparent'} color={Color.neutral10}>
+          <ContainerCardSection padding={'0'}>
+            <SectionTitleWrapper maxWidth={1000} margin="0 auto">
+              <SectionTitleDescription fontSize={16} color={Color.neutral40}>
+                <b>* Important Disclaimer:</b> Use of this widget is subject to the laws and regulations of your
+                jurisdiction. You are solely responsible for ensuring compliance, and the provider is not liable for any
+                legal consequences or issues arising from your failure to adhere. Using the widget indicates acceptance
+                of the <a href="/widget/terms-and-conditions">Terms and Conditions;</a> if you do not agree, refrain
+                from using it.
+              </SectionTitleDescription>
+            </SectionTitleWrapper>
+          </ContainerCardSection>
+        </ContainerCard>
+      </Wrapper>
+    </LayoutV2>
   )
 }
 
-export const getStaticProps: GetStaticProps = async () => {
+export const getStaticProps: GetStaticProps<PageProps> = async () => {
   const siteConfigData = CONFIG
 
   return {

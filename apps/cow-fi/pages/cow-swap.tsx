@@ -1,15 +1,9 @@
 import Head from 'next/head'
 import { GetStaticProps } from 'next'
-import { Font, Color, Media, ProductLogo, ProductVariant } from '@cowprotocol/ui'
-import IMG_ICON_CROWN_COW from '@cowprotocol/assets/images/icon-crown-cow.svg'
-import IMG_ICON_GOVERNANCE from '@cowprotocol/assets/images/icon-governance.svg'
+import { Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
+
 import IMG_ICON_BULB_COW from '@cowprotocol/assets/images/icon-bulb-cow.svg'
-import IMG_ICON_BUILD_WITH_COW from '@cowprotocol/assets/images/icon-build-with-cow.svg'
-import IMG_ICON_SECURE from '@cowprotocol/assets/images/icon-secure.svg'
-import IMG_ICON_OWL from '@cowprotocol/assets/images/icon-owl.svg'
-import IMG_ICON_GHOST from '@cowprotocol/assets/images/icon-ghost.svg'
-import IMG_LOGO_SAFE from '@cowprotocol/assets/images/logo-safe.svg'
-import IMG_LOGO_OASIS from '@cowprotocol/assets/images/logo-oasis.svg'
+
 import IMG_ICON_UNICORN from '@cowprotocol/assets/images/icon-unicorn.svg'
 import IMG_ICON_FLOWER_COW from '@cowprotocol/assets/images/icon-flower-cow.svg'
 
@@ -34,7 +28,6 @@ import {
   SectionTitleIcon,
   SectionTitleText,
   SectionTitleDescription,
-  SectionImage,
   TopicCardInner,
   HeroContainer,
   HeroImage,
@@ -79,16 +72,6 @@ const FAQ_DATA = [
 
 interface PageProps {
   siteConfigData: typeof CONFIG
-  categories: {
-    name: string
-    slug: string
-    description: string
-    bgColor: string
-    textColor: string
-    link: string
-    iconColor: string
-  }[]
-  articles: ArticleListResponse['data']
 }
 
 const Wrapper = styled.div`
@@ -556,25 +539,10 @@ export default function Page({ siteConfigData }: PageProps) {
 
 export const getStaticProps: GetStaticProps<PageProps> = async () => {
   const siteConfigData = CONFIG
-  const categoriesResponse = await getCategories()
-  const articlesResponse = await getArticles()
-
-  const categories =
-    categoriesResponse?.map((category: Category) => ({
-      name: category?.attributes?.name || '',
-      slug: category?.attributes?.slug || '',
-      description: category?.attributes?.description || '',
-      bgColor: category?.attributes?.backgroundColor || '#fff',
-      textColor: category?.attributes?.textColor || '#000',
-      link: `/topic/${category?.attributes?.slug}`,
-      iconColor: '#fff',
-    })) || []
 
   return {
     props: {
       siteConfigData,
-      categories,
-      articles: articlesResponse.data,
     },
     revalidate: DATA_CACHE_TIME_SECONDS,
   }

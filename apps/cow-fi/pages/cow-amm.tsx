@@ -12,7 +12,6 @@ import { CONFIG } from '@/const/meta'
 
 import LayoutV2 from '@/components/Layout/LayoutV2'
 import FAQ from '@/components/FAQ'
-import { getCategories, getArticles, Category, ArticleListResponse } from 'services/cms'
 
 import {
   ContainerCard,
@@ -22,12 +21,10 @@ import {
   TopicImage,
   TopicTitle,
   TopicDescription,
-  TopicButton,
   SectionTitleWrapper,
   SectionTitleIcon,
   SectionTitleText,
   SectionTitleDescription,
-  SectionImage,
   TopicCardInner,
   HeroContainer,
   HeroImage,
@@ -71,16 +68,6 @@ const FAQ_DATA = [
 
 interface PageProps {
   siteConfigData: typeof CONFIG
-  categories: {
-    name: string
-    slug: string
-    description: string
-    bgColor: string
-    textColor: string
-    link: string
-    iconColor: string
-  }[]
-  articles: ArticleListResponse['data']
 }
 
 const Wrapper = styled.div`
@@ -396,25 +383,10 @@ export default function Page({ siteConfigData }: PageProps) {
 
 export const getStaticProps: GetStaticProps<PageProps> = async () => {
   const siteConfigData = CONFIG
-  const categoriesResponse = await getCategories()
-  const articlesResponse = await getArticles()
-
-  const categories =
-    categoriesResponse?.map((category: Category) => ({
-      name: category?.attributes?.name || '',
-      slug: category?.attributes?.slug || '',
-      description: category?.attributes?.description || '',
-      bgColor: category?.attributes?.backgroundColor || '#fff',
-      textColor: category?.attributes?.textColor || '#000',
-      link: `/topic/${category?.attributes?.slug}`,
-      iconColor: '#fff',
-    })) || []
 
   return {
     props: {
       siteConfigData,
-      categories,
-      articles: articlesResponse.data,
     },
     revalidate: DATA_CACHE_TIME_SECONDS,
   }
