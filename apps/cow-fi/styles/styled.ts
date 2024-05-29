@@ -226,7 +226,7 @@ export const TopicCardInner = styled.div<{ contentAlign?: string; gap?: number; 
 `
 
 export const TopicImage = styled.div<{
-  iconColor: string
+  iconColor?: string
   large?: boolean
   bgColor?: string
   margin?: string

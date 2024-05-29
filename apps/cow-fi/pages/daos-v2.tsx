@@ -204,195 +204,102 @@ export default function Page({ siteConfigData }: PageProps) {
           </ContainerCardSection>
         </ContainerCard>
 
-        <ContainerCard bgColor={'transparent'}>
+        <ContainerCard bgColor={'transparent'} color={Color.neutral10}>
           <ContainerCardSection>
-            <SectionTitleWrapper>
-              <SectionTitleIcon size={100}>
-                <ProductLogo variant={ProductVariant.CowProtocol} theme="light" logoIconOnly />
+            <SectionTitleWrapper padding="150px 0 0" maxWidth={800}>
+              <SectionTitleIcon size={60}>
+                <ProductLogo variant={ProductVariant.CowProtocol} theme="dark" logoIconOnly />
               </SectionTitleIcon>
-              <SectionTitleText>How it works?</SectionTitleText>
-              <SectionTitleDescription maxWidth={900}>
-                Through intents, a network of solvers, and batch auctions, CoW Protocol stands out from every other DEX
+              <SectionTitleText fontSize={62}>Advanced order types</SectionTitleText>
+              <SectionTitleDescription fontSize={24} color={Color.neutral40}>
+                CoW Swap's many order types help you get better prices for your trades, manage token launches,
+                facilitate buybacks, and much more
               </SectionTitleDescription>
             </SectionTitleWrapper>
 
-            <TopicList columns={1} maxWidth={1470}>
-              <TopicCard columns="1fr auto" gap={100} horizontal asProp="div">
-                <TopicCardInner contentAlign="left">
-                  <TopicTitle fontSize={67}>Intents</TopicTitle>
-                  <TopicDescription fontSize={28}>
-                    CoW Protocol users sign an "intent to trade" message instead of directly executing orders on-chain
-                    (like on Uniswap). This lets solvers trade on behalf of the user
-                  </TopicDescription>
-                  <TopicButton bgColor="#66018E" color="#F996EE" href="/knowledge-base">
-                    Learn more
-                  </TopicButton>
-                </TopicCardInner>
-                <TopicImage iconColor="#66018E" width={590} height={590} heightMobile={300} orderReverseMobile />
-              </TopicCard>
-
-              <TopicCard columns="1fr auto" gap={100} horizontal asProp="div">
-                <TopicImage iconColor="#66018E" width={590} height={590} heightMobile={300} orderReverseMobile />
-                <TopicCardInner contentAlign="left">
-                  <TopicTitle fontSize={67}>Solvers</TopicTitle>
-                  <TopicDescription fontSize={28}>
-                    Professional third parties known as “solvers” find the most optimal path for each trade and protect
-                    assets from MEV
-                  </TopicDescription>
-                  <TopicButton bgColor="#66018E" color="#F996EE" href="/knowledge-base">
-                    Learn more
-                  </TopicButton>
-                </TopicCardInner>
-              </TopicCard>
-
-              <TopicCard columns="1fr auto" gap={100} horizontal asProp="div">
-                <TopicCardInner contentAlign="left">
-                  <TopicTitle fontSize={67}>Batch Auctions</TopicTitle>
-                  <TopicDescription fontSize={28}>
-                    CoW Protocol collects intents into a batch and then auctions it off to solvers. The solver that can
-                    provide the most surplus for users gets to settle the batch
-                  </TopicDescription>
-                  <TopicButton bgColor="#66018E" color="#F996EE" href="/knowledge-base">
-                    Learn more
-                  </TopicButton>
-                </TopicCardInner>
-                <TopicImage iconColor="#66018E" width={590} height={590} heightMobile={300} orderReverseMobile />
-              </TopicCard>
-            </TopicList>
-          </ContainerCardSection>
-        </ContainerCard>
-
-        <ContainerCard bgColor={Color.neutral10} color={Color.neutral98}>
-          <ContainerCardSection>
-            <SectionTitleWrapper padding="150px 0 0">
-              <ProductLogo variant={ProductVariant.CowProtocol} theme="dark" logoIconOnly height={60} />
-              <SectionTitleText fontSize={90}>Going where others can&apos;t</SectionTitleText>
-              <SectionTitleDescription fontSize={28} color={Color.neutral60}>
-                Thanks to its unique architecture, CoW Protocol can do things other DEX&apos;s can&apos;t
-              </SectionTitleDescription>
-            </SectionTitleWrapper>
-
-            <SectionTitleWrapper padding="50px 0">
-              <SectionTitleText fontSize={51}>Advanced order types</SectionTitleText>
-            </SectionTitleWrapper>
             <TopicList columns={3}>
-              <TopicCard contentAlign={'left'} bgColor="#66018E" textColor="#F996EE" padding={'32px'} asProp="div">
+              <TopicCard contentAlign={'left'} bgColor={Color.neutral100} padding={'32px'} gap={16} asProp="div">
+                <TopicImage bgColor="transparent" height={75} width={'auto'}>
+                  <SVG src="images/icon-milkman.svg" />
+                </TopicImage>
                 <TopicCardInner contentAlign="left">
-                  <TopicTitle color={Color.neutral100}>Surplus-Capturing Limit Orders</TopicTitle>
-                  <TopicDescription fontSize={21} color="#F996EE">
-                    Limit orders allow users to trade an asset at a pre-determined price. CoW Swap is the only DEX that
-                    offers surplus on limit orders.
+                  <TopicTitle>Milkman Orders</TopicTitle>
+                  <TopicDescription fontSize={18} color={Color.neutral40} margin="0">
+                    Ensure your trades are always close to the real-time market price thanks to the{' '}
+                    <a href="https://github.com/charlesndalton/milkman" target="_blank" rel="noopener noreferrer">
+                      Milkman bot
+                    </a>
+                    . Set the maximum deviation you&apos;ll accept, and Milkman will do the rest.
                   </TopicDescription>
                 </TopicCardInner>
-                <TopicImage
-                  iconColor="#8702AA"
-                  bgColor="transparent"
-                  margin={'auto 0 0 auto'}
-                  height={187}
-                  width={'auto'}
-                >
-                  <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />
-                </TopicImage>
               </TopicCard>
 
-              <TopicCard contentAlign={'left'} bgColor="#66018E" textColor="#F996EE" padding={'32px'} asProp="div">
+              <TopicCard contentAlign={'left'} bgColor={Color.neutral100} padding={'32px'} gap={16} asProp="div">
+                <TopicImage bgColor="transparent" height={75} width={'auto'}>
+                  <SVG src="images/icon-twap-orders.svg" />
+                </TopicImage>
                 <TopicCardInner contentAlign="left">
-                  <TopicTitle color={Color.neutral100}>TWAP orders</TopicTitle>
-                  <TopicDescription fontSize={21} color="#F996EE">
-                    Time-weighed average price (TWAP) orders allow users to trade an asset at fixed intervals over a
-                    period of time.
+                  <TopicTitle>TWAP Orders</TopicTitle>
+                  <TopicDescription fontSize={18} color={Color.neutral40} margin="0">
+                    Time-weighted average price orders allow you to spread your trade out over time, averaging out your
+                    trading price, minimizing price impact, and allowing for lower slippage.
                   </TopicDescription>
                 </TopicCardInner>
-                <TopicImage
-                  iconColor="#8702AA"
-                  bgColor="transparent"
-                  margin={'auto 0 0 auto'}
-                  height={187}
-                  width={'auto'}
-                >
-                  <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />
-                </TopicImage>
               </TopicCard>
 
-              <TopicCard contentAlign={'left'} bgColor="#66018E" textColor="#F996EE" padding={'32px'} asProp="div">
+              <TopicCard contentAlign={'left'} bgColor={Color.neutral100} padding={'32px'} gap={16} asProp="div">
+                <TopicImage bgColor="transparent" height={75} width={'auto'}>
+                  <SVG src="images/icon-limit-orders.svg" />
+                </TopicImage>
                 <TopicCardInner contentAlign="left">
-                  <TopicTitle color={Color.neutral100}>Milkman orders</TopicTitle>
-                  <TopicDescription fontSize={21} color="#F996EE">
-                    Created by CoW Swap, in collaboration with Yearn.fi, the Milkman contract enables trading using a
-                    price oracle.
+                  <TopicTitle>Limit Orders</TopicTitle>
+                  <TopicDescription fontSize={18} color={Color.neutral40} margin="0">
+                    CoW Swap's surplus-capturing limit orders allow you to set a price and sit back while your order
+                    gets filled over time - perfect for token buybacks and other large trades.
                   </TopicDescription>
                 </TopicCardInner>
-                <TopicImage
-                  iconColor="#8702AA"
-                  bgColor="transparent"
-                  margin={'auto 0 0 auto'}
-                  height={187}
-                  width={'auto'}
-                >
-                  <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />
-                </TopicImage>
-              </TopicCard>
-            </TopicList>
-
-            <SectionTitleWrapper padding="150px 0 50px">
-              <SectionTitleText fontSize={51} textAlign="center">
-                Unique smart orders
-              </SectionTitleText>
-            </SectionTitleWrapper>
-            <TopicList columns={3}>
-              <TopicCard contentAlign={'left'} bgColor="#66018E" textColor="#F996EE" padding={'32px'} asProp="div">
-                <TopicCardInner contentAlign="left">
-                  <TopicTitle color={Color.neutral100}>Programmatic Orders</TopicTitle>
-                  <TopicDescription fontSize={21} color="#F996EE">
-                    Deploy conditional orders that only trigger when certain on-chain conditions are met
-                  </TopicDescription>
-                </TopicCardInner>
-                <TopicImage
-                  iconColor="#8702AA"
-                  bgColor="transparent"
-                  margin={'auto 0 0 auto'}
-                  height={187}
-                  width={'auto'}
-                >
-                  <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />
-                </TopicImage>
               </TopicCard>
 
-              <TopicCard contentAlign={'left'} bgColor="#66018E" textColor="#F996EE" padding={'32px'} asProp="div">
+              <TopicCard contentAlign={'left'} bgColor={Color.neutral100} padding={'32px'} gap={16} asProp="div">
+                <TopicImage bgColor="transparent" height={75} width={'auto'}>
+                  <SVG src="images/icon-price-walls.svg" />
+                </TopicImage>
                 <TopicCardInner contentAlign="left">
-                  <TopicTitle color={Color.neutral100}>CoW Hooks</TopicTitle>
-                  <TopicDescription fontSize={21} color="#F996EE">
-                    Add custom pre and post-swap hooks for bridging, staking, depositing, or any DeFi action
+                  <TopicTitle>Price Walls</TopicTitle>
+                  <TopicDescription fontSize={18} color={Color.neutral40} margin="0">
+                    Pick an asset, define a threshold price, and CoW Swap will automatically sell above the threshold,
+                    and buy below it.
                   </TopicDescription>
                 </TopicCardInner>
-                <TopicImage
-                  iconColor="#8702AA"
-                  bgColor="transparent"
-                  margin={'auto 0 0 auto'}
-                  height={187}
-                  width={'auto'}
-                >
-                  <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />
-                </TopicImage>
               </TopicCard>
 
-              <TopicCard contentAlign={'left'} bgColor="#66018E" textColor="#F996EE" padding={'32px'} asProp="div">
+              <TopicCard contentAlign={'left'} bgColor={Color.neutral100} padding={'32px'} gap={16} asProp="div">
+                <TopicImage bgColor="transparent" height={75} width={'auto'}>
+                  <SVG src="images/icon-basket-sells.svg" />
+                </TopicImage>
                 <TopicCardInner contentAlign="left">
-                  <TopicTitle color={Color.neutral100}>Smart orders</TopicTitle>
-                  <TopicDescription fontSize={21} color="#F996EE">
-                    Enjoy ETH-less trading, where all gas fees are paid in the sell token as well as no fees for failed
-                    transactions
+                  <TopicTitle>Basket Sells</TopicTitle>
+                  <TopicDescription fontSize={18} color={Color.neutral40} margin="0">
+                    <a href="https://dump.services/" target="_blank" rel="noopener noreferrer">
+                      Dump.services
+                    </a>
+                    , a collaboration between CoW Swap and Yearn, allows DAOs and traders to sell multiple tokens in a
+                    single transaction.
                   </TopicDescription>
                 </TopicCardInner>
-                <TopicImage
-                  iconColor="#8702AA"
-                  bgColor="transparent"
-                  margin={'auto 0 0 auto'}
-                  height={187}
-                  width={'auto'}
-                >
-                  <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />
+              </TopicCard>
+
+              <TopicCard contentAlign={'left'} bgColor={Color.neutral100} padding={'32px'} gap={16} asProp="div">
+                <TopicImage bgColor="transparent" height={75} width={'auto'}>
+                  <SVG src="images/icon-logic.svg" />
                 </TopicImage>
+                <TopicCardInner contentAlign="left">
+                  <TopicTitle>Place Your Logic Here</TopicTitle>
+                  <TopicDescription fontSize={18} color={Color.neutral40} margin="0">
+                    ERC-1271 Smart Orders and CoW Hooks allow you to define your own complex trading logic; if you can
+                    think it, you can trade it.
+                  </TopicDescription>
+                </TopicCardInner>
               </TopicCard>
             </TopicList>
           </ContainerCardSection>
