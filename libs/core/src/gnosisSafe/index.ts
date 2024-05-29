@@ -1,3 +1,4 @@
+import { CHAIN_INFO } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { JsonRpcFetchFunc, Web3Provider } from '@ethersproject/providers'
 import SafeApiKit, { SafeInfoResponse } from '@safe-global/api-kit'
@@ -7,18 +8,14 @@ import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-type
 // eslint-disable-next-line no-restricted-imports
 import { ethers } from 'ethers'
 
-const SAFE_TRANSACTION_SERVICE_URL: Partial<Record<SupportedChainId, string>> = {
+const SAFE_TRANSACTION_SERVICE_URL: Record<SupportedChainId, string> = {
   [SupportedChainId.MAINNET]: 'https://safe-transaction-mainnet.safe.global',
   [SupportedChainId.GNOSIS_CHAIN]: 'https://safe-transaction-gnosis-chain.safe.global',
+  [SupportedChainId.ARBITRUM_ONE]: 'https://safe-transaction-arbitrum.safe.global',
   [SupportedChainId.SEPOLIA]: 'https://safe-transaction-sepolia.safe.global',
 }
 
 const SAFE_BASE_URL = 'https://app.safe.global'
-const CHAIN_SHORT_NAME: Record<SupportedChainId, string> = {
-  [SupportedChainId.MAINNET]: 'eth', // https://github.com/ethereum-lists/chains/blob/master/_data/chains/eip155-1.json
-  [SupportedChainId.GNOSIS_CHAIN]: 'gno', // https://github.com/ethereum-lists/chains/blob/master/_data/chains/eip155-100.json
-  [SupportedChainId.SEPOLIA]: 'sep', // https://github.com/ethereum-lists/chains/blob/master/_data/chains/eip155-11155111.json
-}
 
 const SAFE_TRANSACTION_SERVICE_CACHE: Partial<Record<number, SafeApiKit | null>> = {}
 
@@ -71,8 +68,8 @@ function _getClientOrThrow(chainId: number, library: Web3Provider): SafeApiKit {
   return client
 }
 
-export function getSafeWebUrl(chaindId: SupportedChainId, safeAddress: string, safeTxHash: string): string {
-  const chainShortName = CHAIN_SHORT_NAME[chaindId]
+export function getSafeWebUrl(chainId: SupportedChainId, safeAddress: string, safeTxHash: string): string {
+  const chainShortName = CHAIN_INFO[chainId].addressPrefix
 
   return `${SAFE_BASE_URL}/${chainShortName}:${safeAddress}/transactions/tx?id=multisig_${safeAddress}_${safeTxHash}`
 }

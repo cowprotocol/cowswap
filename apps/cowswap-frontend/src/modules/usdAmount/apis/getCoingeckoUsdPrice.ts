@@ -18,6 +18,7 @@ type ErrorCoingeckoResponse = { status: { error_code: number; error_message: str
 export const COINGECKO_PLATFORMS: Record<SupportedChainId, string | null> = {
   [SupportedChainId.MAINNET]: 'ethereum',
   [SupportedChainId.GNOSIS_CHAIN]: 'xdai',
+  [SupportedChainId.ARBITRUM_ONE]: 'arbitrum-one',
   [SupportedChainId.SEPOLIA]: null,
 }
 

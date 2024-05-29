@@ -1,9 +1,9 @@
 import { StrictMode, useMemo } from 'react'
 
 import { CssBaseline, GlobalStyles } from '@mui/material'
-import 'inter-ui'
 import Box from '@mui/material/Box'
 import { createTheme, PaletteOptions, ThemeProvider } from '@mui/material/styles'
+import 'inter-ui'
 import { createRoot } from 'react-dom/client'
 
 import { Configurator } from './app/configurator'
@@ -12,6 +12,7 @@ import { commonTypography } from './theme/commonTypography'
 import { useColorMode } from './theme/hooks/useColorMode'
 import { darkPalette, lightPalette } from './theme/paletteOptions'
 import { initWeb3Modal } from './web3modalConfig'
+import { WithLDProvider } from './WithLDProvider'
 
 const WrapperStyled = {
   display: 'flex',
@@ -64,7 +65,9 @@ function Root() {
           <CssBaseline />
           <GlobalStyles styles={globalStyles(theme, colorMode.mode)} />
           <Box sx={WrapperStyled}>
-            <Configurator title="CoW Widget" />
+            <WithLDProvider>
+              <Configurator title="CoW Widget" />
+            </WithLDProvider>
           </Box>
         </ThemeProvider>
       </ColorModeContext.Provider>

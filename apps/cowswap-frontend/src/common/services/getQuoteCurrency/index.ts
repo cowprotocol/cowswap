@@ -1,10 +1,13 @@
 import {
   DAI,
+  DAI_ARBITRUM_ONE,
   NATIVE_CURRENCY_ADDRESS,
+  USDC_ARBITRUM_ONE,
   USDC_GNOSIS_CHAIN,
   USDC_MAINNET,
   USDC_SEPOLIA,
   USDT,
+  USDT_ARBITRUM_ONE,
   USDT_GNOSIS_CHAIN,
   WXDAI,
 } from '@cowprotocol/common-const'
@@ -21,6 +24,9 @@ const STABLE_COINS: Record<SupportedChainId, string[]> = {
     .map((token) => token.address.toLowerCase())
     // XDAI and WXDAI are stable-coins
     .concat(NATIVE_CURRENCY_ADDRESS),
+  [SupportedChainId.ARBITRUM_ONE]: [USDT_ARBITRUM_ONE, USDC_ARBITRUM_ONE, DAI_ARBITRUM_ONE].map((token) =>
+    token.address.toLowerCase()
+  ),
   [SupportedChainId.SEPOLIA]: [USDC_SEPOLIA].map((token) => token.address.toLowerCase()),
 }
 

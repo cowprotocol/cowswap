@@ -30,11 +30,14 @@ export class InjectedWallet extends Connector {
     this.searchKeywords = searchKeywords
   }
 
-  // Based on https://github.com/Uniswap/web3-react/blob/de97c00c378b7909dfbd8a06558ed12e1f796caa/packages/metamask/src/index.ts#L130 with some changes
+  /**
+   * When desiredChainIdOrChainParameters is set it means this is a network switching request
+   * We have to call startActivation() for switching between wallets, but we mustn't do it on network switch
+   */
   async activate(desiredChainIdOrChainParameters?: number | AddEthereumChainParameter): Promise<void> {
     let cancelActivation: Command
 
-    if (!this.provider?.isConnected?.()) {
+    if (!desiredChainIdOrChainParameters || !this.provider?.isConnected?.()) {
       cancelActivation = this.actions.startActivation()
     }
 

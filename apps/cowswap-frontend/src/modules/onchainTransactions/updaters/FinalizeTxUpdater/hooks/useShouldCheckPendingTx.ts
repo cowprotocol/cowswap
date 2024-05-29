@@ -1,9 +1,10 @@
 import { useCallback } from 'react'
 
-import { useBlockNumber } from '@cowprotocol/common-hooks'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/reducer'
+
+import { useBlockNumber } from 'common/hooks/useBlockNumber'
 
 export function useShouldCheckPendingTx() {
   const { account } = useWalletInfo()

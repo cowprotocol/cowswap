@@ -1,5 +1,5 @@
 import { getChainInfo } from '@cowprotocol/common-const'
-import { isSellOrder } from '@cowprotocol/common-utils'
+import { getBlockExplorerUrl, isSellOrder } from '@cowprotocol/common-utils'
 import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import BigNumber from 'bignumber.js'
@@ -23,9 +23,7 @@ import { APP_NAME, NATIVE_TOKEN_ADDRESS_LOWERCASE, WRAPPED_NATIVE_ADDRESS } from
 import { SingleErc20State } from '../../../state/erc20'
 import { Network } from '../../../types'
 import { abbreviateString, FormatAmountPrecision, formattingAmountPrecision } from '../../../utils'
-import { getExplorerUrl } from '../../../utils/getExplorerUrl'
 import { SPECIAL_ADDRESSES, TOKEN_SYMBOL_UNKNOWN } from '../../const'
-
 
 const PROTOCOL_NAME = APP_NAME
 const INTERNAL_NODE_NAME = `${APP_NAME} Buffer`
@@ -97,7 +95,7 @@ export const buildContractViewNodes: BuildNodesFn = function getNodes(
       // Set flag to prevent creating more
       internalNodeCreated = true
 
-      const account = { alias: fromId, href: getExplorerUrl(networkId, 'address', transfer.from) }
+      const account = { alias: fromId, href: getBlockExplorerUrl(networkId, 'address', transfer.from) }
       builder.node(
         {
           type: TypeNodeOnTx.Special,
@@ -392,7 +390,7 @@ export const buildTokenViewNodes: BuildNodesFn = function getNodesAlternative(
     const entity = accounts?.[node.address] || {
       alias: abbreviateString(node.address, 6, 4),
       address: node.address,
-      href: getExplorerUrl(networkId, 'contract', node.address),
+      href: getBlockExplorerUrl(networkId, 'contract', node.address),
     }
     const type = node.isHyperNode ? TypeNodeOnTx.Hyper : TypeNodeOnTx.Token
     const tooltip = getNodeTooltip(node, edges, tokens)
