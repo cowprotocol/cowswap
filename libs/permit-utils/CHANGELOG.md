@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.0](https://github.com/cowprotocol/cowswap/compare/permit-utils-v0.2.1...permit-utils-v0.3.0) (2024-05-29)
+
+
+### Features
+
+* **arbitrum:** add arbitrum_one ([#4407](https://github.com/cowprotocol/cowswap/issues/4407)) ([166e33f](https://github.com/cowprotocol/cowswap/commit/166e33f3c494972738b154cf844584dd78e12c7d))
+
 ## [0.2.1](https://github.com/cowprotocol/cowswap/compare/permit-utils-v0.2.0...permit-utils-v0.2.1) (2024-05-02)
 
 
