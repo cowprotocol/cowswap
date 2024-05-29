@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from 'react'
+import { Dispatch, ReactNode, SetStateAction } from 'react'
 
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
@@ -25,13 +25,13 @@ type Props = {
 }
 
 type AdditionalProps = {
-  priceLabel?: React.ReactNode
-  minReceivedLabel?: React.ReactNode
-  minReceivedTooltip?: React.ReactNode
-  limitPriceLabel?: React.ReactNode
-  limitPriceTooltip?: React.ReactNode
-  slippageLabel?: React.ReactNode
-  slippageTooltip?: React.ReactNode
+  priceLabel?: ReactNode
+  minReceivedLabel?: ReactNode
+  minReceivedTooltip?: ReactNode
+  limitPriceLabel?: ReactNode
+  limitPriceTooltip?: ReactNode
+  slippageLabel?: ReactNode
+  slippageTooltip?: ReactNode
 }
 
 export function TradeBasicConfirmDetails(props: Props) {

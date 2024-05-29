@@ -126,21 +126,23 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
         }
 
         if (showFallbackHandlerWarning) {
-          return [
-            isFallbackHandlerSetupAccepted ? swapPriceDifferenceWarning : null,
-            <FallbackHandlerWarning
-              isFallbackHandlerSetupAccepted={isFallbackHandlerSetupAccepted}
-              toggleFallbackHandlerSetupFlag={toggleFallbackHandlerSetupFlag}
-            />,
-          ]
+          return (
+            <>
+              {isFallbackHandlerSetupAccepted && swapPriceDifferenceWarning}
+              <FallbackHandlerWarning
+                isFallbackHandlerSetupAccepted={isFallbackHandlerSetupAccepted}
+                toggleFallbackHandlerSetupFlag={toggleFallbackHandlerSetupFlag}
+              />
+            </>
+          )
         }
 
-        return [
-          showTradeFormWarnings && isPriceProtectionNotEnough(deadline, slippage) ? (
-            <SmallPriceProtectionWarning />
-          ) : null,
-          swapPriceDifferenceWarning,
-        ]
+        return (
+          <>
+            {showTradeFormWarnings && isPriceProtectionNotEnough(deadline, slippage) && <SmallPriceProtectionWarning />}
+            {swapPriceDifferenceWarning}
+          </>
+        )
       })()}
     </>
   )

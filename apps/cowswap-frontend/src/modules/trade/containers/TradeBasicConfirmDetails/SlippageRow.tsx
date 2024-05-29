@@ -1,7 +1,8 @@
 import { Percent } from '@uniswap/sdk-core'
 
-import { RowSlippage } from 'modules/swap/containers/Row/RowSlippage'
 import { ConfirmDetailsItem } from 'modules/trade/pure/ConfirmDetailsItem'
+
+import { PercentDisplay } from 'common/pure/PercentDisplay'
 
 export type SlippageRowProps = {
   slippage: Percent
@@ -11,13 +12,8 @@ export type SlippageRowProps = {
 
 export function SlippageRow({ slippage, slippageLabel, slippageTooltip }: SlippageRowProps) {
   return (
-    <ConfirmDetailsItem withTimelineDot={true}>
-      <RowSlippage
-        allowedSlippage={slippage}
-        showSettingOnClick={false}
-        slippageLabel={slippageLabel}
-        slippageTooltip={slippageTooltip}
-      />
+    <ConfirmDetailsItem label={slippageLabel} tooltip={slippageTooltip} withTimelineDot={true} labelOpacity>
+      <PercentDisplay percent={+slippage.toFixed(2)} />
     </ConfirmDetailsItem>
   )
 }
