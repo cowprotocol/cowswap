@@ -1,6 +1,7 @@
 import styled, { css } from 'styled-components'
 import { Font, Color, Media } from '@cowprotocol/ui'
 import { transparentize } from 'color2k'
+import { bg } from 'make-plural'
 
 export const ContainerCard = styled.div<{
   bgColor?: string
@@ -324,33 +325,39 @@ export const TopicDescription = styled.p<{
     font-size: ${({ fontSizeMobile }) => fontSizeMobile || 16}px;
   }
 
-  > table {
-    > tr > td:nth-child(odd) {
-      padding: 0 16px 0 0;
-    }
+  > table > tbody > tr > td:first-child {
+    padding: 0 16px 0 0;
   }
 `
 
-export const TopicButton = styled.a<{ fontSize?: number; fontSizeMobile?: number; bgColor?: string; color?: string }>`
+export const TopicButton = styled.a<{
+  fontSize?: number
+  fontSizeMobile?: number
+  bgColor?: string
+  color?: string
+  disabled?: boolean
+}>`
   display: inline-block;
   padding: 16px 24px;
   font-size: ${({ fontSize }) => fontSize || 21}px;
   font-weight: ${Font.weight.bold};
-  color: ${({ color }) => color || Color.neutral98};
-  background-color: ${({ bgColor }) => bgColor || Color.neutral10};
+  color: ${({ color, disabled }) => (disabled ? transparentize(Color.neutral10, 0.5) : color || Color.neutral98)};
+  background-color: ${({ bgColor, disabled }) =>
+    disabled ? transparentize(Color.neutral10, 0.5) : bgColor || Color.neutral10};
   text-decoration: none;
   border-radius: 32px;
   line-height: 1.2;
   text-align: center;
   width: max-content;
   transition: opacity 0.2s ease-in-out;
+  cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
 
   ${Media.upToMedium()} {
     font-size: ${({ fontSizeMobile }) => fontSizeMobile || 16}px;
   }
 
   &:hover {
-    opacity: 0.8;
+    opacity: ${({ disabled }) => (disabled ? 1 : 0.8)};
   }
 `
 
