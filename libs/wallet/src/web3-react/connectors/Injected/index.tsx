@@ -30,8 +30,16 @@ export class InjectedWallet extends Connector {
     this.searchKeywords = searchKeywords
   }
 
+  /**
+   * When desiredChainIdOrChainParameters is set it means this is a network switching request
+   * We have to call startActivation() for switching between wallets, but we mustn't do it on network switch
+   */
   async activate(desiredChainIdOrChainParameters?: number | AddEthereumChainParameter): Promise<void> {
-    const cancelActivation = this.actions.startActivation()
+    let cancelActivation: Command
+
+    if (!desiredChainIdOrChainParameters || !this.provider?.isConnected?.()) {
+      cancelActivation = this.actions.startActivation()
+    }
 
     return this.isomorphicInitialize()
       .then(async () => {
