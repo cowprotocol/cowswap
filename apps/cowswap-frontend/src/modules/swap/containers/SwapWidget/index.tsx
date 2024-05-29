@@ -126,7 +126,7 @@ export function SwapWidget() {
     isIndependent: isSellTrade,
     balance: inputCurrencyBalance,
     fiatAmount: inputUsdValue,
-    receiveAmountInfo,
+    receiveAmountInfo: !isSellTrade ? receiveAmountInfo : null,
   }
 
   const outputCurrencyInfo: CurrencyInfo = {
@@ -136,7 +136,7 @@ export function SwapWidget() {
     isIndependent: !isSellTrade,
     balance: outputCurrencyBalance,
     fiatAmount: outputUsdValue,
-    receiveAmountInfo,
+    receiveAmountInfo: isSellTrade ? receiveAmountInfo : null,
   }
 
   const inputCurrencyPreviewInfo = {
