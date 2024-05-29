@@ -7,12 +7,12 @@ import { CurrencyAmount } from '@uniswap/sdk-core'
 import { getAppData } from 'modules/appData'
 import { defaultLimitOrdersSettings } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { initLimitRateState } from 'modules/limitOrders/state/limitRateAtom'
-import { ReceiveAmountInfo } from 'modules/trade'
 import { DEFAULT_TRADE_QUOTE_STATE } from 'modules/tradeQuote'
 
 import { TradeFlowContext } from '../../services/types'
 
 import { LimitOrdersDetails } from './index'
+import { inputCurrencyInfoMock } from 'mocks/tradeStateMock'
 
 const inputCurrency = COW[SupportedChainId.MAINNET]
 const outputCurrency = GNO[SupportedChainId.MAINNET]
@@ -48,19 +48,11 @@ const tradeContext: TradeFlowContext = {
   quoteState: DEFAULT_TRADE_QUOTE_STATE,
 }
 
-const receiveAmountInfo: ReceiveAmountInfo = {
-  type: 'from',
-  amountBeforeFees: CurrencyAmount.fromRawAmount(outputCurrency, 400 * 10 ** 18),
-  amountAfterFees: CurrencyAmount.fromRawAmount(outputCurrency, 390 * 10 ** 18),
-  networkFeeAmount: CurrencyAmount.fromRawAmount(outputCurrency, 10 * 10 ** 18),
-  partnerFeeAmount: undefined,
-}
-
 const Fixtures = {
   default: (
     <LimitOrdersDetails
       settingsState={defaultLimitOrdersSettings}
-      receiveAmountInfo={receiveAmountInfo}
+      receiveAmountInfo={inputCurrencyInfoMock.receiveAmountInfo}
       tradeContext={tradeContext}
       executionPrice={null}
       limitRateState={initLimitRateState()}

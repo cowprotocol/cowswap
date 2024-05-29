@@ -19,26 +19,39 @@ export function useMapTwapCurrencyInfo(): (info: CurrencyInfo) => CurrencyInfo {
 
       if (!receiveAmountInfo) return info
 
-      const { amountBeforeFees, amountAfterFees, networkFeeAmount, partnerFeeAmount } = receiveAmountInfo
+      const { isSell, costs, beforeNetworkCosts, afterNetworkCosts, afterPartnerFees } = receiveAmountInfo
+
+      const scaleAmount = (amount: CurrencyAmount<Currency>) => amount.multiply(numOfParts!)
 
       return {
         ...info,
         receiveAmountInfo: {
-          type: receiveAmountInfo.type,
-          amountBeforeFees: multiplyAmount(amountBeforeFees, numOfParts),
-          amountAfterFees: amountAfterFees.multiply(numOfParts),
-          networkFeeAmount: multiplyAmount(networkFeeAmount, numOfParts),
-          partnerFeeAmount: multiplyAmount(partnerFeeAmount, numOfParts),
+          isSell,
+          costs: {
+            networkFee: {
+              amountInSellCurrency: scaleAmount(costs.networkFee.amountInSellCurrency),
+              amountInBuyCurrency: scaleAmount(costs.networkFee.amountInBuyCurrency),
+            },
+            partnerFee: {
+              amount: scaleAmount(costs.partnerFee.amount),
+              bps: costs.partnerFee.bps,
+            },
+          },
+          beforeNetworkCosts: {
+            sellAmount: scaleAmount(beforeNetworkCosts.sellAmount),
+            buyAmount: scaleAmount(beforeNetworkCosts.buyAmount),
+          },
+          afterNetworkCosts: {
+            sellAmount: scaleAmount(afterNetworkCosts.sellAmount),
+            buyAmount: scaleAmount(afterNetworkCosts.buyAmount),
+          },
+          afterPartnerFees: {
+            sellAmount: scaleAmount(afterPartnerFees.sellAmount),
+            buyAmount: scaleAmount(afterPartnerFees.buyAmount),
+          },
         },
       }
     },
     [numOfParts]
   )
-}
-
-function multiplyAmount(
-  amount: CurrencyAmount<Currency> | undefined,
-  numOfParts: number
-): CurrencyAmount<Currency> | undefined {
-  return amount ? amount.multiply(numOfParts) : undefined
 }

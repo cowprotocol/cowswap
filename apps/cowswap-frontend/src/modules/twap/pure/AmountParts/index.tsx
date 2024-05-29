@@ -6,6 +6,7 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { Trans } from '@lingui/macro'
 import { Nullish } from 'types'
 
+import { getDirectedReceiveAmounts } from 'modules/trade'
 import { LabelTooltipItems } from 'modules/twap'
 
 import * as styledEl from './styled'
@@ -48,6 +49,8 @@ export function AmountParts({ partsState, labels }: { partsState: PartsState; la
   } = partsState
   const { sellAmount, buyAmount } = labels
 
+  const receiveAmounts = receiveAmountInfo && getDirectedReceiveAmounts(receiveAmountInfo)
+
   return (
     <styledEl.Wrapper>
       <TradeAmountPreview
@@ -77,8 +80,8 @@ export function AmountParts({ partsState, labels }: { partsState: PartsState; la
             <Trans>Receive (incl. costs)</Trans>
           </styledEl.Label>
           <styledEl.Amount
-            amount={receiveAmountInfo?.amountAfterFees}
-            tokenSymbol={receiveAmountInfo?.amountAfterFees?.currency}
+            amount={receiveAmounts?.amountAfterFees}
+            tokenSymbol={receiveAmounts?.amountAfterFees?.currency}
           />
         </div>
       </TradeAmountPreview>

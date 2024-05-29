@@ -1,6 +1,5 @@
 import React, { Dispatch, ReactNode, SetStateAction } from 'react'
 
-import { TokenAmount } from '@cowprotocol/ui'
 import { CowSwapWidgetAppParams } from '@cowprotocol/widget-lib'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
@@ -9,15 +8,14 @@ import { Nullish } from 'types'
 import { useUsdAmount } from 'modules/usdAmount'
 
 import { usePrice } from 'common/hooks/usePrice'
+import { PercentDisplay } from 'common/pure/PercentDisplay'
 import { RateInfoParams } from 'common/pure/RateInfo'
 
 import { LimitPriceRow } from './LimitPriceRow'
-import { SlippageRow } from './SlippageRow'
 import * as styledEl from './styled'
 
-import { ConfirmDetailsItem } from '../../pure/ConfirmDetailsItem'
+import { getDirectedReceiveAmounts } from '../../hooks/useReceiveAmountInfo'
 import { ReviewOrderModalAmountRow } from '../../pure/ReviewOrderModalAmountRow'
-import { RowPartnerFee } from '../../pure/RowPartnerFee'
 import { ReceiveAmountInfo } from '../../types'
 
 type Props = {
@@ -54,7 +52,12 @@ export function TradeBasicConfirmDetails(props: Props) {
     widgetParams,
   } = props
   const { inputCurrencyAmount } = rateInfoParams
-  const { networkFeeAmount, partnerFeeAmount, amountAfterFees } = receiveAmountInfo
+  const { amountAfterFees, networkFeeAmount } = getDirectedReceiveAmounts(receiveAmountInfo)
+  const {
+    costs: {
+      partnerFee: { amount: partnerFeeAmount },
+    },
+  } = receiveAmountInfo
 
   const priceLabel = additionalProps?.priceLabel || 'Price'
   const minReceivedLabel = additionalProps?.minReceivedLabel || 'Min received (incl. costs)'
@@ -65,6 +68,7 @@ export function TradeBasicConfirmDetails(props: Props) {
   const partnerFeeUsd = useUsdAmount(partnerFeeAmount).value
   const minReceivedUsd = useUsdAmount(minReceiveAmount).value
   const amountAfterFeesUsd = useUsdAmount(amountAfterFeesFull).value
+  const networkFeeAmountUsd = useUsdAmount(networkFeeAmount).value
 
   // Limit price is the same for all parts
   const limitPrice = usePrice(inputCurrencyAmount, minReceiveAmount)
@@ -79,21 +83,21 @@ export function TradeBasicConfirmDetails(props: Props) {
         isInvertedState={isInvertedState}
       />
 
-      {/*TODO: display the fee in buy token currency*/}
-      <ConfirmDetailsItem label="Network costs (est.)" tooltip="TODO" withTimelineDot={true} labelOpacity>
-        <TokenAmount amount={networkFeeAmount} tokenSymbol={networkFeeAmount?.currency} />
-      </ConfirmDetailsItem>
+      <ReviewOrderModalAmountRow
+        withTimelineDot={true}
+        amount={networkFeeAmount}
+        fiatAmount={networkFeeAmountUsd}
+        tooltip={'TODO'}
+        label="Network costs (est.)"
+      />
 
-      <ConfirmDetailsItem withTimelineDot={true}>
-        <RowPartnerFee
-          partnerFee={widgetParams.partnerFee}
-          feeAmount={partnerFeeAmount}
-          feeInFiat={partnerFeeUsd}
-          label={'Total fee'}
-          marginBottom={0}
-          tooltipMarkdown={widgetParams.content?.feeTooltipMarkdown}
-        />
-      </ConfirmDetailsItem>
+      <ReviewOrderModalAmountRow
+        withTimelineDot={true}
+        amount={partnerFeeAmount}
+        fiatAmount={partnerFeeUsd}
+        tooltip={widgetParams.content?.feeTooltipMarkdown || 'TODO'}
+        label="Total fee"
+      />
 
       <ReviewOrderModalAmountRow
         highlighted={true}
@@ -104,7 +108,13 @@ export function TradeBasicConfirmDetails(props: Props) {
       />
 
       {/* Slippage */}
-      <SlippageRow slippage={slippage} {...additionalProps} />
+      <ReviewOrderModalAmountRow
+        withTimelineDot={true}
+        tooltip={additionalProps?.slippageTooltip}
+        label={additionalProps?.slippageLabel}
+      >
+        <PercentDisplay percent={+slippage.toFixed(2)} />
+      </ReviewOrderModalAmountRow>
 
       {/* Limit Price */}
       <LimitPriceRow price={limitPrice} isInvertedState={isInvertedState} {...additionalProps} />

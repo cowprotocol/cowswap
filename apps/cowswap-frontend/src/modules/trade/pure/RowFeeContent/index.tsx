@@ -69,7 +69,7 @@ export function RowFeeContent(props: RowFeeContentProps) {
             {requireGas && <PlusGas>&nbsp;+ gas</PlusGas>}
           </>
         )}{' '}
-        {feeInFiat && (
+        {!isFree && feeInFiat && (
           <FiatRate>
             (<FiatAmount amount={feeInFiat} />)
           </FiatRate>

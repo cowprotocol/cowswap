@@ -10,7 +10,8 @@ import { useUpdateCurrencyAmount } from 'modules/trade/hooks/useUpdateCurrencyAm
 import { useTradeQuote } from 'modules/tradeQuote'
 
 import { partsStateAtom } from '../state/partsStateAtom'
-import { getReceiveAmountInfoContext } from 'modules/trade'
+import { getReceiveAmountInfo } from 'modules/trade'
+import { useWidgetPartnerFee } from 'modules/injectedWidget'
 
 export function QuoteObserverUpdater() {
   const { state } = useDerivedTradeState()
@@ -18,6 +19,7 @@ export function QuoteObserverUpdater() {
   const { numberOfPartsValue } = useAtomValue(partsStateAtom)
   const prevNumberOfParts = usePrevious(numberOfPartsValue)
 
+  const partnerFee = useWidgetPartnerFee()
   const updateCurrencyAmount = useUpdateCurrencyAmount()
   const inputCurrency = state?.inputCurrency
   const outputCurrency = state?.outputCurrency
@@ -35,7 +37,7 @@ export function QuoteObserverUpdater() {
 
     const {
       beforeNetworkCosts: { buyAmount },
-    } = getReceiveAmountInfoContext(response.quote, inputCurrency, outputCurrency)
+    } = getReceiveAmountInfo(response.quote, inputCurrency, outputCurrency, partnerFee?.bps)
 
     const adjustedForParts = buyAmount.multiply(numberOfPartsValue)
 

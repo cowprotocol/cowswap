@@ -9,7 +9,13 @@ import { Currency, Price } from '@uniswap/sdk-core'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
-import { ReceiveAmountInfo, RecipientRow, ReceiveAmountTitle, DividerHorizontal } from 'modules/trade'
+import {
+  ReceiveAmountInfo,
+  RecipientRow,
+  ReceiveAmountTitle,
+  DividerHorizontal,
+  getDirectedReceiveAmounts,
+} from 'modules/trade'
 
 import { ordersTableFeatures } from 'common/constants/featureFlags'
 import { ExecutionPrice } from 'common/pure/ExecutionPrice'
@@ -67,17 +73,19 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
     return formatInputAmount(rate)
   }, [isInverted, activeRate])
 
+  const receiveAmounts = receiveAmountInfo && getDirectedReceiveAmounts(receiveAmountInfo)
+
   return (
     <Wrapper>
       <TradeRates open receiveAmountInfo={receiveAmountInfo}>
-        {receiveAmountInfo && (
+        {receiveAmounts && (
           <styledEl.DetailsRow>
             <ReceiveAmountTitle>{isSell ? 'Expected to receive' : 'Expected to sell'}</ReceiveAmountTitle>
             <div>
               <b>
                 <TokenAmount
-                  amount={receiveAmountInfo.amountAfterFees}
-                  tokenSymbol={receiveAmountInfo.amountAfterFees.currency}
+                  amount={receiveAmounts.amountAfterFees}
+                  tokenSymbol={receiveAmounts.amountAfterFees.currency}
                   defaultValue="0"
                 />
               </b>

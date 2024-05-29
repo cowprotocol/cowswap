@@ -4,7 +4,7 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { advancedOrdersDerivedStateAtom } from 'modules/advancedOrders'
 import { injectedWidgetPartnerFeeAtom } from 'modules/injectedWidget/state/injectedWidgetParamsAtom'
-import { getReceiveAmountInfo, getReceiveAmountInfoContext, ReceiveAmountInfo } from 'modules/trade'
+import { getReceiveAmountInfo, ReceiveAmountInfo } from 'modules/trade'
 import { tradeQuoteAtom } from 'modules/tradeQuote'
 
 import { twapOrdersSettingsAtom } from './twapOrdersSettingsAtom'
@@ -37,10 +37,7 @@ export const partsStateAtom = atom<PartsState>((get) => {
 
   const receiveAmountInfo =
     quoteResponse && inputCurrency && outputCurrency
-      ? getReceiveAmountInfo({
-          ...getReceiveAmountInfoContext(quoteResponse.quote, inputCurrency, outputCurrency),
-          partnerFee,
-        })
+      ? getReceiveAmountInfo(quoteResponse.quote, inputCurrency, outputCurrency, partnerFee?.bps)
       : null
 
   return {

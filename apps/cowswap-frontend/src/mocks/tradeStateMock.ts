@@ -16,11 +16,29 @@ export const inputCurrencyInfoMock: CurrencyInfo = {
   field: Field.INPUT,
   isIndependent: false,
   receiveAmountInfo: {
-    type: 'from',
-    amountBeforeFees: CurrencyAmount.fromRawAmount(inputCurrency, 30 * 10 ** 18),
-    amountAfterFees: CurrencyAmount.fromRawAmount(inputCurrency, 20 * 10 ** 18),
-    networkFeeAmount: CurrencyAmount.fromRawAmount(inputCurrency, 10 * 10 ** 18),
-    partnerFeeAmount: CurrencyAmount.fromRawAmount(inputCurrency, 0),
+    isSell: false,
+    costs: {
+      networkFee: {
+        amountInSellCurrency: CurrencyAmount.fromRawAmount(inputCurrency, 30 * 10 ** 18),
+        amountInBuyCurrency: CurrencyAmount.fromRawAmount(outputCurrency, 52 * 10 ** 18),
+      },
+      partnerFee: {
+        amount: CurrencyAmount.fromRawAmount(inputCurrency, 0),
+        bps: 0,
+      },
+    },
+    beforeNetworkCosts: {
+      sellAmount: CurrencyAmount.fromRawAmount(inputCurrency, 120 * 10 ** 18),
+      buyAmount: CurrencyAmount.fromRawAmount(outputCurrency, 600 * 10 ** 18),
+    },
+    afterNetworkCosts: {
+      sellAmount: CurrencyAmount.fromRawAmount(inputCurrency, 110 * 10 ** 18),
+      buyAmount: CurrencyAmount.fromRawAmount(outputCurrency, 590 * 10 ** 18),
+    },
+    afterPartnerFees: {
+      sellAmount: CurrencyAmount.fromRawAmount(inputCurrency, 110 * 10 ** 18),
+      buyAmount: CurrencyAmount.fromRawAmount(outputCurrency, 590 * 10 ** 18),
+    },
   },
   currency: inputCurrency,
   balance: CurrencyAmount.fromRawAmount(inputCurrency, 250 * 10 ** 18),
@@ -31,13 +49,7 @@ export const inputCurrencyInfoMock: CurrencyInfo = {
 export const outputCurrencyInfoMock: CurrencyInfo = {
   field: Field.INPUT,
   isIndependent: false,
-  receiveAmountInfo: {
-    type: 'from',
-    amountBeforeFees: CurrencyAmount.fromRawAmount(outputCurrency, 30 * 10 ** 18),
-    amountAfterFees: CurrencyAmount.fromRawAmount(outputCurrency, 20 * 10 ** 18),
-    networkFeeAmount: CurrencyAmount.fromRawAmount(outputCurrency, 10 * 10 ** 18),
-    partnerFeeAmount: CurrencyAmount.fromRawAmount(outputCurrency, 0),
-  },
+  receiveAmountInfo: null,
   currency: outputCurrency,
   balance: CurrencyAmount.fromRawAmount(outputCurrency, 250 * 10 ** 18),
   amount: CurrencyAmount.fromRawAmount(outputCurrency, 20 * 10 ** 18),

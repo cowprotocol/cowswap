@@ -7,6 +7,7 @@ import { Trans } from '@lingui/macro'
 import { BalanceAndSubsidy } from 'legacy/hooks/useCowBalanceAndSubsidy'
 
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
+import { getDirectedReceiveAmounts } from 'modules/trade'
 import { ReceiveAmountInfo } from 'modules/trade/types'
 
 import * as styledEl from './styled'
@@ -21,11 +22,17 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps) {
   const isEoaEthFlow = useIsEoaEthFlow()
 
   const { receiveAmountInfo, subsidyAndBalance, allowsOffchainSigning } = props
-  const { type, amountAfterFees, amountBeforeFees, networkFeeAmount, partnerFeeAmount } = receiveAmountInfo
+  const {
+    isSell,
+    costs: {
+      partnerFee: { amount: partnerFeeAmount },
+    },
+  } = receiveAmountInfo
+  const { amountAfterFees, amountBeforeFees, networkFeeAmount } = getDirectedReceiveAmounts(receiveAmountInfo)
   const { subsidy } = subsidyAndBalance
   const { discount } = subsidy
 
-  const typeString = type === 'from' ? '+' : '-'
+  const typeString = !isSell ? '+' : '-'
   const hasPartnerFee = !!partnerFeeAmount && partnerFeeAmount.greaterThan(0)
   const hasNetworkFee = !!networkFeeAmount && networkFeeAmount.greaterThan(0)
   const hasFee = hasNetworkFee || hasPartnerFee
@@ -88,7 +95,7 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps) {
       {amountAfterFees.greaterThan(0) && (
         <styledEl.TotalAmount>
           <span>
-            <Trans>{type === 'from' ? 'From' : 'To'}</Trans>
+            <Trans>{!isSell ? 'From' : 'To'}</Trans>
           </span>
           <span>
             <TokenAmount amount={amountAfterFees} tokenSymbol={amountAfterFees.currency} defaultValue="0" />
