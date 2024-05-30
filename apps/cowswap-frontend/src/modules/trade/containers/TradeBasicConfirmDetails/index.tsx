@@ -83,21 +83,25 @@ export function TradeBasicConfirmDetails(props: Props) {
         isInvertedState={isInvertedState}
       />
 
-      <ReviewOrderModalAmountRow
-        withTimelineDot={true}
-        amount={networkFeeAmount}
-        fiatAmount={networkFeeAmountUsd}
-        tooltip={'TODO'}
-        label="Network costs (est.)"
-      />
+      {networkFeeAmount.greaterThan(0) && (
+        <ReviewOrderModalAmountRow
+          withTimelineDot={true}
+          amount={networkFeeAmount}
+          fiatAmount={networkFeeAmountUsd}
+          tooltip={'TODO'}
+          label="Network costs (est.)"
+        />
+      )}
 
-      <ReviewOrderModalAmountRow
-        withTimelineDot={true}
-        amount={partnerFeeAmount}
-        fiatAmount={partnerFeeUsd}
-        tooltip={widgetParams.content?.feeTooltipMarkdown || 'TODO'}
-        label="Total fee"
-      />
+      {partnerFeeAmount.greaterThan(0) && (
+        <ReviewOrderModalAmountRow
+          withTimelineDot={true}
+          amount={partnerFeeAmount}
+          fiatAmount={partnerFeeUsd}
+          tooltip={widgetParams.content?.feeTooltipMarkdown || 'TODO'}
+          label="Total fee"
+        />
+      )}
 
       <ReviewOrderModalAmountRow
         highlighted={true}
