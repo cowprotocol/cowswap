@@ -11,9 +11,9 @@ import { useWrapNativeScreenState } from '../../hooks/useWrapNativeScreenState'
 export function WrapNativeModal() {
   const [, setWrapNativeState] = useWrapNativeScreenState()
 
-  const derivedState = useDerivedTradeState()
+  const state = useDerivedTradeState()
 
-  const { inputCurrencyAmount, outputCurrency } = derivedState.state || {}
+  const { inputCurrencyAmount, outputCurrency } = state || {}
 
   const handleDismiss = useCallback(() => {
     setWrapNativeState({ isOpen: false })

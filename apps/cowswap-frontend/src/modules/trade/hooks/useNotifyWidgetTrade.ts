@@ -9,12 +9,12 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { EVENT_EMITTER } from 'eventEmitter'
 
 import { useDerivedTradeState } from './useDerivedTradeState'
-import { TradeType } from './useTradeTypeInfo'
 
+import { TradeType } from '../types'
 import { TradeDerivedState } from '../types/TradeDerivedState'
 
 export function useNotifyWidgetTrade() {
-  const { state } = useDerivedTradeState()
+  const state = useDerivedTradeState()
 
   useEffect(() => {
     if (!state?.tradeType) return

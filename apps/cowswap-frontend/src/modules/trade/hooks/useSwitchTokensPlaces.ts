@@ -18,7 +18,7 @@ const EMPTY_CURRENCY_ID = '_'
 export function useSwitchTokensPlaces(stateOverride: Partial<ExtendedTradeRawState> = {}) {
   const { chainId } = useWalletInfo()
   const tradeState = useTradeState()
-  const { inputCurrencyAmount, outputCurrencyAmount } = useDerivedTradeState()?.state || {}
+  const { inputCurrencyAmount, outputCurrencyAmount } = useDerivedTradeState() || {}
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
   const tradeNavigate = useTradeNavigate()
 

@@ -37,7 +37,7 @@ export function useAccountAgnosticPermitHookData(): PermitHookData | undefined {
 }
 
 function useGeneratePermitHookParams(): GeneratePermitHookParams | undefined {
-  const { state } = useDerivedTradeState()
+  const state = useDerivedTradeState()
   const { inputCurrency, tradeType } = state || {}
 
   const permitInfo = usePermitInfo(inputCurrency, tradeType)

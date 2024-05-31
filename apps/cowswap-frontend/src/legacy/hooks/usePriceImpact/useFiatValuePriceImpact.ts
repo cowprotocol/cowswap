@@ -16,7 +16,7 @@ import { useSafeMemo } from 'common/hooks/useSafeMemo'
 const TRADE_SET_UP_DEBOUNCE_TIME = ms`100ms`
 
 export function useFiatValuePriceImpact() {
-  const { state } = useDerivedTradeState()
+  const state = useDerivedTradeState()
   const { inputCurrencyAmount, outputCurrencyAmount, inputCurrency, outputCurrency } = state || {}
 
   const inputToken = useMemo(() => (inputCurrency ? getWrappedToken(inputCurrency) : undefined), [inputCurrency])

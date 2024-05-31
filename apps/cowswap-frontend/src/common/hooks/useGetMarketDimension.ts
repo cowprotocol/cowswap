@@ -20,8 +20,8 @@ export function useGetMarketDimension() {
   const tradeTypeInfo = useTradeTypeInfo()
   const derivedTradeState = useDerivedTradeState()
 
-  const sellSymbol = derivedTradeState?.state?.inputCurrency?.symbol
-  const buySymbol = derivedTradeState?.state?.outputCurrency?.symbol
+  const sellSymbol = derivedTradeState?.inputCurrency?.symbol
+  const buySymbol = derivedTradeState?.outputCurrency?.symbol
   const tradePair = sellSymbol && buySymbol ? `${sellSymbol},${buySymbol}` : null
 
   return useMemo(() => {

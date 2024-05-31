@@ -32,9 +32,10 @@ import { TradeWidgetProps } from './types'
 
 import { useTradeStateFromUrl } from '../../hooks/setupTradeState/useTradeStateFromUrl'
 import { useIsWrapOrUnwrap } from '../../hooks/useIsWrapOrUnwrap'
-import { TradeType, useTradeTypeInfo } from '../../hooks/useTradeTypeInfo'
+import { useTradeTypeInfo } from '../../hooks/useTradeTypeInfo'
 import { TradeWidgetLinks } from '../TradeWidgetLinks'
 import { WrapFlowActionButton } from '../WrapFlowActionButton'
+import { TradeType } from '../../types'
 
 const ZERO_BANNER_STORAGE_KEY = 'limitOrdersZeroBalanceBanner:v0'
 

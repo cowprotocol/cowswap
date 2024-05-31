@@ -1,7 +1,7 @@
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
-import { TradeType } from '../hooks/useTradeTypeInfo'
+import { TradeType } from './TradeType'
 
 export interface TradeDerivedState {
   readonly inputCurrency: Currency | null

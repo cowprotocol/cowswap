@@ -23,7 +23,7 @@ export function useQuoteParams(amount: string | null): LegacyFeeQuoteParams | un
   const verifiedQuotesEnabled = useVerifiedQuotesEnabled(chainId)
   const appData = useAppData()
 
-  const { state } = useDerivedTradeState()
+  const state = useDerivedTradeState()
 
   const { inputCurrency, outputCurrency, orderKind } = state || {}
 

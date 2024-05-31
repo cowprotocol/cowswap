@@ -19,8 +19,8 @@ import { useDerivedTradeState } from './useDerivedTradeState'
 import { useWrapNativeScreenState } from './useWrapNativeScreenState'
 
 export function useWrapNativeFlow(): WrapUnwrapCallback {
-  const derivedTradeState = useDerivedTradeState()
-  const wrapCallback = useWrapNativeCallback(derivedTradeState.state?.inputCurrencyAmount)
+  const state = useDerivedTradeState()
+  const wrapCallback = useWrapNativeCallback(state?.inputCurrencyAmount)
 
   return useCallback(
     (params?: WrapUnwrapCallbackParams) => {
