@@ -9,7 +9,6 @@ import styled from 'styled-components'
 import { CONFIG } from '@/const/meta'
 
 import LayoutV2 from '@/components/Layout/LayoutV2'
-import FAQ from '@/components/FAQ'
 
 import {
   ContainerCard,
@@ -34,34 +33,9 @@ import {
 } from '@/styles/styled'
 
 import SVG from 'react-inlinesvg'
-import IMG_ICON_FAQ from '@cowprotocol/assets/images/icon-faq.svg'
 import IMG_ICON_BULB_COW from '@cowprotocol/assets/images/icon-bulb-cow.svg'
 
 const DATA_CACHE_TIME_SECONDS = 5 * 60 // Cache 5min
-
-const FAQ_DATA = [
-  {
-    question: 'What is CoW DAO?',
-    answer: 'CoW DAO is ...',
-  },
-  {
-    question: 'What is CoW Swap?',
-    answer:
-      'CoW Protocol is a fully permissionless trading protocol that leverages batch auctions as its price finding mechanism. CoW Protocol uses batch auctions to maximize liquidity via Coincidence of Wants (CoWs) in addition to tapping all available on-chain liquidity whenever needed.',
-  },
-  {
-    question: 'What is MEV Blocker?',
-    answer: 'MEV Blocker is ...',
-  },
-  {
-    question: 'What is CoW AMM?',
-    answer: 'CoW AMM is ...',
-  },
-  {
-    question: 'Where does the name come from?',
-    answer: 'The name comes from ...',
-  },
-]
 
 interface PageProps {
   siteConfigData: typeof CONFIG
@@ -189,7 +163,7 @@ export default function Page({ siteConfigData }: PageProps) {
           </ContainerCardSection>
         </ContainerCard>
 
-        <ContainerCard bgColor={Color.neutral10} color={Color.neutral98}>
+        <ContainerCard bgColor={Color.neutral100} color={Color.neutral10} touchFooter>
           <ContainerCardSection>
             <SectionTitleWrapper padding="150px 0 0" maxWidth={900}>
               <SectionTitleIcon size={200}>
@@ -239,19 +213,6 @@ export default function Page({ siteConfigData }: PageProps) {
                 <TopicTitle fontSize={38}>Snapshot</TopicTitle>
               </TopicCard>
             </TopicList>
-          </ContainerCardSection>
-        </ContainerCard>
-
-        <ContainerCard bgColor={'transparent'} touchFooter>
-          <ContainerCardSection padding={'0 0 100px'}>
-            <SectionTitleWrapper>
-              <SectionTitleIcon>
-                <SVG src={IMG_ICON_FAQ} />
-              </SectionTitleIcon>
-              <SectionTitleText>FAQs</SectionTitleText>
-            </SectionTitleWrapper>
-
-            <FAQ faqs={FAQ_DATA} />
           </ContainerCardSection>
         </ContainerCard>
       </Wrapper>
