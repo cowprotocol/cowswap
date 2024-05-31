@@ -10,6 +10,7 @@ import { CONFIG } from '@/const/meta'
 import LayoutV2 from '@/components/Layout/LayoutV2'
 import FAQ from '@/components/FAQ'
 import { AddRpcButton } from '@/components/AddRpcButton'
+import useWebShare from 'hooks/useWebShare'
 
 import { WagmiConfig, createConfig, configureChains, mainnet } from 'wagmi'
 import { publicProvider } from 'wagmi/providers/public'
@@ -44,7 +45,6 @@ import {
 
 import SVG from 'react-inlinesvg'
 import IMG_ICON_FAQ from '@cowprotocol/assets/images/icon-faq.svg'
-import { Section } from '@/components/TokenDetails/index.styles'
 
 const DATA_CACHE_TIME_SECONDS = 5 * 60 // Cache 5min
 
@@ -105,6 +105,16 @@ interface PageProps {
 }
 
 export default function Page({ siteConfigData }: PageProps) {
+  const { share, message } = useWebShare()
+
+  const handleShareClick = () => {
+    share({
+      title: 'MEV Blocker',
+      text: 'Check out MEV Blocker! It helps protect you from MEV damage.',
+      url: 'https://cow.fi/mev-blocker',
+    })
+  }
+
   return (
     <WagmiConfig config={wagmiClient}>
       <RainbowKitProvider chains={chains}>
@@ -264,14 +274,17 @@ export default function Page({ siteConfigData }: PageProps) {
 
             <ContainerCard bgColor={'transparent'} color={Color.neutral10}>
               <ContainerCardSection>
-                <SectionTitleWrapper maxWidth={800} gap={56}>
+                <SectionTitleWrapper maxWidth={850} gap={56}>
                   <SectionTitleIcon multiple size={80}>
                     <ProductLogo variant={ProductVariant.CowProtocol} theme="dark" logoIconOnly />
                   </SectionTitleIcon>
 
                   <SectionTitleText>Get Protected</SectionTitleText>
                   <SectionTitleDescription>
-                    Add this RPC endpoint to your wallet to enjoy the full benefits of MEV Blocker
+                    Add this RPC endpoint to your wallet to enjoy the full benefits of MEV Blocker.
+                  </SectionTitleDescription>
+                  <SectionTitleDescription fontSize={21}>
+                    Note: some wallets make you reselect MEV Blocker every time you change networks.
                   </SectionTitleDescription>
                 </SectionTitleWrapper>
                 <TopicList columns={2}>
@@ -280,7 +293,7 @@ export default function Page({ siteConfigData }: PageProps) {
                       <TopicTitle color={Color.neutral0} fontSize={38}>
                         Click to add to your client
                       </TopicTitle>
-                      <TopicDescription fontSize={28} color={Color.neutral0}>
+                      <TopicDescription fontSize={21} color={Color.neutral0}>
                         MEV Blocker (Ethereum Mainnet)
                       </TopicDescription>
                       <AddRpcButton />
@@ -292,7 +305,7 @@ export default function Page({ siteConfigData }: PageProps) {
                       <TopicTitle color={Color.neutral0} fontSize={38}>
                         Add manually
                       </TopicTitle>
-                      <TopicDescription fontSize={24} color={Color.neutral0}>
+                      <TopicDescription fontSize={19} color={Color.neutral0}>
                         <table>
                           <tbody>
                             <tr>
@@ -417,23 +430,6 @@ export default function Page({ siteConfigData }: PageProps) {
               </ContainerCardSection>
             </ContainerCard>
 
-            <ContainerCard bgColor={'transparent'} color={Color.neutral10}>
-              <ContainerCardSection>
-                <SectionTitleWrapper padding="150px 0 0" maxWidth={1300}>
-                  <SectionTitleIcon size={100}>
-                    <ProductLogo variant={ProductVariant.CowProtocol} theme="light" logoIconOnly />
-                  </SectionTitleIcon>
-                  <SectionTitleText fontSize={90} textAlign="center">
-                    Don&apos;t let your friends get burned by MEV
-                  </SectionTitleText>
-
-                  <SectionTitleButton bgColor="#EC4612" color="#FEE7CF" href="/">
-                    Add to wallet
-                  </SectionTitleButton>
-                </SectionTitleWrapper>
-              </ContainerCardSection>
-            </ContainerCard>
-
             <ContainerCard bgColor={'#EC4612'} color="#FEE7CF">
               <ContainerCardSection>
                 <SectionTitleWrapper>
@@ -461,6 +457,25 @@ export default function Page({ siteConfigData }: PageProps) {
                     <TopicTitle fontSize={38}>CoW DAO</TopicTitle>
                   </TopicCard>
                 </TopicList>
+              </ContainerCardSection>
+            </ContainerCard>
+
+            <ContainerCard bgColor={'transparent'} color={Color.neutral10}>
+              <ContainerCardSection>
+                <SectionTitleWrapper padding="72px 0" maxWidth={900}>
+                  <SectionTitleIcon size={100}>
+                    <ProductLogo variant={ProductVariant.CowProtocol} theme="light" logoIconOnly />
+                  </SectionTitleIcon>
+                  <SectionTitleText fontSize={64} textAlign="center">
+                    Friends don't let friends suffer from MEV damage
+                  </SectionTitleText>
+
+                  <SectionTitleButton bgColor="#EC4612" color="#FEE7CF" onClick={handleShareClick} as="div">
+                    Share MEV Blocker
+                  </SectionTitleButton>
+
+                  {message && <SectionTitleDescription fontSize={21}>{message}</SectionTitleDescription>}
+                </SectionTitleWrapper>
               </ContainerCardSection>
             </ContainerCard>
 

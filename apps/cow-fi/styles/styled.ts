@@ -1,7 +1,6 @@
 import styled, { css } from 'styled-components'
 import { Font, Color, Media } from '@cowprotocol/ui'
 import { transparentize } from 'color2k'
-import { bg } from 'make-plural'
 
 export const ContainerCard = styled.div<{
   bgColor?: string
@@ -718,6 +717,7 @@ export const SectionTitleButton = styled.a<{
   max-width: 100%;
   margin: ${({ margin }) => margin || '0'};
   grid-column: ${({ gridFullWidth }) => (gridFullWidth ? '1 / -1' : 'initial')};
+  cursor: pointer;
 
   ${Media.upToMedium()} {
     font-size: ${({ fontSizeMobile }) => fontSizeMobile || 21}px;
