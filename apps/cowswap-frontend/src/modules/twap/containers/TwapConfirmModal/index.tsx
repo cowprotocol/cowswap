@@ -26,7 +26,6 @@ import { useIsFallbackHandlerRequired } from '../../hooks/useFallbackHandlerVeri
 import { useTwapFormState } from '../../hooks/useTwapFormState'
 import { useTwapSlippage } from '../../hooks/useTwapSlippage'
 import { useTwapWarningsContext } from '../../hooks/useTwapWarningsContext'
-import { partsStateAtom } from '../../state/partsStateAtom'
 import { twapOrderAtom } from '../../state/twapOrderAtom'
 import { TwapFormWarnings } from '../TwapFormWarnings'
 
@@ -73,7 +72,6 @@ export function TwapConfirmModal() {
   // TODO: there's some overlap with what's in each atom
   const twapOrder = useAtomValue(twapOrderAtom)
   const slippage = useTwapSlippage()
-  const partsState = useAtomValue(partsStateAtom)
   const { showPriceImpactWarning } = useTwapWarningsContext()
   const localFormValidation = useTwapFormState()
   const tradeConfirmActions = useTradeConfirmActions()
@@ -140,8 +138,8 @@ export function TwapConfirmModal() {
           <DividerHorizontal />
           <TwapConfirmDetails
             startTime={twapOrder?.startTime}
+            numOfParts={numOfParts}
             partDuration={partDuration}
-            partsState={partsState}
             totalDuration={totalDuration}
           />
           {showPriceImpactWarning && <NoImpactWarning withoutAccepting={true} isAccepted={true} />}

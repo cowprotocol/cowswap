@@ -42,7 +42,7 @@ export default function AdvancedOrdersPage() {
             updaters={<TwapUpdaters />}
             confirmContent={<TwapConfirmModal />}
             params={advancedWidgetParams}
-            mapTwapCurrencyInfo={mapTwapCurrencyInfo}
+            mapCurrencyInfo={mapTwapCurrencyInfo}
           >
             {/*TODO: conditionally display a widget for current advanced order type*/}
             <TwapFormWidget />

@@ -41,7 +41,7 @@ export type AdvancedOrdersWidgetParams = {
 export type AdvancedOrdersWidgetProps = PropsWithChildren<{
   updaters?: ReactNode
   params: AdvancedOrdersWidgetParams
-  mapTwapCurrencyInfo?: (info: CurrencyInfo) => CurrencyInfo
+  mapCurrencyInfo?: (info: CurrencyInfo) => CurrencyInfo
   confirmContent: JSX.Element
 }>
 
@@ -50,7 +50,7 @@ export function AdvancedOrdersWidget({
   updaters,
   params,
   confirmContent,
-  mapTwapCurrencyInfo,
+  mapCurrencyInfo,
 }: AdvancedOrdersWidgetProps) {
   const { disablePriceImpact } = params
 
@@ -130,8 +130,8 @@ export function AdvancedOrdersWidget({
       slots={slots}
       actions={actions}
       params={tradeWidgetParams}
-      inputCurrencyInfo={mapTwapCurrencyInfo ? mapTwapCurrencyInfo(inputCurrencyInfo) : inputCurrencyInfo}
-      outputCurrencyInfo={mapTwapCurrencyInfo ? mapTwapCurrencyInfo(outputCurrencyInfo) : outputCurrencyInfo}
+      inputCurrencyInfo={mapCurrencyInfo ? mapCurrencyInfo(inputCurrencyInfo) : inputCurrencyInfo}
+      outputCurrencyInfo={mapCurrencyInfo ? mapCurrencyInfo(outputCurrencyInfo) : outputCurrencyInfo}
       confirmModal={confirmContent}
     />
   )

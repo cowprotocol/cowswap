@@ -10,12 +10,12 @@ import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
 import { useUpdateCurrencyAmount } from 'modules/trade/hooks/useUpdateCurrencyAmount'
 import { useTradeQuote } from 'modules/tradeQuote'
 
-import { partsStateAtom } from '../state/partsStateAtom'
+import { twapOrdersSettingsAtom } from '../state/twapOrdersSettingsAtom'
 
 export function QuoteObserverUpdater() {
   const state = useDerivedTradeState()
   const { response, isLoading } = useTradeQuote()
-  const { numberOfPartsValue } = useAtomValue(partsStateAtom)
+  const { numberOfPartsValue } = useAtomValue(twapOrdersSettingsAtom)
   const prevNumberOfParts = usePrevious(numberOfPartsValue)
 
   const updateCurrencyAmount = useUpdateCurrencyAmount()

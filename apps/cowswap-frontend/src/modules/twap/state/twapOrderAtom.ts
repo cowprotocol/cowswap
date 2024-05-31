@@ -6,8 +6,8 @@ import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { advancedOrdersDerivedStateAtom } from 'modules/advancedOrders'
 import { getAppData } from 'modules/appData'
 import { appDataInfoAtom } from 'modules/appData/state/atoms'
-import { receiveAmountInfoAtom } from 'modules/trade'
 
+import { scaledReceiveAmountInfoAtom } from './scaledReceiveAmountInfoAtom'
 import { twapOrdersSettingsAtom } from './twapOrdersSettingsAtom'
 
 import { TWAPOrder } from '../types'
@@ -31,7 +31,7 @@ export const twapOrderAtom = atom<TWAPOrder | null>((get) => {
   const { account } = get(walletInfoAtom)
   const { numberOfPartsValue } = get(twapOrdersSettingsAtom)
   const timeInterval = get(twapTimeIntervalAtom)
-  const receiveAmountInfo = get(receiveAmountInfoAtom)
+  const receiveAmountInfo = get(scaledReceiveAmountInfoAtom)
   const { inputCurrencyAmount, recipient, recipientAddress } = get(advancedOrdersDerivedStateAtom)
 
   if (!inputCurrencyAmount || !receiveAmountInfo || !account) return null

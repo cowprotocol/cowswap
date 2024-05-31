@@ -3,17 +3,22 @@ import { useMemo } from 'react'
 
 import { useIsSafeApp, useWalletInfo } from '@cowprotocol/wallet'
 
+import { useReceiveAmountInfo } from 'modules/trade'
+import { useUsdAmount } from 'modules/usdAmount'
+
 import { useFallbackHandlerVerification } from './useFallbackHandlerVerification'
 
 import { getTwapFormState, TwapFormState } from '../pure/PrimaryActionButton/getTwapFormState'
-import { partsStateAtom } from '../state/partsStateAtom'
 import { twapOrderAtom, twapTimeIntervalAtom } from '../state/twapOrderAtom'
 
 export function useTwapFormState(): TwapFormState | null {
   const { chainId } = useWalletInfo()
-
   const twapOrder = useAtomValue(twapOrderAtom)
-  const { inputFiatAmount: sellAmountPartFiat } = useAtomValue(partsStateAtom)
+
+  const receiveAmountInfo = useReceiveAmountInfo()
+  const { buyAmount: outputPartAmount } = receiveAmountInfo?.afterPartnerFees || {}
+  const sellAmountPartFiat = useUsdAmount(outputPartAmount).value
+
   const partTime = useAtomValue(twapTimeIntervalAtom)
 
   const verification = useFallbackHandlerVerification()

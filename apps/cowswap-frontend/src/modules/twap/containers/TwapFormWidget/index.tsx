@@ -16,7 +16,7 @@ import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { ExecutionPrice } from 'common/pure/ExecutionPrice'
 
 import * as styledEl from './styled'
-import { AMOUNT_PARTS_LABELS, LABELS_TOOLTIPS } from './tooltips'
+import { LABELS_TOOLTIPS } from './tooltips'
 
 import { DEFAULT_NUM_OF_PARTS, DEFAULT_TWAP_SLIPPAGE, MAX_TWAP_SLIPPAGE, ORDER_DEADLINES } from '../../const'
 import {
@@ -25,9 +25,7 @@ import {
   useIsFallbackHandlerRequired,
 } from '../../hooks/useFallbackHandlerVerification'
 import { useTwapFormState } from '../../hooks/useTwapFormState'
-import { AmountParts } from '../../pure/AmountParts'
 import { DeadlineSelector } from '../../pure/DeadlineSelector'
-import { partsStateAtom } from '../../state/partsStateAtom'
 import { twapTimeIntervalAtom } from '../../state/twapOrderAtom'
 import { twapOrdersSettingsAtom, updateTwapOrdersSettingsAtom } from '../../state/twapOrdersSettingsAtom'
 import { deadlinePartsDisplay } from '../../utils/deadlinePartsDisplay'
@@ -36,6 +34,7 @@ import { TwapFormWarnings } from '../TwapFormWarnings'
 
 import { useReceiveAmountInfo } from 'modules/trade'
 import { useTwapSlippage } from '../../hooks/useTwapSlippage'
+import { AmountParts } from '../AmountParts'
 
 export type { LabelTooltip, LabelTooltipItems } from './tooltips'
 
@@ -51,7 +50,6 @@ export function TwapFormWidget() {
   const verification = useFallbackHandlerVerification()
 
   const twapOrderSlippage = useTwapSlippage()
-  const partsState = useAtomValue(partsStateAtom)
   const timeInterval = useAtomValue(twapTimeIntervalAtom)
   const updateSettingsState = useSetAtom(updateTwapOrdersSettingsAtom)
 
@@ -165,7 +163,7 @@ export function TwapFormWidget() {
         </TradeTextBox>
       </styledEl.Row>
 
-      <AmountParts partsState={partsState} receiveAmountInfo={receiveAmountInfo} labels={AMOUNT_PARTS_LABELS} />
+      <AmountParts />
 
       <TwapFormWarnings localFormValidation={localFormValidation} />
       <ActionButtons
