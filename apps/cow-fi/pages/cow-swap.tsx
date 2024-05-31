@@ -94,21 +94,28 @@ export default function Page({ siteConfigData }: PageProps) {
       </Head>
 
       <Wrapper>
-        <HeroContainer variant="secondary" maxWidth={1300}>
+        <HeroContainer variant="secondary" maxWidth={1350} padding="0 20px 90px">
           <HeroContent variant="secondary">
             <HeroSubtitle color={'#012F7A'}>CoW Swap</HeroSubtitle>
-            <HeroTitle fontSize={67} fontSizeMobile={38} as="h2">
-              Do what you want, build what you want
+            <HeroTitle fontSize={80} fontSizeMobile={42} as="h2">
+              Don't worry,
+              <br /> trade happy
             </HeroTitle>
             <HeroDescription>
-              CoW Swap has the largest solver competition and the most advanced builder framework on the market
+              CoW Swap protects traders from the dangers of DeFi, so you can do what you want without needing to worry
             </HeroDescription>
-            <HeroButton background={'#012F7A'} color={'#65D9FF'} href="/start-building">
-              Start building
+            <HeroButton
+              background={'#012F7A'}
+              color={'#65D9FF'}
+              href="https://swap.cow.fi/"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              Launch app
             </HeroButton>
           </HeroContent>
           <HeroImage width={470} height={470} color={'#012F7A'} marginMobile="24px auto 56px">
-            <SVG src={IMG_ICON_BULB_COW} />
+            <ProductLogo height="100%" variant={ProductVariant.CowSwap} theme="light" logoIconOnly />
           </HeroImage>
         </HeroContainer>
 

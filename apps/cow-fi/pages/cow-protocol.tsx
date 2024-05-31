@@ -45,6 +45,7 @@ import {
 
 import SVG from 'react-inlinesvg'
 import IMG_ICON_FAQ from '@cowprotocol/assets/images/icon-faq.svg'
+import { Section } from '@/components/Home/index.styles'
 
 const DATA_CACHE_TIME_SECONDS = 5 * 60 // Cache 5min
 
@@ -623,26 +624,16 @@ export default function Page({ siteConfigData }: PageProps) {
                 <SVG src={IMG_ICON_SECURE} />
               </SectionTitleIcon>
               <SectionTitleText fontSize={90} textAlign="center">
-                Secure & battle-tested
+                Want to build a solver?
               </SectionTitleText>
+              <SectionTitleDescription fontSize={28} color={Color.neutral30}>
+                Solvers are the backbone of CoW Protocol.
+              </SectionTitleDescription>
+
+              <SectionTitleDescription fontSize={28} color={'red'}>
+                - MORE CONTENT HERE WIP -
+              </SectionTitleDescription>
             </SectionTitleWrapper>
-
-            <TopicList columns={3}>
-              <TopicCard bgColor="#66018E" textColor={Color.neutral100} href="/">
-                <TopicImage iconColor="#F996EE" large></TopicImage>
-                <TopicTitle fontSize={38}>Programmatic orders</TopicTitle>
-              </TopicCard>
-
-              <TopicCard bgColor="#66018E" textColor={Color.neutral100} href="/">
-                <TopicImage iconColor="#F996EE" large></TopicImage>
-                <TopicTitle fontSize={38}>CoW Hooks</TopicTitle>
-              </TopicCard>
-
-              <TopicCard bgColor="#66018E" textColor={Color.neutral100} href="/">
-                <TopicImage iconColor="#F996EE" large></TopicImage>
-                <TopicTitle fontSize={38}>Smart orders</TopicTitle>
-              </TopicCard>
-            </TopicList>
           </ContainerCardSection>
         </ContainerCard>
 
