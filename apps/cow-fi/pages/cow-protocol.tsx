@@ -227,7 +227,7 @@ export default function Page({ siteConfigData }: PageProps) {
             <TopicList columns={3}>
               <TopicCard contentAlign={'left'} bgColor="#66018E" textColor="#F996EE" padding={'32px'} asProp="div">
                 <TopicCardInner contentAlign="left">
-                  <TopicTitle color={Color.neutral100}>Limit Orders</TopicTitle>
+                  <TopicTitle color={Color.neutral100}>Limit orders</TopicTitle>
                   <TopicDescription fontSize={21} color="#F996EE">
                     Placing a limit order is like setting a trap for a price for your trade. CoW Swap is the only DEX
                     that offers surplus on limit orders - and one of the only DEXs that offers limit orders at all.
