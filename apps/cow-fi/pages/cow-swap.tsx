@@ -145,8 +145,8 @@ export default function Page({ siteConfigData }: PageProps) {
 
               <SectionTitleText>CoW Swap is different</SectionTitleText>
               <SectionTitleDescription maxWidth={900}>
-                CoW Swap is the only DEX built to give you more for every trade by finding the best liquidity and
-                protecting you from MEV
+                Unlike other exchanges, CoW Swap is built around frequent batch auctions, which are designed to find the
+                best liquidity at any point in time and protect you from MEV
               </SectionTitleDescription>
             </SectionTitleWrapper>
 
@@ -154,14 +154,17 @@ export default function Page({ siteConfigData }: PageProps) {
               <TopicCard contentAlign={'left'} bgColor={Color.neutral90} padding={'32px'} asProp="div">
                 <TopicCardInner contentAlign="left">
                   <TopicDescription fontSize={28} color={Color.neutral10}>
-                    Thanks to batch auctions, CoW Swap provides surplus you won&apos;t find anywhere
+                    By aligning incentives, CoW Swap finds surplus you won't get anywhere else
                   </TopicDescription>
-                  <TopicButton bgColor="#65D9FF" color="#012F7A" fontSize={27}>
-                    Learn more
-                  </TopicButton>
                 </TopicCardInner>
-                <TopicImage iconColor="#65D9FF" bgColor="transparent" margin={'0 0 0 auto'} height={187} width={'auto'}>
-                  <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />
+                <TopicImage
+                  iconColor={Color.neutral70}
+                  bgColor="transparent"
+                  margin={'0 0 0 auto'}
+                  height={187}
+                  width={'auto'}
+                >
+                  <ProductLogo variant={ProductVariant.CowSwap} logoIconOnly theme="light" />
                 </TopicImage>
               </TopicCard>
 
@@ -170,26 +173,32 @@ export default function Page({ siteConfigData }: PageProps) {
                   <TopicDescription fontSize={28} color={Color.neutral10}>
                     MEV is a $1.3+ billion problem that you never have to worry about on CoW Swap
                   </TopicDescription>
-                  <TopicButton bgColor="#65D9FF" color="#012F7A" fontSize={27}>
-                    Learn more
-                  </TopicButton>
                 </TopicCardInner>
-                <TopicImage iconColor="#65D9FF" bgColor="transparent" margin={'0 0 0 auto'} height={187} width={'auto'}>
-                  <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />
+                <TopicImage
+                  iconColor={Color.neutral70}
+                  bgColor="transparent"
+                  margin={'0 0 0 auto'}
+                  height={187}
+                  width={'auto'}
+                >
+                  <ProductLogo variant={ProductVariant.CowSwap} logoIconOnly theme="light" />
                 </TopicImage>
               </TopicCard>
 
               <TopicCard contentAlign={'left'} bgColor={Color.neutral90} padding={'32px'} asProp="div">
                 <TopicCardInner contentAlign="left">
                   <TopicDescription fontSize={28} color={Color.neutral10}>
-                    Do more, with great UX, thanks to our unique & innovative architecture
+                    CoW Swap's unique architecture enables advanced order types and seamless UX
                   </TopicDescription>
-                  <TopicButton bgColor="#65D9FF" color="#012F7A" fontSize={27}>
-                    Learn more
-                  </TopicButton>
                 </TopicCardInner>
-                <TopicImage iconColor="#65D9FF" bgColor="transparent" margin={'0 0 0 auto'} height={187} width={'auto'}>
-                  <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />
+                <TopicImage
+                  iconColor={Color.neutral70}
+                  bgColor="transparent"
+                  margin={'0 0 0 auto'}
+                  height={187}
+                  width={'auto'}
+                >
+                  <ProductLogo variant={ProductVariant.CowSwap} logoIconOnly theme="light" />
                 </TopicImage>
               </TopicCard>
             </TopicList>
@@ -198,10 +207,13 @@ export default function Page({ siteConfigData }: PageProps) {
 
         <ContainerCard bgColor={'transparent'}>
           <ContainerCardSection>
-            <SectionTitleWrapper margin="0">
-              <SectionTitleText fontSize={38}>CoW Swap is the first UI built on top of CoW Protocol.</SectionTitleText>
-              <SectionTitleButton bgColor="#65D9FF" color="#012F7A" href="/">
-                Learn about CoW Swap
+            <SectionTitleWrapper maxWidth={900}>
+              <SectionTitleText fontSize={38}>
+                CoW Swap is the first UI built on top of CoW Protocol, an open source and permissionless DEX aggregation
+                protocol that anyone can integrate.
+              </SectionTitleText>
+              <SectionTitleButton bgColor="#65D9FF" color="#012F7A" href="/cow-protocol">
+                Learn about CoW Protocol
               </SectionTitleButton>
             </SectionTitleWrapper>
           </ContainerCardSection>
@@ -215,7 +227,7 @@ export default function Page({ siteConfigData }: PageProps) {
               </SectionTitleIcon>
               <SectionTitleText fontSize={90}>S-moooo-th trading</SectionTitleText>
               <SectionTitleDescription fontSize={28} color={Color.neutral60}>
-                CoW Swap features the smoothest trading experiences in DeFi, allowing you to do more and worry less
+                CoW Swap features the smoothest trading experiences in DeFi, allowing you to worry less and do more
               </SectionTitleDescription>
             </SectionTitleWrapper>
 
@@ -225,10 +237,28 @@ export default function Page({ siteConfigData }: PageProps) {
             <TopicList columns={3}>
               <TopicCard contentAlign={'left'} bgColor="#012F7A" textColor="#65D9FF" padding={'32px'} asProp="div">
                 <TopicCardInner contentAlign="left">
-                  <TopicTitle color={Color.neutral100}>Surplus-Capturing Limit Orders</TopicTitle>
+                  <TopicTitle color={Color.neutral100}>Market orders (aka swaps)</TopicTitle>
                   <TopicDescription fontSize={21} color="#65D9FF">
-                    Limit orders allow users to trade an asset at a pre-determined price. CoW Swap is the only DEX that
-                    offers surplus on limit orders.
+                    CoW Swap market orders maximize surplus and minimize MEV
+                  </TopicDescription>
+                </TopicCardInner>
+                <TopicImage
+                  iconColor="#004293"
+                  bgColor="transparent"
+                  margin={'auto 0 0 auto'}
+                  height={187}
+                  width={'auto'}
+                >
+                  <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />
+                </TopicImage>
+              </TopicCard>
+
+              <TopicCard contentAlign={'left'} bgColor="#012F7A" textColor="#65D9FF" padding={'32px'} asProp="div">
+                <TopicCardInner contentAlign="left">
+                  <TopicTitle color={Color.neutral100}>Limit orders</TopicTitle>
+                  <TopicDescription fontSize={21} color="#65D9FF">
+                    Placing a limit order is like setting a trap for a price for your trade. CoW Swap is the only DEX
+                    that offers surplus on limit orders – and one of the only DEXs that offers limit orders at all
                   </TopicDescription>
                 </TopicCardInner>
                 <TopicImage
@@ -246,27 +276,8 @@ export default function Page({ siteConfigData }: PageProps) {
                 <TopicCardInner contentAlign="left">
                   <TopicTitle color={Color.neutral100}>TWAP orders</TopicTitle>
                   <TopicDescription fontSize={21} color="#65D9FF">
-                    Time-weighed average price (TWAP) orders allow users to trade an asset at fixed intervals over a
-                    period of time.
-                  </TopicDescription>
-                </TopicCardInner>
-                <TopicImage
-                  iconColor="#004293"
-                  bgColor="transparent"
-                  margin={'auto 0 0 auto'}
-                  height={187}
-                  width={'auto'}
-                >
-                  <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />
-                </TopicImage>
-              </TopicCard>
-
-              <TopicCard contentAlign={'left'} bgColor="#012F7A" textColor="#65D9FF" padding={'32px'} asProp="div">
-                <TopicCardInner contentAlign="left">
-                  <TopicTitle color={Color.neutral100}>Milkman orders</TopicTitle>
-                  <TopicDescription fontSize={21} color="#65D9FF">
-                    Created by CoW Swap, in collaboration with Yearn.fi, the Milkman contract enables trading using a
-                    price oracle.
+                    Time-weighted average price (TWAP) orders minimize price impact and volatility risk by letting you
+                    trade assets at fixed intervals over a period of time
                   </TopicDescription>
                 </TopicCardInner>
                 <TopicImage
@@ -283,15 +294,15 @@ export default function Page({ siteConfigData }: PageProps) {
 
             <SectionTitleWrapper>
               <SectionTitleText fontSize={51} textAlign="center">
-                Swaps that do more
+                Seamless UX
               </SectionTitleText>
             </SectionTitleWrapper>
             <TopicList columns={3}>
               <TopicCard contentAlign={'left'} bgColor="#012F7A" textColor="#65D9FF" padding={'32px'} asProp="div">
                 <TopicCardInner contentAlign="left">
-                  <TopicTitle color={Color.neutral100}>Gasless trades</TopicTitle>
+                  <TopicTitle color={Color.neutral100}>Gasless trading</TopicTitle>
                   <TopicDescription fontSize={21} color="#65D9FF">
-                    Deploy conditional orders that only trigger when certain on-chain conditions are met
+                    All gas fees are paid in the sell token - so you can save your precious ETH
                   </TopicDescription>
                 </TopicCardInner>
                 <TopicImage
@@ -309,7 +320,7 @@ export default function Page({ siteConfigData }: PageProps) {
                 <TopicCardInner contentAlign="left">
                   <TopicTitle color={Color.neutral100}>No fees for failed transactions</TopicTitle>
                   <TopicDescription fontSize={21} color="#65D9FF">
-                    Add custom pre and post-swap hooks for bridging, staking, depositing, or any DeFi action
+                    You shouldn&apos;t pay for what didn&apos;t work, so failed transactions are always free
                   </TopicDescription>
                 </TopicCardInner>
                 <TopicImage
@@ -327,8 +338,7 @@ export default function Page({ siteConfigData }: PageProps) {
                 <TopicCardInner contentAlign="left">
                   <TopicTitle color={Color.neutral100}>Execute multiple trades at once</TopicTitle>
                   <TopicDescription fontSize={21} color="#65D9FF">
-                    Enjoy ETH-less trading, where all gas fees are paid in the sell token as well as no fees for failed
-                    transactions
+                    With intent-based trading, you can place as many orders as you want simultaneously
                   </TopicDescription>
                 </TopicCardInner>
                 <TopicImage
@@ -352,7 +362,7 @@ export default function Page({ siteConfigData }: PageProps) {
                 <ProductLogo variant={ProductVariant.CowProtocol} theme="light" logoIconOnly />
               </SectionTitleIcon>
               <SectionTitleText fontSize={90} textAlign="center">
-                The DEX of choice for whales, DAOs, and pros
+                The DEX of choice for crypto whales and pros
               </SectionTitleText>
             </SectionTitleWrapper>
 
@@ -430,45 +440,9 @@ export default function Page({ siteConfigData }: PageProps) {
 
         <ContainerCard bgColor={'transparent'}>
           <ContainerCardSection>
-            <SectionTitleWrapper maxWidth={878} color={Color.neutral10}>
+            <SectionTitleWrapper maxWidth={1200} color={Color.neutral10}>
               <SectionTitleText fontSize={90} textAlign="center">
-                Twitter buzz
-              </SectionTitleText>
-            </SectionTitleWrapper>
-
-            <TopicList columns={3} maxWidth={900}>
-              <TopicCard bgColor={Color.neutral100} padding={'0'} gap={16} asProp="div">
-                <TopicCardInner>
-                  <blockquote className="twitter-tweet" data-dnt="true">
-                    <a href="https://twitter.com/koeppelmann/status/1729455013007684035">Loading X...</a>
-                  </blockquote>
-                </TopicCardInner>
-              </TopicCard>
-
-              <TopicCard bgColor={Color.neutral100} padding={'0'} gap={16} asProp="div">
-                <TopicCardInner>
-                  <blockquote className="twitter-tweet" data-dnt="true">
-                    <a href="https://twitter.com/nomos_paradox/status/1738489297815142736">Loading X...</a>
-                  </blockquote>
-                </TopicCardInner>
-              </TopicCard>
-
-              <TopicCard bgColor={Color.neutral100} padding={'0'} gap={16} asProp="div">
-                <TopicCardInner>
-                  <blockquote className="twitter-tweet" data-dnt="true">
-                    <a href="https://twitter.com/passivenodeinc1/status/1485204781153107973">Loading X...</a>
-                  </blockquote>
-                </TopicCardInner>
-              </TopicCard>
-            </TopicList>
-          </ContainerCardSection>
-        </ContainerCard>
-
-        <ContainerCard bgColor={'transparent'}>
-          <ContainerCardSection>
-            <SectionTitleWrapper maxWidth={878} color={Color.neutral10}>
-              <SectionTitleText fontSize={90} textAlign="center">
-                Case studies
+                Ethereum's biggest DAOs rely on CoW Swap
               </SectionTitleText>
             </SectionTitleWrapper>
 
@@ -518,6 +492,42 @@ export default function Page({ siteConfigData }: PageProps) {
                   <TopicButton bgColor="#65D9FF" color="#012F7A" fontSize={27}>
                     Read more
                   </TopicButton>
+                </TopicCardInner>
+              </TopicCard>
+            </TopicList>
+          </ContainerCardSection>
+        </ContainerCard>
+
+        <ContainerCard bgColor={'transparent'}>
+          <ContainerCardSection>
+            <SectionTitleWrapper maxWidth={878} color={Color.neutral10}>
+              <SectionTitleText fontSize={90} textAlign="center">
+                Don't take our word for it
+              </SectionTitleText>
+            </SectionTitleWrapper>
+
+            <TopicList columns={3} maxWidth={900}>
+              <TopicCard bgColor={Color.neutral100} padding={'0'} gap={16} asProp="div">
+                <TopicCardInner>
+                  <blockquote className="twitter-tweet" data-dnt="true">
+                    <a href="https://twitter.com/koeppelmann/status/1729455013007684035">Loading X...</a>
+                  </blockquote>
+                </TopicCardInner>
+              </TopicCard>
+
+              <TopicCard bgColor={Color.neutral100} padding={'0'} gap={16} asProp="div">
+                <TopicCardInner>
+                  <blockquote className="twitter-tweet" data-dnt="true">
+                    <a href="https://twitter.com/nomos_paradox/status/1738489297815142736">Loading X...</a>
+                  </blockquote>
+                </TopicCardInner>
+              </TopicCard>
+
+              <TopicCard bgColor={Color.neutral100} padding={'0'} gap={16} asProp="div">
+                <TopicCardInner>
+                  <blockquote className="twitter-tweet" data-dnt="true">
+                    <a href="https://twitter.com/passivenodeinc1/status/1485204781153107973">Loading X...</a>
+                  </blockquote>
                 </TopicCardInner>
               </TopicCard>
             </TopicList>
