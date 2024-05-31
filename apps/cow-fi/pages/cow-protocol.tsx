@@ -140,8 +140,8 @@ export default function Page({ siteConfigData }: PageProps) {
               </SectionTitleIcon>
               <SectionTitleText>The leading intents-based DEX aggregation protocol</SectionTitleText>
               <SectionTitleDescription maxWidth={900}>
-                CoW Swap leverages intents, the largest solver network, and batch auctions to bring surplus-capturing,
-                MEV-protected trades to users
+                CoW Swap leverages intents, the largest solver network in DeFi, and batch auctions to bring
+                surplus-capturing, MEV-protected trades to users
               </SectionTitleDescription>
             </SectionTitleWrapper>
           </ContainerCardSection>
