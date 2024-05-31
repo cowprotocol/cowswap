@@ -105,7 +105,8 @@ export default function Page({ siteConfigData }: PageProps) {
               Do what you want, build what you want
             </HeroTitle>
             <HeroDescription>
-              CoW Protocol has the largest solver competition and the most advanced builder framework on the market
+              CoW Protocol has the largest solver competition and the most advanced developer framework - so you can
+              build any DEX-related action you can imagine
             </HeroDescription>
             <HeroButton background={'#66018E'} color={'#F996EE'} href="/start-building">
               Start building
@@ -137,16 +138,12 @@ export default function Page({ siteConfigData }: PageProps) {
               <SectionTitleIcon size={98}>
                 <SVG src={IMG_ICON_CROWN_COW} />
               </SectionTitleIcon>
-              <SectionTitleText>The leading intents-based DEX aggregator</SectionTitleText>
+              <SectionTitleText>The leading intents-based DEX aggregation protocol</SectionTitleText>
               <SectionTitleDescription maxWidth={900}>
-                CoW Protocol uses an intents-based trading system alongside batch auctions to bring surplus-capturing,
-                MEV protected swaps to users.
+                CoW Swap leverages intents, the largest solver network, and batch auctions to bring surplus-capturing,
+                MEV-protected trades to users
               </SectionTitleDescription>
             </SectionTitleWrapper>
-
-            <SectionImage bgColor={'#66018E'}>
-              {/* <img src={IMG_ICON_GOVERNANCE} alt="CoW Protocol" /> */}
-            </SectionImage>
           </ContainerCardSection>
         </ContainerCard>
 
@@ -156,9 +153,10 @@ export default function Page({ siteConfigData }: PageProps) {
               <SectionTitleIcon size={100}>
                 <ProductLogo variant={ProductVariant.CowProtocol} theme="light" logoIconOnly />
               </SectionTitleIcon>
-              <SectionTitleText>How it works?</SectionTitleText>
+              <SectionTitleText>How it works</SectionTitleText>
               <SectionTitleDescription maxWidth={900}>
-                Through intents, a network of solvers, and batch auctions, CoW Protocol stands out from every other DEX
+                By leveraging intents, the largest solver network, and batch auctions, CoW Protocol hosts a continuous
+                competition between solvers to find better prices and protect users from MEV
               </SectionTitleDescription>
             </SectionTitleWrapper>
 
@@ -168,7 +166,7 @@ export default function Page({ siteConfigData }: PageProps) {
                   <TopicTitle fontSize={67}>Intents</TopicTitle>
                   <TopicDescription fontSize={28}>
                     CoW Protocol users sign an "intent to trade" message instead of directly executing orders on-chain
-                    (like on Uniswap). This lets solvers trade on behalf of the user
+                    (like on Uniswap). This lets solvers trade on behalf of the user.
                   </TopicDescription>
                   <TopicButton bgColor="#66018E" color="#F996EE" href="/knowledge-base">
                     Learn more
@@ -182,8 +180,9 @@ export default function Page({ siteConfigData }: PageProps) {
                 <TopicCardInner contentAlign="left">
                   <TopicTitle fontSize={67}>Solvers</TopicTitle>
                   <TopicDescription fontSize={28}>
-                    Professional third parties known as “solvers” find the most optimal path for each trade and protect
-                    assets from MEV
+                    Professional third parties known as solvers find the most optimal trade path from a combination of
+                    public and private liquidity sources - finding better prices than most users could find on their
+                    own.
                   </TopicDescription>
                   <TopicButton bgColor="#66018E" color="#F996EE" href="/knowledge-base">
                     Learn more
@@ -195,8 +194,12 @@ export default function Page({ siteConfigData }: PageProps) {
                 <TopicCardInner contentAlign="left">
                   <TopicTitle fontSize={67}>Batch Auctions</TopicTitle>
                   <TopicDescription fontSize={28}>
-                    CoW Protocol collects intents into a batch and then auctions it off to solvers. The solver that can
-                    provide the most surplus for users gets to settle the batch
+                    Solvers compete for the right to settle trades in batches, which give users additional MEV
+                    protection and allow for Coincidence of Wants.
+                    <br />
+                    <br />
+                    The solver that wins the batch auction is the solver that finds the most surplus - so they win when
+                    you win.
                   </TopicDescription>
                   <TopicButton bgColor="#66018E" color="#F996EE" href="/knowledge-base">
                     Learn more
@@ -214,7 +217,7 @@ export default function Page({ siteConfigData }: PageProps) {
               <ProductLogo variant={ProductVariant.CowProtocol} theme="dark" logoIconOnly height={60} />
               <SectionTitleText fontSize={90}>Going where others can&apos;t</SectionTitleText>
               <SectionTitleDescription fontSize={28} color={Color.neutral60}>
-                Thanks to its unique architecture, CoW Protocol can do things other DEX&apos;s can&apos;t
+                Thanks to its unique architecture, CoW Protocol can do things other DEXs can&apos;t
               </SectionTitleDescription>
             </SectionTitleWrapper>
 
@@ -224,10 +227,10 @@ export default function Page({ siteConfigData }: PageProps) {
             <TopicList columns={3}>
               <TopicCard contentAlign={'left'} bgColor="#66018E" textColor="#F996EE" padding={'32px'} asProp="div">
                 <TopicCardInner contentAlign="left">
-                  <TopicTitle color={Color.neutral100}>Surplus-Capturing Limit Orders</TopicTitle>
+                  <TopicTitle color={Color.neutral100}>Limit Orders</TopicTitle>
                   <TopicDescription fontSize={21} color="#F996EE">
-                    Limit orders allow users to trade an asset at a pre-determined price. CoW Swap is the only DEX that
-                    offers surplus on limit orders.
+                    Placing a limit order is like setting a trap for a price for your trade. CoW Swap is the only DEX
+                    that offers surplus on limit orders - and one of the only DEXs that offers limit orders at all.
                   </TopicDescription>
                 </TopicCardInner>
                 <TopicImage
@@ -245,8 +248,8 @@ export default function Page({ siteConfigData }: PageProps) {
                 <TopicCardInner contentAlign="left">
                   <TopicTitle color={Color.neutral100}>TWAP orders</TopicTitle>
                   <TopicDescription fontSize={21} color="#F996EE">
-                    Time-weighed average price (TWAP) orders allow users to trade an asset at fixed intervals over a
-                    period of time.
+                    Time-weighted average price (TWAP) orders minimize price impact and volatility risk by letting you
+                    trade assets at fixed intervals over a period of time.
                   </TopicDescription>
                 </TopicCardInner>
                 <TopicImage
@@ -264,8 +267,8 @@ export default function Page({ siteConfigData }: PageProps) {
                 <TopicCardInner contentAlign="left">
                   <TopicTitle color={Color.neutral100}>Milkman orders</TopicTitle>
                   <TopicDescription fontSize={21} color="#F996EE">
-                    Created by CoW Swap, in collaboration with Yearn.fi, the Milkman contract enables trading using a
-                    price oracle.
+                    Created with our friends at Yearn.fi, Milkman orders let you prep a trade today to be executed in
+                    the future - with the help of a price oracle so you don't get rekt.
                   </TopicDescription>
                 </TopicCardInner>
                 <TopicImage
