@@ -5,13 +5,12 @@ import { usePrevious } from '@cowprotocol/common-hooks'
 
 import { Field } from 'legacy/state/types'
 
+import { useReceiveAmountInfo } from 'modules/trade'
 import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
 import { useUpdateCurrencyAmount } from 'modules/trade/hooks/useUpdateCurrencyAmount'
 import { useTradeQuote } from 'modules/tradeQuote'
 
 import { partsStateAtom } from '../state/partsStateAtom'
-import { getReceiveAmountInfo } from 'modules/trade'
-import { useWidgetPartnerFee } from 'modules/injectedWidget'
 
 export function QuoteObserverUpdater() {
   const state = useDerivedTradeState()
@@ -19,16 +18,16 @@ export function QuoteObserverUpdater() {
   const { numberOfPartsValue } = useAtomValue(partsStateAtom)
   const prevNumberOfParts = usePrevious(numberOfPartsValue)
 
-  const partnerFee = useWidgetPartnerFee()
   const updateCurrencyAmount = useUpdateCurrencyAmount()
-  const inputCurrency = state?.inputCurrency
+  const receiveAmountInfo = useReceiveAmountInfo()
+
   const outputCurrency = state?.outputCurrency
-  const slippage = state?.slippage
+  const buyAmount = receiveAmountInfo?.beforeNetworkCosts.buyAmount
 
   const quoteBuyAmount = useMemo(() => {
     const numOfPartsChanged = numberOfPartsValue !== prevNumberOfParts
 
-    if (!response || !inputCurrency || !outputCurrency || !numberOfPartsValue || !slippage || isLoading) {
+    if (!buyAmount || !numberOfPartsValue || isLoading) {
       return null
     }
 
@@ -36,14 +35,10 @@ export function QuoteObserverUpdater() {
       return null
     }
 
-    const {
-      beforeNetworkCosts: { buyAmount },
-    } = getReceiveAmountInfo(response.quote, inputCurrency, outputCurrency, slippage, partnerFee?.bps)
-
     const adjustedForParts = buyAmount.multiply(numberOfPartsValue)
 
     return adjustedForParts.quotient.toString()
-  }, [isLoading, numberOfPartsValue, outputCurrency, prevNumberOfParts, slippage, response])
+  }, [isLoading, numberOfPartsValue, buyAmount, prevNumberOfParts])
 
   useMemo(() => {
     if (!outputCurrency || !response || !quoteBuyAmount) {
@@ -55,7 +50,7 @@ export function QuoteObserverUpdater() {
       currency: outputCurrency,
       field: Field.OUTPUT,
     })
-  }, [inputCurrency, outputCurrency, response, updateCurrencyAmount, quoteBuyAmount])
+  }, [outputCurrency, response, updateCurrencyAmount, quoteBuyAmount])
 
   return null
 }

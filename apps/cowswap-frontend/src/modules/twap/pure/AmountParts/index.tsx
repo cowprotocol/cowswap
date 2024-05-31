@@ -6,7 +6,7 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { Trans } from '@lingui/macro'
 import { Nullish } from 'types'
 
-import { getDirectedReceiveAmounts } from 'modules/trade'
+import { getDirectedReceiveAmounts, ReceiveAmountInfo } from 'modules/trade'
 import { LabelTooltipItems } from 'modules/twap'
 
 import * as styledEl from './styled'
@@ -38,15 +38,14 @@ function TradeAmountPreview(props: TradeAmountPreviewProps) {
   )
 }
 
-export function AmountParts({ partsState, labels }: { partsState: PartsState; labels: LabelTooltipItems }) {
-  const {
-    numberOfPartsValue,
-    inputPartAmount,
-    outputPartAmount,
-    inputFiatAmount,
-    outputFiatAmount,
-    receiveAmountInfo,
-  } = partsState
+interface AmountPartsProps {
+  partsState: PartsState
+  labels: LabelTooltipItems
+  receiveAmountInfo: ReceiveAmountInfo | null
+}
+
+export function AmountParts({ partsState, labels, receiveAmountInfo }: AmountPartsProps) {
+  const { numberOfPartsValue, inputPartAmount, outputPartAmount, inputFiatAmount, outputFiatAmount } = partsState
   const { sellAmount, buyAmount } = labels
 
   const receiveAmounts = receiveAmountInfo && getDirectedReceiveAmounts(receiveAmountInfo)

@@ -165,7 +165,7 @@ export function TwapFormWidget() {
         </TradeTextBox>
       </styledEl.Row>
 
-      <AmountParts partsState={partsState} labels={AMOUNT_PARTS_LABELS} />
+      <AmountParts partsState={partsState} receiveAmountInfo={receiveAmountInfo} labels={AMOUNT_PARTS_LABELS} />
 
       <TwapFormWarnings localFormValidation={localFormValidation} />
       <ActionButtons

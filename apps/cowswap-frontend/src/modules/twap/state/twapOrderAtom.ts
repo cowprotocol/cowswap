@@ -6,8 +6,8 @@ import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { advancedOrdersDerivedStateAtom } from 'modules/advancedOrders'
 import { getAppData } from 'modules/appData'
 import { appDataInfoAtom } from 'modules/appData/state/atoms'
+import { receiveAmountInfoAtom } from 'modules/trade'
 
-import { partsStateAtom } from './partsStateAtom'
 import { twapOrdersSettingsAtom } from './twapOrdersSettingsAtom'
 
 import { TWAPOrder } from '../types'
@@ -31,17 +31,16 @@ export const twapOrderAtom = atom<TWAPOrder | null>((get) => {
   const { account } = get(walletInfoAtom)
   const { numberOfPartsValue } = get(twapOrdersSettingsAtom)
   const timeInterval = get(twapTimeIntervalAtom)
-  const { receiveAmountInfo } = get(partsStateAtom)
+  const receiveAmountInfo = get(receiveAmountInfoAtom)
   const { inputCurrencyAmount, recipient, recipientAddress } = get(advancedOrdersDerivedStateAtom)
 
   if (!inputCurrencyAmount || !receiveAmountInfo || !account) return null
 
-  const sellAmount = receiveAmountInfo.afterNetworkCosts.sellAmount
-  const minReceived = receiveAmountInfo.afterSlippage.buyAmount
+  const { sellAmount, buyAmount } = receiveAmountInfo.afterSlippage
 
   return {
     sellAmount: sellAmount as CurrencyAmount<Token>,
-    buyAmount: minReceived as CurrencyAmount<Token>,
+    buyAmount: buyAmount as CurrencyAmount<Token>,
     receiver: recipientAddress || recipient || account,
     numOfParts: numberOfPartsValue,
     startTime: 0, // Will be set to a block timestamp value from CurrentBlockTimestampFactory
