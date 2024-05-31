@@ -913,6 +913,7 @@ export const HeroButtonWrapper = styled.div<{ gap?: number }>`
   gap: ${({ gap }) => gap || 24}px;
   margin: 32px 0;
   flex-flow: row wrap;
+  max-width: 100%;
 
   ${Media.upToMedium()} {
     flex-flow: column wrap;
@@ -932,6 +933,7 @@ export const HeroButton = styled.a<{ background?: string; color?: string }>`
   line-height: 1.2;
   text-align: center;
   width: max-content;
+  max-width: 100%;
   transition: opacity 0.2s ease-in-out;
 
   &:hover {
