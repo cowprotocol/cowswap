@@ -11,6 +11,7 @@ import {
   useAllEmulatedOrders,
   useMapTwapCurrencyInfo,
   useTwapFormState,
+  useTwapSlippage,
 } from 'modules/twap'
 import { TwapFormState } from 'modules/twap/pure/PrimaryActionButton/getTwapFormState'
 
@@ -21,6 +22,7 @@ export default function AdvancedOrdersPage() {
 
   const primaryFormValidation = useGetTradeFormValidation()
   const twapFormValidation = useTwapFormState()
+  const twapSlippage = useTwapSlippage()
   const mapTwapCurrencyInfo = useMapTwapCurrencyInfo()
 
   const disablePriceImpact =
@@ -33,7 +35,7 @@ export default function AdvancedOrdersPage() {
 
   return (
     <>
-      <FillAdvancedOrdersDerivedStateUpdater />
+      <FillAdvancedOrdersDerivedStateUpdater slippage={twapSlippage} />
       <styledEl.PageWrapper isUnlocked={isUnlocked}>
         <styledEl.PrimaryWrapper>
           <AdvancedOrdersWidget
