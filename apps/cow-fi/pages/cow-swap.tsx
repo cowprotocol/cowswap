@@ -534,8 +534,8 @@ export default function Page({ siteConfigData }: PageProps) {
           </ContainerCardSection>
         </ContainerCard>
 
-        <ContainerCard bgColor={'transparent'} color={Color.neutral10} touchFooter>
-          <ContainerCardSection padding={'0 0 100px'}>
+        <ContainerCard bgColor={'transparent'} color={Color.neutral10}>
+          <ContainerCardSection>
             <SectionTitleWrapper>
               <SectionTitleIcon>
                 <SVG src={IMG_ICON_FAQ} />
@@ -544,6 +544,29 @@ export default function Page({ siteConfigData }: PageProps) {
             </SectionTitleWrapper>
 
             <FAQ faqs={FAQ_DATA} />
+          </ContainerCardSection>
+        </ContainerCard>
+
+        <ContainerCard bgColor={Color.neutral90} color={Color.neutral10} touchFooter>
+          <ContainerCardSection padding={'0 0 100px'}>
+            <SectionTitleWrapper margin="0 auto">
+              <SectionTitleIcon>
+                <ProductLogo variant={ProductVariant.CowSwap} theme="light" logoIconOnly />
+              </SectionTitleIcon>
+              <SectionTitleText>Don't worry, trade happy</SectionTitleText>
+              <SectionTitleDescription fontSize={28} color={Color.neutral30}>
+                Trade seamlessly, with the most user-protective DEX in DeFi
+              </SectionTitleDescription>
+              <SectionTitleButton
+                bgColor="#65D9FF"
+                color="#012F7A"
+                href="https://swap.cow.fi/"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                Launch app
+              </SectionTitleButton>
+            </SectionTitleWrapper>
           </ContainerCardSection>
         </ContainerCard>
       </Wrapper>
