@@ -9,7 +9,7 @@ import IMG_ICON_SECURE from '@cowprotocol/assets/images/icon-secure.svg'
 import IMG_ICON_OWL from '@cowprotocol/assets/images/icon-owl.svg'
 import IMG_ICON_GHOST from '@cowprotocol/assets/images/icon-ghost.svg'
 import IMG_LOGO_SAFE from '@cowprotocol/assets/images/logo-safe.svg'
-import IMG_LOGO_OASIS from '@cowprotocol/assets/images/logo-oasis.svg'
+import IMG_LOGO_SUMMER_FI from '@cowprotocol/assets/images/logo-summer-fi.svg'
 
 import styled from 'styled-components'
 
@@ -31,7 +31,6 @@ import {
   SectionTitleIcon,
   SectionTitleText,
   SectionTitleDescription,
-  SectionImage,
   TopicCardInner,
   HeroContainer,
   HeroImage,
@@ -285,52 +284,51 @@ export default function Page({ siteConfigData }: PageProps) {
 
             <SectionTitleWrapper padding="150px 0 50px">
               <SectionTitleText fontSize={51} textAlign="center">
-                Unique smart orders
+                Unique trading logic
               </SectionTitleText>
             </SectionTitleWrapper>
             <TopicList columns={3}>
               <TopicCard contentAlign={'left'} bgColor="#66018E" textColor="#F996EE" padding={'32px'} asProp="div">
                 <TopicCardInner contentAlign="left">
-                  <TopicTitle color={Color.neutral100}>Programmatic Orders</TopicTitle>
-                  <TopicDescription fontSize={21} color="#F996EE">
-                    Deploy conditional orders that only trigger when certain on-chain conditions are met
-                  </TopicDescription>
-                </TopicCardInner>
-                <TopicImage
-                  iconColor="#8702AA"
-                  bgColor="transparent"
-                  margin={'auto 0 0 auto'}
-                  height={187}
-                  width={'auto'}
-                >
-                  <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />
-                </TopicImage>
-              </TopicCard>
-
-              <TopicCard contentAlign={'left'} bgColor="#66018E" textColor="#F996EE" padding={'32px'} asProp="div">
-                <TopicCardInner contentAlign="left">
-                  <TopicTitle color={Color.neutral100}>CoW Hooks</TopicTitle>
-                  <TopicDescription fontSize={21} color="#F996EE">
-                    Add custom pre and post-swap hooks for bridging, staking, depositing, or any DeFi action
-                  </TopicDescription>
-                </TopicCardInner>
-                <TopicImage
-                  iconColor="#8702AA"
-                  bgColor="transparent"
-                  margin={'auto 0 0 auto'}
-                  height={187}
-                  width={'auto'}
-                >
-                  <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />
-                </TopicImage>
-              </TopicCard>
-
-              <TopicCard contentAlign={'left'} bgColor="#66018E" textColor="#F996EE" padding={'32px'} asProp="div">
-                <TopicCardInner contentAlign="left">
                   <TopicTitle color={Color.neutral100}>Smart orders</TopicTitle>
                   <TopicDescription fontSize={21} color="#F996EE">
-                    Enjoy ETH-less trading, where all gas fees are paid in the sell token as well as no fees for failed
-                    transactions
+                    ERC-1271 smart orders let you custom code any trading logic
+                  </TopicDescription>
+                </TopicCardInner>
+                <TopicImage
+                  iconColor="#8702AA"
+                  bgColor="transparent"
+                  margin={'auto 0 0 auto'}
+                  height={187}
+                  width={'auto'}
+                >
+                  <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />
+                </TopicImage>
+              </TopicCard>
+              <TopicCard contentAlign={'left'} bgColor="#66018E" textColor="#F996EE" padding={'32px'} asProp="div">
+                <TopicCardInner contentAlign="left">
+                  <TopicTitle color={Color.neutral100}>Programmatic Orders</TopicTitle>
+                  <TopicDescription fontSize={21} color="#F996EE">
+                    Easily deploy conditional orders that trigger when specified on-chain conditions are met
+                  </TopicDescription>
+                </TopicCardInner>
+                <TopicImage
+                  iconColor="#8702AA"
+                  bgColor="transparent"
+                  margin={'auto 0 0 auto'}
+                  height={187}
+                  width={'auto'}
+                >
+                  <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />
+                </TopicImage>
+              </TopicCard>
+
+              <TopicCard contentAlign={'left'} bgColor="#66018E" textColor="#F996EE" padding={'32px'} asProp="div">
+                <TopicCardInner contentAlign="left">
+                  <TopicTitle color={Color.neutral100}>Hooks</TopicTitle>
+                  <TopicDescription fontSize={21} color="#F996EE">
+                    Add pre- and post- hooks to tie your trade to any other DeFi activity (bridging, staking,
+                    depositing, etc.)
                   </TopicDescription>
                 </TopicCardInner>
                 <TopicImage
@@ -437,7 +435,7 @@ export default function Page({ siteConfigData }: PageProps) {
                   height={54}
                   margin={'auto'}
                 >
-                  <SVG src={IMG_LOGO_OASIS} />
+                  <SVG src={IMG_LOGO_SUMMER_FI} />
                 </TopicImage>
               </TopicCard>
 
@@ -518,7 +516,7 @@ export default function Page({ siteConfigData }: PageProps) {
                   height={54}
                   margin={'auto'}
                 >
-                  <SVG src={IMG_LOGO_OASIS} />
+                  <SVG src={IMG_LOGO_SUMMER_FI} />
                 </TopicImage>
               </TopicCard>
 
