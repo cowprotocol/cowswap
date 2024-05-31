@@ -1,7 +1,7 @@
-import React, { Dispatch, ReactNode, SetStateAction } from 'react'
+import React, { Dispatch, ReactNode, SetStateAction, useMemo } from 'react'
 
 import { CowSwapWidgetAppParams } from '@cowprotocol/widget-lib'
-import { Percent } from '@uniswap/sdk-core'
+import { Percent, Price } from '@uniswap/sdk-core'
 
 import { useUsdAmount } from 'modules/usdAmount'
 
@@ -58,7 +58,14 @@ export function TradeBasicConfirmDetails(props: Props) {
   const networkFeeAmountUsd = useUsdAmount(networkFeeAmount).value
 
   // Limit price is the same for all parts
-  const limitPrice = receiveAmountInfo.quotePrice
+  const limitPrice = useMemo(() => {
+    const { afterNetworkCosts, afterSlippage } = receiveAmountInfo
+
+    return new Price({
+      quoteAmount: afterSlippage.buyAmount,
+      baseAmount: afterNetworkCosts.sellAmount,
+    })
+  }, [receiveAmountInfo])
 
   return (
     <styledEl.Wrapper>
@@ -107,9 +114,6 @@ export function TradeBasicConfirmDetails(props: Props) {
         <PercentDisplay percent={+slippage.toFixed(2)} />
       </ReviewOrderModalAmountRow>
 
-      {/* Limit Price */}
-      <LimitPriceRow price={limitPrice} isInvertedState={isInvertedState} {...additionalProps} />
-
       {/* Min received */}
       <ReviewOrderModalAmountRow
         highlighted={true}
@@ -118,6 +122,9 @@ export function TradeBasicConfirmDetails(props: Props) {
         tooltip={minReceivedTooltip}
         label={minReceivedLabel}
       />
+
+      {/* Limit Price */}
+      <LimitPriceRow price={limitPrice} isInvertedState={isInvertedState} {...additionalProps} />
     </styledEl.Wrapper>
   )
 }

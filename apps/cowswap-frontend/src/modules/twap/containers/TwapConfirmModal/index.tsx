@@ -32,7 +32,7 @@ import { TwapFormWarnings } from '../TwapFormWarnings'
 const CONFIRM_TITLE = 'TWAP'
 
 const CONFIRM_MODAL_CONFIG = {
-  priceLabel: 'Rate (incl. costs)',
+  priceLabel: 'Rate',
   slippageLabel: 'Price protection',
   slippageTooltip: (
     <>
@@ -46,7 +46,7 @@ const CONFIRM_MODAL_CONFIG = {
       </p>
     </>
   ),
-  limitPriceLabel: 'Limit price',
+  limitPriceLabel: 'Limit price (incl. costs)',
   limitPriceTooltip: (
     <>
       If CoW Swap cannot get this price or better (taking into account fees and price protection tolerance), your TWAP
