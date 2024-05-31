@@ -92,14 +92,15 @@ export default function Page({ siteConfigData }: PageProps) {
           </HeroBackground>
           <HeroContent>
             <HeroTitle>Don&apos;t get milked!</HeroTitle>
-            <HeroSubtitle variant={'pill'}>CoW DAO protects users from the dangers of DeFi</HeroSubtitle>
           </HeroContent>
         </HeroContainer>
 
         <ContainerCard bgColor={Color.neutral100}>
           <ContainerCardSection>
-            <SectionTitleWrapper color={Color.neutral0} maxWidth={1100}>
-              <SectionTitleText>CoW DAO develops the most user-protective products in Ethereum</SectionTitleText>
+            <SectionTitleWrapper color={Color.neutral0} maxWidth={1100} margin="100px auto">
+              <SectionTitleText fontSize={54}>
+                Trade in peace, with the most user-protective products in Ethereum
+              </SectionTitleText>
             </SectionTitleWrapper>
 
             <TopicList columns={2}>
@@ -107,7 +108,7 @@ export default function Page({ siteConfigData }: PageProps) {
                 <TopicCardInner contentAlign="left">
                   <TopicTitle fontSize={51}>CoW Protocol</TopicTitle>
                   <TopicDescription fontSize={28} color="#F996EE">
-                    Open-source, permissionless DEX innovation
+                    Open-source, permissionless DEX aggregation protocol
                   </TopicDescription>
                   <TopicButton bgColor="#F996EE" color="#490072">
                     Start building
@@ -154,14 +155,14 @@ export default function Page({ siteConfigData }: PageProps) {
                     MEV Blocker
                   </TopicTitle>
                   <TopicDescription fontSize={28} color="#EC4612">
-                    The best MEV protection under the sun
+                    The best MEV protection RPC under the sun
                   </TopicDescription>
                   <TopicButton bgColor="#EC4612" color="#FEE7CF">
                     Get protected
                   </TopicButton>
                 </TopicCardInner>
                 <TopicImage iconColor="#FDC99F" bgColor="transparent" margin={'0 0 0 auto'} height={187} width={'auto'}>
-                  <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />
+                  <ProductLogo variant={ProductVariant.MevBlocker} logoIconOnly theme="dark" />
                 </TopicImage>
               </TopicCard>
             </TopicList>
