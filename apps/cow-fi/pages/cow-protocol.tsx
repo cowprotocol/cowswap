@@ -544,7 +544,7 @@ export default function Page({ siteConfigData }: PageProps) {
               <SectionTitleText>Build with CoW Protocol</SectionTitleText>
             </SectionTitleWrapper>
 
-            <TopicList columns={2}>
+            <TopicList columns={3}>
               <TopicCard contentAlign={'left'} bgColor="#66018E" textColor="#F996EE" padding={'32px'} asProp="div">
                 <TopicCardInner contentAlign="left">
                   <TopicTitle fontSize={38} color={Color.neutral100}>
@@ -552,9 +552,16 @@ export default function Page({ siteConfigData }: PageProps) {
                   </TopicTitle>
                   <TopicDescription fontSize={21} color="#F996EE">
                     As an open-source protocol, building on top of CoW Protocol is permissionless. Thanks to
-                    comprehensive documentation and even a live coding environment, integrating the protocol is easy.
+                    comprehensive documentation and live coding tutorials, integrating the protocol is easy.
                   </TopicDescription>
-                  <TopicButton bgColor="#ED60E9" color="#66018E" fontSize={27}>
+                  <TopicButton
+                    bgColor="#ED60E9"
+                    color="#66018E"
+                    fontSize={27}
+                    href="https://docs.cow.fi/"
+                    rel="noopener noreferrer"
+                    target="_blank"
+                  >
                     Read the docs
                   </TopicButton>
                 </TopicCardInner>
@@ -569,26 +576,10 @@ export default function Page({ siteConfigData }: PageProps) {
                     For DeFi projects
                   </TopicTitle>
                   <TopicDescription fontSize={21} color="#F996EE">
-                    The worry-free DEX can power swaps and intent-based transactions for any DeFi project or use-case.
+                    Don't need overly-custom trading logic? The CoW Protocol widget is the easiest way to integrate
+                    swaps, twaps, and limit orders directly into your project site.
                   </TopicDescription>
-                  <TopicButton bgColor="#ED60E9" color="#66018E" fontSize={27}>
-                    Read the docs
-                  </TopicButton>
-                </TopicCardInner>
-                <TopicImage iconColor="#8702AA" bgColor="transparent" margin={'0 0 0 auto'} height={187} width={'auto'}>
-                  <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />
-                </TopicImage>
-              </TopicCard>
-
-              <TopicCard contentAlign={'left'} bgColor="#66018E" textColor="#F996EE" padding={'32px'} asProp="div">
-                <TopicCardInner contentAlign="left">
-                  <TopicTitle fontSize={38} color={Color.neutral100}>
-                    For dummies
-                  </TopicTitle>
-                  <TopicDescription fontSize={21} color="#F996EE">
-                    Want to bring the most advanced swap features in DeFi directly to your website, dApp, or project?
-                  </TopicDescription>
-                  <TopicButton bgColor="#ED60E9" color="#66018E" fontSize={27}>
+                  <TopicButton bgColor="#ED60E9" color="#66018E" fontSize={27} href="/widget">
                     Integrate the widget
                   </TopicButton>
                 </TopicCardInner>
@@ -603,10 +594,17 @@ export default function Page({ siteConfigData }: PageProps) {
                     For anyone
                   </TopicTitle>
                   <TopicDescription fontSize={21} color="#F996EE">
-                    The CoW Grants program has given out over $100,000 to community contributors and to innovative
-                    projects built on top of CoW Protocol.
+                    The CoW DAO Grants program has awarded over $100,000 in grants to innovators that build public DeFi
+                    applications with CoW Protocol.
                   </TopicDescription>
-                  <TopicButton bgColor="#ED60E9" color="#66018E" fontSize={27}>
+                  <TopicButton
+                    bgColor="#ED60E9"
+                    color="#66018E"
+                    fontSize={27}
+                    href="https://grants.cow.fi/"
+                    rel="noopener noreferrer"
+                    target="_blank"
+                  >
                     Apply for a grant
                   </TopicButton>
                 </TopicCardInner>
