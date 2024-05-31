@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import { GetStaticProps } from 'next'
-import { Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
+import { Font, Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
 import IMG_ICON_CROWN_COW from '@cowprotocol/assets/images/icon-crown-cow.svg'
 
 import styled from 'styled-components'
@@ -45,6 +45,14 @@ import {
 
 import SVG from 'react-inlinesvg'
 import IMG_ICON_FAQ from '@cowprotocol/assets/images/icon-faq.svg'
+import IMG_LOGO_SAFE from '@cowprotocol/assets/images/logo-safe.svg'
+import IMG_LOGO_KARPATKEY from '@cowprotocol/assets/images/logo-karpatkey.svg'
+import IMG_LOGO_BLOCKNATIVE from '@cowprotocol/assets/images/logo-blocknative.svg'
+import IMG_LOGO_RABBY from '@cowprotocol/assets/images/logo-rabby.svg'
+import IMG_LOGO_KEEPKEY from '@cowprotocol/assets/images/logo-keepkey.svg'
+import IMG_LOGO_AMBIRE from '@cowprotocol/assets/images/logo-ambire.svg'
+import IMG_LOGO_CRYPTO_COM from '@cowprotocol/assets/images/logo-crypto-com.svg'
+import IMG_LOGO_UNISWAP from '@cowprotocol/assets/images/logo-uniswap.svg'
 
 const DATA_CACHE_TIME_SECONDS = 5 * 60 // Cache 5min
 
@@ -156,7 +164,7 @@ export default function Page({ siteConfigData }: PageProps) {
                 </HeroButtonWrapper>
               </HeroContent>
               <HeroImage width={470} height={470} color={'#EC4612'}>
-                <SVG src={IMG_ICON_CROWN_COW} />
+                <ProductLogo height={'100%'} variant={ProductVariant.MevBlocker} theme="dark" logoIconOnly />
               </HeroImage>
             </HeroContainer>
 
@@ -191,7 +199,7 @@ export default function Page({ siteConfigData }: PageProps) {
               <ContainerCardSection gap={90}>
                 <SectionTitleWrapper color={Color.neutral0} maxWidth={1300} gap={56}>
                   <SectionTitleIcon multiple size={80}>
-                    <ProductLogo variant={ProductVariant.CowProtocol} theme="dark" logoIconOnly />
+                    <ProductLogo variant={ProductVariant.MevBlocker} theme="dark" logoIconOnly />
                   </SectionTitleIcon>
                   <SectionTitleText maxWidth={900}>Broad spectrum MEV defense</SectionTitleText>
                   <SectionTitleDescription maxWidth={'100%'} color={Color.neutral50}>
@@ -218,7 +226,7 @@ export default function Page({ siteConfigData }: PageProps) {
                       height={200}
                       width={'auto'}
                     >
-                      <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />
+                      <ProductLogo variant={ProductVariant.MevBlocker} logoIconOnly theme="dark" />
                     </TopicImage>
                   </TopicCard>
 
@@ -235,7 +243,7 @@ export default function Page({ siteConfigData }: PageProps) {
                       height={200}
                       width={'auto'}
                     >
-                      <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />
+                      <ProductLogo variant={ProductVariant.MevBlocker} logoIconOnly theme="dark" />
                     </TopicImage>
                   </TopicCard>
 
@@ -252,7 +260,7 @@ export default function Page({ siteConfigData }: PageProps) {
                       height={200}
                       width={'auto'}
                     >
-                      <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />
+                      <ProductLogo variant={ProductVariant.MevBlocker} logoIconOnly theme="dark" />
                     </TopicImage>
                   </TopicCard>
                 </TopicList>
@@ -276,9 +284,8 @@ export default function Page({ siteConfigData }: PageProps) {
               <ContainerCardSection>
                 <SectionTitleWrapper maxWidth={850} gap={56}>
                   <SectionTitleIcon multiple size={80}>
-                    <ProductLogo variant={ProductVariant.CowProtocol} theme="dark" logoIconOnly />
+                    <ProductLogo variant={ProductVariant.MevBlocker} theme="dark" logoIconOnly />
                   </SectionTitleIcon>
-
                   <SectionTitleText>Get Protected</SectionTitleText>
                   <SectionTitleDescription>
                     Add this RPC endpoint to your wallet to enjoy the full benefits of MEV Blocker.
@@ -357,7 +364,7 @@ export default function Page({ siteConfigData }: PageProps) {
               <ContainerCardSection>
                 <SectionTitleWrapper padding="150px 0 56px">
                   <SectionTitleIcon size={100}>
-                    <ProductLogo variant={ProductVariant.CowProtocol} theme="dark" logoIconOnly />
+                    <ProductLogo variant={ProductVariant.MevBlocker} theme="dark" logoIconOnly />
                   </SectionTitleIcon>
                   <SectionTitleText fontSize={90}>What others are saying...</SectionTitleText>
                 </SectionTitleWrapper>
@@ -433,28 +440,209 @@ export default function Page({ siteConfigData }: PageProps) {
             <ContainerCard bgColor={'#EC4612'} color="#FEE7CF">
               <ContainerCardSection>
                 <SectionTitleWrapper>
-                  <SectionTitleIcon size={100}>
-                    <ProductLogo variant={ProductVariant.CowProtocol} theme="dark" logoIconOnly />
+                  <SectionTitleIcon multiple>
+                    <ProductLogo variant={ProductVariant.MevBlocker} theme="dark" logoIconOnly height={60} />
                   </SectionTitleIcon>
-                  <SectionTitleText fontSize={90} textAlign="center">
-                    Jointly formulated
-                  </SectionTitleText>
+                  <SectionTitleText fontSize={90}>Trusted by the best</SectionTitleText>
                 </SectionTitleWrapper>
 
                 <TopicList columns={3}>
-                  <TopicCard bgColor="#FEE7CF" textColor="#EC4612" href="/">
-                    <TopicImage iconColor="#EC4612" large></TopicImage>
-                    <TopicTitle fontSize={38}>Agnostic Relay</TopicTitle>
+                  <TopicCard
+                    contentAlign={'center'}
+                    bgColor={Color.neutral98}
+                    padding={'28px'}
+                    href="https://safe.global/"
+                    rel={'noopener noreferrer'}
+                    target="_blank"
+                  >
+                    <TopicImage
+                      iconColor={Color.neutral20}
+                      bgColor={'transparent'}
+                      width={'100%'}
+                      height={72}
+                      margin={'auto'}
+                    >
+                      <SVG src={IMG_LOGO_SAFE} />
+                    </TopicImage>
                   </TopicCard>
 
-                  <TopicCard bgColor="#FEE7CF" textColor="#EC4612" href="/">
-                    <TopicImage iconColor="#EC4612" large></TopicImage>
-                    <TopicTitle fontSize={38}>Beaver Build</TopicTitle>
+                  <TopicCard
+                    contentAlign={'center'}
+                    bgColor={Color.neutral98}
+                    padding={'28px'}
+                    gap={16}
+                    href="https://www.karpatkey.com/"
+                    rel={'noopener noreferrer nofollow'}
+                    target="_blank"
+                  >
+                    <TopicImage
+                      iconColor={Color.neutral20}
+                      bgColor={'transparent'}
+                      width={'100%'}
+                      height={72}
+                      margin={'auto'}
+                    >
+                      <SVG src={IMG_LOGO_KARPATKEY} />
+                    </TopicImage>
+
+                    <TopicTitle fontSize={18} color={Color.neutral50} fontWeight={Font.weight.regular}>
+                      Karpatkey
+                    </TopicTitle>
                   </TopicCard>
 
-                  <TopicCard bgColor="#FEE7CF" textColor="#EC4612" href="/">
-                    <TopicImage iconColor="#EC4612" large></TopicImage>
-                    <TopicTitle fontSize={38}>CoW DAO</TopicTitle>
+                  <TopicCard
+                    contentAlign={'center'}
+                    bgColor={Color.neutral98}
+                    padding={'28px'}
+                    href="
+                  https://swap.cow.fi/
+                  "
+                    rel="noopener noreferrer"
+                    target="_blank"
+                  >
+                    <TopicImage
+                      iconColor={Color.neutral20}
+                      bgColor={'transparent'}
+                      width={'100%'}
+                      height={72}
+                      margin={'auto'}
+                    >
+                      <ProductLogo variant={ProductVariant.CowSwap} theme="dark" />
+                    </TopicImage>
+                  </TopicCard>
+
+                  <TopicCard
+                    contentAlign={'center'}
+                    bgColor={Color.neutral98}
+                    padding={'28px'}
+                    gap={16}
+                    href="https://www.blocknative.com/"
+                    rel={'noopener noreferrer'}
+                    target="_blank"
+                  >
+                    <TopicImage
+                      iconColor={Color.neutral20}
+                      bgColor={'transparent'}
+                      width={'100%'}
+                      height={72}
+                      margin={'auto'}
+                    >
+                      <SVG src={IMG_LOGO_BLOCKNATIVE} />
+                    </TopicImage>
+
+                    <TopicTitle fontSize={18} color={Color.neutral50} fontWeight={Font.weight.regular}>
+                      Blocknative Transaction Boost
+                    </TopicTitle>
+                  </TopicCard>
+
+                  <TopicCard
+                    contentAlign={'center'}
+                    bgColor={Color.neutral98}
+                    padding={'28px'}
+                    href="https://rabby.io/"
+                    rel={'noopener noreferrer nofollow'}
+                    target="_blank"
+                  >
+                    <TopicImage
+                      iconColor={Color.neutral20}
+                      bgColor={'transparent'}
+                      width={'100%'}
+                      height={72}
+                      margin={'auto'}
+                    >
+                      <SVG src={IMG_LOGO_RABBY} />
+                    </TopicImage>
+                  </TopicCard>
+
+                  <TopicCard
+                    contentAlign={'center'}
+                    bgColor={Color.neutral98}
+                    padding={'28px'}
+                    href="https://www.keepkey.com/"
+                    rel={'noopener noreferrer nofollow'}
+                    target="_blank"
+                  >
+                    <TopicImage
+                      iconColor={Color.neutral20}
+                      bgColor={'transparent'}
+                      width={'100%'}
+                      height={72}
+                      margin={'auto'}
+                    >
+                      <SVG src={IMG_LOGO_KEEPKEY} />
+                    </TopicImage>
+                  </TopicCard>
+
+                  <TopicCard
+                    contentAlign={'center'}
+                    bgColor={Color.neutral98}
+                    padding={'28px'}
+                    gap={16}
+                    href="https://www.ambire.com/"
+                    rel={'noopener noreferrer nofollow'}
+                    target="_blank"
+                  >
+                    <TopicImage
+                      iconColor={Color.neutral20}
+                      bgColor={'transparent'}
+                      width={'100%'}
+                      height={72}
+                      margin={'auto'}
+                    >
+                      <SVG src={IMG_LOGO_AMBIRE} />
+                    </TopicImage>
+
+                    <TopicTitle fontSize={18} color={Color.neutral50} fontWeight={Font.weight.regular}>
+                      Wallet
+                    </TopicTitle>
+                  </TopicCard>
+
+                  <TopicCard
+                    contentAlign={'center'}
+                    bgColor={Color.neutral98}
+                    padding={'28px'}
+                    href="https://crypto.com/"
+                    rel={'noopener noreferrer nofollow'}
+                    target="_blank"
+                    gap={16}
+                  >
+                    <TopicImage
+                      iconColor={Color.neutral20}
+                      bgColor={'transparent'}
+                      width={'100%'}
+                      height={72}
+                      margin={'auto'}
+                    >
+                      <SVG src={IMG_LOGO_CRYPTO_COM} />
+                    </TopicImage>
+
+                    <TopicTitle fontSize={18} color={Color.neutral50} fontWeight={Font.weight.regular}>
+                      Wallet
+                    </TopicTitle>
+                  </TopicCard>
+
+                  <TopicCard
+                    contentAlign={'center'}
+                    bgColor={Color.neutral98}
+                    padding={'28px'}
+                    href="https://uniswap.org/"
+                    rel={'noopener noreferrer nofollow'}
+                    target="_blank"
+                    gap={16}
+                  >
+                    <TopicImage
+                      iconColor={Color.neutral20}
+                      bgColor={'transparent'}
+                      width={'100%'}
+                      height={72}
+                      margin={'auto'}
+                    >
+                      <SVG src={IMG_LOGO_UNISWAP} />
+                    </TopicImage>
+
+                    <TopicTitle fontSize={18} color={Color.neutral50} fontWeight={Font.weight.regular}>
+                      Wallet
+                    </TopicTitle>
                   </TopicCard>
                 </TopicList>
               </ContainerCardSection>
@@ -464,7 +652,7 @@ export default function Page({ siteConfigData }: PageProps) {
               <ContainerCardSection>
                 <SectionTitleWrapper padding="72px 0" maxWidth={900}>
                   <SectionTitleIcon size={100}>
-                    <ProductLogo variant={ProductVariant.CowProtocol} theme="light" logoIconOnly />
+                    <ProductLogo variant={ProductVariant.MevBlocker} theme="light" logoIconOnly />
                   </SectionTitleIcon>
                   <SectionTitleText fontSize={64} textAlign="center">
                     Friends don't let friends suffer from MEV damage

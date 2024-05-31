@@ -4,6 +4,7 @@ import LOGO_COWPROTOCOL from '@cowprotocol/assets/images/logo-cowprotocol.svg'
 import LOGO_COWSWAP from '@cowprotocol/assets/images/logo-cowswap.svg'
 import LOGO_ICON_COW from '@cowprotocol/assets/images/logo-icon-cow.svg'
 import LOGO_MEVBLOCKER from '@cowprotocol/assets/images/logo-mevblocker.svg'
+import LOGO_ICON_MEVBLOCKER from '@cowprotocol/assets/images/logo-icon-mevblocker.svg'
 import { CowSwapTheme } from '@cowprotocol/widget-lib'
 
 import SVG from 'react-inlinesvg'
@@ -119,7 +120,7 @@ const LOGOS: Record<ProductVariant, ThemedLogo> = {
         color: '#EC4612',
       },
       logoIconOnly: {
-        src: LOGO_ICON_COW,
+        src: LOGO_ICON_MEVBLOCKER,
         alt: 'MEV Blocker icon only light mode',
         color: '#EC4612',
       },
@@ -131,7 +132,7 @@ const LOGOS: Record<ProductVariant, ThemedLogo> = {
         color: '#EC4612',
       },
       logoIconOnly: {
-        src: LOGO_ICON_COW,
+        src: LOGO_ICON_MEVBLOCKER,
         alt: 'MEV Blocker icon only dark mode',
         color: '#EC4612',
       },
@@ -173,11 +174,11 @@ export interface LogoProps {
   logoIconOnly?: boolean
   overrideColor?: string // Optional override color
   overrideHoverColor?: string // Optional override hover color
-  height?: number
+  height?: number | string
 }
 
-const Wrapper = styled.span<{ color?: string; hoverColor?: string; height?: number }>`
-  --height: ${({ height }) => height || 24}px;
+const Wrapper = styled.span<{ color?: string; hoverColor?: string; height?: number | string }>`
+  --height: ${({ height }) => (typeof height === 'number' ? `${height}px` : height || '24px')};
   --color: ${({ color }) => color || 'black'};
   --hoverColor: ${({ hoverColor }) => hoverColor || 'inherit'};
 
