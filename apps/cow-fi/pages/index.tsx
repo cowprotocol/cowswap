@@ -34,6 +34,7 @@ import {
 
 import SVG from 'react-inlinesvg'
 import IMG_ICON_BULB_COW from '@cowprotocol/assets/images/icon-bulb-cow.svg'
+import IMG_ICON_GRANTS_CARTON from '@cowprotocol/assets/images/icon-grants-carton.svg'
 
 const DATA_CACHE_TIME_SECONDS = 5 * 60 // Cache 5min
 
@@ -163,7 +164,7 @@ export default function Page({ siteConfigData }: PageProps) {
           </ContainerCardSection>
         </ContainerCard>
 
-        <ContainerCard bgColor={Color.neutral100} color={Color.neutral10} touchFooter>
+        <ContainerCard bgColor={Color.neutral10} color={Color.neutral98}>
           <ContainerCardSection>
             <SectionTitleWrapper padding="150px 0 0" maxWidth={900}>
               <SectionTitleIcon size={200}>
@@ -213,6 +214,31 @@ export default function Page({ siteConfigData }: PageProps) {
                 <TopicTitle fontSize={38}>Snapshot</TopicTitle>
               </TopicCard>
             </TopicList>
+          </ContainerCardSection>
+        </ContainerCard>
+
+        <ContainerCard bgColor={Color.neutral90} color={Color.neutral10} touchFooter>
+          <ContainerCardSection>
+            <SectionTitleWrapper padding="150px 0 0" maxWidth={900} gap={54}>
+              <SectionTitleIcon size={200}>
+                <SVG src={IMG_ICON_GRANTS_CARTON} />
+              </SectionTitleIcon>
+              <SectionTitleText fontSize={90} textAlign="center">
+                Grants
+              </SectionTitleText>
+              <SectionTitleDescription
+                fontSize={28}
+                color={Color.neutral30}
+                fontWeight={Font.weight.regular}
+                textAlign="center"
+              >
+                The CoW DAO Grants Program funds mission-aligned projects and people working on MEV protection, trading
+                innovation, and ecosystem development.
+              </SectionTitleDescription>
+              <SectionTitleButton href="https://grants.cow.fi/" rel="noopener noreferrer" target="_blank">
+                Apply for a grant
+              </SectionTitleButton>
+            </SectionTitleWrapper>
           </ContainerCardSection>
         </ContainerCard>
       </Wrapper>
