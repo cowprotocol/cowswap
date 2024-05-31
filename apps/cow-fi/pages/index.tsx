@@ -191,30 +191,52 @@ export default function Page({ siteConfigData }: PageProps) {
 
         <ContainerCard bgColor={Color.neutral10} color={Color.neutral98}>
           <ContainerCardSection>
-            <SectionTitleWrapper padding="150px 0">
-              <ProductLogo variant={ProductVariant.CowProtocol} theme="dark" logoIconOnly height={60} />
+            <SectionTitleWrapper padding="150px 0 0" maxWidth={900}>
+              <SectionTitleIcon size={200}>
+                <SVG src={IMG_ICON_GOVERNANCE} />
+              </SectionTitleIcon>
               <SectionTitleText fontSize={90} textAlign="center">
                 New to the barn?
               </SectionTitleText>
-              <SectionTitleDescription fontSize={28} color={Color.neutral60} textAlign="center">
-                The green pastures of CoW DAO are the friendliest place in all of DeFi... Welcome!
+              <SectionTitleDescription
+                fontSize={28}
+                color={Color.neutral60}
+                fontWeight={Font.weight.regular}
+                textAlign="center"
+              >
+                Anyone can join CoW DAO by holding{' '}
+                <a href="https://swap.cow.fi/#/1/swap/USDC/COW" rel="noopener noreferrer" target="_blank">
+                  COW tokens
+                </a>
+                . Tokenholders contribute to CoW DAO's mission by participating in "CoWmunity" discussions on Discord,
+                by adding proposals to the CoW DAO Forum, and by voting on governance actions in Snapshot.
               </SectionTitleDescription>
             </SectionTitleWrapper>
 
             <TopicList columns={3}>
-              <TopicCard textColor="#000000" href="/knowledge-base">
-                <TopicImage iconColor="#FF4500" large></TopicImage>
-                <TopicTitle fontSize={38}>Knowledge Base</TopicTitle>
-              </TopicCard>
-
-              <TopicCard textColor="#000000" href="/docs">
-                <TopicImage iconColor="#4B0082" large></TopicImage>
-                <TopicTitle fontSize={38}>Docs</TopicTitle>
-              </TopicCard>
-
-              <TopicCard textColor="#000000" href="https://discord.com">
+              <TopicCard
+                textColor="#000000"
+                href="https://discord.com/invite/cowprotocol"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
                 <TopicImage iconColor="#1E90FF" large></TopicImage>
                 <TopicTitle fontSize={38}>Discord</TopicTitle>
+              </TopicCard>
+
+              <TopicCard textColor="#000000" href="https://forum.cow.fi/" rel="noopener noreferrer" target="_blank">
+                <TopicImage iconColor="#FF4500" large></TopicImage>
+                <TopicTitle fontSize={38}>Forum</TopicTitle>
+              </TopicCard>
+
+              <TopicCard
+                textColor="#000000"
+                href="https://snapshot.org/#/cow.eth"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                <TopicImage iconColor="#4B0082" large></TopicImage>
+                <TopicTitle fontSize={38}>Snapshot</TopicTitle>
               </TopicCard>
             </TopicList>
           </ContainerCardSection>
