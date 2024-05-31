@@ -329,8 +329,26 @@ export const TopicDescription = styled.p<{
     font-size: ${({ fontSizeMobile }) => fontSizeMobile || 16}px;
   }
 
+  > table, 
+  > table > tbody {
+    max-width: 100%:
+  }
+
   > table > tbody > tr > td:first-child {
     padding: 0 16px 0 0;
+  }
+
+  ${Media.upToMedium()} {
+    > table > tbody {
+      display: flex;
+      flex-flow: column wrap;
+      gap: 16px;
+    }
+
+    > table > tbody > tr {
+      display: flex;
+      flex-flow: column wrap;
+    }
   }
 `
 
@@ -676,10 +694,18 @@ export const SectionTitleDescription = styled.p<{
   }
 `
 
-export const SectionTitleButton = styled.a<{ bgColor?: string; color?: string; margin?: string }>`
+export const SectionTitleButton = styled.a<{
+  bgColor?: string
+  color?: string
+  margin?: string
+  gridFullWidth?: boolean
+  fontSize?: number
+  fontSizeMobile?: number
+}>`
   display: inline-block;
   padding: 16px 24px;
   font-size: 27px;
+  font-size: ${({ fontSize }) => (fontSize && `${fontSize}px`) || '27px'};
   font-weight: ${Font.weight.bold};
   color: ${({ color }) => color || Color.neutral98};
   background: ${({ bgColor }) => bgColor || Color.neutral10};
@@ -691,6 +717,11 @@ export const SectionTitleButton = styled.a<{ bgColor?: string; color?: string; m
   transition: opacity 0.2s ease-in-out;
   max-width: 100%;
   margin: ${({ margin }) => margin || '0'};
+  grid-column: ${({ gridFullWidth }) => (gridFullWidth ? '1 / -1' : 'initial')};
+
+  ${Media.upToMedium()} {
+    font-size: ${({ fontSizeMobile }) => fontSizeMobile || 21}px;
+  }
 
   &:hover {
     opacity: 0.8;
@@ -859,7 +890,7 @@ export const HeroSubtitle = styled.p<{ variant?: string; color?: string }>`
   }
 `
 
-export const HeroDescription = styled.p<{ fontSize?: number; fontSizeMobile?: number; color?: string }>`
+export const HeroDescription = styled.span<{ fontSize?: number; fontSizeMobile?: number; color?: string }>`
   font-size: ${({ fontSize }) => fontSize || 28}px;
   font-weight: ${Font.weight.medium};
   color: ${({ color }) => color || Color.neutral10};
@@ -879,8 +910,14 @@ export const HeroDescription = styled.p<{ fontSize?: number; fontSizeMobile?: nu
 
 export const HeroButtonWrapper = styled.div<{ gap?: number }>`
   display: flex;
-  gap: ${({ gap }) => gap || 56}px;
+  gap: ${({ gap }) => gap || 24}px;
   margin: 32px 0;
+  flex-flow: row wrap;
+
+  ${Media.upToMedium()} {
+    flex-flow: column wrap;
+    align-items: center;
+  }
 `
 
 export const HeroButton = styled.a<{ background?: string; color?: string }>`
@@ -946,10 +983,12 @@ export const MetricsCard = styled.div<{
   color: ${({ color }) => color || Color.neutral0};
   position: relative;
   margin: ${({ touchFooter }) => (touchFooter ? '0 0 calc(-1 * var(--paddingBottomOffset))' : '24px 0')};
+  max-width: 100%;
 
   ${Media.upToMedium()} {
     grid-template-columns: ${({ columnsMobile }) => `repeat(${columnsMobile || 1}, 1fr)`};
     gap: 16px;
+    padding: 42px 12px var(--paddingBottomOffset);
   }
 `
 
@@ -957,29 +996,39 @@ export const MetricsItem = styled.div<{ dividerColor?: string }>`
   display: flex;
   flex-flow: column wrap;
   align-items: center;
+  justify-content: flex-start;
   text-align: center;
   gap: 8px;
+  max-width: 100%;
 
-  &:not(:last-child)::after {
-    content: '';
-    width: 2px;
-    height: 100%;
-    padding: 0;
-    margin: 0 16px;
-    background: ${({ dividerColor }) => dividerColor || Color.neutral80};
-
-    ${Media.upToMedium()} {
-      width: 100%;
-      height: 2px;
-      margin: 16px 0;
+  // only do &:not(:last-child)::after if dividerColor is provided
+  ${({ dividerColor }) =>
+    dividerColor
+      ? `
+    &:not(:last-child)::after {
+      content: '';
+      width: 2px;
+      height: 100%;
+      padding: 0;
+      margin: 0 0 0 auto;
+      background: ${dividerColor || Color.neutral80};
+  
+      ${Media.upToMedium()} {
+        width: 100%;
+        height: 2px;
+        margin: 16px 0;
+      }
     }
-  }
+  `
+      : ''}
 
   > h2 {
     font-size: 48px;
     font-weight: ${Font.weight.bold};
     margin: 0;
     color: inherit;
+    width: 100%;
+    max-width: 100%;
   }
 
   > p {
@@ -989,6 +1038,8 @@ export const MetricsItem = styled.div<{ dividerColor?: string }>`
     color: inherit;
     margin: 0;
     max-width: 50%;
+    width: 100%;
+    max-width: 100%;
 
     ${Media.upToMedium()} {
       max-width: 100%;

@@ -98,7 +98,7 @@ export default function Page({ siteConfigData }: PageProps) {
               The first MEV-capturing AMM
             </HeroTitle>
             <HeroDescription>
-              CoW Protocol has the largest solver competition and the most advanced builder framework on the market
+              CoW AMM protects LPs from LVR so they can provide liquidity with less risk and more return
             </HeroDescription>
             <HeroButton background={'#194D05'} color={'#BCEC79'} href="/start-building">
               Protect your liquidity
@@ -267,7 +267,7 @@ export default function Page({ siteConfigData }: PageProps) {
                     <br />
                     <br />
                     Backtesting research conducted over 6 months in 2023 shows that CoW AMM returns would have equalled
-                    or outperformed CFAMM returns for 10 of the 11 most liquid, non-stablecoin pairs.
+                    or outperformed CF-AMM returns for 10 of the 11 most liquid, non-stablecoin pairs.
                   </TopicDescription>
                 </TopicCardInner>
                 <TopicImage iconColor="#194D05" width={590} height={590} heightMobile={300} orderReverseMobile />
@@ -289,7 +289,7 @@ export default function Page({ siteConfigData }: PageProps) {
               <TopicCard columns="1fr auto" gap={100} horizontal asProp="div" bgColor="transparent" paddingMobile="0">
                 <TopicImage iconColor="#194D05" width={590} height={590} heightMobile={300} orderReverseMobile />
                 <TopicCardInner contentAlign="left">
-                  <TopicTitle fontSize={67}>Support DAO token liquidity without the stick-up</TopicTitle>
+                  <TopicTitle fontSize={67}>Provide liquidity for your token without getting rekt</TopicTitle>
                   <TopicDescription fontSize={28} color={Color.neutral50}>
                     Healthy liquidity for DAO tokens reduces price impact, encourages investment and discourages
                     volatility. But DAOs can be reluctant to provide liquidity with treasury funds when their pools can

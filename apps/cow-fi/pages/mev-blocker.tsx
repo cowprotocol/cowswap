@@ -24,7 +24,6 @@ import {
   TopicImage,
   TopicTitle,
   TopicDescription,
-  TopicButton,
   SectionTitleWrapper,
   SectionTitleIcon,
   SectionTitleText,
@@ -33,6 +32,7 @@ import {
   HeroContainer,
   HeroImage,
   HeroButton,
+  HeroButtonWrapper,
   HeroDescription,
   HeroContent,
   HeroTitle,
@@ -44,6 +44,7 @@ import {
 
 import SVG from 'react-inlinesvg'
 import IMG_ICON_FAQ from '@cowprotocol/assets/images/icon-faq.svg'
+import { Section } from '@/components/TokenDetails/index.styles'
 
 const DATA_CACHE_TIME_SECONDS = 5 * 60 // Cache 5min
 
@@ -88,7 +89,7 @@ const { chains, publicClient } = configureChains([mainnet], [publicProvider()])
 // Get default wallets
 const { connectors } = getDefaultWallets({
   appName: 'Your App Name',
-  projectId: 'YOUR_PROJECT_ID', // Add your project ID here
+  projectId: 'YOUR_PROJECT_ID', // TODO: Add project ID here
   chains,
 })
 
@@ -124,15 +125,25 @@ export default function Page({ siteConfigData }: PageProps) {
                 <HeroDescription fontSize={21}>
                   MEV Blocker is your personal protection from frontrunning and sandwich attacks for a broad spectrum of
                   Ethereum transactions
+                  <br />
+                  <br />
+                  <b>How it works:</b>
                   <ol>
                     <li>Add the RPC endpoint directly to your wallet</li>
                     <li>Enjoy full, automatic protection from all types of MEV</li>
                     <li>Get paid by searchers for your transactions </li>
                   </ol>
                 </HeroDescription>
-                <HeroButton background={'#EC4612'} color={'#FEE7CF'} href="/">
-                  Get protected
-                </HeroButton>
+
+                <HeroButtonWrapper>
+                  <HeroButton background={'#EC4612'} color={'#FEE7CF'} href="/">
+                    Get protected
+                  </HeroButton>
+
+                  <HeroButton background="transparent" color={Color.neutral20} href="#">
+                    Integrate MEV Blocker
+                  </HeroButton>
+                </HeroButtonWrapper>
               </HeroContent>
               <HeroImage width={470} height={470} color={'#EC4612'}>
                 <SVG src={IMG_ICON_CROWN_COW} />
@@ -148,10 +159,22 @@ export default function Page({ siteConfigData }: PageProps) {
                 <h2>1 in 4</h2>
                 <p>user trades go through CoW Protocol</p>
               </MetricsItem>
-              <MetricsItem dividerColor="#F9A36F">
+              <MetricsItem>
                 <h2>83</h2>
                 <p>average NPS score for users of CoW Protocol</p>
               </MetricsItem>
+
+              <SectionTitleButton
+                bgColor="#EC4612"
+                color="#FEE7CF"
+                margin="56px auto 0"
+                gridFullWidth
+                href="https://dune.com/cowprotocol/mev-blocker"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                View metrics on DUNE
+              </SectionTitleButton>
             </MetricsCard>
 
             <ContainerCard bgColor={Color.neutral98}>
