@@ -185,9 +185,12 @@ export default function Page({ siteConfigData }: PageProps) {
                   </SectionTitleIcon>
                   <SectionTitleText maxWidth={900}>Broad spectrum MEV defense</SectionTitleText>
                   <SectionTitleDescription maxWidth={'100%'} color={Color.neutral50}>
-                    MEV bots have extracted more than $1.38 billion from well-meaning Ethereum users across a variety of
-                    use cases (trading, providing liquidity, minting NFTs, etc). MEV Blocker is an RPC endpoint that
-                    supports these users by offering:
+                    MEV bots have extracted more than{' '}
+                    <a href="https://dune.com/queries/2259793/3703605" target="_blank" rel="noopener noreferrer">
+                      $1.38 billion
+                    </a>{' '}
+                    from well-meaning Ethereum users across a variety of use cases (trading, providing liquidity,
+                    minting NFTs, etc). MEV Blocker is an RPC endpoint that supports these users by offering:
                   </SectionTitleDescription>
                 </SectionTitleWrapper>
 
@@ -244,6 +247,19 @@ export default function Page({ siteConfigData }: PageProps) {
                   </TopicCard>
                 </TopicList>
               </ContainerCardSection>
+
+              <SectionTitleWrapper maxWidth={600}>
+                <SectionTitleText fontSize={42}>Curious if you've been the victim of an MEV attack?</SectionTitleText>
+                <SectionTitleButton
+                  bgColor="#EC4612"
+                  color="#FEE7CF"
+                  href="https://www.mevscanner.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Use MEV Scanner to find out
+                </SectionTitleButton>
+              </SectionTitleWrapper>
             </ContainerCard>
 
             <ContainerCard bgColor={'transparent'} color={Color.neutral10}>

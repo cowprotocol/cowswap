@@ -280,6 +280,10 @@ export const GlobalCoWDAOStyles = (fonts: GlobalCowDAOFonts, bgColor?: string) =
         -moz-osx-font-smoothing: grayscale;
         -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
       }
+
+      a {
+        color: inherit;
+      }
     `
   )
 

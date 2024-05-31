@@ -329,9 +329,9 @@ export const TopicDescription = styled.p<{
     font-size: ${({ fontSizeMobile }) => fontSizeMobile || 16}px;
   }
 
-  > table, 
+  > table,
   > table > tbody {
-    max-width: 100%:
+    max-width: 100%;
   }
 
   > table > tbody > tr > td:first-child {
