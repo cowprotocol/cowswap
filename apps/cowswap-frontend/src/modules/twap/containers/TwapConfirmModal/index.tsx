@@ -24,10 +24,10 @@ import { TwapConfirmDetails } from './TwapConfirmDetails'
 import { useCreateTwapOrder } from '../../hooks/useCreateTwapOrder'
 import { useIsFallbackHandlerRequired } from '../../hooks/useFallbackHandlerVerification'
 import { useTwapFormState } from '../../hooks/useTwapFormState'
+import { useTwapSlippage } from '../../hooks/useTwapSlippage'
 import { useTwapWarningsContext } from '../../hooks/useTwapWarningsContext'
 import { partsStateAtom } from '../../state/partsStateAtom'
 import { twapOrderAtom } from '../../state/twapOrderAtom'
-import { twapOrderSlippageAtom } from '../../state/twapOrdersSettingsAtom'
 import { TwapFormWarnings } from '../TwapFormWarnings'
 
 const CONFIRM_TITLE = 'TWAP'
@@ -72,7 +72,7 @@ export function TwapConfirmModal() {
   } = useAdvancedOrdersDerivedState()
   // TODO: there's some overlap with what's in each atom
   const twapOrder = useAtomValue(twapOrderAtom)
-  const slippage = useAtomValue(twapOrderSlippageAtom)
+  const slippage = useTwapSlippage()
   const partsState = useAtomValue(partsStateAtom)
   const { showPriceImpactWarning } = useTwapWarningsContext()
   const localFormValidation = useTwapFormState()
@@ -105,9 +105,6 @@ export function TwapConfirmModal() {
 
   const rateInfoParams = useRateInfoParams(inputCurrencyInfo.amount, outputCurrencyInfo.amount)
 
-  // This already takes into account the full order
-  const minReceivedAmount = twapOrder?.buyAmount
-
   const { timeInterval, numOfParts } = twapOrder || {}
 
   const partDuration = timeInterval
@@ -135,7 +132,6 @@ export function TwapConfirmModal() {
               widgetParams={widgetParams}
               rateInfoParams={rateInfoParams}
               receiveAmountInfo={receiveAmountInfo}
-              minReceiveAmount={minReceivedAmount}
               isInvertedState={isInvertedState}
               slippage={slippage}
               additionalProps={CONFIRM_MODAL_CONFIG}

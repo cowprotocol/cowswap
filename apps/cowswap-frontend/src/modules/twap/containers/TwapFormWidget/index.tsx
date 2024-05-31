@@ -12,8 +12,6 @@ import { TradeNumberInput } from 'modules/trade/pure/TradeNumberInput'
 import { TradeTextBox } from 'modules/trade/pure/TradeTextBox'
 import { useGetTradeFormValidation } from 'modules/tradeFormValidation'
 import { TwapFormState } from 'modules/twap/pure/PrimaryActionButton/getTwapFormState'
-
-import { usePrice } from 'common/hooks/usePrice'
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { ExecutionPrice } from 'common/pure/ExecutionPrice'
 
@@ -30,15 +28,14 @@ import { useTwapFormState } from '../../hooks/useTwapFormState'
 import { AmountParts } from '../../pure/AmountParts'
 import { DeadlineSelector } from '../../pure/DeadlineSelector'
 import { partsStateAtom } from '../../state/partsStateAtom'
-import { twapSlippageAdjustedBuyAmount, twapTimeIntervalAtom } from '../../state/twapOrderAtom'
-import {
-  twapOrderSlippageAtom,
-  twapOrdersSettingsAtom,
-  updateTwapOrdersSettingsAtom,
-} from '../../state/twapOrdersSettingsAtom'
+import { twapTimeIntervalAtom } from '../../state/twapOrderAtom'
+import { twapOrdersSettingsAtom, updateTwapOrdersSettingsAtom } from '../../state/twapOrdersSettingsAtom'
 import { deadlinePartsDisplay } from '../../utils/deadlinePartsDisplay'
 import { ActionButtons } from '../ActionButtons'
 import { TwapFormWarnings } from '../TwapFormWarnings'
+
+import { useReceiveAmountInfo } from 'modules/trade'
+import { useTwapSlippage } from '../../hooks/useTwapSlippage'
 
 export type { LabelTooltip, LabelTooltipItems } from './tooltips'
 
@@ -46,7 +43,6 @@ export function TwapFormWidget() {
   const { account } = useWalletInfo()
 
   const { numberOfPartsValue, deadline, customDeadline, isCustomDeadline } = useAtomValue(twapOrdersSettingsAtom)
-  const buyAmount = useAtomValue(twapSlippageAdjustedBuyAmount)
 
   const { inputCurrencyAmount, outputCurrencyAmount } = useAdvancedOrdersDerivedState()
   const { updateState } = useTradeState()
@@ -54,7 +50,7 @@ export function TwapFormWidget() {
   const isFallbackHandlerCompatible = useIsFallbackHandlerCompatible()
   const verification = useFallbackHandlerVerification()
 
-  const twapOrderSlippage = useAtomValue(twapOrderSlippageAtom)
+  const twapOrderSlippage = useTwapSlippage()
   const partsState = useAtomValue(partsStateAtom)
   const timeInterval = useAtomValue(twapTimeIntervalAtom)
   const updateSettingsState = useSetAtom(updateTwapOrdersSettingsAtom)
@@ -65,7 +61,9 @@ export function TwapFormWidget() {
 
   const rateInfoParams = useRateInfoParams(inputCurrencyAmount, outputCurrencyAmount)
 
-  const limitPrice = usePrice(inputCurrencyAmount, buyAmount)
+  const receiveAmountInfo = useReceiveAmountInfo()
+
+  const limitPrice = receiveAmountInfo?.quotePrice
 
   const deadlineState = {
     deadline,

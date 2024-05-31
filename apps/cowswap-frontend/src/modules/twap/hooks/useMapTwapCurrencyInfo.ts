@@ -19,7 +19,8 @@ export function useMapTwapCurrencyInfo(): (info: CurrencyInfo) => CurrencyInfo {
 
       if (!receiveAmountInfo) return info
 
-      const { isSell, costs, beforeNetworkCosts, afterNetworkCosts, afterPartnerFees } = receiveAmountInfo
+      const { isSell, quotePrice, costs, beforeNetworkCosts, afterNetworkCosts, afterPartnerFees, afterSlippage } =
+        receiveAmountInfo
 
       const scaleAmount = (amount: CurrencyAmount<Currency>) => amount.multiply(numOfParts!)
 
@@ -27,6 +28,7 @@ export function useMapTwapCurrencyInfo(): (info: CurrencyInfo) => CurrencyInfo {
         ...info,
         receiveAmountInfo: {
           isSell,
+          quotePrice,
           costs: {
             networkFee: {
               amountInSellCurrency: scaleAmount(costs.networkFee.amountInSellCurrency),
@@ -48,6 +50,10 @@ export function useMapTwapCurrencyInfo(): (info: CurrencyInfo) => CurrencyInfo {
           afterPartnerFees: {
             sellAmount: scaleAmount(afterPartnerFees.sellAmount),
             buyAmount: scaleAmount(afterPartnerFees.buyAmount),
+          },
+          afterSlippage: {
+            sellAmount: scaleAmount(afterSlippage.sellAmount),
+            buyAmount: scaleAmount(afterSlippage.buyAmount),
           },
         },
       }

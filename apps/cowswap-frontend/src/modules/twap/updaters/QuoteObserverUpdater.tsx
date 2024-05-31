@@ -14,7 +14,7 @@ import { getReceiveAmountInfo } from 'modules/trade'
 import { useWidgetPartnerFee } from 'modules/injectedWidget'
 
 export function QuoteObserverUpdater() {
-  const { state } = useDerivedTradeState()
+  const state = useDerivedTradeState()
   const { response, isLoading } = useTradeQuote()
   const { numberOfPartsValue } = useAtomValue(partsStateAtom)
   const prevNumberOfParts = usePrevious(numberOfPartsValue)
@@ -23,11 +23,12 @@ export function QuoteObserverUpdater() {
   const updateCurrencyAmount = useUpdateCurrencyAmount()
   const inputCurrency = state?.inputCurrency
   const outputCurrency = state?.outputCurrency
+  const slippage = state?.slippage
 
   const quoteBuyAmount = useMemo(() => {
     const numOfPartsChanged = numberOfPartsValue !== prevNumberOfParts
 
-    if (!response || !inputCurrency || !outputCurrency || !numberOfPartsValue || isLoading) {
+    if (!response || !inputCurrency || !outputCurrency || !numberOfPartsValue || !slippage || isLoading) {
       return null
     }
 
@@ -37,12 +38,12 @@ export function QuoteObserverUpdater() {
 
     const {
       beforeNetworkCosts: { buyAmount },
-    } = getReceiveAmountInfo(response.quote, inputCurrency, outputCurrency, partnerFee?.bps)
+    } = getReceiveAmountInfo(response.quote, inputCurrency, outputCurrency, slippage, partnerFee?.bps)
 
     const adjustedForParts = buyAmount.multiply(numberOfPartsValue)
 
     return adjustedForParts.quotient.toString()
-  }, [isLoading, numberOfPartsValue, outputCurrency, prevNumberOfParts, response])
+  }, [isLoading, numberOfPartsValue, outputCurrency, prevNumberOfParts, slippage, response])
 
   useMemo(() => {
     if (!outputCurrency || !response || !quoteBuyAmount) {

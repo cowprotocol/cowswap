@@ -8,7 +8,9 @@ import {
   SellTokenSource,
 } from '@cowprotocol/cow-sdk'
 
-import { getReceiveAmountInfo, getReceiveAmountInfoContext } from './useReceiveAmountInfo'
+import { getReceiveAmountInfoContext } from './useReceiveAmountInfo'
+
+import { getReceiveAmountInfo } from '../utils/getReceiveAmountInfo'
 
 const otherFields = {
   buyToken: '0xdef1ca1fb7fbcdc777520aa7f396b4e015f497ab',

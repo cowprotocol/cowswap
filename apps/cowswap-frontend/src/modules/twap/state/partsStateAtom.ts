@@ -31,13 +31,14 @@ export const partsStateAtom = atom<PartsState>((get) => {
     outputCurrencyAmount,
     inputCurrencyFiatAmount,
     outputCurrencyFiatAmount,
+    slippage,
   } = get(advancedOrdersDerivedStateAtom)
 
   const divider = numberOfPartsValue || DEFAULT_NUM_OF_PARTS
 
   const receiveAmountInfo =
-    quoteResponse && inputCurrency && outputCurrency
-      ? getReceiveAmountInfo(quoteResponse.quote, inputCurrency, outputCurrency, partnerFee?.bps)
+    quoteResponse && inputCurrency && outputCurrency && slippage
+      ? getReceiveAmountInfo(quoteResponse.quote, inputCurrency, outputCurrency, slippage, partnerFee?.bps)
       : null
 
   return {

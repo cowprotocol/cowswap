@@ -1,13 +1,16 @@
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
 
 export interface DirectedReceiveAmounts {
   amountBeforeFees: CurrencyAmount<Currency>
+  amountAfterSlippage: CurrencyAmount<Currency>
   amountAfterFees: CurrencyAmount<Currency>
   networkFeeAmount: CurrencyAmount<Currency>
 }
 
 export interface ReceiveAmountInfo {
   isSell: boolean
+
+  quotePrice: Price<Currency, Currency>
 
   costs: {
     networkFee: {
@@ -29,6 +32,10 @@ export interface ReceiveAmountInfo {
     buyAmount: CurrencyAmount<Currency>
   }
   afterPartnerFees: {
+    sellAmount: CurrencyAmount<Currency>
+    buyAmount: CurrencyAmount<Currency>
+  }
+  afterSlippage: {
     sellAmount: CurrencyAmount<Currency>
     buyAmount: CurrencyAmount<Currency>
   }
