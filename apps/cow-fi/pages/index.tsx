@@ -30,10 +30,12 @@ import {
   HeroContent,
   HeroTitle,
   HeroSubtitle,
+  SectionTitleButton,
 } from '@/styles/styled'
 
 import SVG from 'react-inlinesvg'
 import IMG_ICON_FAQ from '@cowprotocol/assets/images/icon-faq.svg'
+import IMG_ICON_BULB_COW from '@cowprotocol/assets/images/icon-bulb-cow.svg'
 
 const DATA_CACHE_TIME_SECONDS = 5 * 60 // Cache 5min
 
@@ -171,56 +173,19 @@ export default function Page({ siteConfigData }: PageProps) {
 
         <ContainerCard bgColor={'transparent'}>
           <ContainerCardSection>
-            <SectionTitleWrapper>
-              <SectionTitleIcon>
-                <SVG src={IMG_ICON_GOVERNANCE} />
+            <SectionTitleWrapper maxWidth={900} gap={42}>
+              <SectionTitleIcon size={200}>
+                <SVG src={IMG_ICON_BULB_COW} />
               </SectionTitleIcon>
-              <SectionTitleText>Governance</SectionTitleText>
-              <SectionTitleDescription maxWidth={900}>
-                By getting involved, you can further CoW DAO&apos;s mission of creating the most protective products on
-                Ethereum
+              <SectionTitleText>Innovation in action</SectionTitleText>
+              <SectionTitleDescription fontSize={23} color={Color.neutral30}>
+                CoW DAO is famous for pioneering technology at the forefront of intents, MEV protection, and more.
+                Whether you're a crypto beginner or an Ethereum OG, you can learn more about these important topics in
+                the CoW DAO Knowledge Base.
               </SectionTitleDescription>
+
+              <SectionTitleButton href="/learn">Learn more</SectionTitleButton>
             </SectionTitleWrapper>
-
-            <TopicList columns={1} maxWidth={1000}>
-              <TopicCard columns="2fr auto" horizontal asProp="div">
-                <TopicCardInner contentAlign="left">
-                  <TopicTitle fontSize={67}>Forum</TopicTitle>
-                  <TopicDescription fontSize={28}>
-                    CoW Protocol users sign an "intent to trade" message instead of directly executing orders on-chain
-                    (like on Uniswap). This lets solvers trade on behalf of the user.
-                  </TopicDescription>
-                  <TopicButton href="/knowledge-base">Learn more</TopicButton>
-                </TopicCardInner>
-                <TopicImage iconColor="#FF4500" large orderReverseMobile />
-              </TopicCard>
-
-              <TopicCard columns={'auto 2fr'} horizontal asProp="div">
-                <TopicImage iconColor="#4B0082" large orderReverseMobile />
-
-                <TopicCardInner contentAlign={'left'}>
-                  <TopicTitle fontSize={67}>Token</TopicTitle>
-                  <TopicDescription fontSize={28}>
-                    Professional third parties known as “solvers” find the most optimal path for each trade and protect
-                    assets from MEV
-                  </TopicDescription>
-                  <TopicButton href="/docs">Learn more</TopicButton>
-                </TopicCardInner>
-              </TopicCard>
-
-              <TopicCard columns={'2fr auto'} horizontal asProp="div">
-                <TopicCardInner contentAlign={'left'}>
-                  <TopicTitle fontSize={67}>Snapshot</TopicTitle>
-                  <TopicDescription fontSize={28}>
-                    CoW Protocol collects intents into a batch and then auctions it off to solvers. The solver that can
-                    provide the most surplus for users gets to settle the batch.
-                  </TopicDescription>
-                  <TopicButton href="https://discord.com">Learn more</TopicButton>
-                </TopicCardInner>
-
-                <TopicImage iconColor="#1E90FF" large orderReverseMobile />
-              </TopicCard>
-            </TopicList>
           </ContainerCardSection>
         </ContainerCard>
 
