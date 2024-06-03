@@ -98,7 +98,7 @@ export function TwapConfirmModal() {
     amount: outputCurrencyAmount,
     fiatAmount: outputCurrencyFiatAmount,
     balance: outputCurrencyBalance,
-    label: 'Estimated receive amount',
+    label: 'Receive (before fees)',
   }
 
   const rateInfoParams = useRateInfoParams(inputCurrencyInfo.amount, outputCurrencyInfo.amount)

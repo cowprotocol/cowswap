@@ -1,5 +1,6 @@
 import React, { Dispatch, ReactNode, SetStateAction, useMemo } from 'react'
 
+import { bpsToPercent, formatPercent } from '@cowprotocol/common-utils'
 import { CowSwapWidgetAppParams } from '@cowprotocol/widget-lib'
 import { Percent, Price } from '@uniswap/sdk-core'
 
@@ -41,7 +42,7 @@ export function TradeBasicConfirmDetails(props: Props) {
   const { networkFeeAmount, amountAfterFees, amountAfterSlippage } = getDirectedReceiveAmounts(receiveAmountInfo)
   const {
     costs: {
-      partnerFee: { amount: partnerFeeAmount },
+      partnerFee: { amount: partnerFeeAmount, bps: partnerFeeBps },
     },
   } = receiveAmountInfo
 
@@ -52,6 +53,7 @@ export function TradeBasicConfirmDetails(props: Props) {
   const amountAfterFeesFull = amountAfterFees.multiply(numOfParts)
   const amountAfterSlippageFull = amountAfterSlippage.multiply(numOfParts)
 
+  console.log('SSSSS', partnerFeeAmount.toExact())
   const partnerFeeUsd = useUsdAmount(partnerFeeAmount).value
   const amountAfterSlippageUsd = useUsdAmount(amountAfterSlippageFull).value
   const amountAfterFeesUsd = useUsdAmount(amountAfterFeesFull).value
@@ -82,7 +84,13 @@ export function TradeBasicConfirmDetails(props: Props) {
           withTimelineDot={true}
           amount={networkFeeAmount}
           fiatAmount={networkFeeAmountUsd}
-          tooltip={'TODO'}
+          tooltip={
+            <>
+              This is the cost of settling your order on-chain, including gas and any LP fees.
+              <br />
+              CoW Swap will try to lower this cost where possible.
+            </>
+          }
           label="Network costs (est.)"
         />
       )}
@@ -92,7 +100,17 @@ export function TradeBasicConfirmDetails(props: Props) {
           withTimelineDot={true}
           amount={partnerFeeAmount}
           fiatAmount={partnerFeeUsd}
-          tooltip={widgetParams.content?.feeTooltipMarkdown || 'TODO'}
+          tooltip={
+            widgetParams.content?.feeTooltipMarkdown || (
+              <>
+                This fee helps pay for maintenance & improvements to the swap experience.
+                <br />
+                <br />
+                The fee is {partnerFeeBps} BPS ({formatPercent(bpsToPercent(partnerFeeBps))}%), applied only if the
+                trade is executed.
+              </>
+            )
+          }
           label="Total fee"
         />
       )}
@@ -101,7 +119,6 @@ export function TradeBasicConfirmDetails(props: Props) {
         highlighted={true}
         amount={amountAfterFeesFull}
         fiatAmount={amountAfterFeesUsd}
-        tooltip={'TODO'}
         label="Expected to receive"
       />
 
