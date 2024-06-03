@@ -300,10 +300,10 @@ export default function Page({ siteConfigData }: PageProps) {
 
             <TopicList columns={1} maxWidth={1470}>
               <TopicCard columns="1fr auto" gap={100} horizontal asProp="div" bgColor="transparent" paddingMobile="0">
-                <TopicImage iconColor="#194D05" width={590} height={590} heightMobile={300} orderReverseMobile />
+                <TopicImage iconColor="#194D05" width={500} height={500} heightMobile={300} orderReverseMobile />
                 <TopicCardInner contentAlign="left">
-                  <TopicTitle fontSize={67}>Provide liquidity for your token without getting rekt</TopicTitle>
-                  <TopicDescription fontSize={28} color={Color.neutral50}>
+                  <TopicTitle fontSize={52}>Provide liquidity for your token without getting rekt</TopicTitle>
+                  <TopicDescription fontSize={24} color={Color.neutral50}>
                     Healthy liquidity for DAO tokens reduces price impact, encourages investment and discourages
                     volatility. But DAOs can be reluctant to provide liquidity with treasury funds when their pools can
                     be exploited by arbitrageurs. CoW AMM makes providing liquidity more attractive to DAOs of all
@@ -314,14 +314,14 @@ export default function Page({ siteConfigData }: PageProps) {
 
               <TopicCard columns="1fr auto" gap={100} horizontal asProp="div" bgColor="transparent" paddingMobile="0">
                 <TopicCardInner contentAlign="left">
-                  <TopicTitle fontSize={67}>Unlock the power of passive investing</TopicTitle>
-                  <TopicDescription fontSize={28} color={Color.neutral50}>
+                  <TopicTitle fontSize={52}>Unlock the power of passive investing</TopicTitle>
+                  <TopicDescription fontSize={24} color={Color.neutral50}>
                     With LVR in the rear view mirror, providing liquidity becomes identical to running a passive
                     investment strategy: solvers rebalance the pool at the correct market price to keep the value of its
                     reserves equal - thereby keeping portfolios balanced and reducing risk.
                   </TopicDescription>
                 </TopicCardInner>
-                <TopicImage iconColor="#194D05" width={590} height={590} heightMobile={300} orderReverseMobile />
+                <TopicImage iconColor="#194D05" width={500} height={500} heightMobile={300} orderReverseMobile />
               </TopicCard>
             </TopicList>
           </ContainerCardSection>

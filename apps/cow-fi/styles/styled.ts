@@ -109,19 +109,12 @@ export const ArticleCard = styled.a`
   width: 100%;
   text-decoration: none;
 
-  h4 {
+  > h4 {
     font-size: 28px;
     font-weight: ${Font.weight.bold};
     color: ${Color.neutral0};
     margin: 16px 0 8px;
     line-height: 1.2;
-  }
-
-  p {
-    font-size: 16px;
-    color: ${Color.neutral0};
-    font-weight: ${Font.weight.medium};
-    line-height: 1.5;
   }
 `
 
@@ -146,9 +139,11 @@ export const ArticleTitle = styled.h4`
   margin: 16px 0 8px;
 `
 
-export const ArticleDescription = styled.p`
-  font-size: 14px;
-  color: ${Color.neutral0};
+export const ArticleDescription = styled.p<{ color?: string; fontSize?: number; fontWeight?: number }>`
+  font-size: ${({ fontSize }) => fontSize || 16}px;
+  color: ${({ color }) => color || Color.neutral0};
+  font-weight: ${({ fontWeight }) => fontWeight || Font.weight.medium};
+  line-height: 1.5;
 `
 
 export const TopicList = styled.div<{
@@ -535,7 +530,7 @@ export const Breadcrumbs = styled.div<{ padding?: string }>`
   font-size: 16px;
   line-height: 1.2;
   padding: ${({ padding }) => padding || '0 0 24px'};
-  color: ${Color.neutral50};
+  color: ${Color.neutral10};
 
   ${Media.upToMedium()} {
     flex-flow: column wrap;
@@ -547,6 +542,7 @@ export const Breadcrumbs = styled.div<{ padding?: string }>`
     font-size: inherit;
     margin: 0;
     line-height: inherit;
+    color: inherit;
   }
 
   > a {

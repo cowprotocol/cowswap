@@ -93,9 +93,9 @@ export default function ArticlesPage({ siteConfigData, articles, totalArticles, 
             <ArticleList>
               {articles.map((article) => (
                 <ArticleCard key={article.id} href={`${LEARN_PATH}${article.attributes?.slug}`}>
-                  <ArticleImage></ArticleImage> {/* Remove color prop here */}
+                  <ArticleImage></ArticleImage>
                   <ArticleTitle>{article.attributes?.title}</ArticleTitle>
-                  <ArticleDescription>{article.attributes?.description}</ArticleDescription>
+                  <ArticleDescription color={Color.neutral50}>{article.attributes?.description}</ArticleDescription>
                 </ArticleCard>
               ))}
             </ArticleList>
