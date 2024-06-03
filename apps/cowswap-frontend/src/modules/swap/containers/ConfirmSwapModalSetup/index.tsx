@@ -118,6 +118,7 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
               labelsAndTooltips={labelsAndTooltips}
               hideLimitPrice
               hideUsdValues
+              withTimelineDot={false}
             />
           )}
           <HighFeeWarning trade={tradeRatesProps.trade} />

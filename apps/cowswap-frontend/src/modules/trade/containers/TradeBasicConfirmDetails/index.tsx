@@ -26,6 +26,7 @@ type Props = {
   labelsAndTooltips?: LabelsAndTooltips
   hideLimitPrice?: boolean
   hideUsdValues?: boolean
+  withTimelineDot?: boolean
 }
 
 type LabelsAndTooltips = {
@@ -48,6 +49,7 @@ export function TradeBasicConfirmDetails(props: Props) {
     widgetParams,
     hideLimitPrice,
     hideUsdValues,
+    withTimelineDot = true,
   } = props
   const { amountAfterFees, amountAfterSlippage } = getDirectedReceiveAmounts(receiveAmountInfo)
 
@@ -81,7 +83,11 @@ export function TradeBasicConfirmDetails(props: Props) {
         isInvertedState={isInvertedState}
       />
 
-      <TradeFeesAndCosts receiveAmountInfo={receiveAmountInfo} widgetParams={widgetParams} />
+      <TradeFeesAndCosts
+        receiveAmountInfo={receiveAmountInfo}
+        widgetParams={widgetParams}
+        withTimelineDot={withTimelineDot}
+      />
 
       <ReviewOrderModalAmountRow
         highlighted={true}
@@ -94,7 +100,7 @@ export function TradeBasicConfirmDetails(props: Props) {
 
       {/* Slippage */}
       {
-        <ReviewOrderModalAmountRow withTimelineDot={true} tooltip={slippageTooltip} label={slippageLabel}>
+        <ReviewOrderModalAmountRow withTimelineDot={withTimelineDot} tooltip={slippageTooltip} label={slippageLabel}>
           <PercentDisplay percent={+slippage.toFixed(2)} />
         </ReviewOrderModalAmountRow>
       }
