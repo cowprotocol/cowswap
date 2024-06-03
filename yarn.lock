@@ -2388,10 +2388,10 @@
   resolved "https://registry.yarnpkg.com/@cowprotocol/cow-runner-game/-/cow-runner-game-0.2.9.tgz#3f94b3f370bd114f77db8b1d238cba3ef4e9d644"
   integrity sha512-rX7HnoV+HYEEkBaqVUsAkGGo0oBrExi+d6Io+8nQZYwZk+IYLmS9jdcIObsLviM2h4YX8+iin6NuKl35AaiHmg==
 
-"@cowprotocol/cow-sdk@^5.3.1-RC.2":
-  version "5.3.1-RC.2"
-  resolved "https://registry.yarnpkg.com/@cowprotocol/cow-sdk/-/cow-sdk-5.3.1-RC.2.tgz#1d031b05cfbff3f0777dae568afcff04decf1720"
-  integrity sha512-U/c+wyXVNpFL9JMZZxWNVJhL45nnucH0hHTgQH/z+rtzA6ynqp1qktG9SYPTbZQ5CC8lMYOv1d4g1NLAxmUX8A==
+"@cowprotocol/cow-sdk@^5.3.1-RC.3":
+  version "5.3.1-RC.3"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/cow-sdk/-/cow-sdk-5.3.1-RC.3.tgz#b2e04f4af6e71de5ac51fbd6fddae0450171e0c3"
+  integrity sha512-gGQRcVXubGlZ9JkvL2HGvvCCT8UnfotYXm7YTWruuSOUOCHcnCJsk0hzaSuFIYLzjD7MwaJAe9KBwj7ypAtf/A==
   dependencies:
     "@cowprotocol/contracts" "^1.6.0"
     "@ethersproject/abstract-signer" "^5.7.0"
