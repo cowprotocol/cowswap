@@ -464,10 +464,17 @@ export default function Page({ siteConfigData }: PageProps) {
                 <TopicCardInner>
                   <TopicTitle fontSize={38}>Aave</TopicTitle>
                   <TopicDescription fontSize={21}>
-                    Aave DAO used CoW Swap to swap over $4 million directly into Balancer liquidity pool
+                    Aave DAO used CoW Swap to swap over $4 million directly into a Balancer liquidity pool
                   </TopicDescription>
 
-                  <TopicButton bgColor="#65D9FF" color="#012F7A" fontSize={27}>
+                  <TopicButton
+                    bgColor="#65D9FF"
+                    color="#012F7A"
+                    fontSize={27}
+                    href="https://blog.cow.fi/aave-trade-breakdown-e17a7563d7ba"
+                    rel="noopener noreferrer nofollow"
+                    target="_blank"
+                  >
                     Read more
                   </TopicButton>
                 </TopicCardInner>
@@ -480,10 +487,17 @@ export default function Page({ siteConfigData }: PageProps) {
                 <TopicCardInner>
                   <TopicTitle fontSize={38}>ENS</TopicTitle>
                   <TopicDescription fontSize={21}>
-                    Aave DAO used CoW Swap to swap over $4 million directly into Balancer liquidity pool
+                    ENS DAO traded a whopping 10,000 ETH for USDC through CoW Swap
                   </TopicDescription>
 
-                  <TopicButton bgColor="#65D9FF" color="#012F7A" fontSize={27}>
+                  <TopicButton
+                    bgColor="#65D9FF"
+                    color="#012F7A"
+                    fontSize={27}
+                    href="https://blog.cow.fi/ens-trade-breakdown-a8eb00ddd8c0"
+                    rel="noopener noreferrer nofollow"
+                    target="_blank"
+                  >
                     Read more
                   </TopicButton>
                 </TopicCardInner>
@@ -496,10 +510,18 @@ export default function Page({ siteConfigData }: PageProps) {
                 <TopicCardInner>
                   <TopicTitle fontSize={38}>Nexus Mutual</TopicTitle>
                   <TopicDescription fontSize={21}>
-                    Aave DAO used CoW Swap to swap over $4 million directly into Balancer liquidity pool
+                    In the largest DAO trade ever, Nexus Mutual relied on CoW Swap to trade 14,400 ETH for rETH, a
+                    liquid staking token
                   </TopicDescription>
 
-                  <TopicButton bgColor="#65D9FF" color="#012F7A" fontSize={27}>
+                  <TopicButton
+                    bgColor="#65D9FF"
+                    color="#012F7A"
+                    fontSize={27}
+                    href="https://blog.cow.fi/nexus-mutual-trade-breakdown-4aacc6a94be8"
+                    rel="noopener noreferrer nofollow"
+                    target="_blank"
+                  >
                     Read more
                   </TopicButton>
                 </TopicCardInner>
