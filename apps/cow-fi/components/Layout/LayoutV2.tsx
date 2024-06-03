@@ -13,17 +13,28 @@ const NAV_ITEMS: MenuItem[] = [
     href: '#',
     label: 'Products',
     children: [
-      { icon: IMG_ICON_BRANDED_DOT_RED, href: '#', label: 'Swap', description: 'Trade tokens' },
-      { icon: IMG_ICON_BRANDED_DOT_RED, href: '#', label: 'Limit order', description: 'Set your own price' },
+      { href: '/cow-amm', label: 'CoW AMM' },
+      { href: '/cow-swap', label: 'CoW Swap' },
       {
-        icon: IMG_ICON_BRANDED_DOT_RED,
-        href: 'https://cow.fi/',
-        label: 'TWAP',
-        description: 'Place orders with a time-weighted average price',
+        href: '/cow-protocol',
+        label: 'CoW Protocol',
       },
+      {
+        href: '/mev-blocker',
+        label: 'MEV Blocker',
+      },
+      { href: '/widget', label: 'Widget' },
+      { href: '/daos', label: 'For DAOs' },
     ],
   },
-  { href: '/learn', label: 'Learn' },
+  {
+    href: '/learn',
+    label: 'Learn',
+    children: [
+      { href: '/learn/articles', label: 'All articles' },
+      { href: '/learn/topics', label: 'Topics' },
+    ],
+  },
   {
     type: 'dropdown',
     label: 'More',
