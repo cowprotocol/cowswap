@@ -380,12 +380,12 @@ export const TopicButton = styled.a<{
   }
 `
 
-export const LinkSection = styled.div<{ columns?: number; columnsMobile?: number }>`
+export const LinkSection = styled.div<{ columns?: number; columnsMobile?: number; bgColor?: string; padding?: string }>`
   display: grid;
   grid-template-columns: ${({ columns }) => `repeat(${columns || 2}, 1fr)`};
-  background: ${Color.neutral100};
+  background: ${({ bgColor }) => bgColor || Color.neutral100};
   border-radius: 28px;
-  padding: 24px;
+  padding: ${({ padding }) => padding || '24px'};
   width: 100%;
   gap: 24px;
 
@@ -583,8 +583,11 @@ export const Pagination = styled.div`
   margin: 24px auto 0;
   padding: 4px;
   background: ${Color.neutral100};
+  color: ${Color.neutral10};
   border-radius: 21px;
   width: min-content;
+  font-size: 16px;
+  font-weight: ${Font.weight.medium};
 
   > a {
     display: flex;
@@ -594,9 +597,9 @@ export const Pagination = styled.div`
     height: 40px;
     border-radius: inherit;
     text-decoration: none;
-    font-size: 16px;
-    font-weight: ${Font.weight.medium};
-    color: ${Color.neutral100};
+    font-size: inherit;
+    font-weight: inherit;
+    color: inherit;
     background: transparent;
     transition: background 0.2s, color 0.2s;
 
@@ -605,7 +608,7 @@ export const Pagination = styled.div`
     }
 
     &.active {
-      background: ${Color.neutral100};
+      background: ${Color.neutral10};
       color: ${Color.neutral100};
     }
   }
