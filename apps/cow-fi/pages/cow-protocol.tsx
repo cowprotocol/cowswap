@@ -374,11 +374,10 @@ export default function Page({ siteConfigData }: PageProps) {
                 </TopicImage>
                 <TopicCardInner contentAlign="left">
                   <TopicTitle color={Color.neutral100} fontSize={38}>
-                    Liquidations
+                    Automating complex treasury tasks
                   </TopicTitle>
                   <TopicDescription fontSize={21} color="#F996EE">
-                    Info about liquidations goes here. Info about liquidations goes here. Info about liquidations goes
-                    here.
+                    Curve used CoW Protocol to manage their fee burning process ... TBD
                   </TopicDescription>
                 </TopicCardInner>
               </TopicCard>
@@ -392,7 +391,8 @@ export default function Page({ siteConfigData }: PageProps) {
                     Solver infrastructure
                   </TopicTitle>
                   <TopicDescription fontSize={21} color="#F996EE">
-                    CoW Protocol maintains the most robust network of solvers in DeFi, with more being added every day.
+                    Adding security checks to sensitive treasury ops // Additional layer of security for
+                    highly-sensitive swaps
                   </TopicDescription>
                 </TopicCardInner>
               </TopicCard>
@@ -403,10 +403,12 @@ export default function Page({ siteConfigData }: PageProps) {
                 </TopicImage>
                 <TopicCardInner contentAlign="left">
                   <TopicTitle color={Color.neutral100} fontSize={38}>
-                    Rebalancing portfolios
+                    Powering native swaps
                   </TopicTitle>
                   <TopicDescription fontSize={21} color="#F996EE">
-                    Info about rebalancing portfolios goes here. Info about rebalancing portfolios goes here.
+                    Safe integrated a simplified version of CoW Protocol via the CoW widget to offer native swaps and
+                    limit orders to its users. They customized the experience above the standard CoW Swap widget by
+                    adding ...
                   </TopicDescription>
                 </TopicCardInner>
               </TopicCard>
