@@ -41,6 +41,7 @@ import {
   HeroSubtitle,
   MetricsCard,
   MetricsItem,
+  SectionTitleButton,
 } from '@/styles/styled'
 
 import SVG from 'react-inlinesvg'
@@ -631,7 +632,7 @@ export default function Page({ siteConfigData }: PageProps) {
 
         <ContainerCard bgColor={'transparent'}>
           <ContainerCardSection>
-            <SectionTitleWrapper>
+            <SectionTitleWrapper maxWidth={1000}>
               <SectionTitleIcon size={100}>
                 <SVG src={IMG_ICON_SECURE} />
               </SectionTitleIcon>
@@ -639,12 +640,27 @@ export default function Page({ siteConfigData }: PageProps) {
                 Want to build a solver?
               </SectionTitleText>
               <SectionTitleDescription fontSize={28} color={Color.neutral30}>
-                Solvers are the backbone of CoW Protocol.
+                Solvers are the backbone of CoW Protocol. In a nutshell, solvers are optimization algorithms that find
+                CoW Protocol users the best possible settlements for their trade intents.
+                <br />
+                <br />
+                Advanced solver teams can earn hundreds of thousands of dollars per month by winning batch auctions
+                frequently.
+                <br />
+                <br />
+                Learn more about building a solver by reading the CoW Protocol docs.
               </SectionTitleDescription>
 
-              <SectionTitleDescription fontSize={28} color={'red'}>
-                - MORE CONTENT HERE WIP -
-              </SectionTitleDescription>
+              <SectionTitleButton
+                bgColor="#66018E"
+                color="#F996EE"
+                href="https://docs.cow.fi/cow-protocol/tutorials/solvers"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+                margin="28px 0 0"
+              >
+                Read the docs
+              </SectionTitleButton>
             </SectionTitleWrapper>
           </ContainerCardSection>
         </ContainerCard>
