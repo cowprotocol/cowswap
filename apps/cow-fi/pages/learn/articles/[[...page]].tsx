@@ -20,6 +20,7 @@ import {
 } from '@/styles/styled'
 
 const LEARN_PATH = '/learn/'
+const ARTICLES_PATH = `${LEARN_PATH}articles/`
 
 const DATA_CACHE_TIME_SECONDS = 5 * 60 // Cache 5min
 const ITEMS_PER_PAGE = 24
@@ -118,7 +119,7 @@ export default function ArticlesPage({
 
           <Pagination>
             {Array.from({ length: totalPages }, (_, i) => (
-              <a key={i} href={`${LEARN_PATH}${i + 1}`} className={i + 1 === currentPage ? 'active' : ''}>
+              <a key={i} href={`${ARTICLES_PATH}${i + 1}`} className={i + 1 === currentPage ? 'active' : ''}>
                 {i + 1}
               </a>
             ))}
