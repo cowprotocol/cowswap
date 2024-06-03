@@ -98,7 +98,7 @@ export function LimitOrdersWidget() {
     isIndependent: isSell,
     balance: inputCurrencyBalance,
     fiatAmount: inputCurrencyFiatAmount,
-    receiveAmountInfo,
+    receiveAmountInfo: !isSell ? receiveAmountInfo : null,
   }
 
   const outputCurrencyInfo: CurrencyInfo = {
@@ -109,7 +109,7 @@ export function LimitOrdersWidget() {
     isIndependent: !isSell,
     balance: outputCurrencyBalance,
     fiatAmount: outputCurrencyFiatAmount,
-    receiveAmountInfo,
+    receiveAmountInfo: isSell ? receiveAmountInfo : null,
   }
 
   const tradeContext = useTradeFlowContext(inputCurrencyInfo.receiveAmountInfo, outputCurrencyInfo.receiveAmountInfo)
