@@ -13,11 +13,9 @@ import {
   ContainerCard,
   ContainerCardSection,
   ContainerCardSectionTop,
-  ArticleList,
-  ArticleCard,
-  ArticleImage,
-  ArticleTitle,
-  ArticleDescription,
+  LinkSection,
+  LinkColumn,
+  LinkItem,
 } from '@/styles/styled'
 
 const Wrapper = styled.div`
@@ -130,28 +128,18 @@ export default function TopicPage({ category, articles }: TopicPageProps) {
               <i>{articles.length} articles</i>
             </CategoryDescription>
 
-            <ArticleList columns={4} columnsMobile={2}>
-              {articles.map((article) => {
-                const coverData = article.attributes?.cover?.data
-                const imageUrl = coverData?.attributes?.url
-
-                return (
-                  <ArticleCard
-                    key={article.id}
-                    href={`/learn/${article.attributes?.slug}`}
-                    target="_self"
-                    rel="noopener"
-                  >
-                    {imageUrl && (
-                      <ArticleImage>
-                        <img src={imageUrl} alt={article.attributes?.title ?? 'Article Image'} />
-                      </ArticleImage>
-                    )}
-                    <ArticleTitle>{article.attributes?.title}</ArticleTitle>
-                  </ArticleCard>
-                )
-              })}
-            </ArticleList>
+            <LinkSection bgColor={'transparent'} columns={1} padding="0">
+              <LinkColumn>
+                {articles?.map((article) =>
+                  article.attributes ? (
+                    <LinkItem key={article.id} href={`/learn/${article.attributes.slug}`}>
+                      {article.attributes.title}
+                      <span>→</span>
+                    </LinkItem>
+                  ) : null
+                )}
+              </LinkColumn>
+            </LinkSection>
           </ContainerCardSection>
         </ContainerCard>
       </Wrapper>
