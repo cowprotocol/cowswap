@@ -4,15 +4,17 @@ import { COW, GNO } from '@cowprotocol/common-const'
 import { OrderClass, OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
+import { inputCurrencyInfoMock } from 'mocks/tradeStateMock'
+
 import { getAppData } from 'modules/appData'
 import { defaultLimitOrdersSettings } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { initLimitRateState } from 'modules/limitOrders/state/limitRateAtom'
 import { DEFAULT_TRADE_QUOTE_STATE } from 'modules/tradeQuote'
 
+
 import { TradeFlowContext } from '../../services/types'
 
 import { LimitOrdersDetails } from './index'
-import { inputCurrencyInfoMock } from 'mocks/tradeStateMock'
 
 const inputCurrency = COW[SupportedChainId.MAINNET]
 const outputCurrency = GNO[SupportedChainId.MAINNET]

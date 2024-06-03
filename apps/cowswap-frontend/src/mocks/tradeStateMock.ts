@@ -1,6 +1,6 @@
 import { COW, GNO } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { CurrencyAmount, Percent } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { Field } from 'legacy/state/types'
@@ -17,6 +17,10 @@ export const inputCurrencyInfoMock: CurrencyInfo = {
   isIndependent: false,
   receiveAmountInfo: {
     isSell: false,
+    quotePrice: new Price<Currency, Currency>({
+      baseAmount: CurrencyAmount.fromRawAmount(inputCurrency, 1 * 10 ** 18),
+      quoteAmount: CurrencyAmount.fromRawAmount(outputCurrency, 5 * 10 ** 18),
+    }),
     costs: {
       networkFee: {
         amountInSellCurrency: CurrencyAmount.fromRawAmount(inputCurrency, 30 * 10 ** 18),
@@ -38,6 +42,10 @@ export const inputCurrencyInfoMock: CurrencyInfo = {
     afterPartnerFees: {
       sellAmount: CurrencyAmount.fromRawAmount(inputCurrency, 110 * 10 ** 18),
       buyAmount: CurrencyAmount.fromRawAmount(outputCurrency, 590 * 10 ** 18),
+    },
+    afterSlippage: {
+      sellAmount: CurrencyAmount.fromRawAmount(inputCurrency, 110 * 10 ** 18),
+      buyAmount: CurrencyAmount.fromRawAmount(outputCurrency, 530 * 10 ** 18),
     },
   },
   currency: inputCurrency,

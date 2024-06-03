@@ -1,11 +1,12 @@
 import { PRICE_API_TIMEOUT_MS } from '@cowprotocol/common-const'
 import { getCanonicalMarket, isPromiseFulfilled, isSellOrder, withTimeout } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/contracts'
+import { OrderQuoteResponse } from '@cowprotocol/cow-sdk'
 import { BigNumber } from '@ethersproject/bignumber'
 
 import * as Sentry from '@sentry/browser'
 import BigNumberJs from 'bignumber.js'
-import { FeeInformation, PriceInformation } from 'types'
+import { PriceInformation } from 'types'
 
 import {
   getPriceQuote as getPriceQuote1inch,
@@ -27,7 +28,6 @@ import {
   LegacyPromiseRejectedResultWithSource,
   LegacyQuoteParams,
 } from '../state/price/types'
-import { OrderQuoteResponse } from '@cowprotocol/cow-sdk'
 
 /**
  * ************************************************** *
@@ -259,7 +259,7 @@ export async function getBestQuoteLegacy({
       const response = await feePromise
       feeAmount = response.quote.feeAmount
     } catch (error) {
-      const { amount, expirationDate } = _checkFeeErrorForData(error)
+      const { amount } = _checkFeeErrorForData(error)
       feeAmount = amount
     }
 

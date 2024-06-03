@@ -9,6 +9,7 @@ import { useSwapRawState, useUpdateSwapRawState } from 'modules/swap/hooks/useSw
 import { ExtendedTradeRawState, TradeRawState } from 'modules/trade/types/TradeRawState'
 
 import { useTradeTypeInfo } from './useTradeTypeInfo'
+
 import { TradeType } from '../types'
 
 export function useTradeState(): {
