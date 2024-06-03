@@ -19,7 +19,7 @@ import {
   LinkItem,
 } from '@/styles/styled'
 
-const LEARN_PATH = '/learn/articles/'
+const LEARN_PATH = '/learn/'
 
 const DATA_CACHE_TIME_SECONDS = 5 * 60 // Cache 5min
 const ITEMS_PER_PAGE = 24
