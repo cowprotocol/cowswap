@@ -126,7 +126,7 @@ export default function Page({ siteConfigData }: PageProps) {
   return (
     <WagmiConfig config={wagmiClient}>
       <RainbowKitProvider chains={chains}>
-        <LayoutV2 bgColor={'#3FC4FF'}>
+        <LayoutV2 bgColor={'#99ECFF'}>
           <Head>
             <title>
               {siteConfigData.title} - {siteConfigData.descriptionShort}
@@ -170,16 +170,22 @@ export default function Page({ siteConfigData }: PageProps) {
 
             <MetricsCard bgColor="#FEE7CF" color="#EC4612" columns={3} touchFooter>
               <MetricsItem dividerColor="#F9A36F">
-                <h2>18</h2>
-                <p>active solvers settling batches</p>
+                <h2>$76B+</h2>
+                <p>volume protected from MEV</p>
+                <a href="https://dune.com/queries/2635139/4376957" target="_blank" rel="noopener noreferrer nofollow">
+                  Source &#8599;
+                </a>
               </MetricsItem>
               <MetricsItem dividerColor="#F9A36F">
-                <h2>1 in 4</h2>
-                <p>user trades go through CoW Protocol</p>
+                <h2>2200 ETH</h2>
+                <p>rebated to users</p>
+                <a href="https://dune.com/queries/2456432/4038715" target="_blank" rel="noopener noreferrer nofollow">
+                  Source &#8599;
+                </a>
               </MetricsItem>
               <MetricsItem>
-                <h2>83</h2>
-                <p>average NPS score for users of CoW Protocol</p>
+                <h2>100%</h2>
+                <p>of Ethereum's major builders use MEV Blocker</p>
               </MetricsItem>
 
               <SectionTitleButton
@@ -189,9 +195,9 @@ export default function Page({ siteConfigData }: PageProps) {
                 gridFullWidth
                 href="https://dune.com/cowprotocol/mev-blocker"
                 target="_blank"
-                rel="noopener noreferrer"
+                rel="noopener noreferrer nofollow"
               >
-                View metrics on DUNE
+                View all metrics on DUNE &#8599;
               </SectionTitleButton>
             </MetricsCard>
 
@@ -648,7 +654,7 @@ export default function Page({ siteConfigData }: PageProps) {
               </ContainerCardSection>
             </ContainerCard>
 
-            <ContainerCard bgColor={'transparent'} color={Color.neutral10}>
+            <ContainerCard bgColor={Color.neutral100} color={Color.neutral10}>
               <ContainerCardSection>
                 <SectionTitleWrapper padding="72px 0" maxWidth={900}>
                   <SectionTitleIcon size={100}>

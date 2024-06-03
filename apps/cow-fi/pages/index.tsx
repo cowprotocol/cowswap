@@ -171,7 +171,7 @@ export default function Page({ siteConfigData }: PageProps) {
                 <SVG src={IMG_ICON_GOVERNANCE} />
               </SectionTitleIcon>
               <SectionTitleText fontSize={90} textAlign="center">
-                New to the barn?
+                Governance
               </SectionTitleText>
               <SectionTitleDescription
                 fontSize={28}

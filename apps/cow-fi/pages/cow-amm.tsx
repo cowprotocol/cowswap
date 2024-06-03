@@ -25,6 +25,7 @@ import {
   SectionTitleIcon,
   SectionTitleText,
   SectionTitleDescription,
+  SectionTitleButton,
   TopicCardInner,
   HeroContainer,
   HeroImage,
@@ -111,17 +112,29 @@ export default function Page({ siteConfigData }: PageProps) {
 
         <MetricsCard bgColor={Color.neutral100} color="#194D05" columns={3} touchFooter>
           <MetricsItem dividerColor="#9BD955">
-            <h2>18</h2>
-            <p>active solvers settling batches</p>
+            <h2>3%</h2>
+            <p>performance improvement over reference pool</p>
           </MetricsItem>
           <MetricsItem dividerColor="#9BD955">
-            <h2>1 in 4</h2>
-            <p>user trades go through CoW Protocol</p>
+            <h2>4.8M</h2>
+            <p>liquidity protected from LVR</p>
           </MetricsItem>
           <MetricsItem dividerColor="#9BD955">
-            <h2>83</h2>
-            <p>average NPS score for users of CoW Protocol</p>
+            <h2>$59K</h2>
+            <p>surplus captured for LPs</p>
           </MetricsItem>
+
+          <SectionTitleButton
+            bgColor="#194D05"
+            color="#BCEC79"
+            margin="56px auto 0"
+            gridFullWidth
+            href="https://dune.com/cowprotocol/cowamms"
+            target="_blank"
+            rel="noopener noreferrer nofollow"
+          >
+            View all metrics on DUNE &#8599;
+          </SectionTitleButton>
         </MetricsCard>
 
         <ContainerCard bgColor={Color.neutral10}>

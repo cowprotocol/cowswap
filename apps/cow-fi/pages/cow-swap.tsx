@@ -119,17 +119,29 @@ export default function Page({ siteConfigData }: PageProps) {
 
         <MetricsCard bgColor="#65D9FF" color="#012F7A" columns={3} touchFooter>
           <MetricsItem dividerColor="#005EB7">
-            <h2>18</h2>
-            <p>active solvers settling batches</p>
+            <h2>$44B+</h2>
+            <p>total volume traded</p>
           </MetricsItem>
           <MetricsItem dividerColor="#005EB7">
-            <h2>1 in 4</h2>
-            <p>user trades go through CoW Protocol</p>
+            <h2>$238M+</h2>
+            <p>surplus found for users</p>
           </MetricsItem>
-          <MetricsItem dividerColor="#005EB7">
-            <h2>83</h2>
-            <p>average NPS score for users of CoW Protocol</p>
+          <MetricsItem>
+            <h2>#1</h2>
+            <p>retention rate of all DEXs</p>
           </MetricsItem>
+
+          <SectionTitleButton
+            bgColor={'#012F7A'}
+            color={'#65D9FF'}
+            margin="56px auto 0"
+            gridFullWidth
+            href="https://dune.com/cowprotocol/cowswap"
+            target="_blank"
+            rel="noopener noreferrer nofollow"
+          >
+            View all metrics on DUNE &#8599;
+          </SectionTitleButton>
         </MetricsCard>
 
         <ContainerCard bgColor={Color.neutral98}>
@@ -498,7 +510,7 @@ export default function Page({ siteConfigData }: PageProps) {
 
         <ContainerCard bgColor={'transparent'}>
           <ContainerCardSection>
-            <SectionTitleWrapper maxWidth={878} color={Color.neutral10}>
+            <SectionTitleWrapper maxWidth={1100} color={Color.neutral10}>
               <SectionTitleText fontSize={90} textAlign="center">
                 Don't take our word for it
               </SectionTitleText>

@@ -11,7 +11,7 @@ const PRODUCT_VARIANT = ProductVariant.CowProtocol
 const NAV_ITEMS: MenuItem[] = [
   {
     href: '#',
-    label: 'Trade',
+    label: 'Products',
     children: [
       { icon: IMG_ICON_BRANDED_DOT_RED, href: '#', label: 'Swap', description: 'Trade tokens' },
       { icon: IMG_ICON_BRANDED_DOT_RED, href: '#', label: 'Limit order', description: 'Set your own price' },
@@ -23,8 +23,7 @@ const NAV_ITEMS: MenuItem[] = [
       },
     ],
   },
-  { href: 'https://cow.fi/', label: 'Account' },
-  { href: 'https://cow.fi/', label: 'FAQ' },
+  { href: '/learn', label: 'Learn' },
   {
     type: 'dropdown',
     label: 'More',

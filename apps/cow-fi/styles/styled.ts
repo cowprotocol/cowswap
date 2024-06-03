@@ -1033,15 +1033,15 @@ export const MetricsItem = styled.div<{ dividerColor?: string }>`
     max-width: 100%;
   }
 
-  > p {
+  > p,
+  > a {
     font-size: 21px;
     font-weight: ${Font.weight.medium};
     line-height: 1.3;
     color: inherit;
     margin: 0;
-    max-width: 50%;
     width: 100%;
-    max-width: 100%;
+    max-width: 70%;
 
     ${Media.upToMedium()} {
       max-width: 100%;

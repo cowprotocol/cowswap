@@ -119,16 +119,26 @@ export default function Page({ siteConfigData }: PageProps) {
 
         <MetricsCard bgColor="#F996EE" color="#66018E" columns={3} touchFooter>
           <MetricsItem dividerColor="#ED60E9">
-            <h2>18</h2>
+            <h2>23</h2>
             <p>active solvers settling batches</p>
+            <a href="https://dune.com/cowprotocol/solver-info" target="_blank" rel="noopener noreferrer nofollow">
+              Source &#8599;
+            </a>
           </MetricsItem>
           <MetricsItem dividerColor="#ED60E9">
-            <h2>1 in 4</h2>
-            <p>user trades go through CoW Protocol</p>
+            <h2>25%</h2>
+            <p>of Ethereum's non-toxic DEX volume originates on CoW Protocol</p>
           </MetricsItem>
           <MetricsItem dividerColor="#ED60E9">
-            <h2>83</h2>
-            <p>average NPS score for users of CoW Protocol</p>
+            <h2>#1</h2>
+            <p>intent-based DEX protocol by volume</p>
+            <a
+              href="https://dune.com/cowprotocol/cowswap-high-level-metrics-dashboard"
+              target="_blank"
+              rel="noopener noreferrer nofollow"
+            >
+              Source &#8599;
+            </a>
           </MetricsItem>
         </MetricsCard>
 
