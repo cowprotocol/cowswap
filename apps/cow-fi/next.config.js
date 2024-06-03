@@ -48,6 +48,15 @@ const nextConfig = {
 
     return config
   },
+  async redirects() {
+    return [
+      {
+        source: '/learn/articles/1',
+        destination: '/learn/articles',
+        permanent: true,
+      },
+    ]
+  },
 }
 
 const plugins = [withNx]
