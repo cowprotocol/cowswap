@@ -29,7 +29,7 @@ const SearchIcon = styled.div`
   left: 24px;
   width: 24px;
   height: 24px;
-  color: ${Color.neutral60};
+  color: ${Color.neutral70};
 
   ${Media.upToMedium()} {
     left: 16px;
@@ -41,7 +41,7 @@ const Input = styled.input`
   min-height: 56px;
   border: 2px solid transparent;
   font-size: 21px;
-  color: ${Color.neutral60};
+  color: ${Color.neutral50};
   width: 100%;
   background: ${Color.neutral90};
   border-radius: 56px;

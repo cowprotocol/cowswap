@@ -418,8 +418,8 @@ export const LinkItem = styled.a`
   border-radius: 36px;
   padding: 4px 8px 4px 16px;
   text-decoration: none;
-  color: ${Color.neutral50};
-  transition: color 0.2s ease-in-out;
+  color: ${Color.neutral20};
+  transition: background 0.2s ease-in-out, 0.2s ease-in-out;
   line-height: 1.2;
 
   &:hover {
