@@ -1,6 +1,5 @@
 import React, { Dispatch, ReactNode, SetStateAction, useMemo } from 'react'
 
-import { bpsToPercent, formatPercent } from '@cowprotocol/common-utils'
 import { CowSwapWidgetAppParams } from '@cowprotocol/widget-lib'
 import { Percent, Price } from '@uniswap/sdk-core'
 
@@ -13,20 +12,23 @@ import { LimitPriceRow } from './LimitPriceRow'
 import * as styledEl from './styled'
 
 import { ReviewOrderModalAmountRow } from '../../pure/ReviewOrderModalAmountRow'
+import { DividerHorizontal } from '../../pure/Row/styled'
 import { ReceiveAmountInfo } from '../../types'
 import { getDirectedReceiveAmounts } from '../../utils/getReceiveAmountInfo'
+import { TradeFeesAndCosts } from '../TradeFeesAndCosts'
 
 type Props = {
-  numOfParts: number
   receiveAmountInfo: ReceiveAmountInfo
   rateInfoParams: RateInfoParams
   isInvertedState: [boolean, Dispatch<SetStateAction<boolean>>]
   slippage: Percent
-  additionalProps?: AdditionalProps
   widgetParams: Partial<CowSwapWidgetAppParams>
+  labelsAndTooltips?: LabelsAndTooltips
+  hideLimitPrice?: boolean
+  hideUsdValues?: boolean
 }
 
-type AdditionalProps = {
+type LabelsAndTooltips = {
   priceLabel?: ReactNode
   minReceivedLabel?: ReactNode
   minReceivedTooltip?: ReactNode
@@ -37,27 +39,27 @@ type AdditionalProps = {
 }
 
 export function TradeBasicConfirmDetails(props: Props) {
-  const { numOfParts, rateInfoParams, isInvertedState, slippage, additionalProps, receiveAmountInfo, widgetParams } =
-    props
-  const { networkFeeAmount, amountAfterFees, amountAfterSlippage } = getDirectedReceiveAmounts(receiveAmountInfo)
   const {
-    costs: {
-      partnerFee: { amount: partnerFeeAmount, bps: partnerFeeBps },
-    },
-  } = receiveAmountInfo
+    rateInfoParams,
+    isInvertedState,
+    slippage,
+    labelsAndTooltips,
+    receiveAmountInfo,
+    widgetParams,
+    hideLimitPrice,
+    hideUsdValues,
+  } = props
+  const { amountAfterFees, amountAfterSlippage } = getDirectedReceiveAmounts(receiveAmountInfo)
 
-  const priceLabel = additionalProps?.priceLabel || 'Price'
-  const minReceivedLabel = additionalProps?.minReceivedLabel || 'Min received (incl. costs)'
-  const minReceivedTooltip = additionalProps?.minReceivedTooltip || 'This is the minimum amount that you will receive.'
+  const priceLabel = labelsAndTooltips?.priceLabel || 'Price'
+  const minReceivedLabel = labelsAndTooltips?.minReceivedLabel || 'Min received (incl. costs)'
+  const minReceivedTooltip =
+    labelsAndTooltips?.minReceivedTooltip || 'This is the minimum amount that you will receive.'
+  const slippageTooltip = labelsAndTooltips?.slippageTooltip
+  const slippageLabel = labelsAndTooltips?.slippageLabel || 'Slippage tolerance'
 
-  const amountAfterFeesFull = amountAfterFees.multiply(numOfParts)
-  const amountAfterSlippageFull = amountAfterSlippage.multiply(numOfParts)
-
-  console.log('SSSSS', partnerFeeAmount.toExact())
-  const partnerFeeUsd = useUsdAmount(partnerFeeAmount).value
-  const amountAfterSlippageUsd = useUsdAmount(amountAfterSlippageFull).value
-  const amountAfterFeesUsd = useUsdAmount(amountAfterFeesFull).value
-  const networkFeeAmountUsd = useUsdAmount(networkFeeAmount).value
+  const amountAfterSlippageUsd = useUsdAmount(hideUsdValues ? null : amountAfterSlippage).value
+  const amountAfterFeesUsd = useUsdAmount(hideUsdValues ? null : amountAfterFees).value
 
   // Limit price is the same for all parts
   const limitPrice = useMemo(() => {
@@ -79,69 +81,42 @@ export function TradeBasicConfirmDetails(props: Props) {
         isInvertedState={isInvertedState}
       />
 
-      {networkFeeAmount.greaterThan(0) && (
-        <ReviewOrderModalAmountRow
-          withTimelineDot={true}
-          amount={networkFeeAmount}
-          fiatAmount={networkFeeAmountUsd}
-          tooltip={
-            <>
-              This is the cost of settling your order on-chain, including gas and any LP fees.
-              <br />
-              CoW Swap will try to lower this cost where possible.
-            </>
-          }
-          label="Network costs (est.)"
-        />
-      )}
-
-      {partnerFeeAmount.greaterThan(0) && (
-        <ReviewOrderModalAmountRow
-          withTimelineDot={true}
-          amount={partnerFeeAmount}
-          fiatAmount={partnerFeeUsd}
-          tooltip={
-            widgetParams.content?.feeTooltipMarkdown || (
-              <>
-                This fee helps pay for maintenance & improvements to the swap experience.
-                <br />
-                <br />
-                The fee is {partnerFeeBps} BPS ({formatPercent(bpsToPercent(partnerFeeBps))}%), applied only if the
-                trade is executed.
-              </>
-            )
-          }
-          label="Total fee"
-        />
-      )}
+      <TradeFeesAndCosts receiveAmountInfo={receiveAmountInfo} widgetParams={widgetParams} />
 
       <ReviewOrderModalAmountRow
         highlighted={true}
-        amount={amountAfterFeesFull}
+        amount={amountAfterFees}
         fiatAmount={amountAfterFeesUsd}
         label="Expected to receive"
       />
 
+      <DividerHorizontal />
+
       {/* Slippage */}
-      <ReviewOrderModalAmountRow
-        withTimelineDot={true}
-        tooltip={additionalProps?.slippageTooltip}
-        label={additionalProps?.slippageLabel}
-      >
-        <PercentDisplay percent={+slippage.toFixed(2)} />
-      </ReviewOrderModalAmountRow>
+      {
+        <ReviewOrderModalAmountRow withTimelineDot={true} tooltip={slippageTooltip} label={slippageLabel}>
+          <PercentDisplay percent={+slippage.toFixed(2)} />
+        </ReviewOrderModalAmountRow>
+      }
 
       {/* Min received */}
       <ReviewOrderModalAmountRow
         highlighted={true}
-        amount={amountAfterSlippageFull}
+        amount={amountAfterSlippage}
         fiatAmount={amountAfterSlippageUsd}
         tooltip={minReceivedTooltip}
         label={minReceivedLabel}
       />
 
       {/* Limit Price */}
-      <LimitPriceRow price={limitPrice} isInvertedState={isInvertedState} {...additionalProps} />
+      {!hideLimitPrice && (
+        <LimitPriceRow
+          price={limitPrice}
+          isInvertedState={isInvertedState}
+          limitPriceTooltip={labelsAndTooltips?.limitPriceTooltip}
+          limitPriceLabel={labelsAndTooltips?.limitPriceLabel}
+        />
+      )}
     </styledEl.Wrapper>
   )
 }

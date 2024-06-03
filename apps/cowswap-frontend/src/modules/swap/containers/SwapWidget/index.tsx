@@ -73,7 +73,8 @@ export function SwapWidget() {
   const showRecipientControls = useShowRecipientControls(recipient)
   const isEoaEthFlow = useIsEoaEthFlow()
   const shouldZeroApprove = useShouldZeroApprove(slippageAdjustedSellAmount)
-  const { enabledTradeTypes, banners: widgetBanners } = useInjectedWidgetParams()
+  const widgetParams = useInjectedWidgetParams()
+  const { enabledTradeTypes, banners: widgetBanners } = widgetParams
   const priceImpactParams = useTradePriceImpact()
   const tradeQuoteStateOverride = useTradeQuoteStateFromLegacy()
   const receiveAmountInfo = useReceiveAmountInfo()
@@ -258,6 +259,8 @@ export function SwapWidget() {
     isFeeGreater,
     fee,
     rateInfoParams,
+    receiveAmountInfo,
+    widgetParams,
   }
 
   const slots = {
@@ -303,7 +306,6 @@ export function SwapWidget() {
           confirmModal={
             <ConfirmSwapModalSetup
               chainId={chainId}
-              recipientAddressOrName={swapButtonContext.recipientAddressOrName}
               doTrade={swapButtonContext.handleSwap}
               priceImpact={priceImpactParams}
               inputCurrencyInfo={inputCurrencyPreviewInfo}

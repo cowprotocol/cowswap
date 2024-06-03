@@ -46,6 +46,8 @@ const defaultProps: TradeRatesProps = {
   userAllowedSlippage: new Percent(12, 10_000),
   fee: CurrencyAmount.fromRawAmount(currency, fee * 10 ** 18),
   rateInfoParams,
+  receiveAmountInfo: null,
+  widgetParams: {},
 }
 
 export default <TradeRates {...defaultProps} />

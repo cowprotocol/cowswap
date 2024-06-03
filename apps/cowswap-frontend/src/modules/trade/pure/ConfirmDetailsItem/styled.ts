@@ -45,13 +45,13 @@ export const Row = styled(StyledRowBetween)`
   `}
 `
 
-export const Content = styled.div`
+export const Content = styled.div<{ highlighted?: boolean }>`
   display: flex;
   flex-flow: row wrap;
   align-items: center;
   justify-content: flex-end;
   margin: 0 0 0 auto;
-  font-weight: 500;
+  font-weight: ${({ highlighted }) => (highlighted ? 700 : 500)};
   font-size: 13px;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`

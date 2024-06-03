@@ -5,13 +5,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
-import {
-  TradeConfirmation,
-  TradeConfirmModal,
-  useReceiveAmountInfo,
-  useTradeConfirmActions,
-  useTradePriceImpact,
-} from 'modules/trade'
+import { TradeConfirmation, TradeConfirmModal, useTradeConfirmActions, useTradePriceImpact } from 'modules/trade'
 import { TradeBasicConfirmDetails } from 'modules/trade/containers/TradeBasicConfirmDetails'
 import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
 import { DividerHorizontal } from 'modules/trade/pure/Row/styled'
@@ -26,6 +20,7 @@ import { useIsFallbackHandlerRequired } from '../../hooks/useFallbackHandlerVeri
 import { useTwapFormState } from '../../hooks/useTwapFormState'
 import { useTwapSlippage } from '../../hooks/useTwapSlippage'
 import { useTwapWarningsContext } from '../../hooks/useTwapWarningsContext'
+import { scaledReceiveAmountInfoAtom } from '../../state/scaledReceiveAmountInfoAtom'
 import { twapOrderAtom } from '../../state/twapOrderAtom'
 import { TwapFormWarnings } from '../TwapFormWarnings'
 
@@ -71,12 +66,12 @@ export function TwapConfirmModal() {
   } = useAdvancedOrdersDerivedState()
   // TODO: there's some overlap with what's in each atom
   const twapOrder = useAtomValue(twapOrderAtom)
+  const receiveAmountInfo = useAtomValue(scaledReceiveAmountInfoAtom)
   const slippage = useTwapSlippage()
   const { showPriceImpactWarning } = useTwapWarningsContext()
   const localFormValidation = useTwapFormState()
   const tradeConfirmActions = useTradeConfirmActions()
   const createTwapOrder = useCreateTwapOrder()
-  const receiveAmountInfo = useReceiveAmountInfo()
 
   const widgetParams = useInjectedWidgetParams()
 
@@ -126,13 +121,12 @@ export function TwapConfirmModal() {
         <>
           {receiveAmountInfo && numOfParts && (
             <TradeBasicConfirmDetails
-              numOfParts={numOfParts}
               widgetParams={widgetParams}
               rateInfoParams={rateInfoParams}
               receiveAmountInfo={receiveAmountInfo}
               isInvertedState={isInvertedState}
               slippage={slippage}
-              additionalProps={CONFIRM_MODAL_CONFIG}
+              labelsAndTooltips={CONFIRM_MODAL_CONFIG}
             />
           )}
           <DividerHorizontal />
