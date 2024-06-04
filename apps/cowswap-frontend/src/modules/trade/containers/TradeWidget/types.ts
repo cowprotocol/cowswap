@@ -25,7 +25,7 @@ interface TradeWidgetParams {
   tradeQuoteStateOverride?: TradeQuoteState | null
   disableQuotePolling?: boolean
   disableNativeSelling?: boolean
-  disablePriceImpact: boolean
+  disablePriceImpact?: boolean
 }
 
 export interface TradeWidgetSlots {

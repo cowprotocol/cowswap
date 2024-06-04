@@ -10,7 +10,6 @@ import { useLimitOrdersWidgetActions } from 'modules/limitOrders/containers/Limi
 import { TradeButtons } from 'modules/limitOrders/containers/TradeButtons'
 import { TradeWidget, useTradePriceImpact } from 'modules/trade'
 import { BulletListItem, UnlockWidgetScreen } from 'modules/trade/pure/UnlockWidgetScreen'
-import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
 import { useSetTradeQuoteParams, useTradeQuote } from 'modules/tradeQuote'
 
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
@@ -20,7 +19,6 @@ import { LimitOrdersProps, limitOrdersPropsChecker } from './limitOrdersPropsChe
 import * as styledEl from './styled'
 
 import { useLimitOrdersDerivedState } from '../../hooks/useLimitOrdersDerivedState'
-import { LimitOrdersFormState, useLimitOrdersFormState } from '../../hooks/useLimitOrdersFormState'
 import { useUpdateLimitOrdersRawState } from '../../hooks/useLimitOrdersRawState'
 import { useTradeFlowContext } from '../../hooks/useTradeFlowContext'
 import { InfoBanner } from '../../pure/InfoBanner'
@@ -105,9 +103,6 @@ export function LimitOrdersWidget() {
     receiveAmountInfo: null,
   }
 
-  const localFormValidation = useLimitOrdersFormState()
-  const primaryFormValidation = useGetTradeFormValidation()
-
   const props: LimitOrdersProps = {
     inputCurrencyInfo,
     outputCurrencyInfo,
@@ -121,8 +116,6 @@ export function LimitOrdersWidget() {
     settingsState,
     feeAmount,
     widgetActions,
-    localFormValidation,
-    primaryFormValidation,
   }
 
   return <LimitOrders {...props} />
@@ -141,8 +134,6 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
     priceImpact,
     tradeContext,
     feeAmount,
-    localFormValidation,
-    primaryFormValidation,
   } = props
 
   const inputCurrency = inputCurrencyInfo.currency
@@ -208,19 +199,12 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
     outerContent: <>{isUnlocked && <InfoBanner />}</>,
   }
 
-  const disablePriceImpact =
-    localFormValidation === LimitOrdersFormState.FeeExceedsFrom ||
-    primaryFormValidation === TradeFormValidation.QuoteErrors ||
-    primaryFormValidation === TradeFormValidation.CurrencyNotSupported ||
-    primaryFormValidation === TradeFormValidation.WrapUnwrapFlow
-
   const params = {
     compactView: false,
     recipient,
     showRecipient,
     isTradePriceUpdating,
     priceImpact,
-    disablePriceImpact,
   }
 
   return (

@@ -6,12 +6,9 @@ import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { TradeFlowContext } from 'modules/limitOrders/services/types'
 import { LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { TradeWidgetActions } from 'modules/trade'
-import { TradeFormValidation } from 'modules/tradeFormValidation'
 
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 import { RateInfoParams } from 'common/pure/RateInfo'
-
-import { LimitOrdersFormState } from '../../hooks/useLimitOrdersFormState'
 
 export interface LimitOrdersProps {
   inputCurrencyInfo: CurrencyInfo
@@ -28,9 +25,6 @@ export interface LimitOrdersProps {
   settingsState: LimitOrdersSettingsState
   feeAmount: CurrencyAmount<Currency> | null
   widgetActions: TradeWidgetActions
-
-  localFormValidation: LimitOrdersFormState | null
-  primaryFormValidation: TradeFormValidation | null
 }
 
 export function limitOrdersPropsChecker(a: LimitOrdersProps, b: LimitOrdersProps): boolean {
@@ -46,9 +40,7 @@ export function limitOrdersPropsChecker(a: LimitOrdersProps, b: LimitOrdersProps
     checkPriceImpact(a.priceImpact, b.priceImpact) &&
     checkTradeFlowContext(a.tradeContext, b.tradeContext) &&
     genericPropsChecker(a.settingsState, b.settingsState) &&
-    checkCurrencyAmount(a.feeAmount, b.feeAmount) &&
-    a.localFormValidation === b.localFormValidation &&
-    a.primaryFormValidation === b.primaryFormValidation
+    checkCurrencyAmount(a.feeAmount, b.feeAmount)
   )
 }
 

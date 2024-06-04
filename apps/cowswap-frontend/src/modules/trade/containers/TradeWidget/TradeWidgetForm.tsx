@@ -18,6 +18,7 @@ import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { useIsWidgetUnlocked } from 'modules/limitOrders'
 import { SetRecipient } from 'modules/swap/containers/SetRecipient'
 import { useOpenTokenSelectWidget } from 'modules/tokensList'
+import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
 import { useIsAlternativeOrderModalVisible } from 'modules/trade/state/alternativeOrder'
 
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
@@ -57,15 +58,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
   const { settingsWidget, lockScreen, middleContent, bottomContent, outerContent } = slots
 
   const { onCurrencySelection, onUserInput, onSwitchTokens, onChangeRecipient } = actions
-  const {
-    compactView,
-    showRecipient,
-    isTradePriceUpdating,
-    isEoaEthFlow = false,
-    priceImpact,
-    recipient,
-    disablePriceImpact,
-  } = params
+  const { compactView, showRecipient, isTradePriceUpdating, isEoaEthFlow = false, priceImpact, recipient } = params
 
   const { chainId, account } = useWalletInfo()
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
@@ -74,6 +67,8 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
   const isSafeWallet = useIsSafeWallet()
   const openTokenSelectWidget = useOpenTokenSelectWidget()
   const tradeStateFromUrl = useTradeStateFromUrl()
+  const alternativeOrderModalVisible = useIsAlternativeOrderModalVisible()
+  const primaryFormValidation = useGetTradeFormValidation()
 
   const areCurrenciesLoading = !inputCurrencyInfo.currency && !outputCurrencyInfo.currency
   const bothCurrenciesSet = !!inputCurrencyInfo.currency && !!outputCurrencyInfo.currency
@@ -83,7 +78,11 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
   const maxBalance = maxAmountSpend(inputCurrencyInfo.balance || undefined, isSafeWallet)
   const showSetMax = maxBalance?.greaterThan(0) && !inputCurrencyInfo.amount?.equalTo(maxBalance)
 
-  const alternativeOrderModalVisible = useIsAlternativeOrderModalVisible()
+  const disablePriceImpact =
+    !!params.disablePriceImpact ||
+    primaryFormValidation === TradeFormValidation.QuoteErrors ||
+    primaryFormValidation === TradeFormValidation.CurrencyNotSupported ||
+    primaryFormValidation === TradeFormValidation.WrapUnwrapFlow
 
   // Disable too frequent tokens switching
   const throttledOnSwitchTokens = useThrottleFn(onSwitchTokens, 500)
