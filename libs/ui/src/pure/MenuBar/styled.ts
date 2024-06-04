@@ -5,6 +5,18 @@ import styled, { css } from 'styled-components/macro'
 import { Color } from '../../consts'
 
 export const MenuBarWrapper = styled.div`
+  --height: 56px;
+  --width: 100%;
+  --bgColor: ${({ theme }) => (theme.mode === 'dark' ? Color.neutral10 : 'rgba(255, 248, 247, 0.6)')};
+  --color: ${({ theme }) => (theme.mode === 'dark' ? Color.neutral98 : Color.neutral0)};
+  --borderRadius: 28px;
+  --blur: 16px;
+
+  // Elements
+  --defaultFill: ${({ theme }) => (theme.mode === 'dark' ? Color.neutral60 : 'rgb(0 0 0 / 50%)')};
+  --activeBackground: ${({ theme }) => (theme.mode === 'dark' ? Color.neutral30 : Color.neutral100)};
+  --activeFill: ${({ theme }) => (theme.mode === 'dark' ? Color.neutral100 : Color.neutral0)};
+
   display: flex;
   width: 100%;
   padding: 10px;
@@ -14,18 +26,6 @@ export const MenuBarWrapper = styled.div`
 `
 
 export const MenuBarInner = styled.div<{ theme: CowSwapTheme }>`
-  --height: 56px;
-  --width: 100%;
-  --bgColor: ${({ theme }) => (theme.mode === 'dark' ? Color.neutral10 : 'rgba(255, 248, 247, 0.6)')};
-  --color: ${({ theme }) => (theme.mode === 'dark' ? Color.neutral98 : Color.neutral0)};
-  --borderRadius: 28px;
-  --blur: 16px;
-
-  // Elements
-  --defaultFill: ${({ theme }) => (theme.mode === 'dark' ? Color.neutral60 : Color.neutral50)};
-  --activeBackground: ${({ theme }) => (theme.mode === 'dark' ? Color.neutral30 : Color.neutral50)};
-  --activeFill: ${({ theme }) => (theme.mode === 'dark' ? Color.neutral100 : Color.neutral0)};
-
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
@@ -141,7 +141,7 @@ export const NavItems = styled.ul<{ mobileMode?: boolean; theme: CowSwapTheme }>
       z-index: 1000;
       box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
       border-radius: 28px;
-      background: var(--bgColor);
+      background: var(--activeBackground);
       backdrop-filter: blur(var(--blur));
       border-radius: var(--borderRadius);
       padding: 16px 16px 100px;
@@ -173,7 +173,7 @@ export const DropdownContent = styled.div<DropdownContentProps>`
   justify-content: center;
   align-items: flex-start;
   background: ${({ isThirdLevel }) => (isThirdLevel ? 'transparent' : 'var(--bgColor)')};
-  backdrop-filter: blur(15px);
+  backdrop-filter: blur(var(--blur));
   z-index: 1000;
   padding: ${({ isThirdLevel }) => (isThirdLevel ? '6px' : '6px')};
   min-width: ${({ isThirdLevel }) => (isThirdLevel ? '200px' : '270px')};
@@ -375,6 +375,10 @@ export const RootNavItem = styled.a<{ isOpen?: boolean; mobileMode?: boolean }>`
 
   &:hover {
     background: var(--activeBackground);
+
+    > svg {
+      color: inherit;
+    }
   }
 
   ${({ mobileMode }) =>
@@ -390,7 +394,7 @@ export const RootNavItem = styled.a<{ isOpen?: boolean; mobileMode?: boolean }>`
     width: 13px;
     object-fit: contain;
     margin: 3px auto 0;
-    fill: currentColor;
+    color: var(--defaultFill);
     transform: ${({ isOpen }) => (isOpen ? 'rotate(180deg)' : 'rotate(0deg)')};
     transition: transform 0.2s ease-in-out;
 
@@ -423,7 +427,7 @@ export const RightAligned = styled.div<{ mobileMode?: boolean; flexFlow?: string
   ${({ mobileMode, flexFlowMobile }) =>
     mobileMode &&
     css`
-      gap: 24px;
+      gap: 10px;
       flex-flow: ${flexFlowMobile || 'column wrap'};
     `}
 `
@@ -446,14 +450,15 @@ export const GlobalSettingsButton = styled.button`
   border: 0;
   background: transparent;
   cursor: pointer;
-  transition: background 0.2s, fill 0.2s;
+  transition: background 0.2s ease-in-out, fill 0.2s ease-in-out, transform 0.2s ease-in-out;
   color: inherit;
+  transform: rotate(0deg);
 
   > svg {
     --size: 75%;
     height: var(--size);
     width: var(--size);
-    color: currentColor;
+    color: var(--defaultFill);
     object-fit: contain;
     margin: auto;
   }
@@ -465,6 +470,9 @@ export const GlobalSettingsButton = styled.button`
   &:hover {
     background: var(--activeBackground);
     color: var(--activeFill);
+
+    // on hover roate the icon
+    transform: rotate(360deg);
 
     > svg {
       color: var(--activeFill);

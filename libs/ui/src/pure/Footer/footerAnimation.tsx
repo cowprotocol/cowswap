@@ -4,9 +4,9 @@ import IMG_FLYING_WINK_COW_DARK from '@cowprotocol/assets/images/flying-wink-cow
 import { CowSwapTheme } from '@cowprotocol/widget-lib'
 
 import SVG from 'react-inlinesvg'
-import styled, { keyframes, ThemeProvider } from 'styled-components/macro'
+import styled, { keyframes } from 'styled-components/macro'
 
-import { themeMapper } from '../../consts'
+import { Color, themeMapper } from '../../consts'
 
 const scrollHorizontal = keyframes`
   0% {
@@ -18,7 +18,7 @@ const scrollHorizontal = keyframes`
 `
 
 const FooterAnimationContainer = styled.div<{ theme: CowSwapTheme }>`
-  --color: ${({ theme }) => (theme === 'dark' ? '#fff' : '#fff')};
+  --color: ${({ theme }) => (theme === 'dark' ? 'red' : Color.neutral98)};
   --height: 112px;
   --fontSize: 156px;
   --animationSpeed: 10s;
@@ -97,19 +97,17 @@ export const FooterAnimation = ({ theme }: { theme: CowSwapTheme }) => {
   }, [])
 
   return (
-    <ThemeProvider theme={styledTheme}>
-      <FooterAnimationContainer theme={styledTheme} ref={containerRef}>
-        <ScrollingContent ref={contentRef}>
-          <ScrollingContentWrapper>
-            <b>MOOOOOOOOOOOOOOOOOO</b>
-            <SVG src={IMG_FLYING_WINK_COW_DARK} />
-          </ScrollingContentWrapper>
-          <ScrollingContentWrapper>
-            <b>MOOOOOOOOOOOOOOOOOO</b>
-            <SVG src={IMG_FLYING_WINK_COW_DARK} />
-          </ScrollingContentWrapper>
-        </ScrollingContent>
-      </FooterAnimationContainer>
-    </ThemeProvider>
+    <FooterAnimationContainer theme={styledTheme} ref={containerRef}>
+      <ScrollingContent ref={contentRef}>
+        <ScrollingContentWrapper>
+          <b>MOOOOOOOOOOOOOOOOOO</b>
+          <SVG src={IMG_FLYING_WINK_COW_DARK} />
+        </ScrollingContentWrapper>
+        <ScrollingContentWrapper>
+          <b>MOOOOOOOOOOOOOOOOOO</b>
+          <SVG src={IMG_FLYING_WINK_COW_DARK} />
+        </ScrollingContentWrapper>
+      </ScrollingContent>
+    </FooterAnimationContainer>
   )
 }

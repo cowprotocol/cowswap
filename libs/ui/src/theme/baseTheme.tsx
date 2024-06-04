@@ -17,7 +17,7 @@ export function colors(darkMode: boolean): Colors {
     ...colorsUniswap(darkMode),
 
     // V3 colors ======================
-    primary: darkMode ? '#0d5ed9' : '#052B65',
+    primary: darkMode ? '#65D9FF' : '#004293',
     background: darkMode ? '#07162D' : '#ECF1F8',
     paper: darkMode ? '#0c264b' : '#FFFFFF',
 
@@ -27,7 +27,7 @@ export function colors(darkMode: boolean): Colors {
     paperDarkestCustom: darkMode ? darken('#07162d', 0.05) : darken('#ecf1f8', 0.1),
     // =====================================================
 
-    text: darkMode ? '#CAE9FF' : '#052B65',
+    text: darkMode ? '#DEE3E6' : '#00234E',
     secondaryText: darkMode ? '#86B2DC' : '#506B93',
     disabledText: darkMode ? '#86B2DC' : '#506B93',
 
@@ -41,14 +41,14 @@ export function colors(darkMode: boolean): Colors {
     white: darkMode ? '#CAE9FF' : '#ffffff',
     black: '#07162D',
     blueDark1: '#07162D',
-    blueDark2: '#052B65',
+    blueDark2: '#004293',
     blueLight1: '#CAE9FF',
     grey1: darkMode ? '#07162D' : '#ECF1F8',
 
     bg1: darkMode ? '#0c264b' : '#ffffff',
-    bg2: darkMode ? '#0d5ed9' : '#052B65',
+    bg2: darkMode ? '#0d5ed9' : '#004293',
 
-    text1: darkMode ? '#CAE9FF' : '#052B65',
+    text1: darkMode ? '#CAE9FF' : '#004293',
     text2: darkMode ? '#86B2DC' : '#506B93',
     text3: darkMode ? '#428dff' : '#0d5ed9',
 
@@ -61,10 +61,10 @@ export function colors(darkMode: boolean): Colors {
 
     // DEPRECATED but keeping because of dependencies
     bg3: darkMode ? '#07162D' : '#ECF1F8',
-    primary1: darkMode ? '#0d5ed9' : '#052B65',
-    primary3: darkMode ? '#0d5ed9' : '#052B65',
-    primary4: darkMode ? '#0d5ed9' : '#052B65',
-    primary5: darkMode ? '#0d5ed9' : '#052B65',
+    primary1: darkMode ? '#0d5ed9' : '#004293',
+    primary3: darkMode ? '#0d5ed9' : '#004293',
+    primary4: darkMode ? '#0d5ed9' : '#004293',
+    primary5: darkMode ? '#0d5ed9' : '#004293',
     red1: darkMode ? '#EB3030' : '#D41300',
 
     // ==========================================
@@ -189,7 +189,7 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
     button: {
       bg1: darkMode
         ? 'linear-gradient(90deg, #0852C5 0%, #1970F8 100%), linear-gradient(0deg, #0852C5, #0852C5), #0F5BD0;'
-        : '#052B65',
+        : '#004293',
       text1: darkMode ? `var(${UI.COLOR_TEXT})` : '#FFFFFF',
     },
     util: {

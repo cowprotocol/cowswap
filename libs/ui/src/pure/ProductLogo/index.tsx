@@ -33,12 +33,12 @@ const LOGOS: Record<ProductVariant, ThemedLogo> = {
       default: {
         src: LOGO_COWSWAP,
         alt: 'CoW Swap light mode',
-        color: '#012F7A',
+        color: '#004293',
       },
       logoIconOnly: {
         src: LOGO_ICON_COW,
         alt: 'CoW Swap icon only light mode',
-        color: '#012F7A',
+        color: '#004293',
       },
     },
     dark: {

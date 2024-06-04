@@ -73,7 +73,7 @@ export interface MenuItem {
 
 interface MenuBarProps {
   navItems: MenuItem[]
-  theme: CowSwapTheme
+  theme: 'light' | 'dark'
   productVariant: ProductVariant
   additionalContent?: React.ReactNode
   showGlobalSettings?: boolean
@@ -399,7 +399,11 @@ const GlobalSettingsDropdown: React.FC<{ mobileMode: boolean; settingsNavItems?:
       {isOpen && (
         <DropdownContent isOpen={true} ref={dropdownRef} alignRight mobileMode={mobileMode}>
           {settingsNavItems.map((item, index) => (
-            <StyledDropdownContentItem key={index} href={item.href}>
+            <StyledDropdownContentItem
+              key={index}
+              href={item.href}
+              onClick={item.onClick} // Handle onClick here
+            >
               <DropdownContentItemText>
                 <DropdownContentItemTitle>{item.label}</DropdownContentItemTitle>
               </DropdownContentItemText>

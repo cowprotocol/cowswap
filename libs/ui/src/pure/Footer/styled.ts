@@ -5,9 +5,9 @@ import styled from 'styled-components/macro'
 import { Color, Media } from '../../consts'
 
 export const FooterContainer = styled.footer<{ theme: CowSwapTheme; expanded: boolean; hasTouchFooter: boolean }>`
-  --bgColor: ${Color.neutral10};
-  --color: ${Color.neutral50};
-  --colorTitle: ${Color.neutral98};
+  --bgColor: ${({ theme }) => (theme === 'dark' ? Color.neutral0 : Color.neutral10)};
+  --color: ${({ theme }) => (theme === 'dark' ? Color.neutral50 : Color.neutral50)};
+  --colorTitle: ${({ theme }) => (theme === 'dark' ? Color.neutral90 : Color.neutral98)};
   background: var(--bgColor);
   color: var(--color);
   padding: ${({ expanded, hasTouchFooter }) =>

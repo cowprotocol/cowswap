@@ -1,31 +1,22 @@
-// import { CHRISTMAS_THEME_ENABLED } from '@cowprotocol/common-const'
+import { useMemo } from 'react'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
-
 import ErrorBoundary from 'legacy/components/ErrorBoundary'
-// import Footer from 'legacy/components/Footer'
-// import Header from 'legacy/components/Header'
 import { URLWarning } from 'legacy/components/Header/URLWarning'
 import TopLevelModals from 'legacy/components/TopLevelModals'
 import DarkModeQueryParamReader from 'legacy/theme'
-
 import { OrdersPanel } from 'modules/account'
 import { useInitializeUtm } from 'modules/utm'
-// import { WinterFooter } from 'modules/winterEdition'
-
 import { InvalidLocalTimeWarning } from 'common/containers/InvalidLocalTimeWarning'
 import { useAnalyticsReporter } from 'common/hooks/useAnalyticsReporter'
 import RedirectAnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers/RedirectAnySwapAffectedUsers'
-
 import { RoutesApp } from './RoutesApp'
 import * as styledEl from './styled'
-
 import { MenuBar, MenuItem, Footer, ProductVariant, GlobalCoWDAOStyles, Color } from '@cowprotocol/ui'
-
 import { CoWDAOFonts } from 'common/styles/CoWDAOFonts'
 import IMG_ICON_BRANDED_DOT_RED from '@cowprotocol/assets/images/icon-branded-dot-red.svg'
+import { useDarkModeManager } from 'legacy/state/user/hooks'
 
 // Move this to const file ==========
-const THEME_MODE = 'light'
 const PRODUCT_VARIANT = ProductVariant.CowSwap
 
 const NAV_ITEMS: MenuItem[] = [
@@ -75,27 +66,6 @@ const NAV_ITEMS: MenuItem[] = [
         external: true,
       },
     ],
-  },
-]
-
-const NAV_ITEMS_SETTINGS: MenuItem[] = [
-  {
-    label: 'Dark mode',
-    onClick: () => {
-      // Handle dark mode toggle
-      console.log('Dark mode toggled')
-    },
-  },
-  {
-    label: 'Disable sound',
-    onClick: () => {
-      // Handle sound toggle
-      console.log('Sound toggled')
-    },
-  },
-  {
-    label: 'Account Settings',
-    href: 'https://cow.fi/',
   },
 ]
 
@@ -161,6 +131,28 @@ export function App() {
   const isInjectedWidgetMode = isInjectedWidget()
   const GlobalStyles = GlobalCoWDAOStyles(CoWDAOFonts)
 
+  const [darkMode, toggleDarkMode] = useDarkModeManager()
+
+  const settingsNavItems = useMemo(
+    () => [
+      {
+        label: darkMode ? 'Light mode' : 'Dark mode',
+        onClick: toggleDarkMode,
+      },
+      {
+        label: 'Disable sound',
+        onClick: () => {
+          console.log('Sound toggled')
+        },
+      },
+      {
+        label: 'Account Settings',
+        href: 'https://cow.fi/',
+      },
+    ],
+    [darkMode, toggleDarkMode]
+  )
+
   return (
     <ErrorBoundary>
       <RedirectAnySwapAffectedUsers />
@@ -174,13 +166,12 @@ export function App() {
 
         <OrdersPanel />
 
-        {/* Hide header for injected widget mode */}
         {!isInjectedWidgetMode && (
           <MenuBar
             navItems={NAV_ITEMS}
-            theme={THEME_MODE}
+            theme={darkMode ? 'dark' : 'light'}
             productVariant={PRODUCT_VARIANT}
-            settingsNavItems={NAV_ITEMS_SETTINGS}
+            settingsNavItems={settingsNavItems}
             showGlobalSettings
           />
         )}
@@ -191,13 +182,11 @@ export function App() {
           <styledEl.Marginer />
         </styledEl.BodyWrapper>
 
-        {isInjectedWidgetMode ? (
-          <styledEl.MarginerBottom></styledEl.MarginerBottom>
-        ) : (
+        {!isInjectedWidgetMode && (
           <Footer
             description={FOOTER_DESCRIPTION}
             navItems={FOOTER_NAV_ITEMS}
-            theme={THEME_MODE}
+            theme={darkMode ? 'dark' : 'light'}
             productVariant={PRODUCT_VARIANT}
             hasTouchFooter
           />

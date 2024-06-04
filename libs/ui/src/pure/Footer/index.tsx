@@ -101,8 +101,8 @@ export const Footer = ({
                     variant={ProductVariant.CowDao}
                     theme={theme}
                     height={32}
-                    overrideColor={Color.neutral100}
-                    overrideHoverColor={Color.neutral80}
+                    overrideColor={theme === 'light' ? Color.neutral100 : Color.neutral90}
+                    overrideHoverColor={theme === 'light' ? Color.neutral98 : Color.neutral95}
                   />
                 </FooterLogo>
                 {description && <Description>{description}</Description>}
@@ -137,7 +137,7 @@ export const Footer = ({
           </>
         )}
         <FooterBottom>
-          <BottomText>&copy; CoW DAO – {new Date().getFullYear()}</BottomText>
+          <BottomText>&copy; CoW DAO - {new Date().getFullYear()}</BottomText>
           <FooterBottomLogos>
             {PRODUCT_LOGO_LINKS.map((product, index) => (
               <a key={index} href={product.href} target="_blank" rel="noopener noreferrer">
@@ -145,7 +145,7 @@ export const Footer = ({
                   variant={product.productVariant}
                   theme={theme}
                   logoIconOnly={false}
-                  overrideColor={Color.neutral50}
+                  overrideColor={theme === 'light' ? Color.neutral40 : Color.neutral40}
                   overrideHoverColor={Color.neutral98}
                   height={20}
                 />

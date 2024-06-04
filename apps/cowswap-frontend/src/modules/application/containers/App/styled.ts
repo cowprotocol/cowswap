@@ -1,12 +1,15 @@
 import * as CSS from 'csstype'
 import styled from 'styled-components/macro'
 
+import IMAGE_BACKGROUND_LIGHT from '@cowprotocol/assets/images/background-cowswap-lightmode.svg'
+import IMAGE_BACKGROUND_DARK from '@cowprotocol/assets/images/background-cowswap-darkmode.svg'
+
 export const AppWrapper = styled.div<Partial<CSS.Properties>>`
   display: flex;
   flex-flow: column;
   align-items: flex-start;
   min-height: ${({ theme }) => (theme.isInjectedWidgetMode ? '400px' : '100vh')};
-  height: ${({ theme }) => (theme.isInjectedWidgetMode ? 'initial' : '100vh')};
+  height: ${({ theme }) => (theme.isInjectedWidgetMode ? 'initial' : '100%')};
 `
 
 export const Marginer = styled.div`
@@ -32,7 +35,8 @@ export const BodyWrapper = styled.div`
   border-bottom-left-radius: ${({ theme }) => (theme.isInjectedWidgetMode ? '0' : 'var(--marginBottomOffset)')};
   border-bottom-right-radius: ${({ theme }) => (theme.isInjectedWidgetMode ? '0' : 'var(--marginBottomOffset)')};
   min-height: ${({ theme }) => (theme.isInjectedWidgetMode ? 'initial' : 'calc(100vh - 200px)')};
-  background: ${({ theme }) => (theme.isInjectedWidgetMode ? 'transparent' : theme.darkMode ? '#0E0F2D' : '#65D9FF')};
+  background: ${({ theme }) => (theme.isInjectedWidgetMode ? 'transparent' : theme.darkMode ? '#0E0F2D' : '#65D9FF')}
+    url(${({ theme }) => (theme.darkMode ? IMAGE_BACKGROUND_DARK : IMAGE_BACKGROUND_LIGHT)}) no-repeat bottom -1px center;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     padding: ${({ theme }) => (theme.isInjectedWidgetMode ? '0 0 16px' : '150px 16px 76px')};
