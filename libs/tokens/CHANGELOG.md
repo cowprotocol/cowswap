@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.1](https://github.com/cowprotocol/cowswap/compare/tokens-v1.3.0...tokens-v1.3.1) (2024-06-04)
+
+
+### Bug Fixes
+
+* **arbitrum:** replace GNO with COW in fav tokens ([#4503](https://github.com/cowprotocol/cowswap/issues/4503)) ([518cf58](https://github.com/cowprotocol/cowswap/commit/518cf583667a53ecf724f1353306a5398edf1034))
+
 ## [1.3.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.2.0...tokens-v1.3.0) (2024-05-29)
 
 
