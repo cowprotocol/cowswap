@@ -644,7 +644,7 @@ export default function Page({ siteConfigData }: PageProps) {
                 CoW Protocol users the best possible settlements for their trade intents.
                 <br />
                 <br />
-                Advanced solver teams can earn hundreds of thousands of dollars per month by winning batch auctions
+                Advanced solver teams can earn hundreds of thousands of dollars per year by winning batch auctions
                 frequently.
                 <br />
                 <br />

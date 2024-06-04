@@ -28,9 +28,9 @@ export const MenuBarInner = styled.div<{ theme: CowSwapTheme }>`
 
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
-  padding: 8px 4px;
+  padding: 8px;
   gap: 8px;
   height: var(--height);
   width: var(--width);
@@ -119,12 +119,13 @@ export const NavItems = styled.ul<{ mobileMode?: boolean; theme: CowSwapTheme }>
   --blur: 16px;
 
   display: flex;
+  width: auto;
   flex-flow: row wrap;
   justify-content: flex-start;
   align-items: stretch;
   gap: 4px;
   list-style-type: none;
-  margin: 0 auto 0 var(--marginLeft);
+  margin: 0 0 0 var(--marginLeft);
   padding: 0;
 
   ${({ mobileMode }) =>
@@ -139,12 +140,10 @@ export const NavItems = styled.ul<{ mobileMode?: boolean; theme: CowSwapTheme }>
       left: 10px;
       z-index: 1000;
       box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
-      /* padding: 16px; */
       border-radius: 28px;
       background: var(--bgColor);
       backdrop-filter: blur(var(--blur));
       border-radius: var(--borderRadius);
-
       padding: 16px 16px 100px;
       overflow-y: scroll;
       min-height: 100vh;
@@ -176,10 +175,10 @@ export const DropdownContent = styled.div<DropdownContentProps>`
   background: ${({ isThirdLevel }) => (isThirdLevel ? 'transparent' : 'var(--bgColor)')};
   backdrop-filter: blur(15px);
   z-index: 1000;
-  padding: ${({ isThirdLevel }) => (isThirdLevel ? '8px' : '4px')};
-  min-width: ${({ isThirdLevel }) => (isThirdLevel ? '200px' : '300px')};
+  padding: ${({ isThirdLevel }) => (isThirdLevel ? '6px' : '6px')};
+  min-width: ${({ isThirdLevel }) => (isThirdLevel ? '200px' : '270px')};
   width: ${({ isThirdLevel }) => (isThirdLevel ? '100%' : 'max-content')};
-  max-width: ${({ isThirdLevel }) => (isThirdLevel ? '100%' : '530px')};
+  /* max-width: ${({ isThirdLevel }) => (isThirdLevel ? '100%' : '530px')}; */
   height: auto;
   border-radius: 28px;
   position: ${({ isThirdLevel }) => (isThirdLevel ? 'relative' : 'absolute')};
@@ -218,11 +217,19 @@ export const DropdownContent = styled.div<DropdownContentProps>`
   }
 `
 
-export const StyledDropdownContentItem = styled.a<{ isOpen?: boolean; isThirdLevel?: boolean }>`
+export const StyledDropdownContentItem = styled.a<{
+  isOpen?: boolean
+  isThirdLevel?: boolean
+  bgColor?: string
+  color?: string
+  hoverBgColor?: string
+  hoverColor?: string
+  mobileMode?: boolean
+}>`
   display: flex;
   flex-flow: row wrap;
   align-items: center;
-  padding: ${({ isThirdLevel }) => (isThirdLevel ? '16px 16px' : '8px 12px')};
+  padding: ${({ isThirdLevel }) => (isThirdLevel ? '16px' : '8px 12px')};
   text-decoration: none;
   color: inherit;
   transition: background 0.2s ease-in-out;
@@ -237,6 +244,10 @@ export const StyledDropdownContentItem = styled.a<{ isOpen?: boolean; isThirdLev
 
     > svg.arrow-icon-right {
       opacity: 1;
+
+      &.external {
+        transform: rotate(-45deg);
+      }
     }
   }
 
@@ -244,7 +255,7 @@ export const StyledDropdownContentItem = styled.a<{ isOpen?: boolean; isThirdLev
     display: block;
     --size: 20px;
     height: var(--size);
-    width: auto;
+    width: var(--size);
     margin: 0 5px 0 auto;
     object-fit: contain;
     color: inherit;
@@ -254,6 +265,10 @@ export const StyledDropdownContentItem = styled.a<{ isOpen?: boolean; isThirdLev
     &.arrow-icon-right {
       opacity: 0;
       transform: none;
+    }
+
+    &.arrow-icon-right.external {
+      opacity: 1;
     }
   }
 
@@ -279,8 +294,9 @@ export const DropdownContentItemImage = styled.div`
 
 export const DropdownContentItemText = styled.div`
   display: flex;
-  flex-direction: column;
+  flex-flow: column wrap;
   gap: 4px;
+  white-space: nowrap;
 `
 
 export const DropdownContentItemTitle = styled.span`
@@ -295,12 +311,30 @@ export const DropdownContentItemDescription = styled.span`
   line-height: 1.2;
 `
 
-export const DropdownContentItemButton = styled.button`
-  ${StyledDropdownContentItem};
-  background: red;
+export const DropdownContentItemButton = styled(StyledDropdownContentItem)<{
+  bgColor?: string
+  color?: string
+  hoverBgColor?: string
+  hoverColor?: string
+  minHeight?: string
+  mobileMode?: boolean
+}>`
+  background: ${({ bgColor }) => bgColor || Color.neutral100};
+  color: ${({ color }) => color || Color.neutral10};
   width: 100%;
   border: 0;
   border-radius: 24px;
+
+  &:hover {
+    background: ${({ hoverBgColor }) => hoverBgColor || Color.neutral90};
+    color: ${({ hoverColor }) => hoverColor || Color.neutral10};
+  }
+
+  > svg.arrow-icon-right {
+    &.external {
+      transform: rotate(-45deg);
+    }
+  }
 `
 
 export const DropdownMenu = styled.div<{ mobileMode?: boolean }>`
@@ -318,6 +352,7 @@ export const DropdownMenu = styled.div<{ mobileMode?: boolean }>`
     mobileMode &&
     css`
       width: 100%;
+      gap: 24px;
     `}
 `
 
@@ -351,29 +386,44 @@ export const RootNavItem = styled.a<{ isOpen?: boolean; mobileMode?: boolean }>`
     `}
 
   > svg {
-    --size: 12px;
-    height: var(--size);
-    width: var(--size);
+    height: 8px;
+    width: 13px;
     object-fit: contain;
-    margin-left: auto;
+    margin: 3px auto 0;
     fill: currentColor;
     transform: ${({ isOpen }) => (isOpen ? 'rotate(180deg)' : 'rotate(0deg)')};
     transition: transform 0.2s ease-in-out;
+
+    ${({ mobileMode }) =>
+      mobileMode &&
+      css`
+        margin: 3px 0 0 auto;
+      `}
   }
 `
 
 export const RightAligned = styled.div<{ mobileMode?: boolean }>`
   display: flex;
-  flex-direction: row;
+  flex-flow: row nowrap;
   justify-content: flex-end;
   align-items: center;
   gap: 16px;
   margin: 0 0 0 auto;
 
+  ${DropdownContentItemButton} {
+    min-height: 100%;
+    flex-flow: row nowrap;
+
+    > svg.arrow-icon-right {
+      opacity: 1;
+    }
+  }
+
   ${({ mobileMode }) =>
     mobileMode &&
     css`
-      gap: 10px;
+      gap: 24px;
+      flex-flow: column wrap;
     `}
 `
 

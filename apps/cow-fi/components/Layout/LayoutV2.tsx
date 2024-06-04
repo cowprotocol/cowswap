@@ -3,57 +3,105 @@ import styled from 'styled-components/macro'
 
 import IMG_ICON_BRANDED_DOT_RED from '@cowprotocol/assets/images/icon-branded-dot-red.svg'
 import { CoWDAOFonts } from '@/styles/CoWDAOFonts'
-import { bg } from 'make-plural'
 
 const THEME_MODE = 'dark'
-const PRODUCT_VARIANT = ProductVariant.CowProtocol
+const PRODUCT_VARIANT = ProductVariant.CowDao
 
 const NAV_ITEMS: MenuItem[] = [
   {
-    href: '#',
+    label: 'About',
+    children: [
+      { label: 'Governance', href: 'https://docs.cow.fi/governance', external: true },
+      { label: 'Stats', href: 'https://dune.com/cowprotocol/cowswap', external: true },
+      { label: 'Grants', href: 'https://grants.cow.fi/', external: true },
+      { label: 'Careers', href: '/careers' },
+    ],
+  },
+  {
     label: 'Products',
     children: [
-      { href: '/cow-amm', label: 'CoW AMM' },
-      { href: '/cow-swap', label: 'CoW Swap' },
       {
-        href: '/cow-protocol',
-        label: 'CoW Protocol',
-      },
-      {
-        href: '/mev-blocker',
-        label: 'MEV Blocker',
-      },
-      { href: '/widget', label: 'Widget' },
-      { href: '/daos', label: 'For DAOs' },
-    ],
-  },
-  {
-    href: '/learn',
-    label: 'Learn',
-    children: [
-      { href: '/learn/articles', label: 'All articles' },
-      { href: '/learn/topics', label: 'Topics' },
-    ],
-  },
-  {
-    type: 'dropdown',
-    label: 'More',
-    children: [
-      {
-        href: 'https://cow.fi/',
-        label: 'Documentation',
-        description: 'Learn more about CoW',
-        icon: IMG_ICON_BRANDED_DOT_RED,
+        label: 'CoW Swap',
         children: [
-          { href: 'https://cow.fi/cow-amm', label: 'Getting started', description: 'Start using CoW' },
-          { href: 'https://cow.fi/cow-amm', label: 'API', description: 'Integrate with CoW' },
-          { href: 'https://cow.fi/', label: 'Support', description: 'Get help' },
+          { label: 'About', href: '/cow-swap' },
+          { label: 'CoW Swap for DAOs', href: '#' },
+          {
+            label: 'Trade on CoW Swap',
+            href: 'https://swap.cow.fi/#/1/swap/USDC/COW',
+            external: true,
+            isButton: true,
+            bgColor: '#012F7A',
+            color: '#65D9FF',
+          },
         ],
       },
-      { href: 'https://cow.fi/', label: 'API', description: 'Integrate with CoW', icon: IMG_ICON_BRANDED_DOT_RED },
-      { href: 'https://cow.fi/', label: 'Support', description: 'Get help', icon: IMG_ICON_BRANDED_DOT_RED },
-      { href: 'https://cow.fi/', label: 'Trade on CoW Swap', isButton: true },
+      {
+        label: 'CoW Protocol',
+        children: [
+          { label: 'About CoW Protocol', href: '/cow-protocol' },
+          { label: 'CoW Explorer', href: 'https://explorer.cow.fi/', external: true },
+          { label: 'CoW Widget', href: '/widget' },
+          {
+            label: 'Build with CoW Protocol',
+            href: 'https://docs.cow.fi/cow-protocol',
+            external: true,
+            isButton: true,
+          },
+        ],
+      },
+      {
+        label: 'CoW AMM',
+        children: [
+          { label: 'About CoW AMM', href: '/cow-amm' },
+          {
+            label: 'Deploy Liquidity with CoW AMM',
+            href: 'https://deploy-cow-amm.bleu.fi/',
+            external: true,
+            isButton: true,
+          },
+        ],
+      },
+      {
+        label: 'MEV Blocker',
+        children: [
+          { label: 'About MEV Blocker', href: '/mev-blocker' },
+          { label: 'Use MEV Blocker', href: '/mev-blocker#rpc', isButton: true },
+        ],
+      },
     ],
+  },
+  {
+    label: 'Learn',
+    children: [
+      {
+        href: '/learn/what-is-backrunning-mev-attacks-explained',
+        label: 'MEV 101',
+        description: 'MEV Attacks Explained',
+        icon: IMG_ICON_BRANDED_DOT_RED,
+      },
+      { href: '/learn', label: 'Knowledge Base', description: 'Learn more about CoW', icon: IMG_ICON_BRANDED_DOT_RED },
+      { href: 'https://docs.cow.fi/', label: 'Docs', description: 'Read the docs', external: true },
+    ],
+  },
+]
+
+const NAV_ADDITIONAL_BUTTONS = [
+  {
+    label: 'Deploy Liquidity',
+    href: 'https://deploy-cow-amm.bleu.fi/',
+    external: true,
+    isButton: true,
+    bgColor: '#194D05',
+    color: '#BCEC79',
+  },
+  { label: 'Use MEV Blocker', href: '/mev-blocker#rpc', isButton: true, bgColor: '#EC4612', color: '#FEE7CF' },
+  {
+    label: 'Trade on CoW Swap',
+    href: 'https://swap.cow.fi/#/1/swap/USDC/COW',
+    external: true,
+    isButton: true,
+    bgColor: '#65D9FF',
+    color: '#012F7A',
   },
 ]
 
@@ -128,7 +176,12 @@ export default function LayoutV2({ children, bgColor }: LayoutProps) {
   return (
     <>
       <GlobalStyles />
-      <MenuBar navItems={NAV_ITEMS} theme={THEME_MODE} productVariant={PRODUCT_VARIANT} />
+      <MenuBar
+        navItems={NAV_ITEMS}
+        theme={THEME_MODE}
+        productVariant={PRODUCT_VARIANT}
+        additionalNavButtons={NAV_ADDITIONAL_BUTTONS}
+      />
       <Wrapper>{children}</Wrapper>
       <Footer
         description={FOOTER_DESCRIPTION}

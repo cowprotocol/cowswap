@@ -58,11 +58,16 @@ interface NavItemProps {
 export interface MenuItem {
   href?: string
   label?: string
-  type?: 'dropdown'
+  // type?: 'dropdown'
   children?: DropdownMenuItem[]
   productVariant?: ProductVariant
   icon?: string
   isButton?: boolean
+  external?: boolean
+  bgColor?: string
+  hoverBgColor?: string
+  color?: string
+  hoverColor?: string
 }
 
 interface MenuBarProps {
@@ -71,16 +76,22 @@ interface MenuBarProps {
   productVariant: ProductVariant
   additionalContent?: React.ReactNode
   showGlobalSettings?: boolean
+  additionalNavButtons?: MenuItem[]
 }
 
 interface DropdownMenuItem {
   href?: string
+  external?: boolean
   label?: string
   icon?: string
   description?: string
   isButton?: boolean
   children?: DropdownMenuItem[]
   productVariant?: ProductVariant
+  hoverBgColor?: string
+  bgColor?: string
+  color?: string
+  hoverColor?: string
 }
 
 interface DropdownMenuContent {
@@ -113,8 +124,13 @@ const NavItem = ({
       isNavItemDropdown={true}
     />
   ) : (
-    <RootNavItem href={item.href} mobileMode={mobileMode}>
-      {item.label}
+    <RootNavItem
+      href={item.href}
+      mobileMode={mobileMode}
+      target={item.external ? '_blank' : undefined}
+      rel={item.external ? 'noopener noreferrer nofollow' : undefined}
+    >
+      {item.label} {item.external && <span>&#8599;</span>}
     </RootNavItem>
   )
 }
@@ -140,18 +156,6 @@ const DropdownContentItem: React.FC<{ item: DropdownMenuItem; theme: CowSwapThem
     }
   }
 
-  const handleButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault()
-    closeMenu()
-  }
-
-  const renderLinkItem = (content: React.ReactNode, href?: string) => (
-    <StyledDropdownContentItem as="a" href={href} onClick={handleLinkClick} isOpen={isChildrenVisible}>
-      {content}
-      {!item.children && <SVG src={IMG_ICON_ARROW_RIGHT} className="arrow-icon-right" />}
-    </StyledDropdownContentItem>
-  )
-
   const renderItemContent = () => {
     const { productVariant, icon, label, description } = item
     return (
@@ -171,23 +175,58 @@ const DropdownContentItem: React.FC<{ item: DropdownMenuItem; theme: CowSwapThem
     )
   }
 
-  return item.children ? (
-    <>
-      <StyledDropdownContentItem as="div" onClick={handleToggleChildrenVisibility} isOpen={isChildrenVisible}>
+  if (item.isButton) {
+    return (
+      <DropdownContentItemButton
+        href={item.href}
+        target={item.external ? '_blank' : '_self'}
+        rel={item.external ? 'noopener noreferrer' : undefined}
+        bgColor={item.bgColor}
+        color={item.color}
+        hoverBgColor={item.hoverBgColor}
+        hoverColor={item.hoverColor}
+      >
         {renderItemContent()}
-        <SVG src={IMG_ICON_CARRET_DOWN} />
-      </StyledDropdownContentItem>
-      {isChildrenVisible && (
-        <DropdownContentWrapper isThirdLevel content={{ title: undefined, items: item.children }} mobileMode={true} />
-      )}
-    </>
-  ) : item.isButton ? (
-    <DropdownContentItemButton onClick={handleButtonClick}>
+        {item.href && !item.children && (
+          <SVG src={IMG_ICON_ARROW_RIGHT} className={`arrow-icon-right ${item.external ? 'external' : ''}`} />
+        )}
+      </DropdownContentItemButton>
+    )
+  }
+
+  if (item.children) {
+    return (
+      <>
+        <StyledDropdownContentItem as="div" onClick={handleToggleChildrenVisibility} isOpen={isChildrenVisible}>
+          {renderItemContent()}
+          <SVG src={IMG_ICON_CARRET_DOWN} />
+        </StyledDropdownContentItem>
+        {isChildrenVisible && (
+          <DropdownContentWrapper isThirdLevel content={{ title: undefined, items: item.children }} mobileMode={true} />
+        )}
+      </>
+    )
+  }
+
+  return (
+    <StyledDropdownContentItem
+      as="a"
+      href={item.href}
+      onClick={handleLinkClick}
+      isOpen={isChildrenVisible}
+      target={item.external ? '_blank' : undefined}
+      rel={item.external ? 'noopener noreferrer' : undefined}
+      bgColor={item.bgColor}
+      color={item.color}
+      hoverBgColor={item.hoverBgColor}
+      hoverColor={item.hoverColor}
+    >
       {renderItemContent()}
-      {!item.children && <SVG src={IMG_ICON_ARROW_RIGHT} className="arrow-icon-right" />}
-    </DropdownContentItemButton>
-  ) : (
-    renderLinkItem(renderItemContent(), item.href)
+      {item.external && <span>&#8599;</span>}
+      {!item.children && (
+        <SVG src={IMG_ICON_ARROW_RIGHT} className={`arrow-icon-right ${item.external ? 'external' : ''}`} />
+      )}
+    </StyledDropdownContentItem>
   )
 }
 
@@ -257,12 +296,12 @@ const DropdownContentWrapper: React.FC<{
   mobileMode?: boolean
   isNavItemDropdown?: boolean
 }> = ({ content, isThirdLevel = false, isVisible = true, mobileMode = false, isNavItemDropdown = false }) => {
-  const [isThirdLevelVisible, setIsThirdLevelVisible] = useState(false)
+  const [visibleThirdLevel, setVisibleThirdLevel] = useState<{ [key: number]: boolean }>({})
 
-  const handleToggleThirdLevelVisibility = (event: React.MouseEvent<HTMLDivElement>) => {
+  const handleToggleThirdLevelVisibility = (event: React.MouseEvent<HTMLDivElement>, index: number) => {
     event.preventDefault()
     event.stopPropagation()
-    setIsThirdLevelVisible((prevVisible) => !prevVisible)
+    setVisibleThirdLevel((prevState) => ({ ...prevState, [index]: !prevState[index] }))
   }
 
   const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
@@ -278,17 +317,26 @@ const DropdownContentWrapper: React.FC<{
     >
       {content.items?.map((item, index) => {
         const hasChildren = !!item.children
-        const Tag = hasChildren ? 'div' : 'a'
+        const Tag = hasChildren ? 'div' : item.isButton ? DropdownContentItemButton : 'a'
         return (
           <StyledDropdownContentItem
             key={index}
-            href={!hasChildren ? item.href : undefined}
-            isOpen={isThirdLevelVisible}
-            isThirdLevel={isThirdLevel}
             as={Tag}
-            onClick={(e: React.MouseEvent<HTMLDivElement | HTMLAnchorElement>) => {
+            href={!hasChildren ? item.href : undefined}
+            isOpen={visibleThirdLevel[index]}
+            isThirdLevel={isThirdLevel}
+            target={!hasChildren && item.external ? '_blank' : undefined}
+            rel={!hasChildren && item.external ? 'noopener noreferrer nofollow' : undefined}
+            bgColor={item.bgColor}
+            color={item.color}
+            hoverBgColor={item.hoverBgColor}
+            hoverColor={item.hoverColor}
+            mobileMode={mobileMode} // Pass mobileMode here
+            onClick={(e: React.MouseEvent<HTMLDivElement | HTMLAnchorElement | HTMLButtonElement>) => {
               if (hasChildren) {
-                handleToggleThirdLevelVisibility(e as React.MouseEvent<HTMLDivElement>)
+                handleToggleThirdLevelVisibility(e as React.MouseEvent<HTMLDivElement>, index)
+              } else if (item.isButton) {
+                handleLinkClick(e as React.MouseEvent<HTMLAnchorElement>)
               } else {
                 handleLinkClick(e as React.MouseEvent<HTMLAnchorElement>)
               }
@@ -300,13 +348,15 @@ const DropdownContentWrapper: React.FC<{
               {item.description && <DropdownContentItemDescription>{item.description}</DropdownContentItemDescription>}
             </DropdownContentItemText>
             {item.children && <SVG src={IMG_ICON_CARRET_DOWN} />}
-            {!item.children && <SVG src={IMG_ICON_ARROW_RIGHT} className="arrow-icon-right" />}
-            {item.children && isThirdLevelVisible && (
+            {!item.children && (
+              <SVG src={IMG_ICON_ARROW_RIGHT} className={`arrow-icon-right ${item.external ? 'external' : ''}`} />
+            )}
+            {item.children && visibleThirdLevel[index] && (
               <DropdownContentWrapper
                 content={{ title: undefined, items: item.children }}
                 isThirdLevel
-                isVisible={isThirdLevelVisible}
-                mobileMode={mobileMode}
+                isVisible={visibleThirdLevel[index]}
+                mobileMode={mobileMode} // Pass mobileMode here
                 isNavItemDropdown={isNavItemDropdown}
               />
             )}
@@ -348,7 +398,7 @@ const GlobalSettingsDropdown = ({ mobileMode }: { mobileMode: boolean }) => {
 }
 
 export const MenuBar = (props: MenuBarProps) => {
-  const { navItems, theme, productVariant: productVariant, additionalContent, showGlobalSettings } = props
+  const { navItems, theme, productVariant, additionalContent, showGlobalSettings, additionalNavButtons } = props
   const [isDaoOpen, setIsDaoOpen] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const menuRef = useRef(null)
@@ -368,8 +418,8 @@ export const MenuBar = (props: MenuBarProps) => {
   const isMobile = useMediaQuery(Media.upToLarge(false))
 
   const handleMobileMenuToggle = (e: React.MouseEvent<HTMLDivElement>) => {
-    e.stopPropagation() // Stop the event from bubbling up
-    setIsMobileMenuOpen(!isMobileMenuOpen) // Directly set to opposite of current state
+    e.stopPropagation()
+    setIsMobileMenuOpen(!isMobileMenuOpen)
   }
 
   React.useEffect(() => {
@@ -401,16 +451,39 @@ export const MenuBar = (props: MenuBarProps) => {
             </NavItems>
           )}
 
-          <RightAligned>
-            {!isMobile && additionalContent}
+          {(additionalContent || additionalNavButtons) && (
+            <RightAligned mobileMode={isMobile}>
+              {!isMobile && additionalContent}
 
-            {isMobile && (
-              <MobileMenuTrigger ref={mobileMenuTriggerRef} theme={styledTheme} onClick={handleMobileMenuToggle}>
-                <SVG src={isMobileMenuOpen ? IMG_ICON_X : IMG_ICON_MENU_HAMBURGER} />
-              </MobileMenuTrigger>
-            )}
-            {showGlobalSettings && <GlobalSettingsDropdown mobileMode={isMobile} />}
-          </RightAligned>
+              {!isMobile &&
+                additionalNavButtons &&
+                additionalNavButtons.map((item, index) => (
+                  <DropdownContentItemButton
+                    key={index}
+                    href={item.href}
+                    target={item.external ? '_blank' : '_self'}
+                    rel={item.external ? 'noopener noreferrer' : undefined}
+                    bgColor={item.bgColor}
+                    color={item.color}
+                    hoverBgColor={item.hoverBgColor}
+                    hoverColor={item.hoverColor}
+                    mobileMode={isMobile}
+                  >
+                    <DropdownContentItemText>
+                      <DropdownContentItemTitle>{item.label}</DropdownContentItemTitle>
+                    </DropdownContentItemText>
+                    <SVG src={IMG_ICON_ARROW_RIGHT} className={`arrow-icon-right ${item.external ? 'external' : ''}`} />
+                  </DropdownContentItemButton>
+                ))}
+
+              {isMobile && (
+                <MobileMenuTrigger ref={mobileMenuTriggerRef} theme={styledTheme} onClick={handleMobileMenuToggle}>
+                  <SVG src={isMobileMenuOpen ? IMG_ICON_X : IMG_ICON_MENU_HAMBURGER} />
+                </MobileMenuTrigger>
+              )}
+              {showGlobalSettings && <GlobalSettingsDropdown mobileMode={isMobile} />}
+            </RightAligned>
+          )}
         </MenuBarInner>
 
         {isMobile && isMobileMenuOpen && (
@@ -419,7 +492,30 @@ export const MenuBar = (props: MenuBarProps) => {
               {navItems.map((item, index) => (
                 <NavItem key={index} item={item} mobileMode={isMobile} />
               ))}
-              {additionalContent}
+              <RightAligned mobileMode={isMobile}>
+                {additionalContent}
+                {additionalNavButtons &&
+                  additionalNavButtons.map((item, index) => (
+                    <DropdownContentItemButton
+                      key={index}
+                      href={item.href}
+                      target={item.external ? '_blank' : '_self'}
+                      rel={item.external ? 'noopener noreferrer' : undefined}
+                      bgColor={item.bgColor}
+                      color={item.color}
+                      hoverBgColor={item.hoverBgColor}
+                      hoverColor={item.hoverColor}
+                    >
+                      <DropdownContentItemText>
+                        <DropdownContentItemTitle>{item.label}</DropdownContentItemTitle>
+                      </DropdownContentItemText>
+                      <SVG
+                        src={IMG_ICON_ARROW_RIGHT}
+                        className={`arrow-icon-right ${item.external ? 'external' : ''}`}
+                      />
+                    </DropdownContentItemButton>
+                  ))}
+              </RightAligned>
             </div>
           </NavItems>
         )}

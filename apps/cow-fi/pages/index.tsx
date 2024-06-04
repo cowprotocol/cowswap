@@ -76,7 +76,7 @@ export default function Page({ siteConfigData }: PageProps) {
           <ContainerCardSection>
             <SectionTitleWrapper color={Color.neutral0} maxWidth={1100} margin="100px auto">
               <SectionTitleText fontSize={54}>
-                Trade in peace, with the most user-protective products in Ethereum
+                CoW DAO develops the most user-protective products in Ethereum - so you can do more with less worry
               </SectionTitleText>
             </SectionTitleWrapper>
 

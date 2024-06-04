@@ -175,6 +175,8 @@ export interface LogoProps {
   overrideColor?: string // Optional override color
   overrideHoverColor?: string // Optional override hover color
   height?: number | string
+  href?: string // Optional href for the logo
+  external?: boolean // Indicates if the href is an external link
 }
 
 const Wrapper = styled.span<{ color?: string; hoverColor?: string; height?: number | string }>`
@@ -191,14 +193,15 @@ const Wrapper = styled.span<{ color?: string; hoverColor?: string; height?: numb
   height: var(--height);
   transition: color 0.2s ease-in-out;
 
-  > svg {
+  > a,
+  > a > svg {
     height: 100%;
     width: auto;
     color: inherit;
     fill: currentColor;
   }
 
-  > svg path {
+  > a > svg path {
     fill: currentColor;
   }
 
@@ -214,14 +217,24 @@ export const ProductLogo = ({
   overrideColor,
   overrideHoverColor,
   height,
+  href = '/',
+  external = false,
 }: LogoProps) => {
   const logoForTheme = LOGOS[variant][themeMode]
   const logoInfo = logoIconOnly && logoForTheme.logoIconOnly ? logoForTheme.logoIconOnly : logoForTheme.default
   const initialColor = overrideColor || logoInfo.color
 
+  const logoElement = <SVG src={logoInfo.src} description={logoInfo.alt} />
+
   return (
     <Wrapper color={initialColor} hoverColor={overrideHoverColor || logoInfo.color} height={height}>
-      <SVG src={logoInfo.src} description={logoInfo.alt} />
+      {href ? (
+        <a href={href} target={external ? '_blank' : '_self'} rel={external ? 'noopener noreferrer' : undefined}>
+          {logoElement}
+        </a>
+      ) : (
+        logoElement
+      )}
     </Wrapper>
   )
 }

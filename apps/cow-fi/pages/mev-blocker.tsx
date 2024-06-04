@@ -286,7 +286,7 @@ export default function Page({ siteConfigData }: PageProps) {
               </SectionTitleWrapper>
             </ContainerCard>
 
-            <ContainerCard bgColor={Color.neutral90} color={Color.neutral10}>
+            <ContainerCard bgColor={Color.neutral90} color={Color.neutral10} id="rpc">
               <ContainerCardSection>
                 <SectionTitleWrapper maxWidth={850} gap={56}>
                   <SectionTitleIcon multiple size={80}>

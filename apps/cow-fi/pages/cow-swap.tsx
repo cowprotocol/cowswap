@@ -217,11 +217,14 @@ export default function Page({ siteConfigData }: PageProps) {
 
         <ContainerCard bgColor={'transparent'}>
           <ContainerCardSection>
-            <SectionTitleWrapper maxWidth={900}>
-              <SectionTitleText fontSize={38}>
-                CoW Swap is the first UI built on top of CoW Protocol, an open source and permissionless DEX aggregation
-                protocol that anyone can integrate.
+            <SectionTitleWrapper maxWidth={800}>
+              <SectionTitleText fontSize={62}>
+                CoW Swap is the first user interface built on top of CoW Protocol
               </SectionTitleText>
+              <SectionTitleDescription fontSize={24} color={Color.neutral60}>
+                A powerful, open-source, and permissionless DEX aggregation protocol that anyone can integrate for a
+                variety of DeFi purposes.
+              </SectionTitleDescription>
               <SectionTitleButton bgColor="#65D9FF" color="#012F7A" href="/cow-protocol">
                 Learn about CoW Protocol
               </SectionTitleButton>
