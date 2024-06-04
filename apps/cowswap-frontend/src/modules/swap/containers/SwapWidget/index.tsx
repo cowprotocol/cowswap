@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 
 import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
 import { NATIVE_CURRENCIES, TokenWithLogo } from '@cowprotocol/common-const'
@@ -12,7 +12,6 @@ import SettingsTab from 'legacy/components/Settings'
 import { useModalIsOpen } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
 import { Field } from 'legacy/state/types'
-import { useUserSlippageTolerance } from 'legacy/state/user/hooks'
 
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { EthFlowModal, EthFlowProps } from 'modules/swap/containers/EthFlow'
@@ -25,14 +24,21 @@ import { useSwapButtonContext } from 'modules/swap/hooks/useSwapButtonContext'
 import { useSwapCurrenciesAmounts } from 'modules/swap/hooks/useSwapCurrenciesAmounts'
 import { useTradePricesUpdate } from 'modules/swap/hooks/useTradePricesUpdate'
 import { SwapButtons } from 'modules/swap/pure/SwapButtons'
-import { TradeRates, TradeRatesProps } from 'modules/swap/pure/TradeRates'
 import {
   SwapWarningsBottom,
   SwapWarningsBottomProps,
   SwapWarningsTop,
   SwapWarningsTopProps,
 } from 'modules/swap/pure/warnings'
-import { TradeWidget, TradeWidgetContainer, useReceiveAmountInfo, useTradePriceImpact } from 'modules/trade'
+import {
+  getTotalCosts,
+  TradeFeesAndCosts,
+  TradeTotalCostsDetails,
+  TradeWidget,
+  TradeWidgetContainer,
+  useReceiveAmountInfo,
+  useTradePriceImpact,
+} from 'modules/trade'
 import { useTradeRouteContext } from 'modules/trade/hooks/useTradeRouteContext'
 import { useWrappedToken } from 'modules/trade/hooks/useWrappedToken'
 import { getQuoteTimeOffset } from 'modules/tradeQuote'
@@ -49,25 +55,24 @@ import { useIsSwapEth } from '../../hooks/useIsSwapEth'
 import {
   useDerivedSwapInfo,
   useHighFeeWarning,
-  useIsFeeGreaterThanInput,
   useSwapActionHandlers,
   useSwapState,
   useUnknownImpactWarning,
 } from '../../hooks/useSwapState'
 import { useTradeQuoteStateFromLegacy } from '../../hooks/useTradeQuoteStateFromLegacy'
 import { ConfirmSwapModalSetup } from '../ConfirmSwapModalSetup'
+import { RowDeadline } from '../Row/RowDeadline'
 
 const BUTTON_STATES_TO_SHOW_BUNDLE_APPROVAL_BANNER = [SwapButtonState.ApproveAndSwap]
 const BUTTON_STATES_TO_SHOW_BUNDLE_WRAP_BANNER = [SwapButtonState.WrapAndSwap]
 
 export function SwapWidget() {
   const { chainId, account } = useWalletInfo()
-  const { slippageAdjustedSellAmount, allowedSlippage, currencies, currenciesIds, trade } = useDerivedSwapInfo()
+  const { slippageAdjustedSellAmount, allowedSlippage, currencies, trade } = useDerivedSwapInfo()
   const parsedAmounts = useSwapCurrenciesAmounts()
   const { isSupportedWallet } = useWalletDetails()
   const isSwapUnsupported = useIsTradeUnsupported(currencies.INPUT, currencies.OUTPUT)
   const swapActions = useSwapActionHandlers()
-  const userAllowedSlippage = useUserSlippageTolerance()
   const swapState = useSwapState()
   const { independentField, recipient } = swapState
   const showRecipientControls = useShowRecipientControls(recipient)
@@ -80,11 +85,6 @@ export function SwapWidget() {
   const receiveAmountInfo = useReceiveAmountInfo()
 
   const isTradePriceUpdating = useTradePricesUpdate()
-  const { isFeeGreater, fee } = useIsFeeGreaterThanInput({
-    chainId,
-    address: currenciesIds.INPUT,
-    trade,
-  })
 
   const inputToken = useMemo(() => {
     if (!currencies.INPUT) return currencies.INPUT
@@ -242,7 +242,6 @@ export function SwapWidget() {
     buyingFiatAmount,
     priceImpact: priceImpactParams.priceImpact,
     tradeUrlParams,
-    isFeeGreater,
   }
 
   const swapWarningsBottomProps: SwapWarningsBottomProps = {
@@ -252,22 +251,22 @@ export function SwapWidget() {
     currencyOut: currencies.OUTPUT || undefined,
   }
 
-  const tradeRatesProps: TradeRatesProps = {
-    trade,
-    userAllowedSlippage,
-    allowedSlippage,
-    isFeeGreater,
-    fee,
-    rateInfoParams,
-    receiveAmountInfo,
-    widgetParams,
-  }
+  const totalCosts = receiveAmountInfo && getTotalCosts(receiveAmountInfo)
 
   const slots = {
     settingsWidget: <SettingsTab placeholderSlippage={allowedSlippage} />,
     bottomContent: (
       <>
-        <TradeRates {...tradeRatesProps} />
+        <TradeTotalCostsDetails totalCosts={totalCosts} rateInfoParams={rateInfoParams}>
+          <>
+            <TradeFeesAndCosts
+              receiveAmountInfo={receiveAmountInfo}
+              widgetParams={widgetParams}
+              withTimelineDot={false}
+            />
+            <RowDeadline />
+          </>
+        </TradeTotalCostsDetails>
         <SwapWarningsTop {...swapWarningsTopProps} />
         <SafeTokenBanner sellTokenAddress={inputToken?.address} buyTokenAddress={outputToken?.address} />
         <SwapButtons {...swapButtonContext} />
@@ -275,8 +274,6 @@ export function SwapWidget() {
       </>
     ),
   }
-
-  const disablePriceImpact = isFeeGreater
 
   const params = {
     isEoaEthFlow,
@@ -287,7 +284,6 @@ export function SwapWidget() {
     priceImpact: priceImpactParams,
     disableQuotePolling: true,
     tradeQuoteStateOverride,
-    disablePriceImpact,
   }
 
   useSetLocalTimeOffset(getQuoteTimeOffset(swapButtonContext.quoteDeadlineParams))
@@ -306,11 +302,13 @@ export function SwapWidget() {
           confirmModal={
             <ConfirmSwapModalSetup
               chainId={chainId}
+              rateInfoParams={rateInfoParams}
+              trade={trade}
+              allowedSlippage={allowedSlippage}
               doTrade={swapButtonContext.handleSwap}
               priceImpact={priceImpactParams}
               inputCurrencyInfo={inputCurrencyPreviewInfo}
               outputCurrencyInfo={outputCurrencyPreviewInfo}
-              tradeRatesProps={tradeRatesProps}
               refreshInterval={SWAP_QUOTE_CHECK_INTERVAL}
             />
           }

@@ -1,28 +1,26 @@
 import React from 'react'
 
-import { bpsToPercent, formatPercent } from '@cowprotocol/common-utils'
 import { CowSwapWidgetAppParams } from '@cowprotocol/widget-lib'
 
 import { useUsdAmount } from '../../../usdAmount'
+import { PartnerFeeRow } from '../../pure/PartnerFeeRow'
 import { ReviewOrderModalAmountRow } from '../../pure/ReviewOrderModalAmountRow'
 import { ReceiveAmountInfo } from '../../types'
 import { getDirectedReceiveAmounts } from '../../utils/getReceiveAmountInfo'
-import * as styledEl from '../TradeBasicConfirmDetails/styled'
 
 interface TradeFeesAndCostsProps {
-  receiveAmountInfo: ReceiveAmountInfo
+  receiveAmountInfo: ReceiveAmountInfo | null
   widgetParams: Partial<CowSwapWidgetAppParams>
   withTimelineDot?: boolean
 }
 
 export function TradeFeesAndCosts(props: TradeFeesAndCostsProps) {
   const { receiveAmountInfo, widgetParams, withTimelineDot = true } = props
-  const { networkFeeAmount } = getDirectedReceiveAmounts(receiveAmountInfo)
-  const {
-    costs: {
-      partnerFee: { amount: partnerFeeAmount, bps: partnerFeeBps },
-    },
-  } = receiveAmountInfo
+
+  const networkFeeAmount = receiveAmountInfo && getDirectedReceiveAmounts(receiveAmountInfo).networkFeeAmount
+  const partnerFee = receiveAmountInfo && receiveAmountInfo.costs.partnerFee
+  const partnerFeeAmount = partnerFee?.amount
+  const partnerFeeBps = partnerFee?.bps
 
   const partnerFeeUsd = useUsdAmount(partnerFeeAmount).value
   const networkFeeAmountUsd = useUsdAmount(networkFeeAmount).value
@@ -30,36 +28,16 @@ export function TradeFeesAndCosts(props: TradeFeesAndCostsProps) {
   return (
     <>
       {/*Partner fee*/}
-      {partnerFeeAmount.greaterThan(0) ? (
-        <ReviewOrderModalAmountRow
-          withTimelineDot={withTimelineDot}
-          amount={partnerFeeAmount}
-          fiatAmount={partnerFeeUsd}
-          tooltip={
-            widgetParams.content?.feeTooltipMarkdown || (
-              <>
-                This fee helps pay for maintenance & improvements to the swap experience.
-                <br />
-                <br />
-                The fee is {partnerFeeBps} BPS ({formatPercent(bpsToPercent(partnerFeeBps))}%), applied only if the
-                trade is executed.
-              </>
-            )
-          }
-          label="Total fee"
-        />
-      ) : (
-        <ReviewOrderModalAmountRow
-          withTimelineDot={withTimelineDot}
-          tooltip="Unlike other exchanges, CoW Swap doesn’t charge a fee for trading!"
-          label="Fee"
-        >
-          <styledEl.GreenText>FREE</styledEl.GreenText>
-        </ReviewOrderModalAmountRow>
-      )}
+      <PartnerFeeRow
+        withTimelineDot={withTimelineDot}
+        partnerFeeUsd={partnerFeeUsd}
+        partnerFeeAmount={partnerFeeAmount}
+        partnerFeeBps={partnerFeeBps}
+        feeTooltipMarkdown={widgetParams.content?.feeTooltipMarkdown}
+      />
 
       {/*Network cost*/}
-      {networkFeeAmount.greaterThan(0) && (
+      {networkFeeAmount?.greaterThan(0) && (
         <ReviewOrderModalAmountRow
           withTimelineDot={withTimelineDot}
           amount={networkFeeAmount}

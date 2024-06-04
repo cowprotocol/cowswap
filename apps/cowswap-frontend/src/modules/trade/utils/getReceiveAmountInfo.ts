@@ -21,6 +21,12 @@ export function getDirectedReceiveAmounts(info: ReceiveAmountInfo): DirectedRece
   }
 }
 
+export function getTotalCosts(info: ReceiveAmountInfo): CurrencyAmount<Currency> {
+  const { networkFeeAmount } = getDirectedReceiveAmounts(info)
+
+  return networkFeeAmount.add(info.costs.partnerFee.amount)
+}
+
 type AmountsAndCosts = Omit<QuoteAmountsAndCosts<CurrencyAmount<Currency>>, 'quotePrice'>
 
 /**

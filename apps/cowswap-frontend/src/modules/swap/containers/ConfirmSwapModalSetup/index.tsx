@@ -5,7 +5,7 @@ import { getMinimumReceivedTooltip } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
 import { useGnosisSafeInfo, useWalletInfo } from '@cowprotocol/wallet'
-import { TradeType } from '@uniswap/sdk-core'
+import { Percent, TradeType } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
 
@@ -25,7 +25,8 @@ import { TransactionSubmittedContent } from 'common/pure/TransactionSubmittedCon
 
 import { useSwapConfirmButtonText } from '../../hooks/useSwapConfirmButtonText'
 import { useSwapState } from '../../hooks/useSwapState'
-import { TradeRatesProps } from '../../pure/TradeRates'
+import TradeGp from 'legacy/state/swap/TradeGp'
+import { RateInfoParams } from 'common/pure/RateInfo'
 
 const CONFIRM_TITLE = 'Swap'
 
@@ -34,15 +35,26 @@ export interface ConfirmSwapModalSetupProps {
   inputCurrencyInfo: CurrencyPreviewInfo
   outputCurrencyInfo: CurrencyPreviewInfo
   priceImpact: PriceImpact
-  tradeRatesProps: TradeRatesProps
+  rateInfoParams: RateInfoParams
   refreshInterval: number
+  allowedSlippage: Percent
+  trade: TradeGp | undefined
 
   doTrade(): void
 }
 
 export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
-  const { chainId, inputCurrencyInfo, outputCurrencyInfo, doTrade, priceImpact, tradeRatesProps, refreshInterval } =
-    props
+  const {
+    chainId,
+    inputCurrencyInfo,
+    outputCurrencyInfo,
+    doTrade,
+    priceImpact,
+    allowedSlippage,
+    trade,
+    refreshInterval,
+    rateInfoParams,
+  } = props
 
   const { account } = useWalletInfo()
   const { recipient } = useSwapState()
@@ -53,7 +65,6 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
 
   const isInvertedState = useState(false)
 
-  const { allowedSlippage, trade } = tradeRatesProps
   const slippageAdjustedSellAmount = trade?.maximumAmountIn(allowedSlippage)
   const isExactIn = trade?.tradeType === TradeType.EXACT_INPUT
 
@@ -111,7 +122,7 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
           {receiveAmountInfo && (
             <TradeBasicConfirmDetails
               isInvertedState={isInvertedState}
-              rateInfoParams={tradeRatesProps.rateInfoParams}
+              rateInfoParams={rateInfoParams}
               slippage={allowedSlippage}
               receiveAmountInfo={receiveAmountInfo}
               widgetParams={widgetParams}
@@ -121,7 +132,7 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
               withTimelineDot={false}
             />
           )}
-          <HighFeeWarning trade={tradeRatesProps.trade} />
+          <HighFeeWarning trade={trade} />
           {!priceImpact.priceImpact && <NoImpactWarning isAccepted withoutAccepting />}
         </>
       </TradeConfirmation>
