@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.71.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.71.0...cowswap-v1.71.1) (2024-06-04)
+
+
+### Bug Fixes
+
+* change something for cowswap to deploy with release please ([#4506](https://github.com/cowprotocol/cowswap/issues/4506)) ([df0c832](https://github.com/cowprotocol/cowswap/commit/df0c8325d77a097161aa4da9490d3bc3d6dcd94c))
+
 ## [1.71.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.70.0...cowswap-v1.71.0) (2024-05-29)
 
 
