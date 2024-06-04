@@ -9,18 +9,6 @@ export const AppWrapper = styled.div<Partial<CSS.Properties>>`
   height: ${({ theme }) => (theme.isInjectedWidgetMode ? 'initial' : '100vh')};
 `
 
-export const HeaderWrapper = styled.div`
-  ${({ theme }) => theme.flexRowNoWrap}
-  width: 100%;
-  justify-content: space-between;
-  z-index: 3;
-`
-
-export const FooterWrapper = styled(HeaderWrapper)`
-  z-index: 1;
-  width: 100%;
-`
-
 export const Marginer = styled.div`
   margin-top: 5rem;
 `
@@ -30,6 +18,7 @@ export const MarginerBottom = styled.div`
 `
 
 export const BodyWrapper = styled.div`
+  --marginBottomOffset: 65px;
   display: flex;
   flex-direction: row;
   width: 100%;
@@ -38,10 +27,21 @@ export const BodyWrapper = styled.div`
   flex: 1 1 auto;
   z-index: 2;
   color: inherit;
-  padding: ${({ theme }) => (theme.isInjectedWidgetMode ? '16px 16px 0' : '5vh 16px 0')};
+  padding: ${({ theme }) => (theme.isInjectedWidgetMode ? '16px 16px 0' : '150px 16px 76px')};
+  margin: ${({ theme }) => (theme.isInjectedWidgetMode ? '0' : '-76px auto calc(var(--marginBottomOffset) * -1);')};
+  border-bottom-left-radius: ${({ theme }) => (theme.isInjectedWidgetMode ? '0' : 'var(--marginBottomOffset)')};
+  border-bottom-right-radius: ${({ theme }) => (theme.isInjectedWidgetMode ? '0' : 'var(--marginBottomOffset)')};
+  min-height: ${({ theme }) => (theme.isInjectedWidgetMode ? 'initial' : 'calc(100vh - 200px)')};
+  background: ${({ theme }) => (theme.isInjectedWidgetMode ? 'transparent' : theme.darkMode ? '#0E0F2D' : '#65D9FF')};
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
-    padding: ${({ theme }) => (theme.isInjectedWidgetMode ? '0 0 16px' : '0 10px 16px')};
+    padding: ${({ theme }) => (theme.isInjectedWidgetMode ? '0 0 16px' : '150px 16px 76px')};
     flex: none;
+    min-height: ${({ theme }) => (theme.isInjectedWidgetMode ? 'initial' : 'calc(100vh - 200px)')};
+  `}
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+  padding: ${({ theme }) => (theme.isInjectedWidgetMode ? '0 0 16px' : '90px 16px 76px')};
+    min-height: ${({ theme }) => (theme.isInjectedWidgetMode ? 'initial' : 'calc(100vh - 100px)')};
   `}
 `

@@ -111,28 +111,28 @@ export async function getAllArticleSlugs(): Promise<string[]> {
  * @returns All categories
  */
 export async function getCategories(): Promise<Category[]> {
-  const { data, error, response } = await client.GET('/categories', {
-    params: {
-      query: {
-        // Populate
-        populate: 'image',
-
-        // Pagination
-        'pagination[page]': 0,
-        'pagination[pageSize]': 50, // For simplicity, we assume there's less than 50 categories (expected ~8 categories)
-
-        // Sort
+  try {
+    const { data, error, response } = await client.GET('/categories', {
+      params: {
+        populate: '*', // Assuming you want to populate all fields
+        pagination: {
+          page: 0,
+          pageSize: 50, // For simplicity, we assume there's less than 50 categories (expected ~8 categories)
+        },
         sort: 'name:asc',
       },
-    },
-  })
+    })
 
-  if (error) {
-    console.error(`Error ${response.status} getting categories: ${response.url}`, error)
-    throw error
+    if (error) {
+      console.error(`Error ${response.status} getting categories: ${response.url}`, error)
+      throw error
+    }
+
+    return data.data
+  } catch (err) {
+    console.error('An unexpected error occurred:', err)
+    throw err
   }
-
-  return data.data
 }
 
 /**

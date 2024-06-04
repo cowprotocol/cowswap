@@ -68,6 +68,7 @@ export interface MenuItem {
   hoverBgColor?: string
   color?: string
   hoverColor?: string
+  onClick?: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void
 }
 
 interface MenuBarProps {
@@ -76,6 +77,7 @@ interface MenuBarProps {
   productVariant: ProductVariant
   additionalContent?: React.ReactNode
   showGlobalSettings?: boolean
+  settingsNavItems?: MenuItem[]
   additionalNavButtons?: MenuItem[]
 }
 
@@ -92,6 +94,7 @@ interface DropdownMenuItem {
   bgColor?: string
   color?: string
   hoverColor?: string
+  onClick?: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void
 }
 
 interface DropdownMenuContent {
@@ -149,7 +152,11 @@ const DropdownContentItem: React.FC<{ item: DropdownMenuItem; theme: CowSwapThem
   }
 
   const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    if (!item.children) {
+    if (item.onClick) {
+      e.preventDefault()
+      item.onClick(e)
+      closeMenu()
+    } else if (!item.children) {
       closeMenu()
     } else {
       e.preventDefault()
@@ -185,6 +192,7 @@ const DropdownContentItem: React.FC<{ item: DropdownMenuItem; theme: CowSwapThem
         color={item.color}
         hoverBgColor={item.hoverBgColor}
         hoverColor={item.hoverColor}
+        onClick={item.onClick ? handleLinkClick : undefined} // Use handleLinkClick if onClick is provided
       >
         {renderItemContent()}
         {item.href && !item.children && (
@@ -367,7 +375,10 @@ const DropdownContentWrapper: React.FC<{
   )
 }
 
-const GlobalSettingsDropdown = ({ mobileMode }: { mobileMode: boolean }) => {
+const GlobalSettingsDropdown: React.FC<{ mobileMode: boolean; settingsNavItems?: MenuItem[] }> = ({
+  mobileMode,
+  settingsNavItems,
+}) => {
   const [isOpen, setIsOpen] = useState(false)
   const buttonRef = useRef<HTMLButtonElement>(null)
   const dropdownRef = useRef<HTMLDivElement>(null)
@@ -376,6 +387,10 @@ const GlobalSettingsDropdown = ({ mobileMode }: { mobileMode: boolean }) => {
     setIsOpen(false)
   )
 
+  if (!settingsNavItems || settingsNavItems.length === 0) {
+    return null
+  }
+
   return (
     <GlobalSettingsWrapper>
       <GlobalSettingsButton ref={buttonRef} onClick={() => setIsOpen(!isOpen)}>
@@ -383,7 +398,7 @@ const GlobalSettingsDropdown = ({ mobileMode }: { mobileMode: boolean }) => {
       </GlobalSettingsButton>
       {isOpen && (
         <DropdownContent isOpen={true} ref={dropdownRef} alignRight mobileMode={mobileMode}>
-          {SETTINGS_ITEMS.map((item, index) => (
+          {settingsNavItems.map((item, index) => (
             <StyledDropdownContentItem key={index} href={item.href}>
               <DropdownContentItemText>
                 <DropdownContentItemTitle>{item.label}</DropdownContentItemTitle>
@@ -398,7 +413,15 @@ const GlobalSettingsDropdown = ({ mobileMode }: { mobileMode: boolean }) => {
 }
 
 export const MenuBar = (props: MenuBarProps) => {
-  const { navItems, theme, productVariant, additionalContent, showGlobalSettings, additionalNavButtons } = props
+  const {
+    navItems,
+    theme,
+    productVariant,
+    additionalContent,
+    showGlobalSettings,
+    additionalNavButtons,
+    settingsNavItems,
+  } = props
   const [isDaoOpen, setIsDaoOpen] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const menuRef = useRef(null)
@@ -451,8 +474,8 @@ export const MenuBar = (props: MenuBarProps) => {
             </NavItems>
           )}
 
-          {(additionalContent || additionalNavButtons) && (
-            <RightAligned mobileMode={isMobile}>
+          {(additionalContent || additionalNavButtons || (showGlobalSettings && settingsNavItems)) && (
+            <RightAligned mobileMode={isMobile} flexFlowMobile="row wrap">
               {!isMobile && additionalContent}
 
               {!isMobile &&
@@ -476,12 +499,15 @@ export const MenuBar = (props: MenuBarProps) => {
                   </DropdownContentItemButton>
                 ))}
 
+              {showGlobalSettings && settingsNavItems && (
+                <GlobalSettingsDropdown mobileMode={isMobile} settingsNavItems={settingsNavItems} />
+              )}
+
               {isMobile && (
                 <MobileMenuTrigger ref={mobileMenuTriggerRef} theme={styledTheme} onClick={handleMobileMenuToggle}>
                   <SVG src={isMobileMenuOpen ? IMG_ICON_X : IMG_ICON_MENU_HAMBURGER} />
                 </MobileMenuTrigger>
               )}
-              {showGlobalSettings && <GlobalSettingsDropdown mobileMode={isMobile} />}
             </RightAligned>
           )}
         </MenuBarInner>

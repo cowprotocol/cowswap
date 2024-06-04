@@ -15,6 +15,7 @@ export const FooterContainer = styled.footer<{ theme: CowSwapTheme; expanded: bo
   text-align: left;
   transition: padding 0.3s ease;
   font-size: 18px;
+  width: 100%;
 
   ${Media.upToSmall()} {
     padding: ${({ expanded }) => (expanded ? '54px 0 0' : '0')};

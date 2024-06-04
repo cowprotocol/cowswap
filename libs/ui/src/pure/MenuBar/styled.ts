@@ -402,9 +402,10 @@ export const RootNavItem = styled.a<{ isOpen?: boolean; mobileMode?: boolean }>`
   }
 `
 
-export const RightAligned = styled.div<{ mobileMode?: boolean }>`
+export const RightAligned = styled.div<{ mobileMode?: boolean; flexFlow?: string; flexFlowMobile?: string }>`
   display: flex;
   flex-flow: row nowrap;
+  flex-flow: ${({ flexFlow }) => flexFlow || 'row nowrap'};
   justify-content: flex-end;
   align-items: center;
   gap: 16px;
@@ -419,11 +420,11 @@ export const RightAligned = styled.div<{ mobileMode?: boolean }>`
     }
   }
 
-  ${({ mobileMode }) =>
+  ${({ mobileMode, flexFlowMobile }) =>
     mobileMode &&
     css`
       gap: 24px;
-      flex-flow: column wrap;
+      flex-flow: ${flexFlowMobile || 'column wrap'};
     `}
 `
 
