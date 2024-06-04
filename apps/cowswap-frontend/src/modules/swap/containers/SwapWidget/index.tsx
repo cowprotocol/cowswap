@@ -30,15 +30,7 @@ import {
   SwapWarningsTop,
   SwapWarningsTopProps,
 } from 'modules/swap/pure/warnings'
-import {
-  getTotalCosts,
-  TradeFeesAndCosts,
-  TradeTotalCostsDetails,
-  TradeWidget,
-  TradeWidgetContainer,
-  useReceiveAmountInfo,
-  useTradePriceImpact,
-} from 'modules/trade'
+import { TradeWidget, TradeWidgetContainer, useReceiveAmountInfo, useTradePriceImpact } from 'modules/trade'
 import { useTradeRouteContext } from 'modules/trade/hooks/useTradeRouteContext'
 import { useWrappedToken } from 'modules/trade/hooks/useWrappedToken'
 import { getQuoteTimeOffset } from 'modules/tradeQuote'
@@ -61,7 +53,7 @@ import {
 } from '../../hooks/useSwapState'
 import { useTradeQuoteStateFromLegacy } from '../../hooks/useTradeQuoteStateFromLegacy'
 import { ConfirmSwapModalSetup } from '../ConfirmSwapModalSetup'
-import { RowDeadline } from '../Row/RowDeadline'
+import { TradeRateDetails } from '../TradeRateDetails'
 
 const BUTTON_STATES_TO_SHOW_BUNDLE_APPROVAL_BANNER = [SwapButtonState.ApproveAndSwap]
 const BUTTON_STATES_TO_SHOW_BUNDLE_WRAP_BANNER = [SwapButtonState.WrapAndSwap]
@@ -251,22 +243,11 @@ export function SwapWidget() {
     currencyOut: currencies.OUTPUT || undefined,
   }
 
-  const totalCosts = receiveAmountInfo && getTotalCosts(receiveAmountInfo)
-
   const slots = {
     settingsWidget: <SettingsTab placeholderSlippage={allowedSlippage} />,
     bottomContent: (
       <>
-        <TradeTotalCostsDetails totalCosts={totalCosts} rateInfoParams={rateInfoParams}>
-          <>
-            <TradeFeesAndCosts
-              receiveAmountInfo={receiveAmountInfo}
-              widgetParams={widgetParams}
-              withTimelineDot={false}
-            />
-            <RowDeadline />
-          </>
-        </TradeTotalCostsDetails>
+        <TradeRateDetails rateInfoParams={rateInfoParams} receiveAmountInfo={receiveAmountInfo} />
         <SwapWarningsTop {...swapWarningsTopProps} />
         <SafeTokenBanner sellTokenAddress={inputToken?.address} buyTokenAddress={outputToken?.address} />
         <SwapButtons {...swapButtonContext} />

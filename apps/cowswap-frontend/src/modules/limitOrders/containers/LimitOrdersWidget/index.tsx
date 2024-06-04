@@ -28,6 +28,7 @@ import { DeadlineInput } from '../DeadlineInput'
 import { LimitOrdersConfirmModal } from '../LimitOrdersConfirmModal'
 import { RateInput } from '../RateInput'
 import { SettingsWidget } from '../SettingsWidget'
+import { TradeRateDetails } from '../TradeRateDetails'
 
 export const LIMIT_BULLET_LIST_CONTENT: BulletListItem[] = [
   { content: 'Set any limit price and time horizon' },
@@ -186,7 +187,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
     bottomContent: (
       <>
         <styledEl.FooterBox>
-          <styledEl.StyledRateInfo rateInfoParams={rateInfoParams} />
+          <TradeRateDetails rateInfoParams={rateInfoParams} />
         </styledEl.FooterBox>
 
         <LimitOrdersWarnings feeAmount={feeAmount} />

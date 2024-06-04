@@ -40,14 +40,8 @@ export function limitOrdersPropsChecker(a: LimitOrdersProps, b: LimitOrdersProps
     checkPriceImpact(a.priceImpact, b.priceImpact) &&
     checkTradeFlowContext(a.tradeContext, b.tradeContext) &&
     genericPropsChecker(a.settingsState, b.settingsState) &&
-    checkCurrencyAmount(a.feeAmount, b.feeAmount)
+    areFractionsEqual(a.feeAmount, b.feeAmount)
   )
-}
-
-function checkCurrencyAmount(a: CurrencyAmount<Currency> | null, b: CurrencyAmount<Currency> | null): boolean {
-  if (!a || !b) return a === b
-
-  return a.currency.equals(b.currency) && a.equalTo(b)
 }
 
 function checkCurrencyInfo(a: CurrencyInfo, b: CurrencyInfo): boolean {
