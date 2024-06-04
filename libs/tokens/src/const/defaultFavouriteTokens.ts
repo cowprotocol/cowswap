@@ -1,10 +1,10 @@
 import {
   ARB_ARBITRUM_ONE,
   COW,
+  COW_TOKEN_ARBITRUM,
   DAI,
   DAI_ARBITRUM_ONE,
   EURE_GNOSIS_CHAIN,
-  GNO_ARBITRUM_ONE,
   GNO_GNOSIS_CHAIN,
   TokenWithLogo,
   USDC_ARBITRUM_ONE,
@@ -61,7 +61,7 @@ export const DEFAULT_FAVOURITE_TOKENS: Record<SupportedChainId, TokensMap> = {
     WBTC_ARBITRUM_ONE,
     DAI_ARBITRUM_ONE,
     ARB_ARBITRUM_ONE,
-    GNO_ARBITRUM_ONE,
+    COW_TOKEN_ARBITRUM,
   ]),
   [SupportedChainId.SEPOLIA]: tokensListToMap([
     WRAPPED_NATIVE_CURRENCIES[SupportedChainId.SEPOLIA],
