@@ -254,7 +254,7 @@ const COW_TOKEN_XDAI = new TokenWithLogo(
   'CoW Protocol Token'
 )
 
-const COW_TOKEN_ARBITRUM = new TokenWithLogo(
+export const COW_TOKEN_ARBITRUM = new TokenWithLogo(
   COW_TOKEN_MAINNET.logoURI,
   SupportedChainId.ARBITRUM_ONE,
   COW_CONTRACT_ADDRESS[SupportedChainId.ARBITRUM_ONE] || '',
