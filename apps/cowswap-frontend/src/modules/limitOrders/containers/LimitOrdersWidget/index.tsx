@@ -5,11 +5,10 @@ import { isSellOrder } from '@cowprotocol/common-utils'
 
 import { Field } from 'legacy/state/types'
 
-import { useWidgetPartnerFee } from 'modules/injectedWidget'
 import { LimitOrdersWarnings } from 'modules/limitOrders/containers/LimitOrdersWarnings'
 import { useLimitOrdersWidgetActions } from 'modules/limitOrders/containers/LimitOrdersWidget/hooks/useLimitOrdersWidgetActions'
 import { TradeButtons } from 'modules/limitOrders/containers/TradeButtons'
-import { TradeWidget, useReceiveAmountInfo, useTradePriceImpact } from 'modules/trade'
+import { TradeWidget, useTradePriceImpact } from 'modules/trade'
 import { BulletListItem, UnlockWidgetScreen } from 'modules/trade/pure/UnlockWidgetScreen'
 import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
 import { useSetTradeQuoteParams, useTradeQuote } from 'modules/tradeQuote'
@@ -31,7 +30,6 @@ import { DeadlineInput } from '../DeadlineInput'
 import { LimitOrdersConfirmModal } from '../LimitOrdersConfirmModal'
 import { RateInput } from '../RateInput'
 import { SettingsWidget } from '../SettingsWidget'
-import { TradeRates } from '../TradeRates'
 
 export const LIMIT_BULLET_LIST_CONTENT: BulletListItem[] = [
   { content: 'Set any limit price and time horizon' },
@@ -69,11 +67,11 @@ export function LimitOrdersWidget() {
   } = useLimitOrdersDerivedState()
   const settingsState = useAtomValue(limitOrdersSettingsAtom)
   const isSell = isSellOrder(orderKind)
+  const tradeContext = useTradeFlowContext()
   const { feeAmount } = useAtomValue(limitRateAtom)
   const { isLoading: isRateLoading } = useTradeQuote()
   const rateInfoParams = useRateInfoParams(inputCurrencyAmount, outputCurrencyAmount)
   const widgetActions = useLimitOrdersWidgetActions()
-  const partnerFee = useWidgetPartnerFee()
 
   const { showRecipient: showRecipientSetting } = settingsState
   const showRecipient = showRecipientSetting || !!recipient
@@ -84,35 +82,29 @@ export function LimitOrdersWidget() {
     [isSell, inputCurrencyAmount, outputCurrencyAmount]
   )
 
-  const hasPartnerFee = +(partnerFee?.bps || 0) > 0
-
   useSetTradeQuoteParams(quoteAmount)
-
-  const receiveAmountInfo = useReceiveAmountInfo()
 
   const inputCurrencyInfo: CurrencyInfo = {
     field: Field.INPUT,
-    label: isSell ? 'Sell amount' : hasPartnerFee ? 'Expected sell amount' : 'You sell at most',
+    label: isSell ? 'Sell amount' : 'You sell at most',
     currency: inputCurrency,
     amount: inputCurrencyAmount,
     isIndependent: isSell,
     balance: inputCurrencyBalance,
     fiatAmount: inputCurrencyFiatAmount,
-    receiveAmountInfo: !isSell ? receiveAmountInfo : null,
+    receiveAmountInfo: null,
   }
-
   const outputCurrencyInfo: CurrencyInfo = {
     field: Field.OUTPUT,
-    label: isSell ? (hasPartnerFee ? 'Receive (before fees)' : 'Receive at least') : 'Buy exactly',
+    label: isSell ? 'Receive at least' : 'Buy exactly',
     currency: outputCurrency,
     amount: outputCurrencyAmount,
     isIndependent: !isSell,
     balance: outputCurrencyBalance,
     fiatAmount: outputCurrencyFiatAmount,
-    receiveAmountInfo: isSell ? receiveAmountInfo : null,
+    receiveAmountInfo: null,
   }
 
-  const tradeContext = useTradeFlowContext(inputCurrencyInfo.receiveAmountInfo, outputCurrencyInfo.receiveAmountInfo)
   const localFormValidation = useLimitOrdersFormState()
   const primaryFormValidation = useGetTradeFormValidation()
 
@@ -145,6 +137,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
     widgetActions,
     showRecipient,
     recipient,
+    rateInfoParams,
     priceImpact,
     tradeContext,
     feeAmount,
@@ -154,7 +147,6 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
 
   const inputCurrency = inputCurrencyInfo.currency
   const outputCurrency = outputCurrencyInfo.currency
-  const receiveAmountInfo = inputCurrencyInfo.receiveAmountInfo || outputCurrencyInfo.receiveAmountInfo
 
   const isTradePriceUpdating = useMemo(() => {
     if (!inputCurrency || !outputCurrency) return false
@@ -203,7 +195,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
     bottomContent: (
       <>
         <styledEl.FooterBox>
-          <TradeRates receiveAmountInfo={receiveAmountInfo} />
+          <styledEl.StyledRateInfo rateInfoParams={rateInfoParams} />
         </styledEl.FooterBox>
 
         <LimitOrdersWarnings feeAmount={feeAmount} />
@@ -244,7 +236,6 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
             recipient={recipient}
             tradeContext={tradeContext}
             priceImpact={priceImpact}
-            receiveAmountInfo={receiveAmountInfo}
             inputCurrencyInfo={inputCurrencyPreviewInfo}
             outputCurrencyInfo={outputCurrencyPreviewInfo}
           />
