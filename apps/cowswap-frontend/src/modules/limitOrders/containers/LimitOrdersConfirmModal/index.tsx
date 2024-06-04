@@ -15,7 +15,7 @@ import { executionPriceAtom } from 'modules/limitOrders/state/executionPriceAtom
 import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { limitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
 import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
-import { TradeConfirmation, TradeConfirmModal, useTradeConfirmActions } from 'modules/trade'
+import { TradeConfirmation, TradeConfirmModal, ReviewOrderModalAmountRow, useTradeConfirmActions } from 'modules/trade'
 
 import { useIsSafeApprovalBundle } from 'common/hooks/useIsSafeApprovalBundle'
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
@@ -24,6 +24,7 @@ import { CurrencyPreviewInfo } from 'common/pure/CurrencyAmountPreview'
 import { LOW_RATE_THRESHOLD_PERCENT } from '../../const/trade'
 import { LimitOrdersDetails } from '../../pure/LimitOrdersDetails'
 import { TradeFlowContext } from '../../services/types'
+import { TradeRateDetails } from '../TradeRateDetails'
 
 const CONFIRM_TITLE = 'Limit Order'
 
@@ -54,7 +55,7 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
   const partiallyFillableOverride = useAtom(partiallyFillableOverrideAtom)
 
   const { amount: inputAmount } = inputCurrencyInfo
-  const { amount: outputAmount } = outputCurrencyInfo
+  const { amount: outputAmount, fiatAmount: outputAmountUsd } = outputCurrencyInfo
 
   const rateImpact = useRateImpact()
   const rateInfoParams = useRateInfoParams(inputAmount, outputAmount)
@@ -99,7 +100,17 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
             settingsState={settingsState}
             executionPrice={executionPrice}
             partiallyFillableOverride={partiallyFillableOverride}
-          />
+          >
+            <>
+              <TradeRateDetails />
+              <ReviewOrderModalAmountRow
+                highlighted={true}
+                amount={outputAmount}
+                fiatAmount={outputAmountUsd}
+                label="Expected to receive"
+              />
+            </>
+          </LimitOrdersDetails>
           <LimitOrdersWarnings isConfirmScreen={true} />
         </>
       </TradeConfirmation>

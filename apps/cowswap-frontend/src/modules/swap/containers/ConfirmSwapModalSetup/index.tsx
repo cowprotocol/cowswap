@@ -14,6 +14,7 @@ import { getActivityDerivedState } from 'legacy/hooks/useActivityDerivedState'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { createActivityDescriptor } from 'legacy/hooks/useRecentActivity'
 import { Order } from 'legacy/state/orders/actions'
+import TradeGp from 'legacy/state/swap/TradeGp'
 
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { TradeConfirmation, TradeConfirmModal, useReceiveAmountInfo, useTradeConfirmActions } from 'modules/trade'
@@ -21,12 +22,11 @@ import { TradeBasicConfirmDetails } from 'modules/trade/containers/TradeBasicCon
 import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
 
 import { CurrencyPreviewInfo } from 'common/pure/CurrencyAmountPreview'
+import { RateInfoParams } from 'common/pure/RateInfo'
 import { TransactionSubmittedContent } from 'common/pure/TransactionSubmittedContent'
 
 import { useSwapConfirmButtonText } from '../../hooks/useSwapConfirmButtonText'
 import { useSwapState } from '../../hooks/useSwapState'
-import TradeGp from 'legacy/state/swap/TradeGp'
-import { RateInfoParams } from 'common/pure/RateInfo'
 
 const CONFIRM_TITLE = 'Swap'
 
