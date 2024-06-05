@@ -3,6 +3,7 @@ import { CowSwapTheme } from '@cowprotocol/widget-lib'
 import { createGlobalStyle, css, DefaultTheme, DefaultThemeUniswap } from 'styled-components/macro'
 
 import { colors, themeVariables as baseThemeVariables } from './theme'
+import { UI } from './enum'
 
 export const AMOUNTS_FORMATTING_FEATURE_FLAG = 'highlight-amounts-formatting'
 export const SAFE_COW_APP_LINK = 'https://app.safe.global/share/safe-app?appUrl=https%3A%2F%2Fswap.cow.fi&chain=eth'
@@ -166,9 +167,9 @@ type GlobalCowDAOFonts = {
   FONT_STUDIO_FEIXEN_ULTRALIGHT_ITALIC: GlobalFontConfig
 }
 
-export const GlobalCoWDAOStyles = (fonts: GlobalCowDAOFonts, bgColor?: string) =>
+export const GlobalCoWDAOStyles = (fonts: GlobalCowDAOFonts, bgColor?: string, color?: string) =>
   createGlobalStyle(
-    ({ theme = 'dark' }: { theme: CowSwapTheme }) => css`
+    ({ theme }: { theme: CowSwapTheme }) => css`
       @font-face {
         font-family: 'studiofeixen';
         src: url(${fonts.FONT_STUDIO_FEIXEN_ULTRALIGHT}) format('woff2');
@@ -272,8 +273,8 @@ export const GlobalCoWDAOStyles = (fonts: GlobalCowDAOFonts, bgColor?: string) =
         margin: 0;
         padding: 0;
         background: ${({ theme }) =>
-          theme.isInjectedWidgetMode ? 'transparent' : bgColor ? bgColor : Color.neutral98};
-        color: ${Color.neutral0};
+          theme?.isInjectedWidgetMode ? 'transparent' : bgColor ? bgColor : Color.neutral98};
+        color: ${color || UI.COLOR_TEXT};
         scroll-behavior: smooth;
         font-variant: none;
         text-rendering: geometricPrecision;

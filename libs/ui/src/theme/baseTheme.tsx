@@ -22,9 +22,9 @@ export function colors(darkMode: boolean): Colors {
     paper: darkMode ? '#0c264b' : '#FFFFFF',
 
     // swap.cow.fi specific overrides ======================
-    paperCustom: darkMode ? '#0c264b' : '#FFFFFF',
-    paperDarkerCustom: darkMode ? '#07162d' : '#ecf1f8',
-    paperDarkestCustom: darkMode ? darken('#07162d', 0.05) : darken('#ecf1f8', 0.1),
+    paperCustom: darkMode ? '#18193B' : '#FFFFFF',
+    paperDarkerCustom: darkMode ? '#090A20' : '#E5EEF7',
+    paperDarkestCustom: darkMode ? darken('#090A20', 0.05) : darken('#E5EEF7', 0.1),
     // =====================================================
 
     text: darkMode ? '#DEE3E6' : '#00234E',
