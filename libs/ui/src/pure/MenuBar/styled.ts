@@ -239,6 +239,13 @@ export const StyledDropdownContentItem = styled.a<{
   position: relative;
   width: 100%;
 
+  ${({ mobileMode }) =>
+    mobileMode &&
+    css`
+      flex-flow: row nowrap;
+      padding: 8px 0;
+    `}
+
   &.hasDivider {
     margin: 0 0 12px;
 
@@ -327,6 +334,7 @@ export const DropdownContentItemDescription = styled.span`
   font-size: 14px;
   color: var(--defaultFill);
   line-height: 1.2;
+  white-space: pre-wrap;
 `
 
 export const DropdownContentItemButton = styled(StyledDropdownContentItem)<{

@@ -79,10 +79,9 @@ export const Footer = ({
   useEffect(() => {
     if (hasMounted.current) {
       if (isFooterExpanded && footerRef.current) {
-        footerRef.current.scrollIntoView({ behavior: 'smooth' })
-      } else if (!isFooterExpanded && footerRef.current) {
-        const offset = footerRef.current.getBoundingClientRect().top + window.pageYOffset - 80
-        window.scrollTo({ top: offset, behavior: 'smooth' })
+        setTimeout(() => {
+          footerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' })
+        }, 300) // Slight delay needed for correct scroll position calculation
       }
     } else {
       hasMounted.current = true
