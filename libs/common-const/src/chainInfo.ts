@@ -50,7 +50,7 @@ export const CHAIN_INFO: ChainInfoMap = {
     addressPrefix: 'arb1',
     name: 'arbitrum_one',
     explorerTitle: 'Arbiscan',
-    urlAlias: 'abr1',
+    urlAlias: 'arb1',
     logo: { light: ArbitrumOneLogoLight, dark: ArbitrumOneLogoDark },
     color: '#1B4ADD',
     nativeCurrency: NATIVE_CURRENCIES[SupportedChainId.ARBITRUM_ONE],

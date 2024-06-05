@@ -1,11 +1,8 @@
-// Code based on https://github.com/cowprotocol/explorer/blob/develop/src/components/orders/FilledProgress/index.tsx
-
 import { TokenAmount } from '@cowprotocol/ui'
+import { PercentDisplay } from '@cowprotocol/ui'
 
-// TODO: bad import
 import { ProgressBar, ProgressBarWrapper } from 'modules/ordersTable/pure/OrdersTableContainer/OrderRow/styled'
 
-import { PercentDisplay } from 'common/pure/PercentDisplay'
 import { getFilledAmounts } from 'utils/orderUtils/getFilledAmounts'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 

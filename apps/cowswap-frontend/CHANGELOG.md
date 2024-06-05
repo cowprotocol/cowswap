@@ -1,5 +1,32 @@
 # Changelog
 
+## [1.71.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.71.0...cowswap-v1.71.1) (2024-06-04)
+
+
+### Bug Fixes
+
+* change something for cowswap to deploy with release please ([#4506](https://github.com/cowprotocol/cowswap/issues/4506)) ([df0c832](https://github.com/cowprotocol/cowswap/commit/df0c8325d77a097161aa4da9490d3bc3d6dcd94c))
+
+## [1.71.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.70.0...cowswap-v1.71.0) (2024-05-29)
+
+
+### Features
+
+* add support for ERC-3770 on recipient addr ([#4418](https://github.com/cowprotocol/cowswap/issues/4418)) ([3e1732d](https://github.com/cowprotocol/cowswap/commit/3e1732dfb11f2cb4fdb815802e68c1d03af29c80))
+* **arbitrum:** add arbitrum_one ([#4407](https://github.com/cowprotocol/cowswap/issues/4407)) ([166e33f](https://github.com/cowprotocol/cowswap/commit/166e33f3c494972738b154cf844584dd78e12c7d))
+* don't pollute the history with widget changes ([#4470](https://github.com/cowprotocol/cowswap/issues/4470)) ([9e813bd](https://github.com/cowprotocol/cowswap/commit/9e813bd835f67f6d3676a2e06164606e7c434d5a))
+* improve message for wrong prefix on networks ([#4468](https://github.com/cowprotocol/cowswap/issues/4468)) ([fdb36e5](https://github.com/cowprotocol/cowswap/commit/fdb36e57ec937c883106d200df130e3072181f02))
+
+
+### Bug Fixes
+
+* **explorer:** adjust almost fully filled orders displaying ([#4482](https://github.com/cowprotocol/cowswap/issues/4482)) ([3a5d654](https://github.com/cowprotocol/cowswap/commit/3a5d65484ab8818f5a5ba6aa18e6519243f686ee))
+* fix safe read-only button tooltip ([#4475](https://github.com/cowprotocol/cowswap/issues/4475)) ([f33a1eb](https://github.com/cowprotocol/cowswap/commit/f33a1ebb5eb347e62deca26211a7779f41db63df))
+* **limit-orders:** adjust almost fully filled orders displaying ([#4477](https://github.com/cowprotocol/cowswap/issues/4477)) ([d89a0d4](https://github.com/cowprotocol/cowswap/commit/d89a0d4ba76836c05526091c9ab6bee8a5048616))
+* **limit-orders:** don't update trade context after review modal open ([#4476](https://github.com/cowprotocol/cowswap/issues/4476)) ([972ddd9](https://github.com/cowprotocol/cowswap/commit/972ddd93b2ad3c8cb7fbbf7a4ce4c1e452324fe0))
+* navigate with widget awareness ([#4471](https://github.com/cowprotocol/cowswap/issues/4471)) ([f0c4134](https://github.com/cowprotocol/cowswap/commit/f0c41344eea751006a4fe0b66865b2c5c30a5310))
+* **usd-estimation:** no usd estimations for native ([#4352](https://github.com/cowprotocol/cowswap/issues/4352)) ([e986ec4](https://github.com/cowprotocol/cowswap/commit/e986ec4812119ed5c79347efe8d21aa25c9629dd))
+
 ## [1.70.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.69.0...cowswap-v1.70.0) (2024-05-22)
 
 
