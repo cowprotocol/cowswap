@@ -239,6 +239,24 @@ export const StyledDropdownContentItem = styled.a<{
   position: relative;
   width: 100%;
 
+  &.hasDivider {
+    margin: 0 0 12px;
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      top: calc(100% + 6px);
+      left: 0;
+      right: 0;
+      margin: 0 auto;
+      width: 90%;
+      height: 1px;
+      background: var(--defaultFill);
+      opacity: 0.25;
+    }
+  }
+
   &:hover {
     background: ${({ isThirdLevel }) => (isThirdLevel ? 'var(--bgColor)' : 'var(--activeBackground)')};
 

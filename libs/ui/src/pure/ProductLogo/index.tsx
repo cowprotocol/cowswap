@@ -194,14 +194,16 @@ const Wrapper = styled.span<{ color?: string; hoverColor?: string; height?: numb
   transition: color 0.2s ease-in-out;
 
   > a,
-  > a > svg {
+  > a > svg,
+  > svg {
     height: 100%;
     width: auto;
     color: inherit;
     fill: currentColor;
   }
 
-  > a > svg path {
+  > a > svg path,
+  > svg path {
     fill: currentColor;
   }
 
@@ -217,7 +219,7 @@ export const ProductLogo = ({
   overrideColor,
   overrideHoverColor,
   height,
-  href = '/',
+  href,
   external = false,
 }: LogoProps) => {
   const logoForTheme = LOGOS[variant][themeMode]

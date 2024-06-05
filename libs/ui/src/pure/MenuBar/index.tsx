@@ -38,17 +38,11 @@ import { Media, themeMapper } from '../../consts'
 import { ProductLogo, ProductVariant } from '../ProductLogo'
 
 const DAO_NAV_ITEMS: MenuItem[] = [
-  { href: 'https://cow.fi/#cowswap', productVariant: ProductVariant.CowSwap },
-  { href: 'https://cow.fi/#cowprotocol', productVariant: ProductVariant.CowProtocol },
-  { href: 'https://cow.fi/#cowamm', productVariant: ProductVariant.CowAmm },
-  { href: 'https://cow.fi/', productVariant: ProductVariant.MevBlocker },
-]
-
-const SETTINGS_ITEMS: MenuItem[] = [
-  { label: 'Preferences', href: 'https://google.com/' },
-  { label: 'Account Settings', href: 'https://cow.fi/' },
-  { label: 'Theme', href: '#theme' },
-  { label: 'Language', href: '#language' },
+  { href: 'https://cow.fi/', productVariant: ProductVariant.CowDao, hasDivider: true },
+  { href: 'https://cow.fi/cow-swap', productVariant: ProductVariant.CowSwap },
+  { href: 'https://cow.fi/cow-protocol', productVariant: ProductVariant.CowProtocol },
+  { href: 'https://cow.fi/cow-amm', productVariant: ProductVariant.CowAmm },
+  { href: 'https://cow.fi/mev-blocker', productVariant: ProductVariant.MevBlocker },
 ]
 
 interface NavItemProps {
@@ -58,7 +52,6 @@ interface NavItemProps {
 export interface MenuItem {
   href?: string
   label?: string
-  // type?: 'dropdown'
   children?: DropdownMenuItem[]
   productVariant?: ProductVariant
   icon?: string
@@ -69,6 +62,7 @@ export interface MenuItem {
   color?: string
   hoverColor?: string
   onClick?: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void
+  hasDivider?: boolean
 }
 
 interface MenuBarProps {
@@ -95,6 +89,7 @@ interface DropdownMenuItem {
   color?: string
   hoverColor?: string
   onClick?: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void
+  hasDivider?: boolean
 }
 
 interface DropdownMenuContent {
@@ -182,6 +177,8 @@ const DropdownContentItem: React.FC<{ item: DropdownMenuItem; theme: CowSwapThem
     )
   }
 
+  const itemClassName = item.hasDivider ? 'hasDivider' : ''
+
   if (item.isButton) {
     return (
       <DropdownContentItemButton
@@ -192,7 +189,8 @@ const DropdownContentItem: React.FC<{ item: DropdownMenuItem; theme: CowSwapThem
         color={item.color}
         hoverBgColor={item.hoverBgColor}
         hoverColor={item.hoverColor}
-        onClick={item.onClick ? handleLinkClick : undefined} // Use handleLinkClick if onClick is provided
+        onClick={item.onClick ? handleLinkClick : undefined}
+        className={itemClassName}
       >
         {renderItemContent()}
         {item.href && !item.children && (
@@ -205,7 +203,12 @@ const DropdownContentItem: React.FC<{ item: DropdownMenuItem; theme: CowSwapThem
   if (item.children) {
     return (
       <>
-        <StyledDropdownContentItem as="div" onClick={handleToggleChildrenVisibility} isOpen={isChildrenVisible}>
+        <StyledDropdownContentItem
+          as="div"
+          onClick={handleToggleChildrenVisibility}
+          isOpen={isChildrenVisible}
+          className={itemClassName}
+        >
           {renderItemContent()}
           <SVG src={IMG_ICON_CARRET_DOWN} />
         </StyledDropdownContentItem>
@@ -228,6 +231,7 @@ const DropdownContentItem: React.FC<{ item: DropdownMenuItem; theme: CowSwapThem
       color={item.color}
       hoverBgColor={item.hoverBgColor}
       hoverColor={item.hoverColor}
+      className={itemClassName}
     >
       {renderItemContent()}
       {item.external && <span>&#8599;</span>}
@@ -468,7 +472,7 @@ export const MenuBar = (props: MenuBarProps) => {
       <MenuBarWrapper ref={menuRef}>
         <MenuBarInner theme={styledTheme}>
           <NavDaoTrigger isOpen={isDaoOpen} setIsOpen={setIsDaoOpen} theme={theme} mobileMode={isMobile} />
-          <ProductLogo variant={productVariant} theme={theme} logoIconOnly={isMobile} />
+          <ProductLogo variant={productVariant} theme={theme} logoIconOnly={isMobile} href="/" />
 
           {!isMobile && (
             <NavItems theme={styledTheme}>
