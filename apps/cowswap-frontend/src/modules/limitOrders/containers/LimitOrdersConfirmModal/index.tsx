@@ -55,7 +55,7 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
   const partiallyFillableOverride = useAtom(partiallyFillableOverrideAtom)
 
   const { amount: inputAmount } = inputCurrencyInfo
-  const { amount: outputAmount, fiatAmount: outputAmountUsd } = outputCurrencyInfo
+  const { amount: outputAmount } = outputCurrencyInfo
 
   const rateImpact = useRateImpact()
   const rateInfoParams = useRateInfoParams(inputAmount, outputAmount)
