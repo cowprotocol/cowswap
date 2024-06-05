@@ -82,7 +82,12 @@
     {
       "priority": 2,
       "enabledByDefault": true,
-      "source": "https://tokens.coingecko.com/arbitrum-one/all.json"
+      "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/ArbitrumOneUniswapTokensList.json"
+    },
+    {
+      "priority": 3,
+      "enabledByDefault": true,
+      "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/ArbitrumOneCoingeckoTokensList.json"
     }
   ],
   "11155111": [

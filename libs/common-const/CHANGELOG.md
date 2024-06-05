@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.3.1](https://github.com/cowprotocol/cowswap/compare/common-const-v1.3.0...common-const-v1.3.1) (2024-06-04)
+
+
+### Bug Fixes
+
+* **arbitrum:** replace GNO with COW in fav tokens ([#4503](https://github.com/cowprotocol/cowswap/issues/4503)) ([518cf58](https://github.com/cowprotocol/cowswap/commit/518cf583667a53ecf724f1353306a5398edf1034))
+
+## [1.3.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.2.0...common-const-v1.3.0) (2024-05-29)
+
+
+### Features
+
+* add support for ERC-3770 on recipient addr ([#4418](https://github.com/cowprotocol/cowswap/issues/4418)) ([3e1732d](https://github.com/cowprotocol/cowswap/commit/3e1732dfb11f2cb4fdb815802e68c1d03af29c80))
+* **arbitrum:** add arbitrum_one ([#4407](https://github.com/cowprotocol/cowswap/issues/4407)) ([166e33f](https://github.com/cowprotocol/cowswap/commit/166e33f3c494972738b154cf844584dd78e12c7d))
+
 ## [1.2.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.1.0...common-const-v1.2.0) (2024-05-22)
 
 

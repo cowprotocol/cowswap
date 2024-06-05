@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.1](https://github.com/cowprotocol/cowswap/compare/ui-v1.2.0...ui-v1.2.1) (2024-05-29)
+
+
+### Bug Fixes
+
+* **explorer:** adjust almost fully filled orders displaying ([#4482](https://github.com/cowprotocol/cowswap/issues/4482)) ([3a5d654](https://github.com/cowprotocol/cowswap/commit/3a5d65484ab8818f5a5ba6aa18e6519243f686ee))
+* fix safe read-only button tooltip ([#4475](https://github.com/cowprotocol/cowswap/issues/4475)) ([f33a1eb](https://github.com/cowprotocol/cowswap/commit/f33a1ebb5eb347e62deca26211a7779f41db63df))
+
 ## [1.2.0](https://github.com/cowprotocol/cowswap/compare/ui-v1.1.0...ui-v1.2.0) (2024-05-02)
 
 

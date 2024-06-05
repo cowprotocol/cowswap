@@ -8,6 +8,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { Command, UiOrderType } from '@cowprotocol/types'
 import { ButtonSecondary, Loader, TokenAmount, TokenSymbol, UI } from '@cowprotocol/ui'
+import { PercentDisplay, percentIsAlmostHundred } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
 
 import SVG from 'react-inlinesvg'
@@ -18,7 +19,6 @@ import { PendingOrderPrices } from 'modules/orders/state/pendingOrdersPricesAtom
 import { getIsEthFlowOrder } from 'modules/swap/containers/EthFlowStepper'
 
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
-import { PercentDisplay, percentIsAlmostHundred } from 'common/pure/PercentDisplay'
 import { RateInfo } from 'common/pure/RateInfo'
 import { getQuoteCurrency } from 'common/services/getQuoteCurrency'
 import { isOrderCancellable } from 'common/utils/isOrderCancellable'

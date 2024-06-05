@@ -44,7 +44,7 @@ export default function ChainPrefixWarning({ chainPrefixWarning, chainInfo, isDa
   return (
     <Wrapper>
       <p>
-        The recipient address you inputted had the chain prefix <strong>{chainPrefixWarning}</strong>, which is not not
+        The recipient address you inputted had the chain prefix <strong>{chainPrefixWarning}</strong>, which is not
         the expected for the network you are in.
       </p>
       <p>
