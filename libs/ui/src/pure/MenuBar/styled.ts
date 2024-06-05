@@ -1,7 +1,5 @@
 import { CowSwapTheme } from '@cowprotocol/widget-lib'
-
 import styled, { css } from 'styled-components/macro'
-
 import { Color } from '../../consts'
 
 export const MenuBarWrapper = styled.div`
@@ -16,6 +14,8 @@ export const MenuBarWrapper = styled.div`
   --defaultFill: ${({ theme }) => (theme.mode === 'dark' ? Color.neutral60 : 'rgb(0 0 0 / 50%)')};
   --activeBackground: ${({ theme }) => (theme.mode === 'dark' ? Color.neutral30 : Color.neutral100)};
   --activeFill: ${({ theme }) => (theme.mode === 'dark' ? Color.neutral100 : Color.neutral0)};
+
+  --hoverBackground: ${({ theme }) => (theme.mode === 'dark' ? Color.neutral20 : Color.neutral90)};
 
   display: flex;
   width: 100%;
@@ -40,7 +40,7 @@ export const MenuBarInner = styled.div<{ theme: CowSwapTheme }>`
   color: var(--color);
 `
 
-export const NavDaoTriggerElement = styled.div<{ isActive: boolean }>`
+export const NavDaoTriggerElement = styled.div<{ isActive: boolean; mobileMode?: boolean; isOpen?: boolean }>`
   --size: 42px;
 
   display: flex;
@@ -91,12 +91,13 @@ export const MobileMenuTrigger = styled.div<{ theme: CowSwapTheme }>`
   min-height: var(--size);
   border-radius: 50%;
   background: transparent;
-  color: inherit;
+  color: var(--defaultFill);
   cursor: pointer;
   transition: background 0.2s, fill 0.2s;
 
   &:hover {
     background: var(--activeBackground);
+    color: var(--activeFill);
   }
 
   > svg {
@@ -159,6 +160,68 @@ export const NavItems = styled.ul<{ mobileMode?: boolean; theme: CowSwapTheme }>
 interface DropdownContentProps {
   isOpen: boolean
   isThirdLevel?: boolean
+  mobileMode?: boolean
+  isNavItemDropdown?: boolean
+  alignRight?: boolean
+}
+
+export const DropdownContentWrapper = styled.div<DropdownContentProps>`
+  display: ${({ isOpen }) => (isOpen ? 'block' : 'none')};
+  flex: ${({ isThirdLevel }) => (isThirdLevel ? '1 1 100%;' : 'initial')};
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  background: ${({ isThirdLevel }) => (isThirdLevel ? 'transparent' : 'var(--activeBackground)')};
+  backdrop-filter: blur(var(--blur));
+  z-index: 1000;
+  padding: ${({ isThirdLevel }) => (isThirdLevel ? '6px' : '6px')};
+  min-width: ${({ isThirdLevel }) => (isThirdLevel ? '200px' : '270px')};
+  width: ${({ isThirdLevel }) => (isThirdLevel ? '100%' : 'max-content')};
+  height: auto;
+  border-radius: 28px;
+  position: ${({ isThirdLevel }) => (isThirdLevel ? 'relative' : 'absolute')};
+  top: ${({ isThirdLevel }) => (isThirdLevel ? 'initial' : 'calc(100% + var(--dropdownOffset))')};
+  right: ${({ alignRight }) => (alignRight ? 0 : 'initial')};
+  left: ${({ alignRight }) => (alignRight ? 'initial' : 0)};
+  cursor: pointer;
+
+  ${({ mobileMode }) =>
+    mobileMode &&
+    css`
+      max-width: 100%;
+      width: 100%;
+      position: fixed;
+      top: 56px;
+      height: calc(100vh - 56px);
+      overflow-y: auto;
+      padding-bottom: 100px;
+    `}
+
+  ${({ mobileMode, isNavItemDropdown }) =>
+    mobileMode &&
+    isNavItemDropdown &&
+    css`
+      position: relative;
+      top: initial;
+      right: initial;
+      left: initial;
+      background: transparent;
+      backdrop-filter: none;
+    `}
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: calc(-2 * var(--dropdownOffset));
+    left: 0;
+    border: var(--dropdownOffset) solid transparent;
+    width: 100%;
+  }
+`
+
+interface DropdownContentProps {
+  isOpen: boolean
+  isThirdLevel?: boolean
   alignRight?: boolean
   mobileMode?: boolean
   isNavItemDropdown?: boolean
@@ -172,13 +235,12 @@ export const DropdownContent = styled.div<DropdownContentProps>`
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
-  background: ${({ isThirdLevel }) => (isThirdLevel ? 'transparent' : 'var(--bgColor)')};
+  background: ${({ isThirdLevel }) => (isThirdLevel ? 'transparent' : 'var(--activeBackground)')};
   backdrop-filter: blur(var(--blur));
   z-index: 1000;
   padding: ${({ isThirdLevel }) => (isThirdLevel ? '6px' : '6px')};
   min-width: ${({ isThirdLevel }) => (isThirdLevel ? '200px' : '270px')};
   width: ${({ isThirdLevel }) => (isThirdLevel ? '100%' : 'max-content')};
-  /* max-width: ${({ isThirdLevel }) => (isThirdLevel ? '100%' : '530px')}; */
   height: auto;
   border-radius: 28px;
   position: ${({ isThirdLevel }) => (isThirdLevel ? 'relative' : 'absolute')};
@@ -215,6 +277,59 @@ export const DropdownContent = styled.div<DropdownContentProps>`
     border: var(--dropdownOffset) solid transparent;
     width: 100%;
   }
+`
+
+export const MobileDropdownContainer = styled.div<{ mobileMode: boolean }>`
+  ${({ mobileMode }) =>
+    mobileMode &&
+    css`
+      flex-flow: column wrap;
+      align-items: flex-start;
+      margin: 6px auto;
+      width: 100%;
+      position: absolute;
+      top: 56px;
+      left: 0;
+      z-index: 1000;
+      box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+      border-radius: 28px;
+      background: var(--activeBackground);
+      border-radius: var(--borderRadius);
+      padding: 10px 10px 100px;
+      overflow-y: auto;
+      min-height: 100vh;
+      height: 100vh;
+      box-sizing: border-box;
+      scrollbar-width: thin;
+      scrollbar-color: var(--scrollbarColor) var(--scrollbarBackground);
+
+      > div {
+        width: 100%;
+        position: relative;
+        left: initial;
+        top: initial;
+        right: initial;
+        padding: 0;
+        margin: 0;
+        border-radius: 28px;
+      }
+
+      /* For WebKit-based browsers (Chrome, Safari) */
+      &::-webkit-scrollbar {
+        width: 10px;
+      }
+
+      &::-webkit-scrollbar-track {
+        background: var(--scrollbarBackground);
+        border-radius: 28px;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background-color: var(--scrollbarColor);
+        border-radius: 10px;
+        border: 2px solid var(--scrollbarBackground);
+      }
+    `}
 `
 
 export const StyledDropdownContentItem = styled.a<{
@@ -265,7 +380,7 @@ export const StyledDropdownContentItem = styled.a<{
   }
 
   &:hover {
-    background: ${({ isThirdLevel }) => (isThirdLevel ? 'var(--bgColor)' : 'var(--activeBackground)')};
+    background: ${({ isThirdLevel }) => (isThirdLevel ? 'var(--bgColor)' : 'var(--hoverBackground)')};
 
     > svg.arrow-icon-right {
       opacity: 1;
@@ -453,13 +568,25 @@ export const RightAligned = styled.div<{ mobileMode?: boolean; flexFlow?: string
   ${({ mobileMode, flexFlowMobile }) =>
     mobileMode &&
     css`
-      gap: 10px;
+      gap: 0;
       flex-flow: ${flexFlowMobile || 'column wrap'};
     `}
 `
 
-export const GlobalSettingsWrapper = styled.div`
+export const GlobalSettingsWrapper = styled.div<{ mobileMode: boolean; isOpen: boolean }>`
   position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  ${({ mobileMode }) =>
+    mobileMode &&
+    css`
+      position: absolute;
+      top: 0;
+      right: 0;
+      margin: 0 1rem;
+    `}
 `
 
 export const GlobalSettingsButton = styled.button`
@@ -478,7 +605,6 @@ export const GlobalSettingsButton = styled.button`
   cursor: pointer;
   transition: background 0.2s ease-in-out, fill 0.2s ease-in-out, transform 0.2s ease-in-out;
   color: inherit;
-  transform: rotate(0deg);
 
   > svg {
     --size: 75%;
@@ -496,9 +622,6 @@ export const GlobalSettingsButton = styled.button`
   &:hover {
     background: var(--activeBackground);
     color: var(--activeFill);
-
-    // on hover roate the icon
-    transform: rotate(360deg);
 
     > svg {
       color: var(--activeFill);

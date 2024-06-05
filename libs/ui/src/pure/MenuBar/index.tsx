@@ -1,18 +1,6 @@
 import React, { useState, useRef, RefObject } from 'react'
-
-import IMG_ICON_ARROW_RIGHT from '@cowprotocol/assets/images/arrow-right.svg'
-import IMG_ICON_CARRET_DOWN from '@cowprotocol/assets/images/carret-down.svg'
-import IMG_ICON_MENU_DOTS from '@cowprotocol/assets/images/menu-grid-dots.svg'
-import IMG_ICON_MENU_HAMBURGER from '@cowprotocol/assets/images/menu-hamburger.svg'
-import IMG_ICON_SETTINGS_GLOBAL from '@cowprotocol/assets/images/settings-global.svg'
-import IMG_ICON_X from '@cowprotocol/assets/images/x.svg'
-import { useOnClickOutside, useMediaQuery } from '@cowprotocol/common-hooks'
-import { addBodyClass, removeBodyClass } from '@cowprotocol/common-utils'
-import { CowSwapTheme } from '@cowprotocol/widget-lib'
-
 import SVG from 'react-inlinesvg'
 import { ThemeProvider } from 'styled-components/macro'
-
 import {
   RootNavItem,
   MenuBarWrapper,
@@ -30,12 +18,22 @@ import {
   GlobalSettingsButton,
   NavItems,
   StyledDropdownContentItem,
+  MobileDropdownContainer,
   RightAligned,
   MobileMenuTrigger,
 } from './styled'
 
+import { useOnClickOutside, useMediaQuery } from '@cowprotocol/common-hooks'
+import { addBodyClass, removeBodyClass } from '@cowprotocol/common-utils'
+import { CowSwapTheme } from '@cowprotocol/widget-lib'
 import { Media, themeMapper } from '../../consts'
 import { ProductLogo, ProductVariant } from '../ProductLogo'
+import IMG_ICON_ARROW_RIGHT from '@cowprotocol/assets/images/arrow-right.svg'
+import IMG_ICON_CARRET_DOWN from '@cowprotocol/assets/images/carret-down.svg'
+import IMG_ICON_MENU_DOTS from '@cowprotocol/assets/images/menu-grid-dots.svg'
+import IMG_ICON_MENU_HAMBURGER from '@cowprotocol/assets/images/menu-hamburger.svg'
+import IMG_ICON_SETTINGS_GLOBAL from '@cowprotocol/assets/images/settings-global.svg'
+import IMG_ICON_X from '@cowprotocol/assets/images/x.svg'
 
 const DAO_NAV_ITEMS: MenuItem[] = [
   { href: 'https://cow.fi/', productVariant: ProductVariant.CowDao, hasDivider: true },
@@ -255,19 +253,32 @@ const NavDaoTrigger: React.FC<{
     setIsOpen(false)
   )
 
+  const handleToggle = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation()
+    setIsOpen(!isOpen)
+  }
+
   const closeMenu = () => setIsOpen(false)
 
   return (
     <>
-      <NavDaoTriggerElement ref={triggerRef} isActive={isOpen} onClick={() => setIsOpen(!isOpen)}>
+      <NavDaoTriggerElement
+        ref={triggerRef}
+        isActive={isOpen}
+        mobileMode={mobileMode}
+        onClick={handleToggle}
+        isOpen={isOpen}
+      >
         <SVG src={IMG_ICON_MENU_DOTS} />
       </NavDaoTriggerElement>
       {isOpen && (
-        <DropdownContent isOpen={true} ref={dropdownRef} mobileMode={mobileMode}>
-          {DAO_NAV_ITEMS.map((item, index) => (
-            <DropdownContentItem key={index} item={item} theme={theme} closeMenu={closeMenu} />
-          ))}
-        </DropdownContent>
+        <MobileDropdownContainer mobileMode={mobileMode} ref={dropdownRef}>
+          <DropdownContent isOpen={true} mobileMode={mobileMode}>
+            {DAO_NAV_ITEMS.map((item, index) => (
+              <DropdownContentItem key={index} item={item} theme={theme} closeMenu={closeMenu} />
+            ))}
+          </DropdownContent>
+        </MobileDropdownContainer>
       )}
     </>
   )
@@ -300,14 +311,21 @@ const GenericDropdown: React.FC<DropdownProps & { mobileMode?: boolean; isNavIte
     </DropdownMenu>
   )
 }
-
-const DropdownContentWrapper: React.FC<{
+interface DropdownContentWrapperProps {
   content: DropdownMenuContent
   isThirdLevel?: boolean
   isVisible?: boolean
   mobileMode?: boolean
   isNavItemDropdown?: boolean
-}> = ({ content, isThirdLevel = false, isVisible = true, mobileMode = false, isNavItemDropdown = false }) => {
+}
+
+const DropdownContentWrapper: React.FC<DropdownContentWrapperProps> = ({
+  content,
+  isThirdLevel = false,
+  isVisible = true,
+  mobileMode = false,
+  isNavItemDropdown = false,
+}) => {
   const [visibleThirdLevel, setVisibleThirdLevel] = useState<{ [key: number]: boolean }>({})
 
   const handleToggleThirdLevelVisibility = (event: React.MouseEvent<HTMLDivElement>, index: number) => {
@@ -327,7 +345,7 @@ const DropdownContentWrapper: React.FC<{
       mobileMode={mobileMode}
       isNavItemDropdown={isNavItemDropdown}
     >
-      {content.items?.map((item, index) => {
+      {content.items?.map((item: DropdownMenuItem, index: number) => {
         const hasChildren = !!item.children
         const Tag = hasChildren ? 'div' : item.isButton ? DropdownContentItemButton : 'a'
         return (
@@ -343,7 +361,7 @@ const DropdownContentWrapper: React.FC<{
             color={item.color}
             hoverBgColor={item.hoverBgColor}
             hoverColor={item.hoverColor}
-            mobileMode={mobileMode} // Pass mobileMode here
+            mobileMode={mobileMode}
             onClick={(e: React.MouseEvent<HTMLDivElement | HTMLAnchorElement | HTMLButtonElement>) => {
               if (hasChildren) {
                 handleToggleThirdLevelVisibility(e as React.MouseEvent<HTMLDivElement>, index)
@@ -368,7 +386,7 @@ const DropdownContentWrapper: React.FC<{
                 content={{ title: undefined, items: item.children }}
                 isThirdLevel
                 isVisible={visibleThirdLevel[index]}
-                mobileMode={mobileMode} // Pass mobileMode here
+                mobileMode={mobileMode}
                 isNavItemDropdown={isNavItemDropdown}
               />
             )}
@@ -379,44 +397,56 @@ const DropdownContentWrapper: React.FC<{
   )
 }
 
-const GlobalSettingsDropdown: React.FC<{ mobileMode: boolean; settingsNavItems?: MenuItem[] }> = ({
+interface GlobalSettingsDropdownProps {
+  mobileMode: boolean
+  settingsNavItems?: MenuItem[]
+  setIsSettingsOpen: React.Dispatch<React.SetStateAction<boolean>>
+  isOpen: boolean
+}
+
+const GlobalSettingsDropdown: React.FC<GlobalSettingsDropdownProps> = ({
   mobileMode,
   settingsNavItems,
+  setIsSettingsOpen,
+  isOpen,
 }) => {
-  const [isOpen, setIsOpen] = useState(false)
   const buttonRef = useRef<HTMLButtonElement>(null)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
   useOnClickOutside([buttonRef as RefObject<HTMLElement>, dropdownRef as RefObject<HTMLElement>], () =>
-    setIsOpen(false)
+    setIsSettingsOpen(false)
   )
+
+  const handleToggle = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation()
+    setIsSettingsOpen(!isOpen)
+  }
 
   if (!settingsNavItems || settingsNavItems.length === 0) {
     return null
   }
 
   return (
-    <GlobalSettingsWrapper>
-      <GlobalSettingsButton ref={buttonRef} onClick={() => setIsOpen(!isOpen)}>
-        <SVG src={IMG_ICON_SETTINGS_GLOBAL} />
-      </GlobalSettingsButton>
+    <>
       {isOpen && (
-        <DropdownContent isOpen={true} ref={dropdownRef} alignRight mobileMode={mobileMode}>
-          {settingsNavItems.map((item, index) => (
-            <StyledDropdownContentItem
-              key={index}
-              href={item.href}
-              onClick={item.onClick} // Handle onClick here
-            >
-              <DropdownContentItemText>
-                <DropdownContentItemTitle>{item.label}</DropdownContentItemTitle>
-              </DropdownContentItemText>
-              <SVG src={IMG_ICON_ARROW_RIGHT} className="arrow-icon-right" />
-            </StyledDropdownContentItem>
-          ))}
-        </DropdownContent>
+        <MobileDropdownContainer mobileMode={mobileMode} ref={dropdownRef}>
+          <DropdownContent isOpen={true} alignRight={true} mobileMode={mobileMode}>
+            {settingsNavItems.map((item, index) => (
+              <StyledDropdownContentItem
+                key={index}
+                href={item.href}
+                onClick={item.onClick} // Handle onClick here
+              >
+                <DropdownContentItemText>
+                  <DropdownContentItemTitle>{item.label}</DropdownContentItemTitle>
+                </DropdownContentItemText>
+                <SVG src={IMG_ICON_ARROW_RIGHT} className="arrow-icon-right" />
+              </StyledDropdownContentItem>
+            ))}
+          </DropdownContent>
+        </MobileDropdownContainer>
       )}
-    </GlobalSettingsWrapper>
+    </>
   )
 }
 
@@ -432,9 +462,16 @@ export const MenuBar = (props: MenuBarProps) => {
   } = props
   const [isDaoOpen, setIsDaoOpen] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false)
   const menuRef = useRef(null)
   const mobileMenuRef = useRef(null)
   const mobileMenuTriggerRef = useRef<HTMLDivElement>(null)
+  const buttonRef = useRef<HTMLButtonElement>(null)
+
+  const handleToggle = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation()
+    setIsSettingsOpen(!isSettingsOpen)
+  }
 
   const styledTheme = {
     ...themeMapper(theme),
@@ -455,7 +492,7 @@ export const MenuBar = (props: MenuBarProps) => {
 
   React.useEffect(() => {
     if (isMobile) {
-      if (isMobileMenuOpen || isDaoOpen) {
+      if (isMobileMenuOpen || isDaoOpen || isSettingsOpen) {
         addBodyClass('noScroll')
       } else {
         removeBodyClass('noScroll')
@@ -465,7 +502,7 @@ export const MenuBar = (props: MenuBarProps) => {
     return () => {
       removeBodyClass('noScroll')
     }
-  }, [isMobile, isMobileMenuOpen, isDaoOpen])
+  }, [isMobile, isMobileMenuOpen, isDaoOpen, isSettingsOpen])
 
   return (
     <ThemeProvider theme={styledTheme}>
@@ -506,9 +543,18 @@ export const MenuBar = (props: MenuBarProps) => {
                     <SVG src={IMG_ICON_ARROW_RIGHT} className={`arrow-icon-right ${item.external ? 'external' : ''}`} />
                   </DropdownContentItemButton>
                 ))}
-
               {showGlobalSettings && settingsNavItems && (
-                <GlobalSettingsDropdown mobileMode={isMobile} settingsNavItems={settingsNavItems} />
+                <>
+                  <GlobalSettingsButton ref={buttonRef} onClick={handleToggle}>
+                    <SVG src={IMG_ICON_SETTINGS_GLOBAL} />
+                  </GlobalSettingsButton>
+                  <GlobalSettingsDropdown
+                    mobileMode={isMobile}
+                    settingsNavItems={settingsNavItems}
+                    setIsSettingsOpen={setIsSettingsOpen}
+                    isOpen={isSettingsOpen}
+                  />
+                </>
               )}
 
               {isMobile && (
