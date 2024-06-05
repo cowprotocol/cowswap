@@ -2,7 +2,6 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { TokenErc20, UNLIMITED_ORDER_AMOUNT } from '@gnosis.pm/dex-js'
 import BigNumber from 'bignumber.js'
-import BN from 'bn.js'
 
 export {
   ALLOWANCE_FOR_ENABLED_TOKEN,
@@ -28,15 +27,6 @@ export const ONE_HUNDRED_BIG_NUMBER = new BigNumber(100)
 
 // Value used on formatSmart's smallLimit for integer values, such as raw token amounts
 export const MINIMUM_ATOM_VALUE = '1'
-
-// How much of the order needs to be matched to consider it filled
-// Will divide the total sell amount by this factor.
-// E.g.: Sell = 500; ORDER_FILLED_FACTOR = 100 (1%) => 500/100 => 5
-// ∴ when the amount is < 5 the order will be considered filled.
-export const ORDER_FILLED_FACTOR = new BN(10000) // 0.01%
-// Similar to the ORDER_FILLED_FACTOR, but for the explorer, and using a different calculation
-// Order is considered `filled` when less than FILLED_ORDER_EPSILON is left
-export const FILLED_ORDER_EPSILON = new BigNumber('0.0001') // == 0.01%
 
 export const APP_NAME = 'CoW Protocol'
 
@@ -105,7 +95,7 @@ export const MEDIA = {
 
 export const WETH_ADDRESS_MAINNET = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'
 export const WXDAI_ADDRESS_XDAI = '0xe91D153E0b41518A2Ce8Dd3D7944Fa863463a97d'
-export const WXDAI_ADDRESS_ARBITRUM_ONE = '0x82af49447d8a07e3bd95bd0d56f35241523fbab1'
+export const WETH_ADDRESS_ARBITRUM_ONE = '0x82af49447d8a07e3bd95bd0d56f35241523fbab1'
 export const WETH_ADDRESS_SEPOLIA = '0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14'
 export const NATIVE_TOKEN_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
 export const NATIVE_TOKEN_ADDRESS_LOWERCASE = NATIVE_TOKEN_ADDRESS.toLowerCase()
@@ -113,7 +103,7 @@ export const NATIVE_TOKEN_ADDRESS_LOWERCASE = NATIVE_TOKEN_ADDRESS.toLowerCase()
 export const WRAPPED_NATIVE_ADDRESS: Record<SupportedChainId, string> = {
   [SupportedChainId.MAINNET]: WETH_ADDRESS_MAINNET,
   [SupportedChainId.GNOSIS_CHAIN]: WXDAI_ADDRESS_XDAI,
-  [SupportedChainId.ARBITRUM_ONE]: WXDAI_ADDRESS_ARBITRUM_ONE,
+  [SupportedChainId.ARBITRUM_ONE]: WETH_ADDRESS_ARBITRUM_ONE,
   [SupportedChainId.SEPOLIA]: WETH_ADDRESS_SEPOLIA,
 }
 
