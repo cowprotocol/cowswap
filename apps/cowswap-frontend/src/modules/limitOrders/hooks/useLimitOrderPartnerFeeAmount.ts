@@ -12,12 +12,10 @@ export function useLimitOrderPartnerFeeAmount(): CurrencyAmount<Currency> | null
 
   return useMemo(() => {
     const outputCurrencyAmount = state?.outputCurrencyAmount
-    if (!outputCurrencyAmount || !partnerFee) return null
+    if (!outputCurrencyAmount) return null
 
-    const { bps: partnerFeeBps } = partnerFee
-
-    return partnerFeeBps > 0
-      ? outputCurrencyAmount.multiply(bpsToPercent(partnerFeeBps))
+    return !!partnerFee?.bps && partnerFee.bps > 0
+      ? outputCurrencyAmount.multiply(bpsToPercent(partnerFee?.bps))
       : CurrencyAmount.fromRawAmount(outputCurrencyAmount.currency, 0)
   }, [state, partnerFee])
 }

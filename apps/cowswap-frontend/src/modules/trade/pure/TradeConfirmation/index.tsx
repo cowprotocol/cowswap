@@ -81,7 +81,7 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
 
   const { isPriceChanged, resetPriceChanged } = useIsPriceChanged(inputAmount, outputAmount)
 
-  const isButtonDisabled = isConfirmDisabled || isPriceChanged || hasPendingTrade
+  const isButtonDisabled = isConfirmDisabled || (isPriceChanged && !isPriceStatic) || hasPendingTrade
 
   const [nextUpdateAt, setNextUpdateAt] = useState(refreshInterval)
 

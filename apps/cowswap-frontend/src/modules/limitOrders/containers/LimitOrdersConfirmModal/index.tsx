@@ -15,7 +15,7 @@ import { executionPriceAtom } from 'modules/limitOrders/state/executionPriceAtom
 import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { limitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
 import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
-import { TradeConfirmation, TradeConfirmModal, ReviewOrderModalAmountRow, useTradeConfirmActions } from 'modules/trade'
+import { TradeConfirmation, TradeConfirmModal, useTradeConfirmActions } from 'modules/trade'
 
 import { useIsSafeApprovalBundle } from 'common/hooks/useIsSafeApprovalBundle'
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
@@ -29,7 +29,7 @@ import { TradeRateDetails } from '../TradeRateDetails'
 const CONFIRM_TITLE = 'Limit Order'
 
 export interface LimitOrdersConfirmModalProps {
-  tradeContext: TradeFlowContext
+  tradeContext: TradeFlowContext | null
   inputCurrencyInfo: CurrencyPreviewInfo
   outputCurrencyInfo: CurrencyPreviewInfo
   priceImpact: PriceImpact
@@ -93,24 +93,20 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
         isPriceStatic={true}
       >
         <>
-          <LimitOrdersDetails
-            limitRateState={limitRateState}
-            tradeContext={tradeContext}
-            rateInfoParams={rateInfoParams}
-            settingsState={settingsState}
-            executionPrice={executionPrice}
-            partiallyFillableOverride={partiallyFillableOverride}
-          >
-            <>
-              <TradeRateDetails />
-              <ReviewOrderModalAmountRow
-                highlighted={true}
-                amount={outputAmount}
-                fiatAmount={outputAmountUsd}
-                label="Expected to receive"
-              />
-            </>
-          </LimitOrdersDetails>
+          {tradeContext && (
+            <LimitOrdersDetails
+              limitRateState={limitRateState}
+              tradeContext={tradeContext}
+              rateInfoParams={rateInfoParams}
+              settingsState={settingsState}
+              executionPrice={executionPrice}
+              partiallyFillableOverride={partiallyFillableOverride}
+            >
+              <>
+                <TradeRateDetails />
+              </>
+            </LimitOrdersDetails>
+          )}
           <LimitOrdersWarnings isConfirmScreen={true} />
         </>
       </TradeConfirmation>
