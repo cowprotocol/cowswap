@@ -139,16 +139,6 @@ export function App() {
         label: darkMode ? 'Light mode' : 'Dark mode',
         onClick: toggleDarkMode,
       },
-      {
-        label: 'Disable sound',
-        onClick: () => {
-          console.log('Sound toggled')
-        },
-      },
-      {
-        label: 'Account Settings',
-        href: 'https://cow.fi/',
-      },
     ],
     [darkMode, toggleDarkMode]
   )

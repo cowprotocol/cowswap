@@ -271,7 +271,8 @@ export const GlobalCoWDAOStyles = (fonts: GlobalCowDAOFonts, bgColor?: string) =
         font-family: ${Font.family};
         margin: 0;
         padding: 0;
-        background: ${bgColor ? bgColor : Color.neutral98};
+        background: ${({ theme }) =>
+          theme.isInjectedWidgetMode ? 'transparent' : bgColor ? bgColor : Color.neutral98};
         color: ${Color.neutral0};
         scroll-behavior: smooth;
         font-variant: none;

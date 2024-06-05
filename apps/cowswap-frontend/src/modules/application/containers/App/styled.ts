@@ -35,8 +35,15 @@ export const BodyWrapper = styled.div`
   border-bottom-left-radius: ${({ theme }) => (theme.isInjectedWidgetMode ? '0' : 'var(--marginBottomOffset)')};
   border-bottom-right-radius: ${({ theme }) => (theme.isInjectedWidgetMode ? '0' : 'var(--marginBottomOffset)')};
   min-height: ${({ theme }) => (theme.isInjectedWidgetMode ? 'initial' : 'calc(100vh - 200px)')};
-  background: ${({ theme }) => (theme.isInjectedWidgetMode ? 'transparent' : theme.darkMode ? '#0E0F2D' : '#65D9FF')}
-    url(${({ theme }) => (theme.darkMode ? IMAGE_BACKGROUND_DARK : IMAGE_BACKGROUND_LIGHT)}) no-repeat bottom -1px center;
+  background: ${({ theme }) => {
+    if (theme.isInjectedWidgetMode) {
+      return 'transparent'
+    } else {
+      const backgroundColor = theme.darkMode ? '#0E0F2D' : '#65D9FF'
+      const backgroundImage = theme.darkMode ? `url(${IMAGE_BACKGROUND_DARK})` : `url(${IMAGE_BACKGROUND_LIGHT})`
+      return `${backgroundColor} ${backgroundImage} no-repeat bottom -1px center`
+    }
+  }};
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     padding: ${({ theme }) => (theme.isInjectedWidgetMode ? '0 0 16px' : '150px 16px 76px')};
@@ -45,7 +52,7 @@ export const BodyWrapper = styled.div`
   `}
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
-  padding: ${({ theme }) => (theme.isInjectedWidgetMode ? '0 0 16px' : '90px 16px 76px')};
+    padding: ${({ theme }) => (theme.isInjectedWidgetMode ? '0 0 16px' : '90px 16px 76px')};
     min-height: ${({ theme }) => (theme.isInjectedWidgetMode ? 'initial' : 'calc(100vh - 100px)')};
   `}
 `

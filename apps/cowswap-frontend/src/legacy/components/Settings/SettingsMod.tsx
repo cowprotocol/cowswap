@@ -5,7 +5,7 @@ import { useOnClickOutside } from '@cowprotocol/common-hooks'
 import { HelpTooltip, RowBetween, RowFixed, UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
-import { Settings } from 'react-feather'
+
 import { Text } from 'rebass'
 import styled from 'styled-components/macro'
 
@@ -19,7 +19,7 @@ import { ThemedText } from 'legacy/theme'
 
 import { SettingsTabProp } from './index'
 
-export const StyledMenuIcon = styled(Settings)`
+export const StyledMenuIcon = styled.span`
   --size: var(${UI.ICON_SIZE_NORMAL});
   height: var(--size);
   width: var(--size);
