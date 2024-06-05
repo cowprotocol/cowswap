@@ -43,10 +43,6 @@ const DAO_NAV_ITEMS: MenuItem[] = [
   { href: 'https://cow.fi/mev-blocker', productVariant: ProductVariant.MevBlocker },
 ]
 
-interface NavItemProps {
-  item: MenuItem
-}
-
 export interface MenuItem {
   href?: string
   label?: string
@@ -102,20 +98,24 @@ interface DropdownProps {
   interaction: 'hover' | 'click'
 }
 
-const NavItem = ({
-  item,
-  isClickable = false,
-  mobileMode = false,
-}: NavItemProps & { isClickable?: boolean; mobileMode?: boolean }) => {
-  const [isOpen, setIsOpen] = useState(false)
-  const handleToggle = () => setIsOpen((prevIsOpen) => !prevIsOpen)
+interface NavItemProps {
+  item: MenuItem
+  mobileMode?: boolean
+  openDropdown: string | null
+  setOpenDropdown: React.Dispatch<React.SetStateAction<string | null>>
+}
+
+const NavItem = ({ item, mobileMode = false, openDropdown, setOpenDropdown }: NavItemProps) => {
+  const handleToggle = () => {
+    setOpenDropdown((prev) => (prev === item.label ? null : item.label || null))
+  }
 
   return item.children ? (
     <GenericDropdown
-      isOpen={isOpen}
+      isOpen={openDropdown === item.label}
       content={{ title: item.label, items: item.children }}
       onTrigger={handleToggle}
-      interaction={isClickable || mobileMode ? 'click' : 'hover'}
+      interaction="click" // Ensure it's 'click' for both mobile and desktop
       mobileMode={mobileMode}
       isNavItemDropdown={true}
     />
@@ -271,15 +271,22 @@ const NavDaoTrigger: React.FC<{
       >
         <SVG src={IMG_ICON_MENU_DOTS} />
       </NavDaoTriggerElement>
-      {isOpen && (
-        <MobileDropdownContainer mobileMode={mobileMode} ref={dropdownRef}>
-          <DropdownContent isOpen={true} mobileMode={mobileMode}>
+      {isOpen &&
+        (mobileMode ? (
+          <MobileDropdownContainer mobileMode={mobileMode} ref={dropdownRef}>
+            <DropdownContent isOpen={true} mobileMode={mobileMode}>
+              {DAO_NAV_ITEMS.map((item, index) => (
+                <DropdownContentItem key={index} item={item} theme={theme} closeMenu={closeMenu} />
+              ))}
+            </DropdownContent>
+          </MobileDropdownContainer>
+        ) : (
+          <DropdownContent isOpen={true} ref={dropdownRef} mobileMode={mobileMode}>
             {DAO_NAV_ITEMS.map((item, index) => (
               <DropdownContentItem key={index} item={item} theme={theme} closeMenu={closeMenu} />
             ))}
           </DropdownContent>
-        </MobileDropdownContainer>
-      )}
+        ))}
     </>
   )
 }
@@ -311,6 +318,7 @@ const GenericDropdown: React.FC<DropdownProps & { mobileMode?: boolean; isNavIte
     </DropdownMenu>
   )
 }
+
 interface DropdownContentWrapperProps {
   content: DropdownMenuContent
   isThirdLevel?: boolean
@@ -326,12 +334,12 @@ const DropdownContentWrapper: React.FC<DropdownContentWrapperProps> = ({
   mobileMode = false,
   isNavItemDropdown = false,
 }) => {
-  const [visibleThirdLevel, setVisibleThirdLevel] = useState<{ [key: number]: boolean }>({})
+  const [visibleThirdLevel, setVisibleThirdLevel] = useState<number | null>(null)
 
   const handleToggleThirdLevelVisibility = (event: React.MouseEvent<HTMLDivElement>, index: number) => {
     event.preventDefault()
     event.stopPropagation()
-    setVisibleThirdLevel((prevState) => ({ ...prevState, [index]: !prevState[index] }))
+    setVisibleThirdLevel((prevState) => (prevState === index ? null : index))
   }
 
   const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
@@ -353,7 +361,7 @@ const DropdownContentWrapper: React.FC<DropdownContentWrapperProps> = ({
             key={index}
             as={Tag}
             href={!hasChildren ? item.href : undefined}
-            isOpen={visibleThirdLevel[index]}
+            isOpen={visibleThirdLevel === index}
             isThirdLevel={isThirdLevel}
             target={!hasChildren && item.external ? '_blank' : undefined}
             rel={!hasChildren && item.external ? 'noopener noreferrer nofollow' : undefined}
@@ -381,11 +389,11 @@ const DropdownContentWrapper: React.FC<DropdownContentWrapperProps> = ({
             {!item.children && (
               <SVG src={IMG_ICON_ARROW_RIGHT} className={`arrow-icon-right ${item.external ? 'external' : ''}`} />
             )}
-            {item.children && visibleThirdLevel[index] && (
+            {item.children && visibleThirdLevel === index && (
               <DropdownContentWrapper
                 content={{ title: undefined, items: item.children }}
                 isThirdLevel
-                isVisible={visibleThirdLevel[index]}
+                isVisible={visibleThirdLevel === index}
                 mobileMode={mobileMode}
                 isNavItemDropdown={isNavItemDropdown}
               />
@@ -428,9 +436,26 @@ const GlobalSettingsDropdown: React.FC<GlobalSettingsDropdownProps> = ({
 
   return (
     <>
-      {isOpen && (
-        <MobileDropdownContainer mobileMode={mobileMode} ref={dropdownRef}>
-          <DropdownContent isOpen={true} alignRight={true} mobileMode={mobileMode}>
+      {isOpen &&
+        (mobileMode ? (
+          <MobileDropdownContainer mobileMode={mobileMode} ref={dropdownRef}>
+            <DropdownContent isOpen={true} alignRight={true} mobileMode={mobileMode}>
+              {settingsNavItems.map((item, index) => (
+                <StyledDropdownContentItem
+                  key={index}
+                  href={item.href}
+                  onClick={item.onClick} // Handle onClick here
+                >
+                  <DropdownContentItemText>
+                    <DropdownContentItemTitle>{item.label}</DropdownContentItemTitle>
+                  </DropdownContentItemText>
+                  <SVG src={IMG_ICON_ARROW_RIGHT} className="arrow-icon-right" />
+                </StyledDropdownContentItem>
+              ))}
+            </DropdownContent>
+          </MobileDropdownContainer>
+        ) : (
+          <DropdownContent isOpen={true} ref={dropdownRef} alignRight={true} mobileMode={mobileMode}>
             {settingsNavItems.map((item, index) => (
               <StyledDropdownContentItem
                 key={index}
@@ -444,8 +469,7 @@ const GlobalSettingsDropdown: React.FC<GlobalSettingsDropdownProps> = ({
               </StyledDropdownContentItem>
             ))}
           </DropdownContent>
-        </MobileDropdownContainer>
-      )}
+        ))}
     </>
   )
 }
@@ -460,12 +484,16 @@ export const MenuBar = (props: MenuBarProps) => {
     additionalNavButtons,
     settingsNavItems,
   } = props
+
   const [isDaoOpen, setIsDaoOpen] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null)
+
   const menuRef = useRef(null)
   const mobileMenuRef = useRef(null)
   const mobileMenuTriggerRef = useRef<HTMLDivElement>(null)
+  const navItemsRef = useRef<HTMLDivElement>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
 
   const handleToggle = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -479,6 +507,7 @@ export const MenuBar = (props: MenuBarProps) => {
   }
 
   useOnClickOutside([menuRef as RefObject<HTMLElement>], () => setIsDaoOpen(false))
+  useOnClickOutside([navItemsRef as RefObject<HTMLElement>], () => setOpenDropdown(null))
   useOnClickOutside([mobileMenuRef as RefObject<HTMLElement>, mobileMenuTriggerRef as RefObject<HTMLElement>], () =>
     setIsMobileMenuOpen(false)
   )
@@ -512,9 +541,15 @@ export const MenuBar = (props: MenuBarProps) => {
           <ProductLogo variant={productVariant} theme={theme} logoIconOnly={isMobile} href="/" />
 
           {!isMobile && (
-            <NavItems theme={styledTheme}>
+            <NavItems theme={styledTheme} ref={navItemsRef}>
               {navItems.map((item, index) => (
-                <NavItem key={index} item={item} mobileMode={isMobile} />
+                <NavItem
+                  key={index}
+                  item={item}
+                  mobileMode={isMobile}
+                  openDropdown={openDropdown}
+                  setOpenDropdown={setOpenDropdown}
+                />
               ))}
             </NavItems>
           )}
@@ -570,7 +605,13 @@ export const MenuBar = (props: MenuBarProps) => {
           <NavItems mobileMode={isMobile} ref={mobileMenuRef} theme={styledTheme}>
             <div>
               {navItems.map((item, index) => (
-                <NavItem key={index} item={item} mobileMode={isMobile} />
+                <NavItem
+                  key={index}
+                  item={item}
+                  mobileMode={isMobile}
+                  openDropdown={openDropdown}
+                  setOpenDropdown={setOpenDropdown}
+                />
               ))}
               <RightAligned mobileMode={isMobile}>
                 {additionalContent}

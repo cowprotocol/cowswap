@@ -1,6 +1,6 @@
 import { CowSwapTheme } from '@cowprotocol/widget-lib'
 import styled, { css } from 'styled-components/macro'
-import { Color } from '../../consts'
+import { Color, Font } from '../../consts'
 
 export const MenuBarWrapper = styled.div`
   --height: 56px;
@@ -267,6 +267,7 @@ export const DropdownContent = styled.div<DropdownContentProps>`
       left: initial;
       background: transparent;
       backdrop-filter: none;
+      padding: 0 0 0 10px;
     `}
 
   &::before {
@@ -357,7 +358,7 @@ export const StyledDropdownContentItem = styled.a<{
   ${({ mobileMode }) =>
     mobileMode &&
     css`
-      flex-flow: row nowrap;
+      /* flex-flow: row nowrap; */
       padding: 8px 0;
     `}
 
@@ -528,6 +529,9 @@ export const RootNavItem = styled.a<{ isOpen?: boolean; mobileMode?: boolean }>`
       width: 100%;
       align-items: center;
       justify-content: left;
+      font-size: 21px;
+      font-weight: ${Font.weight.semibold};
+      padding: 12px 16px 12px 6px;
     `}
 
   > svg {
@@ -543,6 +547,8 @@ export const RootNavItem = styled.a<{ isOpen?: boolean; mobileMode?: boolean }>`
       mobileMode &&
       css`
         margin: 3px 0 0 auto;
+        height: 15px;
+        width: 24px;
       `}
   }
 `
