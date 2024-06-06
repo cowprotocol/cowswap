@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.72.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.72.0...cowswap-v1.72.1) (2024-06-06)
+
+
+### Bug Fixes
+
+* force release please to make a release ([#4517](https://github.com/cowprotocol/cowswap/issues/4517)) ([a5029cd](https://github.com/cowprotocol/cowswap/commit/a5029cd122d9fb2420680b2164573fa182b16bd3))
+
 ## [1.72.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.71.1...cowswap-v1.72.0) (2024-06-06)
 
 
