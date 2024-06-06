@@ -4,10 +4,11 @@ import { OrderKind, OrderQuoteResponse, SupportedChainId as ChainId } from '@cow
 import { createReducer, current, PayloadAction } from '@reduxjs/toolkit'
 import { FeeInformation, PriceInformation, Writable } from 'types'
 
+import QuoteApiError from 'api/cowProtocol/errors/QuoteError'
+
 import { getNewQuote, QuoteError, refreshQuote, setQuoteError, updateQuote } from './actions'
 import { LegacyFeeQuoteParams } from './types'
 
-import QuoteApiError from '../../../api/cowProtocol/errors/QuoteError'
 import { PrefillStateRequired } from '../orders/reducer'
 
 export interface QuoteInformationObject extends LegacyFeeQuoteParams {

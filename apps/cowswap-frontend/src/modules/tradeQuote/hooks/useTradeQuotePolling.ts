@@ -10,11 +10,12 @@ import ms from 'ms.macro'
 
 import { useUpdateCurrencyAmount } from 'modules/trade/hooks/useUpdateCurrencyAmount'
 
+import { getQuote } from 'api/cowProtocol/api'
+
 import { useProcessUnsupportedTokenError } from './useProcessUnsupportedTokenError'
 import { useQuoteParams } from './useQuoteParams'
 import { useUpdateTradeQuote } from './useUpdateTradeQuote'
 
-import { getQuote } from '../../../api/cowProtocol/api'
 import QuoteApiError, { QuoteApiErrorCodes } from '../../../api/cowProtocol/errors/QuoteError'
 import { tradeQuoteParamsAtom } from '../state/tradeQuoteParamsAtom'
 

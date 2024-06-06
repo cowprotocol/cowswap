@@ -3,7 +3,7 @@ import { useCallback } from 'react'
 import { getQuoteUnsupportedToken } from '@cowprotocol/common-utils'
 import { useAddUnsupportedToken } from '@cowprotocol/tokens'
 
-import QuoteApiError from '../../../api/cowProtocol/errors/QuoteError'
+import QuoteApiError from 'api/cowProtocol/errors/QuoteError'
 
 export function useProcessUnsupportedTokenError() {
   const addGpUnsupportedToken = useAddUnsupportedToken()

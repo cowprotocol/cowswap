@@ -31,9 +31,9 @@ import { getBestQuote } from 'legacy/utils/price'
 import { updatePendingOrderPricesAtom } from 'modules/orders/state/pendingOrdersPricesAtom'
 import { hasEnoughBalanceAndAllowance } from 'modules/tokens'
 
+import { getPriceQuality } from 'api/cowProtocol/api'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
-import { getPriceQuality } from '../../../api/cowProtocol/api'
 import { PRICE_QUOTE_VALID_TO_TIME } from '../../constants/quote'
 import { useVerifiedQuotesEnabled } from '../../hooks/featureFlags/useVerifiedQuotesEnabled'
 

@@ -7,7 +7,8 @@ import { OrderQuoteResponse } from '@cowprotocol/cow-sdk'
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
 import { useTradeQuote, useQuoteParams } from 'modules/tradeQuote'
 
-import { getQuote } from '../../../api/cowProtocol/api'
+import { getQuote } from 'api/cowProtocol/api'
+
 import { fullAmountQuoteAtom } from '../state/fullAmountQuoteAtom'
 
 const getQuoteOnlyResolveLast = onlyResolvesLast<OrderQuoteResponse>(getQuote)

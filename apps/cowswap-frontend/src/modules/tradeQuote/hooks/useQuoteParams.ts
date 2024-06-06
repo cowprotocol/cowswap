@@ -13,9 +13,8 @@ import { useAppData } from 'modules/appData'
 import { useEnoughBalanceAndAllowance } from 'modules/tokens'
 import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
 
+import { getPriceQuality } from 'api/cowProtocol/api'
 import { useVerifiedQuotesEnabled } from 'common/hooks/featureFlags/useVerifiedQuotesEnabled'
-
-import { getPriceQuality } from '../../../api/cowProtocol/api'
 
 const DEFAULT_QUOTE_TTL = ms`30m` / 1000
 
