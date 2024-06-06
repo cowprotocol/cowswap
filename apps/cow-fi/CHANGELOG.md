@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.1.0...cow-fi-v1.2.0) (2024-06-06)
+
+
+### Features
+
+* use bff proxies ([#4491](https://github.com/cowprotocol/cowswap/issues/4491)) ([cb9586b](https://github.com/cowprotocol/cowswap/commit/cb9586bbb4f78498a39b2b01c6bb1e4255dd0c46))
+
 ## [1.1.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.0.0...cow-fi-v1.1.0) (2024-05-29)
 
 
