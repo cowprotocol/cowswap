@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { bpsToPercent, formatPercent } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 

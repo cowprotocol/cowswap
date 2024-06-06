@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { getTotalCosts, ReceiveAmountInfo, TradeFeesAndCosts, TradeTotalCostsDetails } from 'modules/trade'
 
@@ -19,10 +17,8 @@ export function TradeRateDetails({ receiveAmountInfo, rateInfoParams }: TradeRat
 
   return (
     <TradeTotalCostsDetails totalCosts={totalCosts} rateInfoParams={rateInfoParams}>
-      <>
-        <TradeFeesAndCosts receiveAmountInfo={receiveAmountInfo} widgetParams={widgetParams} withTimelineDot={false} />
-        <RowDeadline />
-      </>
+      <TradeFeesAndCosts receiveAmountInfo={receiveAmountInfo} widgetParams={widgetParams} withTimelineDot={false} />
+      <RowDeadline />
     </TradeTotalCostsDetails>
   )
 }

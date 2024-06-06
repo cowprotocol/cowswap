@@ -102,9 +102,7 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
               executionPrice={executionPrice}
               partiallyFillableOverride={partiallyFillableOverride}
             >
-              <>
-                <TradeRateDetails />
-              </>
+              <TradeRateDetails />
             </LimitOrdersDetails>
           )}
           <LimitOrdersWarnings isConfirmScreen={true} />

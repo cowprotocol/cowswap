@@ -15,7 +15,7 @@ export function useLimitOrderPartnerFeeAmount(): CurrencyAmount<Currency> | null
     if (!outputCurrencyAmount) return null
 
     return !!partnerFee?.bps && partnerFee.bps > 0
-      ? outputCurrencyAmount.multiply(bpsToPercent(partnerFee?.bps))
+      ? outputCurrencyAmount.multiply(bpsToPercent(partnerFee.bps))
       : CurrencyAmount.fromRawAmount(outputCurrencyAmount.currency, 0)
   }, [state, partnerFee])
 }
