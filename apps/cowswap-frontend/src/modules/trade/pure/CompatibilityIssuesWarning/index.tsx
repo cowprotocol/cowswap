@@ -1,3 +1,5 @@
+import { memo } from 'react'
+
 import { genericPropsChecker } from '@cowprotocol/common-utils'
 import { Currency } from '@uniswap/sdk-core'
 
@@ -11,7 +13,7 @@ export interface CompatibilityIssuesWarningProps {
   isSupportedWallet: boolean
 }
 
-export const CompatibilityIssuesWarning = React.memo((props: CompatibilityIssuesWarningProps) => {
+export const CompatibilityIssuesWarning = memo((props: CompatibilityIssuesWarningProps) => {
   const { currencyIn, currencyOut, isSupportedWallet } = props
   const currenciesPair = [currencyIn, currencyOut]
 
