@@ -4,7 +4,7 @@ import { GetStaticPaths, GetStaticProps } from 'next'
 import styled from 'styled-components'
 import { Font, Color, Media } from '@cowprotocol/ui'
 import Layout from '@/components/Layout'
-import { getCategoryBySlug, getAllCategorySlugs, getArticles } from 'services/cms'
+import { getCategoryBySlug, getAllCategorySlugs, getArticles, getCategories } from 'services/cms'
 import { SearchBar } from '@/components/SearchBar'
 import { ArrowButton } from '@/components/ArrowButton'
 
@@ -16,6 +16,7 @@ import {
   LinkSection,
   LinkColumn,
   LinkItem,
+  CategoryLinks,
 } from '@/styles/styled'
 
 const Wrapper = styled.div`
@@ -24,14 +25,13 @@ const Wrapper = styled.div`
   align-items: center;
   max-width: 1600px;
   width: 100%;
-  margin: 76px auto 0;
-  gap: 24px;
+  margin: 24px auto 0;
+  gap: 34px;
   padding: 0 16px;
 
   ${Media.upToMedium()} {
     margin: 0 auto;
-    gap: 0;
-    padding: 0 8px;
+    gap: 24px;
   }
 `
 
@@ -85,9 +85,10 @@ const CategoryDescription = styled.div`
 interface TopicPageProps {
   category: any // Adjust the type as per your Category structure
   articles: any[] // Adjust the type as per your Article structure
+  allCategories: { name: string; slug: string }[] // Add categories type
 }
 
-export default function TopicPage({ category, articles }: TopicPageProps) {
+export default function TopicPage({ category, articles, allCategories }: TopicPageProps) {
   const { name, description, image } = category.attributes || {}
   const imageUrl = image?.data?.attributes?.url
 
@@ -102,10 +103,23 @@ export default function TopicPage({ category, articles }: TopicPageProps) {
       </Head>
 
       <Wrapper>
+        <CategoryLinks>
+          <li>
+            <a href="/learn">All Topics</a>
+          </li>
+          {allCategories.map((category) => (
+            <li key={category.slug}>
+              <a href={`/learn/topic/${category.slug}`}>{category.name}</a>
+            </li>
+          ))}
+        </CategoryLinks>
+
         <SearchBar articles={articles} />
 
-        <ContainerCard gap={42} gapMobile={24} touchFooter>
+        <ContainerCard gap={42} gapMobile={24} minHeight="100vh" alignContent="flex-start" touchFooter>
           <Breadcrumbs padding={'0'}>
+            <a href="/">Home</a>
+            <a href="/learn">Learn</a>
             <a href="/learn/topics/">Topic</a>
             <span>{name}</span>
           </Breadcrumbs>
@@ -172,10 +186,18 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
   const articles = articlesResponse.data
 
+  const categoriesResponse = await getCategories()
+  const allCategories =
+    categoriesResponse?.map((category: any) => ({
+      name: category?.attributes?.name || '',
+      slug: category?.attributes?.slug || '',
+    })) || []
+
   return {
     props: {
       category,
       articles,
+      allCategories,
     },
     revalidate: 5 * 60,
   }

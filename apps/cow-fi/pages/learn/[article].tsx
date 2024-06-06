@@ -33,6 +33,7 @@ import {
   ArticleMainTitle,
   ArticleSubtitleWrapper,
   CategoryTags,
+  CategoryLinks,
   StickyMenu,
   RelatedArticles,
 } from '@/styles/styled'
@@ -58,44 +59,6 @@ const Wrapper = styled.div`
   ${Media.upToMedium()} {
     margin: 0 auto;
     gap: 24px;
-  }
-`
-
-const CategoryLinks = styled.ul`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 32px;
-  padding: 0;
-  margin: 0;
-  list-style: none;
-  font-size: 16px;
-  font-weight: 500;
-  color: ${Color.neutral50};
-  width: 100%;
-
-  ${Media.upToMedium()} {
-    overflow-x: auto;
-    flex-flow: row nowrap;
-    justify-content: flex-start;
-    gap: 24px;
-    padding: 16px 34px 0 16px;
-  }
-
-  li {
-    display: inline-block;
-  }
-
-  a {
-    color: ${Color.neutral50};
-    text-decoration: none;
-    transition: color 0.2s ease-in-out;
-    white-space: nowrap;
-    line-height: 1;
-
-    &:hover {
-      color: ${Color.neutral0};
-    }
   }
 `
 

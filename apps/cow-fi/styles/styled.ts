@@ -9,6 +9,7 @@ export const ContainerCard = styled.div<{
   gapMobile?: number
   touchFooter?: boolean
   centerContent?: boolean
+  alignContent?: string
   padding?: string
   minHeight?: string
   margin?: string
@@ -16,6 +17,7 @@ export const ContainerCard = styled.div<{
   display: flex;
   flex-flow: row wrap;
   justify-content: ${({ centerContent }) => (centerContent ? 'center' : 'flex-start')};
+  align-content: ${({ alignContent }) => alignContent || 'initial'};
   gap: ${({ gap }) => gap || 100}px;
   margin: ${({ touchFooter, margin }) => (touchFooter ? '0 0 -65px' : margin || '24px 0')};
   width: 100%;
@@ -1568,6 +1570,44 @@ export const CategoryTags = styled.div`
     &:hover {
       background: ${Color.neutral10};
       color: ${Color.neutral98};
+    }
+  }
+`
+
+export const CategoryLinks = styled.ul`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  font-size: 16px;
+  font-weight: 500;
+  color: ${Color.neutral50};
+  width: 100%;
+
+  ${Media.upToMedium()} {
+    overflow-x: auto;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    gap: 24px;
+    padding: 16px 34px 0 16px;
+  }
+
+  li {
+    display: inline-block;
+  }
+
+  a {
+    color: ${Color.neutral50};
+    text-decoration: none;
+    transition: color 0.2s ease-in-out;
+    white-space: nowrap;
+    line-height: 1;
+
+    &:hover {
+      color: ${Color.neutral0};
     }
   }
 `
