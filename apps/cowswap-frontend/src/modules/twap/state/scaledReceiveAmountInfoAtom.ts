@@ -4,11 +4,11 @@ import { ReceiveAmountInfo, receiveAmountInfoAtom } from 'modules/trade'
 
 import { twapOrdersSettingsAtom } from './twapOrdersSettingsAtom'
 
-import { scaleReceiveAmountInfo } from '../utils/scaleReceiveAmountInfo'
+import { calculateTwapReceivedAmountInfo } from '../utils/calculateTwapReceivedAmountInfo'
 
 export const scaledReceiveAmountInfoAtom = atom<ReceiveAmountInfo | null>((get) => {
   const { numberOfPartsValue } = get(twapOrdersSettingsAtom)
   const receiveAmountInfo = get(receiveAmountInfoAtom)
 
-  return scaleReceiveAmountInfo(receiveAmountInfo, numberOfPartsValue)
+  return calculateTwapReceivedAmountInfo(receiveAmountInfo, numberOfPartsValue)
 })

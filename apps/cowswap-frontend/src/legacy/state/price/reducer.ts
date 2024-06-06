@@ -11,8 +11,6 @@ import { LegacyFeeQuoteParams } from './types'
 
 import { PrefillStateRequired } from '../orders/reducer'
 
-// API Doc: https://protocol-rinkeby.dev.gnosisdev.com/api
-
 export interface QuoteInformationObject extends LegacyFeeQuoteParams {
   fee?: FeeInformation
   price?: PriceInformation
