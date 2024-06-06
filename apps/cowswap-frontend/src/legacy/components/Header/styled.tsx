@@ -34,13 +34,6 @@ export const HeaderLinksMod = styled(Row)`
   `};
 `
 
-export const HeaderControlsUni = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-self: flex-end;
-`
-
 export const StyledNavLinkUni = styled(NavLink)`
   ${({ theme }) => theme.flexRowNoWrap}
   align-items: left;
@@ -135,16 +128,26 @@ export const StyledNavLink = styled(StyledNavLinkUni)`
   }
 `
 
-export const HeaderControls = styled(HeaderControlsUni)`
+export const HeaderControls = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
   justify-content: flex-end;
   gap: 0;
+  max-width: 100%;
 
-  ${({ theme }) => theme.mediaWidth.upToLarge`
-    max-width: 100%;
+  ${({ theme }) => theme.mediaWidth.upToMedium`
     margin: 0 0 0 auto;
-    padding: 0;
-    height: auto;
-    width: auto;
+    height: 56px;
+    width: 100%;
+    position: sticky;
+    bottom: 0;
+    left: 0;
+    z-index: 101;
+    background: var(${UI.COLOR_PAPER});
+    padding: 5px 10px;
+    flex-flow: row-reverse;
+    justify-content: space-between;
   `};
 `
 
@@ -152,16 +155,6 @@ export const HeaderElement = styled.div`
   display: flex;
   align-items: center;
   gap: 0;
-
-  ${({ theme }) => theme.mediaWidth.upToTiny`
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background: var(${UI.COLOR_PAPER});
-    padding: 5px;
-    justify-content: flex-end;
-  `};
 `
 
 export const Wrapper = styled.div<{ isMobileMenuOpen: boolean }>`

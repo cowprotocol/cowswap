@@ -13,19 +13,19 @@ import { RoutesApp } from './RoutesApp'
 import * as styledEl from './styled'
 import { Media, MenuBar, MenuItem, Footer, ProductVariant, GlobalCoWDAOStyles, Color } from '@cowprotocol/ui'
 import { CoWDAOFonts } from 'common/styles/CoWDAOFonts'
+
 import IMG_ICON_BRANDED_DOT_RED from '@cowprotocol/assets/images/icon-branded-dot-red.svg'
+import IMG_ICON_COW_RUNNER from '@cowprotocol/assets/cow-swap/game.gif'
+import IMG_ICON_COW_SLICER from '@cowprotocol/assets/cow-swap/ninja-cow.png'
+
 import { useDarkModeManager } from 'legacy/state/user/hooks'
 import { useMediaQuery } from '@cowprotocol/common-hooks'
 
-// import { useNavigate } from 'react-router-dom'
 import { NetworkSelector } from 'legacy/components/Header/NetworkSelector'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
-// import { useWalletInfo } from '@cowprotocol/wallet'
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
-// import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
 import { HeaderControls, HeaderElement } from 'legacy/components/Header/styled'
-// import CowBalanceButton from 'legacy/components/CowBalanceButton'
 import { AccountElement } from 'legacy/components/Header/AccountElement'
 
 // Move this to const file ==========
@@ -51,6 +51,16 @@ const NAV_ITEMS: MenuItem[] = [
     ],
   },
   {
+    label: 'Account',
+    children: [
+      { href: '/#/account', label: 'Account' },
+      {
+        href: '/#/account/tokens',
+        label: 'Tokens',
+      },
+    ],
+  },
+  {
     label: 'Learn',
     children: [
       {
@@ -68,14 +78,22 @@ const NAV_ITEMS: MenuItem[] = [
       {
         href: 'https://cow.fi/',
         label: 'CoW Protocol',
-        description: 'Build with CoW Protocol',
         external: true,
       },
       {
         href: 'https://cow.fi/',
         label: 'CoW AMM',
-        description: 'Deploy liquidity with CoW AMM',
         external: true,
+      },
+      {
+        href: '/#/play/cow-runner',
+        label: 'CoW Runner',
+        icon: IMG_ICON_COW_RUNNER,
+      },
+      {
+        href: '/#/play/mev-slicer',
+        label: 'MEV Slicer',
+        icon: IMG_ICON_COW_SLICER,
       },
     ],
   },
@@ -156,11 +174,8 @@ export function App() {
     [darkMode, toggleDarkMode]
   )
 
-  // const { account, chainId } = useWalletInfo()
   const injectedWidgetParams = useInjectedWidgetParams()
-  // const isChainIdUnsupported = useIsProviderNetworkUnsupported()
   const { pendingActivity } = useCategorizeRecentActivity()
-  // const navigate = useNavigate()
   const isMobile = useMediaQuery(Media.upToMedium(false))
 
   const persistentAdditionalContent = (
@@ -198,7 +213,7 @@ export function App() {
             activeFillDark="#DEE3E6"
             activeBackgroundDark="#282854"
             hoverBackgroundDark={'#18193B'}
-            persistentAdditionalContent={persistentAdditionalContent} // This will stay at its original location
+            persistentAdditionalContent={isMobile ? null : persistentAdditionalContent} // This will stay at its original location
             additionalContent={null} // On desktop renders inside the menu bar, on mobile renders inside the mobile menu
           />
         )}
@@ -218,6 +233,9 @@ export function App() {
             hasTouchFooter
           />
         )}
+
+        {/* Render MobileHeaderControls outside of MenuBar on mobile */}
+        {isMobile && !isInjectedWidgetMode && persistentAdditionalContent}
       </styledEl.AppWrapper>
     </ErrorBoundary>
   )

@@ -10,13 +10,14 @@ import { darken, transparentize } from 'color2k'
 import { AlertTriangle, ChevronDown } from 'react-feather'
 import styled from 'styled-components/macro'
 
-import { upToMedium, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 import { useCloseModal, useModalIsOpen, useOpenModal, useToggleModal } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useOnSelectNetwork } from 'common/hooks/useOnSelectNetwork'
 import { NetworksList } from 'common/pure/NetworksList'
+import { useMediaQuery } from '@cowprotocol/common-hooks'
+import { Media } from '@cowprotocol/ui'
 
 const FlyoutHeader = styled.div`
   color: inherit;
@@ -30,12 +31,6 @@ const FlyoutMenu = styled.div`
   padding-top: 10px;
   top: 38px;
   right: 0;
-
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-      width: 100%;
-      left: 0;
-      top: 58px;
-    `};
 `
 
 const FlyoutMenuContents = styled.div`
@@ -52,10 +47,13 @@ const FlyoutMenuContents = styled.div`
   z-index: 99;
   padding: 16px;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    top: 50px;
-    box-shadow: 0 0 0 100vh ${({ theme }) => transparentize(theme.black, 0.1)}};
-  `};
+  ${Media.upToSmall()} {
+    bottom: 56px;
+    left: 0;
+    position: fixed;
+    width: 100%;
+    border-radius: 12px 12px 0 0;
+  }
 
   & > *:not(:last-child) {
     margin-bottom: 5px;
@@ -67,9 +65,9 @@ const SelectorLabel = styled.div`
   margin: 0;
   white-space: nowrap;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToExtraSmall()} {
     display: none;
-  `};
+  }
 `
 const SelectorControls = styled.div<{ isChainIdUnsupported: boolean }>`
   align-items: center;
@@ -108,9 +106,9 @@ const SelectorLogo = styled.img<{ interactive?: boolean }>`
   margin-right: ${({ interactive }) => (interactive ? 8 : 0)}px;
   object-fit: contain;
 
-  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+  ${Media.upToExtraSmall()} {
     --size: 21px;
-  `};
+  }
 `
 const SelectorWrapper = styled.div`
   display: flex;
@@ -134,7 +132,7 @@ const NetworkIcon = styled(AlertTriangle)`
 `
 const NetworkAlertLabel = styled.div`
   flex: 1 1 auto;
-  display: none;
+  display: block;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -142,10 +140,6 @@ const NetworkAlertLabel = styled.div`
   font-size: 1rem;
   width: fit-content;
   font-weight: 500;
-
-  @media screen and (min-width: ${MEDIA_WIDTHS.upToSmall}px) {
-    display: block;
-  }
 `
 
 export function NetworkSelector() {
@@ -164,7 +158,7 @@ export function NetworkSelector() {
   const onSelectChain = useOnSelectNetwork()
 
   // Mod: Detect viewport changes and set isUpToMedium
-  const isUpToMedium = useMediaQuery(upToMedium)
+  const isUpToMedium = useMediaQuery(Media.upToMedium(true))
 
   if (!chainId || !provider || isSmartContractWallet || isTallyWallet) {
     return null

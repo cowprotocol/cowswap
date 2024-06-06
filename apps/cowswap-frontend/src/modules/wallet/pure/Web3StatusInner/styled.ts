@@ -87,6 +87,7 @@ export const Wrapper = styled.div`
     padding: 6px 12px;
     width: max-content;
     gap: 6px;
+    background: var(${UI.COLOR_PAPER});
   }
 
   ${Web3StatusConnected} {

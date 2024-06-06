@@ -30,7 +30,7 @@ export const Wrapper = styled.div<{ active: boolean }>`
   align-items: center;
   white-space: nowrap;
   cursor: pointer;
-  background-color: ${({ theme, active }) => (!active ? theme.bg1 : theme.bg1)};
+  background: ${({ active }) => (active ? `var(${UI.COLOR_PAPER_DARKER})` : `var(${UI.COLOR_PAPER})`)};
   border-radius: 21px;
   border: 2px solid transparent;
   transition: border var(${UI.ANIMATION_DURATION}) ease-in-out;

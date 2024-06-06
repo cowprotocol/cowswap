@@ -1,6 +1,8 @@
 import * as CSS from 'csstype'
 import styled from 'styled-components/macro'
 
+import { Media } from '@cowprotocol/ui'
+
 import IMAGE_BACKGROUND_LIGHT from '@cowprotocol/assets/images/background-cowswap-lightmode.svg'
 import IMAGE_BACKGROUND_DARK from '@cowprotocol/assets/images/background-cowswap-darkmode.svg'
 
@@ -45,14 +47,14 @@ export const BodyWrapper = styled.div`
     }
   }};
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${Media.upToMedium()} {
     padding: ${({ theme }) => (theme.isInjectedWidgetMode ? '0 0 16px' : '150px 16px 76px')};
     flex: none;
     min-height: ${({ theme }) => (theme.isInjectedWidgetMode ? 'initial' : 'calc(100vh - 200px)')};
-  `}
+  }
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     padding: ${({ theme }) => (theme.isInjectedWidgetMode ? '0 0 16px' : '90px 16px 76px')};
     min-height: ${({ theme }) => (theme.isInjectedWidgetMode ? 'initial' : 'calc(100vh - 100px)')};
-  `}
+  }
 `

@@ -435,6 +435,7 @@ export const StyledDropdownContentItem = styled.a<{
 
     &.arrow-icon-right.external {
       opacity: 1;
+      transform: rotate(-45deg);
     }
   }
 
@@ -445,7 +446,7 @@ export const StyledDropdownContentItem = styled.a<{
 
 export const DropdownContentItemIcon = styled.img`
   width: 56px;
-  height: 100%;
+  height: 56px;
   object-fit: contain;
 `
 
