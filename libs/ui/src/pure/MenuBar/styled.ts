@@ -2,20 +2,39 @@ import { CowSwapTheme } from '@cowprotocol/widget-lib'
 import styled, { css } from 'styled-components/macro'
 import { Color, Font } from '../../consts'
 
-export const MenuBarWrapper = styled.div`
+export const MenuBarWrapper = styled.div<{
+  theme: CowSwapTheme
+  bgColorLight?: string
+  bgColorDark?: string
+  colorLight?: string
+  colorDark?: string
+  defaultFillLight?: string
+  defaultFillDark?: string
+  activeBackgroundLight?: string
+  activeBackgroundDark?: string
+  activeFillLight?: string
+  activeFillDark?: string
+  hoverBackgroundLight?: string
+  hoverBackgroundDark?: string
+}>`
   --height: 56px;
   --width: 100%;
-  --bgColor: ${({ theme }) => (theme.mode === 'dark' ? Color.neutral10 : 'rgba(255, 248, 247, 0.6)')};
-  --color: ${({ theme }) => (theme.mode === 'dark' ? Color.neutral98 : Color.neutral0)};
+  --bgColor: ${({ theme, bgColorLight, bgColorDark }) =>
+    theme.mode === 'dark' ? bgColorDark || Color.neutral10 : bgColorLight || 'rgba(255, 248, 247, 0.6)'};
+  --color: ${({ theme, colorLight, colorDark }) =>
+    theme.mode === 'dark' ? colorDark || Color.neutral98 : colorLight || Color.neutral0};
   --borderRadius: 28px;
   --blur: 16px;
 
   // Elements
-  --defaultFill: ${({ theme }) => (theme.mode === 'dark' ? Color.neutral60 : 'rgb(0 0 0 / 50%)')};
-  --activeBackground: ${({ theme }) => (theme.mode === 'dark' ? Color.neutral30 : Color.neutral100)};
-  --activeFill: ${({ theme }) => (theme.mode === 'dark' ? Color.neutral100 : Color.neutral0)};
-
-  --hoverBackground: ${({ theme }) => (theme.mode === 'dark' ? Color.neutral20 : Color.neutral90)};
+  --defaultFill: ${({ theme, defaultFillLight, defaultFillDark }) =>
+    theme.mode === 'dark' ? defaultFillDark || Color.neutral60 : defaultFillLight || 'rgb(0 0 0 / 50%)'};
+  --activeBackground: ${({ theme, activeBackgroundLight, activeBackgroundDark }) =>
+    theme.mode === 'dark' ? activeBackgroundDark || Color.neutral30 : activeBackgroundLight || Color.neutral100};
+  --activeFill: ${({ theme, activeFillLight, activeFillDark }) =>
+    theme.mode === 'dark' ? activeFillDark || Color.neutral100 : activeFillLight || Color.neutral0};
+  --hoverBackground: ${({ theme, hoverBackgroundLight, hoverBackgroundDark }) =>
+    theme.mode === 'dark' ? hoverBackgroundDark || Color.neutral20 : hoverBackgroundLight || Color.neutral90};
 
   display: flex;
   width: 100%;
@@ -277,6 +296,12 @@ export const DropdownContent = styled.div<DropdownContentProps>`
     left: 0;
     border: var(--dropdownOffset) solid transparent;
     width: 100%;
+
+    ${({ mobileMode }) =>
+      mobileMode &&
+      css`
+        content: none;
+      `}
   }
 `
 
@@ -358,8 +383,8 @@ export const StyledDropdownContentItem = styled.a<{
   ${({ mobileMode }) =>
     mobileMode &&
     css`
-      /* flex-flow: row nowrap; */
-      padding: 8px 0;
+      flex-flow: row wrap;
+      padding: 8px;
     `}
 
   &.hasDivider {
@@ -469,7 +494,11 @@ export const DropdownContentItemButton = styled(StyledDropdownContentItem)<{
 
   &:hover {
     background: ${({ hoverBgColor }) => hoverBgColor || Color.neutral90};
-    color: ${({ hoverColor }) => hoverColor || Color.neutral10};
+
+    &:hover {
+      background: ${({ hoverBgColor }) => hoverBgColor || Color.neutral100};
+      color: ${({ hoverColor }) => hoverColor || Color.neutral10};
+    }
   }
 
   > svg.arrow-icon-right {
@@ -494,7 +523,6 @@ export const DropdownMenu = styled.div<{ mobileMode?: boolean }>`
     mobileMode &&
     css`
       width: 100%;
-      gap: 24px;
     `}
 `
 
@@ -576,22 +604,6 @@ export const RightAligned = styled.div<{ mobileMode?: boolean; flexFlow?: string
     css`
       gap: 0;
       flex-flow: ${flexFlowMobile || 'column wrap'};
-    `}
-`
-
-export const GlobalSettingsWrapper = styled.div<{ mobileMode: boolean; isOpen: boolean }>`
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  ${({ mobileMode }) =>
-    mobileMode &&
-    css`
-      position: absolute;
-      top: 0;
-      right: 0;
-      margin: 0 1rem;
     `}
 `
 

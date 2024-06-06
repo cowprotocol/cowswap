@@ -47,7 +47,7 @@ const NAV_ITEMS: MenuItem[] = [
         external: true,
       },
       { href: 'https://cow.fi/learn', label: 'FAQs', external: true },
-      { href: 'https://cow.fi/', label: 'Docs ', external: true },
+      { href: 'https://docs.cow.fi/', label: 'Docs ', external: true },
     ],
   },
   {
@@ -122,6 +122,7 @@ const FOOTER_NAV_ITEMS: MenuItem[] = [
     ],
   },
 ]
+
 // Move this to const file ==========
 
 export function App() {
@@ -163,6 +164,13 @@ export function App() {
             productVariant={PRODUCT_VARIANT}
             settingsNavItems={settingsNavItems}
             showGlobalSettings
+            // bgColorDark={NavBgColorDark}
+            bgColorDark={'rgb(222 227 230 / 7%)'}
+            colorDark={'#DEE3E6'}
+            defaultFillDark="rgba(222, 227, 230, 0.4)"
+            activeFillDark="#DEE3E6"
+            activeBackgroundDark="#282854"
+            hoverBackgroundDark={'#18193B'}
           />
         )}
 

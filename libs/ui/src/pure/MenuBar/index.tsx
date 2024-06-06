@@ -14,7 +14,6 @@ import {
   DropdownContentItemText,
   DropdownContentItemTitle,
   DropdownContentItemDescription,
-  GlobalSettingsWrapper,
   GlobalSettingsButton,
   NavItems,
   StyledDropdownContentItem,
@@ -57,16 +56,6 @@ export interface MenuItem {
   hoverColor?: string
   onClick?: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void
   hasDivider?: boolean
-}
-
-interface MenuBarProps {
-  navItems: MenuItem[]
-  theme: 'light' | 'dark'
-  productVariant: ProductVariant
-  additionalContent?: React.ReactNode
-  showGlobalSettings?: boolean
-  settingsNavItems?: MenuItem[]
-  additionalNavButtons?: MenuItem[]
 }
 
 interface DropdownMenuItem {
@@ -474,6 +463,29 @@ const GlobalSettingsDropdown: React.FC<GlobalSettingsDropdownProps> = ({
   )
 }
 
+// MenuBar.tsx
+interface MenuBarProps {
+  navItems: MenuItem[]
+  theme: 'light' | 'dark'
+  productVariant: ProductVariant
+  additionalContent?: React.ReactNode
+  showGlobalSettings?: boolean
+  settingsNavItems?: MenuItem[]
+  additionalNavButtons?: MenuItem[]
+  bgColorLight?: string
+  bgColorDark?: string
+  colorLight?: string
+  colorDark?: string
+  defaultFillLight?: string
+  defaultFillDark?: string
+  activeBackgroundLight?: string
+  activeBackgroundDark?: string
+  activeFillLight?: string
+  activeFillDark?: string
+  hoverBackgroundLight?: string
+  hoverBackgroundDark?: string
+}
+
 export const MenuBar = (props: MenuBarProps) => {
   const {
     navItems,
@@ -483,6 +495,18 @@ export const MenuBar = (props: MenuBarProps) => {
     showGlobalSettings,
     additionalNavButtons,
     settingsNavItems,
+    bgColorLight,
+    bgColorDark,
+    colorLight,
+    colorDark,
+    defaultFillLight,
+    defaultFillDark,
+    activeBackgroundLight,
+    activeBackgroundDark,
+    activeFillLight,
+    activeFillDark,
+    hoverBackgroundLight,
+    hoverBackgroundDark,
   } = props
 
   const [isDaoOpen, setIsDaoOpen] = useState(false)
@@ -493,7 +517,7 @@ export const MenuBar = (props: MenuBarProps) => {
   const menuRef = useRef(null)
   const mobileMenuRef = useRef(null)
   const mobileMenuTriggerRef = useRef<HTMLDivElement>(null)
-  const navItemsRef = useRef<HTMLDivElement>(null)
+  const navItemsRef = useRef<HTMLUListElement>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
 
   const handleToggle = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -535,7 +559,22 @@ export const MenuBar = (props: MenuBarProps) => {
 
   return (
     <ThemeProvider theme={styledTheme}>
-      <MenuBarWrapper ref={menuRef}>
+      <MenuBarWrapper
+        ref={menuRef}
+        theme={styledTheme}
+        bgColorLight={bgColorLight}
+        bgColorDark={bgColorDark}
+        colorLight={colorLight}
+        colorDark={colorDark}
+        defaultFillLight={defaultFillLight}
+        defaultFillDark={defaultFillDark}
+        activeBackgroundLight={activeBackgroundLight}
+        activeBackgroundDark={activeBackgroundDark}
+        activeFillLight={activeFillLight}
+        activeFillDark={activeFillDark}
+        hoverBackgroundLight={hoverBackgroundLight}
+        hoverBackgroundDark={hoverBackgroundDark}
+      >
         <MenuBarInner theme={styledTheme}>
           <NavDaoTrigger isOpen={isDaoOpen} setIsOpen={setIsDaoOpen} theme={theme} mobileMode={isMobile} />
           <ProductLogo variant={productVariant} theme={theme} logoIconOnly={isMobile} href="/" />
