@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { CowSwapWidgetAppParams } from '@cowprotocol/widget-lib'
 
 import { useUsdAmount } from '../../../usdAmount'

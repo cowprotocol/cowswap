@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react'
+import { useCallback, useEffect } from 'react'
 
 import ICON_ORDERS from '@cowprotocol/assets/svg/orders.svg'
 import ICON_TOKENS from '@cowprotocol/assets/svg/tokens.svg'

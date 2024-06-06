@@ -1,4 +1,4 @@
-import React, { Dispatch, ReactNode, SetStateAction, useMemo } from 'react'
+import { Dispatch, ReactNode, SetStateAction, useMemo } from 'react'
 
 import { CowSwapWidgetAppParams } from '@cowprotocol/widget-lib'
 import { Percent, Price } from '@uniswap/sdk-core'

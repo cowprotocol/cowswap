@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { genericPropsChecker } from '@cowprotocol/common-utils'
 import { Currency } from '@uniswap/sdk-core'
 

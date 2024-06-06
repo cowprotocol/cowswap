@@ -1,10 +1,7 @@
-import React from 'react'
-
 import { isAddress, shortenAddress } from '@cowprotocol/common-utils'
 import { InfoTooltip } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
-
 
 const Row = styled.div`
   display: flex;

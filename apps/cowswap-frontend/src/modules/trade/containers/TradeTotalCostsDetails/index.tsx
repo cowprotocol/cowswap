@@ -1,4 +1,4 @@
-import React from 'react'
+import { ReactNode } from 'react'
 
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -12,7 +12,7 @@ import * as styledEl from './styled'
 export interface TradeRatesProps {
   rateInfoParams: RateInfoParams
   totalCosts: CurrencyAmount<Currency> | null
-  children?: JSX.Element
+  children?: ReactNode
 }
 
 export function TradeTotalCostsDetails(props: TradeRatesProps) {
