@@ -11,12 +11,13 @@ export const ContainerCard = styled.div<{
   centerContent?: boolean
   padding?: string
   minHeight?: string
+  margin?: string
 }>`
   display: flex;
   flex-flow: row wrap;
   justify-content: ${({ centerContent }) => (centerContent ? 'center' : 'flex-start')};
   gap: ${({ gap }) => gap || 100}px;
-  margin: ${({ touchFooter }) => (touchFooter ? '0 0 -65px' : '24px 0')};
+  margin: ${({ touchFooter, margin }) => (touchFooter ? '0 0 -65px' : margin || '24px 0')};
   width: 100%;
   padding: ${({ padding }) => padding || '60px'};
   border-radius: 60px;

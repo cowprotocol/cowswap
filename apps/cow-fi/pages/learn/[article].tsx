@@ -2,10 +2,18 @@ import React from 'react'
 import Head from 'next/head'
 import { GetStaticPaths, GetStaticProps } from 'next'
 import styled from 'styled-components'
-import { Font, Color, Media } from '@cowprotocol/ui'
+import { Color, Media } from '@cowprotocol/ui'
 import { CONFIG } from '@/const/meta'
 import Layout from '@/components/Layout'
-import { getArticles, getArticleBySlug, getAllArticleSlugs, Article, SharedRichTextComponent } from 'services/cms'
+import {
+  getArticles,
+  getArticleBySlug,
+  getAllArticleSlugs,
+  getCategories,
+  Article,
+  SharedRichTextComponent,
+} from 'services/cms'
+
 import ReactMarkdown from 'react-markdown'
 import { formatDate } from 'util/formatDate'
 import { SearchBar } from '@/components/SearchBar'
@@ -44,12 +52,50 @@ const Wrapper = styled.div`
   align-items: center;
   width: 100%;
   margin: 24px auto 0;
-  gap: 24px;
+  gap: 34px;
   max-width: 1600px;
 
   ${Media.upToMedium()} {
     margin: 0 auto;
-    gap: 0;
+    gap: 24px;
+  }
+`
+
+const CategoryLinks = styled.ul`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  font-size: 16px;
+  font-weight: 500;
+  color: ${Color.neutral50};
+  width: 100%;
+
+  ${Media.upToMedium()} {
+    overflow-x: auto;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    gap: 24px;
+    padding: 16px 34px 0 16px;
+  }
+
+  li {
+    display: inline-block;
+  }
+
+  a {
+    color: ${Color.neutral50};
+    text-decoration: none;
+    transition: color 0.2s ease-in-out;
+    white-space: nowrap;
+    line-height: 1;
+
+    &:hover {
+      color: ${Color.neutral0};
+    }
   }
 `
 
@@ -96,7 +142,12 @@ export default function ArticlePage({
   articles,
   randomArticles,
   relatedArticles,
-}: ArticlePageProps & { randomArticles: Article[]; relatedArticles: Article[] }) {
+  allCategories, // Renamed to avoid duplication
+}: ArticlePageProps & {
+  randomArticles: Article[]
+  relatedArticles: Article[]
+  allCategories: { name: string; slug: string }[] // Ensure type matches fetched data
+}) {
   const { title, blocks, publishedAt, categories } = article.attributes || {}
   const content = blocks?.map((block) => (isRichTextComponent(block) ? block.body : '')).join(' ') || ''
 
@@ -109,10 +160,22 @@ export default function ArticlePage({
       </Head>
 
       <Wrapper>
+        <CategoryLinks>
+          <li>
+            <a href="/learn">All Topics</a>
+          </li>
+          {allCategories.map((category) => (
+            <li key={category.slug}>
+              <a href={`/learn/topic/${category.slug}`}>{category.name}</a>
+            </li>
+          ))}
+        </CategoryLinks>
+
         <SearchBar articles={articles} />
-        <ContainerCard gap={62} gapMobile={42} centerContent>
+        <ContainerCard gap={62} gapMobile={42} margin="0 auto" centerContent>
           <ArticleContent>
             <Breadcrumbs>
+              <a href="/">Home</a>
               <a href="/learn">Learn</a>
               <span>{title}</span>
             </Breadcrumbs>
@@ -197,6 +260,12 @@ export const getStaticProps: GetStaticProps<ArticlePageProps> = async ({ params 
   const articles = articlesResponse.data
   const randomArticles = getRandomArticles(articles, 3)
   const relatedArticles = getRandomArticles(articles, 7)
+  const categoriesResponse = await getCategories()
+  const allCategories =
+    categoriesResponse?.map((category: any) => ({
+      name: category?.attributes?.name || '',
+      slug: category?.attributes?.slug || '',
+    })) || []
 
   return {
     props: {
@@ -205,6 +274,7 @@ export const getStaticProps: GetStaticProps<ArticlePageProps> = async ({ params 
       articles,
       randomArticles,
       relatedArticles,
+      allCategories,
     },
     revalidate: DATA_CACHE_TIME_SECONDS,
   }

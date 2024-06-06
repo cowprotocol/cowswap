@@ -10,7 +10,7 @@ import IMG_ICON_SEARCH from '@cowprotocol/assets/images/icon-search.svg'
 const SearchBarContainer = styled.div`
   width: 100%;
   max-width: 970px;
-  margin: 16px 0;
+  margin: 0 auto;
   position: relative;
 
   ${Media.upToMedium()} {
