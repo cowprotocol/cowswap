@@ -144,6 +144,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
       <styledEl.Wrapper
         id={id}
         className={className}
+        data-address={selectedTokenAddress}
         withReceiveAmountInfo={!!receiveAmountInfo}
         pointerDisabled={disabled}
         readOnly={inputDisabled}
