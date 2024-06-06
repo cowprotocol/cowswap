@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.72.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.71.1...cowswap-v1.72.0) (2024-06-06)
+
+
+### Features
+
+* expose the address of a token in the HTML ([#4501](https://github.com/cowprotocol/cowswap/issues/4501)) ([0d5f468](https://github.com/cowprotocol/cowswap/commit/0d5f468e48c1b2dee56375bc80ed3f3c785c6b66))
+* use bff proxies ([#4491](https://github.com/cowprotocol/cowswap/issues/4491)) ([cb9586b](https://github.com/cowprotocol/cowswap/commit/cb9586bbb4f78498a39b2b01c6bb1e4255dd0c46))
+
+
+### Bug Fixes
+
+* fix lint issue ([#4514](https://github.com/cowprotocol/cowswap/issues/4514)) ([48a7536](https://github.com/cowprotocol/cowswap/commit/48a75363422e5e63e246f0553e8372ce94a3f6b6))
+
 ## [1.71.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.71.0...cowswap-v1.71.1) (2024-06-04)
 
 
