@@ -17,8 +17,15 @@ const useWebShare = () => {
           text: options.text,
           url: options.url,
         })
-        .then(() => console.log('Successfully shared'))
-        .catch((error) => console.error('Error sharing:', error))
+        .then(() => {
+          setMessage('Successfully shared')
+          setTimeout(() => setMessage(null), 3000) // Hide message after 3 seconds
+        })
+        .catch((error) => {
+          setMessage('Error sharing content')
+          setTimeout(() => setMessage(null), 3000) // Hide message after 3 seconds
+          console.error('Error sharing:', error)
+        })
     } else {
       // Fallback: Copy to clipboard
       navigator.clipboard
@@ -28,6 +35,8 @@ const useWebShare = () => {
           setTimeout(() => setMessage(null), 3000) // Hide message after 3 seconds
         })
         .catch((error) => {
+          setMessage('Error copying to clipboard')
+          setTimeout(() => setMessage(null), 3000) // Hide message after 3 seconds
           console.error('Error copying to clipboard:', error)
         })
     }

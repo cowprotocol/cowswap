@@ -36,7 +36,9 @@ import {
   CategoryLinks,
   StickyMenu,
   RelatedArticles,
+  SectionTitleButton,
 } from '@/styles/styled'
+import useWebShare from 'hooks/useWebShare'
 
 const DATA_CACHE_TIME_SECONDS = 5 * 60 // Cache 5min
 
@@ -105,14 +107,24 @@ export default function ArticlePage({
   articles,
   randomArticles,
   relatedArticles,
-  allCategories, // Renamed to avoid duplication
+  allCategories,
 }: ArticlePageProps & {
   randomArticles: Article[]
   relatedArticles: Article[]
-  allCategories: { name: string; slug: string }[] // Ensure type matches fetched data
+  allCategories: { name: string; slug: string }[]
 }) {
   const { title, blocks, publishedAt, categories } = article.attributes || {}
   const content = blocks?.map((block) => (isRichTextComponent(block) ? block.body : '')).join(' ') || ''
+
+  const { share, message } = useWebShare()
+
+  const handleShareClick = () => {
+    share({
+      title: title || 'CoW DAO Article',
+      text: content.split(' ').slice(0, 50).join(' ') + '...',
+      url: window.location.href,
+    })
+  }
 
   return (
     <Layout>
@@ -163,6 +175,11 @@ export default function ArticlePage({
                     <ArticleSharedRichTextComponent key={block.id} sharedRichText={block} />
                   ) : null
                 )}
+
+              <br />
+              <SectionTitleButton onClick={handleShareClick} as="div">
+                Share article
+              </SectionTitleButton>
             </BodyContent>
           </ArticleContent>
 
@@ -192,7 +209,7 @@ export default function ArticlePage({
                 const imageUrl = coverData?.attributes?.url
 
                 return (
-                  <ArticleCard key={article.id} href={`/article/${article.attributes?.slug}`}>
+                  <ArticleCard key={article.id} href={`/learn/${article.attributes?.slug}`}>
                     {imageUrl && (
                       <ArticleImage>
                         <img src={imageUrl} alt={article.attributes?.title ?? 'Article Image'} />

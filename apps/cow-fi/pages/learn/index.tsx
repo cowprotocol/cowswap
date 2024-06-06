@@ -42,7 +42,7 @@ const FEATURED_ARTICLES = [
     title: 'What is a Sandwich Attack? — MEV Attacks Explained',
     description: 'Sandwich attacks make up the majority of harmful MEV extraction',
     color: '#0B6623',
-    link: '/article/sandwich-attack',
+    link: '/learn/sandwich-attack',
     linkExternal: false,
   },
   {
@@ -50,7 +50,7 @@ const FEATURED_ARTICLES = [
     description:
       'Smart Contracts enable the majority of decentralized apps and are critical to modern blockchain ecosystems',
     color: '#FFD700',
-    link: '/article/smart-contract',
+    link: '/learn/smart-contract',
     linkExternal: false,
   },
   {
@@ -58,14 +58,14 @@ const FEATURED_ARTICLES = [
     description:
       'Welcome back to CoW DAO highlights, where we break down the most notable developments of the last few weeks at CoW DAO.',
     color: '#FF69B4',
-    link: '/article/cow-dao-april-2024',
+    link: '/learn/cow-dao-april-2024',
     linkExternal: false,
   },
   {
     title: 'What is a Sandwich Attack? — MEV Attacks Explained',
     description: 'Sandwich attacks make up the majority of harmful MEV extraction',
     color: '#800020',
-    link: '/article/sandwich-attack',
+    link: '/learn/sandwich-attack',
     linkExternal: false,
   },
   {
@@ -73,7 +73,7 @@ const FEATURED_ARTICLES = [
     description:
       'Smart Contracts enable the majority of decentralized apps and are critical to modern blockchain ecosystems',
     color: '#00BFFF',
-    link: '/article/smart-contract',
+    link: '/learn/smart-contract',
     linkExternal: false,
   },
   {
@@ -81,7 +81,7 @@ const FEATURED_ARTICLES = [
     description:
       'Welcome back to CoW DAO highlights, where we break down the most notable developments of the last few weeks at CoW DAO.',
     color: '#FF4500',
-    link: '/article/cow-dao-april-2024',
+    link: '/learn/cow-dao-april-2024',
     linkExternal: false,
   },
 ]
