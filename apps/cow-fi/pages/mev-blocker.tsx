@@ -7,7 +7,7 @@ import styled from 'styled-components'
 
 import { CONFIG } from '@/const/meta'
 
-import LayoutV2 from '@/components/Layout/LayoutV2'
+import Layout from '@/components/Layout'
 import FAQ from '@/components/FAQ'
 import { AddRpcButton } from '@/components/AddRpcButton'
 import useWebShare from 'hooks/useWebShare'
@@ -126,7 +126,7 @@ export default function Page({ siteConfigData }: PageProps) {
   return (
     <WagmiConfig config={wagmiClient}>
       <RainbowKitProvider chains={chains}>
-        <LayoutV2 bgColor={'#99ECFF'}>
+        <Layout bgColor={'#99ECFF'}>
           <Head>
             <title>
               {siteConfigData.title} - {siteConfigData.descriptionShort}
@@ -687,7 +687,7 @@ export default function Page({ siteConfigData }: PageProps) {
             </ContainerCard>
           </Wrapper>
           <script async src="https://platform.twitter.com/widgets.js"></script>
-        </LayoutV2>
+        </Layout>
       </RainbowKitProvider>
     </WagmiConfig>
   )

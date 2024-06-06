@@ -4,7 +4,7 @@ import { GetStaticPaths, GetStaticProps } from 'next'
 import styled from 'styled-components'
 import { Font, Color, Media } from '@cowprotocol/ui'
 import { CONFIG } from '@/const/meta'
-import LayoutV2 from '@/components/Layout/LayoutV2'
+import Layout from '@/components/Layout'
 import { getArticles, getArticleBySlug, getAllArticleSlugs, Article, SharedRichTextComponent } from 'services/cms'
 import ReactMarkdown from 'react-markdown'
 import { formatDate } from 'util/formatDate'
@@ -101,7 +101,7 @@ export default function ArticlePage({
   const content = blocks?.map((block) => (isRichTextComponent(block) ? block.body : '')).join(' ') || ''
 
   return (
-    <LayoutV2>
+    <Layout>
       <Head>
         <title>
           {title} - {siteConfigData.title}
@@ -180,7 +180,7 @@ export default function ArticlePage({
           </ContainerCardSection>
         </ContainerCard>
       </Wrapper>
-    </LayoutV2>
+    </Layout>
   )
 }
 

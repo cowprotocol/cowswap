@@ -6,7 +6,7 @@ import styled from 'styled-components'
 
 import { CONFIG } from '@/const/meta'
 
-import LayoutV2 from '@/components/Layout/LayoutV2'
+import Layout from '@/components/Layout'
 
 import {
   ContainerCard,
@@ -38,7 +38,7 @@ export default function Page({ siteConfigData }: PageProps) {
   const { title, descriptionShort } = siteConfigData
 
   return (
-    <LayoutV2 bgColor={Color.neutral90}>
+    <Layout bgColor={Color.neutral90}>
       <Head>
         <title>
           {title} - {descriptionShort}
@@ -178,7 +178,7 @@ export default function Page({ siteConfigData }: PageProps) {
           </ArticleContent>
         </ContainerCard>
       </Wrapper>
-    </LayoutV2>
+    </Layout>
   )
 }
 

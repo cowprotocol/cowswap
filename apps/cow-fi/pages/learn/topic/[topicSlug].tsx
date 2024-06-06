@@ -3,7 +3,7 @@ import Head from 'next/head'
 import { GetStaticPaths, GetStaticProps } from 'next'
 import styled from 'styled-components'
 import { Font, Color, Media } from '@cowprotocol/ui'
-import LayoutV2 from '@/components/Layout/LayoutV2'
+import Layout from '@/components/Layout'
 import { getCategoryBySlug, getAllCategorySlugs, getArticles } from 'services/cms'
 import { SearchBar } from '@/components/SearchBar'
 import { ArrowButton } from '@/components/ArrowButton'
@@ -92,7 +92,7 @@ export default function TopicPage({ category, articles }: TopicPageProps) {
   const imageUrl = image?.data?.attributes?.url
 
   return (
-    <LayoutV2>
+    <Layout>
       <Head>
         <title>{name} - Knowledge Base</title>
         <meta name="description" content={description} />
@@ -143,7 +143,7 @@ export default function TopicPage({ category, articles }: TopicPageProps) {
           </ContainerCardSection>
         </ContainerCard>
       </Wrapper>
-    </LayoutV2>
+    </Layout>
   )
 }
 

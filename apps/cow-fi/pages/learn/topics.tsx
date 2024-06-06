@@ -6,7 +6,7 @@ import styled from 'styled-components'
 
 import { CONFIG } from '@/const/meta'
 
-import LayoutV2 from '@/components/Layout/LayoutV2'
+import Layout from '@/components/Layout'
 import { getCategories, getArticles, Category, ArticleListResponse } from 'services/cms'
 
 import { SearchBar } from '@/components/SearchBar'
@@ -72,7 +72,7 @@ const Wrapper = styled.div`
 
 export default function Topics({ siteConfigData, categories, articles }: TopicsProps) {
   return (
-    <LayoutV2>
+    <Layout>
       <Head>
         <title>
           {siteConfigData.title} - {siteConfigData.descriptionShort}
@@ -102,7 +102,7 @@ export default function Topics({ siteConfigData, categories, articles }: TopicsP
           </ContainerCardSection>
         </ContainerCard>
       </Wrapper>
-    </LayoutV2>
+    </Layout>
   )
 }
 

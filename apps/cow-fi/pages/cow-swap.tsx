@@ -9,7 +9,7 @@ import styled from 'styled-components'
 
 import { CONFIG } from '@/const/meta'
 
-import LayoutV2 from '@/components/Layout/LayoutV2'
+import Layout from '@/components/Layout'
 import FAQ from '@/components/FAQ'
 
 import {
@@ -84,7 +84,7 @@ const Wrapper = styled.div`
 
 export default function Page({ siteConfigData }: PageProps) {
   return (
-    <LayoutV2 bgColor={Color.neutral90}>
+    <Layout bgColor={Color.neutral90}>
       <Head>
         <title>
           {siteConfigData.title} - {siteConfigData.descriptionShort}
@@ -607,7 +607,7 @@ export default function Page({ siteConfigData }: PageProps) {
       </Wrapper>
 
       <script async src="https://platform.twitter.com/widgets.js"></script>
-    </LayoutV2>
+    </Layout>
   )
 }
 

@@ -6,7 +6,7 @@ import styled from 'styled-components'
 
 import { CONFIG } from '@/const/meta'
 
-import LayoutV2 from '@/components/Layout/LayoutV2'
+import Layout from '@/components/Layout'
 import { getCategories, getArticles, Category, ArticleListResponse } from 'services/cms'
 
 import { SearchBar } from '@/components/SearchBar'
@@ -178,7 +178,7 @@ const Wrapper = styled.div`
 
 export default function Learn({ siteConfigData, categories, articles }: LearnProps) {
   return (
-    <LayoutV2>
+    <Layout>
       <Head>
         <title>
           {siteConfigData.title} - {siteConfigData.descriptionShort}
@@ -286,7 +286,7 @@ export default function Learn({ siteConfigData, categories, articles }: LearnPro
           </CTAButton>
         </CTASectionWrapper>
       </Wrapper>
-    </LayoutV2>
+    </Layout>
   )
 }
 export const getStaticProps: GetStaticProps<LearnProps> = async () => {

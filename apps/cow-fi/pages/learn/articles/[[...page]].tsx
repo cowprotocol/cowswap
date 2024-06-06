@@ -3,7 +3,7 @@ import { GetStaticProps, GetStaticPaths, GetStaticPropsContext, InferGetStaticPr
 import styled from 'styled-components'
 import { Font, Color, Media } from '@cowprotocol/ui'
 import { CONFIG } from '@/const/meta'
-import LayoutV2 from '@/components/Layout/LayoutV2'
+import Layout from '@/components/Layout'
 import { getArticles, Article } from 'services/cms'
 import { SearchBar } from '@/components/SearchBar'
 
@@ -81,7 +81,7 @@ export default function ArticlesPage({
   const totalPages = articles ? Math.ceil(totalArticles / ITEMS_PER_PAGE) : 0
 
   return (
-    <LayoutV2>
+    <Layout>
       <Head>
         <title>{siteConfigData.title} - All Articles</title>
       </Head>
@@ -126,7 +126,7 @@ export default function ArticlesPage({
           </Pagination>
         </ContainerCard>
       </Wrapper>
-    </LayoutV2>
+    </Layout>
   )
 }
 
