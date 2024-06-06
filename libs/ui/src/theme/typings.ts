@@ -116,6 +116,7 @@ export interface Colors extends ColorsUniswap {
   paperDarkerCustom: ColorValue
   paperDarkestCustom: ColorValue
   paperLighterCustom: ColorValue
+  buttonTextCustom: ColorValue
 }
 
 declare module 'styled-components' {

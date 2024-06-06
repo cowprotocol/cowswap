@@ -25,6 +25,7 @@ export function colors(darkMode: boolean): Colors {
     paperCustom: darkMode ? '#18193B' : '#FFFFFF',
     paperDarkerCustom: darkMode ? '#090A20' : '#E5EEF7',
     paperDarkestCustom: darkMode ? darken('#090A20', 0.05) : darken('#E5EEF7', 0.1),
+    buttonTextCustom: darkMode ? '#65D9FF' : '#65D9FF',
     // =====================================================
 
     text: darkMode ? '#DEE3E6' : '#00234E',
@@ -424,7 +425,14 @@ export const UniThemedGlobalStyle = css`
     ${UI.COLOR_DARK_IMAGE_PAPER_TEXT}: ${({ theme }) =>
       getContrastText(getContrastText('#000000', theme.paper), theme.text)};
 
-    ${UI.COLOR_BUTTON_TEXT}: ${({ theme }) => getContrastText(theme.primary, theme.text)};
+    ${UI.COLOR_BUTTON_TEXT}: ${({ theme }) => {
+      if (theme.isInjectedWidgetMode) {
+        return getContrastText(theme.primary, theme.text)
+      } else {
+        return getContrastText(theme.primary, theme.buttonTextCustom)
+      }
+    }};
+
     ${UI.COLOR_BUTTON_TEXT_DISABLED}: ${({ theme }) =>
       getContrastText(theme.darkMode ? darken(theme.paper, 0.07) : darken(theme.paper, 0.05), theme.text)};
 
