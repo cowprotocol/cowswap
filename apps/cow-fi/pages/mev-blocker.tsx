@@ -126,7 +126,7 @@ export default function Page({ siteConfigData }: PageProps) {
   return (
     <WagmiConfig config={wagmiClient}>
       <RainbowKitProvider chains={chains}>
-        <Layout bgColor={'#99ECFF'}>
+        <Layout bgColor={'#FEE7CF'}>
           <Head>
             <title>
               {siteConfigData.title} - {siteConfigData.descriptionShort}
@@ -153,22 +153,16 @@ export default function Page({ siteConfigData }: PageProps) {
                   </ol>
                 </HeroDescription>
 
-                <HeroButtonWrapper>
-                  <HeroButton background={'#EC4612'} color={'#FEE7CF'} href="/">
-                    Get protected
-                  </HeroButton>
-
-                  <HeroButton background="transparent" color={Color.neutral20} href="#">
-                    Integrate MEV Blocker
-                  </HeroButton>
-                </HeroButtonWrapper>
+                <HeroButton background={'#EC4612'} color={'#FEE7CF'} href="/">
+                  Get protected
+                </HeroButton>
               </HeroContent>
               <HeroImage width={470} height={470} color={'#EC4612'}>
                 <ProductLogo height={'100%'} variant={ProductVariant.MevBlocker} theme="dark" logoIconOnly />
               </HeroImage>
             </HeroContainer>
 
-            <MetricsCard bgColor="#FEE7CF" color="#EC4612" columns={3} touchFooter>
+            <MetricsCard bgColor="#EC4612" color="#FEE7CF" columns={3} touchFooter>
               <MetricsItem dividerColor="#F9A36F">
                 <h2>$76B+</h2>
                 <p>volume protected from MEV</p>
@@ -204,10 +198,10 @@ export default function Page({ siteConfigData }: PageProps) {
             <ContainerCard bgColor={Color.neutral98}>
               <ContainerCardSection gap={90}>
                 <SectionTitleWrapper color={Color.neutral0} maxWidth={1300} gap={56}>
-                  <SectionTitleIcon multiple size={80}>
+                  <SectionTitleIcon multiple size={62}>
                     <ProductLogo variant={ProductVariant.MevBlocker} theme="dark" logoIconOnly />
                   </SectionTitleIcon>
-                  <SectionTitleText maxWidth={900}>Broad spectrum MEV defense</SectionTitleText>
+                  <SectionTitleText maxWidth={500}>Broad spectrum MEV defense</SectionTitleText>
                   <SectionTitleDescription maxWidth={'100%'} color={Color.neutral50}>
                     MEV bots have extracted more than{' '}
                     <a href="https://dune.com/queries/2259793/3703605" target="_blank" rel="noopener noreferrer">
@@ -221,7 +215,7 @@ export default function Page({ siteConfigData }: PageProps) {
                 <TopicList columns={3}>
                   <TopicCard contentAlign={'left'} bgColor={'#EC4612'} padding={'32px'} asProp="div">
                     <TopicCardInner contentAlign="left">
-                      <TopicDescription fontSize={28} color={Color.neutral95}>
+                      <TopicDescription fontSize={28} color={'#FEE7CF'}>
                         Full protection from frontrunning and sandwich attacks on all types of transactions
                       </TopicDescription>
                     </TopicCardInner>
@@ -238,7 +232,7 @@ export default function Page({ siteConfigData }: PageProps) {
 
                   <TopicCard contentAlign={'left'} bgColor={'#EC4612'} padding={'32px'} asProp="div">
                     <TopicCardInner contentAlign="left">
-                      <TopicDescription fontSize={28} color={Color.neutral95}>
+                      <TopicDescription fontSize={28} color={'#FEE7CF'}>
                         Profit from any backrunning opportunities your transactions create
                       </TopicDescription>
                     </TopicCardInner>
@@ -255,7 +249,7 @@ export default function Page({ siteConfigData }: PageProps) {
 
                   <TopicCard contentAlign={'left'} bgColor={'#EC4612'} padding={'32px'} asProp="div">
                     <TopicCardInner contentAlign="left">
-                      <TopicDescription fontSize={28} color={Color.neutral95}>
+                      <TopicDescription fontSize={28} color={'#FEE7CF'}>
                         A fast, free, censorship-resistant solution open to all searchers and builders
                       </TopicDescription>
                     </TopicCardInner>
@@ -286,27 +280,27 @@ export default function Page({ siteConfigData }: PageProps) {
               </SectionTitleWrapper>
             </ContainerCard>
 
-            <ContainerCard bgColor={Color.neutral90} color={Color.neutral10} id="rpc">
+            <ContainerCard bgColor="transparent" color={Color.neutral10} id="rpc">
               <ContainerCardSection>
-                <SectionTitleWrapper maxWidth={850} gap={56}>
-                  <SectionTitleIcon multiple size={80}>
+                <SectionTitleWrapper maxWidth={850} gap={56} margin="24px auto">
+                  <SectionTitleIcon multiple size={62}>
                     <ProductLogo variant={ProductVariant.MevBlocker} theme="dark" logoIconOnly />
                   </SectionTitleIcon>
                   <SectionTitleText>Get Protected</SectionTitleText>
-                  <SectionTitleDescription>
+                  <SectionTitleDescription color={Color.neutral50}>
                     Add this RPC endpoint to your wallet to enjoy the full benefits of MEV Blocker.
                   </SectionTitleDescription>
-                  <SectionTitleDescription fontSize={21}>
+                  <SectionTitleDescription fontSize={21} color={Color.neutral50}>
                     Note: some wallets make you reselect MEV Blocker every time you change networks.
                   </SectionTitleDescription>
                 </SectionTitleWrapper>
                 <TopicList columns={2}>
                   <TopicCard contentAlign={'left'} bgColor={Color.neutral100} padding={'32px'} asProp="div">
                     <TopicCardInner contentAlign="left">
-                      <TopicTitle color={Color.neutral0} fontSize={38}>
+                      <TopicTitle color={Color.neutral0} fontSize={32}>
                         Click to add to your client
                       </TopicTitle>
-                      <TopicDescription fontSize={21} color={Color.neutral0}>
+                      <TopicDescription fontSize={27} color={Color.neutral0}>
                         MEV Blocker (Ethereum Mainnet)
                       </TopicDescription>
                       <AddRpcButton />
@@ -315,10 +309,10 @@ export default function Page({ siteConfigData }: PageProps) {
 
                   <TopicCard contentAlign={'left'} bgColor={Color.neutral100} padding={'32px'} asProp="div">
                     <TopicCardInner contentAlign="left">
-                      <TopicTitle color={Color.neutral0} fontSize={38}>
+                      <TopicTitle color={Color.neutral0} fontSize={32}>
                         Add manually
                       </TopicTitle>
-                      <TopicDescription fontSize={19} color={Color.neutral0}>
+                      <TopicDescription fontSize={24} color={Color.neutral0}>
                         <table>
                           <tbody>
                             <tr>
@@ -358,7 +352,7 @@ export default function Page({ siteConfigData }: PageProps) {
                   </TopicCard>
                 </TopicList>
                 <SectionTitleWrapper margin={'56px auto'}>
-                  <SectionTitleDescription fontSize={28} color={Color.neutral0} maxWidth={700}>
+                  <SectionTitleDescription fontSize={28} color={Color.neutral50} maxWidth={700}>
                     Having trouble? Check your wallet's documentation for instructions on how to update your RPC
                     endpoint
                   </SectionTitleDescription>

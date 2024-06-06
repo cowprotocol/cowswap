@@ -657,7 +657,7 @@ export const SectionTitleText = styled.h5<{
   as?: string
   textAlign?: string
 }>`
-  font-size: ${({ fontSize }) => fontSize || 90}px;
+  font-size: ${({ fontSize }) => fontSize || 51}px;
   font-weight: ${({ fontWeight }) => fontWeight || Font.weight.bold};
   color: ${({ color }) => color || 'inherit'};
   margin: 0;
@@ -678,7 +678,7 @@ export const SectionTitleDescription = styled.p<{
   fontWeight?: number
   textAlign?: string
 }>`
-  font-size: ${({ fontSize }) => fontSize || 38}px;
+  font-size: ${({ fontSize }) => fontSize || 32}px;
   color: ${({ color }) => color || 'inherit'};
   font-weight: ${({ fontWeight }) => fontWeight || Font.weight.medium};
   margin: 0;

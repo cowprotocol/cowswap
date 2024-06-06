@@ -277,14 +277,16 @@ export default function Learn({ siteConfigData, categories, articles }: LearnPro
           </ContainerCardSection>
         </ContainerCard>
 
-        <CTASectionWrapper>
-          <CTAImage bgColor={'#00A1FF'}></CTAImage>
-          <CTASubtitle>Explore, learn, integrate</CTASubtitle>
-          <CTATitle>CoW DAO documentation</CTATitle>
-          <CTAButton href="/docs" target="_self">
-            Read the docs
-          </CTAButton>
-        </CTASectionWrapper>
+        <ContainerCard bgColor={Color.neutral98} touchFooter>
+          <CTASectionWrapper>
+            <CTAImage bgColor={'#00A1FF'}></CTAImage>
+            <CTASubtitle>Explore, learn, integrate</CTASubtitle>
+            <CTATitle>CoW DAO documentation</CTATitle>
+            <CTAButton href="https://docs.cow.fi/" target="_blank" rel="noopener noreferrer">
+              Read the docs
+            </CTAButton>
+          </CTASectionWrapper>
+        </ContainerCard>
       </Wrapper>
     </Layout>
   )

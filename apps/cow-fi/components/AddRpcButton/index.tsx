@@ -44,7 +44,13 @@ export function AddRpcButton() {
         </>
       ) : (
         <>
-          <TopicButton fontSize={30} onClick={connectAndAddToWallet || (() => {})} disabled={disabledButton}>
+          <TopicButton
+            fontSize={27}
+            color={'#FFF8F7'}
+            bgColor="#EC4612"
+            onClick={connectAndAddToWallet || (() => {})}
+            disabled={disabledButton}
+          >
             {buttonLabel}
           </TopicButton>
           {errorMessage && <Message state={state}>{errorMessage}</Message>}
