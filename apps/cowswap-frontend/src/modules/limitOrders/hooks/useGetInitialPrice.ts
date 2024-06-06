@@ -12,7 +12,7 @@ import { useAsyncMemo } from 'use-async-memo'
 import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
 import { parsePrice } from 'modules/limitOrders/utils/parsePrice'
 
-import { getNativePrice } from 'api/gnosisProtocol'
+import { getNativePrice } from 'api/cowProtocol'
 
 type PriceResult = number | Error | undefined
 

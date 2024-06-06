@@ -1,7 +1,7 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
-import { GP_VAULT_RELAYER } from '@cowprotocol/common-const'
+import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS } from '@cowprotocol/cow-sdk'
 import {
   generatePermitHook,
   getPermitUtilsInstance,
@@ -34,7 +34,7 @@ export function useGeneratePermitHook(): GeneratePermitHook {
   const { chainId } = useWalletInfo()
   const provider = useWalletProvider()
 
-  const spender = GP_VAULT_RELAYER[chainId]
+  const spender = COW_PROTOCOL_VAULT_RELAYER_ADDRESS[chainId]
 
   return useCallback(
     async (params: GeneratePermitHookParams): Promise<PermitHookData | undefined> => {

@@ -21,7 +21,7 @@ import { GasUpdater } from 'common/updaters/GasUpdater'
 import {
   CancelledOrdersUpdater,
   ExpiredOrdersUpdater,
-  GpOrdersUpdater,
+  OrdersFromApiUpdater,
   PendingOrdersUpdater,
   UnfillableOrdersUpdater,
 } from 'common/updaters/orders'
@@ -47,7 +47,7 @@ export function Updaters() {
       <ExpiredOrdersUpdater />
       <FeesUpdater />
       <UnfillableOrdersUpdater />
-      <GpOrdersUpdater />
+      <OrdersFromApiUpdater />
       <GasUpdater />
       <GasPriceStrategyUpdater />
       <SentryUpdater />

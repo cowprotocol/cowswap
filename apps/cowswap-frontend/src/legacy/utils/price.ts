@@ -3,7 +3,7 @@ import { OrderQuoteResponse } from '@cowprotocol/cow-sdk'
 
 import { PriceInformation } from 'types'
 
-import { getQuote } from 'api/gnosisProtocol'
+import { getQuote } from 'api/cowProtocol'
 
 import { LegacyFeeQuoteParams, LegacyPriceQuoteParams, LegacyQuoteParams } from '../state/price/types'
 

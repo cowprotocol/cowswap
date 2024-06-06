@@ -15,7 +15,7 @@ import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
 import { FeeInformation } from 'types'
 
 import { useGetGpPriceStrategy } from 'legacy/hooks/useGetGpPriceStrategy'
-import { GpPriceStrategy } from 'legacy/state/gas/atoms'
+import { PriceStrategy } from 'legacy/state/gas/atoms'
 import { Order } from 'legacy/state/orders/actions'
 import { PENDING_ORDERS_PRICE_CHECK_POLL_INTERVAL } from 'legacy/state/orders/consts'
 import { useOnlyPendingOrders, useSetIsOrderUnfillable } from 'legacy/state/orders/hooks'
@@ -31,9 +31,9 @@ import { getBestQuote } from 'legacy/utils/price'
 import { updatePendingOrderPricesAtom } from 'modules/orders/state/pendingOrdersPricesAtom'
 import { hasEnoughBalanceAndAllowance } from 'modules/tokens'
 
-import { getPriceQuality } from 'api/gnosisProtocol/api'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
+import { getPriceQuality } from '../../../api/cowProtocol/api'
 import { PRICE_QUOTE_VALID_TO_TIME } from '../../constants/quote'
 import { useVerifiedQuotesEnabled } from '../../hooks/featureFlags/useVerifiedQuotesEnabled'
 
@@ -203,7 +203,7 @@ async function _getOrderPrice(
   chainId: ChainId,
   order: Order,
   verifyQuote: boolean | undefined,
-  strategy: GpPriceStrategy
+  strategy: PriceStrategy
 ) {
   let baseToken, quoteToken
 

@@ -4,18 +4,17 @@ import { OrderKind, OrderQuoteResponse, SupportedChainId as ChainId } from '@cow
 import { createReducer, current, PayloadAction } from '@reduxjs/toolkit'
 import { FeeInformation, PriceInformation, Writable } from 'types'
 
-import GpQuoteError from 'api/gnosisProtocol/errors/QuoteError'
-
 import { getNewQuote, QuoteError, refreshQuote, setQuoteError, updateQuote } from './actions'
 import { LegacyFeeQuoteParams } from './types'
 
+import QuoteApiError from '../../../api/cowProtocol/errors/QuoteError'
 import { PrefillStateRequired } from '../orders/reducer'
 
 export interface QuoteInformationObject extends LegacyFeeQuoteParams {
   fee?: FeeInformation
   price?: PriceInformation
   error?: QuoteError
-  originalError?: GpQuoteError
+  originalError?: QuoteApiError
   response?: OrderQuoteResponse
   lastCheck: number
   localQuoteTimestamp?: number

@@ -3,9 +3,8 @@ import { useResetAtom } from 'jotai/utils'
 import { useEffect, useMemo } from 'react'
 
 import { ERC_20_INTERFACE } from '@cowprotocol/abis'
-import { GP_VAULT_RELAYER } from '@cowprotocol/common-const'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useMultipleContractSingleData } from '@cowprotocol/multicall'
 import { BigNumber } from '@ethersproject/bignumber'
 
@@ -34,7 +33,7 @@ export function usePersistBalancesAndAllowances(params: PersistBalancesAndAllowa
   const resetBalances = useResetAtom(balancesAtom)
   const resetAllowances = useResetAtom(allowancesFullState)
 
-  const spender = GP_VAULT_RELAYER[chainId]
+  const spender = COW_PROTOCOL_VAULT_RELAYER_ADDRESS[chainId]
 
   const balanceOfParams = useMemo(() => (account ? [account] : undefined), [account])
   const allowanceParams = useMemo(() => (account && spender ? [account, spender] : undefined), [account, spender])
