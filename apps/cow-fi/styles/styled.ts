@@ -680,11 +680,12 @@ export const SectionTitleDescription = styled.p<{
   fontSizeMobile?: number
   fontWeight?: number
   textAlign?: string
+  margin?: string
 }>`
   font-size: ${({ fontSize }) => fontSize || 32}px;
   color: ${({ color }) => color || 'inherit'};
   font-weight: ${({ fontWeight }) => fontWeight || Font.weight.medium};
-  margin: 0;
+  margin: ${({ margin }) => margin || '0'};
   line-height: 1.2;
   text-align: ${({ textAlign }) => textAlign || 'center'};
   width: 100%;

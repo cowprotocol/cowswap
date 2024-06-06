@@ -15,6 +15,7 @@ import {
 } from 'services/cms'
 
 import ReactMarkdown from 'react-markdown'
+import rehypeRaw from 'rehype-raw'
 import { formatDate } from 'util/formatDate'
 import { SearchBar } from '@/components/SearchBar'
 
@@ -37,6 +38,7 @@ import {
   StickyMenu,
   RelatedArticles,
   SectionTitleButton,
+  SectionTitleDescription,
 } from '@/styles/styled'
 import useWebShare from 'hooks/useWebShare'
 
@@ -82,7 +84,7 @@ export function ArticleSubtitle({ dateIso, content }: { dateIso: string; content
 }
 
 export function ArticleSharedRichTextComponent({ sharedRichText }: { sharedRichText: SharedRichTextComponent }) {
-  return <ReactMarkdown>{sharedRichText.body}</ReactMarkdown>
+  return <ReactMarkdown rehypePlugins={[rehypeRaw]}>{sharedRichText.body}</ReactMarkdown>
 }
 
 function calculateReadTime(text: string): string {
@@ -180,6 +182,11 @@ export default function ArticlePage({
               <SectionTitleButton onClick={handleShareClick} as="div">
                 Share article
               </SectionTitleButton>
+              {message && (
+                <SectionTitleDescription textAlign="left" margin="16px 0 0" fontSize={21}>
+                  {message}
+                </SectionTitleDescription>
+              )}
             </BodyContent>
           </ArticleContent>
 
