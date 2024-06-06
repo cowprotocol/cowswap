@@ -23,7 +23,8 @@ import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { useDerivedSwapInfo, useSwapState } from 'modules/swap/hooks/useSwapState'
 import { useEnoughBalanceAndAllowance } from 'modules/tokens'
 
-import { getPriceQuality } from '../../api/cowProtocol/api'
+import { getPriceQuality } from 'api/cowProtocol/api'
+
 import { useVerifiedQuotesEnabled } from '../hooks/featureFlags/useVerifiedQuotesEnabled'
 
 export const TYPED_VALUE_DEBOUNCE_TIME = 350

@@ -8,10 +8,10 @@ import styled from 'styled-components/macro'
 
 import { CompatibilityIssuesWarning } from 'modules/trade/pure/CompatibilityIssuesWarning'
 
+import { QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
 import { TradeApproveButton } from 'common/containers/TradeApprove'
 import { TradeLoadingButton } from 'common/pure/TradeLoadingButton'
 
-import { QuoteApiErrorCodes } from '../../../../api/cowProtocol/errors/QuoteError'
 import { TradeFormButtonContext, TradeFormValidation } from '../../types'
 import { TradeFormBlankButton } from '../TradeFormBlankButton'
 

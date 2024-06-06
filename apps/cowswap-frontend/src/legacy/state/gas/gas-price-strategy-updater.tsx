@@ -6,9 +6,9 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import ms from 'ms.macro'
 
-import { gasPriceStrategyAtom } from './atoms'
+import { getPriceStrategy } from 'api/cowProtocol/priceApi'
 
-import { getPriceStrategy } from '../../../api/cowProtocol/priceApi'
+import { gasPriceStrategyAtom } from './atoms'
 
 const PRICE_STRATEGY_INTERVAL_TIME = ms`30 minutes`
 

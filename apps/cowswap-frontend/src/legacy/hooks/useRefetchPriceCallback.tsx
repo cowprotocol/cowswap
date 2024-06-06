@@ -21,12 +21,12 @@ import { getBestQuote, getFastQuote, QuoteResult } from 'legacy/utils/price'
 
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 
-import { ApiErrorCodes, isValidOperatorError } from '../../api/cowProtocol/errors/OperatorError'
+import { ApiErrorCodes, isValidOperatorError } from 'api/cowProtocol/errors/OperatorError'
 import QuoteApiError, {
   QuoteApiErrorCodes,
   QuoteApiErrorDetails,
   isValidQuoteError,
-} from '../../api/cowProtocol/errors/QuoteError'
+} from 'api/cowProtocol/errors/QuoteError'
 
 interface HandleQuoteErrorParams {
   quoteData: QuoteInformationObject | LegacyFeeQuoteParams

@@ -2,10 +2,11 @@ import { environmentName } from '@cowprotocol/common-utils'
 
 import * as Sentry from '@sentry/react'
 
+import { SENTRY_IGNORED_QUOTE_ERRORS } from 'api/cowProtocol/errors/QuoteError'
+
 import { beforeSend } from './beforeSend'
 
 import pkg from '../../../package.json'
-import { SENTRY_IGNORED_QUOTE_ERRORS } from '../../api/cowProtocol/errors/QuoteError'
 
 const SENTRY_DSN = process.env.REACT_APP_SENTRY_DSN
 const SENTRY_TRACES_SAMPLE_RATE = process.env.REACT_APP_SENTRY_TRACES_SAMPLE_RATE

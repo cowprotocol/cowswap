@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import { ORDER_API_UPDATE_INTERVAL } from '@cowprotocol/common-const'
+import { ORDER_BOOK_API_UPDATE_INTERVAL } from '@cowprotocol/common-const'
 import { isBarnBackendEnv } from '@cowprotocol/common-utils'
 import { EnrichedOrder } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -28,7 +28,7 @@ export function useSWRProdOrders(): EnrichedOrder[] {
 
       return getOrders(requestParams, { chainId, env: 'prod' })
     },
-    { refreshInterval: ORDER_API_UPDATE_INTERVAL }
+    { refreshInterval: ORDER_BOOK_API_UPDATE_INTERVAL }
   )
 
   return useMemo(() => {

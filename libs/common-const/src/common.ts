@@ -66,7 +66,7 @@ export const INPUT_OUTPUT_EXPLANATION = 'Only executed swaps incur fees.'
 export const PENDING_ORDERS_BUFFER = ms`60s` // 60s
 export const CANCELLED_ORDERS_PENDING_TIME = ms`5min` // 5min
 export const PRICE_API_TIMEOUT_MS = ms`10s` // 10s
-export const ORDER_API_UPDATE_INTERVAL = ms`30s` // 30s
+export const ORDER_BOOK_API_UPDATE_INTERVAL = ms`30s` // 30s
 export const MINIMUM_ORDER_VALID_TO_TIME_SECONDS = 120
 // Minimum deadline for EthFlow orders. Like the default deadline, anything smaller will be replaced by this
 export const MINIMUM_ETH_FLOW_DEADLINE_SECONDS = 600 // 10 minutes in SECONDS

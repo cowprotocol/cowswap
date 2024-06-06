@@ -14,7 +14,7 @@ import {
   toPriceInformation as toPriceInformation1inch,
 } from 'api/1inch'
 import { getQuote } from 'api/cowProtocol'
-import QuoteApiError, { QuoteApiErrorCodes } from '../../api/cowProtocol/errors/QuoteError'
+import QuoteApiError, { QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
 import {
   getPriceQuote as getPriceQuoteMatcha,
   MatchaPriceQuote,

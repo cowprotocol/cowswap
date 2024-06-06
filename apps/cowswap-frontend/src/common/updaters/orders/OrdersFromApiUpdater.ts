@@ -13,11 +13,10 @@ import { classifyOrder, OrderTransitionStatus } from 'legacy/state/orders/utils'
 import { getTokensListFromOrders, useTokensForOrdersList } from 'modules/orders'
 import { apiOrdersAtom } from 'modules/orders/state/apiOrdersAtom'
 
+import { useOrdersFromOrderBook } from 'api/cowProtocol/hooks'
 import { getTokenFromMapping } from 'utils/orderUtils/getTokenFromMapping'
 
 import { computeOrderSummary } from './utils'
-
-import { useOrdersFromOrderBook } from '../../../api/cowProtocol/hooks'
 
 // TODO: update this for ethflow states
 const statusMapping: Record<OrderTransitionStatus, OrderStatus | undefined> = {
@@ -30,7 +29,7 @@ const statusMapping: Record<OrderTransitionStatus, OrderStatus | undefined> = {
   unknown: undefined,
 }
 
-function _transformOrderToStoreOrder(
+function _transformOrderBookOrderToStoreOrder(
   order: EnrichedOrder,
   chainId: ChainId,
   allTokens: TokensByAddress
@@ -118,7 +117,7 @@ function _getInputToken(
 
 function _filterOrders(orders: EnrichedOrder[], tokens: TokensByAddress, chainId: ChainId): Order[] {
   return orders.reduce<Order[]>((acc, order) => {
-    const storeOrder = _transformOrderToStoreOrder(order, chainId, tokens)
+    const storeOrder = _transformOrderBookOrderToStoreOrder(order, chainId, tokens)
     if (storeOrder) {
       acc.push(storeOrder)
     }

@@ -1,4 +1,4 @@
-import { ORDER_API_UPDATE_INTERVAL } from '@cowprotocol/common-const'
+import { ORDER_BOOK_API_UPDATE_INTERVAL } from '@cowprotocol/common-const'
 import { EnrichedOrder } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -21,7 +21,7 @@ export function useOrdersFromOrderBook(): EnrichedOrder[] {
 
       return getOrders(requestParams, { chainId })
     },
-    { refreshInterval: ORDER_API_UPDATE_INTERVAL }
+    { refreshInterval: ORDER_BOOK_API_UPDATE_INTERVAL }
   )
 
   return currentEnvOrders || []
