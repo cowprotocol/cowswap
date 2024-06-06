@@ -1413,6 +1413,10 @@ export const BodyContent = styled.div<{ color?: string }>`
     margin-top: 20px;
   }
 
+  iframe {
+    max-width: 100%;
+  }
+
   a {
     color: ${Color.neutral20};
     text-decoration: underline;
