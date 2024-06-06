@@ -468,7 +468,8 @@ interface MenuBarProps {
   navItems: MenuItem[]
   theme: 'light' | 'dark'
   productVariant: ProductVariant
-  additionalContent?: React.ReactNode
+  persistentAdditionalContent?: React.ReactNode // Content that always stays in the MenuBar
+  additionalContent?: React.ReactNode // Content that moves to mobile menu on mobile
   showGlobalSettings?: boolean
   settingsNavItems?: MenuItem[]
   additionalNavButtons?: MenuItem[]
@@ -491,6 +492,7 @@ export const MenuBar = (props: MenuBarProps) => {
     navItems,
     theme,
     productVariant,
+    persistentAdditionalContent,
     additionalContent,
     showGlobalSettings,
     additionalNavButtons,
@@ -593,50 +595,48 @@ export const MenuBar = (props: MenuBarProps) => {
             </NavItems>
           )}
 
-          {(additionalContent || additionalNavButtons || (showGlobalSettings && settingsNavItems)) && (
-            <RightAligned mobileMode={isMobile} flexFlowMobile="row wrap">
-              {!isMobile && additionalContent}
+          <RightAligned mobileMode={isMobile} flexFlowMobile="row wrap">
+            {persistentAdditionalContent} {/* Always render this content */}
+            {!isMobile && additionalContent} {/* Render this content only on desktop */}
+            {!isMobile &&
+              additionalNavButtons &&
+              additionalNavButtons.map((item, index) => (
+                <DropdownContentItemButton
+                  key={index}
+                  href={item.href}
+                  target={item.external ? '_blank' : '_self'}
+                  rel={item.external ? 'noopener noreferrer' : undefined}
+                  bgColor={item.bgColor}
+                  color={item.color}
+                  hoverBgColor={item.hoverBgColor}
+                  hoverColor={item.hoverColor}
+                  mobileMode={isMobile}
+                >
+                  <DropdownContentItemText>
+                    <DropdownContentItemTitle>{item.label}</DropdownContentItemTitle>
+                  </DropdownContentItemText>
+                  <SVG src={IMG_ICON_ARROW_RIGHT} className={`arrow-icon-right ${item.external ? 'external' : ''}`} />
+                </DropdownContentItemButton>
+              ))}
+            {showGlobalSettings && settingsNavItems && (
+              <>
+                <GlobalSettingsButton ref={buttonRef} onClick={handleToggle}>
+                  <SVG src={IMG_ICON_SETTINGS_GLOBAL} />
+                </GlobalSettingsButton>
+                <GlobalSettingsDropdown
+                  mobileMode={isMobile}
+                  settingsNavItems={settingsNavItems}
+                  setIsSettingsOpen={setIsSettingsOpen}
+                  isOpen={isSettingsOpen}
+                />
+              </>
+            )}
+          </RightAligned>
 
-              {!isMobile &&
-                additionalNavButtons &&
-                additionalNavButtons.map((item, index) => (
-                  <DropdownContentItemButton
-                    key={index}
-                    href={item.href}
-                    target={item.external ? '_blank' : '_self'}
-                    rel={item.external ? 'noopener noreferrer' : undefined}
-                    bgColor={item.bgColor}
-                    color={item.color}
-                    hoverBgColor={item.hoverBgColor}
-                    hoverColor={item.hoverColor}
-                    mobileMode={isMobile}
-                  >
-                    <DropdownContentItemText>
-                      <DropdownContentItemTitle>{item.label}</DropdownContentItemTitle>
-                    </DropdownContentItemText>
-                    <SVG src={IMG_ICON_ARROW_RIGHT} className={`arrow-icon-right ${item.external ? 'external' : ''}`} />
-                  </DropdownContentItemButton>
-                ))}
-              {showGlobalSettings && settingsNavItems && (
-                <>
-                  <GlobalSettingsButton ref={buttonRef} onClick={handleToggle}>
-                    <SVG src={IMG_ICON_SETTINGS_GLOBAL} />
-                  </GlobalSettingsButton>
-                  <GlobalSettingsDropdown
-                    mobileMode={isMobile}
-                    settingsNavItems={settingsNavItems}
-                    setIsSettingsOpen={setIsSettingsOpen}
-                    isOpen={isSettingsOpen}
-                  />
-                </>
-              )}
-
-              {isMobile && (
-                <MobileMenuTrigger ref={mobileMenuTriggerRef} theme={styledTheme} onClick={handleMobileMenuToggle}>
-                  <SVG src={isMobileMenuOpen ? IMG_ICON_X : IMG_ICON_MENU_HAMBURGER} />
-                </MobileMenuTrigger>
-              )}
-            </RightAligned>
+          {isMobile && (
+            <MobileMenuTrigger ref={mobileMenuTriggerRef} theme={styledTheme} onClick={handleMobileMenuToggle}>
+              <SVG src={isMobileMenuOpen ? IMG_ICON_X : IMG_ICON_MENU_HAMBURGER} />
+            </MobileMenuTrigger>
           )}
         </MenuBarInner>
 
@@ -653,7 +653,7 @@ export const MenuBar = (props: MenuBarProps) => {
                 />
               ))}
               <RightAligned mobileMode={isMobile}>
-                {additionalContent}
+                {additionalContent} {/* Add additional content here */}
                 {additionalNavButtons &&
                   additionalNavButtons.map((item, index) => (
                     <DropdownContentItemButton

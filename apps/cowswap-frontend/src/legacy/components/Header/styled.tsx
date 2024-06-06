@@ -137,7 +137,7 @@ export const StyledNavLink = styled(StyledNavLinkUni)`
 
 export const HeaderControls = styled(HeaderControlsUni)`
   justify-content: flex-end;
-  gap: 12px;
+  gap: 0;
 
   ${({ theme }) => theme.mediaWidth.upToLarge`
     max-width: 100%;
@@ -151,7 +151,7 @@ export const HeaderControls = styled(HeaderControlsUni)`
 export const HeaderElement = styled.div`
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 0;
 
   ${({ theme }) => theme.mediaWidth.upToTiny`
     position: fixed;

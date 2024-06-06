@@ -20,7 +20,7 @@ export const MenuBarWrapper = styled.div<{
   --height: 56px;
   --width: 100%;
   --bgColor: ${({ theme, bgColorLight, bgColorDark }) =>
-    theme.mode === 'dark' ? bgColorDark || Color.neutral10 : bgColorLight || 'rgba(255, 248, 247, 0.6)'};
+    theme.mode === 'dark' ? bgColorDark || Color.neutral10 : bgColorLight || 'rgb(255 248 247 / 40%)'};
   --color: ${({ theme, colorLight, colorDark }) =>
     theme.mode === 'dark' ? colorDark || Color.neutral98 : colorLight || Color.neutral0};
   --borderRadius: 28px;
@@ -587,7 +587,7 @@ export const RightAligned = styled.div<{ mobileMode?: boolean; flexFlow?: string
   flex-flow: ${({ flexFlow }) => flexFlow || 'row nowrap'};
   justify-content: flex-end;
   align-items: center;
-  gap: 16px;
+  gap: 6px;
   margin: 0 0 0 auto;
 
   ${DropdownContentItemButton} {

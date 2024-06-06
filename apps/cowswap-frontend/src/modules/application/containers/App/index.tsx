@@ -11,10 +11,22 @@ import { useAnalyticsReporter } from 'common/hooks/useAnalyticsReporter'
 import RedirectAnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers/RedirectAnySwapAffectedUsers'
 import { RoutesApp } from './RoutesApp'
 import * as styledEl from './styled'
-import { MenuBar, MenuItem, Footer, ProductVariant, GlobalCoWDAOStyles, Color } from '@cowprotocol/ui'
+import { Media, MenuBar, MenuItem, Footer, ProductVariant, GlobalCoWDAOStyles, Color } from '@cowprotocol/ui'
 import { CoWDAOFonts } from 'common/styles/CoWDAOFonts'
 import IMG_ICON_BRANDED_DOT_RED from '@cowprotocol/assets/images/icon-branded-dot-red.svg'
 import { useDarkModeManager } from 'legacy/state/user/hooks'
+import { useMediaQuery } from '@cowprotocol/common-hooks'
+
+// import { useNavigate } from 'react-router-dom'
+import { NetworkSelector } from 'legacy/components/Header/NetworkSelector'
+import { useInjectedWidgetParams } from 'modules/injectedWidget'
+// import { useWalletInfo } from '@cowprotocol/wallet'
+import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
+// import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
+
+import { HeaderControls, HeaderElement } from 'legacy/components/Header/styled'
+// import CowBalanceButton from 'legacy/components/CowBalanceButton'
+import { AccountElement } from 'legacy/components/Header/AccountElement'
 
 // Move this to const file ==========
 const PRODUCT_VARIANT = ProductVariant.CowSwap
@@ -144,6 +156,22 @@ export function App() {
     [darkMode, toggleDarkMode]
   )
 
+  // const { account, chainId } = useWalletInfo()
+  const injectedWidgetParams = useInjectedWidgetParams()
+  // const isChainIdUnsupported = useIsProviderNetworkUnsupported()
+  const { pendingActivity } = useCategorizeRecentActivity()
+  // const navigate = useNavigate()
+  const isMobile = useMediaQuery(Media.upToMedium(false))
+
+  const persistentAdditionalContent = (
+    <HeaderControls>
+      {!injectedWidgetParams.hideNetworkSelector && <NetworkSelector />}
+      <HeaderElement>
+        <AccountElement pendingActivities={pendingActivity} />
+      </HeaderElement>
+    </HeaderControls>
+  )
+
   return (
     <ErrorBoundary>
       <RedirectAnySwapAffectedUsers />
@@ -164,13 +192,14 @@ export function App() {
             productVariant={PRODUCT_VARIANT}
             settingsNavItems={settingsNavItems}
             showGlobalSettings
-            // bgColorDark={NavBgColorDark}
             bgColorDark={'rgb(222 227 230 / 7%)'}
             colorDark={'#DEE3E6'}
             defaultFillDark="rgba(222, 227, 230, 0.4)"
             activeFillDark="#DEE3E6"
             activeBackgroundDark="#282854"
             hoverBackgroundDark={'#18193B'}
+            persistentAdditionalContent={persistentAdditionalContent} // This will stay at its original location
+            additionalContent={null} // On desktop renders inside the menu bar, on mobile renders inside the mobile menu
           />
         )}
 
