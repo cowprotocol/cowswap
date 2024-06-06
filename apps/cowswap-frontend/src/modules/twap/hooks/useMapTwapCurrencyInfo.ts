@@ -4,7 +4,7 @@ import { useCallback } from 'react'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 
 import { twapOrderAtom } from '../state/twapOrderAtom'
-import { scaleReceiveAmountInfo } from '../utils/scaleReceiveAmountInfo'
+import { calculateTwapReceivedAmountInfo } from '../utils/calculateTwapReceivedAmountInfo'
 
 export function useMapTwapCurrencyInfo(): (info: CurrencyInfo) => CurrencyInfo {
   const twapOrder = useAtomValue(twapOrderAtom)
@@ -14,7 +14,7 @@ export function useMapTwapCurrencyInfo(): (info: CurrencyInfo) => CurrencyInfo {
     (info: CurrencyInfo) => {
       return {
         ...info,
-        receiveAmountInfo: scaleReceiveAmountInfo(info.receiveAmountInfo, numOfParts),
+        receiveAmountInfo: calculateTwapReceivedAmountInfo(info.receiveAmountInfo, numOfParts),
       }
     },
     [numOfParts]

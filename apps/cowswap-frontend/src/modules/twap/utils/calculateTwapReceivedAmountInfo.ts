@@ -4,7 +4,10 @@ import { Nullish } from 'types'
 
 import { ReceiveAmountInfo } from 'modules/trade'
 
-export function scaleReceiveAmountInfo(info: ReceiveAmountInfo | null, numOfParts: Nullish<number>): typeof info {
+export function calculateTwapReceivedAmountInfo(
+  info: ReceiveAmountInfo | null,
+  numOfParts: Nullish<number>
+): typeof info {
   if (!info || !numOfParts) return null
 
   const { isSell, quotePrice, costs, beforeNetworkCosts, afterNetworkCosts, afterPartnerFees, afterSlippage } = info
