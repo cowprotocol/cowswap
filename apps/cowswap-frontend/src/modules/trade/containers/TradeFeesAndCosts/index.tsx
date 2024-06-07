@@ -4,7 +4,7 @@ import { useUsdAmount } from '../../../usdAmount'
 import { PartnerFeeRow } from '../../pure/PartnerFeeRow'
 import { ReviewOrderModalAmountRow } from '../../pure/ReviewOrderModalAmountRow'
 import { ReceiveAmountInfo } from '../../types'
-import { getDirectedReceiveAmounts } from '../../utils/getReceiveAmountInfo'
+import { getOrderTypeReceiveAmounts } from '../../utils/getReceiveAmountInfo'
 
 interface TradeFeesAndCostsProps {
   receiveAmountInfo: ReceiveAmountInfo | null
@@ -15,7 +15,7 @@ interface TradeFeesAndCostsProps {
 export function TradeFeesAndCosts(props: TradeFeesAndCostsProps) {
   const { receiveAmountInfo, widgetParams, withTimelineDot = true } = props
 
-  const networkFeeAmount = receiveAmountInfo && getDirectedReceiveAmounts(receiveAmountInfo).networkFeeAmount
+  const networkFeeAmount = receiveAmountInfo && getOrderTypeReceiveAmounts(receiveAmountInfo).networkFeeAmount
   const partnerFee = receiveAmountInfo && receiveAmountInfo.costs.partnerFee
   const partnerFeeAmount = partnerFee?.amount
   const partnerFeeBps = partnerFee?.bps

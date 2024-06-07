@@ -2,9 +2,9 @@ import { isSellOrder } from '@cowprotocol/common-utils'
 import { type OrderParameters, getQuoteAmountsAndCosts, QuoteAmountsAndCosts } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
 
-import { DirectedReceiveAmounts, ReceiveAmountInfo } from '../types'
+import { OrderTypeReceiveAmounts, ReceiveAmountInfo } from '../types'
 
-export function getDirectedReceiveAmounts(info: ReceiveAmountInfo): DirectedReceiveAmounts {
+export function getOrderTypeReceiveAmounts(info: ReceiveAmountInfo): OrderTypeReceiveAmounts {
   const {
     isSell,
     costs: { networkFee },
@@ -22,7 +22,7 @@ export function getDirectedReceiveAmounts(info: ReceiveAmountInfo): DirectedRece
 }
 
 export function getTotalCosts(info: ReceiveAmountInfo): CurrencyAmount<Currency> {
-  const { networkFeeAmount } = getDirectedReceiveAmounts(info)
+  const { networkFeeAmount } = getOrderTypeReceiveAmounts(info)
 
   return networkFeeAmount.add(info.costs.partnerFee.amount)
 }
