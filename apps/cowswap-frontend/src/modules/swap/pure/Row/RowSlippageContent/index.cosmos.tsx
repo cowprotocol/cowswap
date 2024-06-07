@@ -4,6 +4,7 @@ import { RowSlippageProps } from 'modules/swap/containers/Row/RowSlippage'
 import { RowSlippageContent, RowSlippageContentProps } from 'modules/swap/pure/Row/RowSlippageContent'
 
 const defaultProps: RowSlippageProps & RowSlippageContentProps = {
+  chainId: 1,
   isEoaEthFlow: true,
   symbols: ['ETH', 'WETH'],
   allowedSlippage: new Percent(1, 100),
