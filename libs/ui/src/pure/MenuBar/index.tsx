@@ -1,6 +1,18 @@
-import React, { useState, useRef, RefObject } from 'react'
+import React, { useState, useRef, RefObject, useMemo } from 'react'
+
+import IMG_ICON_ARROW_RIGHT from '@cowprotocol/assets/images/arrow-right.svg'
+import IMG_ICON_CARRET_DOWN from '@cowprotocol/assets/images/carret-down.svg'
+import IMG_ICON_MENU_DOTS from '@cowprotocol/assets/images/menu-grid-dots.svg'
+import IMG_ICON_MENU_HAMBURGER from '@cowprotocol/assets/images/menu-hamburger.svg'
+import IMG_ICON_SETTINGS_GLOBAL from '@cowprotocol/assets/images/settings-global.svg'
+import IMG_ICON_X from '@cowprotocol/assets/images/x.svg'
+import { useOnClickOutside, useMediaQuery } from '@cowprotocol/common-hooks'
+import { addBodyClass, removeBodyClass } from '@cowprotocol/common-utils'
+import { CowSwapTheme } from '@cowprotocol/widget-lib'
+
 import SVG from 'react-inlinesvg'
 import { ThemeProvider } from 'styled-components/macro'
+
 import {
   RootNavItem,
   MenuBarWrapper,
@@ -22,17 +34,8 @@ import {
   MobileMenuTrigger,
 } from './styled'
 
-import { useOnClickOutside, useMediaQuery } from '@cowprotocol/common-hooks'
-import { addBodyClass, removeBodyClass } from '@cowprotocol/common-utils'
-import { CowSwapTheme } from '@cowprotocol/widget-lib'
 import { Media, themeMapper } from '../../consts'
 import { ProductLogo, ProductVariant } from '../ProductLogo'
-import IMG_ICON_ARROW_RIGHT from '@cowprotocol/assets/images/arrow-right.svg'
-import IMG_ICON_CARRET_DOWN from '@cowprotocol/assets/images/carret-down.svg'
-import IMG_ICON_MENU_DOTS from '@cowprotocol/assets/images/menu-grid-dots.svg'
-import IMG_ICON_MENU_HAMBURGER from '@cowprotocol/assets/images/menu-hamburger.svg'
-import IMG_ICON_SETTINGS_GLOBAL from '@cowprotocol/assets/images/settings-global.svg'
-import IMG_ICON_X from '@cowprotocol/assets/images/x.svg'
 
 const DAO_NAV_ITEMS: MenuItem[] = [
   { href: 'https://cow.fi/', productVariant: ProductVariant.CowDao, hasDivider: true },
@@ -96,7 +99,9 @@ interface NavItemProps {
 
 const NavItem = ({ item, mobileMode = false, openDropdown, setOpenDropdown }: NavItemProps) => {
   const handleToggle = () => {
-    setOpenDropdown((prev) => (prev === item.label ? null : item.label || null))
+    setOpenDropdown((prev) => {
+      return prev === item.label ? null : item.label || null
+    })
   }
 
   return item.children ? (
@@ -292,8 +297,16 @@ const GenericDropdown: React.FC<DropdownProps & { mobileMode?: boolean; isNavIte
     throw new Error('Dropdown content must have a title')
   }
 
-  const interactionProps =
-    interaction === 'hover' ? { onMouseEnter: onTrigger, onMouseLeave: onTrigger } : { onClick: onTrigger }
+  const interactionProps = useMemo(() => {
+    return interaction === 'hover'
+      ? {
+          onMouseEnter: onTrigger,
+          onMouseLeave: onTrigger,
+        }
+      : {
+          onClick: onTrigger,
+        }
+  }, [interaction, onTrigger])
 
   return (
     <DropdownMenu {...interactionProps} mobileMode={mobileMode}>
@@ -532,13 +545,16 @@ export const MenuBar = (props: MenuBarProps) => {
     mode: theme,
   }
 
+  const isMobile = useMediaQuery(Media.upToLarge(false))
+
   useOnClickOutside([menuRef as RefObject<HTMLElement>], () => setIsDaoOpen(false))
-  useOnClickOutside([navItemsRef as RefObject<HTMLElement>], () => setOpenDropdown(null))
+
+  useOnClickOutside(isMobile ? [mobileMenuRef] : [navItemsRef], () => {
+    setOpenDropdown(null)
+  })
   useOnClickOutside([mobileMenuRef as RefObject<HTMLElement>, mobileMenuTriggerRef as RefObject<HTMLElement>], () =>
     setIsMobileMenuOpen(false)
   )
-
-  const isMobile = useMediaQuery(Media.upToLarge(false))
 
   const handleMobileMenuToggle = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation()
