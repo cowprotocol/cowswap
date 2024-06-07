@@ -23,7 +23,7 @@ export const ActiveRowLinkList = styled.div`
     display: flex;
     flex-direction: row;
     font-size: 14px;
-    font-weight: 500;
+    font-weight: 400;
     justify-content: space-between;
     padding: 8px 0 4px 6px;
     text-decoration: none;
@@ -46,7 +46,7 @@ export const FlyoutRow = styled.div<{ active: boolean }>`
   border-radius: 8px;
   cursor: pointer;
   display: flex;
-  font-weight: 500;
+  font-weight: 400;
   justify-content: space-between;
   padding: 6px 8px;
   text-align: left;

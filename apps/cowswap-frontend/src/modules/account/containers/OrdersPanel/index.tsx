@@ -1,7 +1,8 @@
 import { useSetAtom } from 'jotai'
 
 import Close from '@cowprotocol/assets/images/x.svg?react'
-import { UI } from '@cowprotocol/ui'
+import { UI, Media } from '@cowprotocol/ui'
+
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { transparentize } from 'color2k'
@@ -39,12 +40,13 @@ const SideBar = styled.div`
   box-shadow: ${({ theme }) => theme.boxShadow1};
   background: var(${UI.COLOR_PAPER});
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${Media.upToMedium()} {
     width: 100%;
     height: 100%;
     max-width: 100%;
-    border-radius: ${theme.isInjectedWidgetMode ? '24px' : '0'};
-  `};
+    border-radius: ${({ theme }) => (theme.isInjectedWidgetMode ? '24px' : '0')};
+    z-index: 10000;
+  }
 `
 
 const SidebarBackground = styled.div`
@@ -57,9 +59,9 @@ const SidebarBackground = styled.div`
   background: ${({ theme }) => (theme.isInjectedWidgetMode ? 'transparent' : transparentize(theme.black, 0.1))};
   backdrop-filter: blur(3px);
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     display: none;
-  `};
+  }
 `
 
 const Header = styled.div`
@@ -77,7 +79,7 @@ const Header = styled.div`
   width: 100%;
   z-index: 20;
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${Media.upToMedium()} {
     top: 0;
     padding: 0 16px;
     z-index: 99999;
@@ -85,7 +87,7 @@ const Header = styled.div`
     left: 0;
     height: 52px;
     background: var(${UI.COLOR_PAPER});
-  `};
+  }
 
   &:hover {
     cursor: pointer;
@@ -96,18 +98,20 @@ const Header = styled.div`
     font-size: 24px;
     color: inherit;
 
-    ${({ theme }) => theme.mediaWidth.upToSmall`
+    ${Media.upToSmall()} {
       font-size: 18px;
-    `};
+    }
   }
 `
 
 const CloseIcon = styled((props) => <Close {...props} />)`
+  --size: 20px;
   opacity: 0.6;
   transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
   stroke: var(${UI.COLOR_TEXT});
-  width: 24px;
-  height: 24px;
+  width: var(--size);
+  height: var(--size);
+  object-fit: contain;
 
   &:hover {
     opacity: 1;

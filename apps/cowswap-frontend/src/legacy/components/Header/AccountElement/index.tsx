@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { useNativeCurrencyAmount } from '@cowprotocol/balances-and-allowances'
 import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { TokenAmount } from '@cowprotocol/ui'

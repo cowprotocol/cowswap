@@ -15,9 +15,11 @@ import { ApplicationModal } from 'legacy/state/application/reducer'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useOnSelectNetwork } from 'common/hooks/useOnSelectNetwork'
+import { useOnClickOutside } from '@cowprotocol/common-hooks'
+import { useMediaQuery } from '@cowprotocol/common-hooks'
+
 import { NetworksList } from 'common/pure/NetworksList'
 import { Media } from '@cowprotocol/ui'
-import { tr } from 'make-plural'
 
 const FlyoutHeader = styled.div`
   color: inherit;
@@ -76,7 +78,7 @@ const SelectorControls = styled.div<{ isChainIdUnsupported: boolean }>`
   align-items: center;
   color: inherit;
   display: flex;
-  font-weight: 500;
+  font-weight: 400;
   justify-content: space-between;
   gap: 6px;
 
@@ -149,14 +151,20 @@ export function NetworkSelector() {
   const { provider } = useWeb3React()
   const { chainId } = useWalletInfo()
   const node = useRef<HTMLDivElement>(null)
+  const nodeMobile = useRef<HTMLDivElement>(null)
   const isOpen = useModalIsOpen(ApplicationModal.NETWORK_SELECTOR)
-  const openModal = useOpenModal(ApplicationModal.NETWORK_SELECTOR)
-  const closeModal = useCloseModal(ApplicationModal.NETWORK_SELECTOR)
   const toggleModal = useToggleModal(ApplicationModal.NETWORK_SELECTOR)
   const isSmartContractWallet = useIsSmartContractWallet()
   const isTallyWallet = getIsTallyWallet(provider?.provider)
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
   const info = getChainInfo(chainId)
+  const isUpToMedium = useMediaQuery(Media.upToMedium(false))
+
+  useOnClickOutside(isUpToMedium ? [nodeMobile] : [node], () => {
+    if (isOpen) {
+      toggleModal()
+    }
+  })
 
   const onSelectChain = useOnSelectNetwork()
 
@@ -183,7 +191,7 @@ export function NetworkSelector() {
       </SelectorControls>
       {isOpen && (
         <FlyoutMenu>
-          <FlyoutMenuContents>
+          <FlyoutMenuContents ref={nodeMobile}>
             <FlyoutHeader>
               <Trans>Select a network</Trans>
             </FlyoutHeader>
