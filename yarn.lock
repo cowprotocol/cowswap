@@ -2386,10 +2386,10 @@
     json-stringify-deterministic "^1.0.8"
     multiformats "^9.6.4"
 
-"@cowprotocol/cms@^0.2.2":
-  version "0.2.2"
-  resolved "https://registry.yarnpkg.com/@cowprotocol/cms/-/cms-0.2.2.tgz#6041f8468fab23911c846b2dd0072e209073b089"
-  integrity sha512-kpILhi3N7EaFFaFUXpJnkpEYUmUu7EdU9SVCxBHwqCcvIO4Yw8qhCr3aUPgRI6reCNqMEnNai3EPjyoNzD2bKg==
+"@cowprotocol/cms@^0.3.1":
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/cms/-/cms-0.3.1.tgz#8e5f77be1a97f9c083ce30a744402689802b4c3e"
+  integrity sha512-jslJwDdmn29ygB+iXnDG+5W9XCCUkexkcWV46EvKzrX8i3T7feUb/Hmgc+OiU59avWp9yMw2l1qrZ+sEPIwiPw==
   dependencies:
     openapi-fetch "^0.9.3"
 

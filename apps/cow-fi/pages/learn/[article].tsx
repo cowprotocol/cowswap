@@ -66,7 +66,7 @@ const Wrapper = styled.div`
   }
 `
 
-export function ArticleSubtitle({ dateIso, content }: { dateIso: string; content: string }) {
+export function ArticleSubtitle({ dateIso, content, dateVisible }: { dateIso: string; content: string, dateVisible: boolean }) {
   const date = new Date(dateIso)
   const readTime = calculateReadTime(content)
 
@@ -76,9 +76,11 @@ export function ArticleSubtitle({ dateIso, content }: { dateIso: string; content
         <span>{readTime}</span>
       </div>
       <div>·</div>
-      <div>
-        <span>Published {formatDate(date)}</span>
-      </div>
+      {dateVisible && (
+        <div>
+          <span>Published {formatDate(date)}</span>
+        </div>
+      )}
     </ArticleSubtitleWrapper>
   )
 }
@@ -115,7 +117,7 @@ export default function ArticlePage({
   relatedArticles: Article[]
   allCategories: { name: string; slug: string }[]
 }) {
-  const { title, blocks, publishedAt, categories } = article.attributes || {}
+  const { title, blocks, publishedAt, publishDate, publishDateVisible = true, categories } = article.attributes || {}
   const content = blocks?.map((block) => (isRichTextComponent(block) ? block.body : '')).join(' ') || ''
 
   const { share, message } = useWebShare()
@@ -169,7 +171,7 @@ export default function ArticlePage({
 
             <ArticleMainTitle>{title}</ArticleMainTitle>
 
-            <ArticleSubtitle dateIso={publishedAt!} content={content} />
+            <ArticleSubtitle dateIso={(publishDate || publishedAt)!} dateVisible={publishDateVisible} content={content} />
             <BodyContent>
               {blocks &&
                 blocks.map((block) =>

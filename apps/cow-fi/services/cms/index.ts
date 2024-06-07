@@ -171,7 +171,7 @@ export async function getArticles({
         // Pagination
         'pagination[page]': page,
         'pagination[pageSize]': pageSize,
-        sort: 'publishedAt:desc',
+        sort: 'publishDate:desc,publishedAt:desc',
         filters,
       },
     },
@@ -254,35 +254,35 @@ async function getBySlugAux(slug: string, endpoint: '/categories' | '/articles')
   const populate =
     endpoint === '/categories'
       ? // Category
-        {
-          articles: {
-            populate: {
-              authorsBio: {
-                fields: ['name'],
-              },
-              seo: '*',
+      {
+        articles: {
+          populate: {
+            authorsBio: {
+              fields: ['name'],
             },
+            seo: '*',
           },
-          image: { fields: ['url'] }, // Ensure the image is populated
-        }
+        },
+        image: { fields: ['url'] }, // Ensure the image is populated
+      }
       : // Articles
-        {
-          cover: {
-            fields: ['url', 'width', 'height', 'alternativeText'],
-          },
-          blocks: '*',
-          seo: {
-            fields: ['metaTitle', 'metaDescription'],
-            populate: {
-              shareImage: {
-                fields: ['url'],
-              },
+      {
+        cover: {
+          fields: ['url', 'width', 'height', 'alternativeText'],
+        },
+        blocks: '*',
+        seo: {
+          fields: ['metaTitle', 'metaDescription'],
+          populate: {
+            shareImage: {
+              fields: ['url'],
             },
           },
-          authorsBio: {
-            fields: ['name'],
-          },
-        }
+        },
+        authorsBio: {
+          fields: ['name'],
+        },
+      }
 
   const query = toQueryParams({
     filters: {
