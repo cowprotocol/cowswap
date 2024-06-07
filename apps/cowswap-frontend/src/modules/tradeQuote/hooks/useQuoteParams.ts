@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 
 import { NATIVE_CURRENCY_ADDRESS } from '@cowprotocol/common-const'
 import { getAddress, getIsNativeToken } from '@cowprotocol/common-utils'
+import { PriceQuality } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -12,7 +13,6 @@ import { LegacyFeeQuoteParams } from 'legacy/state/price/types'
 import { useAppData } from 'modules/appData'
 import { useEnoughBalanceAndAllowance } from 'modules/tokens'
 import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
-import { PriceQuality } from '@cowprotocol/cow-sdk'
 
 const DEFAULT_QUOTE_TTL = ms`30m` / 1000
 
