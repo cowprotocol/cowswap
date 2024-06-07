@@ -65,19 +65,22 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
   // 4. Handle widget height changes
   windowListeners.push(...listenToHeightChanges(iframe, params.height))
 
-  // 5. Handle and forward widget events to the listeners
+  // 5. Intercept deeplinks navigation in the iframe
+  windowListeners.push(interceptDeepLinks())
+
+  // 6. Handle and forward widget events to the listeners
   const iFrameCowEventEmitter = new IframeCowEventEmitter(window, listeners)
 
-  // 6. Wire up the iframeRpcProviderBridge with the provider (so RPC calls flow back and forth)
+  // 7. Wire up the iframeRpcProviderBridge with the provider (so RPC calls flow back and forth)
   let iframeRpcProviderBridge = updateProvider(iframeWindow, null, provider)
 
-  // 7. Schedule the uploading of the params, once the iframe is loaded
+  // 8. Schedule the uploading of the params, once the iframe is loaded
   iframe.addEventListener('load', () => updateParams(iframeWindow, currentParams, provider))
 
-  // 8. Listen for messages from the iframe
+  // 9. Listen for messages from the iframe
   const iframeSafeSdkBridge = new IframeSafeSdkBridge(window, iframeWindow)
 
-  // 9. Return the handler, so the widget, listeners, and provider can be updated
+  // 10. Return the handler, so the widget, listeners, and provider can be updated
   return {
     updateParams: (newParams: CowSwapWidgetParams) => {
       currentParams = newParams
@@ -198,6 +201,20 @@ function sendAppCodeOnActivation(contentWindow: Window, appCode: string | undefi
   })
 
   return listener
+}
+
+/**
+ * Since deeplinks are not supported in iframes, this function intercepts the window.open calls from the widget and opens
+ */
+function interceptDeepLinks() {
+  return listenToMessageFromWindow(window, WidgetMethodsEmit.INTERCEPT_WINDOW_OPEN, ({ href, rel, target }) => {
+    const url = href.toString()
+
+    if (!url.startsWith('http') && url.match(/^[a-zA-Z0-9]+:\/\//)) {
+      window.open(url, target, rel)
+      return
+    }
+  })
 }
 
 /**
