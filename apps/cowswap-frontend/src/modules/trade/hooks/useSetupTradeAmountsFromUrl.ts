@@ -6,7 +6,11 @@ import { OrderKind } from '@cowprotocol/cow-sdk'
 import { useLocation } from 'react-router-dom'
 import { Writeable } from 'types'
 
-import { TRADE_URL_BUY_AMOUNT_KEY, TRADE_URL_SELL_AMOUNT_KEY } from 'modules/trade/const/tradeUrl'
+import {
+  TRADE_URL_BUY_AMOUNT_KEY,
+  TRADE_URL_ORDER_KIND_KEY,
+  TRADE_URL_SELL_AMOUNT_KEY,
+} from 'modules/trade/const/tradeUrl'
 
 import { useNavigate } from 'common/hooks/useNavigate'
 import { TradeAmounts } from 'common/types'
@@ -16,6 +20,10 @@ import { useTradeState } from './useTradeState'
 
 import { ExtendedTradeRawState } from '../types/TradeRawState'
 
+interface SetupTradeAmountsParams {
+  onlySell?: boolean
+  onAmountsUpdate?: (amounts: TradeAmounts) => void
+}
 /**
  * Parse sell/buy amount from URL and apply to Limit orders widget
  * Example:
@@ -23,7 +31,7 @@ import { ExtendedTradeRawState } from '../types/TradeRawState'
  *
  * In case when both sellAmount and buyAmount specified, the price will be automatically calculated
  */
-export function useSetupTradeAmountsFromUrl(onAmountsUpdate?: (amounts: TradeAmounts) => void) {
+export function useSetupTradeAmountsFromUrl({ onAmountsUpdate, onlySell }: SetupTradeAmountsParams) {
   const navigate = useNavigate()
   const { search, pathname } = useLocation()
   const params = useMemo(() => new URLSearchParams(search), [search])
@@ -36,11 +44,13 @@ export function useSetupTradeAmountsFromUrl(onAmountsUpdate?: (amounts: TradeAmo
 
     queryParams.delete(TRADE_URL_BUY_AMOUNT_KEY)
     queryParams.delete(TRADE_URL_SELL_AMOUNT_KEY)
+    queryParams.delete(TRADE_URL_ORDER_KIND_KEY)
 
     navigate({ pathname, search: queryParams.toString() }, { replace: true })
   }, [navigate, pathname, search])
 
   useEffect(() => {
+    const orderKind = params.get(TRADE_URL_ORDER_KIND_KEY) as OrderKind | null
     const sellAmount = getIntOrFloat(params.get(TRADE_URL_SELL_AMOUNT_KEY))
     const buyAmount = getIntOrFloat(params.get(TRADE_URL_BUY_AMOUNT_KEY))
     const update: Partial<Writeable<ExtendedTradeRawState>> = {}
@@ -51,16 +61,15 @@ export function useSetupTradeAmountsFromUrl(onAmountsUpdate?: (amounts: TradeAmo
     const sellCurrencyAmount = isSellAmountValid ? tryParseCurrencyAmount(sellAmount, inputCurrency) : null
     const buyCurrencyAmount = isBuyAmountValid ? tryParseCurrencyAmount(buyAmount, outputCurrency) : null
 
-    if (sellCurrencyAmount) {
-      update.inputCurrencyAmount = FractionUtils.serializeFractionToJSON(sellCurrencyAmount)
-      update.orderKind = OrderKind.SELL
-    }
-    if (buyCurrencyAmount) {
+    if (!onlySell && buyCurrencyAmount && orderKind === OrderKind.BUY) {
       update.outputCurrencyAmount = FractionUtils.serializeFractionToJSON(buyCurrencyAmount)
 
       if (!sellCurrencyAmount) {
         update.orderKind = OrderKind.BUY
       }
+    } else if (sellCurrencyAmount) {
+      update.inputCurrencyAmount = FractionUtils.serializeFractionToJSON(sellCurrencyAmount)
+      update.orderKind = OrderKind.SELL
     }
 
     const hasUpdates = Object.keys(update).length > 1
@@ -79,5 +88,5 @@ export function useSetupTradeAmountsFromUrl(onAmountsUpdate?: (amounts: TradeAmo
     }
     // Trigger only when URL or assets are changed
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [params, inputCurrency, outputCurrency])
+  }, [params, inputCurrency, outputCurrency, onlySell])
 }

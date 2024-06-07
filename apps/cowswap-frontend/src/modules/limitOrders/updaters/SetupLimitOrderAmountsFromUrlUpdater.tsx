@@ -19,7 +19,7 @@ export function SetupLimitOrderAmountsFromUrlUpdater() {
     [updateRate]
   )
 
-  useSetupTradeAmountsFromUrl(onAmountsUpdate)
+  useSetupTradeAmountsFromUrl({ onAmountsUpdate })
 
   return null
 }

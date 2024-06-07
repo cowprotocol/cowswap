@@ -1,7 +1,5 @@
 import { useMemo } from 'react'
 
-import { isSellOrder } from '@cowprotocol/common-utils'
-
 import { useDerivedTradeState } from './useDerivedTradeState'
 import { useTradeState } from './useTradeState'
 
@@ -13,7 +11,6 @@ export function useTradeRouteContext(): TradeUrlParams {
   const { orderKind, inputCurrencyAmount, outputCurrencyAmount } = derivedState || {}
   const { inputCurrencyId, outputCurrencyId, chainId } = state || {}
 
-  const sellOrder = orderKind && isSellOrder(orderKind)
   const inputCurrencyAmountStr = inputCurrencyAmount?.toExact()
   const outputCurrencyAmountStr = outputCurrencyAmount?.toExact()
 
@@ -21,10 +18,11 @@ export function useTradeRouteContext(): TradeUrlParams {
     () => ({
       inputCurrencyId: inputCurrencyId || undefined,
       outputCurrencyId: outputCurrencyId || undefined,
-      inputCurrencyAmount: sellOrder ? inputCurrencyAmountStr : undefined,
-      outputCurrencyAmount: sellOrder ? undefined : outputCurrencyAmountStr,
+      inputCurrencyAmount: inputCurrencyAmountStr,
+      outputCurrencyAmount: outputCurrencyAmountStr,
       chainId: chainId?.toString(),
+      orderKind,
     }),
-    [inputCurrencyId, outputCurrencyId, chainId, sellOrder, inputCurrencyAmountStr, outputCurrencyAmountStr]
+    [inputCurrencyId, outputCurrencyId, chainId, inputCurrencyAmountStr, outputCurrencyAmountStr]
   )
 }

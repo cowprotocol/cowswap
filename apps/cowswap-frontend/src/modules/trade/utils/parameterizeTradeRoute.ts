@@ -1,3 +1,5 @@
+import { OrderKind } from '@cowprotocol/cow-sdk'
+
 import { TradeUrlParams } from 'modules/trade/types/TradeRawState'
 
 import { RoutesValues } from 'common/constants/routes'
@@ -7,7 +9,7 @@ import { RoutesValues } from 'common/constants/routes'
  * /limit/_/DAI
  */
 export function parameterizeTradeRoute(
-  { chainId, inputCurrencyId, outputCurrencyId, inputCurrencyAmount, outputCurrencyAmount }: TradeUrlParams,
+  { chainId, orderKind, inputCurrencyId, outputCurrencyId, inputCurrencyAmount, outputCurrencyAmount }: TradeUrlParams,
   route: RoutesValues
 ): string {
   const path = route
@@ -24,6 +26,8 @@ export function parameterizeTradeRoute(
   if (outputCurrencyAmount) {
     params.set('buyAmount', outputCurrencyAmount)
   }
+
+  params.set('orderKind', orderKind || OrderKind.SELL)
 
   return `${path}?${params.toString()}`
 }

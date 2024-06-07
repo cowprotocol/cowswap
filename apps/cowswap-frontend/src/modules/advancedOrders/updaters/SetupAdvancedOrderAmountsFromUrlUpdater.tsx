@@ -1,7 +1,7 @@
 import { useSetupTradeAmountsFromUrl } from 'modules/trade'
 
 export function SetupAdvancedOrderAmountsFromUrlUpdater() {
-  useSetupTradeAmountsFromUrl()
+  useSetupTradeAmountsFromUrl({ onlySell: true })
 
   return null
 }
