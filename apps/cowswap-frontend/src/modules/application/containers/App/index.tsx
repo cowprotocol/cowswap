@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState, useEffect, lazy, Suspense } from 'react'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import ErrorBoundary from 'legacy/components/ErrorBoundary'
 import { URLWarning } from 'legacy/components/Header/URLWarning'
@@ -9,9 +9,8 @@ import { useInitializeUtm } from 'modules/utm'
 import { InvalidLocalTimeWarning } from 'common/containers/InvalidLocalTimeWarning'
 import { useAnalyticsReporter } from 'common/hooks/useAnalyticsReporter'
 import RedirectAnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers/RedirectAnySwapAffectedUsers'
-import { RoutesApp } from './RoutesApp'
 import * as styledEl from './styled'
-import { Media, MenuBar, MenuItem, Footer, ProductVariant, GlobalCoWDAOStyles, Color } from '@cowprotocol/ui'
+import { Media, MenuBar, MenuItem, Footer, ProductVariant, GlobalCoWDAOStyles, LoadingApp } from '@cowprotocol/ui'
 import { CoWDAOFonts } from 'common/styles/CoWDAOFonts'
 
 import IMG_ICON_BRANDED_DOT_RED from '@cowprotocol/assets/images/icon-branded-dot-red.svg'
@@ -21,12 +20,15 @@ import IMG_ICON_COW_SLICER from '@cowprotocol/assets/cow-swap/ninja-cow.png'
 import { useDarkModeManager } from 'legacy/state/user/hooks'
 import { useMediaQuery } from '@cowprotocol/common-hooks'
 
-import { NetworkSelector } from 'legacy/components/Header/NetworkSelector'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
 
 import { HeaderControls, HeaderElement } from 'legacy/components/Header/styled'
 import { AccountElement } from 'legacy/components/Header/AccountElement'
+
+import { NetworkSelector } from 'legacy/components/Header/NetworkSelector' // Ensure the import path is correct
+
+const RoutesApp = lazy(() => import('./RoutesApp').then((module) => ({ default: module.RoutesApp })))
 
 // Move this to const file ==========
 const PRODUCT_VARIANT = ProductVariant.CowSwap
@@ -189,54 +191,57 @@ export function App() {
 
   return (
     <ErrorBoundary>
-      <RedirectAnySwapAffectedUsers />
-      <DarkModeQueryParamReader />
+      <Suspense fallback={<LoadingApp darkMode={darkMode} />}>
+        <RedirectAnySwapAffectedUsers />
+        <DarkModeQueryParamReader />
+        <GlobalStyles />
 
-      <GlobalStyles />
+        <styledEl.AppWrapper>
+          <URLWarning />
+          <InvalidLocalTimeWarning />
 
-      <styledEl.AppWrapper>
-        <URLWarning />
-        <InvalidLocalTimeWarning />
+          <OrdersPanel />
 
-        <OrdersPanel />
+          {!isInjectedWidgetMode && (
+            <MenuBar
+              navItems={NAV_ITEMS}
+              theme={darkMode ? 'dark' : 'light'}
+              productVariant={PRODUCT_VARIANT}
+              settingsNavItems={settingsNavItems}
+              showGlobalSettings
+              bgColorDark={'rgb(222 227 230 / 7%)'}
+              colorDark={'#DEE3E6'}
+              defaultFillDark="rgba(222, 227, 230, 0.4)"
+              activeFillDark="#DEE3E6"
+              activeBackgroundDark="#282854"
+              hoverBackgroundDark={'#18193B'}
+              persistentAdditionalContent={isMobile ? null : persistentAdditionalContent} // This will stay at its original location
+              additionalContent={null} // On desktop renders inside the menu bar, on mobile renders inside the mobile menu
+            />
+          )}
 
-        {!isInjectedWidgetMode && (
-          <MenuBar
-            navItems={NAV_ITEMS}
-            theme={darkMode ? 'dark' : 'light'}
-            productVariant={PRODUCT_VARIANT}
-            settingsNavItems={settingsNavItems}
-            showGlobalSettings
-            bgColorDark={'rgb(222 227 230 / 7%)'}
-            colorDark={'#DEE3E6'}
-            defaultFillDark="rgba(222, 227, 230, 0.4)"
-            activeFillDark="#DEE3E6"
-            activeBackgroundDark="#282854"
-            hoverBackgroundDark={'#18193B'}
-            persistentAdditionalContent={isMobile ? null : persistentAdditionalContent} // This will stay at its original location
-            additionalContent={null} // On desktop renders inside the menu bar, on mobile renders inside the mobile menu
-          />
-        )}
+          <styledEl.BodyWrapper>
+            <TopLevelModals />
 
-        <styledEl.BodyWrapper>
-          <TopLevelModals />
-          <RoutesApp />
-          <styledEl.Marginer />
-        </styledEl.BodyWrapper>
+            <RoutesApp />
 
-        {!isInjectedWidgetMode && (
-          <Footer
-            description={FOOTER_DESCRIPTION}
-            navItems={FOOTER_NAV_ITEMS}
-            theme={darkMode ? 'dark' : 'light'}
-            productVariant={PRODUCT_VARIANT}
-            hasTouchFooter
-          />
-        )}
+            <styledEl.Marginer />
+          </styledEl.BodyWrapper>
 
-        {/* Render MobileHeaderControls outside of MenuBar on mobile */}
-        {isMobile && !isInjectedWidgetMode && persistentAdditionalContent}
-      </styledEl.AppWrapper>
+          {!isInjectedWidgetMode && (
+            <Footer
+              description={FOOTER_DESCRIPTION}
+              navItems={FOOTER_NAV_ITEMS}
+              theme={darkMode ? 'dark' : 'light'}
+              productVariant={PRODUCT_VARIANT}
+              hasTouchFooter
+            />
+          )}
+
+          {/* Render MobileHeaderControls outside of MenuBar on mobile */}
+          {isMobile && !isInjectedWidgetMode && persistentAdditionalContent}
+        </styledEl.AppWrapper>
+      </Suspense>
     </ErrorBoundary>
   )
 }

@@ -46,7 +46,7 @@ function createRedirectExternal(url: string) {
 type LazyRouteProps = { route: RoutesValues; element: ReactNode; key?: number }
 
 function LazyRoute({ route, element, key }: LazyRouteProps) {
-  return <Route key={key} path={route} element={<Suspense fallback={Loading}>{element}</Suspense>} />
+  return <Route key={key} path={route} element={<Suspense fallback={<Loading />}>{element}</Suspense>} />
 }
 
 const lazyRoutes: LazyRouteProps[] = [
@@ -96,7 +96,7 @@ export function RoutesApp() {
         <Route
           path="*"
           element={
-            <Suspense fallback={Loading}>
+            <Suspense fallback={<Loading />}>
               <NotFound />
             </Suspense>
           }
