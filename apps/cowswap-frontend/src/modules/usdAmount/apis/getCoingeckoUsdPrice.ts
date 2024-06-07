@@ -1,3 +1,4 @@
+import { BFF_BASE_URL } from '@cowprotocol/common-const'
 import { FractionUtils } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Fraction, Token } from '@uniswap/sdk-core'
@@ -7,7 +8,6 @@ import ms from 'ms.macro'
 import { fetchWithRateLimit } from 'common/utils/fetch'
 
 import { RateLimitError, UnknownCurrencyError, UnsupportedPlatformError } from './errors'
-import { BFF_BASE_URL } from '@cowprotocol/common-const'
 
 type SuccessCoingeckoUsdQuoteResponse = {
   [address: string]: {
