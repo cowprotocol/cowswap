@@ -133,7 +133,7 @@ export const HeaderControls = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: flex-end;
-  gap: 0;
+  gap: 6px;
   max-width: 100%;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`

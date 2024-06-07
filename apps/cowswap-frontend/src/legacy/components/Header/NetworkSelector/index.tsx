@@ -1,7 +1,7 @@
 import { useRef } from 'react'
 
 import { getChainInfo } from '@cowprotocol/common-const'
-import { MEDIA_WIDTHS, UI } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 import { getIsTallyWallet, useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
 import { useWeb3React } from '@web3-react/core'
 
@@ -16,8 +16,8 @@ import { ApplicationModal } from 'legacy/state/application/reducer'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useOnSelectNetwork } from 'common/hooks/useOnSelectNetwork'
 import { NetworksList } from 'common/pure/NetworksList'
-import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { Media } from '@cowprotocol/ui'
+import { tr } from 'make-plural'
 
 const FlyoutHeader = styled.div`
   color: inherit;
@@ -25,12 +25,14 @@ const FlyoutHeader = styled.div`
 `
 
 const FlyoutMenu = styled.div`
-  position: absolute;
-  width: 272px;
-  z-index: 99;
-  padding-top: 10px;
-  top: 38px;
-  right: 0;
+  ${Media.MediumAndUp()} {
+    position: absolute;
+    width: 272px;
+    z-index: 99;
+    padding-top: 10px;
+    top: 38px;
+    right: 0;
+  }
 `
 
 const FlyoutMenuContents = styled.div`
@@ -47,12 +49,13 @@ const FlyoutMenuContents = styled.div`
   z-index: 99;
   padding: 16px;
 
-  ${Media.upToSmall()} {
+  ${Media.upToMedium()} {
     bottom: 56px;
     left: 0;
     position: fixed;
     width: 100%;
     border-radius: 12px 12px 0 0;
+    box-shadow: 0 -100vh 0 100vh ${transparentize('black', 0.4)};
   }
 
   & > *:not(:last-child) {
@@ -114,7 +117,7 @@ const SelectorWrapper = styled.div`
   display: flex;
   cursor: pointer;
 
-  @media screen and (min-width: ${MEDIA_WIDTHS.upToSmall}px) {
+  ${Media.MediumAndUp()} {
     position: relative;
   }
 `
@@ -157,20 +160,12 @@ export function NetworkSelector() {
 
   const onSelectChain = useOnSelectNetwork()
 
-  // Mod: Detect viewport changes and set isUpToMedium
-  const isUpToMedium = useMediaQuery(Media.upToMedium(true))
-
   if (!chainId || !provider || isSmartContractWallet || isTallyWallet) {
     return null
   }
 
   return (
-    <SelectorWrapper
-      ref={node}
-      onMouseEnter={!isUpToMedium ? openModal : undefined}
-      onMouseLeave={!isUpToMedium ? closeModal : undefined}
-      onClick={isUpToMedium ? toggleModal : undefined}
-    >
+    <SelectorWrapper ref={node} onClick={toggleModal}>
       <SelectorControls isChainIdUnsupported={isChainIdUnsupported}>
         {!isChainIdUnsupported ? (
           <>

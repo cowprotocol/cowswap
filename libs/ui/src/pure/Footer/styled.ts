@@ -169,6 +169,7 @@ export const FooterBottom = styled.div`
 
   ${Media.upToLarge()} {
     flex-flow: column wrap;
+    gap: 0;
   }
 `
 
@@ -183,7 +184,6 @@ export const FooterBottomLogos = styled.div`
     margin: 24px auto;
     justify-content: center;
     flex-flow: row wrap;
-    gap: 56px;
   }
 
   > a {

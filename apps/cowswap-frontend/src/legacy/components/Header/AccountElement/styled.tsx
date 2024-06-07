@@ -32,17 +32,15 @@ export const Wrapper = styled.div<{ active: boolean }>`
   cursor: pointer;
   background: ${({ active }) => (active ? `var(${UI.COLOR_PAPER_DARKER})` : `var(${UI.COLOR_PAPER})`)};
   border-radius: 21px;
-  border: 2px solid transparent;
+  border: none;
   transition: border var(${UI.ANIMATION_DURATION}) ease-in-out;
   pointer-events: auto;
   width: auto;
 
   :focus {
-    border: 1px solid blue;
   }
 
   &:hover {
-    border: 2px solid var(${UI.COLOR_TEXT_OPACITY_25});
   }
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
