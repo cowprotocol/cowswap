@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect, lazy, Suspense } from 'react'
+import { useMemo, lazy, Suspense } from 'react'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import ErrorBoundary from 'legacy/components/ErrorBoundary'
 import { URLWarning } from 'legacy/components/Header/URLWarning'

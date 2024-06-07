@@ -51,7 +51,7 @@ export default function Account() {
   return (
     <Wrapper>
       <AccountMenu />
-      <Suspense fallback={Loading}>
+      <Suspense fallback={<Loading />}>
         <AccountPageWrapper>
           <Content>
             <Title id={id}>{name}</Title>
