@@ -17,8 +17,9 @@ import { gnosisSafeInfoAtom, walletDetailsAtom, walletInfoAtom } from '../api/st
 import { GnosisSafeInfo, WalletDetails, WalletInfo } from '../api/types'
 import { getWalletType } from '../api/utils/getWalletType'
 import { getWalletTypeLabel } from '../api/utils/getWalletTypeLabel'
+import { useSafeAppsSdk } from './hooks/useSafeAppsSdk'
 
-const SAFE_INFO_UPDATE_INTERVAL = ms`30s`
+const SAFE_INFO_UPDATE_INTERVAL = ms`5s`
 
 // Smart contract wallets are filtered out by default, no need to add them to this list
 const UNSUPPORTED_WC_WALLETS = new Set(['DeFi Wallet', 'WallETH'])
@@ -65,17 +66,27 @@ function _useSafeInfo(walletInfo: WalletInfo): GnosisSafeInfo | undefined {
   const { provider } = useWeb3React()
   const { account, chainId } = walletInfo
   const [safeInfo, setSafeInfo] = useState<GnosisSafeInfo>()
-  const { isReadOnly } = useSafeAppsSdkInfo() || {}
-
+  const safeAppsSdk = useSafeAppsSdk()
   useEffect(() => {
     const update = () => {
       if (chainId && account && provider) {
         getSafeInfo(chainId, account, provider)
-          .then((_safeInfo) =>
-            setSafeInfo({
-              isReadOnly,
-              ..._safeInfo,
-            })
+          .then(async (_safeInfo) => {
+            if (safeAppsSdk) {
+              const appsSdkSafeInfo = await safeAppsSdk.safe.getInfo()
+              setSafeInfo({
+                isReadOnly: appsSdkSafeInfo.isReadOnly,
+                chainId,
+                ..._safeInfo,
+              })
+            } else {
+              setSafeInfo({
+                isReadOnly: false,
+                chainId,
+                ..._safeInfo,
+              })
+            }
+            }
           )
           .catch(() => {
             console.debug(`[WalletUpdater] Address ${account} is likely not a Safe (API didn't return Safe info)`)
@@ -91,7 +102,7 @@ function _useSafeInfo(walletInfo: WalletInfo): GnosisSafeInfo | undefined {
     update()
 
     return () => clearInterval(interval)
-  }, [setSafeInfo, chainId, account, provider, isReadOnly])
+  }, [setSafeInfo, chainId, account, provider, safeAppsSdk])
 
   return safeInfo
 }

@@ -1,31 +1,24 @@
-import { useEffect, useState } from 'react'
-
 import type { SafeInfo } from '@safe-global/safe-apps-sdk'
 
-import { useSafeAppsSdk } from './useSafeAppsSdk'
+import { useAtom } from 'jotai/index'
+import { gnosisSafeInfoAtom } from '@cowprotocol/wallet'
 
 export type GnosisSafeSdkInfo = SafeInfo
 
 export function useSafeAppsSdkInfo(): GnosisSafeSdkInfo | null {
-  const [gnosisSafeInfo, setGnosisSafeInfo] = useState<GnosisSafeSdkInfo | null>(null)
-  const safeAppsSdk = useSafeAppsSdk()
-  const [intervalTimeout, setIntervalTimeout] = useState<number>(2000)
+  const gnosisSafeInfo = useAtom(gnosisSafeInfoAtom)[0]
 
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      if (!safeAppsSdk) {
-        setGnosisSafeInfo(null)
-      } else {
-        safeAppsSdk.safe.getInfo().then((safeInfo) => {
-          setGnosisSafeInfo(safeInfo)
-          // if the user is connected, we can check less frequently
-          setIntervalTimeout(safeInfo.isReadOnly ? 10000 : 2000)
-        })
-      }
-    }, intervalTimeout)
+  console.log('main use safe apps sdk info')
 
-    return () => clearInterval(intervalId)
-  }, [safeAppsSdk, intervalTimeout])
+  if (!gnosisSafeInfo) {
+    return null
+  }
 
-  return gnosisSafeInfo
+  return {
+    safeAddress: gnosisSafeInfo.address,
+    chainId: gnosisSafeInfo.chainId,
+    threshold: gnosisSafeInfo.threshold,
+    owners: gnosisSafeInfo.owners,
+    isReadOnly: !!gnosisSafeInfo.isReadOnly,
+  }
 }
