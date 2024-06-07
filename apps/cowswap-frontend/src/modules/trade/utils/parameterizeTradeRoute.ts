@@ -10,24 +10,29 @@ import { RoutesValues } from 'common/constants/routes'
  */
 export function parameterizeTradeRoute(
   { chainId, orderKind, inputCurrencyId, outputCurrencyId, inputCurrencyAmount, outputCurrencyAmount }: TradeUrlParams,
-  route: RoutesValues
+  route: RoutesValues,
+  withAmounts?: boolean
 ): string {
   const path = route
     .replace('/:chainId?', chainId ? `/${encodeURIComponent(chainId)}` : '')
     .replace('/:inputCurrencyId?', inputCurrencyId ? `/${encodeURIComponent(inputCurrencyId)}` : '/_')
     .replace('/:outputCurrencyId?', outputCurrencyId ? `/${encodeURIComponent(outputCurrencyId)}` : '')
 
-  const params = new URLSearchParams()
+  if (withAmounts) {
+    const params = new URLSearchParams()
 
-  if (inputCurrencyAmount) {
-    params.set('sellAmount', inputCurrencyAmount)
+    if (inputCurrencyAmount) {
+      params.set('sellAmount', inputCurrencyAmount)
+    }
+
+    if (outputCurrencyAmount) {
+      params.set('buyAmount', outputCurrencyAmount)
+    }
+
+    params.set('orderKind', orderKind || OrderKind.SELL)
+
+    return `${path}?${params.toString()}`
   }
 
-  if (outputCurrencyAmount) {
-    params.set('buyAmount', outputCurrencyAmount)
-  }
-
-  params.set('orderKind', orderKind || OrderKind.SELL)
-
-  return `${path}?${params.toString()}`
+  return path
 }

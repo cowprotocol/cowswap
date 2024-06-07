@@ -70,7 +70,7 @@ export function TradeWidgetLinks({
   })
 
   const menuItems = enabledItems.map((item) => {
-    const routePath = parameterizeTradeRoute(tradeContext, item.route)
+    const routePath = parameterizeTradeRoute(tradeContext, item.route, true)
     const isActive = !!matchPath(location.pathname, routePath.split('?')[0])
 
     const menuItem = (
