@@ -25,8 +25,6 @@ import { useEnoughBalanceAndAllowance } from 'modules/tokens'
 
 import { getPriceQuality } from 'api/gnosisProtocol/api'
 
-import { useVerifiedQuotesEnabled } from '../hooks/featureFlags/useVerifiedQuotesEnabled'
-
 export const TYPED_VALUE_DEBOUNCE_TIME = 350
 export const SWAP_QUOTE_CHECK_INTERVAL = ms`30s` // Every 30s
 const RENEW_FEE_QUOTES_BEFORE_EXPIRATION_TIME = ms`30s` // Will renew the quote if there's less than 30 seconds left for the quote to expire
@@ -40,14 +38,13 @@ type FeeQuoteParams = Omit<LegacyFeeQuoteParams, 'validTo'>
 function wasQuoteCheckedRecently(lastQuoteCheck: number): boolean {
   return lastQuoteCheck + WAITING_TIME_BETWEEN_EQUAL_REQUESTS > Date.now()
 }
+
 /**
  * Returns true if the fee quote expires soon (in less than RENEW_FEE_QUOTES_BEFORE_EXPIRATION_TIME milliseconds)
  */
 function isExpiringSoon(quoteExpirationIsoDate: string, threshold: number): boolean {
   const feeExpirationDate = Date.parse(quoteExpirationIsoDate)
-  const needRefetch = feeExpirationDate <= Date.now() + threshold
-
-  return needRefetch
+  return feeExpirationDate <= Date.now() + threshold
 }
 
 /**
@@ -120,7 +117,6 @@ function isRefetchQuoteRequired(
 
 export function FeesUpdater(): null {
   const { chainId, account } = useWalletInfo()
-  const verifiedQuotesEnabled = useVerifiedQuotesEnabled(chainId)
 
   const { independentField, typedValue: rawTypedValue, recipient } = useSwapState()
   const {
@@ -205,7 +201,7 @@ export function FeesUpdater(): null {
       userAddress: account,
       validFor: deadline,
       isEthFlow,
-      priceQuality: getPriceQuality({ verifyQuote: verifiedQuotesEnabled && enoughBalance }),
+      priceQuality: getPriceQuality({ verifyQuote: enoughBalance }),
       appData: appData?.fullAppData,
       appDataHash: appData?.appDataKeccak256,
     }
@@ -279,7 +275,6 @@ export function FeesUpdater(): null {
     buyTokenAddressInvalid,
     sellTokenAddressInvalid,
     enoughBalance,
-    verifiedQuotesEnabled,
     appData?.fullAppData,
     appData?.appDataKeccak256,
   ])

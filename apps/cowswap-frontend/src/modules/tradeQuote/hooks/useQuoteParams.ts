@@ -14,13 +14,11 @@ import { useEnoughBalanceAndAllowance } from 'modules/tokens'
 import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
 
 import { getPriceQuality } from 'api/gnosisProtocol/api'
-import { useVerifiedQuotesEnabled } from 'common/hooks/featureFlags/useVerifiedQuotesEnabled'
 
 const DEFAULT_QUOTE_TTL = ms`30m` / 1000
 
 export function useQuoteParams(amount: string | null): LegacyFeeQuoteParams | undefined {
   const { chainId, account } = useWalletInfo()
-  const verifiedQuotesEnabled = useVerifiedQuotesEnabled(chainId)
   const appData = useAppData()
 
   const { state } = useDerivedTradeState()
@@ -52,7 +50,7 @@ export function useQuoteParams(amount: string | null): LegacyFeeQuoteParams | un
       toDecimals,
       fromDecimals,
       isEthFlow: false,
-      priceQuality: getPriceQuality({ verifyQuote: verifiedQuotesEnabled && enoughBalance }),
+      priceQuality: getPriceQuality({ verifyQuote: enoughBalance }),
       appData: appData?.fullAppData,
       appDataHash: appData?.appDataKeccak256,
       validFor: DEFAULT_QUOTE_TTL,
@@ -69,7 +67,6 @@ export function useQuoteParams(amount: string | null): LegacyFeeQuoteParams | un
     toDecimals,
     fromDecimals,
     enoughBalance,
-    verifiedQuotesEnabled,
     appData?.fullAppData,
     appData?.appDataKeccak256,
   ])

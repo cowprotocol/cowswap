@@ -23,7 +23,7 @@ import {
   getEstimatedExecutionPrice,
   getOrderMarketPrice,
   getRemainderAmount,
-  isOrderUnfillable,
+  isOrderUnfillable
 } from 'legacy/state/orders/utils'
 import type { LegacyFeeQuoteParams } from 'legacy/state/price/types'
 import { getBestQuote } from 'legacy/utils/price'
@@ -35,14 +35,12 @@ import { getPriceQuality } from 'api/gnosisProtocol/api'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { PRICE_QUOTE_VALID_TO_TIME } from '../../constants/quote'
-import { useVerifiedQuotesEnabled } from '../../hooks/featureFlags/useVerifiedQuotesEnabled'
 
 /**
  * Updater that checks whether pending orders are still "fillable"
  */
 export function UnfillableOrdersUpdater(): null {
   const { chainId, account } = useWalletInfo()
-  const verifiedQuotesEnabled = useVerifiedQuotesEnabled(chainId)
   const updatePendingOrderPrices = useSetAtom(updatePendingOrderPricesAtom)
   const isWindowVisible = useIsWindowVisible()
 
@@ -138,7 +136,7 @@ export function UnfillableOrdersUpdater(): null {
           amount: currencyAmount,
           balances: balancesRef.current,
         })
-        const verifiedQuote = verifiedQuotesEnabled && enoughBalance
+        const verifiedQuote = enoughBalance
 
         _getOrderPrice(chainId, order, verifiedQuote, strategy)
           .then((quote) => {
@@ -165,15 +163,7 @@ export function UnfillableOrdersUpdater(): null {
     } finally {
       isUpdating.current = false
     }
-  }, [
-    account,
-    chainId,
-    strategy,
-    updateIsUnfillableFlag,
-    isWindowVisible,
-    updatePendingOrderPrices,
-    verifiedQuotesEnabled,
-  ])
+  }, [account, chainId, strategy, updateIsUnfillableFlag, isWindowVisible, updatePendingOrderPrices])
 
   const updatePendingRef = useRef(updatePending)
   updatePendingRef.current = updatePending
