@@ -5,6 +5,8 @@ export interface TradeUrlParams {
   readonly chainId: string | undefined
   readonly inputCurrencyId: string | undefined
   readonly outputCurrencyId: string | undefined
+  readonly inputCurrencyAmount: string | undefined
+  readonly outputCurrencyAmount: string | undefined
 }
 
 export interface TradeRawState {

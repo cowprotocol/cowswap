@@ -7,11 +7,23 @@ import { RoutesValues } from 'common/constants/routes'
  * /limit/_/DAI
  */
 export function parameterizeTradeRoute(
-  { chainId, inputCurrencyId, outputCurrencyId }: TradeUrlParams,
+  { chainId, inputCurrencyId, outputCurrencyId, inputCurrencyAmount, outputCurrencyAmount }: TradeUrlParams,
   route: RoutesValues
 ): string {
-  return route
+  const path = route
     .replace('/:chainId?', chainId ? `/${encodeURIComponent(chainId)}` : '')
     .replace('/:inputCurrencyId?', inputCurrencyId ? `/${encodeURIComponent(inputCurrencyId)}` : '/_')
     .replace('/:outputCurrencyId?', outputCurrencyId ? `/${encodeURIComponent(outputCurrencyId)}` : '')
+
+  const params = new URLSearchParams()
+
+  if (inputCurrencyAmount) {
+    params.set('sellAmount', inputCurrencyAmount)
+  }
+
+  if (outputCurrencyAmount) {
+    params.set('buyAmount', outputCurrencyAmount)
+  }
+
+  return `${path}?${params.toString()}`
 }
