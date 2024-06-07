@@ -78,12 +78,12 @@ const NAV_ITEMS: MenuItem[] = [
     label: 'More',
     children: [
       {
-        href: 'https://cow.fi/',
+        href: 'https://cow.fi/cow-protocol',
         label: 'CoW Protocol',
         external: true,
       },
       {
-        href: 'https://cow.fi/',
+        href: 'https://cow.fi/cow-amm',
         label: 'CoW AMM',
         external: true,
       },

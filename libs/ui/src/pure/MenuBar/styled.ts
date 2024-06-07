@@ -286,7 +286,10 @@ export const DropdownContent = styled.div<DropdownContentProps>`
       left: initial;
       background: transparent;
       backdrop-filter: none;
-      padding: 0 0 0 10px;
+      padding: 6px;
+      margin: 0 0 16px;
+      background: var(--hoverBackground);
+      border-radius: 12px;
     `}
 
   &::before {
@@ -608,7 +611,9 @@ export const RightAligned = styled.div<{ mobileMode?: boolean; flexFlow?: string
     `}
 `
 
-export const GlobalSettingsButton = styled.button`
+export const GlobalSettingsButton = styled.button<{
+  onClick?: () => void
+}>`
   --size: 42px;
 
   display: flex;

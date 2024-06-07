@@ -23,51 +23,19 @@ const NAV_ITEMS: MenuItem[] = [
     children: [
       {
         label: 'CoW Swap',
-        children: [
-          { label: 'About', href: '/cow-swap' },
-          { label: 'CoW Swap for DAOs', href: '#' },
-          {
-            label: 'Trade on CoW Swap',
-            href: 'https://swap.cow.fi/#/1/swap/USDC/COW',
-            external: true,
-            isButton: true,
-            bgColor: '#012F7A',
-            color: '#65D9FF',
-          },
-        ],
+        href: '/cow-swap',
       },
       {
         label: 'CoW Protocol',
-        children: [
-          { label: 'About CoW Protocol', href: '/cow-protocol' },
-          { label: 'CoW Explorer', href: 'https://explorer.cow.fi/', external: true },
-          { label: 'CoW Widget', href: '/widget' },
-          {
-            label: 'Build with CoW Protocol',
-            href: 'https://docs.cow.fi/cow-protocol',
-            external: true,
-            isButton: true,
-          },
-        ],
+        href: '/cow-protocol',
       },
       {
         label: 'CoW AMM',
-        children: [
-          { label: 'About CoW AMM', href: '/cow-amm' },
-          {
-            label: 'Deploy Liquidity with CoW AMM',
-            href: 'https://deploy-cow-amm.bleu.fi/',
-            external: true,
-            isButton: true,
-          },
-        ],
+        href: '/cow-amm',
       },
       {
         label: 'MEV Blocker',
-        children: [
-          { label: 'About MEV Blocker', href: '/mev-blocker' },
-          { label: 'Use MEV Blocker', href: '/mev-blocker#rpc', isButton: true },
-        ],
+        href: '/mev-blocker',
       },
     ],
   },
@@ -95,7 +63,7 @@ const NAV_ADDITIONAL_BUTTONS = [
     bgColor: '#194D05',
     color: '#BCEC79',
   },
-  { label: 'Use MEV Blocker', href: '/mev-blocker#rpc', isButton: true, bgColor: '#EC4612', color: '#FEE7CF' },
+  // { label: 'Use MEV Blocker', href: '/mev-blocker#rpc', isButton: true, bgColor: '#EC4612', color: '#FEE7CF' },
   {
     label: 'Trade on CoW Swap',
     href: 'https://swap.cow.fi/#/1/swap/USDC/COW',
