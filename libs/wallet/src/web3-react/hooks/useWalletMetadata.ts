@@ -3,7 +3,6 @@ import { useMemo } from 'react'
 import { useWeb3React } from '@web3-react/core'
 
 import { useSafeAppsSdk } from './useSafeAppsSdk'
-import { useSafeAppsSdkInfo } from './useSafeAppsSdkInfo'
 
 import { useGnosisSafeInfo, useSelectedEip6963ProviderInfo } from '../../api/hooks'
 import { ConnectionType } from '../../api/types'
@@ -125,10 +124,9 @@ export function useIsSafeApp(): boolean {
  * regardless of the connection method (WalletConnect or inside Safe as an App)
  */
 export function useIsSafeWallet(): boolean {
-  const { safeAddress } = useSafeAppsSdkInfo() || {}
   const hasSafeInfo = !!useGnosisSafeInfo()
 
-  return !!safeAddress || hasSafeInfo
+  return hasSafeInfo
 }
 
 /**

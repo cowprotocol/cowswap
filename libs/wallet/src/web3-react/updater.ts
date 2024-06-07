@@ -10,14 +10,13 @@ import { useWeb3React } from '@web3-react/core'
 import ms from 'ms.macro'
 
 import { useIsSmartContractWallet } from './hooks/useIsSmartContractWallet'
-import { useSafeAppsSdkInfo } from './hooks/useSafeAppsSdkInfo'
+import { useSafeAppsSdk } from './hooks/useSafeAppsSdk'
 import { useWalletMetaData } from './hooks/useWalletMetadata'
 
 import { gnosisSafeInfoAtom, walletDetailsAtom, walletInfoAtom } from '../api/state'
 import { GnosisSafeInfo, WalletDetails, WalletInfo } from '../api/types'
 import { getWalletType } from '../api/utils/getWalletType'
 import { getWalletTypeLabel } from '../api/utils/getWalletTypeLabel'
-import { useSafeAppsSdk } from './hooks/useSafeAppsSdk'
 
 const SAFE_INFO_UPDATE_INTERVAL = ms`5s`
 
@@ -67,27 +66,21 @@ function _useSafeInfo(walletInfo: WalletInfo): GnosisSafeInfo | undefined {
   const { account, chainId } = walletInfo
   const [safeInfo, setSafeInfo] = useState<GnosisSafeInfo>()
   const safeAppsSdk = useSafeAppsSdk()
+
+  const SAFE_INFO_UPDATE_INTERVAL = ms`30s`
+  const SAFE_APPS_SDK_INFO_UPDATE_INTERVAL = ms`5s` // Adjust this value as needed
+
   useEffect(() => {
-    const update = () => {
+    const updateSafeInfo = () => {
       if (chainId && account && provider) {
         getSafeInfo(chainId, account, provider)
-          .then(async (_safeInfo) => {
-            if (safeAppsSdk) {
-              const appsSdkSafeInfo = await safeAppsSdk.safe.getInfo()
-              setSafeInfo({
-                isReadOnly: appsSdkSafeInfo.isReadOnly,
-                chainId,
-                ..._safeInfo,
-              })
-            } else {
-              setSafeInfo({
-                isReadOnly: false,
-                chainId,
-                ..._safeInfo,
-              })
-            }
-            }
-          )
+          .then((_safeInfo) => {
+            setSafeInfo((prevSafeInfo) => ({
+              ...prevSafeInfo,
+              chainId,
+              ..._safeInfo,
+            }))
+          })
           .catch(() => {
             console.debug(`[WalletUpdater] Address ${account} is likely not a Safe (API didn't return Safe info)`)
             setSafeInfo(undefined)
@@ -97,11 +90,30 @@ function _useSafeInfo(walletInfo: WalletInfo): GnosisSafeInfo | undefined {
       }
     }
 
-    const interval = setInterval(update, SAFE_INFO_UPDATE_INTERVAL)
+    const updateSafeAppsSdkInfo = async () => {
+      if (safeAppsSdk) {
+        const appsSdkSafeInfo = await safeAppsSdk.safe.getInfo()
+        setSafeInfo((prevSafeInfo) => {
+          // only update the isReadyOnly flag if we have safe info returned from the api kit
+          if (!prevSafeInfo) return
+          return {
+            ...prevSafeInfo,
+            isReadOnly: appsSdkSafeInfo.isReadOnly,
+          }
+        })
+      }
+    }
 
-    update()
+    const safeInfoInterval = setInterval(updateSafeInfo, SAFE_INFO_UPDATE_INTERVAL)
+    const safeAppsSdkInfoInterval = setInterval(updateSafeAppsSdkInfo, SAFE_APPS_SDK_INFO_UPDATE_INTERVAL)
 
-    return () => clearInterval(interval)
+    updateSafeInfo()
+    updateSafeAppsSdkInfo()
+
+    return () => {
+      clearInterval(safeInfoInterval)
+      clearInterval(safeAppsSdkInfoInterval)
+    }
   }, [setSafeInfo, chainId, account, provider, safeAppsSdk])
 
   return safeInfo
@@ -110,6 +122,7 @@ function _useSafeInfo(walletInfo: WalletInfo): GnosisSafeInfo | undefined {
 interface WalletUpdaterProps {
   standaloneMode?: boolean
 }
+
 export function WalletUpdater({ standaloneMode }: WalletUpdaterProps) {
   const walletInfo = _useWalletInfo()
   const walletDetails = _useWalletDetails(walletInfo.account, standaloneMode)
