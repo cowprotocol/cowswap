@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 
 import { MINIMUM_ETH_FLOW_SLIPPAGE } from '@cowprotocol/common-const'
 import { loadJsonFromLocalStorage, setJsonToLocalStorage } from '@cowprotocol/common-utils'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { Percent } from '@uniswap/sdk-core'
 
 import { useSetUserSlippageTolerance, useUserSlippageTolerance } from 'legacy/state/user/hooks'
@@ -16,6 +17,8 @@ export function EthFlowSlippageUpdater() {
   const currentSlippage = useUserSlippageTolerance()
   const setUserSlippageTolerance = useSetUserSlippageTolerance()
   const isEoaEthFlow = useIsEoaEthFlow()
+  const { chainId } = useWalletInfo()
+  const minEthFlowSlippage = MINIMUM_ETH_FLOW_SLIPPAGE[chainId]
 
   // On updater mount, load previous slippage from localStorage and set it
   useEffect(() => {
@@ -48,15 +51,13 @@ export function EthFlowSlippageUpdater() {
 
       if (
         currentSlippage === 'auto' ||
-        (!currentSlippage.greaterThan(MINIMUM_ETH_FLOW_SLIPPAGE) && !currentSlippage.equalTo(MINIMUM_ETH_FLOW_SLIPPAGE))
+        (!currentSlippage.greaterThan(minEthFlowSlippage) && !currentSlippage.equalTo(minEthFlowSlippage))
       ) {
         // If current slippage is auto or if it's smaller than ETH flow slippage, update it
 
         // If the former ethFlow slippage was saved, use that. Otherwise pick the minimum
         const newSlippage =
-          ethFlow !== 'auto' && ethFlow && ethFlow.greaterThan(MINIMUM_ETH_FLOW_SLIPPAGE)
-            ? ethFlow
-            : MINIMUM_ETH_FLOW_SLIPPAGE
+          ethFlow !== 'auto' && ethFlow && ethFlow.greaterThan(minEthFlowSlippage) ? ethFlow : minEthFlowSlippage
 
         // Update the global state
         setUserSlippageTolerance(newSlippage)
@@ -73,7 +74,7 @@ export function EthFlowSlippageUpdater() {
       // Disable the flag
       wasEthFlowActive.current = false
     }
-  }, [setUserSlippageTolerance, isEoaEthFlow, currentSlippage])
+  }, [setUserSlippageTolerance, isEoaEthFlow, currentSlippage, minEthFlowSlippage])
 
   return null
 }

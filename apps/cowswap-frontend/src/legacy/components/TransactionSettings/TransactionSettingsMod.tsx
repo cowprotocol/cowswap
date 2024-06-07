@@ -1,8 +1,8 @@
 import { useContext, useState } from 'react'
 
 import { orderExpirationTimeAnalytics, slippageToleranceAnalytics } from '@cowprotocol/analytics'
-import { DEFAULT_DEADLINE_FROM_NOW } from '@cowprotocol/common-const'
 import {
+  DEFAULT_DEADLINE_FROM_NOW,
   DEFAULT_SLIPPAGE_BPS,
   HIGH_ETH_FLOW_SLIPPAGE_BPS,
   HIGH_SLIPPAGE_BPS,
@@ -15,9 +15,7 @@ import {
   MINIMUM_ORDER_VALID_TO_TIME_SECONDS,
 } from '@cowprotocol/common-const'
 import { getWrappedToken } from '@cowprotocol/common-utils'
-import { HelpTooltip, RowBetween, RowFixed } from '@cowprotocol/ui'
-import { FancyButton } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
+import { FancyButton, HelpTooltip, RowBetween, RowFixed, UI } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Percent } from '@uniswap/sdk-core'
 
@@ -65,10 +63,12 @@ export const Input = styled.input`
   font-size: 16px;
   width: auto;
   outline: none;
+
   &::-webkit-outer-spin-button,
   &::-webkit-inner-spin-button {
     -webkit-appearance: none;
   }
+
   color: ${({ theme, color }) => (color === 'red' ? theme.red1 : `var(${UI.COLOR_TEXT})`)};
   text-align: right;
 `
@@ -79,6 +79,7 @@ export const OptionCustom = styled(FancyButton)<{ active?: boolean; warning?: bo
   padding: 0 0.75rem;
   flex: 1;
   border: ${({ theme, active, warning }) => active && `1px solid ${warning ? theme.red1 : theme.primary1}`};
+
   :hover {
     border: ${({ theme, active, warning }) =>
       active && `1px solid ${warning ? darken(theme.red1, 0.1) : darken(theme.primary1, 0.1)}`};
@@ -87,7 +88,7 @@ export const OptionCustom = styled(FancyButton)<{ active?: boolean; warning?: bo
   input {
     width: 100%;
     height: 100%;
-    border: 0px;
+    border: 0;
     border-radius: 2rem;
   }
 `
@@ -121,14 +122,17 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
   const [deadlineInput, setDeadlineInput] = useState('')
   const [deadlineError, setDeadlineError] = useState<DeadlineError | false>(false)
 
+  const minEthFlowSlippageBps = MINIMUM_ETH_FLOW_SLIPPAGE_BPS[chainId]
+  const minEthFlowSlippage = MINIMUM_ETH_FLOW_SLIPPAGE[chainId]
+
   function parseSlippageInput(value: string) {
     // populate what the user typed and clear the error
     setSlippageInput(value)
     setSlippageError(false)
 
     if (value.length === 0) {
-      slippageToleranceAnalytics('Default', isEoaEthFlow ? MINIMUM_ETH_FLOW_SLIPPAGE_BPS : DEFAULT_SLIPPAGE_BPS)
-      setUserSlippageTolerance(isEoaEthFlow ? MINIMUM_ETH_FLOW_SLIPPAGE : 'auto')
+      slippageToleranceAnalytics('Default', isEoaEthFlow ? minEthFlowSlippageBps : DEFAULT_SLIPPAGE_BPS)
+      setUserSlippageTolerance(isEoaEthFlow ? minEthFlowSlippage : 'auto')
     } else {
       let v = value
 
@@ -144,10 +148,10 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
 
       if (
         !Number.isInteger(parsed) ||
-        parsed < (isEoaEthFlow ? MINIMUM_ETH_FLOW_SLIPPAGE_BPS : MIN_SLIPPAGE_BPS) ||
+        parsed < (isEoaEthFlow ? minEthFlowSlippageBps : MIN_SLIPPAGE_BPS) ||
         parsed > MAX_SLIPPAGE_BPS
       ) {
-        slippageToleranceAnalytics('Default', isEoaEthFlow ? MINIMUM_ETH_FLOW_SLIPPAGE_BPS : DEFAULT_SLIPPAGE_BPS)
+        slippageToleranceAnalytics('Default', isEoaEthFlow ? minEthFlowSlippageBps : DEFAULT_SLIPPAGE_BPS)
         setUserSlippageTolerance('auto')
         if (v !== '.') {
           setSlippageError(SlippageError.InvalidInput)
@@ -161,7 +165,7 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
 
   const tooLow =
     userSlippageTolerance !== 'auto' &&
-    userSlippageTolerance.lessThan(new Percent(isEoaEthFlow ? MINIMUM_ETH_FLOW_SLIPPAGE_BPS : LOW_SLIPPAGE_BPS, 10_000))
+    userSlippageTolerance.lessThan(new Percent(isEoaEthFlow ? minEthFlowSlippageBps : LOW_SLIPPAGE_BPS, 10_000))
   const tooHigh =
     userSlippageTolerance !== 'auto' &&
     userSlippageTolerance.greaterThan(
@@ -213,7 +217,7 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
             text={
               // <Trans>Your transaction will revert if the price changes unfavorably by more than this percentage.</Trans>
               isEoaEthFlow
-                ? getNativeSlippageTooltip([nativeCurrency.symbol, getWrappedToken(nativeCurrency).symbol])
+                ? getNativeSlippageTooltip(chainId, [nativeCurrency.symbol, getWrappedToken(nativeCurrency).symbol])
                 : getNonNativeSlippageTooltip()
             }
           />
@@ -254,7 +258,7 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
                     // Set the slippage to minimum allowed
                     // Otherwise it'll default to last value used
                     if (curr && isEoaEthFlow) {
-                      setUserSlippageTolerance(MINIMUM_ETH_FLOW_SLIPPAGE)
+                      setUserSlippageTolerance(minEthFlowSlippage)
                     }
                     return false
                   })
@@ -277,8 +281,7 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
             {slippageError ? (
               <Trans>
                 Enter slippage percentage between{' '}
-                {isEoaEthFlow ? MINIMUM_ETH_FLOW_SLIPPAGE.toFixed(0) : MIN_SLIPPAGE_BPS / 100}% and{' '}
-                {MAX_SLIPPAGE_BPS / 100}%
+                {isEoaEthFlow ? minEthFlowSlippage.toFixed(1) : MIN_SLIPPAGE_BPS / 100}% and {MAX_SLIPPAGE_BPS / 100}%
               </Trans>
             ) : tooLow ? (
               <Trans>Your transaction may expire</Trans>
