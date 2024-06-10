@@ -124,9 +124,7 @@ export function useIsSafeApp(): boolean {
  * regardless of the connection method (WalletConnect or inside Safe as an App)
  */
 export function useIsSafeWallet(): boolean {
-  const hasSafeInfo = !!useGnosisSafeInfo()
-
-  return hasSafeInfo
+  return !!useGnosisSafeInfo()
 }
 
 /**

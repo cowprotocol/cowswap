@@ -18,7 +18,8 @@ import { GnosisSafeInfo, WalletDetails, WalletInfo } from '../api/types'
 import { getWalletType } from '../api/utils/getWalletType'
 import { getWalletTypeLabel } from '../api/utils/getWalletTypeLabel'
 
-const SAFE_INFO_UPDATE_INTERVAL = ms`5s`
+const SAFE_INFO_UPDATE_INTERVAL = ms`30s`
+const SAFE_APPS_SDK_INFO_UPDATE_INTERVAL = ms`5s`
 
 // Smart contract wallets are filtered out by default, no need to add them to this list
 const UNSUPPORTED_WC_WALLETS = new Set(['DeFi Wallet', 'WallETH'])
@@ -61,14 +62,13 @@ function _useWalletDetails(account?: string, standaloneMode?: boolean): WalletDe
   }, [isSmartContractWallet, walletName, icon, ensName])
 }
 
+
 function _useSafeInfo(walletInfo: WalletInfo): GnosisSafeInfo | undefined {
   const { provider } = useWeb3React()
   const { account, chainId } = walletInfo
   const [safeInfo, setSafeInfo] = useState<GnosisSafeInfo>()
   const safeAppsSdk = useSafeAppsSdk()
 
-  const SAFE_INFO_UPDATE_INTERVAL = ms`30s`
-  const SAFE_APPS_SDK_INFO_UPDATE_INTERVAL = ms`5s` // Adjust this value as needed
 
   useEffect(() => {
     const updateSafeInfo = () => {
@@ -90,7 +90,7 @@ function _useSafeInfo(walletInfo: WalletInfo): GnosisSafeInfo | undefined {
       }
     }
 
-    const updateSafeAppsSdkInfo = async () => {
+    const updateIsReadOnlyFromSafeAppsSdkInfo = async () => {
       if (safeAppsSdk) {
         const appsSdkSafeInfo = await safeAppsSdk.safe.getInfo()
         setSafeInfo((prevSafeInfo) => {
@@ -105,10 +105,10 @@ function _useSafeInfo(walletInfo: WalletInfo): GnosisSafeInfo | undefined {
     }
 
     const safeInfoInterval = setInterval(updateSafeInfo, SAFE_INFO_UPDATE_INTERVAL)
-    const safeAppsSdkInfoInterval = setInterval(updateSafeAppsSdkInfo, SAFE_APPS_SDK_INFO_UPDATE_INTERVAL)
+    const safeAppsSdkInfoInterval = setInterval(updateIsReadOnlyFromSafeAppsSdkInfo, SAFE_APPS_SDK_INFO_UPDATE_INTERVAL)
 
     updateSafeInfo()
-    updateSafeAppsSdkInfo()
+    updateIsReadOnlyFromSafeAppsSdkInfo()
 
     return () => {
       clearInterval(safeInfoInterval)
