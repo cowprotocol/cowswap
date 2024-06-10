@@ -28,6 +28,8 @@ export const TEST_ADDRESS_NEVER_USE = new Wallet(INTEGRATION_TEST_PRIVATE_KEY).a
 // Redefined bridge to fix a supper annoying issue making some contract calls to fail
 //  See https://github.com/ethers-io/ethers.js/issues/1683
 class CustomizedBridge extends Eip1193Bridge {
+  autoConnect = true
+
   chainId = CHAIN_ID
 
   async sendAsync(...args: any[]) {
