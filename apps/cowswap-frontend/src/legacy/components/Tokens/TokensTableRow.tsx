@@ -62,7 +62,14 @@ export const TokensTableRow = ({
       const inputCurrencyId = areThereTokensWithSameSymbol(symbol) ? address : symbol
 
       return parameterizeTradeRoute(
-        { chainId: chainId.toString(), inputCurrencyId, outputCurrencyId: undefined },
+        {
+          chainId: chainId.toString(),
+          inputCurrencyId,
+          outputCurrencyId: undefined,
+          inputCurrencyAmount: undefined,
+          outputCurrencyAmount: undefined,
+          orderKind: undefined,
+        },
         Routes.SWAP
       )
     },

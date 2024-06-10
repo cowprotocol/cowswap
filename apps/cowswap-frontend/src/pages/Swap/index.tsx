@@ -46,7 +46,17 @@ function SwapPageRedirect() {
   searchParams.delete('outputCurrency')
   searchParams.delete('chain')
 
-  const pathname = parameterizeTradeRoute({ chainId: String(chainId), inputCurrencyId, outputCurrencyId }, Routes.SWAP)
+  const pathname = parameterizeTradeRoute(
+    {
+      chainId: String(chainId),
+      inputCurrencyId,
+      outputCurrencyId,
+      inputCurrencyAmount: undefined,
+      outputCurrencyAmount: undefined,
+      orderKind: undefined,
+    },
+    Routes.SWAP
+  )
 
   return <Navigate to={{ ...location, pathname, search: searchParams.toString() }} />
 }
