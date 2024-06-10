@@ -59,9 +59,15 @@ const cacheMessages = (event: MessageEvent) => {
   window.open = function (...args) {
     const [href = '', target = '', rel = ''] = args
 
-    postMessageToWindow(top, WidgetMethodsEmit.INTERCEPT_WINDOW_OPEN, { href, target, rel })
+    try {
+      return originalWinOpen.apply(this, args)
+    } catch (e) {
+      console.log('Error in window.open', e)
 
-    return originalWinOpen.apply(this, args)
+      postMessageToWindow(top, WidgetMethodsEmit.INTERCEPT_WINDOW_OPEN, { href, target, rel })
+
+      return null
+    }
   }
 
   document.body.addEventListener('click', (event) => {
