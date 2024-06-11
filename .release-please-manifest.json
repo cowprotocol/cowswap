@@ -1,6 +1,6 @@
 {
   "apps/cowswap-frontend": "1.72.1",
-  "apps/explorer": "2.30.0",
+  "apps/explorer": "2.30.1",
   "libs/permit-utils": "0.3.0",
   "libs/widget-lib": "0.12.0",
   "libs/widget-react": "0.9.0",
