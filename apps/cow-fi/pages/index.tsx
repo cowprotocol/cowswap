@@ -154,12 +154,12 @@ export default function Page({ siteConfigData }: PageProps) {
 
         <ContainerCard bgColor={'transparent'}>
           <ContainerCardSection>
-            <SectionTitleWrapper maxWidth={900} gap={42}>
+            <SectionTitleWrapper maxWidth={900}>
               <SectionTitleIcon size={200}>
                 <SVG src={IMG_ICON_BULB_COW} />
               </SectionTitleIcon>
               <SectionTitleText>Innovation in action</SectionTitleText>
-              <SectionTitleDescription fontSize={23} color={Color.neutral30}>
+              <SectionTitleDescription color={Color.neutral30}>
                 CoW DAO is famous for pioneering technology at the forefront of intents, MEV protection, and more.{' '}
                 <br />
                 Whether you're a crypto beginner or an Ethereum OG, you can learn more about these important topics in
@@ -219,7 +219,7 @@ export default function Page({ siteConfigData }: PageProps) {
 
         <ContainerCard bgColor={Color.neutral90} color={Color.neutral10} touchFooter>
           <ContainerCardSection>
-            <SectionTitleWrapper padding="150px 0 0" maxWidth={900} gap={54}>
+            <SectionTitleWrapper maxWidth={900}>
               <SectionTitleIcon size={200}>
                 <SVG src={IMG_ICON_GRANTS_CARTON} />
               </SectionTitleIcon>
