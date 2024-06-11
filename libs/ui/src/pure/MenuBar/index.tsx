@@ -87,7 +87,10 @@ interface DropdownProps {
   isOpen: boolean
   content: DropdownMenuContent
   onTrigger: () => void
+  closeDropdown: () => void
   interaction: 'hover' | 'click'
+  mobileMode?: boolean
+  isNavItemDropdown?: boolean
 }
 
 interface NavItemProps {
@@ -112,6 +115,7 @@ const NavItem = ({ item, mobileMode = false, openDropdown, setOpenDropdown }: Na
       interaction="click" // Ensure it's 'click' for both mobile and desktop
       mobileMode={mobileMode}
       isNavItemDropdown={true}
+      closeDropdown={() => setOpenDropdown(null)}
     />
   ) : (
     <RootNavItem
@@ -205,7 +209,12 @@ const DropdownContentItem: React.FC<{ item: DropdownMenuItem; theme: CowSwapThem
           <SVG src={IMG_ICON_CARRET_DOWN} />
         </StyledDropdownContentItem>
         {isChildrenVisible && (
-          <DropdownContentWrapper isThirdLevel content={{ title: undefined, items: item.children }} mobileMode={true} />
+          <DropdownContentWrapper
+            isThirdLevel
+            content={{ title: undefined, items: item.children }}
+            mobileMode={true}
+            closeDropdown={closeMenu}
+          />
         )}
       </>
     )
@@ -283,13 +292,14 @@ const NavDaoTrigger: React.FC<{
   )
 }
 
-const GenericDropdown: React.FC<DropdownProps & { mobileMode?: boolean; isNavItemDropdown?: boolean }> = ({
+const GenericDropdown: React.FC<DropdownProps> = ({
   isOpen,
   content,
   onTrigger,
   interaction,
   mobileMode,
   isNavItemDropdown,
+  closeDropdown,
 }) => {
   if (!content.title) {
     throw new Error('Dropdown content must have a title')
@@ -313,7 +323,12 @@ const GenericDropdown: React.FC<DropdownProps & { mobileMode?: boolean; isNavIte
         {content.items && <SVG src={IMG_ICON_CARRET_DOWN} />}
       </RootNavItem>
       {isOpen && (
-        <DropdownContentWrapper content={content} mobileMode={mobileMode} isNavItemDropdown={isNavItemDropdown} />
+        <DropdownContentWrapper
+          content={content}
+          mobileMode={mobileMode}
+          isNavItemDropdown={isNavItemDropdown}
+          closeDropdown={closeDropdown}
+        />
       )}
     </DropdownMenu>
   )
@@ -325,6 +340,7 @@ interface DropdownContentWrapperProps {
   isVisible?: boolean
   mobileMode?: boolean
   isNavItemDropdown?: boolean
+  closeDropdown: () => void
 }
 
 const DropdownContentWrapper: React.FC<DropdownContentWrapperProps> = ({
@@ -333,6 +349,7 @@ const DropdownContentWrapper: React.FC<DropdownContentWrapperProps> = ({
   isVisible = true,
   mobileMode = false,
   isNavItemDropdown = false,
+  closeDropdown,
 }) => {
   const [visibleThirdLevel, setVisibleThirdLevel] = useState<number | null>(null)
 
@@ -343,6 +360,7 @@ const DropdownContentWrapper: React.FC<DropdownContentWrapperProps> = ({
   }
 
   const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    closeDropdown()
     e.stopPropagation()
   }
 
@@ -396,6 +414,7 @@ const DropdownContentWrapper: React.FC<DropdownContentWrapperProps> = ({
                 isVisible={visibleThirdLevel === index}
                 mobileMode={mobileMode}
                 isNavItemDropdown={isNavItemDropdown}
+                closeDropdown={closeDropdown}
               />
             )}
           </StyledDropdownContentItem>
