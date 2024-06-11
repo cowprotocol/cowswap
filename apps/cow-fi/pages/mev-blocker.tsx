@@ -264,7 +264,7 @@ export default function Page({ siteConfigData }: PageProps) {
                   <TopicCard contentAlign={'left'} bgColor={'#EC4612'} padding={'32px'} asProp="div">
                     <TopicCardInner contentAlign="left">
                       <TopicDescription fontSize={28} color={'#FEE7CF'}>
-                        Full protection from frontrunning and sandwich attacks on all types of transactions
+                        Protection from frontrunning and sandwich attacks on all types of transactions
                       </TopicDescription>
                     </TopicCardInner>
                     <TopicImage

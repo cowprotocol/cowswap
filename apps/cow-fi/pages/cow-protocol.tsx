@@ -152,7 +152,7 @@ export default function Page({ siteConfigData }: PageProps) {
               </SectionTitleIcon>
               <SectionTitleText>The leading intents-based DEX aggregation protocol</SectionTitleText>
               <SectionTitleDescription maxWidth={900} color={Color.neutral50}>
-                CoW Swap leverages intents, the largest solver network in DeFi, and batch auctions to bring
+                CoW Protocol leverages intents, the largest solver network in DeFi, and batch auctions to bring
                 surplus-capturing, MEV-protected trades to users
               </SectionTitleDescription>
             </SectionTitleWrapper>
@@ -561,9 +561,9 @@ export default function Page({ siteConfigData }: PageProps) {
                   <TopicTitle fontSize={38} color={Color.neutral100}>
                     For developers
                   </TopicTitle>
-                  <TopicDescription fontSize={21} color="#F996EE">
+                  <TopicDescription fontSize={21} color="#F996EE" minHeight={170}>
                     As an open-source protocol, building on top of CoW Protocol is permissionless. Thanks to
-                    comprehensive documentation and live coding tutorials, integrating the protocol is easy.
+                    comprehensive documentation and live coding tutorials, integrating the protocol is easy
                   </TopicDescription>
                   <TopicButton
                     bgColor="#ED60E9"
@@ -586,7 +586,7 @@ export default function Page({ siteConfigData }: PageProps) {
                   <TopicTitle fontSize={38} color={Color.neutral100}>
                     For DeFi projects
                   </TopicTitle>
-                  <TopicDescription fontSize={21} color="#F996EE">
+                  <TopicDescription fontSize={21} color="#F996EE" minHeight={170}>
                     Don't need overly-custom trading logic? The CoW Protocol widget is the easiest way to integrate
                     swaps, twaps, and limit orders directly into your project site.
                   </TopicDescription>
@@ -604,7 +604,7 @@ export default function Page({ siteConfigData }: PageProps) {
                   <TopicTitle fontSize={38} color={Color.neutral100}>
                     For anyone
                   </TopicTitle>
-                  <TopicDescription fontSize={21} color="#F996EE">
+                  <TopicDescription fontSize={21} color="#F996EE" minHeight={170}>
                     The CoW DAO Grants program has awarded over $100,000 in grants to innovators that build public DeFi
                     applications with CoW Protocol.
                   </TopicDescription>
@@ -635,8 +635,8 @@ export default function Page({ siteConfigData }: PageProps) {
               </SectionTitleIcon>
               <SectionTitleText textAlign="center">Want to build a solver?</SectionTitleText>
               <SectionTitleDescription fontSize={28} color={Color.neutral30}>
-                Solvers are the backbone of CoW Protocol. In a nutshell, solvers are optimization algorithms that find
-                CoW Protocol users the best possible settlements for their trade intents.
+                Solvers are the backbone of CoW Protocol. In a nutshell, solvers are optimization algorithms that
+                compete to find CoW Protocol users the best possible settlements for their trade intents.
                 <br />
                 <br />
                 Advanced solver teams can earn hundreds of thousands of dollars per year by winning batch auctions

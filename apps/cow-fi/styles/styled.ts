@@ -163,6 +163,7 @@ export const TopicList = styled.div<{
   width: 100%;
   max-width: ${({ maxWidth }) => (maxWidth ? `${maxWidth}px` : '100%')};
   margin: ${({ margin }) => margin || '0 auto'};
+  overflow-x: auto;
 
   ${Media.upToMedium()} {
     grid-template-columns: ${({ columnsMobile }) => `repeat(${columnsMobile || 1}, 1fr)`};
@@ -314,6 +315,8 @@ export const TopicDescription = styled.p<{
   fontWeight?: number
   color?: string
   margin?: string
+  minHeight?: number
+  minHeightMobile?: number
 }>`
   font-size: ${({ fontSize }) => fontSize || 16}px;
   color: ${({ color }) => color || 'inherit'};
@@ -321,9 +324,11 @@ export const TopicDescription = styled.p<{
   line-height: 1.4;
   margin: ${({ margin }) => margin || '16px 0'};
   text-align: inherit;
+  min-height: ${({ minHeight }) => `${minHeight}px` || 'initial'};
 
   ${Media.upToMedium()} {
     font-size: ${({ fontSizeMobile }) => fontSizeMobile || 16}px;
+    min-height: ${({ minHeightMobile }) => `${minHeightMobile}px` || 'initial'};
   }
 
   > table,
