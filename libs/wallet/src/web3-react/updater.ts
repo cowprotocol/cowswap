@@ -22,8 +22,8 @@ import { getWalletTypeLabel } from '../api/utils/getWalletTypeLabel'
 const SAFE_INFO_LONG_INTERVAL = ms`30s`
 // used for calls that don't require on-chain interactions
 const SAFE_INFO_SHORT_INTERVAL = ms`5s`
-let shortSafeInfoInterval: NodeJS.Timeout;
-let longSafeInfoInterval: NodeJS.Timeout;
+let shortSafeInfoInterval: NodeJS.Timeout | null
+let longSafeInfoInterval: NodeJS.Timeout | null
 
 // Smart contract wallets are filtered out by default, no need to add them to this list
 const UNSUPPORTED_WC_WALLETS = new Set(['DeFi Wallet', 'WallETH'])
@@ -65,7 +65,6 @@ function _useWalletDetails(account?: string, standaloneMode?: boolean): WalletDe
     }
   }, [isSmartContractWallet, walletName, icon, ensName])
 }
-
 
 function _useSafeInfo(walletInfo: WalletInfo): GnosisSafeInfo | undefined {
   const { provider } = useWeb3React()
@@ -113,12 +112,12 @@ function _useSafeInfo(walletInfo: WalletInfo): GnosisSafeInfo | undefined {
 
               // Being here means that we don't run in an iframe over Safe's AppCommunicator,
               // so we need to slow down the interval to not spam the RPC
-              clearInterval(shortSafeInfoInterval);
-              longSafeInfoInterval = setInterval(updateSafeInfo, SAFE_INFO_LONG_INTERVAL);
+              clearInterval(shortSafeInfoInterval !== null ? shortSafeInfoInterval : undefined)
+              longSafeInfoInterval = setInterval(updateSafeInfo, SAFE_INFO_LONG_INTERVAL)
             })
             .catch(() => {
               console.debug(`[WalletUpdater] Address ${account} is likely not a Safe (API didn't return Safe info)`)
-                setSafeInfo(undefined)
+              setSafeInfo(undefined)
             })
         }
       } else {
@@ -131,8 +130,10 @@ function _useSafeInfo(walletInfo: WalletInfo): GnosisSafeInfo | undefined {
     updateSafeInfo()
 
     return () => {
-      clearInterval(shortSafeInfoInterval)
-      clearInterval(longSafeInfoInterval);
+      clearInterval(shortSafeInfoInterval !== null? shortSafeInfoInterval : undefined)
+      shortSafeInfoInterval = null
+      clearInterval(longSafeInfoInterval !== null ? longSafeInfoInterval : undefined)
+      longSafeInfoInterval = null
     }
   }, [setSafeInfo, chainId, account, provider, safeAppsSdk])
 
