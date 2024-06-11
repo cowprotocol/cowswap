@@ -16,7 +16,6 @@ import { fetchTokenFromBlockchain } from '../../utils/fetchTokenFromBlockchain'
 import { getTokenSearchFilter } from '../../utils/getTokenSearchFilter'
 import { parseTokensFromApi } from '../../utils/parseTokensFromApi'
 
-
 const IN_LISTS_DEBOUNCE_TIME = ms`100ms`
 const IN_EXTERNALS_DEBOUNCE_TIME = ms`1s`
 
@@ -59,8 +58,10 @@ export function useSearchToken(input: string | null): TokenSearchResponse {
   const { tokensFromActiveLists, tokensFromInactiveLists } = useSearchTokensInLists(debouncedInputInList)
 
   const isTokenAlreadyFoundByAddress = useMemo(() => {
-    return tokensFromActiveLists.some((token) => token.address.toLowerCase() === debouncedInputInList)
-  }, [debouncedInputInList, tokensFromActiveLists])
+    return [...tokensFromActiveLists, ...tokensFromInactiveLists].some(
+      (token) => token.address.toLowerCase() === debouncedInputInList
+    )
+  }, [debouncedInputInList, tokensFromActiveLists, tokensFromInactiveLists])
 
   // Search in external API
   const { data: apiResultTokens, isLoading: apiIsLoading } = useSearchTokensInApi(
@@ -104,24 +105,17 @@ export function useSearchToken(input: string | null): TokenSearchResponse {
         ...emptyResponse,
         isLoading,
         activeListsResult: tokensFromActiveLists,
+        inactiveListsResult: tokensFromInactiveLists,
       }
     }
 
-    const foundTokens = tokensFromActiveLists.reduce<{ [address: string]: true }>((acc, val) => {
-      acc[val.address.toLowerCase()] = true
-      return acc
-    }, {})
-
-    const filterFoundTokens = (token: TokenWithLogo) => !foundTokens[token.address.toLowerCase()]
-
-    const inactiveListsResult = tokensFromInactiveLists.filter(filterFoundTokens)
     const blockchainResult = !isInputStale && tokenFromBlockChain ? [tokenFromBlockChain] : []
-    const externalApiResult = !isInputStale && apiResultTokens ? apiResultTokens.filter(filterFoundTokens) : []
+    const externalApiResult = !isInputStale && apiResultTokens ? apiResultTokens : []
 
     return {
       isLoading,
       activeListsResult: tokensFromActiveLists,
-      inactiveListsResult,
+      inactiveListsResult: tokensFromInactiveLists,
       blockchainResult,
       externalApiResult,
     }
