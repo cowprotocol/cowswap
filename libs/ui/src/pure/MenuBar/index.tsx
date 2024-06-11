@@ -526,8 +526,8 @@ export const MenuBar = (props: MenuBarProps) => {
   const mobileMenuRef = useRef<HTMLUListElement>(null)
   const mobileMenuTriggerRef = useRef<HTMLDivElement>(null)
   const navItemsRef = useRef<HTMLUListElement>(null)
-  const buttonRef = useRef<HTMLButtonElement>(null)
-  const dropdownRef = useRef<HTMLDivElement>(null)
+  const settingsButtonRef = useRef<HTMLButtonElement>(null)
+  const settingsDropdownRef = useRef<HTMLDivElement>(null)
 
   const handleSettingsToggle = () => setIsSettingsOpen((prev) => !prev)
 
@@ -544,7 +544,7 @@ export const MenuBar = (props: MenuBarProps) => {
 
   useOnClickOutside([mobileMenuRef, mobileMenuTriggerRef], () => setIsMobileMenuOpen(false))
 
-  useOnClickOutside([buttonRef, dropdownRef], () => setIsSettingsOpen(false))
+  useOnClickOutside([settingsButtonRef, settingsDropdownRef], () => setIsSettingsOpen(false))
 
   const handleMobileMenuToggle = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation()
@@ -628,7 +628,7 @@ export const MenuBar = (props: MenuBarProps) => {
               ))}
             {showGlobalSettings && settingsNavItems && (
               <>
-                <GlobalSettingsButton ref={buttonRef} onClick={handleSettingsToggle}>
+                <GlobalSettingsButton ref={settingsButtonRef} onClick={handleSettingsToggle}>
                   <SVG src={IMG_ICON_SETTINGS_GLOBAL} />
                 </GlobalSettingsButton>
                 {isSettingsOpen && (
@@ -637,7 +637,7 @@ export const MenuBar = (props: MenuBarProps) => {
                     settingsNavItems={settingsNavItems}
                     isOpen={isSettingsOpen}
                     closeDropdown={handleSettingsToggle}
-                    ref={dropdownRef}
+                    ref={settingsDropdownRef}
                   />
                 )}
               </>
