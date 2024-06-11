@@ -1,7 +1,7 @@
 {
   "name": "@cowprotocol/cow-fi",
-  "version": "1.1.0",
-  "description": "CoW Swap landing pages",
+  "version": "1.2.1",
+  "description": "CoW Swap landing page",
   "main": "index.js",
   "author": "",
   "license": "ISC",
