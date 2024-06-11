@@ -44,6 +44,7 @@ export const MenuBarWrapper = styled.div<{
   z-index: 10;
   position: sticky;
   top: 0;
+  color: var(--color);
 
   ${({ mobileMode }) =>
     mobileMode &&
@@ -155,6 +156,7 @@ export const NavItems = styled.ul<{ mobileMode?: boolean; theme: CowSwapTheme }>
   list-style-type: none;
   margin: 0 0 0 var(--marginLeft);
   padding: 0;
+  color: inherit;
 
   ${({ mobileMode }) =>
     mobileMode &&
@@ -180,6 +182,7 @@ export const NavItems = styled.ul<{ mobileMode?: boolean; theme: CowSwapTheme }>
       > div {
         width: 100%;
         position: relative;
+        color: inherit;
       }
     `}
 `
@@ -614,7 +617,8 @@ export const RightAligned = styled.div<{ mobileMode?: boolean; flexFlow?: string
   ${({ mobileMode, flexFlowMobile }) =>
     mobileMode &&
     css`
-      gap: 0;
+      gap: 16px;
+      margin: 24px 0 0 auto;
       flex-flow: ${flexFlowMobile || 'column wrap'};
     `}
 `

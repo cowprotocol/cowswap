@@ -11,8 +11,8 @@ const NAV_ITEMS: MenuItem[] = [
   {
     label: 'About',
     children: [
-      { label: 'Governance', href: 'https://docs.cow.fi/governance', external: true },
       { label: 'Stats', href: 'https://dune.com/cowprotocol/cowswap', external: true },
+      { label: 'Governance', href: 'https://docs.cow.fi/governance', external: true },
       { label: 'Grants', href: 'https://grants.cow.fi/', external: true },
       { label: 'Careers', href: '/careers' },
       { label: 'Tokens', href: '/tokens' },
