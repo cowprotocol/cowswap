@@ -430,7 +430,7 @@ const GlobalSettingsDropdown = forwardRef(
                   <StyledDropdownContentItem
                     key={index}
                     href={item.href}
-                    onClick={item.onClick} // Handle onClick here
+                    onClick={_onDropdownItemClickFactory(item, closeDropdown)} // Handle onClick here
                   >
                     <DropdownContentItemText>
                       <DropdownContentItemTitle>{item.label}</DropdownContentItemTitle>
@@ -446,10 +446,7 @@ const GlobalSettingsDropdown = forwardRef(
                 <StyledDropdownContentItem
                   key={index}
                   href={item.href}
-                  onClick={(e) => {
-                    item.onClick?.(e)
-                    closeDropdown()
-                  }} // Handle onClick here
+                  onClick={_onDropdownItemClickFactory(item, closeDropdown)} // Handle onClick here
                 >
                   <DropdownContentItemText>
                     <DropdownContentItemTitle>{item.label}</DropdownContentItemTitle>
@@ -463,6 +460,13 @@ const GlobalSettingsDropdown = forwardRef(
     )
   }
 )
+
+function _onDropdownItemClickFactory(item: MenuItem, postClick?: () => void) {
+  return (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    item.onClick?.(e)
+    postClick?.()
+  }
+}
 
 interface MenuBarProps {
   navItems: MenuItem[]
