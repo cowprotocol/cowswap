@@ -72,7 +72,7 @@ export function useSetupTradeAmountsFromUrl({ onAmountsUpdate, onlySell }: Setup
       update.orderKind = OrderKind.SELL
     }
 
-    const hasUpdates = Object.keys(update).length > 1
+    const hasUpdates = Object.keys(update).length > 0
 
     if (hasUpdates) {
       // Clean params only when an update was applied or currencies are loaded

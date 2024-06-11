@@ -2,7 +2,7 @@ import { useCallback } from 'react'
 
 import { FractionUtils, isSellOrder } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/cow-sdk'
-import { Fraction } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Fraction } from '@uniswap/sdk-core'
 
 import { Writeable } from 'types'
 
@@ -16,7 +16,7 @@ import { calculateAmountForRate } from 'utils/orderUtils/calculateAmountForRate'
 
 type CurrencyAmountProps = {
   activeRate: Fraction | null
-  amount: Fraction | null
+  amount: CurrencyAmount<Currency> | null
   orderKind: OrderKind
 }
 
