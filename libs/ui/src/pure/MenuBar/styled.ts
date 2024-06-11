@@ -202,8 +202,8 @@ export const DropdownContentWrapper = styled.div<DropdownContentProps>`
   backdrop-filter: blur(var(--blur));
   z-index: 1000;
   padding: ${({ isThirdLevel }) => (isThirdLevel ? '6px' : '6px')};
-  min-width: ${({ isThirdLevel }) => (isThirdLevel ? '200px' : '270px')};
-  width: ${({ isThirdLevel }) => (isThirdLevel ? '100%' : 'max-content')};
+  /* min-width: ${({ isThirdLevel }) => (isThirdLevel ? '200px' : '270px')}; */
+  width: ${({ isThirdLevel }) => (isThirdLevel ? '100%' : '320px')};
   height: auto;
   border-radius: 28px;
   position: ${({ isThirdLevel }) => (isThirdLevel ? 'relative' : 'absolute')};
@@ -266,8 +266,8 @@ export const DropdownContent = styled.div<DropdownContentProps>`
   backdrop-filter: blur(var(--blur));
   z-index: 1000;
   padding: ${({ isThirdLevel }) => (isThirdLevel ? '6px' : '6px')};
-  min-width: ${({ isThirdLevel }) => (isThirdLevel ? '200px' : '270px')};
-  width: ${({ isThirdLevel }) => (isThirdLevel ? '100%' : 'max-content')};
+  /* min-width: ${({ isThirdLevel }) => (isThirdLevel ? '200px' : '270px')}; */
+  width: ${({ isThirdLevel }) => (isThirdLevel ? '100%' : '320px')};
   height: auto;
   border-radius: 28px;
   position: ${({ isThirdLevel }) => (isThirdLevel ? 'relative' : 'absolute')};
