@@ -105,7 +105,7 @@ export default function TopicPage({ category, articles, allCategories }: TopicPa
       <Wrapper>
         <CategoryLinks>
           <li>
-            <a href="/learn">All Topics</a>
+            <a href="/learn">Knowledge Base</a>
           </li>
           {allCategories.map((category) => (
             <li key={category.slug}>
@@ -119,7 +119,7 @@ export default function TopicPage({ category, articles, allCategories }: TopicPa
         <ContainerCard gap={42} gapMobile={24} minHeight="100vh" alignContent="flex-start" touchFooter>
           <Breadcrumbs padding={'0'}>
             <a href="/">Home</a>
-            <a href="/learn">Learn</a>
+            <a href="/learn">Knowledge Base</a>
             <a href="/learn/topics/">Topic</a>
             <span>{name}</span>
           </Breadcrumbs>

@@ -153,7 +153,7 @@ export default function ArticlePage({
           <ArticleContent>
             <Breadcrumbs>
               <a href="/">Home</a>
-              <a href="/learn">Learn</a>
+              <a href="/learn">Knowledge Base</a>
               <span>{title}</span>
             </Breadcrumbs>
 

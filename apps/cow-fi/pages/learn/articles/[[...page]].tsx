@@ -92,7 +92,7 @@ export default function ArticlesPage({
         <ContainerCard gap={42} gapMobile={24}>
           <ContainerCardSectionTop>
             <Breadcrumbs padding={'0'}>
-              <a href="/Learn">Learn</a>
+              <a href="/Learn">Knowledge Base</a>
               <h1>All articles</h1>
             </Breadcrumbs>
 

@@ -539,9 +539,9 @@ export const Breadcrumbs = styled.div<{ padding?: string }>`
   line-height: 1.2;
   padding: ${({ padding }) => padding || '0 0 24px'};
   color: ${Color.neutral10};
+  flex-flow: row wrap;
 
   ${Media.upToMedium()} {
-    flex-flow: column wrap;
     gap: 8px;
     font-size: 14px;
   }
@@ -1601,14 +1601,32 @@ export const CategoryLinks = styled.ul`
 
   ${Media.upToMedium()} {
     overflow-x: auto;
+    overflow-y: hidden;
     flex-flow: row nowrap;
     justify-content: flex-start;
     gap: 24px;
-    padding: 16px 34px 0 16px;
+    padding: 16px 34px 16px 16px;
+    -webkit-overflow-scrolling: touch;
   }
 
   li {
-    display: inline-block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:first-child {
+      margin-right: -32px;
+    }
+
+    &:first-child::after {
+      content: '|';
+      margin: 0 16px;
+      display: flex;
+      height: 100%;
+      width: 16px;
+      align-items: center;
+      justify-content: center;
+    }
   }
 
   a {

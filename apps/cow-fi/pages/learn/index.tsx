@@ -195,7 +195,6 @@ export default function Learn({ siteConfigData, categories, articles }: LearnPro
           <ContainerCardSection>
             <ContainerCardSectionTop>
               <ContainerCardSectionTopTitle>Featured articles</ContainerCardSectionTopTitle>
-              <ArrowButton link="/articles" text="View all articles" />
             </ContainerCardSectionTop>
             <ArticleList>
               {FEATURED_ARTICLES.map(({ title, description, color, link, linkExternal }, index) => (
@@ -230,7 +229,6 @@ export default function Learn({ siteConfigData, categories, articles }: LearnPro
           <ContainerCardSection>
             <ContainerCardSectionTop>
               <ContainerCardSectionTopTitle>Podcasts & Spaces</ContainerCardSectionTopTitle>
-              <ArrowButton link="/articles" text="View all" />
             </ContainerCardSectionTop>
             <LinkSection>
               <LinkColumn>
@@ -258,7 +256,6 @@ export default function Learn({ siteConfigData, categories, articles }: LearnPro
           <ContainerCardSection>
             <ContainerCardSectionTop>
               <ContainerCardSectionTopTitle>Media coverage</ContainerCardSectionTopTitle>
-              <ArrowButton link="/articles" text="View all" />
             </ContainerCardSectionTop>
             <ArticleList columns={4}>
               {MEDIA_COVERAGE.map(({ image, title, publisher, link, linkExternal }, index) => (
