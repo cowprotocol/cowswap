@@ -150,6 +150,7 @@ export default function LayoutV2({ children, bgColor }: LayoutProps) {
         theme={THEME_MODE}
         productVariant={PRODUCT_VARIANT}
         additionalNavButtons={NAV_ADDITIONAL_BUTTONS}
+        padding="10px 60px"
       />
       <Wrapper>{children}</Wrapper>
       <Footer

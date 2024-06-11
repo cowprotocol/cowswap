@@ -16,6 +16,8 @@ export const MenuBarWrapper = styled.div<{
   activeFillDark?: string
   hoverBackgroundLight?: string
   hoverBackgroundDark?: string
+  padding?: string
+  mobileMode?: boolean
 }>`
   --height: 56px;
   --width: 100%;
@@ -38,10 +40,16 @@ export const MenuBarWrapper = styled.div<{
 
   display: flex;
   width: 100%;
-  padding: 10px;
+  padding: ${({ padding }) => padding || '10px'};
   z-index: 10;
   position: sticky;
   top: 0;
+
+  ${({ mobileMode }) =>
+    mobileMode &&
+    css`
+      padding: 10px;
+    `}
 `
 
 export const MenuBarInner = styled.div<{ theme: CowSwapTheme }>`
