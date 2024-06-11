@@ -61,15 +61,20 @@ export function useSetupTradeAmountsFromUrl({ onAmountsUpdate, onlySell }: Setup
     const sellCurrencyAmount = isSellAmountValid ? tryParseCurrencyAmount(sellAmount, inputCurrency) : null
     const buyCurrencyAmount = isBuyAmountValid ? tryParseCurrencyAmount(buyAmount, outputCurrency) : null
 
-    if (!onlySell && buyCurrencyAmount && orderKind === OrderKind.BUY) {
+    if (buyCurrencyAmount) {
       update.outputCurrencyAmount = FractionUtils.serializeFractionToJSON(buyCurrencyAmount)
+    }
 
-      if (!sellCurrencyAmount) {
-        update.orderKind = OrderKind.BUY
-      }
-    } else if (sellCurrencyAmount) {
+    if (sellCurrencyAmount) {
       update.inputCurrencyAmount = FractionUtils.serializeFractionToJSON(sellCurrencyAmount)
+    }
+
+    if (onlySell) {
+      update.outputCurrencyAmount = null
+
       update.orderKind = OrderKind.SELL
+    } else {
+      update.orderKind = orderKind || (!buyCurrencyAmount ? OrderKind.SELL : OrderKind.BUY)
     }
 
     const hasUpdates = Object.keys(update).length > 0
