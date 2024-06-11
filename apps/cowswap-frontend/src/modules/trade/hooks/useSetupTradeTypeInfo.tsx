@@ -1,5 +1,5 @@
 import { useSetAtom } from 'jotai'
-import { useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 
 import { PathMatch } from '@remix-run/router'
 import { useMatch } from 'react-router-dom'
@@ -15,17 +15,17 @@ export function useSetupTradeTypeInfo() {
   const limitOrderMatch = !!useMatchTradeRoute('limit')
   const advancedOrdersMatch = !!useMatchTradeRoute('advanced')
 
-  const type = useMemo(() => {
-    if (swapMatch) return { tradeType: TradeType.SWAP, route: Routes.SWAP }
-    if (limitOrderMatch) return { tradeType: TradeType.LIMIT_ORDER, route: Routes.LIMIT_ORDER }
-    if (advancedOrdersMatch) return { tradeType: TradeType.ADVANCED_ORDERS, route: Routes.ADVANCED_ORDERS }
-
-    return null
+  useMemo(() => {
+    if (swapMatch) {
+      setTradeType({ tradeType: TradeType.SWAP, route: Routes.SWAP })
+    } else if (limitOrderMatch) {
+      setTradeType({ tradeType: TradeType.LIMIT_ORDER, route: Routes.LIMIT_ORDER })
+    } else if (advancedOrdersMatch) {
+      setTradeType({ tradeType: TradeType.ADVANCED_ORDERS, route: Routes.ADVANCED_ORDERS })
+    } else {
+      setTradeType(null)
+    }
   }, [swapMatch, limitOrderMatch, advancedOrdersMatch])
-
-  useEffect(() => {
-    setTradeType(type)
-  }, [type, setTradeType])
 }
 
 function useMatchTradeRoute(route: string): PathMatch<'chainId'> | null {
