@@ -427,9 +427,8 @@ const GlobalSettingsDropdown: React.FC<GlobalSettingsDropdownProps> = ({
     setIsSettingsOpen(false)
   )
 
-  const handleToggle = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.stopPropagation()
-    setIsSettingsOpen(!isOpen)
+  const handleToggle = () => {
+    setIsSettingsOpen((prev) => !prev)
   }
 
   if (!settingsNavItems || settingsNavItems.length === 0) {
@@ -476,7 +475,6 @@ const GlobalSettingsDropdown: React.FC<GlobalSettingsDropdownProps> = ({
   )
 }
 
-// MenuBar.tsx
 interface MenuBarProps {
   navItems: MenuItem[]
   theme: 'light' | 'dark'
@@ -535,9 +533,8 @@ export const MenuBar = (props: MenuBarProps) => {
   const navItemsRef = useRef<HTMLUListElement>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
 
-  const handleToggle = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.stopPropagation()
-    setIsSettingsOpen(!isSettingsOpen)
+  const handleSettingsToggle = () => {
+    setIsSettingsOpen((prev) => !prev)
   }
 
   const styledTheme = {
@@ -558,7 +555,7 @@ export const MenuBar = (props: MenuBarProps) => {
 
   const handleMobileMenuToggle = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation()
-    setIsMobileMenuOpen(!isMobileMenuOpen)
+    setIsMobileMenuOpen((prev) => !prev)
   }
 
   React.useEffect(() => {
@@ -636,7 +633,7 @@ export const MenuBar = (props: MenuBarProps) => {
               ))}
             {showGlobalSettings && settingsNavItems && (
               <>
-                <GlobalSettingsButton ref={buttonRef} onClick={handleToggle}>
+                <GlobalSettingsButton ref={buttonRef} onClick={handleSettingsToggle}>
                   <SVG src={IMG_ICON_SETTINGS_GLOBAL} />
                 </GlobalSettingsButton>
                 <GlobalSettingsDropdown
