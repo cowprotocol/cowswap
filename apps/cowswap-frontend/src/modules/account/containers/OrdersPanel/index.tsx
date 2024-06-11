@@ -106,8 +106,8 @@ const CloseIcon = styled((props) => <Close {...props} />)`
   opacity: 0.6;
   transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
   stroke: var(${UI.COLOR_TEXT});
-  width: 24px;
-  height: 24px;
+  width: 16px;
+  height: 16px;
 
   &:hover {
     opacity: 1;
