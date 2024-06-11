@@ -160,7 +160,8 @@ export default function Page({ siteConfigData }: PageProps) {
               </SectionTitleIcon>
               <SectionTitleText>Innovation in action</SectionTitleText>
               <SectionTitleDescription fontSize={23} color={Color.neutral30}>
-                CoW DAO is famous for pioneering technology at the forefront of intents, MEV protection, and more.
+                CoW DAO is famous for pioneering technology at the forefront of intents, MEV protection, and more.{' '}
+                <br />
                 Whether you're a crypto beginner or an Ethereum OG, you can learn more about these important topics in
                 the CoW DAO Knowledge Base.
               </SectionTitleDescription>
