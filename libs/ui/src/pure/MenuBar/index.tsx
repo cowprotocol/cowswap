@@ -1,4 +1,4 @@
-import React, { useState, useRef, RefObject, useMemo } from 'react'
+import React, { useMemo, useRef, useState } from 'react'
 
 import IMG_ICON_ARROW_RIGHT from '@cowprotocol/assets/images/arrow-right.svg'
 import IMG_ICON_CARRET_DOWN from '@cowprotocol/assets/images/carret-down.svg'
@@ -6,7 +6,7 @@ import IMG_ICON_MENU_DOTS from '@cowprotocol/assets/images/menu-grid-dots.svg'
 import IMG_ICON_MENU_HAMBURGER from '@cowprotocol/assets/images/menu-hamburger.svg'
 import IMG_ICON_SETTINGS_GLOBAL from '@cowprotocol/assets/images/settings-global.svg'
 import IMG_ICON_X from '@cowprotocol/assets/images/x.svg'
-import { useOnClickOutside, useMediaQuery } from '@cowprotocol/common-hooks'
+import { useMediaQuery, useOnClickOutside } from '@cowprotocol/common-hooks'
 import { addBodyClass, removeBodyClass } from '@cowprotocol/common-utils'
 import { CowSwapTheme } from '@cowprotocol/widget-lib'
 
@@ -14,24 +14,24 @@ import SVG from 'react-inlinesvg'
 import { ThemeProvider } from 'styled-components/macro'
 
 import {
-  RootNavItem,
-  MenuBarWrapper,
-  MenuBarInner,
-  NavDaoTriggerElement,
-  DropdownMenu,
   DropdownContent,
   DropdownContentItemButton,
-  DropdownContentItemImage,
+  DropdownContentItemDescription,
   DropdownContentItemIcon,
+  DropdownContentItemImage,
   DropdownContentItemText,
   DropdownContentItemTitle,
-  DropdownContentItemDescription,
+  DropdownMenu,
   GlobalSettingsButton,
-  NavItems,
-  StyledDropdownContentItem,
+  MenuBarInner,
+  MenuBarWrapper,
   MobileDropdownContainer,
-  RightAligned,
   MobileMenuTrigger,
+  NavDaoTriggerElement,
+  NavItems,
+  RightAligned,
+  RootNavItem,
+  StyledDropdownContentItem,
 } from './styled'
 
 import { Media, themeMapper } from '../../consts'
@@ -243,9 +243,7 @@ const NavDaoTrigger: React.FC<{
   const triggerRef = useRef<HTMLDivElement>(null)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
-  useOnClickOutside([triggerRef as RefObject<HTMLElement>, dropdownRef as RefObject<HTMLElement>], () =>
-    setIsOpen(false)
-  )
+  useOnClickOutside([triggerRef, dropdownRef], () => setIsOpen(false))
 
   const handleToggle = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation()
@@ -514,8 +512,8 @@ export const MenuBar = (props: MenuBarProps) => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
   const [openDropdown, setOpenDropdown] = useState<string | null>(null)
 
-  const menuRef = useRef(null)
-  const mobileMenuRef = useRef(null)
+  const menuRef = useRef<HTMLDivElement>(null)
+  const mobileMenuRef = useRef<HTMLUListElement>(null)
   const mobileMenuTriggerRef = useRef<HTMLDivElement>(null)
   const navItemsRef = useRef<HTMLUListElement>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
@@ -529,14 +527,12 @@ export const MenuBar = (props: MenuBarProps) => {
 
   const isMobile = useMediaQuery(Media.upToLarge(false))
 
-  useOnClickOutside([menuRef as RefObject<HTMLElement>], () => setIsDaoOpen(false))
+  useOnClickOutside([menuRef], () => setIsDaoOpen(false))
 
   useOnClickOutside(isMobile ? [mobileMenuRef] : [navItemsRef], () => {
     setOpenDropdown(null)
   })
-  useOnClickOutside([mobileMenuRef as RefObject<HTMLElement>, mobileMenuTriggerRef as RefObject<HTMLElement>], () =>
-    setIsMobileMenuOpen(false)
-  )
+  useOnClickOutside([mobileMenuRef, mobileMenuTriggerRef], () => setIsMobileMenuOpen(false))
 
   useOnClickOutside([buttonRef], () => setIsSettingsOpen(false))
 
