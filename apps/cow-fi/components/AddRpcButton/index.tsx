@@ -1,10 +1,9 @@
 import { Confetti } from '@/components/Confetti'
 import styled from 'styled-components'
-import { Color } from '@cowprotocol/ui'
 import { darken, transparentize } from 'polished'
 import { useConnectAndAddToWallet } from '../../lib/hooks/useConnectAndAddToWallet'
 
-import { TopicButton, HeroButton, SectionTitleButton } from '@/styles/styled'
+import { TopicButton } from '@/styles/styled'
 
 export type AddToWalletStateValues = 'unknown' | 'adding' | 'added' | 'error' | 'takingTooLong' | 'connecting'
 
@@ -33,7 +32,7 @@ export function AddRpcButton() {
   const isAdding = state === 'adding'
   const isConnecting = state === 'connecting'
   const disabledButton = isConnecting || isAdding || !connectAndAddToWallet
-  const buttonLabel = isConnecting ? 'Connecting Wallet...' : isAdding ? 'Adding to Wallet...' : 'Add to Wallet'
+  const buttonLabel = isConnecting ? 'Connecting Wallet...' : isAdding ? 'Adding to Wallet...' : 'Get protected'
 
   return (
     <>
@@ -45,8 +44,8 @@ export function AddRpcButton() {
       ) : (
         <>
           <TopicButton
-            fontSize={27}
-            color={'#FFF8F7'}
+            fontSize={21}
+            color={'#FEE7CF'}
             bgColor="#EC4612"
             onClick={connectAndAddToWallet || (() => {})}
             disabled={disabledButton}

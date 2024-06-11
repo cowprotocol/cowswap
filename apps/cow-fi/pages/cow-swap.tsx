@@ -95,7 +95,7 @@ export default function Page({ siteConfigData }: PageProps) {
         <HeroContainer variant="secondary" maxWidth={1350} padding="0 20px 90px">
           <HeroContent variant="secondary">
             <HeroSubtitle color={'#012F7A'}>CoW Swap</HeroSubtitle>
-            <HeroTitle fontSize={80} fontSizeMobile={42} as="h2">
+            <HeroTitle as="h2">
               Don't worry,
               <br /> trade happy
             </HeroTitle>
@@ -132,9 +132,9 @@ export default function Page({ siteConfigData }: PageProps) {
           </MetricsItem>
 
           <SectionTitleButton
-            bgColor={'#012F7A'}
-            color={'#65D9FF'}
-            margin="56px auto 0"
+            bgColor="transparent"
+            color="#012F7A"
+            margin="24px auto 0"
             gridFullWidth
             href="https://dune.com/cowprotocol/cowswap"
             target="_blank"
@@ -144,17 +144,17 @@ export default function Page({ siteConfigData }: PageProps) {
           </SectionTitleButton>
         </MetricsCard>
 
-        <ContainerCard bgColor={Color.neutral98}>
+        <ContainerCard bgColor={Color.neutral100}>
           <ContainerCardSection gap={90}>
             <SectionTitleWrapper color={Color.neutral0} maxWidth={1100} gap={56}>
-              <SectionTitleIcon multiple size={80}>
+              <SectionTitleIcon multiple size={82}>
                 <SVG src={IMG_ICON_UNICORN} />
                 <ProductLogo variant={ProductVariant.CowProtocol} theme="dark" logoIconOnly />
                 <SVG src={IMG_ICON_UNICORN} className="image-reverse" />
               </SectionTitleIcon>
 
               <SectionTitleText>CoW Swap is different</SectionTitleText>
-              <SectionTitleDescription maxWidth={900}>
+              <SectionTitleDescription maxWidth={900} color={Color.neutral50}>
                 Unlike other exchanges, CoW Swap is built around frequent batch auctions, which are designed to find the
                 best liquidity at any point in time and protect you from MEV
               </SectionTitleDescription>
@@ -218,10 +218,8 @@ export default function Page({ siteConfigData }: PageProps) {
         <ContainerCard bgColor={'transparent'}>
           <ContainerCardSection>
             <SectionTitleWrapper maxWidth={800}>
-              <SectionTitleText fontSize={62}>
-                CoW Swap is the first user interface built on top of CoW Protocol
-              </SectionTitleText>
-              <SectionTitleDescription fontSize={24} color={Color.neutral60}>
+              <SectionTitleText>CoW Swap is the first user interface built on top of CoW Protocol</SectionTitleText>
+              <SectionTitleDescription color={Color.neutral50}>
                 A powerful, open-source, and permissionless DEX aggregation protocol that anyone can integrate for a
                 variety of DeFi purposes.
               </SectionTitleDescription>
@@ -234,18 +232,18 @@ export default function Page({ siteConfigData }: PageProps) {
 
         <ContainerCard bgColor={Color.neutral10} color={Color.neutral98}>
           <ContainerCardSection>
-            <SectionTitleWrapper padding="150px 0 0">
+            <SectionTitleWrapper padding="150px 0 0" maxWidth={900}>
               <SectionTitleIcon size={140}>
                 <SVG src={IMG_ICON_FLOWER_COW} />
               </SectionTitleIcon>
-              <SectionTitleText fontSize={90}>S-moooo-th trading</SectionTitleText>
-              <SectionTitleDescription fontSize={28} color={Color.neutral60}>
+              <SectionTitleText>S-moooo-th trading</SectionTitleText>
+              <SectionTitleDescription color={Color.neutral60}>
                 CoW Swap features the smoothest trading experiences in DeFi, allowing you to worry less and do more
               </SectionTitleDescription>
             </SectionTitleWrapper>
 
             <SectionTitleWrapper>
-              <SectionTitleText fontSize={51}>Advanced order types</SectionTitleText>
+              <SectionTitleText>Advanced order types</SectionTitleText>
             </SectionTitleWrapper>
             <TopicList columns={3}>
               <TopicCard contentAlign={'left'} bgColor="#012F7A" textColor="#65D9FF" padding={'32px'} asProp="div">
@@ -370,13 +368,11 @@ export default function Page({ siteConfigData }: PageProps) {
 
         <ContainerCard bgColor={'transparent'}>
           <ContainerCardSection>
-            <SectionTitleWrapper padding="150px 0 0" maxWidth={1300} color={Color.neutral10}>
-              <SectionTitleIcon size={100}>
+            <SectionTitleWrapper padding="150px 0 0" maxWidth={1300}>
+              <SectionTitleIcon size={82}>
                 <ProductLogo variant={ProductVariant.CowProtocol} theme="light" logoIconOnly />
               </SectionTitleIcon>
-              <SectionTitleText fontSize={90} textAlign="center">
-                The DEX of choice for crypto whales and pros
-              </SectionTitleText>
+              <SectionTitleText textAlign="center">The DEX of choice for crypto whales and pros</SectionTitleText>
             </SectionTitleWrapper>
 
             <TopicList columns={4}>
@@ -453,10 +449,8 @@ export default function Page({ siteConfigData }: PageProps) {
 
         <ContainerCard bgColor={'transparent'}>
           <ContainerCardSection>
-            <SectionTitleWrapper maxWidth={1200} color={Color.neutral10}>
-              <SectionTitleText fontSize={90} textAlign="center">
-                Ethereum's biggest DAOs rely on CoW Swap
-              </SectionTitleText>
+            <SectionTitleWrapper maxWidth={1200}>
+              <SectionTitleText textAlign="center">Ethereum's biggest DAOs rely on CoW Swap</SectionTitleText>
             </SectionTitleWrapper>
 
             <TopicList columns={3}>
@@ -535,10 +529,8 @@ export default function Page({ siteConfigData }: PageProps) {
 
         <ContainerCard bgColor={'transparent'}>
           <ContainerCardSection>
-            <SectionTitleWrapper maxWidth={1100} color={Color.neutral10}>
-              <SectionTitleText fontSize={90} textAlign="center">
-                Don't take our word for it
-              </SectionTitleText>
+            <SectionTitleWrapper maxWidth={1100}>
+              <SectionTitleText textAlign="center">Don't take our word for it</SectionTitleText>
             </SectionTitleWrapper>
 
             <TopicList columns={3} maxWidth={900}>
@@ -572,7 +564,7 @@ export default function Page({ siteConfigData }: PageProps) {
         <ContainerCard bgColor={'transparent'} color={Color.neutral10}>
           <ContainerCardSection>
             <SectionTitleWrapper>
-              <SectionTitleIcon>
+              <SectionTitleIcon size={62}>
                 <SVG src={IMG_ICON_FAQ} />
               </SectionTitleIcon>
               <SectionTitleText>FAQs</SectionTitleText>

@@ -101,7 +101,7 @@ export default function Page({ siteConfigData }: PageProps) {
         <HeroContainer variant="secondary" maxWidth={1300}>
           <HeroContent variant="secondary">
             <HeroSubtitle color={'#66018E'}>CoW Protocol</HeroSubtitle>
-            <HeroTitle fontSize={67} fontSizeMobile={38} as="h2">
+            <HeroTitle as="h2" maxWidth={520}>
               Do what you want, build what you want
             </HeroTitle>
             <HeroDescription>
@@ -121,9 +121,6 @@ export default function Page({ siteConfigData }: PageProps) {
           <MetricsItem dividerColor="#ED60E9">
             <h2>23</h2>
             <p>active solvers settling batches</p>
-            <a href="https://dune.com/cowprotocol/solver-info" target="_blank" rel="noopener noreferrer nofollow">
-              Source &#8599;
-            </a>
           </MetricsItem>
           <MetricsItem dividerColor="#ED60E9">
             <h2>25%</h2>
@@ -132,24 +129,29 @@ export default function Page({ siteConfigData }: PageProps) {
           <MetricsItem dividerColor="#ED60E9">
             <h2>#1</h2>
             <p>intent-based DEX protocol by volume</p>
-            <a
-              href="https://dune.com/cowprotocol/cowswap-high-level-metrics-dashboard"
-              target="_blank"
-              rel="noopener noreferrer nofollow"
-            >
-              Source &#8599;
-            </a>
           </MetricsItem>
+
+          <SectionTitleButton
+            bgColor="transparent"
+            color="#66018E"
+            margin="24px auto 0"
+            gridFullWidth
+            href="https://dune.com/cowprotocol/monthly-cow-protocol-reporting"
+            target="_blank"
+            rel="noopener noreferrer nofollow"
+          >
+            View all metrics on DUNE &#8599;
+          </SectionTitleButton>
         </MetricsCard>
 
         <ContainerCard bgColor={Color.neutral98}>
           <ContainerCardSection>
-            <SectionTitleWrapper color={Color.neutral0} maxWidth={1100} gap={56}>
-              <SectionTitleIcon size={98}>
+            <SectionTitleWrapper color={Color.neutral0} maxWidth={700} gap={56}>
+              <SectionTitleIcon size={82}>
                 <SVG src={IMG_ICON_CROWN_COW} />
               </SectionTitleIcon>
               <SectionTitleText>The leading intents-based DEX aggregation protocol</SectionTitleText>
-              <SectionTitleDescription maxWidth={900}>
+              <SectionTitleDescription maxWidth={900} color={Color.neutral50}>
                 CoW Swap leverages intents, the largest solver network in DeFi, and batch auctions to bring
                 surplus-capturing, MEV-protected trades to users
               </SectionTitleDescription>
@@ -160,11 +162,11 @@ export default function Page({ siteConfigData }: PageProps) {
         <ContainerCard bgColor={'transparent'}>
           <ContainerCardSection>
             <SectionTitleWrapper>
-              <SectionTitleIcon size={100}>
+              <SectionTitleIcon size={82}>
                 <ProductLogo variant={ProductVariant.CowProtocol} theme="light" logoIconOnly />
               </SectionTitleIcon>
               <SectionTitleText>How it works</SectionTitleText>
-              <SectionTitleDescription maxWidth={900}>
+              <SectionTitleDescription maxWidth={900} color={Color.neutral50}>
                 By leveraging intents, the largest solver network, and batch auctions, CoW Protocol hosts a continuous
                 competition between solvers to find better prices and protect users from MEV
               </SectionTitleDescription>
@@ -173,8 +175,8 @@ export default function Page({ siteConfigData }: PageProps) {
             <TopicList columns={1} maxWidth={1470}>
               <TopicCard columns="1fr auto" gap={100} horizontal asProp="div">
                 <TopicCardInner contentAlign="left">
-                  <TopicTitle fontSize={67}>Intents</TopicTitle>
-                  <TopicDescription fontSize={28}>
+                  <TopicTitle fontSize={51}>Intents</TopicTitle>
+                  <TopicDescription fontSize={28} color={Color.neutral50}>
                     CoW Protocol users sign an "intent to trade" message instead of directly executing orders on-chain
                     (like on Uniswap). This lets solvers trade on behalf of the user.
                   </TopicDescription>
@@ -188,8 +190,8 @@ export default function Page({ siteConfigData }: PageProps) {
               <TopicCard columns="1fr auto" gap={100} horizontal asProp="div">
                 <TopicImage iconColor="#66018E" width={590} height={590} heightMobile={300} orderReverseMobile />
                 <TopicCardInner contentAlign="left">
-                  <TopicTitle fontSize={67}>Solvers</TopicTitle>
-                  <TopicDescription fontSize={28}>
+                  <TopicTitle fontSize={51}>Solvers</TopicTitle>
+                  <TopicDescription fontSize={28} color={Color.neutral50}>
                     Professional third parties known as solvers find the most optimal trade path from a combination of
                     public and private liquidity sources - finding better prices than most users could find on their
                     own.
@@ -202,8 +204,8 @@ export default function Page({ siteConfigData }: PageProps) {
 
               <TopicCard columns="1fr auto" gap={100} horizontal asProp="div">
                 <TopicCardInner contentAlign="left">
-                  <TopicTitle fontSize={67}>Batch Auctions</TopicTitle>
-                  <TopicDescription fontSize={28}>
+                  <TopicTitle fontSize={51}>Batch Auctions</TopicTitle>
+                  <TopicDescription fontSize={28} color={Color.neutral50}>
                     Solvers compete for the right to settle trades in batches, which give users additional MEV
                     protection and allow for Coincidence of Wants.
                     <br />
@@ -225,14 +227,14 @@ export default function Page({ siteConfigData }: PageProps) {
           <ContainerCardSection>
             <SectionTitleWrapper padding="150px 0 0">
               <ProductLogo variant={ProductVariant.CowProtocol} theme="dark" logoIconOnly height={60} />
-              <SectionTitleText fontSize={90}>Going where others can&apos;t</SectionTitleText>
-              <SectionTitleDescription fontSize={28} color={Color.neutral60}>
+              <SectionTitleText>Going where others can&apos;t</SectionTitleText>
+              <SectionTitleDescription color={Color.neutral60}>
                 Thanks to its unique architecture, CoW Protocol can do things other DEXs can&apos;t
               </SectionTitleDescription>
             </SectionTitleWrapper>
 
             <SectionTitleWrapper padding="50px 0">
-              <SectionTitleText fontSize={51}>Advanced order types</SectionTitleText>
+              <SectionTitleText>Advanced order types</SectionTitleText>
             </SectionTitleWrapper>
             <TopicList columns={3}>
               <TopicCard contentAlign={'left'} bgColor="#66018E" textColor="#F996EE" padding={'32px'} asProp="div">
@@ -294,9 +296,7 @@ export default function Page({ siteConfigData }: PageProps) {
             </TopicList>
 
             <SectionTitleWrapper padding="150px 0 50px">
-              <SectionTitleText fontSize={51} textAlign="center">
-                Unique trading logic
-              </SectionTitleText>
+              <SectionTitleText textAlign="center">Unique trading logic</SectionTitleText>
             </SectionTitleWrapper>
             <TopicList columns={3}>
               <TopicCard contentAlign={'left'} bgColor="#66018E" textColor="#F996EE" padding={'32px'} asProp="div">
@@ -362,9 +362,7 @@ export default function Page({ siteConfigData }: PageProps) {
               <SectionTitleIcon size={128}>
                 <SVG src={IMG_ICON_BULB_COW} />
               </SectionTitleIcon>
-              <SectionTitleText fontSize={90} textAlign="center">
-                Powering innovation across DeFi
-              </SectionTitleText>
+              <SectionTitleText textAlign="center">Powering innovation across DeFi</SectionTitleText>
             </SectionTitleWrapper>
 
             <TopicList columns={3}>
@@ -424,7 +422,7 @@ export default function Page({ siteConfigData }: PageProps) {
                 <ProductLogo variant={ProductVariant.CowProtocol} theme="dark" logoIconOnly height={60} />
                 <SVG src={IMG_ICON_GHOST} />
               </SectionTitleIcon>
-              <SectionTitleText fontSize={90}>Trusted by the best</SectionTitleText>
+              <SectionTitleText>Trusted by the best</SectionTitleText>
             </SectionTitleWrapper>
 
             <TopicList columns={3}>
@@ -635,9 +633,7 @@ export default function Page({ siteConfigData }: PageProps) {
               <SectionTitleIcon size={100}>
                 <SVG src={IMG_ICON_SECURE} />
               </SectionTitleIcon>
-              <SectionTitleText fontSize={90} textAlign="center">
-                Want to build a solver?
-              </SectionTitleText>
+              <SectionTitleText textAlign="center">Want to build a solver?</SectionTitleText>
               <SectionTitleDescription fontSize={28} color={Color.neutral30}>
                 Solvers are the backbone of CoW Protocol. In a nutshell, solvers are optimization algorithms that find
                 CoW Protocol users the best possible settlements for their trade intents.
@@ -664,10 +660,10 @@ export default function Page({ siteConfigData }: PageProps) {
           </ContainerCardSection>
         </ContainerCard>
 
-        <ContainerCard bgColor={'transparent'} color={Color.neutral10} touchFooter>
-          <ContainerCardSection padding={'0 0 100px'}>
+        <ContainerCard bgColor={Color.neutral90} color={Color.neutral10} touchFooter>
+          <ContainerCardSection>
             <SectionTitleWrapper>
-              <SectionTitleIcon>
+              <SectionTitleIcon size={62}>
                 <SVG src={IMG_ICON_FAQ} />
               </SectionTitleIcon>
               <SectionTitleText>FAQs</SectionTitleText>

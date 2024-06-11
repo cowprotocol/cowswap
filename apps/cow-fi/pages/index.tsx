@@ -68,14 +68,14 @@ export default function Page({ siteConfigData }: PageProps) {
             <SVG src={IMG_COW_HERO_HOME} />
           </HeroBackground>
           <HeroContent>
-            <HeroTitle>Don&apos;t get milked!</HeroTitle>
+            <HeroTitle fontSize={120}>Don&apos;t get milked!</HeroTitle>
           </HeroContent>
         </HeroContainer>
 
         <ContainerCard bgColor={Color.neutral100}>
           <ContainerCardSection>
             <SectionTitleWrapper color={Color.neutral0} maxWidth={1100} margin="100px auto">
-              <SectionTitleText fontSize={54}>
+              <SectionTitleText>
                 CoW DAO develops the most user-protective products in Ethereum - so you can do more with less worry
               </SectionTitleText>
             </SectionTitleWrapper>
@@ -170,15 +170,8 @@ export default function Page({ siteConfigData }: PageProps) {
               <SectionTitleIcon size={200}>
                 <SVG src={IMG_ICON_GOVERNANCE} />
               </SectionTitleIcon>
-              <SectionTitleText fontSize={90} textAlign="center">
-                Governance
-              </SectionTitleText>
-              <SectionTitleDescription
-                fontSize={28}
-                color={Color.neutral60}
-                fontWeight={Font.weight.regular}
-                textAlign="center"
-              >
+              <SectionTitleText textAlign="center">Governance</SectionTitleText>
+              <SectionTitleDescription color={Color.neutral60} fontWeight={Font.weight.regular} textAlign="center">
                 Anyone can join CoW DAO by holding{' '}
                 <a href="https://swap.cow.fi/#/1/swap/USDC/COW" rel="noopener noreferrer" target="_blank">
                   COW tokens
@@ -223,15 +216,8 @@ export default function Page({ siteConfigData }: PageProps) {
               <SectionTitleIcon size={200}>
                 <SVG src={IMG_ICON_GRANTS_CARTON} />
               </SectionTitleIcon>
-              <SectionTitleText fontSize={90} textAlign="center">
-                Grants
-              </SectionTitleText>
-              <SectionTitleDescription
-                fontSize={28}
-                color={Color.neutral30}
-                fontWeight={Font.weight.regular}
-                textAlign="center"
-              >
+              <SectionTitleText textAlign="center">Grants</SectionTitleText>
+              <SectionTitleDescription color={Color.neutral30} fontWeight={Font.weight.regular} textAlign="center">
                 The CoW DAO Grants Program funds mission-aligned projects and people working on MEV protection, trading
                 innovation, and ecosystem development.
               </SectionTitleDescription>

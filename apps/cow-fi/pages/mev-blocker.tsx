@@ -16,6 +16,12 @@ import { publicProvider } from 'wagmi/providers/public'
 import { RainbowKitProvider, getDefaultWallets } from '@rainbow-me/rainbowkit'
 import '@rainbow-me/rainbowkit/styles.css'
 
+import IMAGE_ICON_MEVBLOCKER_PROTECT from '@cowprotocol/assets/images/icon-mevblocker-protect.svg'
+import IMAGE_ICON_MEVBLOCKER_PROTECT2 from '@cowprotocol/assets/images/icon-mevblocker-protect2.svg'
+import IMAGE_ICON_MEVBLOCKER_CHATBALLOON from '@cowprotocol/assets/images/icon-mevblocker-chatballoon.svg'
+import IMAGE_ICON_MEVBLOCKER_TRUST from '@cowprotocol/assets/images/icon-mevblocker-trust.svg'
+import IMAGE_ICON_QUESTIONBALLOON from '@cowprotocol/assets/images/icon-question-balloon.svg'
+
 import {
   ContainerCard,
   ContainerCardSection,
@@ -32,7 +38,6 @@ import {
   HeroContainer,
   HeroImage,
   HeroButton,
-  HeroButtonWrapper,
   HeroDescription,
   HeroContent,
   HeroTitle,
@@ -40,6 +45,10 @@ import {
   MetricsCard,
   MetricsItem,
   SectionTitleButton,
+  ColorTable,
+  ColorTableCell,
+  ColorTableHeader,
+  ColorTableContainer,
 } from '@/styles/styled'
 
 import SVG from 'react-inlinesvg'
@@ -76,6 +85,54 @@ const FAQ_DATA = [
   {
     question: 'Where does the name come from?',
     answer: 'The name comes from ...',
+  },
+]
+
+const TRUSTED_BY_CONTENT = [
+  {
+    href: 'https://uniswap.org/',
+    src: IMG_LOGO_UNISWAP,
+    title: 'Wallet',
+  },
+  {
+    href: 'https://rabby.io/',
+    src: IMG_LOGO_RABBY,
+    title: 'Wallet',
+  },
+  {
+    href: 'https://crypto.com/',
+    src: IMG_LOGO_CRYPTO_COM,
+    title: 'Wallet',
+  },
+  {
+    href: 'https://swap.cow.fi/',
+    component: <ProductLogo variant={ProductVariant.CowSwap} theme="dark" />,
+    title: '',
+  },
+  {
+    href: 'https://safe.global/',
+    src: IMG_LOGO_SAFE,
+    title: '',
+  },
+  {
+    href: 'https://www.karpatkey.com/',
+    src: IMG_LOGO_KARPATKEY,
+    title: 'Karpatkey',
+  },
+  {
+    href: 'https://www.keepkey.com/',
+    src: IMG_LOGO_KEEPKEY,
+    title: '',
+  },
+  {
+    href: 'https://www.ambire.com/',
+    src: IMG_LOGO_AMBIRE,
+    title: 'Wallet',
+  },
+  {
+    href: 'https://www.blocknative.com/',
+    src: IMG_LOGO_BLOCKNATIVE,
+    title: 'Blocknative Transaction Boost',
   },
 ]
 
@@ -136,9 +193,7 @@ export default function Page({ siteConfigData }: PageProps) {
             <HeroContainer variant="secondary" maxWidth={1300} padding={'0 0 75px'}>
               <HeroContent variant="secondary">
                 <HeroSubtitle color={'#EC4612'}>MEV Blocker</HeroSubtitle>
-                <HeroTitle fontSize={51} fontSizeMobile={38} as="h2">
-                  The best MEV protection under the sun
-                </HeroTitle>
+                <HeroTitle as="h2">The best MEV protection under the sun</HeroTitle>
                 <HeroDescription fontSize={21}>
                   MEV Blocker is your personal protection from frontrunning and sandwich attacks for a broad spectrum of
                   Ethereum transactions
@@ -165,16 +220,10 @@ export default function Page({ siteConfigData }: PageProps) {
               <MetricsItem dividerColor="#F9A36F">
                 <h2>$76B+</h2>
                 <p>volume protected from MEV</p>
-                <a href="https://dune.com/queries/2635139/4376957" target="_blank" rel="noopener noreferrer nofollow">
-                  Source &#8599;
-                </a>
               </MetricsItem>
               <MetricsItem dividerColor="#F9A36F">
                 <h2>2200 ETH</h2>
                 <p>rebated to users</p>
-                <a href="https://dune.com/queries/2456432/4038715" target="_blank" rel="noopener noreferrer nofollow">
-                  Source &#8599;
-                </a>
               </MetricsItem>
               <MetricsItem>
                 <h2>100%</h2>
@@ -182,9 +231,9 @@ export default function Page({ siteConfigData }: PageProps) {
               </MetricsItem>
 
               <SectionTitleButton
-                bgColor="#EC4612"
+                bgColor="transparent"
                 color="#FEE7CF"
-                margin="56px auto 0"
+                margin="24px auto 0"
                 gridFullWidth
                 href="https://dune.com/cowprotocol/mev-blocker"
                 target="_blank"
@@ -194,11 +243,11 @@ export default function Page({ siteConfigData }: PageProps) {
               </SectionTitleButton>
             </MetricsCard>
 
-            <ContainerCard bgColor={Color.neutral98}>
-              <ContainerCardSection gap={90}>
-                <SectionTitleWrapper color={Color.neutral0} maxWidth={1300} gap={56}>
-                  <SectionTitleIcon multiple size={62}>
-                    <ProductLogo variant={ProductVariant.MevBlocker} theme="dark" logoIconOnly />
+            <ContainerCard bgColor={Color.neutral100}>
+              <ContainerCardSection gap={60}>
+                <SectionTitleWrapper color={Color.neutral10} maxWidth={1300} gap={56}>
+                  <SectionTitleIcon multiple size={82}>
+                    <SVG src={IMAGE_ICON_MEVBLOCKER_PROTECT} />
                   </SectionTitleIcon>
                   <SectionTitleText maxWidth={500}>Broad spectrum MEV defense</SectionTitleText>
                   <SectionTitleDescription maxWidth={'100%'} color={Color.neutral50}>
@@ -263,27 +312,24 @@ export default function Page({ siteConfigData }: PageProps) {
                     </TopicImage>
                   </TopicCard>
                 </TopicList>
-              </ContainerCardSection>
 
-              <SectionTitleWrapper maxWidth={600}>
-                <SectionTitleText fontSize={42}>Curious if you've been the victim of an MEV attack?</SectionTitleText>
-                <SectionTitleButton
-                  bgColor="#EC4612"
-                  color="#FEE7CF"
-                  href="https://www.mevscanner.com/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Use MEV Scanner to find out
-                </SectionTitleButton>
-              </SectionTitleWrapper>
+                <SectionTitleWrapper maxWidth={1200} margin="0 auto">
+                  <SectionTitleDescription fontSize={28} color={Color.neutral50}>
+                    Curious if you've been the victim of an MEV attack?{' '}
+                    <a href="https://www.mevscanner.com/" target="_blank" rel="noopener noreferrer">
+                      Use MEV Scanner
+                    </a>{' '}
+                    to find out
+                  </SectionTitleDescription>
+                </SectionTitleWrapper>
+              </ContainerCardSection>
             </ContainerCard>
 
             <ContainerCard bgColor="transparent" color={Color.neutral10} id="rpc">
               <ContainerCardSection>
                 <SectionTitleWrapper maxWidth={850} gap={56} margin="24px auto">
-                  <SectionTitleIcon multiple size={62}>
-                    <ProductLogo variant={ProductVariant.MevBlocker} theme="dark" logoIconOnly />
+                  <SectionTitleIcon multiple size={82}>
+                    <SVG src={IMAGE_ICON_MEVBLOCKER_PROTECT2} />
                   </SectionTitleIcon>
                   <SectionTitleText>Get Protected</SectionTitleText>
                   <SectionTitleDescription color={Color.neutral50}>
@@ -296,22 +342,20 @@ export default function Page({ siteConfigData }: PageProps) {
                 <TopicList columns={2}>
                   <TopicCard contentAlign={'left'} bgColor={Color.neutral100} padding={'32px'} asProp="div">
                     <TopicCardInner contentAlign="left">
-                      <TopicTitle color={Color.neutral0} fontSize={32}>
+                      <TopicTitle color={Color.neutral0} fontSize={28}>
                         Click to add to your client
                       </TopicTitle>
-                      <TopicDescription fontSize={27} color={Color.neutral0}>
-                        MEV Blocker (Ethereum Mainnet)
-                      </TopicDescription>
+                      <TopicDescription fontSize={21}>MEV Blocker (Ethereum Mainnet)</TopicDescription>
                       <AddRpcButton />
                     </TopicCardInner>
                   </TopicCard>
 
                   <TopicCard contentAlign={'left'} bgColor={Color.neutral100} padding={'32px'} asProp="div">
                     <TopicCardInner contentAlign="left">
-                      <TopicTitle color={Color.neutral0} fontSize={32}>
+                      <TopicTitle color={Color.neutral0} fontSize={28}>
                         Add manually
                       </TopicTitle>
-                      <TopicDescription fontSize={24} color={Color.neutral0}>
+                      <TopicDescription fontSize={21}>
                         <table>
                           <tbody>
                             <tr>
@@ -350,7 +394,7 @@ export default function Page({ siteConfigData }: PageProps) {
                     </TopicCardInner>
                   </TopicCard>
                 </TopicList>
-                <SectionTitleWrapper margin={'56px auto'}>
+                <SectionTitleWrapper margin={'24px auto 0'}>
                   <SectionTitleDescription fontSize={28} color={Color.neutral50} maxWidth={700}>
                     Having trouble? Check your wallet's documentation for instructions on how to update your RPC
                     endpoint
@@ -359,13 +403,78 @@ export default function Page({ siteConfigData }: PageProps) {
               </ContainerCardSection>
             </ContainerCard>
 
-            <ContainerCard bgColor={Color.neutral10} color={Color.neutral98}>
+            <ContainerCard bgColor={Color.neutral10} color={Color.neutral100}>
               <ContainerCardSection>
-                <SectionTitleWrapper padding="150px 0 56px">
-                  <SectionTitleIcon size={100}>
+                <SectionTitleWrapper maxWidth={700}>
+                  <SectionTitleIcon>
                     <ProductLogo variant={ProductVariant.MevBlocker} theme="dark" logoIconOnly />
                   </SectionTitleIcon>
-                  <SectionTitleText fontSize={90}>What others are saying...</SectionTitleText>
+                  <SectionTitleText>Multiple endpoints for multiple protection types</SectionTitleText>
+                  <SectionTitleDescription color={Color.neutral50}>
+                    Advanced MEV Blocker users can select from a variety of endpoints to suit their specific needs.
+                  </SectionTitleDescription>
+                </SectionTitleWrapper>
+
+                <ColorTableContainer>
+                  <ColorTable>
+                    <thead>
+                      <tr>
+                        <ColorTableHeader></ColorTableHeader>
+                        <ColorTableHeader>Frontrunning</ColorTableHeader>
+                        <ColorTableHeader>Backrunning</ColorTableHeader>
+                        <ColorTableHeader>Tx Revert</ColorTableHeader>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <ColorTableCell>/fast (default)</ColorTableCell>
+                        <ColorTableCell className="protected">Protected</ColorTableCell>
+                        <ColorTableCell className="refund">Refund</ColorTableCell>
+                        <ColorTableCell className="not-protected">Not protected</ColorTableCell>
+                      </tr>
+                      <tr>
+                        <ColorTableCell>/noreverts</ColorTableCell>
+                        <ColorTableCell className="protected">Protected</ColorTableCell>
+                        <ColorTableCell className="refund">Refund</ColorTableCell>
+                        <ColorTableCell className="protected">Protected</ColorTableCell>
+                      </tr>
+                      <tr>
+                        <ColorTableCell>/fullprivacy</ColorTableCell>
+                        <ColorTableCell className="max-protection">Max protection</ColorTableCell>
+                        <ColorTableCell className="no-rebate">No rebate</ColorTableCell>
+                        <ColorTableCell className="protected">Protected</ColorTableCell>
+                      </tr>
+                      <tr>
+                        <ColorTableCell>/maxbackrun</ColorTableCell>
+                        <ColorTableCell className="protected">Protected</ColorTableCell>
+                        <ColorTableCell className="refund">Refund</ColorTableCell>
+                        <ColorTableCell className="protected">Protected</ColorTableCell>
+                      </tr>
+                      <tr>
+                        <ColorTableCell>/nochecks</ColorTableCell>
+                        <ColorTableCell className="max-protection">Max protection</ColorTableCell>
+                        <ColorTableCell className="no-rebate">No rebate</ColorTableCell>
+                        <ColorTableCell className="protected">Protected</ColorTableCell>
+                      </tr>
+                    </tbody>
+                  </ColorTable>
+                </ColorTableContainer>
+
+                <SectionTitleWrapper margin={'24px auto 0'}>
+                  <SectionTitleDescription color={Color.neutral50}>
+                    To learn more about each of the endpoints MEV Blocker has to offer, read the MEV Blocker docs.
+                  </SectionTitleDescription>
+                </SectionTitleWrapper>
+              </ContainerCardSection>
+            </ContainerCard>
+
+            <ContainerCard bgColor={'transparent'}>
+              <ContainerCardSection>
+                <SectionTitleWrapper>
+                  <SectionTitleIcon>
+                    <SVG src={IMAGE_ICON_MEVBLOCKER_CHATBALLOON} />
+                  </SectionTitleIcon>
+                  <SectionTitleText>What others are saying...</SectionTitleText>
                 </SectionTitleWrapper>
 
                 <TopicList columns={3}>
@@ -395,7 +504,13 @@ export default function Page({ siteConfigData }: PageProps) {
                     </TopicCardInner>
                   </TopicCard>
 
-                  <TopicCard contentAlign={'left'} bgColor="#FEE7CF" textColor="#EC4612" padding={'24px'} asProp="div">
+                  <TopicCard
+                    contentAlign={'left'}
+                    bgColor={Color.neutral100}
+                    textColor="#EC4612"
+                    padding={'24px'}
+                    asProp="div"
+                  >
                     <TopicCardInner height="100%" contentAlign="left" gap={52}>
                       <TopicTitle fontSize={28}>I was tired of getting rekt, so I started using MEV Blocker</TopicTitle>
                       <TopicDescription margin="auto 0 0" fontSize={21}>
@@ -404,7 +519,13 @@ export default function Page({ siteConfigData }: PageProps) {
                     </TopicCardInner>
                   </TopicCard>
 
-                  <TopicCard contentAlign={'left'} bgColor="#FEE7CF" textColor="#EC4612" padding={'24px'} asProp="div">
+                  <TopicCard
+                    contentAlign={'left'}
+                    bgColor={Color.neutral100}
+                    textColor="#EC4612"
+                    padding={'24px'}
+                    asProp="div"
+                  >
                     <TopicCardInner height="100%" contentAlign="left" gap={52}>
                       <TopicTitle fontSize={28}>Robots should work for me, not against me</TopicTitle>
                       <TopicDescription margin="auto 0 0" fontSize={21}>
@@ -436,246 +557,103 @@ export default function Page({ siteConfigData }: PageProps) {
               </ContainerCardSection>
             </ContainerCard>
 
-            <ContainerCard bgColor={'#EC4612'} color="#FEE7CF">
+            <ContainerCard bgColor={Color.neutral100}>
+              <ContainerCardSection>
+                <SectionTitleWrapper maxWidth={900}>
+                  <SectionTitleIcon>
+                    <ProductLogo variant={ProductVariant.MevBlocker} theme="light" logoIconOnly />
+                  </SectionTitleIcon>
+                  <SectionTitleText textAlign="center" maxWidth={480}>
+                    Don't let your users get burned by MEV
+                  </SectionTitleText>
+                  <SectionTitleDescription color={Color.neutral50}>
+                    If you're a wallet, a solver, or any project that settles transactions on behalf of users, you
+                    should integrate MEV Blocker to protect them from MEV and earn some extra revenue.
+                  </SectionTitleDescription>
+
+                  <SectionTitleButton
+                    bgColor="#EC4612"
+                    color={Color.neutral98}
+                    href="https://docs.cow.fi/category/searchers"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Learn more
+                  </SectionTitleButton>
+                </SectionTitleWrapper>
+              </ContainerCardSection>
+            </ContainerCard>
+
+            <ContainerCard bgColor="transparent">
               <ContainerCardSection>
                 <SectionTitleWrapper>
-                  <SectionTitleIcon multiple>
-                    <ProductLogo variant={ProductVariant.MevBlocker} theme="dark" logoIconOnly height={60} />
+                  <SectionTitleIcon size={90}>
+                    <SVG src={IMAGE_ICON_MEVBLOCKER_TRUST} />
                   </SectionTitleIcon>
-                  <SectionTitleText fontSize={90}>Trusted by the best</SectionTitleText>
+                  <SectionTitleText>Trusted by the best</SectionTitleText>
                 </SectionTitleWrapper>
 
                 <TopicList columns={3}>
-                  <TopicCard
-                    contentAlign={'center'}
-                    bgColor={Color.neutral98}
-                    padding={'28px'}
-                    href="https://safe.global/"
-                    rel={'noopener noreferrer'}
-                    target="_blank"
-                  >
-                    <TopicImage
-                      iconColor={Color.neutral20}
-                      bgColor={'transparent'}
-                      width={'100%'}
-                      height={72}
-                      margin={'auto'}
+                  {TRUSTED_BY_CONTENT.map((item, index) => (
+                    <TopicCard
+                      key={index}
+                      contentAlign={'center'}
+                      bgColor={Color.neutral98}
+                      padding={'28px'}
+                      href={item.href}
+                      rel={'noopener noreferrer nofollow'}
+                      target="_blank"
+                      gap={item.title ? 16 : undefined}
                     >
-                      <SVG src={IMG_LOGO_SAFE} />
-                    </TopicImage>
-                  </TopicCard>
-
-                  <TopicCard
-                    contentAlign={'center'}
-                    bgColor={Color.neutral98}
-                    padding={'28px'}
-                    gap={16}
-                    href="https://www.karpatkey.com/"
-                    rel={'noopener noreferrer nofollow'}
-                    target="_blank"
-                  >
-                    <TopicImage
-                      iconColor={Color.neutral20}
-                      bgColor={'transparent'}
-                      width={'100%'}
-                      height={72}
-                      margin={'auto'}
-                    >
-                      <SVG src={IMG_LOGO_KARPATKEY} />
-                    </TopicImage>
-
-                    <TopicTitle fontSize={18} color={Color.neutral50} fontWeight={Font.weight.regular}>
-                      Karpatkey
-                    </TopicTitle>
-                  </TopicCard>
-
-                  <TopicCard
-                    contentAlign={'center'}
-                    bgColor={Color.neutral98}
-                    padding={'28px'}
-                    href="
-                  https://swap.cow.fi/
-                  "
-                    rel="noopener noreferrer"
-                    target="_blank"
-                  >
-                    <TopicImage
-                      iconColor={Color.neutral20}
-                      bgColor={'transparent'}
-                      width={'100%'}
-                      height={72}
-                      margin={'auto'}
-                    >
-                      <ProductLogo variant={ProductVariant.CowSwap} theme="dark" />
-                    </TopicImage>
-                  </TopicCard>
-
-                  <TopicCard
-                    contentAlign={'center'}
-                    bgColor={Color.neutral98}
-                    padding={'28px'}
-                    gap={16}
-                    href="https://www.blocknative.com/"
-                    rel={'noopener noreferrer'}
-                    target="_blank"
-                  >
-                    <TopicImage
-                      iconColor={Color.neutral20}
-                      bgColor={'transparent'}
-                      width={'100%'}
-                      height={72}
-                      margin={'auto'}
-                    >
-                      <SVG src={IMG_LOGO_BLOCKNATIVE} />
-                    </TopicImage>
-
-                    <TopicTitle fontSize={18} color={Color.neutral50} fontWeight={Font.weight.regular}>
-                      Blocknative Transaction Boost
-                    </TopicTitle>
-                  </TopicCard>
-
-                  <TopicCard
-                    contentAlign={'center'}
-                    bgColor={Color.neutral98}
-                    padding={'28px'}
-                    href="https://rabby.io/"
-                    rel={'noopener noreferrer nofollow'}
-                    target="_blank"
-                  >
-                    <TopicImage
-                      iconColor={Color.neutral20}
-                      bgColor={'transparent'}
-                      width={'100%'}
-                      height={72}
-                      margin={'auto'}
-                    >
-                      <SVG src={IMG_LOGO_RABBY} />
-                    </TopicImage>
-                  </TopicCard>
-
-                  <TopicCard
-                    contentAlign={'center'}
-                    bgColor={Color.neutral98}
-                    padding={'28px'}
-                    href="https://www.keepkey.com/"
-                    rel={'noopener noreferrer nofollow'}
-                    target="_blank"
-                  >
-                    <TopicImage
-                      iconColor={Color.neutral20}
-                      bgColor={'transparent'}
-                      width={'100%'}
-                      height={72}
-                      margin={'auto'}
-                    >
-                      <SVG src={IMG_LOGO_KEEPKEY} />
-                    </TopicImage>
-                  </TopicCard>
-
-                  <TopicCard
-                    contentAlign={'center'}
-                    bgColor={Color.neutral98}
-                    padding={'28px'}
-                    gap={16}
-                    href="https://www.ambire.com/"
-                    rel={'noopener noreferrer nofollow'}
-                    target="_blank"
-                  >
-                    <TopicImage
-                      iconColor={Color.neutral20}
-                      bgColor={'transparent'}
-                      width={'100%'}
-                      height={72}
-                      margin={'auto'}
-                    >
-                      <SVG src={IMG_LOGO_AMBIRE} />
-                    </TopicImage>
-
-                    <TopicTitle fontSize={18} color={Color.neutral50} fontWeight={Font.weight.regular}>
-                      Wallet
-                    </TopicTitle>
-                  </TopicCard>
-
-                  <TopicCard
-                    contentAlign={'center'}
-                    bgColor={Color.neutral98}
-                    padding={'28px'}
-                    href="https://crypto.com/"
-                    rel={'noopener noreferrer nofollow'}
-                    target="_blank"
-                    gap={16}
-                  >
-                    <TopicImage
-                      iconColor={Color.neutral20}
-                      bgColor={'transparent'}
-                      width={'100%'}
-                      height={72}
-                      margin={'auto'}
-                    >
-                      <SVG src={IMG_LOGO_CRYPTO_COM} />
-                    </TopicImage>
-
-                    <TopicTitle fontSize={18} color={Color.neutral50} fontWeight={Font.weight.regular}>
-                      Wallet
-                    </TopicTitle>
-                  </TopicCard>
-
-                  <TopicCard
-                    contentAlign={'center'}
-                    bgColor={Color.neutral98}
-                    padding={'28px'}
-                    href="https://uniswap.org/"
-                    rel={'noopener noreferrer nofollow'}
-                    target="_blank"
-                    gap={16}
-                  >
-                    <TopicImage
-                      iconColor={Color.neutral20}
-                      bgColor={'transparent'}
-                      width={'100%'}
-                      height={72}
-                      margin={'auto'}
-                    >
-                      <SVG src={IMG_LOGO_UNISWAP} />
-                    </TopicImage>
-
-                    <TopicTitle fontSize={18} color={Color.neutral50} fontWeight={Font.weight.regular}>
-                      Wallet
-                    </TopicTitle>
-                  </TopicCard>
+                      <TopicImage
+                        iconColor={Color.neutral20}
+                        bgColor={'transparent'}
+                        width={'100%'}
+                        height={72}
+                        margin={'auto'}
+                      >
+                        {item.component || <SVG src={item.src} />}
+                      </TopicImage>
+                      {item.title && (
+                        <TopicTitle fontSize={18} color={Color.neutral50} fontWeight={Font.weight.regular}>
+                          {item.title}
+                        </TopicTitle>
+                      )}
+                    </TopicCard>
+                  ))}
                 </TopicList>
               </ContainerCardSection>
             </ContainerCard>
 
-            <ContainerCard bgColor={Color.neutral100} color={Color.neutral10}>
+            <ContainerCard bgColor={Color.neutral100}>
               <ContainerCardSection>
-                <SectionTitleWrapper padding="72px 0" maxWidth={900}>
-                  <SectionTitleIcon size={100}>
-                    <ProductLogo variant={ProductVariant.MevBlocker} theme="light" logoIconOnly />
-                  </SectionTitleIcon>
-                  <SectionTitleText fontSize={64} textAlign="center">
-                    Friends don't let friends suffer from MEV damage
-                  </SectionTitleText>
-
-                  <SectionTitleButton bgColor="#EC4612" color="#FEE7CF" onClick={handleShareClick} as="div">
-                    Share MEV Blocker
-                  </SectionTitleButton>
-
-                  {message && <SectionTitleDescription fontSize={21}>{message}</SectionTitleDescription>}
-                </SectionTitleWrapper>
-              </ContainerCardSection>
-            </ContainerCard>
-
-            <ContainerCard bgColor={Color.neutral90} color={Color.neutral20} touchFooter>
-              <ContainerCardSection padding={'0 0 100px'}>
                 <SectionTitleWrapper>
                   <SectionTitleIcon>
-                    <SVG src={IMG_ICON_FAQ} />
+                    <SVG src={IMAGE_ICON_QUESTIONBALLOON} />
                   </SectionTitleIcon>
                   <SectionTitleText>FAQs</SectionTitleText>
                 </SectionTitleWrapper>
 
                 <FAQ faqs={FAQ_DATA} />
+              </ContainerCardSection>
+            </ContainerCard>
+
+            <ContainerCard bgColor="#FEE7CF" touchFooter>
+              <ContainerCardSection>
+                <SectionTitleWrapper padding="72px 0" maxWidth={640}>
+                  <SectionTitleIcon>
+                    <ProductLogo variant={ProductVariant.MevBlocker} theme="light" logoIconOnly />
+                  </SectionTitleIcon>
+                  <SectionTitleText textAlign="center">
+                    Friends don't let friends suffer from MEV damage
+                  </SectionTitleText>
+
+                  <SectionTitleButton bgColor="#EC4612" onClick={handleShareClick} as="div">
+                    Share MEV Blocker
+                  </SectionTitleButton>
+
+                  {message && <SectionTitleDescription fontSize={21}>{message}</SectionTitleDescription>}
+                </SectionTitleWrapper>
               </ContainerCardSection>
             </ContainerCard>
           </Wrapper>

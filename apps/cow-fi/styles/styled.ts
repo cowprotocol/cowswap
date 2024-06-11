@@ -25,7 +25,7 @@ export const ContainerCard = styled.div<{
   border-radius: 60px;
   background: ${({ bgColor }) => bgColor || Color.neutral90};
   position: relative;
-  color: ${({ color }) => color || Color.neutral0};
+  color: ${({ color }) => color || Color.neutral10};
   min-height: ${({ minHeight }) => minHeight || 'initial'};
 
   ${Media.upToMedium()} {
@@ -632,7 +632,7 @@ export const SectionTitleWrapper = styled.div<{
   marginMobile?: string
   rowWrap?: boolean
 }>`
-  --color: ${Color.neutral20};
+  --color: ${Color.neutral10};
   display: flex;
   flex-flow: column wrap;
   flex-flow: ${({ rowWrap }) => (rowWrap ? 'row wrap' : 'column wrap')};
@@ -682,11 +682,11 @@ export const SectionTitleDescription = styled.p<{
   textAlign?: string
   margin?: string
 }>`
-  font-size: ${({ fontSize }) => fontSize || 32}px;
+  font-size: ${({ fontSize }) => fontSize || 28}px;
   color: ${({ color }) => color || 'inherit'};
   font-weight: ${({ fontWeight }) => fontWeight || Font.weight.medium};
   margin: ${({ margin }) => margin || '0'};
-  line-height: 1.2;
+  line-height: 1.4;
   text-align: ${({ textAlign }) => textAlign || 'center'};
   width: 100%;
   max-width: ${({ maxWidth }) => (typeof maxWidth === 'number' ? `${maxWidth}px` : maxWidth || '100%')};
@@ -707,7 +707,7 @@ export const SectionTitleButton = styled.a<{
   display: inline-block;
   padding: 16px 24px;
   font-size: 27px;
-  font-size: ${({ fontSize }) => (fontSize && `${fontSize}px`) || '27px'};
+  font-size: ${({ fontSize }) => (fontSize && `${fontSize}px`) || '24px'};
   font-weight: ${Font.weight.bold};
   color: ${({ color }) => color || Color.neutral98};
   background: ${({ bgColor }) => bgColor || Color.neutral10};
@@ -732,7 +732,7 @@ export const SectionTitleButton = styled.a<{
 `
 
 export const SectionTitleIcon = styled.div<{ size?: number; multiple?: boolean }>`
-  --size: ${({ size }) => (size ? `${size}px` : '64px')};
+  --size: ${({ size }) => (size ? `${size}px` : '82px')};
   width: 100%;
   object-fit: contain;
   color: inherit;
@@ -862,15 +862,17 @@ export const HeroTitle = styled.h1<{
   fontWeight?: number
   color?: string
   as?: string
+  maxWidth?: number
 }>`
-  font-size: ${({ fontSize }) => fontSize || 150}px;
+  font-size: ${({ fontSize }) => fontSize || 51}px;
   font-weight: ${({ fontWeight }) => fontWeight || Font.weight.bold};
   color: ${({ color }) => color || Color.neutral10};
   margin: 0;
   line-height: 1.2;
+  max-width: ${({ maxWidth }) => (maxWidth ? `${maxWidth}px` : '100%')};
 
   ${Media.upToMedium()} {
-    font-size: ${({ fontSizeMobile }) => fontSizeMobile || 67}px;
+    font-size: ${({ fontSizeMobile }) => fontSizeMobile || 38}px;
   }
 `
 
@@ -1669,5 +1671,89 @@ export const DropDown = styled.div<{ maxWidth?: number; margin?: string }>`
       background-color: ${Color.neutral0};
       color: ${Color.neutral0};
     }
+  }
+`
+
+export const ColorTableContainer = styled.div`
+  width: 100%;
+  overflow-x: auto;
+  border-radius: 32px;
+  -webkit-overflow-scrolling: touch;
+
+  ${Media.upToMedium()} {
+    overflow-x: auto;
+  }
+`
+
+export const ColorTable = styled.table`
+  --green: #2b6f0b;
+  --red: #ec4612;
+  --neutral: #fee7cf;
+  --border: ${Color.neutral10};
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  font-size: 32px;
+  font-weight: ${Font.weight.semibold};
+  color: var(--neutral);
+  border-radius: 32px;
+
+  ${Media.upToMedium()} {
+    font-size: 21px;
+    max-width: 100%;
+    display: block;
+  }
+`
+
+export const ColorTableHeader = styled.th`
+  background: var(--neutral);
+  color: var(--red);
+  padding: 10px;
+  text-align: left;
+  border: 2px solid var(--border);
+  font-weight: inherit;
+  line-height: 1.2;
+  padding: 30px;
+  position: relative;
+
+  &:first-child {
+    background: transparent;
+    position: relative;
+    overflow: hidden;
+  }
+`
+
+export const ColorTableCell = styled.td`
+  background: var(--neutral);
+  color: var(--red);
+  line-height: 1.2;
+  padding: 30px;
+  border: 2px solid var(--border);
+  text-align: left;
+  font-weight: inherit;
+
+  &.protected {
+    background: var(--green);
+    color: var(--neutral);
+  }
+
+  &.not-protected {
+    background: var(--red);
+    color: var(--neutral);
+  }
+
+  &.refund {
+    background: var (--green);
+    color: var(--neutral);
+  }
+
+  &.no-rebate {
+    background: var(--neutral);
+    color: var(--red);
+  }
+
+  &.max-protection {
+    background: var(--green);
+    color: var(--neutral);
   }
 `

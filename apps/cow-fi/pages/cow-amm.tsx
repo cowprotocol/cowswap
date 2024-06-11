@@ -95,9 +95,7 @@ export default function Page({ siteConfigData }: PageProps) {
         <HeroContainer variant="secondary" maxWidth={1300}>
           <HeroContent variant="secondary">
             <HeroSubtitle color={'#194D05'}>CoW AMM</HeroSubtitle>
-            <HeroTitle fontSize={67} fontSizeMobile={38} as="h2">
-              The first MEV-capturing AMM
-            </HeroTitle>
+            <HeroTitle as="h2">The first MEV-capturing AMM</HeroTitle>
             <HeroDescription>
               CoW AMM protects LPs from LVR so they can provide liquidity with less risk and more return
             </HeroDescription>
@@ -125,8 +123,8 @@ export default function Page({ siteConfigData }: PageProps) {
           </MetricsItem>
 
           <SectionTitleButton
-            bgColor="#194D05"
-            color="#BCEC79"
+            bgColor="transparent"
+            color="#194D05"
             margin="56px auto 0"
             gridFullWidth
             href="https://dune.com/cowprotocol/cowamms"
@@ -175,10 +173,8 @@ export default function Page({ siteConfigData }: PageProps) {
               <SectionTitleIcon size={128}>
                 <SVG src={IMG_ICON_BULB_COW} />
               </SectionTitleIcon>
-              <SectionTitleText fontSize={90} textAlign="center">
-                Finally, an AMM designed with LPs in mind
-              </SectionTitleText>
-              <SectionTitleDescription fontSize={38} textAlign="center">
+              <SectionTitleText textAlign="center">Finally, an AMM designed with LPs in mind</SectionTitleText>
+              <SectionTitleDescription textAlign="center">
                 CoW AMM eliminates LVR once and for all by using batch auctions to send surplus to LPs
               </SectionTitleDescription>
             </SectionTitleWrapper>
@@ -283,7 +279,7 @@ export default function Page({ siteConfigData }: PageProps) {
                     or outperformed CF-AMM returns for 10 of the 11 most liquid, non-stablecoin pairs.
                   </TopicDescription>
                 </TopicCardInner>
-                <TopicImage iconColor="#194D05" width={590} height={590} heightMobile={300} orderReverseMobile />
+                <TopicImage iconColor="#194D05" width={550} height={550} heightMobile={300} orderReverseMobile />
               </TopicCard>
             </TopicList>
           </ContainerCardSection>
@@ -292,7 +288,7 @@ export default function Page({ siteConfigData }: PageProps) {
         <ContainerCard bgColor={'transparent'}>
           <ContainerCardSection>
             <SectionTitleWrapper color={Color.neutral10} maxWidth={1100} gap={56}>
-              <SectionTitleIcon size={98}>
+              <SectionTitleIcon size={128}>
                 <SVG src={IMG_ICON_BULB_COW} />
               </SectionTitleIcon>
               <SectionTitleText>CoW AMM benefits LPs of all types</SectionTitleText>
@@ -330,10 +326,10 @@ export default function Page({ siteConfigData }: PageProps) {
         <ContainerCard bgColor={Color.neutral10} color={Color.neutral98}>
           <ContainerCardSection>
             <SectionTitleWrapper padding="150px 0 56px">
-              <SectionTitleIcon size={100}>
+              <SectionTitleIcon size={82}>
                 <ProductLogo variant={ProductVariant.CowProtocol} theme="dark" logoIconOnly />
               </SectionTitleIcon>
-              <SectionTitleText fontSize={90}>Trust the experts</SectionTitleText>
+              <SectionTitleText>Trust the experts</SectionTitleText>
             </SectionTitleWrapper>
 
             <TopicList columns={3}>
@@ -380,7 +376,7 @@ export default function Page({ siteConfigData }: PageProps) {
         <ContainerCard bgColor={'transparent'} color={Color.neutral10} touchFooter>
           <ContainerCardSection padding={'0 0 100px'}>
             <SectionTitleWrapper>
-              <SectionTitleIcon>
+              <SectionTitleIcon size={62}>
                 <SVG src={IMG_ICON_FAQ} />
               </SectionTitleIcon>
               <SectionTitleText>FAQs</SectionTitleText>

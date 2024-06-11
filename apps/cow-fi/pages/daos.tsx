@@ -106,7 +106,7 @@ export default function Page({ siteConfigData }: PageProps) {
         <HeroContainer variant="secondary" maxWidth={1300}>
           <HeroContent variant="secondary">
             <HeroSubtitle color={'#66018E'}>DAOs</HeroSubtitle>
-            <HeroTitle fontSize={67} fontSizeMobile={38} as="h2">
+            <HeroTitle as="h2" maxWidth={470}>
               Savvy DAOs Choose CoW Swap
             </HeroTitle>
             <HeroDescription>The smartest DAOs trust CoW Swap with their most-important trades</HeroDescription>
@@ -140,7 +140,7 @@ export default function Page({ siteConfigData }: PageProps) {
               <SectionTitleIcon size={98}>
                 <SVG src={IMG_ICON_CROWN_COW} />
               </SectionTitleIcon>
-              <SectionTitleText fontSize={64}>Expert trading for expert DAOs</SectionTitleText>
+              <SectionTitleText>Expert trading for expert DAOs</SectionTitleText>
               <SectionTitleDescription maxWidth={900}>
                 CoW Swap is the only DEX built to solve the unique challenges faced by DAOs
               </SectionTitleDescription>
@@ -194,7 +194,7 @@ export default function Page({ siteConfigData }: PageProps) {
               <SectionTitleIcon size={60}>
                 <ProductLogo variant={ProductVariant.CowProtocol} theme="dark" logoIconOnly />
               </SectionTitleIcon>
-              <SectionTitleText fontSize={62}>Advanced order types</SectionTitleText>
+              <SectionTitleText>Advanced order types</SectionTitleText>
               <SectionTitleDescription fontSize={24} color={Color.neutral40}>
                 CoW Swap's many order types help you get better prices for your trades, manage token launches,
                 facilitate buybacks, and much more
@@ -306,7 +306,7 @@ export default function Page({ siteConfigData }: PageProps) {
                 <ProductLogo variant={ProductVariant.CowProtocol} theme="dark" logoIconOnly height={60} />
                 <SVG src={IMG_ICON_GHOST} />
               </SectionTitleIcon>
-              <SectionTitleText fontSize={90}>Trusted by the best</SectionTitleText>
+              <SectionTitleText>Trusted by the best</SectionTitleText>
             </SectionTitleWrapper>
 
             <TopicList columns={3}>
@@ -369,7 +369,7 @@ export default function Page({ siteConfigData }: PageProps) {
         <ContainerCard bgColor={'transparent'} color={Color.neutral10} touchFooter>
           <ContainerCardSection padding={'0 0 100px'}>
             <SectionTitleWrapper>
-              <SectionTitleIcon>
+              <SectionTitleIcon size={62}>
                 <SVG src={IMG_ICON_FAQ} />
               </SectionTitleIcon>
               <SectionTitleText>FAQs</SectionTitleText>
