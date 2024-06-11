@@ -87,7 +87,7 @@ export default function Page({ siteConfigData }: PageProps) {
                   <TopicDescription fontSize={28} color="#F996EE">
                     Open-source, permissionless DEX aggregation protocol
                   </TopicDescription>
-                  <TopicButton bgColor="#F996EE" color="#490072">
+                  <TopicButton bgColor="#F996EE" color="#490072" href="/cow-protocol">
                     Start building
                   </TopicButton>
                 </TopicCardInner>
@@ -102,8 +102,14 @@ export default function Page({ siteConfigData }: PageProps) {
                   <TopicDescription fontSize={28} color="#012F7A">
                     The DEX that lets you do what you want
                   </TopicDescription>
-                  <TopicButton bgColor="#012F7A" color="#65D9FF">
-                    Start swapping
+                  <TopicButton
+                    bgColor="#012F7A"
+                    color="#65D9FF"
+                    href="https://swap.cow.fi/#/1/swap/USDC/COW"
+                    rel="noopener noreferrer"
+                    target="_blank"
+                  >
+                    Start trading
                   </TopicButton>
                 </TopicCardInner>
                 <TopicImage iconColor="#CCF8FF" bgColor="transparent" margin={'0 0 0 auto'} height={187} width={'auto'}>
@@ -117,7 +123,7 @@ export default function Page({ siteConfigData }: PageProps) {
                   <TopicDescription fontSize={28} color="#BCEC79">
                     The first MEV-capturing AMM
                   </TopicDescription>
-                  <TopicButton bgColor="#BCEC79" color="#194D06">
+                  <TopicButton bgColor="#BCEC79" color="#194D06" href="/cow-amm">
                     Deposit liquidity
                   </TopicButton>
                 </TopicCardInner>
@@ -134,7 +140,7 @@ export default function Page({ siteConfigData }: PageProps) {
                   <TopicDescription fontSize={28} color="#EC4612">
                     The best MEV protection RPC under the sun
                   </TopicDescription>
-                  <TopicButton bgColor="#EC4612" color="#FEE7CF">
+                  <TopicButton bgColor="#EC4612" color="#FEE7CF" href="/mev-blocker">
                     Get protected
                   </TopicButton>
                 </TopicCardInner>

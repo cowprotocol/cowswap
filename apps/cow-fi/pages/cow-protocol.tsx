@@ -10,6 +10,8 @@ import IMG_ICON_OWL from '@cowprotocol/assets/images/icon-owl.svg'
 import IMG_ICON_GHOST from '@cowprotocol/assets/images/icon-ghost.svg'
 import IMG_LOGO_SAFE from '@cowprotocol/assets/images/logo-safe.svg'
 import IMG_LOGO_SUMMER_FI from '@cowprotocol/assets/images/logo-summer-fi.svg'
+import IMG_LOGO_LIDO from '@cowprotocol/assets/images/logo-lido.svg'
+import IMG_LOGO_CURVE from '@cowprotocol/assets/images/logo-curve.svg'
 
 import styled from 'styled-components'
 
@@ -368,45 +370,49 @@ export default function Page({ siteConfigData }: PageProps) {
             <TopicList columns={3}>
               <TopicCard contentAlign={'left'} bgColor="#66018E" textColor="#F996EE" padding={'32px'} asProp="div">
                 <TopicImage iconColor="#8702AA" bgColor="transparent" height={96} width={'auto'}>
-                  <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />
+                  <SVG src={IMG_LOGO_CURVE} />
                 </TopicImage>
                 <TopicCardInner contentAlign="left">
                   <TopicTitle color={Color.neutral100} fontSize={38}>
-                    Automating complex treasury tasks
+                    Automating advanced treasury tasks
                   </TopicTitle>
                   <TopicDescription fontSize={21} color="#F996EE">
-                    Curve used CoW Protocol to manage their fee burning process ... TBD
+                    Curve uses programmatic orders from CoW Protocol to streamline their fee burning processes. With the
+                    integration in place, Curve can take fees in any token and convert them automatically to CRV, while
+                    generating surplus and protecting themselves from MEV
                   </TopicDescription>
                 </TopicCardInner>
               </TopicCard>
 
               <TopicCard contentAlign={'left'} bgColor="#66018E" textColor="#F996EE" padding={'32px'} asProp="div">
                 <TopicImage iconColor="#8702AA" bgColor="transparent" height={96} width={'auto'}>
-                  <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />
+                  <SVG src={IMG_LOGO_LIDO} />
                 </TopicImage>
                 <TopicCardInner contentAlign="left">
                   <TopicTitle color={Color.neutral100} fontSize={38}>
-                    Solver infrastructure
+                    Adding security to sensitive transactions
                   </TopicTitle>
                   <TopicDescription fontSize={21} color="#F996EE">
-                    Adding security checks to sensitive treasury ops // Additional layer of security for
-                    highly-sensitive swaps
+                    Lido leverages programmatic orders as the backbone of “stonks” - a set of smart contracts that they
+                    use to manage treasury ops smoothly and securely without taking custody of funds. Stonks allows Lido
+                    DAO to "set and forget" complex trade intents without compromising the prices they receive on future
+                    swaps - minimizing time spend and human error
                   </TopicDescription>
                 </TopicCardInner>
               </TopicCard>
 
               <TopicCard contentAlign={'left'} bgColor="#66018E" textColor="#F996EE" padding={'32px'} asProp="div">
                 <TopicImage iconColor="#8702AA" bgColor="transparent" height={96} width={'auto'}>
-                  <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />
+                  <SVG src={IMG_LOGO_SAFE} />
                 </TopicImage>
                 <TopicCardInner contentAlign="left">
                   <TopicTitle color={Color.neutral100} fontSize={38}>
                     Powering native swaps
                   </TopicTitle>
                   <TopicDescription fontSize={21} color="#F996EE">
-                    Safe integrated a simplified version of CoW Protocol via the CoW widget to offer native swaps and
-                    limit orders to its users. They customized the experience above the standard CoW Swap widget by
-                    adding ...
+                    Safe chose CoW Protocol to power native swaps on the Safe app. The team chose to build on top of the
+                    CoW widget (the simplest way to integrate CoW Protocol) and is now earning revenue by offering
+                    MEV-protected swaps to its users
                   </TopicDescription>
                 </TopicCardInner>
               </TopicCard>
@@ -588,7 +594,7 @@ export default function Page({ siteConfigData }: PageProps) {
                   </TopicTitle>
                   <TopicDescription fontSize={21} color="#F996EE" minHeight={170}>
                     Don't need overly-custom trading logic? The CoW Protocol widget is the easiest way to integrate
-                    swaps, twaps, and limit orders directly into your project site.
+                    swaps, twaps, and limit orders directly into your project site
                   </TopicDescription>
                   <TopicButton bgColor="#ED60E9" color="#66018E" fontSize={27} href="/widget">
                     Integrate the widget
@@ -606,7 +612,7 @@ export default function Page({ siteConfigData }: PageProps) {
                   </TopicTitle>
                   <TopicDescription fontSize={21} color="#F996EE" minHeight={170}>
                     The CoW DAO Grants program has awarded over $100,000 in grants to innovators that build public DeFi
-                    applications with CoW Protocol.
+                    applications with CoW Protocol
                   </TopicDescription>
                   <TopicButton
                     bgColor="#ED60E9"
