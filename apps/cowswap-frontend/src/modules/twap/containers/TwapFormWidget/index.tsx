@@ -36,7 +36,6 @@ import { ActionButtons } from '../ActionButtons'
 import { AmountParts } from '../AmountParts'
 import { TwapFormWarnings } from '../TwapFormWarnings'
 
-
 export type { LabelTooltip, LabelTooltipItems } from './tooltips'
 
 export function TwapFormWidget() {
@@ -127,7 +126,12 @@ export function TwapFormWidget() {
         prefixComponent={
           <em>
             {limitPrice ? (
-              <ExecutionPrice executionPrice={limitPrice} isInverted={isInverted} hideFiat hideSeparator />
+              <styledEl.ExecutionPriceStyled
+                executionPrice={limitPrice}
+                isInverted={isInverted}
+                hideFiat
+                hideSeparator
+              />
             ) : (
               '0'
             )}
