@@ -1,4 +1,3 @@
-import Head from 'next/head'
 import { GetStaticProps } from 'next'
 import { Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
 import IMG_ICON_CROWN_COW from '@cowprotocol/assets/images/icon-crown-cow.svg'
@@ -95,20 +94,16 @@ const Wrapper = styled.div`
 
 export default function Page({ siteConfigData }: PageProps) {
   return (
-    <Layout bgColor={Color.neutral90}>
-      <Head>
-        <title>
-          {siteConfigData.title} - {siteConfigData.descriptionShort}
-        </title>
-      </Head>
-
+    <Layout
+      bgColor={Color.neutral90}
+      metaTitle="DAOs - Savvy DAOs Choose CoW Swap"
+      metaDescription="The smartest DAOs trust CoW Swap with their most-important trades"
+    >
       <Wrapper>
         <HeroContainer variant="secondary" maxWidth={1300}>
           <HeroContent variant="secondary">
             <HeroSubtitle color={'#66018E'}>DAOs</HeroSubtitle>
-            <HeroTitle as="h2" maxWidth={470}>
-              Savvy DAOs Choose CoW Swap
-            </HeroTitle>
+            <HeroTitle maxWidth={470}>Savvy DAOs Choose CoW Swap</HeroTitle>
             <HeroDescription>The smartest DAOs trust CoW Swap with their most-important trades</HeroDescription>
           </HeroContent>
           <HeroImage width={470} height={400} color={'#66018E'}>

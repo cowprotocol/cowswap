@@ -1,4 +1,3 @@
-import Head from 'next/head'
 import { GetStaticProps } from 'next'
 import { Color } from '@cowprotocol/ui'
 
@@ -35,16 +34,14 @@ const Wrapper = styled.div`
 `
 
 export default function Page({ siteConfigData }: PageProps) {
-  const { title, descriptionShort } = siteConfigData
+  const { title } = siteConfigData
 
   return (
-    <Layout bgColor={Color.neutral90}>
-      <Head>
-        <title>
-          {title} - {descriptionShort}
-        </title>
-      </Head>
-
+    <Layout
+      bgColor={Color.neutral90}
+      metaTitle="Widget - Terms and Conditions"
+      metaDescription="Terms and Conditions for the CoW Swap Widget"
+    >
       <Wrapper>
         <ContainerCard bgColor={Color.neutral100} minHeight="70vh" gap={62} gapMobile={42} centerContent touchFooter>
           <ArticleContent maxWidth="100%">
@@ -59,7 +56,7 @@ export default function Page({ siteConfigData }: PageProps) {
 
             <BodyContent>
               <p>
-                These Terms and Conditions (the "Terms") govern the integration of the CoW Swap Widgetr (the "Widget").
+                These Terms and Conditions (the "Terms") govern the integration of the CoW Swap Widget (the "Widget").
                 The Widget is provided to you ("you", the "Partner") by CoW DAO (the "Provider", "we", "our", or "us").
               </p>
               <p>

@@ -1,4 +1,3 @@
-import Head from 'next/head'
 import { GetStaticProps } from 'next'
 import { Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
 import IMG_ICON_CROWN_COW from '@cowprotocol/assets/images/icon-crown-cow.svg'
@@ -80,11 +79,12 @@ interface PageProps {
 }
 
 const Wrapper = styled.div`
+  --maxWidth: 1760px;
   display: flex;
   flex-flow: column wrap;
   justify-content: center;
   align-items: center;
-  max-width: 1600px;
+  max-width: var(--maxWidth);
   width: 100%;
   margin: 76px auto 0;
   gap: 24px;
@@ -92,20 +92,16 @@ const Wrapper = styled.div`
 
 export default function Page({ siteConfigData }: PageProps) {
   return (
-    <Layout bgColor={Color.neutral90}>
-      <Head>
-        <title>
-          {siteConfigData.title} - {siteConfigData.descriptionShort}
-        </title>
-      </Head>
-
+    <Layout
+      bgColor={Color.neutral90}
+      metaTitle="CoW Protocol - Do what you want, build what you want"
+      metaDescription="CoW Protocol has the largest solver competition and the most advanced developer framework - so you can build any DEX-related action you can imagine"
+    >
       <Wrapper>
         <HeroContainer variant="secondary" maxWidth={1300}>
           <HeroContent variant="secondary">
             <HeroSubtitle color={'#66018E'}>CoW Protocol</HeroSubtitle>
-            <HeroTitle as="h2" maxWidth={520}>
-              Do what you want, build what you want
-            </HeroTitle>
+            <HeroTitle maxWidth={520}>Do what you want, build what you want</HeroTitle>
             <HeroDescription>
               CoW Protocol has the largest solver competition and the most advanced developer framework - so you can
               build any DEX-related action you can imagine
@@ -182,7 +178,7 @@ export default function Page({ siteConfigData }: PageProps) {
                     CoW Protocol users sign an "intent to trade" message instead of directly executing orders on-chain
                     (like on Uniswap). This lets solvers trade on behalf of the user.
                   </TopicDescription>
-                  <TopicButton bgColor="#66018E" color="#F996EE" href="/knowledge-base">
+                  <TopicButton bgColor="#66018E" color="#F996EE" href="/learn">
                     Learn more
                   </TopicButton>
                 </TopicCardInner>
@@ -198,7 +194,7 @@ export default function Page({ siteConfigData }: PageProps) {
                     public and private liquidity sources - finding better prices than most users could find on their
                     own.
                   </TopicDescription>
-                  <TopicButton bgColor="#66018E" color="#F996EE" href="/knowledge-base">
+                  <TopicButton bgColor="#66018E" color="#F996EE" href="/learn">
                     Learn more
                   </TopicButton>
                 </TopicCardInner>
@@ -215,7 +211,7 @@ export default function Page({ siteConfigData }: PageProps) {
                     The solver that wins the batch auction is the solver that finds the most surplus - so they win when
                     you win.
                   </TopicDescription>
-                  <TopicButton bgColor="#66018E" color="#F996EE" href="/knowledge-base">
+                  <TopicButton bgColor="#66018E" color="#F996EE" href="/learn">
                     Learn more
                   </TopicButton>
                 </TopicCardInner>

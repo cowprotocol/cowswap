@@ -1,4 +1,3 @@
-import Head from 'next/head'
 import { GetStaticProps } from 'next'
 import { Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
 import IMG_ICON_CROWN_COW from '@cowprotocol/assets/images/icon-crown-cow.svg'
@@ -84,18 +83,16 @@ const Wrapper = styled.div`
 
 export default function Page({ siteConfigData }: PageProps) {
   return (
-    <Layout bgColor={Color.neutral90}>
-      <Head>
-        <title>
-          {siteConfigData.title} - {siteConfigData.descriptionShort}
-        </title>
-      </Head>
-
+    <Layout
+      bgColor={Color.neutral90}
+      metaTitle="CoW AMM - The first MEV-capturing AMM"
+      metaDescription="CoW AMM protects LPs from LVR so they can provide liquidity with less risk and more return"
+    >
       <Wrapper>
         <HeroContainer variant="secondary" maxWidth={1300}>
           <HeroContent variant="secondary">
             <HeroSubtitle color={'#194D05'}>CoW AMM</HeroSubtitle>
-            <HeroTitle as="h2">The first MEV-capturing AMM</HeroTitle>
+            <HeroTitle>The first MEV-capturing AMM</HeroTitle>
             <HeroDescription>
               CoW AMM protects LPs from LVR so they can provide liquidity with less risk and more return
             </HeroDescription>
@@ -373,7 +370,7 @@ export default function Page({ siteConfigData }: PageProps) {
           </ContainerCardSection>
         </ContainerCard>
 
-        <ContainerCard bgColor={'transparent'} color={Color.neutral10} touchFooter>
+        <ContainerCard bgColor={Color.neutral90} color={Color.neutral10} touchFooter>
           <ContainerCardSection padding={'0 0 100px'}>
             <SectionTitleWrapper>
               <SectionTitleIcon size={62}>

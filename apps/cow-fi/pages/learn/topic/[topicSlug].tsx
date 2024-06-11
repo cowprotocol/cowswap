@@ -1,5 +1,4 @@
 import React from 'react'
-import Head from 'next/head'
 import { GetStaticPaths, GetStaticProps } from 'next'
 import styled from 'styled-components'
 import { Font, Color, Media } from '@cowprotocol/ui'
@@ -83,9 +82,9 @@ const CategoryDescription = styled.div`
 `
 
 interface TopicPageProps {
-  category: any // Adjust the type as per your Category structure
-  articles: any[] // Adjust the type as per your Article structure
-  allCategories: { name: string; slug: string }[] // Add categories type
+  category: any
+  articles: any[]
+  allCategories: { name: string; slug: string }[]
 }
 
 export default function TopicPage({ category, articles, allCategories }: TopicPageProps) {
@@ -93,15 +92,7 @@ export default function TopicPage({ category, articles, allCategories }: TopicPa
   const imageUrl = image?.data?.attributes?.url
 
   return (
-    <Layout>
-      <Head>
-        <title>{name} - Knowledge Base</title>
-        <meta name="description" content={description} />
-        <meta property="og:description" content={description} />
-        <meta property="og:title" content={name} />
-        <meta name="twitter:title" content={name} />
-      </Head>
-
+    <Layout metaTitle={`${name} - Knowledge Base`} metaDescription={description}>
       <Wrapper>
         <CategoryLinks>
           <li>

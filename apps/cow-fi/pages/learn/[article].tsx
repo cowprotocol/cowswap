@@ -1,5 +1,4 @@
 import React from 'react'
-import Head from 'next/head'
 import { GetStaticPaths, GetStaticProps } from 'next'
 import styled from 'styled-components'
 import { Color, Media } from '@cowprotocol/ui'
@@ -17,6 +16,7 @@ import {
 import ReactMarkdown from 'react-markdown'
 import rehypeRaw from 'rehype-raw'
 import { formatDate } from 'util/formatDate'
+import { stripHtmlTags } from 'util/stripHTMLTags'
 import { SearchBar } from '@/components/SearchBar'
 
 import {
@@ -115,8 +115,10 @@ export default function ArticlePage({
   relatedArticles: Article[]
   allCategories: { name: string; slug: string }[]
 }) {
-  const { title, blocks, publishedAt, categories } = article.attributes || {}
+  const { title, blocks, publishedAt, categories, cover } = article.attributes || {}
   const content = blocks?.map((block) => (isRichTextComponent(block) ? block.body : '')).join(' ') || ''
+  const plainContent = stripHtmlTags(content)
+  const coverImageUrl = cover?.data?.attributes?.url
 
   const { share, message } = useWebShare()
 
@@ -129,17 +131,15 @@ export default function ArticlePage({
   }
 
   return (
-    <Layout>
-      <Head>
-        <title>
-          {title} - {siteConfigData.title}
-        </title>
-      </Head>
-
+    <Layout
+      metaTitle={`${title} - ${siteConfigData.title}`}
+      metaDescription={plainContent.split(' ').slice(0, 50).join(' ') + '...'}
+      ogImage={coverImageUrl}
+    >
       <Wrapper>
         <CategoryLinks>
           <li>
-            <a href="/learn">All Topics</a>
+            <a href="/learn">Knowledge Base</a>
           </li>
           {allCategories.map((category) => (
             <li key={category.slug}>

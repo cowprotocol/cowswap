@@ -56,12 +56,6 @@ const Wrapper = styled.div`
 export default function Page({ siteConfigData }: PageProps) {
   return (
     <Layout bgColor={Color.neutral90}>
-      <Head>
-        <title>
-          {siteConfigData.title} - {siteConfigData.descriptionShort}
-        </title>
-      </Head>
-
       <Wrapper>
         <HeroContainer>
           <HeroBackground>

@@ -1,4 +1,3 @@
-import Head from 'next/head'
 import { GetStaticProps } from 'next'
 import { Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
 
@@ -84,18 +83,16 @@ const Wrapper = styled.div`
 
 export default function Page({ siteConfigData }: PageProps) {
   return (
-    <Layout bgColor={Color.neutral90}>
-      <Head>
-        <title>
-          {siteConfigData.title} - {siteConfigData.descriptionShort}
-        </title>
-      </Head>
-
+    <Layout
+      bgColor={Color.neutral90}
+      metaTitle="CoW Swap - Don't worry, trade happy"
+      metaDescription="CoW Swap protects traders from the dangers of DeFi, so you can do what you want without needing to worry"
+    >
       <Wrapper>
         <HeroContainer variant="secondary" maxWidth={1350} padding="0 20px 90px">
           <HeroContent variant="secondary">
             <HeroSubtitle color={'#012F7A'}>CoW Swap</HeroSubtitle>
-            <HeroTitle as="h2">
+            <HeroTitle>
               Don't worry,
               <br /> trade happy
             </HeroTitle>

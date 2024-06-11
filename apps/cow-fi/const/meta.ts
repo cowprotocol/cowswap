@@ -3,11 +3,12 @@ import { TokenInfo } from 'types'
 const API_BASE_URL = 'https://api.cow.fi'
 
 export const CONFIG = {
-  title: 'CoW Protocol',
+  title: 'CoW DAO',
   metatitle_tokenDetail: 'Live Token Price Chart & Metrics',
   description:
     'CoW Protocol finds the lowest prices from all decentralized exchanges and DEX aggregators & saves you more with p2p trading and protection from MEV ',
   descriptionShort: 'The smartest way to trade',
+  ogImage: 'https://cow.fi/images/og-meta-cowdao.png',
   url: {
     root: 'https://cow.fi',
     swap: 'https://swap.cow.fi/#/1/swap/DAI/COW?sellAmount=500',
