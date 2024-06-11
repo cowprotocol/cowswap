@@ -15,6 +15,7 @@ interface Window {
     isCoinbaseWallet?: true
     isMetaMask?: true
     autoRefreshOnNetworkChange?: boolean
+    autoConnect?: boolean
     setSelectedProvider: (any) => void
     providers: [any]
     isTrust?: boolean

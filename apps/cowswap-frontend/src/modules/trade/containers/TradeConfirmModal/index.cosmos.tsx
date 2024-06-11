@@ -25,6 +25,7 @@ const tradeAmounts: TradeAmounts = {
 const confirmationState: TradeConfirmationProps = {
   title: 'Review order',
   account: undefined,
+  ensName: undefined,
   inputCurrencyInfo: inputCurrencyInfoMock,
   outputCurrencyInfo: outputCurrencyInfoMock,
   priceImpact: priceImpactMock,

@@ -6,18 +6,20 @@ import * as styledEl from './styled'
 
 export interface FavouriteTokensListProps {
   tokens: TokenWithLogo[]
+  hideTooltip?: boolean
   selectedToken?: string
+
   onSelectToken(token: TokenWithLogo): void
 }
 
 export function FavouriteTokensList(props: FavouriteTokensListProps) {
-  const { tokens, selectedToken, onSelectToken } = props
+  const { tokens, hideTooltip, selectedToken, onSelectToken } = props
 
   return (
     <div>
       <styledEl.Header>
         <h4>Favorite tokens</h4>
-        <HelpTooltip text="Your favorite saved tokens. Edit this list in your account page." />
+        {!hideTooltip && <HelpTooltip text="Your favorite saved tokens. Edit this list in your account page." />}
       </styledEl.Header>
       <styledEl.List>
         {tokens.map((token) => {
