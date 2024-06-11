@@ -31,6 +31,7 @@ export interface TradeConfirmationProps {
   onConfirm(): void
   onDismiss(): void
   account: string | undefined
+  ensName: string | undefined
   inputCurrencyInfo: CurrencyPreviewInfo
   outputCurrencyInfo: CurrencyPreviewInfo
   isConfirmDisabled: boolean
@@ -56,6 +57,7 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
     onConfirm,
     onDismiss,
     account,
+    ensName,
     inputCurrencyInfo,
     outputCurrencyInfo,
     isConfirmDisabled,
@@ -75,7 +77,11 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
     setFrozenProps(hasPendingTrade ? propsRef.current : null)
   }, [hasPendingTrade])
 
-  const showRecipientWarning = recipient && account && recipient.toLowerCase() !== account.toLowerCase()
+  const showRecipientWarning =
+    recipient &&
+    (account || ensName) &&
+    ![account?.toLowerCase(), ensName?.toLowerCase()].includes(recipient.toLowerCase())
+
   const inputAmount = inputCurrencyInfo.amount?.toExact()
   const outputAmount = outputCurrencyInfo.amount?.toExact()
 
