@@ -410,26 +410,11 @@ const DropdownContentWrapper: React.FC<DropdownContentWrapperProps> = ({
 interface GlobalSettingsDropdownProps {
   mobileMode: boolean
   settingsNavItems?: MenuItem[]
-  setIsSettingsOpen: React.Dispatch<React.SetStateAction<boolean>>
   isOpen: boolean
 }
 
-const GlobalSettingsDropdown: React.FC<GlobalSettingsDropdownProps> = ({
-  mobileMode,
-  settingsNavItems,
-  setIsSettingsOpen,
-  isOpen,
-}) => {
-  const buttonRef = useRef<HTMLButtonElement>(null)
+const GlobalSettingsDropdown: React.FC<GlobalSettingsDropdownProps> = ({ mobileMode, settingsNavItems, isOpen }) => {
   const dropdownRef = useRef<HTMLDivElement>(null)
-
-  useOnClickOutside([buttonRef as RefObject<HTMLElement>, dropdownRef as RefObject<HTMLElement>], () =>
-    setIsSettingsOpen(false)
-  )
-
-  const handleToggle = () => {
-    setIsSettingsOpen((prev) => !prev)
-  }
 
   if (!settingsNavItems || settingsNavItems.length === 0) {
     return null
@@ -535,9 +520,7 @@ export const MenuBar = (props: MenuBarProps) => {
   const navItemsRef = useRef<HTMLUListElement>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
 
-  const handleSettingsToggle = () => {
-    setIsSettingsOpen((prev) => !prev)
-  }
+  const handleSettingsToggle = () => setIsSettingsOpen((prev) => !prev)
 
   const styledTheme = {
     ...themeMapper(theme),
@@ -554,6 +537,8 @@ export const MenuBar = (props: MenuBarProps) => {
   useOnClickOutside([mobileMenuRef as RefObject<HTMLElement>, mobileMenuTriggerRef as RefObject<HTMLElement>], () =>
     setIsMobileMenuOpen(false)
   )
+
+  useOnClickOutside([buttonRef], () => setIsSettingsOpen(false))
 
   const handleMobileMenuToggle = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation()
@@ -640,12 +625,13 @@ export const MenuBar = (props: MenuBarProps) => {
                 <GlobalSettingsButton ref={buttonRef} onClick={handleSettingsToggle}>
                   <SVG src={IMG_ICON_SETTINGS_GLOBAL} />
                 </GlobalSettingsButton>
-                <GlobalSettingsDropdown
-                  mobileMode={isMobile}
-                  settingsNavItems={settingsNavItems}
-                  setIsSettingsOpen={setIsSettingsOpen}
-                  isOpen={isSettingsOpen}
-                />
+                {isSettingsOpen && (
+                  <GlobalSettingsDropdown
+                    mobileMode={isMobile}
+                    settingsNavItems={settingsNavItems}
+                    isOpen={isSettingsOpen}
+                  />
+                )}
               </>
             )}
           </RightAligned>
