@@ -32,7 +32,7 @@ export interface WalletDetails {
   allowsOffchainSigning: boolean
 }
 
-export type GnosisSafeInfo = SafeInfoResponse & { isReadOnly?: boolean, chainId: number }
+export type GnosisSafeInfo = Pick<SafeInfoResponse, 'address' | 'threshold' | 'owners' > & { isReadOnly?: boolean, chainId: number }
 
 export enum WalletType {
   SAFE,

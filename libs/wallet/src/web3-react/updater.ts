@@ -18,8 +18,12 @@ import { GnosisSafeInfo, WalletDetails, WalletInfo } from '../api/types'
 import { getWalletType } from '../api/utils/getWalletType'
 import { getWalletTypeLabel } from '../api/utils/getWalletTypeLabel'
 
-const SAFE_INFO_UPDATE_INTERVAL = ms`30s`
-const SAFE_APPS_SDK_INFO_UPDATE_INTERVAL = ms`5s`
+// used for on-chain calls
+const SAFE_INFO_LONG_INTERVAL = ms`30s`
+// used for calls that don't require on-chain interactions
+const SAFE_INFO_SHORT_INTERVAL = ms`5s`
+let shortSafeInfoInterval: NodeJS.Timeout;
+let longSafeInfoInterval: NodeJS.Timeout;
 
 // Smart contract wallets are filtered out by default, no need to add them to this list
 const UNSUPPORTED_WC_WALLETS = new Set(['DeFi Wallet', 'WallETH'])
@@ -69,50 +73,66 @@ function _useSafeInfo(walletInfo: WalletInfo): GnosisSafeInfo | undefined {
   const [safeInfo, setSafeInfo] = useState<GnosisSafeInfo>()
   const safeAppsSdk = useSafeAppsSdk()
 
-
   useEffect(() => {
-    const updateSafeInfo = () => {
+    const updateSafeInfo = async () => {
       if (chainId && account && provider) {
-        getSafeInfo(chainId, account, provider)
-          .then((_safeInfo) => {
-            setSafeInfo((prevSafeInfo) => ({
+        if (safeAppsSdk) {
+          const appsSdkSafeInfo = await safeAppsSdk.safe.getInfo()
+          setSafeInfo((prevSafeInfo) => {
+            const { isReadOnly } = appsSdkSafeInfo
+            if (!prevSafeInfo) {
+              // We don't have prevSafeInfo for counterfactual safes as the SDK can't find a deployment
+              // of this safe on-chain
+              const { safeAddress, threshold, owners } = appsSdkSafeInfo
+              return {
+                chainId,
+                address: safeAddress,
+                threshold,
+                owners,
+                isReadOnly,
+              }
+            }
+
+            return {
               ...prevSafeInfo,
-              chainId,
-              ..._safeInfo,
-            }))
+              isReadOnly,
+            }
           })
-          .catch(() => {
-            console.debug(`[WalletUpdater] Address ${account} is likely not a Safe (API didn't return Safe info)`)
-            setSafeInfo(undefined)
-          })
+        } else {
+          getSafeInfo(chainId, account, provider)
+            .then((_safeInfo) => {
+              const { address, threshold, owners } = _safeInfo
+              setSafeInfo((prevSafeInfo) => ({
+                ...prevSafeInfo,
+                chainId,
+                address,
+                threshold,
+                owners,
+                isReadOnly: false,
+              }))
+
+              // Being here means that we don't run in an iframe over Safe's AppCommunicator,
+              // so we need to slow down the interval to not spam the RPC
+              clearInterval(shortSafeInfoInterval);
+              longSafeInfoInterval = setInterval(updateSafeInfo, SAFE_INFO_LONG_INTERVAL);
+            })
+            .catch(() => {
+              console.debug(`[WalletUpdater] Address ${account} is likely not a Safe (API didn't return Safe info)`)
+                setSafeInfo(undefined)
+            })
+        }
       } else {
         setSafeInfo(undefined)
       }
     }
 
-    const updateIsReadOnlyFromSafeAppsSdkInfo = async () => {
-      if (safeAppsSdk) {
-        const appsSdkSafeInfo = await safeAppsSdk.safe.getInfo()
-        setSafeInfo((prevSafeInfo) => {
-          // only update the isReadyOnly flag if we have safe info returned from the api kit
-          if (!prevSafeInfo) return
-          return {
-            ...prevSafeInfo,
-            isReadOnly: appsSdkSafeInfo.isReadOnly,
-          }
-        })
-      }
-    }
-
-    const safeInfoInterval = setInterval(updateSafeInfo, SAFE_INFO_UPDATE_INTERVAL)
-    const safeAppsSdkInfoInterval = setInterval(updateIsReadOnlyFromSafeAppsSdkInfo, SAFE_APPS_SDK_INFO_UPDATE_INTERVAL)
+    shortSafeInfoInterval = setInterval(updateSafeInfo, SAFE_INFO_SHORT_INTERVAL)
 
     updateSafeInfo()
-    updateIsReadOnlyFromSafeAppsSdkInfo()
 
     return () => {
-      clearInterval(safeInfoInterval)
-      clearInterval(safeAppsSdkInfoInterval)
+      clearInterval(shortSafeInfoInterval)
+      clearInterval(longSafeInfoInterval);
     }
   }, [setSafeInfo, chainId, account, provider, safeAppsSdk])
 
