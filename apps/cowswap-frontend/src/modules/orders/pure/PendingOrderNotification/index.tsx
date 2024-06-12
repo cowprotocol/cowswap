@@ -57,13 +57,15 @@ export function PendingOrderNotification(props: PendingOrderNotificationProps) {
       <div ref={ref}>
         <strong>{ORDER_UI_TYPE_TITLES[orderType]} submitted</strong>
         <br />
-        <OrderSummary
-          kind={kind}
-          inputToken={inputToken}
-          outputToken={outputToken}
-          sellAmount={inputAmountRaw.toString()}
-          buyAmount={outputAmountRaw.toString()}
-        />
+        {inputToken && outputToken && (
+          <OrderSummary
+            kind={kind}
+            inputToken={inputToken}
+            outputToken={outputToken}
+            sellAmount={inputAmountRaw.toString()}
+            buyAmount={outputAmountRaw.toString()}
+          />
+        )}
         <ReceiverInfo receiver={receiver} owner={owner} />
       </div>
       <OrderLinkWrapper>

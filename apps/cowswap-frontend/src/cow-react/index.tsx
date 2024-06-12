@@ -4,13 +4,12 @@ import 'inter-ui'
 import '@cowprotocol/analytics'
 import './sentry'
 import { Provider as AtomProvider } from 'jotai'
-import { useEffect, StrictMode } from 'react'
+import { ReactNode, StrictMode, useEffect } from 'react'
 
-import { BlockNumberProvider } from '@cowprotocol/common-hooks'
 import { nodeRemoveChildFix } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
 import { SnackbarsWidget } from '@cowprotocol/snackbars'
-import { ThemedGlobalStyle } from '@cowprotocol/ui'
+import { Web3Provider } from '@cowprotocol/wallet'
 
 import { LanguageProvider } from 'i18n'
 import { createRoot } from 'react-dom/client'
@@ -18,9 +17,10 @@ import { Provider } from 'react-redux'
 import { HashRouter } from 'react-router-dom'
 import * as serviceWorkerRegistration from 'serviceWorkerRegistration'
 
-import Web3Provider from 'legacy/components/Web3Provider'
 import { cowSwapStore } from 'legacy/state'
+import { useAppSelector } from 'legacy/state/hooks'
 import ThemeProvider, { FixedGlobalStyle } from 'legacy/theme'
+import { ThemedGlobalStyle } from '@cowprotocol/ui'
 
 import { App } from 'modules/application/containers/App'
 import { Updaters } from 'modules/application/containers/App/Updaters'
@@ -28,6 +28,7 @@ import { WithLDProvider } from 'modules/application/containers/WithLDProvider'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 
 import { WalletUnsupportedNetworkBanner } from '../common/containers/WalletUnsupportedNetworkBanner'
+import { BlockNumberProvider } from '../common/hooks/useBlockNumber'
 
 // Node removeChild hackaround
 // based on: https://github.com/facebook/react/issues/11538#issuecomment-417504600
@@ -52,7 +53,7 @@ function Main() {
         <AtomProvider store={jotaiStore}>
           <HashRouter>
             <LanguageProvider>
-              <Web3Provider>
+              <Web3ProviderInstance>
                 <ThemeProvider>
                   <ThemedGlobalStyle />
                   <BlockNumberProvider>
@@ -65,13 +66,19 @@ function Main() {
                     </WithLDProvider>
                   </BlockNumberProvider>
                 </ThemeProvider>
-              </Web3Provider>
+              </Web3ProviderInstance>
             </LanguageProvider>
           </HashRouter>
         </AtomProvider>
       </Provider>
     </StrictMode>
   )
+}
+
+function Web3ProviderInstance({ children }: { children: ReactNode }) {
+  const selectedWallet = useAppSelector((state) => state.user.selectedWallet)
+
+  return <Web3Provider selectedWallet={selectedWallet}>{children}</Web3Provider>
 }
 
 function Toasts() {

@@ -1,13 +1,11 @@
 import '@reach/dialog/styles.css'
 import './polyfills'
 
-import React, { StrictMode, useCallback, useContext, ReactNode, useEffect } from 'react'
+import React, { ReactNode, StrictMode, useCallback, useContext, useEffect } from 'react'
 
 import IMAGE_MOON from '@cowprotocol/assets/cow-swap/moon.svg'
 import IMAGE_SUN from '@cowprotocol/assets/cow-swap/sun.svg'
-import { BlockNumberProvider } from '@cowprotocol/common-hooks'
-import { ThemedGlobalStyle } from '@cowprotocol/ui'
-import { WalletUpdater, injectedConnection } from '@cowprotocol/wallet'
+import { injectedWalletConnection, WalletUpdater } from '@cowprotocol/wallet'
 import { Web3ReactProvider } from '@web3-react/core'
 
 import { LanguageProvider } from 'i18n'
@@ -15,12 +13,14 @@ import SVG from 'react-inlinesvg'
 import { Provider } from 'react-redux'
 import { HashRouter } from 'react-router-dom'
 import { Flex } from 'rebass'
-import styled from 'styled-components/macro'
-import { ThemeContext } from 'styled-components/macro'
+import styled, { ThemeContext } from 'styled-components/macro'
+import { ThemedGlobalStyle } from '@cowprotocol/ui'
 
 import { cowSwapStore } from 'legacy/state'
 import { useDarkModeManager } from 'legacy/state/user/hooks'
 import ThemeProvider, { FixedGlobalStyle } from 'legacy/theme'
+
+import { BlockNumberProvider } from './common/hooks/useBlockNumber'
 
 const DarkModeToggleButton = styled.button`
   display: flex;
@@ -87,7 +87,7 @@ export const DemoContainer = styled.div`
 
 const chainId = 5
 
-const { connector, hooks } = injectedConnection
+const { connector, hooks } = injectedWalletConnection
 connector.activate(chainId)
 
 const Fixture = ({ children }: { children: ReactNode }) => {

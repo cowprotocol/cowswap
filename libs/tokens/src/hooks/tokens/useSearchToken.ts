@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useDebounce } from '@cowprotocol/common-hooks'
 import { isAddress } from '@cowprotocol/common-utils'
-import { useWeb3React } from '@web3-react/core'
+import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import ms from 'ms.macro'
 import useSWR from 'swr'
@@ -15,6 +15,7 @@ import { activeTokensAtom, inactiveTokensAtom } from '../../state/tokens/allToke
 import { fetchTokenFromBlockchain } from '../../utils/fetchTokenFromBlockchain'
 import { getTokenSearchFilter } from '../../utils/getTokenSearchFilter'
 import { parseTokensFromApi } from '../../utils/parseTokensFromApi'
+
 
 const IN_LISTS_DEBOUNCE_TIME = ms`100ms`
 const IN_EXTERNALS_DEBOUNCE_TIME = ms`1s`
@@ -170,7 +171,7 @@ function useSearchTokensInApi(input: string | undefined, isTokenAlreadyFoundByAd
 
 function useFetchTokenFromBlockchain(input: string | undefined, isTokenAlreadyFoundByAddress: boolean) {
   const { chainId } = useAtomValue(environmentAtom)
-  const { provider } = useWeb3React()
+  const provider = useWalletProvider()
 
   return useSWR<TokenWithLogo | null>(['fetchTokenFromBlockchain', input], () => {
     if (isTokenAlreadyFoundByAddress || !input || !provider || !isAddress(input)) {

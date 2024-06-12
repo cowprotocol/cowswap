@@ -32,8 +32,15 @@ export function useTradeUsdAmounts(
   const areAmountsReady = !isFractionFalsy(inputAmount) && !isFractionFalsy(outputAmount)
   const isTradeReady = !isWrapOrUnwrap && (dontWaitBothAmounts || areAmountsReady)
 
+  const useUsdAmountInputParams: Parameters<typeof useUsdAmount> = isWrapOrUnwrap
+    ? [null, null] // disable usd estimation when it's wrap/unwrap
+    : [isTradeReady ? inputAmount : null, inputCurrency]
+  const useUsdAmountOutputParams: Parameters<typeof useUsdAmount> = isWrapOrUnwrap
+    ? [null, null]
+    : [isTradeReady ? outputAmount : null, outputCurrency]
+
   return {
-    inputAmount: useUsdAmount(isTradeReady ? inputAmount : null, inputCurrency),
-    outputAmount: useUsdAmount(isTradeReady ? outputAmount : null, outputCurrency),
+    inputAmount: useUsdAmount(...useUsdAmountInputParams),
+    outputAmount: useUsdAmount(...useUsdAmountOutputParams),
   }
 }

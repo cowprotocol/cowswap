@@ -1,5 +1,33 @@
 # Changelog
 
+## [2.30.1](https://github.com/cowprotocol/cowswap/compare/explorer-v2.30.0...explorer-v2.30.1) (2024-06-11)
+
+
+### Bug Fixes
+
+* change something in the explorer to trigger with release please ([#4538](https://github.com/cowprotocol/cowswap/issues/4538)) ([9c5176b](https://github.com/cowprotocol/cowswap/commit/9c5176b697a99ad9f384741291c6e08a0ce72937))
+
+## [2.30.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.29.6...explorer-v2.30.0) (2024-05-29)
+
+
+### Features
+
+* add arbitrum uni token list ([#4488](https://github.com/cowprotocol/cowswap/issues/4488)) ([057bc68](https://github.com/cowprotocol/cowswap/commit/057bc689771bd256d667f3335a3da0b683f1bd8d))
+* **arbitrum:** add arbitrum_one ([#4407](https://github.com/cowprotocol/cowswap/issues/4407)) ([166e33f](https://github.com/cowprotocol/cowswap/commit/166e33f3c494972738b154cf844584dd78e12c7d))
+
+
+### Bug Fixes
+
+* **explorer:** adjust almost fully filled orders displaying ([#4482](https://github.com/cowprotocol/cowswap/issues/4482)) ([3a5d654](https://github.com/cowprotocol/cowswap/commit/3a5d65484ab8818f5a5ba6aa18e6519243f686ee))
+* navigate with widget awareness ([#4471](https://github.com/cowprotocol/cowswap/issues/4471)) ([f0c4134](https://github.com/cowprotocol/cowswap/commit/f0c41344eea751006a4fe0b66865b2c5c30a5310))
+
+## [2.29.6](https://github.com/cowprotocol/cowswap/compare/explorer-v2.29.5...explorer-v2.29.6) (2024-05-22)
+
+
+### Bug Fixes
+
+* **explorer:** reduce retries for tx orders requests ([#4438](https://github.com/cowprotocol/cowswap/issues/4438)) ([2ee1a8d](https://github.com/cowprotocol/cowswap/commit/2ee1a8dfa79aed6d68a89feae7a3c757addcbdf0))
+
 ## [2.29.5](https://github.com/cowprotocol/cowswap/compare/explorer-v2.29.4...explorer-v2.29.5) (2024-04-22)
 
 

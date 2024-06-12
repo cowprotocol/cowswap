@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.3.0](https://github.com/cowprotocol/cowswap/compare/assets-v1.2.0...assets-v1.3.0) (2024-05-29)
+
+
+### Features
+
+* **arbitrum:** add arbitrum_one ([#4407](https://github.com/cowprotocol/cowswap/issues/4407)) ([166e33f](https://github.com/cowprotocol/cowswap/commit/166e33f3c494972738b154cf844584dd78e12c7d))
+
+## [1.2.0](https://github.com/cowprotocol/cowswap/compare/assets-v1.1.0...assets-v1.2.0) (2024-05-22)
+
+
+### Features
+
+* notifications feed ([#4409](https://github.com/cowprotocol/cowswap/issues/4409)) ([d6f2987](https://github.com/cowprotocol/cowswap/commit/d6f2987b57e3b5bd90d029aca0215134ec1a050b))
+
 ## [1.1.0](https://github.com/cowprotocol/cowswap/compare/assets-v1.0.0...assets-v1.1.0) (2024-04-23)
 
 

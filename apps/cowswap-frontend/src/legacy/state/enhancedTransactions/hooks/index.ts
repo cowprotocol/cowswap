@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react'
 
 import { useWalletInfo, useIsSafeWallet } from '@cowprotocol/wallet'
-import { useWeb3React } from '@web3-react/core'
+import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import { useAllTransactions } from './TransactionHooksMod'
 
@@ -19,13 +19,13 @@ export type TransactionAdder = (params: AddTransactionHookParams) => void
  */
 export function useTransactionAdder(): TransactionAdder {
   const { chainId, account } = useWalletInfo()
-  const { provider } = useWeb3React()
+  const provider = useWalletProvider()
   const dispatch = useAppDispatch()
   const isSafeWallet = useIsSafeWallet()
 
   return useCallback(
     async (addTransactionParams: AddTransactionHookParams) => {
-      if (!account || !chainId) return
+      if (!account) return
 
       const hashType = isSafeWallet ? HashType.GNOSIS_SAFE_TX : HashType.ETHEREUM_TX
 

@@ -6,8 +6,9 @@ import styled from 'styled-components/macro'
 export const BalanceText = styled(Text)`
   font-weight: 500;
   font-size: 13px;
-  padding: 0 6px 0 12px;
+  padding: 0 9px 0 11px;
   min-width: initial;
+  color: var(${UI.COLOR_TEXT_OPACITY_70});
 
   ${({ theme }) => theme.mediaWidth.upToExtraSmall`
     display: none;
@@ -36,12 +37,6 @@ export const Wrapper = styled.div<{ active: boolean }>`
   transition: border var(${UI.ANIMATION_DURATION}) ease-in-out;
   pointer-events: auto;
   width: auto;
-
-  :focus {
-  }
-
-  &:hover {
-  }
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     height: 100%;

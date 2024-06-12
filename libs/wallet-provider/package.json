@@ -1,0 +1,23 @@
+{
+  "name": "@cowprotocol/wallet-provider",
+  "version": "1.0.0",
+  "type": "commonjs",
+  "description": "Wallet provider",
+  "main": "index.js",
+  "exports": {
+    "import": "./index.js",
+    "require": "./index.mjs"
+  },
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cowprotocol/cowswap"
+  },
+  "keywords": [
+    "cowprotocol",
+    "widget",
+    "cowswap",
+    "dex",
+    "wallet-provider"
+  ]
+}

@@ -234,7 +234,7 @@ export async function getArticleBySlug(slug: string): Promise<Article | null> {
  * @param slug Slug of the category
  *
  * @throws Error if slug is not found
- * @throws Error if multiple categorys are found with the same slug
+ * @throws Error if multiple categories are found with the same slug
  *
  * @returns Article with the given slug
  */

@@ -1,5 +1,4 @@
 import { useAddPriorityAllowance } from '@cowprotocol/balances-and-allowances'
-import { GetReceipt } from '@cowprotocol/common-hooks'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { GnosisSafeInfo } from '@cowprotocol/wallet'
 
@@ -8,6 +7,8 @@ import { AppDispatch } from 'legacy/state'
 import { CancelOrdersBatchCallback } from 'legacy/state/orders/hooks'
 
 import type { useGetTwapOrderById } from 'modules/twap/hooks/useGetTwapOrderById'
+
+import type { GetReceipt } from 'common/hooks/useGetReceipt'
 
 export interface CheckEthereumTransactions {
   chainId: SupportedChainId

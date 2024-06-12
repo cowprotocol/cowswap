@@ -1,9 +1,9 @@
 import { useAtom, useAtomValue } from 'jotai'
-import React from 'react'
+import React, { useMemo } from 'react'
 
 import { getWrappedToken } from '@cowprotocol/common-utils'
 import { TokenSymbol } from '@cowprotocol/ui'
-import { useWalletInfo } from '@cowprotocol/wallet'
+import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
@@ -36,9 +36,18 @@ export interface LimitOrdersConfirmModalProps {
 }
 
 export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
-  const { inputCurrencyInfo, outputCurrencyInfo, tradeContext, priceImpact, recipient } = props
+  const { inputCurrencyInfo, outputCurrencyInfo, tradeContext: tradeContextInitial, priceImpact, recipient } = props
+
+  /**
+   * This is a very important part of the code.
+   * After the confirmation modal opens, the trade context should not be recreated.
+   * In order to prevent this, we use useMemo to keep the trade context the same when the modal was opened.
+   */
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const tradeContext = useMemo(() => tradeContextInitial, [])
 
   const { account } = useWalletInfo()
+  const { ensName } = useWalletDetails()
   const warningsAccepted = useLimitOrdersWarningsAccepted(true)
   const settingsState = useAtomValue(limitOrdersSettingsAtom)
   const executionPrice = useAtomValue(executionPriceAtom)
@@ -73,6 +82,7 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
       <TradeConfirmation
         title={CONFIRM_TITLE}
         account={account}
+        ensName={ensName}
         inputCurrencyInfo={inputCurrencyInfo}
         outputCurrencyInfo={outputCurrencyInfo}
         onConfirm={doTrade}

@@ -2,7 +2,7 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
 import { USDC } from '@cowprotocol/common-const'
-import { FractionUtils } from '@cowprotocol/common-utils'
+import { FractionUtils, getWrappedToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Fraction, Token } from '@uniswap/sdk-core'
@@ -90,8 +90,11 @@ async function processQueue(queue: Token[], getUsdcPrice: () => Promise<Fraction
         isLoading: false,
       }
 
+      // To avoid querying native assets directly, used the wrapped version instead
+      const wrappedCurrency = getWrappedToken(currency)
+
       try {
-        const price = await fetchCurrencyUsdPrice(currency, getUsdcPrice)
+        const price = await fetchCurrencyUsdPrice(wrappedCurrency, getUsdcPrice)
         if (price) {
           state.price = price
           state.updatedAt = Date.now()

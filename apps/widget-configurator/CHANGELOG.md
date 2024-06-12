@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.3.0](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v1.2.1...widget-configurator-v1.3.0) (2024-05-29)
+
+
+### Features
+
+* **arbitrum:** add arbitrum_one ([#4407](https://github.com/cowprotocol/cowswap/issues/4407)) ([166e33f](https://github.com/cowprotocol/cowswap/commit/166e33f3c494972738b154cf844584dd78e12c7d))
+
+## [1.2.1](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v1.2.0...widget-configurator-v1.2.1) (2024-05-22)
+
+
+### Bug Fixes
+
+* **widget-cfg:** don't request network switching with standalone mode ([#4463](https://github.com/cowprotocol/cowswap/issues/4463)) ([41ef4cc](https://github.com/cowprotocol/cowswap/commit/41ef4cc83358c17742fb3e5472e1aa8dc19d475d))
+
 ## [1.2.0](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v1.1.0...widget-configurator-v1.2.0) (2024-05-02)
 
 

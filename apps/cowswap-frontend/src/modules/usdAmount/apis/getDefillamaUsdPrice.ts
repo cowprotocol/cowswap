@@ -19,6 +19,7 @@ interface DefillamaUsdQuote {
 export const DEFILLAMA_PLATFORMS: Record<SupportedChainId, string | null> = {
   [SupportedChainId.MAINNET]: 'ethereum',
   [SupportedChainId.GNOSIS_CHAIN]: 'xdai',
+  [SupportedChainId.ARBITRUM_ONE]: 'arbitrum-one',
   [SupportedChainId.SEPOLIA]: null,
 }
 

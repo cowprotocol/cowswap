@@ -1,8 +1,6 @@
 import { getChainInfo } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { AutoRow } from '@cowprotocol/ui'
-import { ExternalLink } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
+import { AutoRow, ExternalLink, UI } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Trans } from '@lingui/macro'
@@ -138,8 +136,9 @@ export function NetworkAlert() {
     return null
   }
 
-  const { label, logoUrl, bridge } = getChainInfo(chainId)
+  const { label, logo, bridge } = getChainInfo(chainId)
   const textColor = theme.text1
+  const logoUrl = darkMode ? logo.dark : logo.light
 
   return bridge ? (
     <RootWrapper>
