@@ -1769,6 +1769,8 @@ export const ColorTableContainer = styled.div`
   overflow-x: auto;
   border-radius: 32px;
   -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: ${Color.neutral70} ${Color.neutral90};
 
   &::-webkit-scrollbar {
     width: 8px;
