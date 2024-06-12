@@ -285,7 +285,7 @@ export const DropdownContent = styled.div<DropdownContentProps>`
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
-  background: ${({ isThirdLevel }) => (isThirdLevel ? 'transparent' : 'var(--activeBackground)')};
+  background: ${({ isThirdLevel }) => (isThirdLevel ? 'transparent' : 'var(--bgColor)')};
   backdrop-filter: blur(var(--blur));
   z-index: 1000;
   padding: ${({ isThirdLevel }) => (isThirdLevel ? '6px' : '6px')};
