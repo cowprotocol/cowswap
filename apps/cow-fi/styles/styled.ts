@@ -269,13 +269,14 @@ export const TopicImage = styled.div<{
   heightMobile?: number | string
   widthMobile?: number | string
   orderReverseMobile?: boolean
+  borderRadius?: number
 }>`
   --size: ${({ large }) => (large ? '290px' : '132px')};
   width: ${({ width }) => (typeof width === 'number' ? `${width}px` : width || 'var(--size)')};
   max-width: ${({ maxWidth }) => (typeof maxWidth === 'number' ? `${maxWidth}px` : maxWidth || '100%')};
   height: ${({ height }) => (typeof height === 'number' ? `${height}px` : height || 'var(--size)')};
   max-height: ${({ maxHeight }) => (typeof maxHeight === 'number' ? `${maxHeight}px` : maxHeight || 'initial')};
-  border-radius: var(--size);
+  border-radius: ${({ borderRadius }) => (borderRadius ? `${borderRadius}px` : 0)};
   background: ${({ bgColor, iconColor }) => bgColor || iconColor || Color.neutral90};
   color: ${({ iconColor }) => iconColor || Color.neutral90};
   margin: ${({ margin }) => margin || '0 0 16px'};

@@ -218,7 +218,7 @@ export default function Page({ siteConfigData }: PageProps) {
               <SectionTitleText>CoW Swap is the first user interface built on top of CoW Protocol</SectionTitleText>
               <SectionTitleDescription color={Color.neutral50}>
                 A powerful, open-source, and permissionless DEX aggregation protocol that anyone can integrate for a
-                variety of DeFi purposes.
+                variety of DeFi purposes
               </SectionTitleDescription>
               <SectionTitleButton bgColor="#65D9FF" color="#012F7A" href="/cow-protocol">
                 Learn about CoW Protocol
