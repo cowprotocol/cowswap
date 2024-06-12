@@ -37,55 +37,6 @@ import {
 
 const DATA_CACHE_TIME_SECONDS = 5 * 60 // Cache 5min
 
-const FEATURED_ARTICLES = [
-  {
-    title: 'What is a Sandwich Attack? — MEV Attacks Explained',
-    description: 'Sandwich attacks make up the majority of harmful MEV extraction',
-    color: '#0B6623',
-    link: '/learn/sandwich-attack',
-    linkExternal: false,
-  },
-  {
-    title: 'What is a Smart Contract?',
-    description:
-      'Smart Contracts enable the majority of decentralized apps and are critical to modern blockchain ecosystems',
-    color: '#FFD700',
-    link: '/learn/smart-contract',
-    linkExternal: false,
-  },
-  {
-    title: 'CoW DAO April 2024 Highlights',
-    description:
-      'Welcome back to CoW DAO highlights, where we break down the most notable developments of the last few weeks at CoW DAO.',
-    color: '#FF69B4',
-    link: '/learn/cow-dao-april-2024',
-    linkExternal: false,
-  },
-  {
-    title: 'What is a Sandwich Attack? — MEV Attacks Explained',
-    description: 'Sandwich attacks make up the majority of harmful MEV extraction',
-    color: '#800020',
-    link: '/learn/sandwich-attack',
-    linkExternal: false,
-  },
-  {
-    title: 'What is a Smart Contract?',
-    description:
-      'Smart Contracts enable the majority of decentralized apps and are critical to modern blockchain ecosystems',
-    color: '#00BFFF',
-    link: '/learn/smart-contract',
-    linkExternal: false,
-  },
-  {
-    title: 'CoW DAO April 2024 Highlights',
-    description:
-      'Welcome back to CoW DAO highlights, where we break down the most notable developments of the last few weeks at CoW DAO.',
-    color: '#FF4500',
-    link: '/learn/cow-dao-april-2024',
-    linkExternal: false,
-  },
-]
-
 const PODCASTS = [
   { title: 'CoW Hooks: you are in control!', link: '/podcast/cow-hooks' },
   { title: 'CoW Swap for DAOs', link: '/podcast/cow-swap-for-daos' },
@@ -131,7 +82,7 @@ const MEDIA_COVERAGE = [
   },
 ]
 
-interface LearnProps {
+interface PageProps {
   siteConfigData: typeof CONFIG
   categories: {
     name: string
@@ -143,6 +94,12 @@ interface LearnProps {
     iconColor: string
   }[]
   articles: ArticleListResponse['data']
+  featuredArticles: {
+    title: string
+    description: string
+    link: string
+    cover: string
+  }[]
 }
 
 const Wrapper = styled.div`
@@ -176,7 +133,7 @@ const Wrapper = styled.div`
   }
 `
 
-export default function Learn({ siteConfigData, categories, articles }: LearnProps) {
+export default function Page({ siteConfigData, categories, articles, featuredArticles }: PageProps) {
   const { title } = siteConfigData
 
   return (
@@ -194,14 +151,9 @@ export default function Learn({ siteConfigData, categories, articles }: LearnPro
               <ArrowButton link="/learn/articles" text="All articles" />
             </ContainerCardSectionTop>
             <ArticleList>
-              {FEATURED_ARTICLES.map(({ title, description, color, link, linkExternal }, index) => (
-                <ArticleCard
-                  key={index}
-                  href={link}
-                  target={linkExternal ? '_blank' : '_self'}
-                  rel={linkExternal ? 'noopener' : ''}
-                >
-                  <ArticleImage color={color}></ArticleImage>
+              {featuredArticles.map(({ title, description, cover, link }, index) => (
+                <ArticleCard key={index} href={link}>
+                  <ArticleImage color="#000">{cover && <img src={cover} alt={title} />}</ArticleImage>
                   <ArticleTitle>{title}</ArticleTitle>
                   <ArticleDescription>{description}</ArticleDescription>
                 </ArticleCard>
@@ -285,10 +237,16 @@ export default function Learn({ siteConfigData, categories, articles }: LearnPro
     </Layout>
   )
 }
-export const getStaticProps: GetStaticProps<LearnProps> = async () => {
+
+export const getStaticProps: GetStaticProps<PageProps> = async () => {
   const siteConfigData = CONFIG
   const categoriesResponse = await getCategories()
   const articlesResponse = await getArticles()
+
+  const featuredArticlesResponse = await getArticles({
+    filters: { featured: { $eq: true } },
+    pageSize: 6, // Number of featured articles you want to fetch
+  })
 
   const categories =
     categoriesResponse?.map((category: Category) => ({
@@ -301,11 +259,22 @@ export const getStaticProps: GetStaticProps<LearnProps> = async () => {
       iconColor: '#fff',
     })) || []
 
+  const featuredArticles = featuredArticlesResponse.data.map((article) => {
+    const attributes = article.attributes
+    return {
+      title: attributes?.title || 'No title',
+      description: attributes?.description || 'No description',
+      link: `/learn/${attributes?.slug || 'no-slug'}`,
+      cover: attributes?.cover?.data?.attributes?.url || '',
+    }
+  })
+
   return {
     props: {
       siteConfigData,
       categories,
       articles: articlesResponse.data,
+      featuredArticles,
     },
     revalidate: DATA_CACHE_TIME_SECONDS,
   }
