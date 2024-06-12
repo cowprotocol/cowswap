@@ -152,12 +152,16 @@ export const ArticleImage = styled.div<{ color?: string }>`
   }
 `
 
-export const ArticleTitle = styled.h4<{ fontSize?: number }>`
+export const ArticleTitle = styled.h4<{ fontSize?: number; fontSizeMobile?: number }>`
   font-size: ${({ fontSize }) => fontSize || 28}px;
   font-weight: ${Font.weight.bold};
   color: ${Color.neutral0};
   margin: 16px 0 8px;
   line-height: 1.2;
+
+  ${Media.upToMedium()} {
+    font-size: ${({ fontSizeMobile }) => fontSizeMobile || 21}px;
+  }
 `
 
 export const ArticleDescription = styled.p<{ color?: string; fontSize?: number; fontWeight?: number }>`

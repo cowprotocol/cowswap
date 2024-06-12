@@ -40,7 +40,15 @@ const CategoryTitle = styled.div`
   flex-flow: row wrap;
   align-items: center;
   gap: 24px;
-  font-size: 32px;
+  font-size: 52px;
+
+  ${Media.upToMedium()} {
+    font-size: 32px;
+  }
+
+  > h1 {
+    font-size: inherit;
+  }
 `
 
 const CategoryImageWrapper = styled.div`
