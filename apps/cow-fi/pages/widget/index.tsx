@@ -264,7 +264,7 @@ export default function Page({ siteConfigData }: PageProps) {
               <SectionTitleText fontSize={62}>Everything You'd Want in a Widget</SectionTitleText>
             </SectionTitleWrapper>
 
-            <TopicList columns={4} columnsMobile={2}>
+            <TopicList columns={4} columnsMobile={1}>
               {FEATURE_ITEMS.map((item, index) => (
                 <TopicCard
                   key={index}
