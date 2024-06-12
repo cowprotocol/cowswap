@@ -5,10 +5,10 @@ import { OrderClass, OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useENSAddress } from '@cowprotocol/ens'
 import { Command, UiOrderType } from '@cowprotocol/types'
 import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
+import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { Web3Provider } from '@ethersproject/providers'
 import { SafeInfoResponse } from '@safe-global/api-kit'
 import { Currency, CurrencyAmount, Percent, Token } from '@uniswap/sdk-core'
-import { useWeb3React } from '@web3-react/core'
 
 import { useDispatch } from 'react-redux'
 
@@ -84,7 +84,7 @@ export function useSwapAmountsWithSlippage(): [
 }
 
 export function useBaseFlowContextSetup(): BaseFlowContextSetup {
-  const { provider } = useWeb3React()
+  const provider = useWalletProvider()
   const { account, chainId } = useWalletInfo()
   const { allowsOffchainSigning } = useWalletDetails()
   const gnosisSafeInfo = useGnosisSafeInfo()

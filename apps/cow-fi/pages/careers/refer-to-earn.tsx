@@ -1,4 +1,3 @@
-import Head from 'next/head'
 import { GetStaticProps } from 'next'
 import { Color } from '@cowprotocol/ui'
 
@@ -8,14 +7,7 @@ import { CONFIG } from '@/const/meta'
 
 import Layout from '@/components/Layout'
 
-import {
-  ContainerCard,
-  ArticleContent,
-  Breadcrumbs,
-  ArticleMainTitle,
-  BodyContent,
-  ArticleDescription,
-} from '@/styles/styled'
+import { ContainerCard, ArticleContent, Breadcrumbs, ArticleMainTitle, BodyContent } from '@/styles/styled'
 
 const DATA_CACHE_TIME_SECONDS = 5 * 60 // Cache 5min
 
@@ -35,25 +27,23 @@ const Wrapper = styled.div`
 `
 
 export default function Page({ siteConfigData }: PageProps) {
-  const { title, descriptionShort } = siteConfigData
+  const { title } = siteConfigData
 
   return (
-    <Layout bgColor={Color.neutral90}>
-      <Head>
-        <title>
-          {title} - {descriptionShort}
-        </title>
-      </Head>
-
+    <Layout
+      bgColor={Color.neutral90}
+      metaTitle={`Refer-to-Earn - ${title}`}
+      metaDescription="Kow someone who is not just looking for a job but for a great opportunity to grow? Refer them to us to earn $6,000 in USDC or USD."
+    >
       <Wrapper>
         <ContainerCard bgColor={Color.neutral100} minHeight="70vh" gap={62} gapMobile={42} centerContent touchFooter>
           <ArticleContent maxWidth="100%">
             <Breadcrumbs>
               <a href="/widget">Widget</a>
-              <span>{title}</span>
+              <span>Refer-to-Earn</span>
             </Breadcrumbs>
 
-            <ArticleMainTitle fontSize={52}>{title}</ArticleMainTitle>
+            <ArticleMainTitle fontSize={52}>Refer-to-Earn</ArticleMainTitle>
 
             <BodyContent>
               <h2>
@@ -187,12 +177,7 @@ export const getStaticProps: GetStaticProps<PageProps> = async () => {
 
   return {
     props: {
-      siteConfigData: {
-        ...siteConfigData,
-        title: 'Refer-to-Earn',
-        descriptionShort:
-          'now someone who is not just looking for a job but for a great opportunity to grow? Refer them to us to earn $6,000 in USDC or USD.',
-      },
+      siteConfigData,
     },
     revalidate: DATA_CACHE_TIME_SECONDS,
   }

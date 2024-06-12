@@ -1,4 +1,3 @@
-import Head from 'next/head'
 import { GetStaticProps } from 'next'
 import { Font, Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
 
@@ -52,7 +51,6 @@ import {
 } from '@/styles/styled'
 
 import SVG from 'react-inlinesvg'
-import IMG_ICON_FAQ from '@cowprotocol/assets/images/icon-faq.svg'
 import IMG_LOGO_SAFE from '@cowprotocol/assets/images/logo-safe.svg'
 import IMG_LOGO_KARPATKEY from '@cowprotocol/assets/images/logo-karpatkey.svg'
 import IMG_LOGO_BLOCKNATIVE from '@cowprotocol/assets/images/logo-blocknative.svg'
@@ -182,18 +180,16 @@ export default function Page({ siteConfigData }: PageProps) {
   return (
     <WagmiConfig config={wagmiClient}>
       <RainbowKitProvider chains={chains}>
-        <Layout bgColor={'#FEE7CF'}>
-          <Head>
-            <title>
-              {siteConfigData.title} - {siteConfigData.descriptionShort}
-            </title>
-          </Head>
-
+        <Layout
+          bgColor={'#FEE7CF'}
+          metaTitle="Mev Blocker - The best MEV protection under the sun"
+          metaDescription="MEV Blocker is your personal protection from frontrunning and sandwich attacks for a broad spectrum of Ethereum transactions"
+        >
           <Wrapper>
             <HeroContainer variant="secondary" maxWidth={1300} padding={'0 0 75px'}>
               <HeroContent variant="secondary">
                 <HeroSubtitle color={'#EC4612'}>MEV Blocker</HeroSubtitle>
-                <HeroTitle as="h2">The best MEV protection under the sun</HeroTitle>
+                <HeroTitle>The best MEV protection under the sun</HeroTitle>
                 <HeroDescription fontSize={21}>
                   MEV Blocker is your personal protection from frontrunning and sandwich attacks for a broad spectrum of
                   Ethereum transactions

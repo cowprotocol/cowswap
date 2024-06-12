@@ -8,6 +8,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { Command, UiOrderType } from '@cowprotocol/types'
 import { ButtonSecondary, Loader, TokenAmount, TokenSymbol, UI } from '@cowprotocol/ui'
+import { PercentDisplay, percentIsAlmostHundred } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
 
 import SVG from 'react-inlinesvg'
@@ -209,8 +210,9 @@ export function OrderRow({
   const priceDiffs = usePricesDifference(prices, spotPrice, isInverted)
   const feeDifference = useFeeAmountDifference(rateInfoParams, prices)
 
-  const isUnfillable =
-    (executedPriceInverted !== undefined && executedPriceInverted?.equalTo(ZERO_FRACTION)) || withWarning
+  const isExecutedPriceZero = executedPriceInverted !== undefined && executedPriceInverted?.equalTo(ZERO_FRACTION)
+
+  const isUnfillable = !percentIsAlmostHundred(filledPercentDisplay) && (isExecutedPriceZero || withWarning)
   const isOrderCreating = CREATING_STATES.includes(order.status)
 
   const inputTokenSymbol = order.inputToken.symbol || ''
@@ -337,7 +339,9 @@ export function OrderRow({
 
       {/* Filled % */}
       <styledEl.CellElement doubleRow clickable onClick={onClick}>
-        <b>{filledPercentDisplay}%</b>
+        <b>
+          <PercentDisplay percent={filledPercentDisplay} />
+        </b>
         <styledEl.ProgressBar value={filledPercentDisplay}></styledEl.ProgressBar>
       </styledEl.CellElement>
 

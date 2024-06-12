@@ -1,4 +1,3 @@
-import Head from 'next/head'
 import { GetStaticProps } from 'next'
 import { Font, Color, Media } from '@cowprotocol/ui'
 
@@ -10,7 +9,6 @@ import Layout from '@/components/Layout'
 import { getCategories, getArticles, Category, ArticleListResponse } from 'services/cms'
 
 import { SearchBar } from '@/components/SearchBar'
-import { ArrowButton } from '@/components/ArrowButton'
 
 import {
   ContainerCard,
@@ -33,6 +31,7 @@ import {
   CTATitle,
   CTAButton,
   ContainerCardSectionTopTitle,
+  TopicTitle,
 } from '@/styles/styled'
 
 const DATA_CACHE_TIME_SECONDS = 5 * 60 // Cache 5min
@@ -102,31 +101,31 @@ const SPACES = [
 
 const MEDIA_COVERAGE = [
   {
-    title: 'CoW DAO unveils AMM aimed at protecting liquidity',
-    publisher: 'The Block',
-    image: '/path/to/image1.png',
-    link: '/media/amm-liquidity',
+    title: 'Bots fleece DeFi liquidity providers for $500m every year. CoW DAO’s new exchange stops them ',
+    publisher: 'DLNews',
+    image: '/images/media-coverage/DLNews-bots-fleece.webp',
+    link: 'https://www.dlnews.com/articles/defi/new-cow-swap-amm-will-stop-mev-bots-and-save-users-millions/',
     linkExternal: true,
   },
   {
     title: 'Ethereum projects unite to protect users from MEV-induced high prices',
-    publisher: 'Cointelegraph',
-    image: '/path/to/image2.png',
-    link: '/media/mev-protection',
+    publisher: 'The Crypto Times',
+    image: '/images/media-coverage/Ethereum-Foundation-Raises-Funds-Website.webp',
+    link: 'https://www.cryptotimes.io/2024/01/22/ethereum-foundation-sells-700-eth-via-cow-protocol/',
     linkExternal: true,
   },
   {
-    title: 'MEV Blocker Wants to Help You Outrun the Front-Runners',
-    publisher: 'Coindesk',
-    image: '/path/to/image3.png',
-    link: '/media/mev-blocker',
+    title: 'CoW Swap: A Beginner’s Guide to This New Decentralized Exchange',
+    publisher: 'BeInCrypto',
+    image: '/images/media-coverage/learn_CoW_Swap-covers_logo.webp',
+    link: 'https://beincrypto.com/learn/cow-swap-guide/',
     linkExternal: true,
   },
   {
-    title: 'Vitalik Buterin Sells MKR Tokens as MakerDAO Co-Founder Pushes for Solana-based ‘NewChain’',
-    publisher: 'Decrypt',
-    image: '/path/to/image4.png',
-    link: '/media/vitalik-sells-mkr',
+    title: 'CoW Swap: Intents, MEV, and Batch Auctions',
+    publisher: 'Shoal Research',
+    image: '/images/media-coverage/shoal-research-intents.webp',
+    link: 'https://www.shoal.gg/p/cow-swap-intents-mev-and-batch-auctions',
     linkExternal: true,
   },
 ]
@@ -177,14 +176,10 @@ const Wrapper = styled.div`
 `
 
 export default function Learn({ siteConfigData, categories, articles }: LearnProps) {
-  return (
-    <Layout>
-      <Head>
-        <title>
-          {siteConfigData.title} - {siteConfigData.descriptionShort}
-        </title>
-      </Head>
+  const { title } = siteConfigData
 
+  return (
+    <Layout metaTitle={`Knowledge Base - ${title}`}>
       <Wrapper>
         <h1>Learn - Knowledge Base</h1>
         <h2>Hi, how can we help?</h2>
@@ -195,7 +190,6 @@ export default function Learn({ siteConfigData, categories, articles }: LearnPro
           <ContainerCardSection>
             <ContainerCardSectionTop>
               <ContainerCardSectionTopTitle>Featured articles</ContainerCardSectionTopTitle>
-              <ArrowButton link="/articles" text="View all articles" />
             </ContainerCardSectionTop>
             <ArticleList>
               {FEATURED_ARTICLES.map(({ title, description, color, link, linkExternal }, index) => (
@@ -221,7 +215,7 @@ export default function Learn({ siteConfigData, categories, articles }: LearnPro
               {categories.map(({ name, bgColor, textColor, iconColor, link }, index) => (
                 <TopicCard key={index} bgColor={bgColor} textColor={textColor} href={link}>
                   <TopicImage iconColor={iconColor}></TopicImage>
-                  <h5>{name}</h5>
+                  <TopicTitle>{name}</TopicTitle>
                 </TopicCard>
               ))}
             </TopicList>
@@ -230,7 +224,6 @@ export default function Learn({ siteConfigData, categories, articles }: LearnPro
           <ContainerCardSection>
             <ContainerCardSectionTop>
               <ContainerCardSectionTopTitle>Podcasts & Spaces</ContainerCardSectionTopTitle>
-              <ArrowButton link="/articles" text="View all" />
             </ContainerCardSectionTop>
             <LinkSection>
               <LinkColumn>
@@ -258,7 +251,6 @@ export default function Learn({ siteConfigData, categories, articles }: LearnPro
           <ContainerCardSection>
             <ContainerCardSectionTop>
               <ContainerCardSectionTopTitle>Media coverage</ContainerCardSectionTopTitle>
-              <ArrowButton link="/articles" text="View all" />
             </ContainerCardSectionTop>
             <ArticleList columns={4}>
               {MEDIA_COVERAGE.map(({ image, title, publisher, link, linkExternal }, index) => (

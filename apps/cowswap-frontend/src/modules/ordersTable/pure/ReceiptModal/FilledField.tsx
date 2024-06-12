@@ -1,8 +1,6 @@
-// Code based on https://github.com/cowprotocol/explorer/blob/develop/src/components/orders/FilledProgress/index.tsx
-
 import { TokenAmount } from '@cowprotocol/ui'
+import { PercentDisplay } from '@cowprotocol/ui'
 
-// TODO: bad import
 import { ProgressBar, ProgressBarWrapper } from 'modules/ordersTable/pure/OrdersTableContainer/OrderRow/styled'
 
 import { getFilledAmounts } from 'utils/orderUtils/getFilledAmounts'
@@ -26,7 +24,9 @@ export function FilledField({ order }: Props) {
     <styledEl.Value>
       <styledEl.InlineWrapper>
         <ProgressBarWrapper>
-          <b>{filledPercentDisplay}%</b>
+          <b>
+            <PercentDisplay percent={filledPercentDisplay} />
+          </b>
           <ProgressBar value={filledPercentDisplay || 0}></ProgressBar>
         </ProgressBarWrapper>
       </styledEl.InlineWrapper>

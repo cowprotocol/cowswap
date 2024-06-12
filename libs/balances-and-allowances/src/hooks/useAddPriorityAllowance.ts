@@ -4,8 +4,8 @@ import { useCallback } from 'react'
 import { Erc20, ERC_20_INTERFACE } from '@cowprotocol/abis'
 import { GP_VAULT_RELAYER } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { Contract } from '@ethersproject/contracts'
-import { useWeb3React } from '@web3-react/core'
 
 import { allowancesFullState } from '../state/allowancesAtom'
 
@@ -17,7 +17,7 @@ interface PriorityAllowanceParams {
 }
 
 export function useAddPriorityAllowance() {
-  const { provider } = useWeb3React()
+  const provider = useWalletProvider()
   const setAllowance = useSetAtom(allowancesFullState)
 
   return useCallback(

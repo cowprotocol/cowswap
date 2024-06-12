@@ -496,6 +496,7 @@ interface MenuBarProps {
   activeFillDark?: string
   hoverBackgroundLight?: string
   hoverBackgroundDark?: string
+  padding?: string
 }
 
 export const MenuBar = (props: MenuBarProps) => {
@@ -520,6 +521,7 @@ export const MenuBar = (props: MenuBarProps) => {
     activeFillDark,
     hoverBackgroundLight,
     hoverBackgroundDark,
+    padding,
   } = props
 
   const [isDaoOpen, setIsDaoOpen] = useState(false)
@@ -589,6 +591,8 @@ export const MenuBar = (props: MenuBarProps) => {
         activeFillDark={activeFillDark}
         hoverBackgroundLight={hoverBackgroundLight}
         hoverBackgroundDark={hoverBackgroundDark}
+        padding={padding}
+        mobileMode={isMobile}
       >
         <MenuBarInner theme={styledTheme}>
           <NavDaoTrigger isOpen={isDaoOpen} setIsOpen={setIsDaoOpen} theme={theme} mobileMode={isMobile} />

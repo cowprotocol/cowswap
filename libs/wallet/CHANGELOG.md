@@ -1,5 +1,33 @@
 # Changelog
 
+## [1.4.0](https://github.com/cowprotocol/cowswap/compare/wallet-v1.3.0...wallet-v1.4.0) (2024-05-29)
+
+
+### Features
+
+* **arbitrum:** add arbitrum_one ([#4407](https://github.com/cowprotocol/cowswap/issues/4407)) ([166e33f](https://github.com/cowprotocol/cowswap/commit/166e33f3c494972738b154cf844584dd78e12c7d))
+
+
+### Bug Fixes
+
+* **wallets:** don't reset wallet on network switching ([#4497](https://github.com/cowprotocol/cowswap/issues/4497)) ([e11a858](https://github.com/cowprotocol/cowswap/commit/e11a85810b881b00b2c6cce0ef040964344122c3))
+* **wallets:** update provider when eip6963 wallet changed ([#4483](https://github.com/cowprotocol/cowswap/issues/4483)) ([7c37566](https://github.com/cowprotocol/cowswap/commit/7c37566cce83a2f23c7a63b71717edf67488cb74))
+
+## [1.3.0](https://github.com/cowprotocol/cowswap/compare/wallet-v1.2.0...wallet-v1.3.0) (2024-05-22)
+
+
+### Features
+
+* **usd-estimation:** add defillama price source ([#4341](https://github.com/cowprotocol/cowswap/issues/4341)) ([96a0343](https://github.com/cowprotocol/cowswap/commit/96a03437710b807c966debdaa8ce5219ddaff7a4))
+* **wallets:** support eip6963 multi-injected providers ([#4416](https://github.com/cowprotocol/cowswap/issues/4416)) ([85a78bb](https://github.com/cowprotocol/cowswap/commit/85a78bbfe9b0a8fe5428b25aba0b38944b10987d))
+
+## [1.2.0](https://github.com/cowprotocol/cowswap/compare/wallet-v1.1.0...wallet-v1.2.0) (2024-05-14)
+
+
+### Features
+
+* support counterfactual safes ([#4063](https://github.com/cowprotocol/cowswap/issues/4063)) ([43f86b8](https://github.com/cowprotocol/cowswap/commit/43f86b889b963341f2214a23ee21ae49ae550a8f))
+
 ## [1.1.0](https://github.com/cowprotocol/cowswap/compare/wallet-v1.0.2...wallet-v1.1.0) (2024-05-01)
 
 

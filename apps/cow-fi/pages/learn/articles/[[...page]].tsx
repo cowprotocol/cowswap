@@ -73,7 +73,6 @@ export type ArticlesResponse = {
 }
 
 export default function ArticlesPage({
-  siteConfigData,
   articles,
   totalArticles = 0,
   currentPage = 1,
@@ -81,18 +80,17 @@ export default function ArticlesPage({
   const totalPages = articles ? Math.ceil(totalArticles / ITEMS_PER_PAGE) : 0
 
   return (
-    <Layout>
-      <Head>
-        <title>{siteConfigData.title} - All Articles</title>
-      </Head>
-
+    <Layout
+      metaTitle={`All articles ${currentPage === 1 ? '' : `(${currentPage})`} - Knowledge Base`}
+      metaDescription="All knowledge base articles in the Cow DAO ecosystem"
+    >
       <Wrapper>
         <SearchBar articles={articles || []} />
 
         <ContainerCard gap={42} gapMobile={24}>
           <ContainerCardSectionTop>
             <Breadcrumbs padding={'0'}>
-              <a href="/Learn">Learn</a>
+              <a href="/Learn">Knowledge Base</a>
               <h1>All articles</h1>
             </Breadcrumbs>
 
@@ -141,7 +139,7 @@ export const getStaticProps: GetStaticProps<ArticlesPageProps> = async (context:
   const articles =
     articlesResponse.data?.map((article: Article) => ({
       ...article,
-      id: article.id || 0, // Ensure id is a number
+      id: article.id || 0,
       attributes: {
         ...article.attributes,
         cover: article.attributes?.cover ?? {},

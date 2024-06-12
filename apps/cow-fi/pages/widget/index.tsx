@@ -1,4 +1,3 @@
-import Head from 'next/head'
 import { GetStaticProps } from 'next'
 import { Font, Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
 
@@ -102,18 +101,16 @@ const Wrapper = styled.div`
 
 export default function Page({ siteConfigData }: PageProps) {
   return (
-    <Layout bgColor={Color.neutral90}>
-      <Head>
-        <title>
-          {siteConfigData.title} - {siteConfigData.descriptionShort}
-        </title>
-      </Head>
-
+    <Layout
+      bgColor={Color.neutral90}
+      metaTitle="Widget - Bring reliable, MEV-protected swaps to your users"
+      metaDescription="Integrate the CoW Swap widget to bring seamless, MEV-protected trading to your website or dApp."
+    >
       <Wrapper>
         <HeroContainer variant="secondary" maxWidth={1300} padding="0 0 72px">
           <HeroContent variant="secondary">
             <HeroSubtitle color={'#66018E'}>Widget</HeroSubtitle>
-            <HeroTitle fontSize={52} fontSizeMobile={38} as="h2">
+            <HeroTitle fontSize={52} fontSizeMobile={38}>
               Bring reliable, MEV-protected swaps to your users
             </HeroTitle>
             <HeroDescription color={Color.neutral30}>

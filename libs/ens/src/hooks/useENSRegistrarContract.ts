@@ -1,22 +1,35 @@
 import { EnsAbi, EnsRegistrar } from '@cowprotocol/abis'
-import { ENS_REGISTRAR_ADDRESSES } from '@cowprotocol/common-const'
+import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
 import { getContract } from '@cowprotocol/common-utils'
-import { useWeb3React } from '@web3-react/core'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { useWalletChainId, useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import useSWR from 'swr'
 
+const ENS_REGISTRAR_ADDRESSES: Record<SupportedChainId, string | null> = {
+  [SupportedChainId.MAINNET]: '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
+  [SupportedChainId.GNOSIS_CHAIN]: null,
+  [SupportedChainId.SEPOLIA]: '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
+  [SupportedChainId.ARBITRUM_ONE]: null,
+}
+
 export function useENSRegistrarContract(): EnsRegistrar | undefined {
-  const { provider, chainId } = useWeb3React()
+  const provider = useWalletProvider()
+  const chainId = useWalletChainId()
 
-  const { data } = useSWR(['useENSRegistrarContract', provider, chainId], () => {
-    if (!chainId || !provider) return undefined
+  const { data } = useSWR(
+    ['useENSRegistrarContract', provider, chainId],
+    () => {
+      if (!chainId || !provider) return undefined
 
-    const address = ENS_REGISTRAR_ADDRESSES[chainId]
+      const address = ENS_REGISTRAR_ADDRESSES[chainId as SupportedChainId]
 
-    if (!address) return undefined
+      if (!address) return undefined
 
-    return getContract(address, EnsAbi, provider) as EnsRegistrar
-  })
+      return getContract(address, EnsAbi, provider) as EnsRegistrar
+    },
+    SWR_NO_REFRESH_OPTIONS
+  )
 
   return data
 }

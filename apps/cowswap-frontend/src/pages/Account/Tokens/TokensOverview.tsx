@@ -6,7 +6,7 @@ import { useDebounce, useOnClickOutside, usePrevious } from '@cowprotocol/common
 import { isAddress, isTruthy } from '@cowprotocol/common-utils'
 import { useTokensByAddressMap, useFavouriteTokens, useResetFavouriteTokens } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { useWeb3React } from '@web3-react/core'
+import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import { Trans, t } from '@lingui/macro'
 import { Check } from 'react-feather'
@@ -52,7 +52,7 @@ const PageView = {
 
 export default function TokensOverview() {
   const { chainId, account } = useWalletInfo()
-  const { provider } = useWeb3React()
+  const provider = useWalletProvider()
 
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
   const [selectedView, setSelectedView] = useState<PageViewKeys>(PageViewKeys.ALL_TOKENS)

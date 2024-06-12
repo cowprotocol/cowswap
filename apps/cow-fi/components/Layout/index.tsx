@@ -1,7 +1,8 @@
+import Head from 'next/head'
 import { MenuBar, MenuItem, Footer, ProductVariant, GlobalCoWDAOStyles } from '@cowprotocol/ui'
 import styled from 'styled-components/macro'
+import { CONFIG } from '@/const/meta'
 
-import IMG_ICON_BRANDED_DOT_RED from '@cowprotocol/assets/images/icon-branded-dot-red.svg'
 import { CoWDAOFonts } from '@/styles/CoWDAOFonts'
 
 const THEME_MODE = 'dark'
@@ -11,8 +12,8 @@ const NAV_ITEMS: MenuItem[] = [
   {
     label: 'About',
     children: [
-      { label: 'Governance', href: 'https://docs.cow.fi/governance', external: true },
       { label: 'Stats', href: 'https://dune.com/cowprotocol/cowswap', external: true },
+      { label: 'Governance', href: 'https://docs.cow.fi/governance', external: true },
       { label: 'Grants', href: 'https://grants.cow.fi/', external: true },
       { label: 'Careers', href: '/careers' },
       { label: 'Tokens', href: '/tokens' },
@@ -43,13 +44,15 @@ const NAV_ITEMS: MenuItem[] = [
     label: 'Learn',
     children: [
       {
-        href: '/learn/what-is-backrunning-mev-attacks-explained',
-        label: 'MEV 101',
-        description: 'MEV Attacks Explained',
-        icon: IMG_ICON_BRANDED_DOT_RED,
+        href: '/learn',
+        label: 'Knowledge Base',
       },
-      { href: '/learn', label: 'Knowledge Base', description: 'Learn more about CoW', icon: IMG_ICON_BRANDED_DOT_RED },
-      { href: 'https://docs.cow.fi/', label: 'Docs', description: 'Read the docs', external: true },
+      {
+        href: 'https://docs.cow.fi/',
+        label: 'Docs',
+
+        external: true,
+      },
     ],
   },
 ]
@@ -60,10 +63,10 @@ const NAV_ADDITIONAL_BUTTONS = [
     href: 'https://deploy-cow-amm.bleu.fi/',
     external: true,
     isButton: true,
-    bgColor: '#194D05',
-    color: '#BCEC79',
+    bgColor: '#BCEC79',
+    color: '#194D05',
   },
-  // { label: 'Use MEV Blocker', href: '/mev-blocker#rpc', isButton: true, bgColor: '#EC4612', color: '#FEE7CF' },
+
   {
     label: 'Trade on CoW Swap',
     href: 'https://swap.cow.fi/#/1/swap/USDC/COW',
@@ -137,19 +140,44 @@ const Wrapper = styled.div`
 interface LayoutProps {
   children: React.ReactNode
   bgColor?: string
+  metaTitle?: string
+  metaDescription?: string
+  ogImage?: string
 }
 
-export default function LayoutV2({ children, bgColor }: LayoutProps) {
+export default function Layout({ children, bgColor, metaTitle, metaDescription, ogImage }: LayoutProps) {
   const GlobalStyles = GlobalCoWDAOStyles(CoWDAOFonts, bgColor)
 
   return (
     <>
+      <Head>
+        <title key="title">{`${metaTitle || `${CONFIG.title} - ${CONFIG.descriptionShort}`}`}</title>
+        <meta key="ogTitle" property="og:title" content={metaTitle || `${CONFIG.title} - ${CONFIG.descriptionShort}`} />
+
+        <meta key="description" name="description" content={metaDescription || CONFIG.descriptionShort} />
+        <meta key="ogDescription" property="og:description" content={metaDescription || CONFIG.descriptionShort} />
+
+        <meta
+          key="twitterTitle"
+          name="twitter:title"
+          content={`${metaTitle || `${CONFIG.title} - ${CONFIG.descriptionShort}`}`}
+        />
+        <meta
+          key="twitterDescription"
+          name="twitter:description"
+          content={metaDescription || CONFIG.descriptionShort}
+        />
+
+        <meta key="ogImage" property="og:image" content={ogImage || CONFIG.ogImage} />
+        <meta key="twitterImage" name="twitter:image" content={ogImage || CONFIG.ogImage} />
+      </Head>
       <GlobalStyles />
       <MenuBar
         navItems={NAV_ITEMS}
         theme={THEME_MODE}
         productVariant={PRODUCT_VARIANT}
         additionalNavButtons={NAV_ADDITIONAL_BUTTONS}
+        padding="10px 60px"
       />
       <Wrapper>{children}</Wrapper>
       <Footer

@@ -1,5 +1,27 @@
 # Changelog
 
+## [1.4.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.3.1...tokens-v1.4.0) (2024-06-06)
+
+
+### Features
+
+* use bff proxies ([#4491](https://github.com/cowprotocol/cowswap/issues/4491)) ([cb9586b](https://github.com/cowprotocol/cowswap/commit/cb9586bbb4f78498a39b2b01c6bb1e4255dd0c46))
+
+## [1.3.1](https://github.com/cowprotocol/cowswap/compare/tokens-v1.3.0...tokens-v1.3.1) (2024-06-04)
+
+
+### Bug Fixes
+
+* **arbitrum:** replace GNO with COW in fav tokens ([#4503](https://github.com/cowprotocol/cowswap/issues/4503)) ([518cf58](https://github.com/cowprotocol/cowswap/commit/518cf583667a53ecf724f1353306a5398edf1034))
+
+## [1.3.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.2.0...tokens-v1.3.0) (2024-05-29)
+
+
+### Features
+
+* add arbitrum uni token list ([#4488](https://github.com/cowprotocol/cowswap/issues/4488)) ([057bc68](https://github.com/cowprotocol/cowswap/commit/057bc689771bd256d667f3335a3da0b683f1bd8d))
+* **arbitrum:** add arbitrum_one ([#4407](https://github.com/cowprotocol/cowswap/issues/4407)) ([166e33f](https://github.com/cowprotocol/cowswap/commit/166e33f3c494972738b154cf844584dd78e12c7d))
+
 ## [1.2.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.1.1...tokens-v1.2.0) (2024-05-02)
 
 

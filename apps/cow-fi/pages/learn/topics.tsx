@@ -1,4 +1,3 @@
-import Head from 'next/head'
 import { GetStaticProps } from 'next'
 import { Font, Color, Media } from '@cowprotocol/ui'
 
@@ -71,14 +70,10 @@ const Wrapper = styled.div`
 `
 
 export default function Topics({ siteConfigData, categories, articles }: TopicsProps) {
-  return (
-    <Layout>
-      <Head>
-        <title>
-          {siteConfigData.title} - {siteConfigData.descriptionShort}
-        </title>
-      </Head>
+  const { title } = siteConfigData
 
+  return (
+    <Layout metaTitle={`Knowledge Base topics - ${title}`} metaDescription="All knowledge base topics">
       <Wrapper>
         <h1>Knowledge Base</h1>
         <h2>All Topics</h2>

@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { getJobs } from 'services/greenhouse'
-import Head from 'next/head'
 import { GetStaticProps } from 'next'
 import { Font, Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
 
@@ -23,7 +22,6 @@ import {
   SectionTitleText,
   SectionTitleDescription,
   TopicCardInner,
-  // DropDown,
 } from '@/styles/styled'
 
 const DATA_CACHE_TIME_SECONDS = 5 * 60 // Cache 5min
@@ -45,23 +43,18 @@ const Wrapper = styled.div`
 `
 
 export default function Page({ siteConfigData, jobsData }: PageProps) {
+  const { title } = siteConfigData
   const [department, setDepartment] = useState('All')
-  const handleDepartmentChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setDepartment(e.target.value)
-  }
 
   const jobsCount = Object.keys(jobsData).reduce((acc, cur) => acc + jobsData[cur].length, 0)
-  const departments = Object.keys(jobsData).map((deptsName: string) => deptsName)
   const jobsCountForDepartment = department === 'All' ? jobsCount : jobsData[department].length
 
   return (
-    <Layout bgColor={Color.neutral90}>
-      <Head>
-        <title>
-          {siteConfigData.title} - {siteConfigData.descriptionShort}
-        </title>
-      </Head>
-
+    <Layout
+      bgColor={Color.neutral90}
+      metaTitle={`Careers - ${title}`}
+      metaDescription="Want to build the future of decentralized trading? We are an ambitious, fast growing and international team working at the forefront of DeFi. We believe that we can make markets both more efficient and fair, by building the ultimate batch auction settlement layer across EVM compatible blockchains."
+    >
       <Wrapper>
         <ContainerCard bgColor={Color.neutral90} color={Color.neutral10} padding="0 60px 60px" touchFooter>
           <ContainerCardSection>
@@ -85,22 +78,6 @@ export default function Page({ siteConfigData, jobsData }: PageProps) {
             </SectionTitleWrapper>
 
             {jobsCount < 1 && <p>There are currently no open positions.</p>}
-            {/* {jobsCount > 0 && department.length > 0 && (
-              <>
-                <DropDown maxWidth={600} margin="0 auto">
-                  <select onChange={handleDepartmentChange}>
-                    <option value="All" selected>
-                      All ({jobsCount})
-                    </option>
-                    {departments.map((department) => (
-                      <option key={department} value={department}>
-                        {department} ({jobsData[department].length})
-                      </option>
-                    ))}
-                  </select>
-                </DropDown>
-              </>
-            )} */}
 
             <TopicList columns={2} maxWidth={900} margin="16px auto 0">
               {jobsCount > 0 &&

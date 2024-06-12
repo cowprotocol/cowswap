@@ -16,6 +16,8 @@ export const MenuBarWrapper = styled.div<{
   activeFillDark?: string
   hoverBackgroundLight?: string
   hoverBackgroundDark?: string
+  padding?: string
+  mobileMode?: boolean
 }>`
   --height: 56px;
   --width: 100%;
@@ -38,10 +40,17 @@ export const MenuBarWrapper = styled.div<{
 
   display: flex;
   width: 100%;
-  padding: 10px;
+  padding: ${({ padding }) => padding || '10px'};
   z-index: 10;
   position: sticky;
   top: 0;
+  color: var(--color);
+
+  ${({ mobileMode }) =>
+    mobileMode &&
+    css`
+      padding: 10px;
+    `}
 `
 
 export const MenuBarInner = styled.div<{ theme: CowSwapTheme }>`
@@ -147,6 +156,7 @@ export const NavItems = styled.ul<{ mobileMode?: boolean; theme: CowSwapTheme }>
   list-style-type: none;
   margin: 0 0 0 var(--marginLeft);
   padding: 0;
+  color: inherit;
 
   ${({ mobileMode }) =>
     mobileMode &&
@@ -172,6 +182,7 @@ export const NavItems = styled.ul<{ mobileMode?: boolean; theme: CowSwapTheme }>
       > div {
         width: 100%;
         position: relative;
+        color: inherit;
       }
     `}
 `
@@ -194,8 +205,8 @@ export const DropdownContentWrapper = styled.div<DropdownContentProps>`
   backdrop-filter: blur(var(--blur));
   z-index: 1000;
   padding: ${({ isThirdLevel }) => (isThirdLevel ? '6px' : '6px')};
-  min-width: ${({ isThirdLevel }) => (isThirdLevel ? '200px' : '270px')};
-  width: ${({ isThirdLevel }) => (isThirdLevel ? '100%' : 'max-content')};
+  /* min-width: ${({ isThirdLevel }) => (isThirdLevel ? '200px' : '270px')}; */
+  width: ${({ isThirdLevel }) => (isThirdLevel ? '100%' : '320px')};
   height: auto;
   border-radius: 28px;
   position: ${({ isThirdLevel }) => (isThirdLevel ? 'relative' : 'absolute')};
@@ -258,8 +269,8 @@ export const DropdownContent = styled.div<DropdownContentProps>`
   backdrop-filter: blur(var(--blur));
   z-index: 1000;
   padding: ${({ isThirdLevel }) => (isThirdLevel ? '6px' : '6px')};
-  min-width: ${({ isThirdLevel }) => (isThirdLevel ? '200px' : '270px')};
-  width: ${({ isThirdLevel }) => (isThirdLevel ? '100%' : 'max-content')};
+  /* min-width: ${({ isThirdLevel }) => (isThirdLevel ? '200px' : '270px')}; */
+  width: ${({ isThirdLevel }) => (isThirdLevel ? '100%' : '320px')};
   height: auto;
   border-radius: 28px;
   position: ${({ isThirdLevel }) => (isThirdLevel ? 'relative' : 'absolute')};
@@ -606,7 +617,8 @@ export const RightAligned = styled.div<{ mobileMode?: boolean; flexFlow?: string
   ${({ mobileMode, flexFlowMobile }) =>
     mobileMode &&
     css`
-      gap: 0;
+      gap: 16px;
+      margin: 24px 0 0 auto;
       flex-flow: ${flexFlowMobile || 'column wrap'};
     `}
 `

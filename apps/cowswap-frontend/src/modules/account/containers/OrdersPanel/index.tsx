@@ -131,7 +131,7 @@ const Wrapper = styled.div`
 
 // TODO: rename the component into AccountModal
 export function OrdersPanel() {
-  const { active } = useWalletInfo()
+  const { active, account } = useWalletInfo()
   const { ensName } = useWalletDetails()
   const toggleWalletModal = useToggleWalletModal()
   const toggleAccountSelectorModal = useSetAtom(toggleAccountSelectorModalAtom)
@@ -140,7 +140,7 @@ export function OrdersPanel() {
 
   const handleCloseOrdersPanel = useToggleAccountModal()
 
-  if (!active || !isOpen) {
+  if (!active || !isOpen || !account) {
     return null
   }
 

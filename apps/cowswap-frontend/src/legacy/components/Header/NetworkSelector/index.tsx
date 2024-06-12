@@ -1,17 +1,19 @@
 import { useRef } from 'react'
 
 import { getChainInfo } from '@cowprotocol/common-const'
+import { useAvailableChains } from '@cowprotocol/common-hooks'
 import { UI } from '@cowprotocol/ui'
-import { getIsTallyWallet, useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
-import { useWeb3React } from '@web3-react/core'
+import { useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
+import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import { Trans } from '@lingui/macro'
 import { darken, transparentize } from 'color2k'
 import { AlertTriangle, ChevronDown } from 'react-feather'
 import styled from 'styled-components/macro'
 
-import { useCloseModal, useModalIsOpen, useOpenModal, useToggleModal } from 'legacy/state/application/hooks'
+import { useModalIsOpen, useToggleModal } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
+import { useIsDarkMode } from 'legacy/state/user/hooks'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useOnSelectNetwork } from 'common/hooks/useOnSelectNetwork'
@@ -148,14 +150,13 @@ const NetworkAlertLabel = styled.div`
 `
 
 export function NetworkSelector() {
-  const { provider } = useWeb3React()
+  const provider = useWalletProvider()
   const { chainId } = useWalletInfo()
   const node = useRef<HTMLDivElement>(null)
   const nodeMobile = useRef<HTMLDivElement>(null)
   const isOpen = useModalIsOpen(ApplicationModal.NETWORK_SELECTOR)
   const toggleModal = useToggleModal(ApplicationModal.NETWORK_SELECTOR)
   const isSmartContractWallet = useIsSmartContractWallet()
-  const isTallyWallet = getIsTallyWallet(provider?.provider)
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
   const info = getChainInfo(chainId)
   const isUpToMedium = useMediaQuery(Media.upToMedium(false))
@@ -167,8 +168,12 @@ export function NetworkSelector() {
   })
 
   const onSelectChain = useOnSelectNetwork()
+  const isDarkMode = useIsDarkMode()
+  const logoUrl = isDarkMode ? info.logo.dark : info.logo.light
 
-  if (!chainId || !provider || isSmartContractWallet || isTallyWallet) {
+  const availableChains = useAvailableChains()
+
+  if (!provider || isSmartContractWallet) {
     return null
   }
 
@@ -177,7 +182,7 @@ export function NetworkSelector() {
       <SelectorControls isChainIdUnsupported={isChainIdUnsupported}>
         {!isChainIdUnsupported ? (
           <>
-            <SelectorLogo src={info?.logoUrl} />
+            <SelectorLogo src={logoUrl} />
             <SelectorLabel>{info?.label}</SelectorLabel>
             <StyledChevronDown />
           </>
@@ -195,7 +200,12 @@ export function NetworkSelector() {
             <FlyoutHeader>
               <Trans>Select a network</Trans>
             </FlyoutHeader>
-            <NetworksList currentChainId={isChainIdUnsupported ? null : chainId} onSelectChain={onSelectChain} />
+            <NetworksList
+              currentChainId={isChainIdUnsupported ? null : chainId}
+              isDarkMode={isDarkMode}
+              onSelectChain={onSelectChain}
+              availableChains={availableChains}
+            />
           </FlyoutMenuContents>
         </FlyoutMenu>
       )}

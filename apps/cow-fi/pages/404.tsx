@@ -25,14 +25,14 @@ const Wrapper = styled.div`
 `
 
 export default function Page({ siteConfigData }: PageProps) {
-  const { title, descriptionShort } = siteConfigData
+  const { title } = siteConfigData
 
   return (
-    <Layout bgColor={Color.neutral90}>
-      <Head>
-        <title>{title}</title>
-      </Head>
-
+    <Layout
+      bgColor={Color.neutral90}
+      metaTitle="404 - Page Not Found"
+      metaDescription="This page could not be found. Please go back to the homepage or use the navigation menu to find what you are looking for."
+    >
       <Wrapper>
         <ContainerCard bgColor={'transparent'} minHeight="70vh" gap={62} gapMobile={42} centerContent touchFooter>
           <ArticleContent maxWidth="100%">

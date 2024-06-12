@@ -1,4 +1,3 @@
-import Head from 'next/head'
 import { GetStaticProps } from 'next'
 import { Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
 import IMG_ICON_CROWN_COW from '@cowprotocol/assets/images/icon-crown-cow.svg'
@@ -10,6 +9,8 @@ import IMG_ICON_OWL from '@cowprotocol/assets/images/icon-owl.svg'
 import IMG_ICON_GHOST from '@cowprotocol/assets/images/icon-ghost.svg'
 import IMG_LOGO_SAFE from '@cowprotocol/assets/images/logo-safe.svg'
 import IMG_LOGO_SUMMER_FI from '@cowprotocol/assets/images/logo-summer-fi.svg'
+import IMG_LOGO_LIDO from '@cowprotocol/assets/images/logo-lido.svg'
+import IMG_LOGO_CURVE from '@cowprotocol/assets/images/logo-curve.svg'
 
 import styled from 'styled-components'
 
@@ -78,11 +79,12 @@ interface PageProps {
 }
 
 const Wrapper = styled.div`
+  --maxWidth: 1760px;
   display: flex;
   flex-flow: column wrap;
   justify-content: center;
   align-items: center;
-  max-width: 1600px;
+  max-width: var(--maxWidth);
   width: 100%;
   margin: 76px auto 0;
   gap: 24px;
@@ -90,20 +92,16 @@ const Wrapper = styled.div`
 
 export default function Page({ siteConfigData }: PageProps) {
   return (
-    <Layout bgColor={Color.neutral90}>
-      <Head>
-        <title>
-          {siteConfigData.title} - {siteConfigData.descriptionShort}
-        </title>
-      </Head>
-
+    <Layout
+      bgColor={Color.neutral90}
+      metaTitle="CoW Protocol - Do what you want, build what you want"
+      metaDescription="CoW Protocol has the largest solver competition and the most advanced developer framework - so you can build any DEX-related action you can imagine"
+    >
       <Wrapper>
         <HeroContainer variant="secondary" maxWidth={1300}>
           <HeroContent variant="secondary">
             <HeroSubtitle color={'#66018E'}>CoW Protocol</HeroSubtitle>
-            <HeroTitle as="h2" maxWidth={520}>
-              Do what you want, build what you want
-            </HeroTitle>
+            <HeroTitle maxWidth={520}>Do what you want, build what you want</HeroTitle>
             <HeroDescription>
               CoW Protocol has the largest solver competition and the most advanced developer framework - so you can
               build any DEX-related action you can imagine
@@ -180,7 +178,7 @@ export default function Page({ siteConfigData }: PageProps) {
                     CoW Protocol users sign an "intent to trade" message instead of directly executing orders on-chain
                     (like on Uniswap). This lets solvers trade on behalf of the user.
                   </TopicDescription>
-                  <TopicButton bgColor="#66018E" color="#F996EE" href="/knowledge-base">
+                  <TopicButton bgColor="#66018E" color="#F996EE" href="/learn">
                     Learn more
                   </TopicButton>
                 </TopicCardInner>
@@ -196,7 +194,7 @@ export default function Page({ siteConfigData }: PageProps) {
                     public and private liquidity sources - finding better prices than most users could find on their
                     own.
                   </TopicDescription>
-                  <TopicButton bgColor="#66018E" color="#F996EE" href="/knowledge-base">
+                  <TopicButton bgColor="#66018E" color="#F996EE" href="/learn">
                     Learn more
                   </TopicButton>
                 </TopicCardInner>
@@ -213,7 +211,7 @@ export default function Page({ siteConfigData }: PageProps) {
                     The solver that wins the batch auction is the solver that finds the most surplus - so they win when
                     you win.
                   </TopicDescription>
-                  <TopicButton bgColor="#66018E" color="#F996EE" href="/knowledge-base">
+                  <TopicButton bgColor="#66018E" color="#F996EE" href="/learn">
                     Learn more
                   </TopicButton>
                 </TopicCardInner>
@@ -368,45 +366,49 @@ export default function Page({ siteConfigData }: PageProps) {
             <TopicList columns={3}>
               <TopicCard contentAlign={'left'} bgColor="#66018E" textColor="#F996EE" padding={'32px'} asProp="div">
                 <TopicImage iconColor="#8702AA" bgColor="transparent" height={96} width={'auto'}>
-                  <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />
+                  <SVG src={IMG_LOGO_CURVE} />
                 </TopicImage>
                 <TopicCardInner contentAlign="left">
                   <TopicTitle color={Color.neutral100} fontSize={38}>
-                    Automating complex treasury tasks
+                    Automating advanced treasury tasks
                   </TopicTitle>
                   <TopicDescription fontSize={21} color="#F996EE">
-                    Curve used CoW Protocol to manage their fee burning process ... TBD
+                    Curve uses programmatic orders from CoW Protocol to streamline their fee burning processes. With the
+                    integration in place, Curve can take fees in any token and convert them automatically to CRV, while
+                    generating surplus and protecting themselves from MEV
                   </TopicDescription>
                 </TopicCardInner>
               </TopicCard>
 
               <TopicCard contentAlign={'left'} bgColor="#66018E" textColor="#F996EE" padding={'32px'} asProp="div">
                 <TopicImage iconColor="#8702AA" bgColor="transparent" height={96} width={'auto'}>
-                  <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />
+                  <SVG src={IMG_LOGO_LIDO} />
                 </TopicImage>
                 <TopicCardInner contentAlign="left">
                   <TopicTitle color={Color.neutral100} fontSize={38}>
-                    Solver infrastructure
+                    Adding security to sensitive transactions
                   </TopicTitle>
                   <TopicDescription fontSize={21} color="#F996EE">
-                    Adding security checks to sensitive treasury ops // Additional layer of security for
-                    highly-sensitive swaps
+                    Lido leverages programmatic orders as the backbone of “stonks” - a set of smart contracts that they
+                    use to manage treasury ops smoothly and securely without taking custody of funds. Stonks allows Lido
+                    DAO to "set and forget" complex trade intents without compromising the prices they receive on future
+                    swaps - minimizing time spend and human error
                   </TopicDescription>
                 </TopicCardInner>
               </TopicCard>
 
               <TopicCard contentAlign={'left'} bgColor="#66018E" textColor="#F996EE" padding={'32px'} asProp="div">
                 <TopicImage iconColor="#8702AA" bgColor="transparent" height={96} width={'auto'}>
-                  <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />
+                  <SVG src={IMG_LOGO_SAFE} />
                 </TopicImage>
                 <TopicCardInner contentAlign="left">
                   <TopicTitle color={Color.neutral100} fontSize={38}>
                     Powering native swaps
                   </TopicTitle>
                   <TopicDescription fontSize={21} color="#F996EE">
-                    Safe integrated a simplified version of CoW Protocol via the CoW widget to offer native swaps and
-                    limit orders to its users. They customized the experience above the standard CoW Swap widget by
-                    adding ...
+                    Safe chose CoW Protocol to power native swaps on the Safe app. The team chose to build on top of the
+                    CoW widget (the simplest way to integrate CoW Protocol) and is now earning revenue by offering
+                    MEV-protected swaps to its users
                   </TopicDescription>
                 </TopicCardInner>
               </TopicCard>
@@ -588,7 +590,7 @@ export default function Page({ siteConfigData }: PageProps) {
                   </TopicTitle>
                   <TopicDescription fontSize={21} color="#F996EE" minHeight={170}>
                     Don't need overly-custom trading logic? The CoW Protocol widget is the easiest way to integrate
-                    swaps, twaps, and limit orders directly into your project site.
+                    swaps, twaps, and limit orders directly into your project site
                   </TopicDescription>
                   <TopicButton bgColor="#ED60E9" color="#66018E" fontSize={27} href="/widget">
                     Integrate the widget
@@ -606,7 +608,7 @@ export default function Page({ siteConfigData }: PageProps) {
                   </TopicTitle>
                   <TopicDescription fontSize={21} color="#F996EE" minHeight={170}>
                     The CoW DAO Grants program has awarded over $100,000 in grants to innovators that build public DeFi
-                    applications with CoW Protocol.
+                    applications with CoW Protocol
                   </TopicDescription>
                   <TopicButton
                     bgColor="#ED60E9"

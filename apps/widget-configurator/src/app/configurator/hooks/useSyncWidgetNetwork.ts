@@ -8,7 +8,8 @@ import { getNetworkOption, NetworkOption } from '../controls/NetworkControl'
 
 export function useSyncWidgetNetwork(
   chainId: SupportedChainId,
-  setNetworkControlState: (option: NetworkOption) => void
+  setNetworkControlState: (option: NetworkOption) => void,
+  standaloneMode: boolean
 ) {
   const { chainId: walletChainId, isConnected } = useWeb3ModalAccount()
   const { switchNetwork } = useSwitchNetwork()
@@ -34,11 +35,12 @@ export function useSyncWidgetNetwork(
     if (
       !switchNetwork ||
       !isConnected ||
+      standaloneMode ||
       walletChainIdRef.current === chainId ||
       currentChainIdRef.current === walletChainIdRef.current
     )
       return
 
     switchNetwork(chainId)
-  }, [chainId, isConnected, switchNetwork, setNetworkControlState])
+  }, [chainId, isConnected, switchNetwork, setNetworkControlState, standaloneMode])
 }

@@ -1,3 +1,4 @@
+import { BFF_BASE_URL } from '@cowprotocol/common-const'
 import { FractionUtils } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Fraction, Token } from '@uniswap/sdk-core'
@@ -18,10 +19,11 @@ type ErrorCoingeckoResponse = { status: { error_code: number; error_message: str
 export const COINGECKO_PLATFORMS: Record<SupportedChainId, string | null> = {
   [SupportedChainId.MAINNET]: 'ethereum',
   [SupportedChainId.GNOSIS_CHAIN]: 'xdai',
+  [SupportedChainId.ARBITRUM_ONE]: 'arbitrum-one',
   [SupportedChainId.SEPOLIA]: null,
 }
 
-const BASE_URL = 'https://cow-web-services.vercel.app/api/serverless/proxies/coingecko'
+const BASE_URL = `${BFF_BASE_URL}/proxies/coingecko`
 const VS_CURRENCY = 'usd'
 /**
  * This is a text of 429 HTTP code
