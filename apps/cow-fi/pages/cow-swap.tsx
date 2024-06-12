@@ -531,7 +531,7 @@ export default function Page({ siteConfigData }: PageProps) {
             </SectionTitleWrapper>
 
             <TopicList columns={3} maxWidth={900}>
-              <TopicCard bgColor={Color.neutral100} padding={'0'} gap={16} asProp="div">
+              <TopicCard bgColor={Color.neutral100} padding="4px" paddingMobile="4px" gap={16} asProp="div">
                 <TopicCardInner>
                   <blockquote className="twitter-tweet" data-dnt="true">
                     <a href="https://twitter.com/koeppelmann/status/1729455013007684035">Loading X...</a>
@@ -539,7 +539,7 @@ export default function Page({ siteConfigData }: PageProps) {
                 </TopicCardInner>
               </TopicCard>
 
-              <TopicCard bgColor={Color.neutral100} padding={'0'} gap={16} asProp="div">
+              <TopicCard bgColor={Color.neutral100} padding="4px" paddingMobile="4px" gap={16} asProp="div">
                 <TopicCardInner>
                   <blockquote className="twitter-tweet" data-dnt="true">
                     <a href="https://twitter.com/nomos_paradox/status/1738489297815142736">Loading X...</a>
@@ -547,7 +547,7 @@ export default function Page({ siteConfigData }: PageProps) {
                 </TopicCardInner>
               </TopicCard>
 
-              <TopicCard bgColor={Color.neutral100} padding={'0'} gap={16} asProp="div">
+              <TopicCard bgColor={Color.neutral100} padding="4px" paddingMobile="4px" gap={16} asProp="div">
                 <TopicCardInner>
                   <blockquote className="twitter-tweet" data-dnt="true">
                     <a href="https://twitter.com/passivenodeinc1/status/1485204781153107973">Loading X...</a>

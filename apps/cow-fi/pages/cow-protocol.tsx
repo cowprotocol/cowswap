@@ -106,7 +106,13 @@ export default function Page({ siteConfigData }: PageProps) {
               CoW Protocol has the largest solver competition and the most advanced developer framework - so you can
               build any DEX-related action you can imagine
             </HeroDescription>
-            <HeroButton background={'#66018E'} color={'#F996EE'} href="/start-building">
+            <HeroButton
+              background={'#66018E'}
+              color={'#F996EE'}
+              href="https://docs.cow.fi/category/tutorials"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
               Start building
             </HeroButton>
           </HeroContent>

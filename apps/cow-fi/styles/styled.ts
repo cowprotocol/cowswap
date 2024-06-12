@@ -255,6 +255,17 @@ export const TopicCardInner = styled.div<{ contentAlign?: string; gap?: number; 
   align-items: ${({ contentAlign }) =>
     contentAlign === 'left' ? 'flex-start' : contentAlign === 'right' ? 'flex-end' : 'center'};
   height: ${({ height }) => height || 'auto'};
+  width: 100%;
+
+  > .twitter-tweet {
+    max-width: 100% !important;
+    margin: 0 auto !important;
+  }
+
+  > .twitter-tweet > iframe {
+    max-width: 100%;
+    width: 100% !important;
+  }
 `
 
 export const TopicImage = styled.div<{
