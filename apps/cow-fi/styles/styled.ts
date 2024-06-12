@@ -1770,6 +1770,24 @@ export const ColorTableContainer = styled.div`
   border-radius: 32px;
   -webkit-overflow-scrolling: touch;
 
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: ${Color.neutral90};
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: ${Color.neutral70};
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: ${Color.neutral50};
+  }
+
   ${Media.upToMedium()} {
     overflow-x: auto;
   }

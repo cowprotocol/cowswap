@@ -115,7 +115,7 @@ const TRUSTED_BY_CONTENT = [
   {
     href: 'https://www.karpatkey.com/',
     src: IMG_LOGO_KARPATKEY,
-    title: 'Karpatkey',
+    title: 'karpatkey',
   },
   {
     href: 'https://www.keepkey.com/',
@@ -186,7 +186,7 @@ export default function Page({ siteConfigData }: PageProps) {
           metaDescription="MEV Blocker is your personal protection from frontrunning and sandwich attacks for a broad spectrum of Ethereum transactions"
         >
           <Wrapper>
-            <HeroContainer variant="secondary" maxWidth={1300} padding={'0 0 75px'}>
+            <HeroContainer variant="secondary" maxWidth={1300} padding="0 20px 76px">
               <HeroContent variant="secondary">
                 <HeroSubtitle color={'#EC4612'}>MEV Blocker</HeroSubtitle>
                 <HeroTitle>The best MEV protection under the sun</HeroTitle>
@@ -458,7 +458,11 @@ export default function Page({ siteConfigData }: PageProps) {
 
                 <SectionTitleWrapper margin={'24px auto 0'}>
                   <SectionTitleDescription color={Color.neutral50}>
-                    To learn more about each of the endpoints MEV Blocker has to offer, read the MEV Blocker docs.
+                    To learn more about each of the endpoints MEV Blocker has to offer,{' '}
+                    <a href="https://docs.cow.fi/mevblocker" rel="noopener noreferrer" target="_blank">
+                      read the MEV Blocker docs
+                    </a>
+                    .
                   </SectionTitleDescription>
                 </SectionTitleWrapper>
               </ContainerCardSection>
