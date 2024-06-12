@@ -189,12 +189,12 @@ export default function Page({ siteConfigData }: PageProps) {
                 rel="noopener noreferrer"
                 target="_blank"
               >
-                <TopicImage iconColor="#1E90FF" large></TopicImage>
+                <TopicImage iconColor="#1E90FF" maxWidth={290} maxHeight={290} height={290} width={290}></TopicImage>
                 <TopicTitle fontSize={38}>Discord</TopicTitle>
               </TopicCard>
 
               <TopicCard textColor="#000000" href="https://forum.cow.fi/" rel="noopener noreferrer" target="_blank">
-                <TopicImage iconColor="#FF4500" large></TopicImage>
+                <TopicImage iconColor="#FF4500" maxWidth={290} maxHeight={290} height={290} width={290}></TopicImage>
                 <TopicTitle fontSize={38}>Forum</TopicTitle>
               </TopicCard>
 
@@ -204,7 +204,7 @@ export default function Page({ siteConfigData }: PageProps) {
                 rel="noopener noreferrer"
                 target="_blank"
               >
-                <TopicImage iconColor="#4B0082" large></TopicImage>
+                <TopicImage iconColor="#4B0082" maxWidth={290} maxHeight={290} height={290} width={290}></TopicImage>
                 <TopicTitle fontSize={38}>Snapshot</TopicTitle>
               </TopicCard>
             </TopicList>

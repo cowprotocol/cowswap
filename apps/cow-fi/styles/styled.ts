@@ -263,6 +263,8 @@ export const TopicImage = styled.div<{
   bgColor?: string
   margin?: string
   height?: number | string
+  maxWidth?: number
+  maxHeight?: number | string
   width?: number | string
   heightMobile?: number | string
   widthMobile?: number | string
@@ -270,8 +272,9 @@ export const TopicImage = styled.div<{
 }>`
   --size: ${({ large }) => (large ? '290px' : '132px')};
   width: ${({ width }) => (typeof width === 'number' ? `${width}px` : width || 'var(--size)')};
-  max-width: 100%;
+  max-width: ${({ maxWidth }) => (typeof maxWidth === 'number' ? `${maxWidth}px` : maxWidth || '100%')};
   height: ${({ height }) => (typeof height === 'number' ? `${height}px` : height || 'var(--size)')};
+  max-height: ${({ maxHeight }) => (typeof maxHeight === 'number' ? `${maxHeight}px` : maxHeight || 'initial')};
   border-radius: var(--size);
   background: ${({ bgColor, iconColor }) => bgColor || iconColor || Color.neutral90};
   color: ${({ iconColor }) => iconColor || Color.neutral90};
@@ -289,7 +292,6 @@ export const TopicImage = styled.div<{
         ? `${height}px`
         : height || 'var(--size)'};
     order: ${({ orderReverseMobile }) => (orderReverseMobile ? -1 : 'initial')};
-    max-width: 100%;
   }
 
   > span {
