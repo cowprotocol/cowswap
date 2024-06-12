@@ -9,13 +9,13 @@ import { useDerivedTradeState } from 'modules/trade'
 export function useLimitOrderPartnerFeeAmount(): CurrencyAmount<Currency> | null {
   const state = useDerivedTradeState()
   const partnerFee = useWidgetPartnerFee()
+  const outputCurrencyAmount = state?.outputCurrencyAmount
 
   return useMemo(() => {
-    const outputCurrencyAmount = state?.outputCurrencyAmount
     if (!outputCurrencyAmount) return null
 
     return !!partnerFee?.bps && partnerFee.bps > 0
       ? outputCurrencyAmount.multiply(bpsToPercent(partnerFee.bps))
       : CurrencyAmount.fromRawAmount(outputCurrencyAmount.currency, 0)
-  }, [state, partnerFee])
+  }, [outputCurrencyAmount, partnerFee])
 }
