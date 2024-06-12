@@ -1,5 +1,7 @@
 import { CowSwapTheme } from '@cowprotocol/widget-lib'
+
 import styled, { css } from 'styled-components/macro'
+
 import { Color, Font } from '../../consts'
 
 export const MenuBarWrapper = styled.div<{
@@ -226,7 +228,6 @@ export const DropdownContentWrapper = styled.div<DropdownContentProps>`
       overflow-y: auto;
       padding-bottom: 100px;
     `}
-
   ${({ mobileMode, isNavItemDropdown }) =>
     mobileMode &&
     isNavItemDropdown &&
@@ -238,7 +239,6 @@ export const DropdownContentWrapper = styled.div<DropdownContentProps>`
       background: transparent;
       backdrop-filter: none;
     `}
-
   &::before {
     content: '';
     position: absolute;
@@ -286,7 +286,6 @@ export const DropdownContent = styled.div<DropdownContentProps>`
       width: 100%;
       position: fixed;
     `}
-
   ${({ mobileMode, isNavItemDropdown }) =>
     mobileMode &&
     isNavItemDropdown &&
@@ -302,7 +301,6 @@ export const DropdownContent = styled.div<DropdownContentProps>`
       background: var(--hoverBackground);
       border-radius: 12px;
     `}
-
   &::before {
     content: '';
     position: absolute;
@@ -355,6 +353,7 @@ export const MobileDropdownContainer = styled.div<{ mobileMode: boolean }>`
       }
 
       /* For WebKit-based browsers (Chrome, Safari) */
+
       &::-webkit-scrollbar {
         width: 10px;
       }
@@ -400,7 +399,6 @@ export const StyledDropdownContentItem = styled.a<{
       flex-flow: row wrap;
       padding: 8px;
     `}
-
   &.hasDivider {
     margin: 0 0 12px;
 
@@ -576,7 +574,6 @@ export const RootNavItem = styled.a<{ isOpen?: boolean; mobileMode?: boolean }>`
       font-weight: ${Font.weight.semibold};
       padding: 12px 16px 12px 6px;
     `}
-
   > svg {
     height: 8px;
     width: 13px;
@@ -623,9 +620,7 @@ export const RightAligned = styled.div<{ mobileMode?: boolean; flexFlow?: string
     `}
 `
 
-export const GlobalSettingsButton = styled.button<{
-  onClick?: () => void
-}>`
+export const GlobalSettingsButton = styled.button`
   --size: 42px;
 
   display: flex;
