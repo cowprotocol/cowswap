@@ -9,6 +9,7 @@ import Layout from '@/components/Layout'
 import { getCategories, getArticles, Category, ArticleListResponse } from 'services/cms'
 
 import { SearchBar } from '@/components/SearchBar'
+import { ArrowButton } from '@/components/ArrowButton'
 
 import {
   ContainerCard,
@@ -190,6 +191,7 @@ export default function Learn({ siteConfigData, categories, articles }: LearnPro
           <ContainerCardSection>
             <ContainerCardSectionTop>
               <ContainerCardSectionTopTitle>Featured articles</ContainerCardSectionTopTitle>
+              <ArrowButton link="/learn/articles" text="All articles" />
             </ContainerCardSectionTop>
             <ArticleList>
               {FEATURED_ARTICLES.map(({ title, description, color, link, linkExternal }, index) => (
