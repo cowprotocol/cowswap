@@ -208,7 +208,7 @@ export default function Page({ siteConfigData, categories, articles, featuredArt
                 {categories.map(({ name, bgColor, textColor, iconColor, link, imageUrl }, index) => {
                   return (
                     <TopicCard key={index} bgColor={bgColor} textColor={textColor} href={link}>
-                      <TopicImage iconColor={iconColor} bgColor={bgColor} borderRadius={90}>
+                      <TopicImage iconColor={iconColor} bgColor={bgColor} borderRadius={90} widthMobile={'auto'}>
                         {imageUrl ? (
                           <img
                             src={imageUrl}

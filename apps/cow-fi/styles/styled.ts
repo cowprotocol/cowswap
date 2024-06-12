@@ -309,7 +309,7 @@ export const TopicImage = styled.div<{
   overflow: hidden;
 
   ${Media.upToMedium()} {
-    width: 100%;
+    width: ${({ widthMobile }) => (typeof widthMobile === 'number' ? `${widthMobile}px` : widthMobile || '100%')};
     height: ${({ heightMobile, height }) =>
       heightMobile
         ? typeof heightMobile === 'number'
@@ -366,7 +366,7 @@ export const TopicDescription = styled.p<{
   minHeight?: number
   minHeightMobile?: number
 }>`
-  font-size: ${({ fontSize }) => fontSize || 16}px;
+  font-size: ${({ fontSize }) => fontSize || 21}px;
   color: ${({ color }) => color || 'inherit'};
   font-weight: ${({ fontWeight }) => fontWeight || Font.weight.medium};
   line-height: 1.4;
@@ -375,8 +375,9 @@ export const TopicDescription = styled.p<{
   min-height: ${({ minHeight }) => `${minHeight}px` || 'initial'};
 
   ${Media.upToMedium()} {
-    font-size: ${({ fontSizeMobile }) => fontSizeMobile || 16}px;
-    min-height: ${({ minHeightMobile }) => `${minHeightMobile}px` || 'initial'};
+    font-size: ${({ fontSizeMobile }) => fontSizeMobile || 18}px;
+    min-height: ${({ minHeightMobile }) =>
+      typeof minHeightMobile === 'number' ? `${minHeightMobile}px` : minHeightMobile || 'initial'};
   }
 
   > table,
@@ -1665,6 +1666,27 @@ export const CategoryLinks = styled.ul<{ noDivider?: boolean }>`
   font-weight: 500;
   color: ${Color.neutral50};
   width: 100%;
+  scrollbar-width: thin;
+  scrollbar-color: ${Color.neutral70} ${Color.neutral90};
+  -webkit-overflow-scrolling: touch;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: ${Color.neutral90};
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: ${Color.neutral70};
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: ${Color.neutral50};
+  }
 
   ${Media.upToMedium()} {
     overflow-x: auto;
@@ -1673,7 +1695,6 @@ export const CategoryLinks = styled.ul<{ noDivider?: boolean }>`
     justify-content: flex-start;
     gap: 24px;
     padding: 16px 34px 16px 16px;
-    -webkit-overflow-scrolling: touch;
   }
 
   li {
