@@ -247,7 +247,12 @@ export const TopicCard = styled.a.attrs<TopicCardProps>(({ asProp }) => ({
   `}
 `
 
-export const TopicCardInner = styled.div<{ contentAlign?: string; gap?: number; height?: string }>`
+export const TopicCardInner = styled.div<{
+  contentAlign?: string
+  contentAlignMobile?: string
+  gap?: number
+  height?: string
+}>`
   display: flex;
   flex-flow: column wrap;
   gap: ${({ gap }) => (typeof gap === 'number' ? `${gap}px` : '16px')};
@@ -256,6 +261,16 @@ export const TopicCardInner = styled.div<{ contentAlign?: string; gap?: number; 
     contentAlign === 'left' ? 'flex-start' : contentAlign === 'right' ? 'flex-end' : 'center'};
   height: ${({ height }) => height || 'auto'};
   width: 100%;
+
+  ${Media.upToMedium()} {
+    text-align: ${({ contentAlignMobile }) => contentAlignMobile || 'center'};
+    align-items: ${({ contentAlignMobile }) =>
+      contentAlignMobile === 'left'
+        ? 'flex-start'
+        : contentAlignMobile === 'right'
+        ? 'flex-end'
+        : contentAlignMobile || 'center'};
+  }
 
   > .twitter-tweet {
     max-width: 100% !important;
