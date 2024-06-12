@@ -188,11 +188,25 @@ export default function Page({ siteConfigData }: PageProps) {
                     Learn more
                   </TopicButton>
                 </TopicCardInner>
-                <TopicImage iconColor="#66018E" width={590} height={590} heightMobile={300} orderReverseMobile />
+                <TopicImage
+                  iconColor="#66018E"
+                  width={590}
+                  height={590}
+                  heightMobile={300}
+                  orderReverseMobile
+                  borderRadius={90}
+                />
               </TopicCard>
 
               <TopicCard columns="1fr auto" gap={100} horizontal asProp="div">
-                <TopicImage iconColor="#66018E" width={590} height={590} heightMobile={300} orderReverseMobile />
+                <TopicImage
+                  iconColor="#66018E"
+                  width={590}
+                  height={590}
+                  heightMobile={300}
+                  orderReverseMobile
+                  borderRadius={90}
+                />
                 <TopicCardInner contentAlign="left">
                   <TopicTitle fontSize={51}>Solvers</TopicTitle>
                   <TopicDescription fontSize={28} color={Color.neutral50}>
@@ -221,7 +235,14 @@ export default function Page({ siteConfigData }: PageProps) {
                     Learn more
                   </TopicButton>
                 </TopicCardInner>
-                <TopicImage iconColor="#66018E" width={590} height={590} heightMobile={300} orderReverseMobile />
+                <TopicImage
+                  iconColor="#66018E"
+                  width={590}
+                  height={590}
+                  heightMobile={300}
+                  orderReverseMobile
+                  borderRadius={90}
+                />
               </TopicCard>
             </TopicList>
           </ContainerCardSection>
@@ -322,7 +343,7 @@ export default function Page({ siteConfigData }: PageProps) {
               </TopicCard>
               <TopicCard contentAlign={'left'} bgColor="#66018E" textColor="#F996EE" padding={'32px'} asProp="div">
                 <TopicCardInner contentAlign="left">
-                  <TopicTitle color={Color.neutral100}>Programmatic Orders</TopicTitle>
+                  <TopicTitle color={Color.neutral100}>Programmatic orders</TopicTitle>
                   <TopicDescription fontSize={21} color="#F996EE">
                     Easily deploy conditional orders that trigger when specified on-chain conditions are met
                   </TopicDescription>

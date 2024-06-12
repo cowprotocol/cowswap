@@ -229,7 +229,7 @@ export const ProductLogo = ({
   const logoElement = <SVG src={logoInfo.src} description={logoInfo.alt} />
 
   return (
-    <Wrapper color={initialColor} hoverColor={overrideHoverColor || logoInfo.color} height={height}>
+    <Wrapper color={initialColor} hoverColor={overrideHoverColor || 'initial'} height={height}>
       {href ? (
         <a href={href} target={external ? '_blank' : '_self'} rel={external ? 'noopener noreferrer' : undefined}>
           {logoElement}
