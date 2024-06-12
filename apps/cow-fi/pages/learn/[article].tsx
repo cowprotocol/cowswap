@@ -66,7 +66,15 @@ const Wrapper = styled.div`
   }
 `
 
-export function ArticleSubtitle({ dateIso, content }: { dateIso: string; content: string }) {
+export function ArticleSubtitle({
+  dateIso,
+  content,
+  dateVisible,
+}: {
+  dateIso: string
+  content: string
+  dateVisible: boolean
+}) {
   const date = new Date(dateIso)
   const readTime = calculateReadTime(content)
 
@@ -75,10 +83,15 @@ export function ArticleSubtitle({ dateIso, content }: { dateIso: string; content
       <div>
         <span>{readTime}</span>
       </div>
-      <div>·</div>
-      <div>
-        <span>Published {formatDate(date)}</span>
-      </div>
+
+      {dateVisible && (
+        <>
+          <div>·</div>
+          <div>
+            <span>Published {formatDate(date)}</span>
+          </div>
+        </>
+      )}
     </ArticleSubtitleWrapper>
   )
 }
@@ -115,8 +128,20 @@ export default function ArticlePage({
   relatedArticles: Article[]
   allCategories: { name: string; slug: string }[]
 }) {
-  const { title, blocks, publishedAt, categories, cover } = article.attributes || {}
-  const content = blocks?.map((block) => (isRichTextComponent(block) ? block.body : '')).join(' ') || ''
+  const attributes: {
+    title?: string
+    blocks?: SharedRichTextComponent[]
+    publishedAt?: string
+    publishDate?: string
+    publishDateVisible?: boolean
+    categories?: any
+    cover?: any
+  } = article.attributes || {}
+  const { title, blocks, publishedAt, categories, cover } = attributes
+  const publishDate = attributes.publishDate || null
+  const publishDateVisible = attributes.publishDateVisible ?? true
+  const content =
+    blocks?.map((block: SharedRichTextComponent) => (isRichTextComponent(block) ? block.body : '')).join(' ') || ''
   const plainContent = stripHtmlTags(content)
   const coverImageUrl = cover?.data?.attributes?.url
 
@@ -141,7 +166,7 @@ export default function ArticlePage({
           <li>
             <a href="/learn">Knowledge Base</a>
           </li>
-          {allCategories.map((category) => (
+          {allCategories.map((category: { name: string; slug: string }) => (
             <li key={category.slug}>
               <a href={`/learn/topic/${category.slug}`}>{category.name}</a>
             </li>
@@ -159,7 +184,7 @@ export default function ArticlePage({
 
             {categories && Array.isArray(categories.data) && categories.data.length > 0 && (
               <CategoryTags>
-                {categories.data.map((category) => (
+                {categories.data.map((category: { id: string; attributes?: { slug?: string; name?: string } }) => (
                   <a key={category.id} href={`/learn/topic/${category.attributes?.slug ?? ''}`}>
                     {category.attributes?.name ?? ''}
                   </a>
@@ -169,10 +194,14 @@ export default function ArticlePage({
 
             <ArticleMainTitle>{title}</ArticleMainTitle>
 
-            <ArticleSubtitle dateIso={publishedAt!} content={content} />
+            <ArticleSubtitle
+              dateIso={(publishDate || publishedAt)!}
+              dateVisible={publishDateVisible}
+              content={content}
+            />
             <BodyContent>
               {blocks &&
-                blocks.map((block) =>
+                blocks.map((block: SharedRichTextComponent) =>
                   isRichTextComponent(block) ? (
                     <ArticleSharedRichTextComponent key={block.id} sharedRichText={block} />
                   ) : null
