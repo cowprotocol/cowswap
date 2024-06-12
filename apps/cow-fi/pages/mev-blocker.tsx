@@ -203,7 +203,7 @@ export default function Page({ siteConfigData }: PageProps) {
                   </ol>
                 </HeroDescription>
 
-                <HeroButton background={'#EC4612'} color={'#FEE7CF'} href="/">
+                <HeroButton background={'#EC4612'} color={'#FEE7CF'} href="#rpc">
                   Get protected
                 </HeroButton>
               </HeroContent>

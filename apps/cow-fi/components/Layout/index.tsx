@@ -2,6 +2,7 @@ import Head from 'next/head'
 import { MenuBar, MenuItem, Footer, ProductVariant, GlobalCoWDAOStyles } from '@cowprotocol/ui'
 import styled from 'styled-components/macro'
 import { CONFIG } from '@/const/meta'
+import { useEffect } from 'react'
 
 import { CoWDAOFonts } from '@/styles/CoWDAOFonts'
 
@@ -147,6 +148,23 @@ interface LayoutProps {
 
 export default function Layout({ children, bgColor, metaTitle, metaDescription, ogImage }: LayoutProps) {
   const GlobalStyles = GlobalCoWDAOStyles(CoWDAOFonts, bgColor)
+
+  useEffect(() => {
+    const anchorLinks = document.querySelectorAll('a[href^="#"]')
+    anchorLinks.forEach((link) => {
+      link.addEventListener('click', (event: Event) => {
+        event.preventDefault()
+        const targetId = ((event.target as HTMLElement).closest('a') as HTMLAnchorElement).getAttribute('href')
+        if (targetId) {
+          // Ensure targetId is not null
+          const targetElement = document.querySelector(targetId)
+          if (targetElement) {
+            targetElement.scrollIntoView({ behavior: 'smooth' })
+          }
+        }
+      })
+    })
+  }, [])
 
   return (
     <>
