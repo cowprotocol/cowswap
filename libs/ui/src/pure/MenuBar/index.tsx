@@ -97,10 +97,11 @@ interface NavItemProps {
   item: MenuItem
   mobileMode?: boolean
   openDropdown: string | null
+  closeDropdown: () => void
   setOpenDropdown: React.Dispatch<React.SetStateAction<string | null>>
 }
 
-const NavItem = ({ item, mobileMode = false, openDropdown, setOpenDropdown }: NavItemProps) => {
+const NavItem = ({ item, mobileMode = false, openDropdown, closeDropdown, setOpenDropdown }: NavItemProps) => {
   const handleToggle = () => {
     setOpenDropdown((prev) => {
       return prev === item.label ? null : item.label || null
@@ -115,7 +116,7 @@ const NavItem = ({ item, mobileMode = false, openDropdown, setOpenDropdown }: Na
       interaction="click" // Ensure it's 'click' for both mobile and desktop
       mobileMode={mobileMode}
       isNavItemDropdown={true}
-      closeDropdown={() => setOpenDropdown(null)}
+      closeDropdown={closeDropdown}
     />
   ) : (
     <RootNavItem
@@ -616,6 +617,7 @@ export const MenuBar = (props: MenuBarProps) => {
                   item={item}
                   mobileMode={isMobile}
                   openDropdown={openDropdown}
+                  closeDropdown={() => setOpenDropdown(null)}
                   setOpenDropdown={setOpenDropdown}
                 />
               ))}
@@ -679,6 +681,10 @@ export const MenuBar = (props: MenuBarProps) => {
                   item={item}
                   mobileMode={isMobile}
                   openDropdown={openDropdown}
+                  closeDropdown={() => {
+                    setIsMobileMenuOpen(false)
+                    setOpenDropdown(null)
+                  }}
                   setOpenDropdown={setOpenDropdown}
                 />
               ))}
