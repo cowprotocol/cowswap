@@ -96,7 +96,13 @@ export default function Page({ siteConfigData }: PageProps) {
             <HeroDescription>
               CoW AMM protects LPs from LVR so they can provide liquidity with less risk and more return
             </HeroDescription>
-            <HeroButton background={'#194D05'} color={'#BCEC79'} href="/start-building">
+            <HeroButton
+              background={'#194D05'}
+              color={'#BCEC79'}
+              href="https://deploy-cow-amm.bleu.fi/"
+              target="_blank"
+              rel="noopener noreferrer nofollow"
+            >
               Protect your liquidity
             </HeroButton>
           </HeroContent>
