@@ -47,7 +47,7 @@ interface FooterProps {
 
 const SOCIAL_LINKS: { href: string; label: string; icon: string }[] = [
   { href: 'https://x.com/CoWSwap', label: 'Twitter/X', icon: IMG_ICON_SOCIAL_X },
-  { href: '#', label: 'Discord', icon: IMG_ICON_SOCIAL_DISCORD },
+  { href: 'https://discord.com/invite/cowprotocol', label: 'Discord', icon: IMG_ICON_SOCIAL_DISCORD },
   { href: 'https://github.com/cowprotocol', label: 'GitHub', icon: IMG_ICON_SOCIAL_GITHUB },
   { href: 'https://forum.cow.fi/', label: 'Forum', icon: IMG_ICON_SOCIAL_FORUM },
   { href: 'https://snapshot.org/#/cow.eth', label: 'Snapshot', icon: IMG_ICON_SOCIAL_SNAPSHOT },
