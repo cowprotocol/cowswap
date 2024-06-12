@@ -15,7 +15,6 @@ import { useGetTradeFormValidation } from 'modules/tradeFormValidation'
 import { TwapFormState } from 'modules/twap/pure/PrimaryActionButton/getTwapFormState'
 
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
-import { ExecutionPrice } from 'common/pure/ExecutionPrice'
 
 import * as styledEl from './styled'
 import { LABELS_TOOLTIPS } from './tooltips'
