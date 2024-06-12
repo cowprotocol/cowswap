@@ -21,6 +21,8 @@ export function PartnerFeeRow({
   withTimelineDot,
   feeTooltipMarkdown,
 }: PartnerFeeRowProps) {
+  const feeAsPercent = partnerFeeBps ? formatPercent(bpsToPercent(partnerFeeBps)) : null
+
   return (
     <>
       {partnerFeeAmount?.greaterThan(0) && partnerFeeBps ? (
@@ -34,12 +36,11 @@ export function PartnerFeeRow({
                 This fee helps pay for maintenance & improvements to the swap experience.
                 <br />
                 <br />
-                The fee is {partnerFeeBps} BPS ({formatPercent(bpsToPercent(partnerFeeBps))}%), applied only if the
-                trade is executed.
+                The fee is {partnerFeeBps} BPS ({feeAsPercent}%), applied only if the trade is executed.
               </>
             )
           }
-          label="Total fee"
+          label={`Total fee (${feeAsPercent}%)`}
         />
       ) : (
         <ReviewOrderModalAmountRow

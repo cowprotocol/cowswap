@@ -11,6 +11,7 @@ export interface ExecutionPriceProps {
   hideSeparator?: boolean
   separatorSymbol?: string
   hideFiat?: boolean
+  className?: string
 }
 
 export function ExecutionPrice({
@@ -20,6 +21,7 @@ export function ExecutionPrice({
   separatorSymbol = '≈',
   hideSeparator,
   hideFiat,
+  className,
 }: ExecutionPriceProps) {
   const executionPriceFiat = useExecutionPriceFiat(hideFiat ? null : executionPrice, isInverted)
   const quoteCurrency = isInverted ? executionPrice?.baseCurrency : executionPrice?.quoteCurrency
@@ -27,7 +29,7 @@ export function ExecutionPrice({
   const oneBaseCurrency = tryParseCurrencyAmount('1', baseCurrency)
 
   return (
-    <span>
+    <span className={className}>
       {showBaseCurrency && <TokenAmount amount={oneBaseCurrency} tokenSymbol={baseCurrency} />}
       {!hideSeparator && ` ${separatorSymbol} `}
       <TokenAmount amount={isInverted ? executionPrice.invert() : executionPrice} tokenSymbol={quoteCurrency} />

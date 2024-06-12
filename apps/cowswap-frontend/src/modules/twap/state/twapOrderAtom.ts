@@ -34,14 +34,14 @@ export const twapOrderAtom = atom<TWAPOrder | null>((get) => {
   const receiveAmountInfo = get(scaledReceiveAmountInfoAtom)
   const { inputCurrencyAmount, recipient, recipientAddress } = get(advancedOrdersDerivedStateAtom)
 
-  if (!inputCurrencyAmount || !receiveAmountInfo || !account) return null
+  if (!inputCurrencyAmount || !receiveAmountInfo) return null
 
   const { sellAmount, buyAmount } = receiveAmountInfo.afterSlippage
 
   return {
     sellAmount: sellAmount as CurrencyAmount<Token>,
     buyAmount: buyAmount as CurrencyAmount<Token>,
-    receiver: recipientAddress || recipient || account,
+    receiver: recipientAddress || recipient || account || '',
     numOfParts: numberOfPartsValue,
     startTime: 0, // Will be set to a block timestamp value from CurrentBlockTimestampFactory
     timeInterval,

@@ -1,6 +1,6 @@
 import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
 
-export interface DirectedReceiveAmounts {
+export interface OrderTypeReceiveAmounts {
   amountBeforeFees: CurrencyAmount<Currency>
   amountAfterSlippage: CurrencyAmount<Currency>
   amountAfterFees: CurrencyAmount<Currency>

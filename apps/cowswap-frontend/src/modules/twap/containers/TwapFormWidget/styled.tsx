@@ -2,7 +2,7 @@ import { QuestionTooltipIconWrapper, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-
+import { ExecutionPrice } from 'common/pure/ExecutionPrice'
 import { RateInfo } from 'common/pure/RateInfo'
 
 export const Row = styled.div`
@@ -35,9 +35,6 @@ export const StyledRateInfo = styled(RateInfo)`
   grid-template-rows: max-content;
 `
 
-export const StyledPriceProtection = styled.div`
-  display: flex;
-  flex-flow: row wrap;
-  align-items: center;
-  width: 100%;
+export const ExecutionPriceStyled = styled(ExecutionPrice)`
+  font-size: 16px;
 `

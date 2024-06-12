@@ -3,7 +3,7 @@ import React, { useMemo } from 'react'
 
 import { getWrappedToken } from '@cowprotocol/common-utils'
 import { TokenSymbol } from '@cowprotocol/ui'
-import { useWalletInfo } from '@cowprotocol/wallet'
+import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
@@ -48,6 +48,7 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
   const tradeContext = useMemo(() => tradeContextInitial, [])
 
   const { account } = useWalletInfo()
+  const { ensName } = useWalletDetails()
   const warningsAccepted = useLimitOrdersWarningsAccepted(true)
   const settingsState = useAtomValue(limitOrdersSettingsAtom)
   const executionPrice = useAtomValue(executionPriceAtom)
@@ -82,6 +83,7 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
       <TradeConfirmation
         title={CONFIRM_TITLE}
         account={account}
+        ensName={ensName}
         inputCurrencyInfo={inputCurrencyInfo}
         outputCurrencyInfo={outputCurrencyInfo}
         onConfirm={doTrade}

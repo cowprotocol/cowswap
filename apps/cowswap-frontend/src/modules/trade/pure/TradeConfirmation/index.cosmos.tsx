@@ -7,6 +7,7 @@ const Fixtures = {
     <TradeConfirmation
       title="Review order"
       account={undefined}
+      ensName={undefined}
       inputCurrencyInfo={inputCurrencyInfoMock}
       outputCurrencyInfo={outputCurrencyInfoMock}
       onConfirm={() => void 0}

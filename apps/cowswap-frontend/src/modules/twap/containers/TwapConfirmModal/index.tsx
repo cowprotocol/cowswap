@@ -1,7 +1,7 @@
 import { useAtomValue } from 'jotai'
 import { useState } from 'react'
 
-import { useWalletInfo } from '@cowprotocol/wallet'
+import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
@@ -55,6 +55,7 @@ const CONFIRM_MODAL_CONFIG = {
 
 export function TwapConfirmModal() {
   const { account } = useWalletInfo()
+  const { ensName } = useWalletDetails()
   const {
     inputCurrencyAmount,
     inputCurrencyFiatAmount,
@@ -108,6 +109,7 @@ export function TwapConfirmModal() {
       <TradeConfirmation
         title={CONFIRM_TITLE}
         account={account}
+        ensName={ensName}
         inputCurrencyInfo={inputCurrencyInfo}
         outputCurrencyInfo={outputCurrencyInfo}
         onConfirm={() => createTwapOrder(fallbackHandlerIsNotSet)}

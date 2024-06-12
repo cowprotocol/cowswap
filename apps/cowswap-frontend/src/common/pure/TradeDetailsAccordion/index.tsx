@@ -133,7 +133,7 @@ export const TradeDetailsAccordion = ({
             <>
               {feeUsdTotalAmount?.greaterThan(0) ? (
                 <>
-                  Fee <FiatAmount amount={feeUsdTotalAmount} />
+                  <FiatAmount amount={feeUsdTotalAmount} />
                 </>
               ) : (
                 <>

@@ -14,7 +14,7 @@ import * as styledEl from './styled'
 import { ReviewOrderModalAmountRow } from '../../pure/ReviewOrderModalAmountRow'
 import { DividerHorizontal } from '../../pure/Row/styled'
 import { ReceiveAmountInfo } from '../../types'
-import { getDirectedReceiveAmounts } from '../../utils/getReceiveAmountInfo'
+import { getOrderTypeReceiveAmounts } from '../../utils/getReceiveAmountInfo'
 import { TradeFeesAndCosts } from '../TradeFeesAndCosts'
 
 type Props = {
@@ -51,7 +51,7 @@ export function TradeBasicConfirmDetails(props: Props) {
     hideUsdValues,
     withTimelineDot = true,
   } = props
-  const { amountAfterFees, amountAfterSlippage } = getDirectedReceiveAmounts(receiveAmountInfo)
+  const { amountAfterFees, amountAfterSlippage } = getOrderTypeReceiveAmounts(receiveAmountInfo)
 
   const priceLabel = labelsAndTooltips?.priceLabel || 'Price'
   const minReceivedLabel = labelsAndTooltips?.minReceivedLabel || 'Min received (incl. costs)'
