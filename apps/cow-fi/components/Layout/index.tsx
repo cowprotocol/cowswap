@@ -116,7 +116,7 @@ const FOOTER_NAV_ITEMS: MenuItem[] = [
     label: 'Help',
     children: [
       { href: '#', label: 'Dev Docs' },
-      { href: '#', label: 'FAQ / Knowledge base' },
+      { href: 'https://cow.fi/learn', label: 'FAQ / Knowledge Base' },
       { href: '#', label: 'Send Feedback' },
       { href: '#', label: 'Report Scams' },
     ],

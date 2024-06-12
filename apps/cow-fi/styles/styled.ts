@@ -59,7 +59,12 @@ export const ContainerCardSection = styled.div<{ padding?: string; gap?: number 
   padding: ${({ padding }) => padding || '0'};
 `
 
-export const ContainerCardSectionTop = styled.div<{ columnWrap?: boolean; padding?: string; maxWidth?: number }>`
+export const ContainerCardSectionTop = styled.div<{
+  columnWrap?: boolean
+  padding?: string
+  maxWidth?: number
+  alignMobile?: string
+}>`
   display: flex;
   flex-flow: ${({ columnWrap }) => (columnWrap ? 'column wrap' : 'row wrap')};
   gap: 60px;
@@ -70,6 +75,10 @@ export const ContainerCardSectionTop = styled.div<{ columnWrap?: boolean; paddin
   color: inherit;
   padding: ${({ padding }) => padding || '0'};
   margin: 0 auto;
+
+  ${Media.upToMedium()} {
+    justify-content: ${({ alignMobile }) => alignMobile || 'space-between'};
+  }
 `
 
 export const ContainerCardSectionTopTitle = styled.h3<{
@@ -77,6 +86,7 @@ export const ContainerCardSectionTopTitle = styled.h3<{
   fontSizeMobile?: number
   color?: string
   textAlign?: string
+  textAlignMobile?: string
 }>`
   font-size: ${({ fontSize }) => fontSize || 38}px;
   font-weight: ${Font.weight.bold};
@@ -86,6 +96,8 @@ export const ContainerCardSectionTopTitle = styled.h3<{
 
   ${Media.upToMedium()} {
     font-size: ${({ fontSizeMobile }) => fontSizeMobile || 38}px;
+    text-align: ${({ textAlignMobile }) => textAlignMobile || 'center'};
+    width: 100%;
   }
 `
 
@@ -1611,7 +1623,7 @@ export const CategoryTags = styled.div`
   }
 `
 
-export const CategoryLinks = styled.ul`
+export const CategoryLinks = styled.ul<{ noDivider?: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1640,11 +1652,11 @@ export const CategoryLinks = styled.ul`
     justify-content: center;
 
     &:first-child {
-      margin-right: -32px;
+      margin-right: ${({ noDivider }) => (noDivider ? '0' : '-32px')};
     }
 
     &:first-child::after {
-      content: '|';
+      content: ${({ noDivider }) => (noDivider ? 'none' : "'|'")};
       margin: 0 16px;
       display: flex;
       height: 100%;

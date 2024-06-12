@@ -18,6 +18,7 @@ import {
   ContainerCardSection,
   ContainerCardInner,
   ContainerCardSectionTop,
+  CategoryLinks,
   ArticleList,
   ArticleCard,
   ArticleImage,
@@ -136,18 +137,15 @@ const Wrapper = styled.div`
   align-items: center;
   max-width: 1760px;
   width: 100%;
-  margin: 76px auto 0;
+  margin: 42px auto 0;
   gap: 24px;
-
-  ${Media.upToMedium()} {
-    margin: 40px auto 0;
-  }
 
   h1 {
     font-size: 28px;
     font-weight: ${Font.weight.medium};
     color: ${Color.neutral50};
     text-align: center;
+    padding: 0 10px;
 
     ${Media.upToMedium()} {
       font-size: 18px;
@@ -157,9 +155,10 @@ const Wrapper = styled.div`
   h2 {
     font-size: 67px;
     text-align: center;
+    padding: 0 10px 16px;
 
     ${Media.upToMedium()} {
-      font-size: 38px;
+      font-size: 32px;
     }
   }
 `
@@ -173,12 +172,20 @@ export default function Page({ siteConfigData, categories, articles, featuredArt
         <h1>Learn - Knowledge Base</h1>
         <h2>Hi, how can we help?</h2>
 
+        <CategoryLinks noDivider>
+          {categories.map((category: { name: string; slug: string }) => (
+            <li key={category.slug}>
+              <a href={`/learn/topic/${category.slug}`}>{category.name}</a>
+            </li>
+          ))}
+        </CategoryLinks>
+
         <SearchBar articles={articles} />
 
         <ContainerCard>
           <ContainerCardInner maxWidth={1350}>
             <ContainerCardSection>
-              <ContainerCardSectionTop>
+              <ContainerCardSectionTop alignMobile="center">
                 <ContainerCardSectionTopTitle>Featured articles</ContainerCardSectionTopTitle>
                 <ArrowButton link="/learn/articles" text="All articles" />
               </ContainerCardSectionTop>

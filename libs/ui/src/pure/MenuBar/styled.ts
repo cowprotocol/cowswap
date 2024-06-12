@@ -176,10 +176,30 @@ export const NavItems = styled.ul<{ mobileMode?: boolean; theme: CowSwapTheme }>
       background: var(--activeBackground);
       backdrop-filter: blur(var(--blur));
       border-radius: var(--borderRadius);
-      padding: 16px 16px 100px;
+      padding: 16px 16px 200px;
       overflow-y: scroll;
       min-height: 100vh;
       height: 100vh;
+      // smooth ios scroll
+      -webkit-overflow-scrolling: touch;
+
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: ${Color.neutral90};
+        border-radius: 10px;
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: ${Color.neutral70};
+        border-radius: 10px;
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+        background: ${Color.neutral50};
+      }
 
       > div {
         width: 100%;
