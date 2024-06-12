@@ -6,7 +6,7 @@ import styled from 'styled-components'
 import { CONFIG } from '@/const/meta'
 
 import Layout from '@/components/Layout'
-import { getCategories, getArticles, Category, ArticleListResponse } from 'services/cms'
+import { getCategories, getArticles, ArticleListResponse } from 'services/cms'
 
 import { SearchBar } from '@/components/SearchBar'
 import { ArrowButton } from '@/components/ArrowButton'
@@ -92,6 +92,7 @@ interface PageProps {
     textColor: string
     link: string
     iconColor: string
+    imageUrl: string // Add this line to include the imageUrl property
   }[]
   articles: ArticleListResponse['data']
   featuredArticles: {
@@ -166,12 +167,27 @@ export default function Page({ siteConfigData, categories, articles, featuredArt
               <ContainerCardSectionTopTitle>Topics</ContainerCardSectionTopTitle>
             </ContainerCardSectionTop>
             <TopicList columns={3}>
-              {categories.map(({ name, bgColor, textColor, iconColor, link }, index) => (
-                <TopicCard key={index} bgColor={bgColor} textColor={textColor} href={link}>
-                  <TopicImage iconColor={iconColor}></TopicImage>
-                  <TopicTitle>{name}</TopicTitle>
-                </TopicCard>
-              ))}
+              {categories.map(({ name, bgColor, textColor, iconColor, link, imageUrl }, index) => {
+                return (
+                  <TopicCard key={index} bgColor={bgColor} textColor={textColor} href={link}>
+                    <TopicImage iconColor={iconColor} bgColor={bgColor}>
+                      {imageUrl ? (
+                        <img
+                          src={imageUrl}
+                          alt={name}
+                          onError={(e) => {
+                            e.currentTarget.onerror = null
+                            e.currentTarget.style.display = 'none' // Hide image if it fails to load
+                          }}
+                        />
+                      ) : (
+                        <span>{name.charAt(0)}</span>
+                      )}
+                    </TopicImage>
+                    <TopicTitle>{name}</TopicTitle>
+                  </TopicCard>
+                )
+              })}
             </TopicList>
           </ContainerCardSection>
 
@@ -245,19 +261,24 @@ export const getStaticProps: GetStaticProps<PageProps> = async () => {
 
   const featuredArticlesResponse = await getArticles({
     filters: { featured: { $eq: true } },
-    pageSize: 6, // Number of featured articles you want to fetch
+    pageSize: 6,
   })
 
   const categories =
-    categoriesResponse?.map((category: Category) => ({
-      name: category?.attributes?.name || '',
-      slug: category?.attributes?.slug || '',
-      description: category?.attributes?.description || '',
-      bgColor: category?.attributes?.backgroundColor || '#fff',
-      textColor: category?.attributes?.textColor || '#000',
-      link: `/learn/topic/${category?.attributes?.slug}`,
-      iconColor: '#fff',
-    })) || []
+    categoriesResponse?.map((category: any) => {
+      const imageUrl = category?.attributes?.image?.data?.attributes?.url || ''
+
+      return {
+        name: category?.attributes?.name || '',
+        slug: category?.attributes?.slug || '',
+        description: category?.attributes?.description || '',
+        bgColor: category?.attributes?.backgroundColor || '#fff',
+        textColor: category?.attributes?.textColor || '#000',
+        link: `/learn/topic/${category?.attributes?.slug}`,
+        iconColor: '#fff',
+        imageUrl, // Ensure this field is correctly populated
+      }
+    }) || []
 
   const featuredArticles = featuredArticlesResponse.data.map((article) => {
     const attributes = article.attributes

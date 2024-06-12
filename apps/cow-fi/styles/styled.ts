@@ -258,6 +258,7 @@ export const TopicImage = styled.div<{
   background: ${({ bgColor, iconColor }) => bgColor || iconColor || Color.neutral90};
   color: ${({ iconColor }) => iconColor || Color.neutral90};
   margin: ${({ margin }) => margin || '0 0 16px'};
+  overflow: hidden;
 
   ${Media.upToMedium()} {
     width: 100%;

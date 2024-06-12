@@ -106,18 +106,17 @@ export async function getAllArticleSlugs(): Promise<string[]> {
 }
 
 /**
- * Get articles sorted by descending published date.
+ * Get categories with images.
  *
- * @returns All categories
+ * @returns Categories with their associated images
  */
 export async function getCategories(): Promise<Category[]> {
   try {
-    const { data, error, response } = await client.GET('/categories', {
+    const { data, error, response } = await client.GET('/categories?populate=*', {
       params: {
-        populate: '*', // Assuming you want to populate all fields
         pagination: {
           page: 0,
-          pageSize: 50, // For simplicity, we assume there's less than 50 categories (expected ~8 categories)
+          pageSize: 50,
         },
         sort: 'name:asc',
       },
@@ -254,35 +253,35 @@ async function getBySlugAux(slug: string, endpoint: '/categories' | '/articles')
   const populate =
     endpoint === '/categories'
       ? // Category
-      {
-        articles: {
-          populate: {
-            authorsBio: {
-              fields: ['name'],
+        {
+          articles: {
+            populate: {
+              authorsBio: {
+                fields: ['name'],
+              },
+              seo: '*',
             },
-            seo: '*',
           },
-        },
-        image: { fields: ['url'] }, // Ensure the image is populated
-      }
+          image: { fields: ['url'] }, // Ensure the image is populated
+        }
       : // Articles
-      {
-        cover: {
-          fields: ['url', 'width', 'height', 'alternativeText'],
-        },
-        blocks: '*',
-        seo: {
-          fields: ['metaTitle', 'metaDescription'],
-          populate: {
-            shareImage: {
-              fields: ['url'],
+        {
+          cover: {
+            fields: ['url', 'width', 'height', 'alternativeText'],
+          },
+          blocks: '*',
+          seo: {
+            fields: ['metaTitle', 'metaDescription'],
+            populate: {
+              shareImage: {
+                fields: ['url'],
+              },
             },
           },
-        },
-        authorsBio: {
-          fields: ['name'],
-        },
-      }
+          authorsBio: {
+            fields: ['name'],
+          },
+        }
 
   const query = toQueryParams({
     filters: {
