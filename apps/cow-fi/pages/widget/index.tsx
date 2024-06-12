@@ -343,7 +343,7 @@ export default function Page({ siteConfigData }: PageProps) {
           </ContainerCardSection>
         </ContainerCard>
 
-        <ContainerCard bgColor={'transparent'} color={Color.neutral10}>
+        <ContainerCard bgColor={Color.neutral90} color={Color.neutral10} touchFooter>
           <ContainerCardSection padding={'0'}>
             <SectionTitleWrapper maxWidth={1000} margin="0 auto">
               <SectionTitleDescription fontSize={16} color={Color.neutral40}>
