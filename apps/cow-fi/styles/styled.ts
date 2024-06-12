@@ -35,6 +35,19 @@ export const ContainerCard = styled.div<{
   }
 `
 
+export const ContainerCardInner = styled.div<{ maxWidth?: number; gap?: number; gapMobile?: number }>`
+  display: flex;
+  flex-flow: column wrap;
+  gap: ${({ gap }) => gap || 90}px;
+  margin: 0 auto;
+  width: 100%;
+  max-width: ${({ maxWidth }) => (maxWidth ? `${maxWidth}px` : '100%')};
+
+  ${Media.upToMedium()} {
+    gap: ${({ gapMobile }) => gapMobile || 74}px;
+  }
+`
+
 export const ContainerCardSection = styled.div<{ padding?: string; gap?: number }>`
   display: flex;
   flex-flow: row wrap;
@@ -111,14 +124,6 @@ export const ArticleCard = styled.a`
   border-radius: 20px;
   width: 100%;
   text-decoration: none;
-
-  > h4 {
-    font-size: 28px;
-    font-weight: ${Font.weight.bold};
-    color: ${Color.neutral0};
-    margin: 16px 0 8px;
-    line-height: 1.2;
-  }
 `
 
 export const ArticleImage = styled.div<{ color?: string }>`
@@ -135,16 +140,17 @@ export const ArticleImage = styled.div<{ color?: string }>`
   }
 `
 
-export const ArticleTitle = styled.h4`
-  font-size: 18px;
+export const ArticleTitle = styled.h4<{ fontSize?: number }>`
+  font-size: ${({ fontSize }) => fontSize || 28}px;
   font-weight: ${Font.weight.bold};
   color: ${Color.neutral0};
   margin: 16px 0 8px;
+  line-height: 1.2;
 `
 
 export const ArticleDescription = styled.p<{ color?: string; fontSize?: number; fontWeight?: number }>`
   font-size: ${({ fontSize }) => fontSize || 16}px;
-  color: ${({ color }) => color || Color.neutral0};
+  color: ${({ color }) => color || Color.neutral50};
   font-weight: ${({ fontWeight }) => fontWeight || Font.weight.medium};
   line-height: 1.5;
 `
@@ -389,17 +395,25 @@ export const TopicButton = styled.a<{
   }
 `
 
-export const LinkSection = styled.div<{ columns?: number; columnsMobile?: number; bgColor?: string; padding?: string }>`
+export const LinkSection = styled.div<{
+  columns?: number
+  columnsMobile?: number
+  bgColor?: string
+  padding?: string
+  gap?: number
+  gapMobile?: number
+}>`
   display: grid;
   grid-template-columns: ${({ columns }) => `repeat(${columns || 2}, 1fr)`};
   background: ${({ bgColor }) => bgColor || Color.neutral100};
   border-radius: 28px;
   padding: ${({ padding }) => padding || '24px'};
   width: 100%;
-  gap: 24px;
+  gap: ${({ gap }) => gap || 24}px;
 
   ${Media.upToMedium()} {
     grid-template-columns: ${({ columnsMobile }) => `repeat(${columnsMobile || 1}, 1fr)`};
+    gap: ${({ gapMobile }) => gapMobile || 16}px;
   }
 `
 
@@ -425,15 +439,21 @@ export const LinkItem = styled.a`
   width: 100%;
   font-size: 18px;
   border-radius: 36px;
-  padding: 4px 8px 4px 16px;
+  padding: 8px 0;
   text-decoration: none;
   color: ${Color.neutral20};
-  transition: background 0.2s ease-in-out, 0.2s ease-in-out;
-  line-height: 1.2;
+  transition: background 0.2s ease-in-out, 0.2s ease-in-out, padding 0.2s ease-in-out, color 0.2s ease-in-out;
+  line-height: 1.3;
+  gap: 16px;
+
+  ${Media.upToMedium()} {
+    font-size: 16px;
+  }
 
   &:hover {
     color: ${Color.neutral0};
     background: ${Color.neutral80};
+    padding: 8px 8px 8px 21px;
 
     > span {
       color: ${Color.neutral0};
@@ -453,6 +473,8 @@ export const LinkItem = styled.a`
     align-items: center;
     height: var(--size);
     width: var(--size);
+    min-height: var(--size);
+    min-width: var(--size);
     color: ${Color.neutral50};
     transition: color 0.2s ease-in-out;
     border-radius: 24px;
@@ -474,19 +496,21 @@ export const CTASectionWrapper = styled.section`
   margin: 100px 0;
 `
 
-export const CTAImage = styled.div<{ bgColor?: string }>`
+export const CTAImage = styled.div<{ bgColor?: string; color?: string }>`
   --size: 100px;
   width: var(--size);
   height: var(--size);
   border-radius: var(--size);
-  background: ${({ bgColor }) => bgColor || Color.neutral50};
+  background: ${({ bgColor }) => bgColor || 'transparent'};
   padding: 0;
+  color: ${({ color }) => color || 'inherit'};
 
   > img,
   svg {
     width: 100%;
     height: 100%;
     object-fit: contain;
+    fill: currentColor;
   }
 `
 

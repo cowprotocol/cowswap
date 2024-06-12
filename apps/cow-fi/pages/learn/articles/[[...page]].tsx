@@ -1,10 +1,9 @@
-import Head from 'next/head'
 import { GetStaticProps, GetStaticPaths, GetStaticPropsContext, InferGetStaticPropsType } from 'next'
 import styled from 'styled-components'
 import { Font, Color, Media } from '@cowprotocol/ui'
 import { CONFIG } from '@/const/meta'
 import Layout from '@/components/Layout'
-import { getArticles, Article } from 'services/cms'
+import { getArticles, getCategories, Article } from 'services/cms'
 import { SearchBar } from '@/components/SearchBar'
 
 import {
@@ -17,6 +16,8 @@ import {
   LinkSection,
   LinkColumn,
   LinkItem,
+  ContainerCardInner,
+  CategoryLinks,
 } from '@/styles/styled'
 
 const LEARN_PATH = '/learn/'
@@ -30,10 +31,10 @@ const Wrapper = styled.div`
   flex-flow: column wrap;
   justify-content: center;
   align-items: center;
-  max-width: 1600px;
   width: 100%;
-  margin: 32px auto 0;
-  gap: 24px;
+  margin: 24px auto 0;
+  gap: 34px;
+  max-width: 1760px;
 
   > h1 {
     font-size: 28px;
@@ -61,6 +62,7 @@ interface ArticlesPageProps {
   articles?: any[]
   totalArticles?: number
   currentPage?: number
+  allCategories: { name: string; slug: string }[]
 }
 
 export type ArticlesResponse = {
@@ -76,6 +78,7 @@ export default function ArticlesPage({
   articles,
   totalArticles = 0,
   currentPage = 1,
+  allCategories,
 }: InferGetStaticPropsType<typeof getStaticProps>) {
   const totalPages = articles ? Math.ceil(totalArticles / ITEMS_PER_PAGE) : 0
 
@@ -85,43 +88,56 @@ export default function ArticlesPage({
       metaDescription="All knowledge base articles in the Cow DAO ecosystem"
     >
       <Wrapper>
+        <CategoryLinks>
+          <li>
+            <a href="/learn">Knowledge Base</a>
+          </li>
+          {(allCategories || []).map((category) => (
+            <li key={category.slug}>
+              <a href={`/learn/topic/${category.slug}`}>{category.name}</a>
+            </li>
+          ))}
+        </CategoryLinks>
+
         <SearchBar articles={articles || []} />
 
-        <ContainerCard gap={42} gapMobile={24}>
-          <ContainerCardSectionTop>
-            <Breadcrumbs padding={'0'}>
-              <a href="/learn">Knowledge Base</a>
-              <h1>All articles</h1>
-            </Breadcrumbs>
+        <ContainerCard gap={42} gapMobile={24} touchFooter>
+          <ContainerCardInner maxWidth={970} gap={24} gapMobile={24}>
+            <ContainerCardSectionTop>
+              <Breadcrumbs padding={'0'}>
+                <a href="/learn">Knowledge Base</a>
+                <h1>All articles</h1>
+              </Breadcrumbs>
 
-            <ArticleCount>
-              Showing {ITEMS_PER_PAGE * (currentPage - 1) + 1}-{Math.min(ITEMS_PER_PAGE * currentPage, totalArticles)}{' '}
-              of {totalArticles} articles
-            </ArticleCount>
-          </ContainerCardSectionTop>
+              <ArticleCount>
+                Showing {ITEMS_PER_PAGE * (currentPage - 1) + 1}-{Math.min(ITEMS_PER_PAGE * currentPage, totalArticles)}{' '}
+                of {totalArticles} articles
+              </ArticleCount>
+            </ContainerCardSectionTop>
 
-          <ContainerCardSection>
-            <LinkSection bgColor={'transparent'} columns={1} padding="0">
-              <LinkColumn>
-                {articles?.map((article) =>
-                  article.attributes ? (
-                    <LinkItem key={article.id} href={`${LEARN_PATH}${article.attributes.slug}`}>
-                      {article.attributes.title}
-                      <span>→</span>
-                    </LinkItem>
-                  ) : null
-                )}
-              </LinkColumn>
-            </LinkSection>
-          </ContainerCardSection>
+            <ContainerCardSection>
+              <LinkSection bgColor={'transparent'} columns={1} padding="0">
+                <LinkColumn>
+                  {articles?.map((article) =>
+                    article.attributes ? (
+                      <LinkItem key={article.id} href={`${LEARN_PATH}${article.attributes.slug}`}>
+                        {article.attributes.title}
+                        <span>→</span>
+                      </LinkItem>
+                    ) : null
+                  )}
+                </LinkColumn>
+              </LinkSection>
+            </ContainerCardSection>
 
-          <Pagination>
-            {Array.from({ length: totalPages }, (_, i) => (
-              <a key={i} href={`${ARTICLES_PATH}${i + 1}`} className={i + 1 === currentPage ? 'active' : ''}>
-                {i + 1}
-              </a>
-            ))}
-          </Pagination>
+            <Pagination>
+              {Array.from({ length: totalPages }, (_, i) => (
+                <a key={i} href={`${ARTICLES_PATH}${i + 1}`} className={i + 1 === currentPage ? 'active' : ''}>
+                  {i + 1}
+                </a>
+              ))}
+            </Pagination>
+          </ContainerCardInner>
         </ContainerCard>
       </Wrapper>
     </Layout>
@@ -147,12 +163,20 @@ export const getStaticProps: GetStaticProps<ArticlesPageProps> = async (context:
       },
     })) || []
 
+  const categoriesResponse = await getCategories()
+  const allCategories =
+    categoriesResponse?.map((category: any) => ({
+      name: category?.attributes?.name || '',
+      slug: category?.attributes?.slug || '',
+    })) || []
+
   return {
     props: {
       siteConfigData,
       articles,
       totalArticles,
       currentPage: page,
+      allCategories,
     },
     revalidate: DATA_CACHE_TIME_SECONDS,
   }

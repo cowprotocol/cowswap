@@ -58,7 +58,7 @@ const Wrapper = styled.div`
   width: 100%;
   margin: 24px auto 0;
   gap: 34px;
-  max-width: 1600px;
+  max-width: 1760px;
 
   ${Media.upToMedium()} {
     margin: 0 auto;

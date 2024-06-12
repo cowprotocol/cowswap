@@ -47,7 +47,7 @@ const Wrapper = styled.div`
   flex-flow: column wrap;
   justify-content: center;
   align-items: center;
-  max-width: 1600px;
+  max-width: 1760px;
   width: 100%;
   margin: 76px auto 0;
   gap: 24px;

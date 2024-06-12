@@ -14,6 +14,7 @@ import { ArrowButton } from '@/components/ArrowButton'
 import {
   ContainerCard,
   ContainerCardSection,
+  ContainerCardInner,
   ContainerCardSectionTop,
   TopicList,
   TopicCard,
@@ -24,7 +25,7 @@ import {
 
 const DATA_CACHE_TIME_SECONDS = 5 * 60 // Cache 5min
 
-interface TopicsProps {
+interface PageProps {
   siteConfigData: typeof CONFIG
   categories: {
     name: string
@@ -34,6 +35,7 @@ interface TopicsProps {
     textColor: string
     link: string
     iconColor: string
+    imageUrl: string
   }[]
   articles: ArticleListResponse['data']
 }
@@ -43,10 +45,10 @@ const Wrapper = styled.div`
   flex-flow: column wrap;
   justify-content: center;
   align-items: center;
-  max-width: 1600px;
   width: 100%;
-  margin: 76px auto 0;
-  gap: 24px;
+  margin: 42px auto 0;
+  gap: 34px;
+  max-width: 1760px;
 
   h1 {
     font-size: 28px;
@@ -69,7 +71,7 @@ const Wrapper = styled.div`
   }
 `
 
-export default function Topics({ siteConfigData, categories, articles }: TopicsProps) {
+export default function Page({ siteConfigData, categories, articles }: PageProps) {
   const { title } = siteConfigData
 
   return (
@@ -81,41 +83,61 @@ export default function Topics({ siteConfigData, categories, articles }: TopicsP
         <SearchBar articles={articles || []} />
 
         <ContainerCard touchFooter>
-          <ContainerCardSection>
-            <ContainerCardSectionTop>
-              <ContainerCardSectionTopTitle>Topics</ContainerCardSectionTopTitle>
-              <ArrowButton link="/learn" text="Overview" />
-            </ContainerCardSectionTop>
-            <TopicList columns={3}>
-              {categories.map(({ name, bgColor, textColor, iconColor, link }, index) => (
-                <TopicCard key={index} bgColor={bgColor} textColor={textColor} href={link}>
-                  <TopicImage iconColor={iconColor}></TopicImage>
-                  <TopicTitle>{name}</TopicTitle>
-                </TopicCard>
-              ))}
-            </TopicList>
-          </ContainerCardSection>
+          <ContainerCardInner maxWidth={970} gap={24} gapMobile={24}>
+            <ContainerCardSection>
+              <ContainerCardSectionTop>
+                <ContainerCardSectionTopTitle>Topics</ContainerCardSectionTopTitle>
+                <ArrowButton link="/learn" text="Overview" />
+              </ContainerCardSectionTop>
+              <TopicList columns={3}>
+                {categories.map(({ name, bgColor, textColor, iconColor, link, imageUrl }, index) => (
+                  <TopicCard key={index} bgColor={bgColor} textColor={textColor} href={link}>
+                    <TopicImage iconColor={iconColor}>
+                      {imageUrl ? (
+                        <img
+                          src={imageUrl}
+                          alt={name}
+                          onError={(e) => {
+                            e.currentTarget.onerror = null
+                            e.currentTarget.style.display = 'none'
+                          }}
+                        />
+                      ) : (
+                        <span>{name.charAt(0)}</span>
+                      )}
+                    </TopicImage>
+                    <TopicTitle>{name}</TopicTitle>
+                  </TopicCard>
+                ))}
+              </TopicList>
+            </ContainerCardSection>
+          </ContainerCardInner>
         </ContainerCard>
       </Wrapper>
     </Layout>
   )
 }
 
-export const getStaticProps: GetStaticProps<TopicsProps> = async () => {
+export const getStaticProps: GetStaticProps<PageProps> = async () => {
   const siteConfigData = CONFIG
   const categoriesResponse = await getCategories()
   const articlesResponse = await getArticles()
 
   const categories =
-    categoriesResponse?.map((category: Category) => ({
-      name: category?.attributes?.name || '',
-      slug: category?.attributes?.slug || '',
-      description: category?.attributes?.description || '',
-      bgColor: category?.attributes?.backgroundColor || '#fff',
-      textColor: category?.attributes?.textColor || '#000',
-      link: `/learn/topic/${category?.attributes?.slug}`,
-      iconColor: '#fff',
-    })) || []
+    categoriesResponse?.map((category: any) => {
+      const imageUrl = category?.attributes?.image?.data?.attributes?.url || ''
+
+      return {
+        name: category?.attributes?.name || '',
+        slug: category?.attributes?.slug || '',
+        description: category?.attributes?.description || '',
+        bgColor: category?.attributes?.backgroundColor || '#fff',
+        textColor: category?.attributes?.textColor || '#000',
+        link: `/learn/topic/${category?.attributes?.slug}`,
+        iconColor: '#fff',
+        imageUrl,
+      }
+    }) || []
 
   return {
     props: {

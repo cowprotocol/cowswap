@@ -11,9 +11,12 @@ import { getCategories, getArticles, ArticleListResponse } from 'services/cms'
 import { SearchBar } from '@/components/SearchBar'
 import { ArrowButton } from '@/components/ArrowButton'
 
+import IMG_ICON_BULB_COW from '@cowprotocol/assets/images/icon-bulb-cow.svg'
+
 import {
   ContainerCard,
   ContainerCardSection,
+  ContainerCardInner,
   ContainerCardSectionTop,
   ArticleList,
   ArticleCard,
@@ -35,20 +38,43 @@ import {
   TopicTitle,
 } from '@/styles/styled'
 
+import SVG from 'react-inlinesvg'
+
 const DATA_CACHE_TIME_SECONDS = 5 * 60 // Cache 5min
 
 const PODCASTS = [
-  { title: 'CoW Hooks: you are in control!', link: '/podcast/cow-hooks' },
-  { title: 'CoW Swap for DAOs', link: '/podcast/cow-swap-for-daos' },
-  { title: 'Introducing surplus-capturing limit orders', link: '/podcast/surplus-limit-orders' },
-  { title: 'Tally Recipes for CoW Swaps', link: '/podcast/tally-recipes' },
+  {
+    title: 'How CoWs Will Save DeFi Swaps (0xResearch) ',
+    link: 'https://www.youtube.com/watch?v=-CrTF4RO0Ww',
+  },
+  {
+    title: 'A Deep dive into Batch Auctions (Bell Curve)',
+    link: 'https://open.spotify.com/episode/4M7CNfjg0C2BD6SpyPFuaI?si=niArWe7EQDyqiXt610MDzg',
+  },
+  {
+    title: 'How Introducing Competition Fixes DeFi (Strange Water)',
+    link: 'https://strangewater.xyz/episode/sw48',
+  },
+  {
+    title: 'CoW Swap - The Only DEX You Need In DeFi? (Leviathan News)',
+    link: 'https://open.spotify.com/episode/4M7CNfjg0C2BD6SpyPFuaI?si=niArWe7EQDyqiXt610MDzg',
+  },
 ]
 
 const SPACES = [
-  { title: 'CoW Swap Introduces “I’m Feeling Lucky” Mode for DeFi Trades', link: '/space/feeling-lucky' },
-  { title: 'CoW Protocol February 2024 Highlights', link: '/space/feb-2024-highlights' },
-  { title: 'How to Add Custom Tokens on CoW Swap', link: '/space/custom-tokens' },
-  { title: 'What is Loss-Versus-Rebalancing (LVR)?', link: '/space/lvr' },
+  {
+    title: 'CoW Swap is one of the most exciting projects in the DEX space',
+    link: 'https://x.com/cryptotesters/status/1501505365833248774',
+  },
+  {
+    title: 'CoW Protocoll & Yearn Finance Partnership Deep Dive',
+    link: 'https://x.com/CoWSwap/status/1605593667682476032',
+  },
+  {
+    title: 'CoW Swap & ENS: Pushing Decentralized Trading to its limits',
+    link: 'https://x.com/CoWSwap/status/1625932839936983055',
+  },
+  { title: 'CoW AMM is the 1st MEV-Capturing AMM', link: 'https://x.com/CoWSwap/status/1759633529279791584' },
 ]
 
 const MEDIA_COVERAGE = [
@@ -92,7 +118,7 @@ interface PageProps {
     textColor: string
     link: string
     iconColor: string
-    imageUrl: string // Add this line to include the imageUrl property
+    imageUrl: string
   }[]
   articles: ArticleListResponse['data']
   featuredArticles: {
@@ -108,10 +134,14 @@ const Wrapper = styled.div`
   flex-flow: column wrap;
   justify-content: center;
   align-items: center;
-  max-width: 1600px;
+  max-width: 1760px;
   width: 100%;
   margin: 76px auto 0;
   gap: 24px;
+
+  ${Media.upToMedium()} {
+    margin: 40px auto 0;
+  }
 
   h1 {
     font-size: 28px;
@@ -146,102 +176,106 @@ export default function Page({ siteConfigData, categories, articles, featuredArt
         <SearchBar articles={articles} />
 
         <ContainerCard>
-          <ContainerCardSection>
-            <ContainerCardSectionTop>
-              <ContainerCardSectionTopTitle>Featured articles</ContainerCardSectionTopTitle>
-              <ArrowButton link="/learn/articles" text="All articles" />
-            </ContainerCardSectionTop>
-            <ArticleList>
-              {featuredArticles.map(({ title, description, cover, link }, index) => (
-                <ArticleCard key={index} href={link}>
-                  <ArticleImage color="#000">{cover && <img src={cover} alt={title} />}</ArticleImage>
-                  <ArticleTitle>{title}</ArticleTitle>
-                  <ArticleDescription>{description}</ArticleDescription>
-                </ArticleCard>
-              ))}
-            </ArticleList>
-          </ContainerCardSection>
-
-          <ContainerCardSection>
-            <ContainerCardSectionTop>
-              <ContainerCardSectionTopTitle>Topics</ContainerCardSectionTopTitle>
-            </ContainerCardSectionTop>
-            <TopicList columns={3}>
-              {categories.map(({ name, bgColor, textColor, iconColor, link, imageUrl }, index) => {
-                return (
-                  <TopicCard key={index} bgColor={bgColor} textColor={textColor} href={link}>
-                    <TopicImage iconColor={iconColor} bgColor={bgColor}>
-                      {imageUrl ? (
-                        <img
-                          src={imageUrl}
-                          alt={name}
-                          onError={(e) => {
-                            e.currentTarget.onerror = null
-                            e.currentTarget.style.display = 'none' // Hide image if it fails to load
-                          }}
-                        />
-                      ) : (
-                        <span>{name.charAt(0)}</span>
-                      )}
-                    </TopicImage>
-                    <TopicTitle>{name}</TopicTitle>
-                  </TopicCard>
-                )
-              })}
-            </TopicList>
-          </ContainerCardSection>
-
-          <ContainerCardSection>
-            <ContainerCardSectionTop>
-              <ContainerCardSectionTopTitle>Podcasts & Spaces</ContainerCardSectionTopTitle>
-            </ContainerCardSectionTop>
-            <LinkSection>
-              <LinkColumn>
-                <h5>Podcasts</h5>
-                {PODCASTS.map((podcast, index) => (
-                  <LinkItem key={index} href={podcast.link}>
-                    {podcast.title}
-                    <span>→</span>
-                  </LinkItem>
+          <ContainerCardInner maxWidth={1350}>
+            <ContainerCardSection>
+              <ContainerCardSectionTop>
+                <ContainerCardSectionTopTitle>Featured articles</ContainerCardSectionTopTitle>
+                <ArrowButton link="/learn/articles" text="All articles" />
+              </ContainerCardSectionTop>
+              <ArticleList>
+                {featuredArticles.map(({ title, description, cover, link }, index) => (
+                  <ArticleCard key={index} href={link}>
+                    <ArticleImage color="#000">{cover && <img src={cover} alt={title} />}</ArticleImage>
+                    <ArticleTitle>{title}</ArticleTitle>
+                    <ArticleDescription>{description}</ArticleDescription>
+                  </ArticleCard>
                 ))}
-              </LinkColumn>
+              </ArticleList>
+            </ContainerCardSection>
 
-              <LinkColumn>
-                <h5>Spaces</h5>
-                {SPACES.map((space, index) => (
-                  <LinkItem key={index} href={space.link}>
-                    {space.title}
-                    <span>→</span>
-                  </LinkItem>
+            <ContainerCardSection>
+              <ContainerCardSectionTop>
+                <ContainerCardSectionTopTitle>Topics</ContainerCardSectionTopTitle>
+              </ContainerCardSectionTop>
+              <TopicList columns={3}>
+                {categories.map(({ name, bgColor, textColor, iconColor, link, imageUrl }, index) => {
+                  return (
+                    <TopicCard key={index} bgColor={bgColor} textColor={textColor} href={link}>
+                      <TopicImage iconColor={iconColor} bgColor={bgColor}>
+                        {imageUrl ? (
+                          <img
+                            src={imageUrl}
+                            alt={name}
+                            onError={(e) => {
+                              e.currentTarget.onerror = null
+                              e.currentTarget.style.display = 'none'
+                            }}
+                          />
+                        ) : (
+                          <span>{name.charAt(0)}</span>
+                        )}
+                      </TopicImage>
+                      <TopicTitle>{name}</TopicTitle>
+                    </TopicCard>
+                  )
+                })}
+              </TopicList>
+            </ContainerCardSection>
+
+            <ContainerCardSection>
+              <ContainerCardSectionTop>
+                <ContainerCardSectionTopTitle>Podcasts & Spaces</ContainerCardSectionTopTitle>
+              </ContainerCardSectionTop>
+              <LinkSection gap={56}>
+                <LinkColumn>
+                  <h5>Podcasts</h5>
+                  {PODCASTS.map((podcast, index) => (
+                    <LinkItem key={index} href={podcast.link} rel="noopener noreferrer nofollow" target="_blank">
+                      {podcast.title}
+                      <span>→</span>
+                    </LinkItem>
+                  ))}
+                </LinkColumn>
+
+                <LinkColumn>
+                  <h5>Spaces</h5>
+                  {SPACES.map((space, index) => (
+                    <LinkItem key={index} href={space.link} rel="noopener noreferrer nofollow" target="_blank">
+                      {space.title}
+                      <span>→</span>
+                    </LinkItem>
+                  ))}
+                </LinkColumn>
+              </LinkSection>
+            </ContainerCardSection>
+
+            <ContainerCardSection>
+              <ContainerCardSectionTop>
+                <ContainerCardSectionTopTitle>Media coverage</ContainerCardSectionTopTitle>
+              </ContainerCardSectionTop>
+              <ArticleList columns={4}>
+                {MEDIA_COVERAGE.map(({ image, title, publisher, link, linkExternal }, index) => (
+                  <ArticleCard
+                    key={index}
+                    href={link}
+                    target={linkExternal ? '_blank' : '_self'}
+                    rel={linkExternal ? 'noopener' : ''}
+                  >
+                    <ArticleImage>{image && <img src={image} alt={title} />}</ArticleImage>
+                    <ArticleTitle fontSize={21}>{title}</ArticleTitle>
+                    <ArticleDescription>Published by {publisher}</ArticleDescription>
+                  </ArticleCard>
                 ))}
-              </LinkColumn>
-            </LinkSection>
-          </ContainerCardSection>
-
-          <ContainerCardSection>
-            <ContainerCardSectionTop>
-              <ContainerCardSectionTopTitle>Media coverage</ContainerCardSectionTopTitle>
-            </ContainerCardSectionTop>
-            <ArticleList columns={4}>
-              {MEDIA_COVERAGE.map(({ image, title, publisher, link, linkExternal }, index) => (
-                <ArticleCard
-                  key={index}
-                  href={link}
-                  target={linkExternal ? '_blank' : '_self'}
-                  rel={linkExternal ? 'noopener' : ''}
-                >
-                  <ArticleImage>{image && <img src={image} alt={title} />}</ArticleImage>
-                  <ArticleTitle>{title}</ArticleTitle>
-                  <ArticleDescription>Published by {publisher}</ArticleDescription>
-                </ArticleCard>
-              ))}
-            </ArticleList>
-          </ContainerCardSection>
+              </ArticleList>
+            </ContainerCardSection>
+          </ContainerCardInner>
         </ContainerCard>
 
-        <ContainerCard bgColor={Color.neutral98} touchFooter>
+        <ContainerCard bgColor={Color.neutral98} padding="0" touchFooter>
           <CTASectionWrapper>
-            <CTAImage bgColor={'#00A1FF'}></CTAImage>
+            <CTAImage color={'#00A1FF'}>
+              <SVG src={IMG_ICON_BULB_COW} />
+            </CTAImage>
             <CTASubtitle>Explore, learn, integrate</CTASubtitle>
             <CTATitle>CoW DAO documentation</CTATitle>
             <CTAButton href="https://docs.cow.fi/" target="_blank" rel="noopener noreferrer">
@@ -276,7 +310,7 @@ export const getStaticProps: GetStaticProps<PageProps> = async () => {
         textColor: category?.attributes?.textColor || '#000',
         link: `/learn/topic/${category?.attributes?.slug}`,
         iconColor: '#fff',
-        imageUrl, // Ensure this field is correctly populated
+        imageUrl,
       }
     }) || []
 

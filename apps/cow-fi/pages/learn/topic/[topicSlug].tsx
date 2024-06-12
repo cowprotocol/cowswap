@@ -11,6 +11,7 @@ import {
   Breadcrumbs,
   ContainerCard,
   ContainerCardSection,
+  ContainerCardInner,
   ContainerCardSectionTop,
   LinkSection,
   LinkColumn,
@@ -22,7 +23,7 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  max-width: 1600px;
+  max-width: 1760px;
   width: 100%;
   margin: 24px auto 0;
   gap: 34px;
@@ -108,44 +109,46 @@ export default function TopicPage({ category, articles, allCategories }: TopicPa
         <SearchBar articles={articles} />
 
         <ContainerCard gap={42} gapMobile={24} minHeight="100vh" alignContent="flex-start" touchFooter>
-          <Breadcrumbs padding={'0'}>
-            <a href="/">Home</a>
-            <a href="/learn">Knowledge Base</a>
-            <a href="/learn/topics/">Topic</a>
-            <span>{name}</span>
-          </Breadcrumbs>
+          <ContainerCardInner maxWidth={970} gap={24} gapMobile={24}>
+            <Breadcrumbs padding={'0'}>
+              <a href="/">Home</a>
+              <a href="/learn">Knowledge Base</a>
+              <a href="/learn/topics/">Topic</a>
+              <span>{name}</span>
+            </Breadcrumbs>
 
-          <ContainerCardSectionTop>
-            <CategoryTitle>
-              {imageUrl && (
-                <CategoryImageWrapper>
-                  <CategoryImage src={imageUrl} alt={name} />
-                </CategoryImageWrapper>
-              )}
-              <h1>{name}</h1>
-            </CategoryTitle>
-            <ArrowButton link="/learn/topics" text="All topics" />
-          </ContainerCardSectionTop>
-
-          <ContainerCardSection>
-            <CategoryDescription>
-              <p>{description}</p>
-              <i>{articles.length} articles</i>
-            </CategoryDescription>
-
-            <LinkSection bgColor={'transparent'} columns={1} padding="0">
-              <LinkColumn>
-                {articles?.map((article) =>
-                  article.attributes ? (
-                    <LinkItem key={article.id} href={`/learn/${article.attributes.slug}`}>
-                      {article.attributes.title}
-                      <span>→</span>
-                    </LinkItem>
-                  ) : null
+            <ContainerCardSectionTop>
+              <CategoryTitle>
+                {imageUrl && (
+                  <CategoryImageWrapper>
+                    <CategoryImage src={imageUrl} alt={name} />
+                  </CategoryImageWrapper>
                 )}
-              </LinkColumn>
-            </LinkSection>
-          </ContainerCardSection>
+                <h1>{name}</h1>
+              </CategoryTitle>
+              <ArrowButton link="/learn/topics" text="All topics" />
+            </ContainerCardSectionTop>
+
+            <ContainerCardSection>
+              <CategoryDescription>
+                <p>{description}</p>
+                <i>{articles.length} articles</i>
+              </CategoryDescription>
+
+              <LinkSection bgColor={'transparent'} columns={1} padding="0">
+                <LinkColumn>
+                  {articles?.map((article) =>
+                    article.attributes ? (
+                      <LinkItem key={article.id} href={`/learn/${article.attributes.slug}`}>
+                        {article.attributes.title}
+                        <span>→</span>
+                      </LinkItem>
+                    ) : null
+                  )}
+                </LinkColumn>
+              </LinkSection>
+            </ContainerCardSection>
+          </ContainerCardInner>
         </ContainerCard>
       </Wrapper>
     </Layout>
