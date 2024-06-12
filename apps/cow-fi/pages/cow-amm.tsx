@@ -120,7 +120,7 @@ export default function Page({ siteConfigData }: PageProps) {
             <h2>4.8M</h2>
             <p>liquidity protected from LVR</p>
           </MetricsItem>
-          <MetricsItem dividerColor="#9BD955">
+          <MetricsItem>
             <h2>$59K</h2>
             <p>surplus captured for LPs</p>
           </MetricsItem>
@@ -154,17 +154,24 @@ export default function Page({ siteConfigData }: PageProps) {
                     Liquidity providers expect their tokens to earn yield, but the dirty little secret of AMMs is that
                     most liquidity pools lose money. <br />
                     <br />
-                    In fact, hundreds of millions of dollars of LP funds are stolen by arbitrageurs every year 1. These
-                    losses are known as loss-versus-rebalancing (LVR). LVR is a bigger source of MEV than frontrunning
-                    and sandwich attacks combined.
+                    In fact, hundreds of millions of dollars of LP funds are stolen by arbitrageurs every year
+                    <sup>1</sup>. These losses are known as loss-versus-rebalancing (LVR). LVR is a bigger source of MEV
+                    than frontrunning and sandwich attacks combined.
                   </TopicDescription>
 
                   <TopicDescription fontSize={21} color={Color.neutral50}>
-                    1 Andrea Canidio and Robin Fritsch, Arbitrageurs' profits, LVR, and sandwich attacks: batch trading
-                    as an AMM design response (November 2023).
+                    <sup>1</sup> Andrea Canidio and Robin Fritsch, Arbitrageurs' profits, LVR, and sandwich attacks:
+                    batch trading as an AMM design response (November 2023).
                   </TopicDescription>
                 </TopicCardInner>
-                <TopicImage iconColor="#66018E" width={590} height={590} heightMobile={300} orderReverseMobile />
+                <TopicImage
+                  iconColor="#66018E"
+                  width={590}
+                  height={590}
+                  heightMobile={300}
+                  orderReverseMobile
+                  borderRadius={90}
+                />
               </TopicCard>
             </TopicList>
           </ContainerCardSection>
@@ -195,7 +202,7 @@ export default function Page({ siteConfigData }: PageProps) {
                   <SVG src={IMG_ICON_BUILD_WITH_COW} />
                 </TopicImage>
                 <TopicCardInner contentAlign="left">
-                  <TopicDescription fontSize={21}>
+                  <TopicDescription fontSize={21} fontSizeMobile={21}>
                     Liquidity providers deposit tokens into protected CoW AMM liquidity pools, where traders can access
                     the liquidity
                   </TopicDescription>
@@ -214,7 +221,7 @@ export default function Page({ siteConfigData }: PageProps) {
                   <SVG src={IMG_ICON_BUILD_WITH_COW} />
                 </TopicImage>
                 <TopicCardInner contentAlign="left">
-                  <TopicDescription fontSize={21}>
+                  <TopicDescription fontSize={21} fontSizeMobile={21}>
                     Solvers bid to rebalance CoW AMM pools whenever there is an arbitrage opportunity
                   </TopicDescription>
                 </TopicCardInner>
@@ -232,7 +239,7 @@ export default function Page({ siteConfigData }: PageProps) {
                   <SVG src={IMG_ICON_BUILD_WITH_COW} />
                 </TopicImage>
                 <TopicCardInner contentAlign="left">
-                  <TopicDescription fontSize={21}>
+                  <TopicDescription fontSize={21} fontSizeMobile={21}>
                     The solver that offers the most surplus to the pool wins the right to rebalance the pool
                   </TopicDescription>
                 </TopicCardInner>
@@ -250,7 +257,7 @@ export default function Page({ siteConfigData }: PageProps) {
                   <SVG src={IMG_ICON_BUILD_WITH_COW} />
                 </TopicImage>
                 <TopicCardInner contentAlign="left">
-                  <TopicDescription fontSize={21}>
+                  <TopicDescription fontSize={21} fontSizeMobile={21}>
                     CoW AMM eliminates LVR by capturing arbitrage value for LPs and shielding it from MEV bots
                   </TopicDescription>
                 </TopicCardInner>
@@ -282,7 +289,14 @@ export default function Page({ siteConfigData }: PageProps) {
                     or outperformed CF-AMM returns for 10 of the 11 most liquid, non-stablecoin pairs.
                   </TopicDescription>
                 </TopicCardInner>
-                <TopicImage iconColor="#194D05" width={550} height={550} heightMobile={300} orderReverseMobile />
+                <TopicImage
+                  iconColor="#194D05"
+                  width={550}
+                  height={550}
+                  heightMobile={300}
+                  orderReverseMobile
+                  borderRadius={90}
+                />
               </TopicCard>
             </TopicList>
           </ContainerCardSection>
@@ -299,7 +313,14 @@ export default function Page({ siteConfigData }: PageProps) {
 
             <TopicList columns={1} maxWidth={1470}>
               <TopicCard columns="1fr auto" gap={100} horizontal asProp="div" bgColor="transparent" paddingMobile="0">
-                <TopicImage iconColor="#194D05" width={500} height={500} heightMobile={300} orderReverseMobile />
+                <TopicImage
+                  iconColor="#194D05"
+                  width={500}
+                  height={500}
+                  heightMobile={300}
+                  orderReverseMobile
+                  borderRadius={90}
+                />
                 <TopicCardInner contentAlign="left">
                   <TopicTitle fontSize={52}>Provide liquidity for your token without getting rekt</TopicTitle>
                   <TopicDescription fontSize={24} color={Color.neutral50}>
@@ -320,7 +341,14 @@ export default function Page({ siteConfigData }: PageProps) {
                     reserves equal - thereby keeping portfolios balanced and reducing risk.
                   </TopicDescription>
                 </TopicCardInner>
-                <TopicImage iconColor="#194D05" width={500} height={500} heightMobile={300} orderReverseMobile />
+                <TopicImage
+                  iconColor="#194D05"
+                  width={500}
+                  height={500}
+                  heightMobile={300}
+                  orderReverseMobile
+                  borderRadius={90}
+                />
               </TopicCard>
             </TopicList>
           </ContainerCardSection>

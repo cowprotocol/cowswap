@@ -130,7 +130,7 @@ export default function Page({ siteConfigData }: PageProps) {
             <h2>25%</h2>
             <p>of Ethereum's non-toxic DEX volume originates on CoW Protocol</p>
           </MetricsItem>
-          <MetricsItem dividerColor="#ED60E9">
+          <MetricsItem>
             <h2>#1</h2>
             <p>intent-based DEX protocol by volume</p>
           </MetricsItem>
