@@ -751,7 +751,6 @@ export const SectionTitleButton = styled.a<{
 }>`
   display: inline-block;
   padding: 16px 24px;
-  font-size: 27px;
   font-size: ${({ fontSize }) => (fontSize && `${fontSize}px`) || '24px'};
   font-weight: ${Font.weight.bold};
   color: ${({ color }) => color || Color.neutral98};
@@ -760,7 +759,7 @@ export const SectionTitleButton = styled.a<{
   border-radius: 32px;
   line-height: 1.2;
   text-align: center;
-  width: max-content;
+  width: auto;
   transition: opacity 0.2s ease-in-out;
   max-width: 100%;
   margin: ${({ margin }) => margin || '0'};
