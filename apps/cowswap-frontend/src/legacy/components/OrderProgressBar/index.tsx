@@ -1,45 +1,32 @@
 import { useEffect, useMemo, useState } from 'react'
 
-import loadingCowWebp from '@cowprotocol/assets/cow-swap/cow-load.webp'
-import ammsGraphGC from '@cowprotocol/assets/images/amms-graph-gc.svg'
-import ammsGraphEth from '@cowprotocol/assets/images/amms-graph.svg'
-import cowGraph from '@cowprotocol/assets/images/cow-graph.svg'
-import cowMeditatingSmooth from '@cowprotocol/assets/images/cow-meditating-smoooth.svg'
-import cowMeditatingGraph from '@cowprotocol/assets/images/cow-meditating.svg'
-import { getExplorerOrderLink } from '@cowprotocol/common-utils'
+import progressBarStep1 from '@cowprotocol/assets/cow-swap/progress-bar-step1.png'
+import progressBarStep1a from '@cowprotocol/assets/cow-swap/progress-bar-step1a.png'
+import progressBarStep2a from '@cowprotocol/assets/cow-swap/progress-bar-step2a.png'
+import progressBarStep2b from '@cowprotocol/assets/cow-swap/progress-bar-step2b.png'
+import progressBarStep3 from '@cowprotocol/assets/cow-swap/progress-bar-step3.png'
+import { isSellOrder } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { TokenAmount } from '@cowprotocol/ui'
 import { useIsSmartContractWallet } from '@cowprotocol/wallet'
+import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useTransition } from '@react-spring/web'
 import ms from 'ms.macro'
+import styled from 'styled-components/macro'
+import useSWR from 'swr'
 
-import { AMMsLogo } from 'legacy/components/AMMsLogo'
-import { EXPECTED_EXECUTION_TIME, getPercentage } from 'legacy/components/OrderProgressBar/utils'
+import { getPercentage } from 'legacy/components/OrderProgressBar/utils'
 
 import { ActivityDerivedState } from 'modules/account/containers/Transaction'
 
+import { getOrderStatus, OrderStatus } from 'api/gnosisProtocol/api'
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
-import { CancelButton } from 'common/pure/CancelButton'
+import { Stepper, StepProps } from 'common/pure/Stepper'
 
-import {
-  ProgressBarWrapper,
-  ProgressBarInnerWrapper,
-  SuccessProgress,
-  CowProtocolIcon,
-  GreenClockIcon,
-  StatusMsgContainer,
-  StatusWrapper,
-  StatusMsg,
-  StatusGraph,
-  OrangeClockIcon,
-  DelayedProgress,
-  WarningLogo,
-  GreenCheckIcon,
-  StyledExternalLink,
-  StyledCoWLink,
-} from './styled'
+import { ProgressBarWrapper } from './styled'
 
-import { TransactionExecutedContent } from '../TransactionExecutedContent'
+import { AMM_LOGOS } from '../AMMsLogo'
 
 const REFRESH_INTERVAL_MS = ms`0.2s`
 const COW_STATE_SECONDS = ms`0.03s`
@@ -52,7 +39,94 @@ type OrderProgressBarProps = {
   hash?: string
 }
 
-type ExecutionState = 'cow' | 'amm' | 'confirmed' | 'unfillable' | 'delayed'
+// type ExecutionState = 'cow' | 'amm' | 'confirmed' | 'unfillable' | 'delayed'
+type happyPath = 'initial' | 'solving' | 'executing' | 'finished'
+type errorFlow = 'nextBatch' | 'delayed' | 'unfillable' | 'submissionFailed'
+type ExecutionState = happyPath | errorFlow
+
+type ProgressBarState = {
+  state: ExecutionState
+  value: undefined | OrderStatus['value']
+}
+
+function useProgressBarState(
+  chainId: SupportedChainId,
+  orderId: string,
+  isUnfillable: boolean,
+  isConfirmed: boolean
+): ProgressBarState {
+  const [state, setState] = useState<ExecutionState>('initial')
+  const [countdown, setCountdown] = useState<number | null>(null)
+  const { data: orderStatus } = useOrderStatus(chainId, orderId)
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout | undefined
+    if (countdown) {
+      timer = setInterval(
+        () => countdown < Date.now() && setState((curr) => (curr === 'solving' ? 'delayed' : curr)),
+        ms`1s`
+      )
+    }
+
+    return () => timer && clearTimeout(timer)
+  }, [countdown])
+
+  useEffect(() => {
+    if (isUnfillable) {
+      setState('unfillable')
+    } else if (!orderStatus || orderStatus.type === 'scheduled' || orderStatus.type === 'open') {
+      // setState('initial')
+      // TODO: think about what to do when we come back to this state
+    } else if (orderStatus.type === 'active') {
+      setState('solving')
+      setCountdown(Date.now() + ms`15s`)
+    } else if (orderStatus.type === 'solved' || orderStatus.type === 'executing') {
+      setState('executing')
+    } else if (orderStatus.type === 'traded' || isConfirmed) {
+      setState('finished')
+    } else if (orderStatus.type === 'cancelled') {
+      setState('unfillable')
+    }
+
+    // return () => timerId && clearTimeout(timerId)
+  }, [isConfirmed, isUnfillable, orderStatus])
+
+  return { state, value: orderStatus?.value }
+}
+
+function useOrderStatus(chainId: SupportedChainId, orderId: string) {
+  return useSWR(`${chainId}/${orderId}/`, chainId && orderId ? () => getOrderStatus(chainId, orderId) : null, {
+    refreshInterval: ms`1s`,
+  })
+}
+
+const ProgressImage = styled.img`
+  width: 100%;
+`
+
+function CountDown() {
+  const [countdown, setCountdown] = useState(15)
+
+  useEffect(() => {
+    const timer = setInterval(() => setCountdown((c) => (c > 1 ? c - 1 : 0)), ms`1s`)
+
+    return () => clearInterval(timer)
+  }, [])
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column' }}>
+      <strong style={{ alignSelf: 'center', fontSize: '5em' }}>{countdown}</strong>
+      <p>The auction has started! Solvers are competing to find the best solution for you...</p>
+    </div>
+  )
+}
+
+const steps: StepProps[] = [
+  { stepState: 'open', stepNumber: 1, label: 'placing' },
+  { stepState: 'open', stepNumber: 2, label: 'solving' },
+  { stepState: 'open', stepNumber: 3, label: 'executing' },
+  { stepState: 'open', stepNumber: 4, label: 'done' },
+]
 
 export function OrderProgressBar(props: OrderProgressBarProps) {
   const { activityDerivedState, chainId, hideWhenFinished = false, hash } = props
@@ -79,7 +153,14 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
     validTo,
     creationTime,
   })
-  const [executionState, setExecutionState] = useState<ExecutionState>('cow')
+
+  const { state: newState, value: solverCompetition } = useProgressBarState(
+    chainId,
+    order?.id || '',
+    isUnfillable,
+    isConfirmed
+  )
+  // const [executionState, setExecutionState] = useState<ExecutionState>('cow')
   const [percentage, setPercentage] = useState(getPercentage(elapsedSeconds, expirationInSeconds, chainId))
   const isSmartContractWallet = useIsSmartContractWallet()
 
@@ -121,195 +202,306 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
     return () => clearTimeout(timeout)
   }, [isConfirmed])
 
-  useEffect(() => {
-    if (isConfirmed) {
-      setExecutionState('confirmed')
-    } else if (isUnfillable) {
-      setExecutionState('unfillable')
-    } else if (elapsedSeconds <= COW_STATE_SECONDS) {
-      setExecutionState('cow')
-    } else if (elapsedSeconds <= EXPECTED_EXECUTION_TIME[chainId]) {
-      setExecutionState('amm')
-    } else {
-      setExecutionState('delayed')
-    }
-  }, [elapsedSeconds, isConfirmed, isUnfillable, chainId])
-
   const progressBar = () => {
-    switch (executionState) {
-      case 'cow': {
+    switch (newState) {
+      case 'initial': {
+        const localSteps = [...steps]
+        localSteps[0].stepState = 'loading'
+        return (
+          <div>
+            <ProgressImage src={progressBarStep1} alt="" />
+            <p>Your order has been submitted and will be included in the next solver auction.</p>
+            <Stepper steps={localSteps} />
+          </div>
+        )
+      }
+      case 'solving': {
+        const localSteps = [...steps]
+        localSteps[0].stepState = 'finished'
+        localSteps[1].stepState = 'loading'
         return (
           <>
-            <ProgressBarInnerWrapper>
-              <SuccessProgress percentage={percentage}>
-                <CowProtocolIcon />
-              </SuccessProgress>
-            </ProgressBarInnerWrapper>
-            <StatusMsgContainer>
-              <StatusWrapper>
-                <GreenClockIcon size={16} />
-                <StatusMsg>
-                  Order Status: <strong>Looking for a</strong>{' '}
-                  <StyledCoWLink
-                    href="https://docs.cow.fi/cow-protocol/concepts/how-it-works/coincidence-of-wants"
-                    className="cowlink"
-                  >
-                    <strong>
-                      <span>C</span>oincidence <span>o</span>f <span>W</span>ants (CoW) ↗
-                    </strong>
-                  </StyledCoWLink>
-                </StatusMsg>
-              </StatusWrapper>
-              <StatusGraph>
-                <img src={cowGraph} alt="Loading for a CoW..." />
-                <p>
-                  <strong>CoW Swap</strong> can save you gas costs and get a better price if another trader takes the
-                  opposite side of your trade.
-                </p>
-              </StatusGraph>
-            </StatusMsgContainer>
+            <CountDown />
+            <Stepper steps={localSteps} />
           </>
         )
       }
-      case 'amm': {
+      case 'executing': {
+        const localSteps = [...steps]
+        localSteps[0].stepState = 'finished'
+        localSteps[1].stepState = 'finished'
+        localSteps[2].stepState = 'loading'
         return (
-          <>
-            <ProgressBarInnerWrapper>
-              <SuccessProgress percentage={percentage}>
-                <AMMsLogo chainId={chainId} />
-              </SuccessProgress>
-            </ProgressBarInnerWrapper>
-            <StatusMsgContainer>
-              <StatusWrapper>
-                <OrangeClockIcon size={16} />
-                <StatusMsg>
-                  Order Status: <strong>Finding the best on-chain price.</strong>
-                </StatusMsg>
-              </StatusWrapper>
-              <StatusGraph>
-                <img
-                  src={chainId === SupportedChainId.GNOSIS_CHAIN ? ammsGraphGC : ammsGraphEth}
-                  alt="Finding the best price ..."
-                />
-                <p>
-                  <strong>CoW Swap</strong> searches all on-chain liquidity sources to find you the best price.
-                </p>
-              </StatusGraph>
-            </StatusMsgContainer>
-          </>
+          <div>
+            <ProgressImage src={progressBarStep3} alt="" />
+            <p>
+              <strong>
+                {solverCompetition?.length} solver{solverCompetition && solverCompetition?.length > 1 && 's'} joined the
+                competition!
+              </strong>
+            </p>
+            <p>The winner is submitting your order on-chain...</p>
+            <Stepper steps={localSteps} />
+          </div>
         )
       }
-      case 'confirmed': {
-        if (!showDetails) {
-          return (
-            <>
-              <ProgressBarInnerWrapper>
-                <SuccessProgress percentage={100}>
-                  <CowProtocolIcon />
-                </SuccessProgress>
-              </ProgressBarInnerWrapper>
-              <StatusMsgContainer>
-                <StatusWrapper>
-                  <GreenCheckIcon size={16} />
-                  <StatusMsg>
-                    <strong>Congrats! Your transaction has been confirmed successfully! 🚀 </strong>
-                  </StatusMsg>
-                </StatusWrapper>
-                <StatusGraph>
-                  <img src={cowMeditatingSmooth} alt="Cow Smoooth ..." />
-                  <p>
-                    Your tokens should already be in your wallet, check out your trade on the{' '}
-                    <StyledExternalLink href={order ? getExplorerOrderLink(chainId, order.id) : '#'}>
-                      explorer ↗
-                    </StyledExternalLink>{' '}
-                  </p>
-                </StatusGraph>
-              </StatusMsgContainer>
-            </>
-          )
-        } else if (order) {
-          return <TransactionExecutedContent hash={hash} chainId={chainId} order={order} />
-        } else {
-          return null
-        }
+      case 'finished': {
+        const localSteps = [...steps]
+        localSteps[0].stepState = 'finished'
+        localSteps[1].stepState = 'finished'
+        localSteps[2].stepState = 'finished'
+        localSteps[3].stepState = 'finished'
+
+        const isSell = order && isSellOrder(order.kind)
+        const displayToken = isSell ? order?.outputToken : order?.inputToken
+        const solution = solverCompetition && solverCompetition[0]
+        const displayAmount =
+          displayToken &&
+          solution &&
+          CurrencyAmount.fromRawAmount(displayToken, isSell ? solution?.buyAmount : solution?.sellAmount)
+        return (
+          <div>
+            <span>
+              You {isSell ? 'received' : 'sold'} <TokenAmount amount={displayAmount} tokenSymbol={displayToken} />!
+            </span>
+
+            <p>Solver ranking</p>
+            <ol>
+              {solverCompetition?.map((entry) => {
+                const imageProps = AMM_LOGOS[entry.solver] || AMM_LOGOS.default
+
+                return (
+                  <li key={entry.solver}>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                      <img style={{ height: '20px', width: '20px', marginRight: '5px' }} {...imageProps} />
+                      <span>{entry.solver}</span>
+                    </div>
+                  </li>
+                )
+              })}
+            </ol>
+            {/*{solverCompetition && solverCompetition.length > 1 && (*/}
+            {/*  <p>*/}
+            {/*    You would have gotten {solverCompetition[1].sellAmount} / {solverCompetition[1].sellAmount} on{' '}*/}
+            {/*    {solverCompetition[1].solver}!*/}
+            {/*  </p>*/}
+            {/*)}*/}
+            <Stepper steps={localSteps} />
+          </div>
+        )
       }
       case 'unfillable': {
+        const localSteps = [...steps]
+        localSteps[0].stepState = 'error'
         return (
-          <>
-            <ProgressBarInnerWrapper>
-              <DelayedProgress percentage={percentage}>
-                <WarningLogo>
-                  <img src={loadingCowWebp} alt="Loading prices..." />
-                </WarningLogo>
-              </DelayedProgress>
-            </ProgressBarInnerWrapper>
-            <StatusMsgContainer>
-              <StatusWrapper>
-                <OrangeClockIcon size={16} />
-                <StatusMsg>
-                  Order Status: <strong>Your limit price is out of market.</strong>{' '}
-                  {showCancellationModal ? (
-                    <>
-                      {' '}
-                      You can wait or <CancelButton onClick={showCancellationModal} />
-                    </>
-                  ) : null}
-                </StatusMsg>
-              </StatusWrapper>
-              <StatusGraph>
-                <img src={cowMeditatingGraph} alt="Cow meditating ..." className="meditating-cow" />
-                {/*<p>
-                  Current price: <strong>$1200.56</strong>
-                </p>
-                <p>
-                  Your price: $1300.55 (<span>+8%</span>)
-                </p>*/}
-                <p>
-                  <strong>CoW Swap</strong> won&apos;t charge you if the trade is reverted or if you cancel.
-                </p>
-              </StatusGraph>
-            </StatusMsgContainer>
-          </>
+          <div>
+            <ProgressImage src={progressBarStep1a} alt="" />
+            <p>Your order’s price is currently out of market. You can wait or cancel the order.</p>
+            <Stepper steps={localSteps} />
+          </div>
         )
       }
       case 'delayed': {
+        const localSteps = [...steps]
+        localSteps[0].stepState = 'finished'
+        localSteps[1].stepState = 'loading'
         return (
-          <>
-            <ProgressBarInnerWrapper>
-              <DelayedProgress percentage={percentage}>
-                <WarningLogo>
-                  <img src={loadingCowWebp} alt="Loading prices..." />
-                </WarningLogo>
-              </DelayedProgress>
-            </ProgressBarInnerWrapper>
-            <StatusMsgContainer>
-              <StatusWrapper>
-                <OrangeClockIcon size={16} />
-                <StatusMsg>
-                  Order Status:{' '}
-                  <strong>The network looks slower than usual. Our solvers are adjusting gas fees for you!</strong>
-                  {showCancellationModal ? (
-                    <>
-                      {' '}
-                      You can wait or <CancelButton onClick={showCancellationModal} />
-                    </>
-                  ) : null}
-                </StatusMsg>
-              </StatusWrapper>
-              <StatusGraph>
-                <img src={cowMeditatingGraph} alt="Cow meditating ..." className="meditating-cow" />
-                <p>
-                  <strong>CoW Swap</strong> won&apos;t charge you if the trade is reverted or if you cancel.
-                </p>
-              </StatusGraph>
-            </StatusMsgContainer>
-          </>
+          <div>
+            <ProgressImage src={progressBarStep2a} alt="" />
+            <p>This is taking longer than expected! Solvers are still searching...</p>
+            <Stepper steps={localSteps} />
+          </div>
         )
       }
-      default: {
-        return null
+      case 'submissionFailed': {
+        const localSteps = [...steps]
+        localSteps[0].stepState = 'loading'
+        return (
+          <div>
+            <ProgressImage src={progressBarStep2b} alt="" />
+            <p>The order could not be settled on-chain. Solvers are competing to find a new solution...</p>
+            <Stepper steps={localSteps} />
+          </div>
+        )
       }
+      default:
+        return null
     }
+
+    // switch (executionState) {
+    //   case 'cow': {
+    //     return (
+    //       <>
+    //         <ProgressBarInnerWrapper>
+    //           <SuccessProgress percentage={percentage}>
+    //             <CowProtocolIcon />
+    //           </SuccessProgress>
+    //         </ProgressBarInnerWrapper>
+    //         <StatusMsgContainer>
+    //           <StatusWrapper>
+    //             <GreenClockIcon size={16} />
+    //             <StatusMsg>
+    //               Order Status: <strong>Looking for a</strong>{' '}
+    //               <StyledCoWLink
+    //                 href="https://docs.cow.fi/cow-protocol/concepts/how-it-works/coincidence-of-wants"
+    //                 className="cowlink"
+    //               >
+    //                 <strong>
+    //                   <span>C</span>oincidence <span>o</span>f <span>W</span>ants (CoW) ↗
+    //                 </strong>
+    //               </StyledCoWLink>
+    //             </StatusMsg>
+    //           </StatusWrapper>
+    //           <StatusGraph>
+    //             <img src={cowGraph} alt="Loading for a CoW..." />
+    //             <p>
+    //               <strong>CoW Swap</strong> can save you gas costs and get a better price if another trader takes the
+    //               opposite side of your trade.
+    //             </p>
+    //           </StatusGraph>
+    //         </StatusMsgContainer>
+    //       </>
+    //     )
+    //   }
+    //   case 'amm': {
+    //     return (
+    //       <>
+    //         <ProgressBarInnerWrapper>
+    //           <SuccessProgress percentage={percentage}>
+    //             <AMMsLogo chainId={chainId} />
+    //           </SuccessProgress>
+    //         </ProgressBarInnerWrapper>
+    //         <StatusMsgContainer>
+    //           <StatusWrapper>
+    //             <OrangeClockIcon size={16} />
+    //             <StatusMsg>
+    //               Order Status: <strong>Finding the best on-chain price.</strong>
+    //             </StatusMsg>
+    //           </StatusWrapper>
+    //           <StatusGraph>
+    //             <img
+    //               src={chainId === SupportedChainId.GNOSIS_CHAIN ? ammsGraphGC : ammsGraphEth}
+    //               alt="Finding the best price ..."
+    //             />
+    //             <p>
+    //               <strong>CoW Swap</strong> searches all on-chain liquidity sources to find you the best price.
+    //             </p>
+    //           </StatusGraph>
+    //         </StatusMsgContainer>
+    //       </>
+    //     )
+    //   }
+    //   case 'confirmed': {
+    //     if (!showDetails) {
+    //       return (
+    //         <>
+    //           <ProgressBarInnerWrapper>
+    //             <SuccessProgress percentage={100}>
+    //               <CowProtocolIcon />
+    //             </SuccessProgress>
+    //           </ProgressBarInnerWrapper>
+    //           <StatusMsgContainer>
+    //             <StatusWrapper>
+    //               <GreenCheckIcon size={16} />
+    //               <StatusMsg>
+    //                 <strong>Congrats! Your transaction has been confirmed successfully! 🚀 </strong>
+    //               </StatusMsg>
+    //             </StatusWrapper>
+    //             <StatusGraph>
+    //               <img src={cowMeditatingSmooth} alt="Cow Smoooth ..." />
+    //               <p>
+    //                 Your tokens should already be in your wallet, check out your trade on the{' '}
+    //                 <StyledExternalLink href={order ? getExplorerOrderLink(chainId, order.id) : '#'}>
+    //                   explorer ↗
+    //                 </StyledExternalLink>{' '}
+    //               </p>
+    //             </StatusGraph>
+    //           </StatusMsgContainer>
+    //         </>
+    //       )
+    //     } else if (order) {
+    //       return <TransactionExecutedContent hash={hash} chainId={chainId} order={order} />
+    //     } else {
+    //       return null
+    //     }
+    //   }
+    //   case 'unfillable': {
+    //     return (
+    //       <>
+    //         <ProgressBarInnerWrapper>
+    //           <DelayedProgress percentage={percentage}>
+    //             <WarningLogo>
+    //               <img src={loadingCowWebp} alt="Loading prices..." />
+    //             </WarningLogo>
+    //           </DelayedProgress>
+    //         </ProgressBarInnerWrapper>
+    //         <StatusMsgContainer>
+    //           <StatusWrapper>
+    //             <OrangeClockIcon size={16} />
+    //             <StatusMsg>
+    //               Order Status: <strong>Your limit price is out of market.</strong>{' '}
+    //               {showCancellationModal ? (
+    //                 <>
+    //                   {' '}
+    //                   You can wait or <CancelButton onClick={showCancellationModal} />
+    //                 </>
+    //               ) : null}
+    //             </StatusMsg>
+    //           </StatusWrapper>
+    //           <StatusGraph>
+    //             <img src={cowMeditatingGraph} alt="Cow meditating ..." className="meditating-cow" />
+    //             {/*<p>
+    //               Current price: <strong>$1200.56</strong>
+    //             </p>
+    //             <p>
+    //               Your price: $1300.55 (<span>+8%</span>)
+    //             </p>*/}
+    //             <p>
+    //               <strong>CoW Swap</strong> won&apos;t charge you if the trade is reverted or if you cancel.
+    //             </p>
+    //           </StatusGraph>
+    //         </StatusMsgContainer>
+    //       </>
+    //     )
+    //   }
+    //   case 'delayed': {
+    //     return (
+    //       <>
+    //         <ProgressBarInnerWrapper>
+    //           <DelayedProgress percentage={percentage}>
+    //             <WarningLogo>
+    //               <img src={loadingCowWebp} alt="Loading prices..." />
+    //             </WarningLogo>
+    //           </DelayedProgress>
+    //         </ProgressBarInnerWrapper>
+    //         <StatusMsgContainer>
+    //           <StatusWrapper>
+    //             <OrangeClockIcon size={16} />
+    //             <StatusMsg>
+    //               Order Status:{' '}
+    //               <strong>The network looks slower than usual. Our solvers are adjusting gas fees for you!</strong>
+    //               {showCancellationModal ? (
+    //                 <>
+    //                   {' '}
+    //                   You can wait or <CancelButton onClick={showCancellationModal} />
+    //                 </>
+    //               ) : null}
+    //             </StatusMsg>
+    //           </StatusWrapper>
+    //           <StatusGraph>
+    //             <img src={cowMeditatingGraph} alt="Cow meditating ..." className="meditating-cow" />
+    //             <p>
+    //               <strong>CoW Swap</strong> won&apos;t charge you if the trade is reverted or if you cancel.
+    //             </p>
+    //           </StatusGraph>
+    //         </StatusMsgContainer>
+    //       </>
+    //     )
+    //   }
+    //   default: {
+    //     return null
+    //   }
+    // }
   }
 
   if (isSmartContractWallet) {
