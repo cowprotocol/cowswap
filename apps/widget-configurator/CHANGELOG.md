@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.1](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v1.3.0...widget-configurator-v1.3.1) (2024-06-12)
+
+
+### Bug Fixes
+
+* deploy widget using release please ([#4544](https://github.com/cowprotocol/cowswap/issues/4544)) ([e3e8372](https://github.com/cowprotocol/cowswap/commit/e3e83726a059eecb4f7d513bbdc34e60406d5558))
+
 ## [1.3.0](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v1.2.1...widget-configurator-v1.3.0) (2024-05-29)
 
 
