@@ -1404,8 +1404,10 @@ export const WidgetContainer = styled.div`
   }
 
   ${Media.upToMedium()} {
-    > iframe {
+    > div,
+    > div > iframe {
       width: 100%;
+      max-width: 100%;
     }
   }
 `

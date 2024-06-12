@@ -86,6 +86,7 @@ const widgetParams: CowSwapWidgetParams = {
   appCode: 'CoW Protocol: Widget Demo',
   theme: 'light',
   standaloneMode: true,
+  width: '100%',
 }
 
 const Wrapper = styled.div`
@@ -96,7 +97,7 @@ const Wrapper = styled.div`
   max-width: 1760px;
   width: 100%;
   margin: 76px auto 0;
-  gap: 24px;
+  gap: 34px;
 `
 
 export default function Page({ siteConfigData }: PageProps) {
@@ -107,7 +108,7 @@ export default function Page({ siteConfigData }: PageProps) {
       metaDescription="Integrate the CoW Swap widget to bring seamless, MEV-protected trading to your website or dApp."
     >
       <Wrapper>
-        <HeroContainer variant="secondary" maxWidth={1300} padding="0 0 72px">
+        <HeroContainer variant="secondary" maxWidth={1300}>
           <HeroContent variant="secondary">
             <HeroSubtitle color={'#66018E'}>Widget</HeroSubtitle>
             <HeroTitle fontSize={52} fontSizeMobile={38}>
