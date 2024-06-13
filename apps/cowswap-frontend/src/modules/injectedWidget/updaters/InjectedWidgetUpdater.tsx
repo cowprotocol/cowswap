@@ -37,18 +37,41 @@ const cacheMessages = (event: MessageEvent) => {
   messagesCache[method] = event.data
 }
 
+;(function initInjectedWidget() {
+  const isInIframe = window.top !== window.self
+
+  const top = window.top
+
+  if (!top || !isInIframe) return
+
   /**
    * To avoid delays, immediately send an activation message and start listening messages
    */
-  ; (function initInjectedWidget() {
-    const isInIframe = window.top !== window.self
+  window.addEventListener('message', cacheMessages)
+  postMessageToWindow(top, WidgetMethodsEmit.ACTIVATE, void 0)
 
-    if (!window.top || !isInIframe) return
+  /**
+   * Intercept window.open and anchor clicks to send a message to the parent window
+   * to handle the opening of deeplinks in the parent window
+   */
+  const originalWinOpen = window.open
 
-    window.addEventListener('message', cacheMessages)
+  window.open = function (...args) {
+    const [href = '', target = '', rel = ''] = args
 
-    postMessageToWindow(window.top, WidgetMethodsEmit.ACTIVATE, void 0)
-  })()
+    postMessageToWindow(top, WidgetMethodsEmit.INTERCEPT_WINDOW_OPEN, { href, target, rel })
+
+    return originalWinOpen.apply(this, args)
+  }
+
+  document.body.addEventListener('click', (event) => {
+    if (event.target instanceof HTMLAnchorElement) {
+      const { href, target, rel } = event.target
+
+      postMessageToWindow(top, WidgetMethodsEmit.INTERCEPT_WINDOW_OPEN, { href, target, rel })
+    }
+  })
+})()
 
 export function InjectedWidgetUpdater() {
   const [
