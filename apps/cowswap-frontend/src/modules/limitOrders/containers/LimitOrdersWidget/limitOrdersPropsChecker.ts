@@ -3,7 +3,6 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
-import { TradeFlowContext } from 'modules/limitOrders/services/types'
 import { LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { TradeWidgetActions } from 'modules/trade'
 
@@ -21,7 +20,6 @@ export interface LimitOrdersProps {
 
   rateInfoParams: RateInfoParams
   priceImpact: PriceImpact
-  tradeContext: TradeFlowContext | null
   settingsState: LimitOrdersSettingsState
   feeAmount: CurrencyAmount<Currency> | null
   widgetActions: TradeWidgetActions
@@ -38,7 +36,6 @@ export function limitOrdersPropsChecker(a: LimitOrdersProps, b: LimitOrdersProps
     a.widgetActions === b.widgetActions &&
     checkRateInfoParams(a.rateInfoParams, b.rateInfoParams) &&
     checkPriceImpact(a.priceImpact, b.priceImpact) &&
-    checkTradeFlowContext(a.tradeContext, b.tradeContext) &&
     genericPropsChecker(a.settingsState, b.settingsState) &&
     areFractionsEqual(a.feeAmount, b.feeAmount)
   )
@@ -69,17 +66,4 @@ function checkRateInfoParams(a: RateInfoParams, b: RateInfoParams): boolean {
 
 function checkPriceImpact(a: PriceImpact, b: PriceImpact): boolean {
   return a.loading === b.loading && areFractionsEqual(a.priceImpact, b.priceImpact)
-}
-
-function checkTradeFlowContext(a: TradeFlowContext | null, b: TradeFlowContext | null): boolean {
-  if (!a || !b) return a === b
-
-  return (
-    genericPropsChecker(a.postOrderParams, b.postOrderParams) &&
-    a.provider === b.provider &&
-    a.settlementContract === b.settlementContract &&
-    a.chainId === b.chainId &&
-    a.dispatch === b.dispatch &&
-    a.allowsOffchainSigning === b.allowsOffchainSigning
-  )
 }

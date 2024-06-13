@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.30.1](https://github.com/cowprotocol/cowswap/compare/explorer-v2.30.0...explorer-v2.30.1) (2024-06-11)
+
+
+### Bug Fixes
+
+* change something in the explorer to trigger with release please ([#4538](https://github.com/cowprotocol/cowswap/issues/4538)) ([9c5176b](https://github.com/cowprotocol/cowswap/commit/9c5176b697a99ad9f384741291c6e08a0ce72937))
+
 ## [2.30.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.29.6...explorer-v2.30.0) (2024-05-29)
 
 
