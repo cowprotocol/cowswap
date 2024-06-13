@@ -1,5 +1,5 @@
 import { useTheme } from '@cowprotocol/common-hooks'
-import { isMobile } from '@cowprotocol/common-utils'
+import { isInjectedWidget, isMobile } from '@cowprotocol/common-utils'
 import {
   CoinbaseWalletOption,
   InjectedOption as DefaultInjectedOption,
@@ -25,12 +25,14 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
 
   const hasCoinbaseEip6963 = multiInjectedProviders.some((provider) => provider.info.rdns === COINBASE_WALLET_RDNS)
 
+  const isWidget = isInjectedWidget()
   const isInjectedMobileBrowser = getIsInjectedMobileBrowser()
 
   const connectionProps = { darkMode, selectedWallet, tryActivation }
 
   const coinbaseWalletOption = (!hasCoinbaseEip6963 && <CoinbaseWalletOption {...connectionProps} />) ?? null
-  const walletConnectionV2Option = (!isInjectedMobileBrowser && <WalletConnectV2Option {...connectionProps} />) ?? null
+  const walletConnectionV2Option =
+    ((!isInjectedMobileBrowser || isWidget) && <WalletConnectV2Option {...connectionProps} />) ?? null
   const trezorOption = (!isInjectedMobileBrowser && !isMobile && <TrezorOption {...connectionProps} />) ?? null
 
   return (

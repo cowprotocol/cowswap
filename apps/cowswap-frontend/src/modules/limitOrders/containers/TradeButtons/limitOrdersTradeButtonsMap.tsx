@@ -23,4 +23,7 @@ export const limitOrdersTradeButtonsMap: { [key in LimitOrdersFormState]: Button
   [LimitOrdersFormState.ZeroPrice]: {
     text: 'Invalid price. Try increasing input/output amount.',
   },
+  [LimitOrdersFormState.FeeExceedsFrom]: {
+    text: 'Sell amount is too small',
+  },
 }
