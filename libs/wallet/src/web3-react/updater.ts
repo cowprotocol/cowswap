@@ -78,7 +78,8 @@ function _useSafeInfo(walletInfo: WalletInfo): GnosisSafeInfo | undefined {
         if (safeAppsSdk) {
           const appsSdkSafeInfo = await safeAppsSdk.safe.getInfo()
           setSafeInfo((prevSafeInfo) => {
-            const { isReadOnly } = appsSdkSafeInfo
+
+            const { isReadOnly, nonce } = appsSdkSafeInfo
             if (!prevSafeInfo) {
               // We don't have prevSafeInfo for counterfactual safes as the SDK can't find a deployment
               // of this safe on-chain
@@ -88,6 +89,7 @@ function _useSafeInfo(walletInfo: WalletInfo): GnosisSafeInfo | undefined {
                 address: safeAddress,
                 threshold,
                 owners,
+                nonce,
                 isReadOnly,
               }
             }
@@ -100,13 +102,14 @@ function _useSafeInfo(walletInfo: WalletInfo): GnosisSafeInfo | undefined {
         } else {
           getSafeInfo(chainId, account, provider)
             .then((_safeInfo) => {
-              const { address, threshold, owners } = _safeInfo
+              const { address, threshold, owners, nonce } = _safeInfo
               setSafeInfo((prevSafeInfo) => ({
                 ...prevSafeInfo,
                 chainId,
                 address,
                 threshold,
                 owners,
+                nonce,
                 isReadOnly: false,
               }))
 
