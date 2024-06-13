@@ -21,9 +21,9 @@ import TradeGp from 'legacy/state/swap/TradeGp'
 import { isWrappingTrade } from 'legacy/state/swap/utils'
 import { Field } from 'legacy/state/types'
 
-import { useWidgetPartnerFee } from 'modules/injectedWidget'
 import { useNavigateOnCurrencySelection } from 'modules/trade/hooks/useNavigateOnCurrencySelection'
 import { useTradeNavigate } from 'modules/trade/hooks/useTradeNavigate'
+import { useVolumeFee } from 'modules/volumeFee'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
@@ -49,6 +49,7 @@ export function useSwapState(): AppState['swap'] {
 }
 
 export type Currencies = { [field in Field]?: Currency | null }
+
 export interface SwapActions {
   onCurrencySelection: (field: Field, currency: Currency) => void
   onSwitchTokens: Command
@@ -123,11 +124,11 @@ export function useHighFeeWarning(trade?: TradeGp) {
   const [isHighFee, feePercentage] = useMemo(() => {
     if (!trade) return [false, undefined]
 
-    const { outputAmountWithoutFee, inputAmountAfterFees, fee, partnerFeeAmount } = trade
+    const { outputAmountWithoutFee, inputAmountAfterFees, fee, volumeFeeAmount } = trade
     const isExactInput = trade.tradeType === TradeType.EXACT_INPUT
     const feeAsCurrency = isExactInput ? trade.executionPrice.quote(fee.feeAsCurrency) : fee.feeAsCurrency
 
-    const totalFeeAmount = partnerFeeAmount ? feeAsCurrency.add(partnerFeeAmount) : feeAsCurrency
+    const totalFeeAmount = volumeFeeAmount ? feeAsCurrency.add(volumeFeeAmount) : feeAsCurrency
     const targetAmount = isExactInput ? outputAmountWithoutFee : inputAmountAfterFees
     const feePercentage = totalFeeAmount.divide(targetAmount).multiply(100).asFraction
 
@@ -243,7 +244,7 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
 
   const isWrapping = isWrappingTrade(inputCurrency, outputCurrency, chainId)
 
-  const partnerFee = useWidgetPartnerFee()
+  const volumeFee = useVolumeFee()
 
   const trade = useSafeMemo(() => {
     if (isWrapping) return undefined
@@ -253,7 +254,7 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
         parsedAmount,
         outputCurrency,
         quote,
-        partnerFee,
+        volumeFee,
       })
     }
 
@@ -261,9 +262,9 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
       parsedAmount,
       inputCurrency,
       quote,
-      partnerFee,
+      volumeFee,
     })
-  }, [isExactIn, parsedAmount, inputCurrency, outputCurrency, quote, partnerFee, isWrapping])
+  }, [isExactIn, parsedAmount, inputCurrency, outputCurrency, quote, volumeFee, isWrapping])
 
   const currencyBalances = useMemo(
     () => ({

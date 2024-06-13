@@ -1,8 +1,9 @@
 import React from 'react'
 
-import { useInjectedWidgetParams, useWidgetPartnerFee } from 'modules/injectedWidget'
+import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { TradeTotalCostsDetails, PartnerFeeRow } from 'modules/trade'
 import { useUsdAmount } from 'modules/usdAmount'
+import { useVolumeFee } from 'modules/volumeFee'
 
 import { RateInfoParams } from 'common/pure/RateInfo'
 
@@ -13,10 +14,10 @@ interface TradeRateDetailsProps {
 }
 export function TradeRateDetails({ rateInfoParams }: TradeRateDetailsProps) {
   const widgetParams = useInjectedWidgetParams()
-  const partnerFee = useWidgetPartnerFee()
+  const volumeFee = useVolumeFee()
   const partnerFeeAmount = useLimitOrderPartnerFeeAmount()
   const partnerFeeUsd = useUsdAmount(partnerFeeAmount).value
-  const partnerFeeBps = partnerFee?.bps
+  const partnerFeeBps = volumeFee?.bps
 
   const partnerFeeRow = (
     <PartnerFeeRow

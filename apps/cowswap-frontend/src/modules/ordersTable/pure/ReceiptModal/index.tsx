@@ -13,7 +13,7 @@ import {
 import { CurrencyAmount, Fraction, Token } from '@uniswap/sdk-core'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
-import { getOrderPartnerFee } from 'legacy/state/orders/utils'
+import { getOrderVolumeFee } from 'legacy/state/orders/utils'
 import { CloseIcon } from 'legacy/theme'
 
 import { TwapOrderItem } from 'modules/twap/types'
@@ -131,7 +131,7 @@ export function ReceiptModal({
   const outputLabel = isSell ? 'You receive at least' : 'You receive exactly'
   const safeTxParams = twapOrder?.safeTxParams
 
-  const partnerFee = getOrderPartnerFee(order.fullAppData)
+  const volumeFee = getOrderVolumeFee(order.fullAppData)
 
   return (
     <CowModal onDismiss={onDismiss} isOpen={isOpen}>
@@ -217,10 +217,10 @@ export function ReceiptModal({
               </styledEl.Field>
             )}
 
-            {partnerFee && (
+            {volumeFee && (
               <styledEl.Field>
                 <FieldLabel label="Total fee" tooltip={tooltips.TOTAL_FEE} />
-                <span>{100 / partnerFee.bps}%</span>
+                <span>{100 / volumeFee.bps}%</span>
               </styledEl.Field>
             )}
 

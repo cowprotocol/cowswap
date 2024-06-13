@@ -1,6 +1,18 @@
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CowEventListeners, CowEventPayloadMap, CowEvents } from '@cowprotocol/events'
+
 export { SupportedChainId } from '@cowprotocol/cow-sdk'
+
+export type PerTradeTypeConfig<T> = Record<TradeType, T>
+
+export type PerNetworkConfig<T> = Record<SupportedChainId, T>
+
+export type FlexibleConfig<T> =
+  | T
+  | PerNetworkConfig<T>
+  | PerTradeTypeConfig<T>
+  | PerTradeTypeConfig<PerNetworkConfig<T>>
+  | PerNetworkConfig<PerTradeTypeConfig<T>>
 
 export enum WidgetMethodsEmit {
   ACTIVATE = 'ACTIVATE',
@@ -82,19 +94,17 @@ export enum TradeType {
 
 /**
  * The partner fee
- *
- * Please contact https://cowprotocol.typeform.com/to/rONXaxHV
  */
 export interface PartnerFee {
   /**
    * The fee in basis points (BPS). One basis point is equivalent to 0.01% (1/100th of a percent)
    */
-  bps: number
+  bps: FlexibleConfig<number>
 
   /**
    * The Ethereum address of the partner to receive the fee.
    */
-  recipient: string | Record<SupportedChainId, string>
+  recipient: FlexibleConfig<string>
 }
 
 /**

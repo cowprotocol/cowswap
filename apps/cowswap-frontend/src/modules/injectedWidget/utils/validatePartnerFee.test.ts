@@ -1,4 +1,5 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { TradeType } from '@cowprotocol/widget-lib'
 
 import { validatePartnerFee } from './validatePartnerFee'
 
@@ -51,6 +52,94 @@ describe('validatePartnerFee()', () => {
       })
 
       expect(result).toBe(undefined)
+    })
+  })
+
+  describe('When bps is a map', () => {
+    it('When one of bps is not a valid, then should return error', () => {
+      const result = validatePartnerFee({
+        bps: {
+          [SupportedChainId.MAINNET]: 200,
+          [SupportedChainId.ARBITRUM_ONE]: 100,
+          [SupportedChainId.GNOSIS_CHAIN]: 100,
+          [SupportedChainId.SEPOLIA]: 100,
+        },
+        recipient: '0x0000000000000000000000000000000000000000',
+      })
+
+      expect(result).toEqual(['Partner fee can not be more than 100 BPS!'])
+    })
+
+    it('When all bps are valid, then should return undefined', () => {
+      const result = validatePartnerFee({
+        bps: {
+          [SupportedChainId.MAINNET]: 100,
+          [SupportedChainId.ARBITRUM_ONE]: 100,
+          [SupportedChainId.GNOSIS_CHAIN]: 100,
+          [SupportedChainId.SEPOLIA]: 100,
+        },
+        recipient: '0x0000000000000000000000000000000000000000',
+      })
+
+      expect(result).toBe(undefined)
+    })
+
+    it('Per trade type and per network config', () => {
+      const result = validatePartnerFee({
+        bps: {
+          [TradeType.SWAP]: {
+            [SupportedChainId.MAINNET]: 100,
+            [SupportedChainId.ARBITRUM_ONE]: 100,
+            [SupportedChainId.GNOSIS_CHAIN]: 100,
+            [SupportedChainId.SEPOLIA]: 100,
+          },
+          [TradeType.LIMIT]: {
+            [SupportedChainId.MAINNET]: 100,
+            [SupportedChainId.ARBITRUM_ONE]: 100,
+            [SupportedChainId.GNOSIS_CHAIN]: -1,
+            [SupportedChainId.SEPOLIA]: 100,
+          },
+          [TradeType.ADVANCED]: {
+            [SupportedChainId.MAINNET]: 100,
+            [SupportedChainId.ARBITRUM_ONE]: 100,
+            [SupportedChainId.GNOSIS_CHAIN]: 100,
+            [SupportedChainId.SEPOLIA]: 100,
+          },
+        },
+        recipient: '0x0000000000000000000000000000000000000000',
+      })
+
+      expect(result).toEqual(['Partner fee can not be less than 0!'])
+    })
+
+    it('Per network and per trade type config', () => {
+      const result = validatePartnerFee({
+        bps: {
+          [SupportedChainId.MAINNET]: {
+            [TradeType.SWAP]: 100,
+            [TradeType.LIMIT]: 100,
+            [TradeType.ADVANCED]: 100,
+          },
+          [SupportedChainId.ARBITRUM_ONE]: {
+            [TradeType.SWAP]: 100,
+            [TradeType.LIMIT]: 100,
+            [TradeType.ADVANCED]: 100,
+          },
+          [SupportedChainId.GNOSIS_CHAIN]: {
+            [TradeType.SWAP]: 100,
+            [TradeType.LIMIT]: -2,
+            [TradeType.ADVANCED]: 100,
+          },
+          [SupportedChainId.SEPOLIA]: {
+            [TradeType.SWAP]: 100,
+            [TradeType.LIMIT]: 100,
+            [TradeType.ADVANCED]: 100,
+          },
+        },
+        recipient: '0x0000000000000000000000000000000000000000',
+      })
+
+      expect(result).toEqual(['Partner fee can not be less than 0!'])
     })
   })
 
