@@ -55,7 +55,7 @@ jobs:
           REACT_APP_SUBGRAPH_URL_MAINNET=${{ secrets.REACT_APP_SUBGRAPH_URL_MAINNET }}
           REACT_APP_SUBGRAPH_URL_ARBITRUM_ONE=${{ secrets.REACT_APP_SUBGRAPH_URL_ARBITRUM_ONE }}
           REACT_APP_SUBGRAPH_URL_GNOSIS_CHAIN=${{ secrets.REACT_APP_SUBGRAPH_URL_GNOSIS_CHAIN }}
-          REACT_APP_BFF_BASE_URL: ${{ secrets.BFF_BASE_URL }}
+          REACT_APP_BFF_BASE_URL=${{ secrets.BFF_BASE_URL }}
           vercel build -t ${{ secrets.VERCEL_TOKEN }} --prod
 
       - name: Get the version
