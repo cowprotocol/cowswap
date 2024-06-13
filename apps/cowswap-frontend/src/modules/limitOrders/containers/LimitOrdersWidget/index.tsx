@@ -67,7 +67,6 @@ export function LimitOrdersWidget() {
   } = useLimitOrdersDerivedState()
   const settingsState = useAtomValue(limitOrdersSettingsAtom)
   const isSell = isSellOrder(orderKind)
-  const tradeContext = useTradeFlowContext()
   const { feeAmount } = useAtomValue(limitRateAtom)
   const { isLoading: isRateLoading } = useTradeQuote()
   const rateInfoParams = useRateInfoParams(inputCurrencyAmount, outputCurrencyAmount)
@@ -114,7 +113,6 @@ export function LimitOrdersWidget() {
     recipient,
     rateInfoParams,
     priceImpact,
-    tradeContext,
     settingsState,
     feeAmount,
     widgetActions,
@@ -134,7 +132,6 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
     recipient,
     rateInfoParams,
     priceImpact,
-    tradeContext,
     feeAmount,
   } = props
 
@@ -147,6 +144,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
     return isRateLoading
   }, [isRateLoading, inputCurrency, outputCurrency])
 
+  const tradeContext = useTradeFlowContext()
   const updateLimitOrdersState = useUpdateLimitOrdersRawState()
   const localFormValidation = useLimitOrdersFormState()
 
@@ -195,7 +193,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
         <LimitOrdersWarnings feeAmount={feeAmount} />
 
         <styledEl.TradeButtonBox>
-          <TradeButtons tradeContext={tradeContext} priceImpact={priceImpact} />
+          <TradeButtons />
         </styledEl.TradeButtonBox>
       </>
     ),
