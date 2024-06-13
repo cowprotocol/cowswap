@@ -2,7 +2,7 @@ import { SupportedChainId as ChainId, SupportedChainId } from '@cowprotocol/cow-
 
 import { COW_CONTRACT_ADDRESS, V_COW_CONTRACT_ADDRESS } from './common'
 import { cowprotocolTokenLogoUrl } from './cowprotocolTokenLogoUrl'
-import { WETH_MAINNET } from './nativeAndWrappedTokens'
+import { NATIVE_CURRENCIES, WETH_MAINNET, WRAPPED_NATIVE_CURRENCIES } from './nativeAndWrappedTokens'
 import { TokenWithLogo } from './types'
 
 // Mainnet
@@ -285,6 +285,19 @@ export const GNO: Record<SupportedChainId, TokenWithLogo> = {
   [SupportedChainId.ARBITRUM_ONE]: GNO_ARBITRUM_ONE,
   [SupportedChainId.SEPOLIA]: GNO_SEPOLIA,
 }
+
+const SDAI_GNOSIS_CHAIN_ADDRESS = '0xaf204776c7245bf4147c2612bf6e5972ee483701'
+const GBPE_GNOSIS_CHAIN_ADDRESS = '0x5cb9073902f2035222b9749f8fb0c9bfe5527108'
+
+export const GNOSIS_CHAIN_STABLECOINS = [
+  SDAI_GNOSIS_CHAIN_ADDRESS,
+  NATIVE_CURRENCIES[SupportedChainId.GNOSIS_CHAIN].address, //xDAI
+  WRAPPED_NATIVE_CURRENCIES[SupportedChainId.GNOSIS_CHAIN].address, //wxDAI
+  EURE_GNOSIS_CHAIN.address,
+  GBPE_GNOSIS_CHAIN_ADDRESS,
+  USDC_GNOSIS_CHAIN.address,
+  USDT_GNOSIS_CHAIN.address,
+]
 
 /**
  * Addresses related to COW vesting for Locked GNO

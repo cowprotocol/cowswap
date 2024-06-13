@@ -7,9 +7,18 @@ import { injectedWidgetPartnerFeeAtom } from 'modules/injectedWidget'
 import { tradeTypeAtom } from 'modules/trade'
 import { TradeType } from 'modules/trade/types/TradeType'
 
+import { cowSwapFeeAtom } from './cowswapFeeAtom'
+
 import { VolumeFee } from '../types'
 
 export const volumeFeeAtom = atom<VolumeFee | undefined>((get) => {
+  const cowSwapFee = get(cowSwapFeeAtom)
+  const widgetPartnerFee = get(widgetPartnerFeeAtom)
+
+  return cowSwapFee || widgetPartnerFee
+})
+
+const widgetPartnerFeeAtom = atom<VolumeFee | undefined>((get) => {
   const { chainId } = get(walletInfoAtom)
   const partnerFee = get(injectedWidgetPartnerFeeAtom)
   const tradeType = get(tradeTypeAtom)?.tradeType
