@@ -19,6 +19,7 @@ import { LimitOrdersProps, limitOrdersPropsChecker } from './limitOrdersPropsChe
 import * as styledEl from './styled'
 
 import { useLimitOrdersDerivedState } from '../../hooks/useLimitOrdersDerivedState'
+import { LimitOrdersFormState, useLimitOrdersFormState } from '../../hooks/useLimitOrdersFormState'
 import { useUpdateLimitOrdersRawState } from '../../hooks/useLimitOrdersRawState'
 import { useTradeFlowContext } from '../../hooks/useTradeFlowContext'
 import { InfoBanner } from '../../pure/InfoBanner'
@@ -147,6 +148,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
   }, [isRateLoading, inputCurrency, outputCurrency])
 
   const updateLimitOrdersState = useUpdateLimitOrdersRawState()
+  const localFormValidation = useLimitOrdersFormState()
 
   const inputCurrencyPreviewInfo = {
     amount: inputCurrencyInfo.amount,
@@ -206,6 +208,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
     showRecipient,
     isTradePriceUpdating,
     priceImpact,
+    disablePriceImpact: localFormValidation === LimitOrdersFormState.FeeExceedsFrom,
   }
 
   return (
