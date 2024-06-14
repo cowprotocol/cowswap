@@ -78,9 +78,6 @@ const NAV_ADDITIONAL_BUTTONS = [
   },
 ]
 
-const FOOTER_DESCRIPTION =
-  'CoW DAO is an open organization of developers, market makers, and community contributors on a mission to protect users from the dangers of DeFi.'
-
 const FOOTER_NAV_ITEMS: MenuItem[] = [
   {
     label: 'About',
@@ -198,14 +195,7 @@ export default function Layout({ children, bgColor, metaTitle, metaDescription, 
         padding="10px 60px"
       />
       <Wrapper>{children}</Wrapper>
-      <Footer
-        description={FOOTER_DESCRIPTION}
-        navItems={FOOTER_NAV_ITEMS}
-        theme={THEME_MODE}
-        productVariant={PRODUCT_VARIANT}
-        expanded
-        hasTouchFooter
-      />
+      <Footer navItems={FOOTER_NAV_ITEMS} theme={THEME_MODE} productVariant={PRODUCT_VARIANT} expanded hasTouchFooter />
     </>
   )
 }

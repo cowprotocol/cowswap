@@ -35,7 +35,11 @@ import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentAct
 import { HeaderControls, HeaderElement } from 'legacy/components/Header/styled'
 import { AccountElement } from 'legacy/components/Header/AccountElement'
 
-import { NetworkSelector } from 'legacy/components/Header/NetworkSelector' // Ensure the import path is correct
+import { NetworkSelector } from 'legacy/components/Header/NetworkSelector'
+
+import AppziButton from 'legacy/components/AppziButton'
+import { FortuneWidget } from 'modules/fortune/containers/FortuneWidget'
+import { FeatureGuard } from 'common/containers/FeatureGuard'
 
 const RoutesApp = lazy(() => import('./RoutesApp').then((module) => ({ default: module.RoutesApp })))
 
@@ -110,9 +114,6 @@ const NAV_ITEMS: MenuItem[] = [
   },
 ]
 
-const FOOTER_DESCRIPTION =
-  'CoW DAO is an open organization of developers, market makers, and community contributors on a mission to protect users from the dangers of DeFi.'
-
 const FOOTER_NAV_ITEMS: MenuItem[] = [
   {
     label: 'About',
@@ -163,6 +164,15 @@ const FOOTER_NAV_ITEMS: MenuItem[] = [
     ],
   },
 ]
+
+const ADDITIONAL_FOOTER_CONTENT = (
+  <>
+    <FeatureGuard featureFlag="cowFortuneEnabled">
+      <FortuneWidget />
+    </FeatureGuard>
+    <AppziButton />
+  </>
+)
 
 // Move this to const file ==========
 
@@ -241,10 +251,10 @@ export function App() {
 
           {!isInjectedWidgetMode && (
             <Footer
-              description={FOOTER_DESCRIPTION}
               navItems={FOOTER_NAV_ITEMS}
               theme={darkMode ? 'dark' : 'light'}
               productVariant={PRODUCT_VARIANT}
+              additionalFooterContent={ADDITIONAL_FOOTER_CONTENT}
               hasTouchFooter
             />
           )}

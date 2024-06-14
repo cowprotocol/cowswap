@@ -60,8 +60,11 @@ const PRODUCT_LOGO_LINKS: { href: string; label: string; productVariant: Product
   { href: 'https://cow.fi/cow-amm', label: 'CoW AMM', productVariant: ProductVariant.CowAmm },
 ]
 
+const GLOBAL_FOOTER_DESCRIPTION =
+  'CoW DAO is an open organization of developers, market makers, and community contributors on a mission to protect users from the dangers of DeFi.'
+
 export const Footer = ({
-  description,
+  description = GLOBAL_FOOTER_DESCRIPTION,
   navItems,
   theme,
   additionalFooterContent,
