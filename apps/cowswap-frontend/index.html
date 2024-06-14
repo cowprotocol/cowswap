@@ -11,8 +11,15 @@
     <script src="/emergency.js"></script>
 
     <!-- Manifest, theme & colors  -->
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" href="/favicon-light-mode.png" media="(prefers-color-scheme: light)" />
+    <link rel="icon" type="image/png" href="/favicon-dark-mode.png" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" type="image/png" href="/favicon-light-mode.png" media="(prefers-color-scheme: no-preference)" />
+
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#000000" />
+    <meta name="msapplication-TileColor" content="#000000" />
+    <meta name="theme-color" content="#ffffff" />
 
     <!-- Social media tags -->
     <meta property="og:type" content="website" />
