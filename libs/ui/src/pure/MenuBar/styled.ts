@@ -1,7 +1,7 @@
 import { CowSwapTheme } from '@cowprotocol/widget-lib'
 import styled, { css } from 'styled-components/macro'
 import { Color, Font } from '../../consts'
-import { Wrapper as ProductLogoWrapper } from '../ProductLogo'
+import { ProductLogoWrapper } from '../ProductLogo'
 
 export const MenuBarWrapper = styled.div<{
   theme: CowSwapTheme
