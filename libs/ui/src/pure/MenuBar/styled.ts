@@ -111,7 +111,7 @@ export const NavDaoTriggerElement = styled.div<{ isActive: boolean; mobileMode?:
   }
 `
 
-export const MobileMenuTrigger = styled.div<{ theme: CowSwapTheme }>`
+export const MobileMenuTrigger = styled.div<{ theme: CowSwapTheme; mobileMode?: boolean }>`
   --size: 42px;
 
   display: flex;
@@ -129,13 +129,19 @@ export const MobileMenuTrigger = styled.div<{ theme: CowSwapTheme }>`
   cursor: pointer;
   transition: background 0.2s, fill 0.2s;
 
+  ${({ mobileMode }) =>
+    mobileMode &&
+    css`
+      --size: 33px;
+    `}}
+
   &:hover {
     background: var(--activeBackground);
     color: var(--activeFill);
   }
 
   > svg {
-    --size: 50%;
+    --size: 21px;
     height: var(--size);
     width: var(--size);
     object-fit: contain;
@@ -309,6 +315,7 @@ export const DropdownContent = styled.div<DropdownContentProps>`
       max-width: 100%;
       width: 100%;
       position: fixed;
+      border: 0;
     `}
   ${({ mobileMode, isNavItemDropdown }) =>
     mobileMode &&
@@ -404,7 +411,7 @@ export const StyledDropdownContentItem = styled.a<{
   mobileMode?: boolean
 }>`
   display: flex;
-  flex-flow: row wrap;
+  flex-flow: row;
   align-items: center;
   padding: ${({ isThirdLevel }) => (isThirdLevel ? '16px' : '8px 12px')};
   text-decoration: none;
@@ -419,7 +426,6 @@ export const StyledDropdownContentItem = styled.a<{
   ${({ mobileMode }) =>
     mobileMode &&
     css`
-      flex-flow: row wrap;
       padding: 8px;
     `}
 
@@ -459,10 +465,12 @@ export const StyledDropdownContentItem = styled.a<{
   }
 
   > svg {
-    display: block;
     --size: 20px;
+    display: block;
     height: var(--size);
     width: var(--size);
+    min-width: var(--size);
+    min-height: var(--size);
     margin: 0 5px 0 auto;
     object-fit: contain;
     color: inherit;
@@ -648,7 +656,7 @@ export const RightAligned = styled.div<{ mobileMode?: boolean; flexFlow?: string
     `}
 `
 
-export const GlobalSettingsButton = styled.button`
+export const GlobalSettingsButton = styled.button<{ mobileMode?: boolean }>`
   --size: 42px;
 
   display: flex;
@@ -665,8 +673,15 @@ export const GlobalSettingsButton = styled.button`
   transition: background 0.2s ease-in-out, fill 0.2s ease-in-out, transform 0.2s ease-in-out;
   color: inherit;
 
+  ${({ mobileMode }) =>
+    mobileMode &&
+    css`
+      --size: 33px;
+      padding: 0;
+    `}}
+
   > svg {
-    --size: 75%;
+    --size: 21px;
     height: var(--size);
     width: var(--size);
     color: var(--defaultFill);

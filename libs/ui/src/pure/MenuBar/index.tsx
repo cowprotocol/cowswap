@@ -691,7 +691,7 @@ export const MenuBar = (props: MenuBarProps) => {
               ))}
             {showGlobalSettings && settingsNavItems && (
               <>
-                <GlobalSettingsButton ref={settingsButtonRef} onClick={handleSettingsToggle}>
+                <GlobalSettingsButton ref={settingsButtonRef} mobileMode={isMobile} onClick={handleSettingsToggle}>
                   <SVG src={IMG_ICON_SETTINGS_GLOBAL} />
                 </GlobalSettingsButton>
                 {isSettingsOpen && (
@@ -708,7 +708,12 @@ export const MenuBar = (props: MenuBarProps) => {
           </RightAligned>
 
           {isMobile && (
-            <MobileMenuTrigger ref={mobileMenuTriggerRef} theme={styledTheme} onClick={handleMobileMenuToggle}>
+            <MobileMenuTrigger
+              ref={mobileMenuTriggerRef}
+              theme={styledTheme}
+              mobileMode={isMobile}
+              onClick={handleMobileMenuToggle}
+            >
               <SVG src={isMobileMenuOpen ? IMG_ICON_X : IMG_ICON_MENU_HAMBURGER} />
             </MobileMenuTrigger>
           )}
