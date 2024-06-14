@@ -37,7 +37,10 @@ export const NewToEthereum = () => (
 )
 
 export const CloseColor = styled((props) => <Close {...props} />)`
+  --size: 16px;
   color: inherit;
+  width: var(--size);
+  height: var(--size);
 
   path {
     stroke: currentColor;

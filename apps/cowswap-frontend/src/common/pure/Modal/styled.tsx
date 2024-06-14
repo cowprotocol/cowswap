@@ -9,6 +9,7 @@ import styled, { css } from 'styled-components/macro'
 
 export const HeaderRow = styled.div`
   ${({ theme }) => theme.flexRowNoWrap};
+  width: 100%;
   padding: 1rem 1rem;
   font-weight: 600;
   color: ${(props) => (props.color === 'blue' ? ({ theme }) => theme.primary1 : 'inherit')};
@@ -18,12 +19,14 @@ export const HeaderRow = styled.div`
 `
 
 export const CloseIcon = styled.div`
-  position: absolute;
-  right: 14px;
-  top: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   opacity: 0.6;
   cursor: pointer;
+  color: var(${UI.COLOR_TEXT});
   transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
+  margin: 0 0 0 auto;
 
   &:hover {
     opacity: 1;
