@@ -16,14 +16,14 @@ interface NotificationSidebarProps {
 
 export function NotificationSidebar({ isOpen, onClose }: NotificationSidebarProps) {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
-  const sidebarRef = useRef(null)
+  const sidebarRef = useRef<HTMLDivElement>(null)
 
   const onDismiss = useCallback(() => {
     onClose()
     setIsSettingsOpen(false)
   }, [onClose])
 
-  useOnClickOutside(sidebarRef, onDismiss)
+  useOnClickOutside([sidebarRef], onDismiss)
 
   const toggleSettingsOpen = useCallback(() => {
     setIsSettingsOpen((prev) => !prev)
