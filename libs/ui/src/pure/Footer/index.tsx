@@ -37,7 +37,7 @@ import { ProductLogo, ProductVariant } from '../ProductLogo'
 
 interface FooterProps {
   description?: string
-  navItems: MenuItem[]
+  navItems?: MenuItem[]
   theme: 'light' | 'dark'
   productVariant: ProductVariant
   additionalFooterContent?: ReactNode
@@ -63,9 +63,61 @@ const PRODUCT_LOGO_LINKS: { href: string; label: string; productVariant: Product
 const GLOBAL_FOOTER_DESCRIPTION =
   'CoW DAO is an open organization of developers, market makers, and community contributors on a mission to protect users from the dangers of DeFi.'
 
+const GLOBAL_FOOTER_NAV_ITEMS: MenuItem[] = [
+  {
+    label: 'About',
+    children: [
+      { href: '#', label: 'Governance' },
+      { href: '#', label: 'Token' },
+      { href: '#', label: 'Grants' },
+      { href: '#', label: 'Careers' },
+      { href: '#', label: 'Brand Kit' },
+    ],
+  },
+  {
+    label: 'Legal',
+    children: [
+      { href: '#', label: 'Terms & Conditions' },
+      { href: '#', label: 'Cookie Policy' },
+      { href: '#', label: 'Privacy Policy' },
+    ],
+  },
+  {
+    label: 'Products',
+    children: [
+      { href: '#', label: 'CoW Swap' },
+      { href: '#', label: 'CoW Protocol' },
+      { href: '#', label: 'CoW AMM' },
+      { href: '#', label: 'MEV Blocker' },
+      { href: '#', label: 'Explorer' },
+      { href: '#', label: 'Widget' },
+      { href: '#', label: 'Hooks Store' },
+    ],
+  },
+  {
+    href: '#',
+    label: 'Help',
+    children: [
+      { href: '#', label: 'Dev Docs' },
+      { href: 'https://cow.fi/learn', label: 'FAQ / Knowledge Base' },
+      { href: '#', label: 'Send Feedback' },
+      { href: '#', label: 'Report Scams' },
+    ],
+  },
+  {
+    label: 'Misc.',
+    children: [
+      { href: 'https://cow.fi/tokens', label: 'Tokens' },
+      { href: '#', label: 'Swag Store' },
+      { href: '#', label: 'Token Charts' },
+      { href: '#', label: 'For DAOs' },
+    ],
+  },
+]
+
 export const Footer = ({
   description = GLOBAL_FOOTER_DESCRIPTION,
-  navItems,
+  navItems = GLOBAL_FOOTER_NAV_ITEMS,
   theme,
   additionalFooterContent,
   expanded = false,
@@ -124,9 +176,7 @@ export const Footer = ({
                     <LinkList>
                       {item.children?.map((child, childIndex) => (
                         <li key={childIndex}>
-                          <Link href={child.href || '#'} target="_blank" rel="noopener noreferrer">
-                            {child.label}
-                          </Link>
+                          <Link href={child.href || '#'}>{child.label}</Link>
                         </li>
                       ))}
                     </LinkList>
@@ -142,7 +192,7 @@ export const Footer = ({
           <BottomText>&copy; CoW DAO - {new Date().getFullYear()}</BottomText>
           <FooterBottomLogos>
             {PRODUCT_LOGO_LINKS.map((product, index) => (
-              <a key={index} href={product.href} target="_blank" rel="noopener noreferrer">
+              <a key={index} href={product.href}>
                 <ProductLogo
                   variant={product.productVariant}
                   theme={theme}

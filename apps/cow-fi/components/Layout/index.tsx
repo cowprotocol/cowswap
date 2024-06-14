@@ -78,57 +78,6 @@ const NAV_ADDITIONAL_BUTTONS = [
   },
 ]
 
-const FOOTER_NAV_ITEMS: MenuItem[] = [
-  {
-    label: 'About',
-    children: [
-      { href: '#', label: 'Governance' },
-      { href: '#', label: 'Token' },
-      { href: '#', label: 'Grants' },
-      { href: '#', label: 'Careers' },
-      { href: '#', label: 'Brand Kit' },
-    ],
-  },
-  {
-    label: 'Legal',
-    children: [
-      { href: '#', label: 'Terms & Conditions' },
-      { href: '#', label: 'Cookie Policy' },
-      { href: '#', label: 'Privacy Policy' },
-    ],
-  },
-  {
-    label: 'Products',
-    children: [
-      { href: '#', label: 'CoW Swap' },
-      { href: '#', label: 'CoW Protocol' },
-      { href: '#', label: 'CoW AMM' },
-      { href: '#', label: 'MEV Blocker' },
-      { href: '#', label: 'Explorer' },
-      { href: '#', label: 'Widget' },
-      { href: '#', label: 'Hooks Store' },
-    ],
-  },
-  {
-    href: '#',
-    label: 'Help',
-    children: [
-      { href: '#', label: 'Dev Docs' },
-      { href: 'https://cow.fi/learn', label: 'FAQ / Knowledge Base' },
-      { href: '#', label: 'Send Feedback' },
-      { href: '#', label: 'Report Scams' },
-    ],
-  },
-  {
-    label: 'Misc.',
-    children: [
-      { href: '#', label: 'Swag Store' },
-      { href: '#', label: 'Token Charts' },
-      { href: '#', label: 'For DAOs' },
-    ],
-  },
-]
-
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -195,7 +144,7 @@ export default function Layout({ children, bgColor, metaTitle, metaDescription, 
         padding="10px 60px"
       />
       <Wrapper>{children}</Wrapper>
-      <Footer navItems={FOOTER_NAV_ITEMS} theme={THEME_MODE} productVariant={PRODUCT_VARIANT} expanded hasTouchFooter />
+      <Footer theme={THEME_MODE} productVariant={PRODUCT_VARIANT} expanded hasTouchFooter />
     </>
   )
 }
