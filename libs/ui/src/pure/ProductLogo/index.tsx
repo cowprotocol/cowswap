@@ -181,7 +181,7 @@ export interface LogoProps {
 
 const Wrapper = styled.span<{ color?: string; hoverColor?: string; height?: number | string }>`
   --height: ${({ height }) => (typeof height === 'number' ? `${height}px` : height || '24px')};
-  --color: ${({ color }) => color || 'black'};
+  --color: ${({ color }) => color || 'inherit'};
   --hoverColor: ${({ hoverColor }) => hoverColor || 'inherit'};
 
   display: flex;
@@ -229,7 +229,7 @@ export const ProductLogo = ({
   const logoElement = <SVG src={logoInfo.src} description={logoInfo.alt} />
 
   return (
-    <Wrapper color={initialColor} hoverColor={overrideHoverColor || 'initial'} height={height}>
+    <Wrapper color={initialColor} hoverColor={overrideHoverColor || 'inherit'} height={height}>
       {href ? (
         <a href={href} target={external ? '_blank' : '_self'} rel={external ? 'noopener noreferrer' : undefined}>
           {logoElement}

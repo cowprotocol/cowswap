@@ -10,7 +10,16 @@ import { InvalidLocalTimeWarning } from 'common/containers/InvalidLocalTimeWarni
 import { useAnalyticsReporter } from 'common/hooks/useAnalyticsReporter'
 import RedirectAnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers/RedirectAnySwapAffectedUsers'
 import * as styledEl from './styled'
-import { Media, MenuBar, MenuItem, Footer, ProductVariant, GlobalCoWDAOStyles, LoadingApp } from '@cowprotocol/ui'
+import {
+  Color,
+  Media,
+  MenuBar,
+  MenuItem,
+  Footer,
+  ProductVariant,
+  GlobalCoWDAOStyles,
+  LoadingApp,
+} from '@cowprotocol/ui'
 import { CoWDAOFonts } from 'common/styles/CoWDAOFonts'
 
 import IMG_ICON_BRANDED_DOT_RED from '@cowprotocol/assets/images/icon-branded-dot-red.svg'
@@ -211,6 +220,8 @@ export function App() {
               showGlobalSettings
               bgColorDark={'rgb(222 227 230 / 7%)'}
               colorDark={'#DEE3E6'}
+              bgDropdownColorLight={Color.neutral100}
+              bgDropdownColorDark={Color.neutral0}
               defaultFillDark="rgba(222, 227, 230, 0.4)"
               activeFillDark="#DEE3E6"
               activeBackgroundDark="#282854"

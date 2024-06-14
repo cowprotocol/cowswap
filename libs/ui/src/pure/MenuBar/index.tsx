@@ -12,6 +12,7 @@ import { CowSwapTheme } from '@cowprotocol/widget-lib'
 
 import SVG from 'react-inlinesvg'
 import { ThemeProvider } from 'styled-components/macro'
+import { Color } from '../../consts'
 
 import {
   DropdownContent,
@@ -38,11 +39,37 @@ import { Media, themeMapper } from '../../consts'
 import { ProductLogo, ProductVariant } from '../ProductLogo'
 
 const DAO_NAV_ITEMS: MenuItem[] = [
-  { href: 'https://cow.fi/', productVariant: ProductVariant.CowDao, hasDivider: true },
-  { href: 'https://cow.fi/cow-swap', productVariant: ProductVariant.CowSwap },
-  { href: 'https://cow.fi/cow-protocol', productVariant: ProductVariant.CowProtocol },
-  { href: 'https://cow.fi/cow-amm', productVariant: ProductVariant.CowAmm },
-  { href: 'https://cow.fi/mev-blocker', productVariant: ProductVariant.MevBlocker },
+  {
+    href: 'https://cow.fi/',
+    productVariant: ProductVariant.CowDao,
+    hasDivider: true,
+    hoverColor: Color.neutral100,
+    hoverBgColor: Color.neutral10,
+  },
+  {
+    href: 'https://cow.fi/cow-swap',
+    productVariant: ProductVariant.CowSwap,
+    hoverColor: '#65D9FF',
+    hoverBgColor: '#012F7A',
+  },
+  {
+    href: 'https://cow.fi/cow-protocol',
+    productVariant: ProductVariant.CowProtocol,
+    hoverColor: '#F996EE',
+    hoverBgColor: '#490072',
+  },
+  {
+    href: 'https://cow.fi/cow-amm',
+    productVariant: ProductVariant.CowAmm,
+    hoverColor: '#BCEC79',
+    hoverBgColor: '#194D06',
+  },
+  {
+    href: 'https://cow.fi/mev-blocker',
+    productVariant: ProductVariant.MevBlocker,
+    hoverColor: '#FEE7CF',
+    hoverBgColor: '#EC4612',
+  },
 ]
 
 export interface MenuItem {
@@ -57,6 +84,7 @@ export interface MenuItem {
   hoverBgColor?: string
   color?: string
   hoverColor?: string
+  overrideHoverColor?: string
   onClick?: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void
   hasDivider?: boolean
 }
@@ -71,6 +99,7 @@ interface DropdownMenuItem {
   children?: DropdownMenuItem[]
   productVariant?: ProductVariant
   hoverBgColor?: string
+  overrideHoverColor?: string
   bgColor?: string
   color?: string
   hoverColor?: string
@@ -156,11 +185,17 @@ const DropdownContentItem: React.FC<{ item: DropdownMenuItem; theme: CowSwapThem
   }
 
   const renderItemContent = () => {
-    const { productVariant, icon, label, description } = item
+    const { productVariant, icon, label, description, hoverColor } = item
     return (
       <>
         {productVariant ? (
-          <ProductLogo variant={productVariant} theme={theme} logoIconOnly={false} />
+          <ProductLogo
+            variant={productVariant}
+            overrideColor="inherit"
+            overrideHoverColor={hoverColor} // Ensure hoverColor is passed here
+            theme={theme}
+            logoIconOnly={false}
+          />
         ) : icon ? (
           <DropdownContentItemImage>
             <img src={icon} alt={label} />
@@ -205,6 +240,7 @@ const DropdownContentItem: React.FC<{ item: DropdownMenuItem; theme: CowSwapThem
           onClick={handleToggleChildrenVisibility}
           isOpen={isChildrenVisible}
           className={itemClassName}
+          hoverColor={item.hoverColor} // Pass hoverColor here
         >
           {renderItemContent()}
           <SVG src={IMG_ICON_CARRET_DOWN} />
@@ -499,6 +535,8 @@ interface MenuBarProps {
   additionalNavButtons?: MenuItem[]
   bgColorLight?: string
   bgColorDark?: string
+  bgDropdownColorLight?: string
+  bgDropdownColorDark?: string
   colorLight?: string
   colorDark?: string
   defaultFillLight?: string
@@ -524,6 +562,8 @@ export const MenuBar = (props: MenuBarProps) => {
     settingsNavItems,
     bgColorLight,
     bgColorDark,
+    bgDropdownColorLight,
+    bgDropdownColorDark,
     colorLight,
     colorDark,
     defaultFillLight,
@@ -592,6 +632,8 @@ export const MenuBar = (props: MenuBarProps) => {
         theme={styledTheme}
         bgColorLight={bgColorLight}
         bgColorDark={bgColorDark}
+        bgDropdownColorLight={bgDropdownColorLight}
+        bgDropdownColorDark={bgDropdownColorDark}
         colorLight={colorLight}
         colorDark={colorDark}
         defaultFillLight={defaultFillLight}

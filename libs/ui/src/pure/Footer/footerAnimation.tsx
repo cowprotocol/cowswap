@@ -32,10 +32,6 @@ const FooterAnimationContainer = styled.div<{ theme: CowSwapTheme }>`
   color: var(--color);
   margin: 50px 0;
   overflow: hidden;
-
-  &:hover > div {
-    animation-play-state: paused;
-  }
 `
 
 const ScrollingContent = styled.div`

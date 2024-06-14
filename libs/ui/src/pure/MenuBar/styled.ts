@@ -10,6 +10,8 @@ export const MenuBarWrapper = styled.div<{
   bgColorDark?: string
   colorLight?: string
   colorDark?: string
+  bgDropdownColorLight?: string
+  bgDropdownColorDark?: string
   defaultFillLight?: string
   defaultFillDark?: string
   activeBackgroundLight?: string
@@ -25,6 +27,8 @@ export const MenuBarWrapper = styled.div<{
   --width: 100%;
   --bgColor: ${({ theme, bgColorLight, bgColorDark }) =>
     theme.mode === 'dark' ? bgColorDark || Color.neutral10 : bgColorLight || 'rgb(255 248 247 / 40%)'};
+  --bgDropdownColor: ${({ theme, bgDropdownColorLight, bgDropdownColorDark }) =>
+    theme.mode === 'dark' ? bgDropdownColorDark || Color.neutral10 : bgDropdownColorLight || Color.neutral100};
   --color: ${({ theme, colorLight, colorDark }) =>
     theme.mode === 'dark' ? colorDark || Color.neutral98 : colorLight || Color.neutral0};
   --borderRadius: 28px;
@@ -285,11 +289,10 @@ export const DropdownContent = styled.div<DropdownContentProps>`
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
-  background: ${({ isThirdLevel }) => (isThirdLevel ? 'transparent' : 'var(--bgColor)')};
+  background: ${({ isThirdLevel }) => (isThirdLevel ? 'transparent' : 'var(--bgDropdownColor)')};
   backdrop-filter: blur(var(--blur));
   z-index: 1000;
   padding: ${({ isThirdLevel }) => (isThirdLevel ? '6px' : '6px')};
-  /* min-width: ${({ isThirdLevel }) => (isThirdLevel ? '200px' : '270px')}; */
   width: ${({ isThirdLevel }) => (isThirdLevel ? '100%' : '320px')};
   height: auto;
   border-radius: 28px;
@@ -298,6 +301,7 @@ export const DropdownContent = styled.div<DropdownContentProps>`
   right: ${({ alignRight }) => (alignRight ? 0 : 'initial')};
   left: ${({ alignRight }) => (alignRight ? 'initial' : 0)};
   cursor: pointer;
+  border: 1px solid var(--hoverBackground);
 
   ${({ mobileMode }) =>
     mobileMode &&
@@ -314,7 +318,6 @@ export const DropdownContent = styled.div<DropdownContentProps>`
       top: initial;
       right: initial;
       left: initial;
-      background: transparent;
       backdrop-filter: none;
       padding: 6px;
       margin: 0 0 16px;
@@ -406,7 +409,7 @@ export const StyledDropdownContentItem = styled.a<{
   padding: ${({ isThirdLevel }) => (isThirdLevel ? '16px' : '8px 12px')};
   text-decoration: none;
   color: inherit;
-  transition: background 0.2s ease-in-out;
+  transition: background 0.2s ease-in-out, color 0.2s ease-in-out;
   border-radius: 24px;
   min-height: 56px;
   gap: 10px;
@@ -419,6 +422,7 @@ export const StyledDropdownContentItem = styled.a<{
       flex-flow: row wrap;
       padding: 8px;
     `}
+
   &.hasDivider {
     margin: 0 0 12px;
 
@@ -438,7 +442,12 @@ export const StyledDropdownContentItem = styled.a<{
   }
 
   &:hover {
-    background: ${({ isThirdLevel }) => (isThirdLevel ? 'var(--bgColor)' : 'var(--hoverBackground)')};
+    background: ${({ hoverBgColor }) => hoverBgColor || 'var(--hoverBackground)'};
+    color: ${({ hoverColor }) => hoverColor || 'inherit'};
+
+    .ProductLogo__Wrapper-sc-8j8ri0-0 {
+      color: ${({ hoverColor }) => hoverColor || 'inherit'};
+    }
 
     > svg.arrow-icon-right {
       opacity: 1;
@@ -635,7 +644,6 @@ export const RightAligned = styled.div<{ mobileMode?: boolean; flexFlow?: string
     mobileMode &&
     css`
       gap: 16px;
-      margin: 24px 0 0 auto;
       flex-flow: ${flexFlowMobile || 'column wrap'};
     `}
 `
