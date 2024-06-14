@@ -179,7 +179,7 @@ export interface LogoProps {
   external?: boolean // Indicates if the href is an external link
 }
 
-const Wrapper = styled.span<{ color?: string; hoverColor?: string; height?: number | string }>`
+export const Wrapper = styled.span<{ color?: string; hoverColor?: string; height?: number | string }>`
   --height: ${({ height }) => (typeof height === 'number' ? `${height}px` : height || '24px')};
   --color: ${({ color }) => color || 'inherit'};
   --hoverColor: ${({ hoverColor }) => hoverColor || 'inherit'};

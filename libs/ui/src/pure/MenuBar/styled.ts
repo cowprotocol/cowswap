@@ -1,8 +1,7 @@
 import { CowSwapTheme } from '@cowprotocol/widget-lib'
-
 import styled, { css } from 'styled-components/macro'
-
 import { Color, Font } from '../../consts'
+import { Wrapper as ProductLogoWrapper } from '../ProductLogo'
 
 export const MenuBarWrapper = styled.div<{
   theme: CowSwapTheme
@@ -133,7 +132,7 @@ export const MobileMenuTrigger = styled.div<{ theme: CowSwapTheme; mobileMode?: 
     mobileMode &&
     css`
       --size: 33px;
-    `}}
+    `}
 
   &:hover {
     background: var(--activeBackground);
@@ -258,6 +257,7 @@ export const DropdownContentWrapper = styled.div<DropdownContentProps>`
       overflow-y: auto;
       padding-bottom: 100px;
     `}
+
   ${({ mobileMode, isNavItemDropdown }) =>
     mobileMode &&
     isNavItemDropdown &&
@@ -317,6 +317,7 @@ export const DropdownContent = styled.div<DropdownContentProps>`
       position: fixed;
       border: 0;
     `}
+
   ${({ mobileMode, isNavItemDropdown }) =>
     mobileMode &&
     isNavItemDropdown &&
@@ -451,7 +452,7 @@ export const StyledDropdownContentItem = styled.a<{
     background: ${({ hoverBgColor }) => hoverBgColor || 'var(--hoverBackground)'};
     color: ${({ hoverColor }) => hoverColor || 'inherit'};
 
-    .ProductLogo__Wrapper-sc-8j8ri0-0 {
+    ${ProductLogoWrapper} {
       color: ${({ hoverColor }) => hoverColor || 'inherit'};
     }
 
@@ -658,7 +659,6 @@ export const RightAligned = styled.div<{ mobileMode?: boolean; flexFlow?: string
 
 export const GlobalSettingsButton = styled.button<{ mobileMode?: boolean }>`
   --size: 42px;
-
   display: flex;
   flex-flow: row wrap;
   justify-content: center;
@@ -678,7 +678,7 @@ export const GlobalSettingsButton = styled.button<{ mobileMode?: boolean }>`
     css`
       --size: 33px;
       padding: 0;
-    `}}
+    `}
 
   > svg {
     --size: 21px;
