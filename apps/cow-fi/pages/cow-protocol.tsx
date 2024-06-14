@@ -8,9 +8,24 @@ import IMG_ICON_SECURE from '@cowprotocol/assets/images/icon-secure.svg'
 import IMG_ICON_OWL from '@cowprotocol/assets/images/icon-owl.svg'
 import IMG_ICON_GHOST from '@cowprotocol/assets/images/icon-ghost.svg'
 import IMG_LOGO_SAFE from '@cowprotocol/assets/images/logo-safe.svg'
-import IMG_LOGO_SUMMER_FI from '@cowprotocol/assets/images/logo-summer-fi.svg'
 import IMG_LOGO_LIDO from '@cowprotocol/assets/images/logo-lido.svg'
 import IMG_LOGO_CURVE from '@cowprotocol/assets/images/logo-curve.svg'
+import IMG_LOGO_GNOSIS from '@cowprotocol/assets/images/logo-gnosis.svg'
+import IMG_LOGO_BALANCER from '@cowprotocol/assets/images/logo-balancer.svg'
+import IMG_LOGO_AURA from '@cowprotocol/assets/images/logo-aura.svg'
+import IMG_LOGO_KARPATKEY from '@cowprotocol/assets/images/logo-karpatkey.svg'
+import IMG_LOGO_SHAPESHIFT from '@cowprotocol/assets/images/logo-shapeshift.svg'
+import IMG_LOGO_MAKER from '@cowprotocol/assets/images/logo-maker.svg'
+import IMG_LOGO_SYNTHETIX from '@cowprotocol/assets/images/logo-synthetix.svg'
+import IMG_LOGO_ARAGON from '@cowprotocol/assets/images/logo-aragon.svg'
+import IMG_LOGO_PLEASER_DAO from '@cowprotocol/assets/images/logo-pleasrdao.svg'
+import IMG_LOGO_POLYGON from '@cowprotocol/assets/images/logo-polygon.svg'
+import IMG_LOGO_INDEX_COOP from '@cowprotocol/assets/images/logo-index.svg'
+import IMG_LOGO_ALCHEMIX from '@cowprotocol/assets/images/logo-alchemix.svg'
+import IMG_LOGO_STAKE_DAO from '@cowprotocol/assets/images/logo-stakedao.svg'
+import IMG_LOGO_RHINO_FI from '@cowprotocol/assets/images/logo-rhino.svg'
+import IMG_LOGO_TELLER_FINANCE from '@cowprotocol/assets/images/logo-teller.svg'
+import IMG_LOGO_FRAX_FINANCE from '@cowprotocol/assets/images/logo-frax.svg'
 
 import styled from 'styled-components'
 
@@ -72,6 +87,53 @@ const FAQ_DATA = [
     question: 'Where does the name come from?',
     answer: 'The name comes from ...',
   },
+]
+
+const TOP_LOGOS = [
+  { src: IMG_LOGO_LIDO, alt: 'Lido', url: 'https://lido.fi/' },
+  { src: IMG_LOGO_CURVE, alt: 'Curve', url: 'https://curve.fi/' },
+  { src: IMG_LOGO_SAFE, alt: 'Safe', url: 'https://safe.global/' },
+]
+
+const CASE_STUDIES = [
+  {
+    title: 'Aave',
+    description: 'Aave DAO used CoW Swap to swap over $4 million directly into a Balancer liquidity pool',
+    link: 'https://blog.cow.fi/aave-trade-breakdown-e17a7563d7ba',
+    logo: <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />,
+  },
+  {
+    title: 'ENS',
+    description: 'ENS DAO traded a whopping 10,000 ETH for USDC through CoW Swap',
+    link: 'https://blog.cow.fi/ens-trade-breakdown-a8eb00ddd8c0',
+    logo: <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />,
+  },
+  {
+    title: 'Nexus Mutual',
+    description:
+      'In the largest DAO trade ever, Nexus Mutual relied on CoW Swap to trade 14,400 ETH for rETH, a liquid staking token',
+    link: 'https://blog.cow.fi/nexus-mutual-trade-breakdown-4aacc6a94be8',
+    logo: <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />,
+  },
+]
+
+const ALL_LOGOS = [
+  { src: IMG_LOGO_GNOSIS, alt: 'Gnosis', url: 'https://www.gnosis.io/' },
+  { src: IMG_LOGO_BALANCER, alt: 'Balancer', url: 'https://balancer.fi/' },
+  { src: IMG_LOGO_AURA, alt: 'Aura', url: 'https://aura.finance/' },
+  { src: IMG_LOGO_KARPATKEY, alt: 'Karpatkey', url: 'https://www.karpatkey.com/' },
+  { src: IMG_LOGO_SHAPESHIFT, alt: 'Shapeshift', url: 'https://shapeshift.com/' },
+  { src: IMG_LOGO_MAKER, alt: 'Maker', url: 'https://makerdao.com/' },
+  { src: IMG_LOGO_SYNTHETIX, alt: 'Synthetix', url: 'https://synthetix.io/' },
+  { src: IMG_LOGO_ARAGON, alt: 'Aragon', url: 'https://aragon.org/' },
+  { src: IMG_LOGO_PLEASER_DAO, alt: 'Pleaser DAO', url: 'https://pleasr.org/' },
+  { src: IMG_LOGO_POLYGON, alt: 'Polygon', url: 'https://polygon.technology/' },
+  { src: IMG_LOGO_INDEX_COOP, alt: 'Index Coop', url: 'https://indexcoop.com/' },
+  { src: IMG_LOGO_ALCHEMIX, alt: 'Alchemix', url: 'https://alchemix.fi/' },
+  { src: IMG_LOGO_STAKE_DAO, alt: 'StakeDAO', url: 'https://stakedao.org/' },
+  { src: IMG_LOGO_RHINO_FI, alt: 'RhinoFi', url: 'https://rhino.fi/' },
+  { src: IMG_LOGO_TELLER_FINANCE, alt: 'Teller Finance', url: 'https://teller.finance/' },
+  { src: IMG_LOGO_FRAX_FINANCE, alt: 'Frax Finance', url: 'https://frax.finance/' },
 ]
 
 interface PageProps {
@@ -455,122 +517,73 @@ export default function Page({ siteConfigData }: PageProps) {
             </SectionTitleWrapper>
 
             <TopicList columns={3}>
-              <TopicCard contentAlign={'center'} bgColor={Color.neutral98} padding={'42px'} href="/">
-                <TopicImage
-                  iconColor={Color.neutral20}
-                  bgColor={'transparent'}
-                  width={'100%'}
-                  height={54}
-                  margin={'auto'}
+              {TOP_LOGOS.map((logo, index) => (
+                <TopicCard
+                  key={index}
+                  contentAlign={'center'}
+                  bgColor={Color.neutral100}
+                  padding={'42px'}
+                  href={logo.url}
+                  target="_blank"
+                  rel="noopener noreferrer nofollow"
                 >
-                  <SVG src={IMG_LOGO_SAFE} />
-                </TopicImage>
-              </TopicCard>
+                  <TopicImage
+                    iconColor={Color.neutral20}
+                    bgColor={'transparent'}
+                    width={'100%'}
+                    height={54}
+                    margin={'auto'}
+                  >
+                    <SVG src={logo.src} title={logo.alt} />
+                  </TopicImage>
+                </TopicCard>
+              ))}
 
-              <TopicCard contentAlign={'center'} bgColor={Color.neutral98} padding={'42px'} href="/">
-                <TopicImage
-                  iconColor={Color.neutral20}
-                  bgColor={'transparent'}
-                  width={'100%'}
-                  height={54}
-                  margin={'auto'}
+              {CASE_STUDIES.map((study, index) => (
+                <TopicCard key={index} bgColor={Color.neutral100} padding={'52px'} gap={16} asProp="div">
+                  <TopicImage iconColor="#8702AA" bgColor="transparent" height={96} width={'auto'}>
+                    {study.logo}
+                  </TopicImage>
+                  <TopicCardInner>
+                    <TopicTitle fontSize={38}>{study.title}</TopicTitle>
+                    <TopicDescription fontSize={21}>{study.description}</TopicDescription>
+                    <TopicButton
+                      bgColor="#490072"
+                      color="#F996EE"
+                      fontSize={27}
+                      href={study.link}
+                      rel="noopener noreferrer nofollow"
+                      target="_blank"
+                    >
+                      Read more
+                    </TopicButton>
+                  </TopicCardInner>
+                </TopicCard>
+              ))}
+            </TopicList>
+
+            <TopicList columns={4} columnsMobile={2}>
+              {ALL_LOGOS.map((logo, index) => (
+                <TopicCard
+                  key={index}
+                  contentAlign={'center'}
+                  bgColor={Color.neutral100}
+                  padding={'42px'}
+                  href={logo.url}
+                  target="_blank"
+                  rel="noopener noreferrer nofollow"
                 >
-                  <SVG src={IMG_LOGO_SUMMER_FI} />
-                </TopicImage>
-              </TopicCard>
-
-              <TopicCard contentAlign={'center'} bgColor={Color.neutral98} padding={'42px'} href="/">
-                <TopicImage
-                  iconColor={Color.neutral20}
-                  bgColor={'transparent'}
-                  width={'100%'}
-                  height={54}
-                  margin={'auto'}
-                >
-                  <SVG src={IMG_LOGO_SAFE} />
-                </TopicImage>
-              </TopicCard>
-
-              <TopicCard contentAlign={'center'} bgColor={Color.neutral98} padding={'42px'} gap={12} asProp="div">
-                <TopicImage iconColor="#8702AA" bgColor={'transparent'} height={128}>
-                  <SVG src={IMG_ICON_OWL} />
-                </TopicImage>
-                <TopicCardInner contentAlign="center">
-                  <TopicTitle fontSize={51}>Yearn</TopicTitle>
-                  <TopicDescription fontSize={21}>
-                    Aave DAO used CoW Swap to swap over $4 million directly into Balancer liquidity pool
-                  </TopicDescription>
-                  <TopicButton bgColor="#490072" color="#F996EE">
-                    Learn more
-                  </TopicButton>
-                </TopicCardInner>
-              </TopicCard>
-
-              <TopicCard contentAlign={'center'} bgColor={Color.neutral98} padding={'42px'} gap={12} asProp="div">
-                <TopicImage iconColor="#8702AA" bgColor={'transparent'} height={128}>
-                  <SVG src={IMG_ICON_GHOST} />
-                </TopicImage>
-                <TopicCardInner contentAlign="center">
-                  <TopicTitle fontSize={51}>Giveth</TopicTitle>
-                  <TopicDescription fontSize={21}>
-                    Aave DAO used CoW Swap to swap over $4 million directly into Balancer liquidity pool
-                  </TopicDescription>
-                  <TopicButton bgColor="#490072" color="#F996EE">
-                    Learn more
-                  </TopicButton>
-                </TopicCardInner>
-              </TopicCard>
-
-              <TopicCard contentAlign={'center'} bgColor={Color.neutral98} padding={'42px'} gap={12} asProp="div">
-                <TopicImage iconColor="#8702AA" bgColor={'transparent'} height={128}>
-                  <SVG src={IMG_ICON_GHOST} />
-                </TopicImage>
-                <TopicCardInner contentAlign="center">
-                  <TopicTitle fontSize={51}>Balancer</TopicTitle>
-                  <TopicDescription fontSize={21}>
-                    Aave DAO used CoW Swap to swap over $4 million directly into Balancer liquidity pool
-                  </TopicDescription>
-                  <TopicButton bgColor="#490072" color="#F996EE">
-                    Learn more
-                  </TopicButton>
-                </TopicCardInner>
-              </TopicCard>
-
-              <TopicCard contentAlign={'center'} bgColor={Color.neutral98} padding={'42px'} href="/">
-                <TopicImage
-                  iconColor={Color.neutral20}
-                  bgColor={'transparent'}
-                  width={'100%'}
-                  height={54}
-                  margin={'auto'}
-                >
-                  <SVG src={IMG_LOGO_SAFE} />
-                </TopicImage>
-              </TopicCard>
-
-              <TopicCard contentAlign={'center'} bgColor={Color.neutral98} padding={'42px'} href="/">
-                <TopicImage
-                  iconColor={Color.neutral20}
-                  bgColor={'transparent'}
-                  width={'100%'}
-                  height={54}
-                  margin={'auto'}
-                >
-                  <SVG src={IMG_LOGO_SUMMER_FI} />
-                </TopicImage>
-              </TopicCard>
-
-              <TopicCard contentAlign={'center'} bgColor={Color.neutral98} padding={'42px'} href="/">
-                <TopicImage
-                  iconColor={Color.neutral20}
-                  bgColor={'transparent'}
-                  width={'100%'}
-                  height={54}
-                  margin={'auto'}
-                >
-                  <SVG src={IMG_LOGO_SAFE} />
-                </TopicImage>
-              </TopicCard>
+                  <TopicImage
+                    iconColor={Color.neutral20}
+                    bgColor={'transparent'}
+                    width={'100%'}
+                    height={110}
+                    margin={'auto'}
+                  >
+                    <SVG src={logo.src} title={logo.alt} />
+                  </TopicImage>
+                </TopicCard>
+              ))}
             </TopicList>
           </ContainerCardSection>
         </ContainerCard>
