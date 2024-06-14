@@ -42,29 +42,6 @@ export function TokenDetails({ token }: TokenDetailProps) {
       <MainContent>
         <Breadcrumbs crumbs={[{ text: 'Tokens', href: '/tokens' }, { text: `${name} Price` }]} />
 
-        {/* TODO: Move InlineBanner content to be retrieved from token data */}
-        {token.symbol === 'COW' && (
-          <InlineBanner
-            type="alert"
-            content={
-              <p>
-                Read the latest updates impacting the COW token&nbsp;
-                <LinkWithUtm
-                  defaultUtm={{
-                    ...CONFIG.utm,
-                    utmContent: 'COW-tokenpage-banner-link',
-                  }}
-                  href="https://forum.cow.fi/t/cip-draft-testing-fee-models-for-cow-protocol/1984/3"
-                  passHref
-                >
-                  on the forum
-                </LinkWithUtm>
-              </p>
-            }
-          />
-        )}
-        {/* ============================================================== */}
-
         <DetailHeading>
           <TokenTitle>
             <img src={image.large!} alt={`${name} (${symbol})`} />
