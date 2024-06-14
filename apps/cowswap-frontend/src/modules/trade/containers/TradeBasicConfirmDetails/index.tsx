@@ -33,6 +33,7 @@ type Props = {
 
 type LabelsAndTooltips = {
   priceLabel?: ReactNode
+  expectReceiveLabel?: ReactNode
   minReceivedLabel?: ReactNode
   minReceivedTooltip?: ReactNode
   limitPriceLabel?: ReactNode
@@ -59,6 +60,7 @@ export function TradeBasicConfirmDetails(props: Props) {
 
   const priceLabel = labelsAndTooltips?.priceLabel || 'Price'
   const minReceivedLabel = labelsAndTooltips?.minReceivedLabel || 'Min received (incl. costs)'
+  const expectReceiveLabel = labelsAndTooltips?.expectReceiveLabel || 'Expected to receive'
   const minReceivedTooltip =
     labelsAndTooltips?.minReceivedTooltip || 'This is the minimum amount that you will receive.'
   const slippageTooltip = labelsAndTooltips?.slippageTooltip
@@ -99,7 +101,7 @@ export function TradeBasicConfirmDetails(props: Props) {
         amount={amountAfterFees}
         fiatAmount={amountAfterFeesUsd}
         alwaysRow={alwaysRow}
-        label="Expected to receive"
+        label={expectReceiveLabel}
       />
 
       <DividerHorizontal />

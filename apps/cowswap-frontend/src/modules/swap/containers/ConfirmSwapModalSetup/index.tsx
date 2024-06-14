@@ -85,7 +85,8 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
           {INPUT_OUTPUT_EXPLANATION}
         </Trans>
       ),
-      minReceivedLabel: 'Minimum receive',
+      expectReceiveLabel: isExactIn ? 'Expected to receive' : 'Expected to sell',
+      minReceivedLabel: isExactIn ? 'Minimum receive' : 'Maximum sent',
       minReceivedTooltip: getMinimumReceivedTooltip(allowedSlippage, isExactIn),
     }),
     [allowedSlippage]
