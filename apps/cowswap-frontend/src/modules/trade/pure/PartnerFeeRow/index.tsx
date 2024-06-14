@@ -36,7 +36,7 @@ export function PartnerFeeRow({
           tooltip={
             feeTooltipMarkdown || (
               <>
-                This fee helps pay for maintenance & improvements to the swap experience.
+                This fee helps pay for maintenance & improvements to the trade experience.
                 <br />
                 <br />
                 The fee is {partnerFeeBps} BPS ({feeAsPercent}%), applied only if the trade is executed.
