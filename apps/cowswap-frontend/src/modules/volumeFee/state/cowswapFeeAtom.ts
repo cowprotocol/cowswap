@@ -35,8 +35,8 @@ export const cowSwapFeeAtom = atom((get) => {
     getIsNativeToken(outputCurrency) ? NATIVE_CURRENCY_ADDRESS : outputCurrency.address
   )
 
-  // No stable-stable trades
-  if (isInputTokenStable && isOutputTokenStable) return null
+  // Only stable-nonStable trades
+  if ((isInputTokenStable && isOutputTokenStable) || (!isInputTokenStable && !isOutputTokenStable)) return null
 
   return COWSWAP_VOLUME_FEE
 })
