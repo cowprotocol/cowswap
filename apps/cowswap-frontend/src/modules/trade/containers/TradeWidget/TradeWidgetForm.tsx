@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 
 import ICON_ORDERS from '@cowprotocol/assets/svg/orders.svg'
 import ICON_TOKENS from '@cowprotocol/assets/svg/tokens.svg'
@@ -163,7 +163,10 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
             <div>
               <CurrencyInputPanel
                 id="input-currency-input"
-                currencyInfo={inputCurrencyInfo}
+                currencyInfo={useMemo(
+                  () => (isWrapOrUnwrap ? { ...inputCurrencyInfo, receiveAmountInfo: null } : inputCurrencyInfo),
+                  [isWrapOrUnwrap, inputCurrencyInfo]
+                )}
                 showSetMax={showSetMax}
                 maxBalance={maxBalance}
                 topLabel={isWrapOrUnwrap ? undefined : inputCurrencyInfo.label}
@@ -208,9 +211,13 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
                     ? t`You cannot edit this field when selling ${inputCurrencyInfo?.currency?.symbol}`
                     : undefined
                 }
-                currencyInfo={
-                  isWrapOrUnwrap ? { ...outputCurrencyInfo, amount: inputCurrencyInfo.amount } : outputCurrencyInfo
-                }
+                currencyInfo={useMemo(
+                  () =>
+                    isWrapOrUnwrap
+                      ? { ...outputCurrencyInfo, amount: inputCurrencyInfo.amount, receiveAmountInfo: null }
+                      : outputCurrencyInfo,
+                  [isWrapOrUnwrap, outputCurrencyInfo, inputCurrencyInfo.amount]
+                )}
                 priceImpactParams={!disablePriceImpact ? priceImpact : undefined}
                 topLabel={isWrapOrUnwrap ? undefined : outputCurrencyInfo.label}
                 {...currencyInputCommonProps}

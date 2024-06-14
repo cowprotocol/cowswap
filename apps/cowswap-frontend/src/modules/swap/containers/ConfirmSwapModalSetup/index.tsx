@@ -27,6 +27,7 @@ import { TransactionSubmittedContent } from 'common/pure/TransactionSubmittedCon
 
 import { useSwapConfirmButtonText } from '../../hooks/useSwapConfirmButtonText'
 import { useSwapState } from '../../hooks/useSwapState'
+import { RowDeadline } from '../Row/RowDeadline'
 
 const CONFIRM_TITLE = 'Swap'
 
@@ -132,7 +133,10 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
               hideLimitPrice
               hideUsdValues
               withTimelineDot={false}
-            />
+              alwaysRow
+            >
+              <RowDeadline />
+            </TradeBasicConfirmDetails>
           )}
           <HighFeeWarning trade={trade} />
           {!priceImpact.priceImpact && <NoImpactWarning isAccepted withoutAccepting />}

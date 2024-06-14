@@ -19,6 +19,7 @@ export type ReviewOrderAmountRowProps = {
   isAmountAccurate?: boolean
   withTimelineDot?: boolean
   highlighted?: boolean
+  alwaysRow?: boolean
 }
 
 export function ReviewOrderModalAmountRow({
@@ -30,6 +31,7 @@ export function ReviewOrderModalAmountRow({
   isAmountAccurate = true,
   withTimelineDot = false,
   highlighted = false,
+  alwaysRow = false,
 }: ReviewOrderAmountRowProps) {
   const Amount = (
     <Content highlighted={highlighted}>
@@ -46,7 +48,12 @@ export function ReviewOrderModalAmountRow({
   )
 
   return (
-    <ConfirmDetailsItem tooltip={tooltip} label={highlighted ? undefined : label} withTimelineDot={withTimelineDot}>
+    <ConfirmDetailsItem
+      tooltip={tooltip}
+      label={highlighted ? undefined : label}
+      alwaysRow={alwaysRow}
+      withTimelineDot={withTimelineDot}
+    >
       {highlighted ? (
         <>
           <ReceiveAmountTitle>

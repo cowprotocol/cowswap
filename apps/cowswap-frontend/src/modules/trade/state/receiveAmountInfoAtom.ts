@@ -10,10 +10,16 @@ import { getReceiveAmountInfo } from '../utils/getReceiveAmountInfo'
 export const receiveAmountInfoAtom = atom((get) => {
   const { response: quoteResponse } = get(tradeQuoteAtom)
   const partnerFee = get(injectedWidgetPartnerFeeAtom)
-  const { inputCurrency, outputCurrency, slippage } = get(derivedTradeStateAtom) || {}
+  const { inputCurrencyAmount, outputCurrencyAmount, slippage } = get(derivedTradeStateAtom) || {}
 
-  if (quoteResponse && inputCurrency && outputCurrency && slippage) {
-    return getReceiveAmountInfo(quoteResponse.quote, inputCurrency, outputCurrency, slippage, partnerFee?.bps)
+  if (quoteResponse && inputCurrencyAmount && outputCurrencyAmount && slippage) {
+    return getReceiveAmountInfo(
+      quoteResponse.quote,
+      inputCurrencyAmount.currency,
+      outputCurrencyAmount.currency,
+      slippage,
+      partnerFee?.bps
+    )
   }
 
   return null

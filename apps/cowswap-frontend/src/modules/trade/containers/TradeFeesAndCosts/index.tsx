@@ -1,8 +1,9 @@
 import { CowSwapWidgetAppParams } from '@cowprotocol/widget-lib'
 
-import { useUsdAmount } from '../../../usdAmount'
+import { useUsdAmount } from 'modules/usdAmount'
+
+import { NetworkCostsRow } from '../../pure/NetworkCostsRow'
 import { PartnerFeeRow } from '../../pure/PartnerFeeRow'
-import { ReviewOrderModalAmountRow } from '../../pure/ReviewOrderModalAmountRow'
 import { ReceiveAmountInfo } from '../../types'
 import { getOrderTypeReceiveAmounts } from '../../utils/getReceiveAmountInfo'
 
@@ -10,10 +11,11 @@ interface TradeFeesAndCostsProps {
   receiveAmountInfo: ReceiveAmountInfo | null
   widgetParams: Partial<CowSwapWidgetAppParams>
   withTimelineDot?: boolean
+  alwaysRow?: boolean
 }
 
 export function TradeFeesAndCosts(props: TradeFeesAndCostsProps) {
-  const { receiveAmountInfo, widgetParams, withTimelineDot = true } = props
+  const { receiveAmountInfo, widgetParams, withTimelineDot = true, alwaysRow } = props
 
   const networkFeeAmount = receiveAmountInfo && getOrderTypeReceiveAmounts(receiveAmountInfo).networkFeeAmount
   const partnerFee = receiveAmountInfo && receiveAmountInfo.costs.partnerFee
@@ -27,6 +29,7 @@ export function TradeFeesAndCosts(props: TradeFeesAndCostsProps) {
     <>
       {/*Partner fee*/}
       <PartnerFeeRow
+        alwaysRow={alwaysRow}
         withTimelineDot={withTimelineDot}
         partnerFeeUsd={partnerFeeUsd}
         partnerFeeAmount={partnerFeeAmount}
@@ -36,18 +39,11 @@ export function TradeFeesAndCosts(props: TradeFeesAndCostsProps) {
 
       {/*Network cost*/}
       {networkFeeAmount?.greaterThan(0) && (
-        <ReviewOrderModalAmountRow
+        <NetworkCostsRow
+          networkFeeAmount={networkFeeAmount}
+          networkFeeAmountUsd={networkFeeAmountUsd}
           withTimelineDot={withTimelineDot}
-          amount={networkFeeAmount}
-          fiatAmount={networkFeeAmountUsd}
-          tooltip={
-            <>
-              This is the cost of settling your order on-chain, including gas and any LP fees.
-              <br />
-              CoW Swap will try to lower this cost where possible.
-            </>
-          }
-          label="Network costs (est.)"
+          alwaysRow={alwaysRow}
         />
       )}
     </>
