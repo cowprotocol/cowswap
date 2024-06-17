@@ -56,7 +56,6 @@ import {
   HeroSubtitle,
   MetricsCard,
   MetricsItem,
-  SectionTitleButton,
 } from '@/styles/styled'
 
 import SVG from 'react-inlinesvg'
@@ -196,17 +195,18 @@ export default function Page({ siteConfigData }: PageProps) {
             <p>intent-based DEX protocol by volume</p>
           </MetricsItem>
 
-          <SectionTitleButton
+          <Link
             bgColor="transparent"
             color="#66018E"
             margin="24px auto 0"
             gridFullWidth
             href="https://dune.com/cowprotocol/monthly-cow-protocol-reporting"
-            target="_blank"
-            rel="noopener noreferrer nofollow"
+            external
+            type={LinkType.SectionTitleButton}
+            utmContent="cow-protocol-metrics"
           >
             View all metrics on DUNE &#8599;
-          </SectionTitleButton>
+          </Link>
         </MetricsCard>
 
         <ContainerCard bgColor={Color.neutral98}>
@@ -689,16 +689,17 @@ export default function Page({ siteConfigData }: PageProps) {
                 Learn more about building a solver by reading the CoW Protocol docs.
               </SectionTitleDescription>
 
-              <SectionTitleButton
+              <Link
                 bgColor="#66018E"
                 color="#F996EE"
                 href="https://docs.cow.fi/cow-protocol/tutorials/solvers"
-                target="_blank"
-                rel="noopener noreferrer nofollow"
+                external
+                type={LinkType.SectionTitleButton}
+                utmContent="cow-protocol-solvers"
                 margin="28px 0 0"
               >
                 Read the docs
-              </SectionTitleButton>
+              </Link>
             </SectionTitleWrapper>
           </ContainerCardSection>
         </ContainerCard>

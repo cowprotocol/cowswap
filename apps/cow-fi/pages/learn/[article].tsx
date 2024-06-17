@@ -37,10 +37,11 @@ import {
   CategoryLinks,
   StickyMenu,
   RelatedArticles,
-  SectionTitleButton,
   SectionTitleDescription,
 } from '@/styles/styled'
 import useWebShare from 'hooks/useWebShare'
+
+import { Link, LinkType } from '@/components/Link'
 
 const DATA_CACHE_TIME_SECONDS = 5 * 60 // Cache 5min
 
@@ -208,9 +209,15 @@ export default function ArticlePage({
                 )}
 
               <br />
-              <SectionTitleButton onClick={handleShareClick} as="div">
+              <Link
+                onClick={handleShareClick}
+                href="#"
+                type={LinkType.SectionTitleButton}
+                color={Color.neutral98}
+                bgColor={Color.neutral10}
+              >
                 Share article
-              </SectionTitleButton>
+              </Link>
               {message && (
                 <SectionTitleDescription textAlign="left" margin="16px 0 0" fontSize={21}>
                   {message}

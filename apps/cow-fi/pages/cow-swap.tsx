@@ -33,7 +33,6 @@ import {
   HeroSubtitle,
   MetricsCard,
   MetricsItem,
-  SectionTitleButton,
 } from '@/styles/styled'
 
 import SVG from 'react-inlinesvg'
@@ -121,17 +120,18 @@ export default function Page({ siteConfigData }: PageProps) {
             <p>retention rate of all DEXs</p>
           </MetricsItem>
 
-          <SectionTitleButton
+          <Link
             bgColor="transparent"
             color="#012F7A"
             margin="24px auto 0"
             gridFullWidth
             href="https://dune.com/cowprotocol/cowswap"
-            target="_blank"
-            rel="noopener noreferrer nofollow"
+            external
+            type={LinkType.SectionTitleButton}
+            utmContent="cow-swap-metrics-link"
           >
             View all metrics on DUNE &#8599;
-          </SectionTitleButton>
+          </Link>
         </MetricsCard>
 
         <ContainerCard bgColor={Color.neutral100}>
@@ -213,9 +213,9 @@ export default function Page({ siteConfigData }: PageProps) {
                 A powerful, open-source, and permissionless DEX aggregation protocol that anyone can integrate for a
                 variety of DeFi purposes
               </SectionTitleDescription>
-              <SectionTitleButton bgColor="#65D9FF" color="#012F7A" href="/cow-protocol">
+              <Link bgColor="#65D9FF" color="#012F7A" href="/cow-protocol">
                 Learn about CoW Protocol
-              </SectionTitleButton>
+              </Link>
             </SectionTitleWrapper>
           </ContainerCardSection>
         </ContainerCard>
@@ -494,15 +494,16 @@ export default function Page({ siteConfigData }: PageProps) {
               <SectionTitleDescription fontSize={28} color={Color.neutral30}>
                 Trade seamlessly, with the most user-protective DEX in DeFi
               </SectionTitleDescription>
-              <SectionTitleButton
+              <Link
                 bgColor="#65D9FF"
                 color="#012F7A"
                 href="https://swap.cow.fi/"
-                rel="noopener noreferrer"
-                target="_blank"
+                external
+                type={LinkType.SectionTitleButton}
+                utmContent="cow-swap-launch-app-button"
               >
                 Launch app
-              </SectionTitleButton>
+              </Link>
             </SectionTitleWrapper>
           </ContainerCardSection>
         </ContainerCard>

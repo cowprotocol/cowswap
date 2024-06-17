@@ -9,6 +9,7 @@ import styled from 'styled-components'
 import { CONFIG } from '@/const/meta'
 
 import Layout from '@/components/Layout'
+import { Link, LinkType } from '@/components/Link'
 
 import {
   ContainerCard,
@@ -18,7 +19,6 @@ import {
   TopicImage,
   TopicTitle,
   TopicDescription,
-  TopicButton,
   SectionTitleWrapper,
   SectionTitleIcon,
   SectionTitleText,
@@ -28,8 +28,6 @@ import {
   HeroBackground,
   HeroContent,
   HeroTitle,
-  HeroSubtitle,
-  SectionTitleButton,
 } from '@/styles/styled'
 
 import SVG from 'react-inlinesvg'
@@ -81,9 +79,9 @@ export default function Page({ siteConfigData }: PageProps) {
                   <TopicDescription fontSize={28} color="#F996EE">
                     Open-source, permissionless DEX aggregation protocol
                   </TopicDescription>
-                  <TopicButton bgColor="#F996EE" color="#490072" href="/cow-protocol">
+                  <Link bgColor="#F996EE" color="#490072" href="/cow-protocol">
                     Start building
-                  </TopicButton>
+                  </Link>
                 </TopicCardInner>
                 <TopicImage iconColor="#8702AA" bgColor="transparent" margin={'0 0 0 auto'} height={187} width={'auto'}>
                   <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />
@@ -96,15 +94,16 @@ export default function Page({ siteConfigData }: PageProps) {
                   <TopicDescription fontSize={28} color="#012F7A">
                     The DEX that lets you do what you want
                   </TopicDescription>
-                  <TopicButton
+                  <Link
                     bgColor="#012F7A"
                     color="#65D9FF"
                     href="https://swap.cow.fi/#/1/swap/USDC/COW"
-                    rel="noopener noreferrer"
-                    target="_blank"
+                    external
+                    type={LinkType.TopicButton}
+                    utmContent="home-page-trade-on-cow-swap"
                   >
                     Start trading
-                  </TopicButton>
+                  </Link>
                 </TopicCardInner>
                 <TopicImage iconColor="#CCF8FF" bgColor="transparent" margin={'0 0 0 auto'} height={187} width={'auto'}>
                   <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />
@@ -117,9 +116,9 @@ export default function Page({ siteConfigData }: PageProps) {
                   <TopicDescription fontSize={28} color="#BCEC79">
                     The first MEV-capturing AMM
                   </TopicDescription>
-                  <TopicButton bgColor="#BCEC79" color="#194D06" href="/cow-amm">
+                  <Link type={LinkType.TopicButton} bgColor="#BCEC79" color="#194D06" href="/cow-amm">
                     Deposit liquidity
-                  </TopicButton>
+                  </Link>
                 </TopicCardInner>
                 <TopicImage iconColor="#408A13" bgColor="transparent" margin={'0 0 0 auto'} height={187} width={'auto'}>
                   <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />
@@ -134,9 +133,9 @@ export default function Page({ siteConfigData }: PageProps) {
                   <TopicDescription fontSize={28} color="#EC4612">
                     The best MEV protection RPC under the sun
                   </TopicDescription>
-                  <TopicButton bgColor="#EC4612" color="#FEE7CF" href="/mev-blocker">
+                  <Link type={LinkType.TopicButton} bgColor="#EC4612" color="#FEE7CF" href="/mev-blocker">
                     Get protected
-                  </TopicButton>
+                  </Link>
                 </TopicCardInner>
                 <TopicImage iconColor="#FDC99F" bgColor="transparent" margin={'0 0 0 auto'} height={187} width={'auto'}>
                   <ProductLogo variant={ProductVariant.MevBlocker} logoIconOnly theme="dark" />
@@ -160,7 +159,9 @@ export default function Page({ siteConfigData }: PageProps) {
                 the CoW DAO Knowledge Base.
               </SectionTitleDescription>
 
-              <SectionTitleButton href="/learn">Learn more</SectionTitleButton>
+              <Link type={LinkType.SectionTitleButton} href="/learn">
+                Learn more
+              </Link>
             </SectionTitleWrapper>
           </ContainerCardSection>
         </ContainerCard>
@@ -222,9 +223,14 @@ export default function Page({ siteConfigData }: PageProps) {
                 The CoW DAO Grants Program funds mission-aligned projects and people working on MEV protection, trading
                 innovation, and ecosystem development.
               </SectionTitleDescription>
-              <SectionTitleButton href="https://grants.cow.fi/" rel="noopener noreferrer" target="_blank">
+              <Link
+                external
+                type={LinkType.SectionTitleButton}
+                utmContent="home-page-apply-for-a-grant"
+                href="https://grants.cow.fi/"
+              >
                 Apply for a grant
-              </SectionTitleButton>
+              </Link>
             </SectionTitleWrapper>
           </ContainerCardSection>
         </ContainerCard>

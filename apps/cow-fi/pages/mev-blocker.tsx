@@ -9,6 +9,7 @@ import Layout from '@/components/Layout'
 import FAQ from '@/components/FAQ'
 import { AddRpcButton } from '@/components/AddRpcButton'
 import { Link, LinkType } from '@/components/Link'
+
 import useWebShare from 'hooks/useWebShare'
 
 import { WagmiConfig, createConfig, configureChains, mainnet } from 'wagmi'
@@ -43,7 +44,6 @@ import {
   HeroSubtitle,
   MetricsCard,
   MetricsItem,
-  SectionTitleButton,
   ColorTable,
   ColorTableCell,
   ColorTableHeader,
@@ -203,7 +203,7 @@ export default function Page({ siteConfigData }: PageProps) {
                   </ol>
                 </HeroDescription>
 
-                <Link bgColor={'#EC4612'} color={'#FEE7CF'} href="#rpc">
+                <Link type={LinkType.HeroButton} bgColor={'#EC4612'} color={'#FEE7CF'} href="#rpc">
                   Get protected
                 </Link>
               </HeroContent>
@@ -226,17 +226,18 @@ export default function Page({ siteConfigData }: PageProps) {
                 <p>of Ethereum's major builders use MEV Blocker</p>
               </MetricsItem>
 
-              <SectionTitleButton
+              <Link
                 bgColor="transparent"
                 color="#FEE7CF"
                 margin="24px auto 0"
                 gridFullWidth
                 href="https://dune.com/cowprotocol/mev-blocker"
-                target="_blank"
-                rel="noopener noreferrer nofollow"
+                external
+                type={LinkType.SectionTitleButton}
+                utmContent="mev-blocker-metrics-link"
               >
                 View all metrics on DUNE &#8599;
-              </SectionTitleButton>
+              </Link>
             </MetricsCard>
 
             <ContainerCard bgColor={Color.neutral100}>
@@ -248,9 +249,9 @@ export default function Page({ siteConfigData }: PageProps) {
                   <SectionTitleText maxWidth={500}>Broad spectrum MEV defense</SectionTitleText>
                   <SectionTitleDescription maxWidth={'100%'} color={Color.neutral50}>
                     MEV bots have extracted more than{' '}
-                    <a href="https://dune.com/queries/2259793/3703605" target="_blank" rel="noopener noreferrer">
+                    <Link href="https://dune.com/queries/2259793/3703605" external utmContent="mev-blocker-dune-link">
                       $1.38 billion
-                    </a>{' '}
+                    </Link>{' '}
                     from well-meaning Ethereum users across a variety of use cases (trading, providing liquidity,
                     minting NFTs, etc). MEV Blocker is an RPC endpoint that supports these users by offering:
                   </SectionTitleDescription>
@@ -312,9 +313,9 @@ export default function Page({ siteConfigData }: PageProps) {
                 <SectionTitleWrapper maxWidth={1200} margin="0 auto">
                   <SectionTitleDescription fontSize={28} color={Color.neutral50}>
                     Curious if you've been the victim of an MEV attack?{' '}
-                    <a href="https://www.mevscanner.com/" target="_blank" rel="noopener noreferrer">
+                    <Link href="https://www.mevscanner.com/" external utmContent="mev-blocker-mev-scanner-link">
                       Use MEV Scanner
-                    </a>{' '}
+                    </Link>{' '}
                     to find out
                   </SectionTitleDescription>
                 </SectionTitleWrapper>
@@ -459,9 +460,9 @@ export default function Page({ siteConfigData }: PageProps) {
                 <SectionTitleWrapper margin={'24px auto 0'}>
                   <SectionTitleDescription color={Color.neutral50}>
                     To learn more about each of the endpoints MEV Blocker has to offer,{' '}
-                    <a href="https://docs.cow.fi/mevblocker" rel="noopener noreferrer" target="_blank">
+                    <Link href="https://docs.cow.fi/mevblocker" external utmContent="mev-blocker-docs-link">
                       read the MEV Blocker docs
-                    </a>
+                    </Link>
                     .
                   </SectionTitleDescription>
                 </SectionTitleWrapper>
@@ -571,15 +572,16 @@ export default function Page({ siteConfigData }: PageProps) {
                     should integrate MEV Blocker to protect them from MEV and earn some extra revenue.
                   </SectionTitleDescription>
 
-                  <SectionTitleButton
+                  <Link
                     bgColor="#EC4612"
                     color={Color.neutral98}
                     href="https://docs.cow.fi/category/searchers"
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    external
+                    type={LinkType.SectionTitleButton}
+                    utmContent="mev-blocker-learn-more"
                   >
                     Learn more
-                  </SectionTitleButton>
+                  </Link>
                 </SectionTitleWrapper>
               </ContainerCardSection>
             </ContainerCard>
@@ -648,9 +650,9 @@ export default function Page({ siteConfigData }: PageProps) {
                     Friends don't let friends suffer from MEV damage
                   </SectionTitleText>
 
-                  <SectionTitleButton bgColor="#EC4612" onClick={handleShareClick} as="div">
+                  <Link type={LinkType.SectionTitleButton} bgColor="#EC4612" onClick={handleShareClick} href="#">
                     Share MEV Blocker
-                  </SectionTitleButton>
+                  </Link>
 
                   {message && <SectionTitleDescription fontSize={21}>{message}</SectionTitleDescription>}
                 </SectionTitleWrapper>

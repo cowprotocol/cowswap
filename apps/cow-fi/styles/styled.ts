@@ -739,40 +739,6 @@ export const SectionTitleDescription = styled.p<{
   }
 `
 
-export const SectionTitleButton = styled.a<{
-  bgColor?: string
-  color?: string
-  margin?: string
-  gridFullWidth?: boolean
-  fontSize?: number
-  fontSizeMobile?: number
-}>`
-  display: inline-block;
-  padding: 16px 24px;
-  font-size: ${({ fontSize }) => (fontSize && `${fontSize}px`) || '24px'};
-  font-weight: ${Font.weight.bold};
-  color: ${({ color }) => color || Color.neutral98};
-  background: ${({ bgColor }) => bgColor || Color.neutral10};
-  text-decoration: none;
-  border-radius: 32px;
-  line-height: 1.2;
-  text-align: center;
-  width: auto;
-  transition: opacity 0.2s ease-in-out;
-  max-width: 100%;
-  margin: ${({ margin }) => margin || '0'};
-  grid-column: ${({ gridFullWidth }) => (gridFullWidth ? '1 / -1' : 'initial')};
-  cursor: pointer;
-
-  ${Media.upToMedium()} {
-    font-size: ${({ fontSizeMobile }) => fontSizeMobile || 21}px;
-  }
-
-  &:hover {
-    opacity: 0.8;
-  }
-`
-
 export const SectionTitleIcon = styled.div<{ size?: number; multiple?: boolean }>`
   --size: ${({ size }) => (size ? `${size}px` : '82px')};
   width: 100%;

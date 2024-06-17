@@ -25,7 +25,6 @@ import {
   SectionTitleIcon,
   SectionTitleText,
   SectionTitleDescription,
-  SectionTitleButton,
   TopicCardInner,
   HeroContainer,
   HeroImage,
@@ -126,17 +125,18 @@ export default function Page({ siteConfigData }: PageProps) {
             <p>surplus captured for LPs</p>
           </MetricsItem>
 
-          <SectionTitleButton
+          <Link
             bgColor="transparent"
             color="#194D05"
             margin="56px auto 0"
             gridFullWidth
             href="https://dune.com/cowprotocol/cowamms"
-            target="_blank"
-            rel="noopener noreferrer nofollow"
+            external
+            type={LinkType.SectionTitleButton}
+            utmContent={'cow-amm-metrics-button-view-all'}
           >
             View all metrics on DUNE &#8599;
-          </SectionTitleButton>
+          </Link>
         </MetricsCard>
 
         <ContainerCard bgColor={Color.neutral10}>
