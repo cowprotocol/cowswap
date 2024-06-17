@@ -133,7 +133,7 @@ function _useSafeInfo(walletInfo: WalletInfo): GnosisSafeInfo | undefined {
     updateSafeInfo()
 
     return () => {
-      clearInterval(shortSafeInfoInterval !== null? shortSafeInfoInterval : undefined)
+      clearInterval(shortSafeInfoInterval !== null ? shortSafeInfoInterval : undefined)
       shortSafeInfoInterval = null
       clearInterval(longSafeInfoInterval !== null ? longSafeInfoInterval : undefined)
       longSafeInfoInterval = null
