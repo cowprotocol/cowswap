@@ -14,7 +14,6 @@ The Products covered by these terms include but are not limited to:
 
 - The Forum
 
-
 ## Important prior warnings
 
 ### Financial risks
@@ -25,26 +24,21 @@ The tokens’ value is highly volatile causing price fluctuations, as auctions t
 
 Please carefully consider your investment objectives, risk tolerance, and experience before engaging in any trading activities. This is not financial advice, and you should always consult with a qualified financial professional before making any investment decisions.
 
-
 ### Beware of scammers
 
 We will never contact you first, never ask you for password, private keys, seed phrase, nor ask you to connect your wallet to a third party decentralised application.
-
 
 ### Technical understanding
 
 Cryptographic assets are described in technical language requiring a comprehensive understanding of computer science and mathematics to appreciate the inherent risks.
 
-
 ### Transactions on public blockchains are publicly accessible
 
 Please be aware that all transactions on public blockchains are permanently recorded and publicly accessible. This means anyone can view the details of your transactions, including the amount, sender, and receiver addresses. While this transparency offers benefits like security and trust, it also means your privacy is not guaranteed. If you require anonymity or confidentiality for your transactions, please consider using a different platform.
 
-
 ### Transactions on public blockchains are immutable and irreversible
 
 Transactions on public blockchains are generally immutable and irreversible. Any transaction thereon is therefore irrevocable and final as soon as it is settled thereon. In the event that you send your tokens to sell to any other destination other than the Protocol smart contracts, such tokens may not be returned. We assume no responsibility and shall have no obligation to you if this occurs, including but not limited to any responsibility to recover, or assist to recover, any such tokens.
-
 
 ## Please read these Terms carefully before using the Website or the Products.
 
@@ -56,11 +50,9 @@ You are also responsible for ensuring that all persons who access the Website or
 
 We may terminate or suspend your access to the Website or the Products immediately, without prior notice or liability, if you breach any clause of the Terms. Upon termination of your access, your right to access the website or use the Products will immediately cease.
 
-
 ### Change of these Terms
 
 We may amend these Terms at our sole discretion. We regularly do so. Every time you wish to access the Website or use the Products, please check these Terms to ensure you understand the terms that apply at that time.
-
 
 ## CoW Protocol
 
@@ -70,17 +62,15 @@ CoW Protocol is a set of smart contracts that applies batch auction mechanisms t
 
 Please consult our [documentation](https://docs.cow.fi/cow-protocol) for more information on CoW Protocol.
 
-
 ## The Interface
 
-[https://swap.cow.fi](https://swap.cow.fi/) is a web-hosted user interface (the “Interface”) providing access to CoW Protocol. You may submit orders into the Interface and exchange compatible tokens using the unique features of the Protocol.
+[https://swap.cow.fi](https://swap.cow.fi/) is a web-hosted user interface (the "Interface") providing access to CoW Protocol. You may submit orders into the Interface and exchange compatible tokens using the unique features of the Protocol.
 
 Please consult our [documentation](https://docs.cow.fi/cow-protocol/tutorials/cow-swap) for more information on our Interface.
 
-The features of the Interface can also be accessed through third parties’ websites integrating our widget (the “Widget”).
+The features of the Interface can also be accessed through third parties’ websites integrating our widget (the "Widget").
 
 Please consult our [documentation](https://docs.cow.fi/cow-protocol/tutorials/widget) for more information on our Widget.
-
 
 ### Restricted use of the Interface
 
@@ -92,7 +82,6 @@ You further warrant that you are not a United States citizen, permanent resident
 
 Finally, you confirm that your use of the Interface will fully comply with all applicable laws and regulations, and you will not use the Interface to conduct, promote, or facilitate any illegal activities.
 
-
 ### Use of the Interface
 
 By using the Interface, you understand that you are not buying or selling digital assets from CoW DAO.
@@ -101,13 +90,11 @@ You are responsible for ensuring that all persons who access or use the Interfac
 
 You may have been recommended to the Interface by a third party. We shall not be liable for any agreement or terms that may exist between you and the respective third party.
 
-
 ### Requirements to Use the Interface
 
 To use the Interface, you must employ a non-custodial wallet application, enabling interaction with EVM compatible public blockchains. Your connection with the non-custodial wallet provider is governed by the applicable service terms of such a third party wallet provider. We do not hold custody of your wallet's contents and are unable to recover or transfer such content. By connecting your wallet to our Interface, you agree to be bound by these Terms and all of the terms incorporated herein by reference.
 
-For more details on how to use the Interface please refer to our [“FAQ”](https://swap.cow.fi/#/faq).
-
+For more details on how to use the Interface please refer to our ["FAQ"](https://swap.cow.fi/#/faq).
 
 ### Fees
 
@@ -115,13 +102,11 @@ For more details on how to use the Interface please refer to our [“FAQ”](htt
 
 The user may incur a fee at protocol level, which - if technically possible - is shown to the user on the Interface when user places their trade intent. Such a fee is designed in accordance with the specific features of the protocol.
 
-
 #### Widget Integrator’s Fee
 
 Third-party integrators can embed the Interface on their own website using the Widget may charge an additional service fee to the user of the Widget on their website. The user acknowledges that such a service fee is not charged by us but exclusively by the third-party integrator.
 
 The user of the Widget understands and agrees that we are not responsible for such a fee and that it is the sole responsibility of the user of the Widget to carefully review the terms and conditions provided by the third-party integrator before using Widget.
-
 
 ### Interface Changes, Updates and Withdrawal
 
@@ -129,23 +114,19 @@ We may update and change the Interface from time to time. We do not guarantee th
 
 We reserve the right to suspend or withdraw or restrict the availability of all or any part of the Interface for whatever reasons.
 
-
 ### Non-Custody and Wallet Security
 
 The Interface operates as a non-custodial application, which implies that we, at no point in time, assume custody, ownership, or control over your digital assets.
 
 This further underscores your unequivocal responsibility for safeguarding the cryptographic private keys associated with your digital asset wallets. Under no circumstances should you disclose your wallet credentials or seed phrase to any third party. We disclaim any responsibility or liability whatsoever in connection with your utilization of a wallet, and we make no representations or warranties regarding the compatibility of the Interface with any particular wallet. Likewise, accountability for any associated wallet rests solely with you, and we shall not be held responsible for any actions or omissions undertaken by you in relation to or as a consequence of your wallet being compromised.
 
-
 ### No Fiduciary Duty
 
 To the fullest extent permitted by law, you acknowledge and agree that we owe no fiduciary duties or liabilities to you or any other party, and that to the extent any such duties or liabilities may exist at law or in equity, those duties and liabilities are hereby irrevocably disclaimed, waived, and eliminated. You further agree that the only duties and obligations that we owe you are those set out expressly in these Terms.
 
-
 ### Tax Responsibility
 
 You are solely responsible to determine if your use of the Interface has tax implications for you. By using the Interface you agree not to hold us liable for any tax liability you incur arising out of or associated with your usage of the Interface or any other action or transaction related thereto.
-
 
 ## The Forum
 
@@ -155,11 +136,9 @@ https\://forum.cow\.fi (the "Forum") is a moderated online forum for discussing 
 
 You may access and use the Forum only for lawful purposes and in compliance with these Terms of Use.
 
-
 ### Registration and Account Security
 
 In order to use the Forum Name, you may be required to register for an account. You must provide accurate and complete information when registering and you are responsible for keeping your account information up-to-date and secure. You agree not to share your account information with anyone else.
-
 
 ### Acceptable Use
 
@@ -170,7 +149,6 @@ You will not impersonate any person or entity or falsely state or otherwise misr
 You will not post advertisements or solicitations of business without explicit permission from the forum administrators.
 
 You agree to respect the copyright and intellectual property rights of others. You may not post any content that infringes on the copyright or other intellectual property rights of others.
-
 
 ### User Conduct
 
@@ -186,30 +164,25 @@ You agree to be respectful of other users of the Forum. You agree not to:
 
 - Violate the privacy of other users.
 
-
 ### Content Ownership and Responsibility
 
 You retain all ownership rights to the content you post on the forum. However, by posting content, you grant the forum a non-exclusive, royalty-free license to use, reproduce, and distribute your content.
 
 You acknowledge and agree that all content posted on the forum is the sole responsibility of the individual who posted the content.
 
-
 ### Moderation and Removal of Content
 
 The forum administrators reserve the right to monitor all user activity on the Forum. We may remove any content that violates these Terms of Use or that we deem to be inappropriate. We may also suspend or terminate your account if you violate these Terms of Use.
 
-
 ## Information on the Website or Products are not advice
 
 None of the information available on the Website including the Interface and the Forum, or made otherwise available to you in relation to its use, constitutes any legal, tax, financial or other advice. When in doubt as to the action you should take, you should consult your legal, financial, tax or other professional advisors.
-
 
 ## Intellectual Property Rights
 
 Subject to the application of any miscellaneous open source license attaching to the software code of the Protocol and to the software code of the Products, we are the owner all contents, including but not limited to software, text, images, trademarks, service marks, copyrights, patents, and designs. This means we own all the legal rights to them. You are not allowed to copy, modify, adapt, rent, license, sell, publish, distribute, or share access to the Interface or its contents with anyone else, unless we explicitly give you permission in writing. Simply using the Interface doesn't give you any ownership rights to it or its contents.
 
 Subject to your compliance with these Terms, we grant you a limited, revocable, non-exclusive, non-transferable, non-sublicensable licence to access the Protocol and the Products. This licence does not include any resale, commercial or derivative use of the Protocol or the Products. We reserve and retain all rights not expressly granted to you in these Terms. The Interface may not be reproduced, sold, or otherwise exploited for any commercial purpose without our express prior written consent. You may not frame or utilise framing techniques to enclose any trademark, logo, or other proprietary information of us without our express prior written consent. You may not misuse the Interface and may only use it as permitted by law. If you breach our intellectual property rights in violation of these Terms, your licence to use the Interface will automatically be revoked and terminated immediately.
-
 
 ## Bug and Default
 
@@ -225,7 +198,6 @@ Subject to your compliance with these Terms, we grant you a limited, revocable, 
 
 - Will be accurate, complete, reliable, current, or virus-free.
 
-
 ## User Responsibilities and Prohibited Actions
 
 ### User Responsibilities
@@ -233,7 +205,6 @@ Subject to your compliance with these Terms, we grant you a limited, revocable, 
 You are responsible for configuring your information technology and computer programs to access the Products Interface in a secure manner. This includes the use of appropriate virus protection software.
 
 You agree to use the Products only for their intended purpose and in accordance with these Terms.
-
 
 ### Prohibited Actions:
 
@@ -259,7 +230,6 @@ You are prohibited from attacking the Products through:
 
 You acknowledge that any breach of this clause may constitute a criminal offense.
 
-
 ## Consequences of Breaching of these Terms
 
 We reserve the right to immediately terminate your access to the Website or the Products upon any breach of these Terms.
@@ -270,7 +240,6 @@ We may report any breach of this clause to the relevant law enforcement authorit
 
 Upon termination of your access, your right to use the Website or the Products will immediately cease. Clauses 7 to 22 and any other term intended so will survive any termination of these Terms.
 
-
 ## Indemnification and Liability
 
 You agree to release and indemnify, defend and hold us and any of our affiliates harmless, as well as any members, participants, directors, officers, employees, contractors, shareholders and representatives of any of the foregoing, from and against any and all losses, liabilities, damages, costs claims or actions of any kind arising or resulting from your use of the Interface, your breach of these Terms, and any of your acts or omissions that infringe the rights of any person.
@@ -278,7 +247,6 @@ You agree to release and indemnify, defend and hold us and any of our affiliates
 We reserve the right, at our own expense, to assume exclusive defence and control of any matter otherwise subject to indemnification by you and, in such case, you agree to cooperate with us in the defence of such matter.
 
 The indemnity set out here is in addition to, and not in lieu of, any other remedies that may be available to us under applicable law.
-
 
 ## Warranties
 
@@ -318,7 +286,6 @@ By using our Products you hereby agree, represent and warrant that:
 
 - the risks of using the Interface are substantial and include, but are not limited to, the ones set out in the APPENDIX, which is hereby expressly incorporated into these Terms, and you are willing to accept the risk of loss associated therewith.
 
-
 ## Limitation of Liability
 
 We do not exclude or limit our liability to you where it would be unlawful to do so. This includes liability for death or personal injury caused by our negligence or fraud.
@@ -329,47 +296,39 @@ We are not liable for any funds lost due to your interaction with scam websites 
 
 You are responsible for ensuring you are interacting with the correct URL and taking necessary precautions to avoid scams or fraudulent activities impersonating us.
 
-
 ## We Are Not Registered with any Governmental Agency
 
 We are not registered with any governmental supervisory authority in any capacity. You understand and acknowledge that we do not broker trading orders on your behalf. We also do not facilitate the execution or settlement of your trades, which occur entirely on public distributed blockchains.
-
 
 ## No Fiduciary Duty
 
 To the fullest extent permitted by law, you acknowledge and agree that we owe no fiduciary duties or liabilities to you or any other party, and that to the extent any such duties or liabilities may exist at law or in equity, those duties and liabilities are hereby irrevocably disclaimed, waived, and eliminated. You further agree that the only duties and obligations that we owe you are those set out expressly in this Agreement.
 
-
 ## Dispute Resolution
 
 ### Amicable Dispute Resolution
 
-If an alleged breach, controversy, claim, dispute or difference arises out of or in connection with the present Terms about or in connection to this Interface between you and us (a “Dispute”), you agree to seek to resolve the matter with us amicably by referring the matter to legal\@cow\.fi.
+If an alleged breach, controversy, claim, dispute or difference arises out of or in connection with the present Terms about or in connection to this Interface between you and us (a "Dispute"), you agree to seek to resolve the matter with us amicably by referring the matter to legal\@cow\.fi.
 
 For any claim not relating to or connected to the Interface please contact CoW DAO via CoW Forum at https\://forum.cow\.fi/ with a detailed description, the date and time the issue arose, your handle to contact you on and the outcome you are seeking.
 
-
 ### Mediation and Arbitration
 
-In the event a Dispute cannot be resolved amicably, you must first refer the Dispute to proceedings under the International Chamber of Commerce (“ICC”) Mediation Rules, which Rules are deemed to be incorporated by reference into this clause. The place of mediation shall be London, United Kingdom. The language of the mediation proceedings shall be English.
+In the event a Dispute cannot be resolved amicably, you must first refer the Dispute to proceedings under the International Chamber of Commerce ("ICC") Mediation Rules, which Rules are deemed to be incorporated by reference into this clause. The place of mediation shall be London, United Kingdom. The language of the mediation proceedings shall be English.
 
 If the Dispute has not been settled pursuant to the ICC Mediation Rules within forty (40) days following the filing of a Request for Mediation in accordance with the ICC Mediation Rules or within such other period as the parties to the Dispute may agree in writing, such Dispute shall thereafter be finally settled under the Rules of Arbitration of the International Chamber of Commerce by three (3) arbitrators appointed in accordance with the said Rules. The seat of Arbitration shall be London, United Kingdom. The governing law of this arbitration clause shall be the laws of England and Wales. The language of the arbitration shall be English. The Emergency Arbitrator Provisions shall not apply.
-
 
 ### Final Jurisdiction
 
 If the Dispute cannot be resolved for legal reasons in accordance with the procedures described above, you and we agree that the courts of England and Wales shall have exclusive jurisdiction to resolve the Dispute.
 
-
 ### No Class Action
 
 _YOU AGREE AND UNDERSTAND THAT BY ENTERING INTO THIS AGREEMENT, YOU EXPRESSLY WAIVE ANY RIGHT, IF ANY, TO A TRIAL BY JURY AND RIGHT TO PARTICIPATE IN A CLASS ACTION LAWSUIT._
 
-
 ## Governing law
 
 This Agreement shall be governed by and construed in accordance with the substantive laws of England & Wales without regard to conflict of laws principles.
-
 
 ## Third party beneficiary
 
@@ -377,18 +336,15 @@ Clauses 4 to 22 also apply to the benefit of the Affiliates and such benefit als
 
 Subject to 20.1, these Terms do not give rise to any third party rights, which may be enforced against Us.
 
-
 ## Entire agreement
 
 These Terms constitute the entire and exclusive agreement between us and you regarding its subject matter, and supersede and replace any previous or contemporaneous written or oral contract, promises, assurances, assurances, warranty, representation or understanding regarding its subject matter, whether written or oral. You shall have no claim for innocent or negligent misrepresentation or misstatement based on any statement in these Terms, though nothing in this clause shall limit or exclude any liability for fraud.
-
 
 ## No waiver and no assignment
 
 You may not assign, transfer or delegate any of your rights or duties arising out of or in connection with these Terms to a third party. Any such assignment or transfer shall be void and shall not impose any obligation or liability on us to the assignee or transferee.
 
 Any delay or omission by us in relation to the exercise of any right granted by law or under these Terms shall not as a result exclude or prevent the later exercise of such a right.
-
 
 ## Severability
 
