@@ -250,7 +250,6 @@ export function SwapWidget() {
     bottomContent: (
       <>
         <TradeRateDetails
-          isSwapEth={isSwapEth}
           allowedSlippage={useSlippage === 'auto' ? null : allowedSlippage}
           rateInfoParams={rateInfoParams}
           receiveAmountInfo={receiveAmountInfo}

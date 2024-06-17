@@ -25,7 +25,6 @@ type Props = {
   widgetParams: Partial<CowSwapWidgetAppParams>
   labelsAndTooltips?: LabelsAndTooltips
   children?: ReactNode
-  networkCostsSuffix?: ReactNode
   hideLimitPrice?: boolean
   hideUsdValues?: boolean
   withTimelineDot?: boolean
@@ -41,6 +40,8 @@ type LabelsAndTooltips = {
   limitPriceTooltip?: ReactNode
   slippageLabel?: ReactNode
   slippageTooltip?: ReactNode
+  networkCostsSuffix?: ReactNode
+  networkCostsTooltipSuffix?: ReactNode
 }
 
 export function TradeBasicConfirmDetails(props: Props) {
@@ -56,9 +57,9 @@ export function TradeBasicConfirmDetails(props: Props) {
     withTimelineDot = true,
     alwaysRow,
     children,
-    networkCostsSuffix,
   } = props
   const { amountAfterFees, amountAfterSlippage } = getOrderTypeReceiveAmounts(receiveAmountInfo)
+  const { networkCostsSuffix, networkCostsTooltipSuffix } = labelsAndTooltips || {}
 
   const priceLabel = labelsAndTooltips?.priceLabel || 'Price'
   const minReceivedLabel = labelsAndTooltips?.minReceivedLabel || 'Min received (incl. costs)'
@@ -97,6 +98,7 @@ export function TradeBasicConfirmDetails(props: Props) {
         withTimelineDot={withTimelineDot}
         alwaysRow={alwaysRow}
         networkCostsSuffix={networkCostsSuffix}
+        networkCostsTooltipSuffix={networkCostsTooltipSuffix}
       />
 
       <ReviewOrderModalAmountRow

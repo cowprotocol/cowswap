@@ -9,6 +9,7 @@ interface NetworkCostsRowProps {
   networkFeeAmountUsd: CurrencyAmount<Currency> | null
   withTimelineDot?: boolean
   amountSuffix?: ReactNode
+  tooltipSuffix?: ReactNode
   alwaysRow?: boolean
 }
 export function NetworkCostsRow({
@@ -17,6 +18,7 @@ export function NetworkCostsRow({
   networkFeeAmount,
   networkFeeAmountUsd,
   amountSuffix,
+  tooltipSuffix,
 }: NetworkCostsRowProps) {
   return (
     <ReviewOrderModalAmountRow
@@ -29,7 +31,9 @@ export function NetworkCostsRow({
         <>
           This is the cost of settling your order on-chain, including gas and any LP fees.
           <br />
+          <br />
           CoW Swap will try to lower this cost where possible.
+          {tooltipSuffix}
         </>
       }
       label="Network costs (est.)"

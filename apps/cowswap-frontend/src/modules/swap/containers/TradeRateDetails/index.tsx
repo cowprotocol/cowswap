@@ -16,7 +16,9 @@ import { useUsdAmount } from 'modules/usdAmount'
 
 import { RateInfoParams } from 'common/pure/RateInfo'
 
+import { useShouldPayGas } from '../../hooks/useShouldPayGas'
 import { NetworkCostsSuffix } from '../../pure/NetworkCostsSuffix'
+import { NetworkCostsTooltipSuffix } from '../../pure/NetworkCostsTooltipSuffix'
 import { RowDeadline } from '../Row/RowDeadline'
 import { RowSlippage } from '../Row/RowSlippage'
 
@@ -24,17 +26,12 @@ interface TradeRateDetailsProps {
   receiveAmountInfo: ReceiveAmountInfo | null
   rateInfoParams: RateInfoParams
   allowedSlippage: Percent | null
-  isSwapEth: boolean
 }
 
-export function TradeRateDetails({
-  allowedSlippage,
-  receiveAmountInfo,
-  rateInfoParams,
-  isSwapEth,
-}: TradeRateDetailsProps) {
+export function TradeRateDetails({ allowedSlippage, receiveAmountInfo, rateInfoParams }: TradeRateDetailsProps) {
   const derivedTradeState = useDerivedTradeState()
   const tradeQuote = useTradeQuote()
+  const shouldPayGas = useShouldPayGas()
 
   const inputCurrency = derivedTradeState?.inputCurrency
   const costsExceedFeeRaw = tradeQuote?.error?.data?.fee_amount
@@ -57,7 +54,8 @@ export function TradeRateDetails({
           networkFeeAmount={networkFeeAmount}
           networkFeeAmountUsd={networkFeeAmountUsd}
           withTimelineDot={false}
-          amountSuffix={isSwapEth ? <NetworkCostsSuffix /> : null}
+          amountSuffix={shouldPayGas ? <NetworkCostsSuffix /> : null}
+          tooltipSuffix={<NetworkCostsTooltipSuffix />}
           alwaysRow
         />
       </div>
@@ -72,7 +70,8 @@ export function TradeRateDetails({
         receiveAmountInfo={receiveAmountInfo}
         widgetParams={widgetParams}
         withTimelineDot={false}
-        networkCostsSuffix={isSwapEth ? <NetworkCostsSuffix /> : null}
+        networkCostsSuffix={shouldPayGas ? <NetworkCostsSuffix /> : null}
+        networkCostsTooltipSuffix={<NetworkCostsTooltipSuffix />}
         alwaysRow
       />
       {allowedSlippage && <RowSlippage allowedSlippage={allowedSlippage} />}

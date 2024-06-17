@@ -24,10 +24,11 @@ import { TransactionSubmittedContent } from 'common/pure/TransactionSubmittedCon
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 import { useIsEoaEthFlow } from '../../hooks/useIsEoaEthFlow'
-import { useIsSwapEth } from '../../hooks/useIsSwapEth'
+import { useShouldPayGas } from '../../hooks/useShouldPayGas'
 import { useSwapConfirmButtonText } from '../../hooks/useSwapConfirmButtonText'
 import { useSwapState } from '../../hooks/useSwapState'
 import { NetworkCostsSuffix } from '../../pure/NetworkCostsSuffix'
+import { NetworkCostsTooltipSuffix } from '../../pure/NetworkCostsTooltipSuffix'
 import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from '../../pure/Row/RowSlippageContent'
 import { RowDeadline } from '../Row/RowDeadline'
 
@@ -66,7 +67,7 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
   const tradeConfirmActions = useTradeConfirmActions()
   const receiveAmountInfo = useReceiveAmountInfo()
   const widgetParams = useInjectedWidgetParams()
-  const isSwapEth = useIsSwapEth()
+  const shouldPayGas = useShouldPayGas()
   const isEoaEthFlow = useIsEoaEthFlow()
   const nativeCurrency = useNativeCurrency()
 
@@ -83,8 +84,10 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
       expectReceiveLabel: isExactIn ? 'Expected to receive' : 'Expected to sell',
       minReceivedLabel: isExactIn ? 'Minimum receive' : 'Maximum sent',
       minReceivedTooltip: getMinimumReceivedTooltip(allowedSlippage, isExactIn),
+      networkCostsSuffix: shouldPayGas ? <NetworkCostsSuffix /> : null,
+      networkCostsTooltipSuffix: <NetworkCostsTooltipSuffix />,
     }),
-    [allowedSlippage, nativeCurrency.symbol, isEoaEthFlow, isExactIn]
+    [allowedSlippage, nativeCurrency.symbol, isEoaEthFlow, isExactIn, shouldPayGas]
   )
 
   const submittedContent = (order: Order | undefined, onDismiss: Command) => {
@@ -129,7 +132,6 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
               hideLimitPrice
               hideUsdValues
               withTimelineDot={false}
-              networkCostsSuffix={isSwapEth ? <NetworkCostsSuffix /> : null}
               alwaysRow
             >
               <RowDeadline />

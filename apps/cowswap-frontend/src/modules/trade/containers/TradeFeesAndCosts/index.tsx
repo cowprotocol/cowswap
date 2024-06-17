@@ -13,12 +13,20 @@ interface TradeFeesAndCostsProps {
   receiveAmountInfo: ReceiveAmountInfo | null
   widgetParams: Partial<CowSwapWidgetAppParams>
   networkCostsSuffix?: ReactNode
+  networkCostsTooltipSuffix?: ReactNode
   withTimelineDot?: boolean
   alwaysRow?: boolean
 }
 
 export function TradeFeesAndCosts(props: TradeFeesAndCostsProps) {
-  const { receiveAmountInfo, widgetParams, networkCostsSuffix, withTimelineDot = true, alwaysRow } = props
+  const {
+    receiveAmountInfo,
+    widgetParams,
+    networkCostsSuffix,
+    networkCostsTooltipSuffix,
+    withTimelineDot = true,
+    alwaysRow,
+  } = props
 
   const networkFeeAmount = receiveAmountInfo && getOrderTypeReceiveAmounts(receiveAmountInfo).networkFeeAmount
   const partnerFee = receiveAmountInfo && receiveAmountInfo.costs.partnerFee
@@ -48,6 +56,7 @@ export function TradeFeesAndCosts(props: TradeFeesAndCostsProps) {
           withTimelineDot={withTimelineDot}
           alwaysRow={alwaysRow}
           amountSuffix={networkCostsSuffix}
+          tooltipSuffix={networkCostsTooltipSuffix}
         />
       )}
     </>
