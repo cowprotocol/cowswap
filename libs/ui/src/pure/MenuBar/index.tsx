@@ -160,7 +160,7 @@ const NavItem = ({
   }
 
   const href = item.external
-    ? appendUtmParams(item.href!, item.utmSource, item.utmContent, rootDomain, item.external)
+    ? appendUtmParams(item.href!, item.utmSource, item.utmContent, rootDomain, item.external, item.label)
     : item.href
 
   return item.children ? (
@@ -242,7 +242,7 @@ const DropdownContentItem: React.FC<{
   const itemClassName = item.hasDivider ? 'hasDivider' : ''
 
   const href = item.external
-    ? appendUtmParams(item.href!, item.utmSource, item.utmContent, rootDomain, item.external)
+    ? appendUtmParams(item.href!, item.utmSource, item.utmContent, rootDomain, item.external, item.label)
     : item.href
 
   if (item.isButton) {
@@ -466,7 +466,7 @@ const DropdownContentWrapper: React.FC<DropdownContentWrapperProps> = ({
             as={Tag}
             href={
               !hasChildren
-                ? appendUtmParams(item.href!, item.utmSource, item.utmContent, rootDomain, !!item.external)
+                ? appendUtmParams(item.href!, item.utmSource, item.utmContent, rootDomain, !!item.external, item.label)
                 : undefined
             }
             isOpen={visibleThirdLevel === index}
@@ -520,13 +520,13 @@ const appendUtmParams = (
   utmSource: string | undefined,
   utmContent: string | undefined,
   rootDomain: string,
-  isExternal: boolean
+  isExternal: boolean,
+  label: string | undefined
 ) => {
-  console.log('appendUtmParams called with:', { href, utmSource, utmContent, rootDomain })
   const defaultUtm = {
     utmSource: rootDomain,
     utmMedium: 'web',
-    utmContent: 'link',
+    utmContent: `menubar-nav-button-${label?.toLowerCase().replace(/\s+/g, '-')}`,
   }
   const finalUtmSource = utmSource || defaultUtm.utmSource
   const finalUtmContent = utmContent || defaultUtm.utmContent
@@ -574,7 +574,14 @@ const GlobalSettingsDropdown = forwardRef(
                     key={index}
                     href={
                       item.external
-                        ? appendUtmParams(item.href!, item.utmSource, item.utmContent, rootDomain, item.external)
+                        ? appendUtmParams(
+                            item.href!,
+                            item.utmSource,
+                            item.utmContent,
+                            rootDomain,
+                            item.external,
+                            item.label
+                          )
                         : `${new URL(item.href!, `https://${rootDomain}`).pathname}`
                     }
                     onClick={_onDropdownItemClickFactory(item, closeDropdown)} // Handle onClick here
@@ -594,7 +601,14 @@ const GlobalSettingsDropdown = forwardRef(
                   key={index}
                   href={
                     item.external
-                      ? appendUtmParams(item.href!, item.utmSource, item.utmContent, rootDomain, !!item.external)
+                      ? appendUtmParams(
+                          item.href!,
+                          item.utmSource,
+                          item.utmContent,
+                          rootDomain,
+                          !!item.external,
+                          item.label
+                        )
                       : item.href
                   }
                   onClick={_onDropdownItemClickFactory(item, closeDropdown)} // Handle onClick here
@@ -777,7 +791,7 @@ export const MenuBar = (props: MenuBarProps) => {
               additionalNavButtons &&
               additionalNavButtons.map((item, index) => {
                 const href = item.external
-                  ? appendUtmParams(item.href!, item.utmSource, item.utmContent, rootDomain, item.external)
+                  ? appendUtmParams(item.href!, item.utmSource, item.utmContent, rootDomain, item.external, item.label)
                   : item.href
                 return (
                   <DropdownContentItemButton
@@ -852,7 +866,14 @@ export const MenuBar = (props: MenuBarProps) => {
                   additionalNavButtons.map((item, index) => (
                     <DropdownContentItemButton
                       key={index}
-                      href={appendUtmParams(item.href!, item.utmSource, item.utmContent, rootDomain, !!item.external)}
+                      href={appendUtmParams(
+                        item.href!,
+                        item.utmSource,
+                        item.utmContent,
+                        rootDomain,
+                        !!item.external,
+                        item.label
+                      )}
                       target={item.external ? '_blank' : '_self'}
                       rel={item.external ? 'noopener noreferrer' : undefined}
                       bgColor={item.bgColor}
