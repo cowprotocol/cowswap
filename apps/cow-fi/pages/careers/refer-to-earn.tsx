@@ -39,7 +39,7 @@ export default function Page({ siteConfigData }: PageProps) {
         <ContainerCard bgColor={Color.neutral100} minHeight="70vh" gap={62} gapMobile={42} centerContent touchFooter>
           <ArticleContent maxWidth="100%">
             <Breadcrumbs>
-              <a href="/widget">Widget</a>
+              <a href="/careers">Careers</a>
               <span>Refer-to-Earn</span>
             </Breadcrumbs>
 
