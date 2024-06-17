@@ -14,10 +14,10 @@ import {
 import { useTradeQuote } from 'modules/tradeQuote'
 import { useUsdAmount } from 'modules/usdAmount'
 
+import { NetworkCostsSuffix } from 'common/pure/NetworkCostsSuffix'
 import { RateInfoParams } from 'common/pure/RateInfo'
 
 import { useShouldPayGas } from '../../hooks/useShouldPayGas'
-import { NetworkCostsSuffix } from '../../pure/NetworkCostsSuffix'
 import { NetworkCostsTooltipSuffix } from '../../pure/NetworkCostsTooltipSuffix'
 import { RowDeadline } from '../Row/RowDeadline'
 import { RowSlippage } from '../Row/RowSlippage'
