@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import React, { useMemo } from 'react'
 
 import { CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
@@ -16,6 +16,7 @@ import { useUsdAmount } from 'modules/usdAmount'
 
 import { RateInfoParams } from 'common/pure/RateInfo'
 
+import { NetworkCostsSuffix } from '../../pure/NetworkCostsSuffix'
 import { RowDeadline } from '../Row/RowDeadline'
 import { RowSlippage } from '../Row/RowSlippage'
 
@@ -23,9 +24,15 @@ interface TradeRateDetailsProps {
   receiveAmountInfo: ReceiveAmountInfo | null
   rateInfoParams: RateInfoParams
   allowedSlippage: Percent | null
+  isSwapEth: boolean
 }
 
-export function TradeRateDetails({ allowedSlippage, receiveAmountInfo, rateInfoParams }: TradeRateDetailsProps) {
+export function TradeRateDetails({
+  allowedSlippage,
+  receiveAmountInfo,
+  rateInfoParams,
+  isSwapEth,
+}: TradeRateDetailsProps) {
   const derivedTradeState = useDerivedTradeState()
   const tradeQuote = useTradeQuote()
 
@@ -50,6 +57,7 @@ export function TradeRateDetails({ allowedSlippage, receiveAmountInfo, rateInfoP
           networkFeeAmount={networkFeeAmount}
           networkFeeAmountUsd={networkFeeAmountUsd}
           withTimelineDot={false}
+          amountSuffix={isSwapEth ? <NetworkCostsSuffix /> : null}
           alwaysRow
         />
       </div>
@@ -64,6 +72,7 @@ export function TradeRateDetails({ allowedSlippage, receiveAmountInfo, rateInfoP
         receiveAmountInfo={receiveAmountInfo}
         widgetParams={widgetParams}
         withTimelineDot={false}
+        networkCostsSuffix={isSwapEth ? <NetworkCostsSuffix /> : null}
         alwaysRow
       />
       {allowedSlippage && <RowSlippage allowedSlippage={allowedSlippage} />}

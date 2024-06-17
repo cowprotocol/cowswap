@@ -28,6 +28,8 @@ import { TransactionSubmittedContent } from 'common/pure/TransactionSubmittedCon
 import { useSwapConfirmButtonText } from '../../hooks/useSwapConfirmButtonText'
 import { useSwapState } from '../../hooks/useSwapState'
 import { RowDeadline } from '../Row/RowDeadline'
+import { useIsSwapEth } from '../../hooks/useIsSwapEth'
+import { NetworkCostsSuffix } from '../../pure/NetworkCostsSuffix'
 
 const CONFIRM_TITLE = 'Swap'
 
@@ -64,6 +66,7 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
   const tradeConfirmActions = useTradeConfirmActions()
   const receiveAmountInfo = useReceiveAmountInfo()
   const widgetParams = useInjectedWidgetParams()
+  const isSwapEth = useIsSwapEth()
 
   const isInvertedState = useState(false)
 
@@ -134,6 +137,7 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
               hideLimitPrice
               hideUsdValues
               withTimelineDot={false}
+              networkCostsSuffix={isSwapEth ? <NetworkCostsSuffix /> : null}
               alwaysRow
             >
               <RowDeadline />

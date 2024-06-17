@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import { CowSwapWidgetAppParams } from '@cowprotocol/widget-lib'
 
 import { useUsdAmount } from 'modules/usdAmount'
@@ -10,12 +12,13 @@ import { getOrderTypeReceiveAmounts } from '../../utils/getReceiveAmountInfo'
 interface TradeFeesAndCostsProps {
   receiveAmountInfo: ReceiveAmountInfo | null
   widgetParams: Partial<CowSwapWidgetAppParams>
+  networkCostsSuffix?: ReactNode
   withTimelineDot?: boolean
   alwaysRow?: boolean
 }
 
 export function TradeFeesAndCosts(props: TradeFeesAndCostsProps) {
-  const { receiveAmountInfo, widgetParams, withTimelineDot = true, alwaysRow } = props
+  const { receiveAmountInfo, widgetParams, networkCostsSuffix, withTimelineDot = true, alwaysRow } = props
 
   const networkFeeAmount = receiveAmountInfo && getOrderTypeReceiveAmounts(receiveAmountInfo).networkFeeAmount
   const partnerFee = receiveAmountInfo && receiveAmountInfo.costs.partnerFee
@@ -44,6 +47,7 @@ export function TradeFeesAndCosts(props: TradeFeesAndCostsProps) {
           networkFeeAmountUsd={networkFeeAmountUsd}
           withTimelineDot={withTimelineDot}
           alwaysRow={alwaysRow}
+          amountSuffix={networkCostsSuffix}
         />
       )}
     </>

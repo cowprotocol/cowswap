@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { ReviewOrderModalAmountRow } from '../ReviewOrderModalAmountRow'
@@ -6,6 +8,7 @@ interface NetworkCostsRowProps {
   networkFeeAmount: CurrencyAmount<Currency>
   networkFeeAmountUsd: CurrencyAmount<Currency> | null
   withTimelineDot?: boolean
+  amountSuffix?: ReactNode
   alwaysRow?: boolean
 }
 export function NetworkCostsRow({
@@ -13,6 +16,7 @@ export function NetworkCostsRow({
   alwaysRow,
   networkFeeAmount,
   networkFeeAmountUsd,
+  amountSuffix,
 }: NetworkCostsRowProps) {
   return (
     <ReviewOrderModalAmountRow
@@ -20,6 +24,7 @@ export function NetworkCostsRow({
       withTimelineDot={withTimelineDot}
       amount={networkFeeAmount}
       fiatAmount={networkFeeAmountUsd}
+      amountSuffix={amountSuffix}
       tooltip={
         <>
           This is the cost of settling your order on-chain, including gas and any LP fees.

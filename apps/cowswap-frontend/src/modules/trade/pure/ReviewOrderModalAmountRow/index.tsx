@@ -16,6 +16,7 @@ export type ReviewOrderAmountRowProps = {
   tooltip?: ReactNode
   label: ReactNode
   children?: ReactNode
+  amountSuffix?: ReactNode
   isAmountAccurate?: boolean
   withTimelineDot?: boolean
   highlighted?: boolean
@@ -28,6 +29,7 @@ export function ReviewOrderModalAmountRow({
   tooltip,
   label,
   children,
+  amountSuffix,
   isAmountAccurate = true,
   withTimelineDot = false,
   highlighted = false,
@@ -38,6 +40,7 @@ export function ReviewOrderModalAmountRow({
       {children}
       {!isAmountAccurate && '≈ '}
       <TokenAmount amount={amount} defaultValue="-" tokenSymbol={amount?.currency} />
+      {amountSuffix}
       {fiatAmount && (
         <i>
           &nbsp;(
