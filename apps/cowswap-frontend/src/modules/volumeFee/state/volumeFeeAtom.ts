@@ -34,9 +34,14 @@ const widgetPartnerFeeAtom = atom<VolumeFee | undefined>((get) => {
     return undefined
   }
 
+  const bps = resolveFlexibleConfig(partnerFee.bps, chainId, TradeTypeMap[tradeType])
+  const recipient = resolveFlexibleConfig(partnerFee.recipient, chainId, TradeTypeMap[tradeType])
+
+  if (!bps || !recipient) return undefined
+
   return {
-    bps: resolveFlexibleConfig(partnerFee.bps, chainId, TradeTypeMap[tradeType]),
-    recipient: resolveFlexibleConfig(partnerFee.recipient, chainId, TradeTypeMap[tradeType]),
+    bps,
+    recipient,
   }
 })
 

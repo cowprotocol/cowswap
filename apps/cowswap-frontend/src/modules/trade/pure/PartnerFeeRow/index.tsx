@@ -11,6 +11,7 @@ interface PartnerFeeRowProps {
   partnerFeeUsd: Nullish<CurrencyAmount<Currency>>
   partnerFeeBps: number | undefined
   withTimelineDot: boolean
+  alwaysRow?: boolean
   feeTooltipMarkdown?: string
 }
 
@@ -19,6 +20,7 @@ export function PartnerFeeRow({
   partnerFeeUsd,
   partnerFeeBps,
   withTimelineDot,
+  alwaysRow,
   feeTooltipMarkdown,
 }: PartnerFeeRowProps) {
   const feeAsPercent = partnerFeeBps ? formatPercent(bpsToPercent(partnerFeeBps)) : null
@@ -33,10 +35,11 @@ export function PartnerFeeRow({
           withTimelineDot={withTimelineDot}
           amount={minPartnerFeeAmount}
           fiatAmount={partnerFeeUsd}
+          alwaysRow={alwaysRow}
           tooltip={
             feeTooltipMarkdown || (
               <>
-                This fee helps pay for maintenance & improvements to the swap experience.
+                This fee helps pay for maintenance & improvements to the trade experience.
                 <br />
                 <br />
                 The fee is {partnerFeeBps} BPS ({feeAsPercent}%), applied only if the trade is executed.
@@ -48,6 +51,7 @@ export function PartnerFeeRow({
       ) : (
         <ReviewOrderModalAmountRow
           withTimelineDot={withTimelineDot}
+          alwaysRow={alwaysRow}
           tooltip="Unlike other exchanges, CoW Swap doesn’t charge a fee for trading!"
           label="Fee"
         >

@@ -3,9 +3,9 @@ import { CowEventListeners, CowEventPayloadMap, CowEvents } from '@cowprotocol/e
 
 export { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-export type PerTradeTypeConfig<T> = Record<TradeType, T>
+export type PerTradeTypeConfig<T> = Partial<Record<TradeType, T>>
 
-export type PerNetworkConfig<T> = Record<SupportedChainId, T>
+export type PerNetworkConfig<T> = Partial<Record<SupportedChainId, T>>
 
 export type FlexibleConfig<T> =
   | T
