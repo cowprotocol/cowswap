@@ -220,7 +220,7 @@ export function ReceiptModal({
             {partnerFee && (
               <styledEl.Field>
                 <FieldLabel label="Total fee" tooltip={tooltips.TOTAL_FEE} />
-                <span>{100 / partnerFee.bps}%</span>
+                <span>{(partnerFee.bps / 100).toFixed(2)}%</span>
               </styledEl.Field>
             )}
 
