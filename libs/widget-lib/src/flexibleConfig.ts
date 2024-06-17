@@ -8,7 +8,7 @@ export function resolveFlexibleConfig<T extends string | number>(
   config: FlexibleConfig<T>,
   chainId: SupportedChainId,
   tradeType: TradeType
-): T {
+): T | undefined {
   if (isPerTradeTypeConfig(config)) {
     const value = config[tradeType]
 
