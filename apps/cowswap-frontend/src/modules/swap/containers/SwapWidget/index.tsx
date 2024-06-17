@@ -12,6 +12,7 @@ import SettingsTab from 'legacy/components/Settings'
 import { useModalIsOpen } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
 import { Field } from 'legacy/state/types'
+import { useUserSlippageTolerance } from 'legacy/state/user/hooks'
 
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { EthFlowModal, EthFlowProps } from 'modules/swap/containers/EthFlow'
@@ -61,6 +62,7 @@ const BUTTON_STATES_TO_SHOW_BUNDLE_WRAP_BANNER = [SwapButtonState.WrapAndSwap]
 export function SwapWidget() {
   const { chainId, account } = useWalletInfo()
   const { slippageAdjustedSellAmount, allowedSlippage, currencies, trade } = useDerivedSwapInfo()
+  const useSlippage = useUserSlippageTolerance()
   const parsedAmounts = useSwapCurrenciesAmounts()
   const { isSupportedWallet } = useWalletDetails()
   const isSwapUnsupported = useIsTradeUnsupported(currencies.INPUT, currencies.OUTPUT)
@@ -247,7 +249,11 @@ export function SwapWidget() {
     settingsWidget: <SettingsTab placeholderSlippage={allowedSlippage} />,
     bottomContent: (
       <>
-        <TradeRateDetails rateInfoParams={rateInfoParams} receiveAmountInfo={receiveAmountInfo} />
+        <TradeRateDetails
+          allowedSlippage={useSlippage === 'auto' ? null : allowedSlippage}
+          rateInfoParams={rateInfoParams}
+          receiveAmountInfo={receiveAmountInfo}
+        />
         <SwapWarningsTop {...swapWarningsTopProps} />
         <SafeTokenBanner sellTokenAddress={inputToken?.address} buyTokenAddress={outputToken?.address} />
         <SwapButtons {...swapButtonContext} />
