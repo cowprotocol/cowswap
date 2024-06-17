@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 
 import ICON_ORDERS from '@cowprotocol/assets/svg/orders.svg'
 import ICON_TOKENS from '@cowprotocol/assets/svg/tokens.svg'
@@ -53,15 +53,28 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
 
   const isAlternativeOrderModalVisible = useIsAlternativeOrderModalVisible()
   const { pendingActivity } = useCategorizeRecentActivity()
+  const isWrapOrUnwrap = useIsWrapOrUnwrap()
 
-  const { slots, inputCurrencyInfo, outputCurrencyInfo, actions, params, disableOutput } = props
+  const { slots, actions, params, disableOutput } = props
   const { settingsWidget, lockScreen, middleContent, bottomContent, outerContent } = slots
 
   const { onCurrencySelection, onUserInput, onSwitchTokens, onChangeRecipient } = actions
   const { compactView, showRecipient, isTradePriceUpdating, isEoaEthFlow = false, priceImpact, recipient } = params
 
+  const inputCurrencyInfo = useMemo(
+    () => (isWrapOrUnwrap ? { ...props.inputCurrencyInfo, receiveAmountInfo: null } : props.inputCurrencyInfo),
+    [isWrapOrUnwrap, props.inputCurrencyInfo]
+  )
+
+  const outputCurrencyInfo = useMemo(
+    () =>
+      isWrapOrUnwrap
+        ? { ...props.outputCurrencyInfo, amount: props.inputCurrencyInfo.amount, receiveAmountInfo: null }
+        : props.outputCurrencyInfo,
+    [isWrapOrUnwrap, props.outputCurrencyInfo, props.inputCurrencyInfo.amount]
+  )
+
   const { chainId, account } = useWalletInfo()
-  const isWrapOrUnwrap = useIsWrapOrUnwrap()
   const { allowsOffchainSigning } = useWalletDetails()
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
   const isSafeWallet = useIsSafeWallet()
@@ -208,9 +221,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
                     ? t`You cannot edit this field when selling ${inputCurrencyInfo?.currency?.symbol}`
                     : undefined
                 }
-                currencyInfo={
-                  isWrapOrUnwrap ? { ...outputCurrencyInfo, amount: inputCurrencyInfo.amount } : outputCurrencyInfo
-                }
+                currencyInfo={outputCurrencyInfo}
                 priceImpactParams={!disablePriceImpact ? priceImpact : undefined}
                 topLabel={isWrapOrUnwrap ? undefined : outputCurrencyInfo.label}
                 {...currencyInputCommonProps}

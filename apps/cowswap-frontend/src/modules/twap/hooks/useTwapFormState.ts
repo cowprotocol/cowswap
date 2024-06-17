@@ -16,8 +16,8 @@ export function useTwapFormState(): TwapFormState | null {
   const twapOrder = useAtomValue(twapOrderAtom)
 
   const receiveAmountInfo = useReceiveAmountInfo()
-  const { buyAmount: outputPartAmount } = receiveAmountInfo?.afterPartnerFees || {}
-  const sellAmountPartFiat = useUsdAmount(outputPartAmount).value
+  const { sellAmount } = receiveAmountInfo?.afterPartnerFees || {}
+  const sellAmountPartFiat = useUsdAmount(sellAmount).value
 
   const partTime = useAtomValue(twapTimeIntervalAtom)
 

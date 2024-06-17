@@ -24,19 +24,24 @@ type Props = {
   slippage: Percent
   widgetParams: Partial<CowSwapWidgetAppParams>
   labelsAndTooltips?: LabelsAndTooltips
+  children?: ReactNode
   hideLimitPrice?: boolean
   hideUsdValues?: boolean
   withTimelineDot?: boolean
+  alwaysRow?: boolean
 }
 
 type LabelsAndTooltips = {
   priceLabel?: ReactNode
+  expectReceiveLabel?: ReactNode
   minReceivedLabel?: ReactNode
   minReceivedTooltip?: ReactNode
   limitPriceLabel?: ReactNode
   limitPriceTooltip?: ReactNode
   slippageLabel?: ReactNode
   slippageTooltip?: ReactNode
+  networkCostsSuffix?: ReactNode
+  networkCostsTooltipSuffix?: ReactNode
 }
 
 export function TradeBasicConfirmDetails(props: Props) {
@@ -50,11 +55,15 @@ export function TradeBasicConfirmDetails(props: Props) {
     hideLimitPrice,
     hideUsdValues,
     withTimelineDot = true,
+    alwaysRow,
+    children,
   } = props
   const { amountAfterFees, amountAfterSlippage } = getOrderTypeReceiveAmounts(receiveAmountInfo)
+  const { networkCostsSuffix, networkCostsTooltipSuffix } = labelsAndTooltips || {}
 
   const priceLabel = labelsAndTooltips?.priceLabel || 'Price'
   const minReceivedLabel = labelsAndTooltips?.minReceivedLabel || 'Min received (incl. costs)'
+  const expectReceiveLabel = labelsAndTooltips?.expectReceiveLabel || 'Expected to receive'
   const minReceivedTooltip =
     labelsAndTooltips?.minReceivedTooltip || 'This is the minimum amount that you will receive.'
   const slippageTooltip = labelsAndTooltips?.slippageTooltip
@@ -87,20 +96,29 @@ export function TradeBasicConfirmDetails(props: Props) {
         receiveAmountInfo={receiveAmountInfo}
         widgetParams={widgetParams}
         withTimelineDot={withTimelineDot}
+        alwaysRow={alwaysRow}
+        networkCostsSuffix={networkCostsSuffix}
+        networkCostsTooltipSuffix={networkCostsTooltipSuffix}
       />
 
       <ReviewOrderModalAmountRow
         highlighted={true}
         amount={amountAfterFees}
         fiatAmount={amountAfterFeesUsd}
-        label="Expected to receive"
+        alwaysRow={alwaysRow}
+        label={expectReceiveLabel}
       />
 
       <DividerHorizontal />
 
       {/* Slippage */}
       {
-        <ReviewOrderModalAmountRow withTimelineDot={withTimelineDot} tooltip={slippageTooltip} label={slippageLabel}>
+        <ReviewOrderModalAmountRow
+          withTimelineDot={withTimelineDot}
+          tooltip={slippageTooltip}
+          label={slippageLabel}
+          alwaysRow={alwaysRow}
+        >
           <PercentDisplay percent={+slippage.toFixed(2)} />
         </ReviewOrderModalAmountRow>
       }
@@ -112,6 +130,7 @@ export function TradeBasicConfirmDetails(props: Props) {
         fiatAmount={amountAfterSlippageUsd}
         tooltip={minReceivedTooltip}
         label={minReceivedLabel}
+        alwaysRow={alwaysRow}
       />
 
       {/* Limit Price */}
@@ -123,6 +142,8 @@ export function TradeBasicConfirmDetails(props: Props) {
           limitPriceLabel={labelsAndTooltips?.limitPriceLabel}
         />
       )}
+
+      {children}
     </styledEl.Wrapper>
   )
 }

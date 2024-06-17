@@ -16,9 +16,11 @@ export type ReviewOrderAmountRowProps = {
   tooltip?: ReactNode
   label: ReactNode
   children?: ReactNode
+  amountSuffix?: ReactNode
   isAmountAccurate?: boolean
   withTimelineDot?: boolean
   highlighted?: boolean
+  alwaysRow?: boolean
 }
 
 export function ReviewOrderModalAmountRow({
@@ -27,15 +29,18 @@ export function ReviewOrderModalAmountRow({
   tooltip,
   label,
   children,
+  amountSuffix,
   isAmountAccurate = true,
   withTimelineDot = false,
   highlighted = false,
+  alwaysRow = false,
 }: ReviewOrderAmountRowProps) {
   const Amount = (
     <Content highlighted={highlighted}>
       {children}
       {!isAmountAccurate && '≈ '}
       <TokenAmount amount={amount} defaultValue="-" tokenSymbol={amount?.currency} />
+      {amountSuffix}
       {fiatAmount && (
         <i>
           &nbsp;(
@@ -46,7 +51,12 @@ export function ReviewOrderModalAmountRow({
   )
 
   return (
-    <ConfirmDetailsItem tooltip={tooltip} label={highlighted ? undefined : label} withTimelineDot={withTimelineDot}>
+    <ConfirmDetailsItem
+      tooltip={tooltip}
+      label={highlighted ? undefined : label}
+      alwaysRow={alwaysRow}
+      withTimelineDot={withTimelineDot}
+    >
       {highlighted ? (
         <>
           <ReceiveAmountTitle>

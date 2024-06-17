@@ -20,6 +20,7 @@ export function TradeRateDetails({ rateInfoParams }: TradeRateDetailsProps) {
 
   const partnerFeeRow = (
     <PartnerFeeRow
+      alwaysRow
       withTimelineDot={false}
       partnerFeeUsd={partnerFeeUsd}
       partnerFeeAmount={partnerFeeAmount}
