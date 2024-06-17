@@ -29,10 +29,10 @@ export const cowSwapFeeAtom = atom((get) => {
   if (!inputCurrency || !outputCurrency) return null
 
   const isInputTokenStable = GNOSIS_CHAIN_STABLECOINS.includes(
-    getIsNativeToken(inputCurrency) ? NATIVE_CURRENCY_ADDRESS : inputCurrency.address.toLowerCase()
+    getIsNativeToken(inputCurrency) ? NATIVE_CURRENCY_ADDRESS.toLowerCase() : inputCurrency.address.toLowerCase()
   )
   const isOutputTokenStable = GNOSIS_CHAIN_STABLECOINS.includes(
-    getIsNativeToken(outputCurrency) ? NATIVE_CURRENCY_ADDRESS : outputCurrency.address.toLowerCase()
+    getIsNativeToken(outputCurrency) ? NATIVE_CURRENCY_ADDRESS.toLowerCase() : outputCurrency.address.toLowerCase()
   )
 
   // No stable-stable trades
