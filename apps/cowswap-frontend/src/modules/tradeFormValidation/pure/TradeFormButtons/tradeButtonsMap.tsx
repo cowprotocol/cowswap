@@ -108,7 +108,7 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
     text: 'Wallet Unsupported',
   },
   [TradeFormValidation.SafeReadonlyUser]: {
-    text: 'Read Only',
+    text: 'Connect signer',
   },
   [TradeFormValidation.QuoteLoading]: {
     text: <TradeLoadingButton />,
