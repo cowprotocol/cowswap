@@ -3,7 +3,7 @@ import { useRef } from 'react'
 import { getChainInfo } from '@cowprotocol/common-const'
 import { useAvailableChains } from '@cowprotocol/common-hooks'
 import { UI } from '@cowprotocol/ui'
-import { useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
+import { useIsRabbyWallet, useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import { Trans } from '@lingui/macro'
@@ -156,7 +156,9 @@ export function NetworkSelector() {
   const nodeMobile = useRef<HTMLDivElement>(null)
   const isOpen = useModalIsOpen(ApplicationModal.NETWORK_SELECTOR)
   const toggleModal = useToggleModal(ApplicationModal.NETWORK_SELECTOR)
+
   const isSmartContractWallet = useIsSmartContractWallet()
+  const isRabbyWallet = useIsRabbyWallet()
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
   const info = getChainInfo(chainId)
   const isUpToMedium = useMediaQuery(Media.upToMedium(false))
@@ -173,7 +175,7 @@ export function NetworkSelector() {
 
   const availableChains = useAvailableChains()
 
-  if (!provider || isSmartContractWallet) {
+  if (!provider || (isSmartContractWallet && !isRabbyWallet)) {
     return null
   }
 
