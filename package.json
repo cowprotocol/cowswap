@@ -56,6 +56,10 @@
       "node_modules/(?!@ledgerhq/connect-kit-loader)"
     ]
   },
+  "resolutions": {
+    "@safe-global/safe-apps-provider/**/@safe-global/safe-apps-sdk": "^9.1.0",
+    "@web3-react/gnosis-safe/**/@safe-global/safe-apps-sdk": "^9.1.0"
+  },
   "dependencies": {
     "@1inch/permit-signed-approvals-utils": "^1.4.10",
     "@apollo/client": "^3.1.5",
