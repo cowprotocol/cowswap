@@ -297,7 +297,7 @@ export const GNOSIS_CHAIN_STABLECOINS = [
   GBPE_GNOSIS_CHAIN_ADDRESS,
   USDC_GNOSIS_CHAIN.address,
   USDT_GNOSIS_CHAIN.address,
-]
+].map((t) => t.toLowerCase())
 
 /**
  * Addresses related to COW vesting for Locked GNO
