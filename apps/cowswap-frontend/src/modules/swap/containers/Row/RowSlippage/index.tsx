@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 
 import { formatPercent } from '@cowprotocol/common-utils'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { Percent } from '@uniswap/sdk-core'
 
 import { useToggleSettingsMenu } from 'legacy/state/application/hooks'
@@ -27,9 +28,11 @@ export function RowSlippage({
 
   const isEoaEthFlow = useIsEoaEthFlow()
   const nativeCurrency = useNativeCurrency()
+  const { chainId } = useWalletInfo()
 
   const props = useMemo(
     () => ({
+      chainId,
       isEoaEthFlow,
       symbols: [nativeCurrency.symbol],
       showSettingOnClick,
