@@ -18,7 +18,6 @@ import {
   OrderQuoteSideKindBuy,
   OrderQuoteSideKindSell,
   PartialApiContext,
-  PriceQuality,
   SigningScheme,
   SupportedChainId as ChainId,
   TotalSurplus,
@@ -251,17 +250,4 @@ export async function getProfileData(chainId: ChainId, address: string): Promise
   } else {
     return response.json()
   }
-}
-
-export function getPriceQuality(props: { fast?: boolean; verifyQuote: boolean | undefined }): PriceQuality {
-  const { fast = false, verifyQuote } = props
-  if (fast) {
-    return PriceQuality.FAST
-  }
-
-  if (verifyQuote) {
-    return PriceQuality.VERIFIED
-  }
-
-  return PriceQuality.OPTIMAL
 }
