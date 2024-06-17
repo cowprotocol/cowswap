@@ -11,6 +11,7 @@ import { CONFIG } from '@/const/meta'
 
 import Layout from '@/components/Layout'
 import FAQ from '@/components/FAQ'
+import { Link, LinkType } from '@/components/Link'
 
 import {
   ContainerCard,
@@ -28,7 +29,6 @@ import {
   TopicCardInner,
   HeroContainer,
   HeroImage,
-  HeroButton,
   HeroDescription,
   HeroContent,
   HeroTitle,
@@ -96,15 +96,16 @@ export default function Page({ siteConfigData }: PageProps) {
             <HeroDescription>
               CoW AMM protects LPs from LVR so they can provide liquidity with less risk and more return
             </HeroDescription>
-            <HeroButton
-              background={'#194D05'}
+            <Link
+              bgColor={'#194D05'}
               color={'#BCEC79'}
               href="https://deploy-cow-amm.bleu.fi/"
-              target="_blank"
-              rel="noopener noreferrer nofollow"
+              external
+              type={LinkType.HeroButton}
+              utmContent={'cow-amm-hero-button-protect-liquidity'}
             >
               Protect your liquidity
-            </HeroButton>
+            </Link>
           </HeroContent>
           <HeroImage width={470} color={'#194D05'} marginMobile="24px auto 56px">
             <SVG src={IMG_ICON_GOVERNANCE} />

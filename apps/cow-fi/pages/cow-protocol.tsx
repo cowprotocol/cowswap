@@ -33,6 +33,7 @@ import { CONFIG } from '@/const/meta'
 
 import Layout from '@/components/Layout'
 import FAQ from '@/components/FAQ'
+import { Link, LinkType } from '@/components/Link'
 
 import {
   ContainerCard,
@@ -42,7 +43,6 @@ import {
   TopicImage,
   TopicTitle,
   TopicDescription,
-  TopicButton,
   SectionTitleWrapper,
   SectionTitleIcon,
   SectionTitleText,
@@ -50,7 +50,6 @@ import {
   TopicCardInner,
   HeroContainer,
   HeroImage,
-  HeroButton,
   HeroDescription,
   HeroContent,
   HeroTitle,
@@ -168,15 +167,15 @@ export default function Page({ siteConfigData }: PageProps) {
               CoW Protocol has the largest solver competition and the most advanced developer framework - so you can
               build any DEX-related action you can imagine
             </HeroDescription>
-            <HeroButton
-              background={'#66018E'}
+            <Link
+              bgColor={'#66018E'}
               color={'#F996EE'}
               href="https://docs.cow.fi/category/tutorials"
-              rel="noopener noreferrer"
-              target="_blank"
+              external
+              type={LinkType.HeroButton}
             >
               Start building
-            </HeroButton>
+            </Link>
           </HeroContent>
           <HeroImage width={470} color={'#66018E'}>
             <SVG src={IMG_ICON_GOVERNANCE} />
@@ -246,9 +245,9 @@ export default function Page({ siteConfigData }: PageProps) {
                     CoW Protocol users sign an "intent to trade" message instead of directly executing orders on-chain
                     (like on Uniswap). This lets solvers trade on behalf of the user.
                   </TopicDescription>
-                  <TopicButton bgColor="#66018E" color="#F996EE" href="/learn">
+                  <Link bgColor="#66018E" color="#F996EE" href="/learn">
                     Learn more
-                  </TopicButton>
+                  </Link>
                 </TopicCardInner>
                 <TopicImage
                   iconColor="#66018E"
@@ -276,9 +275,9 @@ export default function Page({ siteConfigData }: PageProps) {
                     public and private liquidity sources - finding better prices than most users could find on their
                     own.
                   </TopicDescription>
-                  <TopicButton bgColor="#66018E" color="#F996EE" href="/learn">
+                  <Link bgColor="#66018E" color="#F996EE" href="/learn">
                     Learn more
-                  </TopicButton>
+                  </Link>
                 </TopicCardInner>
               </TopicCard>
 
@@ -293,9 +292,9 @@ export default function Page({ siteConfigData }: PageProps) {
                     The solver that wins the batch auction is the solver that finds the most surplus - so they win when
                     you win.
                   </TopicDescription>
-                  <TopicButton bgColor="#66018E" color="#F996EE" href="/learn">
+                  <Link bgColor="#66018E" color="#F996EE" href="/learn">
                     Learn more
-                  </TopicButton>
+                  </Link>
                 </TopicCardInner>
                 <TopicImage
                   iconColor="#66018E"
@@ -547,16 +546,17 @@ export default function Page({ siteConfigData }: PageProps) {
                   <TopicCardInner>
                     <TopicTitle fontSize={38}>{study.title}</TopicTitle>
                     <TopicDescription fontSize={21}>{study.description}</TopicDescription>
-                    <TopicButton
+                    <Link
                       bgColor="#490072"
                       color="#F996EE"
                       fontSize={27}
                       href={study.link}
-                      rel="noopener noreferrer nofollow"
-                      target="_blank"
+                      external
+                      type={LinkType.TopicButton}
+                      utmContent={`cow-protocol-case-study-${study.title}`}
                     >
                       Read more
-                    </TopicButton>
+                    </Link>
                   </TopicCardInner>
                 </TopicCard>
               ))}
@@ -607,16 +607,16 @@ export default function Page({ siteConfigData }: PageProps) {
                     As an open-source protocol, building on top of CoW Protocol is permissionless. Thanks to
                     comprehensive documentation and live coding tutorials, integrating the protocol is easy
                   </TopicDescription>
-                  <TopicButton
+                  <Link
                     bgColor="#ED60E9"
                     color="#66018E"
                     fontSize={27}
                     href="https://docs.cow.fi/"
-                    rel="noopener noreferrer"
-                    target="_blank"
+                    type={LinkType.TopicButton}
+                    utmContent={`cow-protocol-docs`}
                   >
                     Read the docs
-                  </TopicButton>
+                  </Link>
                 </TopicCardInner>
                 <TopicImage iconColor="#8702AA" bgColor="transparent" margin={'0 0 0 auto'} height={187} width={'auto'}>
                   <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />
@@ -632,9 +632,9 @@ export default function Page({ siteConfigData }: PageProps) {
                     Don't need overly-custom trading logic? The CoW Protocol widget is the easiest way to integrate
                     swaps, twaps, and limit orders directly into your project site
                   </TopicDescription>
-                  <TopicButton bgColor="#ED60E9" color="#66018E" fontSize={27} href="/widget">
+                  <Link bgColor="#ED60E9" color="#66018E" fontSize={27} href="/widget">
                     Integrate the widget
-                  </TopicButton>
+                  </Link>
                 </TopicCardInner>
                 <TopicImage iconColor="#8702AA" bgColor="transparent" margin={'0 0 0 auto'} height={187} width={'auto'}>
                   <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />
@@ -650,16 +650,17 @@ export default function Page({ siteConfigData }: PageProps) {
                     The CoW DAO Grants program has awarded over $100,000 in grants to innovators that build public DeFi
                     applications with CoW Protocol
                   </TopicDescription>
-                  <TopicButton
+                  <Link
                     bgColor="#ED60E9"
                     color="#66018E"
                     fontSize={27}
                     href="https://grants.cow.fi/"
-                    rel="noopener noreferrer"
-                    target="_blank"
+                    type={LinkType.TopicButton}
+                    external
+                    utmContent={`cow-protocol-grants`}
                   >
                     Apply for a grant
-                  </TopicButton>
+                  </Link>
                 </TopicCardInner>
                 <TopicImage iconColor="#8702AA" bgColor="transparent" margin={'0 0 0 auto'} height={187} width={'auto'}>
                   <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />

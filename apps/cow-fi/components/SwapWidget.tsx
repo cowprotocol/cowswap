@@ -4,7 +4,7 @@ import { Color } from 'styles/variables'
 import { Button } from '@/components/Button'
 import { transparentize } from 'polished'
 import { CONFIG } from '@/const/meta'
-import { LinkWithUtm } from 'modules/utm'
+import { LinkWithUtmComponent } from 'modules/utm'
 
 type TabProps = {
   active: boolean
@@ -322,7 +322,7 @@ export const SwapWidget = ({ tokenId, tokenSymbol, tokenImage, platforms }: Swap
         </div>
       </InputLabel>
 
-      <LinkWithUtm
+      <LinkWithUtmComponent
         defaultUtm={{
           ...CONFIG.utm,
           utmContent: 'utm_content=swap-widget-token__' + encodeURI(tokenId),
@@ -331,7 +331,7 @@ export const SwapWidget = ({ tokenId, tokenSymbol, tokenImage, platforms }: Swap
         passHref
       >
         <Button label={`Swap ${tokenSymbol}`} fontSize={1.6} minHeight={4.2} />
-      </LinkWithUtm>
+      </LinkWithUtmComponent>
     </Wrapper>
   )
 }

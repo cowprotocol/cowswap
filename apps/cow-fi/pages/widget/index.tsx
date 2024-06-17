@@ -10,6 +10,7 @@ import { CONFIG } from '@/const/meta'
 
 import Layout from '@/components/Layout'
 import FAQ from '@/components/FAQ'
+import { Link, LinkType } from '@/components/Link'
 
 import { CowSwapWidget, CowSwapWidgetParams } from '@cowprotocol/widget-react'
 
@@ -32,7 +33,6 @@ import {
   HeroTitle,
   HeroSubtitle,
   WidgetContainer,
-  HeroButton,
   HeroButtonWrapper,
 } from '@/styles/styled'
 
@@ -120,25 +120,29 @@ export default function Page({ siteConfigData }: PageProps) {
             </HeroDescription>
 
             <HeroButtonWrapper>
-              <HeroButton
-                href="https://widget.cow.fi/?utm_content=widget-page-configure-widget-cta-hero&utm_medium=web&utm_source=cow.fi"
+              <Link
+                href="https://widget.cow.fi/"
+                utmContent="widget-page-configure-widget-cta-hero"
                 target="_blank"
                 rel="noopener noreferrer"
+                external
+                type={LinkType.HeroButton}
               >
                 {' '}
                 Configure widget{' '}
-              </HeroButton>
+              </Link>
 
-              <HeroButton
-                background="transparent"
+              <Link
+                bgColor="transparent"
                 color={Color.neutral20}
-                href="https://docs.cow.fi/cow-protocol/tutorials/widget?utm_content=widget-page-readdocs-cta-hero&utm_medium=web&utm_source=cow.fi"
-                target="_blank"
-                rel="noopener noreferrer"
+                href="https://docs.cow.fi/cow-protocol/tutorials/widget"
+                utmContent="widget-page-readdocs-cta-hero"
+                external
+                type={LinkType.HeroButton}
               >
                 {' '}
                 Read docs
-              </HeroButton>
+              </Link>
             </HeroButtonWrapper>
           </HeroContent>
 

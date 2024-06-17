@@ -10,6 +10,7 @@ import { CONFIG } from '@/const/meta'
 
 import Layout from '@/components/Layout'
 import FAQ from '@/components/FAQ'
+import { Link, LinkType } from '@/components/Link'
 
 import {
   ContainerCard,
@@ -19,7 +20,6 @@ import {
   TopicImage,
   TopicTitle,
   TopicDescription,
-  TopicButton,
   SectionTitleWrapper,
   SectionTitleIcon,
   SectionTitleText,
@@ -27,7 +27,6 @@ import {
   TopicCardInner,
   HeroContainer,
   HeroImage,
-  HeroButton,
   HeroDescription,
   HeroContent,
   HeroTitle,
@@ -99,15 +98,9 @@ export default function Page({ siteConfigData }: PageProps) {
             <HeroDescription>
               CoW Swap protects traders from the dangers of DeFi, so you can do what you want without needing to worry
             </HeroDescription>
-            <HeroButton
-              background={'#012F7A'}
-              color={'#65D9FF'}
-              href="https://swap.cow.fi/"
-              rel="noopener noreferrer"
-              target="_blank"
-            >
+            <Link bgColor={'#012F7A'} color={'#65D9FF'} href="https://swap.cow.fi/" external type={LinkType.HeroButton}>
               Launch app
-            </HeroButton>
+            </Link>
           </HeroContent>
           <HeroImage width={470} height={470} color={'#012F7A'} marginMobile="24px auto 56px">
             <ProductLogo height="100%" variant={ProductVariant.CowSwap} theme="light" logoIconOnly />

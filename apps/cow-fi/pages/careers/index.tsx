@@ -2,12 +2,12 @@ import { useState } from 'react'
 import { getJobs } from 'services/greenhouse'
 import { GetStaticProps } from 'next'
 import { Font, Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
-
 import styled from 'styled-components'
 
 import { CONFIG } from '@/const/meta'
 
 import Layout from '@/components/Layout'
+import { Link, LinkType } from '@/components/Link'
 
 import {
   ContainerCard,
@@ -15,7 +15,6 @@ import {
   TopicList,
   TopicCard,
   TopicTitle,
-  TopicButton,
   TopicDescription,
   SectionTitleWrapper,
   SectionTitleIcon,
@@ -23,6 +22,8 @@ import {
   SectionTitleDescription,
   TopicCardInner,
 } from '@/styles/styled'
+
+import { defaultUtm } from 'modules/utm'
 
 const DATA_CACHE_TIME_SECONDS = 5 * 60 // Cache 5min
 
@@ -102,14 +103,15 @@ export default function Page({ siteConfigData, jobsData }: PageProps) {
                               <TopicDescription fontSize={18} color={Color.neutral40} margin="0 0 24px">
                                 {location.name}
                               </TopicDescription>
-                              <TopicButton
-                                margin="auto auto 0 0"
+                              <Link
+                                external
+                                type={LinkType.TopicButton}
                                 href={absolute_url}
-                                target="_blank"
-                                rel="noopener nofollow noreferrer"
+                                utmContent={`job-${title}`}
+                                margin="auto auto 0 0"
                               >
                                 Apply
-                              </TopicButton>
+                              </Link>
                             </TopicCardInner>
                           </TopicCard>
                         ))}
@@ -132,9 +134,14 @@ export default function Page({ siteConfigData, jobsData }: PageProps) {
                               <TopicDescription fontSize={18} color={Color.neutral40} margin="0">
                                 {location.name}
                               </TopicDescription>
-                              <a href={absolute_url} target="_blank" rel="noopener nofollow noreferrer">
+                              <Link
+                                external
+                                type={LinkType.TopicButton}
+                                href={absolute_url}
+                                utmContent={`job-${title}`}
+                              >
                                 Apply
-                              </a>
+                              </Link>
                             </TopicCardInner>
                           </TopicCard>
                         ))}
@@ -157,9 +164,9 @@ export default function Page({ siteConfigData, jobsData }: PageProps) {
                     Know someone who is not just looking for a job but for a great opportunity to grow? Refer them to us
                     to earn $6,000 in USDC or USD.{' '}
                   </TopicDescription>
-                  <TopicButton bgColor="#194D05" color="#BCEC79" href="/careers/refer-to-earn">
+                  <Link type={LinkType.TopicButton} bgColor="#194D05" color="#BCEC79" href="/careers/refer-to-earn">
                     Refer-to-Earn details
-                  </TopicButton>
+                  </Link>
                 </TopicCardInner>
               </TopicCard>
             </TopicList>

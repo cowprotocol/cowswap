@@ -8,6 +8,7 @@ import { CONFIG } from '@/const/meta'
 import Layout from '@/components/Layout'
 import FAQ from '@/components/FAQ'
 import { AddRpcButton } from '@/components/AddRpcButton'
+import { Link, LinkType } from '@/components/Link'
 import useWebShare from 'hooks/useWebShare'
 
 import { WagmiConfig, createConfig, configureChains, mainnet } from 'wagmi'
@@ -36,7 +37,6 @@ import {
   TopicCardInner,
   HeroContainer,
   HeroImage,
-  HeroButton,
   HeroDescription,
   HeroContent,
   HeroTitle,
@@ -203,9 +203,9 @@ export default function Page({ siteConfigData }: PageProps) {
                   </ol>
                 </HeroDescription>
 
-                <HeroButton background={'#EC4612'} color={'#FEE7CF'} href="#rpc">
+                <Link bgColor={'#EC4612'} color={'#FEE7CF'} href="#rpc">
                   Get protected
-                </HeroButton>
+                </Link>
               </HeroContent>
               <HeroImage width={470} height={470} color={'#EC4612'}>
                 <ProductLogo height={'100%'} variant={ProductVariant.MevBlocker} theme="dark" logoIconOnly />

@@ -1,4 +1,4 @@
-import { LinkWithUtm } from 'modules/utm'
+import { LinkWithUtmComponent } from 'modules/utm'
 import { CONFIG } from '@/const/meta'
 import { IMAGE_PATH } from '@/const/paths'
 
@@ -51,13 +51,13 @@ export const DAO_CONTENT = {
       description: (
         <>
           Ensure your trades are always close to the real-time market price thanks to the{' '}
-          <LinkWithUtm
+          <LinkWithUtmComponent
             href="https://github.com/charlesndalton/milkman"
             defaultUtm={{ ...CONFIG.utm, utmContent: 'daos-page' }}
             passHref
           >
             Milkman bot
-          </LinkWithUtm>
+          </LinkWithUtmComponent>
           . Set the maximum deviation you&apos;ll accept, and Milkman will do the rest.
         </>
       ),
@@ -85,9 +85,13 @@ export const DAO_CONTENT = {
       title: 'Basket Sells',
       description: (
         <>
-          <LinkWithUtm href="https://dump.services/" defaultUtm={{ ...CONFIG.utm, utmContent: 'daos-page' }} passHref>
+          <LinkWithUtmComponent
+            href="https://dump.services/"
+            defaultUtm={{ ...CONFIG.utm, utmContent: 'daos-page' }}
+            passHref
+          >
             Dump.services
-          </LinkWithUtm>
+          </LinkWithUtmComponent>
           , a collaboration between CoW Swap and Yearn, allows DAOs and traders to sell multiple tokens in a single
           transaction.
         </>
