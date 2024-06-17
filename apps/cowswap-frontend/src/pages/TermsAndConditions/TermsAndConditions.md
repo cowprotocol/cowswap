@@ -6,7 +6,7 @@
 
 These Terms of Use (the "Terms") govern your access to <https://cow.fi/> (the "Website") and use of any products offered or provided through the Website (collectively, the "Products"). The Website and Products are provided to you by CoW DAO ("we", "our", or "us").
 
-CoW DAO is an Ethereum and Gnosis Chain based collective managed by community members in accordance with the CoW DAO’s [participation agreement](https://snapshot.org/#/cow.eth/about). To contact CoW DAO please use the forum at <https://forum.cow.fi/>.
+CoW DAO is a collective managed by community members across various Ethereum Virtual Machine (EVM) compatible blockchains. These blockchains may include, but are not limited to, well-established networks such as Ethereum and Gnosis Chain and emerging solutions within Ethereum layer 2 solutions. The management of CoW DAO is in accordance with its participation agreement. For any inquiries or to establish contact with CoW DAO, please use the forum at <https://forum.cow.fi/>.
 
 The Products covered by these terms include but are not limited to:
 
@@ -64,9 +64,9 @@ We may amend these Terms at our sole discretion. We regularly do so. Every time 
 
 ## CoW Protocol
 
-Cow Protocol (the “Protocol”) is a decentralised protocol operated by CoW DAO on the Ethereum and Gnosis Chain blockchains (and potentially any EVM compatible chains) that allows users to trade certain digital assets. The Protocol is a set of smart contracts owned by CoW DAO.
+CoW Protocol (the "Protocol") is a decentralised protocol owned and operated by CoW DAO that allows users to trade certain digital assets.
 
-CoW Protocol applies batch auction mechanisms to allow peer-to-peer trades on Ethereum Mainnet, and Ethereum Virtual Machine compatible validation mechanisms. CoW DAO is not custodians or counterparties to any transactions executed by you on the Protocol. We do not support any other service, particularly we do not provide any order matching, guaranteed prices, or similar exchange or trading platform services.
+CoW Protocol is a set of smart contracts that applies batch auction mechanisms to allow peer-to-peer trades on well-established networks such as Ethereum and Gnosis Chain and emerging solutions within Ethereum layer 2 solutions. CoW DAO is not custodian or counterparty to any transactions executed by you on the Protocol. We do not support any other service, particularly we do not provide any order matching, guaranteed prices, or similar exchange or trading platform services.
 
 Please consult our [documentation](https://docs.cow.fi/cow-protocol) for more information on CoW Protocol.
 
