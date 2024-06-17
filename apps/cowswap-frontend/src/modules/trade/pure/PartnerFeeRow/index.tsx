@@ -22,13 +22,16 @@ export function PartnerFeeRow({
   feeTooltipMarkdown,
 }: PartnerFeeRowProps) {
   const feeAsPercent = partnerFeeBps ? formatPercent(bpsToPercent(partnerFeeBps)) : null
+  const minPartnerFeeAmount = partnerFeeAmount?.equalTo(0)
+    ? CurrencyAmount.fromRawAmount(partnerFeeAmount.currency, 1)
+    : partnerFeeAmount
 
   return (
     <>
-      {partnerFeeAmount?.greaterThan(0) && partnerFeeBps ? (
+      {partnerFeeAmount && partnerFeeBps ? (
         <ReviewOrderModalAmountRow
           withTimelineDot={withTimelineDot}
-          amount={partnerFeeAmount}
+          amount={minPartnerFeeAmount}
           fiatAmount={partnerFeeUsd}
           tooltip={
             feeTooltipMarkdown || (
