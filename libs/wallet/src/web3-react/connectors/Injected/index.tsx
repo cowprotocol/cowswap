@@ -19,7 +19,9 @@ export class InjectedWallet extends Connector {
   walletUrl: string
   searchKeywords: string[]
   eagerConnection?: boolean
+
   onConnect?(provider: EIP1193Provider): void
+
   onDisconnect?: Command
 
   constructor({ actions, onError, walletUrl, searchKeywords }: injectedWalletConstructorArgs) {
@@ -145,7 +147,9 @@ export class InjectedWallet extends Connector {
       const onDisconnect = (error: ProviderRpcError): void => {
         if (!doesProviderMatches()) return
 
-        this.provider?.request({ method: 'PUBLIC_disconnectSite' })
+        this.provider
+          ?.request({ method: 'PUBLIC_disconnectSite' })
+          .catch((e) => console.log('Failed to call "PUBLIC_disconnectSite", ignoring'))
 
         this.deactivate()
         this.onError?.(error)
