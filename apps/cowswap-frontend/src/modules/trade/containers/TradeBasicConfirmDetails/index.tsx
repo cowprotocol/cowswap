@@ -1,8 +1,9 @@
-import { Dispatch, ReactNode, SetStateAction, useMemo } from 'react'
+import React, { Dispatch, ReactNode, SetStateAction, useMemo } from 'react'
 
-import { isAddress, shortenAddress } from '@cowprotocol/common-utils'
 import { CowSwapWidgetAppParams } from '@cowprotocol/widget-lib'
 import { Percent, Price } from '@uniswap/sdk-core'
+
+import { Nullish } from 'types'
 
 import { useUsdAmount } from 'modules/usdAmount'
 
@@ -12,7 +13,7 @@ import { RateInfoParams } from 'common/pure/RateInfo'
 import { LimitPriceRow } from './LimitPriceRow'
 import * as styledEl from './styled'
 
-import { ConfirmDetailsItem } from '../../pure/ConfirmDetailsItem'
+import { RecipientRow } from '../../pure/RecipientRow'
 import { ReviewOrderModalAmountRow } from '../../pure/ReviewOrderModalAmountRow'
 import { DividerHorizontal } from '../../pure/Row/styled'
 import { ReceiveAmountInfo } from '../../types'
@@ -27,7 +28,8 @@ type Props = {
   widgetParams: Partial<CowSwapWidgetAppParams>
   labelsAndTooltips?: LabelsAndTooltips
   children?: ReactNode
-  recipient?: string | null
+  recipient?: Nullish<string>
+  account: Nullish<string>
   hideLimitPrice?: boolean
   hideUsdValues?: boolean
   withTimelineDot?: boolean
@@ -61,6 +63,7 @@ export function TradeBasicConfirmDetails(props: Props) {
     alwaysRow,
     children,
     recipient,
+    account,
   } = props
   const { amountAfterFees, amountAfterSlippage } = getOrderTypeReceiveAmounts(receiveAmountInfo)
   const { networkCostsSuffix, networkCostsTooltipSuffix } = labelsAndTooltips || {}
@@ -149,16 +152,8 @@ export function TradeBasicConfirmDetails(props: Props) {
 
       {/*Recipient*/}
 
-      {recipient && (
-        <ConfirmDetailsItem
-          tooltip="The tokens received from this order will automatically be sent to this address. No need to do a second transaction!"
-          label="Recipient"
-          alwaysRow={alwaysRow}
-          withTimelineDot={withTimelineDot}
-        >
-          <span>{isAddress(recipient) ? shortenAddress(recipient) : recipient}</span>
-        </ConfirmDetailsItem>
-      )}
+      {/* Recipient */}
+      <RecipientRow recipient={recipient} account={account} />
       {children}
     </styledEl.Wrapper>
   )
