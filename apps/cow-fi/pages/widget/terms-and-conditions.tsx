@@ -54,7 +54,7 @@ export default function TermsAndConditionsPage({ siteConfigData }: { siteConfigD
         <div>
           <h1>Terms and Conditions for the CoW Swap Widget &amp; Partner Fee Program</h1>
           <p>
-            These Terms and Conditions (the "Terms") govern the integration of the CoW Swap Widgetr (the "Widget"). The
+            These Terms and Conditions (the "Terms") govern the integration of the CoW Swap Widget (the "Widget"). The
             Widget is provided to you ("you", the "Partner") by CoW DAO (the "Provider", "we", "our", or "us").
           </p>
           <p>

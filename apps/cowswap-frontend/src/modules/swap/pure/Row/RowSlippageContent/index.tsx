@@ -1,4 +1,5 @@
 import { INPUT_OUTPUT_EXPLANATION, MINIMUM_ETH_FLOW_SLIPPAGE, PERCENTAGE_PRECISION } from '@cowprotocol/common-const'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
 import { HoverTooltip, RowFixed } from '@cowprotocol/ui'
 
@@ -25,26 +26,30 @@ export const ClickableText = styled.button`
   }
 `
 
-export const getNativeSlippageTooltip = (symbols: (string | undefined)[] | undefined) => (
+export const getNativeSlippageTooltip = (chainId: SupportedChainId, symbols: (string | undefined)[] | undefined) => (
   <Trans>
     When selling {symbols?.[0] || 'a native currency'}, the minimum slippage tolerance is set to{' '}
-    {MINIMUM_ETH_FLOW_SLIPPAGE.toSignificant(PERCENTAGE_PRECISION)}% to ensure a high likelihood of order matching,
-    even in volatile market conditions.
-    <br /><br />
+    {MINIMUM_ETH_FLOW_SLIPPAGE[chainId].toSignificant(PERCENTAGE_PRECISION)}% to ensure a high likelihood of order
+    matching, even in volatile market conditions.
+    <br />
+    <br />
     Orders on CoW Swap are always protected from MEV, so your slippage tolerance cannot be exploited.
   </Trans>
 )
 export const getNonNativeSlippageTooltip = () => (
   <Trans>
     Your slippage is MEV protected: all orders are submitted with tight spread (0.1%) on-chain.
-    <br /><br />
+    <br />
+    <br />
     The slippage you pick here enables a resubmission of your order in case of unfavourable price movements.
-    <br /><br />
+    <br />
+    <br />
     {INPUT_OUTPUT_EXPLANATION}
   </Trans>
 )
 
 export interface RowSlippageContentProps extends RowSlippageProps {
+  chainId: SupportedChainId
   toggleSettings: Command
   displaySlippage: string
   isEoaEthFlow: boolean
@@ -59,6 +64,7 @@ export interface RowSlippageContentProps extends RowSlippageProps {
 
 export function RowSlippageContent(props: RowSlippageContentProps) {
   const {
+    chainId,
     showSettingOnClick,
     toggleSettings,
     displaySlippage,
@@ -70,7 +76,7 @@ export function RowSlippageContent(props: RowSlippageContentProps) {
   } = props
 
   const tooltipContent =
-    slippageTooltip || (isEoaEthFlow ? getNativeSlippageTooltip(symbols) : getNonNativeSlippageTooltip())
+    slippageTooltip || (isEoaEthFlow ? getNativeSlippageTooltip(chainId, symbols) : getNonNativeSlippageTooltip())
 
   return (
     <StyledRowBetween {...styleProps}>

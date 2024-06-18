@@ -9,12 +9,18 @@ export function tryParseFractionalAmount(
   if (!amount || !currency) return null
 
   try {
-    const fraction = FractionUtils.parseFractionFromJSON(amount)
+    const parsed = FractionUtils.parseFractionFromJSON(amount)
 
-    if (!fraction) return null
+    if (!parsed) return null
+
+    const fraction =
+      typeof parsed.decimals === 'number'
+        ? FractionUtils.adjustDecimalsAtoms(parsed.value, parsed.decimals, currency.decimals)
+        : parsed.value
 
     return currency ? CurrencyAmount.fromFractionalAmount(currency, fraction.numerator, fraction.denominator) : null
-  } catch (e: any) {
+  } catch (error: any) {
+    console.error('Failed to parse fractional amount', error, amount, currency?.symbol)
     return null
   }
 }
