@@ -1,4 +1,5 @@
 import { INPUT_OUTPUT_EXPLANATION, MINIMUM_ETH_FLOW_SLIPPAGE, PERCENTAGE_PRECISION } from '@cowprotocol/common-const'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
 import { HoverTooltip, RowFixed } from '@cowprotocol/ui'
 import { Percent } from '@uniswap/sdk-core'
@@ -25,11 +26,11 @@ export const ClickableText = styled.button`
   }
 `
 
-export const getNativeSlippageTooltip = (symbols: (string | undefined)[] | undefined) => (
+export const getNativeSlippageTooltip = (chainId: SupportedChainId, symbols: (string | undefined)[] | undefined) => (
   <Trans>
     When selling {symbols?.[0] || 'a native currency'}, the minimum slippage tolerance is set to{' '}
-    {MINIMUM_ETH_FLOW_SLIPPAGE.toSignificant(PERCENTAGE_PRECISION)}% to ensure a high likelihood of order matching, even
-    in volatile market conditions.
+    {MINIMUM_ETH_FLOW_SLIPPAGE[chainId].toSignificant(PERCENTAGE_PRECISION)}% to ensure a high likelihood of order
+    matching, even in volatile market conditions.
     <br />
     <br />
     Orders on CoW Swap are always protected from MEV, so your slippage tolerance cannot be exploited.
@@ -48,6 +49,7 @@ export const getNonNativeSlippageTooltip = () => (
 )
 
 export interface RowSlippageContentProps {
+  chainId: SupportedChainId
   toggleSettings: Command
   displaySlippage: string
   isEoaEthFlow: boolean
@@ -64,6 +66,7 @@ export interface RowSlippageContentProps {
 
 export function RowSlippageContent(props: RowSlippageContentProps) {
   const {
+    chainId,
     showSettingOnClick,
     toggleSettings,
     displaySlippage,
@@ -75,7 +78,7 @@ export function RowSlippageContent(props: RowSlippageContentProps) {
   } = props
 
   const tooltipContent =
-    slippageTooltip || (isEoaEthFlow ? getNativeSlippageTooltip(symbols) : getNonNativeSlippageTooltip())
+    slippageTooltip || (isEoaEthFlow ? getNativeSlippageTooltip(chainId, symbols) : getNonNativeSlippageTooltip())
 
   return (
     <StyledRowBetween {...styleProps}>

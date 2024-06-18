@@ -174,4 +174,65 @@ describe('validatePartnerFee()', () => {
       expect(result).toBe(undefined)
     })
   })
+
+  describe('When bps and recipient are maps', () => {
+    it('When one of bps is not a valid, then should return error', () => {
+      const result = validatePartnerFee({
+        bps: {
+          [SupportedChainId.MAINNET]: 200,
+          [SupportedChainId.ARBITRUM_ONE]: 100,
+          [SupportedChainId.GNOSIS_CHAIN]: 100,
+          [SupportedChainId.SEPOLIA]: 100,
+        },
+        recipient: {
+          [SupportedChainId.MAINNET]: '0x0000000000000000000000000000000000000000',
+          [SupportedChainId.ARBITRUM_ONE]: '0x0000000000000000000000000000000000000000',
+          [SupportedChainId.GNOSIS_CHAIN]: '0x0000000000000000000000000000000000000000',
+          [SupportedChainId.SEPOLIA]: '0x0000000000000000000000000000000000000000',
+        },
+      })
+
+      expect(result).toEqual(['Partner fee can not be more than 100 BPS!'])
+    })
+
+    it('When one of addresses is not a valid address, then should return error', () => {
+      const result = validatePartnerFee({
+        bps: {
+          [SupportedChainId.MAINNET]: 100,
+          [SupportedChainId.ARBITRUM_ONE]: 100,
+          [SupportedChainId.GNOSIS_CHAIN]: 100,
+          [SupportedChainId.SEPOLIA]: 100,
+        },
+        recipient: {
+          [SupportedChainId.MAINNET]: '0x0000000000000000000000000000000000000000',
+          [SupportedChainId.ARBITRUM_ONE]: '0x0000000000000000000000000000000000000000',
+          [SupportedChainId.GNOSIS_CHAIN]: 'rtrth',
+          [SupportedChainId.SEPOLIA]: '0x0000000000000000000000000000000000000000',
+        },
+      })
+
+      expect(result).toEqual([
+        'invalid address (argument="address", value="rtrth", code=INVALID_ARGUMENT, version=address/5.7.0)',
+      ])
+    })
+
+    it('When everything is valid, then should return undefined', () => {
+      const result = validatePartnerFee({
+        bps: {
+          [SupportedChainId.MAINNET]: 100,
+          [SupportedChainId.ARBITRUM_ONE]: 100,
+          [SupportedChainId.GNOSIS_CHAIN]: 100,
+          [SupportedChainId.SEPOLIA]: 100,
+        },
+        recipient: {
+          [SupportedChainId.MAINNET]: '0x0000000000000000000000000000000000000000',
+          [SupportedChainId.ARBITRUM_ONE]: '0x0000000000000000000000000000000000000000',
+          [SupportedChainId.GNOSIS_CHAIN]: '0x0000000000000000000000000000000000000000',
+          [SupportedChainId.SEPOLIA]: '0x0000000000000000000000000000000000000000',
+        },
+      })
+
+      expect(result).toBe(undefined)
+    })
+  })
 })

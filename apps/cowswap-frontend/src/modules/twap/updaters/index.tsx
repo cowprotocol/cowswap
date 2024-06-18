@@ -9,7 +9,6 @@ import { FullAmountQuoteUpdater } from './FullAmountQuoteUpdater'
 import { PartOrdersUpdater } from './PartOrdersUpdater'
 import { QuoteObserverUpdater } from './QuoteObserverUpdater'
 import { QuoteParamsUpdater } from './QuoteParamsUpdater'
-import { TwapAmountsFromUrlsUpdater } from './TwapAmountsFromUrlsUpdater'
 import { TwapOrdersUpdater } from './TwapOrdersUpdater'
 
 import { useTwapSlippage } from '../hooks/useTwapSlippage'
@@ -28,7 +27,6 @@ export function TwapUpdaters() {
       <QuoteParamsUpdater />
       <AppDataUpdater orderClass="twap" slippage={twapOrderSlippage} />
       <QuoteObserverUpdater />
-      <TwapAmountsFromUrlsUpdater />
       {shouldLoadTwapOrders && (
         <>
           <FullAmountQuoteUpdater />

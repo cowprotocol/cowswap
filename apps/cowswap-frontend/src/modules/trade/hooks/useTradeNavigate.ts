@@ -39,6 +39,9 @@ export function useTradeNavigate(): UseTradeNavigateCallback {
           chainId: chainId ? chainId.toString() : undefined,
           inputCurrencyId: inputCurrencyId || undefined,
           outputCurrencyId: outputCurrencyId || undefined,
+          inputCurrencyAmount: undefined,
+          outputCurrencyAmount: undefined,
+          orderKind: undefined,
         },
         tradeRoute
       )
