@@ -54,7 +54,11 @@ const SOCIAL_LINKS: { href: string; label: string; icon: string }[] = [
 ]
 
 const PRODUCT_LOGO_LINKS: { href: string; label: string; productVariant: ProductVariant }[] = [
-  { href: 'https://swap.cow.fi/', label: 'CoW Swap', productVariant: ProductVariant.CowSwap },
+  {
+    href: 'https://swap.cow.fi/',
+    label: 'CoW Swap',
+    productVariant: ProductVariant.CowSwap,
+  },
   { href: 'https://cow.fi/', label: 'CoW Protocol', productVariant: ProductVariant.CowProtocol },
   { href: 'https://mevblocker.com', label: 'MEV Blocker', productVariant: ProductVariant.MevBlocker },
   { href: 'https://cow.fi/cow-amm', label: 'CoW AMM', productVariant: ProductVariant.CowAmm },

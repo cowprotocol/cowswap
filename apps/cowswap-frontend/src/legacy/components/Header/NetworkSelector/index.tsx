@@ -83,16 +83,15 @@ const SelectorControls = styled.div<{ isChainIdUnsupported: boolean }>`
   font-weight: 400;
   justify-content: space-between;
   gap: 6px;
-
-  &:focus {
-    background-color: ${({ theme }) => darken(theme.red1, 0.1)};
-  }
-
-  border-radius: 21px;
+  border-radius: 28px;
   border: 2px solid transparent;
   padding: 6px;
   transition: border var(${UI.ANIMATION_DURATION}) ease-in-out;
   background: transparent;
+
+  &:focus {
+    background-color: ${({ theme }) => darken(theme.red1, 0.1)};
+  }
 
   &:hover {
     border: 2px solid ${({ theme }) => transparentize(theme.text, 0.7)};
@@ -120,6 +119,7 @@ const SelectorLogo = styled.img<{ interactive?: boolean }>`
 const SelectorWrapper = styled.div`
   display: flex;
   cursor: pointer;
+  height: 100%;
 
   ${Media.MediumAndUp()} {
     position: relative;

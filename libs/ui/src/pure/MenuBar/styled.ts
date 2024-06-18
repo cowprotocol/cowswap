@@ -63,8 +63,8 @@ export const MenuBarInner = styled.div<{ theme: CowSwapTheme }>`
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
-  padding: 8px;
-  gap: 8px;
+  padding: 6px;
+  gap: 6px;
   height: var(--height);
   width: var(--width);
   background: var(--bgColor);
@@ -639,6 +639,7 @@ export const RightAligned = styled.div<{ mobileMode?: boolean; flexFlow?: string
   align-items: center;
   gap: 6px;
   margin: 0 0 0 auto;
+  height: 100%;
 
   ${DropdownContentItemButton} {
     min-height: 100%;
@@ -652,6 +653,7 @@ export const RightAligned = styled.div<{ mobileMode?: boolean; flexFlow?: string
   ${({ mobileMode, flexFlowMobile }) =>
     mobileMode &&
     css`
+      height: auto;
       gap: 16px;
       flex-flow: ${flexFlowMobile || 'column wrap'};
     `}

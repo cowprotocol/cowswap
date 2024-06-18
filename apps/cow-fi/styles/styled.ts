@@ -1,7 +1,6 @@
 import styled, { css } from 'styled-components'
 import { Font, Color, Media } from '@cowprotocol/ui'
 import { transparentize } from 'color2k'
-import { LinkWithUtmComponent, LinkWithUtmProps } from 'modules/utm'
 
 export const ContainerCard = styled.div<{
   bgColor?: string

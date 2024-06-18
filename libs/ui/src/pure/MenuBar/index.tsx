@@ -44,7 +44,7 @@ const DAO_NAV_ITEMS: MenuItem[] = [
     productVariant: ProductVariant.CowDao,
     hasDivider: true,
     hoverColor: Color.neutral100,
-    hoverBgColor: Color.neutral10,
+    hoverBgColor: Color.neutral20,
     external: true,
     utmContent: 'menubar-dao-nav-cowdao',
   },
@@ -59,23 +59,23 @@ const DAO_NAV_ITEMS: MenuItem[] = [
   {
     href: 'https://cow.fi/cow-protocol',
     productVariant: ProductVariant.CowProtocol,
-    hoverColor: '#F996EE',
-    hoverBgColor: '#490072',
+    hoverColor: '#FCCAF2',
+    hoverBgColor: '#AD02C6',
     external: true,
     utmContent: 'menubar-dao-nav-cowprotocol',
   },
   {
     href: 'https://cow.fi/cow-amm',
     productVariant: ProductVariant.CowAmm,
-    hoverColor: '#BCEC79',
-    hoverBgColor: '#194D06',
+    hoverColor: '#007CDB',
+    hoverBgColor: '#CCF8FF',
     external: true,
     utmContent: 'menubar-dao-nav-cowamm',
   },
   {
     href: 'https://cow.fi/mev-blocker',
     productVariant: ProductVariant.MevBlocker,
-    hoverColor: '#FEE7CF',
+    hoverColor: '#F2CD16',
     hoverBgColor: '#EC4612',
     external: true,
   },
@@ -766,7 +766,7 @@ export const MenuBar = (props: MenuBarProps) => {
             mobileMode={isMobile}
             rootDomain={rootDomain}
           />
-          <ProductLogo variant={productVariant} theme={theme} logoIconOnly={isMobile} href="/" />
+          <ProductLogo variant={productVariant} theme={theme} logoIconOnly={isMobile} height={30} href="/" />
 
           {!isMobile && (
             <NavItems theme={styledTheme} ref={navItemsRef}>

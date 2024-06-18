@@ -46,19 +46,15 @@ export default function Layout({ children, bgColor, metaTitle, metaDescription, 
         <title key="title">{`${metaTitle || `${CONFIG.title} - ${CONFIG.descriptionShort}`}`}</title>
         <meta key="ogTitle" property="og:title" content={metaTitle || `${CONFIG.title} - ${CONFIG.descriptionShort}`} />
 
-        <meta key="description" name="description" content={metaDescription || CONFIG.descriptionShort} />
-        <meta key="ogDescription" property="og:description" content={metaDescription || CONFIG.descriptionShort} />
+        <meta key="description" name="description" content={metaDescription || CONFIG.description} />
+        <meta key="ogDescription" property="og:description" content={metaDescription || CONFIG.description} />
 
         <meta
           key="twitterTitle"
           name="twitter:title"
-          content={`${metaTitle || `${CONFIG.title} - ${CONFIG.descriptionShort}`}`}
+          content={`${metaTitle || `${CONFIG.title} - ${CONFIG.description}`}`}
         />
-        <meta
-          key="twitterDescription"
-          name="twitter:description"
-          content={metaDescription || CONFIG.descriptionShort}
-        />
+        <meta key="twitterDescription" name="twitter:description" content={metaDescription || CONFIG.description} />
 
         <meta key="ogImage" property="og:image" content={ogImage || CONFIG.ogImage} />
         <meta key="twitterImage" name="twitter:image" content={ogImage || CONFIG.ogImage} />

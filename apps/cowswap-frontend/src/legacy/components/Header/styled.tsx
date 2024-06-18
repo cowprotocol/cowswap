@@ -135,6 +135,7 @@ export const HeaderControls = styled.div`
   justify-content: flex-end;
   gap: 6px;
   max-width: 100%;
+  height: 100%;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     margin: 0 0 0 auto;
@@ -155,6 +156,7 @@ export const HeaderElement = styled.div`
   display: flex;
   align-items: center;
   gap: 0;
+  height: 100%;
 `
 
 export const Wrapper = styled.div<{ isMobileMenuOpen: boolean }>`
