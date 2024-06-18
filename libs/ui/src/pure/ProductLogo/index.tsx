@@ -2,16 +2,20 @@ import LOGO_COWAMM from '@cowprotocol/assets/images/logo-cowamm.svg'
 import LOGO_COWDAO from '@cowprotocol/assets/images/logo-cowdao.svg'
 import LOGO_COWPROTOCOL from '@cowprotocol/assets/images/logo-cowprotocol.svg'
 import LOGO_COWSWAP from '@cowprotocol/assets/images/logo-cowswap.svg'
+import LOGO_COWEXPLORER from '@cowprotocol/assets/images/logo-cowexplorer.svg'
 import LOGO_ICON_COW from '@cowprotocol/assets/images/logo-icon-cow.svg'
 import LOGO_MEVBLOCKER from '@cowprotocol/assets/images/logo-mevblocker.svg'
 import LOGO_ICON_MEVBLOCKER from '@cowprotocol/assets/images/logo-icon-mevblocker.svg'
 import { CowSwapTheme } from '@cowprotocol/widget-lib'
+
+import { Color } from '../../consts'
 
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
 export enum ProductVariant {
   CowSwap = 'cowSwap',
+  CowExplorer = 'cowExplorer',
   CowProtocol = 'cowProtocol',
   MevBlocker = 'mevBlocker',
   CowAmm = 'cowAmm',
@@ -55,30 +59,58 @@ const LOGOS: Record<ProductVariant, ThemedLogo> = {
     },
   },
 
+  // CoW Explorer
+  [ProductVariant.CowExplorer]: {
+    light: {
+      default: {
+        src: LOGO_COWEXPLORER,
+        alt: 'CoW Explorer light mode',
+        color: Color.neutral0,
+      },
+      logoIconOnly: {
+        src: LOGO_ICON_COW,
+        alt: 'CoW Explorer icon only light mode',
+        color: Color.neutral0,
+      },
+    },
+    dark: {
+      default: {
+        src: LOGO_COWEXPLORER,
+        alt: 'CoW Explorer dark mode',
+        color: Color.neutral100,
+      },
+      logoIconOnly: {
+        src: LOGO_ICON_COW,
+        alt: 'CoW Explorer icon only dark mode',
+        color: Color.neutral100,
+      },
+    },
+  },
+
   // CoW DAO
   [ProductVariant.CowDao]: {
     light: {
       default: {
         src: LOGO_COWDAO,
         alt: 'CoW DAO light mode',
-        color: '#000000',
+        color: Color.neutral0,
       },
       logoIconOnly: {
         src: LOGO_ICON_COW,
         alt: 'CoW DAO icon only light mode',
-        color: '#000000',
+        color: Color.neutral0,
       },
     },
     dark: {
       default: {
         src: LOGO_COWDAO,
         alt: 'CoW DAO dark mode',
-        color: '#FFFFFF',
+        color: Color.neutral100,
       },
       logoIconOnly: {
         src: LOGO_ICON_COW,
         alt: 'CoW DAO icon only dark mode',
-        color: '#FFFFFF',
+        color: Color.neutral100,
       },
     },
   },
@@ -89,24 +121,24 @@ const LOGOS: Record<ProductVariant, ThemedLogo> = {
       default: {
         src: LOGO_COWPROTOCOL,
         alt: 'CoW Protocol light mode',
-        color: '#000000',
+        color: Color.neutral0,
       },
       logoIconOnly: {
         src: LOGO_ICON_COW,
         alt: 'CoW Protocol icon only light mode',
-        color: '#000000',
+        color: Color.neutral0,
       },
     },
     dark: {
       default: {
         src: LOGO_COWPROTOCOL,
         alt: 'CoW Protocol dark mode',
-        color: '#FFFFFF',
+        color: Color.neutral100,
       },
       logoIconOnly: {
         src: LOGO_ICON_COW,
         alt: 'CoW Protocol icon only dark mode',
-        color: '#FFFFFF',
+        color: Color.neutral100,
       },
     },
   },
@@ -180,7 +212,7 @@ export interface LogoProps {
 }
 
 export const ProductLogoWrapper = styled.span<{ color?: string; hoverColor?: string; height?: number | string }>`
-  --height: ${({ height }) => (typeof height === 'number' ? `${height}px` : height || '24px')};
+  --height: ${({ height }) => (typeof height === 'number' ? `${height}px` : height || '28px')};
   --color: ${({ color }) => color || 'inherit'};
   --hoverColor: ${({ hoverColor }) => hoverColor || 'inherit'};
 

@@ -14,6 +14,7 @@
       "@cowprotocol/common-utils": ["../../../libs/common-utils/src/index.ts"],
       "@cowprotocol/common-hooks": ["../../../libs/common-hooks/src/index.ts"],
       "@cowprotocol/ui/pure/*": ["../../../libs/ui/src/pure/*"],
+      "@cowprotocol/ui": ["../../../libs/ui/src/index.ts"],
       "@cowprotocol/abis": ["../../../libs/abis/src/index.ts"],
       "@cowprotocol/assets": ["../../../libs/assets/src/index.ts"],
       "@cowprotocol/types": ["../../../libs/types/src/index.ts"]

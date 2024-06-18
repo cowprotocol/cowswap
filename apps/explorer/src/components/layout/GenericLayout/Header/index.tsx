@@ -1,11 +1,10 @@
 import React, { PropsWithChildren } from 'react'
 
-import LogoImage from 'assets/img/CowProtocol-logo-white.svg'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components/macro'
 import { media } from 'theme/styles/media'
-
-// Assets
+import { Color, Media, ProductLogo, ProductVariant } from '@cowprotocol/ui'
+import { useMediaQuery } from '@cowprotocol/common-hooks'
 
 const HeaderStyled = styled.header`
   height: auto;
@@ -33,8 +32,6 @@ const Logo = styled(Link)`
   display: flex;
   align-content: center;
   justify-content: center;
-  width: 12rem;
-  height: 3.9rem;
   z-index: 6;
   transition: transform 0.3s ease 0s;
 
@@ -48,7 +45,6 @@ const Logo = styled(Link)`
   }
 
   > img {
-    background: url(${LogoImage}) no-repeat center/contain;
     border: 0;
     object-fit: contain;
     width: 100%;
@@ -73,15 +69,23 @@ const Logo = styled(Link)`
 
 type Props = PropsWithChildren<{
   linkTo?: string
-  logoAlt?: string
   onClickOptional?: React.MouseEventHandler<HTMLAnchorElement>
 }>
 
-export const Header: React.FC<Props> = ({ children, linkTo, logoAlt, onClickOptional }) => (
-  <HeaderStyled>
-    <Logo to={linkTo || '/'} onClick={(event): void => onClickOptional && onClickOptional(event)}>
-      <img src={LogoImage} alt={logoAlt || 'Trading interface homepage'} />
-    </Logo>
-    {children}
-  </HeaderStyled>
-)
+export const Header: React.FC<Props> = ({ children, linkTo, onClickOptional }) => {
+  const isUpToMedium = useMediaQuery(Media.upToMedium(false))
+
+  return (
+    <HeaderStyled>
+      <Logo to={linkTo || '/'} onClick={(event): void => onClickOptional && onClickOptional(event)}>
+        <ProductLogo
+          theme={'dark'}
+          variant={ProductVariant.CowExplorer}
+          overrideColor={Color.neutral100}
+          logoIconOnly={isUpToMedium}
+        />
+      </Logo>
+      {children}
+    </HeaderStyled>
+  )
+}
