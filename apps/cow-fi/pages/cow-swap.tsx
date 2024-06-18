@@ -461,7 +461,7 @@ export default function Page({ siteConfigData }: PageProps) {
               <SectionTitleText textAlign="center">Don't take our word for it</SectionTitleText>
             </SectionTitleWrapper>
 
-            <TopicList columns={3} maxWidth={900}>
+            <TopicList columns={3} maxWidth={1360}>
               <TopicCard bgColor={Color.neutral100} padding="4px" paddingMobile="4px" gap={16} asProp="div">
                 <TopicCardInner>
                   <blockquote className="twitter-tweet" data-dnt="true">
