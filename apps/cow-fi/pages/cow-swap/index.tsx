@@ -37,7 +37,7 @@ import {
 
 import SVG from 'react-inlinesvg'
 import IMG_ICON_FAQ from '@cowprotocol/assets/images/icon-faq.svg'
-import { FAQ_DATA } from './const'
+import { FAQ_DATA } from '../../data/cow-swap/const'
 
 import { GAEventCategories } from 'lib/analytics/GAEvents'
 import { sendGAEventHandler } from 'lib/analytics/sendGAEvent'

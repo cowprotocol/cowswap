@@ -54,7 +54,7 @@ import SVG from 'react-inlinesvg'
 
 import { GAEventCategories } from 'lib/analytics/GAEvents'
 import { sendGAEventHandler } from 'lib/analytics/sendGAEvent'
-import { FAQ_DATA, TRUSTED_BY_CONTENT } from './const'
+import { FAQ_DATA, TRUSTED_BY_CONTENT } from '../../data/mev-blocker/const'
 
 const DATA_CACHE_TIME_SECONDS = 5 * 60 // Cache 5min
 

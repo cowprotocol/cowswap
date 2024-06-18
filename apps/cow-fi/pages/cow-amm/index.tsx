@@ -41,7 +41,7 @@ import IMG_ICON_FAQ from '@cowprotocol/assets/images/icon-faq.svg'
 
 import { GAEventCategories } from 'lib/analytics/GAEvents'
 import { sendGAEventHandler } from 'lib/analytics/sendGAEvent'
-import { FAQ_DATA } from './const'
+import { FAQ_DATA } from '../../data/cow-amm/const'
 
 const DATA_CACHE_TIME_SECONDS = 5 * 60 // Cache 5min
 
