@@ -9,8 +9,6 @@ import IMG_ICON_GHOST from '@cowprotocol/assets/images/icon-ghost.svg'
 
 import styled from 'styled-components'
 
-import { CONFIG } from '@/const/meta'
-
 import Layout from '@/components/Layout'
 import FAQ from '@/components/FAQ'
 import { Link, LinkType } from '@/components/Link'
@@ -53,7 +51,7 @@ import { Autoplay, Pagination, Navigation } from 'swiper/modules'
 import { GAEventCategories } from 'lib/analytics/GAEvents'
 import { sendGAEventHandler } from 'lib/analytics/sendGAEvent'
 
-const DATA_CACHE_TIME_SECONDS = 5 * 60 // Cache 5min
+import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
 
 const FAQ_DATA = [
   {

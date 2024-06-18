@@ -6,8 +6,6 @@ import IMG_ICON_FLOWER_COW from '@cowprotocol/assets/images/icon-flower-cow.svg'
 
 import styled from 'styled-components'
 
-import { CONFIG } from '@/const/meta'
-
 import Layout from '@/components/Layout'
 import FAQ from '@/components/FAQ'
 import { Link, LinkType } from '@/components/Link'
@@ -42,7 +40,7 @@ import { FAQ_DATA } from '../../data/cow-swap/const'
 import { GAEventCategories } from 'lib/analytics/GAEvents'
 import { sendGAEventHandler } from 'lib/analytics/sendGAEvent'
 
-const DATA_CACHE_TIME_SECONDS = 5 * 60 // Cache 5min
+import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
 
 interface PageProps {
   siteConfigData: typeof CONFIG

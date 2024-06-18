@@ -1,7 +1,7 @@
 import { GetStaticProps, GetStaticPaths, GetStaticPropsContext, InferGetStaticPropsType } from 'next'
 import styled from 'styled-components'
 import { Font, Color, Media } from '@cowprotocol/ui'
-import { CONFIG } from '@/const/meta'
+
 import Layout from '@/components/Layout'
 import { getArticles, getCategories, Article } from 'services/cms'
 import { SearchBar } from '@/components/SearchBar'
@@ -26,7 +26,7 @@ import { sendGAEventHandler } from 'lib/analytics/sendGAEvent'
 const LEARN_PATH = '/learn/'
 const ARTICLES_PATH = `${LEARN_PATH}articles/`
 
-const DATA_CACHE_TIME_SECONDS = 5 * 60 // Cache 5min
+import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
 const ITEMS_PER_PAGE = 24
 
 const Wrapper = styled.div`

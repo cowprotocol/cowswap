@@ -2,6 +2,8 @@ import { TokenInfo } from 'types'
 
 const API_BASE_URL = 'https://api.cow.fi'
 
+export const DATA_CACHE_TIME_SECONDS = 5 * 60 // Cache 5min
+
 export const CONFIG = {
   title: 'CoW DAO',
   metatitle_tokenDetail: 'Live Token Price Chart & Metrics',
