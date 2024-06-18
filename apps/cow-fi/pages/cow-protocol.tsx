@@ -61,6 +61,9 @@ import {
 import SVG from 'react-inlinesvg'
 import IMG_ICON_FAQ from '@cowprotocol/assets/images/icon-faq.svg'
 
+import { GAEventCategories } from 'lib/analytics/GAEvents'
+import { sendGAEventHandler } from 'lib/analytics/sendGAEvent'
+
 const DATA_CACHE_TIME_SECONDS = 5 * 60 // Cache 5min
 
 const FAQ_DATA = [
@@ -172,6 +175,7 @@ export default function Page({ siteConfigData }: PageProps) {
               href="https://docs.cow.fi/category/tutorials"
               external
               linkType={LinkType.HeroButton}
+              onClick={() => sendGAEventHandler(GAEventCategories.COWPROTOCOL, 'click-hero-start-building')}
             >
               Start building
             </Link>
@@ -204,6 +208,7 @@ export default function Page({ siteConfigData }: PageProps) {
             external
             linkType={LinkType.SectionTitleButton}
             utmContent="cow-protocol-metrics"
+            onClick={() => sendGAEventHandler(GAEventCategories.COWPROTOCOL, 'click-metrics-view-all')}
           >
             View all metrics on DUNE &#8599;
           </Link>
@@ -245,7 +250,12 @@ export default function Page({ siteConfigData }: PageProps) {
                     CoW Protocol users sign an "intent to trade" message instead of directly executing orders on-chain
                     (like on Uniswap). This lets solvers trade on behalf of the user.
                   </TopicDescription>
-                  <Link bgColor="#66018E" color="#F996EE" href="/learn">
+                  <Link
+                    bgColor="#66018E"
+                    color="#F996EE"
+                    href="/learn"
+                    onClick={() => sendGAEventHandler(GAEventCategories.COWPROTOCOL, 'click-intents-learn-more')}
+                  >
                     Learn more
                   </Link>
                 </TopicCardInner>
@@ -275,7 +285,12 @@ export default function Page({ siteConfigData }: PageProps) {
                     public and private liquidity sources - finding better prices than most users could find on their
                     own.
                   </TopicDescription>
-                  <Link bgColor="#66018E" color="#F996EE" href="/learn">
+                  <Link
+                    bgColor="#66018E"
+                    color="#F996EE"
+                    href="/learn"
+                    onClick={() => sendGAEventHandler(GAEventCategories.COWPROTOCOL, 'click-solvers-learn-more')}
+                  >
                     Learn more
                   </Link>
                 </TopicCardInner>
@@ -292,7 +307,12 @@ export default function Page({ siteConfigData }: PageProps) {
                     The solver that wins the batch auction is the solver that finds the most surplus - so they win when
                     you win.
                   </TopicDescription>
-                  <Link bgColor="#66018E" color="#F996EE" href="/learn">
+                  <Link
+                    bgColor="#66018E"
+                    color="#F996EE"
+                    href="/learn"
+                    onClick={() => sendGAEventHandler(GAEventCategories.COWPROTOCOL, 'click-batch-auctions-learn-more')}
+                  >
                     Learn more
                   </Link>
                 </TopicCardInner>
@@ -522,9 +542,10 @@ export default function Page({ siteConfigData }: PageProps) {
                   contentAlign={'center'}
                   bgColor={Color.neutral100}
                   padding={'42px'}
-                  href={logo.url}
+                  href={`${logo.url}?utm_source=cow.fi&utm_medium=web&utm_content=cow-protocol-logos`}
                   target="_blank"
                   rel="noopener noreferrer nofollow"
+                  onClick={() => sendGAEventHandler(GAEventCategories.COWPROTOCOL, `click-logo-${logo.alt}`)}
                 >
                   <TopicImage
                     iconColor={Color.neutral20}
@@ -554,6 +575,9 @@ export default function Page({ siteConfigData }: PageProps) {
                       external
                       linkType={LinkType.TopicButton}
                       utmContent={`cow-protocol-case-study-${study.title}`}
+                      onClick={() =>
+                        sendGAEventHandler(GAEventCategories.COWPROTOCOL, `click-case-study-${study.title}`)
+                      }
                     >
                       Read more
                     </Link>
@@ -569,9 +593,10 @@ export default function Page({ siteConfigData }: PageProps) {
                   contentAlign={'center'}
                   bgColor={Color.neutral100}
                   padding={'42px'}
-                  href={logo.url}
+                  href={`${logo.url}?utm_source=cow.fi&utm_medium=web&utm_content=cow-protocol-logos`}
                   target="_blank"
                   rel="noopener noreferrer nofollow"
+                  onClick={() => sendGAEventHandler(GAEventCategories.COWPROTOCOL, `click-logo-${logo.alt}`)}
                 >
                   <TopicImage
                     iconColor={Color.neutral20}
@@ -614,6 +639,7 @@ export default function Page({ siteConfigData }: PageProps) {
                     href="https://docs.cow.fi/"
                     linkType={LinkType.TopicButton}
                     utmContent={`cow-protocol-docs`}
+                    onClick={() => sendGAEventHandler(GAEventCategories.COWPROTOCOL, `click-docs`)}
                   >
                     Read the docs
                   </Link>
@@ -632,7 +658,13 @@ export default function Page({ siteConfigData }: PageProps) {
                     Don't need overly-custom trading logic? The CoW Protocol widget is the easiest way to integrate
                     swaps, twaps, and limit orders directly into your project site
                   </TopicDescription>
-                  <Link bgColor="#ED60E9" color="#66018E" fontSize={27} href="/widget">
+                  <Link
+                    bgColor="#ED60E9"
+                    color="#66018E"
+                    fontSize={27}
+                    href="/widget"
+                    onClick={() => sendGAEventHandler(GAEventCategories.COWPROTOCOL, `click-integrate-widget`)}
+                  >
                     Integrate the widget
                   </Link>
                 </TopicCardInner>
@@ -658,6 +690,7 @@ export default function Page({ siteConfigData }: PageProps) {
                     linkType={LinkType.TopicButton}
                     external
                     utmContent={`cow-protocol-grants`}
+                    onClick={() => sendGAEventHandler(GAEventCategories.COWPROTOCOL, `click-apply-for-a-grant`)}
                   >
                     Apply for a grant
                   </Link>
@@ -697,6 +730,7 @@ export default function Page({ siteConfigData }: PageProps) {
                 linkType={LinkType.SectionTitleButton}
                 utmContent="cow-protocol-solvers"
                 margin="28px 0 0"
+                onClick={() => sendGAEventHandler(GAEventCategories.COWPROTOCOL, `click-solvers-read-docs`)}
               >
                 Read the docs
               </Link>

@@ -34,6 +34,9 @@ import SVG from 'react-inlinesvg'
 import IMG_ICON_BULB_COW from '@cowprotocol/assets/images/icon-bulb-cow.svg'
 import IMG_ICON_GRANTS_CARTON from '@cowprotocol/assets/images/icon-grants-carton.svg'
 
+import { GAEventCategories } from 'lib/analytics/GAEvents'
+import { sendGAEventHandler } from 'lib/analytics/sendGAEvent'
+
 const DATA_CACHE_TIME_SECONDS = 5 * 60 // Cache 5min
 
 interface PageProps {
@@ -79,7 +82,13 @@ export default function Page({ siteConfigData }: PageProps) {
                   <TopicDescription fontSize={28} color="#F996EE">
                     Open-source, permissionless DEX aggregation protocol
                   </TopicDescription>
-                  <Link bgColor="#F996EE" color="#490072" href="/cow-protocol">
+                  <Link
+                    bgColor="#F996EE"
+                    color="#490072"
+                    href="/cow-protocol"
+                    linkType={LinkType.TopicButton}
+                    onClick={() => sendGAEventHandler(GAEventCategories.HOME, 'click-start-building')}
+                  >
                     Start building
                   </Link>
                 </TopicCardInner>
@@ -101,6 +110,7 @@ export default function Page({ siteConfigData }: PageProps) {
                     external
                     linkType={LinkType.TopicButton}
                     utmContent="home-page-trade-on-cow-swap"
+                    onClick={() => sendGAEventHandler(GAEventCategories.HOME, 'click-trade-on-cow-swap')}
                   >
                     Start trading
                   </Link>
@@ -116,7 +126,13 @@ export default function Page({ siteConfigData }: PageProps) {
                   <TopicDescription fontSize={28} color="#BCEC79">
                     The first MEV-capturing AMM
                   </TopicDescription>
-                  <Link linkType={LinkType.TopicButton} bgColor="#BCEC79" color="#194D06" href="/cow-amm">
+                  <Link
+                    linkType={LinkType.TopicButton}
+                    bgColor="#BCEC79"
+                    color="#194D06"
+                    href="/cow-amm"
+                    onClick={() => sendGAEventHandler(GAEventCategories.HOME, 'click-deploy-liquidity')}
+                  >
                     Deposit liquidity
                   </Link>
                 </TopicCardInner>
@@ -133,7 +149,13 @@ export default function Page({ siteConfigData }: PageProps) {
                   <TopicDescription fontSize={28} color="#EC4612">
                     The best MEV protection RPC under the sun
                   </TopicDescription>
-                  <Link linkType={LinkType.TopicButton} bgColor="#EC4612" color="#FEE7CF" href="/mev-blocker">
+                  <Link
+                    linkType={LinkType.TopicButton}
+                    bgColor="#EC4612"
+                    color="#FEE7CF"
+                    href="/mev-blocker"
+                    onClick={() => sendGAEventHandler(GAEventCategories.HOME, 'click-get-protected')}
+                  >
                     Get protected
                   </Link>
                 </TopicCardInner>
@@ -159,7 +181,11 @@ export default function Page({ siteConfigData }: PageProps) {
                 the CoW DAO Knowledge Base.
               </SectionTitleDescription>
 
-              <Link linkType={LinkType.SectionTitleButton} href="/learn">
+              <Link
+                linkType={LinkType.SectionTitleButton}
+                href="/learn"
+                onClick={() => sendGAEventHandler(GAEventCategories.HOME, 'click-cow-knowledge-base-learn-more')}
+              >
                 Learn more
               </Link>
             </SectionTitleWrapper>
@@ -175,9 +201,13 @@ export default function Page({ siteConfigData }: PageProps) {
               <SectionTitleText textAlign="center">Governance</SectionTitleText>
               <SectionTitleDescription color={Color.neutral60} fontWeight={Font.weight.regular} textAlign="center">
                 Anyone can join CoW DAO by holding{' '}
-                <a href="https://swap.cow.fi/#/1/swap/USDC/COW" rel="noopener noreferrer" target="_blank">
+                <Link
+                  href="https://swap.cow.fi/#/1/swap/USDC/COW"
+                  onClick={() => sendGAEventHandler(GAEventCategories.HOME, 'click-cow-tokens')}
+                  external
+                >
                   COW tokens
-                </a>
+                </Link>
                 . Tokenholders contribute to CoW DAO's mission by participating in "CoWmunity" discussions on Discord,
                 by adding proposals to the CoW DAO Forum, and by voting on governance actions in Snapshot.
               </SectionTitleDescription>
@@ -186,24 +216,32 @@ export default function Page({ siteConfigData }: PageProps) {
             <TopicList columns={3}>
               <TopicCard
                 textColor="#000000"
-                href="https://discord.com/invite/cowprotocol"
+                href="https://discord.com/invite/cowprotocol?utm_source=cow.fi&utm_medium=web&utm_content=link"
                 rel="noopener noreferrer"
                 target="_blank"
+                onClick={() => sendGAEventHandler(GAEventCategories.HOME, 'click-discord')}
               >
                 <TopicImage iconColor="#1E90FF" maxWidth={290} maxHeight={290} height={290} width={290}></TopicImage>
                 <TopicTitle fontSize={38}>Discord</TopicTitle>
               </TopicCard>
 
-              <TopicCard textColor="#000000" href="https://forum.cow.fi/" rel="noopener noreferrer" target="_blank">
+              <TopicCard
+                textColor="#000000"
+                href="https://forum.cow.fi/?utm_source=cow.fi&utm_medium=web&utm_content=link"
+                rel="noopener noreferrer"
+                target="_blank"
+                onClick={() => sendGAEventHandler(GAEventCategories.HOME, 'click-forum')}
+              >
                 <TopicImage iconColor="#FF4500" maxWidth={290} maxHeight={290} height={290} width={290}></TopicImage>
                 <TopicTitle fontSize={38}>Forum</TopicTitle>
               </TopicCard>
 
               <TopicCard
                 textColor="#000000"
-                href="https://snapshot.org/#/cow.eth"
+                href="https://snapshot.org/#/cow.eth?utm_source=cow.fi&utm_medium=web&utm_content=link"
                 rel="noopener noreferrer"
                 target="_blank"
+                onClick={() => sendGAEventHandler(GAEventCategories.HOME, 'click-snapshot')}
               >
                 <TopicImage iconColor="#4B0082" maxWidth={290} maxHeight={290} height={290} width={290}></TopicImage>
                 <TopicTitle fontSize={38}>Snapshot</TopicTitle>
@@ -228,6 +266,7 @@ export default function Page({ siteConfigData }: PageProps) {
                 linkType={LinkType.SectionTitleButton}
                 utmContent="home-page-apply-for-a-grant"
                 href="https://grants.cow.fi/"
+                onClick={() => sendGAEventHandler(GAEventCategories.HOME, 'click-apply-for-a-grant')}
               >
                 Apply for a grant
               </Link>

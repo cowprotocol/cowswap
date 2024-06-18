@@ -46,6 +46,7 @@ const topicButtonStyles = css<LinkProps>`
   width: max-content;
   transition: opacity 0.2s ease-in-out;
   cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
+  text-decoration: none;
 
   ${Media.upToMedium()} {
     font-size: ${({ fontSizeMobile }) => fontSizeMobile || 16}px;
@@ -135,7 +136,7 @@ export const Link: FC<LinkProps> = ({ href, external, linkType, children, utmCon
 
   if (external) {
     return (
-      <StyledAnchor href={finalHref} linkType={linkType} {...rest}>
+      <StyledAnchor target="_blank" rel="noopener noreferrer" href={finalHref} linkType={linkType} {...rest}>
         {children}
       </StyledAnchor>
     )

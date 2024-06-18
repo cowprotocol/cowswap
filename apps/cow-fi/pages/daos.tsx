@@ -50,6 +50,9 @@ import 'swiper/css/navigation'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Autoplay, Pagination, Navigation } from 'swiper/modules'
 
+import { GAEventCategories } from 'lib/analytics/GAEvents'
+import { sendGAEventHandler } from 'lib/analytics/sendGAEvent'
+
 const DATA_CACHE_TIME_SECONDS = 5 * 60 // Cache 5min
 
 const FAQ_DATA = [
@@ -204,7 +207,12 @@ export default function Page({ siteConfigData }: PageProps) {
                   <TopicTitle>Milkman Orders</TopicTitle>
                   <TopicDescription fontSize={18} color={Color.neutral40} margin="0">
                     Ensure your trades are always close to the real-time market price thanks to the{' '}
-                    <Link href="https://github.com/charlesndalton/milkman" external utmContent="link-to-milkman">
+                    <Link
+                      href="https://github.com/charlesndalton/milkman"
+                      external
+                      utmContent="link-to-milkman"
+                      onClick={() => sendGAEventHandler(GAEventCategories.DAOS, 'click-milkman')}
+                    >
                       Milkman bot
                     </Link>
                     . Set the maximum deviation you&apos;ll accept, and Milkman will do the rest.
@@ -258,7 +266,12 @@ export default function Page({ siteConfigData }: PageProps) {
                 <TopicCardInner contentAlign="left">
                   <TopicTitle>Basket Sells</TopicTitle>
                   <TopicDescription fontSize={18} color={Color.neutral40} margin="0">
-                    <Link href="https://dump.services/" external utmContent="link-to-dump-services">
+                    <Link
+                      href="https://dump.services/"
+                      external
+                      utmContent="link-to-dump-services"
+                      onClick={() => sendGAEventHandler(GAEventCategories.DAOS, 'click-dump-services')}
+                    >
                       Dump.services
                     </Link>
                     , a collaboration between CoW Swap and Yearn, allows DAOs and traders to sell multiple tokens in a
@@ -286,6 +299,8 @@ export default function Page({ siteConfigData }: PageProps) {
               linkType={LinkType.SectionTitleButton}
               utmContent="link-to-advanced-order-types"
               margin="24px auto 0"
+              external
+              onClick={() => sendGAEventHandler(GAEventCategories.DAOS, 'click-advanced-order-types')}
             >
               Explore advanced order types
             </Link>
@@ -333,6 +348,8 @@ export default function Page({ siteConfigData }: PageProps) {
                         linkType={LinkType.TopicButton}
                         href={dao.link}
                         utmContent={`dao-${dao.title.toLowerCase().replace(/\s/g, '-')}`}
+                        external
+                        onClick={() => sendGAEventHandler(GAEventCategories.DAOS, `click-${dao.title.toLowerCase()}`)}
                       >
                         Learn more
                       </Link>
@@ -344,7 +361,10 @@ export default function Page({ siteConfigData }: PageProps) {
                     contentAlign={'center'}
                     bgColor={Color.neutral20}
                     padding={'10px'}
-                    href={dao.link}
+                    href={`${dao.link}?utm_source=cow.fi&utm_medium=web&utm_content=dao-${dao.title}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => sendGAEventHandler(GAEventCategories.DAOS, `click-${dao.title.toLowerCase()}`)}
                   >
                     <TopicImage
                       iconColor={Color.neutral0}

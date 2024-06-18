@@ -38,6 +38,9 @@ import {
 import SVG from 'react-inlinesvg'
 import IMG_ICON_FAQ from '@cowprotocol/assets/images/icon-faq.svg'
 
+import { GAEventCategories } from 'lib/analytics/GAEvents'
+import { sendGAEventHandler } from 'lib/analytics/sendGAEvent'
+
 const DATA_CACHE_TIME_SECONDS = 5 * 60 // Cache 5min
 
 const FAQ_DATA = [
@@ -103,6 +106,8 @@ export default function Page({ siteConfigData }: PageProps) {
               href="https://swap.cow.fi/"
               external
               linkType={LinkType.HeroButton}
+              utmContent="cow-swap-launch-app-button"
+              onClick={() => sendGAEventHandler(GAEventCategories.COWSWAP, 'click-launch-app')}
             >
               Launch app
             </Link>
@@ -135,6 +140,7 @@ export default function Page({ siteConfigData }: PageProps) {
             external
             linkType={LinkType.SectionTitleButton}
             utmContent="cow-swap-metrics-link"
+            onClick={() => sendGAEventHandler(GAEventCategories.COWSWAP, 'click-metrics-link')}
           >
             View all metrics on DUNE &#8599;
           </Link>
@@ -219,7 +225,12 @@ export default function Page({ siteConfigData }: PageProps) {
                 A powerful, open-source, and permissionless DEX aggregation protocol that anyone can integrate for a
                 variety of DeFi purposes
               </SectionTitleDescription>
-              <Link bgColor="#65D9FF" color="#012F7A" href="/cow-protocol">
+              <Link
+                bgColor="#65D9FF"
+                color="#012F7A"
+                href="/cow-protocol"
+                onClick={() => sendGAEventHandler(GAEventCategories.COWSWAP, 'click-learn-about-cow-protocol')}
+              >
                 Learn about CoW Protocol
               </Link>
             </SectionTitleWrapper>
@@ -507,6 +518,7 @@ export default function Page({ siteConfigData }: PageProps) {
                 external
                 linkType={LinkType.SectionTitleButton}
                 utmContent="cow-swap-launch-app-button"
+                onClick={() => sendGAEventHandler(GAEventCategories.COWSWAP, 'click-launch-app')}
               >
                 Launch app
               </Link>

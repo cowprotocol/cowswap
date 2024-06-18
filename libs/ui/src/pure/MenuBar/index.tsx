@@ -637,7 +637,7 @@ interface MenuBarProps {
   navItems: MenuItem[]
   theme: 'light' | 'dark'
   productVariant: ProductVariant
-  rootDomain: string // Add rootDomain prop
+  rootDomain: string
   persistentAdditionalContent?: React.ReactNode
   additionalContent?: React.ReactNode
   showGlobalSettings?: boolean

@@ -41,6 +41,9 @@ import {
 
 import SVG from 'react-inlinesvg'
 
+import { GAEventCategories } from 'lib/analytics/GAEvents'
+import { sendGAEventHandler } from 'lib/analytics/sendGAEvent'
+
 const DATA_CACHE_TIME_SECONDS = 5 * 60 // Cache 5min
 
 const PODCASTS = [
@@ -175,7 +178,12 @@ export default function Page({ siteConfigData, categories, articles, featuredArt
         <CategoryLinks noDivider>
           {categories.map((category: { name: string; slug: string }) => (
             <li key={category.slug}>
-              <a href={`/learn/topic/${category.slug}`}>{category.name}</a>
+              <a
+                href={`/learn/topic/${category.slug}`}
+                onClick={() => sendGAEventHandler(GAEventCategories.KNOWLEDGEBASE, `click-topic-${category.name}`)}
+              >
+                {category.name}
+              </a>
             </li>
           ))}
         </CategoryLinks>
@@ -191,7 +199,11 @@ export default function Page({ siteConfigData, categories, articles, featuredArt
               </ContainerCardSectionTop>
               <ArticleList>
                 {featuredArticles.map(({ title, description, cover, link }, index) => (
-                  <ArticleCard key={index} href={link}>
+                  <ArticleCard
+                    key={index}
+                    href={link}
+                    onClick={() => sendGAEventHandler(GAEventCategories.KNOWLEDGEBASE, `click-article-${title}`)}
+                  >
                     <ArticleImage color="#000">{cover && <img src={cover} alt={title} />}</ArticleImage>
                     <ArticleTitle>{title}</ArticleTitle>
                     <ArticleDescription>{description}</ArticleDescription>
@@ -207,7 +219,13 @@ export default function Page({ siteConfigData, categories, articles, featuredArt
               <TopicList columns={3}>
                 {categories.map(({ name, bgColor, textColor, iconColor, link, imageUrl }, index) => {
                   return (
-                    <TopicCard key={index} bgColor={bgColor} textColor={textColor} href={link}>
+                    <TopicCard
+                      key={index}
+                      bgColor={bgColor}
+                      textColor={textColor}
+                      href={link}
+                      onClick={() => sendGAEventHandler(GAEventCategories.KNOWLEDGEBASE, `click-topic-${name}`)}
+                    >
                       <TopicImage iconColor={iconColor} bgColor={bgColor} borderRadius={90} widthMobile={'auto'}>
                         {imageUrl ? (
                           <img
@@ -237,7 +255,15 @@ export default function Page({ siteConfigData, categories, articles, featuredArt
                 <LinkColumn>
                   <h5>Podcasts</h5>
                   {PODCASTS.map((podcast, index) => (
-                    <LinkItem key={index} href={podcast.link} rel="noopener noreferrer nofollow" target="_blank">
+                    <LinkItem
+                      key={index}
+                      href={`${podcast.link}?utm_source=cow.fi&utm_medium=web&utm_content=podcast-${podcast.title}`}
+                      rel="noopener noreferrer nofollow"
+                      target="_blank"
+                      onClick={() =>
+                        sendGAEventHandler(GAEventCategories.KNOWLEDGEBASE, `click-podcast-${podcast.title}`)
+                      }
+                    >
                       {podcast.title}
                       <span>→</span>
                     </LinkItem>
@@ -247,7 +273,13 @@ export default function Page({ siteConfigData, categories, articles, featuredArt
                 <LinkColumn>
                   <h5>Spaces</h5>
                   {SPACES.map((space, index) => (
-                    <LinkItem key={index} href={space.link} rel="noopener noreferrer nofollow" target="_blank">
+                    <LinkItem
+                      key={index}
+                      href={`${space.link}?utm_source=cow.fi&utm_medium=web&utm_content=space-${space.title}`}
+                      rel="noopener noreferrer nofollow"
+                      target="_blank"
+                      onClick={() => sendGAEventHandler(GAEventCategories.KNOWLEDGEBASE, `click-space-${space.title}`)}
+                    >
                       {space.title}
                       <span>→</span>
                     </LinkItem>
@@ -264,9 +296,10 @@ export default function Page({ siteConfigData, categories, articles, featuredArt
                 {MEDIA_COVERAGE.map(({ image, title, publisher, link, linkExternal }, index) => (
                   <ArticleCard
                     key={index}
-                    href={link}
+                    href={`${link}?utm_source=cow.fi&utm_medium=web&utm_content=media-${title}`}
                     target={linkExternal ? '_blank' : '_self'}
                     rel={linkExternal ? 'noopener' : ''}
+                    onClick={() => sendGAEventHandler(GAEventCategories.KNOWLEDGEBASE, `click-media-${title}`)}
                   >
                     <ArticleImage>{image && <img src={image} alt={title} />}</ArticleImage>
                     <ArticleTitle fontSize={21}>{title}</ArticleTitle>
@@ -285,7 +318,14 @@ export default function Page({ siteConfigData, categories, articles, featuredArt
             </CTAImage>
             <CTASubtitle>Explore, learn, integrate</CTASubtitle>
             <CTATitle>CoW DAO documentation</CTATitle>
-            <CTAButton href="https://docs.cow.fi/" target="_blank" rel="noopener noreferrer">
+            <CTAButton
+              href="https://docs.cow.fi/
+            ?utm_source=cow.fi&utm_medium=web&utm_content=cta-read-docs
+            "
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => sendGAEventHandler(GAEventCategories.KNOWLEDGEBASE, 'click-read-docs')}
+            >
               Read the docs
             </CTAButton>
           </CTASectionWrapper>

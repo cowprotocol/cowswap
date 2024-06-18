@@ -23,6 +23,9 @@ import {
   TopicTitle,
 } from '@/styles/styled'
 
+import { GAEventCategories } from 'lib/analytics/GAEvents'
+import { sendGAEventHandler } from 'lib/analytics/sendGAEvent'
+
 const DATA_CACHE_TIME_SECONDS = 5 * 60 // Cache 5min
 
 interface PageProps {
@@ -91,7 +94,13 @@ export default function Page({ siteConfigData, categories, articles }: PageProps
               </ContainerCardSectionTop>
               <TopicList columns={3}>
                 {categories.map(({ name, bgColor, textColor, iconColor, link, imageUrl }, index) => (
-                  <TopicCard key={index} bgColor={bgColor} textColor={textColor} href={link}>
+                  <TopicCard
+                    key={index}
+                    bgColor={bgColor}
+                    textColor={textColor}
+                    href={link}
+                    onClick={() => sendGAEventHandler(GAEventCategories.KNOWLEDGEBASE, `click-topic-${name}`)}
+                  >
                     <TopicImage iconColor={iconColor}>
                       {imageUrl ? (
                         <img

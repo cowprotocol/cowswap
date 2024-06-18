@@ -9,6 +9,9 @@ import Layout from '@/components/Layout'
 
 import { ContainerCard, ArticleContent, Breadcrumbs, ArticleMainTitle, BodyContent } from '@/styles/styled'
 
+import { GAEventCategories } from 'lib/analytics/GAEvents'
+import { sendGAEventHandler } from 'lib/analytics/sendGAEvent'
+
 const DATA_CACHE_TIME_SECONDS = 5 * 60 // Cache 5min
 
 interface PageProps {
@@ -39,7 +42,12 @@ export default function Page({ siteConfigData }: PageProps) {
         <ContainerCard bgColor={Color.neutral100} minHeight="70vh" gap={62} gapMobile={42} centerContent touchFooter>
           <ArticleContent maxWidth="100%">
             <Breadcrumbs>
-              <a href="/careers">Careers</a>
+              <a
+                href="/careers"
+                onClick={() => sendGAEventHandler(GAEventCategories.CAREERS, 'click-breadcrumb-careers')}
+              >
+                Careers
+              </a>
               <span>Refer-to-Earn</span>
             </Breadcrumbs>
 

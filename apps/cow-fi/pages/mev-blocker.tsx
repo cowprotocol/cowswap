@@ -60,6 +60,9 @@ import IMG_LOGO_AMBIRE from '@cowprotocol/assets/images/logo-ambire.svg'
 import IMG_LOGO_CRYPTO_COM from '@cowprotocol/assets/images/logo-crypto-com.svg'
 import IMG_LOGO_UNISWAP from '@cowprotocol/assets/images/logo-uniswap.svg'
 
+import { GAEventCategories } from 'lib/analytics/GAEvents'
+import { sendGAEventHandler } from 'lib/analytics/sendGAEvent'
+
 const DATA_CACHE_TIME_SECONDS = 5 * 60 // Cache 5min
 
 const FAQ_DATA = [
@@ -235,6 +238,7 @@ export default function Page({ siteConfigData }: PageProps) {
                 external
                 linkType={LinkType.SectionTitleButton}
                 utmContent="mev-blocker-metrics-link"
+                onClick={() => sendGAEventHandler(GAEventCategories.MEVBLOCKER, 'click-metrics-dune')}
               >
                 View all metrics on DUNE &#8599;
               </Link>
@@ -249,7 +253,12 @@ export default function Page({ siteConfigData }: PageProps) {
                   <SectionTitleText maxWidth={500}>Broad spectrum MEV defense</SectionTitleText>
                   <SectionTitleDescription maxWidth={'100%'} color={Color.neutral50}>
                     MEV bots have extracted more than{' '}
-                    <Link href="https://dune.com/queries/2259793/3703605" external utmContent="mev-blocker-dune-link">
+                    <Link
+                      href="https://dune.com/queries/2259793/3703605"
+                      external
+                      utmContent="mev-blocker-dune-link"
+                      onClick={() => sendGAEventHandler(GAEventCategories.MEVBLOCKER, 'click-dune-link')}
+                    >
                       $1.38 billion
                     </Link>{' '}
                     from well-meaning Ethereum users across a variety of use cases (trading, providing liquidity,
@@ -313,7 +322,12 @@ export default function Page({ siteConfigData }: PageProps) {
                 <SectionTitleWrapper maxWidth={1200} margin="0 auto">
                   <SectionTitleDescription fontSize={28} color={Color.neutral50}>
                     Curious if you've been the victim of an MEV attack?{' '}
-                    <Link href="https://www.mevscanner.com/" external utmContent="mev-blocker-mev-scanner-link">
+                    <Link
+                      href="https://www.mevscanner.com/"
+                      external
+                      utmContent="mev-blocker-mev-scanner-link"
+                      onClick={() => sendGAEventHandler(GAEventCategories.MEVBLOCKER, 'click-mev-scanner-link')}
+                    >
                       Use MEV Scanner
                     </Link>{' '}
                     to find out
@@ -460,7 +474,12 @@ export default function Page({ siteConfigData }: PageProps) {
                 <SectionTitleWrapper margin={'24px auto 0'}>
                   <SectionTitleDescription color={Color.neutral50}>
                     To learn more about each of the endpoints MEV Blocker has to offer,{' '}
-                    <Link href="https://docs.cow.fi/mevblocker" external utmContent="mev-blocker-docs-link">
+                    <Link
+                      href="https://docs.cow.fi/mevblocker"
+                      external
+                      utmContent="mev-blocker-docs-link"
+                      onClick={() => sendGAEventHandler(GAEventCategories.MEVBLOCKER, 'click-mev-blocker-docs-link')}
+                    >
                       read the MEV Blocker docs
                     </Link>
                     .
@@ -579,6 +598,7 @@ export default function Page({ siteConfigData }: PageProps) {
                     external
                     linkType={LinkType.SectionTitleButton}
                     utmContent="mev-blocker-learn-more"
+                    onClick={() => sendGAEventHandler(GAEventCategories.MEVBLOCKER, 'click-mev-blocker-learn-more')}
                   >
                     Learn more
                   </Link>
@@ -606,6 +626,7 @@ export default function Page({ siteConfigData }: PageProps) {
                       rel={'noopener noreferrer nofollow'}
                       target="_blank"
                       gap={item.title ? 16 : undefined}
+                      onClick={() => sendGAEventHandler(GAEventCategories.MEVBLOCKER, `click-trusted-by-${item.title}`)}
                     >
                       <TopicImage
                         iconColor={Color.neutral20}

@@ -74,7 +74,6 @@ const NAV_ADDITIONAL_BUTTONS = [
   {
     label: 'Deploy Liquidity',
     href: 'https://deploy-cow-amm.bleu.fi/',
-    utmSource: 'cow.fi',
     utmContent: 'menubar-nav-button-deploy-liquidity',
     external: true,
     isButton: true,
@@ -85,7 +84,6 @@ const NAV_ADDITIONAL_BUTTONS = [
   {
     label: 'Trade on CoW Swap',
     href: 'https://swap.cow.fi/#/1/swap/USDC/COW',
-    utmSource: 'cow.fi',
     utmContent: 'menubar-nav-button-trade-on-cow-swap',
     external: true,
     isButton: true,
