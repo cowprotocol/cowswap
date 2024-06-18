@@ -16,6 +16,7 @@ const LOCAL_STORAGE_KEY = 'UserSlippageSettings'
 export function EthFlowSlippageUpdater() {
   const currentSlippage = useUserSlippageTolerance()
   const setUserSlippageTolerance = useSetUserSlippageTolerance()
+  const prevSlippage = useRef<Percent | 'auto' | null>(null)
   const isEoaEthFlow = useIsEoaEthFlow()
   const { chainId } = useWalletInfo()
   const minEthFlowSlippage = MINIMUM_ETH_FLOW_SLIPPAGE[chainId]
@@ -43,12 +44,23 @@ export function EthFlowSlippageUpdater() {
 
   useEffect(() => {
     // Reset state when chain changes and ethflow was active
+    wasEthFlowActive.current && _resetSlippage(setUserSlippageTolerance, false)
     _saveSlippage({})
     wasEthFlowActive.current = false
   }, [chainId, setUserSlippageTolerance])
 
   useEffect(() => {
     if (isEoaEthFlow) {
+      if (
+        prevSlippage.current &&
+        currentSlippage &&
+        prevSlippage.current !== 'auto' &&
+        currentSlippage !== 'auto' &&
+        prevSlippage.current.equalTo(currentSlippage)
+      ) {
+        // Avoid entering the cycle again if we just updated the slippage
+        return
+      }
       // Switching into ethflow.
 
       // Load what's stored
@@ -69,6 +81,9 @@ export function EthFlowSlippageUpdater() {
 
         // Update the global state
         setUserSlippageTolerance(newSlippage)
+
+        // Store updated value to prevent cyclical issues
+        prevSlippage.current = newSlippage
 
         // Update local storage
         _saveSlippage({
@@ -137,5 +152,5 @@ function _resetSlippage(setUserSlippageTolerance: (slippageTolerance: Slippage) 
   // user switched back to non-native swap, set slippage back to previous value
   setUserSlippageTolerance(regular || 'auto')
   // Removing it from storage to avoid issues when coming back
-  _saveSlippage({ ethFlow: keepEthFlow ? ethFlow : 'auto' })
+  _saveSlippage(keepEthFlow ? { ethFlow } : {})
 }
