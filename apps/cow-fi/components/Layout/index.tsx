@@ -1,96 +1,10 @@
+import { useEffect } from 'react'
 import Head from 'next/head'
 import { MenuBar, MenuItem, Footer, ProductVariant, GlobalCoWDAOStyles } from '@cowprotocol/ui'
 import styled from 'styled-components/macro'
 import { CONFIG } from '@/const/meta'
-import { useEffect } from 'react'
-
 import { CoWDAOFonts } from '@/styles/CoWDAOFonts'
-
-const ROOT_DOMAIN = 'cow.fi'
-const THEME_MODE = 'dark'
-const PRODUCT_VARIANT = ProductVariant.CowDao
-
-const NAV_ITEMS: MenuItem[] = [
-  {
-    label: 'About',
-    children: [
-      {
-        label: 'Stats',
-        href: 'https://dune.com/cowprotocol/cowswap',
-        external: true,
-      },
-      {
-        label: 'Governance',
-        href: 'https://docs.cow.fi/governance',
-        external: true,
-      },
-      {
-        label: 'Grants',
-        href: 'https://grants.cow.fi/',
-        external: true,
-      },
-      { label: 'Careers', href: '/careers' },
-      { label: 'Tokens', href: '/tokens' },
-    ],
-  },
-  {
-    label: 'Products',
-    children: [
-      {
-        label: 'CoW Swap',
-        href: '/cow-swap',
-      },
-      {
-        label: 'CoW Protocol',
-        href: '/cow-protocol',
-      },
-      {
-        label: 'CoW AMM',
-        href: '/cow-amm',
-      },
-      {
-        label: 'MEV Blocker',
-        href: '/mev-blocker',
-      },
-    ],
-  },
-  {
-    label: 'Learn',
-    children: [
-      {
-        href: '/learn',
-        label: 'Knowledge Base',
-      },
-      {
-        href: 'https://docs.cow.fi/',
-        label: 'Docs',
-        external: true,
-      },
-    ],
-  },
-]
-
-const NAV_ADDITIONAL_BUTTONS = [
-  {
-    label: 'Deploy Liquidity',
-    href: 'https://deploy-cow-amm.bleu.fi/',
-    utmContent: 'menubar-nav-button-deploy-liquidity',
-    external: true,
-    isButton: true,
-    bgColor: '#BCEC79',
-    color: '#194D05',
-  },
-
-  {
-    label: 'Trade on CoW Swap',
-    href: 'https://swap.cow.fi/#/1/swap/USDC/COW',
-    utmContent: 'menubar-nav-button-trade-on-cow-swap',
-    external: true,
-    isButton: true,
-    bgColor: '#65D9FF',
-    color: '#012F7A',
-  },
-]
+import { ROOT_DOMAIN, THEME_MODE, PRODUCT_VARIANT, NAV_ADDITIONAL_BUTTONS, NAV_ITEMS } from './const'
 
 const Wrapper = styled.div`
   display: flex;
