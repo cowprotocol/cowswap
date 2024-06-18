@@ -78,24 +78,14 @@ function _useSafeInfo(walletInfo: WalletInfo): GnosisSafeInfo | undefined {
         if (safeAppsSdk) {
           const appsSdkSafeInfo = await safeAppsSdk.safe.getInfo()
           setSafeInfo((prevSafeInfo) => {
-
             const { isReadOnly, nonce } = appsSdkSafeInfo
-            if (!prevSafeInfo) {
-              // We don't have prevSafeInfo for counterfactual safes as the SDK can't find a deployment
-              // of this safe on-chain
-              const { safeAddress, threshold, owners } = appsSdkSafeInfo
-              return {
-                chainId,
-                address: safeAddress,
-                threshold,
-                owners,
-                nonce,
-                isReadOnly,
-              }
-            }
-
+            const { safeAddress, threshold, owners } = appsSdkSafeInfo
             return {
-              ...prevSafeInfo,
+              chainId,
+              address: safeAddress,
+              threshold,
+              owners,
+              nonce,
               isReadOnly,
             }
           })
@@ -112,11 +102,6 @@ function _useSafeInfo(walletInfo: WalletInfo): GnosisSafeInfo | undefined {
                 nonce,
                 isReadOnly: false,
               }))
-
-              // Being here means that we don't run in an iframe over Safe's AppCommunicator,
-              // so we need to slow down the interval to not spam the RPC
-              clearInterval(shortSafeInfoInterval !== null ? shortSafeInfoInterval : undefined)
-              longSafeInfoInterval = setInterval(updateSafeInfo, SAFE_INFO_LONG_INTERVAL)
             })
             .catch(() => {
               console.debug(`[WalletUpdater] Address ${account} is likely not a Safe (API didn't return Safe info)`)
@@ -128,7 +113,19 @@ function _useSafeInfo(walletInfo: WalletInfo): GnosisSafeInfo | undefined {
       }
     }
 
-    shortSafeInfoInterval = setInterval(updateSafeInfo, SAFE_INFO_SHORT_INTERVAL)
+    if (safeAppsSdk) {
+      // If we are here, we are running as a safe app. The safe app getInfo call doesn't do network requests
+      // but uses the local data, so we can use a shorter interval
+      clearInterval(longSafeInfoInterval !== null ? longSafeInfoInterval : undefined)
+      longSafeInfoInterval = null
+      shortSafeInfoInterval = setInterval(updateSafeInfo, SAFE_INFO_SHORT_INTERVAL)
+    } else {
+      // If we don't have a safeAppsSdk, we are running maybe in walletconnect mode and protocol-kit's
+      // getSafeInfo call does network requests, so we use a longer interval to not spam the servers too much
+      clearInterval(shortSafeInfoInterval !== null ? shortSafeInfoInterval : undefined)
+      shortSafeInfoInterval = null
+      longSafeInfoInterval = setInterval(updateSafeInfo, SAFE_INFO_LONG_INTERVAL)
+    }
 
     updateSafeInfo()
 
