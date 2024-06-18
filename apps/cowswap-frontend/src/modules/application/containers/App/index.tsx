@@ -75,6 +75,7 @@ export function App() {
           <OrdersPanel />
 
           {!isInjectedWidgetMode && (
+            // TODO: Move hard-coded colors to theme
             <MenuBar
               navItems={NAV_ITEMS}
               theme={darkMode ? 'dark' : 'light'}
