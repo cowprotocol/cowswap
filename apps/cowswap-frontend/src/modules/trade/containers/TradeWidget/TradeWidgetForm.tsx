@@ -126,7 +126,6 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
     if (!hasRecipientInUrl && !isAlternativeOrderModalVisible) {
       onChangeRecipient(null)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const toggleAccountModal = useToggleAccountModal()
