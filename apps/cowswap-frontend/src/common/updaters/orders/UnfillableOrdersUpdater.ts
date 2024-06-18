@@ -135,7 +135,12 @@ export function UnfillableOrdersUpdater(): null {
               const price = getPromiseFulfilledValue(promisedPrice, null)
               const fee = getPromiseFulfilledValue(promisedFee, null)
 
-              price?.amount && updateIsUnfillableFlag(chainId, order, price.amount, fee)
+              price?.amount &&
+                fee &&
+                updateIsUnfillableFlag(chainId, order, price.amount, {
+                  expirationDate: fee.expiration,
+                  amount: fee.quote.feeAmount,
+                })
             }
           })
           .catch((e) => {

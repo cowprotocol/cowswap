@@ -20,7 +20,7 @@ export function useQuoteParams(amount: string | null): LegacyFeeQuoteParams | un
   const { chainId, account } = useWalletInfo()
   const appData = useAppData()
 
-  const { state } = useDerivedTradeState()
+  const state = useDerivedTradeState()
 
   const { inputCurrency, outputCurrency, orderKind } = state || {}
 

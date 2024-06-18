@@ -20,7 +20,7 @@ export function useTradeFormButtonContext(
   defaultText: string,
   callbacks: TradeFormCallbacks
 ): TradeFormButtonContext | null {
-  const { state: derivedState } = useDerivedTradeState()
+  const derivedState = useDerivedTradeState()
   const wrapNativeFlow = useWrapNativeFlow()
   const { isSupportedWallet } = useWalletDetails()
   const quote = useTradeQuote()

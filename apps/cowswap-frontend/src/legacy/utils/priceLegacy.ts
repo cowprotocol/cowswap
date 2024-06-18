@@ -1,11 +1,12 @@
 import { PRICE_API_TIMEOUT_MS } from '@cowprotocol/common-const'
 import { getCanonicalMarket, isPromiseFulfilled, isSellOrder, withTimeout } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/contracts'
+import { OrderQuoteResponse } from '@cowprotocol/cow-sdk'
 import { BigNumber } from '@ethersproject/bignumber'
 
 import * as Sentry from '@sentry/browser'
 import BigNumberJs from 'bignumber.js'
-import { FeeInformation, PriceInformation } from 'types'
+import { PriceInformation } from 'types'
 
 import {
   getPriceQuote as getPriceQuote1inch,
@@ -71,7 +72,7 @@ function _filterWinningPrice(params: FilterWinningPriceParams) {
   return { token, amount }
 }
 
-export type QuoteResult = [PromiseSettledResult<PriceInformation>, PromiseSettledResult<FeeInformation>]
+export type QuoteResult = [PromiseSettledResult<PriceInformation>, PromiseSettledResult<OrderQuoteResponse>]
 export type AllPricesResult = {
   gpPriceResult: PromiseSettledResult<PriceInformation | null>
   paraSwapPriceResult: PromiseSettledResult<null>
@@ -163,14 +164,6 @@ function _checkFeeErrorForData(error: GpQuoteError) {
   }
 }
 
-function formatAtoms(amount: string, decimals: number | undefined): string {
-  if (typeof decimals !== 'number') return amount
-
-  return BigNumberJs(amount)
-    .div(10 ** decimals)
-    .toString()
-}
-
 /**
  *  Return the best price considering all price feeds
  */
@@ -235,7 +228,7 @@ export async function getBestPrice(
 export async function getBestQuoteLegacy({
   quoteParams,
   fetchFee,
-  previousFee,
+  previousResponse,
 }: Omit<LegacyQuoteParams, 'strategy'>): Promise<QuoteResult> {
   const {
     sellToken,
@@ -252,27 +245,30 @@ export async function getBestQuoteLegacy({
   } = quoteParams
   const { baseToken, quoteToken } = getCanonicalMarket({ sellToken, buyToken, kind })
   // Get a new fee quote (if required)
-  const feePromise =
-    fetchFee || !previousFee
-      ? getQuote(quoteParams)
-          .then((resp) => ({ amount: resp.quote.feeAmount, expirationDate: resp.expiration }))
-          .catch(_checkFeeErrorForData)
-      : Promise.resolve(previousFee)
+  const feePromise = fetchFee || !previousResponse ? getQuote(quoteParams) : Promise.resolve(previousResponse)
 
   // Get a new price quote
-  let exchangeAmount
+  let exchangeAmount: string | null = null
   let feeExceedsPrice = false
+
   if (isSellOrder(kind)) {
     // Sell orders need to deduct the fee from the swapped amount
     // we need to check for 0/negative exchangeAmount should fee >= amount
-    const { amount: fee } = await feePromise
-    const result = BigNumber.from(amount).sub(fee)
-    console.log(`Sell amount before fee: ${formatAtoms(amount, fromDecimals)}  (in atoms ${amount})`)
-    console.log(`Sell amount after fee: ${formatAtoms(result.toString(), fromDecimals)}  (in atoms ${result})`)
+    let feeAmount: string | null = null
+    try {
+      const response = await feePromise
+      feeAmount = response.quote.feeAmount
+    } catch (error) {
+      const { amount } = _checkFeeErrorForData(error)
+      feeAmount = amount
+    }
 
-    feeExceedsPrice = result.lte('0')
+    if (feeAmount) {
+      const result = BigNumber.from(amount).sub(feeAmount)
 
-    exchangeAmount = !feeExceedsPrice ? result.toString() : null
+      feeExceedsPrice = result.lte('0')
+      exchangeAmount = !feeExceedsPrice ? result.toString() : null
+    }
   } else {
     // For buy orders, we swap the whole amount, then we add the fee on top
     exchangeAmount = amount

@@ -231,7 +231,7 @@ export function FeesUpdater(): null {
         refetchQuote({
           quoteParams,
           fetchFee: true, // TODO: Review this, because probably now doesn't make any sense to not query the feee in some situations. Actually the endpoint will change to one that returns fee and quote together
-          previousFee: quoteInfo?.fee,
+          previousResponse: quoteInfo?.response,
           isPriceRefresh,
         }).catch((error) => console.error('Error re-fetching the quote', error))
       }

@@ -1,10 +1,42 @@
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
+
+export interface DirectedReceiveAmounts {
+  amountBeforeFees: CurrencyAmount<Currency>
+  amountAfterSlippage: CurrencyAmount<Currency>
+  amountAfterFees: CurrencyAmount<Currency>
+  networkFeeAmount: CurrencyAmount<Currency>
+}
 
 export interface ReceiveAmountInfo {
-  type: 'from' | 'to'
-  customTitle?: string
-  amountBeforeFees: CurrencyAmount<Currency> | undefined
-  amountAfterFees: CurrencyAmount<Currency>
-  feeAmount: CurrencyAmount<Currency> | undefined
-  partnerFeeAmount: CurrencyAmount<Currency> | undefined
+  isSell: boolean
+
+  quotePrice: Price<Currency, Currency>
+
+  costs: {
+    networkFee: {
+      amountInSellCurrency: CurrencyAmount<Currency>
+      amountInBuyCurrency: CurrencyAmount<Currency>
+    }
+    partnerFee: {
+      amount: CurrencyAmount<Currency>
+      bps: number
+    }
+  }
+
+  beforeNetworkCosts: {
+    sellAmount: CurrencyAmount<Currency>
+    buyAmount: CurrencyAmount<Currency>
+  }
+  afterNetworkCosts: {
+    sellAmount: CurrencyAmount<Currency>
+    buyAmount: CurrencyAmount<Currency>
+  }
+  afterPartnerFees: {
+    sellAmount: CurrencyAmount<Currency>
+    buyAmount: CurrencyAmount<Currency>
+  }
+  afterSlippage: {
+    sellAmount: CurrencyAmount<Currency>
+    buyAmount: CurrencyAmount<Currency>
+  }
 }

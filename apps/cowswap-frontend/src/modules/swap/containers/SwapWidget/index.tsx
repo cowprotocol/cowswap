@@ -19,7 +19,6 @@ import { EthFlowModal, EthFlowProps } from 'modules/swap/containers/EthFlow'
 import { SafeTokenBanner } from 'modules/swap/containers/SafeTokenBanner'
 import { SwapModals, SwapModalsProps } from 'modules/swap/containers/SwapModals'
 import { SwapButtonState } from 'modules/swap/helpers/getSwapButtonState'
-import { getInputReceiveAmountInfo, getOutputReceiveAmountInfo } from 'modules/swap/helpers/tradeReceiveAmount'
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { useShowRecipientControls } from 'modules/swap/hooks/useShowRecipientControls'
 import { useSwapButtonContext } from 'modules/swap/hooks/useSwapButtonContext'
@@ -33,7 +32,7 @@ import {
   SwapWarningsTop,
   SwapWarningsTopProps,
 } from 'modules/swap/pure/warnings'
-import { TradeWidget, TradeWidgetContainer, useTradePriceImpact } from 'modules/trade'
+import { TradeWidget, TradeWidgetContainer, useReceiveAmountInfo, useTradePriceImpact } from 'modules/trade'
 import { useTradeRouteContext } from 'modules/trade/hooks/useTradeRouteContext'
 import { useWrappedToken } from 'modules/trade/hooks/useWrappedToken'
 import { getQuoteTimeOffset } from 'modules/tradeQuote'
@@ -55,6 +54,7 @@ import {
   useSwapState,
   useUnknownImpactWarning,
 } from '../../hooks/useSwapState'
+import { useTradeQuoteStateFromLegacy } from '../../hooks/useTradeQuoteStateFromLegacy'
 import { ConfirmSwapModalSetup } from '../ConfirmSwapModalSetup'
 
 const BUTTON_STATES_TO_SHOW_BUNDLE_APPROVAL_BANNER = [SwapButtonState.ApproveAndSwap]
@@ -73,8 +73,11 @@ export function SwapWidget() {
   const showRecipientControls = useShowRecipientControls(recipient)
   const isEoaEthFlow = useIsEoaEthFlow()
   const shouldZeroApprove = useShouldZeroApprove(slippageAdjustedSellAmount)
-  const { enabledTradeTypes, banners: widgetBanners } = useInjectedWidgetParams()
+  const widgetParams = useInjectedWidgetParams()
+  const { enabledTradeTypes, banners: widgetBanners } = widgetParams
   const priceImpactParams = useTradePriceImpact()
+  const tradeQuoteStateOverride = useTradeQuoteStateFromLegacy()
+  const receiveAmountInfo = useReceiveAmountInfo()
 
   const isTradePriceUpdating = useTradePricesUpdate()
   const { isFeeGreater, fee } = useIsFeeGreaterThanInput({
@@ -124,7 +127,7 @@ export function SwapWidget() {
     isIndependent: isSellTrade,
     balance: inputCurrencyBalance,
     fiatAmount: inputUsdValue,
-    receiveAmountInfo: !isSellTrade && trade ? getInputReceiveAmountInfo(trade) : null,
+    receiveAmountInfo: !isSellTrade ? receiveAmountInfo : null,
   }
 
   const outputCurrencyInfo: CurrencyInfo = {
@@ -134,7 +137,7 @@ export function SwapWidget() {
     isIndependent: !isSellTrade,
     balance: outputCurrencyBalance,
     fiatAmount: outputUsdValue,
-    receiveAmountInfo: isSellTrade && trade ? getOutputReceiveAmountInfo(trade) : null,
+    receiveAmountInfo: isSellTrade ? receiveAmountInfo : null,
   }
 
   const inputCurrencyPreviewInfo = {
@@ -256,6 +259,8 @@ export function SwapWidget() {
     isFeeGreater,
     fee,
     rateInfoParams,
+    receiveAmountInfo,
+    widgetParams,
   }
 
   const slots = {
@@ -281,6 +286,7 @@ export function SwapWidget() {
     isTradePriceUpdating,
     priceImpact: priceImpactParams,
     disableQuotePolling: true,
+    tradeQuoteStateOverride,
     disablePriceImpact,
   }
 
@@ -300,7 +306,6 @@ export function SwapWidget() {
           confirmModal={
             <ConfirmSwapModalSetup
               chainId={chainId}
-              recipientAddressOrName={swapButtonContext.recipientAddressOrName}
               doTrade={swapButtonContext.handleSwap}
               priceImpact={priceImpactParams}
               inputCurrencyInfo={inputCurrencyPreviewInfo}

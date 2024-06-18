@@ -17,7 +17,7 @@ import { TradeFlowContext } from 'modules/limitOrders/services/types'
 import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { useGeneratePermitHook, useGetCachedPermit, usePermitInfo } from 'modules/permit'
 import { useEnoughBalanceAndAllowance } from 'modules/tokens'
-import { ReceiveAmountInfo, TradeType } from 'modules/trade'
+import { getDirectedReceiveAmounts, ReceiveAmountInfo, TradeType } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
 
 import { useGP2SettlementContract } from 'common/hooks/useContract'
@@ -50,9 +50,12 @@ export function useTradeFlowContext(
   const generatePermitHook = useGeneratePermitHook()
   const getCachedPermit = useGetCachedPermit()
 
-  const inputAmount = inputReceiveAmountInfo?.amountAfterFees || state.inputCurrencyAmount
-  const sellAmountBeforeFee = inputReceiveAmountInfo?.amountBeforeFees || state.inputCurrencyAmount
-  const outputAmount = outputReceiveAmountInfo?.amountAfterFees || state.outputCurrencyAmount
+  const inputReceiveAmounts = inputReceiveAmountInfo && getDirectedReceiveAmounts(inputReceiveAmountInfo)
+  const outputReceiveAmounts = outputReceiveAmountInfo && getDirectedReceiveAmounts(outputReceiveAmountInfo)
+
+  const inputAmount = inputReceiveAmounts?.amountAfterFees || state.inputCurrencyAmount
+  const sellAmountBeforeFee = inputReceiveAmounts?.amountBeforeFees || state.inputCurrencyAmount
+  const outputAmount = outputReceiveAmounts?.amountAfterFees || state.outputCurrencyAmount
   const partiallyFillable = settingsState.partialFillsEnabled
 
   return useMemo(() => {

@@ -23,7 +23,7 @@ export interface TradeRatesProps {
 }
 
 export function TradeRates({ open, receiveAmountInfo, children }: TradeRatesProps) {
-  const partnerFeeAmount = receiveAmountInfo?.partnerFeeAmount || null
+  const partnerFeeAmount = receiveAmountInfo?.costs.partnerFee.amount || null
 
   const { inputCurrencyAmount, outputCurrencyAmount } = useLimitOrdersDerivedState()
 

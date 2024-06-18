@@ -11,6 +11,8 @@ import { useBuildTradeDerivedState } from 'modules/trade/hooks/useBuildTradeDeri
 
 import { useIsWidgetUnlocked } from './useIsWidgetUnlocked'
 
+import { LIMIT_ORDER_SLIPPAGE } from '../const/trade'
+
 export function useLimitOrdersDerivedState(): LimitOrdersDerivedState {
   return useAtomValue(limitOrdersDerivedStateAtom)
 }
@@ -21,6 +23,11 @@ export function useFillLimitOrdersDerivedState() {
   const derivedState = useBuildTradeDerivedState(limitOrdersRawStateAtom)
 
   useEffect(() => {
-    updateDerivedState({ ...derivedState, isUnlocked, tradeType: TradeType.LIMIT_ORDER })
+    updateDerivedState({
+      ...derivedState,
+      isUnlocked,
+      slippage: LIMIT_ORDER_SLIPPAGE,
+      tradeType: TradeType.LIMIT_ORDER,
+    })
   }, [derivedState, updateDerivedState, isUnlocked])
 }

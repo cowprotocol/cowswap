@@ -2,11 +2,11 @@ import { INPUT_OUTPUT_EXPLANATION, MINIMUM_ETH_FLOW_SLIPPAGE, PERCENTAGE_PRECISI
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
 import { HoverTooltip, RowFixed } from '@cowprotocol/ui'
+import { Percent } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
 
-import { RowSlippageProps } from 'modules/swap/containers/Row/RowSlippage'
 import { StyledRowBetween, TextWrapper } from 'modules/swap/pure/Row/styled'
 import { RowStyleProps } from 'modules/swap/pure/Row/types'
 import { StyledInfoIcon, TransactionText } from 'modules/swap/pure/styled'
@@ -48,16 +48,18 @@ export const getNonNativeSlippageTooltip = () => (
   </Trans>
 )
 
-export interface RowSlippageContentProps extends RowSlippageProps {
+export interface RowSlippageContentProps {
   chainId: SupportedChainId
   toggleSettings: Command
   displaySlippage: string
   isEoaEthFlow: boolean
   symbols?: (string | undefined)[]
   wrappedSymbol?: string
+  styleProps?: RowStyleProps
+  allowedSlippage: Percent
+  showSettingOnClick?: boolean
   slippageLabel?: React.ReactNode
   slippageTooltip?: React.ReactNode
-  styleProps?: RowStyleProps
 }
 
 // TODO: RowDeadlineContent and RowSlippageContent are very similar. Refactor and extract base component?

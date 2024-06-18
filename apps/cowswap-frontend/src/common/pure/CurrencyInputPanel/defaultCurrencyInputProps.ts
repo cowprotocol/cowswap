@@ -2,6 +2,8 @@ import { COW } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
+import { inputCurrencyInfoMock } from 'mocks/tradeStateMock'
+
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { Field } from 'legacy/state/types'
 
@@ -21,13 +23,7 @@ export const defaultCurrencyInputPanelProps: CurrencyInputPanelProps & { priceIm
   currencyInfo: {
     field: Field.INPUT,
     isIndependent: false,
-    receiveAmountInfo: {
-      type: 'from',
-      amountBeforeFees: CurrencyAmount.fromRawAmount(currency, 30 * 10 ** 18),
-      amountAfterFees: CurrencyAmount.fromRawAmount(currency, 20 * 10 ** 18),
-      feeAmount: CurrencyAmount.fromRawAmount(currency, 10 * 10 ** 18),
-      partnerFeeAmount: CurrencyAmount.fromRawAmount(currency, 0),
-    },
+    receiveAmountInfo: inputCurrencyInfoMock.receiveAmountInfo,
     currency,
     balance,
     amount: CurrencyAmount.fromRawAmount(currency, 20 * 10 ** 18),

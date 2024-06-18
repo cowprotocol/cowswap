@@ -9,7 +9,7 @@ import { useWidgetPartnerFee } from 'modules/injectedWidget'
 import { LimitOrdersWarnings } from 'modules/limitOrders/containers/LimitOrdersWarnings'
 import { useLimitOrdersWidgetActions } from 'modules/limitOrders/containers/LimitOrdersWidget/hooks/useLimitOrdersWidgetActions'
 import { TradeButtons } from 'modules/limitOrders/containers/TradeButtons'
-import { TradeWidget, useTradePriceImpact } from 'modules/trade'
+import { TradeWidget, useReceiveAmountInfo, useTradePriceImpact } from 'modules/trade'
 import { BulletListItem, UnlockWidgetScreen } from 'modules/trade/pure/UnlockWidgetScreen'
 import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
 import { useSetTradeQuoteParams, useTradeQuote } from 'modules/tradeQuote'
@@ -17,7 +17,6 @@ import { useSetTradeQuoteParams, useTradeQuote } from 'modules/tradeQuote'
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 
-import { getReceiveAmountInfo } from './helpers/tradeReceiveAmount'
 import { LimitOrdersProps, limitOrdersPropsChecker } from './limitOrdersPropsChecker'
 import * as styledEl from './styled'
 
@@ -89,6 +88,8 @@ export function LimitOrdersWidget() {
 
   useSetTradeQuoteParams(quoteAmount)
 
+  const receiveAmountInfo = useReceiveAmountInfo()
+
   const inputCurrencyInfo: CurrencyInfo = {
     field: Field.INPUT,
     label: isSell ? 'Sell amount' : hasPartnerFee ? 'Expected sell amount' : 'You sell at most',
@@ -97,7 +98,7 @@ export function LimitOrdersWidget() {
     isIndependent: isSell,
     balance: inputCurrencyBalance,
     fiatAmount: inputCurrencyFiatAmount,
-    receiveAmountInfo: !isSell ? getReceiveAmountInfo('from', inputCurrencyAmount, partnerFee) : null,
+    receiveAmountInfo: !isSell ? receiveAmountInfo : null,
   }
 
   const outputCurrencyInfo: CurrencyInfo = {
@@ -108,7 +109,7 @@ export function LimitOrdersWidget() {
     isIndependent: !isSell,
     balance: outputCurrencyBalance,
     fiatAmount: outputCurrencyFiatAmount,
-    receiveAmountInfo: isSell ? getReceiveAmountInfo('to', outputCurrencyAmount, partnerFee) : null,
+    receiveAmountInfo: isSell ? receiveAmountInfo : null,
   }
 
   const tradeContext = useTradeFlowContext(inputCurrencyInfo.receiveAmountInfo, outputCurrencyInfo.receiveAmountInfo)

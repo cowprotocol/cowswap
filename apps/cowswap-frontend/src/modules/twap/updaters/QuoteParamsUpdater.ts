@@ -2,7 +2,8 @@ import { useAtomValue } from 'jotai'
 
 import { useSetTradeQuoteParams } from 'modules/tradeQuote'
 
-import { partsStateAtom } from '../state/partsStateAtom'
+import { useAdvancedOrdersDerivedState } from '../../advancedOrders'
+import { twapOrdersSettingsAtom } from '../state/twapOrdersSettingsAtom'
 
 /**
  * There is a generic module `modules/tradeQuote` that is supposed to be used by all trade widgets (swap/limit/advanced).
@@ -11,7 +12,10 @@ import { partsStateAtom } from '../state/partsStateAtom'
  * useSetTradeQuoteParams() just fill the quote amount into `tradeQuoteParamsAtom` that is used by `useQuoteParams`.
  */
 export function QuoteParamsUpdater() {
-  const { inputPartAmount } = useAtomValue(partsStateAtom)
+  const { inputCurrencyAmount } = useAdvancedOrdersDerivedState()
+  const { numberOfPartsValue } = useAtomValue(twapOrdersSettingsAtom)
+
+  const inputPartAmount = inputCurrencyAmount?.divide(numberOfPartsValue)
 
   useSetTradeQuoteParams(inputPartAmount)
 

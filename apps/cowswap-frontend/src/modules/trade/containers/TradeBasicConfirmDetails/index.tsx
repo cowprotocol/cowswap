@@ -1,51 +1,77 @@
-import { Dispatch, SetStateAction } from 'react'
+import React, { Dispatch, ReactNode, SetStateAction, useMemo } from 'react'
 
-import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
-
-import { Nullish } from 'types'
+import { CowSwapWidgetAppParams } from '@cowprotocol/widget-lib'
+import { Percent, Price } from '@uniswap/sdk-core'
 
 import { useUsdAmount } from 'modules/usdAmount'
 
-import { usePrice } from 'common/hooks/usePrice'
+import { PercentDisplay } from 'common/pure/PercentDisplay'
 import { RateInfoParams } from 'common/pure/RateInfo'
 
 import { LimitPriceRow } from './LimitPriceRow'
-import { SlippageRow } from './SlippageRow'
 import * as styledEl from './styled'
 
 import { ReviewOrderModalAmountRow } from '../../pure/ReviewOrderModalAmountRow'
+import { DividerHorizontal } from '../../pure/Row/styled'
+import { ReceiveAmountInfo } from '../../types'
+import { getDirectedReceiveAmounts } from '../../utils/getReceiveAmountInfo'
+import { TradeFeesAndCosts } from '../TradeFeesAndCosts'
 
 type Props = {
+  receiveAmountInfo: ReceiveAmountInfo
   rateInfoParams: RateInfoParams
-  // TODO: Add maxSendAmount when using component in swap/limit BUY orders
-  minReceiveAmount: Nullish<CurrencyAmount<Currency>>
   isInvertedState: [boolean, Dispatch<SetStateAction<boolean>>]
   slippage: Percent
-  additionalProps?: AdditionalProps
+  widgetParams: Partial<CowSwapWidgetAppParams>
+  labelsAndTooltips?: LabelsAndTooltips
+  hideLimitPrice?: boolean
+  hideUsdValues?: boolean
+  withTimelineDot?: boolean
 }
 
-type AdditionalProps = {
-  priceLabel?: React.ReactNode
-  minReceivedLabel?: React.ReactNode
-  minReceivedTooltip?: React.ReactNode
-  limitPriceLabel?: React.ReactNode
-  limitPriceTooltip?: React.ReactNode
-  slippageLabel?: React.ReactNode
-  slippageTooltip?: React.ReactNode
+type LabelsAndTooltips = {
+  priceLabel?: ReactNode
+  minReceivedLabel?: ReactNode
+  minReceivedTooltip?: ReactNode
+  limitPriceLabel?: ReactNode
+  limitPriceTooltip?: ReactNode
+  slippageLabel?: ReactNode
+  slippageTooltip?: ReactNode
 }
 
 export function TradeBasicConfirmDetails(props: Props) {
-  const { rateInfoParams, minReceiveAmount, isInvertedState, slippage, additionalProps } = props
-  const { inputCurrencyAmount } = rateInfoParams
+  const {
+    rateInfoParams,
+    isInvertedState,
+    slippage,
+    labelsAndTooltips,
+    receiveAmountInfo,
+    widgetParams,
+    hideLimitPrice,
+    hideUsdValues,
+    withTimelineDot = true,
+  } = props
+  const { amountAfterFees, amountAfterSlippage } = getDirectedReceiveAmounts(receiveAmountInfo)
 
-  const priceLabel = additionalProps?.priceLabel || 'Price'
-  const minReceivedLabel = additionalProps?.minReceivedLabel || 'Min received (incl. costs)'
-  const minReceivedTooltip = additionalProps?.minReceivedTooltip || 'This is the minimum amount that you will receive.'
+  const priceLabel = labelsAndTooltips?.priceLabel || 'Price'
+  const minReceivedLabel = labelsAndTooltips?.minReceivedLabel || 'Min received (incl. costs)'
+  const minReceivedTooltip =
+    labelsAndTooltips?.minReceivedTooltip || 'This is the minimum amount that you will receive.'
+  const slippageTooltip = labelsAndTooltips?.slippageTooltip
+  const slippageLabel = labelsAndTooltips?.slippageLabel || 'Slippage tolerance'
 
-  const minReceivedUsdAmount = useUsdAmount(minReceiveAmount).value
+  const amountAfterSlippageUsd = useUsdAmount(hideUsdValues ? null : amountAfterSlippage).value
+  const amountAfterFeesUsd = useUsdAmount(hideUsdValues ? null : amountAfterFees).value
 
   // Limit price is the same for all parts
-  const limitPrice = usePrice(inputCurrencyAmount, minReceiveAmount)
+  const limitPrice = useMemo(() => {
+    const { afterNetworkCosts, afterSlippage } = receiveAmountInfo
+
+    return new Price({
+      quoteAmount: afterSlippage.buyAmount,
+      baseAmount: afterNetworkCosts.sellAmount,
+    })
+  }, [receiveAmountInfo])
 
   return (
     <styledEl.Wrapper>
@@ -57,20 +83,46 @@ export function TradeBasicConfirmDetails(props: Props) {
         isInvertedState={isInvertedState}
       />
 
-      {/* Slippage */}
-      <SlippageRow slippage={slippage} {...additionalProps} />
+      <TradeFeesAndCosts
+        receiveAmountInfo={receiveAmountInfo}
+        widgetParams={widgetParams}
+        withTimelineDot={withTimelineDot}
+      />
 
-      {/* Limit Price */}
-      <LimitPriceRow price={limitPrice} isInvertedState={isInvertedState} {...additionalProps} />
+      <ReviewOrderModalAmountRow
+        highlighted={true}
+        amount={amountAfterFees}
+        fiatAmount={amountAfterFeesUsd}
+        label="Expected to receive"
+      />
+
+      <DividerHorizontal />
+
+      {/* Slippage */}
+      {
+        <ReviewOrderModalAmountRow withTimelineDot={withTimelineDot} tooltip={slippageTooltip} label={slippageLabel}>
+          <PercentDisplay percent={+slippage.toFixed(2)} />
+        </ReviewOrderModalAmountRow>
+      }
 
       {/* Min received */}
       <ReviewOrderModalAmountRow
         highlighted={true}
-        amount={minReceiveAmount}
-        fiatAmount={minReceivedUsdAmount}
+        amount={amountAfterSlippage}
+        fiatAmount={amountAfterSlippageUsd}
         tooltip={minReceivedTooltip}
         label={minReceivedLabel}
       />
+
+      {/* Limit Price */}
+      {!hideLimitPrice && (
+        <LimitPriceRow
+          price={limitPrice}
+          isInvertedState={isInvertedState}
+          limitPriceTooltip={labelsAndTooltips?.limitPriceTooltip}
+          limitPriceLabel={labelsAndTooltips?.limitPriceLabel}
+        />
+      )}
     </styledEl.Wrapper>
   )
 }

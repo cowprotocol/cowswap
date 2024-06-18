@@ -1,8 +1,13 @@
-import React from 'react'
+import React, { useMemo, useState } from 'react'
 
+import { INPUT_OUTPUT_EXPLANATION } from '@cowprotocol/common-const'
+import { getMinimumReceivedTooltip } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
 import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
+import { TradeType } from '@uniswap/sdk-core'
+
+import { Trans } from '@lingui/macro'
 
 import { HighFeeWarning } from 'legacy/components/SwapWarnings'
 import { getActivityDerivedState } from 'legacy/hooks/useActivityDerivedState'
@@ -10,8 +15,9 @@ import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { createActivityDescriptor } from 'legacy/hooks/useRecentActivity'
 import { Order } from 'legacy/state/orders/actions'
 
-import { TradeConfirmation, TradeConfirmModal, useTradeConfirmActions } from 'modules/trade'
-import { RecipientRow } from 'modules/trade'
+import { useInjectedWidgetParams } from 'modules/injectedWidget'
+import { TradeConfirmation, TradeConfirmModal, useReceiveAmountInfo, useTradeConfirmActions } from 'modules/trade'
+import { TradeBasicConfirmDetails } from 'modules/trade/containers/TradeBasicConfirmDetails'
 import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
 
 import { CurrencyPreviewInfo } from 'common/pure/CurrencyAmountPreview'
@@ -19,7 +25,7 @@ import { TransactionSubmittedContent } from 'common/pure/TransactionSubmittedCon
 
 import { useSwapConfirmButtonText } from '../../hooks/useSwapConfirmButtonText'
 import { useSwapState } from '../../hooks/useSwapState'
-import { TradeRates, TradeRatesProps } from '../../pure/TradeRates'
+import { TradeRatesProps } from '../../pure/TradeRates'
 
 const CONFIRM_TITLE = 'Swap'
 
@@ -30,31 +36,48 @@ export interface ConfirmSwapModalSetupProps {
   priceImpact: PriceImpact
   tradeRatesProps: TradeRatesProps
   refreshInterval: number
-  recipientAddressOrName: string | null
+
   doTrade(): void
 }
+
 export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
-  const {
-    chainId,
-    inputCurrencyInfo,
-    outputCurrencyInfo,
-    doTrade,
-    priceImpact,
-    tradeRatesProps,
-    refreshInterval,
-    recipientAddressOrName,
-  } = props
+  const { chainId, inputCurrencyInfo, outputCurrencyInfo, doTrade, priceImpact, tradeRatesProps, refreshInterval } =
+    props
 
   const { account } = useWalletInfo()
   const { ensName } = useWalletDetails()
   const { recipient } = useSwapState()
   const gnosisSafeInfo = useGnosisSafeInfo()
   const tradeConfirmActions = useTradeConfirmActions()
+  const receiveAmountInfo = useReceiveAmountInfo()
+  const widgetParams = useInjectedWidgetParams()
+
+  const isInvertedState = useState(false)
 
   const { allowedSlippage, trade } = tradeRatesProps
   const slippageAdjustedSellAmount = trade?.maximumAmountIn(allowedSlippage)
+  const isExactIn = trade?.tradeType === TradeType.EXACT_INPUT
 
   const buttonText = useSwapConfirmButtonText(slippageAdjustedSellAmount)
+
+  const labelsAndTooltips = useMemo(
+    () => ({
+      slippageTooltip: (
+        <Trans>
+          Your slippage is MEV protected: all orders are submitted with tight spread (0.1%) on-chain.
+          <br />
+          <br />
+          The slippage you pick here enables a resubmission of your order in case of unfavourable price movements.
+          <br />
+          <br />
+          {INPUT_OUTPUT_EXPLANATION}
+        </Trans>
+      ),
+      minReceivedLabel: 'Minimum receive',
+      minReceivedTooltip: getMinimumReceivedTooltip(allowedSlippage, isExactIn),
+    }),
+    [allowedSlippage]
+  )
 
   const submittedContent = (order: Order | undefined, onDismiss: Command) => {
     const activity = createActivityDescriptor(chainId, undefined, order)
@@ -87,9 +110,19 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
         recipient={recipient}
       >
         <>
-          <TradeRates {...tradeRatesProps} isReviewSwap>
-            <RecipientRow recipient={recipient} account={account} recipientAddressOrName={recipientAddressOrName} />
-          </TradeRates>
+          {receiveAmountInfo && (
+            <TradeBasicConfirmDetails
+              isInvertedState={isInvertedState}
+              rateInfoParams={tradeRatesProps.rateInfoParams}
+              slippage={allowedSlippage}
+              receiveAmountInfo={receiveAmountInfo}
+              widgetParams={widgetParams}
+              labelsAndTooltips={labelsAndTooltips}
+              hideLimitPrice
+              hideUsdValues
+              withTimelineDot={false}
+            />
+          )}
           <HighFeeWarning trade={tradeRatesProps.trade} />
           {!priceImpact.priceImpact && <NoImpactWarning isAccepted withoutAccepting />}
         </>

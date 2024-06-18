@@ -81,7 +81,7 @@ const tooltips: { [key: string]: string | JSX.Element } = {
   RECEIVER: 'The account address which will/did receive the bought amount.',
   EXPIRY:
     "If your order has not been filled by this date & time, it will expire. Don't worry - expirations and order placement are free on CoW Swap!",
-  TOTAL_FEE: 'TODO: This fee helps pay for maintenance & improvements to the swap experience',
+  TOTAL_FEE: 'This fee helps pay for maintenance & improvements to the swap experience',
   ORDER_TYPE: (
     <span>
       Orders on CoW Swap can either be market orders (which fill at the market price within the slippage tolerance you

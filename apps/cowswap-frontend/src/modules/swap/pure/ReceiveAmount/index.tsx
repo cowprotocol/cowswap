@@ -6,6 +6,7 @@ import { Trans } from '@lingui/macro'
 import { BalanceAndSubsidy } from 'legacy/hooks/useCowBalanceAndSubsidy'
 
 import { ReceiveAmountInfoTooltip } from 'modules/swap/pure/ReceiveAmountInfo'
+import { getDirectedReceiveAmounts } from 'modules/trade'
 import { ReceiveAmountInfo } from 'modules/trade/types'
 
 import * as styledEl from './styled'
@@ -18,14 +19,17 @@ export interface ReceiveAmountProps {
 }
 
 export function ReceiveAmount(props: ReceiveAmountProps) {
-  const { type, amountAfterFees, customTitle } = props.receiveAmountInfo
+  const { isSell } = props.receiveAmountInfo
+
+  const { amountAfterFees } = getDirectedReceiveAmounts(props.receiveAmountInfo)
+
   const title = amountAfterFees.toExact() + ' ' + props.currency.symbol
 
   return (
     <styledEl.ReceiveAmountBox>
       <div>
         <span>
-          <Trans>{customTitle || (type === 'from' ? 'From (incl. costs)' : 'Receive (incl. costs)')}</Trans>
+          <Trans>{!isSell ? 'From (incl. costs)' : 'Receive (incl. costs)'}</Trans>
         </span>
 
         <styledEl.QuestionHelperWrapped text={<ReceiveAmountInfoTooltip {...props} />} />

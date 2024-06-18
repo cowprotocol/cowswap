@@ -8,7 +8,9 @@ import { useLimitOrdersRawState, useUpdateLimitOrdersRawState } from 'modules/li
 import { useSwapRawState, useUpdateSwapRawState } from 'modules/swap/hooks/useSwapRawState'
 import { ExtendedTradeRawState, TradeRawState } from 'modules/trade/types/TradeRawState'
 
-import { TradeType, useTradeTypeInfo } from './useTradeTypeInfo'
+import { useTradeTypeInfo } from './useTradeTypeInfo'
+
+import { TradeType } from '../types'
 
 export function useTradeState(): {
   state?: TradeRawState

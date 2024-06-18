@@ -11,7 +11,7 @@ import { Currency } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 
-import { TradeType } from 'modules/trade/hooks/useTradeTypeInfo'
+import { TradeType } from 'modules/trade/types'
 
 import { useIsPermitEnabled } from 'common/hooks/featureFlags/useIsPermitEnabled'
 

@@ -7,6 +7,7 @@ import { Trans } from '@lingui/macro'
 import { BalanceAndSubsidy } from 'legacy/hooks/useCowBalanceAndSubsidy'
 
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
+import { getDirectedReceiveAmounts } from 'modules/trade'
 import { ReceiveAmountInfo } from 'modules/trade/types'
 
 import * as styledEl from './styled'
@@ -21,13 +22,19 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps) {
   const isEoaEthFlow = useIsEoaEthFlow()
 
   const { receiveAmountInfo, subsidyAndBalance, allowsOffchainSigning } = props
-  const { type, amountAfterFees, amountBeforeFees, feeAmount, partnerFeeAmount } = receiveAmountInfo
+  const {
+    isSell,
+    costs: {
+      partnerFee: { amount: partnerFeeAmount },
+    },
+  } = receiveAmountInfo
+  const { amountAfterFees, amountBeforeFees, networkFeeAmount } = getDirectedReceiveAmounts(receiveAmountInfo)
   const { subsidy } = subsidyAndBalance
   const { discount } = subsidy
 
-  const typeString = type === 'from' ? '+' : '-'
+  const typeString = !isSell ? '+' : '-'
   const hasPartnerFee = !!partnerFeeAmount && partnerFeeAmount.greaterThan(0)
-  const hasNetworkFee = !!feeAmount && feeAmount.greaterThan(0)
+  const hasNetworkFee = !!networkFeeAmount && networkFeeAmount.greaterThan(0)
   const hasFee = hasNetworkFee || hasPartnerFee
 
   const isEoaNotEthFlow = allowsOffchainSigning && !isEoaEthFlow
@@ -49,13 +56,13 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps) {
           <TokenAmount amount={amountBeforeFees} tokenSymbol={amountBeforeFees?.currency} defaultValue="0" />
         </span>
       </div>
-      {feeAmount && (
+      {networkFeeAmount && (
         <div>
           {discount ? <styledEl.GreenText>{FeePercent}</styledEl.GreenText> : FeePercent}
           {hasFee ? (
             <span>
               {typeString}
-              <TokenAmount amount={feeAmount} tokenSymbol={feeAmount?.currency} defaultValue="0" />
+              <TokenAmount amount={networkFeeAmount} tokenSymbol={networkFeeAmount?.currency} defaultValue="0" />
             </span>
           ) : (
             <styledEl.GreenText>
@@ -88,7 +95,7 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps) {
       {amountAfterFees.greaterThan(0) && (
         <styledEl.TotalAmount>
           <span>
-            <Trans>{type === 'from' ? 'From' : 'To'}</Trans>
+            <Trans>{!isSell ? 'From' : 'To'}</Trans>
           </span>
           <span>
             <TokenAmount amount={amountAfterFees} tokenSymbol={amountAfterFees.currency} defaultValue="0" />

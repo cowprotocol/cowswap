@@ -2,7 +2,7 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 
-import { ReceiveAmountInfo } from 'modules/trade'
+import { getDirectedReceiveAmounts, ReceiveAmountInfo } from 'modules/trade'
 
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import type { RateInfoParams } from 'common/pure/RateInfo'
@@ -12,7 +12,7 @@ export function useRateInfoAfterFees(
   inputAmount: CurrencyAmount<Currency> | null,
   outputAmount: CurrencyAmount<Currency> | null
 ): RateInfoParams {
-  const amountAfterFees = receiveAmountInfo?.amountAfterFees || null
+  const amountAfterFees = (receiveAmountInfo && getDirectedReceiveAmounts(receiveAmountInfo)?.amountAfterFees) || null
 
   return useRateInfoParams(
     preferAmountAfterFees(amountAfterFees, inputAmount),

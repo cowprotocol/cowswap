@@ -1,22 +1,7 @@
-import { RowBetween, UI } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 
 import { Info } from 'react-feather'
 import styled from 'styled-components/macro'
-
-export const LowerSectionWrapper = styled(RowBetween).attrs((props) => ({
-  ...props,
-  align: 'center',
-  flexDirection: 'row',
-  flexWrap: 'wrap',
-  minHeight: 24,
-}))`
-  gap: 0;
-
-  > .price-container {
-    display: flex;
-    gap: 5px;
-  }
-`
 
 export const StyledInfoIcon = styled(Info)`
   color: inherit;

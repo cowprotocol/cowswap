@@ -1,14 +1,13 @@
 import { isSellOrder, toErc20Address } from '@cowprotocol/common-utils'
-import { Percent } from '@uniswap/sdk-core'
+import { OrderQuoteResponse } from '@cowprotocol/cow-sdk'
 
-import BigNumberJs from 'bignumber.js'
-import { FeeInformation, PriceInformation } from 'types'
+import { PriceInformation } from 'types'
 
 import { getQuote } from 'api/gnosisProtocol'
 
 import { LegacyFeeQuoteParams, LegacyPriceQuoteParams, LegacyQuoteParams } from '../state/price/types'
 
-export type QuoteResult = [PromiseSettledResult<PriceInformation>, PromiseSettledResult<FeeInformation>]
+export type QuoteResult = [PromiseSettledResult<PriceInformation>, PromiseSettledResult<OrderQuoteResponse>]
 
 /**
  * getFullQuote
@@ -17,7 +16,8 @@ export type QuoteResult = [PromiseSettledResult<PriceInformation>, PromiseSettle
  */
 export async function getFullQuote({ quoteParams }: { quoteParams: LegacyFeeQuoteParams }): Promise<QuoteResult> {
   const { kind } = quoteParams
-  const { quote, expiration: expirationDate, id: quoteId } = await getQuote(quoteParams)
+  const response = await getQuote(quoteParams)
+  const { quote, id: quoteId } = response
 
   const isSell = isSellOrder(kind)
 
@@ -27,19 +27,15 @@ export async function getFullQuote({ quoteParams }: { quoteParams: LegacyFeeQuot
     quoteId: quoteId ?? undefined,
     quoteValidTo: quote.validTo,
   }
-  const fee = {
-    amount: quote.feeAmount,
-    expirationDate,
-  }
 
-  return Promise.allSettled([price, fee])
+  return Promise.allSettled([price, response])
 }
 
 export async function getBestQuote({
   strategy,
   quoteParams,
   fetchFee,
-  previousFee,
+  previousResponse,
 }: LegacyQuoteParams): Promise<QuoteResult> {
   if (strategy === 'COWSWAP') {
     console.debug('[GP PRICE::API] getBestQuote - Attempting best quote retrieval using COWSWAP strategy, hang tight.')
@@ -55,7 +51,7 @@ export async function getBestQuote({
         strategy: 'LEGACY',
         quoteParams,
         fetchFee,
-        previousFee,
+        previousResponse,
         isPriceRefresh: false,
       })
     })
@@ -64,7 +60,7 @@ export async function getBestQuote({
 
     const { getBestQuoteLegacy } = await import('legacy/utils/priceLegacy')
 
-    return getBestQuoteLegacy({ quoteParams, fetchFee, previousFee, isPriceRefresh: false })
+    return getBestQuoteLegacy({ quoteParams, fetchFee, previousResponse, isPriceRefresh: false })
   }
 }
 
@@ -80,24 +76,4 @@ export function getValidParams(params: LegacyPriceQuoteParams) {
   const quoteToken = toErc20Address(quoteTokenAux, chainId)
 
   return { ...params, baseToken, quoteToken }
-}
-
-// TODO: the function throws error, when initialValue = '0'
-export function calculateFallbackPriceImpact(initialValue: string, finalValue: string) {
-  const initialValueBn = new BigNumberJs(initialValue)
-  const finalValueBn = new BigNumberJs(finalValue)
-  // ((finalValue - initialValue) / initialValue / 2) * 100
-  const output = finalValueBn.minus(initialValueBn).div(initialValueBn).div('2')
-  const [numerator, denominator] = output.toFraction()
-
-  const isPositive = numerator.isNegative() === denominator.isNegative()
-
-  const percentage = new Percent(numerator.abs().toString(10), denominator.abs().toString(10))
-  // UI shows NEGATIVE impact as a POSITIVE effect, so we need to swap the sign here
-  // see FiatValue: line 38
-  const impact = isPositive ? percentage.multiply('-1') : percentage
-
-  console.debug(`[calculateFallbackPriceImpact]::${impact.toSignificant(2)}%`)
-
-  return impact
 }
