@@ -17,7 +17,7 @@ import { CloseIcon } from 'legacy/theme'
 import { PageTitle } from 'modules/application/containers/PageTitle'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
-import { useTheme } from 'common/hooks/useTheme'
+import { useTheme } from '@cowprotocol/common-hooks'
 
 import {
   Menu,

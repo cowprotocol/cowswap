@@ -3,7 +3,7 @@ import { Loader } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Token, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { useTheme } from 'common/hooks/useTheme'
+import { useTheme } from '@cowprotocol/common-hooks'
 
 import { BalanceValue } from './styled'
 

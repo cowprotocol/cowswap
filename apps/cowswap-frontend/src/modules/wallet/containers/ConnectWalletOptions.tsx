@@ -17,7 +17,7 @@ import {
 
 import { useSelectedWallet } from 'legacy/state/user/hooks'
 
-import { useTheme } from 'common/hooks/useTheme'
+import { useTheme } from '@cowprotocol/common-hooks'
 
 export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActivation }) {
   const selectedWallet = useSelectedWallet()

@@ -1,6 +1,6 @@
 import styled, { keyframes } from 'styled-components/macro'
 
-import { useTheme } from 'common/hooks/useTheme'
+import { useTheme } from '@cowprotocol/common-hooks'
 
 const Wrapper = styled.div`
   height: 90px;

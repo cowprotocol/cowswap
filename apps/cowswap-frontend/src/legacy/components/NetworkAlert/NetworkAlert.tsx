@@ -10,7 +10,7 @@ import styled from 'styled-components/macro'
 import { useDarkModeManager } from 'legacy/state/user/hooks'
 import { HideSmall } from 'legacy/theme'
 
-import { useTheme } from 'common/hooks/useTheme'
+import { useTheme } from '@cowprotocol/common-hooks'
 
 const L2Icon = styled.img`
   width: 24px;

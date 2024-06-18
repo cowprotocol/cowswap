@@ -8,7 +8,7 @@ import { Token } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
 
-import { useTheme } from 'common/hooks/useTheme'
+import { useTheme } from '@cowprotocol/common-hooks'
 
 export const StyledButtonStar = styled(ButtonStar)`
   z-index: 9;

@@ -9,7 +9,7 @@ import { ThemedText } from 'legacy/theme'
 
 import { CopyHelper } from 'modules/account/containers/CopyHelper'
 
-import { useTheme } from 'common/hooks/useTheme'
+import { useTheme } from '@cowprotocol/common-hooks'
 import { Modal } from 'common/pure/Modal'
 
 const ContentWrapper = styled(Column)`
