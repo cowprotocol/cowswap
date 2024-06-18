@@ -39,12 +39,12 @@ export default function App(props: AppProps) {
         <meta key="ogType" property="og:type" content="website" />
         <meta key="ogTitle" property="og:title" content={CONFIG.title} />
         <meta key="ogDescription" property="og:description" content={CONFIG.description} />
-        <meta key="ogImage" property="og:image" content={CONFIG.url.root + '/images/og-meta-cowprotocol.png'} />
+        <meta key="ogImage" property="og:image" content={CONFIG.url.root + '/images/og-meta-cowdao.png'} />
         <meta key="ogUrl" property="og:url" content={CURRENT_URL} />
         <meta key="twitterCard" name="twitter:card" content="summary_large_image" />
         <meta key="twitterSite" name="twitter:site" content={CONFIG.social.twitter.account} />
         <meta key="twitterTitle" name="twitter:title" content={CONFIG.title} />
-        <meta key="twitterImage" name="twitter:image" content={CONFIG.url.root + '/images/og-meta-cowprotocol.png'} />
+        <meta key="twitterImage" name="twitter:image" content={CONFIG.url.root + '/images/og-meta-cowdao.png'} />
         <meta key="viewport" name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
       </Head>
 
