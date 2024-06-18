@@ -16,12 +16,13 @@ import { UsdPricesUpdater } from 'modules/usdAmount'
 
 import { TotalSurplusUpdater } from 'common/state/totalSurplusState'
 import { CancelReplaceTxUpdater } from 'common/updaters/CancelReplaceTxUpdater'
+import { FeatureFlagsUpdater } from 'common/updaters/FeatureFlagsUpdater'
 import { FeesUpdater } from 'common/updaters/FeesUpdater'
 import { GasUpdater } from 'common/updaters/GasUpdater'
 import {
   CancelledOrdersUpdater,
   ExpiredOrdersUpdater,
-  GpOrdersUpdater,
+  OrdersFromApiUpdater,
   PendingOrdersUpdater,
   UnfillableOrdersUpdater,
 } from 'common/updaters/orders'
@@ -37,6 +38,7 @@ export function Updaters() {
 
   return (
     <>
+      <FeatureFlagsUpdater />
       <WalletUpdater standaloneMode={standaloneMode} />
       <HwAccountIndexUpdater />
       <UserUpdater />
@@ -47,7 +49,7 @@ export function Updaters() {
       <ExpiredOrdersUpdater />
       <FeesUpdater />
       <UnfillableOrdersUpdater />
-      <GpOrdersUpdater />
+      <OrdersFromApiUpdater />
       <GasUpdater />
       <GasPriceStrategyUpdater />
       <SentryUpdater />

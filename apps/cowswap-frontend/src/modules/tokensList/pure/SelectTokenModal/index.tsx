@@ -23,10 +23,16 @@ export interface SelectTokenModalProps {
   unsupportedTokens: UnsupportedTokensState
   selectedToken?: string
   permitCompatibleTokens: PermitCompatibleTokens
+  hideFavoriteTokensTooltip?: boolean
+
   onSelectToken(token: TokenWithLogo): void
+
   onInputPressEnter?(): void
+
   defaultInputValue?: string
+
   onOpenManageWidget(): void
+
   onDismiss(): void
 }
 
@@ -39,6 +45,7 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
     balancesState,
     unsupportedTokens,
     permitCompatibleTokens,
+    hideFavoriteTokensTooltip,
     onSelectToken,
     onDismiss,
     onOpenManageWidget,
@@ -72,7 +79,12 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
         />
       </styledEl.Row>
       <styledEl.Row>
-        <FavouriteTokensList onSelectToken={onSelectToken} selectedToken={selectedToken} tokens={favouriteTokens} />
+        <FavouriteTokensList
+          onSelectToken={onSelectToken}
+          selectedToken={selectedToken}
+          tokens={favouriteTokens}
+          hideTooltip={hideFavoriteTokensTooltip}
+        />
       </styledEl.Row>
       <styledEl.Separator />
       {inputValue.trim() ? (

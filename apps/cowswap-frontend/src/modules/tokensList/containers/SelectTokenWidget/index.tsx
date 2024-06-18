@@ -3,6 +3,7 @@ import { useCallback, useState } from 'react'
 import { addListAnalytics } from '@cowprotocol/analytics'
 import { useTokensBalances } from '@cowprotocol/balances-and-allowances'
 import { TokenWithLogo } from '@cowprotocol/common-const'
+import { isInjectedWidget } from '@cowprotocol/common-utils'
 import {
   ListState,
   useAddList,
@@ -53,6 +54,8 @@ export function SelectTokenWidget() {
   const unsupportedTokens = useUnsupportedTokens()
   const permitCompatibleTokens = usePermitCompatibleTokens()
   const onTokenListAddingError = useOnTokenListAddingError()
+
+  const isInjectedWidgetMode = isInjectedWidget()
 
   const closeTokenSelectWidget = useCallback(() => {
     updateSelectTokenWidget({
@@ -142,6 +145,7 @@ export function SelectTokenWidget() {
             onInputPressEnter={onInputPressEnter}
             onDismiss={onDismiss}
             onOpenManageWidget={() => setIsManageWidgetOpen(true)}
+            hideFavoriteTokensTooltip={isInjectedWidgetMode}
           ></SelectTokenModal>
         )
       })()}

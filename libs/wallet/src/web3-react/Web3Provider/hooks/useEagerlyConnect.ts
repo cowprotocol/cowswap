@@ -35,7 +35,8 @@ export function useEagerlyConnect(selectedWallet: ConnectionType | undefined) {
   useEffect(() => {
     const isIframe = window.top !== window.self
 
-    if (isInjectedWidget() || getIsInjectedMobileBrowser()) {
+    // autoConnect is set to true in the e2e tests
+    if (isInjectedWidget() || getIsInjectedMobileBrowser() || window.ethereum?.autoConnect) {
       connect(injectedWalletConnection.connector)
     }
 

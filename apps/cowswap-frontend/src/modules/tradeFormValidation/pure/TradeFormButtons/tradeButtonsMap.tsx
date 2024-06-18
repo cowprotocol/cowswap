@@ -8,7 +8,7 @@ import styled from 'styled-components/macro'
 
 import { CompatibilityIssuesWarning } from 'modules/trade/pure/CompatibilityIssuesWarning'
 
-import { GpQuoteErrorCodes } from 'api/gnosisProtocol/errors/QuoteError'
+import { QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
 import { TradeApproveButton } from 'common/containers/TradeApprove'
 import { TradeLoadingButton } from 'common/pure/TradeLoadingButton'
 
@@ -28,15 +28,15 @@ const CompatibilityIssuesWarningWrapper = styled.div`
   margin-top: -10px;
 `
 
-const quoteErrorTexts: Record<GpQuoteErrorCodes, string> = {
-  [GpQuoteErrorCodes.UNHANDLED_ERROR]: 'Error loading price. Try again later.',
-  [GpQuoteErrorCodes.TransferEthToContract]:
+const quoteErrorTexts: Record<QuoteApiErrorCodes, string> = {
+  [QuoteApiErrorCodes.UNHANDLED_ERROR]: 'Error loading price. Try again later.',
+  [QuoteApiErrorCodes.TransferEthToContract]:
     'Buying native currency with smart contract wallets is not currently supported',
-  [GpQuoteErrorCodes.UnsupportedToken]: 'Unsupported token',
-  [GpQuoteErrorCodes.InsufficientLiquidity]: 'Insufficient liquidity for this trade.',
-  [GpQuoteErrorCodes.FeeExceedsFrom]: 'Sell amount is too small',
-  [GpQuoteErrorCodes.ZeroPrice]: 'Invalid price. Try increasing input/output amount.',
-  [GpQuoteErrorCodes.SameBuyAndSellToken]: 'Tokens must be different',
+  [QuoteApiErrorCodes.UnsupportedToken]: 'Unsupported token',
+  [QuoteApiErrorCodes.InsufficientLiquidity]: 'Insufficient liquidity for this trade.',
+  [QuoteApiErrorCodes.FeeExceedsFrom]: 'Sell amount is too small',
+  [QuoteApiErrorCodes.ZeroPrice]: 'Invalid price. Try increasing input/output amount.',
+  [QuoteApiErrorCodes.SameBuyAndSellToken]: 'Tokens must be different',
 }
 
 const unsupportedTokenButton = (context: TradeFormButtonContext) => {
@@ -84,9 +84,9 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
   },
   [TradeFormValidation.QuoteErrors]: (context) => {
     const { quote } = context
-    const defaultError = quoteErrorTexts[GpQuoteErrorCodes.UNHANDLED_ERROR]
+    const defaultError = quoteErrorTexts[QuoteApiErrorCodes.UNHANDLED_ERROR]
 
-    if (quote.error?.type === GpQuoteErrorCodes.UnsupportedToken) {
+    if (quote.error?.type === QuoteApiErrorCodes.UnsupportedToken) {
       return unsupportedTokenButton(context)
     }
 

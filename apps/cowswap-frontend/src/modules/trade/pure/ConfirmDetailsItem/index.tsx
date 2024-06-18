@@ -5,7 +5,6 @@ import { InfoTooltip } from '@cowprotocol/ui'
 
 import { CornerDownRight } from 'react-feather'
 
-
 import { TimelineDot } from 'modules/trade/pure/Row/styled'
 
 import { Content, Row, Wrapper, Label } from './styled'
@@ -19,13 +18,22 @@ export type ConfirmDetailsItemProps = {
   fiatAmount?: string
   withTimelineDot?: boolean
   highlighted?: boolean
+  alwaysRow?: boolean
 }
 
 export function ConfirmDetailsItem(props: ConfirmDetailsItemProps) {
-  const { children, label, labelOpacity = false, tooltip, withArrow = false, withTimelineDot = false } = props
+  const {
+    children,
+    label,
+    labelOpacity = false,
+    tooltip,
+    withArrow = false,
+    withTimelineDot = false,
+    alwaysRow = false,
+  } = props
 
   return (
-    <Wrapper>
+    <Wrapper alwaysRow={alwaysRow}>
       {withArrow && <CornerDownRight size={14} />}
       {withTimelineDot && <TimelineDot />}
       {label ? (

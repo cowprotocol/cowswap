@@ -1,7 +1,7 @@
 import { TradeQuoteState } from 'modules/tradeQuote'
 
-import { GpQuoteErrorCodes } from 'api/gnosisProtocol/errors/QuoteError'
+import { QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
 
 export function isUnsupportedTokenInQuote(state: TradeQuoteState): boolean {
-  return state.error?.type === GpQuoteErrorCodes.UnsupportedToken
+  return state.error?.type === QuoteApiErrorCodes.UnsupportedToken
 }

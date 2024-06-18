@@ -41,7 +41,6 @@ export function OrdersReceiptModal(props: OrdersReceiptModalProps) {
   const sellAmountCurrency = CurrencyAmount.fromRawAmount(inputToken, sellAmount.toString())
   const buyAmountCurrency = CurrencyAmount.fromRawAmount(outputToken, buyAmount.toString())
 
-  // Limit price
   const limitPrice = calculatePrice({
     buyAmount: JSBI.BigInt(buyAmount.toString()),
     sellAmount: JSBI.BigInt(sellAmount.toString()),
@@ -49,7 +48,6 @@ export function OrdersReceiptModal(props: OrdersReceiptModalProps) {
     outputToken,
   })
 
-  // Execution price
   const executionPrice = calculatePrice({
     buyAmount: executedBuyAmount,
     sellAmount: executedSellAmount,

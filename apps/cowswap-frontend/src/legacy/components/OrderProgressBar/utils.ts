@@ -5,7 +5,7 @@ const EXPECTED_EXECUTION_TIME_PERCENTAGE = 75
 export const EXPECTED_EXECUTION_TIME: Record<SupportedChainId, number> = {
   [SupportedChainId.MAINNET]: 120,
   [SupportedChainId.GNOSIS_CHAIN]: 50,
-  [SupportedChainId.ARBITRUM_ONE]: 50,
+  [SupportedChainId.ARBITRUM_ONE]: 40,
   [SupportedChainId.SEPOLIA]: 50,
 }
 

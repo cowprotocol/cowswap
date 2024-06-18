@@ -5,7 +5,7 @@ import { Order, OrderStatus } from 'legacy/state/orders/actions'
 import { classifyOrder, OrderTransitionStatus } from 'legacy/state/orders/utils'
 import { stringToCurrency } from 'legacy/state/swap/extension'
 
-import { getOrder } from 'api/gnosisProtocol'
+import { getOrder } from 'api/cowProtocol'
 import { getIsComposableCowChildOrder } from 'utils/orderUtils/getIsComposableCowChildOrder'
 import { getUiOrderType, ORDER_UI_TYPE_TITLES, UiOrderTypeParams } from 'utils/orderUtils/getUiOrderType'
 

@@ -2,29 +2,32 @@ import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
 import { usePrevious } from '@cowprotocol/common-hooks'
-import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Field } from 'legacy/state/types'
 
+import { useReceiveAmountInfo } from 'modules/trade'
 import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
 import { useUpdateCurrencyAmount } from 'modules/trade/hooks/useUpdateCurrencyAmount'
 import { useTradeQuote } from 'modules/tradeQuote'
 
-import { partsStateAtom } from '../state/partsStateAtom'
+import { twapOrdersSettingsAtom } from '../state/twapOrdersSettingsAtom'
 
 export function QuoteObserverUpdater() {
-  const { state } = useDerivedTradeState()
+  const state = useDerivedTradeState()
   const { response, isLoading } = useTradeQuote()
-  const { numberOfPartsValue } = useAtomValue(partsStateAtom)
+  const { numberOfPartsValue } = useAtomValue(twapOrdersSettingsAtom)
   const prevNumberOfParts = usePrevious(numberOfPartsValue)
 
   const updateCurrencyAmount = useUpdateCurrencyAmount()
+  const receiveAmountInfo = useReceiveAmountInfo()
+
   const outputCurrency = state?.outputCurrency
+  const buyAmount = receiveAmountInfo?.beforeNetworkCosts.buyAmount
 
   const quoteBuyAmount = useMemo(() => {
     const numOfPartsChanged = numberOfPartsValue !== prevNumberOfParts
 
-    if (!response || !outputCurrency || !numberOfPartsValue || isLoading) {
+    if (!buyAmount || !numberOfPartsValue || isLoading) {
       return null
     }
 
@@ -32,12 +35,10 @@ export function QuoteObserverUpdater() {
       return null
     }
 
-    const { buyAmount } = response.quote
-    const currencyValue = CurrencyAmount.fromRawAmount(outputCurrency, buyAmount)
-    const adjustedForParts = currencyValue.multiply(numberOfPartsValue)
+    const adjustedForParts = buyAmount.multiply(numberOfPartsValue)
 
     return adjustedForParts.quotient.toString()
-  }, [isLoading, numberOfPartsValue, outputCurrency, prevNumberOfParts, response])
+  }, [isLoading, numberOfPartsValue, buyAmount, prevNumberOfParts])
 
   useMemo(() => {
     if (!outputCurrency || !response || !quoteBuyAmount) {

@@ -1,10 +1,8 @@
 import { ethFlowBarnJson, ethFlowProdJson } from '@cowprotocol/abis'
 import {
-  COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS,
-  COW_PROTOCOL_VAULT_RELAYER_ADDRESS,
   IpfsConfig,
-  SupportedChainId,
   mapSupportedNetworks,
+  SupportedChainId,
 } from '@cowprotocol/cow-sdk'
 import { Fraction, Percent } from '@uniswap/sdk-core'
 
@@ -32,7 +30,6 @@ export const RADIX_HEX = 16
 
 export const DEFAULT_DECIMALS = 18
 export const DEFAULT_PRECISION = 6
-export const DEFAULT_SMALL_LIMIT = '0.000001'
 export const AMOUNT_PRECISION = 4
 export const LONG_PRECISION = 10
 export const FULL_PRICE_PRECISION = 20
@@ -46,9 +43,6 @@ export const AVG_APPROVE_COST_GWEI = '50000'
 export const DEFAULT_APP_CODE = 'CoW Swap'
 export const SAFE_APP_CODE = `${DEFAULT_APP_CODE}-SafeApp`
 
-export const PRODUCTION_URL = 'swap.cow.fi'
-export const BARN_URL = `barn.cow.fi`
-
 export const APP_TITLE = 'CoW Swap | The smartest way to trade cryptocurrencies'
 
 type Env = 'barn' | 'prod'
@@ -57,10 +51,6 @@ export const COWSWAP_ETHFLOW_CONTRACT_ADDRESS: Record<Env, Record<SupportedChain
   prod: mapSupportedNetworks((chain) => EthFlowProd[chain].address),
   barn: mapSupportedNetworks((chain) => EthFlowBarn[chain].address),
 }
-
-export const GP_SETTLEMENT_CONTRACT_ADDRESS = COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS
-
-export const GP_VAULT_RELAYER = COW_PROTOCOL_VAULT_RELAYER_ADDRESS
 
 export const V_COW_CONTRACT_ADDRESS: Record<SupportedChainId, string | null> = {
   [SupportedChainId.MAINNET]: '0xd057b63f5e69cf1b929b356b579cba08d7688048',
@@ -80,12 +70,19 @@ export const INPUT_OUTPUT_EXPLANATION = 'Only executed swaps incur fees.'
 export const PENDING_ORDERS_BUFFER = ms`60s` // 60s
 export const CANCELLED_ORDERS_PENDING_TIME = ms`5min` // 5min
 export const PRICE_API_TIMEOUT_MS = ms`10s` // 10s
-export const GP_ORDER_UPDATE_INTERVAL = ms`30s` // 30s
+export const ORDER_BOOK_API_UPDATE_INTERVAL = ms`30s` // 30s
 export const MINIMUM_ORDER_VALID_TO_TIME_SECONDS = 120
 // Minimum deadline for EthFlow orders. Like the default deadline, anything smaller will be replaced by this
 export const MINIMUM_ETH_FLOW_DEADLINE_SECONDS = 600 // 10 minutes in SECONDS
-export const MINIMUM_ETH_FLOW_SLIPPAGE_BPS = 200 // 2%
-export const MINIMUM_ETH_FLOW_SLIPPAGE = new Percent(MINIMUM_ETH_FLOW_SLIPPAGE_BPS, 10_000) // 2%
+export const MINIMUM_ETH_FLOW_SLIPPAGE_BPS: Record<SupportedChainId, number> = {
+  [SupportedChainId.MAINNET]: 200, // 2%
+  [SupportedChainId.GNOSIS_CHAIN]: DEFAULT_SLIPPAGE_BPS,
+  [SupportedChainId.ARBITRUM_ONE]: DEFAULT_SLIPPAGE_BPS,
+  [SupportedChainId.SEPOLIA]: DEFAULT_SLIPPAGE_BPS,
+}
+export const MINIMUM_ETH_FLOW_SLIPPAGE: Record<SupportedChainId, Percent> = mapSupportedNetworks(
+  (chainId) => new Percent(MINIMUM_ETH_FLOW_SLIPPAGE_BPS[chainId], 10_000)
+)
 export const HIGH_ETH_FLOW_SLIPPAGE_BPS = 1_000 // 10%
 
 export const WETH_LOGO_URI =
@@ -142,7 +139,7 @@ export const AMOUNT_OF_ORDERS_TO_FETCH = 100
 // Default price strategy to use for getting app prices
 // COWSWAP = new quote endpoint
 // LEGACY = price racing logic (checking 0x, gp, paraswap, etc)
-export const DEFAULT_GP_PRICE_STRATEGY = 'COWSWAP'
+export const DEFAULT_PRICE_STRATEGY = 'COWSWAP'
 
 // Start date of COW vesting for locked GNO
 export const LOCKED_GNO_VESTING_START_DATE = new Date('02-11-2022 13:05:15 GMT')

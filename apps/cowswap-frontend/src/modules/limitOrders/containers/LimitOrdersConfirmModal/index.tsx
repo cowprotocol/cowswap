@@ -3,7 +3,7 @@ import React, { useMemo } from 'react'
 
 import { getWrappedToken } from '@cowprotocol/common-utils'
 import { TokenSymbol } from '@cowprotocol/ui'
-import { useWalletInfo } from '@cowprotocol/wallet'
+import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
@@ -24,11 +24,12 @@ import { CurrencyPreviewInfo } from 'common/pure/CurrencyAmountPreview'
 import { LOW_RATE_THRESHOLD_PERCENT } from '../../const/trade'
 import { LimitOrdersDetails } from '../../pure/LimitOrdersDetails'
 import { TradeFlowContext } from '../../services/types'
+import { TradeRateDetails } from '../TradeRateDetails'
 
 const CONFIRM_TITLE = 'Limit Order'
 
 export interface LimitOrdersConfirmModalProps {
-  tradeContext: TradeFlowContext
+  tradeContext: TradeFlowContext | null
   inputCurrencyInfo: CurrencyPreviewInfo
   outputCurrencyInfo: CurrencyPreviewInfo
   priceImpact: PriceImpact
@@ -47,6 +48,7 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
   const tradeContext = useMemo(() => tradeContextInitial, [])
 
   const { account } = useWalletInfo()
+  const { ensName } = useWalletDetails()
   const warningsAccepted = useLimitOrdersWarningsAccepted(true)
   const settingsState = useAtomValue(limitOrdersSettingsAtom)
   const executionPrice = useAtomValue(executionPriceAtom)
@@ -81,6 +83,7 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
       <TradeConfirmation
         title={CONFIRM_TITLE}
         account={account}
+        ensName={ensName}
         inputCurrencyInfo={inputCurrencyInfo}
         outputCurrencyInfo={outputCurrencyInfo}
         onConfirm={doTrade}
@@ -92,14 +95,18 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
         isPriceStatic={true}
       >
         <>
-          <LimitOrdersDetails
-            limitRateState={limitRateState}
-            tradeContext={tradeContext}
-            rateInfoParams={rateInfoParams}
-            settingsState={settingsState}
-            executionPrice={executionPrice}
-            partiallyFillableOverride={partiallyFillableOverride}
-          />
+          {tradeContext && (
+            <LimitOrdersDetails
+              limitRateState={limitRateState}
+              tradeContext={tradeContext}
+              rateInfoParams={rateInfoParams}
+              settingsState={settingsState}
+              executionPrice={executionPrice}
+              partiallyFillableOverride={partiallyFillableOverride}
+            >
+              <TradeRateDetails />
+            </LimitOrdersDetails>
+          )}
           <LimitOrdersWarnings isConfirmScreen={true} />
         </>
       </TradeConfirmation>

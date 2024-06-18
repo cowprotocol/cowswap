@@ -1,4 +1,4 @@
-import { useAtomValue, useSetAtom } from 'jotai'
+import { useAtomValue } from 'jotai'
 import { PropsWithChildren, ReactNode } from 'react'
 
 import { isSellOrder } from '@cowprotocol/common-utils'
@@ -7,15 +7,15 @@ import { Field } from 'legacy/state/types'
 
 import { useAdvancedOrdersActions } from 'modules/advancedOrders/hooks/useAdvancedOrdersActions'
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders/hooks/useAdvancedOrdersDerivedState'
-import { updateAdvancedOrdersAtom } from 'modules/advancedOrders/state/advancedOrdersAtom'
 import { advancedOrdersSettingsAtom } from 'modules/advancedOrders/state/advancedOrdersSettingsAtom'
-import { TradeWidget, TradeWidgetSlots, useTradePriceImpact } from 'modules/trade'
+import { TradeWidget, TradeWidgetSlots, useReceiveAmountInfo, useTradePriceImpact } from 'modules/trade'
 import { BulletListItem, UnlockWidgetScreen } from 'modules/trade/pure/UnlockWidgetScreen'
 import { useTradeQuote } from 'modules/tradeQuote'
 import { TWAP_LEARN_MORE_LINK } from 'modules/twap/const'
 
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 
+import { useUpdateAdvancedOrdersRawState } from '../../hooks/useAdvancedOrdersRawState'
 import { AdvancedOrdersSettings } from '../AdvancedOrdersSettings'
 
 const TWAP_BULLET_LIST_CONTENT: BulletListItem[] = [
@@ -41,10 +41,17 @@ export type AdvancedOrdersWidgetParams = {
 export type AdvancedOrdersWidgetProps = PropsWithChildren<{
   updaters?: ReactNode
   params: AdvancedOrdersWidgetParams
+  mapCurrencyInfo?: (info: CurrencyInfo) => CurrencyInfo
   confirmContent: JSX.Element
 }>
 
-export function AdvancedOrdersWidget({ children, updaters, params, confirmContent }: AdvancedOrdersWidgetProps) {
+export function AdvancedOrdersWidget({
+  children,
+  updaters,
+  params,
+  confirmContent,
+  mapCurrencyInfo,
+}: AdvancedOrdersWidgetProps) {
   const { disablePriceImpact } = params
 
   const {
@@ -64,8 +71,9 @@ export function AdvancedOrdersWidget({ children, updaters, params, confirmConten
   const { isLoading: isTradePriceUpdating } = useTradeQuote()
   const { showRecipient } = useAtomValue(advancedOrdersSettingsAtom)
   const priceImpact = useTradePriceImpact()
+  const receiveAmountInfo = useReceiveAmountInfo()
 
-  const updateAdvancedOrdersState = useSetAtom(updateAdvancedOrdersAtom)
+  const updateAdvancedOrdersState = useUpdateAdvancedOrdersRawState()
 
   const isSell = isSellOrder(orderKind)
 
@@ -83,12 +91,11 @@ export function AdvancedOrdersWidget({ children, updaters, params, confirmConten
     currency: outputCurrency,
     amount: outputCurrencyAmount,
     isIndependent: !isSell,
-    receiveAmountInfo: null,
+    receiveAmountInfo,
     balance: outputCurrencyBalance,
     fiatAmount: outputCurrencyFiatAmount,
   }
 
-  // TODO
   const slots: TradeWidgetSlots = {
     settingsWidget: <AdvancedOrdersSettings />,
     bottomContent: children,
@@ -123,8 +130,8 @@ export function AdvancedOrdersWidget({ children, updaters, params, confirmConten
       slots={slots}
       actions={actions}
       params={tradeWidgetParams}
-      inputCurrencyInfo={inputCurrencyInfo}
-      outputCurrencyInfo={outputCurrencyInfo}
+      inputCurrencyInfo={mapCurrencyInfo ? mapCurrencyInfo(inputCurrencyInfo) : inputCurrencyInfo}
+      outputCurrencyInfo={mapCurrencyInfo ? mapCurrencyInfo(outputCurrencyInfo) : outputCurrencyInfo}
       confirmModal={confirmContent}
     />
   )

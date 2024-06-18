@@ -1,6 +1,18 @@
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CowEventListeners, CowEventPayloadMap, CowEvents } from '@cowprotocol/events'
+
 export { SupportedChainId } from '@cowprotocol/cow-sdk'
+
+export type PerTradeTypeConfig<T> = Partial<Record<TradeType, T>>
+
+export type PerNetworkConfig<T> = Partial<Record<SupportedChainId, T>>
+
+export type FlexibleConfig<T> =
+  | T
+  | PerNetworkConfig<T>
+  | PerTradeTypeConfig<T>
+  | PerTradeTypeConfig<PerNetworkConfig<T>>
+  | PerNetworkConfig<PerTradeTypeConfig<T>>
 
 export enum WidgetMethodsEmit {
   ACTIVATE = 'ACTIVATE',
@@ -8,6 +20,7 @@ export enum WidgetMethodsEmit {
   SET_FULL_HEIGHT = 'SET_FULL_HEIGHT',
   EMIT_COW_EVENT = 'EMIT_COW_EVENT',
   PROVIDER_RPC_REQUEST = 'PROVIDER_RPC_REQUEST',
+  INTERCEPT_WINDOW_OPEN = 'INTERCEPT_WINDOW_OPEN',
 }
 
 export enum WidgetMethodsListen {
@@ -82,19 +95,17 @@ export enum TradeType {
 
 /**
  * The partner fee
- *
- * Please contact https://cowprotocol.typeform.com/to/rONXaxHV
  */
 export interface PartnerFee {
   /**
    * The fee in basis points (BPS). One basis point is equivalent to 0.01% (1/100th of a percent)
    */
-  bps: number
+  bps: FlexibleConfig<number>
 
   /**
    * The Ethereum address of the partner to receive the fee.
    */
-  recipient: string | Record<SupportedChainId, string>
+  recipient: FlexibleConfig<string>
 }
 
 /**
@@ -302,6 +313,7 @@ export interface WidgetMethodsEmitPayloadMap {
   [WidgetMethodsEmit.UPDATE_HEIGHT]: UpdateWidgetHeightPayload
   [WidgetMethodsEmit.SET_FULL_HEIGHT]: SetWidgetFullHeightPayload
   [WidgetMethodsEmit.PROVIDER_RPC_REQUEST]: ProviderRpcRequestPayload
+  [WidgetMethodsEmit.INTERCEPT_WINDOW_OPEN]: WindowOpenPayload
 }
 
 export interface WidgetMethodsListenPayloadMap {
@@ -353,6 +365,12 @@ export type WidgetMethodHandler<T extends WidgetMethodsEmit> = (payload: WidgetM
 
 export interface ProviderRpcRequestPayload {
   rpcRequest: JsonRpcRequestMessage
+}
+
+export interface WindowOpenPayload {
+  href: string | URL
+  target: string
+  rel: string
 }
 
 export interface JsonRpcRequestMessage {

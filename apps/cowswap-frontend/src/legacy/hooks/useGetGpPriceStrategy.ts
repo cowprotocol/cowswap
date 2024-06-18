@@ -1,7 +1,7 @@
 import { useAtomValue } from 'jotai'
 
-import { gasPriceStrategyAtom, GpPriceStrategy } from 'legacy/state/gas/atoms'
+import { gasPriceStrategyAtom, PriceStrategy } from 'legacy/state/gas/atoms'
 
-export function useGetGpPriceStrategy(): GpPriceStrategy {
+export function useGetGpPriceStrategy(): PriceStrategy {
   return useAtomValue(gasPriceStrategyAtom)
 }

@@ -3,6 +3,8 @@ import { CanonicalMarketParams, getCanonicalMarket } from '@cowprotocol/common-u
 import { PartnerFee } from '@cowprotocol/widget-lib'
 import { Currency, CurrencyAmount, Percent, Price, TradeType } from '@uniswap/sdk-core'
 
+import { VolumeFee } from 'modules/volumeFee'
+
 interface PriceInformation {
   token: string
   amount: string | null
@@ -36,14 +38,10 @@ export function _constructTradePrice({
   })
 
   if (baseToken && quoteToken && price) {
-    executionPrice = new Price<Currency, Currency>(
-      // baseToken.currency,
-      // quoteToken.currency,
-      // baseToken.currency.quotient,
-      // price.amount
-      // TODO: CHECK THIS IS THE SAME AS THE ABOVE ON THE OLDER SDK
-      { baseAmount: baseToken, quoteAmount: CurrencyAmount.fromRawAmount(quoteToken.currency, price.amount) }
-    )
+    executionPrice = new Price<Currency, Currency>({
+      baseAmount: baseToken,
+      quoteAmount: CurrencyAmount.fromRawAmount(quoteToken.currency, price.amount),
+    })
   }
   return executionPrice
 }
@@ -76,8 +74,8 @@ interface TradeGpConstructor {
   executionPrice: Price<Currency, Currency>
   tradeType: TradeType
   quoteId?: number
-  partnerFee?: PartnerFee
-  partnerFeeAmount?: CurrencyAmount<Currency>
+  volumeFee?: VolumeFee
+  volumeFeeAmount?: CurrencyAmount<Currency>
 }
 
 /**
@@ -121,11 +119,11 @@ export default class TradeGp {
   /**
    * The partner fee
    */
-  readonly partnerFee?: PartnerFee
+  readonly volumeFee?: PartnerFee
   /**
    * The partner fee as token amount
    */
-  readonly partnerFeeAmount?: CurrencyAmount<Currency>
+  readonly volumeFeeAmount?: CurrencyAmount<Currency>
 
   public constructor({
     inputAmount,
@@ -139,8 +137,8 @@ export default class TradeGp {
     executionPrice,
     tradeType,
     quoteId,
-    partnerFee,
-    partnerFeeAmount,
+    volumeFee,
+    volumeFeeAmount,
   }: TradeGpConstructor) {
     this.tradeType = tradeType
     this.inputAmount = inputAmount
@@ -153,8 +151,8 @@ export default class TradeGp {
     this.fee = fee
     this.executionPrice = executionPrice
     this.quoteId = quoteId
-    this.partnerFee = partnerFee
-    this.partnerFeeAmount = partnerFeeAmount
+    this.volumeFee = volumeFee
+    this.volumeFeeAmount = volumeFeeAmount
   }
   /**
    * Get the minimum amount that must be received from this trade for the given slippage tolerance

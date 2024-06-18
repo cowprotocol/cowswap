@@ -35,7 +35,7 @@ export function ActionButtons({
     confirmTrade,
   }
 
-  const tradeFormButtonContext = useTradeFormButtonContext('TWAP order', { doTrade: confirmTrade, confirmTrade })
+  const tradeFormButtonContext = useTradeFormButtonContext('TWAP order', confirmTrade)
 
   if (!tradeFormButtonContext) return null
 

@@ -1,10 +1,8 @@
-import React from 'react'
-
 import { isAddress, shortenAddress } from '@cowprotocol/common-utils'
 import { InfoTooltip } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
-
+import { Nullish } from 'types'
 
 const Row = styled.div`
   display: flex;
@@ -17,16 +15,15 @@ const Row = styled.div`
 `
 
 interface RecipientRowProps {
-  recipient: string | null
-  recipientAddressOrName: string | null
-  account: string | undefined
+  recipient: Nullish<string>
+  account: Nullish<string>
 }
 
 export function RecipientRow(props: RecipientRowProps) {
-  const { recipientAddressOrName, recipient, account } = props
+  const { recipient, account } = props
   return (
     <>
-      {recipientAddressOrName && recipient !== account && (
+      {recipient && recipient.toLowerCase() !== account?.toLowerCase() && (
         <Row>
           <div>
             <span>Recipient</span>{' '}
@@ -37,9 +34,7 @@ export function RecipientRow(props: RecipientRowProps) {
             />
           </div>
           <div>
-            <span title={recipientAddressOrName}>
-              {isAddress(recipientAddressOrName) ? shortenAddress(recipientAddressOrName) : recipientAddressOrName}
-            </span>
+            <span title={recipient}>{isAddress(recipient) ? shortenAddress(recipient) : recipient}</span>
           </div>
         </Row>
       )}
