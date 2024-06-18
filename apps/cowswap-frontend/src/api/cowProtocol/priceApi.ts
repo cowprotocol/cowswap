@@ -2,7 +2,7 @@ import { RAW_CODE_LINK } from '@cowprotocol/common-const'
 import { environmentName } from '@cowprotocol/common-utils'
 import { SupportedChainId, mapSupportedNetworks } from '@cowprotocol/cow-sdk'
 
-import { GpPriceStrategy } from 'legacy/state/gas/atoms'
+import { PriceStrategy as PriceStrategyEnum } from 'legacy/state/gas/atoms'
 
 const API_NAME = 'CoW Protocol'
 const STRATEGY_URL_BASE = RAW_CODE_LINK + '/configuration/config/'
@@ -12,8 +12,8 @@ const STRATEGY_URL = STRATEGY_URL_BASE + ENV_BASE + '/strategies'
 const STRATEGY_API_URL = mapSupportedNetworks((chainId: SupportedChainId) => `${STRATEGY_URL}/strategy-${chainId}.json`)
 
 export type PriceStrategy = {
-  primary: GpPriceStrategy
-  secondary: GpPriceStrategy
+  primary: PriceStrategyEnum
+  secondary: PriceStrategyEnum
 }
 
 function _getPriceStrategyApiBaseUrl(chainId: SupportedChainId): string {

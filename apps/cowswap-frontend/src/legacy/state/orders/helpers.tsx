@@ -33,12 +33,12 @@ type IdOrHash<K extends OrderIdType, T extends OrderTxTypes> = {
   [identifier in K]: T extends OrderTxTypes.METATXN ? OrderTxTypes.METATXN : OrderTxTypes.TXN
 }
 
-type GPPopupContent<T extends OrderTxTypes> = {
+type PopupContent<T extends OrderTxTypes> = {
   [type in T]: IdOrHash<T extends OrderTxTypes.METATXN ? OrderIdType.ID : OrderIdType.HASH, T> & BasePopupContent
 }
 
-type MetaPopupContent = GPPopupContent<OrderTxTypes.METATXN>
-type TxnPopupContent = GPPopupContent<OrderTxTypes.TXN>
+type MetaPopupContent = PopupContent<OrderTxTypes.METATXN>
+type TxnPopupContent = PopupContent<OrderTxTypes.TXN>
 
 function setOrderSummary({ id, summary, status, descriptor }: SetOrderSummaryParams) {
   // If there isn't summary, return generalized summary

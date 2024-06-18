@@ -13,8 +13,8 @@ import {
   PriceQuote1inch,
   toPriceInformation as toPriceInformation1inch,
 } from 'api/1inch'
-import { getQuote } from 'api/gnosisProtocol'
-import GpQuoteError, { GpQuoteErrorCodes } from 'api/gnosisProtocol/errors/QuoteError'
+import { getQuote } from 'api/cowProtocol'
+import QuoteApiError, { QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
 import {
   getPriceQuote as getPriceQuoteMatcha,
   MatchaPriceQuote,
@@ -38,9 +38,9 @@ import {
  * ************************************************** *
  */
 
-const FEE_EXCEEDS_FROM_ERROR = new GpQuoteError({
-  errorType: GpQuoteErrorCodes.FeeExceedsFrom,
-  description: GpQuoteError.quoteErrorDetails.FeeExceedsFrom,
+const FEE_EXCEEDS_FROM_ERROR = new QuoteApiError({
+  errorType: QuoteApiErrorCodes.FeeExceedsFrom,
+  description: QuoteApiError.quoteErrorDetails.FeeExceedsFrom,
 })
 
 interface GetBestPriceOptions {
@@ -147,7 +147,7 @@ function _extractPriceAndErrorPromiseValues(
   return [priceQuotes, errorsGetPrice]
 }
 
-function _checkFeeErrorForData(error: GpQuoteError) {
+function _checkFeeErrorForData(error: QuoteApiError) {
   console.warn('legacy]::Fee error', error)
 
   const feeAmount = error?.data?.fee_amount || error?.data?.feeAmount

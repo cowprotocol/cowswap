@@ -21,12 +21,12 @@ import { getBestQuote, getFastQuote, QuoteResult } from 'legacy/utils/price'
 
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 
-import { ApiErrorCodes, isValidOperatorError } from 'api/gnosisProtocol/errors/OperatorError'
-import GpQuoteError, {
-  GpQuoteErrorCodes,
-  GpQuoteErrorDetails,
+import { ApiErrorCodes, isValidOperatorError } from 'api/cowProtocol/errors/OperatorError'
+import QuoteApiError, {
+  QuoteApiErrorCodes,
+  QuoteApiErrorDetails,
   isValidQuoteError,
-} from 'api/gnosisProtocol/errors/QuoteError'
+} from 'api/cowProtocol/errors/QuoteError'
 
 interface HandleQuoteErrorParams {
   quoteData: QuoteInformationObject | LegacyFeeQuoteParams
@@ -62,20 +62,20 @@ function handleQuoteError({ quoteData, error, addUnsupportedToken }: HandleQuote
     switch (error.type) {
       // Fee/Price query returns error
       // e.g Insufficient Liquidity or Fee exceeds Price
-      case GpQuoteErrorCodes.FeeExceedsFrom: {
+      case QuoteApiErrorCodes.FeeExceedsFrom: {
         return 'fee-exceeds-sell-amount'
       }
 
-      case GpQuoteErrorCodes.ZeroPrice: {
+      case QuoteApiErrorCodes.ZeroPrice: {
         return 'zero-price'
       }
 
-      case GpQuoteErrorCodes.InsufficientLiquidity: {
+      case QuoteApiErrorCodes.InsufficientLiquidity: {
         console.error(`Insufficient liquidity ${error.message}: ${error.description}`)
         return 'insufficient-liquidity'
       }
 
-      case GpQuoteErrorCodes.UnsupportedToken: {
+      case QuoteApiErrorCodes.UnsupportedToken: {
         // TODO: will change with introduction of data prop in error responses
         const unsupportedTokenAddress = getQuoteUnsupportedToken(error, quoteData)
         console.error(`${error.message}: ${error.description} - disabling.`)
@@ -88,7 +88,7 @@ function handleQuoteError({ quoteData, error, addUnsupportedToken }: HandleQuote
         return 'unsupported-token'
       }
 
-      case GpQuoteErrorCodes.TransferEthToContract: {
+      case QuoteApiErrorCodes.TransferEthToContract: {
         return 'transfer-eth-to-smart-contract'
       }
 
@@ -175,9 +175,9 @@ export function useRefetchQuoteCallback() {
         // we need to check if returned price is 0 - this is rare but can occur e.g DAI <> WBTC where price diff is huge
         // TODO: check if this should be handled differently by backend - maybe we return a new error like "ZERO_PRICE"
         if (price.value.amount === '0')
-          throw new GpQuoteError({
-            errorType: GpQuoteErrorCodes.ZeroPrice,
-            description: GpQuoteErrorDetails.ZeroPrice,
+          throw new QuoteApiError({
+            errorType: QuoteApiErrorCodes.ZeroPrice,
+            description: QuoteApiErrorDetails.ZeroPrice,
           })
 
         const previouslyUnsupportedToken = getIsUnsupportedToken(sellToken)
@@ -197,7 +197,7 @@ export function useRefetchQuoteCallback() {
         updateQuote({ ...quoteData, quoteValidTo: price.value.quoteValidTo, isBestQuote })
       }
 
-      const handleError = (error: GpQuoteError) => {
+      const handleError = (error: QuoteApiError) => {
         // handle any errors in quote fetch
         // we re-use the quoteData object in scope to save values into state
         const quoteError = handleQuoteError({

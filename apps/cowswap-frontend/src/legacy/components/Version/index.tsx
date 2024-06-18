@@ -1,17 +1,20 @@
-import { CODE_LINK, GP_SETTLEMENT_CONTRACT_ADDRESS, GP_VAULT_RELAYER } from '@cowprotocol/common-const'
+import { CODE_LINK } from '@cowprotocol/common-const'
 import { getEtherscanLink } from '@cowprotocol/common-utils'
 import contractsPkg from '@cowprotocol/contracts/package.json'
-import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import {
+  COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS,
+  COW_PROTOCOL_VAULT_RELAYER_ADDRESS,
+  SupportedChainId as ChainId,
+} from '@cowprotocol/cow-sdk'
 import { UI } from '@cowprotocol/ui'
 import { ExternalLink } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import styled from 'styled-components/macro'
 
-// eslint-disable-next-line @nx/enforce-module-boundaries
 import pkg from '../../../../package.json'
 
-function _getContractsUrls(chainId: ChainId, contractAddressMap: typeof GP_SETTLEMENT_CONTRACT_ADDRESS) {
+function _getContractsUrls(chainId: ChainId, contractAddressMap: typeof COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS) {
   const contractAddress = contractAddressMap[chainId]
   if (!contractAddress) return '-'
   return getEtherscanLink(chainId, 'address', contractAddress)
@@ -35,7 +38,7 @@ const VERSIONS: Record<
     version: 'v' + contractsPkg.version,
     href(chainId: ChainId) {
       // return Etherscan by default
-      return _getContractsUrls(chainId, GP_VAULT_RELAYER)
+      return _getContractsUrls(chainId, COW_PROTOCOL_VAULT_RELAYER_ADDRESS)
 
       // return {
       //   etherscan: _getContractsUrls(chainId, GP_VAULT_RELAYER),
@@ -47,7 +50,7 @@ const VERSIONS: Record<
     version: 'v' + contractsPkg.version,
     href(chainId: ChainId) {
       // return Etherscan by default
-      return _getContractsUrls(chainId, GP_SETTLEMENT_CONTRACT_ADDRESS)
+      return _getContractsUrls(chainId, COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS)
 
       // return {
       //   etherscan: _getContractsUrls(chainId, GP_SETTLEMENT_CONTRACT_ADDRESS),

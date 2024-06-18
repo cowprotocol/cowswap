@@ -13,7 +13,7 @@ import { classifyOrder, OrderTransitionStatus } from 'legacy/state/orders/utils'
 import { getTokensListFromOrders, useTokensForOrdersList } from 'modules/orders'
 import { apiOrdersAtom } from 'modules/orders/state/apiOrdersAtom'
 
-import { useGpOrders } from 'api/gnosisProtocol/hooks'
+import { useOrdersFromOrderBook } from 'api/cowProtocol/hooks'
 import { getTokenFromMapping } from 'utils/orderUtils/getTokenFromMapping'
 
 import { computeOrderSummary } from './utils'
@@ -29,7 +29,7 @@ const statusMapping: Record<OrderTransitionStatus, OrderStatus | undefined> = {
   unknown: undefined,
 }
 
-function _transformGpOrderToStoreOrder(
+function _transformOrderBookOrderToStoreOrder(
   order: EnrichedOrder,
   chainId: ChainId,
   allTokens: TokensByAddress
@@ -56,14 +56,14 @@ function _transformGpOrderToStoreOrder(
   const status = statusMapping[apiStatus]
 
   if (!status) {
-    console.warn(`GpOrdersUpdater::Order ${id} in unknown internal state: ${apiStatus}`)
+    console.warn(`OrdersFromApiUpdater::Order ${id} in unknown internal state: ${apiStatus}`)
     return
   }
   if (!inputToken || !outputToken) {
     console.warn(
-      `GpOrdersUpdater::Tokens not found for order ${id}: sellToken ${!inputToken ? sellToken : 'found'} - buyToken ${
-        !outputToken ? buyToken : 'found'
-      }`
+      `OrdersFromApiUpdater::Tokens not found for order ${id}: sellToken ${
+        !inputToken ? sellToken : 'found'
+      } - buyToken ${!outputToken ? buyToken : 'found'}`
     )
     return
   }
@@ -117,7 +117,7 @@ function _getInputToken(
 
 function _filterOrders(orders: EnrichedOrder[], tokens: TokensByAddress, chainId: ChainId): Order[] {
   return orders.reduce<Order[]>((acc, order) => {
-    const storeOrder = _transformGpOrderToStoreOrder(order, chainId, tokens)
+    const storeOrder = _transformOrderBookOrderToStoreOrder(order, chainId, tokens)
     if (storeOrder) {
       acc.push(storeOrder)
     }
@@ -126,9 +126,9 @@ function _filterOrders(orders: EnrichedOrder[], tokens: TokensByAddress, chainId
 }
 
 /**
- * Updater for GP orders
+ * Updater for orders
  *
- * This updater fetches orders from GnosisProtocol backend API instead of onchain (since we work with offline orders)
+ * This updater fetches orders from CoWProtocol backend API instead of onchain (since we work with offline orders)
  * It will:
  * - Fetch the most recent orders (up to ~100), once, on every account/chainId change
  * - Transform them from `OrderMetaData` into the local order representation type `Order`
@@ -136,7 +136,7 @@ function _filterOrders(orders: EnrichedOrder[], tokens: TokensByAddress, chainId
  * - Ignore orders for which a token could not be found
  * - Persist the new tokens and orders on redux
  */
-export function GpOrdersUpdater(): null {
+export function OrdersFromApiUpdater(): null {
   const isSafeWallet = useIsSafeWallet()
   const clearOrderStorage = useClearOrdersStorage()
 
@@ -145,7 +145,7 @@ export function GpOrdersUpdater(): null {
   const tokensAreLoaded = useMemo(() => Object.keys(allTokens).length > 0, [allTokens])
   const addOrUpdateOrders = useAddOrUpdateOrders()
   const updateApiOrders = useSetAtom(apiOrdersAtom)
-  const gpOrders = useGpOrders()
+  const ordersFromOrderBook = useOrdersFromOrderBook()
   const getTokensForOrdersList = useTokensForOrdersList()
 
   // Using a ref to store allTokens to avoid re-fetching when new tokens are added
@@ -157,31 +157,31 @@ export function GpOrdersUpdater(): null {
   const updateOrders = useCallback(
     async (chainId: ChainId): Promise<void> => {
       try {
-        if (!gpOrders?.length) {
+        if (!ordersFromOrderBook?.length) {
           return
         }
 
-        const tokensToFetch = getTokensListFromOrders(gpOrders)
+        const tokensToFetch = getTokensListFromOrders(ordersFromOrderBook)
         // Merge fetched tokens with what's currently loaded
         const reallyAllTokens = await getTokensForOrdersList(tokensToFetch)
 
         // Build store order objects, for all orders which we found both input/output tokens
         // Don't add order for those we didn't
-        const orders = _filterOrders(gpOrders, reallyAllTokens, chainId)
-        console.debug(`GpOrdersUpdater::will add/update ${orders.length} out of ${gpOrders.length}`)
+        const orders = _filterOrders(ordersFromOrderBook, reallyAllTokens, chainId)
+        console.debug(`OrdersFromApiUpdater::will add/update ${orders.length} out of ${ordersFromOrderBook.length}`)
 
         // Add orders to redux state
         orders.length && addOrUpdateOrders({ orders, chainId, isSafeWallet })
       } catch (e: any) {
-        console.error(`GpOrdersUpdater::Failed to fetch orders`, e)
+        console.error(`OrdersFromApiUpdater::Failed to fetch orders`, e)
       }
     },
-    [addOrUpdateOrders, gpOrders, getTokensForOrdersList, isSafeWallet]
+    [addOrUpdateOrders, ordersFromOrderBook, getTokensForOrdersList, isSafeWallet]
   )
 
   useEffect(() => {
-    updateApiOrders(gpOrders)
-  }, [gpOrders, updateApiOrders])
+    updateApiOrders(ordersFromOrderBook)
+  }, [ordersFromOrderBook, updateApiOrders])
 
   useEffect(() => {
     if (account && chainId && tokensAreLoaded) {

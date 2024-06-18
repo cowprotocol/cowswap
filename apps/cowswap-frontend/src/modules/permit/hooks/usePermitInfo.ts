@@ -1,9 +1,8 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
-import { GP_VAULT_RELAYER } from '@cowprotocol/common-const'
 import { getIsNativeToken, getWrappedToken } from '@cowprotocol/common-utils'
-import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS, mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { DEFAULT_MIN_GAS_LIMIT, getTokenPermitInfo, PermitInfo } from '@cowprotocol/permit-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
@@ -58,7 +57,7 @@ export function usePermitInfo(token: Nullish<Currency>, tradeType: Nullish<Trade
     isPermitEnabled && !isNative ? token : undefined
   )
 
-  const spender = GP_VAULT_RELAYER[chainId]
+  const spender = COW_PROTOCOL_VAULT_RELAYER_ADDRESS[chainId]
 
   useEffect(() => {
     if (

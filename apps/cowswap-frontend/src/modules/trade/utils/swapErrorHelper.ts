@@ -1,6 +1,6 @@
 import { capitalizeFirstLetter, getProviderErrorMessage, isRejectRequestProviderError } from '@cowprotocol/common-utils'
 
-import { isValidOperatorError } from 'api/gnosisProtocol/errors/OperatorError'
+import { isValidOperatorError } from 'api/cowProtocol/errors/OperatorError'
 
 export const USER_SWAP_REJECTED_ERROR = 'User rejected signing the order'
 

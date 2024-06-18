@@ -4,11 +4,11 @@ import { OrderQuoteResponse } from '@cowprotocol/cow-sdk'
 
 import type { LegacyFeeQuoteParams } from 'legacy/state/price/types'
 
-import GpQuoteError from 'api/gnosisProtocol/errors/QuoteError'
+import QuoteApiError from 'api/cowProtocol/errors/QuoteError'
 
 export interface TradeQuoteState {
   response: OrderQuoteResponse | null
-  error: GpQuoteError | null
+  error: QuoteApiError | null
   isLoading: boolean
   quoteParams: LegacyFeeQuoteParams | null
   localQuoteTimestamp: number | null

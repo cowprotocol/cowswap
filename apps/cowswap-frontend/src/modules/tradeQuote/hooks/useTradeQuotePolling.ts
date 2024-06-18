@@ -10,8 +10,8 @@ import ms from 'ms.macro'
 
 import { useUpdateCurrencyAmount } from 'modules/trade/hooks/useUpdateCurrencyAmount'
 
-import { getQuote } from 'api/gnosisProtocol/api'
-import GpQuoteError, { GpQuoteErrorCodes } from 'api/gnosisProtocol/errors/QuoteError'
+import { getQuote } from 'api/cowProtocol/api'
+import QuoteApiError, { QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
 
 import { useProcessUnsupportedTokenError } from './useProcessUnsupportedTokenError'
 import { useQuoteParams } from './useQuoteParams'
@@ -64,11 +64,11 @@ export function useTradeQuotePolling() {
 
           updateQuoteState({ response: data, quoteParams, isLoading: false, error: null })
         })
-        .catch((error: GpQuoteError) => {
+        .catch((error: QuoteApiError) => {
           console.log('[useGetQuote]:: fetchQuote error', error)
           updateQuoteState({ isLoading: false, error })
 
-          if (error.type === GpQuoteErrorCodes.UnsupportedToken) {
+          if (error.type === QuoteApiErrorCodes.UnsupportedToken) {
             processUnsupportedTokenError(error, quoteParams)
           }
         })

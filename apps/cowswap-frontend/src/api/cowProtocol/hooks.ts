@@ -1,4 +1,4 @@
-import { GP_ORDER_UPDATE_INTERVAL } from '@cowprotocol/common-const'
+import { ORDER_BOOK_API_UPDATE_INTERVAL } from '@cowprotocol/common-const'
 import { EnrichedOrder } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -8,7 +8,7 @@ import { useSWROrdersRequest } from 'modules/orders/hooks/useSWROrdersRequest'
 
 import { getOrders } from './api'
 
-export function useGpOrders(): EnrichedOrder[] {
+export function useOrdersFromOrderBook(): EnrichedOrder[] {
   const { chainId } = useWalletInfo()
 
   const requestParams = useSWROrdersRequest()
@@ -21,7 +21,7 @@ export function useGpOrders(): EnrichedOrder[] {
 
       return getOrders(requestParams, { chainId })
     },
-    { refreshInterval: GP_ORDER_UPDATE_INTERVAL }
+    { refreshInterval: ORDER_BOOK_API_UPDATE_INTERVAL }
   )
 
   return currentEnvOrders || []

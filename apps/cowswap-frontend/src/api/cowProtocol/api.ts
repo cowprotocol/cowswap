@@ -30,9 +30,8 @@ import { LegacyFeeQuoteParams as FeeQuoteParams } from 'legacy/state/price/types
 
 import { getAppData } from 'modules/appData'
 
-import { ApiErrorCodes } from 'api/gnosisProtocol/errors/OperatorError'
-import GpQuoteError, { GpQuoteErrorDetails, mapOperatorErrorToQuoteError } from 'api/gnosisProtocol/errors/QuoteError'
-
+import { ApiErrorCodes } from './errors/OperatorError'
+import QuoteApiError, { QuoteApiErrorDetails, mapOperatorErrorToQuoteError } from './errors/QuoteError'
 import { getIsOrderBookTypedError } from './getIsOrderBookTypedError'
 
 function getProfileUrl(): Partial<Record<ChainId, string>> {
@@ -171,7 +170,7 @@ export async function getQuote(params: FeeQuoteParams): Promise<OrderQuoteRespon
     return Promise.reject(
       mapOperatorErrorToQuoteError({
         errorType: ApiErrorCodes.SameBuyAndSellToken,
-        description: GpQuoteErrorDetails.SameBuyAndSellToken,
+        description: QuoteApiErrorDetails.SameBuyAndSellToken,
       })
     )
   }
@@ -180,7 +179,7 @@ export async function getQuote(params: FeeQuoteParams): Promise<OrderQuoteRespon
     if (getIsOrderBookTypedError(error)) {
       const errorObject = mapOperatorErrorToQuoteError(error.body)
 
-      return Promise.reject(errorObject ? new GpQuoteError(errorObject) : error)
+      return Promise.reject(errorObject ? new QuoteApiError(errorObject) : error)
     }
 
     return Promise.reject(error)
