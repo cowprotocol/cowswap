@@ -2,7 +2,7 @@ import { LinkScrollable } from 'legacy/components/Link'
 import { PageWithToC } from 'legacy/components/PageWithToC'
 
 import { PageTitle } from 'modules/application/containers/PageTitle'
-import { Page, Content } from 'modules/application/pure/Page'
+import { Content, Page } from 'modules/application/pure/Page'
 
 import { useToC } from './hooks'
 import { FaqMenu } from './Menu'
@@ -176,7 +176,7 @@ export default function TokenFaq() {
             <h3 id="can-i-buy-and-sell-eth-in-cowswap">Can I buy and sell ETH in CoW Swap?</h3>
 
             <p>
-              Yes, you can directly place buy and sell orders for ETH. Etieher the UI will prompt you to wrap and unwrap
+              Yes, you can directly place buy and sell orders for ETH. Either the UI will prompt you to wrap and unwrap
               ETH into WETH without needing to leave the dapp's UI, or you can trade leveraging the native sell token
               flow.
             </p>

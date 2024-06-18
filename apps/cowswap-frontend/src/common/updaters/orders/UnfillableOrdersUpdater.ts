@@ -7,7 +7,7 @@ import { NATIVE_CURRENCY_ADDRESS, WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol
 import { useIsWindowVisible } from '@cowprotocol/common-hooks'
 import { getPromiseFulfilledValue, isSellOrder } from '@cowprotocol/common-utils'
 import { timestamp } from '@cowprotocol/contracts'
-import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { PriceQuality, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
@@ -23,26 +23,22 @@ import {
   getEstimatedExecutionPrice,
   getOrderMarketPrice,
   getRemainderAmount,
-  isOrderUnfillable,
+  isOrderUnfillable
 } from 'legacy/state/orders/utils'
 import type { LegacyFeeQuoteParams } from 'legacy/state/price/types'
 import { getBestQuote } from 'legacy/utils/price'
 
 import { updatePendingOrderPricesAtom } from 'modules/orders/state/pendingOrdersPricesAtom'
-import { hasEnoughBalanceAndAllowance } from 'modules/tokens'
 
-import { getPriceQuality } from 'api/gnosisProtocol/api'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { PRICE_QUOTE_VALID_TO_TIME } from '../../constants/quote'
-import { useVerifiedQuotesEnabled } from '../../hooks/featureFlags/useVerifiedQuotesEnabled'
 
 /**
  * Updater that checks whether pending orders are still "fillable"
  */
 export function UnfillableOrdersUpdater(): null {
   const { chainId, account } = useWalletInfo()
-  const verifiedQuotesEnabled = useVerifiedQuotesEnabled(chainId)
   const updatePendingOrderPrices = useSetAtom(updatePendingOrderPricesAtom)
   const isWindowVisible = useIsWindowVisible()
 
@@ -132,15 +128,7 @@ export function UnfillableOrdersUpdater(): null {
       }
 
       pending.forEach((order) => {
-        const currencyAmount = CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount)
-        const { enoughBalance } = hasEnoughBalanceAndAllowance({
-          account,
-          amount: currencyAmount,
-          balances: balancesRef.current,
-        })
-        const verifiedQuote = verifiedQuotesEnabled && enoughBalance
-
-        _getOrderPrice(chainId, order, verifiedQuote, strategy)
+        _getOrderPrice(chainId, order, strategy)
           .then((quote) => {
             if (quote) {
               const [promisedPrice, promisedFee] = quote
@@ -170,15 +158,7 @@ export function UnfillableOrdersUpdater(): null {
     } finally {
       isUpdating.current = false
     }
-  }, [
-    account,
-    chainId,
-    strategy,
-    updateIsUnfillableFlag,
-    isWindowVisible,
-    updatePendingOrderPrices,
-    verifiedQuotesEnabled,
-  ])
+  }, [account, chainId, strategy, updateIsUnfillableFlag, isWindowVisible, updatePendingOrderPrices])
 
   const updatePendingRef = useRef(updatePending)
   updatePendingRef.current = updatePending
@@ -199,12 +179,7 @@ export function UnfillableOrdersUpdater(): null {
 /**
  * Thin wrapper around `getBestPrice` that builds the params and returns null on failure
  */
-async function _getOrderPrice(
-  chainId: ChainId,
-  order: Order,
-  verifyQuote: boolean | undefined,
-  strategy: GpPriceStrategy
-) {
+async function _getOrderPrice(chainId: ChainId, order: Order, strategy: GpPriceStrategy) {
   let baseToken, quoteToken
 
   const amount = getRemainderAmount(order.kind, order)
@@ -241,7 +216,7 @@ async function _getOrderPrice(
     userAddress: order.owner,
     receiver: order.receiver,
     isEthFlow,
-    priceQuality: getPriceQuality({ verifyQuote }),
+    priceQuality: PriceQuality.OPTIMAL,
     appData: order.appData ?? undefined,
     appDataHash: order.appDataHash ?? undefined,
   }
