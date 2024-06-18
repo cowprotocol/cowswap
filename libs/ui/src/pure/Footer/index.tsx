@@ -199,7 +199,7 @@ export const Footer = ({
                   logoIconOnly={false}
                   overrideColor={theme === 'light' ? Color.neutral40 : Color.neutral40}
                   overrideHoverColor={Color.neutral98}
-                  height={20}
+                  height={24}
                 />
               </a>
             ))}
