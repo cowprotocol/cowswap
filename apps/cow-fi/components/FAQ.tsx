@@ -6,7 +6,7 @@ import IMG_ICON_PLUS from '@cowprotocol/assets/images/icon-plus.svg'
 import SVG from 'react-inlinesvg'
 
 const Wrapper = styled.div`
-  --titleSize: 28px;
+  --titleSize: 26px;
   --color: ${Color.neutral10};
   display: flex;
   flex-flow: column wrap;
@@ -18,7 +18,7 @@ const Wrapper = styled.div`
   font-weight: ${Font.weight.bold};
 
   ${Media.upToMedium()} {
-    --titleSize: 20px;
+    --titleSize: 18px;
   }
 
   a {
@@ -59,6 +59,10 @@ const Wrapper = styled.div`
     position: relative;
     font-size: var(--titleSize);
 
+    ${Media.upToMedium()} {
+      padding: 14px 4px 14px 21px;
+    }
+
     &::marker,
     &::-webkit-details-marker {
       display: none;
@@ -68,6 +72,8 @@ const Wrapper = styled.div`
       --size: 56px;
       width: var(--size);
       height: var(--size);
+      min-height: var(--size);
+      min-width: var(--size);
       border-radius: var(--size);
       background: transparent;
       transition: background 0.2s ease-in-out;
@@ -115,7 +121,7 @@ const Wrapper = styled.div`
 
 interface FAQItemProps {
   question: string
-  answer: string
+  answer: string | JSX.Element
 }
 
 const FAQItem: React.FC<FAQItemProps> = ({ question, answer }) => {

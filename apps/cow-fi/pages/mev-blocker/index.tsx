@@ -51,91 +51,12 @@ import {
 } from '@/styles/styled'
 
 import SVG from 'react-inlinesvg'
-import IMG_LOGO_SAFE from '@cowprotocol/assets/images/logo-safe.svg'
-import IMG_LOGO_KARPATKEY from '@cowprotocol/assets/images/logo-karpatkey.svg'
-import IMG_LOGO_BLOCKNATIVE from '@cowprotocol/assets/images/logo-blocknative.svg'
-import IMG_LOGO_RABBY from '@cowprotocol/assets/images/logo-rabby.svg'
-import IMG_LOGO_KEEPKEY from '@cowprotocol/assets/images/logo-keepkey.svg'
-import IMG_LOGO_AMBIRE from '@cowprotocol/assets/images/logo-ambire.svg'
-import IMG_LOGO_CRYPTO_COM from '@cowprotocol/assets/images/logo-crypto-com.svg'
-import IMG_LOGO_UNISWAP from '@cowprotocol/assets/images/logo-uniswap.svg'
 
 import { GAEventCategories } from 'lib/analytics/GAEvents'
 import { sendGAEventHandler } from 'lib/analytics/sendGAEvent'
+import { FAQ_DATA, TRUSTED_BY_CONTENT } from './const'
 
 const DATA_CACHE_TIME_SECONDS = 5 * 60 // Cache 5min
-
-const FAQ_DATA = [
-  {
-    question: 'What is CoW DAO?',
-    answer: 'CoW DAO is ...',
-  },
-  {
-    question: 'What is CoW Swap?',
-    answer:
-      'CoW Protocol is a fully permissionless trading protocol that leverages batch auctions as its price finding mechanism. CoW Protocol uses batch auctions to maximize liquidity via Coincidence of Wants (CoWs) in addition to tapping all available on-chain liquidity whenever needed.',
-  },
-  {
-    question: 'What is MEV Blocker?',
-    answer: 'MEV Blocker is ...',
-  },
-  {
-    question: 'What is CoW AMM?',
-    answer: 'CoW AMM is ...',
-  },
-  {
-    question: 'Where does the name come from?',
-    answer: 'The name comes from ...',
-  },
-]
-
-const TRUSTED_BY_CONTENT = [
-  {
-    href: 'https://uniswap.org/',
-    src: IMG_LOGO_UNISWAP,
-    title: 'Wallet',
-  },
-  {
-    href: 'https://rabby.io/',
-    src: IMG_LOGO_RABBY,
-    title: 'Wallet',
-  },
-  {
-    href: 'https://crypto.com/',
-    src: IMG_LOGO_CRYPTO_COM,
-    title: 'Wallet',
-  },
-  {
-    href: 'https://swap.cow.fi/',
-    component: <ProductLogo variant={ProductVariant.CowSwap} theme="dark" />,
-    title: '',
-  },
-  {
-    href: 'https://safe.global/',
-    src: IMG_LOGO_SAFE,
-    title: '',
-  },
-  {
-    href: 'https://www.karpatkey.com/',
-    src: IMG_LOGO_KARPATKEY,
-    title: 'karpatkey',
-  },
-  {
-    href: 'https://www.keepkey.com/',
-    src: IMG_LOGO_KEEPKEY,
-    title: '',
-  },
-  {
-    href: 'https://www.ambire.com/',
-    src: IMG_LOGO_AMBIRE,
-    title: 'Wallet',
-  },
-  {
-    href: 'https://www.blocknative.com/',
-    src: IMG_LOGO_BLOCKNATIVE,
-    title: 'Blocknative Transaction Boost',
-  },
-]
 
 const Wrapper = styled.div`
   display: flex;
@@ -206,7 +127,13 @@ export default function Page({ siteConfigData }: PageProps) {
                   </ol>
                 </HeroDescription>
 
-                <Link linkType={LinkType.HeroButton} bgColor={'#EC4612'} color={'#FEE7CF'} href="#rpc">
+                <Link
+                  linkType={LinkType.HeroButton}
+                  bgColor={'#EC4612'}
+                  color={'#FEE7CF'}
+                  href="#rpc"
+                  onClick={() => sendGAEventHandler(GAEventCategories.MEVBLOCKER, 'click-get-protected')}
+                >
                   Get protected
                 </Link>
               </HeroContent>

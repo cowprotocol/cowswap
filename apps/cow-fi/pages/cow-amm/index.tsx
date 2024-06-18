@@ -41,32 +41,9 @@ import IMG_ICON_FAQ from '@cowprotocol/assets/images/icon-faq.svg'
 
 import { GAEventCategories } from 'lib/analytics/GAEvents'
 import { sendGAEventHandler } from 'lib/analytics/sendGAEvent'
+import { FAQ_DATA } from './const'
 
 const DATA_CACHE_TIME_SECONDS = 5 * 60 // Cache 5min
-
-const FAQ_DATA = [
-  {
-    question: 'What is CoW DAO?',
-    answer: 'CoW DAO is ...',
-  },
-  {
-    question: 'What is CoW Swap?',
-    answer:
-      'CoW Protocol is a fully permissionless trading protocol that leverages batch auctions as its price finding mechanism. CoW Protocol uses batch auctions to maximize liquidity via Coincidence of Wants (CoWs) in addition to tapping all available on-chain liquidity whenever needed.',
-  },
-  {
-    question: 'What is MEV Blocker?',
-    answer: 'MEV Blocker is ...',
-  },
-  {
-    question: 'What is CoW AMM?',
-    answer: 'CoW AMM is ...',
-  },
-  {
-    question: 'Where does the name come from?',
-    answer: 'The name comes from ...',
-  },
-]
 
 interface PageProps {
   siteConfigData: typeof CONFIG
