@@ -4,7 +4,7 @@ import { useDarkModeManager } from 'legacy/state/user/hooks'
 import { ExtLink, BannerCard, BannerCardContent, BannerCardIcon, CardActions } from './styled'
 
 export default function Governance() {
-  const [darkMode, toggleDarkMode] = useDarkModeManager()
+  const [darkMode] = useDarkModeManager()
 
   return (
     <BannerCard>
