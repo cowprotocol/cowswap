@@ -80,14 +80,16 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
 
   const labelsAndTooltips = useMemo(
     () => ({
-      slippageTooltip: isEoaEthFlow ? getNativeSlippageTooltip([nativeCurrency.symbol]) : getNonNativeSlippageTooltip(),
+      slippageTooltip: isEoaEthFlow
+        ? getNativeSlippageTooltip(chainId, [nativeCurrency.symbol])
+        : getNonNativeSlippageTooltip(),
       expectReceiveLabel: isExactIn ? 'Expected to receive' : 'Expected to sell',
       minReceivedLabel: isExactIn ? 'Minimum receive' : 'Maximum sent',
       minReceivedTooltip: getMinimumReceivedTooltip(allowedSlippage, isExactIn),
       networkCostsSuffix: shouldPayGas ? <NetworkCostsSuffix /> : null,
       networkCostsTooltipSuffix: <NetworkCostsTooltipSuffix />,
     }),
-    [allowedSlippage, nativeCurrency.symbol, isEoaEthFlow, isExactIn, shouldPayGas]
+    [chainId, allowedSlippage, nativeCurrency.symbol, isEoaEthFlow, isExactIn, shouldPayGas]
   )
 
   const submittedContent = (order: Order | undefined, onDismiss: Command) => {
