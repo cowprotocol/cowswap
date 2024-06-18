@@ -29,7 +29,7 @@ export function ReceiveAmount(props: ReceiveAmountProps) {
     <styledEl.ReceiveAmountBox>
       <div>
         <span>
-          <Trans>{!isSell ? 'From (incl. fees)' : 'Receive (incl. fees)'}</Trans>
+          <Trans>{!isSell ? 'From (incl. costs)' : 'Receive (incl. costs)'}</Trans>
         </span>
 
         <styledEl.QuestionHelperWrapped text={<ReceiveAmountInfoTooltip {...props} />} />
