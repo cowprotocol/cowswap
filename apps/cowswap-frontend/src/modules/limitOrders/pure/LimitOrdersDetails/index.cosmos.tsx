@@ -16,6 +16,14 @@ import { LimitOrdersDetails } from './index'
 const inputCurrency = COW[SupportedChainId.MAINNET]
 const outputCurrency = GNO[SupportedChainId.MAINNET]
 
+const rateInfoParams = {
+  chainId: 5,
+  inputCurrencyAmount: CurrencyAmount.fromRawAmount(inputCurrency, 123 * 10 ** 18),
+  outputCurrencyAmount: CurrencyAmount.fromRawAmount(outputCurrency, 456 * 10 ** 18),
+  activeRateFiatAmount: CurrencyAmount.fromRawAmount(outputCurrency, 2 * 10 ** 18),
+  invertedActiveRateFiatAmount: CurrencyAmount.fromRawAmount(outputCurrency, 65 * 10 ** 18),
+}
+
 const tradeContext: TradeFlowContext = {
   permitInfo: undefined,
   generatePermitHook: () => Promise.resolve(undefined),
@@ -47,19 +55,11 @@ const tradeContext: TradeFlowContext = {
   quoteState: DEFAULT_TRADE_QUOTE_STATE,
 }
 
-const rateInfoParams = {
-  chainId: 5,
-  inputCurrencyAmount: CurrencyAmount.fromRawAmount(outputCurrency, 123 * 10 ** 18),
-  outputCurrencyAmount: CurrencyAmount.fromRawAmount(outputCurrency, 456 * 10 ** 18),
-  activeRateFiatAmount: CurrencyAmount.fromRawAmount(outputCurrency, 2 * 10 ** 18),
-  invertedActiveRateFiatAmount: CurrencyAmount.fromRawAmount(outputCurrency, 65 * 10 ** 18),
-}
-
 const Fixtures = {
   default: (
     <LimitOrdersDetails
-      settingsState={defaultLimitOrdersSettings}
       rateInfoParams={rateInfoParams}
+      settingsState={defaultLimitOrdersSettings}
       tradeContext={tradeContext}
       executionPrice={null}
       limitRateState={initLimitRateState()}

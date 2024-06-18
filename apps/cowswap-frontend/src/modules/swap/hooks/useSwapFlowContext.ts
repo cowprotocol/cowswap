@@ -1,6 +1,5 @@
-import { GP_VAULT_RELAYER } from '@cowprotocol/common-const'
 import { getWrappedToken } from '@cowprotocol/common-utils'
-import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS, OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { TradeType as UniTradeType } from '@uniswap/sdk-core'
 
@@ -24,7 +23,7 @@ export function useSwapFlowContext(): SwapFlowContext | null {
   const permitInfo = usePermitInfo(sellCurrency, TradeType.SWAP)
   const generatePermitHook = useGeneratePermitHook()
 
-  const checkAllowanceAddress = GP_VAULT_RELAYER[baseProps.chainId || SupportedChainId.MAINNET]
+  const checkAllowanceAddress = COW_PROTOCOL_VAULT_RELAYER_ADDRESS[baseProps.chainId || SupportedChainId.MAINNET]
   const { enoughAllowance } = useEnoughBalanceAndAllowance({
     account: baseProps.account,
     amount: baseProps.inputAmountWithSlippage,
@@ -53,7 +52,7 @@ export function useSwapEnoughAllowance(): boolean | undefined {
   const { chainId, account } = useWalletInfo()
   const [inputAmountWithSlippage] = useSwapAmountsWithSlippage()
 
-  const checkAllowanceAddress = GP_VAULT_RELAYER[chainId]
+  const checkAllowanceAddress = COW_PROTOCOL_VAULT_RELAYER_ADDRESS[chainId]
   const { enoughAllowance } = useEnoughBalanceAndAllowance({
     account,
     amount: inputAmountWithSlippage,

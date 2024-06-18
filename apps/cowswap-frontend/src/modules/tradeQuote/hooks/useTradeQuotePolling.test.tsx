@@ -5,16 +5,17 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { WalletInfo, walletInfoAtom } from '@cowprotocol/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
-import { renderHook } from '@testing-library/react-hooks'
+import { renderHook } from '@testing-library/react'
 import { orderBookApi } from 'cowSdk'
 import { JotaiTestProvider, WithMockedWeb3 } from 'test-utils'
 
-import { LimitOrdersDerivedState, limitOrdersDerivedStateAtom } from 'modules/limitOrders/state/limitOrdersRawStateAtom'
+import { LimitOrdersDerivedState, limitOrdersDerivedStateAtom } from 'modules/limitOrders'
 import * as tokensModule from 'modules/tokens'
-import { DEFAULT_TRADE_DERIVED_STATE } from 'modules/trade'
+import { DEFAULT_TRADE_DERIVED_STATE, TradeType } from 'modules/trade'
 
 import { useTradeQuotePolling } from './useTradeQuotePolling'
 
+import { tradeTypeAtom } from '../../trade/state/tradeTypeAtom'
 import { tradeQuoteParamsAtom } from '../state/tradeQuoteParamsAtom'
 
 jest.mock('modules/zeroApproval/hooks/useZeroApprovalState')
@@ -44,6 +45,7 @@ const limitOrdersDerivedStateMock: LimitOrdersDerivedState = {
 const jotaiMock = [
   [tradeQuoteParamsAtom, { amount: inputCurrencyAmount }],
   [limitOrdersDerivedStateAtom, limitOrdersDerivedStateMock],
+  [tradeTypeAtom, { tradeType: TradeType.LIMIT_ORDER, route: '' }],
 ]
 
 const Wrapper =

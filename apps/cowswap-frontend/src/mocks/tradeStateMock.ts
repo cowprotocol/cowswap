@@ -1,6 +1,7 @@
 import { COW, GNO } from '@cowprotocol/common-const'
+import { tryParseCurrencyAmount } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { CurrencyAmount, Percent } from '@uniswap/sdk-core'
+import { Currency, Percent, Price } from '@uniswap/sdk-core'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { Field } from 'legacy/state/types'
@@ -16,38 +17,52 @@ export const inputCurrencyInfoMock: CurrencyInfo = {
   field: Field.INPUT,
   isIndependent: false,
   receiveAmountInfo: {
-    type: 'from',
-    amountBeforeFees: '30',
-    amountAfterFees: '20',
-    amountAfterFeesRaw: CurrencyAmount.fromRawAmount(inputCurrency, 20 * 10 ** 18),
-    feeAmount: '10',
-    feeAmountRaw: CurrencyAmount.fromRawAmount(inputCurrency, 10 * 10 ** 18),
-    partnerFeeAmount: '25',
-    partnerFeeAmountRaw: CurrencyAmount.fromRawAmount(inputCurrency, 0),
+    isSell: false,
+    quotePrice: new Price<Currency, Currency>({
+      baseAmount: tryParseCurrencyAmount('1', inputCurrency),
+      quoteAmount: tryParseCurrencyAmount('5', outputCurrency),
+    }),
+    costs: {
+      networkFee: {
+        amountInSellCurrency: tryParseCurrencyAmount('30', inputCurrency),
+        amountInBuyCurrency: tryParseCurrencyAmount('52', outputCurrency),
+      },
+      partnerFee: {
+        amount: tryParseCurrencyAmount('0', inputCurrency),
+        bps: 0,
+      },
+    },
+    beforeNetworkCosts: {
+      sellAmount: tryParseCurrencyAmount('120', inputCurrency),
+      buyAmount: tryParseCurrencyAmount('600', outputCurrency),
+    },
+    afterNetworkCosts: {
+      sellAmount: tryParseCurrencyAmount('110', inputCurrency),
+      buyAmount: tryParseCurrencyAmount('590', outputCurrency),
+    },
+    afterPartnerFees: {
+      sellAmount: tryParseCurrencyAmount('110', inputCurrency),
+      buyAmount: tryParseCurrencyAmount('590', outputCurrency),
+    },
+    afterSlippage: {
+      sellAmount: tryParseCurrencyAmount('110', inputCurrency),
+      buyAmount: tryParseCurrencyAmount('530', outputCurrency),
+    },
   },
   currency: inputCurrency,
-  balance: CurrencyAmount.fromRawAmount(inputCurrency, 250 * 10 ** 18),
-  amount: CurrencyAmount.fromRawAmount(inputCurrency, 20 * 10 ** 18),
-  fiatAmount: CurrencyAmount.fromRawAmount(inputCurrency, 12 * 10 ** 18),
+  balance: tryParseCurrencyAmount('250', inputCurrency),
+  amount: tryParseCurrencyAmount('20', inputCurrency),
+  fiatAmount: tryParseCurrencyAmount('12', inputCurrency),
 }
 
 export const outputCurrencyInfoMock: CurrencyInfo = {
   field: Field.INPUT,
   isIndependent: false,
-  receiveAmountInfo: {
-    type: 'from',
-    amountBeforeFees: '30',
-    amountAfterFees: '20',
-    amountAfterFeesRaw: CurrencyAmount.fromRawAmount(outputCurrency, 20 * 10 ** 18),
-    feeAmount: '10',
-    feeAmountRaw: CurrencyAmount.fromRawAmount(outputCurrency, 10 * 10 ** 18),
-    partnerFeeAmount: '0',
-    partnerFeeAmountRaw: CurrencyAmount.fromRawAmount(outputCurrency, 0),
-  },
+  receiveAmountInfo: null,
   currency: outputCurrency,
-  balance: CurrencyAmount.fromRawAmount(outputCurrency, 250 * 10 ** 18),
-  amount: CurrencyAmount.fromRawAmount(outputCurrency, 20 * 10 ** 18),
-  fiatAmount: CurrencyAmount.fromRawAmount(outputCurrency, 12 * 10 ** 18),
+  balance: tryParseCurrencyAmount('250', outputCurrency),
+  amount: tryParseCurrencyAmount('20', outputCurrency),
+  fiatAmount: tryParseCurrencyAmount('12', outputCurrency),
 }
 
 export const priceImpactMock: PriceImpact = {

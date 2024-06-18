@@ -8,13 +8,17 @@ import { useLimitOrdersRawState, useUpdateLimitOrdersRawState } from 'modules/li
 import { useSwapRawState, useUpdateSwapRawState } from 'modules/swap/hooks/useSwapRawState'
 import { ExtendedTradeRawState, TradeRawState } from 'modules/trade/types/TradeRawState'
 
-import { TradeType, useTradeTypeInfo } from './useTradeTypeInfo'
+import { useTradeTypeInfoFromUrl } from './useTradeTypeInfoFromUrl'
+
+import { TradeType } from '../types'
+
+const EMPTY_TRADE_STATE = {}
 
 export function useTradeState(): {
   state?: TradeRawState
   updateState?: (update: Partial<ExtendedTradeRawState>) => void
 } {
-  const tradeTypeInfo = useTradeTypeInfo()
+  const tradeTypeInfo = useTradeTypeInfoFromUrl()
 
   const limitOrdersState = useLimitOrdersRawState()
   const updateLimitOrdersState = useUpdateLimitOrdersRawState()
@@ -26,7 +30,7 @@ export function useTradeState(): {
   const updateSwapState = useUpdateSwapRawState()
 
   return useMemo(() => {
-    if (!tradeTypeInfo) return {}
+    if (!tradeTypeInfo) return EMPTY_TRADE_STATE
 
     if (tradeTypeInfo.tradeType === TradeType.SWAP) {
       return {

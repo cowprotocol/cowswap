@@ -15,7 +15,7 @@ import { useDerivedTradeState } from './useDerivedTradeState'
 
 export function usePriorityTokenAddresses(): string[] {
   const { chainId } = useWalletInfo()
-  const tradeState = useDerivedTradeState()
+  const state = useDerivedTradeState()
 
   const pending = useSelector<AppState, PartialOrdersMap | undefined>((state) => {
     return state.orders?.[chainId]?.pending
@@ -33,8 +33,8 @@ export function usePriorityTokenAddresses(): string[] {
       .flat()
   }, [pending])
 
-  const inputCurrency = tradeState?.state?.inputCurrency
-  const outputCurrency = tradeState?.state?.outputCurrency
+  const inputCurrency = state?.inputCurrency
+  const outputCurrency = state?.outputCurrency
 
   const inputCurrencyAddress = getAddress(inputCurrency)
   const outputCurrencyAddress = getAddress(outputCurrency)

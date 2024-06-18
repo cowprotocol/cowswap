@@ -1,28 +1,28 @@
 import { atom } from 'jotai'
-import { atomWithReset } from 'jotai/utils'
 
 import { OrderQuoteResponse } from '@cowprotocol/cow-sdk'
 
 import type { LegacyFeeQuoteParams } from 'legacy/state/price/types'
 
-import GpQuoteError from 'api/gnosisProtocol/errors/QuoteError'
+import QuoteApiError from 'api/cowProtocol/errors/QuoteError'
 
-export const DEFAULT_TRADE_QUOTE_STATE = {
+export interface TradeQuoteState {
+  response: OrderQuoteResponse | null
+  error: QuoteApiError | null
+  isLoading: boolean
+  quoteParams: LegacyFeeQuoteParams | null
+  localQuoteTimestamp: number | null
+}
+
+export const DEFAULT_TRADE_QUOTE_STATE: TradeQuoteState = {
   response: null,
   error: null,
   isLoading: false,
   quoteParams: null,
   localQuoteTimestamp: null,
 }
-export interface TradeQuoteState {
-  response: OrderQuoteResponse | null
-  error: GpQuoteError | null
-  isLoading: boolean
-  quoteParams: LegacyFeeQuoteParams | null
-  localQuoteTimestamp: number | null
-}
 
-export const tradeQuoteAtom = atomWithReset<TradeQuoteState>(DEFAULT_TRADE_QUOTE_STATE)
+export const tradeQuoteAtom = atom<TradeQuoteState>(DEFAULT_TRADE_QUOTE_STATE)
 
 export const updateTradeQuoteAtom = atom(null, (get, set, nextState: Partial<TradeQuoteState>) => {
   set(tradeQuoteAtom, () => {

@@ -1,16 +1,16 @@
 import { useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
-import { DEFAULT_GP_PRICE_STRATEGY } from '@cowprotocol/common-const'
+import { DEFAULT_PRICE_STRATEGY } from '@cowprotocol/common-const'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import ms from 'ms.macro'
 
-import { getPriceStrategy } from 'api/gnosisProtocol/priceApi'
+import { getPriceStrategy } from 'api/cowProtocol/priceApi'
 
 import { gasPriceStrategyAtom } from './atoms'
 
-const GP_PRICE_STRATEGY_INTERVAL_TIME = ms`30 minutes`
+const PRICE_STRATEGY_INTERVAL_TIME = ms`30 minutes`
 
 export function GasPriceStrategyUpdater(): null {
   const { chainId } = useWalletInfo()
@@ -27,11 +27,11 @@ export function GasPriceStrategyUpdater(): null {
         .catch((err: Error) => {
           console.error('[GasPiceStrategyUpdater] Error getting GP price strategy::', err)
 
-          setGasPriceStrategy(DEFAULT_GP_PRICE_STRATEGY)
+          setGasPriceStrategy(DEFAULT_PRICE_STRATEGY)
         })
     }
 
-    const intervalId = setInterval(updateCallback, GP_PRICE_STRATEGY_INTERVAL_TIME)
+    const intervalId = setInterval(updateCallback, PRICE_STRATEGY_INTERVAL_TIME)
 
     updateCallback()
 

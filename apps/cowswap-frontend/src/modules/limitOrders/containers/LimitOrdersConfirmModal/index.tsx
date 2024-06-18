@@ -24,11 +24,12 @@ import { CurrencyPreviewInfo } from 'common/pure/CurrencyAmountPreview'
 import { LOW_RATE_THRESHOLD_PERCENT } from '../../const/trade'
 import { LimitOrdersDetails } from '../../pure/LimitOrdersDetails'
 import { TradeFlowContext } from '../../services/types'
+import { TradeRateDetails } from '../TradeRateDetails'
 
 const CONFIRM_TITLE = 'Limit Order'
 
 export interface LimitOrdersConfirmModalProps {
-  tradeContext: TradeFlowContext
+  tradeContext: TradeFlowContext | null
   inputCurrencyInfo: CurrencyPreviewInfo
   outputCurrencyInfo: CurrencyPreviewInfo
   priceImpact: PriceImpact
@@ -94,14 +95,18 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
         isPriceStatic={true}
       >
         <>
-          <LimitOrdersDetails
-            limitRateState={limitRateState}
-            tradeContext={tradeContext}
-            rateInfoParams={rateInfoParams}
-            settingsState={settingsState}
-            executionPrice={executionPrice}
-            partiallyFillableOverride={partiallyFillableOverride}
-          />
+          {tradeContext && (
+            <LimitOrdersDetails
+              limitRateState={limitRateState}
+              tradeContext={tradeContext}
+              rateInfoParams={rateInfoParams}
+              settingsState={settingsState}
+              executionPrice={executionPrice}
+              partiallyFillableOverride={partiallyFillableOverride}
+            >
+              <TradeRateDetails />
+            </LimitOrdersDetails>
+          )}
           <LimitOrdersWarnings isConfirmScreen={true} />
         </>
       </TradeConfirmation>

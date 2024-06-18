@@ -8,7 +8,7 @@ import { SetIsOrderRefundedBatch } from 'legacy/state/orders/actions'
 import { EXPIRED_ORDERS_CHECK_POLL_INTERVAL } from 'legacy/state/orders/consts'
 import { useExpiredOrders, useSetIsOrderRefundedBatch } from 'legacy/state/orders/hooks'
 
-import { getOrder } from 'api/gnosisProtocol'
+import { getOrder } from 'api/cowProtocol'
 
 export function ExpiredOrdersUpdater(): null {
   const { chainId, account } = useWalletInfo()

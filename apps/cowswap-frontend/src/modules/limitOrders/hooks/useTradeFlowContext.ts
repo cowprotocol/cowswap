@@ -1,7 +1,6 @@
 import { useAtomValue } from 'jotai'
 
-import { GP_VAULT_RELAYER } from '@cowprotocol/common-const'
-import { OrderClass } from '@cowprotocol/cow-sdk'
+import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS, OrderClass } from '@cowprotocol/cow-sdk'
 import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
@@ -37,7 +36,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
   const settingsState = useAtomValue(limitOrdersSettingsAtom)
   const permitInfo = usePermitInfo(state.inputCurrency, TradeType.LIMIT_ORDER)
 
-  const checkAllowanceAddress = GP_VAULT_RELAYER[chainId]
+  const checkAllowanceAddress = COW_PROTOCOL_VAULT_RELAYER_ADDRESS[chainId]
   const { enoughAllowance } = useEnoughBalanceAndAllowance({
     account,
     amount: state.slippageAdjustedSellAmount || undefined,

@@ -18,7 +18,7 @@ export type UseAppDataParams = {
   orderClass: AppDataOrderClass
   utm: UtmParams | undefined
   hooks?: AppDataHooks
-  partnerFee?: AppDataPartnerFee
+  volumeFee?: AppDataPartnerFee
   replacedOrderUid?: string
 }
 
@@ -33,7 +33,7 @@ export function AppDataInfoUpdater({
   orderClass,
   utm,
   hooks,
-  partnerFee,
+  volumeFee,
   replacedOrderUid,
 }: UseAppDataParams): void {
   // AppDataInfo, from Jotai
@@ -57,7 +57,7 @@ export function AppDataInfoUpdater({
       orderClass,
       utm,
       hooks,
-      partnerFee,
+      partnerFee: volumeFee,
       widget,
       replacedOrderUid,
     }
@@ -83,7 +83,7 @@ export function AppDataInfoUpdater({
     orderClass,
     utm,
     hooks,
-    partnerFee,
+    volumeFee,
     replacedOrderUid,
   ])
 }

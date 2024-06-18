@@ -2,8 +2,6 @@ import styled from 'styled-components/macro'
 
 import { NumericalInput } from 'modules/limitOrders/containers/RateInput/styled'
 
-import { RateInfo } from 'common/pure/RateInfo'
-
 export const TradeButtonBox = styled.div`
   margin: 10px 0 0;
   display: flex;
@@ -34,14 +32,4 @@ export const RateWrapper = styled.div`
   ${NumericalInput} {
     font-size: 21px;
   }
-`
-
-export const StyledRateInfo = styled(RateInfo)`
-  padding-top: 8px;
-  gap: 4px;
-  font-size: 13px;
-  min-height: 24px;
-  display: grid;
-  grid-template-columns: max-content auto;
-  grid-template-rows: max-content;
 `

@@ -26,9 +26,9 @@ import { AddUnserialisedPendingOrderParams } from 'legacy/state/orders/hooks'
 
 import { AppDataInfo } from 'modules/appData'
 
-import { getIsOrderBookTypedError, getTrades } from 'api/gnosisProtocol'
-import { getProfileData } from 'api/gnosisProtocol/api'
-import OperatorError, { ApiErrorObject } from 'api/gnosisProtocol/errors/OperatorError'
+import { getIsOrderBookTypedError, getTrades } from 'api/cowProtocol'
+import { getProfileData } from 'api/cowProtocol/api'
+import OperatorError, { ApiErrorObject } from 'api/cowProtocol/errors/OperatorError'
 
 export type PostOrderParams = {
   account: string

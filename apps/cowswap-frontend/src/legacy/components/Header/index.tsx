@@ -8,7 +8,6 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import SVG from 'react-inlinesvg'
 
-
 import CowBalanceButton from 'legacy/components/CowBalanceButton'
 import { NetworkSelector } from 'legacy/components/Header/NetworkSelector'
 import { upToLarge, upToExtraSmall, useMediaQuery, upToTiny } from 'legacy/hooks/useMediaQuery'
@@ -43,7 +42,7 @@ import {
 
 export default function Header() {
   const { account, chainId } = useWalletInfo()
-  const injectedWidgetParams = useInjectedWidgetParams()
+  const { hideNetworkSelector, hideLogo } = useInjectedWidgetParams()
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
   const { pendingActivity } = useCategorizeRecentActivity()
   const [darkMode, toggleDarkModeAux] = useDarkModeManager()
@@ -92,6 +91,9 @@ export default function Header() {
       inputCurrencyId,
       outputCurrencyId,
       chainId: defaultTradeState.chainId?.toString(),
+      inputCurrencyAmount: undefined,
+      outputCurrencyAmount: undefined,
+      orderKind: undefined,
     }
   }, [chainId, tradeState, swapRawState])
 
@@ -106,7 +108,7 @@ export default function Header() {
     <Wrapper isMobileMenuOpen={isMobileMenuOpen}>
       <HeaderModWrapper>
         <HeaderRow>
-          {!injectedWidgetParams.hideLogo && (
+          {!hideLogo && (
             <Title href={Routes.HOME} isMobileMenuOpen={isMobileMenuOpen}>
               <UniIcon>
                 <LogoImage isMobileMenuOpen={isMobileMenuOpen}>
@@ -133,7 +135,7 @@ export default function Header() {
         </HeaderRow>
 
         <HeaderControls>
-          {!injectedWidgetParams.hideNetworkSelector && <NetworkSelector />}
+          {!hideNetworkSelector && <NetworkSelector />}
 
           <HeaderElement>
             {!isChainIdUnsupported && (isMobileMenuOpen || !isUpToLarge || isUpToTiny) && (

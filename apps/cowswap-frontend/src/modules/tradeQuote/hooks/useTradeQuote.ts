@@ -8,7 +8,7 @@ import { TradeQuoteState } from '../state/tradeQuoteAtom'
 import { DEFAULT_TRADE_QUOTE_STATE } from '../state/tradeQuoteAtom'
 
 export function useTradeQuote(): TradeQuoteState {
-  const { state } = useDerivedTradeState()
+  const state = useDerivedTradeState()
   const quoteState = useAtomValue(tradeQuoteAtom)
 
   const inputCurrency = state?.inputCurrency

@@ -1,10 +1,7 @@
-import React from 'react'
-
 import { renderTooltip } from '@cowprotocol/ui'
 import { HelpTooltip } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
-
 
 import { Content, ErrorText, TradeWidgetFieldBox, TradeWidgetFieldLabel } from './styled'
 

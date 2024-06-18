@@ -26,7 +26,7 @@ interface LimitOrdersFormParams {
 }
 
 function getLimitOrdersFormState(params: LimitOrdersFormParams): LimitOrdersFormState | null {
-  const { activeRate, isRateLoading, feeAmount, sellAmount, buyAmount } = params
+  const { activeRate, isRateLoading, sellAmount, buyAmount, feeAmount } = params
 
   if (isFractionFalsy(activeRate)) {
     return LimitOrdersFormState.PriceIsNotSet
@@ -51,8 +51,8 @@ function getLimitOrdersFormState(params: LimitOrdersFormParams): LimitOrdersForm
 }
 
 export function useLimitOrdersFormState(): LimitOrdersFormState | null {
-  const { inputCurrencyAmount, outputCurrencyAmount } = useLimitOrdersDerivedState()
   const quote = useTradeQuote()
+  const { inputCurrencyAmount, outputCurrencyAmount } = useLimitOrdersDerivedState()
   const { activeRate, isLoading } = useAtomValue(limitRateAtom)
 
   const feeRawAmount = quote?.response?.quote?.feeAmount

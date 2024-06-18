@@ -39,7 +39,7 @@ import {
 } from 'modules/orders'
 import { useAddOrderToSurplusQueue } from 'modules/swap/state/surplusModal'
 
-import { getOrder } from 'api/gnosisProtocol'
+import { getOrder } from 'api/cowProtocol'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { fetchAndClassifyOrder } from './utils'

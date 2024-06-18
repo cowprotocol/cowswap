@@ -1,8 +1,10 @@
 import { useCallback, useMemo } from 'react'
 
 import EtherscanImage from '@cowprotocol/assets/cow-swap/etherscan-icon.svg'
-import { GP_VAULT_RELAYER, TokenWithLogo } from '@cowprotocol/common-const'
+import { TokenWithLogo } from '@cowprotocol/common-const'
+import { useTheme } from '@cowprotocol/common-hooks'
 import { getBlockExplorerUrl, getIsNativeToken } from '@cowprotocol/common-utils'
+import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS } from '@cowprotocol/cow-sdk'
 import { useAreThereTokensWithSameSymbol } from '@cowprotocol/tokens'
 import { Command } from '@cowprotocol/types'
 import { Loader, TokenAmount, TokenName, TokenSymbol } from '@cowprotocol/ui'
@@ -19,7 +21,6 @@ import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRou
 import { Routes } from 'common/constants/routes'
 import { useApproveCallback } from 'common/hooks/useApproveCallback'
 import { ApprovalState, useApproveState } from 'common/hooks/useApproveState'
-import { useTheme } from 'common/hooks/useTheme'
 import { CardsSpinner, ExtLink } from 'pages/Account/styled'
 
 import BalanceCell from './BalanceCell'
@@ -62,7 +63,14 @@ export const TokensTableRow = ({
       const inputCurrencyId = areThereTokensWithSameSymbol(symbol) ? address : symbol
 
       return parameterizeTradeRoute(
-        { chainId: chainId.toString(), inputCurrencyId, outputCurrencyId: undefined },
+        {
+          chainId: chainId.toString(),
+          inputCurrencyId,
+          outputCurrencyId: undefined,
+          inputCurrencyAmount: undefined,
+          outputCurrencyAmount: undefined,
+          orderKind: undefined,
+        },
         Routes.SWAP
       )
     },
@@ -71,7 +79,7 @@ export const TokensTableRow = ({
 
   const { handleSetError, handleCloseError } = useErrorModal()
 
-  const vaultRelayer = chainId ? GP_VAULT_RELAYER[chainId] : undefined
+  const vaultRelayer = chainId ? COW_PROTOCOL_VAULT_RELAYER_ADDRESS[chainId] : undefined
   const isNativeToken = getIsNativeToken(tokenData)
 
   const amountToApprove = useMemo(() => CurrencyAmount.fromRawAmount(tokenData, MaxUint256), [tokenData])

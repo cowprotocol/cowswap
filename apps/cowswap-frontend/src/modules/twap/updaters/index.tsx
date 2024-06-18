@@ -1,5 +1,3 @@
-import { useAtomValue } from 'jotai'
-
 import { useIsSafeApp, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useComposableCowContract } from 'modules/advancedOrders/hooks/useComposableCowContract'
@@ -11,16 +9,15 @@ import { FullAmountQuoteUpdater } from './FullAmountQuoteUpdater'
 import { PartOrdersUpdater } from './PartOrdersUpdater'
 import { QuoteObserverUpdater } from './QuoteObserverUpdater'
 import { QuoteParamsUpdater } from './QuoteParamsUpdater'
-import { TwapAmountsFromUrlsUpdater } from './TwapAmountsFromUrlsUpdater'
 import { TwapOrdersUpdater } from './TwapOrdersUpdater'
 
-import { twapOrderSlippageAtom } from '../state/twapOrdersSettingsAtom'
+import { useTwapSlippage } from '../hooks/useTwapSlippage'
 
 export function TwapUpdaters() {
   const { chainId, account } = useWalletInfo()
   const isSafeApp = useIsSafeApp()
   const composableCowContract = useComposableCowContract()
-  const twapOrderSlippage = useAtomValue(twapOrderSlippageAtom)
+  const twapOrderSlippage = useTwapSlippage()
 
   const shouldLoadTwapOrders = !!(isSafeApp && chainId && account && composableCowContract)
 
@@ -30,7 +27,6 @@ export function TwapUpdaters() {
       <QuoteParamsUpdater />
       <AppDataUpdater orderClass="twap" slippage={twapOrderSlippage} />
       <QuoteObserverUpdater />
-      <TwapAmountsFromUrlsUpdater />
       {shouldLoadTwapOrders && (
         <>
           <FullAmountQuoteUpdater />

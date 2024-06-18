@@ -12,7 +12,7 @@ const LIMIT_ORDERS_PRICE_SLIPPAGE = new Percent(1, 10) // 0.1%
 
 export function QuoteObserverUpdater() {
   const { response } = useTradeQuote()
-  const { state } = useDerivedTradeState()
+  const state = useDerivedTradeState()
 
   const updateLimitRateState = useSetAtom(updateLimitRateAtom)
 
