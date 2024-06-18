@@ -3,7 +3,7 @@ import { useEffect, useMemo } from 'react'
 import { DEFAULT_DECIMALS } from '@cowprotocol/common-const'
 import { useDebounce, useIsOnline, useIsWindowVisible } from '@cowprotocol/common-hooks'
 import { getIsNativeToken, isAddress, isSellOrder, tryParseCurrencyAmount } from '@cowprotocol/common-utils'
-import { OrderKind } from '@cowprotocol/cow-sdk'
+import { OrderKind, PriceQuality } from '@cowprotocol/cow-sdk'
 import { useENSAddress } from '@cowprotocol/ens'
 import { useIsUnsupportedToken } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -21,11 +21,6 @@ import { useUserTransactionTTL } from 'legacy/state/user/hooks'
 import { useAppData } from 'modules/appData'
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { useDerivedSwapInfo, useSwapState } from 'modules/swap/hooks/useSwapState'
-import { useEnoughBalanceAndAllowance } from 'modules/tokens'
-
-import { getPriceQuality } from 'api/gnosisProtocol/api'
-
-import { useVerifiedQuotesEnabled } from '../hooks/featureFlags/useVerifiedQuotesEnabled'
 
 export const TYPED_VALUE_DEBOUNCE_TIME = 350
 export const SWAP_QUOTE_CHECK_INTERVAL = ms`30s` // Every 30s
@@ -40,14 +35,13 @@ type FeeQuoteParams = Omit<LegacyFeeQuoteParams, 'validTo'>
 function wasQuoteCheckedRecently(lastQuoteCheck: number): boolean {
   return lastQuoteCheck + WAITING_TIME_BETWEEN_EQUAL_REQUESTS > Date.now()
 }
+
 /**
  * Returns true if the fee quote expires soon (in less than RENEW_FEE_QUOTES_BEFORE_EXPIRATION_TIME milliseconds)
  */
 function isExpiringSoon(quoteExpirationIsoDate: string, threshold: number): boolean {
   const feeExpirationDate = Date.parse(quoteExpirationIsoDate)
-  const needRefetch = feeExpirationDate <= Date.now() + threshold
-
-  return needRefetch
+  return feeExpirationDate <= Date.now() + threshold
 }
 
 /**
@@ -120,16 +114,12 @@ function isRefetchQuoteRequired(
 
 export function FeesUpdater(): null {
   const { chainId, account } = useWalletInfo()
-  const verifiedQuotesEnabled = useVerifiedQuotesEnabled(chainId)
 
   const { independentField, typedValue: rawTypedValue, recipient } = useSwapState()
   const {
     currencies: { INPUT: sellCurrency, OUTPUT: buyCurrency },
     currenciesIds: { INPUT: sellCurrencyId, OUTPUT: buyCurrencyId },
-    parsedAmount,
   } = useDerivedSwapInfo()
-
-  const { enoughBalance } = useEnoughBalanceAndAllowance({ account, amount: parsedAmount })
 
   const { address: ensRecipientAddress } = useENSAddress(recipient)
   const receiver = ensRecipientAddress || recipient
@@ -205,7 +195,7 @@ export function FeesUpdater(): null {
       userAddress: account,
       validFor: deadline,
       isEthFlow,
-      priceQuality: getPriceQuality({ verifyQuote: verifiedQuotesEnabled && enoughBalance }),
+      priceQuality: PriceQuality.OPTIMAL,
       appData: appData?.fullAppData,
       appDataHash: appData?.appDataKeccak256,
     }
@@ -278,8 +268,6 @@ export function FeesUpdater(): null {
     deadline,
     buyTokenAddressInvalid,
     sellTokenAddressInvalid,
-    enoughBalance,
-    verifiedQuotesEnabled,
     appData?.fullAppData,
     appData?.appDataKeccak256,
   ])

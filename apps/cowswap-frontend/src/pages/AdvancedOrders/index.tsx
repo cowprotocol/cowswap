@@ -1,6 +1,11 @@
 import { useAtomValue } from 'jotai'
 
-import { advancedOrdersAtom, AdvancedOrdersWidget, FillAdvancedOrdersDerivedStateUpdater } from 'modules/advancedOrders'
+import {
+  advancedOrdersAtom,
+  AdvancedOrdersWidget,
+  FillAdvancedOrdersDerivedStateUpdater,
+  SetupAdvancedOrderAmountsFromUrlUpdater,
+} from 'modules/advancedOrders'
 import { OrdersTableWidget, TabOrderTypes } from 'modules/ordersTable'
 import * as styledEl from 'modules/trade/pure/TradePageLayout'
 import {
@@ -30,6 +35,7 @@ export default function AdvancedOrdersPage() {
   return (
     <>
       <FillAdvancedOrdersDerivedStateUpdater slippage={twapSlippage} />
+      <SetupAdvancedOrderAmountsFromUrlUpdater />
       <styledEl.PageWrapper isUnlocked={isUnlocked}>
         <styledEl.PrimaryWrapper>
           <AdvancedOrdersWidget
