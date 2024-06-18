@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
+import { shortenOrderId } from '@cowprotocol/common-utils'
 import { Command } from '@cowprotocol/types'
 
 import { faExchangeAlt, faSpinner } from '@fortawesome/free-solid-svg-icons'
@@ -15,17 +16,14 @@ import { OrderSurplusDisplayStyledByRow } from 'components/orders/OrdersUserDeta
 import { StatusLabel } from 'components/orders/StatusLabel'
 import { HelpTooltip } from 'components/Tooltip'
 import { useNetworkId } from 'state/network'
-import { getOrderLimitPrice, formatCalculatedPriceToDisplay, formattedAmount, FormatAmountPrecision } from 'utils'
+import { FormatAmountPrecision, formatCalculatedPriceToDisplay, formattedAmount, getOrderLimitPrice } from 'utils'
 
 import { Order } from 'api/operator'
-import { getShortOrderId } from 'utils/operator'
-
 
 import { HeaderTitle, HeaderValue, WrapperUserDetailsTable } from './styled'
 
 import { TextWithTooltip } from '../../../explorer/components/common/TextWithTooltip'
-import { StyledUserDetailsTableProps, EmptyItemWrapper } from '../../common/StyledUserDetailsTable'
-
+import { EmptyItemWrapper, StyledUserDetailsTableProps } from '../../common/StyledUserDetailsTable'
 
 function getLimitPrice(order: Order, isPriceInverted: boolean): string {
   if (!order.buyToken || !order.sellToken) return '-'
@@ -91,7 +89,7 @@ const RowTransaction: React.FC<RowProps> = ({ order, isPriceInverted, invertLimi
             textToCopy={uid}
             contentsToDisplay={
               <LinkWithPrefixNetwork to={`/orders/${order.uid}`} rel="noopener noreferrer" target="_self">
-                {getShortOrderId(shortId)}
+                {shortenOrderId(shortId)}
               </LinkWithPrefixNetwork>
             }
           />

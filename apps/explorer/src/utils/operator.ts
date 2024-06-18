@@ -1,4 +1,4 @@
-import { isSellOrder } from '@cowprotocol/common-utils'
+import { isSellOrder, shortenOrderId } from '@cowprotocol/common-utils'
 import { Trade as TradeMetaData } from '@cowprotocol/cow-sdk'
 
 import { calculatePrice, invertPrice, TokenErc20 } from '@gnosis.pm/dex-js'
@@ -324,10 +324,6 @@ export function getOrderExecutedPrice({
   })
 }
 
-export function getShortOrderId(orderId: string, length = 8): string {
-  return orderId.replace(/^0x/, '').slice(0, length)
-}
-
 function isZeroAddress(address: string): boolean {
   return /^0x0{40}$/.test(address)
 }
@@ -381,7 +377,7 @@ export function transformOrder(rawOrder: RawOrder): Order {
     ...rest
   } = rawOrder
   const receiver = getReceiverAddress(rawOrder)
-  const shortId = getShortOrderId(rawOrder.uid)
+  const shortId = shortenOrderId(rawOrder.uid)
   const { executedBuyAmount, executedSellAmount } = getOrderExecutedAmounts(rawOrder)
   const status = getOrderStatus(rawOrder)
   const partiallyFilled = isOrderPartiallyFilled(rawOrder)

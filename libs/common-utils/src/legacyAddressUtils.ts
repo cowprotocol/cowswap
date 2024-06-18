@@ -7,8 +7,6 @@ import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers'
 
 import { getExplorerOrderLink } from './explorer'
 
-const ORDER_ID_SHORT_LENGTH = 8
-
 // returns the checksummed address if the address is valid, otherwise returns false
 export function isAddress(value: string | undefined | null): string | false {
   try {
@@ -118,15 +116,13 @@ export function getExplorerLabel(chainId: SupportedChainId, type: BlockExplorerL
   return `View on ${CHAIN_INFO[chainId].explorerTitle}`
 }
 
-// Shortens OrderID (or any string really) removing initial 2 characters e.g 0x
-// and cutting string at 'chars' length, default = 8
-export function shortenOrderId(orderId: string, start = 0, chars = ORDER_ID_SHORT_LENGTH): string {
-  return orderId.substring(start, chars + start)
+export function shortenOrderId(orderId: string): string {
+  return orderId.slice(0, 6) + '...' + orderId.slice(orderId.length - 4)
 }
 
 export function formatOrderId(orderId: string): string {
   const has0x = orderId.match('0x')
 
   // 0x is at index 0 of orderId, shorten. Else return id as is
-  return has0x?.index === 0 ? shortenOrderId(orderId, 2, orderId.length) : orderId
+  return has0x?.index === 0 ? shortenOrderId(orderId) : orderId
 }
