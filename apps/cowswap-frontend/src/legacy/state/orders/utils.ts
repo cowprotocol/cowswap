@@ -3,7 +3,6 @@ import { ONE_HUNDRED_PERCENT, PENDING_ORDERS_BUFFER, ZERO_FRACTION } from '@cowp
 import { bpsToPercent, buildPriceFromCurrencyAmounts, isSellOrder } from '@cowprotocol/common-utils'
 import { EnrichedOrder, OrderKind, OrderStatus } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
-import type { PartnerFee } from '@cowprotocol/widget-lib'
 import { Currency, CurrencyAmount, Percent, Price, Token } from '@uniswap/sdk-core'
 
 import JSBI from 'jsbi'
@@ -378,7 +377,9 @@ export function partialOrderUpdate({ chainId, order, isSafeWallet }: UpdateOrder
   dispatch(updateOrder(params))
 }
 
-export function getOrderPartnerFee(fullAppData: EnrichedOrder['fullAppData']): PartnerFee | undefined {
+export function getOrderVolumeFee(
+  fullAppData: EnrichedOrder['fullAppData']
+): LatestAppDataDocVersion['metadata']['partnerFee'] | undefined {
   const appData = decodeAppData(fullAppData) as LatestAppDataDocVersion
 
   return appData?.metadata?.partnerFee
@@ -404,16 +405,16 @@ function getOrderAmountsWithPartnerFee(
   buyAmount: CurrencyAmount<Token>,
   isSellOrder: boolean
 ): { inputCurrencyAmount: CurrencyAmount<Token>; outputCurrencyAmount: CurrencyAmount<Token> } {
-  const partnerFee = getOrderPartnerFee(fullAppData)
+  const volumeFee = getOrderVolumeFee(fullAppData)
 
-  if (!partnerFee) {
+  if (!volumeFee) {
     return {
       inputCurrencyAmount: sellAmount,
       outputCurrencyAmount: buyAmount,
     }
   }
 
-  const partnerFeePercent = bpsToPercent(partnerFee.bps)
+  const partnerFeePercent = bpsToPercent(volumeFee.bps)
 
   if (isSellOrder) {
     return {

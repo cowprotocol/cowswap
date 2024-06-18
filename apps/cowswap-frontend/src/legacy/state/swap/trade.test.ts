@@ -61,6 +61,7 @@ describe('Swap PRICE Quote test', () => {
           fee: {
             amount: MOCKED_FEE_AMOUNT.long,
             feeAsCurrency,
+            expirationDate: '',
           },
           tradeType: TradeType.EXACT_INPUT,
         })
@@ -121,6 +122,7 @@ describe('Swap PRICE Quote test', () => {
           fee: {
             amount: MOCKED_FEE_AMOUNT.long,
             feeAsCurrency,
+            expirationDate: '',
           },
           tradeType: TradeType.EXACT_OUTPUT,
         })

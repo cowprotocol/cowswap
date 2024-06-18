@@ -1,9 +1,10 @@
 import { bpsToPercent } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/cow-sdk'
-import { PartnerFee } from '@cowprotocol/widget-lib'
 import { Currency, CurrencyAmount, TradeType } from '@uniswap/sdk-core'
 
 import JSBI from 'jsbi'
+
+import { VolumeFee } from 'modules/volumeFee'
 
 import TradeGp, { _constructTradePrice } from './TradeGp'
 
@@ -14,7 +15,7 @@ interface TradeParams {
   inputCurrency?: Currency | null
   outputCurrency?: Currency | null
   quote?: Pick<QuoteInformationObject, 'fee' | 'price'>
-  partnerFee?: PartnerFee
+  volumeFee?: VolumeFee
 }
 
 export const stringToCurrency = (amount: string, currency: Currency) =>
@@ -28,7 +29,7 @@ export function buildTradeExactInWithFee({
   parsedAmount: parsedInputAmount,
   outputCurrency,
   quote,
-  partnerFee,
+  volumeFee,
 }: Omit<TradeParams, 'inputCurrency'>) {
   // make sure we have a typed in amount, a fee, and a price
   // else we can assume the trade will be undefined
@@ -67,8 +68,8 @@ export function buildTradeExactInWithFee({
   // useful for calculating fees in buy token
   const outputAmountWithoutFee = executionPrice.quote(parsedInputAmount)
 
-  const partnerFeeAmount = partnerFee ? outputAmountWithoutFee.multiply(bpsToPercent(partnerFee.bps)) : undefined
-  const outputAmountAfterFees = partnerFeeAmount ? outputAmount.subtract(partnerFeeAmount) : outputAmount
+  const volumeFeeAmount = volumeFee ? outputAmountWithoutFee.multiply(bpsToPercent(volumeFee.bps)) : undefined
+  const outputAmountAfterFees = volumeFeeAmount ? outputAmount.subtract(volumeFeeAmount) : outputAmount
 
   return new TradeGp({
     inputAmount: parsedInputAmount,
@@ -82,8 +83,8 @@ export function buildTradeExactInWithFee({
     executionPrice,
     tradeType: TradeType.EXACT_INPUT,
     quoteId: quote.price.quoteId,
-    partnerFee,
-    partnerFeeAmount,
+    volumeFee,
+    volumeFeeAmount,
   })
 }
 
@@ -95,7 +96,7 @@ export function buildTradeExactOutWithFee({
   parsedAmount: parsedOutputAmount,
   inputCurrency,
   quote,
-  partnerFee,
+  volumeFee,
 }: Omit<TradeParams, 'outputCurrency'>) {
   if (!parsedOutputAmount || !inputCurrency || !quote?.fee || !quote?.price?.amount) return undefined
 
@@ -113,8 +114,8 @@ export function buildTradeExactOutWithFee({
   // Using feeInformation info, determine whether minimalFee greaterThan or lessThan feeRatio * sellAmount
   const inputAmountWithFee = inputAmountWithoutFee.add(feeAsCurrency)
   // Partner fee
-  const partnerFeeAmount = partnerFee ? inputAmountWithoutFee.multiply(bpsToPercent(partnerFee.bps)) : undefined
-  const inputAmountAfterFees = partnerFeeAmount ? inputAmountWithFee.add(partnerFeeAmount) : inputAmountWithFee
+  const volumeFeeAmount = volumeFee ? inputAmountWithoutFee.multiply(bpsToPercent(volumeFee.bps)) : undefined
+  const inputAmountAfterFees = volumeFeeAmount ? inputAmountWithFee.add(volumeFeeAmount) : inputAmountWithFee
 
   // per unit price
   const executionPrice = _constructTradePrice({
@@ -142,7 +143,7 @@ export function buildTradeExactOutWithFee({
     executionPrice,
     tradeType: TradeType.EXACT_OUTPUT,
     quoteId: quote.price.quoteId,
-    partnerFee,
-    partnerFeeAmount,
+    volumeFee,
+    volumeFeeAmount,
   })
 }
