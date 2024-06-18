@@ -1,5 +1,5 @@
 import { useAtomValue } from 'jotai'
-import { useState } from 'react'
+import React, { useState } from 'react'
 
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
@@ -12,6 +12,7 @@ import { DividerHorizontal } from 'modules/trade/pure/Row/styled'
 import { PRICE_UPDATE_INTERVAL } from 'modules/tradeQuote/hooks/useTradeQuotePolling'
 
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
+import { NetworkCostsSuffix } from 'common/pure/NetworkCostsSuffix'
 
 import { TwapConfirmDetails } from './TwapConfirmDetails'
 
@@ -55,7 +56,7 @@ const CONFIRM_MODAL_CONFIG = {
 
 export function TwapConfirmModal() {
   const { account } = useWalletInfo()
-  const { ensName } = useWalletDetails()
+  const { ensName, allowsOffchainSigning } = useWalletDetails()
   const {
     inputCurrencyAmount,
     inputCurrencyFiatAmount,
@@ -128,7 +129,18 @@ export function TwapConfirmModal() {
               receiveAmountInfo={receiveAmountInfo}
               isInvertedState={isInvertedState}
               slippage={slippage}
-              labelsAndTooltips={CONFIRM_MODAL_CONFIG}
+              labelsAndTooltips={{
+                ...CONFIRM_MODAL_CONFIG,
+                networkCostsSuffix: !allowsOffchainSigning ? <NetworkCostsSuffix /> : null,
+                networkCostsTooltipSuffix: !allowsOffchainSigning ? (
+                  <>
+                    <br />
+                    <br />
+                    Because you are using a smart contract wallet, you will pay a separate gas cost for signing the
+                    order placement on-chain.
+                  </>
+                ) : null,
+              }}
             />
           )}
           <DividerHorizontal />

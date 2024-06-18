@@ -6,6 +6,5 @@ export function useShouldPayGas() {
   const { allowsOffchainSigning } = useWalletDetails()
   const isEoaEthFlow = useIsEoaEthFlow()
 
-  const isPresign = !isEoaEthFlow && !allowsOffchainSigning
-  return isEoaEthFlow || isPresign
+  return isEoaEthFlow || !allowsOffchainSigning
 }
