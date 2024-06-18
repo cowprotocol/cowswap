@@ -12,6 +12,7 @@ interface PartnerFeeRowProps {
   partnerFeeBps: number | undefined
   withTimelineDot: boolean
   alwaysRow?: boolean
+  cowswapFee?: boolean
   feeTooltipMarkdown?: string
 }
 
@@ -22,6 +23,7 @@ export function PartnerFeeRow({
   withTimelineDot,
   alwaysRow,
   feeTooltipMarkdown,
+  cowswapFee,
 }: PartnerFeeRowProps) {
   const feeAsPercent = partnerFeeBps ? formatPercent(bpsToPercent(partnerFeeBps)) : null
   const minPartnerFeeAmount = partnerFeeAmount?.equalTo(0)
@@ -40,9 +42,13 @@ export function PartnerFeeRow({
             feeTooltipMarkdown || (
               <>
                 This fee helps pay for maintenance & improvements to the trade experience.
-                <br />
-                <br />
-                The fee is {partnerFeeBps} BPS ({feeAsPercent}%), applied only if the trade is executed.
+                {!cowswapFee && (
+                  <>
+                    <br />
+                    <br />
+                    The fee is {partnerFeeBps} BPS ({feeAsPercent}%), applied only if the trade is executed.
+                  </>
+                )}
               </>
             )
           }

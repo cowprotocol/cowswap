@@ -3,6 +3,7 @@ import { ReactNode } from 'react'
 import { CowSwapWidgetAppParams } from '@cowprotocol/widget-lib'
 
 import { useUsdAmount } from 'modules/usdAmount'
+import { useCowswapFee } from 'modules/volumeFee'
 
 import { NetworkCostsRow } from '../../pure/NetworkCostsRow'
 import { PartnerFeeRow } from '../../pure/PartnerFeeRow'
@@ -33,6 +34,7 @@ export function TradeFeesAndCosts(props: TradeFeesAndCostsProps) {
   const partnerFeeAmount = partnerFee?.amount
   const partnerFeeBps = partnerFee?.bps
 
+  const cowswapFee = useCowswapFee()
   const partnerFeeUsd = useUsdAmount(partnerFeeAmount).value
   const networkFeeAmountUsd = useUsdAmount(networkFeeAmount).value
 
@@ -40,6 +42,7 @@ export function TradeFeesAndCosts(props: TradeFeesAndCostsProps) {
     <>
       {/*Partner fee*/}
       <PartnerFeeRow
+        cowswapFee={!!cowswapFee}
         alwaysRow={alwaysRow}
         withTimelineDot={withTimelineDot}
         partnerFeeUsd={partnerFeeUsd}
