@@ -1,3 +1,5 @@
+import { UI } from '@cowprotocol/ui'
+
 import styled from 'styled-components/macro'
 
 import { RateInfo } from 'common/pure/RateInfo'
@@ -27,11 +29,6 @@ export const StyledRateInfo = styled(RateInfo)`
   `}
 `
 
-export const ItemWithArrow = styled.div`
-  display: flex;
-  align-items: center;
-
-  > svg:first-child {
-    margin-right: 5px;
-  }
+export const GreenText = styled.span`
+  color: var(${UI.COLOR_GREEN});
 `

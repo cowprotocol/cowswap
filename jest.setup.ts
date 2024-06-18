@@ -15,3 +15,7 @@ if (typeof global.TextEncoder === 'undefined') {
 }
 
 fetchMock.dontMock()
+
+jest.mock('react-markdown', () => () => {
+  return null
+})

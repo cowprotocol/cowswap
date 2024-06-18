@@ -14,11 +14,11 @@ import {
 } from '@cowprotocol/abis'
 import {
   COWSWAP_ETHFLOW_CONTRACT_ADDRESS,
-  GP_SETTLEMENT_CONTRACT_ADDRESS,
   V_COW_CONTRACT_ADDRESS,
   WRAPPED_NATIVE_CURRENCIES,
 } from '@cowprotocol/common-const'
 import { getContract, isEns, isProd, isStaging } from '@cowprotocol/common-utils'
+import { COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { Contract } from '@ethersproject/contracts'
@@ -76,7 +76,7 @@ export function useEthFlowContract(): CoWSwapEthFlow | null {
 export function useGP2SettlementContract(): GPv2Settlement | null {
   const { chainId } = useWalletInfo()
   return useContract<GPv2Settlement>(
-    chainId ? GP_SETTLEMENT_CONTRACT_ADDRESS[chainId] : undefined,
+    chainId ? COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS[chainId] : undefined,
     GPv2SettlementAbi,
     true
   )

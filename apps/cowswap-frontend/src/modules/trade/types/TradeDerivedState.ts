@@ -1,7 +1,7 @@
 import { OrderKind } from '@cowprotocol/cow-sdk'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
-import { TradeType } from '../hooks/useTradeTypeInfo'
+import { TradeType } from './TradeType'
 
 export interface TradeDerivedState {
   readonly inputCurrency: Currency | null
@@ -20,6 +20,7 @@ export interface TradeDerivedState {
    * So, the final sell amount will be 552 COW + 2% = 563.04
    */
   readonly slippageAdjustedSellAmount: CurrencyAmount<Currency> | null
+  // TODO: remove those fields and use useReceiveAmountInfo() instead
   readonly slippageAdjustedBuyAmount: CurrencyAmount<Currency> | null
   readonly inputCurrencyBalance: CurrencyAmount<Currency> | null
   readonly outputCurrencyBalance: CurrencyAmount<Currency> | null
@@ -28,6 +29,7 @@ export interface TradeDerivedState {
   readonly recipient: string | null
   readonly recipientAddress: string | null
   readonly orderKind: OrderKind
+  readonly slippage: Percent | null
   readonly tradeType: TradeType | null
 }
 
@@ -44,6 +46,7 @@ export const DEFAULT_TRADE_DERIVED_STATE: TradeDerivedState = {
   outputCurrencyFiatAmount: null,
   recipient: null,
   recipientAddress: null,
+  slippage: null,
   orderKind: OrderKind.SELL,
   tradeType: null,
 }

@@ -8,9 +8,15 @@ import {
 } from 'modules/advancedOrders'
 import { OrdersTableWidget, TabOrderTypes } from 'modules/ordersTable'
 import * as styledEl from 'modules/trade/pure/TradePageLayout'
-import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
-import { TwapConfirmModal, TwapFormWidget, TwapUpdaters, useAllEmulatedOrders } from 'modules/twap'
-import { useTwapFormState } from 'modules/twap/hooks/useTwapFormState'
+import {
+  TwapConfirmModal,
+  TwapFormWidget,
+  TwapUpdaters,
+  useAllEmulatedOrders,
+  useMapTwapCurrencyInfo,
+  useTwapFormState,
+  useTwapSlippage,
+} from 'modules/twap'
 import { TwapFormState } from 'modules/twap/pure/PrimaryActionButton/getTwapFormState'
 
 export default function AdvancedOrdersPage() {
@@ -18,20 +24,17 @@ export default function AdvancedOrdersPage() {
 
   const allEmulatedOrders = useAllEmulatedOrders()
 
-  const primaryFormValidation = useGetTradeFormValidation()
   const twapFormValidation = useTwapFormState()
+  const twapSlippage = useTwapSlippage()
+  const mapTwapCurrencyInfo = useMapTwapCurrencyInfo()
 
-  const disablePriceImpact =
-    primaryFormValidation === TradeFormValidation.QuoteErrors ||
-    primaryFormValidation === TradeFormValidation.CurrencyNotSupported ||
-    primaryFormValidation === TradeFormValidation.WrapUnwrapFlow ||
-    twapFormValidation === TwapFormState.SELL_AMOUNT_TOO_SMALL
+  const disablePriceImpact = twapFormValidation === TwapFormState.SELL_AMOUNT_TOO_SMALL
 
   const advancedWidgetParams = { disablePriceImpact }
 
   return (
     <>
-      <FillAdvancedOrdersDerivedStateUpdater />
+      <FillAdvancedOrdersDerivedStateUpdater slippage={twapSlippage} />
       <SetupAdvancedOrderAmountsFromUrlUpdater />
       <styledEl.PageWrapper isUnlocked={isUnlocked}>
         <styledEl.PrimaryWrapper>
@@ -39,6 +42,7 @@ export default function AdvancedOrdersPage() {
             updaters={<TwapUpdaters />}
             confirmContent={<TwapConfirmModal />}
             params={advancedWidgetParams}
+            mapCurrencyInfo={mapTwapCurrencyInfo}
           >
             {/*TODO: conditionally display a widget for current advanced order type*/}
             <TwapFormWidget />

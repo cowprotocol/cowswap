@@ -65,7 +65,7 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
     useLimitOrdersDerivedState()
   const tradeQuote = useTradeQuote()
   const priceImpactParams = useTradePriceImpact()
-  const widgetParams = useInjectedWidgetParams()
+  const { banners: widgetBanners } = useInjectedWidgetParams()
 
   const isBundling = primaryFormValidation && FORM_STATES_TO_SHOW_BUNDLE_BANNER.includes(primaryFormValidation)
 
@@ -89,7 +89,7 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
     !showApprovalBundlingBanner &&
     isSafeViaWc &&
     primaryFormValidation === TradeFormValidation.ApproveRequired &&
-    !widgetParams?.banners?.hideSafeWebAppBanner
+    !widgetBanners?.hideSafeWebAppBanner
 
   // TODO: implement Safe App EthFlow bundling for LIMIT and disable the warning in that case
   const showNativeSellWarning = primaryFormValidation === TradeFormValidation.SellNativeToken

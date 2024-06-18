@@ -24,11 +24,11 @@ export function RowSlippage({
   slippageTooltip,
   slippageLabel,
 }: RowSlippageProps) {
+  const { chainId } = useWalletInfo()
   const toggleSettings = useToggleSettingsMenu()
 
   const isEoaEthFlow = useIsEoaEthFlow()
   const nativeCurrency = useNativeCurrency()
-  const { chainId } = useWalletInfo()
 
   const props = useMemo(
     () => ({
@@ -41,7 +41,7 @@ export function RowSlippage({
       slippageTooltip,
       displaySlippage: `${formatPercent(allowedSlippage)}%`,
     }),
-    [isEoaEthFlow, nativeCurrency.symbol, showSettingOnClick, allowedSlippage, slippageLabel, slippageTooltip]
+    [chainId, isEoaEthFlow, nativeCurrency.symbol, showSettingOnClick, allowedSlippage, slippageLabel, slippageTooltip]
   )
 
   return <RowSlippageContent {...props} toggleSettings={toggleSettings} />

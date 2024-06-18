@@ -11,16 +11,11 @@ import { useTradeQuote } from 'modules/tradeQuote'
 
 import { TradeFormButtonContext } from '../types'
 
-interface TradeFormCallbacks {
-  doTrade(): void
-  confirmTrade(): void
-}
-
 export function useTradeFormButtonContext(
   defaultText: string,
-  callbacks: TradeFormCallbacks
+  confirmTrade: () => void
 ): TradeFormButtonContext | null {
-  const { state: derivedState } = useDerivedTradeState()
+  const derivedState = useDerivedTradeState()
   const wrapNativeFlow = useWrapNativeFlow()
   const { isSupportedWallet } = useWalletDetails()
   const quote = useTradeQuote()
@@ -35,7 +30,7 @@ export function useTradeFormButtonContext(
       derivedState,
       quote,
       isSupportedWallet,
-      ...callbacks,
+      confirmTrade,
       wrapNativeFlow,
       connectWallet: toggleWalletModal,
       widgetStandaloneMode: standaloneMode,
@@ -45,7 +40,7 @@ export function useTradeFormButtonContext(
     derivedState,
     quote,
     isSupportedWallet,
-    callbacks,
+    confirmTrade,
     wrapNativeFlow,
     toggleWalletModal,
     standaloneMode,

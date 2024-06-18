@@ -6,7 +6,7 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import useSWR from 'swr'
 
-import { getSurplusData } from 'api/gnosisProtocol/api'
+import { getSurplusData } from 'api/cowProtocol/api'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 import { totalSurplusAtom } from './atoms'

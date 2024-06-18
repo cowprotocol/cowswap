@@ -1,9 +1,9 @@
-import React, { useEffect, useCallback } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 
 import ICON_ORDERS from '@cowprotocol/assets/svg/orders.svg'
 import ICON_TOKENS from '@cowprotocol/assets/svg/tokens.svg'
 import { isInjectedWidget, maxAmountSpend } from '@cowprotocol/common-utils'
-import { ButtonOutlined, MY_ORDERS_ID, InlineBanner, BannerOrientation, ClosableBanner } from '@cowprotocol/ui'
+import { BannerOrientation, ButtonOutlined, ClosableBanner, InlineBanner, MY_ORDERS_ID } from '@cowprotocol/ui'
 import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/macro'
@@ -19,6 +19,7 @@ import { useIsWidgetUnlocked } from 'modules/limitOrders'
 import { SetRecipient } from 'modules/swap/containers/SetRecipient'
 import { useOpenTokenSelectWidget } from 'modules/tokensList'
 import { useIsAlternativeOrderModalVisible } from 'modules/trade/state/alternativeOrder'
+import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
 
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
@@ -32,7 +33,8 @@ import { TradeWidgetProps } from './types'
 
 import { useTradeStateFromUrl } from '../../hooks/setupTradeState/useTradeStateFromUrl'
 import { useIsWrapOrUnwrap } from '../../hooks/useIsWrapOrUnwrap'
-import { TradeType, useTradeTypeInfo } from '../../hooks/useTradeTypeInfo'
+import { useTradeTypeInfo } from '../../hooks/useTradeTypeInfo'
+import { TradeType } from '../../types'
 import { TradeWidgetLinks } from '../TradeWidgetLinks'
 import { WrapFlowActionButton } from '../WrapFlowActionButton'
 
@@ -47,32 +49,39 @@ const scrollToMyOrders = () => {
 
 export function TradeWidgetForm(props: TradeWidgetProps) {
   const isInjectedWidgetMode = isInjectedWidget()
-  const injectedWidgetParams = useInjectedWidgetParams()
+  const { standaloneMode } = useInjectedWidgetParams()
 
   const isAlternativeOrderModalVisible = useIsAlternativeOrderModalVisible()
   const { pendingActivity } = useCategorizeRecentActivity()
+  const isWrapOrUnwrap = useIsWrapOrUnwrap()
 
-  const { slots, inputCurrencyInfo, outputCurrencyInfo, actions, params, disableOutput } = props
+  const { slots, actions, params, disableOutput } = props
   const { settingsWidget, lockScreen, middleContent, bottomContent, outerContent } = slots
 
   const { onCurrencySelection, onUserInput, onSwitchTokens, onChangeRecipient } = actions
-  const {
-    compactView,
-    showRecipient,
-    isTradePriceUpdating,
-    isEoaEthFlow = false,
-    priceImpact,
-    recipient,
-    disablePriceImpact,
-  } = params
+  const { compactView, showRecipient, isTradePriceUpdating, isEoaEthFlow = false, priceImpact, recipient } = params
+
+  const inputCurrencyInfo = useMemo(
+    () => (isWrapOrUnwrap ? { ...props.inputCurrencyInfo, receiveAmountInfo: null } : props.inputCurrencyInfo),
+    [isWrapOrUnwrap, props.inputCurrencyInfo]
+  )
+
+  const outputCurrencyInfo = useMemo(
+    () =>
+      isWrapOrUnwrap
+        ? { ...props.outputCurrencyInfo, amount: props.inputCurrencyInfo.amount, receiveAmountInfo: null }
+        : props.outputCurrencyInfo,
+    [isWrapOrUnwrap, props.outputCurrencyInfo, props.inputCurrencyInfo.amount]
+  )
 
   const { chainId, account } = useWalletInfo()
-  const isWrapOrUnwrap = useIsWrapOrUnwrap()
   const { allowsOffchainSigning } = useWalletDetails()
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
   const isSafeWallet = useIsSafeWallet()
   const openTokenSelectWidget = useOpenTokenSelectWidget()
   const tradeStateFromUrl = useTradeStateFromUrl()
+  const alternativeOrderModalVisible = useIsAlternativeOrderModalVisible()
+  const primaryFormValidation = useGetTradeFormValidation()
 
   const areCurrenciesLoading = !inputCurrencyInfo.currency && !outputCurrencyInfo.currency
   const bothCurrenciesSet = !!inputCurrencyInfo.currency && !!outputCurrencyInfo.currency
@@ -82,7 +91,11 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
   const maxBalance = maxAmountSpend(inputCurrencyInfo.balance || undefined, isSafeWallet)
   const showSetMax = maxBalance?.greaterThan(0) && !inputCurrencyInfo.amount?.equalTo(maxBalance)
 
-  const alternativeOrderModalVisible = useIsAlternativeOrderModalVisible()
+  const disablePriceImpact =
+    !!params.disablePriceImpact ||
+    primaryFormValidation === TradeFormValidation.QuoteErrors ||
+    primaryFormValidation === TradeFormValidation.CurrencyNotSupported ||
+    primaryFormValidation === TradeFormValidation.WrapUnwrapFlow
 
   // Disable too frequent tokens switching
   const throttledOnSwitchTokens = useThrottleFn(onSwitchTokens, 500)
@@ -100,7 +113,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
   const shouldShowMyOrdersButton =
     !alternativeOrderModalVisible &&
     (!isInjectedWidgetMode && isConnectedSwapMode ? isUpToLarge : true) &&
-    ((isConnectedSwapMode && injectedWidgetParams.standaloneMode !== true) ||
+    ((isConnectedSwapMode && standaloneMode !== true) ||
       (isLimitOrderMode && isUpToLarge && isLimitOrdersUnlocked) ||
       (isAdvancedMode && isUpToLarge && isAdvancedOrdersUnlocked))
 
@@ -143,7 +156,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
       <styledEl.ContainerBox>
         <styledEl.Header>
           {isAlternativeOrderModalVisible ? <div></div> : <TradeWidgetLinks isDropdown={showDropdown} />}
-          {isInjectedWidgetMode && injectedWidgetParams.standaloneMode && (
+          {isInjectedWidgetMode && standaloneMode && (
             <AccountElement standaloneMode pendingActivities={pendingActivity} />
           )}
 
@@ -208,9 +221,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
                     ? t`You cannot edit this field when selling ${inputCurrencyInfo?.currency?.symbol}`
                     : undefined
                 }
-                currencyInfo={
-                  isWrapOrUnwrap ? { ...outputCurrencyInfo, amount: inputCurrencyInfo.amount } : outputCurrencyInfo
-                }
+                currencyInfo={outputCurrencyInfo}
                 priceImpactParams={!disablePriceImpact ? priceImpact : undefined}
                 topLabel={isWrapOrUnwrap ? undefined : outputCurrencyInfo.label}
                 {...currencyInputCommonProps}

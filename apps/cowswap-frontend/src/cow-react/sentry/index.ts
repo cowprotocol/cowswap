@@ -2,11 +2,10 @@ import { environmentName } from '@cowprotocol/common-utils'
 
 import * as Sentry from '@sentry/react'
 
-import { SENTRY_IGNORED_GP_QUOTE_ERRORS } from 'api/gnosisProtocol/errors/QuoteError'
+import { SENTRY_IGNORED_QUOTE_ERRORS } from 'api/cowProtocol/errors/QuoteError'
 
 import { beforeSend } from './beforeSend'
 
-// eslint-disable-next-line @nx/enforce-module-boundaries
 import pkg from '../../../package.json'
 
 const SENTRY_DSN = process.env.REACT_APP_SENTRY_DSN
@@ -18,7 +17,7 @@ if (SENTRY_DSN) {
     integrations: [new Sentry.BrowserTracing()],
     release: 'CowSwap@v' + pkg.version,
     environment: environmentName,
-    ignoreErrors: [...SENTRY_IGNORED_GP_QUOTE_ERRORS, `Can't find variable: bytecode`],
+    ignoreErrors: [...SENTRY_IGNORED_QUOTE_ERRORS, `Can't find variable: bytecode`],
     beforeSend,
     // Set tracesSampleRate to 1.0 to capture 100%
     // of transactions for performance monitoring.

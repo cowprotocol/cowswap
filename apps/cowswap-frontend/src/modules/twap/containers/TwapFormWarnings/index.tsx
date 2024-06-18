@@ -26,15 +26,12 @@ import { SmallPriceProtectionWarning } from './warnings/SmallPriceProtectionWarn
 import { SwapPriceDifferenceWarning } from './warnings/SwapPriceDifferenceWarning'
 
 import { useIsFallbackHandlerRequired } from '../../hooks/useFallbackHandlerVerification'
+import { useTwapSlippage } from '../../hooks/useTwapSlippage'
 import { useTwapWarningsContext } from '../../hooks/useTwapWarningsContext'
 import { TwapFormState } from '../../pure/PrimaryActionButton/getTwapFormState'
 import { swapAmountDifferenceAtom } from '../../state/swapAmountDifferenceAtom'
 import { twapDeadlineAtom, twapOrderAtom } from '../../state/twapOrderAtom'
-import {
-  twapOrderSlippageAtom,
-  twapOrdersSettingsAtom,
-  updateTwapOrdersSettingsAtom,
-} from '../../state/twapOrdersSettingsAtom'
+import { twapOrdersSettingsAtom, updateTwapOrdersSettingsAtom } from '../../state/twapOrdersSettingsAtom'
 import { isPriceProtectionNotEnough } from '../../utils/isPriceProtectionNotEnough'
 
 const BUNDLE_APPROVAL_STATES = [TradeFormValidation.ApproveAndSwap]
@@ -48,7 +45,7 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
   const { isFallbackHandlerSetupAccepted, isPriceImpactAccepted } = useAtomValue(twapOrdersSettingsAtom)
   const updateTwapOrdersSettings = useSetAtom(updateTwapOrdersSettingsAtom)
   const twapOrder = useAtomValue(twapOrderAtom)
-  const slippage = useAtomValue(twapOrderSlippageAtom)
+  const slippage = useTwapSlippage()
   const deadline = useAtomValue(twapDeadlineAtom)
   const swapAmountDifference = useAtomValue(swapAmountDifferenceAtom)
   const { outputCurrencyAmount } = useAdvancedOrdersDerivedState()
@@ -126,21 +123,23 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
         }
 
         if (showFallbackHandlerWarning) {
-          return [
-            isFallbackHandlerSetupAccepted ? swapPriceDifferenceWarning : null,
-            <FallbackHandlerWarning
-              isFallbackHandlerSetupAccepted={isFallbackHandlerSetupAccepted}
-              toggleFallbackHandlerSetupFlag={toggleFallbackHandlerSetupFlag}
-            />,
-          ]
+          return (
+            <>
+              {isFallbackHandlerSetupAccepted && swapPriceDifferenceWarning}
+              <FallbackHandlerWarning
+                isFallbackHandlerSetupAccepted={isFallbackHandlerSetupAccepted}
+                toggleFallbackHandlerSetupFlag={toggleFallbackHandlerSetupFlag}
+              />
+            </>
+          )
         }
 
-        return [
-          showTradeFormWarnings && isPriceProtectionNotEnough(deadline, slippage) ? (
-            <SmallPriceProtectionWarning />
-          ) : null,
-          swapPriceDifferenceWarning,
-        ]
+        return (
+          <>
+            {showTradeFormWarnings && isPriceProtectionNotEnough(deadline, slippage) && <SmallPriceProtectionWarning />}
+            {swapPriceDifferenceWarning}
+          </>
+        )
       })()}
     </>
   )

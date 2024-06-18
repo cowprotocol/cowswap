@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { ReactNode, useMemo, useState } from 'react'
 
 import ArrowDownImage from '@cowprotocol/assets/cow-swap/arrowDownRight.svg'
 import { DEFAULT_DATE_FORMAT } from '@cowprotocol/common-const'
@@ -9,7 +9,6 @@ import { Currency, Price } from '@uniswap/sdk-core'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
-
 import { ExecutionPriceTooltip } from 'modules/limitOrders/pure/ExecutionPriceTooltip'
 import { OrderType } from 'modules/limitOrders/pure/OrderType'
 import { TradeFlowContext } from 'modules/limitOrders/services/types'
@@ -17,7 +16,7 @@ import { LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersS
 import { LimitRateState } from 'modules/limitOrders/state/limitRateAtom'
 import { PartiallyFillableOverrideDispatcherType } from 'modules/limitOrders/state/partiallyFillableOverride'
 import { calculateLimitOrdersDeadline } from 'modules/limitOrders/utils/calculateLimitOrdersDeadline'
-import { RecipientRow } from 'modules/trade'
+import { DividerHorizontal, RecipientRow } from 'modules/trade'
 
 import { ordersTableFeatures } from 'common/constants/featureFlags'
 import { ExecutionPrice } from 'common/pure/ExecutionPrice'
@@ -46,11 +45,19 @@ export interface LimitOrdersDetailsProps {
   executionPrice: Price<Currency, Currency> | null
   limitRateState: LimitRateState
   partiallyFillableOverride: PartiallyFillableOverrideDispatcherType
+  children?: ReactNode
 }
 
 export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
-  const { executionPrice, tradeContext, settingsState, rateInfoParams, limitRateState, partiallyFillableOverride } =
-    props
+  const {
+    executionPrice,
+    tradeContext,
+    settingsState,
+    rateInfoParams,
+    limitRateState,
+    partiallyFillableOverride,
+    children,
+  } = props
   const { account, recipient, recipientAddressOrName, partiallyFillable } = tradeContext.postOrderParams
   const { feeAmount, activeRate, marketRate } = limitRateState
 
@@ -71,6 +78,10 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
       <styledEl.DetailsRow>
         <styledEl.StyledRateInfo isInvertedState={isInvertedState} rateInfoParams={rateInfoParams} />
       </styledEl.DetailsRow>
+
+      {children}
+
+      <DividerHorizontal />
 
       {ordersTableFeatures.DISPLAY_EXECUTION_TIME && executionPrice && (
         <styledEl.DetailsRow>

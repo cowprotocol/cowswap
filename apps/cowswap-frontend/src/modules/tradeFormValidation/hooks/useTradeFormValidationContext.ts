@@ -17,7 +17,7 @@ import { TradeFormValidationCommonContext } from '../types'
 
 export function useTradeFormValidationContext(): TradeFormValidationCommonContext | null {
   const { account } = useWalletInfo()
-  const { state: derivedTradeState } = useDerivedTradeState()
+  const derivedTradeState = useDerivedTradeState()
   const tradeQuote = useTradeQuote()
 
   const { inputCurrency, outputCurrency, slippageAdjustedSellAmount, recipient, tradeType } = derivedTradeState || {}

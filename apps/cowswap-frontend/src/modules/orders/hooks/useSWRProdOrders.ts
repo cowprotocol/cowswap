@@ -1,13 +1,13 @@
 import { useMemo } from 'react'
 
-import { GP_ORDER_UPDATE_INTERVAL } from '@cowprotocol/common-const'
+import { ORDER_BOOK_API_UPDATE_INTERVAL } from '@cowprotocol/common-const'
 import { isBarnBackendEnv } from '@cowprotocol/common-utils'
 import { EnrichedOrder } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import useSWR from 'swr'
 
-import { getOrders } from 'api/gnosisProtocol'
+import { getOrders } from 'api/cowProtocol'
 
 import { useApiOrders } from './useApiOrders'
 import { useSWROrdersRequest } from './useSWROrdersRequest'
@@ -28,7 +28,7 @@ export function useSWRProdOrders(): EnrichedOrder[] {
 
       return getOrders(requestParams, { chainId, env: 'prod' })
     },
-    { refreshInterval: GP_ORDER_UPDATE_INTERVAL }
+    { refreshInterval: ORDER_BOOK_API_UPDATE_INTERVAL }
   )
 
   return useMemo(() => {

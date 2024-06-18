@@ -36,7 +36,7 @@ export function useSetupTradeAmountsFromUrl({ onAmountsUpdate, onlySell }: Setup
   const { search, pathname } = useLocation()
   const params = useMemo(() => new URLSearchParams(search), [search])
   const { updateState } = useTradeState()
-  const { state } = useDerivedTradeState()
+  const state = useDerivedTradeState()
   const { inputCurrency, outputCurrency } = state || {}
 
   const cleanParams = useCallback(() => {

@@ -15,7 +15,7 @@ import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
 import { FeeInformation } from 'types'
 
 import { useGetGpPriceStrategy } from 'legacy/hooks/useGetGpPriceStrategy'
-import { GpPriceStrategy } from 'legacy/state/gas/atoms'
+import { PriceStrategy } from 'legacy/state/gas/atoms'
 import { Order } from 'legacy/state/orders/actions'
 import { PENDING_ORDERS_PRICE_CHECK_POLL_INTERVAL } from 'legacy/state/orders/consts'
 import { useOnlyPendingOrders, useSetIsOrderUnfillable } from 'legacy/state/orders/hooks'
@@ -135,7 +135,12 @@ export function UnfillableOrdersUpdater(): null {
               const price = getPromiseFulfilledValue(promisedPrice, null)
               const fee = getPromiseFulfilledValue(promisedFee, null)
 
-              price?.amount && updateIsUnfillableFlag(chainId, order, price.amount, fee)
+              price?.amount &&
+                fee &&
+                updateIsUnfillableFlag(chainId, order, price.amount, {
+                  expirationDate: fee.expiration,
+                  amount: fee.quote.feeAmount,
+                })
             }
           })
           .catch((e) => {
@@ -174,7 +179,7 @@ export function UnfillableOrdersUpdater(): null {
 /**
  * Thin wrapper around `getBestPrice` that builds the params and returns null on failure
  */
-async function _getOrderPrice(chainId: ChainId, order: Order, strategy: GpPriceStrategy) {
+async function _getOrderPrice(chainId: ChainId, order: Order, strategy: PriceStrategy) {
   let baseToken, quoteToken
 
   const amount = getRemainderAmount(order.kind, order)

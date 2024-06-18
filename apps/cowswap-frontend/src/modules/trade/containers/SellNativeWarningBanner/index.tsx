@@ -14,7 +14,7 @@ export function SellNativeWarningBanner() {
   const wrapped = useWrappedToken()
   const navigateOnCurrencySelection = useNavigateOnCurrencySelection()
 
-  const { state } = useDerivedTradeState()
+  const state = useDerivedTradeState()
 
   const queryParams = state?.inputCurrencyAmount
     ? {

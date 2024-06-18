@@ -36,7 +36,7 @@ export const StyledRowBetween = styled(RowBetween)<RowStyleProps>`
     transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
 
     &:first-child {
-      opacity: 0.7;
+      opacity: 1;
       font-weight: 400;
 
       &:hover {

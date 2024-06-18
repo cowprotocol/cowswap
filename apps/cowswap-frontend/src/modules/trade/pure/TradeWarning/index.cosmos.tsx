@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { TradeWarning, TradeWarningType } from './index'
 
 const text = (

@@ -4,7 +4,6 @@ import { changeSwapAmountAnalytics, switchTokensAnalytics } from '@cowprotocol/a
 import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
 import { FEE_SIZE_THRESHOLD } from '@cowprotocol/common-const'
 import { formatSymbol, getIsNativeToken, isAddress, tryParseCurrencyAmount } from '@cowprotocol/common-utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useENS } from '@cowprotocol/ens'
 import { useAreThereTokensWithSameSymbol, useTokenBySymbolOrAddress } from '@cowprotocol/tokens'
 import { Command } from '@cowprotocol/types'
@@ -15,16 +14,16 @@ import { t } from '@lingui/macro'
 
 import { AppState } from 'legacy/state'
 import { useAppDispatch, useAppSelector } from 'legacy/state/hooks'
-import { useGetQuoteAndStatus, useQuote } from 'legacy/state/price/hooks'
+import { useGetQuoteAndStatus } from 'legacy/state/price/hooks'
 import { setRecipient, switchCurrencies, typeInput } from 'legacy/state/swap/actions'
-import { buildTradeExactInWithFee, buildTradeExactOutWithFee, stringToCurrency } from 'legacy/state/swap/extension'
+import { buildTradeExactInWithFee, buildTradeExactOutWithFee } from 'legacy/state/swap/extension'
 import TradeGp from 'legacy/state/swap/TradeGp'
 import { isWrappingTrade } from 'legacy/state/swap/utils'
 import { Field } from 'legacy/state/types'
 
-import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { useNavigateOnCurrencySelection } from 'modules/trade/hooks/useNavigateOnCurrencySelection'
 import { useTradeNavigate } from 'modules/trade/hooks/useTradeNavigate'
+import { useVolumeFee } from 'modules/volumeFee'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
@@ -50,6 +49,7 @@ export function useSwapState(): AppState['swap'] {
 }
 
 export type Currencies = { [field in Field]?: Currency | null }
+
 export interface SwapActions {
   onCurrencySelection: (field: Field, currency: Currency) => void
   onSwitchTokens: Command
@@ -124,11 +124,11 @@ export function useHighFeeWarning(trade?: TradeGp) {
   const [isHighFee, feePercentage] = useMemo(() => {
     if (!trade) return [false, undefined]
 
-    const { outputAmountWithoutFee, inputAmountAfterFees, fee, partnerFeeAmount } = trade
+    const { outputAmountWithoutFee, inputAmountAfterFees, fee, volumeFeeAmount } = trade
     const isExactInput = trade.tradeType === TradeType.EXACT_INPUT
     const feeAsCurrency = isExactInput ? trade.executionPrice.quote(fee.feeAsCurrency) : fee.feeAsCurrency
 
-    const totalFeeAmount = partnerFeeAmount ? feeAsCurrency.add(partnerFeeAmount) : feeAsCurrency
+    const totalFeeAmount = volumeFeeAmount ? feeAsCurrency.add(volumeFeeAmount) : feeAsCurrency
     const targetAmount = isExactInput ? outputAmountWithoutFee : inputAmountAfterFees
     const feePercentage = totalFeeAmount.divide(targetAmount).multiply(100).asFraction
 
@@ -244,7 +244,7 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
 
   const isWrapping = isWrappingTrade(inputCurrency, outputCurrency, chainId)
 
-  const { partnerFee } = useInjectedWidgetParams()
+  const volumeFee = useVolumeFee()
 
   const trade = useSafeMemo(() => {
     if (isWrapping) return undefined
@@ -254,7 +254,7 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
         parsedAmount,
         outputCurrency,
         quote,
-        partnerFee,
+        volumeFee,
       })
     }
 
@@ -262,9 +262,9 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
       parsedAmount,
       inputCurrency,
       quote,
-      partnerFee,
+      volumeFee,
     })
-  }, [isExactIn, parsedAmount, inputCurrency, outputCurrency, quote, partnerFee, isWrapping])
+  }, [isExactIn, parsedAmount, inputCurrency, outputCurrency, quote, volumeFee, isWrapping])
 
   const currencyBalances = useMemo(
     () => ({
@@ -337,46 +337,17 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
         slippageAdjustedBuyAmount,
       }
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
     [
       allowedSlippage,
       currencyBalances,
       currenciesIds,
       inputError,
       parsedAmount,
-      // eslint-disable-next-line react-hooks/exhaustive-deps
+
       JSON.stringify(trade),
       slippageAdjustedSellAmount,
       slippageAdjustedBuyAmount,
     ] // mod
   )
-}
-
-export function useIsFeeGreaterThanInput({
-  address,
-  chainId,
-  trade,
-}: {
-  address?: string | null
-  chainId?: SupportedChainId
-  trade: TradeGp | undefined
-}): {
-  isFeeGreater: boolean
-  fee: CurrencyAmount<Currency> | null
-} {
-  const quote = useQuote({ chainId, token: address })
-  const feeToken = useTokenBySymbolOrAddress(address)
-
-  return useMemo(() => {
-    if (!quote || !feeToken) return { isFeeGreater: false, fee: null }
-
-    const isSellOrder = trade?.tradeType === TradeType.EXACT_INPUT
-    const amountAfterFees = isSellOrder ? trade?.outputAmountAfterFees : trade?.inputAmountAfterFees
-    const isQuoteError = quote.error === 'fee-exceeds-sell-amount'
-
-    return {
-      isFeeGreater: isQuoteError || (!!amountAfterFees && (amountAfterFees.equalTo(0) || amountAfterFees.lessThan(0))),
-      fee: quote.fee ? stringToCurrency(quote.fee.amount, feeToken) : null,
-    }
-  }, [quote, trade, feeToken])
 }

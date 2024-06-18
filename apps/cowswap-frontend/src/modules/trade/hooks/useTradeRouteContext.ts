@@ -7,7 +7,7 @@ import { TradeUrlParams } from '../types/TradeRawState'
 
 export function useTradeRouteContext(): TradeUrlParams {
   const { state } = useTradeState()
-  const { state: derivedState } = useDerivedTradeState()
+  const derivedState = useDerivedTradeState()
   const { orderKind, inputCurrencyAmount, outputCurrencyAmount } = derivedState || {}
   const { inputCurrencyId, outputCurrencyId, chainId } = state || {}
 

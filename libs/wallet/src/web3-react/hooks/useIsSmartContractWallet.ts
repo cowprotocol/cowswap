@@ -3,9 +3,18 @@ import { useWeb3React } from '@web3-react/core'
 
 import useSWR from 'swr'
 
+import { useIsSafeWallet } from './useWalletMetadata'
+
 import { useWalletInfo } from '../../api/hooks'
 
 export function useIsSmartContractWallet(): boolean | undefined {
+  const hasCodeAtAddress = useHasContractAtAddress()
+  const isSafeWallet = useIsSafeWallet()
+
+  return isSafeWallet || hasCodeAtAddress
+}
+
+function useHasContractAtAddress(): boolean | undefined {
   const { provider } = useWeb3React()
   const { account } = useWalletInfo()
 
