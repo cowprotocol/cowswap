@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.1](https://github.com/cowprotocol/cowswap/compare/tokens-v1.4.0...tokens-v1.4.1) (2024-06-18)
+
+
+### Bug Fixes
+
+* **tokens:** remove duplicates from token search result ([#4535](https://github.com/cowprotocol/cowswap/issues/4535)) ([563640e](https://github.com/cowprotocol/cowswap/commit/563640e9563c23ecc0fbdb68e6b245eb07bcba79))
+
 ## [1.4.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.3.1...tokens-v1.4.0) (2024-06-06)
 
 
