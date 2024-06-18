@@ -58,7 +58,7 @@ export function PartnerFeeRow({
         <ReviewOrderModalAmountRow
           withTimelineDot={withTimelineDot}
           alwaysRow={alwaysRow}
-          tooltip="Unlike other exchanges, CoW Swap doesn’t charge a fee for trading!"
+          tooltip="No fee for order placement!"
           label="Fee"
         >
           <styledEl.GreenText>FREE</styledEl.GreenText>
