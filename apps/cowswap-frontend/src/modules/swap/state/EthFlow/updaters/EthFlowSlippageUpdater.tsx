@@ -43,7 +43,7 @@ export function EthFlowSlippageUpdater() {
 
   useEffect(() => {
     // Reset state when chain changes and ethflow was active
-    wasEthFlowActive.current && _resetSlippage(setUserSlippageTolerance, false)
+    _saveSlippage({})
     wasEthFlowActive.current = false
   }, [chainId, setUserSlippageTolerance])
 
