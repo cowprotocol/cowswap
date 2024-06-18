@@ -114,7 +114,7 @@ export const Media = {
 }
 
 export const Font = {
-  family: 'studiofeixen, sans-serif',
+  family: `'studiofeixen', Arial, sans-serif`,
   weight: {
     ultralight: 200,
     light: 300,
@@ -277,7 +277,10 @@ export const GlobalCoWDAOStyles = (fonts: GlobalCowDAOFonts, bgColor?: string, c
         color: ${color || UI.COLOR_TEXT};
         scroll-behavior: smooth;
         font-variant: none;
-        text-rendering: geometricPrecision;
+        font-variant-ligatures: none;
+        font-display: swap;
+        text-rendering: optimizeLegibility;
+        font-feature-settings: 'liga' off, 'kern' on;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
         -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
