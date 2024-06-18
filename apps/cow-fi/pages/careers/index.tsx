@@ -55,7 +55,7 @@ export default function Page({ siteConfigData, jobsData }: PageProps) {
     <Layout
       bgColor={Color.neutral90}
       metaTitle={`Careers - ${title}`}
-      metaDescription="Want to build the future of decentralized trading? We are an ambitious, fast growing and international team working at the forefront of DeFi. We believe that we can make markets both more efficient and fair, by building the ultimate batch auction settlement layer across EVM compatible blockchains."
+      metaDescription="We are an ambitious, fast-growing and international team working at the forefront of DeFi. We believe that we can make markets more fair and more efficient by building the ultimate batch auction settlement layer across EVM-compatible blockchains."
     >
       <Wrapper>
         <ContainerCard bgColor={Color.neutral90} color={Color.neutral10} padding="0 60px 60px" touchFooter>
@@ -66,9 +66,9 @@ export default function Page({ siteConfigData, jobsData }: PageProps) {
               </SectionTitleIcon>
               <SectionTitleText fontSize={62}>Want to build the future of decentralized trading?</SectionTitleText>
               <SectionTitleDescription fontSize={24} color={Color.neutral40} fontWeight={Font.weight.regular}>
-                We are an ambitious, fast growing and international team working at the forefront of DeFi. We believe
-                that we can make markets both more efficient and fair, by building the ultimate batch auction settlement
-                layer across EVM compatible blockchains.
+                We are an ambitious, fast-growing and international team working at the forefront of DeFi. We believe
+                that we can make markets more fair and more efficient by building the ultimate batch auction settlement
+                layer across EVM-compatible blockchains.
               </SectionTitleDescription>
             </SectionTitleWrapper>
 
@@ -164,8 +164,8 @@ export default function Page({ siteConfigData, jobsData }: PageProps) {
                   <TopicTitle fontSize={34}>💸 Refer a friend and earn 6,000 in USDC or USD!</TopicTitle>
 
                   <TopicDescription fontSize={24} fontWeight={Font.weight.regular} margin="0 0 24px">
-                    Know someone who is not just looking for a job but for a great opportunity to grow? Refer them to us
-                    to earn $6,000 in USDC or USD.{' '}
+                    Know someone who is looking not just for a job, but for a great opportunity to grow? Refer them to
+                    earn $6,000 in USD or USDC.{' '}
                   </TopicDescription>
                   <Link
                     linkType={LinkType.TopicButton}

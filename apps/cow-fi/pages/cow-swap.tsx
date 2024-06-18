@@ -229,6 +229,7 @@ export default function Page({ siteConfigData }: PageProps) {
                 bgColor="#65D9FF"
                 color="#012F7A"
                 href="/cow-protocol"
+                linkType={LinkType.SectionTitleButton}
                 onClick={() => sendGAEventHandler(GAEventCategories.COWSWAP, 'click-learn-about-cow-protocol')}
               >
                 Learn about CoW Protocol

@@ -255,6 +255,7 @@ export default function Page({ siteConfigData }: PageProps) {
                     color="#F996EE"
                     href="/learn"
                     onClick={() => sendGAEventHandler(GAEventCategories.COWPROTOCOL, 'click-intents-learn-more')}
+                    linkType={LinkType.TopicButton}
                   >
                     Learn more
                   </Link>
@@ -290,6 +291,7 @@ export default function Page({ siteConfigData }: PageProps) {
                     color="#F996EE"
                     href="/learn"
                     onClick={() => sendGAEventHandler(GAEventCategories.COWPROTOCOL, 'click-solvers-learn-more')}
+                    linkType={LinkType.TopicButton}
                   >
                     Learn more
                   </Link>
@@ -311,6 +313,7 @@ export default function Page({ siteConfigData }: PageProps) {
                     bgColor="#66018E"
                     color="#F996EE"
                     href="/learn"
+                    linkType={LinkType.TopicButton}
                     onClick={() => sendGAEventHandler(GAEventCategories.COWPROTOCOL, 'click-batch-auctions-learn-more')}
                   >
                     Learn more
@@ -663,6 +666,7 @@ export default function Page({ siteConfigData }: PageProps) {
                     color="#66018E"
                     fontSize={27}
                     href="/widget"
+                    linkType={LinkType.TopicButton}
                     onClick={() => sendGAEventHandler(GAEventCategories.COWPROTOCOL, `click-integrate-widget`)}
                   >
                     Integrate the widget

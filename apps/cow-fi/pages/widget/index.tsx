@@ -337,16 +337,39 @@ export default function Page({ siteConfigData }: PageProps) {
           </ContainerCardSection>
         </ContainerCard>
 
-        <ContainerCard bgColor={'transparent'} color={Color.neutral10} padding="0">
-          <ContainerCardSection padding={'0'}>
+        <ContainerCard bgColor={Color.neutral90} color={Color.neutral10} touchFooter>
+          <ContainerCardSection padding={'0 0 100px'}>
             <SectionTitleWrapper>
               <SectionTitleIcon>
-                <SVG src={IMG_ICON_FAQ} />
+                <ProductLogo variant={ProductVariant.CowSwap} theme="light" logoIconOnly />
               </SectionTitleIcon>
-              <SectionTitleText>FAQs</SectionTitleText>
-            </SectionTitleWrapper>
+              <SectionTitleText>Integrate in 5 minutes or less</SectionTitleText>
+              <HeroButtonWrapper>
+                <Link
+                  href="https://widget.cow.fi/"
+                  utmContent="widget-page-configure-widget-cta-hero"
+                  external
+                  linkType={LinkType.HeroButton}
+                  onClick={() => sendGAEventHandler(GAEventCategories.WIDGET, 'click-config-widget')}
+                >
+                  {' '}
+                  Configure widget{' '}
+                </Link>
 
-            <FAQ faqs={FAQ_DATA} />
+                <Link
+                  bgColor="transparent"
+                  color={Color.neutral20}
+                  href="https://docs.cow.fi/cow-protocol/tutorials/widget"
+                  utmContent="widget-page-readdocs-cta-hero"
+                  external
+                  linkType={LinkType.HeroButton}
+                  onClick={() => sendGAEventHandler(GAEventCategories.WIDGET, 'click-read-docs')}
+                >
+                  {' '}
+                  Read docs
+                </Link>
+              </HeroButtonWrapper>
+            </SectionTitleWrapper>
           </ContainerCardSection>
         </ContainerCard>
 
