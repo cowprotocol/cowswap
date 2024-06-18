@@ -7,9 +7,25 @@ import { injectedWidgetPartnerFeeAtom } from 'modules/injectedWidget'
 import { tradeTypeAtom } from 'modules/trade'
 import { TradeType } from 'modules/trade/types/TradeType'
 
+import { featureFlagsAtom } from 'common/state/featureFlagsState'
+
+import { cowSwapFeeAtom } from './cowswapFeeAtom'
+
 import { VolumeFee } from '../types'
 
 export const volumeFeeAtom = atom<VolumeFee | undefined>((get) => {
+  const featureFlags = get(featureFlagsAtom)
+  const cowSwapFee = get(cowSwapFeeAtom)
+  const widgetPartnerFee = get(widgetPartnerFeeAtom)
+
+  if (featureFlags.isCowSwapFeeEnabled) {
+    return cowSwapFee || widgetPartnerFee
+  }
+
+  return widgetPartnerFee
+})
+
+const widgetPartnerFeeAtom = atom<VolumeFee | undefined>((get) => {
   const { chainId } = get(walletInfoAtom)
   const partnerFee = get(injectedWidgetPartnerFeeAtom)
   const tradeType = get(tradeTypeAtom)?.tradeType
