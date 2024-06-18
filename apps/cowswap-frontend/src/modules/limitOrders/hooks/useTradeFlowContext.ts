@@ -1,5 +1,4 @@
 import { useAtomValue } from 'jotai'
-import { useMemo } from 'react'
 
 import { GP_VAULT_RELAYER } from '@cowprotocol/common-const'
 import { OrderClass } from '@cowprotocol/cow-sdk'
@@ -17,17 +16,14 @@ import { TradeFlowContext } from 'modules/limitOrders/services/types'
 import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { useGeneratePermitHook, useGetCachedPermit, usePermitInfo } from 'modules/permit'
 import { useEnoughBalanceAndAllowance } from 'modules/tokens'
-import { getDirectedReceiveAmounts, ReceiveAmountInfo, TradeType } from 'modules/trade'
+import { TradeType } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
 
 import { useGP2SettlementContract } from 'common/hooks/useContract'
 
 import { useLimitOrdersDerivedState } from './useLimitOrdersDerivedState'
 
-export function useTradeFlowContext(
-  inputReceiveAmountInfo: ReceiveAmountInfo | null,
-  outputReceiveAmountInfo: ReceiveAmountInfo | null
-): TradeFlowContext | null {
+export function useTradeFlowContext(): TradeFlowContext | null {
   const provider = useWalletProvider()
   const { chainId, account } = useWalletInfo()
   const { allowsOffchainSigning } = useWalletDetails()
@@ -50,89 +46,60 @@ export function useTradeFlowContext(
   const generatePermitHook = useGeneratePermitHook()
   const getCachedPermit = useGetCachedPermit()
 
-  const inputReceiveAmounts = inputReceiveAmountInfo && getDirectedReceiveAmounts(inputReceiveAmountInfo)
-  const outputReceiveAmounts = outputReceiveAmountInfo && getDirectedReceiveAmounts(outputReceiveAmountInfo)
+  const isQuoteReady = !!quoteState.response && !quoteState.isLoading && !!quoteState.localQuoteTimestamp
 
-  const inputAmount = inputReceiveAmounts?.amountAfterFees || state.inputCurrencyAmount
-  const sellAmountBeforeFee = inputReceiveAmounts?.amountBeforeFees || state.inputCurrencyAmount
-  const outputAmount = outputReceiveAmounts?.amountAfterFees || state.outputCurrencyAmount
+  if (
+    !account ||
+    !state.inputCurrencyAmount ||
+    !state.outputCurrencyAmount ||
+    !state.inputCurrency ||
+    !state.outputCurrency ||
+    !provider ||
+    !settlementContract ||
+    !isQuoteReady ||
+    !appData
+  ) {
+    return null
+  }
+
+  const recipientAddressOrName = state.recipient || state.recipientAddress
+  const recipient = state.recipientAddress || state.recipient || account
+  const sellToken = state.inputCurrency as Token
+  const buyToken = state.outputCurrency as Token
+  const feeAmount = CurrencyAmount.fromRawAmount(state.inputCurrency, 0)
+  const quoteId = quoteState.response?.id || undefined
+
   const partiallyFillable = settingsState.partialFillsEnabled
 
-  return useMemo(() => {
-    const isQuoteReady = !!quoteState.response && !quoteState.isLoading && !!quoteState.localQuoteTimestamp
-
-    if (
-      !account ||
-      !inputAmount ||
-      !outputAmount ||
-      !sellAmountBeforeFee ||
-      !state.inputCurrency ||
-      !state.outputCurrency ||
-      !provider ||
-      !settlementContract ||
-      !isQuoteReady ||
-      !appData
-    ) {
-      return null
-    }
-
-    const recipientAddressOrName = state.recipient || state.recipientAddress
-    const recipient = state.recipientAddress || state.recipient || account
-    const sellToken = state.inputCurrency as Token
-    const buyToken = state.outputCurrency as Token
-    const feeAmount = CurrencyAmount.fromRawAmount(state.inputCurrency, 0)
-    const quoteId = quoteState.response?.id || undefined
-
-    return {
-      chainId,
-      settlementContract,
-      allowsOffchainSigning,
-      dispatch,
-      provider,
-      rateImpact,
-      permitInfo: !enoughAllowance ? permitInfo : undefined,
-      generatePermitHook,
-      getCachedPermit,
-      quoteState,
-      postOrderParams: {
-        class: OrderClass.LIMIT,
-        kind: state.orderKind,
-        account,
-        chainId,
-        sellToken,
-        buyToken,
-        recipient,
-        recipientAddressOrName,
-        allowsOffchainSigning,
-        feeAmount,
-        inputAmount,
-        outputAmount,
-        sellAmountBeforeFee,
-        partiallyFillable,
-        appData,
-        quoteId,
-        isSafeWallet,
-      },
-    }
-  }, [
-    account,
-    inputAmount,
-    outputAmount,
-    sellAmountBeforeFee,
-    state,
-    quoteState,
+  return {
     chainId,
     settlementContract,
+    allowsOffchainSigning,
     dispatch,
     provider,
     rateImpact,
-    enoughAllowance,
-    permitInfo,
+    permitInfo: !enoughAllowance ? permitInfo : undefined,
     generatePermitHook,
     getCachedPermit,
-    allowsOffchainSigning,
-    partiallyFillable,
-    appData,
-    isSafeWallet,
-  ])
+    quoteState,
+    postOrderParams: {
+      class: OrderClass.LIMIT,
+      kind: state.orderKind,
+      account,
+      chainId,
+      sellToken,
+      buyToken,
+      recipient,
+      recipientAddressOrName,
+      allowsOffchainSigning,
+      feeAmount,
+      inputAmount: state.inputCurrencyAmount,
+      outputAmount: state.outputCurrencyAmount,
+      sellAmountBeforeFee: state.inputCurrencyAmount,
+      partiallyFillable,
+      appData,
+      quoteId,
+      isSafeWallet,
+    },
+  }
 }

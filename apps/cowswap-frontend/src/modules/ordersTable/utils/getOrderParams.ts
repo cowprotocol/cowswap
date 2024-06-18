@@ -1,9 +1,7 @@
-import { isEnoughAmount, isSellOrder } from '@cowprotocol/common-utils'
+import { isEnoughAmount } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { BigNumber } from '@ethersproject/bignumber'
 import { Currency, CurrencyAmount, Percent, Token } from '@uniswap/sdk-core'
-
-import { getOrderAmountsWithPartnerFee } from 'legacy/state/orders/utils'
 
 import { BalancesAndAllowances } from 'modules/tokens'
 
@@ -31,9 +29,10 @@ export function getOrderParams(
 
   const rateInfoParams: RateInfoParams = {
     chainId,
+    inputCurrencyAmount: sellAmount,
+    outputCurrencyAmount: buyAmount,
     activeRateFiatAmount: null,
     invertedActiveRateFiatAmount: null,
-    ...getOrderAmountsWithPartnerFee(order.fullAppData, sellAmount, buyAmount, isSellOrder(order.kind)),
   }
 
   const { balances, allowances } = balancesAndAllowances

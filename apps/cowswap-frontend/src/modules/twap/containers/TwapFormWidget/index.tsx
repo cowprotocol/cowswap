@@ -35,7 +35,6 @@ import { ActionButtons } from '../ActionButtons'
 import { AmountParts } from '../AmountParts'
 import { TwapFormWarnings } from '../TwapFormWarnings'
 
-
 export type { LabelTooltip, LabelTooltipItems } from './tooltips'
 
 export function TwapFormWidget() {
