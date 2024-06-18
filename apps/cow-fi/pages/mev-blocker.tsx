@@ -203,7 +203,7 @@ export default function Page({ siteConfigData }: PageProps) {
                   </ol>
                 </HeroDescription>
 
-                <Link type={LinkType.HeroButton} bgColor={'#EC4612'} color={'#FEE7CF'} href="#rpc">
+                <Link linkType={LinkType.HeroButton} bgColor={'#EC4612'} color={'#FEE7CF'} href="#rpc">
                   Get protected
                 </Link>
               </HeroContent>
@@ -233,7 +233,7 @@ export default function Page({ siteConfigData }: PageProps) {
                 gridFullWidth
                 href="https://dune.com/cowprotocol/mev-blocker"
                 external
-                type={LinkType.SectionTitleButton}
+                linkType={LinkType.SectionTitleButton}
                 utmContent="mev-blocker-metrics-link"
               >
                 View all metrics on DUNE &#8599;
@@ -577,7 +577,7 @@ export default function Page({ siteConfigData }: PageProps) {
                     color={Color.neutral98}
                     href="https://docs.cow.fi/category/searchers"
                     external
-                    type={LinkType.SectionTitleButton}
+                    linkType={LinkType.SectionTitleButton}
                     utmContent="mev-blocker-learn-more"
                   >
                     Learn more
@@ -650,7 +650,7 @@ export default function Page({ siteConfigData }: PageProps) {
                     Friends don't let friends suffer from MEV damage
                   </SectionTitleText>
 
-                  <Link type={LinkType.SectionTitleButton} bgColor="#EC4612" onClick={handleShareClick} href="#">
+                  <Link linkType={LinkType.SectionTitleButton} bgColor="#EC4612" onClick={handleShareClick} asButton>
                     Share MEV Blocker
                   </Link>
 

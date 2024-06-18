@@ -211,13 +211,14 @@ export default function ArticlePage({
               <br />
               <Link
                 onClick={handleShareClick}
-                href="#"
-                type={LinkType.SectionTitleButton}
+                asButton
+                linkType={LinkType.SectionTitleButton}
                 color={Color.neutral98}
                 bgColor={Color.neutral10}
               >
                 Share article
               </Link>
+
               {message && (
                 <SectionTitleDescription textAlign="left" margin="16px 0 0" fontSize={21}>
                   {message}

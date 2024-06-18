@@ -11,10 +11,10 @@ export enum LinkType {
   SectionTitleButton = 'sectionTitleButton',
 }
 
-interface LinkProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
-  href: string
+interface LinkProps extends Omit<React.HTMLAttributes<HTMLAnchorElement & HTMLDivElement>, 'href' | 'ref'> {
+  href?: string
   external?: boolean
-  type?: LinkType
+  linkType?: LinkType
   children: ReactNode
   fontSize?: number
   fontSizeMobile?: number
@@ -25,6 +25,8 @@ interface LinkProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
   margin?: string
   utmContent?: string
   gridFullWidth?: boolean
+  asButton?: boolean
+  onClick?: React.MouseEventHandler<HTMLAnchorElement & HTMLDivElement>
 }
 
 const baseStyles = css``
@@ -104,29 +106,44 @@ const sectionTitleButtonStyles = css<LinkProps>`
 
 const StyledAnchor = styled.a<LinkProps>`
   ${baseStyles}
-  ${({ type }) => type === LinkType.TopicButton && topicButtonStyles}
-  ${({ type }) => type === LinkType.HeroButton && heroButtonStyles}
-  ${({ type }) => type === LinkType.SectionTitleButton && sectionTitleButtonStyles}
+  ${({ linkType }) => linkType === LinkType.TopicButton && topicButtonStyles}
+  ${({ linkType }) => linkType === LinkType.HeroButton && heroButtonStyles}
+  ${({ linkType }) => linkType === LinkType.SectionTitleButton && sectionTitleButtonStyles}
 `
 
-export const Link: FC<LinkProps> = ({ href, external, type, children, utmContent, ...rest }) => {
+const StyledDiv = styled.div<LinkProps>`
+  ${baseStyles}
+  ${({ linkType }) => linkType === LinkType.TopicButton && topicButtonStyles}
+  ${({ linkType }) => linkType === LinkType.HeroButton && heroButtonStyles}
+  ${({ linkType }) => linkType === LinkType.SectionTitleButton && sectionTitleButtonStyles}
+`
+
+export const Link: FC<LinkProps> = ({ href, external, linkType, children, utmContent, asButton, ...rest }) => {
   const finalHref = external
     ? `${href}?utm_source=${defaultUtm.utmSource}&utm_medium=${defaultUtm.utmMedium}&utm_content=${
         utmContent || defaultUtm.utmContent
       }`
     : href
 
+  if (asButton) {
+    return (
+      <StyledDiv linkType={linkType} {...rest}>
+        {children}
+      </StyledDiv>
+    )
+  }
+
   if (external) {
     return (
-      <StyledAnchor href={finalHref} type={type} {...rest}>
+      <StyledAnchor href={finalHref} linkType={linkType} {...rest}>
         {children}
       </StyledAnchor>
     )
   }
 
   return (
-    <NextLink href={finalHref} passHref>
-      <StyledAnchor as="a" href={finalHref} type={type} {...rest}>
+    <NextLink href={finalHref || '#'} passHref legacyBehavior>
+      <StyledAnchor linkType={linkType} {...rest}>
         {children}
       </StyledAnchor>
     </NextLink>

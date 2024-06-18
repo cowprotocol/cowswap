@@ -105,7 +105,7 @@ export default function Page({ siteConfigData, jobsData }: PageProps) {
                               </TopicDescription>
                               <Link
                                 external
-                                type={LinkType.TopicButton}
+                                linkType={LinkType.TopicButton}
                                 href={absolute_url}
                                 utmContent={`job-${title}`}
                                 margin="auto auto 0 0"
@@ -136,7 +136,7 @@ export default function Page({ siteConfigData, jobsData }: PageProps) {
                               </TopicDescription>
                               <Link
                                 external
-                                type={LinkType.TopicButton}
+                                linkType={LinkType.TopicButton}
                                 href={absolute_url}
                                 utmContent={`job-${title}`}
                               >
@@ -164,7 +164,7 @@ export default function Page({ siteConfigData, jobsData }: PageProps) {
                     Know someone who is not just looking for a job but for a great opportunity to grow? Refer them to us
                     to earn $6,000 in USDC or USD.{' '}
                   </TopicDescription>
-                  <Link type={LinkType.TopicButton} bgColor="#194D05" color="#BCEC79" href="/careers/refer-to-earn">
+                  <Link linkType={LinkType.TopicButton} bgColor="#194D05" color="#BCEC79" href="/careers/refer-to-earn">
                     Refer-to-Earn details
                   </Link>
                 </TopicCardInner>

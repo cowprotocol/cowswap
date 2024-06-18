@@ -97,7 +97,13 @@ export default function Page({ siteConfigData }: PageProps) {
             <HeroDescription>
               CoW Swap protects traders from the dangers of DeFi, so you can do what you want without needing to worry
             </HeroDescription>
-            <Link bgColor={'#012F7A'} color={'#65D9FF'} href="https://swap.cow.fi/" external type={LinkType.HeroButton}>
+            <Link
+              bgColor={'#012F7A'}
+              color={'#65D9FF'}
+              href="https://swap.cow.fi/"
+              external
+              linkType={LinkType.HeroButton}
+            >
               Launch app
             </Link>
           </HeroContent>
@@ -127,7 +133,7 @@ export default function Page({ siteConfigData }: PageProps) {
             gridFullWidth
             href="https://dune.com/cowprotocol/cowswap"
             external
-            type={LinkType.SectionTitleButton}
+            linkType={LinkType.SectionTitleButton}
             utmContent="cow-swap-metrics-link"
           >
             View all metrics on DUNE &#8599;
@@ -499,7 +505,7 @@ export default function Page({ siteConfigData }: PageProps) {
                 color="#012F7A"
                 href="https://swap.cow.fi/"
                 external
-                type={LinkType.SectionTitleButton}
+                linkType={LinkType.SectionTitleButton}
                 utmContent="cow-swap-launch-app-button"
               >
                 Launch app

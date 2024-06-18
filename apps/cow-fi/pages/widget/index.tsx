@@ -123,10 +123,8 @@ export default function Page({ siteConfigData }: PageProps) {
               <Link
                 href="https://widget.cow.fi/"
                 utmContent="widget-page-configure-widget-cta-hero"
-                target="_blank"
-                rel="noopener noreferrer"
                 external
-                type={LinkType.HeroButton}
+                linkType={LinkType.HeroButton}
               >
                 {' '}
                 Configure widget{' '}
@@ -138,7 +136,7 @@ export default function Page({ siteConfigData }: PageProps) {
                 href="https://docs.cow.fi/cow-protocol/tutorials/widget"
                 utmContent="widget-page-readdocs-cta-hero"
                 external
-                type={LinkType.HeroButton}
+                linkType={LinkType.HeroButton}
               >
                 {' '}
                 Read docs

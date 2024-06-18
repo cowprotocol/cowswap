@@ -99,7 +99,7 @@ export default function Page({ siteConfigData }: PageProps) {
                     color="#65D9FF"
                     href="https://swap.cow.fi/#/1/swap/USDC/COW"
                     external
-                    type={LinkType.TopicButton}
+                    linkType={LinkType.TopicButton}
                     utmContent="home-page-trade-on-cow-swap"
                   >
                     Start trading
@@ -116,7 +116,7 @@ export default function Page({ siteConfigData }: PageProps) {
                   <TopicDescription fontSize={28} color="#BCEC79">
                     The first MEV-capturing AMM
                   </TopicDescription>
-                  <Link type={LinkType.TopicButton} bgColor="#BCEC79" color="#194D06" href="/cow-amm">
+                  <Link linkType={LinkType.TopicButton} bgColor="#BCEC79" color="#194D06" href="/cow-amm">
                     Deposit liquidity
                   </Link>
                 </TopicCardInner>
@@ -133,7 +133,7 @@ export default function Page({ siteConfigData }: PageProps) {
                   <TopicDescription fontSize={28} color="#EC4612">
                     The best MEV protection RPC under the sun
                   </TopicDescription>
-                  <Link type={LinkType.TopicButton} bgColor="#EC4612" color="#FEE7CF" href="/mev-blocker">
+                  <Link linkType={LinkType.TopicButton} bgColor="#EC4612" color="#FEE7CF" href="/mev-blocker">
                     Get protected
                   </Link>
                 </TopicCardInner>
@@ -159,7 +159,7 @@ export default function Page({ siteConfigData }: PageProps) {
                 the CoW DAO Knowledge Base.
               </SectionTitleDescription>
 
-              <Link type={LinkType.SectionTitleButton} href="/learn">
+              <Link linkType={LinkType.SectionTitleButton} href="/learn">
                 Learn more
               </Link>
             </SectionTitleWrapper>
@@ -225,7 +225,7 @@ export default function Page({ siteConfigData }: PageProps) {
               </SectionTitleDescription>
               <Link
                 external
-                type={LinkType.SectionTitleButton}
+                linkType={LinkType.SectionTitleButton}
                 utmContent="home-page-apply-for-a-grant"
                 href="https://grants.cow.fi/"
               >

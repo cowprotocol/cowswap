@@ -44,13 +44,13 @@ export function AddRpcButton() {
       ) : (
         <>
           <Link
-            type={LinkType.TopicButton}
-            href="#"
+            linkType={LinkType.TopicButton}
             fontSize={21}
             color={'#FEE7CF'}
             bgColor="#EC4612"
             onClick={connectAndAddToWallet || (() => {})}
             disabled={disabledButton}
+            asButton
           >
             {buttonLabel}
           </Link>

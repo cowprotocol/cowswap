@@ -100,7 +100,7 @@ export default function Page({ siteConfigData }: PageProps) {
               color={'#BCEC79'}
               href="https://deploy-cow-amm.bleu.fi/"
               external
-              type={LinkType.HeroButton}
+              linkType={LinkType.HeroButton}
               utmContent={'cow-amm-hero-button-protect-liquidity'}
             >
               Protect your liquidity
@@ -132,7 +132,7 @@ export default function Page({ siteConfigData }: PageProps) {
             gridFullWidth
             href="https://dune.com/cowprotocol/cowamms"
             external
-            type={LinkType.SectionTitleButton}
+            linkType={LinkType.SectionTitleButton}
             utmContent={'cow-amm-metrics-button-view-all'}
           >
             View all metrics on DUNE &#8599;

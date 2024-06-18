@@ -171,7 +171,7 @@ export default function Page({ siteConfigData }: PageProps) {
               color={'#F996EE'}
               href="https://docs.cow.fi/category/tutorials"
               external
-              type={LinkType.HeroButton}
+              linkType={LinkType.HeroButton}
             >
               Start building
             </Link>
@@ -202,7 +202,7 @@ export default function Page({ siteConfigData }: PageProps) {
             gridFullWidth
             href="https://dune.com/cowprotocol/monthly-cow-protocol-reporting"
             external
-            type={LinkType.SectionTitleButton}
+            linkType={LinkType.SectionTitleButton}
             utmContent="cow-protocol-metrics"
           >
             View all metrics on DUNE &#8599;
@@ -552,7 +552,7 @@ export default function Page({ siteConfigData }: PageProps) {
                       fontSize={27}
                       href={study.link}
                       external
-                      type={LinkType.TopicButton}
+                      linkType={LinkType.TopicButton}
                       utmContent={`cow-protocol-case-study-${study.title}`}
                     >
                       Read more
@@ -612,7 +612,7 @@ export default function Page({ siteConfigData }: PageProps) {
                     color="#66018E"
                     fontSize={27}
                     href="https://docs.cow.fi/"
-                    type={LinkType.TopicButton}
+                    linkType={LinkType.TopicButton}
                     utmContent={`cow-protocol-docs`}
                   >
                     Read the docs
@@ -655,7 +655,7 @@ export default function Page({ siteConfigData }: PageProps) {
                     color="#66018E"
                     fontSize={27}
                     href="https://grants.cow.fi/"
-                    type={LinkType.TopicButton}
+                    linkType={LinkType.TopicButton}
                     external
                     utmContent={`cow-protocol-grants`}
                   >
@@ -694,7 +694,7 @@ export default function Page({ siteConfigData }: PageProps) {
                 color="#F996EE"
                 href="https://docs.cow.fi/cow-protocol/tutorials/solvers"
                 external
-                type={LinkType.SectionTitleButton}
+                linkType={LinkType.SectionTitleButton}
                 utmContent="cow-protocol-solvers"
                 margin="28px 0 0"
               >

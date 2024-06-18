@@ -283,7 +283,7 @@ export default function Page({ siteConfigData }: PageProps) {
 
             <Link
               href="https://blog.cow.fi/list/advanced-order-types-b391bd4390cb"
-              type={LinkType.SectionTitleButton}
+              linkType={LinkType.SectionTitleButton}
               utmContent="link-to-advanced-order-types"
               margin="24px auto 0"
             >
@@ -330,7 +330,7 @@ export default function Page({ siteConfigData }: PageProps) {
                         {dao.description}
                       </TopicDescription>
                       <Link
-                        type={LinkType.TopicButton}
+                        linkType={LinkType.TopicButton}
                         href={dao.link}
                         utmContent={`dao-${dao.title.toLowerCase().replace(/\s/g, '-')}`}
                       >
