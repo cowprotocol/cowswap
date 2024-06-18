@@ -317,9 +317,7 @@ export default function Page({ siteConfigData, categories, articles, featuredArt
             <CTASubtitle>Explore, learn, integrate</CTASubtitle>
             <CTATitle>CoW DAO documentation</CTATitle>
             <CTAButton
-              href="https://docs.cow.fi/
-            ?utm_source=cow.fi&utm_medium=web&utm_content=cta-read-docs
-            "
+              href="https://docs.cow.fi/?utm_source=cow.fi&utm_medium=web&utm_content=cta-read-docs"
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => sendGAEventHandler(GAEventCategories.KNOWLEDGEBASE, 'click-read-docs')}
