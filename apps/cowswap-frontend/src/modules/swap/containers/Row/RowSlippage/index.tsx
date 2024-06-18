@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 
 import { formatPercent } from '@cowprotocol/common-utils'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { Percent } from '@uniswap/sdk-core'
 
 import { useToggleSettingsMenu } from 'legacy/state/application/hooks'
@@ -23,6 +24,7 @@ export function RowSlippage({
   slippageTooltip,
   slippageLabel,
 }: RowSlippageProps) {
+  const { chainId } = useWalletInfo()
   const toggleSettings = useToggleSettingsMenu()
 
   const isEoaEthFlow = useIsEoaEthFlow()
@@ -30,6 +32,7 @@ export function RowSlippage({
 
   const props = useMemo(
     () => ({
+      chainId,
       isEoaEthFlow,
       symbols: [nativeCurrency.symbol],
       showSettingOnClick,
@@ -38,7 +41,7 @@ export function RowSlippage({
       slippageTooltip,
       displaySlippage: `${formatPercent(allowedSlippage)}%`,
     }),
-    [isEoaEthFlow, nativeCurrency.symbol, showSettingOnClick, allowedSlippage, slippageLabel, slippageTooltip]
+    [chainId, isEoaEthFlow, nativeCurrency.symbol, showSettingOnClick, allowedSlippage, slippageLabel, slippageTooltip]
   )
 
   return <RowSlippageContent {...props} toggleSettings={toggleSettings} />
