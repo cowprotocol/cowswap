@@ -224,7 +224,6 @@ export const FAQ_DATA = [
           href="https://rpc.mevblocker.io/noreverts"
           external
           onClick={() => sendGAEventHandler(GAEventCategories.MEVBLOCKER, 'click-noreverts')}
-          utmContent="mev-blocker-noreverts"
         >
           https://rpc.mevblocker.io/noreverts
         </Link>{' '}
@@ -242,7 +241,6 @@ export const FAQ_DATA = [
           href="https://rpc.mevblocker.io/norefunds"
           external
           onClick={() => sendGAEventHandler(GAEventCategories.MEVBLOCKER, 'click-norefunds')}
-          utmContent="mev-blocker-norefunds"
         >
           https://rpc.mevblocker.io/norefunds
         </Link>{' '}
