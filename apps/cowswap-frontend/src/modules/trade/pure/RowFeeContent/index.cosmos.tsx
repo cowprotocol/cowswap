@@ -6,7 +6,8 @@ import { CurrencyAmount, Price, TradeType } from '@uniswap/sdk-core'
 import TradeGp from 'legacy/state/swap/TradeGp'
 
 import { RowNetworkCostsProps } from 'modules/swap/containers/Row/RowFee'
-import { RowFeeContent, RowFeeContentProps } from 'modules/swap/pure/Row/RowFeeContent'
+
+import { RowFeeContent, RowFeeContentProps } from './index'
 
 const currency = COW[SupportedChainId.MAINNET]
 const currencyOut = GNO[SupportedChainId.MAINNET]
@@ -36,17 +37,9 @@ const defaultProps: RowNetworkCostsProps & RowFeeContentProps = {
   label: 'Est. Fee',
   trade,
   feeAmount: CurrencyAmount.fromRawAmount(currency, fee * 10 ** 18),
-  feeUsd: '(≈$42.93)',
-  feeCurrencySymbol: 'GNO',
   isFree: false,
   get feeInFiat() {
     return this.feeAmount ? currencyAmountToTokenAmount(this.feeAmount.multiply('100')) : null
-  },
-  get feeToken() {
-    return (this.feeAmount?.toExact() || '-') + ' ' + this.feeCurrencySymbol
-  },
-  get fullDisplayFee() {
-    return this.feeAmount?.quotient.toString() || 'Unknown'
   },
   allowsOffchainSigning: true,
   tooltip: 'This is a tooltip that describes stuff. Stuff that is great. Great stuff. The best stuff on earth.',

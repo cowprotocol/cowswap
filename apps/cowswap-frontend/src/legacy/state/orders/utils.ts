@@ -1,14 +1,19 @@
+import type { LatestAppDataDocVersion } from '@cowprotocol/app-data'
 import { ONE_HUNDRED_PERCENT, PENDING_ORDERS_BUFFER, ZERO_FRACTION } from '@cowprotocol/common-const'
-import { buildPriceFromCurrencyAmounts, isSellOrder } from '@cowprotocol/common-utils'
+import { bpsToPercent, buildPriceFromCurrencyAmounts, isSellOrder } from '@cowprotocol/common-utils'
 import { EnrichedOrder, OrderKind, OrderStatus } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
-import { Currency, CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
+import type { PartnerFee } from '@cowprotocol/widget-lib'
+import { Currency, CurrencyAmount, Percent, Price, Token } from '@uniswap/sdk-core'
 
 import JSBI from 'jsbi'
+
+import { decodeAppData } from 'modules/appData/utils/decodeAppData'
 
 import { getIsComposableCowParentOrder } from 'utils/orderUtils/getIsComposableCowParentOrder'
 import { getOrderSurplus } from 'utils/orderUtils/getOrderSurplus'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
+import type { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import { Order, updateOrder, UpdateOrderParams as UpdateOrderParamsAction } from './actions'
 import { OUT_OF_MARKET_PRICE_DELTA_PERCENTAGE } from './consts'
@@ -224,10 +229,8 @@ export function getEstimatedExecutionPrice(
 ): Price<Currency, Currency> | null {
   // Build CurrencyAmount and Price instances
   const feeAmount = CurrencyAmount.fromRawAmount(order.inputToken, fee)
-  // Always use original amounts for building the limit price, as this will never change
-  const inputAmount = CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount.toString())
-  const outputAmount = CurrencyAmount.fromRawAmount(order.outputToken, order.buyAmount.toString())
-  const limitPrice = buildPriceFromCurrencyAmounts(inputAmount, outputAmount)
+  // Take partner fee into account when calculating the limit price
+  const limitPrice = getOrderLimitPriceWithPartnerFee(order)
 
   if (getUiOrderType(order) === UiOrderType.SWAP) {
     return limitPrice
@@ -373,4 +376,54 @@ export function partialOrderUpdate({ chainId, order, isSafeWallet }: UpdateOrder
     isSafeWallet,
   }
   dispatch(updateOrder(params))
+}
+
+export function getOrderPartnerFee(fullAppData: EnrichedOrder['fullAppData']): PartnerFee | undefined {
+  const appData = decodeAppData(fullAppData) as LatestAppDataDocVersion
+
+  return appData?.metadata?.partnerFee
+}
+
+export function getOrderAmountsWithPartnerFee(
+  fullAppData: EnrichedOrder['fullAppData'],
+  sellAmount: CurrencyAmount<Token>,
+  buyAmount: CurrencyAmount<Token>,
+  isSellOrder: boolean
+): { inputCurrencyAmount: CurrencyAmount<Token>; outputCurrencyAmount: CurrencyAmount<Token> } {
+  const partnerFee = getOrderPartnerFee(fullAppData)
+
+  if (!partnerFee) {
+    return {
+      inputCurrencyAmount: sellAmount,
+      outputCurrencyAmount: buyAmount,
+    }
+  }
+
+  const partnerFeePercent = bpsToPercent(partnerFee.bps)
+
+  if (isSellOrder) {
+    return {
+      inputCurrencyAmount: sellAmount,
+      outputCurrencyAmount: buyAmount.divide(ONE_HUNDRED_PERCENT.subtract(partnerFeePercent)),
+    }
+  }
+
+  return {
+    inputCurrencyAmount: sellAmount.divide(ONE_HUNDRED_PERCENT.add(partnerFeePercent)),
+    outputCurrencyAmount: buyAmount,
+  }
+}
+
+export function getOrderLimitPriceWithPartnerFee(order: Order | ParsedOrder): Price<Currency, Currency> {
+  const inputAmount = CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount.toString())
+  const outputAmount = CurrencyAmount.fromRawAmount(order.outputToken, order.buyAmount.toString())
+
+  const { inputCurrencyAmount, outputCurrencyAmount } = getOrderAmountsWithPartnerFee(
+    order.fullAppData,
+    inputAmount,
+    outputAmount,
+    isSellOrder(order.kind)
+  )
+
+  return buildPriceFromCurrencyAmounts(inputCurrencyAmount, outputCurrencyAmount)
 }

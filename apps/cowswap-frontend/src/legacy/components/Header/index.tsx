@@ -42,7 +42,7 @@ import {
 
 export default function Header() {
   const { account, chainId } = useWalletInfo()
-  const injectedWidgetParams = useInjectedWidgetParams()
+  const { hideNetworkSelector, hideLogo } = useInjectedWidgetParams()
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
   const { pendingActivity } = useCategorizeRecentActivity()
   const [darkMode, toggleDarkModeAux] = useDarkModeManager()
@@ -108,7 +108,7 @@ export default function Header() {
     <Wrapper isMobileMenuOpen={isMobileMenuOpen}>
       <HeaderModWrapper>
         <HeaderRow>
-          {!injectedWidgetParams.hideLogo && (
+          {!hideLogo && (
             <Title href={Routes.HOME} isMobileMenuOpen={isMobileMenuOpen}>
               <UniIcon>
                 <LogoImage isMobileMenuOpen={isMobileMenuOpen}>
@@ -135,7 +135,7 @@ export default function Header() {
         </HeaderRow>
 
         <HeaderControls>
-          {!injectedWidgetParams.hideNetworkSelector && <NetworkSelector />}
+          {!hideNetworkSelector && <NetworkSelector />}
 
           <HeaderElement>
             {!isChainIdUnsupported && (isMobileMenuOpen || !isUpToLarge || isUpToTiny) && (

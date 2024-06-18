@@ -7,6 +7,7 @@ import { CurrencyAmount } from '@uniswap/sdk-core'
 import { getAppData } from 'modules/appData'
 import { defaultLimitOrdersSettings } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { initLimitRateState } from 'modules/limitOrders/state/limitRateAtom'
+import { ReceiveAmountInfo } from 'modules/trade'
 import { DEFAULT_TRADE_QUOTE_STATE } from 'modules/tradeQuote'
 
 import { TradeFlowContext } from '../../services/types'
@@ -47,19 +48,19 @@ const tradeContext: TradeFlowContext = {
   quoteState: DEFAULT_TRADE_QUOTE_STATE,
 }
 
-const rateInfoParams = {
-  chainId: 5,
-  inputCurrencyAmount: CurrencyAmount.fromRawAmount(outputCurrency, 123 * 10 ** 18),
-  outputCurrencyAmount: CurrencyAmount.fromRawAmount(outputCurrency, 456 * 10 ** 18),
-  activeRateFiatAmount: CurrencyAmount.fromRawAmount(outputCurrency, 2 * 10 ** 18),
-  invertedActiveRateFiatAmount: CurrencyAmount.fromRawAmount(outputCurrency, 65 * 10 ** 18),
+const receiveAmountInfo: ReceiveAmountInfo = {
+  type: 'from',
+  amountBeforeFees: CurrencyAmount.fromRawAmount(outputCurrency, 400 * 10 ** 18),
+  amountAfterFees: CurrencyAmount.fromRawAmount(outputCurrency, 390 * 10 ** 18),
+  feeAmount: CurrencyAmount.fromRawAmount(outputCurrency, 10 * 10 ** 18),
+  partnerFeeAmount: undefined,
 }
 
 const Fixtures = {
   default: (
     <LimitOrdersDetails
       settingsState={defaultLimitOrdersSettings}
-      rateInfoParams={rateInfoParams}
+      receiveAmountInfo={receiveAmountInfo}
       tradeContext={tradeContext}
       executionPrice={null}
       limitRateState={initLimitRateState()}

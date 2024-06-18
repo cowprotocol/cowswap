@@ -9,7 +9,6 @@ import { TradeType } from '@cowprotocol/widget-lib'
 
 import { NetworkAlert } from 'legacy/components/NetworkAlert/NetworkAlert'
 import SettingsTab from 'legacy/components/Settings'
-import useCowBalanceAndSubsidy from 'legacy/hooks/useCowBalanceAndSubsidy'
 import { useModalIsOpen } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
 import { Field } from 'legacy/state/types'
@@ -65,17 +64,16 @@ export function SwapWidget() {
   const { chainId, account } = useWalletInfo()
   const { slippageAdjustedSellAmount, allowedSlippage, currencies, currenciesIds, trade } = useDerivedSwapInfo()
   const parsedAmounts = useSwapCurrenciesAmounts()
-  const { isSupportedWallet, allowsOffchainSigning } = useWalletDetails()
+  const { isSupportedWallet } = useWalletDetails()
   const isSwapUnsupported = useIsTradeUnsupported(currencies.INPUT, currencies.OUTPUT)
   const swapActions = useSwapActionHandlers()
-  const subsidyAndBalance = useCowBalanceAndSubsidy()
   const userAllowedSlippage = useUserSlippageTolerance()
   const swapState = useSwapState()
   const { independentField, recipient } = swapState
   const showRecipientControls = useShowRecipientControls(recipient)
   const isEoaEthFlow = useIsEoaEthFlow()
   const shouldZeroApprove = useShouldZeroApprove(slippageAdjustedSellAmount)
-  const widgetParams = useInjectedWidgetParams()
+  const { enabledTradeTypes, banners: widgetBanners } = useInjectedWidgetParams()
   const priceImpactParams = useTradePriceImpact()
 
   const isTradePriceUpdating = useTradePricesUpdate()
@@ -215,10 +213,9 @@ export function SwapWidget() {
 
   // Show the same banner when approval is needed or selling native token
   const showSafeWcBundlingBanner =
-    (showSafeWcApprovalBundlingBanner || showSafeWcWrapBundlingBanner) && !widgetParams.banners?.hideSafeWebAppBanner
+    (showSafeWcApprovalBundlingBanner || showSafeWcWrapBundlingBanner) && !widgetBanners?.hideSafeWebAppBanner
 
-  const showTwapSuggestionBanner =
-    !widgetParams.enabledTradeTypes || widgetParams.enabledTradeTypes.includes(TradeType.ADVANCED)
+  const showTwapSuggestionBanner = !enabledTradeTypes || enabledTradeTypes.includes(TradeType.ADVANCED)
 
   const nativeCurrencySymbol = useNativeCurrency().symbol || 'ETH'
   const wrappedCurrencySymbol = useWrappedToken().symbol || 'WETH'
@@ -254,12 +251,10 @@ export function SwapWidget() {
 
   const tradeRatesProps: TradeRatesProps = {
     trade,
-    allowedSlippage,
-    allowsOffchainSigning,
     userAllowedSlippage,
+    allowedSlippage,
     isFeeGreater,
     fee,
-    discount: subsidyAndBalance.subsidy.discount || 0,
     rateInfoParams,
   }
 

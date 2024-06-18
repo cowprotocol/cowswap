@@ -4,7 +4,7 @@ import { areFractionsEqual } from '@cowprotocol/common-utils'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
 import { SwapFormProps } from 'modules/swap/containers/SwapWidget/types'
-import { ReceiveAmountInfo } from 'modules/swap/helpers/tradeReceiveAmount'
+import { ReceiveAmountInfo } from 'modules/trade/types'
 
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 
@@ -14,10 +14,9 @@ function isReceiveAmountInfoEqual(prev: ReceiveAmountInfo | null, next: ReceiveA
   }
 
   return (
-    prev.feeAmount === next.feeAmount &&
-    prev.amountBeforeFees === next.amountBeforeFees &&
-    areFractionsEqual(prev.amountAfterFeesRaw, next.amountAfterFeesRaw) &&
-    prev.amountAfterFees === next.amountAfterFees
+    areFractionsEqual(prev.feeAmount, next.feeAmount) &&
+    areFractionsEqual(prev.amountBeforeFees, next.amountBeforeFees) &&
+    areFractionsEqual(prev.amountAfterFees, next.amountAfterFees)
   )
 }
 

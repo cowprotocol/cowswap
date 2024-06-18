@@ -13,6 +13,7 @@ import {
 import { CurrencyAmount, Fraction, Token } from '@uniswap/sdk-core'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
+import { getOrderPartnerFee } from 'legacy/state/orders/utils'
 import { CloseIcon } from 'legacy/theme'
 
 import { TwapOrderItem } from 'modules/twap/types'
@@ -80,6 +81,7 @@ const tooltips: { [key: string]: string | JSX.Element } = {
   RECEIVER: 'The account address which will/did receive the bought amount.',
   EXPIRY:
     "If your order has not been filled by this date & time, it will expire. Don't worry - expirations and order placement are free on CoW Swap!",
+  TOTAL_FEE: 'TODO: This fee helps pay for maintenance & improvements to the swap experience',
   ORDER_TYPE: (
     <span>
       Orders on CoW Swap can either be market orders (which fill at the market price within the slippage tolerance you
@@ -128,6 +130,8 @@ export function ReceiptModal({
   const inputLabel = isSell ? 'You sell' : 'You sell at most'
   const outputLabel = isSell ? 'You receive at least' : 'You receive exactly'
   const safeTxParams = twapOrder?.safeTxParams
+
+  const partnerFee = getOrderPartnerFee(order.fullAppData)
 
   return (
     <CowModal onDismiss={onDismiss} isOpen={isOpen}>
@@ -210,6 +214,13 @@ export function ReceiptModal({
                     <PriceField order={order} price={executionPrice} />
                   </>
                 )}
+              </styledEl.Field>
+            )}
+
+            {partnerFee && (
+              <styledEl.Field>
+                <FieldLabel label="Total fee" tooltip={tooltips.TOTAL_FEE} />
+                <span>{100 / partnerFee.bps}%</span>
               </styledEl.Field>
             )}
 

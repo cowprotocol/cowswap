@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { genericPropsChecker } from '@cowprotocol/common-utils'
-import { FiatAmount, TokenAmount } from '@cowprotocol/ui'
+import { useWalletDetails } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import TradeGp from 'legacy/state/swap/TradeGp'
@@ -15,51 +15,27 @@ import { TradeDetailsAccordion } from 'common/pure/TradeDetailsAccordion'
 import * as styledEl from './styled'
 import { useFeeAmounts } from './useFeeAmounts'
 
-// const SUBSIDY_INFO_MESSAGE_EXTENDED =
-//   SUBSIDY_INFO_MESSAGE + '. Click on the discount button on the right for more info.'
-
 export interface TradeRatesProps {
   trade: TradeGp | undefined
   allowedSlippage: Percent
-  allowsOffchainSigning: boolean
   userAllowedSlippage: Percent | string
   isFeeGreater: boolean
-  discount: number
   fee: CurrencyAmount<Currency> | null
   rateInfoParams: RateInfoParams
-  priceLabel?: string
   isReviewSwap?: boolean
   children?: JSX.Element
 }
 
 export const TradeRates = React.memo(function (props: TradeRatesProps) {
-  const {
-    isFeeGreater,
-    fee,
-    trade,
-    allowsOffchainSigning,
-    userAllowedSlippage,
-    // discount,
-    rateInfoParams,
-    isReviewSwap = false,
-    children,
-  } = props
-  // const openCowSubsidyModal = useOpenModal(ApplicationModal.COW_SUBSIDY)
+  const { isFeeGreater, fee, trade, userAllowedSlippage, rateInfoParams, isReviewSwap = false, children } = props
 
   const showPrice = !!trade
   const showTradeBasicDetails = (isFeeGreater || trade) && fee
-  const showRowDeadline = !!trade
 
+  const { allowsOffchainSigning } = useWalletDetails()
   const { feeTotalAmount, feeUsdTotalAmount } = useFeeAmounts(trade, fee)
 
   if (!feeTotalAmount && !feeUsdTotalAmount) return null
-
-  const feeSummary =
-    feeUsdTotalAmount && feeUsdTotalAmount.greaterThan(0) ? (
-      <FiatAmount amount={feeUsdTotalAmount} />
-    ) : (
-      <TokenAmount amount={feeTotalAmount} tokenSymbol={feeTotalAmount?.currency} />
-    )
 
   const tradeBasicDetails = fee && (
     <TradeBasicDetails
@@ -77,11 +53,12 @@ export const TradeRates = React.memo(function (props: TradeRatesProps) {
       <TradeDetailsAccordion
         open={isReviewSwap}
         rateInfo={<styledEl.StyledRateInfo noLabel={true} stylized={true} rateInfoParams={rateInfoParams} />}
-        feeSummary={showTradeBasicDetails && feeSummary}
+        feeUsdTotalAmount={feeUsdTotalAmount}
+        feeTotalAmount={feeTotalAmount}
       >
         <styledEl.Box noMargin>
           {showTradeBasicDetails && tradeBasicDetails}
-          {showRowDeadline && <RowDeadline />}
+          <RowDeadline />
           {children}
         </styledEl.Box>
       </TradeDetailsAccordion>
