@@ -151,8 +151,6 @@ export function TradeBasicConfirmDetails(props: Props) {
       )}
 
       {/*Recipient*/}
-
-      {/* Recipient */}
       <RecipientRow recipient={recipient} account={account} />
       {children}
     </styledEl.Wrapper>
