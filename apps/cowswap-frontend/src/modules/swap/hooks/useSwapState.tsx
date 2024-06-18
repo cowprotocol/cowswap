@@ -4,7 +4,6 @@ import { changeSwapAmountAnalytics, switchTokensAnalytics } from '@cowprotocol/a
 import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
 import { FEE_SIZE_THRESHOLD } from '@cowprotocol/common-const'
 import { formatSymbol, getIsNativeToken, isAddress, tryParseCurrencyAmount } from '@cowprotocol/common-utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useENS } from '@cowprotocol/ens'
 import { useAreThereTokensWithSameSymbol, useTokenBySymbolOrAddress } from '@cowprotocol/tokens'
 import { Command } from '@cowprotocol/types'
@@ -15,9 +14,9 @@ import { t } from '@lingui/macro'
 
 import { AppState } from 'legacy/state'
 import { useAppDispatch, useAppSelector } from 'legacy/state/hooks'
-import { useGetQuoteAndStatus, useQuote } from 'legacy/state/price/hooks'
+import { useGetQuoteAndStatus } from 'legacy/state/price/hooks'
 import { setRecipient, switchCurrencies, typeInput } from 'legacy/state/swap/actions'
-import { buildTradeExactInWithFee, buildTradeExactOutWithFee, stringToCurrency } from 'legacy/state/swap/extension'
+import { buildTradeExactInWithFee, buildTradeExactOutWithFee } from 'legacy/state/swap/extension'
 import TradeGp from 'legacy/state/swap/TradeGp'
 import { isWrappingTrade } from 'legacy/state/swap/utils'
 import { Field } from 'legacy/state/types'
@@ -350,33 +349,4 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
       slippageAdjustedBuyAmount,
     ] // mod
   )
-}
-
-export function useIsFeeGreaterThanInput({
-  address,
-  chainId,
-  trade,
-}: {
-  address?: string | null
-  chainId?: SupportedChainId
-  trade: TradeGp | undefined
-}): {
-  isFeeGreater: boolean
-  fee: CurrencyAmount<Currency> | null
-} {
-  const quote = useQuote({ chainId, token: address })
-  const feeToken = useTokenBySymbolOrAddress(address)
-
-  return useMemo(() => {
-    if (!quote || !feeToken) return { isFeeGreater: false, fee: null }
-
-    const isSellOrder = trade?.tradeType === TradeType.EXACT_INPUT
-    const amountAfterFees = isSellOrder ? trade?.outputAmountAfterFees : trade?.inputAmountAfterFees
-    const isQuoteError = quote.error === 'fee-exceeds-sell-amount'
-
-    return {
-      isFeeGreater: isQuoteError || (!!amountAfterFees && (amountAfterFees.equalTo(0) || amountAfterFees.lessThan(0))),
-      fee: quote.fee ? stringToCurrency(quote.fee.amount, feeToken) : null,
-    }
-  }, [quote, trade, feeToken])
 }

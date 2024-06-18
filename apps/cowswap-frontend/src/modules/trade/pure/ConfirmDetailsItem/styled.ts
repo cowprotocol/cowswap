@@ -4,14 +4,18 @@ import styled from 'styled-components/macro'
 
 import { StyledRowBetween } from 'modules/swap/pure/Row/styled'
 
-export const Wrapper = styled.div`
+export const Wrapper = styled.div<{ alwaysRow: boolean }>`
   display: flex;
   align-items: center;
   justify-content: space-between;
   min-height: 24px;
   gap: 6px;
+  width: 100%;
+  font-size: 13px;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${({ theme, alwaysRow }) =>
+    !alwaysRow &&
+    theme.mediaWidth.upToSmall`
     width: 100%;
     flex-flow: column wrap;
     align-items: flex-start;
@@ -25,7 +29,9 @@ export const Wrapper = styled.div`
   }
 
   ${StyledRowBetween} {
-    ${({ theme }) => theme.mediaWidth.upToSmall`
+    ${({ theme, alwaysRow }) =>
+      !alwaysRow &&
+      theme.mediaWidth.upToSmall`
       flex-flow: column wrap;
       gap: 2px;
       align-items: flex-start;
@@ -37,12 +43,6 @@ export const Row = styled(StyledRowBetween)`
   display: flex;
   align-items: center;
   justify-content: space-between;
-
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    flex-flow: column wrap;
-    gap: 2px;
-    align-items: flex-start;
-  `}
 `
 
 export const Content = styled.div<{ highlighted?: boolean }>`

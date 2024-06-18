@@ -2,7 +2,7 @@ import { TradeFormButtons, useGetTradeFormValidation, useTradeFormButtonContext 
 
 const doTradeText = ''
 const confirmText = ''
-const tradeCallbacks = { doTrade() {}, confirmTrade() {} }
+const confirmTrade = () => void 0
 
 /**
  * This component is used only to display a button for Wrap/Unwrap
@@ -10,7 +10,7 @@ const tradeCallbacks = { doTrade() {}, confirmTrade() {} }
  */
 export function WrapFlowActionButton() {
   const primaryFormValidation = useGetTradeFormValidation()
-  const tradeFormButtonContext = useTradeFormButtonContext(doTradeText, tradeCallbacks)
+  const tradeFormButtonContext = useTradeFormButtonContext(doTradeText, confirmTrade)
 
   if (!tradeFormButtonContext) return null
 

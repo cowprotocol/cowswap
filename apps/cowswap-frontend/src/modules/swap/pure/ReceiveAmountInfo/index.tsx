@@ -7,7 +7,7 @@ import { Trans } from '@lingui/macro'
 import { BalanceAndSubsidy } from 'legacy/hooks/useCowBalanceAndSubsidy'
 
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
-import { getDirectedReceiveAmounts } from 'modules/trade'
+import { getOrderTypeReceiveAmounts } from 'modules/trade'
 import { ReceiveAmountInfo } from 'modules/trade/types'
 
 import * as styledEl from './styled'
@@ -28,7 +28,7 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps) {
       partnerFee: { amount: partnerFeeAmount },
     },
   } = receiveAmountInfo
-  const { amountAfterFees, amountBeforeFees, networkFeeAmount } = getDirectedReceiveAmounts(receiveAmountInfo)
+  const { amountAfterFees, amountBeforeFees, networkFeeAmount } = getOrderTypeReceiveAmounts(receiveAmountInfo)
   const { subsidy } = subsidyAndBalance
   const { discount } = subsidy
 

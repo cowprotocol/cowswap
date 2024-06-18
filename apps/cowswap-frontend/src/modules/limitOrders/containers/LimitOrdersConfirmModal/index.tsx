@@ -15,28 +15,29 @@ import { executionPriceAtom } from 'modules/limitOrders/state/executionPriceAtom
 import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { limitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
 import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
-import { ReceiveAmountInfo, TradeConfirmation, TradeConfirmModal, useTradeConfirmActions } from 'modules/trade'
+import { TradeConfirmation, TradeConfirmModal, useTradeConfirmActions } from 'modules/trade'
 
 import { useIsSafeApprovalBundle } from 'common/hooks/useIsSafeApprovalBundle'
+import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { CurrencyPreviewInfo } from 'common/pure/CurrencyAmountPreview'
 
 import { LOW_RATE_THRESHOLD_PERCENT } from '../../const/trade'
 import { LimitOrdersDetails } from '../../pure/LimitOrdersDetails'
 import { TradeFlowContext } from '../../services/types'
+import { TradeRateDetails } from '../TradeRateDetails'
 
 const CONFIRM_TITLE = 'Limit Order'
 
 export interface LimitOrdersConfirmModalProps {
-  tradeContext: TradeFlowContext
+  tradeContext: TradeFlowContext | null
   inputCurrencyInfo: CurrencyPreviewInfo
   outputCurrencyInfo: CurrencyPreviewInfo
   priceImpact: PriceImpact
-  receiveAmountInfo: ReceiveAmountInfo | null
   recipient: string | null
 }
 
 export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
-  const { inputCurrencyInfo, outputCurrencyInfo, receiveAmountInfo, tradeContext: tradeContextInitial, priceImpact, recipient } = props
+  const { inputCurrencyInfo, outputCurrencyInfo, tradeContext: tradeContextInitial, priceImpact, recipient } = props
 
   /**
    * This is a very important part of the code.
@@ -55,8 +56,10 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
   const partiallyFillableOverride = useAtom(partiallyFillableOverrideAtom)
 
   const { amount: inputAmount } = inputCurrencyInfo
+  const { amount: outputAmount } = outputCurrencyInfo
 
   const rateImpact = useRateImpact()
+  const rateInfoParams = useRateInfoParams(inputAmount, outputAmount)
 
   const tradeConfirmActions = useTradeConfirmActions()
 
@@ -92,14 +95,18 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
         isPriceStatic={true}
       >
         <>
-          <LimitOrdersDetails
-            limitRateState={limitRateState}
-            tradeContext={tradeContext}
-            receiveAmountInfo={receiveAmountInfo}
-            settingsState={settingsState}
-            executionPrice={executionPrice}
-            partiallyFillableOverride={partiallyFillableOverride}
-          />
+          {tradeContext && (
+            <LimitOrdersDetails
+              limitRateState={limitRateState}
+              tradeContext={tradeContext}
+              rateInfoParams={rateInfoParams}
+              settingsState={settingsState}
+              executionPrice={executionPrice}
+              partiallyFillableOverride={partiallyFillableOverride}
+            >
+              <TradeRateDetails />
+            </LimitOrdersDetails>
+          )}
           <LimitOrdersWarnings isConfirmScreen={true} />
         </>
       </TradeConfirmation>

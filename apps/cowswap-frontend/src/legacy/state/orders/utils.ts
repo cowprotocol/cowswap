@@ -384,7 +384,21 @@ export function getOrderPartnerFee(fullAppData: EnrichedOrder['fullAppData']): P
   return appData?.metadata?.partnerFee
 }
 
-export function getOrderAmountsWithPartnerFee(
+export function getOrderLimitPriceWithPartnerFee(order: Order | ParsedOrder): Price<Currency, Currency> {
+  const inputAmount = CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount.toString())
+  const outputAmount = CurrencyAmount.fromRawAmount(order.outputToken, order.buyAmount.toString())
+
+  const { inputCurrencyAmount, outputCurrencyAmount } = getOrderAmountsWithPartnerFee(
+    order.fullAppData,
+    inputAmount,
+    outputAmount,
+    isSellOrder(order.kind)
+  )
+
+  return buildPriceFromCurrencyAmounts(inputCurrencyAmount, outputCurrencyAmount)
+}
+
+function getOrderAmountsWithPartnerFee(
   fullAppData: EnrichedOrder['fullAppData'],
   sellAmount: CurrencyAmount<Token>,
   buyAmount: CurrencyAmount<Token>,
@@ -412,18 +426,4 @@ export function getOrderAmountsWithPartnerFee(
     inputCurrencyAmount: sellAmount.divide(ONE_HUNDRED_PERCENT.add(partnerFeePercent)),
     outputCurrencyAmount: buyAmount,
   }
-}
-
-export function getOrderLimitPriceWithPartnerFee(order: Order | ParsedOrder): Price<Currency, Currency> {
-  const inputAmount = CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount.toString())
-  const outputAmount = CurrencyAmount.fromRawAmount(order.outputToken, order.buyAmount.toString())
-
-  const { inputCurrencyAmount, outputCurrencyAmount } = getOrderAmountsWithPartnerFee(
-    order.fullAppData,
-    inputAmount,
-    outputAmount,
-    isSellOrder(order.kind)
-  )
-
-  return buildPriceFromCurrencyAmounts(inputCurrencyAmount, outputCurrencyAmount)
 }

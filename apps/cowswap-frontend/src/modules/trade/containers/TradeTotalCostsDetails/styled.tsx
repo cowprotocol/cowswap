@@ -1,9 +1,6 @@
 import { UI } from '@cowprotocol/ui'
-import { HelpTooltip } from '@cowprotocol/ui'
 
-import { Repeat } from 'react-feather'
 import styled from 'styled-components/macro'
-
 
 import { RateInfo } from 'common/pure/RateInfo'
 
@@ -12,10 +9,6 @@ export const Box = styled.div<{ noMargin: boolean }>`
   flex-flow: column wrap;
   width: 100%;
   margin: ${({ noMargin }) => (noMargin ? '0' : '6px 8px')};
-`
-
-export const FeeWrapper = styled.div`
-  margin: 0 6px;
 `
 
 export const Row = styled.div`
@@ -48,38 +41,6 @@ export const Row = styled.div`
     &:last-child {
       text-align: right;
     }
-  }
-`
-
-export const PriceSwitchButton = styled(Repeat)`
-  cursor: pointer;
-  border-radius: 20px;
-  background: ${({ theme }) => theme.bg4};
-  padding: 4px;
-  vertical-align: middle;
-  line-height: 0;
-`
-
-export const QuestionHelperWrapped = styled(HelpTooltip)`
-  display: inline-block;
-  vertical-align: middle;
-  line-height: 0;
-`
-
-export const Discount = styled.span`
-  margin: auto;
-  display: flex;
-  cursor: pointer;
-  padding: 2px 8px;
-  background: var(${UI.COLOR_PAPER_DARKER});
-  color: inherit;
-  border-radius: 5px;
-  font-weight: 400;
-  transition: background var(${UI.ANIMATION_DURATION}) ease-in-out, color var(${UI.ANIMATION_DURATION}) ease-in-out;
-
-  &:hover {
-    background: var(${UI.COLOR_PRIMARY});
-    color: ${({ theme }) => theme.white};
   }
 `
 

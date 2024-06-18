@@ -53,14 +53,9 @@ const RateLabel = styled.div`
   font-weight: 400;
   gap: 5px;
   text-align: left;
-  transition: color var(${UI.ANIMATION_DURATION}) ease-in-out, opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
+  transition: color var(${UI.ANIMATION_DURATION}) ease-in-out;
   color: inherit;
-  opacity: 0.7;
   white-space: nowrap;
-
-  &:hover {
-    opacity: 1;
-  }
 `
 
 const InvertIcon = styled.div`
@@ -232,8 +227,8 @@ export function RateInfo({
           <span
             title={
               currentActiveRate.toFixed(rateOutputCurrency.decimals || DEFAULT_DECIMALS) +
-              ' ' +
-              rateOutputCurrency.symbol || ''
+                ' ' +
+                rateOutputCurrency.symbol || ''
             }
           >
             {prependSymbol && (

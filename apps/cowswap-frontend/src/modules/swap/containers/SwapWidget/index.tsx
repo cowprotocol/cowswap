@@ -25,7 +25,6 @@ import { useSwapButtonContext } from 'modules/swap/hooks/useSwapButtonContext'
 import { useSwapCurrenciesAmounts } from 'modules/swap/hooks/useSwapCurrenciesAmounts'
 import { useTradePricesUpdate } from 'modules/swap/hooks/useTradePricesUpdate'
 import { SwapButtons } from 'modules/swap/pure/SwapButtons'
-import { TradeRates, TradeRatesProps } from 'modules/swap/pure/TradeRates'
 import {
   SwapWarningsBottom,
   SwapWarningsBottomProps,
@@ -49,25 +48,25 @@ import { useIsSwapEth } from '../../hooks/useIsSwapEth'
 import {
   useDerivedSwapInfo,
   useHighFeeWarning,
-  useIsFeeGreaterThanInput,
   useSwapActionHandlers,
   useSwapState,
   useUnknownImpactWarning,
 } from '../../hooks/useSwapState'
 import { useTradeQuoteStateFromLegacy } from '../../hooks/useTradeQuoteStateFromLegacy'
 import { ConfirmSwapModalSetup } from '../ConfirmSwapModalSetup'
+import { TradeRateDetails } from '../TradeRateDetails'
 
 const BUTTON_STATES_TO_SHOW_BUNDLE_APPROVAL_BANNER = [SwapButtonState.ApproveAndSwap]
 const BUTTON_STATES_TO_SHOW_BUNDLE_WRAP_BANNER = [SwapButtonState.WrapAndSwap]
 
 export function SwapWidget() {
   const { chainId, account } = useWalletInfo()
-  const { slippageAdjustedSellAmount, allowedSlippage, currencies, currenciesIds, trade } = useDerivedSwapInfo()
+  const { slippageAdjustedSellAmount, allowedSlippage, currencies, trade } = useDerivedSwapInfo()
+  const useSlippage = useUserSlippageTolerance()
   const parsedAmounts = useSwapCurrenciesAmounts()
   const { isSupportedWallet } = useWalletDetails()
   const isSwapUnsupported = useIsTradeUnsupported(currencies.INPUT, currencies.OUTPUT)
   const swapActions = useSwapActionHandlers()
-  const userAllowedSlippage = useUserSlippageTolerance()
   const swapState = useSwapState()
   const { independentField, recipient } = swapState
   const showRecipientControls = useShowRecipientControls(recipient)
@@ -80,11 +79,6 @@ export function SwapWidget() {
   const receiveAmountInfo = useReceiveAmountInfo()
 
   const isTradePriceUpdating = useTradePricesUpdate()
-  const { isFeeGreater, fee } = useIsFeeGreaterThanInput({
-    chainId,
-    address: currenciesIds.INPUT,
-    trade,
-  })
 
   const inputToken = useMemo(() => {
     if (!currencies.INPUT) return currencies.INPUT
@@ -242,7 +236,6 @@ export function SwapWidget() {
     buyingFiatAmount,
     priceImpact: priceImpactParams.priceImpact,
     tradeUrlParams,
-    isFeeGreater,
   }
 
   const swapWarningsBottomProps: SwapWarningsBottomProps = {
@@ -252,22 +245,15 @@ export function SwapWidget() {
     currencyOut: currencies.OUTPUT || undefined,
   }
 
-  const tradeRatesProps: TradeRatesProps = {
-    trade,
-    userAllowedSlippage,
-    allowedSlippage,
-    isFeeGreater,
-    fee,
-    rateInfoParams,
-    receiveAmountInfo,
-    widgetParams,
-  }
-
   const slots = {
     settingsWidget: <SettingsTab placeholderSlippage={allowedSlippage} />,
     bottomContent: (
       <>
-        <TradeRates {...tradeRatesProps} />
+        <TradeRateDetails
+          allowedSlippage={useSlippage === 'auto' ? null : allowedSlippage}
+          rateInfoParams={rateInfoParams}
+          receiveAmountInfo={receiveAmountInfo}
+        />
         <SwapWarningsTop {...swapWarningsTopProps} />
         <SafeTokenBanner sellTokenAddress={inputToken?.address} buyTokenAddress={outputToken?.address} />
         <SwapButtons {...swapButtonContext} />
@@ -275,8 +261,6 @@ export function SwapWidget() {
       </>
     ),
   }
-
-  const disablePriceImpact = isFeeGreater
 
   const params = {
     isEoaEthFlow,
@@ -287,7 +271,6 @@ export function SwapWidget() {
     priceImpact: priceImpactParams,
     disableQuotePolling: true,
     tradeQuoteStateOverride,
-    disablePriceImpact,
   }
 
   useSetLocalTimeOffset(getQuoteTimeOffset(swapButtonContext.quoteDeadlineParams))
@@ -306,11 +289,13 @@ export function SwapWidget() {
           confirmModal={
             <ConfirmSwapModalSetup
               chainId={chainId}
+              rateInfoParams={rateInfoParams}
+              trade={trade}
+              allowedSlippage={allowedSlippage}
               doTrade={swapButtonContext.handleSwap}
               priceImpact={priceImpactParams}
               inputCurrencyInfo={inputCurrencyPreviewInfo}
               outputCurrencyInfo={outputCurrencyPreviewInfo}
-              tradeRatesProps={tradeRatesProps}
               refreshInterval={SWAP_QUOTE_CHECK_INTERVAL}
             />
           }

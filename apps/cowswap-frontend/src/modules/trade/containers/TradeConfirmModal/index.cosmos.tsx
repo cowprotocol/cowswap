@@ -1,5 +1,5 @@
 import { useSetAtom } from 'jotai'
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { walletInfoAtom } from '@cowprotocol/wallet'

@@ -8,7 +8,6 @@ import {
 } from 'modules/advancedOrders'
 import { OrdersTableWidget, TabOrderTypes } from 'modules/ordersTable'
 import * as styledEl from 'modules/trade/pure/TradePageLayout'
-import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
 import {
   TwapConfirmModal,
   TwapFormWidget,
@@ -25,16 +24,11 @@ export default function AdvancedOrdersPage() {
 
   const allEmulatedOrders = useAllEmulatedOrders()
 
-  const primaryFormValidation = useGetTradeFormValidation()
   const twapFormValidation = useTwapFormState()
   const twapSlippage = useTwapSlippage()
   const mapTwapCurrencyInfo = useMapTwapCurrencyInfo()
 
-  const disablePriceImpact =
-    primaryFormValidation === TradeFormValidation.QuoteErrors ||
-    primaryFormValidation === TradeFormValidation.CurrencyNotSupported ||
-    primaryFormValidation === TradeFormValidation.WrapUnwrapFlow ||
-    twapFormValidation === TwapFormState.SELL_AMOUNT_TOO_SMALL
+  const disablePriceImpact = twapFormValidation === TwapFormState.SELL_AMOUNT_TOO_SMALL
 
   const advancedWidgetParams = { disablePriceImpact }
 
