@@ -4,8 +4,12 @@ import { Color } from '@cowprotocol/ui'
 import styled from 'styled-components'
 import { CONFIG } from '@/const/meta'
 import Layout from '@/components/Layout'
+import { Link } from '@/components/Link'
 
 import { ContainerCard, ArticleContent, ArticleMainTitle, BodyContent } from '@/styles/styled'
+
+import { GAEventCategories } from 'lib/analytics/GAEvents'
+import { sendGAEventHandler } from 'lib/analytics/sendGAEvent'
 
 const DATA_CACHE_TIME_SECONDS = 5 * 60 // Cache 5min
 
@@ -42,8 +46,11 @@ export default function Page({ siteConfigData }: PageProps) {
 
             <BodyContent>
               <p>
-                This page could not be found. Please go back to the <a href="/">homepage</a> or use the navigation menu
-                to find what you are looking for.
+                This page could not be found. Please go back to the{' '}
+                <Link href="/" onClick={() => sendGAEventHandler(GAEventCategories.ERROR404, 'click-homepage')}>
+                  homepage
+                </Link>{' '}
+                or use the navigation menu to find what you are looking for.
               </p>
             </BodyContent>
           </ArticleContent>

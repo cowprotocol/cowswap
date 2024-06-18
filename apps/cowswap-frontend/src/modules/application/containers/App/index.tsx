@@ -45,7 +45,7 @@ const RoutesApp = lazy(() => import('./RoutesApp').then((module) => ({ default: 
 
 // Move this to const file ==========
 const PRODUCT_VARIANT = ProductVariant.CowSwap
-
+const ROOT_DOMAIN = 'swap.cow.fi'
 const NAV_ITEMS: MenuItem[] = [
   {
     label: 'Trade',
@@ -238,6 +238,7 @@ export function App() {
               hoverBackgroundDark={'#18193B'}
               persistentAdditionalContent={isMobile ? null : persistentAdditionalContent} // This will stay at its original location
               additionalContent={null} // On desktop renders inside the menu bar, on mobile renders inside the mobile menu
+              rootDomain={ROOT_DOMAIN}
             />
           )}
 

@@ -14,6 +14,9 @@ import {
   NoTokensText,
 } from './index.style'
 
+import { GAEventCategories } from 'lib/analytics/GAEvents'
+import { sendGAEventHandler } from 'lib/analytics/sendGAEvent'
+
 export interface TokenListProps {
   tokens: TokenInfo[]
 }
@@ -73,7 +76,10 @@ function TokenItem({ token, index }: TokenItemProps) {
     <ListItem key={id}>
       <span>{index + 1}</span>
 
-      <TokenLink href={`/tokens/${id}`}>
+      <TokenLink
+        href={`/tokens/${id}`}
+        onClick={() => sendGAEventHandler(GAEventCategories.TOKENS, `click-token-${name}`)}
+      >
         {image.large && image.large !== 'missing_large.png' ? (
           <img src={image.large} alt={name} />
         ) : (

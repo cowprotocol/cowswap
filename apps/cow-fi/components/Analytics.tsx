@@ -3,8 +3,10 @@ import Router from 'next/router'
 import ReactGA from 'react-ga4'
 import { isMobile } from 'react-device-detect'
 import { initBraveAnalytics } from 'lib/analytics/brave'
+import { clarity } from 'react-microsoft-clarity'
 
 const trackingId = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS!
+const clarityId = process.env.NEXT_PUBLIC_CLARITY_ID!
 
 function handleRouteChange(page_path: string) {
   console.log('[Analytics] Page view', page_path)
@@ -30,6 +32,11 @@ function initializeAnalytics() {
 
   // Init brave analytics
   initBraveAnalytics()
+
+  // Init Microsoft Clarity
+  if (clarityId) {
+    clarity.init(clarityId)
+  }
 
   // Handle all route changes
   handleRouteChange(Router.pathname)

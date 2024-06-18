@@ -33,6 +33,7 @@ import { CONFIG } from '@/const/meta'
 
 import Layout from '@/components/Layout'
 import FAQ from '@/components/FAQ'
+import { Link, LinkType } from '@/components/Link'
 
 import {
   ContainerCard,
@@ -42,7 +43,6 @@ import {
   TopicImage,
   TopicTitle,
   TopicDescription,
-  TopicButton,
   SectionTitleWrapper,
   SectionTitleIcon,
   SectionTitleText,
@@ -50,18 +50,19 @@ import {
   TopicCardInner,
   HeroContainer,
   HeroImage,
-  HeroButton,
   HeroDescription,
   HeroContent,
   HeroTitle,
   HeroSubtitle,
   MetricsCard,
   MetricsItem,
-  SectionTitleButton,
 } from '@/styles/styled'
 
 import SVG from 'react-inlinesvg'
 import IMG_ICON_FAQ from '@cowprotocol/assets/images/icon-faq.svg'
+
+import { GAEventCategories } from 'lib/analytics/GAEvents'
+import { sendGAEventHandler } from 'lib/analytics/sendGAEvent'
 
 const DATA_CACHE_TIME_SECONDS = 5 * 60 // Cache 5min
 
@@ -168,15 +169,16 @@ export default function Page({ siteConfigData }: PageProps) {
               CoW Protocol has the largest solver competition and the most advanced developer framework - so you can
               build any DEX-related action you can imagine
             </HeroDescription>
-            <HeroButton
-              background={'#66018E'}
+            <Link
+              bgColor={'#66018E'}
               color={'#F996EE'}
               href="https://docs.cow.fi/category/tutorials"
-              rel="noopener noreferrer"
-              target="_blank"
+              external
+              linkType={LinkType.HeroButton}
+              onClick={() => sendGAEventHandler(GAEventCategories.COWPROTOCOL, 'click-hero-start-building')}
             >
               Start building
-            </HeroButton>
+            </Link>
           </HeroContent>
           <HeroImage width={470} color={'#66018E'}>
             <SVG src={IMG_ICON_GOVERNANCE} />
@@ -197,17 +199,19 @@ export default function Page({ siteConfigData }: PageProps) {
             <p>intent-based DEX protocol by volume</p>
           </MetricsItem>
 
-          <SectionTitleButton
+          <Link
             bgColor="transparent"
             color="#66018E"
             margin="24px auto 0"
             gridFullWidth
             href="https://dune.com/cowprotocol/monthly-cow-protocol-reporting"
-            target="_blank"
-            rel="noopener noreferrer nofollow"
+            external
+            linkType={LinkType.SectionTitleButton}
+            utmContent="cow-protocol-metrics"
+            onClick={() => sendGAEventHandler(GAEventCategories.COWPROTOCOL, 'click-metrics-view-all')}
           >
             View all metrics on DUNE &#8599;
-          </SectionTitleButton>
+          </Link>
         </MetricsCard>
 
         <ContainerCard bgColor={Color.neutral98}>
@@ -246,9 +250,14 @@ export default function Page({ siteConfigData }: PageProps) {
                     CoW Protocol users sign an "intent to trade" message instead of directly executing orders on-chain
                     (like on Uniswap). This lets solvers trade on behalf of the user.
                   </TopicDescription>
-                  <TopicButton bgColor="#66018E" color="#F996EE" href="/learn">
+                  <Link
+                    bgColor="#66018E"
+                    color="#F996EE"
+                    href="/learn"
+                    onClick={() => sendGAEventHandler(GAEventCategories.COWPROTOCOL, 'click-intents-learn-more')}
+                  >
                     Learn more
-                  </TopicButton>
+                  </Link>
                 </TopicCardInner>
                 <TopicImage
                   iconColor="#66018E"
@@ -276,9 +285,14 @@ export default function Page({ siteConfigData }: PageProps) {
                     public and private liquidity sources - finding better prices than most users could find on their
                     own.
                   </TopicDescription>
-                  <TopicButton bgColor="#66018E" color="#F996EE" href="/learn">
+                  <Link
+                    bgColor="#66018E"
+                    color="#F996EE"
+                    href="/learn"
+                    onClick={() => sendGAEventHandler(GAEventCategories.COWPROTOCOL, 'click-solvers-learn-more')}
+                  >
                     Learn more
-                  </TopicButton>
+                  </Link>
                 </TopicCardInner>
               </TopicCard>
 
@@ -293,9 +307,14 @@ export default function Page({ siteConfigData }: PageProps) {
                     The solver that wins the batch auction is the solver that finds the most surplus - so they win when
                     you win.
                   </TopicDescription>
-                  <TopicButton bgColor="#66018E" color="#F996EE" href="/learn">
+                  <Link
+                    bgColor="#66018E"
+                    color="#F996EE"
+                    href="/learn"
+                    onClick={() => sendGAEventHandler(GAEventCategories.COWPROTOCOL, 'click-batch-auctions-learn-more')}
+                  >
                     Learn more
-                  </TopicButton>
+                  </Link>
                 </TopicCardInner>
                 <TopicImage
                   iconColor="#66018E"
@@ -523,9 +542,10 @@ export default function Page({ siteConfigData }: PageProps) {
                   contentAlign={'center'}
                   bgColor={Color.neutral100}
                   padding={'42px'}
-                  href={logo.url}
+                  href={`${logo.url}?utm_source=cow.fi&utm_medium=web&utm_content=cow-protocol-logos`}
                   target="_blank"
                   rel="noopener noreferrer nofollow"
+                  onClick={() => sendGAEventHandler(GAEventCategories.COWPROTOCOL, `click-logo-${logo.alt}`)}
                 >
                   <TopicImage
                     iconColor={Color.neutral20}
@@ -547,16 +567,20 @@ export default function Page({ siteConfigData }: PageProps) {
                   <TopicCardInner>
                     <TopicTitle fontSize={38}>{study.title}</TopicTitle>
                     <TopicDescription fontSize={21}>{study.description}</TopicDescription>
-                    <TopicButton
+                    <Link
                       bgColor="#490072"
                       color="#F996EE"
                       fontSize={27}
                       href={study.link}
-                      rel="noopener noreferrer nofollow"
-                      target="_blank"
+                      external
+                      linkType={LinkType.TopicButton}
+                      utmContent={`cow-protocol-case-study-${study.title}`}
+                      onClick={() =>
+                        sendGAEventHandler(GAEventCategories.COWPROTOCOL, `click-case-study-${study.title}`)
+                      }
                     >
                       Read more
-                    </TopicButton>
+                    </Link>
                   </TopicCardInner>
                 </TopicCard>
               ))}
@@ -569,9 +593,10 @@ export default function Page({ siteConfigData }: PageProps) {
                   contentAlign={'center'}
                   bgColor={Color.neutral100}
                   padding={'42px'}
-                  href={logo.url}
+                  href={`${logo.url}?utm_source=cow.fi&utm_medium=web&utm_content=cow-protocol-logos`}
                   target="_blank"
                   rel="noopener noreferrer nofollow"
+                  onClick={() => sendGAEventHandler(GAEventCategories.COWPROTOCOL, `click-logo-${logo.alt}`)}
                 >
                   <TopicImage
                     iconColor={Color.neutral20}
@@ -607,16 +632,17 @@ export default function Page({ siteConfigData }: PageProps) {
                     As an open-source protocol, building on top of CoW Protocol is permissionless. Thanks to
                     comprehensive documentation and live coding tutorials, integrating the protocol is easy
                   </TopicDescription>
-                  <TopicButton
+                  <Link
                     bgColor="#ED60E9"
                     color="#66018E"
                     fontSize={27}
                     href="https://docs.cow.fi/"
-                    rel="noopener noreferrer"
-                    target="_blank"
+                    linkType={LinkType.TopicButton}
+                    utmContent={`cow-protocol-docs`}
+                    onClick={() => sendGAEventHandler(GAEventCategories.COWPROTOCOL, `click-docs`)}
                   >
                     Read the docs
-                  </TopicButton>
+                  </Link>
                 </TopicCardInner>
                 <TopicImage iconColor="#8702AA" bgColor="transparent" margin={'0 0 0 auto'} height={187} width={'auto'}>
                   <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />
@@ -632,9 +658,15 @@ export default function Page({ siteConfigData }: PageProps) {
                     Don't need overly-custom trading logic? The CoW Protocol widget is the easiest way to integrate
                     swaps, twaps, and limit orders directly into your project site
                   </TopicDescription>
-                  <TopicButton bgColor="#ED60E9" color="#66018E" fontSize={27} href="/widget">
+                  <Link
+                    bgColor="#ED60E9"
+                    color="#66018E"
+                    fontSize={27}
+                    href="/widget"
+                    onClick={() => sendGAEventHandler(GAEventCategories.COWPROTOCOL, `click-integrate-widget`)}
+                  >
                     Integrate the widget
-                  </TopicButton>
+                  </Link>
                 </TopicCardInner>
                 <TopicImage iconColor="#8702AA" bgColor="transparent" margin={'0 0 0 auto'} height={187} width={'auto'}>
                   <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />
@@ -650,16 +682,18 @@ export default function Page({ siteConfigData }: PageProps) {
                     The CoW DAO Grants program has awarded over $100,000 in grants to innovators that build public DeFi
                     applications with CoW Protocol
                   </TopicDescription>
-                  <TopicButton
+                  <Link
                     bgColor="#ED60E9"
                     color="#66018E"
                     fontSize={27}
                     href="https://grants.cow.fi/"
-                    rel="noopener noreferrer"
-                    target="_blank"
+                    linkType={LinkType.TopicButton}
+                    external
+                    utmContent={`cow-protocol-grants`}
+                    onClick={() => sendGAEventHandler(GAEventCategories.COWPROTOCOL, `click-apply-for-a-grant`)}
                   >
                     Apply for a grant
-                  </TopicButton>
+                  </Link>
                 </TopicCardInner>
                 <TopicImage iconColor="#8702AA" bgColor="transparent" margin={'0 0 0 auto'} height={187} width={'auto'}>
                   <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />
@@ -688,16 +722,18 @@ export default function Page({ siteConfigData }: PageProps) {
                 Learn more about building a solver by reading the CoW Protocol docs.
               </SectionTitleDescription>
 
-              <SectionTitleButton
+              <Link
                 bgColor="#66018E"
                 color="#F996EE"
                 href="https://docs.cow.fi/cow-protocol/tutorials/solvers"
-                target="_blank"
-                rel="noopener noreferrer nofollow"
+                external
+                linkType={LinkType.SectionTitleButton}
+                utmContent="cow-protocol-solvers"
                 margin="28px 0 0"
+                onClick={() => sendGAEventHandler(GAEventCategories.COWPROTOCOL, `click-solvers-read-docs`)}
               >
                 Read the docs
-              </SectionTitleButton>
+              </Link>
             </SectionTitleWrapper>
           </ContainerCardSection>
         </ContainerCard>

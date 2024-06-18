@@ -7,6 +7,9 @@ import { getCategoryBySlug, getAllCategorySlugs, getArticles, getCategories } fr
 import { SearchBar } from '@/components/SearchBar'
 import { ArrowButton } from '@/components/ArrowButton'
 
+import { GAEventCategories } from 'lib/analytics/GAEvents'
+import { sendGAEventHandler } from 'lib/analytics/sendGAEvent'
+
 import {
   Breadcrumbs,
   ContainerCard,
@@ -105,11 +108,21 @@ export default function TopicPage({ category, articles, allCategories }: TopicPa
       <Wrapper>
         <CategoryLinks>
           <li>
-            <a href="/learn">Knowledge Base</a>
+            <a
+              href="/learn"
+              onClick={() => sendGAEventHandler(GAEventCategories.KNOWLEDGEBASE, 'click-categories-home')}
+            >
+              Knowledge Base
+            </a>
           </li>
           {allCategories.map((category) => (
             <li key={category.slug}>
-              <a href={`/learn/topic/${category.slug}`}>{category.name}</a>
+              <a
+                href={`/learn/topic/${category.slug}`}
+                onClick={() => sendGAEventHandler(GAEventCategories.KNOWLEDGEBASE, `click-categories-${category.name}`)}
+              >
+                {category.name}
+              </a>
             </li>
           ))}
         </CategoryLinks>
@@ -119,9 +132,21 @@ export default function TopicPage({ category, articles, allCategories }: TopicPa
         <ContainerCard gap={42} gapMobile={24} minHeight="100vh" alignContent="flex-start" touchFooter>
           <ContainerCardInner maxWidth={970} gap={24} gapMobile={24}>
             <Breadcrumbs padding={'0'}>
-              <a href="/">Home</a>
-              <a href="/learn">Knowledge Base</a>
-              <a href="/learn/topics/">Topic</a>
+              <a href="/" onClick={() => sendGAEventHandler(GAEventCategories.KNOWLEDGEBASE, 'click-breadcrumbs-home')}>
+                Home
+              </a>
+              <a
+                href="/learn"
+                onClick={() => sendGAEventHandler(GAEventCategories.KNOWLEDGEBASE, 'click-breadcrumbs-knowledgebase')}
+              >
+                Knowledge Base
+              </a>
+              <a
+                href="/learn/topics/"
+                onClick={() => sendGAEventHandler(GAEventCategories.KNOWLEDGEBASE, 'click-breadcrumbs-topics')}
+              >
+                Topic
+              </a>
               <span>{name}</span>
             </Breadcrumbs>
 
@@ -147,7 +172,16 @@ export default function TopicPage({ category, articles, allCategories }: TopicPa
                 <LinkColumn>
                   {articles?.map((article) =>
                     article.attributes ? (
-                      <LinkItem key={article.id} href={`/learn/${article.attributes.slug}`}>
+                      <LinkItem
+                        key={article.id}
+                        href={`/learn/${article.attributes.slug}`}
+                        onClick={() =>
+                          sendGAEventHandler(
+                            GAEventCategories.KNOWLEDGEBASE,
+                            `click-article-${article.attributes.title}`
+                          )
+                        }
+                      >
                         {article.attributes.title}
                         <span>→</span>
                       </LinkItem>

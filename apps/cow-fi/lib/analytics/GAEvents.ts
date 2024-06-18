@@ -1,11 +1,16 @@
 export enum GAEventCategories {
+  HOME = 'Homepage',
   NAVIGATION = 'Navigation',
   WIDGET = 'Widget',
   COWAMM = 'CoW AMM',
-}
-
-export const NavigationEvents = {
-  TRADE_ON_COWSWAP: { category: GAEventCategories.NAVIGATION, action: 'Trade On CoW Swap' },
+  COWSWAP = 'CoW Swap',
+  COWPROTOCOL = 'CoW Protocol',
+  MEVBLOCKER = 'MEV Blocker',
+  DAOS = 'DAOs',
+  KNOWLEDGEBASE = 'Knowledge Base',
+  ERROR404 = 'Error 404',
+  CAREERS = 'Careers',
+  TOKENS = 'Tokens',
 }
 
 export const WidgetEvents = {

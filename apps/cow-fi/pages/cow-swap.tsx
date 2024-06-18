@@ -10,6 +10,7 @@ import { CONFIG } from '@/const/meta'
 
 import Layout from '@/components/Layout'
 import FAQ from '@/components/FAQ'
+import { Link, LinkType } from '@/components/Link'
 
 import {
   ContainerCard,
@@ -19,7 +20,6 @@ import {
   TopicImage,
   TopicTitle,
   TopicDescription,
-  TopicButton,
   SectionTitleWrapper,
   SectionTitleIcon,
   SectionTitleText,
@@ -27,18 +27,19 @@ import {
   TopicCardInner,
   HeroContainer,
   HeroImage,
-  HeroButton,
   HeroDescription,
   HeroContent,
   HeroTitle,
   HeroSubtitle,
   MetricsCard,
   MetricsItem,
-  SectionTitleButton,
 } from '@/styles/styled'
 
 import SVG from 'react-inlinesvg'
 import IMG_ICON_FAQ from '@cowprotocol/assets/images/icon-faq.svg'
+
+import { GAEventCategories } from 'lib/analytics/GAEvents'
+import { sendGAEventHandler } from 'lib/analytics/sendGAEvent'
 
 const DATA_CACHE_TIME_SECONDS = 5 * 60 // Cache 5min
 
@@ -99,15 +100,17 @@ export default function Page({ siteConfigData }: PageProps) {
             <HeroDescription>
               CoW Swap protects traders from the dangers of DeFi, so you can do what you want without needing to worry
             </HeroDescription>
-            <HeroButton
-              background={'#012F7A'}
+            <Link
+              bgColor={'#012F7A'}
               color={'#65D9FF'}
               href="https://swap.cow.fi/"
-              rel="noopener noreferrer"
-              target="_blank"
+              external
+              linkType={LinkType.HeroButton}
+              utmContent="cow-swap-launch-app-button"
+              onClick={() => sendGAEventHandler(GAEventCategories.COWSWAP, 'click-launch-app')}
             >
               Launch app
-            </HeroButton>
+            </Link>
           </HeroContent>
           <HeroImage width={470} height={470} color={'#012F7A'} marginMobile="24px auto 56px">
             <ProductLogo height="100%" variant={ProductVariant.CowSwap} theme="light" logoIconOnly />
@@ -128,17 +131,19 @@ export default function Page({ siteConfigData }: PageProps) {
             <p>retention rate of all DEXs</p>
           </MetricsItem>
 
-          <SectionTitleButton
+          <Link
             bgColor="transparent"
             color="#012F7A"
             margin="24px auto 0"
             gridFullWidth
             href="https://dune.com/cowprotocol/cowswap"
-            target="_blank"
-            rel="noopener noreferrer nofollow"
+            external
+            linkType={LinkType.SectionTitleButton}
+            utmContent="cow-swap-metrics-link"
+            onClick={() => sendGAEventHandler(GAEventCategories.COWSWAP, 'click-metrics-link')}
           >
             View all metrics on DUNE &#8599;
-          </SectionTitleButton>
+          </Link>
         </MetricsCard>
 
         <ContainerCard bgColor={Color.neutral100}>
@@ -220,9 +225,14 @@ export default function Page({ siteConfigData }: PageProps) {
                 A powerful, open-source, and permissionless DEX aggregation protocol that anyone can integrate for a
                 variety of DeFi purposes
               </SectionTitleDescription>
-              <SectionTitleButton bgColor="#65D9FF" color="#012F7A" href="/cow-protocol">
+              <Link
+                bgColor="#65D9FF"
+                color="#012F7A"
+                href="/cow-protocol"
+                onClick={() => sendGAEventHandler(GAEventCategories.COWSWAP, 'click-learn-about-cow-protocol')}
+              >
                 Learn about CoW Protocol
-              </SectionTitleButton>
+              </Link>
             </SectionTitleWrapper>
           </ContainerCardSection>
         </ContainerCard>
@@ -501,15 +511,17 @@ export default function Page({ siteConfigData }: PageProps) {
               <SectionTitleDescription fontSize={28} color={Color.neutral30}>
                 Trade seamlessly, with the most user-protective DEX in DeFi
               </SectionTitleDescription>
-              <SectionTitleButton
+              <Link
                 bgColor="#65D9FF"
                 color="#012F7A"
                 href="https://swap.cow.fi/"
-                rel="noopener noreferrer"
-                target="_blank"
+                external
+                linkType={LinkType.SectionTitleButton}
+                utmContent="cow-swap-launch-app-button"
+                onClick={() => sendGAEventHandler(GAEventCategories.COWSWAP, 'click-launch-app')}
               >
                 Launch app
-              </SectionTitleButton>
+              </Link>
             </SectionTitleWrapper>
           </ContainerCardSection>
         </ContainerCard>

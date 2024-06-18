@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { darken, transparentize } from 'polished'
 import { useConnectAndAddToWallet } from '../../lib/hooks/useConnectAndAddToWallet'
 
-import { TopicButton } from '@/styles/styled'
+import { Link, LinkType } from '@/components/Link'
 
 export type AddToWalletStateValues = 'unknown' | 'adding' | 'added' | 'error' | 'takingTooLong' | 'connecting'
 
@@ -43,15 +43,17 @@ export function AddRpcButton() {
         </>
       ) : (
         <>
-          <TopicButton
+          <Link
+            linkType={LinkType.TopicButton}
             fontSize={21}
             color={'#FEE7CF'}
             bgColor="#EC4612"
             onClick={connectAndAddToWallet || (() => {})}
             disabled={disabledButton}
+            asButton
           >
             {buttonLabel}
-          </TopicButton>
+          </Link>
           {errorMessage && <Message state={state}>{errorMessage}</Message>}
         </>
       )}

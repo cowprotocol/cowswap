@@ -11,6 +11,7 @@ import { CONFIG } from '@/const/meta'
 
 import Layout from '@/components/Layout'
 import FAQ from '@/components/FAQ'
+import { Link, LinkType } from '@/components/Link'
 
 import {
   ContainerCard,
@@ -24,11 +25,9 @@ import {
   SectionTitleIcon,
   SectionTitleText,
   SectionTitleDescription,
-  SectionTitleButton,
   TopicCardInner,
   HeroContainer,
   HeroImage,
-  HeroButton,
   HeroDescription,
   HeroContent,
   HeroTitle,
@@ -39,6 +38,9 @@ import {
 
 import SVG from 'react-inlinesvg'
 import IMG_ICON_FAQ from '@cowprotocol/assets/images/icon-faq.svg'
+
+import { GAEventCategories } from 'lib/analytics/GAEvents'
+import { sendGAEventHandler } from 'lib/analytics/sendGAEvent'
 
 const DATA_CACHE_TIME_SECONDS = 5 * 60 // Cache 5min
 
@@ -96,15 +98,17 @@ export default function Page({ siteConfigData }: PageProps) {
             <HeroDescription>
               CoW AMM protects LPs from LVR so they can provide liquidity with less risk and more return
             </HeroDescription>
-            <HeroButton
-              background={'#194D05'}
+            <Link
+              bgColor={'#194D05'}
               color={'#BCEC79'}
               href="https://deploy-cow-amm.bleu.fi/"
-              target="_blank"
-              rel="noopener noreferrer nofollow"
+              external
+              linkType={LinkType.HeroButton}
+              utmContent={'cow-amm-hero-button-protect-liquidity'}
+              onClick={() => sendGAEventHandler(GAEventCategories.COWAMM, 'click-protect-liquidity')}
             >
               Protect your liquidity
-            </HeroButton>
+            </Link>
           </HeroContent>
           <HeroImage width={470} color={'#194D05'} marginMobile="24px auto 56px">
             <SVG src={IMG_ICON_GOVERNANCE} />
@@ -125,17 +129,19 @@ export default function Page({ siteConfigData }: PageProps) {
             <p>surplus captured for LPs</p>
           </MetricsItem>
 
-          <SectionTitleButton
+          <Link
             bgColor="transparent"
             color="#194D05"
             margin="56px auto 0"
             gridFullWidth
             href="https://dune.com/cowprotocol/cowamms"
-            target="_blank"
-            rel="noopener noreferrer nofollow"
+            external
+            linkType={LinkType.SectionTitleButton}
+            utmContent={'cow-amm-metrics-button-view-all'}
+            onClick={() => sendGAEventHandler(GAEventCategories.COWAMM, 'click-view-all-metrics')}
           >
             View all metrics on DUNE &#8599;
-          </SectionTitleButton>
+          </Link>
         </MetricsCard>
 
         <ContainerCard bgColor={Color.neutral10}>

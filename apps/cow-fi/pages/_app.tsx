@@ -8,7 +8,6 @@ import { ApolloProvider } from '@apollo/client'
 import { apolloClient } from 'services/uniswap-price/apollo-client'
 import { useInitializeUtm } from 'modules/utm'
 import { WithLDProvider } from '@/components/WithLDProvider'
-import Script from 'next/script'
 
 export default function App(props: AppProps) {
   const { Component, pageProps } = props
@@ -40,12 +39,12 @@ export default function App(props: AppProps) {
         <meta key="ogType" property="og:type" content="website" />
         <meta key="ogTitle" property="og:title" content={CONFIG.title} />
         <meta key="ogDescription" property="og:description" content={CONFIG.description} />
-        <meta key="ogImage" property="og:image" content={CONFIG.url.root + '/images/og-meta-cowprotocol.png'} />
+        <meta key="ogImage" property="og:image" content={CONFIG.url.root + '/images/og-meta-cowdao.png'} />
         <meta key="ogUrl" property="og:url" content={CURRENT_URL} />
         <meta key="twitterCard" name="twitter:card" content="summary_large_image" />
         <meta key="twitterSite" name="twitter:site" content={CONFIG.social.twitter.account} />
         <meta key="twitterTitle" name="twitter:title" content={CONFIG.title} />
-        <meta key="twitterImage" name="twitter:image" content={CONFIG.url.root + '/images/og-meta-cowprotocol.png'} />
+        <meta key="twitterImage" name="twitter:image" content={CONFIG.url.root + '/images/og-meta-cowdao.png'} />
         <meta key="viewport" name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
       </Head>
 
@@ -56,16 +55,6 @@ export default function App(props: AppProps) {
           <Component {...pageProps} />
         </WithLDProvider>
       </ApolloProvider>
-
-      <Script id="clarity-script" strategy="afterInteractive">
-        {`
-    (function(c,l,a,r,i,t,y){
-        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-    })(window, document, "clarity", "script", "mqse7dmywa");
-  `}
-      </Script>
     </>
   )
 }

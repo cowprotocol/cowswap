@@ -6,15 +6,12 @@ import styled from 'styled-components'
 import { CONFIG } from '@/const/meta'
 
 import Layout from '@/components/Layout'
+import { Link } from '@/components/Link'
 
-import {
-  ContainerCard,
-  ArticleContent,
-  Breadcrumbs,
-  ArticleMainTitle,
-  BodyContent,
-  ArticleDescription,
-} from '@/styles/styled'
+import { ContainerCard, ArticleContent, Breadcrumbs, ArticleMainTitle, BodyContent } from '@/styles/styled'
+
+import { GAEventCategories } from 'lib/analytics/GAEvents'
+import { sendGAEventHandler } from 'lib/analytics/sendGAEvent'
 
 const DATA_CACHE_TIME_SECONDS = 5 * 60 // Cache 5min
 
@@ -46,7 +43,12 @@ export default function Page({ siteConfigData }: PageProps) {
         <ContainerCard bgColor={Color.neutral100} minHeight="70vh" gap={62} gapMobile={42} centerContent touchFooter>
           <ArticleContent maxWidth="100%">
             <Breadcrumbs>
-              <a href="/widget">Widget</a>
+              <Link
+                href="/widget"
+                onClick={() => sendGAEventHandler(GAEventCategories.WIDGET, 'click-widget-breadcrumbs')}
+              >
+                Widget
+              </Link>
               <span>{title}</span>
             </Breadcrumbs>
 

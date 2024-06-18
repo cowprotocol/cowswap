@@ -37,10 +37,14 @@ import {
   CategoryLinks,
   StickyMenu,
   RelatedArticles,
-  SectionTitleButton,
   SectionTitleDescription,
 } from '@/styles/styled'
 import useWebShare from 'hooks/useWebShare'
+
+import { Link, LinkType } from '@/components/Link'
+
+import { GAEventCategories } from 'lib/analytics/GAEvents'
+import { sendGAEventHandler } from 'lib/analytics/sendGAEvent'
 
 const DATA_CACHE_TIME_SECONDS = 5 * 60 // Cache 5min
 
@@ -164,11 +168,21 @@ export default function ArticlePage({
       <Wrapper>
         <CategoryLinks>
           <li>
-            <a href="/learn">Knowledge Base</a>
+            <a
+              href="/learn"
+              onClick={() => sendGAEventHandler(GAEventCategories.KNOWLEDGEBASE, 'click-knowledge-base')}
+            >
+              Knowledge Base
+            </a>
           </li>
           {allCategories.map((category: { name: string; slug: string }) => (
             <li key={category.slug}>
-              <a href={`/learn/topic/${category.slug}`}>{category.name}</a>
+              <a
+                href={`/learn/topic/${category.slug}`}
+                onClick={() => sendGAEventHandler(GAEventCategories.KNOWLEDGEBASE, `click-topic-${category.name}`)}
+              >
+                {category.name}
+              </a>
             </li>
           ))}
         </CategoryLinks>
@@ -177,15 +191,28 @@ export default function ArticlePage({
         <ContainerCard gap={62} gapMobile={42} margin="0 auto" centerContent>
           <ArticleContent>
             <Breadcrumbs>
-              <a href="/">Home</a>
-              <a href="/learn">Knowledge Base</a>
+              <a href="/" onClick={() => sendGAEventHandler(GAEventCategories.KNOWLEDGEBASE, 'click-breadcrumbs-home')}>
+                Home
+              </a>
+              <a
+                href="/learn"
+                onClick={() => sendGAEventHandler(GAEventCategories.KNOWLEDGEBASE, 'click-breadcrumbs-knowledge-base')}
+              >
+                Knowledge Base
+              </a>
               <span>{title}</span>
             </Breadcrumbs>
 
             {categories && Array.isArray(categories.data) && categories.data.length > 0 && (
               <CategoryTags>
                 {categories.data.map((category: { id: string; attributes?: { slug?: string; name?: string } }) => (
-                  <a key={category.id} href={`/learn/topic/${category.attributes?.slug ?? ''}`}>
+                  <a
+                    key={category.id}
+                    href={`/learn/topic/${category.attributes?.slug ?? ''}`}
+                    onClick={() =>
+                      sendGAEventHandler(GAEventCategories.KNOWLEDGEBASE, `click-category-${category.attributes?.name}`)
+                    }
+                  >
                     {category.attributes?.name ?? ''}
                   </a>
                 ))}
@@ -208,9 +235,16 @@ export default function ArticlePage({
                 )}
 
               <br />
-              <SectionTitleButton onClick={handleShareClick} as="div">
+              <Link
+                onClick={handleShareClick}
+                asButton
+                linkType={LinkType.SectionTitleButton}
+                color={Color.neutral98}
+                bgColor={Color.neutral10}
+              >
                 Share article
-              </SectionTitleButton>
+              </Link>
+
               {message && (
                 <SectionTitleDescription textAlign="left" margin="16px 0 0" fontSize={21}>
                   {message}
@@ -225,7 +259,17 @@ export default function ArticlePage({
               <ul>
                 {relatedArticles.map((article) => (
                   <li key={article.id}>
-                    <a href={`/learn/${article.attributes?.slug}`}>{article.attributes?.title}</a>
+                    <a
+                      href={`/learn/${article.attributes?.slug}`}
+                      onClick={() =>
+                        sendGAEventHandler(
+                          GAEventCategories.KNOWLEDGEBASE,
+                          `click-related-article-${article.attributes?.title}`
+                        )
+                      }
+                    >
+                      {article.attributes?.title}
+                    </a>
                   </li>
                 ))}
               </ul>
@@ -245,7 +289,16 @@ export default function ArticlePage({
                 const imageUrl = coverData?.attributes?.url
 
                 return (
-                  <ArticleCard key={article.id} href={`/learn/${article.attributes?.slug}`}>
+                  <ArticleCard
+                    key={article.id}
+                    href={`/learn/${article.attributes?.slug}`}
+                    onClick={() =>
+                      sendGAEventHandler(
+                        GAEventCategories.KNOWLEDGEBASE,
+                        `click-read-more-${article.attributes?.title}`
+                      )
+                    }
+                  >
                     {imageUrl && (
                       <ArticleImage>
                         <img src={imageUrl} alt={article.attributes?.title ?? 'Article Image'} />

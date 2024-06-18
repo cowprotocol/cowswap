@@ -1,6 +1,7 @@
 import styled, { css } from 'styled-components'
 import { Font, Color, Media } from '@cowprotocol/ui'
 import { transparentize } from 'color2k'
+import { LinkWithUtmComponent, LinkWithUtmProps } from 'modules/utm'
 
 export const ContainerCard = styled.div<{
   bgColor?: string
@@ -407,40 +408,6 @@ export const TopicDescription = styled.p<{
   }
 `
 
-export const TopicButton = styled.a<{
-  fontSize?: number
-  fontSizeMobile?: number
-  bgColor?: string
-  color?: string
-  disabled?: boolean
-  padding?: string
-  margin?: string
-}>`
-  display: inline-block;
-  padding: ${({ padding }) => padding || '16px 24px'};
-  margin: ${({ margin }) => margin || 'initial'};
-  font-size: ${({ fontSize }) => fontSize || 21}px;
-  font-weight: ${Font.weight.bold};
-  color: ${({ color, disabled }) => (disabled ? transparentize(Color.neutral10, 0.5) : color || Color.neutral98)};
-  background-color: ${({ bgColor, disabled }) =>
-    disabled ? transparentize(Color.neutral10, 0.5) : bgColor || Color.neutral10};
-  text-decoration: none;
-  border-radius: 32px;
-  line-height: 1.2;
-  text-align: center;
-  width: max-content;
-  transition: opacity 0.2s ease-in-out;
-  cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
-
-  ${Media.upToMedium()} {
-    font-size: ${({ fontSizeMobile }) => fontSizeMobile || 16}px;
-  }
-
-  &:hover {
-    opacity: ${({ disabled }) => (disabled ? 1 : 0.8)};
-  }
-`
-
 export const LinkSection = styled.div<{
   columns?: number
   columnsMobile?: number
@@ -772,40 +739,6 @@ export const SectionTitleDescription = styled.p<{
   }
 `
 
-export const SectionTitleButton = styled.a<{
-  bgColor?: string
-  color?: string
-  margin?: string
-  gridFullWidth?: boolean
-  fontSize?: number
-  fontSizeMobile?: number
-}>`
-  display: inline-block;
-  padding: 16px 24px;
-  font-size: ${({ fontSize }) => (fontSize && `${fontSize}px`) || '24px'};
-  font-weight: ${Font.weight.bold};
-  color: ${({ color }) => color || Color.neutral98};
-  background: ${({ bgColor }) => bgColor || Color.neutral10};
-  text-decoration: none;
-  border-radius: 32px;
-  line-height: 1.2;
-  text-align: center;
-  width: auto;
-  transition: opacity 0.2s ease-in-out;
-  max-width: 100%;
-  margin: ${({ margin }) => margin || '0'};
-  grid-column: ${({ gridFullWidth }) => (gridFullWidth ? '1 / -1' : 'initial')};
-  cursor: pointer;
-
-  ${Media.upToMedium()} {
-    font-size: ${({ fontSizeMobile }) => fontSizeMobile || 21}px;
-  }
-
-  &:hover {
-    opacity: 0.8;
-  }
-`
-
 export const SectionTitleIcon = styled.div<{ size?: number; multiple?: boolean }>`
   --size: ${({ size }) => (size ? `${size}px` : '82px')};
   width: 100%;
@@ -998,26 +931,6 @@ export const HeroButtonWrapper = styled.div<{ gap?: number }>`
   ${Media.upToMedium()} {
     flex-flow: column wrap;
     align-items: center;
-  }
-`
-
-export const HeroButton = styled.a<{ background?: string; color?: string }>`
-  display: inline-block;
-  padding: 16px 24px;
-  font-size: 27px;
-  font-weight: ${Font.weight.bold};
-  color: ${({ color }) => color || Color.neutral98};
-  background: ${({ background }) => background || Color.neutral10};
-  text-decoration: none;
-  border-radius: 32px;
-  line-height: 1.2;
-  text-align: center;
-  width: max-content;
-  max-width: 100%;
-  transition: opacity 0.2s ease-in-out;
-
-  &:hover {
-    opacity: 0.8;
   }
 `
 

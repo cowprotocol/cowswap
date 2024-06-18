@@ -13,6 +13,7 @@ import { CONFIG } from '@/const/meta'
 
 import Layout from '@/components/Layout'
 import FAQ from '@/components/FAQ'
+import { Link, LinkType } from '@/components/Link'
 
 import {
   ContainerCard,
@@ -22,7 +23,6 @@ import {
   TopicImage,
   TopicTitle,
   TopicDescription,
-  TopicButton,
   SectionTitleWrapper,
   SectionTitleIcon,
   SectionTitleText,
@@ -37,7 +37,6 @@ import {
   MetricsCard,
   TrustedBy,
   SwiperSlideWrapper,
-  SectionTitleButton,
 } from '@/styles/styled'
 
 import { DAO_CONTENT as CONTENT } from '@/data/siteContent/daos'
@@ -50,6 +49,9 @@ import 'swiper/css/pagination'
 import 'swiper/css/navigation'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Autoplay, Pagination, Navigation } from 'swiper/modules'
+
+import { GAEventCategories } from 'lib/analytics/GAEvents'
+import { sendGAEventHandler } from 'lib/analytics/sendGAEvent'
 
 const DATA_CACHE_TIME_SECONDS = 5 * 60 // Cache 5min
 
@@ -205,9 +207,14 @@ export default function Page({ siteConfigData }: PageProps) {
                   <TopicTitle>Milkman Orders</TopicTitle>
                   <TopicDescription fontSize={18} color={Color.neutral40} margin="0">
                     Ensure your trades are always close to the real-time market price thanks to the{' '}
-                    <a href="https://github.com/charlesndalton/milkman" target="_blank" rel="noopener noreferrer">
+                    <Link
+                      href="https://github.com/charlesndalton/milkman"
+                      external
+                      utmContent="link-to-milkman"
+                      onClick={() => sendGAEventHandler(GAEventCategories.DAOS, 'click-milkman')}
+                    >
                       Milkman bot
-                    </a>
+                    </Link>
                     . Set the maximum deviation you&apos;ll accept, and Milkman will do the rest.
                   </TopicDescription>
                 </TopicCardInner>
@@ -259,9 +266,14 @@ export default function Page({ siteConfigData }: PageProps) {
                 <TopicCardInner contentAlign="left">
                   <TopicTitle>Basket Sells</TopicTitle>
                   <TopicDescription fontSize={18} color={Color.neutral40} margin="0">
-                    <a href="https://dump.services/" target="_blank" rel="noopener noreferrer">
+                    <Link
+                      href="https://dump.services/"
+                      external
+                      utmContent="link-to-dump-services"
+                      onClick={() => sendGAEventHandler(GAEventCategories.DAOS, 'click-dump-services')}
+                    >
                       Dump.services
-                    </a>
+                    </Link>
                     , a collaboration between CoW Swap and Yearn, allows DAOs and traders to sell multiple tokens in a
                     single transaction.
                   </TopicDescription>
@@ -282,14 +294,16 @@ export default function Page({ siteConfigData }: PageProps) {
               </TopicCard>
             </TopicList>
 
-            <SectionTitleButton
-              href="https://blog.cow.fi/list/advanced-order-types-b391bd4390cb?utm_content=daos-page&utm_medium=web&utm_source=cow.fi"
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              href="https://blog.cow.fi/list/advanced-order-types-b391bd4390cb"
+              linkType={LinkType.SectionTitleButton}
+              utmContent="link-to-advanced-order-types"
               margin="24px auto 0"
+              external
+              onClick={() => sendGAEventHandler(GAEventCategories.DAOS, 'click-advanced-order-types')}
             >
               Explore advanced order types
-            </SectionTitleButton>
+            </Link>
           </ContainerCardSection>
         </ContainerCard>
 
@@ -330,7 +344,15 @@ export default function Page({ siteConfigData }: PageProps) {
                       <TopicDescription fontSize={18} color={Color.neutral70}>
                         {dao.description}
                       </TopicDescription>
-                      <TopicButton href={dao.link}>Learn more</TopicButton>
+                      <Link
+                        linkType={LinkType.TopicButton}
+                        href={dao.link}
+                        utmContent={`dao-${dao.title.toLowerCase().replace(/\s/g, '-')}`}
+                        external
+                        onClick={() => sendGAEventHandler(GAEventCategories.DAOS, `click-${dao.title.toLowerCase()}`)}
+                      >
+                        Learn more
+                      </Link>
                     </TopicCardInner>
                   </TopicCard>
                 ) : (
@@ -339,7 +361,10 @@ export default function Page({ siteConfigData }: PageProps) {
                     contentAlign={'center'}
                     bgColor={Color.neutral20}
                     padding={'10px'}
-                    href={dao.link}
+                    href={`${dao.link}?utm_source=cow.fi&utm_medium=web&utm_content=dao-${dao.title}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => sendGAEventHandler(GAEventCategories.DAOS, `click-${dao.title.toLowerCase()}`)}
                   >
                     <TopicImage
                       iconColor={Color.neutral0}

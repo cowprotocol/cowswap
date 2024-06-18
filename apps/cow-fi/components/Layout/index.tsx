@@ -6,6 +6,7 @@ import { useEffect } from 'react'
 
 import { CoWDAOFonts } from '@/styles/CoWDAOFonts'
 
+const ROOT_DOMAIN = 'cow.fi'
 const THEME_MODE = 'dark'
 const PRODUCT_VARIANT = ProductVariant.CowDao
 
@@ -13,9 +14,21 @@ const NAV_ITEMS: MenuItem[] = [
   {
     label: 'About',
     children: [
-      { label: 'Stats', href: 'https://dune.com/cowprotocol/cowswap', external: true },
-      { label: 'Governance', href: 'https://docs.cow.fi/governance', external: true },
-      { label: 'Grants', href: 'https://grants.cow.fi/', external: true },
+      {
+        label: 'Stats',
+        href: 'https://dune.com/cowprotocol/cowswap',
+        external: true,
+      },
+      {
+        label: 'Governance',
+        href: 'https://docs.cow.fi/governance',
+        external: true,
+      },
+      {
+        label: 'Grants',
+        href: 'https://grants.cow.fi/',
+        external: true,
+      },
       { label: 'Careers', href: '/careers' },
       { label: 'Tokens', href: '/tokens' },
     ],
@@ -51,7 +64,6 @@ const NAV_ITEMS: MenuItem[] = [
       {
         href: 'https://docs.cow.fi/',
         label: 'Docs',
-
         external: true,
       },
     ],
@@ -62,6 +74,7 @@ const NAV_ADDITIONAL_BUTTONS = [
   {
     label: 'Deploy Liquidity',
     href: 'https://deploy-cow-amm.bleu.fi/',
+    utmContent: 'menubar-nav-button-deploy-liquidity',
     external: true,
     isButton: true,
     bgColor: '#BCEC79',
@@ -71,6 +84,7 @@ const NAV_ADDITIONAL_BUTTONS = [
   {
     label: 'Trade on CoW Swap',
     href: 'https://swap.cow.fi/#/1/swap/USDC/COW',
+    utmContent: 'menubar-nav-button-trade-on-cow-swap',
     external: true,
     isButton: true,
     bgColor: '#65D9FF',
@@ -142,6 +156,7 @@ export default function Layout({ children, bgColor, metaTitle, metaDescription, 
         productVariant={PRODUCT_VARIANT}
         additionalNavButtons={NAV_ADDITIONAL_BUTTONS}
         padding="10px 60px"
+        rootDomain={ROOT_DOMAIN}
       />
       <Wrapper>{children}</Wrapper>
       <Footer theme={THEME_MODE} productVariant={PRODUCT_VARIANT} expanded hasTouchFooter />
