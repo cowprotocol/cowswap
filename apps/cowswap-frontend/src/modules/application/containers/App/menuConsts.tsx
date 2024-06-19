@@ -1,4 +1,3 @@
-
 import IMG_ICON_COW_RUNNER from '@cowprotocol/assets/cow-swap/game.gif'
 import IMG_ICON_COW_SLICER from '@cowprotocol/assets/cow-swap/ninja-cow.png'
 import { MenuItem, ProductVariant } from '@cowprotocol/ui'
@@ -7,17 +6,14 @@ import AppziButton from 'legacy/components/AppziButton'
 
 import { FortuneWidget } from 'modules/fortune/containers/FortuneWidget'
 
-import { FeatureGuard } from 'common/containers/FeatureGuard'
-
 export const PRODUCT_VARIANT = ProductVariant.CowSwap
-export const ROOT_DOMAIN = 'swap.cow.fi'
 export const NAV_ITEMS: MenuItem[] = [
   {
     label: 'Trade',
     children: [
-      { href: '/#/1/swap/USDC/COW', label: 'Swap', description: 'Trade tokens' },
-      { href: '/#/1/limit/USDC/COW', label: 'Limit order', description: 'Set your own price' },
-      { href: '/#/1/advanced/USDC/COW', label: 'TWAP', description: 'Place orders with a time-weighted average price' },
+      { href: '/#/swap', label: 'Swap', description: 'Trade tokens' },
+      { href: '/#/limit', label: 'Limit order', description: 'Set your own price' },
+      { href: '/#/advanced', label: 'TWAP', description: 'Place orders with a time-weighted average price' },
     ],
   },
   {
@@ -122,9 +118,7 @@ export const FOOTER_NAV_ITEMS: MenuItem[] = [
 
 export const ADDITIONAL_FOOTER_CONTENT = (
   <>
-    <FeatureGuard featureFlag="cowFortuneEnabled">
-      <FortuneWidget />
-    </FeatureGuard>
+    <FortuneWidget />
     <AppziButton />
   </>
 )

@@ -1,8 +1,7 @@
-import { CowSwapTheme } from '@cowprotocol/widget-lib'
-
 import styled from 'styled-components/macro'
 
 import { Color, Media } from '../../consts'
+import { CowSwapTheme } from '../../types'
 
 export const FooterContainer = styled.footer<{ theme: CowSwapTheme; expanded: boolean; hasTouchFooter: boolean }>`
   --bgColor: ${({ theme }) => (theme === 'dark' ? Color.neutral0 : Color.neutral10)};

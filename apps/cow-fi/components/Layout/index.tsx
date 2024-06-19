@@ -4,7 +4,7 @@ import { MenuBar, MenuItem, Footer, ProductVariant, GlobalCoWDAOStyles } from '@
 import styled from 'styled-components/macro'
 import { CONFIG } from '@/const/meta'
 import { CoWDAOFonts } from '@/styles/CoWDAOFonts'
-import { ROOT_DOMAIN, THEME_MODE, PRODUCT_VARIANT, NAV_ADDITIONAL_BUTTONS, NAV_ITEMS } from './const'
+import { THEME_MODE, PRODUCT_VARIANT, NAV_ADDITIONAL_BUTTONS, NAV_ITEMS } from './const'
 
 const Wrapper = styled.div`
   display: flex;
@@ -66,7 +66,6 @@ export default function Layout({ children, bgColor, metaTitle, metaDescription, 
         productVariant={PRODUCT_VARIANT}
         additionalNavButtons={NAV_ADDITIONAL_BUTTONS}
         padding="10px 60px"
-        rootDomain={ROOT_DOMAIN}
       />
       <Wrapper>{children}</Wrapper>
       <Footer theme={THEME_MODE} productVariant={PRODUCT_VARIANT} expanded hasTouchFooter />

@@ -1,58 +1,31 @@
-import { CowSwapTheme } from '@cowprotocol/widget-lib'
-
-import { createGlobalStyle, css, DefaultTheme, DefaultThemeUniswap } from 'styled-components/macro'
+import { createGlobalStyle, css, DefaultTheme } from 'styled-components/macro'
 
 import { UI } from './enum'
 import { colors, themeVariables as baseThemeVariables } from './theme'
+import { CowSwapTheme } from './types'
 
 export const AMOUNTS_FORMATTING_FEATURE_FLAG = 'highlight-amounts-formatting'
 export const SAFE_COW_APP_LINK = 'https://app.safe.global/share/safe-app?appUrl=https%3A%2F%2Fswap.cow.fi&chain=eth'
 export const LINK_GUIDE_ADD_CUSTOM_TOKEN = 'https://blog.cow.fi/how-to-add-custom-tokens-on-cow-swap-a72d677c78c0'
 export const MY_ORDERS_ID = 'my-orders'
 
-declare module 'styled-components' {
-  export interface DefaultTheme {
-    mode: CowSwapTheme
-  }
-}
-
-export const themeMapper = (theme: CowSwapTheme, isInjectedWidgetMode = false): DefaultTheme => {
-  const darkmode = theme === 'dark'
-  const colorsTheme = colors(darkmode)
+export function themeMapper<T extends DefaultTheme>(theme: CowSwapTheme, isInjectedWidgetMode = false): DefaultTheme {
+  const darkMode = theme === 'dark'
+  const colorsTheme = colors(darkMode)
   return {
-    ...getTheme(darkmode),
+    mode: theme,
     ...colorsTheme,
     isInjectedWidgetMode,
-
     // Override Theme
-    ...baseThemeVariables(darkmode, colorsTheme),
+    ...baseThemeVariables(darkMode, colorsTheme),
     mediaWidth: mediaWidthTemplates,
-
-    mode: darkmode ? 'dark' : 'light',
-  }
-}
-
-interface ExtendedDefaultThemeUniswap extends DefaultThemeUniswap {
-  mode: 'light' | 'dark'
-}
-
-export function getTheme(darkMode: boolean): ExtendedDefaultThemeUniswap {
-  return {
-    ...colors(darkMode),
-
     grids: {
       sm: 8,
       md: 12,
       lg: 24,
     },
 
-    //shadows
     shadow1: darkMode ? '#000' : '#2F80ED',
-
-    // media queries
-    mediaWidth: mediaWidthTemplates,
-
-    // css snippets
     flexColumnNoWrap: css`
       display: flex;
       flex-flow: column nowrap;
@@ -61,9 +34,7 @@ export function getTheme(darkMode: boolean): ExtendedDefaultThemeUniswap {
       display: flex;
       flex-flow: row nowrap;
     `,
-
-    mode: darkMode ? 'dark' : 'light',
-  }
+  } as T
 }
 
 export const MEDIA_WIDTHS = {

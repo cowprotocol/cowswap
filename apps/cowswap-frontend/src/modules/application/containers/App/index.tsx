@@ -23,7 +23,7 @@ import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentAct
 import { CoWDAOFonts } from 'common/styles/CoWDAOFonts'
 import RedirectAnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers/RedirectAnySwapAffectedUsers'
 
-import { NAV_ITEMS, FOOTER_NAV_ITEMS, PRODUCT_VARIANT, ROOT_DOMAIN, ADDITIONAL_FOOTER_CONTENT } from './const'
+import { NAV_ITEMS, FOOTER_NAV_ITEMS, PRODUCT_VARIANT, ADDITIONAL_FOOTER_CONTENT } from './menuConsts'
 import * as styledEl from './styled'
 
 const RoutesApp = lazy(() => import('./RoutesApp').then((module) => ({ default: module.RoutesApp })))
@@ -92,7 +92,6 @@ export function App() {
               hoverBackgroundDark={'#18193B'}
               persistentAdditionalContent={isMobile ? null : persistentAdditionalContent} // This will stay at its original location
               additionalContent={null} // On desktop renders inside the menu bar, on mobile renders inside the mobile menu
-              rootDomain={ROOT_DOMAIN}
             />
           )}
 

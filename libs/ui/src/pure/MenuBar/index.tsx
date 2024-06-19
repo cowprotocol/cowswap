@@ -8,7 +8,6 @@ import IMG_ICON_SETTINGS_GLOBAL from '@cowprotocol/assets/images/settings-global
 import IMG_ICON_X from '@cowprotocol/assets/images/x.svg'
 import { useMediaQuery, useOnClickOutside } from '@cowprotocol/common-hooks'
 import { addBodyClass, removeBodyClass } from '@cowprotocol/common-utils'
-import { CowSwapTheme } from '@cowprotocol/widget-lib'
 
 import SVG from 'react-inlinesvg'
 import { ThemeProvider } from 'styled-components/macro'
@@ -36,6 +35,7 @@ import {
 
 import { Color } from '../../consts'
 import { Media, themeMapper } from '../../consts'
+import { CowSwapTheme } from '../../types'
 import { ProductLogo, ProductVariant } from '../ProductLogo'
 
 const DAO_NAV_ITEMS: MenuItem[] = [
@@ -637,7 +637,6 @@ interface MenuBarProps {
   navItems: MenuItem[]
   theme: 'light' | 'dark'
   productVariant: ProductVariant
-  rootDomain: string
   persistentAdditionalContent?: React.ReactNode
   additionalContent?: React.ReactNode
   showGlobalSettings?: boolean
@@ -665,7 +664,6 @@ export const MenuBar = (props: MenuBarProps) => {
     navItems,
     theme,
     productVariant,
-    rootDomain,
     persistentAdditionalContent,
     additionalContent,
     showGlobalSettings,
@@ -699,6 +697,8 @@ export const MenuBar = (props: MenuBarProps) => {
   const navItemsRef = useRef<HTMLUListElement>(null)
   const settingsButtonRef = useRef<HTMLButtonElement>(null)
   const settingsDropdownRef = useRef<HTMLDivElement>(null)
+
+  const rootDomain = window.location.host
 
   const handleSettingsToggle = () => setIsSettingsOpen((prev) => !prev)
 
