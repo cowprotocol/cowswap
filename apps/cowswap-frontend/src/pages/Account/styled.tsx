@@ -190,17 +190,19 @@ export const Card = styled.div<{ showLoader?: boolean }>`
 
   ${ButtonPrimary} {
     height: 52px;
+    gap: 10px;
 
     > svg {
       height: 100%;
       width: 16px;
       object-fit: contain;
       margin: 0;
+      color: inherit;
       transform: translateX(0);
       transition: transform var(${UI.ANIMATION_DURATION}) ease-in-out;
 
       > path {
-        fill: ${({ theme }) => theme.white};
+        fill: currentColor;
       }
     }
 
@@ -349,7 +351,7 @@ export const BannerCard = styled(BannerExplainer)`
       line-height: 1.5;
       text-align: left;
       padding: 0;
-      margin: 0 auto;
+      margin: 0;
 
       ${Media.upToSmall()} {
         text-align: center;
