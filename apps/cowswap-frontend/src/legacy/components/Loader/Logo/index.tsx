@@ -1,9 +1,10 @@
 import { useState } from 'react'
 
+import { useTheme } from '@cowprotocol/common-hooks'
+
 import { Slash } from 'react-feather'
 import { ImageProps } from 'rebass'
 
-import { useTheme } from '@cowprotocol/common-hooks'
 
 const BAD_SRCS: { [tokenAddress: string]: true } = {}
 

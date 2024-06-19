@@ -1,5 +1,7 @@
 import React, { PropsWithChildren, useMemo } from 'react'
 
+import { themeMapper } from '@cowprotocol/ui'
+
 import { useThemeMode } from 'hooks/useThemeManager'
 import {
   DefaultTheme,
@@ -8,28 +10,17 @@ import {
   ThemeProvider as StyledComponentsThemeProvider,
 } from 'styled-components/macro'
 
-import { getFonts, getThemePalette, mediaWidthTemplates as mediaQueries } from './styles'
+import { getFonts, getThemePalette } from './styles'
 
 export * from './styles'
 export * from './types'
-
-const getBaseTheme = (): Pick<DefaultTheme, 'mediaQueries' | 'mq'> => ({
-  // media queries
-  mediaQueries,
-  get mq(): DefaultTheme['mq'] {
-    return this.mediaQueries
-  },
-})
 
 // This type is all React.ReactElement & StyledComponents combined
 type ReactOrStyledNode = React.ReactElement &
   StyledComponent<keyof JSX.IntrinsicElements, Record<string, unknown>, Record<string, unknown>, never>
 
 // Extension/override of styled-components' ThemeProvider but with our own constructed theme object
-const ThemeProvider = ({
-  children,
-  componentKey,
-}: PropsWithChildren<{ componentKey?: Partial<DefaultTheme['componentKey']> }>) => {
+const ThemeProvider = ({ children }: PropsWithChildren) => {
   const mode = useThemeMode()
 
   const themeObject = useMemo(() => {
@@ -37,16 +28,15 @@ const ThemeProvider = ({
     const fontPalette = getFonts(mode)
 
     const computedTheme: DefaultTheme = {
+      ...themeMapper(mode),
       mode,
-      componentKey,
       // Compute the app colour pallette using the passed in themeMode
       ...themePalette,
       ...fontPalette,
-      ...getBaseTheme(),
     }
 
     return computedTheme
-  }, [componentKey, mode])
+  }, [mode])
 
   // We want to pass the ThemeProvider theme to all children implicitly, no need to manually pass it
   return (

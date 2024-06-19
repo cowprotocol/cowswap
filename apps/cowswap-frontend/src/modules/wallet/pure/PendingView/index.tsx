@@ -1,8 +1,8 @@
 import { Command } from '@cowprotocol/types'
 import { ButtonEmpty, ButtonPrimary, Loader } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
-import { UI } from '@cowprotocol/ui'
 import styled from 'styled-components/macro'
 
 import { ThemedText } from 'legacy/theme'

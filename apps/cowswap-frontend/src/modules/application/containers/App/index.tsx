@@ -1,30 +1,30 @@
 import { useMemo, lazy, Suspense } from 'react'
+
+import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
+import { Color, Media, MenuBar, Footer, GlobalCoWDAOStyles, LoadingApp } from '@cowprotocol/ui'
+
 import ErrorBoundary from 'legacy/components/ErrorBoundary'
+import { AccountElement } from 'legacy/components/Header/AccountElement'
+import { NetworkSelector } from 'legacy/components/Header/NetworkSelector'
+import { HeaderControls, HeaderElement } from 'legacy/components/Header/styled'
 import { URLWarning } from 'legacy/components/Header/URLWarning'
 import TopLevelModals from 'legacy/components/TopLevelModals'
+import { useDarkModeManager } from 'legacy/state/user/hooks'
 import DarkModeQueryParamReader from 'legacy/theme'
+
 import { OrdersPanel } from 'modules/account'
+import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { useInitializeUtm } from 'modules/utm'
+
 import { InvalidLocalTimeWarning } from 'common/containers/InvalidLocalTimeWarning'
 import { useAnalyticsReporter } from 'common/hooks/useAnalyticsReporter'
-import RedirectAnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers/RedirectAnySwapAffectedUsers'
-import * as styledEl from './styled'
-import { Color, Media, MenuBar, Footer, GlobalCoWDAOStyles, LoadingApp } from '@cowprotocol/ui'
-import { CoWDAOFonts } from 'common/styles/CoWDAOFonts'
-
-import { useDarkModeManager } from 'legacy/state/user/hooks'
-import { useMediaQuery } from '@cowprotocol/common-hooks'
-
-import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
+import { CoWDAOFonts } from 'common/styles/CoWDAOFonts'
+import RedirectAnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers/RedirectAnySwapAffectedUsers'
 
-import { HeaderControls, HeaderElement } from 'legacy/components/Header/styled'
-import { AccountElement } from 'legacy/components/Header/AccountElement'
-
-import { NetworkSelector } from 'legacy/components/Header/NetworkSelector'
-
-import { NAV_ITEMS, FOOTER_NAV_ITEMS, PRODUCT_VARIANT, ROOT_DOMAIN, ADDITIONAL_FOOTER_CONTENT } from './const'
+import { NAV_ITEMS, FOOTER_NAV_ITEMS, PRODUCT_VARIANT, ADDITIONAL_FOOTER_CONTENT } from './menuConsts'
+import * as styledEl from './styled'
 
 const RoutesApp = lazy(() => import('./RoutesApp').then((module) => ({ default: module.RoutesApp })))
 
@@ -92,7 +92,6 @@ export function App() {
               hoverBackgroundDark={'#18193B'}
               persistentAdditionalContent={isMobile ? null : persistentAdditionalContent} // This will stay at its original location
               additionalContent={null} // On desktop renders inside the menu bar, on mobile renders inside the mobile menu
-              rootDomain={ROOT_DOMAIN}
             />
           )}
 

@@ -1,10 +1,11 @@
 import React, { PropsWithChildren } from 'react'
 
+import { useMediaQuery } from '@cowprotocol/common-hooks'
+import { Color, Media, ProductLogo, ProductVariant } from '@cowprotocol/ui'
+
 import { Link } from 'react-router-dom'
 import styled from 'styled-components/macro'
 import { media } from 'theme/styles/media'
-import { Color, Media, ProductLogo, ProductVariant } from '@cowprotocol/ui'
-import { useMediaQuery } from '@cowprotocol/common-hooks'
 
 const HeaderStyled = styled.header`
   height: auto;

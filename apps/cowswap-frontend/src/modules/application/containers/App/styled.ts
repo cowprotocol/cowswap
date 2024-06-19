@@ -1,10 +1,11 @@
+import IMAGE_BACKGROUND_DARK from '@cowprotocol/assets/images/background-cowswap-darkmode.svg'
+import IMAGE_BACKGROUND_LIGHT from '@cowprotocol/assets/images/background-cowswap-lightmode.svg'
+import { Media } from '@cowprotocol/ui'
+
 import * as CSS from 'csstype'
 import styled from 'styled-components/macro'
 
-import { Media } from '@cowprotocol/ui'
 
-import IMAGE_BACKGROUND_LIGHT from '@cowprotocol/assets/images/background-cowswap-lightmode.svg'
-import IMAGE_BACKGROUND_DARK from '@cowprotocol/assets/images/background-cowswap-darkmode.svg'
 
 export const AppWrapper = styled.div<Partial<CSS.Properties>>`
   display: flex;

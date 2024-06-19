@@ -1,4 +1,5 @@
 import { ButtonSize } from '../enum'
+import { CowSwapTheme } from '../types'
 
 type ColorValue = string
 
@@ -120,28 +121,9 @@ export interface Colors extends ColorsUniswap {
 }
 
 declare module 'styled-components' {
-  // Copy of DefaultTheme in '../../theme/styled'
-  export interface DefaultThemeUniswap extends ColorsUniswap {
-    grids: any
-
-    // shadows
-    shadow1: string
-
-    // media queries
-    mediaWidth: {
-      upToExtraSmall: ThemedCssFunction<DefaultTheme>
-      upToSmall: ThemedCssFunction<DefaultTheme>
-      upToMedium: ThemedCssFunction<DefaultTheme>
-      upToLarge: ThemedCssFunction<DefaultTheme>
-    }
-
-    // css snippets
-    flexColumnNoWrap: FlattenSimpleInterpolation
-    flexRowNoWrap: FlattenSimpleInterpolation
-  }
-
   // Override theme
-  export interface DefaultTheme extends DefaultThemeUniswap, Colors {
+  export interface CowProtocolTheme extends Colors {
+    mode: CowSwapTheme
     isInjectedWidgetMode: boolean
     shimmer: FlattenSimpleInterpolation
     colorScrollbar: FlattenSimpleInterpolation
@@ -267,5 +249,15 @@ declare module 'styled-components' {
       upToLargeAlt: ThemedCssFunction<DefaultTheme>
       upToExtraLarge: ThemedCssFunction<DefaultTheme>
     }
+    grids: any
+
+    // shadows
+    shadow1: string
+
+    // css snippets
+    flexColumnNoWrap: FlattenSimpleInterpolation
+    flexRowNoWrap: FlattenSimpleInterpolation
   }
+
+  export interface DefaultTheme extends CowProtocolTheme {}
 }

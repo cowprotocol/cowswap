@@ -1,6 +1,5 @@
 import { MenuItem, ProductVariant } from '@cowprotocol/ui'
 
-export const ROOT_DOMAIN = 'cow.fi'
 export const THEME_MODE = 'dark'
 export const PRODUCT_VARIANT = ProductVariant.CowDao
 

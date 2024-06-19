@@ -1,4 +1,5 @@
 import { isMobile } from '@cowprotocol/common-utils'
+
 import { initAnalytics, serviceWorkerAnalytics } from './events/otherEvents'
 import { googleAnalytics } from './googleAnalytics'
 import { Dimensions } from './types'

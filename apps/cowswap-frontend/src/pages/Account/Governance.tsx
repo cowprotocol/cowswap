@@ -1,4 +1,5 @@
 import { ProductLogo, ProductVariant } from '@cowprotocol/ui'
+
 import { useDarkModeManager } from 'legacy/state/user/hooks'
 
 import { ExtLink, BannerCard, BannerCardContent, BannerCardIcon, CardActions } from './styled'
