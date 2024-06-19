@@ -698,7 +698,7 @@ export const MenuBar = (props: MenuBarProps) => {
   const settingsButtonRef = useRef<HTMLButtonElement>(null)
   const settingsDropdownRef = useRef<HTMLDivElement>(null)
 
-  const rootDomain = window.location.host
+  const rootDomain = typeof window !== 'undefined' ? window.location.host : ''
 
   const handleSettingsToggle = () => setIsSettingsOpen((prev) => !prev)
 
