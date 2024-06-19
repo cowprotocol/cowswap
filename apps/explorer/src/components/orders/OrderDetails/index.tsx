@@ -26,7 +26,6 @@ import { Order, Trade } from 'api/operator'
 import { FillsTableContext } from './context/FillsTableContext'
 import { FillsTableWithData } from './FillsTableWithData'
 
-
 const TitleUid = styled(RowWithCopyButton)`
   color: ${({ theme }): string => theme.grey};
   font-size: ${({ theme }): string => theme.fontSizeDefault};
@@ -215,9 +214,7 @@ export const OrderDetails: React.FC<Props> = (props) => {
     <>
       <h1>
         {order && 'Order details'}
-        {order && (
-          <TitleUid textToCopy={order.uid} contentsToDisplay={<TruncatedText text={order.uid} width="10ch" />} />
-        )}
+        {order && <TitleUid textToCopy={order.uid} contentsToDisplay={<TruncatedText text={order.uid} />} />}
       </h1>
       <ConnectionStatus />
       {Object.keys(errors).map((key) => (

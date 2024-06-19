@@ -192,7 +192,7 @@ const RowOrder: React.FC<RowProps> = ({ order, isPriceInverted }) => {
             textToCopy={uid}
             contentsToDisplay={
               <LinkWithPrefixNetwork to={`/orders/${order.uid}`} rel="noopener noreferrer" target="_self">
-                <TruncatedText text={uid} width="10ch" />
+                <TruncatedText text={uid} />
               </LinkWithPrefixNetwork>
             }
           />
