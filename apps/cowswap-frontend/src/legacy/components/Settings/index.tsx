@@ -1,13 +1,13 @@
+import IMAGE_ICON_SETTINGS_ALT from '@cowprotocol/assets/images/icon-settings-alt.svg'
 import { Command } from '@cowprotocol/types'
 import { RowFixed, UI } from '@cowprotocol/ui'
 import { Percent } from '@uniswap/sdk-core'
 
 import { transparentize } from 'color2k'
+import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 import { WithClassName } from 'types'
 
-import IMAGE_ICON_SETTINGS_ALT from '@cowprotocol/assets/images/icon-settings-alt.svg'
-import SVG from 'react-inlinesvg'
 
 import SettingsMod, { EmojiWrapper, MenuFlyout, StyledMenuButton, StyledMenuIcon } from './SettingsMod'
 

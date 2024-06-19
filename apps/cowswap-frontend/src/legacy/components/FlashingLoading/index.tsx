@@ -1,7 +1,9 @@
 import { ProductLogo, ProductVariant } from '@cowprotocol/ui'
-import { useDarkModeManager } from 'legacy/state/user/hooks'
+
 import { transparentize } from 'color2k'
 import styled from 'styled-components/macro'
+
+import { useDarkModeManager } from 'legacy/state/user/hooks'
 
 export const LoadingWrapper = styled.div`
   display: flex;

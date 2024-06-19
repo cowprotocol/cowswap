@@ -2,7 +2,10 @@ import { useRef } from 'react'
 
 import { getChainInfo } from '@cowprotocol/common-const'
 import { useAvailableChains } from '@cowprotocol/common-hooks'
+import { useOnClickOutside } from '@cowprotocol/common-hooks'
+import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { UI } from '@cowprotocol/ui'
+import { Media } from '@cowprotocol/ui'
 import { useIsRabbyWallet, useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
@@ -17,11 +20,8 @@ import { useIsDarkMode } from 'legacy/state/user/hooks'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useOnSelectNetwork } from 'common/hooks/useOnSelectNetwork'
-import { useOnClickOutside } from '@cowprotocol/common-hooks'
-import { useMediaQuery } from '@cowprotocol/common-hooks'
-
 import { NetworksList } from 'common/pure/NetworksList'
-import { Media } from '@cowprotocol/ui'
+
 
 const FlyoutHeader = styled.div`
   color: inherit;

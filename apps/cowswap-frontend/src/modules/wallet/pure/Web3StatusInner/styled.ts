@@ -1,5 +1,5 @@
 import { ButtonSecondary } from '@cowprotocol/ui'
-import { UI, Media } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 
 import styled, { css } from 'styled-components/macro'
 

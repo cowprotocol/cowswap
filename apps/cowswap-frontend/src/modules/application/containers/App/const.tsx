@@ -1,10 +1,12 @@
-import { MenuItem, ProductVariant } from '@cowprotocol/ui'
 
 import IMG_ICON_COW_RUNNER from '@cowprotocol/assets/cow-swap/game.gif'
 import IMG_ICON_COW_SLICER from '@cowprotocol/assets/cow-swap/ninja-cow.png'
+import { MenuItem, ProductVariant } from '@cowprotocol/ui'
 
 import AppziButton from 'legacy/components/AppziButton'
+
 import { FortuneWidget } from 'modules/fortune/containers/FortuneWidget'
+
 import { FeatureGuard } from 'common/containers/FeatureGuard'
 
 export const PRODUCT_VARIANT = ProductVariant.CowSwap

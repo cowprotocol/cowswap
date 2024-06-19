@@ -12,7 +12,6 @@ import { CowSwapTheme } from '@cowprotocol/widget-lib'
 
 import SVG from 'react-inlinesvg'
 import { ThemeProvider } from 'styled-components/macro'
-import { Color } from '../../consts'
 
 import {
   DropdownContent,
@@ -35,6 +34,7 @@ import {
   StyledDropdownContentItem,
 } from './styled'
 
+import { Color } from '../../consts'
 import { Media, themeMapper } from '../../consts'
 import { ProductLogo, ProductVariant } from '../ProductLogo'
 

@@ -1,5 +1,7 @@
 import { CowSwapTheme } from '@cowprotocol/widget-lib'
+
 import styled, { css } from 'styled-components/macro'
+
 import { Color, Font } from '../../consts'
 import { ProductLogoWrapper } from '../ProductLogo'
 

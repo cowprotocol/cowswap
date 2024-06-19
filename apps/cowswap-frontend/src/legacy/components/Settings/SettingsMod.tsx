@@ -1,11 +1,10 @@
-import { useCallback, useRef, RefObject } from 'react'
+import { useCallback, useRef } from 'react'
 
 import { toggleRecepientAddressAnalytics } from '@cowprotocol/analytics'
 import { useOnClickOutside } from '@cowprotocol/common-hooks'
 import { HelpTooltip, RowBetween, RowFixed, UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
-
 import { Text } from 'rebass'
 import styled from 'styled-components/macro'
 

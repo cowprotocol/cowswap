@@ -2,8 +2,8 @@ import { CowSwapTheme } from '@cowprotocol/widget-lib'
 
 import { createGlobalStyle, css, DefaultTheme, DefaultThemeUniswap } from 'styled-components/macro'
 
-import { colors, themeVariables as baseThemeVariables } from './theme'
 import { UI } from './enum'
+import { colors, themeVariables as baseThemeVariables } from './theme'
 
 export const AMOUNTS_FORMATTING_FEATURE_FLAG = 'highlight-amounts-formatting'
 export const SAFE_COW_APP_LINK = 'https://app.safe.global/share/safe-app?appUrl=https%3A%2F%2Fswap.cow.fi&chain=eth'
@@ -169,7 +169,7 @@ type GlobalCowDAOFonts = {
 
 export const GlobalCoWDAOStyles = (fonts: GlobalCowDAOFonts, bgColor?: string, color?: string) =>
   createGlobalStyle(
-    ({ theme }: { theme: CowSwapTheme }) => css`
+    () => css`
       @font-face {
         font-family: 'studiofeixen';
         src: url(${fonts.FONT_STUDIO_FEIXEN_ULTRALIGHT}) format('woff2');
@@ -291,20 +291,3 @@ export const GlobalCoWDAOStyles = (fonts: GlobalCowDAOFonts, bgColor?: string, c
       }
     `
   )
-
-// export const THEME = (theme: CowSwapTheme) => {
-//   return {
-//     buttonSizes: {
-//       [ButtonSize.BIG]: css`
-//         font-size: 26px;
-//         min-height: 60px;
-//       `,
-//       [ButtonSize.DEFAULT]: css`
-//         font-size: 16px;
-//       `,
-//       [ButtonSize.SMALL]: css`
-//         font-size: 12px;
-//       `,
-//     },
-//   }
-// }

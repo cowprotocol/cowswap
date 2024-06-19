@@ -1,5 +1,4 @@
 import { Loader as SpinnerLoader, ButtonPrimary, Media } from '@cowprotocol/ui'
-
 import { ExternalLink } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 
