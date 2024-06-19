@@ -1,5 +1,33 @@
 # Changelog
 
+## [1.73.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.72.1...cowswap-v1.73.0) (2024-06-18)
+
+
+### Features
+
+* cowswap volume fee ([#4547](https://github.com/cowprotocol/cowswap/issues/4547)) ([85ef997](https://github.com/cowprotocol/cowswap/commit/85ef997771a7ce5e51d6b1f41335d89913b5dfbb))
+* **limit-orders:** add partner fee (variant A) ([#4502](https://github.com/cowprotocol/cowswap/issues/4502)) ([9e12875](https://github.com/cowprotocol/cowswap/commit/9e12875ed9a7625ae9e7f5c26b3a8a680b828e34))
+* **limit-orders:** allow partner fee (variant B) ([#4467](https://github.com/cowprotocol/cowswap/issues/4467)) ([72d9af8](https://github.com/cowprotocol/cowswap/commit/72d9af8869618e8f12aa2170326cf18b35db786a))
+* reduce ethflow slippage for non mainnet chains ([#4524](https://github.com/cowprotocol/cowswap/issues/4524)) ([8c47780](https://github.com/cowprotocol/cowswap/commit/8c4778022b9d4970c0aa716f66285a04dac4c101))
+* **trade:** sync trade amounts between widgets ([#4521](https://github.com/cowprotocol/cowswap/issues/4521)) ([538bf04](https://github.com/cowprotocol/cowswap/commit/538bf04cc38744af04a719d5f4261f0951a07203))
+* **twap:** add partner fee ([#4496](https://github.com/cowprotocol/cowswap/issues/4496)) ([a882522](https://github.com/cowprotocol/cowswap/commit/a88252272229728663941d291a4a3813d90e97a8))
+* update T&C for arb1 ([#4552](https://github.com/cowprotocol/cowswap/issues/4552)) ([f43786e](https://github.com/cowprotocol/cowswap/commit/f43786e90a040c42a0cb58c38c8280a0cd5a5acb))
+* **widget:** use flexible config for partner fee ([#4546](https://github.com/cowprotocol/cowswap/issues/4546)) ([e23194a](https://github.com/cowprotocol/cowswap/commit/e23194acde8d97b8b4f852e73f4f59b33e65a8b8))
+
+
+### Bug Fixes
+
+* **arb1:** adjust progress bar timing to 40s ([#4523](https://github.com/cowprotocol/cowswap/issues/4523)) ([49e0957](https://github.com/cowprotocol/cowswap/commit/49e0957a8b2228d655038b3beebf7e5084f70120))
+* connect wallet in e2e tests ([#4531](https://github.com/cowprotocol/cowswap/issues/4531)) ([0b5c369](https://github.com/cowprotocol/cowswap/commit/0b5c369f633151fc7f77768d6f39a4580d1c553f))
+* display network selector for Rabby + Safe ([#4510](https://github.com/cowprotocol/cowswap/issues/4510)) ([1bfafeb](https://github.com/cowprotocol/cowswap/commit/1bfafeb1b10ea8b5622827a3f84f19faeab95b70))
+* **limit:** do not allow wrap without full balance ([#4526](https://github.com/cowprotocol/cowswap/issues/4526)) ([7142d1c](https://github.com/cowprotocol/cowswap/commit/7142d1c3a5215aca3e4c1e793501feb25f0fc402))
+* **quotes:** remove verified quotes ([#4528](https://github.com/cowprotocol/cowswap/issues/4528)) ([d05b397](https://github.com/cowprotocol/cowswap/commit/d05b397a2054a88246f4c9e73bc08ee411f33d70))
+* **slippage:** always reset ethflow slippage when changing networks ([#4559](https://github.com/cowprotocol/cowswap/issues/4559)) ([e34cf14](https://github.com/cowprotocol/cowswap/commit/e34cf14b6279f12751071762bf97d50240c721b6))
+* **trade:** check recipient against account and ens name ([#4530](https://github.com/cowprotocol/cowswap/issues/4530)) ([d2dd0b6](https://github.com/cowprotocol/cowswap/commit/d2dd0b6aa835904e4fbe191ef63bca586a222c60))
+* **trade:** display recipient on confirm screen ([#4558](https://github.com/cowprotocol/cowswap/issues/4558)) ([7e8e3e6](https://github.com/cowprotocol/cowswap/commit/7e8e3e6ec9d2ed214ae37481e296800ecb17aed1))
+* **widget:** allow using walletconnect in widget mobile ([#4522](https://github.com/cowprotocol/cowswap/issues/4522)) ([ff58638](https://github.com/cowprotocol/cowswap/commit/ff586381f673314cf5d847f4f52da2e9e4015bea))
+* **widget:** remove favorite tooltip for widget ([#4527](https://github.com/cowprotocol/cowswap/issues/4527)) ([3b864f5](https://github.com/cowprotocol/cowswap/commit/3b864f57c09fdb74a4fdc90e93c6a64e1e30315f))
+
 ## [1.72.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.72.0...cowswap-v1.72.1) (2024-06-06)
 
 

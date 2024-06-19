@@ -50,7 +50,7 @@ export function useActivateConnector({
         onActivationError(error)
       }
     },
-    [chainId, pendingConnector, skipNetworkChanging]
+    [chainId, pendingConnector, skipNetworkChanging, afterActivation, beforeActivation, onActivationError]
   )
 
   return {

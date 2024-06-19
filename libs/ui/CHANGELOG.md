@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/cowprotocol/cowswap/compare/ui-v1.2.1...ui-v1.3.0) (2024-06-18)
+
+
+### Features
+
+* **limit-orders:** allow partner fee (variant B) ([#4467](https://github.com/cowprotocol/cowswap/issues/4467)) ([72d9af8](https://github.com/cowprotocol/cowswap/commit/72d9af8869618e8f12aa2170326cf18b35db786a))
+
 ## [1.2.1](https://github.com/cowprotocol/cowswap/compare/ui-v1.2.0...ui-v1.2.1) (2024-05-29)
 
 

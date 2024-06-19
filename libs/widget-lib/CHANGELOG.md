@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.13.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v0.12.0...widget-lib-v0.13.0) (2024-06-18)
+
+
+### Features
+
+* **widget:** use flexible config for partner fee ([#4546](https://github.com/cowprotocol/cowswap/issues/4546)) ([e23194a](https://github.com/cowprotocol/cowswap/commit/e23194acde8d97b8b4f852e73f4f59b33e65a8b8))
+
+
+### Bug Fixes
+
+* **widget:** allow using walletconnect in widget mobile ([#4522](https://github.com/cowprotocol/cowswap/issues/4522)) ([ff58638](https://github.com/cowprotocol/cowswap/commit/ff586381f673314cf5d847f4f52da2e9e4015bea))
+
 ## [0.12.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v0.11.0...widget-lib-v0.12.0) (2024-05-29)
 
 

@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.4.1](https://github.com/cowprotocol/cowswap/compare/wallet-v1.4.0...wallet-v1.4.1) (2024-06-18)
+
+
+### Bug Fixes
+
+* connect wallet in e2e tests ([#4531](https://github.com/cowprotocol/cowswap/issues/4531)) ([0b5c369](https://github.com/cowprotocol/cowswap/commit/0b5c369f633151fc7f77768d6f39a4580d1c553f))
+* display network selector for Rabby + Safe ([#4510](https://github.com/cowprotocol/cowswap/issues/4510)) ([1bfafeb](https://github.com/cowprotocol/cowswap/commit/1bfafeb1b10ea8b5622827a3f84f19faeab95b70))
+
 ## [1.4.0](https://github.com/cowprotocol/cowswap/compare/wallet-v1.3.0...wallet-v1.4.0) (2024-05-29)
 
 
