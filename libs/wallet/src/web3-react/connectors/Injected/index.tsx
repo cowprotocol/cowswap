@@ -149,7 +149,7 @@ export class InjectedWallet extends Connector {
 
         this.provider
           ?.request({ method: 'PUBLIC_disconnectSite' })
-          .catch((e) => console.log('Failed to call "PUBLIC_disconnectSite", ignoring'))
+          .catch(() => console.log('Failed to call "PUBLIC_disconnectSite", ignoring'))
 
         this.deactivate()
         this.onError?.(error)
