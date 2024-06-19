@@ -159,7 +159,7 @@ const Wrapper = styled.div`
     padding: 0 10px 16px;
 
     ${Media.upToMedium()} {
-      font-size: 32px;
+      font-size: 26px;
     }
   }
 `
@@ -188,7 +188,7 @@ export default function Page({ siteConfigData, categories, articles, featuredArt
 
         <SearchBar articles={articles} />
 
-        <ContainerCard>
+        <ContainerCard marginMobile="0 auto 24px">
           <ContainerCardInner maxWidth={1350}>
             <ContainerCardSection>
               <ContainerCardSectionTop alignMobile="center">

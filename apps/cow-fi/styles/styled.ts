@@ -25,6 +25,7 @@ export const ContainerCard = styled.div<{
   padding?: string
   minHeight?: string
   margin?: string
+  marginMobile?: string
 }>`
   display: flex;
   flex-flow: row wrap;
@@ -44,6 +45,8 @@ export const ContainerCard = styled.div<{
     flex-flow: column wrap;
     padding: 48px 21px;
     gap: ${({ gapMobile }) => gapMobile || 100}px;
+    margin: ${({ marginMobile, touchFooter, margin }) =>
+      marginMobile ? marginMobile : touchFooter ? '0 0 -65px' : margin || '24px 0'};
   }
 `
 
@@ -561,7 +564,7 @@ export const CTATitle = styled.h6`
   white-space: wrap;
 
   ${Media.upToMedium()} {
-    font-size: 38px;
+    font-size: 28px;
   }
 `
 

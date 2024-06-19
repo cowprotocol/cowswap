@@ -289,7 +289,7 @@ interface DropdownContentProps {
 }
 
 export const DropdownContent = styled.div<DropdownContentProps>`
-  --dropdownOffset: 12px;
+  --dropdownOffset: 8px;
 
   display: ${({ isOpen }) => (isOpen ? 'block' : 'none')};
   flex: ${({ isThirdLevel }) => (isThirdLevel ? '1 1 100%;' : 'initial')};
@@ -566,6 +566,10 @@ export const DropdownMenu = styled.div<{ mobileMode?: boolean }>`
   border-radius: inherit;
   border-radius: var(--borderRadius);
   color: inherit;
+
+  ${DropdownContent} {
+    --dropdownOffset: 14px;
+  }
 
   &:hover {
     background: var(--activeBackground);
