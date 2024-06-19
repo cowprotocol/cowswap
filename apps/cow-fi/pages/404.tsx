@@ -1,12 +1,11 @@
 import Head from 'next/head'
 import { GetStaticProps } from 'next'
 import { Color } from '@cowprotocol/ui'
-import styled from 'styled-components'
 
 import Layout from '@/components/Layout'
 import { Link } from '@/components/Link'
 
-import { ContainerCard, ArticleContent, ArticleMainTitle, BodyContent } from '@/styles/styled'
+import { PageWrapper, ContainerCard, ArticleContent, ArticleMainTitle, BodyContent } from '@/styles/styled'
 
 import { GAEventCategories } from 'lib/analytics/GAEvents'
 import { sendGAEventHandler } from 'lib/analytics/sendGAEvent'
@@ -17,17 +16,6 @@ interface PageProps {
   siteConfigData: typeof CONFIG
 }
 
-const Wrapper = styled.div`
-  display: flex;
-  flex-flow: column wrap;
-  justify-content: flex-start;
-  align-items: center;
-  max-width: 1000px;
-  width: 100%;
-  margin: 24px auto 0;
-  gap: 24px;
-`
-
 export default function Page({ siteConfigData }: PageProps) {
   const { title } = siteConfigData
 
@@ -37,7 +25,7 @@ export default function Page({ siteConfigData }: PageProps) {
       metaTitle="404 - Page Not Found"
       metaDescription="This page could not be found. Please go back to the homepage or use the navigation menu to find what you are looking for."
     >
-      <Wrapper>
+      <PageWrapper>
         <ContainerCard bgColor={'transparent'} minHeight="70vh" gap={62} gapMobile={42} centerContent touchFooter>
           <ArticleContent maxWidth="100%">
             <ArticleMainTitle margin={'0 0 62px'} fontSize={52}>
@@ -55,7 +43,7 @@ export default function Page({ siteConfigData }: PageProps) {
             </BodyContent>
           </ArticleContent>
         </ContainerCard>
-      </Wrapper>
+      </PageWrapper>
     </Layout>
   )
 }

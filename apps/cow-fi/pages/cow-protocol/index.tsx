@@ -11,13 +11,12 @@ import IMG_LOGO_SAFE from '@cowprotocol/assets/images/logo-safe.svg'
 import IMG_LOGO_LIDO from '@cowprotocol/assets/images/logo-lido.svg'
 import IMG_LOGO_CURVE from '@cowprotocol/assets/images/logo-curve.svg'
 
-import styled from 'styled-components'
-
 import Layout from '@/components/Layout'
 import FAQ from '@/components/FAQ'
 import { Link, LinkType } from '@/components/Link'
 
 import {
+  PageWrapper,
   ContainerCard,
   ContainerCardSection,
   TopicList,
@@ -54,18 +53,6 @@ interface PageProps {
   siteConfigData: typeof CONFIG
 }
 
-const Wrapper = styled.div`
-  --maxWidth: 1760px;
-  display: flex;
-  flex-flow: column wrap;
-  justify-content: center;
-  align-items: center;
-  max-width: var(--maxWidth);
-  width: 100%;
-  margin: 76px auto 0;
-  gap: 24px;
-`
-
 export default function Page({ siteConfigData }: PageProps) {
   return (
     <Layout
@@ -73,8 +60,8 @@ export default function Page({ siteConfigData }: PageProps) {
       metaTitle="CoW Protocol - Do what you want, build what you want"
       metaDescription="CoW Protocol has the largest solver competition and the most advanced developer framework - so you can build any DEX-related action you can imagine"
     >
-      <Wrapper>
-        <HeroContainer variant="secondary" maxWidth={1300}>
+      <PageWrapper>
+        <HeroContainer variant="secondary">
           <HeroContent variant="secondary">
             <HeroSubtitle color={'#66018E'}>CoW Protocol</HeroSubtitle>
             <HeroTitle maxWidth={520}>Do what you want, build what you want</HeroTitle>
@@ -667,7 +654,7 @@ export default function Page({ siteConfigData }: PageProps) {
             <FAQ faqs={FAQ_DATA} />
           </ContainerCardSection>
         </ContainerCard>
-      </Wrapper>
+      </PageWrapper>
     </Layout>
   )
 }

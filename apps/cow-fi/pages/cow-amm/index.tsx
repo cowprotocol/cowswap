@@ -5,13 +5,12 @@ import IMG_ICON_GOVERNANCE from '@cowprotocol/assets/images/icon-governance.svg'
 import IMG_ICON_BULB_COW from '@cowprotocol/assets/images/icon-bulb-cow.svg'
 import IMG_ICON_BUILD_WITH_COW from '@cowprotocol/assets/images/icon-build-with-cow.svg'
 
-import styled from 'styled-components'
-
 import Layout from '@/components/Layout'
 import FAQ from '@/components/FAQ'
 import { Link, LinkType } from '@/components/Link'
 
 import {
+  PageWrapper,
   ContainerCard,
   ContainerCardSection,
   TopicList,
@@ -47,17 +46,6 @@ interface PageProps {
   siteConfigData: typeof CONFIG
 }
 
-const Wrapper = styled.div`
-  display: flex;
-  flex-flow: column wrap;
-  justify-content: center;
-  align-items: center;
-  max-width: 1760px;
-  width: 100%;
-  margin: 76px auto 0;
-  gap: 24px;
-`
-
 export default function Page({ siteConfigData }: PageProps) {
   return (
     <Layout
@@ -65,7 +53,7 @@ export default function Page({ siteConfigData }: PageProps) {
       metaTitle="CoW AMM - The first MEV-capturing AMM"
       metaDescription="CoW AMM protects LPs from LVR so they can provide liquidity with less risk and more return"
     >
-      <Wrapper>
+      <PageWrapper>
         <HeroContainer variant="secondary" maxWidth={1300}>
           <HeroContent variant="secondary">
             <HeroSubtitle color={'#194D05'}>CoW AMM</HeroSubtitle>
@@ -397,7 +385,7 @@ export default function Page({ siteConfigData }: PageProps) {
             <FAQ faqs={FAQ_DATA} />
           </ContainerCardSection>
         </ContainerCard>
-      </Wrapper>
+      </PageWrapper>
     </Layout>
   )
 }

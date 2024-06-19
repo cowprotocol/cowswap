@@ -1,8 +1,6 @@
 import { GetStaticProps } from 'next'
 import { Font, Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
 
-import styled from 'styled-components'
-
 import Layout from '@/components/Layout'
 import FAQ from '@/components/FAQ'
 import { AddRpcButton } from '@/components/AddRpcButton'
@@ -22,6 +20,7 @@ import IMAGE_ICON_MEVBLOCKER_TRUST from '@cowprotocol/assets/images/icon-mevbloc
 import IMAGE_ICON_QUESTIONBALLOON from '@cowprotocol/assets/images/icon-question-balloon.svg'
 
 import {
+  PageWrapper,
   ContainerCard,
   ContainerCardSection,
   TopicList,
@@ -55,17 +54,6 @@ import { sendGAEventHandler } from 'lib/analytics/sendGAEvent'
 import { FAQ_DATA, TRUSTED_BY_CONTENT } from '../../data/mev-blocker/const'
 
 import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
-
-const Wrapper = styled.div`
-  display: flex;
-  flex-flow: column wrap;
-  justify-content: center;
-  align-items: center;
-  max-width: 1760px;
-  width: 100%;
-  margin: 76px auto 0;
-  gap: 24px;
-`
 
 // Configure chains and providers
 const { chains, publicClient } = configureChains([mainnet], [publicProvider()])
@@ -107,8 +95,8 @@ export default function Page({ siteConfigData }: PageProps) {
           metaTitle="Mev Blocker - The best MEV protection under the sun"
           metaDescription="MEV Blocker is your personal protection from frontrunning and sandwich attacks for a broad spectrum of Ethereum transactions"
         >
-          <Wrapper>
-            <HeroContainer variant="secondary" maxWidth={1300} padding="0 20px 76px">
+          <PageWrapper>
+            <HeroContainer variant="secondary">
               <HeroContent variant="secondary">
                 <HeroSubtitle color={'#EC4612'}>MEV Blocker</HeroSubtitle>
                 <HeroTitle>The best MEV protection under the sun</HeroTitle>
@@ -604,7 +592,7 @@ export default function Page({ siteConfigData }: PageProps) {
                 </SectionTitleWrapper>
               </ContainerCardSection>
             </ContainerCard>
-          </Wrapper>
+          </PageWrapper>
           <script async src="https://platform.twitter.com/widgets.js"></script>
         </Layout>
       </RainbowKitProvider>

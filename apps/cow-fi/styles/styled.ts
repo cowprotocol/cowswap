@@ -1,6 +1,18 @@
 import styled, { css } from 'styled-components'
 import { Font, Color, Media } from '@cowprotocol/ui'
 import { transparentize } from 'color2k'
+import { PAGE_MAX_WIDTH } from '@/components/Layout/const'
+
+export const PageWrapper = styled.div`
+  display: flex;
+  flex-flow: column wrap;
+  justify-content: center;
+  align-items: center;
+  max-width: ${PAGE_MAX_WIDTH}px;
+  width: 100%;
+  margin: 0 auto;
+  gap: 24px;
+`
 
 export const ContainerCard = styled.div<{
   bgColor?: string
@@ -805,14 +817,14 @@ export const HeroContainer = styled.div<{
   position: relative;
   min-height: 60vh;
   width: 100%;
-  max-width: ${({ maxWidth }) => (maxWidth ? `${maxWidth}px` : '100%')};
+  max-width: ${({ maxWidth }) => (maxWidth ? `${maxWidth}px` : '1300px')};
   background: transparent;
-  padding: ${({ padding }) => padding || '0 20px'};
+  padding: ${({ padding }) => padding || '76px 20px 56px'};
   overflow: hidden;
   margin: 0 auto;
 
   ${Media.upToMedium()} {
-    padding: ${({ paddingMobile }) => paddingMobile || '0 20px'};
+    padding: ${({ paddingMobile }) => paddingMobile || '38px 20px'};
   }
 
   ${({ variant }) =>
@@ -903,7 +915,7 @@ export const HeroSubtitle = styled.p<{ variant?: string; color?: string }>`
 `
 
 export const HeroDescription = styled.span<{ fontSize?: number; fontSizeMobile?: number; color?: string }>`
-  font-size: ${({ fontSize }) => fontSize || 28}px;
+  font-size: ${({ fontSize }) => fontSize || 26}px;
   font-weight: ${Font.weight.medium};
   color: ${({ color }) => color || Color.neutral10};
   margin: 16px 0;

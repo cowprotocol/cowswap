@@ -4,13 +4,12 @@ import { Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
 import IMG_ICON_UNICORN from '@cowprotocol/assets/images/icon-unicorn.svg'
 import IMG_ICON_FLOWER_COW from '@cowprotocol/assets/images/icon-flower-cow.svg'
 
-import styled from 'styled-components'
-
 import Layout from '@/components/Layout'
 import FAQ from '@/components/FAQ'
 import { Link, LinkType } from '@/components/Link'
 
 import {
+  PageWrapper,
   ContainerCard,
   ContainerCardSection,
   TopicList,
@@ -46,17 +45,6 @@ interface PageProps {
   siteConfigData: typeof CONFIG
 }
 
-const Wrapper = styled.div`
-  display: flex;
-  flex-flow: column wrap;
-  justify-content: center;
-  align-items: center;
-  max-width: 1760px;
-  width: 100%;
-  margin: 76px auto 0;
-  gap: 24px;
-`
-
 export default function Page({ siteConfigData }: PageProps) {
   return (
     <Layout
@@ -64,8 +52,8 @@ export default function Page({ siteConfigData }: PageProps) {
       metaTitle="CoW Swap - Don't worry, trade happy"
       metaDescription="CoW Swap protects traders from the dangers of DeFi, so you can do what you want without needing to worry"
     >
-      <Wrapper>
-        <HeroContainer variant="secondary" maxWidth={1350} padding="0 20px 90px">
+      <PageWrapper>
+        <HeroContainer variant="secondary">
           <HeroContent variant="secondary">
             <HeroSubtitle color={'#012F7A'}>CoW Swap</HeroSubtitle>
             <HeroTitle>
@@ -501,7 +489,7 @@ export default function Page({ siteConfigData }: PageProps) {
             </SectionTitleWrapper>
           </ContainerCardSection>
         </ContainerCard>
-      </Wrapper>
+      </PageWrapper>
 
       <script async src="https://platform.twitter.com/widgets.js"></script>
     </Layout>

@@ -7,13 +7,11 @@ import IMG_ICON_BULB_COW from '@cowprotocol/assets/images/icon-bulb-cow.svg'
 import IMG_ICON_OWL from '@cowprotocol/assets/images/icon-owl.svg'
 import IMG_ICON_GHOST from '@cowprotocol/assets/images/icon-ghost.svg'
 
-import styled from 'styled-components'
-
 import Layout from '@/components/Layout'
-import FAQ from '@/components/FAQ'
 import { Link, LinkType } from '@/components/Link'
 
 import {
+  PageWrapper,
   ContainerCard,
   ContainerCardSection,
   TopicList,
@@ -37,7 +35,7 @@ import {
   SwiperSlideWrapper,
 } from '@/styles/styled'
 
-import { DAO_CONTENT as CONTENT } from '@/data/siteContent/daos'
+import { DAO_CONTENT as CONTENT } from '@/data/widget/daos'
 
 import SVG from 'react-inlinesvg'
 import IMG_ICON_FAQ from '@cowprotocol/assets/images/icon-faq.svg'
@@ -53,44 +51,9 @@ import { sendGAEventHandler } from 'lib/analytics/sendGAEvent'
 
 import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
 
-const FAQ_DATA = [
-  {
-    question: 'What is CoW DAO?',
-    answer: 'CoW DAO is ...',
-  },
-  {
-    question: 'What is CoW Swap?',
-    answer:
-      'CoW Protocol is a fully permissionless trading protocol that leverages batch auctions as its price finding mechanism. CoW Protocol uses batch auctions to maximize liquidity via Coincidence of Wants (CoWs) in addition to tapping all available on-chain liquidity whenever needed.',
-  },
-  {
-    question: 'What is MEV Blocker?',
-    answer: 'MEV Blocker is ...',
-  },
-  {
-    question: 'What is CoW AMM?',
-    answer: 'CoW AMM is ...',
-  },
-  {
-    question: 'Where does the name come from?',
-    answer: 'The name comes from ...',
-  },
-]
-
 interface PageProps {
   siteConfigData: typeof CONFIG
 }
-
-const Wrapper = styled.div`
-  display: flex;
-  flex-flow: column wrap;
-  justify-content: center;
-  align-items: center;
-  max-width: 1760px;
-  width: 100%;
-  margin: 76px auto 0;
-  gap: 24px;
-`
 
 export default function Page({ siteConfigData }: PageProps) {
   return (
@@ -99,8 +62,8 @@ export default function Page({ siteConfigData }: PageProps) {
       metaTitle="DAOs - Savvy DAOs Choose CoW Swap"
       metaDescription="The smartest DAOs trust CoW Swap with their most-important trades"
     >
-      <Wrapper>
-        <HeroContainer variant="secondary" maxWidth={1300}>
+      <PageWrapper>
+        <HeroContainer variant="secondary">
           <HeroContent variant="secondary">
             <HeroSubtitle color={'#66018E'}>DAOs</HeroSubtitle>
             <HeroTitle maxWidth={470}>Savvy DAOs Choose CoW Swap</HeroTitle>
@@ -383,20 +346,7 @@ export default function Page({ siteConfigData }: PageProps) {
             </TopicList>
           </ContainerCardSection>
         </ContainerCard>
-
-        <ContainerCard bgColor={'transparent'} color={Color.neutral10} touchFooter>
-          <ContainerCardSection padding={'0 0 100px'}>
-            <SectionTitleWrapper>
-              <SectionTitleIcon size={62}>
-                <SVG src={IMG_ICON_FAQ} />
-              </SectionTitleIcon>
-              <SectionTitleText>FAQs</SectionTitleText>
-            </SectionTitleWrapper>
-
-            <FAQ faqs={FAQ_DATA} />
-          </ContainerCardSection>
-        </ContainerCard>
-      </Wrapper>
+      </PageWrapper>
     </Layout>
   )
 }

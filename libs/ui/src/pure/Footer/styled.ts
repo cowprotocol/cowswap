@@ -30,11 +30,13 @@ export const FooterContainer = styled.footer<{ theme: CowSwapTheme; expanded: bo
   }
 `
 
-export const FooterContent = styled.div`
+export const FooterContent = styled.div<{ maxWidth?: number }>`
   display: grid;
   grid-template-columns: 0.7fr 1fr;
   gap: 20px;
   padding: 0 48px;
+  max-width: ${({ maxWidth }) => (maxWidth ? `${maxWidth}px` : '100%')};
+  margin: 0 auto;
 
   ${Media.upToLarge()} {
     grid-template-columns: 1fr;
@@ -158,13 +160,15 @@ export const Link = styled.a`
   }
 `
 
-export const FooterBottom = styled.div`
+export const FooterBottom = styled.div<{ maxWidth?: number }>`
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 24px;
   gap: 24px;
   font-size: 14px;
+  max-width: ${({ maxWidth }) => (maxWidth ? `${maxWidth}px` : '100%')};
+  margin: 0 auto;
 
   ${Media.upToLarge()} {
     flex-flow: column wrap;

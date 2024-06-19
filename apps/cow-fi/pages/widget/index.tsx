@@ -4,10 +4,7 @@ import { Font, Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
 import IMG_ICON_OWL from '@cowprotocol/assets/images/icon-owl.svg'
 import IMG_ICON_GHOST from '@cowprotocol/assets/images/icon-ghost.svg'
 
-import styled from 'styled-components'
-
 import Layout from '@/components/Layout'
-import FAQ from '@/components/FAQ'
 import { Link, LinkType } from '@/components/Link'
 
 import { CowSwapWidget, CowSwapWidgetParams } from '@cowprotocol/widget-react'
@@ -16,6 +13,7 @@ import { GAEventCategories } from 'lib/analytics/GAEvents'
 import { sendGAEventHandler } from 'lib/analytics/sendGAEvent'
 
 import {
+  PageWrapper,
   ContainerCard,
   ContainerCardSection,
   TopicList,
@@ -37,36 +35,11 @@ import {
   HeroButtonWrapper,
 } from '@/styles/styled'
 
-import { DAO_CONTENT as CONTENT } from '@/data/siteContent/daos'
+import { DAO_CONTENT as CONTENT } from '@/data/widget/daos'
 
 import SVG from 'react-inlinesvg'
-import IMG_ICON_FAQ from '@cowprotocol/assets/images/icon-faq.svg'
 
 import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
-
-const FAQ_DATA = [
-  {
-    question: 'What is CoW DAO?',
-    answer: 'CoW DAO is ...',
-  },
-  {
-    question: 'What is CoW Swap?',
-    answer:
-      'CoW Protocol is a fully permissionless trading protocol that leverages batch auctions as its price finding mechanism. CoW Protocol uses batch auctions to maximize liquidity via Coincidence of Wants (CoWs) in addition to tapping all available on-chain liquidity whenever needed.',
-  },
-  {
-    question: 'What is MEV Blocker?',
-    answer: 'MEV Blocker is ...',
-  },
-  {
-    question: 'What is CoW AMM?',
-    answer: 'CoW AMM is ...',
-  },
-  {
-    question: 'Where does the name come from?',
-    answer: 'The name comes from ...',
-  },
-]
 
 const FEATURE_ITEMS = [
   'Live styling configurator',
@@ -90,17 +63,6 @@ const widgetParams: CowSwapWidgetParams = {
   width: '100%',
 }
 
-const Wrapper = styled.div`
-  display: flex;
-  flex-flow: column wrap;
-  justify-content: center;
-  align-items: center;
-  max-width: 1760px;
-  width: 100%;
-  margin: 76px auto 0;
-  gap: 34px;
-`
-
 export default function Page({ siteConfigData }: PageProps) {
   return (
     <Layout
@@ -108,8 +70,8 @@ export default function Page({ siteConfigData }: PageProps) {
       metaTitle="Widget - Bring reliable, MEV-protected swaps to your users"
       metaDescription="Integrate the CoW Swap widget to bring seamless, MEV-protected trading to your website or dApp."
     >
-      <Wrapper>
-        <HeroContainer variant="secondary" maxWidth={1300}>
+      <PageWrapper>
+        <HeroContainer variant="secondary">
           <HeroContent variant="secondary">
             <HeroSubtitle color={'#66018E'}>Widget</HeroSubtitle>
             <HeroTitle fontSize={52} fontSizeMobile={38}>
@@ -384,7 +346,7 @@ export default function Page({ siteConfigData }: PageProps) {
             </SectionTitleWrapper>
           </ContainerCardSection>
         </ContainerCard>
-      </Wrapper>
+      </PageWrapper>
     </Layout>
   )
 }

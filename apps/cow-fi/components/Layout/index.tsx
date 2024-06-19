@@ -1,10 +1,10 @@
 import { useEffect } from 'react'
 import Head from 'next/head'
-import { MenuBar, MenuItem, Footer, ProductVariant, GlobalCoWDAOStyles } from '@cowprotocol/ui'
+import { MenuBar, Footer, GlobalCoWDAOStyles } from '@cowprotocol/ui'
 import styled from 'styled-components/macro'
 import { CONFIG } from '@/const/meta'
 import { CoWDAOFonts } from '@/styles/CoWDAOFonts'
-import { THEME_MODE, PRODUCT_VARIANT, NAV_ADDITIONAL_BUTTONS, NAV_ITEMS } from './const'
+import { PAGE_MAX_WIDTH, THEME_MODE, PRODUCT_VARIANT, NAV_ADDITIONAL_BUTTONS, NAV_ITEMS } from './const'
 
 const Wrapper = styled.div`
   display: flex;
@@ -66,9 +66,10 @@ export default function Layout({ children, bgColor, metaTitle, metaDescription, 
         productVariant={PRODUCT_VARIANT}
         additionalNavButtons={NAV_ADDITIONAL_BUTTONS}
         padding="10px 60px"
+        maxWidth={PAGE_MAX_WIDTH}
       />
       <Wrapper>{children}</Wrapper>
-      <Footer theme={THEME_MODE} productVariant={PRODUCT_VARIANT} expanded hasTouchFooter />
+      <Footer theme={THEME_MODE} maxWidth={PAGE_MAX_WIDTH} productVariant={PRODUCT_VARIANT} expanded hasTouchFooter />
     </>
   )
 }

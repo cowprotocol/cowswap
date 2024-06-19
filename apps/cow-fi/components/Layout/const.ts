@@ -1,5 +1,6 @@
 import { MenuItem, ProductVariant } from '@cowprotocol/ui'
 
+export const PAGE_MAX_WIDTH = 1760
 export const THEME_MODE = 'dark'
 export const PRODUCT_VARIANT = ProductVariant.CowDao
 

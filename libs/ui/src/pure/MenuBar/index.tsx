@@ -657,6 +657,7 @@ interface MenuBarProps {
   hoverBackgroundLight?: string
   hoverBackgroundDark?: string
   padding?: string
+  maxWidth?: number
 }
 
 export const MenuBar = (props: MenuBarProps) => {
@@ -684,6 +685,7 @@ export const MenuBar = (props: MenuBarProps) => {
     hoverBackgroundLight,
     hoverBackgroundDark,
     padding,
+    maxWidth,
   } = props
 
   const [isDaoOpen, setIsDaoOpen] = useState(false)
@@ -757,6 +759,7 @@ export const MenuBar = (props: MenuBarProps) => {
         hoverBackgroundDark={hoverBackgroundDark}
         padding={padding}
         mobileMode={isMobile}
+        maxWidth={maxWidth}
       >
         <MenuBarInner theme={styledTheme}>
           <NavDaoTrigger

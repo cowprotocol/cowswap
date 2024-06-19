@@ -2,12 +2,12 @@ import { useState } from 'react'
 import { getJobs } from 'services/greenhouse'
 import { GetStaticProps } from 'next'
 import { Font, Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
-import styled from 'styled-components'
 
 import Layout from '@/components/Layout'
 import { Link, LinkType } from '@/components/Link'
 
 import {
+  PageWrapper,
   ContainerCard,
   ContainerCardSection,
   TopicList,
@@ -31,17 +31,6 @@ interface PageProps {
   jobsData: any
 }
 
-const Wrapper = styled.div`
-  display: flex;
-  flex-flow: column wrap;
-  justify-content: center;
-  align-items: center;
-  max-width: 1760px;
-  width: 100%;
-  margin: 76px auto 0;
-  gap: 24px;
-`
-
 export default function Page({ siteConfigData, jobsData }: PageProps) {
   const { title } = siteConfigData
   const [department, setDepartment] = useState('All')
@@ -55,10 +44,10 @@ export default function Page({ siteConfigData, jobsData }: PageProps) {
       metaTitle={`Careers - ${title}`}
       metaDescription="We are an ambitious, fast-growing and international team working at the forefront of DeFi. We believe that we can make markets more fair and more efficient by building the ultimate batch auction settlement layer across EVM-compatible blockchains."
     >
-      <Wrapper>
-        <ContainerCard bgColor={Color.neutral90} color={Color.neutral10} padding="0 60px 60px" touchFooter>
+      <PageWrapper>
+        <ContainerCard bgColor={Color.neutral90} color={Color.neutral10} touchFooter>
           <ContainerCardSection>
-            <SectionTitleWrapper maxWidth={900} margin="0 auto 56px">
+            <SectionTitleWrapper maxWidth={900} margin="0 auto 56px" marginMobile="0 auto 56px">
               <SectionTitleIcon size={60}>
                 <ProductLogo variant={ProductVariant.CowProtocol} theme="dark" logoIconOnly />
               </SectionTitleIcon>
@@ -190,7 +179,7 @@ export default function Page({ siteConfigData, jobsData }: PageProps) {
             </SectionTitleWrapper>
           </ContainerCardSection>
         </ContainerCard>
-      </Wrapper>
+      </PageWrapper>
     </Layout>
   )
 }

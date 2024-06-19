@@ -43,6 +43,7 @@ interface FooterProps {
   additionalFooterContent?: ReactNode
   expanded?: boolean
   hasTouchFooter?: boolean
+  maxWidth?: number
 }
 
 const SOCIAL_LINKS: { href: string; label: string; icon: string }[] = [
@@ -126,6 +127,7 @@ export const Footer = ({
   additionalFooterContent,
   expanded = false,
   hasTouchFooter = false,
+  maxWidth,
 }: FooterProps) => {
   const [isFooterExpanded, setIsFooterExpanded] = useState(expanded)
   const footerRef = useRef<HTMLDivElement>(null)
@@ -152,7 +154,7 @@ export const Footer = ({
       <FooterContainer ref={footerRef} theme={theme as any} expanded={isFooterExpanded} hasTouchFooter={hasTouchFooter}>
         {isFooterExpanded && (
           <>
-            <FooterContent>
+            <FooterContent maxWidth={maxWidth}>
               <FooterDescriptionSection>
                 <FooterLogo>
                   <ProductLogo
@@ -192,7 +194,7 @@ export const Footer = ({
             <FooterAnimation theme={theme} />
           </>
         )}
-        <FooterBottom>
+        <FooterBottom maxWidth={maxWidth}>
           <BottomText>&copy; CoW DAO - {new Date().getFullYear()}</BottomText>
           <FooterBottomLogos>
             {PRODUCT_LOGO_LINKS.map((product, index) => (

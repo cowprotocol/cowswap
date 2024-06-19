@@ -21,6 +21,7 @@ export const MenuBarWrapper = styled.div<{
   hoverBackgroundDark?: string
   padding?: string
   mobileMode?: boolean
+  maxWidth?: number
 }>`
   --height: 56px;
   --width: 100%;
@@ -50,6 +51,8 @@ export const MenuBarWrapper = styled.div<{
   position: sticky;
   top: 0;
   color: var(--color);
+  margin: 0 auto;
+  max-width: ${({ maxWidth }) => (maxWidth ? `${maxWidth}px` : '100%')};
 
   ${({ mobileMode }) =>
     mobileMode &&
@@ -128,12 +131,6 @@ export const MobileMenuTrigger = styled.div<{ theme: CowSwapTheme; mobileMode?: 
   cursor: pointer;
   transition: background 0.2s, fill 0.2s;
 
-  ${({ mobileMode }) =>
-    mobileMode &&
-    css`
-      --size: 33px;
-    `}
-
   &:hover {
     background: var(--activeBackground);
     color: var(--activeFill);
@@ -186,7 +183,7 @@ export const NavItems = styled.ul<{ mobileMode?: boolean; theme: CowSwapTheme }>
       backdrop-filter: blur(var(--blur));
       border-radius: var(--borderRadius);
       padding: 16px 16px 200px;
-      overflow-y: scroll;
+      overflow-y: auto;
       min-height: 100vh;
       height: 100vh;
       // smooth ios scroll
@@ -214,6 +211,10 @@ export const NavItems = styled.ul<{ mobileMode?: boolean; theme: CowSwapTheme }>
         width: 100%;
         position: relative;
         color: inherit;
+      }
+
+      > div > ${RightAligned} {
+        margin: 24px 0 0;
       }
     `}
 `
