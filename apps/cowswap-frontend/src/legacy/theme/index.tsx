@@ -5,17 +5,11 @@ import {
   colors as colorsBaseTheme,
   Colors,
   FixedGlobalStyle as FixedGlobalStyleBase,
-  MEDIA_WIDTHS,
   themeMapper,
 } from '@cowprotocol/ui'
 
 import { Text, TextProps as TextPropsOriginal } from 'rebass'
-import styled, {
-  css,
-  DefaultTheme,
-  DefaultThemeUniswap,
-  ThemeProvider as StyledComponentsThemeProvider,
-} from 'styled-components/macro'
+import styled, { DefaultTheme, ThemeProvider as StyledComponentsThemeProvider } from 'styled-components/macro'
 
 import { useIsDarkMode } from 'legacy/state/user/hooks'
 
@@ -44,52 +38,6 @@ export enum Z_INDEX {
 
 export function colors(darkMode: boolean): Colors {
   return colorsBaseTheme(darkMode)
-}
-
-const mediaWidthTemplates: { [width in keyof typeof MEDIA_WIDTHS]: typeof css } = Object.keys(MEDIA_WIDTHS).reduce(
-  (accumulator, size) => {
-    ;(accumulator as any)[size] = (a: any, b: any, c: any) => css`
-      @media (max-width: ${(MEDIA_WIDTHS as any)[size]}px) {
-        ${css(a, b, c)}
-      }
-    `
-    return accumulator
-  },
-  {}
-) as any
-
-interface ExtendedDefaultThemeUniswap extends DefaultThemeUniswap {
-  mode: 'light' | 'dark'
-}
-
-export function getTheme(darkMode: boolean): ExtendedDefaultThemeUniswap {
-  return {
-    ...colors(darkMode),
-
-    grids: {
-      sm: 8,
-      md: 12,
-      lg: 24,
-    },
-
-    //shadows
-    shadow1: darkMode ? '#000' : '#2F80ED',
-
-    // media queries
-    mediaWidth: mediaWidthTemplates,
-
-    // css snippets
-    flexColumnNoWrap: css`
-      display: flex;
-      flex-flow: column nowrap;
-    `,
-    flexRowNoWrap: css`
-      display: flex;
-      flex-flow: row nowrap;
-    `,
-
-    mode: darkMode ? 'dark' : 'light',
-  }
 }
 
 export const TextWrapper = styled(Text)<{ color: keyof Colors; override?: boolean }>`
