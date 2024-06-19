@@ -292,11 +292,7 @@ export default function Page({ siteConfigData }: PageProps) {
                     asProp="div"
                   >
                     <TopicImage iconColor={Color.neutral98} bgColor={'transparent'} height={100}>
-                      {isPng ? (
-                        <img src={dao.icon} alt={dao.title} style={{ maxWidth: '100%' }} />
-                      ) : (
-                        <SVG src={dao.icon} />
-                      )}
+                      {isPng ? <img src={dao.icon} alt={dao.title} /> : <SVG src={dao.icon} />}
                     </TopicImage>
                     <TopicCardInner contentAlign="center">
                       <TopicTitle fontSize={28} color={Color.neutral98}>
@@ -331,7 +327,8 @@ export default function Page({ siteConfigData }: PageProps) {
                       iconColor={Color.neutral0}
                       bgColor={'transparent'}
                       width={'100%'}
-                      height={75}
+                      height={100}
+                      maxWidth={100}
                       margin={'auto'}
                     >
                       {isPng ? (

@@ -305,7 +305,7 @@ export const TopicImage = styled.div<{
   bgColor?: string
   margin?: string
   height?: number | string
-  maxWidth?: number
+  maxWidth?: number | string
   maxHeight?: number | string
   width?: number | string
   heightMobile?: number | string
@@ -315,9 +315,23 @@ export const TopicImage = styled.div<{
 }>`
   --size: ${({ large }) => (large ? '290px' : '132px')};
   width: ${({ width }) => (typeof width === 'number' ? `${width}px` : width || 'var(--size)')};
-  max-width: ${({ maxWidth }) => (typeof maxWidth === 'number' ? `${maxWidth}px` : maxWidth || '100%')};
+  max-width: ${({ maxWidth, width }) =>
+    maxWidth !== undefined
+      ? typeof maxWidth === 'number'
+        ? `${maxWidth}px`
+        : maxWidth
+      : typeof width === 'number'
+      ? `${width}px`
+      : width || '100%'};
   height: ${({ height }) => (typeof height === 'number' ? `${height}px` : height || 'var(--size)')};
-  max-height: ${({ maxHeight }) => (typeof maxHeight === 'number' ? `${maxHeight}px` : maxHeight || 'initial')};
+  max-height: ${({ maxHeight, height }) =>
+    maxHeight !== undefined
+      ? typeof maxHeight === 'number'
+        ? `${maxHeight}px`
+        : maxHeight
+      : typeof height === 'number'
+      ? `${height}px`
+      : height || '100%'};
   border-radius: ${({ borderRadius }) => (borderRadius ? `${borderRadius}px` : 0)};
   background: ${({ bgColor, iconColor }) => bgColor || iconColor || Color.neutral90};
   color: ${({ iconColor }) => iconColor || Color.neutral90};
