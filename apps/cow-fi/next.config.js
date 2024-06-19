@@ -60,6 +60,11 @@ const nextConfig = {
         destination: '/careers',
         permanent: true,
       },
+      {
+        source: '/report-scam',
+        destination: 'https://app.chainpatrol.io/cow',
+        permanent: true,
+      },
     ]
   },
 }

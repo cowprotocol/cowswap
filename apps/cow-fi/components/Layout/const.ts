@@ -24,7 +24,6 @@ export const NAV_ITEMS: MenuItem[] = [
         external: true,
       },
       { label: 'Careers', href: '/careers' },
-      { label: 'Tokens', href: '/tokens' },
     ],
   },
   {
@@ -46,6 +45,21 @@ export const NAV_ITEMS: MenuItem[] = [
         label: 'MEV Blocker',
         href: '/mev-blocker',
       },
+      {
+        label: 'More',
+        children: [
+          {
+            label: 'Widget',
+            href: '/widget',
+          },
+          {
+            label: 'CoW Explorer',
+            href: 'https://explorer.cow.fi/',
+            external: true,
+            utmContent: 'menubar-nav-item-cow-explorer',
+          },
+        ],
+      },
     ],
   },
   {
@@ -59,6 +73,7 @@ export const NAV_ITEMS: MenuItem[] = [
         href: 'https://docs.cow.fi/',
         label: 'Docs',
         external: true,
+        utmContent: 'menubar-nav-item-docs',
       },
     ],
   },

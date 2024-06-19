@@ -11,6 +11,7 @@ export enum GAEventCategories {
   ERROR404 = 'Error 404',
   CAREERS = 'Careers',
   TOKENS = 'Tokens',
+  LEGAL = 'Legal',
 }
 
 export const WidgetEvents = {

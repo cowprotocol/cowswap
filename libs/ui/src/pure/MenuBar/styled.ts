@@ -413,7 +413,7 @@ export const StyledDropdownContentItem = styled.a<{
   mobileMode?: boolean
 }>`
   display: flex;
-  flex-flow: row;
+  flex-flow: row wrap;
   align-items: center;
   padding: ${({ isThirdLevel }) => (isThirdLevel ? '16px' : '8px 12px')};
   text-decoration: none;
@@ -421,7 +421,7 @@ export const StyledDropdownContentItem = styled.a<{
   transition: background 0.2s ease-in-out, color 0.2s ease-in-out;
   border-radius: 24px;
   min-height: 56px;
-  gap: 10px;
+  gap: 20px;
   position: relative;
   width: 100%;
 
@@ -450,7 +450,8 @@ export const StyledDropdownContentItem = styled.a<{
   }
 
   &:hover {
-    background: ${({ hoverBgColor }) => hoverBgColor || 'var(--hoverBackground)'};
+    background: ${({ hoverBgColor, isThirdLevel }) =>
+      isThirdLevel ? 'var(--activeBackground)' : hoverBgColor || 'var(--hoverBackground)'};
     color: ${({ hoverColor }) => hoverColor || 'inherit'};
 
     ${ProductLogoWrapper} {
@@ -515,6 +516,7 @@ export const DropdownContentItemText = styled.div`
   flex-flow: column wrap;
   gap: 4px;
   white-space: nowrap;
+  flex: 1 1 0;
 `
 
 export const DropdownContentItemTitle = styled.span`
