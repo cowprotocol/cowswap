@@ -35,7 +35,7 @@ import {
   HeroButtonWrapper,
 } from '@/styles/styled'
 
-import { DAO_CONTENT as CONTENT } from '@/data/widget/daos'
+import { DAO_CONTENT as CONTENT } from '@/data/widget/const'
 
 import SVG from 'react-inlinesvg'
 
@@ -274,13 +274,13 @@ export default function Page({ siteConfigData }: PageProps) {
                     key={index}
                     contentAlign={'center'}
                     bgColor={Color.neutral20}
-                    padding={'10px'}
+                    padding={'20px'}
                     href={dao.link}
                   >
                     <TopicImage
                       iconColor={Color.neutral0}
                       bgColor={'transparent'}
-                      width={'100%'}
+                      width={75}
                       height={48}
                       margin={'auto'}
                     >

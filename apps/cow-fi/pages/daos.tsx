@@ -35,7 +35,7 @@ import {
   SwiperSlideWrapper,
 } from '@/styles/styled'
 
-import { DAO_CONTENT as CONTENT } from '@/data/widget/daos'
+import { DAO_CONTENT as CONTENT } from '@/data/widget/const'
 
 import SVG from 'react-inlinesvg'
 import IMG_ICON_FAQ from '@cowprotocol/assets/images/icon-faq.svg'
@@ -328,7 +328,7 @@ export default function Page({ siteConfigData }: PageProps) {
                       bgColor={'transparent'}
                       width={'100%'}
                       height={100}
-                      maxWidth={100}
+                      maxWidth={75}
                       margin={'auto'}
                     >
                       {isPng ? (

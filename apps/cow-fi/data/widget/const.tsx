@@ -106,14 +106,14 @@ export const DAO_CONTENT = {
   ],
   trustedDAOs: [
     {
-      icon: `${DAO_LOGOS_PATH}aave.svg`,
+      icon: `${DAO_LOGOS_PATH}aave-icon.svg`,
       title: 'Aave',
       description: 'Aave DAO used CoW Swap to swap over $4 million directly into Balancer liquidity pool',
       link: 'https://medium.com/@cow-protocol/aave-trade-breakdown-e17a7563d7ba',
       volume: '$4 million',
     },
     {
-      icon: `${DAO_LOGOS_PATH}nexus.svg`,
+      icon: `${DAO_LOGOS_PATH}nexus-icon.svg`,
       title: 'Nexus Mutual',
       description:
         'In the largest DAO trade ever, Nexus Mutual relied on CoW Swap to trade 14,400 ETH for the rETH liquid staking token',
@@ -121,7 +121,7 @@ export const DAO_CONTENT = {
       volume: '14,400 ETH',
     },
     {
-      icon: `${DAO_LOGOS_PATH}ens.svg`,
+      icon: `${DAO_LOGOS_PATH}ens-icon.svg`,
       title: 'ENS',
       description: 'ENS DAO traded a whopping 10,000 of ETH ($16.5 million dollars) for USDC through CoW Swap',
       link: 'https://medium.com/@cow-protocol/ens-trade-breakdown-a8eb00ddd8c0',
@@ -160,8 +160,7 @@ export const DAO_CONTENT = {
     { icon: `${DAO_LOGOS_PATH}idle.svg`, title: 'Idle', link: 'https://idle.finance/' },
     { icon: `${DAO_LOGOS_PATH}teller.svg`, title: 'Teller', link: 'https://teller.finance/' },
     { icon: `${DAO_LOGOS_PATH}sherlock.svg`, title: 'Sherlock', link: 'https://www.sherlock.xyz/' },
-    { icon: `${DAO_LOGOS_PATH}badgerdao.svg`, title: 'BadgerDAO', link: 'https://badger.com/' },
-    { icon: `${DAO_LOGOS_PATH}solace.svg`, title: 'Solace', link: 'https://solace.fi/' },
+    { icon: `${DAO_LOGOS_PATH}badgerdao.png`, title: 'BadgerDAO', link: 'https://badger.com/' },
     { icon: `${DAO_LOGOS_PATH}dreamdao.png`, title: 'DreamDAO', link: 'https://dreamdao.io/' },
     { icon: `${DAO_LOGOS_PATH}ondo.svg`, title: 'Ondo', link: 'https://ondo.finance/' },
     { icon: `${DAO_LOGOS_PATH}abracadabra.png`, title: 'Abracadabra', link: 'https://abracadabra.money/' },
