@@ -126,7 +126,7 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
         </div>
       </styledEl.DetailsRow>
       <OrderType isPartiallyFillable={partiallyFillable} partiallyFillableOverride={partiallyFillableOverride} />
-      <RecipientRow recipient={recipient} account={account} recipientAddressOrName={recipientAddressOrName} />
+      <RecipientRow recipient={recipientAddressOrName || recipient} account={account} />
     </Wrapper>
   )
 }

@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.3.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.2.0...common-utils-v1.3.0) (2024-06-18)
+
+
+### Features
+
+* **trade:** sync trade amounts between widgets ([#4521](https://github.com/cowprotocol/cowswap/issues/4521)) ([538bf04](https://github.com/cowprotocol/cowswap/commit/538bf04cc38744af04a719d5f4261f0951a07203))
+* **twap:** add partner fee ([#4496](https://github.com/cowprotocol/cowswap/issues/4496)) ([a882522](https://github.com/cowprotocol/cowswap/commit/a88252272229728663941d291a4a3813d90e97a8))
+
+
+### Bug Fixes
+
+* disable appzi in widget mode ([#4549](https://github.com/cowprotocol/cowswap/issues/4549)) ([b04daf8](https://github.com/cowprotocol/cowswap/commit/b04daf865ff48946d4642c20a08e9cf3ba100494))
+
 ## [1.2.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.1.1...common-utils-v1.2.0) (2024-05-29)
 
 
