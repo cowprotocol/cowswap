@@ -158,18 +158,8 @@ interface RowProps {
 }
 
 const RowOrder: React.FC<RowProps> = ({ order, isPriceInverted }) => {
-  const {
-    creationDate,
-    buyToken,
-    buyAmount,
-    sellToken,
-    sellAmount,
-    kind,
-    partiallyFilled,
-    shortId,
-    uid,
-    filledPercentage,
-  } = order
+  const { creationDate, buyToken, buyAmount, sellToken, sellAmount, kind, partiallyFilled, uid, filledPercentage } =
+    order
   const [_isPriceInverted, setIsPriceInverted] = useState(isPriceInverted)
   const network = useNetworkId()
   const buyTokenSymbol = buyToken ? safeTokenName(buyToken) : ''
@@ -191,7 +181,7 @@ const RowOrder: React.FC<RowProps> = ({ order, isPriceInverted }) => {
   }
 
   return (
-    <tr key={shortId}>
+    <tr key={uid}>
       <td>
         <HeaderTitle>
           Order ID <HelpTooltip tooltip={tooltip.orderID} />
@@ -285,7 +275,7 @@ const OrdersUserDetailsTable: React.FC<Props> = (props) => {
     return (
       <>
         {items.map((item) => (
-          <RowOrder key={item.shortId} order={item} isPriceInverted={isPriceInverted} />
+          <RowOrder key={item.uid} order={item} isPriceInverted={isPriceInverted} />
         ))}
       </>
     )

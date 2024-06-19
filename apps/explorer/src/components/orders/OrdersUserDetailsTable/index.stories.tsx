@@ -23,7 +23,6 @@ const orderBuy: Order = {
   kind: OrderKind.BUY,
   buyToken: WETH,
   sellToken: TUSD,
-  shortId: 'bdef89ac',
   buyAmount: new BigNumber('1500000000000000000'), // 1.5WETH
   sellAmount: new BigNumber('7500000000000000000000'), // 7500 TUSD
   creationDate: sub(new Date(), { hours: 1 }),

@@ -4,7 +4,6 @@ import { TokenErc20 } from '@gnosis.pm/dex-js'
 import BigNumber from 'bignumber.js'
 import { Network } from 'types'
 
-
 export type TxHash = string
 
 export type OrderStatus = 'open' | 'filled' | 'cancelled' | 'cancelling' | 'expired' | 'signing'
@@ -23,7 +22,6 @@ export type Order = Pick<
 > & {
   receiver: string
   txHash?: string
-  shortId: string
   creationDate: Date
   expirationDate: Date
   buyTokenAddress: string
