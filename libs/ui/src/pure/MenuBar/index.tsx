@@ -8,7 +8,6 @@ import IMG_ICON_SETTINGS_GLOBAL from '@cowprotocol/assets/images/settings-global
 import IMG_ICON_X from '@cowprotocol/assets/images/x.svg'
 import { useMediaQuery, useOnClickOutside } from '@cowprotocol/common-hooks'
 import { addBodyClass, removeBodyClass } from '@cowprotocol/common-utils'
-import { CowSwapTheme } from '@cowprotocol/widget-lib'
 
 import SVG from 'react-inlinesvg'
 import { ThemeProvider } from 'styled-components/macro'
@@ -36,6 +35,7 @@ import {
 
 import { Color } from '../../consts'
 import { Media, themeMapper } from '../../consts'
+import { CowSwapTheme } from '../../types'
 import { ProductLogo, ProductVariant } from '../ProductLogo'
 
 const DAO_NAV_ITEMS: MenuItem[] = [

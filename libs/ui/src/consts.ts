@@ -1,9 +1,8 @@
-import { CowSwapTheme } from '@cowprotocol/widget-lib'
-
 import { createGlobalStyle, css, DefaultTheme, DefaultThemeUniswap } from 'styled-components/macro'
 
 import { UI } from './enum'
 import { colors, themeVariables as baseThemeVariables } from './theme'
+import { CowSwapTheme } from './types'
 
 export const AMOUNTS_FORMATTING_FEATURE_FLAG = 'highlight-amounts-formatting'
 export const SAFE_COW_APP_LINK = 'https://app.safe.global/share/safe-app?appUrl=https%3A%2F%2Fswap.cow.fi&chain=eth'
