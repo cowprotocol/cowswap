@@ -11,6 +11,7 @@ import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
 import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 import { SimpleTable } from 'components/common/SimpleTable'
 import Spinner from 'components/common/Spinner'
+import { TruncatedText } from 'components/common/TruncatedText'
 import { AmountsDisplay } from 'components/orders/AmountsDisplay'
 import { FilledProgress } from 'components/orders/FilledProgress'
 import { GasFeeDisplay } from 'components/orders/GasFeeDisplay'
@@ -43,16 +44,19 @@ const Table = styled(SimpleTable)`
 
       &:first-of-type {
         text-transform: capitalize;
+
         ${media.mediumUp} {
           font-weight: ${({ theme }): string => theme.fontLighter};
         }
 
         /* Question mark */
+
         > svg {
           margin: 0 1rem 0 0;
         }
 
         /* Column after text on first column */
+
         ::after {
           content: ':';
         }
@@ -119,6 +123,7 @@ const tooltip = {
 export const Wrapper = styled.div`
   display: flex;
   flex-direction: row;
+
   ${media.mobile} {
     flex-direction: column;
   }
@@ -172,7 +177,6 @@ export function DetailsTable(props: Props): JSX.Element | null {
   const { order, areTradesLoading, showFillsButton, viewFills, isPriceInverted, invertPrice } = props
   const {
     uid,
-    shortId,
     owner,
     receiver,
     txHash,
@@ -214,7 +218,11 @@ export function DetailsTable(props: Props): JSX.Element | null {
               <HelpTooltip tooltip={tooltip.orderID} /> Order Id
             </td>
             <td>
-              <RowWithCopyButton textToCopy={uid} contentsToDisplay={shortId} onCopy={(): void => onCopy('orderId')} />
+              <RowWithCopyButton
+                textToCopy={uid}
+                contentsToDisplay={<TruncatedText text={uid} />}
+                onCopy={(): void => onCopy('orderId')}
+              />
             </td>
           </tr>
           <tr>

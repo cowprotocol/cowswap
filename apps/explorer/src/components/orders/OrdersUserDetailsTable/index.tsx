@@ -6,10 +6,16 @@ import { DateDisplay } from 'components/common/DateDisplay'
 import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
 import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 import Spinner from 'components/common/Spinner'
+import StyledUserDetailsTable, {
+  EmptyItemWrapper,
+  Props as StyledUserDetailsTableProps,
+} from 'components/common/StyledUserDetailsTable'
 import { TokenDisplay } from 'components/common/TokenDisplay'
 import TradeOrderType from 'components/common/TradeOrderType'
+import { TruncatedText } from 'components/common/TruncatedText'
 import Icon from 'components/Icon'
 import { HelpTooltip } from 'components/Tooltip'
+import { TextWithTooltip } from 'explorer/components/common/TextWithTooltip'
 import { useNetworkId } from 'state/network'
 import styled from 'styled-components/macro'
 import { media } from 'theme/styles/media'
@@ -19,11 +25,6 @@ import { Order } from 'api/operator'
 
 import { OrderSurplusDisplayStyledByRow } from './OrderSurplusTooltipStyledByRow'
 
-import { TextWithTooltip } from '../../../explorer/components/common/TextWithTooltip'
-import StyledUserDetailsTable, {
-  EmptyItemWrapper,
-  Props as StyledUserDetailsTableProps,
-} from '../../common/StyledUserDetailsTable'
 import { StatusLabel } from '../StatusLabel'
 
 const Wrapper = styled(StyledUserDetailsTable)`
@@ -201,7 +202,7 @@ const RowOrder: React.FC<RowProps> = ({ order, isPriceInverted }) => {
             textToCopy={uid}
             contentsToDisplay={
               <LinkWithPrefixNetwork to={`/orders/${order.uid}`} rel="noopener noreferrer" target="_self">
-                {shortId}
+                <TruncatedText text={uid} width="10ch" />
               </LinkWithPrefixNetwork>
             }
           />

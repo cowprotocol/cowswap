@@ -1,12 +1,10 @@
-import React from 'react'
-
 // also exported from '@storybook/react' if you can deal with breaking changes in 6.1
 import { OrderKind } from '@cowprotocol/cow-sdk'
 
-import { Story, Meta } from '@storybook/react/types-6-0'
+import { Meta, Story } from '@storybook/react/types-6-0'
 import BigNumber from 'bignumber.js'
 import { add, sub } from 'date-fns'
-import { GlobalStyles, ThemeToggler, Router, NetworkDecorator } from 'storybook/decorators'
+import { GlobalStyles, NetworkDecorator, Router, ThemeToggler } from 'storybook/decorators'
 
 import { Order } from 'api/operator'
 
