@@ -13,6 +13,13 @@ import { sendGAEventHandler } from 'lib/analytics/sendGAEvent'
 
 import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
 
+const LEGAL_LINKS = [
+  {
+    title: 'CoW Widget Terms and Conditions',
+    href: '/legal/widget-terms',
+  },
+]
+
 interface PageProps {
   siteConfigData: typeof CONFIG
 }
@@ -40,6 +47,7 @@ export default function Page({ siteConfigData }: PageProps) {
               <Link href="/" onClick={() => sendGAEventHandler(GAEventCategories.LEGAL, 'click-legal-breadcrumbs')}>
                 Home
               </Link>
+
               <span>{title}</span>
             </Breadcrumbs>
 
@@ -49,6 +57,19 @@ export default function Page({ siteConfigData }: PageProps) {
 
             <BodyContent>
               <p>An overview of all legal documents related to CoW DAO and its products.</p>
+
+              <ul>
+                {LEGAL_LINKS.map((link, index) => (
+                  <li key={index}>
+                    <Link
+                      href={link.href}
+                      onClick={() => sendGAEventHandler(GAEventCategories.LEGAL, `click-${link.title}`)}
+                    >
+                      {link.title}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
             </BodyContent>
           </ArticleContent>
         </ContainerCard>

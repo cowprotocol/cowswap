@@ -65,6 +65,11 @@ const nextConfig = {
         destination: 'https://app.chainpatrol.io/cow',
         permanent: true,
       },
+      {
+        source: '/widget/terms-and-conditions',
+        destination: '/legal/widget-terms',
+        permanent: true,
+      },
     ]
   },
 }

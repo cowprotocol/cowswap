@@ -233,7 +233,8 @@ export const FAQ_DATA = [
   },
   {
     question: 'Can I get a refund from CoW Swap?',
-    answer: '',
+    answer:
+      "As decentralized networks, Cow Swap and CoW Protocol do not have custody or control over users' funds. Each user is solely responsible for managing their own wallet and signing transactions. Users should be aware that blockchain transactions are irreversible, and that they may be subject to various risks such as failed transactions, gas costs, slippage, price impact, etc.",
   },
   {
     question: 'How do I get support?',
