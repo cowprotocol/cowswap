@@ -94,7 +94,7 @@ const Wrapper = styled(StyledUserDetailsTable)`
       display: flex;
       flex-wrap: nowrap;
 
-      span {
+      span.copy-text {
         display: flex;
         align-items: center;
       }
