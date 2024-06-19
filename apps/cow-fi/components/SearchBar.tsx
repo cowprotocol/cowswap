@@ -100,6 +100,7 @@ const ResultItem = styled.a<{ isSelected: boolean }>`
   align-items: center;
   justify-content: flex-start;
   flex-flow: row wrap;
+  white-space: pre;
   text-decoration: none;
   color: ${Color.neutral0};
   line-height: 1.2;
