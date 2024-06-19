@@ -1,11 +1,8 @@
 import React from 'react'
 
-import { useWalletInfo } from '@cowprotocol/wallet'
-
 import styled from 'styled-components/macro'
 
-import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
-import { RecipientRow, useReceiveAmountInfo } from 'modules/trade'
+import { useReceiveAmountInfo } from 'modules/trade'
 import { ConfirmDetailsItem } from 'modules/trade/pure/ConfirmDetailsItem'
 import { ReviewOrderModalAmountRow } from 'modules/trade/pure/ReviewOrderModalAmountRow'
 import { useUsdAmount } from 'modules/usdAmount'
@@ -53,10 +50,6 @@ export const TwapConfirmDetails = React.memo(function TwapConfirmDetails(props: 
 
   const partDurationDisplay = partDuration ? deadlinePartsDisplay(partDuration, true) : ''
   const totalDurationDisplay = totalDuration ? deadlinePartsDisplay(totalDuration, true) : ''
-
-  const { account } = useWalletInfo()
-  const { recipient, recipientAddress } = useAdvancedOrdersDerivedState()
-  const recipientAddressOrName = recipient || recipientAddress
 
   const receiveAmountInfo = useReceiveAmountInfo()
   const { sellAmount: inputPartAfterSlippageAmount, buyAmount: outputPartAfterSlippageAmount } =
@@ -116,9 +109,6 @@ export const TwapConfirmDetails = React.memo(function TwapConfirmDetails(props: 
       >
         {totalDurationDisplay}
       </ConfirmDetailsItem>
-
-      {/* Recipient */}
-      <RecipientRow recipient={recipient} account={account} recipientAddressOrName={recipientAddressOrName} />
     </Wrapper>
   )
 })

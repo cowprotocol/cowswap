@@ -131,6 +131,8 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
               receiveAmountInfo={receiveAmountInfo}
               widgetParams={widgetParams}
               labelsAndTooltips={labelsAndTooltips}
+              recipient={recipient}
+              account={account}
               hideLimitPrice
               hideUsdValues
               withTimelineDot={false}
