@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.2.1...cow-fi-v1.3.0) (2024-06-18)
+
+
+### Features
+
+* update T&C for arb1 ([#4552](https://github.com/cowprotocol/cowswap/issues/4552)) ([f43786e](https://github.com/cowprotocol/cowswap/commit/f43786e90a040c42a0cb58c38c8280a0cd5a5acb))
+
 ## [1.2.1](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.2.0...cow-fi-v1.2.1) (2024-06-06)
 
 

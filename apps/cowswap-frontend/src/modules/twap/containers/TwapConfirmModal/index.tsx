@@ -129,6 +129,8 @@ export function TwapConfirmModal() {
               receiveAmountInfo={receiveAmountInfo}
               isInvertedState={isInvertedState}
               slippage={slippage}
+              recipient={recipient}
+              account={account}
               labelsAndTooltips={{
                 ...CONFIRM_MODAL_CONFIG,
                 networkCostsSuffix: !allowsOffchainSigning ? <NetworkCostsSuffix /> : null,

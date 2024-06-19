@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.5.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.4.0...common-const-v1.5.0) (2024-06-18)
+
+
+### Features
+
+* cowswap volume fee ([#4547](https://github.com/cowprotocol/cowswap/issues/4547)) ([85ef997](https://github.com/cowprotocol/cowswap/commit/85ef997771a7ce5e51d6b1f41335d89913b5dfbb))
+* reduce ethflow slippage for non mainnet chains ([#4524](https://github.com/cowprotocol/cowswap/issues/4524)) ([8c47780](https://github.com/cowprotocol/cowswap/commit/8c4778022b9d4970c0aa716f66285a04dac4c101))
+
 ## [1.4.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.3.1...common-const-v1.4.0) (2024-06-06)
 
 
