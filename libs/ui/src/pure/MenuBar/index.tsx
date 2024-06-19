@@ -637,7 +637,6 @@ interface MenuBarProps {
   navItems: MenuItem[]
   theme: 'light' | 'dark'
   productVariant: ProductVariant
-  rootDomain: string
   persistentAdditionalContent?: React.ReactNode
   additionalContent?: React.ReactNode
   showGlobalSettings?: boolean
@@ -665,7 +664,6 @@ export const MenuBar = (props: MenuBarProps) => {
     navItems,
     theme,
     productVariant,
-    rootDomain,
     persistentAdditionalContent,
     additionalContent,
     showGlobalSettings,
@@ -699,6 +697,8 @@ export const MenuBar = (props: MenuBarProps) => {
   const navItemsRef = useRef<HTMLUListElement>(null)
   const settingsButtonRef = useRef<HTMLButtonElement>(null)
   const settingsDropdownRef = useRef<HTMLDivElement>(null)
+
+  const rootDomain = window.location.host
 
   const handleSettingsToggle = () => setIsSettingsOpen((prev) => !prev)
 
