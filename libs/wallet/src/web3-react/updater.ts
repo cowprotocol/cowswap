@@ -78,11 +78,11 @@ function _useSafeInfo(walletInfo: WalletInfo): GnosisSafeInfo | undefined {
         try {
           const appsSdkSafeInfo = await safeAppsSdk.safe.getInfo()
           setSafeInfo((prevSafeInfo) => {
-            const { isReadOnly, nonce } = appsSdkSafeInfo
-            const { safeAddress, threshold, owners } = appsSdkSafeInfo
+            const { safeAddress, threshold, owners, isReadOnly, nonce } = appsSdkSafeInfo
             return {
-              chainId,
+              ...prevSafeInfo,
               address: safeAddress,
+              chainId,
               threshold,
               owners,
               nonce,
