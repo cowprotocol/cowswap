@@ -74,8 +74,8 @@ function _useSafeInfo(walletInfo: WalletInfo): GnosisSafeInfo | undefined {
 
   useEffect(() => {
     const updateSafeInfo = async () => {
-      if (chainId && account && provider) {
-        if (safeAppsSdk) {
+      if (safeAppsSdk) {
+        try {
           const appsSdkSafeInfo = await safeAppsSdk.safe.getInfo()
           setSafeInfo((prevSafeInfo) => {
             const { isReadOnly, nonce } = appsSdkSafeInfo
@@ -89,27 +89,31 @@ function _useSafeInfo(walletInfo: WalletInfo): GnosisSafeInfo | undefined {
               isReadOnly,
             }
           })
-        } else {
-          getSafeInfo(chainId, account, provider)
-            .then((_safeInfo) => {
-              const { address, threshold, owners, nonce } = _safeInfo
-              setSafeInfo((prevSafeInfo) => ({
-                ...prevSafeInfo,
-                chainId,
-                address,
-                threshold,
-                owners,
-                nonce,
-                isReadOnly: false,
-              }))
-            })
-            .catch(() => {
-              console.debug(`[WalletUpdater] Address ${account} is likely not a Safe (API didn't return Safe info)`)
-              setSafeInfo(undefined)
-            })
+        } catch (error) {
+          console.debug(`[WalletUpdater] Error fetching safe info over iframe ${account}`)
+          setSafeInfo(undefined)
         }
       } else {
-        setSafeInfo(undefined)
+        if (chainId && account && provider) {
+          try {
+            const _safeInfo = await getSafeInfo(chainId, account, provider)
+            const { address, threshold, owners, nonce } = _safeInfo
+            setSafeInfo((prevSafeInfo) => ({
+              ...prevSafeInfo,
+              chainId,
+              address,
+              threshold,
+              owners,
+              nonce,
+              isReadOnly: false,
+            }))
+          } catch (error) {
+            console.debug(`[WalletUpdater] Address ${account} is likely not a Safe (API didn't return Safe info)`)
+            setSafeInfo(undefined)
+          }
+        } else {
+          setSafeInfo(undefined)
+        }
       }
     }
 
