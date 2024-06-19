@@ -20,8 +20,7 @@ import {
   CategoryLinks,
 } from '@/styles/styled'
 
-import { GAEventCategories } from 'lib/analytics/GAEvents'
-import { sendGAEventHandler } from 'lib/analytics/sendGAEvent'
+import { EventCategories, sendEventHandler } from '@cowprotocol/analytics'
 
 const LEARN_PATH = '/learn/'
 const ARTICLES_PATH = `${LEARN_PATH}articles/`
@@ -93,7 +92,7 @@ export default function ArticlesPage({
       <Wrapper>
         <CategoryLinks>
           <li>
-            <a href="/learn" onClick={sendGAEventHandler(GAEventCategories.KNOWLEDGEBASE, 'click-categories-home')}>
+            <a href="/learn" onClick={sendEventHandler(EventCategories.KNOWLEDGEBASE, 'click-categories-home')}>
               Knowledge Base
             </a>
           </li>
@@ -101,7 +100,7 @@ export default function ArticlesPage({
             <li key={category.slug}>
               <a
                 href={`/learn/topic/${category.slug}`}
-                onClick={sendGAEventHandler(GAEventCategories.KNOWLEDGEBASE, `click-categories-${category.name}`)}
+                onClick={sendEventHandler(EventCategories.KNOWLEDGEBASE, `click-categories-${category.name}`)}
               >
                 {category.name}
               </a>
@@ -115,10 +114,7 @@ export default function ArticlesPage({
           <ContainerCardInner maxWidth={970} gap={24} gapMobile={24}>
             <ContainerCardSectionTop>
               <Breadcrumbs padding={'0'}>
-                <a
-                  href="/learn"
-                  onClick={sendGAEventHandler(GAEventCategories.KNOWLEDGEBASE, 'click-breadcrumbs-home')}
-                >
+                <a href="/learn" onClick={sendEventHandler(EventCategories.KNOWLEDGEBASE, 'click-breadcrumbs-home')}>
                   Knowledge Base
                 </a>
                 <h1>All articles</h1>
@@ -138,8 +134,8 @@ export default function ArticlesPage({
                       <LinkItem
                         key={article.id}
                         href={`${LEARN_PATH}${article.attributes.slug}`}
-                        onClick={sendGAEventHandler(
-                          GAEventCategories.KNOWLEDGEBASE,
+                        onClick={sendEventHandler(
+                          EventCategories.KNOWLEDGEBASE,
                           `click-article-${article.attributes.title}`
                         )}
                       >
@@ -158,7 +154,7 @@ export default function ArticlesPage({
                   key={i}
                   href={`${ARTICLES_PATH}${i + 1}`}
                   className={i + 1 === currentPage ? 'active' : ''}
-                  onClick={sendGAEventHandler(GAEventCategories.KNOWLEDGEBASE, `click-pagination-${i + 1}`)}
+                  onClick={sendEventHandler(EventCategories.KNOWLEDGEBASE, `click-pagination-${i + 1}`)}
                 >
                   {i + 1}
                 </a>

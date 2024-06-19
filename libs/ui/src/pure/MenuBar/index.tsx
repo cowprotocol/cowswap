@@ -172,7 +172,7 @@ const NavItem = ({
       mobileMode={mobileMode}
       isNavItemDropdown={true}
       closeDropdown={closeDropdown}
-      rootDomain={rootDomain} // Pass rootDomain here
+      rootDomain={rootDomain}
     />
   ) : (
     <RootNavItem
@@ -505,7 +505,7 @@ const DropdownContentWrapper: React.FC<DropdownContentWrapperProps> = ({
                 mobileMode={mobileMode}
                 isNavItemDropdown={isNavItemDropdown}
                 closeDropdown={closeDropdown}
-                rootDomain={rootDomain} // Pass rootDomain here
+                rootDomain={rootDomain}
               />
             )}
           </StyledDropdownContentItem>
@@ -557,7 +557,7 @@ interface GlobalSettingsDropdownProps {
 
 const GlobalSettingsDropdown = forwardRef(
   (props: GlobalSettingsDropdownProps, dropdownRef: ForwardedRef<HTMLDivElement> | null) => {
-    const { mobileMode, settingsNavItems, isOpen, closeDropdown, rootDomain } = props // Destructure rootDomain here
+    const { mobileMode, settingsNavItems, isOpen, closeDropdown, rootDomain } = props
 
     if (!settingsNavItems || settingsNavItems.length === 0) {
       return null
@@ -827,7 +827,7 @@ export const MenuBar = (props: MenuBarProps) => {
                     isOpen={isSettingsOpen}
                     closeDropdown={handleSettingsToggle}
                     ref={settingsDropdownRef}
-                    rootDomain={rootDomain} // Pass rootDomain here
+                    rootDomain={rootDomain}
                   />
                 )}
               </>

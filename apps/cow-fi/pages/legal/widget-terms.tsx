@@ -8,8 +8,7 @@ import { Link } from '@/components/Link'
 
 import { ContainerCard, ArticleContent, Breadcrumbs, ArticleMainTitle, BodyContent } from '@/styles/styled'
 
-import { GAEventCategories } from 'lib/analytics/GAEvents'
-import { sendGAEventHandler } from 'lib/analytics/sendGAEvent'
+import { EventCategories, sendEventHandler } from '@cowprotocol/analytics'
 
 import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
 
@@ -41,13 +40,10 @@ export default function Page({ siteConfigData }: PageProps) {
         <ContainerCard bgColor={Color.neutral100} minHeight="70vh" gap={62} gapMobile={42} centerContent touchFooter>
           <ArticleContent maxWidth="100%">
             <Breadcrumbs>
-              <Link href="/ " onClick={() => sendGAEventHandler(GAEventCategories.LEGAL, 'click-legal-breadcrumbs')}>
+              <Link href="/ " onClick={() => sendEventHandler(EventCategories.LEGAL, 'click-legal-breadcrumbs')}>
                 Home
               </Link>
-              <Link
-                href="/legal"
-                onClick={() => sendGAEventHandler(GAEventCategories.LEGAL, 'click-legal-breadcrumbs')}
-              >
+              <Link href="/legal" onClick={() => sendEventHandler(EventCategories.LEGAL, 'click-legal-breadcrumbs')}>
                 Legal
               </Link>
               <span>{title}</span>

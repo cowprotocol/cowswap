@@ -7,8 +7,7 @@ import { Link } from '@/components/Link'
 
 import { PageWrapper, ContainerCard, ArticleContent, ArticleMainTitle, BodyContent } from '@/styles/styled'
 
-import { GAEventCategories } from 'lib/analytics/GAEvents'
-import { sendGAEventHandler } from 'lib/analytics/sendGAEvent'
+import { EventCategories, sendEventHandler } from '@cowprotocol/analytics'
 
 import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
 
@@ -35,7 +34,7 @@ export default function Page({ siteConfigData }: PageProps) {
             <BodyContent>
               <p>
                 This page could not be found. Please go back to the{' '}
-                <Link href="/" onClick={() => sendGAEventHandler(GAEventCategories.ERROR404, 'click-homepage')}>
+                <Link href="/" onClick={() => sendEventHandler(EventCategories.ERROR404, 'click-homepage')}>
                   homepage
                 </Link>{' '}
                 or use the navigation menu to find what you are looking for.

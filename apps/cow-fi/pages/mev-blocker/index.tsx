@@ -49,8 +49,7 @@ import {
 
 import SVG from 'react-inlinesvg'
 
-import { GAEventCategories } from 'lib/analytics/GAEvents'
-import { sendGAEventHandler } from 'lib/analytics/sendGAEvent'
+import { EventCategories, sendEventHandler } from '@cowprotocol/analytics'
 import { FAQ_DATA, TRUSTED_BY_CONTENT } from '../../data/mev-blocker/const'
 
 import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
@@ -118,7 +117,7 @@ export default function Page({ siteConfigData }: PageProps) {
                   bgColor={'#EC4612'}
                   color={'#FEE7CF'}
                   href="#rpc"
-                  onClick={() => sendGAEventHandler(GAEventCategories.MEVBLOCKER, 'click-get-protected')}
+                  onClick={() => sendEventHandler(EventCategories.MEVBLOCKER, 'click-get-protected')}
                 >
                   Get protected
                 </Link>
@@ -151,7 +150,7 @@ export default function Page({ siteConfigData }: PageProps) {
                 external
                 linkType={LinkType.SectionTitleButton}
                 utmContent="mev-blocker-metrics-link"
-                onClick={() => sendGAEventHandler(GAEventCategories.MEVBLOCKER, 'click-metrics-dune')}
+                onClick={() => sendEventHandler(EventCategories.MEVBLOCKER, 'click-metrics-dune')}
               >
                 View all metrics on DUNE &#8599;
               </Link>
@@ -170,7 +169,7 @@ export default function Page({ siteConfigData }: PageProps) {
                       href="https://dune.com/queries/2259793/3703605"
                       external
                       utmContent="mev-blocker-dune-link"
-                      onClick={() => sendGAEventHandler(GAEventCategories.MEVBLOCKER, 'click-dune-link')}
+                      onClick={() => sendEventHandler(EventCategories.MEVBLOCKER, 'click-dune-link')}
                     >
                       $1.38 billion
                     </Link>{' '}
@@ -239,7 +238,7 @@ export default function Page({ siteConfigData }: PageProps) {
                       href="https://www.mevscanner.com/"
                       external
                       utmContent="mev-blocker-mev-scanner-link"
-                      onClick={() => sendGAEventHandler(GAEventCategories.MEVBLOCKER, 'click-mev-scanner-link')}
+                      onClick={() => sendEventHandler(EventCategories.MEVBLOCKER, 'click-mev-scanner-link')}
                     >
                       Use MEV Scanner
                     </Link>{' '}
@@ -391,7 +390,7 @@ export default function Page({ siteConfigData }: PageProps) {
                       href="https://docs.cow.fi/mevblocker"
                       external
                       utmContent="mev-blocker-docs-link"
-                      onClick={() => sendGAEventHandler(GAEventCategories.MEVBLOCKER, 'click-mev-blocker-docs-link')}
+                      onClick={() => sendEventHandler(EventCategories.MEVBLOCKER, 'click-mev-blocker-docs-link')}
                     >
                       read the MEV Blocker docs
                     </Link>
@@ -511,7 +510,7 @@ export default function Page({ siteConfigData }: PageProps) {
                     external
                     linkType={LinkType.SectionTitleButton}
                     utmContent="mev-blocker-learn-more"
-                    onClick={() => sendGAEventHandler(GAEventCategories.MEVBLOCKER, 'click-mev-blocker-learn-more')}
+                    onClick={() => sendEventHandler(EventCategories.MEVBLOCKER, 'click-mev-blocker-learn-more')}
                   >
                     Learn more
                   </Link>
@@ -539,7 +538,7 @@ export default function Page({ siteConfigData }: PageProps) {
                       rel={'noopener noreferrer nofollow'}
                       target="_blank"
                       gap={item.title ? 16 : undefined}
-                      onClick={() => sendGAEventHandler(GAEventCategories.MEVBLOCKER, `click-trusted-by-${item.title}`)}
+                      onClick={() => sendEventHandler(EventCategories.MEVBLOCKER, `click-trusted-by-${item.title}`)}
                     >
                       <TopicImage
                         iconColor={Color.neutral20}

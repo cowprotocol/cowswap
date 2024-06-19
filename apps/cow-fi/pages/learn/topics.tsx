@@ -21,8 +21,7 @@ import {
   TopicTitle,
 } from '@/styles/styled'
 
-import { GAEventCategories } from 'lib/analytics/GAEvents'
-import { sendGAEventHandler } from 'lib/analytics/sendGAEvent'
+import { EventCategories, sendEventHandler } from '@cowprotocol/analytics'
 
 import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
 
@@ -97,7 +96,7 @@ export default function Page({ siteConfigData, categories, articles }: PageProps
                     bgColor={bgColor}
                     textColor={textColor}
                     href={link}
-                    onClick={() => sendGAEventHandler(GAEventCategories.KNOWLEDGEBASE, `click-topic-${name}`)}
+                    onClick={() => sendEventHandler(EventCategories.KNOWLEDGEBASE, `click-topic-${name}`)}
                   >
                     <TopicImage iconColor={iconColor}>
                       {imageUrl ? (

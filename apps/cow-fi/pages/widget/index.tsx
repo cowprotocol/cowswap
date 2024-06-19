@@ -9,8 +9,7 @@ import { Link, LinkType } from '@/components/Link'
 
 import { CowSwapWidget, CowSwapWidgetParams } from '@cowprotocol/widget-react'
 
-import { GAEventCategories } from 'lib/analytics/GAEvents'
-import { sendGAEventHandler } from 'lib/analytics/sendGAEvent'
+import { EventCategories, sendEventHandler } from '@cowprotocol/analytics'
 
 import {
   PageWrapper,
@@ -88,7 +87,7 @@ export default function Page({ siteConfigData }: PageProps) {
                 utmContent="widget-page-configure-widget-cta-hero"
                 external
                 linkType={LinkType.HeroButton}
-                onClick={() => sendGAEventHandler(GAEventCategories.WIDGET, 'click-config-widget')}
+                onClick={() => sendEventHandler(EventCategories.WIDGET, 'click-config-widget')}
               >
                 {' '}
                 Configure widget{' '}
@@ -101,7 +100,7 @@ export default function Page({ siteConfigData }: PageProps) {
                 utmContent="widget-page-readdocs-cta-hero"
                 external
                 linkType={LinkType.HeroButton}
-                onClick={() => sendGAEventHandler(GAEventCategories.WIDGET, 'click-read-docs')}
+                onClick={() => sendEventHandler(EventCategories.WIDGET, 'click-read-docs')}
               >
                 {' '}
                 Read docs
@@ -310,7 +309,7 @@ export default function Page({ siteConfigData }: PageProps) {
                   utmContent="widget-page-configure-widget-cta-hero"
                   external
                   linkType={LinkType.HeroButton}
-                  onClick={() => sendGAEventHandler(GAEventCategories.WIDGET, 'click-config-widget')}
+                  onClick={() => sendEventHandler(EventCategories.WIDGET, 'click-config-widget')}
                 >
                   {' '}
                   Configure widget{' '}
@@ -323,7 +322,7 @@ export default function Page({ siteConfigData }: PageProps) {
                   utmContent="widget-page-readdocs-cta-hero"
                   external
                   linkType={LinkType.HeroButton}
-                  onClick={() => sendGAEventHandler(GAEventCategories.WIDGET, 'click-read-docs')}
+                  onClick={() => sendEventHandler(EventCategories.WIDGET, 'click-read-docs')}
                 >
                   {' '}
                   Read docs

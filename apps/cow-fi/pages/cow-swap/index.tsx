@@ -36,8 +36,7 @@ import SVG from 'react-inlinesvg'
 import IMG_ICON_FAQ from '@cowprotocol/assets/images/icon-faq.svg'
 import { FAQ_DATA } from '../../data/cow-swap/const'
 
-import { GAEventCategories } from 'lib/analytics/GAEvents'
-import { sendGAEventHandler } from 'lib/analytics/sendGAEvent'
+import { EventCategories, sendEventHandler } from '@cowprotocol/analytics'
 
 import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
 
@@ -70,7 +69,7 @@ export default function Page({ siteConfigData }: PageProps) {
               external
               linkType={LinkType.HeroButton}
               utmContent="cow-swap-launch-app-button"
-              onClick={() => sendGAEventHandler(GAEventCategories.COWSWAP, 'click-launch-app')}
+              onClick={() => sendEventHandler(EventCategories.COWSWAP, 'click-launch-app')}
             >
               Launch app
             </Link>
@@ -103,7 +102,7 @@ export default function Page({ siteConfigData }: PageProps) {
             external
             linkType={LinkType.SectionTitleButton}
             utmContent="cow-swap-metrics-link"
-            onClick={() => sendGAEventHandler(GAEventCategories.COWSWAP, 'click-metrics-link')}
+            onClick={() => sendEventHandler(EventCategories.COWSWAP, 'click-metrics-link')}
           >
             View all metrics on DUNE &#8599;
           </Link>
@@ -193,7 +192,7 @@ export default function Page({ siteConfigData }: PageProps) {
                 color="#012F7A"
                 href="/cow-protocol"
                 linkType={LinkType.SectionTitleButton}
-                onClick={() => sendGAEventHandler(GAEventCategories.COWSWAP, 'click-learn-about-cow-protocol')}
+                onClick={() => sendEventHandler(EventCategories.COWSWAP, 'click-learn-about-cow-protocol')}
               >
                 Learn about CoW Protocol
               </Link>
@@ -482,7 +481,7 @@ export default function Page({ siteConfigData }: PageProps) {
                 external
                 linkType={LinkType.SectionTitleButton}
                 utmContent="cow-swap-launch-app-button"
-                onClick={() => sendGAEventHandler(GAEventCategories.COWSWAP, 'click-launch-app')}
+                onClick={() => sendEventHandler(EventCategories.COWSWAP, 'click-launch-app')}
               >
                 Launch app
               </Link>

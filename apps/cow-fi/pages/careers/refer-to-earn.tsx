@@ -7,8 +7,7 @@ import Layout from '@/components/Layout'
 
 import { ContainerCard, ArticleContent, Breadcrumbs, ArticleMainTitle, BodyContent } from '@/styles/styled'
 
-import { GAEventCategories } from 'lib/analytics/GAEvents'
-import { sendGAEventHandler } from 'lib/analytics/sendGAEvent'
+import { EventCategories, sendEventHandler } from '@cowprotocol/analytics'
 
 import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
 
@@ -40,10 +39,7 @@ export default function Page({ siteConfigData }: PageProps) {
         <ContainerCard bgColor={Color.neutral100} minHeight="70vh" gap={62} gapMobile={42} centerContent touchFooter>
           <ArticleContent maxWidth="100%">
             <Breadcrumbs>
-              <a
-                href="/careers"
-                onClick={() => sendGAEventHandler(GAEventCategories.CAREERS, 'click-breadcrumb-careers')}
-              >
+              <a href="/careers" onClick={() => sendEventHandler(EventCategories.CAREERS, 'click-breadcrumb-careers')}>
                 Careers
               </a>
               <span>Refer-to-Earn</span>

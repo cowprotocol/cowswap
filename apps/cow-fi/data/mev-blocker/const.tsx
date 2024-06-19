@@ -1,7 +1,6 @@
 import { Link } from '@/components/Link'
 import { ProductLogo, ProductVariant } from '@cowprotocol/ui'
-import { GAEventCategories } from 'lib/analytics/GAEvents'
-import { sendGAEventHandler } from 'lib/analytics/sendGAEvent'
+import { EventCategories, sendEventHandler } from '@cowprotocol/analytics'
 
 import IMG_LOGO_SAFE from '@cowprotocol/assets/images/logo-safe.svg'
 import IMG_LOGO_KARPATKEY from '@cowprotocol/assets/images/logo-karpatkey.svg'
@@ -96,7 +95,7 @@ export const FAQ_DATA = [
           href="https://t.me/+yonLSGoFPRI0YTFk"
           external
           utmContent="mev-blocker-contact"
-          onClick={() => sendGAEventHandler(GAEventCategories.MEVBLOCKER, 'click-contact-us')}
+          onClick={() => sendEventHandler(EventCategories.MEVBLOCKER, 'click-contact-us')}
         >
           Get in touch
         </Link>{' '}
@@ -140,7 +139,7 @@ export const FAQ_DATA = [
           href="https://swap.cow.fi/"
           external
           utmContent="mev-blocker-cow-swap"
-          onClick={() => sendGAEventHandler(GAEventCategories.MEVBLOCKER, 'click-cow-swap')}
+          onClick={() => sendEventHandler(EventCategories.MEVBLOCKER, 'click-cow-swap')}
         >
           CoW Swap
         </Link>{' '}
@@ -169,7 +168,7 @@ export const FAQ_DATA = [
       <>
         To use MEV Blocker, you will need to add the MEV Blocker RPC endpoint to your wallet. You can do that easily by
         following the instructions{' '}
-        <Link href="#rpc" onClick={() => sendGAEventHandler(GAEventCategories.MEVBLOCKER, 'click-rpc')}>
+        <Link href="#rpc" onClick={() => sendEventHandler(EventCategories.MEVBLOCKER, 'click-rpc')}>
           here
         </Link>
         . (Note that once your MEV Blocker is added to your wallet, you might need to check that it is your selected
@@ -223,7 +222,7 @@ export const FAQ_DATA = [
         <Link
           href="https://rpc.mevblocker.io/noreverts"
           external
-          onClick={() => sendGAEventHandler(GAEventCategories.MEVBLOCKER, 'click-noreverts')}
+          onClick={() => sendEventHandler(EventCategories.MEVBLOCKER, 'click-noreverts')}
         >
           https://rpc.mevblocker.io/noreverts
         </Link>{' '}
@@ -240,7 +239,7 @@ export const FAQ_DATA = [
         <Link
           href="https://rpc.mevblocker.io/norefunds"
           external
-          onClick={() => sendGAEventHandler(GAEventCategories.MEVBLOCKER, 'click-norefunds')}
+          onClick={() => sendEventHandler(EventCategories.MEVBLOCKER, 'click-norefunds')}
         >
           https://rpc.mevblocker.io/norefunds
         </Link>{' '}
@@ -276,7 +275,7 @@ export const FAQ_DATA = [
           href="https://cow.fi/"
           external
           utmContent="mev-blocker-cow-protocol"
-          onClick={() => sendGAEventHandler(GAEventCategories.MEVBLOCKER, 'click-cow-protocol')}
+          onClick={() => sendEventHandler(EventCategories.MEVBLOCKER, 'click-cow-protocol')}
         >
           CoW Protocol
         </Link>
@@ -285,7 +284,7 @@ export const FAQ_DATA = [
           href="https://agnostic-relay.net/"
           external
           utmContent="mev-blocker-agnostic"
-          onClick={() => sendGAEventHandler(GAEventCategories.MEVBLOCKER, 'click-agnostic')}
+          onClick={() => sendEventHandler(EventCategories.MEVBLOCKER, 'click-agnostic')}
         >
           Agnostic Relay
         </Link>
@@ -294,7 +293,7 @@ export const FAQ_DATA = [
           href="https://beaverbuild.org/"
           external
           utmContent="mev-blocker-beaver"
-          onClick={() => sendGAEventHandler(GAEventCategories.MEVBLOCKER, 'click-beaver')}
+          onClick={() => sendEventHandler(EventCategories.MEVBLOCKER, 'click-beaver')}
         >
           Beaver Build
         </Link>
@@ -316,7 +315,7 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/mevblocker"
           external
           utmContent="mev-blocker-docs"
-          onClick={() => sendGAEventHandler(GAEventCategories.MEVBLOCKER, 'click-docs')}
+          onClick={() => sendEventHandler(EventCategories.MEVBLOCKER, 'click-docs')}
         >
           documentation
         </Link>{' '}
@@ -325,7 +324,7 @@ export const FAQ_DATA = [
           href="https://t.me/+yonLSGoFPRI0YTFk"
           external
           utmContent="mev-blocker-telegram"
-          onClick={() => sendGAEventHandler(GAEventCategories.MEVBLOCKER, 'click-telegram')}
+          onClick={() => sendEventHandler(EventCategories.MEVBLOCKER, 'click-telegram')}
         >
           join the community
         </Link>
@@ -343,7 +342,7 @@ export const FAQ_DATA = [
           href="https://t.me/+yonLSGoFPRI0YTFk"
           external
           utmContent="mev-blocker-telegram"
-          onClick={() => sendGAEventHandler(GAEventCategories.MEVBLOCKER, 'click-telegram')}
+          onClick={() => sendEventHandler(EventCategories.MEVBLOCKER, 'click-telegram')}
         >
           Telegram
         </Link>

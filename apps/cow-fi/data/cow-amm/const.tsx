@@ -1,6 +1,5 @@
 import { Link } from '@/components/Link'
-import { GAEventCategories } from 'lib/analytics/GAEvents'
-import { sendGAEventHandler } from 'lib/analytics/sendGAEvent'
+import { EventCategories, sendEventHandler } from '@cowprotocol/analytics'
 
 import { ProductLogo, ProductVariant } from '@cowprotocol/ui'
 import IMG_LOGO_SAFE from '@cowprotocol/assets/images/logo-safe.svg'
@@ -151,8 +150,8 @@ export const FAQ_DATA = [
           external
           utmContent="cow-amm-contact-us"
           onClick={() =>
-            sendGAEventHandler({
-              category: GAEventCategories.COWAMM,
+            sendEventHandler({
+              category: EventCategories.COWAMM,
               action: 'Content link click - FAQ:Contact us',
             })
           }

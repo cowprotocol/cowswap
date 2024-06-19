@@ -32,8 +32,7 @@ import SVG from 'react-inlinesvg'
 import IMG_ICON_BULB_COW from '@cowprotocol/assets/images/icon-bulb-cow.svg'
 import IMG_ICON_GRANTS_CARTON from '@cowprotocol/assets/images/icon-grants-carton.svg'
 
-import { GAEventCategories } from 'lib/analytics/GAEvents'
-import { sendGAEventHandler } from 'lib/analytics/sendGAEvent'
+import { EventCategories, sendEventHandler } from '@cowprotocol/analytics'
 
 import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
 
@@ -85,7 +84,7 @@ export default function Page({ siteConfigData }: PageProps) {
                     color="#490072"
                     href="/cow-protocol"
                     linkType={LinkType.TopicButton}
-                    onClick={() => sendGAEventHandler(GAEventCategories.HOME, 'click-start-building')}
+                    onClick={() => sendEventHandler(EventCategories.HOME, 'click-start-building')}
                   >
                     Start building
                   </Link>
@@ -108,7 +107,7 @@ export default function Page({ siteConfigData }: PageProps) {
                     external
                     linkType={LinkType.TopicButton}
                     utmContent="home-page-trade-on-cow-swap"
-                    onClick={() => sendGAEventHandler(GAEventCategories.HOME, 'click-trade-on-cow-swap')}
+                    onClick={() => sendEventHandler(EventCategories.HOME, 'click-trade-on-cow-swap')}
                   >
                     Start trading
                   </Link>
@@ -129,7 +128,7 @@ export default function Page({ siteConfigData }: PageProps) {
                     bgColor="#BCEC79"
                     color="#194D06"
                     href="/cow-amm"
-                    onClick={() => sendGAEventHandler(GAEventCategories.HOME, 'click-deploy-liquidity')}
+                    onClick={() => sendEventHandler(EventCategories.HOME, 'click-deploy-liquidity')}
                   >
                     Deposit liquidity
                   </Link>
@@ -152,7 +151,7 @@ export default function Page({ siteConfigData }: PageProps) {
                     bgColor="#EC4612"
                     color="#FEE7CF"
                     href="/mev-blocker"
-                    onClick={() => sendGAEventHandler(GAEventCategories.HOME, 'click-get-protected')}
+                    onClick={() => sendEventHandler(EventCategories.HOME, 'click-get-protected')}
                   >
                     Get protected
                   </Link>
@@ -182,7 +181,7 @@ export default function Page({ siteConfigData }: PageProps) {
               <Link
                 linkType={LinkType.SectionTitleButton}
                 href="/learn"
-                onClick={() => sendGAEventHandler(GAEventCategories.HOME, 'click-cow-knowledge-base-learn-more')}
+                onClick={() => sendEventHandler(EventCategories.HOME, 'click-cow-knowledge-base-learn-more')}
               >
                 Learn more
               </Link>
@@ -201,7 +200,7 @@ export default function Page({ siteConfigData }: PageProps) {
                 Anyone can join CoW DAO by holding{' '}
                 <Link
                   href="https://swap.cow.fi/#/1/swap/USDC/COW"
-                  onClick={() => sendGAEventHandler(GAEventCategories.HOME, 'click-cow-tokens')}
+                  onClick={() => sendEventHandler(EventCategories.HOME, 'click-cow-tokens')}
                   external
                 >
                   COW tokens
@@ -217,7 +216,7 @@ export default function Page({ siteConfigData }: PageProps) {
                 href="https://discord.com/invite/cowprotocol?utm_source=cow.fi&utm_medium=web&utm_content=link"
                 rel="noopener noreferrer"
                 target="_blank"
-                onClick={() => sendGAEventHandler(GAEventCategories.HOME, 'click-discord')}
+                onClick={() => sendEventHandler(EventCategories.HOME, 'click-discord')}
               >
                 <TopicImage iconColor="#1E90FF" maxWidth={290} maxHeight={290} height={290} width={290}></TopicImage>
                 <TopicTitle fontSize={38}>Discord</TopicTitle>
@@ -228,7 +227,7 @@ export default function Page({ siteConfigData }: PageProps) {
                 href="https://forum.cow.fi/?utm_source=cow.fi&utm_medium=web&utm_content=link"
                 rel="noopener noreferrer"
                 target="_blank"
-                onClick={() => sendGAEventHandler(GAEventCategories.HOME, 'click-forum')}
+                onClick={() => sendEventHandler(EventCategories.HOME, 'click-forum')}
               >
                 <TopicImage iconColor="#FF4500" maxWidth={290} maxHeight={290} height={290} width={290}></TopicImage>
                 <TopicTitle fontSize={38}>Forum</TopicTitle>
@@ -239,7 +238,7 @@ export default function Page({ siteConfigData }: PageProps) {
                 href="https://snapshot.org/#/cow.eth?utm_source=cow.fi&utm_medium=web&utm_content=link"
                 rel="noopener noreferrer"
                 target="_blank"
-                onClick={() => sendGAEventHandler(GAEventCategories.HOME, 'click-snapshot')}
+                onClick={() => sendEventHandler(EventCategories.HOME, 'click-snapshot')}
               >
                 <TopicImage iconColor="#4B0082" maxWidth={290} maxHeight={290} height={290} width={290}></TopicImage>
                 <TopicTitle fontSize={38}>Snapshot</TopicTitle>
@@ -264,7 +263,7 @@ export default function Page({ siteConfigData }: PageProps) {
                 linkType={LinkType.SectionTitleButton}
                 utmContent="home-page-apply-for-a-grant"
                 href="https://grants.cow.fi/"
-                onClick={() => sendGAEventHandler(GAEventCategories.HOME, 'click-apply-for-a-grant')}
+                onClick={() => sendEventHandler(EventCategories.HOME, 'click-apply-for-a-grant')}
               >
                 Apply for a grant
               </Link>

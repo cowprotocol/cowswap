@@ -38,7 +38,6 @@ import {
 import { DAO_CONTENT as CONTENT } from '@/data/widget/const'
 
 import SVG from 'react-inlinesvg'
-import IMG_ICON_FAQ from '@cowprotocol/assets/images/icon-faq.svg'
 
 import 'swiper/css'
 import 'swiper/css/pagination'
@@ -46,8 +45,7 @@ import 'swiper/css/navigation'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Autoplay, Pagination, Navigation } from 'swiper/modules'
 
-import { GAEventCategories } from 'lib/analytics/GAEvents'
-import { sendGAEventHandler } from 'lib/analytics/sendGAEvent'
+import { EventCategories, sendEventHandler } from '@cowprotocol/analytics'
 
 import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
 
@@ -172,7 +170,7 @@ export default function Page({ siteConfigData }: PageProps) {
                       href="https://github.com/charlesndalton/milkman"
                       external
                       utmContent="link-to-milkman"
-                      onClick={() => sendGAEventHandler(GAEventCategories.DAOS, 'click-milkman')}
+                      onClick={() => sendEventHandler(EventCategories.DAOS, 'click-milkman')}
                     >
                       Milkman bot
                     </Link>
@@ -231,7 +229,7 @@ export default function Page({ siteConfigData }: PageProps) {
                       href="https://dump.services/"
                       external
                       utmContent="link-to-dump-services"
-                      onClick={() => sendGAEventHandler(GAEventCategories.DAOS, 'click-dump-services')}
+                      onClick={() => sendEventHandler(EventCategories.DAOS, 'click-dump-services')}
                     >
                       Dump.services
                     </Link>
@@ -261,7 +259,7 @@ export default function Page({ siteConfigData }: PageProps) {
               utmContent="link-to-advanced-order-types"
               margin="24px auto 0"
               external
-              onClick={() => sendGAEventHandler(GAEventCategories.DAOS, 'click-advanced-order-types')}
+              onClick={() => sendEventHandler(EventCategories.DAOS, 'click-advanced-order-types')}
             >
               Explore advanced order types
             </Link>
@@ -306,7 +304,7 @@ export default function Page({ siteConfigData }: PageProps) {
                         href={dao.link}
                         utmContent={`dao-${dao.title.toLowerCase().replace(/\s/g, '-')}`}
                         external
-                        onClick={() => sendGAEventHandler(GAEventCategories.DAOS, `click-${dao.title.toLowerCase()}`)}
+                        onClick={() => sendEventHandler(EventCategories.DAOS, `click-${dao.title.toLowerCase()}`)}
                       >
                         Learn more
                       </Link>
@@ -321,7 +319,7 @@ export default function Page({ siteConfigData }: PageProps) {
                     href={`${dao.link}?utm_source=cow.fi&utm_medium=web&utm_content=dao-${dao.title}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    onClick={() => sendGAEventHandler(GAEventCategories.DAOS, `click-${dao.title.toLowerCase()}`)}
+                    onClick={() => sendEventHandler(EventCategories.DAOS, `click-${dao.title.toLowerCase()}`)}
                   >
                     <TopicImage
                       iconColor={Color.neutral0}

@@ -65,57 +65,6 @@ export const NAV_ITEMS: MenuItem[] = [
   },
 ]
 
-export const FOOTER_NAV_ITEMS: MenuItem[] = [
-  {
-    label: 'About',
-    children: [
-      { href: '#', label: 'Governance' },
-      { href: '#', label: 'Token' },
-      { href: '#', label: 'Grants' },
-      { href: '#', label: 'Careers' },
-      { href: '#', label: 'Brand Kit' },
-    ],
-  },
-  {
-    label: 'Legal',
-    children: [
-      { href: '#', label: 'Terms & Conditions' },
-      { href: '#', label: 'Cookie Policy' },
-      { href: '#', label: 'Privacy Policy' },
-    ],
-  },
-  {
-    label: 'Products',
-    children: [
-      { href: '#', label: 'CoW Swap' },
-      { href: '#', label: 'CoW Protocol' },
-      { href: '#', label: 'CoW AMM' },
-      { href: '#', label: 'MEV Blocker' },
-      { href: '#', label: 'Explorer' },
-      { href: '#', label: 'Widget' },
-      { href: '#', label: 'Hooks Store' },
-    ],
-  },
-  {
-    href: '#',
-    label: 'Help',
-    children: [
-      { href: '#', label: 'Dev Docs' },
-      { href: '#', label: 'FAQ / Knowledge base' },
-      { href: '#', label: 'Send Feedback' },
-      { href: '#', label: 'Report Scams' },
-    ],
-  },
-  {
-    label: 'Misc.',
-    children: [
-      { href: '#', label: 'Swag Store' },
-      { href: '#', label: 'Token Charts' },
-      { href: '#', label: 'For DAOs' },
-    ],
-  },
-]
-
 export const ADDITIONAL_FOOTER_CONTENT = (
   <>
     <FortuneWidget />

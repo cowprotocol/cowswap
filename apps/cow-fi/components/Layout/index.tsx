@@ -5,11 +5,12 @@ import styled from 'styled-components/macro'
 import { CONFIG } from '@/const/meta'
 import { CoWDAOFonts } from '@/styles/CoWDAOFonts'
 import { PAGE_MAX_WIDTH, THEME_MODE, PRODUCT_VARIANT, NAV_ADDITIONAL_BUTTONS, NAV_ITEMS } from './const'
+import getURL from '@/util/getURL'
 
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  min-height: 60vh;
 `
 
 interface LayoutProps {
@@ -18,9 +19,10 @@ interface LayoutProps {
   metaTitle?: string
   metaDescription?: string
   ogImage?: string
+  host?: string
 }
 
-export default function Layout({ children, bgColor, metaTitle, metaDescription, ogImage }: LayoutProps) {
+export default function Layout({ children, bgColor, metaTitle, metaDescription, ogImage, host }: LayoutProps) {
   const GlobalStyles = GlobalCoWDAOStyles(CoWDAOFonts, bgColor)
 
   useEffect(() => {
@@ -39,6 +41,8 @@ export default function Layout({ children, bgColor, metaTitle, metaDescription, 
       })
     })
   }, [])
+
+  const finalHost = host || getURL('')
 
   return (
     <>
@@ -69,7 +73,14 @@ export default function Layout({ children, bgColor, metaTitle, metaDescription, 
         maxWidth={PAGE_MAX_WIDTH}
       />
       <Wrapper>{children}</Wrapper>
-      <Footer theme={THEME_MODE} maxWidth={PAGE_MAX_WIDTH} productVariant={PRODUCT_VARIANT} expanded hasTouchFooter />
+      <Footer
+        theme={THEME_MODE}
+        maxWidth={PAGE_MAX_WIDTH}
+        productVariant={PRODUCT_VARIANT}
+        host={finalHost}
+        expanded
+        hasTouchFooter
+      />
     </>
   )
 }

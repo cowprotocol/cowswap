@@ -7,8 +7,7 @@ import { getCategoryBySlug, getAllCategorySlugs, getArticles, getCategories } fr
 import { SearchBar } from '@/components/SearchBar'
 import { ArrowButton } from '@/components/ArrowButton'
 
-import { GAEventCategories } from 'lib/analytics/GAEvents'
-import { sendGAEventHandler } from 'lib/analytics/sendGAEvent'
+import { EventCategories, sendEventHandler } from '@cowprotocol/analytics'
 
 import {
   Breadcrumbs,
@@ -108,10 +107,7 @@ export default function TopicPage({ category, articles, allCategories }: TopicPa
       <Wrapper>
         <CategoryLinks>
           <li>
-            <a
-              href="/learn"
-              onClick={() => sendGAEventHandler(GAEventCategories.KNOWLEDGEBASE, 'click-categories-home')}
-            >
+            <a href="/learn" onClick={() => sendEventHandler(EventCategories.KNOWLEDGEBASE, 'click-categories-home')}>
               Knowledge Base
             </a>
           </li>
@@ -119,7 +115,7 @@ export default function TopicPage({ category, articles, allCategories }: TopicPa
             <li key={category.slug}>
               <a
                 href={`/learn/topic/${category.slug}`}
-                onClick={() => sendGAEventHandler(GAEventCategories.KNOWLEDGEBASE, `click-categories-${category.name}`)}
+                onClick={() => sendEventHandler(EventCategories.KNOWLEDGEBASE, `click-categories-${category.name}`)}
               >
                 {category.name}
               </a>
@@ -132,18 +128,18 @@ export default function TopicPage({ category, articles, allCategories }: TopicPa
         <ContainerCard gap={42} gapMobile={24} minHeight="100vh" alignContent="flex-start" touchFooter>
           <ContainerCardInner maxWidth={970} gap={24} gapMobile={24}>
             <Breadcrumbs padding={'0'}>
-              <a href="/" onClick={() => sendGAEventHandler(GAEventCategories.KNOWLEDGEBASE, 'click-breadcrumbs-home')}>
+              <a href="/" onClick={() => sendEventHandler(EventCategories.KNOWLEDGEBASE, 'click-breadcrumbs-home')}>
                 Home
               </a>
               <a
                 href="/learn"
-                onClick={() => sendGAEventHandler(GAEventCategories.KNOWLEDGEBASE, 'click-breadcrumbs-knowledgebase')}
+                onClick={() => sendEventHandler(EventCategories.KNOWLEDGEBASE, 'click-breadcrumbs-knowledgebase')}
               >
                 Knowledge Base
               </a>
               <a
                 href="/learn/topics/"
-                onClick={() => sendGAEventHandler(GAEventCategories.KNOWLEDGEBASE, 'click-breadcrumbs-topics')}
+                onClick={() => sendEventHandler(EventCategories.KNOWLEDGEBASE, 'click-breadcrumbs-topics')}
               >
                 Topic
               </a>
@@ -176,10 +172,7 @@ export default function TopicPage({ category, articles, allCategories }: TopicPa
                         key={article.id}
                         href={`/learn/${article.attributes.slug}`}
                         onClick={() =>
-                          sendGAEventHandler(
-                            GAEventCategories.KNOWLEDGEBASE,
-                            `click-article-${article.attributes.title}`
-                          )
+                          sendEventHandler(EventCategories.KNOWLEDGEBASE, `click-article-${article.attributes.title}`)
                         }
                       >
                         {article.attributes.title}

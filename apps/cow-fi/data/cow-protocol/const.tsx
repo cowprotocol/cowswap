@@ -1,6 +1,5 @@
 import { Link } from '@/components/Link'
-import { GAEventCategories } from 'lib/analytics/GAEvents'
-import { sendGAEventHandler } from 'lib/analytics/sendGAEvent'
+import { EventCategories, sendEventHandler } from '@cowprotocol/analytics'
 
 import { ProductLogo, ProductVariant } from '@cowprotocol/ui'
 import IMG_LOGO_SAFE from '@cowprotocol/assets/images/logo-safe.svg'
@@ -80,7 +79,7 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/introduction/intents"
           external
           utmContent="cow-protocol-introduction-intents"
-          onClick={() => sendGAEventHandler(GAEventCategories.COWPROTOCOL, 'click-introduction-intents')}
+          onClick={() => sendEventHandler(EventCategories.COWPROTOCOL, 'click-introduction-intents')}
         >
           intents
         </Link>
@@ -89,7 +88,7 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/introduction/solvers"
           external
           utmContent="cow-protocol-introduction-solvers"
-          onClick={() => sendGAEventHandler(GAEventCategories.COWPROTOCOL, 'click-introduction-solvers')}
+          onClick={() => sendEventHandler(EventCategories.COWPROTOCOL, 'click-introduction-solvers')}
         >
           solvers
         </Link>
@@ -98,7 +97,7 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/introduction/batch-auctions"
           external
           utmContent="cow-protocol-introduction-batch-auctions"
-          onClick={() => sendGAEventHandler(GAEventCategories.COWPROTOCOL, 'click-introduction-batch-auctions')}
+          onClick={() => sendEventHandler(EventCategories.COWPROTOCOL, 'click-introduction-batch-auctions')}
         >
           batch auctions
         </Link>{' '}
@@ -115,7 +114,7 @@ export const FAQ_DATA = [
           href="https://swap.cow.fi/"
           external
           utmContent="cow-protocol-cow-swap"
-          onClick={() => sendGAEventHandler(GAEventCategories.COWPROTOCOL, 'click-cow-swap')}
+          onClick={() => sendEventHandler(EventCategories.COWPROTOCOL, 'click-cow-swap')}
         >
           CoW Swap
         </Link>{' '}
@@ -139,7 +138,7 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/introduction/solvers"
           external
           utmContent="cow-protocol-introduction-solvers"
-          onClick={() => sendGAEventHandler(GAEventCategories.COWPROTOCOL, 'click-introduction-solvers')}
+          onClick={() => sendEventHandler(EventCategories.COWPROTOCOL, 'click-introduction-solvers')}
         >
           solvers
         </Link>{' '}
@@ -160,7 +159,7 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/introduction/solvers"
           external
           utmContent="cow-protocol-introduction-solvers"
-          onClick={() => sendGAEventHandler(GAEventCategories.COWPROTOCOL, 'click-introduction-solvers')}
+          onClick={() => sendEventHandler(EventCategories.COWPROTOCOL, 'click-introduction-solvers')}
         >
           solvers
         </Link>{' '}
@@ -170,7 +169,7 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/how-it-works/coincidence-of-wants"
           external
           utmContent="cow-protocol-coincidence-of-wants"
-          onClick={() => sendGAEventHandler(GAEventCategories.COWPROTOCOL, 'click-coincidence-of-wants')}
+          onClick={() => sendEventHandler(EventCategories.COWPROTOCOL, 'click-coincidence-of-wants')}
         >
           Coincidences of Wants
         </Link>{' '}
@@ -199,7 +198,7 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/introduction/intents"
           external
           utmContent="cow-protocol-introduction-intents"
-          onClick={() => sendGAEventHandler(GAEventCategories.COWPROTOCOL, 'click-introduction-intents')}
+          onClick={() => sendEventHandler(EventCategories.COWPROTOCOL, 'click-introduction-intents')}
         >
           intent
         </Link>{' '}
@@ -210,7 +209,7 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/introduction/solvers"
           external
           utmContent="cow-protocol-introduction-solvers"
-          onClick={() => sendGAEventHandler(GAEventCategories.COWPROTOCOL, 'click-introduction-solvers')}
+          onClick={() => sendEventHandler(EventCategories.COWPROTOCOL, 'click-introduction-solvers')}
         >
           solvers
         </Link>
@@ -221,7 +220,7 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/introduction/solvers"
           external
           utmContent="cow-protocol-introduction-solvers"
-          onClick={() => sendGAEventHandler(GAEventCategories.COWPROTOCOL, 'click-introduction-solvers')}
+          onClick={() => sendEventHandler(EventCategories.COWPROTOCOL, 'click-introduction-solvers')}
         >
           solver
         </Link>{' '}
@@ -237,7 +236,7 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/introduction/solvers"
           external
           utmContent="cow-protocol-introduction-solvers"
-          onClick={() => sendGAEventHandler(GAEventCategories.COWPROTOCOL, 'click-introduction-solvers')}
+          onClick={() => sendEventHandler(EventCategories.COWPROTOCOL, 'click-introduction-solvers')}
         >
           Solvers
         </Link>{' '}
@@ -246,7 +245,7 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/introduction/intents"
           external
           utmContent="cow-protocol-introduction-intents"
-          onClick={() => sendGAEventHandler(GAEventCategories.COWPROTOCOL, 'click-introduction-intents')}
+          onClick={() => sendEventHandler(EventCategories.COWPROTOCOL, 'click-introduction-intents')}
         >
           intent to trade message
         </Link>
@@ -255,7 +254,7 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/introduction/batch-auctions"
           external
           utmContent="cow-protocol-introduction-batch-auctions"
-          onClick={() => sendGAEventHandler(GAEventCategories.COWPROTOCOL, 'click-introduction-batch-auctions')}
+          onClick={() => sendEventHandler(EventCategories.COWPROTOCOL, 'click-introduction-batch-auctions')}
         >
           batch
         </Link>
@@ -265,7 +264,7 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/benefits/price-improvement"
           external
           utmContent="cow-protocol-price-improvement"
-          onClick={() => sendGAEventHandler(GAEventCategories.COWPROTOCOL, 'click-price-improvement')}
+          onClick={() => sendEventHandler(EventCategories.COWPROTOCOL, 'click-price-improvement')}
         >
           surplus
         </Link>{' '}
@@ -276,7 +275,7 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/tutorials/solvers"
           external
           utmContent="cow-protocol-tutorials-solvers"
-          onClick={() => sendGAEventHandler(GAEventCategories.COWPROTOCOL, 'click-tutorials-solvers')}
+          onClick={() => sendEventHandler(EventCategories.COWPROTOCOL, 'click-tutorials-solvers')}
         >
           CoW Protocol documentation
         </Link>
@@ -293,7 +292,7 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/introduction/intents"
           external
           utmContent="cow-protocol-introduction-intents"
-          onClick={() => sendGAEventHandler(GAEventCategories.COWPROTOCOL, 'click-introduction-intents')}
+          onClick={() => sendEventHandler(EventCategories.COWPROTOCOL, 'click-introduction-intents')}
         >
           intent to trade
         </Link>{' '}
@@ -302,7 +301,7 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/introduction/solvers"
           external
           utmContent="cow-protocol-introduction-solvers"
-          onClick={() => sendGAEventHandler(GAEventCategories.COWPROTOCOL, 'click-introduction-solvers')}
+          onClick={() => sendEventHandler(EventCategories.COWPROTOCOL, 'click-introduction-solvers')}
         >
           solvers
         </Link>
@@ -313,7 +312,7 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/introduction/batch-auctions"
           external
           utmContent="cow-protocol-introduction-batch-auctions"
-          onClick={() => sendGAEventHandler(GAEventCategories.COWPROTOCOL, 'click-introduction-batch-auctions')}
+          onClick={() => sendEventHandler(EventCategories.COWPROTOCOL, 'click-introduction-batch-auctions')}
         >
           batch auction
         </Link>
@@ -325,7 +324,7 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/benefits/mev-protection"
           external
           utmContent="cow-protocol-mev-protection"
-          onClick={() => sendGAEventHandler(GAEventCategories.COWPROTOCOL, 'click-mev-protection')}
+          onClick={() => sendEventHandler(EventCategories.COWPROTOCOL, 'click-mev-protection')}
         >
           prevents MEV
         </Link>
@@ -351,7 +350,7 @@ export const FAQ_DATA = [
           href="https://discord.gg/cowprotocol"
           external
           utmContent="cow-discord"
-          onClick={() => sendGAEventHandler(GAEventCategories.COWPROTOCOL, 'click-discord')}
+          onClick={() => sendEventHandler(EventCategories.COWPROTOCOL, 'click-discord')}
         >
           https://discord.gg/cowprotocol
         </Link>

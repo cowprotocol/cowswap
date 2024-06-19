@@ -42,8 +42,7 @@ import {
 import SVG from 'react-inlinesvg'
 import IMG_ICON_FAQ from '@cowprotocol/assets/images/icon-faq.svg'
 
-import { GAEventCategories } from 'lib/analytics/GAEvents'
-import { sendGAEventHandler } from 'lib/analytics/sendGAEvent'
+import { EventCategories, sendEventHandler } from '@cowprotocol/analytics'
 
 import { FAQ_DATA, TOP_LOGOS, CASE_STUDIES, ALL_LOGOS } from '../../data/cow-protocol/const'
 
@@ -75,7 +74,7 @@ export default function Page({ siteConfigData }: PageProps) {
               href="https://docs.cow.fi/category/tutorials"
               external
               linkType={LinkType.HeroButton}
-              onClick={() => sendGAEventHandler(GAEventCategories.COWPROTOCOL, 'click-hero-start-building')}
+              onClick={() => sendEventHandler(EventCategories.COWPROTOCOL, 'click-hero-start-building')}
             >
               Start building
             </Link>
@@ -108,7 +107,7 @@ export default function Page({ siteConfigData }: PageProps) {
             external
             linkType={LinkType.SectionTitleButton}
             utmContent="cow-protocol-metrics"
-            onClick={() => sendGAEventHandler(GAEventCategories.COWPROTOCOL, 'click-metrics-view-all')}
+            onClick={() => sendEventHandler(EventCategories.COWPROTOCOL, 'click-metrics-view-all')}
           >
             View all metrics on DUNE &#8599;
           </Link>
@@ -154,7 +153,7 @@ export default function Page({ siteConfigData }: PageProps) {
                     bgColor="#66018E"
                     color="#F996EE"
                     href="/learn"
-                    onClick={() => sendGAEventHandler(GAEventCategories.COWPROTOCOL, 'click-intents-learn-more')}
+                    onClick={() => sendEventHandler(EventCategories.COWPROTOCOL, 'click-intents-learn-more')}
                     linkType={LinkType.TopicButton}
                   >
                     Learn more
@@ -190,7 +189,7 @@ export default function Page({ siteConfigData }: PageProps) {
                     bgColor="#66018E"
                     color="#F996EE"
                     href="/learn"
-                    onClick={() => sendGAEventHandler(GAEventCategories.COWPROTOCOL, 'click-solvers-learn-more')}
+                    onClick={() => sendEventHandler(EventCategories.COWPROTOCOL, 'click-solvers-learn-more')}
                     linkType={LinkType.TopicButton}
                   >
                     Learn more
@@ -214,7 +213,7 @@ export default function Page({ siteConfigData }: PageProps) {
                     color="#F996EE"
                     href="/learn"
                     linkType={LinkType.TopicButton}
-                    onClick={() => sendGAEventHandler(GAEventCategories.COWPROTOCOL, 'click-batch-auctions-learn-more')}
+                    onClick={() => sendEventHandler(EventCategories.COWPROTOCOL, 'click-batch-auctions-learn-more')}
                   >
                     Learn more
                   </Link>
@@ -448,7 +447,7 @@ export default function Page({ siteConfigData }: PageProps) {
                   href={`${logo.url}?utm_source=cow.fi&utm_medium=web&utm_content=cow-protocol-logos`}
                   target="_blank"
                   rel="noopener noreferrer nofollow"
-                  onClick={() => sendGAEventHandler(GAEventCategories.COWPROTOCOL, `click-logo-${logo.alt}`)}
+                  onClick={() => sendEventHandler(EventCategories.COWPROTOCOL, `click-logo-${logo.alt}`)}
                 >
                   <TopicImage
                     iconColor={Color.neutral20}
@@ -478,9 +477,7 @@ export default function Page({ siteConfigData }: PageProps) {
                       external
                       linkType={LinkType.TopicButton}
                       utmContent={`cow-protocol-case-study-${study.title}`}
-                      onClick={() =>
-                        sendGAEventHandler(GAEventCategories.COWPROTOCOL, `click-case-study-${study.title}`)
-                      }
+                      onClick={() => sendEventHandler(EventCategories.COWPROTOCOL, `click-case-study-${study.title}`)}
                     >
                       Read more
                     </Link>
@@ -499,7 +496,7 @@ export default function Page({ siteConfigData }: PageProps) {
                   href={`${logo.url}?utm_source=cow.fi&utm_medium=web&utm_content=cow-protocol-logos`}
                   target="_blank"
                   rel="noopener noreferrer nofollow"
-                  onClick={() => sendGAEventHandler(GAEventCategories.COWPROTOCOL, `click-logo-${logo.alt}`)}
+                  onClick={() => sendEventHandler(EventCategories.COWPROTOCOL, `click-logo-${logo.alt}`)}
                 >
                   <TopicImage
                     iconColor={Color.neutral20}
@@ -542,7 +539,7 @@ export default function Page({ siteConfigData }: PageProps) {
                     href="https://docs.cow.fi/"
                     linkType={LinkType.TopicButton}
                     utmContent={`cow-protocol-docs`}
-                    onClick={() => sendGAEventHandler(GAEventCategories.COWPROTOCOL, `click-docs`)}
+                    onClick={() => sendEventHandler(EventCategories.COWPROTOCOL, `click-docs`)}
                   >
                     Read the docs
                   </Link>
@@ -567,7 +564,7 @@ export default function Page({ siteConfigData }: PageProps) {
                     fontSize={27}
                     href="/widget"
                     linkType={LinkType.TopicButton}
-                    onClick={() => sendGAEventHandler(GAEventCategories.COWPROTOCOL, `click-integrate-widget`)}
+                    onClick={() => sendEventHandler(EventCategories.COWPROTOCOL, `click-integrate-widget`)}
                   >
                     Integrate the widget
                   </Link>
@@ -594,7 +591,7 @@ export default function Page({ siteConfigData }: PageProps) {
                     linkType={LinkType.TopicButton}
                     external
                     utmContent={`cow-protocol-grants`}
-                    onClick={() => sendGAEventHandler(GAEventCategories.COWPROTOCOL, `click-apply-for-a-grant`)}
+                    onClick={() => sendEventHandler(EventCategories.COWPROTOCOL, `click-apply-for-a-grant`)}
                   >
                     Apply for a grant
                   </Link>
@@ -634,7 +631,7 @@ export default function Page({ siteConfigData }: PageProps) {
                 linkType={LinkType.SectionTitleButton}
                 utmContent="cow-protocol-solvers"
                 margin="28px 0 0"
-                onClick={() => sendGAEventHandler(GAEventCategories.COWPROTOCOL, `click-solvers-read-docs`)}
+                onClick={() => sendEventHandler(EventCategories.COWPROTOCOL, `click-solvers-read-docs`)}
               >
                 Read the docs
               </Link>

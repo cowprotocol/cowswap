@@ -23,7 +23,7 @@ import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentAct
 import { CoWDAOFonts } from 'common/styles/CoWDAOFonts'
 import RedirectAnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers/RedirectAnySwapAffectedUsers'
 
-import { NAV_ITEMS, FOOTER_NAV_ITEMS, PRODUCT_VARIANT, ADDITIONAL_FOOTER_CONTENT } from './menuConsts'
+import { NAV_ITEMS, PRODUCT_VARIANT, ADDITIONAL_FOOTER_CONTENT } from './menuConsts'
 import * as styledEl from './styled'
 
 const RoutesApp = lazy(() => import('./RoutesApp').then((module) => ({ default: module.RoutesApp })))
@@ -105,7 +105,6 @@ export function App() {
 
           {!isInjectedWidgetMode && (
             <Footer
-              navItems={FOOTER_NAV_ITEMS}
               theme={darkMode ? 'dark' : 'light'}
               productVariant={PRODUCT_VARIANT}
               additionalFooterContent={ADDITIONAL_FOOTER_CONTENT}

@@ -36,8 +36,7 @@ import {
 import SVG from 'react-inlinesvg'
 import IMG_ICON_FAQ from '@cowprotocol/assets/images/icon-faq.svg'
 
-import { GAEventCategories } from 'lib/analytics/GAEvents'
-import { sendGAEventHandler } from 'lib/analytics/sendGAEvent'
+import { EventCategories, sendEventHandler } from '@cowprotocol/analytics'
 import { FAQ_DATA } from '../../data/cow-amm/const'
 
 import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
@@ -68,7 +67,7 @@ export default function Page({ siteConfigData }: PageProps) {
               external
               linkType={LinkType.HeroButton}
               utmContent={'cow-amm-hero-button-protect-liquidity'}
-              onClick={() => sendGAEventHandler(GAEventCategories.COWAMM, 'click-protect-liquidity')}
+              onClick={() => sendEventHandler(EventCategories.COWAMM, 'click-protect-liquidity')}
             >
               Protect your liquidity
             </Link>
@@ -101,7 +100,7 @@ export default function Page({ siteConfigData }: PageProps) {
             external
             linkType={LinkType.SectionTitleButton}
             utmContent={'cow-amm-metrics-button-view-all'}
-            onClick={() => sendGAEventHandler(GAEventCategories.COWAMM, 'click-view-all-metrics')}
+            onClick={() => sendEventHandler(EventCategories.COWAMM, 'click-view-all-metrics')}
           >
             View all metrics on DUNE &#8599;
           </Link>

@@ -43,8 +43,7 @@ import useWebShare from 'hooks/useWebShare'
 
 import { Link, LinkType } from '@/components/Link'
 
-import { GAEventCategories } from 'lib/analytics/GAEvents'
-import { sendGAEventHandler } from 'lib/analytics/sendGAEvent'
+import { EventCategories, sendEventHandler } from '@cowprotocol/analytics'
 
 import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
 
@@ -168,10 +167,7 @@ export default function ArticlePage({
       <Wrapper>
         <CategoryLinks>
           <li>
-            <a
-              href="/learn"
-              onClick={() => sendGAEventHandler(GAEventCategories.KNOWLEDGEBASE, 'click-knowledge-base')}
-            >
+            <a href="/learn" onClick={() => sendEventHandler(EventCategories.KNOWLEDGEBASE, 'click-knowledge-base')}>
               Knowledge Base
             </a>
           </li>
@@ -179,7 +175,7 @@ export default function ArticlePage({
             <li key={category.slug}>
               <a
                 href={`/learn/topic/${category.slug}`}
-                onClick={() => sendGAEventHandler(GAEventCategories.KNOWLEDGEBASE, `click-topic-${category.name}`)}
+                onClick={() => sendEventHandler(EventCategories.KNOWLEDGEBASE, `click-topic-${category.name}`)}
               >
                 {category.name}
               </a>
@@ -191,12 +187,12 @@ export default function ArticlePage({
         <ContainerCard gap={62} gapMobile={42} margin="0 auto" centerContent>
           <ArticleContent>
             <Breadcrumbs>
-              <a href="/" onClick={() => sendGAEventHandler(GAEventCategories.KNOWLEDGEBASE, 'click-breadcrumbs-home')}>
+              <a href="/" onClick={() => sendEventHandler(EventCategories.KNOWLEDGEBASE, 'click-breadcrumbs-home')}>
                 Home
               </a>
               <a
                 href="/learn"
-                onClick={() => sendGAEventHandler(GAEventCategories.KNOWLEDGEBASE, 'click-breadcrumbs-knowledge-base')}
+                onClick={() => sendEventHandler(EventCategories.KNOWLEDGEBASE, 'click-breadcrumbs-knowledge-base')}
               >
                 Knowledge Base
               </a>
@@ -210,7 +206,7 @@ export default function ArticlePage({
                     key={category.id}
                     href={`/learn/topic/${category.attributes?.slug ?? ''}`}
                     onClick={() =>
-                      sendGAEventHandler(GAEventCategories.KNOWLEDGEBASE, `click-category-${category.attributes?.name}`)
+                      sendEventHandler(EventCategories.KNOWLEDGEBASE, `click-category-${category.attributes?.name}`)
                     }
                   >
                     {category.attributes?.name ?? ''}
@@ -262,8 +258,8 @@ export default function ArticlePage({
                     <a
                       href={`/learn/${article.attributes?.slug}`}
                       onClick={() =>
-                        sendGAEventHandler(
-                          GAEventCategories.KNOWLEDGEBASE,
+                        sendEventHandler(
+                          EventCategories.KNOWLEDGEBASE,
                           `click-related-article-${article.attributes?.title}`
                         )
                       }
@@ -293,10 +289,7 @@ export default function ArticlePage({
                     key={article.id}
                     href={`/learn/${article.attributes?.slug}`}
                     onClick={() =>
-                      sendGAEventHandler(
-                        GAEventCategories.KNOWLEDGEBASE,
-                        `click-read-more-${article.attributes?.title}`
-                      )
+                      sendEventHandler(EventCategories.KNOWLEDGEBASE, `click-read-more-${article.attributes?.title}`)
                     }
                   >
                     {imageUrl && (

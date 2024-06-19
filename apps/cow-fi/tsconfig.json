@@ -8,6 +8,7 @@
       "@/pages/*": ["pages/*"],
       "@/styles/*": ["styles/*"],
       "@/data/*": ["data/*"],
+      "@/util/*": ["util/*"],
       "@cowprotocol/widget-react": ["../../libs/widget-react/src/index.ts"],
       "@cowprotocol/events": ["../../libs/events/src/index.ts"],
       "@cowprotocol/widget-lib": ["../../libs/widget-lib/src/index.ts"],

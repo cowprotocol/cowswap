@@ -21,8 +21,7 @@ import {
   TopicCardInner,
 } from '@/styles/styled'
 
-import { GAEventCategories } from 'lib/analytics/GAEvents'
-import { sendGAEventHandler } from 'lib/analytics/sendGAEvent'
+import { EventCategories, sendEventHandler } from '@cowprotocol/analytics'
 
 import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
 
@@ -97,7 +96,7 @@ export default function Page({ siteConfigData, jobsData }: PageProps) {
                                 href={absolute_url}
                                 utmContent={`job-${title}`}
                                 margin="auto auto 0 0"
-                                onClick={() => sendGAEventHandler(GAEventCategories.CAREERS, `click-job-${title}`)}
+                                onClick={() => sendEventHandler(EventCategories.CAREERS, `click-job-${title}`)}
                               >
                                 Apply
                               </Link>
@@ -128,7 +127,7 @@ export default function Page({ siteConfigData, jobsData }: PageProps) {
                                 linkType={LinkType.TopicButton}
                                 href={absolute_url}
                                 utmContent={`job-${title}`}
-                                onClick={() => sendGAEventHandler(GAEventCategories.CAREERS, `click-job-${title}`)}
+                                onClick={() => sendEventHandler(EventCategories.CAREERS, `click-job-${title}`)}
                               >
                                 Apply
                               </Link>
@@ -159,7 +158,7 @@ export default function Page({ siteConfigData, jobsData }: PageProps) {
                     bgColor="#194D05"
                     color="#BCEC79"
                     href="/careers/refer-to-earn"
-                    onClick={() => sendGAEventHandler(GAEventCategories.CAREERS, `click-refer-to-earn`)}
+                    onClick={() => sendEventHandler(EventCategories.CAREERS, `click-refer-to-earn`)}
                   >
                     Refer-to-Earn details
                   </Link>
