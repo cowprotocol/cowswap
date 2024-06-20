@@ -3,7 +3,7 @@ import React from 'react'
 import { Command } from '@cowprotocol/types'
 import { TruncatedText } from '@cowprotocol/ui/pure/TruncatedText'
 
-import { faFill, faProjectDiagram } from '@fortawesome/free-solid-svg-icons'
+import { faFill, faProjectDiagram, faGroupArrowsRotate } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { sendEvent } from 'components/analytics'
 import DecodeAppData from 'components/AppData/DecodeAppData'
@@ -27,6 +27,8 @@ import { Order } from 'api/operator'
 import { getUiOrderType } from 'utils/getUiOrderType'
 
 import { TAB_QUERY_PARAM_KEY } from '../../../explorer/const'
+import { ExplorerDataType, getExplorerLink } from '../../../../../../libs/common-utils/src/getExplorerLink'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 const Table = styled(SimpleTable)`
   > tbody > tr {
@@ -166,7 +168,8 @@ export const LinkButton = styled(LinkWithPrefixNetwork)`
   }
 `
 
-export type Props = {
+export type DetailsTableProps = {
+  chainId: SupportedChainId
   order: Order
   showFillsButton: boolean | undefined
   areTradesLoading: boolean
@@ -175,8 +178,8 @@ export type Props = {
   invertPrice: Command
 }
 
-export function DetailsTable(props: Props): JSX.Element | null {
-  const { order, areTradesLoading, showFillsButton, viewFills, isPriceInverted, invertPrice } = props
+export function DetailsTable(props: DetailsTableProps): JSX.Element | null {
+  const { chainId, order, areTradesLoading, showFillsButton, viewFills, isPriceInverted, invertPrice } = props
   const {
     uid,
     owner,
@@ -199,6 +202,7 @@ export function DetailsTable(props: Props): JSX.Element | null {
     sellToken,
     appData,
     fullAppData,
+
   } = order
 
   if (!buyToken || !sellToken) {
@@ -267,11 +271,16 @@ export function DetailsTable(props: Props): JSX.Element | null {
                     <RowWithCopyButton
                       textToCopy={txHash}
                       onCopy={(): void => onCopy('settlementTx')}
-                      contentsToDisplay={<LinkWithPrefixNetwork to={`/tx/${txHash}`}>{txHash}</LinkWithPrefixNetwork>}
+                      contentsToDisplay={<LinkWithPrefixNetwork to={getExplorerLink(chainId, txHash, ExplorerDataType.TRANSACTION)} target='_blank'>{txHash}</LinkWithPrefixNetwork>}
                     />
+                    <LinkButton to={`/tx/${txHash}/?${TAB_QUERY_PARAM_KEY}`}>
+                      <FontAwesomeIcon icon={faGroupArrowsRotate} />
+                      Batch
+                    </LinkButton>
+
                     <LinkButton to={`/tx/${txHash}/?${TAB_QUERY_PARAM_KEY}=graph`}>
                       <FontAwesomeIcon icon={faProjectDiagram} />
-                      View batch graph
+                      Graph
                     </LinkButton>
                   </Wrapper>
                 ) : (
