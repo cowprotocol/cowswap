@@ -18,12 +18,7 @@ import IMAGE_ICON_MEVBLOCKER_PROTECT2 from '@cowprotocol/assets/images/icon-mevb
 import IMAGE_ICON_MEVBLOCKER_CHATBALLOON from '@cowprotocol/assets/images/icon-mevblocker-chatballoon.svg'
 import IMAGE_ICON_MEVBLOCKER_TRUST from '@cowprotocol/assets/images/icon-mevblocker-trust.svg'
 import IMAGE_ICON_QUESTIONBALLOON from '@cowprotocol/assets/images/icon-question-balloon.svg'
-
 import IMAGE_SANDWICH_GUY from '@cowprotocol/assets/images/image-sandwich-guy.svg'
-
-import IMAGE_FULLPROTECTION from '@cowprotocol/assets/images/image-fullprotection.svg'
-import IMGAGE_FASTFREE from '@cowprotocol/assets/images/image-fastfree.svg'
-import IMAGE_PROFIT from '@cowprotocol/assets/images/image-profit.svg'
 
 import {
   PageWrapper,
@@ -56,7 +51,7 @@ import {
 import SVG from 'react-inlinesvg'
 
 import { EventCategories, sendEventHandler } from '@cowprotocol/analytics'
-import { FAQ_DATA, TRUSTED_BY_CONTENT, TESTIMONIAL_LIST } from '@/data/mev-blocker/const'
+import { FAQ_DATA, TRUSTED_BY_CONTENT, TESTIMONIAL_LIST, MEV_BLOCKER_LIST } from '@/data/mev-blocker/const'
 
 import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
 
@@ -185,56 +180,18 @@ export default function Page({ siteConfigData }: PageProps) {
                 </SectionTitleWrapper>
 
                 <TopicList columns={3}>
-                  <TopicCard contentAlign={'left'} bgColor={'#EC4612'} padding={'32px'} asProp="div">
-                    <TopicCardInner contentAlign="left">
-                      <TopicDescription fontSize={28} color={'#FEE7CF'}>
-                        Protection from frontrunning and sandwich attacks on all types of transactions
-                      </TopicDescription>
-                    </TopicCardInner>
-                    <TopicImage
-                      iconColor="#F2CD16"
-                      bgColor="transparent"
-                      margin={'auto auto 0 0'}
-                      height={200}
-                      width={'auto'}
-                    >
-                      <ProductLogo variant={ProductVariant.MevBlocker} logoIconOnly theme="dark" />
-                    </TopicImage>
-                  </TopicCard>
-
-                  <TopicCard contentAlign={'left'} bgColor={'#EC4612'} padding={'32px'} asProp="div">
-                    <TopicCardInner contentAlign="left">
-                      <TopicDescription fontSize={28} color={'#FEE7CF'}>
-                        Profit from any backrunning opportunities your transactions create
-                      </TopicDescription>
-                    </TopicCardInner>
-                    <TopicImage
-                      iconColor="#F2CD16"
-                      bgColor="transparent"
-                      margin={'auto auto 0 0'}
-                      height={200}
-                      width={'auto'}
-                    >
-                      <ProductLogo variant={ProductVariant.MevBlocker} logoIconOnly theme="dark" />
-                    </TopicImage>
-                  </TopicCard>
-
-                  <TopicCard contentAlign={'left'} bgColor={'#EC4612'} padding={'32px'} asProp="div">
-                    <TopicCardInner contentAlign="left">
-                      <TopicDescription fontSize={28} color={'#FEE7CF'}>
-                        A fast, free, censorship-resistant solution open to all searchers and builders
-                      </TopicDescription>
-                    </TopicCardInner>
-                    <TopicImage
-                      iconColor="#F2CD16"
-                      bgColor="transparent"
-                      margin={'auto auto 0 0'}
-                      height={200}
-                      width={'auto'}
-                    >
-                      <ProductLogo variant={ProductVariant.MevBlocker} logoIconOnly theme="dark" />
-                    </TopicImage>
-                  </TopicCard>
+                  {MEV_BLOCKER_LIST.map((item, index) => (
+                    <TopicCard key={index} contentAlign={'left'} bgColor={item.bgColor} padding={'32px'} asProp="div">
+                      <TopicCardInner contentAlign="left">
+                        <TopicDescription fontSize={28} fontSizeMobile={24} color={item.textColor}>
+                          {item.description}
+                        </TopicDescription>
+                      </TopicCardInner>
+                      <TopicImage bgColor="transparent" margin={'auto 0 0 auto'} height={200} width={'auto'}>
+                        <SVG src={item.iconImage} title={item.description} />
+                      </TopicImage>
+                    </TopicCard>
+                  ))}
                 </TopicList>
 
                 <SectionTitleWrapper maxWidth={1200} margin="0 auto">

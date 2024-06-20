@@ -18,6 +18,31 @@ import IMAGE_MEVBLOCKER_REVIEW_4 from '@cowprotocol/assets/images/image-mevblock
 import IMAGE_MEVBLOCKER_REVIEW_5 from '@cowprotocol/assets/images/image-mevblocker-review-5.svg'
 import IMAGE_MEVBLOCKER_REVIEW_6 from '@cowprotocol/assets/images/image-mevblocker-review-6.svg'
 
+import IMAGE_FULLPROTECTION from '@cowprotocol/assets/images/image-fullprotection.svg'
+import IMGAGE_FASTFREE from '@cowprotocol/assets/images/image-fastfree.svg'
+import IMAGE_PROFIT from '@cowprotocol/assets/images/image-profit.svg'
+
+export const MEV_BLOCKER_LIST = [
+  {
+    description: 'Protection from frontrunning and sandwich attacks on all types of transactions',
+    iconImage: IMAGE_FULLPROTECTION,
+    bgColor: '#EC4612',
+    textColor: '#FEE7CF',
+  },
+  {
+    description: 'Profit from any backrunning opportunities your transactions create',
+    iconImage: IMAGE_PROFIT,
+    bgColor: '#FDC99F',
+    textColor: '#EC4612',
+  },
+  {
+    description: 'A fast, free, censorship-resistant solution open to all searchers and builders',
+    iconImage: IMGAGE_FASTFREE,
+    bgColor: '#99ECFF',
+    textColor: '#012F7A',
+  },
+]
+
 export const TRUSTED_BY_CONTENT = [
   {
     href: 'https://uniswap.org/',
