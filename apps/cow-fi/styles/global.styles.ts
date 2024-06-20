@@ -151,6 +151,27 @@ const GlobalStyles = createGlobalStyle`
   animation-fill-mode: forwards;
 }
 
+span[class^='wordtag-'] {
+    padding: 0;
+    border-radius: 28px;
+    display: inline-block;
+    padding: 3px 16px;
+  }
+
+  .wordtag-blue {
+    color: #012f7a;
+    background: #65d9ff;
+  }
+
+  .wordtag-orange {
+    color: #ec4612;
+    background: #fee7cf;
+  }
+
+  .wordtag-purple {
+    color: #f996ee;
+    background: #490072;
+  }
 `
 
 export const ExternalLink = styled.a`
