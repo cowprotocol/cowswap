@@ -4,10 +4,9 @@ import { getAddress, getIsNativeToken } from '@cowprotocol/common-utils'
 import { OrderClass, OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useENSAddress } from '@cowprotocol/ens'
 import { Command, UiOrderType } from '@cowprotocol/types'
-import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
+import { GnosisSafeInfo, useGnosisSafeInfo, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { Web3Provider } from '@ethersproject/providers'
-import { SafeInfoResponse } from '@safe-global/api-kit'
 import { Currency, CurrencyAmount, Percent, Token } from '@uniswap/sdk-core'
 
 import { useDispatch } from 'react-redux'
@@ -55,7 +54,7 @@ interface BaseFlowContextSetup {
   wethContract: Weth | null
   inputAmountWithSlippage: CurrencyAmount<Currency> | undefined
   outputAmountWithSlippage: CurrencyAmount<Currency> | undefined
-  gnosisSafeInfo: SafeInfoResponse | undefined
+  gnosisSafeInfo: GnosisSafeInfo | undefined
   recipient: string | null
   recipientAddressOrName: string | null
   deadline: number
