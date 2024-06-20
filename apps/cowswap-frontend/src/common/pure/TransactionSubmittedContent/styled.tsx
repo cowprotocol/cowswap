@@ -1,4 +1,4 @@
-import { UI } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
@@ -52,9 +52,9 @@ export const ButtonGroup = styled.div`
     text-decoration: none;
   }
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     flex-direction: column;
-  `}
+  }
 `
 
 export const CloseIconWrapper = styled(CloseIcon)<{ margin?: string }>`

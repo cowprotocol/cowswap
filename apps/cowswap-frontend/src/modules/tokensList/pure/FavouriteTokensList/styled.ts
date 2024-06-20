@@ -1,4 +1,4 @@
-import { UI } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
@@ -18,11 +18,11 @@ export const Header = styled.div`
 export const List = styled.div`
   display: block;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     white-space: nowrap;
     overflow-x: scroll;
-    ${theme.colorScrollbar};
-  `}
+    ${({ theme }) => theme.colorScrollbar};
+  }
 `
 
 export const TokensItem = styled.button`

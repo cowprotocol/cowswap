@@ -1,4 +1,4 @@
-import { UI } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
@@ -14,10 +14,10 @@ export const Container = styled.div`
   flex-direction: column;
   gap: 20px;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     font-size: 13px;
     letter-spacing: -0.1px;
-  `}
+  }
 `
 
 export const Amount = styled.div`

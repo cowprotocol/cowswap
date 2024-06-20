@@ -9,7 +9,6 @@ import { ReactNode, StrictMode } from 'react'
 import { nodeRemoveChildFix } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
 import { SnackbarsWidget } from '@cowprotocol/snackbars'
-import { ThemedGlobalStyle } from '@cowprotocol/ui'
 import { Web3Provider } from '@cowprotocol/wallet'
 
 import { LanguageProvider } from 'i18n'
@@ -20,7 +19,7 @@ import * as serviceWorkerRegistration from 'serviceWorkerRegistration'
 
 import { cowSwapStore } from 'legacy/state'
 import { useAppSelector } from 'legacy/state/hooks'
-import ThemeProvider, { FixedGlobalStyle } from 'legacy/theme'
+import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from 'legacy/theme'
 
 import { App } from 'modules/application/containers/App'
 import { Updaters } from 'modules/application/containers/App/Updaters'

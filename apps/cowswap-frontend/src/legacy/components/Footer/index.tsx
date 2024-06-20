@@ -1,3 +1,5 @@
+import { Media } from '@cowprotocol/ui'
+
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
@@ -24,26 +26,26 @@ const Wrapper = styled.div`
     height: auto;
     z-index: -1;
 
-    ${({ theme }) => theme.mediaWidth.upToMedium`
+    ${Media.upToMedium()} {
       left: initial;
       bottom: initial;
       top: 0;
       margin: 24px auto 0;
-    `}
+    }
 
-    ${({ theme }) => theme.mediaWidth.upToSmall`
+    ${Media.upToSmall()} {
       margin: 120px auto 0;
-    `}
+    }
   }
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${Media.upToMedium()} {
     flex-flow: column wrap;
     margin: 24px auto 0;
-  `}
+  }
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     margin: 56px auto 160px;
-  `}
+  }
 `
 
 const ImageWrapper = styled.div`
@@ -56,13 +58,13 @@ const ImageWrapper = styled.div`
   height: auto;
   z-index: -1;
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${Media.upToMedium()} {
     left: initial;
     bottom: initial;
     top: calc(100% - 100px);
     margin: 50px auto 0;
     height: 360px;
-  `}
+  }
 
   > svg {
     max-width: 100%;
@@ -70,13 +72,13 @@ const ImageWrapper = styled.div`
     max-height: 100%;
     height: 100%;
 
-    ${({ theme }) => theme.mediaWidth.upToMedium`
+    ${Media.upToMedium()} {
       transform: scale(1.7);
-    `}
+    }
 
-    ${({ theme }) => theme.mediaWidth.upToSmall`
+    ${Media.upToSmall()} {
       transform: scale(2);
-    `}
+    }
   }
 `
 
@@ -85,20 +87,20 @@ const FooterVersion = styled(Version)`
   padding: 0;
   flex-flow: row wrap;
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${Media.upToMedium()} {
     margin: 0 auto;
-  `}
+  }
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     flex-flow: column wrap;
     width: 100%;
     gap: 24px;
-  `}
+  }
 
   > div {
-    ${({ theme }) => theme.mediaWidth.upToSmall`
+    ${Media.upToSmall()} {
       margin: 0 0 8px;
-    `}
+    }
   }
 `
 

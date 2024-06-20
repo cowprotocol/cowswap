@@ -1,5 +1,5 @@
 import { Command } from '@cowprotocol/types'
-import { UI } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 
 import styled, { css } from 'styled-components/macro'
 
@@ -13,10 +13,10 @@ const Wrapper = styled.div<{ isMobileMenuOpen: boolean; height?: number; width?:
   height: ${({ height = 18 }) => `${height}px`};
   flex: 0 0 auto;
 
-  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+  ${Media.upToExtraSmall()} {
     max-width: 24px;
     width: 100%;
-  `}
+  }
 
   span {
     background-color: var(${UI.COLOR_TEXT});

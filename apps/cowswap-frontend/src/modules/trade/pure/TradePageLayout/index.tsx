@@ -1,3 +1,5 @@
+import { Media } from '@cowprotocol/ui'
+
 import styled from 'styled-components/macro'
 
 export const PageWrapper = styled.div<{ isUnlocked: boolean }>`
@@ -9,10 +11,10 @@ export const PageWrapper = styled.div<{ isUnlocked: boolean }>`
   grid-template-rows: max-content;
   grid-column-gap: 20px;
 
-  ${({ theme }) => theme.mediaWidth.upToLarge`
+  ${Media.upToLarge()} {
     display: flex;
     flex-flow: column wrap;
-  `};
+  }
 
   > div:last-child {
     display: ${({ isUnlocked }) => (isUnlocked ? '' : 'none')};
@@ -34,8 +36,8 @@ export const SecondaryWrapper = styled.div`
   display: flex;
   width: 100%;
 
-  ${({ theme }) => theme.mediaWidth.upToLargeAlt`
+  ${Media.upToLargeAlt()} {
     flex-flow: column wrap;
     margin: 56px 0;
-  `};
+  }
 `

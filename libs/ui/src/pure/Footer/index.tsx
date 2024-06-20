@@ -1,5 +1,6 @@
 import { useState, ReactNode, useEffect, useRef } from 'react'
 
+import { EventCategories, sendEventHandler } from '@cowprotocol/analytics'
 import IMG_ICON_ARROW_RIGHT_CIRCULAR from '@cowprotocol/assets/images/arrow-right-circular.svg'
 import IMG_ICON_SOCIAL_DISCORD from '@cowprotocol/assets/images/icon-social-discord.svg'
 import IMG_ICON_SOCIAL_FORUM from '@cowprotocol/assets/images/icon-social-forum.svg'
@@ -34,7 +35,6 @@ import {
 import { Color, themeMapper } from '../../consts'
 import { MenuItem } from '../MenuBar'
 import { ProductLogo, ProductVariant } from '../ProductLogo'
-import { EventCategories, sendEventHandler } from '@cowprotocol/analytics'
 
 interface FooterProps {
   description?: string
@@ -234,7 +234,7 @@ const FooterLink = ({
         }
       })()
 
-  const handleClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+  const handleClick = () => {
     sendEventHandler(EventCategories.FOOTER, `click-${utmContent || label?.toLowerCase().replace(/\s+/g, '-')}`)
   }
 

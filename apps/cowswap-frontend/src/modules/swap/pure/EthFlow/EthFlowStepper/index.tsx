@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { UI } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
@@ -81,13 +81,13 @@ const Wrapper = styled.div`
   font-size: 15px;
   line-height: 1;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     display: flex;
     flex-flow: column wrap;
     justify-content: flex-start;
     align-items: center;
     padding: 42px 22px;
-  `}
+  }
 `
 
 export interface ProgressProps {
@@ -103,14 +103,14 @@ export const Progress = styled.div<ProgressProps>`
   margin: 28px 0 0;
   border-radius: var(--height);
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     --height: 30px;
     --width: 3px;
     border-radius: var(--width);
     margin: 24px auto;
     height: var(--height);
     width: var(--width);
-  `}
+  }
 
   &::after {
     content: '';
@@ -131,12 +131,12 @@ export const Progress = styled.div<ProgressProps>`
         : `var(${UI.COLOR_TEXT_OPACITY_25})`};
     border-radius: var(--height);
 
-    ${({ theme }) => theme.mediaWidth.upToSmall<ProgressProps>`
+    ${Media.upToSmall()} {
       --width: 3px;
       width: var(--width);
       border-radius: var(--width);
       height: ${({ value }) => (value ? `${value}%` : '0%')};
-    `}
+    }
   }
 `
 

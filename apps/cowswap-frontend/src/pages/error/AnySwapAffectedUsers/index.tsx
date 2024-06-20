@@ -1,5 +1,5 @@
 import cow404IMG from '@cowprotocol/assets/cow-swap/cow-404.png'
-import { ButtonPrimary } from '@cowprotocol/ui'
+import { ButtonPrimary, Media } from '@cowprotocol/ui'
 import { ExternalLink as ExternalLinkTheme } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
@@ -12,16 +12,16 @@ const Wrapper = styled(Page)`
   ${GdocsListStyle};
   min-height: auto;
   padding-bottom: 32px;
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     padding-bottom: 24px;
-  `}
+  }
   ${Title} {
     margin-bottom: 50px;
     font-size: 26px;
-    ${({ theme }) => theme.mediaWidth.upToSmall`
+    ${Media.upToSmall()} {
       font-size: 18px;
       text-align: center;
-    `}
+    }
   }
   ${Content} {
     margin-bottom: 0;
@@ -64,7 +64,7 @@ const Container = styled.div`
     text-align: left;
   }
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     img {
       max-width: 287px;
     }
@@ -72,7 +72,7 @@ const Container = styled.div`
       font-size: 16px;
       text-align: center;
     }
-  `}
+  }
 `
 
 export default function AnySwapAffectedUsers() {

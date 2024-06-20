@@ -1,4 +1,4 @@
-import { UI } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
@@ -20,9 +20,9 @@ export const ClaimTotal = styled.div`
     margin: 0 0 2px;
     opacity: 0.7;
 
-    ${({ theme }) => theme.mediaWidth.upToSmall`
+    ${Media.upToSmall()} {
       margin: 0 0 3px;
-    `};
+    }
   }
 
   > p {
@@ -30,10 +30,10 @@ export const ClaimTotal = styled.div`
     font-size: 30px;
     font-weight: bold;
 
-    ${({ theme }) => theme.mediaWidth.upToSmall`
+    ${Media.upToSmall()} {
       font-size: 16px;
       line-height: 1;
-    `};
+    }
   }
 `
 

@@ -1,4 +1,4 @@
-import { UI } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 
 import { Text } from 'rebass'
 import styled from 'styled-components/macro'
@@ -10,19 +10,19 @@ export const BalanceText = styled(Text)`
   min-width: initial;
   color: var(${UI.COLOR_TEXT_OPACITY_70});
 
-  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+  ${Media.upToExtraSmall()} {
     display: none;
-  `};
+  }
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${Media.upToMedium()} {
     overflow: hidden;
     max-width: 100px;
     text-overflow: ellipsis;
-  `};
+  }
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     display: none;
-  `};
+  }
 `
 
 export const Wrapper = styled.div<{ active: boolean }>`
@@ -39,9 +39,9 @@ export const Wrapper = styled.div<{ active: boolean }>`
   width: auto;
   height: 100%;
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${Media.upToMedium()} {
     height: 100%;
-  `}
+  }
 
   ${({ theme }) =>
     theme.isInjectedWidgetMode &&

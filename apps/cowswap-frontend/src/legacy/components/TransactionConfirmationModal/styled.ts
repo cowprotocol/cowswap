@@ -1,4 +1,4 @@
-import { RowBetween } from '@cowprotocol/ui'
+import { Media, RowBetween } from '@cowprotocol/ui'
 import { ExternalLink } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 
@@ -21,9 +21,9 @@ export const Wrapper = styled.div`
 export const ContentWrapper = styled(Wrapper)`
   padding: 0 16px;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     padding: 0 10px;
-  `}
+  }
 `
 
 export const Section = styled(AutoColumn)<{ inline?: boolean }>`

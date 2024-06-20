@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { UI } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 
 import { DialogContent, DialogOverlay } from '@reach/dialog'
 import { animated } from '@react-spring/web'
@@ -13,9 +13,9 @@ export const HeaderRow = styled.div`
   padding: 1rem 1rem;
   font-weight: 600;
   color: ${(props) => (props.color === 'blue' ? ({ theme }) => theme.primary1 : 'inherit')};
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${Media.upToMedium()} {
     padding: 1rem;
-  `};
+  }
 `
 
 export const CloseIcon = styled.div`
@@ -45,12 +45,13 @@ export const HoverText = styled.div`
 `
 
 export const ContentWrapper = styled.div`
-  /* background-color: ${({ theme }) => theme.bg0}; */
   background-color: var(${UI.COLOR_PAPER});
   padding: 0 1rem 1rem 1rem;
   border-bottom-left-radius: 20px;
   border-bottom-right-radius: 20px;
-  ${({ theme }) => theme.mediaWidth.upToMedium`padding: 0 1rem 1rem 1rem`};
+  ${Media.upToMedium()} {
+    padding: 0 1rem 1rem 1rem;
+  }
 `
 
 const AnimatedDialogOverlay = animated(DialogOverlay)
@@ -64,14 +65,14 @@ export const StyledDialogOverlay = styled(AnimatedDialogOverlay)`
     align-items: center;
     justify-content: center;
 
-    background-color: ${({ theme }) => theme.modalBG};
+    background-color: ${({ theme }) => (theme.darkMode ? 'rgba(0,0,0,.425)' : 'rgba(0,0,0,0.3)')};
     backdrop-filter: blur(5px);
   }
 `
 
 const AnimatedDialogContent = animated(DialogContent)
 // destructure to not pass custom props to Dialog DOM element
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+
 export const StyledDialogContent = styled(({ ...rest }) => <AnimatedDialogContent {...rest} />).attrs<{
   $mobile: boolean
 }>({
@@ -102,21 +103,22 @@ export const StyledDialogContent = styled(({ ...rest }) => <AnimatedDialogConten
       `}
     display: flex;
     border-radius: 20px;
-    ${({ theme }) => theme.mediaWidth.upToMedium`
+    ${Media.upToMedium()} {
       width: 65vw;
       margin: 0;
-    `}
-    ${({ theme, $mobile }) => theme.mediaWidth.upToSmall`
-      width:  85vw;
-      ${
-        $mobile &&
+    }
+
+    ${Media.upToSmall()} {
+      ${({ $mobile }) => css`
+        width: 85vw;
+        ${$mobile &&
         css`
           width: 100vw;
           border-radius: 20px;
           border-bottom-left-radius: 0;
           border-bottom-right-radius: 0;
-        `
-      }
-    `}
+        `}
+      `}
+    }
   }
 `
