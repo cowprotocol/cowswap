@@ -11,7 +11,7 @@ import { environmentAtom } from '../environmentAtom'
 
 
 export const favoriteTokensAtom = atomWithStorage<Record<SupportedChainId, TokensMap>>(
-  'favoriteTokensAtom:v1',
+  'favouriteTokensAtom:v1',
   DEFAULT_FAVORITE_TOKENS,
   getJotaiMergerStorage()
 )
