@@ -3,14 +3,14 @@ import { Font, Color, Media } from '@cowprotocol/ui'
 import { transparentize } from 'color2k'
 import { PAGE_MAX_WIDTH } from '@/components/Layout/const'
 
-export const PageWrapper = styled.div`
+export const PageWrapper = styled.div<{ margin?: string }>`
   display: flex;
   flex-flow: column wrap;
   justify-content: center;
   align-items: center;
   max-width: ${PAGE_MAX_WIDTH}px;
   width: 100%;
-  margin: 0 auto;
+  margin: ${({ margin }) => margin || '0 auto'};
   gap: 24px;
 `
 
@@ -823,22 +823,24 @@ export const SectionImage = styled.div<{
 
 export const HeroContainer = styled.div<{
   variant?: string
-  maxWidth?: number
+  maxWidth?: number | string
   padding?: string
   paddingMobile?: string
+  minHeight?: string
+  margin?: string
 }>`
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   position: relative;
-  min-height: 60vh;
+  min-height: ${({ minHeight }) => minHeight || '60vh'};
   width: 100%;
-  max-width: ${({ maxWidth }) => (maxWidth ? `${maxWidth}px` : '1300px')};
+  max-width: ${({ maxWidth }) => (typeof maxWidth === 'number' ? `${maxWidth}px` : maxWidth || '1300px')};
   background: transparent;
   padding: ${({ padding }) => padding || '76px 20px 56px'};
   overflow: hidden;
-  margin: 0 auto;
+  margin: ${({ margin }) => margin || '0 auto'};
 
   ${Media.upToMedium()} {
     padding: ${({ paddingMobile }) => paddingMobile || '38px 20px'};
@@ -867,11 +869,14 @@ export const HeroBackground = styled.div<{ imageHeight?: string }>`
   height: 100%;
   z-index: 1;
 
-  > img,
-  > svg {
-    object-fit: contain;
+  > video {
     width: 100%;
     height: 100%;
+    margin: 0;
+    padding: 0;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: cover;
   }
 `
 
@@ -906,6 +911,8 @@ export const HeroTitle = styled.h1<{
   margin: 0;
   line-height: 1.2;
   max-width: ${({ maxWidth }) => (maxWidth ? `${maxWidth}px` : '100%')};
+  font-feature-settings: 'ss07' on; /* Headline Letters */
+  word-wrap: break-word;
 
   ${Media.upToMedium()} {
     font-size: ${({ fontSizeMobile }) => fontSizeMobile || 38}px;

@@ -1,15 +1,13 @@
-import Head from 'next/head'
 import { GetStaticProps } from 'next'
 import { Font, Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
-import IMG_COW_HERO_HOME from '@cowprotocol/assets/images/cow-hero-home.svg'
 import IMG_ICON_GOVERNANCE from '@cowprotocol/assets/images/icon-governance.svg'
-
-import styled from 'styled-components'
+import VIDEO_HERO_HOME from '@cowprotocol/assets/video/cow-dao-hero-animation.mp4'
 
 import Layout from '@/components/Layout'
 import { Link, LinkType } from '@/components/Link'
 
 import {
+  PageWrapper,
   ContainerCard,
   ContainerCardSection,
   TopicList,
@@ -40,27 +38,20 @@ interface PageProps {
   siteConfigData: typeof CONFIG
 }
 
-const Wrapper = styled.div`
-  display: flex;
-  flex-flow: column wrap;
-  justify-content: center;
-  align-items: center;
-  max-width: 1760px;
-  width: 100%;
-  margin: 76px auto 0;
-  gap: 24px;
-`
-
 export default function Page({ siteConfigData }: PageProps) {
   return (
     <Layout bgColor={Color.neutral90}>
-      <Wrapper>
-        <HeroContainer>
+      <PageWrapper>
+        <HeroContainer minHeight="700px" maxWidth={'100%'} margin="-76px auto -48px" padding="142px 20px 56px">
           <HeroBackground>
-            <SVG src={IMG_COW_HERO_HOME} />
+            <video autoPlay loop muted playsInline>
+              <source src={VIDEO_HERO_HOME} type="video/mp4" />
+            </video>
           </HeroBackground>
           <HeroContent>
-            <HeroTitle fontSize={120}>Don&apos;t get milked!</HeroTitle>
+            <HeroTitle fontSize={148} fontSizeMobile={80}>
+              Don’t get milked!
+            </HeroTitle>
           </HeroContent>
         </HeroContainer>
 
@@ -270,7 +261,7 @@ export default function Page({ siteConfigData }: PageProps) {
             </SectionTitleWrapper>
           </ContainerCardSection>
         </ContainerCard>
-      </Wrapper>
+      </PageWrapper>
     </Layout>
   )
 }
