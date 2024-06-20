@@ -244,7 +244,7 @@ export function FilledProgress(props: Props): JSX.Element {
         <FilledContainer>
           <p className="title">Filled</p>
           <div>
-            <p className="percentage">{formattedPercentage}%</p>
+            <p className="percentage">{formattedPercentage.toFixed(2)}%</p>
             <OrderAssetsInfo />
           </div>
           <ProgressBar showLabel={false} percentage={formattedPercentage} />
