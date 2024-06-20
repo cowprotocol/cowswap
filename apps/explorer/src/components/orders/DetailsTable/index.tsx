@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { Command } from '@cowprotocol/types'
+import { TruncatedText } from '@cowprotocol/ui/pure/TruncatedText'
 
 import { faFill, faProjectDiagram } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -43,16 +44,19 @@ const Table = styled(SimpleTable)`
 
       &:first-of-type {
         text-transform: capitalize;
+
         ${media.mediumUp} {
           font-weight: ${({ theme }): string => theme.fontLighter};
         }
 
         /* Question mark */
+
         > svg {
           margin: 0 1rem 0 0;
         }
 
         /* Column after text on first column */
+
         ::after {
           content: ':';
         }
@@ -119,6 +123,7 @@ const tooltip = {
 export const Wrapper = styled.div`
   display: flex;
   flex-direction: row;
+
   ${media.mobile} {
     flex-direction: column;
   }
@@ -172,7 +177,6 @@ export function DetailsTable(props: Props): JSX.Element | null {
   const { order, areTradesLoading, showFillsButton, viewFills, isPriceInverted, invertPrice } = props
   const {
     uid,
-    shortId,
     owner,
     receiver,
     txHash,
@@ -214,7 +218,11 @@ export function DetailsTable(props: Props): JSX.Element | null {
               <HelpTooltip tooltip={tooltip.orderID} /> Order Id
             </td>
             <td>
-              <RowWithCopyButton textToCopy={uid} contentsToDisplay={shortId} onCopy={(): void => onCopy('orderId')} />
+              <RowWithCopyButton
+                textToCopy={uid}
+                contentsToDisplay={<TruncatedText text={uid} />}
+                onCopy={(): void => onCopy('orderId')}
+              />
             </td>
           </tr>
           <tr>
