@@ -582,7 +582,9 @@ const GlobalSettingsDropdown = forwardRef(
                             item.external,
                             item.label
                           )
-                        : `${new URL(item.href!, `https://${rootDomain}`).pathname}`
+                        : item.href
+                        ? `${new URL(item.href, `https://${rootDomain}`).pathname}`
+                        : undefined
                     }
                     onClick={_onDropdownItemClickFactory(item, closeDropdown)} // Handle onClick here
                   >
