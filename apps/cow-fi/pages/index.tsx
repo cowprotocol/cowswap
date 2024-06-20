@@ -158,7 +158,7 @@ export default function Page({ siteConfigData }: PageProps) {
         <ContainerCard bgColor={'transparent'}>
           <ContainerCardSection>
             <SectionTitleWrapper maxWidth={900}>
-              <SectionTitleIcon size={200}>
+              <SectionTitleIcon size={126}>
                 <SVG src={IMG_ICON_BULB_COW} />
               </SectionTitleIcon>
               <SectionTitleText>Innovation in action</SectionTitleText>
@@ -183,7 +183,7 @@ export default function Page({ siteConfigData }: PageProps) {
         <ContainerCard bgColor={Color.neutral10} color={Color.neutral98}>
           <ContainerCardSection>
             <SectionTitleWrapper padding="150px 0 0" maxWidth={900}>
-              <SectionTitleIcon size={200}>
+              <SectionTitleIcon size={90}>
                 <SVG src={IMG_ICON_GOVERNANCE} />
               </SectionTitleIcon>
               <SectionTitleText textAlign="center">Governance</SectionTitleText>
@@ -241,7 +241,7 @@ export default function Page({ siteConfigData }: PageProps) {
         <ContainerCard bgColor={Color.neutral90} color={Color.neutral10} touchFooter>
           <ContainerCardSection>
             <SectionTitleWrapper maxWidth={900}>
-              <SectionTitleIcon size={200}>
+              <SectionTitleIcon size={90}>
                 <SVG src={IMG_ICON_GRANTS_CARTON} />
               </SectionTitleIcon>
               <SectionTitleText textAlign="center">Grants</SectionTitleText>
