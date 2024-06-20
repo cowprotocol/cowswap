@@ -50,10 +50,6 @@ export function useAdvancedOrdersActions() {
         currency: inputCurrency,
         field,
       })
-
-      if (field === Field.INPUT) {
-        updateState?.({ outputCurrencyAmount: null })
-      }
     },
     [updateState, inputCurrency, updateCurrencyAmount]
   )

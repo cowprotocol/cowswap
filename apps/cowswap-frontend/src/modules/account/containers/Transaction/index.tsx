@@ -1,6 +1,5 @@
 import { RowFixed } from '@cowprotocol/ui'
-import { useWalletInfo } from '@cowprotocol/wallet'
-import { SafeInfoResponse } from '@safe-global/api-kit'
+import { GnosisSafeInfo, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useActivityDerivedState } from 'legacy/hooks/useActivityDerivedState'
 import { ActivityDescriptors, ActivityStatus, ActivityType } from 'legacy/hooks/useRecentActivity'
@@ -80,7 +79,7 @@ export interface ActivityDerivedState {
   order?: Order
 
   // Gnosis Safe
-  gnosisSafeInfo?: SafeInfoResponse
+  gnosisSafeInfo?: GnosisSafeInfo
 
   // Eth-flow order related transactions
   orderCreationTxInfo?: OrderCreationTxInfo

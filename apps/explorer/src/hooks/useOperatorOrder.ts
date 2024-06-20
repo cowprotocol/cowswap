@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 
+import { shortenOrderId } from '@cowprotocol/common-utils'
 import { Command } from '@cowprotocol/types'
 
 import {
@@ -10,14 +11,11 @@ import {
 } from 'services/helpers/tryGetOrderOnAllNetworks'
 import { useNetworkId } from 'state/network'
 import { Errors, Network, UiError } from 'types'
-import { getShortOrderId, transformOrder } from 'utils'
+import { transformOrder } from 'utils'
 
 import { getOrder, GetOrderParams, Order } from 'api/operator'
 
-
-
 import { useMultipleErc20 } from './useErc20'
-
 
 type UseOrderResult = {
   order: Order | null
@@ -68,7 +66,7 @@ export function useOrderByNetwork(orderId: string, networkId: Network | null, up
       } catch (e) {
         const msg = `Failed to fetch order`
         console.error(`${msg}: ${orderId}`, e.message)
-        setError({ message: `${msg}: ${getShortOrderId(orderId)}`, type: 'error' })
+        setError({ message: `${msg}: ${shortenOrderId(orderId)}`, type: 'error' })
       } finally {
         setIsLoading(false)
       }

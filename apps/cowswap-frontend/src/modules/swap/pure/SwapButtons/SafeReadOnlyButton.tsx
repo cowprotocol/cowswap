@@ -19,7 +19,7 @@ export function SafeReadOnlyButton() {
             <div>
               Your Safe is not connected with a signer.
               <br />
-              To place an order, you must connect using a signer of the Safe and refresh the page.
+              To place an order, you must connect using a signer of the Safe.
             </div>
           }
         />

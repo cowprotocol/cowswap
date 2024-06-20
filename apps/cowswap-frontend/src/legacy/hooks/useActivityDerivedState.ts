@@ -2,8 +2,7 @@ import { useMemo } from 'react'
 
 import { getEtherscanLink, getExplorerOrderLink } from '@cowprotocol/common-utils'
 import { getSafeWebUrl } from '@cowprotocol/core'
-import { useGnosisSafeInfo } from '@cowprotocol/wallet'
-import { SafeInfoResponse } from '@safe-global/api-kit'
+import { GnosisSafeInfo, useGnosisSafeInfo } from '@cowprotocol/wallet'
 
 import { EnhancedTransactionDetails, HashType } from 'legacy/state/enhancedTransactions/reducer'
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
@@ -53,7 +52,7 @@ export function useActivityDerivedState({
 export function getActivityDerivedState(props: {
   chainId?: number
   activityData: ActivityDescriptors | null
-  gnosisSafeInfo?: SafeInfoResponse
+  gnosisSafeInfo?: GnosisSafeInfo
   orderCreationTxInfo?: OrderCreationTxInfo
 }): ActivityDerivedState | null {
   const { chainId, activityData, gnosisSafeInfo, orderCreationTxInfo } = props

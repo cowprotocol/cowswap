@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 
 import { Command } from '@cowprotocol/types'
+import { TruncatedText } from '@cowprotocol/ui/pure/TruncatedText'
 
 import CowLoading from 'components/common/CowLoading'
 import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
@@ -10,6 +11,10 @@ import { ConnectionStatus } from 'components/ConnectionStatus'
 import { Notification } from 'components/Notification'
 import { DetailsTable } from 'components/orders/DetailsTable'
 import RedirectToSearch from 'components/RedirectToSearch'
+import ExplorerTabs from 'explorer/components/common/ExplorerTabs/ExplorerTabs'
+import TablePagination, { PaginationWrapper } from 'explorer/components/common/TablePagination'
+import { useTable } from 'explorer/components/TokensTableWidget/useTable'
+import { TAB_QUERY_PARAM_KEY } from 'explorer/const'
 import { useQuery, useUpdateQueryString } from 'hooks/useQuery'
 import styled from 'styled-components/macro'
 import { media } from 'theme/styles/media'
@@ -20,11 +25,6 @@ import { Order, Trade } from 'api/operator'
 
 import { FillsTableContext } from './context/FillsTableContext'
 import { FillsTableWithData } from './FillsTableWithData'
-
-import ExplorerTabs from '../../../explorer/components/common/ExplorerTabs/ExplorerTabs'
-import TablePagination, { PaginationWrapper } from '../../../explorer/components/common/TablePagination'
-import { useTable } from '../../../explorer/components/TokensTableWidget/useTable'
-import { TAB_QUERY_PARAM_KEY } from '../../../explorer/const'
 
 const TitleUid = styled(RowWithCopyButton)`
   color: ${({ theme }): string => theme.grey};
@@ -41,16 +41,19 @@ const WrapperExtraComponents = styled.div`
   justify-content: flex-end;
   height: 100%;
   gap: 1rem;
+
   ${media.mobile} {
     ${PaginationWrapper} {
       display: none;
     }
+
     justify-content: center;
   }
 `
 
 const StyledExplorerTabs = styled(ExplorerTabs)`
   margin-top: 2rem;
+
   &.orderDetails-tab {
     &--overview {
       .tab-content {
@@ -147,7 +150,7 @@ const tabItems = (
  */
 function getOrderWithTxHash(order: Order | null, trades: Trade[]): Order | null {
   if (order && trades.length === 1) {
-    return { ...order, txHash: trades[0].txHash || undefined }
+    return { ...order, txHash: trades[0].txHash || undefined, executionDate: trades[0].executionTime || undefined }
   }
   return order
 }
@@ -211,7 +214,7 @@ export const OrderDetails: React.FC<Props> = (props) => {
     <>
       <h1>
         {order && 'Order details'}
-        {order && <TitleUid textToCopy={order.uid} contentsToDisplay={order.shortId} />}
+        {order && <TitleUid textToCopy={order.uid} contentsToDisplay={<TruncatedText text={order.uid} />} />}
       </h1>
       <ConnectionStatus />
       {Object.keys(errors).map((key) => (
