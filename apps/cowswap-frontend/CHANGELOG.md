@@ -53,7 +53,7 @@
 * **trade:** check recipient against account and ens name ([#4530](https://github.com/cowprotocol/cowswap/issues/4530)) ([d2dd0b6](https://github.com/cowprotocol/cowswap/commit/d2dd0b6aa835904e4fbe191ef63bca586a222c60))
 * **trade:** display recipient on confirm screen ([#4558](https://github.com/cowprotocol/cowswap/issues/4558)) ([7e8e3e6](https://github.com/cowprotocol/cowswap/commit/7e8e3e6ec9d2ed214ae37481e296800ecb17aed1))
 * **widget:** allow using walletconnect in widget mobile ([#4522](https://github.com/cowprotocol/cowswap/issues/4522)) ([ff58638](https://github.com/cowprotocol/cowswap/commit/ff586381f673314cf5d847f4f52da2e9e4015bea))
-* **widget:** remove favorite tooltip for widget ([#4527](https://github.com/cowprotocol/cowswap/issues/4527)) ([3b864f5](https://github.com/cowprotocol/cowswap/commit/3b864f57c09fdb74a4fdc90e93c6a64e1e30315f))
+* **widget:** remove favourite tooltip for widget ([#4527](https://github.com/cowprotocol/cowswap/issues/4527)) ([3b864f5](https://github.com/cowprotocol/cowswap/commit/3b864f57c09fdb74a4fdc90e93c6a64e1e30315f))
 
 ## [1.72.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.72.0...cowswap-v1.72.1) (2024-06-06)
 

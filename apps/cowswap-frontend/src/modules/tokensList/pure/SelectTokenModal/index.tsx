@@ -23,7 +23,7 @@ export interface SelectTokenModalProps {
   unsupportedTokens: UnsupportedTokensState
   selectedToken?: string
   permitCompatibleTokens: PermitCompatibleTokens
-  hideFavoriteTokensTooltip?: boolean
+  hideFavouriteTokensTooltip?: boolean
 
   onSelectToken(token: TokenWithLogo): void
 
@@ -45,7 +45,7 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
     balancesState,
     unsupportedTokens,
     permitCompatibleTokens,
-    hideFavoriteTokensTooltip,
+    hideFavouriteTokensTooltip,
     onSelectToken,
     onDismiss,
     onOpenManageWidget,
@@ -83,7 +83,7 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
           onSelectToken={onSelectToken}
           selectedToken={selectedToken}
           tokens={favouriteTokens}
-          hideTooltip={hideFavoriteTokensTooltip}
+          hideTooltip={hideFavouriteTokensTooltip}
         />
       </styledEl.Row>
       <styledEl.Separator />

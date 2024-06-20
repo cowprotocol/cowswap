@@ -145,7 +145,7 @@ export function SelectTokenWidget() {
             onInputPressEnter={onInputPressEnter}
             onDismiss={onDismiss}
             onOpenManageWidget={() => setIsManageWidgetOpen(true)}
-            hideFavoriteTokensTooltip={isInjectedWidgetMode}
+            hideFavouriteTokensTooltip={isInjectedWidgetMode}
           ></SelectTokenModal>
         )
       })()}

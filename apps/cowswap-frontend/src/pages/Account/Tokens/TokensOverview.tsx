@@ -38,15 +38,15 @@ import { CardsLoader, CardsSpinner } from '../styled'
 
 export enum PageViewKeys {
   ALL_TOKENS = 'ALL_TOKENS',
-  FAVORITE_TOKENS = 'FAVORITE_TOKENS',
+  FAVOURITE_TOKENS = 'FAVOURITE_TOKENS',
 }
 
 const PageView = {
   [PageViewKeys.ALL_TOKENS]: {
     label: 'All tokens',
   },
-  [PageViewKeys.FAVORITE_TOKENS]: {
-    label: 'Favorite tokens',
+  [PageViewKeys.FAVOURITE_TOKENS]: {
+    label: 'Favourite tokens',
   },
 }
 
@@ -102,7 +102,7 @@ export default function TokensOverview() {
 
     if (selectedView === PageViewKeys.ALL_TOKENS) {
       tokensData = formattedTokens
-    } else if (selectedView === PageViewKeys.FAVORITE_TOKENS) {
+    } else if (selectedView === PageViewKeys.FAVOURITE_TOKENS) {
       tokensData = favouriteTokens
     }
 
@@ -176,7 +176,7 @@ export default function TokensOverview() {
             </MenuWrapper>
           </LeftSection>
 
-          {selectedView === PageViewKeys.FAVORITE_TOKENS && (
+          {selectedView === PageViewKeys.FAVOURITE_TOKENS && (
             <RemoveTokens onClick={handleRestoreTokens}>
               <span>
                 (<Trans>Reset favourites</Trans>)

@@ -18,8 +18,8 @@ export function FavouriteTokensList(props: FavouriteTokensListProps) {
   return (
     <div>
       <styledEl.Header>
-        <h4>Favorite tokens</h4>
-        {!hideTooltip && <HelpTooltip text="Your favorite saved tokens. Edit this list in your account page." />}
+        <h4>Favourite tokens</h4>
+        {!hideTooltip && <HelpTooltip text="Your favourite saved tokens. Edit this list in your account page." />}
       </styledEl.Header>
       <styledEl.List>
         {tokens.map((token) => {

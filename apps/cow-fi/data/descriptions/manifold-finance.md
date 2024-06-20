@@ -2,7 +2,7 @@
 
 <p>Moo-ve over traditional finance, it's time to make way for the revolution of decentralized finance, better known as DeFi! Allow us to introduce <a href="https://manifoldfinance.com" rel="nofollow noopener noreferrer" target="_blank">Manifold Finance</a> (FOLD), a unique token residing comfortably on the Ethereum platform. Manifold Finance aims to enhance the middleware market of DeFi applications and protocols, focusing on scalability and usability. This innovative system works similarly to an APY strategy, like you'd find with Yearn Finance, except instead of you providing capital, Manifold Finance develops applications that generate revenue.</p>
 
-<p>Picture Manifold Finance as the glue holding together your favorite DeFi applications. These applications are aimed at providing services that generate revenue, a prime example of which is YCabal. And don't worry, Manifold Finance takes the health of the entire Ethereum ecosystem to heart, with a mission to contribute to its scalability. It's about serving as a bridge between you and the intricate world of DeFi, making your journey as smooth as a cow's milk!</p>
+<p>Picture Manifold Finance as the glue holding together your favourite DeFi applications. These applications are aimed at providing services that generate revenue, a prime example of which is YCabal. And don't worry, Manifold Finance takes the health of the entire Ethereum ecosystem to heart, with a mission to contribute to its scalability. It's about serving as a bridge between you and the intricate world of DeFi, making your journey as smooth as a cow's milk!</p>
 
 <h3>Where can you swap or trade Manifold Finance (FOLD)?</h3>
 
