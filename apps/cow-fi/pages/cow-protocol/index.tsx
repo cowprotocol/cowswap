@@ -7,9 +7,25 @@ import IMG_ICON_BUILD_WITH_COW from '@cowprotocol/assets/images/icon-build-with-
 import IMG_ICON_SECURE from '@cowprotocol/assets/images/icon-secure.svg'
 import IMG_ICON_OWL from '@cowprotocol/assets/images/icon-owl.svg'
 import IMG_ICON_GHOST from '@cowprotocol/assets/images/icon-ghost.svg'
-import IMG_LOGO_SAFE from '@cowprotocol/assets/images/logo-safe.svg'
-import IMG_LOGO_LIDO from '@cowprotocol/assets/images/logo-lido.svg'
-import IMG_LOGO_CURVE from '@cowprotocol/assets/images/logo-curve.svg'
+
+import IMG_GRANT_COLOR from '@cowprotocol/assets/images/image-grant-color.svg'
+import IMG_WIDGET from '@cowprotocol/assets/images/image-widget.svg'
+import IMG_DOCS from '@cowprotocol/assets/images/image-docs.svg'
+import IMG_LOGO_SAFE from '@cowprotocol/assets/images/icon-logo-safe.svg'
+import IMG_LOGO_LIDO from '@cowprotocol/assets/images/icon-logo-lido.svg'
+import IMG_MILKMAN from '@cowprotocol/assets/images/image-milkman.svg'
+import IMG_TWAP from '@cowprotocol/assets/images/image-twap.svg'
+import IMG_SURPLUS from '@cowprotocol/assets/images/image-surplus.svg'
+import IMG_HOOKS from '@cowprotocol/assets/images/image-hooks.svg'
+import IMG_LOGO_CURVE from '@cowprotocol/assets/images/icon-logo-curve.svg'
+import IMG_PROGRAMMATIC_ORDERS from '@cowprotocol/assets/images/image-programmatic-orders.svg'
+import IMG_SMARTORDERS from '@cowprotocol/assets/images/image-smartorders.svg'
+import IMG_INTENTS from '@cowprotocol/assets/images/image-intents.svg'
+import IMG_SOLVERS from '@cowprotocol/assets/images/image-solvers.svg'
+import IMG_BATCHAUCTIONS from '@cowprotocol/assets/images/image-batchauctions.svg'
+import IMG_COW_LENS from '@cowprotocol/assets/images/icon-cow-lens.svg'
+import IMG_COW_BITS from '@cowprotocol/assets/images/image-cow-bits.svg'
+import IMG_LEADING from '@cowprotocol/assets/images/image-leading.svg'
 
 import Layout from '@/components/Layout'
 import FAQ from '@/components/FAQ'
@@ -37,6 +53,7 @@ import {
   HeroSubtitle,
   MetricsCard,
   MetricsItem,
+  SectionImage,
 } from '@/styles/styled'
 
 import SVG from 'react-inlinesvg'
@@ -80,7 +97,7 @@ export default function Page({ siteConfigData }: PageProps) {
             </Link>
           </HeroContent>
           <HeroImage width={470} height={470} color={'#66018E'}>
-            <SVG src={IMG_ICON_GOVERNANCE} />
+            <SVG src={IMG_COW_BITS} />
           </HeroImage>
         </HeroContainer>
 
@@ -125,14 +142,17 @@ export default function Page({ siteConfigData }: PageProps) {
                 surplus-capturing, MEV-protected trades to users
               </SectionTitleDescription>
             </SectionTitleWrapper>
+            <SectionImage>
+              <SVG src={IMG_LEADING} />
+            </SectionImage>
           </ContainerCardSection>
         </ContainerCard>
 
         <ContainerCard bgColor={'transparent'}>
           <ContainerCardSection>
             <SectionTitleWrapper>
-              <SectionTitleIcon size={82}>
-                <ProductLogo variant={ProductVariant.CowProtocol} theme="light" logoIconOnly />
+              <SectionTitleIcon size={132}>
+                <SVG src={IMG_COW_LENS} />
               </SectionTitleIcon>
               <SectionTitleText>How it works</SectionTitleText>
               <SectionTitleDescription maxWidth={900} color={Color.neutral50}>
@@ -160,24 +180,28 @@ export default function Page({ siteConfigData }: PageProps) {
                   </Link>
                 </TopicCardInner>
                 <TopicImage
-                  iconColor="#66018E"
+                  iconColor="transparent"
                   width={590}
                   height={590}
                   heightMobile={300}
                   orderReverseMobile
                   borderRadius={90}
-                />
+                >
+                  <SVG src={IMG_INTENTS} />
+                </TopicImage>
               </TopicCard>
 
               <TopicCard columns="1fr auto" gap={100} horizontal asProp="div">
                 <TopicImage
-                  iconColor="#66018E"
+                  iconColor="transparent"
                   width={590}
                   height={590}
                   heightMobile={300}
                   orderReverseMobile
                   borderRadius={90}
-                />
+                >
+                  <SVG src={IMG_SOLVERS} />
+                </TopicImage>
                 <TopicCardInner contentAlign="left">
                   <TopicTitle fontSize={51}>Solvers</TopicTitle>
                   <TopicDescription fontSize={28} color={Color.neutral50}>
@@ -219,13 +243,15 @@ export default function Page({ siteConfigData }: PageProps) {
                   </Link>
                 </TopicCardInner>
                 <TopicImage
-                  iconColor="#66018E"
+                  iconColor="transparent"
                   width={590}
                   height={590}
                   heightMobile={300}
                   orderReverseMobile
                   borderRadius={90}
-                />
+                >
+                  <SVG src={IMG_BATCHAUCTIONS} />
+                </TopicImage>
               </TopicCard>
             </TopicList>
           </ContainerCardSection>
@@ -307,21 +333,15 @@ export default function Page({ siteConfigData }: PageProps) {
               <SectionTitleText textAlign="center">Unique trading logic</SectionTitleText>
             </SectionTitleWrapper>
             <TopicList columns={3}>
-              <TopicCard contentAlign={'left'} bgColor="#66018E" textColor="#F996EE" padding={'32px'} asProp="div">
+              <TopicCard contentAlign={'left'} bgColor="#FCCAF2" textColor="#490072" padding={'32px'} asProp="div">
                 <TopicCardInner contentAlign="left">
-                  <TopicTitle color={Color.neutral100}>Smart orders</TopicTitle>
-                  <TopicDescription fontSize={21} color="#F996EE">
+                  <TopicTitle color="490072">Smart orders</TopicTitle>
+                  <TopicDescription fontSize={21} color="#8702AA">
                     ERC-1271 smart orders let you custom code any trading logic
                   </TopicDescription>
                 </TopicCardInner>
-                <TopicImage
-                  iconColor="#8702AA"
-                  bgColor="transparent"
-                  margin={'auto 0 0 auto'}
-                  height={187}
-                  width={'auto'}
-                >
-                  <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />
+                <TopicImage iconColor="transparent" margin={'auto 0 0 auto'} height={240} width={'100%'}>
+                  <SVG src={IMG_SMARTORDERS} />
                 </TopicImage>
               </TopicCard>
               <TopicCard contentAlign={'left'} bgColor="#66018E" textColor="#F996EE" padding={'32px'} asProp="div">
@@ -332,13 +352,13 @@ export default function Page({ siteConfigData }: PageProps) {
                   </TopicDescription>
                 </TopicCardInner>
                 <TopicImage
-                  iconColor="#8702AA"
+                  iconColor="transparent"
                   bgColor="transparent"
                   margin={'auto 0 0 auto'}
-                  height={187}
-                  width={'auto'}
+                  height={240}
+                  width={'100%'}
                 >
-                  <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />
+                  <SVG src={IMG_PROGRAMMATIC_ORDERS} />
                 </TopicImage>
               </TopicCard>
 
@@ -351,13 +371,13 @@ export default function Page({ siteConfigData }: PageProps) {
                   </TopicDescription>
                 </TopicCardInner>
                 <TopicImage
-                  iconColor="#8702AA"
+                  iconColor="transparent"
                   bgColor="transparent"
                   margin={'auto 0 0 auto'}
-                  height={187}
-                  width={'auto'}
+                  height={240}
+                  width={'100%'}
                 >
-                  <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />
+                  <SVG src={IMG_HOOKS} />
                 </TopicImage>
               </TopicCard>
             </TopicList>

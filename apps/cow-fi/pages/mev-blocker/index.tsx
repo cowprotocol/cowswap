@@ -1,4 +1,6 @@
 import { GetStaticProps } from 'next'
+import Script from 'next/script'
+
 import { Font, Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
 
 import Layout from '@/components/Layout'
@@ -76,7 +78,7 @@ interface PageProps {
   siteConfigData: typeof CONFIG
 }
 
-export default function Page({ siteConfigData }: PageProps) {
+export default function Page() {
   const { share, message } = useWebShare()
 
   const handleShareClick = () => {
@@ -123,7 +125,7 @@ export default function Page({ siteConfigData }: PageProps) {
                   Get protected
                 </Link>
               </HeroContent>
-              <HeroImage width={740} height={'auto'} color={'#EC4612'}>
+              <HeroImage width={470} height={'auto'} color={'#EC4612'}>
                 <SVG src={IMAGE_SANDWICH_GUY} />
               </HeroImage>
             </HeroContainer>
@@ -180,8 +182,8 @@ export default function Page({ siteConfigData }: PageProps) {
                 </SectionTitleWrapper>
 
                 <TopicList columns={3}>
-                  {MEV_BLOCKER_LIST.map((item, index) => (
-                    <TopicCard key={index} contentAlign={'left'} bgColor={item.bgColor} padding={'32px'} asProp="div">
+                  {MEV_BLOCKER_LIST.map((item) => (
+                    <TopicCard key={item.id} contentAlign={'left'} bgColor={item.bgColor} padding={'32px'} asProp="div">
                       <TopicCardInner contentAlign="left">
                         <TopicDescription fontSize={28} fontSizeMobile={24} color={item.textColor}>
                           {item.description}
@@ -373,9 +375,9 @@ export default function Page({ siteConfigData }: PageProps) {
                 </SectionTitleWrapper>
 
                 <TopicList columns={3}>
-                  {TESTIMONIAL_LIST.map((testimonial, index) => (
+                  {TESTIMONIAL_LIST.map((testimonial) => (
                     <TopicCard
-                      key={index}
+                      key={testimonial.title}
                       contentAlign={'left'}
                       bgColor={testimonial.bgColor}
                       textColor={testimonial.textColor}
@@ -453,9 +455,9 @@ export default function Page({ siteConfigData }: PageProps) {
                 </SectionTitleWrapper>
 
                 <TopicList columns={3}>
-                  {TRUSTED_BY_CONTENT.map((item, index) => (
+                  {TRUSTED_BY_CONTENT.map((item) => (
                     <TopicCard
-                      key={index}
+                      key={item.href}
                       contentAlign={'center'}
                       bgColor={Color.neutral98}
                       padding={'28px'}
@@ -517,7 +519,8 @@ export default function Page({ siteConfigData }: PageProps) {
               </ContainerCardSection>
             </ContainerCard>
           </PageWrapper>
-          <script async src="https://platform.twitter.com/widgets.js"></script>
+
+          <Script src="https://platform.twitter.com/widgets.js" strategy="lazyOnload" />
         </Layout>
       </RainbowKitProvider>
     </WagmiConfig>

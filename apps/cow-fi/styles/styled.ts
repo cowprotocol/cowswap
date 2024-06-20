@@ -811,7 +811,8 @@ export const SectionImage = styled.div<{
     max-width: 100%;
   }
 
-  > img {
+  > img,
+  > svg {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -887,6 +888,7 @@ export const HeroContent = styled.div<{ variant?: string; gap?: number }>`
   display: flex;
   flex-flow: column wrap;
   max-width: 100%;
+  flex: 1 1 0;
 
   ${({ variant }) =>
     variant === 'secondary' &&

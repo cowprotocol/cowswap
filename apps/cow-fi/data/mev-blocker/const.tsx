@@ -24,18 +24,21 @@ import IMAGE_PROFIT from '@cowprotocol/assets/images/image-profit.svg'
 
 export const MEV_BLOCKER_LIST = [
   {
+    id: 'fullprotection',
     description: 'Protection from frontrunning and sandwich attacks on all types of transactions',
     iconImage: IMAGE_FULLPROTECTION,
     bgColor: '#EC4612',
     textColor: '#FEE7CF',
   },
   {
+    id: 'profit',
     description: 'Profit from any backrunning opportunities your transactions create',
     iconImage: IMAGE_PROFIT,
     bgColor: '#FDC99F',
     textColor: '#EC4612',
   },
   {
+    id: 'fastfree',
     description: 'A fast, free, censorship-resistant solution open to all searchers and builders',
     iconImage: IMGAGE_FASTFREE,
     bgColor: '#99ECFF',
