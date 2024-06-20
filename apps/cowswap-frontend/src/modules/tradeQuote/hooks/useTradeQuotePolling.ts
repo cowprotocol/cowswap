@@ -51,8 +51,8 @@ export function useTradeQuotePolling() {
       return
     }
 
-    const fetchQuote = () => {
-      updateQuoteState({ isLoading: true })
+    const fetchQuote = (hasParamsChanged: boolean) => {
+      updateQuoteState({ isLoading: true, hasParamsChanged })
 
       getQuoteOnlyResolveLast(quoteParams)
         .then((response) => {
@@ -62,11 +62,11 @@ export function useTradeQuotePolling() {
             return
           }
 
-          updateQuoteState({ response: data, quoteParams, isLoading: false, error: null })
+          updateQuoteState({ response: data, quoteParams, isLoading: false, error: null, hasParamsChanged: false })
         })
         .catch((error: QuoteApiError) => {
           console.log('[useGetQuote]:: fetchQuote error', error)
-          updateQuoteState({ isLoading: false, error })
+          updateQuoteState({ isLoading: false, error, hasParamsChanged: false })
 
           if (error.type === QuoteApiErrorCodes.UnsupportedToken) {
             processUnsupportedTokenError(error, quoteParams)
@@ -74,9 +74,9 @@ export function useTradeQuotePolling() {
         })
     }
 
-    fetchQuote()
+    fetchQuote(true)
 
-    const intervalId = setInterval(fetchQuote, PRICE_UPDATE_INTERVAL)
+    const intervalId = setInterval(() => fetchQuote(false), PRICE_UPDATE_INTERVAL)
 
     return () => clearInterval(intervalId)
   }, [quoteParams, updateQuoteState, updateCurrencyAmount, processUnsupportedTokenError, getIsUnsupportedTokens])
