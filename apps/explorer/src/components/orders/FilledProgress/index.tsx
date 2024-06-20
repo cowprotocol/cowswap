@@ -13,6 +13,7 @@ import { safeTokenName } from 'utils'
 import { Order } from 'api/operator'
 
 import { OrderPriceDisplay } from '../OrderPriceDisplay'
+import { PercentDisplay } from '@cowprotocol/ui/pure/PercentDisplay'
 
 export type Props = {
   order: Order
@@ -244,7 +245,7 @@ export function FilledProgress(props: Props): JSX.Element {
         <FilledContainer>
           <p className="title">Filled</p>
           <div>
-            <p className="percentage">{formattedPercentage.toFixed(2)}%</p>
+            <p className="percentage"><PercentDisplay percent={formattedPercentage} /></p>
             <OrderAssetsInfo />
           </div>
           <ProgressBar showLabel={false} percentage={formattedPercentage} />
