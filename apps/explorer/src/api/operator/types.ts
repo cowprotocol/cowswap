@@ -24,6 +24,7 @@ export type Order = Pick<
   txHash?: string
   creationDate: Date
   expirationDate: Date
+  executionDate?: Date
   buyTokenAddress: string
   buyToken?: TokenErc20 | null // undefined when not set, null when not found
   sellTokenAddress: string

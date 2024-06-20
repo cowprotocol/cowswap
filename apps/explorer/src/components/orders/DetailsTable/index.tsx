@@ -81,6 +81,8 @@ const tooltip = {
     'The date and time at which the order was submitted. The timezone is based on the browser locale settings.',
   expiration:
     'The date and time at which an order will expire and effectively be cancelled. Depending on the type of order, it may have partial fills upon expiration.',
+  execution:
+    'The date and time at which the order has been executed. The timezone is based on the browser locale settings.',
   type: (
     <div>
       CoW Protocol supports three type of orders – market, limit and liquidity:
@@ -184,6 +186,7 @@ export function DetailsTable(props: Props): JSX.Element | null {
     partiallyFillable,
     creationDate,
     expirationDate,
+    executionDate,
     buyAmount,
     sellAmount,
     executedBuyAmount,
@@ -293,6 +296,16 @@ export function DetailsTable(props: Props): JSX.Element | null {
               <DateDisplay date={creationDate} showIcon={true} />
             </td>
           </tr>
+          {executionDate && !showFillsButton && (
+            <tr>
+              <td>
+                <HelpTooltip tooltip={tooltip.execution} /> Execution Time
+              </td>
+              <td>
+                <DateDisplay date={executionDate} showIcon={true} />
+              </td>
+            </tr>
+          )}
           <tr>
             <td>
               <HelpTooltip tooltip={tooltip.expiration} /> Expiration Time
