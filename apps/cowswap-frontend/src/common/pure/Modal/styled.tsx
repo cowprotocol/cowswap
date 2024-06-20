@@ -103,10 +103,10 @@ export const StyledDialogContent = styled(({ ...rest }) => <AnimatedDialogConten
       `}
     display: flex;
     border-radius: 20px;
-    ${({ theme }) => theme.mediaWidth.upToMedium`
+    ${Media.upToMedium()} {
       width: 65vw;
       margin: 0;
-    `}
+    }
     ${({ theme, $mobile }) => theme.mediaWidth.upToSmall`
       width:  85vw;
       ${

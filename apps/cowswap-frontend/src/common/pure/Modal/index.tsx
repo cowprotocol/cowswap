@@ -3,7 +3,7 @@ import React, { useCallback, useEffect } from 'react'
 
 import { isMobile } from '@cowprotocol/common-utils'
 import { Command } from '@cowprotocol/types'
-import { UI } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 
 import { useSpringValue, useTransition } from '@react-spring/web'
 import { useGesture } from '@use-gesture/react'
@@ -155,9 +155,9 @@ export const CowModal = styled(Modal)<{
     }
 
     ${ContentWrapper} {
-      ${({ theme }) => theme.mediaWidth.upToSmall`
+      ${Media.upToSmall()} {
         margin: 82px auto 0;
-      `}
+      }
     }
   }
 `

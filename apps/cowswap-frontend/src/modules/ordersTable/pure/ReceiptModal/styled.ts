@@ -1,4 +1,4 @@
-import { AutoRow } from '@cowprotocol/ui'
+import { AutoRow, Media } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
@@ -61,9 +61,9 @@ export const FieldsWrapper = styled.div`
   width: 100%;
   gap: 2px;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     padding: 0 0 54px;
-  `}
+  }
 `
 
 export const InfoBannerWrapper = styled.div`
@@ -125,9 +125,9 @@ export const CurrencyField = styled.div`
     width: 100%;
 
     & .open-currency-select-button {
-      ${({ theme }) => theme.mediaWidth.upToSmall`
+      ${Media.upToSmall()} {
         width: auto;
-    `}
+      }
     }
   }
 `

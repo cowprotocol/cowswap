@@ -1,4 +1,4 @@
-import { UI } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
@@ -95,9 +95,9 @@ export const AuxInformationContainer = styled.div<{
       align-items: center;
       white-space: nowrap;
 
-      ${({ theme }) => theme.mediaWidth.upToSmall`
+      ${Media.upToSmall()} {
         margin: 0 0 10px;
-      `}
+      }
     }
 
     > span > small {

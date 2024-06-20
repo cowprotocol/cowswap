@@ -1,7 +1,7 @@
 import { getChainInfo } from '@cowprotocol/common-const'
 import { useTheme } from '@cowprotocol/common-hooks'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { AutoRow, ExternalLink, UI } from '@cowprotocol/ui'
+import { AutoRow, ExternalLink, Media, UI } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Trans } from '@lingui/macro'
@@ -10,7 +10,6 @@ import styled from 'styled-components/macro'
 
 import { useDarkModeManager } from 'legacy/state/user/hooks'
 import { HideSmall } from 'legacy/theme'
-
 
 const L2Icon = styled.img`
   width: 24px;
@@ -38,9 +37,9 @@ const RootWrapper = styled.div`
   color: inherit;
   gap: 10px;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     padding: 0 10px;
-  `}
+  }
 `
 
 const SHOULD_SHOW_ALERT = {

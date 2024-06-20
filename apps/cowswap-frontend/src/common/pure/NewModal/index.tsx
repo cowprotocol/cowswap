@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react'
 
 import { Command } from '@cowprotocol/types'
-import { BackButton, UI } from '@cowprotocol/ui'
+import { BackButton, Media, UI } from '@cowprotocol/ui'
 
 import CLOSE_ICON from 'assets/icon/x.svg'
 import SVG from 'react-inlinesvg'
@@ -62,10 +62,10 @@ const Heading = styled.h2<{ modalMode: boolean }>`
   padding: ${({ modalMode }) => (modalMode ? '16px 20px 3px' : '16px 20px 3px 40px')};
   font-size: var(${UI.FONT_SIZE_MEDIUM});
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     position: sticky;
     top: 0;
-  `}
+  }
 `
 
 const IconX = styled.div`

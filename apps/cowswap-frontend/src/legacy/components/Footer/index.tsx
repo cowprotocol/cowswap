@@ -1,3 +1,5 @@
+import { Media } from '@cowprotocol/ui'
+
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
@@ -24,16 +26,16 @@ const Wrapper = styled.div`
     height: auto;
     z-index: -1;
 
-    ${({ theme }) => theme.mediaWidth.upToMedium`
+    ${Media.upToMedium()} {
       left: initial;
       bottom: initial;
       top: 0;
       margin: 24px auto 0;
-    `}
+    }
 
-    ${({ theme }) => theme.mediaWidth.upToSmall`
+    ${Media.upToSmall()} {
       margin: 120px auto 0;
-    `}
+    }
   }
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
@@ -41,9 +43,9 @@ const Wrapper = styled.div`
     margin: 24px auto 0;
   `}
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     margin: 56px auto 160px;
-  `}
+  }
 `
 
 const ImageWrapper = styled.div`
@@ -85,9 +87,9 @@ const FooterVersion = styled(Version)`
   padding: 0;
   flex-flow: row wrap;
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${Media.upToMedium()} {
     margin: 0 auto;
-  `}
+  }
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     flex-flow: column wrap;
@@ -96,9 +98,9 @@ const FooterVersion = styled(Version)`
   `}
 
   > div {
-    ${({ theme }) => theme.mediaWidth.upToSmall`
+    ${Media.upToSmall()} {
       margin: 0 0 8px;
-    `}
+    }
   }
 `
 

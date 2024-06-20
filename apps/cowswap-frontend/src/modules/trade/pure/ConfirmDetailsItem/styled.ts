@@ -1,4 +1,4 @@
-import { UI } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
@@ -54,9 +54,9 @@ export const Content = styled.div<{ highlighted?: boolean }>`
   font-weight: ${({ highlighted }) => (highlighted ? 700 : 500)};
   font-size: 13px;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     margin: 0;
-  `}
+  }
 
   > span {
     display: block;

@@ -15,7 +15,7 @@ import {
   MINIMUM_ORDER_VALID_TO_TIME_SECONDS,
 } from '@cowprotocol/common-const'
 import { getWrappedToken } from '@cowprotocol/common-utils'
-import { FancyButton, HelpTooltip, RowBetween, RowFixed, UI } from '@cowprotocol/ui'
+import { FancyButton, HelpTooltip, Media, RowBetween, RowFixed, UI } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Percent } from '@uniswap/sdk-core'
 
@@ -95,9 +95,9 @@ export const OptionCustom = styled(FancyButton)<{ active?: boolean; warning?: bo
 
 const SlippageEmojiContainer = styled.span`
   color: #f3841e;
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     display: none;
-  `}
+  }
 `
 
 export interface TransactionSettingsProps {

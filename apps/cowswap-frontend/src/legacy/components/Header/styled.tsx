@@ -284,9 +284,9 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
     }
 
     &.expanded + ${MenuContent} {
-      ${({ theme }) => theme.mediaWidth.upToLarge`
+      ${Media.upToLarge()} {
         border: 0;
-      `}
+      }
     }
 
     &.ACTIVE {
@@ -397,10 +397,10 @@ export const LogoImage = styled.div<{ isMobileMenuOpen?: boolean }>`
   margin: 0 32px 0 0;
   position: relative;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     height: 30px;
     width: auto;
-  `}
+  }
 
   ${({ theme, isMobileMenuOpen }) => theme.mediaWidth.upToLarge`
     ${
@@ -441,11 +441,11 @@ export const WinterHat = styled.div`
   top: -10px;
   left: 6px;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     left: 0;
     right: 0;
     margin: auto;
-  `}
+  }
 
   > svg {
     height: 15px;

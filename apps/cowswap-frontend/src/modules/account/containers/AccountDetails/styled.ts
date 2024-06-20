@@ -396,9 +396,9 @@ export const LowerSectionSimple = styled(LowerSection)`
               margin: 10px 0 6px;
             }
           }
-          ${({ theme }) => theme.mediaWidth.upToSmall`
+          ${Media.upToSmall()} {
             margin: 16px 0;
-          `}
+          }
 
           > b {
             display: none;

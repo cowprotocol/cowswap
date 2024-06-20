@@ -1,4 +1,4 @@
-import { TokenAmount, loadingOpacityMixin } from '@cowprotocol/ui'
+import { TokenAmount, loadingOpacityMixin, Media } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
@@ -25,9 +25,9 @@ export const Wrapper = styled.div<{ withReceiveAmountInfo: boolean; readOnly: bo
   pointer-events: ${({ pointerDisabled }) => (pointerDisabled ? 'none' : '')};
   max-width: 100%;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     padding: 16px 12px;
-  `}
+  }
 `
 
 export const CurrencyInputBox = styled.div`
@@ -42,9 +42,9 @@ export const CurrencyInputBox = styled.div`
   font-size: 13px;
   color: inherit;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     gap: 8px;
-  `}
+  }
 
   > div {
     display: flex;
