@@ -116,22 +116,6 @@ export const ContainerCardSectionTopTitle = styled.h3<{
   }
 `
 
-export const ContainerCardSectionTopDescription = styled.small<{
-  fontSize?: number
-  fontSizeMobile?: number
-  color?: string
-  textAlign?: string
-}>`
-  font-size: ${({ fontSize }) => fontSize || 28}px;
-  color: ${({ color }) => color || 'inherit'};
-  text-align: ${({ textAlign }) => textAlign || 'left'};
-  line-height: 1.5;
-
-  ${Media.upToMedium()} {
-    font-size: ${({ fontSizeMobile }) => fontSizeMobile || 21}px;
-  }
-`
-
 export const ArticleList = styled.div<{ columns?: number; columnsMobile?: number }>`
   display: grid;
   grid-template-columns: repeat(${({ columns }) => columns || 3}, 1fr);
@@ -532,7 +516,6 @@ export const LinkItem = styled.a`
     min-height: var(--size);
     min-width: var(--size);
     color: ${Color.neutral50};
-    transition: color 0.2s ease-in-out;
     border-radius: 24px;
     font-size: 24px;
     transition: transform 0.2s ease-in-out;
@@ -1057,7 +1040,7 @@ export const MetricsItem = styled.div<{ dividerColor?: string }>`
       padding: 0;
       margin: 0 0 0 auto;
       background: ${dividerColor || Color.neutral80};
-  
+
       ${Media.upToMedium()} {
         width: 100%;
         height: 2px;
@@ -1436,7 +1419,6 @@ export const ArticleMainTitle = styled.h1<{ margin?: string; fontSize?: number }
   font-size: ${({ fontSize }) => (fontSize ? `${fontSize}px` : '67px')};
   font-weight: ${Font.weight.bold};
   color: ${Color.neutral10};
-  margin-bottom: 16px;
   margin: ${({ margin }) => margin || '0 0 16px'};
 
   ${Media.upToMedium()} {
@@ -1841,7 +1823,7 @@ export const ColorTableCell = styled.td`
   }
 
   &.refund {
-    background: var (--green);
+    background: var(--green);
     color: var(--neutral);
   }
 
