@@ -139,13 +139,11 @@ export default createReducer<SwapState>(initialState, (builder) =>
         [Field.OUTPUT]: { currencyId: state[Field.INPUT].currencyId },
       }
     })
-    .addCase(typeInput, (state, { payload: { field, typedValue } }) => {
-      return {
-        ...state,
-        independentField: field,
-        typedValue,
-      }
-    })
+    .addCase(typeInput, (state, { payload: { field, typedValue } }) => ({
+      ...state,
+      independentField: field,
+      typedValue,
+    }))
     .addCase(setRecipient, (state, { payload: { recipient } }) => ({
       ...state,
       recipient,
