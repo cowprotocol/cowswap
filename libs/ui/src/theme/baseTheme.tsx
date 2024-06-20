@@ -5,7 +5,6 @@ import { createGlobalStyle, css } from 'styled-components/macro'
 
 import { Colors } from './typings'
 
-import { Media } from '../consts'
 import { ButtonSize, UI } from '../enum'
 
 export function colors(darkMode: boolean): Colors {
@@ -223,7 +222,7 @@ export const UniFixedGlobalStyle = css`
   }
 `
 
-export const UniThemedGlobalStyle = css`
+export const ThemeColorsGlobalStyle = css`
   :root {
     // V3
     ${UI.COLOR_PRIMARY}: ${({ theme }) => theme.primary};
@@ -385,65 +384,5 @@ export const UniThemedGlobalStyle = css`
 `
 
 export const FixedGlobalStyle = createGlobalStyle`
-  // Uni V2 theme mixin
   ${UniFixedGlobalStyle}
-`
-
-export const ThemedGlobalStyle = createGlobalStyle`
-  // Uni V2 theme mixin
-  ${UniThemedGlobalStyle}
-
-  html {
-    background-color: ${({ theme }) =>
-      theme.isInjectedWidgetMode ? 'transparent' : `var(${UI.COLOR_CONTAINER_BG_02})`};
-  }
-
-  *, *:after, *:before { box-sizing:border-box; }
-
-  body {
-
-    &.noScroll {
-      overflow: hidden;
-    }
-  }
-
-  ::selection {
-    background: var(${UI.COLOR_PRIMARY});
-    color: var(${UI.COLOR_BUTTON_TEXT});
-  }
-
-  // TODO: Can be removed once we control this component
-  [data-reach-dialog-overlay] {
-    z-index: 10!important;
-
-    ${Media.upToMedium()} {
-      top: 0!important;
-      bottom: 0!important;
-    }
-  }
-
-  // Appzi Container override
-  div[id*='appzi-wfo-'] {
-    display: none!important; // Force hiding Appzi container when not opened
-  }
-
-  body[class*='appzi-f-w-open-'] div[id^='appzi-wfo-'] {
-    z-index: 2147483004!important;
-    display: block!important;
-  }
-
-    // Walletconnect V2 mobile override
-  body #wcm-modal.wcm-overlay {
-    ${Media.upToSmall()} {
-      align-items: flex-start;
-    }
-
-    a {
-      text-decoration: none;
-
-      :hover {
-        text-decoration: underline;
-      }
-    }
-  }
 `

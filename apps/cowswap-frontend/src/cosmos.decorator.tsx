@@ -5,7 +5,6 @@ import React, { ReactNode, StrictMode, useCallback, useContext } from 'react'
 
 import IMAGE_MOON from '@cowprotocol/assets/cow-swap/moon.svg'
 import IMAGE_SUN from '@cowprotocol/assets/cow-swap/sun.svg'
-import { ThemedGlobalStyle } from '@cowprotocol/ui'
 import { injectedWalletConnection, WalletUpdater } from '@cowprotocol/wallet'
 import { Web3ReactProvider } from '@web3-react/core'
 
@@ -18,7 +17,7 @@ import styled, { ThemeContext } from 'styled-components/macro'
 
 import { cowSwapStore } from 'legacy/state'
 import { useDarkModeManager } from 'legacy/state/user/hooks'
-import ThemeProvider, { FixedGlobalStyle } from 'legacy/theme'
+import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from 'legacy/theme'
 
 import { BlockNumberProvider } from './common/hooks/useBlockNumber'
 
