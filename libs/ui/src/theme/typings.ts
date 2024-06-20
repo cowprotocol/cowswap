@@ -107,15 +107,6 @@ declare module 'styled-components' {
       borderRadius?: string
       boxShadow?: string
     }
-    mediaWidth: {
-      upToTiny: ThemedCssFunction<DefaultTheme>
-      upToExtraSmall: ThemedCssFunction<DefaultTheme>
-      upToSmall: ThemedCssFunction<DefaultTheme>
-      upToMedium: ThemedCssFunction<DefaultTheme>
-      upToLarge: ThemedCssFunction<DefaultTheme>
-      upToLargeAlt: ThemedCssFunction<DefaultTheme>
-      upToExtraLarge: ThemedCssFunction<DefaultTheme>
-    }
 
     // shadows
     shadow1: string

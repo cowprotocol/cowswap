@@ -5,6 +5,7 @@ import { createGlobalStyle, css } from 'styled-components/macro'
 
 import { Colors } from './typings'
 
+import { Media } from '../consts'
 import { ButtonSize, UI } from '../enum'
 
 export function colors(darkMode: boolean): Colors {
@@ -415,10 +416,10 @@ export const ThemedGlobalStyle = createGlobalStyle`
   [data-reach-dialog-overlay] {
     z-index: 10!important;
 
-    ${({ theme }) => theme.mediaWidth.upToMedium`
+    ${Media.upToMedium()} {
       top: 0!important;
       bottom: 0!important;
-    `}
+    }
   }
 
   // Appzi Container override
@@ -433,9 +434,10 @@ export const ThemedGlobalStyle = createGlobalStyle`
 
     // Walletconnect V2 mobile override
   body #wcm-modal.wcm-overlay {
-    ${({ theme }) => theme.mediaWidth.upToSmall`
+    ${Media.upToSmall()} {
       align-items: flex-start;
-    `}
+    }
+
     a {
       text-decoration: none;
 

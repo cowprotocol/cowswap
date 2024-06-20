@@ -4,13 +4,11 @@ import { useMemo } from 'react'
 import { cowprotocolTokenLogoUrl, NATIVE_CURRENCY_ADDRESS, TokenWithLogo } from '@cowprotocol/common-const'
 import { uriToHttp } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { UI } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 import { Currency, NativeCurrency } from '@uniswap/sdk-core'
 
 import { Slash } from 'react-feather'
 import styled, { css } from 'styled-components/macro'
-
-
 
 import { SingleLetterLogo } from './SingleLetterLogo'
 
@@ -35,8 +33,8 @@ export const TokenLogoWrapper = styled.div<{ size?: number; sizeMobile?: number 
     object-fit: contain;
   }
 
-  ${({ theme, sizeMobile }) => theme.mediaWidth.upToSmall`
-    ${
+  ${Media.upToSmall()} {
+    ${({ sizeMobile }) =>
       sizeMobile
         ? css`
             border-radius: ${sizeMobile}px;
@@ -48,9 +46,8 @@ export const TokenLogoWrapper = styled.div<{ size?: number; sizeMobile?: number 
               border-radius: ${sizeMobile}px;
             }
           `
-        : ''
-    }
-  `}
+        : ''}
+  }
 `
 
 export interface TokenLogoProps {
