@@ -104,7 +104,7 @@ export const Content = styled.div`
 
     &::before {
       content: '';
-      background: ${({ theme }) => theme.redShade};
+      background: ${({ theme }) => (theme.darkMode ? '#842100' : '#AE2C00')};
       position: absolute;
       width: 100%;
       height: 100%;
@@ -116,7 +116,7 @@ export const Content = styled.div`
   }
 
   li > em {
-    background: ${({ theme }) => theme.redShade};
+    background: ${({ theme }) => (theme.darkMode ? '#842100' : '#AE2C00')};
     color: ${({ theme }) => theme.white};
     width: 100%;
     display: block;

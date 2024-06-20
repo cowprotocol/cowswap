@@ -62,11 +62,7 @@ export interface Colors extends ColorsUniswap {
   bg8: ColorValue
   purple: ColorValue
   yellow: ColorValue
-  redShade: ColorValue
-  textLink: ColorValue
-  greenShade: ColorValue
   blueShade: ColorValue
-  blueShade2: ColorValue
   blueShade3: ColorValue
   blue2: ColorValue
   orange: ColorValue
@@ -77,10 +73,6 @@ export interface Colors extends ColorsUniswap {
   border: ColorValue
   border2: ColorValue
   disabled: ColorValue
-  scrollbarBg: ColorValue
-  scrollbarThumb: ColorValue
-  tableHeadBG: ColorValue
-  tableRowBG: ColorValue
   info: ColorValue
   information: ColorValue
   warning: ColorValue
@@ -90,10 +82,6 @@ export interface Colors extends ColorsUniswap {
   infoText: ColorValue
   warningText: ColorValue
   errorText: ColorValue
-  cardBackground: ColorValue
-  cardBorder: ColorValue
-  cardShadow1: ColorValue
-  cardShadow2: ColorValue
   blueDark1: ColorValue
   blueDark2: ColorValue
   blueLight1: ColorValue
@@ -102,7 +90,6 @@ export interface Colors extends ColorsUniswap {
   paperCustom: ColorValue
   paperDarkerCustom: ColorValue
   paperDarkestCustom: ColorValue
-  paperLighterCustom: ColorValue
   buttonTextCustom: ColorValue
 }
 

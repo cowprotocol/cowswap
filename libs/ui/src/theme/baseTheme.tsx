@@ -82,28 +82,14 @@ export function colors(darkMode: boolean): Colors {
     purple: '#8958FF',
     yellow: '#fff6dc',
     orange: '#FF784A',
-    greenShade: '#376c57',
     blueShade: '#0f2644',
-    blueShade2: '#011e34',
     blueShade3: darkMode ? '#1c416e' : '#bdd6e1',
 
     // ****** other ******
     border: darkMode ? '#021E34' : '#000000',
     border2: darkMode ? '#254F83' : '#afcbda',
-    cardBackground: darkMode ? '#142642' : 'rgb(255 255 255 / 85%)',
-    cardBorder: darkMode ? '#021E34' : 'rgba(255, 255, 255, 0.5)',
-    cardShadow1: darkMode ? '#4C7487' : '#FFFFFF',
-    cardShadow2: darkMode ? 'rgba(1, 10, 16, 0.15)' : 'rgba(11, 37, 53, 0.93)',
 
     disabled: darkMode ? 'rgba(197, 218, 239, 0.4)' : '#afcbda',
-    redShade: darkMode ? '#842100' : '#AE2C00',
-    textLink: darkMode ? '#ffffff' : '#AE2C00',
-    scrollbarBg: darkMode ? '#01182a' : '#d5e8f0',
-    scrollbarThumb: darkMode ? '#152c3e' : '#adc2ce',
-
-    // table styles
-    tableHeadBG: darkMode ? '#021E34' : 'rgb(2 30 52 / 15%)',
-    tableRowBG: darkMode ? 'rgb(0 30 52 / 60%)' : '#ffffff',
 
     infoText: darkMode ? '#ffca4a' : '#564D00',
     warningText: '#564D00',
