@@ -146,12 +146,14 @@ export default createReducer<SwapState>(initialState, (builder) =>
         typedValue,
       }
     })
-    .addCase(setRecipient, (state, { payload: { recipient } }) => {
-      state.recipient = recipient
-    })
-    .addCase(setRecipientAddress, (state, { payload: { recipientAddress } }) => {
-      state.recipientAddress = recipientAddress
-    })
+    .addCase(setRecipient, (state, { payload: { recipient } }) => ({
+      ...state,
+      recipient,
+    }))
+    .addCase(setRecipientAddress, (state, { payload: { recipientAddress } }) => ({
+      ...state,
+      recipientAddress,
+    }))
 )
 
 /**
