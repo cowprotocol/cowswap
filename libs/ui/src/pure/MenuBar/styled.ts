@@ -319,7 +319,7 @@ export const DropdownContent = styled.div<DropdownContentProps>`
       border: 0;
     `}
 
-  ${({ mobileMode, isNavItemDropdown }) =>
+  ${({ mobileMode, isNavItemDropdown, isThirdLevel }) =>
     mobileMode &&
     isNavItemDropdown &&
     css`
@@ -331,6 +331,7 @@ export const DropdownContent = styled.div<DropdownContentProps>`
       padding: 6px;
       margin: 0 0 16px;
       background: var(--hoverBackground);
+      background: ${isThirdLevel ? 'var(--activeBackground)' : 'var(--hoverBackground)'};
       border-radius: 12px;
     `}
   &::before {
@@ -415,7 +416,7 @@ export const StyledDropdownContentItem = styled.a<{
   display: flex;
   flex-flow: row wrap;
   align-items: center;
-  padding: ${({ isThirdLevel }) => (isThirdLevel ? '16px' : '8px 12px')};
+  padding: 16px;
   text-decoration: none;
   color: inherit;
   transition: background 0.2s ease-in-out, color 0.2s ease-in-out;
@@ -474,7 +475,7 @@ export const StyledDropdownContentItem = styled.a<{
     width: var(--size);
     min-width: var(--size);
     min-height: var(--size);
-    margin: 0 5px 0 auto;
+    margin: 0 0 0 auto;
     object-fit: contain;
     color: inherit;
     transform: ${({ isOpen }) => (isOpen ? 'rotate(180deg)' : 'rotate(0deg)')};
@@ -562,7 +563,9 @@ export const DropdownContentItemButton = styled(StyledDropdownContentItem)<{
   }
 `
 
-export const DropdownMenu = styled.div<{ mobileMode?: boolean }>`
+export const DropdownMenu = styled.div<{
+  mobileMode?: boolean
+}>`
   position: relative;
   display: inline-block;
   border-radius: inherit;
@@ -651,6 +654,7 @@ export const RightAligned = styled.div<{ mobileMode?: boolean; flexFlow?: string
   ${DropdownContentItemButton} {
     min-height: 100%;
     flex-flow: row nowrap;
+    padding: 8px 12px;
 
     > svg.arrow-icon-right {
       opacity: 1;

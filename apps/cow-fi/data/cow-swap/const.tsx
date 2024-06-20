@@ -256,3 +256,14 @@ export const FAQ_DATA = [
     ),
   },
 ]
+
+export const TWEETS = [
+  'https://twitter.com/koeppelmann/status/1729455013007684035',
+  'https://twitter.com/EFMinerals/status/1684926720032305152',
+  'https://twitter.com/lucasmanuel_eth/status/1772064334350332164',
+  'https://twitter.com/0ctoshi/status/1751967788074238261',
+  'https://twitter.com/mazzaanXBT/status/1798284703268733231',
+  'https://twitter.com/thelyingbear/status/1798396384871420169',
+  'https://twitter.com/DeFi_Cheetah/status/1747989443687100646',
+  'https://twitter.com/sassal0x/status/1715282124247646398',
+]

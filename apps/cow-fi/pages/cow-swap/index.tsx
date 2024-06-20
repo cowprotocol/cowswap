@@ -34,7 +34,7 @@ import {
 
 import SVG from 'react-inlinesvg'
 import IMG_ICON_FAQ from '@cowprotocol/assets/images/icon-faq.svg'
-import { FAQ_DATA } from '../../data/cow-swap/const'
+import { FAQ_DATA, TWEETS } from '../../data/cow-swap/const'
 
 import { EventCategories, sendEventHandler } from '@cowprotocol/analytics'
 
@@ -424,29 +424,22 @@ export default function Page({ siteConfigData }: PageProps) {
             </SectionTitleWrapper>
 
             <TopicList columns={3} maxWidth={1360}>
-              <TopicCard bgColor={Color.neutral100} padding="4px" paddingMobile="4px" gap={16} asProp="div">
-                <TopicCardInner>
-                  <blockquote className="twitter-tweet" data-dnt="true">
-                    <a href="https://twitter.com/koeppelmann/status/1729455013007684035">Loading X...</a>
-                  </blockquote>
-                </TopicCardInner>
-              </TopicCard>
-
-              <TopicCard bgColor={Color.neutral100} padding="4px" paddingMobile="4px" gap={16} asProp="div">
-                <TopicCardInner>
-                  <blockquote className="twitter-tweet" data-dnt="true">
-                    <a href="https://twitter.com/nomos_paradox/status/1738489297815142736">Loading X...</a>
-                  </blockquote>
-                </TopicCardInner>
-              </TopicCard>
-
-              <TopicCard bgColor={Color.neutral100} padding="4px" paddingMobile="4px" gap={16} asProp="div">
-                <TopicCardInner>
-                  <blockquote className="twitter-tweet" data-dnt="true">
-                    <a href="https://twitter.com/passivenodeinc1/status/1485204781153107973">Loading X...</a>
-                  </blockquote>
-                </TopicCardInner>
-              </TopicCard>
+              {TWEETS.map((tweet, index) => (
+                <TopicCard
+                  bgColor={Color.neutral100}
+                  padding="4px"
+                  paddingMobile="4px"
+                  gap={16}
+                  asProp="div"
+                  key={index}
+                >
+                  <TopicCardInner>
+                    <blockquote className="twitter-tweet" data-dnt="true" data-theme="light">
+                      <a href={tweet}>Loading X...</a>
+                    </blockquote>
+                  </TopicCardInner>
+                </TopicCard>
+              ))}
             </TopicList>
           </ContainerCardSection>
         </ContainerCard>
