@@ -8,10 +8,6 @@ import { Colors } from './typings'
 
 import { ButtonSize, UI } from '../enum'
 
-// TODO: This shouldn't be in the base theme
-// Modal override items
-// import { HeaderText } from 'legacy/components/WalletModal/Option'
-
 export function colors(darkMode: boolean): Colors {
   return {
     ...colorsUniswap(darkMode),
@@ -117,16 +113,6 @@ export function colors(darkMode: boolean): Colors {
 
 export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
   return {
-    body: {
-      background: css`
-        ${darkMode
-          ? `
-          background-color: ${colorsTheme.blueDark1};
-          background-image: radial-gradient(50% 500px at 50% -6%, hsl(216deg 100% 20% / 70%) 0%, #071832 50%, #06162d 100%),radial-gradient(circle at -70% 50%, hsla(215,100%,20%,0.7) 0, transparent 50%);`
-          : `background: linear-gradient(45deg, #EAE9FF 14.64%, ${colorsTheme.blueLight1} 85.36%)`};
-        background-attachment: fixed;
-      `,
-    },
     shimmer: css`
       background-image: linear-gradient(
         90deg,
@@ -161,30 +147,13 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
         background-clip: padding-box;
       }
     `,
-    textShadow1: `
-      ${
-        darkMode
-          ? `0px 0px 26px ${`var(${UI.COLOR_TEXT_OPACITY_10})`}, 0px 0px 28px ${`var(${UI.COLOR_TEXT_OPACITY_25})`}`
-          : 'none'
-      }
-    `,
     boxShadow1: darkMode ? '0 24px 32px rgba(0, 0, 0, 0.06)' : '0 12px 12px rgba(5, 43, 101, 0.06)',
     boxShadow2: '0 4px 12px 0 rgb(0 0 0 / 15%)',
-    boxShadow3: `0 4px 12px 0 ${transparentize(colorsTheme.text3, 0.9)}`,
     gradient1: `linear-gradient(145deg, ${colorsTheme.bg1}, ${colorsTheme.grey1})`,
     gradient2: `linear-gradient(250deg, ${transparentize(colorsTheme.alert, 0.92)} 10%, ${transparentize(
       colorsTheme.success,
       0.92
     )} 50%, ${transparentize(colorsTheme.success, 0.92)} 100%);`,
-    input: {
-      bg1: darkMode ? '#07162D' : '#ECF1F8',
-    },
-    button: {
-      bg1: darkMode
-        ? 'linear-gradient(90deg, #0852C5 0%, #1970F8 100%), linear-gradient(0deg, #0852C5, #0852C5), #0F5BD0;'
-        : '#004293',
-      text1: darkMode ? `var(${UI.COLOR_TEXT})` : '#FFFFFF',
-    },
     util: {
       invertImageForDarkMode: darkMode ? 'filter: invert(1) grayscale(1);' : null,
     },
@@ -193,54 +162,6 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
         swap: '470px',
         limit: '1350px',
         content: '680px',
-      },
-    },
-    transaction: {
-      tokenBackground: colorsTheme.bg2,
-      tokenColor: '#1d4373',
-      tokenBorder: darkMode ? '#01182a' : colorsTheme.bg3,
-    },
-    neumorphism: {
-      boxShadow: css`
-        box-shadow: inset 2px -2px 4px ${darkMode ? '#1d4373' : '#ffffff'},
-          inset -2px 2px 4px ${darkMode ? '#021E34' : 'rgb(162 200 216)'};
-      `,
-    },
-    cowToken: {
-      background: css`
-        background: linear-gradient(70.89deg, #292a30 10.71%, #101015 33%, #0e0501 88.54%);
-      `,
-      boxShadow: css`
-        box-shadow: inset 1px 0px 1px -1px hsla(0, 0%, 100%, 0.4);
-      `,
-    },
-    card: {
-      background: css`
-        background: linear-gradient(145deg, ${colorsTheme.bg3}, ${colorsTheme.bg1});
-      `,
-      background2: darkMode ? '#01182a' : colorsTheme.bg3,
-      background3: css`
-        background: ${darkMode ? '#0f2644' : '#ffffff'};
-      `,
-      border: `${darkMode ? 'rgb(197 218 239 / 10%)' : 'rgb(16 42 72 / 20%)'}`,
-      boxShadow: css`
-        background: linear-gradient(145deg, var(${UI.COLOR_PAPER}), var(${UI.COLOR_PAPER_DARKER}));
-        box-shadow: inset 0 1px 1px 0 hsl(0deg 0% 100% / 10%), 0 10px 40px -20px #000000;
-      `,
-    },
-    iconGradientBorder: css`
-      background: conic-gradient(var(${UI.COLOR_PAPER}) 40grad, 80grad, var(${UI.COLOR_PRIMARY}) 360grad);
-    `,
-    header: {
-      border: 'none',
-      menuFlyout: {
-        background: 'transparent',
-        color: darkMode ? `var(${UI.COLOR_TEXT})` : colorsTheme.text2,
-        colorHover: darkMode ? `var(${UI.COLOR_TEXT})` : colorsTheme.text2,
-        colorHoverBg: darkMode ? colorsTheme.black : colorsTheme.disabled,
-        closeButtonBg: darkMode ? colorsTheme.white : colorsTheme.disabled,
-        closeButtonColor: colorsTheme.black,
-        seperatorColor: colorsTheme.disabled,
       },
     },
     buttonSizes: {
@@ -254,19 +175,6 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
       [ButtonSize.SMALL]: css`
         font-size: 12px;
       `,
-    },
-    swap: {
-      headerSize: '28px',
-      arrowDown: {
-        background: darkMode ? colorsTheme.blueShade : colorsTheme.white,
-        color: darkMode ? colorsTheme.white : colorsTheme.black,
-        colorHover: darkMode ? colorsTheme.white : colorsTheme.black,
-        borderRadius: '9px',
-        width: '30px',
-        height: '30px',
-        borderColor: darkMode ? colorsTheme.blueShade2 : colorsTheme.disabled,
-        borderSize: `2px`,
-      },
     },
     buttonOutlined: {
       background: css`
@@ -283,30 +191,6 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
       fontWeight: '800',
       border: `4px solid ${colorsTheme.black}`,
       boxShadow: `4px 4px 0px ${colorsTheme.black}`,
-    },
-    currencyInput: {
-      background: `${darkMode ? colorsTheme.blueShade : colorsTheme.white}`,
-      color: `var(${UI.COLOR_TEXT})`,
-      border: `2px solid ${darkMode ? colorsTheme.blueShade2 : colorsTheme.disabled}`,
-    },
-    buttonCurrencySelect: {
-      background: colorsTheme.bg1,
-      border: `0`,
-      boxShadow: `0px 4px 8px rgba(0, 0, 0, 0.06);`,
-      color: `var(${UI.COLOR_TEXT})`,
-      colorSelected: `var(${UI.COLOR_TEXT})`,
-    },
-    bgLinearGradient: css`
-      background-image: linear-gradient(270deg, ${colorsTheme.purple} 30%, ${colorsTheme.blue1} 70%);
-    `,
-    footerColor: darkMode ? `var(${UI.COLOR_TEXT})` : colorsTheme.greenShade,
-    networkCard: {
-      background: 'rgb(255 120 74 / 60%)',
-      text: colorsTheme.black,
-    },
-    wallet: {
-      color: `var(${UI.COLOR_TEXT})`,
-      background: darkMode ? colorsTheme.bg3 : colorsTheme.bg1,
     },
   }
 }
@@ -524,7 +408,6 @@ export const ThemedGlobalStyle = createGlobalStyle`
   html {
     background-color: ${({ theme }) =>
       theme.isInjectedWidgetMode ? 'transparent' : `var(${UI.COLOR_CONTAINER_BG_02})`};
-    ${({ theme }) => (theme.isInjectedWidgetMode ? 'transparent' : theme.body.background)};
   }
 
   *, *:after, *:before { box-sizing:border-box; }

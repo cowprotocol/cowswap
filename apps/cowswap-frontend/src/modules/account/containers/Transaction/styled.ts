@@ -230,7 +230,9 @@ export const StatusLabel = styled.div<{
   height: 28px;
   width: 100px;
   ${({ isPending, isPresignaturePending, isCancelling, isCreating, theme }) =>
-    !isCancelling && (isPending || isPresignaturePending || isCreating) && `border:  1px solid ${theme.card.border};`}
+    !isCancelling &&
+    (isPending || isPresignaturePending || isCreating) &&
+    `border:  1px solid ${`${theme.darkMode ? 'rgb(197 218 239 / 10%)' : 'rgb(16 42 72 / 20%)'}`};`}
   color: var(--statusColor);
   position: relative;
   border-radius: 4px;
@@ -348,7 +350,7 @@ export const TransactionInnerDetail = styled.div`
   padding: 20px;
   color: inherit;
   margin: 24px auto 0 0;
-  border: 1px solid ${({ theme }) => theme.card.border};
+  border: 1px solid ${({ theme }) => `${theme.darkMode ? 'rgb(197 218 239 / 10%)' : 'rgb(16 42 72 / 20%)'}`};
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     margin: 24px auto 12px;

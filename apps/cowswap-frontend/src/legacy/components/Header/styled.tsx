@@ -96,7 +96,7 @@ export const HeaderFrame = styled.div<{ showBackground: boolean }>`
   width: 100%;
   top: 0;
   position: relative;
-  border-bottom: ${({ theme }) => theme.header.border};
+  border-bottom: none;
   padding: 1rem;
   z-index: 2;
 

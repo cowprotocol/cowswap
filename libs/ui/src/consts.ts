@@ -19,11 +19,6 @@ export function themeMapper<T extends DefaultTheme>(theme: CowSwapTheme, isInjec
     // Override Theme
     ...baseThemeVariables(darkMode, colorsTheme),
     mediaWidth: mediaWidthTemplates,
-    grids: {
-      sm: 8,
-      md: 12,
-      lg: 24,
-    },
 
     shadow1: darkMode ? '#000' : '#2F80ED',
     flexColumnNoWrap: css`

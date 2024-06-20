@@ -113,89 +113,20 @@ declare module 'styled-components' {
     isInjectedWidgetMode: boolean
     shimmer: FlattenSimpleInterpolation
     colorScrollbar: FlattenSimpleInterpolation
-    textShadow1: string
     boxShadow1: string
     boxShadow2: string
-    boxShadow3: string
     gradient1: string
     gradient2: string
-    input: {
-      bg1: ColorValue
-    }
-    button: {
-      bg1: ColorValue
-      text1: ColorValue
-    }
     util: {
       invertImageForDarkMode: string | null
     }
     cursor?: FlattenSimpleInterpolation
-    body: {
-      background?: FlattenSimpleInterpolation
-    }
     appBody: {
       maxWidth: {
         swap: string
         limit: string
         content: string
       }
-    }
-    transaction: {
-      tokenBackground: string
-      tokenColor: string
-      tokenBorder: string
-    }
-    neumorphism: {
-      boxShadow: FlattenSimpleInterpolation
-    }
-    cowToken: {
-      background: FlattenSimpleInterpolation
-      boxShadow: FlattenSimpleInterpolation
-    }
-    iconGradientBorder: FlattenSimpleInterpolation
-    card: {
-      background: FlattenSimpleInterpolation
-      background2: string
-      background3: FlattenSimpleInterpolation
-      border: string
-      boxShadow: FlattenSimpleInterpolation
-    }
-    header: {
-      border: string
-      menuFlyout: {
-        background?: string
-        color?: string
-        colorHover?: string
-        colorHoverBg?: string
-        closeButtonBg?: string
-        closeButtonColor?: string
-        seperatorColor?: string
-      }
-    }
-    swap: {
-      headerSize: string
-      arrowDown: {
-        background: string
-        color: string
-        colorHover: string
-        borderRadius: string
-        width: string
-        height: string
-        borderColor: string
-        borderSize: string
-      }
-    }
-    currencyInput?: {
-      background?: string
-      border?: string
-      color?: string
-    }
-    buttonCurrencySelect: {
-      background: string
-      boxShadow?: string
-      border?: string
-      color?: string
-      colorSelected?: string
     }
     buttonSizes: Record<ButtonSize, FlattenSimpleInterpolation>
     buttonOutlined: {
@@ -216,16 +147,6 @@ declare module 'styled-components' {
       borderRadius?: string
       boxShadow?: string
     }
-    bgLinearGradient: FlattenSimpleInterpolation
-    footerColor: string
-    networkCard: {
-      background: string
-      text: string
-    }
-    wallet: {
-      background?: string
-      color?: string
-    }
     mediaWidth: {
       upToTiny: ThemedCssFunction<DefaultTheme>
       upToExtraSmall: ThemedCssFunction<DefaultTheme>
@@ -235,7 +156,6 @@ declare module 'styled-components' {
       upToLargeAlt: ThemedCssFunction<DefaultTheme>
       upToExtraLarge: ThemedCssFunction<DefaultTheme>
     }
-    grids: any
 
     // shadows
     shadow1: string

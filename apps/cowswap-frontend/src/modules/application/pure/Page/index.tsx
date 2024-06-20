@@ -19,7 +19,10 @@ export const Title = styled.h1`
   font-size: 32px;
   margin: 24px 0;
   color: inherit;
-  text-shadow: ${({ theme }) => theme.textShadow1};
+  text-shadow: ${({ theme }) =>
+    theme.darkMode
+      ? `0px 0px 26px ${`var(${UI.COLOR_TEXT_OPACITY_10})`}, 0px 0px 28px ${`var(${UI.COLOR_TEXT_OPACITY_25})`}`
+      : 'none'};
   font-weight: 500;
 
   ${({ theme }) => theme.mediaWidth.upToExtraSmall`

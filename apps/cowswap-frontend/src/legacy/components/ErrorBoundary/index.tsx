@@ -37,7 +37,7 @@ const AppWrapper = styled.div`
     right: 0;
     filter: blur(20px);
     backdrop-filter: blur(20px);
-    background-image: ${({ theme }) => theme.body.background};
+    // TODO: check
     transition: 0.5s;
     z-index: -1;
   }

@@ -128,7 +128,8 @@ export const StepsIconWrapper = styled.div`
     left: var(--border-size);
     z-index: -1;
     border-radius: calc(var(--border-radius) - var(--border-size));
-    ${({ theme }) => theme.card.boxShadow};
+    background: linear-gradient(145deg, var(${UI.COLOR_PAPER}), var(${UI.COLOR_PAPER_DARKER}));
+    box-shadow: inset 0 1px 1px 0 hsl(0deg 0% 100% / 10%), 0 10px 40px -20px #000000;
   }
 
   > svg {
@@ -168,7 +169,7 @@ export const StepsWrapper = styled.div`
     ${StepsIconWrapper} {
       &::before {
         content: '';
-        ${({ theme }) => theme.iconGradientBorder};
+        background: conic-gradient(var(${UI.COLOR_PAPER}) 40grad, 80grad, var(${UI.COLOR_PRIMARY}) 360grad);
         display: block;
         width: var(--circle-size);
         padding: 0;
