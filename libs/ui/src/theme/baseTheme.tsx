@@ -3,16 +3,13 @@ import { getContrastText } from '@cowprotocol/ui-utils'
 import { transparentize, lighten, darken } from 'color2k'
 import { createGlobalStyle, css } from 'styled-components/macro'
 
-import { colorsUniswap } from './colorsUniswap'
 import { Colors } from './typings'
 
 import { ButtonSize, UI } from '../enum'
 
 export function colors(darkMode: boolean): Colors {
   return {
-    ...colorsUniswap(darkMode),
-
-    // V3 colors ======================
+    darkMode,
     primary: darkMode ? '#65D9FF' : '#004293',
     background: darkMode ? '#07162D' : '#ECF1F8',
     paper: darkMode ? '#0c264b' : '#FFFFFF',
@@ -94,6 +91,10 @@ export function colors(darkMode: boolean): Colors {
     infoText: darkMode ? '#ffca4a' : '#564D00',
     warningText: '#564D00',
     errorText: '#b91515',
+
+    green1: darkMode ? '#27AE60' : '#007D35',
+    yellow2: '#FF8F00',
+    yellow3: '#F3B71E',
   }
 }
 

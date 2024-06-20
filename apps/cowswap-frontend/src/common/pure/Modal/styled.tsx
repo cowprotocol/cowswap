@@ -45,7 +45,6 @@ export const HoverText = styled.div`
 `
 
 export const ContentWrapper = styled.div`
-  /* background-color: ${({ theme }) => theme.bg0}; */
   background-color: var(${UI.COLOR_PAPER});
   padding: 0 1rem 1rem 1rem;
   border-bottom-left-radius: 20px;
@@ -64,14 +63,14 @@ export const StyledDialogOverlay = styled(AnimatedDialogOverlay)`
     align-items: center;
     justify-content: center;
 
-    background-color: ${({ theme }) => theme.modalBG};
+    background-color: ${({ theme }) => (theme.darkMode ? 'rgba(0,0,0,.425)' : 'rgba(0,0,0,0.3)')};
     backdrop-filter: blur(5px);
   }
 `
 
 const AnimatedDialogContent = animated(DialogContent)
 // destructure to not pass custom props to Dialog DOM element
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+
 export const StyledDialogContent = styled(({ ...rest }) => <AnimatedDialogContent {...rest} />).attrs<{
   $mobile: boolean
 }>({

@@ -3,62 +3,39 @@ import { CowSwapTheme } from '../types'
 
 type ColorValue = string
 
-interface ColorsUniswap {
+// Override colors
+export interface Colors {
   darkMode: boolean
 
-  // V3 =======================
   primary: ColorValue
-  secondary: ColorValue
   background: ColorValue
   paper: ColorValue
-
   text: ColorValue
   disabledText: ColorValue
-
   error: ColorValue
   warning: ColorValue
   info: ColorValue
   success: ColorValue
-  // ===========================
-
-  // base
   white: ColorValue
   black: ColorValue
-
-  // text
   text1: ColorValue
   text2: ColorValue
   text3: ColorValue
   text4: ColorValue
-
-  // backgrounds / greys
-  bg0: ColorValue
   bg1: ColorValue
   bg2: ColorValue
   bg3: ColorValue
   bg4: ColorValue
   bg5: ColorValue
-
-  modalBG: ColorValue
   advancedBG: ColorValue
-
   primary1: ColorValue
-  primary2: ColorValue
   primary3: ColorValue
   primary4: ColorValue
   primary5: ColorValue
-
-  // other
-  red1: ColorValue
   green1: ColorValue
   yellow2: ColorValue
   yellow3: ColorValue
   blue1: ColorValue
-  blue2: ColorValue
-}
-
-// Override colors
-export interface Colors extends ColorsUniswap {
   bg8: ColorValue
   purple: ColorValue
   yellow: ColorValue
@@ -66,19 +43,15 @@ export interface Colors extends ColorsUniswap {
   blueShade3: ColorValue
   blue2: ColorValue
   orange: ColorValue
-  success: ColorValue
   danger: ColorValue
   pending: ColorValue
   attention: ColorValue
   border: ColorValue
   border2: ColorValue
   disabled: ColorValue
-  info: ColorValue
   information: ColorValue
-  warning: ColorValue
   alert: ColorValue
   alert2: ColorValue
-  error: ColorValue
   infoText: ColorValue
   warningText: ColorValue
   errorText: ColorValue
