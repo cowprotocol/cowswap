@@ -29,7 +29,6 @@ export function colors(darkMode: boolean): Colors {
     // =====================================================
 
     text: darkMode ? '#DEE3E6' : '#00234E',
-    secondaryText: darkMode ? '#86B2DC' : '#506B93',
     disabledText: darkMode ? '#86B2DC' : '#506B93',
 
     danger: darkMode ? '#f44336' : '#D41300',
@@ -76,23 +75,16 @@ export function colors(darkMode: boolean): Colors {
     // ****** backgrounds ******
     bg4: darkMode ? '#021E34' : '#ffffff',
     bg5: darkMode ? '#1d4373' : '#D5E9F0',
-    bg6: darkMode ? '#163861' : '#b0dfee',
-    bg7: darkMode ? '#1F4471' : '#CEE7EF',
     bg8: darkMode ? '#021E34' : '#152943',
 
     // ****** specialty colors ******
     advancedBG: darkMode ? '#163861' : '#d5e8f0',
-
-    // ****** secondary colors ******
-    secondary1: darkMode ? '#2172E5' : '#8958FF',
-    secondary3: darkMode ? '#17000b26' : 'rgba(137,88,255,0.6)',
 
     // ****** other ******
     blue1: '#3F77FF',
     blue2: darkMode ? '#a3beff' : '#0c40bf',
     purple: '#8958FF',
     yellow: '#fff6dc',
-    yellow1: darkMode ? '#ebd6a2' : '#ffc107',
     orange: '#FF784A',
     greenShade: '#376c57',
     blueShade: '#0f2644',

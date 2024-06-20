@@ -13,7 +13,6 @@ interface ColorsUniswap {
   paper: ColorValue
 
   text: ColorValue
-  secondaryText: ColorValue
   disabledText: ColorValue
 
   error: ColorValue
@@ -31,8 +30,6 @@ interface ColorsUniswap {
   text2: ColorValue
   text3: ColorValue
   text4: ColorValue
-  text5: ColorValue
-  text6: ColorValue
 
   // backgrounds / greys
   bg0: ColorValue
@@ -41,8 +38,6 @@ interface ColorsUniswap {
   bg3: ColorValue
   bg4: ColorValue
   bg5: ColorValue
-  bg6: ColorValue
-  bg7: ColorValue
 
   modalBG: ColorValue
   advancedBG: ColorValue
@@ -53,22 +48,13 @@ interface ColorsUniswap {
   primary4: ColorValue
   primary5: ColorValue
 
-  // pinks
-  secondary1: ColorValue
-  secondary2: ColorValue
-  secondary3: ColorValue
-
   // other
   red1: ColorValue
-  red2: ColorValue
-  red3: ColorValue
   green1: ColorValue
-  yellow1: ColorValue
   yellow2: ColorValue
   yellow3: ColorValue
   blue1: ColorValue
   blue2: ColorValue
-  blue4: ColorValue
 }
 
 // Override colors

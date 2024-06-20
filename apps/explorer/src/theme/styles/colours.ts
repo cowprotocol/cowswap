@@ -34,8 +34,6 @@ export interface Colors {
   white: Color
   black: Color
   red1: Color
-  red2: Color
-  red3?: Color
   red4: Color
   grey: Color
   greyShade: Color
@@ -45,14 +43,12 @@ export interface Colors {
   green1: Color
   green2: Color
   green3?: Color
-  yellow1: Color
   yellow2: Color
   yellow3?: Color
   yellow4: Color
   blue1: Color
   blue2: Color
   blue3?: Color
-  blue4: Color
   orange: Color
   orangeOpacity: Color
   orange1: Color
@@ -63,18 +59,14 @@ export const BASE_COLOURS = {
   white: '#FFF',
   black: '#000',
   red1: '#FF305B',
-  red2: '#FF6871',
-  red3: '#F82D3A',
   red4: '#d83265',
   green1: '#00C46E',
   green2: '#09371d',
   green3: '#a9ffcd',
-  yellow1: '#f1851d',
   yellow2: '#f1851d',
   yellow4: '#f6c343',
   blue1: '#2172E5',
   blue2: '#3F77FF',
-  blue4: '#62688F',
   orange1: '#D96D49',
 }
 
