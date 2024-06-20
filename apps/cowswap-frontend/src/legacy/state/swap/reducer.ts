@@ -98,7 +98,7 @@ export default createReducer<SwapState>(initialState, (builder) =>
         [Field.OUTPUT]: {
           currencyId: outputCurrencyId ?? null,
         },
-        recipient,
+        ...(recipient ? { recipient } : undefined),
       }
     })
     .addCase(selectCurrency, (state, { payload: { currencyId, field } }) => {
