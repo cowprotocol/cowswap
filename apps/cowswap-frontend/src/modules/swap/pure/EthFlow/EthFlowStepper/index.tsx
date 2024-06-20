@@ -131,12 +131,12 @@ export const Progress = styled.div<ProgressProps>`
         : `var(${UI.COLOR_TEXT_OPACITY_25})`};
     border-radius: var(--height);
 
-    ${({ theme }) => theme.mediaWidth.upToSmall<ProgressProps>`
+    ${Media.upToSmall()} {
       --width: 3px;
       width: var(--width);
       border-radius: var(--width);
       height: ${({ value }) => (value ? `${value}%` : '0%')};
-    `}
+    }
   }
 `
 

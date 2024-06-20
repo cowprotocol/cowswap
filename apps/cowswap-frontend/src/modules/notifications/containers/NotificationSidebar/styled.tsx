@@ -92,11 +92,11 @@ export const SidebarHeader = styled.div<SidebarHeaderProps>`
   margin: 0;
   z-index: 10;
 
-  ${({ theme, isArrowNav }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     flex-flow: row-reverse;
-    flex-flow: ${isArrowNav ? 'row' : 'row-reverse'};
+    flex-flow: ${({ isArrowNav }) => (isArrowNav ? 'row' : 'row-reverse')};
     padding: 16px;
-  `};
+  }
 
   > h3 {
     font-size: 18px;
@@ -111,8 +111,8 @@ export const SidebarHeader = styled.div<SidebarHeaderProps>`
     gap: 0;
     color: var(${UI.COLOR_TEXT});
 
-    ${({ theme, isArrowNav }) => theme.mediaWidth.upToSmall`
-      flex-flow: ${isArrowNav ? 'row' : 'row-reverse'};
-    `};
+    ${Media.upToSmall()} {
+      flex-flow: ${({ isArrowNav }) => (isArrowNav ? 'row' : 'row-reverse')};
+    }
   }
 `

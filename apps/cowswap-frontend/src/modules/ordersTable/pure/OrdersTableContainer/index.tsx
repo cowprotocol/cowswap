@@ -9,7 +9,7 @@ import type { CowSwapWidgetAppParams } from '@cowprotocol/widget-lib'
 
 import { Trans } from '@lingui/macro'
 import SVG from 'react-inlinesvg'
-import styled from 'styled-components/macro'
+import styled, { css } from 'styled-components/macro'
 
 import { Web3Status } from 'modules/wallet/containers/Web3Status'
 
@@ -143,13 +143,15 @@ const TabsContainer = styled.div<{ withSingleChild: boolean }>`
   align-items: center;
   justify-content: flex-end;
 
-  ${({ theme, withSingleChild }) =>
-    !withSingleChild &&
-    theme.mediaWidth.upToMedium`
-      flex-direction: column-reverse;
-      align-items: end;
-      gap: 10px;
-  `};
+  ${Media.upToMedium()} {
+    ${({ withSingleChild }) =>
+      !withSingleChild &&
+      css`
+        flex-direction: column-reverse;
+        align-items: end;
+        gap: 10px;
+      `};
+  }
 `
 
 const ExternalLinkStyled = styled(ExternalLink)`

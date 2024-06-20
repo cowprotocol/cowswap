@@ -171,10 +171,9 @@ export const Wrapper = styled.div<{ isMobileMenuOpen: boolean }>`
       gap: 10px;
     }
 
-    ${({ theme, isMobileMenuOpen }) => theme.mediaWidth.upToLarge`
-
-      ${
-        isMobileMenuOpen &&
+    ${Media.upToLarge()} {
+      ${({ isMobileMenuOpen }) => css`
+        ${isMobileMenuOpen &&
         css`
           position: absolute;
           top: 0;
@@ -191,9 +190,9 @@ export const Wrapper = styled.div<{ isMobileMenuOpen: boolean }>`
             left: 0;
             z-index: 101;
           }
-        `
-      }
-    `}
+        `}
+      `}
+    }
   }
 
   ${StyledMenuButton} {
@@ -217,14 +216,13 @@ export const Title = styled(TitleMod)<{ isMobileMenuOpen: boolean }>`
   text-decoration: none;
   color: inherit;
 
-  ${({ theme, isMobileMenuOpen }) => theme.mediaWidth.upToLarge`
-    ${
+  ${Media.upToLarge()} {
+    ${({ isMobileMenuOpen }) =>
       isMobileMenuOpen &&
       css`
         z-index: 101;
-      `
-    }
-  `};
+      `};
+  }
 `
 
 export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>`
@@ -338,8 +336,8 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
     }
   }
 
-  ${({ theme, isMobileMenuOpen }) => theme.mediaWidth.upToLarge`
-    display: ${isMobileMenuOpen ? 'flex' : 'none'};
+  ${Media.upToLarge()} {
+    display: ${({ isMobileMenuOpen }) => (isMobileMenuOpen ? 'flex' : 'none')};
     width: 100%;
     height: 100%;
     position: fixed;
@@ -356,37 +354,6 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
     flex-flow: column nowrap;
     justify-content: flex-start;
     align-items: flex-start;
-`};
-`
-
-export const TwitterLink = styled(StyledMenuButton)`
-  > a {
-    ${({ theme }) => theme.cursor};
-    padding: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-    width: 100%;
-  }
-
-  > a > svg {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    border: 0;
-    display: flex;
-    margin: 0;
-    padding: 0;
-    stroke: transparent;
-  }
-
-  > a > svg > path {
-    fill: var(${UI.COLOR_TEXT});
-  }
-
-  > a:hover > svg > path {
-    fill: var(${UI.COLOR_TEXT});
   }
 `
 
@@ -402,15 +369,14 @@ export const LogoImage = styled.div<{ isMobileMenuOpen?: boolean }>`
     width: auto;
   }
 
-  ${({ theme, isMobileMenuOpen }) => theme.mediaWidth.upToLarge`
-    ${
+  ${Media.upToLarge()} {
+    ${({ isMobileMenuOpen }) =>
       isMobileMenuOpen &&
       css`
         height: 34px;
         width: auto;
-      `
-    }
-  `}
+      `}
+  }
 
   > svg {
     width: inherit;

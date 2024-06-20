@@ -1,7 +1,7 @@
 import { Media, UI } from '@cowprotocol/ui'
 
 import { transparentize } from 'color2k'
-import styled from 'styled-components/macro'
+import styled, { css } from 'styled-components/macro'
 
 import { RateWrapper } from 'common/pure/RateInfo'
 
@@ -21,13 +21,15 @@ export const TableHeader = styled.div<{ isOpenOrdersTab: boolean; isRowSelectabl
   border-bottom: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
   padding: 0 12px;
 
-  ${({ theme, isRowSelectable, isOpenOrdersTab }) => theme.mediaWidth.upToLargeAlt`
-  grid-template-columns: ${`${
-    isRowSelectable && isOpenOrdersTab ? 'var(--checkboxSize) minmax(200px,2fr)' : 'minmax(200px,2fr)'
-  } repeat(2,minmax(110px,2fr)) ${
-    isOpenOrdersTab ? 'minmax(140px,2.2fr) minmax(100px,1fr)' : ''
-  } minmax(50px,1fr) 108px 24px`};
-  `}
+  ${Media.upToLargeAlt()} {
+    ${({ isRowSelectable, isOpenOrdersTab }) => css`
+      grid-template-columns: ${`${
+        isRowSelectable && isOpenOrdersTab ? 'var(--checkboxSize) minmax(200px,2fr)' : 'minmax(200px,2fr)'
+      } repeat(2,minmax(110px,2fr)) ${
+        isOpenOrdersTab ? 'minmax(140px,2.2fr) minmax(100px,1fr)' : ''
+      } minmax(50px,1fr) 108px 24px`};
+    `}
+  }
 
   ${Media.upToSmall()} {
     --checkboxSize: 24px;
@@ -145,9 +147,9 @@ export const TableRowCheckbox = styled.input`
     top: calc(50% + 3px);
     transform: none;
 
-    ${({ theme }) => theme.mediaWidth.upToSmall`
+    ${Media.upToSmall()} {
       top: calc(50% + 4px);
-    `}
+    }
   }
 
   &[disabled],
