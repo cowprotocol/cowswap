@@ -1,12 +1,10 @@
-import React from 'react'
-
 // also exported from '@storybook/react' if you can deal with breaking changes in 6.1
 import { OrderKind } from '@cowprotocol/cow-sdk'
 
-import { Story, Meta } from '@storybook/react/types-6-0'
+import { Meta, Story } from '@storybook/react/types-6-0'
 import BigNumber from 'bignumber.js'
 import { add, sub } from 'date-fns'
-import { GlobalStyles, ThemeToggler, Router, NetworkDecorator } from 'storybook/decorators'
+import { GlobalStyles, NetworkDecorator, Router, ThemeToggler } from 'storybook/decorators'
 
 import { Order } from 'api/operator'
 
@@ -25,7 +23,6 @@ const orderBuy: Order = {
   kind: OrderKind.BUY,
   buyToken: WETH,
   sellToken: TUSD,
-  shortId: 'bdef89ac',
   buyAmount: new BigNumber('1500000000000000000'), // 1.5WETH
   sellAmount: new BigNumber('7500000000000000000000'), // 7500 TUSD
   creationDate: sub(new Date(), { hours: 1 }),

@@ -10,6 +10,7 @@ export interface TradeQuoteState {
   response: OrderQuoteResponse | null
   error: QuoteApiError | null
   isLoading: boolean
+  hasParamsChanged: boolean
   quoteParams: LegacyFeeQuoteParams | null
   localQuoteTimestamp: number | null
 }
@@ -18,6 +19,7 @@ export const DEFAULT_TRADE_QUOTE_STATE: TradeQuoteState = {
   response: null,
   error: null,
   isLoading: false,
+  hasParamsChanged: false,
   quoteParams: null,
   localQuoteTimestamp: null,
 }

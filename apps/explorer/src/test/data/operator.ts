@@ -1,4 +1,4 @@
-import { OrderClass, OrderStatus, OrderKind, SigningScheme } from '@cowprotocol/cow-sdk'
+import { OrderClass, OrderKind, OrderStatus, SigningScheme } from '@cowprotocol/cow-sdk'
 
 import BigNumber from 'bignumber.js'
 
@@ -39,7 +39,6 @@ export const RAW_ORDER = {
 export const RICH_ORDER: Order = {
   ...RAW_ORDER,
   receiver: RAW_ORDER.owner,
-  shortId: 'adef89ad',
   creationDate: new Date(RAW_ORDER.creationDate),
   expirationDate: new Date(RAW_ORDER.validTo * 1000),
   buyTokenAddress: RAW_ORDER.buyToken,
