@@ -10,7 +10,7 @@ import {
   useAddUserToken,
   useAllListsList,
   useAllTokens,
-  useFavouriteTokens,
+  useFavoriteTokens,
   useUnsupportedTokens,
   useUserAddedTokens,
 } from '@cowprotocol/tokens'
@@ -47,7 +47,7 @@ export function SelectTokenWidget() {
   const importTokenCallback = useAddUserToken()
 
   const allTokens = useAllTokens()
-  const favouriteTokens = useFavouriteTokens()
+  const favoriteTokens = useFavoriteTokens()
   const userAddedTokens = useUserAddedTokens()
   const allTokenLists = useAllListsList()
   const balancesState = useTokensBalances()
@@ -138,14 +138,14 @@ export function SelectTokenWidget() {
             unsupportedTokens={unsupportedTokens}
             selectedToken={selectedToken}
             allTokens={allTokens}
-            favouriteTokens={favouriteTokens}
+            favoriteTokens={favoriteTokens}
             balancesState={balancesState}
             permitCompatibleTokens={permitCompatibleTokens}
             onSelectToken={onSelectToken}
             onInputPressEnter={onInputPressEnter}
             onDismiss={onDismiss}
             onOpenManageWidget={() => setIsManageWidgetOpen(true)}
-            hideFavouriteTokensTooltip={isInjectedWidgetMode}
+            hideFavoriteTokensTooltip={isInjectedWidgetMode}
           ></SelectTokenModal>
         )
       })()}

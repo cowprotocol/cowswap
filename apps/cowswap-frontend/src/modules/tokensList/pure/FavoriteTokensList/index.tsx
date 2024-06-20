@@ -4,7 +4,7 @@ import { HelpTooltip, TokenSymbol } from '@cowprotocol/ui'
 
 import * as styledEl from './styled'
 
-export interface FavouriteTokensListProps {
+export interface FavoriteTokensListProps {
   tokens: TokenWithLogo[]
   hideTooltip?: boolean
   selectedToken?: string
@@ -12,14 +12,14 @@ export interface FavouriteTokensListProps {
   onSelectToken(token: TokenWithLogo): void
 }
 
-export function FavouriteTokensList(props: FavouriteTokensListProps) {
+export function FavoriteTokensList(props: FavoriteTokensListProps) {
   const { tokens, hideTooltip, selectedToken, onSelectToken } = props
 
   return (
     <div>
       <styledEl.Header>
-        <h4>Favourite tokens</h4>
-        {!hideTooltip && <HelpTooltip text="Your favourite saved tokens. Edit this list in your account page." />}
+        <h4>Favorite tokens</h4>
+        {!hideTooltip && <HelpTooltip text="Your favorite saved tokens. Edit this list in your account page." />}
       </styledEl.Header>
       <styledEl.List>
         {tokens.map((token) => {
