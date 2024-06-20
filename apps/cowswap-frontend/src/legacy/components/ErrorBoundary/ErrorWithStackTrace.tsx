@@ -3,7 +3,7 @@ import React from 'react'
 import CowError from '@cowprotocol/assets/cow-swap/CowError.png'
 import { CODE_LINK, DISCORD_LINK } from '@cowprotocol/common-const'
 import { userAgent } from '@cowprotocol/common-utils'
-import { AutoRow, MEDIA_WIDTHS, ExternalLink, UI } from '@cowprotocol/ui'
+import { AutoRow, MEDIA_WIDTHS, ExternalLink, UI, Media } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
@@ -46,11 +46,10 @@ const CodeBlockWrapper = styled.div`
   padding: 16px;
   color: inherit;
 
-  /* MOD */
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     padding: 12px;
     width: auto;
-  `};
+  }
 `
 
 const LinkWrapper = styled.div`

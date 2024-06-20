@@ -1,5 +1,5 @@
 import CowProtocolLogo from '@cowprotocol/assets/cow-swap/cowprotocol.svg'
-import { ExternalLink } from '@cowprotocol/ui'
+import { ExternalLink, Media } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 
 import { animated } from '@react-spring/web'
@@ -173,11 +173,11 @@ export const StatusGraph = styled.div`
   min-height: 100px;
   width: 100%;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     display: flex;
     align-items: center;
     flex-direction: column;
-  `};
+  }
 
   > img {
     margin: 0 10px 0 0;

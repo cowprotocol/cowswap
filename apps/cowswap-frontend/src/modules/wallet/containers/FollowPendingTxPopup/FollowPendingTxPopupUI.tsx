@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { Command } from '@cowprotocol/types'
-import { Tooltip, TooltipProps, UI } from '@cowprotocol/ui'
+import { Media, Tooltip, TooltipProps, UI } from '@cowprotocol/ui'
 
 import { X } from 'react-feather'
 import { Text } from 'rebass'
@@ -79,10 +79,10 @@ const AutoColumnWrapper = styled(AutoColumn)`
   * input {
     margin-left: 0;
   }
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     max-width: 9rem;
     min-width: auto;
-  `};
+  }
 `
 
 const StyledClose = styled(IconClose)`
@@ -124,15 +124,16 @@ export function FollowPendingTxPopupUI({
   ...rest
 }: FollowingTxPopupProps): JSX.Element {
   return (
-    <TooltipWrapper 
-      show={show} 
-      placement="left" 
-      wrapInContainer 
-      content={<PopupContent onClose={onClose} onCheck={onCheck} />} 
-      {...rest}>
-        <div onClick={onClose} onKeyDown={onClose} role="button" tabIndex={0}>
-          {children}
-        </div>
+    <TooltipWrapper
+      show={show}
+      placement="left"
+      wrapInContainer
+      content={<PopupContent onClose={onClose} onCheck={onCheck} />}
+      {...rest}
+    >
+      <div onClick={onClose} onKeyDown={onClose} role="button" tabIndex={0}>
+        {children}
+      </div>
     </TooltipWrapper>
   )
 }

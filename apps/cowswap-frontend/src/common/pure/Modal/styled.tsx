@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { UI } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 
 import { DialogContent, DialogOverlay } from '@reach/dialog'
 import { animated } from '@react-spring/web'
@@ -13,9 +13,9 @@ export const HeaderRow = styled.div`
   padding: 1rem 1rem;
   font-weight: 600;
   color: ${(props) => (props.color === 'blue' ? ({ theme }) => theme.primary1 : 'inherit')};
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${Media.upToMedium()} {
     padding: 1rem;
-  `};
+  }
 `
 
 export const CloseIcon = styled.div`
@@ -49,7 +49,9 @@ export const ContentWrapper = styled.div`
   padding: 0 1rem 1rem 1rem;
   border-bottom-left-radius: 20px;
   border-bottom-right-radius: 20px;
-  ${({ theme }) => theme.mediaWidth.upToMedium`padding: 0 1rem 1rem 1rem`};
+  ${Media.upToMedium()} {
+    padding: 0 1rem 1rem 1rem;
+  }
 `
 
 const AnimatedDialogOverlay = animated(DialogOverlay)

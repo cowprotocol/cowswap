@@ -1,5 +1,5 @@
 import { TokenLogoWrapper } from '@cowprotocol/tokens'
-import { FiatAmount, RowFixed } from '@cowprotocol/ui'
+import { FiatAmount, Media, RowFixed } from '@cowprotocol/ui'
 import { ExternalLink, StyledLink } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 
@@ -21,9 +21,9 @@ export const TransactionWrapper = styled.div`
   border: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
   position: relative;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     flex-flow: column wrap;
-  `};
+  }
 
   ${RowFixed} {
     width: 100%;
@@ -47,11 +47,11 @@ export const Summary = styled.div`
   grid-template-rows: max-content;
   color: inherit;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     display: flex;
     grid-template-columns: initial;
     grid-template-rows: initial;
-  `};
+  }
 
   > span {
     display: flex;
@@ -129,11 +129,11 @@ export const SummaryInnerRow = styled.div<{ isExpired?: boolean; isCancelled?: b
   margin: 0 0 4px;
   color: inherit;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     grid-template-columns: 1fr;
     grid-template-rows: max-content max-content;
     margin: 0 0 16px 0;
-  `};
+  }
 
   > b,
   > i {
@@ -157,10 +157,10 @@ export const SummaryInnerRow = styled.div<{ isExpired?: boolean; isCancelled?: b
     white-space: break-spaces;
     text-decoration: ${({ isExpired, isCancelled }) => (isExpired || isCancelled) && 'line-through'};
 
-    ${({ theme }) => theme.mediaWidth.upToSmall`
+    ${Media.upToSmall()} {
       font-weight: 600;
       margin: 6px 0 0;
-    `};
+    }
 
     &.cancelled {
       text-decoration: line-through;
@@ -185,9 +185,9 @@ export const TransactionStatusText = styled.div`
   flex-flow: column wrap;
   align-items: flex-start;
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${Media.upToMedium()} {
     margin: 0 auto 0 0;
-  `};
+  }
 
   &.copied,
   &:hover {
@@ -330,13 +330,13 @@ export const TransactionState = styled(OldTransactionState).attrs(
   font-size: 14px;
   margin: 6px 0 0;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     margin: 18px auto 0;
     position: absolute;
     top: 0;
     right: 16px;
     width: auto;
-  `};
+  }
 
   ${RowFixed} {
     width: 100%;

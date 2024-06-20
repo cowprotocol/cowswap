@@ -1,6 +1,6 @@
 import { PropsWithChildren } from 'react'
 
-import { Row, RowFixed } from '@cowprotocol/ui'
+import { Media, Row, RowFixed } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 
 import useScrollPosition from '@react-hook/window-scroll'
@@ -21,17 +21,17 @@ export const TitleMod = styled.a`
     cursor: pointer;
   }
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     justify-self: center;
-  `};
+  }
 `
 
 export const HeaderLinksMod = styled(Row)`
   justify-content: center;
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${Media.upToMedium()} {
     display: none;
-  `};
+  }
 `
 
 export const StyledNavLinkUni = styled(NavLink)`
@@ -100,14 +100,14 @@ export const HeaderFrame = styled.div<{ showBackground: boolean }>`
   padding: 1rem;
   z-index: 2;
 
-  ${({ theme }) => theme.mediaWidth.upToLarge`
+  ${Media.upToLarge()} {
     grid-template-columns: 48px 1fr 1fr;
-  `};
+  }
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${Media.upToMedium()} {
     grid-template-columns: 1fr 1fr;
     position: relative;
-  `};
+  }
 
   ${({ theme }) => theme.mediaWidth.upToExtraSmall`
     padding: 0.5rem 1rem;
@@ -167,9 +167,9 @@ export const Wrapper = styled.div<{ isMobileMenuOpen: boolean }>`
     padding: 16px;
     gap: 16px;
 
-    ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+    ${Media.upToExtraSmall()} {
       gap: 10px;
-    `};
+    }
 
     ${({ theme, isMobileMenuOpen }) => theme.mediaWidth.upToLarge`
 
@@ -269,10 +269,10 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
       background: var(${UI.COLOR_PRIMARY});
       color: var(${UI.COLOR_BUTTON_TEXT});
 
-      ${({ theme }) => theme.mediaWidth.upToLarge`
+      ${Media.upToLarge()} {
         background: transparent;
         color: inherit;
-      `};
+      }
 
       > svg > path {
         fill: currentColor;
@@ -314,11 +314,11 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
   }
 
   ${MenuContent} {
-    ${({ theme }) => theme.mediaWidth.upToLarge`
+    ${Media.upToLarge()} {
       padding: 8px 10px 28px;
       gap: 36px;
       margin: 0;
-    `};
+    }
   }
 
   ${MenuSection} {
@@ -333,9 +333,9 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
   }
 
   ${MenuTitle} {
-    ${({ theme }) => theme.mediaWidth.upToLarge`
+    ${Media.upToLarge()} {
       display: none;
-    `};
+    }
   }
 
   ${({ theme, isMobileMenuOpen }) => theme.mediaWidth.upToLarge`

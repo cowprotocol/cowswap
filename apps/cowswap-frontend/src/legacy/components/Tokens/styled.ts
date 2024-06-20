@@ -1,5 +1,5 @@
 import { TokenLogo } from '@cowprotocol/tokens'
-import { BaseButton } from '@cowprotocol/ui'
+import { BaseButton, Media } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 
 import { transparentize } from 'color2k'
@@ -104,9 +104,9 @@ export const PaginationText = styled.span`
   font-size: 13px;
   white-space: nowrap;
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${Media.upToMedium()} {
     font-size: 15px;
-  `};
+  }
 `
 
 export const ArrowButton = styled.button`
@@ -120,9 +120,9 @@ export const Arrow = styled.div<{ faded: boolean }>`
   padding: 0 10px;
   user-select: none;
 
-  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+  ${Media.upToExtraSmall()} {
     padding: 5px;
-  `};
+  }
 
   ${({ faded }) =>
     !faded &&
@@ -213,9 +213,9 @@ export const TokenText = styled.div`
     display: inline-block;
   }
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     font-size: 13px;
-  `};
+  }
 `
 
 export const Cell = styled.div`
@@ -343,9 +343,9 @@ export const Table = styled.div`
   transition: background var(${UI.ANIMATION_DURATION}) ease-in-out;
   ${({ theme }) => theme.colorScrollbar};
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     min-height: 250px;
-  `};
+  }
 `
 
 export const ApproveLabel = styled.span`
@@ -387,11 +387,11 @@ export const NoResults = styled.div`
   align-items: center;
   color: inherit;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     min-height: 200px;
     margin: 0 auto 0 0;
     overflow-x: auto;
-  `};
+  }
 
   > h3 {
     font-size: 24px;
@@ -399,10 +399,10 @@ export const NoResults = styled.div`
     margin: 0 auto;
     color: inherit;
 
-    ${({ theme }) => theme.mediaWidth.upToSmall`
+    ${Media.upToSmall()} {
       font-size: 16px;
       text-align: left;
       margin: 16px;
-    `};
+    }
   }
 `

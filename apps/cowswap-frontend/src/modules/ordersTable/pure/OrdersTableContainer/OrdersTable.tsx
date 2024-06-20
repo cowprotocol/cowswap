@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import iconOrderExecution from '@cowprotocol/assets/cow-swap/orderExecution.svg'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { QuestionTooltipIconWrapper, UI } from '@cowprotocol/ui'
+import { Media, QuestionTooltipIconWrapper, UI } from '@cowprotocol/ui'
 import { HelpTooltip } from '@cowprotocol/ui'
 import { Currency, Price } from '@uniswap/sdk-core'
 
@@ -10,7 +10,6 @@ import { Trans } from '@lingui/macro'
 import { X } from 'react-feather'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
-
 
 import { PendingOrdersPrices } from 'modules/orders/state/pendingOrdersPricesAtom'
 import { SpotPricesKeyParams } from 'modules/orders/state/spotPricesAtom'
@@ -122,10 +121,10 @@ const Rows = styled.div`
   display: block;
   ${({ theme }) => theme.colorScrollbar};
 
-  ${({ theme }) => theme.mediaWidth.upToLargeAlt`
-   display: flex;
-   flex-flow: column wrap;
-  `};
+  ${Media.upToLargeAlt()} {
+    display: flex;
+    flex-flow: column wrap;
+  }
 `
 
 const StyledInvertRateControl = styled(InvertRateControl)`

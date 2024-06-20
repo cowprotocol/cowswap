@@ -1,6 +1,6 @@
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
-import { TokenAmount, UI } from '@cowprotocol/ui'
+import { Media, TokenAmount, UI } from '@cowprotocol/ui'
 
 import { transparentize } from 'color2k'
 import styled, { css } from 'styled-components/macro'
@@ -33,17 +33,17 @@ export const Wrapper = styled.div<{ isLoading: boolean }>`
     background: var(${UI.COLOR_PAPER_DARKER});
   `};
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     right: 56px;
-  `};
+  }
 
-  ${({ theme }) => theme.mediaWidth.upToTiny`
+  ${Media.upToTiny()} {
     position: relative;
     right: initial;
     margin: 0 auto 0 0;
     height: 36px;
     padding: 6px;
-  `};
+  }
 
   &:hover {
     border: 2px solid ${({ theme }) => transparentize(theme.text, 0.7)};
@@ -71,14 +71,14 @@ export const Wrapper = styled.div<{ isLoading: boolean }>`
     font-weight: inherit;
     white-space: nowrap;
 
-    ${({ theme }) => theme.mediaWidth.upToMedium`
+    ${Media.upToMedium()} {
       overflow: hidden;
       text-overflow: ellipsis;
-    `};
+    }
 
-    ${({ theme }) => theme.mediaWidth.upToSmall`
+    ${Media.upToSmall()} {
       max-width: 120px;
-    `};
+    }
   }
 `
 interface CowBalanceButtonProps {

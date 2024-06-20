@@ -1,4 +1,4 @@
-import { UI } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import { Link } from 'react-router-dom'
@@ -35,9 +35,9 @@ const TabButton = styled(Link)<{ active: string }>`
   cursor: pointer;
   transition: background var(${UI.ANIMATION_DURATION}) ease-in-out, color var(${UI.ANIMATION_DURATION}) ease-in-out;
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${Media.upToMedium()} {
     text-align: center;
-  `};
+  }
 
   &:hover {
     background: ${({ active }) =>
