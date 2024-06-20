@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 import { getEtherscanLink, getWrappedToken } from '@cowprotocol/common-utils'
 import { TokenLogo, useIsUnsupportedToken } from '@cowprotocol/tokens'
-import { AutoRow, ButtonEmpty, ExternalLink, RowBetween } from '@cowprotocol/ui'
+import { AutoRow, ButtonEmpty, ExternalLink, Media, RowBetween } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency } from '@uniswap/sdk-core'
 
@@ -42,9 +42,9 @@ export const AddressText = styled(ThemedText.Blue)`
   font-size: 12px;
   word-break: break-all;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     font-size: 10px;
-`}
+  }
 `
 
 export interface UnsupportedCurrencyFooterParams {

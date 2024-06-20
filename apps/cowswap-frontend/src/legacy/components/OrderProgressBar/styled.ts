@@ -21,13 +21,13 @@ export const ProgressBarWrapper = animated(styled.div`
   background-color: var(${UI.COLOR_PAPER_DARKER});
   transition: height 0.2s ease;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     padding: 18px;
     margin: 24px auto 12px;
     width: 100%;
     max-width: 100%;
     grid-column: 1 / -1;
-  `};
+  }
 `)
 
 export const ProgressBarInnerWrapper = styled.div`
@@ -150,7 +150,7 @@ export const StatusMsgContainer = styled.div`
   align-items: flex-start;
   margin: 20px auto 0;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     gap: 0.2rem;
     display: flex;
     align-items: center;
@@ -159,7 +159,7 @@ export const StatusMsgContainer = styled.div`
     svg {
       flex-shrink: 0;
     }
-  `};
+  }
 `
 
 export const StatusGraph = styled.div`
@@ -202,9 +202,9 @@ export const StatusMsg = styled.p`
   color: inherit;
   margin: 0;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     font-size: 0.835rem;
-  `};
+  }
 
   > button {
     color: inherit;

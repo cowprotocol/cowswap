@@ -42,13 +42,13 @@ const TooltipWrapper = styled(Tooltip)`
     max-width: 370px;
   }
 
-  ${({ theme }) => theme.mediaWidth.upToLarge`
+  ${Media.upToLarge()} {
     padding-right: 0.8rem;
-  `};
-  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+  }
+  ${Media.upToExtraSmall()} {
     padding-left: 0;
     padding-right: 0.5rem;
-  `};
+  }
 `
 
 const BodyWrapper = styled(AutoColumn)`
@@ -61,17 +61,17 @@ const BodyWrapper = styled(AutoColumn)`
     font-size: 18px;
   }
 
-  ${({ theme }) => theme.mediaWidth.upToLarge`
+  ${Media.upToLarge()} {
     gap: 0.8rem;
-  `};
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  }
+  ${Media.upToSmall()} {
     gap: 0.6rem;
     padding-top: 0.5rem;
     padding-top: auto;
-  `};
-  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+  }
+  ${Media.upToExtraSmall()} {
     gap: 0.4rem;
-  `};
+  }
 `
 
 const AutoColumnWrapper = styled(AutoColumn)`
@@ -87,9 +87,9 @@ const AutoColumnWrapper = styled(AutoColumn)`
 
 const StyledClose = styled(IconClose)`
   top: 0.5rem;
-  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
-    right:0.5rem;
-  `};
+  ${Media.upToExtraSmall()} {
+    right: 0.5rem;
+  }
 `
 
 const PopupContent = ({ onCheck, onClose }: PopupContentProps) => {

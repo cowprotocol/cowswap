@@ -33,22 +33,22 @@ const Wrapper = styled.div<{
   border-radius: var(${UI.BORDER_RADIUS_NORMAL});
   box-shadow: var(${UI.BOX_SHADOW});
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     margin: 0;
     border-radius: 0;
     border-top-left-radius: var(${UI.BORDER_RADIUS_NORMAL});
     border-top-right-radius: var(${UI.BORDER_RADIUS_NORMAL});
     box-shadow: none;
-  `}
+  }
 
   ${ModalInner} {
     max-width: ${({ maxWidth }) => (maxWidth ? `${maxWidth}px` : '100%')};
     min-height: ${({ minHeight }) => (minHeight ? `${minHeight}px` : '100%')};
 
-    ${({ theme }) => theme.mediaWidth.upToSmall`
+    ${Media.upToSmall()} {
       max-width: 100%;
       height: 100%;
-    `}
+    }
   }
 `
 

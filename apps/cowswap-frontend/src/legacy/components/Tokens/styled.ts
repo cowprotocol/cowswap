@@ -32,11 +32,11 @@ export const ResponsiveLogo = styled(TokenLogo)`
   background: var(${UI.COLOR_PAPER});
   color: var(${UI.COLOR_TEXT}) !important; // TODO: prevent styles override
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${Media.upToMedium()} {
     width: 21px;
     height: 21px;
     border-radius: 21px;
-  `}
+  }
 `
 
 export const Label = styled.div<{ end?: number }>`
@@ -151,10 +151,10 @@ export const Row = styled.div`
   background: transparent;
   transition: background var(${UI.ANIMATION_DURATION}) ease-in-out;
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${Media.upToMedium()} {
     width: auto;
-    grid-template-columns: 62px 330px repeat(2,150px) 200px;
-  `}
+    grid-template-columns: 62px 330px repeat(2, 150px) 200px;
+  }
 
   &:hover {
     background: var(${UI.COLOR_PAPER_DARKER});

@@ -26,12 +26,12 @@ export const Wrapper = styled.div<{ isLoading: boolean }>`
   overflow: hidden;
   text-overflow: ellipsis;
 
-  ${({ theme }) => theme.mediaWidth.upToLarge`
+  ${Media.upToLarge()} {
     position: absolute;
     z-index: 1001;
     right: 66px;
     background: var(${UI.COLOR_PAPER_DARKER});
-  `};
+  }
 
   ${Media.upToSmall()} {
     right: 56px;

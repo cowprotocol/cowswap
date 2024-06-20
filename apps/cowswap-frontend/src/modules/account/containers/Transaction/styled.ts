@@ -65,12 +65,12 @@ export const Summary = styled.div`
     font-size: 13px;
     margin: 0;
 
-    ${({ theme }) => theme.mediaWidth.upToSmall`
+    ${Media.upToSmall()} {
       order: 2;
       display: flex;
       justify-content: flex-end;
       flex: 1 1 max-content;
-    `}
+    }
   }
 `
 
@@ -83,7 +83,7 @@ export const SummaryInner = styled.div`
   font-size: 14px;
   word-break: break-word;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     margin: 16px 0 0;
     width: 100%;
     display: grid;
@@ -92,7 +92,7 @@ export const SummaryInner = styled.div`
     grid-gap: 0 18px;
     justify-items: flex-start;
     align-items: flex-start;
-  `};
+  }
 
   > b {
     font-weight: bold;
@@ -103,10 +103,10 @@ export const SummaryInner = styled.div`
     margin: 0 0 16px;
     flex: 0 0 auto;
 
-    ${({ theme }) => theme.mediaWidth.upToSmall`
+    ${Media.upToSmall()} {
       font-size: 18px;
       grid-column: 1 / -1;
-    `}
+    }
   }
 
   > a {
@@ -203,10 +203,10 @@ export const StatusLabelWrapper = styled.div<{ withCancellationHash$: boolean }>
   align-items: center;
   margin: 0 0 auto auto;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     margin: 16px auto 0;
     width: 100%;
-  `};
+  }
 `
 
 // TODO: Consolidate status label logic with StatusItem
@@ -243,12 +243,12 @@ export const StatusLabel = styled.div<{
   font-weight: 600;
   overflow: hidden;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     width: 100%;
     font-size: 13px;
     height: 32px;
     padding: 0 12px;
-  `};
+  }
 
   &::before {
     content: '';
@@ -352,12 +352,12 @@ export const TransactionInnerDetail = styled.div`
   margin: 24px auto 0 0;
   border: 1px solid ${({ theme }) => `${theme.darkMode ? 'rgb(197 218 239 / 10%)' : 'rgb(16 42 72 / 20%)'}`};
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     margin: 24px auto 12px;
     width: 100%;
     max-width: 100%;
     grid-column: 1 / -1;
-  `};
+  }
 
   > span {
     flex: 1 1 auto;

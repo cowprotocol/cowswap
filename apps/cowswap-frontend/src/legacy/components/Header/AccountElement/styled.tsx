@@ -39,9 +39,9 @@ export const Wrapper = styled.div<{ active: boolean }>`
   width: auto;
   height: 100%;
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${Media.upToMedium()} {
     height: 100%;
-  `}
+  }
 
   ${({ theme }) =>
     theme.isInjectedWidgetMode &&

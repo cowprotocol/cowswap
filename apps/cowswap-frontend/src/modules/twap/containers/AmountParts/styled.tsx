@@ -1,4 +1,4 @@
-import { FiatAmount, QuestionTooltipIconWrapper, TokenAmount } from '@cowprotocol/ui'
+import { FiatAmount, Media, QuestionTooltipIconWrapper, TokenAmount } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
@@ -9,10 +9,10 @@ export const Wrapper = styled.div`
   display: flex;
   grid-gap: 8px;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     flex-direction: column;
     grid-gap: 6px;
-  `}
+  }
 `
 
 export const Part = styled(TradeWidgetFieldBox)`
@@ -47,10 +47,10 @@ export const Amount = styled(TokenAmount)`
     margin: 0 5px 0 0;
   }
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     font-size: 18px;
     padding: 5px 0;
-  `}
+  }
 `
 
 export const Fiat = styled(FiatAmount)`

@@ -1,6 +1,6 @@
 import { PropsWithChildren } from 'react'
 
-import { UI } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 
 import { lighten } from 'color2k'
 import styled, { css } from 'styled-components/macro'
@@ -25,18 +25,18 @@ export const Title = styled.h1`
       : 'none'};
   font-weight: 500;
 
-  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+  ${Media.upToExtraSmall()} {
     font-size: 24px;
-  `}
+  }
 `
 
 export const SectionTitle = styled(Title)`
   font-size: 21px;
   margin: 12px 0 16px;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     text-align: center;
-  `}
+  }
 `
 
 export const Content = styled.div`
@@ -45,11 +45,11 @@ export const Content = styled.div`
   display: block;
   color: inherit;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     p > a {
       word-break: break-all;
     }
-  `}
+  }
 
   > h2 {
     font-size: 24px;

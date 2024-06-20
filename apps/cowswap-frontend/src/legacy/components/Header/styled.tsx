@@ -109,9 +109,9 @@ export const HeaderFrame = styled.div<{ showBackground: boolean }>`
     position: relative;
   }
 
-  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+  ${Media.upToExtraSmall()} {
     padding: 0.5rem 1rem;
-  `};
+  }
 `
 
 export const StyledNavLink = styled(StyledNavLinkUni)`
@@ -137,7 +137,7 @@ export const HeaderControls = styled.div`
   max-width: 100%;
   height: 100%;
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${Media.upToMedium()} {
     margin: 0 0 0 auto;
     height: 56px;
     width: 100%;
@@ -149,7 +149,7 @@ export const HeaderControls = styled.div`
     padding: 5px 10px;
     flex-flow: row-reverse;
     justify-content: space-between;
-  `};
+  }
 `
 
 export const HeaderElement = styled.div`
@@ -248,7 +248,7 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
     transition: background var(${UI.ANIMATION_DURATION}) ease-in-out, color var(${UI.ANIMATION_DURATION}) ease-in-out;
     color: inherit;
 
-    ${({ theme }) => theme.mediaWidth.upToLarge`
+    ${Media.upToLarge()} {
       width: 100%;
       border-radius: 0;
       margin: 0;
@@ -257,7 +257,7 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
       padding: 28px 10px;
       color: inherit;
       border-bottom: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
-    `}
+    }
 
     > svg > path {
       fill: currentColor;
@@ -296,7 +296,7 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
   }
 
   ${MenuFlyout} {
-    ${({ theme }) => theme.mediaWidth.upToLarge`
+    ${Media.upToLarge()} {
       width: 100%;
       flex-flow: column wrap;
 
@@ -304,13 +304,13 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
         margin: 0 0 0 auto;
         height: 10px;
       }
-    `};
+    }
 
-    ${({ theme }) => theme.mediaWidth.upToSmall`
+    ${Media.upToSmall()} {
       > button > svg {
         order: 3;
       }
-    `};
+    }
   }
 
   ${MenuContent} {
@@ -322,14 +322,14 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
   }
 
   ${MenuSection} {
-    ${({ theme }) => theme.mediaWidth.upToLarge`
+    ${Media.upToLarge()} {
       gap 36px;
       opacity: 0.7;
-    `};
+    };
 
-    ${({ theme }) => theme.mediaWidth.upToMedium`
+    ${Media.upToMedium()} {
      width: 100%;
-    `};
+    };
   }
 
   ${MenuTitle} {
@@ -430,9 +430,9 @@ export const UniIcon = styled.div`
 `
 
 export const HeaderRow = styled(RowFixed)`
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-   width: 100%;
-  `};
+  ${Media.upToMedium()} {
+    width: 100%;
+  }
 `
 
 export const WinterHat = styled.div`

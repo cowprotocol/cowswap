@@ -38,10 +38,10 @@ const Wrapper = styled.div`
     }
   }
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${Media.upToMedium()} {
     flex-flow: column wrap;
     margin: 24px auto 0;
-  `}
+  }
 
   ${Media.upToSmall()} {
     margin: 56px auto 160px;
@@ -58,13 +58,13 @@ const ImageWrapper = styled.div`
   height: auto;
   z-index: -1;
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${Media.upToMedium()} {
     left: initial;
     bottom: initial;
     top: calc(100% - 100px);
     margin: 50px auto 0;
     height: 360px;
-  `}
+  }
 
   > svg {
     max-width: 100%;
@@ -72,13 +72,13 @@ const ImageWrapper = styled.div`
     max-height: 100%;
     height: 100%;
 
-    ${({ theme }) => theme.mediaWidth.upToMedium`
+    ${Media.upToMedium()} {
       transform: scale(1.7);
-    `}
+    }
 
-    ${({ theme }) => theme.mediaWidth.upToSmall`
+    ${Media.upToSmall()} {
       transform: scale(2);
-    `}
+    }
   }
 `
 
@@ -91,11 +91,11 @@ const FooterVersion = styled(Version)`
     margin: 0 auto;
   }
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     flex-flow: column wrap;
     width: 100%;
     gap: 24px;
-  `}
+  }
 
   > div {
     ${Media.upToSmall()} {

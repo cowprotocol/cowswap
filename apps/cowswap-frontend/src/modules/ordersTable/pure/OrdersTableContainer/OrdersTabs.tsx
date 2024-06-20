@@ -14,12 +14,12 @@ const Tabs = styled.div`
   margin: 0;
   border: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${Media.upToMedium()} {
     width: 100%;
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: max-content;
-  `};
+  }
 `
 
 const TabButton = styled(Link)<{ active: string }>`

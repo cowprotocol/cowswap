@@ -1,8 +1,7 @@
-import { UI } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 import { HelpTooltip } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
-
 
 export const ReceiveAmountBox = styled.div`
   display: flex;
@@ -14,11 +13,11 @@ export const ReceiveAmountBox = styled.div`
   background: var(${UI.COLOR_PAPER});
   border: 1px solid var(${UI.COLOR_PAPER_DARKER});
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     flex-direction: column;
     align-items: start;
     gap: 0.5rem;
-  `};
+  }
 
   > div {
     display: flex;

@@ -2,7 +2,7 @@ import { useCallback, useRef } from 'react'
 
 import { toggleRecepientAddressAnalytics } from '@cowprotocol/analytics'
 import { useOnClickOutside } from '@cowprotocol/common-hooks'
-import { HelpTooltip, RowBetween, RowFixed, UI } from '@cowprotocol/ui'
+import { HelpTooltip, Media, RowBetween, RowFixed, UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import { Text } from 'rebass'
@@ -77,9 +77,9 @@ export const MenuFlyout = styled.span`
   z-index: 100;
   color: inherit;
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${Media.upToMedium()} {
     min-width: 18.125rem;
-  `};
+  }
 
   user-select: none;
 `

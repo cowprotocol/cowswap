@@ -3,7 +3,7 @@ import { ReactNode } from 'react'
 import cowMeditatingV2 from '@cowprotocol/assets/cow-swap/meditating-cow-v2.svg'
 import imageConnectWallet from '@cowprotocol/assets/cow-swap/wallet-plus.svg'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
-import { ExternalLink } from '@cowprotocol/ui'
+import { ExternalLink, Media } from '@cowprotocol/ui'
 import { UI, CowSwapSafeAppLink, MY_ORDERS_ID } from '@cowprotocol/ui'
 import type { CowSwapWidgetAppParams } from '@cowprotocol/widget-lib'
 
@@ -123,14 +123,14 @@ const Header = styled.div`
   width: 100%;
   margin: 0 0 24px;
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${Media.upToMedium()} {
     display: block;
     text-align: center;
 
     > h2 {
-      margin-bottom: 15px!important;
+      margin-bottom: 15px !important;
     }
-  `};
+  }
 
   > h2 {
     font-size: 24px;

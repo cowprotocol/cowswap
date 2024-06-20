@@ -87,9 +87,9 @@ export const NumericalInput = styled(Input)<{ $loading: boolean }>`
     color: inherit;
   }
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     font-size: 26px;
-  `}
+  }
 
   ${loadingOpacityMixin}
 `
@@ -99,9 +99,9 @@ export const TokenAmountStyled = styled(TokenAmount)`
   font-weight: 500;
   color: inherit;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     font-size: 26px;
-  `}
+  }
 `
 
 export const BalanceText = styled.span`

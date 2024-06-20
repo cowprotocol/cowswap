@@ -60,11 +60,11 @@ export const Menu = styled.div`
     padding: 0;
     font-size: inherit;
 
-    ${({ theme }) => theme.mediaWidth.upToSmall`
+    ${Media.upToSmall()} {
       background: var(${UI.COLOR_TEXT_OPACITY_10});
       border-radius: 16px;
       padding: 12px;
-    `}
+    }
   }
 
   > ul > li {
@@ -92,10 +92,10 @@ export const Menu = styled.div`
     }
 
     &.active {
-      ${({ theme }) => theme.mediaWidth.upToSmall`
+      ${Media.upToSmall()} {
         background: var(${UI.COLOR_TEXT_OPACITY_10});
         border-radius: 16px;
-      `}
+      }
     }
   }
 `

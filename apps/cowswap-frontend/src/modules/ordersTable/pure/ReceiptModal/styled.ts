@@ -10,13 +10,13 @@ export const Wrapper = styled.div`
   overflow-y: auto;
   ${({ theme }) => theme.colorScrollbar};
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     overflow-y: auto;
     overflow-x: auto;
     padding: 0;
     max-height: 100vh;
     margin: 0;
-  `}
+  }
 `
 
 export const Header = styled.div`
@@ -50,9 +50,9 @@ export const Body = styled(AutoRow)`
   max-height: 80vh;
   padding: 0 10px;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     max-height: 100%;
-  `}
+  }
 `
 
 export const FieldsWrapper = styled.div`

@@ -50,11 +50,11 @@ const TableBox = styled.div`
   background: var(${UI.COLOR_PAPER_OPACITY_99});
   backdrop-filter: blur(20px);
 
-  ${({ theme }) => theme.mediaWidth.upToLargeAlt`
+  ${Media.upToLargeAlt()} {
     width: 100%;
     display: flex;
     flex-flow: column wrap;
-  `};
+  }
 `
 
 const TableInner = styled.div`
@@ -161,10 +161,10 @@ const OrdersExplainerBanner = styled.div`
   padding: 0 16px;
   color: inherit;
 
-  ${({ theme }) => theme.mediaWidth.upToLargeAlt`
+  ${Media.upToLargeAlt()} {
     width: fit-content;
     grid-template-columns: minmax(462px, 4fr) minmax(426px, 3.8fr) 24px;
-  `}
+  }
 
   /* 1st section */
   > div {

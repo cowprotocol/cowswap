@@ -224,12 +224,12 @@ export const Wrapper = styled.div`
   }
 
   ${AccountControl} ${WalletActions} {
-    ${({ theme }) => theme.mediaWidth.upToSmall`
-        width: 100%;
-        flex-flow: row wrap;
-        justify-content: center;
-        margin: 12px auto;
-    `};
+    ${Media.upToSmall()} {
+      width: 100%;
+      flex-flow: row wrap;
+      justify-content: center;
+      margin: 12px auto;
+    }
   }
 `
 
@@ -254,13 +254,13 @@ export const InfoCard = styled.div`
     margin: 24px 0;
   }
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     padding: 16px 10px 24px;
 
     &:not(:first-child) {
       margin: 16px 0;
     }
-  `};
+  }
 `
 
 export const AccountGroupingRow = styled.div`
@@ -275,9 +275,9 @@ export const AccountGroupingRow = styled.div`
 
   margin: 0;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     width: 100%;
-  `};
+  }
 
   > div {
     flex-flow: column wrap;
@@ -417,14 +417,14 @@ const NetworkCardUni = styled(YellowCard)`
   border-radius: 12px;
   padding: 8px 12px;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     margin: 0;
     margin-right: 0.5rem;
     width: initial;
     overflow: hidden;
     text-overflow: ellipsis;
     flex-shrink: 1;
-  `};
+  }
 `
 
 export const NetworkCard = styled(NetworkCardUni)`

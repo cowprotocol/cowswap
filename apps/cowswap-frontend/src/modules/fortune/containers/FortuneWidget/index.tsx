@@ -6,7 +6,7 @@ import { openFortuneCookieAnalytics, shareFortuneTwitterAnalytics } from '@cowpr
 import twitterImage from '@cowprotocol/assets/cow-swap/twitter.svg'
 import IMAGE_ICON_FORTUNE_COOKIE from '@cowprotocol/assets/images/icon-fortune-cookie.svg'
 import { addBodyClass, removeBodyClass } from '@cowprotocol/common-utils'
-import { ExternalLink } from '@cowprotocol/ui'
+import { ExternalLink, Media } from '@cowprotocol/ui'
 import { UI, Color } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
@@ -151,10 +151,10 @@ const FortuneTitle = styled.h2`
   font-weight: 700;
   color: inherit;
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${Media.upToMedium()} {
     font-size: 16px;
     margin: 16px auto 34px;
-  `}
+  }
 
   > i {
     font-size: 16px;
@@ -180,9 +180,9 @@ const FortuneText = styled.h3`
   background: ${({ theme }) => theme.white};
 
   // small device
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${Media.upToMedium()} {
     font-size: 21px;
-  `}
+  }
 
   &:before {
     content: '“';
@@ -235,11 +235,11 @@ const HeaderElement = styled.div`
   height: 56px;
   z-index: 10;
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${Media.upToMedium()} {
     height: 48px;
     justify-content: center;
     background: var(${UI.COLOR_PAPER_DARKEST});
-  `}
+  }
 `
 
 const StyledCloseIcon = styled(X)`
@@ -250,11 +250,11 @@ const StyledCloseIcon = styled(X)`
   transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
   margin: 0 0 0 auto;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     --size: 34px;
     width: 100%;
     margin: 0;
-  `}
+  }
 
   &:hover {
     cursor: pointer;

@@ -95,10 +95,10 @@ export const TradeWidgetFieldBox = styled.div<{ hasPrefix?: boolean }>`
         padding: 0;
         height: var(--minHeight);
 
-        ${({ theme }) => theme.mediaWidth.upToSmall`
+        ${Media.upToSmall()} {
           border-top: 1px solid var(${UI.COLOR_PAPER_DARKER});
           width: 100%;
-        `};
+        }
       `}
 
     > em {
