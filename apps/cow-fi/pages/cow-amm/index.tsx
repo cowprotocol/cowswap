@@ -37,7 +37,7 @@ import SVG from 'react-inlinesvg'
 import IMG_ICON_FAQ from '@cowprotocol/assets/images/icon-faq.svg'
 
 import { EventCategories, sendEventHandler } from '@cowprotocol/analytics'
-import { FAQ_DATA } from '../../data/cow-amm/const'
+import { FAQ_DATA } from '@/data/cow-amm/const'
 
 import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
 
@@ -72,7 +72,7 @@ export default function Page({ siteConfigData }: PageProps) {
               Protect your liquidity
             </Link>
           </HeroContent>
-          <HeroImage width={470} color={'#194D05'} marginMobile="24px auto 56px">
+          <HeroImage width={470} height={470} color={'#194D05'} marginMobile="24px auto 56px">
             <SVG src={IMG_ICON_GOVERNANCE} />
           </HeroImage>
         </HeroContainer>

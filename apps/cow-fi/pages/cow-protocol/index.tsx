@@ -44,7 +44,7 @@ import IMG_ICON_FAQ from '@cowprotocol/assets/images/icon-faq.svg'
 
 import { EventCategories, sendEventHandler } from '@cowprotocol/analytics'
 
-import { FAQ_DATA, TOP_LOGOS, CASE_STUDIES, ALL_LOGOS } from '../../data/cow-protocol/const'
+import { FAQ_DATA, TOP_LOGOS, CASE_STUDIES, ALL_LOGOS } from '@/data/cow-protocol/const'
 
 import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
 
@@ -79,7 +79,7 @@ export default function Page({ siteConfigData }: PageProps) {
               Start building
             </Link>
           </HeroContent>
-          <HeroImage width={470} color={'#66018E'}>
+          <HeroImage width={470} height={470} color={'#66018E'}>
             <SVG src={IMG_ICON_GOVERNANCE} />
           </HeroImage>
         </HeroContainer>

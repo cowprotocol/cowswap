@@ -1,5 +1,5 @@
 import { Link } from '@/components/Link'
-import { ProductLogo, ProductVariant } from '@cowprotocol/ui'
+import { Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
 import { EventCategories, sendEventHandler } from '@cowprotocol/analytics'
 
 import IMG_LOGO_SAFE from '@cowprotocol/assets/images/logo-safe.svg'
@@ -10,6 +10,13 @@ import IMG_LOGO_KEEPKEY from '@cowprotocol/assets/images/logo-keepkey.svg'
 import IMG_LOGO_AMBIRE from '@cowprotocol/assets/images/logo-ambire.svg'
 import IMG_LOGO_CRYPTO_COM from '@cowprotocol/assets/images/logo-crypto-com.svg'
 import IMG_LOGO_UNISWAP from '@cowprotocol/assets/images/logo-uniswap.svg'
+
+import IMAGE_MEVBLOCKER_REVIEW_1 from '@cowprotocol/assets/images/image-mevblocker-review-1.svg'
+import IMAGE_MEVBLOCKER_REVIEW_2 from '@cowprotocol/assets/images/image-mevblocker-review-2.svg'
+import IMAGE_MEVBLOCKER_REVIEW_3 from '@cowprotocol/assets/images/image-mevblocker-review-3.svg'
+import IMAGE_MEVBLOCKER_REVIEW_4 from '@cowprotocol/assets/images/image-mevblocker-review-4.svg'
+import IMAGE_MEVBLOCKER_REVIEW_5 from '@cowprotocol/assets/images/image-mevblocker-review-5.svg'
+import IMAGE_MEVBLOCKER_REVIEW_6 from '@cowprotocol/assets/images/image-mevblocker-review-6.svg'
 
 export const TRUSTED_BY_CONTENT = [
   {
@@ -56,6 +63,51 @@ export const TRUSTED_BY_CONTENT = [
     href: 'https://www.blocknative.com/',
     src: IMG_LOGO_BLOCKNATIVE,
     title: 'Blocknative Transaction Boost',
+  },
+]
+
+export const TESTIMONIAL_LIST = [
+  {
+    title: 'MEV Blocker fixed my marriage!',
+    description: '– Anon',
+    bgColor: '#3FC4FF',
+    textColor: Color.neutral0,
+    iconImage: IMAGE_MEVBLOCKER_REVIEW_1,
+  },
+  {
+    title: "If I'd known about MEV Blocker sooner, I could've had a lambo by now",
+    description: '– Anon',
+    bgColor: '#EC4612',
+    textColor: '#FEE7CF',
+    iconImage: IMAGE_MEVBLOCKER_REVIEW_2,
+  },
+  {
+    title: 'I was tired of getting rekt, so I started using MEV Blocker',
+    description: '– Anon',
+    bgColor: Color.neutral100,
+    textColor: '#EC4612',
+    iconImage: IMAGE_MEVBLOCKER_REVIEW_3,
+  },
+  {
+    title: 'Robots should work for me, not against me',
+    description: '– Anon',
+    bgColor: Color.neutral100,
+    textColor: '#EC4612',
+    iconImage: IMAGE_MEVBLOCKER_REVIEW_4,
+  },
+  {
+    title: "Nobody's stolen my lunch money since I started using MEV Blocker",
+    description: '– Anon',
+    bgColor: '#F2CD16',
+    textColor: '#EC4612',
+    iconImage: IMAGE_MEVBLOCKER_REVIEW_5,
+  },
+  {
+    title: 'I used MEV Blocker and I instantly went up a tax bracket',
+    description: '– Anon',
+    bgColor: '#EC4612',
+    textColor: '#F2CD16',
+    iconImage: IMAGE_MEVBLOCKER_REVIEW_6,
   },
 ]
 

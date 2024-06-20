@@ -221,6 +221,7 @@ interface TopicCardProps {
   gap?: number
   height?: string
   fullWidth?: boolean
+  border?: string
 }
 
 export const TopicCard = styled.a.attrs<TopicCardProps>(({ asProp }) => ({
@@ -239,15 +240,19 @@ export const TopicCard = styled.a.attrs<TopicCardProps>(({ asProp }) => ({
   font-size: 24px;
   font-weight: ${Font.weight.bold};
   text-decoration: none;
-  border: ${({ borderColor }) => (borderColor ? `4px solid ${borderColor}` : '4px solid transparent')};
+  border: ${({ border, borderColor }) =>
+    border || (borderColor ? `4px solid ${borderColor}` : '4px solid transparent')};
   transition: border 0.2s ease-in-out;
   gap: ${({ gap }) => (typeof gap === 'number' ? `${gap}px` : '56px')};
   max-width: 100%;
   height: ${({ height }) => height || 'initial'};
   grid-column: ${({ fullWidth }) => (fullWidth ? '1 / -1' : 'auto')}; /* New line for full width */
+  position: relative;
+  overflow: hidden;
 
   &:hover {
-    border: ${({ asProp }) => (asProp === 'div' ? '4px solid transparent' : `4px solid ${Color.neutral40}`)};
+    border: ${({ asProp, border }) =>
+      asProp === 'div' ? border || '4px solid transparent' : `4px solid ${Color.neutral40}`};
   }
 
   ${Media.upToMedium()} {
@@ -256,14 +261,6 @@ export const TopicCard = styled.a.attrs<TopicCardProps>(({ asProp }) => ({
     display: ${({ fullWidth }) => (fullWidth ? 'block' : 'flex')};
     flex-flow: column wrap;
   }
-
-  ${({ asProp }) =>
-    asProp === 'div' &&
-    `
-    &:hover {
-      border: 4px solid transparent;
-    }
-  `}
 `
 
 export const TopicCardInner = styled.div<{
@@ -271,6 +268,7 @@ export const TopicCardInner = styled.div<{
   contentAlignMobile?: string
   gap?: number
   height?: string
+  minHeight?: string
 }>`
   display: flex;
   flex-flow: column wrap;
@@ -279,7 +277,9 @@ export const TopicCardInner = styled.div<{
   align-items: ${({ contentAlign }) =>
     contentAlign === 'left' ? 'flex-start' : contentAlign === 'right' ? 'flex-end' : 'center'};
   height: ${({ height }) => height || 'auto'};
+  min-height: ${({ minHeight }) => minHeight || 'initial'};
   width: 100%;
+  z-index: 1;
 
   ${Media.upToMedium()} {
     text-align: ${({ contentAlignMobile }) => contentAlignMobile || 'center'};
@@ -315,6 +315,16 @@ export const TopicImage = styled.div<{
   widthMobile?: number | string
   orderReverseMobile?: boolean
   borderRadius?: number
+  position?: string
+  positionMobile?: string
+  top?: number | string
+  topMobile?: number | string
+  left?: number | string
+  leftMobile?: number | string
+  right?: number | string
+  rightMobile?: number | string
+  bottom?: number | string
+  bottomMobile?: number | string
 }>`
   --size: ${({ large }) => (large ? '290px' : '132px')};
   width: ${({ width }) => (typeof width === 'number' ? `${width}px` : width || 'var(--size)')};
@@ -325,7 +335,7 @@ export const TopicImage = styled.div<{
         : maxWidth
       : typeof width === 'number'
       ? `${width}px`
-      : width || '100%'};
+      : '100%'};
   height: ${({ height }) => (typeof height === 'number' ? `${height}px` : height || 'var(--size)')};
   max-height: ${({ maxHeight, height }) =>
     maxHeight !== undefined
@@ -340,6 +350,11 @@ export const TopicImage = styled.div<{
   color: ${({ iconColor }) => iconColor || Color.neutral90};
   margin: ${({ margin }) => margin || '0 0 16px'};
   overflow: hidden;
+  position: ${({ position }) => position || 'relative'};
+  top: ${({ top }) => (typeof top === 'number' ? `${top}px` : top || 'initial')};
+  left: ${({ left }) => (typeof left === 'number' ? `${left}px` : left || 'initial')};
+  right: ${({ right }) => (typeof right === 'number' ? `${right}px` : right || 'initial')};
+  bottom: ${({ bottom }) => (typeof bottom === 'number' ? `${bottom}px` : bottom || 'initial')};
 
   ${Media.upToMedium()} {
     width: ${({ widthMobile }) => (typeof widthMobile === 'number' ? `${widthMobile}px` : widthMobile || '100%')};
@@ -970,15 +985,15 @@ export const HeroButtonWrapper = styled.div<{ gap?: number }>`
 `
 
 export const HeroImage = styled.div<{
-  width?: number
-  height?: number
+  width?: number | string
+  height?: number | string
   color?: string
   margin?: string
   marginMobile?: string
 }>`
-  width: 100%;
-  height: ${({ height }) => (height ? `${height}px` : 'auto')};
-  max-width: ${({ width }) => `${width}px` || '100%'};
+  width: ${({ width }) => (typeof width === 'number' ? `${width}px` : width || '100%')};
+  height: ${({ height }) => (typeof height === 'number' ? `${height}px` : height || 'auto')};
+  max-width: 100%;
   margin: ${({ margin }) => margin || '0 auto'};
   padding: 0;
   color: ${({ color }) => color || Color.neutral0};

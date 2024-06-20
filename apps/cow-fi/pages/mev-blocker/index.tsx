@@ -19,6 +19,12 @@ import IMAGE_ICON_MEVBLOCKER_CHATBALLOON from '@cowprotocol/assets/images/icon-m
 import IMAGE_ICON_MEVBLOCKER_TRUST from '@cowprotocol/assets/images/icon-mevblocker-trust.svg'
 import IMAGE_ICON_QUESTIONBALLOON from '@cowprotocol/assets/images/icon-question-balloon.svg'
 
+import IMAGE_SANDWICH_GUY from '@cowprotocol/assets/images/image-sandwich-guy.svg'
+
+import IMAGE_FULLPROTECTION from '@cowprotocol/assets/images/image-fullprotection.svg'
+import IMGAGE_FASTFREE from '@cowprotocol/assets/images/image-fastfree.svg'
+import IMAGE_PROFIT from '@cowprotocol/assets/images/image-profit.svg'
+
 import {
   PageWrapper,
   ContainerCard,
@@ -50,7 +56,7 @@ import {
 import SVG from 'react-inlinesvg'
 
 import { EventCategories, sendEventHandler } from '@cowprotocol/analytics'
-import { FAQ_DATA, TRUSTED_BY_CONTENT } from '../../data/mev-blocker/const'
+import { FAQ_DATA, TRUSTED_BY_CONTENT, TESTIMONIAL_LIST } from '@/data/mev-blocker/const'
 
 import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
 
@@ -122,8 +128,8 @@ export default function Page({ siteConfigData }: PageProps) {
                   Get protected
                 </Link>
               </HeroContent>
-              <HeroImage width={470} height={470} color={'#EC4612'}>
-                <ProductLogo height={'100%'} variant={ProductVariant.MevBlocker} theme="dark" logoIconOnly />
+              <HeroImage width={740} height={'auto'} color={'#EC4612'}>
+                <SVG src={IMAGE_SANDWICH_GUY} />
               </HeroImage>
             </HeroContainer>
 
@@ -410,81 +416,43 @@ export default function Page({ siteConfigData }: PageProps) {
                 </SectionTitleWrapper>
 
                 <TopicList columns={3}>
-                  <TopicCard
-                    contentAlign={'left'}
-                    bgColor="#3FC4FF"
-                    textColor={Color.neutral0}
-                    padding={'24px'}
-                    asProp="div"
-                  >
-                    <TopicCardInner height="100%" contentAlign="left" gap={52}>
-                      <TopicTitle fontSize={28}>MEV Blocker fixed my marriage!</TopicTitle>
-                      <TopicDescription margin="auto 0 0" fontSize={21}>
-                        – Anon
-                      </TopicDescription>
-                    </TopicCardInner>
-                  </TopicCard>
-
-                  <TopicCard contentAlign={'left'} bgColor="#EC4612" textColor="#FEE7CF" padding={'24px'} asProp="div">
-                    <TopicCardInner height="100%" contentAlign="left" gap={52}>
-                      <TopicTitle fontSize={28}>
-                        If I'd known about MEV Blocker sooner, I could've had a lambo by now
-                      </TopicTitle>
-                      <TopicDescription margin="auto 0 0" fontSize={21}>
-                        – Anon
-                      </TopicDescription>
-                    </TopicCardInner>
-                  </TopicCard>
-
-                  <TopicCard
-                    contentAlign={'left'}
-                    bgColor={Color.neutral100}
-                    textColor="#EC4612"
-                    padding={'24px'}
-                    asProp="div"
-                  >
-                    <TopicCardInner height="100%" contentAlign="left" gap={52}>
-                      <TopicTitle fontSize={28}>I was tired of getting rekt, so I started using MEV Blocker</TopicTitle>
-                      <TopicDescription margin="auto 0 0" fontSize={21}>
-                        – Anon
-                      </TopicDescription>
-                    </TopicCardInner>
-                  </TopicCard>
-
-                  <TopicCard
-                    contentAlign={'left'}
-                    bgColor={Color.neutral100}
-                    textColor="#EC4612"
-                    padding={'24px'}
-                    asProp="div"
-                  >
-                    <TopicCardInner height="100%" contentAlign="left" gap={52}>
-                      <TopicTitle fontSize={28}>Robots should work for me, not against me</TopicTitle>
-                      <TopicDescription margin="auto 0 0" fontSize={21}>
-                        – Anon
-                      </TopicDescription>
-                    </TopicCardInner>
-                  </TopicCard>
-
-                  <TopicCard contentAlign={'left'} bgColor="#F2CD16" textColor="#EC4612" padding={'24px'} asProp="div">
-                    <TopicCardInner height="100%" contentAlign="left" gap={52}>
-                      <TopicTitle fontSize={28}>
-                        Nobody's stolen my lunch money since I started using MEV Blocker
-                      </TopicTitle>
-                      <TopicDescription margin="auto 0 0" fontSize={21}>
-                        – Anon
-                      </TopicDescription>
-                    </TopicCardInner>
-                  </TopicCard>
-
-                  <TopicCard contentAlign={'left'} bgColor="#EC4612" textColor="#F2CD16" padding={'24px'} asProp="div">
-                    <TopicCardInner height="100%" contentAlign="left" gap={52}>
-                      <TopicTitle fontSize={28}>I used MEV Blocker and I instantly went up a tax bracket</TopicTitle>
-                      <TopicDescription margin="auto 0 0" fontSize={21}>
-                        – Anon
-                      </TopicDescription>
-                    </TopicCardInner>
-                  </TopicCard>
+                  {TESTIMONIAL_LIST.map((testimonial, index) => (
+                    <TopicCard
+                      key={index}
+                      contentAlign={'left'}
+                      bgColor={testimonial.bgColor}
+                      textColor={testimonial.textColor}
+                      padding={'24px'}
+                      asProp="div"
+                      border="none"
+                    >
+                      <TopicCardInner
+                        height="100%"
+                        contentAlign="left"
+                        contentAlignMobile="left"
+                        gap={52}
+                        minHeight="260px"
+                      >
+                        <TopicTitle fontSize={28}>{testimonial.title}</TopicTitle>
+                        <TopicDescription margin="auto 0 0" fontSize={21}>
+                          {testimonial.description}
+                        </TopicDescription>
+                      </TopicCardInner>
+                      <TopicImage
+                        iconColor="transparent"
+                        bgColor="transparent"
+                        margin={'auto auto 0 0'}
+                        height={100}
+                        width={'auto'}
+                        widthMobile={'auto'}
+                        position={'absolute'}
+                        bottom={0}
+                        right={0}
+                      >
+                        <SVG src={testimonial.iconImage} title={testimonial.title} />
+                      </TopicImage>
+                    </TopicCard>
+                  ))}
                 </TopicList>
               </ContainerCardSection>
             </ContainerCard>
