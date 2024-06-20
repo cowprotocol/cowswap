@@ -1,4 +1,4 @@
-import { UI } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 
 import { MenuButton, MenuItem, MenuList } from '@reach/menu-button'
 import { transparentize } from 'color2k'
@@ -65,9 +65,9 @@ export const Current = styled(MenuButton)<{ $custom?: boolean }>`
   text-overflow: ellipsis;
   overflow: hidden;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     font-size: 21px;
-  `}
+  }
 
   &:hover {
     text-decoration: underline;

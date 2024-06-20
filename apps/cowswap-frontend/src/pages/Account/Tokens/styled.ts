@@ -1,4 +1,4 @@
-import { UI } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 
 import { transparentize, darken } from 'color2k'
 import { ChevronDown } from 'react-feather'
@@ -74,10 +74,10 @@ export const Wrapper = styled.div`
   max-width: 100%;
   justify-content: center;
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${Media.upToMedium()} {
     display: flex;
     flex-flow: column wrap;
-  `}
+  }
 `
 
 export const AccountPageWrapper = styled.div`
@@ -146,15 +146,18 @@ export const Overview = styled.div`
   overflow: hidden;
   box-shadow: ${({ theme }) => theme.boxShadow1};
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${Media.upToMedium()} {
     display: flex;
     flex-flow: column wrap;
 
     &::after {
-      content: "";
+      content: '';
       display: block;
-      background: linear-gradient(to left, ${({ theme }) => theme.bg1} 0%, ${({ theme }) =>
-    transparentize(theme.bg1, 1)} 100%);
+      background: linear-gradient(
+        to left,
+        ${({ theme }) => theme.bg1} 0%,
+        ${({ theme }) => transparentize(theme.bg1, 1)} 100%
+      );
       pointer-events: none;
       height: 100%;
       width: 80px;
@@ -165,7 +168,7 @@ export const Overview = styled.div`
       margin: auto;
       z-index: 1;
     }
-  `};
+  }
 `
 
 export const SearchInputFormatter = styled(Column)`
@@ -209,9 +212,9 @@ export const TokenSearchInput = styled.input`
     background: var(${UI.COLOR_PAPER});
     outline: 0;
 
-    ${({ theme }) => theme.mediaWidth.upToMedium`
+    ${Media.upToMedium()} {
       width: 100%;
-    `};
+    }
   }
 
   &::placeholder {
@@ -226,15 +229,15 @@ export const TokenSearchInput = styled.input`
     opacity: 1;
   }
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${Media.upToMedium()} {
     max-width: 100%;
-  `};
+  }
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     font-size: 12px !important;
 
     &::placeholder {
       font-size: 12px !important;
     }
-  `};
+  }
 `

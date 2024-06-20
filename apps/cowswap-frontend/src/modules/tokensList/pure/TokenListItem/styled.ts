@@ -1,4 +1,4 @@
-import { UI } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
@@ -25,11 +25,11 @@ export const TokenItem = styled.button`
   opacity: ${({ disabled }) => (disabled ? 0.5 : 1)};
   transition: background var(${UI.ANIMATION_DURATION}) ease-in-out, color var(${UI.ANIMATION_DURATION}) ease-in-out;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     font-size: 14px;
     padding: 10px 15px;
     justify-content: flex-end;
-  `}
+  }
 
   &:last-child {
     margin-bottom: 0;

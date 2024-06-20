@@ -18,12 +18,6 @@ export function themeMapper<T extends DefaultTheme>(theme: CowSwapTheme, isInjec
     isInjectedWidgetMode,
     // Override Theme
     ...baseThemeVariables(darkMode, colorsTheme),
-    mediaWidth: mediaWidthTemplates,
-    grids: {
-      sm: 8,
-      md: 12,
-      lg: 24,
-    },
 
     shadow1: darkMode ? '#000' : '#2F80ED',
     flexColumnNoWrap: css`
@@ -47,18 +41,6 @@ export const MEDIA_WIDTHS = {
   upToExtraLarge: 2560,
 }
 
-const mediaWidthTemplates: { [width in keyof typeof MEDIA_WIDTHS]: typeof css } = Object.keys(MEDIA_WIDTHS).reduce(
-  (accumulator, size) => {
-    ;(accumulator as any)[size] = (a: any, b: any, c: any) => css`
-      @media (max-width: ${(MEDIA_WIDTHS as any)[size]}px) {
-        ${css(a, b, c)}
-      }
-    `
-    return accumulator
-  },
-  {}
-) as any
-
 const getMediaQuery = (query: string, useMediaPrefix = true) => {
   return useMediaPrefix ? `@media ${query}` : query
 }
@@ -81,6 +63,7 @@ export const Media = {
       useMediaPrefix
     ),
   upToLarge: (useMediaPrefix = true) => getMediaQuery(`(max-width: ${MEDIA_WIDTHS.upToLarge}px)`, useMediaPrefix),
+  upToLargeAlt: (useMediaPrefix = true) => getMediaQuery(`(max-width: ${MEDIA_WIDTHS.upToLargeAlt}px)`, useMediaPrefix),
   LargeAndUp: (useMediaPrefix = true) => getMediaQuery(`(min-width: ${MEDIA_WIDTHS.upToLarge + 1}px)`, useMediaPrefix),
 }
 

@@ -1,8 +1,7 @@
-import { HelpTooltip, UI } from '@cowprotocol/ui'
+import { HelpTooltip, Media, UI } from '@cowprotocol/ui'
 
 import { transparentize } from 'color2k'
 import styled from 'styled-components/macro'
-
 
 import { RateWrapper } from 'common/pure/RateInfo'
 
@@ -73,9 +72,9 @@ export const AmountItem = styled.div`
   gap: 6px;
   white-space: nowrap;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     white-space: normal;
-  `};
+  }
 
   > div {
     display: flex;

@@ -1,4 +1,5 @@
 import FeedbackIcon from '@cowprotocol/assets/cow-swap/feedback.svg'
+import { Media } from '@cowprotocol/ui'
 
 import { isAppziEnabled, openFeedbackAppzi } from 'appzi'
 import { transparentize } from 'color2k'
@@ -34,18 +35,18 @@ const Wrapper = styled.div`
     background: ${({ theme }) => transparentize(theme.bg2, 0.1)};
     transform: translateY(-3px);
 
-    ${({ theme }) => theme.mediaWidth.upToMedium`
+    ${Media.upToMedium()} {
       background: none;
       transform: none;
-    `};
+    }
 
     > svg {
       fill: ${({ theme }) => theme.white};
       transform: rotate(-360deg);
 
-      ${({ theme }) => theme.mediaWidth.upToMedium`
+      ${Media.upToMedium()} {
         transform: none;
-    `};
+      }
     }
   }
 `

@@ -67,37 +67,34 @@ export function HoverTooltip(props: HoverTooltipProps) {
   )
 
   // Close the tooltip
-  const close = useCallback(
-    (e: MouseEvent<HTMLDivElement> | null, eager = false) => {
-      e && e.preventDefault()
+  const close = useCallback((e: MouseEvent<HTMLDivElement> | null, eager = false) => {
+    e && e.preventDefault()
 
-      // Cancel any previous scheduled close
-      if (cancelCloseRef.current) {
-        cancelCloseRef.current()
-      }
+    // Cancel any previous scheduled close
+    if (cancelCloseRef.current) {
+      cancelCloseRef.current()
+    }
 
-      const closeNow = () => {
+    const closeNow = () => {
+      cancelCloseRef.current = null
+      setShow(false)
+    }
+
+    if (eager) {
+      // Close eagerly
+      closeNow()
+    } else {
+      // Close after a delay
+      const closeTimeout = setTimeout(closeNow, TOOLTIP_CLOSE_DELAY)
+
+      cancelCloseRef.current = () => {
         cancelCloseRef.current = null
-        setShow(false)
+        clearTimeout(closeTimeout)
       }
+    }
 
-      if (eager) {
-        // Close eagerly
-        closeNow()
-      } else {
-        // Close after a delay
-        const closeTimeout = setTimeout(closeNow, TOOLTIP_CLOSE_DELAY)
-
-        cancelCloseRef.current = () => {
-          cancelCloseRef.current = null
-          clearTimeout(closeTimeout)
-        }
-      }
-
-      return () => cancelCloseRef.current && cancelCloseRef.current()
-    },
-    [setShow]
-  )
+    return () => cancelCloseRef.current && cancelCloseRef.current()
+  }, [])
 
   // Stop the delayed close when hovering the tooltip
   const stopDelayedClose = useCallback(() => {
@@ -131,7 +128,7 @@ export function HoverTooltip(props: HoverTooltipProps) {
     return () => {
       document.removeEventListener('scroll', handleScroll)
     }
-  }, [show])
+  }, [show, close])
 
   const tooltipContent = disableHover ? null : (
     <div ref={divRef} onMouseEnter={stopDelayedClose} onMouseLeave={close}>

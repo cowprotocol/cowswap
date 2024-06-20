@@ -6,7 +6,7 @@ import {
   COW_PROTOCOL_VAULT_RELAYER_ADDRESS,
   SupportedChainId as ChainId,
 } from '@cowprotocol/cow-sdk'
-import { UI } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 import { ExternalLink } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -101,11 +101,11 @@ const VersionsLinkWrapper = styled.span`
   opacity: 0.5;
   transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     opacity: 1;
     font-size: 13px;
     width: 100%;
-  `}
+  }
 
   &:hover {
     opacity: 1;

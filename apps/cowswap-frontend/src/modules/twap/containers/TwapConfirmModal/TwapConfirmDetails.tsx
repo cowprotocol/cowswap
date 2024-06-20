@@ -1,5 +1,7 @@
 import React from 'react'
 
+import { Media } from '@cowprotocol/ui'
+
 import styled from 'styled-components/macro'
 
 import { useReceiveAmountInfo } from 'modules/trade'
@@ -17,9 +19,9 @@ const Wrapper = styled.div`
     display: block;
     margin: 0 0 3px;
 
-    ${({ theme }) => theme.mediaWidth.upToSmall`
+    ${Media.upToSmall()} {
       margin: 0 0 10px;
-    `}
+    }
   }
 `
 
@@ -30,9 +32,9 @@ const TWAPSplitTitle = styled.div`
   align-items: center;
   gap: 3px;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     margin: 0 0 10px;
-  `}
+  }
 `
 
 export type TwapConfirmDetailsProps = {

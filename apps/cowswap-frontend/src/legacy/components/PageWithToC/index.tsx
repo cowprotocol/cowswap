@@ -1,4 +1,4 @@
-import { UI } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
@@ -10,11 +10,11 @@ export const PageWithToC = styled.div<{ longList?: boolean }>`
   grid-template-rows: max-content;
   flex-direction: column;
 
-  ${({ theme, longList }) => theme.mediaWidth[longList ? 'upToMedium' : 'upToSmall']`
+  ${({ longList }) => (longList ? Media.upToMedium : Media.upToSmall)()} {
     width: 100%;
     display: flex;
     flex-flow: column wrap;
-  `}
+  }
 
   #table-container {
     margin: auto;

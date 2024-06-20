@@ -1,4 +1,4 @@
-import { ButtonSecondary } from '@cowprotocol/ui'
+import { ButtonSecondary, Media } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 
 import { X } from 'react-feather'
@@ -49,9 +49,9 @@ export const ModalContent = styled.div`
   width: 100%;
   grid-gap: 6px;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-      grid-template-columns: repeat(1, 1fr);
-    `};
+  ${Media.upToSmall()} {
+    grid-template-columns: repeat(1, 1fr);
+  }
 
   > ${TradeWidgetFieldBox} {
     flex-flow: row nowrap;

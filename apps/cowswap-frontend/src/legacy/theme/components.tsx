@@ -1,11 +1,9 @@
-import React from 'react'
-
 import { Command } from '@cowprotocol/types'
-import { UI } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 
-import { ArrowLeft, Trash, X } from 'react-feather'
+import { X } from 'react-feather'
 import { Link } from 'react-router-dom'
-import styled, { keyframes } from 'styled-components/macro'
+import styled from 'styled-components/macro'
 
 export const CloseIcon = styled(X)<{ onClick: Command }>`
   cursor: pointer;
@@ -14,20 +12,6 @@ export const CloseIcon = styled(X)<{ onClick: Command }>`
 
   &:hover {
     opacity: 1;
-  }
-`
-
-// for wrapper react feather icons
-export const IconWrapper = styled.div<{ stroke?: string; size?: string; marginRight?: string; marginLeft?: string }>`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: ${({ size }) => size ?? '20px'};
-  height: ${({ size }) => size ?? '20px'};
-  margin-right: ${({ marginRight }) => marginRight ?? 0};
-  margin-left: ${({ marginLeft }) => marginLeft ?? 0};
-  & > * {
-    stroke: ${({ theme, stroke }) => stroke ?? theme.blue1};
   }
 `
 
@@ -77,90 +61,8 @@ export const StyledInternalLink = styled(Link)`
   }
 `
 
-export const TrashIcon = styled(Trash)`
-  height: 16px;
-  width: 18px;
-  margin-left: 10px;
-  stroke: currentColor;
-
-  cursor: pointer;
-  align-items: center;
-  justify-content: center;
-  display: flex;
-
-  :hover {
-    opacity: 0.7;
-  }
-`
-
-const rotateImg = keyframes`
-  0% {
-    transform: perspective(1000px) rotateY(0deg);
-  }
-
-  100% {
-    transform: perspective(1000px) rotateY(360deg);
-  }
-`
-
-export const UniTokenAnimated = styled.img`
-  animation: ${rotateImg} 5s cubic-bezier(0.83, 0, 0.17, 1) infinite;
-  padding: 2rem 0 0 0;
-  filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.15));
-`
-
-const rotate = keyframes`
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-`
-
-export const Spinner = styled.img`
-  animation: 2s ${rotate} linear infinite;
-  width: 16px;
-  height: 16px;
-`
-
-const BackArrowLink = styled(StyledInternalLink)`
-  color: inherit;
-`
-export function BackArrow({ to }: { to: string }) {
-  return (
-    <BackArrowLink to={to}>
-      <ArrowLeft />
-    </BackArrowLink>
-  )
-}
-
-export const CustomLightSpinner = styled(Spinner)<{ size: string }>`
-  height: ${({ size }) => size};
-  width: ${({ size }) => size};
-`
-
 export const HideSmall = styled.span`
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     display: none;
-  `};
-`
-
-export const HideExtraSmall = styled.span`
-  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
-    display: none;
-  `};
-`
-
-export const SmallOnly = styled.span`
-  display: none;
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    display: block;
-  `};
-`
-
-export const Separator = styled.div`
-  width: 100%;
-  height: 1px;
-  background-color: var(${UI.COLOR_PRIMARY});
+  }
 `

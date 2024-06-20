@@ -1,4 +1,4 @@
-import { UI } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 
 import styled, { css } from 'styled-components/macro'
 
@@ -55,9 +55,9 @@ export const TradeWidgetFieldBox = styled.div<{ hasPrefix?: boolean }>`
   gap: 3px;
   width: 100%;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     gap: 0;
-  `};
+  }
 
   ${({ hasPrefix }) =>
     hasPrefix &&
@@ -66,10 +66,10 @@ export const TradeWidgetFieldBox = styled.div<{ hasPrefix?: boolean }>`
       grid-template-columns: max-content auto;
       grid-template-rows: max-content;
 
-      ${({ theme }) => theme.mediaWidth.upToSmall`
-      display: flex;
-      flex-flow: column wrap;
-    `};
+      ${Media.upToSmall()} {
+        display: flex;
+        flex-flow: column wrap;
+      }
     `}
 
   ${TradeWidgetFieldLabel} {
@@ -95,10 +95,10 @@ export const TradeWidgetFieldBox = styled.div<{ hasPrefix?: boolean }>`
         padding: 0;
         height: var(--minHeight);
 
-        ${({ theme }) => theme.mediaWidth.upToSmall`
+        ${Media.upToSmall()} {
           border-top: 1px solid var(${UI.COLOR_PAPER_DARKER});
           width: 100%;
-        `};
+        }
       `}
 
     > em {
@@ -125,10 +125,10 @@ export const TradeWidgetFieldBox = styled.div<{ hasPrefix?: boolean }>`
           border-radius: 0 15px 15px 0;
           align-items: center;
 
-          ${({ theme }) => theme.mediaWidth.upToSmall`
+          ${Media.upToSmall()} {
             border-radius: 0 0 15px 0;
             width: 136px;
-          `};
+          }
 
           > ${NumericalInput} {
             font-size: 18px;

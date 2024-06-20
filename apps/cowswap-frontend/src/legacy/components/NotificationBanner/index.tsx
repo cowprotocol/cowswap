@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import { MEDIA_WIDTHS, UI } from '@cowprotocol/ui'
+import { Media, MEDIA_WIDTHS, UI } from '@cowprotocol/ui'
 
 import { X } from 'react-feather'
 import styled from 'styled-components/macro'
@@ -38,9 +38,9 @@ const Banner = styled.div<Pick<BannerProps, 'isVisible' | 'level'>>`
     text-align: center;
   }
 
-  ${({ theme }) => theme.mediaWidth.upToLarge`
+  ${Media.upToLarge()} {
     font-size: 14px;
-  `}
+  }
 `
 
 const StyledClose = styled(X)`
