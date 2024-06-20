@@ -16,7 +16,6 @@ import { useUserSlippageTolerance } from 'legacy/state/user/hooks'
 
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { EthFlowModal, EthFlowProps } from 'modules/swap/containers/EthFlow'
-import { SafeTokenBanner } from 'modules/swap/containers/SafeTokenBanner'
 import { SwapModals, SwapModalsProps } from 'modules/swap/containers/SwapModals'
 import { SwapButtonState } from 'modules/swap/helpers/getSwapButtonState'
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
@@ -255,7 +254,6 @@ export function SwapWidget() {
           receiveAmountInfo={receiveAmountInfo}
         />
         <SwapWarningsTop {...swapWarningsTopProps} />
-        <SafeTokenBanner sellTokenAddress={inputToken?.address} buyTokenAddress={outputToken?.address} />
         <SwapButtons {...swapButtonContext} />
         <SwapWarningsBottom {...swapWarningsBottomProps} />
       </>
