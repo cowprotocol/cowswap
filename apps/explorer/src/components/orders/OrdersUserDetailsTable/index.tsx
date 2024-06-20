@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react'
 
+import { TruncatedText } from '@cowprotocol/ui/pure/TruncatedText'
+
 import { faExchangeAlt } from '@fortawesome/free-solid-svg-icons'
 import { safeTokenName } from '@gnosis.pm/dex-js'
 import { DateDisplay } from 'components/common/DateDisplay'
@@ -12,7 +14,6 @@ import StyledUserDetailsTable, {
 } from 'components/common/StyledUserDetailsTable'
 import { TokenDisplay } from 'components/common/TokenDisplay'
 import TradeOrderType from 'components/common/TradeOrderType'
-import { TruncatedText } from 'components/common/TruncatedText'
 import Icon from 'components/Icon'
 import { HelpTooltip } from 'components/Tooltip'
 import { TextWithTooltip } from 'explorer/components/common/TextWithTooltip'

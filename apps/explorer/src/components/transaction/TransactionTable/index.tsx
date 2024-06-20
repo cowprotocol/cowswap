@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 
 import { Command } from '@cowprotocol/types'
+import { TruncatedText } from '@cowprotocol/ui/pure/TruncatedText'
 
 import { faExchangeAlt, faSpinner } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -11,7 +12,6 @@ import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 import { EmptyItemWrapper, StyledUserDetailsTableProps } from 'components/common/StyledUserDetailsTable'
 import { TokenDisplay } from 'components/common/TokenDisplay'
 import TradeOrderType from 'components/common/TradeOrderType'
-import { TruncatedText } from 'components/common/TruncatedText'
 import Icon from 'components/Icon'
 import { OrderSurplusDisplayStyledByRow } from 'components/orders/OrdersUserDetailsTable/OrderSurplusTooltipStyledByRow'
 import { StatusLabel } from 'components/orders/StatusLabel'
@@ -23,7 +23,6 @@ import { FormatAmountPrecision, formatCalculatedPriceToDisplay, formattedAmount,
 import { Order } from 'api/operator'
 
 import { HeaderTitle, HeaderValue, WrapperUserDetailsTable } from './styled'
-
 
 function getLimitPrice(order: Order, isPriceInverted: boolean): string {
   if (!order.buyToken || !order.sellToken) return '-'

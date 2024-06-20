@@ -1,12 +1,12 @@
 import React, { useCallback, useEffect, useState } from 'react'
 
 import { Command } from '@cowprotocol/types'
+import { TruncatedText } from '@cowprotocol/ui/pure/TruncatedText'
 
 import CowLoading from 'components/common/CowLoading'
 import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 import { EmptyItemWrapper } from 'components/common/StyledUserDetailsTable'
 import { TabItemInterface } from 'components/common/Tabs/Tabs'
-import { TruncatedText } from 'components/common/TruncatedText'
 import { ConnectionStatus } from 'components/ConnectionStatus'
 import { Notification } from 'components/Notification'
 import { DetailsTable } from 'components/orders/DetailsTable'

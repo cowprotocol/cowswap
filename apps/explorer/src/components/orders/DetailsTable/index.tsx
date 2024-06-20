@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { Command } from '@cowprotocol/types'
+import { TruncatedText } from '@cowprotocol/ui/pure/TruncatedText'
 
 import { faFill, faProjectDiagram } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -11,7 +12,6 @@ import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
 import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 import { SimpleTable } from 'components/common/SimpleTable'
 import Spinner from 'components/common/Spinner'
-import { TruncatedText } from 'components/common/TruncatedText'
 import { AmountsDisplay } from 'components/orders/AmountsDisplay'
 import { FilledProgress } from 'components/orders/FilledProgress'
 import { GasFeeDisplay } from 'components/orders/GasFeeDisplay'
