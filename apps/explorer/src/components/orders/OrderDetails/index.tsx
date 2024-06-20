@@ -150,7 +150,7 @@ const tabItems = (
  */
 function getOrderWithTxHash(order: Order | null, trades: Trade[]): Order | null {
   if (order && trades.length === 1) {
-    return { ...order, txHash: trades[0].txHash || undefined }
+    return { ...order, txHash: trades[0].txHash || undefined, executionDate: trades[0].executionTime || undefined }
   }
   return order
 }
