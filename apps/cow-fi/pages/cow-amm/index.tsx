@@ -1,9 +1,9 @@
 import { GetStaticProps } from 'next'
 import { Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
 import IMG_ICON_CROWN_COW from '@cowprotocol/assets/images/icon-crown-cow.svg'
-import IMG_ICON_GOVERNANCE from '@cowprotocol/assets/images/icon-governance.svg'
 import IMG_ICON_BULB_COW from '@cowprotocol/assets/images/icon-bulb-cow.svg'
 import IMG_ICON_BUILD_WITH_COW from '@cowprotocol/assets/images/icon-build-with-cow.svg'
+import IMG_COWAMM_HERO from '@cowprotocol/assets/images/image-cowamm-hero.svg'
 
 import Layout from '@/components/Layout'
 import FAQ from '@/components/FAQ'
@@ -73,7 +73,7 @@ export default function Page({ siteConfigData }: PageProps) {
             </Link>
           </HeroContent>
           <HeroImage width={470} height={470} color={'#194D05'} marginMobile="24px auto 56px">
-            <SVG src={IMG_ICON_GOVERNANCE} />
+            <SVG src={IMG_COWAMM_HERO} />
           </HeroImage>
         </HeroContainer>
 
