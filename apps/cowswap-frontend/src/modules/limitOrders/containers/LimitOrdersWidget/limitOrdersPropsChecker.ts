@@ -16,7 +16,7 @@ export interface LimitOrdersProps {
   isUnlocked: boolean
   isRateLoading: boolean
   showRecipient: boolean
-  recipient: string | null
+  recipient?: string | null
 
   rateInfoParams: RateInfoParams
   priceImpact: PriceImpact

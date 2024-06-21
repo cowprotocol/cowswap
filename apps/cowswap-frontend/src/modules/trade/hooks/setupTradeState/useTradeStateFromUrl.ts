@@ -23,8 +23,8 @@ export function useTradeStateFromUrl(): TradeRawState {
       chainId: chainIdAsNumber,
       inputCurrencyId: inputCurrencyId || searchParams.get('inputCurrency') || null,
       outputCurrencyId: outputCurrencyId || searchParams.get('outputCurrency') || null,
-      recipient,
-      recipientAddress,
+      ...(recipient ? { recipient } : undefined),
+      ...(recipientAddress ? { recipientAddress } : undefined),
     }
 
     return state

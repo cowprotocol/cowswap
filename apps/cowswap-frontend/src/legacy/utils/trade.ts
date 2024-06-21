@@ -43,7 +43,7 @@ export type PostOrderParams = {
   buyToken: Token
   validTo: number
   recipient: string
-  recipientAddressOrName: string | null
+  recipientAddressOrName?: string | null
   allowsOffchainSigning: boolean
   appData: AppDataInfo
   class: OrderClass
