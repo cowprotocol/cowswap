@@ -1,5 +1,6 @@
 import { transparentize, darken } from 'color2k'
-import { CowProtocolTheme, css } from 'styled-components/macro'
+import { CowProtocolTheme } from 'styled-components'
+import { css } from 'styled-components/macro'
 
 import { Colors } from './typings'
 

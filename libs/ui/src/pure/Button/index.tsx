@@ -57,7 +57,6 @@ export const ButtonLight = styled(ButtonPrimary)`
   font-weight: 800;
   border: ${({ theme }) => `4px solid ${theme.black}`};
   box-shadow: ${({ theme }) => `4px 4px 0px ${theme.black}`};
-  ${({ theme }) => theme.cursor};
   overflow: hidden;
   position: relative;
 
