@@ -1,9 +1,3 @@
-export enum ButtonSize {
-  SMALL,
-  DEFAULT,
-  BIG,
-}
-
 export enum UI {
   // V3
   COLOR_PRIMARY = '--cow-color-primary',

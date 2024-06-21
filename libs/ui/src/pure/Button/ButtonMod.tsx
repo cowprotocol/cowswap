@@ -3,7 +3,9 @@ import { ChevronDown } from 'react-feather'
 import { Button as RebassButton, ButtonProps as ButtonPropsOriginal } from 'rebass/styled-components'
 import styled from 'styled-components/macro'
 
-import { ButtonSize, UI } from '../../enum'
+import { BUTTON_SIZES_STYLE, ButtonSize } from './types'
+
+import { UI } from '../../enum'
 import { RowBetween } from '../Row'
 
 type ButtonProps = Omit<ButtonPropsOriginal, 'css'>
@@ -19,7 +21,7 @@ export const BaseButton = styled(RebassButton)<
 >`
   padding: ${({ padding }) => padding ?? '16px'};
   width: ${({ width }) => width ?? '100%'};
-  ${({ theme, buttonSize = ButtonSize.DEFAULT }) => theme.buttonSizes[buttonSize]};
+  ${({ buttonSize = ButtonSize.DEFAULT }) => BUTTON_SIZES_STYLE[buttonSize]};
   font-weight: 500;
   text-align: center;
   border-radius: ${({ $borderRadius }) => $borderRadius ?? '20px'};
@@ -209,28 +211,6 @@ export const ButtonEmpty = styled(BaseButton)`
   }
 `
 
-export const ButtonText = styled(BaseButton)`
-  padding: 0;
-  width: fit-content;
-  background: none;
-  text-decoration: none;
-  &:focus {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    text-decoration: underline;
-  }
-  &:hover {
-    // text-decoration: underline;
-    opacity: 0.9;
-  }
-  &:active {
-    text-decoration: underline;
-  }
-  &:disabled {
-    opacity: 50%;
-    cursor: auto;
-  }
-`
-
 export const ButtonConfirmedStyle = styled(BaseButton)`
   background-color: ${({ theme }) => theme.bg3};
   color: var(--cow-color-text1);
@@ -296,16 +276,5 @@ export function ButtonDropdown({ disabled = false, children, ...rest }: { disabl
         <ChevronDown size={24} />
       </RowBetween>
     </ButtonPrimary>
-  )
-}
-
-export function ButtonDropdownLight({ disabled = false, children, ...rest }: { disabled?: boolean } & ButtonProps) {
-  return (
-    <ButtonOutlined {...rest} disabled={disabled}>
-      <RowBetween>
-        <div style={{ display: 'flex', alignItems: 'center' }}>{children}</div>
-        <ChevronDown size={24} />
-      </RowBetween>
-    </ButtonOutlined>
   )
 }
