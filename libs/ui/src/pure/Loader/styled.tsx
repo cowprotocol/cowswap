@@ -1,21 +1,12 @@
-import styled, { css, keyframes } from 'styled-components/macro'
+import styled, { css } from 'styled-components/macro'
 
 import { UI } from '../../enum'
-
-export const loadingAnimation = keyframes`
-  0% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-`
 
 export const LoadingRows = styled.div`
   display: grid;
 
   & > div {
-    animation: ${loadingAnimation} 1.5s infinite;
+    animation: loadingAnimation 1.5s infinite;
     animation-fill-mode: both;
     background: linear-gradient(
       to left,
@@ -27,6 +18,15 @@ export const LoadingRows = styled.div`
     border-radius: 12px;
     height: 2.4em;
     will-change: background-position;
+  }
+
+  @keyframes loadingAnimation {
+    0% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
   }
 `
 

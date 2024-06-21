@@ -3,16 +3,14 @@ import React from 'react'
 import CowError from '@cowprotocol/assets/cow-swap/CowError.png'
 import { CODE_LINK, DISCORD_LINK } from '@cowprotocol/common-const'
 import { userAgent } from '@cowprotocol/common-utils'
-import { AutoRow } from '@cowprotocol/ui'
-import { ExternalLink } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
+import { AutoRow, MEDIA_WIDTHS, ExternalLink, UI, Media } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
 
 import { AutoColumn } from 'legacy/components/Column'
 import { cowSwapStore, AppState } from 'legacy/state'
-import { MEDIA_WIDTHS, ThemedText } from 'legacy/theme'
+import { ThemedText } from 'legacy/theme'
 
 import { Title } from 'modules/application/pure/Page'
 
@@ -48,11 +46,10 @@ const CodeBlockWrapper = styled.div`
   padding: 16px;
   color: inherit;
 
-  /* MOD */
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     padding: 12px;
     width: auto;
-  `};
+  }
 `
 
 const LinkWrapper = styled.div`

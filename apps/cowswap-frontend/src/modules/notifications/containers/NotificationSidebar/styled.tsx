@@ -2,7 +2,7 @@ import ICON_ARROW from '@cowprotocol/assets/images/arrow-left.svg'
 import ICON_DOUBLE_ARROW_RIGHT from '@cowprotocol/assets/images/double-arrow-right.svg'
 import ICON_SETTINGS from '@cowprotocol/assets/images/settings.svg'
 import ICON_CLOSE_X from '@cowprotocol/assets/images/x.svg'
-import { UI } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
@@ -66,13 +66,13 @@ export const Sidebar = styled.div<{ isOpen: boolean }>`
 
   ${({ theme }) => theme.colorScrollbar};
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     width: 100%;
     position: fixed;
     top: 0;
     border: 0;
     border-radius: 0;
-  `};
+  }
 `
 
 interface SidebarHeaderProps {
@@ -92,11 +92,11 @@ export const SidebarHeader = styled.div<SidebarHeaderProps>`
   margin: 0;
   z-index: 10;
 
-  ${({ theme, isArrowNav }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     flex-flow: row-reverse;
-    flex-flow: ${isArrowNav ? 'row' : 'row-reverse'};
+    flex-flow: ${({ isArrowNav }) => (isArrowNav ? 'row' : 'row-reverse')};
     padding: 16px;
-  `};
+  }
 
   > h3 {
     font-size: 18px;
@@ -111,8 +111,8 @@ export const SidebarHeader = styled.div<SidebarHeaderProps>`
     gap: 0;
     color: var(${UI.COLOR_TEXT});
 
-    ${({ theme, isArrowNav }) => theme.mediaWidth.upToSmall`
-      flex-flow: ${isArrowNav ? 'row' : 'row-reverse'};
-    `};
+    ${Media.upToSmall()} {
+      flex-flow: ${({ isArrowNav }) => (isArrowNav ? 'row' : 'row-reverse')};
+    }
   }
 `

@@ -1,5 +1,5 @@
 import { useTheme } from '@cowprotocol/common-hooks'
-import { isInjectedWidget, isMobile } from '@cowprotocol/common-utils'
+import { isMobile, isInjectedWidget } from '@cowprotocol/common-utils'
 import {
   CoinbaseWalletOption,
   InjectedOption as DefaultInjectedOption,
@@ -17,6 +17,7 @@ import {
 } from '@cowprotocol/wallet'
 
 import { useSelectedWallet } from 'legacy/state/user/hooks'
+
 
 export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActivation }) {
   const selectedWallet = useSelectedWallet()

@@ -1,4 +1,4 @@
-import { ButtonPrimary, ExternalLink as ExternalLinkTheme, UI } from '@cowprotocol/ui'
+import { ButtonPrimary, ExternalLink as ExternalLinkTheme, Media, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
@@ -46,11 +46,11 @@ export const Menu = styled.div`
   width: 100%;
   padding: 38px 0 0;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     padding: 0;
     position: relative;
     margin: 0;
-  `}
+  }
 
   > ul {
     display: flex;
@@ -60,11 +60,11 @@ export const Menu = styled.div`
     padding: 0;
     font-size: inherit;
 
-    ${({ theme }) => theme.mediaWidth.upToSmall`
+    ${Media.upToSmall()} {
       background: var(${UI.COLOR_TEXT_OPACITY_10});
       border-radius: 16px;
       padding: 12px;
-    `}
+    }
   }
 
   > ul > li {
@@ -82,9 +82,9 @@ export const Menu = styled.div`
     transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
     display: block;
 
-    ${({ theme }) => theme.mediaWidth.upToSmall`
+    ${Media.upToSmall()} {
       margin: 0;
-    `}
+    }
 
     &:hover,
     &.active {
@@ -92,10 +92,10 @@ export const Menu = styled.div`
     }
 
     &.active {
-      ${({ theme }) => theme.mediaWidth.upToSmall`
+      ${Media.upToSmall()} {
         background: var(${UI.COLOR_TEXT_OPACITY_10});
         border-radius: 16px;
-      `}
+      }
     }
   }
 `

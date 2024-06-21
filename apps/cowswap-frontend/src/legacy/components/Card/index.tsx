@@ -43,10 +43,6 @@ export const DarkGreyCard = styled(Card)`
   background-color: var(${UI.COLOR_PRIMARY});
 `
 
-export const DarkCard = styled(Card)`
-  background-color: ${({ theme }) => theme.bg0};
-`
-
 export const OutlineCard = styled(Card)`
   border: 1px solid var(${UI.COLOR_PAPER_DARKER});
 `

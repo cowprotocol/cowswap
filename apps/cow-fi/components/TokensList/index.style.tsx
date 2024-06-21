@@ -1,6 +1,6 @@
 import styled from 'styled-components'
-import { Color, Media } from 'styles/variables'
-import { transparentize } from 'polished'
+import { Media } from 'styles/variables'
+import { Color } from '@cowprotocol/ui'
 
 export const Wrapper = styled.div`
   --tokenSize: 2.6rem;
@@ -10,7 +10,7 @@ export const Wrapper = styled.div`
   max-width: 126rem;
   margin: 0 auto;
   padding: 0 1.6rem;
-  color: ${Color.darkBlue};
+  color: ${Color.neutral10};
 
   ${Media.mobile} {
     max-width: 100%;
@@ -31,12 +31,13 @@ export const Wrapper = styled.div`
 
 export const SearchTokens = styled.input`
   width: 100%;
-  border: 1px solid ${transparentize(0.9, Color.darkBlue)};
+  border: 1px solid transparent;
   border-radius: 1.6rem;
-  background-color: ${transparentize(0.95, Color.darkBlue)};
+  background: ${Color.neutral80};
   padding: 1rem 1rem;
   margin: 0 auto 1.6rem;
-  color: ${transparentize(0.1, Color.darkBlue)};
+  color: ${Color.neutral30};
+  font-size: 1.8rem;
   transition: border-color 0.2s ease-in-out, background-color 0.2s ease-in-out, color 0.2s ease-in-out;
   outline: 0;
 `
@@ -54,7 +55,7 @@ export const HeaderItem = styled.div`
   align-items: center;
   justify-content: flex-start;
   padding: 1rem 0;
-  border-bottom: 1px solid ${transparentize(0.9, Color.darkBlue)};
+  border-bottom: 1px solid ${Color.neutral10};
   gap: 1.4rem;
   width: 100%;
 
@@ -78,12 +79,12 @@ export const PlacerholderImage = styled.div`
   width: var(--tokenSize);
   height: var(--tokenSize);
   border-radius: var(--tokenSize);
-  background-color: ${Color.darkBlue};
+  background-color: ${Color.neutral10};
 `
 
 export const NoTokensText = styled.div`
   font-size: 2rem;
   padding: 1rem;
   padding-top: 2rem;
-  color: ${Color.text1};
+  color: ${Color.neutral0};
 `

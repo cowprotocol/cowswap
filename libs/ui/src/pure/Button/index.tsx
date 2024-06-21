@@ -6,7 +6,6 @@ import styled from 'styled-components/macro'
 
 import {
   ButtonConfirmedStyle as ButtonConfirmedStyleMod,
-  ButtonEmpty as ButtonEmptyMod,
   ButtonGray as ButtonGrayMod,
   ButtonPrimary as ButtonPrimaryMod,
 } from './ButtonMod'
@@ -30,7 +29,6 @@ export const ButtonPrimary = styled(ButtonPrimaryMod)`
   transition: background var(${UI.ANIMATION_DURATION}) ease-in-out, color var(${UI.ANIMATION_DURATION}) ease-in-out;
   margin: 0;
   flex-flow: row wrap;
-  /* ${({ theme }) => theme.cursor}; */ // TODO: add behind feature flag
 
   &:focus,
   &:hover,
@@ -185,10 +183,6 @@ export const ButtonErrorStyle = styled(ButtonPrimary)`
     background: var(${UI.COLOR_DANGER});
     color: var(${UI.COLOR_BUTTON_TEXT});
   }
-`
-
-export const ButtonEmpty = styled(ButtonEmptyMod)`
-  // CSS overrides
 `
 
 export const FancyButton = styled.button`

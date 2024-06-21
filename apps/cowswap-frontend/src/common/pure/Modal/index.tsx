@@ -3,7 +3,7 @@ import React, { useCallback, useEffect } from 'react'
 
 import { isMobile } from '@cowprotocol/common-utils'
 import { Command } from '@cowprotocol/types'
-import { UI } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 
 import { useSpringValue, useTransition } from '@react-spring/web'
 import { useGesture } from '@use-gesture/react'
@@ -121,16 +121,16 @@ export const CowModal = styled(Modal)<{
     overflow: hidden;
     border-radius: var(${UI.BORDER_RADIUS_NORMAL});
 
-    ${({ theme }) => theme.mediaWidth.upToSmall`
+    ${Media.upToSmall()} {
       max-height: 100vh;
       max-width: 100%;
       height: 100%;
       width: 100vw;
       border-radius: 0;
-    `}
+    }
 
     ${HeaderRow} {
-      ${({ theme }) => theme.mediaWidth.upToSmall`
+      ${Media.upToSmall()} {
         position: fixed;
         top: 0;
         left: 0;
@@ -138,26 +138,26 @@ export const CowModal = styled(Modal)<{
         padding: 16px;
         background: var(${UI.COLOR_PAPER});
         z-index: 20;
-      `}
+      }
     }
 
     ${CloseIcon} {
-      ${({ theme }) => theme.mediaWidth.upToSmall`
+      ${Media.upToSmall()} {
         z-index: 21;
         position: fixed;
-      `}
+      }
     }
 
     ${HoverText} {
-      ${({ theme }) => theme.mediaWidth.upToSmall`
+      ${Media.upToSmall()} {
         white-space: nowrap;
-      `}
+      }
     }
 
     ${ContentWrapper} {
-      ${({ theme }) => theme.mediaWidth.upToSmall`
+      ${Media.upToSmall()} {
         margin: 82px auto 0;
-      `}
+      }
     }
   }
 `

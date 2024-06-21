@@ -3,7 +3,7 @@ import { ChevronDown } from 'react-feather'
 import { Button as RebassButton, ButtonProps as ButtonPropsOriginal } from 'rebass/styled-components'
 import styled from 'styled-components/macro'
 
-import { ButtonSize } from '../../enum'
+import { ButtonSize, UI } from '../../enum'
 import { RowBetween } from '../Row'
 
 type ButtonProps = Omit<ButtonPropsOriginal, 'css'>
@@ -25,7 +25,7 @@ export const BaseButton = styled(RebassButton)<
   border-radius: ${({ $borderRadius }) => $borderRadius ?? '20px'};
   outline: none;
   border: 1px solid transparent;
-  color: white;
+  color: var(${UI.COLOR_TEXT});
   text-decoration: none;
   display: flex;
   justify-content: center;

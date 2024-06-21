@@ -1,8 +1,8 @@
 import { Command } from '@cowprotocol/types'
 import { ButtonEmpty, ButtonPrimary, Loader } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
-import { transparentize } from 'color2k'
 import styled from 'styled-components/macro'
 
 import { ThemedText } from 'legacy/theme'
@@ -49,10 +49,11 @@ const LoadingWrapper = styled.div`
 
 const WalletError = styled.div`
   width: 100%;
-  padding: 1rem;
+  padding: 16px;
   text-align: center;
   border-radius: 12px;
-  background: ${({ theme }) => transparentize(theme.disabled, 0.7)};
+  background: var(${UI.COLOR_DANGER_BG});
+  color: var(${UI.COLOR_DANGER_TEXT});
   margin: -15px 0 20px 0;
 `
 export function PendingView({

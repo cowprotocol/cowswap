@@ -10,7 +10,6 @@ import { useNetworkId } from '../../state/network'
 import { addBodyClass, removeBodyClass } from '../../utils/toggleBodyClass'
 import { FlexWrap } from '../pages/styled'
 
-
 export const Header: React.FC = () => {
   const isMobile = useMediaBreakpoint(['xs', 'sm'])
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -34,7 +33,6 @@ export const Header: React.FC = () => {
 
   return (
     <GenericHeader
-      logoAlt="CoW Protocol Explorer"
       linkTo={`/${prefixNetwork || ''}`}
       onClickOptional={isMobileMenuOpen ? handleMobileMenuOnClick : undefined}
     >

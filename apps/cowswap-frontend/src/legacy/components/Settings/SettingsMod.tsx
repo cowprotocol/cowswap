@@ -2,10 +2,9 @@ import { useCallback, useRef } from 'react'
 
 import { toggleRecepientAddressAnalytics } from '@cowprotocol/analytics'
 import { useOnClickOutside } from '@cowprotocol/common-hooks'
-import { HelpTooltip, RowBetween, RowFixed, UI } from '@cowprotocol/ui'
+import { HelpTooltip, Media, RowBetween, RowFixed, UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
-import { Settings } from 'react-feather'
 import { Text } from 'rebass'
 import styled from 'styled-components/macro'
 
@@ -19,7 +18,7 @@ import { ThemedText } from 'legacy/theme'
 
 import { SettingsTabProp } from './index'
 
-export const StyledMenuIcon = styled(Settings)`
+export const StyledMenuIcon = styled.span`
   --size: var(${UI.ICON_SIZE_NORMAL});
   height: var(--size);
   width: var(--size);
@@ -78,15 +77,15 @@ export const MenuFlyout = styled.span`
   z-index: 100;
   color: inherit;
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${Media.upToMedium()} {
     min-width: 18.125rem;
-  `};
+  }
 
   user-select: none;
 `
 
 export default function SettingsTab({ className, placeholderSlippage, SettingsButton }: SettingsTabProp) {
-  const node = useRef<HTMLDivElement>()
+  const node = useRef<HTMLDivElement>(null)
   const open = useModalIsOpen(ApplicationModal.SETTINGS)
   const toggle = useToggleSettingsMenu()
 
@@ -102,7 +101,7 @@ export default function SettingsTab({ className, placeholderSlippage, SettingsBu
 
   // show confirmation view before turning on
 
-  useOnClickOutside(node, open ? toggle : undefined)
+  useOnClickOutside([node], open ? toggle : undefined)
 
   return (
     // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/30451

@@ -1,8 +1,7 @@
-import { BackButton, UI } from '@cowprotocol/ui'
+import { BackButton, Media, UI } from '@cowprotocol/ui'
 
-import { transparentize } from 'color2k'
 import { X } from 'react-feather'
-import styled, { css } from 'styled-components/macro'
+import styled from 'styled-components/macro'
 
 export const Wrapper = styled.div`
   width: 100%;
@@ -128,7 +127,8 @@ export const StepsIconWrapper = styled.div`
     left: var(--border-size);
     z-index: -1;
     border-radius: calc(var(--border-radius) - var(--border-size));
-    ${({ theme }) => theme.card.boxShadow};
+    background: linear-gradient(145deg, var(${UI.COLOR_PAPER}), var(${UI.COLOR_PAPER_DARKER}));
+    box-shadow: inset 0 1px 1px 0 hsl(0deg 0% 100% / 10%), 0 10px 40px -20px #000000;
   }
 
   > svg {
@@ -168,7 +168,7 @@ export const StepsWrapper = styled.div`
     ${StepsIconWrapper} {
       &::before {
         content: '';
-        ${({ theme }) => theme.iconGradientBorder};
+        background: conic-gradient(var(${UI.COLOR_PAPER}) 40grad, 80grad, var(${UI.COLOR_PRIMARY}) 360grad);
         display: block;
         width: var(--circle-size);
         padding: 0;
@@ -203,13 +203,13 @@ export const StepsWrapper = styled.div`
     top: 32px;
     z-index: 1;
 
-    ${({ theme }) => theme.mediaWidth.upToSmall`
+    ${Media.upToSmall()} {
       max-width: 25%;
-    `}
+    }
 
-    ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+    ${Media.upToExtraSmall()} {
       max-width: 20%;
-    `}
+    }
   }
 
   > hr::before {
@@ -273,162 +273,4 @@ export const BackButtonStyled = styled(BackButton)`
   position: absolute;
   top: 16px;
   left: 16px;
-`
-
-export const ApproveComparison = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: max-content;
-  grid-gap: 16px;
-  margin: 0 auto;
-  width: 100%;
-
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    display: flex;
-    flex-flow: column wrap;
-    gap: 24px;
-  `};
-`
-
-export const CompareItem = styled.div<{ highlight?: boolean; recommended?: boolean }>`
-  display: flex;
-  flex-flow: column wrap;
-  align-items: center;
-  justify-content: flex-start;
-  padding: 32px 24px;
-  gap: 16px;
-  border-radius: 12px;
-  font-size: 13px;
-  background: ${({ theme, highlight }) =>
-    highlight ? (theme.darkMode ? transparentize(theme.text3, 0.8) : transparentize(theme.text3, 0.9)) : theme.bg1};
-  border: 1px solid ${({ highlight }) => (highlight ? 'none' : `var(${UI.COLOR_TEXT})`)};
-  position: relative;
-
-  &::before {
-    content: ${({ recommended }) => (recommended ? "'Recommended'" : 'none')};
-    position: absolute;
-    top: -7px;
-    left: 0;
-    right: 0;
-    width: fit-content;
-    border-radius: 12px;
-    display: block;
-    margin: 0 auto;
-    padding: 2px 6px;
-    text-transform: uppercase;
-    font-size: 10px;
-    font-weight: bold;
-    letter-spacing: 0.5px;
-    text-align: center;
-    background: ${({ theme }) => theme.text3};
-    color: ${({ theme }) => (theme.darkMode ? theme.blueDark1 : theme.white)};
-  }
-
-  > h5 {
-    font-size: 21px;
-    font-weight: ${({ highlight }) => (highlight ? 700 : 500)};
-    margin: 0;
-    padding: 0;
-  }
-`
-
-export const ItemList = styled.div<{ listIconAlert?: boolean }>`
-  margin: 0 auto;
-  padding: 0;
-  list-style: none;
-  font-size: inherit;
-  color: inherit;
-  gap: 6px;
-  display: flex;
-  flex-flow: column wrap;
-
-  > li {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-  }
-
-  > li > svg {
-    --size: 12px;
-    display: inline-block;
-    width: var(--size);
-    height: var(--size);
-
-    ${({ listIconAlert }) =>
-      !listIconAlert &&
-      css`
-        > path:nth-child(1) {
-          fill: ${({ theme }) => theme.text3};
-          opacity: 1;
-        }
-
-        > path:nth-child(2) {
-          fill: ${({ theme }) => theme.text3};
-        }
-
-        > path:nth-child(3) {
-          fill: ${({ theme }) => theme.white};
-        }
-      `}
-
-    ${({ listIconAlert }) =>
-      listIconAlert &&
-      css`
-        > path {
-          fill: ${({ theme }) => transparentize(theme.text, 0.6)};
-        }
-      `}
-  }
-`
-
-export const ApproveFooter = styled.div`
-  display: flex;
-  flex-flow: column wrap;
-  font-size: 13px;
-  margin: 0 auto;
-
-  > h6 {
-    margin: 0 auto 16px;
-    width: 100%;
-    font-weight: 600;
-    font-size: 14px;
-    text-align: center;
-  }
-
-  > ul {
-    margin: 0 auto;
-    padding: 0;
-    list-style: none;
-    font-size: inherit;
-    color: var(${UI.COLOR_TEXT_OPACITY_25});
-    gap: 6px;
-    display: flex;
-    flex-flow: column wrap;
-  }
-
-  > ul > li {
-    display: flex;
-    align-items: center;
-  }
-
-  > ul > li > svg {
-    --size: 12px;
-    display: inline-block;
-    width: var(--size);
-    height: var(--size);
-    margin: 0 6px 0 0;
-
-    > path:nth-child(1) {
-      fill: ${({ theme }) => theme.text3};
-      opacity: 1;
-    }
-
-    > path:nth-child(2) {
-      fill: ${({ theme }) => theme.text3};
-    }
-
-    > path:nth-child(3) {
-      fill: ${({ theme }) => theme.white};
-    }
-  }
 `

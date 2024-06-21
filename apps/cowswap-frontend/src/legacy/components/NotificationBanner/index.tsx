@@ -1,11 +1,9 @@
 import { useEffect, useState } from 'react'
 
-import { UI } from '@cowprotocol/ui'
+import { Media, MEDIA_WIDTHS, UI } from '@cowprotocol/ui'
 
 import { X } from 'react-feather'
 import styled from 'styled-components/macro'
-
-import { MEDIA_WIDTHS } from 'legacy/theme'
 
 import { useNotificationState } from 'common/hooks/useNotificationState'
 
@@ -40,9 +38,9 @@ const Banner = styled.div<Pick<BannerProps, 'isVisible' | 'level'>>`
     text-align: center;
   }
 
-  ${({ theme }) => theme.mediaWidth.upToLarge`
+  ${Media.upToLarge()} {
     font-size: 14px;
-  `}
+  }
 `
 
 const StyledClose = styled(X)`

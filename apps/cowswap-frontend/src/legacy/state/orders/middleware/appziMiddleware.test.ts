@@ -1,6 +1,6 @@
-import { isOrderInPendingTooLong, triggerAppziSurvey } from '@cowprotocol/common-utils'
 import { UiOrderType } from '@cowprotocol/types'
 
+import { isOrderInPendingTooLong, triggerAppziSurvey } from 'appzi'
 import { AnyAction, Dispatch, MiddlewareAPI } from 'redux'
 import { instance, mock, resetCalls, when } from 'ts-mockito'
 
@@ -11,7 +11,7 @@ import { appziMiddleware } from './appziMiddleware'
 import { AppState } from '../../index'
 import { getOrderByIdFromState } from '../helpers'
 
-jest.mock('@cowprotocol/common-utils')
+jest.mock('appzi')
 jest.mock('../helpers', () => {
   return {
     ...jest.requireActual('../helpers'),

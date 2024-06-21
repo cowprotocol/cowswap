@@ -1,5 +1,6 @@
 import { Fragment } from 'react'
 
+import { Media } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import styled from 'styled-components/macro'
@@ -16,9 +17,9 @@ type SimpleAccountDetailsProps = Pick<AccountDetailsProps, 'pendingTransactions'
 
 const SimpleWrapper = styled(Wrapper)<StyledWrapperProps>`
   ${({ $margin }) => $margin && `margin: ${$margin};`}
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${Media.upToMedium()} {
     padding: 0;
-  `};
+  }
 `
 
 export default function SimpleAccountDetails({

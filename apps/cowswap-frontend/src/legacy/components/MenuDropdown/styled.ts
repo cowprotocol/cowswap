@@ -1,4 +1,4 @@
-import { UI } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
@@ -24,9 +24,9 @@ export const MenuFlyout = styled.ol`
         left: 0;
         background: transparent;
 
-        ${({ theme }) => theme.mediaWidth.upToLarge`
+        ${Media.upToLarge()} {
           content: none;
-        `};
+        }
       }
     }
 
@@ -57,7 +57,7 @@ export const Content = styled.div`
   gap: 62px;
   margin: 6px 0 0;
 
-  ${({ theme }) => theme.mediaWidth.upToLarge`
+  ${Media.upToLarge()} {
     box-shadow: none;
     background: transparent;
     padding: 0;
@@ -67,7 +67,7 @@ export const Content = styled.div`
     border-radius: 0;
     display: flex;
     flex-flow: column wrap;
-  `};
+  }
 
   > div {
     display: flex;
@@ -112,9 +112,9 @@ export const MenuSection = styled.div`
     opacity: 0.8;
     transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
 
-    ${({ theme }) => theme.mediaWidth.upToLarge`
+    ${Media.upToLarge()} {
       opacity: 1;
-    `};
+    }
 
     > svg,
     > img {

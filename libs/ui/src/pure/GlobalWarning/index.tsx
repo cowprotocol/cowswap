@@ -5,7 +5,7 @@ import styled from 'styled-components/macro'
 
 import { UI } from '../../enum'
 
-const StyledClose = styled(X)`
+const StyledClose = styled(X as any)`
   :hover {
     cursor: pointer;
   }

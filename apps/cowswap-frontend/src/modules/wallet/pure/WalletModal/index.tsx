@@ -39,14 +39,15 @@ export function WalletModal(props: WalletModalProps) {
     <CowModal maxWidth={600} isOpen={isOpen} onDismiss={onDismiss} minHeight={false} maxHeight={90}>
       <Wrapper>
         <UpperSection>
-          <CloseIcon onClick={onDismiss}>
-            <CloseColor />
-          </CloseIcon>
           {!isPending && (
             <HeaderRow>
               <HoverText>
                 <Trans>Connect a wallet</Trans>
               </HoverText>
+
+              <CloseIcon onClick={onDismiss}>
+                <CloseColor />
+              </CloseIcon>
             </HeaderRow>
           )}
           <ContentWrapper>

@@ -4,6 +4,7 @@ import { Loader } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Token, CurrencyAmount } from '@uniswap/sdk-core'
 
+
 import { BalanceValue } from './styled'
 
 type BalanceCellProps = {

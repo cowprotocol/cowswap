@@ -1,7 +1,7 @@
 import '@reach/dialog/styles.css'
 import './polyfills'
 
-import React, { ReactNode, StrictMode, useCallback, useContext, useEffect } from 'react'
+import React, { ReactNode, StrictMode, useCallback, useContext } from 'react'
 
 import IMAGE_MOON from '@cowprotocol/assets/cow-swap/moon.svg'
 import IMAGE_SUN from '@cowprotocol/assets/cow-swap/sun.svg'
@@ -37,7 +37,6 @@ const DarkModeToggle = ({ children }: { children?: ReactNode }) => {
   const [darkMode, toggleDarkModeAux] = useDarkModeManager()
   const toggleDarkMode = useCallback(() => {
     toggleDarkModeAux()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [toggleDarkModeAux, darkMode])
   const label = (darkMode ? 'Light' : 'Dark') + ' Mode'
   const description = `${darkMode ? 'Sun/light' : 'Moon/dark'} mode icon`
@@ -91,11 +90,6 @@ const { connector, hooks } = injectedWalletConnection
 connector.activate(chainId)
 
 const Fixture = ({ children }: { children: ReactNode }) => {
-  useEffect(() => {
-    const skeleton = document.getElementById('swap-skeleton')
-    if (skeleton) skeleton.style.display = 'none'
-  }, [])
-
   return (
     <StrictMode>
       <FixedGlobalStyle />

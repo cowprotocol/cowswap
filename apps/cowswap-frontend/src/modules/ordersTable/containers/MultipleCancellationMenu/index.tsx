@@ -1,7 +1,7 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback, useEffect } from 'react'
 
-import { UI } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 import { useWalletDetails } from '@cowprotocol/wallet'
 
 import { Trash2 } from 'react-feather'
@@ -25,11 +25,11 @@ const Wrapper = styled.div<{ hasSelectedItems: boolean }>`
   margin-left: ${({ hasSelectedItems }) => (hasSelectedItems ? '' : 'auto')};
   margin: 0 10px 0 0;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     width: 100%;
     justify-content: center;
     margin: 15px auto 0;
-  `}
+  }
 `
 
 const ActionButton = styled.button`

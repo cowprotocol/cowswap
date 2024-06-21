@@ -7,7 +7,10 @@ import { Dimensions } from './types'
 const GOOGLE_ANALYTICS_ID: string | undefined = process.env.REACT_APP_GOOGLE_ANALYTICS_ID
 export const GOOGLE_ANALYTICS_CLIENT_ID_STORAGE_KEY = 'ga_client_id'
 
-const storedClientId = window.localStorage.getItem(GOOGLE_ANALYTICS_CLIENT_ID_STORAGE_KEY)
+let storedClientId: string | null = null
+if (typeof window !== 'undefined') {
+  storedClientId = window.localStorage.getItem(GOOGLE_ANALYTICS_CLIENT_ID_STORAGE_KEY)
+}
 
 export function outboundLink(
   {
@@ -29,10 +32,13 @@ if (typeof GOOGLE_ANALYTICS_ID === 'string') {
       cookieFlags: 'SameSite=None; Secure',
     },
   })
-  googleAnalytics.setDimension(
-    Dimensions.customBrowserType,
-    !isMobile ? 'desktop' : 'web3' in window || 'ethereum' in window ? 'mobileWeb3' : 'mobileRegular'
-  )
+
+  if (typeof window !== 'undefined') {
+    googleAnalytics.setDimension(
+      Dimensions.customBrowserType,
+      !isMobile ? 'desktop' : 'web3' in window || 'ethereum' in window ? 'mobileWeb3' : 'mobileRegular'
+    )
+  }
 } else {
   googleAnalytics.initialize('test', { gtagOptions: { debug_mode: true } })
 }

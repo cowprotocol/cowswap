@@ -137,7 +137,7 @@ const Wrapper = styled.span<{
   }
 `
 
-const CloseIcon = styled(X)`
+const CloseIcon = styled(X as any)`
   --size: 16px;
   cursor: pointer;
   position: absolute;

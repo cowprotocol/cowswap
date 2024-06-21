@@ -5,6 +5,7 @@ import { useTheme } from '@cowprotocol/common-hooks'
 import { Slash } from 'react-feather'
 import { ImageProps } from 'rebass'
 
+
 const BAD_SRCS: { [tokenAddress: string]: true } = {}
 
 export interface LogoProps extends Pick<ImageProps, 'style' | 'alt' | 'className'> {

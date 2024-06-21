@@ -1,6 +1,6 @@
-import { UI } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 
-import styled from 'styled-components/macro'
+import styled, { css } from 'styled-components/macro'
 
 import { StyledRowBetween } from 'modules/swap/pure/Row/styled'
 
@@ -13,14 +13,16 @@ export const Wrapper = styled.div<{ alwaysRow: boolean }>`
   width: 100%;
   font-size: 13px;
 
-  ${({ theme, alwaysRow }) =>
-    !alwaysRow &&
-    theme.mediaWidth.upToSmall`
-    width: 100%;
-    flex-flow: column wrap;
-    align-items: flex-start;
-    margin: 0 0 10px;
-  `}
+  ${Media.upToSmall()} {
+    ${({ alwaysRow }) =>
+      !alwaysRow &&
+      css`
+        width: 100%;
+        flex-flow: column wrap;
+        align-items: flex-start;
+        margin: 0 0 10px;
+      `}
+  }
 
   > svg:first-child {
     margin: 0 4px 0 0;
@@ -29,13 +31,15 @@ export const Wrapper = styled.div<{ alwaysRow: boolean }>`
   }
 
   ${StyledRowBetween} {
-    ${({ theme, alwaysRow }) =>
-      !alwaysRow &&
-      theme.mediaWidth.upToSmall`
-      flex-flow: column wrap;
-      gap: 2px;
-      align-items: flex-start;
-    `}
+    ${Media.upToSmall()} {
+      ${({ alwaysRow }) =>
+        !alwaysRow &&
+        css`
+          flex-flow: column wrap;
+          gap: 2px;
+          align-items: flex-start;
+        `}
+    }
   }
 `
 
@@ -54,9 +58,9 @@ export const Content = styled.div<{ highlighted?: boolean }>`
   font-weight: ${({ highlighted }) => (highlighted ? 700 : 500)};
   font-size: 13px;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     margin: 0;
-  `}
+  }
 
   > span {
     display: block;

@@ -3,13 +3,13 @@ import { ReactNode } from 'react'
 import cowMeditatingV2 from '@cowprotocol/assets/cow-swap/meditating-cow-v2.svg'
 import imageConnectWallet from '@cowprotocol/assets/cow-swap/wallet-plus.svg'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
-import { ExternalLink } from '@cowprotocol/ui'
+import { ExternalLink, Media } from '@cowprotocol/ui'
 import { UI, CowSwapSafeAppLink, MY_ORDERS_ID } from '@cowprotocol/ui'
 import type { CowSwapWidgetAppParams } from '@cowprotocol/widget-lib'
 
 import { Trans } from '@lingui/macro'
 import SVG from 'react-inlinesvg'
-import styled from 'styled-components/macro'
+import styled, { css } from 'styled-components/macro'
 
 import { Web3Status } from 'modules/wallet/containers/Web3Status'
 
@@ -123,14 +123,14 @@ const Header = styled.div`
   width: 100%;
   margin: 0 0 24px;
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${Media.upToMedium()} {
     display: block;
     text-align: center;
 
     > h2 {
-      margin-bottom: 15px!important;
+      margin-bottom: 15px !important;
     }
-  `};
+  }
 
   > h2 {
     font-size: 24px;
@@ -143,13 +143,15 @@ const TabsContainer = styled.div<{ withSingleChild: boolean }>`
   align-items: center;
   justify-content: flex-end;
 
-  ${({ theme, withSingleChild }) =>
-    !withSingleChild &&
-    theme.mediaWidth.upToMedium`
-      flex-direction: column-reverse;
-      align-items: end;
-      gap: 10px;
-  `};
+  ${Media.upToMedium()} {
+    ${({ withSingleChild }) =>
+      !withSingleChild &&
+      css`
+        flex-direction: column-reverse;
+        align-items: end;
+        gap: 10px;
+      `};
+  }
 `
 
 const ExternalLinkStyled = styled(ExternalLink)`

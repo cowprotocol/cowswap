@@ -1,4 +1,4 @@
-import { UI } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import { transparentize, darken } from 'color2k'
@@ -15,9 +15,9 @@ const ModalMessage = styled.div`
   font-size: 14px;
   line-height: 1.3;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     margin-top: 2rem;
-  `}
+  }
 
   > p {
     margin: 0 0 16px;

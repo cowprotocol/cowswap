@@ -1,40 +1,32 @@
 import React, { useMemo } from 'react'
 
 import { isInjectedWidget } from '@cowprotocol/common-utils'
+import {
+  colors as colorsBaseTheme,
+  Colors,
+  FixedGlobalStyle as FixedGlobalStyleBase,
+  Media,
+  ThemeColorsGlobalStyle,
+  themeMapper,
+  UI,
+} from '@cowprotocol/ui'
 
 import { Text, TextProps as TextPropsOriginal } from 'rebass'
 import styled, {
-  css,
+  createGlobalStyle,
   DefaultTheme,
-  DefaultThemeUniswap,
   ThemeProvider as StyledComponentsThemeProvider,
 } from 'styled-components/macro'
 
 import { useIsDarkMode } from 'legacy/state/user/hooks'
-import {
-  colors as colorsBaseTheme,
-  FixedGlobalStyle as FixedGlobalStyleBase,
-  themeVariables as baseThemeVariables,
-} from 'legacy/theme/baseTheme'
 
 import { useInjectedWidgetPalette } from 'modules/injectedWidget'
 
 import { ThemeFromUrlUpdater } from 'common/updaters/ThemeFromUrlUpdater'
 
 import { mapWidgetTheme } from './mapWidgetTheme'
-import { Colors } from './styled'
 
 export type TextProps = Omit<TextPropsOriginal, 'css'> & { override?: boolean }
-
-export const MEDIA_WIDTHS = {
-  upToTiny: 320,
-  upToExtraSmall: 500,
-  upToSmall: 720,
-  upToMedium: 960,
-  upToLarge: 1280,
-  upToLargeAlt: 1390,
-  upToExtraLarge: 2560,
-}
 
 // Migrating to a standard z-index system https://getbootstrap.com/docs/5.0/layout/z-index/
 // Please avoid using deprecated numbers
@@ -53,46 +45,6 @@ export enum Z_INDEX {
 
 export function colors(darkMode: boolean): Colors {
   return colorsBaseTheme(darkMode)
-}
-
-const mediaWidthTemplates: { [width in keyof typeof MEDIA_WIDTHS]: typeof css } = Object.keys(MEDIA_WIDTHS).reduce(
-  (accumulator, size) => {
-    ;(accumulator as any)[size] = (a: any, b: any, c: any) => css`
-      @media (max-width: ${(MEDIA_WIDTHS as any)[size]}px) {
-        ${css(a, b, c)}
-      }
-    `
-    return accumulator
-  },
-  {}
-) as any
-
-export function getTheme(darkMode: boolean): DefaultThemeUniswap {
-  return {
-    ...colors(darkMode),
-
-    grids: {
-      sm: 8,
-      md: 12,
-      lg: 24,
-    },
-
-    //shadows
-    shadow1: darkMode ? '#000' : '#2F80ED',
-
-    // media queries
-    mediaWidth: mediaWidthTemplates,
-
-    // css snippets
-    flexColumnNoWrap: css`
-      display: flex;
-      flex-flow: column nowrap;
-    `,
-    flexRowNoWrap: css`
-      display: flex;
-      flex-flow: row nowrap;
-    `,
-  }
 }
 
 export const TextWrapper = styled(Text)<{ color: keyof Colors; override?: boolean }>`
@@ -164,16 +116,7 @@ export const ThemedText = {
 }
 
 export function theme(darkmode: boolean, isInjectedWidgetMode: boolean): DefaultTheme {
-  const colorsTheme = colors(darkmode)
-  return {
-    ...getTheme(darkmode),
-    ...colorsTheme,
-    isInjectedWidgetMode,
-
-    // Override Theme
-    ...baseThemeVariables(darkmode, colorsTheme),
-    mediaWidth: mediaWidthTemplates,
-  }
+  return themeMapper(darkmode ? 'dark' : 'light', isInjectedWidgetMode)
 }
 
 export default function ThemeProvider({ children }: { children?: React.ReactNode }) {
@@ -201,5 +144,62 @@ export default function ThemeProvider({ children }: { children?: React.ReactNode
 
 export const FixedGlobalStyle = FixedGlobalStyleBase
 
-export { ThemedGlobalStyle } from './baseTheme'
+export const ThemedGlobalStyle = createGlobalStyle`
+  ${ThemeColorsGlobalStyle}
+
+  html {
+    background-color: ${({ theme }) =>
+      theme.isInjectedWidgetMode ? 'transparent' : `var(${UI.COLOR_CONTAINER_BG_02})`};
+  }
+
+  *, *:after, *:before { box-sizing:border-box; }
+
+  body {
+
+    &.noScroll {
+      overflow: hidden;
+    }
+  }
+
+  ::selection {
+    background: var(${UI.COLOR_PRIMARY});
+    color: var(${UI.COLOR_BUTTON_TEXT});
+  }
+
+  // TODO: Can be removed once we control this component
+  [data-reach-dialog-overlay] {
+    z-index: 10!important;
+
+    ${Media.upToMedium()} {
+      top: 0!important;
+      bottom: 0!important;
+    }
+  }
+
+  // Appzi Container override
+  div[id*='appzi-wfo-'] {
+    display: none!important; // Force hiding Appzi container when not opened
+  }
+
+  body[class*='appzi-f-w-open-'] div[id^='appzi-wfo-'] {
+    z-index: 2147483004!important;
+    display: block!important;
+  }
+
+    // Walletconnect V2 mobile override
+  body #wcm-modal.wcm-overlay {
+    ${Media.upToSmall()} {
+      align-items: flex-start;
+    }
+
+    a {
+      text-decoration: none;
+
+      :hover {
+        text-decoration: underline;
+      }
+    }
+  }
+`
+
 export * from './components'
