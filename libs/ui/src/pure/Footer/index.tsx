@@ -108,7 +108,7 @@ const PRODUCT_LOGO_LINKS: {
     utmContent: 'product-cow-protocol',
   },
   {
-    href: 'https://mevblocker.com',
+    href: 'https://cow.fi/mev-blocker',
     label: 'MEV Blocker',
     productVariant: ProductVariant.MevBlocker,
     external: true,
