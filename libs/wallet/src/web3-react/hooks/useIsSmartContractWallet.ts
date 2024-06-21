@@ -19,17 +19,13 @@ function useHasContractAtAddress(): boolean | undefined {
   const { account } = useWalletInfo()
 
   const { data } = useSWR(
-    ['isSmartContract', account, provider],
-    async () => {
-      if (!account || !provider) {
-        return false
-      }
-
+    account && provider ? ['isSmartContract', account, provider] : null,
+    async ([, _account, _provider]) => {
       try {
-        const code = await provider.getCode(account)
+        const code = await _provider.getCode(_account)
         return code !== '0x'
       } catch (e: any) {
-        console.debug(`checkIsSmartContractWallet: failed to check address ${account}`, e.message)
+        console.debug(`checkIsSmartContractWallet: failed to check address ${_account}`, e.message)
         return false
       }
     },

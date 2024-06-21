@@ -22,12 +22,8 @@ export function useTokenAllowance(
   const contract = useTokenContract(tokenAddress, false)
 
   const { data: allowance } = useSWR(
-    ['useTokenAllowance', tokenAddress, owner, spender],
-    async () => {
-      if (!owner || !spender) return undefined
-
-      return contract?.callStatic.allowance(owner, spender)
-    },
+    owner && spender && contract ? ['useTokenAllowance', tokenAddress, owner, spender, contract] : null,
+    async ([, , _owner, _spender, _contract]) => _contract?.callStatic.allowance(_owner, _spender),
     ALLOWANCES_SWR_CONFIG
   )
 

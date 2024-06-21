@@ -26,6 +26,7 @@ type VCowData = {
   unvested: CurrencyAmount<Currency> | undefined | null
   vested: CurrencyAmount<Currency> | undefined | null
 }
+
 interface SwapVCowCallbackParams {
   openModal: (message: string) => void
   closeModal: Command
@@ -56,21 +57,13 @@ export function useVCowData(): VCowData {
   const { account } = useWalletInfo()
 
   const { data: vestedResult, isLoading: isVestedLoading } = useSWR(
-    ['useVCowData.swappableBalanceOf', account, vCowContract],
-    async () => {
-      if (!account || !vCowContract) return undefined
-
-      return vCowContract.swappableBalanceOf(account)
-    }
+    account && vCowContract ? ['useVCowData.swappableBalanceOf', account, vCowContract] : null,
+    async ([, _account, contract]) => contract.swappableBalanceOf(_account)
   )
 
   const { data: totalResult, isLoading: isTotalLoading } = useSWR(
-    ['useVCowData.balanceOf', account, vCowContract],
-    async () => {
-      if (!account || !vCowContract) return undefined
-
-      return vCowContract.balanceOf(account)
-    }
+    account && vCowContract ? ['useVCowData.balanceOf', account, vCowContract] : null,
+    async ([, _account, contract]) => contract.balanceOf(_account)
   )
 
   const vested = useParseVCowResult(vestedResult)

@@ -19,12 +19,8 @@ export function useENSResolverMethod(
   )
 
   const { data, isLoading } = useSWR(
-    ['useENSResolverMethod' + method, resolverContract, ensNodeArgument],
-    async () => {
-      if (!resolverContract || !ensNodeArgument) return undefined
-
-      return resolverContract.callStatic[method](ensNodeArgument)
-    },
+    resolverContract && ensNodeArgument ? ['useENSResolverMethod', method, resolverContract, ensNodeArgument] : null,
+    async ([, _method, contract, arg]) => contract.callStatic[_method](arg),
     SWR_NO_REFRESH_OPTIONS
   )
 

@@ -61,13 +61,12 @@ export const useCowFromLockedGnoBalances = () => {
 
   const tokenDistro = useTokenDistroContract()
 
-  const { data, isLoading } = useSWR(['useCowFromLockedGnoBalances', account, allocated, tokenDistro], async () => {
-    if (account && tokenDistro && allocated.greaterThan(0)) {
-      return tokenDistro.balances(account)
-    }
-
-    return null
-  })
+  const { data, isLoading } = useSWR(
+    account && tokenDistro && allocated?.greaterThan(0)
+      ? ['useCowFromLockedGnoBalances', account, allocated, tokenDistro]
+      : null,
+    async ([, _account, , _tokenDistro]) => _tokenDistro.balances(_account)
+  )
 
   const claimed = useMemo(() => CurrencyAmount.fromRawAmount(_COW, data ? data.claimed.toString() : 0), [data])
 
@@ -84,6 +83,7 @@ interface ClaimCallbackParams {
   closeModal: Command
   isFirstClaim: boolean
 }
+
 export function useClaimCowFromLockedGnoCallback({
   openModal,
   closeModal,
