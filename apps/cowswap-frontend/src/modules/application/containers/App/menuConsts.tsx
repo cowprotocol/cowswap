@@ -36,6 +36,14 @@ export const NAV_ITEMS: MenuItem[] = [
       },
       { href: 'https://cow.fi/learn', label: 'FAQs', external: true },
       { href: 'https://docs.cow.fi/', label: 'Docs', external: true },
+      {
+        label: 'Legal',
+        children: [
+          { href: '/#/privacy-policy', label: 'Privacy Policy' },
+          { href: '/#/cookie-policy', label: 'Cookie Policy' },
+          { href: '/#/terms-and-conditions', label: 'Terms and Conditions' },
+        ],
+      },
     ],
   },
   {
