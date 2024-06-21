@@ -63,10 +63,6 @@ module.exports = [
               name: 'ethers',
               message: "Please import from '@ethersproject/module' directly to support tree-shaking.",
             },
-            {
-              name: 'styled-components',
-              message: 'Please import from styled-components/macro.',
-            },
           ],
 
           patterns: [

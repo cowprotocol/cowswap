@@ -215,23 +215,6 @@ export const ThemeColorsGlobalStyle = css`
     ${UI.COLOR_PAPER_DARKEST}: ${({ theme }) =>
       theme.darkMode ? darken(theme.paper, 0.1) : darken(theme.paper, 0.15)};
 
-    ${UI.COLOR_PAPER}: ${({ theme }) => (theme.isInjectedWidgetMode ? theme.paper : theme.paperCustom)};
-    ${UI.COLOR_PAPER_DARKER}: ${({ theme }) => {
-      if (theme.isInjectedWidgetMode) {
-        return darken(theme.paper, theme.darkMode ? 0.07 : 0.05)
-      } else {
-        return theme.paperDarkerCustom
-      }
-    }};
-
-    ${UI.COLOR_PAPER_DARKEST}: ${({ theme }) => {
-      if (theme.isInjectedWidgetMode) {
-        return darken(theme.paper, theme.darkMode ? 0.1 : 0.15)
-      } else {
-        return theme.paperDarkestCustom
-      }
-    }};
-
     ${UI.COLOR_BORDER}: var(${UI.COLOR_PAPER_DARKER});
     ${UI.BOX_SHADOW}: 0 12px 12px ${({ theme }) => transparentize(theme.primary, 0.94)};
     ${UI.BOX_SHADOW_2}: 0px 4px 8px ${({ theme }) => transparentize(theme.primary, 0.94)};
@@ -253,13 +236,7 @@ export const ThemeColorsGlobalStyle = css`
     ${UI.COLOR_DARK_IMAGE_PAPER_TEXT}: ${({ theme }) =>
       getContrastText(getContrastText('#000000', theme.paper), theme.text)};
 
-    ${UI.COLOR_BUTTON_TEXT}: ${({ theme }) => {
-      if (theme.isInjectedWidgetMode) {
-        return getContrastText(theme.primary, theme.text)
-      } else {
-        return getContrastText(theme.primary, theme.buttonTextCustom)
-      }
-    }};
+    ${UI.COLOR_BUTTON_TEXT}: ${({ theme }) => getContrastText(theme.primary, theme.buttonTextCustom)};
 
     ${UI.COLOR_BUTTON_TEXT_DISABLED}: ${({ theme }) =>
       getContrastText(theme.darkMode ? darken(theme.paper, 0.07) : darken(theme.paper, 0.05), theme.text)};
@@ -342,7 +319,6 @@ export const ThemeColorsGlobalStyle = css`
   }
 
   body {
-    min-height: ${({ theme }) => (theme.isInjectedWidgetMode ? 'auto' : '100vh')};
     scrollbar-color: ${({ theme }) => theme.colorScrollbar};
     color: var(${UI.COLOR_TEXT_PAPER});
   }

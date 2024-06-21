@@ -1,4 +1,5 @@
-import { createGlobalStyle, css, DefaultTheme } from 'styled-components/macro'
+import { type CowProtocolTheme } from 'styled-components'
+import { createGlobalStyle, css } from 'styled-components/macro'
 
 import { UI } from './enum'
 import { colors, themeVariables as baseThemeVariables } from './theme'
@@ -9,13 +10,12 @@ export const SAFE_COW_APP_LINK = 'https://app.safe.global/share/safe-app?appUrl=
 export const LINK_GUIDE_ADD_CUSTOM_TOKEN = 'https://blog.cow.fi/how-to-add-custom-tokens-on-cow-swap-a72d677c78c0'
 export const MY_ORDERS_ID = 'my-orders'
 
-export function themeMapper<T extends DefaultTheme>(theme: CowSwapTheme, isInjectedWidgetMode = false): DefaultTheme {
+export function themeMapper<T extends CowProtocolTheme>(theme: CowSwapTheme): CowProtocolTheme {
   const darkMode = theme === 'dark'
   const colorsTheme = colors(darkMode)
   return {
     mode: theme,
     ...colorsTheme,
-    isInjectedWidgetMode,
     // Override Theme
     ...baseThemeVariables(darkMode, colorsTheme),
 
@@ -121,7 +121,7 @@ type GlobalCowDAOFonts = {
   FONT_STUDIO_FEIXEN_ULTRALIGHT_ITALIC: GlobalFontConfig
 }
 
-export const GlobalCoWDAOStyles = (fonts: GlobalCowDAOFonts, bgColor?: string, color?: string) =>
+export const GlobalCoWDAOStyles = (fonts: GlobalCowDAOFonts) =>
   createGlobalStyle(
     () => css`
       @font-face {
@@ -226,9 +226,7 @@ export const GlobalCoWDAOStyles = (fonts: GlobalCowDAOFonts, bgColor?: string, c
         font-family: ${Font.family};
         margin: 0;
         padding: 0;
-        background: ${({ theme }) =>
-          theme?.isInjectedWidgetMode ? 'transparent' : bgColor ? bgColor : Color.neutral98};
-        color: ${color || UI.COLOR_TEXT};
+        color: ${UI.COLOR_TEXT};
         scroll-behavior: smooth;
         font-variant: none;
         font-variant-ligatures: none;
