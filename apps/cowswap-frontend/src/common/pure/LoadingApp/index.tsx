@@ -1,9 +1,8 @@
 import { isInjectedWidget } from '@cowprotocol/common-utils'
+import { ProductLogo, ProductVariant } from '@cowprotocol/ui'
 
 import { transparentize } from 'color2k'
 import styled, { keyframes, css } from 'styled-components/macro'
-
-import { ProductLogo, ProductVariant } from '../ProductLogo'
 
 const pulse = keyframes`
   0% {
