@@ -77,7 +77,7 @@ export const DemoContainer = styled.div`
   display: flex;
   flex-flow: column wrap;
   gap: 6px;
-  background: ${({ theme }) => theme.bg1};
+  background: ${({ theme }) => theme.paper};
   border: none;
   border-radius: 16px;
   box-shadow: ${({ theme }) => theme.boxShadow1};

@@ -26,7 +26,7 @@ export const DetailsFooter = styled.div<{ show: boolean }>`
   border-bottom-left-radius: 20px;
   border-bottom-right-radius: 20px;
   color: inherit;
-  background-color: ${({ theme }) => theme.advancedBG};
+  background-color: ${({ theme }) => (theme.darkMode ? '#163861' : '#d5e8f0')};
   z-index: ${Z_INDEX.deprecated_zero};
 
   transform: ${({ show }) => (show ? 'translateY(0%)' : 'translateY(-100%)')};

@@ -54,7 +54,7 @@ const StyledUserDetailsTable = styled(SimpleTable)<StyledUserDetailsTableProps>`
   }
 
   tbody tr:hover {
-    background-color: ${({ theme }): string => theme.bg3};
+    background-color: ${({ theme }): string => theme.background};
   }
 
   .span-copybtn-wrap {
@@ -69,7 +69,7 @@ const StyledUserDetailsTable = styled(SimpleTable)<StyledUserDetailsTableProps>`
     grid-column: 1 / span all;
 
     :hover {
-      background-color: ${({ theme }): string => theme.bg1};
+      background-color: ${({ theme }): string => theme.paper};
     }
   }
 

@@ -1,12 +1,8 @@
 import { ProductLogo, ProductVariant } from '@cowprotocol/ui'
 
-import { useDarkModeManager } from 'legacy/state/user/hooks'
-
 import { ExtLink, BannerCard, BannerCardContent, BannerCardIcon, CardActions } from './styled'
 
 export default function Governance() {
-  const [darkMode] = useDarkModeManager()
-
   return (
     <BannerCard>
       <BannerCardContent>
@@ -19,7 +15,7 @@ export default function Governance() {
         </CardActions>
       </BannerCardContent>
       <BannerCardIcon>
-        <ProductLogo variant={ProductVariant.CowSwap} theme={darkMode ? 'dark' : 'light'} height={76} logoIconOnly />
+        <ProductLogo variant={ProductVariant.CowSwap} height={76} logoIconOnly />
       </BannerCardIcon>
     </BannerCard>
   )

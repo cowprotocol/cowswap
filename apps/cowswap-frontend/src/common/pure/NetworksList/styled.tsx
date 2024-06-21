@@ -5,7 +5,7 @@ import { ArrowDownCircle } from 'react-feather'
 import styled from 'styled-components/macro'
 
 export const ActiveRowWrapper = styled.div`
-  background-color: ${({ theme }) => transparentize(theme.bg4, 0.4)};
+  background-color: ${({ theme }) => transparentize(theme.paperCustom, 0.4)};
   border-radius: 8px;
   cursor: pointer;
   width: 100%;

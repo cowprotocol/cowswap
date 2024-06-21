@@ -3,8 +3,6 @@ import { ProductLogo, ProductVariant } from '@cowprotocol/ui'
 import { transparentize } from 'color2k'
 import styled from 'styled-components/macro'
 
-import { useDarkModeManager } from 'legacy/state/user/hooks'
-
 export const LoadingWrapper = styled.div`
   display: flex;
   flex-flow: column wrap;
@@ -62,11 +60,9 @@ export const LoadingWrapper = styled.div`
 `
 
 export const Loading: React.FC = () => {
-  const [darkMode] = useDarkModeManager()
-
   return (
     <LoadingWrapper>
-      <ProductLogo variant={ProductVariant.CowSwap} height={100} theme={darkMode ? 'dark' : 'light'} logoIconOnly />
+      <ProductLogo variant={ProductVariant.CowSwap} height={100} logoIconOnly />
       <span>Loading...</span>
     </LoadingWrapper>
   )

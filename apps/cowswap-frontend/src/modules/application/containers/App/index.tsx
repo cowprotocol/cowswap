@@ -64,7 +64,7 @@ export function App() {
 
   return (
     <ErrorBoundary>
-      <Suspense fallback={<LoadingApp darkMode={darkMode} />}>
+      <Suspense fallback={<LoadingApp />}>
         <RedirectAnySwapAffectedUsers />
         <DarkModeQueryParamReader />
         <GlobalStyles />
@@ -79,7 +79,6 @@ export function App() {
             // TODO: Move hard-coded colors to theme
             <MenuBar
               navItems={NAV_ITEMS}
-              theme={darkMode ? 'dark' : 'light'}
               productVariant={PRODUCT_VARIANT}
               settingsNavItems={settingsNavItems}
               showGlobalSettings
@@ -106,7 +105,6 @@ export function App() {
 
           {!isInjectedWidgetMode && (
             <Footer
-              theme={darkMode ? 'dark' : 'light'}
               productVariant={PRODUCT_VARIANT}
               additionalFooterContent={ADDITIONAL_FOOTER_CONTENT}
               hasTouchFooter

@@ -62,7 +62,7 @@ export const TableRow = styled(TableHeader)<{ isChildOrder?: boolean }>`
 
     &::before {
       display: ${({ isChildOrder }) => (isChildOrder ? 'inline-block' : 'none')};
-      color: ${({ theme }) => transparentize(theme.text3, 0.6)};
+      color: ${({ theme }) => transparentize(theme.info, 0.6)};
       content: '↳';
       text-decoration: none !important;
     }

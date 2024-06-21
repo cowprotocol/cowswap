@@ -123,7 +123,7 @@ export const TokensTableRow = ({
   // This is so we only create fiat value request if there is a balance
   const fiatValue = useMemo(() => {
     if (!balance && account) {
-      return <Loader stroke={theme.text3} />
+      return <Loader stroke={theme.info} />
     } else if (hasZeroBalance) {
       return <BalanceValue hasBalance={false}>0</BalanceValue>
     } else {

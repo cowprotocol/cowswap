@@ -74,7 +74,7 @@ export const Step = styled.div<{
       completedStep
         ? `url(${CheckCircle}) no-repeat center/${circleSize ? `${circleSize}px` : 'var(--circleSize)'}`
         : isActiveStep
-        ? theme.primary1
+        ? theme.bg2
         : theme.blueShade3};
 
     > small {

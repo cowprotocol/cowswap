@@ -33,7 +33,7 @@ export const AuxInformationContainer = styled.div<{
 
   :focus,
   :hover {
-    border: 1px solid ${({ theme, hideInput }) => (hideInput ? ' transparent' : theme.bg3)};
+    border: 1px solid ${({ theme, hideInput }) => (hideInput ? ' transparent' : theme.background)};
   }
 
   ${({ theme, hideInput, disabled }) =>
@@ -41,7 +41,7 @@ export const AuxInformationContainer = styled.div<{
     `
       :focus,
       :hover {
-        border: 1px solid ${hideInput ? ' transparent' : theme.bg3};
+        border: 1px solid ${hideInput ? ' transparent' : theme.background};
       }
     `}
 

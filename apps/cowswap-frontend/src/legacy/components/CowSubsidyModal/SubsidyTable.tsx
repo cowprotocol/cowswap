@@ -42,7 +42,7 @@ const SubsidyTr = styled.tr<{ selected?: boolean; darkMode?: boolean }>`
   border: 1px solid transparent;
   gap: 0;
   background: transparent;
-  border-bottom: 1px solid ${({ theme }) => transparentize(theme.text2, 0.7)};
+  border-bottom: 1px solid ${({ theme }) => transparentize(theme.disabledText, 0.7)};
 
   &:last-child {
     border-bottom: 0;
@@ -65,7 +65,7 @@ const SubsidyTr = styled.tr<{ selected?: boolean; darkMode?: boolean }>`
   }
 
   > td:first-child {
-    border-right: 1px solid ${({ theme }) => transparentize(theme.text2, 0.7)};
+    border-right: 1px solid ${({ theme }) => transparentize(theme.disabledText, 0.7)};
   }
 
   > td,
