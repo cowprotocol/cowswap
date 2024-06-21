@@ -2,10 +2,10 @@ import { Media } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
+import { footerImage } from 'theme/cowSwapAssets'
 
 import { Polling } from 'legacy/components/Header/Polling'
 import { useIsDarkMode } from 'legacy/state/user/hooks'
-import { footerImage } from 'legacy/theme/cowSwapAssets'
 
 import { Version } from '../Version'
 

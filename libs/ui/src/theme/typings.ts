@@ -4,10 +4,8 @@ import type { FlattenSimpleInterpolation as StyledFlattenSimpleInterpolation } f
 
 type ColorValue = string
 
-// Override colors
 export interface Colors {
   darkMode: boolean
-
   primary: ColorValue
   background: ColorValue
   paper: ColorValue
@@ -44,28 +42,24 @@ export interface Colors {
   paperDarkerCustom: ColorValue
   paperDarkestCustom: ColorValue
   buttonTextCustom: ColorValue
+  gradient1: ColorValue
+  gradient2: ColorValue
+  boxShadow1: ColorValue
+  boxShadow2: ColorValue
+  shadow1: ColorValue
+}
+
+export interface ThemeUtils {
+  shimmer: StyledFlattenSimpleInterpolation
+  colorScrollbar: StyledFlattenSimpleInterpolation
+  invertImageForDarkMode: string | null
+  flexColumnNoWrap: StyledFlattenSimpleInterpolation
+  flexRowNoWrap: StyledFlattenSimpleInterpolation
 }
 
 declare module 'styled-components' {
-  // Override theme
-  export interface CowProtocolTheme extends Colors {
+  export interface CowProtocolTheme extends Colors, ThemeUtils {
     mode: CowSwapTheme
-    shimmer: StyledFlattenSimpleInterpolation
-    colorScrollbar: StyledFlattenSimpleInterpolation
-    boxShadow1: string
-    boxShadow2: string
-    gradient1: string
-    gradient2: string
-    util: {
-      invertImageForDarkMode: string | null
-    }
-    cursor?: StyledFlattenSimpleInterpolation
-
-    shadow1: string
-
-    // css snippets
-    flexColumnNoWrap: StyledFlattenSimpleInterpolation
-    flexRowNoWrap: StyledFlattenSimpleInterpolation
   }
 
   export interface DefaultTheme extends CowProtocolTheme {}

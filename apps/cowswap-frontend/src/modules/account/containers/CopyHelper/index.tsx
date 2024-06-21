@@ -5,8 +5,7 @@ import { useCopyClipboard } from '@cowprotocol/common-hooks'
 import { Trans } from '@lingui/macro'
 import { CheckCircle, Copy } from 'react-feather'
 import styled from 'styled-components/macro'
-
-import { LinkStyledButton } from 'legacy/theme'
+import { LinkStyledButton } from 'theme'
 
 const CopyIcon = styled(LinkStyledButton)`
   color: ${({ color, theme }) => color || theme.info};

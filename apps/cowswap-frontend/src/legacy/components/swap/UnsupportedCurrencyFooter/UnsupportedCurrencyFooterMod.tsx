@@ -8,10 +8,11 @@ import { Currency } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
+import { ThemedText, Z_INDEX } from 'theme'
+import { CloseIcon } from 'theme'
 
 import Card, { OutlineCard } from 'legacy/components/Card'
 import { AutoColumn } from 'legacy/components/Column'
-import { CloseIcon, ThemedText, Z_INDEX } from 'legacy/theme'
 
 import { Modal } from 'common/pure/Modal'
 

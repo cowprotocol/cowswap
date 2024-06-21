@@ -4,6 +4,8 @@ import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { Color, Media, MenuBar, Footer, GlobalCoWDAOStyles } from '@cowprotocol/ui'
 
+import { ThemeProvider } from 'theme'
+
 import ErrorBoundary from 'legacy/components/ErrorBoundary'
 import { AccountElement } from 'legacy/components/Header/AccountElement'
 import { NetworkSelector } from 'legacy/components/Header/NetworkSelector'
@@ -11,7 +13,6 @@ import { HeaderControls, HeaderElement } from 'legacy/components/Header/styled'
 import { URLWarning } from 'legacy/components/Header/URLWarning'
 import TopLevelModals from 'legacy/components/TopLevelModals'
 import { useDarkModeManager } from 'legacy/state/user/hooks'
-import DarkModeQueryParamReader from 'legacy/theme'
 
 import { OrdersPanel } from 'modules/account'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
@@ -66,7 +67,7 @@ export function App() {
     <ErrorBoundary>
       <Suspense fallback={<LoadingApp />}>
         <RedirectAnySwapAffectedUsers />
-        <DarkModeQueryParamReader />
+        <ThemeProvider />
         <GlobalStyles />
 
         <styledEl.AppWrapper>

@@ -1,8 +1,7 @@
 import { UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
-
-import { WIDGET_MAX_WIDTH } from 'legacy/theme'
+import { WIDGET_MAX_WIDTH } from 'theme'
 
 export const Container = styled.div`
   width: 100%;

@@ -8,9 +8,9 @@ import { ExternalLink } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
+import { ThemedText } from 'theme'
 
 import { AutoColumn } from 'legacy/components/Column'
-import { ThemedText } from 'legacy/theme'
 
 import { Title } from 'modules/application/pure/Page'
 

@@ -4,8 +4,8 @@ import { Media, UI } from '@cowprotocol/ui'
 
 import { lighten } from 'color2k'
 import styled, { css } from 'styled-components/macro'
+import { WIDGET_MAX_WIDTH } from 'theme'
 
-import { WIDGET_MAX_WIDTH } from 'legacy/theme'
 import { WithClassName } from 'legacy/types'
 
 import { Widget } from 'modules/application/pure/Widget'

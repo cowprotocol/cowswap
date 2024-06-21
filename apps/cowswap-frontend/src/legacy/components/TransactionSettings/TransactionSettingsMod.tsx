@@ -22,10 +22,10 @@ import { Percent } from '@uniswap/sdk-core'
 import { Trans } from '@lingui/macro'
 import { darken } from 'color2k'
 import styled, { ThemeContext } from 'styled-components/macro'
+import { ThemedText } from 'theme'
 
 import { AutoColumn } from 'legacy/components/Column'
 import { useSetUserSlippageTolerance, useUserSlippageTolerance, useUserTransactionTTL } from 'legacy/state/user/hooks'
-import { ThemedText } from 'legacy/theme'
 
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { getNativeOrderDeadlineTooltip, getNonNativeOrderDeadlineTooltip } from 'modules/swap/pure/Row/RowDeadline'

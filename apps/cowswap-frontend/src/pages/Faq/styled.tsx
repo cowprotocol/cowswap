@@ -1,8 +1,7 @@
 import { ButtonPrimary, ExternalLink as ExternalLinkTheme, Media, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
-
-import { StyledInternalLink } from 'legacy/theme'
+import { StyledInternalLink } from 'theme'
 
 export const ExternalLinkFaq = styled(ExternalLinkTheme)`
   text-decoration: underline;

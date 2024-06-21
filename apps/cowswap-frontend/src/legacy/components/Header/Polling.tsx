@@ -8,9 +8,9 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { Trans } from '@lingui/macro'
 import JSBI from 'jsbi'
 import styled, { keyframes } from 'styled-components/macro'
+import { ThemedText } from 'theme'
 
 import useGasPrice from 'legacy/hooks/useGasPrice'
-import { ThemedText } from 'legacy/theme'
 
 import { useBlockNumber } from 'common/hooks/useBlockNumber'
 

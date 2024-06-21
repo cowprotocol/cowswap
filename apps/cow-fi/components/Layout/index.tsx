@@ -4,7 +4,7 @@ import { MenuBar, Footer, GlobalCoWDAOStyles } from '@cowprotocol/ui'
 import styled, { createGlobalStyle, css } from 'styled-components/macro'
 import { CONFIG } from '@/const/meta'
 import { CoWDAOFonts } from '@/styles/CoWDAOFonts'
-import { PAGE_MAX_WIDTH, THEME_MODE, PRODUCT_VARIANT, NAV_ADDITIONAL_BUTTONS, NAV_ITEMS } from './const'
+import { PAGE_MAX_WIDTH, PRODUCT_VARIANT, NAV_ADDITIONAL_BUTTONS, NAV_ITEMS } from './const'
 import getURL from '@/util/getURL'
 
 const Wrapper = styled.div`

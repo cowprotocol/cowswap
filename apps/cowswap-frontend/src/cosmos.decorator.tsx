@@ -17,7 +17,7 @@ import styled, { ThemeContext } from 'styled-components/macro'
 
 import { cowSwapStore } from 'legacy/state'
 import { useDarkModeManager } from 'legacy/state/user/hooks'
-import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle, WIDGET_MAX_WIDTH } from 'legacy/theme'
+import { ThemeProvider, WIDGET_MAX_WIDTH, ThemedGlobalStyle } from 'theme'
 
 import { BlockNumberProvider } from './common/hooks/useBlockNumber'
 
@@ -92,7 +92,6 @@ connector.activate(chainId)
 const Fixture = ({ children }: { children: ReactNode }) => {
   return (
     <StrictMode>
-      <FixedGlobalStyle />
       <Provider store={cowSwapStore}>
         <HashRouter>
           <ThemeProvider>

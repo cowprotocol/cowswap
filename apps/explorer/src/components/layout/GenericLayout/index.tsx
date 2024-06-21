@@ -1,6 +1,6 @@
 import React, { PropsWithChildren } from 'react'
 
-import ThemeProvider, { StaticGlobalStyle, ThemedGlobalStyle } from 'theme'
+import { ThemeProvider, StaticGlobalStyle, ThemedGlobalStyle } from 'theme'
 
 import { Footer } from './Footer'
 import { Header } from './Header'

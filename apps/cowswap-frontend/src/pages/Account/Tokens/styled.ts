@@ -3,9 +3,9 @@ import { Media, UI } from '@cowprotocol/ui'
 import { transparentize, darken } from 'color2k'
 import { ChevronDown } from 'react-feather'
 import styled from 'styled-components/macro'
+import { ThemedText } from 'theme'
 
 import Column from 'legacy/components/Column'
-import { ThemedText } from 'legacy/theme'
 
 import { Card } from 'pages/Account/styled'
 

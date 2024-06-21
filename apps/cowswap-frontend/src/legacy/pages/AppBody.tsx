@@ -3,8 +3,7 @@ import React from 'react'
 import { UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
-
-import { Z_INDEX } from 'legacy/theme'
+import { Z_INDEX } from 'theme'
 
 export const BodyWrapper = styled.main<{ margin?: string; maxWidth?: string }>`
   position: relative;

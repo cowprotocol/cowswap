@@ -12,9 +12,10 @@ import {
 } from '@cowprotocol/ui'
 import { CurrencyAmount, Fraction, Token } from '@uniswap/sdk-core'
 
+import { CloseIcon } from 'theme'
+
 import { OrderStatus } from 'legacy/state/orders/actions'
 import { getOrderVolumeFee } from 'legacy/state/orders/utils'
-import { CloseIcon } from 'legacy/theme'
 
 import { TwapOrderItem } from 'modules/twap/types'
 

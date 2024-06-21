@@ -235,7 +235,7 @@ export const Wrapper = styled.div`
 
 export const WalletWrapper = styled.div`
   > div > img[alt='Gnosis Safe Multisig logo'] {
-    ${({ theme }) => theme.util.invertImageForDarkMode};
+    ${({ theme }) => theme.invertImageForDarkMode};
   }
 `
 

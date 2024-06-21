@@ -5,8 +5,7 @@ import { UI } from '@cowprotocol/ui'
 
 import { transparentize } from 'color2k'
 import styled, { css, keyframes } from 'styled-components/macro'
-
-import { LinkStyledButton } from 'legacy/theme'
+import { LinkStyledButton } from 'theme'
 
 import { RateWrapper } from 'common/pure/RateInfo'
 

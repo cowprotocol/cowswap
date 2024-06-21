@@ -1,10 +1,9 @@
 import { UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
+import { WIDGET_MAX_WIDTH } from 'theme'
 
 import { BodyWrapper as BodyWrapperMod } from 'legacy/pages/AppBody'
-
-import { WIDGET_MAX_WIDTH } from '../../../../legacy/theme'
 
 const Wrapper = styled(BodyWrapperMod)`
   background: var(${UI.COLOR_PAPER});
