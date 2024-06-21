@@ -3,7 +3,6 @@ import React, { useMemo } from 'react'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import {
   Color,
-  colors as colorsBaseTheme,
   Colors,
   FixedGlobalStyle as FixedGlobalStyleBase,
   Media,
@@ -44,10 +43,6 @@ export const WIDGET_MAX_WIDTH = {
   swap: '470px',
   limit: '1350px',
   content: '680px',
-}
-
-export function colors(darkMode: boolean): Colors {
-  return colorsBaseTheme(darkMode)
 }
 
 export const TextWrapper = styled(Text)<{ color: keyof Colors; override?: boolean }>`
