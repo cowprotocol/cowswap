@@ -50,7 +50,7 @@ export default function Page({ siteConfigData }: PageProps) {
               <source src={VIDEO_HERO_HOME} type="video/mp4" />
             </video>
           </HeroBackground>
-          <HeroContent>
+          <HeroContent flex={'0 1 0'}>
             <HeroTitle fontSize={148} fontSizeMobile={80}>
               Don’t get milked!
             </HeroTitle>

@@ -879,7 +879,7 @@ export const HeroBackground = styled.div<{ imageHeight?: string }>`
   }
 `
 
-export const HeroContent = styled.div<{ variant?: string; gap?: number }>`
+export const HeroContent = styled.div<{ variant?: string; gap?: number; flex?: string }>`
   position: relative;
   z-index: 2;
   text-align: ${({ variant }) => (variant === 'secondary' ? 'left' : 'center')};
@@ -888,7 +888,7 @@ export const HeroContent = styled.div<{ variant?: string; gap?: number }>`
   display: flex;
   flex-flow: column wrap;
   max-width: 100%;
-  flex: 1 1 0;
+  flex: ${({ flex }) => flex || '1 1 0'};
 
   ${({ variant }) =>
     variant === 'secondary' &&
