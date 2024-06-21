@@ -1,4 +1,4 @@
-import styled, { keyframes } from 'styled-components'
+import styled, { keyframes } from 'styled-components/macro'
 import { lighten } from 'polished'
 import { Color } from 'styles/variables'
 

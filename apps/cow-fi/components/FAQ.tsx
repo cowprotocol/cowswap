@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { Font, Color, Media } from '@cowprotocol/ui'
 import IMG_ICON_MINUS from '@cowprotocol/assets/images/icon-minus.svg'
 import IMG_ICON_PLUS from '@cowprotocol/assets/images/icon-plus.svg'

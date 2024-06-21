@@ -1,7 +1,7 @@
 import { GetStaticProps } from 'next'
 import { Font, Color, Media } from '@cowprotocol/ui'
 
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 
 import Layout from '@/components/Layout'
 import { getCategories, getArticles, Category, ArticleListResponse } from 'services/cms'
