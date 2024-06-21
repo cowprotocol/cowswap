@@ -3,11 +3,6 @@ import { Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
 import IMG_ICON_CROWN_COW from '@cowprotocol/assets/images/icon-crown-cow.svg'
 import IMG_ICON_BULB_COW from '@cowprotocol/assets/images/icon-bulb-cow.svg'
 import IMG_COWAMM_HERO from '@cowprotocol/assets/images/image-cowamm-hero.svg'
-import IMG_COWAMM_LVR from '@cowprotocol/assets/images/image-cowamm-lvr.svg'
-import IMG_COWAMM_LP_1 from '@cowprotocol/assets/images/image-cowamm-lp-1.svg'
-import IMG_COWAMM_LP_2 from '@cowprotocol/assets/images/image-cowamm-lp-2.svg'
-import IMG_COWAMM_LP_3 from '@cowprotocol/assets/images/image-cowamm-lp-3.svg'
-import IMG_COWAMM_LP_4 from '@cowprotocol/assets/images/image-cowamm-lp-4.svg'
 import IMG_COWAMM_RAISING from '@cowprotocol/assets/images/image-cowamm-raising.svg'
 import IMG_COWAMM_PASSIVE from '@cowprotocol/assets/images/image-cowamm-passive.svg'
 import IMG_COWAMM_REKT from '@cowprotocol/assets/images/image-cowamm-rekt.svg'
@@ -52,7 +47,7 @@ interface PageProps {
   siteConfigData: typeof CONFIG
 }
 
-export default function Page({ siteConfigData }: PageProps) {
+export default function Page() {
   return (
     <Layout
       bgColor={Color.neutral90}
