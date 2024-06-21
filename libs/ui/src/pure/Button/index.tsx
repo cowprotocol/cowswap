@@ -9,11 +9,13 @@ import {
   ButtonGray as ButtonGrayMod,
   ButtonPrimary as ButtonPrimaryMod,
 } from './ButtonMod'
+import { ButtonSize } from './types'
 
-import { ButtonSize, UI } from '../../enum'
+import { UI } from '../../enum'
 import { RowBetween } from '../Row'
 
 export * from './ButtonMod'
+export * from './types'
 
 export const ButtonPrimary = styled(ButtonPrimaryMod)`
   // CSS overrides
@@ -51,14 +53,10 @@ export const ButtonPrimary = styled(ButtonPrimaryMod)`
 `
 
 export const ButtonLight = styled(ButtonPrimary)`
-  // CSS override
-  ${({ theme }) => theme.buttonLight.background}
   color: ${({ theme }) => theme.text1};
-  font-size: ${({ theme }) => theme.buttonLight.fontSize};
-  font-weight: ${({ theme }) => theme.buttonLight.fontWeight};
-  border: ${({ theme }) => theme.buttonLight.border};
-  box-shadow: ${({ theme }) => theme.buttonLight.boxShadow};
-  border-radius: ${({ theme }) => theme.buttonLight.borderRadius};
+  font-weight: 800;
+  border: ${({ theme }) => `4px solid ${theme.black}`};
+  box-shadow: ${({ theme }) => `4px 4px 0px ${theme.black}`};
   ${({ theme }) => theme.cursor};
   overflow: hidden;
   position: relative;
@@ -69,17 +67,17 @@ export const ButtonLight = styled(ButtonPrimary)`
   }
 
   &:focus {
-    box-shadow: ${({ theme }) => theme.buttonLight.boxShadow};
-    background-color: ${({ theme }) => theme.buttonLight.backgroundHover};
+    box-shadow: ${({ theme }) => `4px 4px 0px ${theme.black}`};
+    background-color: ${({ theme }) => theme.primary4};
   }
 
   &:hover {
-    background-color: ${({ theme }) => theme.buttonLight.backgroundHover};
+    background-color: ${({ theme }) => theme.primary4};
   }
 
   &:active {
-    box-shadow: ${({ theme }) => theme.buttonLight.boxShadow};
-    background-color: ${({ theme }) => theme.buttonLight.backgroundHover};
+    box-shadow: ${({ theme }) => `4px 4px 0px ${theme.black}`};
+    background-color: ${({ theme }) => theme.primary4};
   }
 
   &:disabled {
@@ -92,7 +90,6 @@ export const ButtonLight = styled(ButtonPrimary)`
       cursor: auto;
       background-color: ${({ theme }) => theme.primary5};
       box-shadow: none;
-      border: ${({ theme }) => theme.buttonLight.borderHover};
       outline: none;
     }
   }

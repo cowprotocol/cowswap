@@ -1,4 +1,3 @@
-import { ButtonSize } from '../enum'
 import { CowSwapTheme } from '../types'
 
 type ColorValue = string
@@ -81,27 +80,7 @@ declare module 'styled-components' {
       invertImageForDarkMode: string | null
     }
     cursor?: FlattenSimpleInterpolation
-    buttonSizes: Record<ButtonSize, FlattenSimpleInterpolation>
-    buttonOutlined: {
-      background?: FlattenSimpleInterpolation
-      fontSize?: string
-      fontWeight?: string
-      border?: string
-      borderRadius?: string
-      boxShadow?: string
-    }
-    buttonLight: {
-      background?: FlattenSimpleInterpolation
-      backgroundHover?: string
-      fontSize?: string
-      fontWeight?: string
-      border?: string
-      borderHover?: string
-      borderRadius?: string
-      boxShadow?: string
-    }
 
-    // shadows
     shadow1: string
 
     // css snippets

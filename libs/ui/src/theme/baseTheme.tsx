@@ -5,7 +5,7 @@ import { createGlobalStyle, css } from 'styled-components/macro'
 
 import { Colors } from './typings'
 
-import { ButtonSize, UI } from '../enum'
+import { UI } from '../enum'
 
 export function colors(darkMode: boolean): Colors {
   return {
@@ -143,34 +143,6 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
     )} 50%, ${transparentize(colorsTheme.success, 0.92)} 100%);`,
     util: {
       invertImageForDarkMode: darkMode ? 'filter: invert(1) grayscale(1);' : null,
-    },
-    buttonSizes: {
-      [ButtonSize.BIG]: css`
-        font-size: 26px;
-        min-height: 60px;
-      `,
-      [ButtonSize.DEFAULT]: css`
-        font-size: 16px;
-      `,
-      [ButtonSize.SMALL]: css`
-        font-size: 12px;
-      `,
-    },
-    buttonOutlined: {
-      background: css`
-        background: ${colorsTheme.bg1};
-        color: inherit;
-      `,
-      fontWeight: '800',
-      border: `4px solid ${colorsTheme.black}`,
-      borderRadius: '16px',
-      boxShadow: `4px 4px 0px ${colorsTheme.black}`,
-    },
-    buttonLight: {
-      backgroundHover: colorsTheme.primary4,
-      fontWeight: '800',
-      border: `4px solid ${colorsTheme.black}`,
-      boxShadow: `4px 4px 0px ${colorsTheme.black}`,
     },
   }
 }
