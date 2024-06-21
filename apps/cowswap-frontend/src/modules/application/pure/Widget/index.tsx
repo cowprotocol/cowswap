@@ -4,13 +4,15 @@ import styled from 'styled-components/macro'
 
 import { BodyWrapper as BodyWrapperMod } from 'legacy/pages/AppBody'
 
+import { WIDGET_MAX_WIDTH } from '../../../../legacy/theme'
+
 const Wrapper = styled(BodyWrapperMod)`
   background: var(${UI.COLOR_PAPER});
   border: 0;
   border-radius: 16px;
   box-shadow: ${({ theme }) => theme.boxShadow1};
   padding: 10px;
-  max-width: ${({ theme }) => theme.appBody.maxWidth.swap};
+  max-width: ${WIDGET_MAX_WIDTH.swap};
 `
 
 export interface AppBodyProps {

@@ -2,12 +2,14 @@ import { Media } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
+import { WIDGET_MAX_WIDTH } from 'legacy/theme'
+
 export const PageWrapper = styled.div<{ isUnlocked: boolean }>`
   width: 100%;
   display: grid;
   max-width: 1500px;
   margin: 0 auto;
-  grid-template-columns: ${({ theme, isUnlocked }) => (isUnlocked ? theme.appBody.maxWidth.swap : '')} 1fr;
+  grid-template-columns: ${({ isUnlocked }) => (isUnlocked ? WIDGET_MAX_WIDTH.swap : '')} 1fr;
   grid-template-rows: max-content;
   grid-column-gap: 20px;
 
@@ -26,7 +28,7 @@ export const PrimaryWrapper = styled.div`
   flex-flow: column wrap;
   gap: 16px;
   width: 100%;
-  max-width: ${({ theme }) => theme.appBody.maxWidth.swap};
+  max-width: ${WIDGET_MAX_WIDTH.swap};
   margin: 0 auto;
   color: inherit;
 `

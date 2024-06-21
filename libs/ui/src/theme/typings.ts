@@ -81,13 +81,6 @@ declare module 'styled-components' {
       invertImageForDarkMode: string | null
     }
     cursor?: FlattenSimpleInterpolation
-    appBody: {
-      maxWidth: {
-        swap: string
-        limit: string
-        content: string
-      }
-    }
     buttonSizes: Record<ButtonSize, FlattenSimpleInterpolation>
     buttonOutlined: {
       background?: FlattenSimpleInterpolation
