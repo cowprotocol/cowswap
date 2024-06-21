@@ -1,5 +1,7 @@
 import { CowSwapTheme } from '../types'
 
+import type { FlattenSimpleInterpolation as StyledFlattenSimpleInterpolation } from 'styled-components/macro'
+
 type ColorValue = string
 
 // Override colors
@@ -69,9 +71,8 @@ declare module 'styled-components' {
   // Override theme
   export interface CowProtocolTheme extends Colors {
     mode: CowSwapTheme
-    isInjectedWidgetMode: boolean
-    shimmer: FlattenSimpleInterpolation
-    colorScrollbar: FlattenSimpleInterpolation
+    shimmer: StyledFlattenSimpleInterpolation
+    colorScrollbar: StyledFlattenSimpleInterpolation
     boxShadow1: string
     boxShadow2: string
     gradient1: string
@@ -79,13 +80,13 @@ declare module 'styled-components' {
     util: {
       invertImageForDarkMode: string | null
     }
-    cursor?: FlattenSimpleInterpolation
+    cursor?: StyledFlattenSimpleInterpolation
 
     shadow1: string
 
     // css snippets
-    flexColumnNoWrap: FlattenSimpleInterpolation
-    flexRowNoWrap: FlattenSimpleInterpolation
+    flexColumnNoWrap: StyledFlattenSimpleInterpolation
+    flexRowNoWrap: StyledFlattenSimpleInterpolation
   }
 
   export interface DefaultTheme extends CowProtocolTheme {}

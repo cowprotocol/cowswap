@@ -2,6 +2,7 @@ import React, { useMemo } from 'react'
 
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import {
+  Color,
   colors as colorsBaseTheme,
   Colors,
   FixedGlobalStyle as FixedGlobalStyleBase,
@@ -10,13 +11,11 @@ import {
   themeMapper,
   UI,
 } from '@cowprotocol/ui'
+import { getContrastText } from '@cowprotocol/ui-utils'
 
+import { darken } from 'color2k'
 import { Text, TextProps as TextPropsOriginal } from 'rebass'
-import styled, {
-  createGlobalStyle,
-  DefaultTheme,
-  ThemeProvider as StyledComponentsThemeProvider,
-} from 'styled-components/macro'
+import styled, { createGlobalStyle, css, ThemeProvider as StyledComponentsThemeProvider } from 'styled-components/macro'
 
 import { useIsDarkMode } from 'legacy/state/user/hooks'
 
@@ -25,6 +24,8 @@ import { useInjectedWidgetPalette } from 'modules/injectedWidget'
 import { ThemeFromUrlUpdater } from 'common/updaters/ThemeFromUrlUpdater'
 
 import { mapWidgetTheme } from './mapWidgetTheme'
+
+import type { CowSwapDefaultTheme } from 'styled-components'
 
 export type TextProps = Omit<TextPropsOriginal, 'css'> & { override?: boolean }
 
@@ -75,52 +76,22 @@ export const ThemedText = {
   Label(props: TextProps) {
     return <TextWrapper fontWeight={600} {...props} />
   },
-  Black(props: TextProps) {
-    return <TextWrapper fontWeight={500} {...props} />
-  },
-  White(props: TextProps) {
-    return <TextWrapper fontWeight={500} {...props} />
-  },
-  Body(props: TextProps) {
-    return <TextWrapper fontWeight={400} fontSize={16} {...props} />
-  },
-  LargeHeader(props: TextProps) {
-    return <TextWrapper fontWeight={600} fontSize={24} {...props} />
-  },
-  MediumHeader(props: TextProps) {
-    return <TextWrapper fontWeight={500} fontSize={20} {...props} />
-  },
-  SubHeader(props: TextProps) {
-    return <TextWrapper fontWeight={400} fontSize={14} {...props} />
-  },
   Small(props: TextProps) {
     return <TextWrapper fontWeight={500} fontSize={11} {...props} />
   },
   Blue(props: TextProps) {
     return <TextWrapper fontWeight={500} {...props} />
   },
-  Yellow(props: TextProps) {
-    return <TextWrapper fontWeight={500} {...props} />
-  },
-  DarkGray(props: TextProps) {
-    return <TextWrapper fontWeight={500} {...props} />
-  },
-  Gray(props: TextProps) {
-    return <TextWrapper fontWeight={500} {...props} />
-  },
-  Italic(props: TextProps) {
-    return <TextWrapper fontWeight={500} fontSize={12} fontStyle={'italic'} {...props} />
-  },
   Error({ ...props }: { error: boolean } & TextProps) {
-    return <TextWrapper fontWeight={500} {...props} />
-  },
-  Warn(props: TextProps) {
     return <TextWrapper fontWeight={500} {...props} />
   },
 }
 
-export function theme(darkmode: boolean, isInjectedWidgetMode: boolean): DefaultTheme {
-  return themeMapper(darkmode ? 'dark' : 'light', isInjectedWidgetMode)
+export function theme(darkmode: boolean, isInjectedWidgetMode: boolean): CowSwapDefaultTheme {
+  return {
+    isInjectedWidgetMode,
+    ...themeMapper(darkmode ? 'dark' : 'light'),
+  }
 }
 
 export default function ThemeProvider({ children }: { children?: React.ReactNode }) {
@@ -146,10 +117,40 @@ export default function ThemeProvider({ children }: { children?: React.ReactNode
   )
 }
 
+const themeColorsOverride = css`
+  :root {
+    ${UI.COLOR_PAPER}: ${({ theme }) => (theme.isInjectedWidgetMode ? theme.paper : theme.paperCustom)};
+    ${UI.COLOR_PAPER_DARKER}: ${({ theme }) => {
+      if (theme.isInjectedWidgetMode) {
+        return darken(theme.paper, theme.darkMode ? 0.07 : 0.05)
+      } else {
+        return theme.paperDarkerCustom
+      }
+    }};
+
+    ${UI.COLOR_PAPER_DARKEST}: ${({ theme }) => {
+      if (theme.isInjectedWidgetMode) {
+        return darken(theme.paper, theme.darkMode ? 0.1 : 0.15)
+      } else {
+        return theme.paperDarkestCustom
+      }
+    }};
+
+    ${UI.COLOR_BUTTON_TEXT}: ${({ theme }) => {
+      if (theme.isInjectedWidgetMode) {
+        return getContrastText(theme.primary, theme.text)
+      } else {
+        return getContrastText(theme.primary, theme.buttonTextCustom)
+      }
+    }};
+  }
+`
+
 export const FixedGlobalStyle = FixedGlobalStyleBase
 
 export const ThemedGlobalStyle = createGlobalStyle`
   ${ThemeColorsGlobalStyle}
+  ${themeColorsOverride}
 
   html {
     background-color: ${({ theme }) =>
@@ -159,6 +160,8 @@ export const ThemedGlobalStyle = createGlobalStyle`
   *, *:after, *:before { box-sizing:border-box; }
 
   body {
+    background: ${({ theme }) => (theme?.isInjectedWidgetMode ? 'transparent' : Color.neutral98)};
+    min-height: ${({ theme }) => (theme.isInjectedWidgetMode ? 'auto' : '100vh')};
 
     &.noScroll {
       overflow: hidden;
