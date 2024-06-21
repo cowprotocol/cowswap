@@ -1,5 +1,5 @@
 import { ReactNode } from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { Color } from 'styles/variables'
 import { TrendingUp } from 'react-feather'
 

@@ -1,5 +1,5 @@
 import { Confetti } from '@/components/Confetti'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { darken, transparentize } from 'polished'
 import { useConnectAndAddToWallet } from '../../lib/hooks/useConnectAndAddToWallet'
 

@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components'
+import styled, { css } from 'styled-components/macro'
 import { Color, Media, Font } from '@cowprotocol/ui'
 import React, { forwardRef } from 'react'
 import { lighten } from 'polished'

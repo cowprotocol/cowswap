@@ -1,6 +1,6 @@
 import Layout from '@/components/Layout'
 import { Color } from '@cowprotocol/ui'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { getTokensInfo } from 'services/tokens'
 import { TokenInfo } from 'types'
 import { GetStaticProps } from 'next'
