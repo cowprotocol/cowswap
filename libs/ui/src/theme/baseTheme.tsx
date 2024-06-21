@@ -141,7 +141,7 @@ export const UniFixedGlobalStyle = css`
     padding: 0;
   }
   a {
-    color: ${colors(false).blue1};
+    color: ${({ theme }) => theme.blue1};
   }
   * {
     box-sizing: border-box;
