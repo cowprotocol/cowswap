@@ -2,7 +2,7 @@ import { useMemo, lazy, Suspense } from 'react'
 
 import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
-import { Color, Media, MenuBar, Footer, GlobalCoWDAOStyles, LoadingApp } from '@cowprotocol/ui'
+import { Color, Media, MenuBar, Footer, GlobalCoWDAOStyles } from '@cowprotocol/ui'
 
 import ErrorBoundary from 'legacy/components/ErrorBoundary'
 import { AccountElement } from 'legacy/components/Header/AccountElement'
@@ -20,6 +20,7 @@ import { useInitializeUtm } from 'modules/utm'
 import { InvalidLocalTimeWarning } from 'common/containers/InvalidLocalTimeWarning'
 import { useAnalyticsReporter } from 'common/hooks/useAnalyticsReporter'
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
+import { LoadingApp } from 'common/pure/LoadingApp'
 import { CoWDAOFonts } from 'common/styles/CoWDAOFonts'
 import RedirectAnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers/RedirectAnySwapAffectedUsers'
 
