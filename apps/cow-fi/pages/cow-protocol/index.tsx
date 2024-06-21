@@ -1,25 +1,14 @@
 import { GetStaticProps } from 'next'
 import { Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
 import IMG_ICON_CROWN_COW from '@cowprotocol/assets/images/icon-crown-cow.svg'
-import IMG_ICON_GOVERNANCE from '@cowprotocol/assets/images/icon-governance.svg'
 import IMG_ICON_BULB_COW from '@cowprotocol/assets/images/icon-bulb-cow.svg'
 import IMG_ICON_BUILD_WITH_COW from '@cowprotocol/assets/images/icon-build-with-cow.svg'
 import IMG_ICON_SECURE from '@cowprotocol/assets/images/icon-secure.svg'
 import IMG_ICON_OWL from '@cowprotocol/assets/images/icon-owl.svg'
 import IMG_ICON_GHOST from '@cowprotocol/assets/images/icon-ghost.svg'
-
-import IMG_GRANT_COLOR from '@cowprotocol/assets/images/image-grant-color.svg'
-import IMG_WIDGET from '@cowprotocol/assets/images/image-widget.svg'
-import IMG_DOCS from '@cowprotocol/assets/images/image-docs.svg'
 import IMG_LOGO_SAFE from '@cowprotocol/assets/images/icon-logo-safe.svg'
 import IMG_LOGO_LIDO from '@cowprotocol/assets/images/icon-logo-lido.svg'
-import IMG_MILKMAN from '@cowprotocol/assets/images/image-milkman.svg'
-import IMG_TWAP from '@cowprotocol/assets/images/image-twap.svg'
-import IMG_SURPLUS from '@cowprotocol/assets/images/image-surplus.svg'
-import IMG_HOOKS from '@cowprotocol/assets/images/image-hooks.svg'
 import IMG_LOGO_CURVE from '@cowprotocol/assets/images/icon-logo-curve.svg'
-import IMG_PROGRAMMATIC_ORDERS from '@cowprotocol/assets/images/image-programmatic-orders.svg'
-import IMG_SMARTORDERS from '@cowprotocol/assets/images/image-smartorders.svg'
 import IMG_INTENTS from '@cowprotocol/assets/images/image-intents.svg'
 import IMG_SOLVERS from '@cowprotocol/assets/images/image-solvers.svg'
 import IMG_BATCHAUCTIONS from '@cowprotocol/assets/images/image-batchauctions.svg'
@@ -61,7 +50,15 @@ import IMG_ICON_FAQ from '@cowprotocol/assets/images/icon-faq.svg'
 
 import { EventCategories, sendEventHandler } from '@cowprotocol/analytics'
 
-import { FAQ_DATA, TOP_LOGOS, CASE_STUDIES, ALL_LOGOS } from '@/data/cow-protocol/const'
+import {
+  FAQ_DATA,
+  TOP_LOGOS,
+  CASE_STUDIES,
+  ALL_LOGOS,
+  ADVANCED_ORDER_TYPES,
+  UNIQUE_TRADING_LOGIC,
+  COW_PROTOCOL_SECTIONS,
+} from '@/data/cow-protocol/const'
 
 import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
 
@@ -69,7 +66,7 @@ interface PageProps {
   siteConfigData: typeof CONFIG
 }
 
-export default function Page({ siteConfigData }: PageProps) {
+export default function Page({}: PageProps) {
   return (
     <Layout
       bgColor={Color.neutral90}
@@ -257,7 +254,7 @@ export default function Page({ siteConfigData }: PageProps) {
           </ContainerCardSection>
         </ContainerCard>
 
-        <ContainerCard bgColor={Color.neutral10} color={Color.neutral98}>
+        <ContainerCard bgColor={Color.neutral0} color={Color.neutral98}>
           <ContainerCardSection>
             <SectionTitleWrapper padding="150px 0 0">
               <ProductLogo variant={ProductVariant.CowProtocol} theme="dark" logoIconOnly height={60} />
@@ -271,115 +268,64 @@ export default function Page({ siteConfigData }: PageProps) {
               <SectionTitleText>Advanced order types</SectionTitleText>
             </SectionTitleWrapper>
             <TopicList columns={3}>
-              <TopicCard contentAlign={'left'} bgColor="#66018E" textColor="#F996EE" padding={'32px'} asProp="div">
-                <TopicCardInner contentAlign="left">
-                  <TopicTitle color={Color.neutral100}>Limit orders</TopicTitle>
-                  <TopicDescription fontSize={21} color="#F996EE">
-                    Placing a limit order is like setting a trap for a price for your trade. CoW Swap is the only DEX
-                    that offers surplus on limit orders - and one of the only DEXs that offers limit orders at all.
-                  </TopicDescription>
-                </TopicCardInner>
-                <TopicImage
-                  iconColor="#8702AA"
-                  bgColor="transparent"
-                  margin={'auto 0 0 auto'}
-                  height={187}
-                  width={'auto'}
+              {ADVANCED_ORDER_TYPES.map((topic) => (
+                <TopicCard
+                  key={topic.title}
+                  contentAlign="left"
+                  bgColor={topic.bgColor}
+                  textColor={topic.textColor}
+                  padding="32px"
+                  asProp="div"
                 >
-                  <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />
-                </TopicImage>
-              </TopicCard>
-
-              <TopicCard contentAlign={'left'} bgColor="#66018E" textColor="#F996EE" padding={'32px'} asProp="div">
-                <TopicCardInner contentAlign="left">
-                  <TopicTitle color={Color.neutral100}>TWAP orders</TopicTitle>
-                  <TopicDescription fontSize={21} color="#F996EE">
-                    Time-weighted average price (TWAP) orders minimize price impact and volatility risk by letting you
-                    trade assets at fixed intervals over a period of time.
-                  </TopicDescription>
-                </TopicCardInner>
-                <TopicImage
-                  iconColor="#8702AA"
-                  bgColor="transparent"
-                  margin={'auto 0 0 auto'}
-                  height={187}
-                  width={'auto'}
-                >
-                  <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />
-                </TopicImage>
-              </TopicCard>
-
-              <TopicCard contentAlign={'left'} bgColor="#66018E" textColor="#F996EE" padding={'32px'} asProp="div">
-                <TopicCardInner contentAlign="left">
-                  <TopicTitle color={Color.neutral100}>Milkman orders</TopicTitle>
-                  <TopicDescription fontSize={21} color="#F996EE">
-                    Created with our friends at Yearn.fi, Milkman orders let you prep a trade today to be executed in
-                    the future - with the help of a price oracle so you don't get rekt.
-                  </TopicDescription>
-                </TopicCardInner>
-                <TopicImage
-                  iconColor="#8702AA"
-                  bgColor="transparent"
-                  margin={'auto 0 0 auto'}
-                  height={187}
-                  width={'auto'}
-                >
-                  <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />
-                </TopicImage>
-              </TopicCard>
+                  <TopicCardInner contentAlign="left">
+                    <TopicTitle color={topic.titleColor}>{topic.title}</TopicTitle>
+                    <TopicDescription fontSize={21} color={topic.textColor}>
+                      {topic.description}
+                    </TopicDescription>
+                  </TopicCardInner>
+                  <TopicImage
+                    iconColor="transparent"
+                    bgColor="transparent"
+                    margin="auto 0 0 auto"
+                    height="auto"
+                    width="100%"
+                  >
+                    <SVG src={topic.imageSrc} />
+                  </TopicImage>
+                </TopicCard>
+              ))}
             </TopicList>
 
             <SectionTitleWrapper padding="150px 0 50px">
               <SectionTitleText textAlign="center">Unique trading logic</SectionTitleText>
             </SectionTitleWrapper>
             <TopicList columns={3}>
-              <TopicCard contentAlign={'left'} bgColor="#FCCAF2" textColor="#490072" padding={'32px'} asProp="div">
-                <TopicCardInner contentAlign="left">
-                  <TopicTitle color="490072">Smart orders</TopicTitle>
-                  <TopicDescription fontSize={21} color="#8702AA">
-                    ERC-1271 smart orders let you custom code any trading logic
-                  </TopicDescription>
-                </TopicCardInner>
-                <TopicImage iconColor="transparent" margin={'auto 0 0 auto'} height={240} width={'100%'}>
-                  <SVG src={IMG_SMARTORDERS} />
-                </TopicImage>
-              </TopicCard>
-              <TopicCard contentAlign={'left'} bgColor="#66018E" textColor="#F996EE" padding={'32px'} asProp="div">
-                <TopicCardInner contentAlign="left">
-                  <TopicTitle color={Color.neutral100}>Programmatic orders</TopicTitle>
-                  <TopicDescription fontSize={21} color="#F996EE">
-                    Easily deploy conditional orders that trigger when specified on-chain conditions are met
-                  </TopicDescription>
-                </TopicCardInner>
-                <TopicImage
-                  iconColor="transparent"
-                  bgColor="transparent"
-                  margin={'auto 0 0 auto'}
-                  height={240}
-                  width={'100%'}
+              {UNIQUE_TRADING_LOGIC.map((topic) => (
+                <TopicCard
+                  key={topic.title}
+                  contentAlign="left"
+                  bgColor={topic.bgColor}
+                  textColor={topic.textColor}
+                  padding="32px"
+                  asProp="div"
                 >
-                  <SVG src={IMG_PROGRAMMATIC_ORDERS} />
-                </TopicImage>
-              </TopicCard>
-
-              <TopicCard contentAlign={'left'} bgColor="#66018E" textColor="#F996EE" padding={'32px'} asProp="div">
-                <TopicCardInner contentAlign="left">
-                  <TopicTitle color={Color.neutral100}>Hooks</TopicTitle>
-                  <TopicDescription fontSize={21} color="#F996EE">
-                    Add pre- and post- hooks to tie your trade to any other DeFi activity (bridging, staking,
-                    depositing, etc.)
-                  </TopicDescription>
-                </TopicCardInner>
-                <TopicImage
-                  iconColor="transparent"
-                  bgColor="transparent"
-                  margin={'auto 0 0 auto'}
-                  height={240}
-                  width={'100%'}
-                >
-                  <SVG src={IMG_HOOKS} />
-                </TopicImage>
-              </TopicCard>
+                  <TopicCardInner contentAlign="left">
+                    <TopicTitle color={topic.titleColor}>{topic.title}</TopicTitle>
+                    <TopicDescription fontSize={21} color={topic.textColor}>
+                      {topic.description}
+                    </TopicDescription>
+                  </TopicCardInner>
+                  <TopicImage
+                    iconColor="transparent"
+                    bgColor="transparent"
+                    margin="auto 0 0 auto"
+                    height="auto"
+                    width="100%"
+                  >
+                    <SVG src={topic.imageSrc} />
+                  </TopicImage>
+                </TopicCard>
+              ))}
             </TopicList>
           </ContainerCardSection>
         </ContainerCard>
@@ -449,7 +395,7 @@ export default function Page({ siteConfigData }: PageProps) {
         <ContainerCard bgColor={Color.neutral10} color={Color.neutral98}>
           <ContainerCardSection>
             <SectionTitleWrapper padding="150px 0 0">
-              <SectionTitleIcon multiple>
+              <SectionTitleIcon multiple size={60}>
                 <SVG src={IMG_ICON_OWL} />
                 <ProductLogo variant={ProductVariant.CowProtocol} theme="dark" logoIconOnly height={60} />
                 <SVG src={IMG_ICON_GHOST} />
@@ -484,7 +430,7 @@ export default function Page({ siteConfigData }: PageProps) {
               {CASE_STUDIES.map((study, index) => (
                 <TopicCard key={index} bgColor={Color.neutral100} padding={'52px'} gap={16} asProp="div">
                   <TopicImage iconColor="#8702AA" bgColor="transparent" height={96} width={'auto'}>
-                    {study.logo}
+                    <SVG src={study.logo} />
                   </TopicImage>
                   <TopicCardInner>
                     <TopicTitle fontSize={38}>{study.title}</TopicTitle>
@@ -521,8 +467,8 @@ export default function Page({ siteConfigData }: PageProps) {
                   <TopicImage
                     iconColor={Color.neutral20}
                     bgColor={'transparent'}
-                    width={'100%'}
-                    height={110}
+                    width={90}
+                    height={90}
                     margin={'auto'}
                   >
                     <SVG src={logo.src} title={logo.alt} />
@@ -536,90 +482,47 @@ export default function Page({ siteConfigData }: PageProps) {
         <ContainerCard bgColor={'transparent'}>
           <ContainerCardSection>
             <SectionTitleWrapper color={Color.neutral10} maxWidth={1100}>
-              <SectionTitleIcon size={114}>
+              <SectionTitleIcon size={78}>
                 <SVG src={IMG_ICON_BUILD_WITH_COW} />
               </SectionTitleIcon>
               <SectionTitleText>Build with CoW Protocol</SectionTitleText>
             </SectionTitleWrapper>
 
             <TopicList columns={3}>
-              <TopicCard contentAlign={'left'} bgColor="#66018E" textColor="#F996EE" padding={'32px'} asProp="div">
-                <TopicCardInner contentAlign="left">
-                  <TopicTitle fontSize={38} color={Color.neutral100}>
-                    For developers
-                  </TopicTitle>
-                  <TopicDescription fontSize={21} color="#F996EE" minHeight={170}>
-                    As an open-source protocol, building on top of CoW Protocol is permissionless. Thanks to
-                    comprehensive documentation and live coding tutorials, integrating the protocol is easy
-                  </TopicDescription>
-                  <Link
-                    bgColor="#ED60E9"
-                    color="#66018E"
-                    fontSize={27}
-                    href="https://docs.cow.fi/"
-                    linkType={LinkType.TopicButton}
-                    utmContent={`cow-protocol-docs`}
-                    onClick={() => sendEventHandler(EventCategories.COWPROTOCOL, `click-docs`)}
-                  >
-                    Read the docs
-                  </Link>
-                </TopicCardInner>
-                <TopicImage iconColor="#8702AA" bgColor="transparent" margin={'0 0 0 auto'} height={187} width={'auto'}>
-                  <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />
-                </TopicImage>
-              </TopicCard>
-
-              <TopicCard contentAlign={'left'} bgColor="#66018E" textColor="#F996EE" padding={'32px'} asProp="div">
-                <TopicCardInner contentAlign="left">
-                  <TopicTitle fontSize={38} color={Color.neutral100}>
-                    For DeFi projects
-                  </TopicTitle>
-                  <TopicDescription fontSize={21} color="#F996EE" minHeight={170}>
-                    Don't need overly-custom trading logic? The CoW Protocol widget is the easiest way to integrate
-                    swaps, twaps, and limit orders directly into your project site
-                  </TopicDescription>
-                  <Link
-                    bgColor="#ED60E9"
-                    color="#66018E"
-                    fontSize={27}
-                    href="/widget"
-                    linkType={LinkType.TopicButton}
-                    onClick={() => sendEventHandler(EventCategories.COWPROTOCOL, `click-integrate-widget`)}
-                  >
-                    Integrate the widget
-                  </Link>
-                </TopicCardInner>
-                <TopicImage iconColor="#8702AA" bgColor="transparent" margin={'0 0 0 auto'} height={187} width={'auto'}>
-                  <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />
-                </TopicImage>
-              </TopicCard>
-
-              <TopicCard contentAlign={'left'} bgColor="#66018E" textColor="#F996EE" padding={'32px'} asProp="div">
-                <TopicCardInner contentAlign="left">
-                  <TopicTitle fontSize={38} color={Color.neutral100}>
-                    For anyone
-                  </TopicTitle>
-                  <TopicDescription fontSize={21} color="#F996EE" minHeight={170}>
-                    The CoW DAO Grants program has awarded over $100,000 in grants to innovators that build public DeFi
-                    applications with CoW Protocol
-                  </TopicDescription>
-                  <Link
-                    bgColor="#ED60E9"
-                    color="#66018E"
-                    fontSize={27}
-                    href="https://grants.cow.fi/"
-                    linkType={LinkType.TopicButton}
-                    external
-                    utmContent={`cow-protocol-grants`}
-                    onClick={() => sendEventHandler(EventCategories.COWPROTOCOL, `click-apply-for-a-grant`)}
-                  >
-                    Apply for a grant
-                  </Link>
-                </TopicCardInner>
-                <TopicImage iconColor="#8702AA" bgColor="transparent" margin={'0 0 0 auto'} height={187} width={'auto'}>
-                  <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />
-                </TopicImage>
-              </TopicCard>
+              {COW_PROTOCOL_SECTIONS.map((topic) => (
+                <TopicCard
+                  key={topic.title}
+                  contentAlign="left"
+                  bgColor={topic.bgColor}
+                  textColor={topic.textColor}
+                  padding="32px"
+                  asProp="div"
+                >
+                  <TopicCardInner contentAlign="left">
+                    <TopicTitle fontSize={38} color={topic.titleColor}>
+                      {topic.title}
+                    </TopicTitle>
+                    <TopicDescription fontSize={21} color={topic.textColor} minHeight={170}>
+                      {topic.description}
+                    </TopicDescription>
+                    <Link
+                      bgColor={topic.textColor}
+                      color={topic.bgColor}
+                      fontSize={27}
+                      href={topic.linkHref}
+                      linkType={LinkType.TopicButton}
+                      onClick={() => sendEventHandler(EventCategories.COWPROTOCOL, topic.linkEvent)}
+                      utmContent={topic.linkUtmContent}
+                      external={topic.linkHref.startsWith('http')}
+                    >
+                      {topic.linkText}
+                    </Link>
+                  </TopicCardInner>
+                  <TopicImage iconColor="#8702AA" bgColor="transparent" margin="0 0 0 auto" height={187} width="auto">
+                    <SVG src={topic.imageSrc} />
+                  </TopicImage>
+                </TopicCard>
+              ))}
             </TopicList>
           </ContainerCardSection>
         </ContainerCard>

@@ -1,7 +1,6 @@
 import { Link } from '@/components/Link'
 import { EventCategories, sendEventHandler } from '@cowprotocol/analytics'
 
-import { ProductLogo, ProductVariant } from '@cowprotocol/ui'
 import IMG_LOGO_SAFE from '@cowprotocol/assets/images/logo-safe.svg'
 import IMG_LOGO_LIDO from '@cowprotocol/assets/images/logo-lido.svg'
 import IMG_LOGO_CURVE from '@cowprotocol/assets/images/logo-curve.svg'
@@ -21,6 +20,76 @@ import IMG_LOGO_STAKE_DAO from '@cowprotocol/assets/images/logo-stakedao.svg'
 import IMG_LOGO_RHINO_FI from '@cowprotocol/assets/images/logo-rhino.svg'
 import IMG_LOGO_TELLER_FINANCE from '@cowprotocol/assets/images/logo-teller.svg'
 import IMG_LOGO_FRAX_FINANCE from '@cowprotocol/assets/images/logo-frax.svg'
+import IMG_GRANT_COLOR from '@cowprotocol/assets/images/image-grant-color.svg'
+import IMG_WIDGET from '@cowprotocol/assets/images/image-widget.svg'
+import IMG_DOCS from '@cowprotocol/assets/images/image-docs.svg'
+import IMG_MILKMAN from '@cowprotocol/assets/images/image-milkman.svg'
+import IMG_TWAP from '@cowprotocol/assets/images/image-twap.svg'
+import IMG_SURPLUS from '@cowprotocol/assets/images/image-surplus.svg'
+import IMG_HOOKS from '@cowprotocol/assets/images/image-hooks.svg'
+import IMG_PROGRAMMATIC_ORDERS from '@cowprotocol/assets/images/image-programmatic-orders.svg'
+import IMG_SMARTORDERS from '@cowprotocol/assets/images/image-smartorders.svg'
+import IMG_LOGO_NEXUS from '@cowprotocol/assets/images/logo-nexus-icon.svg'
+import IMG_LOGO_ENS from '@cowprotocol/assets/images/logo-ens-icon.svg'
+import IMG_LOGO_AAVE from '@cowprotocol/assets/images/logo-aave-icon.svg'
+
+export const ADVANCED_ORDER_TYPES = [
+  {
+    title: 'Limit orders',
+    description:
+      'Placing a limit order is like setting a trap for a price for your trade. CoW Swap is the only DEX that offers surplus on limit orders - and one of the only DEXs that offers limit orders at all.',
+    bgColor: '#8702AA',
+    textColor: '#FCCAF2',
+    titleColor: '#FFF8F7',
+    imageSrc: IMG_SURPLUS,
+  },
+  {
+    title: 'TWAP orders',
+    description:
+      'Time-weighted average price (TWAP) orders minimize price impact and volatility risk by letting you trade assets at fixed intervals over a period of time.',
+    bgColor: '#F996EE',
+    textColor: '#8702AA',
+    titleColor: '#490072',
+    imageSrc: IMG_TWAP,
+  },
+  {
+    title: 'Milkman orders',
+    description:
+      "Created with our friends at Yearn.fi, Milkman orders let you prep a trade today to be executed in the future - with the help of a price oracle so you don't get rekt.",
+    bgColor: '#490072',
+    textColor: '#F996EE',
+    titleColor: '#FFF8F7',
+    imageSrc: IMG_MILKMAN,
+  },
+]
+
+export const UNIQUE_TRADING_LOGIC = [
+  {
+    title: 'Smart orders',
+    description: 'ERC-1271 smart orders let you custom code any trading logic',
+    bgColor: '#FCCAF2',
+    textColor: '#8702AA',
+    titleColor: '#490072',
+    imageSrc: IMG_SMARTORDERS,
+  },
+  {
+    title: 'Programmatic orders',
+    description: 'Easily deploy conditional orders that trigger when specified on-chain conditions are met',
+    bgColor: '#490072',
+    textColor: '#F996EE',
+    titleColor: '#FFF8F7',
+    imageSrc: IMG_PROGRAMMATIC_ORDERS,
+  },
+  {
+    title: 'Hooks',
+    description:
+      'Add pre- and post- hooks to tie your trade to any other DeFi activity (bridging, staking, depositing, etc.)',
+    bgColor: '#66018E',
+    textColor: '#F996EE',
+    titleColor: '#FFF8F7',
+    imageSrc: IMG_HOOKS,
+  },
+]
 
 export const TOP_LOGOS = [
   { src: IMG_LOGO_LIDO, alt: 'Lido', url: 'https://lido.fi/' },
@@ -33,20 +102,20 @@ export const CASE_STUDIES = [
     title: 'Aave',
     description: 'Aave DAO used CoW Swap to swap over $4 million directly into a Balancer liquidity pool',
     link: 'https://blog.cow.fi/aave-trade-breakdown-e17a7563d7ba',
-    logo: <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />,
+    logo: IMG_LOGO_AAVE,
   },
   {
     title: 'ENS',
     description: 'ENS DAO traded a whopping 10,000 ETH for USDC through CoW Swap',
     link: 'https://blog.cow.fi/ens-trade-breakdown-a8eb00ddd8c0',
-    logo: <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />,
+    logo: IMG_LOGO_ENS,
   },
   {
     title: 'Nexus Mutual',
     description:
       'In the largest DAO trade ever, Nexus Mutual relied on CoW Swap to trade 14,400 ETH for rETH, a liquid staking token',
     link: 'https://blog.cow.fi/nexus-mutual-trade-breakdown-4aacc6a94be8',
-    logo: <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />,
+    logo: IMG_LOGO_NEXUS,
   },
 ]
 
@@ -356,5 +425,46 @@ export const FAQ_DATA = [
         </Link>
       </>
     ),
+  },
+]
+
+export const COW_PROTOCOL_SECTIONS = [
+  {
+    title: 'For developers',
+    description:
+      'As an open-source protocol, building on top of CoW Protocol is permissionless. Thanks to comprehensive documentation and live coding tutorials, integrating the protocol is easy.',
+    bgColor: '#66018E',
+    textColor: '#F996EE',
+    titleColor: '#FFF8F7',
+    linkHref: 'https://docs.cow.fi/',
+    linkText: 'Read the docs',
+    linkEvent: 'click-docs',
+    linkUtmContent: 'cow-protocol-docs',
+    imageSrc: IMG_DOCS,
+  },
+  {
+    title: 'For DeFi projects',
+    description:
+      "Don't need overly-custom trading logic? The CoW Protocol widget is the easiest way to integrate swaps, twaps, and limit orders directly into your project site.",
+    bgColor: '#490072',
+    textColor: '#F996EE',
+    titleColor: '#FFF8F7',
+    linkHref: '/widget',
+    linkText: 'Integrate the widget',
+    linkEvent: 'click-integrate-widget',
+    imageSrc: IMG_WIDGET,
+  },
+  {
+    title: 'For anyone',
+    description:
+      'The CoW DAO Grants program has awarded over $100,000 in grants to innovators that build public DeFi applications with CoW Protocol.',
+    bgColor: '#F996EE',
+    textColor: '#66018E',
+    titleColor: '#490072',
+    linkHref: 'https://grants.cow.fi/',
+    linkText: 'Apply for a grant',
+    linkEvent: 'click-apply-for-a-grant',
+    linkUtmContent: 'cow-protocol-grants',
+    imageSrc: IMG_GRANT_COLOR,
   },
 ]
