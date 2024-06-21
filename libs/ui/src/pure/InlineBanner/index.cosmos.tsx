@@ -4,7 +4,7 @@ import { InlineBanner } from '.'
 
 const DemoContainer = styled.div`
   width: 100%;
-  max-width: ${({ theme }) => theme.appBody.maxWidth.swap};
+  max-width: 470px;
   margin: 0 auto;
   display: flex;
   flex-flow: column wrap;

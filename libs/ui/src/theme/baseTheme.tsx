@@ -144,13 +144,6 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
     util: {
       invertImageForDarkMode: darkMode ? 'filter: invert(1) grayscale(1);' : null,
     },
-    appBody: {
-      maxWidth: {
-        swap: '470px',
-        limit: '1350px',
-        content: '680px',
-      },
-    },
     buttonSizes: {
       [ButtonSize.BIG]: css`
         font-size: 26px;

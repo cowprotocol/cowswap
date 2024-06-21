@@ -5,13 +5,14 @@ import { Media, UI } from '@cowprotocol/ui'
 import { lighten } from 'color2k'
 import styled, { css } from 'styled-components/macro'
 
+import { WIDGET_MAX_WIDTH } from 'legacy/theme'
 import { WithClassName } from 'legacy/types'
 
 import { Widget } from 'modules/application/pure/Widget'
 
 export const PageWrapper = styled(Widget)`
   padding: 0 24px 24px;
-  max-width: ${({ theme }) => theme.appBody.maxWidth.content};
+  max-width: ${WIDGET_MAX_WIDTH.content};
   min-height: 500px;
 `
 

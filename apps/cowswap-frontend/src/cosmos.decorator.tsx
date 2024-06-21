@@ -17,7 +17,7 @@ import styled, { ThemeContext } from 'styled-components/macro'
 
 import { cowSwapStore } from 'legacy/state'
 import { useDarkModeManager } from 'legacy/state/user/hooks'
-import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from 'legacy/theme'
+import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle, WIDGET_MAX_WIDTH } from 'legacy/theme'
 
 import { BlockNumberProvider } from './common/hooks/useBlockNumber'
 
@@ -72,7 +72,7 @@ const WrapperInner = styled.div`
 
 export const DemoContainer = styled.div`
   width: 100%;
-  max-width: ${({ theme }) => theme.appBody.maxWidth.swap};
+  max-width: ${WIDGET_MAX_WIDTH.swap};
   margin: 0 auto;
   display: flex;
   flex-flow: column wrap;

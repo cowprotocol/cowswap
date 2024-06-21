@@ -36,11 +36,15 @@ export enum Z_INDEX {
   dropdown = 1000,
   sticky = 1020,
   fixed = 1030,
-  modalBackdrop = 1040,
-  offcanvas = 1050,
   modal = 1060,
   popover = 1070,
   tooltip = 1080,
+}
+
+export const WIDGET_MAX_WIDTH = {
+  swap: '470px',
+  limit: '1350px',
+  content: '680px',
 }
 
 export function colors(darkMode: boolean): Colors {
