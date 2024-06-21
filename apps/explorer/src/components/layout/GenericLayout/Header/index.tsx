@@ -80,7 +80,6 @@ export const Header: React.FC<Props> = ({ children, linkTo, onClickOptional }) =
     <HeaderStyled>
       <Logo to={linkTo || '/'} onClick={(event): void => onClickOptional && onClickOptional(event)}>
         <ProductLogo
-          theme={'dark'}
           variant={ProductVariant.CowExplorer}
           overrideColor={Color.neutral100}
           logoIconOnly={isUpToMedium}

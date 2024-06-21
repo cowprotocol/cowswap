@@ -1,12 +1,13 @@
-import React, { useContext } from 'react'
+import React from 'react'
 
+import { useTheme } from '@cowprotocol/common-hooks'
 import { Command } from '@cowprotocol/types'
 import { UI } from '@cowprotocol/ui'
 import { RowFixed, TokenSymbol } from '@cowprotocol/ui'
 import { Currency } from '@uniswap/sdk-core'
 
 import { CheckCircle } from 'react-feather'
-import styled, { ThemeContext } from 'styled-components/macro'
+import styled from 'styled-components/macro'
 
 export const ButtonCustom = styled.button`
   display: flex;
@@ -65,7 +66,7 @@ export type WatchAssetInWalletProps = {
 }
 export function WatchAssetInWallet(props: WatchAssetInWalletProps) {
   const { className, walletIcon, walletName, currency, shortLabel, addToken, success } = props
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
 
   return (
     <ButtonCustom className={className} onClick={addToken}>

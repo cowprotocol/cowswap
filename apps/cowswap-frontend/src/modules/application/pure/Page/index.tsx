@@ -186,10 +186,10 @@ export const GdocsListStyle = css`
       list-style: decimal;
 
       a {
-        color: ${({ theme }) => theme.text3};
+        color: ${({ theme }) => theme.info};
 
         &:hover {
-          color: ${({ theme }) => theme.text3};
+          color: ${({ theme }) => theme.info};
         }
       }
 

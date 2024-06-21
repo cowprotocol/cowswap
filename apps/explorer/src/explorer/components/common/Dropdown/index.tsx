@@ -71,7 +71,7 @@ const Items = styled(BaseCard)<{
   fullWidth?: boolean
   isOpen: boolean
 }>`
-  background: ${({ theme }): string => theme.bg1};
+  background: ${({ theme }): string => theme.paper};
   border-radius: 0.6rem;
   border: 1px solid ${({ theme }): string => theme.borderPrimary};
   box-shadow: ${({ theme }): string => theme.boxShadow};

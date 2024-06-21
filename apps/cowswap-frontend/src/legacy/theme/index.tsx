@@ -11,11 +11,9 @@ import {
   themeMapper,
   UI,
 } from '@cowprotocol/ui'
-import { getContrastText } from '@cowprotocol/ui-utils'
 
-import { darken } from 'color2k'
 import { Text, TextProps as TextPropsOriginal } from 'rebass'
-import styled, { createGlobalStyle, css, ThemeProvider as StyledComponentsThemeProvider } from 'styled-components/macro'
+import styled, { createGlobalStyle, ThemeProvider as StyledComponentsThemeProvider } from 'styled-components/macro'
 
 import { useIsDarkMode } from 'legacy/state/user/hooks'
 
@@ -79,10 +77,25 @@ export const ThemedText = {
   Small(props: TextProps) {
     return <TextWrapper fontWeight={500} fontSize={11} {...props} />
   },
+  Black(props: TextProps) {
+    return <TextWrapper fontWeight={500} {...props} />
+  },
   Blue(props: TextProps) {
     return <TextWrapper fontWeight={500} {...props} />
   },
   Error({ ...props }: { error: boolean } & TextProps) {
+    return <TextWrapper fontWeight={500} {...props} />
+  },
+  Body(props: TextProps) {
+    return <TextWrapper fontWeight={400} fontSize={16} {...props} />
+  },
+  MediumHeader(props: TextProps) {
+    return <TextWrapper fontWeight={500} fontSize={20} {...props} />
+  },
+  LargeHeader(props: TextProps) {
+    return <TextWrapper fontWeight={600} fontSize={24} {...props} />
+  },
+  DarkGray(props: TextProps) {
     return <TextWrapper fontWeight={500} {...props} />
   },
 }
@@ -117,40 +130,10 @@ export default function ThemeProvider({ children }: { children?: React.ReactNode
   )
 }
 
-const themeColorsOverride = css`
-  :root {
-    ${UI.COLOR_PAPER}: ${({ theme }) => (theme.isInjectedWidgetMode ? theme.paper : theme.paperCustom)};
-    ${UI.COLOR_PAPER_DARKER}: ${({ theme }) => {
-      if (theme.isInjectedWidgetMode) {
-        return darken(theme.paper, theme.darkMode ? 0.07 : 0.05)
-      } else {
-        return theme.paperDarkerCustom
-      }
-    }};
-
-    ${UI.COLOR_PAPER_DARKEST}: ${({ theme }) => {
-      if (theme.isInjectedWidgetMode) {
-        return darken(theme.paper, theme.darkMode ? 0.1 : 0.15)
-      } else {
-        return theme.paperDarkestCustom
-      }
-    }};
-
-    ${UI.COLOR_BUTTON_TEXT}: ${({ theme }) => {
-      if (theme.isInjectedWidgetMode) {
-        return getContrastText(theme.primary, theme.text)
-      } else {
-        return getContrastText(theme.primary, theme.buttonTextCustom)
-      }
-    }};
-  }
-`
-
 export const FixedGlobalStyle = FixedGlobalStyleBase
 
 export const ThemedGlobalStyle = createGlobalStyle`
   ${ThemeColorsGlobalStyle}
-  ${themeColorsOverride}
 
   html {
     background-color: ${({ theme }) =>

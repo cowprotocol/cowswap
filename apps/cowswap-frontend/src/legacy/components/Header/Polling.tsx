@@ -59,7 +59,7 @@ export const StyledPollingDot = styled.div<{ warning: boolean }>`
 `
 
 export const StyledGasDot = styled.div`
-  background-color: ${({ theme }) => theme.text3};
+  background-color: ${({ theme }) => theme.info};
   border-radius: 50%;
   height: 4px;
   min-height: 4px;

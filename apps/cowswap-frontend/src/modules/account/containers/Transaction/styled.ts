@@ -115,7 +115,7 @@ export const SummaryInner = styled.div`
     font-size: 14px;
 
     &:hover {
-      color: ${({ theme }) => theme.text3};
+      color: ${({ theme }) => theme.info};
     }
   }
 `
@@ -383,10 +383,10 @@ export const TransactionInnerDetail = styled.div`
 
 export const TextAlert = styled.div<{ isPending: boolean; isExpired: boolean; isCancelled: boolean }>`
   background: ${({ theme, isPending }) =>
-    isPending ? transparentize(theme.attention, 0.85) : transparentize(theme.success, 0.85)};
+    isPending ? transparentize('#ff5722', 0.85) : transparentize(theme.success, 0.85)};
   margin: 6px 0 16px;
   padding: 8px 12px;
-  color: ${({ theme, isPending }) => (isPending ? theme.attention : theme.success)};
+  color: ${({ theme, isPending }) => (isPending ? '#ff5722' : theme.success)};
   text-decoration: ${({ isExpired, isCancelled }) => (isExpired || isCancelled) && 'line-through'};
   border-radius: 8px;
   text-align: center;

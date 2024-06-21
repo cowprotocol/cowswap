@@ -52,11 +52,7 @@ export const SuccessBanner = styled.div<{ type: string }>`
     object-fit: contain;
     stroke: none;
     fill: ${({ type, theme }) =>
-      type === 'Twitter'
-        ? SuccessBannerColors.twitter
-        : type === 'Discord'
-        ? SuccessBannerColors.discord
-        : theme.primary1};
+      type === 'Twitter' ? SuccessBannerColors.twitter : type === 'Discord' ? SuccessBannerColors.discord : theme.bg2};
 
     ${Media.upToSmall()} {
       width: 32px;

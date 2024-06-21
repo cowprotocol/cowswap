@@ -20,21 +20,10 @@ export interface Colors {
   white: ColorValue
   black: ColorValue
   text1: ColorValue
-  text2: ColorValue
-  text3: ColorValue
   text4: ColorValue
-  bg1: ColorValue
   bg2: ColorValue
-  bg3: ColorValue
-  bg4: ColorValue
   bg5: ColorValue
-  advancedBG: ColorValue
-  primary1: ColorValue
-  primary3: ColorValue
-  primary4: ColorValue
-  primary5: ColorValue
   green1: ColorValue
-  yellow2: ColorValue
   yellow3: ColorValue
   blue1: ColorValue
   bg8: ColorValue
@@ -45,22 +34,12 @@ export interface Colors {
   blue2: ColorValue
   orange: ColorValue
   danger: ColorValue
-  pending: ColorValue
-  attention: ColorValue
   border: ColorValue
   border2: ColorValue
   disabled: ColorValue
-  information: ColorValue
   alert: ColorValue
   alert2: ColorValue
-  infoText: ColorValue
-  warningText: ColorValue
-  errorText: ColorValue
-  blueDark1: ColorValue
   blueDark2: ColorValue
-  blueLight1: ColorValue
-  grey1: ColorValue
-  red1: ColorValue
   paperCustom: ColorValue
   paperDarkerCustom: ColorValue
   paperDarkestCustom: ColorValue

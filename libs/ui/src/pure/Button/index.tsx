@@ -68,16 +68,16 @@ export const ButtonLight = styled(ButtonPrimary)`
 
   &:focus {
     box-shadow: ${({ theme }) => `4px 4px 0px ${theme.black}`};
-    background-color: ${({ theme }) => theme.primary4};
+    background-color: ${({ theme }) => theme.bg2};
   }
 
   &:hover {
-    background-color: ${({ theme }) => theme.primary4};
+    background-color: ${({ theme }) => theme.bg2};
   }
 
   &:active {
     box-shadow: ${({ theme }) => `4px 4px 0px ${theme.black}`};
-    background-color: ${({ theme }) => theme.primary4};
+    background-color: ${({ theme }) => theme.bg2};
   }
 
   &:disabled {
@@ -88,7 +88,7 @@ export const ButtonLight = styled(ButtonPrimary)`
 
     &:hover {
       cursor: auto;
-      background-color: ${({ theme }) => theme.primary5};
+      background-color: ${({ theme }) => theme.bg2};
       box-shadow: none;
       outline: none;
     }

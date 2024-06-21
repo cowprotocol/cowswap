@@ -22,7 +22,7 @@ export const WalletName = styled.div`
   width: initial;
   font-size: 0.825rem;
   font-weight: 500;
-  color: ${({ theme }) => theme.text3};
+  color: ${({ theme }) => theme.info};
 `
 
 export const IconWrapper = styled.div<{ size?: number }>`
@@ -351,7 +351,7 @@ export const LowerSection = styled.div`
     font-size: 14px;
 
     &:hover {
-      color: ${({ theme }) => theme.text3};
+      color: ${({ theme }) => theme.info};
     }
   }
 `

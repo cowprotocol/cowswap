@@ -38,7 +38,7 @@ Cytoscape.use(fcose)
 Cytoscape.use(klay)
 
 const WrapperCytoscape = styled(CytoscapeComponent)`
-  background-color: ${({ theme }): string => theme.bg1};
+  background-color: ${({ theme }): string => theme.paper};
   font-weight: ${({ theme }): string => theme.fontMedium};
   border-radius: 0.6rem;
 

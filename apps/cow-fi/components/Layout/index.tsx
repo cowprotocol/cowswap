@@ -73,21 +73,13 @@ export default function Layout({ children, bgColor, metaTitle, metaDescription, 
       <LocalStyles />
       <MenuBar
         navItems={NAV_ITEMS}
-        theme={THEME_MODE}
         productVariant={PRODUCT_VARIANT}
         additionalNavButtons={NAV_ADDITIONAL_BUTTONS}
         padding="10px 60px"
         maxWidth={PAGE_MAX_WIDTH}
       />
       <Wrapper>{children}</Wrapper>
-      <Footer
-        theme={THEME_MODE}
-        maxWidth={PAGE_MAX_WIDTH}
-        productVariant={PRODUCT_VARIANT}
-        host={finalHost}
-        expanded
-        hasTouchFooter
-      />
+      <Footer maxWidth={PAGE_MAX_WIDTH} productVariant={PRODUCT_VARIANT} host={finalHost} expanded hasTouchFooter />
     </>
   )
 }

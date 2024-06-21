@@ -26,7 +26,7 @@ function pickBackgroundColor(variant: BadgeVariant | undefined, theme: DefaultTh
     case BadgeVariant.POSITIVE:
       return theme.success
     case BadgeVariant.PRIMARY:
-      return theme.primary1
+      return theme.bg2
     case BadgeVariant.WARNING:
       return theme.warning
     case BadgeVariant.WARNING_OUTLINE:

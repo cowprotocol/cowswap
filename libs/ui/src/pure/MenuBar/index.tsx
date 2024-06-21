@@ -10,7 +10,6 @@ import { useMediaQuery, useOnClickOutside } from '@cowprotocol/common-hooks'
 import { addBodyClass, removeBodyClass } from '@cowprotocol/common-utils'
 
 import SVG from 'react-inlinesvg'
-import { ThemeProvider } from 'styled-components/macro'
 
 import {
   DropdownContent,
@@ -34,8 +33,7 @@ import {
 } from './styled'
 
 import { Color } from '../../consts'
-import { Media, themeMapper } from '../../consts'
-import { CowSwapTheme } from '../../types'
+import { Media } from '../../consts'
 import { ProductLogo, ProductVariant } from '../ProductLogo'
 
 const DAO_NAV_ITEMS: MenuItem[] = [
@@ -188,10 +186,9 @@ const NavItem = ({
 
 const DropdownContentItem: React.FC<{
   item: DropdownMenuItem
-  theme: CowSwapTheme
   closeMenu: () => void
   rootDomain: string
-}> = ({ item, theme, closeMenu, rootDomain }) => {
+}> = ({ item, closeMenu, rootDomain }) => {
   const [isChildrenVisible, setIsChildrenVisible] = useState(false)
 
   const handleToggleChildrenVisibility = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -221,7 +218,6 @@ const DropdownContentItem: React.FC<{
             variant={productVariant}
             overrideColor="inherit"
             overrideHoverColor={hoverColor}
-            theme={theme}
             logoIconOnly={false}
           />
         ) : icon ? (
@@ -316,10 +312,9 @@ const DropdownContentItem: React.FC<{
 const NavDaoTrigger: React.FC<{
   isOpen: boolean
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
-  theme: CowSwapTheme
   mobileMode: boolean
   rootDomain: string
-}> = ({ isOpen, setIsOpen, theme, mobileMode, rootDomain }) => {
+}> = ({ isOpen, setIsOpen, mobileMode, rootDomain }) => {
   const triggerRef = useRef<HTMLDivElement>(null)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
@@ -347,25 +342,13 @@ const NavDaoTrigger: React.FC<{
         (mobileMode ? (
           <MobileDropdownContainer mobileMode={mobileMode} ref={dropdownRef}>
             {DAO_NAV_ITEMS.map((item, index) => (
-              <DropdownContentItem
-                key={index}
-                item={item}
-                theme={theme}
-                closeMenu={closeMenu}
-                rootDomain={rootDomain}
-              />
+              <DropdownContentItem key={index} item={item} closeMenu={closeMenu} rootDomain={rootDomain} />
             ))}
           </MobileDropdownContainer>
         ) : (
           <DropdownContent isOpen={true} ref={dropdownRef} mobileMode={mobileMode}>
             {DAO_NAV_ITEMS.map((item, index) => (
-              <DropdownContentItem
-                key={index}
-                item={item}
-                theme={theme}
-                closeMenu={closeMenu}
-                rootDomain={rootDomain}
-              />
+              <DropdownContentItem key={index} item={item} closeMenu={closeMenu} rootDomain={rootDomain} />
             ))}
           </DropdownContent>
         ))}
@@ -637,7 +620,6 @@ function _onDropdownItemClickFactory(item: MenuItem, postClick?: () => void) {
 
 interface MenuBarProps {
   navItems: MenuItem[]
-  theme: 'light' | 'dark'
   productVariant: ProductVariant
   persistentAdditionalContent?: React.ReactNode
   additionalContent?: React.ReactNode
@@ -665,7 +647,6 @@ interface MenuBarProps {
 export const MenuBar = (props: MenuBarProps) => {
   const {
     navItems,
-    theme,
     productVariant,
     persistentAdditionalContent,
     additionalContent,
@@ -706,11 +687,6 @@ export const MenuBar = (props: MenuBarProps) => {
 
   const handleSettingsToggle = () => setIsSettingsOpen((prev) => !prev)
 
-  const styledTheme = {
-    ...themeMapper(theme),
-    mode: theme,
-  }
-
   const isMobile = useMediaQuery(Media.upToLarge(false))
 
   useOnClickOutside([menuRef], () => setIsDaoOpen(false))
@@ -741,165 +717,148 @@ export const MenuBar = (props: MenuBarProps) => {
   }, [isMobile, isMobileMenuOpen, isDaoOpen, isSettingsOpen])
 
   return (
-    <ThemeProvider theme={styledTheme}>
-      <MenuBarWrapper
-        ref={menuRef}
-        theme={styledTheme}
-        bgColorLight={bgColorLight}
-        bgColorDark={bgColorDark}
-        bgDropdownColorLight={bgDropdownColorLight}
-        bgDropdownColorDark={bgDropdownColorDark}
-        colorLight={colorLight}
-        colorDark={colorDark}
-        defaultFillLight={defaultFillLight}
-        defaultFillDark={defaultFillDark}
-        activeBackgroundLight={activeBackgroundLight}
-        activeBackgroundDark={activeBackgroundDark}
-        activeFillLight={activeFillLight}
-        activeFillDark={activeFillDark}
-        hoverBackgroundLight={hoverBackgroundLight}
-        hoverBackgroundDark={hoverBackgroundDark}
-        padding={padding}
-        mobileMode={isMobile}
-        maxWidth={maxWidth}
-      >
-        <MenuBarInner theme={styledTheme}>
-          <NavDaoTrigger
-            isOpen={isDaoOpen}
-            setIsOpen={setIsDaoOpen}
-            theme={theme}
-            mobileMode={isMobile}
-            rootDomain={rootDomain}
-          />
-          <ProductLogo variant={productVariant} theme={theme} logoIconOnly={isMobile} height={30} href="/" />
+    <MenuBarWrapper
+      ref={menuRef}
+      bgColorLight={bgColorLight}
+      bgColorDark={bgColorDark}
+      bgDropdownColorLight={bgDropdownColorLight}
+      bgDropdownColorDark={bgDropdownColorDark}
+      colorLight={colorLight}
+      colorDark={colorDark}
+      defaultFillLight={defaultFillLight}
+      defaultFillDark={defaultFillDark}
+      activeBackgroundLight={activeBackgroundLight}
+      activeBackgroundDark={activeBackgroundDark}
+      activeFillLight={activeFillLight}
+      activeFillDark={activeFillDark}
+      hoverBackgroundLight={hoverBackgroundLight}
+      hoverBackgroundDark={hoverBackgroundDark}
+      padding={padding}
+      mobileMode={isMobile}
+      maxWidth={maxWidth}
+    >
+      <MenuBarInner>
+        <NavDaoTrigger isOpen={isDaoOpen} setIsOpen={setIsDaoOpen} mobileMode={isMobile} rootDomain={rootDomain} />
+        <ProductLogo variant={productVariant} logoIconOnly={isMobile} height={30} href="/" />
 
-          {!isMobile && (
-            <NavItems theme={styledTheme} ref={navItemsRef}>
-              {navItems.map((item, index) => (
-                <NavItem
+        {!isMobile && (
+          <NavItems ref={navItemsRef}>
+            {navItems.map((item, index) => (
+              <NavItem
+                key={index}
+                item={item}
+                mobileMode={isMobile}
+                openDropdown={openDropdown}
+                closeDropdown={() => setOpenDropdown(null)}
+                setOpenDropdown={setOpenDropdown}
+                rootDomain={rootDomain}
+              />
+            ))}
+          </NavItems>
+        )}
+
+        <RightAligned mobileMode={isMobile} flexFlowMobile="row wrap">
+          {persistentAdditionalContent} {/* Always render this content */}
+          {!isMobile && additionalContent} {/* Render this content only on desktop */}
+          {!isMobile &&
+            additionalNavButtons &&
+            additionalNavButtons.map((item, index) => {
+              const href = item.external
+                ? appendUtmParams(item.href!, item.utmSource, item.utmContent, rootDomain, item.external, item.label)
+                : item.href
+              return (
+                <DropdownContentItemButton
                   key={index}
-                  item={item}
+                  href={href}
+                  target={item.external ? '_blank' : '_self'}
+                  rel={item.external ? 'noopener noreferrer' : undefined}
+                  bgColor={item.bgColor}
+                  color={item.color}
+                  hoverBgColor={item.hoverBgColor}
+                  hoverColor={item.hoverColor}
                   mobileMode={isMobile}
-                  openDropdown={openDropdown}
-                  closeDropdown={() => setOpenDropdown(null)}
-                  setOpenDropdown={setOpenDropdown}
+                >
+                  <DropdownContentItemText>
+                    <DropdownContentItemTitle>{item.label}</DropdownContentItemTitle>
+                  </DropdownContentItemText>
+                  <SVG src={IMG_ICON_ARROW_RIGHT} className={`arrow-icon-right ${item.external ? 'external' : ''}`} />
+                </DropdownContentItemButton>
+              )
+            })}
+          {showGlobalSettings && settingsNavItems && (
+            <>
+              <GlobalSettingsButton ref={settingsButtonRef} mobileMode={isMobile} onClick={handleSettingsToggle}>
+                <SVG src={IMG_ICON_SETTINGS_GLOBAL} />
+              </GlobalSettingsButton>
+              {isSettingsOpen && (
+                <GlobalSettingsDropdown
+                  mobileMode={isMobile}
+                  settingsNavItems={settingsNavItems}
+                  isOpen={isSettingsOpen}
+                  closeDropdown={handleSettingsToggle}
+                  ref={settingsDropdownRef}
                   rootDomain={rootDomain}
                 />
-              ))}
-            </NavItems>
+              )}
+            </>
           )}
+        </RightAligned>
 
-          <RightAligned mobileMode={isMobile} flexFlowMobile="row wrap">
-            {persistentAdditionalContent} {/* Always render this content */}
-            {!isMobile && additionalContent} {/* Render this content only on desktop */}
-            {!isMobile &&
-              additionalNavButtons &&
-              additionalNavButtons.map((item, index) => {
-                const href = item.external
-                  ? appendUtmParams(item.href!, item.utmSource, item.utmContent, rootDomain, item.external, item.label)
-                  : item.href
-                return (
+        {isMobile && (
+          <MobileMenuTrigger ref={mobileMenuTriggerRef} mobileMode={isMobile} onClick={handleMobileMenuToggle}>
+            <SVG src={isMobileMenuOpen ? IMG_ICON_X : IMG_ICON_MENU_HAMBURGER} />
+          </MobileMenuTrigger>
+        )}
+      </MenuBarInner>
+
+      {isMobile && isMobileMenuOpen && (
+        <NavItems mobileMode={isMobile} ref={mobileMenuRef}>
+          <div>
+            {navItems.map((item, index) => (
+              <NavItem
+                key={index}
+                item={item}
+                mobileMode={isMobile}
+                openDropdown={openDropdown}
+                closeDropdown={() => {
+                  setIsMobileMenuOpen(false)
+                  setOpenDropdown(null)
+                }}
+                setOpenDropdown={setOpenDropdown}
+                rootDomain={rootDomain}
+              />
+            ))}
+            <RightAligned mobileMode={isMobile}>
+              {additionalContent} {/* Add additional content here */}
+              {additionalNavButtons &&
+                additionalNavButtons.map((item, index) => (
                   <DropdownContentItemButton
                     key={index}
-                    href={href}
+                    href={appendUtmParams(
+                      item.href!,
+                      item.utmSource,
+                      item.utmContent,
+                      rootDomain,
+                      !!item.external,
+                      item.label
+                    )}
                     target={item.external ? '_blank' : '_self'}
                     rel={item.external ? 'noopener noreferrer' : undefined}
                     bgColor={item.bgColor}
                     color={item.color}
                     hoverBgColor={item.hoverBgColor}
                     hoverColor={item.hoverColor}
-                    mobileMode={isMobile}
                   >
                     <DropdownContentItemText>
                       <DropdownContentItemTitle>{item.label}</DropdownContentItemTitle>
                     </DropdownContentItemText>
                     <SVG src={IMG_ICON_ARROW_RIGHT} className={`arrow-icon-right ${item.external ? 'external' : ''}`} />
                   </DropdownContentItemButton>
-                )
-              })}
-            {showGlobalSettings && settingsNavItems && (
-              <>
-                <GlobalSettingsButton ref={settingsButtonRef} mobileMode={isMobile} onClick={handleSettingsToggle}>
-                  <SVG src={IMG_ICON_SETTINGS_GLOBAL} />
-                </GlobalSettingsButton>
-                {isSettingsOpen && (
-                  <GlobalSettingsDropdown
-                    mobileMode={isMobile}
-                    settingsNavItems={settingsNavItems}
-                    isOpen={isSettingsOpen}
-                    closeDropdown={handleSettingsToggle}
-                    ref={settingsDropdownRef}
-                    rootDomain={rootDomain}
-                  />
-                )}
-              </>
-            )}
-          </RightAligned>
-
-          {isMobile && (
-            <MobileMenuTrigger
-              ref={mobileMenuTriggerRef}
-              theme={styledTheme}
-              mobileMode={isMobile}
-              onClick={handleMobileMenuToggle}
-            >
-              <SVG src={isMobileMenuOpen ? IMG_ICON_X : IMG_ICON_MENU_HAMBURGER} />
-            </MobileMenuTrigger>
-          )}
-        </MenuBarInner>
-
-        {isMobile && isMobileMenuOpen && (
-          <NavItems mobileMode={isMobile} ref={mobileMenuRef} theme={styledTheme}>
-            <div>
-              {navItems.map((item, index) => (
-                <NavItem
-                  key={index}
-                  item={item}
-                  mobileMode={isMobile}
-                  openDropdown={openDropdown}
-                  closeDropdown={() => {
-                    setIsMobileMenuOpen(false)
-                    setOpenDropdown(null)
-                  }}
-                  setOpenDropdown={setOpenDropdown}
-                  rootDomain={rootDomain}
-                />
-              ))}
-              <RightAligned mobileMode={isMobile}>
-                {additionalContent} {/* Add additional content here */}
-                {additionalNavButtons &&
-                  additionalNavButtons.map((item, index) => (
-                    <DropdownContentItemButton
-                      key={index}
-                      href={appendUtmParams(
-                        item.href!,
-                        item.utmSource,
-                        item.utmContent,
-                        rootDomain,
-                        !!item.external,
-                        item.label
-                      )}
-                      target={item.external ? '_blank' : '_self'}
-                      rel={item.external ? 'noopener noreferrer' : undefined}
-                      bgColor={item.bgColor}
-                      color={item.color}
-                      hoverBgColor={item.hoverBgColor}
-                      hoverColor={item.hoverColor}
-                    >
-                      <DropdownContentItemText>
-                        <DropdownContentItemTitle>{item.label}</DropdownContentItemTitle>
-                      </DropdownContentItemText>
-                      <SVG
-                        src={IMG_ICON_ARROW_RIGHT}
-                        className={`arrow-icon-right ${item.external ? 'external' : ''}`}
-                      />
-                    </DropdownContentItemButton>
-                  ))}
-              </RightAligned>
-            </div>
-          </NavItems>
-        )}
-      </MenuBarWrapper>
-    </ThemeProvider>
+                ))}
+            </RightAligned>
+          </div>
+        </NavItems>
+      )}
+    </MenuBarWrapper>
   )
 }

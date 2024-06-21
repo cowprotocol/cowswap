@@ -28,7 +28,7 @@ const Label = styled.span<{ color: string }>`
 
 const Format = styled.strong`
   font-family: monospace;
-  color: ${({ theme }) => theme.text3};
+  color: ${({ theme }) => theme.info};
 
   white-space: nowrap;
 `
@@ -44,8 +44,8 @@ export default function ChainPrefixWarning({ chainPrefixWarning, chainInfo, isDa
   return (
     <Wrapper>
       <p>
-        The recipient address you inputted had the chain prefix <strong>{chainPrefixWarning}</strong>, which is not
-        the expected for the network you are in.
+        The recipient address you inputted had the chain prefix <strong>{chainPrefixWarning}</strong>, which is not the
+        expected for the network you are in.
       </p>
       <p>
         You are connected to

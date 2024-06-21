@@ -8,70 +8,47 @@ import { Colors } from './typings'
 import { UI } from '../enum'
 
 export function colors(darkMode: boolean): Colors {
+  const buttonTextCustom = '#65D9FF'
+  const blueDark2 = '#004293'
+  const blueDark3 = '#0d5ed9'
+  const blueDark4 = '#021E34'
+  const blueLight1 = '#CAE9FF'
+  const blueLight2 = '#afcbda'
+  const black = '#07162D'
+  const white = '#FFFFFF'
+  const darkerDark = '#090A20'
+  const darkerLight = '#090A20'
+  const error = '#D41300'
+  const alert = '#FFCA4A'
+
   return {
     darkMode,
-    primary: darkMode ? '#65D9FF' : '#004293',
-    background: darkMode ? '#07162D' : '#ECF1F8',
-    paper: darkMode ? '#0c264b' : '#FFFFFF',
-
-    // swap.cow.fi specific overrides ======================
-    paperCustom: darkMode ? '#18193B' : '#FFFFFF',
-    paperDarkerCustom: darkMode ? '#090A20' : '#E5EEF7',
-    paperDarkestCustom: darkMode ? darken('#090A20', 0.05) : darken('#E5EEF7', 0.1),
-    buttonTextCustom: darkMode ? '#65D9FF' : '#65D9FF',
-    // =====================================================
-
+    primary: darkMode ? buttonTextCustom : blueDark2,
+    background: darkMode ? black : '#ECF1F8',
+    paper: darkMode ? '#0c264b' : white,
+    paperCustom: darkMode ? '#18193B' : white,
+    paperDarkerCustom: darkMode ? darkerDark : darkerLight,
+    paperDarkestCustom: darkMode ? darken(darkerDark, 0.05) : darken(darkerLight, 0.1),
+    buttonTextCustom,
     text: darkMode ? '#DEE3E6' : '#00234E',
     disabledText: darkMode ? '#86B2DC' : '#506B93',
-
-    danger: darkMode ? '#f44336' : '#D41300',
-    alert: darkMode ? '#FFCA4A' : '#DB971E',
+    danger: darkMode ? '#f44336' : error,
+    alert: darkMode ? alert : '#DB971E',
     warning: darkMode ? '#ED6237' : '#D94719',
-    info: darkMode ? '#428dff' : '#0d5ed9',
+    info: darkMode ? '#428dff' : blueDark3,
     success: darkMode ? '#00D897' : '#007B28',
-
-    // CoW Swap V2 colors ======================
-    white: darkMode ? '#CAE9FF' : '#ffffff',
-    black: '#07162D',
-    blueDark1: '#07162D',
-    blueDark2: '#004293',
-    blueLight1: '#CAE9FF',
-    grey1: darkMode ? '#07162D' : '#ECF1F8',
-
-    bg1: darkMode ? '#0c264b' : '#ffffff',
-    bg2: darkMode ? '#0d5ed9' : '#004293',
-
-    text1: darkMode ? '#CAE9FF' : '#004293',
-    text2: darkMode ? '#86B2DC' : '#506B93',
-    text3: darkMode ? '#428dff' : '#0d5ed9',
-
+    white: darkMode ? blueLight1 : white,
+    black,
+    blueDark2,
+    bg2: darkMode ? blueDark3 : blueDark2,
+    text1: darkMode ? blueLight1 : blueDark2,
     alert2: '#F8D06B',
-    error: darkMode ? '#EB3030' : '#D41300',
-    information: darkMode ? '#428dff' : '#0d5ed9',
-
-    pending: '#43758C', // deprecate
-    attention: '#ff5722', // deprecate
-
-    // DEPRECATED but keeping because of dependencies
-    bg3: darkMode ? '#07162D' : '#ECF1F8',
-    primary1: darkMode ? '#0d5ed9' : '#004293',
-    primary3: darkMode ? '#0d5ed9' : '#004293',
-    primary4: darkMode ? '#0d5ed9' : '#004293',
-    primary5: darkMode ? '#0d5ed9' : '#004293',
-    red1: darkMode ? '#EB3030' : '#D41300',
-
-    // ==========================================
-
-    // ****** text ******
+    error: darkMode ? '#EB3030' : error,
     text4: darkMode ? 'rgba(197, 218, 239, 0.7)' : '#000000b8',
 
     // ****** backgrounds ******
-    bg4: darkMode ? '#021E34' : '#ffffff',
     bg5: darkMode ? '#1d4373' : '#D5E9F0',
-    bg8: darkMode ? '#021E34' : '#152943',
-
-    // ****** specialty colors ******
-    advancedBG: darkMode ? '#163861' : '#d5e8f0',
+    bg8: darkMode ? blueDark4 : '#152943',
 
     // ****** other ******
     blue1: '#3F77FF',
@@ -83,17 +60,12 @@ export function colors(darkMode: boolean): Colors {
     blueShade3: darkMode ? '#1c416e' : '#bdd6e1',
 
     // ****** other ******
-    border: darkMode ? '#021E34' : '#000000',
-    border2: darkMode ? '#254F83' : '#afcbda',
+    border: darkMode ? blueDark4 : '#000000',
+    border2: darkMode ? '#254F83' : blueLight2,
 
-    disabled: darkMode ? 'rgba(197, 218, 239, 0.4)' : '#afcbda',
-
-    infoText: darkMode ? '#ffca4a' : '#564D00',
-    warningText: '#564D00',
-    errorText: '#b91515',
+    disabled: darkMode ? 'rgba(197, 218, 239, 0.4)' : blueLight2,
 
     green1: darkMode ? '#27AE60' : '#007D35',
-    yellow2: '#FF8F00',
     yellow3: '#F3B71E',
   }
 }
@@ -136,7 +108,7 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
     `,
     boxShadow1: darkMode ? '0 24px 32px rgba(0, 0, 0, 0.06)' : '0 12px 12px rgba(5, 43, 101, 0.06)',
     boxShadow2: '0 4px 12px 0 rgb(0 0 0 / 15%)',
-    gradient1: `linear-gradient(145deg, ${colorsTheme.bg1}, ${colorsTheme.grey1})`,
+    gradient1: `linear-gradient(145deg, ${colorsTheme.paper}, ${colorsTheme.background})`,
     gradient2: `linear-gradient(250deg, ${transparentize(colorsTheme.alert, 0.92)} 10%, ${transparentize(
       colorsTheme.success,
       0.92
@@ -273,9 +245,8 @@ export const ThemeColorsGlobalStyle = css`
     // Colors
     ${UI.COLOR_WHITE}: ${({ theme }) => theme.white};
     ${UI.COLOR_BLUE}: ${({ theme }) => theme.blueDark2};
-    ${UI.COLOR_LIGHT_BLUE}: ${({ theme }) => theme.blueLight1};
-    ${UI.COLOR_LIGHT_BLUE_OPACITY_90}: ${({ theme }) => theme.information};
-    ${UI.COLOR_LIGHT_BLUE_OPACITY_80}: ${({ theme }) => transparentize(theme.information, 0.2)}; // 80% opacity
+    ${UI.COLOR_LIGHT_BLUE_OPACITY_90}: ${({ theme }) => theme.info};
+    ${UI.COLOR_LIGHT_BLUE_OPACITY_80}: ${({ theme }) => transparentize(theme.info, 0.2)}; // 80% opacity
     ${UI.COLOR_YELLOW_LIGHT}: ${({ theme }) => theme.alert2};
     ${UI.COLOR_GREEN}: ${({ theme }) => theme.success};
     ${UI.COLOR_RED}: ${({ theme }) => theme.danger};
@@ -299,7 +270,7 @@ export const ThemeColorsGlobalStyle = css`
     ${UI.COLOR_TEXT_OPACITY_10}: ${({ theme }) => transparentize(theme.text, 0.9)};
     ${UI.COLOR_TEXT2}: ${({ theme }) => transparentize(theme.text, 0.3)};
     ${UI.COLOR_LINK}: ${`var(${UI.COLOR_PRIMARY})`};
-    ${UI.COLOR_LINK_OPACITY_10}: ${({ theme }) => transparentize(theme.text3, 0.9)};
+    ${UI.COLOR_LINK_OPACITY_10}: ${({ theme }) => transparentize(theme.info, 0.9)};
 
     // Font Weights & Sizes
     ${UI.FONT_WEIGHT_NORMAL}: 400;

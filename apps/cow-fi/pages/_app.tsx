@@ -8,6 +8,8 @@ import { ApolloProvider } from '@apollo/client'
 import { apolloClient } from 'services/uniswap-price/apollo-client'
 import { useInitializeUtm } from 'modules/utm'
 import { WithLDProvider } from '@/components/WithLDProvider'
+import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-components/macro'
+import { getTheme } from '@/styles/theme'
 
 export default function App(props: AppProps) {
   const { Component, pageProps } = props
@@ -15,6 +17,7 @@ export default function App(props: AppProps) {
 
   const router = useRouter()
   const CURRENT_URL = `${CONFIG.url.root}${router.asPath}`
+  const theme = getTheme()
 
   return (
     <>
@@ -52,7 +55,9 @@ export default function App(props: AppProps) {
       <Analytics />
       <ApolloProvider client={apolloClient}>
         <WithLDProvider>
-          <Component {...pageProps} />
+          <StyledComponentsThemeProvider theme={theme}>
+            <Component {...pageProps} />
+          </StyledComponentsThemeProvider>
         </WithLDProvider>
       </ApolloProvider>
     </>

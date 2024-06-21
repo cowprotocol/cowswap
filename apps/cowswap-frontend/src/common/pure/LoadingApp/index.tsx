@@ -143,18 +143,14 @@ const LoadingWrapper = styled.div`
   }
 `
 
-interface LoaderProps {
-  darkMode: boolean
-}
-
-export const LoadingApp = ({ darkMode }: LoaderProps) => {
+export const LoadingApp = () => {
   const isInjectedWidgetMode = isInjectedWidget()
 
   return (
     <LoadingWrapper>
       {!isInjectedWidgetMode && (
         <span>
-          <ProductLogo variant={ProductVariant.CowSwap} height={100} theme={darkMode ? 'dark' : 'light'} logoIconOnly />
+          <ProductLogo variant={ProductVariant.CowSwap} height={100} logoIconOnly />
         </span>
       )}
       <p>

@@ -61,7 +61,7 @@ export const ContextMenuItem = styled(MenuItem)<{ $red?: boolean }>`
   color: ${({ $red }) => ($red ? `var(${UI.COLOR_DANGER})` : `var(${UI.COLOR_TEXT})`)};
 
   &:hover {
-    background: ${({ theme }) => transparentize(theme.text3, 0.8)};
+    background: ${({ theme }) => transparentize(theme.info, 0.8)};
   }
 `
 
