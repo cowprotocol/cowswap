@@ -4,14 +4,12 @@ import { NATIVE_CURRENCY_ADDRESS } from '@cowprotocol/common-const'
 import { getAddress, getIsNativeToken } from '@cowprotocol/common-utils'
 import { PriceQuality } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import ms from 'ms.macro'
 
 import { LegacyFeeQuoteParams } from 'legacy/state/price/types'
 
 import { useAppData } from 'modules/appData'
-import { useEnoughBalanceAndAllowance } from 'modules/tokens'
 import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
 
 const DEFAULT_QUOTE_TTL = ms`30m` / 1000
@@ -29,11 +27,6 @@ export function useQuoteParams(amount: string | null): LegacyFeeQuoteParams | un
     outputCurrency && getIsNativeToken(outputCurrency) ? NATIVE_CURRENCY_ADDRESS : getAddress(outputCurrency)
   const fromDecimals = inputCurrency?.decimals
   const toDecimals = outputCurrency?.decimals
-
-  const { enoughBalance } = useEnoughBalanceAndAllowance({
-    account,
-    amount: (inputCurrency && amount && CurrencyAmount.fromRawAmount(inputCurrency, amount)) || undefined,
-  })
 
   return useMemo(() => {
     if (!sellToken || !buyToken || !amount || !orderKind) return
@@ -65,7 +58,6 @@ export function useQuoteParams(amount: string | null): LegacyFeeQuoteParams | un
     account,
     toDecimals,
     fromDecimals,
-    enoughBalance,
     appData?.fullAppData,
     appData?.appDataKeccak256,
   ])

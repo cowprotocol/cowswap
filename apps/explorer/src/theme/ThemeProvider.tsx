@@ -2,8 +2,9 @@ import React, { PropsWithChildren, useMemo } from 'react'
 
 import { baseTheme } from '@cowprotocol/ui'
 
-import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-components'
-import { DefaultTheme } from 'styled-components/macro'
+// eslint-disable-next-line no-restricted-imports
+import { DefaultTheme } from 'styled-components'
+import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-components/macro'
 
 import { getFonts, getThemePalette } from './styles'
 

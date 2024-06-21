@@ -14,10 +14,10 @@ import { Provider } from 'react-redux'
 import { HashRouter } from 'react-router-dom'
 import { Flex } from 'rebass'
 import styled, { ThemeContext } from 'styled-components/macro'
+import { ThemedGlobalStyle, ThemeProvider, WIDGET_MAX_WIDTH } from 'theme'
 
 import { cowSwapStore } from 'legacy/state'
 import { useDarkModeManager } from 'legacy/state/user/hooks'
-import { ThemeProvider, WIDGET_MAX_WIDTH, ThemedGlobalStyle } from 'theme'
 
 import { BlockNumberProvider } from './common/hooks/useBlockNumber'
 

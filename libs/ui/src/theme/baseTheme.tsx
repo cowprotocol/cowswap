@@ -1,4 +1,5 @@
 import { transparentize, darken } from 'color2k'
+// eslint-disable-next-line no-restricted-imports
 import { CowProtocolTheme } from 'styled-components'
 import { css } from 'styled-components/macro'
 
