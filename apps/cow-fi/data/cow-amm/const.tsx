@@ -22,6 +22,18 @@ import IMG_LOGO_RHINO_FI from '@cowprotocol/assets/images/logo-rhino.svg'
 import IMG_LOGO_TELLER_FINANCE from '@cowprotocol/assets/images/logo-teller.svg'
 import IMG_LOGO_FRAX_FINANCE from '@cowprotocol/assets/images/logo-frax.svg'
 
+import IMG_ICON_CROWN_COW from '@cowprotocol/assets/images/icon-crown-cow.svg'
+import IMG_ICON_BULB_COW from '@cowprotocol/assets/images/icon-bulb-cow.svg'
+import IMG_COWAMM_HERO from '@cowprotocol/assets/images/image-cowamm-hero.svg'
+import IMG_COWAMM_LVR from '@cowprotocol/assets/images/image-cowamm-lvr.svg'
+import IMG_COWAMM_LP_1 from '@cowprotocol/assets/images/image-cowamm-lp-1.svg'
+import IMG_COWAMM_LP_2 from '@cowprotocol/assets/images/image-cowamm-lp-2.svg'
+import IMG_COWAMM_LP_3 from '@cowprotocol/assets/images/image-cowamm-lp-3.svg'
+import IMG_COWAMM_LP_4 from '@cowprotocol/assets/images/image-cowamm-lp-4.svg'
+import IMG_COWAMM_RAISING from '@cowprotocol/assets/images/image-cowamm-raising.svg'
+import IMG_COWAMM_PASSIVE from '@cowprotocol/assets/images/image-cowamm-passive.svg'
+import IMG_COWAMM_REKT from '@cowprotocol/assets/images/image-cowamm-rekt.svg'
+
 export const TOP_LOGOS = [
   { src: IMG_LOGO_LIDO, alt: 'Lido', url: 'https://lido.fi/' },
   { src: IMG_LOGO_CURVE, alt: 'Curve', url: 'https://curve.fi/' },
@@ -67,6 +79,93 @@ export const ALL_LOGOS = [
   { src: IMG_LOGO_RHINO_FI, alt: 'RhinoFi', url: 'https://rhino.fi/' },
   { src: IMG_LOGO_TELLER_FINANCE, alt: 'Teller Finance', url: 'https://teller.finance/' },
   { src: IMG_LOGO_FRAX_FINANCE, alt: 'Frax Finance', url: 'https://frax.finance/' },
+]
+
+export const QUOTES = [
+  {
+    title:
+      '"When LPs bleed money to LVR, users pay for it with bigger spreads. If we want DeFi to rival the CEX experience, solving LVR will be key."',
+    description: (
+      <>
+        <b>- Hasu</b>
+        <br />
+        <i>Strategy Lead at Flashbots</i>
+      </>
+    ),
+    bgColor: '#BCEC79',
+    textColor: '#194D05',
+  },
+  {
+    title:
+      '"Impermanent loss is a big worry for many of our clients. If LPs could deposit liquidity into surplus-rebalancing pools and not worry about LVR, we’d deposit more funds into passive investment strategies."',
+    description: (
+      <>
+        <b>- Marcelo</b>
+        <br />
+        <i>Co-founder at Karpatkey</i>
+      </>
+    ),
+    bgColor: '#BCEC79',
+    textColor: '#194D05',
+  },
+  {
+    title:
+      '"LVR is the main reason for the current concentration in the block builder market. CoW AMM is not only great for LPs, it\'s important for Ethereum overall."',
+    description: (
+      <>
+        <b>- Josojo</b>
+        <br />
+        <i>Crypto Researcher</i>
+      </>
+    ),
+    bgColor: '#BCEC79',
+    textColor: '#194D05',
+  },
+]
+
+export const COW_AMM_CONTENT = [
+  {
+    description:
+      'Liquidity providers deposit tokens into protected CoW AMM liquidity pools, where traders can access the liquidity',
+    bgColor: '#224D22',
+    textColor: '#DCF8A7',
+    image: IMG_COWAMM_LP_1,
+  },
+  {
+    description: 'Solvers bid to rebalance CoW AMM pools whenever there is an arbitrage opportunity',
+    bgColor: '#224D22',
+    textColor: '#DCF8A7',
+    image: IMG_COWAMM_LP_2,
+  },
+  {
+    description: 'The solver that offers the most surplus to the pool wins the right to rebalance the pool',
+    bgColor: '#224D22',
+    textColor: '#DCF8A7',
+    image: IMG_COWAMM_LP_3,
+  },
+  {
+    description: 'CoW AMM eliminates LVR by capturing arbitrage value for LPs and shielding it from MEV bots',
+    bgColor: '#224D22',
+    textColor: '#DCF8A7',
+    image: IMG_COWAMM_LP_4,
+  },
+]
+
+export const LVR_CONTENT = [
+  {
+    description1: (
+      <>
+        Liquidity providers expect their tokens to earn yield, but the dirty little secret of AMMs is that most
+        liquidity pools lose money. In fact, hundreds of millions of dollars of LP funds are stolen by arbitrageurs
+        every year<sup>1</sup>. These losses are known as loss-versus-rebalancing (LVR). LVR is a bigger source of MEV
+        than frontrunning and sandwich attacks combined.
+      </>
+    ),
+    description2:
+      "Andrea Canidio and Robin Fritsch, Arbitrageurs' profits, LVR, and sandwich attacks: batch trading as an AMM design response (November 2023).",
+    bgColor: 'transparent',
+    image: IMG_COWAMM_LVR,
+  },
 ]
 
 export const FAQ_DATA = [
