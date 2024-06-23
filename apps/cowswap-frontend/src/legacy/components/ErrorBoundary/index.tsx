@@ -2,14 +2,14 @@ import React, { ErrorInfo, PropsWithChildren } from 'react'
 
 import { sendError } from '@cowprotocol/analytics'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
-import { MEDIA_WIDTHS } from '@cowprotocol/ui'
+import { MEDIA_WIDTHS, UI } from '@cowprotocol/ui'
 
 import * as Sentry from '@sentry/react'
 import styled from 'styled-components/macro'
 
 import { ChunkLoadError } from 'legacy/components/ErrorBoundary/ChunkLoadError'
 import { ErrorWithStackTrace } from 'legacy/components/ErrorBoundary/ErrorWithStackTrace'
-import Footer from 'legacy/components/Footer'
+
 import { HeaderRow, LogoImage, UniIcon } from 'legacy/components/Header/styled'
 
 import { Page } from 'modules/application/pure/Page'
@@ -27,20 +27,7 @@ const AppWrapper = styled.div`
   min-height: 100vh;
   overflow-x: hidden;
   color: inherit;
-
-  &:after {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    filter: blur(20px);
-    backdrop-filter: blur(20px);
-    // TODO: check
-    transition: 0.5s;
-    z-index: -1;
-  }
+  background: inherit;
 `
 
 const Wrapper = styled(Page)`
@@ -51,6 +38,7 @@ const Wrapper = styled(Page)`
   margin: 120px 0;
   position: relative;
   z-index: 2;
+  box-shadow: none;
 
   @media screen and (max-width: ${MEDIA_WIDTHS.upToSmall}px) {
     max-width: 95vw;
@@ -70,19 +58,12 @@ const HeaderWrapper = styled.div`
     position: relative;
   }
 `
-const FooterWrapper = styled(HeaderWrapper)`
-  z-index: 1;
-  flex-grow: 1;
-  width: 100%;
-  position: relative;
-  top: auto;
-`
 
 async function updateServiceWorker(): Promise<ServiceWorkerRegistration> {
   const ready = await navigator.serviceWorker.ready
   // the return type of update is incorrectly typed as Promise<void>. See
   // https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerRegistration/update
-  return ready.update() as unknown as Promise<ServiceWorkerRegistration>
+  return (await ready.update()) as unknown as Promise<ServiceWorkerRegistration>
 }
 
 export default class ErrorBoundary extends React.Component<PropsWithChildren, ErrorBoundaryState> {
@@ -144,9 +125,6 @@ export default class ErrorBoundary extends React.Component<PropsWithChildren, Er
               )}
 
               <Wrapper>{isChunkLoadError ? <ChunkLoadError /> : <ErrorWithStackTrace error={error} />}</Wrapper>
-              <FooterWrapper>
-                <Footer />
-              </FooterWrapper>
             </AppWrapper>
           )
         }}

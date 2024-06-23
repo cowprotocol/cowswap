@@ -1,9 +1,5 @@
 import { ethFlowBarnJson, ethFlowProdJson } from '@cowprotocol/abis'
-import {
-  IpfsConfig,
-  mapSupportedNetworks,
-  SupportedChainId,
-} from '@cowprotocol/cow-sdk'
+import { IpfsConfig, mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Fraction, Percent } from '@uniswap/sdk-core'
 
 import BigNumber from 'bignumber.js'
@@ -95,6 +91,7 @@ export const CODE_LINK = 'https://github.com/' + GITHUB_REPOSITORY
 export const RAW_CODE_LINK = 'https://raw.githubusercontent.com/' + GITHUB_REPOSITORY
 
 export const COW_PROTOCOL_LINK = 'https://cow.fi/'
+export const COWDAO_KNOWLEDGE_BASE_LINK = 'https://cow.fi/learn/'
 export const DOCS_LINK = 'https://docs.cow.fi'
 export const CONTRACTS_CODE_LINK = 'https://github.com/cowprotocol/contracts'
 export const DISCORD_LINK = 'https://discord.com/invite/cowprotocol'

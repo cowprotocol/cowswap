@@ -40,8 +40,8 @@ const CodeBlockWrapper = styled.div`
   background: var(${UI.COLOR_PAPER});
   overflow: auto;
   white-space: pre;
-  box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.01), 0px 4px 8px rgba(0, 0, 0, 0.04), 0px 16px 24px rgba(0, 0, 0, 0.04),
-    0px 24px 32px rgba(0, 0, 0, 0.01);
+  box-shadow: 0 0 1px rgba(0, 0, 0, 0.01), 0 4px 8px rgba(0, 0, 0, 0.04), 0 16px 24px rgba(0, 0, 0, 0.04),
+    0 24px 32px rgba(0, 0, 0, 0.01);
   border-radius: 16px;
   padding: 16px;
   color: inherit;
@@ -68,14 +68,14 @@ export const ErrorWithStackTrace = ({ error }: { error: Error }) => {
     <>
       <FlexContainer>
         <StyledTitle>
-          <Trans> Something went wrong</Trans>
+          <Trans>Something went wrong</Trans>
         </StyledTitle>
         <img src={CowError} alt="CowSwap Error" height="125" />
       </FlexContainer>
       <AutoColumn gap={'md'}>
         <CodeBlockWrapper>
           <code>
-            <ThemedText.Main fontSize={10} color={'text1'}>
+            <ThemedText.Main fontSize={10}>
               <StyledParagraph>{error.stack}</StyledParagraph>
             </ThemedText.Main>
           </code>

@@ -1,6 +1,12 @@
 import { lazy, ReactNode, Suspense } from 'react'
 
-import { DISCORD_LINK, DOCS_LINK, DUNE_DASHBOARD_LINK, TWITTER_LINK } from '@cowprotocol/common-const'
+import {
+  DISCORD_LINK,
+  DOCS_LINK,
+  DUNE_DASHBOARD_LINK,
+  TWITTER_LINK,
+  COWDAO_KNOWLEDGE_BASE_LINK,
+} from '@cowprotocol/common-const'
 import { Loader } from '@cowprotocol/ui'
 
 import { Navigate, Route, Routes } from 'react-router-dom'
@@ -19,18 +25,9 @@ const LimitOrders = lazy(() => import(/* webpackChunkName: "limit_orders" */ 'pa
 const AdvancedOrders = lazy(() => import(/* webpackChunkName: "advanced_orders" */ 'pages/AdvancedOrders'))
 const CookiePolicy = lazy(() => import(/* webpackChunkName: "cookie_policy" */ 'pages/CookiePolicy'))
 const TermsAndConditions = lazy(() => import(/* webpackChunkName: "terms" */ 'pages/TermsAndConditions'))
-const About = lazy(() => import(/* webpackChunkName: "about" */ 'pages/About'))
 const NotFound = lazy(() => import(/* webpackChunkName: "not_found" */ 'pages/error/NotFound'))
 const CowRunner = lazy(() => import(/* webpackChunkName: "cow_runner" */ 'pages/games/CowRunner'))
 const MevSlicer = lazy(() => import(/* webpackChunkName: "mev_slicer" */ 'pages/games/MevSlicer'))
-
-// FAQ pages
-const Faq = lazy(() => import(/* webpackChunkName: "faq" */ 'pages/Faq'))
-const ProtocolFaq = lazy(() => import(/* webpackChunkName: "protocol_faq" */ 'pages/Faq/ProtocolFaq'))
-const TokenFaq = lazy(() => import(/* webpackChunkName: "token_faq" */ 'pages/Faq/TokenFaq'))
-const TradingFaq = lazy(() => import(/* webpackChunkName: "trading_faq" */ 'pages/Faq/TradingFaq'))
-const LimitOrdersFaq = lazy(() => import(/* webpackChunkName: "limit_orders_faq" */ 'pages/Faq/LimitOrdersFaq'))
-const EthFlowFaq = lazy(() => import(/* webpackChunkName: "eth_flow_faq" */ 'pages/Faq/EthFlowFaq'))
 
 // Account
 const AccountTokensOverview = lazy(() => import(/* webpackChunkName: "tokens_overview" */ 'pages/Account/Tokens'))
@@ -54,13 +51,13 @@ const lazyRoutes: LazyRouteProps[] = [
   { route: RoutesEnum.LONG_LIMIT_ORDER, element: <RedirectToPath path={'/limit'} /> },
   { route: RoutesEnum.ADVANCED_ORDERS, element: <AdvancedOrders /> },
   { route: RoutesEnum.LONG_ADVANCED_ORDERS, element: <RedirectToPath path={'/advanced'} /> },
-  { route: RoutesEnum.ABOUT, element: <About /> },
-  { route: RoutesEnum.FAQ, element: <Faq /> },
-  { route: RoutesEnum.FAQ_PROTOCOL, element: <ProtocolFaq /> },
-  { route: RoutesEnum.FAQ_TOKEN, element: <TokenFaq /> },
-  { route: RoutesEnum.FAQ_TRADING, element: <TradingFaq /> },
-  { route: RoutesEnum.FAQ_LIMIT_ORDERS, element: <LimitOrdersFaq /> },
-  { route: RoutesEnum.FAQ_ETH_FLOW, element: <EthFlowFaq /> },
+  { route: RoutesEnum.ABOUT, element: createRedirectExternal(COWDAO_KNOWLEDGE_BASE_LINK)() },
+  { route: RoutesEnum.FAQ, element: createRedirectExternal(COWDAO_KNOWLEDGE_BASE_LINK)() },
+  { route: RoutesEnum.FAQ_PROTOCOL, element: createRedirectExternal(COWDAO_KNOWLEDGE_BASE_LINK)() },
+  { route: RoutesEnum.FAQ_TOKEN, element: createRedirectExternal(COWDAO_KNOWLEDGE_BASE_LINK)() },
+  { route: RoutesEnum.FAQ_TRADING, element: createRedirectExternal(COWDAO_KNOWLEDGE_BASE_LINK)() },
+  { route: RoutesEnum.FAQ_LIMIT_ORDERS, element: createRedirectExternal(COWDAO_KNOWLEDGE_BASE_LINK)() },
+  { route: RoutesEnum.FAQ_ETH_FLOW, element: createRedirectExternal(COWDAO_KNOWLEDGE_BASE_LINK)() },
   { route: RoutesEnum.PLAY_COWRUNNER, element: <CowRunner /> },
   { route: RoutesEnum.PLAY_MEVSLICER, element: <MevSlicer /> },
   { route: RoutesEnum.PRIVACY_POLICY, element: <PrivacyPolicy /> },
