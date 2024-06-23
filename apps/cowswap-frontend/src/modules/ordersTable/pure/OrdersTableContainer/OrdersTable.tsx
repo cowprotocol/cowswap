@@ -43,12 +43,11 @@ import { OrdersTablePagination } from '../OrdersTablePagination'
 const TableBox = styled.div`
   display: block;
   border-radius: 16px;
-  border: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
+  border: none;
   padding: 0;
   position: relative;
   overflow: hidden;
-  background: var(${UI.COLOR_PAPER_OPACITY_99});
-  backdrop-filter: blur(20px);
+  background: var(${UI.COLOR_PAPER});
 
   ${Media.upToLargeAlt()} {
     width: 100%;
