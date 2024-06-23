@@ -38,7 +38,7 @@ export const PRODUCT_LIST = [
     linkBgColor: '#012F7A',
     linkColor: '#65D9FF',
     productVariant: ProductVariant.CowDao,
-    iconImage: IMG_GREEN_WAVES,
+    iconImage: IMG_COINS,
   },
   {
     title: 'CoW AMM',
@@ -52,7 +52,7 @@ export const PRODUCT_LIST = [
     linkBgColor: '#BCEC79',
     linkColor: '#194D06',
     productVariant: ProductVariant.CowDao,
-    iconImage: IMG_COINS,
+    iconImage: IMG_GREEN_WAVES,
   },
   {
     title: 'MEV Blocker',

@@ -1,5 +1,5 @@
 import { GetStaticProps } from 'next'
-import { Font, Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
+import { Font, Color } from '@cowprotocol/ui'
 import IMG_ICON_GOVERNANCE from '@cowprotocol/assets/images/icon-governance.svg'
 import VIDEO_HERO_HOME from '@cowprotocol/assets/video/cow-dao-hero-animation.mp4'
 
@@ -40,7 +40,7 @@ interface PageProps {
   siteConfigData: typeof CONFIG
 }
 
-export default function Page({ siteConfigData }: PageProps) {
+export default function Page() {
   return (
     <Layout bgColor={Color.neutral90}>
       <PageWrapper>

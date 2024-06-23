@@ -291,6 +291,7 @@ export const TopicImage = styled.div<{
   large?: boolean
   bgColor?: string
   margin?: string
+  marginMobile?: string
   height?: number | string
   maxWidth?: number | string
   maxHeight?: number | string
@@ -351,6 +352,7 @@ export const TopicImage = styled.div<{
         ? `${height}px`
         : height || 'var(--size)'};
     order: ${({ orderReverseMobile }) => (orderReverseMobile ? -1 : 'initial')};
+    margin: ${({ marginMobile }) => marginMobile || '0 0 16px'};
   }
 
   > span {

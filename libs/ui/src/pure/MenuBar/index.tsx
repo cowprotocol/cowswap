@@ -608,7 +608,7 @@ const GlobalSettingsDropdown = forwardRef(
                           item.utmSource,
                           item.utmContent,
                           rootDomain,
-                          !!item.external,
+                          item.external,
                           item.label
                         )
                       : item.href
