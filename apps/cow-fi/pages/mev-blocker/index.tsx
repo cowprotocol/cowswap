@@ -1,7 +1,7 @@
 import { GetStaticProps } from 'next'
 import Script from 'next/script'
 
-import { Font, Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
+import { Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
 
 import Layout from '@/components/Layout'
 import FAQ from '@/components/FAQ'
@@ -464,7 +464,7 @@ export default function Page() {
                       href={item.href}
                       rel={'noopener noreferrer nofollow'}
                       target="_blank"
-                      onClick={() => sendEventHandler(EventCategories.MEVBLOCKER, `click-trusted-by-${item.title}`)}
+                      onClick={() => sendEventHandler(EventCategories.MEVBLOCKER, `click-trusted-by-${item.href}`)}
                     >
                       <TopicImage
                         iconColor={Color.neutral20}
