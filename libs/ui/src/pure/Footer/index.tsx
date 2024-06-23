@@ -124,7 +124,7 @@ const PRODUCT_LOGO_LINKS: {
 ]
 
 const GLOBAL_FOOTER_DESCRIPTION =
-  'CoW DAO is an open organization of developers, market makers, and community contributors on a mission to protect users from the dangers of DeFi.'
+  'CoW DAO is an open collective of developers, market makers, and community contributors on a mission to protect users from the dangers of DeFi.'
 
 const GLOBAL_FOOTER_NAV_ITEMS: MenuItem[] = [
   {

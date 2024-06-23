@@ -128,7 +128,7 @@ export default function Page({ siteConfigData }: PageProps) {
               <TopicCard contentAlign={'left'} bgColor={Color.neutral90} padding={'32px'} asProp="div">
                 <TopicCardInner contentAlign="left">
                   <TopicDescription fontSize={28} color={Color.neutral10}>
-                    By aligning incentives, CoW Swap finds surplus you won't get anywhere else
+                    By aligning incentives between solvers and users, CoW Swap finds surplus you won't get anywhere else
                   </TopicDescription>
                 </TopicCardInner>
                 <TopicImage
@@ -275,7 +275,7 @@ export default function Page({ siteConfigData }: PageProps) {
 
             <SectionTitleWrapper>
               <SectionTitleText fontSize={51} textAlign="center">
-                Seamless UX
+                Better UX, thanks to intents
               </SectionTitleText>
             </SectionTitleWrapper>
             <TopicList columns={3}>

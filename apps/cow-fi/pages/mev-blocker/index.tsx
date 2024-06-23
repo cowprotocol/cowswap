@@ -132,16 +132,16 @@ export default function Page() {
 
             <MetricsCard bgColor="#EC4612" color="#FEE7CF" columns={3} touchFooter>
               <MetricsItem dividerColor="#F9A36F">
-                <h2>$76B+</h2>
-                <p>volume protected from MEV</p>
+                <h2>$84B+</h2>
+                <p>volume protected from MEV, across 20M+ transactions</p>
               </MetricsItem>
               <MetricsItem dividerColor="#F9A36F">
-                <h2>2200 ETH</h2>
-                <p>rebated to users</p>
+                <h2>2.2K+</h2>
+                <p>ETH rebated to users</p>
               </MetricsItem>
               <MetricsItem>
-                <h2>100%</h2>
-                <p>of Ethereum's major builders use MEV Blocker</p>
+                <h2>$26</h2>
+                <p>USD value of median rebate</p>
               </MetricsItem>
 
               <Link
@@ -464,23 +464,17 @@ export default function Page() {
                       href={item.href}
                       rel={'noopener noreferrer nofollow'}
                       target="_blank"
-                      gap={item.title ? 16 : undefined}
                       onClick={() => sendEventHandler(EventCategories.MEVBLOCKER, `click-trusted-by-${item.title}`)}
                     >
                       <TopicImage
                         iconColor={Color.neutral20}
                         bgColor={'transparent'}
-                        width={'100%'}
+                        width={'90%'}
                         height={72}
                         margin={'auto'}
                       >
                         {item.component || <SVG src={item.src} />}
                       </TopicImage>
-                      {item.title && (
-                        <TopicTitle fontSize={18} color={Color.neutral50} fontWeight={Font.weight.regular}>
-                          {item.title}
-                        </TopicTitle>
-                      )}
                     </TopicCard>
                   ))}
                 </TopicList>

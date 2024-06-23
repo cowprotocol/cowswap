@@ -502,6 +502,7 @@ export default function Page({}: PageProps) {
                       bgColor={topic.textColor}
                       color={topic.bgColor}
                       fontSize={27}
+                      fontSizeMobile={24}
                       href={topic.linkHref}
                       linkType={LinkType.TopicButton}
                       onClick={() => sendEventHandler(EventCategories.COWPROTOCOL, topic.linkEvent)}

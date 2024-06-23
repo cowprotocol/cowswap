@@ -61,8 +61,8 @@ export default function Page({ siteConfigData }: PageProps) {
           <ContainerCardSection>
             <SectionTitleWrapper color={Color.neutral0} maxWidth={1200} margin="100px auto">
               <SectionTitleText>
-                CoW DAO develops the <span className="wordtag-orange">most user-protective</span> products in Ethereum -
-                so you can <span className="wordtag-purple">do more</span> with{' '}
+                CoW DAO develops the <span className="wordtag-orange">most user-protective</span> products in DeFi – so
+                you can <span className="wordtag-purple">do more</span> with{' '}
                 <span className="wordtag-blue">less worry</span>
               </SectionTitleText>
             </SectionTitleWrapper>
@@ -194,7 +194,7 @@ export default function Page({ siteConfigData }: PageProps) {
                 href="https://grants.cow.fi/"
                 onClick={() => sendEventHandler(EventCategories.HOME, 'click-apply-for-a-grant')}
               >
-                Apply for a grant
+                Explore grants
               </Link>
             </SectionTitleWrapper>
           </ContainerCardSection>

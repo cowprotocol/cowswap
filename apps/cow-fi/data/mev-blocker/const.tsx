@@ -50,47 +50,38 @@ export const TRUSTED_BY_CONTENT = [
   {
     href: 'https://uniswap.org/',
     src: IMG_LOGO_UNISWAP,
-    title: 'Wallet',
   },
   {
     href: 'https://rabby.io/',
     src: IMG_LOGO_RABBY,
-    title: 'Wallet',
   },
   {
     href: 'https://crypto.com/',
     src: IMG_LOGO_CRYPTO_COM,
-    title: 'Wallet',
   },
   {
     href: 'https://swap.cow.fi/',
     component: <ProductLogo variant={ProductVariant.CowSwap} theme="dark" />,
-    title: '',
   },
   {
     href: 'https://safe.global/',
     src: IMG_LOGO_SAFE,
-    title: '',
   },
   {
     href: 'https://www.karpatkey.com/',
     src: IMG_LOGO_KARPATKEY,
-    title: 'karpatkey',
   },
   {
     href: 'https://www.keepkey.com/',
     src: IMG_LOGO_KEEPKEY,
-    title: '',
   },
   {
     href: 'https://www.ambire.com/',
     src: IMG_LOGO_AMBIRE,
-    title: 'Wallet',
   },
   {
     href: 'https://www.blocknative.com/',
     src: IMG_LOGO_BLOCKNATIVE,
-    title: 'Blocknative Transaction Boost',
   },
 ]
 
