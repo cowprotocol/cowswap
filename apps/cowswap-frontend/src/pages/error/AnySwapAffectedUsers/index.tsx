@@ -12,17 +12,21 @@ const Wrapper = styled(Page)`
   ${GdocsListStyle};
   min-height: auto;
   padding-bottom: 32px;
+
   ${Media.upToSmall()} {
     padding-bottom: 24px;
   }
+
   ${Title} {
     margin-bottom: 50px;
     font-size: 26px;
+
     ${Media.upToSmall()} {
       font-size: 18px;
       text-align: center;
     }
   }
+
   ${Content} {
     margin-bottom: 0;
 

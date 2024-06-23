@@ -2,7 +2,6 @@ import { Command } from '@cowprotocol/types'
 import { UI } from '@cowprotocol/ui'
 
 import { Menu, MenuButton, MenuItem, MenuList } from '@reach/menu-button'
-import { transparentize } from 'color2k'
 import { Edit, FileText, Link2, MoreVertical, Repeat, Trash2 } from 'react-feather'
 import styled from 'styled-components/macro'
 
