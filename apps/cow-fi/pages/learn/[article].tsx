@@ -124,11 +124,11 @@ export default function ArticlePage({
   article,
   articles,
   randomArticles,
-  relatedArticles,
+  featuredArticles,
   allCategories,
 }: ArticlePageProps & {
   randomArticles: Article[]
-  relatedArticles: Article[]
+  featuredArticles: Article[]
   allCategories: { name: string; slug: string }[]
 }) {
   const attributes: {
@@ -250,10 +250,10 @@ export default function ArticlePage({
           </ArticleContent>
 
           <StickyMenu>
-            <b>Related Articles</b>
+            <b>Featured Articles</b>
             <RelatedArticles>
               <ul>
-                {relatedArticles.map((article) => (
+                {featuredArticles.map((article) => (
                   <li key={article.id}>
                     <a
                       href={`/learn/${article.attributes?.slug}`}
@@ -320,8 +320,19 @@ export const getStaticProps: GetStaticProps<ArticlePageProps> = async ({ params 
 
   const articlesResponse = await getArticles()
   const articles = articlesResponse.data
+
+  // Fetch featured articles
+  const featuredArticlesResponse = await getArticles({
+    filters: {
+      featured: {
+        $eq: true,
+      },
+    },
+    pageSize: 7, // Limit to 7 articles
+  })
+  const featuredArticles = featuredArticlesResponse.data
+
   const randomArticles = getRandomArticles(articles, 3)
-  const relatedArticles = getRandomArticles(articles, 7)
   const categoriesResponse = await getCategories()
   const allCategories =
     categoriesResponse?.map((category: any) => ({
@@ -335,7 +346,7 @@ export const getStaticProps: GetStaticProps<ArticlePageProps> = async ({ params 
       article,
       articles,
       randomArticles,
-      relatedArticles,
+      featuredArticles,
       allCategories,
     },
     revalidate: DATA_CACHE_TIME_SECONDS,
