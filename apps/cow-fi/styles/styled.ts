@@ -1431,6 +1431,7 @@ export const ArticleMainTitle = styled.h1<{ margin?: string; fontSize?: number }
 `
 
 export const BodyContent = styled.div<{ color?: string }>`
+  font-family: ${Font.familySerif};
   font-size: 18px;
   line-height: 1.6;
   color: ${({ color }) => color || Color.neutral0};
@@ -1460,7 +1461,7 @@ export const BodyContent = styled.div<{ color?: string }>`
   > ol {
     margin-bottom: 16px;
     font-size: 21px;
-    line-height: 1.4;
+    line-height: 1.5;
 
     ${Media.upToMedium()} {
       font-size: 18px;
@@ -1496,6 +1497,7 @@ export const BodyContent = styled.div<{ color?: string }>`
   > h4,
   > h5,
   > h6 {
+    font-family: ${Font.family};
     font-weight: bold;
     margin: 56px 0 32px;
   }

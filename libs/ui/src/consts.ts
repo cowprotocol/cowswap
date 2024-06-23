@@ -69,6 +69,7 @@ export const Media = {
 
 export const Font = {
   family: `'studiofeixen', Arial, sans-serif`,
+  familySerif: `'studiofeixenserif', Arial, serif`,
   weight: {
     ultralight: 200,
     light: 300,
@@ -119,6 +120,10 @@ type GlobalCowDAOFonts = {
   FONT_STUDIO_FEIXEN_SEMIBOLD_ITALIC: GlobalFontConfig
   FONT_STUDIO_FEIXEN_ULTRALIGHT: GlobalFontConfig
   FONT_STUDIO_FEIXEN_ULTRALIGHT_ITALIC: GlobalFontConfig
+  FONT_STUDIO_FEIXEN_SERIF_BOLD: GlobalFontConfig
+  FONT_STUDIO_FEIXEN_SERIF_MEDIUM: GlobalFontConfig
+  FONT_STUDIO_FEIXEN_SERIF_REGULAR: GlobalFontConfig
+  FONT_STUDIO_FEIXEN_SERIF_BOOK: GlobalFontConfig
 }
 
 export const GlobalCoWDAOStyles = (fonts: GlobalCowDAOFonts, bgColor?: string, color?: string) =>
@@ -222,6 +227,34 @@ export const GlobalCoWDAOStyles = (fonts: GlobalCowDAOFonts, bgColor?: string, c
         font-style: italic;
       }
 
+      @font-face {
+        font-family: 'studiofeixenserif';
+        src: url(${fonts.FONT_STUDIO_FEIXEN_SERIF_BOLD}) format('woff2');
+        font-weight: ${Font.weight.bold};
+        font-style: normal;
+      }
+
+      @font-face {
+        font-family: 'studiofeixenserif';
+        src: url(${fonts.FONT_STUDIO_FEIXEN_SERIF_MEDIUM}) format('woff2');
+        font-weight: ${Font.weight.medium};
+        font-style: normal;
+      }
+
+      @font-face {
+        font-family: 'studiofeixenserif';
+        src: url(${fonts.FONT_STUDIO_FEIXEN_SERIF_REGULAR}) format('woff2');
+        font-weight: ${Font.weight.regular};
+        font-style: normal;
+      }
+
+      @font-face {
+        font-family: 'studiofeixenserif';
+        src: url(${fonts.FONT_STUDIO_FEIXEN_SERIF_BOOK}) format('woff2');
+        font-weight: ${Font.weight.book};
+        font-style: normal;
+      }
+
       body {
         font-family: ${Font.family};
         margin: 0;
@@ -232,7 +265,6 @@ export const GlobalCoWDAOStyles = (fonts: GlobalCowDAOFonts, bgColor?: string, c
         scroll-behavior: smooth;
         font-variant: none;
         font-variant-ligatures: none;
-        font-display: swap;
         text-rendering: optimizeLegibility;
         font-feature-settings: 'liga' off, 'kern' on;
         -webkit-font-smoothing: antialiased;
