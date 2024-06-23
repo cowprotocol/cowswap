@@ -29,7 +29,9 @@ interface LinkProps extends Omit<React.HTMLAttributes<HTMLAnchorElement & HTMLDi
   onClick?: React.MouseEventHandler<HTMLAnchorElement & HTMLDivElement>
 }
 
-const baseStyles = css``
+const baseStyles = css`
+  max-width: 100%;
+`
 
 const topicButtonStyles = css<LinkProps>`
   display: inline-block;

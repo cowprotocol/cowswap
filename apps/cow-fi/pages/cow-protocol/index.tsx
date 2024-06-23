@@ -80,7 +80,7 @@ export default function Page({}: PageProps) {
             <HeroTitle maxWidth={520}>Do what you want, build what you want</HeroTitle>
             <HeroDescription>
               CoW Protocol has the largest solver competition and the most advanced developer framework - so you can
-              build any DEX-related action you can imagine
+              build any DeFi-related action you can imagine
             </HeroDescription>
             <Link
               bgColor={'#66018E'}
@@ -104,12 +104,13 @@ export default function Page({}: PageProps) {
             <p>active solvers settling batches</p>
           </MetricsItem>
           <MetricsItem dividerColor="#ED60E9">
-            <h2>25%</h2>
-            <p>of Ethereum's non-toxic DEX volume originates on CoW Protocol</p>
-          </MetricsItem>
-          <MetricsItem>
             <h2>#1</h2>
             <p>intent-based DEX protocol by volume</p>
+          </MetricsItem>
+
+          <MetricsItem>
+            <h2>1.2B+</h2>
+            <p>all time transactions</p>
           </MetricsItem>
 
           <Link
@@ -135,7 +136,7 @@ export default function Page({}: PageProps) {
               </SectionTitleIcon>
               <SectionTitleText>The leading intents-based DEX aggregation protocol</SectionTitleText>
               <SectionTitleDescription maxWidth={900} color={Color.neutral50}>
-                CoW Protocol leverages intents, the largest solver network in DeFi, and batch auctions to bring
+                CoW Protocol leverages intents, batch auctions, and the largest solver network in DeFi to bring
                 surplus-capturing, MEV-protected trades to users
               </SectionTitleDescription>
             </SectionTitleWrapper>
@@ -153,8 +154,8 @@ export default function Page({}: PageProps) {
               </SectionTitleIcon>
               <SectionTitleText>How it works</SectionTitleText>
               <SectionTitleDescription maxWidth={900} color={Color.neutral50}>
-                By leveraging intents, the largest solver network, and batch auctions, CoW Protocol hosts a continuous
-                competition between solvers to find better prices and protect users from MEV
+                CoW Protocol hosts a continuous competition between solvers to find better prices and protect users from
+                MEV
               </SectionTitleDescription>
             </SectionTitleWrapper>
 
@@ -332,7 +333,7 @@ export default function Page({}: PageProps) {
 
         <ContainerCard bgColor={'transparent'}>
           <ContainerCardSection>
-            <SectionTitleWrapper padding="150px 0 0" maxWidth={878} color={Color.neutral10}>
+            <SectionTitleWrapper maxWidth={878} color={Color.neutral10}>
               <SectionTitleIcon size={128}>
                 <SVG src={IMG_ICON_BULB_COW} />
               </SectionTitleIcon>
@@ -345,9 +346,7 @@ export default function Page({}: PageProps) {
                   <SVG src={IMG_LOGO_CURVE} />
                 </TopicImage>
                 <TopicCardInner contentAlign="left">
-                  <TopicTitle color={Color.neutral100} fontSize={38}>
-                    Automating advanced treasury tasks
-                  </TopicTitle>
+                  <TopicTitle color={Color.neutral100}>Automating advanced treasury tasks</TopicTitle>
                   <TopicDescription fontSize={21} color="#F996EE">
                     Curve uses programmatic orders from CoW Protocol to streamline their fee burning processes. With the
                     integration in place, Curve can take fees in any token and convert them automatically to CRV, while
@@ -361,14 +360,12 @@ export default function Page({}: PageProps) {
                   <SVG src={IMG_LOGO_LIDO} />
                 </TopicImage>
                 <TopicCardInner contentAlign="left">
-                  <TopicTitle color={Color.neutral100} fontSize={38}>
-                    Adding security to sensitive transactions
-                  </TopicTitle>
+                  <TopicTitle color={Color.neutral100}>Adding security to sensitive transactions</TopicTitle>
                   <TopicDescription fontSize={21} color="#F996EE">
                     Lido leverages programmatic orders as the backbone of “stonks” - a set of smart contracts that they
                     use to manage treasury ops smoothly and securely without taking custody of funds. Stonks allows Lido
                     DAO to "set and forget" complex trade intents without compromising the prices they receive on future
-                    swaps - minimizing time spend and human error
+                    swaps - minimizing time spent and human error
                   </TopicDescription>
                 </TopicCardInner>
               </TopicCard>
@@ -378,9 +375,7 @@ export default function Page({}: PageProps) {
                   <SVG src={IMG_LOGO_SAFE} />
                 </TopicImage>
                 <TopicCardInner contentAlign="left">
-                  <TopicTitle color={Color.neutral100} fontSize={38}>
-                    Powering native swaps
-                  </TopicTitle>
+                  <TopicTitle color={Color.neutral100}>Powering native swaps</TopicTitle>
                   <TopicDescription fontSize={21} color="#F996EE">
                     Safe chose CoW Protocol to power native swaps on the Safe app. The team chose to build on top of the
                     CoW widget (the simplest way to integrate CoW Protocol) and is now earning revenue by offering
@@ -499,10 +494,8 @@ export default function Page({}: PageProps) {
                   asProp="div"
                 >
                   <TopicCardInner contentAlign="left">
-                    <TopicTitle fontSize={38} color={topic.titleColor}>
-                      {topic.title}
-                    </TopicTitle>
-                    <TopicDescription fontSize={21} color={topic.textColor} minHeight={170}>
+                    <TopicTitle color={topic.titleColor}>{topic.title}</TopicTitle>
+                    <TopicDescription fontSize={21} color={topic.textColor} minHeight={220}>
                       {topic.description}
                     </TopicDescription>
                     <Link

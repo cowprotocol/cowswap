@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import Head from 'next/head'
-import { MenuBar, Footer, GlobalCoWDAOStyles } from '@cowprotocol/ui'
+import { Media, MenuBar, Footer, GlobalCoWDAOStyles } from '@cowprotocol/ui'
 import styled from 'styled-components/macro'
 import { CONFIG } from '@/const/meta'
 import { CoWDAOFonts } from '@/styles/CoWDAOFonts'
@@ -11,6 +11,13 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   min-height: 60vh;
+  max-width: ${PAGE_MAX_WIDTH}px;
+  margin: 0 auto;
+  padding: 0 60px;
+
+  ${Media.upToLarge()} {
+    padding: 0;
+  }
 `
 
 interface LayoutProps {
