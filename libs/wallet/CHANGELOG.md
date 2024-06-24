@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.5.0](https://github.com/cowprotocol/cowswap/compare/wallet-v1.4.1...wallet-v1.5.0) (2024-06-24)
+
+
+### Features
+
+* **rebranding:** merge 📦 Big Package "Re-branding" 📦  ([#4543](https://github.com/cowprotocol/cowswap/issues/4543)) ([ce9ab43](https://github.com/cowprotocol/cowswap/commit/ce9ab4317f304c86e3e1ec37825379e427099518))
+* theme unification and cleaning ([#4580](https://github.com/cowprotocol/cowswap/issues/4580)) ([c1538b1](https://github.com/cowprotocol/cowswap/commit/c1538b16d9c890c95d73ea92ffb93b2065233d90))
+
+
+### Bug Fixes
+
+* detect a connected user in a safe ([#4508](https://github.com/cowprotocol/cowswap/issues/4508)) ([0fed667](https://github.com/cowprotocol/cowswap/commit/0fed667d7063c9db07f5cd5671dcc36ee25ab685))
+* **sentry:** handle unhandled exception calling PUBLIC_disconnectSite ([#4563](https://github.com/cowprotocol/cowswap/issues/4563)) ([d9dd60c](https://github.com/cowprotocol/cowswap/commit/d9dd60c3563c90dbd81b65e76df55beac9084f26))
+
 ## [1.4.1](https://github.com/cowprotocol/cowswap/compare/wallet-v1.4.0...wallet-v1.4.1) (2024-06-18)
 
 

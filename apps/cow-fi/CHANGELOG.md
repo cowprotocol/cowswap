@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.4.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.3.0...cow-fi-v1.4.0) (2024-06-24)
+
+
+### Features
+
+* **rebranding:** merge 📦 Big Package "Re-branding" 📦  ([#4543](https://github.com/cowprotocol/cowswap/issues/4543)) ([ce9ab43](https://github.com/cowprotocol/cowswap/commit/ce9ab4317f304c86e3e1ec37825379e427099518))
+* theme unification and cleaning ([#4580](https://github.com/cowprotocol/cowswap/issues/4580)) ([c1538b1](https://github.com/cowprotocol/cowswap/commit/c1538b16d9c890c95d73ea92ffb93b2065233d90))
+
+
+### Bug Fixes
+
+* **rebranding:** polish UI ([#4581](https://github.com/cowprotocol/cowswap/issues/4581)) ([a038458](https://github.com/cowprotocol/cowswap/commit/a038458a23d91fb9b624679950ee6492a966ccba))
+
 ## [1.3.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.2.1...cow-fi-v1.3.0) (2024-06-18)
 
 

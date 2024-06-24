@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.4.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.3.0...common-utils-v1.4.0) (2024-06-24)
+
+
+### Features
+
+* **explorer:** truncated orderId with CSS ([#4557](https://github.com/cowprotocol/cowswap/issues/4557)) ([88b5c06](https://github.com/cowprotocol/cowswap/commit/88b5c061beefdf7866a39a84a940ea01715e9c0b))
+* **rebranding:** merge 📦 Big Package "Re-branding" 📦  ([#4543](https://github.com/cowprotocol/cowswap/issues/4543)) ([ce9ab43](https://github.com/cowprotocol/cowswap/commit/ce9ab4317f304c86e3e1ec37825379e427099518))
+
 ## [1.3.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.2.0...common-utils-v1.3.0) (2024-06-18)
 
 
