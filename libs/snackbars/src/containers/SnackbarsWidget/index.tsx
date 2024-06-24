@@ -43,7 +43,6 @@ const Host = styled.div<{ hidden$: boolean }>`
     left: 0;
     right: ${({ hidden$ }) => (hidden$ ? '-9999px' : '0')};
     margin: auto;
-    top: 20px;
 
     ${Overlay} {
       display: block;
