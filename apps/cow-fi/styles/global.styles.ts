@@ -1,6 +1,5 @@
 import styled, { createGlobalStyle } from 'styled-components/macro'
-import { Color, Media, Font } from '@cowprotocol/ui'
-import { transparentize } from 'polished'
+import { Color, Media } from '@cowprotocol/ui'
 
 const GlobalStyles = createGlobalStyle`
 
@@ -19,7 +18,6 @@ const GlobalStyles = createGlobalStyle`
       textarea,
       button {
           font-family: inherit;
-          font-display: fallback;
       }
   }
 
@@ -152,9 +150,8 @@ const GlobalStyles = createGlobalStyle`
 }
 
 span[class^='wordtag-'] {
-    padding: 0;
+    display: inline;
     border-radius: 28px;
-    display: inline-block;
     padding: 3px 16px;
   }
 
@@ -186,61 +183,6 @@ export const ExternalLink = styled.a`
     font-size: 16px;
     display: inline-block;
     margin: 0 0 0 0.2rem;
-  }
-`
-
-export const DropDown = styled.div`
-  border: 0.1rem solid ${transparentize(0.9, Color.neutral100)};
-  border-radius: 0.6rem;
-  width: 100%;
-  padding: 0;
-  background: ${Color.neutral0};
-  color: ${Color.neutral100};
-  font-size: 1.8rem;
-  margin: 0 0 2.4rem;
-  display: flex;
-  flex-flow: row nowrap;
-  position: relative;
-
-  &::after {
-    content: '▼';
-    position: absolute;
-    border: 0;
-    color: inherit;
-    font-size: 16px;
-    display: flex;
-    align-items: center;
-    pointer-events: none;
-    margin: auto;
-    height: 100%;
-    top: 0;
-    bottom: 0;
-    right: 1.2rem;
-    cursor: pointer;
-  }
-
-  > select {
-    appearance: none;
-    cursor: pointer;
-    height: 100%;
-    padding: 1.2rem;
-    width: 100%;
-    display: block;
-    color: inherit;
-    font-family: inherit;
-    font-size: inherit;
-    border: 0;
-    border-radius: inherit;
-    background: ${transparentize(0.9, Color.neutral0)};
-
-    &:focus {
-      outline: none;
-    }
-
-    > option {
-      background-color: ${Color.neutral0};
-      color: ${Color.neutral0};
-    }
   }
 `
 

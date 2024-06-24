@@ -755,17 +755,20 @@ export const SectionTitleText = styled.h5<{
   maxWidth?: number
   as?: string
   textAlign?: string
+  lineHeight?: number
+  lineHeightMobile?: number
 }>`
   font-size: ${({ fontSize }) => fontSize || 51}px;
   font-weight: ${({ fontWeight }) => fontWeight || Font.weight.bold};
   color: ${({ color }) => color || 'inherit'};
   margin: 0;
   text-align: ${({ textAlign }) => textAlign || 'center'};
-  line-height: 1.2;
+  line-height: ${({ lineHeight }) => lineHeight || 1.2};
   max-width: ${({ maxWidth }) => (maxWidth ? `${maxWidth}px` : '100%')};
 
   ${Media.upToMedium()} {
     font-size: ${({ fontSizeMobile }) => fontSizeMobile || 38}px;
+    line-height: ${({ lineHeightMobile }) => lineHeightMobile || 1.2};
   }
 `
 

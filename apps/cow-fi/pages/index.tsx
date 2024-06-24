@@ -60,7 +60,7 @@ export default function Page() {
         <ContainerCard bgColor={Color.neutral100}>
           <ContainerCardSection>
             <SectionTitleWrapper color={Color.neutral0} maxWidth={1200} margin="100px auto">
-              <SectionTitleText>
+              <SectionTitleText lineHeight={1.6} lineHeightMobile={1.8} fontSizeMobile={28}>
                 CoW DAO develops the <span className="wordtag-orange">most user-protective</span> products in DeFi – so
                 you can <span className="wordtag-purple">do more</span> with{' '}
                 <span className="wordtag-blue">less worry</span>
