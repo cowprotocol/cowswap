@@ -351,7 +351,7 @@ export const MobileDropdownContainer = styled.div<{ mobileMode: boolean }>`
     `}
 `
 
-export const StyledDropdownContentItem = styled.a<{
+export const StyledDropdownContentItem = styled.div<{
   isOpen?: boolean
   isThirdLevel?: boolean
   bgColor?: string
@@ -360,18 +360,22 @@ export const StyledDropdownContentItem = styled.a<{
   hoverColor?: string
   mobileMode?: boolean
 }>`
-  display: flex;
-  flex-flow: row wrap;
-  align-items: center;
-  padding: 16px;
-  text-decoration: none;
-  color: inherit;
-  transition: background 0.2s ease-in-out, color 0.2s ease-in-out;
   border-radius: 24px;
-  min-height: 56px;
-  gap: 20px;
-  position: relative;
-  width: 100%;
+
+  > a,
+  > div {
+    min-height: 56px;
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    padding: 16px;
+    text-decoration: none;
+    color: inherit;
+    transition: background 0.2s ease-in-out, color 0.2s ease-in-out;
+    gap: 20px;
+    position: relative;
+    width: 100%;
+  }
 
   ${({ mobileMode }) =>
     mobileMode &&
@@ -397,6 +401,10 @@ export const StyledDropdownContentItem = styled.a<{
     }
   }
 
+  & > a.active span {
+    color: var(--activeFill) !important;
+  }
+
   &:hover {
     background: ${({ hoverBgColor, isThirdLevel }) =>
       isThirdLevel ? 'var(--activeBackground)' : hoverBgColor || 'var(--hoverBackground)'};
@@ -406,7 +414,7 @@ export const StyledDropdownContentItem = styled.a<{
       color: ${({ hoverColor }) => hoverColor || 'inherit'};
     }
 
-    > svg.arrow-icon-right {
+    > a > svg.arrow-icon-right {
       opacity: 1;
 
       &.external {
@@ -415,7 +423,8 @@ export const StyledDropdownContentItem = styled.a<{
     }
   }
 
-  > svg {
+  > a > svg,
+  > div > svg {
     --size: 20px;
     display: block;
     height: var(--size);
@@ -503,7 +512,7 @@ export const DropdownContentItemButton = styled(StyledDropdownContentItem)<{
     }
   }
 
-  > svg.arrow-icon-right {
+  > a > svg.arrow-icon-right {
     &.external {
       transform: rotate(-45deg);
     }
@@ -534,7 +543,7 @@ export const DropdownMenu = styled.div<{
     `}
 `
 
-export const RootNavItem = styled.a<{ isOpen?: boolean; mobileMode?: boolean }>`
+export const RootNavItem = styled.div<{ isOpen?: boolean; mobileMode?: boolean }>`
   color: inherit;
   font-size: 16px;
   padding: 12px 16px;
@@ -550,6 +559,10 @@ export const RootNavItem = styled.a<{ isOpen?: boolean; mobileMode?: boolean }>`
   cursor: pointer;
   gap: 5px;
   color: inherit;
+
+  > a {
+    text-decoration: none;
+  }
 
   &:hover {
     background: var(--activeBackground);
@@ -599,12 +612,15 @@ export const RightAligned = styled.div<{ mobileMode?: boolean; flexFlow?: string
   height: 100%;
 
   ${DropdownContentItemButton} {
-    min-height: 100%;
-    flex-flow: row nowrap;
-    padding: 8px 12px;
+    > a,
+    > div {
+      min-height: 100%;
+      flex-flow: row nowrap;
+      padding: 12px;
 
-    > svg.arrow-icon-right {
-      opacity: 1;
+      > svg.arrow-icon-right {
+        opacity: 1;
+      }
     }
   }
 

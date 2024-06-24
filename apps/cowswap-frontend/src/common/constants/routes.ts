@@ -35,3 +35,9 @@ export const Routes = {
 
 export type RoutesKeys = keyof typeof Routes
 export type RoutesValues = (typeof Routes)[RoutesKeys]
+
+export const MENU_ITEMS: { route: RoutesValues; label: string; fullLabel?: string; description: string }[] = [
+  { route: Routes.SWAP, label: 'Swap', description: 'Trade tokens' },
+  { route: Routes.LIMIT_ORDER, label: 'Limit', fullLabel: 'Limit order', description: 'Set your own price' },
+  { route: Routes.ADVANCED_ORDERS, label: 'TWAP', description: 'Place orders with a time-weighted average price' },
+]

@@ -29,7 +29,7 @@ function colors(darkMode: boolean): Colors {
   const darkerDark = '#090A20'
   const darkerLight = '#090A20'
   const error = '#D41300'
-  const paper = darkMode ? '#0c264b' : white
+  const paper = darkMode ? '#18193B' : white
   const background = darkMode ? black : '#ECF1F8'
   const alert = darkMode ? '#FFCA4A' : '#DB971E'
   const success = darkMode ? '#00D897' : '#007B28'
@@ -39,7 +39,7 @@ function colors(darkMode: boolean): Colors {
     primary: darkMode ? buttonTextCustom : blueDark2,
     background,
     paper,
-    paperCustom: darkMode ? '#18193B' : white,
+    paperCustom: paper,
     paperDarkerCustom: darkMode ? darkerDark : darkerLight,
     paperDarkestCustom: darkMode ? darken(darkerDark, 0.05) : darken(darkerLight, 0.1),
     buttonTextCustom,

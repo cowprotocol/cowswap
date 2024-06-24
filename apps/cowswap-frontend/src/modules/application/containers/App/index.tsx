@@ -1,9 +1,10 @@
-import { useMemo, lazy, Suspense } from 'react'
+import { lazy, PropsWithChildren, Suspense, useMemo } from 'react'
 
 import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
-import { Color, Media, MenuBar, Footer, GlobalCoWDAOStyles } from '@cowprotocol/ui'
+import { Color, Footer, GlobalCoWDAOStyles, Media, MenuBar } from '@cowprotocol/ui'
 
+import { NavLink } from 'react-router-dom'
 import { ThemeProvider } from 'theme'
 
 import ErrorBoundary from 'legacy/components/ErrorBoundary'
@@ -16,8 +17,10 @@ import { useDarkModeManager } from 'legacy/state/user/hooks'
 
 import { OrdersPanel } from 'modules/account'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
+import { parameterizeTradeRoute, useTradeRouteContext } from 'modules/trade'
 import { useInitializeUtm } from 'modules/utm'
 
+import { MENU_ITEMS } from 'common/constants/routes'
 import { InvalidLocalTimeWarning } from 'common/containers/InvalidLocalTimeWarning'
 import { useAnalyticsReporter } from 'common/hooks/useAnalyticsReporter'
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
@@ -25,12 +28,22 @@ import { LoadingApp } from 'common/pure/LoadingApp'
 import { CoWDAOFonts } from 'common/styles/CoWDAOFonts'
 import RedirectAnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers/RedirectAnySwapAffectedUsers'
 
-import { NAV_ITEMS, PRODUCT_VARIANT, ADDITIONAL_FOOTER_CONTENT } from './menuConsts'
+import { ADDITIONAL_FOOTER_CONTENT, NAV_ITEMS, PRODUCT_VARIANT } from './menuConsts'
 import * as styledEl from './styled'
 
 const RoutesApp = lazy(() => import('./RoutesApp').then((module) => ({ default: module.RoutesApp })))
 
 const GlobalStyles = GlobalCoWDAOStyles(CoWDAOFonts, 'transparent')
+
+const LinkComponent = ({ href, children }: PropsWithChildren<{ href: string }>) => {
+  const external = href.startsWith('http')
+
+  return (
+    <NavLink to={href} target={external ? '_blank' : '_self'} rel={external ? 'noopener noreferrer' : undefined}>
+      {children}
+    </NavLink>
+  )
+}
 
 export function App() {
   useAnalyticsReporter()
@@ -49,6 +62,22 @@ export function App() {
     ],
     [darkMode, toggleDarkMode]
   )
+
+  const tradeContext = useTradeRouteContext()
+
+  const navItems = useMemo(() => {
+    return [
+      {
+        label: 'Trade',
+        children: MENU_ITEMS.map((item) => {
+          const href = parameterizeTradeRoute(tradeContext, item.route, true)
+
+          return { href, label: item.label, description: item.description }
+        }),
+      },
+      ...NAV_ITEMS,
+    ]
+  }, [tradeContext])
 
   const injectedWidgetParams = useInjectedWidgetParams()
   const { pendingActivity } = useCategorizeRecentActivity()
@@ -79,7 +108,7 @@ export function App() {
           {!isInjectedWidgetMode && (
             // TODO: Move hard-coded colors to theme
             <MenuBar
-              navItems={NAV_ITEMS}
+              navItems={navItems}
               productVariant={PRODUCT_VARIANT}
               settingsNavItems={settingsNavItems}
               showGlobalSettings
@@ -91,6 +120,7 @@ export function App() {
               activeFillDark="#DEE3E6"
               activeBackgroundDark="#282854"
               hoverBackgroundDark={'#18193B'}
+              LinkComponent={LinkComponent}
               persistentAdditionalContent={isMobile ? null : persistentAdditionalContent} // This will stay at its original location
               additionalContent={null} // On desktop renders inside the menu bar, on mobile renders inside the mobile menu
             />
