@@ -1794,7 +1794,6 @@ export const ColorTable = styled.table`
 export const ColorTableHeader = styled.th`
   background: var(--neutral);
   color: var(--red);
-  padding: 10px;
   text-align: left;
   border: 2px solid var(--border);
   font-weight: inherit;
