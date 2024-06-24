@@ -14,7 +14,7 @@ export function useCloseAccountModalOnNavigate(): null {
 
   useLayoutEffect(() => {
     closeAccountModal()
-  }, [location.pathname])
+  }, [location.pathname, closeAccountModal])
 
   return null
 }
