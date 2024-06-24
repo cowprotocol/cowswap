@@ -927,6 +927,10 @@ export const HeroContent = styled.div<{ variant?: string; gap?: number; flex?: s
   max-width: 100%;
   flex: ${({ flex }) => flex || '1 1 0'};
 
+  ${Media.upToMedium()} {
+    flex: 1 1 auto;
+  }
+
   ${({ variant }) =>
     variant === 'secondary' &&
     `
