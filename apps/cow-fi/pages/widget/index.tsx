@@ -184,7 +184,7 @@ export default function Page({ siteConfigData }: PageProps) {
                   <SVG src="images/protection.svg" />
                 </TopicImage>
                 <TopicCardInner contentAlign="left">
-                  <TopicTitle>Full Protection from MEV</TopicTitle>
+                  <TopicTitle>Full protection from MEV</TopicTitle>
                   <TopicDescription fontSize={18} color={Color.neutral40} margin="0">
                     CoW Swap offers the best MEV protection in the land. Thanks to a delegated trading model that relies
                     on experts to execute swaps, traders can rest assured that they're safe from the MEV bots.
@@ -197,7 +197,7 @@ export default function Page({ siteConfigData }: PageProps) {
                   <SVG src="images/surplus.svg" />
                 </TopicImage>
                 <TopicCardInner contentAlign="left">
-                  <TopicTitle>Surplus-Capturing Orders</TopicTitle>
+                  <TopicTitle>Surplus-capturing orders</TopicTitle>
                   <TopicDescription fontSize={18} color={Color.neutral40} margin="0">
                     Every order is surplus-capturing and traders usually earn a little extra in their sell token with
                     each swap.
@@ -210,7 +210,7 @@ export default function Page({ siteConfigData }: PageProps) {
                   <SVG src="images/gasless.svg" />
                 </TopicImage>
                 <TopicCardInner contentAlign="left">
-                  <TopicTitle>Gasless Trading</TopicTitle>
+                  <TopicTitle>Gasless trading</TopicTitle>
                   <TopicDescription fontSize={18} color={Color.neutral40} margin="0">
                     All gas fees are paid in the sell token for swaps and even for token approvals. Users can enjoy
                     ETH-free trading every time, even with brand-new wallets.

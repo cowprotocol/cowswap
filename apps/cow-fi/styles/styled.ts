@@ -1351,7 +1351,8 @@ export const SwiperSlideWrapper = styled.div`
 
 export const WidgetContainer = styled.div`
   display: flex;
-  width: 100%;
+  width: 47rem;
+  max-width: 100%;
   flex-flow: column wrap;
   justify-content: flex-start;
   align-items: center;
@@ -1374,6 +1375,8 @@ export const WidgetContainer = styled.div`
   }
 
   ${Media.upToMedium()} {
+    width: 100%;
+
     > div,
     > div > iframe {
       width: 100%;
