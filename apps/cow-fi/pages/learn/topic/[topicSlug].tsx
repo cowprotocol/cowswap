@@ -192,8 +192,7 @@ export default function TopicPage({ category, articles, allCategories }: TopicPa
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const slug = params?.topicSlug as string
-  const categoryResponse = await getCategoryBySlug(slug)
-  const category = categoryResponse
+  const category = await getCategoryBySlug(slug)
 
   if (!category) {
     return {

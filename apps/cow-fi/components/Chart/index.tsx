@@ -15,7 +15,6 @@ import { GlyphCircle } from '@visx/glyph'
 import { localPoint } from '@visx/event'
 import { EventType } from '@visx/event/lib/types'
 import { Color } from 'styles/variables'
-import { getPriceChangeColor } from 'util/getPriceChangeColor'
 import { MissingPriceChart } from './MissingChart'
 import {
   ArrowCell,
@@ -75,8 +74,8 @@ export function formatDelta(delta: number | null | undefined) {
   if (delta === null || delta === undefined || delta === Infinity || isNaN(delta)) {
     return '-'
   }
-  const formattedDelta = Math.abs(delta).toFixed(2) + '%'
-  return formattedDelta
+
+  return Math.abs(delta).toFixed(2) + '%'
 }
 
 export function Chart({ prices, height, width, timePeriod }: ChartProps) {

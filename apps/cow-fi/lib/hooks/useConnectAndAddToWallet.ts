@@ -1,14 +1,13 @@
 import { useCallback, useEffect, useState } from 'react'
-import { useConnect } from '../hooks/useConnect'
+import { useConnect } from './useConnect'
 import { useWalletClient } from 'wagmi'
-import { handleRpcError } from '../../util/handleRpcError'
+import { handleRpcError } from '@/util/handleRpcError'
 import { useAddRpcWithTimeout } from './useAddRpcWithTimeout'
 import { AddToWalletState, AddToWalletStateValues } from '@/components/AddRpcButton'
 
 const DEFAULT_STATE: AddToWalletState = { state: 'unknown', autoConnect: false }
 const ADDING_STATE: AddToWalletState = { state: 'adding', autoConnect: false }
 const ADDED_STATE: AddToWalletState = { state: 'added', autoConnect: false }
-const CONNECTING_STATE: AddToWalletState = { state: 'connecting', autoConnect: true }
 
 export interface UseConnectAndAddToWalletPros {
   addWalletState: AddToWalletState

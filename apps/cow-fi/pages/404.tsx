@@ -1,4 +1,3 @@
-import Head from 'next/head'
 import { GetStaticProps } from 'next'
 import { Color } from '@cowprotocol/ui'
 
@@ -26,7 +25,7 @@ export default function Page({ siteConfigData }: PageProps) {
     >
       <PageWrapper>
         <ContainerCard bgColor={'transparent'} minHeight="70vh" gap={62} gapMobile={42} centerContent touchFooter>
-          <ArticleContent maxWidth="100%">
+          <ArticleContent maxWidth="90rem">
             <ArticleMainTitle margin={'0 0 62px'} fontSize={52}>
               {title}
             </ArticleMainTitle>
@@ -48,12 +47,10 @@ export default function Page({ siteConfigData }: PageProps) {
 }
 
 export const getStaticProps: GetStaticProps<PageProps> = async () => {
-  const siteConfigData = CONFIG
-
   return {
     props: {
       siteConfigData: {
-        ...siteConfigData,
+        ...CONFIG,
         title: '404 - Page Not Found',
         descriptionShort: '404 - Page Not Found',
       },

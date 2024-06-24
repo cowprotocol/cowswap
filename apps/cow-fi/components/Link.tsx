@@ -2,7 +2,7 @@ import styled, { css } from 'styled-components/macro'
 import { Font, Color, Media } from '@cowprotocol/ui'
 import { transparentize } from 'color2k'
 import { defaultUtm } from 'modules/utm'
-import { AnchorHTMLAttributes, FC, ReactNode } from 'react'
+import { FC, ReactNode } from 'react'
 import NextLink from 'next/link'
 
 export enum LinkType {

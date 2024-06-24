@@ -4,7 +4,7 @@ import { Font, Color, Media } from '@cowprotocol/ui'
 import styled from 'styled-components/macro'
 
 import Layout from '@/components/Layout'
-import { getCategories, getArticles, Category, ArticleListResponse } from 'services/cms'
+import { getCategories, getArticles, ArticleListResponse } from 'services/cms'
 
 import { SearchBar } from '@/components/SearchBar'
 import { ArrowButton } from '@/components/ArrowButton'
@@ -140,7 +140,7 @@ export const getStaticProps: GetStaticProps<PageProps> = async () => {
         bgColor: category?.attributes?.backgroundColor || '#fff',
         textColor: category?.attributes?.textColor || '#000',
         link: `/learn/topic/${category?.attributes?.slug}`,
-        iconColor: '#fff',
+        iconColor: 'transparent',
         imageUrl,
       }
     }) || []

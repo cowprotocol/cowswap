@@ -11,7 +11,6 @@ export const Wrapper = styled.div`
   width: 100%;
   height: 100%;
   background: ${transparentize(0.9, Color.black)};
-  backdrop-filter: blur(5rem);
   border: 0.1rem solid ${transparentize(0.9, Color.white)};
   backdrop-filter: blur(6rem);
   border-radius: 7rem;
@@ -29,12 +28,6 @@ export const Wrapper = styled.div`
     max-height: initial;
     border-radius: 2rem;
     padding: 3rem 2.4rem 5rem;
-  }
-`
-
-export const CowSliderWrapper = styled.div`
-  ${Media.mediumDown} {
-    width: 100%;
   }
 `
 

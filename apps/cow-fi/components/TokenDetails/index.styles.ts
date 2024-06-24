@@ -329,7 +329,6 @@ export const Stats = styled.div`
   margin: 1.2rem 0;
   display: flex;
   flex-flow: row wrap;
-  gap: 1.2rem;
   gap: 2rem;
   width: 100%;
   justify-content: space-between;
@@ -355,12 +354,6 @@ export const StatValue = styled.h5`
   margin: 0;
 `
 
-export const SectionSeparator = styled.div`
-  height: 0.1rem;
-  width: 100%;
-  background: white;
-  opacity: 0.3;
-`
 export const CopyIcon = styled.img`
   cursor: pointer;
   opacity: 0.6;
