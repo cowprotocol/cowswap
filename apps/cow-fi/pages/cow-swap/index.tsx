@@ -83,16 +83,16 @@ export default function Page() {
 
         <MetricsCard bgColor="#65D9FF" color="#012F7A" columns={3} touchFooter>
           <MetricsItem dividerColor="#005EB7">
+            <h2>#1</h2>
+            <p>retention rate of all major DEXs</p>
+          </MetricsItem>
+          <MetricsItem dividerColor="#005EB7">
             <h2>$44B+</h2>
             <p>total volume traded</p>
           </MetricsItem>
-          <MetricsItem dividerColor="#005EB7">
+          <MetricsItem>
             <h2>$238M+</h2>
             <p>surplus found for users</p>
-          </MetricsItem>
-          <MetricsItem>
-            <h2>#1</h2>
-            <p>retention rate of all DEXs</p>
           </MetricsItem>
 
           <Link
