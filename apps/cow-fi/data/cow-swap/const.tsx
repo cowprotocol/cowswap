@@ -1,6 +1,34 @@
 import { Link } from '@/components/Link'
 import { EventCategories, sendEventHandler } from '@cowprotocol/analytics'
 
+import IMG_COWSWAP_COINS from '@cowprotocol/assets/images/image-coins.svg'
+import IMG_COWSWAP_MEV from '@cowprotocol/assets/images/image-cowswap-mev.svg'
+import IMG_COWSWAP_UX from '@cowprotocol/assets/images/image-cowswap-ux.svg'
+
+export const COW_IS_DIFFERENT = [
+  {
+    bgColor: '#65D9FF',
+    fontSize: 28,
+    color: '#012F7A',
+    description: "By aligning incentives between solvers and users, CoW Swap finds surplus you won't get anywhere else",
+    imgSrc: IMG_COWSWAP_COINS,
+  },
+  {
+    bgColor: '#012F7A',
+    fontSize: 28,
+    color: '#CCF8FF',
+    description: 'MEV is a $1.3+ billion problem that you never have to worry about on CoW Swap',
+    imgSrc: IMG_COWSWAP_MEV,
+  },
+  {
+    bgColor: '#CCF8FF',
+    fontSize: 28,
+    color: '#012F7A',
+    description: "CoW Swap's unique architecture enables advanced order types and seamless UX",
+    imgSrc: IMG_COWSWAP_UX,
+  },
+]
+
 export const FAQ_DATA = [
   {
     question: 'What is CoW Swap?',

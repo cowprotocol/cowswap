@@ -160,7 +160,7 @@ export default function Page({}: PageProps) {
             </SectionTitleWrapper>
 
             <TopicList columns={1} maxWidth={1470}>
-              <TopicCard columns="1fr auto" gap={100} horizontal asProp="div">
+              <TopicCard columns="repeat(2, 1fr)" gap={100} horizontal asProp="div">
                 <TopicCardInner contentAlign="left">
                   <TopicTitle fontSize={51}>Intents</TopicTitle>
                   <TopicDescription fontSize={28} color={Color.neutral50}>
@@ -181,7 +181,8 @@ export default function Page({}: PageProps) {
                   iconColor="transparent"
                   width={590}
                   height={590}
-                  heightMobile={300}
+                  heightMobile={'auto'}
+                  widthMobile={'100%'}
                   orderReverseMobile
                   borderRadius={90}
                 >
@@ -194,7 +195,8 @@ export default function Page({}: PageProps) {
                   iconColor="transparent"
                   width={590}
                   height={590}
-                  heightMobile={300}
+                  heightMobile={'auto'}
+                  widthMobile={'100%'}
                   orderReverseMobile
                   borderRadius={90}
                 >
@@ -244,7 +246,8 @@ export default function Page({}: PageProps) {
                   iconColor="transparent"
                   width={590}
                   height={590}
-                  heightMobile={300}
+                  heightMobile={'auto'}
+                  widthMobile={'100%'}
                   orderReverseMobile
                   borderRadius={90}
                 >

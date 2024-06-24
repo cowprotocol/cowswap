@@ -6,6 +6,7 @@ import {
   DUNE_DASHBOARD_LINK,
   TWITTER_LINK,
   COWDAO_KNOWLEDGE_BASE_LINK,
+  COWDAO_COWSWAP_ABOUT_LINK,
 } from '@cowprotocol/common-const'
 import { Loader } from '@cowprotocol/ui'
 
@@ -52,7 +53,7 @@ const lazyRoutes: LazyRouteProps[] = [
   { route: RoutesEnum.LONG_LIMIT_ORDER, element: <RedirectToPath path={'/limit'} /> },
   { route: RoutesEnum.ADVANCED_ORDERS, element: <AdvancedOrders /> },
   { route: RoutesEnum.LONG_ADVANCED_ORDERS, element: <RedirectToPath path={'/advanced'} /> },
-  { route: RoutesEnum.ABOUT, element: <ExternalRedirect url={COWDAO_KNOWLEDGE_BASE_LINK} /> },
+  { route: RoutesEnum.ABOUT, element: <ExternalRedirect url={COWDAO_COWSWAP_ABOUT_LINK} /> },
   { route: RoutesEnum.FAQ, element: <ExternalRedirect url={COWDAO_KNOWLEDGE_BASE_LINK} /> },
   { route: RoutesEnum.FAQ_PROTOCOL, element: <ExternalRedirect url={COWDAO_KNOWLEDGE_BASE_LINK} /> },
   { route: RoutesEnum.FAQ_TOKEN, element: <ExternalRedirect url={COWDAO_KNOWLEDGE_BASE_LINK} /> },

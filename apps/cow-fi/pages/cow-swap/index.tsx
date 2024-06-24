@@ -3,6 +3,8 @@ import { Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
 
 import IMG_ICON_UNICORN from '@cowprotocol/assets/images/icon-unicorn.svg'
 import IMG_ICON_FLOWER_COW from '@cowprotocol/assets/images/icon-flower-cow.svg'
+import IMG_COWSWAP_HERO from '@cowprotocol/assets/images/image-cowswap-hero.svg'
+import ICON_BULB from '@cowprotocol/assets/images/icon-bulb-cow.svg'
 
 import Layout from '@/components/Layout'
 import FAQ from '@/components/FAQ'
@@ -34,7 +36,7 @@ import {
 
 import SVG from 'react-inlinesvg'
 import IMG_ICON_FAQ from '@cowprotocol/assets/images/icon-faq.svg'
-import { FAQ_DATA, TWEETS } from '@/data/cow-swap/const'
+import { FAQ_DATA, TWEETS, COW_IS_DIFFERENT } from '@/data/cow-swap/const'
 
 import { EventCategories, sendEventHandler } from '@cowprotocol/analytics'
 
@@ -75,7 +77,7 @@ export default function Page() {
             </Link>
           </HeroContent>
           <HeroImage width={470} height={470} color={'#012F7A'} marginMobile="24px auto 56px">
-            <ProductLogo height="100%" variant={ProductVariant.CowSwap} theme="light" logoIconOnly />
+            <SVG src={IMG_COWSWAP_HERO} />
           </HeroImage>
         </HeroContainer>
 
@@ -110,7 +112,7 @@ export default function Page() {
 
         <ContainerCard bgColor={Color.neutral100}>
           <ContainerCardSection gap={90}>
-            <SectionTitleWrapper color={Color.neutral0} maxWidth={1100} gap={56}>
+            <SectionTitleWrapper color={Color.neutral10} maxWidth={1100} gap={56}>
               <SectionTitleIcon multiple size={82}>
                 <SVG src={IMG_ICON_UNICORN} />
                 <ProductLogo variant={ProductVariant.CowProtocol} theme="dark" logoIconOnly />
@@ -125,56 +127,24 @@ export default function Page() {
             </SectionTitleWrapper>
 
             <TopicList columns={3}>
-              <TopicCard contentAlign={'left'} bgColor={Color.neutral90} padding={'32px'} asProp="div">
-                <TopicCardInner contentAlign="left">
-                  <TopicDescription fontSize={28} color={Color.neutral10}>
-                    By aligning incentives between solvers and users, CoW Swap finds surplus you won't get anywhere else
-                  </TopicDescription>
-                </TopicCardInner>
-                <TopicImage
-                  iconColor={Color.neutral70}
-                  bgColor="transparent"
-                  margin={'0 0 0 auto'}
-                  height={187}
-                  width={'auto'}
-                >
-                  <ProductLogo variant={ProductVariant.CowSwap} logoIconOnly theme="light" />
-                </TopicImage>
-              </TopicCard>
-
-              <TopicCard contentAlign={'left'} bgColor={Color.neutral90} padding={'32px'} asProp="div">
-                <TopicCardInner contentAlign="left">
-                  <TopicDescription fontSize={28} color={Color.neutral10}>
-                    MEV is a $1.3+ billion problem that you never have to worry about on CoW Swap
-                  </TopicDescription>
-                </TopicCardInner>
-                <TopicImage
-                  iconColor={Color.neutral70}
-                  bgColor="transparent"
-                  margin={'0 0 0 auto'}
-                  height={187}
-                  width={'auto'}
-                >
-                  <ProductLogo variant={ProductVariant.CowSwap} logoIconOnly theme="light" />
-                </TopicImage>
-              </TopicCard>
-
-              <TopicCard contentAlign={'left'} bgColor={Color.neutral90} padding={'32px'} asProp="div">
-                <TopicCardInner contentAlign="left">
-                  <TopicDescription fontSize={28} color={Color.neutral10}>
-                    CoW Swap's unique architecture enables advanced order types and seamless UX
-                  </TopicDescription>
-                </TopicCardInner>
-                <TopicImage
-                  iconColor={Color.neutral70}
-                  bgColor="transparent"
-                  margin={'0 0 0 auto'}
-                  height={187}
-                  width={'auto'}
-                >
-                  <ProductLogo variant={ProductVariant.CowSwap} logoIconOnly theme="light" />
-                </TopicImage>
-              </TopicCard>
+              {COW_IS_DIFFERENT.map((topic, index) => (
+                <TopicCard key={index} contentAlign={'left'} bgColor={topic.bgColor} padding={'32px'} asProp="div">
+                  <TopicCardInner contentAlign="left">
+                    <TopicDescription fontSize={topic.fontSize} color={topic.color}>
+                      {topic.description}
+                    </TopicDescription>
+                  </TopicCardInner>
+                  <TopicImage
+                    iconColor={'transparent'}
+                    bgColor="transparent"
+                    margin={'auto 0 0 auto'}
+                    height={187}
+                    width={'auto'}
+                  >
+                    <SVG src={topic.imgSrc} />
+                  </TopicImage>
+                </TopicCard>
+              ))}
             </TopicList>
           </ContainerCardSection>
         </ContainerCard>
@@ -182,6 +152,9 @@ export default function Page() {
         <ContainerCard bgColor={'transparent'}>
           <ContainerCardSection>
             <SectionTitleWrapper maxWidth={800}>
+              <SectionTitleIcon size={126}>
+                <SVG src={ICON_BULB} />
+              </SectionTitleIcon>
               <SectionTitleText>CoW Swap is the first user interface built on top of CoW Protocol</SectionTitleText>
               <SectionTitleDescription color={Color.neutral50}>
                 A powerful, open-source, and permissionless DEX aggregation protocol that anyone can integrate for a

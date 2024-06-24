@@ -92,6 +92,7 @@ export const RAW_CODE_LINK = 'https://raw.githubusercontent.com/' + GITHUB_REPOS
 
 export const COW_PROTOCOL_LINK = 'https://cow.fi/'
 export const COWDAO_KNOWLEDGE_BASE_LINK = 'https://cow.fi/learn/'
+export const COWDAO_COWSWAP_ABOUT_LINK = 'https://cow.fi/cow-swap/'
 export const DOCS_LINK = 'https://docs.cow.fi'
 export const CONTRACTS_CODE_LINK = 'https://github.com/cowprotocol/contracts'
 export const DISCORD_LINK = 'https://discord.com/invite/cowprotocol'
