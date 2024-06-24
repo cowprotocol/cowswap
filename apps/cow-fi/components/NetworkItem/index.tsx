@@ -15,7 +15,7 @@ type Props = {
 
 export function NetworkItem(props: Props) {
   const { network, platformData } = props
-  const { address, symbol, decimals, name } = platformData
+  const { address, symbol, name } = platformData
 
   return (
     <ItemWrapper>
