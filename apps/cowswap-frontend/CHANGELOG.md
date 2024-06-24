@@ -1,5 +1,24 @@
 # Changelog
 
+## [1.74.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.73.0...cowswap-v1.74.0) (2024-06-24)
+
+
+### Features
+
+* **explorer:** truncated orderId with CSS ([#4557](https://github.com/cowprotocol/cowswap/issues/4557)) ([88b5c06](https://github.com/cowprotocol/cowswap/commit/88b5c061beefdf7866a39a84a940ea01715e9c0b))
+* **rebranding:** merge 📦 Big Package "Re-branding" 📦  ([#4543](https://github.com/cowprotocol/cowswap/issues/4543)) ([ce9ab43](https://github.com/cowprotocol/cowswap/commit/ce9ab4317f304c86e3e1ec37825379e427099518))
+* theme unification and cleaning ([#4580](https://github.com/cowprotocol/cowswap/issues/4580)) ([c1538b1](https://github.com/cowprotocol/cowswap/commit/c1538b16d9c890c95d73ea92ffb93b2065233d90))
+
+
+### Bug Fixes
+
+* detect a connected user in a safe ([#4508](https://github.com/cowprotocol/cowswap/issues/4508)) ([0fed667](https://github.com/cowprotocol/cowswap/commit/0fed667d7063c9db07f5cd5671dcc36ee25ab685))
+* **rebranding:** polish UI ([#4581](https://github.com/cowprotocol/cowswap/issues/4581)) ([a038458](https://github.com/cowprotocol/cowswap/commit/a038458a23d91fb9b624679950ee6492a966ccba))
+* remove SafeTokenWarning banner ([#4578](https://github.com/cowprotocol/cowswap/issues/4578)) ([778e392](https://github.com/cowprotocol/cowswap/commit/778e3926d1cc3f7d9daa3e97f09639f5a4352f37))
+* reset isDropdownVisible status in large screen ([#4584](https://github.com/cowprotocol/cowswap/issues/4584)) ([d5fa633](https://github.com/cowprotocol/cowswap/commit/d5fa63339f8c65a89631ab07540518329c8c674f))
+* **twap:** improve output amount resetting logic ([#4571](https://github.com/cowprotocol/cowswap/issues/4571)) ([9109d7c](https://github.com/cowprotocol/cowswap/commit/9109d7cc5e394d5806e2cf899333de3df5b4db23))
+* **widget:** fix widget usage in more than one iframe ([#4586](https://github.com/cowprotocol/cowswap/issues/4586)) ([65522e5](https://github.com/cowprotocol/cowswap/commit/65522e57d0f3f9a5692cadc32bed475e35b9f7d1))
+
 ## [1.73.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.72.1...cowswap-v1.73.0) (2024-06-18)
 
 
