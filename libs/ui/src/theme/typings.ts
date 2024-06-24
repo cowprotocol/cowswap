@@ -1,12 +1,11 @@
-import { ButtonSize } from '../enum'
 import { CowSwapTheme } from '../types'
+
+import type { FlattenSimpleInterpolation as StyledFlattenSimpleInterpolation } from 'styled-components/macro'
 
 type ColorValue = string
 
-// Override colors
 export interface Colors {
   darkMode: boolean
-
   primary: ColorValue
   background: ColorValue
   paper: ColorValue
@@ -19,21 +18,10 @@ export interface Colors {
   white: ColorValue
   black: ColorValue
   text1: ColorValue
-  text2: ColorValue
-  text3: ColorValue
   text4: ColorValue
-  bg1: ColorValue
   bg2: ColorValue
-  bg3: ColorValue
-  bg4: ColorValue
   bg5: ColorValue
-  advancedBG: ColorValue
-  primary1: ColorValue
-  primary3: ColorValue
-  primary4: ColorValue
-  primary5: ColorValue
   green1: ColorValue
-  yellow2: ColorValue
   yellow3: ColorValue
   blue1: ColorValue
   bg8: ColorValue
@@ -44,76 +32,34 @@ export interface Colors {
   blue2: ColorValue
   orange: ColorValue
   danger: ColorValue
-  pending: ColorValue
-  attention: ColorValue
   border: ColorValue
   border2: ColorValue
   disabled: ColorValue
-  information: ColorValue
   alert: ColorValue
   alert2: ColorValue
-  infoText: ColorValue
-  warningText: ColorValue
-  errorText: ColorValue
-  blueDark1: ColorValue
   blueDark2: ColorValue
-  blueLight1: ColorValue
-  grey1: ColorValue
-  red1: ColorValue
   paperCustom: ColorValue
   paperDarkerCustom: ColorValue
   paperDarkestCustom: ColorValue
   buttonTextCustom: ColorValue
+  gradient1: ColorValue
+  gradient2: ColorValue
+  boxShadow1: ColorValue
+  boxShadow2: ColorValue
+  shadow1: ColorValue
+}
+
+export interface ThemeUtils {
+  shimmer: StyledFlattenSimpleInterpolation
+  colorScrollbar: StyledFlattenSimpleInterpolation
+  invertImageForDarkMode: string | null
+  flexColumnNoWrap: StyledFlattenSimpleInterpolation
+  flexRowNoWrap: StyledFlattenSimpleInterpolation
 }
 
 declare module 'styled-components' {
-  // Override theme
-  export interface CowProtocolTheme extends Colors {
+  export interface CowProtocolTheme extends Colors, ThemeUtils {
     mode: CowSwapTheme
-    isInjectedWidgetMode: boolean
-    shimmer: FlattenSimpleInterpolation
-    colorScrollbar: FlattenSimpleInterpolation
-    boxShadow1: string
-    boxShadow2: string
-    gradient1: string
-    gradient2: string
-    util: {
-      invertImageForDarkMode: string | null
-    }
-    cursor?: FlattenSimpleInterpolation
-    appBody: {
-      maxWidth: {
-        swap: string
-        limit: string
-        content: string
-      }
-    }
-    buttonSizes: Record<ButtonSize, FlattenSimpleInterpolation>
-    buttonOutlined: {
-      background?: FlattenSimpleInterpolation
-      fontSize?: string
-      fontWeight?: string
-      border?: string
-      borderRadius?: string
-      boxShadow?: string
-    }
-    buttonLight: {
-      background?: FlattenSimpleInterpolation
-      backgroundHover?: string
-      fontSize?: string
-      fontWeight?: string
-      border?: string
-      borderHover?: string
-      borderRadius?: string
-      boxShadow?: string
-    }
-
-    // shadows
-    shadow1: string
-
-    // css snippets
-    flexColumnNoWrap: FlattenSimpleInterpolation
-    flexRowNoWrap: FlattenSimpleInterpolation
   }
 
   export interface DefaultTheme extends CowProtocolTheme {}

@@ -12,7 +12,7 @@ export const HeaderRow = styled.div`
   width: 100%;
   padding: 1rem 1rem;
   font-weight: 600;
-  color: ${(props) => (props.color === 'blue' ? ({ theme }) => theme.primary1 : 'inherit')};
+  color: ${(props) => (props.color === 'blue' ? ({ theme }) => theme.bg2 : 'inherit')};
   ${Media.upToMedium()} {
     padding: 1rem;
   }

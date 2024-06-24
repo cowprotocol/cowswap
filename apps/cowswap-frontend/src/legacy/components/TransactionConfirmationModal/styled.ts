@@ -3,9 +3,9 @@ import { ExternalLink } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
+import { CloseIcon } from 'theme'
 
 import { AutoColumn } from 'legacy/components/Column'
-import { CloseIcon } from 'legacy/theme'
 
 export const Wrapper = styled.div`
   width: 100%;

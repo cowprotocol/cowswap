@@ -137,7 +137,7 @@ export const WrapperPeriodButton = styled.button<{ active: boolean }>`
   align-items: center;
   justify-content: center;
   color: ${({ theme, active }): string => (active ? theme.orange : theme.white)};
-  background-color: ${({ theme, active }): string => (active ? theme.orangeOpacity : theme.bg1)};
+  background-color: ${({ theme, active }): string => (active ? theme.orangeOpacity : theme.paper)};
   border: 1px solid ${({ theme, active }): string => (active ? theme.orange : theme.bg2)};
   padding: 0;
   border-radius: 0.6rem;
@@ -154,7 +154,7 @@ export const WrapperPeriodButton = styled.button<{ active: boolean }>`
 
   &:hover {
     color: ${({ theme }): string => theme.orange};
-    background-color: ${({ theme, active }): string => (active ? theme.bg1 : theme.orangeOpacity)};
+    background-color: ${({ theme, active }): string => (active ? theme.paper : theme.orangeOpacity)};
   }
 `
 export const StyledShimmerBar = styled(ShimmerBar)`
@@ -164,7 +164,7 @@ export const StyledShimmerBar = styled(ShimmerBar)`
 
 export const WrapperTooltipPrice = styled.div<{ left: number; top: number; height?: number; width?: number }>`
   color: ${({ theme }): string => theme.white};
-  background-color: ${({ theme }): string => theme.bg1};
+  background-color: ${({ theme }): string => theme.paper};
   border: 1px solid ${({ theme }): string => theme.bg2};
   padding: 0.5rem 1rem;
   border-radius: 0.5rem;

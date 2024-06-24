@@ -6,6 +6,7 @@ import LOGO_COWSWAP from '@cowprotocol/assets/images/logo-cowswap.svg'
 import LOGO_ICON_COW from '@cowprotocol/assets/images/logo-icon-cow.svg'
 import LOGO_ICON_MEVBLOCKER from '@cowprotocol/assets/images/logo-icon-mevblocker.svg'
 import LOGO_MEVBLOCKER from '@cowprotocol/assets/images/logo-mevblocker.svg'
+import { useTheme } from '@cowprotocol/common-hooks'
 
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
@@ -202,7 +203,7 @@ const LOGOS: Record<ProductVariant, ThemedLogo> = {
 
 export interface LogoProps {
   variant: ProductVariant
-  theme: CowSwapTheme
+  theme?: CowSwapTheme
   logoIconOnly?: boolean
   overrideColor?: string // Optional override color
   overrideHoverColor?: string // Optional override hover color
@@ -246,7 +247,7 @@ export const ProductLogoWrapper = styled.span<{ color?: string; hoverColor?: str
 
 export const ProductLogo = ({
   variant,
-  theme: themeMode,
+  theme: customThemeMode,
   logoIconOnly,
   overrideColor,
   overrideHoverColor,
@@ -254,7 +255,8 @@ export const ProductLogo = ({
   href,
   external = false,
 }: LogoProps) => {
-  const logoForTheme = LOGOS[variant][themeMode]
+  const themeMode = useTheme()
+  const logoForTheme = LOGOS[variant][customThemeMode || (themeMode.darkMode ? 'dark' : 'light')]
   const logoInfo = logoIconOnly && logoForTheme.logoIconOnly ? logoForTheme.logoIconOnly : logoForTheme.default
   const initialColor = overrideColor || logoInfo.color
 

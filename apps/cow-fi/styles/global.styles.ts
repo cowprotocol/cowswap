@@ -1,4 +1,4 @@
-import styled, { createGlobalStyle } from 'styled-components'
+import styled, { createGlobalStyle } from 'styled-components/macro'
 import { Color, Media, Font } from '@cowprotocol/ui'
 import { transparentize } from 'polished'
 

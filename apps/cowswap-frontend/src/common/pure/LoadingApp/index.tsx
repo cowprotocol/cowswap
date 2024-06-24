@@ -1,9 +1,8 @@
 import { isInjectedWidget } from '@cowprotocol/common-utils'
+import { ProductLogo, ProductVariant } from '@cowprotocol/ui'
 
 import { transparentize } from 'color2k'
 import styled, { keyframes, css } from 'styled-components/macro'
-
-import { ProductLogo, ProductVariant } from '../ProductLogo'
 
 const pulse = keyframes`
   0% {
@@ -144,18 +143,14 @@ const LoadingWrapper = styled.div`
   }
 `
 
-interface LoaderProps {
-  darkMode: boolean
-}
-
-export const LoadingApp = ({ darkMode }: LoaderProps) => {
+export const LoadingApp = () => {
   const isInjectedWidgetMode = isInjectedWidget()
 
   return (
     <LoadingWrapper>
       {!isInjectedWidgetMode && (
         <span>
-          <ProductLogo variant={ProductVariant.CowSwap} height={100} theme={darkMode ? 'dark' : 'light'} logoIconOnly />
+          <ProductLogo variant={ProductVariant.CowSwap} height={100} logoIconOnly />
         </span>
       )}
       <p>

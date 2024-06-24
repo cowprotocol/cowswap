@@ -7,6 +7,7 @@ import { HelpTooltip, Media, RowBetween, RowFixed, UI } from '@cowprotocol/ui'
 import { Trans } from '@lingui/macro'
 import { Text } from 'rebass'
 import styled from 'styled-components/macro'
+import { ThemedText } from 'theme'
 
 import { AutoColumn } from 'legacy/components/Column'
 import { Toggle } from 'legacy/components/Toggle'
@@ -14,7 +15,6 @@ import TransactionSettings from 'legacy/components/TransactionSettings'
 import { useModalIsOpen, useToggleSettingsMenu } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
 import { useRecipientToggleManager } from 'legacy/state/user/hooks'
-import { ThemedText } from 'legacy/theme'
 
 import { SettingsTabProp } from './index'
 

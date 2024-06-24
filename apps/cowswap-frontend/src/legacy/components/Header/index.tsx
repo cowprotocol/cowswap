@@ -7,12 +7,12 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import SVG from 'react-inlinesvg'
+import { cowSwapLogo, cowSwapIcon, winterThemeHat } from 'theme/cowSwapAssets'
 
 import CowBalanceButton from 'legacy/components/CowBalanceButton'
 import { NetworkSelector } from 'legacy/components/Header/NetworkSelector'
 import { upToLarge, upToExtraSmall, useMediaQuery, upToTiny } from 'legacy/hooks/useMediaQuery'
 import { useDarkModeManager } from 'legacy/state/user/hooks'
-import { cowSwapLogo, cowSwapIcon, winterThemeHat } from 'legacy/theme/cowSwapAssets'
 
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { MainMenuContext } from 'modules/mainMenu'

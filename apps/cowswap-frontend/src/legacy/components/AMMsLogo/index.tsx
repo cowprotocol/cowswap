@@ -24,7 +24,7 @@ export const Wrapper = styled.div<{ logosLength: number }>`
   width: 24px;
   height: 24px;
   border-radius: 100%;
-  box-shadow: 0px 0px 10px 2px ${({ theme }) => theme.bg1};
+  box-shadow: 0px 0px 10px 2px ${({ theme }) => theme.paper};
   background-color: ${({ theme }) => theme.white};
   transform-style: preserve-3d;
   position: absolute;

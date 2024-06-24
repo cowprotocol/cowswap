@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { Media } from 'styles/variables'
 import { Color } from '@cowprotocol/ui'
 

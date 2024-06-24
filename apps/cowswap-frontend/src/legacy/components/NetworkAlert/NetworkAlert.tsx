@@ -9,7 +9,12 @@ import { ArrowUpRight } from 'react-feather'
 import styled from 'styled-components/macro'
 
 import { useDarkModeManager } from 'legacy/state/user/hooks'
-import { HideSmall } from 'legacy/theme'
+
+const HideSmall = styled.span`
+  ${Media.upToSmall()} {
+    display: none;
+  }
+`
 
 const L2Icon = styled.img`
   width: 24px;

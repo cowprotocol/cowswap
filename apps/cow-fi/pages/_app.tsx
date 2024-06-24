@@ -8,6 +8,7 @@ import { ApolloProvider } from '@apollo/client'
 import { apolloClient } from 'services/uniswap-price/apollo-client'
 import { useInitializeUtm } from 'modules/utm'
 import { WithLDProvider } from '@/components/WithLDProvider'
+import { ThemeProvider } from '../theme'
 
 export default function App(props: AppProps) {
   const { Component, pageProps } = props
@@ -52,7 +53,9 @@ export default function App(props: AppProps) {
       <Analytics />
       <ApolloProvider client={apolloClient}>
         <WithLDProvider>
-          <Component {...pageProps} />
+          <ThemeProvider>
+            <Component {...pageProps} />
+          </ThemeProvider>
         </WithLDProvider>
       </ApolloProvider>
     </>

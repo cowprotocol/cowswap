@@ -7,7 +7,7 @@ import { CONFIG } from '@/const/meta'
 
 import Layout from '@/components/Layout'
 import { Color } from '@cowprotocol/ui'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 
 const DATA_CACHE_TIME_SECONDS = 10 * 60 // 10 minutes
 

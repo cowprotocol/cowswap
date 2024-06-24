@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { ArrowDownRight, ArrowUpRight } from 'react-feather'
 import { Color, TransitionDuration } from 'styles/variables'
 import { textFadeIn } from 'styles/variables'

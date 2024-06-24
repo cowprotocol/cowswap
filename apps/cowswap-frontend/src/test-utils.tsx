@@ -15,10 +15,10 @@ import { LocationDescriptorObject } from 'history'
 import { Provider } from 'react-redux'
 import { MemoryRouter } from 'react-router-dom'
 import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-components/macro'
+import { getCowswapTheme } from 'theme'
 
 import { cowSwapStore } from 'legacy/state'
 import { useIsDarkMode } from 'legacy/state/user/hooks'
-import { theme } from 'legacy/theme'
 
 import { LanguageProvider } from './i18n'
 
@@ -30,7 +30,7 @@ const MockThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const darkMode = useIsDarkMode()
   const isInjectedWidgetMode = isInjectedWidget()
 
-  const themeObject = useMemo(() => theme(darkMode, isInjectedWidgetMode), [darkMode, isInjectedWidgetMode])
+  const themeObject = useMemo(() => getCowswapTheme(darkMode, isInjectedWidgetMode), [darkMode, isInjectedWidgetMode])
 
   return <StyledComponentsThemeProvider theme={themeObject}>{children}</StyledComponentsThemeProvider>
 }

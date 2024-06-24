@@ -4,8 +4,7 @@ import { UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
-
-import { ThemedText } from 'legacy/theme'
+import { ThemedText } from 'theme'
 
 const PendingSection = styled.div`
   ${({ theme }) => theme.flexColumnNoWrap};

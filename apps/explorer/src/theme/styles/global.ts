@@ -82,7 +82,7 @@ export const ThemedGlobalStyle = createGlobalStyle`
     }
   }
   html, body {
-    background: ${({ theme }): string => theme.bg1};
+    background: ${({ theme }): string => theme.paper};
     color: ${({ theme }): string => theme.textPrimary1};
     /* StyleLint fights you for the sans-serif as it requires a fallback and can't detect it from the theme prop */
     font-family: ${({ theme }): string => theme.fontDefault}, sans-serif;

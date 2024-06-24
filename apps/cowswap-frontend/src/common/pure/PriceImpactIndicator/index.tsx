@@ -3,10 +3,12 @@ import { Loader, HoverTooltip } from '@cowprotocol/ui'
 import { Percent } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/macro'
-import styled, { DefaultTheme } from 'styled-components/macro'
+import styled from 'styled-components/macro'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { warningSeverity } from 'legacy/utils/prices'
+
+import type { DefaultTheme } from 'styled-components'
 
 const LoaderStyled = styled(Loader)`
   margin-left: 4px;

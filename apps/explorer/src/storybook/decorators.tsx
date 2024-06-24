@@ -14,7 +14,7 @@ import { FormProvider, useForm, UseFormOptions } from 'react-hook-form'
 import { MemoryRouter } from 'react-router'
 import { GLOBAL_INITIAL_STATE, globalRootReducer } from 'state'
 import { reducer as networkReducer } from 'state/network'
-import ThemeProvider, { getThemePalette, StaticGlobalStyle, Theme, ThemedGlobalStyle } from 'theme'
+import { ThemeProvider, getThemePalette, StaticGlobalStyle, Theme, ThemedGlobalStyle } from 'theme'
 import { Network } from 'types'
 
 export const GlobalStyles = (DecoratedStory: () => StoryFnReactReturnType): JSX.Element => (

@@ -27,7 +27,7 @@ export const PageWithToC = styled.div<{ longList?: boolean }>`
       color: inherit;
 
       > thead {
-        background: ${({ theme }) => theme.bg3};
+        background: ${({ theme }) => theme.background};
       }
 
       > tbody > tr {

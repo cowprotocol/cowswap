@@ -19,7 +19,7 @@ export const PaginationBox = styled.div`
   }
 `
 const pageButtonStyles = css<{ $active?: boolean }>`
-  background: ${({ theme, $active }) => ($active ? transparentize(theme.text3, 0.9) : 'transparent')};
+  background: ${({ theme, $active }) => ($active ? transparentize(theme.info, 0.9) : 'transparent')};
   color: ${({ $active }) => ($active ? `var(${UI.COLOR_TEXT})` : `var(${UI.COLOR_TEXT_OPACITY_25})`)};
   border: 0;
   outline: 0;

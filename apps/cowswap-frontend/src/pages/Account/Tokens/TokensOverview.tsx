@@ -11,9 +11,9 @@ import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import { Trans, t } from '@lingui/macro'
 import { Check } from 'react-feather'
+import { CloseIcon } from 'theme'
 
 import TokensTable from 'legacy/components/Tokens/TokensTable'
-import { CloseIcon } from 'legacy/theme'
 
 import { PageTitle } from 'modules/application/containers/PageTitle'
 

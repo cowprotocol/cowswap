@@ -54,7 +54,7 @@ export const StyledRowBetween = styled(RowBetween)<RowStyleProps>`
   }
 
   ${StyledHoverTooltip} {
-    background-color: ${({ theme }) => theme.bg3};
+    background-color: ${({ theme }) => theme.background};
     color: inherit;
   }
 `

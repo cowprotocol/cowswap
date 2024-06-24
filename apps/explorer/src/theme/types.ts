@@ -6,7 +6,7 @@ export enum Theme {
 }
 
 declare module 'styled-components' {
-  interface ExplorerTheme extends Colors, Fonts {
+  export interface ExplorerTheme extends Colors, Fonts {
     // theming
     mode: 'light' | 'dark'
   }

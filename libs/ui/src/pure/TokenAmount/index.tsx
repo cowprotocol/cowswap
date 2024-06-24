@@ -1,18 +1,15 @@
 import { LONG_PRECISION } from '@cowprotocol/common-const'
-import { FeatureFlag, formatTokenAmount, FractionUtils } from '@cowprotocol/common-utils'
+import { formatTokenAmount, FractionUtils } from '@cowprotocol/common-utils'
 
 import styled from 'styled-components/macro'
 
-import { AMOUNTS_FORMATTING_FEATURE_FLAG } from '../../consts'
 import { UI } from '../../enum'
 import { FractionLike, Nullish } from '../../types'
 import { TokenNameAndSymbol, TokenSymbol } from '../TokenSymbol'
 
-export const Wrapper = styled.span<{ highlight: boolean; lowVolumeWarning?: boolean }>`
-  background: ${({ lowVolumeWarning, highlight }) =>
-    lowVolumeWarning || highlight ? `var(${UI.COLOR_ALERT_BG})` : ''};
-  color: ${({ lowVolumeWarning, highlight }) =>
-    lowVolumeWarning || highlight ? `var(${UI.COLOR_ALERT_TEXT})` : 'inherit'};
+export const Wrapper = styled.span<{ lowVolumeWarning?: boolean }>`
+  background: ${({ lowVolumeWarning }) => (lowVolumeWarning ? `var(${UI.COLOR_ALERT_BG})` : '')};
+  color: ${({ lowVolumeWarning }) => (lowVolumeWarning ? `var(${UI.COLOR_ALERT_TEXT})` : 'inherit')};
   border-radius: 2px;
   word-break: break-word;
 `
@@ -31,8 +28,6 @@ export interface TokenAmountProps {
   round?: boolean
   opacitySymbol?: boolean
 }
-
-const highlight = !!FeatureFlag.get(AMOUNTS_FORMATTING_FEATURE_FLAG)
 
 export function TokenAmount({
   amount,
@@ -57,7 +52,7 @@ export function TokenAmount({
 
   const roundedAmount = round ? FractionUtils.round(amount) : amount
   return (
-    <Wrapper title={title} className={className} highlight={highlight}>
+    <Wrapper title={title} className={className}>
       {formatTokenAmount(roundedAmount) || defaultValue}
       <SymbolElement opacitySymbol={opacitySymbol}>{tokenSymbolElement}</SymbolElement>
     </Wrapper>

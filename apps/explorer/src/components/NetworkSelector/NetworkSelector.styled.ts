@@ -22,7 +22,7 @@ export const OptionsContainer = styled.div<{ width: number }>`
   width: ${(props: { width: number }): string => `${184 + props.width}px`};
   left: 15px;
   top: 54px;
-  background: ${({ theme }): string => theme.bg1};
+  background: ${({ theme }): string => theme.paper};
   border: 1px solid rgba(141, 141, 169, 0.3);
   box-sizing: border-box;
   border-radius: 6px;
