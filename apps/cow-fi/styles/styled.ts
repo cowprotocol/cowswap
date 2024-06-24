@@ -1215,10 +1215,6 @@ export const SwiperSlideWrapper = styled.div`
     position: relative;
     padding: 0 0 5rem; // Fix for swiper pagination
 
-    ${Media.upToMedium()} {
-      overflow-x: visible;
-    }
-
     &::before,
     &::after {
       content: '';
