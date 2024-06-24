@@ -116,12 +116,16 @@ export const ContainerCardSectionTopTitle = styled.h3<{
   }
 `
 
-export const ArticleList = styled.div<{ columns?: number; columnsMobile?: number }>`
+export const ArticleList = styled.div<{ columns?: number; columnsTablet?: number; columnsMobile?: number }>`
   display: grid;
   grid-template-columns: repeat(${({ columns }) => columns || 3}, 1fr);
   gap: 64px 32px;
   justify-content: space-between;
   width: 100%;
+
+  ${Media.upToLarge()} {
+    grid-template-columns: repeat(${({ columnsTablet }) => columnsTablet || 3}, 1fr);
+  }
 
   ${Media.upToMedium()} {
     grid-template-columns: repeat(${({ columnsMobile }) => columnsMobile || 1}, 1fr);
