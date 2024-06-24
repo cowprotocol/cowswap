@@ -18,7 +18,7 @@ export const Web3StatusConnect = styled(Web3StatusGeneric)<{ faded?: boolean }>`
       border: 0;
       font-size: 14px;
       font-weight: var(${UI.FONT_WEIGHT_MEDIUM});
-      background: transparent;
+      background: transparent !important;
       color: inherit !important;
       transition: all var(${UI.ANIMATION_DURATION}) ease-in-out;
       opacity: 0.7;
