@@ -270,6 +270,12 @@ export const MenuSection = styled.div`
     }
   }
 
+  a > svg {
+    width: 1.8rem;
+    height: 1.8rem;
+    object-fit: contain;
+  }
+
   a > svg > path {
     fill: white;
   }
