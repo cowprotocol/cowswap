@@ -126,7 +126,7 @@ export default function Page() {
               </SectionTitleDescription>
             </SectionTitleWrapper>
 
-            <TopicList columns={3}>
+            <TopicList columns={3} columnsTablet={2}>
               {COW_IS_DIFFERENT.map((topic, index) => (
                 <TopicCard key={index} contentAlign={'left'} bgColor={topic.bgColor} padding={'32px'} asProp="div">
                   <TopicCardInner contentAlign="left">
@@ -188,7 +188,7 @@ export default function Page() {
             <SectionTitleWrapper>
               <SectionTitleText>Advanced order types</SectionTitleText>
             </SectionTitleWrapper>
-            <TopicList columns={3}>
+            <TopicList columns={3} columnsTablet={2}>
               {ADVANCED_ORDER_TYPES.map((topic, index) => (
                 <TopicCard
                   key={index}
@@ -220,7 +220,7 @@ export default function Page() {
                 Better UX, thanks to intents
               </SectionTitleText>
             </SectionTitleWrapper>
-            <TopicList columns={3}>
+            <TopicList columns={3} columnsTablet={2}>
               {BETTER_UX.map((topic, index) => (
                 <TopicCard
                   key={index}
@@ -258,7 +258,7 @@ export default function Page() {
               <SectionTitleText textAlign="center">The DEX of choice for crypto whales and pros</SectionTitleText>
             </SectionTitleWrapper>
 
-            <TopicList columns={4}>
+            <TopicList columns={4} columnsTablet={2}>
               <TopicCard
                 contentAlign={'left'}
                 bgColor="#012F7A"
@@ -336,7 +336,7 @@ export default function Page() {
               <SectionTitleText textAlign="center">Don't take our word for it</SectionTitleText>
             </SectionTitleWrapper>
 
-            <TopicList columns={3} maxWidth={1360}>
+            <TopicList columns={3} columnsTablet={2} maxWidth={1360}>
               {TWEETS.map((tweet, index) => (
                 <TopicCard
                   bgColor={Color.neutral100}

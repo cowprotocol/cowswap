@@ -157,7 +157,7 @@ export default function Page({ siteConfigData }: PageProps) {
               </SectionTitleDescription>
             </SectionTitleWrapper>
 
-            <TopicList columns={3}>
+            <TopicList columns={3} columnsTablet={2}>
               <TopicCard contentAlign={'left'} bgColor={Color.neutral100} padding={'32px'} gap={16} asProp="div">
                 <TopicImage bgColor="transparent" height={75} width={'auto'}>
                   <SVG src="images/icon-milkman.svg" />
@@ -266,7 +266,7 @@ export default function Page({ siteConfigData }: PageProps) {
           </ContainerCardSection>
         </ContainerCard>
 
-        <ContainerCard bgColor={Color.neutral10} color={Color.neutral98}>
+        <ContainerCard bgColor={Color.neutral10} color={Color.neutral98} touchFooter>
           <ContainerCardSection>
             <SectionTitleWrapper padding="150px 0 0">
               <SectionTitleIcon multiple>

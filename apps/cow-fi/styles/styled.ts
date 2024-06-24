@@ -172,9 +172,11 @@ export const ArticleDescription = styled.p<{ color?: string; fontSize?: number; 
 
 export const TopicList = styled.div<{
   columns?: number
+  columnsTablet?: number
   columnsMobile?: number
   maxWidth?: number
   gap?: number
+  gapTablet?: number
   gapMobile?: number
   margin?: string
 }>`
@@ -185,6 +187,11 @@ export const TopicList = styled.div<{
   max-width: ${({ maxWidth }) => (maxWidth ? `${maxWidth}px` : '100%')};
   margin: ${({ margin }) => margin || '0 auto'};
   overflow-x: auto;
+
+  ${Media.upToLarge()} {
+    grid-template-columns: ${({ columnsTablet }) => `repeat(${columnsTablet || 3}, 1fr)`};
+    gap: ${({ gapTablet }) => (gapTablet ? `${gapTablet}px` : '32px')};
+  }
 
   ${Media.upToMedium()} {
     grid-template-columns: ${({ columnsMobile }) => `repeat(${columnsMobile || 1}, 1fr)`};
@@ -198,6 +205,8 @@ interface TopicCardProps {
   borderColor?: string
   horizontal?: boolean
   columns?: string
+  columnsTablet?: string
+  columnsMobile?: string
   asProp?: string
   padding?: string
   paddingMobile?: string
@@ -239,7 +248,14 @@ export const TopicCard = styled.a.attrs<TopicCardProps>(({ asProp }) => ({
       asProp === 'div' ? border || '4px solid transparent' : `4px solid ${Color.neutral40}`};
   }
 
+  ${Media.upToLarge()} {
+    grid-template-columns: ${({ columns, fullWidth, columnsTablet }) =>
+      fullWidth ? '1fr' : columnsTablet || columns || '1fr'};
+  }
+
   ${Media.upToMedium()} {
+    grid-template-columns: ${({ columns, fullWidth, columnsMobile }) =>
+      fullWidth ? '1fr' : columnsMobile || columns || '1fr'};
     padding: ${({ paddingMobile }) => paddingMobile || '32px 16px'};
     gap: 32px;
     display: ${({ fullWidth }) => (fullWidth ? 'block' : 'flex')};
@@ -298,6 +314,7 @@ export const TopicImage = styled.div<{
   width?: number | string
   heightMobile?: number | string
   widthMobile?: number | string
+  orderReverseTablet?: boolean
   orderReverseMobile?: boolean
   borderRadius?: number
   position?: string
@@ -340,6 +357,10 @@ export const TopicImage = styled.div<{
   left: ${({ left }) => (typeof left === 'number' ? `${left}px` : left || 'initial')};
   right: ${({ right }) => (typeof right === 'number' ? `${right}px` : right || 'initial')};
   bottom: ${({ bottom }) => (typeof bottom === 'number' ? `${bottom}px` : bottom || 'initial')};
+
+  ${Media.upToLarge()} {
+    order: ${({ orderReverseTablet }) => (orderReverseTablet ? -1 : 'initial')};
+  }
 
   ${Media.upToMedium()} {
     width: ${({ widthMobile }) => (typeof widthMobile === 'number' ? `${widthMobile}px` : widthMobile || '100%')};

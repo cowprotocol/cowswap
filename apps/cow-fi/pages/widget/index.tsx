@@ -122,7 +122,7 @@ export default function Page({ siteConfigData }: PageProps) {
               <SectionTitleText>Integrate now</SectionTitleText>
             </SectionTitleWrapper>
 
-            <TopicList columns={1} maxWidth={1000}>
+            <TopicList columns={1} columnsTablet={1} maxWidth={1000}>
               <TopicCard
                 columns="1fr auto"
                 gap={100}
@@ -178,7 +178,7 @@ export default function Page({ siteConfigData }: PageProps) {
               </SectionTitleDescription>
             </SectionTitleWrapper>
 
-            <TopicList columns={3}>
+            <TopicList columns={3} columnsTablet={2}>
               <TopicCard contentAlign={'left'} bgColor={Color.neutral100} padding={'32px'} gap={16} asProp="div">
                 <TopicImage bgColor="transparent" height={75} width={'auto'}>
                   <SVG src="images/protection.svg" />
@@ -230,7 +230,7 @@ export default function Page({ siteConfigData }: PageProps) {
               <SectionTitleText fontSize={62}>Everything You'd Want in a Widget</SectionTitleText>
             </SectionTitleWrapper>
 
-            <TopicList columns={4} columnsMobile={1}>
+            <TopicList columns={4} columnsTablet={2} columnsMobile={1}>
               {FEATURE_ITEMS.map((item, index) => (
                 <TopicCard
                   key={index}

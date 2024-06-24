@@ -181,7 +181,7 @@ export default function Page() {
                   </SectionTitleDescription>
                 </SectionTitleWrapper>
 
-                <TopicList columns={3}>
+                <TopicList columns={3} columnsTablet={2}>
                   {MEV_BLOCKER_LIST.map((item) => (
                     <TopicCard key={item.id} contentAlign={'left'} bgColor={item.bgColor} padding={'32px'} asProp="div">
                       <TopicCardInner contentAlign="left">
@@ -227,7 +227,7 @@ export default function Page() {
                     Note: some wallets make you reselect MEV Blocker every time you change networks.
                   </SectionTitleDescription>
                 </SectionTitleWrapper>
-                <TopicList columns={2}>
+                <TopicList columns={2} columnsTablet={1}>
                   <TopicCard contentAlign={'left'} bgColor={Color.neutral100} padding={'32px'} asProp="div">
                     <TopicCardInner contentAlign="left">
                       <TopicTitle color={Color.neutral0} fontSize={28}>
@@ -374,7 +374,7 @@ export default function Page() {
                   <SectionTitleText>What others are saying...</SectionTitleText>
                 </SectionTitleWrapper>
 
-                <TopicList columns={3}>
+                <TopicList columns={3} columnsTablet={2}>
                   {TESTIMONIAL_LIST.map((testimonial) => (
                     <TopicCard
                       key={testimonial.title}

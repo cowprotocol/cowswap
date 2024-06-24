@@ -82,7 +82,7 @@ export const NAV_ITEMS: MenuItem[] = [
 export const NAV_ADDITIONAL_BUTTONS = [
   {
     label: 'Deploy Liquidity',
-    href: 'https://cow.fi/mev-blocker',
+    href: 'https://cow.fi/cow-amm',
     utmContent: 'menubar-nav-button-deploy-liquidity',
     external: true,
     isButton: true,

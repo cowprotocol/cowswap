@@ -159,8 +159,8 @@ export default function Page({}: PageProps) {
               </SectionTitleDescription>
             </SectionTitleWrapper>
 
-            <TopicList columns={1} maxWidth={1470}>
-              <TopicCard columns="repeat(2, 1fr)" gap={100} horizontal asProp="div">
+            <TopicList columns={1} columnsTablet={1} maxWidth={1470}>
+              <TopicCard columns="repeat(2, 1fr)" columnsTablet="1fr" gap={100} horizontal asProp="div">
                 <TopicCardInner contentAlign="left">
                   <TopicTitle fontSize={51}>Intents</TopicTitle>
                   <TopicDescription fontSize={28} color={Color.neutral50}>
@@ -184,13 +184,14 @@ export default function Page({}: PageProps) {
                   heightMobile={'auto'}
                   widthMobile={'100%'}
                   orderReverseMobile
+                  orderReverseTablet
                   borderRadius={90}
                 >
                   <SVG src={IMG_INTENTS} />
                 </TopicImage>
               </TopicCard>
 
-              <TopicCard columns="1fr auto" gap={100} horizontal asProp="div">
+              <TopicCard columns="1fr auto" columnsTablet="1fr" gap={100} horizontal asProp="div">
                 <TopicImage
                   iconColor="transparent"
                   width={590}
@@ -198,6 +199,7 @@ export default function Page({}: PageProps) {
                   heightMobile={'auto'}
                   widthMobile={'100%'}
                   orderReverseMobile
+                  orderReverseTablet
                   borderRadius={90}
                 >
                   <SVG src={IMG_SOLVERS} />
@@ -221,7 +223,7 @@ export default function Page({}: PageProps) {
                 </TopicCardInner>
               </TopicCard>
 
-              <TopicCard columns="1fr auto" gap={100} horizontal asProp="div">
+              <TopicCard columns="1fr auto" columnsTablet="1fr" gap={100} horizontal asProp="div">
                 <TopicCardInner contentAlign="left">
                   <TopicTitle fontSize={51}>Batch Auctions</TopicTitle>
                   <TopicDescription fontSize={28} color={Color.neutral50}>
@@ -271,7 +273,7 @@ export default function Page({}: PageProps) {
             <SectionTitleWrapper padding="50px 0">
               <SectionTitleText>Advanced order types</SectionTitleText>
             </SectionTitleWrapper>
-            <TopicList columns={3}>
+            <TopicList columns={3} columnsTablet={2}>
               {ADVANCED_ORDER_TYPES.map((topic) => (
                 <TopicCard
                   key={topic.title}
@@ -303,7 +305,7 @@ export default function Page({}: PageProps) {
             <SectionTitleWrapper padding="150px 0 50px">
               <SectionTitleText textAlign="center">Unique trading logic</SectionTitleText>
             </SectionTitleWrapper>
-            <TopicList columns={3}>
+            <TopicList columns={3} columnsTablet={2}>
               {UNIQUE_TRADING_LOGIC.map((topic) => (
                 <TopicCard
                   key={topic.title}
@@ -343,7 +345,7 @@ export default function Page({}: PageProps) {
               <SectionTitleText textAlign="center">Powering innovation across DeFi</SectionTitleText>
             </SectionTitleWrapper>
 
-            <TopicList columns={3}>
+            <TopicList columns={3} columnsTablet={2}>
               <TopicCard contentAlign={'left'} bgColor="#66018E" textColor="#F996EE" padding={'32px'} asProp="div">
                 <TopicImage iconColor="#8702AA" bgColor="transparent" height={96} width={'auto'}>
                   <SVG src={IMG_LOGO_CURVE} />
@@ -450,7 +452,7 @@ export default function Page({}: PageProps) {
               ))}
             </TopicList>
 
-            <TopicList columns={4} columnsMobile={2}>
+            <TopicList columns={4} columnsTablet={2}>
               {ALL_LOGOS.map((logo, index) => (
                 <TopicCard
                   key={index}
@@ -486,7 +488,7 @@ export default function Page({}: PageProps) {
               <SectionTitleText>Build with CoW Protocol</SectionTitleText>
             </SectionTitleWrapper>
 
-            <TopicList columns={3}>
+            <TopicList columns={3} columnsTablet={2}>
               {COW_PROTOCOL_SECTIONS.map((topic) => (
                 <TopicCard
                   key={topic.title}

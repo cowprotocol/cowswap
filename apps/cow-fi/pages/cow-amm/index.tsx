@@ -117,11 +117,12 @@ export default function Page() {
               <SectionTitleText>AMMs don&apos;t want you to know about LVR</SectionTitleText>
             </SectionTitleWrapper>
 
-            <TopicList columns={1} maxWidth={1470}>
+            <TopicList columns={1} columnsTablet={1} maxWidth={1470}>
               {LVR_CONTENT.map((content, index) => (
                 <TopicCard
                   key={index}
                   columns="1fr auto"
+                  columnsTablet="1fr"
                   gap={100}
                   horizontal
                   asProp="div"
@@ -142,6 +143,7 @@ export default function Page() {
                     height={590}
                     heightMobile={300}
                     orderReverseMobile
+                    orderReverseTablet
                     borderRadius={90}
                   >
                     <SVG src={content.image} />
@@ -164,7 +166,7 @@ export default function Page() {
               </SectionTitleDescription>
             </SectionTitleWrapper>
 
-            <TopicList columns={4}>
+            <TopicList columns={4} columnsTablet={2}>
               {COW_AMM_CONTENT.map((content, index) => (
                 <TopicCard
                   key={index}
@@ -208,8 +210,16 @@ export default function Page() {
               </SectionTitleText>
             </SectionTitleWrapper>
 
-            <TopicList columns={1} maxWidth={1470}>
-              <TopicCard columns="1fr auto" gap={100} horizontal asProp="div" bgColor="transparent" paddingMobile="0">
+            <TopicList columns={1} columnsTablet={1} maxWidth={1470}>
+              <TopicCard
+                columns="1fr auto"
+                columnsTablet="1fr"
+                gap={100}
+                horizontal
+                asProp="div"
+                bgColor="transparent"
+                paddingMobile="0"
+              >
                 <TopicCardInner contentAlign="left">
                   <TopicDescription fontSize={28}>
                     CoW AMM LPs don't have to worry about LVR, which costs CF-AMM LPs 5-7% of their liquidity, on
@@ -226,6 +236,7 @@ export default function Page() {
                   height={550}
                   heightMobile={300}
                   orderReverseMobile
+                  orderReverseTablet
                   borderRadius={32}
                 >
                   <SVG src={IMG_COWAMM_RAISING} />
@@ -244,14 +255,23 @@ export default function Page() {
               <SectionTitleText>CoW AMM benefits LPs of all types</SectionTitleText>
             </SectionTitleWrapper>
 
-            <TopicList columns={1} maxWidth={1470}>
-              <TopicCard columns="1fr auto" gap={100} horizontal asProp="div" bgColor="transparent" paddingMobile="0">
+            <TopicList columns={1} columnsTablet={1} maxWidth={1470}>
+              <TopicCard
+                columns="1fr auto"
+                columnsTablet="1fr"
+                gap={100}
+                horizontal
+                asProp="div"
+                bgColor="transparent"
+                paddingMobile="0"
+              >
                 <TopicImage
                   iconColor="transparent"
                   width={500}
                   height={500}
                   heightMobile={300}
                   orderReverseMobile
+                  orderReverseTablet
                   borderRadius={32}
                 >
                   <SVG src={IMG_COWAMM_REKT} />
@@ -267,7 +287,15 @@ export default function Page() {
                 </TopicCardInner>
               </TopicCard>
 
-              <TopicCard columns="1fr auto" gap={100} horizontal asProp="div" bgColor="transparent" paddingMobile="0">
+              <TopicCard
+                columns="1fr auto"
+                columnsTablet="1fr"
+                gap={100}
+                horizontal
+                asProp="div"
+                bgColor="transparent"
+                paddingMobile="0"
+              >
                 <TopicCardInner contentAlign="left">
                   <TopicTitle fontSize={52}>Unlock the power of passive income</TopicTitle>
                   <TopicDescription fontSize={24} color={Color.neutral50}>
@@ -282,6 +310,7 @@ export default function Page() {
                   height={500}
                   heightMobile={300}
                   orderReverseMobile
+                  orderReverseTablet
                   borderRadius={32}
                 >
                   <SVG src={IMG_COWAMM_PASSIVE} />
@@ -300,7 +329,7 @@ export default function Page() {
               <SectionTitleText>Trust the experts</SectionTitleText>
             </SectionTitleWrapper>
 
-            <TopicList columns={3}>
+            <TopicList columns={3} columnsTablet={2}>
               {QUOTES.map((quote, index) => (
                 <TopicCard
                   key={index}
