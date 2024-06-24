@@ -2,9 +2,7 @@ import IMAGE_CODE from '@cowprotocol/assets/cow-swap/code.svg'
 import IMAGE_COOKIE_POLICY from '@cowprotocol/assets/cow-swap/cookie-policy.svg'
 import IMAGE_DISCORD from '@cowprotocol/assets/cow-swap/discord.svg'
 import IMAGE_DOCS from '@cowprotocol/assets/cow-swap/doc.svg'
-import IMAGE_GAME from '@cowprotocol/assets/cow-swap/game.gif'
 import IMAGE_INFO from '@cowprotocol/assets/cow-swap/info.svg'
-import IMAGE_SLICER from '@cowprotocol/assets/cow-swap/ninja-cow.png'
 import IMAGE_PIE from '@cowprotocol/assets/cow-swap/pie.svg'
 import IMAGE_PRIVACY_POLICY from '@cowprotocol/assets/cow-swap/privacy-policy.svg'
 import IMAGE_TERMS_AND_CONDITIONS from '@cowprotocol/assets/cow-swap/terms-and-conditions.svg'
@@ -163,8 +161,16 @@ export const MAIN_MENU: MenuTreeItem[] = [
         sectionTitle: 'Other',
         links: [
           { kind: MenuItemKind.DARK_MODE_BUTTON },
-          { id: MainMenuItemId.OTHER_COW_RUNNER, title: 'CoW Runner', url: Routes.PLAY_COWRUNNER, icon: IMAGE_GAME },
-          { id: MainMenuItemId.OTHER_MEV_SLICER, title: 'MEV Slicer', url: Routes.PLAY_MEVSLICER, icon: IMAGE_SLICER },
+          {
+            id: MainMenuItemId.OTHER_COW_RUNNER,
+            title: 'CoW Runner',
+            url: Routes.PLAY_COWRUNNER /*, icon: IMAGE_GAME*/,
+          },
+          {
+            id: MainMenuItemId.OTHER_MEV_SLICER,
+            title: 'MEV Slicer',
+            url: Routes.PLAY_MEVSLICER /*, icon: IMAGE_SLICER*/,
+          },
           {
             id: MainMenuItemId.OTHER_TERMS_AND_CONDITIONS,
             title: 'Terms and Conditions',
