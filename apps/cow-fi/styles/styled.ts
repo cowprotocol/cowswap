@@ -999,10 +999,12 @@ export const HeroButtonWrapper = styled.div<{ gap?: number }>`
   margin: 32px 0;
   flex-flow: row wrap;
   max-width: 100%;
+  width: 100%;
 
   ${Media.upToMedium()} {
     flex-flow: column wrap;
     align-items: center;
+    margin: 0 auto;
   }
 `
 
