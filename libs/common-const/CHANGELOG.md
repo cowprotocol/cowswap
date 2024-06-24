@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.6.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.5.0...common-const-v1.6.0) (2024-06-24)
+
+
+### Features
+
+* **rebranding:** merge 📦 Big Package "Re-branding" 📦  ([#4543](https://github.com/cowprotocol/cowswap/issues/4543)) ([ce9ab43](https://github.com/cowprotocol/cowswap/commit/ce9ab4317f304c86e3e1ec37825379e427099518))
+
+
+### Bug Fixes
+
+* **rebranding:** polish UI ([#4581](https://github.com/cowprotocol/cowswap/issues/4581)) ([a038458](https://github.com/cowprotocol/cowswap/commit/a038458a23d91fb9b624679950ee6492a966ccba))
+
 ## [1.5.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.4.0...common-const-v1.5.0) (2024-06-18)
 
 
