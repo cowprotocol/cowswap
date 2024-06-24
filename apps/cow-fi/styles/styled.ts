@@ -269,6 +269,7 @@ export const TopicCard = styled.a.attrs<TopicCardProps>(({ asProp }) => ({
 
 export const TopicCardInner = styled.div<{
   contentAlign?: string
+  contentAlignTablet?: string
   contentAlignMobile?: string
   gap?: number
   height?: string
@@ -284,6 +285,10 @@ export const TopicCardInner = styled.div<{
   min-height: ${({ minHeight }) => minHeight || 'initial'};
   width: 100%;
   z-index: 1;
+
+  ${Media.upToLarge()} {
+    text-align: ${({ contentAlignTablet }) => contentAlignTablet || 'initial'};
+  }
 
   ${Media.upToMedium()} {
     text-align: ${({ contentAlignMobile }) => contentAlignMobile || 'center'};
@@ -409,6 +414,7 @@ export const TopicTitle = styled.h5<{
   padding: 0;
   margin: 0;
   line-height: 1.2;
+  width: 100%;
 
   ${Media.upToMedium()} {
     font-size: ${({ fontSizeMobile }) => fontSizeMobile || 28}px;
@@ -432,6 +438,7 @@ export const TopicDescription = styled.p<{
   margin: ${({ margin }) => margin || '16px 0'};
   text-align: inherit;
   min-height: ${({ minHeight }) => `${minHeight}px` || 'initial'};
+  width: 100%;
 
   ${Media.upToMedium()} {
     font-size: ${({ fontSizeMobile }) => fontSizeMobile || 18}px;
@@ -1156,7 +1163,6 @@ export const TrustedBy = styled.div`
     position: absolute;
     top: 0;
     left: 0;
-    width: 100%;
     transform: translateY(-100%);
     animation: slide 9s ease 0s infinite normal forwards;
     opacity: 0;

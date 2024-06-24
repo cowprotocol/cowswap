@@ -67,7 +67,7 @@ export default function Page({ siteConfigData, jobsData }: PageProps) {
 
             {jobsCount < 1 && <p>There are currently no open positions.</p>}
 
-            <TopicList columns={2} maxWidth={900} margin="16px auto 0">
+            <TopicList columns={2} columnsTablet={2} maxWidth={900} margin="16px auto 0">
               {jobsCount > 0 &&
                 (department === 'All'
                   ? Object.keys(jobsData).map((deptName: string) => (
@@ -82,7 +82,7 @@ export default function Page({ siteConfigData, jobsData }: PageProps) {
                             asProp="div"
                             height="100%"
                           >
-                            <TopicCardInner contentAlign="left" height="100%">
+                            <TopicCardInner contentAlign="left" contentAlignTablet={'center'} height="100%">
                               <TopicTitle fontSize={16} color={Color.neutral50}>
                                 {deptName}
                               </TopicTitle>
@@ -96,6 +96,7 @@ export default function Page({ siteConfigData, jobsData }: PageProps) {
                                 href={absolute_url}
                                 utmContent={`job-${title}`}
                                 margin="auto auto 0 0"
+                                marginTablet="auto auto 0"
                                 onClick={() => sendEventHandler(EventCategories.CAREERS, `click-job-${title}`)}
                               >
                                 Apply
