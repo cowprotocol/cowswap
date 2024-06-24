@@ -7,3 +7,9 @@ export function useToggleAccountModal() {
 
   return () => updateAccountModalState((prev) => ({ isOpen: !prev.isOpen }))
 }
+
+export function useCloseAccountModal() {
+  const updateAccountModalState = useSetAtom(updateAccountModalStateAtom)
+
+  return () => updateAccountModalState({ isOpen: false })
+}
