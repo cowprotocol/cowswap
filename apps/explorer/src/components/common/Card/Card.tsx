@@ -3,7 +3,6 @@ import React from 'react'
 import Grid, { GridSize } from '@material-ui/core/Grid'
 import styled from 'styled-components/macro'
 import { COLOURS } from 'styles'
-import { Theme } from 'theme'
 import { media } from 'theme/styles/media'
 
 const { white, fadedGreyishWhite, blackLight } = COLOURS
@@ -27,8 +26,8 @@ const CardComponent = styled(DefaultCard)`
   flex-direction: column;
   border-top-right-radius: 6px;
   border-top-left-radius: 6px;
-  background: ${({ theme }): string => (theme.mode === Theme.DARK ? fadedGreyishWhite : white)};
-  color: ${({ theme }): string => (theme.mode === Theme.DARK ? white : blackLight)};
+  background: ${({ theme }): string => (theme.darkMode ? fadedGreyishWhite : white)};
+  color: ${({ theme }): string => (theme.darkMode ? white : blackLight)};
 `
 
 // CARD CONTENT STYLES

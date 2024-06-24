@@ -1,5 +1,5 @@
 import { GetStaticProps, GetStaticPaths, GetStaticPropsContext, InferGetStaticPropsType } from 'next'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { Font, Color, Media } from '@cowprotocol/ui'
 
 import Layout from '@/components/Layout'

@@ -1,5 +1,5 @@
 import { Command } from '@cowprotocol/types'
-import { Media, UI } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 
 import { X } from 'react-feather'
 import { Link } from 'react-router-dom'
@@ -58,11 +58,5 @@ export const StyledInternalLink = styled(Link)`
 
   :active {
     text-decoration: none;
-  }
-`
-
-export const HideSmall = styled.span`
-  ${Media.upToSmall()} {
-    display: none;
   }
 `

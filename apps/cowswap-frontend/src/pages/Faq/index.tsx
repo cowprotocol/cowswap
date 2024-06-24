@@ -8,10 +8,10 @@ import {
 } from '@cowprotocol/common-const'
 
 import { Link } from 'react-router-dom'
+import { StyledInternalLink } from 'theme'
 
 import { LinkScrollable } from 'legacy/components/Link'
 import { PageWithToC } from 'legacy/components/PageWithToC'
-import { StyledInternalLink } from 'legacy/theme'
 
 import { PageTitle } from 'modules/application/containers/PageTitle'
 import { Page, Content } from 'modules/application/pure/Page'

@@ -1,8 +1,7 @@
 import { Media, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
-
-import { CloseIcon } from 'legacy/theme'
+import { CloseIcon } from 'theme'
 
 export const ButtonCustom = styled.button<{ cowGame?: boolean }>`
   display: flex;

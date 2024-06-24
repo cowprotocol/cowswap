@@ -2,7 +2,9 @@ import { useMemo, lazy, Suspense } from 'react'
 
 import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
-import { Color, Media, MenuBar, Footer, GlobalCoWDAOStyles, LoadingApp } from '@cowprotocol/ui'
+import { Color, Media, MenuBar, Footer, GlobalCoWDAOStyles } from '@cowprotocol/ui'
+
+import { ThemeProvider } from 'theme'
 
 import ErrorBoundary from 'legacy/components/ErrorBoundary'
 import { AccountElement } from 'legacy/components/Header/AccountElement'
@@ -11,7 +13,6 @@ import { HeaderControls, HeaderElement } from 'legacy/components/Header/styled'
 import { URLWarning } from 'legacy/components/Header/URLWarning'
 import TopLevelModals from 'legacy/components/TopLevelModals'
 import { useDarkModeManager } from 'legacy/state/user/hooks'
-import DarkModeQueryParamReader from 'legacy/theme'
 
 import { OrdersPanel } from 'modules/account'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
@@ -20,6 +21,7 @@ import { useInitializeUtm } from 'modules/utm'
 import { InvalidLocalTimeWarning } from 'common/containers/InvalidLocalTimeWarning'
 import { useAnalyticsReporter } from 'common/hooks/useAnalyticsReporter'
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
+import { LoadingApp } from 'common/pure/LoadingApp'
 import { CoWDAOFonts } from 'common/styles/CoWDAOFonts'
 import RedirectAnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers/RedirectAnySwapAffectedUsers'
 
@@ -63,9 +65,9 @@ export function App() {
 
   return (
     <ErrorBoundary>
-      <Suspense fallback={<LoadingApp darkMode={darkMode} />}>
+      <Suspense fallback={<LoadingApp />}>
         <RedirectAnySwapAffectedUsers />
-        <DarkModeQueryParamReader />
+        <ThemeProvider />
         <GlobalStyles />
 
         <styledEl.AppWrapper>
@@ -78,7 +80,6 @@ export function App() {
             // TODO: Move hard-coded colors to theme
             <MenuBar
               navItems={NAV_ITEMS}
-              theme={darkMode ? 'dark' : 'light'}
               productVariant={PRODUCT_VARIANT}
               settingsNavItems={settingsNavItems}
               showGlobalSettings
@@ -105,7 +106,6 @@ export function App() {
 
           {!isInjectedWidgetMode && (
             <Footer
-              theme={darkMode ? 'dark' : 'light'}
               productVariant={PRODUCT_VARIANT}
               additionalFooterContent={ADDITIONAL_FOOTER_CONTENT}
               hasTouchFooter

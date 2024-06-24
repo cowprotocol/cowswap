@@ -1,6 +1,6 @@
 import { transparentize } from 'polished'
-import { css, keyframes } from 'styled-components'
-import styled from 'styled-components'
+import { css, keyframes } from 'styled-components/macro'
+import styled from 'styled-components/macro'
 
 export const Color = {
   white: '#FFFFFF',

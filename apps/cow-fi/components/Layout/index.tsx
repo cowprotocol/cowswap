@@ -1,10 +1,10 @@
 import { useEffect } from 'react'
 import Head from 'next/head'
 import { MenuBar, Footer, GlobalCoWDAOStyles } from '@cowprotocol/ui'
-import styled from 'styled-components/macro'
+import styled, { createGlobalStyle, css } from 'styled-components/macro'
 import { CONFIG } from '@/const/meta'
 import { CoWDAOFonts } from '@/styles/CoWDAOFonts'
-import { PAGE_MAX_WIDTH, THEME_MODE, PRODUCT_VARIANT, NAV_ADDITIONAL_BUTTONS, NAV_ITEMS } from './const'
+import { PAGE_MAX_WIDTH, PRODUCT_VARIANT, NAV_ADDITIONAL_BUTTONS, NAV_ITEMS } from './const'
 import getURL from '@/util/getURL'
 
 const Wrapper = styled.div`
@@ -23,7 +23,13 @@ interface LayoutProps {
 }
 
 export default function Layout({ children, bgColor, metaTitle, metaDescription, ogImage, host }: LayoutProps) {
-  const GlobalStyles = GlobalCoWDAOStyles(CoWDAOFonts, bgColor)
+  const GlobalStyles = GlobalCoWDAOStyles(CoWDAOFonts)
+
+  const LocalStyles = createGlobalStyle(
+    () => css`
+      background: ${bgColor};
+    `
+  )
 
   useEffect(() => {
     const anchorLinks = document.querySelectorAll('a[href^="#"]')
@@ -64,23 +70,16 @@ export default function Layout({ children, bgColor, metaTitle, metaDescription, 
         <meta key="twitterImage" name="twitter:image" content={ogImage || CONFIG.ogImage} />
       </Head>
       <GlobalStyles />
+      <LocalStyles />
       <MenuBar
         navItems={NAV_ITEMS}
-        theme={THEME_MODE}
         productVariant={PRODUCT_VARIANT}
         additionalNavButtons={NAV_ADDITIONAL_BUTTONS}
         padding="10px 60px"
         maxWidth={PAGE_MAX_WIDTH}
       />
       <Wrapper>{children}</Wrapper>
-      <Footer
-        theme={THEME_MODE}
-        maxWidth={PAGE_MAX_WIDTH}
-        productVariant={PRODUCT_VARIANT}
-        host={finalHost}
-        expanded
-        hasTouchFooter
-      />
+      <Footer maxWidth={PAGE_MAX_WIDTH} productVariant={PRODUCT_VARIANT} host={finalHost} expanded hasTouchFooter />
     </>
   )
 }

@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { Color, Font } from '@cowprotocol/ui'
 import SVG from 'react-inlinesvg'
 import IMG_ICON_ARROW_RIGHT from '@cowprotocol/assets/images/arrow-right.svg'

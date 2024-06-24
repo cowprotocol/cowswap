@@ -25,7 +25,7 @@ export const Wrapper = styled(Page)`
   justify-content: flex-end;
   flex-flow: column wrap;
   margin: 0;
-  background: ${({ theme }) => theme.bg1};
+  background: ${({ theme }) => theme.paper};
   box-shadow: ${({ theme }) => theme.boxShadow1};
   border: none;
 
@@ -158,7 +158,7 @@ export const Card = styled.div<{ showLoader?: boolean }>`
   flex: 1;
   min-height: 192px;
   margin: 0;
-  background: ${({ theme }) => theme.bg1};
+  background: ${({ theme }) => theme.paper};
   box-shadow: none;
   padding: 24px;
   gap: 24px 0;
@@ -306,7 +306,7 @@ const BannerExplainer = styled.div`
 export const BannerCard = styled(BannerExplainer)`
   min-height: 192px;
   border-radius: 16px;
-  background: ${({ theme }) => theme.bg1};
+  background: ${({ theme }) => theme.paper};
   border: none;
   padding: 0 24px;
   gap: 16px;
@@ -379,7 +379,7 @@ export const BannerCard = styled(BannerExplainer)`
       color: ${({ theme }) => theme.text1};
 
       &:hover {
-        color: ${({ theme }) => theme.text3};
+        color: ${({ theme }) => theme.info};
       }
     }
   }
@@ -492,7 +492,7 @@ export const BalanceDisplay = styled.div<{ titleSize?: number; altColor?: boolea
     display: flex;
     align-items: center;
     gap: 0 6px;
-    color: ${({ theme, altColor }) => (altColor ? theme.text3 : `var(${UI.COLOR_TEXT})`)};
+    color: ${({ theme, altColor }) => (altColor ? theme.info : `var(${UI.COLOR_TEXT})`)};
     font-size: ${({ titleSize }) => (titleSize ? `${titleSize}px` : '21px')};
 
     ${Media.upToMedium()} {

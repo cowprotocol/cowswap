@@ -323,31 +323,27 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
     return inputError
   }, [account, slippageAdjustedSellAmount, currencies, currencyBalances, inputCurrency, parsedAmount, to]) // mod
 
-  return useMemo(
-    () => {
-      return {
-        currencies,
-        currenciesIds,
-        currencyBalances,
-        parsedAmount,
-        inputError,
-        trade,
-        allowedSlippage,
-        slippageAdjustedSellAmount,
-        slippageAdjustedBuyAmount,
-      }
-    },
-
-    [
-      allowedSlippage,
-      currencyBalances,
+  return useMemo(() => {
+    return {
+      currencies,
       currenciesIds,
-      inputError,
+      currencyBalances,
       parsedAmount,
-
-      JSON.stringify(trade),
+      inputError,
+      trade,
+      allowedSlippage,
       slippageAdjustedSellAmount,
       slippageAdjustedBuyAmount,
-    ] // mod
-  )
+    }
+  }, [
+    currencies,
+    trade,
+    allowedSlippage,
+    currencyBalances,
+    currenciesIds,
+    inputError,
+    parsedAmount,
+    slippageAdjustedSellAmount,
+    slippageAdjustedBuyAmount,
+  ])
 }

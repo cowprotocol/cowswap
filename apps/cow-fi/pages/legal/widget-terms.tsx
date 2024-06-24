@@ -1,7 +1,7 @@
 import { GetStaticProps } from 'next'
 import { Color } from '@cowprotocol/ui'
 
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 
 import Layout from '@/components/Layout'
 import { Link } from '@/components/Link'

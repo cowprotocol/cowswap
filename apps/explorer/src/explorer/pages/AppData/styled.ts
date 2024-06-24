@@ -29,7 +29,7 @@ export const Wrapper = styled(WrapperTemplate)`
     font-size: 1.5rem;
     &.box {
       padding: 3rem 4rem;
-      background: ${({ theme }): string => theme.bg3};
+      background: ${({ theme }): string => theme.background};
       border-radius: 0.4rem;
     }
     a {
@@ -75,7 +75,7 @@ export const Wrapper = styled(WrapperTemplate)`
       }
 
       &.error {
-        background: ${({ theme }): string => transparentize(0.8, theme.red1)};
+        background: ${({ theme }): string => transparentize(0.8, theme.error)};
       }
     }
     .hidden-content {
@@ -291,7 +291,7 @@ export const Wrapper = styled(WrapperTemplate)`
       li {
         list-style: none;
         line-height: normal;
-        color: ${({ theme }): string => theme.red1};
+        color: ${({ theme }): string => theme.error};
         font-size: 1.3rem;
       }
     }
@@ -335,7 +335,7 @@ export const Wrapper = styled(WrapperTemplate)`
   }
 
   span.error {
-    color: ${(props): string => props.theme.red1};
+    color: ${(props): string => props.theme.error};
   }
 `
 export const IpfsWrapper = styled.div`
@@ -351,11 +351,11 @@ export const IpfsWrapper = styled.div`
   .form-group:first-child {
     margin-top: -0.7rem;
     label {
-      background: ${({ theme }): string => theme.bg1};
+      background: ${({ theme }): string => theme.paper};
       padding: 0 0.2rem;
     }
     svg {
-      background: ${({ theme }): string => theme.bg1};
+      background: ${({ theme }): string => theme.paper};
       width: 2.2rem;
     }
   }

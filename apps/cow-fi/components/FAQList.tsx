@@ -1,5 +1,5 @@
 import React from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { Color, Font, Media } from 'styles/variables'
 
 const Wrapper = styled.div<{

@@ -6,9 +6,9 @@ import { UI } from '@cowprotocol/ui'
 import { Trans } from '@lingui/macro'
 import { CheckCircle, Copy } from 'react-feather'
 import styled from 'styled-components/macro'
+import { LinkStyledButton } from 'theme'
 
 import { TransactionStatusText } from 'legacy/components/Copy/index'
-import { LinkStyledButton } from 'legacy/theme'
 
 // MOD imports
 export const CopyIcon = styled(LinkStyledButton)`

@@ -58,9 +58,9 @@ export const CowProtocolIcon = styled.div`
   height: 24px;
   width: 24px;
   border-radius: 100%;
-  border: 1px solid ${({ theme }) => theme.bg1};
+  border: 1px solid ${({ theme }) => theme.paper};
   background: url(${CowProtocolLogo}) ${({ theme }) => theme.black} no-repeat center/75%;
-  box-shadow: 0 0 10px 2px ${({ theme }) => theme.bg1};
+  box-shadow: 0 0 10px 2px ${({ theme }) => theme.paper};
 `
 
 export const WarningLogo = styled.div`
@@ -73,7 +73,7 @@ export const WarningLogo = styled.div`
   border: transparent;
 
   background: ${({ theme }) => theme.blueShade};
-  box-shadow: 0 0 10px 2px ${({ theme }) => theme.bg1};
+  box-shadow: 0 0 10px 2px ${({ theme }) => theme.paper};
 
   img {
     margin: 4px 0 0 2px;
@@ -90,7 +90,7 @@ export const WarningLogo = styled.div`
     position: absolute;
     left: -2px;
     top: -2px;
-    background: ${({ theme }) => `linear-gradient(45deg, #e57751, #c5daef, #275194, ${theme.bg1}, #c5daef, #1b5a7a)`};
+    background: ${({ theme }) => `linear-gradient(45deg, #e57751, #c5daef, #275194, ${theme.paper}, #c5daef, #1b5a7a)`};
     background-size: 800%;
     width: calc(100% + 4px);
     height: calc(100% + 4px);
@@ -218,7 +218,7 @@ export const StyledCoWLink = styled(ExternalLink)`
   opacity: 1 !important;
 
   span {
-    color: ${({ theme }) => theme.text3};
+    color: ${({ theme }) => theme.info};
   }
 
   :hover {
