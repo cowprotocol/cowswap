@@ -38,17 +38,17 @@ const cacheMessages = (event: MessageEvent) => {
 }
 
 ;(function initInjectedWidget() {
-  const isInIframe = window.top !== window.self
+  const isInIframe = window.parent !== window.self
 
-  const top = window.top
+  const parent = window.parent
 
-  if (!top || !isInIframe) return
+  if (!parent || !isInIframe) return
 
   /**
    * To avoid delays, immediately send an activation message and start listening messages
    */
   window.addEventListener('message', cacheMessages)
-  postMessageToWindow(top, WidgetMethodsEmit.ACTIVATE, void 0)
+  postMessageToWindow(parent, WidgetMethodsEmit.ACTIVATE, void 0)
 
   /**
    * Intercept window.open and anchor clicks to send a message to the parent window
@@ -59,7 +59,7 @@ const cacheMessages = (event: MessageEvent) => {
   window.open = function (...args) {
     const [href = '', target = '', rel = ''] = args
 
-    postMessageToWindow(top, WidgetMethodsEmit.INTERCEPT_WINDOW_OPEN, { href, target, rel })
+    postMessageToWindow(parent, WidgetMethodsEmit.INTERCEPT_WINDOW_OPEN, { href, target, rel })
 
     return originalWinOpen.apply(this, args)
   }
@@ -68,7 +68,7 @@ const cacheMessages = (event: MessageEvent) => {
     if (event.target instanceof HTMLAnchorElement) {
       const { href, target, rel } = event.target
 
-      postMessageToWindow(top, WidgetMethodsEmit.INTERCEPT_WINDOW_OPEN, { href, target, rel })
+      postMessageToWindow(parent, WidgetMethodsEmit.INTERCEPT_WINDOW_OPEN, { href, target, rel })
     }
   })
 })()
