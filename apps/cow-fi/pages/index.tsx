@@ -155,7 +155,7 @@ export default function Page() {
               </SectionTitleDescription>
             </SectionTitleWrapper>
 
-            <TopicList columns={3}>
+            <TopicList columns={3} columnsTablet={2}>
               {CHANNEL_LIST.map((social, index) => (
                 <TopicCard
                   key={index}
