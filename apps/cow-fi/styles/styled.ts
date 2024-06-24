@@ -929,7 +929,7 @@ export const HeroContent = styled.div<{ variant?: string; gap?: number; flex?: s
   flex: ${({ flex }) => flex || '1 1 0'};
 
   ${Media.upToMedium()} {
-    flex: 1 1 auto;
+    flex: 0 0 auto;
   }
 
   ${({ variant }) =>
