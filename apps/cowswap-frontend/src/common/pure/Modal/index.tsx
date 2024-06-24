@@ -9,7 +9,7 @@ import { useSpringValue, useTransition } from '@react-spring/web'
 import { useGesture } from '@use-gesture/react'
 import styled from 'styled-components/macro'
 
-import { CloseIcon, ContentWrapper, HeaderRow, HoverText, StyledDialogContent, StyledDialogOverlay } from './styled'
+import { ContentWrapper, HeaderRow, HoverText, StyledDialogContent, StyledDialogOverlay } from './styled'
 
 import { openModalState } from '../../state/openModalState'
 
@@ -138,13 +138,6 @@ export const CowModal = styled(Modal)<{
         padding: 16px;
         background: var(${UI.COLOR_PAPER});
         z-index: 20;
-      }
-    }
-
-    ${CloseIcon} {
-      ${Media.upToSmall()} {
-        z-index: 21;
-        position: fixed;
       }
     }
 
