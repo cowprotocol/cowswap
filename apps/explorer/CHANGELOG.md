@@ -1,5 +1,20 @@
 # Changelog
 
+## [2.31.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.30.1...explorer-v2.31.0) (2024-06-24)
+
+
+### Features
+
+* **explorer:** show execution time when available ([#4575](https://github.com/cowprotocol/cowswap/issues/4575)) ([f93a8d3](https://github.com/cowprotocol/cowswap/commit/f93a8d315788d47e1b9932d946b91b41fc12a2cd))
+* **explorer:** truncated orderId with CSS ([#4557](https://github.com/cowprotocol/cowswap/issues/4557)) ([88b5c06](https://github.com/cowprotocol/cowswap/commit/88b5c061beefdf7866a39a84a940ea01715e9c0b))
+* **rebranding:** merge 📦 Big Package "Re-branding" 📦  ([#4543](https://github.com/cowprotocol/cowswap/issues/4543)) ([ce9ab43](https://github.com/cowprotocol/cowswap/commit/ce9ab4317f304c86e3e1ec37825379e427099518))
+* theme unification and cleaning ([#4580](https://github.com/cowprotocol/cowswap/issues/4580)) ([c1538b1](https://github.com/cowprotocol/cowswap/commit/c1538b16d9c890c95d73ea92ffb93b2065233d90))
+
+
+### Bug Fixes
+
+* **rebranding:** polish UI ([#4581](https://github.com/cowprotocol/cowswap/issues/4581)) ([a038458](https://github.com/cowprotocol/cowswap/commit/a038458a23d91fb9b624679950ee6492a966ccba))
+
 ## [2.30.1](https://github.com/cowprotocol/cowswap/compare/explorer-v2.30.0...explorer-v2.30.1) (2024-06-11)
 
 

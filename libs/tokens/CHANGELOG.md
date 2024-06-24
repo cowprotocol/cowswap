@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.4.1...tokens-v1.5.0) (2024-06-24)
+
+
+### Features
+
+* **rebranding:** merge 📦 Big Package "Re-branding" 📦  ([#4543](https://github.com/cowprotocol/cowswap/issues/4543)) ([ce9ab43](https://github.com/cowprotocol/cowswap/commit/ce9ab4317f304c86e3e1ec37825379e427099518))
+
 ## [1.4.1](https://github.com/cowprotocol/cowswap/compare/tokens-v1.4.0...tokens-v1.4.1) (2024-06-18)
 
 
