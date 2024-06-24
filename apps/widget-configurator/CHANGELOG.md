@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.2](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v1.3.1...widget-configurator-v1.3.2) (2024-06-24)
+
+
+### Bug Fixes
+
+* **widget:** don't crash on dev env ([#4570](https://github.com/cowprotocol/cowswap/issues/4570)) ([8cdd833](https://github.com/cowprotocol/cowswap/commit/8cdd833f020ec9cbe1ff558fd57748260078d402))
+
 ## [1.3.1](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v1.3.0...widget-configurator-v1.3.1) (2024-06-12)
 
 

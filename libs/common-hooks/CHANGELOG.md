@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.3.0](https://github.com/cowprotocol/cowswap/compare/common-hooks-v1.2.0...common-hooks-v1.3.0) (2024-06-24)
+
+
+### Features
+
+* **rebranding:** merge 📦 Big Package "Re-branding" 📦  ([#4543](https://github.com/cowprotocol/cowswap/issues/4543)) ([ce9ab43](https://github.com/cowprotocol/cowswap/commit/ce9ab4317f304c86e3e1ec37825379e427099518))
+* theme unification and cleaning ([#4580](https://github.com/cowprotocol/cowswap/issues/4580)) ([c1538b1](https://github.com/cowprotocol/cowswap/commit/c1538b16d9c890c95d73ea92ffb93b2065233d90))
+
 ## [1.2.0](https://github.com/cowprotocol/cowswap/compare/common-hooks-v1.1.0...common-hooks-v1.2.0) (2024-06-06)
 
 
