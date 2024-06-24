@@ -1,4 +1,4 @@
-import { lazy, ReactNode, Suspense } from 'react'
+import { lazy, ReactNode, Suspense, useEffect } from 'react'
 
 import {
   DISCORD_LINK,
@@ -33,11 +33,12 @@ const MevSlicer = lazy(() => import(/* webpackChunkName: "mev_slicer" */ 'pages/
 const AccountTokensOverview = lazy(() => import(/* webpackChunkName: "tokens_overview" */ 'pages/Account/Tokens'))
 const AccountNotFound = lazy(() => import(/* webpackChunkName: "affiliate" */ 'pages/error/NotFound'))
 
-function createRedirectExternal(url: string) {
-  return () => {
+function ExternalRedirect({ url }: { url: string }) {
+  useEffect(() => {
     window.location.replace(url)
-    return null
-  }
+  }, [url])
+
+  return null
 }
 
 type LazyRouteProps = { route: RoutesValues; element: ReactNode; key?: number }
@@ -51,13 +52,13 @@ const lazyRoutes: LazyRouteProps[] = [
   { route: RoutesEnum.LONG_LIMIT_ORDER, element: <RedirectToPath path={'/limit'} /> },
   { route: RoutesEnum.ADVANCED_ORDERS, element: <AdvancedOrders /> },
   { route: RoutesEnum.LONG_ADVANCED_ORDERS, element: <RedirectToPath path={'/advanced'} /> },
-  { route: RoutesEnum.ABOUT, element: createRedirectExternal(COWDAO_KNOWLEDGE_BASE_LINK)() },
-  { route: RoutesEnum.FAQ, element: createRedirectExternal(COWDAO_KNOWLEDGE_BASE_LINK)() },
-  { route: RoutesEnum.FAQ_PROTOCOL, element: createRedirectExternal(COWDAO_KNOWLEDGE_BASE_LINK)() },
-  { route: RoutesEnum.FAQ_TOKEN, element: createRedirectExternal(COWDAO_KNOWLEDGE_BASE_LINK)() },
-  { route: RoutesEnum.FAQ_TRADING, element: createRedirectExternal(COWDAO_KNOWLEDGE_BASE_LINK)() },
-  { route: RoutesEnum.FAQ_LIMIT_ORDERS, element: createRedirectExternal(COWDAO_KNOWLEDGE_BASE_LINK)() },
-  { route: RoutesEnum.FAQ_ETH_FLOW, element: createRedirectExternal(COWDAO_KNOWLEDGE_BASE_LINK)() },
+  { route: RoutesEnum.ABOUT, element: <ExternalRedirect url={COWDAO_KNOWLEDGE_BASE_LINK} /> },
+  { route: RoutesEnum.FAQ, element: <ExternalRedirect url={COWDAO_KNOWLEDGE_BASE_LINK} /> },
+  { route: RoutesEnum.FAQ_PROTOCOL, element: <ExternalRedirect url={COWDAO_KNOWLEDGE_BASE_LINK} /> },
+  { route: RoutesEnum.FAQ_TOKEN, element: <ExternalRedirect url={COWDAO_KNOWLEDGE_BASE_LINK} /> },
+  { route: RoutesEnum.FAQ_TRADING, element: <ExternalRedirect url={COWDAO_KNOWLEDGE_BASE_LINK} /> },
+  { route: RoutesEnum.FAQ_LIMIT_ORDERS, element: <ExternalRedirect url={COWDAO_KNOWLEDGE_BASE_LINK} /> },
+  { route: RoutesEnum.FAQ_ETH_FLOW, element: <ExternalRedirect url={COWDAO_KNOWLEDGE_BASE_LINK} /> },
   { route: RoutesEnum.PLAY_COWRUNNER, element: <CowRunner /> },
   { route: RoutesEnum.PLAY_MEVSLICER, element: <MevSlicer /> },
   { route: RoutesEnum.PRIVACY_POLICY, element: <PrivacyPolicy /> },
@@ -85,10 +86,11 @@ export function RoutesApp() {
         {lazyRoutes.map((item, key) => LazyRoute({ ...item, key }))}
 
         <Route path={RoutesEnum.ANYSWAP_AFFECTED} element={<AnySwapAffectedUsers />} />
-        <Route path={RoutesEnum.CHAT} loader={createRedirectExternal(DISCORD_LINK)} />
-        <Route path={RoutesEnum.DOCS} loader={createRedirectExternal(DOCS_LINK)} />
-        <Route path={RoutesEnum.STATS} loader={createRedirectExternal(DUNE_DASHBOARD_LINK)} />
-        <Route path={RoutesEnum.TWITTER} loader={createRedirectExternal(TWITTER_LINK)} />
+        <Route path={RoutesEnum.CHAT} element={<ExternalRedirect url={DISCORD_LINK} />} />
+        <Route path={RoutesEnum.DOCS} element={<ExternalRedirect url={DOCS_LINK} />} />
+        <Route path={RoutesEnum.STATS} element={<ExternalRedirect url={DUNE_DASHBOARD_LINK} />} />
+        <Route path={RoutesEnum.TWITTER} element={<ExternalRedirect url={TWITTER_LINK} />} />
+
         <Route path={RoutesEnum.HOME} element={<RedirectPathToSwapOnly />} />
         <Route
           path="*"
