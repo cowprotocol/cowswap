@@ -40,6 +40,7 @@ export const Media = {
 
 export const Font = {
   family: `'studiofeixen', Arial, sans-serif`,
+  familySerif: `'studiofeixenserif', Arial, serif`,
   weight: {
     ultralight: 200,
     light: 300,

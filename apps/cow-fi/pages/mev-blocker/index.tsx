@@ -1,7 +1,7 @@
 import { GetStaticProps } from 'next'
 import Script from 'next/script'
 
-import { Font, Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
+import { Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
 
 import Layout from '@/components/Layout'
 import FAQ from '@/components/FAQ'
@@ -132,16 +132,16 @@ export default function Page() {
 
             <MetricsCard bgColor="#EC4612" color="#FEE7CF" columns={3} touchFooter>
               <MetricsItem dividerColor="#F9A36F">
-                <h2>$76B+</h2>
-                <p>volume protected from MEV</p>
+                <h2>$84B+</h2>
+                <p>volume protected from MEV, across 20M+ transactions</p>
               </MetricsItem>
               <MetricsItem dividerColor="#F9A36F">
-                <h2>2200 ETH</h2>
-                <p>rebated to users</p>
+                <h2>2.2K+</h2>
+                <p>ETH rebated to users</p>
               </MetricsItem>
               <MetricsItem>
-                <h2>100%</h2>
-                <p>of Ethereum's major builders use MEV Blocker</p>
+                <h2>$26</h2>
+                <p>USD value of median rebate</p>
               </MetricsItem>
 
               <Link
@@ -181,7 +181,7 @@ export default function Page() {
                   </SectionTitleDescription>
                 </SectionTitleWrapper>
 
-                <TopicList columns={3}>
+                <TopicList columns={3} columnsTablet={2}>
                   {MEV_BLOCKER_LIST.map((item) => (
                     <TopicCard key={item.id} contentAlign={'left'} bgColor={item.bgColor} padding={'32px'} asProp="div">
                       <TopicCardInner contentAlign="left">
@@ -227,7 +227,7 @@ export default function Page() {
                     Note: some wallets make you reselect MEV Blocker every time you change networks.
                   </SectionTitleDescription>
                 </SectionTitleWrapper>
-                <TopicList columns={2}>
+                <TopicList columns={2} columnsTablet={1}>
                   <TopicCard contentAlign={'left'} bgColor={Color.neutral100} padding={'32px'} asProp="div">
                     <TopicCardInner contentAlign="left">
                       <TopicTitle color={Color.neutral0} fontSize={28}>
@@ -374,7 +374,7 @@ export default function Page() {
                   <SectionTitleText>What others are saying...</SectionTitleText>
                 </SectionTitleWrapper>
 
-                <TopicList columns={3}>
+                <TopicList columns={3} columnsTablet={2}>
                   {TESTIMONIAL_LIST.map((testimonial) => (
                     <TopicCard
                       key={testimonial.title}
@@ -464,23 +464,17 @@ export default function Page() {
                       href={item.href}
                       rel={'noopener noreferrer nofollow'}
                       target="_blank"
-                      gap={item.title ? 16 : undefined}
-                      onClick={() => sendEventHandler(EventCategories.MEVBLOCKER, `click-trusted-by-${item.title}`)}
+                      onClick={() => sendEventHandler(EventCategories.MEVBLOCKER, `click-trusted-by-${item.href}`)}
                     >
                       <TopicImage
                         iconColor={Color.neutral20}
                         bgColor={'transparent'}
-                        width={'100%'}
+                        width={'90%'}
                         height={72}
                         margin={'auto'}
                       >
                         {item.component || <SVG src={item.src} />}
                       </TopicImage>
-                      {item.title && (
-                        <TopicTitle fontSize={18} color={Color.neutral50} fontWeight={Font.weight.regular}>
-                          {item.title}
-                        </TopicTitle>
-                      )}
                     </TopicCard>
                   ))}
                 </TopicList>
@@ -510,7 +504,13 @@ export default function Page() {
                     Friends don't let friends suffer from MEV damage
                   </SectionTitleText>
 
-                  <Link linkType={LinkType.SectionTitleButton} bgColor="#EC4612" onClick={handleShareClick} asButton>
+                  <Link
+                    linkType={LinkType.SectionTitleButton}
+                    bgColor={'#EC4612'}
+                    color={'#FEE7CF'}
+                    onClick={handleShareClick}
+                    asButton
+                  >
                     Share MEV Blocker
                   </Link>
 

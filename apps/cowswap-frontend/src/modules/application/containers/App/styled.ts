@@ -5,8 +5,6 @@ import { Media } from '@cowprotocol/ui'
 import * as CSS from 'csstype'
 import styled from 'styled-components/macro'
 
-
-
 export const AppWrapper = styled.div<Partial<CSS.Properties>>`
   display: flex;
   flex-flow: column;
@@ -17,10 +15,6 @@ export const AppWrapper = styled.div<Partial<CSS.Properties>>`
 
 export const Marginer = styled.div`
   margin-top: 5rem;
-`
-
-export const MarginerBottom = styled.div`
-  margin-bottom: 60px;
 `
 
 export const BodyWrapper = styled.div`
@@ -44,7 +38,7 @@ export const BodyWrapper = styled.div`
     } else {
       const backgroundColor = theme.darkMode ? '#0E0F2D' : '#65D9FF'
       const backgroundImage = theme.darkMode ? `url(${IMAGE_BACKGROUND_DARK})` : `url(${IMAGE_BACKGROUND_LIGHT})`
-      return `${backgroundColor} ${backgroundImage} no-repeat bottom -1px center`
+      return `${backgroundColor} ${backgroundImage} no-repeat bottom -1px center / contain`
     }
   }};
 
@@ -52,6 +46,7 @@ export const BodyWrapper = styled.div`
     padding: ${({ theme }) => (theme.isInjectedWidgetMode ? '0 0 16px' : '150px 16px 76px')};
     flex: none;
     min-height: ${({ theme }) => (theme.isInjectedWidgetMode ? 'initial' : 'calc(100vh - 200px)')};
+    background-size: auto;
   }
 
   ${Media.upToSmall()} {

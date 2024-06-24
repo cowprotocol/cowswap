@@ -37,7 +37,7 @@ export const ADVANCED_ORDER_TYPES = [
   {
     title: 'Limit orders',
     description:
-      'Placing a limit order is like setting a trap for a price for your trade. CoW Swap is the only DEX that offers surplus on limit orders - and one of the only DEXs that offers limit orders at all.',
+      'Placing a limit order is like setting a trap for a price for your trade. CoW Swap is the only DEX that offers surplus on limit orders - and one of the only DEXs that offers limit orders at all',
     bgColor: '#8702AA',
     textColor: '#FCCAF2',
     titleColor: '#FFF8F7',
@@ -46,7 +46,7 @@ export const ADVANCED_ORDER_TYPES = [
   {
     title: 'TWAP orders',
     description:
-      'Time-weighted average price (TWAP) orders minimize price impact and volatility risk by letting you trade assets at fixed intervals over a period of time.',
+      'Time-weighted average price (TWAP) orders minimize price impact and volatility risk by letting you trade assets at fixed intervals over a period of time',
     bgColor: '#F996EE',
     textColor: '#8702AA',
     titleColor: '#490072',
@@ -55,7 +55,7 @@ export const ADVANCED_ORDER_TYPES = [
   {
     title: 'Milkman orders',
     description:
-      "Created with our friends at Yearn.fi, Milkman orders let you prep a trade today to be executed in the future - with the help of a price oracle so you don't get rekt.",
+      "Created with our friends at Yearn.fi, Milkman orders let you prep a trade today to be executed in the future - with the help of a price oracle so you don't get rekt",
     bgColor: '#490072',
     textColor: '#F996EE',
     titleColor: '#FFF8F7',
@@ -66,7 +66,7 @@ export const ADVANCED_ORDER_TYPES = [
 export const UNIQUE_TRADING_LOGIC = [
   {
     title: 'Smart orders',
-    description: 'ERC-1271 smart orders let you custom code any trading logic',
+    description: 'ERC-1271 smart orders let you custom code any trading logic into your smart contract',
     bgColor: '#FCCAF2',
     textColor: '#8702AA',
     titleColor: '#490072',
@@ -432,7 +432,7 @@ export const COW_PROTOCOL_SECTIONS = [
   {
     title: 'For developers',
     description:
-      'As an open-source protocol, building on top of CoW Protocol is permissionless. Thanks to comprehensive documentation and live coding tutorials, integrating the protocol is easy.',
+      'CoW Protocol is open-source and permissionless. Thanks to comprehensive documentation and live coding tutorials, integrating the protocol is easy.',
     bgColor: '#66018E',
     textColor: '#F996EE',
     titleColor: '#FFF8F7',
@@ -445,7 +445,7 @@ export const COW_PROTOCOL_SECTIONS = [
   {
     title: 'For DeFi projects',
     description:
-      "Don't need overly-custom trading logic? The CoW Protocol widget is the easiest way to integrate swaps, twaps, and limit orders directly into your project site.",
+      "Don't need overly custom trading logic? The CoW Swap widget is the easiest way to integrate swaps, TWAPs, and limit orders directly into your project site.",
     bgColor: '#490072',
     textColor: '#F996EE',
     titleColor: '#FFF8F7',

@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 // import { addRpcUrlAction as sendToAnalytics, AddRpcUrlActionType } from '@src/lib/analytics/events'
-import { ERROR_ADD_MANUALLY_MESSAGE } from '../../util/handleRpcError'
-import { useAddRpcEndpoint } from '../hooks/useAddRpcEndpoint'
+import { ERROR_ADD_MANUALLY_MESSAGE } from '@/util/handleRpcError'
+import { useAddRpcEndpoint } from './useAddRpcEndpoint'
 import { WalletClient } from 'viem'
 import { AddToWalletStateValues } from '@/components/AddRpcButton'
 

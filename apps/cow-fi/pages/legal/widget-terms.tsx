@@ -386,12 +386,10 @@ export default function Page({ siteConfigData }: PageProps) {
 }
 
 export const getStaticProps: GetStaticProps<PageProps> = async () => {
-  const siteConfigData = CONFIG
-
   return {
     props: {
       siteConfigData: {
-        ...siteConfigData,
+        ...CONFIG,
         title: 'Terms and Conditions for the CoW Swap Widget & Partner Fee Program',
         descriptionShort: 'Terms and Conditions',
       },

@@ -37,12 +37,6 @@ const TabContainer = styled.div`
   justify-content: space-between;
 `
 
-const Dropdown = styled.select`
-  width: 100%;
-  padding: 1rem;
-  margin: 1rem 0;
-`
-
 const Input = styled.input`
   width: 100%;
   padding: 1rem 0 1rem 1rem;
@@ -266,8 +260,7 @@ export const SwapWidget = ({ tokenId, tokenSymbol, tokenImage, platforms }: Swap
         }
       }
 
-      const url = `https://swap.cow.fi/#/${networkId}/swap/${sellToken}/${buyToken}?${activeTab.toLowerCase()}Amount=${amount}`
-      return url
+      return `https://swap.cow.fi/#/${networkId}/swap/${sellToken}/${buyToken}?${activeTab.toLowerCase()}Amount=${amount}`
     } else {
       return '#'
     }

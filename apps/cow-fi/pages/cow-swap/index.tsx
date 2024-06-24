@@ -3,6 +3,8 @@ import { Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
 
 import IMG_ICON_UNICORN from '@cowprotocol/assets/images/icon-unicorn.svg'
 import IMG_ICON_FLOWER_COW from '@cowprotocol/assets/images/icon-flower-cow.svg'
+import IMG_COWSWAP_HERO from '@cowprotocol/assets/images/image-cowswap-hero.svg'
+import ICON_BULB from '@cowprotocol/assets/images/icon-bulb-cow.svg'
 
 import Layout from '@/components/Layout'
 import FAQ from '@/components/FAQ'
@@ -34,7 +36,7 @@ import {
 
 import SVG from 'react-inlinesvg'
 import IMG_ICON_FAQ from '@cowprotocol/assets/images/icon-faq.svg'
-import { FAQ_DATA, TWEETS } from '@/data/cow-swap/const'
+import { FAQ_DATA, TWEETS, COW_IS_DIFFERENT, ADVANCED_ORDER_TYPES, BETTER_UX } from '@/data/cow-swap/const'
 
 import { EventCategories, sendEventHandler } from '@cowprotocol/analytics'
 
@@ -44,7 +46,7 @@ interface PageProps {
   siteConfigData: typeof CONFIG
 }
 
-export default function Page({ siteConfigData }: PageProps) {
+export default function Page() {
   return (
     <Layout
       bgColor={Color.neutral90}
@@ -75,22 +77,22 @@ export default function Page({ siteConfigData }: PageProps) {
             </Link>
           </HeroContent>
           <HeroImage width={470} height={470} color={'#012F7A'} marginMobile="24px auto 56px">
-            <ProductLogo height="100%" variant={ProductVariant.CowSwap} theme="light" logoIconOnly />
+            <SVG src={IMG_COWSWAP_HERO} />
           </HeroImage>
         </HeroContainer>
 
         <MetricsCard bgColor="#65D9FF" color="#012F7A" columns={3} touchFooter>
           <MetricsItem dividerColor="#005EB7">
+            <h2>#1</h2>
+            <p>retention rate of all major DEXs</p>
+          </MetricsItem>
+          <MetricsItem dividerColor="#005EB7">
             <h2>$44B+</h2>
             <p>total volume traded</p>
           </MetricsItem>
-          <MetricsItem dividerColor="#005EB7">
+          <MetricsItem>
             <h2>$238M+</h2>
             <p>surplus found for users</p>
-          </MetricsItem>
-          <MetricsItem>
-            <h2>#1</h2>
-            <p>retention rate of all DEXs</p>
           </MetricsItem>
 
           <Link
@@ -110,7 +112,7 @@ export default function Page({ siteConfigData }: PageProps) {
 
         <ContainerCard bgColor={Color.neutral100}>
           <ContainerCardSection gap={90}>
-            <SectionTitleWrapper color={Color.neutral0} maxWidth={1100} gap={56}>
+            <SectionTitleWrapper color={Color.neutral10} maxWidth={1100} gap={56}>
               <SectionTitleIcon multiple size={82}>
                 <SVG src={IMG_ICON_UNICORN} />
                 <ProductLogo variant={ProductVariant.CowProtocol} theme="dark" logoIconOnly />
@@ -124,57 +126,25 @@ export default function Page({ siteConfigData }: PageProps) {
               </SectionTitleDescription>
             </SectionTitleWrapper>
 
-            <TopicList columns={3}>
-              <TopicCard contentAlign={'left'} bgColor={Color.neutral90} padding={'32px'} asProp="div">
-                <TopicCardInner contentAlign="left">
-                  <TopicDescription fontSize={28} color={Color.neutral10}>
-                    By aligning incentives, CoW Swap finds surplus you won't get anywhere else
-                  </TopicDescription>
-                </TopicCardInner>
-                <TopicImage
-                  iconColor={Color.neutral70}
-                  bgColor="transparent"
-                  margin={'0 0 0 auto'}
-                  height={187}
-                  width={'auto'}
-                >
-                  <ProductLogo variant={ProductVariant.CowSwap} logoIconOnly theme="light" />
-                </TopicImage>
-              </TopicCard>
-
-              <TopicCard contentAlign={'left'} bgColor={Color.neutral90} padding={'32px'} asProp="div">
-                <TopicCardInner contentAlign="left">
-                  <TopicDescription fontSize={28} color={Color.neutral10}>
-                    MEV is a $1.3+ billion problem that you never have to worry about on CoW Swap
-                  </TopicDescription>
-                </TopicCardInner>
-                <TopicImage
-                  iconColor={Color.neutral70}
-                  bgColor="transparent"
-                  margin={'0 0 0 auto'}
-                  height={187}
-                  width={'auto'}
-                >
-                  <ProductLogo variant={ProductVariant.CowSwap} logoIconOnly theme="light" />
-                </TopicImage>
-              </TopicCard>
-
-              <TopicCard contentAlign={'left'} bgColor={Color.neutral90} padding={'32px'} asProp="div">
-                <TopicCardInner contentAlign="left">
-                  <TopicDescription fontSize={28} color={Color.neutral10}>
-                    CoW Swap's unique architecture enables advanced order types and seamless UX
-                  </TopicDescription>
-                </TopicCardInner>
-                <TopicImage
-                  iconColor={Color.neutral70}
-                  bgColor="transparent"
-                  margin={'0 0 0 auto'}
-                  height={187}
-                  width={'auto'}
-                >
-                  <ProductLogo variant={ProductVariant.CowSwap} logoIconOnly theme="light" />
-                </TopicImage>
-              </TopicCard>
+            <TopicList columns={3} columnsTablet={2}>
+              {COW_IS_DIFFERENT.map((topic, index) => (
+                <TopicCard key={index} contentAlign={'left'} bgColor={topic.bgColor} padding={'32px'} asProp="div">
+                  <TopicCardInner contentAlign="left">
+                    <TopicDescription fontSize={topic.fontSize} color={topic.color}>
+                      {topic.description}
+                    </TopicDescription>
+                  </TopicCardInner>
+                  <TopicImage
+                    iconColor={'transparent'}
+                    bgColor="transparent"
+                    margin={'auto 0 0 auto'}
+                    height={187}
+                    width={'auto'}
+                  >
+                    <SVG src={topic.imgSrc} />
+                  </TopicImage>
+                </TopicCard>
+              ))}
             </TopicList>
           </ContainerCardSection>
         </ContainerCard>
@@ -182,6 +152,9 @@ export default function Page({ siteConfigData }: PageProps) {
         <ContainerCard bgColor={'transparent'}>
           <ContainerCardSection>
             <SectionTitleWrapper maxWidth={800}>
+              <SectionTitleIcon size={126}>
+                <SVG src={ICON_BULB} />
+              </SectionTitleIcon>
               <SectionTitleText>CoW Swap is the first user interface built on top of CoW Protocol</SectionTitleText>
               <SectionTitleDescription color={Color.neutral50}>
                 A powerful, open-source, and permissionless DEX aggregation protocol that anyone can integrate for a
@@ -208,130 +181,70 @@ export default function Page({ siteConfigData }: PageProps) {
               </SectionTitleIcon>
               <SectionTitleText>S-moooo-th trading</SectionTitleText>
               <SectionTitleDescription color={Color.neutral60}>
-                CoW Swap features the smoothest trading experiences in DeFi, allowing you to worry less and do more
+                CoW Swap features the smoothest trading experiences in DeFi, allowing you to worry less and do more.
               </SectionTitleDescription>
             </SectionTitleWrapper>
 
             <SectionTitleWrapper>
               <SectionTitleText>Advanced order types</SectionTitleText>
             </SectionTitleWrapper>
-            <TopicList columns={3}>
-              <TopicCard contentAlign={'left'} bgColor="#012F7A" textColor="#65D9FF" padding={'32px'} asProp="div">
-                <TopicCardInner contentAlign="left">
-                  <TopicTitle color={Color.neutral100}>Market orders (aka swaps)</TopicTitle>
-                  <TopicDescription fontSize={21} color="#65D9FF">
-                    CoW Swap market orders maximize surplus and minimize MEV
-                  </TopicDescription>
-                </TopicCardInner>
-                <TopicImage
-                  iconColor="#004293"
-                  bgColor="transparent"
-                  margin={'auto 0 0 auto'}
-                  height={187}
-                  width={'auto'}
+            <TopicList columns={3} columnsTablet={2}>
+              {ADVANCED_ORDER_TYPES.map((topic, index) => (
+                <TopicCard
+                  key={index}
+                  contentAlign={'left'}
+                  bgColor={topic.bgColor}
+                  textColor={topic.textColor}
+                  padding={'32px'}
+                  asProp="div"
                 >
-                  <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />
-                </TopicImage>
-              </TopicCard>
-
-              <TopicCard contentAlign={'left'} bgColor="#012F7A" textColor="#65D9FF" padding={'32px'} asProp="div">
-                <TopicCardInner contentAlign="left">
-                  <TopicTitle color={Color.neutral100}>Limit orders</TopicTitle>
-                  <TopicDescription fontSize={21} color="#65D9FF">
-                    Placing a limit order is like setting a trap for a price for your trade. CoW Swap is the only DEX
-                    that offers surplus on limit orders – and one of the only DEXs that offers limit orders at all
-                  </TopicDescription>
-                </TopicCardInner>
-                <TopicImage
-                  iconColor="#004293"
-                  bgColor="transparent"
-                  margin={'auto 0 0 auto'}
-                  height={187}
-                  width={'auto'}
-                >
-                  <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />
-                </TopicImage>
-              </TopicCard>
-
-              <TopicCard contentAlign={'left'} bgColor="#012F7A" textColor="#65D9FF" padding={'32px'} asProp="div">
-                <TopicCardInner contentAlign="left">
-                  <TopicTitle color={Color.neutral100}>TWAP orders</TopicTitle>
-                  <TopicDescription fontSize={21} color="#65D9FF">
-                    Time-weighted average price (TWAP) orders minimize price impact and volatility risk by letting you
-                    trade assets at fixed intervals over a period of time
-                  </TopicDescription>
-                </TopicCardInner>
-                <TopicImage
-                  iconColor="#004293"
-                  bgColor="transparent"
-                  margin={'auto 0 0 auto'}
-                  height={187}
-                  width={'auto'}
-                >
-                  <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />
-                </TopicImage>
-              </TopicCard>
+                  <TopicCardInner contentAlign="left">
+                    <TopicTitle color={topic.titleColor}>{topic.title}</TopicTitle>
+                    <TopicDescription fontSize={21}>{topic.description}</TopicDescription>
+                  </TopicCardInner>
+                  <TopicImage
+                    iconColor="transparent"
+                    bgColor="transparent"
+                    margin={'auto 0 0 auto'}
+                    height={187}
+                    width={'auto'}
+                  >
+                    <SVG src={topic.imgSrc} />
+                  </TopicImage>
+                </TopicCard>
+              ))}
             </TopicList>
 
             <SectionTitleWrapper>
               <SectionTitleText fontSize={51} textAlign="center">
-                Seamless UX
+                Better UX, thanks to intents
               </SectionTitleText>
             </SectionTitleWrapper>
-            <TopicList columns={3}>
-              <TopicCard contentAlign={'left'} bgColor="#012F7A" textColor="#65D9FF" padding={'32px'} asProp="div">
-                <TopicCardInner contentAlign="left">
-                  <TopicTitle color={Color.neutral100}>Gasless trading</TopicTitle>
-                  <TopicDescription fontSize={21} color="#65D9FF">
-                    All gas fees are paid in the sell token - so you can save your precious ETH
-                  </TopicDescription>
-                </TopicCardInner>
-                <TopicImage
-                  iconColor="#004293"
-                  bgColor="transparent"
-                  margin={'auto 0 0 auto'}
-                  height={187}
-                  width={'auto'}
+            <TopicList columns={3} columnsTablet={2}>
+              {BETTER_UX.map((topic, index) => (
+                <TopicCard
+                  key={index}
+                  contentAlign={'left'}
+                  bgColor={topic.bgColor}
+                  textColor={topic.textColor}
+                  padding={'32px'}
+                  asProp="div"
                 >
-                  <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />
-                </TopicImage>
-              </TopicCard>
-
-              <TopicCard contentAlign={'left'} bgColor="#012F7A" textColor="#65D9FF" padding={'32px'} asProp="div">
-                <TopicCardInner contentAlign="left">
-                  <TopicTitle color={Color.neutral100}>No fees for failed transactions</TopicTitle>
-                  <TopicDescription fontSize={21} color="#65D9FF">
-                    You shouldn&apos;t pay for what didn&apos;t work, so failed transactions are always free
-                  </TopicDescription>
-                </TopicCardInner>
-                <TopicImage
-                  iconColor="#004293"
-                  bgColor="transparent"
-                  margin={'auto 0 0 auto'}
-                  height={187}
-                  width={'auto'}
-                >
-                  <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />
-                </TopicImage>
-              </TopicCard>
-
-              <TopicCard contentAlign={'left'} bgColor="#012F7A" textColor="#65D9FF" padding={'32px'} asProp="div">
-                <TopicCardInner contentAlign="left">
-                  <TopicTitle color={Color.neutral100}>Execute multiple trades at once</TopicTitle>
-                  <TopicDescription fontSize={21} color="#65D9FF">
-                    With intent-based trading, you can place as many orders as you want simultaneously
-                  </TopicDescription>
-                </TopicCardInner>
-                <TopicImage
-                  iconColor="#004293"
-                  bgColor="transparent"
-                  margin={'auto 0 0 auto'}
-                  height={187}
-                  width={'auto'}
-                >
-                  <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />
-                </TopicImage>
-              </TopicCard>
+                  <TopicCardInner contentAlign="left">
+                    <TopicTitle color={topic.titleColor}>{topic.title}</TopicTitle>
+                    <TopicDescription fontSize={21}>{topic.description}</TopicDescription>
+                  </TopicCardInner>
+                  <TopicImage
+                    iconColor="transparent"
+                    bgColor="transparent"
+                    margin={'auto 0 0 auto'}
+                    height={187}
+                    width={'auto'}
+                  >
+                    <SVG src={topic.imgSrc} />
+                  </TopicImage>
+                </TopicCard>
+              ))}
             </TopicList>
           </ContainerCardSection>
         </ContainerCard>
@@ -345,7 +258,7 @@ export default function Page({ siteConfigData }: PageProps) {
               <SectionTitleText textAlign="center">The DEX of choice for crypto whales and pros</SectionTitleText>
             </SectionTitleWrapper>
 
-            <TopicList columns={4}>
+            <TopicList columns={4} columnsTablet={2}>
               <TopicCard
                 contentAlign={'left'}
                 bgColor="#012F7A"
@@ -423,7 +336,7 @@ export default function Page({ siteConfigData }: PageProps) {
               <SectionTitleText textAlign="center">Don't take our word for it</SectionTitleText>
             </SectionTitleWrapper>
 
-            <TopicList columns={3} maxWidth={1360}>
+            <TopicList columns={3} columnsTablet={2} maxWidth={1360}>
               {TWEETS.map((tweet, index) => (
                 <TopicCard
                   bgColor={Color.neutral100}
@@ -433,7 +346,7 @@ export default function Page({ siteConfigData }: PageProps) {
                   asProp="div"
                   key={index}
                 >
-                  <TopicCardInner>
+                  <TopicCardInner minHeight={'200px'} contentAlign={'center'}>
                     <blockquote className="twitter-tweet" data-dnt="true" data-theme="light">
                       <a href={tweet}>Loading X...</a>
                     </blockquote>

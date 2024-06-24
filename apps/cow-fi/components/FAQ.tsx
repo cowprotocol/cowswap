@@ -121,7 +121,7 @@ const Wrapper = styled.div`
 
 interface FAQItemProps {
   question: string
-  answer: string | JSX.Element
+  answer: string | React.ReactNode
 }
 
 const FAQItem: React.FC<FAQItemProps> = ({ question, answer }) => {

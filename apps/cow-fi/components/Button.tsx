@@ -1,7 +1,6 @@
 import styled, { css } from 'styled-components/macro'
 import { Color, Media, Font } from '@cowprotocol/ui'
 import React, { forwardRef } from 'react'
-import { lighten } from 'polished'
 
 export enum ButtonVariant {
   OUTLINE = 'outline',
@@ -10,9 +9,6 @@ export enum ButtonVariant {
   TEXT_LIGHT = 'textLight',
   LIGHT = 'light',
   OUTLINE_LIGHT = 'outlineLight',
-  COWAMM_LIGHTBLUE = 'cowammLightBlue',
-  COWAMM_OUTLINE_LIGHT = 'cowammOutlineLight',
-  COWAMM_OUTLINE_SMALL = 'cowammOutlineSmall',
 }
 
 type ButtonProps = {
@@ -122,29 +118,6 @@ const Wrapper = styled.span<Omit<ButtonProps, 'href' | 'label' | 'target' | 'rel
       background: transparent;
       border: 0.1rem solid ${Color.neutral100};
     `}
-`
-
-// General purpose multiple button wrapper
-export const ButtonWrapper = styled.div<{ center?: boolean }>`
-  display: flex;
-  gap: 1.6rem;
-  width: 100%;
-
-  ${({ center }) =>
-    center &&
-    `
-    justify-content: center;
-    align-items: center;
-  `}
-
-  ${Media.upToMedium()} {
-    flex-flow: column wrap;
-    justify-content: center;
-
-    > ${Wrapper} {
-      width: 100%;
-    }
-  }
 `
 
 export const Button = forwardRef<HTMLAnchorElement, ButtonProps>(

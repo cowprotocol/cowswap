@@ -2,7 +2,6 @@ import { Command } from '@cowprotocol/types'
 import { UI } from '@cowprotocol/ui'
 
 import { Menu, MenuButton, MenuItem, MenuList } from '@reach/menu-button'
-import { transparentize } from 'color2k'
 import { Edit, FileText, Link2, MoreVertical, Repeat, Trash2 } from 'react-feather'
 import styled from 'styled-components/macro'
 
@@ -37,7 +36,8 @@ export const ContextMenuButton = styled(MenuButton)`
   }
 `
 export const ContextMenuList = styled(MenuList)`
-  background: var(${UI.COLOR_PAPER});
+  background: var(${UI.COLOR_PAPER_DARKER});
+  border: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
   border-radius: 12px;
   overflow: hidden;
   position: relative;
@@ -59,9 +59,11 @@ export const ContextMenuItem = styled(MenuItem)<{ $red?: boolean }>`
   font-size: 15px;
   font-weight: 500;
   color: ${({ $red }) => ($red ? `var(${UI.COLOR_DANGER})` : `var(${UI.COLOR_TEXT})`)};
+  background: transparent;
+  transition: background var(${UI.ANIMATION_DURATION}) ease-in-out;
 
   &:hover {
-    background: ${({ theme }) => transparentize(theme.info, 0.8)};
+    background: var(${UI.COLOR_PAPER});
   }
 `
 

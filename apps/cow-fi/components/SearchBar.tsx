@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react'
 import styled from 'styled-components/macro'
 import { Font, Color, Media } from '@cowprotocol/ui'
 import { Article } from 'services/cms'
-
 import SVG from 'react-inlinesvg'
 import IMG_ICON_X from '@cowprotocol/assets/images/x.svg'
 import IMG_ICON_SEARCH from '@cowprotocol/assets/images/icon-search.svg'

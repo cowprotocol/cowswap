@@ -1,9 +1,11 @@
 import { GetStaticProps } from 'next'
 import { Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
 import IMG_ICON_CROWN_COW from '@cowprotocol/assets/images/icon-crown-cow.svg'
-import IMG_ICON_GOVERNANCE from '@cowprotocol/assets/images/icon-governance.svg'
 import IMG_ICON_BULB_COW from '@cowprotocol/assets/images/icon-bulb-cow.svg'
-import IMG_ICON_BUILD_WITH_COW from '@cowprotocol/assets/images/icon-build-with-cow.svg'
+import IMG_COWAMM_HERO from '@cowprotocol/assets/images/image-cowamm-hero.svg'
+import IMG_COWAMM_RAISING from '@cowprotocol/assets/images/image-cowamm-raising.svg'
+import IMG_COWAMM_PASSIVE from '@cowprotocol/assets/images/image-cowamm-passive.svg'
+import IMG_COWAMM_REKT from '@cowprotocol/assets/images/image-cowamm-rekt.svg'
 
 import Layout from '@/components/Layout'
 import FAQ from '@/components/FAQ'
@@ -37,7 +39,7 @@ import SVG from 'react-inlinesvg'
 import IMG_ICON_FAQ from '@cowprotocol/assets/images/icon-faq.svg'
 
 import { EventCategories, sendEventHandler } from '@cowprotocol/analytics'
-import { FAQ_DATA } from '@/data/cow-amm/const'
+import { FAQ_DATA, QUOTES, LVR_CONTENT, COW_AMM_CONTENT } from '@/data/cow-amm/const'
 
 import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
 
@@ -45,7 +47,7 @@ interface PageProps {
   siteConfigData: typeof CONFIG
 }
 
-export default function Page({ siteConfigData }: PageProps) {
+export default function Page() {
   return (
     <Layout
       bgColor={Color.neutral90}
@@ -73,7 +75,7 @@ export default function Page({ siteConfigData }: PageProps) {
             </Link>
           </HeroContent>
           <HeroImage width={470} height={470} color={'#194D05'} marginMobile="24px auto 56px">
-            <SVG src={IMG_ICON_GOVERNANCE} />
+            <SVG src={IMG_COWAMM_HERO} />
           </HeroImage>
         </HeroContainer>
 
@@ -83,11 +85,11 @@ export default function Page({ siteConfigData }: PageProps) {
             <p>performance improvement over reference pool</p>
           </MetricsItem>
           <MetricsItem dividerColor="#9BD955">
-            <h2>4.8M</h2>
+            <h2>$4.8M+</h2>
             <p>liquidity protected from LVR</p>
           </MetricsItem>
           <MetricsItem>
-            <h2>$59K</h2>
+            <h2>$59K+</h2>
             <p>surplus captured for LPs</p>
           </MetricsItem>
 
@@ -115,32 +117,39 @@ export default function Page({ siteConfigData }: PageProps) {
               <SectionTitleText>AMMs don&apos;t want you to know about LVR</SectionTitleText>
             </SectionTitleWrapper>
 
-            <TopicList columns={1} maxWidth={1470}>
-              <TopicCard columns="1fr auto" gap={100} horizontal asProp="div" bgColor="transparent" paddingMobile={'0'}>
-                <TopicCardInner contentAlign="left">
-                  <TopicDescription fontSize={28} color={Color.neutral95}>
-                    Liquidity providers expect their tokens to earn yield, but the dirty little secret of AMMs is that
-                    most liquidity pools lose money. <br />
-                    <br />
-                    In fact, hundreds of millions of dollars of LP funds are stolen by arbitrageurs every year
-                    <sup>1</sup>. These losses are known as loss-versus-rebalancing (LVR). LVR is a bigger source of MEV
-                    than frontrunning and sandwich attacks combined.
-                  </TopicDescription>
-
-                  <TopicDescription fontSize={21} color={Color.neutral50}>
-                    <sup>1</sup> Andrea Canidio and Robin Fritsch, Arbitrageurs' profits, LVR, and sandwich attacks:
-                    batch trading as an AMM design response (November 2023).
-                  </TopicDescription>
-                </TopicCardInner>
-                <TopicImage
-                  iconColor="#66018E"
-                  width={590}
-                  height={590}
-                  heightMobile={300}
-                  orderReverseMobile
-                  borderRadius={90}
-                />
-              </TopicCard>
+            <TopicList columns={1} columnsTablet={1} maxWidth={1470}>
+              {LVR_CONTENT.map((content, index) => (
+                <TopicCard
+                  key={index}
+                  columns="1fr auto"
+                  columnsTablet="1fr"
+                  gap={100}
+                  horizontal
+                  asProp="div"
+                  bgColor={content.bgColor}
+                  paddingMobile="0"
+                >
+                  <TopicCardInner contentAlign="left">
+                    <TopicDescription fontSize={28} color={Color.neutral95}>
+                      {content.description1}
+                    </TopicDescription>
+                    <TopicDescription fontSize={21} color={Color.neutral50}>
+                      <sup>1</sup> {content.description2}
+                    </TopicDescription>
+                  </TopicCardInner>
+                  <TopicImage
+                    iconColor="transparent"
+                    width={590}
+                    height={590}
+                    heightMobile={300}
+                    orderReverseMobile
+                    orderReverseTablet
+                    borderRadius={90}
+                  >
+                    <SVG src={content.image} />
+                  </TopicImage>
+                </TopicCard>
+              ))}
             </TopicList>
           </ContainerCardSection>
         </ContainerCard>
@@ -157,79 +166,35 @@ export default function Page({ siteConfigData }: PageProps) {
               </SectionTitleDescription>
             </SectionTitleWrapper>
 
-            <TopicList columns={4}>
-              <TopicCard
-                gap={0}
-                contentAlign={'left'}
-                bgColor="#194D05"
-                textColor="#BCEC79"
-                padding={'24px'}
-                asProp="div"
-              >
-                <TopicImage iconColor="#BCEC79" bgColor="transparent" height={'auto'} width={'100%'}>
-                  <SVG src={IMG_ICON_BUILD_WITH_COW} />
-                </TopicImage>
-                <TopicCardInner contentAlign="left">
-                  <TopicDescription fontSize={21} fontSizeMobile={21}>
-                    Liquidity providers deposit tokens into protected CoW AMM liquidity pools, where traders can access
-                    the liquidity
-                  </TopicDescription>
-                </TopicCardInner>
-              </TopicCard>
-
-              <TopicCard
-                gap={0}
-                contentAlign={'left'}
-                bgColor="#194D05"
-                textColor="#BCEC79"
-                padding={'24px'}
-                asProp="div"
-              >
-                <TopicImage iconColor="#BCEC79" bgColor="transparent" height={'auto'} width={'100%'}>
-                  <SVG src={IMG_ICON_BUILD_WITH_COW} />
-                </TopicImage>
-                <TopicCardInner contentAlign="left">
-                  <TopicDescription fontSize={21} fontSizeMobile={21}>
-                    Solvers bid to rebalance CoW AMM pools whenever there is an arbitrage opportunity
-                  </TopicDescription>
-                </TopicCardInner>
-              </TopicCard>
-
-              <TopicCard
-                gap={0}
-                contentAlign={'left'}
-                bgColor="#194D05"
-                textColor="#BCEC79"
-                padding={'24px'}
-                asProp="div"
-              >
-                <TopicImage iconColor="#BCEC79" bgColor="transparent" height={'auto'} width={'100%'}>
-                  <SVG src={IMG_ICON_BUILD_WITH_COW} />
-                </TopicImage>
-                <TopicCardInner contentAlign="left">
-                  <TopicDescription fontSize={21} fontSizeMobile={21}>
-                    The solver that offers the most surplus to the pool wins the right to rebalance the pool
-                  </TopicDescription>
-                </TopicCardInner>
-              </TopicCard>
-
-              <TopicCard
-                gap={0}
-                contentAlign={'left'}
-                bgColor="#194D05"
-                textColor="#BCEC79"
-                padding={'24px'}
-                asProp="div"
-              >
-                <TopicImage iconColor="#BCEC79" bgColor="transparent" height={'auto'} width={'100%'}>
-                  <SVG src={IMG_ICON_BUILD_WITH_COW} />
-                </TopicImage>
-                <TopicCardInner contentAlign="left">
-                  <TopicDescription fontSize={21} fontSizeMobile={21}>
-                    CoW AMM eliminates LVR by capturing arbitrage value for LPs and shielding it from MEV bots
-                  </TopicDescription>
-                </TopicCardInner>
-              </TopicCard>
+            <TopicList columns={4} columnsTablet={2}>
+              {COW_AMM_CONTENT.map((content, index) => (
+                <TopicCard
+                  key={index}
+                  gap={0}
+                  contentAlign="left"
+                  bgColor={content.bgColor}
+                  textColor={content.textColor}
+                  padding="24px"
+                  asProp="div"
+                >
+                  <TopicCardInner contentAlign="left">
+                    <TopicDescription fontSize={21} fontSizeMobile={21}>
+                      <b>{index + 1}.</b>
+                      <br />
+                      {content.description}
+                    </TopicDescription>
+                  </TopicCardInner>
+                  <TopicImage
+                    iconColor="transparent"
+                    bgColor="transparent"
+                    height="auto"
+                    width="100%"
+                    margin="auto 0 0 auto"
+                  >
+                    <SVG src={content.image} />
+                  </TopicImage>
+                </TopicCard>
+              ))}
             </TopicList>
           </ContainerCardSection>
         </ContainerCard>
@@ -245,8 +210,16 @@ export default function Page({ siteConfigData }: PageProps) {
               </SectionTitleText>
             </SectionTitleWrapper>
 
-            <TopicList columns={1} maxWidth={1470}>
-              <TopicCard columns="1fr auto" gap={100} horizontal asProp="div" bgColor="transparent" paddingMobile="0">
+            <TopicList columns={1} columnsTablet={1} maxWidth={1470}>
+              <TopicCard
+                columns="1fr auto"
+                columnsTablet="1fr"
+                gap={100}
+                horizontal
+                asProp="div"
+                bgColor="transparent"
+                paddingMobile="0"
+              >
                 <TopicCardInner contentAlign="left">
                   <TopicDescription fontSize={28}>
                     CoW AMM LPs don't have to worry about LVR, which costs CF-AMM LPs 5-7% of their liquidity, on
@@ -258,13 +231,16 @@ export default function Page({ siteConfigData }: PageProps) {
                   </TopicDescription>
                 </TopicCardInner>
                 <TopicImage
-                  iconColor="#194D05"
+                  iconColor="transparent"
                   width={550}
                   height={550}
                   heightMobile={300}
                   orderReverseMobile
-                  borderRadius={90}
-                />
+                  orderReverseTablet
+                  borderRadius={32}
+                >
+                  <SVG src={IMG_COWAMM_RAISING} />
+                </TopicImage>
               </TopicCard>
             </TopicList>
           </ContainerCardSection>
@@ -279,16 +255,27 @@ export default function Page({ siteConfigData }: PageProps) {
               <SectionTitleText>CoW AMM benefits LPs of all types</SectionTitleText>
             </SectionTitleWrapper>
 
-            <TopicList columns={1} maxWidth={1470}>
-              <TopicCard columns="1fr auto" gap={100} horizontal asProp="div" bgColor="transparent" paddingMobile="0">
+            <TopicList columns={1} columnsTablet={1} maxWidth={1470}>
+              <TopicCard
+                columns="1fr auto"
+                columnsTablet="1fr"
+                gap={100}
+                horizontal
+                asProp="div"
+                bgColor="transparent"
+                paddingMobile="0"
+              >
                 <TopicImage
-                  iconColor="#194D05"
+                  iconColor="transparent"
                   width={500}
                   height={500}
                   heightMobile={300}
                   orderReverseMobile
-                  borderRadius={90}
-                />
+                  orderReverseTablet
+                  borderRadius={32}
+                >
+                  <SVG src={IMG_COWAMM_REKT} />
+                </TopicImage>
                 <TopicCardInner contentAlign="left">
                   <TopicTitle fontSize={52}>Provide liquidity for your token without getting rekt</TopicTitle>
                   <TopicDescription fontSize={24} color={Color.neutral50}>
@@ -300,23 +287,34 @@ export default function Page({ siteConfigData }: PageProps) {
                 </TopicCardInner>
               </TopicCard>
 
-              <TopicCard columns="1fr auto" gap={100} horizontal asProp="div" bgColor="transparent" paddingMobile="0">
+              <TopicCard
+                columns="1fr auto"
+                columnsTablet="1fr"
+                gap={100}
+                horizontal
+                asProp="div"
+                bgColor="transparent"
+                paddingMobile="0"
+              >
                 <TopicCardInner contentAlign="left">
-                  <TopicTitle fontSize={52}>Unlock the power of passive investing</TopicTitle>
+                  <TopicTitle fontSize={52}>Unlock the power of passive income</TopicTitle>
                   <TopicDescription fontSize={24} color={Color.neutral50}>
                     With LVR in the rear view mirror, providing liquidity becomes identical to running a passive
                     investment strategy: solvers rebalance the pool at the correct market price to keep the value of its
-                    reserves equal - thereby keeping portfolios balanced and reducing risk.
+                    reserves equal, thereby keeping portfolios balanced and reducing risk.
                   </TopicDescription>
                 </TopicCardInner>
                 <TopicImage
-                  iconColor="#194D05"
+                  iconColor="transparent"
                   width={500}
                   height={500}
                   heightMobile={300}
                   orderReverseMobile
-                  borderRadius={90}
-                />
+                  orderReverseTablet
+                  borderRadius={32}
+                >
+                  <SVG src={IMG_COWAMM_PASSIVE} />
+                </TopicImage>
               </TopicCard>
             </TopicList>
           </ContainerCardSection>
@@ -331,43 +329,24 @@ export default function Page({ siteConfigData }: PageProps) {
               <SectionTitleText>Trust the experts</SectionTitleText>
             </SectionTitleWrapper>
 
-            <TopicList columns={3}>
-              <TopicCard contentAlign={'left'} bgColor="#BCEC79" textColor="#194D05" padding={'24px'} asProp="div">
-                <TopicCardInner height="100%" contentAlign="left" gap={52}>
-                  <TopicTitle fontSize={28}>
-                    "When LPs bleed money to LVR, users pay for it with bigger spreads. If we want DeFi to rival the CEX
-                    experience, solving LVR will be the key."
-                  </TopicTitle>
-                  <TopicDescription margin="auto 0 0" fontSize={21}>
-                    - Hasu
-                  </TopicDescription>
-                </TopicCardInner>
-              </TopicCard>
-
-              <TopicCard contentAlign={'left'} bgColor="#BCEC79" textColor="#194D05" padding={'24px'} asProp="div">
-                <TopicCardInner height="100%" contentAlign="left" gap={52}>
-                  <TopicTitle fontSize={28}>
-                    "Impermanent loss is a big worry for many of our clients. If LPs could deposit liquidity into
-                    surplus-rebalancing pools and not worry about LVR, we’d deposit more funds into passive investment
-                    strategies."
-                  </TopicTitle>
-                  <TopicDescription margin="auto 0 0" fontSize={21}>
-                    - Marcelo
-                  </TopicDescription>
-                </TopicCardInner>
-              </TopicCard>
-
-              <TopicCard contentAlign={'left'} bgColor="#BCEC79" textColor="#194D05" padding={'24px'} asProp="div">
-                <TopicCardInner height="100%" contentAlign="left" gap={52}>
-                  <TopicTitle fontSize={28}>
-                    "LVR is the main reason for the current concentration in the block builder market. CoW AMM is not
-                    only great for LPs, it's important for Ethereum overall."
-                  </TopicTitle>
-                  <TopicDescription margin="auto 0 0" fontSize={21}>
-                    - Josojo
-                  </TopicDescription>
-                </TopicCardInner>
-              </TopicCard>
+            <TopicList columns={3} columnsTablet={2}>
+              {QUOTES.map((quote, index) => (
+                <TopicCard
+                  key={index}
+                  contentAlign="left"
+                  bgColor={quote.bgColor}
+                  textColor={quote.textColor}
+                  padding="24px"
+                  asProp="div"
+                >
+                  <TopicCardInner height="100%" contentAlign="left" gap={52}>
+                    <TopicTitle fontSize={28}>{quote.title}</TopicTitle>
+                    <TopicDescription margin="auto 0 0" fontSize={21}>
+                      {quote.description}
+                    </TopicDescription>
+                  </TopicCardInner>
+                </TopicCard>
+              ))}
             </TopicList>
           </ContainerCardSection>
         </ContainerCard>

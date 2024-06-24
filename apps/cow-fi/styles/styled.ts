@@ -172,9 +172,11 @@ export const ArticleDescription = styled.p<{ color?: string; fontSize?: number; 
 
 export const TopicList = styled.div<{
   columns?: number
+  columnsTablet?: number
   columnsMobile?: number
   maxWidth?: number
   gap?: number
+  gapTablet?: number
   gapMobile?: number
   margin?: string
 }>`
@@ -185,6 +187,11 @@ export const TopicList = styled.div<{
   max-width: ${({ maxWidth }) => (maxWidth ? `${maxWidth}px` : '100%')};
   margin: ${({ margin }) => margin || '0 auto'};
   overflow-x: auto;
+
+  ${Media.upToLarge()} {
+    grid-template-columns: ${({ columnsTablet }) => `repeat(${columnsTablet || 3}, 1fr)`};
+    gap: ${({ gapTablet }) => (gapTablet ? `${gapTablet}px` : '32px')};
+  }
 
   ${Media.upToMedium()} {
     grid-template-columns: ${({ columnsMobile }) => `repeat(${columnsMobile || 1}, 1fr)`};
@@ -198,6 +205,8 @@ interface TopicCardProps {
   borderColor?: string
   horizontal?: boolean
   columns?: string
+  columnsTablet?: string
+  columnsMobile?: string
   asProp?: string
   padding?: string
   paddingMobile?: string
@@ -239,7 +248,14 @@ export const TopicCard = styled.a.attrs<TopicCardProps>(({ asProp }) => ({
       asProp === 'div' ? border || '4px solid transparent' : `4px solid ${Color.neutral40}`};
   }
 
+  ${Media.upToLarge()} {
+    grid-template-columns: ${({ columns, fullWidth, columnsTablet }) =>
+      fullWidth ? '1fr' : columnsTablet || columns || '1fr'};
+  }
+
   ${Media.upToMedium()} {
+    grid-template-columns: ${({ columns, fullWidth, columnsMobile }) =>
+      fullWidth ? '1fr' : columnsMobile || columns || '1fr'};
     padding: ${({ paddingMobile }) => paddingMobile || '32px 16px'};
     gap: 32px;
     display: ${({ fullWidth }) => (fullWidth ? 'block' : 'flex')};
@@ -277,7 +293,7 @@ export const TopicCardInner = styled.div<{
 
   > .twitter-tweet {
     max-width: 100% !important;
-    margin: 0 auto !important;
+    margin: auto !important;
   }
 
   > .twitter-tweet > iframe {
@@ -291,12 +307,14 @@ export const TopicImage = styled.div<{
   large?: boolean
   bgColor?: string
   margin?: string
+  marginMobile?: string
   height?: number | string
   maxWidth?: number | string
   maxHeight?: number | string
   width?: number | string
   heightMobile?: number | string
   widthMobile?: number | string
+  orderReverseTablet?: boolean
   orderReverseMobile?: boolean
   borderRadius?: number
   position?: string
@@ -340,6 +358,10 @@ export const TopicImage = styled.div<{
   right: ${({ right }) => (typeof right === 'number' ? `${right}px` : right || 'initial')};
   bottom: ${({ bottom }) => (typeof bottom === 'number' ? `${bottom}px` : bottom || 'initial')};
 
+  ${Media.upToLarge()} {
+    order: ${({ orderReverseTablet }) => (orderReverseTablet ? -1 : 'initial')};
+  }
+
   ${Media.upToMedium()} {
     width: ${({ widthMobile }) => (typeof widthMobile === 'number' ? `${widthMobile}px` : widthMobile || '100%')};
     height: ${({ heightMobile, height }) =>
@@ -351,6 +373,7 @@ export const TopicImage = styled.div<{
         ? `${height}px`
         : height || 'var(--size)'};
     order: ${({ orderReverseMobile }) => (orderReverseMobile ? -1 : 'initial')};
+    margin: ${({ marginMobile }) => marginMobile || '0 0 16px'};
   }
 
   > span {
@@ -1213,10 +1236,6 @@ export const SwiperSlideWrapper = styled.div`
     position: relative;
     padding: 0 0 5rem; // Fix for swiper pagination
 
-    ${Media.upToMedium()} {
-      overflow-x: visible;
-    }
-
     &::before,
     &::after {
       content: '';
@@ -1349,7 +1368,8 @@ export const SwiperSlideWrapper = styled.div`
 
 export const WidgetContainer = styled.div`
   display: flex;
-  width: 100%;
+  width: 47rem;
+  max-width: 100%;
   flex-flow: column wrap;
   justify-content: flex-start;
   align-items: center;
@@ -1372,6 +1392,8 @@ export const WidgetContainer = styled.div`
   }
 
   ${Media.upToMedium()} {
+    width: 100%;
+
     > div,
     > div > iframe {
       width: 100%;
@@ -1429,6 +1451,7 @@ export const ArticleMainTitle = styled.h1<{ margin?: string; fontSize?: number }
 `
 
 export const BodyContent = styled.div<{ color?: string }>`
+  font-family: ${Font.familySerif};
   font-size: 18px;
   line-height: 1.6;
   color: ${({ color }) => color || Color.neutral0};
@@ -1458,7 +1481,7 @@ export const BodyContent = styled.div<{ color?: string }>`
   > ol {
     margin-bottom: 16px;
     font-size: 21px;
-    line-height: 1.4;
+    line-height: 1.5;
 
     ${Media.upToMedium()} {
       font-size: 18px;
@@ -1494,6 +1517,7 @@ export const BodyContent = styled.div<{ color?: string }>`
   > h4,
   > h5,
   > h6 {
+    font-family: ${Font.family};
     font-weight: bold;
     margin: 56px 0 32px;
   }
@@ -1790,7 +1814,6 @@ export const ColorTable = styled.table`
 export const ColorTableHeader = styled.th`
   background: var(--neutral);
   color: var(--red);
-  padding: 10px;
   text-align: left;
   border: 2px solid var(--border);
   font-weight: inherit;

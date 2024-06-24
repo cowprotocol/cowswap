@@ -122,7 +122,7 @@ export default function Page({ siteConfigData }: PageProps) {
               <SectionTitleText>Integrate now</SectionTitleText>
             </SectionTitleWrapper>
 
-            <TopicList columns={1} maxWidth={1000}>
+            <TopicList columns={1} columnsTablet={1} maxWidth={1000}>
               <TopicCard
                 columns="1fr auto"
                 gap={100}
@@ -178,13 +178,13 @@ export default function Page({ siteConfigData }: PageProps) {
               </SectionTitleDescription>
             </SectionTitleWrapper>
 
-            <TopicList columns={3}>
+            <TopicList columns={3} columnsTablet={2}>
               <TopicCard contentAlign={'left'} bgColor={Color.neutral100} padding={'32px'} gap={16} asProp="div">
                 <TopicImage bgColor="transparent" height={75} width={'auto'}>
                   <SVG src="images/protection.svg" />
                 </TopicImage>
                 <TopicCardInner contentAlign="left">
-                  <TopicTitle>Full Protection from MEV</TopicTitle>
+                  <TopicTitle>Full protection from MEV</TopicTitle>
                   <TopicDescription fontSize={18} color={Color.neutral40} margin="0">
                     CoW Swap offers the best MEV protection in the land. Thanks to a delegated trading model that relies
                     on experts to execute swaps, traders can rest assured that they're safe from the MEV bots.
@@ -197,7 +197,7 @@ export default function Page({ siteConfigData }: PageProps) {
                   <SVG src="images/surplus.svg" />
                 </TopicImage>
                 <TopicCardInner contentAlign="left">
-                  <TopicTitle>Surplus-Capturing Orders</TopicTitle>
+                  <TopicTitle>Surplus-capturing orders</TopicTitle>
                   <TopicDescription fontSize={18} color={Color.neutral40} margin="0">
                     Every order is surplus-capturing and traders usually earn a little extra in their sell token with
                     each swap.
@@ -210,7 +210,7 @@ export default function Page({ siteConfigData }: PageProps) {
                   <SVG src="images/gasless.svg" />
                 </TopicImage>
                 <TopicCardInner contentAlign="left">
-                  <TopicTitle>Gasless Trading</TopicTitle>
+                  <TopicTitle>Gasless trading</TopicTitle>
                   <TopicDescription fontSize={18} color={Color.neutral40} margin="0">
                     All gas fees are paid in the sell token for swaps and even for token approvals. Users can enjoy
                     ETH-free trading every time, even with brand-new wallets.
@@ -230,7 +230,7 @@ export default function Page({ siteConfigData }: PageProps) {
               <SectionTitleText fontSize={62}>Everything You'd Want in a Widget</SectionTitleText>
             </SectionTitleWrapper>
 
-            <TopicList columns={4} columnsMobile={1}>
+            <TopicList columns={4} columnsTablet={2} columnsMobile={1}>
               {FEATURE_ITEMS.map((item, index) => (
                 <TopicCard
                   key={index}

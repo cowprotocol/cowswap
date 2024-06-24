@@ -78,12 +78,10 @@ export default function Page({ siteConfigData }: PageProps) {
 }
 
 export const getStaticProps: GetStaticProps<PageProps> = async () => {
-  const siteConfigData = CONFIG
-
   return {
     props: {
       siteConfigData: {
-        ...siteConfigData,
+        ...CONFIG,
         title: 'CoW DAO Legal Overview',
         descriptionShort:
           'Legal overview of CoW DAO, including terms and conditions, privacy policy, and other documents.',

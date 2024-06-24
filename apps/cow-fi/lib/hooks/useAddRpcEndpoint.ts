@@ -1,7 +1,6 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback } from 'react'
 
 import { useConnect } from './useConnect'
-import { useWalletClient } from 'wagmi'
 import { WalletClient } from 'viem'
 
 const CONFIG = {
@@ -14,8 +13,6 @@ const CONFIG = {
     blockExplorerUrl: 'https://etherscan.io',
   },
 }
-
-export const NotConnectedError = new Error('No connected to any provider')
 
 export interface UseAddRpcEndpointResult {
   isConnected: boolean

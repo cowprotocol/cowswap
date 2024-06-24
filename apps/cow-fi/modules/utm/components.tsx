@@ -1,7 +1,8 @@
+import React from 'react'
 import { AnchorHTMLAttributes, useMemo, ComponentType } from 'react'
 import Link, { LinkProps } from 'next/link'
 import { UtmParams, useUtm } from 'modules/utm'
-import { addUtmToUrl, hasUtmCodes } from 'modules/utm/utils'
+import { addUtmToUrl } from 'modules/utm/utils'
 
 export const defaultUtm: UtmParams = {
   utmSource: 'cow.fi',
@@ -15,7 +16,7 @@ export interface LinkWithUtmProps
   defaultUtm?: UtmParams
 }
 
-export function LinkWithUtmComponent(p: LinkWithUtmProps): JSX.Element {
+export function LinkWithUtmComponent(p: LinkWithUtmProps): React.ReactNode {
   const { href, as, children, defaultUtm: providedUtm = defaultUtm, ...props } = p
   const utm = useUtm()
 
@@ -33,16 +34,6 @@ export function LinkWithUtmComponent(p: LinkWithUtmProps): JSX.Element {
       {children}
     </Link>
   )
-}
-
-function getUtm(...utms: (UtmParams | undefined)[]): UtmParams | null {
-  for (const utm of utms) {
-    if (hasUtmCodes(utm)) {
-      return utm || null
-    }
-  }
-
-  return null
 }
 
 export function withUtmLink<T extends JSX.IntrinsicAttributes>(Component: ComponentType<T>) {

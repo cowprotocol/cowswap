@@ -49,7 +49,6 @@ export const TokenTable = styled.div`
 `
 
 export const HeaderItem = styled.div`
-  display: contents;
   display: grid;
   grid-template-columns: 0.1fr 3fr 1fr 1fr 1fr 1fr;
   align-items: center;
@@ -84,7 +83,6 @@ export const PlacerholderImage = styled.div`
 
 export const NoTokensText = styled.div`
   font-size: 2rem;
-  padding: 1rem;
-  padding-top: 2rem;
+  padding: 2rem 1rem 1rem;
   color: ${Color.neutral0};
 `

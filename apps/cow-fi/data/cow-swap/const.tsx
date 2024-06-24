@@ -1,6 +1,96 @@
 import { Link } from '@/components/Link'
 import { EventCategories, sendEventHandler } from '@cowprotocol/analytics'
 
+import IMG_COWSWAP_COINS from '@cowprotocol/assets/images/image-coins.svg'
+import IMG_COWSWAP_MEV from '@cowprotocol/assets/images/image-cowswap-mev.svg'
+import IMG_COWSWAP_UX from '@cowprotocol/assets/images/image-cowswap-ux.svg'
+import IMG_COWSWAP_SWAPS from '@cowprotocol/assets/images/image-cowswap-swaps.svg'
+import IMG_COWSWAP_LIMIT from '@cowprotocol/assets/images/image-cowswap-limit.svg'
+import IMG_COWSWAP_TWAP from '@cowprotocol/assets/images/image-cowswap-twap.svg'
+import IMG_COWSWAP_GASLESS from '@cowprotocol/assets/images/image-cowswap-gasless.svg'
+import IMG_COWSWAP_NOFEES from '@cowprotocol/assets/images/image-cowswap-nofees.svg'
+import IMG_COWSWAP_MULTIPLE from '@cowprotocol/assets/images/image-cowswap-multiple.svg'
+
+export const COW_IS_DIFFERENT = [
+  {
+    bgColor: '#65D9FF',
+    fontSize: 28,
+    color: '#012F7A',
+    description: "By aligning incentives between solvers and users, CoW Swap finds surplus you won't get anywhere else",
+    imgSrc: IMG_COWSWAP_COINS,
+  },
+  {
+    bgColor: '#012F7A',
+    fontSize: 28,
+    color: '#CCF8FF',
+    description: 'MEV is a $1.3+ billion problem that you never have to worry about on CoW Swap',
+    imgSrc: IMG_COWSWAP_MEV,
+  },
+  {
+    bgColor: '#CCF8FF',
+    fontSize: 28,
+    color: '#012F7A',
+    description: "CoW Swap's unique architecture enables advanced order types and seamless UX",
+    imgSrc: IMG_COWSWAP_UX,
+  },
+]
+
+export const ADVANCED_ORDER_TYPES = [
+  {
+    bgColor: '#012F7A',
+    textColor: '#CCF8FF',
+    titleColor: '#FFF8F7',
+    title: 'Market orders (aka swaps)',
+    description: 'CoW Swap market orders maximize surplus and minimize MEV',
+    imgSrc: IMG_COWSWAP_SWAPS,
+  },
+  {
+    bgColor: '#CCF8FF',
+    textColor: '#004293',
+    titleColor: '#012F7A',
+    title: 'Limit orders',
+    description:
+      'Placing a limit order is like setting a trap for a price for your trade. CoW Swap is the only DEX that offers surplus on limit orders – and one of the only DEXs that offers limit orders at all',
+    imgSrc: IMG_COWSWAP_LIMIT,
+  },
+  {
+    bgColor: '#99ECFF',
+    textColor: '#005EB7',
+    titleColor: '#012F7A',
+    title: 'TWAP orders',
+    description:
+      'Time-weighted average price (TWAP) orders minimize price impact and volatility risk by letting you trade assets at fixed intervals over a period of time',
+    imgSrc: IMG_COWSWAP_TWAP,
+  },
+]
+
+export const BETTER_UX = [
+  {
+    bgColor: '#99ECFF',
+    textColor: '#005EB7',
+    titleColor: '#012F7A',
+    title: 'Gasless trading',
+    description: 'All gas fees are paid in the sell token - so you can save your precious ETH',
+    imgSrc: IMG_COWSWAP_GASLESS,
+  },
+  {
+    bgColor: '#012F7A',
+    textColor: '#CCF8FF',
+    titleColor: '#FFF8F7',
+    title: 'No fees for failed transactions',
+    description: "You shouldn't pay for what didn't work, so failed transactions are always free",
+    imgSrc: IMG_COWSWAP_NOFEES,
+  },
+  {
+    bgColor: '#CCF8FF',
+    textColor: '#005EB7',
+    titleColor: '#012F7A',
+    title: 'Execute multiple trades at once',
+    description: 'With intent-based trading, you can place as many orders as you want simultaneously',
+    imgSrc: IMG_COWSWAP_MULTIPLE,
+  },
+]
+
 export const FAQ_DATA = [
   {
     question: 'What is CoW Swap?',

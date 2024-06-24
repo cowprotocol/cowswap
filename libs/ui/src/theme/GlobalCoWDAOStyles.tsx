@@ -1,6 +1,6 @@
 import { createGlobalStyle, css } from 'styled-components/macro'
 
-import { Font } from '../consts'
+import { Color, Font } from '../consts'
 import { UI } from '../enum'
 
 type GlobalFontConfig =
@@ -26,8 +26,13 @@ type GlobalCowDAOFonts = {
   FONT_STUDIO_FEIXEN_SEMIBOLD_ITALIC: GlobalFontConfig
   FONT_STUDIO_FEIXEN_ULTRALIGHT: GlobalFontConfig
   FONT_STUDIO_FEIXEN_ULTRALIGHT_ITALIC: GlobalFontConfig
+  FONT_STUDIO_FEIXEN_SERIF_BOLD: GlobalFontConfig
+  FONT_STUDIO_FEIXEN_SERIF_MEDIUM: GlobalFontConfig
+  FONT_STUDIO_FEIXEN_SERIF_REGULAR: GlobalFontConfig
+  FONT_STUDIO_FEIXEN_SERIF_BOOK: GlobalFontConfig
 }
-export const GlobalCoWDAOStyles = (fonts: GlobalCowDAOFonts) =>
+
+export const GlobalCoWDAOStyles = (fonts: GlobalCowDAOFonts, bgColor?: string, color?: string) =>
   createGlobalStyle(
     () => css`
       @font-face {
@@ -128,15 +133,43 @@ export const GlobalCoWDAOStyles = (fonts: GlobalCowDAOFonts) =>
         font-style: italic;
       }
 
+      @font-face {
+        font-family: 'studiofeixenserif';
+        src: url(${fonts.FONT_STUDIO_FEIXEN_SERIF_BOLD}) format('woff2');
+        font-weight: ${Font.weight.bold};
+        font-style: normal;
+      }
+
+      @font-face {
+        font-family: 'studiofeixenserif';
+        src: url(${fonts.FONT_STUDIO_FEIXEN_SERIF_MEDIUM}) format('woff2');
+        font-weight: ${Font.weight.medium};
+        font-style: normal;
+      }
+
+      @font-face {
+        font-family: 'studiofeixenserif';
+        src: url(${fonts.FONT_STUDIO_FEIXEN_SERIF_REGULAR}) format('woff2');
+        font-weight: ${Font.weight.regular};
+        font-style: normal;
+      }
+
+      @font-face {
+        font-family: 'studiofeixenserif';
+        src: url(${fonts.FONT_STUDIO_FEIXEN_SERIF_BOOK}) format('woff2');
+        font-weight: ${Font.weight.book};
+        font-style: normal;
+      }
+
       body {
         font-family: ${Font.family};
         margin: 0;
         padding: 0;
-        color: ${UI.COLOR_TEXT};
+        background: ${bgColor || Color.neutral98};
+        color: ${color || UI.COLOR_TEXT};
         scroll-behavior: smooth;
         font-variant: none;
         font-variant-ligatures: none;
-        font-display: swap;
         text-rendering: optimizeLegibility;
         font-feature-settings: 'liga' off, 'kern' on;
         -webkit-font-smoothing: antialiased;
