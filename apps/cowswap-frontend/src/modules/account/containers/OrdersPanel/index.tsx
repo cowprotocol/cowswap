@@ -1,7 +1,7 @@
 import { useSetAtom } from 'jotai'
 
 import Close from '@cowprotocol/assets/images/x.svg?react'
-import { UI, Media } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { transparentize } from 'color2k'
@@ -14,6 +14,7 @@ import { toggleAccountSelectorModalAtom } from 'modules/wallet/containers/Accoun
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
 
 import { useAccountModalState } from '../../hooks/useAccountModalState'
+import { useCloseAccountModalOnNavigate } from '../../hooks/useCloseAccountModalOnNavigate'
 import { useToggleAccountModal } from '../../hooks/useToggleAccountModal'
 import { AccountDetails } from '../AccountDetails'
 
@@ -75,7 +76,6 @@ const Header = styled.div`
   position: sticky;
   top: 0;
   left: 0;
-  width: 100%;
   z-index: 20;
 
   ${Media.upToMedium()} {
@@ -138,6 +138,8 @@ export function OrdersPanel() {
   const { pendingActivity, confirmedActivity } = useCategorizeRecentActivity()
 
   const handleCloseOrdersPanel = useToggleAccountModal()
+
+  useCloseAccountModalOnNavigate()
 
   if (!active || !isOpen || !account) {
     return null
