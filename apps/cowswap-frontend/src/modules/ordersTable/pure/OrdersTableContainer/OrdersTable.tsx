@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import iconOrderExecution from '@cowprotocol/assets/cow-swap/orderExecution.svg'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { QuestionTooltipIconWrapper, UI } from '@cowprotocol/ui'
+import { Media, QuestionTooltipIconWrapper, UI } from '@cowprotocol/ui'
 import { HelpTooltip } from '@cowprotocol/ui'
 import { Currency, Price } from '@uniswap/sdk-core'
 
@@ -10,7 +10,6 @@ import { Trans } from '@lingui/macro'
 import { X } from 'react-feather'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
-
 
 import { PendingOrdersPrices } from 'modules/orders/state/pendingOrdersPricesAtom'
 import { SpotPricesKeyParams } from 'modules/orders/state/spotPricesAtom'
@@ -44,18 +43,17 @@ import { OrdersTablePagination } from '../OrdersTablePagination'
 const TableBox = styled.div`
   display: block;
   border-radius: 16px;
-  border: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
+  border: none;
   padding: 0;
   position: relative;
   overflow: hidden;
-  background: var(${UI.COLOR_PAPER_OPACITY_99});
-  backdrop-filter: blur(20px);
+  background: var(${UI.COLOR_PAPER});
 
-  ${({ theme }) => theme.mediaWidth.upToLargeAlt`
+  ${Media.upToLargeAlt()} {
     width: 100%;
     display: flex;
     flex-flow: column wrap;
-  `};
+  }
 `
 
 const TableInner = styled.div`
@@ -122,10 +120,10 @@ const Rows = styled.div`
   display: block;
   ${({ theme }) => theme.colorScrollbar};
 
-  ${({ theme }) => theme.mediaWidth.upToLargeAlt`
-   display: flex;
-   flex-flow: column wrap;
-  `};
+  ${Media.upToLargeAlt()} {
+    display: flex;
+    flex-flow: column wrap;
+  }
 `
 
 const StyledInvertRateControl = styled(InvertRateControl)`
@@ -162,10 +160,10 @@ const OrdersExplainerBanner = styled.div`
   padding: 0 16px;
   color: inherit;
 
-  ${({ theme }) => theme.mediaWidth.upToLargeAlt`
+  ${Media.upToLargeAlt()} {
     width: fit-content;
     grid-template-columns: minmax(462px, 4fr) minmax(426px, 3.8fr) 24px;
-  `}
+  }
 
   /* 1st section */
   > div {

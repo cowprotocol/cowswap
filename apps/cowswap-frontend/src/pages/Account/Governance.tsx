@@ -1,6 +1,6 @@
-import CowProtocolImage from '@cowprotocol/assets/cow-swap/cowprotocol.svg'
+import { ProductLogo, ProductVariant } from '@cowprotocol/ui'
 
-import { ExtLink, BannerCard, BannerCardContent, BannerCardSvg, CardActions } from './styled'
+import { ExtLink, BannerCard, BannerCardContent, BannerCardIcon, CardActions } from './styled'
 
 export default function Governance() {
   return (
@@ -14,7 +14,9 @@ export default function Governance() {
           <ExtLink href={'https://forum.cow.fi/'}>CoW forum ↗</ExtLink>
         </CardActions>
       </BannerCardContent>
-      <BannerCardSvg src={CowProtocolImage} description="CoWDAO Governance" />
+      <BannerCardIcon>
+        <ProductLogo variant={ProductVariant.CowSwap} height={76} logoIconOnly />
+      </BannerCardIcon>
     </BannerCard>
   )
 }

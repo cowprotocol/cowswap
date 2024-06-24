@@ -2,12 +2,14 @@ import { TokenInfo } from 'types'
 
 const API_BASE_URL = 'https://api.cow.fi'
 
+export const DATA_CACHE_TIME_SECONDS = 5 * 60 // Cache 5min
+
 export const CONFIG = {
-  title: 'CoW Protocol',
+  title: 'CoW DAO',
   metatitle_tokenDetail: 'Live Token Price Chart & Metrics',
-  description:
-    'CoW Protocol finds the lowest prices from all decentralized exchanges and DEX aggregators & saves you more with p2p trading and protection from MEV ',
-  descriptionShort: 'The smartest way to trade',
+  description: 'CoW DAO develops the most user-protective products in Ethereum - so you can do more with less worry.',
+  descriptionShort: "Don't get milked!",
+  ogImage: 'https://cow.fi/images/og-meta-cowdao.png',
   url: {
     root: 'https://cow.fi',
     swap: 'https://swap.cow.fi/#/1/swap/DAI/COW?sellAmount=500',

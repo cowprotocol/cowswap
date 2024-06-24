@@ -10,10 +10,10 @@ import { CurrencyAmount } from '@uniswap/sdk-core'
 import { ArrowRight, ArrowLeft } from 'react-feather'
 import { HashLink } from 'react-router-hash-link'
 import styled from 'styled-components/macro'
+import { LinkStyledButton } from 'theme'
 
 import NotificationBanner from 'legacy/components/NotificationBanner'
 import { LegacyConfirmationModalContent } from 'legacy/components/TransactionConfirmationModal/LegacyConfirmationModalContent'
-import { LinkStyledButton } from 'legacy/theme'
 
 import { Routes } from 'common/constants/routes'
 import { CancellationType } from 'common/hooks/useCancelOrder/state'

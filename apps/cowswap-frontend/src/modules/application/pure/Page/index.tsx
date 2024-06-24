@@ -1,9 +1,10 @@
 import { PropsWithChildren } from 'react'
 
-import { UI } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 
 import { lighten } from 'color2k'
 import styled, { css } from 'styled-components/macro'
+import { WIDGET_MAX_WIDTH } from 'theme'
 
 import { WithClassName } from 'legacy/types'
 
@@ -11,7 +12,7 @@ import { Widget } from 'modules/application/pure/Widget'
 
 export const PageWrapper = styled(Widget)`
   padding: 0 24px 24px;
-  max-width: ${({ theme }) => theme.appBody.maxWidth.content};
+  max-width: ${WIDGET_MAX_WIDTH.content};
   min-height: 500px;
 `
 
@@ -19,21 +20,24 @@ export const Title = styled.h1`
   font-size: 32px;
   margin: 24px 0;
   color: inherit;
-  text-shadow: ${({ theme }) => theme.textShadow1};
+  text-shadow: ${({ theme }) =>
+    theme.darkMode
+      ? `0px 0px 26px ${`var(${UI.COLOR_TEXT_OPACITY_10})`}, 0px 0px 28px ${`var(${UI.COLOR_TEXT_OPACITY_25})`}`
+      : 'none'};
   font-weight: 500;
 
-  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+  ${Media.upToExtraSmall()} {
     font-size: 24px;
-  `}
+  }
 `
 
 export const SectionTitle = styled(Title)`
   font-size: 21px;
   margin: 12px 0 16px;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     text-align: center;
-  `}
+  }
 `
 
 export const Content = styled.div`
@@ -42,11 +46,11 @@ export const Content = styled.div`
   display: block;
   color: inherit;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     p > a {
       word-break: break-all;
     }
-  `}
+  }
 
   > h2 {
     font-size: 24px;
@@ -101,7 +105,7 @@ export const Content = styled.div`
 
     &::before {
       content: '';
-      background: ${({ theme }) => theme.redShade};
+      background: ${({ theme }) => (theme.darkMode ? '#842100' : '#AE2C00')};
       position: absolute;
       width: 100%;
       height: 100%;
@@ -113,7 +117,7 @@ export const Content = styled.div`
   }
 
   li > em {
-    background: ${({ theme }) => theme.redShade};
+    background: ${({ theme }) => (theme.darkMode ? '#842100' : '#AE2C00')};
     color: ${({ theme }) => theme.white};
     width: 100%;
     display: block;
@@ -182,10 +186,10 @@ export const GdocsListStyle = css`
       list-style: decimal;
 
       a {
-        color: ${({ theme }) => theme.text3};
+        color: ${({ theme }) => theme.info};
 
         &:hover {
-          color: ${({ theme }) => theme.text3};
+          color: ${({ theme }) => theme.info};
         }
       }
 

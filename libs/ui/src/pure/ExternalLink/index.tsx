@@ -48,7 +48,7 @@ const LinkIconWrapper = styled.a`
     text-decoration: none;
   }
 `
-export const LinkIcon = styled(LinkIconFeather)`
+export const LinkIcon = styled(LinkIconFeather as any)`
   height: 16px;
   width: 18px;
   margin: 0 10px 0 0;

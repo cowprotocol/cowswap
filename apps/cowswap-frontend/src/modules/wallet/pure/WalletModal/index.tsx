@@ -3,11 +3,11 @@ import { AutoRow } from '@cowprotocol/ui'
 import { TryActivation } from '@cowprotocol/wallet'
 
 import { Trans } from '@lingui/macro'
+import { ThemedText } from 'theme'
+import { StyledInternalLink } from 'theme'
 
 import { LightCard } from 'legacy/components/Card'
 import { AutoColumn } from 'legacy/components/Column'
-import { ThemedText } from 'legacy/theme'
-import { StyledInternalLink } from 'legacy/theme/components'
 
 import { Routes } from 'common/constants/routes'
 import { CloseIcon, ContentWrapper, CowModal, HeaderRow, HoverText } from 'common/pure/Modal'
@@ -39,14 +39,15 @@ export function WalletModal(props: WalletModalProps) {
     <CowModal maxWidth={600} isOpen={isOpen} onDismiss={onDismiss} minHeight={false} maxHeight={90}>
       <Wrapper>
         <UpperSection>
-          <CloseIcon onClick={onDismiss}>
-            <CloseColor />
-          </CloseIcon>
           {!isPending && (
             <HeaderRow>
               <HoverText>
                 <Trans>Connect a wallet</Trans>
               </HoverText>
+
+              <CloseIcon onClick={onDismiss}>
+                <CloseColor />
+              </CloseIcon>
             </HeaderRow>
           )}
           <ContentWrapper>

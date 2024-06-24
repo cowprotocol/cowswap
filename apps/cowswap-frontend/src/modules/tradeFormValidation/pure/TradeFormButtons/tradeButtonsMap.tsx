@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { getIsNativeToken, getWrappedToken } from '@cowprotocol/common-utils'
-import { TokenSymbol } from '@cowprotocol/ui'
+import { HelpTooltip, TokenSymbol } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
@@ -108,7 +108,20 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
     text: 'Wallet Unsupported',
   },
   [TradeFormValidation.SafeReadonlyUser]: {
-    text: 'Read Only',
+    text: (
+      <>
+        <span>Connect signer</span>{' '}
+        <HelpTooltip
+          text={
+            <div>
+              Your Safe is not connected with a signer.
+              <br />
+              To place an order, you must connect using a signer of the Safe and refresh the page.
+            </div>
+          }
+        />
+      </>
+    ),
   },
   [TradeFormValidation.QuoteLoading]: {
     text: <TradeLoadingButton />,

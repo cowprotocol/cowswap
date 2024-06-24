@@ -1,4 +1,4 @@
-import { AutoRow } from '@cowprotocol/ui'
+import { AutoRow, Media } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
@@ -10,13 +10,13 @@ export const Wrapper = styled.div`
   overflow-y: auto;
   ${({ theme }) => theme.colorScrollbar};
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     overflow-y: auto;
     overflow-x: auto;
     padding: 0;
     max-height: 100vh;
     margin: 0;
-  `}
+  }
 `
 
 export const Header = styled.div`
@@ -50,9 +50,9 @@ export const Body = styled(AutoRow)`
   max-height: 80vh;
   padding: 0 10px;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     max-height: 100%;
-  `}
+  }
 `
 
 export const FieldsWrapper = styled.div`
@@ -61,9 +61,9 @@ export const FieldsWrapper = styled.div`
   width: 100%;
   gap: 2px;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     padding: 0 0 54px;
-  `}
+  }
 `
 
 export const InfoBannerWrapper = styled.div`
@@ -125,9 +125,9 @@ export const CurrencyField = styled.div`
     width: 100%;
 
     & .open-currency-select-button {
-      ${({ theme }) => theme.mediaWidth.upToSmall`
+      ${Media.upToSmall()} {
         width: auto;
-    `}
+      }
     }
   }
 `

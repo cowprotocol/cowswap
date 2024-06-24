@@ -3,11 +3,11 @@ import { useSetAtom } from 'jotai'
 import { useCallback, useMemo, useRef, useState } from 'react'
 
 import { openFortuneCookieAnalytics, shareFortuneTwitterAnalytics } from '@cowprotocol/analytics'
-import fortuneCookieImage from '@cowprotocol/assets/cow-swap/fortune-cookie.png'
 import twitterImage from '@cowprotocol/assets/cow-swap/twitter.svg'
+import IMAGE_ICON_FORTUNE_COOKIE from '@cowprotocol/assets/images/icon-fortune-cookie.svg'
 import { addBodyClass, removeBodyClass } from '@cowprotocol/common-utils'
-import { ExternalLink } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
+import { ExternalLink, Media } from '@cowprotocol/ui'
+import { UI, Color } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import ReactDOM from 'react-dom'
@@ -28,15 +28,11 @@ import {
 import { SuccessBanner } from './styled'
 
 const FortuneButton = styled.div<{ isDailyFortuneChecked: boolean }>`
-  --size: 64px;
-  display: inline-block;
-  position: fixed;
-  z-index: 10;
-  right: 78px;
-  bottom: 30px;
+  --size: 32px;
+  display: flex;
+
   width: var(--size);
   height: var(--size);
-  border-radius: var(--size);
   text-align: center;
   animation: ${({ isDailyFortuneChecked }) =>
     isDailyFortuneChecked ? '' : 'floating 3.5s ease-in-out forwards infinite'};
@@ -44,70 +40,10 @@ const FortuneButton = styled.div<{ isDailyFortuneChecked: boolean }>`
   transform: scale(1);
   font-size: 40px;
   line-height: 0;
-  color: ${({ theme }) => theme.blue1};
+  color: inherit;
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    --size: 52px;
-    position: relative;
-    right: initial;
-    bottom: initial;
-    transform: none;
-    animation: none;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-radius: 0px;
-    margin: 0px;
-    font-weight: 600;
-    font-size: 17px;
-    padding: 15px 10px;
-    color: inherit;
-    border-bottom: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
-    height: auto;
-  `}
-
-  &::before {
-    content: '';
-    display: block;
-    height: 10px;
-    width: 10px;
-    background: transparent;
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    top: 0;
-    margin: auto;
-    box-shadow: 0px 0px 50px 30px ${({ theme }) => (theme.darkMode ? theme.blueDark2 : theme.blueLight1)};
-    z-index: -1;
-
-    ${({ theme }) => theme.mediaWidth.upToMedium`
-      content: none;
-      display: none;
-    `}
-  }
-
-  &::after {
-    --size: 90%;
-    content: '';
-    display: block;
-    background: url(${fortuneCookieImage}) no-repeat center 100% / contain;
-    width: var(--size);
-    height: var(--size);
-    transition: transform var(${UI.ANIMATION_DURATION}) ease-in-out;
-
-    ${({ theme }) => theme.mediaWidth.upToMedium`
-      --size: 46px;
-    `}
-  }
-
-  &:hover::after {
-    transform: scale(1.4);
-
-    ${({ theme }) => theme.mediaWidth.upToMedium`
-      transform: none;
-    `}
+  &:hover {
+    color: ${Color.neutral100};
   }
 
   > span {
@@ -215,10 +151,10 @@ const FortuneTitle = styled.h2`
   font-weight: 700;
   color: inherit;
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${Media.upToMedium()} {
     font-size: 16px;
     margin: 16px auto 34px;
-  `}
+  }
 
   > i {
     font-size: 16px;
@@ -240,13 +176,13 @@ const FortuneText = styled.h3`
   font-weight: 700;
   text-align: center;
   position: relative;
-  color: ${({ theme }) => (theme.darkMode ? theme.bg1 : `var(${UI.COLOR_TEXT})`)};
+  color: ${({ theme }) => (theme.darkMode ? theme.paper : `var(${UI.COLOR_TEXT})`)};
   background: ${({ theme }) => theme.white};
 
   // small device
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${Media.upToMedium()} {
     font-size: 21px;
-  `}
+  }
 
   &:before {
     content: '“';
@@ -299,11 +235,11 @@ const HeaderElement = styled.div`
   height: 56px;
   z-index: 10;
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${Media.upToMedium()} {
     height: 48px;
     justify-content: center;
     background: var(${UI.COLOR_PAPER_DARKEST});
-  `}
+  }
 `
 
 const StyledCloseIcon = styled(X)`
@@ -314,11 +250,11 @@ const StyledCloseIcon = styled(X)`
   transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
   margin: 0 0 0 auto;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     --size: 34px;
     width: 100%;
     margin: 0;
-  `}
+  }
 
   &:hover {
     cursor: pointer;
@@ -447,6 +383,7 @@ export function FortuneWidget({ menuTitle, isMobileMenuOpen }: FortuneWidgetProp
   return (
     <>
       <FortuneButton isDailyFortuneChecked={isDailyFortuneChecked} onClick={openFortuneModal}>
+        <SVG src={IMAGE_ICON_FORTUNE_COOKIE} description="Fortune Cookie" />
         {menuTitle && <span>{menuTitle}</span>}
       </FortuneButton>
       {ReactDOM.createPortal(<PortalContent />, document.body)}

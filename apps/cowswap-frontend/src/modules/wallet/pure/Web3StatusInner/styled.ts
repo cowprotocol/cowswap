@@ -18,7 +18,7 @@ export const Web3StatusConnect = styled(Web3StatusGeneric)<{ faded?: boolean }>`
       border: 0;
       font-size: 14px;
       font-weight: var(${UI.FONT_WEIGHT_MEDIUM});
-      background: transparent;
+      background: transparent !important;
       color: inherit !important;
       transition: all var(${UI.ANIMATION_DURATION}) ease-in-out;
       opacity: 0.7;
@@ -68,28 +68,45 @@ export const Text = styled.p`
   text-overflow: ellipsis;
   white-space: nowrap;
   margin: 0;
-  font-size: ${({ theme }) => (theme.isInjectedWidgetMode ? '15px' : '1rem')};
+  font-size: ${({ theme }) => (theme.isInjectedWidgetMode ? '15px' : '16px')};
   width: fit-content;
   font-weight: 500;
 `
 
 export const Wrapper = styled.div`
   color: inherit;
-  height: ${({ theme }) => (theme.isInjectedWidgetMode ? 'initial' : '36px')};
+  height: ${({ theme }) => (theme.isInjectedWidgetMode ? 'initial' : '100%')};
+  max-height: 100%;
   display: flex;
   padding: 0;
   margin: 0;
   justify-content: center;
+  border: 2px solid transparent;
 
   > button {
     height: auto;
-    border-radius: 19px;
-    padding: 6px 12px;
+    border-radius: 28px;
+    padding: 8px 16px;
     width: max-content;
     gap: 6px;
+    transition: all var(${UI.ANIMATION_DURATION}) ease-in-out;
+    background: var(${UI.COLOR_PRIMARY});
+    color: var(${UI.COLOR_BUTTON_TEXT});
+
+    &:hover {
+      background: var(${UI.COLOR_PRIMARY_LIGHTER});
+    }
   }
 
-  ${Web3StatusConnected} {
+  > ${Web3StatusConnected} {
+    background: var(${UI.COLOR_PAPER});
+    color: var(${UI.COLOR_TEXT});
+
+    &:hover {
+      background: var(${UI.COLOR_PRIMARY});
+      color: var(${UI.COLOR_BUTTON_TEXT});
+    }
+
     > div > svg > path {
       stroke: currentColor;
       opacity: 0.7;

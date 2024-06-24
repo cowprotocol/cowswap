@@ -1,4 +1,4 @@
-import { QuestionTooltipIconWrapper, UI } from '@cowprotocol/ui'
+import { Media, QuestionTooltipIconWrapper, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
@@ -10,10 +10,10 @@ export const Row = styled.div`
   gap: 10px;
   width: 100%;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     flex-direction: column;
     grid-gap: 6px;
-  `}
+  }
 
   ${QuestionTooltipIconWrapper} {
     opacity: 0.5;

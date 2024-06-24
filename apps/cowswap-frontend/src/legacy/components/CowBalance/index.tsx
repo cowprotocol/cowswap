@@ -1,4 +1,4 @@
-import { TokenAmount } from '@cowprotocol/ui'
+import { Media, TokenAmount } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
@@ -20,9 +20,9 @@ const Wrapper = styled(ClaimSummaryWrapper)`
     > p {
       font-size: 24px;
 
-      ${({ theme }) => theme.mediaWidth.upToSmall`
+      ${Media.upToSmall()} {
         font-size: 18px;
-      `};
+      }
     }
   }
 `

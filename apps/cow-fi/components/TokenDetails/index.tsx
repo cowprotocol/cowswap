@@ -20,9 +20,6 @@ import { SwapWidget } from '@/components/SwapWidget'
 import { SwapLinkCard } from '@/components/SwapLinkCard'
 import { NetworkHeaderItem } from '@/components/NetworkItem/styles'
 import { NetworkItem } from '@/components/NetworkItem'
-import { InlineBanner } from '@/components/InlineBanner'
-import { CONFIG } from '@/const/meta'
-import { LinkWithUtm } from 'modules/utm'
 
 import { ChartSection } from '@/components/ChartSection'
 import { formatUSDPrice } from 'util/formatUSDPrice'
@@ -41,29 +38,6 @@ export function TokenDetails({ token }: TokenDetailProps) {
     <Wrapper>
       <MainContent>
         <Breadcrumbs crumbs={[{ text: 'Tokens', href: '/tokens' }, { text: `${name} Price` }]} />
-
-        {/* TODO: Move InlineBanner content to be retrieved from token data */}
-        {token.symbol === 'COW' && (
-          <InlineBanner
-            type="alert"
-            content={
-              <p>
-                Read the latest updates impacting the COW token&nbsp;
-                <LinkWithUtm
-                  defaultUtm={{
-                    ...CONFIG.utm,
-                    utmContent: 'COW-tokenpage-banner-link',
-                  }}
-                  href="https://forum.cow.fi/t/cip-draft-testing-fee-models-for-cow-protocol/1984/3"
-                  passHref
-                >
-                  on the forum
-                </LinkWithUtm>
-              </p>
-            }
-          />
-        )}
-        {/* ============================================================== */}
 
         <DetailHeading>
           <TokenTitle>

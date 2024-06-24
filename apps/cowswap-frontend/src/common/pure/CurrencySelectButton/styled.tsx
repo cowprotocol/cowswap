@@ -1,5 +1,5 @@
 import DropDown from '@cowprotocol/assets/images/dropdown.svg?react'
-import { UI } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
@@ -16,9 +16,9 @@ export const ArrowDown = styled((props) => <DropDown {...props} />)<{ $stubbed?:
     transition: stroke var(${UI.ANIMATION_DURATION}) ease-in-out;
   }
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     margin-left: auto;
-  `};
+  }
 `
 
 export const CurrencySelectWrapper = styled.button<{ isLoading: boolean; $stubbed: boolean; readonlyMode: boolean }>`
@@ -59,10 +59,10 @@ export const CurrencySymbol = styled.div<{ $stubbed: boolean }>`
   color: inherit;
   transition: color var(${UI.ANIMATION_DURATION}) ease-in-out;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     font-size: 16px;
     word-break: break-word;
     white-space: normal;
     text-align: left;
-  `};
+  }
 `

@@ -25,7 +25,8 @@ export function useTradeQuoteStateFromLegacy(): TradeQuoteState | null {
       isLoading,
       quoteParams: quote || null,
       localQuoteTimestamp: quote?.localQuoteTimestamp || null,
+      hasParamsChanged: isGettingNewQuote,
     }),
-    [quote, isLoading]
+    [quote, isLoading, isGettingNewQuote]
   )
 }

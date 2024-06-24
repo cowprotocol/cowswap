@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
+
+import { TruncatedText } from '@cowprotocol/ui/pure/TruncatedText'
 
 import { faExchangeAlt } from '@fortawesome/free-solid-svg-icons'
 import { safeTokenName } from '@gnosis.pm/dex-js'
@@ -6,46 +8,50 @@ import { DateDisplay } from 'components/common/DateDisplay'
 import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
 import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 import Spinner from 'components/common/Spinner'
+import StyledUserDetailsTable, {
+  EmptyItemWrapper,
+  Props as StyledUserDetailsTableProps,
+} from 'components/common/StyledUserDetailsTable'
 import { TokenDisplay } from 'components/common/TokenDisplay'
 import TradeOrderType from 'components/common/TradeOrderType'
 import Icon from 'components/Icon'
 import { HelpTooltip } from 'components/Tooltip'
+import { TextWithTooltip } from 'explorer/components/common/TextWithTooltip'
 import { useNetworkId } from 'state/network'
 import styled from 'styled-components/macro'
 import { media } from 'theme/styles/media'
-import { getOrderLimitPrice, formatCalculatedPriceToDisplay, formattedAmount, FormatAmountPrecision } from 'utils'
+import { FormatAmountPrecision, formatCalculatedPriceToDisplay, formattedAmount, getOrderLimitPrice } from 'utils'
 
 import { Order } from 'api/operator'
 
 import { OrderSurplusDisplayStyledByRow } from './OrderSurplusTooltipStyledByRow'
 
-import { TextWithTooltip } from '../../../explorer/components/common/TextWithTooltip'
-import StyledUserDetailsTable, {
-  Props as StyledUserDetailsTableProps,
-  EmptyItemWrapper,
-} from '../../common/StyledUserDetailsTable'
 import { StatusLabel } from '../StatusLabel'
 
 const Wrapper = styled(StyledUserDetailsTable)`
   > thead > tr,
   > tbody > tr {
-    grid-template-columns: 11rem 5.5rem repeat(2, minmax(16rem, 1.5fr)) minmax(18rem, 2fr) 10rem minmax(21.6rem, 2fr) 1.36fr;
+    grid-template-columns: 13.25rem 5.5rem repeat(2, minmax(16rem, 1.5fr)) minmax(18rem, 2fr) 9rem minmax(21.6rem, 2fr) 1.36fr;
     grid-template-rows: max-content;
   }
+
   tr > td {
     span.span-inside-tooltip {
       display: flex;
       flex-direction: row;
       flex-wrap: wrap;
+
       img {
         padding: 0;
       }
     }
   }
+
   ${media.mediumDown} {
     > thead > tr {
       display: none;
     }
+
     > tbody > tr {
       grid-template-columns: none;
       grid-template-rows: max-content;
@@ -54,11 +60,13 @@ const Wrapper = styled(StyledUserDetailsTable)`
       border-radius: 6px;
       margin-top: 16px;
       padding: 12px;
+
       &:hover {
         background: none;
         backdrop-filter: none;
       }
     }
+
     tr > td {
       display: flex;
       flex: 1;
@@ -67,40 +75,49 @@ const Wrapper = styled(StyledUserDetailsTable)`
       margin: 0;
       margin-bottom: 18px;
       min-height: 32px;
+
       span.span-inside-tooltip {
         align-items: flex-end;
         flex-direction: column;
+
         img {
           margin-left: 0;
         }
       }
     }
+
     .header-value {
       flex-wrap: wrap;
       text-align: end;
     }
+
     .span-copybtn-wrap {
       display: flex;
       flex-wrap: nowrap;
-      span {
+
+      span.copy-text {
         display: flex;
         align-items: center;
       }
+
       .copy-text {
         display: none;
       }
     }
   }
+
   overflow: auto;
 `
 
 const HeaderTitle = styled.span`
   display: none;
+
   ${media.mediumDown} {
     font-weight: 600;
     align-items: center;
     display: flex;
     margin-right: 3rem;
+
     svg {
       margin-left: 5px;
     }
@@ -142,18 +159,8 @@ interface RowProps {
 }
 
 const RowOrder: React.FC<RowProps> = ({ order, isPriceInverted }) => {
-  const {
-    creationDate,
-    buyToken,
-    buyAmount,
-    sellToken,
-    sellAmount,
-    kind,
-    partiallyFilled,
-    shortId,
-    uid,
-    filledPercentage,
-  } = order
+  const { creationDate, buyToken, buyAmount, sellToken, sellAmount, kind, partiallyFilled, uid, filledPercentage } =
+    order
   const [_isPriceInverted, setIsPriceInverted] = useState(isPriceInverted)
   const network = useNetworkId()
   const buyTokenSymbol = buyToken ? safeTokenName(buyToken) : ''
@@ -175,7 +182,7 @@ const RowOrder: React.FC<RowProps> = ({ order, isPriceInverted }) => {
   }
 
   return (
-    <tr key={shortId}>
+    <tr key={uid}>
       <td>
         <HeaderTitle>
           Order ID <HelpTooltip tooltip={tooltip.orderID} />
@@ -186,7 +193,7 @@ const RowOrder: React.FC<RowProps> = ({ order, isPriceInverted }) => {
             textToCopy={uid}
             contentsToDisplay={
               <LinkWithPrefixNetwork to={`/orders/${order.uid}`} rel="noopener noreferrer" target="_self">
-                {shortId}
+                <TruncatedText text={uid} />
               </LinkWithPrefixNetwork>
             }
           />
@@ -269,7 +276,7 @@ const OrdersUserDetailsTable: React.FC<Props> = (props) => {
     return (
       <>
         {items.map((item) => (
-          <RowOrder key={item.shortId} order={item} isPriceInverted={isPriceInverted} />
+          <RowOrder key={item.uid} order={item} isPriceInverted={isPriceInverted} />
         ))}
       </>
     )

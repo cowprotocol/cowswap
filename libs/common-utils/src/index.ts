@@ -1,7 +1,6 @@
 export * from './address'
 export * from './amountFormat/index'
 export * from './anonymizeLink'
-export * from './appzi'
 export * from './areFractionsEqual'
 export * from './async'
 export * from './buildPriceFromCurrencyAmounts'

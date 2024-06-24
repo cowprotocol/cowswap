@@ -1,4 +1,4 @@
-import { Loader } from '@cowprotocol/ui'
+import { Loader, Media } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
@@ -16,9 +16,9 @@ export const Wrapper = styled.div`
   flex-flow: row wrap;
   color: inherit;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     gap: 10px;
-  `}
+  }
 `
 
 export const Header = styled.div`

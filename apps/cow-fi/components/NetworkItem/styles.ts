@@ -1,6 +1,6 @@
-import styled from 'styled-components'
-import { Color, Media } from 'styles/variables'
-import { transparentize } from 'polished'
+import styled from 'styled-components/macro'
+import { Media } from 'styles/variables'
+import { Color } from '@cowprotocol/ui'
 
 export const NetworkHeaderItem = styled.div`
   display: contents;
@@ -8,8 +8,8 @@ export const NetworkHeaderItem = styled.div`
   grid-template-columns: 14rem auto auto;
   align-items: center;
   padding: 1rem 0;
-  border-bottom: 0.1rem solid ${transparentize(0.9, Color.darkBlue)};
-  color: ${Color.text1};
+  border-bottom: 0.1rem solid ${Color.neutral80};
+  color: ${Color.neutral10};
   gap: 0.8rem;
   width: 100%;
 
@@ -28,7 +28,7 @@ export const NetworkHeaderItem = styled.div`
 
 export const ItemWrapper = styled(NetworkHeaderItem)`
   font-size: 1.6rem;
-  color: ${Color.darkBlue};
+  color: ${Color.neutral10};
 
   > a {
     display: flex;

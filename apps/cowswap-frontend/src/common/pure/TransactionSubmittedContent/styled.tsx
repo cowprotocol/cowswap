@@ -1,8 +1,7 @@
-import { UI } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
-
-import { CloseIcon } from 'legacy/theme'
+import { CloseIcon } from 'theme'
 
 export const ButtonCustom = styled.button<{ cowGame?: boolean }>`
   display: flex;
@@ -52,9 +51,9 @@ export const ButtonGroup = styled.div`
     text-decoration: none;
   }
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     flex-direction: column;
-  `}
+  }
 `
 
 export const CloseIconWrapper = styled(CloseIcon)<{ margin?: string }>`

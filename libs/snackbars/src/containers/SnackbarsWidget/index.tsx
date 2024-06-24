@@ -2,7 +2,7 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { useResetAtom } from 'jotai/utils'
 import { ReactElement, useCallback, useEffect, useMemo } from 'react'
 
-import { UI } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 
 import ms from 'ms.macro'
 import { AlertCircle, CheckCircle } from 'react-feather'
@@ -38,17 +38,16 @@ const Host = styled.div<{ hidden$: boolean }>`
   min-width: 300px;
   max-width: 800px;
 
-  ${({ theme, hidden$ }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     width: 90%;
     left: 0;
-    right: ${hidden$ ? '-9999px' : '0'};
+    right: ${({ hidden$ }) => (hidden$ ? '-9999px' : '0')};
     margin: auto;
-    top: 20px;
 
     ${Overlay} {
       display: block;
     }
-  `}
+  }
 `
 
 const SuccessIcon = styled(CheckCircle)`

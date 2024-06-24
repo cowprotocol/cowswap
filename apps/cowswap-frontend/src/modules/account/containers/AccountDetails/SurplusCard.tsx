@@ -1,5 +1,13 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { ExternalLink, FiatAmount, HelpTooltip, QuestionTooltipIconWrapper, TokenAmount, UI } from '@cowprotocol/ui'
+import {
+  ExternalLink,
+  FiatAmount,
+  HelpTooltip,
+  Media,
+  QuestionTooltipIconWrapper,
+  TokenAmount,
+  UI,
+} from '@cowprotocol/ui'
 
 import { transparentize } from 'color2k'
 import styled from 'styled-components/macro'
@@ -36,11 +44,11 @@ export function SurplusCard() {
     padding: 0;
     color: inherit;
 
-    ${({ theme }) => theme.mediaWidth.upToSmall`
+    ${Media.upToSmall()} {
       display: flex;
       flex-flow: column wrap;
       padding: 0;
-    `}
+    }
 
     ${InfoCard} {
       display: flex;
@@ -150,7 +158,9 @@ export function SurplusCard() {
             <i>
               Your total surplus{' '}
               <HelpTooltip
-                text={`The total surplus CoW Swap has generated for you in ${nativeSymbol} across all your trades since ${isArbitrumOne ? ARBITRUM_ONE_START_DATE : DEFAULT_START_DATE}`}
+                text={`The total surplus CoW Swap has generated for you in ${nativeSymbol} across all your trades since ${
+                  isArbitrumOne ? ARBITRUM_ONE_START_DATE : DEFAULT_START_DATE
+                }`}
               />
             </i>
           </span>

@@ -1,4 +1,4 @@
-import { UI } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import { Link } from 'react-router-dom'
@@ -14,12 +14,12 @@ const Tabs = styled.div`
   margin: 0;
   border: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${Media.upToMedium()} {
     width: 100%;
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: max-content;
-  `};
+  }
 `
 
 const TabButton = styled(Link)<{ active: string }>`
@@ -35,9 +35,9 @@ const TabButton = styled(Link)<{ active: string }>`
   cursor: pointer;
   transition: background var(${UI.ANIMATION_DURATION}) ease-in-out, color var(${UI.ANIMATION_DURATION}) ease-in-out;
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${Media.upToMedium()} {
     text-align: center;
-  `};
+  }
 
   &:hover {
     background: ${({ active }) =>

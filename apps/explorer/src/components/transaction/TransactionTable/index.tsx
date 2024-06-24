@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 
 import { Command } from '@cowprotocol/types'
+import { TruncatedText } from '@cowprotocol/ui/pure/TruncatedText'
 
 import { faExchangeAlt, faSpinner } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -8,24 +9,20 @@ import { safeTokenName } from '@gnosis.pm/dex-js'
 import { DateDisplay } from 'components/common/DateDisplay'
 import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
 import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
+import { EmptyItemWrapper, StyledUserDetailsTableProps } from 'components/common/StyledUserDetailsTable'
 import { TokenDisplay } from 'components/common/TokenDisplay'
 import TradeOrderType from 'components/common/TradeOrderType'
 import Icon from 'components/Icon'
 import { OrderSurplusDisplayStyledByRow } from 'components/orders/OrdersUserDetailsTable/OrderSurplusTooltipStyledByRow'
 import { StatusLabel } from 'components/orders/StatusLabel'
 import { HelpTooltip } from 'components/Tooltip'
+import { TextWithTooltip } from 'explorer/components/common/TextWithTooltip'
 import { useNetworkId } from 'state/network'
-import { getOrderLimitPrice, formatCalculatedPriceToDisplay, formattedAmount, FormatAmountPrecision } from 'utils'
+import { FormatAmountPrecision, formatCalculatedPriceToDisplay, formattedAmount, getOrderLimitPrice } from 'utils'
 
 import { Order } from 'api/operator'
-import { getShortOrderId } from 'utils/operator'
-
 
 import { HeaderTitle, HeaderValue, WrapperUserDetailsTable } from './styled'
-
-import { TextWithTooltip } from '../../../explorer/components/common/TextWithTooltip'
-import { StyledUserDetailsTableProps, EmptyItemWrapper } from '../../common/StyledUserDetailsTable'
-
 
 function getLimitPrice(order: Order, isPriceInverted: boolean): string {
   if (!order.buyToken || !order.sellToken) return '-'
@@ -66,7 +63,6 @@ const RowTransaction: React.FC<RowProps> = ({ order, isPriceInverted, invertLimi
     sellAmount,
     kind,
     txHash,
-    shortId,
     uid,
   } = order
   const network = useNetworkId()
@@ -91,7 +87,7 @@ const RowTransaction: React.FC<RowProps> = ({ order, isPriceInverted, invertLimi
             textToCopy={uid}
             contentsToDisplay={
               <LinkWithPrefixNetwork to={`/orders/${order.uid}`} rel="noopener noreferrer" target="_self">
-                {getShortOrderId(shortId)}
+                <TruncatedText text={uid} width="8ch" />
               </LinkWithPrefixNetwork>
             }
           />
@@ -181,7 +177,7 @@ const TransactionTable: React.FC<Props> = (props) => {
         <>
           {items.map((item, i) => (
             <RowTransaction
-              key={`${item.shortId}-${i}`}
+              key={`${item.uid}-${i}`}
               invertLimitPrice={invertLimitPrice}
               order={item}
               isPriceInverted={isPriceInverted}

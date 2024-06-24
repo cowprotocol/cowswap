@@ -77,5 +77,5 @@ export const ArrowDownIcon = styled(ArrowDown)<{ disabled: boolean }>`
 export const CowImg = styled.img`
   width: 100%;
   border-radius: 10px;
-  background-color: ${({ theme }) => theme.bg4};
+  background-color: ${({ theme }) => theme.paperCustom};
 `

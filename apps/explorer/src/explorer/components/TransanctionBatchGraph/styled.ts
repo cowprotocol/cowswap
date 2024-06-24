@@ -150,8 +150,8 @@ export function STYLESHEET(theme: DefaultTheme): Stylesheet[] {
     {
       selector: 'edge.sell,edge.amm',
       style: {
-        'line-color': theme.red1,
-        'target-arrow-color': theme.red1,
+        'line-color': theme.error,
+        'target-arrow-color': theme.error,
       },
     },
     {
@@ -214,7 +214,7 @@ export function STYLESHEET(theme: DefaultTheme): Stylesheet[] {
     {
       selector: 'node[type="hyper"]',
       style: {
-        'background-color': theme.red1,
+        'background-color': theme.error,
         width: '10',
         height: '10',
         'text-max-width': '5rem',

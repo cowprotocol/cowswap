@@ -1,4 +1,4 @@
-import { UI } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 
 import { transparentize } from 'color2k'
 import { Link } from 'react-router-dom'
@@ -14,12 +14,12 @@ export const PaginationBox = styled.div`
   font-size: 14px;
   font-weight: 500;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     justify-content: flex-start;
-  `};
+  }
 `
 const pageButtonStyles = css<{ $active?: boolean }>`
-  background: ${({ theme, $active }) => ($active ? transparentize(theme.text3, 0.9) : 'transparent')};
+  background: ${({ theme, $active }) => ($active ? transparentize(theme.info, 0.9) : 'transparent')};
   color: ${({ $active }) => ($active ? `var(${UI.COLOR_TEXT})` : `var(${UI.COLOR_TEXT_OPACITY_25})`)};
   border: 0;
   outline: 0;

@@ -1,4 +1,4 @@
-import { UI } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
@@ -33,7 +33,7 @@ export const AuxInformationContainer = styled.div<{
 
   :focus,
   :hover {
-    border: 1px solid ${({ theme, hideInput }) => (hideInput ? ' transparent' : theme.bg3)};
+    border: 1px solid ${({ theme, hideInput }) => (hideInput ? ' transparent' : theme.background)};
   }
 
   ${({ theme, hideInput, disabled }) =>
@@ -41,7 +41,7 @@ export const AuxInformationContainer = styled.div<{
     `
       :focus,
       :hover {
-        border: 1px solid ${hideInput ? ' transparent' : theme.bg3};
+        border: 1px solid ${hideInput ? ' transparent' : theme.background};
       }
     `}
 
@@ -53,12 +53,12 @@ export const AuxInformationContainer = styled.div<{
     border: 2px solid var(${UI.COLOR_PAPER_DARKER});
   }
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     height: auto;
     flex-flow: column wrap;
     justify-content: flex-end;
     align-items: flex-end;
-  `}
+  }
   > ${FeeInformationTooltipWrapper} {
     align-items: center;
     justify-content: space-between;
@@ -68,13 +68,13 @@ export const AuxInformationContainer = styled.div<{
     font-size: 14px;
     height: auto;
 
-    ${({ theme }) => theme.mediaWidth.upToSmall`
+    ${Media.upToSmall()} {
       flex-flow: column wrap;
       width: 100%;
       align-items: flex-start;
       margin: 0;
       padding: 16px;
-    `}
+    }
 
     > span {
       font-size: 18px;
@@ -82,11 +82,11 @@ export const AuxInformationContainer = styled.div<{
       word-break: break-all;
       text-align: right;
 
-      ${({ theme }) => theme.mediaWidth.upToSmall`
+      ${Media.upToSmall()} {
         text-align: left;
         align-items: flex-start;
         width: 100%;
-      `};
+      }
     }
 
     > span:first-child {
@@ -95,9 +95,9 @@ export const AuxInformationContainer = styled.div<{
       align-items: center;
       white-space: nowrap;
 
-      ${({ theme }) => theme.mediaWidth.upToSmall`
+      ${Media.upToSmall()} {
         margin: 0 0 10px;
-      `}
+      }
     }
 
     > span > small {

@@ -1,10 +1,10 @@
 import React, { useState, useEffect, ChangeEvent } from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { Color } from 'styles/variables'
 import { Button } from '@/components/Button'
 import { transparentize } from 'polished'
 import { CONFIG } from '@/const/meta'
-import { LinkWithUtm } from 'modules/utm'
+import { LinkWithUtmComponent } from 'modules/utm'
 
 type TabProps = {
   active: boolean
@@ -35,12 +35,6 @@ const TabContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   justify-content: space-between;
-`
-
-const Dropdown = styled.select`
-  width: 100%;
-  padding: 1rem;
-  margin: 1rem 0;
 `
 
 const Input = styled.input`
@@ -266,8 +260,7 @@ export const SwapWidget = ({ tokenId, tokenSymbol, tokenImage, platforms }: Swap
         }
       }
 
-      const url = `https://swap.cow.fi/#/${networkId}/swap/${sellToken}/${buyToken}?${activeTab.toLowerCase()}Amount=${amount}`
-      return url
+      return `https://swap.cow.fi/#/${networkId}/swap/${sellToken}/${buyToken}?${activeTab.toLowerCase()}Amount=${amount}`
     } else {
       return '#'
     }
@@ -322,7 +315,7 @@ export const SwapWidget = ({ tokenId, tokenSymbol, tokenImage, platforms }: Swap
         </div>
       </InputLabel>
 
-      <LinkWithUtm
+      <LinkWithUtmComponent
         defaultUtm={{
           ...CONFIG.utm,
           utmContent: 'utm_content=swap-widget-token__' + encodeURI(tokenId),
@@ -331,7 +324,7 @@ export const SwapWidget = ({ tokenId, tokenSymbol, tokenImage, platforms }: Swap
         passHref
       >
         <Button label={`Swap ${tokenSymbol}`} fontSize={1.6} minHeight={4.2} />
-      </LinkWithUtm>
+      </LinkWithUtmComponent>
     </Wrapper>
   )
 }

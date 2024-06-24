@@ -1,6 +1,20 @@
-import { DemoContainer } from 'cosmos.decorator'
+import styled from 'styled-components/macro'
 
 import { InlineBanner } from '.'
+
+const DemoContainer = styled.div`
+  width: 100%;
+  max-width: 470px;
+  margin: 0 auto;
+  display: flex;
+  flex-flow: column wrap;
+  gap: 6px;
+  background: ${({ theme }) => theme.background};
+  border: none;
+  border-radius: 16px;
+  box-shadow: ${({ theme }) => theme.boxShadow1};
+  padding: 10px;
+`
 
 const Fixtures = {
   'default (alert)': (

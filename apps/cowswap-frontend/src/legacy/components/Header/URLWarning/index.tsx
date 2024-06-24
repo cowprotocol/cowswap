@@ -2,10 +2,12 @@ import { useFetchFile } from '@cowprotocol/common-hooks'
 import { hashCode } from '@cowprotocol/common-utils'
 import { environmentName } from '@cowprotocol/common-utils'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { GlobalWarning, ClosableBanner } from '@cowprotocol/ui'
+import { ClosableBanner } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import ReactMarkdown, { Components } from 'react-markdown'
+
+import { GlobalWarning } from 'common/pure/GlobalWarning'
 
 import { markdownComponents } from '../../Markdown/components'
 

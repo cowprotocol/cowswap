@@ -1,23 +1,42 @@
-import Head from 'next/head'
 import { GetStaticProps } from 'next'
-import styled from 'styled-components'
-import { transparentize } from 'polished'
-import { CONFIG, SiteConfig } from '@/const/meta'
-import { DAO_CONTENT as CONTENT } from '@/data/siteContent/daos'
-import { Media, Color, Font } from 'styles/variables'
-import {
-  Section,
-  SectionH1,
-  SectionContent,
-  SubTitle,
-  CardWrapper,
-  CardItem,
-  TrustedBy,
-} from '@/components/Home/index.styles'
+import { Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
+import IMG_ICON_CROWN_COW from '@cowprotocol/assets/images/icon-crown-cow.svg'
+
+import IMG_ICON_BULB_COW from '@cowprotocol/assets/images/icon-bulb-cow.svg'
+
+import IMG_ICON_OWL from '@cowprotocol/assets/images/icon-owl.svg'
+import IMG_ICON_GHOST from '@cowprotocol/assets/images/icon-ghost.svg'
+
 import Layout from '@/components/Layout'
-import SocialList from '@/components/SocialList'
-import { LinkWithUtm } from 'modules/utm'
-import { Button } from '@/components/Button'
+import { Link, LinkType } from '@/components/Link'
+
+import {
+  PageWrapper,
+  ContainerCard,
+  ContainerCardSection,
+  TopicList,
+  TopicCard,
+  TopicImage,
+  TopicTitle,
+  TopicDescription,
+  SectionTitleWrapper,
+  SectionTitleIcon,
+  SectionTitleText,
+  SectionTitleDescription,
+  TopicCardInner,
+  HeroContainer,
+  HeroImage,
+  HeroDescription,
+  HeroContent,
+  HeroTitle,
+  HeroSubtitle,
+  MetricsCard,
+  TrustedBy,
+  SwiperSlideWrapper,
+} from '@/styles/styled'
+
+import { DAO_CONTENT as CONTENT } from '@/data/widget/const'
+
 import SVG from 'react-inlinesvg'
 
 import 'swiper/css'
@@ -26,374 +45,308 @@ import 'swiper/css/navigation'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Autoplay, Pagination, Navigation } from 'swiper/modules'
 
-const SwiperSlideWrapper = styled.div`
-  --swiper-navigation-color: ${Color.lightBlue};
-  --swiper-theme-color: ${Color.lightBlue};
-  --swiper-pagination-bullet-inactive-color: ${Color.lightBlue};
-  --swiper-pagination-bullet-size: 1.2rem;
+import { EventCategories, sendEventHandler } from '@cowprotocol/analytics'
 
-  display: flex;
-  flex-flow: column wrap;
-  width: 100%;
-  overflow: hidden;
+import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
 
-  .daoSwiper {
-    position: relative;
-    padding: 0 0 5rem; // Fix for swiper pagination
+interface PageProps {
+  siteConfigData: typeof CONFIG
+}
 
-    ${Media.mobile} {
-      overflow-x: visible;
-    }
-
-    &::before,
-    &::after {
-      content: '';
-      height: 100%;
-      width: 16rem;
-      position: absolute;
-      left: 0;
-      top: 0;
-      background: linear-gradient(90deg, ${Color.darkBlue}, ${transparentize(1, Color.darkBlue)} 100%);
-      z-index: 10;
-
-      ${Media.mobile} {
-        display: none;
-        content: none;
-      }
-    }
-
-    &::after {
-      background: linear-gradient(270deg, ${Color.darkBlue}, ${transparentize(1, Color.darkBlue)} 100%);
-      left: initial;
-      right: 0;
-    }
-  }
-
-  .daoSwiper {
-    display: flex;
-    flex-flow: column wrap;
-    width: 100%;
-    max-width: 100%;
-  }
-
-  .daoSwiper > .swiper-wrapper {
-    max-width: 80%;
-    align-items: flex-start;
-    justify-content: flex-start;
-
-    ${Media.mobile} {
-      max-width: 100%;
-      align-items: stretch;
-    }
-  }
-
-  .daoSwiper > .swiper-wrapper > .swiper-slide {
-    height: 49rem;
-    width: 100%;
-    max-width: 100%;
-    margin: 0 auto;
-    border-radius: 6rem;
-    border: 0.1rem solid ${Color.border};
-    color: ${Color.lightBlue};
-    font-size: 2.4rem;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    align-items: center;
-    justify-content: flex-start;
-    overflow: hidden;
-
-    ${Media.mediumDown} {
-      height: auto;
-      max-width: 95%;
-      display: flex;
-      flex-flow: column wrap;
-    }
-
-    > img {
-      max-width: 100%;
-      height: 100%;
-      object-fit: cover;
-
-      ${Media.mediumDown} {
-        height: 12rem;
-        width: 100%;
-        margin: 0 auto 2.4rem;
-      }
-    }
-
-    > span {
-      display: flex;
-      flex-flow: column wrap;
-      padding: 5.6rem;
-      gap: 2.4rem;
-
-      ${Media.mediumDown} {
-        padding: 0 3.2rem 4.6rem;
-      }
-    }
-
-    > span > h4 {
-      margin: 0;
-      font-size: 3.4rem;
-      line-height: 1.2;
-      color: ${Color.lightBlue};
-      font-weight: ${Font.weightMedium};
-      background: ${Color.gradient};
-      background-clip: text;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-
-      &::selection {
-        background-clip: initial;
-        -webkit-text-fill-color: initial;
-      }
-
-      ${Media.mobile} {
-        font-size: 2.4rem;
-      }
-    }
-
-    > span > p {
-      font-size: 1.8rem;
-      line-height: 1.4;
-
-      ${Media.mobile} {
-        font-size: 1.6rem;
-      }
-    }
-  }
-
-  .swiper-button-next {
-    z-index: 20;
-
-    ${Media.mobile} {
-      left: initial;
-      right: 5px;
-    }
-  }
-
-  .swiper-button-prev {
-    z-index: 20;
-
-    ${Media.mobile} {
-      left: 5px;
-      right: initial;
-    }
-  }
-`
-
-const DATA_CACHE_TIME_SECONDS = 5 * 60 // Cache 5min
-
-export default function ForDAOs({ siteConfigData }: { siteConfigData: SiteConfig }) {
-  const { social } = siteConfigData
-
-  // Filter out Discord/Forum social links
-  let socialFiltered: Record<string, any> = {}
-  Object.entries(social).forEach(([key, value]) => {
-    if (key !== 'forum' && key !== 'github') {
-      socialFiltered[key] = value
-    }
-  })
-
-  const handleCTAClick = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-    e.preventDefault()
-    const href = e.currentTarget.href
-    const targetId = href.replace(/.*\#/, '')
-    const elem = document.getElementById(targetId)
-    elem?.scrollIntoView({ behavior: 'smooth' })
-  }
-
-  const pageTitle = `CoW Swap for DAOs`
-  const pageDescription =
-    'CoW Swap protects DAOs from MEV and ensures they get the best prices for their treasury trades.'
-
+export default function Page() {
   return (
-    <Layout fullWidthGradientVariant={true}>
-      <Head>
-        <title>{pageTitle}</title>
-        <meta key="description" name="description" content={pageDescription} />
-        <meta key="ogTitle" property="og:title" content={pageTitle} />
-        <meta key="ogDescription" property="og:description" content={pageDescription} />
-        <meta key="twitterTitle" name="twitter:title" content={pageTitle} />
-        <meta key="twitterDescription" name="twitter:description" content={pageDescription} />
-      </Head>
-      <Section fullWidth padding={'8rem 8rem 4rem'} paddingMobile={'0 2.4rem 4rem'}>
-        <SectionContent flow="column">
-          <div>
-            <SectionH1 fontSize={7} fontSizeMobile={4}>
-              <b>
-                <i>Savvy DAOs</i>
-              </b>{' '}
-              <span className="text-weight-light">
-                <br />
-                Choose CoW Swap
-              </span>
-            </SectionH1>
-            <SubTitle color={Color.text1} fontSize={3} lineHeight={1.4} maxWidth={60}>
-              The smartest DAOs trust CoW Swap with their most-important trades
-            </SubTitle>
-            <Button href="#benefits" onClick={handleCTAClick} paddingLR={4.2} fontSizeMobile={2.1} label="Learn why" />
-          </div>
-        </SectionContent>
-      </Section>
-      <Section fullWidth padding={'0'} paddingMobile={'0'}>
-        <TrustedBy>
-          <p>Trusted by</p>
-          <ul>
-            {CONTENT.trustedDAOs.map(
-              ({ icon, title, volume }, index) =>
-                volume && (
-                  <li key={index}>
-                    <SVG src={icon} title={title} />
-                    <small>with</small>
-                    <strong>{volume}</strong>
-                  </li>
-                )
-            )}
-          </ul>
-        </TrustedBy>
-      </Section>
-      <Section fullWidth colorVariant={'dark'} id="benefits">
-        <SectionContent>
-          <SwiperSlideWrapper>
-            <h3>Expert trading for expert DAOs</h3>
-            <SubTitle color={Color.lightBlue} lineHeight={1.4} maxWidth={80}>
-              CoW Swap is the only DEX built to solve the unique challenges faced by DAOs
-            </SubTitle>
-            <Swiper
-              slidesPerView={'auto'}
-              centeredSlides={true}
-              grabCursor={true}
-              loop={true}
-              keyboard={{
-                enabled: true,
-              }}
-              pagination={{
-                dynamicBullets: true,
-                clickable: true,
-              }}
-              autoplay={{
-                delay: 5000,
-                disableOnInteraction: true,
-              }}
-              navigation={{
-                nextEl: '.swiper-button-next',
-                prevEl: '.swiper-button-prev',
-              }}
-              spaceBetween={50}
-              modules={[Autoplay, Pagination, Navigation]}
-              className="daoSwiper"
-            >
-              {CONTENT.slides.map((slide, index) => (
-                <SwiperSlide key={index}>
-                  <img src={slide.image} alt={slide.title} />
-                  <span>
-                    <h4>{slide.title}</h4>
-                    <p>{slide.description}</p>
-                  </span>
-                </SwiperSlide>
-              ))}
-            </Swiper>
+    <Layout
+      bgColor={Color.neutral90}
+      metaTitle="DAOs - Savvy DAOs Choose CoW Swap"
+      metaDescription="The smartest DAOs trust CoW Swap with their most-important trades"
+    >
+      <PageWrapper>
+        <HeroContainer variant="secondary">
+          <HeroContent variant="secondary">
+            <HeroSubtitle color={'#66018E'}>DAOs</HeroSubtitle>
+            <HeroTitle maxWidth={470}>Savvy DAOs Choose CoW Swap</HeroTitle>
+            <HeroDescription>The smartest DAOs trust CoW Swap with their most-important trades</HeroDescription>
+          </HeroContent>
+          <HeroImage width={470} height={400} color={'#66018E'}>
+            <SVG src={IMG_ICON_BULB_COW} />
+          </HeroImage>
+        </HeroContainer>
 
-            <div className="swiper-button-prev"></div>
-            <div className="swiper-button-next"></div>
-          </SwiperSlideWrapper>
-        </SectionContent>
-      </Section>
-      // SS
-      <Section fullWidth>
-        <SectionContent flow={'column'}>
-          <div className="container">
-            <h3>Advanced order types</h3>
-            <SubTitle color={Color.text1} lineHeight={1.4} maxWidth={70}>
-              CoW Swap&apos;s many order types help you get better prices for your trades, manage token launches,
-              facilitate buybacks, and much more
-            </SubTitle>
+        <MetricsCard bgColor="#F996EE" color="#66018E" columns={1} touchFooter>
+          <TrustedBy>
+            <p>Trusted by</p>
+            <ul>
+              {CONTENT.trustedDAOs.map(
+                ({ icon, title, volume }, index) =>
+                  volume && (
+                    <li key={index}>
+                      <SVG src={icon} title={title} />
+                      <small>with</small>
+                      <strong>{volume}</strong>
+                    </li>
+                  )
+              )}
+            </ul>
+          </TrustedBy>
+        </MetricsCard>
 
-            <CardWrapper maxWidth={100}>
-              {CONTENT.orderTypes.map((orderType, index) => (
-                <CardItem key={index} imageHeight={8} imageRounded>
-                  <img src={orderType.icon} alt="image" />
-                  <h4>{orderType.title}</h4>
-                  <p>{orderType.description}</p>
-                </CardItem>
-              ))}
-            </CardWrapper>
+        <ContainerCard bgColor={Color.neutral10}>
+          <ContainerCardSection>
+            <SectionTitleWrapper color={Color.neutral100} maxWidth={1100} gap={56}>
+              <SectionTitleIcon size={98}>
+                <SVG src={IMG_ICON_CROWN_COW} />
+              </SectionTitleIcon>
+              <SectionTitleText>Expert trading for expert DAOs</SectionTitleText>
+              <SectionTitleDescription maxWidth={900}>
+                CoW Swap is the only DEX built to solve the unique challenges faced by DAOs
+              </SectionTitleDescription>
+            </SectionTitleWrapper>
 
-            <LinkWithUtm
-              href={'https://blog.cow.fi/list/advanced-order-types-b391bd4390cb'}
-              defaultUtm={{ ...CONFIG.utm, utmContent: 'daos-page' }}
-              passHref
-            >
-              <Button paddingLR={4.2} label="Explore Advanced Order Types" />
-            </LinkWithUtm>
-          </div>
-        </SectionContent>
-      </Section>
-      <Section fullWidth colorVariant={'dark'}>
-        <SectionContent>
-          <div>
-            <h3>Trusted by the best</h3>
-
-            {/* Only DAOs with a description text */}
-            <CardWrapper maxWidth={85}>
-              {CONTENT.trustedDAOs
-                .filter(({ description }) => description)
-                .map(({ description, icon, title, link }, index) => (
-                  <CardItem key={index} variant="outlined-dark" gap={3.6} imageFullSize textCentered>
-                    <LinkWithUtm href={link} defaultUtm={{ ...CONFIG.utm, utmContent: 'daos-page' }} passHref>
-                      <img src={icon} alt={title} />
-                    </LinkWithUtm>
+            <SwiperSlideWrapper>
+              <Swiper
+                slidesPerView={'auto'}
+                centeredSlides={true}
+                grabCursor={true}
+                loop={true}
+                keyboard={{
+                  enabled: true,
+                }}
+                pagination={{
+                  dynamicBullets: true,
+                  clickable: true,
+                }}
+                autoplay={{
+                  delay: 5000,
+                  disableOnInteraction: true,
+                }}
+                navigation={{
+                  nextEl: '.swiper-button-next',
+                  prevEl: '.swiper-button-prev',
+                }}
+                spaceBetween={50}
+                modules={[Autoplay, Pagination, Navigation]}
+                className="daoSwiper"
+              >
+                {CONTENT.slides.map((slide, index) => (
+                  <SwiperSlide key={index}>
+                    <img src={slide.image} alt={slide.title} />
                     <span>
-                      <p>{description}</p>
-                      <LinkWithUtm href={link} defaultUtm={{ ...CONFIG.utm, utmContent: 'daos-page' }} passHref>
-                        Case study
-                      </LinkWithUtm>
+                      <h4>{slide.title}</h4>
+                      <p>{slide.description}</p>
                     </span>
-                  </CardItem>
+                  </SwiperSlide>
                 ))}
-            </CardWrapper>
+              </Swiper>
 
-            {/* DAOs without a description text (only logo) */}
-            <CardWrapper maxWidth={85} horizontalGrid={8} horizontalGridMobile={4}>
-              {CONTENT.trustedDAOs
-                .filter(({ description }) => !description)
-                .map(({ icon, title, link }, index) => (
-                  <CardItem
+              <div className="swiper-button-prev"></div>
+              <div className="swiper-button-next"></div>
+            </SwiperSlideWrapper>
+          </ContainerCardSection>
+        </ContainerCard>
+
+        <ContainerCard bgColor={'transparent'} color={Color.neutral10}>
+          <ContainerCardSection>
+            <SectionTitleWrapper padding="150px 0 0" maxWidth={800}>
+              <SectionTitleIcon size={60}>
+                <ProductLogo variant={ProductVariant.CowProtocol} theme="dark" logoIconOnly />
+              </SectionTitleIcon>
+              <SectionTitleText>Advanced order types</SectionTitleText>
+              <SectionTitleDescription fontSize={24} color={Color.neutral40}>
+                CoW Swap's many order types help you get better prices for your trades, manage token launches,
+                facilitate buybacks, and much more
+              </SectionTitleDescription>
+            </SectionTitleWrapper>
+
+            <TopicList columns={3} columnsTablet={2}>
+              <TopicCard contentAlign={'left'} bgColor={Color.neutral100} padding={'32px'} gap={16} asProp="div">
+                <TopicImage bgColor="transparent" height={75} width={'auto'}>
+                  <SVG src="images/icon-milkman.svg" />
+                </TopicImage>
+                <TopicCardInner contentAlign="left">
+                  <TopicTitle>Milkman Orders</TopicTitle>
+                  <TopicDescription fontSize={18} color={Color.neutral40} margin="0">
+                    Ensure your trades are always close to the real-time market price thanks to the{' '}
+                    <Link
+                      href="https://github.com/charlesndalton/milkman"
+                      external
+                      utmContent="link-to-milkman"
+                      onClick={() => sendEventHandler(EventCategories.DAOS, 'click-milkman')}
+                    >
+                      Milkman bot
+                    </Link>
+                    . Set the maximum deviation you&apos;ll accept, and Milkman will do the rest.
+                  </TopicDescription>
+                </TopicCardInner>
+              </TopicCard>
+
+              <TopicCard contentAlign={'left'} bgColor={Color.neutral100} padding={'32px'} gap={16} asProp="div">
+                <TopicImage bgColor="transparent" height={75} width={'auto'}>
+                  <SVG src="images/icon-twap-orders.svg" />
+                </TopicImage>
+                <TopicCardInner contentAlign="left">
+                  <TopicTitle>TWAP Orders</TopicTitle>
+                  <TopicDescription fontSize={18} color={Color.neutral40} margin="0">
+                    Time-weighted average price orders allow you to spread your trade out over time, averaging out your
+                    trading price, minimizing price impact, and allowing for lower slippage.
+                  </TopicDescription>
+                </TopicCardInner>
+              </TopicCard>
+
+              <TopicCard contentAlign={'left'} bgColor={Color.neutral100} padding={'32px'} gap={16} asProp="div">
+                <TopicImage bgColor="transparent" height={75} width={'auto'}>
+                  <SVG src="images/icon-limit-orders.svg" />
+                </TopicImage>
+                <TopicCardInner contentAlign="left">
+                  <TopicTitle>Limit Orders</TopicTitle>
+                  <TopicDescription fontSize={18} color={Color.neutral40} margin="0">
+                    CoW Swap's surplus-capturing limit orders allow you to set a price and sit back while your order
+                    gets filled over time - perfect for token buybacks and other large trades.
+                  </TopicDescription>
+                </TopicCardInner>
+              </TopicCard>
+
+              <TopicCard contentAlign={'left'} bgColor={Color.neutral100} padding={'32px'} gap={16} asProp="div">
+                <TopicImage bgColor="transparent" height={75} width={'auto'}>
+                  <SVG src="images/icon-price-walls.svg" />
+                </TopicImage>
+                <TopicCardInner contentAlign="left">
+                  <TopicTitle>Price Walls</TopicTitle>
+                  <TopicDescription fontSize={18} color={Color.neutral40} margin="0">
+                    Pick an asset, define a threshold price, and CoW Swap will automatically sell above the threshold,
+                    and buy below it.
+                  </TopicDescription>
+                </TopicCardInner>
+              </TopicCard>
+
+              <TopicCard contentAlign={'left'} bgColor={Color.neutral100} padding={'32px'} gap={16} asProp="div">
+                <TopicImage bgColor="transparent" height={75} width={'auto'}>
+                  <SVG src="images/icon-basket-sells.svg" />
+                </TopicImage>
+                <TopicCardInner contentAlign="left">
+                  <TopicTitle>Basket Sells</TopicTitle>
+                  <TopicDescription fontSize={18} color={Color.neutral40} margin="0">
+                    <Link
+                      href="https://dump.services/"
+                      external
+                      utmContent="link-to-dump-services"
+                      onClick={() => sendEventHandler(EventCategories.DAOS, 'click-dump-services')}
+                    >
+                      Dump.services
+                    </Link>
+                    , a collaboration between CoW Swap and Yearn, allows DAOs and traders to sell multiple tokens in a
+                    single transaction.
+                  </TopicDescription>
+                </TopicCardInner>
+              </TopicCard>
+
+              <TopicCard contentAlign={'left'} bgColor={Color.neutral100} padding={'32px'} gap={16} asProp="div">
+                <TopicImage bgColor="transparent" height={75} width={'auto'}>
+                  <SVG src="images/icon-logic.svg" />
+                </TopicImage>
+                <TopicCardInner contentAlign="left">
+                  <TopicTitle>Place Your Logic Here</TopicTitle>
+                  <TopicDescription fontSize={18} color={Color.neutral40} margin="0">
+                    ERC-1271 Smart Orders and CoW Hooks allow you to define your own complex trading logic; if you can
+                    think it, you can trade it.
+                  </TopicDescription>
+                </TopicCardInner>
+              </TopicCard>
+            </TopicList>
+
+            <Link
+              href="https://blog.cow.fi/list/advanced-order-types-b391bd4390cb"
+              linkType={LinkType.SectionTitleButton}
+              utmContent="link-to-advanced-order-types"
+              margin="24px auto 0"
+              external
+              onClick={() => sendEventHandler(EventCategories.DAOS, 'click-advanced-order-types')}
+            >
+              Explore advanced order types
+            </Link>
+          </ContainerCardSection>
+        </ContainerCard>
+
+        <ContainerCard bgColor={Color.neutral10} color={Color.neutral98} touchFooter>
+          <ContainerCardSection>
+            <SectionTitleWrapper padding="150px 0 0">
+              <SectionTitleIcon multiple>
+                <SVG src={IMG_ICON_OWL} />
+                <ProductLogo variant={ProductVariant.CowProtocol} theme="dark" logoIconOnly height={60} />
+                <SVG src={IMG_ICON_GHOST} />
+              </SectionTitleIcon>
+              <SectionTitleText>Trusted by the best</SectionTitleText>
+            </SectionTitleWrapper>
+
+            <TopicList columns={3}>
+              {CONTENT.trustedDAOs.map((dao, index) => {
+                const isPng = dao.icon.endsWith('.png')
+                return dao.description ? (
+                  <TopicCard
                     key={index}
-                    padding={1.2}
-                    imageFullSize
-                    variant="outlined-dark"
-                    gap={3.6}
-                    textCentered
-                    contentCentered
-                    className="iconOnly"
+                    contentAlign={'center'}
+                    bgColor={Color.neutral20}
+                    padding={'24px'}
+                    gap={12}
+                    asProp="div"
                   >
-                    <LinkWithUtm href={link} defaultUtm={{ ...CONFIG.utm, utmContent: 'daos-page' }} passHref>
-                      <img src={icon} alt={title} />
-                    </LinkWithUtm>
-                  </CardItem>
-                ))}
-            </CardWrapper>
-          </div>
-        </SectionContent>
-      </Section>
-      <Section fullWidth>
-        <SectionContent flow={'column'}>
-          <div>
-            <h3>Get in touch</h3>
-            <SubTitle maxWidth={60} color={Color.text1} lineHeight={1.4}>
-              Learn more about how CoW Protocol can help your DAO by reaching out on Twitter or Discord
-            </SubTitle>
-            <SocialList social={socialFiltered} color={Color.darkBlue} />
-          </div>
-        </SectionContent>
-      </Section>
+                    <TopicImage iconColor={Color.neutral98} bgColor={'transparent'} height={100}>
+                      {isPng ? <img src={dao.icon} alt={dao.title} /> : <SVG src={dao.icon} />}
+                    </TopicImage>
+                    <TopicCardInner contentAlign="center">
+                      <TopicTitle fontSize={28} color={Color.neutral98}>
+                        {dao.title}
+                      </TopicTitle>
+                      <TopicDescription fontSize={18} color={Color.neutral70}>
+                        {dao.description}
+                      </TopicDescription>
+                      <Link
+                        linkType={LinkType.TopicButton}
+                        href={dao.link}
+                        utmContent={`dao-${dao.title.toLowerCase().replace(/\s/g, '-')}`}
+                        external
+                        onClick={() => sendEventHandler(EventCategories.DAOS, `click-${dao.title.toLowerCase()}`)}
+                      >
+                        Learn more
+                      </Link>
+                    </TopicCardInner>
+                  </TopicCard>
+                ) : (
+                  <TopicCard
+                    key={index}
+                    contentAlign={'center'}
+                    bgColor={Color.neutral20}
+                    padding={'10px'}
+                    href={`${dao.link}?utm_source=cow.fi&utm_medium=web&utm_content=dao-${dao.title}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => sendEventHandler(EventCategories.DAOS, `click-${dao.title.toLowerCase()}`)}
+                  >
+                    <TopicImage
+                      iconColor={Color.neutral0}
+                      bgColor={'transparent'}
+                      width={'100%'}
+                      height={100}
+                      maxWidth={75}
+                      margin={'auto'}
+                    >
+                      {isPng ? (
+                        <img src={dao.icon} alt={dao.title} style={{ maxWidth: '100%' }} />
+                      ) : (
+                        <SVG src={dao.icon} />
+                      )}
+                    </TopicImage>
+                  </TopicCard>
+                )
+              })}
+            </TopicList>
+          </ContainerCardSection>
+        </ContainerCard>
+      </PageWrapper>
     </Layout>
   )
 }
 
-export const getStaticProps: GetStaticProps = async () => {
+export const getStaticProps: GetStaticProps<PageProps> = async () => {
   const siteConfigData = CONFIG
 
   return {

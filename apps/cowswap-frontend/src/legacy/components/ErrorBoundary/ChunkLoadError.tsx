@@ -2,15 +2,15 @@ import React, { useCallback } from 'react'
 
 import cowNoConnectionIMG from '@cowprotocol/assets/cow-swap/cow-no-connection.png'
 import { DISCORD_LINK } from '@cowprotocol/common-const'
-import { ButtonPrimary } from '@cowprotocol/ui'
+import { ButtonPrimary, MEDIA_WIDTHS } from '@cowprotocol/ui'
 import { AutoRow } from '@cowprotocol/ui'
 import { ExternalLink } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
+import { ThemedText } from 'theme'
 
 import { AutoColumn } from 'legacy/components/Column'
-import { MEDIA_WIDTHS, ThemedText } from 'legacy/theme'
 
 import { Title } from 'modules/application/pure/Page'
 

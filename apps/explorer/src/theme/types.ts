@@ -1,49 +1,15 @@
-import { Colors, Fonts, MediaWidth } from './styles'
+import { Colors, Fonts } from './styles'
 
 export enum Theme {
-  DARK = 'DARK',
-  LIGHT = 'LIGHT',
+  DARK = 'dark',
+  LIGHT = 'light',
 }
 
-export const THEME_LIST = Object.entries(Theme)
-
 declare module 'styled-components' {
-  export interface DefaultTheme extends DefaultThemeAliases, Colors, Fonts {
+  export interface ExplorerTheme extends Colors, Fonts {
     // theming
-    mode: Theme
-    // used to key in on component variants
-    componentKey?: keyof JSX.IntrinsicElements
-    /**
-     * @name mediaQueries
-     *
-     * @example theme.mediaQueries.upToMedium` font-size: larger; color: red; `
-     *
-     * @example {
-     *  upToExtraSmall: 500,
-     *  upToSmall: 720,
-     *  upToMedium: 960,
-     *  upToLarge: 1280,
-     *  tabletPortrait: 720 to 960, orientation: portrait,
-     *  tabletLandscape: 720 to 960, orientation: landscape,
-     * }
-     */
-    mediaQueries: MediaWidth
+    mode: 'light' | 'dark'
   }
-  interface DefaultThemeAliases {
-    /**
-     * @name mq - alias for mediaQueries
-     *
-     * @example theme.mq.upToMedium` font-size: larger; color: red; `
-     *
-     * @example {
-     *  upToExtraSmall: 500,
-     *  upToSmall: 720,
-     *  upToMedium: 960,
-     *  upToLarge: 1280,
-     *  tabletPortrait: 720 to 960, orientation: portrait,
-     *  tabletLandscape: 720 to 960, orientation: landscape,
-     * }
-     */
-    mq: DefaultTheme['mediaQueries']
-  }
+
+  export interface DefaultTheme extends CowProtocolTheme, ExplorerTheme {}
 }

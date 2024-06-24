@@ -1,4 +1,4 @@
-import { UI } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 import { RowBetween, RowFixed } from '@cowprotocol/ui'
 import { HoverTooltip } from '@cowprotocol/ui'
 
@@ -25,9 +25,9 @@ export const StyledRowBetween = styled(RowBetween)<RowStyleProps>`
     gap: 4px;
     min-width: 150px;
 
-    ${({ theme }) => theme.mediaWidth.upToSmall`
+    ${Media.upToSmall()} {
       min-width: max-content;
-    `}
+    }
   }
 
   ${TextWrapper} {
@@ -54,7 +54,7 @@ export const StyledRowBetween = styled(RowBetween)<RowStyleProps>`
   }
 
   ${StyledHoverTooltip} {
-    background-color: ${({ theme }) => theme.bg3};
+    background-color: ${({ theme }) => theme.background};
     color: inherit;
   }
 `

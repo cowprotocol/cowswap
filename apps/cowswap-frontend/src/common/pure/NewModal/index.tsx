@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react'
 
 import { Command } from '@cowprotocol/types'
-import { BackButton, UI } from '@cowprotocol/ui'
+import { BackButton, Media, UI } from '@cowprotocol/ui'
 
 import CLOSE_ICON from 'assets/icon/x.svg'
 import SVG from 'react-inlinesvg'
@@ -33,22 +33,22 @@ const Wrapper = styled.div<{
   border-radius: var(${UI.BORDER_RADIUS_NORMAL});
   box-shadow: var(${UI.BOX_SHADOW});
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     margin: 0;
     border-radius: 0;
     border-top-left-radius: var(${UI.BORDER_RADIUS_NORMAL});
     border-top-right-radius: var(${UI.BORDER_RADIUS_NORMAL});
     box-shadow: none;
-  `}
+  }
 
   ${ModalInner} {
     max-width: ${({ maxWidth }) => (maxWidth ? `${maxWidth}px` : '100%')};
     min-height: ${({ minHeight }) => (minHeight ? `${minHeight}px` : '100%')};
 
-    ${({ theme }) => theme.mediaWidth.upToSmall`
+    ${Media.upToSmall()} {
       max-width: 100%;
       height: 100%;
-    `}
+    }
   }
 `
 
@@ -62,10 +62,10 @@ const Heading = styled.h2<{ modalMode: boolean }>`
   padding: ${({ modalMode }) => (modalMode ? '16px 20px 3px' : '16px 20px 3px 40px')};
   font-size: var(${UI.FONT_SIZE_MEDIUM});
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     position: sticky;
     top: 0;
-  `}
+  }
 `
 
 const IconX = styled.div`

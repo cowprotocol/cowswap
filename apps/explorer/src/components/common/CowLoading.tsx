@@ -1,6 +1,6 @@
 import React from 'react'
 
-import CowLoadingSVG from 'assets/img/CoW-loading.svg'
+import CowLoadingSVG from 'assets/img/CowProtocol-logo.svg'
 import SVG from 'react-inlinesvg'
 import styled, { keyframes } from 'styled-components/macro'
 
@@ -23,6 +23,11 @@ const CowAnimation = keyframes`
   }
 `
 export const StyledCowLoading = styled(SVG)`
+  --size: 15rem;
+  width: var(--size);
+  height: var(--size);
+  object-fit: contain;
+
   .cowLoading {
     animation: ${CowAnimation} 1.4s infinite ease-in-out;
     animation-delay: -1s;

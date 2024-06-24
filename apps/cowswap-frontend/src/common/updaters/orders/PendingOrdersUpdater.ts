@@ -1,15 +1,12 @@
 import { useSetAtom } from 'jotai'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 
-import {
-  getExplorerOrderLink,
-  isOrderInPendingTooLong,
-  timeSinceInSeconds,
-  triggerAppziSurvey,
-} from '@cowprotocol/common-utils'
+import { getExplorerOrderLink, timeSinceInSeconds } from '@cowprotocol/common-utils'
 import { EnrichedOrder, EthflowData, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { Command, UiOrderType } from '@cowprotocol/types'
 import { GnosisSafeInfo, useGnosisSafeInfo, useWalletInfo } from '@cowprotocol/wallet'
+
+import { isOrderInPendingTooLong, triggerAppziSurvey } from 'appzi'
 
 import { GetSafeTxInfo, useGetSafeTxInfo } from 'legacy/hooks/useGetSafeTxInfo'
 import { useAllTransactions } from 'legacy/state/enhancedTransactions/hooks'

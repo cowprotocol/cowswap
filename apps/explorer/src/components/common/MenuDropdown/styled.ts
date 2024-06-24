@@ -8,7 +8,7 @@ export const Wrapper = styled.div<{ isMobileMenuOpen: boolean }>`
   display: flex;
   justify-content: flex-end;
   .mobile-menu {
-    background: ${({ theme }): string => theme.bg4};
+    background: ${({ theme }): string => theme.paperCustom};
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -97,7 +97,7 @@ export const MenuItemCSS = css`
   }
   ${media.mobile} {
     width: 100%;
-    border-bottom: 0.1rem solid ${({ theme }): string => theme.bg3};
+    border-bottom: 0.1rem solid ${({ theme }): string => theme.background};
     border-radius: 0;
     padding: 2.8rem 1rem;
     font-size: 1.8rem;
@@ -118,7 +118,7 @@ export const ButtonMenuItem = styled.button`
 
   ${media.mobile} {
     width: 100%;
-    border-bottom: 0.1rem solid ${({ theme }): string => theme.bg3};
+    border-bottom: 0.1rem solid ${({ theme }): string => theme.background};
     border-radius: 0;
     padding: 2.8rem 1rem;
     font-size: 1.8rem;
@@ -188,8 +188,8 @@ export const Content = styled.div`
   top: 100%;
   right: 0;
   border-radius: 1.6rem;
-  background: ${({ theme }): string => theme.bg4};
-  box-shadow: 0 1.2rem 1.8rem ${({ theme }): string => theme.bg3};
+  background: ${({ theme }): string => theme.paperCustom};
+  box-shadow: 0 1.2rem 1.8rem ${({ theme }): string => theme.background};
   padding: 3.2rem;
   gap: 6.2rem;
   margin: 1.2rem 0 0;
@@ -268,6 +268,12 @@ export const MenuSection = styled.div`
     &.ACTIVE {
       font-weight: bold;
     }
+  }
+
+  a > svg {
+    width: 1.8rem;
+    height: 1.8rem;
+    object-fit: contain;
   }
 
   a > svg > path {

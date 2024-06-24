@@ -1,7 +1,7 @@
 import '@reach/dialog/styles.css'
 import './polyfills'
 
-import React, { ReactNode, StrictMode, useCallback, useContext, useEffect } from 'react'
+import React, { ReactNode, StrictMode, useCallback, useContext } from 'react'
 
 import IMAGE_MOON from '@cowprotocol/assets/cow-swap/moon.svg'
 import IMAGE_SUN from '@cowprotocol/assets/cow-swap/sun.svg'
@@ -14,10 +14,10 @@ import { Provider } from 'react-redux'
 import { HashRouter } from 'react-router-dom'
 import { Flex } from 'rebass'
 import styled, { ThemeContext } from 'styled-components/macro'
+import { ThemedGlobalStyle, ThemeProvider, WIDGET_MAX_WIDTH } from 'theme'
 
 import { cowSwapStore } from 'legacy/state'
 import { useDarkModeManager } from 'legacy/state/user/hooks'
-import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from 'legacy/theme'
 
 import { BlockNumberProvider } from './common/hooks/useBlockNumber'
 
@@ -37,7 +37,6 @@ const DarkModeToggle = ({ children }: { children?: ReactNode }) => {
   const [darkMode, toggleDarkModeAux] = useDarkModeManager()
   const toggleDarkMode = useCallback(() => {
     toggleDarkModeAux()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [toggleDarkModeAux, darkMode])
   const label = (darkMode ? 'Light' : 'Dark') + ' Mode'
   const description = `${darkMode ? 'Sun/light' : 'Moon/dark'} mode icon`
@@ -73,12 +72,12 @@ const WrapperInner = styled.div`
 
 export const DemoContainer = styled.div`
   width: 100%;
-  max-width: ${({ theme }) => theme.appBody.maxWidth.swap};
+  max-width: ${WIDGET_MAX_WIDTH.swap};
   margin: 0 auto;
   display: flex;
   flex-flow: column wrap;
   gap: 6px;
-  background: ${({ theme }) => theme.bg1};
+  background: ${({ theme }) => theme.paper};
   border: none;
   border-radius: 16px;
   box-shadow: ${({ theme }) => theme.boxShadow1};
@@ -91,14 +90,8 @@ const { connector, hooks } = injectedWalletConnection
 connector.activate(chainId)
 
 const Fixture = ({ children }: { children: ReactNode }) => {
-  useEffect(() => {
-    const skeleton = document.getElementById('swap-skeleton')
-    if (skeleton) skeleton.style.display = 'none'
-  }, [])
-
   return (
     <StrictMode>
-      <FixedGlobalStyle />
       <Provider store={cowSwapStore}>
         <HashRouter>
           <ThemeProvider>

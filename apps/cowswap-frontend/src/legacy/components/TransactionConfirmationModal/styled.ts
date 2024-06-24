@@ -1,11 +1,11 @@
-import { RowBetween } from '@cowprotocol/ui'
+import { Media, RowBetween } from '@cowprotocol/ui'
 import { ExternalLink } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
+import { CloseIcon } from 'theme'
 
 import { AutoColumn } from 'legacy/components/Column'
-import { CloseIcon } from 'legacy/theme'
 
 export const Wrapper = styled.div`
   width: 100%;
@@ -21,9 +21,9 @@ export const Wrapper = styled.div`
 export const ContentWrapper = styled(Wrapper)`
   padding: 0 16px;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     padding: 0 10px;
-  `}
+  }
 `
 
 export const Section = styled(AutoColumn)<{ inline?: boolean }>`

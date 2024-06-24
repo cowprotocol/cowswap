@@ -1,24 +1,91 @@
 const { composePlugins, withNx } = require('@nx/next')
 
-/**
- * @type {import('@nx/next/plugins/with-nx').WithNxOptions}
- **/
 const nextConfig = {
   nx: {
-    // Set this to true if you would like to to use SVGR
-    // See: https://github.com/gregberge/svgr
     svgr: false,
   },
-
   compiler: {
-    // For other options, see https://styled-components.com/docs/tooling#babel-plugin
     styledComponents: true,
+  },
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        module: false,
+      }
+    }
+
+    config.module.rules.push(
+      {
+        test: /\.(woff|woff2|eot|ttf|otf)$/,
+        type: 'asset/resource',
+        generator: {
+          filename: 'static/fonts/[hash][ext][query]',
+        },
+      },
+      {
+        test: /\.(png|jpg|gif|svg)$/,
+        type: 'asset/resource',
+        generator: {
+          filename: 'static/images/[hash][ext][query]',
+        },
+      },
+      {
+        test: /\.(mp4|webm)$/,
+        use: {
+          loader: 'file-loader',
+          options: {
+            publicPath: '/_next/static/videos/',
+            outputPath: 'static/videos/',
+            name: '[name].[hash].[ext]',
+            esModule: false,
+          },
+        },
+      },
+      {
+        test: /\.[tj]sx?$/,
+        exclude: /node_modules/,
+        use: [
+          {
+            loader: 'babel-loader',
+            options: {
+              presets: ['next/babel'],
+              plugins: ['babel-plugin-macros'],
+            },
+          },
+        ],
+      }
+    )
+
+    return config
+  },
+  async redirects() {
+    return [
+      {
+        source: '/learn/articles/1',
+        destination: '/learn/articles',
+        permanent: true,
+      },
+      {
+        source: '/jobs',
+        destination: '/careers',
+        permanent: true,
+      },
+      {
+        source: '/report-scam',
+        destination: 'https://app.chainpatrol.io/cow',
+        permanent: true,
+      },
+      {
+        source: '/widget/terms-and-conditions',
+        destination: '/legal/widget-terms',
+        permanent: true,
+      },
+    ]
   },
 }
 
-const plugins = [
-  // Add more Next.js plugins to this list if needed.
-  withNx,
-]
+const plugins = [withNx]
 
 module.exports = composePlugins(...plugins)(nextConfig)

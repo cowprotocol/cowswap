@@ -1,6 +1,6 @@
-import styled from 'styled-components'
-import { Color, Media } from 'styles/variables'
-import { transparentize } from 'polished'
+import styled from 'styled-components/macro'
+import { Media } from 'styles/variables'
+import { Color } from '@cowprotocol/ui'
 
 export const Wrapper = styled.div`
   display: grid;
@@ -11,7 +11,7 @@ export const Wrapper = styled.div`
   margin: 0 auto;
   padding: 0 1.6rem;
   position: relative;
-  color: ${Color.darkBlue};
+  color: ${Color.neutral10};
 
   ${Media.mobile} {
     display: flex;
@@ -62,7 +62,7 @@ export const SwapWidgetWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  background: ${Color.white};
+  background: ${Color.neutral100};
   height: 26.2rem;
   width: 100%;
   box-shadow: 0 0.2rem 1.2rem rgba(0, 0, 0, 0.03), 0 2rem 7rem rgba(0, 0, 0, 0.06), 0 0.2rem 0.4rem rgba(0, 0, 0, 0.02);
@@ -91,7 +91,7 @@ export const Section = styled.div`
   > div > pre,
   > div > ul {
     line-height: 1.6;
-    color: ${Color.text1};
+    color: ${Color.neutral10};
     margin: 0 0 2.8rem;
   }
 
@@ -106,7 +106,7 @@ export const Section = styled.div`
   > div > pre {
     margin: 0 0 1.6rem;
     padding: 1.6rem;
-    background: ${transparentize(0.92, Color.darkBlue)};
+    background: ${Color.neutral40};
     border-radius: 1rem;
   }
 
@@ -120,7 +120,7 @@ export const Section = styled.div`
   }
 
   a {
-    color: ${Color.darkBlue};
+    color: ${Color.neutral10};
     text-decoration: none;
     transition: color 0.3s ease-in-out;
   }
@@ -168,8 +168,8 @@ export const TokenTitle = styled.div`
 
   > span {
     padding: 0.6rem;
-    background: ${transparentize(0.92, Color.darkBlue)};
-    color: ${Color.text1};
+    background: ${Color.neutral80};
+    color: ${Color.neutral10};
     border-radius: 0.4rem;
     font-size: 1.4rem;
     letter-spacing: 0.05rem;
@@ -193,12 +193,12 @@ export const TokenPrice = styled.div<{ changeColor?: string }>`
     align-items: center;
     gap: 0.5rem;
     font-size: 2.2rem;
-    color: ${transparentize(0.2, Color.darkBlue)};
+    color: ${Color.neutral40};
   }
 
   > span > b {
     font-weight: normal;
-    color: ${({ changeColor }) => changeColor || Color.text1};
+    color: ${({ changeColor }) => changeColor || Color.neutral10};
   }
 
   > span > i {
@@ -236,11 +236,11 @@ export const TokenLink = styled.a`
   line-height: 1.2;
   gap: 0.8rem;
   text-decoration: none;
-  color: ${transparentize(0.2, Color.darkBlue)};
+  color: ${Color.neutral10};
   transition: color 0.2s ease-in-out;
 
   &:hover {
-    color: ${Color.darkBlue};
+    color: ${Color.neutral10};
     text-decoration: underline;
   }
 
@@ -248,7 +248,7 @@ export const TokenLink = styled.a`
     width: var(--tokenSize);
     height: var(--tokenSize);
     border-radius: var(--tokenSize);
-    background-color: ${Color.darkBlue};
+    background-color: ${Color.neutral10};
   }
 
   > span {
@@ -257,7 +257,7 @@ export const TokenLink = styled.a`
   > span > i {
     text-transform: uppercase;
     font-style: normal;
-    color: ${transparentize(0.5, Color.darkBlue)};
+    color: ${Color.neutral50};
   }
 `
 
@@ -275,14 +275,14 @@ export const SwapCard = styled.div`
   flex-flow: column wrap;
   align-items: flex-start;
   justify-content: flex-start;
-  border: 0.1rem solid ${transparentize(0.8, Color.darkBlue)};
+  border: 0.1rem solid ${Color.neutral40};
   transition: border 0.2s ease-in-out;
   border-radius: 1.2rem;
   padding: 0;
   font-size: 1.4rem;
 
   &:hover {
-    border: 0.1rem solid ${Color.darkBlue};
+    border: 0.1rem solid ${Color.neutral10};
 
     > a > img:last-child {
       opacity: 1;
@@ -320,7 +320,7 @@ export const SwapCard = styled.div`
 `
 
 export const CopyMessage = styled.span`
-  color: ${Color.success};
+  color: #007b28;
   font-size: 1.3rem;
   margin: 0 0 0 0.2rem;
 `
@@ -329,7 +329,6 @@ export const Stats = styled.div`
   margin: 1.2rem 0;
   display: flex;
   flex-flow: row wrap;
-  gap: 1.2rem;
   gap: 2rem;
   width: 100%;
   justify-content: space-between;
@@ -345,7 +344,7 @@ export const StatItem = styled.div`
 export const StatTitle = styled.div`
   font-size: 1.4rem;
   line-height: 1.2;
-  color: ${Color.text1};
+  color: ${Color.neutral10};
 `
 
 export const StatValue = styled.h5`
@@ -355,12 +354,6 @@ export const StatValue = styled.h5`
   margin: 0;
 `
 
-export const SectionSeparator = styled.div`
-  height: 0.1rem;
-  width: 100%;
-  background: white;
-  opacity: 0.3;
-`
 export const CopyIcon = styled.img`
   cursor: pointer;
   opacity: 0.6;

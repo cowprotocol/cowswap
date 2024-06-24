@@ -9,6 +9,7 @@ import { Token } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
 
+
 export const StyledButtonStar = styled(ButtonStar)`
   z-index: 9;
 `

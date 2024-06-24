@@ -15,17 +15,17 @@ import {
   MINIMUM_ORDER_VALID_TO_TIME_SECONDS,
 } from '@cowprotocol/common-const'
 import { getWrappedToken } from '@cowprotocol/common-utils'
-import { FancyButton, HelpTooltip, RowBetween, RowFixed, UI } from '@cowprotocol/ui'
+import { FancyButton, HelpTooltip, Media, RowBetween, RowFixed, UI } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Percent } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
 import { darken } from 'color2k'
 import styled, { ThemeContext } from 'styled-components/macro'
+import { ThemedText } from 'theme'
 
 import { AutoColumn } from 'legacy/components/Column'
 import { useSetUserSlippageTolerance, useUserSlippageTolerance, useUserTransactionTTL } from 'legacy/state/user/hooks'
-import { ThemedText } from 'legacy/theme'
 
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { getNativeOrderDeadlineTooltip, getNonNativeOrderDeadlineTooltip } from 'modules/swap/pure/Row/RowDeadline'
@@ -69,7 +69,7 @@ export const Input = styled.input`
     -webkit-appearance: none;
   }
 
-  color: ${({ theme, color }) => (color === 'red' ? theme.red1 : `var(${UI.COLOR_TEXT})`)};
+  color: ${({ theme, color }) => (color === 'red' ? theme.error : `var(${UI.COLOR_TEXT})`)};
   text-align: right;
 `
 
@@ -78,11 +78,11 @@ export const OptionCustom = styled(FancyButton)<{ active?: boolean; warning?: bo
   position: relative;
   padding: 0 0.75rem;
   flex: 1;
-  border: ${({ theme, active, warning }) => active && `1px solid ${warning ? theme.red1 : theme.primary1}`};
+  border: ${({ theme, active, warning }) => active && `1px solid ${warning ? theme.error : theme.bg2}`};
 
   :hover {
     border: ${({ theme, active, warning }) =>
-      active && `1px solid ${warning ? darken(theme.red1, 0.1) : darken(theme.primary1, 0.1)}`};
+      active && `1px solid ${warning ? darken(theme.error, 0.1) : darken(theme.bg2, 0.1)}`};
   }
 
   input {
@@ -95,9 +95,9 @@ export const OptionCustom = styled(FancyButton)<{ active?: boolean; warning?: bo
 
 const SlippageEmojiContainer = styled.span`
   color: #f3841e;
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     display: none;
-  `}
+  }
 `
 
 export interface TransactionSettingsProps {

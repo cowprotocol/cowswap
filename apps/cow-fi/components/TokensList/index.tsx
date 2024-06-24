@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import Link from 'next/link'
 import { TokenLink } from '@/components/TokenDetails/index.styles'
 import { getPriceChangeColor } from 'util/getPriceChangeColor'
 import { formatUSDPrice } from 'util/formatUSDPrice'
@@ -14,6 +13,8 @@ import {
   Wrapper,
   NoTokensText,
 } from './index.style'
+
+import { EventCategories, sendEventHandler } from '@cowprotocol/analytics'
 
 export interface TokenListProps {
   tokens: TokenInfo[]
@@ -74,7 +75,7 @@ function TokenItem({ token, index }: TokenItemProps) {
     <ListItem key={id}>
       <span>{index + 1}</span>
 
-      <TokenLink href={`/tokens/${id}`}>
+      <TokenLink href={`/tokens/${id}`} onClick={() => sendEventHandler(EventCategories.TOKENS, `click-token-${name}`)}>
         {image.large && image.large !== 'missing_large.png' ? (
           <img src={image.large} alt={name} />
         ) : (

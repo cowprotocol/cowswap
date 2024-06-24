@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { Command } from '@cowprotocol/types'
-import { Tooltip, TooltipProps, UI } from '@cowprotocol/ui'
+import { Media, Tooltip, TooltipProps, UI } from '@cowprotocol/ui'
 
 import { X } from 'react-feather'
 import { Text } from 'rebass'
@@ -42,13 +42,13 @@ const TooltipWrapper = styled(Tooltip)`
     max-width: 370px;
   }
 
-  ${({ theme }) => theme.mediaWidth.upToLarge`
+  ${Media.upToLarge()} {
     padding-right: 0.8rem;
-  `};
-  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+  }
+  ${Media.upToExtraSmall()} {
     padding-left: 0;
     padding-right: 0.5rem;
-  `};
+  }
 `
 
 const BodyWrapper = styled(AutoColumn)`
@@ -61,17 +61,17 @@ const BodyWrapper = styled(AutoColumn)`
     font-size: 18px;
   }
 
-  ${({ theme }) => theme.mediaWidth.upToLarge`
+  ${Media.upToLarge()} {
     gap: 0.8rem;
-  `};
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  }
+  ${Media.upToSmall()} {
     gap: 0.6rem;
     padding-top: 0.5rem;
     padding-top: auto;
-  `};
-  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+  }
+  ${Media.upToExtraSmall()} {
     gap: 0.4rem;
-  `};
+  }
 `
 
 const AutoColumnWrapper = styled(AutoColumn)`
@@ -79,17 +79,17 @@ const AutoColumnWrapper = styled(AutoColumn)`
   * input {
     margin-left: 0;
   }
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     max-width: 9rem;
     min-width: auto;
-  `};
+  }
 `
 
 const StyledClose = styled(IconClose)`
   top: 0.5rem;
-  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
-    right:0.5rem;
-  `};
+  ${Media.upToExtraSmall()} {
+    right: 0.5rem;
+  }
 `
 
 const PopupContent = ({ onCheck, onClose }: PopupContentProps) => {
@@ -124,15 +124,16 @@ export function FollowPendingTxPopupUI({
   ...rest
 }: FollowingTxPopupProps): JSX.Element {
   return (
-    <TooltipWrapper 
-      show={show} 
-      placement="left" 
-      wrapInContainer 
-      content={<PopupContent onClose={onClose} onCheck={onCheck} />} 
-      {...rest}>
-        <div onClick={onClose} onKeyDown={onClose} role="button" tabIndex={0}>
-          {children}
-        </div>
+    <TooltipWrapper
+      show={show}
+      placement="left"
+      wrapInContainer
+      content={<PopupContent onClose={onClose} onCheck={onCheck} />}
+      {...rest}
+    >
+      <div onClick={onClose} onKeyDown={onClose} role="button" tabIndex={0}>
+        {children}
+      </div>
     </TooltipWrapper>
   )
 }

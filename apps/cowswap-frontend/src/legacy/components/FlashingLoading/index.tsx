@@ -1,7 +1,6 @@
-import CowIcon from '@cowprotocol/assets/cow-swap/cowprotocol.svg'
+import { ProductLogo, ProductVariant } from '@cowprotocol/ui'
 
 import { transparentize } from 'color2k'
-import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
 export const LoadingWrapper = styled.div`
@@ -60,9 +59,11 @@ export const LoadingWrapper = styled.div`
   }
 `
 
-export const Loading = (
-  <LoadingWrapper>
-    <SVG src={CowIcon} width={100} height={100} />
-    <span>Loading...</span>
-  </LoadingWrapper>
-)
+export const Loading: React.FC = () => {
+  return (
+    <LoadingWrapper>
+      <ProductLogo variant={ProductVariant.CowSwap} height={100} logoIconOnly />
+      <span>Loading...</span>
+    </LoadingWrapper>
+  )
+}

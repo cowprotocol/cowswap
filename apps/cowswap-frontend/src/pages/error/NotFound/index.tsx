@@ -1,5 +1,5 @@
 import cow404IMG from '@cowprotocol/assets/cow-swap/cow-404.png'
-import { ButtonPrimary } from '@cowprotocol/ui'
+import { ButtonPrimary, Media } from '@cowprotocol/ui'
 
 import { Link } from 'react-router-dom'
 import styled from 'styled-components/macro'
@@ -7,21 +7,21 @@ import styled from 'styled-components/macro'
 import { Page, Title, Content, GdocsListStyle } from 'modules/application/pure/Page'
 
 const Wrapper = styled(Page)`
-  ${GdocsListStyle}
+  ${GdocsListStyle};
   min-height: auto;
   padding-bottom: 32px;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     padding-bottom: 24px;
-  `}
+  }
 
   ${Title} {
     margin-bottom: 50px;
     font-size: 26px;
-    ${({ theme }) => theme.mediaWidth.upToSmall`
+    ${Media.upToSmall()} {
       font-size: 18px;
       text-align: center;
-    `}
+    }
   }
 
   ${Content} {
@@ -50,7 +50,7 @@ const Container = styled.div`
     max-width: 506px;
   }
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     img {
       max-width: 287px;
     }
@@ -59,7 +59,7 @@ const Container = styled.div`
       font-size: 16px;
       text-align: center;
     }
-  `}
+  }
 `
 
 export default function NotFound() {

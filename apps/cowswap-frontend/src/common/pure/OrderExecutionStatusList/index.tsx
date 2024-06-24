@@ -52,7 +52,7 @@ export const ExecuteIndicator = styled.div<{ status?: OrderExecutionStatus }>`
       case 'veryClose':
         return theme.success
       case 'close':
-        return theme.text3
+        return theme.info
       case 'notClose':
       default:
         return `var(${UI.COLOR_TEXT})`

@@ -1,64 +1,8 @@
-import styled, { createGlobalStyle } from 'styled-components'
-import { Color, Font, Media } from 'styles/variables'
+import styled, { createGlobalStyle } from 'styled-components/macro'
+import { Color, Media, Font } from '@cowprotocol/ui'
 import { transparentize } from 'polished'
 
 const GlobalStyles = createGlobalStyle`
-
-@font-face {
-      font-family: 'Averta';
-      src: url('/fonts/averta-regular-webfont.woff2') format('woff2');
-      font-weight: normal;
-      font-style: normal;
-      font-display: swap;
-  }
-
-  @font-face {
-      font-family: 'Averta';
-      src: url('/fonts/averta-semibold-webfont.woff2') format('woff2');
-      font-weight: 500;
-      font-style: normal;
-      font-display: swap;
-  }
-
-  @font-face {
-      font-family: 'Averta';
-      src: url('/fonts/averta-bold-webfont.woff2') format('woff2');
-      font-weight: bold;
-      font-style: normal;
-      font-display: swap;
-  }
-
-  @font-face {
-      font-family: 'Averta';
-      src: url('/fonts/averta-extrabold-webfont.woff2') format('woff2');
-      font-weight: 900;
-      font-style: normal;
-      font-display: swap;
-  }
-
-  @font-face {
-    font-family: 'Flecha S';
-    src: url('/fonts/FlechaS-MediumItalic.woff2') format('woff2');
-    font-weight: 500;
-    font-style: italic;
-    font-display: swap;
-  }
-
-  @font-face {
-    font-family: 'Flecha S';
-    src: url('/fonts/FlechaS-Medium.woff2') format('woff2');
-    font-weight: 500;
-    font-style: normal;
-    font-display: swap;
-  }
-
-  @font-face {
-    font-family: 'CircularXXSub-Book';
-    src: url('/fonts/CircularXXSub-Book.woff2') format('woff2');
-    font-weight: 400;
-    font-style: normal;
-    font-display: swap;
-  }
 
   html, body {
     width: 100%;
@@ -67,38 +11,29 @@ const GlobalStyles = createGlobalStyle`
     margin: 0;
     font-size: 62.5%;
     line-height: 10px;
-    font-family: ${Font.default};
-    background-color: ${Color.darkBlue};
-    color: ${Color.lightBlue};
     box-sizing: border-box;
-    scroll-behavior: smooth;
-    font-variant: none;
-    text-rendering: geometricPrecision;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     font-feature-settings: 'ss01' on, 'ss02' on, 'cv01' on, 'cv03' on;
 
       html,
       input,
       textarea,
       button {
-          font-family: 'Averta', sans-serif;
+          font-family: inherit;
           font-display: fallback;
       }
   }
 
   *::selection {
-    background: ${Color.lightBlue};
-    color: ${Color.darkBlue};
+    background: ${Color.neutral100};
+    color: ${Color.neutral0};
   }
 
   *::-moz-selection {
-    background: ${Color.lightBlue};
+    background: ${Color.neutral100};
   }
 
   *::-webkit-selection {
-    background: ${Color.lightBlue};
+    background: ${Color.neutral100};
   }
 
   *::-moz-placeholder {
@@ -124,7 +59,7 @@ const GlobalStyles = createGlobalStyle`
   }
 
   ul, ol {
-    font-size: ${Font.sizeDefault};
+    font-size: 16px;
   }
 
   button {
@@ -161,7 +96,7 @@ const GlobalStyles = createGlobalStyle`
     }
 
     &:focus {
-      border-color: ${Color.darkBlue};
+      border-color: ${Color.neutral0};
     }
 
     &:disabled {
@@ -178,13 +113,13 @@ const GlobalStyles = createGlobalStyle`
   .mobileOnly {
     display: none !important;
 
-    ${Media.mobile} {
+    ${Media.upToMedium()} {
       display: block !important;
     }
   }
 
   .hideMobile {
-    ${Media.mobile} {
+    ${Media.upToMedium()} {
       display: none;
     }
   }
@@ -216,43 +151,63 @@ const GlobalStyles = createGlobalStyle`
   animation-fill-mode: forwards;
 }
 
+span[class^='wordtag-'] {
+    padding: 0;
+    border-radius: 28px;
+    display: inline-block;
+    padding: 3px 16px;
+  }
+
+  .wordtag-blue {
+    color: #012f7a;
+    background: #65d9ff;
+  }
+
+  .wordtag-orange {
+    color: #ec4612;
+    background: #fee7cf;
+  }
+
+  .wordtag-purple {
+    color: #f996ee;
+    background: #490072;
+  }
 `
 
 export const ExternalLink = styled.a`
   display: inline-block;
-  color: ${Color.darkBlue};
+  color: ${Color.neutral0};
   font-size: inherit;
   white-space: nowrap;
 
   &::after {
     content: '↗';
     color: inherit;
-    font-size: ${Font.sizeDefault};
+    font-size: 16px;
     display: inline-block;
     margin: 0 0 0 0.2rem;
   }
 `
 
 export const DropDown = styled.div`
-  border: 0.1rem solid ${transparentize(0.9, Color.lightBlue)};
+  border: 0.1rem solid ${transparentize(0.9, Color.neutral100)};
   border-radius: 0.6rem;
   width: 100%;
   padding: 0;
-  background: ${Color.darkBlue4};
-  color: ${Color.lightBlue};
+  background: ${Color.neutral0};
+  color: ${Color.neutral100};
   font-size: 1.8rem;
   margin: 0 0 2.4rem;
   display: flex;
   flex-flow: row nowrap;
   position: relative;
-  font-family: ${Font.default};
 
   &::after {
     content: '▼';
     position: absolute;
     border: 0;
     color: inherit;
-    font-size: ${Font.sizeDefault};
+    font-size: 16px;
     display: flex;
     align-items: center;
     pointer-events: none;
@@ -276,15 +231,15 @@ export const DropDown = styled.div`
     font-size: inherit;
     border: 0;
     border-radius: inherit;
-    background: ${transparentize(0.9, Color.darkBlue)};
+    background: ${transparentize(0.9, Color.neutral0)};
 
     &:focus {
       outline: none;
     }
 
     > option {
-      background-color: ${Color.black};
-      color: ${Color.darkBlue};
+      background-color: ${Color.neutral0};
+      color: ${Color.neutral0};
     }
   }
 `

@@ -9,7 +9,7 @@ import SlippageTabsMod, { TransactionSettingsProps, OptionCustom } from './Trans
 const Wrapper = styled.div`
   ${RowBetween} > button, ${OptionCustom} {
     &:disabled {
-      background-color: ${({ theme }) => darken(theme.bg3, 0.031)};
+      background-color: ${({ theme }) => darken(theme.background, 0.031)};
       border: none;
       pointer-events: none;
     }

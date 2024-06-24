@@ -1,6 +1,7 @@
 import React from 'react'
 
 import styled from 'styled-components/macro'
+import { DARK_COLOURS, media } from 'theme'
 
 import Tabs, {
   getTabTheme,
@@ -8,8 +9,6 @@ import Tabs, {
   IndicatorTabSize,
   TabList,
 } from '../../../../components/common/Tabs/Tabs'
-import { DARK_COLOURS } from '../../../../theme'
-import { media } from '../../../../theme/styles/media'
 
 const StyledTabs = styled.div`
   display: flex;

@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { Command } from '@cowprotocol/types'
+import { TruncatedText } from '@cowprotocol/ui/pure/TruncatedText'
 
 import { faFill, faProjectDiagram } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -43,16 +44,19 @@ const Table = styled(SimpleTable)`
 
       &:first-of-type {
         text-transform: capitalize;
+
         ${media.mediumUp} {
           font-weight: ${({ theme }): string => theme.fontLighter};
         }
 
         /* Question mark */
+
         > svg {
           margin: 0 1rem 0 0;
         }
 
         /* Column after text on first column */
+
         ::after {
           content: ':';
         }
@@ -77,6 +81,8 @@ const tooltip = {
     'The date and time at which the order was submitted. The timezone is based on the browser locale settings.',
   expiration:
     'The date and time at which an order will expire and effectively be cancelled. Depending on the type of order, it may have partial fills upon expiration.',
+  execution:
+    'The date and time at which the order has been executed. The timezone is based on the browser locale settings.',
   type: (
     <div>
       CoW Protocol supports three type of orders – market, limit and liquidity:
@@ -119,6 +125,7 @@ const tooltip = {
 export const Wrapper = styled.div`
   display: flex;
   flex-direction: row;
+
   ${media.mobile} {
     flex-direction: column;
   }
@@ -172,7 +179,6 @@ export function DetailsTable(props: Props): JSX.Element | null {
   const { order, areTradesLoading, showFillsButton, viewFills, isPriceInverted, invertPrice } = props
   const {
     uid,
-    shortId,
     owner,
     receiver,
     txHash,
@@ -180,6 +186,7 @@ export function DetailsTable(props: Props): JSX.Element | null {
     partiallyFillable,
     creationDate,
     expirationDate,
+    executionDate,
     buyAmount,
     sellAmount,
     executedBuyAmount,
@@ -214,7 +221,11 @@ export function DetailsTable(props: Props): JSX.Element | null {
               <HelpTooltip tooltip={tooltip.orderID} /> Order Id
             </td>
             <td>
-              <RowWithCopyButton textToCopy={uid} contentsToDisplay={shortId} onCopy={(): void => onCopy('orderId')} />
+              <RowWithCopyButton
+                textToCopy={uid}
+                contentsToDisplay={<TruncatedText text={uid} />}
+                onCopy={(): void => onCopy('orderId')}
+              />
             </td>
           </tr>
           <tr>
@@ -285,6 +296,16 @@ export function DetailsTable(props: Props): JSX.Element | null {
               <DateDisplay date={creationDate} showIcon={true} />
             </td>
           </tr>
+          {executionDate && !showFillsButton && (
+            <tr>
+              <td>
+                <HelpTooltip tooltip={tooltip.execution} /> Execution Time
+              </td>
+              <td>
+                <DateDisplay date={executionDate} showIcon={true} />
+              </td>
+            </tr>
+          )}
           <tr>
             <td>
               <HelpTooltip tooltip={tooltip.expiration} /> Expiration Time

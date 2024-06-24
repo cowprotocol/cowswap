@@ -1,6 +1,6 @@
 import { PropsWithChildren } from 'react'
 
-import { Row, RowFixed } from '@cowprotocol/ui'
+import { Media, Row, RowFixed } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 
 import useScrollPosition from '@react-hook/window-scroll'
@@ -21,24 +21,17 @@ export const TitleMod = styled.a`
     cursor: pointer;
   }
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     justify-self: center;
-  `};
+  }
 `
 
 export const HeaderLinksMod = styled(Row)`
   justify-content: center;
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${Media.upToMedium()} {
     display: none;
-  `};
-`
-
-export const HeaderControlsUni = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-self: flex-end;
+  }
 `
 
 export const StyledNavLinkUni = styled(NavLink)`
@@ -75,7 +68,7 @@ export const StyledMenuButton = styled.button`
   margin: 0;
   padding: 0;
   height: 35px;
-  background-color: ${({ theme }) => theme.bg3};
+  background-color: ${({ theme }) => theme.background};
   margin-left: 8px;
   padding: 0.15rem 0.5rem;
   border-radius: 0.5rem;
@@ -85,7 +78,7 @@ export const StyledMenuButton = styled.button`
   &:focus {
     cursor: pointer;
     outline: none;
-    background-color: ${({ theme }) => theme.bg4};
+    background-color: ${({ theme }) => theme.paperCustom};
   }
 
   svg {
@@ -103,22 +96,22 @@ export const HeaderFrame = styled.div<{ showBackground: boolean }>`
   width: 100%;
   top: 0;
   position: relative;
-  border-bottom: ${({ theme }) => theme.header.border};
+  border-bottom: none;
   padding: 1rem;
   z-index: 2;
 
-  ${({ theme }) => theme.mediaWidth.upToLarge`
+  ${Media.upToLarge()} {
     grid-template-columns: 48px 1fr 1fr;
-  `};
+  }
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${Media.upToMedium()} {
     grid-template-columns: 1fr 1fr;
     position: relative;
-  `};
+  }
 
-  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+  ${Media.upToExtraSmall()} {
     padding: 0.5rem 1rem;
-  `};
+  }
 `
 
 export const StyledNavLink = styled(StyledNavLinkUni)`
@@ -135,33 +128,35 @@ export const StyledNavLink = styled(StyledNavLinkUni)`
   }
 `
 
-export const HeaderControls = styled(HeaderControlsUni)`
+export const HeaderControls = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
   justify-content: flex-end;
-  gap: 12px;
+  gap: 6px;
+  max-width: 100%;
+  height: 100%;
 
-  ${({ theme }) => theme.mediaWidth.upToLarge`
-    max-width: 100%;
+  ${Media.upToMedium()} {
     margin: 0 0 0 auto;
-    padding: 0;
-    height: auto;
-    width: auto;
-  `};
+    height: 56px;
+    width: 100%;
+    position: sticky;
+    bottom: 0;
+    left: 0;
+    z-index: 101;
+    background: var(${UI.COLOR_PAPER});
+    padding: 5px 10px;
+    flex-flow: row-reverse;
+    justify-content: space-between;
+  }
 `
 
 export const HeaderElement = styled.div`
   display: flex;
   align-items: center;
-  gap: 12px;
-
-  ${({ theme }) => theme.mediaWidth.upToTiny`
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background: var(${UI.COLOR_PAPER});
-    padding: 5px;
-    justify-content: flex-end;
-  `};
+  gap: 0;
+  height: 100%;
 `
 
 export const Wrapper = styled.div<{ isMobileMenuOpen: boolean }>`
@@ -172,14 +167,13 @@ export const Wrapper = styled.div<{ isMobileMenuOpen: boolean }>`
     padding: 16px;
     gap: 16px;
 
-    ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+    ${Media.upToExtraSmall()} {
       gap: 10px;
-    `};
+    }
 
-    ${({ theme, isMobileMenuOpen }) => theme.mediaWidth.upToLarge`
-
-      ${
-        isMobileMenuOpen &&
+    ${Media.upToLarge()} {
+      ${({ isMobileMenuOpen }) => css`
+        ${isMobileMenuOpen &&
         css`
           position: absolute;
           top: 0;
@@ -196,9 +190,9 @@ export const Wrapper = styled.div<{ isMobileMenuOpen: boolean }>`
             left: 0;
             z-index: 101;
           }
-        `
-      }
-    `}
+        `}
+      `}
+    }
   }
 
   ${StyledMenuButton} {
@@ -222,14 +216,13 @@ export const Title = styled(TitleMod)<{ isMobileMenuOpen: boolean }>`
   text-decoration: none;
   color: inherit;
 
-  ${({ theme, isMobileMenuOpen }) => theme.mediaWidth.upToLarge`
-    ${
+  ${Media.upToLarge()} {
+    ${({ isMobileMenuOpen }) =>
       isMobileMenuOpen &&
       css`
         z-index: 101;
-      `
-    }
-  `};
+      `};
+  }
 `
 
 export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>`
@@ -253,7 +246,7 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
     transition: background var(${UI.ANIMATION_DURATION}) ease-in-out, color var(${UI.ANIMATION_DURATION}) ease-in-out;
     color: inherit;
 
-    ${({ theme }) => theme.mediaWidth.upToLarge`
+    ${Media.upToLarge()} {
       width: 100%;
       border-radius: 0;
       margin: 0;
@@ -262,7 +255,7 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
       padding: 28px 10px;
       color: inherit;
       border-bottom: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
-    `}
+    }
 
     > svg > path {
       fill: currentColor;
@@ -274,10 +267,10 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
       background: var(${UI.COLOR_PRIMARY});
       color: var(${UI.COLOR_BUTTON_TEXT});
 
-      ${({ theme }) => theme.mediaWidth.upToLarge`
+      ${Media.upToLarge()} {
         background: transparent;
         color: inherit;
-      `};
+      }
 
       > svg > path {
         fill: currentColor;
@@ -289,9 +282,9 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
     }
 
     &.expanded + ${MenuContent} {
-      ${({ theme }) => theme.mediaWidth.upToLarge`
+      ${Media.upToLarge()} {
         border: 0;
-      `}
+      }
     }
 
     &.ACTIVE {
@@ -301,7 +294,7 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
   }
 
   ${MenuFlyout} {
-    ${({ theme }) => theme.mediaWidth.upToLarge`
+    ${Media.upToLarge()} {
       width: 100%;
       flex-flow: column wrap;
 
@@ -309,42 +302,42 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
         margin: 0 0 0 auto;
         height: 10px;
       }
-    `};
+    }
 
-    ${({ theme }) => theme.mediaWidth.upToSmall`
+    ${Media.upToSmall()} {
       > button > svg {
         order: 3;
       }
-    `};
+    }
   }
 
   ${MenuContent} {
-    ${({ theme }) => theme.mediaWidth.upToLarge`
+    ${Media.upToLarge()} {
       padding: 8px 10px 28px;
       gap: 36px;
       margin: 0;
-    `};
+    }
   }
 
   ${MenuSection} {
-    ${({ theme }) => theme.mediaWidth.upToLarge`
+    ${Media.upToLarge()} {
       gap 36px;
       opacity: 0.7;
-    `};
+    };
 
-    ${({ theme }) => theme.mediaWidth.upToMedium`
+    ${Media.upToMedium()} {
      width: 100%;
-    `};
+    };
   }
 
   ${MenuTitle} {
-    ${({ theme }) => theme.mediaWidth.upToLarge`
+    ${Media.upToLarge()} {
       display: none;
-    `};
+    }
   }
 
-  ${({ theme, isMobileMenuOpen }) => theme.mediaWidth.upToLarge`
-    display: ${isMobileMenuOpen ? 'flex' : 'none'};
+  ${Media.upToLarge()} {
+    display: ${({ isMobileMenuOpen }) => (isMobileMenuOpen ? 'flex' : 'none')};
     width: 100%;
     height: 100%;
     position: fixed;
@@ -361,37 +354,6 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
     flex-flow: column nowrap;
     justify-content: flex-start;
     align-items: flex-start;
-`};
-`
-
-export const TwitterLink = styled(StyledMenuButton)`
-  > a {
-    ${({ theme }) => theme.cursor};
-    padding: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-    width: 100%;
-  }
-
-  > a > svg {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    border: 0;
-    display: flex;
-    margin: 0;
-    padding: 0;
-    stroke: transparent;
-  }
-
-  > a > svg > path {
-    fill: var(${UI.COLOR_TEXT});
-  }
-
-  > a:hover > svg > path {
-    fill: var(${UI.COLOR_TEXT});
   }
 `
 
@@ -402,20 +364,19 @@ export const LogoImage = styled.div<{ isMobileMenuOpen?: boolean }>`
   margin: 0 32px 0 0;
   position: relative;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     height: 30px;
     width: auto;
-  `}
+  }
 
-  ${({ theme, isMobileMenuOpen }) => theme.mediaWidth.upToLarge`
-    ${
+  ${Media.upToLarge()} {
+    ${({ isMobileMenuOpen }) =>
       isMobileMenuOpen &&
       css`
         height: 34px;
         width: auto;
-      `
-    }
-  `}
+      `}
+  }
 
   > svg {
     width: inherit;
@@ -435,9 +396,9 @@ export const UniIcon = styled.div`
 `
 
 export const HeaderRow = styled(RowFixed)`
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-   width: 100%;
-  `};
+  ${Media.upToMedium()} {
+    width: 100%;
+  }
 `
 
 export const WinterHat = styled.div`
@@ -446,11 +407,11 @@ export const WinterHat = styled.div`
   top: -10px;
   left: 6px;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     left: 0;
     right: 0;
     margin: auto;
-  `}
+  }
 
   > svg {
     height: 15px;

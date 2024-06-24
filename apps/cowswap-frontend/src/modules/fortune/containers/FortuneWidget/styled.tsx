@@ -1,4 +1,4 @@
-import { UI } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 
 import { darken, transparentize } from 'color2k'
 import styled from 'styled-components/macro'
@@ -42,9 +42,9 @@ export const SuccessBanner = styled.div<{ type: string }>`
           : darken(theme.blueShade3, SuccessBannerColors.darken)};
   }
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     font-size: 16px;
-  `};
+  }
 
   > svg {
     width: 32px;
@@ -52,16 +52,12 @@ export const SuccessBanner = styled.div<{ type: string }>`
     object-fit: contain;
     stroke: none;
     fill: ${({ type, theme }) =>
-      type === 'Twitter'
-        ? SuccessBannerColors.twitter
-        : type === 'Discord'
-        ? SuccessBannerColors.discord
-        : theme.primary1};
+      type === 'Twitter' ? SuccessBannerColors.twitter : type === 'Discord' ? SuccessBannerColors.discord : theme.bg2};
 
-    ${({ theme }) => theme.mediaWidth.upToSmall`
+    ${Media.upToSmall()} {
       width: 32px;
       height: 32px;
-    `};
+    }
 
     > path {
       fill: ${({ type, theme }) =>

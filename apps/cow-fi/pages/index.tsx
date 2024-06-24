@@ -1,61 +1,214 @@
-import Head from 'next/head'
 import { GetStaticProps } from 'next'
-
-import { CONFIG } from '@/const/meta'
+import { Font, Color } from '@cowprotocol/ui'
+import IMG_ICON_GOVERNANCE from '@cowprotocol/assets/images/icon-governance.svg'
+import VIDEO_HERO_HOME from '@cowprotocol/assets/video/cow-dao-hero-animation.mp4'
 
 import Layout from '@/components/Layout'
+import { Link, LinkType } from '@/components/Link'
 
-import { getCowStats } from 'services/cow'
-import Home, { HomeProps } from '@/components/Home'
+import {
+  PageWrapper,
+  ContainerCard,
+  ContainerCardSection,
+  TopicList,
+  TopicCard,
+  TopicImage,
+  TopicTitle,
+  TopicDescription,
+  SectionTitleWrapper,
+  SectionTitleIcon,
+  SectionTitleText,
+  SectionTitleDescription,
+  TopicCardInner,
+  HeroContainer,
+  HeroBackground,
+  HeroContent,
+  HeroTitle,
+} from '@/styles/styled'
 
-const numberFormatter = Intl.NumberFormat('en', { notation: 'compact' })
-const DATA_CACHE_TIME_SECONDS = 5 * 60 // Cache 5min
+import SVG from 'react-inlinesvg'
+import IMG_ICON_BULB_COW from '@cowprotocol/assets/images/icon-bulb-cow.svg'
+import IMG_ICON_GRANTS_CARTON from '@cowprotocol/assets/images/icon-grants-carton.svg'
 
-// Defaults are only meant to be used when the API fails
-const DEFAULT_USD_VOLUME = '40400000000' // https://dune.com/cowprotocol/cowswap-high-level-metrics-dashboard?Aggregate+by_e759c2=Week
+import { EventCategories, sendEventHandler } from '@cowprotocol/analytics'
 
-export default function HomePage({ metricsData, siteConfigData }: HomeProps) {
+import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
+
+import { PRODUCT_LIST, CHANNEL_LIST } from '@/data/home/const'
+
+interface PageProps {
+  siteConfigData: typeof CONFIG
+}
+
+export default function Page() {
   return (
-    <Layout fullWidthGradientVariant>
-      <Head>
-        <title>
-          {siteConfigData.title} - {siteConfigData.descriptionShort}
-        </title>
-      </Head>
+    <Layout bgColor={Color.neutral90}>
+      <PageWrapper>
+        <HeroContainer minHeight="700px" maxWidth={'100%'} margin="-76px auto -48px" padding="142px 20px 56px">
+          <HeroBackground>
+            <video autoPlay loop muted playsInline>
+              <source src={VIDEO_HERO_HOME} type="video/mp4" />
+            </video>
+          </HeroBackground>
+          <HeroContent flex={'0 1 0'}>
+            <HeroTitle fontSize={148} fontSizeMobile={80}>
+              Don’t get milked!
+            </HeroTitle>
+          </HeroContent>
+        </HeroContainer>
 
-      <Home metricsData={metricsData} siteConfigData={siteConfigData} />
+        <ContainerCard bgColor={Color.neutral100}>
+          <ContainerCardSection>
+            <SectionTitleWrapper color={Color.neutral0} maxWidth={1200} margin="100px auto">
+              <SectionTitleText>
+                CoW DAO develops the <span className="wordtag-orange">most user-protective</span> products in DeFi – so
+                you can <span className="wordtag-purple">do more</span> with{' '}
+                <span className="wordtag-blue">less worry</span>
+              </SectionTitleText>
+            </SectionTitleWrapper>
+
+            <TopicList columns={2}>
+              {PRODUCT_LIST.map((topic, index) => (
+                <TopicCard
+                  key={index}
+                  contentAlign={'left'}
+                  bgColor={topic.bgColor}
+                  textColor={topic.textColor}
+                  padding={'32px'}
+                  asProp="div"
+                >
+                  <TopicCardInner contentAlign="left">
+                    <TopicTitle fontSize={51}>{topic.title}</TopicTitle>
+                    <TopicDescription fontSize={28} color={topic.descriptionColor}>
+                      {topic.description}
+                    </TopicDescription>
+                    <Link
+                      bgColor={topic.linkBgColor}
+                      color={topic.linkColor}
+                      href={topic.linkHref}
+                      linkType={LinkType.TopicButton}
+                      onClick={() => sendEventHandler(EventCategories.HOME, topic.linkEvent)}
+                      external={topic.linkExternal}
+                      utmContent={topic.linkUtmContent}
+                    >
+                      {topic.linkText}
+                    </Link>
+                  </TopicCardInner>
+                  <TopicImage
+                    iconColor="transparent"
+                    bgColor="transparent"
+                    margin={'0 0 0 auto'}
+                    height={'236px'}
+                    width={'auto'}
+                  >
+                    <SVG src={topic.iconImage} title={topic.title} />
+                  </TopicImage>
+                </TopicCard>
+              ))}
+            </TopicList>
+          </ContainerCardSection>
+        </ContainerCard>
+
+        <ContainerCard bgColor={'transparent'}>
+          <ContainerCardSection>
+            <SectionTitleWrapper maxWidth={900}>
+              <SectionTitleIcon size={126}>
+                <SVG src={IMG_ICON_BULB_COW} />
+              </SectionTitleIcon>
+              <SectionTitleText>Innovation in action</SectionTitleText>
+              <SectionTitleDescription color={Color.neutral30}>
+                CoW DAO is famous for pioneering technology at the forefront of intents, MEV protection, and more.{' '}
+                <br />
+                Whether you're a crypto beginner or an Ethereum OG, you can learn more about these important topics in
+                the CoW DAO Knowledge Base.
+              </SectionTitleDescription>
+
+              <Link
+                linkType={LinkType.SectionTitleButton}
+                href="/learn"
+                onClick={() => sendEventHandler(EventCategories.HOME, 'click-cow-knowledge-base-learn-more')}
+              >
+                Learn more
+              </Link>
+            </SectionTitleWrapper>
+          </ContainerCardSection>
+        </ContainerCard>
+
+        <ContainerCard bgColor={Color.neutral10} color={Color.neutral98}>
+          <ContainerCardSection>
+            <SectionTitleWrapper padding="150px 0 0" maxWidth={900}>
+              <SectionTitleIcon size={90}>
+                <SVG src={IMG_ICON_GOVERNANCE} />
+              </SectionTitleIcon>
+              <SectionTitleText textAlign="center">Governance</SectionTitleText>
+              <SectionTitleDescription color={Color.neutral60} fontWeight={Font.weight.regular} textAlign="center">
+                Anyone can join CoW DAO by holding{' '}
+                <Link
+                  href="https://swap.cow.fi/#/1/swap/USDC/COW"
+                  onClick={() => sendEventHandler(EventCategories.HOME, 'click-cow-tokens')}
+                  external
+                >
+                  COW tokens
+                </Link>
+                . Tokenholders contribute to CoW DAO's mission by participating in "CoWmunity" discussions on Discord,
+                by adding proposals to the CoW DAO Forum, and by voting on governance actions in Snapshot.
+              </SectionTitleDescription>
+            </SectionTitleWrapper>
+
+            <TopicList columns={3}>
+              {CHANNEL_LIST.map((social, index) => (
+                <TopicCard
+                  key={index}
+                  textColor={social.textColor}
+                  bgColor={social.iconColor}
+                  href={social.href}
+                  rel="noopener noreferrer"
+                  target="_blank"
+                  onClick={() => sendEventHandler(EventCategories.HOME, social.linkEvent)}
+                >
+                  <TopicImage iconColor="transparent" maxWidth={290} maxHeight={290} height={290} width={290}>
+                    <SVG src={social.iconImage} title={social.title} />
+                  </TopicImage>
+                  <TopicTitle fontSize={38}>{social.title}</TopicTitle>
+                </TopicCard>
+              ))}
+            </TopicList>
+          </ContainerCardSection>
+        </ContainerCard>
+
+        <ContainerCard bgColor={Color.neutral90} color={Color.neutral10} touchFooter>
+          <ContainerCardSection>
+            <SectionTitleWrapper maxWidth={900}>
+              <SectionTitleIcon size={90}>
+                <SVG src={IMG_ICON_GRANTS_CARTON} />
+              </SectionTitleIcon>
+              <SectionTitleText textAlign="center">Grants</SectionTitleText>
+              <SectionTitleDescription color={Color.neutral30} fontWeight={Font.weight.regular} textAlign="center">
+                The CoW DAO Grants Program funds mission-aligned projects and people working on MEV protection, trading
+                innovation, and ecosystem development.
+              </SectionTitleDescription>
+              <Link
+                external
+                linkType={LinkType.SectionTitleButton}
+                utmContent="home-page-apply-for-a-grant"
+                href="https://grants.cow.fi/"
+                onClick={() => sendEventHandler(EventCategories.HOME, 'click-apply-for-a-grant')}
+              >
+                Explore grants
+              </Link>
+            </SectionTitleWrapper>
+          </ContainerCardSection>
+        </ContainerCard>
+      </PageWrapper>
     </Layout>
   )
 }
 
-export const getStaticProps: GetStaticProps<HomeProps> = async () => {
+export const getStaticProps: GetStaticProps<PageProps> = async () => {
   const siteConfigData = CONFIG
-  let volumeUsd = DEFAULT_USD_VOLUME
-
-  // TODO: Fix this
-  // // Don't fail when couldn't get Subgraph data
-  // try {
-  //   const data = await cowSdk.cowSubgraphApi.getTotals()
-  //   volumeUsd = data.volumeUsd
-  // } catch (e) {
-  //   console.error('Error getting totals from Dune', e)
-  // }
-  const { surplus, totalTrades, lastModified } = await getCowStats()
-
-  const totalSurplus = surplus.reasonable + surplus.unusual
-  const lastModifiedFormatted = lastModified.toISOString()
 
   return {
     props: {
-      metricsData: {
-        totalVolume: numberFormatter.format(+volumeUsd) + '+',
-
-        tradesCount: numberFormatter.format(totalTrades) + '+',
-        tradesCountLastModified: lastModifiedFormatted,
-
-        totalSurplus: numberFormatter.format(totalSurplus) + '+',
-        totalSurplusLastModified: lastModifiedFormatted,
-      },
       siteConfigData,
     },
     revalidate: DATA_CACHE_TIME_SECONDS,

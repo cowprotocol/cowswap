@@ -1,5 +1,6 @@
 import { CmsClient, components } from '@cowprotocol/cms'
 import { PaginationParam } from 'types'
+import qs from 'qs'
 
 import { toQueryParams } from 'util/queryParams'
 
@@ -7,6 +8,19 @@ const PAGE_SIZE = 50
 
 type Schemas = components['schemas']
 export type Article = Schemas['ArticleListResponseDataItem']
+
+export type ArticleListResponse = {
+  data: Article[]
+  meta: {
+    pagination: {
+      page: number
+      pageSize: number
+      pageCount: number
+      total: number
+    }
+  }
+}
+
 export type SharedMediaComponent = Schemas['SharedMediaComponent']
 export type SharedQuoteComponent = Schemas['SharedQuoteComponent']
 export type SharedRichTextComponent = Schemas['SharedRichTextComponent']
@@ -57,8 +71,8 @@ export const client = CmsClient({
  * @returns Slugs
  */
 async function getArticlesSlugs(params: PaginationParam = {}): Promise<string[]> {
-  const articles = await getArticles(params)
-  return articles.map((article) => article.attributes!.slug!)
+  const articlesResponse = await getArticles(params)
+  return articlesResponse.data.map((article: Article) => article.attributes!.slug!)
 }
 
 /**
@@ -67,54 +81,57 @@ async function getArticlesSlugs(params: PaginationParam = {}): Promise<string[]>
  * @returns Slugs
  */
 export async function getAllArticleSlugs(): Promise<string[]> {
-  // Fetch all pages
-  const allSlugs = []
-  let page = 0
-  while (true) {
-    const slugs = await getArticlesSlugs({ page, pageSize: PAGE_SIZE + 1 }) // Get one extra to check if there's more pages
-    const hasMorePages = slugs.length > PAGE_SIZE
-    allSlugs.push(hasMorePages ? slugs.slice(0, -1) : slugs)
-
-    if (!hasMorePages) {
-      break
-    }
-
-    // Keep fetching while there's more pages
-    page++
+  const querySerializer = (params: any) => {
+    return qs.stringify(params, { encodeValuesOnly: true, arrayFormat: 'brackets' })
   }
 
-  return allSlugs.flat()
-}
-
-/**
- * Get articles sorted by descending published date.
- *
- * @returns All categories
- */
-export async function getCategories(): Promise<Category[]> {
-  console.log('[getCategories] get all categories')
-  const { data, error, response } = await client.GET('/categories', {
+  const { data, error, response } = await client.GET('/articles', {
     params: {
       query: {
-        // Populate
-        populate: 'image',
-
-        // Pagination
-        'pagination[page]': 0,
-        'pagination[pageSize]': 50, // For simplicity, we assume there's less than 50 categories (expected ~8 categories)
-
-        // Sort
-        sort: 'name:asc',
+        fields: ['slug'],
+        'pagination[pageSize]': 100, // Adjust the page size as needed
       },
     },
+    querySerializer,
   })
 
   if (error) {
-    console.error(`Error ${response.status} getting categories: ${response.url}`, error)
+    console.error(`Error ${response.status} getting article slugs: ${response.url}`, error)
     throw error
   }
 
   return data.data
+    .filter((article: Article) => article.attributes) // Ensure attributes are defined
+    .map((article: Article) => article.attributes!.slug) // Non-null assertion since we have already filtered
+}
+
+/**
+ * Get categories with images.
+ *
+ * @returns Categories with their associated images
+ */
+export async function getCategories(): Promise<Category[]> {
+  try {
+    const { data, error, response } = await client.GET('/categories?populate=*', {
+      params: {
+        pagination: {
+          page: 0,
+          pageSize: 50,
+        },
+        sort: 'name:asc',
+      },
+    })
+
+    if (error) {
+      console.error(`Error ${response.status} getting categories: ${response.url}`, error)
+      throw error
+    }
+
+    return data.data
+  } catch (err) {
+    console.error('An unexpected error occurred:', err)
+    throw err
+  }
 }
 
 /**
@@ -133,8 +150,14 @@ export async function getAllCategorySlugs(): Promise<string[]> {
  *
  * @returns Articles for the given page
  */
-export async function getArticles({ page = 0, pageSize = PAGE_SIZE }: PaginationParam = {}): Promise<Article[]> {
-  console.log('[getArticles] fetching page', page)
+export async function getArticles({
+  page = 0,
+  pageSize = PAGE_SIZE,
+  filters = {},
+}: PaginationParam & { filters?: any } = {}): Promise<ArticleListResponse> {
+  const querySerializer = (params: any) => {
+    return qs.stringify(params, { encodeValuesOnly: true, arrayFormat: 'brackets' })
+  }
 
   const { data, error, response } = await client.GET('/articles', {
     params: {
@@ -144,21 +167,22 @@ export async function getArticles({ page = 0, pageSize = PAGE_SIZE }: Pagination
         'populate[1]': 'blocks',
         'populate[2]': 'seo',
         'populate[3]': 'authorsBio',
-
         // Pagination
         'pagination[page]': page,
         'pagination[pageSize]': pageSize,
-        sort: 'publishedAt:desc',
+        sort: 'publishDate:desc,publishedAt:desc',
+        filters,
       },
     },
+    querySerializer,
   })
 
   if (error) {
-    console.error(`Error ${response.status} getting articles: ${response.url}. Page${page}`, error)
+    console.error(`Error ${response.status} getting articles: ${response.url}. Page ${page}`, error)
     throw error
   }
 
-  return data.data
+  return { data: data.data, meta: data.meta }
 }
 
 /**
@@ -172,7 +196,35 @@ export async function getArticles({ page = 0, pageSize = PAGE_SIZE }: Pagination
  * @returns Article with the given slug
  */
 export async function getArticleBySlug(slug: string): Promise<Article | null> {
-  return getBySlugAux(slug, '/articles')
+  const querySerializer = (params: any) => {
+    return qs.stringify(params, { encodeValuesOnly: true, arrayFormat: 'brackets' })
+  }
+
+  const { data, error, response } = await client.GET(`/articles`, {
+    params: {
+      query: {
+        filters: {
+          slug: {
+            $eq: slug,
+          },
+        },
+        populate: ['cover', 'blocks', 'seo', 'authorsBio', 'categories'],
+      },
+    },
+    querySerializer,
+  })
+
+  if (error) {
+    console.error(`Error ${response.status} getting article by slug: ${response.url}`, error)
+    throw error
+  }
+
+  const articles = data.data
+  if (articles.length === 0) {
+    return null
+  }
+
+  return articles[0]
 }
 
 /**
@@ -210,6 +262,7 @@ async function getBySlugAux(slug: string, endpoint: '/categories' | '/articles')
               seo: '*',
             },
           },
+          image: { fields: ['url'] }, // Ensure the image is populated
         }
       : // Articles
         {
@@ -245,7 +298,7 @@ async function getBySlugAux(slug: string, endpoint: '/categories' | '/articles')
     populate,
   })
 
-  console.log(`[getArticleBySlug] get ${entity} for slug ${slug}`, query)
+  // console.log(`[getBySlugAux] get ${entity} for slug ${slug}`, query)
 
   const { data, error } = await client.GET(endpoint, {
     params: {

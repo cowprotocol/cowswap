@@ -1,10 +1,11 @@
 import { UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
+import { WIDGET_MAX_WIDTH } from 'theme'
 
 export const Container = styled.div`
   width: 100%;
-  max-width: ${({ theme }) => theme.appBody.maxWidth.swap};
+  max-width: ${WIDGET_MAX_WIDTH.swap};
   margin: 0 auto;
   position: relative;
 `
@@ -17,7 +18,7 @@ export const ContainerBox = styled.div`
   color: var(${UI.COLOR_TEXT_PAPER});
   border: none;
   border-radius: var(${UI.BORDER_RADIUS_NORMAL});
-  box-shadow: ${({ theme }) => theme.boxShadow1};
+  box-shadow: ${({ theme }) => (theme.isInjectedWidgetMode ? theme.boxShadow1 : 'none')};
   padding: 10px;
   position: relative;
 

@@ -1,7 +1,6 @@
 import React from 'react'
-import styled from 'styled-components'
-import { Color, Media } from 'styles/variables'
-import { transparentize } from 'polished'
+import styled from 'styled-components/macro'
+import { Color } from '@cowprotocol/ui'
 import Link from 'next/link'
 
 export const StyledBreadcrumbs = styled.div`
@@ -10,10 +9,10 @@ export const StyledBreadcrumbs = styled.div`
   font-size: 1.4rem;
   margin: 0 0 1.6rem;
   font-weight: 400;
-  color: ${Color.darkBlue};
+  color: ${Color.neutral10};
 
   > a {
-    color: ${Color.darkBlue};
+    color: ${Color.neutral10};
     transition: color 0.2s ease-in-out;
     text-decoration: none;
     line-height: 1.2;
@@ -21,8 +20,8 @@ export const StyledBreadcrumbs = styled.div`
   }
 
   > a:hover {
-    color: ${Color.darkBlue};
-    border-bottom: 0.1rem solid ${Color.darkBlue};
+    color: ${Color.neutral10};
+    border-bottom: 0.1rem solid ${Color.neutral10};
   }
 
   .breadcrumbs-arrow {

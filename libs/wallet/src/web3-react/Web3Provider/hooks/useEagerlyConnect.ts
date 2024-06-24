@@ -63,7 +63,7 @@ export function useEagerlyConnect(selectedWallet: ConnectionType | undefined) {
       connect(connection.connector)
     }
     // The dependency list is empty so this is only run once on mount
-  }, [])
+  }, [selectedWallet])
 
   /**
    * Activate the selected eip6963 provider
