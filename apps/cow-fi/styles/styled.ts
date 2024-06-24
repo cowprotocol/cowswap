@@ -805,6 +805,7 @@ export const SectionTitleDescription = styled.p<{
 export const SectionTitleIcon = styled.div<{ size?: number; multiple?: boolean }>`
   --size: ${({ size }) => (size ? `${size}px` : '82px')};
   width: 100%;
+  height: var(--size);
   object-fit: contain;
   color: inherit;
   display: flex;
