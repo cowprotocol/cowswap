@@ -504,7 +504,13 @@ export default function Page() {
                     Friends don't let friends suffer from MEV damage
                   </SectionTitleText>
 
-                  <Link linkType={LinkType.SectionTitleButton} bgColor="#EC4612" onClick={handleShareClick} asButton>
+                  <Link
+                    linkType={LinkType.SectionTitleButton}
+                    bgColor={'#EC4612'}
+                    color={'#FEE7CF'}
+                    onClick={handleShareClick}
+                    asButton
+                  >
                     Share MEV Blocker
                   </Link>
 
