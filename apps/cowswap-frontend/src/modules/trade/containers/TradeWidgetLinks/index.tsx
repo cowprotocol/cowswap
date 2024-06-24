@@ -82,7 +82,7 @@ export function TradeWidgetLinks({
         badgeText={item.badgeText || highlightedBadgeText}
         badgeType={item.badgeType || highlightedBadgeType}
         onClick={() => handleMenuItemClick(item)}
-        isDropdownVisible={isDropdownVisible}
+        isDropdownVisible={isDropdown && isDropdownVisible}
       />
     )
 
