@@ -81,13 +81,13 @@ export const NAV_ITEMS: MenuItem[] = [
 
 export const NAV_ADDITIONAL_BUTTONS = [
   {
-    label: 'Deploy Liquidity',
-    href: 'https://cow.fi/cow-amm',
-    utmContent: 'menubar-nav-button-deploy-liquidity',
+    label: 'Use MEV Blocker',
+    href: 'https://cow.fi/mev-blocker',
+    utmContent: 'menubar-nav-button-use-mev-blocker',
     external: true,
     isButton: true,
-    bgColor: '#BCEC79',
-    color: '#194D05',
+    bgColor: '#EC4612',
+    color: '#FEE7CF',
   },
 
   {
