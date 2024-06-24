@@ -30,7 +30,7 @@ import * as styledEl from './styled'
 
 const RoutesApp = lazy(() => import('./RoutesApp').then((module) => ({ default: module.RoutesApp })))
 
-const GlobalStyles = GlobalCoWDAOStyles(CoWDAOFonts, Color.neutral10)
+const GlobalStyles = GlobalCoWDAOStyles(CoWDAOFonts, 'transparent')
 
 export function App() {
   useAnalyticsReporter()
