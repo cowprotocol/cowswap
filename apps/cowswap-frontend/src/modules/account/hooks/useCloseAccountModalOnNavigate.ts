@@ -1,5 +1,7 @@
 import { useLayoutEffect } from 'react'
+
 import { useLocation } from 'react-router-dom'
+
 import { useCloseAccountModal } from './useToggleAccountModal'
 
 /**
