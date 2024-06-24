@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components'
+import styled, { css } from 'styled-components/macro'
 import { Font, Color, Media } from '@cowprotocol/ui'
 import { transparentize } from 'color2k'
 import { defaultUtm } from 'modules/utm'

@@ -1,12 +1,11 @@
 import styled from 'styled-components/macro'
 
 import { Color, Media } from '../../consts'
-import { CowSwapTheme } from '../../types'
 
-export const FooterContainer = styled.footer<{ theme: CowSwapTheme; expanded: boolean; hasTouchFooter: boolean }>`
-  --bgColor: ${({ theme }) => (theme === 'dark' ? Color.neutral0 : Color.neutral10)};
-  --color: ${({ theme }) => (theme === 'dark' ? Color.neutral50 : Color.neutral50)};
-  --colorTitle: ${({ theme }) => (theme === 'dark' ? Color.neutral90 : Color.neutral98)};
+export const FooterContainer = styled.footer<{ expanded: boolean; hasTouchFooter: boolean }>`
+  --bgColor: ${({ theme }) => (theme.darkMode ? Color.neutral0 : Color.neutral10)};
+  --color: ${({ theme }) => (theme.darkMode ? Color.neutral50 : Color.neutral50)};
+  --colorTitle: ${({ theme }) => (theme.darkMode ? Color.neutral90 : Color.neutral98)};
   background: var(--bgColor);
   color: var(--color);
   padding: ${({ expanded, hasTouchFooter }) =>

@@ -26,23 +26,23 @@ export const MenuBarWrapper = styled.div<{
   --height: 56px;
   --width: 100%;
   --bgColor: ${({ theme, bgColorLight, bgColorDark }) =>
-    theme.mode === 'dark' ? bgColorDark || Color.neutral10 : bgColorLight || 'rgb(255 248 247 / 40%)'};
+    theme.darkMode ? bgColorDark || Color.neutral10 : bgColorLight || 'rgb(255 248 247 / 40%)'};
   --bgDropdownColor: ${({ theme, bgDropdownColorLight, bgDropdownColorDark }) =>
-    theme.mode === 'dark' ? bgDropdownColorDark || Color.neutral10 : bgDropdownColorLight || Color.neutral100};
+    theme.darkMode ? bgDropdownColorDark || Color.neutral10 : bgDropdownColorLight || Color.neutral100};
   --color: ${({ theme, colorLight, colorDark }) =>
-    theme.mode === 'dark' ? colorDark || Color.neutral98 : colorLight || Color.neutral0};
+    theme.darkMode ? colorDark || Color.neutral98 : colorLight || Color.neutral0};
   --borderRadius: 28px;
   --blur: 16px;
 
   // Elements
   --defaultFill: ${({ theme, defaultFillLight, defaultFillDark }) =>
-    theme.mode === 'dark' ? defaultFillDark || Color.neutral60 : defaultFillLight || 'rgb(0 0 0 / 50%)'};
+    theme.darkMode ? defaultFillDark || Color.neutral60 : defaultFillLight || 'rgb(0 0 0 / 50%)'};
   --activeBackground: ${({ theme, activeBackgroundLight, activeBackgroundDark }) =>
-    theme.mode === 'dark' ? activeBackgroundDark || Color.neutral30 : activeBackgroundLight || Color.neutral100};
+    theme.darkMode ? activeBackgroundDark || Color.neutral30 : activeBackgroundLight || Color.neutral100};
   --activeFill: ${({ theme, activeFillLight, activeFillDark }) =>
-    theme.mode === 'dark' ? activeFillDark || Color.neutral100 : activeFillLight || Color.neutral0};
+    theme.darkMode ? activeFillDark || Color.neutral100 : activeFillLight || Color.neutral0};
   --hoverBackground: ${({ theme, hoverBackgroundLight, hoverBackgroundDark }) =>
-    theme.mode === 'dark' ? hoverBackgroundDark || Color.neutral20 : hoverBackgroundLight || Color.neutral90};
+    theme.darkMode ? hoverBackgroundDark || Color.neutral20 : hoverBackgroundLight || Color.neutral90};
 
   display: flex;
   width: 100%;
@@ -226,59 +226,6 @@ interface DropdownContentProps {
   isNavItemDropdown?: boolean
   alignRight?: boolean
 }
-
-export const DropdownContentWrapper = styled.div<DropdownContentProps>`
-  display: ${({ isOpen }) => (isOpen ? 'block' : 'none')};
-  flex: ${({ isThirdLevel }) => (isThirdLevel ? '1 1 100%;' : 'initial')};
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
-  background: ${({ isThirdLevel }) => (isThirdLevel ? 'transparent' : 'var(--activeBackground)')};
-  backdrop-filter: blur(var(--blur));
-  z-index: 1000;
-  padding: ${({ isThirdLevel }) => (isThirdLevel ? '6px' : '6px')};
-  /* min-width: ${({ isThirdLevel }) => (isThirdLevel ? '200px' : '270px')}; */
-  width: ${({ isThirdLevel }) => (isThirdLevel ? '100%' : '320px')};
-  height: auto;
-  border-radius: 28px;
-  position: ${({ isThirdLevel }) => (isThirdLevel ? 'relative' : 'absolute')};
-  top: ${({ isThirdLevel }) => (isThirdLevel ? 'initial' : 'calc(100% + var(--dropdownOffset))')};
-  right: ${({ alignRight }) => (alignRight ? 0 : 'initial')};
-  left: ${({ alignRight }) => (alignRight ? 'initial' : 0)};
-  cursor: pointer;
-
-  ${({ mobileMode }) =>
-    mobileMode &&
-    css`
-      max-width: 100%;
-      width: 100%;
-      position: fixed;
-      top: 56px;
-      height: calc(100vh - 56px);
-      overflow-y: auto;
-      padding-bottom: 100px;
-    `}
-
-  ${({ mobileMode, isNavItemDropdown }) =>
-    mobileMode &&
-    isNavItemDropdown &&
-    css`
-      position: relative;
-      top: initial;
-      right: initial;
-      left: initial;
-      background: transparent;
-      backdrop-filter: none;
-    `}
-  &::before {
-    content: '';
-    position: absolute;
-    top: calc(-2 * var(--dropdownOffset));
-    left: 0;
-    border: var(--dropdownOffset) solid transparent;
-    width: 100%;
-  }
-`
 
 interface DropdownContentProps {
   isOpen: boolean

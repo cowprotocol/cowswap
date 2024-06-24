@@ -19,7 +19,6 @@ export interface TokenInfo {
     large: string | null
   }
   marketCapRank: number | null
-  // market_data, TODO: is this needed???
 }
 
 export interface TokenDetails extends TokenInfo {
@@ -38,7 +37,7 @@ export interface MetricsData {
   totalSurplusLastModified: string
 }
 
-export interface PaginationParam { 
-  page?: number, 
+export interface PaginationParam {
+  page?: number
   pageSize?: number
 }

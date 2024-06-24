@@ -23,6 +23,6 @@ export function useTradeRouteContext(): TradeUrlParams {
       chainId: chainId?.toString(),
       orderKind,
     }),
-    [inputCurrencyId, outputCurrencyId, chainId, inputCurrencyAmountStr, outputCurrencyAmountStr]
+    [orderKind, inputCurrencyId, outputCurrencyId, chainId, inputCurrencyAmountStr, outputCurrencyAmountStr]
   )
 }

@@ -14,10 +14,10 @@ import { Provider } from 'react-redux'
 import { HashRouter } from 'react-router-dom'
 import { Flex } from 'rebass'
 import styled, { ThemeContext } from 'styled-components/macro'
+import { ThemedGlobalStyle, ThemeProvider, WIDGET_MAX_WIDTH } from 'theme'
 
 import { cowSwapStore } from 'legacy/state'
 import { useDarkModeManager } from 'legacy/state/user/hooks'
-import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from 'legacy/theme'
 
 import { BlockNumberProvider } from './common/hooks/useBlockNumber'
 
@@ -72,12 +72,12 @@ const WrapperInner = styled.div`
 
 export const DemoContainer = styled.div`
   width: 100%;
-  max-width: ${({ theme }) => theme.appBody.maxWidth.swap};
+  max-width: ${WIDGET_MAX_WIDTH.swap};
   margin: 0 auto;
   display: flex;
   flex-flow: column wrap;
   gap: 6px;
-  background: ${({ theme }) => theme.bg1};
+  background: ${({ theme }) => theme.paper};
   border: none;
   border-radius: 16px;
   box-shadow: ${({ theme }) => theme.boxShadow1};
@@ -92,7 +92,6 @@ connector.activate(chainId)
 const Fixture = ({ children }: { children: ReactNode }) => {
   return (
     <StrictMode>
-      <FixedGlobalStyle />
       <Provider store={cowSwapStore}>
         <HashRouter>
           <ThemeProvider>

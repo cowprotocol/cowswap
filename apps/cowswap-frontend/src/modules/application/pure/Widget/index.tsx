@@ -1,6 +1,7 @@
 import { UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
+import { WIDGET_MAX_WIDTH } from 'theme'
 
 import { BodyWrapper as BodyWrapperMod } from 'legacy/pages/AppBody'
 
@@ -10,7 +11,7 @@ const Wrapper = styled(BodyWrapperMod)`
   border-radius: 16px;
   box-shadow: ${({ theme }) => theme.boxShadow1};
   padding: 10px;
-  max-width: ${({ theme }) => theme.appBody.maxWidth.swap};
+  max-width: ${WIDGET_MAX_WIDTH.swap};
 `
 
 export interface AppBodyProps {

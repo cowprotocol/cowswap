@@ -1,9 +1,3 @@
-export enum ButtonSize {
-  SMALL,
-  DEFAULT,
-  BIG,
-}
-
 export enum UI {
   // V3
   COLOR_PRIMARY = '--cow-color-primary',
@@ -75,8 +69,6 @@ export enum UI {
   // Colors
   COLOR_WHITE = '--cow-color-white',
   COLOR_BLUE = '--cow-color-blue',
-  COLOR_GREY = '--cow-color-grey',
-  COLOR_LIGHT_BLUE = '--cow-color-lightBlue',
   COLOR_LIGHT_BLUE_OPACITY_90 = '--cow-color-lightBlue-opacity-90',
   COLOR_LIGHT_BLUE_OPACITY_80 = '--cow-color-lightBlue-opacity-80',
   COLOR_YELLOW_LIGHT = '--cow-color-yellow-light',

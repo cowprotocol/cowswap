@@ -22,7 +22,6 @@ import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetwo
 import { useOnSelectNetwork } from 'common/hooks/useOnSelectNetwork'
 import { NetworksList } from 'common/pure/NetworksList'
 
-
 const FlyoutHeader = styled.div`
   color: inherit;
   font-weight: 400;
@@ -90,7 +89,7 @@ const SelectorControls = styled.div<{ isChainIdUnsupported: boolean }>`
   background: transparent;
 
   &:focus {
-    background-color: ${({ theme }) => darken(theme.red1, 0.1)};
+    background-color: ${({ theme }) => darken(theme.error, 0.1)};
   }
 
   &:hover {

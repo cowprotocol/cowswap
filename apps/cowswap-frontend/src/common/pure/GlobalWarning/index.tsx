@@ -1,9 +1,9 @@
 import { ReactNode } from 'react'
 
+import { UI } from '@cowprotocol/ui'
+
 import { AlertTriangle, X } from 'react-feather'
 import styled from 'styled-components/macro'
-
-import { UI } from '../../enum'
 
 const StyledClose = styled(X as any)`
   :hover {

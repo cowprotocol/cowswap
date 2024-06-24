@@ -3,9 +3,9 @@ import { Media, UI } from '@cowprotocol/ui'
 import { transparentize, darken } from 'color2k'
 import { ChevronDown } from 'react-feather'
 import styled from 'styled-components/macro'
+import { ThemedText } from 'theme'
 
 import Column from 'legacy/components/Column'
-import { ThemedText } from 'legacy/theme'
 
 import { Card } from 'pages/Account/styled'
 
@@ -36,7 +36,7 @@ export const StyledChevronDown = styled(ChevronDown)`
 
 export const Menu = styled.div`
   border-radius: 16px;
-  background: ${({ theme }) => (theme.darkMode ? darken(theme.bg5, 0.09) : theme.bg4)};
+  background: ${({ theme }) => (theme.darkMode ? darken(theme.bg5, 0.09) : theme.paperCustom)};
   box-shadow: 0 12px 18px ${({ theme }) => theme.bg5};
   display: flex;
   flex-direction: column;
@@ -53,7 +53,7 @@ export const Menu = styled.div`
 export const MenuItem = styled.div<{ active: boolean }>`
   transition: background 0.2s ease-in;
   background-color: ${({ active, theme }) => (active ? theme.grey1 : 'transparent')};
-  color: ${({ active, theme }) => (active ? theme.text2 : `var(${UI.COLOR_TEXT})`)};
+  color: ${({ active, theme }) => (active ? theme.disabledText : `var(${UI.COLOR_TEXT})`)};
   justify-content: space-between;
   border-radius: 8px;
   padding: 0.4rem 0.8rem;
@@ -110,7 +110,7 @@ export const AccountHeading = styled.div`
 export const RemoveTokens = styled.button`
   background: none;
   border: none;
-  color: ${({ theme }) => theme.text3};
+  color: ${({ theme }) => theme.info};
   cursor: pointer;
 `
 
@@ -155,8 +155,8 @@ export const Overview = styled.div`
       display: block;
       background: linear-gradient(
         to left,
-        ${({ theme }) => theme.bg1} 0%,
-        ${({ theme }) => transparentize(theme.bg1, 1)} 100%
+        ${({ theme }) => theme.paper} 0%,
+        ${({ theme }) => transparentize(theme.paper, 1)} 100%
       );
       pointer-events: none;
       height: 100%;

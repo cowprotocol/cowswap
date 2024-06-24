@@ -30,8 +30,8 @@ export const Content = styled.div`
 
 export const ErrorText = styled.div<{ type?: 'error' | 'warning' }>`
   color: ${({ theme, type }) => {
-    if (type === 'error') return theme.red1
-    else if (type === 'warning') return theme.yellow2
+    if (type === 'error') return theme.error
+    else if (type === 'warning') return '#FF8F00'
     else return theme.text1
   }};
   font-size: 12px;

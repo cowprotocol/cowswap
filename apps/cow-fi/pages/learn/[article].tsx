@@ -1,6 +1,6 @@
 import React from 'react'
 import { GetStaticPaths, GetStaticProps } from 'next'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { Color, Media } from '@cowprotocol/ui'
 
 import Layout from '@/components/Layout'

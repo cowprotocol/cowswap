@@ -59,7 +59,7 @@ export const WalletIcon = styled.div`
   }
 
   > div > img[alt='Gnosis Safe Multisig logo'] {
-    ${({ theme }) => theme.util.invertImageForDarkMode};
+    ${({ theme }) => theme.invertImageForDarkMode};
   }
 `
 

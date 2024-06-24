@@ -2,14 +2,13 @@ import React, { ErrorInfo, PropsWithChildren } from 'react'
 
 import { sendError } from '@cowprotocol/analytics'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
-import { MEDIA_WIDTHS, UI } from '@cowprotocol/ui'
+import { MEDIA_WIDTHS } from '@cowprotocol/ui'
 
 import * as Sentry from '@sentry/react'
 import styled from 'styled-components/macro'
 
 import { ChunkLoadError } from 'legacy/components/ErrorBoundary/ChunkLoadError'
 import { ErrorWithStackTrace } from 'legacy/components/ErrorBoundary/ErrorWithStackTrace'
-
 import { HeaderRow, LogoImage, UniIcon } from 'legacy/components/Header/styled'
 
 import { Page } from 'modules/application/pure/Page'

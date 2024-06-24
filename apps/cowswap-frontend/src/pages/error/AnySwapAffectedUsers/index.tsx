@@ -38,7 +38,7 @@ const Wrapper = styled(Page)`
   ${ExternalLink} {
     text-decoration: underline;
     font-weight: 800;
-    color: ${({ theme }) => theme.text3};
+    color: ${({ theme }) => theme.info};
   }
 `
 

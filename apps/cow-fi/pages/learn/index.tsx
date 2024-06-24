@@ -1,7 +1,7 @@
 import { GetStaticProps } from 'next'
 import { Font, Color, Media } from '@cowprotocol/ui'
 
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 
 import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
 

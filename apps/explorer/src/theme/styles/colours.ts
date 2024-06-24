@@ -11,10 +11,10 @@ export interface Colors {
   textDisabled: Color
 
   // backgrounds / greys
-  bg1: Color
+  paper: Color
   bg2: Color
-  bg3: Color
-  bg4: Color
+  background: Color
+  paperCustom: Color
   shade: Color
   boxShadow: Color
 
@@ -88,10 +88,10 @@ export const LIGHT_COLOURS = {
   textDisabled: '#31323E',
 
   // backgrounds / greys
-  bg1: '#F7F8FA',
+  paper: '#F7F8FA',
   bg2: '#F7F8FA',
-  bg3: '#232432',
-  bg4: '#0e0f14',
+  background: '#232432',
+  paperCustom: '#0e0f14',
   shade: '#2E2F3B',
   boxShadow: 'rgba(0, 0, 0, 0.16)',
 
@@ -126,10 +126,10 @@ export const DARK_COLOURS = {
   textDisabled: '#31323E',
 
   // backgrounds / greys
-  bg1: '#16171F',
+  paper: '#16171F',
   bg2: '#2C2D3F',
-  bg3: '#232432',
-  bg4: '#0e0f14',
+  background: '#232432',
+  paperCustom: '#0e0f14',
   bgDisabled: '#ffffff80',
   shade: '#2E2F3B',
   boxShadow: 'rgba(0, 0, 0, 0.16)',

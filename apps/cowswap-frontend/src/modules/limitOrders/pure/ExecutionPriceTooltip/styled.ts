@@ -18,7 +18,7 @@ export const FeeItem = styled.div<{ highlighted?: boolean; borderTop?: boolean }
   margin: ${({ highlighted }) => (highlighted ? '10px 0 0' : '0')};
   padding: ${({ borderTop }) => (borderTop ? '16px 10px 10px' : '10px')};
   border-radius: ${({ highlighted }) => (highlighted ? '10px' : '0')};
-  background: ${({ theme, highlighted }) => (highlighted ? theme.bg1 : 'transparent')};
+  background: ${({ theme, highlighted }) => (highlighted ? theme.paper : 'transparent')};
   border-top: ${({ borderTop }) => (borderTop ? `1px solid var(${UI.COLOR_PAPER_DARKER})` : 'none')};
   gap: 4px;
 

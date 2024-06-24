@@ -262,7 +262,6 @@
     "@types/ms": "^0.7.31",
     "@types/ms.macro": "^2.0.0",
     "@types/node": "18.16.9",
-    "@types/react": "18.2.14",
     "@types/react-copy-to-clipboard": "^4.3.0",
     "@types/react-cytoscapejs": "^1.2.2",
     "@types/react-dom": "18.2.14",

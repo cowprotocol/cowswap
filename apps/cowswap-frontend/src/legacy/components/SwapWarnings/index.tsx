@@ -97,7 +97,7 @@ const WarningContainer = styled(AuxInformationContainer).attrs((props) => ({
 `
 
 const ErrorStyledInfoIcon = styled(StyledInfoIcon)`
-  color: ${({ theme }) => theme.infoText};
+  color: ${({ theme }) => (theme.darkMode ? '#FFCA4A' : '#564D00')};
 `
 const HIGH_TIER_FEE = 30
 const MEDIUM_TIER_FEE = 20

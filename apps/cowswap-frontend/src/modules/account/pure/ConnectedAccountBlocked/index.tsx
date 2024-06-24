@@ -4,9 +4,9 @@ import { ExternalLink } from '@cowprotocol/ui'
 import { Trans } from '@lingui/macro'
 import { AlertOctagon } from 'react-feather'
 import styled from 'styled-components/macro'
+import { ThemedText } from 'theme'
 
 import Column from 'legacy/components/Column'
-import { ThemedText } from 'legacy/theme'
 
 import { CopyHelper } from 'modules/account/containers/CopyHelper'
 
@@ -53,7 +53,7 @@ export default function ConnectedAccountBlocked(props: ConnectedAccountBlockedPr
         <ThemedText.Main fontSize={12}>
           <Trans>If you believe this is an error, please send an email including your address to </Trans>{' '}
         </ThemedText.Main>
-        <Copy iconSize={12} toCopy="compliance@uniswap.org" color={theme.primary1} iconPosition="right">
+        <Copy iconSize={12} toCopy="compliance@uniswap.org" color={theme.bg2} iconPosition="right">
           compliance@uniswap.org
         </Copy>
       </ContentWrapper>

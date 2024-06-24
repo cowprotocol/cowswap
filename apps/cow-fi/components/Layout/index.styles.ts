@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { lighten, transparentize } from 'polished'
 import { Color, Font, Media } from 'styles/variables'
 
