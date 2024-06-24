@@ -188,7 +188,6 @@ const GLOBAL_FOOTER_NAV_ITEMS: MenuItem[] = [
         external: true,
         utmContent: 'footer-help-knowledge-base',
       },
-      { label: 'Send Feedback', href: '#', external: false, utmContent: 'footer-help-send-feedback' },
       {
         label: 'Report Scams',
         href: 'https://cow.fi/report-scam',
