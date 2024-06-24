@@ -277,7 +277,7 @@ export const TopicCardInner = styled.div<{
 
   > .twitter-tweet {
     max-width: 100% !important;
-    margin: 0 auto !important;
+    margin: auto !important;
   }
 
   > .twitter-tweet > iframe {

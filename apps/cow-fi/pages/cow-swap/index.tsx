@@ -36,7 +36,7 @@ import {
 
 import SVG from 'react-inlinesvg'
 import IMG_ICON_FAQ from '@cowprotocol/assets/images/icon-faq.svg'
-import { FAQ_DATA, TWEETS, COW_IS_DIFFERENT, ADVANCED_ORDER_TYPES } from '@/data/cow-swap/const'
+import { FAQ_DATA, TWEETS, COW_IS_DIFFERENT, ADVANCED_ORDER_TYPES, BETTER_UX } from '@/data/cow-swap/const'
 
 import { EventCategories, sendEventHandler } from '@cowprotocol/analytics'
 
@@ -221,59 +221,30 @@ export default function Page() {
               </SectionTitleText>
             </SectionTitleWrapper>
             <TopicList columns={3}>
-              <TopicCard contentAlign={'left'} bgColor="#012F7A" textColor="#65D9FF" padding={'32px'} asProp="div">
-                <TopicCardInner contentAlign="left">
-                  <TopicTitle color={Color.neutral100}>Gasless trading</TopicTitle>
-                  <TopicDescription fontSize={21} color="#65D9FF">
-                    All gas fees are paid in the sell token - so you can save your precious ETH
-                  </TopicDescription>
-                </TopicCardInner>
-                <TopicImage
-                  iconColor="#004293"
-                  bgColor="transparent"
-                  margin={'auto 0 0 auto'}
-                  height={187}
-                  width={'auto'}
+              {BETTER_UX.map((topic, index) => (
+                <TopicCard
+                  key={index}
+                  contentAlign={'left'}
+                  bgColor={topic.bgColor}
+                  textColor={topic.textColor}
+                  padding={'32px'}
+                  asProp="div"
                 >
-                  <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />
-                </TopicImage>
-              </TopicCard>
-
-              <TopicCard contentAlign={'left'} bgColor="#012F7A" textColor="#65D9FF" padding={'32px'} asProp="div">
-                <TopicCardInner contentAlign="left">
-                  <TopicTitle color={Color.neutral100}>No fees for failed transactions</TopicTitle>
-                  <TopicDescription fontSize={21} color="#65D9FF">
-                    You shouldn&apos;t pay for what didn&apos;t work, so failed transactions are always free
-                  </TopicDescription>
-                </TopicCardInner>
-                <TopicImage
-                  iconColor="#004293"
-                  bgColor="transparent"
-                  margin={'auto 0 0 auto'}
-                  height={187}
-                  width={'auto'}
-                >
-                  <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />
-                </TopicImage>
-              </TopicCard>
-
-              <TopicCard contentAlign={'left'} bgColor="#012F7A" textColor="#65D9FF" padding={'32px'} asProp="div">
-                <TopicCardInner contentAlign="left">
-                  <TopicTitle color={Color.neutral100}>Execute multiple trades at once</TopicTitle>
-                  <TopicDescription fontSize={21} color="#65D9FF">
-                    With intent-based trading, you can place as many orders as you want simultaneously
-                  </TopicDescription>
-                </TopicCardInner>
-                <TopicImage
-                  iconColor="#004293"
-                  bgColor="transparent"
-                  margin={'auto 0 0 auto'}
-                  height={187}
-                  width={'auto'}
-                >
-                  <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />
-                </TopicImage>
-              </TopicCard>
+                  <TopicCardInner contentAlign="left">
+                    <TopicTitle color={topic.titleColor}>{topic.title}</TopicTitle>
+                    <TopicDescription fontSize={21}>{topic.description}</TopicDescription>
+                  </TopicCardInner>
+                  <TopicImage
+                    iconColor="transparent"
+                    bgColor="transparent"
+                    margin={'auto 0 0 auto'}
+                    height={187}
+                    width={'auto'}
+                  >
+                    <SVG src={topic.imgSrc} />
+                  </TopicImage>
+                </TopicCard>
+              ))}
             </TopicList>
           </ContainerCardSection>
         </ContainerCard>
@@ -375,7 +346,7 @@ export default function Page() {
                   asProp="div"
                   key={index}
                 >
-                  <TopicCardInner>
+                  <TopicCardInner minHeight={'200px'} contentAlign={'center'}>
                     <blockquote className="twitter-tweet" data-dnt="true" data-theme="light">
                       <a href={tweet}>Loading X...</a>
                     </blockquote>

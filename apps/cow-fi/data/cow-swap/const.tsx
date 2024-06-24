@@ -7,6 +7,9 @@ import IMG_COWSWAP_UX from '@cowprotocol/assets/images/image-cowswap-ux.svg'
 import IMG_COWSWAP_SWAPS from '@cowprotocol/assets/images/image-cowswap-swaps.svg'
 import IMG_COWSWAP_LIMIT from '@cowprotocol/assets/images/image-cowswap-limit.svg'
 import IMG_COWSWAP_TWAP from '@cowprotocol/assets/images/image-cowswap-twap.svg'
+import IMG_COWSWAP_GASLESS from '@cowprotocol/assets/images/image-cowswap-gasless.svg'
+import IMG_COWSWAP_NOFEES from '@cowprotocol/assets/images/image-cowswap-nofees.svg'
+import IMG_COWSWAP_MULTIPLE from '@cowprotocol/assets/images/image-cowswap-multiple.svg'
 
 export const COW_IS_DIFFERENT = [
   {
@@ -58,6 +61,33 @@ export const ADVANCED_ORDER_TYPES = [
     description:
       'Time-weighted average price (TWAP) orders minimize price impact and volatility risk by letting you trade assets at fixed intervals over a period of time',
     imgSrc: IMG_COWSWAP_TWAP,
+  },
+]
+
+export const BETTER_UX = [
+  {
+    bgColor: '#99ECFF',
+    textColor: '#005EB7',
+    titleColor: '#012F7A',
+    title: 'Gasless trading',
+    description: 'All gas fees are paid in the sell token - so you can save your precious ETH',
+    imgSrc: IMG_COWSWAP_GASLESS,
+  },
+  {
+    bgColor: '#012F7A',
+    textColor: '#CCF8FF',
+    titleColor: '#FFF8F7',
+    title: 'No fees for failed transactions',
+    description: "You shouldn't pay for what didn't work, so failed transactions are always free",
+    imgSrc: IMG_COWSWAP_NOFEES,
+  },
+  {
+    bgColor: '#CCF8FF',
+    textColor: '#005EB7',
+    titleColor: '#012F7A',
+    title: 'Execute multiple trades at once',
+    description: 'With intent-based trading, you can place as many orders as you want simultaneously',
+    imgSrc: IMG_COWSWAP_MULTIPLE,
   },
 ]
 
