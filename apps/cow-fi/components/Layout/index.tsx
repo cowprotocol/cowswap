@@ -33,7 +33,9 @@ export default function Layout({ children, bgColor, metaTitle, metaDescription, 
 
   const LocalStyles = createGlobalStyle(
     () => css`
-      background: ${bgColor};
+      body {
+        background: ${bgColor};
+      }
     `
   )
 

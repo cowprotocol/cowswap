@@ -4,6 +4,9 @@ import { EventCategories, sendEventHandler } from '@cowprotocol/analytics'
 import IMG_COWSWAP_COINS from '@cowprotocol/assets/images/image-coins.svg'
 import IMG_COWSWAP_MEV from '@cowprotocol/assets/images/image-cowswap-mev.svg'
 import IMG_COWSWAP_UX from '@cowprotocol/assets/images/image-cowswap-ux.svg'
+import IMG_COWSWAP_SWAPS from '@cowprotocol/assets/images/image-cowswap-swaps.svg'
+import IMG_COWSWAP_LIMIT from '@cowprotocol/assets/images/image-cowswap-limit.svg'
+import IMG_COWSWAP_TWAP from '@cowprotocol/assets/images/image-cowswap-twap.svg'
 
 export const COW_IS_DIFFERENT = [
   {
@@ -26,6 +29,35 @@ export const COW_IS_DIFFERENT = [
     color: '#012F7A',
     description: "CoW Swap's unique architecture enables advanced order types and seamless UX",
     imgSrc: IMG_COWSWAP_UX,
+  },
+]
+
+export const ADVANCED_ORDER_TYPES = [
+  {
+    bgColor: '#012F7A',
+    textColor: '#CCF8FF',
+    titleColor: '#FFF8F7',
+    title: 'Market orders (aka swaps)',
+    description: 'CoW Swap market orders maximize surplus and minimize MEV',
+    imgSrc: IMG_COWSWAP_SWAPS,
+  },
+  {
+    bgColor: '#CCF8FF',
+    textColor: '#004293',
+    titleColor: '#012F7A',
+    title: 'Limit orders',
+    description:
+      'Placing a limit order is like setting a trap for a price for your trade. CoW Swap is the only DEX that offers surplus on limit orders – and one of the only DEXs that offers limit orders at all',
+    imgSrc: IMG_COWSWAP_LIMIT,
+  },
+  {
+    bgColor: '#99ECFF',
+    textColor: '#005EB7',
+    titleColor: '#012F7A',
+    title: 'TWAP orders',
+    description:
+      'Time-weighted average price (TWAP) orders minimize price impact and volatility risk by letting you trade assets at fixed intervals over a period of time',
+    imgSrc: IMG_COWSWAP_TWAP,
   },
 ]
 

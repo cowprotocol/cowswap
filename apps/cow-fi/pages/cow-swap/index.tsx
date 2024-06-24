@@ -36,7 +36,7 @@ import {
 
 import SVG from 'react-inlinesvg'
 import IMG_ICON_FAQ from '@cowprotocol/assets/images/icon-faq.svg'
-import { FAQ_DATA, TWEETS, COW_IS_DIFFERENT } from '@/data/cow-swap/const'
+import { FAQ_DATA, TWEETS, COW_IS_DIFFERENT, ADVANCED_ORDER_TYPES } from '@/data/cow-swap/const'
 
 import { EventCategories, sendEventHandler } from '@cowprotocol/analytics'
 
@@ -189,61 +189,30 @@ export default function Page() {
               <SectionTitleText>Advanced order types</SectionTitleText>
             </SectionTitleWrapper>
             <TopicList columns={3}>
-              <TopicCard contentAlign={'left'} bgColor="#012F7A" textColor="#65D9FF" padding={'32px'} asProp="div">
-                <TopicCardInner contentAlign="left">
-                  <TopicTitle color={Color.neutral100}>Market orders (aka swaps)</TopicTitle>
-                  <TopicDescription fontSize={21} color="#65D9FF">
-                    CoW Swap market orders maximize surplus and minimize MEV
-                  </TopicDescription>
-                </TopicCardInner>
-                <TopicImage
-                  iconColor="#004293"
-                  bgColor="transparent"
-                  margin={'auto 0 0 auto'}
-                  height={187}
-                  width={'auto'}
+              {ADVANCED_ORDER_TYPES.map((topic, index) => (
+                <TopicCard
+                  key={index}
+                  contentAlign={'left'}
+                  bgColor={topic.bgColor}
+                  textColor={topic.textColor}
+                  padding={'32px'}
+                  asProp="div"
                 >
-                  <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />
-                </TopicImage>
-              </TopicCard>
-
-              <TopicCard contentAlign={'left'} bgColor="#012F7A" textColor="#65D9FF" padding={'32px'} asProp="div">
-                <TopicCardInner contentAlign="left">
-                  <TopicTitle color={Color.neutral100}>Limit orders</TopicTitle>
-                  <TopicDescription fontSize={21} color="#65D9FF">
-                    Placing a limit order is like setting a trap for a price for your trade. CoW Swap is the only DEX
-                    that offers surplus on limit orders – and one of the only DEXs that offers limit orders at all
-                  </TopicDescription>
-                </TopicCardInner>
-                <TopicImage
-                  iconColor="#004293"
-                  bgColor="transparent"
-                  margin={'auto 0 0 auto'}
-                  height={187}
-                  width={'auto'}
-                >
-                  <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />
-                </TopicImage>
-              </TopicCard>
-
-              <TopicCard contentAlign={'left'} bgColor="#012F7A" textColor="#65D9FF" padding={'32px'} asProp="div">
-                <TopicCardInner contentAlign="left">
-                  <TopicTitle color={Color.neutral100}>TWAP orders</TopicTitle>
-                  <TopicDescription fontSize={21} color="#65D9FF">
-                    Time-weighted average price (TWAP) orders minimize price impact and volatility risk by letting you
-                    trade assets at fixed intervals over a period of time
-                  </TopicDescription>
-                </TopicCardInner>
-                <TopicImage
-                  iconColor="#004293"
-                  bgColor="transparent"
-                  margin={'auto 0 0 auto'}
-                  height={187}
-                  width={'auto'}
-                >
-                  <ProductLogo variant={ProductVariant.CowDao} logoIconOnly theme="dark" />
-                </TopicImage>
-              </TopicCard>
+                  <TopicCardInner contentAlign="left">
+                    <TopicTitle color={topic.titleColor}>{topic.title}</TopicTitle>
+                    <TopicDescription fontSize={21}>{topic.description}</TopicDescription>
+                  </TopicCardInner>
+                  <TopicImage
+                    iconColor="transparent"
+                    bgColor="transparent"
+                    margin={'auto 0 0 auto'}
+                    height={187}
+                    width={'auto'}
+                  >
+                    <SVG src={topic.imgSrc} />
+                  </TopicImage>
+                </TopicCard>
+              ))}
             </TopicList>
 
             <SectionTitleWrapper>
