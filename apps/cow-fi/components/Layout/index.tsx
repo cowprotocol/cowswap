@@ -1,10 +1,19 @@
+import { PropsWithChildren } from 'react'
+import Link from 'next/link'
 import Head from 'next/head'
-import { Media, MenuBar, Footer, GlobalCoWDAOStyles } from '@cowprotocol/ui'
+import { Footer, GlobalCoWDAOStyles, Media, MenuBar } from '@cowprotocol/ui'
 import styled, { createGlobalStyle, css } from 'styled-components/macro'
+
 import { CONFIG } from '@/const/meta'
 import { CoWDAOFonts } from '@/styles/CoWDAOFonts'
-import { PAGE_MAX_WIDTH, PRODUCT_VARIANT, NAV_ADDITIONAL_BUTTONS, NAV_ITEMS } from './const'
 import getURL from '@/util/getURL'
+import { NAV_ADDITIONAL_BUTTONS, NAV_ITEMS, PAGE_MAX_WIDTH, PRODUCT_VARIANT } from './const'
+
+const LinkComponent = (props: PropsWithChildren<{ href: string }>) => {
+  const external = props.href.startsWith('http')
+
+  return <Link {...props} target={external ? '_blank' : '_self'} rel={external ? 'noopener noreferrer' : undefined} />
+}
 
 const Wrapper = styled.div`
   display: flex;
@@ -66,6 +75,7 @@ export default function Layout({ children, bgColor, metaTitle, metaDescription, 
         additionalNavButtons={NAV_ADDITIONAL_BUTTONS}
         padding="10px 60px"
         maxWidth={PAGE_MAX_WIDTH}
+        LinkComponent={LinkComponent}
       />
       <Wrapper>{children}</Wrapper>
       <Footer maxWidth={PAGE_MAX_WIDTH} productVariant={PRODUCT_VARIANT} host={finalHost} expanded hasTouchFooter />

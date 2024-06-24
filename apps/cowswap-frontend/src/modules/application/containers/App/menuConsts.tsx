@@ -9,19 +9,11 @@ import { FortuneWidget } from 'modules/fortune/containers/FortuneWidget'
 export const PRODUCT_VARIANT = ProductVariant.CowSwap
 export const NAV_ITEMS: MenuItem[] = [
   {
-    label: 'Trade',
-    children: [
-      { href: '/#/swap', label: 'Swap', description: 'Trade tokens' },
-      { href: '/#/limit', label: 'Limit order', description: 'Set your own price' },
-      { href: '/#/advanced', label: 'TWAP', description: 'Place orders with a time-weighted average price' },
-    ],
-  },
-  {
     label: 'Account',
     children: [
-      { href: '/#/account', label: 'Account' },
+      { href: '/account', label: 'Account' },
       {
-        href: '/#/account/tokens',
+        href: '/account/tokens',
         label: 'Tokens',
       },
     ],
@@ -39,9 +31,9 @@ export const NAV_ITEMS: MenuItem[] = [
       {
         label: 'Legal',
         children: [
-          { href: '/#/privacy-policy', label: 'Privacy Policy' },
-          { href: '/#/cookie-policy', label: 'Cookie Policy' },
-          { href: '/#/terms-and-conditions', label: 'Terms and Conditions' },
+          { href: '/privacy-policy', label: 'Privacy Policy' },
+          { href: '/cookie-policy', label: 'Cookie Policy' },
+          { href: '/terms-and-conditions', label: 'Terms and Conditions' },
         ],
       },
     ],
@@ -60,12 +52,12 @@ export const NAV_ITEMS: MenuItem[] = [
         external: true,
       },
       {
-        href: '/#/play/cow-runner',
+        href: '/play/cow-runner',
         label: 'CoW Runner',
         icon: IMG_ICON_COW_RUNNER,
       },
       {
-        href: '/#/play/mev-slicer',
+        href: '/play/mev-slicer',
         label: 'MEV Slicer',
         icon: IMG_ICON_COW_SLICER,
       },
