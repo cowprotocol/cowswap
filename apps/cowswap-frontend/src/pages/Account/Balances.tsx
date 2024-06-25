@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import ArrowIcon from '@cowprotocol/assets/cow-swap/arrow.svg'
 import CowImage from '@cowprotocol/assets/cow-swap/cow_token.svg'
-import vCOWImage from '@cowprotocol/assets/cow-swap/vCOW.png'
+import vCOWImage from '@cowprotocol/assets/images/vCOW.svg'
 import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
 import { COW, COW_CONTRACT_ADDRESS, V_COW } from '@cowprotocol/common-const'
 import { usePrevious } from '@cowprotocol/common-hooks'
@@ -222,7 +222,7 @@ export default function Profile() {
           {hasVCowBalance && vCowToken && (
             <Card showLoader={isVCowLoading || isSwapPending}>
               <BalanceDisplay hAlign="left">
-                <img src={vCOWImage} alt="vCOW token" width="56" height="56" />
+                <SVG src={vCOWImage} title="vCOW token" width="56" height="56" />
                 <span>
                   <i>
                     <Trans>Total vCOW balance</Trans>
