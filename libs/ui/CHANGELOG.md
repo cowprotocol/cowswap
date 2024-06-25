@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.1](https://github.com/cowprotocol/cowswap/compare/ui-v1.4.0...ui-v1.4.1) (2024-06-25)
+
+
+### Bug Fixes
+
+* improve UI responsiveness ([#4593](https://github.com/cowprotocol/cowswap/issues/4593)) ([2ba1492](https://github.com/cowprotocol/cowswap/commit/2ba14925c590b5939d26658543c16a512fff7bf1))
+
 ## [1.4.0](https://github.com/cowprotocol/cowswap/compare/ui-v1.3.0...ui-v1.4.0) (2024-06-24)
 
 
