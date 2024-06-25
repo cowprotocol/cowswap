@@ -1,3 +1,5 @@
+import { useEffect } from 'react'
+
 import { GetStaticProps } from 'next'
 import { Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
 
@@ -43,9 +45,18 @@ import LazyLoadTweet from '@/components/LazyLoadTweet'
 
 interface PageProps {
   siteConfigData: typeof CONFIG
+  tweets: string[]
 }
 
-export default function Page() {
+export default function Page({ tweets }: PageProps) {
+  // Load Twitter script
+  useEffect(() => {
+    const script = document.createElement('script')
+    script.src = 'https://platform.twitter.com/widgets.js'
+    script.async = true
+    document.head.appendChild(script)
+  }, [])
+
   return (
     <Layout
       bgColor={Color.neutral90}
@@ -336,7 +347,7 @@ export default function Page() {
             </SectionTitleWrapper>
 
             <TopicList columns={3} columnsTablet={2} maxWidth={1360}>
-              {TWEETS.map((tweet, index) => (
+              {tweets.map((tweet, index) => (
                 <TopicCard
                   bgColor={Color.neutral100}
                   padding="4px"
@@ -346,7 +357,7 @@ export default function Page() {
                   key={index}
                 >
                   <TopicCardInner minHeight={'200px'} contentAlign={'center'}>
-                    <LazyLoadTweet tweetUrl={tweet} />
+                    <LazyLoadTweet tweetUrl={tweet} key={index} />
                   </TopicCardInner>
                 </TopicCard>
               ))}
@@ -392,18 +403,18 @@ export default function Page() {
           </ContainerCardSection>
         </ContainerCard>
       </PageWrapper>
-
-      <script async src="https://platform.twitter.com/widgets.js"></script>
     </Layout>
   )
 }
 
 export const getStaticProps: GetStaticProps<PageProps> = async () => {
   const siteConfigData = CONFIG
+  const tweets = TWEETS
 
   return {
     props: {
       siteConfigData,
+      tweets,
     },
     revalidate: DATA_CACHE_TIME_SECONDS,
   }
