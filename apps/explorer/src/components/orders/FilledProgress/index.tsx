@@ -2,6 +2,7 @@ import React from 'react'
 
 import { isSellOrder } from '@cowprotocol/common-utils'
 import { Command } from '@cowprotocol/types'
+import { PercentDisplay } from '@cowprotocol/ui/pure/PercentDisplay'
 
 import { ProgressBar } from 'components/common/ProgressBar'
 import { Amount, Percentage, SurplusComponent } from 'components/common/SurplusComponent'
@@ -244,7 +245,7 @@ export function FilledProgress(props: Props): JSX.Element {
         <FilledContainer>
           <p className="title">Filled</p>
           <div>
-            <p className="percentage">{formattedPercentage}%</p>
+            <p className="percentage"><PercentDisplay percent={formattedPercentage} /></p>
             <OrderAssetsInfo />
           </div>
           <ProgressBar showLabel={false} percentage={formattedPercentage} />

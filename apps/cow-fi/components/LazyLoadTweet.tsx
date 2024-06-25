@@ -1,13 +1,17 @@
 import React, { useEffect, useRef } from 'react'
 
-declare global {
-  interface Window {
-    twttr: any
-  }
-}
-
 interface LazyLoadTweetProps {
   tweetUrl: string
+}
+
+declare global {
+  interface Window {
+    twttr: {
+      widgets: {
+        load: (el?: HTMLElement) => void
+      }
+    }
+  }
 }
 
 const LazyLoadTweet: React.FC<LazyLoadTweetProps> = ({ tweetUrl }) => {
@@ -39,6 +43,12 @@ const LazyLoadTweet: React.FC<LazyLoadTweetProps> = ({ tweetUrl }) => {
       }
     }
   }, [tweetUrl])
+
+  useEffect(() => {
+    if (window.twttr && window.twttr.widgets) {
+      window.twttr.widgets.load()
+    }
+  }, [])
 
   return <div ref={tweetRef} style={{ width: '100%' }} />
 }
