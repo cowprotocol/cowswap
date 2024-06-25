@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.1](https://github.com/cowprotocol/cowswap/compare/wallet-v1.5.0...wallet-v1.5.1) (2024-06-25)
+
+
+### Bug Fixes
+
+* update cow token logo ([#4608](https://github.com/cowprotocol/cowswap/issues/4608)) ([51ad5f4](https://github.com/cowprotocol/cowswap/commit/51ad5f47a7e4bf0e4ea8b9998774a82874f47306))
+
 ## [1.5.0](https://github.com/cowprotocol/cowswap/compare/wallet-v1.4.1...wallet-v1.5.0) (2024-06-24)
 
 

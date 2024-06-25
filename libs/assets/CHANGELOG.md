@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.5.0](https://github.com/cowprotocol/cowswap/compare/assets-v1.4.1...assets-v1.5.0) (2024-06-25)
+
+
+### Features
+
+* update cow-swap url footer ([#4609](https://github.com/cowprotocol/cowswap/issues/4609)) ([8e0ae31](https://github.com/cowprotocol/cowswap/commit/8e0ae31a5e6074e94f62487dcc0fffe7bf26ef60))
+* update vcow image ([#4611](https://github.com/cowprotocol/cowswap/issues/4611)) ([8212880](https://github.com/cowprotocol/cowswap/commit/821288029e011b104598fb58c8174ee2bf840f80))
+
+
+### Bug Fixes
+
+* update cow token logo ([#4608](https://github.com/cowprotocol/cowswap/issues/4608)) ([51ad5f4](https://github.com/cowprotocol/cowswap/commit/51ad5f47a7e4bf0e4ea8b9998774a82874f47306))
+
 ## [1.4.1](https://github.com/cowprotocol/cowswap/compare/assets-v1.4.0...assets-v1.4.1) (2024-06-25)
 
 
