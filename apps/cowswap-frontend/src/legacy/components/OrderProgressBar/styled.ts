@@ -31,7 +31,7 @@ export const ProgressBarWrapper = animated(styled.div`
 `)
 
 export const ProgressBarInnerWrapper = styled.div`
-  background-color: var(${UI.COLOR_PAPER_DARKEST});
+  background-color: var(${UI.COLOR_PAPER});
   border-radius: 18px;
   overflow: visible !important;
   position: relative;
