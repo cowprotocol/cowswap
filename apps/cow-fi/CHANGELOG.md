@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.2](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.4.1...cow-fi-v1.4.2) (2024-06-25)
+
+
+### Bug Fixes
+
+* **cow-fi:** improve twitter ports loading ([#4606](https://github.com/cowprotocol/cowswap/issues/4606)) ([989091b](https://github.com/cowprotocol/cowswap/commit/989091b74000b6142eb31fce18ec71b7e5fe4dfc))
+
 ## [1.4.1](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.4.0...cow-fi-v1.4.1) (2024-06-25)
 
 
