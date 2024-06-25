@@ -1,6 +1,5 @@
 import ICON_ARROW from '@cowprotocol/assets/images/arrow-left.svg'
 import ICON_DOUBLE_ARROW_RIGHT from '@cowprotocol/assets/images/double-arrow-right.svg'
-import ICON_SETTINGS from '@cowprotocol/assets/images/settings.svg'
 import ICON_CLOSE_X from '@cowprotocol/assets/images/x.svg'
 import { Media, UI } from '@cowprotocol/ui'
 
@@ -33,8 +32,6 @@ const IconBase = styled(SVG)<{ size?: string; opacity?: string }>`
     fill: inherit;
   }
 `
-
-export const SettingsIcon = ({ onClick }: IconProps) => <IconBase src={ICON_SETTINGS} onClick={onClick} />
 
 export const DoubleArrowRightIcon = ({ onClick }: IconProps) => (
   <IconBase src={ICON_DOUBLE_ARROW_RIGHT} onClick={onClick} />

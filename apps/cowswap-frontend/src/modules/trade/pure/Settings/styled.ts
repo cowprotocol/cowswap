@@ -2,7 +2,6 @@ import { UI } from '@cowprotocol/ui'
 
 import { MenuButton, MenuList } from '@reach/menu-button'
 import { transparentize } from 'color2k'
-import { Settings as SettingsIconRaw } from 'react-feather'
 import styled from 'styled-components/macro'
 
 export const SettingsTitle = styled.h3`
@@ -60,26 +59,5 @@ export const SettingsButton = styled(MenuButton)`
 export const MenuContent = styled(MenuList)`
   position: relative;
   z-index: 2;
-  color: inherit;
   color: var(${UI.COLOR_TEXT_PAPER});
-`
-
-export const SettingsIcon = styled(SettingsIconRaw)`
-  --size: var(${UI.ICON_SIZE_NORMAL});
-  height: var(--size);
-  width: var(--size);
-  color: inherit;
-  opacity: 0.6;
-  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out, transform 0.3s cubic-bezier(0.65, 0.05, 0.36, 1);
-
-  &:hover {
-    opacity: 1;
-    transform: rotate(180deg);
-  }
-
-  > path,
-  > circle {
-    transition: stroke var(${UI.ANIMATION_DURATION}) ease-in-out;
-    stroke: currentColor;
-  }
 `
