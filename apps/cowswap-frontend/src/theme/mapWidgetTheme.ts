@@ -12,5 +12,6 @@ export function mapWidgetTheme(
   return {
     ...defaultTheme,
     ...widgetTheme,
+    ...(widgetTheme.primary ? { buttonTextCustom: widgetTheme.primary } : null),
   }
 }
