@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.4.1](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.4.0...cow-fi-v1.4.1) (2024-06-25)
+
+
+### Bug Fixes
+
+* **cow-fi:** lazy load tweets in cowswap page ([#4602](https://github.com/cowprotocol/cowswap/issues/4602)) ([fef3910](https://github.com/cowprotocol/cowswap/commit/fef3910927b7cc2252c11533467f9c109903a2f5))
+* improve UI responsiveness ([#4593](https://github.com/cowprotocol/cowswap/issues/4593)) ([2ba1492](https://github.com/cowprotocol/cowswap/commit/2ba14925c590b5939d26658543c16a512fff7bf1))
+
 ## [1.4.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.3.0...cow-fi-v1.4.0) (2024-06-24)
 
 
