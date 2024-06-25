@@ -1,11 +1,9 @@
 import { ethFlowBarnJson, ethFlowProdJson } from '@cowprotocol/abis'
-import { IpfsConfig, mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Fraction, Percent } from '@uniswap/sdk-core'
 
 import BigNumber from 'bignumber.js'
 import ms from 'ms.macro'
-
-import { PINATA_API_KEY, PINATA_SECRET_API_KEY } from './ipfs'
 
 // TODO: move those consts to src/constants/common
 
@@ -123,7 +121,7 @@ export const GAS_API_KEYS: Record<SupportedChainId, string | null> = {
   [SupportedChainId.SEPOLIA]: null,
 }
 
-export const UNSUPPORTED_TOKENS_FAQ_URL = '/faq/trading#what-token-pairs-does-cowswap-allow-to-trade'
+export const UNSUPPORTED_TOKENS_FAQ_URL = 'https://docs.cow.fi/cow-protocol/reference/core/tokens'
 
 // fee threshold - should be greater than percentage, show warning
 export const FEE_SIZE_THRESHOLD = 10 // 10%
@@ -162,28 +160,12 @@ export const SWR_NO_REFRESH_OPTIONS = {
   refreshInterval: 0,
 }
 
-// TODO: show banner warning when PINATA env vars are missing
-export const COW_IPFS_OPTIONS: IpfsConfig = {
-  pinataApiKey: PINATA_API_KEY,
-  pinataApiSecret: PINATA_SECRET_API_KEY,
-}
-
 // These are used for Account sidebar menu
 export const ACCOUNT_MENU_LINKS = [
   { title: 'Overview', url: '/account' },
   { title: 'Tokens', url: '/account/tokens' },
   // { title: 'Governance', url: '/account/governance' },
   // { title: 'Affiliate', url: '/account/affiliate' },
-]
-
-// These are used for FAQ sidebar menu
-export const FAQ_MENU_LINKS = [
-  { title: 'General', url: '/faq' },
-  { title: 'Protocol', url: '/faq/protocol' },
-  { title: 'Token', url: '/faq/token' },
-  { title: 'Trading', url: '/faq/trading' },
-  { title: 'Limit orders', url: '/faq/limit-order' },
-  { title: 'Selling Native tokens', url: '/faq/sell-native' },
 ]
 
 // Min USD value to show surplus
