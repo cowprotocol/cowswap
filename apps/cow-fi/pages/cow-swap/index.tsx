@@ -348,7 +348,9 @@ export default function Page() {
                 >
                   <TopicCardInner minHeight={'200px'} contentAlign={'center'}>
                     <blockquote className="twitter-tweet" data-dnt="true" data-theme="light">
-                      <a href={tweet}>Loading X...</a>
+                      <a href={tweet} target="_blank">
+                        Loading X...
+                      </a>
                     </blockquote>
                   </TopicCardInner>
                 </TopicCard>
