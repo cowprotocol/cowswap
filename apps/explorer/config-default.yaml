@@ -23,8 +23,10 @@
 # Name of the app
 name: Gnosis Protocol v1 Web
 
+#TODO: remove this config completely
+
 # Logo used for the favicon
-logoPath: './src/assets/img/CowProtocol-icon.svg'
+logoPath: './src/assets/img/CowProtocol-logo.svg'
 
 # HTML template
 templatePath: './src/html/index.html'
@@ -57,7 +59,7 @@ dexPriceEstimator:
     - networkId: 100
       url_production: https://dex-price-estimator.xdai.gnosis.io
       url_develop: https://price-estimate-xdai.dev.gnosisdev.com
-      
+
 # Subgraph abstraction, used for getting the last price
 theGraphApi:
   type: 'the-graph' # choices: the-graph
@@ -142,8 +144,8 @@ disabledTokens:
     - address: '0x71010A9D003445aC60C4e6A7017c1E89A477B438'
     - address: '0x6Fb0855c404E09c47C3fBCA25f08d4E41f9F062f'
     - address: '0xFC4B8ED459e00e5400be803A9BB3954234FD50e3'
-  4: [] # Rinkeby
-  100: [] # xDAI
+  4: [ ] # Rinkeby
+  100: [ ] # xDAI
 
 # Initial token selection for the sell token and buy token
 initialTokenSelection:
@@ -184,7 +186,7 @@ initialTokenList:
     decimals: 18
     addressByNetwork:
       '1': '0x0000000000085d4780B73119b644AE5ecd22b376'
-      '4': '0x0000000000085d4780B73119b644AE5ecd22b376'      
+      '4': '0x0000000000085d4780B73119b644AE5ecd22b376'
 
   - id: 4
     name: USD Coin
@@ -297,7 +299,7 @@ initialTokenList:
     decimals: 18
     addressByNetwork:
       '1': '0x0ae055097c6d159879521c384f1d2123d1f195e6'
-      '100': '0xb7D311E2Eb55F2f68a9440da38e7989210b9A05e'      
+      '100': '0xb7D311E2Eb55F2f68a9440da38e7989210b9A05e'
 
   - id: 21
     name: Wrapped xDAI
@@ -305,7 +307,7 @@ initialTokenList:
     decimals: 18
     addressByNetwork:
       '100': '0xe91D153E0b41518A2Ce8Dd3D7944Fa863463a97d'
-        
+
 
   - id: 0
     name: OWL

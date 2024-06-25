@@ -1,8 +1,8 @@
 import { COW_PROTOCOL_LINK } from '@cowprotocol/common-const'
-import { ExternalLink } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
+import { ExternalLink, UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
+// TODO: update icon
 import cowIcon from 'assets/logo/cow-icon.svg'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
