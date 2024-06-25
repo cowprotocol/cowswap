@@ -3,7 +3,7 @@ import { HoverTooltip } from '@cowprotocol/ui'
 
 import ICON_GAS_FREE from 'assets/icon/gas-free.svg'
 import SVG from 'react-inlinesvg'
-import { HashLink } from 'react-router-hash-link'
+import { NavLink } from 'react-router-dom'
 
 import * as styledEl from './styled'
 
@@ -57,9 +57,9 @@ export function TokenTags({
     <TagDescriptor tags={tagsToShow}>
       {isUnsupported && (
         <styledEl.TagLink>
-          <HashLink to={UNSUPPORTED_TOKENS_FAQ_URL} target="_blank" onClick={(e) => e.stopPropagation()}>
+          <NavLink to={UNSUPPORTED_TOKENS_FAQ_URL} target="_blank">
             FAQ
-          </HashLink>
+          </NavLink>
         </styledEl.TagLink>
       )}
     </TagDescriptor>
