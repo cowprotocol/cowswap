@@ -144,7 +144,7 @@ const GLOBAL_FOOTER_NAV_ITEMS: MenuItem[] = [
       { href: 'https://grants.cow.fi/', label: 'Grants', external: true, utmContent: 'footer-about-grants' },
       { href: 'https://cow.fi/careers', label: 'Careers', external: true, utmContent: 'footer-about-careers' },
       {
-        href: 'https://cownation.notion.site/CoW-DAO-Brand-Kit-fe70d51a39df4229b7912cb7af3eb320',
+        href: 'https://cownation.notion.site/CoW-DAO-Brand-Kit-dad6212f182f49d38683e8410bfb37d2',
         label: 'Brand Kit',
         external: true,
         utmContent: 'footer-about-brand-kit',
