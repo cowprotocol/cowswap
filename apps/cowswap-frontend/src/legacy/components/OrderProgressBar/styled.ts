@@ -1,6 +1,6 @@
+// TODO: replace with new logo
 import CowProtocolLogo from '@cowprotocol/assets/cow-swap/cowprotocol.svg'
-import { ExternalLink, Media } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
+import { ExternalLink, Media, UI } from '@cowprotocol/ui'
 
 import { animated } from '@react-spring/web'
 import { CheckCircle, Clock } from 'react-feather'
