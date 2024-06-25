@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.75.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.74.1...cowswap-v1.75.0) (2024-06-25)
+
+
+### Features
+
+* update vcow image ([#4611](https://github.com/cowprotocol/cowswap/issues/4611)) ([8212880](https://github.com/cowprotocol/cowswap/commit/821288029e011b104598fb58c8174ee2bf840f80))
+
+
+### Bug Fixes
+
+* update cow token logo ([#4608](https://github.com/cowprotocol/cowswap/issues/4608)) ([51ad5f4](https://github.com/cowprotocol/cowswap/commit/51ad5f47a7e4bf0e4ea8b9998774a82874f47306))
+* **widget:** override new button text color ([#4616](https://github.com/cowprotocol/cowswap/issues/4616)) ([77793a4](https://github.com/cowprotocol/cowswap/commit/77793a4f0f740494ec929966efc64ebd0f24b9f9))
+
 ## [1.74.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.74.0...cowswap-v1.74.1) (2024-06-25)
 
 

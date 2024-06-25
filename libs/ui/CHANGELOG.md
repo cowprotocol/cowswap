@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.5.0](https://github.com/cowprotocol/cowswap/compare/ui-v1.4.1...ui-v1.5.0) (2024-06-25)
+
+
+### Features
+
+* update brand kit link ([#4610](https://github.com/cowprotocol/cowswap/issues/4610)) ([319ab7e](https://github.com/cowprotocol/cowswap/commit/319ab7ebc3cf581684584d3ddbf57f7b9d4f1aec))
+* update cow-swap url footer ([#4609](https://github.com/cowprotocol/cowswap/issues/4609)) ([8e0ae31](https://github.com/cowprotocol/cowswap/commit/8e0ae31a5e6074e94f62487dcc0fffe7bf26ef60))
+
 ## [1.4.1](https://github.com/cowprotocol/cowswap/compare/ui-v1.4.0...ui-v1.4.1) (2024-06-25)
 
 
