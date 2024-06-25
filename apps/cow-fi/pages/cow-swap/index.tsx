@@ -37,10 +37,9 @@ import {
 import SVG from 'react-inlinesvg'
 import IMG_ICON_FAQ from '@cowprotocol/assets/images/icon-faq.svg'
 import { FAQ_DATA, TWEETS, COW_IS_DIFFERENT, ADVANCED_ORDER_TYPES, BETTER_UX } from '@/data/cow-swap/const'
-
 import { EventCategories, sendEventHandler } from '@cowprotocol/analytics'
-
 import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
+import LazyLoadTweet from '@/components/LazyLoadTweet'
 
 interface PageProps {
   siteConfigData: typeof CONFIG
@@ -347,11 +346,7 @@ export default function Page() {
                   key={index}
                 >
                   <TopicCardInner minHeight={'200px'} contentAlign={'center'}>
-                    <blockquote className="twitter-tweet" data-dnt="true" data-theme="light">
-                      <a href={tweet} target="_blank">
-                        Loading X...
-                      </a>
-                    </blockquote>
+                    <LazyLoadTweet tweetUrl={tweet} />
                   </TopicCardInner>
                 </TopicCard>
               ))}
