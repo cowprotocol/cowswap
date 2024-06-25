@@ -1,10 +1,13 @@
 import { Stylesheet } from 'cytoscape'
 import styled, { css, DefaultTheme } from 'styled-components/macro'
 
+// TODO: update icon
 import CowProtocolIcon from '../../../assets/img/CoW-protocol.svg'
 import DexIcon from '../../../assets/img/Dex.svg'
 import TokenIcon from '../../../assets/img/eth-network.svg'
+// TODO: update icon
 import SpecialIcon from '../../../assets/img/Trader-variant.svg'
+// TODO: update icon
 import TraderIcon from '../../../assets/img/Trader.svg'
 import { ArrowIconCSS } from '../../../components/icons/cssIcons'
 import { MEDIA } from '../../../const'
@@ -39,6 +42,7 @@ const FloatingButton = css`
     transition: all 0.2s ease-in-out;
     color: ${({ theme }): string => theme.textActive1};
   }
+
   @media ${MEDIA.mediumDown} {
     min-width: 3rem;
     span {
