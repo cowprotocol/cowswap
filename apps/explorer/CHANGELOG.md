@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.31.1](https://github.com/cowprotocol/cowswap/compare/explorer-v2.31.0...explorer-v2.31.1) (2024-06-25)
+
+
+### Bug Fixes
+
+* **cow-fi:** improve twitter ports loading ([#4606](https://github.com/cowprotocol/cowswap/issues/4606)) ([989091b](https://github.com/cowprotocol/cowswap/commit/989091b74000b6142eb31fce18ec71b7e5fe4dfc))
+* reduce decimals to percentage ([#4574](https://github.com/cowprotocol/cowswap/issues/4574)) ([b95205a](https://github.com/cowprotocol/cowswap/commit/b95205a0f107c8231840a03aa248a26b8f4d1172))
+
 ## [2.31.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.30.1...explorer-v2.31.0) (2024-06-24)
 
 
