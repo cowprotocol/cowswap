@@ -1,4 +1,4 @@
-import CowProtocolIcon from '@cowprotocol/assets/cow-swap/cow_v2.svg'
+import CowProtocolIcon from '@cowprotocol/assets/cow-swap/cow_token.svg'
 import { Media } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'

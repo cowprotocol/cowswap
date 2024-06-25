@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import ArrowIcon from '@cowprotocol/assets/cow-swap/arrow.svg'
-import CowImage from '@cowprotocol/assets/cow-swap/cow_v2.svg'
+import CowImage from '@cowprotocol/assets/cow-swap/cow_token.svg'
 import vCOWImage from '@cowprotocol/assets/cow-swap/vCOW.png'
 import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
 import { COW, COW_CONTRACT_ADDRESS, V_COW } from '@cowprotocol/common-const'
@@ -37,7 +37,7 @@ import {
   ConvertWrapper,
   ExtLink,
   StyledWatchAssetInWallet,
-  VestingBreakdown
+  VestingBreakdown,
 } from 'pages/Account/styled'
 
 import LockedGnoVesting from './LockedGnoVesting'
