@@ -151,7 +151,7 @@ export default function Page({ siteConfigData }: PageProps) {
                 textColor={Color.neutral100}
               >
                 <TopicImage width={400} height={400} heightMobile={300} orderReverseMobile bgColor="transparent">
-                  <img src="images//eth-blocks.svg" alt="Integrate With Ease" width="340" height="214" />
+                  <img src="images/eth-blocks.svg" alt="Integrate With Ease" width="340" height="214" />
                 </TopicImage>
                 <TopicCardInner contentAlign="left">
                   <TopicTitle fontSize={67}>Integrate With Ease</TopicTitle>

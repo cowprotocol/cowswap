@@ -194,7 +194,7 @@ export default function Page({ siteConfigData, categories, articles, featuredArt
                 <ContainerCardSectionTopTitle>Featured articles</ContainerCardSectionTopTitle>
                 <ArrowButton link="/learn/articles" text="All articles" />
               </ContainerCardSectionTop>
-              <ArticleList>
+              <ArticleList columnsTablet={2}>
                 {featuredArticles.map(({ title, description, cover, link }, index) => (
                   <ArticleCard
                     key={index}
