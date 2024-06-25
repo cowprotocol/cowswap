@@ -23,6 +23,8 @@ interface LinkProps extends Omit<React.HTMLAttributes<HTMLAnchorElement & HTMLDi
   disabled?: boolean
   padding?: string
   margin?: string
+  marginTablet?: string
+  marginMobile?: string
   utmContent?: string
   gridFullWidth?: boolean
   asButton?: boolean
@@ -50,8 +52,13 @@ const topicButtonStyles = css<LinkProps>`
   cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
   text-decoration: none;
 
+  ${Media.upToLarge()} {
+    margin: ${({ marginTablet }) => marginTablet || 'initial'};
+  }
+
   ${Media.upToMedium()} {
     font-size: ${({ fontSizeMobile }) => fontSizeMobile || 16}px;
+    margin: ${({ marginMobile }) => marginMobile || 'initial'};
   }
 
   &:hover {

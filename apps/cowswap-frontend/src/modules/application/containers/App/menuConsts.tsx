@@ -1,10 +1,10 @@
-import IMG_ICON_COW_RUNNER from '@cowprotocol/assets/cow-swap/game.gif'
-import IMG_ICON_COW_SLICER from '@cowprotocol/assets/cow-swap/ninja-cow.png'
 import { MenuItem, ProductVariant } from '@cowprotocol/ui'
 
 import AppziButton from 'legacy/components/AppziButton'
 
 import { FortuneWidget } from 'modules/fortune/containers/FortuneWidget'
+
+import { Routes } from 'common/constants/routes'
 
 export const PRODUCT_VARIANT = ProductVariant.CowSwap
 export const NAV_ITEMS: MenuItem[] = [
@@ -52,14 +52,14 @@ export const NAV_ITEMS: MenuItem[] = [
         external: true,
       },
       {
-        href: '/play/cow-runner',
+        href: Routes.PLAY_COWRUNNER,
         label: 'CoW Runner',
-        icon: IMG_ICON_COW_RUNNER,
+        // icon: IMG_ICON_COW_RUNNER,
       },
       {
-        href: '/play/mev-slicer',
+        href: Routes.PLAY_MEVSLICER,
         label: 'MEV Slicer',
-        icon: IMG_ICON_COW_SLICER,
+        // icon: IMG_ICON_COW_SLICER,
       },
     ],
   },

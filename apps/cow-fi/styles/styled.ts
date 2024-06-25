@@ -116,12 +116,16 @@ export const ContainerCardSectionTopTitle = styled.h3<{
   }
 `
 
-export const ArticleList = styled.div<{ columns?: number; columnsMobile?: number }>`
+export const ArticleList = styled.div<{ columns?: number; columnsTablet?: number; columnsMobile?: number }>`
   display: grid;
   grid-template-columns: repeat(${({ columns }) => columns || 3}, 1fr);
   gap: 64px 32px;
   justify-content: space-between;
   width: 100%;
+
+  ${Media.upToLarge()} {
+    grid-template-columns: repeat(${({ columnsTablet }) => columnsTablet || 3}, 1fr);
+  }
 
   ${Media.upToMedium()} {
     grid-template-columns: repeat(${({ columnsMobile }) => columnsMobile || 1}, 1fr);
@@ -265,6 +269,7 @@ export const TopicCard = styled.a.attrs<TopicCardProps>(({ asProp }) => ({
 
 export const TopicCardInner = styled.div<{
   contentAlign?: string
+  contentAlignTablet?: string
   contentAlignMobile?: string
   gap?: number
   height?: string
@@ -280,6 +285,10 @@ export const TopicCardInner = styled.div<{
   min-height: ${({ minHeight }) => minHeight || 'initial'};
   width: 100%;
   z-index: 1;
+
+  ${Media.upToLarge()} {
+    text-align: ${({ contentAlignTablet }) => contentAlignTablet || 'initial'};
+  }
 
   ${Media.upToMedium()} {
     text-align: ${({ contentAlignMobile }) => contentAlignMobile || 'center'};
@@ -405,6 +414,7 @@ export const TopicTitle = styled.h5<{
   padding: 0;
   margin: 0;
   line-height: 1.2;
+  width: 100%;
 
   ${Media.upToMedium()} {
     font-size: ${({ fontSizeMobile }) => fontSizeMobile || 28}px;
@@ -428,6 +438,7 @@ export const TopicDescription = styled.p<{
   margin: ${({ margin }) => margin || '16px 0'};
   text-align: inherit;
   min-height: ${({ minHeight }) => `${minHeight}px` || 'initial'};
+  width: 100%;
 
   ${Media.upToMedium()} {
     font-size: ${({ fontSizeMobile }) => fontSizeMobile || 18}px;
@@ -751,17 +762,20 @@ export const SectionTitleText = styled.h5<{
   maxWidth?: number
   as?: string
   textAlign?: string
+  lineHeight?: number
+  lineHeightMobile?: number
 }>`
   font-size: ${({ fontSize }) => fontSize || 51}px;
   font-weight: ${({ fontWeight }) => fontWeight || Font.weight.bold};
   color: ${({ color }) => color || 'inherit'};
   margin: 0;
   text-align: ${({ textAlign }) => textAlign || 'center'};
-  line-height: 1.2;
+  line-height: ${({ lineHeight }) => lineHeight || 1.2};
   max-width: ${({ maxWidth }) => (maxWidth ? `${maxWidth}px` : '100%')};
 
   ${Media.upToMedium()} {
     font-size: ${({ fontSizeMobile }) => fontSizeMobile || 38}px;
+    line-height: ${({ lineHeightMobile }) => lineHeightMobile || 1.2};
   }
 `
 
@@ -791,6 +805,7 @@ export const SectionTitleDescription = styled.p<{
 export const SectionTitleIcon = styled.div<{ size?: number; multiple?: boolean }>`
   --size: ${({ size }) => (size ? `${size}px` : '82px')};
   width: 100%;
+  height: var(--size);
   object-fit: contain;
   color: inherit;
   display: flex;
@@ -913,6 +928,10 @@ export const HeroContent = styled.div<{ variant?: string; gap?: number; flex?: s
   max-width: 100%;
   flex: ${({ flex }) => flex || '1 1 0'};
 
+  ${Media.upToMedium()} {
+    flex: 0 0 auto;
+  }
+
   ${({ variant }) =>
     variant === 'secondary' &&
     `
@@ -985,10 +1004,12 @@ export const HeroButtonWrapper = styled.div<{ gap?: number }>`
   margin: 32px 0;
   flex-flow: row wrap;
   max-width: 100%;
+  width: 100%;
 
   ${Media.upToMedium()} {
     flex-flow: column wrap;
     align-items: center;
+    margin: 0 auto;
   }
 `
 
@@ -1149,7 +1170,6 @@ export const TrustedBy = styled.div`
     position: absolute;
     top: 0;
     left: 0;
-    width: 100%;
     transform: translateY(-100%);
     animation: slide 9s ease 0s infinite normal forwards;
     opacity: 0;

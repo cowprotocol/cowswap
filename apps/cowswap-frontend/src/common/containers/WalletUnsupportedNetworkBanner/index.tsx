@@ -1,4 +1,4 @@
-import { UI } from '@cowprotocol/ui'
+import { UI, Media } from '@cowprotocol/ui'
 
 import { AlertCircle } from 'react-feather'
 import styled from 'styled-components/macro'
@@ -11,7 +11,6 @@ const Wrapper = styled.div`
   position: fixed;
   right: 20px;
   top: 100px;
-
   display: flex;
   background: var(${UI.COLOR_DANGER_BG});
   color: var(${UI.COLOR_DANGER_TEXT});
@@ -24,6 +23,14 @@ const Wrapper = styled.div`
   border-radius: 10px;
   border: 1px solid var(${UI.COLOR_DANGER});
   box-shadow: var(${UI.BOX_SHADOW});
+
+  ${Media.upToMedium()} {
+    left: 10px;
+    right: 0;
+    width: calc(100vw - 20px);
+    bottom: 72px;
+    top: initial;
+  }
 `
 
 const StyledAlertCircle = styled(AlertCircle)`

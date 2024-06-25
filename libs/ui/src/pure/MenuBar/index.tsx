@@ -1,4 +1,13 @@
-import React, { ForwardedRef, forwardRef, useMemo, useRef, useState, ComponentType, PropsWithChildren } from 'react'
+import React, {
+  ForwardedRef,
+  forwardRef,
+  useMemo,
+  useRef,
+  useState,
+  useEffect,
+  ComponentType,
+  PropsWithChildren,
+} from 'react'
 
 import IMG_ICON_ARROW_RIGHT from '@cowprotocol/assets/images/arrow-right.svg'
 import IMG_ICON_CARRET_DOWN from '@cowprotocol/assets/images/carret-down.svg'
@@ -709,6 +718,7 @@ export const MenuBar = (props: MenuBarProps) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
   const [openDropdown, setOpenDropdown] = useState<string | null>(null)
+  const [isLoaded, setIsLoaded] = useState(false)
 
   const menuRef = useRef<HTMLDivElement>(null)
   const mobileMenuRef = useRef<HTMLUListElement>(null)
@@ -749,6 +759,10 @@ export const MenuBar = (props: MenuBarProps) => {
       removeBodyClass('noScroll')
     }
   }, [isMobile, isMobileMenuOpen, isDaoOpen, isSettingsOpen])
+
+  useEffect(() => {
+    setIsLoaded(true)
+  }, [])
 
   return (
     <MenuBarWrapper
@@ -802,6 +816,7 @@ export const MenuBar = (props: MenuBarProps) => {
           {persistentAdditionalContent} {/* Always render this content */}
           {!isMobile && additionalContent} {/* Render this content only on desktop */}
           {!isMobile &&
+            isLoaded &&
             additionalNavButtons &&
             additionalNavButtons.map((item, index) => {
               const href = item.external

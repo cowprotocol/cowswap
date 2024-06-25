@@ -2,6 +2,7 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { useResetAtom } from 'jotai/utils'
 import { ReactElement, useCallback, useEffect, useMemo } from 'react'
 
+import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { Media, UI } from '@cowprotocol/ui'
 
 import ms from 'ms.macro'
@@ -93,7 +94,8 @@ export function SnackbarsWidget({ hidden }: SnackbarsWidgetProps) {
     [removeSnackbar]
   )
 
-  const isOverlayDisplayed = snackbars.length > 0 && !hidden
+  const isUpToSmall = useMediaQuery(Media.upToSmall(false))
+  const isOverlayDisplayed = snackbars.length > 0 && !hidden && isUpToSmall
 
   useEffect(() => {
     document.body.style.overflow = isOverlayDisplayed ? 'hidden' : ''

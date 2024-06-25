@@ -1,5 +1,4 @@
-import { useSetAtom } from 'jotai'
-import { useAtomValue } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
 import { Menu, MenuItem } from '@reach/menu-button'
@@ -9,8 +8,8 @@ import { MenuContent, SettingsButton, SettingsIcon } from 'modules/trade/pure/Se
 
 import {
   advancedOrdersSettingsAtom,
-  updateAdvancedOrdersSettingsAtom,
   AdvancedOrdersSettingsState,
+  updateAdvancedOrdersSettingsAtom,
 } from '../../state/advancedOrdersSettingsAtom'
 
 export function AdvancedOrdersSettings() {

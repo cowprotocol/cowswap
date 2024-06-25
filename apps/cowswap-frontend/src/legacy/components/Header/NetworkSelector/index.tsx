@@ -146,6 +146,12 @@ const NetworkAlertLabel = styled.div`
   font-size: 1rem;
   width: fit-content;
   font-weight: 500;
+
+  ${Media.upToExtraSmall()} {
+    > span {
+      display: none;
+    }
+  }
 `
 
 export function NetworkSelector() {
@@ -190,7 +196,9 @@ export function NetworkSelector() {
         ) : (
           <>
             <NetworkIcon />
-            <NetworkAlertLabel>Switch Network</NetworkAlertLabel>
+            <NetworkAlertLabel>
+              <span>Switch</span> Network
+            </NetworkAlertLabel>
             <StyledChevronDown />
           </>
         )}
