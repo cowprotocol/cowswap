@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.74.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.74.0...cowswap-v1.74.1) (2024-06-25)
+
+
+### Bug Fixes
+
+* improve UI responsiveness ([#4593](https://github.com/cowprotocol/cowswap/issues/4593)) ([2ba1492](https://github.com/cowprotocol/cowswap/commit/2ba14925c590b5939d26658543c16a512fff7bf1))
+* use same settings icon on all forms ([#4594](https://github.com/cowprotocol/cowswap/issues/4594)) ([49f550f](https://github.com/cowprotocol/cowswap/commit/49f550f1ffdeb189c540d6141f23f750e51ba597))
+
 ## [1.74.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.73.0...cowswap-v1.74.0) (2024-06-24)
 
 
