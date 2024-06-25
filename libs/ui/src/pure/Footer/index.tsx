@@ -155,7 +155,12 @@ const GLOBAL_FOOTER_NAV_ITEMS: MenuItem[] = [
   {
     label: 'Products',
     children: [
-      { label: 'CoW Swap', href: 'https://swap.cow.fi/', external: true, utmContent: 'footer-products-cow-swap' },
+      {
+        label: 'CoW Swap',
+        href: 'https://cow.fi/cow-swap',
+        external: true,
+        utmContent: 'footer-products-cow-swap',
+      },
       {
         label: 'CoW Protocol',
         href: 'https://cow.fi/cow-protocol',
