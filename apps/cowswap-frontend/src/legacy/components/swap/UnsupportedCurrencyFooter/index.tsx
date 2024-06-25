@@ -1,7 +1,7 @@
 import { UNSUPPORTED_TOKENS_FAQ_URL } from '@cowprotocol/common-const'
 
 import { transparentize } from 'color2k'
-import { HashLink } from 'react-router-hash-link'
+import { NavLink } from 'react-router-dom'
 import styled from 'styled-components/macro'
 
 import UnsupportedCurrencyFooterMod, {
@@ -15,9 +15,9 @@ const DEFAULT_DETAILS_TEXT = (
     which do not operate optimally with CoW Protocol.
     <p>
       For more information, please refer to the{' '}
-      <HashLink target="_blank" to={UNSUPPORTED_TOKENS_FAQ_URL}>
+      <NavLink target="_blank" to={UNSUPPORTED_TOKENS_FAQ_URL}>
         FAQ
-      </HashLink>
+      </NavLink>
       .
     </p>
   </div>

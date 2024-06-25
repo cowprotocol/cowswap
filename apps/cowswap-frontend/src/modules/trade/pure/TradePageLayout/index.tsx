@@ -36,6 +36,7 @@ export const PrimaryWrapper = styled.div`
 export const SecondaryWrapper = styled.div`
   display: flex;
   width: 100%;
+  overflow: hidden;
 
   ${Media.upToLargeAlt()} {
     flex-flow: column wrap;
