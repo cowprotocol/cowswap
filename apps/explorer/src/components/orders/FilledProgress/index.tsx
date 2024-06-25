@@ -2,6 +2,7 @@ import React from 'react'
 
 import { isSellOrder } from '@cowprotocol/common-utils'
 import { Command } from '@cowprotocol/types'
+import { PercentDisplay } from '@cowprotocol/ui/pure/PercentDisplay'
 
 import { ProgressBar } from 'components/common/ProgressBar'
 import { Amount, Percentage, SurplusComponent } from 'components/common/SurplusComponent'
@@ -13,7 +14,6 @@ import { safeTokenName } from 'utils'
 import { Order } from 'api/operator'
 
 import { OrderPriceDisplay } from '../OrderPriceDisplay'
-import { PercentDisplay } from '@cowprotocol/ui/pure/PercentDisplay'
 
 export type Props = {
   order: Order
