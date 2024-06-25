@@ -342,7 +342,7 @@ export default function Page() {
                         <ColorTableCell>/nochecks</ColorTableCell>
                         <ColorTableCell className="max-protection">Max protection</ColorTableCell>
                         <ColorTableCell className="no-rebate">No rebate</ColorTableCell>
-                        <ColorTableCell className="protected">Protected</ColorTableCell>
+                        <ColorTableCell className="not-protected">Not protected</ColorTableCell>
                       </tr>
                     </tbody>
                   </ColorTable>

@@ -118,7 +118,7 @@ export default function Page({}: PageProps) {
             color="#66018E"
             margin="24px auto 0"
             gridFullWidth
-            href="https://dune.com/cowprotocol/monthly-cow-protocol-reporting"
+            href="https://dune.com/cowprotocol/cowswap"
             external
             linkType={LinkType.SectionTitleButton}
             utmContent="cow-protocol-metrics"

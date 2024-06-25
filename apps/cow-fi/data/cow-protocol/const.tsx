@@ -3,7 +3,7 @@ import { EventCategories, sendEventHandler } from '@cowprotocol/analytics'
 
 import IMG_LOGO_SAFE from '@cowprotocol/assets/images/logo-safe.svg'
 import IMG_LOGO_LIDO from '@cowprotocol/assets/images/logo-lido.svg'
-import IMG_LOGO_CURVE from '@cowprotocol/assets/images/logo-curve.svg'
+import IMG_LOGO_CURVE_TEXT from '@cowprotocol/assets/images/logo-curve-text.svg'
 import IMG_LOGO_GNOSIS from '@cowprotocol/assets/images/logo-gnosis.svg'
 import IMG_LOGO_BALANCER from '@cowprotocol/assets/images/logo-balancer.svg'
 import IMG_LOGO_AURA from '@cowprotocol/assets/images/logo-aura.svg'
@@ -93,7 +93,7 @@ export const UNIQUE_TRADING_LOGIC = [
 
 export const TOP_LOGOS = [
   { src: IMG_LOGO_LIDO, alt: 'Lido', url: 'https://lido.fi/' },
-  { src: IMG_LOGO_CURVE, alt: 'Curve', url: 'https://curve.fi/' },
+  { src: IMG_LOGO_CURVE_TEXT, alt: 'Curve', url: 'https://curve.fi/' },
   { src: IMG_LOGO_SAFE, alt: 'Safe', url: 'https://safe.global/' },
 ]
 
@@ -101,20 +101,20 @@ export const CASE_STUDIES = [
   {
     title: 'Aave',
     description: 'Aave DAO used CoW Swap to swap over $4 million directly into a Balancer liquidity pool',
-    link: 'https://blog.cow.fi/aave-trade-breakdown-e17a7563d7ba',
+    link: '/learn/aave-trade-breakdown',
     logo: IMG_LOGO_AAVE,
   },
   {
     title: 'ENS',
     description: 'ENS DAO traded a whopping 10,000 ETH for USDC through CoW Swap',
-    link: 'https://blog.cow.fi/ens-trade-breakdown-a8eb00ddd8c0',
+    link: '/learn/ens-trade-breakdown',
     logo: IMG_LOGO_ENS,
   },
   {
     title: 'Nexus Mutual',
     description:
       'In the largest DAO trade ever, Nexus Mutual relied on CoW Swap to trade 14,400 ETH for rETH, a liquid staking token',
-    link: 'https://blog.cow.fi/nexus-mutual-trade-breakdown-4aacc6a94be8',
+    link: '/learn/nexus-mutual-trade-breakdown',
     logo: IMG_LOGO_NEXUS,
   },
 ]
