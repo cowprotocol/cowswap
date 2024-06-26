@@ -209,7 +209,6 @@ export function DetailsTable(props: DetailsTableProps): JSX.Element | null {
     sellToken,
     appData,
     fullAppData,
-
   } = order
 
   if (!buyToken || !sellToken) {
