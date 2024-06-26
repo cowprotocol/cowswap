@@ -50,11 +50,7 @@ export function useLimitOrdersWidgetActions(): TradeWidgetActions {
   })
 
   const onChangeRecipient = useCallback(
-    (recipient: string | null) => {
-      console.log(`fuck:onChangeRecipient`, recipient)
-
-      updateLimitOrdersState({ recipient })
-    },
+    (recipient: string | null) => updateLimitOrdersState({ recipient }),
     [updateLimitOrdersState]
   )
 

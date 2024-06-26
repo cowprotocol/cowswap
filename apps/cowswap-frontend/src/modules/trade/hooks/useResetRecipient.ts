@@ -17,7 +17,6 @@ export function useResetRecipient(onChangeRecipient: (recipient: string | null) 
    */
   useEffect(() => {
     if (!hasRecipientInUrl && !isAlternativeOrderModalVisible) {
-      console.log(`fuck:useResetRecipient`, { hasRecipientInUrl, isAlternativeOrderModalVisible })
       onChangeRecipient(null)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
