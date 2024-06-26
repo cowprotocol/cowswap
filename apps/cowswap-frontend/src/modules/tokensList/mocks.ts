@@ -57,7 +57,7 @@ export const allTokensMock: TokenWithLogo[] = [
   },
 ].map((item) => new TokenWithLogo(item.logoURI, item.chainId, item.address, item.decimals, item.symbol, item.name))
 
-export const favouriteTokensMock: TokenWithLogo[] = [
+export const favoriteTokensMock: TokenWithLogo[] = [
   {
     name: 'Basic Attention Token',
     chainId: 5,

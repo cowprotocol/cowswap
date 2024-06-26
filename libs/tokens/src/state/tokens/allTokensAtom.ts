@@ -3,7 +3,7 @@ import { atom } from 'jotai'
 import { NATIVE_CURRENCIES, TokenWithLogo } from '@cowprotocol/common-const'
 import { TokenInfo } from '@cowprotocol/types'
 
-import { favouriteTokensAtom } from './favouriteTokensAtom'
+import { favoriteTokensAtom } from './favoriteTokensAtom'
 import { userAddedTokensAtom } from './userAddedTokensAtom'
 
 import { TokensMap } from '../../types'
@@ -74,13 +74,13 @@ export const tokensStateAtom = atom<TokensState>((get) => {
 
 /**
  * Returns a list of tokens that are active and sorted alphabetically
- * The list includes: native token, user added tokens, favourite tokens and tokens from active lists
+ * The list includes: native token, user added tokens, favorite tokens and tokens from active lists
  * Native token is always the first element in the list
  */
 export const activeTokensAtom = atom<TokenWithLogo[]>((get) => {
   const { chainId } = get(environmentAtom)
   const userAddedTokens = get(userAddedTokensAtom)
-  const favouriteTokensState = get(favouriteTokensAtom)
+  const favoriteTokensState = get(favoriteTokensAtom)
 
   const tokensMap = get(tokensStateAtom)
   const nativeToken = NATIVE_CURRENCIES[chainId]
@@ -90,7 +90,7 @@ export const activeTokensAtom = atom<TokenWithLogo[]>((get) => {
       [nativeToken.address.toLowerCase()]: nativeToken as TokenInfo,
       ...tokensMap.activeTokens,
       ...lowerCaseTokensMap(userAddedTokens[chainId]),
-      ...lowerCaseTokensMap(favouriteTokensState[chainId]),
+      ...lowerCaseTokensMap(favoriteTokensState[chainId]),
     },
     chainId
   )
