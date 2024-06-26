@@ -293,7 +293,7 @@ export function DetailsTable(props: DetailsTableProps): JSX.Element | null {
                       contentsToDisplay={<LinkWithPrefixNetwork to={getExplorerLink(chainId, txHash, ExplorerDataType.TRANSACTION)} target='_blank'>{txHash}↗</LinkWithPrefixNetwork>}
                     />
                     <Wrapper gap={false}>
-                      <LinkButton to={`/tx/${txHash}/?${TAB_QUERY_PARAM_KEY}`}>
+                      <LinkButton to={`/tx/${txHash}`}>
                         <FontAwesomeIcon icon={faGroupArrowsRotate} />
                         Batch
                       </LinkButton>
