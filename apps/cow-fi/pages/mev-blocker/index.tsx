@@ -96,6 +96,7 @@ export default function Page() {
           bgColor={'#FEE7CF'}
           metaTitle="Mev Blocker - The best MEV protection under the sun"
           metaDescription="MEV Blocker is your personal protection from frontrunning and sandwich attacks for a broad spectrum of Ethereum transactions"
+          ogImage={CONFIG.ogImageMEVBLOCKER}
         >
           <PageWrapper>
             <HeroContainer variant="secondary">

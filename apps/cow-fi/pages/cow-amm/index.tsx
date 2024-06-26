@@ -53,6 +53,7 @@ export default function Page() {
       bgColor={Color.neutral90}
       metaTitle="CoW AMM - The first MEV-capturing AMM"
       metaDescription="CoW AMM protects LPs from LVR so they can provide liquidity with less risk and more return"
+      ogImage={CONFIG.ogImageCOWAMM}
     >
       <PageWrapper>
         <HeroContainer variant="secondary" maxWidth={1300}>
