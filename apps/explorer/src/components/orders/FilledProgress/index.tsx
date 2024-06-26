@@ -8,7 +8,7 @@ import { ProgressBar } from 'components/common/ProgressBar'
 import { Amount, Percentage, SurplusComponent } from 'components/common/SurplusComponent'
 import { TokenAmount } from 'components/token/TokenAmount'
 import styled from 'styled-components/macro'
-import { media } from 'theme/styles/media'
+import { Media } from '@cowprotocol/ui'
 import { safeTokenName } from 'utils'
 
 import { Order } from 'api/operator'
@@ -38,7 +38,7 @@ const Wrapper = styled.div`
     margin: 0 0 0 2rem;
     font-weight: ${({ theme }): string => theme.fontLighter};
 
-    ${media.mobile} {
+    ${Media.upToSmall()} {
       line-height: 1.5;
     }
   }
@@ -48,7 +48,7 @@ const Wrapper = styled.div`
   }
 
   > div {
-    ${media.mobile} {
+    ${Media.upToSmall()} {
       max-width: 150px;
     }
   }
@@ -62,7 +62,7 @@ const TableHeading = styled.div`
   justify-content: flex-start;
   gap: 1.6rem;
 
-  ${media.mobile} {
+  ${Media.upToSmall()} {
     display: flex;
     flex-flow: column wrap;
   }
@@ -86,7 +86,7 @@ const TableHeading = styled.div`
     font-weight: ${({ theme }): string => theme.fontMedium};
     color: ${({ theme }): string => theme.green};
 
-    ${media.mobile} {
+    ${Media.upToSmall()} {
       font-size: 2.8rem;
     }
   }
@@ -105,7 +105,7 @@ const TableHeading = styled.div`
     font-size: 2.3rem;
     margin: 0;
 
-    ${media.mobile} {
+    ${Media.upToSmall()} {
       font-size: 1.8rem;
     }
 
@@ -131,7 +131,7 @@ const TableHeadingContent = styled.div`
   background: ${({ theme }): string => theme.tableRowBorder};
   padding: 2rem 1.8rem;
 
-  ${media.mobile} {
+  ${Media.upToSmall()} {
     flex-direction: column;
   }
 
@@ -245,7 +245,9 @@ export function FilledProgress(props: Props): JSX.Element {
         <FilledContainer>
           <p className="title">Filled</p>
           <div>
-            <p className="percentage"><PercentDisplay percent={formattedPercentage} /></p>
+            <p className="percentage">
+              <PercentDisplay percent={formattedPercentage} />
+            </p>
             <OrderAssetsInfo />
           </div>
           <ProgressBar showLabel={false} percentage={formattedPercentage} />

@@ -16,7 +16,7 @@ import { ConnectionStatus } from '../../../components/ConnectionStatus'
 import { useFlexSearch } from '../../../hooks/useFlexSearch'
 import { Token, useGetTokens } from '../../../hooks/useGetTokens'
 import { useNetworkId } from '../../../state/network'
-import { media } from '../../../theme/styles/media'
+import { Media } from '@cowprotocol/ui'
 import { ScrollBarStyle } from '../../styled'
 import ExplorerTabs from '../common/ExplorerTabs/ExplorerTabs'
 import TablePagination from '../common/TablePagination'
@@ -26,14 +26,14 @@ const WrapperExtraComponents = styled.div`
   display: flex;
   justify-content: flex-end;
   height: 100%;
-  ${media.mobile} {
+  ${Media.upToSmall()} {
     justify-content: center;
   }
 `
 
 const TableWrapper = styled(CardRow)`
   width: 100%;
-  ${media.mobile} {
+  ${Media.upToSmall()} {
     width: 100%;
   }
   div.tab-content {
@@ -46,7 +46,7 @@ const TableWrapper = styled(CardRow)`
 
 const ExplorerCustomTab = styled(ExplorerTabs)`
   ${TabList} {
-    ${media.mobile} {
+    ${Media.upToSmall()} {
       flex-direction: column;
       border-bottom: none;
     }
@@ -55,7 +55,7 @@ const ExplorerCustomTab = styled(ExplorerTabs)`
     border-bottom: none;
     font-size: 1.8rem;
     margin: 0 0.5rem 0 1rem;
-    ${media.mobile} {
+    ${Media.upToSmall()} {
       font-size: 1.5rem;
       margin: 0;
       display: flex;

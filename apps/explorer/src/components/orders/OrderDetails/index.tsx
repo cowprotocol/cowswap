@@ -17,7 +17,7 @@ import { useTable } from 'explorer/components/TokensTableWidget/useTable'
 import { TAB_QUERY_PARAM_KEY } from 'explorer/const'
 import { useQuery, useUpdateQueryString } from 'hooks/useQuery'
 import styled from 'styled-components/macro'
-import { media } from 'theme/styles/media'
+import { Media } from '@cowprotocol/ui'
 import { Errors } from 'types'
 import { formatPercentage } from 'utils'
 
@@ -42,7 +42,7 @@ const WrapperExtraComponents = styled.div`
   height: 100%;
   gap: 1rem;
 
-  ${media.mobile} {
+  ${Media.upToSmall()} {
     ${PaginationWrapper} {
       display: none;
     }

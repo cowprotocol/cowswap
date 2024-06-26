@@ -1,7 +1,8 @@
 import React from 'react'
 
 import styled from 'styled-components/macro'
-import { DARK_COLOURS, media } from 'theme'
+import { DARK_COLOURS } from 'theme'
+import { Media } from '@cowprotocol/ui'
 
 import Tabs, {
   getTabTheme,
@@ -45,7 +46,8 @@ const StyledTabs = styled.div`
   .tab-extra-content {
     width: 100%;
   }
-  ${media.mediumDown} {
+
+  ${Media.upToMedium()} {
     border: none;
   }
 `

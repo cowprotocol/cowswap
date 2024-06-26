@@ -17,7 +17,7 @@ import { TEN_BIG_NUMBER } from 'const'
 import { useMultipleErc20 } from 'hooks/useErc20'
 import { useNetworkId } from 'state/network'
 import styled, { useTheme } from 'styled-components/macro'
-import { media } from 'theme/styles/media'
+import { Media } from '@cowprotocol/ui'
 import { abbreviateString } from 'utils'
 
 import { Order, Trade } from 'api/operator'
@@ -44,7 +44,7 @@ const Wrapper = styled(StyledUserDetailsTable)`
       &.header-row {
         display: none;
 
-        ${media.mobile} {
+        ${Media.upToSmall()} {
           display: flex;
           background: transparent;
           border: none;
@@ -94,7 +94,7 @@ const Wrapper = styled(StyledUserDetailsTable)`
     }
   }
 
-  ${media.mobile} {
+  ${Media.upToSmall()} {
     > thead > tr {
       display: none;
 
@@ -178,7 +178,7 @@ const Wrapper = styled(StyledUserDetailsTable)`
 const HeaderTitle = styled.span`
   display: none;
 
-  ${media.mobile} {
+  ${Media.upToSmall()} {
     font-weight: 600;
     align-items: center;
     display: flex;
@@ -195,7 +195,7 @@ const HeaderValue = styled.span<{ captionColor?: 'green' | 'red1' | 'grey' }>`
   flex-flow: row wrap;
   align-items: center;
 
-  ${media.mobile} {
+  ${Media.upToSmall()} {
     flex-wrap: wrap;
     text-align: end;
   }

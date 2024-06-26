@@ -28,7 +28,7 @@ import { Order } from '../../../api/operator'
 import CowLoading from '../../../components/common/CowLoading'
 import { EmptyItemWrapper } from '../../../components/common/StyledUserDetailsTable'
 import { usePrevious } from '../../../hooks/usePrevious'
-import { media } from '../../../theme/styles/media'
+import { Media } from '@cowprotocol/ui'
 import { Network } from '../../../types'
 import { DropdownOption, DropdownPosition } from '../common/Dropdown'
 
@@ -43,7 +43,7 @@ const WrapperCytoscape = styled(CytoscapeComponent)`
   border-radius: 0.6rem;
 
   padding-top: 3rem;
-  ${media.mediumDown} {
+  ${Media.upToMedium()} {
     border: 0.1rem solid ${({ theme }): string => theme.borderPrimary};
     margin: 1.6rem 0;
   }

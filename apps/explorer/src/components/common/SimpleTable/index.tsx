@@ -1,7 +1,7 @@
 import React from 'react'
 
 import styled from 'styled-components/macro'
-import { media } from 'theme/styles/media'
+import { Media } from '@cowprotocol/ui'
 
 const Wrapper = styled.table<{ $numColumns?: number }>`
   font-size: ${({ theme }): string => theme.fontSizeDefault};
@@ -60,7 +60,7 @@ const Wrapper = styled.table<{ $numColumns?: number }>`
         border-bottom: 0.1rem solid ${({ theme }): string => theme.tableRowBorder};
       }
 
-      ${media.mobile} {
+      ${Media.upToSmall()} {
         display: flex;
         flex-flow: column wrap;
         height: auto;
@@ -90,7 +90,7 @@ const Wrapper = styled.table<{ $numColumns?: number }>`
     }
 
     > td:first-of-type {
-      ${media.mobile} {
+      ${Media.upToSmall()} {
         margin: 0 0 1.2rem 0;
         font-weight: ${({ theme }): string => theme.fontBold};
       }
@@ -107,7 +107,7 @@ const Wrapper = styled.table<{ $numColumns?: number }>`
       justify-content: flex-start;
       padding: 0 0.5rem;
 
-      ${media.mobile} {
+      ${Media.upToSmall()} {
         padding: 0 1rem;
       }
     }

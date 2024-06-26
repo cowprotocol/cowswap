@@ -1,5 +1,5 @@
 import styled from 'styled-components/macro'
-import { media } from 'theme/styles/media'
+import { Media } from '@cowprotocol/ui'
 
 import StyledUserDetailsTable from '../../common/StyledUserDetailsTable'
 
@@ -21,7 +21,7 @@ export const WrapperUserDetailsTable = styled(StyledUserDetailsTable)`
     }
   }
 
-  ${media.desktopMediumDown} {
+  ${Media.upToMedium()} {
     > thead > tr {
       display: none;
     }
@@ -86,7 +86,7 @@ export const WrapperUserDetailsTable = styled(StyledUserDetailsTable)`
 export const HeaderTitle = styled.span`
   display: none;
 
-  ${media.desktopMediumDown} {
+  ${Media.upToMedium()} {
     font-weight: 600;
     align-items: center;
     display: flex;
@@ -98,7 +98,7 @@ export const HeaderTitle = styled.span`
   }
 `
 export const HeaderValue = styled.span`
-  ${media.desktopMediumDown} {
+  ${Media.upToMedium()} {
     flex-wrap: wrap;
     text-align: end;
   }

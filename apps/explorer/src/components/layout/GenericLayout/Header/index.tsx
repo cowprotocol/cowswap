@@ -5,7 +5,6 @@ import { Color, Media, ProductLogo, ProductVariant } from '@cowprotocol/ui'
 
 import { Link } from 'react-router-dom'
 import styled from 'styled-components/macro'
-import { media } from 'theme/styles/media'
 
 const HeaderStyled = styled.header`
   height: auto;
@@ -18,11 +17,11 @@ const HeaderStyled = styled.header`
   max-width: 140rem;
   z-index: 5;
 
-  ${media.mediumDown} {
+  ${Media.upToMedium()} {
     max-width: 94rem;
   }
 
-  ${media.mobile} {
+  ${Media.upToSmall()} {
     max-width: 100%;
   }
 `
@@ -40,7 +39,7 @@ const Logo = styled(Link)`
     text-decoration: none;
     transform: rotate(-5deg);
     transition: transform 0.3s ease 0s;
-    ${media.mobile} {
+    ${Media.upToSmall()} {
       transform: none;
     }
   }
@@ -61,7 +60,7 @@ const Logo = styled(Link)`
     color: ${({ theme }): string => theme.textPrimary1};
   }
 
-  ${media.xSmallDown} {
+  ${Media.upToExtraSmall()} {
     > img {
       max-width: 11.5rem;
     }

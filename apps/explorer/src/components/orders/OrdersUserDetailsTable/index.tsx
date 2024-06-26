@@ -19,7 +19,7 @@ import { HelpTooltip } from 'components/Tooltip'
 import { TextWithTooltip } from 'explorer/components/common/TextWithTooltip'
 import { useNetworkId } from 'state/network'
 import styled from 'styled-components/macro'
-import { media } from 'theme/styles/media'
+import { Media } from '@cowprotocol/ui'
 import { FormatAmountPrecision, formatCalculatedPriceToDisplay, formattedAmount, getOrderLimitPrice } from 'utils'
 
 import { Order } from 'api/operator'
@@ -47,7 +47,7 @@ const Wrapper = styled(StyledUserDetailsTable)`
     }
   }
 
-  ${media.mediumDown} {
+  ${Media.upToMedium()} {
     > thead > tr {
       display: none;
     }
@@ -112,7 +112,7 @@ const Wrapper = styled(StyledUserDetailsTable)`
 const HeaderTitle = styled.span`
   display: none;
 
-  ${media.mediumDown} {
+  ${Media.upToMedium()} {
     font-weight: 600;
     align-items: center;
     display: flex;
@@ -124,7 +124,7 @@ const HeaderTitle = styled.span`
   }
 `
 const HeaderValue = styled.span`
-  ${media.mediumDown} {
+  ${Media.upToMedium()} {
     flex-wrap: wrap;
     text-align: end;
   }

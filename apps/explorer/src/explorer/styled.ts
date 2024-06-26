@@ -1,6 +1,5 @@
 import styled, { createGlobalStyle, css } from 'styled-components/macro'
-
-import { media } from '../theme/styles/media'
+import { Media } from '@cowprotocol/ui'
 
 export const ScrollBarStyle = css`
   scroll-behavior: smooth;
@@ -80,12 +79,12 @@ export const MainWrapper = styled.div`
     margin-right: 0;
   }
 
-  ${media.mediumDown} {
+  ${Media.upToMedium()} {
     max-width: 94rem;
     flex-flow: column wrap;
   }
 
-  ${media.xSmallDown} {
+  ${Media.upToExtraSmall()} {
     max-width: 100%;
     flex-grow: 1;
 

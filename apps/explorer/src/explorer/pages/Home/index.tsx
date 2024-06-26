@@ -5,7 +5,6 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useFlags } from 'launchdarkly-react-client-sdk'
 import { Helmet } from 'react-helmet'
 import styled from 'styled-components/macro'
-import { media } from 'theme'
 
 import { SUBGRAPH_URLS } from '../../../consts/subgraphUrls'
 import { useNetworkId } from '../../../state/network'
@@ -14,6 +13,7 @@ import { StatsSummaryCardsWidget } from '../../components/SummaryCardsWidget'
 import { TokensTableWidget } from '../../components/TokensTableWidget'
 import { APP_TITLE } from '../../const'
 import { Wrapper as WrapperMod } from '../styled'
+import { Media } from '@cowprotocol/ui'
 
 const Wrapper = styled(WrapperMod)`
   max-width: 140rem;
@@ -29,7 +29,7 @@ const Wrapper = styled(WrapperMod)`
     font-size: 2.4rem;
     line-height: 1;
 
-    ${media.xSmallDown} {
+    ${Media.upToExtraSmall()} {
       font-size: 1.7rem;
     }
   }
@@ -41,12 +41,12 @@ const SummaryWrapper = styled.section`
   margin: 5rem 0 0 0;
   gap: 5rem;
 
-  ${media.mobile} {
+  ${Media.upToSmall()} {
     padding-top: 4rem;
     max-width: 95vw;
   }
 
-  ${media.xSmallDown} {
+  ${Media.upToExtraSmall()} {
     padding-top: 3rem;
     max-width: 92vw;
   }

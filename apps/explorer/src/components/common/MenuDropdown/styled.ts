@@ -1,7 +1,8 @@
 import InternalExternalMenuLink from 'components/common/MenuDropdown/InternalExternalLink'
 import Icon from 'components/Icon'
 import styled, { css, FlattenSimpleInterpolation } from 'styled-components/macro'
-import { media, ResetButtonCSS } from 'theme/styles'
+import { ResetButtonCSS } from 'theme/styles'
+import { Media } from '@cowprotocol/ui'
 
 export const Wrapper = styled.div<{ isMobileMenuOpen: boolean }>`
   width: 100%;
@@ -15,18 +16,18 @@ export const Wrapper = styled.div<{ isMobileMenuOpen: boolean }>`
     flex-wrap: wrap;
     justify-content: flex-start;
     align-items: flex-start;
-    ${media.mediumUp} {
+    ${Media.MediumAndUp()} {
       min-height: 0;
       flex-direction: inherit;
       background: transparent;
     }
 
-    ${media.mobile} {
+    ${Media.upToSmall()} {
       gap: 0;
       flex-wrap: nowrap;
     }
   }
-  ${media.mobile} {
+  ${Media.upToSmall()} {
     grid-template-columns: unset;
     ${({ isMobileMenuOpen }): FlattenSimpleInterpolation | false =>
       isMobileMenuOpen &&
@@ -56,7 +57,7 @@ export const MenuContainer = styled.nav`
   align-items: center;
   gap: 2rem;
 
-  ${media.mobile}, ${media.mediumOnly} {
+  ${Media.upToMedium()} {
     width: 100%;
     height: 100%;
     position: fixed;
@@ -95,7 +96,7 @@ export const MenuItemCSS = css`
     text-decoration: none;
     color: ${({ theme }): string => theme.textSecondary1};
   }
-  ${media.mobile} {
+  ${Media.upToSmall()} {
     width: 100%;
     border-bottom: 0.1rem solid ${({ theme }): string => theme.background};
     border-radius: 0;
@@ -116,7 +117,7 @@ export const ButtonMenuItem = styled.button`
   display: flex;
   align-items: center;
 
-  ${media.mobile} {
+  ${Media.upToSmall()} {
     width: 100%;
     border-bottom: 0.1rem solid ${({ theme }): string => theme.background};
     border-radius: 0;
@@ -131,7 +132,7 @@ export const ButtonMenuItem = styled.button`
   &:hover {
     background: ${({ theme }): string => theme.bg2};
     color: ${({ theme }): string => theme.textSecondary1};
-    ${media.mobile} {
+    ${Media.upToSmall()} {
       background: none;
     }
     &::after {
@@ -140,7 +141,8 @@ export const ButtonMenuItem = styled.button`
       position: absolute;
       height: 1.8rem;
       width: 100%;
-      ${media.desktopLarge} {
+
+      ${Media.LargeAndUp()} {
         content: none;
       }
     }
@@ -150,7 +152,7 @@ export const ButtonMenuItem = styled.button`
     margin: 0 0 0 0.6rem;
     object-fit: contain;
     transition: transform 0.3s ease-in-out;
-    ${media.mobile} {
+    ${Media.upToSmall()} {
       margin: 0 0 0 auto;
     }
   }
@@ -175,7 +177,7 @@ export const MenuFlyout = styled.ol`
   position: relative;
   justify-content: flex-end;
 
-  ${media.mobile} {
+  ${Media.upToSmall()} {
     display: flex;
     flex-direction: column;
     width: 100%;
@@ -194,7 +196,7 @@ export const Content = styled.div`
   gap: 6.2rem;
   margin: 1.2rem 0 0;
 
-  ${media.mobile} {
+  ${Media.upToSmall()} {
     box-shadow: none;
     background: transparent;
     padding: 0;
@@ -223,7 +225,7 @@ export const MenuTitle = styled.b`
   display: flex;
   margin: 0 0 0.6rem;
   color: ${({ theme }): string => theme.textSecondary2};
-  ${media.mobile} {
+  ${Media.upToSmall()} {
     display: none;
   }
 `
@@ -237,7 +239,7 @@ export const MenuSection = styled.div`
   justify-items: flex-start;
   margin: 0;
   gap: 2.4rem;
-  ${media.mobile} {
+  ${Media.upToSmall()} {
     gap: 3.6rem;
     opacity: 0.7;
   }

@@ -2,7 +2,7 @@ import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
 
 import AppDataWrapper from '../../../components/common/AppDataWrapper'
-import { media } from '../../../theme/styles/media'
+import { Media } from '@cowprotocol/ui'
 import ExplorerTabs from '../../components/common/ExplorerTabs/ExplorerTabs'
 import { ContentCard as Content, Wrapper as WrapperTemplate } from '../styled'
 
@@ -61,16 +61,19 @@ export const Wrapper = styled(WrapperTemplate)`
     ${AppDataWrapper} {
       flex: 1;
       padding-left: 2rem;
-      ${media.mobile} {
+
+      ${Media.upToSmall()} {
         padding-left: 0;
       }
     }
     .json-formatter {
       line-height: 1.25;
-      ${media.desktopMediumDown} {
+
+      ${Media.upToMedium()} {
         max-width: 45vw;
       }
-      ${media.mobile} {
+
+      ${Media.upToSmall()} {
         max-width: none;
       }
 
@@ -94,7 +97,7 @@ export const Wrapper = styled(WrapperTemplate)`
       padding: 0.75rem;
       background: ${({ theme }): string => theme.tableRowBorder};
       border-radius: 0.5rem;
-      ${media.mobile} {
+      ${Media.upToSmall()} {
         max-width: none;
         margin: 1rem 0;
       }
@@ -109,11 +112,11 @@ export const Wrapper = styled(WrapperTemplate)`
   .form-container {
     display: flex;
     flex: 1;
-    ${media.mobile} {
+    ${Media.upToSmall()} {
       margin: 2rem 0;
       flex-direction: column;
     }
-    ${media.mediumDown} {
+    ${Media.upToMedium()} {
       margin: 2rem 0;
     }
     p {
@@ -140,33 +143,38 @@ export const Wrapper = styled(WrapperTemplate)`
     }
 
     .hidden-content {
-      ${media.desktop} {
+      ${Media.LargeAndUp()} {
         position: sticky;
         top: 2.8rem;
         width: 30vw;
       }
-      ${media.mediumUp} {
+
+      ${Media.MediumAndUp()} {
         position: sticky;
         top: 3rem;
         width: 35vw;
       }
-      ${media.mobile} {
+
+      ${Media.upToSmall()} {
         margin-top: 1.5rem;
         background: none;
         padding: 1rem;
         font-size: 1.2rem;
       }
-      ${media.desktopLarge} {
+
+      ${Media.LargeAndUp()} {
         position: sticky;
         top: 4rem;
         width: 60rem;
       }
+
       h2 {
         margin: 2rem 0 2rem 0;
         font-size: 2rem;
       }
     }
   }
+
   .decode-container {
     display: flex;
     gap: 10rem;
@@ -176,12 +184,12 @@ export const Wrapper = styled(WrapperTemplate)`
       flex-direction: column;
       width: 40vw;
     }
-    ${media.mobile} {
+    ${Media.upToSmall()} {
       margin: 2rem 0;
       flex-direction: column;
       gap: 5rem;
     }
-    ${media.mediumDown} {
+    ${Media.upToMedium()} {
       margin: 2rem 0;
     }
   }
@@ -191,7 +199,7 @@ export const Wrapper = styled(WrapperTemplate)`
     margin-top: 2rem;
     width: 40rem;
     gap: 2rem;
-    ${media.mobile} {
+    ${Media.upToSmall()} {
       width: 100%;
     }
     form {
@@ -253,7 +261,7 @@ export const Wrapper = styled(WrapperTemplate)`
     transition-duration: 0.2s;
     transition-timing-function: ease-in-out;
 
-    ${media.mobile} {
+    ${Media.upToSmall()} {
       margin: 1rem 0 0 0;
     }
 
@@ -279,7 +287,7 @@ export const Wrapper = styled(WrapperTemplate)`
         align-items: center;
       }
       max-width: 40rem;
-      ${media.mobile} {
+      ${Media.upToSmall()} {
         max-width: 100%;
       }
     }
@@ -297,7 +305,7 @@ export const Wrapper = styled(WrapperTemplate)`
     }
   }
 
-  ${media.mediumDown} {
+  ${Media.upToMedium()} {
     flex-flow: column wrap;
   }
   .appData-tab {
@@ -320,7 +328,7 @@ export const Wrapper = styled(WrapperTemplate)`
         width: 100%;
         max-width: 40rem;
         margin-right: 2rem;
-        ${media.mobile} {
+        ${Media.upToSmall()} {
           max-width: 100%;
           margin-right: 0;
         }
@@ -342,7 +350,7 @@ export const IpfsWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 40rem;
-  ${media.mobile} {
+  ${Media.upToSmall()} {
     width: 100%;
   }
   button {

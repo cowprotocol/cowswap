@@ -20,7 +20,7 @@ import { OrderSurplusDisplay } from 'components/orders/OrderSurplusDisplay'
 import { StatusLabel } from 'components/orders/StatusLabel'
 import { HelpTooltip } from 'components/Tooltip'
 import styled from 'styled-components/macro'
-import { media } from 'theme/styles/media'
+import { Media } from '@cowprotocol/ui'
 import { capitalize } from 'utils'
 
 import { Order } from 'api/operator'
@@ -34,7 +34,7 @@ const Table = styled(SimpleTable)`
     grid-template-rows: max-content;
     padding: 1.4rem 0 1.4rem 1.1rem;
 
-    ${media.mediumDown} {
+    ${Media.upToSmall()} {
       grid-template-columns: 17rem auto;
       padding: 1.4rem 0;
     }
@@ -45,7 +45,7 @@ const Table = styled(SimpleTable)`
       &:first-of-type {
         text-transform: capitalize;
 
-        ${media.mediumUp} {
+        ${Media.MediumAndUp()} {
           font-weight: ${({ theme }): string => theme.fontLighter};
         }
 
@@ -126,7 +126,7 @@ export const Wrapper = styled.div`
   display: flex;
   flex-direction: row;
 
-  ${media.mobile} {
+  ${Media.upToSmall()} {
     flex-direction: column;
   }
 `
@@ -147,11 +147,11 @@ export const LinkButton = styled(LinkWithPrefixNetwork)`
   transition-duration: 0.2s;
   transition-timing-function: ease-in-out;
 
-  ${media.mobile} {
+  ${Media.upToSmall()} {
     margin: 1rem 0 0 0;
   }
 
-  ${media.mediumDown} {
+  ${Media.upToMedium()} {
     min-width: 18rem;
   }
 

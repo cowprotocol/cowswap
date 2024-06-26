@@ -6,10 +6,10 @@ import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
 import LogoWrapper, { LOGO_MAP } from 'components/common/LogoWrapper'
 import { useNetworkId } from 'state/network'
 import styled from 'styled-components/macro'
-import { media } from 'theme/styles/media'
+import { Media } from '@cowprotocol/ui'
 import { Network } from 'types'
 
-import { footerConfig } from '../Footer/config'
+import { footerConfig } from './config'
 
 const FooterStyled = styled.footer`
   display: flex;
@@ -23,7 +23,7 @@ const FooterStyled = styled.footer`
   justify-content: space-around;
   margin: 0 auto;
 
-  ${media.mediumDown} {
+  ${Media.upToMedium()} {
     flex-flow: column wrap;
   }
   > a {
@@ -33,7 +33,7 @@ const FooterStyled = styled.footer`
       text-decoration: underline;
     }
   }
-  ${media.xSmallDown} {
+  ${Media.upToExtraSmall()} {
     align-items: flex-start;
   }
 `
@@ -46,7 +46,7 @@ const BetaWrapper = styled.div`
   padding: 0 1rem 0 0;
   position: relative;
 
-  ${media.mediumDown} {
+  ${Media.upToMedium()} {
     margin: 0 0 1.6rem;
   }
 `
@@ -57,7 +57,7 @@ const ContractsWrapper = styled.div`
   > :nth-child(2) {
     margin-right: 1rem;
   }
-  ${media.xSmallDown} {
+  ${Media.upToExtraSmall()} {
     flex-direction: column;
   }
 `
@@ -75,7 +75,7 @@ const ContractContainer = styled.div`
   display: flex;
   margin: 0 2rem 1.6rem 0;
   a:nth-of-type(2) {
-    ${media.xSmallDown} {
+    ${Media.upToExtraSmall()} {
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -88,7 +88,7 @@ const VersionsWrapper = styled.div`
   margin: 0 0 0 auto;
   align-items: center;
 
-  ${media.mediumDown} {
+  ${Media.upToMedium()} {
     margin: 0 0 1.6rem;
   }
 

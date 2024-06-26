@@ -1,5 +1,5 @@
 import styled from 'styled-components/macro'
-import { media } from 'theme/styles/media'
+import { Media } from '@cowprotocol/ui'
 
 const AppDataWrapper = styled.div`
   display: flex;
@@ -37,13 +37,13 @@ const AppDataWrapper = styled.div`
     margin-top: 10px;
 
     span div {
-      ${media.mediumUp} {
+      ${Media.MediumAndUp()} {
         width: 95%;
       }
-      ${media.mobile} {
+      ${Media.upToSmall()} {
         width: 78vw;
       }
-      ${media.tinyDown} {
+      ${Media.upToExtraSmall()} {
         width: 70vw;
       }
     }

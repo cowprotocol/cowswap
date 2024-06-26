@@ -2,7 +2,7 @@ import React from 'react'
 
 import searchImg from 'assets/img/search2.svg'
 import styled from 'styled-components/macro'
-import { media } from 'theme/styles/media'
+import { Media } from '@cowprotocol/ui'
 
 import { Wrapper, Input, SearchIcon } from '../../../explorer/components/common/Search/Search.styled'
 
@@ -18,7 +18,7 @@ const SearchWrapped = styled(Wrapper)`
   max-width: 400px;
   margin-left: 1.6rem;
 
-  ${media.mobile} {
+  ${Media.upToSmall()} {
     margin-left: 0;
     max-width: 100%;
     display: flex;
@@ -34,26 +34,22 @@ const SearchWrapped = styled(Wrapper)`
   ${Input} {
     height: 4rem;
     font-size: 1.5rem;
-    ${media.xSmallDown} {
+
+    ${Media.upToExtraSmall()} {
       padding: 0 0.5rem 0 4rem;
     }
-    ${media.tinyDown} {
-      padding: auto 4rem auto 4rem;
-    }
+
     &::placeholder {
       color: ${({ theme }): string => theme.greyShade};
       transition: all 0.2s ease-in-out;
-      ${media.mobile} {
+
+      ${Media.upToSmall()} {
         font-size: 1.3rem;
         white-space: pre-line;
       }
-      ${media.xSmallDown} {
+
+      ${Media.upToExtraSmall()} {
         font-size: 1.2rem;
-      }
-      ${media.tinyDown} {
-        white-space: pre-line;
-        top: 1rem;
-        position: absolute;
       }
     }
     &:focus::placeholder {

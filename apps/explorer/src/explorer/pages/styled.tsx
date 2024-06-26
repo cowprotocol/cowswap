@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import styled from 'styled-components/macro'
 
 import { RowWithCopyButton } from '../../components/common/RowWithCopyButton'
-import { media } from '../../theme/styles/media'
+import { Media } from '@cowprotocol/ui'
 
 export const Wrapper = styled.div`
   padding: 1.6rem;
@@ -11,12 +11,12 @@ export const Wrapper = styled.div`
   width: 100%;
   flex-grow: 1;
 
-  ${media.mediumDown} {
+  ${Media.upToMedium()} {
     max-width: 94rem;
     align-items: center;
   }
 
-  ${media.mobile} {
+  ${Media.upToSmall()} {
     max-width: 100%;
   }
 
@@ -43,7 +43,7 @@ export const StyledTabLoader = styled.span`
 export const FlexContainer = styled.div`
   display: flex;
   align-items: center;
-  ${media.mobile} {
+  ${Media.upToSmall()} {
     flex-direction: column;
     align-items: flex-start;
   }
@@ -55,7 +55,7 @@ export const FlexContainerVar = styled.div`
   align-items: baseline;
   margin: 2.4rem 0;
 
-  ${media.mobile} {
+  ${Media.upToSmall()} {
     /* margin: 0 0 0 1.5rem; */
     span:nth-child(1) {
       margin: 0 0 0 1.5rem;
@@ -67,7 +67,7 @@ export const TitleAddress = styled(RowWithCopyButton)`
   font-size: ${({ theme }): string => theme.fontSizeDefault};
   font-weight: ${({ theme }): string => theme.fontNormal};
   margin: 0 0 0 1.5rem;
-  ${media.mobile} {
+  ${Media.upToSmall()} {
     font-size: 1.2rem;
     margin: 0 0 1.5rem 0;
   }
