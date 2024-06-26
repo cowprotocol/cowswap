@@ -303,7 +303,7 @@ export default function Page() {
                 <ProductLogo variant={ProductVariant.CowSwap} theme="light" logoIconOnly />
               </SectionTitleIcon>
               <SectionTitleText>Integrate in 5 minutes or less</SectionTitleText>
-              <HeroButtonWrapper>
+              <HeroButtonWrapper width="auto">
                 <Link
                   href="https://widget.cow.fi/"
                   utmContent="widget-page-configure-widget-cta-hero"

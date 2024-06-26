@@ -31,9 +31,9 @@ export const NAV_ITEMS: MenuItem[] = [
       {
         label: 'Legal',
         children: [
-          { href: '/privacy-policy', label: 'Privacy Policy' },
-          { href: '/cookie-policy', label: 'Cookie Policy' },
-          { href: '/terms-and-conditions', label: 'Terms and Conditions' },
+          { href: 'https://cow.fi/legal/cowswap-privacy-policy', label: 'Privacy Policy', external: true },
+          { href: 'https://cow.fi/legal/cowswap-cookie-policy', label: 'Cookie Policy', external: true },
+          { href: 'https://cow.fi/legal/cowswap-terms', label: 'Terms and Conditions', external: true },
         ],
       },
     ],
