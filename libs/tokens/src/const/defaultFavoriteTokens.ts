@@ -36,7 +36,7 @@ const tokensListToMap = (list: TokenWithLogo[]) =>
     return acc
   }, {})
 
-export const DEFAULT_FAVOURITE_TOKENS: Record<SupportedChainId, TokensMap> = {
+export const DEFAULT_FAVORITE_TOKENS: Record<SupportedChainId, TokensMap> = {
   [SupportedChainId.MAINNET]: tokensListToMap([
     DAI,
     COW[SupportedChainId.MAINNET],
