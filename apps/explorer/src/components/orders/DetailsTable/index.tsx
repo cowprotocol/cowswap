@@ -161,7 +161,7 @@ export const LinkButton = styled(LinkWithPrefixNetwork)`
   }
 
   :hover {
-    // opacity: 0.8;
+    opacity: 0.8;
     color: ${({ theme }): string => theme.white};
     text-decoration: none;
   }
