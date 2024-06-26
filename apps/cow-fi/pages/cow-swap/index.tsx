@@ -62,6 +62,7 @@ export default function Page({ tweets }: PageProps) {
       bgColor={Color.neutral90}
       metaTitle="CoW Swap - Don't worry, trade happy"
       metaDescription="CoW Swap protects traders from the dangers of DeFi, so you can do what you want without needing to worry"
+      ogImage={CONFIG.ogImageCOWSWAPP}
     >
       <PageWrapper>
         <HeroContainer variant="secondary">
