@@ -252,7 +252,7 @@ export function DetailsTable(props: DetailsTableProps): JSX.Element | null {
                 />
                 <LinkButton to={`/address/${owner}`}>
                   <FontAwesomeIcon icon={faHistory} />
-                  History
+                  Order History
                 </LinkButton>
               </Wrapper>
             </td>
@@ -270,7 +270,7 @@ export function DetailsTable(props: DetailsTableProps): JSX.Element | null {
                 />
                 <LinkButton to={`/address/${receiver}`}>
                   <FontAwesomeIcon icon={faHistory} />
-                  History
+                  Order History
                 </LinkButton>
               </Wrapper>
 
