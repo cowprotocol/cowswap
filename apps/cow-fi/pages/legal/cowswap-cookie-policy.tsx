@@ -6,7 +6,14 @@ import styled from 'styled-components/macro'
 import Layout from '@/components/Layout'
 import { Link } from '@/components/Link'
 
-import { ContainerCard, ArticleContent, Breadcrumbs, ArticleMainTitle, BodyContent } from '@/styles/styled'
+import {
+  ContainerCard,
+  ArticleContent,
+  Breadcrumbs,
+  ArticleMainTitle,
+  BodyContent,
+  ColorTableContainer,
+} from '@/styles/styled'
 
 import { EventCategories, sendEventHandler } from '@cowprotocol/analytics'
 
@@ -324,90 +331,92 @@ export default function Page({ siteConfigData }: PageProps) {
               </p>
               <h2 id="appendix">APPENDIX</h2>
               <p>Table: Overview of cookies placed and the consequences if the cookies are not placed</p>
-              <table>
-                <thead>
-                  <tr>
-                    <th>Name of cookie</th>
-                    <th>Purpose(s) of cookie</th>
-                    <th>Storage period of cookie</th>
-                    <th>Consequences if cookie is not accepted</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>__viewed_cookie_policy</td>
-                    <td>
-                      Cookie set by GDPR cookie consent plug-in. Cookie used to save the agreement of the use of cookies
-                      from the user. No personal data will be saved.
-                    </td>
-                    <td>1 year from set/update</td>
-                    <td>User activity won&#39;t be tracked</td>
-                  </tr>
-                  <tr>
-                    <td>__cookielawinfo_checkbox_performance</td>
-                    <td>
-                      Cookie set by GDPR cookie consent plug-in. Cookie used to save the agreement of the user for
-                      category “performance”.
-                    </td>
-                    <td>1 year from set/update</td>
-                    <td>User activity won&#39;t be tracked</td>
-                  </tr>
-                  <tr>
-                    <td>__cookielawinfo_checkbox_other</td>
-                    <td>
-                      Cookie set by GDPR cookie consent plug-in. Cookie used to save the agreement of the user for
-                      category “other”.
-                    </td>
-                    <td>1 year from set/update</td>
-                    <td>User activity won&#39;t be tracked</td>
-                  </tr>
-                  <tr>
-                    <td>__cookielawinfo_checkbox_necessary</td>
-                    <td>
-                      Cookie set by GDPR cookie consent plug-in. Cookie used to save the agreement of the user for
-                      category “necessary”.
-                    </td>
-                    <td>1 year from set/update</td>
-                    <td>User activity won&#39;t be tracked</td>
-                  </tr>
-                  <tr>
-                    <td>__cookielawinfo_checkbox_functional</td>
-                    <td>
-                      Cookie set by GDPR cookie consent plug-in. Cookie used to save the agreement of the user for
-                      category “functional”.
-                    </td>
-                    <td>1 year from set/update</td>
-                    <td>User activity won&#39;t be tracked</td>
-                  </tr>
-                  <tr>
-                    <td>__cookielawinfo_checkbox_analytics</td>
-                    <td>
-                      Cookie set by GDPR cookie consent plug-in. Cookie used to save the agreement of the user for
-                      category “analytics”.
-                    </td>
-                    <td>1 year from set/update</td>
-                    <td>User activity won&#39;t be tracked</td>
-                  </tr>
-                  <tr>
-                    <td>__cookielawinfo_checkbox_advertisement</td>
-                    <td>
-                      Cookie set by GDPR cookie consent plug-in. Cookie used to save the agreement of the user for
-                      category “advertisement”.
-                    </td>
-                    <td>1 year from set/update</td>
-                    <td>User activity won&#39;t be tracked</td>
-                  </tr>
-                  <tr>
-                    <td>CookieLawInfoConsent</td>
-                    <td>
-                      Cookie set by GDPR cookie consent plug-in. Cookie used to save the agreement of the user for
-                      category “LawInfoConsent”.
-                    </td>
-                    <td>1 year from set/update</td>
-                    <td>User activity won&#39;t be tracked</td>
-                  </tr>
-                </tbody>
-              </table>
+              <ColorTableContainer>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Name of cookie</th>
+                      <th>Purpose(s) of cookie</th>
+                      <th>Storage period of cookie</th>
+                      <th>Consequences if cookie is not accepted</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>__viewed_cookie_policy</td>
+                      <td>
+                        Cookie set by GDPR cookie consent plug-in. Cookie used to save the agreement of the use of
+                        cookies from the user. No personal data will be saved.
+                      </td>
+                      <td>1 year from set/update</td>
+                      <td>User activity won&#39;t be tracked</td>
+                    </tr>
+                    <tr>
+                      <td>__cookielawinfo_checkbox_performance</td>
+                      <td>
+                        Cookie set by GDPR cookie consent plug-in. Cookie used to save the agreement of the user for
+                        category “performance”.
+                      </td>
+                      <td>1 year from set/update</td>
+                      <td>User activity won&#39;t be tracked</td>
+                    </tr>
+                    <tr>
+                      <td>__cookielawinfo_checkbox_other</td>
+                      <td>
+                        Cookie set by GDPR cookie consent plug-in. Cookie used to save the agreement of the user for
+                        category “other”.
+                      </td>
+                      <td>1 year from set/update</td>
+                      <td>User activity won&#39;t be tracked</td>
+                    </tr>
+                    <tr>
+                      <td>__cookielawinfo_checkbox_necessary</td>
+                      <td>
+                        Cookie set by GDPR cookie consent plug-in. Cookie used to save the agreement of the user for
+                        category “necessary”.
+                      </td>
+                      <td>1 year from set/update</td>
+                      <td>User activity won&#39;t be tracked</td>
+                    </tr>
+                    <tr>
+                      <td>__cookielawinfo_checkbox_functional</td>
+                      <td>
+                        Cookie set by GDPR cookie consent plug-in. Cookie used to save the agreement of the user for
+                        category “functional”.
+                      </td>
+                      <td>1 year from set/update</td>
+                      <td>User activity won&#39;t be tracked</td>
+                    </tr>
+                    <tr>
+                      <td>__cookielawinfo_checkbox_analytics</td>
+                      <td>
+                        Cookie set by GDPR cookie consent plug-in. Cookie used to save the agreement of the user for
+                        category “analytics”.
+                      </td>
+                      <td>1 year from set/update</td>
+                      <td>User activity won&#39;t be tracked</td>
+                    </tr>
+                    <tr>
+                      <td>__cookielawinfo_checkbox_advertisement</td>
+                      <td>
+                        Cookie set by GDPR cookie consent plug-in. Cookie used to save the agreement of the user for
+                        category “advertisement”.
+                      </td>
+                      <td>1 year from set/update</td>
+                      <td>User activity won&#39;t be tracked</td>
+                    </tr>
+                    <tr>
+                      <td>CookieLawInfoConsent</td>
+                      <td>
+                        Cookie set by GDPR cookie consent plug-in. Cookie used to save the agreement of the user for
+                        category “LawInfoConsent”.
+                      </td>
+                      <td>1 year from set/update</td>
+                      <td>User activity won&#39;t be tracked</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </ColorTableContainer>
             </BodyContent>
           </ArticleContent>
         </ContainerCard>
@@ -421,7 +430,7 @@ export const getStaticProps: GetStaticProps<PageProps> = async () => {
     props: {
       siteConfigData: {
         ...CONFIG,
-        title: 'Cookie policy for CoW Swap',
+        title: 'CoW Swap Cookie policy',
         descriptionShort: 'Cookie policy',
       },
     },

@@ -704,7 +704,7 @@ export const getStaticProps: GetStaticProps<PageProps> = async () => {
     props: {
       siteConfigData: {
         ...CONFIG,
-        title: 'Privacy policy for CoW Swap',
+        title: 'CoW Swap Privacy policy',
         descriptionShort: 'Privacy policy',
       },
     },

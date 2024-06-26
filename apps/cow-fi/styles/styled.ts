@@ -998,13 +998,13 @@ export const HeroDescription = styled.span<{ fontSize?: number; fontSizeMobile?:
   }
 `
 
-export const HeroButtonWrapper = styled.div<{ gap?: number }>`
+export const HeroButtonWrapper = styled.div<{ gap?: number; width?: string }>`
   display: flex;
   gap: ${({ gap }) => gap || 24}px;
   margin: 32px 0;
   flex-flow: row wrap;
   max-width: 100%;
-  width: 100%;
+  width: ${({ width }) => width || '100%'};
 
   ${Media.upToMedium()} {
     flex-flow: column wrap;
@@ -1515,6 +1515,10 @@ export const BodyContent = styled.div<{ color?: string }>`
   > p em {
     display: block;
     font-weight: ${Font.weight.bold};
+    font-style: normal;
+    background: #fee7cf;
+    padding: 8px;
+    border-radius: 8px;
   }
 
   > ul,
@@ -1547,13 +1551,14 @@ export const BodyContent = styled.div<{ color?: string }>`
   }
 
   // Add general styles for <table> with odd and even rows bg color
-  > table {
+  table {
     width: 100%;
     border-collapse: collapse;
     border-spacing: 0;
     margin: 24px 0;
     font-size: 15px;
     line-height: 1.6;
+    border-radius: 32px;
 
     > thead {
       background: ${Color.neutral90};
