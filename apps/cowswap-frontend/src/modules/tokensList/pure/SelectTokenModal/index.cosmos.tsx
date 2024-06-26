@@ -4,7 +4,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 
 import styled from 'styled-components/macro'
 
-import { allTokensMock, favouriteTokensMock } from '../../mocks'
+import { allTokensMock, favoriteTokensMock } from '../../mocks'
 
 import { SelectTokenModal, SelectTokenModalProps } from './index'
 
@@ -17,7 +17,7 @@ const Wrapper = styled.div`
 
 const unsupportedTokens = {}
 
-const selectedToken = favouriteTokensMock[0].address
+const selectedToken = favoriteTokensMock[0].address
 
 const balances = allTokensMock.reduce<BalancesState['values']>((acc, token) => {
   acc[token.address] = BigNumber.from(getRandomInt(20_000, 120_000_000) + '0'.repeat(token.decimals))
@@ -29,7 +29,7 @@ const defaultProps: SelectTokenModalProps = {
   permitCompatibleTokens: {},
   unsupportedTokens,
   allTokens: allTokensMock,
-  favouriteTokens: favouriteTokensMock,
+  favoriteTokens: favoriteTokensMock,
   balancesState: {
     values: balances,
     isLoading: false,
