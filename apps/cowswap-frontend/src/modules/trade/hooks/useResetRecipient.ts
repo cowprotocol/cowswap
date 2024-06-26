@@ -1,7 +1,10 @@
 import { useEffect } from 'react'
-import { useIsAlternativeOrderModalVisible } from '../state/alternativeOrder'
-import { useTradeStateFromUrl } from './setupTradeState/useTradeStateFromUrl'
+
 import { useWalletInfo } from '@cowprotocol/wallet'
+
+import { useTradeStateFromUrl } from './setupTradeState/useTradeStateFromUrl'
+
+import { useIsAlternativeOrderModalVisible } from '../state/alternativeOrder'
 
 export function useResetRecipient(onChangeRecipient: (recipient: string | null) => void): null {
   const isAlternativeOrderModalVisible = useIsAlternativeOrderModalVisible()
