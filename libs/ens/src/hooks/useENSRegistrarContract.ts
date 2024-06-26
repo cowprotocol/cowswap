@@ -18,15 +18,13 @@ export function useENSRegistrarContract(): EnsRegistrar | undefined {
   const chainId = useWalletChainId()
 
   const { data } = useSWR(
-    ['useENSRegistrarContract', provider, chainId],
-    () => {
-      if (!chainId || !provider) return undefined
-
-      const address = ENS_REGISTRAR_ADDRESSES[chainId as SupportedChainId]
+    provider && chainId ? ['useENSRegistrarContract', provider, chainId] : null,
+    ([, _provider, _chainId]) => {
+      const address = ENS_REGISTRAR_ADDRESSES[_chainId as SupportedChainId]
 
       if (!address) return undefined
 
-      return getContract(address, EnsAbi, provider) as EnsRegistrar
+      return getContract(address, EnsAbi, _provider) as EnsRegistrar
     },
     SWR_NO_REFRESH_OPTIONS
   )

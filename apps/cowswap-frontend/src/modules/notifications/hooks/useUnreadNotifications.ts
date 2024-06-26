@@ -18,18 +18,19 @@ export function useUnreadNotifications(): UnreadNotifications {
   const readNotifications = useAtomValue(readNotificationsAtom)
 
   return (
-    useSWR([account, notifications, readNotifications], () => {
-      if (!account || !notifications) return EMPTY
+    useSWR(
+      account && notifications ? [account, notifications, readNotifications] : null,
+      ([, _notifications, _readNotifications]) => {
+        return _notifications.reduce<UnreadNotifications>((acc, notification) => {
+          const isRead = _readNotifications.includes(notification.id)
 
-      return notifications.reduce<UnreadNotifications>((acc, notification) => {
-        const isRead = readNotifications.includes(notification.id)
+          if (!isRead) {
+            acc[notification.id] = true
+          }
 
-        if (!isRead) {
-          acc[notification.id] = true
-        }
-
-        return acc
-      }, {})
-    }).data || EMPTY
+          return acc
+        }, {})
+      }
+    ).data || EMPTY
   )
 }

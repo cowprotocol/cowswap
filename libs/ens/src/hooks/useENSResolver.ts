@@ -4,16 +4,12 @@ import useSWR, { SWRResponse } from 'swr'
 
 import { useENSRegistrarContract } from './useENSRegistrarContract'
 
-export function useENSResolver(node: string | undefined): SWRResponse<string | undefined> {
+export function useENSResolver(node: string | undefined): SWRResponse<string> {
   const registrarContract = useENSRegistrarContract()
 
   return useSWR(
-    ['useENSResolver', node, registrarContract],
-    async () => {
-      if (!registrarContract || !node) return undefined
-
-      return registrarContract.callStatic.resolver(node)
-    },
+    node && registrarContract ? ['useENSResolver', node, registrarContract] : null,
+    async ([_, _node, contract]) => contract.callStatic.resolver(_node),
     SWR_NO_REFRESH_OPTIONS
   )
 }
