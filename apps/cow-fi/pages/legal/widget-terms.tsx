@@ -390,7 +390,7 @@ export const getStaticProps: GetStaticProps<PageProps> = async () => {
     props: {
       siteConfigData: {
         ...CONFIG,
-        title: 'Terms and Conditions for the CoW Swap Widget & Partner Fee Program',
+        title: 'CoW Swap Widget & Partner Fee Program Terms and Conditions',
         descriptionShort: 'Terms and Conditions',
       },
     },

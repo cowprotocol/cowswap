@@ -48,21 +48,6 @@ export function NetworkItem(props: Props) {
       </a>
       <span>
         <CopyToClipboard text={address} />
-        {/* <a
-          href={`https://link.trustwallet.com/add_asset?asset=c20000714&t=${address}&n=${name}&s=${symbol}&d=${decimals}`}
-          target="_blank"
-          rel="noreferrer nofollow"
-        >
-          <img src="/images/trust_platform.svg" alt="Add to Trust Wallet" />
-        </a>
-
-        <a
-          href={`https://metamask.app.link/addToken?contractAddress=${address}&symbol=${symbol}&decimals=${decimals}&name=${name}`}
-          target="_blank"
-          rel="noreferrer nofollow"
-        >
-          <img src="/images/metamask-fox.svg" alt="Add to Metamask" />
-        </a> */}
       </span>
     </ItemWrapper>
   )
