@@ -160,10 +160,6 @@ export const LinkButton = styled(LinkWithPrefixNetwork)`
     margin: 1rem 0 0 0;
   }
 
-  ${media.mediumDown} {
-    // min-width: 18rem;    
-  }
-
   :hover {
     // opacity: 0.8;
     color: ${({ theme }): string => theme.white};
