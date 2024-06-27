@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.32.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.31.1...explorer-v2.32.0) (2024-06-27)
+
+
+### Features
+
+* add easy link for Etherscan ([#4573](https://github.com/cowprotocol/cowswap/issues/4573)) ([bfd5cf9](https://github.com/cowprotocol/cowswap/commit/bfd5cf9bd6d2aa121bf1c3e81a81652aacd271d0))
+
+
+### Bug Fixes
+
+* **limit-orders:** redesign confirm modal context usage ([#4628](https://github.com/cowprotocol/cowswap/issues/4628)) ([856f180](https://github.com/cowprotocol/cowswap/commit/856f180573c156c9da73bf68a8a7317eea49cb67))
+
 ## [2.31.1](https://github.com/cowprotocol/cowswap/compare/explorer-v2.31.0...explorer-v2.31.1) (2024-06-25)
 
 

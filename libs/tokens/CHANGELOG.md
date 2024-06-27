@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.1](https://github.com/cowprotocol/cowswap/compare/tokens-v1.5.0...tokens-v1.5.1) (2024-06-27)
+
+
+### Bug Fixes
+
+* fix inconsistent use of the word favourite between US/UK version ([#4572](https://github.com/cowprotocol/cowswap/issues/4572)) ([c60f8b4](https://github.com/cowprotocol/cowswap/commit/c60f8b409291d6acd1ee997b3cb2fcac24acb325))
+
 ## [1.5.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.4.1...tokens-v1.5.0) (2024-06-24)
 
 

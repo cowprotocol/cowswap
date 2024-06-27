@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.1](https://github.com/cowprotocol/cowswap/compare/common-const-v1.6.0...common-const-v1.6.1) (2024-06-27)
+
+
+### Bug Fixes
+
+* **ethflow:** prevent ethflow on wrong network ([#4629](https://github.com/cowprotocol/cowswap/issues/4629)) ([2d5f29f](https://github.com/cowprotocol/cowswap/commit/2d5f29f3fe5c456057d19891ad5529d9d5d8d22d))
+
 ## [1.6.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.5.0...common-const-v1.6.0) (2024-06-24)
 
 
