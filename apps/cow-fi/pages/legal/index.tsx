@@ -17,6 +17,18 @@ const LEGAL_LINKS = [
     title: 'CoW Widget Terms and Conditions',
     href: '/legal/widget-terms',
   },
+  {
+    title: 'CoW Swap Terms and Conditions',
+    href: '/legal/cowswap-terms',
+  },
+  {
+    title: 'CoW Swap Privacy Policy',
+    href: '/legal/cowswap-privacy-policy',
+  },
+  {
+    title: 'CoW Swap Cookie Policy',
+    href: '/legal/cowswap-cookie-policy',
+  },
 ]
 
 interface PageProps {

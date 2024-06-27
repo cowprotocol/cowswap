@@ -14,13 +14,9 @@ export function useOrdersFromOrderBook(): EnrichedOrder[] {
   const requestParams = useSWROrdersRequest()
 
   // Fetch orders for the current environment
-  const { data: currentEnvOrders } = useSWR<EnrichedOrder[]>(
-    ['orders', requestParams, chainId],
-    () => {
-      if (!chainId || !requestParams) return []
-
-      return getOrders(requestParams, { chainId })
-    },
+  const { data: currentEnvOrders } = useSWR(
+    requestParams && chainId ? ['orders', requestParams, chainId] : null,
+    ([, params, _chainId]) => getOrders(params, { chainId: _chainId }),
     { refreshInterval: ORDER_BOOK_API_UPDATE_INTERVAL }
   )
 

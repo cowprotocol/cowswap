@@ -998,13 +998,13 @@ export const HeroDescription = styled.span<{ fontSize?: number; fontSizeMobile?:
   }
 `
 
-export const HeroButtonWrapper = styled.div<{ gap?: number }>`
+export const HeroButtonWrapper = styled.div<{ gap?: number; width?: string }>`
   display: flex;
   gap: ${({ gap }) => gap || 24}px;
   margin: 32px 0;
   flex-flow: row wrap;
   max-width: 100%;
-  width: 100%;
+  width: ${({ width }) => width || '100%'};
 
   ${Media.upToMedium()} {
     flex-flow: column wrap;
@@ -1498,7 +1498,11 @@ export const BodyContent = styled.div<{ color?: string }>`
 
   > p,
   > ul,
-  > ol {
+  > ul > li ul,
+  > ol,
+  > ol > li ul,
+  > em,
+  > p em {
     margin-bottom: 16px;
     font-size: 21px;
     line-height: 1.5;
@@ -1508,13 +1512,27 @@ export const BodyContent = styled.div<{ color?: string }>`
     }
   }
 
-  > ul,
-  > ol {
-    padding-left: 20px;
+  > p em {
+    display: block;
+    font-weight: ${Font.weight.bold};
+    font-style: normal;
+    background: #fee7cf;
+    padding: 8px;
+    border-radius: 8px;
+  }
 
-    > li {
-      margin: 0 0 24px;
+  > ul,
+  > ul > li ul,
+  > ol,
+  > ol > li ul {
+    padding: 8px 0 0 20px;
+
+    > li,
+    > li > p,
+    > li > h3 {
+      margin: 0 0 12px;
       font-size: inherit;
+      line-height: inherit;
     }
   }
 
@@ -1529,6 +1547,35 @@ export const BodyContent = styled.div<{ color?: string }>`
 
     > p {
       line-height: 1.6;
+    }
+  }
+
+  // Add general styles for <table> with odd and even rows bg color
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+    margin: 24px 0;
+    font-size: 15px;
+    line-height: 1.6;
+    border-radius: 32px;
+
+    > thead {
+      background: ${Color.neutral90};
+      color: ${Color.neutral20};
+    }
+
+    > tbody {
+      > tr {
+        &:nth-child(odd) {
+          background: ${Color.neutral98};
+        }
+
+        > td {
+          padding: 8px 12px;
+          border: 1px solid ${Color.neutral90};
+        }
+      }
     }
   }
 

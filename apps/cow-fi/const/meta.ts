@@ -10,6 +10,9 @@ export const CONFIG = {
   description: 'CoW DAO develops the most user-protective products in Ethereum - so you can do more with less worry.',
   descriptionShort: "Don't get milked!",
   ogImage: 'https://cow.fi/images/og-meta-cowdao.png',
+  ogImageCOWAMM: 'https://cow.fi/images/og-meta-cowamm.png',
+  ogImageCOWSWAPP: 'https://cow.fi/images/og-meta-cowswap.png',
+  ogImageMEVBLOCKER: 'https://cow.fi/images/og-meta-mevblocker.png',
   url: {
     root: 'https://cow.fi',
     swap: 'https://swap.cow.fi/#/1/swap/DAI/COW?sellAmount=500',

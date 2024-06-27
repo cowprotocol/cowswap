@@ -24,7 +24,7 @@ import { ApprovalState, useApproveState } from 'common/hooks/useApproveState'
 import { CardsSpinner, ExtLink } from 'pages/Account/styled'
 
 import BalanceCell from './BalanceCell'
-import FavouriteTokenButton from './FavouriteTokenButton'
+import FavoriteTokenButton from './FavoriteTokenButton'
 import { FiatBalanceCell } from './FiatBalanceCell'
 import {
   ApproveLabel,
@@ -164,7 +164,7 @@ export const TokensTableRow = ({
   return (
     <>
       <Cell>
-        <FavouriteTokenButton tokenData={tokenData} />
+        <FavoriteTokenButton tokenData={tokenData} />
         <IndexNumber>{index + 1}</IndexNumber>
       </Cell>
 

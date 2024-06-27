@@ -17,7 +17,11 @@ import { useLimitOrdersFormState } from '../../hooks/useLimitOrdersFormState'
 
 const CONFIRM_TEXT = 'Review limit order'
 
-export function TradeButtons() {
+interface TradeButtonsProps {
+  isTradeContextReady: boolean
+}
+
+export function TradeButtons({ isTradeContextReady }: TradeButtonsProps) {
   const localFormValidation = useLimitOrdersFormState()
   const primaryFormValidation = useGetTradeFormValidation()
   const warningsAccepted = useLimitOrdersWarningsAccepted(false)
@@ -28,6 +32,8 @@ export function TradeButtons() {
   const defaultText = CONFIRM_TEXT
 
   const tradeFormButtonContext = useTradeFormButtonContext(defaultText, confirmTrade)
+
+  const isDisabled = !warningsAccepted || !isTradeContextReady
 
   if (!tradeFormButtonContext) return null
 
@@ -49,7 +55,7 @@ export function TradeButtons() {
       confirmText={CONFIRM_TEXT}
       validation={primaryFormValidation}
       context={tradeFormButtonContext}
-      isDisabled={!warningsAccepted}
+      isDisabled={isDisabled}
     />
   )
 }

@@ -13,12 +13,12 @@ import * as styledEl from './styled'
 
 import { TokenSearchResults } from '../../containers/TokenSearchResults'
 import { SelectTokenContext } from '../../types'
-import { FavouriteTokensList } from '../FavouriteTokensList'
+import { FavoriteTokensList } from '../FavoriteTokensList'
 import { TokensVirtualList } from '../TokensVirtualList'
 
 export interface SelectTokenModalProps {
   allTokens: TokenWithLogo[]
-  favouriteTokens: TokenWithLogo[]
+  favoriteTokens: TokenWithLogo[]
   balancesState: BalancesState
   unsupportedTokens: UnsupportedTokensState
   selectedToken?: string
@@ -39,7 +39,7 @@ export interface SelectTokenModalProps {
 export function SelectTokenModal(props: SelectTokenModalProps) {
   const {
     defaultInputValue = '',
-    favouriteTokens,
+    favoriteTokens,
     allTokens,
     selectedToken,
     balancesState,
@@ -79,10 +79,10 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
         />
       </styledEl.Row>
       <styledEl.Row>
-        <FavouriteTokensList
+        <FavoriteTokensList
           onSelectToken={onSelectToken}
           selectedToken={selectedToken}
-          tokens={favouriteTokens}
+          tokens={favoriteTokens}
           hideTooltip={hideFavoriteTokensTooltip}
         />
       </styledEl.Row>

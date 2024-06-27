@@ -10,11 +10,9 @@ export function useENSResolverContract(address: string | undefined): EnsPublicRe
   const chainId = useWalletChainId()
 
   const { data } = useSWR(
-    ['useENSResolverContract', provider, chainId, address],
-    () => {
-      if (!chainId || !provider || !address) return undefined
-
-      return getContract(address, EnsPublicResolverAbi, provider) as EnsPublicResolver
+    provider && chainId && address ? ['useENSResolverContract', provider, chainId, address] : null,
+    ([, _provider, , _address]) => {
+      return getContract(_address, EnsPublicResolverAbi, _provider) as EnsPublicResolver
     },
     SWR_NO_REFRESH_OPTIONS
   )

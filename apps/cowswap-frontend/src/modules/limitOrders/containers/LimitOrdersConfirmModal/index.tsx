@@ -29,7 +29,7 @@ import { TradeRateDetails } from '../TradeRateDetails'
 const CONFIRM_TITLE = 'Limit Order'
 
 export interface LimitOrdersConfirmModalProps {
-  tradeContext: TradeFlowContext | null
+  tradeContext: TradeFlowContext
   inputCurrencyInfo: CurrencyPreviewInfo
   outputCurrencyInfo: CurrencyPreviewInfo
   priceImpact: PriceImpact
