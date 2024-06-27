@@ -26,6 +26,9 @@ import { Order, Trade } from 'api/operator'
 import { FillsTableContext } from './context/FillsTableContext'
 import { FillsTableWithData } from './FillsTableWithData'
 
+import { useNetworkId } from 'state/network'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+
 const TitleUid = styled(RowWithCopyButton)`
   color: ${({ theme }): string => theme.grey};
   font-size: ${({ theme }): string => theme.fontSizeDefault};
@@ -84,6 +87,7 @@ function useQueryViewParams(): { tab: string } {
 }
 
 const tabItems = (
+  chainId: SupportedChainId,
   _order: Order | null,
   trades: Trade[],
   areTradesLoading: boolean,
@@ -105,6 +109,7 @@ const tabItems = (
       <>
         {order && areTokensLoaded && (
           <DetailsTable
+            chainId={chainId}
             order={order}
             showFillsButton={showFills}
             viewFills={(): void => onChangeTab(TabView.FILLS)}
@@ -159,6 +164,7 @@ const RESULTS_PER_PAGE = 10
 
 export const OrderDetails: React.FC<Props> = (props) => {
   const { order, isOrderLoading, areTradesLoading, errors, trades } = props
+  const chainId = useNetworkId()
   const { tab } = useQueryViewParams()
   const [tabViewSelected, setTabViewSelected] = useState<TabView>(TabView[tab] || TabView[DEFAULT_TAB]) // use DEFAULT when URL param is outside the enum
   const {
@@ -206,6 +212,10 @@ export const OrderDetails: React.FC<Props> = (props) => {
     [tabViewSelected, updateQueryString]
   )
 
+  if (!chainId) {
+    return null
+  }
+
   if (redirectTo) {
     return <RedirectToSearch from="orders" />
   }
@@ -234,6 +244,7 @@ export const OrderDetails: React.FC<Props> = (props) => {
         <StyledExplorerTabs
           className={`orderDetails-tab--${TabView[tabViewSelected].toLowerCase()}`}
           tabItems={tabItems(
+            chainId,
             order,
             trades,
             areTradesLoading,
