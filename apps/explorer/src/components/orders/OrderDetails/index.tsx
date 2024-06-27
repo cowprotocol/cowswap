@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
 import { TruncatedText } from '@cowprotocol/ui/pure/TruncatedText'
 
@@ -16,6 +17,7 @@ import TablePagination, { PaginationWrapper } from 'explorer/components/common/T
 import { useTable } from 'explorer/components/TokensTableWidget/useTable'
 import { TAB_QUERY_PARAM_KEY } from 'explorer/const'
 import { useQuery, useUpdateQueryString } from 'hooks/useQuery'
+import { useNetworkId } from 'state/network'
 import styled from 'styled-components/macro'
 import { media } from 'theme/styles/media'
 import { Errors } from 'types'
@@ -26,8 +28,6 @@ import { Order, Trade } from 'api/operator'
 import { FillsTableContext } from './context/FillsTableContext'
 import { FillsTableWithData } from './FillsTableWithData'
 
-import { useNetworkId } from 'state/network'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 const TitleUid = styled(RowWithCopyButton)`
   color: ${({ theme }): string => theme.grey};
