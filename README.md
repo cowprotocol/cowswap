@@ -226,7 +226,7 @@ app will still allow the user to place order and will have some fallback logics
 in case this API is not available.
 
 The reference implementation of the API is
-[BFF (Backend For Frontend)](https://github.com/cowprotocol/cms).
+[CMS API](https://github.com/cowprotocol/cms).
 
 The API endpoint is configured using the environment variable
 `REACT_APP_CMS_BASE_URL`:
