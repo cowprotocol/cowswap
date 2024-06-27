@@ -216,6 +216,29 @@ The API endpoint is configured using the environment variable
 REACT_APP_BFF_BASE_URL=https://bff.cow.fi
 ```
 
+
+## CMS API Endpoints (Content Management System)
+
+The CMS API is a helper API that provides some additional content to the frontend.
+
+It is not consider a required API for CoW Swap core functionality, the
+app will still allow the user to place order and will have some fallback logics
+in case this API is not available.
+
+The reference implementation of the API is
+[BFF (Backend For Frontend)](https://github.com/cowprotocol/cms).
+
+The API endpoint is configured using the environment variable
+`REACT_APP_CMS_BASE_URL`:
+
+```ini
+REACT_APP_CMS_BASE_URL=https://cms.cow.fi/api
+```
+
+
+
+
+
 ## Price feeds
 
 CoW Swap tries to find the best price available on-chain using some price feeds.

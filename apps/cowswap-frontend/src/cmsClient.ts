@@ -1,5 +1,5 @@
 import { CmsClient } from '@cowprotocol/cms'
 
 export const cmsClient = CmsClient({
-  url: 'https://cms.cow.fi/api',
+  url: process.env.REACT_APP_CMS_BASE_URL || 'https://cms.cow.fi/api',
 })
