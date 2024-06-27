@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.76.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.75.0...cowswap-v1.76.0) (2024-06-27)
+
+
+### Features
+
+* update legal pages ([#4619](https://github.com/cowprotocol/cowswap/issues/4619)) ([de136fe](https://github.com/cowprotocol/cowswap/commit/de136fe708aabb32ae9e23ae9170d296956fd737))
+
+
+### Bug Fixes
+
+* fix inconsistent use of the word favourite between US/UK version ([#4572](https://github.com/cowprotocol/cowswap/issues/4572)) ([c60f8b4](https://github.com/cowprotocol/cowswap/commit/c60f8b409291d6acd1ee997b3cb2fcac24acb325))
+* **limit-orders:** redesign confirm modal context usage ([#4628](https://github.com/cowprotocol/cowswap/issues/4628)) ([856f180](https://github.com/cowprotocol/cowswap/commit/856f180573c156c9da73bf68a8a7317eea49cb67))
+* **trade:** keep trade state after navigating from trade widgets ([#4601](https://github.com/cowprotocol/cowswap/issues/4601)) ([56d4eda](https://github.com/cowprotocol/cowswap/commit/56d4eda76007d60292a5be288c68e98a918b638a))
+
 ## [1.75.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.74.1...cowswap-v1.75.0) (2024-06-25)
 
 
