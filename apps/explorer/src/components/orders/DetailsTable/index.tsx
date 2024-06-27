@@ -181,7 +181,7 @@ export type DetailsTableProps = {
   invertPrice: Command
 }
 
-export function DetailsTable(props: DetailsTableProps): JSX.Element | null {
+export function DetailsTable(props: DetailsTableProps): React.ReactNode | null {
   const { chainId, order, areTradesLoading, showFillsButton, viewFills, isPriceInverted, invertPrice } = props
   const {
     uid,
