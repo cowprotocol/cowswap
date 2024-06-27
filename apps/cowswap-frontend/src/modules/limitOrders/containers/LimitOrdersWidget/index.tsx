@@ -9,6 +9,7 @@ import { LimitOrdersWarnings } from 'modules/limitOrders/containers/LimitOrdersW
 import { useLimitOrdersWidgetActions } from 'modules/limitOrders/containers/LimitOrdersWidget/hooks/useLimitOrdersWidgetActions'
 import { TradeButtons } from 'modules/limitOrders/containers/TradeButtons'
 import { TradeWidget, useTradePriceImpact } from 'modules/trade'
+import { useTradeConfirmState } from 'modules/trade'
 import { BulletListItem, UnlockWidgetScreen } from 'modules/trade/pure/UnlockWidgetScreen'
 import { useSetTradeQuoteParams, useTradeQuote } from 'modules/tradeQuote'
 
@@ -147,6 +148,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
   const tradeContext = useTradeFlowContext()
   const updateLimitOrdersState = useUpdateLimitOrdersRawState()
   const localFormValidation = useLimitOrdersFormState()
+  const { isOpen: isConfirmOpen } = useTradeConfirmState()
 
   const inputCurrencyPreviewInfo = {
     amount: inputCurrencyInfo.amount,
@@ -193,7 +195,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
         <LimitOrdersWarnings feeAmount={feeAmount} />
 
         <styledEl.TradeButtonBox>
-          <TradeButtons />
+          <TradeButtons isTradeContextReady={!!tradeContext} />
         </styledEl.TradeButtonBox>
       </>
     ),
@@ -207,6 +209,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
     isTradePriceUpdating,
     priceImpact,
     disablePriceImpact: localFormValidation === LimitOrdersFormState.FeeExceedsFrom,
+    disableQuotePolling: isConfirmOpen,
   }
 
   return (
@@ -217,13 +220,15 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
       inputCurrencyInfo={inputCurrencyInfo}
       outputCurrencyInfo={outputCurrencyInfo}
       confirmModal={
-        <LimitOrdersConfirmModal
-          recipient={recipient}
-          tradeContext={tradeContext}
-          priceImpact={priceImpact}
-          inputCurrencyInfo={inputCurrencyPreviewInfo}
-          outputCurrencyInfo={outputCurrencyPreviewInfo}
-        />
+        tradeContext ? (
+          <LimitOrdersConfirmModal
+            recipient={recipient}
+            tradeContext={tradeContext}
+            priceImpact={priceImpact}
+            inputCurrencyInfo={inputCurrencyPreviewInfo}
+            outputCurrencyInfo={outputCurrencyPreviewInfo}
+          />
+        ) : null
       }
     />
   )
