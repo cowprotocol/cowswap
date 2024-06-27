@@ -1,4 +1,5 @@
 import { useSetAtom } from 'jotai'
+import { useMemo } from 'react'
 
 import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -24,19 +25,25 @@ export function useEthFlowContext(): EthFlowContext | null {
 
   const checkEthFlowOrderExists = useCheckEthFlowOrderExists()
 
-  const baseContext = getFlowContext({
-    baseProps,
-    sellToken,
-    kind: OrderKind.SELL,
-  })
+  const baseContext = useMemo(
+    () =>
+      getFlowContext({
+        baseProps,
+        sellToken,
+        kind: OrderKind.SELL,
+      }),
+    [baseProps, sellToken]
+  )
 
-  if (!baseContext || !contract || baseProps.flowType !== FlowType.EOA_ETH_FLOW) return null
+  return useMemo(() => {
+    if (!baseContext || !contract || baseProps.flowType !== FlowType.EOA_ETH_FLOW) return null
 
-  return {
-    ...baseContext,
-    contract,
-    addTransaction,
-    checkEthFlowOrderExists,
-    addInFlightOrderId,
-  }
+    return {
+      ...baseContext,
+      contract,
+      addTransaction,
+      checkEthFlowOrderExists,
+      addInFlightOrderId,
+    }
+  }, [baseContext, contract, addTransaction, checkEthFlowOrderExists, addInFlightOrderId, baseProps.flowType])
 }

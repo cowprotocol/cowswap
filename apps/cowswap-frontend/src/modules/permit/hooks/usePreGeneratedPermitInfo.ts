@@ -1,3 +1,5 @@
+import { useMemo } from 'react'
+
 import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
 import { PermitInfo } from '@cowprotocol/permit-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -25,5 +27,5 @@ export function usePreGeneratedPermitInfo(): {
     { ...SWR_NO_REFRESH_OPTIONS, fallbackData: {} }
   )
 
-  return { allPermitInfo: data, isLoading }
+  return useMemo(() => ({ allPermitInfo: data, isLoading }), [data, isLoading])
 }

@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 
 import { Command } from '@cowprotocol/types'
 
@@ -7,21 +7,24 @@ import { ApplicationModal } from 'legacy/state/application/reducer'
 
 import { CowModal } from 'common/pure/Modal'
 import { TransactionErrorContent } from 'common/pure/TransactionErrorContent'
+
 export default function useTransactionErrorModal() {
   const openModal = useOpenModal(ApplicationModal.TRANSACTION_ERROR)
   const closeModal = useCloseModals()
   const showTransactionErrorModal = useModalIsOpen(ApplicationModal.TRANSACTION_ERROR)
 
-  return {
+  const TransactionErrorModal = useCallback(
+    ({ message, onDismiss }: { message?: string; onDismiss: Command }) => (
+      <CowModal isOpen={!!message && showTransactionErrorModal} onDismiss={closeModal}>
+        <TransactionErrorContent modalMode onDismiss={onDismiss} message={message || ''} />
+      </CowModal>
+    ),
+    [closeModal, showTransactionErrorModal]
+  )
+
+  return useMemo(() => ({
     openModal,
     closeModal,
-    TransactionErrorModal: useCallback(
-      ({ message, onDismiss }: { message?: string; onDismiss: Command }) => (
-        <CowModal isOpen={!!message && showTransactionErrorModal} onDismiss={closeModal}>
-          <TransactionErrorContent modalMode onDismiss={onDismiss} message={message || ''} />
-        </CowModal>
-      ),
-      [closeModal, showTransactionErrorModal]
-    ),
-  }
+    TransactionErrorModal,
+  }), [openModal, closeModal, TransactionErrorModal])
 }
