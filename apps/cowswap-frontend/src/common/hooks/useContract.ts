@@ -12,12 +12,8 @@ import {
   Weth,
   WethAbi,
 } from '@cowprotocol/abis'
-import {
-  COWSWAP_ETHFLOW_CONTRACT_ADDRESS,
-  V_COW_CONTRACT_ADDRESS,
-  WRAPPED_NATIVE_CURRENCIES,
-} from '@cowprotocol/common-const'
-import { getContract, isEns, isProd, isStaging } from '@cowprotocol/common-utils'
+import { V_COW_CONTRACT_ADDRESS, WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
+import { getContract, getEthFlowContractAddress } from '@cowprotocol/common-utils'
 import { COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
@@ -66,9 +62,7 @@ export function useWETHContract(withSignerIfPossible?: boolean) {
 export function useEthFlowContract(): CoWSwapEthFlow | null {
   const { chainId } = useWalletInfo()
 
-  const contractEnv = isProd || isStaging || isEns ? 'prod' : 'barn'
-
-  const contractAddress = chainId ? COWSWAP_ETHFLOW_CONTRACT_ADDRESS[contractEnv][chainId] : undefined
+  const contractAddress = getEthFlowContractAddress(chainId)
 
   return useContract<CoWSwapEthFlow>(contractAddress, CoWSwapEthFlowAbi, true)
 }
