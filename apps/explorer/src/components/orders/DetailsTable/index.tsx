@@ -1,5 +1,7 @@
 import React from 'react'
 
+import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
 import { TruncatedText } from '@cowprotocol/ui/pure/TruncatedText'
 
@@ -27,8 +29,6 @@ import { Order } from 'api/operator'
 import { getUiOrderType } from 'utils/getUiOrderType'
 
 import { TAB_QUERY_PARAM_KEY } from '../../../explorer/const'
-import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 const Table = styled(SimpleTable)`
   > tbody > tr {

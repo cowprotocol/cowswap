@@ -25,7 +25,7 @@ import { useIsSafeApprovalBundle } from 'common/hooks/useIsSafeApprovalBundle'
 import { TradeAmounts } from 'common/types'
 
 export function useHandleOrderPlacement(
-  tradeContext: TradeFlowContext | null,
+  tradeContext: TradeFlowContext,
   priceImpact: PriceImpact,
   settingsState: LimitOrdersSettingsState,
   tradeConfirmActions: TradeConfirmActions
@@ -78,8 +78,6 @@ export function useHandleOrderPlacement(
         beforeTrade
       )
     }
-
-    if (!tradeContext) throw new Error('tradeContext is not set!')
 
     tradeContext.postOrderParams.partiallyFillable =
       partiallyFillableOverride ?? tradeContext.postOrderParams.partiallyFillable
