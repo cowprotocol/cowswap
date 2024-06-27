@@ -16,11 +16,15 @@ export const Header = styled.div`
 `
 
 export const List = styled.div`
-  display: block;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding-top: 10px;
 
   ${Media.upToSmall()} {
-    white-space: nowrap;
+    flex-wrap: nowrap;
     overflow-x: scroll;
+    padding-bottom: 10px;
     ${({ theme }) => theme.colorScrollbar};
   }
 `
@@ -31,7 +35,6 @@ export const TokensItem = styled.button`
   align-items: center;
   gap: 6px;
   justify-content: center;
-  margin: 5px 10px 5px 0;
   background: none;
   outline: none;
   padding: 6px 10px;
