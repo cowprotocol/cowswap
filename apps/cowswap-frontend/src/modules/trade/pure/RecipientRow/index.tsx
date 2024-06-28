@@ -1,4 +1,5 @@
-import { isAddress, shortenAddress } from '@cowprotocol/common-utils'
+import { ExplorerDataType, getExplorerLink, isAddress, shortenAddress } from '@cowprotocol/common-utils'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { InfoTooltip } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
@@ -14,13 +15,22 @@ const Row = styled.div`
   gap: 3px;
 `
 
+const Link = styled.a`
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+`
+
 interface RecipientRowProps {
+  chainId: SupportedChainId
   recipient: Nullish<string>
   account: Nullish<string>
 }
 
 export function RecipientRow(props: RecipientRowProps) {
-  const { recipient, account } = props
+  const { chainId, recipient, account } = props
   return (
     <>
       {recipient && recipient.toLowerCase() !== account?.toLowerCase() && (
@@ -34,7 +44,13 @@ export function RecipientRow(props: RecipientRowProps) {
             />
           </div>
           <div>
-            <span title={recipient}>{isAddress(recipient) ? shortenAddress(recipient) : recipient}</span>
+            <Link
+              title={recipient}
+              href={getExplorerLink(chainId, recipient, ExplorerDataType.ADDRESS)}
+              target="_blank"
+            >
+              {isAddress(recipient) ? shortenAddress(recipient) : recipient}
+            </Link>
           </div>
         </Row>
       )}
