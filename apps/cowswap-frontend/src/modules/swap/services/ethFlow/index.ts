@@ -1,4 +1,8 @@
-import { reportAppDataWithHooks, reportPlaceOrderWithExpiredQuote } from '@cowprotocol/common-utils'
+import {
+  getEthFlowContractAddress,
+  reportAppDataWithHooks,
+  reportPlaceOrderWithExpiredQuote,
+} from '@cowprotocol/common-utils'
 import { UiOrderType } from '@cowprotocol/types'
 import { Percent } from '@uniswap/sdk-core'
 
@@ -76,6 +80,10 @@ export async function ethFlow(
     ) {
       reportPlaceOrderWithExpiredQuote({ ...orderParamsOriginal, fee })
       throw new Error('Quote expired. Please refresh.')
+    }
+
+    if (contract.address !== getEthFlowContractAddress(chainId)) {
+      throw new Error('EthFlow contract address mismatch. Please refresh the page and try again.')
     }
 
     logTradeFlow('ETH FLOW', 'STEP 4: sign order')

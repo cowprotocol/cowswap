@@ -27,6 +27,7 @@ import { Order } from 'api/operator'
 import { getUiOrderType } from 'utils/getUiOrderType'
 
 import { TAB_QUERY_PARAM_KEY } from '../../../explorer/const'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 const Table = styled(SimpleTable)`
   > tbody > tr {
@@ -167,6 +168,7 @@ export const LinkButton = styled(LinkWithPrefixNetwork)`
 `
 
 export type Props = {
+  chainId: SupportedChainId
   order: Order
   showFillsButton: boolean | undefined
   areTradesLoading: boolean

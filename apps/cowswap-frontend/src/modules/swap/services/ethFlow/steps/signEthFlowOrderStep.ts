@@ -44,6 +44,11 @@ export async function signEthFlowOrderStep(
     throw new Error('[EthFlow::SignEthFlowOrderStep] No quoteId passed')
   }
 
+  const network = await ethFlowContract.provider.getNetwork()
+  if (network.chainId !== orderParams.chainId) {
+    throw new Error('Wallet chain differs from order params.')
+  }
+
   const ethOrderParams: EthFlowCreateOrderParams = {
     ...order,
     quoteId,
