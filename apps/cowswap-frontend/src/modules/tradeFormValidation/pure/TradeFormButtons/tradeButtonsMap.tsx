@@ -1,4 +1,3 @@
-import React from 'react'
 
 import { getIsNativeToken, getWrappedToken } from '@cowprotocol/common-utils'
 import { HelpTooltip, TokenSymbol } from '@cowprotocol/ui'
@@ -116,7 +115,7 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
             <div>
               Your Safe is not connected with a signer.
               <br />
-              To place an order, you must connect using a signer of the Safe and refresh the page.
+              To place an order, you must connect using a signer of this Safe.
             </div>
           }
         />
