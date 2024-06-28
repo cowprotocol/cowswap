@@ -305,7 +305,7 @@ const RowFill: React.FC<RowProps> = ({ trade, isPriceInverted, invertButton }) =
         <HeaderTitle>Surplus</HeaderTitle>
         <HeaderValue>
           {surplus ? (
-            <SurplusComponent icon={faIcon} iconColor={theme.green} surplus={surplus} token={surplusToken} showHidden />
+            <SurplusComponent icon={faIcon} iconColor={theme.green} surplus={surplus} token={surplusToken} />
           ) : (
             '-'
           )}

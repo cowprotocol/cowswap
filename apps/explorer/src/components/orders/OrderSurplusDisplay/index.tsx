@@ -51,7 +51,7 @@ export function OrderSurplusDisplay(props: Props): JSX.Element | null {
 
   if (!surplus) return null
 
-  return <Wrapper surplus={surplus} token={surplus.surplusToken} showHidden />
+  return <Wrapper surplus={surplus} token={surplus.surplusToken} />
 }
 
 const HiddenSection = styled.span<{ showHiddenSection: boolean; strechHiddenSection?: boolean }>`
@@ -67,14 +67,13 @@ const HiddenSection = styled.span<{ showHiddenSection: boolean; strechHiddenSect
 
 export function OrderSurplusTooltipDisplay({
   order,
-  showHiddenSection = false,
   defaultWhenNoSurplus,
   strechWhenNoSurplus = false,
 }: Props & {
   showHiddenSection?: boolean
   defaultWhenNoSurplus?: string
   strechWhenNoSurplus?: boolean
-}): JSX.Element {
+}): React.ReactNode {
   const surplus = useGetSurplus(order)
   const theme = useTheme()
 
@@ -89,13 +88,7 @@ export function OrderSurplusTooltipDisplay({
     <BaseIconTooltipOnHover
       tooltip={<TokenAmount amount={surplus.amount} token={surplus.surplusToken} />}
       targetContent={
-        <SurplusComponent
-          surplus={surplus}
-          token={surplus.surplusToken}
-          showHidden={showHiddenSection}
-          icon={faIcon}
-          iconColor={theme.green}
-        />
+        <SurplusComponent surplus={surplus} token={surplus.surplusToken} icon={faIcon} iconColor={theme.green} />
       }
     />
   )

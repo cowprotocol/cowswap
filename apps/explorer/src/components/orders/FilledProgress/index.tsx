@@ -271,7 +271,7 @@ export function FilledProgress(props: Props): JSX.Element {
       </TableHeadingContent>
       <TableHeadingContent className="surplus">
         <p className="title">Total Surplus</p>
-        <StyledSurplusComponent surplus={surplus} token={surplusToken} showHidden />
+        <StyledSurplusComponent surplus={surplus} token={surplusToken} />
       </TableHeadingContent>
       <TableHeadingContent>
         <p className="title">Limit Price</p>

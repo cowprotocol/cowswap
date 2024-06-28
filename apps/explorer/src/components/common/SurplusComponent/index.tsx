@@ -22,33 +22,27 @@ export const Percentage = styled.span`
   color: ${({ theme }): string => theme.green};
 `
 
-export const Amount = styled.span<{ showHiddenSection: boolean; strechHiddenSection?: boolean }>`
-  display: ${({ showHiddenSection }): string => (showHiddenSection ? 'flex' : 'none')};
-  ${({ strechHiddenSection }): FlattenSimpleInterpolation | false | undefined =>
-    strechHiddenSection &&
-    css`
-      width: 3.4rem;
-      display: inline-block;
-      justify-content: end;
-    `}
+export const Amount = styled.span`
+  display: flex;
 `
 
 const Wrapper = styled.span`
   display: flex;
-  align-items: center;
+  flex-flow: row wrap;
+  align-items: flex-start;
+  justify-content: flex-start;
 `
 
 export type SurplusComponentProps = {
   surplus: Surplus | null
   token: TokenErc20 | null
-  showHidden?: boolean
   className?: string
   icon?: IconDefinition
   iconColor?: string
 }
 
 export const SurplusComponent: React.FC<SurplusComponentProps> = (props) => {
-  const { surplus, token, showHidden, className, icon, iconColor } = props
+  const { surplus, token, className, icon, iconColor } = props
 
   if (!surplus || !token) {
     return null
@@ -59,7 +53,7 @@ export const SurplusComponent: React.FC<SurplusComponentProps> = (props) => {
   const showPercentage = percentage.lt(MAX_SURPLUS_PERCENTAGE)
 
   const amountDisplay = (
-    <Amount showHiddenSection={!!showHidden || !showPercentage}>
+    <Amount>
       <TokenAmount amount={amount} token={token} />
     </Amount>
   )
