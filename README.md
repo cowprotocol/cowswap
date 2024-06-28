@@ -221,8 +221,8 @@ REACT_APP_BFF_BASE_URL=https://bff.cow.fi
 
 The CMS API is a helper API that provides some additional content to the frontend.
 
-It is not consider a required API for CoW Swap core functionality, the
-app will still allow the user to place order and will have some fallback logics
+It is not considered a required API for CoW Swap core functionality, the
+app will still allow the user to place orders and will have some fallback logic
 in case this API is not available.
 
 The reference implementation of the API is
