@@ -104,7 +104,8 @@ export function useOrderTrades(order: Order | null): Result {
       return { ...transformTrade(trade, order, timestamp), buyToken, sellToken }
     })
 
-    setTrades(trades)
+    // Reverse trades, to show the newest on top
+    setTrades(trades.reverse())
   }, [order, rawTrades, tradesTimestamps])
 
   const executedSellAmount = order?.executedSellAmount.toString()
