@@ -130,17 +130,16 @@ export function useOrderAndErc20s(orderId: string, updateInterval = 0): UseOrder
 
   const { value, isLoading: areErc20Loading, error: errors = {} } = useMultipleErc20({ networkId, addresses })
 
-  if (orderError) {
-    errors[orderId] = orderError
-  }
+  return useMemo(() => {
+    if (orderError) {
+      errors[orderId] = orderError
+    }
 
-  if (order && value) {
-    order.buyToken = value[order?.buyTokenAddress?.toLowerCase() || '']
-    order.sellToken = value[order?.sellTokenAddress?.toLowerCase() || '']
-  }
+    if (order && value) {
+      order.buyToken = value[order?.buyTokenAddress?.toLowerCase() || '']
+      order.sellToken = value[order?.sellTokenAddress?.toLowerCase() || '']
+    }
 
-  return useMemo(
-    () => ({ order, isLoading: isOrderLoading || areErc20Loading, errors, errorOrderPresentInNetworkId }),
-    [order, isOrderLoading, areErc20Loading, errors, errorOrderPresentInNetworkId]
-  )
+    return { order, isLoading: isOrderLoading || areErc20Loading, errors, errorOrderPresentInNetworkId }
+  }, [orderError, order, isOrderLoading, areErc20Loading, errors, errorOrderPresentInNetworkId, value])
 }

@@ -12,5 +12,5 @@ export function useEmbedDialogState(initialOpen = false) {
       handleDialogClose: handleClose,
       handleDialogOpen: handleOpen,
     }
-  }, [open, setOpen])
+  }, [open])
 }
