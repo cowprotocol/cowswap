@@ -1,3 +1,5 @@
+import { useMemo } from 'react'
+
 import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
 import { ALL_SUPPORTED_CHAIN_IDS, SupportedChainId, mapSupportedNetworks } from '@cowprotocol/cow-sdk'
 import type { TokenInfo, TokenList } from '@uniswap/token-lists'
@@ -25,12 +27,15 @@ export function useTokenList(chainId: SupportedChainId | undefined): { data: Tok
     chainId === SupportedChainId.ARBITRUM_ONE ? 'https://tokens.coingecko.com/arbitrum-one/all.json' : ''
   )
 
-  const data = chainId ? { ...coingeckoList, ...honeyswapList, ...cowSwapList, ...arbitrumOneList }[chainId] : {}
   const isLoading = chainId
     ? isCowListLoading || isHoneyswapListLoading || isCoingeckoListLoading || isArbitrumOneListLoading
     : false
 
-  return { data, isLoading }
+  return useMemo(() => {
+    const data = chainId ? { ...coingeckoList, ...honeyswapList, ...cowSwapList, ...arbitrumOneList }[chainId] : {}
+
+    return { data, isLoading }
+  }, [chainId, coingeckoList, honeyswapList, cowSwapList, arbitrumOneList, isLoading])
 }
 
 function useTokenListByUrl(tokenListUrl: string) {

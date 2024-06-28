@@ -1,3 +1,5 @@
+import { useMemo } from 'react'
+
 import { ComposableCoW, Erc20 } from '@cowprotocol/abis'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
@@ -32,7 +34,16 @@ export function useTwapOrderCreationContext(
   const needsZeroApproval = useNeedsZeroApproval(erc20Contract, spender, inputAmount)
   const currentBlockFactoryAddress = chainId ? CURRENT_BLOCK_FACTORY_ADDRESS[chainId] : null
 
-  if (!composableCowContract || !erc20Contract || !spender || !currentBlockFactoryAddress) return null
+  return useMemo(() => {
+    if (!composableCowContract || !erc20Contract || !spender || !currentBlockFactoryAddress) return null
 
-  return { composableCowContract, erc20Contract, needsApproval, needsZeroApproval, spender, currentBlockFactoryAddress }
+    return {
+      composableCowContract,
+      erc20Contract,
+      needsApproval,
+      needsZeroApproval,
+      spender,
+      currentBlockFactoryAddress,
+    }
+  }, [composableCowContract, erc20Contract, spender, currentBlockFactoryAddress, needsApproval, needsZeroApproval])
 }

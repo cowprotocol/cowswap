@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 function getErrorMessage(filePath: string, res: Response): string {
   return `Error fetching file ${filePath} - status: ${res.statusText}`
@@ -27,5 +27,5 @@ export function useFetchFile(filePath: string) {
     fetchFile()
   }, [filePath])
 
-  return { file, error }
+  return useMemo(() => ({ file, error }), [file, error])
 }

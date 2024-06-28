@@ -13,6 +13,7 @@ import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOr
 import { parsePrice } from 'modules/limitOrders/utils/parsePrice'
 
 import { getNativePrice } from 'api/cowProtocol'
+import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
 type PriceResult = number | Error | undefined
 
@@ -126,5 +127,5 @@ export function useGetInitialPrice(): { price: Fraction | null; isLoading: boole
     return () => clearInterval(interval)
   }, [isWindowVisible])
 
-  return { price, isLoading }
+  return useSafeMemo(() => ({ price, isLoading }), [price, isLoading])
 }
