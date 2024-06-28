@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.5.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.4.2...cow-fi-v1.5.0) (2024-06-27)
+
+
+### Features
+
+* add og images for cow.fi product page ([#4620](https://github.com/cowprotocol/cowswap/issues/4620)) ([4101624](https://github.com/cowprotocol/cowswap/commit/4101624fe90b360ce511a03d78baf49442a655c2))
+* add products page ([#4621](https://github.com/cowprotocol/cowswap/issues/4621)) ([4adccb3](https://github.com/cowprotocol/cowswap/commit/4adccb3cd9f54d1a6398c618512bd47bdc711d0f))
+* update legal pages ([#4619](https://github.com/cowprotocol/cowswap/issues/4619)) ([de136fe](https://github.com/cowprotocol/cowswap/commit/de136fe708aabb32ae9e23ae9170d296956fd737))
+
 ## [1.4.2](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.4.1...cow-fi-v1.4.2) (2024-06-25)
 
 
