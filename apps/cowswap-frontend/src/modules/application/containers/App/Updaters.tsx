@@ -19,7 +19,6 @@ import { UsdPricesUpdater } from 'modules/usdAmount'
 
 import { TotalSurplusUpdater } from 'common/state/totalSurplusState'
 import { CancelReplaceTxUpdater } from 'common/updaters/CancelReplaceTxUpdater'
-import { CleanUrlPathUpdater } from 'common/updaters/CleanUrlPathUpdater'
 import { FeatureFlagsUpdater } from 'common/updaters/FeatureFlagsUpdater'
 import { FeesUpdater } from 'common/updaters/FeesUpdater'
 import { GasUpdater } from 'common/updaters/GasUpdater'
@@ -47,7 +46,7 @@ export function Updaters() {
 
   return (
     <>
-      <CleanUrlPathUpdater />
+      {/*<CleanUrlPathUpdater />*/}
       <FeatureFlagsUpdater />
       <WalletUpdater standaloneMode={standaloneMode} />
       <HwAccountIndexUpdater />
