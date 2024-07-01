@@ -1,5 +1,6 @@
 import React, { Dispatch, ReactNode, SetStateAction, useMemo } from 'react'
 
+import { PercentDisplay } from '@cowprotocol/ui'
 import { CowSwapWidgetAppParams } from '@cowprotocol/widget-lib'
 import { Percent, Price } from '@uniswap/sdk-core'
 
@@ -7,7 +8,6 @@ import { Nullish } from 'types'
 
 import { useUsdAmount } from 'modules/usdAmount'
 
-import { PercentDisplay } from 'common/pure/PercentDisplay'
 import { RateInfoParams } from 'common/pure/RateInfo'
 
 import { LimitPriceRow } from './LimitPriceRow'
