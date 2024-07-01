@@ -4,7 +4,7 @@ import 'inter-ui'
 import '@cowprotocol/analytics'
 import './sentry'
 import { Provider as AtomProvider } from 'jotai'
-import { ReactNode, StrictMode, useEffect } from 'react'
+import { ReactNode, StrictMode } from 'react'
 
 import { nodeRemoveChildFix } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
@@ -38,13 +38,6 @@ if (window.ethereum) {
 }
 
 function Main() {
-  useEffect(() => {
-    console.log(`debug:window location on root!`, window.location.host, window.location.pathname, window.location.hash)
-    if (window.location.pathname !== '/') {
-      window.location.pathname = '/'
-    }
-  }, [window.location.host, window.location.pathname, window.location.hash])
-
   return (
     <StrictMode>
       <Provider store={cowSwapStore}>
