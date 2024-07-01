@@ -10,11 +10,11 @@ import {
   MAX_SLIPPAGE_BPS,
   MIN_SLIPPAGE_BPS,
   MINIMUM_ETH_FLOW_DEADLINE_SECONDS,
-  MINIMUM_ETH_FLOW_SLIPPAGE,
-  MINIMUM_ETH_FLOW_SLIPPAGE_BPS,
+  DEFAULT_ETH_FLOW_SLIPPAGE,
+  DEFAULT_ETH_FLOW_SLIPPAGE_BPS,
   MINIMUM_ORDER_VALID_TO_TIME_SECONDS,
 } from '@cowprotocol/common-const'
-import { bpsToPercent, getWrappedToken } from '@cowprotocol/common-utils'
+import { bpsToPercent, getWrappedToken, percentToBps } from '@cowprotocol/common-utils'
 import { FancyButton, HelpTooltip, Media, RowBetween, RowFixed, UI } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Percent } from '@uniswap/sdk-core'
@@ -25,15 +25,16 @@ import styled, { ThemeContext } from 'styled-components/macro'
 import { ThemedText } from 'theme'
 
 import { AutoColumn } from 'legacy/components/Column'
-import { useSetUserSlippageTolerance, useUserSlippageTolerance, useUserTransactionTTL } from 'legacy/state/user/hooks'
+import { useUserTransactionTTL } from 'legacy/state/user/hooks'
 
+import { useIsCurrentSlippageDefault } from 'modules/swap/hooks/useIsCurrentSlippageDefault'
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
+import { useSetSlippage } from 'modules/swap/hooks/useSetSlippage'
+import { useSwapSlippage } from 'modules/swap/hooks/useSwapSlippage'
 import { getNativeOrderDeadlineTooltip, getNonNativeOrderDeadlineTooltip } from 'modules/swap/pure/Row/RowDeadline'
 import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from 'modules/swap/pure/Row/RowSlippageContent'
 
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
-
-// MOD imports
 
 const MAX_DEADLINE_MINUTES = 180 // 3h
 
@@ -164,8 +165,8 @@ export function TransactionSettings() {
   const isEoaEthFlow = useIsEoaEthFlow()
   const nativeCurrency = useNativeCurrency()
 
-  const userSlippageTolerance = useUserSlippageTolerance()
-  const setUserSlippageTolerance = useSetUserSlippageTolerance()
+  const swapSlippage = useSwapSlippage()
+  const setSwapSlippage = useSetSlippage()
 
   const [deadline, setDeadline] = useUserTransactionTTL()
 
@@ -175,8 +176,10 @@ export function TransactionSettings() {
   const [deadlineInput, setDeadlineInput] = useState('')
   const [deadlineError, setDeadlineError] = useState<DeadlineError | false>(false)
 
-  const minEthFlowSlippageBps = MINIMUM_ETH_FLOW_SLIPPAGE_BPS[chainId]
-  const minEthFlowSlippage = MINIMUM_ETH_FLOW_SLIPPAGE[chainId]
+  const minEthFlowSlippageBps = DEFAULT_ETH_FLOW_SLIPPAGE_BPS[chainId]
+  const minEthFlowSlippage = DEFAULT_ETH_FLOW_SLIPPAGE[chainId]
+
+  const isCurrentSlippageDefault = useIsCurrentSlippageDefault()
 
   function parseSlippageInput(value: string) {
     // populate what the user typed and clear the error
@@ -185,7 +188,7 @@ export function TransactionSettings() {
 
     if (value.length === 0) {
       slippageToleranceAnalytics('Default', isEoaEthFlow ? minEthFlowSlippageBps : DEFAULT_SLIPPAGE_BPS)
-      setUserSlippageTolerance(isEoaEthFlow ? minEthFlowSlippage : 'auto')
+      setSwapSlippage(isEoaEthFlow ? percentToBps(minEthFlowSlippage) : null)
     } else {
       let v = value
 
@@ -205,25 +208,21 @@ export function TransactionSettings() {
         parsed > MAX_SLIPPAGE_BPS
       ) {
         slippageToleranceAnalytics('Default', isEoaEthFlow ? minEthFlowSlippageBps : DEFAULT_SLIPPAGE_BPS)
-        setUserSlippageTolerance('auto')
+        setSwapSlippage(null)
         if (v !== '.') {
           setSlippageError(SlippageError.InvalidInput)
         }
       } else {
         slippageToleranceAnalytics('Custom', parsed)
-        setUserSlippageTolerance(new Percent(parsed, 10_000))
+        setSwapSlippage(percentToBps(new Percent(parsed, 10_000)))
       }
     }
   }
 
-  const tooLow =
-    userSlippageTolerance !== 'auto' &&
-    userSlippageTolerance.lessThan(new Percent(isEoaEthFlow ? minEthFlowSlippageBps : LOW_SLIPPAGE_BPS, 10_000))
-  const tooHigh =
-    userSlippageTolerance !== 'auto' &&
-    userSlippageTolerance.greaterThan(
-      new Percent(isEoaEthFlow ? HIGH_ETH_FLOW_SLIPPAGE_BPS : HIGH_SLIPPAGE_BPS, 10_000)
-    )
+  const tooLow = swapSlippage.lessThan(new Percent(isEoaEthFlow ? minEthFlowSlippageBps : LOW_SLIPPAGE_BPS, 10_000))
+  const tooHigh = swapSlippage.greaterThan(
+    new Percent(isEoaEthFlow ? HIGH_ETH_FLOW_SLIPPAGE_BPS : HIGH_SLIPPAGE_BPS, 10_000)
+  )
 
   function parseCustomDeadline(value: string) {
     // populate what the user typed and clear the error
@@ -281,12 +280,12 @@ export function TransactionSettings() {
               onClick={() => {
                 parseSlippageInput('')
               }}
-              active={userSlippageTolerance === 'auto'}
+              active={isCurrentSlippageDefault}
               disabled={isEoaEthFlow}
             >
               <Trans>Auto</Trans>
             </Option>
-            <OptionCustom active={userSlippageTolerance !== 'auto'} warning={!!slippageError} tabIndex={-1}>
+            <OptionCustom active={!isCurrentSlippageDefault} warning={!!slippageError} tabIndex={-1}>
               <RowBetween>
                 {tooLow || tooHigh ? (
                   <SlippageEmojiContainer>
@@ -298,11 +297,7 @@ export function TransactionSettings() {
                 <Input
                   placeholder={bpsToPercent(DEFAULT_SLIPPAGE_BPS).toFixed(2)}
                   value={
-                    slippageInput.length > 0
-                      ? slippageInput
-                      : userSlippageTolerance === 'auto'
-                      ? ''
-                      : userSlippageTolerance.toFixed(2)
+                    slippageInput.length > 0 ? slippageInput : isCurrentSlippageDefault ? '' : swapSlippage.toFixed(2)
                   }
                   onChange={(e) => parseSlippageInput(e.target.value)}
                   onBlur={() => {
@@ -312,7 +307,7 @@ export function TransactionSettings() {
                       // Set the slippage to minimum allowed
                       // Otherwise it'll default to last value used
                       if (curr && isEoaEthFlow) {
-                        setUserSlippageTolerance(minEthFlowSlippage)
+                        setSwapSlippage(percentToBps(minEthFlowSlippage))
                       }
                       return false
                     })

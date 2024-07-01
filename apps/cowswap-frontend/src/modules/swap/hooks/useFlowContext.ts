@@ -34,6 +34,7 @@ import { useIsSafeApprovalBundle } from 'common/hooks/useIsSafeApprovalBundle'
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
 import { useIsSafeEthFlow } from './useIsSafeEthFlow'
+import { useSwapSlippage } from './useSwapSlippage'
 import { useDerivedSwapInfo, useSwapState } from './useSwapState'
 
 import { getOrderValidTo } from '../../tradeQuote/utils/quoteDeadline'
@@ -77,9 +78,10 @@ export function useSwapAmountsWithSlippage(): [
   CurrencyAmount<Currency> | undefined,
   CurrencyAmount<Currency> | undefined
 ] {
-  const { trade, allowedSlippage } = useDerivedSwapInfo()
+  const slippage = useSwapSlippage()
+  const { trade } = useDerivedSwapInfo()
 
-  const { INPUT, OUTPUT } = computeSlippageAdjustedAmounts(trade, allowedSlippage)
+  const { INPUT, OUTPUT } = computeSlippageAdjustedAmounts(trade, slippage)
 
   return useSafeMemo(() => [INPUT, OUTPUT], [INPUT, OUTPUT])
 }
@@ -90,7 +92,8 @@ export function useBaseFlowContextSetup(): BaseFlowContextSetup {
   const { allowsOffchainSigning } = useWalletDetails()
   const gnosisSafeInfo = useGnosisSafeInfo()
   const { recipient } = useSwapState()
-  const { trade, allowedSlippage, currenciesIds } = useDerivedSwapInfo()
+  const slippage = useSwapSlippage()
+  const { trade, currenciesIds } = useDerivedSwapInfo()
   const { quote } = useGetQuoteAndStatus({
     token: currenciesIds.INPUT,
     chainId,
@@ -139,7 +142,7 @@ export function useBaseFlowContextSetup(): BaseFlowContextSetup {
       closeModals,
       addOrderCallback,
       dispatch,
-      allowedSlippage,
+      allowedSlippage: slippage,
       tradeConfirmActions,
       getCachedPermit,
       quote,
@@ -165,7 +168,7 @@ export function useBaseFlowContextSetup(): BaseFlowContextSetup {
       closeModals,
       addOrderCallback,
       dispatch,
-      allowedSlippage,
+      slippage,
       tradeConfirmActions,
       getCachedPermit,
       quote,

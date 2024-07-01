@@ -12,7 +12,6 @@ import { SettingsTab } from 'legacy/components/Settings'
 import { useModalIsOpen } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
 import { Field } from 'legacy/state/types'
-import { useUserSlippageTolerance } from 'legacy/state/user/hooks'
 
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { EthFlowModal, EthFlowProps } from 'modules/swap/containers/EthFlow'
@@ -43,7 +42,9 @@ import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 import { SWAP_QUOTE_CHECK_INTERVAL } from 'common/updaters/FeesUpdater'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
+import { useIsCurrentSlippageDefault } from '../../hooks/useIsCurrentSlippageDefault'
 import { useIsSwapEth } from '../../hooks/useIsSwapEth'
+import { useSwapSlippage } from '../../hooks/useSwapSlippage'
 import {
   useDerivedSwapInfo,
   useHighFeeWarning,
@@ -60,8 +61,9 @@ const BUTTON_STATES_TO_SHOW_BUNDLE_WRAP_BANNER = [SwapButtonState.WrapAndSwap]
 
 export function SwapWidget() {
   const { chainId, account } = useWalletInfo()
-  const { slippageAdjustedSellAmount, allowedSlippage, currencies, trade } = useDerivedSwapInfo()
-  const useSlippage = useUserSlippageTolerance()
+  const { slippageAdjustedSellAmount, currencies, trade } = useDerivedSwapInfo()
+  const slippage = useSwapSlippage()
+  const isCurrentSlippageDefault = useIsCurrentSlippageDefault()
   const parsedAmounts = useSwapCurrenciesAmounts()
   const { isSupportedWallet } = useWalletDetails()
   const isSwapUnsupported = useIsTradeUnsupported(currencies.INPUT, currencies.OUTPUT)
@@ -249,7 +251,7 @@ export function SwapWidget() {
     bottomContent: (
       <>
         <TradeRateDetails
-          allowedSlippage={useSlippage === 'auto' ? null : allowedSlippage}
+          allowedSlippage={isCurrentSlippageDefault ? null : slippage}
           rateInfoParams={rateInfoParams}
           receiveAmountInfo={receiveAmountInfo}
         />
@@ -289,7 +291,7 @@ export function SwapWidget() {
               chainId={chainId}
               rateInfoParams={rateInfoParams}
               trade={trade}
-              allowedSlippage={allowedSlippage}
+              allowedSlippage={slippage}
               doTrade={swapButtonContext.handleSwap}
               priceImpact={priceImpactParams}
               inputCurrencyInfo={inputCurrencyPreviewInfo}
