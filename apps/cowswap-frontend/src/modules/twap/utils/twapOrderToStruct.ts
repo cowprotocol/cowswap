@@ -1,5 +1,4 @@
-import { NATIVE_CURRENCY_ADDRESS } from '@cowprotocol/common-const'
-import { FractionUtils, getIsNativeToken } from '@cowprotocol/common-utils'
+import { FractionUtils, getCurrencyAddress } from '@cowprotocol/common-utils'
 
 import { TWAPOrder, TWAPOrderStruct } from '../types'
 
@@ -9,7 +8,7 @@ export function twapOrderToStruct(order: TWAPOrder): TWAPOrderStruct {
 
   return {
     sellToken: order.sellAmount.currency.address,
-    buyToken: getIsNativeToken(buyToken) ? NATIVE_CURRENCY_ADDRESS : buyToken.address,
+    buyToken: getCurrencyAddress(buyToken),
     receiver: order.receiver,
     partSellAmount: order.sellAmount.divide(order.numOfParts).quotient.toString(),
     minPartLimit: minPartLimit.quotient.toString(),
