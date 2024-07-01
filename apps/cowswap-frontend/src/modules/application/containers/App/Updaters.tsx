@@ -1,8 +1,11 @@
+import { useEffect } from 'react'
+
 import { BalancesAndAllowancesUpdater } from '@cowprotocol/balances-and-allowances'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { TokensListsUpdater, UnsupportedTokensUpdater, WidgetTokensListsUpdater } from '@cowprotocol/tokens'
-import { useWalletInfo, WalletUpdater } from '@cowprotocol/wallet'
-import { HwAccountIndexUpdater } from '@cowprotocol/wallet'
+import { HwAccountIndexUpdater, useWalletInfo, WalletUpdater } from '@cowprotocol/wallet'
+
+import { useLocation } from 'react-router'
 
 import { GasPriceStrategyUpdater } from 'legacy/state/gas/gas-price-strategy-updater'
 
@@ -35,6 +38,11 @@ export function Updaters() {
   const { tokenLists, appCode, customTokens, standaloneMode } = useInjectedWidgetParams()
   const onTokenListAddingError = useOnTokenListAddingError()
   const { isGeoBlockEnabled } = useFeatureFlags()
+  const l = useLocation()
+
+  useEffect(() => {
+    console.log(`debug:location changed`, l.pathname)
+  }, [l.pathname])
 
   return (
     <>
