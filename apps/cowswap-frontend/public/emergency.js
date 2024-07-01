@@ -7,6 +7,11 @@ if (window.location.host === 'barn.cowswap.exchange') {
   window.location.href = 'https://barn.cow.fi'
 }
 
+// We use the HashRouter, thus the pathname should ALWAYS be a '/'
+if (window.location.pathname !== '/') {
+  window.location.pathname = '/'
+}
+
 /**
  * Remove old versions of the local storage atom stores
  * We rely on the fact that store names are in the format {name}Atom:v{version}
