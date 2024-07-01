@@ -15,29 +15,38 @@ const normalSwapSlippageAtom = atomWithStorage<SlippageBpsPerNetwork>(
   mapSupportedNetworks(DEFAULT_SLIPPAGE_BPS)
 )
 
-export const ethFlowSlippageAtom = atomWithStorage<SlippageBpsPerNetwork>(
+const ethFlowSlippageAtom = atomWithStorage<SlippageBpsPerNetwork>(
   'eth-flow-slippage-atom:v1',
   DEFAULT_ETH_FLOW_SLIPPAGE_BPS
 )
-
-export const swapSlippageAtom = atom<number>((get) => {
-  const { chainId } = get(walletInfoAtom)
-  const isEoaEthFlow = get(isEoaEthFlowAtom)
-  const normalSwapSlippage = get(normalSwapSlippageAtom)
-  const ethFlowSlippage = get(ethFlowSlippageAtom)
-
-  return (isEoaEthFlow ? ethFlowSlippage : normalSwapSlippage)[chainId]
-})
-
-export const swapSlippagePercentAtom = atom((get) => {
-  return bpsToPercent(get(swapSlippageAtom))
-})
 
 const defaultSlippageAtom = atom((get) => {
   const { chainId } = get(walletInfoAtom)
   const isEoaEthFlow = get(isEoaEthFlowAtom)
 
   return isEoaEthFlow ? DEFAULT_ETH_FLOW_SLIPPAGE_BPS[chainId] : DEFAULT_SLIPPAGE_BPS
+})
+
+export const smartSwapSlippageAtom = atom<number | null>(null)
+
+export const swapSlippageAtom = atom<number>((get) => {
+  const { chainId } = get(walletInfoAtom)
+  const isEoaEthFlow = get(isEoaEthFlowAtom)
+  const smartSwapSlippage = get(smartSwapSlippageAtom)
+  const normalSwapSlippage = get(normalSwapSlippageAtom)
+  const ethFlowSlippage = get(ethFlowSlippageAtom)
+  const defaultSlippage = get(defaultSlippageAtom)
+  const currentSlippage = (isEoaEthFlow ? ethFlowSlippage : normalSwapSlippage)[chainId]
+  const isSlippageDefault = defaultSlippage === currentSlippage
+
+  // Use smart slippage only when user didn't change it manually
+  if (isSlippageDefault && smartSwapSlippage !== null) return smartSwapSlippage
+
+  return currentSlippage
+})
+
+export const swapSlippagePercentAtom = atom((get) => {
+  return bpsToPercent(get(swapSlippageAtom))
 })
 
 export const isCurrentSlippageDefault = atom((get) => {
