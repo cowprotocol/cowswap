@@ -12,7 +12,7 @@ export function RecipientAddressUpdater() {
     if (state?.recipientAddress !== recipientAddress) {
       updateState?.({ ...state, recipientAddress })
     }
-  }, [recipientAddress, state, updateState])
+  }, [recipientAddress, state?.recipientAddress, updateState])
 
   return null
 }
