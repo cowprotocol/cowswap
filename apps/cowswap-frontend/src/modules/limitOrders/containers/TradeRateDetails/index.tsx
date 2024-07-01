@@ -26,7 +26,7 @@ export function TradeRateDetails({ rateInfoParams }: TradeRateDetailsProps) {
       partnerFeeUsd={partnerFeeUsd}
       partnerFeeAmount={partnerFeeAmount}
       partnerFeeBps={partnerFeeBps}
-      feeTooltipMarkdown={widgetParams.content?.feeTooltipMarkdown}
+      widgetContent={widgetParams.content}
     />
   )
 
