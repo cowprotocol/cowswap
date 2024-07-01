@@ -14,16 +14,9 @@ const HeaderStyled = styled.header`
   align-items: center;
   box-sizing: border-box;
   padding: 0 1.6rem;
-  max-width: 140rem;
+  width: 100%;
+  max-width: 100%;
   z-index: 5;
-
-  ${Media.upToMedium()} {
-    max-width: 94rem;
-  }
-
-  ${Media.upToSmall()} {
-    max-width: 100%;
-  }
 `
 
 const Logo = styled(Link)`
@@ -39,6 +32,7 @@ const Logo = styled(Link)`
     text-decoration: none;
     transform: rotate(-5deg);
     transition: transform 0.3s ease 0s;
+
     ${Media.upToSmall()} {
       transform: none;
     }
@@ -53,7 +47,7 @@ const Logo = styled(Link)`
   }
 
   > span {
-    margin: 0 0 0 1rem;
+    margin: 0;
     display: flex;
     align-content: center;
     justify-content: center;

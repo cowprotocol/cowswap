@@ -27,7 +27,7 @@ import { Order, Trade } from 'api/operator'
 
 import { FillsTableContext } from './context/FillsTableContext'
 import { FillsTableWithData } from './FillsTableWithData'
-
+import { FlexContainer, FlexContainerVar } from '../../../explorer/pages/styled'
 
 const TitleUid = styled(RowWithCopyButton)`
   color: ${({ theme }): string => theme.grey};
@@ -46,10 +46,6 @@ const WrapperExtraComponents = styled.div`
   gap: 1rem;
 
   ${Media.upToSmall()} {
-    ${PaginationWrapper} {
-      display: none;
-    }
-
     justify-content: center;
   }
 `
@@ -222,10 +218,11 @@ export const OrderDetails: React.FC<Props> = (props) => {
 
   return (
     <>
-      <h1>
-        {order && 'Order details'}
+      <FlexContainerVar>
+        <h1>{order && 'Order details'}</h1>{' '}
         {order && <TitleUid textToCopy={order.uid} contentsToDisplay={<TruncatedText text={order.uid} />} />}
-      </h1>
+      </FlexContainerVar>
+
       <ConnectionStatus />
       {Object.keys(errors).map((key) => (
         <Notification key={key} type={errors[key].type} message={errors[key].message} />

@@ -23,18 +23,12 @@ const FooterStyled = styled.footer`
   justify-content: space-around;
   margin: 0 auto;
 
-  ${Media.upToMedium()} {
-    flex-flow: column wrap;
-  }
   > a {
     text-decoration: none;
 
     &:hover {
       text-decoration: underline;
     }
-  }
-  ${Media.upToExtraSmall()} {
-    align-items: flex-start;
   }
 `
 
@@ -54,11 +48,13 @@ const BetaWrapper = styled.div`
 const ContractsWrapper = styled.div`
   display: flex;
   align-items: center;
+
+  ${Media.upToMedium()} {
+    flex-direction: column;
+  }
+
   > :nth-child(2) {
     margin-right: 1rem;
-  }
-  ${Media.upToExtraSmall()} {
-    flex-direction: column;
   }
 `
 
@@ -74,13 +70,6 @@ const VerifiedButton = styled(BlockExplorerLink)`
 const ContractContainer = styled.div`
   display: flex;
   margin: 0 2rem 1.6rem 0;
-  a:nth-of-type(2) {
-    ${Media.upToExtraSmall()} {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-  }
 `
 
 const VersionsWrapper = styled.div`

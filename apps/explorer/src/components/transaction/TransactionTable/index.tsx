@@ -78,9 +78,6 @@ const RowTransaction: React.FC<RowProps> = ({ order, isPriceInverted, invertLimi
   return (
     <tr key={txHash}>
       <td>
-        <HeaderTitle>
-          Order ID <HelpTooltip tooltip={tooltip.orderID} />
-        </HeaderTitle>
         <HeaderValue>
           <RowWithCopyButton
             className="span-copybtn-wrap"
@@ -94,13 +91,11 @@ const RowTransaction: React.FC<RowProps> = ({ order, isPriceInverted, invertLimi
         </HeaderValue>
       </td>
       <td>
-        <HeaderTitle>Type</HeaderTitle>
         <span className="header-value">
           <TradeOrderType kind={kind || 'sell'} />
         </span>
       </td>
       <td>
-        <HeaderTitle>Sell Amount</HeaderTitle>
         <HeaderValue>
           {renderSpinnerWhenNoValue(sellFormattedAmount) || (
             <TextWithTooltip textInTooltip={`${sellFormattedAmount} ${sellTokenSymbol}`}>
@@ -111,7 +106,6 @@ const RowTransaction: React.FC<RowProps> = ({ order, isPriceInverted, invertLimi
         </HeaderValue>
       </td>
       <td>
-        <HeaderTitle>Buy amount</HeaderTitle>
         <HeaderValue>
           {renderSpinnerWhenNoValue(buyFormattedAmount) || (
             <TextWithTooltip textInTooltip={`${buyFormattedAmount} ${buyTokenSymbol}`}>
@@ -122,26 +116,19 @@ const RowTransaction: React.FC<RowProps> = ({ order, isPriceInverted, invertLimi
         </HeaderValue>
       </td>
       <td>
-        <HeaderTitle>
-          Limit price
-          <Icon icon={faExchangeAlt} onClick={invertLimitPrice} />
-        </HeaderTitle>
         <HeaderValue>{renderSpinnerWhenNoValue(limitPriceSettled) || limitPriceSettled}</HeaderValue>
       </td>
       <td>
-        <HeaderTitle>Surplus</HeaderTitle>
         <HeaderValue>
           <OrderSurplusDisplayStyledByRow order={order} />
         </HeaderValue>
       </td>
       <td>
-        <HeaderTitle>Created</HeaderTitle>
         <HeaderValue>
           <DateDisplay date={creationDate} showIcon={true} />
         </HeaderValue>
       </td>
       <td>
-        <HeaderTitle>Status</HeaderTitle>
         <HeaderValue>
           <StatusLabel status={order.status} partiallyFilled={partiallyFilled} filledPercentage={filledPercentage} />
         </HeaderValue>

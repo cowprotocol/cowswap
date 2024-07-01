@@ -2,15 +2,20 @@ import styled, { createGlobalStyle, css } from 'styled-components/macro'
 import { Media } from '@cowprotocol/ui'
 
 export const ScrollBarStyle = css`
+  --scrollbarWidth: 0.6rem;
+
   scroll-behavior: smooth;
+
   &::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
+    width: var(--scrollbarWidth);
+    height: var(--scrollbarWidth);
   }
+
   &::-webkit-scrollbar-thumb {
-    background-color: hsla(0, 0%, 100%, 0.1);
-    border-radius: 20px;
+    background-color: hsla(0, 0%, 100%, 0.25);
+    border-radius: 2rem;
   }
+
   &::-webkit-scrollbar-track {
     background: rgba(0, 0, 0, 0.2);
   }
@@ -55,12 +60,22 @@ export const GlobalStyle = createGlobalStyle`
 `
 
 export const MainWrapper = styled.div`
-  max-width: 118rem;
+  --pageMaxWidth: 160rem;
+  max-width: var(--pageMaxWidth);
   width: 100%;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+
+  ${Media.upToMedium()} {
+    flex-flow: column wrap;
+    max-width: 100%;
+  }
+
+  ${Media.upToExtraSmall()} {
+    flex-grow: 1;
+  }
 
   > div {
     display: flex;
@@ -69,28 +84,20 @@ export const MainWrapper = styled.div`
     justify-content: space-between;
     width: 100%;
   }
+
   footer {
     flex-direction: row;
     flex-wrap: wrap;
     flex-grow: 0;
-  }
-  header {
-    margin-left: 0;
-    margin-right: 0;
-  }
 
-  ${Media.upToMedium()} {
-    max-width: 94rem;
-    flex-flow: column wrap;
-  }
-
-  ${Media.upToExtraSmall()} {
-    max-width: 100%;
-    flex-grow: 1;
-
-    footer {
+    ${Media.upToExtraSmall()} {
       flex-direction: column;
       flex-wrap: nowrap;
     }
+  }
+
+  header {
+    margin-left: 0;
+    margin-right: 0;
   }
 `

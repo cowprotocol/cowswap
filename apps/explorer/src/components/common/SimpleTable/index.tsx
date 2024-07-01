@@ -53,27 +53,11 @@ const Wrapper = styled.table<{ $numColumns?: number }>`
       width: 100%;
       transition: background-color 0.1s ease-in-out;
       min-height: 4.8rem;
-      padding: 1.4rem 0;
+      padding: 1rem 0;
       box-sizing: border-box;
 
       &:not(:last-of-type) {
         border-bottom: 0.1rem solid ${({ theme }): string => theme.tableRowBorder};
-      }
-
-      ${Media.upToSmall()} {
-        display: flex;
-        flex-flow: column wrap;
-        height: auto;
-        align-items: flex-start;
-        justify-content: center;
-        padding: 1.4rem 0;
-
-        &:hover {
-          background: var(--color-text-hover);
-          > td {
-            color: var(--color-text-primary);
-          }
-        }
       }
     }
   }
@@ -92,7 +76,6 @@ const Wrapper = styled.table<{ $numColumns?: number }>`
     > td:first-of-type {
       ${Media.upToSmall()} {
         margin: 0 0 1.2rem 0;
-        font-weight: ${({ theme }): string => theme.fontBold};
       }
     }
 
@@ -105,7 +88,12 @@ const Wrapper = styled.table<{ $numColumns?: number }>`
       display: flex;
       align-items: center;
       justify-content: flex-start;
-      padding: 0 0.5rem;
+      padding: 0 0.8rem;
+
+      &:first-child {
+        padding: 0 0 0 1.6rem;
+        margin: 0;
+      }
 
       ${Media.upToSmall()} {
         padding: 0 1rem;
@@ -115,13 +103,13 @@ const Wrapper = styled.table<{ $numColumns?: number }>`
 `
 
 export type Props = {
-  header?: JSX.Element
-  body?: JSX.Element
+  header?: React.ReactNode
+  body?: React.ReactNode
   className?: string
   numColumns?: number
 }
 
-export const SimpleTable = ({ header, body, className, numColumns }: Props): JSX.Element => (
+export const SimpleTable = ({ header, body, className, numColumns }: Props): React.ReactNode => (
   <Wrapper $numColumns={numColumns} className={className}>
     {header && <thead>{header}</thead>}
     <tbody>{body}</tbody>

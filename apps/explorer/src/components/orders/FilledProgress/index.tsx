@@ -31,8 +31,13 @@ const StyledSurplusComponent = styled(SurplusComponent)`
 
 const Wrapper = styled.div`
   display: flex;
+  flex-flow: row wrap;
   align-items: center;
   color: ${({ theme }): string => theme.textPrimary1};
+
+  ${Media.upToSmall()} {
+    gap: 1rem;
+  }
 
   > span {
     margin: 0 0 0 2rem;
@@ -40,6 +45,7 @@ const Wrapper = styled.div`
 
     ${Media.upToSmall()} {
       line-height: 1.5;
+      margin: 0;
     }
   }
 

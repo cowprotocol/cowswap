@@ -19,7 +19,6 @@ import { HelpTooltip } from 'components/Tooltip'
 import { TextWithTooltip } from 'explorer/components/common/TextWithTooltip'
 import { useNetworkId } from 'state/network'
 import styled from 'styled-components/macro'
-import { Media } from '@cowprotocol/ui'
 import { FormatAmountPrecision, formatCalculatedPriceToDisplay, formattedAmount, getOrderLimitPrice } from 'utils'
 
 import { Order } from 'api/operator'
@@ -27,108 +26,12 @@ import { Order } from 'api/operator'
 import { OrderSurplusDisplayStyledByRow } from './OrderSurplusTooltipStyledByRow'
 
 import { StatusLabel } from '../StatusLabel'
+import { ScrollBarStyle } from '../../../explorer/styled'
+import { WrapperUserDetailsTable } from '../../transaction/TransactionTable/styled'
 
-const Wrapper = styled(StyledUserDetailsTable)`
-  > thead > tr,
-  > tbody > tr {
-    grid-template-columns: 13.25rem 5.5rem repeat(2, minmax(16rem, 1.5fr)) minmax(18rem, 2fr) 9rem minmax(21.6rem, 2fr) 1.36fr;
-    grid-template-rows: max-content;
-  }
+const Wrapper = styled(WrapperUserDetailsTable)``
 
-  tr > td {
-    span.span-inside-tooltip {
-      display: flex;
-      flex-direction: row;
-      flex-wrap: wrap;
-
-      img {
-        padding: 0;
-      }
-    }
-  }
-
-  ${Media.upToMedium()} {
-    > thead > tr {
-      display: none;
-    }
-
-    > tbody > tr {
-      grid-template-columns: none;
-      grid-template-rows: max-content;
-      border: 0.1rem solid ${({ theme }): string => theme.tableRowBorder};
-      box-shadow: 0px 4px 12px ${({ theme }): string => theme.boxShadow};
-      border-radius: 6px;
-      margin-top: 16px;
-      padding: 12px;
-
-      &:hover {
-        background: none;
-        backdrop-filter: none;
-      }
-    }
-
-    tr > td {
-      display: flex;
-      flex: 1;
-      width: 100%;
-      justify-content: space-between;
-      margin: 0;
-      margin-bottom: 18px;
-      min-height: 32px;
-
-      span.span-inside-tooltip {
-        align-items: flex-end;
-        flex-direction: column;
-
-        img {
-          margin-left: 0;
-        }
-      }
-    }
-
-    .header-value {
-      flex-wrap: wrap;
-      text-align: end;
-    }
-
-    .span-copybtn-wrap {
-      display: flex;
-      flex-wrap: nowrap;
-
-      span.copy-text {
-        display: flex;
-        align-items: center;
-      }
-
-      .copy-text {
-        display: none;
-      }
-    }
-  }
-
-  overflow: auto;
-`
-
-const HeaderTitle = styled.span`
-  display: none;
-
-  ${Media.upToMedium()} {
-    font-weight: 600;
-    align-items: center;
-    display: flex;
-    margin-right: 3rem;
-
-    svg {
-      margin-left: 5px;
-    }
-  }
-`
-const HeaderValue = styled.span`
-  ${Media.upToMedium()} {
-    flex-wrap: wrap;
-    text-align: end;
-  }
-`
+const HeaderValue = styled.span``
 
 function getLimitPrice(order: Order, isPriceInverted: boolean): string {
   if (!order.buyToken || !order.sellToken) return '-'
@@ -184,9 +87,6 @@ const RowOrder: React.FC<RowProps> = ({ order, isPriceInverted }) => {
   return (
     <tr key={uid}>
       <td>
-        <HeaderTitle>
-          Order ID <HelpTooltip tooltip={tooltip.orderID} />
-        </HeaderTitle>
         <HeaderValue>
           <RowWithCopyButton
             className="span-copybtn-wrap"
@@ -200,13 +100,11 @@ const RowOrder: React.FC<RowProps> = ({ order, isPriceInverted }) => {
         </HeaderValue>
       </td>
       <td>
-        <HeaderTitle>Type</HeaderTitle>
         <span className="header-value">
           <TradeOrderType kind={kind} />
         </span>
       </td>
       <td>
-        <HeaderTitle>Sell Amount</HeaderTitle>
         <HeaderValue>
           {renderSpinnerWhenNoValue(sellFormattedAmount) || (
             <TextWithTooltip textInTooltip={`${sellFormattedAmount} ${sellTokenSymbol}`}>
@@ -217,7 +115,6 @@ const RowOrder: React.FC<RowProps> = ({ order, isPriceInverted }) => {
         </HeaderValue>
       </td>
       <td>
-        <HeaderTitle>Buy amount</HeaderTitle>
         <HeaderValue>
           {renderSpinnerWhenNoValue(buyFormattedAmount) || (
             <TextWithTooltip textInTooltip={`${buyFormattedAmount} ${buyTokenSymbol}`}>
@@ -228,25 +125,19 @@ const RowOrder: React.FC<RowProps> = ({ order, isPriceInverted }) => {
         </HeaderValue>
       </td>
       <td>
-        <HeaderTitle>
-          Limit price <Icon icon={faExchangeAlt} onClick={invertLimitPrice} />
-        </HeaderTitle>
         <HeaderValue>{renderSpinnerWhenNoValue(limitPriceSettled) || limitPriceSettled}</HeaderValue>
       </td>
       <td>
-        <HeaderTitle>Surplus</HeaderTitle>
         <HeaderValue>
           <OrderSurplusDisplayStyledByRow order={order} />
         </HeaderValue>
       </td>
       <td>
-        <HeaderTitle>Created</HeaderTitle>
         <HeaderValue>
           <DateDisplay date={creationDate} showIcon={true} />
         </HeaderValue>
       </td>
       <td>
-        <HeaderTitle>Status</HeaderTitle>
         <HeaderValue>
           <StatusLabel status={order.status} partiallyFilled={partiallyFilled} filledPercentage={filledPercentage} />
         </HeaderValue>

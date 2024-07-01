@@ -28,17 +28,13 @@ import { getUiOrderType } from 'utils/getUiOrderType'
 
 import { TAB_QUERY_PARAM_KEY } from '../../../explorer/const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { ScrollBarStyle } from '../../../explorer/styled'
 
 const Table = styled(SimpleTable)`
   > tbody > tr {
-    grid-template-columns: 27rem auto;
+    grid-template-columns: 19rem auto;
     grid-template-rows: max-content;
     padding: 1.4rem 0 1.4rem 1.1rem;
-
-    ${Media.upToSmall()} {
-      grid-template-columns: 17rem auto;
-      padding: 1.4rem 0;
-    }
 
     > td {
       justify-content: flex-start;
@@ -149,11 +145,7 @@ export const LinkButton = styled(LinkWithPrefixNetwork)`
   transition-timing-function: ease-in-out;
 
   ${Media.upToSmall()} {
-    margin: 1rem 0 0 0;
-  }
-
-  ${Media.upToMedium()} {
-    min-width: 18rem;
+    margin: 1.6rem 0 0 0;
   }
 
   :hover {

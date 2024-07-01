@@ -28,8 +28,7 @@ export const Amount = styled.span`
 
 const Wrapper = styled.span`
   display: flex;
-  flex-flow: row wrap;
-  align-items: flex-start;
+  align-items: center;
   justify-content: flex-start;
 `
 

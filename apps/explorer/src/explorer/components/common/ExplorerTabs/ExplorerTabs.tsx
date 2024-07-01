@@ -27,8 +27,8 @@ const StyledTabs = styled.div`
 
   ${TabList} > button {
     flex: 0 0 auto;
-    min-width: 96px;
-    padding: 12px 0.8rem;
+    min-width: 12rem;
+    padding: 1rem;
     line-height: 2;
     height: auto;
     font-family: var(--font-default);
@@ -40,7 +40,7 @@ const StyledTabs = styled.div`
   }
 
   .tab-content {
-    padding: 20px 16px;
+    padding: 0;
   }
 
   .tab-extra-content {

@@ -2,11 +2,29 @@ import styled from 'styled-components/macro'
 import { Media } from '@cowprotocol/ui'
 
 import StyledUserDetailsTable from '../../common/StyledUserDetailsTable'
+import { ScrollBarStyle } from '../../../explorer/styled'
 
 export const WrapperUserDetailsTable = styled(StyledUserDetailsTable)`
+  overflow-x: auto;
+  white-space: nowrap;
+
+  ${ScrollBarStyle}
+
   > thead > tr,
   > tbody > tr {
-    grid-template-columns: 12rem 5.5rem repeat(2, minmax(16rem, 1.5fr)) minmax(18rem, 2fr) 10rem minmax(21.6rem, 2fr) 1.36fr;
+    display: grid;
+    grid-template-columns:
+      17rem
+      5rem
+      minmax(18rem, 1fr)
+      minmax(18rem, 1fr)
+      minmax(18rem, 1fr)
+      minmax(20rem, 1fr)
+      19rem
+      13rem;
+
+    grid-template-rows: max-content;
+    width: 100%;
   }
 
   tr > td {
@@ -20,86 +38,7 @@ export const WrapperUserDetailsTable = styled(StyledUserDetailsTable)`
       }
     }
   }
-
-  ${Media.upToMedium()} {
-    > thead > tr {
-      display: none;
-    }
-
-    > tbody > tr {
-      grid-template-columns: none;
-      grid-template-rows: max-content;
-      border: 0.1rem solid ${({ theme }): string => theme.tableRowBorder};
-      box-shadow: 0px 4px 12px ${({ theme }): string => theme.boxShadow};
-      border-radius: 6px;
-      margin-top: 16px;
-      padding: 12px;
-
-      &:hover {
-        background: none;
-        backdrop-filter: none;
-      }
-    }
-
-    tr > td {
-      display: flex;
-      flex: 1;
-      width: 100%;
-      justify-content: space-between;
-      margin: 0;
-      margin-bottom: 18px;
-      min-height: 32px;
-
-      span.span-inside-tooltip {
-        align-items: flex-end;
-        flex-direction: column;
-
-        img {
-          margin-left: 0;
-        }
-      }
-    }
-
-    .header-value {
-      flex-wrap: wrap;
-      text-align: end;
-    }
-
-    .span-copybtn-wrap {
-      display: flex;
-      flex-wrap: nowrap;
-
-      span.copy-text {
-        display: flex;
-        align-items: center;
-      }
-
-      .copy-text {
-        margin-left: 5px;
-      }
-    }
-  }
-
-  overflow: auto;
 `
 
-export const HeaderTitle = styled.span`
-  display: none;
-
-  ${Media.upToMedium()} {
-    font-weight: 600;
-    align-items: center;
-    display: flex;
-    margin-right: 3rem;
-
-    svg {
-      margin-left: 5px;
-    }
-  }
-`
-export const HeaderValue = styled.span`
-  ${Media.upToMedium()} {
-    flex-wrap: wrap;
-    text-align: end;
-  }
-`
+export const HeaderTitle = styled.span``
+export const HeaderValue = styled.span``

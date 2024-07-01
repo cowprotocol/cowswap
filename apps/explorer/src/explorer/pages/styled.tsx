@@ -10,14 +10,11 @@ export const Wrapper = styled.div`
   margin: 0 auto;
   width: 100%;
   flex-grow: 1;
+  align-items: center;
+  max-width: 100%;
 
   ${Media.upToMedium()} {
-    max-width: 94rem;
-    align-items: center;
-  }
-
-  ${Media.upToSmall()} {
-    max-width: 100%;
+    padding: 0;
   }
 
   > h1 {
@@ -43,6 +40,7 @@ export const StyledTabLoader = styled.span`
 export const FlexContainer = styled.div`
   display: flex;
   align-items: center;
+
   ${Media.upToSmall()} {
     flex-direction: column;
     align-items: flex-start;
@@ -52,14 +50,20 @@ export const FlexContainer = styled.div`
 export const FlexContainerVar = styled.div`
   display: flex;
   flex-direction: row;
-  align-items: baseline;
+  gap: 1.6rem;
+  align-items: center;
   margin: 2.4rem 0;
 
+  > h1 {
+    line-height: 1.2;
+  }
+
+  ${Media.upToMedium()} {
+    padding: 0 1.6rem;
+  }
+
   ${Media.upToSmall()} {
-    /* margin: 0 0 0 1.5rem; */
-    span:nth-child(1) {
-      margin: 0 0 0 1.5rem;
-    }
+    justify-content: center;
   }
 `
 
@@ -67,9 +71,9 @@ export const TitleAddress = styled(RowWithCopyButton)`
   font-size: ${({ theme }): string => theme.fontSizeDefault};
   font-weight: ${({ theme }): string => theme.fontNormal};
   margin: 0 0 0 1.5rem;
+
   ${Media.upToSmall()} {
     font-size: 1.2rem;
-    margin: 0 0 1.5rem 0;
   }
   a {
     display: flex;

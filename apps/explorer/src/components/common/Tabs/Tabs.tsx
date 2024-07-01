@@ -49,6 +49,7 @@ const Wrapper = styled.div`
   flex-flow: column;
   width: 100%;
   height: 100%;
+
   > div {
     display: flex;
     flex-flow: row nowrap;
@@ -59,7 +60,10 @@ const Wrapper = styled.div`
 `
 
 export const TabList = styled.div`
-  /* stylelint-disable no-empty-block */
+  position: sticky;
+  top: 0;
+  background: #16171f;
+  z-index: 2;
 `
 
 export const DEFAULT_TAB_THEME: TabTheme = {

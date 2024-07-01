@@ -16,7 +16,7 @@ import { useGetTxOrders, useTxOrderExplorerLink } from '../../../hooks/useGetOrd
 import { useQuery, useUpdateQueryString } from '../../../hooks/useQuery'
 import { RedirectToNetwork, useNetworkId } from '../../../state/network'
 import { TAB_QUERY_PARAM_KEY } from '../../const'
-import { FlexContainer, Title, TitleAddress } from '../../pages/styled'
+import { FlexContainer, FlexContainerVar, Title, TitleAddress } from '../../pages/styled'
 import ExplorerTabs from '../common/ExplorerTabs/ExplorerTabs'
 import { TransactionBatchGraph } from '../TransanctionBatchGraph'
 
@@ -101,13 +101,16 @@ export const TransactionsTableWidget: React.FC<Props> = ({ txHash }) => {
 
   return (
     <>
-      <FlexContainer>
-        <Title>Transaction details</Title>
+      <FlexContainerVar>
+        <h1>Transaction details</h1>
         <TitleAddress
           textToCopy={txHash}
-          contentsToDisplay={<BlockExplorerLink type="transaction" networkId={networkId} identifier={txHash} showLogo />}
+          contentsToDisplay={
+            <BlockExplorerLink type="transaction" networkId={networkId} identifier={txHash} showLogo />
+          }
         />
-      </FlexContainer>
+      </FlexContainerVar>
+
       <ConnectionStatus />
       {error && <Notification type={error.type} message={error.message} />}
       <TransactionsTableContext.Provider
