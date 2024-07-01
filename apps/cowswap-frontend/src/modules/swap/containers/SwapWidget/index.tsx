@@ -8,7 +8,7 @@ import { useIsSafeViaWc, useWalletDetails, useWalletInfo } from '@cowprotocol/wa
 import { TradeType } from '@cowprotocol/widget-lib'
 
 import { NetworkAlert } from 'legacy/components/NetworkAlert/NetworkAlert'
-import SettingsTab from 'legacy/components/Settings'
+import { SettingsTab } from 'legacy/components/Settings'
 import { useModalIsOpen } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
 import { Field } from 'legacy/state/types'
@@ -245,7 +245,7 @@ export function SwapWidget() {
   }
 
   const slots = {
-    settingsWidget: <SettingsTab placeholderSlippage={allowedSlippage} />,
+    settingsWidget: <SettingsTab />,
     bottomContent: (
       <>
         <TradeRateDetails
