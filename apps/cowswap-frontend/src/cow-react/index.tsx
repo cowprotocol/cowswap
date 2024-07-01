@@ -39,8 +39,11 @@ if (window.ethereum) {
 
 function Main() {
   useEffect(() => {
-    console.log(`debug:window location on root!`, window.location.host, window.location.hash)
-  }, [window.location.host, window.location.hash])
+    console.log(`debug:window location on root!`, window.location.host, window.location.pathname, window.location.hash)
+    if (window.location.pathname !== '/') {
+      window.location.pathname = '/'
+    }
+  }, [window.location.host, window.location.pathname, window.location.hash])
 
   return (
     <StrictMode>
