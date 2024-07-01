@@ -4,7 +4,7 @@ import 'inter-ui'
 import '@cowprotocol/analytics'
 import './sentry'
 import { Provider as AtomProvider } from 'jotai'
-import { ReactNode, StrictMode } from 'react'
+import { ReactNode, StrictMode, useEffect } from 'react'
 
 import { nodeRemoveChildFix } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
@@ -16,7 +16,7 @@ import { createRoot } from 'react-dom/client'
 import { Provider } from 'react-redux'
 import { HashRouter } from 'react-router-dom'
 import * as serviceWorkerRegistration from 'serviceWorkerRegistration'
-import { ThemeProvider, ThemedGlobalStyle } from 'theme'
+import { ThemedGlobalStyle, ThemeProvider } from 'theme'
 
 import { cowSwapStore } from 'legacy/state'
 import { useAppSelector } from 'legacy/state/hooks'
@@ -38,6 +38,10 @@ if (window.ethereum) {
 }
 
 function Main() {
+  useEffect(() => {
+    console.log(`debug:window location on root!`, window.location.host, window.location.hash)
+  }, [window.location.host, window.location.hash])
+
   return (
     <StrictMode>
       <Provider store={cowSwapStore}>
