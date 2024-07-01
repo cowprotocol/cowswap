@@ -126,7 +126,7 @@ export function TradeBasicConfirmDetails(props: Props) {
           label={slippageLabel}
           alwaysRow={alwaysRow}
         >
-          <PercentDisplay percent={+slippage.toFixed(2)} />
+          <PercentDisplay percent={slippage.toFixed(2)} />
         </ReviewOrderModalAmountRow>
       }
 
