@@ -290,6 +290,8 @@ const SDAI_GNOSIS_CHAIN_ADDRESS = '0xaf204776c7245bf4147c2612bf6e5972ee483701'
 const GBPE_GNOSIS_CHAIN_ADDRESS = '0x5cb9073902f2035222b9749f8fb0c9bfe5527108'
 const USDCe_GNOSIS_CHAIN_ADDRESS = '0x2a22f9c3b484c3629090feed35f17ff8f88f76f0'
 
+// NOTE: whenever this list is updated, make sure to update the docs section regarding the volume fees
+// https://github.com/cowprotocol/docs/blob/main/docs/governance/fees/fees.md?plain=1#L40
 export const GNOSIS_CHAIN_STABLECOINS = [
   SDAI_GNOSIS_CHAIN_ADDRESS,
   NATIVE_CURRENCIES[SupportedChainId.GNOSIS_CHAIN].address, //xDAI
