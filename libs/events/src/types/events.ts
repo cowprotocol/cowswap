@@ -10,7 +10,10 @@ import { OnTradeParamsPayload } from './trade'
 import { OnTransactionPayload } from './transactions'
 
 export enum CowEvents {
+  // Toasts
   ON_TOAST_MESSAGE = 'ON_TOAST_MESSAGE',
+
+  // Orders
   ON_POSTED_ORDER = 'ON_POSTED_ORDER',
   ON_FULFILLED_ORDER = 'ON_FULFILLED_ORDER',
   ON_CANCELLED_ORDER = 'ON_CANCELLED_ORDER',

@@ -8,6 +8,7 @@ import _CoWSwapEthFlowAbi from './abis/CoWSwapEthFlow.json'
 import _GPv2SettlementAbi from './abis/GPv2Settlement.json'
 import _MerkleDropAbi from './abis/MerkleDrop.json'
 import _Multicall3Abi from './abis/Multicall3.json'
+import _SBCDepositContractAbi from './abis/SBCDepositContract.json'
 import _SignatureVerifierMuxerAbi from './abis/SignatureVerifierMuxer.json'
 import _TokenDistroAbi from './abis/TokenDistro.json'
 import _vCowAbi from './abis/vCow.json'
@@ -32,6 +33,7 @@ export const SignatureVerifierMuxerAbi = _SignatureVerifierMuxerAbi
 export const MerkleDropAbi = _MerkleDropAbi
 export const TokenDistroAbi = _TokenDistroAbi
 export const CoWSwapEthFlowAbi = _CoWSwapEthFlowAbi
+export const SBCDepositContractAbi = _SBCDepositContractAbi
 
 export * from './generated/custom'
 export type { GPv2Order } from './generated/custom/ComposableCoW'
@@ -45,7 +47,7 @@ export type {
   Erc721,
   Erc1155,
   Weth,
-  UniswapInterfaceMulticall,
+  UniswapInterfaceMulticall
 } from './generated/legacy'
 
 export type { Erc20Interface } from './generated/legacy/Erc20'
