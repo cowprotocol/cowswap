@@ -22,6 +22,7 @@ import { Routes } from 'common/constants/routes'
 
 import * as styledEl from './styled'
 import { SurplusModal } from './SurplusModal'
+import { GnosisSafeInfo, useGnosisSafeInfo } from '@cowprotocol/wallet'
 
 const activityStatusLabels: Partial<Record<ActivityStatus, string>> = {
   [ActivityStatus.CONFIRMED]: 'Confirmed',
@@ -30,14 +31,17 @@ const activityStatusLabels: Partial<Record<ActivityStatus, string>> = {
   [ActivityStatus.CANCELLING]: 'Cancelling',
   [ActivityStatus.FAILED]: 'Failed',
 }
-function getTitleStatus(activityDerivedState: ActivityDerivedState | null): string {
+function getTitleStatus(activityDerivedState: ActivityDerivedState | null, safeWallet: GnosisSafeInfo | undefined): string {
+
   if (!activityDerivedState) {
     return ''
   }
 
   const prefix = activityDerivedState.isOrder ? 'Order' : 'Transaction'
-  const postfix = activityStatusLabels[activityDerivedState.status] || 'Submitted'
-
+  const postfix =
+    activityStatusLabels[activityDerivedState.status] || (safeWallet && safeWallet.threshold > 1)
+      ? "Order Submitted, but won't be processed until the transaction is signed by all your Safe{Wallet} signers."
+      : 'Submitted'
   return `${prefix} ${postfix}`
 }
 
@@ -48,6 +52,7 @@ export interface TransactionSubmittedContentProps {
   activityDerivedState: ActivityDerivedState | null
   currencyToAdd?: Nullish<Currency>
   showSurplus?: boolean | null
+  safeWallet: GnosisSafeInfo | undefined
 }
 
 export function TransactionSubmittedContent({
@@ -57,6 +62,7 @@ export function TransactionSubmittedContent({
   currencyToAdd,
   activityDerivedState,
   showSurplus,
+  safeWallet,
 }: TransactionSubmittedContentProps) {
   const activityState = activityDerivedState && getActivityState(activityDerivedState)
   const showProgressBar = activityState === 'open' || activityState === 'filled'
@@ -77,7 +83,7 @@ export function TransactionSubmittedContent({
         {(showSurplus && <SurplusModal order={order} />) || (
           <>
             <Text fontWeight={600} fontSize={28}>
-              {getTitleStatus(activityDerivedState)}
+              {getTitleStatus(activityDerivedState, safeWallet)}
             </Text>
             <DisplayLink id={hash} chainId={chainId} />
             <EthFlowStepper order={order} />

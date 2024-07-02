@@ -3,7 +3,7 @@ import { useCallback } from 'react'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
 import { UI } from '@cowprotocol/ui'
-import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
+import { GnosisSafeInfo, useGnosisSafeInfo, useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
 
 import styled from 'styled-components/macro'
 
@@ -40,7 +40,7 @@ export function TradeConfirmModal(props: TradeConfirmModalProps) {
   const { children, submittedContent, title } = props
 
   const { chainId, account } = useWalletInfo()
-  const isSafeWallet = useIsSafeWallet()
+  const safeWallet = useGnosisSafeInfo()
   const { permitSignatureState, pendingTrade, transactionHash, error } = useTradeConfirmState()
   const { onDismiss } = useTradeConfirmActions()
   const setShowFollowPendingTxPopup = useSetShowFollowPendingTxPopup()
@@ -65,7 +65,7 @@ export function TradeConfirmModal(props: TradeConfirmModalProps) {
         transactionHash={transactionHash}
         onDismiss={dismissConfirmation}
         permitSignatureState={permitSignatureState}
-        isSafeWallet={isSafeWallet}
+        safeWallet={safeWallet}
         submittedContent={submittedContent}
         order={order}
       >
@@ -85,7 +85,7 @@ type InnerComponentProps = {
   transactionHash: string | null
   onDismiss: Command
   permitSignatureState: string | undefined
-  isSafeWallet: boolean
+  safeWallet: GnosisSafeInfo | undefined
   submittedContent?: CustomSubmittedContent
   order?: Order
 }
@@ -95,7 +95,7 @@ function InnerComponent(props: InnerComponentProps) {
     chainId,
     children,
     error,
-    isSafeWallet,
+    safeWallet,
     onDismiss,
     title,
     pendingTrade,
@@ -131,7 +131,7 @@ function InnerComponent(props: InnerComponentProps) {
       <OrderSubmittedContent
         chainId={chainId}
         account={account}
-        isSafeWallet={isSafeWallet}
+        safeWallet={safeWallet}
         onDismiss={onDismiss}
         hash={transactionHash}
       />
