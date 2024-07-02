@@ -126,7 +126,6 @@ export const CellElement = styled.div<{
       opacity: 0.7;
     }
   `}
-
   ${RateWrapper} {
     font-weight: 500;
     font-size: 12px;
@@ -198,7 +197,7 @@ export const ProgressBarWrapper = styled.div`
   }
 `
 
-export const ProgressBar = styled.div<{ value: number }>`
+export const ProgressBar = styled.div<{ value: string }>`
   position: relative;
   margin: 0;
   height: 5px;

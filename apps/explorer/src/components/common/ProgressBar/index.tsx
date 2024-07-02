@@ -5,7 +5,7 @@ import { PercentDisplay } from '@cowprotocol/ui/pure/PercentDisplay'
 import styled from 'styled-components/macro'
 
 export type Props = {
-  readonly percentage?: number
+  readonly percentage?: string
   readonly activeColor?: string
   readonly showLabel?: boolean
 }
@@ -40,7 +40,7 @@ const Wrapper = styled.div<Props>`
 `
 
 export function ProgressBar(props: Props): JSX.Element {
-  const { percentage = 0, showLabel = true } = props
+  const { percentage = '0', showLabel = true } = props
 
   return (
     <Wrapper {...props}>
