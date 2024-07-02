@@ -12,6 +12,7 @@ import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
 
 import { SwapDerivedState, swapDerivedStateAtom } from './swapDerivedStateAtom'
 
+import { useSwapSlippage } from '../hooks/useSwapSlippage'
 import { useDerivedSwapInfo, useSwapState } from '../hooks/useSwapState'
 
 export function useSwapDerivedState(): SwapDerivedState {
@@ -20,15 +21,9 @@ export function useSwapDerivedState(): SwapDerivedState {
 
 export function useFillSwapDerivedState() {
   const { independentField, recipient, recipientAddress } = useSwapState()
-  const {
-    trade,
-    currencyBalances,
-    currencies,
-    slippageAdjustedSellAmount,
-    slippageAdjustedBuyAmount,
-    parsedAmount,
-    allowedSlippage,
-  } = useDerivedSwapInfo()
+  const { trade, currencyBalances, currencies, slippageAdjustedSellAmount, slippageAdjustedBuyAmount, parsedAmount } =
+    useDerivedSwapInfo()
+  const slippage = useSwapSlippage()
 
   const isSellTrade = independentField === Field.INPUT
   const inputCurrency = currencies.INPUT || null
@@ -60,7 +55,7 @@ export function useFillSwapDerivedState() {
     recipientAddress,
     orderKind: isSellTrade ? OrderKind.SELL : OrderKind.BUY,
     tradeType: TradeType.SWAP,
-    slippage: allowedSlippage,
+    slippage,
   })
 
   useEffect(() => {

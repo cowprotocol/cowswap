@@ -11,7 +11,7 @@ import {
   USDT_GNOSIS_CHAIN,
   WXDAI,
 } from '@cowprotocol/common-const'
-import { getIsNativeToken } from '@cowprotocol/common-utils'
+import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -64,10 +64,8 @@ export function getQuoteCurrencyByStableCoin(
 
   const stableCoins = STABLE_COINS[chainId]
 
-  const inputAddress = getIsNativeToken(inputCurrency) ? NATIVE_CURRENCY_ADDRESS : inputCurrency.address.toLowerCase()
-  const outputAddress = getIsNativeToken(outputCurrency)
-    ? NATIVE_CURRENCY_ADDRESS
-    : outputCurrency.address.toLowerCase()
+  const inputAddress = getCurrencyAddress(inputCurrency).toLowerCase()
+  const outputAddress = getCurrencyAddress(outputCurrency).toLowerCase()
 
   const isInputStableCoin = stableCoins.includes(inputAddress)
   const isOutputStableCoin = stableCoins.includes(outputAddress)

@@ -1,4 +1,5 @@
 export * from './containers/SwapWidget'
 export * from './updaters/SwapDerivedStateUpdater'
 export * from './updaters/SwapAmountsFromUrlUpdater'
+export * from './updaters/SmartSlippageUpdater'
 export * from './state/swapDerivedStateAtom'

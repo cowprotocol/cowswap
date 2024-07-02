@@ -1,8 +1,8 @@
-import { NATIVE_CURRENCY_ADDRESS, RADIX_DECIMAL } from '@cowprotocol/common-const'
+import { RADIX_DECIMAL } from '@cowprotocol/common-const'
 import {
   formatSymbol,
   formatTokenAmount,
-  getIsNativeToken,
+  getCurrencyAddress,
   isAddress,
   isSellOrder,
   shortenAddress,
@@ -135,7 +135,7 @@ export function getSignOrderParams(params: PostOrderParams): SignOrderParams {
     quoteId,
     order: {
       sellToken: sellTokenAddress,
-      buyToken: getIsNativeToken(buyToken) ? NATIVE_CURRENCY_ADDRESS : buyToken.address,
+      buyToken: getCurrencyAddress(buyToken),
       sellAmount,
       buyAmount,
       validTo,
