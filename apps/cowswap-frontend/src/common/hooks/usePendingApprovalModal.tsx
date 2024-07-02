@@ -1,4 +1,4 @@
-import React from 'react'
+import { useCallback, useMemo } from 'react'
 
 import { Command } from '@cowprotocol/types'
 
@@ -18,26 +18,29 @@ export function usePendingApprovalModal(params?: PendingApprovalModalParams) {
   const state = useModalState<string>()
   const { closeModal, context } = state
 
-  const onDismissCallback = () => {
+  const onDismissCallback = useCallback(() => {
     closeModal()
     onDismiss?.()
-  }
+  }, [closeModal, onDismiss])
 
-  const Title = (
-    <>
-      Approving <strong>{currencySymbol || context}</strong> for trading
-    </>
-  )
+  return useMemo(() => {
 
-  const Modal = (
-    <ConfirmationPendingContent
-      modalMode={!!modalMode}
-      onDismiss={onDismissCallback}
-      title={Title}
-      description="Approving token"
-      operationLabel="token approval"
-    />
-  )
+    const Title = (
+      <>
+        Approving <strong>{currencySymbol || context}</strong> for trading
+      </>
+    )
 
-  return { Modal, state }
+    const Modal = (
+      <ConfirmationPendingContent
+        modalMode={!!modalMode}
+        onDismiss={onDismissCallback}
+        title={Title}
+        description="Approving token"
+        operationLabel="token approval"
+      />
+    )
+
+    return ({ Modal, state })
+  }, [currencySymbol, context, modalMode, onDismissCallback, state])
 }

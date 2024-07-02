@@ -55,5 +55,8 @@ export function useColorPaletteManager(mode: PaletteMode): ColorPaletteManager {
     updateColorPalette(newPalette || defaultPalette)
   }, [mode, defaultPalette])
 
-  return { defaultPalette, colorPalette, setColorPalette, resetColorPalette }
+  return useMemo(
+    () => ({ defaultPalette, colorPalette, setColorPalette, resetColorPalette }),
+    [defaultPalette, colorPalette, setColorPalette, resetColorPalette]
+  )
 }

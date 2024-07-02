@@ -22,21 +22,21 @@ import { useCancelOrder } from 'common/hooks/useCancelOrder'
 import { CancelButton } from 'common/pure/CancelButton'
 
 import {
-  ProgressBarWrapper,
-  ProgressBarInnerWrapper,
-  SuccessProgress,
   CowProtocolIcon,
+  DelayedProgress,
+  GreenCheckIcon,
   GreenClockIcon,
+  OrangeClockIcon,
+  ProgressBarInnerWrapper,
+  ProgressBarWrapper,
+  StatusGraph,
+  StatusMsg,
   StatusMsgContainer,
   StatusWrapper,
-  StatusMsg,
-  StatusGraph,
-  OrangeClockIcon,
-  DelayedProgress,
-  WarningLogo,
-  GreenCheckIcon,
-  StyledExternalLink,
   StyledCoWLink,
+  StyledExternalLink,
+  SuccessProgress,
+  WarningLogo,
 } from './styled'
 
 import { TransactionExecutedContent } from '../TransactionExecutedContent'
