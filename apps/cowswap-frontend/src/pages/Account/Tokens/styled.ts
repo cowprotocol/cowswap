@@ -1,13 +1,10 @@
 import { Media, UI } from '@cowprotocol/ui'
 
-import { transparentize, darken } from 'color2k'
+import { transparentize } from 'color2k'
 import { ChevronDown } from 'react-feather'
 import styled from 'styled-components/macro'
-import { ThemedText } from 'theme'
 
 import Column from 'legacy/components/Column'
-
-import { Card } from 'pages/Account/styled'
 
 export const MenuWrapper = styled.div`
   position: relative;
@@ -36,8 +33,8 @@ export const StyledChevronDown = styled(ChevronDown)`
 
 export const Menu = styled.div`
   border-radius: 16px;
-  background: ${({ theme }) => (theme.darkMode ? darken(theme.bg5, 0.09) : theme.paperCustom)};
-  box-shadow: 0 12px 18px ${({ theme }) => theme.bg5};
+  background: var(${UI.COLOR_PAPER});
+  box-shadow: 0 12px 18px var(${UI.COLOR_PAPER_DARKEST});
   display: flex;
   flex-direction: column;
   position: absolute;
@@ -52,13 +49,17 @@ export const Menu = styled.div`
 
 export const MenuItem = styled.div<{ active: boolean }>`
   transition: background 0.2s ease-in;
-  background-color: ${({ active, theme }) => (active ? theme.grey1 : 'transparent')};
-  color: ${({ active, theme }) => (active ? theme.disabledText : `var(${UI.COLOR_TEXT})`)};
+  background: ${({ active }) => (active ? `var(${UI.COLOR_PAPER_DARKER})` : 'transparent')};
+  color: ${({ active }) => (active ? `var(${UI.COLOR_TEXT})` : `var(${UI.COLOR_TEXT_OPACITY_70})`)};
   justify-content: space-between;
   border-radius: 8px;
   padding: 0.4rem 0.8rem;
   cursor: pointer;
   display: flex;
+
+  &:hover {
+    background: var(${UI.COLOR_PAPER_DARKER});
+  }
 
   :not(:last-child) {
     margin-bottom: 5px;
@@ -89,16 +90,6 @@ export const AccountPageWrapper = styled.div`
   margin: 0;
 `
 
-export const MainText = styled(ThemedText.Main)`
-  color: inherit;
-  font-size: 14px;
-`
-
-export const AccountCard = styled(Card)`
-  min-height: auto;
-  margin-bottom: 1rem;
-`
-
 export const AccountHeading = styled.div`
   display: flex;
   flex-flow: row wrap;
@@ -110,12 +101,12 @@ export const AccountHeading = styled.div`
 export const RemoveTokens = styled.button`
   background: none;
   border: none;
-  color: ${({ theme }) => theme.info};
+  color: var(${UI.COLOR_TEXT});
   cursor: pointer;
-`
 
-export const WrongNetwork = styled.div`
-  max-width: 200px;
+  &:hover {
+    text-decoration: underline;
+  }
 `
 
 export const LeftSection = styled.div`
@@ -142,9 +133,7 @@ export const Overview = styled.div`
   padding: 0;
   z-index: 2;
   position: relative;
-  border-radius: 16px;
   overflow: hidden;
-  box-shadow: ${({ theme }) => theme.boxShadow1};
 
   ${Media.upToMedium()} {
     display: flex;

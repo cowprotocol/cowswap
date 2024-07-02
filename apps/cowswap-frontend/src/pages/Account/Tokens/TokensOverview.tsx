@@ -2,8 +2,7 @@ import { useEffect, useMemo, useState, useCallback, useRef, ChangeEventHandler }
 
 import { useTokensBalances } from '@cowprotocol/balances-and-allowances'
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { useDebounce, useOnClickOutside, usePrevious } from '@cowprotocol/common-hooks'
-import { useTheme } from '@cowprotocol/common-hooks'
+import { useTheme, useDebounce, useOnClickOutside, usePrevious } from '@cowprotocol/common-hooks'
 import { isAddress, isTruthy } from '@cowprotocol/common-utils'
 import { useTokensByAddressMap, useFavoriteTokens, useResetFavoriteTokens } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
