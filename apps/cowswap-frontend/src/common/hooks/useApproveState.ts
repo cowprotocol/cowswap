@@ -73,7 +73,7 @@ export function useApproveState(
 
   const state = useAuxApprovalState(approvalStateBase, currentAllowance)
 
-  return { state, currentAllowance }
+  return useSafeMemo(() => ({ state, currentAllowance }), [state, currentAllowance])
 }
 
 /**

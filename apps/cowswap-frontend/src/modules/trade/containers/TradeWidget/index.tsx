@@ -18,6 +18,7 @@ export function TradeWidget(props: TradeWidgetProps) {
           disableQuotePolling={disableQuotePolling}
           disableNativeSelling={disableNativeSelling}
           tradeQuoteStateOverride={tradeQuoteStateOverride}
+          onChangeRecipient={props.actions.onChangeRecipient}
         >
           {slots.updaters}
         </TradeWidgetUpdaters>

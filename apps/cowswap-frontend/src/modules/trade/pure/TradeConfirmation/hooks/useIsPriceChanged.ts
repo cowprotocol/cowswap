@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 export function useIsPriceChanged(inputAmount: string | undefined, outputAmount: string | undefined) {
   const initialAmounts = useRef<{ inputAmount?: string; outputAmount?: string }>()
@@ -25,5 +25,5 @@ export function useIsPriceChanged(inputAmount: string | undefined, outputAmount:
     }
   }, [inputAmount, outputAmount])
 
-  return { isPriceChanged, resetPriceChanged }
+  return useMemo(() => ({ isPriceChanged, resetPriceChanged }), [isPriceChanged, resetPriceChanged])
 }

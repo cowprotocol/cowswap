@@ -1,5 +1,5 @@
 import { useAtomValue } from 'jotai'
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 
 import { changeSwapAmountAnalytics } from '@cowprotocol/analytics'
 import { isSellOrder, tryParseCurrencyAmount } from '@cowprotocol/common-utils'
@@ -50,11 +50,12 @@ export function useLimitOrdersWidgetActions(): TradeWidgetActions {
   })
 
   const onChangeRecipient = useCallback(
-    (recipient: string | null) => {
-      updateLimitOrdersState({ recipient })
-    },
+    (recipient: string | null) => updateLimitOrdersState({ recipient }),
     [updateLimitOrdersState]
   )
 
-  return { onUserInput, onSwitchTokens, onChangeRecipient, onCurrencySelection }
+  return useMemo(
+    () => ({ onUserInput, onSwitchTokens, onChangeRecipient, onCurrencySelection }),
+    [onUserInput, onSwitchTokens, onChangeRecipient, onCurrencySelection]
+  )
 }

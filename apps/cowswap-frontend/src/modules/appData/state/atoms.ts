@@ -1,6 +1,8 @@
 import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
+import { deepEqual } from '@cowprotocol/common-utils'
+
 import { buildDocFilterFn, buildInverseDocFilterFn } from './utils'
 
 import {
@@ -18,9 +20,16 @@ import { updateFullAppData } from '../utils/fullAppData'
  */
 export const appDataInfoAtom = atom<AppDataInfo | null, [AppDataInfo | null], unknown>(
   null,
-  (_get, set, appDataInfo) => {
+  (get, set, appDataInfo) => {
+    const previous = get(appDataInfoAtom)
+
+    // Do not update if both are equal to avoid unnecessary re-renders
+    if (previous && appDataInfo && deepEqual(previous, appDataInfo)) {
+      return
+    }
+
     set(appDataInfoAtom, appDataInfo)
-    updateFullAppData(appDataInfo?.fullAppData ?? undefined)
+    updateFullAppData(appDataInfo?.fullAppData)
   }
 )
 

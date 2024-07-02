@@ -1,19 +1,19 @@
 import { useEffect, useRef, useState } from 'react'
 
 import {
-  ButtonSize,
-  ButtonPrimary,
   BackButton,
-  CenteredDots,
-  LongLoadText,
   BannerOrientation,
+  ButtonPrimary,
+  ButtonSize,
+  CenteredDots,
   CustomRecipientWarningBanner,
+  LongLoadText,
 } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import ms from 'ms.macro'
 
-import { useMediaQuery, upToMedium } from 'legacy/hooks/useMediaQuery'
+import { upToMedium, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
 import { CurrencyAmountPreview, CurrencyPreviewInfo } from 'common/pure/CurrencyInputPanel'
@@ -29,7 +29,9 @@ const ONE_SEC = ms`1s`
 
 export interface TradeConfirmationProps {
   onConfirm(): void
+
   onDismiss(): void
+
   account: string | undefined
   ensName: string | undefined
   inputCurrencyInfo: CurrencyPreviewInfo
@@ -39,7 +41,7 @@ export interface TradeConfirmationProps {
   title: JSX.Element | string
   refreshInterval?: number
   isPriceStatic?: boolean
-  recipient: string | null
+  recipient?: string | null
   buttonText?: React.ReactNode
   children?: JSX.Element
 }

@@ -1,3 +1,5 @@
+import { useMemo } from 'react'
+
 import { getWrappedToken } from '@cowprotocol/common-utils'
 import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS, OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -30,22 +32,28 @@ export function useSwapFlowContext(): SwapFlowContext | null {
     checkAllowanceAddress,
   })
 
-  if (!baseProps.trade) return null
+  return useMemo(() => {
+    if (!baseProps.trade) {
+      return null
+    }
 
-  const baseContext = getFlowContext({
-    baseProps,
-    sellToken: getWrappedToken(baseProps.trade.inputAmount.currency),
-    kind: baseProps.trade.tradeType === UniTradeType.EXACT_INPUT ? OrderKind.SELL : OrderKind.BUY,
-  })
+    const baseContext = getFlowContext({
+      baseProps,
+      sellToken: getWrappedToken(baseProps.trade.inputAmount.currency),
+      kind: baseProps.trade.tradeType === UniTradeType.EXACT_INPUT ? OrderKind.SELL : OrderKind.BUY,
+    })
 
-  if (!contract || !baseContext || baseProps.flowType !== FlowType.REGULAR) return null
+    if (!contract || !baseContext || baseProps.flowType !== FlowType.REGULAR) {
+      return null
+    }
 
-  return {
-    ...baseContext,
-    contract,
-    permitInfo: !enoughAllowance ? permitInfo : undefined,
-    generatePermitHook,
-  }
+    return {
+      ...baseContext,
+      contract,
+      permitInfo: !enoughAllowance ? permitInfo : undefined,
+      generatePermitHook,
+    }
+  }, [baseProps, contract, enoughAllowance, permitInfo, generatePermitHook])
 }
 
 export function useSwapEnoughAllowance(): boolean | undefined {

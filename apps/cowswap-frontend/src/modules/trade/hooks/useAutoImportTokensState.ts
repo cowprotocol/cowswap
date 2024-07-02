@@ -27,5 +27,5 @@ export function useAutoImportTokensState(
 
   const modalState = useModalState<void>(tokensToImportCount > 0)
 
-  return { tokensToImport, modalState }
+  return useMemo(() => ({ tokensToImport, modalState }), [tokensToImport, modalState])
 }

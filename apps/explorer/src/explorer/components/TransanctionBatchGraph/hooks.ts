@@ -140,18 +140,32 @@ export function useCytoscape(params: UseCytoscapeParams): UseCytoscapeReturn {
     }
   }, [cytoscapeRef, elements.length])
 
-  return {
-    failedToLoadGraph,
-    heightSize,
-    resetZoom,
-    setResetZoom,
-    setCytoscape,
-    layout,
-    setLayout,
-    cyPopperRef,
-    elements,
-    tokensStylesheets,
-  }
+  return useMemo(
+    () => ({
+      failedToLoadGraph,
+      heightSize,
+      resetZoom,
+      setResetZoom,
+      setCytoscape,
+      layout,
+      setLayout,
+      cyPopperRef,
+      elements,
+      tokensStylesheets,
+    }),
+    [
+      failedToLoadGraph,
+      heightSize,
+      resetZoom,
+      setResetZoom,
+      setCytoscape,
+      layout,
+      setLayout,
+      cyPopperRef,
+      elements,
+      tokensStylesheets,
+    ]
+  )
 }
 
 function getStylesheets(
@@ -191,9 +205,9 @@ const DEFAULT_VIEW_NAME = ViewType[DEFAULT_VIEW_TYPE]
 
 const VISUALIZATION_PARAM_NAME = 'vis'
 
-function useQueryViewParams(): { visualization: string } {
+function useQueryViewParams(): string {
   const query = useQuery()
-  return { visualization: query.get(VISUALIZATION_PARAM_NAME)?.toUpperCase() || DEFAULT_VIEW_NAME }
+  return query.get(VISUALIZATION_PARAM_NAME)?.toUpperCase() || DEFAULT_VIEW_NAME
 }
 
 function useUpdateVisQuery(): (vis: string) => void {
@@ -269,7 +283,10 @@ export function useTxBatchData(
       : buildTransfersBasedSettlement(params)
   }, [networkId, orderTokens, missingTokens, txData, orders, trades, transfers, visualization])
 
-  return { txSettlement, error: txData.error, isLoading: txData.isLoading || areTokensLoading }
+  return useMemo(
+    () => ({ txSettlement, error: txData.error, isLoading: txData.isLoading || areTokensLoading }),
+    [txSettlement, txData.error, txData.isLoading, areTokensLoading]
+  )
 }
 
 type UseVisualizationReturn = {
@@ -278,7 +295,7 @@ type UseVisualizationReturn = {
 }
 
 export function useVisualization(): UseVisualizationReturn {
-  const { visualization } = useQueryViewParams()
+  const visualization = useQueryViewParams()
 
   const updateVisQuery = useUpdateVisQuery()
 

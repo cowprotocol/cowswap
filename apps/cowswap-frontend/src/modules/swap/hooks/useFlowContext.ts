@@ -31,6 +31,7 @@ import { TradeFlowAnalyticsContext } from 'modules/trade/utils/analytics'
 
 import { useTokenContract, useWETHContract } from 'common/hooks/useContract'
 import { useIsSafeApprovalBundle } from 'common/hooks/useIsSafeApprovalBundle'
+import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
 import { useIsSafeEthFlow } from './useIsSafeEthFlow'
 import { useDerivedSwapInfo, useSwapState } from './useSwapState'
@@ -44,6 +45,7 @@ export enum FlowType {
   SAFE_BUNDLE_APPROVAL = 'SAFE_BUNDLE_APPROVAL',
   SAFE_BUNDLE_ETH = 'SAFE_BUNDLE_ETH',
 }
+
 interface BaseFlowContextSetup {
   chainId: SupportedChainId
   account: string | undefined
@@ -79,7 +81,7 @@ export function useSwapAmountsWithSlippage(): [
 
   const { INPUT, OUTPUT } = computeSlippageAdjustedAmounts(trade, allowedSlippage)
 
-  return [INPUT, OUTPUT]
+  return useSafeMemo(() => [INPUT, OUTPUT], [INPUT, OUTPUT])
 }
 
 export function useBaseFlowContextSetup(): BaseFlowContextSetup {
@@ -115,32 +117,60 @@ export function useBaseFlowContextSetup(): BaseFlowContextSetup {
   const isSafeBundle = useIsSafeApprovalBundle(inputAmountWithSlippage)
   const flowType = _getFlowType(isSafeBundle, isEoaEthFlow, isSafeEthFlow)
 
-  return {
-    chainId,
-    account,
-    sellTokenContract,
-    provider,
-    trade,
-    appData,
-    wethContract,
-    inputAmountWithSlippage,
-    outputAmountWithSlippage,
-    gnosisSafeInfo,
-    recipient,
-    recipientAddressOrName,
-    deadline,
-    ensRecipientAddress,
-    allowsOffchainSigning,
-    uploadAppData,
-    flowType,
-    closeModals,
-    addOrderCallback,
-    dispatch,
-    allowedSlippage,
-    tradeConfirmActions,
-    getCachedPermit,
-    quote,
-  }
+  return useSafeMemo(
+    () => ({
+      chainId,
+      account,
+      sellTokenContract,
+      provider,
+      trade,
+      appData,
+      wethContract,
+      inputAmountWithSlippage,
+      outputAmountWithSlippage,
+      gnosisSafeInfo,
+      recipient,
+      recipientAddressOrName,
+      deadline,
+      ensRecipientAddress,
+      allowsOffchainSigning,
+      uploadAppData,
+      flowType,
+      closeModals,
+      addOrderCallback,
+      dispatch,
+      allowedSlippage,
+      tradeConfirmActions,
+      getCachedPermit,
+      quote,
+    }),
+    [
+      chainId,
+      account,
+      sellTokenContract,
+      provider,
+      trade,
+      appData,
+      wethContract,
+      inputAmountWithSlippage,
+      outputAmountWithSlippage,
+      gnosisSafeInfo,
+      recipient,
+      recipientAddressOrName,
+      deadline,
+      ensRecipientAddress,
+      allowsOffchainSigning,
+      uploadAppData,
+      flowType,
+      closeModals,
+      addOrderCallback,
+      dispatch,
+      allowedSlippage,
+      tradeConfirmActions,
+      getCachedPermit,
+      quote,
+    ]
+  )
 }
 
 function _getFlowType(isSafeBundle: boolean, isEoaEthFlow: boolean, isSafeEthFlow: boolean): FlowType {

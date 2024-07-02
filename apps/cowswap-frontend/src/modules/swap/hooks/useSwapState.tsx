@@ -101,12 +101,17 @@ export function useSwapActionHandlers(): SwapActions {
     [dispatch]
   )
 
-  return {
+  return useMemo(() => ({
     onSwitchTokens,
     onCurrencySelection,
     onUserInput,
     onChangeRecipient,
-  }
+  }), [
+    onSwitchTokens,
+    onCurrencySelection,
+    onUserInput,
+    onChangeRecipient
+  ])
 }
 
 /**
@@ -140,13 +145,13 @@ export function useHighFeeWarning(trade?: TradeGp) {
     setFeeWarningAccepted(false)
   }, [INPUT.currencyId, OUTPUT.currencyId, independentField])
 
-  return {
+  return useSafeMemo(() => ({
     isHighFee,
     feePercentage,
     // we only care/check about feeWarning being accepted if the fee is actually high..
     feeWarningAccepted: _computeFeeWarningAcceptedState({ feeWarningAccepted, isHighFee }),
     setFeeWarningAccepted,
-  }
+  }), [isHighFee, feePercentage, feeWarningAccepted, setFeeWarningAccepted])
 }
 
 function _computeFeeWarningAcceptedState({
@@ -177,10 +182,10 @@ export function useUnknownImpactWarning() {
     setImpactWarningAccepted(false)
   }, [INPUT.currencyId, OUTPUT.currencyId, independentField])
 
-  return {
+  return useMemo(() => ({
     impactWarningAccepted,
     setImpactWarningAccepted,
-  }
+  }), [impactWarningAccepted, setImpactWarningAccepted])
 }
 
 // from the current swap inputs, compute the best trade and return it.

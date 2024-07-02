@@ -1,3 +1,5 @@
+import { useMemo } from 'react'
+
 import { Nullish } from 'types'
 
 import { usePreGeneratedPermitInfo } from './usePreGeneratedPermitInfo'
@@ -17,8 +19,11 @@ export function usePreGeneratedPermitInfoForToken(token: Nullish<{ address: stri
 
   const permitInfo = address ? allPermitInfo[address] : undefined
 
-  return {
-    permitInfo,
-    isLoading,
-  }
+  return useMemo(
+    () => ({
+      permitInfo,
+      isLoading,
+    }),
+    [permitInfo, isLoading]
+  )
 }

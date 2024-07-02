@@ -155,6 +155,7 @@ function createIframe(params: CowSwapWidgetParams): HTMLIFrameElement {
   iframe.width = width
   iframe.height = height
   iframe.style.border = '0'
+  iframe.allow = 'clipboard-read; clipboard-write'
 
   return iframe
 }

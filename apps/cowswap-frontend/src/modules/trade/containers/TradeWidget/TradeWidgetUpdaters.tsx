@@ -7,6 +7,7 @@ import { TradeFormValidationUpdater } from 'modules/tradeFormValidation'
 import { TradeQuoteState, TradeQuoteUpdater, useUpdateTradeQuote } from 'modules/tradeQuote'
 
 import { usePriorityTokenAddresses } from '../../hooks/usePriorityTokenAddresses'
+import { useResetRecipient } from '../../hooks/useResetRecipient'
 import { CommonTradeUpdater } from '../../updaters/CommonTradeUpdater'
 import { DisableNativeTokenSellingUpdater } from '../../updaters/DisableNativeTokenSellingUpdater'
 import { PriceImpactUpdater } from '../../updaters/PriceImpactUpdater'
@@ -17,12 +18,14 @@ interface TradeWidgetUpdatersProps {
   disableNativeSelling: boolean
   children: ReactNode
   tradeQuoteStateOverride?: TradeQuoteState | null
+  onChangeRecipient: (recipient: string | null) => void
 }
 
 export function TradeWidgetUpdaters({
   disableQuotePolling,
   disableNativeSelling,
   tradeQuoteStateOverride,
+  onChangeRecipient,
   children,
 }: TradeWidgetUpdatersProps) {
   const { chainId, account } = useWalletInfo()
@@ -34,6 +37,8 @@ export function TradeWidgetUpdaters({
       updateQuoteState(tradeQuoteStateOverride)
     }
   }, [tradeQuoteStateOverride, disableQuotePolling, updateQuoteState])
+
+  useResetRecipient(onChangeRecipient)
 
   return (
     <>

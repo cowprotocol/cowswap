@@ -139,9 +139,12 @@ export function useMultipleErc20(
     }
   }, [updateErc20s, saveErc20s, networkId])
 
-  return {
-    isLoading: isTokenListLoading || isLoading,
-    error: errors,
-    value: { ...erc20s, ...fromTokenList, ...nativeState },
-  }
+  return useMemo(
+    () => ({
+      isLoading: isTokenListLoading || isLoading,
+      error: errors,
+      value: { ...erc20s, ...fromTokenList, ...nativeState },
+    }),
+    [isTokenListLoading, isLoading, errors, erc20s, fromTokenList, nativeState]
+  )
 }

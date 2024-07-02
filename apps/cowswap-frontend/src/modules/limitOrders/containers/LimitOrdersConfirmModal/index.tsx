@@ -33,7 +33,7 @@ export interface LimitOrdersConfirmModalProps {
   inputCurrencyInfo: CurrencyPreviewInfo
   outputCurrencyInfo: CurrencyPreviewInfo
   priceImpact: PriceImpact
-  recipient: string | null
+  recipient?: string | null
 }
 
 export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {

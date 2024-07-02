@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 
 import { getCurrentChainIdFromUrl } from '@cowprotocol/common-utils'
 import { Connector } from '@web3-react/types'
@@ -53,12 +53,15 @@ export function useActivateConnector({
     [chainId, pendingConnector, skipNetworkChanging, afterActivation, beforeActivation, onActivationError]
   )
 
-  return {
-    tryActivation,
-    retryPendingActivation: () => {
-      if (pendingConnector) {
-        tryActivation(pendingConnector)
-      }
-    },
-  }
+  return useMemo(
+    () => ({
+      tryActivation,
+      retryPendingActivation: () => {
+        if (pendingConnector) {
+          tryActivation(pendingConnector)
+        }
+      },
+    }),
+    [tryActivation, pendingConnector]
+  )
 }

@@ -1,6 +1,6 @@
-import { useRef, useEffect, RefObject, useState, useMemo, useLayoutEffect } from 'react'
+import { RefObject, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 
-import { Instance, Options, State, Placement } from '@popperjs/core'
+import { Instance, Options, Placement, State } from '@popperjs/core'
 
 export const TOOLTIP_OFFSET = 12 // px
 
@@ -155,10 +155,13 @@ export const usePopperDefault = <T extends HTMLElement>(
     [hide, show, target]
   )
 
-  return {
-    targetProps,
-    tooltipProps,
-  }
+  return useMemo(
+    () => ({
+      targetProps,
+      tooltipProps,
+    }),
+    [targetProps, tooltipProps]
+  )
 }
 
 interface PopperOnClickResult<T extends HTMLElement> {
@@ -201,8 +204,11 @@ export const usePopperOnClick = <T extends HTMLElement>(
     [toggle, target]
   )
 
-  return {
-    targetProps,
-    tooltipProps,
-  }
+  return useMemo(
+    () => ({
+      targetProps,
+      tooltipProps,
+    }),
+    [targetProps, tooltipProps]
+  )
 }

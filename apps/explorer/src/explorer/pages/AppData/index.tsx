@@ -28,9 +28,9 @@ export type TabData = {
 
 const DEFAULT_TAB = TabView[1]
 
-function useQueryViewParams(): { tab: string } {
+function useQueryViewParams(): string {
   const query = useQuery()
-  return { tab: query.get(TAB_QUERY_PARAM_KEY)?.toUpperCase() || DEFAULT_TAB } // if URL param empty will be used DEFAULT
+  return query.get(TAB_QUERY_PARAM_KEY)?.toUpperCase() || DEFAULT_TAB  // if URL param empty will be used DEFAULT
 }
 
 const tabItems = (
@@ -53,7 +53,7 @@ const tabItems = (
 }
 
 const AppDataPage: React.FC = () => {
-  const { tab } = useQueryViewParams()
+  const tab = useQueryViewParams()
   const [tabData, setTabData] = useState<TabData>({
     encode: { formData: {}, options: {} },
     decode: { formData: {}, options: {} },

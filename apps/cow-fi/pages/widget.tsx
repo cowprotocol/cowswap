@@ -62,7 +62,7 @@ const widgetParams: CowSwapWidgetParams = {
   width: '100%',
 }
 
-export default function Page({ siteConfigData }: PageProps) {
+export default function Page() {
   return (
     <Layout
       bgColor={Color.neutral90}

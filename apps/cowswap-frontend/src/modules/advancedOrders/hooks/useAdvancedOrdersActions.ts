@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 
 import { changeSwapAmountAnalytics } from '@cowprotocol/analytics'
 import { Currency } from '@uniswap/sdk-core'
@@ -64,10 +64,13 @@ export function useAdvancedOrdersActions() {
     resetTradeQuote()
   }, [resetTradeQuote, onSwitchTokensDefault])
 
-  return {
-    onCurrencySelection,
-    onUserInput,
-    onChangeRecipient,
-    onSwitchTokens,
-  }
+  return useMemo(
+    () => ({
+      onCurrencySelection,
+      onUserInput,
+      onChangeRecipient,
+      onSwitchTokens,
+    }),
+    [onCurrencySelection, onUserInput, onChangeRecipient, onSwitchTokens]
+  )
 }

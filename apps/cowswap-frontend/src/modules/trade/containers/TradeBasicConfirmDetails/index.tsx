@@ -151,7 +151,7 @@ export function TradeBasicConfirmDetails(props: Props) {
       )}
 
       {/*Recipient*/}
-      <RecipientRow recipient={recipient} account={account} />
+      <RecipientRow chainId={rateInfoParams.chainId} recipient={recipient} account={account} />
       {children}
     </styledEl.Wrapper>
   )

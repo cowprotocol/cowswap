@@ -98,7 +98,7 @@ export default createReducer<SwapState>(initialState, (builder) =>
         [Field.OUTPUT]: {
           currencyId: outputCurrencyId ?? null,
         },
-        recipient,
+        ...(recipient ? { recipient } : undefined),
       }
     })
     .addCase(selectCurrency, (state, { payload: { currencyId, field } }) => {
@@ -139,19 +139,19 @@ export default createReducer<SwapState>(initialState, (builder) =>
         [Field.OUTPUT]: { currencyId: state[Field.INPUT].currencyId },
       }
     })
-    .addCase(typeInput, (state, { payload: { field, typedValue } }) => {
-      return {
-        ...state,
-        independentField: field,
-        typedValue,
-      }
-    })
-    .addCase(setRecipient, (state, { payload: { recipient } }) => {
-      state.recipient = recipient
-    })
-    .addCase(setRecipientAddress, (state, { payload: { recipientAddress } }) => {
-      state.recipientAddress = recipientAddress
-    })
+    .addCase(typeInput, (state, { payload: { field, typedValue } }) => ({
+      ...state,
+      independentField: field,
+      typedValue,
+    }))
+    .addCase(setRecipient, (state, { payload: { recipient } }) => ({
+      ...state,
+      recipient,
+    }))
+    .addCase(setRecipientAddress, (state, { payload: { recipientAddress } }) => ({
+      ...state,
+      recipientAddress,
+    }))
 )
 
 /**

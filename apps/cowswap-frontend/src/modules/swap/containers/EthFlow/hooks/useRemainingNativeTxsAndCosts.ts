@@ -99,5 +99,5 @@ export default function useRemainingNativeTxsAndCosts({
     }
   }, [nativeInput, chainId, txCosts, nativeBalance])
 
-  return { balanceChecks, ...txCosts }
+  return useMemo(() => ({ balanceChecks, ...txCosts }), [balanceChecks, txCosts])
 }

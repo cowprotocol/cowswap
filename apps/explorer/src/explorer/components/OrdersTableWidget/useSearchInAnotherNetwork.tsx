@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { CHAIN_INFO, getChainInfo } from '@cowprotocol/common-const'
 import { useAvailableChains } from '@cowprotocol/common-hooks'
@@ -188,5 +188,5 @@ export const useSearchInAnotherNetwork = (
     fetchAnotherNetworks(networkId)
   }, [fetchAnotherNetworks, isOrdersLengthZero, networkId])
 
-  return { isLoading, ordersInNetworks, setLoadingState: setIsLoading, errorMsg: error }
+  return useMemo(() => ({ isLoading, ordersInNetworks, setLoadingState: setIsLoading, errorMsg: error }), [isLoading, ordersInNetworks, setIsLoading, error])
 }

@@ -70,12 +70,15 @@ export const useCowFromLockedGnoBalances = () => {
 
   const claimed = useMemo(() => CurrencyAmount.fromRawAmount(_COW, data ? data.claimed.toString() : 0), [data])
 
-  return {
-    allocated,
-    vested,
-    claimed,
-    loading: isLoading,
-  }
+  return useMemo(
+    () => ({
+      allocated,
+      vested,
+      claimed,
+      loading: isLoading,
+    }),
+    [allocated, vested, claimed, isLoading]
+  )
 }
 
 interface ClaimCallbackParams {
@@ -95,7 +98,7 @@ export function useClaimCowFromLockedGnoCallback({
 
   const addTransaction = useTransactionAdder()
 
-  const claimCallback = useCallback(async () => {
+  return useCallback(async () => {
     if (!account) {
       throw new Error('Not connected')
     }
@@ -128,6 +131,4 @@ export function useClaimCowFromLockedGnoCallback({
       })
       .finally(closeModal)
   }, [account, addTransaction, chainId, closeModal, openModal, isFirstClaim, merkleDrop, tokenDistro])
-
-  return claimCallback
 }

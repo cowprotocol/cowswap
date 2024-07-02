@@ -81,9 +81,9 @@ export enum TabView {
 
 const DEFAULT_TAB = TabView[1]
 
-function useQueryViewParams(): { tab: string } {
+function useQueryViewParams(): string {
   const query = useQuery()
-  return { tab: query.get(TAB_QUERY_PARAM_KEY)?.toUpperCase() || DEFAULT_TAB } // if URL param empty will be used DEFAULT
+  return query.get(TAB_QUERY_PARAM_KEY)?.toUpperCase() || DEFAULT_TAB // if URL param empty will be used DEFAULT
 }
 
 const tabItems = (
@@ -165,7 +165,7 @@ const RESULTS_PER_PAGE = 10
 export const OrderDetails: React.FC<Props> = (props) => {
   const { order, isOrderLoading, areTradesLoading, errors, trades } = props
   const chainId = useNetworkId()
-  const { tab } = useQueryViewParams()
+  const tab = useQueryViewParams()
   const [tabViewSelected, setTabViewSelected] = useState<TabView>(TabView[tab] || TabView[DEFAULT_TAB]) // use DEFAULT when URL param is outside the enum
   const {
     state: tableState,

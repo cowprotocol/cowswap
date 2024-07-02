@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 
 import { Command } from '@cowprotocol/types'
 
@@ -36,34 +36,36 @@ export function useTable(options: TableOptions): TableStateAndSetters {
     ...initialState,
   })
 
-  const setPageSize = (newValue: number): void => {
-    const offsetRestarted = 0
-    setState({
-      ...state,
-      pageSize: newValue,
-      pageOffset: offsetRestarted,
-      pageIndex: getPageIndex(offsetRestarted, newValue),
-    })
-  }
+  return useMemo(() => {
+    const setPageSize = (newValue: number): void => {
+      const offsetRestarted = 0
+      setState({
+        ...state,
+        pageSize: newValue,
+        pageOffset: offsetRestarted,
+        pageIndex: getPageIndex(offsetRestarted, newValue),
+      })
+    }
 
-  const setPageOffset = (newOffset: number): void => {
-    setState({
-      ...state,
-      pageOffset: newOffset,
-      pageIndex: getPageIndex(newOffset, state.pageSize),
-    })
-  }
+    const setPageOffset = (newOffset: number): void => {
+      setState({
+        ...state,
+        pageOffset: newOffset,
+        pageIndex: getPageIndex(newOffset, state.pageSize),
+      })
+    }
 
-  const handleNextPage = (): void => {
-    const newOffset = state.pageOffset + state.pageSize
-    setPageOffset(newOffset)
-  }
+    const handleNextPage = (): void => {
+      const newOffset = state.pageOffset + state.pageSize
+      setPageOffset(newOffset)
+    }
 
-  const handlePreviousPage = (): void => {
-    let newOffset = state.pageOffset - state.pageSize
-    newOffset = newOffset < 0 ? 0 : newOffset
-    setPageOffset(newOffset)
-  }
+    const handlePreviousPage = (): void => {
+      let newOffset = state.pageOffset - state.pageSize
+      newOffset = newOffset < 0 ? 0 : newOffset
+      setPageOffset(newOffset)
+    }
 
-  return { state, setPageSize, handleNextPage, handlePreviousPage }
+    return ({ state, setPageSize, handleNextPage, handlePreviousPage }) as TableStateAndSetters
+  }, [state, setState])
 }

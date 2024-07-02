@@ -8,7 +8,7 @@ import FAQ from '@/components/FAQ'
 import { AddRpcButton } from '@/components/AddRpcButton'
 import { Link, LinkType } from '@/components/Link'
 
-import useWebShare from 'hooks/useWebShare'
+import useWebShare from '../hooks/useWebShare'
 
 import { WagmiConfig, createConfig, configureChains, mainnet } from 'wagmi'
 import { publicProvider } from 'wagmi/providers/public'

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 
 import { isSellOrder } from '@cowprotocol/common-utils'
 
@@ -39,11 +39,15 @@ function useGetSurplus(order: Order): OrderSurplus | null {
   // TODO: get USD estimation
   // const usdAmount = '55.555'
 
-  if (!surplusToken || surplusAmount.isZero()) {
-    return null
-  }
 
-  return { amount: surplusAmount, percentage: surplusPercentage, surplusToken }
+  return useMemo(() => {
+
+    if (!surplusToken || surplusAmount.isZero()) {
+      return null
+    }
+
+    return ({ amount: surplusAmount, percentage: surplusPercentage, surplusToken })
+  }, [surplusToken, surplusAmount, surplusPercentage])
 }
 
 export function OrderSurplusDisplay(props: Props): JSX.Element | null {

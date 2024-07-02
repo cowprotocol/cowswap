@@ -33,9 +33,9 @@ enum TabView {
 
 const DEFAULT_TAB = TabView[1]
 
-function useQueryViewParams(): { tab: string } {
+function useQueryViewParams(): string {
   const query = useQuery()
-  return { tab: query.get(TAB_QUERY_PARAM_KEY)?.toUpperCase() || DEFAULT_TAB } // if URL param empty will be used DEFAULT
+  return query.get(TAB_QUERY_PARAM_KEY)?.toUpperCase() || DEFAULT_TAB  // if URL param empty will be used DEFAULT
 }
 
 const tabItems = (orders: Order[] | undefined, networkId: BlockchainNetwork, txHash: string): TabItemInterface[] => {
@@ -57,7 +57,7 @@ export const TransactionsTableWidget: React.FC<Props> = ({ txHash }) => {
   const { orders, isLoading: isTxLoading, errorTxPresentInNetworkId, error } = useGetTxOrders(txHash)
   const networkId = useNetworkId() || undefined
   const [redirectTo, setRedirectTo] = useState(false)
-  const { tab } = useQueryViewParams()
+  const tab = useQueryViewParams()
   const [tabViewSelected, setTabViewSelected] = useState<TabView>(TabView[tab] || TabView[DEFAULT_TAB]) // use DEFAULT when URL param is outside the enum
   const txHashParams = { networkId, txHash }
   const isZeroOrders = !!(orders && orders.length === 0)

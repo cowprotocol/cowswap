@@ -1,3 +1,5 @@
+import { useMemo } from 'react'
+
 import { getWrappedToken } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { useSafeAppsSdk } from '@cowprotocol/wallet'
@@ -19,21 +21,23 @@ export function useBaseSafeBundleFlowContext(): BaseSafeFlowContext | null {
   const safeAppsSdk = useSafeAppsSdk()
   const provider = useWalletProvider()
 
-  if (!baseProps.trade || !settlementContract || !spender || !safeAppsSdk || !provider) return null
+  return useMemo(() => {
+    if (!baseProps.trade || !settlementContract || !spender || !safeAppsSdk || !provider) return null
 
-  const baseContext = getFlowContext({
-    baseProps,
-    sellToken,
-    kind: baseProps.trade.tradeType === TradeType.EXACT_INPUT ? OrderKind.SELL : OrderKind.BUY,
-  })
+    const baseContext = getFlowContext({
+      baseProps,
+      sellToken,
+      kind: baseProps.trade.tradeType === TradeType.EXACT_INPUT ? OrderKind.SELL : OrderKind.BUY,
+    })
 
-  if (!baseContext) return null
+    if (!baseContext) return null
 
-  return {
-    ...baseContext,
-    settlementContract,
-    spender,
-    safeAppsSdk,
-    provider,
-  }
+    return {
+      ...baseContext,
+      settlementContract,
+      spender,
+      safeAppsSdk,
+      provider,
+    }
+  }, [baseProps, settlementContract, spender, safeAppsSdk, provider, sellToken])
 }

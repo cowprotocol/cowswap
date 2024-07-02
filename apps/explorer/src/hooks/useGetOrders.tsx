@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { ALL_SUPPORTED_CHAIN_IDS } from '@cowprotocol/cow-sdk'
 
@@ -22,7 +22,7 @@ import { web3 } from '../explorer/api'
 import { ORDERS_QUERY_INTERVAL } from '../explorer/const'
 
 function isObjectEmpty(object: Record<string, unknown>): boolean {
-  // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
+
   for (const key in object) {
     if (key) return false
   }
@@ -107,7 +107,7 @@ function useOrdersWithTokenInfo(networkId: Network | undefined): UseOrdersWithTo
     setErc20Addresses([])
   }, [valueErc20s, networkId, areErc20Loading, mountNewOrders, orders])
 
-  return { orders, areErc20Loading, setOrders, setMountNewOrders, setErc20Addresses }
+  return useMemo(() => ({ orders, areErc20Loading, setOrders, setMountNewOrders, setErc20Addresses }), [orders, areErc20Loading, setOrders, setMountNewOrders, setErc20Addresses])
 }
 
 export function useGetTxOrders(txHash: string): GetTxOrdersResult {
@@ -156,7 +156,7 @@ export function useGetTxOrders(txHash: string): GetTxOrdersResult {
     fetchOrders(networkId, txHash)
   }, [fetchOrders, networkId, txHash])
 
-  return { orders, error, isLoading: isLoading || areErc20Loading, errorTxPresentInNetworkId }
+  return useMemo(() => ({ orders, error, isLoading: isLoading || areErc20Loading, errorTxPresentInNetworkId }), [orders, error, isLoading, areErc20Loading, errorTxPresentInNetworkId])
 }
 
 export function useTxOrderExplorerLink(
@@ -247,5 +247,5 @@ export function useGetAccountOrders(
     }
   }, [fetchOrders, networkId, ownerAddress, pageIndex])
 
-  return { orders, error, isLoading, isThereNext }
+  return useMemo(() => ({ orders, error, isLoading, isThereNext }), [orders, error, isLoading, isThereNext])
 }
