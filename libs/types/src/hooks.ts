@@ -1,9 +1,10 @@
 import { ReactNode } from 'react'
 
 import { latest } from '@cowprotocol/app-data'
-import { Command } from '.'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+
+import { Command } from './common'
 
 interface HookInfoPayload {
   hookDetails: CowHookDetails

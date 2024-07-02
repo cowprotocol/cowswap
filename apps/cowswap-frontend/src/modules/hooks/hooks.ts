@@ -2,12 +2,13 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
 import { SBCDepositContract, SBCDepositContractAbi } from '@cowprotocol/abis'
-import { useContract } from '@cowprotocol/common-hooks'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { AddHook, RemoveHook } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { v4 as uuidv4 } from 'uuid'
+
+import { useContract } from 'common/hooks/useContract'
 
 import { hooksAtom } from './state/hookDetailsAtom'
 

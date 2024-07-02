@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef } from 'react'
 
-import { OrderInteractionHooks } from '@cowprotocol/app-data/dist/generatedTypes/v0.10.0'
+import { latest } from '@cowprotocol/app-data'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { PermitHookData } from '@cowprotocol/permit-utils'
 import { useIsSmartContractWallet } from '@cowprotocol/wallet'
@@ -13,6 +13,8 @@ import { useLimitHasEnoughAllowance } from '../../limitOrders/hooks/useLimitHasE
 import { useSwapEnoughAllowance } from '../../swap/hooks/useSwapFlowContext'
 import { useUpdateAppDataHooks } from '../hooks'
 import { buildAppDataHooks } from '../utils/buildAppDataHooks'
+
+type OrderInteractionHooks = latest.OrderInteractionHooks
 
 function useAgnosticPermitDataIfUserHasNoAllowance(): PermitHookData | undefined {
   const { target, callData, gasLimit } = useAccountAgnosticPermitHookData() || {}
@@ -62,12 +64,10 @@ export function AppDataHooksUpdater(): null {
 
     if (!isSmartContractWallet && !isNativeSell && hooks) {
       // Update the hooks
-      console.log('[AppDataHooksUpdater]: Set hooks', hooks)
       updateAppDataHooks(hooks)
       hooksPrev.current = hooks
     } else {
       // There was a hook data, but not anymore. The hook needs to be removed
-      console.log('[AppDataHooksUpdater] Clear hooks')
       updateAppDataHooks(undefined)
       hooksPrev.current = hooks
     }

@@ -3,13 +3,12 @@ import { useState } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CowHookDetails } from '@cowprotocol/types'
-import { ButtonSecondaryAlt, TokenAmount, UI } from '@cowprotocol/ui'
+import { ButtonSecondaryAlt, HelpTooltip, TokenAmount, UI } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import styled from 'styled-components/macro'
 
 import { Link } from 'legacy/components/Link'
-import QuestionHelper from 'legacy/components/QuestionHelper'
 
 import { CloseIcon as CloseIconOriginal } from 'common/pure/CloseIcon'
 
@@ -194,7 +193,7 @@ export function PostHookButton() {
 
 function HookTooltip({ isPreHook }: { isPreHook: boolean }) {
   return (
-    <QuestionHelper
+    <HelpTooltip
       text={`${isPreHook ? 'Pre' : 'Post'}-hook allow you to automatically execute any action action ${
         isPreHook ? 'AFTER' : 'BEFORE'
       } your trade is executed`}
