@@ -7,6 +7,7 @@ import {
   TWITTER_LINK,
   COWDAO_KNOWLEDGE_BASE_LINK,
   COWDAO_COWSWAP_ABOUT_LINK,
+  COWDAO_LEGAL_LINK,
 } from '@cowprotocol/common-const'
 import { Loader } from '@cowprotocol/ui'
 
@@ -21,11 +22,9 @@ import AnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers'
 import { SwapPage } from 'pages/Swap'
 
 // Async routes
-const PrivacyPolicy = lazy(() => import(/* webpackChunkName: "privacy_policy" */ 'pages/PrivacyPolicy'))
+
 const LimitOrders = lazy(() => import(/* webpackChunkName: "limit_orders" */ 'pages/LimitOrders'))
 const AdvancedOrders = lazy(() => import(/* webpackChunkName: "advanced_orders" */ 'pages/AdvancedOrders'))
-const CookiePolicy = lazy(() => import(/* webpackChunkName: "cookie_policy" */ 'pages/CookiePolicy'))
-const TermsAndConditions = lazy(() => import(/* webpackChunkName: "terms" */ 'pages/TermsAndConditions'))
 const NotFound = lazy(() => import(/* webpackChunkName: "not_found" */ 'pages/error/NotFound'))
 const CowRunner = lazy(() => import(/* webpackChunkName: "cow_runner" */ 'pages/games/CowRunner'))
 const MevSlicer = lazy(() => import(/* webpackChunkName: "mev_slicer" */ 'pages/games/MevSlicer'))
@@ -62,9 +61,9 @@ const lazyRoutes: LazyRouteProps[] = [
   { route: RoutesEnum.FAQ_ETH_FLOW, element: <ExternalRedirect url={COWDAO_KNOWLEDGE_BASE_LINK} /> },
   { route: RoutesEnum.PLAY_COWRUNNER, element: <CowRunner /> },
   { route: RoutesEnum.PLAY_MEVSLICER, element: <MevSlicer /> },
-  { route: RoutesEnum.PRIVACY_POLICY, element: <PrivacyPolicy /> },
-  { route: RoutesEnum.COOKIE_POLICY, element: <CookiePolicy /> },
-  { route: RoutesEnum.TERMS_CONDITIONS, element: <TermsAndConditions /> },
+  { route: RoutesEnum.PRIVACY_POLICY, element: <ExternalRedirect url={COWDAO_LEGAL_LINK} /> },
+  { route: RoutesEnum.COOKIE_POLICY, element: <ExternalRedirect url={COWDAO_LEGAL_LINK} /> },
+  { route: RoutesEnum.TERMS_CONDITIONS, element: <ExternalRedirect url={COWDAO_LEGAL_LINK} /> },
 ]
 
 export function RoutesApp() {

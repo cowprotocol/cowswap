@@ -25,7 +25,7 @@ interface WalletModalProps {
   tryConnection: Command
   pendingError: string | undefined
   tryActivation: TryActivation
-  // account: string | undefined
+  account: string | undefined
 }
 
 export function WalletModal(props: Readonly<WalletModalProps>) {

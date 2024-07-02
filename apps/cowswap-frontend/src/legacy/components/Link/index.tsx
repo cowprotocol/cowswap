@@ -1,3 +1,4 @@
+import React from 'react'
 import { ExternalLink } from '@cowprotocol/ui'
 
 import { HashLink } from 'react-router-hash-link'
@@ -26,7 +27,7 @@ export function Link(props: LinkRendererProps) {
   )
 }
 
-export function LinkScrollable(props: LinkRendererProps): JSX.Element {
+export function LinkScrollable(props: Readonly<LinkRendererProps>): React.ReactNode {
   const { children, smooth = true, ...otherProps } = props
 
   return (
