@@ -1,16 +1,15 @@
 import React from 'react'
+
 // also exported from '@storybook/react' if you can deal with breaking changes in 6.1
 import { Story, Meta } from '@storybook/react/types-6-0'
-
+import { ETH, XDAI } from 'const'
 import { GlobalStyles, ThemeToggler } from 'storybook/decorators'
-
 import { Network } from 'types'
 
-import { ETH, XDAI } from 'const'
+import { USDT } from '../../../test/data'
 
 import { TokenDisplay, Props } from '.'
 
-import { USDT } from '../../../test/data'
 
 export default {
   title: 'Common/TokenDisplay',

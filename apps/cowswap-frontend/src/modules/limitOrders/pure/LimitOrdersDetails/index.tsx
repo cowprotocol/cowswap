@@ -1,15 +1,13 @@
-import React, { useMemo, useState } from 'react'
+import React, { ReactNode, useMemo, useState } from 'react'
 
 import ArrowDownImage from '@cowprotocol/assets/cow-swap/arrowDownRight.svg'
 import { DEFAULT_DATE_FORMAT } from '@cowprotocol/common-const'
 import { formatInputAmount } from '@cowprotocol/common-utils'
+import { InfoTooltip, HelpTooltip } from '@cowprotocol/ui'
 import { Currency, Price } from '@uniswap/sdk-core'
 
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
-
-import { InfoIcon } from 'legacy/components/InfoIcon'
-import QuestionHelper from 'legacy/components/QuestionHelper'
 
 import { ExecutionPriceTooltip } from 'modules/limitOrders/pure/ExecutionPriceTooltip'
 import { OrderType } from 'modules/limitOrders/pure/OrderType'
@@ -18,7 +16,7 @@ import { LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersS
 import { LimitRateState } from 'modules/limitOrders/state/limitRateAtom'
 import { PartiallyFillableOverrideDispatcherType } from 'modules/limitOrders/state/partiallyFillableOverride'
 import { calculateLimitOrdersDeadline } from 'modules/limitOrders/utils/calculateLimitOrdersDeadline'
-import { RecipientRow } from 'modules/trade'
+import { DividerHorizontal, RecipientRow } from 'modules/trade'
 
 import { ordersTableFeatures } from 'common/constants/featureFlags'
 import { ExecutionPrice } from 'common/pure/ExecutionPrice'
@@ -47,15 +45,23 @@ export interface LimitOrdersDetailsProps {
   executionPrice: Price<Currency, Currency> | null
   limitRateState: LimitRateState
   partiallyFillableOverride: PartiallyFillableOverrideDispatcherType
+  children?: ReactNode
 }
 
 export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
-  const { executionPrice, tradeContext, settingsState, rateInfoParams, limitRateState, partiallyFillableOverride } =
-    props
+  const {
+    executionPrice,
+    tradeContext,
+    settingsState,
+    rateInfoParams,
+    limitRateState,
+    partiallyFillableOverride,
+    children,
+  } = props
   const { account, recipient, recipientAddressOrName, partiallyFillable } = tradeContext.postOrderParams
   const { feeAmount, activeRate, marketRate } = limitRateState
 
-  const validTo = calculateLimitOrdersDeadline(settingsState)
+  const validTo = calculateLimitOrdersDeadline(settingsState, tradeContext.quoteState)
   const expiryDate = new Date(validTo * 1000)
   const isInvertedState = useState(false)
   const [isInverted] = isInvertedState
@@ -73,6 +79,10 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
         <styledEl.StyledRateInfo isInvertedState={isInvertedState} rateInfoParams={rateInfoParams} />
       </styledEl.DetailsRow>
 
+      {children}
+
+      <DividerHorizontal />
+
       {ordersTableFeatures.DISPLAY_EXECUTION_TIME && executionPrice && (
         <styledEl.DetailsRow>
           <div>
@@ -81,7 +91,7 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
                 <SVG src={ArrowDownImage} />
               </ArrowDownRight>
               <p>order executes at</p>{' '}
-              <QuestionHelper
+              <HelpTooltip
                 text={
                   <ExecutionPriceTooltip
                     isInverted={isInverted}
@@ -105,7 +115,7 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
           <span>
             <p>Order expires</p>
           </span>
-          <InfoIcon
+          <InfoTooltip
             content={
               "If your order has not been filled by this date & time, it will expire. Don't worry - expirations and order placement are free on CoW Swap!"
             }
@@ -115,21 +125,8 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
           <span>{expiryDate.toLocaleString(undefined, DEFAULT_DATE_FORMAT)}</span>
         </div>
       </styledEl.DetailsRow>
-      {/* <styledEl.DetailsRow>
-        <div>
-          <span>Protection from MEV</span>
-          <InfoIcon
-            content={
-              'On CoW Swap, your limit orders - just like market orders - are protected from MEV by default! So there’s no need to worry about MEV attacks like frontrunning or sandwiching.'
-            }
-          />
-        </div>
-        <div>
-          <span>Active</span>
-        </div>
-      </styledEl.DetailsRow> */}
       <OrderType isPartiallyFillable={partiallyFillable} partiallyFillableOverride={partiallyFillableOverride} />
-      <RecipientRow recipient={recipient} account={account} recipientAddressOrName={recipientAddressOrName} />
+      <RecipientRow chainId={tradeContext.chainId} recipient={recipientAddressOrName || recipient} account={account} />
     </Wrapper>
   )
 }

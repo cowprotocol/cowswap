@@ -1,8 +1,11 @@
 import React, { HTMLProps } from 'react'
-import { anonymizeLink } from '@cowprotocol/common-utils'
+
 import { externalLinkAnalytics, outboundLink } from '@cowprotocol/analytics'
-import styled from 'styled-components'
+import { anonymizeLink } from '@cowprotocol/common-utils'
+
 import { ExternalLink as LinkIconFeather } from 'react-feather'
+import styled from 'styled-components/macro'
+
 import { UI } from '../../enum'
 
 export const StyledLink = styled.a`
@@ -45,7 +48,7 @@ const LinkIconWrapper = styled.a`
     text-decoration: none;
   }
 `
-export const LinkIcon = styled(LinkIconFeather)`
+export const LinkIcon = styled(LinkIconFeather as any)`
   height: 16px;
   width: 18px;
   margin: 0 10px 0 0;

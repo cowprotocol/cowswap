@@ -1,4 +1,5 @@
 import { act, renderHook } from '@testing-library/react-hooks'
+
 import { useTable } from '../../explorer/components/OrdersTableWidget/useTable'
 
 describe('when rendered', () => {

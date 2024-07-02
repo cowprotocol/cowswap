@@ -1,21 +1,24 @@
 import React from 'react'
-import { BrowserRouter, HashRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom'
 
-import { withGlobalContext } from '../hooks/useGlobalState'
-import { INITIAL_STATE, rootReducer } from './state'
+import { CHAIN_INFO_ARRAY } from '@cowprotocol/common-const'
 
-import { GenericLayout } from '../components/layout'
-import { Header } from './layout/Header'
-
-import { useAnalyticsReporter } from '../components/analytics'
 import * as Sentry from '@sentry/react'
 import { Integrations } from '@sentry/tracing'
-import { environmentName } from '../utils/env'
-import { version } from '../../package.json'
+import { BrowserRouter, HashRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom'
+
+import { WithLDProvider } from './components/common/WithLDProvider'
+import { Header } from './layout/Header'
+import { INITIAL_STATE, rootReducer } from './state'
 import { GlobalStyle, MainWrapper } from './styled'
-import { NetworkUpdater } from '../state/network/NetworkUpdater'
+
+import { version } from '../../package.json'
+import { useAnalyticsReporter } from '../components/analytics'
+import { GenericLayout } from '../components/layout'
+import { withGlobalContext } from '../hooks/useGlobalState'
 import { RedirectMainnet, RedirectXdai } from '../state/network'
-import { CHAIN_INFO_ARRAY } from '@cowprotocol/common-const'
+import { NetworkUpdater } from '../state/network/NetworkUpdater'
+import { environmentName } from '../utils/env'
+
 
 const SENTRY_DSN = process.env.REACT_APP_EXPLORER_SENTRY_DSN
 const SENTRY_TRACES_SAMPLE_RATE = process.env.REACT_APP_SENTRY_TRACES_SAMPLE_RATE
@@ -113,22 +116,24 @@ const AppContent = (): JSX.Element => {
   useAnalyticsReporter(location, 'Explorer')
 
   return (
-    <GenericLayout header={<Header />}>
-      <React.Suspense fallback={null}>
-        <Routes>
-          <Route path={pathPrefix + '/'} element={<Home />} />
-          <Route path={pathPrefix + '/address/'} element={<Navigate to={pathPrefix + '/search/'} />} />
-          <Route path={pathPrefix + '/orders/'} element={<Navigate to={pathPrefix + '/search/'} />} />
-          <Route path={pathPrefix + '/tx/'} element={<Navigate to={pathPrefix + '/search/'} />} />
-          <Route path={pathPrefix + '/orders/:orderId'} element={<Order />} />
-          <Route path={pathPrefix + '/address/:address'} element={<UserDetails />} />
-          <Route path={pathPrefix + '/tx/:txHash'} element={<TransactionDetails />} />
-          <Route path={pathPrefix + '/search/:searchString?'} element={<SearchNotFound />} />
-          <Route path={pathPrefix + '/appdata'} element={<AppDataDetails />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </React.Suspense>
-    </GenericLayout>
+    <WithLDProvider>
+      <GenericLayout header={<Header />}>
+        <React.Suspense fallback={null}>
+          <Routes>
+            <Route path={pathPrefix + '/'} element={<Home />} />
+            <Route path={pathPrefix + '/address/'} element={<Navigate to={pathPrefix + '/search/'} />} />
+            <Route path={pathPrefix + '/orders/'} element={<Navigate to={pathPrefix + '/search/'} />} />
+            <Route path={pathPrefix + '/tx/'} element={<Navigate to={pathPrefix + '/search/'} />} />
+            <Route path={pathPrefix + '/orders/:orderId'} element={<Order />} />
+            <Route path={pathPrefix + '/address/:address'} element={<UserDetails />} />
+            <Route path={pathPrefix + '/tx/:txHash'} element={<TransactionDetails />} />
+            <Route path={pathPrefix + '/search/:searchString?'} element={<SearchNotFound />} />
+            <Route path={pathPrefix + '/appdata'} element={<AppDataDetails />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </React.Suspense>
+      </GenericLayout>
+    </WithLDProvider>
   )
 }
 

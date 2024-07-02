@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from 'react'
 
 import { useWalletInfo, useIsSafeWallet } from '@cowprotocol/wallet'
+import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import { useAllTransactions } from './TransactionHooksMod'
 
@@ -10,7 +11,7 @@ import { EnhancedTransactionDetails, HashType } from '../reducer'
 
 export * from './TransactionHooksMod'
 
-export type AddTransactionHookParams = Omit<AddTransactionParams, 'chainId' | 'from' | 'hashType'> // The hook requires less params for convenience
+export type AddTransactionHookParams = Omit<AddTransactionParams, 'chainId' | 'from' | 'hashType' | 'nonce'> // The hook requires less params for convenience
 export type TransactionAdder = (params: AddTransactionHookParams) => void
 
 /**
@@ -18,27 +19,39 @@ export type TransactionAdder = (params: AddTransactionHookParams) => void
  */
 export function useTransactionAdder(): TransactionAdder {
   const { chainId, account } = useWalletInfo()
+  const provider = useWalletProvider()
   const dispatch = useAppDispatch()
   const isSafeWallet = useIsSafeWallet()
 
   return useCallback(
-    (addTransactionParams: AddTransactionHookParams) => {
-      if (!account || !chainId) return
+    async (addTransactionParams: AddTransactionHookParams) => {
+      if (!account) return
 
       const hashType = isSafeWallet ? HashType.GNOSIS_SAFE_TX : HashType.ETHEREUM_TX
+
       if (!addTransactionParams.hash) {
         throw Error('No transaction hash found')
       }
-      dispatch(
-        addTransaction({
-          hashType,
-          from: account,
-          chainId,
-          ...addTransactionParams,
-        })
-      )
+
+      if (!provider) return
+
+      try {
+        const nonce = await provider.getTransactionCount(account)
+
+        dispatch(
+          addTransaction({
+            hashType,
+            from: account,
+            chainId,
+            ...addTransactionParams,
+            nonce,
+          })
+        )
+      } catch (e) {
+        console.error('Cannot add a transaction', e)
+      }
     },
-    [dispatch, chainId, account, isSafeWallet]
+    [dispatch, chainId, account, isSafeWallet, provider]
   )
 }
 
@@ -55,32 +68,6 @@ export function useAllTransactionsDetails(filter?: TransactionFilter): EnhancedT
 
     return filter ? transactionsDetails.filter(filter) : transactionsDetails
   }, [transactions, filter])
-}
-
-export type TransactionsByType = Record<HashType, EnhancedTransactionDetails[]>
-
-/**
- * Return all transactions grouped by type
- */
-export function useAllTransactionsByType(filter?: TransactionFilter): TransactionsByType {
-  const transactions = useAllTransactionsDetails(filter)
-
-  return useMemo(() => {
-    return transactions.reduce<TransactionsByType>(
-      (acc, tx) => {
-        const txs = acc[tx.hashType]
-        if (!txs) {
-          acc[tx.hashType] = []
-        }
-        acc[tx.hashType].push(tx)
-        return acc
-      },
-      {
-        [HashType.ETHEREUM_TX]: [],
-        [HashType.GNOSIS_SAFE_TX]: [],
-      }
-    )
-  }, [transactions])
 }
 
 /**

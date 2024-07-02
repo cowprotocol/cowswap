@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { DefaultTheme, useTheme } from 'styled-components'
+
+import { Command } from '@cowprotocol/types'
+
 import { format, fromUnixTime } from 'date-fns'
 import {
   createChart,
@@ -11,10 +13,8 @@ import {
   Coordinate,
   LogicalRange,
 } from 'lightweight-charts'
+import { DefaultTheme, useTheme } from 'styled-components/macro'
 
-import { formatSmart, getPercentageDifference } from '../../../../utils'
-import Spinner from '../../../../components/common/Spinner'
-import { getColorBySign } from '../../../../components/common/Card/card.utils'
 import {
   ChartSkeleton,
   WrapperChart,
@@ -24,11 +24,13 @@ import {
   WrapperTooltipPrice,
 } from './VolumeChart.styled'
 import { VolumePeriod, volumePeriodTitle } from './VolumeChartWidget'
-import { numberFormatter } from '../utils'
-import { useNetworkId } from '../../../../state/network'
-import { usePrevious } from '../../../../hooks/usePrevious'
 
-import { Command } from '@cowprotocol/types'
+import { getColorBySign } from '../../../../components/common/Card/card.utils'
+import Spinner from '../../../../components/common/Spinner'
+import { usePrevious } from '../../../../hooks/usePrevious'
+import { useNetworkId } from '../../../../state/network'
+import { formatSmart, getPercentageDifference } from '../../../../utils'
+import { numberFormatter } from '../utils'
 
 const DEFAULT_CHART_HEIGHT = 214 // px
 

@@ -1,9 +1,10 @@
 import { useCallback, useMemo } from 'react'
 
 import { ThemeState, updateTheme } from 'state/theme'
+import { Theme } from 'theme'
+
 import useGlobalState from './useGlobalState'
 
-import { Theme } from 'theme'
 
 export function useThemeMode<State extends { theme: ThemeState }>(): Theme {
   const [state] = useGlobalState<State>()

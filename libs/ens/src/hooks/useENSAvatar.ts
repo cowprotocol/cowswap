@@ -1,16 +1,17 @@
 import { useEffect, useMemo, useState } from 'react'
 
-import { safeNamehash, uriToHttp, isAddress, isZero, getContract } from '@cowprotocol/common-utils'
+import { Erc1155, Erc1155Abi, Erc721, Erc721Abi } from '@cowprotocol/abis'
+import { getContract, isAddress, isZero, safeNamehash, uriToHttp } from '@cowprotocol/common-utils'
+import { useWalletChainId, useWalletProvider } from '@cowprotocol/wallet-provider'
 import { BigNumber } from '@ethersproject/bignumber'
 import { hexZeroPad } from '@ethersproject/bytes'
 import { namehash } from '@ethersproject/hash'
 
-import { useENSName } from './useENSName'
-import { useENSResolverContract } from './useENSResolverContract'
 import useSWR from 'swr'
+
+import { useENSName } from './useENSName'
 import { useENSResolver } from './useENSResolver'
-import { useWeb3React } from '@web3-react/core'
-import { Erc1155, Erc1155Abi, Erc721, Erc721Abi } from '@cowprotocol/abis'
+import { useENSResolverContract } from './useENSResolverContract'
 
 /**
  * Returns the ENS avatar URI, if available.
@@ -51,11 +52,10 @@ function useAvatarFromNode(node?: string): { avatar?: string; loading: boolean }
     resolverAddress && !isZero(resolverAddress) ? resolverAddress : undefined
   )
 
-  const { data: avatar, isLoading } = useSWR(['useAvatarFromNode', node], async () => {
-    if (!resolverContract || !node) return undefined
-
-    return resolverContract.callStatic.text(node, 'avatar')
-  })
+  const { data: avatar, isLoading } = useSWR(
+    node && resolverContract ? ['useAvatarFromNode', node, resolverContract] : null,
+    async ([, _node, contract]) => contract.callStatic.text(_node, 'avatar')
+  )
 
   return useMemo(
     () => ({
@@ -116,13 +116,14 @@ function useERC721Uri(
 ): { uri?: string; loading: boolean } {
   const contract = useERC721Contract(contractAddress)
 
-  const { data, isLoading } = useSWR(['useERC721Uri', contract, id], async () => {
-    if (!contract || !account || !id) return undefined
+  const { data, isLoading } = useSWR(
+    contract && id && account ? ['useERC721Uri', contract, id] : null,
+    async ([, _contract, _id]) => {
+      const [owner, uri] = await Promise.all([_contract.callStatic.ownerOf(_id), _contract.callStatic.tokenURI(_id)])
 
-    const [owner, uri] = await Promise.all([contract.callStatic.ownerOf(id), contract.callStatic.tokenURI(id)])
-
-    return { owner, uri }
-  })
+      return { owner, uri }
+    }
+  )
 
   return useMemo(
     () => ({
@@ -141,13 +142,17 @@ function useERC1155Uri(
 ): { uri?: string; loading: boolean } {
   const contract = useERC1155Contract(contractAddress)
 
-  const { data, isLoading } = useSWR(['useERC1155Uri', contract, id, account], async () => {
-    if (!contract || !account || !id) return undefined
+  const { data, isLoading } = useSWR(
+    contract && id && account ? ['useERC1155Uri', contract, id, account] : null,
+    async ([, _contract, _id, _account]) => {
+      const [balance, uri] = await Promise.all([
+        _contract.callStatic.balanceOf(_account, _id),
+        _contract.callStatic.uri(_id),
+      ])
 
-    const [balance, uri] = await Promise.all([contract.callStatic.balanceOf(account, id), contract.callStatic.uri(id)])
-
-    return { balance, uri }
-  })
+      return { balance, uri }
+    }
+  )
 
   // ERC-1155 allows a generic {id} in the URL, so prepare to replace if relevant,
   //   in lowercase hexadecimal (with no 0x prefix) and leading zero padded to 64 hex characters.
@@ -164,25 +169,25 @@ function useERC1155Uri(
 }
 
 function useERC721Contract(address: string | undefined): Erc721 | undefined {
-  const { provider, chainId } = useWeb3React()
+  const chainId = useWalletChainId()
+  const provider = useWalletProvider()
 
-  const { data } = useSWR(['useERC721Contract', provider, chainId, address], () => {
-    if (!chainId || !provider || !address) return undefined
-
-    return getContract(address, Erc721Abi, provider) as Erc721
-  })
+  const { data } = useSWR(
+    provider && chainId && address ? ['useERC721Contract', provider, chainId, address] : null,
+    ([, _provider, , _address]) => getContract(_address, Erc721Abi, _provider) as Erc721
+  )
 
   return data
 }
 
 function useERC1155Contract(address: string | undefined): Erc1155 | undefined {
-  const { provider, chainId } = useWeb3React()
+  const chainId = useWalletChainId()
+  const provider = useWalletProvider()
 
-  const { data } = useSWR(['useERC1155Contract', provider, chainId, address], () => {
-    if (!chainId || !provider || !address) return undefined
-
-    return getContract(address, Erc1155Abi, provider) as Erc1155
-  })
+  const { data } = useSWR(
+    provider && chainId && address ? ['useERC1155Contract', provider, chainId, address] : null,
+    ([, _provider, , _address]) => getContract(_address, Erc1155Abi, _provider) as Erc1155
+  )
 
   return data
 }

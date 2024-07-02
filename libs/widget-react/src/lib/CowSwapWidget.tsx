@@ -1,15 +1,15 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-import {
-  createCowSwapWidget,
-  EthereumProvider,
-  CowSwapWidgetHandler,
-  CowSwapWidgetProps,
-  CowSwapWidgetParams,
-} from '@cowprotocol/widget-lib'
 import type { CowEventListeners } from '@cowprotocol/events'
-
 import { Command } from '@cowprotocol/types'
+import {
+  CowSwapWidgetHandler,
+  CowSwapWidgetParams,
+  CowSwapWidgetProps,
+  EthereumProvider,
+  createCowSwapWidget,
+} from '@cowprotocol/widget-lib'
+
 
 export function CowSwapWidget(props: CowSwapWidgetProps) {
   const { params, provider, listeners } = props
@@ -17,7 +17,7 @@ export function CowSwapWidget(props: CowSwapWidgetProps) {
   const paramsRef = useRef<CowSwapWidgetParams | null>(null)
   const providerRef = useRef<EthereumProvider | undefined>(provider)
   const listenersRef = useRef<CowEventListeners | undefined>(listeners)
-  const containerRef = useRef<HTMLDivElement>(null)
+  const containerRef = useRef<HTMLDivElement | null>(null)
   const widgetHandlerRef = useRef<CowSwapWidgetHandler | null>(null)
 
   // Error handling
@@ -35,6 +35,24 @@ export function CowSwapWidget(props: CowSwapWidgetProps) {
     [setError]
   )
 
+  // Cleanup widget
+  useEffect(() => {
+    return () => {
+      // Cleanup references
+      paramsRef.current = null
+      providerRef.current = undefined
+      listenersRef.current = undefined
+
+      // Destroy widget
+      const handler = widgetHandlerRef.current
+      if (handler) {
+        tryOrHandleError('💥 Destroy widget', () => handler.destroy())
+        widgetHandlerRef.current = null
+      }
+    }
+  }, [])
+
+  // Create/Update the widget if the parameters change
   useEffect(() => {
     if (!containerRef.current || JSON.stringify(paramsRef.current) === JSON.stringify(params)) {
       return
@@ -54,6 +72,7 @@ export function CowSwapWidget(props: CowSwapWidgetProps) {
     }
   }, [params])
 
+  // Update widget provider (if it changes)
   useEffect(() => {
     if (!widgetHandlerRef.current || providerRef.current === provider) {
       return
@@ -82,6 +101,7 @@ export function CowSwapWidget(props: CowSwapWidgetProps) {
     }
   }, [provider])
 
+  // Update widget listeners (if they change)
   useEffect(() => {
     if (!widgetHandlerRef.current || listenersRef.current === listeners) return
 
@@ -89,6 +109,7 @@ export function CowSwapWidget(props: CowSwapWidgetProps) {
     tryOrHandleError('Updating the listeners', () => handler.updateListeners(listeners))
   }, [listeners])
 
+  // Handle errors
   if (error) {
     return (
       <div style={{ color: '#ff3a3a' }}>
@@ -98,5 +119,6 @@ export function CowSwapWidget(props: CowSwapWidgetProps) {
     )
   }
 
-  return <div ref={containerRef}></div>
+  // Render widget container
+  return <div ref={containerRef} style={{ width: '100%' }}></div>
 }

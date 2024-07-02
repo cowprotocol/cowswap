@@ -1,9 +1,9 @@
 import { SupportedChainId as ChainId, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { COW_CONTRACT_ADDRESS, V_COW_CONTRACT_ADDRESS } from './common'
-import { TokenWithLogo } from './types'
 import { cowprotocolTokenLogoUrl } from './cowprotocolTokenLogoUrl'
-import { WETH_MAINNET } from './nativeAndWrappedTokens'
+import { NATIVE_CURRENCIES, WETH_MAINNET, WRAPPED_NATIVE_CURRENCIES } from './nativeAndWrappedTokens'
+import { TokenWithLogo } from './types'
 
 // Mainnet
 export const USDT = new TokenWithLogo(
@@ -94,6 +94,70 @@ export const GNO_GNOSIS_CHAIN = new TokenWithLogo(
   'Gnosis Token'
 )
 
+export const EURE_GNOSIS_CHAIN = new TokenWithLogo(
+  cowprotocolTokenLogoUrl('0xcb444e90d8198415266c6a2724b7900fb12fc56e', SupportedChainId.GNOSIS_CHAIN),
+  SupportedChainId.GNOSIS_CHAIN,
+  '0xcb444e90d8198415266c6a2724b7900fb12fc56e',
+  18,
+  'EURe',
+  'Monerium EUR emoney'
+)
+
+// Arbitrum
+
+export const USDT_ARBITRUM_ONE = new TokenWithLogo(
+  USDT.logoURI,
+  SupportedChainId.ARBITRUM_ONE,
+  '0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9',
+  6,
+  'USDT',
+  'Tether USD'
+)
+export const WBTC_ARBITRUM_ONE = new TokenWithLogo(
+  WBTC.logoURI,
+  SupportedChainId.ARBITRUM_ONE,
+  '0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f',
+  8,
+  'WBTC',
+  'Wrapped BTC'
+)
+
+export const USDC_ARBITRUM_ONE = new TokenWithLogo(
+  USDC_MAINNET.logoURI,
+  SupportedChainId.ARBITRUM_ONE,
+  '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
+  6,
+  'USDC',
+  'USD Coin'
+)
+
+export const DAI_ARBITRUM_ONE = new TokenWithLogo(
+  DAI.logoURI,
+  SupportedChainId.ARBITRUM_ONE,
+  '0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1',
+  18,
+  'DAI',
+  'Dai Stablecoin'
+)
+
+export const ARB_ARBITRUM_ONE = new TokenWithLogo(
+  cowprotocolTokenLogoUrl('0xb50721bcf8d664c30412cfbc6cf7a15145234ad1', SupportedChainId.ARBITRUM_ONE),
+  SupportedChainId.ARBITRUM_ONE,
+  '0x912ce59144191c1204e64559fe8253a0e49e6548',
+  18,
+  'ARB',
+  'Arbitrum'
+)
+
+export const GNO_ARBITRUM_ONE = new TokenWithLogo(
+  GNO_MAINNET.logoURI,
+  SupportedChainId.ARBITRUM_ONE,
+  '0xa0b862F60edEf4452F25B4160F177db44DeB6Cf1',
+  18,
+  'GNO',
+  'Gnosis Token'
+)
+
 // Sepolia
 
 const GNO_SEPOLIA = new TokenWithLogo(
@@ -118,14 +182,16 @@ export const USDC_SEPOLIA = new TokenWithLogo(
 export const USDC: Record<SupportedChainId, TokenWithLogo> = {
   [SupportedChainId.MAINNET]: USDC_MAINNET,
   [SupportedChainId.GNOSIS_CHAIN]: USDC_GNOSIS_CHAIN,
+  [SupportedChainId.ARBITRUM_ONE]: USDC_ARBITRUM_ONE,
   [SupportedChainId.SEPOLIA]: USDC_SEPOLIA,
 }
 
 export const TOKEN_SHORTHANDS: { [shorthand: string]: Record<SupportedChainId, string> } = {
   USDC: {
     [SupportedChainId.MAINNET]: USDC_MAINNET.address,
-    [SupportedChainId.SEPOLIA]: USDC_SEPOLIA.address,
     [SupportedChainId.GNOSIS_CHAIN]: USDC_GNOSIS_CHAIN.address,
+    [SupportedChainId.ARBITRUM_ONE]: USDC_ARBITRUM_ONE.address,
+    [SupportedChainId.SEPOLIA]: USDC_SEPOLIA.address,
   },
 }
 
@@ -159,9 +225,11 @@ const V_COW_TOKEN_SEPOLIA = new TokenWithLogo(
   'CoW Protocol Virtual Token'
 )
 
-export const V_COW: Record<SupportedChainId, TokenWithLogo> = {
+// TODO: V_COW not present in all chains, make sure code using it can handle that
+export const V_COW: Record<SupportedChainId, TokenWithLogo | null> = {
   [SupportedChainId.MAINNET]: V_COW_TOKEN_MAINNET,
   [SupportedChainId.GNOSIS_CHAIN]: V_COW_TOKEN_XDAI,
+  [SupportedChainId.ARBITRUM_ONE]: null,
   [SupportedChainId.SEPOLIA]: V_COW_TOKEN_SEPOLIA,
 }
 
@@ -186,6 +254,15 @@ const COW_TOKEN_XDAI = new TokenWithLogo(
   'CoW Protocol Token'
 )
 
+export const COW_TOKEN_ARBITRUM = new TokenWithLogo(
+  COW_TOKEN_MAINNET.logoURI,
+  SupportedChainId.ARBITRUM_ONE,
+  COW_CONTRACT_ADDRESS[SupportedChainId.ARBITRUM_ONE] || '',
+  18,
+  'COW',
+  'CoW Protocol Token'
+)
+
 const COW_TOKEN_SEPOLIA = new TokenWithLogo(
   COW_TOKEN_MAINNET.logoURI,
   SupportedChainId.SEPOLIA,
@@ -198,23 +275,33 @@ const COW_TOKEN_SEPOLIA = new TokenWithLogo(
 export const COW: Record<SupportedChainId, TokenWithLogo> = {
   [SupportedChainId.MAINNET]: COW_TOKEN_MAINNET,
   [SupportedChainId.GNOSIS_CHAIN]: COW_TOKEN_XDAI,
+  [SupportedChainId.ARBITRUM_ONE]: COW_TOKEN_ARBITRUM,
   [SupportedChainId.SEPOLIA]: COW_TOKEN_SEPOLIA,
 }
 
 export const GNO: Record<SupportedChainId, TokenWithLogo> = {
   [SupportedChainId.MAINNET]: GNO_MAINNET,
   [SupportedChainId.GNOSIS_CHAIN]: GNO_GNOSIS_CHAIN,
+  [SupportedChainId.ARBITRUM_ONE]: GNO_ARBITRUM_ONE,
   [SupportedChainId.SEPOLIA]: GNO_SEPOLIA,
 }
 
-export const EURE_GNOSIS_CHAIN = new TokenWithLogo(
-  cowprotocolTokenLogoUrl('0xcb444e90d8198415266c6a2724b7900fb12fc56e', SupportedChainId.GNOSIS_CHAIN),
-  SupportedChainId.GNOSIS_CHAIN,
-  '0xcb444e90d8198415266c6a2724b7900fb12fc56e',
-  18,
-  'EURe',
-  'Monerium EUR emoney'
-)
+const SDAI_GNOSIS_CHAIN_ADDRESS = '0xaf204776c7245bf4147c2612bf6e5972ee483701'
+const GBPE_GNOSIS_CHAIN_ADDRESS = '0x5cb9073902f2035222b9749f8fb0c9bfe5527108'
+const USDCe_GNOSIS_CHAIN_ADDRESS = '0x2a22f9c3b484c3629090feed35f17ff8f88f76f0'
+
+// NOTE: whenever this list is updated, make sure to update the docs section regarding the volume fees
+// https://github.com/cowprotocol/docs/blob/main/docs/governance/fees/fees.md?plain=1#L40
+export const GNOSIS_CHAIN_STABLECOINS = [
+  SDAI_GNOSIS_CHAIN_ADDRESS,
+  NATIVE_CURRENCIES[SupportedChainId.GNOSIS_CHAIN].address, //xDAI
+  WRAPPED_NATIVE_CURRENCIES[SupportedChainId.GNOSIS_CHAIN].address, //wxDAI
+  EURE_GNOSIS_CHAIN.address,
+  GBPE_GNOSIS_CHAIN_ADDRESS,
+  USDC_GNOSIS_CHAIN.address,
+  USDCe_GNOSIS_CHAIN_ADDRESS,
+  USDT_GNOSIS_CHAIN.address,
+].map((t) => t.toLowerCase())
 
 /**
  * Addresses related to COW vesting for Locked GNO
@@ -223,11 +310,13 @@ export const EURE_GNOSIS_CHAIN = new TokenWithLogo(
 export const MERKLE_DROP_CONTRACT_ADDRESSES: Record<SupportedChainId, string> = {
   [SupportedChainId.MAINNET]: '0x64646f112FfD6F1B7533359CFaAF7998F23C8c40',
   [SupportedChainId.GNOSIS_CHAIN]: '0x48D8566887F8c7d99757CE29c2cD39962bfd9547',
+  [SupportedChainId.ARBITRUM_ONE]: '', // doesn't exist
   [SupportedChainId.SEPOLIA]: '', // TODO SEPOLIA: check it
 }
 
 export const TOKEN_DISTRO_CONTRACT_ADDRESSES: Record<SupportedChainId, string> = {
   [SupportedChainId.MAINNET]: '0x68FFAaC7A431f276fe73604C127Bd78E49070c92',
   [SupportedChainId.GNOSIS_CHAIN]: '0x3d610e917130f9D036e85A030596807f57e11093',
+  [SupportedChainId.ARBITRUM_ONE]: '', // doesn't exist
   [SupportedChainId.SEPOLIA]: '', // TODO SEPOLIA: check it
 }

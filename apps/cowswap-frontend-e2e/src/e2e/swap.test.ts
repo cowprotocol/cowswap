@@ -23,7 +23,7 @@ describe('Swap (custom)', () => {
 
     // input amounts
     cy.get('#input-currency-input .token-amount-input').should('be.visible')
-    cy.get('#input-currency-input .token-amount-input').type('0.1', { force: true, delay: 200 })
+    cy.get('#input-currency-input .token-amount-input').type('0.5', { force: true, delay: 200 })
     cy.get('#output-currency-input .token-amount-input').should('not.equal', '')
     cy.get('#swap-button').should('contain.text', 'Swap').click()
     cy.get('#trade-confirmation > button').should('contain', 'Confirm Swap')
@@ -32,7 +32,7 @@ describe('Swap (custom)', () => {
   it('can swap ETH for USDC', () => {
     cy.visit(`/#/${CHAIN_ID}/swap/ETH/${USDC}`)
     cy.get('#input-currency-input .token-amount-input').should('be.visible')
-    cy.get('#input-currency-input .token-amount-input').type('0.1', { force: true, delay: 200 })
+    cy.get('#input-currency-input .token-amount-input').type('0.5', { force: true, delay: 200 })
     cy.get('#output-currency-input .token-amount-input').should('not.equal', '')
     acceptFeesExceedWarning()
     cy.get('#swap-button > button').should('contain.text', 'Swap').should('be.enabled').click()
@@ -44,7 +44,7 @@ describe('Swap (custom)', () => {
     cy.visit(`/#/${CHAIN_ID}/swap/ETH/${USDC}`)
 
     cy.get('#input-currency-input .token-amount-input').should('be.visible')
-    cy.get('#input-currency-input .token-amount-input').type('0.1', { force: true, delay: 400 })
+    cy.get('#input-currency-input .token-amount-input').type('0.5', { force: true, delay: 400 })
 
     cy.get('#output-currency-input .token-amount-input').should('not.equal', '')
     acceptFeesExceedWarning()

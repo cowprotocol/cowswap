@@ -1,4 +1,5 @@
 import { Network } from 'types'
+
 import { NetworkMap } from './types'
 
 export const networkIds = Object.values(Network).filter(Number.isInteger) as Network[]

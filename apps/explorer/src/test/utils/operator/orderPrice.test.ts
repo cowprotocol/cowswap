@@ -1,9 +1,12 @@
-import BigNumber from 'bignumber.js'
-import { ONE_BIG_NUMBER, ONE_HUNDRED_BIG_NUMBER, TEN_BIG_NUMBER, ZERO_BIG_NUMBER } from '../../../const'
-import { RawOrder } from 'api/operator'
-import { getOrderExecutedPrice, getOrderLimitPrice, GetRawOrderPriceParams, GetOrderLimitPriceParams } from 'utils'
-import { RAW_ORDER } from '../../data'
 import { OrderKind } from '@cowprotocol/cow-sdk'
+
+import BigNumber from 'bignumber.js'
+import { getOrderExecutedPrice, getOrderLimitPrice, GetRawOrderPriceParams, GetOrderLimitPriceParams } from 'utils'
+
+import { RawOrder } from 'api/operator'
+
+import { ONE_BIG_NUMBER, ONE_HUNDRED_BIG_NUMBER, TEN_BIG_NUMBER, ZERO_BIG_NUMBER } from '../../../const'
+import { RAW_ORDER } from '../../data'
 
 const ZERO_DOT_ONE = new BigNumber('0.1')
 

@@ -2,11 +2,41 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>Explorer</title>
+    <title>CoW Explorer</title>
+    <meta
+      name="description"
+      content="CoW Explorer is a blockchain explorer for the CoW Protocol."
+    />
     <base href="/" />
-
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" type="image/x-icon" href="/favicon.svg" />
+
+    <!-- Manifest, theme & colors  -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" href="/favicon-light-mode.png" media="(prefers-color-scheme: light)" />
+    <link rel="icon" type="image/png" href="/favicon-dark-mode.png" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" type="image/png" href="/favicon-light-mode.png" media="(prefers-color-scheme: no-preference)" />
+
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#000000" />
+    <meta name="msapplication-TileColor" content="#000000" />
+    <meta name="theme-color" content="#ffffff" />
+
+    <!-- Social media tags -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="CoW Explorer" />
+    <meta
+      property="og:description"
+      content="CoW Explorer is a blockchain explorer for the CoW Protocol."
+    />
+
+    <meta property="og:image" content="https://explorer.cow.fi/og-meta.png" />
+    <meta property="og:url" content="https://explorer.cow.fi/" />
+
+    <!-- Twitter media tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@CoWSwap" />
+    <meta name="twitter:title" content="CoW Explorer" />
+    <meta name="twitter:image" content="https://explorer.cow.fi/og-meta.png" />
   </head>
   <body>
     <div id="root"></div>

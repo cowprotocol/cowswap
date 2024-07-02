@@ -14,3 +14,12 @@ export enum UiOrderType {
   TWAP = 'TWAP',
   HOOKS = 'HOOKS',
 }
+
+export type TokenInfo = {
+  chainId: number
+  address: string
+  name: string
+  decimals: number
+  symbol: string
+  logoURI?: string
+}

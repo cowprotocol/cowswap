@@ -1,8 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { faCheck } from '@fortawesome/free-solid-svg-icons'
-import { SelectorContainer, OptionsContainer, Option, NetworkLabel, StyledFAIcon } from './NetworkSelector.styled'
+
 import { CHAIN_INFO, getChainInfo } from '@cowprotocol/common-const'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { useAvailableChains } from '@cowprotocol/common-hooks'
+
+import { faCheck } from '@fortawesome/free-solid-svg-icons'
+
+import { NetworkLabel, Option, OptionsContainer, SelectorContainer, StyledFAIcon } from './NetworkSelector.styled'
+
 import { usePathSuffix } from '../../state/network'
 
 type networkSelectorProps = {
@@ -17,6 +21,7 @@ export const NetworkSelector: React.FC<networkSelectorProps> = ({ networkId }) =
   const currentNetworkName = currentNetwork.label.toLowerCase()
   const [open, setOpen] = useState(false)
   const pathSuffix = usePathSuffix()
+  const availableChains = useAvailableChains()
 
   useEffect(() => {
     const closeOpenSelector = (e: MouseEvent | KeyboardEvent): void => {
@@ -47,8 +52,7 @@ export const NetworkSelector: React.FC<networkSelectorProps> = ({ networkId }) =
       <span className={`arrow ${open && 'open'}`} />
       {open && (
         <OptionsContainer width={selectContainer.current?.offsetWidth || 0}>
-          {Object.keys(CHAIN_INFO).map((_itemNetworkId) => {
-            const itemNetworkId = +_itemNetworkId as unknown as SupportedChainId
+          {availableChains.map((itemNetworkId) => {
             const network = CHAIN_INFO[itemNetworkId]
 
             /**

@@ -1,11 +1,12 @@
 import { useMemo } from 'react'
 
-import { useTokenContract } from '@cowprotocol/common-hooks'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import ms from 'ms.macro'
 import useSWR from 'swr'
 import { Nullish } from 'types'
+
+import { useTokenContract } from 'common/hooks/useContract'
 
 const ALLOWANCES_SWR_CONFIG = { refreshInterval: ms`10s` }
 
@@ -21,12 +22,8 @@ export function useTokenAllowance(
   const contract = useTokenContract(tokenAddress, false)
 
   const { data: allowance } = useSWR(
-    ['useTokenAllowance', tokenAddress, owner, spender],
-    async () => {
-      if (!owner || !spender) return undefined
-
-      return contract?.callStatic.allowance(owner, spender)
-    },
+    owner && spender && contract ? ['useTokenAllowance', tokenAddress, owner, spender, contract] : null,
+    async ([, , _owner, _spender, _contract]) => _contract?.callStatic.allowance(_owner, _spender),
     ALLOWANCES_SWR_CONFIG
   )
 

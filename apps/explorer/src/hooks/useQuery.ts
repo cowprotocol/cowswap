@@ -1,5 +1,6 @@
-import { useLocation } from 'react-router'
 import { useCallback, useMemo } from 'react'
+
+import { useLocation } from 'react-router'
 import { useNavigate } from 'react-router-dom'
 
 export function useQuery(): URLSearchParams {

@@ -1,7 +1,8 @@
 import React from 'react'
-import styled, { keyframes } from 'styled-components'
+
+import CowLoadingSVG from 'assets/img/CowProtocol-logo.svg'
 import SVG from 'react-inlinesvg'
-import CowLoadingSVG from 'assets/img/CoW-loading.svg'
+import styled, { keyframes } from 'styled-components/macro'
 
 export const WrapperCenter = styled.div`
   display: flex;
@@ -14,7 +15,7 @@ const CowAnimation = keyframes`
   0%,
   100% {
     transform: scale(0.95) translateX(1px);
-    opacity: 0.4;    
+    opacity: 0.4;
   }
   50% {
     transform: scale(1);
@@ -22,6 +23,11 @@ const CowAnimation = keyframes`
   }
 `
 export const StyledCowLoading = styled(SVG)`
+  --size: 15rem;
+  width: var(--size);
+  height: var(--size);
+  object-fit: contain;
+
   .cowLoading {
     animation: ${CowAnimation} 1.4s infinite ease-in-out;
     animation-delay: -1s;

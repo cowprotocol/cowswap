@@ -1,11 +1,13 @@
 import React from 'react'
-import { useParams } from 'react-router'
-import { Helmet } from 'react-helmet'
 
-import { isATxHash } from '../../utils'
-import RedirectToSearch from '../../components/RedirectToSearch'
+import { Helmet } from 'react-helmet'
+import { useParams } from 'react-router'
+
 import { Wrapper } from './styled'
+
+import RedirectToSearch from '../../components/RedirectToSearch'
 import { useNetworkId } from '../../state/network'
+import { isATxHash } from '../../utils'
 import { TransactionsTableWidget } from '../components/TransactionsTableWidget'
 import { APP_TITLE } from '../const'
 

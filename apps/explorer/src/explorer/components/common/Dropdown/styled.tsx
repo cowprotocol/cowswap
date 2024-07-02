@@ -1,7 +1,7 @@
-import styled, { css } from 'styled-components'
+import styled, { css } from 'styled-components/macro'
 
 export const BaseCard = styled.div<{ noPadding?: boolean }>`
-  background-color: ${({ theme }): string => theme.bg1};
+  background-color: ${({ theme }): string => theme.paper};
   border-radius: 0.6rem;
   border: 1px solid ${({ theme }): string => theme.borderPrimary};
   display: flex;
@@ -47,7 +47,7 @@ export interface DropdownItemProps {
 
 export const DropdownItemCSS = css<DropdownItemProps>`
   align-items: center;
-  background-color: ${(props): string => props.theme.bg1};
+  background-color: ${(props): string => props.theme.paper};
   border-bottom: 1px solid ${(props): string => props.theme.borderPrimary};
   color: ${(props): string => props.theme.textPrimary1};
   cursor: pointer;

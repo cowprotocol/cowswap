@@ -1,10 +1,14 @@
 import { useEffect, useState } from 'react'
+
 import { HistogramData, UTCTimestamp } from 'lightweight-charts'
+
+import { VolumeDataResponse } from './VolumeChart'
+import { VolumePeriod } from './VolumeChartWidget'
+
+import { subgraphApiSDK } from '../../../../cowSdk'
 import { useNetworkId } from '../../../../state/network'
 import { Network } from '../../../../types'
-import { VolumePeriod } from './VolumeChartWidget'
-import { VolumeDataResponse } from './VolumeChart'
-import { subgraphApiSDK } from '../../../../cowSdk'
+
 
 type RawVolumeItem = {
   timestamp: number

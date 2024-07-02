@@ -1,5 +1,5 @@
 import { TokenLogo } from '@cowprotocol/tokens'
-import { BaseButton } from '@cowprotocol/ui'
+import { BaseButton, Media } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 
 import { transparentize } from 'color2k'
@@ -32,11 +32,11 @@ export const ResponsiveLogo = styled(TokenLogo)`
   background: var(${UI.COLOR_PAPER});
   color: var(${UI.COLOR_TEXT}) !important; // TODO: prevent styles override
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${Media.upToMedium()} {
     width: 21px;
     height: 21px;
     border-radius: 21px;
-  `}
+  }
 `
 
 export const Label = styled.div<{ end?: number }>`
@@ -104,9 +104,9 @@ export const PaginationText = styled.span`
   font-size: 13px;
   white-space: nowrap;
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${Media.upToMedium()} {
     font-size: 15px;
-  `};
+  }
 `
 
 export const ArrowButton = styled.button`
@@ -120,9 +120,9 @@ export const Arrow = styled.div<{ faded: boolean }>`
   padding: 0 10px;
   user-select: none;
 
-  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+  ${Media.upToExtraSmall()} {
     padding: 5px;
-  `};
+  }
 
   ${({ faded }) =>
     !faded &&
@@ -151,10 +151,10 @@ export const Row = styled.div`
   background: transparent;
   transition: background var(${UI.ANIMATION_DURATION}) ease-in-out;
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${Media.upToMedium()} {
     width: auto;
-    grid-template-columns: 62px 330px repeat(2,150px) 200px;
-  `}
+    grid-template-columns: 62px 330px repeat(2, 150px) 200px;
+  }
 
   &:hover {
     background: var(${UI.COLOR_PAPER_DARKER});
@@ -170,6 +170,51 @@ export const TableHeader = styled(Row)`
 
   ${Label} {
     opacity: 0.75;
+  }
+`
+
+export const TokenText = styled.div`
+  display: flex;
+  align-items: center;
+  text-align: left;
+  margin: 0 0 0 12px;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  font-variant-numeric: tabular-nums;
+
+  > span {
+    display: flex;
+    flex-flow: column wrap;
+    align-items: center;
+    justify-content: flex-start;
+    max-width: inherit;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    gap: 2px;
+  }
+
+  > span > b {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+    font-weight: 600;
+    display: inline-block;
+  }
+
+  > span > i {
+    opacity: 0.6;
+    font-style: normal;
+    font-size: 14px;
+    font-weight: 500;
+    width: 100%;
+    display: inline-block;
+  }
+
+  ${Media.upToSmall()} {
+    font-size: 13px;
   }
 `
 
@@ -195,14 +240,18 @@ export const Cell = styled.div`
 
   > a {
     text-decoration-color: transparent;
-    transition: text-decoration-color var(${UI.ANIMATION_DURATION}) ease-in-out;
+    transition: color var(${UI.ANIMATION_DURATION}) ease-in-out;
     overflow: hidden;
     display: flex;
     color: var(${UI.COLOR_TEXT});
 
     &:hover {
       color: var(${UI.COLOR_TEXT});
-      text-decoration-color: var(${UI.COLOR_TEXT});
+      text-decoration: none;
+    }
+
+    &:hover > ${TokenText} {
+      text-decoration: underline;
     }
   }
 `
@@ -294,54 +343,9 @@ export const Table = styled.div`
   transition: background var(${UI.ANIMATION_DURATION}) ease-in-out;
   ${({ theme }) => theme.colorScrollbar};
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     min-height: 250px;
-  `};
-`
-
-export const TokenText = styled.div`
-  display: flex;
-  align-items: center;
-  text-align: left;
-  margin: 0 0 0 12px;
-  font-size: 16px;
-  display: flex;
-  align-items: center;
-  font-variant-numeric: tabular-nums;
-
-  > span {
-    display: flex;
-    flex-flow: column wrap;
-    align-items: center;
-    justify-content: flex-start;
-    max-width: inherit;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    gap: 2px;
   }
-
-  > span > b {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    width: 100%;
-    font-weight: 600;
-    display: inline-block;
-  }
-
-  > span > i {
-    opacity: 0.6;
-    font-style: normal;
-    font-size: 14px;
-    font-weight: 500;
-    width: 100%;
-    display: inline-block;
-  }
-
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    font-size: 13px;
-  `};
 `
 
 export const ApproveLabel = styled.span`
@@ -383,11 +387,11 @@ export const NoResults = styled.div`
   align-items: center;
   color: inherit;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     min-height: 200px;
     margin: 0 auto 0 0;
     overflow-x: auto;
-  `};
+  }
 
   > h3 {
     font-size: 24px;
@@ -395,10 +399,10 @@ export const NoResults = styled.div`
     margin: 0 auto;
     color: inherit;
 
-    ${({ theme }) => theme.mediaWidth.upToSmall`
+    ${Media.upToSmall()} {
       font-size: 16px;
       text-align: left;
       margin: 16px;
-    `};
+    }
   }
 `

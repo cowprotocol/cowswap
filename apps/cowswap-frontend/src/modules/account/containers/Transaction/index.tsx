@@ -1,6 +1,5 @@
 import { RowFixed } from '@cowprotocol/ui'
-import { useWalletInfo } from '@cowprotocol/wallet'
-import { SafeInfoResponse } from '@safe-global/api-kit'
+import { GnosisSafeInfo, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useActivityDerivedState } from 'legacy/hooks/useActivityDerivedState'
 import { ActivityDescriptors, ActivityStatus, ActivityType } from 'legacy/hooks/useRecentActivity'
@@ -45,6 +44,10 @@ export function determinePillColour(status: ActivityStatus, type: ActivityType) 
   }
 }
 
+export interface OrderCreationTxInfo {
+  orderCreationTx: EnhancedTransactionDetails
+  orderCreationLinkedTx?: EnhancedTransactionDetails
+}
 /**
  * Object derived from the activity state
  */
@@ -63,6 +66,7 @@ export interface ActivityDerivedState {
   isExpired: boolean
   isCancelling: boolean
   isCancelled: boolean
+  isReplaced: boolean
   isPresignaturePending: boolean
   isUnfillable?: boolean
   // EthFlow flags
@@ -75,7 +79,10 @@ export interface ActivityDerivedState {
   order?: Order
 
   // Gnosis Safe
-  gnosisSafeInfo?: SafeInfoResponse
+  gnosisSafeInfo?: GnosisSafeInfo
+
+  // Eth-flow order related transactions
+  orderCreationTxInfo?: OrderCreationTxInfo
 }
 
 export default function Activity({ activity }: { activity: ActivityDescriptors }) {

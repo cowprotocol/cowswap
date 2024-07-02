@@ -1,16 +1,15 @@
 import { LONG_PRECISION } from '@cowprotocol/common-const'
-import { FeatureFlag, formatTokenAmount, FractionUtils } from '@cowprotocol/common-utils'
-import { UI } from '../../enum'
-import styled from 'styled-components'
-import { FractionLike, Nullish } from '../../types'
-import { formatTokenSymbol, TokenNameAndSymbol, TokenSymbol } from '../TokenSymbol'
-import { AMOUNTS_FORMATTING_FEATURE_FLAG } from '../../consts'
+import { formatTokenAmount, FractionUtils } from '@cowprotocol/common-utils'
 
-export const Wrapper = styled.span<{ highlight: boolean; lowVolumeWarning?: boolean }>`
-  background: ${({ lowVolumeWarning, highlight }) =>
-    lowVolumeWarning || highlight ? `var(${UI.COLOR_ALERT_BG})` : ''};
-  color: ${({ lowVolumeWarning, highlight }) =>
-    lowVolumeWarning || highlight ? `var(${UI.COLOR_ALERT_TEXT})` : 'inherit'};
+import styled from 'styled-components/macro'
+
+import { UI } from '../../enum'
+import { FractionLike, Nullish } from '../../types'
+import { TokenNameAndSymbol, TokenSymbol } from '../TokenSymbol'
+
+export const Wrapper = styled.span<{ lowVolumeWarning?: boolean }>`
+  background: ${({ lowVolumeWarning }) => (lowVolumeWarning ? `var(${UI.COLOR_ALERT_BG})` : '')};
+  color: ${({ lowVolumeWarning }) => (lowVolumeWarning ? `var(${UI.COLOR_ALERT_TEXT})` : 'inherit')};
   border-radius: 2px;
   word-break: break-word;
 `
@@ -30,8 +29,6 @@ export interface TokenAmountProps {
   opacitySymbol?: boolean
 }
 
-const highlight = !!FeatureFlag.get(AMOUNTS_FORMATTING_FEATURE_FLAG)
-
 export function TokenAmount({
   amount,
   defaultValue,
@@ -41,8 +38,7 @@ export function TokenAmount({
   hideTokenSymbol,
   opacitySymbol,
 }: TokenAmountProps) {
-  const title =
-    FractionUtils.fractionLikeToExactString(amount, LONG_PRECISION) + (tokenSymbol ? ` ${tokenSymbol.symbol}` : '')
+  const title = getTokenAmountTitle({ amount, tokenSymbol })
 
   if (!amount) return null
 
@@ -56,30 +52,13 @@ export function TokenAmount({
 
   const roundedAmount = round ? FractionUtils.round(amount) : amount
   return (
-    <Wrapper title={title} className={className} highlight={highlight}>
+    <Wrapper title={title} className={className}>
       {formatTokenAmount(roundedAmount) || defaultValue}
       <SymbolElement opacitySymbol={opacitySymbol}>{tokenSymbolElement}</SymbolElement>
     </Wrapper>
   )
 }
 
-export type FormatTokenAmountWithSymbolParams = Omit<TokenAmountProps, 'className' | 'opacitySymbol'>
-
-export function formatTokenAmountWithSymbol(props: FormatTokenAmountWithSymbolParams): string | null {
-  const { amount, defaultValue, tokenSymbol, round, hideTokenSymbol } = props
-
-  if (!amount) {
-    return null
-  }
-
-  const symbol = hideTokenSymbol || !tokenSymbol ? null : formatTokenSymbol({ token: tokenSymbol })
-
-  const roundedAmount = round ? FractionUtils.round(amount) : amount
-
-  const formattedAmount = formatTokenAmount(roundedAmount) || defaultValue
-  if (!formattedAmount) {
-    return null
-  }
-
-  return symbol ? `${formattedAmount} ${symbol}` : formattedAmount
+export function getTokenAmountTitle({ amount, tokenSymbol }: Pick<TokenAmountProps, 'amount' | 'tokenSymbol'>): string {
+  return FractionUtils.fractionLikeToExactString(amount, LONG_PRECISION) + (tokenSymbol ? ` ${tokenSymbol.symbol}` : '')
 }

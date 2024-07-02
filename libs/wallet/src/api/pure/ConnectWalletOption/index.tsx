@@ -1,20 +1,18 @@
 import React from 'react'
 
+import { Command } from '@cowprotocol/types'
+import { ExternalLink, HoverTooltip, UI } from '@cowprotocol/ui'
+
 import styled from 'styled-components/macro'
 
-import { UI } from '@cowprotocol/ui'
-import { Command } from '@cowprotocol/types'
-
-import { MouseoverTooltip, ExternalLink } from '@cowprotocol/ui'
-
 const InfoCard = styled.button<{ isActive?: boolean }>`
-  background-color: ${({ theme, isActive }) => (isActive ? theme.bg3 : theme.bg2)};
+  background-color: ${({ theme, isActive }) => (isActive ? theme.background : theme.bg2)};
   padding: 1rem;
   outline: none;
   border: 1px solid;
   border-radius: 12px;
   width: 100% !important;
-  border-color: ${({ theme, isActive }) => (isActive ? 'transparent' : theme.bg3)};
+  border-color: ${({ theme, isActive }) => (isActive ? 'transparent' : theme.background)};
 `
 
 const OptionCard = styled(InfoCard as any)`
@@ -159,11 +157,21 @@ export function ConnectWalletOption({
 
   if (link) {
     const externalLink = <ExternalLink href={link}>{content}</ExternalLink>
-    return tooltipText ? <MouseoverTooltip text={tooltipText}>{externalLink}</MouseoverTooltip> : externalLink
+    return tooltipText ? (
+      <HoverTooltip wrapInContainer content={tooltipText}>
+        {externalLink}
+      </HoverTooltip>
+    ) : (
+      externalLink
+    )
   }
 
   if (tooltipText) {
-    return <MouseoverTooltip text={tooltipText}>{content}</MouseoverTooltip>
+    return (
+      <HoverTooltip wrapInContainer content={tooltipText}>
+        {content}
+      </HoverTooltip>
+    )
   }
 
   return content

@@ -7,40 +7,27 @@ import { Trans } from '@lingui/macro'
 import ICON_WALLET from 'assets/icon/wallet.svg'
 import SVG from 'react-inlinesvg'
 
-import { NetworkIcon, Text, Web3StatusConnect, Web3StatusConnected, Web3StatusError } from './styled'
+import { upToTiny, upToExtraSmall, useMediaQuery } from 'legacy/hooks/useMediaQuery'
+
+import { Text, Web3StatusConnect, Web3StatusConnected } from './styled'
 
 import { FollowPendingTxPopup } from '../../containers/FollowPendingTxPopup'
 import { StatusIcon } from '../StatusIcon'
 
 export interface Web3StatusInnerProps {
-  account?: string | null
-  chainId?: number
+  account?: string
   pendingCount: number
-  error?: string
-  connectWallet: Command | null
+  connectWallet: Command
   connectionType: ConnectionType
   ensName?: string | null
 }
 
 export function Web3StatusInner(props: Web3StatusInnerProps) {
-  const { account, pendingCount, chainId, error, ensName, connectionType, connectWallet } = props
+  const { account, pendingCount, ensName, connectionType, connectWallet } = props
 
   const hasPendingTransactions = !!pendingCount
-
-  if (!chainId || !connectWallet) {
-    return null
-  }
-
-  if (error) {
-    return (
-      <Web3StatusError>
-        <NetworkIcon />
-        <Text>
-          <Trans>Error</Trans>
-        </Text>
-      </Web3StatusError>
-    )
-  }
+  const isUpToExtraSmall = useMediaQuery(upToExtraSmall)
+  const isUpToTiny = useMediaQuery(upToTiny)
 
   if (account) {
     return (
@@ -55,7 +42,7 @@ export function Web3StatusInner(props: Web3StatusInnerProps) {
             <Loader stroke="currentColor" />
           </RowBetween>
         ) : (
-          <Text>{ensName || shortenAddress(account)}</Text>
+          <Text>{ensName || shortenAddress(account, isUpToTiny ? 4 : isUpToExtraSmall ? 3 : 4)}</Text>
         )}
         {!hasPendingTransactions && <StatusIcon connectionType={connectionType} />}
       </Web3StatusConnected>

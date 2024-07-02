@@ -1,24 +1,24 @@
 import { useAtomValue, useSetAtom } from 'jotai'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useState } from 'react'
 
 import { openAdvancedOrdersTabAnalytics, twapWalletCompatibilityAnalytics } from '@cowprotocol/analytics'
 import { renderTooltip } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { useAdvancedOrdersDerivedState, useAdvancedOrdersRawState } from 'modules/advancedOrders'
+import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
+import { useReceiveAmountInfo } from 'modules/trade'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 import { useTradeState } from 'modules/trade/hooks/useTradeState'
 import { TradeNumberInput } from 'modules/trade/pure/TradeNumberInput'
 import { TradeTextBox } from 'modules/trade/pure/TradeTextBox'
 import { useGetTradeFormValidation } from 'modules/tradeFormValidation'
+import { useTradeQuote } from 'modules/tradeQuote'
 import { TwapFormState } from 'modules/twap/pure/PrimaryActionButton/getTwapFormState'
 
-import { usePrice } from 'common/hooks/usePrice'
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
-import { ExecutionPrice } from 'common/pure/ExecutionPrice'
 
 import * as styledEl from './styled'
-import { AMOUNT_PARTS_LABELS, LABELS_TOOLTIPS } from './tooltips'
+import { LABELS_TOOLTIPS } from './tooltips'
 
 import { DEFAULT_NUM_OF_PARTS, DEFAULT_TWAP_SLIPPAGE, MAX_TWAP_SLIPPAGE, ORDER_DEADLINES } from '../../const'
 import {
@@ -27,17 +27,13 @@ import {
   useIsFallbackHandlerRequired,
 } from '../../hooks/useFallbackHandlerVerification'
 import { useTwapFormState } from '../../hooks/useTwapFormState'
-import { AmountParts } from '../../pure/AmountParts'
+import { useTwapSlippage } from '../../hooks/useTwapSlippage'
 import { DeadlineSelector } from '../../pure/DeadlineSelector'
-import { partsStateAtom } from '../../state/partsStateAtom'
-import { twapSlippageAdjustedBuyAmount, twapTimeIntervalAtom } from '../../state/twapOrderAtom'
-import {
-  twapOrderSlippageAtom,
-  twapOrdersSettingsAtom,
-  updateTwapOrdersSettingsAtom,
-} from '../../state/twapOrdersSettingsAtom'
+import { twapTimeIntervalAtom } from '../../state/twapOrderAtom'
+import { twapOrdersSettingsAtom, updateTwapOrdersSettingsAtom } from '../../state/twapOrdersSettingsAtom'
 import { deadlinePartsDisplay } from '../../utils/deadlinePartsDisplay'
 import { ActionButtons } from '../ActionButtons'
+import { AmountParts } from '../AmountParts'
 import { TwapFormWarnings } from '../TwapFormWarnings'
 
 export type { LabelTooltip, LabelTooltipItems } from './tooltips'
@@ -46,17 +42,15 @@ export function TwapFormWidget() {
   const { account } = useWalletInfo()
 
   const { numberOfPartsValue, deadline, customDeadline, isCustomDeadline } = useAtomValue(twapOrdersSettingsAtom)
-  const buyAmount = useAtomValue(twapSlippageAdjustedBuyAmount)
 
   const { inputCurrencyAmount, outputCurrencyAmount } = useAdvancedOrdersDerivedState()
-  const { inputCurrencyAmount: rawInputCurrencyAmount } = useAdvancedOrdersRawState()
   const { updateState } = useTradeState()
+  const tradeQuote = useTradeQuote()
   const isFallbackHandlerRequired = useIsFallbackHandlerRequired()
   const isFallbackHandlerCompatible = useIsFallbackHandlerCompatible()
   const verification = useFallbackHandlerVerification()
 
-  const twapOrderSlippage = useAtomValue(twapOrderSlippageAtom)
-  const partsState = useAtomValue(partsStateAtom)
+  const twapOrderSlippage = useTwapSlippage()
   const timeInterval = useAtomValue(twapTimeIntervalAtom)
   const updateSettingsState = useSetAtom(updateTwapOrdersSettingsAtom)
 
@@ -66,18 +60,15 @@ export function TwapFormWidget() {
 
   const rateInfoParams = useRateInfoParams(inputCurrencyAmount, outputCurrencyAmount)
 
-  const limitPrice = usePrice(inputCurrencyAmount, buyAmount)
+  const receiveAmountInfo = useReceiveAmountInfo()
+
+  const limitPrice = receiveAmountInfo?.quotePrice
 
   const deadlineState = {
     deadline,
     customDeadline,
     isCustomDeadline,
   }
-
-  // Reset output amount when num of parts or input amount are changed
-  useEffect(() => {
-    updateState?.({ outputCurrencyAmount: null })
-  }, [updateState, numberOfPartsValue, rawInputCurrencyAmount])
 
   // Reset warnings flags once on start
   useEffect(() => {
@@ -98,6 +89,13 @@ export function TwapFormWidget() {
     }
   }, [account, isFallbackHandlerRequired, isFallbackHandlerCompatible, localFormValidation, verification])
 
+  // Reset output amount when quote params are changed
+  useLayoutEffect(() => {
+    if (tradeQuote.hasParamsChanged) {
+      updateState?.({ outputCurrencyAmount: null })
+    }
+  }, [tradeQuote.hasParamsChanged, updateState])
+
   const isInvertedState = useState(false)
   const [isInverted] = isInvertedState
 
@@ -106,9 +104,10 @@ export function TwapFormWidget() {
       onSlippageInput: (value: number | null) => updateSettingsState({ slippageValue: value }),
       onNumOfPartsInput: (value: number | null) => {
         updateSettingsState({ numberOfPartsValue: value || DEFAULT_NUM_OF_PARTS })
+        updateState?.({ outputCurrencyAmount: null })
       },
     }
-  }, [updateSettingsState])
+  }, [updateSettingsState, updateState])
 
   return (
     <>
@@ -135,7 +134,12 @@ export function TwapFormWidget() {
         prefixComponent={
           <em>
             {limitPrice ? (
-              <ExecutionPrice executionPrice={limitPrice} isInverted={isInverted} hideFiat hideSeparator />
+              <styledEl.ExecutionPriceStyled
+                executionPrice={limitPrice}
+                isInverted={isInverted}
+                hideFiat
+                hideSeparator
+              />
             ) : (
               '0'
             )}
@@ -172,7 +176,7 @@ export function TwapFormWidget() {
         </TradeTextBox>
       </styledEl.Row>
 
-      <AmountParts partsState={partsState} labels={AMOUNT_PARTS_LABELS} />
+      <AmountParts />
 
       <TwapFormWarnings localFormValidation={localFormValidation} />
       <ActionButtons

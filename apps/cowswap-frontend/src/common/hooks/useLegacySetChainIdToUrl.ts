@@ -3,9 +3,11 @@ import { useCallback } from 'react'
 import { getChainInfo } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 
 import { useTradeTypeInfo } from 'modules/trade'
+
+import { useNavigate } from 'common/hooks/useNavigate'
 
 /**
  * Changing chainId in query parameters: ?chain=mainnet

@@ -14,6 +14,7 @@ export function mockEthFlowPendingTxs() {
   // Wrap transactions
   cowSwapStore.dispatch(
     addTransaction({
+      nonce: 1,
       hash: WrapPendingTxHashMock,
       hashType: HashType.ETHEREUM_TX,
       from: '0xfb3c7eb936cAA12B5A884d612393969A557d4307',
@@ -24,6 +25,7 @@ export function mockEthFlowPendingTxs() {
 
   cowSwapStore.dispatch(
     addTransaction({
+      nonce: 1,
       hash: WrapSuccessfulTxHashMock,
       hashType: HashType.ETHEREUM_TX,
       from: '0xfb3c7eb936cAA12B5A884d612393969A557d4307',
@@ -50,6 +52,7 @@ export function mockEthFlowPendingTxs() {
 
   cowSwapStore.dispatch(
     addTransaction({
+      nonce: 1,
       hash: WrapErrorTxHashMock,
       hashType: HashType.ETHEREUM_TX,
       from: '0xfb3c7eb936cAA12B5A884d612393969A557d4307',
@@ -77,6 +80,7 @@ export function mockEthFlowPendingTxs() {
   // Approve transactions
   cowSwapStore.dispatch(
     addTransaction({
+      nonce: 1,
       hash: ApprovePendingTxHashMock,
       hashType: HashType.ETHEREUM_TX,
       from: '0xfb3c7eb936cAA12B5A884d612393969A557d4307',
@@ -92,6 +96,7 @@ export function mockEthFlowPendingTxs() {
 
   cowSwapStore.dispatch(
     addTransaction({
+      nonce: 1,
       hash: ApproveSuccessfulTxHashMock,
       hashType: HashType.ETHEREUM_TX,
       from: '0xfb3c7eb936cAA12B5A884d612393969A557d4307',
@@ -123,6 +128,7 @@ export function mockEthFlowPendingTxs() {
 
   cowSwapStore.dispatch(
     addTransaction({
+      nonce: 1,
       hash: ApproveErrorTxHashMock,
       hashType: HashType.ETHEREUM_TX,
       from: '0xfb3c7eb936cAA12B5A884d612393969A557d4307',

@@ -1,6 +1,13 @@
-import { AppData, AppDataHash, EnrichedOrder, PriceQuality, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import {
+  AppData,
+  AppDataHash,
+  EnrichedOrder,
+  OrderQuoteResponse,
+  PriceQuality,
+  SupportedChainId as ChainId,
+} from '@cowprotocol/cow-sdk'
 
-type GpPriceStrategy = 'COWSWAP' | 'LEGACY'
+import type { PriceStrategy } from '../gas/atoms'
 
 interface PriceInformation {
   token: string
@@ -8,23 +15,19 @@ interface PriceInformation {
   quoteId?: number
 }
 
-export interface FeeInformation {
-  expirationDate: string
-  amount: string
-}
-
 interface FeeQuoteParams extends Pick<EnrichedOrder, 'sellToken' | 'buyToken' | 'kind'> {
   amount: string
   userAddress?: string | null
   receiver?: string | null
+  validFor?: number
   validTo?: number
 }
 
 export interface LegacyQuoteParams {
   quoteParams: LegacyFeeQuoteParams
-  strategy: GpPriceStrategy
+  strategy: PriceStrategy
   fetchFee: boolean
-  previousFee?: FeeInformation
+  previousResponse?: OrderQuoteResponse
   isPriceRefresh: boolean
 }
 

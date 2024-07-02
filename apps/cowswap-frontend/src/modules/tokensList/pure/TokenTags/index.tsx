@@ -1,9 +1,9 @@
 import { UNSUPPORTED_TOKENS_FAQ_URL } from '@cowprotocol/common-const'
-import { MouseoverTooltip } from '@cowprotocol/ui'
+import { HoverTooltip } from '@cowprotocol/ui'
 
 import ICON_GAS_FREE from 'assets/icon/gas-free.svg'
 import SVG from 'react-inlinesvg'
-import { HashLink } from 'react-router-hash-link'
+import { NavLink } from 'react-router-dom'
 
 import * as styledEl from './styled'
 
@@ -57,9 +57,9 @@ export function TokenTags({
     <TagDescriptor tags={tagsToShow}>
       {isUnsupported && (
         <styledEl.TagLink>
-          <HashLink to={UNSUPPORTED_TOKENS_FAQ_URL} target="_blank" onClick={(e) => e.stopPropagation()}>
+          <NavLink to={UNSUPPORTED_TOKENS_FAQ_URL} target="_blank">
             FAQ
-          </HashLink>
+          </NavLink>
         </styledEl.TagLink>
       )}
     </TagDescriptor>
@@ -70,12 +70,12 @@ function TagDescriptor({ tags, children }: { children?: React.ReactNode; tags: T
   return (
     <styledEl.TagContainer>
       {tags.map((tag) => (
-        <MouseoverTooltip key={tag.id} text={tag.description}>
+        <HoverTooltip wrapInContainer key={tag.id} content={tag.description}>
           <styledEl.Tag tag={tag}>
             {tag.icon ? <SVG src={tag.icon} title={tag.name} /> : null}
             {tag.name}
           </styledEl.Tag>
-        </MouseoverTooltip>
+        </HoverTooltip>
       ))}
       {children}
     </styledEl.TagContainer>

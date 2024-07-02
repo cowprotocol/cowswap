@@ -8,14 +8,7 @@ import {
   sendAllPixels,
 } from '@cowprotocol/analytics'
 import { usePrevious } from '@cowprotocol/common-hooks'
-import {
-  getConnectionName,
-  getIsMetaMask,
-  getWeb3ReactConnection,
-  useWalletDetails,
-  useWalletInfo,
-} from '@cowprotocol/wallet'
-import { useWeb3React } from '@web3-react/core'
+import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import ReactGA from 'react-ga4'
 import { useLocation } from 'react-router-dom'
@@ -56,10 +49,8 @@ let initiatedPixel = false
 export function useAnalyticsReporter() {
   const { pathname, search } = useLocation()
 
-  // Handle chain id custom dimension
-  const { connector } = useWeb3React()
   const { chainId, account } = useWalletInfo()
-  const { walletName: _walletName } = useWalletDetails()
+  const { walletName } = useWalletDetails()
   const injectedWidgetMetaData = useInjectedWidgetMetaData()
   const prevAccount = usePrevious(account)
 
@@ -71,11 +62,6 @@ export function useAnalyticsReporter() {
   }, [chainId])
 
   // Handle wallet name custom dimension
-  const connection = getWeb3ReactConnection(connector)
-  const isMetaMask = getIsMetaMask()
-
-  const walletName = _walletName || getConnectionName(connection.type, isMetaMask)
-
   const injectedWidgetAppId = injectedWidgetMetaData?.appCode
 
   useEffect(() => {

@@ -1,7 +1,6 @@
 import { PropsWithChildren } from 'react'
 
 import { COW, NATIVE_CURRENCIES } from '@cowprotocol/common-const'
-import { useEthFlowContract, useGP2SettlementContract } from '@cowprotocol/common-hooks'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { BigNumber } from '@ethersproject/bignumber'
 
@@ -10,6 +9,8 @@ import { renderHook } from '@testing-library/react-hooks'
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 import { Order } from 'legacy/state/orders/actions'
 import { useRequestOrderCancellation, useSetOrderCancellationHash } from 'legacy/state/orders/hooks'
+
+import { useEthFlowContract, useGP2SettlementContract } from 'common/hooks/useContract'
 
 import { useSendOnChainCancellation } from './useSendOnChainCancellation'
 
@@ -26,9 +27,9 @@ jest.mock('@cowprotocol/wallet', () => {
     useWalletInfo: jest.fn().mockReturnValue({ chainId }),
   }
 })
-jest.mock('@cowprotocol/common-hooks', () => {
+jest.mock('common/hooks/useContract', () => {
   return {
-    ...jest.requireActual('@cowprotocol/common-hooks'),
+    ...jest.requireActual('common/hooks/useContract'),
     useEthFlowContract: jest.fn(),
     useGP2SettlementContract: jest.fn(),
   }

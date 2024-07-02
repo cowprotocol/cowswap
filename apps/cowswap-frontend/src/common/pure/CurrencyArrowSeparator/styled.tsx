@@ -6,27 +6,26 @@ import styled, { css } from 'styled-components/macro'
 import { loadingAnimationMixin } from './style-mixins'
 
 export const Box = styled.div<{
-  withRecipient: boolean
   isCollapsed: boolean
   hasSeparatorLine?: boolean
   disabled: boolean
 }>`
-  display: ${({ withRecipient }) => (withRecipient ? 'inline-flex' : 'block')};
-  margin: ${({ withRecipient, isCollapsed }) => (withRecipient ? '0' : isCollapsed ? '-13px auto' : '2px auto')};
+  display: block;
+  margin: ${({ isCollapsed }) => (isCollapsed ? '-13px auto' : '2px auto')};
   cursor: ${({ disabled }) => (disabled ? 'inherit' : 'pointer')};
   color: inherit;
   position: relative;
   z-index: 2;
-  width: ${({ withRecipient }) => (withRecipient ? '26px' : '100%')};
+  width: 100%;
   height: 26px;
-  justify-content: ${({ withRecipient }) => (withRecipient ? 'intial' : 'center')};
+  justify-content: center;
   transition: width var(${UI.ANIMATION_DURATION}) ease-in-out;
 
-  ${({ hasSeparatorLine, withRecipient }) =>
+  ${({ hasSeparatorLine }) =>
     hasSeparatorLine &&
     css`
       &::before {
-        content: ${withRecipient ? 'none' : '""'};
+        content: '';
         position: absolute;
         width: calc(100% + 16px);
         left: -8px;
@@ -78,5 +77,5 @@ export const ArrowDownIcon = styled(ArrowDown)<{ disabled: boolean }>`
 export const CowImg = styled.img`
   width: 100%;
   border-radius: 10px;
-  background-color: ${({ theme }) => theme.bg4};
+  background-color: ${({ theme }) => theme.paperCustom};
 `

@@ -1,5 +1,6 @@
-import { OrderKind, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { SupportedChainId as ChainId, OrderKind } from '@cowprotocol/cow-sdk'
 import { Percent } from '@uniswap/sdk-core'
+
 import { isSellOrder } from './isSellOrder'
 
 interface Market<T = string> {
@@ -79,12 +80,6 @@ export interface TokensFromMarketParams<T> extends Market<T> {
 }
 
 export function getCanonicalMarket<T>({ sellToken, buyToken, kind }: CanonicalMarketParams<T>): Market<T> {
-  // TODO: Implement smarter logic https://github.com/cowprotocol/explorer/issues/9
-
-  // Not big reasoning on my selection of what is base and what is quote (important thing in this PR is just to do a consistent selection)
-  // The used reasoning is:
-  //    - If I sell apples, the quote is EUR (buy token)
-  //    - If I buy apples, the quote is EUR (sell token)
   if (isSellOrder(kind)) {
     return {
       baseToken: sellToken,
@@ -139,8 +134,10 @@ export function hashCode(text: string): number {
  * Some providers return some description in the error.message, and some others the error message is itself a String
  * with the error message
  */
-export function getProviderErrorMessage(error: any) {
-  return typeof error === 'string' ? error : error.message
+export function getProviderErrorMessage(error: unknown): string | undefined {
+  if (typeof error === 'string') return error
+  if (error && typeof error === 'object' && 'message' in error) return error.message as string
+  return error?.toString()
 }
 
 /**
@@ -162,8 +159,8 @@ export function isRejectRequestProviderError(error: any) {
     // Check for some specific messages returned by some wallets when rejecting requests
     const message = getProviderErrorMessage(error)
     if (
-      PROVIDER_REJECT_REQUEST_ERROR_MESSAGES.some((rejectMessage) =>
-        message.toLowerCase().includes(rejectMessage.toLowerCase())
+      PROVIDER_REJECT_REQUEST_ERROR_MESSAGES.some(
+        (rejectMessage) => message && rejectMessage && message.toLowerCase().includes(rejectMessage.toLowerCase())
       )
     ) {
       return true

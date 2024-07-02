@@ -1,7 +1,8 @@
 import React, { useRef, useState } from 'react'
-import styled from 'styled-components'
-import { useGetVolumeData } from './useGetVolumeData'
 
+import styled from 'styled-components/macro'
+
+import { useGetVolumeData } from './useGetVolumeData'
 import { PeriodButton, VolumeChart } from './VolumeChart'
 
 const WrapperVolumeChart = styled.div`
@@ -18,7 +19,7 @@ export const volumePeriodTitle = new Map(
   (Object.keys(VolumePeriod) as (keyof typeof VolumePeriod)[]).map((key) => [
     VolumePeriod[key],
     key.toLocaleLowerCase(),
-  ]),
+  ])
 )
 
 /* A lightweight-charts logical range is an object with: 'from' and 'to', which are numbers and represent

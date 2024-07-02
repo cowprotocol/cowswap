@@ -9,7 +9,7 @@ import { useTwapOrderByChildId, useTwapOrderById } from 'modules/twap'
 
 import { calculatePrice } from 'utils/orderUtils/calculatePrice'
 
-import { useCloseReceiptModal, useGetShowRecreateModal, useSelectedOrder } from './hooks'
+import { useCloseReceiptModal, useGetAlternativeOrderModalContext, useSelectedOrder } from './hooks'
 
 import { ReceiptModal } from '../../pure/ReceiptModal'
 
@@ -29,7 +29,7 @@ export function OrdersReceiptModal(props: OrdersReceiptModalProps) {
   const twapOrder = twapOrderById || twapOrderByChildId
   const isTwapPartOrder = !!twapOrderByChildId
 
-  const showRecreateModal = useGetShowRecreateModal(order)
+  const alternativeOrderModalContext = useGetAlternativeOrderModalContext(order)
 
   if (!chainId || !order) {
     return null
@@ -41,7 +41,6 @@ export function OrdersReceiptModal(props: OrdersReceiptModalProps) {
   const sellAmountCurrency = CurrencyAmount.fromRawAmount(inputToken, sellAmount.toString())
   const buyAmountCurrency = CurrencyAmount.fromRawAmount(outputToken, buyAmount.toString())
 
-  // Limit price
   const limitPrice = calculatePrice({
     buyAmount: JSBI.BigInt(buyAmount.toString()),
     sellAmount: JSBI.BigInt(sellAmount.toString()),
@@ -49,7 +48,6 @@ export function OrdersReceiptModal(props: OrdersReceiptModalProps) {
     outputToken,
   })
 
-  // Execution price
   const executionPrice = calculatePrice({
     buyAmount: executedBuyAmount,
     sellAmount: executedSellAmount,
@@ -76,7 +74,7 @@ export function OrdersReceiptModal(props: OrdersReceiptModalProps) {
       isTwapPartOrder={isTwapPartOrder}
       isOpen={!!order}
       onDismiss={closeReceiptModal}
-      showRecreateModal={showRecreateModal}
+      alternativeOrderModalContext={alternativeOrderModalContext}
     />
   )
 }

@@ -71,7 +71,7 @@ export const LABELS_TOOLTIPS: LabelTooltipItems = {
     ),
   },
   price: {
-    label: 'Rate (incl. fee)',
+    label: 'Rate',
     tooltip: 'This is the current market price, including the fee.',
   },
   sellAmount: {

@@ -1,6 +1,7 @@
-import * as path from 'path'
-import * as fs from 'fs'
 import * as YAML from 'yaml'
+
+import * as fs from 'fs'
+import * as path from 'path'
 
 const SUPPORTED_EXTENSIONS = 'yaml|yml|json'
 const CONFIG_FILE = './config-default.yaml'

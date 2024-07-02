@@ -1,19 +1,16 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import ArrowIcon from '@cowprotocol/assets/cow-swap/arrow.svg'
-import CowImage from '@cowprotocol/assets/cow-swap/cow_v2.svg'
-import vCOWImage from '@cowprotocol/assets/cow-swap/vCOW.png'
+import CowImage from '@cowprotocol/assets/cow-swap/cow_token.svg'
+import vCOWImage from '@cowprotocol/assets/images/vCOW.svg'
 import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
-import { COW, COW_CONTRACT_ADDRESS, V_COW, V_COW_CONTRACT_ADDRESS } from '@cowprotocol/common-const'
+import { COW, COW_CONTRACT_ADDRESS, V_COW } from '@cowprotocol/common-const'
 import { usePrevious } from '@cowprotocol/common-hooks'
-import { useBlockNumber } from '@cowprotocol/common-hooks'
 import { getBlockExplorerUrl, getProviderErrorMessage } from '@cowprotocol/common-utils'
-import { TokenAmount, ButtonPrimary } from '@cowprotocol/ui'
-import { MouseoverTooltipContent } from '@cowprotocol/ui'
+import { ButtonPrimary, HoverTooltip, TokenAmount } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
+import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { CurrencyAmount } from '@uniswap/sdk-core'
-import { useWeb3React } from '@web3-react/core'
-import { MetaMask } from '@web3-react/metamask'
 
 import { Trans } from '@lingui/macro'
 import SVG from 'react-inlinesvg'
@@ -22,8 +19,9 @@ import { Link } from 'react-router-dom'
 import CopyHelper from 'legacy/components/Copy'
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
 import { SwapVCowStatus } from 'legacy/state/cowToken/actions'
-import { useVCowData, useSwapVCowCallback, useSetSwapVCowStatus, useSwapVCowStatus } from 'legacy/state/cowToken/hooks'
+import { useSetSwapVCowStatus, useSwapVCowCallback, useSwapVCowStatus, useVCowData } from 'legacy/state/cowToken/hooks'
 
+import { useBlockNumber } from 'common/hooks/useBlockNumber'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useModalState } from 'common/hooks/useModalState'
 import { ConfirmationPendingContent } from 'common/pure/ConfirmationPendingContent'
@@ -31,15 +29,15 @@ import { HelpCircle } from 'common/pure/HelpCircle'
 import { CowModal } from 'common/pure/Modal'
 import { useCowFromLockedGnoBalances } from 'pages/Account/LockedGnoVesting/hooks'
 import {
-  ExtLink,
+  BalanceDisplay,
   Card,
   CardActions,
-  BalanceDisplay,
-  ConvertWrapper,
-  VestingBreakdown,
   CardsLoader,
   CardsSpinner,
-  StyledAddToMetamask,
+  ConvertWrapper,
+  ExtLink,
+  StyledWatchAssetInWallet,
+  VestingBreakdown,
 } from 'pages/Account/styled'
 
 import LockedGnoVesting from './LockedGnoVesting'
@@ -48,7 +46,7 @@ import LockedGnoVesting from './LockedGnoVesting'
 const BLOCKS_TO_WAIT = 2
 
 export default function Profile() {
-  const { provider, connector } = useWeb3React()
+  const provider = useWalletProvider()
   const { account, chainId } = useWalletInfo()
   const previousAccount = usePrevious(account)
 
@@ -59,8 +57,6 @@ export default function Profile() {
 
   const setSwapVCowStatus = useSetSwapVCowStatus()
   const swapVCowStatus = useSwapVCowStatus()
-
-  const isMetaMask = (connector as MetaMask)?.provider?.isMetaMask
 
   // Locked GNO balance
   const { loading: isLockedGnoLoading, ...lockedGnoBalances } = useCowFromLockedGnoBalances()
@@ -101,7 +97,7 @@ export default function Profile() {
   const { isModalOpen, openModal, closeModal } = useModalState<string>()
 
   // Handle swaping
-  const { swapCallback } = useSwapVCowCallback({
+  const swapCallback = useSwapVCowCallback({
     openModal,
     closeModal,
   })
@@ -201,8 +197,6 @@ export default function Profile() {
     }
   }, [account, isSwapInitial, previousAccount, setSwapVCowStatus])
 
-  const currencyCOW = COW[chainId]
-
   return (
     <>
       <CowModal isOpen={isModalOpen} onDismiss={closeModal}>
@@ -225,19 +219,19 @@ export default function Profile() {
         </Card>
       ) : (
         <>
-          {hasVCowBalance && (
+          {hasVCowBalance && vCowToken && (
             <Card showLoader={isVCowLoading || isSwapPending}>
               <BalanceDisplay hAlign="left">
-                <img src={vCOWImage} alt="vCOW token" width="56" height="56" />
+                <SVG src={vCOWImage} title="vCOW token" width="56" height="56" />
                 <span>
                   <i>
                     <Trans>Total vCOW balance</Trans>
                   </i>
                   <b>
                     <TokenAmount amount={total} defaultValue="0" tokenSymbol={vCowToken} />{' '}
-                    <MouseoverTooltipContent content={tooltipText.balanceBreakdown} wrap>
+                    <HoverTooltip content={tooltipText.balanceBreakdown} wrapInContainer>
                       <HelpCircle size={14} />
-                    </MouseoverTooltipContent>
+                    </HoverTooltip>
                   </b>
                 </span>
               </BalanceDisplay>
@@ -245,9 +239,9 @@ export default function Profile() {
                 <BalanceDisplay titleSize={18} altColor={true}>
                   <i>
                     Vested{' '}
-                    <MouseoverTooltipContent content={tooltipText.vested} wrap>
+                    <HoverTooltip content={tooltipText.vested} wrapInContainer>
                       <HelpCircle size={14} />
-                    </MouseoverTooltipContent>
+                    </HoverTooltip>
                   </i>
                   <b>
                     <TokenAmount amount={shouldUpdate ? undefined : vested} defaultValue="0" />
@@ -259,10 +253,8 @@ export default function Profile() {
               </ConvertWrapper>
 
               <CardActions>
-                <ExtLink href={getBlockExplorerUrl(chainId, 'token', V_COW_CONTRACT_ADDRESS[chainId])}>
-                  View contract ↗
-                </ExtLink>
-                <CopyHelper toCopy={V_COW_CONTRACT_ADDRESS[chainId]}>
+                <ExtLink href={getBlockExplorerUrl(chainId, 'token', vCowToken.address)}>View contract ↗</ExtLink>
+                <CopyHelper toCopy={vCowToken.address}>
                   <div title="Click to copy token contract address">Copy contract</div>
                 </CopyHelper>
               </CardActions>
@@ -289,13 +281,15 @@ export default function Profile() {
                 View contract ↗
               </ExtLink>
 
-              {isMetaMask && !isProviderNetworkUnsupported && <StyledAddToMetamask shortLabel currency={currencyCOW} />}
-
-              {!isMetaMask && (
-                <CopyHelper toCopy={COW_CONTRACT_ADDRESS[chainId]}>
-                  <div title="Click to copy token contract address">Copy contract</div>
-                </CopyHelper>
-              )}
+              <StyledWatchAssetInWallet
+                shortLabel
+                currency={cowToken}
+                fallback={
+                  <CopyHelper toCopy={COW_CONTRACT_ADDRESS[chainId]}>
+                    <div title="Click to copy token contract address">Copy contract</div>
+                  </CopyHelper>
+                }
+              />
 
               <Link to={`/swap?outputCurrency=${COW_CONTRACT_ADDRESS[chainId]}`}>Buy COW</Link>
             </CardActions>

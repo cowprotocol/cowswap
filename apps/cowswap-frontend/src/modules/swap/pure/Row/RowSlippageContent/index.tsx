@@ -1,12 +1,12 @@
 import { INPUT_OUTPUT_EXPLANATION, MINIMUM_ETH_FLOW_SLIPPAGE, PERCENTAGE_PRECISION } from '@cowprotocol/common-const'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
-import { RowFixed } from '@cowprotocol/ui'
-import { MouseoverTooltipContent } from '@cowprotocol/ui'
+import { HoverTooltip, RowFixed } from '@cowprotocol/ui'
+import { Percent } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
 
-import { RowSlippageProps } from 'modules/swap/containers/Row/RowSlippage'
 import { StyledRowBetween, TextWrapper } from 'modules/swap/pure/Row/styled'
 import { RowStyleProps } from 'modules/swap/pure/Row/types'
 import { StyledInfoIcon, TransactionText } from 'modules/swap/pure/styled'
@@ -26,39 +26,47 @@ export const ClickableText = styled.button`
   }
 `
 
-export const getNativeSlippageTooltip = (symbols: (string | undefined)[] | undefined) => (
+export const getNativeSlippageTooltip = (chainId: SupportedChainId, symbols: (string | undefined)[] | undefined) => (
   <Trans>
-    <p>
-      When selling {symbols?.[0] || 'a native currency'}, the minimum slippage tolerance is set to{' '}
-      {MINIMUM_ETH_FLOW_SLIPPAGE.toSignificant(PERCENTAGE_PRECISION)}% to ensure a high likelihood of order matching,
-      even in volatile market conditions.
-    </p>
-    <p>Orders on CoW Swap are always protected from MEV, so your slippage tolerance cannot be exploited.</p>
+    When selling {symbols?.[0] || 'a native currency'}, the minimum slippage tolerance is set to{' '}
+    {MINIMUM_ETH_FLOW_SLIPPAGE[chainId].toSignificant(PERCENTAGE_PRECISION)}% to ensure a high likelihood of order
+    matching, even in volatile market conditions.
+    <br />
+    <br />
+    Orders on CoW Swap are always protected from MEV, so your slippage tolerance cannot be exploited.
   </Trans>
 )
 export const getNonNativeSlippageTooltip = () => (
   <Trans>
-    <p>Your slippage is MEV protected: all orders are submitted with tight spread (0.1%) on-chain.</p>
-    <p>The slippage you pick here enables a resubmission of your order in case of unfavourable price movements.</p>
-    <p>{INPUT_OUTPUT_EXPLANATION}</p>
+    Your slippage is MEV protected: all orders are submitted with tight spread (0.1%) on-chain.
+    <br />
+    <br />
+    The slippage you pick here enables a resubmission of your order in case of unfavourable price movements.
+    <br />
+    <br />
+    {INPUT_OUTPUT_EXPLANATION}
   </Trans>
 )
 
-export interface RowSlippageContentProps extends RowSlippageProps {
+export interface RowSlippageContentProps {
+  chainId: SupportedChainId
   toggleSettings: Command
   displaySlippage: string
   isEoaEthFlow: boolean
   symbols?: (string | undefined)[]
   wrappedSymbol?: string
+  styleProps?: RowStyleProps
+  allowedSlippage: Percent
+  showSettingOnClick?: boolean
   slippageLabel?: React.ReactNode
   slippageTooltip?: React.ReactNode
-  styleProps?: RowStyleProps
 }
 
 // TODO: RowDeadlineContent and RowSlippageContent are very similar. Refactor and extract base component?
 
 export function RowSlippageContent(props: RowSlippageContentProps) {
   const {
+    chainId,
     showSettingOnClick,
     toggleSettings,
     displaySlippage,
@@ -70,7 +78,7 @@ export function RowSlippageContent(props: RowSlippageContentProps) {
   } = props
 
   const tooltipContent =
-    slippageTooltip || (isEoaEthFlow ? getNativeSlippageTooltip(symbols) : getNonNativeSlippageTooltip())
+    slippageTooltip || (isEoaEthFlow ? getNativeSlippageTooltip(chainId, symbols) : getNonNativeSlippageTooltip())
 
   return (
     <StyledRowBetween {...styleProps}>
@@ -84,9 +92,9 @@ export function RowSlippageContent(props: RowSlippageContentProps) {
             <SlippageTextContents isEoaEthFlow={isEoaEthFlow} slippageLabel={slippageLabel} />
           )}
         </TextWrapper>
-        <MouseoverTooltipContent wrap content={tooltipContent}>
+        <HoverTooltip wrapInContainer content={tooltipContent}>
           <StyledInfoIcon size={16} />
-        </MouseoverTooltipContent>
+        </HoverTooltip>
       </RowFixed>
       <TextWrapper textAlign="right">
         {showSettingOnClick ? (

@@ -1,22 +1,22 @@
-import styled, { keyframes } from 'styled-components'
-
-const rotate = keyframes`
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-`
+import styled from 'styled-components/macro'
 
 export const StyledSVG = styled.svg<{ size: string; stroke?: string }>`
-  animation: 2s ${rotate} linear infinite;
+  animation: 2s rotate linear infinite;
   height: ${({ size }) => size};
   width: ${({ size }) => size};
   opacity: 0.7;
 
   > path {
     stroke: ${({ stroke }) => stroke ?? 'currentColor'};
+  }
+
+  @keyframes rotate {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
   }
 `
 

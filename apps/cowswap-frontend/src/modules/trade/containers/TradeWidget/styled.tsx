@@ -1,12 +1,11 @@
 import { UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
-
-import { SetRecipient } from 'modules/swap/containers/SetRecipient'
+import { WIDGET_MAX_WIDTH } from 'theme'
 
 export const Container = styled.div`
   width: 100%;
-  max-width: ${({ theme }) => theme.appBody.maxWidth.swap};
+  max-width: ${WIDGET_MAX_WIDTH.swap};
   margin: 0 auto;
   position: relative;
 `
@@ -19,7 +18,7 @@ export const ContainerBox = styled.div`
   color: var(${UI.COLOR_TEXT_PAPER});
   border: none;
   border-radius: var(${UI.BORDER_RADIUS_NORMAL});
-  box-shadow: ${({ theme }) => theme.boxShadow1};
+  box-shadow: ${({ theme }) => (theme.isInjectedWidgetMode ? theme.boxShadow1 : 'none')};
   padding: 10px;
   position: relative;
 
@@ -41,13 +40,9 @@ export const OuterContentWrapper = styled.div`
   margin-top: 10px;
 `
 
-export const CurrencySeparatorBox = styled.div<{ withRecipient: boolean; compactView: boolean }>`
+export const CurrencySeparatorBox = styled.div<{ compactView: boolean }>`
   display: flex;
   justify-content: space-between;
   margin: ${({ compactView }) => (compactView ? '-5px 0' : '0')};
-  padding: ${({ withRecipient }) => (withRecipient ? '0 10px' : '0')};
-`
-
-export const StyledRemoveRecipient = styled(SetRecipient)`
-  margin: 15px 0;
+  padding: 0;
 `

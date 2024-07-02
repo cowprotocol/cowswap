@@ -1,11 +1,12 @@
-import { RawOrder } from 'api/operator'
-import { PENDING_ORDERS_BUFFER } from '../../../explorer/const'
+import { OrderStatus, OrderKind } from '@cowprotocol/cow-sdk'
 
 import { getOrderStatus } from 'utils'
 
+import { RawOrder } from 'api/operator'
+
+import { PENDING_ORDERS_BUFFER } from '../../../explorer/const'
 import { RAW_ORDER } from '../../data'
 import { mockTimes, DATE } from '../../testHelpers'
-import { OrderStatus, OrderKind } from '@cowprotocol/cow-sdk'
 
 function _getCurrentTimestamp(): number {
   return Math.floor(Date.now() / 1000)
@@ -25,11 +26,6 @@ beforeEach(() => mockTimes(_creationDatePlusMilliseconds(PENDING_ORDERS_BUFFER *
 
 describe('Filled status', () => {
   describe('Buy order', () => {
-    test('Filled, within epsilon', () => {
-      const order = { ...RAW_ORDER, kind: OrderKind.BUY, buyAmount: '10000', executedBuyAmount: '9999' }
-
-      expect(getOrderStatus(order)).toEqual('filled')
-    })
     test('Filled, exact amount', () => {
       const order = { ...RAW_ORDER, kind: OrderKind.BUY, buyAmount: '100', executedBuyAmount: '100' }
 
@@ -73,11 +69,6 @@ describe('Filled status', () => {
     })
   })
   describe('Sell order', () => {
-    test('Filled, within epsilon', () => {
-      const order = { ...RAW_ORDER, kind: OrderKind.SELL, sellAmount: '10000', executedSellAmount: '9999' }
-
-      expect(getOrderStatus(order)).toEqual('filled')
-    })
     test('Filled, exact amount', () => {
       const order = { ...RAW_ORDER, kind: OrderKind.SELL, sellAmount: '100', executedSellAmount: '100' }
 

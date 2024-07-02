@@ -1,4 +1,4 @@
-import { UI } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 
 import { transparentize, darken } from 'color2k'
 import styled from 'styled-components/macro'
@@ -40,9 +40,9 @@ export const List = styled.ul`
   font-size: 14px;
   gap: 10px 12px;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     grid-template-columns: 1fr;
-  `}
+  }
 
   > li {
     background: transparent;

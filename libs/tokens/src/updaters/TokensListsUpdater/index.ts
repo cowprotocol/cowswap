@@ -1,23 +1,26 @@
 import { useAtomValue, useSetAtom } from 'jotai'
-import useSWR, { SWRConfiguration } from 'swr'
+import { atomWithStorage } from 'jotai/utils'
 import { useEffect } from 'react'
 
-import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { allListsSourcesAtom, tokenListsUpdatingAtom } from '../../state/tokenLists/tokenListsStateAtom'
-import { fetchTokenList } from '../../services/fetchTokenList'
-import { environmentAtom, updateEnvironmentAtom } from '../../state/environmentAtom'
-import { getFulfilledResults, getIsTimeToUpdate, TOKENS_LISTS_UPDATER_INTERVAL } from './helpers'
-import { ListState } from '../../types'
-import { upsertListsAtom } from '../../state/tokenLists/tokenListsActionsAtom'
-import { atomWithStorage } from 'jotai/utils'
 import { atomWithPartialUpdate, isInjectedWidget } from '@cowprotocol/common-utils'
 import { getJotaiMergerStorage } from '@cowprotocol/core'
+import { SupportedChainId, mapSupportedNetworks } from '@cowprotocol/cow-sdk'
+
 import * as Sentry from '@sentry/browser'
+import useSWR, { SWRConfiguration } from 'swr'
+
+import { TOKENS_LISTS_UPDATER_INTERVAL, getFulfilledResults, getIsTimeToUpdate } from './helpers'
+
+import { fetchTokenList } from '../../services/fetchTokenList'
+import { environmentAtom, updateEnvironmentAtom } from '../../state/environmentAtom'
+import { upsertListsAtom } from '../../state/tokenLists/tokenListsActionsAtom'
+import { allListsSourcesAtom, tokenListsUpdatingAtom } from '../../state/tokenLists/tokenListsStateAtom'
+import { ListState } from '../../types'
 
 const { atom: lastUpdateTimeAtom, updateAtom: updateLastUpdateTimeAtom } = atomWithPartialUpdate(
   atomWithStorage<Record<SupportedChainId, number>>(
-    'tokens:lastUpdateTimeAtom:v0',
+    'tokens:lastUpdateTimeAtom:v1',
     mapSupportedNetworks(0),
     getJotaiMergerStorage()
   )
@@ -28,12 +31,20 @@ const swrOptions: SWRConfiguration = {
   revalidateOnFocus: false,
 }
 
-const NETWORKS_WITHOUT_RESTRICTIONS = [SupportedChainId.SEPOLIA, SupportedChainId.GNOSIS_CHAIN]
+const NETWORKS_WITHOUT_RESTRICTIONS = [SupportedChainId.SEPOLIA]
 
 interface TokensListsUpdaterProps {
   chainId: SupportedChainId
   isGeoBlockEnabled: boolean
 }
+
+/**
+ * Geoblock query related errors to be ignored
+ *
+ * Those can happen when the domain we use to detect user's location is inaccessible, usually due to adblockers
+ * Errors not meeting these filters will still be logged as usual
+ */
+const GEOBLOCK_ERRORS_TO_IGNORE = /(failed to fetch)|(load failed)/i
 
 export function TokensListsUpdater({ chainId: currentChainId, isGeoBlockEnabled }: TokensListsUpdaterProps) {
   const { chainId } = useAtomValue(environmentAtom)
@@ -91,6 +102,8 @@ export function TokensListsUpdater({ chainId: currentChainId, isGeoBlockEnabled 
         }
       })
       .catch((error) => {
+        if (GEOBLOCK_ERRORS_TO_IGNORE.test(error?.toString())) return
+
         const sentryError = Object.assign(error, {
           name: 'GeoBlockingError',
         })

@@ -1,12 +1,15 @@
-import { reportAppDataWithHooks, reportPlaceOrderWithExpiredQuote } from '@cowprotocol/common-utils'
-import { CowEvents } from '@cowprotocol/events'
+import {
+  getEthFlowContractAddress,
+  reportAppDataWithHooks,
+  reportPlaceOrderWithExpiredQuote,
+} from '@cowprotocol/common-utils'
+import { UiOrderType } from '@cowprotocol/types'
 import { Percent } from '@uniswap/sdk-core'
-
-import { EVENT_EMITTER } from 'eventEmitter'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
 import { updateHooksOnAppData } from 'modules/appData'
+import { emitPostedOrderEvent } from 'modules/orders'
 import { appDataContainsHooks } from 'modules/permit/utils/appDataContainsHooks'
 import { signEthFlowOrderStep } from 'modules/swap/services/ethFlow/steps/signEthFlowOrderStep'
 import { EthFlowContext } from 'modules/swap/services/types'
@@ -14,7 +17,7 @@ import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { tradeFlowAnalytics } from 'modules/trade/utils/analytics'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
-import { isQuoteExpired } from 'modules/tradeQuote/utils/isQuoteExpired'
+import { isQuoteExpired } from 'modules/tradeQuote'
 
 import { calculateUniqueOrderId } from './steps/calculateUniqueOrderId'
 
@@ -34,11 +37,14 @@ export async function ethFlow(
     orderParams: orderParamsOriginal,
     checkEthFlowOrderExists,
     addInFlightOrderId,
+    quote,
   } = ethFlowContext
   const {
+    chainId,
     trade: { inputAmount, outputAmount, fee },
   } = context
   const tradeAmounts = { inputAmount, outputAmount }
+  const { account, recipientAddressOrName, kind } = orderParamsOriginal
 
   logTradeFlow('ETH FLOW', 'STEP 1: confirm price impact')
   if (priceImpactParams?.priceImpact && !(await confirmPriceImpactWithoutFee(priceImpactParams.priceImpact))) {
@@ -62,9 +68,22 @@ export async function ethFlow(
 
   try {
     // Do not proceed if fee is expired
-    if (isQuoteExpired(fee.expirationDate)) {
+    if (
+      isQuoteExpired({
+        expirationDate: fee.expirationDate,
+        deadlineParams: {
+          validFor: quote?.validFor,
+          quoteValidTo: quote?.quoteValidTo,
+          localQuoteTimestamp: quote?.localQuoteTimestamp,
+        },
+      })
+    ) {
       reportPlaceOrderWithExpiredQuote({ ...orderParamsOriginal, fee })
       throw new Error('Quote expired. Please refresh.')
+    }
+
+    if (contract.address !== getEthFlowContractAddress(chainId)) {
+      throw new Error('EthFlow contract address mismatch. Please refresh the page and try again.')
     }
 
     logTradeFlow('ETH FLOW', 'STEP 4: sign order')
@@ -74,10 +93,17 @@ export async function ethFlow(
       }
     )
 
-    EVENT_EMITTER.emit(CowEvents.ON_POSTED_ETH_FLOW_ORDER, {
-      txHash: txReceipt.hash,
-      orderUid: order.id,
-      chainId: context.chainId,
+    emitPostedOrderEvent({
+      chainId,
+      id: orderId,
+      orderCreationHash: txReceipt.hash,
+      kind,
+      receiver: recipientAddressOrName,
+      inputAmount,
+      outputAmount,
+      owner: account,
+      uiOrderType: UiOrderType.SWAP,
+      isEthFlow: true,
     })
 
     logTradeFlow('ETH FLOW', 'STEP 5: add pending order step')

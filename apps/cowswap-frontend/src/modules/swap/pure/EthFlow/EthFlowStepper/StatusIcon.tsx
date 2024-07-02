@@ -35,7 +35,8 @@ const StepIcon = styled.div<{ status: StatusIconState }>`
       : status === 'success'
       ? 'none'
       : `2px solid var(${UI.COLOR_PAPER})`};
-  box-shadow: ${({ status, theme }) => (status === 'pending' ? theme.boxShadow3 : 'none')};
+  box-shadow: ${({ status, theme }) =>
+    status === 'pending' ? `0 4px 12px 0 ${transparentize(theme.info, 0.9)}` : 'none'};
   background: ${({ status, theme }) =>
     status === 'pending'
       ? 'transparent'
@@ -51,7 +52,7 @@ const StepIcon = styled.div<{ status: StatusIconState }>`
   // 'PENDING' STATE only animation
   &::before {
     content: ${({ status }) => (status === 'pending' ? '""' : 'none')};
-    background: ${({ theme }) => `conic-gradient(transparent 40grad, 80grad, ${theme.text3} 360grad)`};
+    background: ${({ theme }) => `conic-gradient(transparent 40grad, 80grad, ${theme.info} 360grad)`};
     display: block;
     width: var(--circle-size);
     padding: 0;
@@ -118,7 +119,7 @@ const StepIcon = styled.div<{ status: StatusIconState }>`
 
 const Label = styled.span<{ status: StatusIconState; crossOut: boolean }>`
   --color: ${({ status, crossOut }) =>
-    status === 'pending'
+    status === 'pending' || status === 'not-started'
       ? `var(${UI.COLOR_TEXT})`
       : crossOut
       ? `var(${UI.COLOR_PAPER_DARKER})`
@@ -134,6 +135,7 @@ const Label = styled.span<{ status: StatusIconState; crossOut: boolean }>`
   text-decoration: ${({ crossOut }) => (crossOut ? 'line-through' : 'none')};
   display: flex;
   flex-flow: column wrap;
+  line-height: 1.3;
 
   // Sublabel text
   > span {

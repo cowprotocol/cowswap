@@ -1,10 +1,9 @@
-import React from 'react'
-
-import { isAddress, shortenAddress } from '@cowprotocol/common-utils'
+import { ExplorerDataType, getExplorerLink, isAddress, shortenAddress } from '@cowprotocol/common-utils'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { InfoTooltip } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
-
-import { InfoIcon } from 'legacy/components/InfoIcon'
+import { Nullish } from 'types'
 
 const Row = styled.div`
   display: flex;
@@ -16,30 +15,42 @@ const Row = styled.div`
   gap: 3px;
 `
 
+const Link = styled.a`
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+`
+
 interface RecipientRowProps {
-  recipient: string | null
-  recipientAddressOrName: string | null
-  account: string | undefined
+  chainId: SupportedChainId
+  recipient: Nullish<string>
+  account: Nullish<string>
 }
 
 export function RecipientRow(props: RecipientRowProps) {
-  const { recipientAddressOrName, recipient, account } = props
+  const { chainId, recipient, account } = props
   return (
     <>
-      {recipientAddressOrName && recipient !== account && (
+      {recipient && recipient.toLowerCase() !== account?.toLowerCase() && (
         <Row>
           <div>
             <span>Recipient</span>{' '}
-            <InfoIcon
+            <InfoTooltip
               content={
                 'The tokens received from this order will automatically be sent to this address. No need to do a second transaction!'
               }
             />
           </div>
           <div>
-            <span title={recipientAddressOrName}>
-              {isAddress(recipientAddressOrName) ? shortenAddress(recipientAddressOrName) : recipientAddressOrName}
-            </span>
+            <Link
+              title={recipient}
+              href={getExplorerLink(chainId, recipient, ExplorerDataType.ADDRESS)}
+              target="_blank"
+            >
+              {isAddress(recipient) ? shortenAddress(recipient) : recipient}
+            </Link>
           </div>
         </Row>
       )}

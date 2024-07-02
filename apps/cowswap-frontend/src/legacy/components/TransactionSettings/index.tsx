@@ -1,7 +1,6 @@
 import { RowBetween, RowFixed } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 
-import { darken } from 'color2k'
 import styled from 'styled-components/macro'
 
 import SlippageTabsMod, { TransactionSettingsProps, OptionCustom } from './TransactionSettingsMod'
@@ -9,7 +8,8 @@ import SlippageTabsMod, { TransactionSettingsProps, OptionCustom } from './Trans
 const Wrapper = styled.div`
   ${RowBetween} > button, ${OptionCustom} {
     &:disabled {
-      background-color: ${({ theme }) => darken(theme.bg3, 0.031)};
+      color: var(${UI.COLOR_TEXT_OPACITY_50});
+      background-color: var(${UI.COLOR_PAPER});
       border: none;
       pointer-events: none;
     }

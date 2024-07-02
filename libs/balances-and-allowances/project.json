@@ -1,5 +1,5 @@
 {
-  "name": "@cowprotocol/balances-and-allowances",
+  "name": "balances-and-allowances",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/balances-and-allowances/src",
   "projectType": "library",

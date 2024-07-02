@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from 'react'
+
 import Form, { FormValidation } from '@rjsf/core'
+
 import { decodeAppDataSchema, FormProps, handleErrors, transformErrors } from './config'
+
 import DecodeAppData from '../../../components/AppData/DecodeAppData'
+
 import { TabData } from './index'
 
 type DecodeProps = {

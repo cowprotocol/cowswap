@@ -10,7 +10,7 @@ See the widget in action in the [widget configurator](https://widget.cow.fi)
 
 ## Docs
 
-You can find a detailed description of all widget parameters in the [documentation](../../libs/widget-lib/docs/README.md)
+You can find a detailed description of all widget parameters in the [documentation](https://docs.cow.fi/cow-protocol/tutorials/widget)
 
 ## Quick start
 
@@ -31,27 +31,28 @@ Create a container somewhere in your website, the widget will be rendered inside
 Import the widget and initialise it:
 
 ```js
-import { cowSwapWidget, CowSwapWidgetParams } from '@cowprotocol/widget-lib'
+import { createCowSwapWidget, CowSwapWidgetParams } from '@cowprotocol/widget-lib'
 
 // Initialise the widget
 const widgetContainer = document.getElementById('cowswap-widget')
 
+// instantiate your own web3 provider
+const provider = window.ethereum
+
 const params: CowSwapWidgetParams = {
-  appCode: '<YOUR_APP_KEY>', // Just an unique identifier for your app
+  appCode: 'NAME-OF-YOU-APP', // Add here the name of your app. e.g. "Pig Swap"
   sell: { asset: 'DAI' },
   buy: { asset: 'USDC', amount: '0.1' },
-  // instantiate your own web3 provider
-  provider: window.ethereum,
 }
 
-const updateWidget = cowSwapWidget(
+const {updateParams} = createCowSwapWidget(
   widgetContainer,
   // Optionally, you can provide some additional params to customise your widget
-  params
+  {params, provider}
 )
 
 // You also can change widget configuration on the fly
-updateWidget({ ...params, tradeType: 'limit' })
+updateParams({ ...params, tradeType: 'limit' })
 ```
 
 ## Developers

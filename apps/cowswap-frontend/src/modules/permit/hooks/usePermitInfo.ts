@@ -1,25 +1,29 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
-import { GP_VAULT_RELAYER } from '@cowprotocol/common-const'
 import { getIsNativeToken, getWrappedToken } from '@cowprotocol/common-utils'
-import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS, mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { DEFAULT_MIN_GAS_LIMIT, getTokenPermitInfo, PermitInfo } from '@cowprotocol/permit-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
+import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { Currency } from '@uniswap/sdk-core'
-import { useWeb3React } from '@web3-react/core'
 
 import { Nullish } from 'types'
 
-import { TradeType } from 'modules/trade'
+import { TradeType } from 'modules/trade/types'
 
 import { useIsPermitEnabled } from 'common/hooks/featureFlags/useIsPermitEnabled'
 
 import { usePreGeneratedPermitInfoForToken } from './usePreGeneratedPermitInfoForToken'
 
-import { ORDER_TYPE_SUPPORTS_PERMIT } from '../const'
 import { addPermitInfoForTokenAtom, permittableTokensAtom } from '../state/permittableTokensAtom'
 import { IsTokenPermittableResult } from '../types'
+
+const ORDER_TYPE_SUPPORTS_PERMIT: Record<TradeType, boolean> = {
+  [TradeType.SWAP]: true,
+  [TradeType.LIMIT_ORDER]: true,
+  [TradeType.ADVANCED_ORDERS]: false,
+}
 
 const UNSUPPORTED: PermitInfo = { type: 'unsupported', name: 'native' }
 
@@ -37,7 +41,7 @@ export const PERMIT_GAS_LIMIT_MIN: Record<SupportedChainId, number> = mapSupport
  */
 export function usePermitInfo(token: Nullish<Currency>, tradeType: Nullish<TradeType>): IsTokenPermittableResult {
   const { chainId } = useWalletInfo()
-  const { provider } = useWeb3React()
+  const provider = useWalletProvider()
 
   const lowerCaseAddress = token ? getWrappedToken(token).address?.toLowerCase() : undefined
   const isNative = !!token && getIsNativeToken(token)
@@ -53,7 +57,7 @@ export function usePermitInfo(token: Nullish<Currency>, tradeType: Nullish<Trade
     isPermitEnabled && !isNative ? token : undefined
   )
 
-  const spender = GP_VAULT_RELAYER[chainId]
+  const spender = COW_PROTOCOL_VAULT_RELAYER_ADDRESS[chainId]
 
   useEffect(() => {
     if (

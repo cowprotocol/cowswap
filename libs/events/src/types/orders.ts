@@ -1,20 +1,32 @@
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { SupportedChainId, EnrichedOrder, OrderKind } from '@cowprotocol/cow-sdk'
+import { TokenInfo, UiOrderType } from '@cowprotocol/types'
 
-export interface OrderUidInChain {
+type BaseOrderPayload = {
+  chainId: SupportedChainId
+  order: EnrichedOrder
+}
+
+export type OnPostedOrderPayload = {
   orderUid: string
   chainId: SupportedChainId
-  // TODO: Potentially add all order info here, but lets keep it minimal for now
+  owner: string
+  kind: OrderKind
+  orderType: UiOrderType
+  inputAmount: bigint
+  outputAmount: bigint
+  inputToken: TokenInfo
+  outputToken: TokenInfo
+  receiver?: string
+  orderCreationHash?: string
+  isEthFlow?: boolean
 }
 
-export type OnPostedOrderPayload = OrderUidInChain
-export type OnExecutedOrderPayload = OrderUidInChain
+export type OnFulfilledOrderPayload = BaseOrderPayload
 
-export type OnPostedEthFlowOrderPayload = OrderUidInChain & {
-  txHash: string
+export type OnCancelledOrderPayload = BaseOrderPayload & {
+  transactionHash?: string
 }
 
-export type OnRejectedOrderPayload = OrderUidInChain & {
-  reason: string
-  errorCode?: number
-  // TODO: Potentially add all order info here, but lets keep it minimal for now
-}
+export type OnExpiredOrderPayload = BaseOrderPayload
+
+export type OnPresignedOrderPayload = BaseOrderPayload

@@ -1,6 +1,8 @@
 import { useLayoutEffect } from 'react'
 
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
+
+import { useNavigate } from 'common/hooks/useNavigate'
 
 import { ORDERS_TABLE_PAGE_SIZE } from '../../../const/tabs'
 import { buildOrdersTableUrl } from '../../../utils/buildOrdersTableUrl'

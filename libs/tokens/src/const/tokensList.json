@@ -61,6 +61,33 @@
       "priority": 2,
       "enabledByDefault": true,
       "source": "https://tokens.honeyswap.org"
+    },
+    {
+      "priority": 3,
+      "enabledByDefault": true,
+      "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/GnosisUniswapTokensList.json"
+    },
+    {
+      "priority": 4,
+      "enabledByDefault": true,
+      "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/GnosisCoingeckoTokensList.json"
+    }
+  ],
+  "42161": [
+    {
+      "priority": 1,
+      "enabledByDefault": true,
+      "source": "https://files.cow.fi/tokens/CowSwap.json"
+    },
+    {
+      "priority": 2,
+      "enabledByDefault": true,
+      "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/ArbitrumOneUniswapTokensList.json"
+    },
+    {
+      "priority": 3,
+      "enabledByDefault": true,
+      "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/ArbitrumOneCoingeckoTokensList.json"
     }
   ],
   "11155111": [

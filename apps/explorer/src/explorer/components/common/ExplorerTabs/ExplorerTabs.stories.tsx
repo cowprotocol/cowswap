@@ -1,12 +1,13 @@
 import React from 'react'
-import styled from 'styled-components'
 
 // also exported from '@storybook/react' if you can deal with breaking changes in 6.1
 import { Meta, Story } from '@storybook/react/types-6-0'
-import { GlobalStyles, ThemeToggler } from '../../../../storybook/decorators'
+import styled from 'styled-components/macro'
 
 import StyledTabs from './ExplorerTabs'
+
 import { Props as TabsProps } from '../../../../components/common/Tabs/Tabs'
+import { GlobalStyles, ThemeToggler } from '../../../../storybook/decorators'
 
 export default {
   title: 'ExplorerApp/ExplorerTabs',

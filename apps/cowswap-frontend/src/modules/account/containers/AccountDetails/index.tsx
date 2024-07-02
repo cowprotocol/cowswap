@@ -1,27 +1,19 @@
-import { Fragment, useMemo } from 'react'
+import { Fragment } from 'react'
 
 import { CHAIN_INFO } from '@cowprotocol/common-const'
-import {
-  getEtherscanLink,
-  getExplorerLabel,
-  shortenAddress,
-  getExplorerAddressLink,
-  isMobile,
-} from '@cowprotocol/common-utils'
+import { getEtherscanLink, getExplorerLabel, shortenAddress, getExplorerAddressLink } from '@cowprotocol/common-utils'
 import { Command } from '@cowprotocol/types'
 import { ExternalLink } from '@cowprotocol/ui'
 import {
   ConnectionType,
   useWalletInfo,
-  getConnectionName,
-  getIsCoinbaseWallet,
-  getIsMetaMask,
   useWalletDetails,
   useIsWalletConnect,
-  getWeb3ReactConnection,
   getIsHardWareWallet,
+  useDisconnectWallet,
+  useConnectionType,
+  getIsInjectedMobileBrowser,
 } from '@cowprotocol/wallet'
-import { useWeb3React } from '@web3-react/core'
 
 import { Trans } from '@lingui/macro'
 
@@ -31,10 +23,14 @@ import {
   groupActivitiesByDay,
   useMultipleActivityDescriptors,
 } from 'legacy/hooks/useRecentActivity'
+import { useAppDispatch } from 'legacy/state/hooks'
+import { updateSelectedWallet } from 'legacy/state/user/reducer'
 
 import Activity from 'modules/account/containers/Transaction'
+import { useInjectedWidgetParams } from 'modules/injectedWidget'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
+import { useUnsupportedNetworksText } from 'common/hooks/useUnsupportedNetworksText'
 
 import { AccountIcon } from './AccountIcon'
 import {
@@ -58,8 +54,6 @@ import {
 } from './styled'
 import { SurplusCard } from './SurplusCard'
 
-import { useUnsupportedNetworksText } from '../../../../common/hooks/useUnsupportedNetworksText'
-import { useDisconnectWallet } from '../../hooks/useDisconnectWallet'
 import { CreationDateText } from '../Transaction/styled'
 
 export const DATE_FORMAT_OPTION: Intl.DateTimeFormatOptions = {
@@ -81,7 +75,7 @@ export interface AccountDetailsProps {
   confirmedTransactions: string[]
   ENSName?: string
   forceHardwareWallet?: boolean
-  toggleWalletModal: Command | null
+  toggleWalletModal: Command
   toggleAccountSelectorModal: Command
   handleCloseOrdersPanel: Command
 }
@@ -96,10 +90,12 @@ export function AccountDetails({
   forceHardwareWallet,
 }: AccountDetailsProps) {
   const { account, chainId } = useWalletInfo()
-  const { connector } = useWeb3React()
+  const connectionType = useConnectionType()
   const walletDetails = useWalletDetails()
+  const dispatch = useAppDispatch()
   const disconnectWallet = useDisconnectWallet()
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
+  const { standaloneMode } = useInjectedWidgetParams()
 
   const explorerOrdersLink = account && getExplorerAddressLink(chainId, account)
   const explorerLabel = account ? getExplorerLabel(chainId, 'address', account) : undefined
@@ -109,17 +105,12 @@ export function AccountDetails({
   const activityTotalCount = activities?.length || 0
 
   const isWalletConnect = useIsWalletConnect()
-  const isMetaMask = getIsMetaMask()
-  const isCoinbaseWallet = getIsCoinbaseWallet()
-  const connection = useMemo(() => getWeb3ReactConnection(connector), [connector])
-  const isInjectedMobileBrowser = (isMetaMask || isCoinbaseWallet) && isMobile
+  const isInjectedMobileBrowser = getIsInjectedMobileBrowser()
 
   const unsupportedNetworksText = useUnsupportedNetworksText()
 
-  if (!toggleWalletModal) return null
-
   function formatConnectorName() {
-    const name = walletDetails?.walletName || getConnectionName(connection.type, getIsMetaMask())
+    const name = walletDetails?.walletName
     // In case the wallet is connected via WalletConnect and has wallet name set, add the suffix to be clear
     // This to avoid confusion for instance when using Metamask mobile
     // When name is not set, it defaults to WalletConnect already
@@ -136,11 +127,11 @@ export function AccountDetails({
   const handleDisconnectClick = () => {
     disconnectWallet()
     handleCloseOrdersPanel()
-    toggleWalletModal()
+    dispatch(updateSelectedWallet({ wallet: undefined }))
   }
 
   const networkLabel = CHAIN_INFO[chainId].label
-  const isHardWareWallet = forceHardwareWallet || getIsHardWareWallet(connection.type)
+  const isHardWareWallet = forceHardwareWallet || getIsHardWareWallet(connectionType)
 
   return (
     <Wrapper>
@@ -156,7 +147,7 @@ export function AccountDetails({
                   }
                 }}
               >
-                <AccountIcon connector={connector} walletDetails={walletDetails} size={24} account={account} />
+                <AccountIcon size={24} account={account} />
 
                 {(ENSName || account) && (
                   <WalletNameAddress>{ENSName ? ENSName : account && shortenAddress(account)}</WalletNameAddress>
@@ -188,15 +179,18 @@ export function AccountDetails({
                     </AddressLink>
                   )}
 
-                  {connection.type !== ConnectionType.GNOSIS_SAFE && (
-                    <WalletAction onClick={toggleWalletModal}>
-                      <Trans>Change Wallet</Trans>
-                    </WalletAction>
+                  {standaloneMode !== false && (
+                    <>
+                      {connectionType !== ConnectionType.GNOSIS_SAFE && (
+                        <WalletAction onClick={toggleWalletModal}>
+                          <Trans>Change Wallet</Trans>
+                        </WalletAction>
+                      )}
+                      <WalletAction onClick={handleDisconnectClick}>
+                        <Trans>Disconnect</Trans>
+                      </WalletAction>
+                    </>
                   )}
-
-                  <WalletAction onClick={handleDisconnectClick}>
-                    <Trans>Disconnect</Trans>
-                  </WalletAction>
                 </>
               )}
             </WalletSecondaryActions>

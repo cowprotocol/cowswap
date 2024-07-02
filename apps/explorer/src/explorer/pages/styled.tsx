@@ -1,8 +1,9 @@
-import styled from 'styled-components'
-import { media } from '../../theme/styles/media'
-import { RowWithCopyButton } from '../../components/common/RowWithCopyButton'
 import * as CSS from 'csstype'
 import { Link } from 'react-router-dom'
+import styled from 'styled-components/macro'
+
+import { RowWithCopyButton } from '../../components/common/RowWithCopyButton'
+import { media } from '../../theme/styles/media'
 
 export const Wrapper = styled.div`
   padding: 1.6rem;

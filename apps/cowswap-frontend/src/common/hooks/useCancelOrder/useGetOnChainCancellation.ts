@@ -1,7 +1,5 @@
 import { useCallback } from 'react'
 
-import { useEthFlowContract, useGP2SettlementContract } from '@cowprotocol/common-hooks'
-
 import { Order } from 'legacy/state/orders/actions'
 
 import { getIsEthFlowOrder } from 'modules/swap/containers/EthFlowStepper'
@@ -12,6 +10,7 @@ import {
   getOnChainCancellation,
   OnChainCancellation,
 } from 'common/hooks/useCancelOrder/onChainCancellation'
+import { useEthFlowContract, useGP2SettlementContract } from 'common/hooks/useContract'
 import { getIsComposableCowParentOrder } from 'utils/orderUtils/getIsComposableCowParentOrder'
 import { getIsTheLastTwapPart } from 'utils/orderUtils/getIsTheLastTwapPart'
 

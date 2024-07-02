@@ -3,8 +3,10 @@ import { atom } from 'jotai'
 import { isFractionFalsy } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
+import { receiveAmountInfoAtom } from 'modules/trade'
+
 import { fullAmountQuoteAtom } from './fullAmountQuoteAtom'
-import { partsStateAtom } from './partsStateAtom'
+import { twapOrdersSettingsAtom } from './twapOrdersSettingsAtom'
 
 export interface SwapAmountDifference {
   amount: CurrencyAmount<Currency>
@@ -13,7 +15,8 @@ export interface SwapAmountDifference {
 
 export const swapAmountDifferenceAtom = atom<SwapAmountDifference | null>((get) => {
   const fullAmountQuote = get(fullAmountQuoteAtom)
-  const { numberOfPartsValue, outputPartAmount } = get(partsStateAtom)
+  const outputPartAmount = get(receiveAmountInfoAtom)?.afterSlippage.buyAmount
+  const { numberOfPartsValue } = get(twapOrdersSettingsAtom)
 
   if (!outputPartAmount || isFractionFalsy(outputPartAmount)) return null
 

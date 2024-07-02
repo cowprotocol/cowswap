@@ -22,6 +22,7 @@ export function CurrencySelectButton(props: CurrencySelectButtonProps) {
     <styledEl.CurrencySelectWrapper
       className="open-currency-select-button"
       readonlyMode={readonlyMode}
+      disabled={readonlyMode}
       onClick={onClick}
       isLoading={loading}
       $stubbed={$stubbed}

@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/common-utils",
-  "version": "0.0.1",
+  "version": "1.4.1",
   "main": "./index.js",
   "types": "./index.d.ts",
   "exports": {

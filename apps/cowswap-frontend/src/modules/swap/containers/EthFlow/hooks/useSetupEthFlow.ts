@@ -1,9 +1,13 @@
 import { useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
+import { Command } from '@cowprotocol/types'
+
 import { ActivityDescriptors } from 'legacy/hooks/useRecentActivity'
 
 import { ApprovalState } from 'common/hooks/useApproveState'
+
+import { useHandleChainChange } from './useHandleChainChange'
 
 import { resetEthFlowContextAtom, updateEthFlowContextAtom } from '../../../state/EthFlow/ethFlowContextAtom'
 
@@ -12,6 +16,7 @@ interface EthFlowSetupParams {
   approveActivity: ActivityDescriptors | null
   wrapActivity: ActivityDescriptors | null
   hasEnoughWrappedBalanceForSwap: boolean
+  onDismiss: Command
 }
 
 export function useSetupEthFlow({
@@ -19,15 +24,17 @@ export function useSetupEthFlow({
   approvalState,
   approveActivity,
   wrapActivity,
+  onDismiss,
 }: EthFlowSetupParams) {
   const updateEthFlowContext = useSetAtom(updateEthFlowContextAtom)
   const resetEthFlowContext = useSetAtom(resetEthFlowContextAtom)
 
-  // Reset context once
+  useHandleChainChange(onDismiss)
+
+  // Reset once on start
   useEffect(() => {
     resetEthFlowContext()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [resetEthFlowContext])
 
   // Bind isNeeded flags
   useEffect(() => {

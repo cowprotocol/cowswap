@@ -12,8 +12,7 @@ export default defineConfig({
   plugins: [
     dts({
       entryRoot: 'src',
-      tsConfigFilePath: path.join(__dirname, 'tsconfig.lib.json'),
-      skipDiagnostics: true,
+      tsconfigPath: path.join(__dirname, 'tsconfig.lib.json'),
     }),
 
     macrosPlugin(),
@@ -22,7 +21,6 @@ export default defineConfig({
       root: '../../../',
     }),
   ],
-
   // Uncomment this if you are using workers.
   // worker: {
   //  plugins: [

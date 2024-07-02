@@ -1,8 +1,8 @@
+import { DEFAULT_LOCALE, SupportedLocale } from '@cowprotocol/common-const'
 import { Currency, CurrencyAmount, Fraction, Price } from '@uniswap/sdk-core'
 
 import JSBI from 'jsbi'
 
-import { DEFAULT_LOCALE, SupportedLocale } from '@cowprotocol/common-const'
 
 import formatLocaleNumber from './formatLocaleNumber'
 

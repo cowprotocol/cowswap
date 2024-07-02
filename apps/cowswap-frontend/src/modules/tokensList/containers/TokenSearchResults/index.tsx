@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { useNetworkName } from '@cowprotocol/common-hooks'
 import { doesTokenMatchSymbolOrAddress } from '@cowprotocol/common-utils'
 import { useSearchToken } from '@cowprotocol/tokens'
-import { Loader } from '@cowprotocol/ui'
+import { BannerOrientation, ExternalLink, InlineBanner, LINK_GUIDE_ADD_CUSTOM_TOKEN, Loader } from '@cowprotocol/ui'
+
+import { useNetworkName } from 'common/hooks/useNetworkName'
 
 import * as styledEl from './styled'
 
@@ -88,6 +89,13 @@ export function TokenSearchResults({
 
   return (
     <CommonListContainer id="currency-list">
+      <InlineBanner margin={'10px'} width="auto" orientation={BannerOrientation.Horizontal} bannerType={'information'}>
+        <p>
+          Can't find your token on the list?{' '}
+          <ExternalLink href={LINK_GUIDE_ADD_CUSTOM_TOKEN}>Read our guide</ExternalLink> on how to add custom tokens.
+        </p>
+      </InlineBanner>
+
       {(() => {
         if (isLoading)
           return (

@@ -1,3 +1,4 @@
+import { GetAccountOrdersResponse } from './accountOrderUtils'
 import {
   GetOrderParams,
   GetOrdersParams,
@@ -9,7 +10,6 @@ import {
 } from './types'
 
 import { RAW_ORDER, RAW_TRADE } from '../../test/data'
-import { GetAccountOrdersResponse } from './accountOrderUtils'
 
 export async function getOrder(params: GetOrderParams): Promise<RawOrder> {
   const { orderId } = params

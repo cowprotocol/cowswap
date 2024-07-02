@@ -1,4 +1,4 @@
-import { UI } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 
 import { Text } from 'rebass'
 import styled from 'styled-components/macro'
@@ -6,22 +6,23 @@ import styled from 'styled-components/macro'
 export const BalanceText = styled(Text)`
   font-weight: 500;
   font-size: 13px;
-  padding: 0 6px 0 12px;
+  padding: 0 9px 0 11px;
   min-width: initial;
+  color: var(${UI.COLOR_TEXT_OPACITY_70});
 
-  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+  ${Media.upToExtraSmall()} {
     display: none;
-  `};
+  }
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${Media.upToMedium()} {
     overflow: hidden;
     max-width: 100px;
     text-overflow: ellipsis;
-  `};
+  }
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     display: none;
-  `};
+  }
 `
 
 export const Wrapper = styled.div<{ active: boolean }>`
@@ -30,24 +31,17 @@ export const Wrapper = styled.div<{ active: boolean }>`
   align-items: center;
   white-space: nowrap;
   cursor: pointer;
-  background-color: ${({ theme, active }) => (!active ? theme.bg1 : theme.bg1)};
-  border-radius: 21px;
-  border: 2px solid transparent;
+  background: ${({ active }) => (active ? `var(${UI.COLOR_PAPER_DARKER})` : `var(${UI.COLOR_PAPER})`)};
+  border-radius: 28px;
+  border: none;
   transition: border var(${UI.ANIMATION_DURATION}) ease-in-out;
   pointer-events: auto;
   width: auto;
+  height: 100%;
 
-  :focus {
-    border: 1px solid blue;
-  }
-
-  &:hover {
-    border: 2px solid var(${UI.COLOR_TEXT_OPACITY_25});
-  }
-
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${Media.upToMedium()} {
     height: 100%;
-  `}
+  }
 
   ${({ theme }) =>
     theme.isInjectedWidgetMode &&

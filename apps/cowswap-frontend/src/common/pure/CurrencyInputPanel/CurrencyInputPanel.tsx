@@ -4,7 +4,7 @@ import { setMaxSellTokensAnalytics } from '@cowprotocol/analytics'
 import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { formatInputAmount, getIsNativeToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { MouseoverTooltip, TokenAmount } from '@cowprotocol/ui'
+import { TokenAmount, HoverTooltip } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
@@ -135,11 +135,16 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
     }
   }, [_priceImpactParams, bothCurrenciesSet])
 
+  const onTokenSelectClick = useCallback(() => {
+    openTokenSelectWidget(selectedTokenAddress, (currency) => onCurrencySelection(field, currency))
+  }, [openTokenSelectWidget, selectedTokenAddress, onCurrencySelection, field])
+
   return (
     <styledEl.OuterWrapper>
       <styledEl.Wrapper
         id={id}
         className={className}
+        data-address={selectedTokenAddress}
         withReceiveAmountInfo={!!receiveAmountInfo}
         pointerDisabled={disabled}
         readOnly={inputDisabled}
@@ -149,16 +154,14 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
         <styledEl.CurrencyInputBox>
           <div>
             <CurrencySelectButton
-              onClick={() =>
-                openTokenSelectWidget(selectedTokenAddress, (currency) => onCurrencySelection(field, currency))
-              }
+              onClick={onTokenSelectClick}
               currency={disabled ? undefined : currency || undefined}
               loading={areCurrenciesLoading || disabled}
               readonlyMode={tokenSelectorDisabled}
             />
           </div>
           <div>
-            {inputTooltip ? <MouseoverTooltip text={inputTooltip}>{numericalInput}</MouseoverTooltip> : numericalInput}
+            {inputTooltip ? <HoverTooltip wrapInContainer content={inputTooltip}>{numericalInput}</HoverTooltip> : numericalInput}
           </div>
         </styledEl.CurrencyInputBox>
 

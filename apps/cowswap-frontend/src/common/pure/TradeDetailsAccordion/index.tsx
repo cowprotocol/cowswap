@@ -1,7 +1,8 @@
 import { useState } from 'react'
 
 import CarretIcon from '@cowprotocol/assets/cow-swap/carret-down.svg'
-import { UI } from '@cowprotocol/ui'
+import { FiatAmount, TokenAmount, UI } from '@cowprotocol/ui'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
@@ -40,6 +41,7 @@ const Summary = styled.div`
   span {
     font-size: inherit;
     font-weight: inherit;
+    white-space: nowrap;
   }
 `
 
@@ -89,12 +91,19 @@ const ToggleIcon = styled.div<{ isOpen: boolean }>`
 
 interface TradeDetailsAccordionProps {
   rateInfo: React.ReactNode
-  feeSummary?: React.ReactNode // TODO: pass actual CurrencyAmount<Currency> here
+  feeTotalAmount: CurrencyAmount<Currency> | null
+  feeUsdTotalAmount: CurrencyAmount<Currency> | null
   children?: React.ReactNode
   open?: boolean
 }
 
-export const TradeDetailsAccordion = ({ rateInfo, feeSummary, children, open = false }: TradeDetailsAccordionProps) => {
+export const TradeDetailsAccordion = ({
+  rateInfo,
+  feeTotalAmount,
+  feeUsdTotalAmount,
+  children,
+  open = false,
+}: TradeDetailsAccordionProps) => {
   const [isOpen, setIsOpen] = useState(open)
 
   const toggleAccordion = () => {
@@ -120,7 +129,25 @@ export const TradeDetailsAccordion = ({ rateInfo, feeSummary, children, open = f
           tabIndex={0}
           isOpen={isOpen}
         >
-          {!isOpen && feeSummary}
+          {!isOpen && (
+            <>
+              {feeUsdTotalAmount?.greaterThan(0) ? (
+                <>
+                  <FiatAmount amount={feeUsdTotalAmount} />
+                </>
+              ) : (
+                <>
+                  {feeTotalAmount?.greaterThan(0) ? (
+                    <>
+                      Fee <TokenAmount amount={feeTotalAmount} tokenSymbol={feeTotalAmount?.currency} />
+                    </>
+                  ) : (
+                    'Free'
+                  )}
+                </>
+              )}
+            </>
+          )}
           <ToggleIcon isOpen={isOpen}>
             <SVG src={CarretIcon} title={isOpen ? 'Close' : 'Open'} />
           </ToggleIcon>

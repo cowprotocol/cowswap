@@ -50,3 +50,7 @@ analyse.html
 
 # NX
 .nx
+
+# Next.js
+.next
+out

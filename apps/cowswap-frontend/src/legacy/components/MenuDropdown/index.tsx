@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, RefObject } from 'react'
 
 import IMAGE_CARRET_DOWN from '@cowprotocol/assets/cow-swap/carret-down.svg'
 import { useOnClickOutside } from '@cowprotocol/common-hooks'
@@ -19,14 +19,16 @@ interface MenuProps {
 
 export function Menu({ title, badge, children }: MenuProps) {
   const isLargeAndUp = useMediaQuery(LargeAndUp)
-  const node = useRef<HTMLOListElement>()
+  const node = useRef<HTMLOListElement | null>(null)
   const [showMenu, setShowMenu] = useState(false)
 
   const handleOnClick = () => {
     setShowMenu((showMenu) => !showMenu)
   }
 
-  useOnClickOutside(node, () => isLargeAndUp && setShowMenu(false)) // only trigger on large screens
+  useOnClickOutside([node as RefObject<HTMLElement>], () => {
+    if (isLargeAndUp) setShowMenu(false)
+  }) // only trigger on large screens
 
   return (
     <MenuFlyout ref={node as any}>

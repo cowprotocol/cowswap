@@ -13,7 +13,7 @@ import { useSafeMemo } from 'common/hooks/useSafeMemo'
 import { getExecutedSummaryData } from 'utils/getExecutedSummaryData'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
-type Output = {
+export type SurplusData = {
   surplusFiatValue: Nullish<CurrencyAmount<Currency>>
   surplusAmount: Nullish<CurrencyAmount<Currency>>
   surplusToken: Nullish<Currency>
@@ -21,7 +21,7 @@ type Output = {
   showSurplus: boolean | null
 }
 
-export function useGetSurplusData(order: Order | ParsedOrder | undefined): Output {
+export function useGetSurplusData(order: Order | ParsedOrder | undefined): SurplusData {
   const { surplusAmount, surplusToken } = useMemo(() => {
     const output: { surplusToken?: Currency; surplusAmount?: CurrencyAmount<Currency> } = {}
 

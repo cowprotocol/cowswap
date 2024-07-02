@@ -1,6 +1,6 @@
 import { CoWSwapEthFlow } from '@cowprotocol/abis'
 import { calculateGasMargin } from '@cowprotocol/common-utils'
-import { OrderClass, UnsignedOrder } from '@cowprotocol/cow-sdk'
+import { OrderClass, SigningScheme, UnsignedOrder } from '@cowprotocol/cow-sdk'
 import { ContractTransaction } from '@ethersproject/contracts'
 import { NativeCurrency } from '@uniswap/sdk-core'
 
@@ -44,6 +44,11 @@ export async function signEthFlowOrderStep(
     throw new Error('[EthFlow::SignEthFlowOrderStep] No quoteId passed')
   }
 
+  const network = await ethFlowContract.provider.getNetwork()
+  if (network.chainId !== orderParams.chainId) {
+    throw new Error('Wallet chain differs from order params.')
+  }
+
   const ethOrderParams: EthFlowCreateOrderParams = {
     ...order,
     quoteId,
@@ -82,6 +87,7 @@ export async function signEthFlowOrderStep(
         class: OrderClass.MARKET,
         orderId,
         signature: '',
+        signingScheme: SigningScheme.EIP1271,
         summary,
         quoteId,
         orderCreationHash: txReceipt.hash,

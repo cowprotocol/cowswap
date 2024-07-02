@@ -1,9 +1,12 @@
-import Cytoscape, { EventObject } from 'cytoscape'
 import React from 'react'
+
+import { Command } from '@cowprotocol/types'
+
+import Cytoscape, { EventObject } from 'cytoscape'
+
 import { LAYOUTS } from './layouts'
 import { PopperInstance } from './types'
 
-import { Command } from '@cowprotocol/types'
 
 /**
  * This allows to bind a tooltip (popper.js) around to a cytoscape elements (node, edge)

@@ -1,4 +1,5 @@
 import { NodeSingular } from 'cytoscape'
+
 import { CustomLayoutOptions, CytoscapeLayouts } from './types'
 
 const DEFAULT_VALUES = {

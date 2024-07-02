@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
-import { isAddress } from '@cowprotocol/common-utils'
 import { TokenWithLogo } from '@cowprotocol/common-const'
+import { isAddress } from '@cowprotocol/common-utils'
 
 export function useFilterTokens(tokens: TokenWithLogo[], query: string): TokenWithLogo[] {
   return useMemo(() => {

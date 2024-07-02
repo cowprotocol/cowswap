@@ -12,11 +12,12 @@ import { useTradeQuote } from 'modules/tradeQuote'
 
 import { useApproveState } from 'common/hooks/useApproveState'
 
+import { TradeType } from '../../trade'
 import { TradeFormValidationCommonContext } from '../types'
 
 export function useTradeFormValidationContext(): TradeFormValidationCommonContext | null {
   const { account } = useWalletInfo()
-  const { state: derivedTradeState } = useDerivedTradeState()
+  const derivedTradeState = useDerivedTradeState()
   const tradeQuote = useTradeQuote()
 
   const { inputCurrency, outputCurrency, slippageAdjustedSellAmount, recipient, tradeType } = derivedTradeState || {}
@@ -34,6 +35,8 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
 
   const isPermitSupported = useTokenSupportsPermit(inputCurrency, tradeType)
 
+  const isInsufficientBalanceOrderAllowed = tradeType === TradeType.LIMIT_ORDER
+
   const commonContext = {
     account,
     isWrapUnwrap,
@@ -45,6 +48,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
     approvalState,
     tradeQuote,
     isPermitSupported,
+    isInsufficientBalanceOrderAllowed,
   }
 
   return useMemo(() => {

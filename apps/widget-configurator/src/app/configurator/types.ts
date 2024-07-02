@@ -1,21 +1,10 @@
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
-import type { TradeType } from '@cowprotocol/widget-lib'
+import { CowSwapWidgetPaletteColors, TradeType } from '@cowprotocol/widget-lib'
 
 import { PaletteMode } from '@mui/material'
 
-export type ColorKeys =
-  | 'primary'
-  | 'background'
-  | 'paper'
-  | 'text'
-  | 'danger'
-  | 'warning'
-  | 'alert'
-  | 'info'
-  | 'success'
-
 export type ColorPalette = {
-  [key in ColorKeys]: string
+  [key in CowSwapWidgetPaletteColors]: string
 }
 
 export interface TokenListItem {
@@ -24,7 +13,7 @@ export interface TokenListItem {
 }
 
 export interface ConfiguratorState {
-  chainId: SupportedChainId
+  chainId?: SupportedChainId
   theme: PaletteMode
   currentTradeType: TradeType
   enabledTradeTypes: TradeType[]
@@ -32,9 +21,11 @@ export interface ConfiguratorState {
   sellTokenAmount: number | undefined
   buyToken: string
   buyTokenAmount: number | undefined
-  tokenLists: TokenListItem[]
+  tokenListUrls: TokenListItem[]
   customColors: ColorPalette
   defaultColors: ColorPalette
   partnerFeeBps: number
   partnerFeeRecipient: string
+  standaloneMode: boolean
+  disableToastMessages: boolean
 }

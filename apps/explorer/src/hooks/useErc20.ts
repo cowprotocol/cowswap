@@ -1,18 +1,15 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { TokenErc20 } from '@gnosis.pm/dex-js'
-
-import { Errors, Network, UiError } from 'types'
-
-import { SingleErc20State, useMultipleErc20s as useMultipleErc20sState, useSaveErc20s } from 'state/erc20'
-
+import { NATIVE_TOKEN_PER_NETWORK } from 'const'
 import { getErc20Info } from 'services/helpers'
+import { SingleErc20State, useMultipleErc20s as useMultipleErc20sState, useSaveErc20s } from 'state/erc20'
+import { Errors, Network, UiError } from 'types'
+import { isNativeToken, retry } from 'utils'
+
+import { useTokenList } from './useTokenList'
 
 import { erc20Api, web3 } from '../explorer/api'
-
-import { NATIVE_TOKEN_PER_NETWORK } from 'const'
-import { isNativeToken, retry } from 'utils'
-import { useTokenList } from './useTokenList'
 
 async function _fetchErc20FromNetwork(params: {
   address: string
@@ -20,14 +17,6 @@ async function _fetchErc20FromNetwork(params: {
   setError: (error: UiError) => void
 }): Promise<SingleErc20State> {
   const { address, networkId, setError } = params
-
-  if (isNativeToken(address)) {
-    // Default to mainnet (ETH) when the network isn't configured
-    const nativeToken = NATIVE_TOKEN_PER_NETWORK[networkId] || NATIVE_TOKEN_PER_NETWORK[Network.MAINNET]
-    // Overwrite native address because otherwise it won't match the case
-    // Causing the caller to never know we got the token it was looking for
-    return { ...nativeToken, address }
-  }
 
   try {
     return await retry(() => getErc20Info({ tokenAddress: address, networkId, web3, erc20Api }))
@@ -79,9 +68,38 @@ export function useMultipleErc20(
     [addresses, tokenListTokens]
   )
 
+  // If native token is in the list of tokens to be fetched, memoize it here
+  const nativeState = useMemo(
+    () =>
+      addresses.reduce<Record<string, TokenErc20> | undefined>((native, address) => {
+        if (native) return native
+        if (isNativeToken(address)) {
+          // Default to mainnet (ETH) when the network isn't configured
+          const nativeToken = NATIVE_TOKEN_PER_NETWORK[networkId || Network.MAINNET]
+          // Overwrite native address because otherwise it won't match the case
+          // Causing the caller to never know we got the token it was looking for
+          // return { ...nativeToken, address }
+          return { [address.toLowerCase()]: nativeToken }
+        }
+        return undefined
+      }, undefined) || {},
+    [addresses, networkId]
+  )
+
   // check what on globalState has not been fetched yet
   const toFetch = useMemo(
-    () => (isTokenListLoading ? [] : addresses.filter((address) => !erc20s[address] && !fromTokenList[address])),
+    () =>
+      isTokenListLoading
+        ? []
+        : addresses.filter(
+            (address) =>
+              // Do not try to fetch the ones we already loaded
+              !erc20s[address] &&
+              // Do not try to fetch the ones in a token list
+              !fromTokenList[address] &&
+              // Do not try to fetch native
+              !isNativeToken(address)
+          ),
     [addresses, erc20s, fromTokenList, isTokenListLoading]
   )
   // flow control
@@ -121,5 +139,12 @@ export function useMultipleErc20(
     }
   }, [updateErc20s, saveErc20s, networkId])
 
-  return { isLoading: isTokenListLoading || isLoading, error: errors, value: { ...erc20s, ...fromTokenList } }
+  return useMemo(
+    () => ({
+      isLoading: isTokenListLoading || isLoading,
+      error: errors,
+      value: { ...erc20s, ...fromTokenList, ...nativeState },
+    }),
+    [isTokenListLoading, isLoading, errors, erc20s, fromTokenList, nativeState]
+  )
 }

@@ -20,7 +20,7 @@ function getTrade(params: TradeParams): TradeGp | undefined {
 
   const isExactInput = tradeType === TradeType.EXACT_INPUT
 
-  const partnerFee = {
+  const volumeFee = {
     bps: partnerFeeBps,
     recipient: '',
   }
@@ -37,13 +37,13 @@ function getTrade(params: TradeParams): TradeGp | undefined {
     ? buildTradeExactInWithFee({
         parsedAmount: inputAmount,
         outputCurrency: outputAmount.currency,
-        partnerFee,
+        volumeFee,
         quote,
       })
     : buildTradeExactOutWithFee({
         parsedAmount: outputAmount,
         inputCurrency: inputAmount.currency,
-        partnerFee,
+        volumeFee,
         quote,
       })
 }

@@ -1,9 +1,9 @@
-import type { CowSwapWidgetParams } from '@cowprotocol/widget-lib'
+import { CowSwapWidgetParams } from '@cowprotocol/widget-lib'
 
 import { formatParameters } from './formatParameters'
 
 import { ColorPalette } from '../../configurator/types'
-import { COMMENTS_BEFORE_PARAMS } from '../const'
+import { COMMENTS_BEFORE_PARAMS, PROVIDER_PARAM_COMMENT } from '../const'
 
 export function vanillaNoDepsExample(params: CowSwapWidgetParams, defaultPalette: ColorPalette): string {
   return `
@@ -19,7 +19,13 @@ export function vanillaNoDepsExample(params: CowSwapWidgetParams, defaultPalette
     // ${COMMENTS_BEFORE_PARAMS}
     const params = ${formatParameters(params, 4, false, defaultPalette)}
 
-    cowSwapWidget.cowSwapWidget(document.getElementById("app"), params)
+    // ${PROVIDER_PARAM_COMMENT}
+    const provider = window.ethereum
+
+    const { updateParams } = cowSwapWidget.createCowSwapWidget(
+      document.getElementById("app"),
+      { params, provider }
+    )
   </script>
 </body>
 </html>

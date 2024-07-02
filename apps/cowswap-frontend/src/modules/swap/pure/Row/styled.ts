@@ -1,15 +1,16 @@
-import { UI } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 import { RowBetween, RowFixed } from '@cowprotocol/ui'
-import { MouseoverTooltipContent } from '@cowprotocol/ui'
+import { HoverTooltip } from '@cowprotocol/ui'
 
 import { Text } from 'rebass'
 import styled from 'styled-components/macro'
 
 import { RowStyleProps } from './types'
 
-const StyledMouseoverTooltipContent = styled(MouseoverTooltipContent)``
-
-export const TextWrapper = styled(Text)``
+const StyledHoverTooltip = styled(HoverTooltip)``
+export const TextWrapper = styled(Text)<{ success?: boolean }>`
+  ${({ success }) => (success ? `color: var(${UI.COLOR_GREEN}) !important;` : 'color: inherit;')}
+`
 
 export const StyledRowBetween = styled(RowBetween)<RowStyleProps>`
   flex-flow: row wrap;
@@ -24,19 +25,18 @@ export const StyledRowBetween = styled(RowBetween)<RowStyleProps>`
     gap: 4px;
     min-width: 150px;
 
-    ${({ theme }) => theme.mediaWidth.upToSmall`
+    ${Media.upToSmall()} {
       min-width: max-content;
-    `}
+    }
   }
 
   ${TextWrapper} {
-    color: inherit;
     font-size: ${({ fontSize = 13 }) => fontSize}px;
     font-weight: ${({ fontWeight = 500 }) => fontWeight};
     transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
 
     &:first-child {
-      opacity: 0.7;
+      opacity: 1;
       font-weight: 400;
 
       &:hover {
@@ -53,8 +53,8 @@ export const StyledRowBetween = styled(RowBetween)<RowStyleProps>`
     }
   }
 
-  ${StyledMouseoverTooltipContent} {
-    background-color: ${({ theme }) => theme.bg3};
+  ${StyledHoverTooltip} {
+    background-color: ${({ theme }) => theme.background};
     color: inherit;
   }
 `

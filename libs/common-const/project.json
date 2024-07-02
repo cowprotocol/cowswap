@@ -1,5 +1,5 @@
 {
-  "name": "@cowprotocol/common-const",
+  "name": "common-const",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/common-const/src",
   "projectType": "library",

@@ -1,5 +1,6 @@
-import { fetchSolversInfo, SolversInfo } from 'utils/fetchSolversInfo'
 import { useEffect, useState } from 'react'
+
+import { fetchSolversInfo, SolversInfo } from 'utils/fetchSolversInfo'
 
 // TODO: Don't delete the hook it will be used in the feature
 export function useSolversInfo(network?: number): SolversInfo {

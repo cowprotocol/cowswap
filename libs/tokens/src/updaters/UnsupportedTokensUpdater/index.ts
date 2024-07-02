@@ -1,7 +1,9 @@
-import ms from 'ms.macro'
 import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
+
 import { useInterval } from '@cowprotocol/common-hooks'
+
+import ms from 'ms.macro'
 
 import { useUnsupportedTokens } from '../../hooks/tokens/unsupported/useUnsupportedTokens'
 import { removeUnsupportedTokensAtom } from '../../state/tokens/unsupportedTokensAtom'

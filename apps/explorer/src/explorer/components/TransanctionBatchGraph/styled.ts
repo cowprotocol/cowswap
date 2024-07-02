@@ -1,15 +1,17 @@
 import { Stylesheet } from 'cytoscape'
-import styled, { css, DefaultTheme } from 'styled-components'
+import styled, { css, DefaultTheme } from 'styled-components/macro'
 
-import TraderIcon from '../../../assets/img/Trader.svg'
-import SpecialIcon from '../../../assets/img/Trader-variant.svg'
+// TODO: update icon
 import CowProtocolIcon from '../../../assets/img/CoW-protocol.svg'
 import DexIcon from '../../../assets/img/Dex.svg'
 import TokenIcon from '../../../assets/img/eth-network.svg'
-
+// TODO: update icon
+import SpecialIcon from '../../../assets/img/Trader-variant.svg'
+// TODO: update icon
+import TraderIcon from '../../../assets/img/Trader.svg'
+import { ArrowIconCSS } from '../../../components/icons/cssIcons'
 import { MEDIA } from '../../../const'
 import { Dropdown } from '../common/Dropdown'
-import { ArrowIconCSS } from '../../../components/icons/cssIcons'
 
 export const FloatingWrapper = styled.div`
   position: absolute;
@@ -40,6 +42,7 @@ const FloatingButton = css`
     transition: all 0.2s ease-in-out;
     color: ${({ theme }): string => theme.textActive1};
   }
+
   @media ${MEDIA.mediumDown} {
     min-width: 3rem;
     span {
@@ -151,8 +154,8 @@ export function STYLESHEET(theme: DefaultTheme): Stylesheet[] {
     {
       selector: 'edge.sell,edge.amm',
       style: {
-        'line-color': theme.red1,
-        'target-arrow-color': theme.red1,
+        'line-color': theme.error,
+        'target-arrow-color': theme.error,
       },
     },
     {
@@ -215,7 +218,7 @@ export function STYLESHEET(theme: DefaultTheme): Stylesheet[] {
     {
       selector: 'node[type="hyper"]',
       style: {
-        'background-color': theme.red1,
+        'background-color': theme.error,
         width: '10',
         height: '10',
         'text-max-width': '5rem',

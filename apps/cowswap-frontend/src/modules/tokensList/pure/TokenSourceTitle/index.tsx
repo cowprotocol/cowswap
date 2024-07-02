@@ -1,8 +1,8 @@
 import TokenListLogo from '@cowprotocol/assets/svg/tokenlist.svg'
+import { HelpTooltip } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-import { InfoIcon } from 'legacy/components/InfoIcon'
 
 const Wrapper = styled.div`
   display: flex;
@@ -38,7 +38,7 @@ export function TokenSourceTitle(props: TokenSourceTitleProps) {
         {children}
       </Title>
       <div>
-        <InfoIcon iconType="help" content={tooltip} />
+        <HelpTooltip text={tooltip} />
       </div>
     </Wrapper>
   )

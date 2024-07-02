@@ -1,13 +1,13 @@
 import { useCallback, useMemo } from 'react'
 
 import EtherscanImage from '@cowprotocol/assets/cow-swap/etherscan-icon.svg'
-import { GP_VAULT_RELAYER, TokenWithLogo } from '@cowprotocol/common-const'
+import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useTheme } from '@cowprotocol/common-hooks'
 import { getBlockExplorerUrl, getIsNativeToken } from '@cowprotocol/common-utils'
-import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS } from '@cowprotocol/cow-sdk'
 import { useAreThereTokensWithSameSymbol } from '@cowprotocol/tokens'
 import { Command } from '@cowprotocol/types'
-import { TokenAmount, TokenSymbol, Loader, TokenName } from '@cowprotocol/ui'
+import { Loader, TokenAmount, TokenName, TokenSymbol } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount, MaxUint256, Token } from '@uniswap/sdk-core'
 
@@ -24,7 +24,7 @@ import { ApprovalState, useApproveState } from 'common/hooks/useApproveState'
 import { CardsSpinner, ExtLink } from 'pages/Account/styled'
 
 import BalanceCell from './BalanceCell'
-import FavouriteTokenButton from './FavouriteTokenButton'
+import FavoriteTokenButton from './FavoriteTokenButton'
 import { FiatBalanceCell } from './FiatBalanceCell'
 import {
   ApproveLabel,
@@ -43,7 +43,7 @@ type DataRowParams = {
   balance?: CurrencyAmount<Token> | undefined
   openApproveModal: (tokenSymbol?: string) => void
   closeApproveModal: Command
-  toggleWalletModal: Command | null
+  toggleWalletModal: Command
 }
 
 export const TokensTableRow = ({
@@ -54,7 +54,7 @@ export const TokensTableRow = ({
   openApproveModal,
   toggleWalletModal,
 }: DataRowParams) => {
-  const { account, chainId = ChainId.MAINNET } = useWalletInfo()
+  const { account, chainId } = useWalletInfo()
   const areThereTokensWithSameSymbol = useAreThereTokensWithSameSymbol()
 
   const theme = useTheme()
@@ -63,7 +63,14 @@ export const TokensTableRow = ({
       const inputCurrencyId = areThereTokensWithSameSymbol(symbol) ? address : symbol
 
       return parameterizeTradeRoute(
-        { chainId: chainId.toString(), inputCurrencyId, outputCurrencyId: undefined },
+        {
+          chainId: chainId.toString(),
+          inputCurrencyId,
+          outputCurrencyId: undefined,
+          inputCurrencyAmount: undefined,
+          outputCurrencyAmount: undefined,
+          orderKind: undefined,
+        },
         Routes.SWAP
       )
     },
@@ -72,7 +79,7 @@ export const TokensTableRow = ({
 
   const { handleSetError, handleCloseError } = useErrorModal()
 
-  const vaultRelayer = chainId ? GP_VAULT_RELAYER[chainId] : undefined
+  const vaultRelayer = chainId ? COW_PROTOCOL_VAULT_RELAYER_ADDRESS[chainId] : undefined
   const isNativeToken = getIsNativeToken(tokenData)
 
   const amountToApprove = useMemo(() => CurrencyAmount.fromRawAmount(tokenData, MaxUint256), [tokenData])
@@ -83,7 +90,7 @@ export const TokensTableRow = ({
   const handleApprove = useCallback(async () => {
     handleCloseError()
 
-    if (!account && toggleWalletModal) {
+    if (!account) {
       toggleWalletModal()
       return
     }
@@ -116,7 +123,7 @@ export const TokensTableRow = ({
   // This is so we only create fiat value request if there is a balance
   const fiatValue = useMemo(() => {
     if (!balance && account) {
-      return <Loader stroke={theme.text3} />
+      return <Loader stroke={theme.info} />
     } else if (hasZeroBalance) {
       return <BalanceValue hasBalance={false}>0</BalanceValue>
     } else {
@@ -157,7 +164,7 @@ export const TokensTableRow = ({
   return (
     <>
       <Cell>
-        <FavouriteTokenButton tokenData={tokenData} />
+        <FavoriteTokenButton tokenData={tokenData} />
         <IndexNumber>{index + 1}</IndexNumber>
       </Cell>
 
@@ -184,12 +191,16 @@ export const TokensTableRow = ({
       <Cell>{fiatValue}</Cell>
 
       <Cell>
-        <ExtLink href={getBlockExplorerUrl(chainId, 'token', tokenData.address)}>
-          <TableButton>
-            <SVG src={EtherscanImage} title="View token contract" description="View token contract" />
-          </TableButton>
-        </ExtLink>
-        {displayApproveContent}
+        {displayApproveContent && (
+          <>
+            <ExtLink href={getBlockExplorerUrl(chainId, 'token', tokenData.address)}>
+              <TableButton>
+                <SVG src={EtherscanImage} title="View token contract" description="View token contract" />
+              </TableButton>
+            </ExtLink>
+            {displayApproveContent}
+          </>
+        )}
       </Cell>
     </>
   )

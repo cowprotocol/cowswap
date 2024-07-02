@@ -26,10 +26,6 @@ import { MenuBadge, StyledExternalLink } from './styled'
 
 import { MAIN_MENU } from '../../constants/mainMenu'
 
-// Assets
-
-// TODO: decompose the file
-
 interface MenuImageProps {
   title: string
   iconSVG?: string
@@ -93,6 +89,7 @@ function DarkModeButton({ context }: DarkModeButtonProps) {
   const { darkMode, toggleDarkMode, handleMobileMenuOnClick } = context
   const description = `${darkMode ? 'Sun/light' : 'Moon/dark'} mode icon`
   const label = (darkMode ? 'Light' : 'Dark') + ' Mode'
+
   return (
     <button
       onClick={() => {
@@ -173,6 +170,7 @@ export interface MenuTreeProps {
   items?: MenuTreeItem[]
   context: MainMenuContext
   isMobileMenuOpen: boolean
+  handleMobileMenuOnClick(): void
 }
 
 export function MenuTree({ items = MAIN_MENU, isMobileMenuOpen, context }: MenuTreeProps) {

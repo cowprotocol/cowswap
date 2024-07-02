@@ -2,8 +2,8 @@
 
 exports[`useTradeQuotePolling() When wallet is NOT connected Then the "useAddress" field in the quote request should be 0x000...0000 1`] = `
 {
-  "appData": "{"version":"1.0.0","appCode":"CoW Swap","metadata":{}}",
-  "appDataHash": "0xed05aa46a959996a53c8a35b28b0f326a7bde9a3fd45a0836f6c2a17aff007a3",
+  "appData": "{"version":"1.1.0","appCode":"CoW Swap","metadata":{}}",
+  "appDataHash": "0x3f13237929334d44bdb32b189d1644965915936e62004fb77ec7bc861cddc7a4",
   "buyToken": "0x0625aFB445C3B6B7B929342a04A22599fd5dBB59",
   "from": "0x0000000000000000000000000000000000000000",
   "kind": "sell",
@@ -12,14 +12,14 @@ exports[`useTradeQuotePolling() When wallet is NOT connected Then the "useAddres
   "receiver": "0x0000000000000000000000000000000000000000",
   "sellAmountBeforeFee": "10000000",
   "sellToken": "0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14",
-  "validTo": undefined,
+  "validFor": 1800,
 }
 `;
 
 exports[`useTradeQuotePolling() When wallet is connected Then should put account address into "useAddress" field in the quote request 1`] = `
 {
-  "appData": "{"version":"1.0.0","appCode":"CoW Swap","metadata":{}}",
-  "appDataHash": "0xed05aa46a959996a53c8a35b28b0f326a7bde9a3fd45a0836f6c2a17aff007a3",
+  "appData": "{"version":"1.1.0","appCode":"CoW Swap","metadata":{}}",
+  "appDataHash": "0x3f13237929334d44bdb32b189d1644965915936e62004fb77ec7bc861cddc7a4",
   "buyToken": "0x0625aFB445C3B6B7B929342a04A22599fd5dBB59",
   "from": "0x333333f332a06ecb5d20d35da44ba07986d6e203",
   "kind": "sell",
@@ -28,6 +28,6 @@ exports[`useTradeQuotePolling() When wallet is connected Then should put account
   "receiver": "0x333333f332a06ecb5d20d35da44ba07986d6e203",
   "sellAmountBeforeFee": "10000000",
   "sellToken": "0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14",
-  "validTo": undefined,
+  "validFor": 1800,
 }
 `;

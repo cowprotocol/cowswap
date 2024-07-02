@@ -13,11 +13,11 @@ type PermittableTokens = Record<string, PermitInfo>
  * Atom that stores the permittable tokens info for each chain on localStorage.
  * It's meant to be shared across different tabs, thus no special storage handling.
  *
- * Contains either the permit info for every token checked locally
+ * Contains the permit info for every token checked locally
  */
 
 export const permittableTokensAtom = atomWithStorage<Record<SupportedChainId, PermittableTokens>>(
-  'permittableTokens:v2',
+  'permittableTokens:v3',
   mapSupportedNetworks({}),
   getJotaiMergerStorage()
 )

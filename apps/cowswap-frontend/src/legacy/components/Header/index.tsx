@@ -2,17 +2,17 @@ import React, { useCallback, useMemo, useState } from 'react'
 
 import { toggleDarkModeAnalytics } from '@cowprotocol/analytics'
 import { CHRISTMAS_THEME_ENABLED } from '@cowprotocol/common-const'
+import { addBodyClass, removeBodyClass } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import SVG from 'react-inlinesvg'
-import { useNavigate } from 'react-router-dom'
+import { cowSwapLogo, cowSwapIcon, winterThemeHat } from 'theme/cowSwapAssets'
 
 import CowBalanceButton from 'legacy/components/CowBalanceButton'
 import { NetworkSelector } from 'legacy/components/Header/NetworkSelector'
-import { upToLarge, upToSmall, useMediaQuery } from 'legacy/hooks/useMediaQuery'
+import { upToLarge, upToExtraSmall, useMediaQuery, upToTiny } from 'legacy/hooks/useMediaQuery'
 import { useDarkModeManager } from 'legacy/state/user/hooks'
-import { cowSwapLogo, winterThemeHat } from 'legacy/theme/cowSwapAssets'
 
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { MainMenuContext } from 'modules/mainMenu'
@@ -24,11 +24,11 @@ import { getDefaultTradeRawState } from 'modules/trade/types/TradeRawState'
 import { Routes } from 'common/constants/routes'
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
+import { useNavigate } from 'common/hooks/useNavigate'
 
 import { AccountElement } from './AccountElement'
 import MobileMenuIcon from './MobileMenuIcon'
 import {
-  CustomLogoImg,
   HeaderControls,
   HeaderElement,
   HeaderModWrapper,
@@ -42,7 +42,7 @@ import {
 
 export default function Header() {
   const { account, chainId } = useWalletInfo()
-  const injectedWidgetParams = useInjectedWidgetParams()
+  const { hideNetworkSelector, hideLogo } = useInjectedWidgetParams()
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
   const { pendingActivity } = useCategorizeRecentActivity()
   const [darkMode, toggleDarkModeAux] = useDarkModeManager()
@@ -56,11 +56,20 @@ export default function Header() {
   const navigate = useNavigate()
 
   const isUpToLarge = useMediaQuery(upToLarge)
-  const isUpToSmall = useMediaQuery(upToSmall)
+  const isUpToExtraSmall = useMediaQuery(upToExtraSmall)
+  const isUpToTiny = useMediaQuery(upToTiny)
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const handleMobileMenuOnClick = useCallback(() => {
-    isUpToLarge && setIsMobileMenuOpen(!isMobileMenuOpen)
+    if (isUpToLarge) {
+      setIsMobileMenuOpen(!isMobileMenuOpen)
+
+      if (!isMobileMenuOpen) {
+        addBodyClass('noScroll')
+      } else {
+        removeBodyClass('noScroll')
+      }
+    }
   }, [isUpToLarge, isMobileMenuOpen])
 
   const tradeMenuContext = useMemo(() => {
@@ -82,6 +91,9 @@ export default function Header() {
       inputCurrencyId,
       outputCurrencyId,
       chainId: defaultTradeState.chainId?.toString(),
+      inputCurrencyAmount: undefined,
+      outputCurrencyAmount: undefined,
+      orderKind: undefined,
     }
   }, [chainId, tradeState, swapRawState])
 
@@ -96,15 +108,11 @@ export default function Header() {
     <Wrapper isMobileMenuOpen={isMobileMenuOpen}>
       <HeaderModWrapper>
         <HeaderRow>
-          {!injectedWidgetParams.hideLogo && (
+          {!hideLogo && (
             <Title href={Routes.HOME} isMobileMenuOpen={isMobileMenuOpen}>
               <UniIcon>
                 <LogoImage isMobileMenuOpen={isMobileMenuOpen}>
-                  {injectedWidgetParams.logoUrl ? (
-                    <CustomLogoImg src={injectedWidgetParams.logoUrl} alt="Logo" />
-                  ) : (
-                    <SVG src={cowSwapLogo(darkMode)} />
-                  )}
+                  <SVG src={isUpToExtraSmall ? cowSwapIcon(darkMode) : cowSwapLogo(darkMode)} />
                 </LogoImage>
 
                 {/* WINTER THEME ONLY */}
@@ -117,19 +125,27 @@ export default function Header() {
               </UniIcon>
             </Title>
           )}
-          {<MenuTree isMobileMenuOpen={isMobileMenuOpen} context={menuContext} />}
+          {
+            <MenuTree
+              isMobileMenuOpen={isMobileMenuOpen}
+              context={menuContext}
+              handleMobileMenuOnClick={handleMobileMenuOnClick}
+            />
+          }
         </HeaderRow>
 
         <HeaderControls>
-          {!injectedWidgetParams.hideNetworkSelector && <NetworkSelector />}
+          {!hideNetworkSelector && <NetworkSelector />}
 
           <HeaderElement>
-            {!isChainIdUnsupported && (
+            {!isChainIdUnsupported && (isMobileMenuOpen || !isUpToLarge || isUpToTiny) && (
               <CowBalanceButton
-                onClick={() => navigate('/account')}
+                onClick={() => {
+                  navigate('/account')
+                  handleMobileMenuOnClick()
+                }}
                 account={account}
                 chainId={chainId}
-                isUpToSmall={isUpToSmall}
               />
             )}
 

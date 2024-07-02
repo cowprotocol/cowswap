@@ -1,8 +1,7 @@
 import IMAGE_CARET_DOWN from '@cowprotocol/assets/cow-swap/carret-down.svg'
+import {InfoTooltip} from '@cowprotocol/ui'
 
 import { Menu } from '@reach/menu-button'
-
-import { InfoIcon } from 'legacy/components/InfoIcon'
 
 import { DetailsRow } from 'modules/limitOrders/pure/LimitOrdersDetails/styled'
 import { PartiallyFillableOverrideDispatcherType } from 'modules/limitOrders/state/partiallyFillableOverride'
@@ -32,7 +31,7 @@ export function OrderType(props: OrderTypeProps) {
         <span>
           <p>Order type</p>
         </span>{' '}
-        <InfoIcon content={textContent} />
+        <InfoTooltip content={textContent} />
       </div>
       <OrderTypePicker {...props} />
     </DetailsRow>

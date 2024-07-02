@@ -1,10 +1,10 @@
 // On each Pending, Expired, Fulfilled order action a corresponding sound is dispatched
-import { getCowSoundError, getCowSoundSend, getCowSoundSuccess } from '@cowprotocol/common-utils'
 
 import { isAnyOf } from '@reduxjs/toolkit'
 import { AnyAction, Dispatch, Middleware, MiddlewareAPI } from 'redux'
 
-import { addPopup } from '../../application/reducer'
+import { getCowSoundError, getCowSoundSend, getCowSoundSuccess } from 'modules/sounds'
+
 import { AppState } from '../../index'
 import { AddPendingOrderParams, BatchOrdersUpdateParams, UpdateOrderParams } from '../actions'
 import * as OrderActions from '../actions'
@@ -26,7 +26,6 @@ const isBatchExpireOrderAction = isAnyOf(OrderActions.expireOrdersBatch)
 const isBatchCancelOrderAction = isAnyOf(OrderActions.cancelOrdersBatch)
 // const isBatchPresignOrders = isAnyOf(OrderActions.preSignOrders)
 const isFulfillOrderAction = isAnyOf(OrderActions.addPendingOrder, OrderActions.fulfillOrdersBatch)
-const isAddPopup = isAnyOf(addPopup)
 
 export const soundMiddleware: Middleware<Record<string, unknown>, AppState> = (store) => (next) => (action) => {
   const result = next(action)
@@ -40,7 +39,9 @@ export const soundMiddleware: Middleware<Record<string, unknown>, AppState> = (s
       return result
     }
 
-    const updatedElements = isBatchFulfillOrderAction(action) ? action.payload.ordersData : action.payload.ids
+    const updatedElements = isBatchFulfillOrderAction(action)
+      ? action.payload.orders.map(({ uid }) => uid)
+      : action.payload.ids
     // no orders were executed/expired
     if (updatedElements.length === 0) {
       return result
@@ -59,8 +60,6 @@ export const soundMiddleware: Middleware<Record<string, unknown>, AppState> = (s
       cowSound = getCowSoundError()
     }
   } else if (isBatchCancelOrderAction(action)) {
-    cowSound = getCowSoundError()
-  } else if (isFailedTxAction(action)) {
     cowSound = getCowSoundError()
   } else if (isUpdateOrderAction(action)) {
     cowSound = _getUpdatedOrderSound(action.payload)
@@ -100,11 +99,4 @@ function _getUpdatedOrderSound(payload: UpdateOrderParams) {
     return getCowSoundSend()
   }
   return undefined
-}
-
-/**
- * Checks whether the action is `addPopup` for a `txn` which failed
- */
-function isFailedTxAction(action: unknown): boolean {
-  return isAddPopup(action) && 'txn' in action.payload.content && action.payload.content.txn.success === false
 }

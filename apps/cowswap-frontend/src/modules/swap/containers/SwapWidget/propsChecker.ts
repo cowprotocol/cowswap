@@ -4,22 +4,8 @@ import { areFractionsEqual } from '@cowprotocol/common-utils'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
 import { SwapFormProps } from 'modules/swap/containers/SwapWidget/types'
-import { ReceiveAmountInfo } from 'modules/swap/helpers/tradeReceiveAmount'
 
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
-
-function isReceiveAmountInfoEqual(prev: ReceiveAmountInfo | null, next: ReceiveAmountInfo | null): boolean {
-  if (!prev || !next) {
-    return prev === next
-  }
-
-  return (
-    prev.feeAmount === next.feeAmount &&
-    prev.amountBeforeFees === next.amountBeforeFees &&
-    areFractionsEqual(prev.amountAfterFeesRaw, next.amountAfterFeesRaw) &&
-    prev.amountAfterFees === next.amountAfterFees
-  )
-}
 
 function isCurrencyInfoEqual(prev: CurrencyInfo, next: CurrencyInfo): boolean {
   const isCurrencyEqual =
@@ -35,7 +21,7 @@ function isCurrencyInfoEqual(prev: CurrencyInfo, next: CurrencyInfo): boolean {
     isFiatAmountEqual &&
     isAmountEqual &&
     isIsIndependentEqual &&
-    isReceiveAmountInfoEqual(prev.receiveAmountInfo, next.receiveAmountInfo)
+    prev.receiveAmountInfo === next.receiveAmountInfo
   )
 }
 

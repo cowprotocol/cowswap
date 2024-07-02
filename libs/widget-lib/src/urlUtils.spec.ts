@@ -1,7 +1,6 @@
-import { buildWidgetUrl } from './urlUtils'
 import { TradeType } from './types'
+import { buildWidgetUrl } from './urlUtils'
 
-const defaultEnv = 'prod'
 const chainId = 1
 const tradeType = TradeType.SWAP
 
@@ -9,33 +8,33 @@ const tradeType = TradeType.SWAP
 describe.skip('buildWidgetUrl', () => {
   describe('env', () => {
     it('local', () => {
-      const url = buildWidgetUrl({ chainId, tradeType, env: 'local' })
+      const url = buildWidgetUrl({ chainId, tradeType, baseUrl: 'http://localhost:3000' })
       expect(url).toEqual('http://localhost:3000/#/1/widget/swap/?')
     })
     it('prod', () => {
-      const url = buildWidgetUrl({ chainId, tradeType, env: 'prod' })
+      const url = buildWidgetUrl({ chainId, tradeType, baseUrl: 'https://swap.cow.fi' })
       expect(url).toEqual('https://swap.cow.fi/#/1/widget/swap/?')
     })
   })
 
   describe('chainId', () => {
     it('mainnet', () => {
-      const url = buildWidgetUrl({ chainId: 1, tradeType, env: defaultEnv })
+      const url = buildWidgetUrl({ chainId: 1, tradeType })
       expect(url).toEqual('https://swap.cow.fi/#/1/widget/swap/?')
     })
     it('gnosis chain', () => {
-      const url = buildWidgetUrl({ chainId: 100, tradeType, env: defaultEnv })
+      const url = buildWidgetUrl({ chainId: 100, tradeType })
       expect(url).toEqual('https://swap.cow.fi/#/100/widget/swap/?')
     })
   })
 
   describe('theme', () => {
     it('dark', () => {
-      const url = buildWidgetUrl({ theme: 'dark', chainId, tradeType, env: defaultEnv })
+      const url = buildWidgetUrl({ theme: 'dark', chainId, tradeType })
       expect(url).toEqual('https://swap.cow.fi/#/1/widget/swap/?theme=dark')
     })
     it('light', () => {
-      const url = buildWidgetUrl({ theme: 'light', chainId, tradeType, env: defaultEnv })
+      const url = buildWidgetUrl({ theme: 'light', chainId, tradeType })
       expect(url).toEqual('https://swap.cow.fi/#/1/widget/swap/?theme=light')
     })
   })
@@ -47,7 +46,6 @@ describe.skip('buildWidgetUrl', () => {
         buy: { asset: 'COW' },
         chainId,
         tradeType,
-        env: defaultEnv,
       })
       expect(url).toEqual('https://swap.cow.fi/#/1/widget/swap/WETH/COW?')
     })
@@ -58,7 +56,6 @@ describe.skip('buildWidgetUrl', () => {
         buy: { asset: 'USDC' },
         chainId,
         tradeType,
-        env: defaultEnv,
       })
       expect(url).toEqual('https://swap.cow.fi/#/1/widget/swap/DAI/USDC?sellAmount=0.1')
     })
@@ -69,7 +66,6 @@ describe.skip('buildWidgetUrl', () => {
         buy: { asset: 'USDC', amount: '0.1' },
         chainId,
         tradeType,
-        env: defaultEnv,
       })
       expect(url).toEqual('https://swap.cow.fi/#/1/widget/swap/DAI/USDC?buyAmount=0.1')
     })
@@ -78,7 +74,6 @@ describe.skip('buildWidgetUrl', () => {
   describe('all config', () => {
     it('dark', () => {
       const url = buildWidgetUrl({
-        env: 'prod',
         chainId: 100,
         tradeType,
         theme: 'light',

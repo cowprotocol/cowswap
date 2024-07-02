@@ -1,9 +1,8 @@
-import { UI } from '@cowprotocol/ui'
+import { Media, QuestionTooltipIconWrapper, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-import { QuestionWrapper } from 'legacy/components/QuestionHelper'
-
+import { ExecutionPrice } from 'common/pure/ExecutionPrice'
 import { RateInfo } from 'common/pure/RateInfo'
 
 export const Row = styled.div`
@@ -11,12 +10,12 @@ export const Row = styled.div`
   gap: 10px;
   width: 100%;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     flex-direction: column;
     grid-gap: 6px;
-  `}
+  }
 
-  ${QuestionWrapper} {
+  ${QuestionTooltipIconWrapper} {
     opacity: 0.5;
     transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
 
@@ -36,9 +35,6 @@ export const StyledRateInfo = styled(RateInfo)`
   grid-template-rows: max-content;
 `
 
-export const StyledPriceProtection = styled.div`
-  display: flex;
-  flex-flow: row wrap;
-  align-items: center;
-  width: 100%;
+export const ExecutionPriceStyled = styled(ExecutionPrice)`
+  font-size: 16px;
 `

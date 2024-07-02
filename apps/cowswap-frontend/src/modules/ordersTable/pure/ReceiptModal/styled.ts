@@ -1,4 +1,4 @@
-import { AutoRow } from '@cowprotocol/ui'
+import { AutoRow, Media } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
@@ -10,13 +10,13 @@ export const Wrapper = styled.div`
   overflow-y: auto;
   ${({ theme }) => theme.colorScrollbar};
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     overflow-y: auto;
     overflow-x: auto;
     padding: 0;
     max-height: 100vh;
     margin: 0;
-  `}
+  }
 `
 
 export const Header = styled.div`
@@ -32,6 +32,12 @@ export const Header = styled.div`
   width: 100%;
   padding: 16px;
   z-index: 20;
+
+  > div {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
 `
 
 export const Title = styled.h3`
@@ -44,9 +50,9 @@ export const Body = styled(AutoRow)`
   max-height: 80vh;
   padding: 0 10px;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     max-height: 100%;
-  `}
+  }
 `
 
 export const FieldsWrapper = styled.div`
@@ -55,9 +61,9 @@ export const FieldsWrapper = styled.div`
   width: 100%;
   gap: 2px;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     padding: 0 0 54px;
-  `}
+  }
 `
 
 export const InfoBannerWrapper = styled.div`
@@ -119,9 +125,9 @@ export const CurrencyField = styled.div`
     width: 100%;
 
     & .open-currency-select-button {
-      ${({ theme }) => theme.mediaWidth.upToSmall`
+      ${Media.upToSmall()} {
         width: auto;
-    `}
+      }
     }
   }
 `
@@ -177,5 +183,23 @@ export const RateValue = styled.div``
 export const OrderTypeValue = styled.span`
   &:first-letter {
     text-transform: uppercase;
+  }
+`
+
+export const LightButton = styled.button`
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid transparent;
+  padding: 6px 14px;
+  border-radius: var(${UI.BORDER_RADIUS_NORMAL});
+  background-color: var(${UI.COLOR_PAPER_DARKER});
+  transition: border var(${UI.ANIMATION_DURATION}) ease-in-out,
+    background-color var(${UI.ANIMATION_DURATION}) ease-in-out;
+  cursor: pointer;
+  color: inherit;
+
+  &:hover {
+    border: 1px solid var(${UI.COLOR_PAPER_DARKER});
+    background-color: transparent;
   }
 `

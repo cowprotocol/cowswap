@@ -1,32 +1,41 @@
-import { ALL_SUPPORTED_CHAIN_IDS, SupportedChainId } from '@cowprotocol/cow-sdk'
-import useSWR from 'swr'
+import { useMemo } from 'react'
+
 import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
+import { ALL_SUPPORTED_CHAIN_IDS, SupportedChainId, mapSupportedNetworks } from '@cowprotocol/cow-sdk'
 import type { TokenInfo, TokenList } from '@uniswap/token-lists'
+
+import useSWR from 'swr'
 
 type TokenListByAddress = Record<string, TokenInfo>
 type TokenListPerNetwork = Record<SupportedChainId, TokenListByAddress>
 
-const INITIAL_TOKEN_LIST_PER_NETWORK: TokenListPerNetwork = {
-  [SupportedChainId.MAINNET]: {},
-  [SupportedChainId.GNOSIS_CHAIN]: {},
-  [SupportedChainId.SEPOLIA]: {},
-}
+const INITIAL_TOKEN_LIST_PER_NETWORK: TokenListPerNetwork = mapSupportedNetworks({})
 
 export function useTokenList(chainId: SupportedChainId | undefined): { data: TokenListByAddress; isLoading: boolean } {
   const { data: cowSwapList, isLoading: isCowListLoading } = useTokenListByUrl(
-    'https://files.cow.fi/tokens/CowSwap.json'
+    chainId !== SupportedChainId.SEPOLIA
+      ? 'https://files.cow.fi/tokens/CowSwap.json'
+      : 'https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/CowSwapSepolia.json'
   )
   const { data: coingeckoList, isLoading: isCoingeckoListLoading } = useTokenListByUrl(
-    'https://tokens.coingecko.com/uniswap/all.json'
+    chainId === SupportedChainId.MAINNET ? 'https://tokens.coingecko.com/uniswap/all.json' : ''
   )
   const { data: honeyswapList, isLoading: isHoneyswapListLoading } = useTokenListByUrl(
     chainId === SupportedChainId.GNOSIS_CHAIN ? 'https://tokens.honeyswap.org' : ''
   )
+  const { data: arbitrumOneList, isLoading: isArbitrumOneListLoading } = useTokenListByUrl(
+    chainId === SupportedChainId.ARBITRUM_ONE ? 'https://tokens.coingecko.com/arbitrum-one/all.json' : ''
+  )
 
-  const data = chainId ? { ...coingeckoList, ...honeyswapList, ...cowSwapList }[chainId] : {}
-  const isLoading = chainId ? isCowListLoading || isHoneyswapListLoading || isCoingeckoListLoading : false
+  const isLoading = chainId
+    ? isCowListLoading || isHoneyswapListLoading || isCoingeckoListLoading || isArbitrumOneListLoading
+    : false
 
-  return { data, isLoading }
+  return useMemo(() => {
+    const data = chainId ? { ...coingeckoList, ...honeyswapList, ...cowSwapList, ...arbitrumOneList }[chainId] : {}
+
+    return { data, isLoading }
+  }, [chainId, coingeckoList, honeyswapList, cowSwapList, arbitrumOneList, isLoading])
 }
 
 function useTokenListByUrl(tokenListUrl: string) {

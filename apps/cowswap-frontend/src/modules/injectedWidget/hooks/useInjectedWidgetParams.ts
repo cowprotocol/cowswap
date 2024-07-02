@@ -1,11 +1,15 @@
 import { useAtomValue } from 'jotai'
 
-import type { CowSwapWidgetParams } from '@cowprotocol/widget-lib'
+import { CowSwapWidgetAppParams, PartnerFee } from '@cowprotocol/widget-lib'
 
-import { injectedWidgetParamsAtom } from '../state/injectedWidgetParamsAtom'
+import { injectedWidgetParamsAtom, injectedWidgetPartnerFeeAtom } from '../state/injectedWidgetParamsAtom'
 
-export function useInjectedWidgetParams(): Partial<CowSwapWidgetParams> {
+export function useInjectedWidgetParams(): Partial<CowSwapWidgetAppParams> {
   const { params } = useAtomValue(injectedWidgetParamsAtom)
 
   return params
+}
+
+export function useWidgetPartnerFee(): PartnerFee | undefined {
+  return useAtomValue(injectedWidgetPartnerFeeAtom)
 }

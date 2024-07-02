@@ -16,7 +16,7 @@ import { ActivityStatus } from 'legacy/hooks/useRecentActivity'
 
 import { ActivityDerivedState } from 'modules/account/containers/Transaction'
 import { EthFlowStepper } from 'modules/swap/containers/EthFlowStepper'
-import { AddToMetamask } from 'modules/wallet/containers/AddToMetamask'
+import { WatchAssetInWallet } from 'modules/wallet/containers/WatchAssetInWallet'
 
 import { Routes } from 'common/constants/routes'
 
@@ -86,8 +86,7 @@ export function TransactionSubmittedContent({
               <OrderProgressBar hash={hash} activityDerivedState={activityDerivedState} chainId={chainId} />
             )}
             <styledEl.ButtonGroup>
-              {/*TODO: refactor AddToMetamask to make it pure*/}
-              <AddToMetamask shortLabel currency={currencyToAdd} />
+              <WatchAssetInWallet shortLabel currency={currencyToAdd} />
 
               {!isInjectedWidgetMode && (
                 <a href={`#${Routes.PLAY_COWRUNNER}`} target="_blank" rel="noreferrer noopener">

@@ -1,7 +1,10 @@
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
+
 import { getIsNativeToken } from './getIsNativeToken'
 import { getWrappedToken } from './getWrappedToken'
 
+export function currencyAmountToTokenAmount(amount: CurrencyAmount<Currency>): CurrencyAmount<Token>
+export function currencyAmountToTokenAmount(amount: null | undefined): null
 export function currencyAmountToTokenAmount(
   amount: CurrencyAmount<Currency> | null | undefined
 ): CurrencyAmount<Token> | null {

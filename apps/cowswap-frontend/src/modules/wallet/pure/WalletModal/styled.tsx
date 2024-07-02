@@ -1,5 +1,5 @@
-import { ReactComponent as Close } from '@cowprotocol/assets/images/x.svg'
-import { ExternalLink } from '@cowprotocol/ui'
+import Close from '@cowprotocol/assets/images/x.svg?react'
+import { ExternalLink, Media } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
@@ -36,8 +36,11 @@ export const NewToEthereum = () => (
   </Blurb>
 )
 
-export const CloseColor = styled(Close)`
+export const CloseColor = styled((props) => <Close {...props} />)`
+  --size: 16px;
   color: inherit;
+  width: var(--size);
+  height: var(--size);
 
   path {
     stroke: currentColor;
@@ -82,12 +85,12 @@ export const OptionGrid = styled.div`
   grid-template-rows: max-content;
   color: inherit;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     grid-template-columns: repeat(3, 1fr);
-  `};
-  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
-        grid-template-columns: repeat(2, 1fr);
-  `}
+  }
+  ${Media.upToExtraSmall()} {
+    grid-template-columns: repeat(2, 1fr);
+  }
 `
 
 export const IconWrapper = styled.div`

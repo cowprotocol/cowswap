@@ -7,7 +7,8 @@ import { getAddress, getEtherscanLink } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { Command, UiOrderType } from '@cowprotocol/types'
-import { Loader, TokenAmount, TokenSymbol, UI, ButtonSecondary } from '@cowprotocol/ui'
+import { ButtonSecondary, Loader, TokenAmount, TokenSymbol, UI } from '@cowprotocol/ui'
+import { PercentDisplay, percentIsAlmostHundred } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
 
 import SVG from 'react-inlinesvg'
@@ -167,10 +168,13 @@ export function OrderRow({
   const { inputCurrencyAmount, outputCurrencyAmount } = rateInfoParams
   const { estimatedExecutionPrice, feeAmount } = prices || {}
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const showCancellationModal = useMemo(() => orderActions.getShowCancellationModal(order), [order.id])
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const showRecreateModal = useMemo(() => orderActions.getShowRecreateModal(order), [order.id])
+  const showCancellationModal = useMemo(() => {
+    return orderActions.getShowCancellationModal(order)
+  }, [orderActions, order])
+  const alternativeOrderModalContext = useMemo(
+    () => orderActions.getAlternativeOrderModalContext(order),
+    [order, orderActions]
+  )
 
   const withAllowanceWarning = hasEnoughAllowance === false && hasValidPendingPermit === false
   const withWarning =
@@ -206,8 +210,9 @@ export function OrderRow({
   const priceDiffs = usePricesDifference(prices, spotPrice, isInverted)
   const feeDifference = useFeeAmountDifference(rateInfoParams, prices)
 
-  const isUnfillable =
-    (executedPriceInverted !== undefined && executedPriceInverted?.equalTo(ZERO_FRACTION)) || withWarning
+  const isExecutedPriceZero = executedPriceInverted !== undefined && executedPriceInverted?.equalTo(ZERO_FRACTION)
+
+  const isUnfillable = !percentIsAlmostHundred(filledPercentDisplay) && (isExecutedPriceZero || withWarning)
   const isOrderCreating = CREATING_STATES.includes(order.status)
 
   const inputTokenSymbol = order.inputToken.symbol || ''
@@ -334,7 +339,9 @@ export function OrderRow({
 
       {/* Filled % */}
       <styledEl.CellElement doubleRow clickable onClick={onClick}>
-        <b>{filledPercentDisplay}%</b>
+        <b>
+          <PercentDisplay percent={filledPercentDisplay} />
+        </b>
         <styledEl.ProgressBar value={filledPercentDisplay}></styledEl.ProgressBar>
       </styledEl.CellElement>
 
@@ -381,7 +388,7 @@ export function OrderRow({
           activityUrl={activityUrl}
           openReceipt={onClick}
           showCancellationModal={showCancellationModal}
-          showRecreateModal={showRecreateModal}
+          alternativeOrderModalContext={alternativeOrderModalContext}
         />
       </styledEl.CellElement>
     </TableRow>

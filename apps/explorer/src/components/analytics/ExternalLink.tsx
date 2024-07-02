@@ -1,5 +1,7 @@
 import React, { HTMLProps } from 'react'
+
 import { outboundLink } from 'components/analytics'
+
 import { anonymizeLink } from 'utils/anonymizeLink'
 
 export function handleClickExternalLink(event: React.MouseEvent<HTMLAnchorElement>): void {
@@ -35,7 +37,6 @@ export function ExternalLink({
   onClickOptional?: React.MouseEventHandler<HTMLAnchorElement>
 }): JSX.Element {
   return (
-    // eslint-disable-next-line jsx-a11y/anchor-has-content
     <a
       target={target}
       rel={rel}

@@ -1,6 +1,7 @@
 import React from 'react'
-import BigNumber from 'bignumber.js'
+
 import { TokenErc20 } from '@gnosis.pm/dex-js'
+import BigNumber from 'bignumber.js'
 import { FormatAmountPrecision, formatSmartMaxPrecision, formattingAmountPrecision } from 'utils'
 
 interface Props {

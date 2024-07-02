@@ -12,8 +12,7 @@ import { matchPath, useLocation } from 'react-router-dom'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { ModalHeader } from 'modules/tokensList/pure/ModalHeader'
 
-import { Routes, RoutesValues } from 'common/constants/routes'
-import { FeatureGuard } from 'common/containers/FeatureGuard'
+import { MENU_ITEMS, Routes, RoutesValues } from 'common/constants/routes'
 
 import * as styledEl from './styled'
 
@@ -23,18 +22,7 @@ import { parameterizeTradeRoute } from '../../utils/parameterizeTradeRoute'
 interface MenuItemConfig {
   route: RoutesValues
   label: string
-  featureGuard?: string
-  onClick?: Command
-  badgeText?: string
-  badgeType?: BadgeType
 }
-
-const MENU_ITEMS: MenuItemConfig[] = [
-  { route: Routes.SWAP, label: 'Swap' },
-  { route: Routes.LIMIT_ORDER, label: 'Limit' },
-  { route: Routes.ADVANCED_ORDERS, label: 'TWAP' },
-  { route: Routes.HOOKS, label: 'Hooks' },
-]
 
 const TRADE_TYPE_TO_ROUTE: Record<TradeType, string> = {
   swap: Routes.SWAP,
@@ -70,8 +58,8 @@ export function TradeWidgetLinks({
   })
 
   const menuItems = enabledItems.map((item) => {
-    const routePath = parameterizeTradeRoute(tradeContext, item.route)
-    const isActive = !!matchPath(location.pathname, routePath)
+    const routePath = parameterizeTradeRoute(tradeContext, item.route, true)
+    const isActive = !!matchPath(location.pathname, routePath.split('?')[0])
 
     const menuItem = (
       <MenuItem
@@ -79,20 +67,14 @@ export function TradeWidgetLinks({
         routePath={routePath}
         item={item}
         isActive={isActive}
-        badgeText={item.badgeText || highlightedBadgeText}
-        badgeType={item.badgeType || highlightedBadgeType}
+        badgeText={highlightedBadgeText}
+        badgeType={highlightedBadgeType}
         onClick={() => handleMenuItemClick(item)}
-        isDropdownVisible={isDropdownVisible}
+        isDropdownVisible={isDropdown && isDropdownVisible}
       />
     )
 
-    return item.featureGuard ? (
-      <FeatureGuard key={item.label} featureFlag={item.featureGuard}>
-        {menuItem}
-      </FeatureGuard>
-    ) : (
-      menuItem
-    )
+    return menuItem
   })
 
   const singleMenuItem = menuItems.length === 1
@@ -114,7 +96,7 @@ export function TradeWidgetLinks({
       {isDropdownVisible && (
         <styledEl.SelectMenu>
           <ModalHeader onBack={handleMenuItemClick}>Trading mode</ModalHeader>
-          {menuItems}
+          <styledEl.TradeWidgetContent>{menuItems}</styledEl.TradeWidgetContent>
         </styledEl.SelectMenu>
       )}
     </>

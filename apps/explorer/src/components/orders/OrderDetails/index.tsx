@@ -1,28 +1,33 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import styled from 'styled-components'
+
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Command } from '@cowprotocol/types'
+import { TruncatedText } from '@cowprotocol/ui/pure/TruncatedText'
+
+import CowLoading from 'components/common/CowLoading'
+import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
+import { EmptyItemWrapper } from 'components/common/StyledUserDetailsTable'
+import { TabItemInterface } from 'components/common/Tabs/Tabs'
+import { ConnectionStatus } from 'components/ConnectionStatus'
+import { Notification } from 'components/Notification'
+import { DetailsTable } from 'components/orders/DetailsTable'
+import RedirectToSearch from 'components/RedirectToSearch'
+import ExplorerTabs from 'explorer/components/common/ExplorerTabs/ExplorerTabs'
+import TablePagination, { PaginationWrapper } from 'explorer/components/common/TablePagination'
+import { useTable } from 'explorer/components/TokensTableWidget/useTable'
+import { TAB_QUERY_PARAM_KEY } from 'explorer/const'
+import { useQuery, useUpdateQueryString } from 'hooks/useQuery'
+import { useNetworkId } from 'state/network'
+import styled from 'styled-components/macro'
+import { media } from 'theme/styles/media'
+import { Errors } from 'types'
+import { formatPercentage } from 'utils'
 
 import { Order, Trade } from 'api/operator'
-import { Errors } from 'types'
 
-import { formatPercentage } from 'utils'
 import { FillsTableContext } from './context/FillsTableContext'
-import { media } from 'theme/styles/media'
-import { useQuery, useUpdateQueryString } from 'hooks/useQuery'
-import { DetailsTable } from 'components/orders/DetailsTable'
-import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
-import RedirectToSearch from 'components/RedirectToSearch'
-import { Notification } from 'components/Notification'
-import { ConnectionStatus } from 'components/ConnectionStatus'
-import { TabItemInterface } from 'components/common/Tabs/Tabs'
-import { EmptyItemWrapper } from 'components/common/StyledUserDetailsTable'
-import CowLoading from 'components/common/CowLoading'
-import TablePagination, { PaginationWrapper } from '../../../explorer/components/common/TablePagination'
-import { useTable } from '../../../explorer/components/TokensTableWidget/useTable'
-import ExplorerTabs from '../../../explorer/components/common/ExplorerTabs/ExplorerTabs'
-
 import { FillsTableWithData } from './FillsTableWithData'
-import { TAB_QUERY_PARAM_KEY } from '../../../explorer/const'
-import { Command } from '@cowprotocol/types'
+
 
 const TitleUid = styled(RowWithCopyButton)`
   color: ${({ theme }): string => theme.grey};
@@ -39,16 +44,19 @@ const WrapperExtraComponents = styled.div`
   justify-content: flex-end;
   height: 100%;
   gap: 1rem;
+
   ${media.mobile} {
     ${PaginationWrapper} {
       display: none;
     }
+
     justify-content: center;
   }
 `
 
 const StyledExplorerTabs = styled(ExplorerTabs)`
   margin-top: 2rem;
+
   &.orderDetails-tab {
     &--overview {
       .tab-content {
@@ -73,12 +81,13 @@ export enum TabView {
 
 const DEFAULT_TAB = TabView[1]
 
-function useQueryViewParams(): { tab: string } {
+function useQueryViewParams(): string {
   const query = useQuery()
-  return { tab: query.get(TAB_QUERY_PARAM_KEY)?.toUpperCase() || DEFAULT_TAB } // if URL param empty will be used DEFAULT
+  return query.get(TAB_QUERY_PARAM_KEY)?.toUpperCase() || DEFAULT_TAB // if URL param empty will be used DEFAULT
 }
 
 const tabItems = (
+  chainId: SupportedChainId,
   _order: Order | null,
   trades: Trade[],
   areTradesLoading: boolean,
@@ -100,6 +109,7 @@ const tabItems = (
       <>
         {order && areTokensLoaded && (
           <DetailsTable
+            chainId={chainId}
             order={order}
             showFillsButton={showFills}
             viewFills={(): void => onChangeTab(TabView.FILLS)}
@@ -145,7 +155,7 @@ const tabItems = (
  */
 function getOrderWithTxHash(order: Order | null, trades: Trade[]): Order | null {
   if (order && trades.length === 1) {
-    return { ...order, txHash: trades[0].txHash || undefined }
+    return { ...order, txHash: trades[0].txHash || undefined, executionDate: trades[0].executionTime || undefined }
   }
   return order
 }
@@ -154,7 +164,8 @@ const RESULTS_PER_PAGE = 10
 
 export const OrderDetails: React.FC<Props> = (props) => {
   const { order, isOrderLoading, areTradesLoading, errors, trades } = props
-  const { tab } = useQueryViewParams()
+  const chainId = useNetworkId()
+  const tab = useQueryViewParams()
   const [tabViewSelected, setTabViewSelected] = useState<TabView>(TabView[tab] || TabView[DEFAULT_TAB]) // use DEFAULT when URL param is outside the enum
   const {
     state: tableState,
@@ -201,6 +212,10 @@ export const OrderDetails: React.FC<Props> = (props) => {
     [tabViewSelected, updateQueryString]
   )
 
+  if (!chainId) {
+    return null
+  }
+
   if (redirectTo) {
     return <RedirectToSearch from="orders" />
   }
@@ -209,7 +224,7 @@ export const OrderDetails: React.FC<Props> = (props) => {
     <>
       <h1>
         {order && 'Order details'}
-        {order && <TitleUid textToCopy={order.uid} contentsToDisplay={order.shortId} />}
+        {order && <TitleUid textToCopy={order.uid} contentsToDisplay={<TruncatedText text={order.uid} />} />}
       </h1>
       <ConnectionStatus />
       {Object.keys(errors).map((key) => (
@@ -229,6 +244,7 @@ export const OrderDetails: React.FC<Props> = (props) => {
         <StyledExplorerTabs
           className={`orderDetails-tab--${TabView[tabViewSelected].toLowerCase()}`}
           tabItems={tabItems(
+            chainId,
             order,
             trades,
             areTradesLoading,

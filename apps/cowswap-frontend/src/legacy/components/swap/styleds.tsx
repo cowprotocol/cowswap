@@ -1,16 +1,6 @@
-import { MouseEventHandler, ReactNode } from 'react'
+import { Media, UI } from '@cowprotocol/ui'
 
-import { TooltipContainer } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
-
-import { transparentize } from 'color2k'
-import { AlertTriangle } from 'react-feather'
-import { Text } from 'rebass'
-import styled, { css } from 'styled-components/macro'
-
-import { ThemedText } from 'legacy/theme'
-
-import { AutoColumn } from '../Column'
+import styled from 'styled-components/macro'
 
 const FeeInformationTooltipWrapper = styled.div`
   display: flex;
@@ -28,158 +18,6 @@ export const Wrapper = styled.div`
   padding: 8px;
 `
 
-export const ArrowWrapper = styled.div<{ clickable: boolean }>`
-  padding: 4px;
-  border-radius: 12px;
-  height: 32px;
-  width: 32px;
-  position: relative;
-  margin-top: -14px;
-  margin-bottom: -14px;
-  left: 16px;
-  background-color: var(${UI.COLOR_PAPER});
-  z-index: 2;
-  ${({ clickable }) =>
-    clickable
-      ? css`
-          :hover {
-            cursor: pointer;
-            opacity: 0.8;
-          }
-        `
-      : null}
-`
-
-export const SectionBreak = styled.div`
-  height: 1px;
-  width: 100%;
-  background-color: ${({ theme }) => theme.bg3};
-`
-
-export const ErrorText = styled(Text)<{ severity?: 0 | 1 | 2 | 3 | 4 }>`
-  color: ${({ theme, severity }) =>
-    severity === 3 || severity === 4
-      ? theme.red1
-      : severity === 2
-      ? theme.yellow2
-      : severity === 1
-      ? theme.text1
-      : theme.text2};
-`
-
-export const TruncatedText = styled(Text)`
-  text-overflow: ellipsis;
-  max-width: 220px;
-  overflow: hidden;
-  text-align: right;
-`
-
-// styles
-export const Dots = styled.span`
-  &::after {
-    display: inline-block;
-    animation: ellipsis 1.25s infinite;
-    content: '.';
-    width: 1em;
-    text-align: left;
-  }
-  @keyframes ellipsis {
-    0% {
-      content: '.';
-    }
-    33% {
-      content: '..';
-    }
-    66% {
-      content: '...';
-    }
-  }
-`
-
-const SwapCallbackErrorInner = styled.div<{ $css?: string }>`
-  background-color: ${({ theme }) => transparentize(theme.red1, 0.9)};
-  border-radius: 1rem;
-  position: relative;
-  display: flex;
-  align-items: center;
-  font-size: 0.825rem;
-  width: 100%;
-  padding: 3rem 1.25rem 1rem 1rem;
-  margin-top: -2rem;
-  color: var(${UI.COLOR_DANGER});
-  z-index: -1;
-  p {
-    padding: 0;
-    margin: 0;
-    font-weight: 500;
-  }
-
-  ${({ $css }) => $css}
-`
-
-const SwapCallbackErrorInnerAlertTriangle = styled.div`
-  background-color: ${({ theme }) => transparentize(theme.red1, 0.9)};
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 12px;
-  border-radius: 12px;
-  min-width: 48px;
-  height: 48px;
-`
-
-const Closer = styled.div`
-  position: absolute;
-  right: 0;
-  top: 0;
-  padding: 7px 10px;
-  font-weight: bold;
-  cursor: pointer;
-`
-
-export type ErrorMessageProps = {
-  error?: ReactNode
-  handleClose?: MouseEventHandler<HTMLDivElement>
-  showClose?: boolean
-  $css?: string
-}
-
-export function SwapCallbackError({ error, handleClose, showClose, ...styleProps }: ErrorMessageProps) {
-  return (
-    <SwapCallbackErrorInner {...styleProps}>
-      {showClose && <Closer onClick={handleClose}>X</Closer>}
-      <SwapCallbackErrorInnerAlertTriangle>
-        <AlertTriangle size={24} />
-      </SwapCallbackErrorInnerAlertTriangle>
-      <p style={{ wordBreak: 'break-word' }}>{error}</p>
-    </SwapCallbackErrorInner>
-  )
-}
-
-export const SwapShowAcceptChanges = styled(AutoColumn)`
-  background-color: ${({ theme }) => transparentize(theme.primary3, 0.95)};
-  color: ${({ theme }) => theme.text1};
-  padding: 0.5rem;
-  border-radius: 12px;
-  margin-top: 8px;
-`
-
-export const TransactionDetailsLabel = styled(ThemedText.Black)`
-  border-bottom: 1px solid var(${UI.COLOR_PRIMARY});
-  padding-bottom: 0.5rem;
-`
-
-export const ResponsiveTooltipContainer = styled(TooltipContainer)<{ origin?: string; width?: string }>`
-  background-color: ${({ theme }) => theme.bg0};
-  border: 1px solid var(${UI.COLOR_PRIMARY});
-  padding: 1rem;
-  width: ${({ width }) => width ?? 'auto'};
-
-  ${({ theme, origin }) => theme.mediaWidth.upToExtraSmall`
-    transform: scale(0.8);
-    transform-origin: ${origin ?? 'top left'};
-  `}
-`
 // TODO: refactor these styles
 export const AuxInformationContainer = styled.div<{
   margin?: string
@@ -195,7 +33,7 @@ export const AuxInformationContainer = styled.div<{
 
   :focus,
   :hover {
-    border: 1px solid ${({ theme, hideInput }) => (hideInput ? ' transparent' : theme.bg3)};
+    border: 1px solid ${({ theme, hideInput }) => (hideInput ? ' transparent' : theme.background)};
   }
 
   ${({ theme, hideInput, disabled }) =>
@@ -203,7 +41,7 @@ export const AuxInformationContainer = styled.div<{
     `
       :focus,
       :hover {
-        border: 1px solid ${hideInput ? ' transparent' : theme.bg3};
+        border: 1px solid ${hideInput ? ' transparent' : theme.background};
       }
     `}
 
@@ -215,12 +53,12 @@ export const AuxInformationContainer = styled.div<{
     border: 2px solid var(${UI.COLOR_PAPER_DARKER});
   }
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     height: auto;
     flex-flow: column wrap;
     justify-content: flex-end;
     align-items: flex-end;
-  `}
+  }
   > ${FeeInformationTooltipWrapper} {
     align-items: center;
     justify-content: space-between;
@@ -230,13 +68,13 @@ export const AuxInformationContainer = styled.div<{
     font-size: 14px;
     height: auto;
 
-    ${({ theme }) => theme.mediaWidth.upToSmall`
+    ${Media.upToSmall()} {
       flex-flow: column wrap;
       width: 100%;
       align-items: flex-start;
       margin: 0;
       padding: 16px;
-    `}
+    }
 
     > span {
       font-size: 18px;
@@ -244,11 +82,11 @@ export const AuxInformationContainer = styled.div<{
       word-break: break-all;
       text-align: right;
 
-      ${({ theme }) => theme.mediaWidth.upToSmall`
+      ${Media.upToSmall()} {
         text-align: left;
         align-items: flex-start;
         width: 100%;
-      `};
+      }
     }
 
     > span:first-child {
@@ -257,9 +95,9 @@ export const AuxInformationContainer = styled.div<{
       align-items: center;
       white-space: nowrap;
 
-      ${({ theme }) => theme.mediaWidth.upToSmall`
+      ${Media.upToSmall()} {
         margin: 0 0 10px;
-      `}
+      }
     }
 
     > span > small {

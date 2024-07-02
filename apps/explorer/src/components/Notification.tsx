@@ -1,10 +1,12 @@
 import React, { useState } from 'react'
-import styled from 'styled-components'
-import { transparentize } from 'polished'
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCircleCheck, faExclamationEllipsis, faExclamationTriangle } from './icons'
+import { transparentize } from 'polished'
+import styled from 'styled-components/macro'
 import { BASE_COLOURS } from 'theme'
 import { media } from 'theme/styles/media'
+
+import { faCircleCheck, faExclamationEllipsis, faExclamationTriangle } from './icons'
 
 export interface NotificationProps {
   type: 'warn' | 'error' | 'success'

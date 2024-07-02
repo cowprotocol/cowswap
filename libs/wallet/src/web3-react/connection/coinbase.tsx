@@ -1,18 +1,17 @@
+import CowImage from '@cowprotocol/assets/cow-swap/cow_token.svg'
+import { RPC_URLS } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { initializeConnector } from '@web3-react/core'
 
-import CowImage from '@cowprotocol/assets/cow-swap/cow_v2.svg'
-import { RPC_URLS } from '@cowprotocol/common-const'
 import { AsyncConnector } from './asyncConnector'
+import { onError } from './onError'
 
 import { default as CoinbaseImage } from '../../api/assets/coinbase.svg'
 import { ConnectWalletOption } from '../../api/pure/ConnectWalletOption'
 import { ConnectionType } from '../../api/types'
 import { getConnectionName } from '../../api/utils/connection'
-import { ConnectionOptionProps, Web3ReactConnection } from '../types'
-
 import { useIsActiveConnection } from '../hooks/useIsActiveConnection'
-import { onError } from './onError'
+import { ConnectionOptionProps, Web3ReactConnection } from '../types'
 
 const coinbaseInjectedOption = {
   color: '#315CF5',

@@ -1,49 +1,9 @@
-import { useEffect, useState } from 'react'
-
 import { EthereumProvider } from '@cowprotocol/widget-lib'
 
-import { useAccount, useConfig } from 'wagmi'
-
-import EventEmitter from 'events'
-
-const onDisconnect = new EventEmitter()
+import { useWeb3ModalProvider } from '@web3modal/ethers5/react'
 
 export function useProvider(): EthereumProvider | undefined {
-  const config = useConfig()
-  const { isDisconnected } = useAccount()
-  const [provider, setProvider] = useState<EthereumProvider | undefined>(undefined)
+  const { walletProvider } = useWeb3ModalProvider()
 
-  useEffect(() => {
-    return config.subscribe(({ connector }) => {
-      connector?.getProvider().then((provider) => {
-        setProvider(getEthereumProvider(provider, onDisconnect))
-      })
-    })
-  }, [config])
-
-  useEffect(() => {
-    if (!provider || !isDisconnected) return
-
-    onDisconnect.emit('disconnect')
-  }, [provider, isDisconnected])
-
-  return provider
-}
-
-function getEthereumProvider(provider: EthereumProvider, onDisconnect: EventEmitter): EthereumProvider {
-  return {
-    request(...args) {
-      return provider.request(...args)
-    },
-    enable(...args) {
-      return provider.enable(...args)
-    },
-    on(event: string, args: never) {
-      if (event === 'disconnect' || event === 'close') {
-        return onDisconnect.on('disconnect', args)
-      } else {
-        return provider.on(event, args)
-      }
-    },
-  }
+  return walletProvider as unknown as EthereumProvider
 }

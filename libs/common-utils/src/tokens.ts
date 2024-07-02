@@ -1,10 +1,10 @@
-import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-
 import {
   NATIVE_CURRENCY_ADDRESS,
   WRAPPED_NATIVE_CURRENCIES as WETH,
   NATIVE_CURRENCIES,
 } from '@cowprotocol/common-const'
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+
 
 export function isNativeAddress(tokenAddress: string, chainId: ChainId) {
   return tokenAddress === 'ETH' || tokenAddress === NATIVE_CURRENCIES[chainId].symbol

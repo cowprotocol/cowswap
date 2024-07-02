@@ -4,6 +4,7 @@ import { createStore } from 'jotai/vanilla'
 import { ReactElement, ReactNode, useMemo } from 'react'
 
 import { isInjectedWidget } from '@cowprotocol/common-utils'
+import { Web3Provider } from '@cowprotocol/wallet'
 import { initializeConnector, Web3ReactHooks, Web3ReactProvider } from '@web3-react/core'
 import { Connector } from '@web3-react/types'
 
@@ -14,11 +15,10 @@ import { LocationDescriptorObject } from 'history'
 import { Provider } from 'react-redux'
 import { MemoryRouter } from 'react-router-dom'
 import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-components/macro'
+import { getCowswapTheme } from 'theme'
 
-import Web3Provider from 'legacy/components/Web3Provider'
 import { cowSwapStore } from 'legacy/state'
 import { useIsDarkMode } from 'legacy/state/user/hooks'
-import { theme } from 'legacy/theme'
 
 import { LanguageProvider } from './i18n'
 
@@ -30,7 +30,7 @@ const MockThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const darkMode = useIsDarkMode()
   const isInjectedWidgetMode = isInjectedWidget()
 
-  const themeObject = useMemo(() => theme(darkMode, isInjectedWidgetMode), [darkMode, isInjectedWidgetMode])
+  const themeObject = useMemo(() => getCowswapTheme(darkMode, isInjectedWidgetMode), [darkMode, isInjectedWidgetMode])
 
   return <StyledComponentsThemeProvider theme={themeObject}>{children}</StyledComponentsThemeProvider>
 }
@@ -40,7 +40,7 @@ const WithProviders = ({ children }: { children?: ReactNode }) => {
     <LanguageProvider>
       <MockedI18nProvider>
         <Provider store={cowSwapStore}>
-          <Web3Provider>
+          <Web3Provider selectedWallet={undefined}>
             <MockThemeProvider>{children}</MockThemeProvider>
           </Web3Provider>
         </Provider>

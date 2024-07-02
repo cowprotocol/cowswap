@@ -1,12 +1,14 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+
 import { AnyAppDataDocVersion } from '@cowprotocol/app-data'
-import { useNetworkId } from 'state/network'
-import { metadataApiSDK } from 'cowSdk'
+
 import { DEFAULT_IPFS_READ_URI } from 'const'
+import { metadataApiSDK } from 'cowSdk'
+import { useNetworkId } from 'state/network'
 
 export const useAppData = (
   appDataHash: string,
-  isLegacyAppDataHex: boolean,
+  isLegacyAppDataHex: boolean
 ): { isLoading: boolean; appDataDoc: AnyAppDataDocVersion | void | undefined } => {
   const network = useNetworkId() || undefined
   const [isLoading, setLoading] = useState<boolean>(false)
@@ -28,12 +30,12 @@ export const useAppData = (
     getAppDataDoc()
   }, [appDataHash, network, isLegacyAppDataHex])
 
-  return { isLoading, appDataDoc }
+  return useMemo(() => ({ isLoading, appDataDoc }), [isLoading, appDataDoc])
 }
 
 export const fetchDocFromAppDataHex = (
   appDataHex: string,
-  isLegacyAppDataHex: boolean,
+  isLegacyAppDataHex: boolean
 ): Promise<void | AnyAppDataDocVersion> => {
   const method = isLegacyAppDataHex ? 'fetchDocFromAppDataHexLegacy' : 'fetchDocFromAppDataHex'
   return metadataApiSDK[method](appDataHex, DEFAULT_IPFS_READ_URI)

@@ -1,7 +1,7 @@
 import React from 'react'
-import styled from 'styled-components'
 
 import { CopyButton } from 'components/common/CopyButton'
+import styled from 'styled-components/macro'
 
 const Wrapper = styled.span`
   display: flex;

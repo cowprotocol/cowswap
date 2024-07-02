@@ -1,7 +1,7 @@
 import { useSetAtom } from 'jotai'
 
-import { ReactComponent as Close } from '@cowprotocol/assets/images/x.svg'
-import { UI } from '@cowprotocol/ui'
+import Close from '@cowprotocol/assets/images/x.svg?react'
+import { Media, UI } from '@cowprotocol/ui'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { transparentize } from 'color2k'
@@ -14,6 +14,7 @@ import { toggleAccountSelectorModalAtom } from 'modules/wallet/containers/Accoun
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
 
 import { useAccountModalState } from '../../hooks/useAccountModalState'
+import { useCloseAccountModalOnNavigate } from '../../hooks/useCloseAccountModalOnNavigate'
 import { useToggleAccountModal } from '../../hooks/useToggleAccountModal'
 import { AccountDetails } from '../AccountDetails'
 
@@ -39,12 +40,13 @@ const SideBar = styled.div`
   box-shadow: ${({ theme }) => theme.boxShadow1};
   background: var(${UI.COLOR_PAPER});
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${Media.upToMedium()} {
     width: 100%;
     height: 100%;
     max-width: 100%;
-    border-radius: ${theme.isInjectedWidgetMode ? '24px' : '0'};
-  `};
+    border-radius: ${({ theme }) => (theme.isInjectedWidgetMode ? '24px' : '0')};
+    z-index: 10000;
+  }
 `
 
 const SidebarBackground = styled.div`
@@ -54,12 +56,12 @@ const SidebarBackground = styled.div`
   z-index: 4;
   width: 100%;
   height: 100%;
-  background: ${({ theme }) => transparentize(theme.black, 0.1)};
+  background: ${({ theme }) => (theme.isInjectedWidgetMode ? 'transparent' : transparentize(theme.black, 0.1))};
   backdrop-filter: blur(3px);
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     display: none;
-  `};
+  }
 `
 
 const Header = styled.div`
@@ -74,10 +76,9 @@ const Header = styled.div`
   position: sticky;
   top: 0;
   left: 0;
-  width: 100%;
   z-index: 20;
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${Media.upToMedium()} {
     top: 0;
     padding: 0 16px;
     z-index: 99999;
@@ -85,7 +86,7 @@ const Header = styled.div`
     left: 0;
     height: 52px;
     background: var(${UI.COLOR_PAPER});
-  `};
+  }
 
   &:hover {
     cursor: pointer;
@@ -96,18 +97,20 @@ const Header = styled.div`
     font-size: 24px;
     color: inherit;
 
-    ${({ theme }) => theme.mediaWidth.upToSmall`
+    ${Media.upToSmall()} {
       font-size: 18px;
-    `};
+    }
   }
 `
 
-const CloseIcon = styled(Close)`
+const CloseIcon = styled((props) => <Close {...props} />)`
+  --size: 20px;
   opacity: 0.6;
   transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
   stroke: var(${UI.COLOR_TEXT});
-  width: 24px;
-  height: 24px;
+  width: var(--size);
+  height: var(--size);
+  object-fit: contain;
 
   &:hover {
     opacity: 1;
@@ -127,7 +130,7 @@ const Wrapper = styled.div`
 
 // TODO: rename the component into AccountModal
 export function OrdersPanel() {
-  const { active } = useWalletInfo()
+  const { active, account } = useWalletInfo()
   const { ensName } = useWalletDetails()
   const toggleWalletModal = useToggleWalletModal()
   const toggleAccountSelectorModal = useSetAtom(toggleAccountSelectorModalAtom)
@@ -136,7 +139,9 @@ export function OrdersPanel() {
 
   const handleCloseOrdersPanel = useToggleAccountModal()
 
-  if (!active || !isOpen) {
+  useCloseAccountModalOnNavigate()
+
+  if (!active || !isOpen || !account) {
     return null
   }
 

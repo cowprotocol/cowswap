@@ -1,12 +1,11 @@
+import { CHAIN_INFO } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { getAddress } from '@ethersproject/address'
 import { AddressZero } from '@ethersproject/constants'
 import { Contract, ContractInterface } from '@ethersproject/contracts'
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers'
-import { getExplorerOrderLink } from './explorer'
-import { CHAIN_INFO } from '@cowprotocol/common-const'
 
-const ORDER_ID_SHORT_LENGTH = 8
+import { getExplorerOrderLink } from './explorer'
 
 // returns the checksummed address if the address is valid, otherwise returns false
 export function isAddress(value: string | undefined | null): string | false {
@@ -63,27 +62,28 @@ export type BlockExplorerLinkType =
   | 'block'
   | 'token-transfer'
   | 'composable-order'
+  | 'event'
+  | 'contract'
 
 function getEtherscanUrl(chainId: SupportedChainId, data: string, type: BlockExplorerLinkType): string {
   const basePath = CHAIN_INFO[chainId].explorer
 
   switch (type) {
-    case 'transaction': {
+    case 'transaction':
       return `${basePath}/tx/${data}`
-    }
-    case 'token': {
+    case 'token':
       return `${basePath}/token/${data}`
-    }
-    case 'block': {
+    case 'block':
       return `${basePath}/block/${data}`
-    }
-    case 'token-transfer': {
+    case 'token-transfer':
       return `${basePath}/address/${data}#tokentxns`
-    }
+    case 'event':
+      return `${basePath}/tx/${data}#eventlog`
+    case 'contract':
+      return `${basePath}/address/${data}#code`
     case 'address':
-    default: {
+    default:
       return `${basePath}/address/${data}`
-    }
   }
 }
 
@@ -111,22 +111,18 @@ export function getEtherscanLink(chainId: SupportedChainId, type: BlockExplorerL
 export function getExplorerLabel(chainId: SupportedChainId, type: BlockExplorerLinkType, data?: string): string {
   if (isCowOrder(type, data)) {
     return 'View on Explorer'
-  } else if (chainId === SupportedChainId.GNOSIS_CHAIN) {
-    return 'View on Gnosisscan'
-  } else {
-    return 'View on Etherscan'
   }
+
+  return `View on ${CHAIN_INFO[chainId].explorerTitle}`
 }
 
-// Shortens OrderID (or any string really) removing initial 2 characters e.g 0x
-// and cutting string at 'chars' length, default = 8
-export function shortenOrderId(orderId: string, start = 0, chars = ORDER_ID_SHORT_LENGTH): string {
-  return orderId.substring(start, chars + start)
+export function shortenOrderId(orderId: string): string {
+  return orderId.slice(0, 6) + '...' + orderId.slice(orderId.length - 4)
 }
 
 export function formatOrderId(orderId: string): string {
   const has0x = orderId.match('0x')
 
   // 0x is at index 0 of orderId, shorten. Else return id as is
-  return has0x?.index === 0 ? shortenOrderId(orderId, 2, orderId.length) : orderId
+  return has0x?.index === 0 ? shortenOrderId(orderId) : orderId
 }

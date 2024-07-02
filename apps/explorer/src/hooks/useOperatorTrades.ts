@@ -1,8 +1,11 @@
-import { getTrades, Order, RawTrade, Trade } from 'api/operator'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+
 import { useNetworkId } from 'state/network'
 import { Network, UiError } from 'types'
 import { transformTrade } from 'utils'
+
+import { getTrades, Order, RawTrade, Trade } from 'api/operator'
+
 import { web3 } from '../explorer/api'
 
 type Result = {
@@ -101,7 +104,8 @@ export function useOrderTrades(order: Order | null): Result {
       return { ...transformTrade(trade, order, timestamp), buyToken, sellToken }
     })
 
-    setTrades(trades)
+    // Reverse trades, to show the newest on top
+    setTrades(trades.reverse())
   }, [order, rawTrades, tradesTimestamps])
 
   const executedSellAmount = order?.executedSellAmount.toString()
@@ -119,8 +123,9 @@ export function useOrderTrades(order: Order | null): Result {
     // Depending on order UID to avoid re-fetching when obj changes but ID remains the same
     // Depending on `executedBuy/SellAmount`s string to force a refetch when there are new trades
     // using the string version because hooks are bad at detecting Object changes
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fetchTrades, networkId, order?.uid, executedSellAmount, executedBuyAmount])
 
-  return { trades, error, isLoading: rawTrades === null }
+  const isLoading = rawTrades === null
+
+  return useMemo(() => ({ trades, error, isLoading }), [trades, error, isLoading])
 }

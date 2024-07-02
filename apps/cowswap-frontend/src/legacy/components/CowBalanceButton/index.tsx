@@ -1,7 +1,6 @@
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
-import { UI } from '@cowprotocol/ui'
-import { TokenAmount } from '@cowprotocol/ui'
+import { Media, TokenAmount, UI } from '@cowprotocol/ui'
 
 import { transparentize } from 'color2k'
 import styled, { css } from 'styled-components/macro'
@@ -24,16 +23,27 @@ export const Wrapper = styled.div<{ isLoading: boolean }>`
   pointer-events: auto;
   transition: width var(${UI.ANIMATION_DURATION}) ease-in-out, border var(${UI.ANIMATION_DURATION}) ease-in-out;
   cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    height: 100%;
-    width: auto;
-    padding: 6px 12px 6px 8px;
-  `};
+  ${Media.upToLarge()} {
+    position: absolute;
+    z-index: 1001;
+    right: 66px;
+    background: var(${UI.COLOR_PAPER_DARKER});
+  }
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    padding: 6px 8px;
-  `};
+  ${Media.upToSmall()} {
+    right: 56px;
+  }
+
+  ${Media.upToTiny()} {
+    position: relative;
+    right: initial;
+    margin: 0 auto 0 0;
+    height: 36px;
+    padding: 6px;
+  }
 
   &:hover {
     border: 2px solid ${({ theme }) => transparentize(theme.text, 0.7)};
@@ -61,42 +71,38 @@ export const Wrapper = styled.div<{ isLoading: boolean }>`
     font-weight: inherit;
     white-space: nowrap;
 
-    ${({ theme }) => theme.mediaWidth.upToMedium`
+    ${Media.upToMedium()} {
       overflow: hidden;
-      max-width: 100px;
       text-overflow: ellipsis;
-    `};
+    }
 
-    ${({ theme }) => theme.mediaWidth.upToSmall`
-      overflow: visible;
-      max-width: initial;
-    `};
+    ${Media.upToSmall()} {
+      max-width: 120px;
+    }
   }
 `
 interface CowBalanceButtonProps {
   account?: string | null | undefined
   chainId: ChainId | undefined
   onClick?: Command
-  isUpToSmall?: boolean
 }
 
-export default function CowBalanceButton({ onClick, isUpToSmall }: CowBalanceButtonProps) {
+export default function CowBalanceButton({ onClick }: CowBalanceButtonProps) {
   const { balance, isLoading } = useCombinedBalance()
 
   return (
     <Wrapper isLoading={isLoading} onClick={onClick}>
       <CowProtocolLogo />
-      {!isUpToSmall && (
-        <b>
-          <TokenAmount
-            round={true}
-            hideTokenSymbol={true}
-            amount={balance}
-            defaultValue="0"
-            tokenSymbol={{ symbol: '(v)COW' }}
-          />
-        </b>
-      )}
+
+      <b>
+        <TokenAmount
+          round={true}
+          hideTokenSymbol={true}
+          amount={balance}
+          defaultValue="0"
+          tokenSymbol={{ symbol: '(v)COW' }}
+        />
+      </b>
     </Wrapper>
   )
 }

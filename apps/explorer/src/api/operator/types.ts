@@ -1,8 +1,8 @@
-import BigNumber from 'bignumber.js'
+import { EnrichedOrder, OrderKind, Trade as TradeMetaData } from '@cowprotocol/cow-sdk'
 
 import { TokenErc20 } from '@gnosis.pm/dex-js'
+import BigNumber from 'bignumber.js'
 import { Network } from 'types'
-import { EnrichedOrder, OrderKind, Trade as TradeMetaData } from '@cowprotocol/cow-sdk'
 
 export type TxHash = string
 
@@ -22,9 +22,9 @@ export type Order = Pick<
 > & {
   receiver: string
   txHash?: string
-  shortId: string
   creationDate: Date
   expirationDate: Date
+  executionDate?: Date
   buyTokenAddress: string
   buyToken?: TokenErc20 | null // undefined when not set, null when not found
   sellTokenAddress: string

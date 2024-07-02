@@ -1,4 +1,4 @@
-import { useAtomValue, useSetAtom } from 'jotai'
+import { useAtomValue } from 'jotai'
 import { useLayoutEffect, useMemo } from 'react'
 
 import { useDebounce } from '@cowprotocol/common-hooks'
@@ -9,13 +9,13 @@ import { useAreUnsupportedTokens } from '@cowprotocol/tokens'
 import ms from 'ms.macro'
 
 import { useUpdateCurrencyAmount } from 'modules/trade/hooks/useUpdateCurrencyAmount'
-import { updateTradeQuoteAtom } from 'modules/tradeQuote/state/tradeQuoteAtom'
 
-import { getQuote } from 'api/gnosisProtocol/api'
-import GpQuoteError, { GpQuoteErrorCodes } from 'api/gnosisProtocol/errors/QuoteError'
+import { getQuote } from 'api/cowProtocol/api'
+import QuoteApiError, { QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
 
 import { useProcessUnsupportedTokenError } from './useProcessUnsupportedTokenError'
 import { useQuoteParams } from './useQuoteParams'
+import { useUpdateTradeQuote } from './useUpdateTradeQuote'
 
 import { tradeQuoteParamsAtom } from '../state/tradeQuoteParamsAtom'
 
@@ -33,7 +33,7 @@ export function useTradeQuotePolling() {
   )
   const quoteParams = useQuoteParams(amountStr)
 
-  const updateQuoteState = useSetAtom(updateTradeQuoteAtom)
+  const updateQuoteState = useUpdateTradeQuote()
   const updateCurrencyAmount = useUpdateCurrencyAmount()
   const getIsUnsupportedTokens = useAreUnsupportedTokens()
   const processUnsupportedTokenError = useProcessUnsupportedTokenError()
@@ -51,8 +51,8 @@ export function useTradeQuotePolling() {
       return
     }
 
-    const fetchQuote = () => {
-      updateQuoteState({ isLoading: true })
+    const fetchQuote = (hasParamsChanged: boolean) => {
+      updateQuoteState({ isLoading: true, hasParamsChanged })
 
       getQuoteOnlyResolveLast(quoteParams)
         .then((response) => {
@@ -62,21 +62,21 @@ export function useTradeQuotePolling() {
             return
           }
 
-          updateQuoteState({ response: data, isLoading: false, error: null })
+          updateQuoteState({ response: data, quoteParams, isLoading: false, error: null, hasParamsChanged: false })
         })
-        .catch((error: GpQuoteError) => {
+        .catch((error: QuoteApiError) => {
           console.log('[useGetQuote]:: fetchQuote error', error)
-          updateQuoteState({ isLoading: false, error })
+          updateQuoteState({ isLoading: false, error, hasParamsChanged: false })
 
-          if (error.type === GpQuoteErrorCodes.UnsupportedToken) {
+          if (error.type === QuoteApiErrorCodes.UnsupportedToken) {
             processUnsupportedTokenError(error, quoteParams)
           }
         })
     }
 
-    fetchQuote()
+    fetchQuote(true)
 
-    const intervalId = setInterval(fetchQuote, PRICE_UPDATE_INTERVAL)
+    const intervalId = setInterval(() => fetchQuote(false), PRICE_UPDATE_INTERVAL)
 
     return () => clearInterval(intervalId)
   }, [quoteParams, updateQuoteState, updateCurrencyAmount, processUnsupportedTokenError, getIsUnsupportedTokens])

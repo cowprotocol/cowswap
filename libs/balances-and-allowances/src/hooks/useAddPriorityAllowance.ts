@@ -2,10 +2,9 @@ import { useSetAtom } from 'jotai/index'
 import { useCallback } from 'react'
 
 import { Erc20, ERC_20_INTERFACE } from '@cowprotocol/abis'
-import { GP_VAULT_RELAYER } from '@cowprotocol/common-const'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { Contract } from '@ethersproject/contracts'
-import { useWeb3React } from '@web3-react/core'
 
 import { allowancesFullState } from '../state/allowancesAtom'
 
@@ -17,14 +16,14 @@ interface PriorityAllowanceParams {
 }
 
 export function useAddPriorityAllowance() {
-  const { provider } = useWeb3React()
+  const provider = useWalletProvider()
   const setAllowance = useSetAtom(allowancesFullState)
 
   return useCallback(
     ({ chainId, account, tokenAddress, blockNumber }: PriorityAllowanceParams) => {
       if (!provider || !account || !blockNumber) return undefined
 
-      const spender = GP_VAULT_RELAYER[chainId]
+      const spender = COW_PROTOCOL_VAULT_RELAYER_ADDRESS[chainId]
       const tokenContract = new Contract(tokenAddress, ERC_20_INTERFACE, provider) as Erc20
 
       tokenContract.callStatic.allowance(account, spender, { blockTag: blockNumber }).then((result) => {

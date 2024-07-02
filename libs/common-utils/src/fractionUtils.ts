@@ -1,25 +1,30 @@
+import { FULL_PRICE_PRECISION } from '@cowprotocol/common-const'
 import { BigintIsh, Currency, CurrencyAmount, Fraction, Price, Rounding, Token } from '@uniswap/sdk-core'
 
 import { BigNumber } from 'bignumber.js'
 import JSBI from 'jsbi'
+
+import { trimTrailingZeros } from './trimTrailingZeros'
 import { FractionLike, Nullish } from './types'
 
-import { FULL_PRICE_PRECISION } from '@cowprotocol/common-const'
-import { trimTrailingZeros } from './trimTrailingZeros'
-
 export class FractionUtils {
-  static serializeFractionToJSON(fraction: Nullish<Fraction>): string {
-    if (!fraction) return ''
-    const { numerator, denominator } = fraction
-    return JSON.stringify({ numerator: numerator + '', denominator: denominator + '' })
+  static serializeFractionToJSON(amount: Nullish<CurrencyAmount<Currency>>): string {
+    if (!amount) return ''
+
+    const { numerator, denominator } = amount
+    return JSON.stringify({
+      numerator: numerator.toString(),
+      denominator: denominator.toString(),
+      decimals: amount.currency.decimals,
+    })
   }
 
-  static parseFractionFromJSON(s: Nullish<string>): Fraction | null {
+  static parseFractionFromJSON(s: Nullish<string>): { value: Fraction; decimals: number | undefined } | null {
     if (!s) return null
 
     try {
-      const { numerator, denominator } = JSON.parse(s)
-      return new Fraction(numerator, denominator)
+      const { numerator, denominator, decimals } = JSON.parse(s)
+      return { value: new Fraction(numerator, denominator), decimals }
     } catch (e: any) {
       return null
     }
@@ -114,7 +119,17 @@ export class FractionUtils {
    * For example, a fraction like 1.1/1 representing the price of USDC, DAI in units, will be turned into
    * 1.1/1000000000000 in atoms
    */
-  static adjustDecimalsAtoms(value: Fraction, decimalsA: number, decimalsB: number): Fraction {
+  static adjustDecimalsAtoms(
+    value: CurrencyAmount<Currency>,
+    decimalsA: number,
+    decimalsB: number
+  ): CurrencyAmount<Currency>
+  static adjustDecimalsAtoms(value: Fraction, decimalsA: number, decimalsB: number): Fraction
+  static adjustDecimalsAtoms(
+    value: Fraction | CurrencyAmount<Currency>,
+    decimalsA: number,
+    decimalsB: number
+  ): Fraction | CurrencyAmount<Currency> {
     if (decimalsA === decimalsB) {
       return value
     }

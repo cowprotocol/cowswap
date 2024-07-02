@@ -64,9 +64,9 @@ declare namespace Cypress {
     /**
      * Pick the 'input' or 'output' token
      *
-     * @example cy.limitPickToken('DAI', 'input')
+     * @example cy.pickToken('DAI', 'input')
      */
-    limitPickToken(symbol: string, role: 'input' | 'output'): Chainable<Subject>
+    pickToken(symbol: string, role: 'input' | 'output'): Chainable<Subject>
 
     /**
      * Set a stubbing intercept on route specified
@@ -88,7 +88,9 @@ declare namespace Cypress {
 }
 
 function _clickOnToken(inputOrOutput: string) {
-  cy.get(`#${inputOrOutput}-currency-input .open-currency-select-button`).click()
+  cy.get(`#${inputOrOutput}-currency-input .open-currency-select-button`, { timeout: 20_000 })
+    .should('not.be.disabled')
+    .click()
 }
 
 function _selectTokenFromSelector(tokenAddress: string, inputOrOutput: string) {
@@ -127,7 +129,7 @@ function selectInput(tokenAddress: string) {
 }
 
 function pickToken(symbol: string, role: string) {
-  cy.get(`#${role}-currency-input .open-currency-select-button`).click()
+  cy.get(`#${role}-currency-input .open-currency-select-button`, { timeout: 20_000 }).should('be.enabled').click()
   cy.get('#token-search-input').type(symbol)
   cy.get('#currency-list').get('div').contains(symbol).click({ force: true })
 }
@@ -171,5 +173,5 @@ Cypress.Commands.add('swapSelectInput', selectInput)
 Cypress.Commands.add('swapSelectOutput', selectOutput)
 Cypress.Commands.add('swapEnterInputAmount', enterInputAmount)
 Cypress.Commands.add('swapEnterOutputAmount', enterOutputAmount)
-Cypress.Commands.add('limitPickToken', pickToken)
+Cypress.Commands.add('pickToken', pickToken)
 Cypress.Commands.add('stubResponse', stubResponse)

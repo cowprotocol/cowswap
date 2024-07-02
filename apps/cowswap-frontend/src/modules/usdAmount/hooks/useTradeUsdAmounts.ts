@@ -1,3 +1,5 @@
+import { useMemo } from 'react'
+
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { isFractionFalsy } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
@@ -5,6 +7,8 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { Nullish } from 'types'
 
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
+
+import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
 import { UsdAmountInfo, useUsdAmount } from './useUsdAmount'
 
@@ -32,8 +36,22 @@ export function useTradeUsdAmounts(
   const areAmountsReady = !isFractionFalsy(inputAmount) && !isFractionFalsy(outputAmount)
   const isTradeReady = !isWrapOrUnwrap && (dontWaitBothAmounts || areAmountsReady)
 
-  return {
-    inputAmount: useUsdAmount(isTradeReady ? inputAmount : null, inputCurrency),
-    outputAmount: useUsdAmount(isTradeReady ? outputAmount : null, outputCurrency),
-  }
+  const [useUsdAmountInputParams, useUsdAmountOutputParams] = useSafeMemo(() => {
+    const useUsdAmountInputParams: Parameters<typeof useUsdAmount> = isWrapOrUnwrap
+      ? [null, null] // disable usd estimation when it's wrap/unwrap
+      : [isTradeReady ? inputAmount : null, inputCurrency]
+    const useUsdAmountOutputParams: Parameters<typeof useUsdAmount> = isWrapOrUnwrap
+      ? [null, null]
+      : [isTradeReady ? outputAmount : null, outputCurrency]
+
+    return [useUsdAmountInputParams, useUsdAmountOutputParams]
+  }, [isWrapOrUnwrap, isTradeReady, inputAmount, outputAmount, inputCurrency, outputCurrency])
+
+  const usdInputAmount = useUsdAmount(...useUsdAmountInputParams)
+  const usdOutputAmount = useUsdAmount(...useUsdAmountOutputParams)
+
+  return useMemo(
+    () => ({ inputAmount: usdInputAmount, outputAmount: usdOutputAmount }),
+    [usdInputAmount, usdOutputAmount]
+  )
 }

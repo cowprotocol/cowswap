@@ -3,7 +3,7 @@ import { useCallback } from 'react'
 
 import { getPermitUtilsInstance, PermitHookData } from '@cowprotocol/permit-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { useWeb3React } from '@web3-react/core'
+import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import { Nullish } from 'types'
 
@@ -11,7 +11,7 @@ import { getPermitCacheAtom } from '../state/permitCacheAtom'
 
 export function useGetCachedPermit(): (tokenAddress: Nullish<string>) => Promise<PermitHookData | undefined> {
   const { chainId, account } = useWalletInfo()
-  const { provider } = useWeb3React()
+  const provider = useWalletProvider()
   const getCachedPermit = useSetAtom(getPermitCacheAtom)
 
   return useCallback(
@@ -27,7 +27,7 @@ export function useGetCachedPermit(): (tokenAddress: Nullish<string>) => Promise
         // Static account should never need to pre-check the nonce as it'll never change once cached
         const nonce = account ? await eip2162Utils.getTokenNonce(tokenAddress, account) : undefined
 
-        const permitParams = { chainId, tokenAddress: tokenAddress, account, nonce }
+        const permitParams = { chainId, tokenAddress, account, nonce }
 
         return getCachedPermit(permitParams)
       } catch (e) {

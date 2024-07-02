@@ -1,13 +1,13 @@
 import React from 'react'
 
-import styled from 'styled-components/macro'
 import { Command } from '@cowprotocol/types'
+
+import styled from 'styled-components/macro'
 
 export const StyledIdenticon = styled.div`
   height: 1rem;
   width: 1rem;
   border-radius: 1.125rem;
-  // background-color: ${({ theme }) => theme.bg4};
   background-color: var(--cow-container-bg-01); // MOD
   font-size: initial;
 `

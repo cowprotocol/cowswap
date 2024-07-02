@@ -1,10 +1,7 @@
 import { reportPermitWithDefaultSigner } from '@cowprotocol/common-utils'
-import { CowEvents } from '@cowprotocol/events'
 import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
 import { Command, UiOrderType } from '@cowprotocol/types'
 import { Percent } from '@uniswap/sdk-core'
-
-import { EVENT_EMITTER } from 'eventEmitter'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
@@ -14,6 +11,7 @@ import { LOW_RATE_THRESHOLD_PERCENT } from 'modules/limitOrders/const/trade'
 import { PriceImpactDeclineError, TradeFlowContext } from 'modules/limitOrders/services/types'
 import { LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { calculateLimitOrdersDeadline } from 'modules/limitOrders/utils/calculateLimitOrdersDeadline'
+import { emitPostedOrderEvent } from 'modules/orders'
 import { handlePermit } from 'modules/permit'
 import { appDataContainsPermitSigner } from 'modules/permit/utils/appDataContainsPermitSigner'
 import { presignOrderStep } from 'modules/swap/services/swapFlow/steps/presignOrderStep'
@@ -21,6 +19,7 @@ import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { TradeFlowAnalyticsContext, tradeFlowAnalytics } from 'modules/trade/utils/analytics'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
+
 export async function tradeFlow(
   params: TradeFlowContext,
   priceImpact: PriceImpact,
@@ -40,7 +39,8 @@ export async function tradeFlow(
     dispatch,
     generatePermitHook,
   } = params
-  const { account, recipientAddressOrName, sellToken, buyToken, appData, isSafeWallet } = postOrderParams
+  const { account, recipientAddressOrName, sellToken, buyToken, appData, isSafeWallet, inputAmount, outputAmount } =
+    postOrderParams
   const marketLabel = [sellToken.symbol, buyToken.symbol].join(',')
   const swapFlowAnalyticsContext: TradeFlowAnalyticsContext = {
     account,
@@ -57,7 +57,7 @@ export async function tradeFlow(
     throw new PriceImpactDeclineError()
   }
 
-  const validTo = calculateLimitOrdersDeadline(settingsState)
+  const validTo = calculateLimitOrdersDeadline(settingsState, params.quoteState)
 
   try {
     logTradeFlow('LIMIT ORDER FLOW', 'STEP 2: handle permit')
@@ -121,7 +121,17 @@ export async function tradeFlow(
         dispatch
       )
     }
-    EVENT_EMITTER.emit(CowEvents.ON_POSTED_ORDER, { orderUid: orderId, chainId })
+
+    emitPostedOrderEvent({
+      chainId,
+      id: orderId,
+      kind: postOrderParams.kind,
+      receiver: recipientAddressOrName,
+      inputAmount,
+      outputAmount,
+      owner: account,
+      uiOrderType: UiOrderType.LIMIT,
+    })
 
     logTradeFlow('LIMIT ORDER FLOW', 'STEP 8: Sign order')
     tradeFlowAnalytics.sign(swapFlowAnalyticsContext)

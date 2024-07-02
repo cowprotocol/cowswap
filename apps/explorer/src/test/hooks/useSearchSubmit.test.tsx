@@ -1,9 +1,10 @@
 import React from 'react'
-import { LocationDescriptorObject } from 'history'
-import { MemoryRouter, useLocation } from 'react-router-dom'
-import { renderHook, act } from '@testing-library/react-hooks'
 
+import { renderHook, act } from '@testing-library/react-hooks'
+import { LocationDescriptorObject } from 'history'
 import { useSearchSubmit } from 'hooks/useSearchSubmit'
+import { MemoryRouter, useLocation } from 'react-router-dom'
+
 
 interface Props {
   children?: React.ReactNode

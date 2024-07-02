@@ -1,15 +1,16 @@
-import React from 'react'
-import styled, { css, FlattenSimpleInterpolation, useTheme } from 'styled-components'
+import React, { useMemo } from 'react'
 
-import { Order } from 'api/operator'
+import { isSellOrder } from '@cowprotocol/common-utils'
 
-import { BaseIconTooltipOnHover } from 'components/Tooltip'
 import { faArrowAltCircleUp as faIcon } from '@fortawesome/free-regular-svg-icons'
-import BigNumber from 'bignumber.js'
 import { TokenErc20 } from '@gnosis.pm/dex-js'
+import BigNumber from 'bignumber.js'
 import { SurplusComponent } from 'components/common/SurplusComponent'
 import { TokenAmount } from 'components/token/TokenAmount'
-import { isSellOrder } from '@cowprotocol/common-utils'
+import { BaseIconTooltipOnHover } from 'components/Tooltip'
+import styled, { css, FlattenSimpleInterpolation, useTheme } from 'styled-components/macro'
+
+import { Order } from 'api/operator'
 
 const Wrapper = styled(SurplusComponent)`
   display: flex;
@@ -38,11 +39,15 @@ function useGetSurplus(order: Order): OrderSurplus | null {
   // TODO: get USD estimation
   // const usdAmount = '55.555'
 
-  if (!surplusToken || surplusAmount.isZero()) {
-    return null
-  }
 
-  return { amount: surplusAmount, percentage: surplusPercentage, surplusToken }
+  return useMemo(() => {
+
+    if (!surplusToken || surplusAmount.isZero()) {
+      return null
+    }
+
+    return ({ amount: surplusAmount, percentage: surplusPercentage, surplusToken })
+  }, [surplusToken, surplusAmount, surplusPercentage])
 }
 
 export function OrderSurplusDisplay(props: Props): JSX.Element | null {

@@ -2,6 +2,7 @@ import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
+
 import { tokensByAddressAtom, tokensBySymbolAtom } from '../../state/tokens/allTokensAtom'
 
 export function useTokenBySymbolOrAddress(symbolOrAddress?: string | null): TokenWithLogo | null {

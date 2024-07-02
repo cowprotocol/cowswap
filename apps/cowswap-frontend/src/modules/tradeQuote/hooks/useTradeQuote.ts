@@ -5,10 +5,10 @@ import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
 
 import { tradeQuoteAtom } from '../state/tradeQuoteAtom'
 import { TradeQuoteState } from '../state/tradeQuoteAtom'
-import { DEFAULT_QUOTE_RESPONSE } from '../state/tradeQuoteAtom'
+import { DEFAULT_TRADE_QUOTE_STATE } from '../state/tradeQuoteAtom'
 
 export function useTradeQuote(): TradeQuoteState {
-  const { state } = useDerivedTradeState()
+  const state = useDerivedTradeState()
   const quoteState = useAtomValue(tradeQuoteAtom)
 
   const inputCurrency = state?.inputCurrency
@@ -16,7 +16,7 @@ export function useTradeQuote(): TradeQuoteState {
 
   return useMemo(() => {
     if (!inputCurrency || !outputCurrency) {
-      return DEFAULT_QUOTE_RESPONSE
+      return DEFAULT_TRADE_QUOTE_STATE
     }
 
     return quoteState

@@ -1,8 +1,15 @@
 import { MAINNET_PROVIDER } from '@cowprotocol/common-const'
-import { contenthashToUri, parseENSAddress, resolveENSContentHash, uriToHttp } from '@cowprotocol/common-utils'
+import {
+  contenthashToUri,
+  isAddress,
+  parseENSAddress,
+  resolveENSContentHash,
+  uriToHttp,
+} from '@cowprotocol/common-utils'
+import { TokenList } from '@uniswap/token-lists'
 
-import { validateTokenList } from '../utils/validateTokenList'
 import { ListSourceConfig, ListState } from '../types'
+import { validateTokenList } from '../utils/validateTokenList'
 
 /**
  * Refactored version of apps/cowswap-frontend/src/lib/hooks/useTokenList/fetchTokenList.ts
@@ -63,13 +70,32 @@ async function _fetchTokenList(source: string, urls: string[]): Promise<ListStat
       continue
     }
 
-    const json = await response.json()
+    try {
+      const json = await response.json()
 
-    return {
-      source,
-      list: await validateTokenList(json),
+      return {
+        source,
+        list: await sanitizeList(json),
+      }
+    } catch (e) {
+      const message = `failed to process list ${url}`
+      console.debug(message, e)
+
+      if (isLast) throw new Error(message)
+
+      continue
     }
   }
 
   throw new Error('Unrecognized list URL protocol.')
+}
+
+async function sanitizeList(list: TokenList): Promise<TokenList> {
+  // Remove tokens from the list that don't have valid addresses
+  const tokens = list.tokens.filter(({ address }) => isAddress(address))
+
+  const cleanedList = { ...list, tokens }
+
+  // Validate the list
+  return validateTokenList(cleanedList)
 }

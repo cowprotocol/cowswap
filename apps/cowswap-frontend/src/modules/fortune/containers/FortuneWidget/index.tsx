@@ -3,14 +3,14 @@ import { useSetAtom } from 'jotai'
 import { useCallback, useMemo, useRef, useState } from 'react'
 
 import { openFortuneCookieAnalytics, shareFortuneTwitterAnalytics } from '@cowprotocol/analytics'
-import fortuneCookieImage from '@cowprotocol/assets/cow-swap/fortune-cookie.png'
 import twitterImage from '@cowprotocol/assets/cow-swap/twitter.svg'
-import { useInterval } from '@cowprotocol/common-hooks'
+import IMAGE_ICON_FORTUNE_COOKIE from '@cowprotocol/assets/images/icon-fortune-cookie.svg'
 import { addBodyClass, removeBodyClass } from '@cowprotocol/common-utils'
-import { ExternalLink } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
+import { ExternalLink, Media } from '@cowprotocol/ui'
+import { UI, Color } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
+import ReactDOM from 'react-dom'
 import { X } from 'react-feather'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
@@ -25,18 +25,14 @@ import {
   updateOpenFortuneAtom,
 } from 'modules/fortune/state/fortuneStateAtom'
 
-import { SuccessBanner } from 'pages/Claim/styled'
+import { SuccessBanner } from './styled'
 
 const FortuneButton = styled.div<{ isDailyFortuneChecked: boolean }>`
-  --size: 64px;
-  display: inline-block;
-  position: fixed;
-  z-index: 10;
-  right: 78px;
-  bottom: 30px;
+  --size: 32px;
+  display: flex;
+
   width: var(--size);
   height: var(--size);
-  border-radius: var(--size);
   text-align: center;
   animation: ${({ isDailyFortuneChecked }) =>
     isDailyFortuneChecked ? '' : 'floating 3.5s ease-in-out forwards infinite'};
@@ -44,47 +40,16 @@ const FortuneButton = styled.div<{ isDailyFortuneChecked: boolean }>`
   transform: scale(1);
   font-size: 40px;
   line-height: 0;
-  color: ${({ theme }) => theme.blue1};
+  color: inherit;
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    --size: 52px;
-    left: 65px;
-    right: initial;
-    bottom: 0;
-  `}
-
-  &::before {
-    content: '';
-    display: block;
-    height: 10px;
-    width: 10px;
-    background: transparent;
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    top: 0;
-    margin: auto;
-    box-shadow: 0px 0px 50px 30px ${({ theme }) => (theme.darkMode ? theme.blueDark2 : theme.blueLight1)};
-    z-index: -1;
-
-    ${({ theme }) => theme.mediaWidth.upToMedium`
-      box-shadow: none;
-    `}
+  &:hover {
+    color: ${Color.neutral100};
   }
 
-  &::after {
-    --size: 90%;
-    content: '';
+  > span {
     display: block;
-    background: url(${fortuneCookieImage}) no-repeat center 100% / contain;
-    width: var(--size);
-    height: var(--size);
-    transition: transform var(${UI.ANIMATION_DURATION}) ease-in-out;
-  }
-
-  &:hover::after {
-    transform: scale(1.4);
+    line-height: 1;
+    text-align: left;
   }
 
   @keyframes floating {
@@ -186,6 +151,11 @@ const FortuneTitle = styled.h2`
   font-weight: 700;
   color: inherit;
 
+  ${Media.upToMedium()} {
+    font-size: 16px;
+    margin: 16px auto 34px;
+  }
+
   > i {
     font-size: 16px;
     text-transform: uppercase;
@@ -206,13 +176,13 @@ const FortuneText = styled.h3`
   font-weight: 700;
   text-align: center;
   position: relative;
-  color: ${({ theme }) => (theme.darkMode ? theme.bg1 : `var(${UI.COLOR_TEXT})`)};
+  color: ${({ theme }) => (theme.darkMode ? theme.paper : `var(${UI.COLOR_TEXT})`)};
   background: ${({ theme }) => theme.white};
 
   // small device
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    font-size: 26px;
-  `}
+  ${Media.upToMedium()} {
+    font-size: 21px;
+  }
 
   &:before {
     content: '“';
@@ -264,6 +234,12 @@ const HeaderElement = styled.div`
   left: 0;
   height: 56px;
   z-index: 10;
+
+  ${Media.upToMedium()} {
+    height: 48px;
+    justify-content: center;
+    background: var(${UI.COLOR_PAPER_DARKEST});
+  }
 `
 
 const StyledCloseIcon = styled(X)`
@@ -274,9 +250,11 @@ const StyledCloseIcon = styled(X)`
   transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
   margin: 0 0 0 auto;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    --size: 42px;
-  `}
+  ${Media.upToSmall()} {
+    --size: 34px;
+    width: 100%;
+    margin: 0;
+  }
 
   &:hover {
     cursor: pointer;
@@ -288,7 +266,12 @@ const StyledCloseIcon = styled(X)`
   }
 `
 
-export function FortuneWidget() {
+interface FortuneWidgetProps {
+  menuTitle?: string
+  isMobileMenuOpen?: boolean
+}
+
+export function FortuneWidget({ menuTitle, isMobileMenuOpen }: FortuneWidgetProps) {
   const { openFortune } = useAtomValue(fortuneStateAtom)
   const lastCheckedFortune = useAtomValue(lastCheckedFortuneAtom)
   const updateOpenFortune = useSetAtom(updateOpenFortuneAtom)
@@ -296,10 +279,6 @@ export function FortuneWidget() {
   const openRandomFortune = useOpenRandomFortune()
   const [isNewFortuneOpen, setIsNewFortuneOpen] = useState(false)
   const [isFortunedShared, setIsFortunedShared] = useState(false)
-
-  const [today, setToday] = useState(new Date())
-  useInterval(() => setToday(new Date()), 2_000)
-
   const checkboxRef = useRef<HTMLInputElement>(null)
 
   // TODO: add text
@@ -311,23 +290,28 @@ export function FortuneWidget() {
     if (!lastCheckedFortune) return false
 
     const lastCheckedFortuneDate = new Date(lastCheckedFortune.checkTimestamp)
+    const today = new Date()
 
     return (
       lastCheckedFortuneDate.getUTCFullYear() === today.getUTCFullYear() &&
       lastCheckedFortuneDate.getUTCMonth() === today.getUTCMonth() &&
       lastCheckedFortuneDate.getUTCDate() === today.getUTCDate()
     )
-  }, [lastCheckedFortune, today])
+  }, [lastCheckedFortune])
 
   const closeModal = useCallback(() => {
     updateOpenFortune(null)
     setIsNewFortuneOpen(false)
-    removeBodyClass('noScroll')
+
+    // only remove body class if isMobileMenuOpen is false
+    if (!isMobileMenuOpen) {
+      removeBodyClass('noScroll')
+    }
 
     if (checkboxRef.current?.checked) {
       setIsFortunesFeatureDisabled(true)
     }
-  }, [updateOpenFortune, checkboxRef, setIsFortunesFeatureDisabled])
+  }, [updateOpenFortune, checkboxRef, setIsFortunesFeatureDisabled, isMobileMenuOpen])
 
   const openFortuneModal = useCallback(() => {
     setIsFortunedShared(false)
@@ -354,24 +338,18 @@ export function FortuneWidget() {
 
   if (isFortunesFeatureDisabled && isDailyFortuneChecked && !openFortune) return null
 
-  return (
+  const PortalContent = () => (
     <>
       {openFortune && (
         <FortuneBanner>
           <FortuneBannerInner>
             <HeaderElement>
-              <StyledCloseIcon onClick={closeModal}>Close</StyledCloseIcon>
+              <StyledCloseIcon onClick={closeModal} />
             </HeaderElement>
             <FortuneTitle>
-              {isNewFortuneOpen ? (
-                <>
-                  CoW Fortune <i>of the day</i>
-                </>
-              ) : (
-                <>
-                  Already seen today's fortune? <br /> Return tomorrow for a fresh one!
-                </>
-              )}
+              {isNewFortuneOpen
+                ? 'CoW Fortune of the day'
+                : "Already seen today's fortune? Return tomorrow for a fresh one!"}
             </FortuneTitle>
             <FortuneContent>
               <FortuneText>{openFortune.text}</FortuneText>
@@ -381,16 +359,13 @@ export function FortuneWidget() {
                   href={`https://twitter.com/intent/tweet?text=${twitterText}`}
                 >
                   <SuccessBanner type={'Twitter'}>
-                    <span>
-                      <Trans>Share on Twitter</Trans>
-                    </span>
+                    <Trans>Share on Twitter</Trans>
                     <SVG src={twitterImage} description="Twitter" />
                   </SuccessBanner>
                 </StyledExternalLink>
                 {!isNewFortuneOpen && !isFortunedShared && (
                   <DontShowAgainBox>
                     <label>
-                      {/*// TODO: tooltip with explanation*/}
                       <input type="checkbox" ref={checkboxRef} />
                       <span>Hide today's fortune cookie</span>
                     </label>
@@ -401,8 +376,17 @@ export function FortuneWidget() {
           </FortuneBannerInner>
         </FortuneBanner>
       )}
-      <FortuneButton isDailyFortuneChecked={isDailyFortuneChecked} onClick={openFortuneModal}></FortuneButton>
       <Confetti start={isNewFortuneOpen} />
+    </>
+  )
+
+  return (
+    <>
+      <FortuneButton isDailyFortuneChecked={isDailyFortuneChecked} onClick={openFortuneModal}>
+        <SVG src={IMAGE_ICON_FORTUNE_COOKIE} description="Fortune Cookie" />
+        {menuTitle && <span>{menuTitle}</span>}
+      </FortuneButton>
+      {ReactDOM.createPortal(<PortalContent />, document.body)}
     </>
   )
 }

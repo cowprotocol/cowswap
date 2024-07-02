@@ -1,50 +1,29 @@
 // Custom
-import _GPv2SettlementAbi from './abis/GPv2Settlement.json'
+import _ethFlowBarnJson from '@cowprotocol/ethflowcontract/networks.barn.json'
+import _ethFlowProdJson from '@cowprotocol/ethflowcontract/networks.prod.json'
+import { Interface } from '@ethersproject/abi'
 
 import _ComposableCoWAbi from './abis/ComposableCoW.json'
-
-import _vCowAbi from './abis/vCow.json'
-
-import _SignatureVerifierMuxerAbi from './abis/SignatureVerifierMuxer.json'
-
-import _MerkleDropAbi from './abis/MerkleDrop.json'
-
-import _TokenDistroAbi from './abis/TokenDistro.json'
-
 import _CoWSwapEthFlowAbi from './abis/CoWSwapEthFlow.json'
-
+import _GPv2SettlementAbi from './abis/GPv2Settlement.json'
+import _MerkleDropAbi from './abis/MerkleDrop.json'
+import _Multicall3Abi from './abis/Multicall3.json'
 import _SBCDepositContractAbi from './abis/SBCDepositContract.json'
-
-import _ethFlowBarnJson from '@cowprotocol/ethflowcontract/networks.barn.json'
-
-import _ethFlowProdJson from '@cowprotocol/ethflowcontract/networks.prod.json'
-
-// Legacy ABIs
+import _SignatureVerifierMuxerAbi from './abis/SignatureVerifierMuxer.json'
+import _TokenDistroAbi from './abis/TokenDistro.json'
+import _vCowAbi from './abis/vCow.json'
 import _ArgentWalletContractAbi from './abis-legacy/argent-wallet-contract.json'
-
 import _ArgentWalletDetectorAbi from './abis-legacy/argent-wallet-detector.json'
-
 import _Eip2612Abi from './abis-legacy/eip_2612.json'
-
 import _EnsPublicResolverAbi from './abis-legacy/ens-public-resolver.json'
-
 import _EnsAbi from './abis-legacy/ens-registrar.json'
-
 import _Erc1155Abi from './abis-legacy/erc1155.json'
-
 import _Erc20Abi from './abis-legacy/erc20.json'
-
 import _Erc20Bytes32Abi from './abis-legacy/erc20_bytes32.json'
-
 import _Erc721Abi from './abis-legacy/erc721.json'
-
+import _UniswapInterfaceMulticallAbi from './abis-legacy/UniswapInterfaceMulticall.json'
 import _WethAbi from './abis-legacy/weth.json'
 
-import _UniswapInterfaceMulticallAbi from './abis-legacy/UniswapInterfaceMulticall.json'
-
-import _Multicall3Abi from './abis/Multicall3.json'
-
-import { Interface } from '@ethersproject/abi'
 import type { Erc20Interface } from './generated/legacy/Erc20'
 
 export const GPv2SettlementAbi = _GPv2SettlementAbi
@@ -68,7 +47,7 @@ export type {
   Erc721,
   Erc1155,
   Weth,
-  UniswapInterfaceMulticall,
+  UniswapInterfaceMulticall
 } from './generated/legacy'
 
 export type { Erc20Interface } from './generated/legacy/Erc20'

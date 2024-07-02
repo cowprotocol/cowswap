@@ -1,6 +1,6 @@
-import { isOrderInPendingTooLong, triggerAppziSurvey } from '@cowprotocol/common-utils'
 import { UiOrderType } from '@cowprotocol/types'
 
+import { isOrderInPendingTooLong, triggerAppziSurvey } from 'appzi'
 import { AnyAction, Dispatch, MiddlewareAPI } from 'redux'
 import { instance, mock, resetCalls, when } from 'ts-mockito'
 
@@ -11,7 +11,7 @@ import { appziMiddleware } from './appziMiddleware'
 import { AppState } from '../../index'
 import { getOrderByIdFromState } from '../helpers'
 
-jest.mock('@cowprotocol/common-utils')
+jest.mock('appzi')
 jest.mock('../helpers', () => {
   return {
     ...jest.requireActual('../helpers'),
@@ -55,7 +55,7 @@ describe('appziMiddleware', () => {
 
   describe('batch fulfill', () => {
     beforeEach(() => {
-      when(actionMock.payload).thenReturn({ chainId: 1, ordersData: [BASE_ORDER.order] })
+      when(actionMock.payload).thenReturn({ chainId: 1, orders: [BASE_ORDER.order] })
       when(actionMock.type).thenReturn('order/fullfillOrdersBatch')
       getUiOrderTypeMock.mockReturnValue(UiOrderType.SWAP)
       getOrderByOrderIdFromStateMock.mockReturnValue(BASE_ORDER as any)

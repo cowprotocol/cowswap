@@ -1,9 +1,9 @@
-import { ReactComponent as DropDown } from '@cowprotocol/assets/images/dropdown.svg'
-import { UI } from '@cowprotocol/ui'
+import DropDown from '@cowprotocol/assets/images/dropdown.svg?react'
+import { Media, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-export const ArrowDown = styled(DropDown)<{ $stubbed?: boolean }>`
+export const ArrowDown = styled((props) => <DropDown {...props} />)<{ $stubbed?: boolean }>`
   margin: 0 3px;
   width: 12px;
   height: 7px;
@@ -16,16 +16,16 @@ export const ArrowDown = styled(DropDown)<{ $stubbed?: boolean }>`
     transition: stroke var(${UI.ANIMATION_DURATION}) ease-in-out;
   }
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     margin-left: auto;
-  `};
+  }
 `
 
 export const CurrencySelectWrapper = styled.button<{ isLoading: boolean; $stubbed: boolean; readonlyMode: boolean }>`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  cursor: pointer;
+  cursor: ${({ readonlyMode }) => (readonlyMode ? '' : 'pointer')};
   gap: 6px;
   border: 0;
   outline: none;
@@ -33,7 +33,6 @@ export const CurrencySelectWrapper = styled.button<{ isLoading: boolean; $stubbe
   color: ${({ $stubbed }) => ($stubbed ? `var(${UI.COLOR_BUTTON_TEXT})` : `var(${UI.COLOR_TEXT_PAPER})`)};
   box-shadow: var(${UI.BOX_SHADOW_2});
   opacity: ${({ isLoading }) => (isLoading ? 0.6 : 1)};
-  pointer-events: ${({ readonlyMode }) => (readonlyMode ? 'none' : '')};
   border-radius: var(${UI.BORDER_RADIUS_NORMAL});
   padding: 6px;
   ${({ readonlyMode }) => (readonlyMode ? 'padding-right: 10px;' : '')}
@@ -41,14 +40,10 @@ export const CurrencySelectWrapper = styled.button<{ isLoading: boolean; $stubbe
   max-width: 190px;
 
   &:hover {
-    // TODO: Check what 'readonlyMode' does and proper style it.
-    color: ${({ $stubbed }) => ($stubbed ? `var(${UI.COLOR_BUTTON_TEXT})` : `var(${UI.COLOR_BUTTON_TEXT})`)};
+    color: ${({ $stubbed, readonlyMode }) =>
+      readonlyMode ? '' : $stubbed ? `var(${UI.COLOR_BUTTON_TEXT})` : `var(${UI.COLOR_BUTTON_TEXT})`};
     background: ${({ readonlyMode, $stubbed }) =>
-      readonlyMode
-        ? `var(${UI.COLOR_DANGER});`
-        : $stubbed
-        ? `var(${UI.COLOR_PRIMARY_LIGHTER});`
-        : `var(${UI.COLOR_PRIMARY});`};
+      readonlyMode ? '' : $stubbed ? `var(${UI.COLOR_PRIMARY_LIGHTER});` : `var(${UI.COLOR_PRIMARY});`};
   }
 
   &:hover ${ArrowDown} > path {
@@ -64,10 +59,10 @@ export const CurrencySymbol = styled.div<{ $stubbed: boolean }>`
   color: inherit;
   transition: color var(${UI.ANIMATION_DURATION}) ease-in-out;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     font-size: 16px;
     word-break: break-word;
     white-space: normal;
     text-align: left;
-  `};
+  }
 `

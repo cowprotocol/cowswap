@@ -1,16 +1,14 @@
-// Util functions that only pertain to/deal with operator API related stuff
-import BigNumber from 'bignumber.js'
-
-import { calculatePrice, invertPrice, TokenErc20 } from '@gnosis.pm/dex-js'
+import { isSellOrder } from '@cowprotocol/common-utils'
 import { Trade as TradeMetaData } from '@cowprotocol/cow-sdk'
 
-import { FILLED_ORDER_EPSILON, ONE_BIG_NUMBER, ZERO_BIG_NUMBER } from 'const'
+import { calculatePrice, invertPrice, TokenErc20 } from '@gnosis.pm/dex-js'
+import BigNumber from 'bignumber.js'
+import { ZERO_BIG_NUMBER } from 'const'
+import { formatSmartMaxPrecision, formattingAmountPrecision } from 'utils'
 
 import { Order, OrderStatus, RawOrder, Trade } from 'api/operator/types'
 
-import { formatSmartMaxPrecision, formattingAmountPrecision } from 'utils'
 import { PENDING_ORDERS_BUFFER } from '../explorer/const'
-import { isSellOrder } from '@cowprotocol/common-utils'
 
 function isOrderFilled(order: RawOrder): boolean {
   const { kind, executedBuyAmount, sellAmount, executedSellAmount, buyAmount, executedFeeAmount } = order
@@ -24,9 +22,7 @@ function isOrderFilled(order: RawOrder): boolean {
     executedAmount = new BigNumber(executedBuyAmount)
   }
 
-  const minimumAmount = amount.multipliedBy(ONE_BIG_NUMBER.minus(FILLED_ORDER_EPSILON))
-
-  return executedAmount.gte(minimumAmount)
+  return executedAmount.gte(amount)
 }
 
 function isOrderExpired(order: RawOrder): boolean {
@@ -98,7 +94,7 @@ export function getOrderFilledAmount(order: RawOrder): { amount: BigNumber; perc
     totalAmount = new BigNumber(buyAmount)
   }
 
-  return { amount: executedAmount, percentage: executedAmount.div(totalAmount) }
+  return { amount: executedAmount, percentage: new BigNumber(executedAmount.toFixed() / totalAmount.toFixed()) }
 }
 
 export type Surplus = {
@@ -328,10 +324,6 @@ export function getOrderExecutedPrice({
   })
 }
 
-export function getShortOrderId(orderId: string, length = 8): string {
-  return orderId.replace(/^0x/, '').slice(0, length)
-}
-
 function isZeroAddress(address: string): boolean {
   return /^0x0{40}$/.test(address)
 }
@@ -385,7 +377,6 @@ export function transformOrder(rawOrder: RawOrder): Order {
     ...rest
   } = rawOrder
   const receiver = getReceiverAddress(rawOrder)
-  const shortId = getShortOrderId(rawOrder.uid)
   const { executedBuyAmount, executedSellAmount } = getOrderExecutedAmounts(rawOrder)
   const status = getOrderStatus(rawOrder)
   const partiallyFilled = isOrderPartiallyFilled(rawOrder)
@@ -396,7 +387,6 @@ export function transformOrder(rawOrder: RawOrder): Order {
   return {
     ...rest,
     receiver,
-    shortId,
     creationDate: new Date(creationDate),
     expirationDate: new Date(validTo * 1000),
     buyTokenAddress: buyToken,

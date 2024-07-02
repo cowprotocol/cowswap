@@ -4,17 +4,16 @@ import {
   reportAppDataWithHooks,
   reportPermitWithDefaultSigner,
 } from '@cowprotocol/common-utils'
-import { CowEvents } from '@cowprotocol/events'
 import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
+import { UiOrderType } from '@cowprotocol/types'
 import { Percent } from '@uniswap/sdk-core'
-
-import { EVENT_EMITTER } from 'eventEmitter'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
 import { signAndPostOrder } from 'legacy/utils/trade'
 
 import { updateHooksOnAppData } from 'modules/appData'
+import { emitPostedOrderEvent } from 'modules/orders'
 import { appDataContainsHooks } from 'modules/permit/utils/appDataContainsHooks'
 import { appDataContainsPermitSigner } from 'modules/permit/utils/appDataContainsPermitSigner'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
@@ -60,12 +59,13 @@ export async function swapFlow(
       tradeConfirmActions.requestPermitSignature(tradeAmounts)
     }
 
-    const { appData, /*account,*/ isSafeWallet } = orderParams
+    const { appData, /*account,*/ isSafeWallet/*, recipientAddressOrName, inputAmount, outputAmount, kind*/ } = orderParams
+
     orderParams.appData = appData
 
     // FIXME: Uncomment "handlePermit" and fix. It removes the hooks because assumes permit are the only hooks we have in the order, which is not true. The permit logic needs a revisit now that we have a permit module
     console.log('appData', appData)
-    // await handlePermit({
+    // orderParams.appData = await handlePermit({
     //   appData,
     //   account,
     //   inputToken: inputCurrency,
@@ -116,7 +116,16 @@ export async function swapFlow(
       ? Promise.resolve(null)
       : presignOrderStep(orderUid, input.contract))
 
-    EVENT_EMITTER.emit(CowEvents.ON_POSTED_ORDER, { orderUid, chainId })
+    emitPostedOrderEvent({
+      chainId,
+      id: orderUid,
+      kind,
+      receiver: recipientAddressOrName,
+      inputAmount,
+      outputAmount,
+      owner: account,
+      uiOrderType: UiOrderType.SWAP,
+    })
 
     logTradeFlow('SWAP FLOW', 'STEP 6: unhide SC order (optional)')
     if (presignTx) {

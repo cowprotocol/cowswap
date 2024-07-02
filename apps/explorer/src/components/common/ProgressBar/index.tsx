@@ -1,8 +1,11 @@
 import React from 'react'
-import styled from 'styled-components'
+
+import { PercentDisplay } from '@cowprotocol/ui/pure/PercentDisplay'
+
+import styled from 'styled-components/macro'
 
 export type Props = {
-  readonly percentage?: string
+  readonly percentage?: number
   readonly activeColor?: string
   readonly showLabel?: boolean
 }
@@ -20,7 +23,7 @@ const Wrapper = styled.div<Props>`
   }
 
   > div > span {
-    width: ${({ percentage }): string => percentage || '0'}%;
+    width: ${({ percentage }) => String(percentage || 0)}%;
     max-width: 100%;
     height: 100%;
     position: absolute;
@@ -37,14 +40,18 @@ const Wrapper = styled.div<Props>`
 `
 
 export function ProgressBar(props: Props): JSX.Element {
-  const { percentage = '0', showLabel = true } = props
+  const { percentage = 0, showLabel = true } = props
 
   return (
     <Wrapper {...props}>
       <div className="progress-line">
         <span></span>
       </div>
-      {showLabel && <b>{percentage}%</b>}
+      {showLabel && (
+        <b>
+          <PercentDisplay percent={percentage} />
+        </b>
+      )}
     </Wrapper>
   )
 }

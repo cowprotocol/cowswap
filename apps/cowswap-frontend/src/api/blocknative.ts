@@ -20,6 +20,8 @@ if (!BLOCKNATIVE_API_KEY) {
   })
 }
 
+const BLOCKNATIVE_ERRORS_TO_IGNORE = /WebSocket error/
+
 export const sdk = !BLOCKNATIVE_API_KEY
   ? {}
   : ALL_SUPPORTED_CHAIN_IDS.reduce<Record<number, BlocknativeSdk | null>>((acc, networkId) => {
@@ -34,12 +36,15 @@ export const sdk = !BLOCKNATIVE_API_KEY
           name: 'bnc_' + networkId,
           onerror: (sdkError: SDKError) => {
             console.log('[blocknative]', sdkError)
-            const { sentryError, tags } = constructSentryError(sdkError.error, { message: sdkError.message })
-            Sentry.captureException(sentryError, {
-              tags,
-              contexts: { params },
-              extra: { ...sdkError },
-            })
+
+            if (!BLOCKNATIVE_ERRORS_TO_IGNORE.test(sdkError.message)) {
+              const { sentryError, tags } = constructSentryError(sdkError.error, { message: sdkError.message })
+              Sentry.captureException(sentryError, {
+                tags,
+                contexts: { params },
+                extra: { ...sdkError },
+              })
+            }
           },
         })
       } catch (error: any) {
@@ -50,8 +55,6 @@ export const sdk = !BLOCKNATIVE_API_KEY
           contexts: { params },
         })
       }
-
-      console.info(`[blocknative] BlocknativeSdk initialized on chain ${networkId}`)
 
       return acc
     }, {})

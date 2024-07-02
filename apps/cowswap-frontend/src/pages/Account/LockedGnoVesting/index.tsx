@@ -1,8 +1,8 @@
-import { useCallback, useState, useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import { claimAnalytics } from '@cowprotocol/analytics'
 import ArrowIcon from '@cowprotocol/assets/cow-swap/arrow.svg'
-import cowImage from '@cowprotocol/assets/cow-swap/cow_v2.svg'
+import cowImage from '@cowprotocol/assets/cow-swap/cow_token.svg'
 import {
   LOCKED_GNO_VESTING_START_DATE,
   MERKLE_DROP_CONTRACT_ADDRESSES,
@@ -17,10 +17,9 @@ import {
 } from '@cowprotocol/common-utils'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
-import { ButtonSize, TokenAmount, ButtonPrimary } from '@cowprotocol/ui'
-import { MouseoverTooltipContent } from '@cowprotocol/ui'
+import { ButtonPrimary, ButtonSize, HoverTooltip, TokenAmount } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
 import SVG from 'react-inlinesvg'
@@ -29,7 +28,7 @@ import CopyHelper from 'legacy/components/Copy'
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
 
 import { HelpCircle } from 'common/pure/HelpCircle'
-import { Card, BalanceDisplay, ConvertWrapper, VestingBreakdown, CardActions, ExtLink } from 'pages/Account/styled'
+import { BalanceDisplay, Card, CardActions, ConvertWrapper, ExtLink, VestingBreakdown } from 'pages/Account/styled'
 
 import { useClaimCowFromLockedGnoCallback } from './hooks'
 
@@ -141,8 +140,8 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allo
             <i>COW vesting from locked GNO</i>
             <b>
               <TokenAmount amount={allocated} defaultValue="0" tokenSymbol={allocated.currency} />
-              <MouseoverTooltipContent
-                wrap
+              <HoverTooltip
+                wrapInContainer
                 content={
                   <VestingBreakdown>
                     <span>
@@ -161,7 +160,7 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allo
                 }
               >
                 <HelpCircle size={14} />
-              </MouseoverTooltipContent>
+              </HoverTooltip>
             </b>
           </span>
         </BalanceDisplay>
@@ -169,8 +168,8 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allo
           <BalanceDisplay titleSize={18} altColor={true}>
             <i>
               Claimable{' '}
-              <MouseoverTooltipContent
-                wrap
+              <HoverTooltip
+                wrapInContainer
                 content={
                   <div>
                     <p>
@@ -182,7 +181,7 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allo
                 }
               >
                 <HelpCircle size={14} />
-              </MouseoverTooltipContent>
+              </HoverTooltip>
             </i>
             <b>
               <TokenAmount amount={vested.subtract(claimed)} defaultValue="0" />

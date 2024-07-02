@@ -1,5 +1,5 @@
 import { Actions } from 'state'
-import { Theme } from 'theme'
+import { Theme } from 'theme/types'
 import { setStorageItem } from 'utils'
 
 export type ThemeState = Theme

@@ -1,7 +1,9 @@
 import React from 'react'
 
-import { Order } from 'api/operator'
 import { useMediaBreakpoint } from 'hooks/useMediaBreakPoint'
+
+import { Order } from 'api/operator'
+
 import { OrderSurplusTooltipDisplay } from '../OrderSurplusDisplay'
 
 type Props = React.HTMLAttributes<HTMLSpanElement> & {

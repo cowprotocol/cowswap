@@ -2,19 +2,20 @@ import { ExplorerDataType, getExplorerLink, isSellOrder, shortenAddress } from '
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
 import {
-  UI,
-  Icon,
-  IconType,
-  ExternalLink,
-  InlineBanner,
-  ButtonSecondary,
   BannerOrientation,
   CustomRecipientWarningBanner,
+  ExternalLink,
+  Icon,
+  IconType,
+  InlineBanner,
+  UI,
 } from '@cowprotocol/ui'
 import { CurrencyAmount, Fraction, Token } from '@uniswap/sdk-core'
 
+import { CloseIcon } from 'theme'
+
 import { OrderStatus } from 'legacy/state/orders/actions'
-import { CloseIcon } from 'legacy/theme'
+import { getOrderVolumeFee } from 'legacy/state/orders/utils'
 
 import { TwapOrderItem } from 'modules/twap/types'
 
@@ -40,6 +41,8 @@ import { StatusField } from './StatusField'
 import * as styledEl from './styled'
 import { SurplusField } from './SurplusField'
 
+import { AlternativeOrderModalContext } from '../../containers/OrdersReceiptModal/hooks'
+
 interface ReceiptProps {
   isOpen: boolean
   order: ParsedOrder
@@ -53,16 +56,16 @@ interface ReceiptProps {
   limitPrice: Fraction | null
   executionPrice: Fraction | null
   estimatedExecutionPrice: Fraction | null
-  showRecreateModal: Command | null
+  alternativeOrderModalContext: AlternativeOrderModalContext
 }
 
 const FILLED_COMMON_TOOLTIP = 'How much of the order has been filled.'
 
 const tooltips: { [key: string]: string | JSX.Element } = {
   LIMIT_PRICE: 'You will receive this price or better for your tokens.',
-  EXECUTION_PRICE: 'An order’s actual execution price will vary based on the market price and network fees.',
+  EXECUTION_PRICE: 'An order’s actual execution price will vary based on the market price and network costs.',
   EXECUTES_AT:
-    'Fees (incl. gas) are covered by filling your order when the market price is better than your limit price.',
+    'Network costs (incl. gas) are covered by filling your order when the market price is better than your limit price.',
   FILLED_TWAP: FILLED_COMMON_TOOLTIP,
   FILLED: (
     <span>
@@ -73,11 +76,13 @@ const tooltips: { [key: string]: string | JSX.Element } = {
     </span>
   ),
   SURPLUS: 'The amount of extra tokens you get on top of your limit price.',
-  FEE: 'CoW Protocol covers the fees by executing your order at a slightly better price than your limit price.',
+  NETWORK_COSTS:
+    'CoW Protocol covers the costs by executing your order at a slightly better price than your limit price.',
   CREATED: 'Your order was created on this date & time. It will remain open until it expires or is filled.',
   RECEIVER: 'The account address which will/did receive the bought amount.',
   EXPIRY:
     "If your order has not been filled by this date & time, it will expire. Don't worry - expirations and order placement are free on CoW Swap!",
+  TOTAL_FEE: 'This fee helps pay for maintenance & improvements to the trade experience',
   ORDER_TYPE: (
     <span>
       Orders on CoW Swap can either be market orders (which fill at the market price within the slippage tolerance you
@@ -105,7 +110,7 @@ export function ReceiptModal({
   executionPrice,
   estimatedExecutionPrice,
   receiverEnsName,
-  showRecreateModal,
+  alternativeOrderModalContext,
 }: ReceiptProps) {
   // Check if Custom Recipient Warning Banner should be visible
   const isCustomRecipientWarningBannerVisible = !useIsReceiverWalletBannerHidden(order.id)
@@ -127,16 +132,20 @@ export function ReceiptModal({
   const outputLabel = isSell ? 'You receive at least' : 'You receive exactly'
   const safeTxParams = twapOrder?.safeTxParams
 
+  const volumeFee = getOrderVolumeFee(order.fullAppData)
+
   return (
     <CowModal onDismiss={onDismiss} isOpen={isOpen}>
       <styledEl.Wrapper>
         <styledEl.Header>
-          <styledEl.Title>Order Receipt</styledEl.Title>
-          {showRecreateModal && (
-            <ButtonSecondary variant={'light'} margin={'0 auto 0 10px'} minHeight={'28px'} onClick={showRecreateModal}>
-              Recreate this order
-            </ButtonSecondary>
-          )}
+          <div>
+            <styledEl.Title>Order Receipt</styledEl.Title>
+            {alternativeOrderModalContext && (
+              <styledEl.LightButton onClick={alternativeOrderModalContext.showAlternativeOrderModal}>
+                {alternativeOrderModalContext.isEdit ? 'Edit' : 'Recreate'} this order
+              </styledEl.LightButton>
+            )}
+          </div>
           <CloseIcon onClick={() => onDismiss()} />
         </styledEl.Header>
 
@@ -186,7 +195,7 @@ export function ReceiptModal({
             )}
 
             <styledEl.Field>
-              <FieldLabel label="Limit price" tooltip={tooltips.LIMIT_PRICE} />
+              <FieldLabel label="Limit price (incl.costs)" tooltip={tooltips.LIMIT_PRICE} />
               <PriceField order={order} price={limitPrice} />
             </styledEl.Field>
 
@@ -209,6 +218,13 @@ export function ReceiptModal({
               </styledEl.Field>
             )}
 
+            {volumeFee && (
+              <styledEl.Field>
+                <FieldLabel label="Total fee" tooltip={tooltips.TOTAL_FEE} />
+                <span>{(volumeFee.bps / 100).toFixed(2)}%</span>
+              </styledEl.Field>
+            )}
+
             <styledEl.Field>
               <FieldLabel label="Filled" tooltip={twapOrder ? tooltips.FILLED_TWAP : tooltips.FILLED} />
               <FilledField order={order} />
@@ -224,7 +240,7 @@ export function ReceiptModal({
             {(!twapOrder || isTwapPartOrder) && (
               <>
                 <styledEl.Field>
-                  <FieldLabel label="Fee" tooltip={tooltips.FEE} />
+                  <FieldLabel label="Network costs" tooltip={tooltips.NETWORK_COSTS} />
                   <FeeField order={order} />
                 </styledEl.Field>
               </>

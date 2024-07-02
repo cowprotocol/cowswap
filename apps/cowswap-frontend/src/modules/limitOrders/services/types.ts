@@ -7,6 +7,7 @@ import { AppDispatch } from 'legacy/state'
 import { PostOrderParams } from 'legacy/utils/trade'
 
 import { GeneratePermitHook, IsTokenPermittableResult, useGetCachedPermit } from 'modules/permit'
+import type { TradeQuoteState } from 'modules/tradeQuote'
 
 export interface TradeFlowContext {
   // signer changes creates redundant re-renders
@@ -21,6 +22,7 @@ export interface TradeFlowContext {
   permitInfo: IsTokenPermittableResult
   generatePermitHook: GeneratePermitHook
   getCachedPermit: ReturnType<typeof useGetCachedPermit>
+  quoteState: TradeQuoteState
 }
 
 export interface SafeBundleFlowContext extends TradeFlowContext {

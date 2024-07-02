@@ -1,6 +1,8 @@
 import React from 'react'
-import styled from 'styled-components'
+
 import { TabItemInterface, TabTheme } from 'components/common/Tabs/Tabs'
+import styled from 'styled-components/macro'
+
 import { ButtonBase } from '../Button'
 
 interface TabProps extends Omit<TabItemInterface, 'content'> {

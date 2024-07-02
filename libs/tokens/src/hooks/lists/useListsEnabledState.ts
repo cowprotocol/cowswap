@@ -1,4 +1,5 @@
 import { useAtomValue } from 'jotai'
+
 import { listsEnabledStateAtom } from '../../state/tokenLists/tokenListsStateAtom'
 import { ListsEnabledState } from '../../types'
 

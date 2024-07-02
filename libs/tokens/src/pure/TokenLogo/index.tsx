@@ -4,12 +4,13 @@ import { useMemo } from 'react'
 import { cowprotocolTokenLogoUrl, NATIVE_CURRENCY_ADDRESS, TokenWithLogo } from '@cowprotocol/common-const'
 import { uriToHttp } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Media, UI } from '@cowprotocol/ui'
 import { Currency, NativeCurrency } from '@uniswap/sdk-core'
 
 import { Slash } from 'react-feather'
 import styled, { css } from 'styled-components/macro'
 
-import { UI } from '@cowprotocol/ui'
+import { SingleLetterLogo } from './SingleLetterLogo'
 
 import { getTokenLogoUrls } from '../../utils/getTokenLogoUrls'
 
@@ -32,8 +33,8 @@ export const TokenLogoWrapper = styled.div<{ size?: number; sizeMobile?: number 
     object-fit: contain;
   }
 
-  ${({ theme, sizeMobile }) => theme.mediaWidth.upToSmall`
-    ${
+  ${Media.upToSmall()} {
+    ${({ sizeMobile }) =>
       sizeMobile
         ? css`
             border-radius: ${sizeMobile}px;
@@ -45,9 +46,8 @@ export const TokenLogoWrapper = styled.div<{ size?: number; sizeMobile?: number 
               border-radius: ${sizeMobile}px;
             }
           `
-        : ''
-    }
-  `}
+        : ''}
+  }
 `
 
 export interface TokenLogoProps {
@@ -82,9 +82,17 @@ export function TokenLogo({ logoURI, token, className, size = 36, sizeMobile }: 
     setInvalidUrls((state) => ({ ...state, [currentUrl]: true }))
   }
 
+  const initial = token?.symbol?.[0] || token?.name?.[0]
+
   return (
     <TokenLogoWrapper className={className} size={size} sizeMobile={sizeMobile}>
-      {!currentUrl ? <Slash size={size} /> : <img alt="token logo" src={currentUrl} onError={onError} />}
+      {currentUrl ? (
+        <img alt="token logo" src={currentUrl} onError={onError} />
+      ) : initial ? (
+        <SingleLetterLogo initial={initial} />
+      ) : (
+        <Slash />
+      )}
     </TokenLogoWrapper>
   )
 }

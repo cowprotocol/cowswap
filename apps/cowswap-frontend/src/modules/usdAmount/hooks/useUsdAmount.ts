@@ -19,7 +19,7 @@ export function useUsdAmount(
   _amount: Nullish<CurrencyAmount<Currency>>,
   currency?: Nullish<TokenWithLogo>
 ): UsdAmountInfo {
-  const amount = useSafeMemo(() => currencyAmountToTokenAmount(_amount), [_amount])
+  const amount = useSafeMemo(() => (_amount ? currencyAmountToTokenAmount(_amount) : null), [_amount])
   const usdcPrice = useUsdPrice(amount?.currency || currency)
 
   return useSafeMemo(() => {

@@ -1,9 +1,7 @@
-import { UI } from '@cowprotocol/ui'
+import { HelpTooltip, Media, UI } from '@cowprotocol/ui'
 
 import { transparentize } from 'color2k'
 import styled from 'styled-components/macro'
-
-import QuestionHelper from 'legacy/components/QuestionHelper'
 
 import { RateWrapper } from 'common/pure/RateInfo'
 
@@ -44,7 +42,7 @@ export const WarningContent = styled.div`
   }
 `
 
-export const StyledQuestionHelper = styled(QuestionHelper)`
+export const StyledQuestionHelper = styled(HelpTooltip)`
   margin: 0;
 `
 
@@ -74,9 +72,9 @@ export const AmountItem = styled.div`
   gap: 6px;
   white-space: nowrap;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     white-space: normal;
-  `};
+  }
 
   > div {
     display: flex;
@@ -240,7 +238,7 @@ export const ToggleExpandButton = styled.div<{ isCollapsed?: boolean }>`
   width: 100%;
   height: 28px;
 
-  background: linear-gradient(90deg, transparent 0%, ${({ theme }) => transparentize(theme.bg1, 0.7)} 100%);
+  background: linear-gradient(90deg, transparent 0%, ${({ theme }) => transparentize(theme.paper, 0.7)} 100%);
   background-size: 200% 100%;
   background-position: 100% 0;
 
@@ -267,13 +265,13 @@ export const ToggleExpandButton = styled.div<{ isCollapsed?: boolean }>`
 
   @keyframes changeOpacity {
     0% {
-      background: linear-gradient(90deg, transparent 0%, ${({ theme }) => theme.bg1} 100%);
+      background: linear-gradient(90deg, transparent 0%, ${({ theme }) => theme.paper} 100%);
     }
     50% {
-      background: linear-gradient(90deg, transparent 0%, ${({ theme }) => transparentize(theme.bg1, 0.1)} 100%);
+      background: linear-gradient(90deg, transparent 0%, ${({ theme }) => transparentize(theme.paper, 0.1)} 100%);
     }
     100% {
-      background: linear-gradient(90deg, transparent 0%, ${({ theme }) => transparentize(theme.bg1, 0.5)} 100%);
+      background: linear-gradient(90deg, transparent 0%, ${({ theme }) => transparentize(theme.paper, 0.5)} 100%);
     }
   }
 

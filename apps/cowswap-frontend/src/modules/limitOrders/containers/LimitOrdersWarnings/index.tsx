@@ -9,6 +9,7 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import styled from 'styled-components/macro'
 import { Nullish } from 'types'
 
+import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
 import { useLimitOrdersFormState } from 'modules/limitOrders/hooks/useLimitOrdersFormState'
 import { useRateImpact } from 'modules/limitOrders/hooks/useRateImpact'
@@ -64,6 +65,7 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
     useLimitOrdersDerivedState()
   const tradeQuote = useTradeQuote()
   const priceImpactParams = useTradePriceImpact()
+  const { banners: widgetBanners } = useInjectedWidgetParams()
 
   const isBundling = primaryFormValidation && FORM_STATES_TO_SHOW_BUNDLE_BANNER.includes(primaryFormValidation)
 
@@ -86,7 +88,8 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
     !isConfirmScreen &&
     !showApprovalBundlingBanner &&
     isSafeViaWc &&
-    primaryFormValidation === TradeFormValidation.ApproveRequired
+    primaryFormValidation === TradeFormValidation.ApproveRequired &&
+    !widgetBanners?.hideSafeWebAppBanner
 
   // TODO: implement Safe App EthFlow bundling for LIMIT and disable the warning in that case
   const showNativeSellWarning = primaryFormValidation === TradeFormValidation.SellNativeToken

@@ -1,7 +1,8 @@
 import { useCallback } from 'react'
+
 import { useNavigate } from 'react-router-dom'
-import { isAnAddressAccount, isAnOrderId, isEns, isATxHash } from 'utils'
 import { usePathPrefix } from 'state/network'
+import { isAnAddressAccount, isAnOrderId, isEns, isATxHash } from 'utils'
 
 export function pathAccordingTo(query: string): string {
   let path = 'search'

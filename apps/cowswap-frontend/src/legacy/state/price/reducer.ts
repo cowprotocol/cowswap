@@ -1,30 +1,25 @@
 import { isSellOrder } from '@cowprotocol/common-utils'
-import { OrderKind, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { OrderKind, OrderQuoteResponse, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 
 import { createReducer, current, PayloadAction } from '@reduxjs/toolkit'
-import { FeeInformation, PriceInformation } from 'types'
+import { FeeInformation, PriceInformation, Writable } from 'types'
+
+import QuoteApiError from 'api/cowProtocol/errors/QuoteError'
 
 import { getNewQuote, QuoteError, refreshQuote, setQuoteError, updateQuote } from './actions'
 import { LegacyFeeQuoteParams } from './types'
 
 import { PrefillStateRequired } from '../orders/reducer'
 
-// API Doc: https://protocol-rinkeby.dev.gnosisdev.com/api
-
-type Writable<T> = {
-  -readonly [K in keyof T]: T[K]
-}
-
-export const EMPTY_FEE = {
-  feeAsCurrency: undefined,
-  amount: '0',
-}
-
 export interface QuoteInformationObject extends LegacyFeeQuoteParams {
   fee?: FeeInformation
   price?: PriceInformation
   error?: QuoteError
+  originalError?: QuoteApiError
+  response?: OrderQuoteResponse
   lastCheck: number
+  localQuoteTimestamp?: number
+  quoteValidTo?: number
 }
 
 // Map token addresses to their last quote information
@@ -139,7 +134,11 @@ export default createReducer(initialState, (builder) =>
       const shouldUpdate = !(!isBestQuote && hasPrice)
 
       if (quoteInformation && shouldUpdate) {
-        quotes[chainId][sellToken] = { ...quoteInformation, ...payload }
+        quotes[chainId][sellToken] = {
+          ...quoteInformation,
+          ...payload,
+          localQuoteTimestamp: Math.ceil(Date.now() / 1000),
+        }
       }
 
       // Stop the loader

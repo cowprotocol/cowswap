@@ -1,5 +1,5 @@
-import { Network } from 'types'
 import { Actions } from 'state'
+import { Network } from 'types'
 
 export type ActionTypes = 'SET_NETWORK'
 

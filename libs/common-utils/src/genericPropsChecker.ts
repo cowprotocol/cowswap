@@ -5,7 +5,7 @@ const JSX_ELEMENT_TYPE = '$$typeof'
  * The function compares previous and next props by values using JSON.stringify. It returns true when props are equal and vice versa
  */
 export function genericPropsChecker(prev: any, next: any): boolean {
-  if (typeof prev === 'object' && prev !== null) {
+  if (typeof prev === 'object' && next !== null && prev !== null) {
     const prevKeys = Object.keys(prev)
     const nextKeys = Object.keys(next)
 

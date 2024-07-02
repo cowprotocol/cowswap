@@ -1,8 +1,8 @@
 import { TokenWithLogo } from '@cowprotocol/common-const'
+import { isTruthy } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { TokenSearchFromApiResult } from '../services/searchTokensInApi'
-import { isTruthy } from '@cowprotocol/common-utils'
 
 export function parseTokensFromApi(apiResult: TokenSearchFromApiResult[], chainId: SupportedChainId): TokenWithLogo[] {
   return apiResult

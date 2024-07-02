@@ -1,11 +1,14 @@
-import { GetTxOrdersParams } from 'api/operator/types'
 import {
   GetOrderApi,
   MultipleOrders,
   tryGetOrderOnAllNetworksAndEnvironments,
 } from 'services/helpers/tryGetOrderOnAllNetworks'
-import { RAW_ORDER } from '../data'
 import { Network } from 'types'
+
+import { GetTxOrdersParams } from 'api/operator/types'
+
+import { RAW_ORDER } from '../data'
+
 
 const networkIdSearchListRemaining = [Network.MAINNET, Network.SEPOLIA]
 

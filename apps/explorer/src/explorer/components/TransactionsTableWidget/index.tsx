@@ -1,22 +1,24 @@
 import React, { useCallback, useEffect, useState } from 'react'
+
 import { faListUl, faProjectDiagram } from '@fortawesome/free-solid-svg-icons'
 
-import { useQuery, useUpdateQueryString } from '../../../hooks/useQuery'
 import { BlockchainNetwork, TransactionsTableContext } from './context/TransactionsTableContext'
-import { useGetTxOrders, useTxOrderExplorerLink } from '../../../hooks/useGetOrders'
-import RedirectToSearch from '../../../components/RedirectToSearch'
-import { RedirectToNetwork, useNetworkId } from '../../../state/network'
-import { Order } from '../../../api/operator'
 import { TransactionsTableWithData } from './TransactionsTableWithData'
-import { TabIcon, TabItemInterface } from '../../../components/common/Tabs/Tabs'
-import ExplorerTabs from '../common/ExplorerTabs/ExplorerTabs'
-import { FlexContainer, Title, TitleAddress } from '../../pages/styled'
+
+import { Order } from '../../../api/operator'
 import { BlockExplorerLink } from '../../../components/common/BlockExplorerLink'
+import CowLoading from '../../../components/common/CowLoading'
+import { TabIcon, TabItemInterface } from '../../../components/common/Tabs/Tabs'
 import { ConnectionStatus } from '../../../components/ConnectionStatus'
 import { Notification } from '../../../components/Notification'
-import { TransactionBatchGraph } from '../TransanctionBatchGraph'
-import CowLoading from '../../../components/common/CowLoading'
+import RedirectToSearch from '../../../components/RedirectToSearch'
+import { useGetTxOrders, useTxOrderExplorerLink } from '../../../hooks/useGetOrders'
+import { useQuery, useUpdateQueryString } from '../../../hooks/useQuery'
+import { RedirectToNetwork, useNetworkId } from '../../../state/network'
 import { TAB_QUERY_PARAM_KEY } from '../../const'
+import { FlexContainer, Title, TitleAddress } from '../../pages/styled'
+import ExplorerTabs from '../common/ExplorerTabs/ExplorerTabs'
+import { TransactionBatchGraph } from '../TransanctionBatchGraph'
 
 interface Props {
   txHash: string
@@ -31,9 +33,9 @@ enum TabView {
 
 const DEFAULT_TAB = TabView[1]
 
-function useQueryViewParams(): { tab: string } {
+function useQueryViewParams(): string {
   const query = useQuery()
-  return { tab: query.get(TAB_QUERY_PARAM_KEY)?.toUpperCase() || DEFAULT_TAB } // if URL param empty will be used DEFAULT
+  return query.get(TAB_QUERY_PARAM_KEY)?.toUpperCase() || DEFAULT_TAB  // if URL param empty will be used DEFAULT
 }
 
 const tabItems = (orders: Order[] | undefined, networkId: BlockchainNetwork, txHash: string): TabItemInterface[] => {
@@ -55,7 +57,7 @@ export const TransactionsTableWidget: React.FC<Props> = ({ txHash }) => {
   const { orders, isLoading: isTxLoading, errorTxPresentInNetworkId, error } = useGetTxOrders(txHash)
   const networkId = useNetworkId() || undefined
   const [redirectTo, setRedirectTo] = useState(false)
-  const { tab } = useQueryViewParams()
+  const tab = useQueryViewParams()
   const [tabViewSelected, setTabViewSelected] = useState<TabView>(TabView[tab] || TabView[DEFAULT_TAB]) // use DEFAULT when URL param is outside the enum
   const txHashParams = { networkId, txHash }
   const isZeroOrders = !!(orders && orders.length === 0)
@@ -103,7 +105,7 @@ export const TransactionsTableWidget: React.FC<Props> = ({ txHash }) => {
         <Title>Transaction details</Title>
         <TitleAddress
           textToCopy={txHash}
-          contentsToDisplay={<BlockExplorerLink type="tx" networkId={networkId} identifier={txHash} showLogo />}
+          contentsToDisplay={<BlockExplorerLink type="transaction" networkId={networkId} identifier={txHash} showLogo />}
         />
       </FlexContainer>
       <ConnectionStatus />

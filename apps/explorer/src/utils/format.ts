@@ -1,17 +1,18 @@
-import BigNumber from 'bignumber.js'
 import { parseBytes32String } from '@ethersproject/strings'
-import { arrayify } from 'ethers/lib/utils'
+
 
 import { formatSmart, safeTokenName, TokenErc20 } from '@gnosis.pm/dex-js'
-
+import BigNumber from 'bignumber.js'
 import { DEFAULT_DECIMALS, MINIMUM_ATOM_VALUE, ONE_BIG_NUMBER, ONE_HUNDRED_BIG_NUMBER, TEN_BIG_NUMBER } from 'const'
+import { arrayify } from 'ethers/lib/utils'
+import { FormatAmountPrecision } from 'utils'
+
 import {
   HIGH_PRECISION_DECIMALS,
   HIGH_PRECISION_SMALL_LIMIT,
   MIDDLE_PRECISION_DECIMALS,
   NO_ADJUSTMENT_NEEDED_PRECISION,
 } from '../explorer/const'
-import { FormatAmountPrecision } from 'utils'
 
 export {
   formatSmart,

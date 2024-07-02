@@ -1,4 +1,4 @@
-import { UI } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
@@ -32,11 +32,11 @@ const Wrapper = styled.div<{ longList?: boolean }>`
   width: 100%;
   padding: 38px 0 0;
 
-  ${({ theme, longList }) => theme.mediaWidth[longList ? 'upToMedium' : 'upToSmall']`
+  ${({ longList }) => (longList ? Media.upToMedium : Media.upToSmall)()} {
     padding: 0;
     margin: 0;
     position: relative;
-  `}
+  }
 
   > div {
     height: 90vh;
@@ -44,9 +44,9 @@ const Wrapper = styled.div<{ longList?: boolean }>`
     margin-right: 5px;
     ${({ theme }) => theme.colorScrollbar};
 
-    ${({ theme, longList }) => theme.mediaWidth[longList ? 'upToMedium' : 'upToSmall']`
+    ${({ longList }) => (longList ? Media.upToMedium : Media.upToSmall)()} {
       height: auto;
-    `}
+    }
   }
 
   > div > ul {
@@ -57,12 +57,12 @@ const Wrapper = styled.div<{ longList?: boolean }>`
     padding: 0;
     font-size: inherit;
 
-    ${({ theme, longList }) => theme.mediaWidth[longList ? 'upToMedium' : 'upToSmall']`
-    background: var(${UI.COLOR_TEXT_OPACITY_10});
-    border-radius: 16px;
-    padding: 12px;
-    margin: 0 0 24px;
-    `}
+    ${({ longList }) => (longList ? Media.upToMedium : Media.upToSmall)()} {
+      background: var(${UI.COLOR_TEXT_OPACITY_10});
+      border-radius: 16px;
+      padding: 12px;
+      margin: 0 0 24px;
+    }
 
     > li {
       width: 100%;
@@ -78,9 +78,9 @@ const Wrapper = styled.div<{ longList?: boolean }>`
         transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
         display: block;
 
-        ${({ theme, longList }) => theme.mediaWidth[longList ? 'upToMedium' : 'upToSmall']`
+        ${({ longList }) => (longList ? Media.upToMedium : Media.upToSmall)()} {
           margin: 0;
-        `}
+        }
 
         &:hover,
         &.active {
@@ -90,10 +90,10 @@ const Wrapper = styled.div<{ longList?: boolean }>`
         &.active {
           font-weight: 600;
 
-          ${({ theme, longList }) => theme.mediaWidth[longList ? 'upToMedium' : 'upToSmall']`
+          ${({ longList }) => (longList ? Media.upToMedium : Media.upToSmall)()} {
             background: var(${UI.COLOR_TEXT_OPACITY_10});
             border-radius: 16px;
-          `}
+          }
         }
       }
     }

@@ -4,7 +4,7 @@ import { AVG_APPROVE_COST_GWEI } from '@cowprotocol/common-const'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { BigNumber } from '@ethersproject/bignumber'
-import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { parseUnits } from 'ethers/lib/utils'
 
@@ -60,7 +60,7 @@ export function _isLowBalanceCheck({
   nativeInput?: CurrencyAmount<Currency>
   balance?: CurrencyAmount<Currency>
 }) {
-  if (!threshold || !txCost) return false
+  if (!threshold || !txCost || (nativeInput && !txCost.currency.equals(nativeInput?.currency))) return false
   if (!nativeInput || !balance || nativeInput.add(txCost).greaterThan(balance)) return true
   // OK if: users_balance - (amt_input + 1_tx_cost) > low_balance_threshold
   return balance.subtract(nativeInput.add(txCost)).lessThan(threshold)
@@ -84,7 +84,8 @@ export default function useRemainingNativeTxsAndCosts({
   // does the user have a lower than set threshold balance? show error
   const balanceChecks: BalanceChecks = useMemo(() => {
     // we only check this for native currencies, otherwise stop
-    if (nativeInput?.currency && !getIsNativeToken(nativeInput.currency)) return undefined
+    if ((nativeInput?.currency && !getIsNativeToken(nativeInput.currency)) || chainId !== nativeInput?.currency.chainId)
+      return undefined
     const { multiTxCost, singleTxCost } = txCosts
 
     return {
@@ -96,7 +97,7 @@ export default function useRemainingNativeTxsAndCosts({
       }),
       txsRemaining: _getAvailableTransactions({ nativeBalance, nativeInput, singleTxCost }),
     }
-  }, [txCosts, nativeBalance, nativeInput])
+  }, [nativeInput, chainId, txCosts, nativeBalance])
 
-  return { balanceChecks, ...txCosts }
+  return useMemo(() => ({ balanceChecks, ...txCosts }), [balanceChecks, txCosts])
 }

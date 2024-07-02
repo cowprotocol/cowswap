@@ -1,0 +1,15 @@
+<h2>What is DAI (DAI)?</h2>
+
+<p>Oh, hello there, Moo! Welcome to the green pastures of <a href="https://en.wikipedia.org/wiki/Stablecoin" target="_blank" rel="nofollow noreferrer noopener">stablecoins</a>. The star today is the Multi-collateral DAI (DAI), a unique stablecoin that is part of the <a href="https://en.wikipedia.org/wiki/MakerDAO" target="_blank" rel="nofollow noreferrer noopener">MakerDAO</a> ecosystem. DAI is like a sturdy cow – it stands strong in the face of market fluctuations, keeping its value pegged to the US dollar. But what makes it special? DAI is collaterized by multiple assets, making it more resilient and versatile. It's a decentralized system without a centralized authority, using smart contract pricing mechanisms to maintain its $1 USD equivalent. And yes, if you're wondering, anyone with an Ethereum wallet can own, accept, and transfer DAI just like any other <a href="https://ethereum.org/en/developers/docs/standards/tokens/erc-20/" target="_blank" rel="nofollow noreferrer noopener">ERC20 token</a>. No middleman required!</p>
+
+<h2>Why should you care about DAI?</h2>
+
+<p>Why indeed? For one, DAI's automatic pricing mechanisms work tirelessly, ensuring that the token's value doesn't stray far from $1 USD. Picture a herd of diligent cows, grazing tirelessly to keep the pasture even. When DAI is worth more than $1, these mechanisms chew away at the surplus value. But if DAI falls below $1, they work to fill in the gaps and get the value back up. With DAI, you're not just getting a token – you're getting a token that's always working to maintain its value and stability.</p>
+
+<h2>What's the story behind DAI?</h2>
+
+<p>DAI is the brainchild of the MakerDAO, and it's a token with a purpose. It's designed to be a stable store of value in the often volatile world of cryptocurrencies. The idea is that by collateralizing multiple assets, DAI can weather market fluctuations and maintain its peg to the US dollar. This makes DAI an appealing choice for those who want the benefits of crypto, such as decentralization and freedom from middlemen, without the risk of major price swings. And yes, in case you were wondering, the team behind DAI includes some seriously smart humans, much like our wise and respected herd leaders.</p>
+
+<h3>Where can you swap or trade DAI (DAI)?</h3>
+
+<p>Ready to join the herd and start your DAI journey? You can swap or trade DAI right here on <a href="https://swap.cow.fi/" target="_blank" rel="noopener">CoW Swap</a>, our own little grazing field. CoW Swap is a Meta DEX aggregator, which means it gathers all the best swap deals from multiple DEXes into one place for you. So, you get the best trade, every time. But that's not all! CoW Swap also offers <a href="https://ethereum.org/en/developers/docs/mev/#mev-extraction" target="_blank" rel="nofollow noreferrer noopener">Maximal Extractable Value</a> (MEV) protection. This ensures that your transactions are always done in a fair and transparent manner. So go on, give it a try, and let us help you moo-ve your DAI tokens with ease and confidence!</p>

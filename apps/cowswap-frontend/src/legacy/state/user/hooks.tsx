@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react'
 
 import { L2_DEADLINE_FROM_NOW, NATIVE_CURRENCIES, SupportedLocale, TokenWithLogo } from '@cowprotocol/common-const'
-import { calculateValidTo, getIsNativeToken } from '@cowprotocol/common-utils'
+import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
 import { Currency, Percent } from '@uniswap/sdk-core'
@@ -19,7 +19,6 @@ import {
 import { SerializedToken } from './types'
 
 import { useAppDispatch, useAppSelector } from '../hooks'
-import { AppState } from '../index'
 import { setRecipient } from '../swap/actions'
 
 export function useIsDarkMode(): boolean {
@@ -154,15 +153,6 @@ export function useUserTransactionTTL(): [number, (slippage: number) => void] {
   )
 
   return [deadline, setUserDeadline]
-}
-
-export function useURLWarningVisible(): boolean {
-  return useAppSelector((state: AppState) => state.user.URLWarningVisible)
-}
-
-export function useOrderValidTo() {
-  const [deadline] = useUserTransactionTTL()
-  return useMemo(() => ({ validTo: calculateValidTo(deadline), deadline }), [deadline])
 }
 
 export function useSelectedWallet(): string | undefined {

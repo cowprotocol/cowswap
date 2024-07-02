@@ -1,8 +1,8 @@
 import React from 'react'
 
+import { Token } from '../../../../hooks/useGetTokens'
 import { Network, UiError } from '../../../../types'
 import { TableState, TableStateSetters } from '../useTable'
-import { Token } from '../../../../hooks/useGetTokens'
 
 export type BlockchainNetwork = Network | undefined
 

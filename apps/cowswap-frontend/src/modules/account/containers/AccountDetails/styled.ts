@@ -1,14 +1,12 @@
 import { Command } from '@cowprotocol/types'
-import { ButtonSecondary } from '@cowprotocol/ui'
+import { ButtonSecondary, Media } from '@cowprotocol/ui'
 import { ExternalLink, StyledLink } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 
-import { transparentize } from 'color2k'
 import styled from 'styled-components/macro'
 
 import { YellowCard } from 'legacy/components/Card'
 import { CopyIcon, TransactionStatusText } from 'legacy/components/Copy'
-import { QuestionWrapper } from 'legacy/components/QuestionHelper'
 
 import {
   StatusLabelWrapper,
@@ -24,7 +22,7 @@ export const WalletName = styled.div`
   width: initial;
   font-size: 0.825rem;
   font-weight: 500;
-  color: ${({ theme }) => theme.text3};
+  color: ${({ theme }) => theme.info};
 `
 
 export const IconWrapper = styled.div<{ size?: number }>`
@@ -36,9 +34,9 @@ export const IconWrapper = styled.div<{ size?: number }>`
   height: ${({ size }) => (size ? size + 'px' : '32px')};
   width: ${({ size }) => (size ? size + 'px' : '32px')};
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${Media.upToMedium()} {
     align-items: flex-end;
-  `};
+  }
 
   & > img,
   span {
@@ -138,10 +136,10 @@ export const Wrapper = styled.div`
   height: 100%;
   margin: 0 24px;
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${Media.upToMedium()} {
     padding: 12px 0 0;
     margin: 0 16px;
-  `};
+  }
 
   ${WalletName},
   ${AddressLink},
@@ -192,9 +190,9 @@ export const Wrapper = styled.div`
   }
 
   ${AccountControl} {
-    ${({ theme }) => theme.mediaWidth.upToSmall`
-        align-items: center;
-    `};
+    ${Media.upToSmall()} {
+      align-items: center;
+    }
   }
 
   ${AccountControl} ${WalletSecondaryActions} {
@@ -205,10 +203,10 @@ export const Wrapper = styled.div`
     gap: 8px;
     justify-items: flex-end;
 
-    ${({ theme }) => theme.mediaWidth.upToSmall`
+    ${Media.upToSmall()} {
       justify-items: center;
       margin: 12px auto 0;
-    `};
+    }
 
     > a,
     > button {
@@ -226,42 +224,19 @@ export const Wrapper = styled.div`
   }
 
   ${AccountControl} ${WalletActions} {
-    ${({ theme }) => theme.mediaWidth.upToSmall`
-        width: 100%;
-        flex-flow: row wrap;
-        justify-content: center;
-        margin: 12px auto;
-    `};
+    ${Media.upToSmall()} {
+      width: 100%;
+      flex-flow: row wrap;
+      justify-content: center;
+      margin: 12px auto;
+    }
   }
 `
 
 export const WalletWrapper = styled.div`
   > div > img[alt='Gnosis Safe Multisig logo'] {
-    ${({ theme }) => theme.util.invertImageForDarkMode};
+    ${({ theme }) => theme.invertImageForDarkMode};
   }
-`
-
-export const UpperSection = styled.div`
-  position: relative;
-
-  h5 {
-    margin: 0;
-    margin-bottom: 0.5rem;
-    font-size: 1rem;
-    font-weight: 400;
-  }
-
-  h5:last-child {
-    margin-bottom: 0px;
-  }
-
-  h4 {
-    margin-top: 0;
-    font-weight: 500;
-  }
-
-  flex: 1 1 auto;
-  width: 100%;
 `
 
 export const InfoCard = styled.div`
@@ -279,19 +254,13 @@ export const InfoCard = styled.div`
     margin: 24px 0;
   }
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     padding: 16px 10px 24px;
 
     &:not(:first-child) {
       margin: 16px 0;
     }
-  `};
-`
-
-export const AccountSection = styled.div`
-  background-color: var(${UI.COLOR_PAPER});
-  padding: 0;
-  ${({ theme }) => theme.mediaWidth.upToMedium`padding: 0;`};
+  }
 `
 
 export const AccountGroupingRow = styled.div`
@@ -306,9 +275,9 @@ export const AccountGroupingRow = styled.div`
 
   margin: 0;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     width: 100%;
-  `};
+  }
 
   > div {
     flex-flow: column wrap;
@@ -341,9 +310,9 @@ export const LowerSection = styled.div`
     justify-content: space-between;
     padding: 0 0 12px;
 
-    ${({ theme }) => theme.mediaWidth.upToMedium`
+    ${Media.upToMedium()} {
       top: 42px;
-    `};
+    }
   }
 
   > div {
@@ -382,7 +351,7 @@ export const LowerSection = styled.div`
     font-size: 14px;
 
     &:hover {
-      color: ${({ theme }) => theme.text3};
+      color: ${({ theme }) => theme.info};
     }
   }
 `
@@ -427,9 +396,9 @@ export const LowerSectionSimple = styled(LowerSection)`
               margin: 10px 0 6px;
             }
           }
-          ${({ theme }) => theme.mediaWidth.upToSmall`
+          ${Media.upToSmall()} {
             margin: 16px 0;
-          `}
+          }
 
           > b {
             display: none;
@@ -448,14 +417,14 @@ const NetworkCardUni = styled(YellowCard)`
   border-radius: 12px;
   padding: 8px 12px;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     margin: 0;
     margin-right: 0.5rem;
     width: initial;
     overflow: hidden;
     text-overflow: ellipsis;
     flex-shrink: 1;
-  `};
+  }
 `
 
 export const NetworkCard = styled(NetworkCardUni)`
@@ -468,138 +437,8 @@ export const NetworkCard = styled(NetworkCardUni)`
   min-width: initial;
   flex: 0 0 fit-content;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     margin: 0 auto 12px;
-  `};
-`
-
-export const SurplusCardWrapper = styled.div`
-  margin: 0 auto 24px;
-  width: 100%;
-  display: grid;
-  align-items: center;
-  justify-content: center;
-  grid-template-columns: 1fr;
-  grid-template-rows: max-content;
-  gap: 24px;
-  box-sizing: border-box;
-  padding: 0 24px;
-
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-      display: flex;
-      flex-flow: column wrap;
-      padding: 0 16px;
-    `}
-
-  ${InfoCard} {
-    display: flex;
-    flex-flow: column wrap;
-    align-items: center;
-    justify-content: center;
-    gap: 0;
-    background: ${({ theme }) => theme.gradient2};
-    border-radius: 16px;
-    padding: 20px 26px 26px;
-    min-height: 210px;
-    width: 100%;
-    max-width: 100%;
-    margin: 0;
-  }
-
-  ${InfoCard} > div {
-    display: flex;
-    flex-flow: column wrap;
-    align-items: center;
-    justify-content: center;
-
-    &:first-child {
-      margin: 20px auto 0;
-    }
-
-    &:last-child {
-      margin: auto 0 0;
-    }
-  }
-
-  ${InfoCard} > div > span {
-    display: flex;
-    flex-flow: column wrap;
-    align-items: center;
-    justify-content: center;
-  }
-
-  ${InfoCard} > div > span > i,
-    ${InfoCard} > div > a,
-    ${InfoCard} > div > span > p {
-    display: flex;
-    font-size: 13px;
-    font-style: normal;
-    font-weight: 500;
-    line-height: 1.1;
-    width: 100%;
-    text-align: center;
-    justify-content: center;
-    align-items: center;
-    color: var(${UI.COLOR_TEXT_OPACITY_70});
-  }
-
-  ${InfoCard} > div > span > p {
-    color: var(${UI.COLOR_TEXT});
-  }
-
-  ${InfoCard} > div > span > b {
-    font-size: 28px;
-    font-weight: bold;
-    color: var(${UI.COLOR_SUCCESS});
-    width: 100%;
-    text-align: center;
-    margin: 20px auto 0;
-    word-break: break-all;
-  }
-
-  ${InfoCard} > div > a {
-    margin: 20px auto 0;
-  }
-
-  ${InfoCard} > div > small {
-    font-size: 15px;
-    font-weight: 500;
-    line-height: 1.1;
-    color: ${({ theme }) => transparentize(theme.text, 0.5)};
-    margin: 3px auto 0;
-  }
-
-  ${QuestionWrapper} {
-    opacity: 0.5;
-    transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
-
-    &:hover {
-      opacity: 1;
-    }
-  }
-`
-
-export const WalletIconWrapper = styled.div`
-  --size: 12px;
-  display: flex;
-  width: var(--size);
-  height: var(--size);
-  align-items: center;
-  justify-content: center;
-  background: transparent;
-  padding: 0;
-  margin: 0 0 0 5px;
-
-  > svg {
-    width: 100%;
-    height: 100%;
-  }
-
-  > svg > path {
-    color: inherit;
-    fill: var(--color);
-    stroke: var(--color);
-    stroke-width: 0.5px;
   }
 `
 

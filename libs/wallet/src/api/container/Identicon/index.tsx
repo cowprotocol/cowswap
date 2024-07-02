@@ -1,9 +1,12 @@
 import { useRef, useState, useEffect, useCallback, useMemo } from 'react'
+
+import { useENSAvatar } from '@cowprotocol/ens'
+
+import jazzicon from '@metamask/jazzicon'
 import styled from 'styled-components/macro'
+
 import { useWalletInfo } from '../../hooks'
 import { Identicon as IdenticonPure } from '../../pure/Identicon'
-import { useENSAvatar } from '@cowprotocol/ens'
-import jazzicon from '@metamask/jazzicon'
 
 const JazzIconWrapper = styled.div`
   display: flex;

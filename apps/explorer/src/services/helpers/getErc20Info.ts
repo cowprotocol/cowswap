@@ -1,9 +1,11 @@
+import { TokenErc20 } from '@gnosis.pm/dex-js'
+import { DEFAULT_PRECISION } from 'const'
+import { logDebug, silentPromise, parseStringOrBytes32, retry } from 'utils'
 import Web3 from 'web3'
 
-import { logDebug, silentPromise, parseStringOrBytes32, retry } from 'utils'
-import { DEFAULT_PRECISION } from 'const'
+
 import { Erc20Api } from 'api/erc20/Erc20Api'
-import { TokenErc20 } from '@gnosis.pm/dex-js'
+
 
 interface Params {
   tokenAddress: string

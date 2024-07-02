@@ -1,3 +1,4 @@
+import { BFF_BASE_URL } from '@cowprotocol/common-const'
 import { FractionUtils } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Fraction, Token } from '@uniswap/sdk-core'
@@ -6,19 +7,23 @@ import ms from 'ms.macro'
 
 import { fetchWithRateLimit } from 'common/utils/fetch'
 
-export interface CoinGeckoUsdQuote {
+import { RateLimitError, UnknownCurrencyError, UnsupportedPlatformError } from './errors'
+
+type SuccessCoingeckoUsdQuoteResponse = {
   [address: string]: {
     usd: number
   }
 }
+type ErrorCoingeckoResponse = { status: { error_code: number; error_message: string } }
 
-export const COINGECK_PLATFORMS: Record<SupportedChainId, string | null> = {
+export const COINGECKO_PLATFORMS: Record<SupportedChainId, string | null> = {
   [SupportedChainId.MAINNET]: 'ethereum',
   [SupportedChainId.GNOSIS_CHAIN]: 'xdai',
+  [SupportedChainId.ARBITRUM_ONE]: 'arbitrum-one',
   [SupportedChainId.SEPOLIA]: null,
 }
 
-const BASE_URL = 'https://api.coingecko.com/api/v3/simple/token_price'
+const BASE_URL = `${BFF_BASE_URL}/proxies/coingecko`
 const VS_CURRENCY = 'usd'
 /**
  * This is a text of 429 HTTP code
@@ -26,7 +31,7 @@ const VS_CURRENCY = 'usd'
  */
 const FAILED_FETCH_ERROR = 'Failed to fetch'
 
-const fetchRateLimitted = fetchWithRateLimit({
+const fetchRateLimited = fetchWithRateLimit({
   // Allow 2 requests per second
   rateLimit: {
     tokensPerInterval: 2,
@@ -41,50 +46,52 @@ const fetchRateLimitted = fetchWithRateLimit({
 
 export const COINGECKO_RATE_LIMIT_TIMEOUT = ms`1m`
 
-export class CoingeckoRateLimitError extends Error {
-  constructor() {
-    super('CoingeckoRateLimitError')
-  }
-}
-
-export class CoingeckoUnknownCurrency extends Error {
-  constructor() {
-    super('CoingeckoUnknownCurrency')
-  }
-}
-
 export async function getCoingeckoUsdPrice(currency: Token): Promise<Fraction | null> {
-  const platform = COINGECK_PLATFORMS[currency.chainId as SupportedChainId]
+  const platform = COINGECKO_PLATFORMS[currency.chainId as SupportedChainId]
 
-  if (!platform) throw new Error('UnsupporedCoingeckoPlatformError')
+  if (!platform) throw new UnsupportedPlatformError({ cause: `Coingecko does not support chain '${currency.chainId}'` })
 
   const params = {
     contract_addresses: currency.address,
     vs_currencies: VS_CURRENCY,
   }
 
-  const url = `${BASE_URL}/${platform}?${new URLSearchParams(params)}`
+  const url = `${BASE_URL}/simple/token_price/${platform}?${new URLSearchParams(params)}`
 
-  return fetchRateLimitted(url)
-    .then((res) => {
-      return res.json()
-    })
+  return fetchRateLimited(url)
+    .then((res) => res.json())
     .catch((error) => {
       if (error.message.includes(FAILED_FETCH_ERROR)) {
-        throw new CoingeckoRateLimitError()
+        throw new RateLimitError({ cause: error })
       }
 
       return Promise.reject(error)
     })
-    .then((res: CoinGeckoUsdQuote) => {
+    .then((res: SuccessCoingeckoUsdQuoteResponse | ErrorCoingeckoResponse) => {
+      if (isErrorResponse(res)) {
+        if (res.status.error_code === 429) {
+          throw new RateLimitError({ cause: res })
+        } else {
+          throw new Error(res.status.error_message, { cause: res })
+        }
+      }
+
       const value = res[currency.address.toLowerCase()]?.usd
 
       // If coingecko API returns an empty response
       // It means Coingecko doesn't know about the currency
       if (value === undefined) {
-        throw new CoingeckoUnknownCurrency()
+        throw new UnknownCurrencyError({
+          cause: `Coingecko did not return a price for '${currency.address}' on chain '${currency.chainId}'`,
+        })
       }
 
-      return typeof value === 'number' ? FractionUtils.fromNumber(value) : null
+      return FractionUtils.fromNumber(value)
     })
+}
+
+function isErrorResponse(
+  res: SuccessCoingeckoUsdQuoteResponse | ErrorCoingeckoResponse
+): res is ErrorCoingeckoResponse {
+  return 'status' in res
 }

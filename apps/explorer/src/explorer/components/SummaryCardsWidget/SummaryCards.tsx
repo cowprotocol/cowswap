@@ -1,17 +1,19 @@
 import React from 'react'
-import styled, { css } from 'styled-components'
-import { media } from '../../../theme/styles/media'
+
 import { formatDistanceToNowStrict } from 'date-fns'
+import styled, { css } from 'styled-components/macro'
+
+import { TotalSummaryResponse } from './useGetSummaryData'
+import { numberFormatter } from './utils'
 
 import { Card, CardContent } from '../../../components/common/Card'
-import { CardRow } from '../../../components/common/CardRow'
-import { TotalSummaryResponse } from './useGetSummaryData'
-import { abbreviateString, getPercentageDifference } from '../../../utils'
-import { useMediaBreakpoint } from '../../../hooks/useMediaBreakPoint'
 import { getColorBySign } from '../../../components/common/Card/card.utils'
+import { CardRow } from '../../../components/common/CardRow'
 import { CopyButton } from '../../../components/common/CopyButton'
 import { LinkWithPrefixNetwork } from '../../../components/common/LinkWithPrefixNetwork'
-import { numberFormatter } from './utils'
+import { useMediaBreakpoint } from '../../../hooks/useMediaBreakPoint'
+import { media } from '../../../theme/styles/media'
+import { abbreviateString, getPercentageDifference } from '../../../utils'
 
 const BatchInfoHeight = '21.6rem'
 const DESKTOP_TEXT_SIZE = 1.8 // rem

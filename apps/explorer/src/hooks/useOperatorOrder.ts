@@ -1,20 +1,21 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
-import { Order, getOrder, GetOrderParams } from 'api/operator'
-
-import { getShortOrderId, transformOrder } from 'utils'
+import { shortenOrderId } from '@cowprotocol/common-utils'
 import { Command } from '@cowprotocol/types'
 
-import { useNetworkId } from 'state/network'
-
-import { useMultipleErc20 } from './useErc20'
-import { Errors, Network, UiError } from 'types'
 import {
   GetOrderApi,
   GetOrderResult,
   SingleOrder,
   tryGetOrderOnAllNetworksAndEnvironments,
 } from 'services/helpers/tryGetOrderOnAllNetworks'
+import { useNetworkId } from 'state/network'
+import { Errors, Network, UiError } from 'types'
+import { transformOrder } from 'utils'
+
+import { getOrder, GetOrderParams, Order } from 'api/operator'
+
+import { useMultipleErc20 } from './useErc20'
 
 type UseOrderResult = {
   order: Order | null
@@ -65,7 +66,7 @@ export function useOrderByNetwork(orderId: string, networkId: Network | null, up
       } catch (e) {
         const msg = `Failed to fetch order`
         console.error(`${msg}: ${orderId}`, e.message)
-        setError({ message: `${msg}: ${getShortOrderId(orderId)}`, type: 'error' })
+        setError({ message: `${msg}: ${shortenOrderId(orderId)}`, type: 'error' })
       } finally {
         setIsLoading(false)
       }
@@ -90,7 +91,10 @@ export function useOrderByNetwork(orderId: string, networkId: Network | null, up
     }
   }, [forceUpdate, order, updateInterval])
 
-  return { order, isLoading, error, errorOrderPresentInNetworkId, forceUpdate }
+  return useMemo(
+    () => ({ order, isLoading, error, errorOrderPresentInNetworkId, forceUpdate }),
+    [order, isLoading, error, errorOrderPresentInNetworkId, forceUpdate]
+  )
 }
 
 export function useOrder(orderId: string, updateInterval?: number): UseOrderResult {
@@ -124,17 +128,18 @@ export function useOrderAndErc20s(orderId: string, updateInterval = 0): UseOrder
 
   const addresses = order ? [order.buyTokenAddress, order.sellTokenAddress] : []
 
-  const { value, isLoading: areErc20Loading, error: erc20Errors } = useMultipleErc20({ networkId, addresses })
+  const { value, isLoading: areErc20Loading, error: errors = {} } = useMultipleErc20({ networkId, addresses })
 
-  const errors = { ...erc20Errors }
-  if (orderError) {
-    errors[orderId] = orderError
-  }
+  return useMemo(() => {
+    if (orderError) {
+      errors[orderId] = orderError
+    }
 
-  if (order && value) {
-    order.buyToken = value[order?.buyTokenAddress || '']
-    order.sellToken = value[order?.sellTokenAddress || '']
-  }
+    if (order && value) {
+      order.buyToken = value[order?.buyTokenAddress?.toLowerCase() || '']
+      order.sellToken = value[order?.sellTokenAddress?.toLowerCase() || '']
+    }
 
-  return { order, isLoading: isOrderLoading || areErc20Loading, errors, errorOrderPresentInNetworkId }
+    return { order, isLoading: isOrderLoading || areErc20Loading, errors, errorOrderPresentInNetworkId }
+  }, [orderError, order, isOrderLoading, areErc20Loading, errors, errorOrderPresentInNetworkId, value])
 }

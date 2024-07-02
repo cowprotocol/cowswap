@@ -1,17 +1,17 @@
 import { useCallback, useEffect, useRef } from 'react'
 
 import { CANCELLED_ORDERS_PENDING_TIME } from '@cowprotocol/common-const'
-import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { EnrichedOrder, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
 
-import { OrderFulfillmentData } from 'legacy/state/orders/actions'
 import { MARKET_OPERATOR_API_POLL_INTERVAL } from 'legacy/state/orders/consts'
 import { useCancelledOrders, useFulfillOrdersBatch } from 'legacy/state/orders/hooks'
 import { OrderTransitionStatus } from 'legacy/state/orders/utils'
 
+import { emitFulfilledOrderEvent } from 'modules/orders'
 import { useAddOrderToSurplusQueue } from 'modules/swap/state/surplusModal'
 
-import { fetchOrderPopupData, OrderLogPopupMixData } from './utils'
+import { fetchAndClassifyOrder } from './utils'
 
 /**
  * Updater for cancelled orders.
@@ -77,15 +77,15 @@ export function CancelledOrdersUpdater(): null {
 
         // Iterate over pending orders fetching operator order data, async
         const unfilteredOrdersData = await Promise.all(
-          pending.map(async (orderFromStore) => fetchOrderPopupData(orderFromStore, chainId))
+          pending.map(async (orderFromStore) => fetchAndClassifyOrder(orderFromStore, chainId))
         )
 
         // Group resolved promises by status
         // Only pick fulfilled
-        const { fulfilled } = unfilteredOrdersData.reduce<Record<OrderTransitionStatus, OrderLogPopupMixData[]>>(
+        const { fulfilled } = unfilteredOrdersData.reduce<Record<OrderTransitionStatus, EnrichedOrder[]>>(
           (acc, orderData) => {
-            if (orderData && orderData.popupData) {
-              acc[orderData.status].push(orderData.popupData)
+            if (orderData && orderData.order) {
+              acc[orderData.status].push(orderData.order)
             }
             return acc
           },
@@ -102,13 +102,17 @@ export function CancelledOrdersUpdater(): null {
 
         // Bach state update fulfilled orders, if any
         if (fulfilled.length) {
-          const ordersData = fulfilled as OrderFulfillmentData[]
           fulfillOrdersBatch({
-            ordersData,
+            orders: fulfilled,
             chainId,
             isSafeWallet,
           })
-          ordersData.forEach(({ id }) => addOrderToSurplusQueue(id))
+
+          fulfilled.forEach((order) => {
+            addOrderToSurplusQueue(order.uid)
+
+            emitFulfilledOrderEvent(chainId, order)
+          })
         }
       } finally {
         isUpdating.current = false

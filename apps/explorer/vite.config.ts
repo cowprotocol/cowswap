@@ -1,16 +1,21 @@
 /// <reference types="vitest" />
-import { defineConfig, searchForWorkspaceRoot } from 'vite'
-import react from '@vitejs/plugin-react-swc'
-import viteTsConfigPaths from 'vite-tsconfig-paths'
-import { nodePolyfills } from 'vite-plugin-node-polyfills'
-import { loadConfig } from './loadConfig'
-import dynamicImport from 'vite-plugin-dynamic-import'
-
-import { version as APP_VERSION } from './package.json'
 import { version as CONTRACT_VERSION } from '@cowprotocol/contracts/package.json'
+
 import { version as DEX_JS_VERSION } from '@gnosis.pm/dex-js/package.json'
-import { getReactProcessEnv } from '../../tools/getReactProcessEnv'
+import react from '@vitejs/plugin-react-swc'
+import { defineConfig, searchForWorkspaceRoot } from 'vite'
 import macrosPlugin from 'vite-plugin-babel-macros'
+import dynamicImport from 'vite-plugin-dynamic-import'
+import { nodePolyfills } from 'vite-plugin-node-polyfills'
+import viteTsConfigPaths from 'vite-tsconfig-paths'
+
+import { loadConfig } from './loadConfig'
+import { version as APP_VERSION } from './package.json'
+
+
+
+import { getReactProcessEnv } from '../../tools/getReactProcessEnv'
+
 
 const CONFIG = loadConfig()
 

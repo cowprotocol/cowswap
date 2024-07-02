@@ -1,4 +1,4 @@
-import { UI } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
@@ -37,9 +37,9 @@ export const Tag = styled.div<{ tag?: { id: string } }>`
   justify-self: flex-end;
   margin: 0 4px 0 0;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     margin: 0;
-  `}
+  }
 
   > img,
   > svg {

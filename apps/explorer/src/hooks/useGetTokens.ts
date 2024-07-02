@@ -1,12 +1,13 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+
 import { gql } from '@apollo/client'
-import { subDays, subHours, startOfToday, startOfYesterday } from 'date-fns'
-import { Network, UiError } from 'types'
-import { NATIVE_TOKEN_PER_NETWORK } from 'const'
 import { TokenErc20 } from '@gnosis.pm/dex-js'
-import { UTCTimestamp } from 'lightweight-charts'
-import { getPercentageDifference, isNativeToken } from 'utils'
+import { NATIVE_TOKEN_PER_NETWORK } from 'const'
 import { subgraphApiSDK } from 'cowSdk'
+import { startOfToday, startOfYesterday, subDays, subHours } from 'date-fns'
+import { UTCTimestamp } from 'lightweight-charts'
+import { Network, UiError } from 'types'
+import { getPercentageDifference, isNativeToken } from 'utils'
 
 export function useGetTokens(networkId: Network | undefined): GetTokensResult {
   const [isLoading, setIsLoading] = useState(false)
@@ -21,10 +22,10 @@ export function useGetTokens(networkId: Network | undefined): GetTokensResult {
       const lastWeekTimestampFrom = Number(lastDaysTimestamp(8))
       const lastWeekTimestampTo = Number(lastDaysTimestamp(6))
       const lastDayPrice = data.tokenHourlyTotals.find(
-        (x) => x.timestamp >= lastDayTimestampFrom && x.timestamp <= lastDayTimestampTo,
+        (x) => x.timestamp >= lastDayTimestampFrom && x.timestamp <= lastDayTimestampTo
       )?.averagePrice
       const lastWeekPrice = data.tokenHourlyTotals.find(
-        (x) => x.timestamp >= lastWeekTimestampFrom && x.timestamp <= lastWeekTimestampTo,
+        (x) => x.timestamp >= lastWeekTimestampFrom && x.timestamp <= lastWeekTimestampTo
       )?.averagePrice
 
       return {
@@ -44,7 +45,7 @@ export function useGetTokens(networkId: Network | undefined): GetTokensResult {
           .sort((a, b) => a.time - b.time),
       }
     },
-    [],
+    []
   )
 
   const fetchTokens = useCallback(
@@ -62,7 +63,7 @@ export function useGetTokens(networkId: Network | undefined): GetTokensResult {
             yesterdayTimestamp,
             lastWeekTimestamp,
           },
-          { chainId: network },
+          { chainId: network }
         )
         if (response) {
           const tokensData: { [tokenId: string]: TokenData } = {}
@@ -71,13 +72,13 @@ export function useGetTokens(networkId: Network | undefined): GetTokensResult {
             const tokenData = processTokenData(
               { tokenHourlyTotals: token.hourlyTotals },
               Number(totalVolumeUsd),
-              timestamp,
+              timestamp
             )
             tokensData[token.address] = { ...tokenData }
           }
           const tokens = addHistoricalData(
             response.tokenDailyTotals.map((tokenDaily) => tokenDaily.token),
-            tokensData,
+            tokensData
           )
           setTokens(enhanceNativeToken(tokens, network))
         }
@@ -89,7 +90,7 @@ export function useGetTokens(networkId: Network | undefined): GetTokensResult {
         setIsLoading(false)
       }
     },
-    [processTokenData],
+    [processTokenData]
   )
 
   useEffect(() => {
@@ -100,7 +101,7 @@ export function useGetTokens(networkId: Network | undefined): GetTokensResult {
     fetchTokens(networkId)
   }, [fetchTokens, networkId])
 
-  return { tokens, error, isLoading }
+  return useMemo(() => ({ tokens, error, isLoading }), [tokens, error, isLoading])
 }
 
 type GetTokensResult = {

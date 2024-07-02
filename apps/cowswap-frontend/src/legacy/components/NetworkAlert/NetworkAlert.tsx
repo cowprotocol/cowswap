@@ -1,9 +1,7 @@
 import { getChainInfo } from '@cowprotocol/common-const'
 import { useTheme } from '@cowprotocol/common-hooks'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { AutoRow } from '@cowprotocol/ui'
-import { ExternalLink } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
+import { AutoRow, ExternalLink, Media, UI } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Trans } from '@lingui/macro'
@@ -11,7 +9,12 @@ import { ArrowUpRight } from 'react-feather'
 import styled from 'styled-components/macro'
 
 import { useDarkModeManager } from 'legacy/state/user/hooks'
-import { HideSmall } from 'legacy/theme'
+
+const HideSmall = styled.span`
+  ${Media.upToSmall()} {
+    display: none;
+  }
+`
 
 const L2Icon = styled.img`
   width: 24px;
@@ -32,9 +35,16 @@ const BodyText = styled.div`
   }
 `
 const RootWrapper = styled.div`
+  display: flex;
+  flex-flow: column wrap;
   position: relative;
   margin-top: 16px;
   color: inherit;
+  gap: 10px;
+
+  ${Media.upToSmall()} {
+    padding: 0 10px;
+  }
 `
 
 const SHOULD_SHOW_ALERT = {
@@ -130,8 +140,9 @@ export function NetworkAlert() {
     return null
   }
 
-  const { label, logoUrl, bridge } = getChainInfo(chainId)
+  const { label, logo, bridge } = getChainInfo(chainId)
   const textColor = theme.text1
+  const logoUrl = darkMode ? logo.dark : logo.light
 
   return bridge ? (
     <RootWrapper>

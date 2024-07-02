@@ -1,4 +1,5 @@
-import CowProtocolIcon from '@cowprotocol/assets/cow-swap/cow_v2.svg'
+import CowProtocolIcon from '@cowprotocol/assets/cow-swap/cow_token.svg'
+import { Media } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
@@ -13,11 +14,11 @@ export const Icon = styled.span<Props>`
   border-radius: ${({ size }) => (size ? `${size}px` : 'var(--defaultSize)')};
   position: relative;
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${Media.upToMedium()} {
     width: var(--smallSize);
     height: var(--smallSize);
     border-radius: var(--smallSize);
-  `};
+  }
 `
 
 interface Props {

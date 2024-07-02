@@ -1,12 +1,13 @@
 import React, { useContext, useState, useEffect } from 'react'
 
-import OrdersTable from '../../../components/orders/OrdersUserDetailsTable'
-import { EmptyItemWrapper } from '../../../components/common/StyledUserDetailsTable'
 import { OrdersTableContext } from './context/OrdersTableContext'
-import useFirstRender from '../../../hooks/useFirstRender'
-import { DEFAULT_TIMEOUT } from '../../../const'
 import { useSearchInAnotherNetwork, EmptyOrdersMessage } from './useSearchInAnotherNetwork'
+
 import CowLoading from '../../../components/common/CowLoading'
+import { EmptyItemWrapper } from '../../../components/common/StyledUserDetailsTable'
+import OrdersTable from '../../../components/orders/OrdersUserDetailsTable'
+import { DEFAULT_TIMEOUT } from '../../../const'
+import useFirstRender from '../../../hooks/useFirstRender'
 
 export const OrdersTableWithData: React.FC = () => {
   const {

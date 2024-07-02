@@ -1,12 +1,11 @@
 import { TokenLogoWrapper } from '@cowprotocol/tokens'
-import { FiatAmount, RowFixed } from '@cowprotocol/ui'
+import { FiatAmount, Media, RowFixed } from '@cowprotocol/ui'
 import { ExternalLink, StyledLink } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 
 import { transparentize } from 'color2k'
 import styled, { css, keyframes } from 'styled-components/macro'
-
-import { LinkStyledButton } from 'legacy/theme'
+import { LinkStyledButton } from 'theme'
 
 import { RateWrapper } from 'common/pure/RateInfo'
 
@@ -21,9 +20,9 @@ export const TransactionWrapper = styled.div`
   border: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
   position: relative;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     flex-flow: column wrap;
-  `};
+  }
 
   ${RowFixed} {
     width: 100%;
@@ -47,11 +46,11 @@ export const Summary = styled.div`
   grid-template-rows: max-content;
   color: inherit;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     display: flex;
     grid-template-columns: initial;
     grid-template-rows: initial;
-  `};
+  }
 
   > span {
     display: flex;
@@ -65,12 +64,12 @@ export const Summary = styled.div`
     font-size: 13px;
     margin: 0;
 
-    ${({ theme }) => theme.mediaWidth.upToSmall`
+    ${Media.upToSmall()} {
       order: 2;
       display: flex;
       justify-content: flex-end;
       flex: 1 1 max-content;
-    `}
+    }
   }
 `
 
@@ -83,7 +82,7 @@ export const SummaryInner = styled.div`
   font-size: 14px;
   word-break: break-word;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     margin: 16px 0 0;
     width: 100%;
     display: grid;
@@ -92,7 +91,7 @@ export const SummaryInner = styled.div`
     grid-gap: 0 18px;
     justify-items: flex-start;
     align-items: flex-start;
-  `};
+  }
 
   > b {
     font-weight: bold;
@@ -103,10 +102,10 @@ export const SummaryInner = styled.div`
     margin: 0 0 16px;
     flex: 0 0 auto;
 
-    ${({ theme }) => theme.mediaWidth.upToSmall`
+    ${Media.upToSmall()} {
       font-size: 18px;
       grid-column: 1 / -1;
-    `}
+    }
   }
 
   > a {
@@ -115,7 +114,7 @@ export const SummaryInner = styled.div`
     font-size: 14px;
 
     &:hover {
-      color: ${({ theme }) => theme.text3};
+      color: ${({ theme }) => theme.info};
     }
   }
 `
@@ -129,11 +128,11 @@ export const SummaryInnerRow = styled.div<{ isExpired?: boolean; isCancelled?: b
   margin: 0 0 4px;
   color: inherit;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     grid-template-columns: 1fr;
     grid-template-rows: max-content max-content;
     margin: 0 0 16px 0;
-  `};
+  }
 
   > b,
   > i {
@@ -157,10 +156,10 @@ export const SummaryInnerRow = styled.div<{ isExpired?: boolean; isCancelled?: b
     white-space: break-spaces;
     text-decoration: ${({ isExpired, isCancelled }) => (isExpired || isCancelled) && 'line-through'};
 
-    ${({ theme }) => theme.mediaWidth.upToSmall`
+    ${Media.upToSmall()} {
       font-weight: 600;
       margin: 6px 0 0;
-    `};
+    }
 
     &.cancelled {
       text-decoration: line-through;
@@ -185,9 +184,9 @@ export const TransactionStatusText = styled.div`
   flex-flow: column wrap;
   align-items: flex-start;
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${Media.upToMedium()} {
     margin: 0 auto 0 0;
-  `};
+  }
 
   &.copied,
   &:hover {
@@ -203,10 +202,10 @@ export const StatusLabelWrapper = styled.div<{ withCancellationHash$: boolean }>
   align-items: center;
   margin: 0 0 auto auto;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     margin: 16px auto 0;
     width: 100%;
-  `};
+  }
 `
 
 // TODO: Consolidate status label logic with StatusItem
@@ -230,7 +229,9 @@ export const StatusLabel = styled.div<{
   height: 28px;
   width: 100px;
   ${({ isPending, isPresignaturePending, isCancelling, isCreating, theme }) =>
-    !isCancelling && (isPending || isPresignaturePending || isCreating) && `border:  1px solid ${theme.card.border};`}
+    !isCancelling &&
+    (isPending || isPresignaturePending || isCreating) &&
+    `border:  1px solid ${`${theme.darkMode ? 'rgb(197 218 239 / 10%)' : 'rgb(16 42 72 / 20%)'}`};`}
   color: var(--statusColor);
   position: relative;
   border-radius: 4px;
@@ -241,12 +242,12 @@ export const StatusLabel = styled.div<{
   font-weight: 600;
   overflow: hidden;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     width: 100%;
     font-size: 13px;
     height: 32px;
     padding: 0 12px;
-  `};
+  }
 
   &::before {
     content: '';
@@ -328,13 +329,13 @@ export const TransactionState = styled(OldTransactionState).attrs(
   font-size: 14px;
   margin: 6px 0 0;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     margin: 18px auto 0;
     position: absolute;
     top: 0;
     right: 16px;
     width: auto;
-  `};
+  }
 
   ${RowFixed} {
     width: 100%;
@@ -348,14 +349,14 @@ export const TransactionInnerDetail = styled.div`
   padding: 20px;
   color: inherit;
   margin: 24px auto 0 0;
-  border: 1px solid ${({ theme }) => theme.card.border};
+  border: 1px solid ${({ theme }) => `${theme.darkMode ? 'rgb(197 218 239 / 10%)' : 'rgb(16 42 72 / 20%)'}`};
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     margin: 24px auto 12px;
     width: 100%;
     max-width: 100%;
     grid-column: 1 / -1;
-  `};
+  }
 
   > span {
     flex: 1 1 auto;
@@ -381,10 +382,10 @@ export const TransactionInnerDetail = styled.div`
 
 export const TextAlert = styled.div<{ isPending: boolean; isExpired: boolean; isCancelled: boolean }>`
   background: ${({ theme, isPending }) =>
-    isPending ? transparentize(theme.attention, 0.85) : transparentize(theme.success, 0.85)};
+    isPending ? transparentize('#ff5722', 0.85) : transparentize(theme.success, 0.85)};
   margin: 6px 0 16px;
   padding: 8px 12px;
-  color: ${({ theme, isPending }) => (isPending ? theme.attention : theme.success)};
+  color: ${({ theme, isPending }) => (isPending ? '#ff5722' : theme.success)};
   text-decoration: ${({ isExpired, isCancelled }) => (isExpired || isCancelled) && 'line-through'};
   border-radius: 8px;
   text-align: center;

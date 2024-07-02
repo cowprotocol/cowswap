@@ -19,7 +19,6 @@ import {
   expireOrdersBatch,
   fulfillOrdersBatch,
   invalidateOrdersBatch,
-  OrderInfoApi,
   OrderStatus,
   preSignOrders,
   requestOrderCancellation,
@@ -193,8 +192,8 @@ function popOrder(state: OrdersState, chainId: ChainId, status: OrderStatus, id:
   return orderObj
 }
 
-function getValidTo(apiAdditionalInfo: OrderInfoApi | undefined, order: SerializedOrder): number {
-  return (apiAdditionalInfo?.ethflowData?.userValidTo || order.validTo) as number
+function getValidTo(userValidTo: number | undefined, order: SerializedOrder): number {
+  return (userValidTo || order.validTo) as number
 }
 
 function cancelOrderInState(
@@ -306,7 +305,7 @@ export default createReducer(initialState, (builder) =>
           popOrder(state, chainId, OrderStatus.SCHEDULED, id) ||
           popOrder(state, chainId, OrderStatus.FAILED, id)
 
-        const validTo = getValidTo(newOrder.apiAdditionalInfo, newOrder)
+        const validTo = getValidTo(newOrder.apiAdditionalInfo?.ethflowData?.userValidTo, newOrder)
 
         // Skip overriding pending orders, because they get updated in CreatedInOrderBookOrdersUpdater
         if (getIsComposableCowDiscreteOrder(orderObj?.order) && getIsNotComposableCowOrder(newOrder)) {
@@ -326,6 +325,8 @@ export default createReducer(initialState, (builder) =>
               isCancelling: isCancelling,
               class: orderObj.order.class || newOrder.class, // should never replace existing order class
               openSince: newOrder.openSince || orderObj.order.openSince,
+              // Necessary since `signingScheme` was added later, and local redux state prior to this change doesn't have it set
+              signingScheme: newOrder.signingScheme || orderObj.order.signingScheme,
               status,
             }
           : { ...newOrder, validTo }
@@ -347,27 +348,41 @@ export default createReducer(initialState, (builder) =>
     })
     .addCase(fulfillOrdersBatch, (state, action) => {
       prefillState(state, action)
-      const { ordersData, chainId, isSafeWallet } = action.payload
+      const { orders, chainId, isSafeWallet } = action.payload
 
       // if there are any newly fulfilled orders
       // update them
-      ordersData.forEach(({ id, fulfillmentTime, transactionHash, apiAdditionalInfo }) => {
-        const orderObject = getOrderById(state, chainId, id)
+      orders.forEach((order) => {
+        const { uid, ethflowData } = order
+        const orderObject = getOrderById(state, chainId, uid)
 
         if (orderObject) {
-          deleteOrderById(state, chainId, id)
+          deleteOrderById(state, chainId, uid)
 
           orderObject.order.status = OrderStatus.FULFILLED
-          orderObject.order.fulfillmentTime = fulfillmentTime
+          orderObject.order.fulfillmentTime = new Date().toISOString()
 
-          orderObject.order.fulfilledTransactionHash = transactionHash
           orderObject.order.isCancelling = false
           // EthFlow orders validTo is different
-          orderObject.order.validTo = getValidTo(apiAdditionalInfo, orderObject.order)
+          orderObject.order.validTo = getValidTo(ethflowData?.userValidTo, orderObject.order)
 
-          orderObject.order.apiAdditionalInfo = apiAdditionalInfo
+          orderObject.order.apiAdditionalInfo = {
+            creationDate: order.creationDate,
+            availableBalance: order.availableBalance,
+            executedBuyAmount: order.executedBuyAmount,
+            executedSellAmount: order.executedSellAmount,
+            executedSellAmountBeforeFees: order.executedSellAmountBeforeFees,
+            executedFeeAmount: order.executedFeeAmount,
+            executedSurplusFee: order.executedSurplusFee,
+            invalidated: order.invalidated,
+            ethflowData: order.ethflowData,
+            onchainOrderData: order.onchainOrderData,
+            class: order.class,
+            fullAppData: order.fullAppData,
+            signingScheme: order.signingScheme,
+          }
 
-          addOrderToState(state, chainId, id, 'fulfilled', orderObject.order, isSafeWallet)
+          addOrderToState(state, chainId, uid, 'fulfilled', orderObject.order, isSafeWallet)
         }
       })
     })

@@ -1,20 +1,23 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+
 import Cytoscape, { EdgeDataDefinition, ElementDefinition, NodeDataDefinition, Stylesheet } from 'cytoscape'
+
 import { LAYOUTS } from './layouts'
-import useWindowSizes from '../../../hooks/useWindowSizes'
-import { HEIGHT_HEADER_FOOTER } from '../../const'
+import { buildContractViewNodes, buildTokenViewNodes, getTokenAddress } from './nodesBuilder'
+import { BuildSettlementParams, buildTradesBasedSettlement, buildTransfersBasedSettlement } from './settlementBuilder'
+import { CustomLayoutOptions, GetTxBatchTradesResult, PopperInstance, ViewType } from './types'
 import { bindPopper, removePopper, updateLayout } from './utils'
+
+import { Order } from '../../../api/operator'
+import { traceToTransfersAndTrades } from '../../../api/tenderly'
+import UnknownToken from '../../../assets/img/question1.svg'
+import { useMultipleErc20 } from '../../../hooks/useErc20'
+import { useQuery, useUpdateQueryString } from '../../../hooks/useQuery'
+import { useTransactionData } from '../../../hooks/useTransactionData'
+import useWindowSizes from '../../../hooks/useWindowSizes'
 import { Network } from '../../../types'
 import { getImageUrl } from '../../../utils'
-import UnknownToken from '../../../assets/img/question1.svg'
-import { buildContractViewNodes, buildTokenViewNodes, getTokenAddress } from './nodesBuilder'
-import { CustomLayoutOptions, GetTxBatchTradesResult, PopperInstance, ViewType } from './types'
-import { useQuery, useUpdateQueryString } from '../../../hooks/useQuery'
-import { Order } from '../../../api/operator'
-import { useTransactionData } from '../../../hooks/useTransactionData'
-import { BuildSettlementParams, buildTradesBasedSettlement, buildTransfersBasedSettlement } from './settlementBuilder'
-import { traceToTransfersAndTrades } from '../../../api/tenderly'
-import { useMultipleErc20 } from '../../../hooks/useErc20'
+import { HEIGHT_HEADER_FOOTER } from '../../const'
 
 export type UseCytoscapeParams = {
   txBatchData: GetTxBatchTradesResult
@@ -137,18 +140,32 @@ export function useCytoscape(params: UseCytoscapeParams): UseCytoscapeReturn {
     }
   }, [cytoscapeRef, elements.length])
 
-  return {
-    failedToLoadGraph,
-    heightSize,
-    resetZoom,
-    setResetZoom,
-    setCytoscape,
-    layout,
-    setLayout,
-    cyPopperRef,
-    elements,
-    tokensStylesheets,
-  }
+  return useMemo(
+    () => ({
+      failedToLoadGraph,
+      heightSize,
+      resetZoom,
+      setResetZoom,
+      setCytoscape,
+      layout,
+      setLayout,
+      cyPopperRef,
+      elements,
+      tokensStylesheets,
+    }),
+    [
+      failedToLoadGraph,
+      heightSize,
+      resetZoom,
+      setResetZoom,
+      setCytoscape,
+      layout,
+      setLayout,
+      cyPopperRef,
+      elements,
+      tokensStylesheets,
+    ]
+  )
 }
 
 function getStylesheets(
@@ -188,9 +205,9 @@ const DEFAULT_VIEW_NAME = ViewType[DEFAULT_VIEW_TYPE]
 
 const VISUALIZATION_PARAM_NAME = 'vis'
 
-function useQueryViewParams(): { visualization: string } {
+function useQueryViewParams(): string {
   const query = useQuery()
-  return { visualization: query.get(VISUALIZATION_PARAM_NAME)?.toUpperCase() || DEFAULT_VIEW_NAME }
+  return query.get(VISUALIZATION_PARAM_NAME)?.toUpperCase() || DEFAULT_VIEW_NAME
 }
 
 function useUpdateVisQuery(): (vis: string) => void {
@@ -266,7 +283,10 @@ export function useTxBatchData(
       : buildTransfersBasedSettlement(params)
   }, [networkId, orderTokens, missingTokens, txData, orders, trades, transfers, visualization])
 
-  return { txSettlement, error: txData.error, isLoading: txData.isLoading || areTokensLoading }
+  return useMemo(
+    () => ({ txSettlement, error: txData.error, isLoading: txData.isLoading || areTokensLoading }),
+    [txSettlement, txData.error, txData.isLoading, areTokensLoading]
+  )
 }
 
 type UseVisualizationReturn = {
@@ -275,7 +295,7 @@ type UseVisualizationReturn = {
 }
 
 export function useVisualization(): UseVisualizationReturn {
-  const { visualization } = useQueryViewParams()
+  const visualization = useQueryViewParams()
 
   const updateVisQuery = useUpdateVisQuery()
 

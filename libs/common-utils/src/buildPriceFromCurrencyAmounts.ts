@@ -1,7 +1,7 @@
 import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
 
-import { Nullish } from './types'
 import { isFractionFalsy } from './isFractionFalsy'
+import { Nullish } from './types'
 
 export function buildPriceFromCurrencyAmounts(
   inputCurrencyAmount: CurrencyAmount<Currency>,

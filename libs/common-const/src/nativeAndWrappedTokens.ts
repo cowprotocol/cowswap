@@ -1,6 +1,7 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { TokenWithLogo } from './types'
+
 import { cowprotocolTokenLogoUrl } from './cowprotocolTokenLogoUrl'
+import { TokenWithLogo } from './types'
 
 export const NATIVE_CURRENCY_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
 
@@ -25,6 +26,14 @@ export const WRAPPED_NATIVE_CURRENCIES: Record<SupportedChainId, TokenWithLogo> 
     'WXDAI',
     'Wrapped XDAI'
   ),
+  [SupportedChainId.ARBITRUM_ONE]: new TokenWithLogo(
+    ETH_LOGO_URL,
+    SupportedChainId.ARBITRUM_ONE,
+    '0x82aF49447D8a07e3bd95BD0d56f35241523fBab1',
+    DEFAULT_NATIVE_DECIMALS,
+    'WETH',
+    'Wrapped Ether'
+  ),
   [SupportedChainId.SEPOLIA]: new TokenWithLogo(
     ETH_LOGO_URL,
     SupportedChainId.SEPOLIA,
@@ -44,14 +53,6 @@ export const NATIVE_CURRENCIES: Record<SupportedChainId, TokenWithLogo> = {
     'ETH',
     'Ether'
   ),
-  [SupportedChainId.SEPOLIA]: new TokenWithLogo(
-    undefined,
-    SupportedChainId.SEPOLIA,
-    NATIVE_CURRENCY_ADDRESS,
-    DEFAULT_NATIVE_DECIMALS,
-    'ETH',
-    'Ether'
-  ),
   [SupportedChainId.GNOSIS_CHAIN]: new TokenWithLogo(
     undefined,
     SupportedChainId.GNOSIS_CHAIN,
@@ -59,6 +60,22 @@ export const NATIVE_CURRENCIES: Record<SupportedChainId, TokenWithLogo> = {
     DEFAULT_NATIVE_DECIMALS,
     'xDAI',
     'xDAI'
+  ),
+  [SupportedChainId.ARBITRUM_ONE]: new TokenWithLogo(
+    undefined,
+    SupportedChainId.ARBITRUM_ONE,
+    NATIVE_CURRENCY_ADDRESS,
+    DEFAULT_NATIVE_DECIMALS,
+    'ETH',
+    'Ether'
+  ),
+  [SupportedChainId.SEPOLIA]: new TokenWithLogo(
+    undefined,
+    SupportedChainId.SEPOLIA,
+    NATIVE_CURRENCY_ADDRESS,
+    DEFAULT_NATIVE_DECIMALS,
+    'ETH',
+    'Ether'
   ),
 }
 

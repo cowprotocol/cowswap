@@ -1,14 +1,16 @@
 import { atom } from 'jotai'
+
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { environmentAtom } from '../environmentAtom'
 import {
   listsEnabledStateAtom,
   listsStatesByChainAtom,
   listsStatesMapAtom,
   userAddedListsSourcesAtom,
 } from './tokenListsStateAtom'
+
 import { ListState } from '../../types'
+import { environmentAtom } from '../environmentAtom'
 
 export const upsertListsAtom = atom(null, (get, set, chainId: SupportedChainId, listsStates: ListState[]) => {
   const globalState = get(listsStatesByChainAtom)

@@ -1,13 +1,14 @@
 import React from 'react'
-import { Helmet } from 'react-helmet'
 
-import { useOrderIdParam } from '../../hooks/useSanitizeOrderIdAndUpdateUrl'
-import { isAnOrderId } from '../../utils'
+import { Helmet } from 'react-helmet'
+import styled from 'styled-components/macro'
+
+import { Wrapper as WrapperMod } from './styled'
 
 import RedirectToSearch from '../../components/RedirectToSearch'
+import { useOrderIdParam } from '../../hooks/useSanitizeOrderIdAndUpdateUrl'
+import { isAnOrderId } from '../../utils'
 import { OrderWidget } from '../components/OrderWidget'
-import { Wrapper as WrapperMod } from './styled'
-import styled from 'styled-components'
 import { APP_TITLE } from '../const'
 
 const Wrapper = styled(WrapperMod)`

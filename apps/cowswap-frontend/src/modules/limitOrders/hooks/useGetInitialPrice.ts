@@ -12,7 +12,8 @@ import { useAsyncMemo } from 'use-async-memo'
 import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
 import { parsePrice } from 'modules/limitOrders/utils/parsePrice'
 
-import { getNativePrice } from 'api/gnosisProtocol'
+import { getNativePrice } from 'api/cowProtocol'
+import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
 type PriceResult = number | Error | undefined
 
@@ -126,5 +127,5 @@ export function useGetInitialPrice(): { price: Fraction | null; isLoading: boole
     return () => clearInterval(interval)
   }, [isWindowVisible])
 
-  return { price, isLoading }
+  return useSafeMemo(() => ({ price, isLoading }), [price, isLoading])
 }

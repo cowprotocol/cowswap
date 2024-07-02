@@ -1,13 +1,12 @@
 import { SimpleCowEventEmitter, CowEventListener, CowEventListeners, CowEvents } from '@cowprotocol/events'
-import { WidgetMethodsEmit } from './types'
-import { WindowListener, listenToMessageFromWindow, stopListeningWindowListener } from './messages'
 
-let i = 1
+import { WindowListener, listenToMessageFromWindow, stopListeningWindowListener } from './messages'
+import { WidgetMethodsEmit } from './types'
+
 export class IframeCowEventEmitter {
   private eventEmitter: SimpleCowEventEmitter = new SimpleCowEventEmitter()
   private listeners: CowEventListeners = []
   private widgetListener: WindowListener
-  private instanceNumber = i++
 
   constructor(private contentWindow: Window, listeners: CowEventListeners = []) {
     // Subscribe listeners to local event emitter

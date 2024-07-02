@@ -1,12 +1,13 @@
 import React from 'react'
+
 // also exported from '@storybook/react' if you can deal with breaking changes in 6.1
 import { Story, Meta } from '@storybook/react/types-6-0'
-
 import { GlobalStyles, Router, ThemeToggler } from 'storybook/decorators'
+
+import { RICH_ORDER } from '../../../test/data'
 
 import { OrderDetails, Props } from '.'
 
-import { RICH_ORDER } from '../../../test/data'
 
 export default {
   title: 'orders/OrderDetails',

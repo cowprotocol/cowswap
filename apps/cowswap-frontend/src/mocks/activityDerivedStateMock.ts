@@ -19,4 +19,5 @@ export const activityDerivedStateMock: ActivityDerivedState = {
   isUnfillable: false,
   isCreating: false,
   isFailed: false,
+  isReplaced: false,
 }

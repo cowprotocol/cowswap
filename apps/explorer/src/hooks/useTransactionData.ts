@@ -1,7 +1,9 @@
+import { useCallback, useEffect, useMemo, useState } from 'react'
+
 import { Network } from 'types'
-import { Contract, Trace } from 'api/tenderly/types'
-import { useCallback, useEffect, useState } from 'react'
+
 import { getTransactionContracts, getTransactionTrace } from 'api/tenderly'
+import { Contract, Trace } from 'api/tenderly/types'
 
 type LoadingData<T> = {
   data: T
@@ -47,7 +49,7 @@ function useTransactionTrace(network: Network | undefined, txHash: string): Load
     }
   }, [network, txHash, fetchTrace])
 
-  return { data: trace, isLoading, error }
+  return useMemo(() => ({ data: trace, isLoading, error }), [trace, isLoading, error])
 }
 
 const CONTRACTS_CACHE = new Map<string, Contract[]>()
@@ -84,7 +86,7 @@ function useTransactionContracts(network: Network | undefined, txHash: string): 
     }
   }, [network, txHash, fetchContracts])
 
-  return { data: contracts, isLoading, error }
+  return useMemo(() => ({ data: contracts, isLoading, error }), [contracts, isLoading, error])
 }
 
 export type TransactionData = {
@@ -98,10 +100,20 @@ export function useTransactionData(network: Network | undefined, txHash: string)
   const traceData = useTransactionTrace(network, txHash)
   const contractsData = useTransactionContracts(network, txHash)
 
-  return {
-    trace: traceData.data,
-    contracts: contractsData.data,
-    isLoading: traceData.isLoading || contractsData.isLoading,
-    error: traceData.error || contractsData.error,
-  }
+  return useMemo(
+    () => ({
+      trace: traceData.data,
+      contracts: contractsData.data,
+      isLoading: traceData.isLoading || contractsData.isLoading,
+      error: traceData.error || contractsData.error,
+    }),
+    [
+      traceData.data,
+      contractsData.data,
+      traceData.isLoading,
+      contractsData.isLoading,
+      traceData.error,
+      contractsData.error,
+    ]
+  )
 }

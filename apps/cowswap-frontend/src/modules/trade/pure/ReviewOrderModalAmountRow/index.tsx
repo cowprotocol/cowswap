@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import { FiatAmount, TokenAmount } from '@cowprotocol/ui'
+import { FiatAmount, InfoTooltip, Row, TokenAmount } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
@@ -11,14 +11,16 @@ import { ConfirmDetailsItem } from '../ConfirmDetailsItem'
 import { ReceiveAmountTitle } from '../ReceiveAmountTitle'
 
 export type ReviewOrderAmountRowProps = {
-  amount: Nullish<CurrencyAmount<Currency>>
+  amount?: Nullish<CurrencyAmount<Currency>>
   fiatAmount?: Nullish<CurrencyAmount<Currency>>
   tooltip?: ReactNode
   label: ReactNode
   children?: ReactNode
+  amountSuffix?: ReactNode
   isAmountAccurate?: boolean
   withTimelineDot?: boolean
   highlighted?: boolean
+  alwaysRow?: boolean
 }
 
 export function ReviewOrderModalAmountRow({
@@ -26,14 +28,19 @@ export function ReviewOrderModalAmountRow({
   fiatAmount,
   tooltip,
   label,
+  children,
+  amountSuffix,
   isAmountAccurate = true,
   withTimelineDot = false,
   highlighted = false,
+  alwaysRow = false,
 }: ReviewOrderAmountRowProps) {
   const Amount = (
-    <Content>
+    <Content highlighted={highlighted}>
+      {children}
       {!isAmountAccurate && '≈ '}
       <TokenAmount amount={amount} defaultValue="-" tokenSymbol={amount?.currency} />
+      {amountSuffix}
       {fiatAmount && (
         <i>
           &nbsp;(
@@ -44,10 +51,20 @@ export function ReviewOrderModalAmountRow({
   )
 
   return (
-    <ConfirmDetailsItem tooltip={tooltip} label={highlighted ? undefined : label} withTimelineDot={withTimelineDot}>
+    <ConfirmDetailsItem
+      tooltip={tooltip}
+      label={highlighted ? undefined : label}
+      alwaysRow={alwaysRow}
+      withTimelineDot={withTimelineDot}
+    >
       {highlighted ? (
         <>
-          <ReceiveAmountTitle>{label}</ReceiveAmountTitle>
+          <ReceiveAmountTitle>
+            <Row gap="6px">
+              <span>{label}</span>
+              {tooltip && <InfoTooltip content={tooltip} />}
+            </Row>
+          </ReceiveAmountTitle>
           <span>{Amount}</span>
         </>
       ) : (

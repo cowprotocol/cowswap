@@ -4,8 +4,7 @@ import { UI } from '@cowprotocol/ui'
 import { Trans } from '@lingui/macro'
 import { AlertTriangle } from 'react-feather'
 import styled from 'styled-components/macro'
-
-import { CloseIcon } from 'legacy/theme'
+import { CloseIcon } from 'theme'
 
 const Wrapper = styled.div`
   width: 100%;

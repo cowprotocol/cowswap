@@ -1,4 +1,5 @@
 import { TxOptionalParams } from 'types'
+
 import { RECEIPT } from '../test/data'
 
 const wait = process.env.NODE_ENV === 'test' ? noop : waitImpl

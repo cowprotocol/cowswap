@@ -4,34 +4,30 @@ import 'inter-ui'
 import '@cowprotocol/analytics'
 import './sentry'
 import { Provider as AtomProvider } from 'jotai'
-import { useEffect, StrictMode } from 'react'
+import { ReactNode, StrictMode } from 'react'
 
-import { BlockNumberProvider } from '@cowprotocol/common-hooks'
-import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { nodeRemoveChildFix } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
 import { SnackbarsWidget } from '@cowprotocol/snackbars'
+import { Web3Provider } from '@cowprotocol/wallet'
 
 import { LanguageProvider } from 'i18n'
 import { createRoot } from 'react-dom/client'
 import { Provider } from 'react-redux'
 import { HashRouter } from 'react-router-dom'
 import * as serviceWorkerRegistration from 'serviceWorkerRegistration'
+import { ThemeProvider, ThemedGlobalStyle } from 'theme'
 
-import AppziButton from 'legacy/components/AppziButton'
-import { Popups } from 'legacy/components/Popups'
-import Web3Provider from 'legacy/components/Web3Provider'
 import { cowSwapStore } from 'legacy/state'
-import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from 'legacy/theme'
+import { useAppSelector } from 'legacy/state/hooks'
 
 import { App } from 'modules/application/containers/App'
 import { Updaters } from 'modules/application/containers/App/Updaters'
 import { WithLDProvider } from 'modules/application/containers/WithLDProvider'
-import { FortuneWidget } from 'modules/fortune/containers/FortuneWidget'
-
-import { FeatureGuard } from 'common/containers/FeatureGuard'
+import { useInjectedWidgetParams } from 'modules/injectedWidget'
 
 import { WalletUnsupportedNetworkBanner } from '../common/containers/WalletUnsupportedNetworkBanner'
+import { BlockNumberProvider } from '../common/hooks/useBlockNumber'
 
 // Node removeChild hackaround
 // based on: https://github.com/facebook/react/issues/11538#issuecomment-417504600
@@ -42,23 +38,13 @@ if (window.ethereum) {
 }
 
 function Main() {
-  const isInjectedWidgetMode = isInjectedWidget()
-
-  useEffect(() => {
-    const skeleton = document.getElementById('skeleton')
-    if (skeleton) {
-      skeleton.parentNode?.removeChild(skeleton)
-    }
-  }, [])
-
   return (
     <StrictMode>
-      <FixedGlobalStyle />
       <Provider store={cowSwapStore}>
         <AtomProvider store={jotaiStore}>
           <HashRouter>
             <LanguageProvider>
-              <Web3Provider>
+              <Web3ProviderInstance>
                 <ThemeProvider>
                   <ThemedGlobalStyle />
                   <BlockNumberProvider>
@@ -66,28 +52,30 @@ function Main() {
                       <WalletUnsupportedNetworkBanner />
                       <Updaters />
 
-                      {!isInjectedWidgetMode && (
-                        <>
-                          <FeatureGuard featureFlag="cowFortuneEnabled">
-                            <FortuneWidget />
-                          </FeatureGuard>
-                          <AppziButton />
-                        </>
-                      )}
-
-                      <Popups />
-                      <SnackbarsWidget />
+                      <Toasts />
                       <App />
                     </WithLDProvider>
                   </BlockNumberProvider>
                 </ThemeProvider>
-              </Web3Provider>
+              </Web3ProviderInstance>
             </LanguageProvider>
           </HashRouter>
         </AtomProvider>
       </Provider>
     </StrictMode>
   )
+}
+
+function Web3ProviderInstance({ children }: { children: ReactNode }) {
+  const selectedWallet = useAppSelector((state) => state.user.selectedWallet)
+
+  return <Web3Provider selectedWallet={selectedWallet}>{children}</Web3Provider>
+}
+
+function Toasts() {
+  const { disableToastMessages = false } = useInjectedWidgetParams()
+
+  return <SnackbarsWidget hidden={disableToastMessages} />
 }
 
 const container = document.getElementById('root')

@@ -1,15 +1,19 @@
 import React from 'react'
-import { Search } from '../../components/common/Search'
-import { Wrapper as WrapperMod } from '../styled'
-import styled from 'styled-components'
-import { media } from '../../../theme/styles/media'
-import { StatsSummaryCardsWidget } from '../../components/SummaryCardsWidget'
-import { useNetworkId } from '../../../state/network'
-import { TokensTableWidget } from '../../components/TokensTableWidget'
-import { Helmet } from 'react-helmet'
-import { APP_TITLE } from '../../const'
-import { SUBGRAPH_URLS } from '../../../consts/subgraphUrls'
+
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+
+import { useFlags } from 'launchdarkly-react-client-sdk'
+import { Helmet } from 'react-helmet'
+import styled from 'styled-components/macro'
+import { media } from 'theme'
+
+import { SUBGRAPH_URLS } from '../../../consts/subgraphUrls'
+import { useNetworkId } from '../../../state/network'
+import { Search } from '../../components/common/Search'
+import { StatsSummaryCardsWidget } from '../../components/SummaryCardsWidget'
+import { TokensTableWidget } from '../../components/TokensTableWidget'
+import { APP_TITLE } from '../../const'
+import { Wrapper as WrapperMod } from '../styled'
 
 const Wrapper = styled(WrapperMod)`
   max-width: 140rem;
@@ -51,14 +55,17 @@ const SummaryWrapper = styled.section`
 const SHOW_TOKENS_TABLE: Record<SupportedChainId, boolean> = {
   [SupportedChainId.MAINNET]: true,
   [SupportedChainId.GNOSIS_CHAIN]: false, // Gchain data is not reliable
+  [SupportedChainId.ARBITRUM_ONE]: false, // No data for Arbitrum one
   [SupportedChainId.SEPOLIA]: false, // No data for Sepolia
 }
 
 export const Home: React.FC = () => {
   const networkId = useNetworkId() || undefined
 
-  const showCharts = !!networkId && SUBGRAPH_URLS[networkId] !== null
-  const showTokensTable = !!networkId && SHOW_TOKENS_TABLE[networkId]
+  const { isTheGraphEnabled } = useFlags()
+
+  const showCharts = !!networkId && isTheGraphEnabled && SUBGRAPH_URLS[networkId] !== null
+  const showTokensTable = !!networkId && isTheGraphEnabled && SHOW_TOKENS_TABLE[networkId]
 
   return (
     <Wrapper>

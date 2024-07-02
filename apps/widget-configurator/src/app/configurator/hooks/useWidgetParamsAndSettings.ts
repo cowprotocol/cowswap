@@ -1,19 +1,26 @@
 import { useMemo } from 'react'
 
-import type { CowSwapWidgetEnv, CowSwapWidgetParams } from '@cowprotocol/widget-lib'
+import type { CowSwapWidgetParams } from '@cowprotocol/widget-lib'
 
 import { isDev, isLocalHost, isVercel } from '../../../env'
 import { ConfiguratorState } from '../types'
 
-const getEnv = (): CowSwapWidgetEnv => {
-  if (isLocalHost) return 'local'
-  if (isDev) return 'dev'
-  if (isVercel) return 'pr'
+const getBaseUrl = (): string => {
+  if (typeof window === 'undefined' || !window) return ''
 
-  return 'prod'
+  if (isLocalHost) return 'http://localhost:3000'
+  if (isDev) return 'https://dev.swap.cow.fi'
+  if (isVercel) {
+    const prKey = window.location.hostname.replace('widget-configurator-git-', '').replace('-cowswap.vercel.app', '')
+    return `https://swap-dev-git-${prKey}-cowswap.vercel.app`
+  }
+
+  return 'https://swap.cow.fi'
 }
 
-export function useWidgetParams(configuratorState: ConfiguratorState, isDappMode: boolean): CowSwapWidgetParams {
+const DEFAULT_BASE_URL = getBaseUrl()
+
+export function useWidgetParams(configuratorState: ConfiguratorState): CowSwapWidgetParams {
   return useMemo(() => {
     const {
       chainId,
@@ -24,11 +31,13 @@ export function useWidgetParams(configuratorState: ConfiguratorState, isDappMode
       sellTokenAmount,
       buyToken,
       buyTokenAmount,
-      tokenLists,
+      tokenListUrls,
       customColors,
       defaultColors,
       partnerFeeBps,
       partnerFeeRecipient,
+      standaloneMode,
+      disableToastMessages,
     } = configuratorState
 
     const themeColors = {
@@ -38,29 +47,33 @@ export function useWidgetParams(configuratorState: ConfiguratorState, isDappMode
 
     const params: CowSwapWidgetParams = {
       appCode: 'CoW Widget: Configurator',
-      width: '450px',
+      width: '100%',
       height: '640px',
       chainId,
-      tokenLists: tokenLists.filter((list) => list.enabled).map((list) => list.url),
-      env: getEnv(),
+      tokenLists: tokenListUrls.filter((list) => list.enabled).map((list) => list.url),
+      baseUrl: DEFAULT_BASE_URL,
       tradeType: currentTradeType,
       sell: { asset: sellToken, amount: sellTokenAmount ? sellTokenAmount.toString() : undefined },
       buy: { asset: buyToken, amount: buyTokenAmount?.toString() },
       enabledTradeTypes,
-      theme: {
-        baseTheme: theme,
-        primary: themeColors.primary,
-        background: themeColors.background,
-        paper: themeColors.paper,
-        text: themeColors.text,
-        danger: themeColors.danger,
-        warning: themeColors.warning,
-        alert: themeColors.alert,
-        info: themeColors.info,
-        success: themeColors.success,
-      },
+      theme:
+        JSON.stringify(customColors) === JSON.stringify(defaultColors)
+          ? theme
+          : {
+              baseTheme: theme,
+              primary: themeColors.primary,
+              background: themeColors.background,
+              paper: themeColors.paper,
+              text: themeColors.text,
+              danger: themeColors.danger,
+              warning: themeColors.warning,
+              alert: themeColors.alert,
+              info: themeColors.info,
+              success: themeColors.success,
+            },
 
-      hideConnectButton: isDappMode,
+      standaloneMode,
+      disableToastMessages,
 
       partnerFee:
         partnerFeeBps > 0
@@ -72,5 +85,5 @@ export function useWidgetParams(configuratorState: ConfiguratorState, isDappMode
     }
 
     return params
-  }, [configuratorState, isDappMode])
+  }, [configuratorState])
 }

@@ -1,6 +1,8 @@
 import { useSetAtom } from 'jotai'
-import { toggleListAtom } from '../../state/tokenLists/tokenListsActionsAtom'
+
 import { toggleListAnalytics } from '@cowprotocol/analytics'
+
+import { toggleListAtom } from '../../state/tokenLists/tokenListsActionsAtom'
 import { ListState } from '../../types'
 
 export function useToggleList() {

@@ -6,6 +6,8 @@ import { transparentize } from 'color2k'
 import styled from 'styled-components/macro'
 import { WithClassName } from 'types'
 
+import { SettingsIcon } from 'modules/trade/pure/Settings'
+
 import SettingsMod, { EmojiWrapper, MenuFlyout, StyledMenuButton, StyledMenuIcon } from './SettingsMod'
 
 const Settings = styled(SettingsMod)`
@@ -50,23 +52,18 @@ const Settings = styled(SettingsMod)`
 
     svg {
       opacity: 1;
-      margin: 0;
+      margin: auto;
       transition: transform 0.3s cubic-bezier(0.65, 0.05, 0.36, 1);
       color: inherit;
-    }
-
-    &:hover > svg {
-      transform: rotate(180deg);
-    }
-
-    &:hover svg > path,
-    &:hover svg > circle {
-      stroke: currentColor;
     }
   }
 
   ${StyledMenuIcon} {
     --size: var(${UI.ICON_SIZE_NORMAL});
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
     height: var(--size);
     width: var(--size);
     color: inherit;
@@ -75,12 +72,6 @@ const Settings = styled(SettingsMod)`
 
     &:hover {
       opacity: 1;
-    }
-
-    > path,
-    > circle {
-      transition: stroke var(${UI.ANIMATION_DURATION}) ease-in-out;
-      stroke: currentColor;
     }
   }
 
@@ -141,7 +132,7 @@ export interface SettingsTabProp extends WithClassName {
 function SettingsButton({ toggleSettings }: SettingsButtonProps) {
   return (
     <StyledMenuButton onClick={toggleSettings} id="open-settings-dialog-button">
-      <StyledMenuIcon />
+      <SettingsIcon />
     </StyledMenuButton>
   )
 }

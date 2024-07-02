@@ -1,10 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
+import { getAddress } from '@cowprotocol/common-utils'
 import { isSupportedPermitInfo, PermitHookData } from '@cowprotocol/permit-utils'
 
 import { useDerivedTradeState } from 'modules/trade'
-
-import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
 import { useGeneratePermitHook } from './useGeneratePermitHook'
 import { usePermitInfo } from './usePermitInfo'
@@ -38,17 +37,20 @@ export function useAccountAgnosticPermitHookData(): PermitHookData | undefined {
 }
 
 function useGeneratePermitHookParams(): GeneratePermitHookParams | undefined {
-  const { state } = useDerivedTradeState()
+  const state = useDerivedTradeState()
   const { inputCurrency, tradeType } = state || {}
 
   const permitInfo = usePermitInfo(inputCurrency, tradeType)
 
-  return useSafeMemo(() => {
-    if (!inputCurrency || !('address' in inputCurrency) || !isSupportedPermitInfo(permitInfo)) return undefined
+  const address = getAddress(inputCurrency)
+  const name = inputCurrency?.name
+
+  return useMemo(() => {
+    if (!address || !isSupportedPermitInfo(permitInfo)) return undefined
 
     return {
-      inputToken: { address: inputCurrency.address, name: inputCurrency.name },
+      inputToken: { address, name },
       permitInfo,
     }
-  }, [inputCurrency, permitInfo])
+  }, [address, name, permitInfo])
 }

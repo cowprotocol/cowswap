@@ -7,6 +7,12 @@ import { ColorPalette } from '../types'
 
 const LOCAL_STORAGE_KEY_NAME = 'COW_WIDGET_PALETTE_'
 
+const getCachedPalette = (mode: PaletteMode) => {
+  const cache = localStorage.getItem(`${LOCAL_STORAGE_KEY_NAME}${mode}`)
+
+  return cache ? JSON.parse(cache) : null
+}
+
 export interface ColorPaletteManager {
   defaultPalette: ColorPalette
   colorPalette: ColorPalette
@@ -19,7 +25,7 @@ export function useColorPaletteManager(mode: PaletteMode): ColorPaletteManager {
     return mode === 'dark' ? DEFAULT_DARK_PALETTE : DEFAULT_LIGHT_PALETTE
   }, [mode])
 
-  const [colorPalette, updateColorPalette] = useState<ColorPalette>(defaultPalette)
+  const [colorPalette, updateColorPalette] = useState<ColorPalette>(getCachedPalette(mode) || defaultPalette)
 
   const persistPalette = useCallback(
     (colorPalette: ColorPalette) => {
@@ -44,12 +50,13 @@ export function useColorPaletteManager(mode: PaletteMode): ColorPaletteManager {
 
   // Restore palette from localStorage when mode changes
   useEffect(() => {
-    const savedPalette = localStorage.getItem(`${LOCAL_STORAGE_KEY_NAME}${mode}`)
+    const newPalette = getCachedPalette(mode)
 
-    const newPalette = savedPalette ? JSON.parse(savedPalette) : defaultPalette
-
-    updateColorPalette(newPalette)
+    updateColorPalette(newPalette || defaultPalette)
   }, [mode, defaultPalette])
 
-  return { defaultPalette, colorPalette, setColorPalette, resetColorPalette }
+  return useMemo(
+    () => ({ defaultPalette, colorPalette, setColorPalette, resetColorPalette }),
+    [defaultPalette, colorPalette, setColorPalette, resetColorPalette]
+  )
 }

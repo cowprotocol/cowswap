@@ -2,11 +2,12 @@ import { Command } from '@cowprotocol/types'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
-import { TokenAmount } from '../TokenAmount'
+
 import { Nullish } from '../../types'
-import { LinkStyledButton } from '../LinkStyledButton'
-import { ButtonSecondary } from '../Button'
+import { ButtonSecondaryAlt } from '../ButtonSecondaryAlt'
 import { CowSwapSafeAppLink } from '../CowSwapSafeAppLink'
+import { LinkStyledButton } from '../LinkStyledButton'
+import { TokenAmount } from '../TokenAmount'
 
 import { InlineBanner, InlineBannerProps } from './index'
 
@@ -76,7 +77,7 @@ export function SmallVolumeWarningBanner({ feePercentage, feeAmount }: SmallVolu
     <InlineBanner iconSize={32}>
       <strong>Small orders are unlikely to be executed</strong>
       <p>
-        For this order, network fees would be{' '}
+        For this order, network costs would be{' '}
         <b>
           {feePercentage?.toFixed(2)}% (
           <TokenAmount amount={feeAmount} tokenSymbol={feeAmount?.currency} />)
@@ -91,6 +92,16 @@ export function SmallVolumeWarningBanner({ feePercentage, feeAmount }: SmallVolu
 }
 
 type CustomRecipientBannerProps = InlineBannerProps & { onDismiss?: Command }
+
+const RecipientBannerContent = styled.div`
+  display: flex;
+  gap: 10px;
+  align-items: center;
+
+  > p {
+    margin: 0;
+  }
+`
 
 export function CustomRecipientWarningBanner({
   bannerType,
@@ -112,14 +123,16 @@ export function CustomRecipientWarningBanner({
       bannerType={bannerType}
       padding={padding}
     >
-      <p>
-        <strong>Caution:</strong> Order recipient address differs from order owner!
-      </p>
-      {onDismiss && (
-        <ButtonSecondary minHeight={'28px'} onClick={handleDismiss}>
-          Dismiss
-        </ButtonSecondary>
-      )}
+      <RecipientBannerContent>
+        <p>
+          <strong>Caution:</strong> Order recipient address differs from order owner!
+        </p>
+        {onDismiss && (
+          <ButtonSecondaryAlt minHeight={'28px'} onClick={handleDismiss}>
+            Dismiss
+          </ButtonSecondaryAlt>
+        )}
+      </RecipientBannerContent>
     </InlineBanner>
   )
 }

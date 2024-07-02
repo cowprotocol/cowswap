@@ -4,7 +4,6 @@ import { changeSwapAmountAnalytics, switchTokensAnalytics } from '@cowprotocol/a
 import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
 import { FEE_SIZE_THRESHOLD } from '@cowprotocol/common-const'
 import { formatSymbol, getIsNativeToken, isAddress, tryParseCurrencyAmount } from '@cowprotocol/common-utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useENS } from '@cowprotocol/ens'
 import { useAreThereTokensWithSameSymbol, useTokenBySymbolOrAddress } from '@cowprotocol/tokens'
 import { Command } from '@cowprotocol/types'
@@ -15,16 +14,16 @@ import { t } from '@lingui/macro'
 
 import { AppState } from 'legacy/state'
 import { useAppDispatch, useAppSelector } from 'legacy/state/hooks'
-import { useGetQuoteAndStatus, useQuote } from 'legacy/state/price/hooks'
+import { useGetQuoteAndStatus } from 'legacy/state/price/hooks'
 import { setRecipient, switchCurrencies, typeInput } from 'legacy/state/swap/actions'
-import { buildTradeExactInWithFee, buildTradeExactOutWithFee, stringToCurrency } from 'legacy/state/swap/extension'
+import { buildTradeExactInWithFee, buildTradeExactOutWithFee } from 'legacy/state/swap/extension'
 import TradeGp from 'legacy/state/swap/TradeGp'
 import { isWrappingTrade } from 'legacy/state/swap/utils'
 import { Field } from 'legacy/state/types'
 
-import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { useNavigateOnCurrencySelection } from 'modules/trade/hooks/useNavigateOnCurrencySelection'
 import { useTradeNavigate } from 'modules/trade/hooks/useTradeNavigate'
+import { useVolumeFee } from 'modules/volumeFee'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
@@ -50,6 +49,7 @@ export function useSwapState(): AppState['swap'] {
 }
 
 export type Currencies = { [field in Field]?: Currency | null }
+
 export interface SwapActions {
   onCurrencySelection: (field: Field, currency: Currency) => void
   onSwitchTokens: Command
@@ -64,6 +64,7 @@ interface DerivedSwapInfo {
   parsedAmount: CurrencyAmount<Currency> | undefined
   // TODO: remove duplications of the value (trade?.maximumAmountIn(allowedSlippage))
   slippageAdjustedSellAmount: CurrencyAmount<Currency> | null
+  slippageAdjustedBuyAmount: CurrencyAmount<Currency> | null
   inputError?: string
   trade: TradeGp | undefined
   allowedSlippage: Percent
@@ -100,12 +101,17 @@ export function useSwapActionHandlers(): SwapActions {
     [dispatch]
   )
 
-  return {
+  return useMemo(() => ({
     onSwitchTokens,
     onCurrencySelection,
     onUserInput,
     onChangeRecipient,
-  }
+  }), [
+    onSwitchTokens,
+    onCurrencySelection,
+    onUserInput,
+    onChangeRecipient
+  ])
 }
 
 /**
@@ -123,14 +129,13 @@ export function useHighFeeWarning(trade?: TradeGp) {
   const [isHighFee, feePercentage] = useMemo(() => {
     if (!trade) return [false, undefined]
 
-    const { outputAmountWithoutFee, inputAmountAfterFees, fee, partnerFeeAmount } = trade
+    const { outputAmountWithoutFee, inputAmountAfterFees, fee, volumeFeeAmount } = trade
     const isExactInput = trade.tradeType === TradeType.EXACT_INPUT
     const feeAsCurrency = isExactInput ? trade.executionPrice.quote(fee.feeAsCurrency) : fee.feeAsCurrency
 
-    const totalFeeAmount = partnerFeeAmount ? feeAsCurrency.add(partnerFeeAmount) : feeAsCurrency
+    const totalFeeAmount = volumeFeeAmount ? feeAsCurrency.add(volumeFeeAmount) : feeAsCurrency
     const targetAmount = isExactInput ? outputAmountWithoutFee : inputAmountAfterFees
-    const feePercentageRaw = totalFeeAmount.divide(targetAmount).asFraction
-    const feePercentage = isExactInput ? feePercentageRaw.multiply(100) : feePercentageRaw.subtract(100).multiply(-1)
+    const feePercentage = totalFeeAmount.divide(targetAmount).multiply(100).asFraction
 
     return [feePercentage.greaterThan(FEE_SIZE_THRESHOLD), feePercentage]
   }, [trade])
@@ -140,13 +145,13 @@ export function useHighFeeWarning(trade?: TradeGp) {
     setFeeWarningAccepted(false)
   }, [INPUT.currencyId, OUTPUT.currencyId, independentField])
 
-  return {
+  return useSafeMemo(() => ({
     isHighFee,
     feePercentage,
     // we only care/check about feeWarning being accepted if the fee is actually high..
     feeWarningAccepted: _computeFeeWarningAcceptedState({ feeWarningAccepted, isHighFee }),
     setFeeWarningAccepted,
-  }
+  }), [isHighFee, feePercentage, feeWarningAccepted, setFeeWarningAccepted])
 }
 
 function _computeFeeWarningAcceptedState({
@@ -177,10 +182,10 @@ export function useUnknownImpactWarning() {
     setImpactWarningAccepted(false)
   }, [INPUT.currencyId, OUTPUT.currencyId, independentField])
 
-  return {
+  return useMemo(() => ({
     impactWarningAccepted,
     setImpactWarningAccepted,
-  }
+  }), [impactWarningAccepted, setImpactWarningAccepted])
 }
 
 // from the current swap inputs, compute the best trade and return it.
@@ -242,15 +247,9 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
     chainId,
   })
 
-  // purely for debugging
-  useEffect(() => {
-    console.debug('[useDerivedSwapInfo] Price quote: ', quote?.price?.amount)
-    console.debug('[useDerivedSwapInfo] Fee quote: ', quote?.fee?.amount)
-  }, [quote])
-
   const isWrapping = isWrappingTrade(inputCurrency, outputCurrency, chainId)
 
-  const { partnerFee } = useInjectedWidgetParams()
+  const volumeFee = useVolumeFee()
 
   const trade = useSafeMemo(() => {
     if (isWrapping) return undefined
@@ -260,7 +259,7 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
         parsedAmount,
         outputCurrency,
         quote,
-        partnerFee,
+        volumeFee,
       })
     }
 
@@ -268,9 +267,9 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
       parsedAmount,
       inputCurrency,
       quote,
-      partnerFee,
+      volumeFee,
     })
-  }, [isExactIn, parsedAmount, inputCurrency, outputCurrency, quote, partnerFee, isWrapping])
+  }, [isExactIn, parsedAmount, inputCurrency, outputCurrency, quote, volumeFee, isWrapping])
 
   const currencyBalances = useMemo(
     () => ({
@@ -286,6 +285,7 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
   // const allowedSlippage = useUserSlippageToleranceWithDefault(autoSlippageTolerance) // mod
   const allowedSlippage = useSwapSlippage()
   const slippageAdjustedSellAmount = trade?.maximumAmountIn(allowedSlippage) || null
+  const slippageAdjustedBuyAmount = trade?.minimumAmountOut(allowedSlippage) || null
 
   const inputError = useMemo(() => {
     let inputError: string | undefined
@@ -328,58 +328,27 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
     return inputError
   }, [account, slippageAdjustedSellAmount, currencies, currencyBalances, inputCurrency, parsedAmount, to]) // mod
 
-  return useMemo(
-    () => {
-      return {
-        currencies,
-        currenciesIds,
-        currencyBalances,
-        parsedAmount,
-        inputError,
-        trade,
-        allowedSlippage,
-        slippageAdjustedSellAmount: slippageAdjustedSellAmount,
-      }
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [
-      allowedSlippage,
-      currencyBalances,
-      currenciesIds,
-      inputError,
-      parsedAmount,
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      JSON.stringify(trade),
-      slippageAdjustedSellAmount,
-    ] // mod
-  )
-}
-
-export function useIsFeeGreaterThanInput({
-  address,
-  chainId,
-  trade,
-}: {
-  address?: string | null
-  chainId?: SupportedChainId
-  trade: TradeGp | undefined
-}): {
-  isFeeGreater: boolean
-  fee: CurrencyAmount<Currency> | null
-} {
-  const quote = useQuote({ chainId, token: address })
-  const feeToken = useTokenBySymbolOrAddress(address)
-
   return useMemo(() => {
-    if (!quote || !feeToken) return { isFeeGreater: false, fee: null }
-
-    const isSellOrder = trade?.tradeType === TradeType.EXACT_INPUT
-    const amountAfterFees = isSellOrder ? trade?.outputAmountAfterFees : trade?.inputAmountAfterFees
-    const isQuoteError = quote.error === 'fee-exceeds-sell-amount'
-
     return {
-      isFeeGreater: isQuoteError || (!!amountAfterFees && (amountAfterFees.equalTo(0) || amountAfterFees.lessThan(0))),
-      fee: quote.fee ? stringToCurrency(quote.fee.amount, feeToken) : null,
+      currencies,
+      currenciesIds,
+      currencyBalances,
+      parsedAmount,
+      inputError,
+      trade,
+      allowedSlippage,
+      slippageAdjustedSellAmount,
+      slippageAdjustedBuyAmount,
     }
-  }, [quote, trade, feeToken])
+  }, [
+    currencies,
+    trade,
+    allowedSlippage,
+    currencyBalances,
+    currenciesIds,
+    inputError,
+    parsedAmount,
+    slippageAdjustedSellAmount,
+    slippageAdjustedBuyAmount,
+  ])
 }

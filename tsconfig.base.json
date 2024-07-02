@@ -3,9 +3,12 @@
   "compilerOptions": {
     "rootDir": ".",
     "moduleResolution": "node",
-    "target": "es2015",
+    "target": "es2022",
     "module": "esnext",
-    "lib": ["es2020", "dom"],
+    "lib": [
+      "es2022",
+      "dom"
+    ],
     "allowJs": true,
     "sourceMap": true,
     "declaration": false,
@@ -38,17 +41,18 @@
       "@cowprotocol/common-const": ["libs/common-const/src/index.ts"],
       "@cowprotocol/common-hooks": ["libs/common-hooks/src/index.ts"],
       "@cowprotocol/common-utils": ["libs/common-utils/src/index.ts"],
-      "@cowprotocol/events": ["libs/events/src/index.ts"],
-      "@cowprotocol/types": ["libs/types/src/index.ts"],
       "@cowprotocol/core": ["libs/core/src/index.ts"],
       "@cowprotocol/ens": ["libs/ens/src/index.ts"],
+      "@cowprotocol/events": ["libs/events/src/index.ts"],
       "@cowprotocol/multicall": ["libs/multicall/src/index.ts"],
       "@cowprotocol/permit-utils": ["libs/permit-utils/src/index.ts"],
       "@cowprotocol/snackbars": ["libs/snackbars/src/index.ts"],
       "@cowprotocol/tokens": ["libs/tokens/src/index.ts"],
+      "@cowprotocol/types": ["libs/types/src/index.ts"],
       "@cowprotocol/ui": ["libs/ui/src/index.ts"],
       "@cowprotocol/ui-utils": ["libs/ui-utils/src/index.ts"],
       "@cowprotocol/wallet": ["libs/wallet/src/index.ts"],
+      "@cowprotocol/wallet-provider": ["libs/wallet-provider/src/index.ts"],
       "@cowprotocol/widget-lib": ["libs/widget-lib/src/index.ts"],
       "@cowprotocol/widget-react": ["libs/widget-react/src/index.ts"]
     }

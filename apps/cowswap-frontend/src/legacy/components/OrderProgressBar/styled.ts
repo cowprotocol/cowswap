@@ -1,6 +1,6 @@
+// TODO: replace with new logo
 import CowProtocolLogo from '@cowprotocol/assets/cow-swap/cowprotocol.svg'
-import { ExternalLink } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
+import { ExternalLink, Media, UI } from '@cowprotocol/ui'
 
 import { animated } from '@react-spring/web'
 import { CheckCircle, Clock } from 'react-feather'
@@ -21,17 +21,17 @@ export const ProgressBarWrapper = animated(styled.div`
   background-color: var(${UI.COLOR_PAPER_DARKER});
   transition: height 0.2s ease;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     padding: 18px;
     margin: 24px auto 12px;
     width: 100%;
     max-width: 100%;
     grid-column: 1 / -1;
-  `};
+  }
 `)
 
 export const ProgressBarInnerWrapper = styled.div`
-  background-color: var(${UI.COLOR_PAPER_DARKEST});
+  background-color: var(${UI.COLOR_PAPER});
   border-radius: 18px;
   overflow: visible !important;
   position: relative;
@@ -58,9 +58,9 @@ export const CowProtocolIcon = styled.div`
   height: 24px;
   width: 24px;
   border-radius: 100%;
-  border: 1px solid ${({ theme }) => theme.bg1};
+  border: 1px solid ${({ theme }) => theme.paper};
   background: url(${CowProtocolLogo}) ${({ theme }) => theme.black} no-repeat center/75%;
-  box-shadow: 0 0 10px 2px ${({ theme }) => theme.bg1};
+  box-shadow: 0 0 10px 2px ${({ theme }) => theme.paper};
 `
 
 export const WarningLogo = styled.div`
@@ -73,7 +73,7 @@ export const WarningLogo = styled.div`
   border: transparent;
 
   background: ${({ theme }) => theme.blueShade};
-  box-shadow: 0 0 10px 2px ${({ theme }) => theme.bg1};
+  box-shadow: 0 0 10px 2px ${({ theme }) => theme.paper};
 
   img {
     margin: 4px 0 0 2px;
@@ -90,7 +90,7 @@ export const WarningLogo = styled.div`
     position: absolute;
     left: -2px;
     top: -2px;
-    background: ${({ theme }) => `linear-gradient(45deg, #e57751, #c5daef, #275194, ${theme.bg1}, #c5daef, #1b5a7a)`};
+    background: ${({ theme }) => `linear-gradient(45deg, #e57751, #c5daef, #275194, ${theme.paper}, #c5daef, #1b5a7a)`};
     background-size: 800%;
     width: calc(100% + 4px);
     height: calc(100% + 4px);
@@ -150,7 +150,7 @@ export const StatusMsgContainer = styled.div`
   align-items: flex-start;
   margin: 20px auto 0;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     gap: 0.2rem;
     display: flex;
     align-items: center;
@@ -159,7 +159,7 @@ export const StatusMsgContainer = styled.div`
     svg {
       flex-shrink: 0;
     }
-  `};
+  }
 `
 
 export const StatusGraph = styled.div`
@@ -173,11 +173,11 @@ export const StatusGraph = styled.div`
   min-height: 100px;
   width: 100%;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     display: flex;
     align-items: center;
     flex-direction: column;
-  `};
+  }
 
   > img {
     margin: 0 10px 0 0;
@@ -202,9 +202,9 @@ export const StatusMsg = styled.p`
   color: inherit;
   margin: 0;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     font-size: 0.835rem;
-  `};
+  }
 
   > button {
     color: inherit;
@@ -218,7 +218,7 @@ export const StyledCoWLink = styled(ExternalLink)`
   opacity: 1 !important;
 
   span {
-    color: ${({ theme }) => theme.text3};
+    color: ${({ theme }) => theme.info};
   }
 
   :hover {

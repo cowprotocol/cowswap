@@ -3,12 +3,13 @@ import { ReactNode } from 'react'
 import cowMeditatingV2 from '@cowprotocol/assets/cow-swap/meditating-cow-v2.svg'
 import imageConnectWallet from '@cowprotocol/assets/cow-swap/wallet-plus.svg'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
-import { ExternalLink } from '@cowprotocol/ui'
-import { UI, CowSwapSafeAppLink } from '@cowprotocol/ui'
+import { ExternalLink, Media } from '@cowprotocol/ui'
+import { UI, CowSwapSafeAppLink, MY_ORDERS_ID } from '@cowprotocol/ui'
+import type { CowSwapWidgetAppParams } from '@cowprotocol/widget-lib'
 
 import { Trans } from '@lingui/macro'
 import SVG from 'react-inlinesvg'
-import styled from 'styled-components/macro'
+import styled, { css } from 'styled-components/macro'
 
 import { Web3Status } from 'modules/wallet/containers/Web3Status'
 
@@ -47,6 +48,7 @@ const Content = styled.div`
     width: var(--size);
     height: var(--size);
     border-radius: var(--size);
+    overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -81,7 +83,6 @@ const Content = styled.div`
       height: 100%;
       object-fit: contain;
       display: inline;
-      padding: 16px;
     }
 
     > svg {
@@ -109,6 +110,10 @@ const Content = styled.div`
   }
 `
 
+const MeditatingCowImg = styled.img`
+  padding: 16px;
+`
+
 const Header = styled.div`
   display: grid;
   grid-template-columns: 150px 1fr;
@@ -118,14 +123,14 @@ const Header = styled.div`
   width: 100%;
   margin: 0 0 24px;
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${Media.upToMedium()} {
     display: block;
     text-align: center;
 
     > h2 {
-      margin-bottom: 15px!important;
+      margin-bottom: 15px !important;
     }
-  `};
+  }
 
   > h2 {
     font-size: 24px;
@@ -138,13 +143,15 @@ const TabsContainer = styled.div<{ withSingleChild: boolean }>`
   align-items: center;
   justify-content: flex-end;
 
-  ${({ theme, withSingleChild }) =>
-    !withSingleChild &&
-    theme.mediaWidth.upToMedium`
-      flex-direction: column-reverse;
-      align-items: end;
-      gap: 10px;
-  `};
+  ${Media.upToMedium()} {
+    ${({ withSingleChild }) =>
+      !withSingleChild &&
+      css`
+        flex-direction: column-reverse;
+        align-items: end;
+        gap: 10px;
+      `};
+  }
 `
 
 const ExternalLinkStyled = styled(ExternalLink)`
@@ -170,6 +177,7 @@ interface OrdersProps extends OrdersTabsProps, OrdersTableProps {
   pendingActivities: string[]
   children?: ReactNode
   orderType: TabOrderTypes
+  injectedWidgetParams: Partial<CowSwapWidgetAppParams>
 }
 
 export function OrdersTableContainer({
@@ -191,8 +199,11 @@ export function OrdersTableContainer({
   orderType,
   pendingActivities,
   ordersPermitStatus,
+  injectedWidgetParams,
 }: OrdersProps) {
   const content = () => {
+    const emptyOrdersImage = injectedWidgetParams.images?.emptyOrders
+
     if (!isWalletConnected) {
       return (
         <Content>
@@ -222,7 +233,11 @@ export function OrdersTableContainer({
       return (
         <Content>
           <span>
-            <img src={cowMeditatingV2} alt="Cow meditating ..." />
+            {emptyOrdersImage ? (
+              <img src={injectedWidgetParams.images?.emptyOrders || cowMeditatingV2} alt="There are no orders" />
+            ) : (
+              <MeditatingCowImg src={cowMeditatingV2} alt="Cow meditating ..." />
+            )}
           </span>
           <h3>
             <Trans>{isOpenOrdersTab ? 'No open orders' : 'No orders history'}</Trans>
@@ -269,7 +284,7 @@ export function OrdersTableContainer({
   return (
     <OrdersBox>
       <Header>
-        <h2>Your Orders</h2>
+        <h2 id={MY_ORDERS_ID}>Your Orders</h2>
         <TabsContainer withSingleChild={!children}>
           {children || <div></div>}
           <OrdersTabs tabs={tabs} />

@@ -2,7 +2,7 @@ import AlertTriangle from '@cowprotocol/assets/cow-swap/alert.svg'
 import { ZERO_FRACTION } from '@cowprotocol/common-const'
 import { UI } from '@cowprotocol/ui'
 import { SymbolElement, TokenAmount, TokenAmountProps } from '@cowprotocol/ui'
-import { MouseoverTooltipContent } from '@cowprotocol/ui'
+import { HoverTooltip } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Fraction, Percent } from '@uniswap/sdk-core'
 
 import { darken } from 'color2k'
@@ -117,8 +117,8 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
       ) : !absoluteDifferenceAmount ? (
         <span>{content}</span>
       ) : (
-        <MouseoverTooltipContent
-          wrap={true}
+        <HoverTooltip
+          wrapInContainer={true}
           content={
             <styledEl.ExecuteInformationTooltip>
               {!isNegativeDifference ? (
@@ -141,7 +141,7 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
           placement="top"
         >
           {content}
-        </MouseoverTooltipContent>
+        </HoverTooltip>
       )}
       {feeWarning && !isNegativeDifference && (
         <UnlikelyToExecuteWarning feePercentage={percentageFee} feeAmount={amountFee} />
@@ -150,12 +150,12 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
   )
 }
 
-export type UnlikelyToExecuteWarningProps = {
+type UnlikelyToExecuteWarningProps = {
   feePercentage?: Percent
   feeAmount?: CurrencyAmount<Currency>
 }
 
-export function UnlikelyToExecuteWarning(props: UnlikelyToExecuteWarningProps) {
+function UnlikelyToExecuteWarning(props: UnlikelyToExecuteWarningProps) {
   const { feePercentage, feeAmount } = props
 
   if (!feePercentage || !feeAmount) {
@@ -164,15 +164,15 @@ export function UnlikelyToExecuteWarning(props: UnlikelyToExecuteWarningProps) {
 
   return (
     <styledEl.WarningIndicator hasBackground={false}>
-      <MouseoverTooltipContent
-        wrap={true}
+      <HoverTooltip
+        wrapInContainer={true}
         placement="bottom"
         bgColor={`var(${UI.COLOR_ALERT_BG})`}
         color={`var(${UI.COLOR_ALERT_TEXT})`}
         content={
           <styledEl.WarningContent>
             <h3>Order unlikely to execute</h3>
-            For this order, network fees would be <b>{feePercentage?.toFixed(2)}%</b>{' '}
+            For this order, network costs would be <b>{feePercentage?.toFixed(2)}%</b>{' '}
             <b>
               <i>
                 (<TokenAmount amount={feeAmount} round={false} tokenSymbol={feeAmount.currency} />)
@@ -183,7 +183,7 @@ export function UnlikelyToExecuteWarning(props: UnlikelyToExecuteWarningProps) {
         }
       >
         <SVG src={AlertTriangle} description="Alert" width="14" height="13" />
-      </MouseoverTooltipContent>
+      </HoverTooltip>
     </styledEl.WarningIndicator>
   )
 }

@@ -42,14 +42,14 @@ export function SwapPriceDifferenceWarning({
 
   if (isTwapBetter && diffLessThanLimit) return null
 
-  const routePath = parameterizeTradeRoute(tradeUrlParams, Routes.SWAP)
+  const routePath = parameterizeTradeRoute(tradeUrlParams, Routes.SWAP, true)
   const swapOrderLink = <StyledNavLink to={routePath}>SWAP order</StyledNavLink>
 
   return (
     <InlineBanner bannerType={'savings'}>
       {isTwapBetter ? (
         <>
-          <strong>Maximizing Your Gains! {/*<InfoIcon content="TODO: set the tooltip content"></InfoIcon>*/}</strong>
+          <strong>Maximizing Your Gains! </strong>
           <p>
             You could gain an extra{' '}
             <b>
@@ -62,7 +62,7 @@ export function SwapPriceDifferenceWarning({
         <>
           <strong>Trade Smart, Save More!</strong>
           <p>
-            Considering current market fees (
+            Considering current network costs (
             <b>
               <FiatAmount amount={feeFiatAmount} />
             </b>{' '}

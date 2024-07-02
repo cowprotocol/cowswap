@@ -1,5 +1,6 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import type { TokenInfo, TokenList as UniTokenList } from '@uniswap/token-lists'
+import { TokenInfo } from '@cowprotocol/types'
+import type { TokenList as UniTokenList } from '@uniswap/token-lists'
 
 export type ListSourceConfig = {
   widgetAppCode?: string
@@ -24,4 +25,6 @@ export interface ListState {
   isEnabled?: boolean
 }
 
-export type TokenListsState = Record<SupportedChainId, { [source: string]: ListState } | undefined>
+export type TokenListsState = { [source: string]: ListState }
+
+export type TokenListsByChainState = Record<SupportedChainId, TokenListsState | undefined>

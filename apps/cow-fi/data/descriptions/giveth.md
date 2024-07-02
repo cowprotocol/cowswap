@@ -1,0 +1,11 @@
+<h2>What is Giveth (GIV)?</h2>
+
+<p>Moo-ving forward in the world of digital giving, blockchain technology meets philanthropy in Giveth (GIV), an innovative platform dedicated to building the future of giving. Focused on promoting transparent, open and cost-free access to fundraising opportunities within the Ethereum ecosystem, Giveth encourages a global culture of altruism. Giveth is more than just a platform; it's a community with a mission: making giving effortless and rewarding those who contribute positively to the world.</p>
+
+<p>At the heart of Giveth is the GIVeconomy, a unique concept that rewards donors with GIV tokens, effectively turning them into shareholders of the Giveth organization. But the GIVeconomy goes beyond just rewarding giving. It creates an entry point for GIVers to learn about, and earn rewards with, Decentralized Finance (DeFi). It generates value and utility for the GIV token through a system that includes GIVbacks, a program rewarding donors; GIVfarm, a rewards pool for liquidity providers; GIVgarden, a decentralized governance platform; GIVstream, a continuous flow of GIV tokens increasing governance power; and GIVdrop, a distribution mechanism to Giveth participants & supporters.</p>
+
+<p>Giveth upholds values of decentralization, altruism, and community. Pioneering decentralized governance and communication techniques, Giveth also supports a host of like-minded initiatives, contributing positively to the world without necessarily having a direct profit motive. Giveth works toward increased transparency and accountability, fostering trust within communities through the power of blockchain technology. With Giveth, giving isn't just a one-way street—it's a moo-vement, changing the world one block at a time.</p>
+
+<h3>Where can you swap or trade Giveth (GIV)?</h3>
+
+<p>You can swap or trade GIV tokens on <a href="https://swap.cow.fi/" rel="noopener" target="_blank">CoW Swap</a>, the first trading interface built on top of the CoW Protocol. As a Meta DEX aggregator, CoW Swap enables the exchange of tokens via gasless orders settled among users or into any on-chain liquidity source, offering MEV (Maximal Extractable Value) protection. Remember, your transaction doesn't have to be a game of 'Cow and Mouse'; with CoW Swap, trading GIV is as easy as saying 'Moo'.</p>

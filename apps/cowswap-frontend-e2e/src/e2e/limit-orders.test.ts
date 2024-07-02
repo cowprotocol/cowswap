@@ -30,7 +30,7 @@ describe('Limit orders', () => {
 
     navigate('')
 
-    cy.limitPickToken('USDC', 'output')
+    cy.pickToken('USDC', 'output')
 
     getInputToken().type(inputAmount.toString())
     cy.get('#rate-limit-amount-input').should('be.enabled').clear().type(rate.toString(), { force: true })

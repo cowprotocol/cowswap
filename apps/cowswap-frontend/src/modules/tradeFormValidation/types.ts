@@ -51,6 +51,7 @@ export interface TradeFormValidationCommonContext {
   isSwapUnsupported: boolean
   isSafeReadonlyUser: boolean
   isPermitSupported: boolean
+  isInsufficientBalanceOrderAllowed: boolean
 }
 
 export interface TradeFormValidationContext extends TradeFormValidationCommonContext {}
@@ -60,9 +61,9 @@ export interface TradeFormButtonContext {
   derivedState: TradeDerivedState
   quote: TradeQuoteState
   isSupportedWallet: boolean
+  widgetStandaloneMode?: boolean
 
-  doTrade(): void
   confirmTrade(): void
-  connectWallet: Command | null
+  connectWallet: Command
   wrapNativeFlow(): void
 }

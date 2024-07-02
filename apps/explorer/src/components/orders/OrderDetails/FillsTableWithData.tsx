@@ -1,14 +1,16 @@
 import React, { useContext } from 'react'
 
-import { Order } from 'api/operator'
-import { EmptyItemWrapper } from 'components/common/StyledUserDetailsTable'
-import { FillsTableContext } from './context/FillsTableContext'
+import { Command } from '@cowprotocol/types'
 
-import useFirstRender from 'hooks/useFirstRender'
 import CowLoading from 'components/common/CowLoading'
+import { EmptyItemWrapper } from 'components/common/StyledUserDetailsTable'
+import useFirstRender from 'hooks/useFirstRender'
+
+import { Order } from 'api/operator'
+
+import { FillsTableContext } from './context/FillsTableContext'
 import FillsTable from './FillsTable'
 
-import { Command } from '@cowprotocol/types'
 
 type Props = {
   areTokensLoaded: boolean

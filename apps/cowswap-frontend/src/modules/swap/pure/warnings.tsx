@@ -29,12 +29,12 @@ export interface SwapWarningsTopProps {
   showWrapBundlingBanner: boolean
   shouldZeroApprove: boolean
   showSafeWcBundlingBanner: boolean
+  showTwapSuggestionBanner: boolean
   nativeCurrencySymbol: string
   wrappedCurrencySymbol: string
   buyingFiatAmount: CurrencyAmount<Currency> | null
   priceImpact: Percent | undefined
   tradeUrlParams: TradeUrlParams
-  isFeeGreater: boolean
   setFeeWarningAccepted(cb: (state: boolean) => boolean): void
   setImpactWarningAccepted(cb: (state: boolean) => boolean): void
 }
@@ -61,6 +61,7 @@ export const SwapWarningsTop = React.memo(function (props: SwapWarningsTopProps)
     showApprovalBundlingBanner,
     showWrapBundlingBanner,
     showSafeWcBundlingBanner,
+    showTwapSuggestionBanner,
     nativeCurrencySymbol,
     wrappedCurrencySymbol,
     setFeeWarningAccepted,
@@ -69,21 +70,16 @@ export const SwapWarningsTop = React.memo(function (props: SwapWarningsTopProps)
     buyingFiatAmount,
     priceImpact,
     tradeUrlParams,
-    isFeeGreater,
   } = props
-
-  console.debug('SWAP WARNING RENDER TOP: ', props)
 
   return (
     <>
       {shouldZeroApprove && <ZeroApprovalWarning currency={trade?.inputAmount.currency} />}
-      {!isFeeGreater && (
-        <HighFeeWarning
-          trade={trade}
-          acceptedStatus={feeWarningAccepted}
-          acceptWarningCb={account ? () => setFeeWarningAccepted((state) => !state) : undefined}
-        />
-      )}
+      <HighFeeWarning
+        trade={trade}
+        acceptedStatus={feeWarningAccepted}
+        acceptWarningCb={account ? () => setFeeWarningAccepted((state) => !state) : undefined}
+      />
       {!hideUnknownImpactWarning && (
         <StyledNoImpactWarning
           isAccepted={impactWarningAccepted}
@@ -98,21 +94,21 @@ export const SwapWarningsTop = React.memo(function (props: SwapWarningsTopProps)
         <BundleTxSafeWcBanner nativeCurrencySymbol={nativeCurrencySymbol} supportsWrapping />
       )}
 
-      <TwapSuggestionBanner
-        chainId={chainId}
-        priceImpact={priceImpact}
-        buyingFiatAmount={buyingFiatAmount}
-        tradeUrlParams={tradeUrlParams}
-        sellAmount={trade?.inputAmount.toExact()}
-      />
+      {showTwapSuggestionBanner && (
+        <TwapSuggestionBanner
+          chainId={chainId}
+          priceImpact={priceImpact}
+          buyingFiatAmount={buyingFiatAmount}
+          tradeUrlParams={tradeUrlParams}
+          sellAmount={trade?.inputAmount.toExact()}
+        />
+      )}
     </>
   )
 }, genericPropsChecker)
 
 export const SwapWarningsBottom = React.memo(function (props: SwapWarningsBottomProps) {
   const { isSupportedWallet, swapIsUnsupported, currencyIn, currencyOut } = props
-
-  console.debug('SWAP WARNING RENDER BOTTOM: ', props)
 
   return (
     <>

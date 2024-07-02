@@ -7,15 +7,15 @@ import { NATIVE_CURRENCY_ADDRESS, WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol
 import { useIsWindowVisible } from '@cowprotocol/common-hooks'
 import { getPromiseFulfilledValue, isSellOrder } from '@cowprotocol/common-utils'
 import { timestamp } from '@cowprotocol/contracts'
-import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { PriceQuality, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
 
-import { FeeInformation, PriceInformation } from 'types'
+import { FeeInformation } from 'types'
 
 import { useGetGpPriceStrategy } from 'legacy/hooks/useGetGpPriceStrategy'
-import { GpPriceStrategy } from 'legacy/state/gas/atoms'
+import { PriceStrategy } from 'legacy/state/gas/atoms'
 import { Order } from 'legacy/state/orders/actions'
 import { PENDING_ORDERS_PRICE_CHECK_POLL_INTERVAL } from 'legacy/state/orders/consts'
 import { useOnlyPendingOrders, useSetIsOrderUnfillable } from 'legacy/state/orders/hooks'
@@ -23,25 +23,22 @@ import {
   getEstimatedExecutionPrice,
   getOrderMarketPrice,
   getRemainderAmount,
-  isOrderUnfillable,
+  isOrderUnfillable
 } from 'legacy/state/orders/utils'
+import type { LegacyFeeQuoteParams } from 'legacy/state/price/types'
 import { getBestQuote } from 'legacy/utils/price'
 
 import { updatePendingOrderPricesAtom } from 'modules/orders/state/pendingOrdersPricesAtom'
-import { hasEnoughBalanceAndAllowance } from 'modules/tokens'
 
-import { getPriceQuality } from 'api/gnosisProtocol/api'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { PRICE_QUOTE_VALID_TO_TIME } from '../../constants/quote'
-import { useVerifiedQuotesEnabled } from '../../hooks/featureFlags/useVerifiedQuotesEnabled'
 
 /**
  * Updater that checks whether pending orders are still "fillable"
  */
 export function UnfillableOrdersUpdater(): null {
   const { chainId, account } = useWalletInfo()
-  const verifiedQuotesEnabled = useVerifiedQuotesEnabled(chainId)
   const updatePendingOrderPrices = useSetAtom(updatePendingOrderPricesAtom)
   const isWindowVisible = useIsWindowVisible()
 
@@ -80,13 +77,8 @@ export function UnfillableOrdersUpdater(): null {
   )
 
   const updateIsUnfillableFlag = useCallback(
-    (
-      chainId: ChainId,
-      order: Order,
-      price: Required<Omit<PriceInformation, 'quoteId'>>,
-      fee: FeeInformation | null
-    ) => {
-      if (!fee?.amount || !price.amount) return
+    (chainId: ChainId, order: Order, priceAmount: string, fee: FeeInformation | null) => {
+      if (!fee?.amount) return
 
       const orderPrice = new Price(
         order.inputToken,
@@ -95,7 +87,7 @@ export function UnfillableOrdersUpdater(): null {
         order.buyAmount.toString()
       )
 
-      const marketPrice = getOrderMarketPrice(order, price.amount, fee.amount)
+      const marketPrice = getOrderMarketPrice(order, priceAmount, fee.amount)
       const estimatedExecutionPrice = getEstimatedExecutionPrice(order, marketPrice, fee.amount)
 
       const isSwap = getUiOrderType(order) === UiOrderType.SWAP
@@ -124,7 +116,6 @@ export function UnfillableOrdersUpdater(): null {
       return
     }
 
-    const startTime = Date.now()
     try {
       isUpdating.current = true
 
@@ -134,37 +125,22 @@ export function UnfillableOrdersUpdater(): null {
 
       if (pending.length === 0) {
         return
-      } else {
-        console.debug(
-          `[UnfillableOrdersUpdater] Checking new market price for ${pending.length} orders, account ${account} and network ${chainId}`
-        )
       }
 
-      pending.forEach((order, index) => {
-        console.debug(`[UnfillableOrdersUpdater] Check order`, order)
-
-        const currencyAmount = CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount)
-        const { enoughBalance } = hasEnoughBalanceAndAllowance({
-          account,
-          amount: currencyAmount,
-          balances: balancesRef.current,
-        })
-        const verifiedQuote = verifiedQuotesEnabled && enoughBalance
-
-        _getOrderPrice(chainId, order, verifiedQuote, strategy)
+      pending.forEach((order) => {
+        _getOrderPrice(chainId, order, strategy)
           .then((quote) => {
             if (quote) {
               const [promisedPrice, promisedFee] = quote
               const price = getPromiseFulfilledValue(promisedPrice, null)
               const fee = getPromiseFulfilledValue(promisedFee, null)
 
-              console.debug(
-                `[UnfillableOrdersUpdater::updateUnfillable] did we get any price? ${order.id.slice(0, 8)}|${index}`,
-                price ? price.amount : 'no :('
-              )
-              price?.amount && updateIsUnfillableFlag(chainId, order, price, fee)
-            } else {
-              console.debug('[UnfillableOrdersUpdater::updateUnfillable] No price quote for', order.id.slice(0, 8))
+              price?.amount &&
+                fee &&
+                updateIsUnfillableFlag(chainId, order, price.amount, {
+                  expirationDate: fee.expiration,
+                  amount: fee.quote.feeAmount,
+                })
             }
           })
           .catch((e) => {
@@ -181,28 +157,17 @@ export function UnfillableOrdersUpdater(): null {
       })
     } finally {
       isUpdating.current = false
-      console.debug(`[UnfillableOrdersUpdater] Checked pending orders in ${Date.now() - startTime}ms`)
     }
-  }, [
-    account,
-    chainId,
-    strategy,
-    updateIsUnfillableFlag,
-    isWindowVisible,
-    updatePendingOrderPrices,
-    verifiedQuotesEnabled,
-  ])
+  }, [account, chainId, strategy, updateIsUnfillableFlag, isWindowVisible, updatePendingOrderPrices])
 
   const updatePendingRef = useRef(updatePending)
   updatePendingRef.current = updatePending
 
   useEffect(() => {
     if (!chainId || !account || !isWindowVisible) {
-      console.debug('[UnfillableOrdersUpdater] No need to fetch unfillable orders')
       return
     }
 
-    console.debug('[UnfillableOrdersUpdater] Periodically check for unfillable orders')
     updatePendingRef.current()
     const interval = setInterval(() => updatePendingRef.current(), PENDING_ORDERS_PRICE_CHECK_POLL_INTERVAL)
     return () => clearInterval(interval)
@@ -214,12 +179,7 @@ export function UnfillableOrdersUpdater(): null {
 /**
  * Thin wrapper around `getBestPrice` that builds the params and returns null on failure
  */
-async function _getOrderPrice(
-  chainId: ChainId,
-  order: Order,
-  verifyQuote: boolean | undefined,
-  strategy: GpPriceStrategy
-) {
+async function _getOrderPrice(chainId: ChainId, order: Order, strategy: PriceStrategy) {
   let baseToken, quoteToken
 
   const amount = getRemainderAmount(order.kind, order)
@@ -241,9 +201,6 @@ async function _getOrderPrice(
   }
 
   const isEthFlow = order.sellToken === NATIVE_CURRENCY_ADDRESS
-  if (isEthFlow) {
-    console.debug('[UnfillableOrderUpdater] - Native sell swap detected. Using wrapped token address for quotes')
-  }
 
   const quoteParams = {
     chainId,
@@ -256,17 +213,23 @@ async function _getOrderPrice(
     quoteToken,
     fromDecimals: order.inputToken.decimals,
     toDecimals: order.outputToken.decimals,
-    // Limit order may have arbitrary validTo, but API doesn't allow values greater than 1 hour
-    // To avoid ExcessiveValidTo error we use PRICE_QUOTE_VALID_TO_TIME
-    validTo:
-      order.class === 'limit' ? Math.round((Date.now() + PRICE_QUOTE_VALID_TO_TIME) / 1000) : timestamp(order.validTo),
     userAddress: order.owner,
     receiver: order.receiver,
     isEthFlow,
-    priceQuality: getPriceQuality({ verifyQuote }),
+    priceQuality: PriceQuality.OPTIMAL,
     appData: order.appData ?? undefined,
     appDataHash: order.appDataHash ?? undefined,
   }
+
+  const legacyFeeQuoteParams = quoteParams as LegacyFeeQuoteParams
+  // Limit order may have arbitrary validTo, but API doesn't allow values greater than 1 hour
+  // To avoid ExcessiveValidTo error we use PRICE_QUOTE_VALID_TO_TIME
+  if (order.class === 'limit') {
+    legacyFeeQuoteParams.validFor = Math.round(PRICE_QUOTE_VALID_TO_TIME / 1000)
+  } else {
+    legacyFeeQuoteParams.validTo = timestamp(order.validTo)
+  }
+
   try {
     return getBestQuote({ strategy, quoteParams, fetchFee: false, isPriceRefresh: false })
   } catch (e: any) {

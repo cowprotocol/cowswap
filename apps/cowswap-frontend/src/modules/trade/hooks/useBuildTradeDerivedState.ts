@@ -1,4 +1,5 @@
 import { Atom, useAtomValue } from 'jotai'
+import { useMemo } from 'react'
 
 import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
 import { tryParseFractionalAmount } from '@cowprotocol/common-utils'
@@ -21,9 +22,14 @@ export function useBuildTradeDerivedState(stateAtom: Atom<ExtendedTradeRawState>
 
   const inputCurrency = useTokenBySymbolOrAddress(rawState.inputCurrencyId)
   const outputCurrency = useTokenBySymbolOrAddress(rawState.outputCurrencyId)
-  const inputCurrencyAmount = getCurrencyAmount(inputCurrency, rawState.inputCurrencyAmount)
-  const outputCurrencyAmount = getCurrencyAmount(outputCurrency, rawState.outputCurrencyAmount)
-
+  const inputCurrencyAmount = useMemo(
+    () => getCurrencyAmount(inputCurrency, rawState.inputCurrencyAmount),
+    [inputCurrency, rawState.inputCurrencyAmount]
+  )
+  const outputCurrencyAmount = useMemo(
+    () => getCurrencyAmount(outputCurrency, rawState.outputCurrencyAmount),
+    [outputCurrency, rawState.outputCurrencyAmount]
+  )
   const inputCurrencyBalance = useCurrencyAmountBalance(inputCurrency) || null
   const outputCurrencyBalance = useCurrencyAmountBalance(outputCurrency) || null
 
@@ -34,6 +40,7 @@ export function useBuildTradeDerivedState(stateAtom: Atom<ExtendedTradeRawState>
 
   // In limit orders and advanced orders we don't have "real" buy orders
   const slippageAdjustedSellAmount = inputCurrencyAmount
+  const slippageAdjustedBuyAmount = outputCurrencyAmount
 
   return useSafeMemoObject({
     orderKind,
@@ -44,6 +51,7 @@ export function useBuildTradeDerivedState(stateAtom: Atom<ExtendedTradeRawState>
     inputCurrencyAmount,
     outputCurrencyAmount,
     slippageAdjustedSellAmount,
+    slippageAdjustedBuyAmount,
     inputCurrencyBalance,
     outputCurrencyBalance,
     inputCurrencyFiatAmount,

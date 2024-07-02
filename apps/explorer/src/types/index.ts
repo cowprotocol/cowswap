@@ -1,5 +1,6 @@
-import { TransactionReceipt } from 'web3-core'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+
+import { TransactionReceipt } from 'web3-core'
 
 export type AnyFunction = (...args: unknown[]) => unknown
 export type Mutation<T> = (original: T) => T

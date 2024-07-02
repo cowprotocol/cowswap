@@ -54,7 +54,7 @@ export function useTradeApproveCallback(amountToApprove?: CurrencyAmount<Currenc
             updateTradeApproveState({ error: typeof error === 'string' ? error : error.message || error.toString() })
           }
 
-          throw error
+          return undefined
         })
     },
     [symbol, approveCallback, updateTradeApproveState, currency]

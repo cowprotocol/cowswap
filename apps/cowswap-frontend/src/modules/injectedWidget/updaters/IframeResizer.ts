@@ -1,14 +1,29 @@
+import { useAtomValue } from 'jotai'
 import { useLayoutEffect, useRef } from 'react'
 
+import { MEDIA_WIDTHS } from '@cowprotocol/ui'
 import { WidgetMethodsEmit, postMessageToWindow } from '@cowprotocol/widget-lib'
 
+import { openModalState } from 'common/state/openModalState'
+
 export function IframeResizer() {
+  const isModalOpen = useAtomValue(openModalState)
   const previousHeightRef = useRef(0)
 
   useLayoutEffect(() => {
     // Initial height calculation and message
     const sendHeightUpdate = () => {
       const contentHeight = document.body.scrollHeight
+
+      if (isModalOpen) {
+        const isUpToSmall = document.body.offsetWidth <= MEDIA_WIDTHS.upToSmall
+
+        postMessageToWindow(window.parent, WidgetMethodsEmit.SET_FULL_HEIGHT, { isUpToSmall })
+
+        previousHeightRef.current = 0
+        return
+      }
+
       if (contentHeight !== previousHeightRef.current) {
         postMessageToWindow(window.parent, WidgetMethodsEmit.UPDATE_HEIGHT, { height: contentHeight })
         previousHeightRef.current = contentHeight
@@ -28,7 +43,7 @@ export function IframeResizer() {
     return () => {
       observer.disconnect()
     }
-  }, [])
+  }, [isModalOpen])
 
   return null
 }

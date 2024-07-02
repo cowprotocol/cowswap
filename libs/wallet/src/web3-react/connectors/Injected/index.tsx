@@ -1,23 +1,10 @@
-import {
-  Actions,
-  AddEthereumChainParameter,
-  Connector,
-  Provider,
-  ProviderConnectInfo,
-  ProviderRpcError,
-  RequestArguments,
-} from '@web3-react/types'
-
-import { Command } from '@cowprotocol/types'
-import { WidgetEthereumProvider } from './WidgetEthereumProvider'
 import { isInjectedWidget, isRejectRequestProviderError } from '@cowprotocol/common-utils'
+import { Command } from '@cowprotocol/types'
+import { Actions, AddEthereumChainParameter, Connector, ProviderConnectInfo, ProviderRpcError } from '@web3-react/types'
 
-type InjectedWalletProvider = Provider & {
-  isConnected: () => boolean
-  request<T>(args: RequestArguments): Promise<T>
-  enable?: Command
-  on: (event: string, args: unknown) => unknown
-}
+import { WidgetEthereumProvider } from './WidgetEthereumProvider'
+
+import type { EIP1193Provider } from '../../../api/eip6963-types'
 
 interface injectedWalletConstructorArgs {
   actions: Actions
@@ -26,21 +13,16 @@ interface injectedWalletConstructorArgs {
   searchKeywords: string[]
 }
 
-function parseChainId(chainId: string | number): number {
-  if (typeof chainId === 'number') return chainId
-
-  if (!chainId.startsWith('0x')) {
-    return Number(chainId)
-  }
-
-  return Number.parseInt(chainId, 16)
-}
-
 export class InjectedWallet extends Connector {
-  provider?: InjectedWalletProvider
+  provider?: EIP1193Provider = undefined
+  prevProvider?: EIP1193Provider = undefined
   walletUrl: string
   searchKeywords: string[]
   eagerConnection?: boolean
+
+  onConnect?(provider: EIP1193Provider): void
+
+  onDisconnect?: Command
 
   constructor({ actions, onError, walletUrl, searchKeywords }: injectedWalletConstructorArgs) {
     super(actions, onError)
@@ -50,11 +32,14 @@ export class InjectedWallet extends Connector {
     this.searchKeywords = searchKeywords
   }
 
-  // Based on https://github.com/Uniswap/web3-react/blob/de97c00c378b7909dfbd8a06558ed12e1f796caa/packages/metamask/src/index.ts#L130 with some changes
+  /**
+   * When desiredChainIdOrChainParameters is set it means this is a network switching request
+   * We have to call startActivation() for switching between wallets, but we mustn't do it on network switch
+   */
   async activate(desiredChainIdOrChainParameters?: number | AddEthereumChainParameter): Promise<void> {
     let cancelActivation: Command
 
-    if (!this.provider?.isConnected?.()) {
+    if (!desiredChainIdOrChainParameters || !this.provider?.isConnected?.()) {
       cancelActivation = this.actions.startActivation()
     }
 
@@ -74,13 +59,14 @@ export class InjectedWallet extends Connector {
         const chainId = (await this.provider.request({ method: 'eth_chainId' })) as string
         const receivedChainId = parseChainId(chainId)
         const desiredChainId =
-          typeof desiredChainIdOrChainParameters === 'number'
-            ? desiredChainIdOrChainParameters
-            : desiredChainIdOrChainParameters?.chainId
+          typeof desiredChainIdOrChainParameters === 'number' ? undefined : desiredChainIdOrChainParameters?.chainId
 
         // if there's no desired chain, or it's equal to the received, update
-        if (!desiredChainId || receivedChainId === desiredChainId)
+        if (!desiredChainId || receivedChainId === desiredChainId) {
+          this.onConnect?.(this.provider)
+
           return this.actions.update({ chainId: receivedChainId, accounts })
+        }
 
         const desiredChainIdHex = `0x${desiredChainId.toString(16)}`
 
@@ -100,6 +86,11 @@ export class InjectedWallet extends Connector {
             }
 
             throw error
+          })
+          .then(() => {
+            if (this.provider) {
+              this.onConnect?.(this.provider)
+            }
           })
       })
       .catch((error: Error) => {
@@ -140,22 +131,27 @@ export class InjectedWallet extends Connector {
 
   // Based on https://github.com/Uniswap/web3-react/blob/de97c00c378b7909dfbd8a06558ed12e1f796caa/packages/metamask/src/index.ts#L54 with some changes
   private async isomorphicInitialize(): Promise<void> {
-    // Mod: we have a custom method to detect a Injected provider based on passed keywords array
+    // We have a custom method to detect Injected provider based on passed keywords array
     const provider = this.detectProvider()
 
     if (provider) {
+      const doesProviderMatches = () => this.provider === provider
+
       provider.on('connect', (data: ProviderConnectInfo): void => {
-        if (!data) return
+        if (!data || !doesProviderMatches()) return
 
         const { chainId } = data
         this.actions.update({ chainId: parseChainId(chainId) })
       })
 
       const onDisconnect = (error: ProviderRpcError): void => {
-        // eslint-disable-next-line @typescript-eslint/no-floating-promises
-        this.provider?.request({ method: 'PUBLIC_disconnectSite' })
+        if (!doesProviderMatches()) return
 
-        this.actions.resetState()
+        this.provider
+          ?.request({ method: 'PUBLIC_disconnectSite' })
+          .catch(() => console.log('Failed to call "PUBLIC_disconnectSite", ignoring'))
+
+        this.deactivate()
         this.onError?.(error)
       }
 
@@ -163,12 +159,24 @@ export class InjectedWallet extends Connector {
       provider.on('close', onDisconnect)
 
       provider.on('chainChanged', (chainId: string): void => {
+        if (!doesProviderMatches()) return
+
         this.actions.update({ chainId: parseChainId(chainId) })
       })
 
       provider.on('accountsChanged', (accounts: string[]): void => {
+        if (!doesProviderMatches()) return
+
         if (accounts.length === 0) {
-          this.actions.resetState()
+          // When one of EIP6963 providers is disconnected try to switch to the previous one
+          if (this.prevProvider && this.provider !== this.prevProvider) {
+            this.provider = this.prevProvider
+            this.prevProvider = undefined
+
+            this.activate()
+          } else {
+            this.actions.resetState()
+          }
         } else {
           this.actions.update({ accounts })
         }
@@ -176,17 +184,27 @@ export class InjectedWallet extends Connector {
     }
   }
 
-  // Mod: Added custom method
-  // Just reset state on deactivate
   async deactivate(): Promise<void> {
+    if (this.provider) {
+      this.provider.removeAllListeners('connect')
+      this.provider.removeAllListeners('disconnect')
+      this.provider.removeAllListeners('close')
+      this.provider.removeAllListeners('chainChanged')
+      this.provider.removeAllListeners('accountsChanged')
+    }
+
+    this.provider = undefined
+    this.onDisconnect?.()
     this.actions.resetState()
   }
 
   // Mod: Added custom method
   // Method to target a specific provider on window.ethereum or window.ethereum.providers if it exists
-  private detectProvider(): InjectedWalletProvider | void {
+  private detectProvider(): EIP1193Provider | void {
+    if (this.provider) return this.provider
+
     if (isInjectedWidget()) {
-      this.provider = new WidgetEthereumProvider() as InjectedWalletProvider
+      this.provider = new WidgetEthereumProvider() as EIP1193Provider
     } else {
       this.provider =
         this.detectOnEthereum(window.ethereum) || this.detectOnProvider(window.ethereum?.providers) || null
@@ -208,6 +226,9 @@ export class InjectedWallet extends Connector {
   // Here we check for specific provider directly on window.ethereum
   private detectOnEthereum(ethereum?: any) {
     if (!ethereum) return null
+
+    if (this.searchKeywords.length === 0) return ethereum
+
     const provider = this.searchKeywords.some((keyword) => ethereum[keyword])
     return provider ? ethereum : null
   }
@@ -233,7 +254,18 @@ export class InjectedWallet extends Connector {
         Failed to get account with eth_requestAccounts method
         Trying with eth_accounts method
       `)
+
       return provider.request({ method: 'eth_accounts' }) as Promise<string[]>
     }
   }
+}
+
+function parseChainId(chainId: string | number): number {
+  if (typeof chainId === 'number') return chainId
+
+  if (!chainId.startsWith('0x')) {
+    return Number(chainId)
+  }
+
+  return Number.parseInt(chainId, 16)
 }

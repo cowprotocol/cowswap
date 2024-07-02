@@ -31,20 +31,8 @@ export const LightCard = styled(Card)`
   }
 `
 
-export const LightGreyCard = styled(Card)`
-  background-color: var(${UI.COLOR_PRIMARY});
-`
-
 export const GreyCard = styled(Card)`
   background-color: var(${UI.COLOR_PAPER_DARKER});
-`
-
-export const DarkGreyCard = styled(Card)`
-  background-color: var(${UI.COLOR_PRIMARY});
-`
-
-export const DarkCard = styled(Card)`
-  background-color: ${({ theme }) => theme.bg0};
 `
 
 export const OutlineCard = styled(Card)`
@@ -55,10 +43,4 @@ export const YellowCard = styled(Card)`
   background-color: rgba(243, 132, 30, 0.05);
   color: ${({ theme }) => theme.yellow3};
   font-weight: 500;
-`
-
-export const BlueCard = styled(Card)`
-  background-color: ${({ theme }) => theme.primary5};
-  color: ${({ theme }) => theme.blue2};
-  border-radius: 12px;
 `

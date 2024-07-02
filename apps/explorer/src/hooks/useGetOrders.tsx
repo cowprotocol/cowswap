@@ -1,25 +1,28 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
-import { Network, UiError } from 'types'
-import { useMultipleErc20 } from 'hooks/useErc20'
-import { updateWeb3Provider } from 'api/web3'
-import { web3 } from '../explorer/api'
-import { getAccountOrders, getTxOrders, Order } from 'api/operator'
-import { GetTxOrdersParams, RawOrder } from 'api/operator/types'
-import { useNetworkId } from 'state/network'
-import { transformOrder } from 'utils'
-import { ORDERS_QUERY_INTERVAL } from '../explorer/const'
-import { Props as ExplorerLinkProps } from 'components/common/BlockExplorerLink'
-import {
-  GetOrderResult,
-  MultipleOrders,
-  GetOrderApi,
-  tryGetOrderOnAllNetworksAndEnvironments,
-} from 'services/helpers/tryGetOrderOnAllNetworks'
 import { ALL_SUPPORTED_CHAIN_IDS } from '@cowprotocol/cow-sdk'
 
+import { Props as ExplorerLinkProps } from 'components/common/BlockExplorerLink'
+import { useMultipleErc20 } from 'hooks/useErc20'
+import {
+  GetOrderApi,
+  GetOrderResult,
+  MultipleOrders,
+  tryGetOrderOnAllNetworksAndEnvironments,
+} from 'services/helpers/tryGetOrderOnAllNetworks'
+import { useNetworkId } from 'state/network'
+import { Network, UiError } from 'types'
+import { transformOrder } from 'utils'
+
+import { Order, getAccountOrders, getTxOrders } from 'api/operator'
+import { GetTxOrdersParams, RawOrder } from 'api/operator/types'
+import { updateWeb3Provider } from 'api/web3'
+
+import { web3 } from '../explorer/api'
+import { ORDERS_QUERY_INTERVAL } from '../explorer/const'
+
 function isObjectEmpty(object: Record<string, unknown>): boolean {
-  // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
+
   for (const key in object) {
     if (key) return false
   }
@@ -93,8 +96,8 @@ function useOrdersWithTokenInfo(networkId: Network | undefined): UseOrdersWithTo
     }
 
     const newOrders = orders.map((order) => {
-      order.buyToken = valueErc20s[order.buyTokenAddress] || order.buyToken
-      order.sellToken = valueErc20s[order.sellTokenAddress] || order.sellToken
+      order.buyToken = valueErc20s[order.buyTokenAddress.toLowerCase()] || order.buyToken
+      order.sellToken = valueErc20s[order.sellTokenAddress.toLowerCase()] || order.sellToken
 
       return order
     })
@@ -104,7 +107,7 @@ function useOrdersWithTokenInfo(networkId: Network | undefined): UseOrdersWithTo
     setErc20Addresses([])
   }, [valueErc20s, networkId, areErc20Loading, mountNewOrders, orders])
 
-  return { orders, areErc20Loading, setOrders, setMountNewOrders, setErc20Addresses }
+  return useMemo(() => ({ orders, areErc20Loading, setOrders, setMountNewOrders, setErc20Addresses }), [orders, areErc20Loading, setOrders, setMountNewOrders, setErc20Addresses])
 }
 
 export function useGetTxOrders(txHash: string): GetTxOrdersResult {
@@ -153,7 +156,7 @@ export function useGetTxOrders(txHash: string): GetTxOrdersResult {
     fetchOrders(networkId, txHash)
   }, [fetchOrders, networkId, txHash])
 
-  return { orders, error, isLoading: isLoading || areErc20Loading, errorTxPresentInNetworkId }
+  return useMemo(() => ({ orders, error, isLoading: isLoading || areErc20Loading, errorTxPresentInNetworkId }), [orders, error, isLoading, areErc20Loading, errorTxPresentInNetworkId])
 }
 
 export function useTxOrderExplorerLink(
@@ -244,5 +247,5 @@ export function useGetAccountOrders(
     }
   }, [fetchOrders, networkId, ownerAddress, pageIndex])
 
-  return { orders, error, isLoading, isThereNext }
+  return useMemo(() => ({ orders, error, isLoading, isThereNext }), [orders, error, isLoading, isThereNext])
 }

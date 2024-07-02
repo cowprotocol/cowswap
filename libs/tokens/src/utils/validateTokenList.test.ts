@@ -1,4 +1,4 @@
-import type { TokenInfo } from '@uniswap/token-lists'
+import { TokenInfo } from '@cowprotocol/types'
 
 import { validateTokens } from './validateTokenList'
 

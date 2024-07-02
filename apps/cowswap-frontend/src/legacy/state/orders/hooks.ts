@@ -18,6 +18,8 @@ import {
   expireOrdersBatch,
   fulfillOrdersBatch,
   FulfillOrdersBatchParams,
+  invalidateOrdersBatch,
+  InvalidateOrdersBatchParams,
   Order,
   preSignOrders,
   requestOrderCancellation,
@@ -39,7 +41,6 @@ import {
   OrderTypeKeys,
   PartialOrdersMap,
 } from './reducer'
-import { partialOrderUpdate } from './utils'
 import { deserializeOrder } from './utils/deserializeOrder'
 
 import { AppDispatch, AppState } from '../index'
@@ -86,6 +87,7 @@ export type ExpireOrdersBatchCallback = (expireOrdersBatchParams: ExpireOrdersBa
 export type CancelOrderCallback = (cancelOrderParams: CancelOrderParams) => void
 export type SetOrderCancellationHashCallback = (setOrderCancellationHashParams: SetOrderCancellationHashParams) => void
 export type CancelOrdersBatchCallback = (cancelOrdersBatchParams: CancelOrdersBatchParams) => void
+export type InvalidateOrdersBatchCallback = (params: InvalidateOrdersBatchParams) => void
 export type PresignOrdersCallback = (fulfillOrderParams: PresignOrdersParams) => void
 export type UpdatePresignGnosisSafeTxCallback = (
   updatePresignGnosisSafeTxParams: UpdatePresignGnosisSafeTxParams
@@ -321,13 +323,6 @@ export type UpdateOrderParams = {
   isSafeWallet: boolean
 }
 
-export type UpdateOrderCallback = (params: UpdateOrderParams) => void
-
-export const usePartialUpdateOrder = (): UpdateOrderCallback => {
-  const dispatch = useDispatch<AppDispatch>()
-  return useCallback((params: UpdateOrderParams) => partialOrderUpdate(params, dispatch), [dispatch])
-}
-
 export const useFulfillOrdersBatch = (): FulfillOrdersBatchCallback => {
   const dispatch = useDispatch<AppDispatch>()
   return useCallback(
@@ -363,6 +358,12 @@ export const useCancelOrdersBatch = (): CancelOrdersBatchCallback => {
     (cancelOrdersBatchParams: CancelOrdersBatchParams) => dispatch(cancelOrdersBatch(cancelOrdersBatchParams)),
     [dispatch]
   )
+}
+
+export const useInvalidateOrdersBatch = (): InvalidateOrdersBatchCallback => {
+  const dispatch = useDispatch<AppDispatch>()
+
+  return useCallback((params: InvalidateOrdersBatchParams) => dispatch(invalidateOrdersBatch(params)), [dispatch])
 }
 
 export const useSetOrderCancellationHash = (): SetOrderCancellationHashCallback => {

@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
 
-import { useTokenContract } from '@cowprotocol/common-hooks'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 
+import { useTokenContract } from 'common/hooks/useContract'
 import { useTradeSpenderAddress } from 'common/hooks/useTradeSpenderAddress'
 import { useApprovalStateForSpender } from 'lib/hooks/useApproval'
 

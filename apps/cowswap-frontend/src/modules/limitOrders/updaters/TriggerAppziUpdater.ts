@@ -1,8 +1,9 @@
 import { useEffect, useMemo } from 'react'
 
-import { triggerAppziSurvey } from '@cowprotocol/common-utils'
 import { UiOrderType } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
+
+import { triggerAppziSurvey } from 'appzi'
 
 import { useOnlyPendingOrders } from 'legacy/state/orders/hooks'
 

@@ -1,6 +1,6 @@
-import styled from 'styled-components/macro'
+import { ButtonSecondary, Media } from '@cowprotocol/ui'
 
-import { ButtonSecondary } from '@cowprotocol/ui'
+import styled from 'styled-components/macro'
 
 export const Wrapper = styled.div`
   ${({ theme }) => theme.flexColumnNoWrap};
@@ -44,13 +44,13 @@ export const SelectWrapper = styled.div`
   margin: 8px 0 0;
   gap: 8px;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-      flex-flow: column wrap;
+  ${Media.upToSmall()} {
+    flex-flow: column wrap;
 
-      ${ButtonSecondary} {
-        width: 100%;
-      }
-    `}
+    ${ButtonSecondary} {
+      width: 100%;
+    }
+  }
 `
 
 export const TextWrapper = styled.div`

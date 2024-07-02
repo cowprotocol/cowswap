@@ -2,6 +2,7 @@ import { useSetAtom } from 'jotai'
 import { useEffect, useState } from 'react'
 
 import { usePrevious } from '@cowprotocol/common-hooks'
+import { FractionUtils } from '@cowprotocol/common-utils'
 import { useENS } from '@cowprotocol/ens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Price } from '@uniswap/sdk-core'
@@ -39,7 +40,7 @@ export function AlternativeLimitOrderUpdater(): null {
 }
 
 function useUpdateAlternativeRawState(): null {
-  const alternativeOrder = useAlternativeOrder()
+  const { order: alternativeOrder } = useAlternativeOrder() || {}
   const updateRawState = useUpdateLimitOrdersRawState()
   const updatePartialFillOverride = useSetAtom(partiallyFillableOverrideAtom)
   const updateSettingsState = useSetAtom(updateLimitOrdersSettingsAtom)
@@ -115,7 +116,11 @@ function useSetAlternativeRate(): null {
       updateLimitRateState({ marketRate: null })
 
       // Set new active rate
-      const activeRate = new Price({ baseAmount: inputCurrencyAmount, quoteAmount: outputCurrencyAmount })
+      // The rate expects a raw fraction which is NOT a Price instace
+      const activeRate = FractionUtils.fromPrice(
+        new Price({ baseAmount: inputCurrencyAmount, quoteAmount: outputCurrencyAmount })
+      )
+
       updateRate({ activeRate, isTypedValue: false, isRateFromUrl: false, isAlternativeOrderRate: true })
     }
   }, [inputCurrencyAmount, hasSetRate, outputCurrencyAmount, updateRate, updateLimitRateState])
@@ -165,7 +170,11 @@ function getDuration(order: Order | ParsedOrder): number {
  */
 function getMatchingDeadline(duration: number) {
   // Match duration with approximate time
-  return limitOrdersDeadlines.find(({ value }) => Math.round(value / duration) === 1)
+  return limitOrdersDeadlines.find(({ value }) => {
+    const ratio = value / duration
+    // If the ratio is +/-10% off of 1, consider it a match
+    return ratio > 0.9 && ratio < 1.1
+  })
 }
 
 /**

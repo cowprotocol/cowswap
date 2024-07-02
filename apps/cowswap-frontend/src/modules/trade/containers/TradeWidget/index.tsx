@@ -1,5 +1,3 @@
-import React from 'react'
-
 import * as styledEl from './styled'
 import { TradeWidgetForm } from './TradeWidgetForm'
 import { TradeWidgetModals } from './TradeWidgetModals'
@@ -9,14 +7,19 @@ import { TradeWidgetProps } from './types'
 export const TradeWidgetContainer = styledEl.Container
 
 export function TradeWidget(props: TradeWidgetProps) {
-  const { id, slots, params, children: confirmModal } = props
-  const { disableQuotePolling = false, disableNativeSelling = false } = params
-  const modals = TradeWidgetModals(confirmModal)
+  const { id, slots, params, confirmModal, genericModal } = props
+  const { disableQuotePolling = false, disableNativeSelling = false, tradeQuoteStateOverride } = params
+  const modals = TradeWidgetModals(confirmModal, genericModal)
 
   return (
     <>
       <styledEl.Container id={id}>
-        <TradeWidgetUpdaters disableQuotePolling={disableQuotePolling} disableNativeSelling={disableNativeSelling}>
+        <TradeWidgetUpdaters
+          disableQuotePolling={disableQuotePolling}
+          disableNativeSelling={disableNativeSelling}
+          tradeQuoteStateOverride={tradeQuoteStateOverride}
+          onChangeRecipient={props.actions.onChangeRecipient}
+        >
           {slots.updaters}
         </TradeWidgetUpdaters>
 

@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
 import { Command } from '@cowprotocol/types'
-import { MouseoverTooltipContent } from '@cowprotocol/ui'
+import { HoverTooltip } from '@cowprotocol/ui'
 import { Fraction } from '@uniswap/sdk-core'
 
 import { AlertTriangle } from 'react-feather'
@@ -97,7 +97,7 @@ const WarningContainer = styled(AuxInformationContainer).attrs((props) => ({
 `
 
 const ErrorStyledInfoIcon = styled(StyledInfoIcon)`
-  color: ${({ theme }) => theme.infoText};
+  color: ${({ theme }) => (theme.darkMode ? '#FFCA4A' : '#564D00')};
 `
 const HIGH_TIER_FEE = 30
 const MEDIUM_TIER_FEE = 20
@@ -119,17 +119,17 @@ function _getWarningInfo(feePercentage?: Fraction) {
 const HighFeeWarningMessage = ({ feePercentage }: { feePercentage?: Fraction }) => (
   <div>
     <small>
-      Current fees on this network make up{' '}
+      Current network costs make up{' '}
       <u>
         <strong>{feePercentage?.toFixed(2)}%</strong>
       </u>{' '}
       of your swap amount.
       <br />
       <br />
-      Consider waiting for lower fees.
+      Consider waiting for lower network costs.
       <br />
       <br />
-      You may still move forward with this swap but a high percentage of it will be consumed by fees.
+      You may still move forward with this swap but a high percentage of it will be consumed by network costs.
     </small>
   </div>
 )
@@ -158,10 +158,10 @@ export const HighFeeWarning = (props: WarningProps) => {
     <WarningContainer {...props} level={level} isDarkMode={darkMode}>
       <div>
         <AlertTriangle size={24} />
-        Fees exceed {level}% of the swap amount!{' '}
-        <MouseoverTooltipContent wrap content={<HighFeeWarningMessage feePercentage={feePercentage} />}>
+        Costs exceed {level}% of the swap amount!{' '}
+        <HoverTooltip wrapInContainer content={<HighFeeWarningMessage feePercentage={feePercentage} />}>
           <ErrorStyledInfoIcon />
-        </MouseoverTooltipContent>{' '}
+        </HoverTooltip>{' '}
       </div>
 
       {acceptWarningCb && (

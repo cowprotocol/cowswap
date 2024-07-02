@@ -1,6 +1,7 @@
 import React from 'react'
-import { usePathPrefix, usePathSuffix } from 'state/network'
+
 import { Navigate } from 'react-router-dom'
+import { usePathPrefix, usePathSuffix } from 'state/network'
 
 interface RedirectToSearchParams {
   from: string

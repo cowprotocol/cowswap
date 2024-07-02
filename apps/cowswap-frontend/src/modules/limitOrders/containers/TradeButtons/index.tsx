@@ -1,14 +1,8 @@
-import { useAtomValue } from 'jotai'
 import React from 'react'
 
 import { Trans } from '@lingui/macro'
 
-import { PriceImpact } from 'legacy/hooks/usePriceImpact'
-
-import { useHandleOrderPlacement } from 'modules/limitOrders/hooks/useHandleOrderPlacement'
 import { useLimitOrdersWarningsAccepted } from 'modules/limitOrders/hooks/useLimitOrdersWarningsAccepted'
-import { TradeFlowContext } from 'modules/limitOrders/services/types'
-import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { useTradeConfirmActions } from 'modules/trade'
 import {
   TradeFormBlankButton,
@@ -23,26 +17,23 @@ import { useLimitOrdersFormState } from '../../hooks/useLimitOrdersFormState'
 
 const CONFIRM_TEXT = 'Review limit order'
 
-export interface TradeButtonsProps {
-  tradeContext: TradeFlowContext | null
-  priceImpact: PriceImpact
+interface TradeButtonsProps {
+  isTradeContextReady: boolean
 }
 
-export function TradeButtons(props: TradeButtonsProps) {
-  const { tradeContext, priceImpact } = props
-
-  const settingsState = useAtomValue(limitOrdersSettingsAtom)
+export function TradeButtons({ isTradeContextReady }: TradeButtonsProps) {
   const localFormValidation = useLimitOrdersFormState()
   const primaryFormValidation = useGetTradeFormValidation()
   const warningsAccepted = useLimitOrdersWarningsAccepted(false)
   const tradeConfirmActions = useTradeConfirmActions()
 
-  const handleTrade = useHandleOrderPlacement(tradeContext, priceImpact, settingsState, tradeConfirmActions)
   const confirmTrade = tradeConfirmActions.onOpen
 
   const defaultText = CONFIRM_TEXT
 
-  const tradeFormButtonContext = useTradeFormButtonContext(defaultText, { doTrade: handleTrade, confirmTrade })
+  const tradeFormButtonContext = useTradeFormButtonContext(defaultText, confirmTrade)
+
+  const isDisabled = !warningsAccepted || !isTradeContextReady
 
   if (!tradeFormButtonContext) return null
 
@@ -64,7 +55,7 @@ export function TradeButtons(props: TradeButtonsProps) {
       confirmText={CONFIRM_TEXT}
       validation={primaryFormValidation}
       context={tradeFormButtonContext}
-      isDisabled={!warningsAccepted}
+      isDisabled={isDisabled}
     />
   )
 }

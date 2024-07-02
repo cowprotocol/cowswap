@@ -3,13 +3,13 @@ import { ReactElement } from 'react'
 
 import {
   BaseButton,
-  ButtonPrimary,
-  ButtonLight,
-  ButtonSecondary,
-  ButtonGray,
   ButtonEmpty,
-  ButtonYellow,
+  ButtonGray,
+  ButtonLight,
   ButtonOutlined,
+  ButtonPrimary,
+  ButtonSecondary,
+  ButtonYellow,
 } from '../index'
 
 const examples = [

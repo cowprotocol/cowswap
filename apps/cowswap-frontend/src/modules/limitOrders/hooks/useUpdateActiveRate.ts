@@ -21,7 +21,7 @@ export function useUpdateActiveRate(): UpdateRateCallback {
   const updateCurrencyAmount = useUpdateCurrencyAmount()
   const updateRateState = useSetAtom(updateLimitRateAtom)
 
-  const { isRateFromUrl: currentIsRateFromUrl, isAlternativeOrderRate: currentIsAlternativeOrderRate } = rateState
+  const { isRateFromUrl: currentIsRateFromUrl } = rateState
 
   return useCallback(
     (update: RateUpdateParams) => {
@@ -34,7 +34,7 @@ export function useUpdateActiveRate(): UpdateRateCallback {
       if (activeRate) {
         // Don't update amounts when rate is set from URL. See useSetupLimitOrderAmountsFromUrl()
         // Don't update amounts when rate is set from AlternativeOrder. See AlternativeLimitOrderUpdater
-        if (currentIsRateFromUrl || isRateFromUrl || currentIsAlternativeOrderRate || isAlternativeOrderRate) {
+        if (currentIsRateFromUrl || isRateFromUrl || isAlternativeOrderRate) {
           return
         }
 
@@ -58,7 +58,6 @@ export function useUpdateActiveRate(): UpdateRateCallback {
       updateRateState,
       orderKind,
       currentIsRateFromUrl,
-      currentIsAlternativeOrderRate,
       updateCurrencyAmount,
       inputCurrencyAmount,
       outputCurrencyAmount,

@@ -1,6 +1,8 @@
-import { GetOrderParams, GetTxOrdersParams, RawOrder } from 'api/operator'
-import { Network } from 'types'
 import { ALL_SUPPORTED_CHAIN_IDS } from '@cowprotocol/cow-sdk'
+
+import { Network } from 'types'
+
+import { GetOrderParams, GetTxOrdersParams, RawOrder } from 'api/operator'
 
 export type SingleOrder = RawOrder | null
 export type MultipleOrders = RawOrder[] | null

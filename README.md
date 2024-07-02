@@ -2,7 +2,9 @@
 
 CoW Swap is the first trading interface built on top of CoW Protocol.
 
-It allows you to buy and sell tokens using gasless orders that are settled peer-to-peer among its users or into any on-chain liquidity source while providing MEV protection.
+It allows you to buy and sell tokens using gasless orders that are settled
+peer-to-peer among its users or into any on-chain liquidity source while
+providing MEV protection.
 
 | **Platform**          | **Link**                                                                                                      |
 | --------------------- | ------------------------------------------------------------------------------------------------------------- |
@@ -54,15 +56,32 @@ Start the Explorer on http://localhost:4200
 [Read more about the Explorer](apps/explorer/README.md)
 
 ### Start
+
 ```bash
 yarn start:explorer
 ```
 
 ### Build
+
 ```bash
 yarn build:explorer
 ```
 
+# 🐄 cow.fi
+
+Start CoW.fi on http://localhost:3001
+
+### Start
+
+```bash
+yarn start:cowfi
+```
+
+### Build
+
+```bash
+yarn build:cowfi
+```
 
 # 🖼️ Widget Configurator
 
@@ -88,7 +107,8 @@ yarn run cosmos
 
 ## Integration test
 
-> ⚠️ To run the tests. Make sure you add the required environment varianbles to your `.env.local` file with:
+> ⚠️ To run the tests. Make sure you add the required environment varianbles to
+> your `.env.local` file with:
 >
 > - `INTEGRATION_TEST_PRIVATE_KEY=<your-private-key>`: Private key
 > - `INTEGRATION_TESTS_INFURA_KEY=<your-infura-key>`: Infura key
@@ -143,14 +163,17 @@ ANALYZE_BUNDLE=true ANALYZE_BUNDLE_TEMPLATE=sunburst yarn build
 
 You should set your own RPC endpoints.
 
-One simple way to do this, is by defining your own `REACT_APP_INFURA_KEY` environment var.
+One simple way to do this, is by defining your own `REACT_APP_INFURA_KEY`
+environment var.
 
-Alternatively you can define the RPC URLs directly with the following environment variables:
+Alternatively you can define the RPC URLs directly with the following
+environment variables:
 
 ```ini
 REACT_APP_NETWORK_URL_1: https://...
 REACT_APP_NETWORK_URL_11155111: https://...
 REACT_APP_NETWORK_URL_100: https://...
+REACT_APP_NETWORK_URL_42161: https://...
 ```
 
 Additionally, if you plan to run the integration tests locally you must define:
@@ -162,22 +185,43 @@ INTEGRATION_TESTS_PRIVATE_KEY: YOUR_TEST_WALLET_PRIVATE_KEY
 
 ## Orderbook API Endpoints
 
-Fee quote requests and posting orders are sent to the Orderbook API. This API has the responsibility of collecting orders and
-handing them to the solvers.
+Fee quote requests and posting orders are sent to the Orderbook API. This API
+has the responsibility of collecting orders and handing them to the solvers.
 
-The reference implementation of the API is [CoW Protocol Services](https://github.com/cowprotocol/services).
+The reference implementation of the API is
+[CoW Protocol Services](https://github.com/cowprotocol/services).
 
-The API endpoint is configured using the environment variable `REACT_APP_ORDER_BOOK_URLS`:
+The API endpoint is configured using the environment variable
+`REACT_APP_ORDER_BOOK_URLS`:
 
 ```ini
 REACT_APP_ORDER_BOOK_URLS='{"1":"https://YOUR_HOST","100":"https://YOUR_HOST","5":"https://YOUR_HOST"}
+```
+
+## BFF API Endpoints (Backend for Frontend)
+
+The BFF API is a helper API that provides some additional data to the frontend.
+It is a API that is used to enhance the frontend experience enabling some
+features. It is not consider a required API for CoW Swap core functionality, the
+app will still allow the user to place order and will have some fallback logics
+in case this API is not available.
+
+The reference implementation of the API is
+[BFF (Backend For Frontend)](https://github.com/cowprotocol/bff).
+
+The API endpoint is configured using the environment variable
+`REACT_APP_BFF_BASE_URL`:
+
+```ini
+REACT_APP_BFF_BASE_URL=https://bff.cow.fi
 ```
 
 ## Price feeds
 
 CoW Swap tries to find the best price available on-chain using some price feeds.
 
-All price feeds are enabled by default, but they can be individually disabled by using an environment variable:
+All price feeds are enabled by default, but they can be individually disabled by
+using an environment variable:
 
 | Name      | Environment variable                 | Type                         | Description                                                                          |
 | --------- | ------------------------------------ | ---------------------------- | ------------------------------------------------------------------------------------ |
@@ -188,11 +232,16 @@ All price feeds are enabled by default, but they can be individually disabled by
 
 The app will attach some metadata to all orders.
 
-This metadata will be sent to the smart contract as a hexadecimal value in an order field called `AppData`. This value comes from hashing the content of a metadata JSON containing some information about the trade (using `keccak256` on the `UTF-8` bytes).
+This metadata will be sent to the smart contract as a hexadecimal value in an
+order field called `AppData`. This value comes from hashing the content of a
+metadata JSON containing some information about the trade (using `keccak256` on
+the `UTF-8` bytes).
 
-The format of the JSON follows the format defined in [@cowprotocol/app-data](https://github.com/cowprotocol/app-data).
+The format of the JSON follows the format defined in
+[@cowprotocol/app-data](https://github.com/cowprotocol/app-data).
 
-To set your own `AppData`, change `REACT_APP_FULL_APP_DATA_<environment>` environment variable. For more details, check out the environment file (<.env>)
+To set your own `AppData`, change `REACT_APP_FULL_APP_DATA_<environment>`
+environment variable. For more details, check out the environment file (<.env>)
 
 # 🔎 SEO
 
@@ -210,8 +259,8 @@ To update its content:
 
 ## Service worker
 
-In case of problems with the service worker cache you force a reset using [emergency.js](apps/cowswap-frontend/public/emergency.js)
-The plan:
+In case of problems with the service worker cache you force a reset using
+[emergency.js](apps/cowswap-frontend/public/emergency.js) The plan:
 
 1. `const resetCacheInCaseOfEmergency = false` - change `false` to `true`
 2. Deploy a new version to production
@@ -223,3 +272,4 @@ The plan:
 1. [Oveall Architecture](docs/architecture-overview.md)
 2. [Amounts formatting](apps/cowswap-frontend/src/utils/amountFormat/README.md)
 3. [ABIs](libs/abis/README.md)
+

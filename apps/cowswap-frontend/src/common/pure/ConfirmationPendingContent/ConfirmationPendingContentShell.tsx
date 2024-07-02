@@ -2,9 +2,9 @@ import React, { ReactNode } from 'react'
 
 import { Command } from '@cowprotocol/types'
 
-import { Wrapper, CloseIcon, UpperSection, WalletIcon, LowerSection, BackButtonStyled } from './styled'
+import { AccountIcon } from 'modules/account'
 
-import { useWalletStatusIcon } from '../../hooks/useWalletStatusIcon'
+import { Wrapper, CloseIcon, UpperSection, WalletIcon, LowerSection, BackButtonStyled } from './styled'
 
 interface ConfirmationPendingContentShellProps {
   onDismiss: Command
@@ -21,14 +21,14 @@ export function ConfirmationPendingContentShell({
   children: body,
   modalMode,
 }: ConfirmationPendingContentShellProps) {
-  const statusIcon = useWalletStatusIcon()
-
   return (
     <Wrapper>
       {modalMode}
       <UpperSection>
         {!modalMode && <BackButtonStyled onClick={onDismiss} />}
-        <WalletIcon>{statusIcon}</WalletIcon>
+        <WalletIcon>
+          <AccountIcon size={56} />
+        </WalletIcon>
         <span>{title}</span>
         {modalMode && <CloseIcon onClick={onDismiss} />}
       </UpperSection>

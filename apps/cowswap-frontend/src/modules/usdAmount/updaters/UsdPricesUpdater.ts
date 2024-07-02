@@ -2,7 +2,7 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
 import { USDC } from '@cowprotocol/common-const'
-import { FractionUtils } from '@cowprotocol/common-utils'
+import { FractionUtils, getWrappedToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Fraction, Token } from '@uniswap/sdk-core'
@@ -21,7 +21,8 @@ import {
 } from '../state/usdRawPricesAtom'
 
 const swrOptions: SWRConfiguration = {
-  refreshInterval: ms`30s`,
+  refreshInterval: ms`60s`,
+  focusThrottleInterval: ms`30s`,
   refreshWhenHidden: false,
   refreshWhenOffline: false,
   revalidateOnFocus: true,
@@ -89,14 +90,17 @@ async function processQueue(queue: Token[], getUsdcPrice: () => Promise<Fraction
         isLoading: false,
       }
 
+      // To avoid querying native assets directly, used the wrapped version instead
+      const wrappedCurrency = getWrappedToken(currency)
+
       try {
-        const price = await fetchCurrencyUsdPrice(currency, getUsdcPrice)
+        const price = await fetchCurrencyUsdPrice(wrappedCurrency, getUsdcPrice)
         if (price) {
           state.price = price
           state.updatedAt = Date.now()
         }
       } catch (e) {
-        console.debug(`[UsdPricesUpdater]: Failed to fetch price for `, currency.address)
+        console.debug(`[UsdPricesUpdater]: Failed to fetch price for`, currency.symbol)
       }
 
       return { [currency.address.toLowerCase()]: state }

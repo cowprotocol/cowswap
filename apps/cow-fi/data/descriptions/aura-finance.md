@@ -1,0 +1,11 @@
+<h2>What is Aura Finance (AURA)?</h2>
+
+<p>Moo-ve over traditional finance, here comes <a href="https://en.wikipedia.org/wiki/Decentralized_finance" rel="nofollow noreferrer noopener" target="_blank">DeFi</a> with a twist! Aura Finance (AURA) is a unique protocol constructed atop the innovative Balancer system. This savvy bovine tech not only coordinates incentives around vote-escrowed tokens, but also gives a hoof up to the yield potential and governance power of DeFi liquidity providers and governance token stakers. Aura Finance, with its native AURA token, focuses on maximizing rewards for Balancer liquidity providers and BAL stakers, through the clever concept of social aggregation of BAL deposits.</p>
+
+<p>Delving a little deeper into Aura Finance's pasture, it offers BAL stakers an onboarding process to veBAL, creating a tokenized wrapper token known as auraBAL. This token represents the 80/20 BPT locked up for the longest time in VotingEscrow. When staked, auraBAL yields existing rewards from Balancer, additional Aura system revenue, and AURA tokens. Users can trade their auraBAL back to BAL whenever they want, offering flexible financial management. But remember, no matter how green the grass may look, it's essential to make informed financial decisions. </p>
+
+<p>Aura Finance offers its users a refreshing take on the DeFi scene, aiming to boost yield potential while also empowering its users' governance rights. It's not just about making hay while the sun shines, but also about ensuring your voice is heard in the DeFi community. </p>
+
+<h3>Where can you swap or trade Aura Finance (AURA)?</h3>
+
+<p>Curious about where to trade or swap your Aura Finance (AURA) tokens? Look no further than <a href="https://swap.cow.fi/" rel="noopener" target="_blank">CoW Swap</a>! As a Meta DEX aggregator, CoW Swap enables gasless orders settled peer-to-peer or via any on-chain liquidity source. Trades can be settled directly via underlying on-chain AMMs or DEX Aggregators, providing users with the best prices for their trades. Above all, CoW Swap offers <a href="https://ethereum.org/en/developers/docs/mev/" rel="nofollow noreferrer noopener" target="_blank">MEV</a> protection, ensuring fair and transparent transactions. So why wait? Swap or trade AURA on CoW Swap today, and milk the DeFi revolution to its fullest! Moo!</p>

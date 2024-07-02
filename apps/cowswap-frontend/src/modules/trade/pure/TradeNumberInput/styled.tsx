@@ -1,4 +1,4 @@
-import { UI } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
@@ -112,7 +112,7 @@ export const NumericalInput = styled(Input)<{ color?: string }>`
   font-size: 22px;
   font-weight: 500;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     font-size: 20px;
-  `}
+  }
 `

@@ -1,13 +1,17 @@
 import { atom } from 'jotai'
-import { environmentAtom } from '../environmentAtom'
-import { TokensMap } from '../../types'
+
 import { NATIVE_CURRENCIES, TokenWithLogo } from '@cowprotocol/common-const'
-import { tokenMapToListWithLogo } from '../../utils/tokenMapToListWithLogo'
+import { TokenInfo } from '@cowprotocol/types'
+
+import { favoriteTokensAtom } from './favoriteTokensAtom'
 import { userAddedTokensAtom } from './userAddedTokensAtom'
-import { favouriteTokensAtom } from './favouriteTokensAtom'
-import { listsEnabledStateAtom, listsStatesListAtom } from '../tokenLists/tokenListsStateAtom'
+
+import { TokensMap } from '../../types'
 import { lowerCaseTokensMap } from '../../utils/lowerCaseTokensMap'
-import type { TokenInfo } from '@uniswap/token-lists'
+import { tokenMapToListWithLogo } from '../../utils/tokenMapToListWithLogo'
+import { environmentAtom } from '../environmentAtom'
+import { listsEnabledStateAtom, listsStatesListAtom } from '../tokenLists/tokenListsStateAtom'
+
 
 export interface TokensByAddress {
   [address: string]: TokenWithLogo | undefined
@@ -70,29 +74,33 @@ export const tokensStateAtom = atom<TokensState>((get) => {
 
 /**
  * Returns a list of tokens that are active and sorted alphabetically
- * The list includes: native token, user added tokens, favourite tokens and tokens from active lists
+ * The list includes: native token, user added tokens, favorite tokens and tokens from active lists
  * Native token is always the first element in the list
  */
 export const activeTokensAtom = atom<TokenWithLogo[]>((get) => {
   const { chainId } = get(environmentAtom)
   const userAddedTokens = get(userAddedTokensAtom)
-  const favouriteTokensState = get(favouriteTokensAtom)
+  const favoriteTokensState = get(favoriteTokensAtom)
 
   const tokensMap = get(tokensStateAtom)
   const nativeToken = NATIVE_CURRENCIES[chainId]
 
-  return tokenMapToListWithLogo({
-    [nativeToken.address.toLowerCase()]: nativeToken as TokenInfo,
-    ...tokensMap.activeTokens,
-    ...lowerCaseTokensMap(userAddedTokens[chainId]),
-    ...lowerCaseTokensMap(favouriteTokensState[chainId]),
-  })
+  return tokenMapToListWithLogo(
+    {
+      [nativeToken.address.toLowerCase()]: nativeToken as TokenInfo,
+      ...tokensMap.activeTokens,
+      ...lowerCaseTokensMap(userAddedTokens[chainId]),
+      ...lowerCaseTokensMap(favoriteTokensState[chainId]),
+    },
+    chainId
+  )
 })
 
 export const inactiveTokensAtom = atom<TokenWithLogo[]>((get) => {
+  const { chainId } = get(environmentAtom)
   const tokensMap = get(tokensStateAtom)
 
-  return tokenMapToListWithLogo(tokensMap.inactiveTokens)
+  return tokenMapToListWithLogo(tokensMap.inactiveTokens, chainId)
 })
 
 export const tokensByAddressAtom = atom<TokensByAddress>((get) => {

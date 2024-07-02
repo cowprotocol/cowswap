@@ -1,5 +1,5 @@
 import { useSetAtom } from 'jotai'
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { walletInfoAtom } from '@cowprotocol/wallet'
@@ -25,6 +25,7 @@ const tradeAmounts: TradeAmounts = {
 const confirmationState: TradeConfirmationProps = {
   title: 'Review order',
   account: undefined,
+  ensName: undefined,
   inputCurrencyInfo: inputCurrencyInfoMock,
   outputCurrencyInfo: outputCurrencyInfoMock,
   priceImpact: priceImpactMock,

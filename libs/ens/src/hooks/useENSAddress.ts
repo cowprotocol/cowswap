@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 
 import { safeNamehash } from '@cowprotocol/common-utils'
+
 import { useENSResolverMethod } from './useENSResolverMethod'
 
 /**

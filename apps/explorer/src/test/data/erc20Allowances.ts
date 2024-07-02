@@ -1,6 +1,8 @@
-import { ZERO, ALLOWANCE_MAX_VALUE } from '../../const'
-import { USER_1, TOKEN_1, CONTRACT, TOKEN_2, TOKEN_3, TOKEN_4, TOKEN_5, TOKEN_6, TOKEN_7 } from './basic'
 import BN from 'bn.js'
+
+import { USER_1, TOKEN_1, CONTRACT, TOKEN_2, TOKEN_3, TOKEN_4, TOKEN_5, TOKEN_6, TOKEN_7 } from './basic'
+
+import { ZERO, ALLOWANCE_MAX_VALUE } from '../../const'
 
 export default {
   [USER_1]: {

@@ -1,7 +1,7 @@
-import { GP_VAULT_RELAYER } from '@cowprotocol/common-const'
-import { useGP2SettlementContract } from '@cowprotocol/common-hooks'
+import { useMemo } from 'react'
+
 import { getWrappedToken } from '@cowprotocol/common-utils'
-import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS, OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { TradeType as UniTradeType } from '@uniswap/sdk-core'
 
@@ -16,6 +16,8 @@ import { SwapFlowContext } from 'modules/swap/services/types'
 import { useEnoughBalanceAndAllowance } from 'modules/tokens'
 import { TradeType } from 'modules/trade'
 
+import { useGP2SettlementContract } from 'common/hooks/useContract'
+
 export function useSwapFlowContext(): SwapFlowContext | null {
   const contract = useGP2SettlementContract()
   const baseProps = useBaseFlowContextSetup()
@@ -23,36 +25,42 @@ export function useSwapFlowContext(): SwapFlowContext | null {
   const permitInfo = usePermitInfo(sellCurrency, TradeType.SWAP)
   const generatePermitHook = useGeneratePermitHook()
 
-  const checkAllowanceAddress = GP_VAULT_RELAYER[baseProps.chainId || SupportedChainId.MAINNET]
+  const checkAllowanceAddress = COW_PROTOCOL_VAULT_RELAYER_ADDRESS[baseProps.chainId || SupportedChainId.MAINNET]
   const { enoughAllowance } = useEnoughBalanceAndAllowance({
     account: baseProps.account,
     amount: baseProps.inputAmountWithSlippage,
     checkAllowanceAddress,
   })
 
-  if (!baseProps.trade) return null
+  return useMemo(() => {
+    if (!baseProps.trade) {
+      return null
+    }
 
-  const baseContext = getFlowContext({
-    baseProps,
-    sellToken: getWrappedToken(baseProps.trade.inputAmount.currency),
-    kind: baseProps.trade.tradeType === UniTradeType.EXACT_INPUT ? OrderKind.SELL : OrderKind.BUY,
-  })
+    const baseContext = getFlowContext({
+      baseProps,
+      sellToken: getWrappedToken(baseProps.trade.inputAmount.currency),
+      kind: baseProps.trade.tradeType === UniTradeType.EXACT_INPUT ? OrderKind.SELL : OrderKind.BUY,
+    })
 
-  if (!contract || !baseContext || baseProps.flowType !== FlowType.REGULAR) return null
+    if (!contract || !baseContext || baseProps.flowType !== FlowType.REGULAR) {
+      return null
+    }
 
-  return {
-    ...baseContext,
-    contract,
-    permitInfo: !enoughAllowance ? permitInfo : undefined,
-    generatePermitHook,
-  }
+    return {
+      ...baseContext,
+      contract,
+      permitInfo: !enoughAllowance ? permitInfo : undefined,
+      generatePermitHook,
+    }
+  }, [baseProps, contract, enoughAllowance, permitInfo, generatePermitHook])
 }
 
 export function useSwapEnoughAllowance(): boolean | undefined {
   const { chainId, account } = useWalletInfo()
   const [inputAmountWithSlippage] = useSwapAmountsWithSlippage()
 
-  const checkAllowanceAddress = GP_VAULT_RELAYER[chainId]
+  const checkAllowanceAddress = COW_PROTOCOL_VAULT_RELAYER_ADDRESS[chainId]
   const { enoughAllowance } = useEnoughBalanceAndAllowance({
     account,
     amount: inputAmountWithSlippage,

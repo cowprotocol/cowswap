@@ -1,10 +1,10 @@
 import { FractionUtils } from '@cowprotocol/common-utils'
-import { Currency, Fraction } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Fraction } from '@uniswap/sdk-core'
 
 import { Field } from 'legacy/state/types'
 
 export type RateCalculationParams = {
-  amount: Fraction | null
+  amount: CurrencyAmount<Currency> | null
   activeRate: Fraction | null
   field: Field
   inputCurrency: Currency | null
@@ -17,7 +17,7 @@ export function calculateAmountForRate({
   field,
   inputCurrency,
   outputCurrency,
-}: RateCalculationParams): Fraction | null {
+}: RateCalculationParams): CurrencyAmount<Currency> | null {
   if (!amount || amount.equalTo(0) || !activeRate || activeRate.equalTo(0) || !inputCurrency || !outputCurrency) {
     return null
   }
@@ -32,11 +32,11 @@ export function calculateAmountForRate({
   )
 
   if (field === Field.INPUT) {
-    return parsedValue.multiply(activeRate)
+    return CurrencyAmount.fromRawAmount(outputCurrency, parsedValue.multiply(activeRate).quotient)
   }
 
   if (field === Field.OUTPUT) {
-    return parsedValue.divide(activeRate)
+    return CurrencyAmount.fromRawAmount(inputCurrency, parsedValue.divide(activeRate).quotient)
   }
 
   return null

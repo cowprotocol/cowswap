@@ -1,20 +1,20 @@
 import { useAtom, useSetAtom } from 'jotai'
 import { useEffect, useRef } from 'react'
 
+import { usePrevious } from '@cowprotocol/common-hooks'
 import { deepEqual } from '@cowprotocol/common-utils'
 import {
-  UpdateParamsPayload,
-  WidgetMethodsEmit,
-  WidgetMethodsListen,
   listenToMessageFromWindow,
   postMessageToWindow,
   stopListeningWindowListener,
-  CowSwapWidgetParams,
+  UpdateParamsPayload,
+  WidgetMethodsEmit,
+  WidgetMethodsListen,
 } from '@cowprotocol/widget-lib'
 
-import { useNavigate } from 'react-router-dom'
+import * as Sentry from '@sentry/browser'
 
-import { useFeatureFlags } from 'common/hooks/featureFlags/useFeatureFlags'
+import { useNavigate } from 'common/hooks/useNavigate'
 
 import { IframeResizer } from './IframeResizer'
 
@@ -37,30 +37,53 @@ const cacheMessages = (event: MessageEvent) => {
   messagesCache[method] = event.data
 }
 
-const paramsWithoutPartnerFee = (params: CowSwapWidgetParams) => {
-  const { partnerFee: _, ...rest } = params
-
-  return rest
-}
-
-/**
- * To avoid delays, immediately send an activation message and start listening messages
- */
 ;(function initInjectedWidget() {
-  const isInIframe = window.top !== window.self
+  const isInIframe = window.parent !== window.self
 
-  if (!window.top || !isInIframe) return
+  const parent = window.parent
 
+  if (!parent || !isInIframe) return
+
+  /**
+   * To avoid delays, immediately send an activation message and start listening messages
+   */
   window.addEventListener('message', cacheMessages)
+  postMessageToWindow(parent, WidgetMethodsEmit.ACTIVATE, void 0)
 
-  postMessageToWindow(window.top, WidgetMethodsEmit.ACTIVATE, void 0)
+  /**
+   * Intercept window.open and anchor clicks to send a message to the parent window
+   * to handle the opening of deeplinks in the parent window
+   */
+  const originalWinOpen = window.open
+
+  window.open = function (...args) {
+    const [href = '', target = '', rel = ''] = args
+
+    postMessageToWindow(parent, WidgetMethodsEmit.INTERCEPT_WINDOW_OPEN, { href, target, rel })
+
+    return originalWinOpen.apply(this, args)
+  }
+
+  document.body.addEventListener('click', (event) => {
+    if (event.target instanceof HTMLAnchorElement) {
+      const { href, target, rel } = event.target
+
+      postMessageToWindow(parent, WidgetMethodsEmit.INTERCEPT_WINDOW_OPEN, { href, target, rel })
+    }
+  })
 })()
 
 export function InjectedWidgetUpdater() {
-  const { isPartnerFeeEnabled } = useFeatureFlags()
-  const [{ errors: validationErrors }, updateParams] = useAtom(injectedWidgetParamsAtom)
+  const [
+    {
+      errors: validationErrors,
+      params: { partnerFee, appCode },
+    },
+    updateParams,
+  ] = useAtom(injectedWidgetParamsAtom)
   const updateMetaData = useSetAtom(injectedWidgetMetaDataAtom)
 
+  const prevPartnerFee = usePrevious(partnerFee)
   const navigate = useNavigate()
   const prevData = useRef<UpdateParamsPayload | null>(null)
 
@@ -75,8 +98,7 @@ export function InjectedWidgetUpdater() {
       // Update params
       prevData.current = data
 
-      // Ignore partner fee value when feature flag is not enabled
-      const appParams = isPartnerFeeEnabled ? data.appParams : paramsWithoutPartnerFee(data.appParams)
+      const appParams = data.appParams
 
       const errors = validateWidgetParams(appParams)
 
@@ -86,7 +108,7 @@ export function InjectedWidgetUpdater() {
       })
 
       // Navigate to the new path
-      navigate(data.urlParams)
+      navigate(data.urlParams, { replace: true })
     })
 
     const updateAppDataListener = listenToMessageFromWindow(window, WidgetMethodsListen.UPDATE_APP_DATA, (data) => {
@@ -106,7 +128,27 @@ export function InjectedWidgetUpdater() {
       stopListeningWindowListener(window, updateParamsListener)
       stopListeningWindowListener(window, updateAppDataListener)
     }
-  }, [updateMetaData, navigate, updateParams, isPartnerFeeEnabled])
+  }, [updateMetaData, navigate, updateParams])
+
+  // Log an error when partnerFee was set and then discarded
+  useEffect(() => {
+    if (!appCode) return
+
+    if (prevPartnerFee && !partnerFee) {
+      const sentryError = Object.assign(
+        new Error(`AppCode: ${appCode}, BPS: ${prevPartnerFee.bps}, recipient: ${prevPartnerFee.recipient}`),
+        {
+          name: 'PartnerFeeDiscarded',
+        }
+      )
+
+      Sentry.captureException(sentryError, {
+        tags: {
+          errorType: 'PartnerFeeDiscarded',
+        },
+      })
+    }
+  }, [appCode, partnerFee, prevPartnerFee])
 
   return (
     <>

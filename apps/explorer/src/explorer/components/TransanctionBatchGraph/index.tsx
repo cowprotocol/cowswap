@@ -1,11 +1,5 @@
-import Cytoscape from 'cytoscape'
-import popper from 'cytoscape-popper'
-import noOverlap from 'cytoscape-no-overlap'
-import fcose from 'cytoscape-fcose'
-import klay from 'cytoscape-klay'
 import React, { useEffect, useMemo } from 'react'
-import CytoscapeComponent from 'react-cytoscapejs'
-import styled, { useTheme } from 'styled-components'
+
 import {
   faDiceFive,
   faDiceFour,
@@ -16,18 +10,27 @@ import {
   IconDefinition,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Network } from '../../../types'
-import { DropdownWrapper, FloatingWrapper, LayoutButton, ResetButton, STYLESHEET } from './styled'
-import CowLoading from '../../../components/common/CowLoading'
-import { media } from '../../../theme/styles/media'
-import { EmptyItemWrapper } from '../../../components/common/StyledUserDetailsTable'
-import { LAYOUTS } from './layouts'
-import { DropdownOption, DropdownPosition } from '../common/Dropdown'
-import { removePopper } from './utils'
+import Cytoscape from 'cytoscape'
+import fcose from 'cytoscape-fcose'
+import klay from 'cytoscape-klay'
+import noOverlap from 'cytoscape-no-overlap'
+import popper from 'cytoscape-popper'
+import CytoscapeComponent from 'react-cytoscapejs'
+import styled, { useTheme } from 'styled-components/macro'
+
 import { useCytoscape, useTxBatchData, useVisualization } from './hooks'
-import { Order } from '../../../api/operator'
-import { usePrevious } from '../../../hooks/usePrevious'
+import { LAYOUTS } from './layouts'
+import { DropdownWrapper, FloatingWrapper, LayoutButton, ResetButton, STYLESHEET } from './styled'
 import { LayoutNames, ViewType } from './types'
+import { removePopper } from './utils'
+
+import { Order } from '../../../api/operator'
+import CowLoading from '../../../components/common/CowLoading'
+import { EmptyItemWrapper } from '../../../components/common/StyledUserDetailsTable'
+import { usePrevious } from '../../../hooks/usePrevious'
+import { media } from '../../../theme/styles/media'
+import { Network } from '../../../types'
+import { DropdownOption, DropdownPosition } from '../common/Dropdown'
 
 Cytoscape.use(popper)
 Cytoscape.use(noOverlap)
@@ -35,7 +38,7 @@ Cytoscape.use(fcose)
 Cytoscape.use(klay)
 
 const WrapperCytoscape = styled(CytoscapeComponent)`
-  background-color: ${({ theme }): string => theme.bg1};
+  background-color: ${({ theme }): string => theme.paper};
   font-weight: ${({ theme }): string => theme.fontMedium};
   border-radius: 0.6rem;
 

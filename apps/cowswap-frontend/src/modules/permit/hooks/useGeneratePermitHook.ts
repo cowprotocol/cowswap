@@ -1,7 +1,7 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
-import { GP_VAULT_RELAYER } from '@cowprotocol/common-const'
+import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS } from '@cowprotocol/cow-sdk'
 import {
   generatePermitHook,
   getPermitUtilsInstance,
@@ -9,7 +9,7 @@ import {
   PermitHookData,
 } from '@cowprotocol/permit-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { useWeb3React } from '@web3-react/core'
+import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import { useGetCachedPermit } from './useGetCachedPermit'
 
@@ -32,9 +32,9 @@ export function useGeneratePermitHook(): GeneratePermitHook {
   useAtomValue(userPermitCacheAtom)
 
   const { chainId } = useWalletInfo()
-  const { provider } = useWeb3React()
+  const provider = useWalletProvider()
 
-  const spender = GP_VAULT_RELAYER[chainId]
+  const spender = COW_PROTOCOL_VAULT_RELAYER_ADDRESS[chainId]
 
   return useCallback(
     async (params: GeneratePermitHookParams): Promise<PermitHookData | undefined> => {
@@ -69,7 +69,7 @@ export function useGeneratePermitHook(): GeneratePermitHook {
         nonce,
       })
 
-      storePermit({ ...permitParams, hookData })
+      hookData && storePermit({ ...permitParams, hookData })
 
       return hookData
     },

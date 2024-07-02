@@ -1,13 +1,12 @@
-import { UI } from '@cowprotocol/ui'
+import { QuestionTooltipIconWrapper, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
-
-import { QuestionWrapper } from 'legacy/components/QuestionHelper'
 
 import { RateInfo } from 'common/pure/RateInfo'
 
 export const DetailsRow = styled.div`
   display: flex;
+  width: 100%;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
@@ -32,7 +31,7 @@ export const DetailsRow = styled.div`
     white-space: nowrap;
   }
 
-  > div > span ${QuestionWrapper} {
+  > div > span ${QuestionTooltipIconWrapper} {
     opacity: 0.5;
     transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
 

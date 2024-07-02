@@ -1,12 +1,13 @@
 import { useEffect } from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { useWeb3React } from '@web3-react/core'
+import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import { Dispatch } from 'redux'
 
 import { replaceTransaction } from 'legacy/state/enhancedTransactions/actions'
 import { useAllTransactionHashes } from 'legacy/state/enhancedTransactions/hooks'
+import { HashType } from 'legacy/state/enhancedTransactions/reducer'
 import { useAppDispatch } from 'legacy/state/hooks'
 
 import { sdk } from 'api/blocknative'
@@ -61,14 +62,17 @@ function unwatchTxChanges(pendingHashes: string[], chainId: number) {
 }
 
 export function CancelReplaceTxUpdater(): null {
-  const { provider } = useWeb3React()
+  const provider = useWalletProvider()
   const { chainId, account } = useWalletInfo()
   const dispatch = useAppDispatch()
   const accountLowerCase = account?.toLowerCase() || ''
-  const pendingHashes = useAllTransactionHashes((tx) => !tx.receipt && tx.from.toLowerCase() === accountLowerCase)
+  const pendingHashes = useAllTransactionHashes(
+    (tx) =>
+      !!tx.hash && !tx.receipt && !tx.replacementType && !tx.linkedTransactionHash && tx.hashType === HashType.ETHEREUM_TX && tx.from.toLowerCase() === accountLowerCase
+  )
 
   useEffect(() => {
-    if (!chainId || !provider) return
+    if (!provider) return
     // Watch the mempool for cancellation/replacement of tx
     watchTxChanges(pendingHashes, chainId, dispatch)
 

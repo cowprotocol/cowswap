@@ -1,15 +1,19 @@
 import React from 'react'
-import styled from 'styled-components'
-import { media } from 'theme/styles/media'
-import { Order } from 'api/operator'
-import { safeTokenName } from 'utils'
-import { ProgressBar } from 'components/common/ProgressBar'
-import { OrderPriceDisplay } from '../OrderPriceDisplay'
-import { TokenAmount } from 'components/token/TokenAmount'
-import { Amount, Percentage, SurplusComponent } from 'components/common/SurplusComponent'
-import { isSellOrder } from '@cowprotocol/common-utils'
 
+import { isSellOrder } from '@cowprotocol/common-utils'
 import { Command } from '@cowprotocol/types'
+import { PercentDisplay } from '@cowprotocol/ui/pure/PercentDisplay'
+
+import { ProgressBar } from 'components/common/ProgressBar'
+import { Amount, Percentage, SurplusComponent } from 'components/common/SurplusComponent'
+import { TokenAmount } from 'components/token/TokenAmount'
+import styled from 'styled-components/macro'
+import { media } from 'theme/styles/media'
+import { safeTokenName } from 'utils'
+
+import { Order } from 'api/operator'
+
+import { OrderPriceDisplay } from '../OrderPriceDisplay'
 
 export type Props = {
   order: Order
@@ -202,7 +206,7 @@ export function FilledProgress(props: Props): JSX.Element {
   const mainSymbol = mainToken ? safeTokenName(mainToken) : mainAddress
   const swappedSymbol = swappedToken ? safeTokenName(swappedToken) : swappedAddress
   // In case the token object is empty, display the raw amount (`decimals || 0` part)
-  const formattedPercentage = filledPercentage.times('100').decimalPlaces(2).toString()
+  const formattedPercentage = filledPercentage.toNumber() * 100
 
   const surplus = { amount: surplusAmount, percentage: surplusPercentage }
   const surplusToken = (isSell ? buyToken : sellToken) || null
@@ -241,7 +245,7 @@ export function FilledProgress(props: Props): JSX.Element {
         <FilledContainer>
           <p className="title">Filled</p>
           <div>
-            <p className="percentage">{formattedPercentage}%</p>
+            <p className="percentage"><PercentDisplay percent={formattedPercentage} /></p>
             <OrderAssetsInfo />
           </div>
           <ProgressBar showLabel={false} percentage={formattedPercentage} />

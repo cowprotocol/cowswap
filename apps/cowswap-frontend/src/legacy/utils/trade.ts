@@ -26,9 +26,9 @@ import { AddUnserialisedPendingOrderParams } from 'legacy/state/orders/hooks'
 
 import { AppDataInfo } from 'modules/appData'
 
-import { getIsOrderBookTypedError, getTrades } from 'api/gnosisProtocol'
-import { getProfileData } from 'api/gnosisProtocol/api'
-import OperatorError, { ApiErrorObject } from 'api/gnosisProtocol/errors/OperatorError'
+import { getIsOrderBookTypedError, getTrades } from 'api/cowProtocol'
+import { getProfileData } from 'api/cowProtocol/api'
+import OperatorError, { ApiErrorObject } from 'api/cowProtocol/errors/OperatorError'
 
 export type PostOrderParams = {
   account: string
@@ -43,7 +43,7 @@ export type PostOrderParams = {
   buyToken: Token
   validTo: number
   recipient: string
-  recipientAddressOrName: string | null
+  recipientAddressOrName?: string | null
   allowsOffchainSigning: boolean
   appData: AppDataInfo
   class: OrderClass
@@ -56,6 +56,7 @@ export type UnsignedOrderAdditionalParams = PostOrderParams & {
   orderId: string
   summary: string
   signature: string
+  signingScheme: SigningScheme
   isOnChain?: boolean
   orderCreationHash?: string
 }
@@ -162,6 +163,7 @@ export function mapUnsignedOrderToOrder({ unsignedOrder, additionalParams }: Map
     allowsOffchainSigning,
     isOnChain,
     signature,
+    signingScheme,
     sellAmountBeforeFee,
     orderCreationHash,
     quoteId,
@@ -191,6 +193,7 @@ export function mapUnsignedOrderToOrder({ unsignedOrder, additionalParams }: Map
 
     // Signature
     signature,
+    signingScheme,
 
     // Additional API info
     apiAdditionalInfo: undefined,
@@ -251,7 +254,7 @@ export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnse
 
     const pendingOrderParams: Order = mapUnsignedOrderToOrder({
       unsignedOrder,
-      additionalParams: { ...params, orderId, summary, signature },
+      additionalParams: { ...params, orderId, summary, signature, signingScheme },
     })
 
     return {

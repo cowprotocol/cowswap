@@ -1,15 +1,12 @@
-import { useSetAtom } from 'jotai'
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 
 import { changeSwapAmountAnalytics } from '@cowprotocol/analytics'
 import { Currency } from '@uniswap/sdk-core'
 
 import { Field } from 'legacy/state/types'
 
-import { useNavigateOnCurrencySelection } from 'modules/trade/hooks/useNavigateOnCurrencySelection'
-import { useSwitchTokensPlaces } from 'modules/trade/hooks/useSwitchTokensPlaces'
-import { useUpdateCurrencyAmount } from 'modules/trade/hooks/useUpdateCurrencyAmount'
-import { updateTradeQuoteAtom } from 'modules/tradeQuote'
+import { useNavigateOnCurrencySelection, useSwitchTokensPlaces, useUpdateCurrencyAmount } from 'modules/trade'
+import { useResetTradeQuote } from 'modules/tradeQuote'
 
 import { useAdvancedOrdersDerivedState } from './useAdvancedOrdersDerivedState'
 import { useUpdateAdvancedOrdersRawState } from './useAdvancedOrdersRawState'
@@ -20,7 +17,7 @@ export function useAdvancedOrdersActions() {
 
   const naviageOnCurrencySelection = useNavigateOnCurrencySelection()
   const updateCurrencyAmount = useUpdateCurrencyAmount()
-  const updateQuoteState = useSetAtom(updateTradeQuoteAtom)
+  const resetTradeQuote = useResetTradeQuote()
 
   const updateAdvancedOrdersState = useUpdateAdvancedOrdersRawState()
 
@@ -34,9 +31,9 @@ export function useAdvancedOrdersActions() {
         currency,
       })
       naviageOnCurrencySelection(field, currency)
-      updateQuoteState({ response: null })
+      resetTradeQuote()
     },
-    [naviageOnCurrencySelection, updateCurrencyAmount, updateQuoteState]
+    [naviageOnCurrencySelection, updateCurrencyAmount, resetTradeQuote]
   )
 
   const onUserInput = useCallback(
@@ -64,13 +61,16 @@ export function useAdvancedOrdersActions() {
 
   const onSwitchTokens = useCallback(() => {
     onSwitchTokensDefault()
-    updateQuoteState({ response: null })
-  }, [updateQuoteState, onSwitchTokensDefault])
+    resetTradeQuote()
+  }, [resetTradeQuote, onSwitchTokensDefault])
 
-  return {
-    onCurrencySelection,
-    onUserInput,
-    onChangeRecipient,
-    onSwitchTokens,
-  }
+  return useMemo(
+    () => ({
+      onCurrencySelection,
+      onUserInput,
+      onChangeRecipient,
+      onSwitchTokens,
+    }),
+    [onCurrencySelection, onUserInput, onChangeRecipient, onSwitchTokens]
+  )
 }

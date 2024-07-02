@@ -1,4 +1,4 @@
-import { css } from 'styled-components'
+import { css } from 'styled-components/macro'
 
 // TODO: may not need any of this current CSS for V2
 

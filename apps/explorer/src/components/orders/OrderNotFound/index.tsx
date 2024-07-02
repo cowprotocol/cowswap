@@ -1,11 +1,14 @@
 import React, { useEffect } from 'react'
+
+import SupportIcon from 'assets/img/support.png'
+import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
+import { MEDIA } from 'const'
 import { useParams } from 'react-router'
 import { useLocation, useNavigate } from 'react-router-dom'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
+
 import { Search } from '../../../explorer/components/common/Search'
-import SupportIcon from 'assets/img/support.png'
-import { MEDIA } from 'const'
-import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
+
 
 const Title = styled.h1`
   margin: 0.55rem 0 2.5rem;

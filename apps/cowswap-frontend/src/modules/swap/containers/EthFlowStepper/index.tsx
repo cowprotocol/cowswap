@@ -29,6 +29,7 @@ export function EthFlowStepper(props: EthFlowStepperProps) {
   // TODO: add refund hash when available from API
 
   const creationTx = creationHash ? allTxs[creationHash] : undefined
+  const creationLinkedTx = creationTx?.linkedTransactionHash ? allTxs[creationTx.linkedTransactionHash] : undefined
   const cancellationTx = cancellationHash ? allTxs[cancellationHash] : undefined
 
   const state = mapOrderToEthFlowStepperState(order, creationTx, cancellationTx)
@@ -56,6 +57,9 @@ export function EthFlowStepper(props: EthFlowStepperProps) {
     creation: {
       hash: creationHash,
       failed: creationTxFailed,
+      cancelled: creationLinkedTx?.replacementType === 'cancel',
+      spedUp: creationLinkedTx?.replacementType === 'speedup',
+      replaced: creationLinkedTx?.replacementType === 'replaced',
     },
     refund: {
       hash: order.refundHash,

@@ -36,7 +36,7 @@ export const CREATING_STATES = [OrderStatus.PRESIGNATURE_PENDING, OrderStatus.CR
 //  - Derived/additional information that is handy for this app
 // Doesn't have input/output tokens, these are declared in the subtypes of this base type
 // includes sellAmountBeforeFee as this is required for checking unfillable orders
-export interface BaseOrder extends Omit<OrderCreation, 'signingScheme'> {
+export interface BaseOrder extends OrderCreation {
   id: UID // Unique identifier for the order: 56 bytes encoded as hex without 0x
   owner: string // Address, without '0x' prefix
   summary: string // Description of the order, for dapp use only, readable by user
@@ -113,6 +113,7 @@ export type OrderInfoApi = Pick<
   | 'onchainOrderData'
   | 'class'
   | 'fullAppData'
+  | 'signingScheme'
 >
 
 /**
@@ -148,7 +149,7 @@ export interface OrderFulfillmentData {
   fulfillmentTime: string
   transactionHash: string
   summary?: string
-  apiAdditionalInfo?: OrderInfoApi
+  order: EnrichedOrder
 }
 
 export interface AddOrUpdateOrdersParams {
@@ -164,7 +165,7 @@ export interface UpdateOrderParams {
 }
 
 export interface FulfillOrdersBatchParams {
-  ordersData: OrderFulfillmentData[]
+  orders: EnrichedOrder[]
   chainId: ChainId
   isSafeWallet: boolean
 }

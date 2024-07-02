@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
-import styled from 'styled-components'
+
+import TabContent from 'components/common/Tabs/TabContent'
+import TabItem from 'components/common/Tabs/TabItem'
+import styled from 'styled-components/macro'
 
 // Components
-import TabItem from 'components/common/Tabs/TabItem'
-import TabContent from 'components/common/Tabs/TabContent'
 export { default as TabIcon } from 'components/common/Tabs/TabIcon'
 
 type TabId = number

@@ -6,28 +6,26 @@ import { buildDaiLikePermitCallData, buildEip2162PermitCallData } from '../utils
 import { getPermitDeadline } from '../utils/getPermitDeadline'
 import { isSupportedPermitInfo } from '../utils/isSupportedPermitInfo'
 
-const REQUESTS_CACHE: { [permitKey: string]: Promise<PermitHookData> } = {}
+const REQUESTS_CACHE: { [permitKey: string]: Promise<PermitHookData | undefined> } = {}
 
-export async function generatePermitHook(params: PermitHookParams): Promise<PermitHookData> {
+export async function generatePermitHook(params: PermitHookParams): Promise<PermitHookData | undefined> {
   const permitKey = getCacheKey(params)
 
   const cachedRequest = REQUESTS_CACHE[permitKey]
 
   if (cachedRequest) {
-    try {
-      return await cachedRequest
-    } catch (e) {
-      console.debug(`[generatePermitHookWith] cached request failed`, e)
-      delete REQUESTS_CACHE[permitKey]
-    }
+    return await cachedRequest
   }
 
-  const request = generatePermitHookRaw(params).then((permitHookData) => {
-    // Remove consumed request to avoid stale data
-    delete REQUESTS_CACHE[permitKey]
-
-    return permitHookData
-  })
+  const request = generatePermitHookRaw(params)
+    .catch((e) => {
+      console.debug(`[generatePermitHook] cached request failed`, e)
+      return undefined
+    })
+    .finally(() => {
+      // Remove consumed request to avoid stale data
+      delete REQUESTS_CACHE[permitKey]
+    })
 
   REQUESTS_CACHE[permitKey] = request
 

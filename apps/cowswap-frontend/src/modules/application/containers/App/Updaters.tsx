@@ -1,48 +1,47 @@
 import { BalancesAndAllowancesUpdater } from '@cowprotocol/balances-and-allowances'
-import { WidgetTokensListsUpdater, TokensListsUpdater, UnsupportedTokensUpdater } from '@cowprotocol/tokens'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { TokensListsUpdater, UnsupportedTokensUpdater, WidgetTokensListsUpdater } from '@cowprotocol/tokens'
 import { useWalletInfo, WalletUpdater } from '@cowprotocol/wallet'
+import { HwAccountIndexUpdater } from '@cowprotocol/wallet'
 
 import { GasPriceStrategyUpdater } from 'legacy/state/gas/gas-price-strategy-updater'
 
 import { UploadToIpfsUpdater } from 'modules/appData/updater/UploadToIpfsUpdater'
 import { CowEventsUpdater, InjectedWidgetUpdater, useInjectedWidgetParams } from 'modules/injectedWidget'
+import { FinalizeTxUpdater } from 'modules/onchainTransactions'
+import { OrdersNotificationsUpdater } from 'modules/orders'
 import { EthFlowDeadlineUpdater, EthFlowSlippageUpdater } from 'modules/swap/state/EthFlow/updaters'
 import { useOnTokenListAddingError } from 'modules/tokensList'
 import { UsdPricesUpdater } from 'modules/usdAmount'
 
-import { useFeatureFlags } from 'common/hooks/featureFlags/useFeatureFlags'
 import { TotalSurplusUpdater } from 'common/state/totalSurplusState'
-import { ApplicationUpdater } from 'common/updaters/ApplicationUpdater'
 import { CancelReplaceTxUpdater } from 'common/updaters/CancelReplaceTxUpdater'
+import { FeatureFlagsUpdater } from 'common/updaters/FeatureFlagsUpdater'
 import { FeesUpdater } from 'common/updaters/FeesUpdater'
-import { FinalizeTxUpdater } from 'common/updaters/FinalizeTxUpdater'
 import { GasUpdater } from 'common/updaters/GasUpdater'
-import { HwAccountIndexUpdater } from 'common/updaters/HwAccountIndexUpdater'
-import { LogsUpdater } from 'common/updaters/LogsUpdater'
 import {
   CancelledOrdersUpdater,
   ExpiredOrdersUpdater,
-  GpOrdersUpdater,
+  OrdersFromApiUpdater,
   PendingOrdersUpdater,
   UnfillableOrdersUpdater,
 } from 'common/updaters/orders'
 import { SpotPricesUpdater } from 'common/updaters/orders/SpotPricesUpdater'
 import { SentryUpdater } from 'common/updaters/SentryUpdater'
-import { ThemeFromUrlUpdater } from 'common/updaters/ThemeFromUrlUpdater'
 import { UserUpdater } from 'common/updaters/UserUpdater'
 
 export function Updaters() {
   const { chainId, account } = useWalletInfo()
-  const { tokenLists, appCode } = useInjectedWidgetParams()
+  const { tokenLists, appCode, customTokens, standaloneMode } = useInjectedWidgetParams()
   const onTokenListAddingError = useOnTokenListAddingError()
   const { isGeoBlockEnabled } = useFeatureFlags()
 
   return (
     <>
-      <WalletUpdater />
+      <FeatureFlagsUpdater />
+      <WalletUpdater standaloneMode={standaloneMode} />
       <HwAccountIndexUpdater />
       <UserUpdater />
-      <ApplicationUpdater />
       <FinalizeTxUpdater />
       <CancelReplaceTxUpdater />
       <PendingOrdersUpdater />
@@ -50,23 +49,24 @@ export function Updaters() {
       <ExpiredOrdersUpdater />
       <FeesUpdater />
       <UnfillableOrdersUpdater />
-      <GpOrdersUpdater />
+      <OrdersFromApiUpdater />
       <GasUpdater />
       <GasPriceStrategyUpdater />
-      <LogsUpdater />
       <SentryUpdater />
       <UploadToIpfsUpdater />
       <EthFlowSlippageUpdater />
       <EthFlowDeadlineUpdater />
       <SpotPricesUpdater />
-      <ThemeFromUrlUpdater />
       <InjectedWidgetUpdater />
       <CowEventsUpdater />
       <TotalSurplusUpdater />
       <UsdPricesUpdater />
+      <OrdersNotificationsUpdater />
+
       <TokensListsUpdater chainId={chainId} isGeoBlockEnabled={isGeoBlockEnabled} />
       <WidgetTokensListsUpdater
         tokenLists={tokenLists}
+        customTokens={customTokens}
         appCode={appCode}
         onTokenListAddingError={onTokenListAddingError}
       />

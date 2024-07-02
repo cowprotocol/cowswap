@@ -3,13 +3,14 @@ import { useCallback, useState } from 'react'
 import { addListAnalytics } from '@cowprotocol/analytics'
 import { useTokensBalances } from '@cowprotocol/balances-and-allowances'
 import { TokenWithLogo } from '@cowprotocol/common-const'
+import { isInjectedWidget } from '@cowprotocol/common-utils'
 import {
   ListState,
   useAddList,
   useAddUserToken,
   useAllListsList,
   useAllTokens,
-  useFavouriteTokens,
+  useFavoriteTokens,
   useUnsupportedTokens,
   useUserAddedTokens,
 } from '@cowprotocol/tokens'
@@ -46,13 +47,15 @@ export function SelectTokenWidget() {
   const importTokenCallback = useAddUserToken()
 
   const allTokens = useAllTokens()
-  const favouriteTokens = useFavouriteTokens()
+  const favoriteTokens = useFavoriteTokens()
   const userAddedTokens = useUserAddedTokens()
   const allTokenLists = useAllListsList()
   const balancesState = useTokensBalances()
   const unsupportedTokens = useUnsupportedTokens()
   const permitCompatibleTokens = usePermitCompatibleTokens()
   const onTokenListAddingError = useOnTokenListAddingError()
+
+  const isInjectedWidgetMode = isInjectedWidget()
 
   const closeTokenSelectWidget = useCallback(() => {
     updateSelectTokenWidget({
@@ -135,13 +138,14 @@ export function SelectTokenWidget() {
             unsupportedTokens={unsupportedTokens}
             selectedToken={selectedToken}
             allTokens={allTokens}
-            favouriteTokens={favouriteTokens}
+            favoriteTokens={favoriteTokens}
             balancesState={balancesState}
             permitCompatibleTokens={permitCompatibleTokens}
             onSelectToken={onSelectToken}
             onInputPressEnter={onInputPressEnter}
             onDismiss={onDismiss}
             onOpenManageWidget={() => setIsManageWidgetOpen(true)}
+            hideFavoriteTokensTooltip={isInjectedWidgetMode}
           ></SelectTokenModal>
         )
       })()}

@@ -1,6 +1,7 @@
 import { useAtom } from 'jotai'
 import { useCallback } from 'react'
 
+import { alternativeModalAnalytics } from '@cowprotocol/analytics'
 import { getAddress } from '@cowprotocol/common-utils'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
@@ -13,17 +14,18 @@ import { PriceImpactDeclineError, TradeFlowContext } from 'modules/limitOrders/s
 import { LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
 import { useNavigateToOpenOrdersTable } from 'modules/ordersTable'
+import { useCloseReceiptModal } from 'modules/ordersTable/containers/OrdersReceiptModal/hooks'
 import { TradeConfirmActions } from 'modules/trade/hooks/useTradeConfirmActions'
-import { useHideAlternativeOrderModal } from 'modules/trade/state/alternativeOrder'
+import { useAlternativeOrder, useHideAlternativeOrderModal } from 'modules/trade/state/alternativeOrder'
 import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
 
-import OperatorError from 'api/gnosisProtocol/errors/OperatorError'
+import OperatorError from 'api/cowProtocol/errors/OperatorError'
 import { useConfirmPriceImpactWithoutFee } from 'common/hooks/useConfirmPriceImpactWithoutFee'
 import { useIsSafeApprovalBundle } from 'common/hooks/useIsSafeApprovalBundle'
 import { TradeAmounts } from 'common/types'
 
 export function useHandleOrderPlacement(
-  tradeContext: TradeFlowContext | null,
+  tradeContext: TradeFlowContext,
   priceImpact: PriceImpact,
   settingsState: LimitOrdersSettingsState,
   tradeConfirmActions: TradeConfirmActions
@@ -31,6 +33,8 @@ export function useHandleOrderPlacement(
   const { confirmPriceImpactWithoutFee } = useConfirmPriceImpactWithoutFee()
   const updateLimitOrdersState = useUpdateLimitOrdersRawState()
   const hideAlternativeOrderModal = useHideAlternativeOrderModal()
+  const { isEdit: isAlternativeOrderEdit } = useAlternativeOrder() || {}
+  const closeReceiptModal = useCloseReceiptModal()
   const navigateToOpenOrdersTable = useNavigateToOpenOrdersTable()
   const [partiallyFillableOverride, setPartiallyFillableOverride] = useAtom(partiallyFillableOverrideAtom)
   // tx bundling stuff
@@ -75,8 +79,6 @@ export function useHandleOrderPlacement(
       )
     }
 
-    if (!tradeContext) throw new Error('tradeContext is not set!')
-
     tradeContext.postOrderParams.partiallyFillable =
       partiallyFillableOverride ?? tradeContext.postOrderParams.partiallyFillable
 
@@ -105,6 +107,13 @@ export function useHandleOrderPlacement(
         hideAlternativeOrderModal()
         // Navigate to open orders
         navigateToOpenOrdersTable()
+        // Close receipt modal
+        closeReceiptModal()
+
+        // Analytics event to track alternative modal usage, only if was using alternative modal
+        if (isAlternativeOrderEdit !== undefined) {
+          alternativeModalAnalytics(isAlternativeOrderEdit, 'placed')
+        }
       })
       .catch((error) => {
         if (error instanceof PriceImpactDeclineError) return
@@ -120,8 +129,10 @@ export function useHandleOrderPlacement(
     tradeConfirmActions,
     updateLimitOrdersState,
     setPartiallyFillableOverride,
-    hideAlternativeOrderModal,
+    isAlternativeOrderEdit,
     navigateToOpenOrdersTable,
+    closeReceiptModal,
+    hideAlternativeOrderModal,
   ])
 }
 

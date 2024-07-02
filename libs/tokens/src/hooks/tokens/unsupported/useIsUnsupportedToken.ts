@@ -1,5 +1,6 @@
-import { useUnsupportedTokens } from './useUnsupportedTokens'
 import { useCallback } from 'react'
+
+import { useUnsupportedTokens } from './useUnsupportedTokens'
 
 type NullishAddress = string | null | undefined
 

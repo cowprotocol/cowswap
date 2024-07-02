@@ -1,5 +1,6 @@
-import { useRef, useEffect, RefObject, useState, useMemo, useLayoutEffect } from 'react'
-import { Instance, Options, State, Placement } from '@popperjs/core'
+import { RefObject, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+
+import { Instance, Options, Placement, State } from '@popperjs/core'
 
 export const TOOLTIP_OFFSET = 12 // px
 
@@ -19,7 +20,7 @@ const defaultConfig: Partial<Options> & Pick<Options, 'modifiers'> = {
 
 const createConfig = (
   config: Partial<Options> | undefined | null,
-  setState: (state: State) => void,
+  setState: (state: State) => void
 ): Partial<Options> => {
   const finalConfig = {
     ...defaultConfig,
@@ -49,7 +50,7 @@ interface Result<T extends HTMLElement, U extends HTMLElement = HTMLDivElement> 
 }
 
 export const usePopper = <T extends HTMLElement, U extends HTMLElement = HTMLDivElement>(
-  config?: Partial<Options>,
+  config?: Partial<Options>
 ): Result<T, U> => {
   const [isShown, setIsShown] = useState(false)
   const popupRef = useRef<U>(null)
@@ -71,7 +72,6 @@ export const usePopper = <T extends HTMLElement, U extends HTMLElement = HTMLDiv
     return (): void => {
       popperRef.current?.destroy()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // memoize what doesn't change between rerenders
@@ -83,7 +83,7 @@ export const usePopper = <T extends HTMLElement, U extends HTMLElement = HTMLDiv
       target: targetRef,
       ref: popupRef,
     }),
-    [],
+    []
   )
 
   // LayoutEffect gets applied before browser paint
@@ -98,7 +98,7 @@ export const usePopper = <T extends HTMLElement, U extends HTMLElement = HTMLDiv
       isShown,
       state,
     }),
-    [isShown, state, stableProps],
+    [isShown, state, stableProps]
   )
 }
 
@@ -137,12 +137,11 @@ interface PopperDefaultHookResult<T extends HTMLElement> {
 // Popper hook using default triggers
 export const usePopperDefault = <T extends HTMLElement>(
   placement: Placement = 'top',
-  offset?: number,
+  offset?: number
 ): PopperDefaultHookResult<T> => {
   const config = usePlacementAndOffset({ placement, offset })
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { target, show, hide, toggle, ...tooltipProps } = usePopper<T>(config)
+  const { target, show, hide, toggle: _toggle, ...tooltipProps } = usePopper<T>(config)
   // ignore toggle var
 
   const targetProps = useMemo(
@@ -153,13 +152,16 @@ export const usePopperDefault = <T extends HTMLElement>(
       onBlur: hide,
       ref: target,
     }),
-    [hide, show, target],
+    [hide, show, target]
   )
 
-  return {
-    targetProps,
-    tooltipProps,
-  }
+  return useMemo(
+    () => ({
+      targetProps,
+      tooltipProps,
+    }),
+    [targetProps, tooltipProps]
+  )
 }
 
 interface PopperOnClickResult<T extends HTMLElement> {
@@ -176,12 +178,11 @@ interface PopperOnClickResult<T extends HTMLElement> {
 
 export const usePopperOnClick = <T extends HTMLElement>(
   placement: Placement = 'top',
-  offset?: number,
+  offset?: number
 ): PopperOnClickResult<T> => {
   const config = usePlacementAndOffset({ placement, offset })
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { target, show, hide, toggle, ...tooltipProps } = usePopper<T>(config)
+  const { target, show: _show, hide, toggle, ...tooltipProps } = usePopper<T>(config)
   // ignore show and hide vars
 
   useEffect(() => {
@@ -200,11 +201,14 @@ export const usePopperOnClick = <T extends HTMLElement>(
       onClick: toggle,
       ref: target,
     }),
-    [toggle, target],
+    [toggle, target]
   )
 
-  return {
-    targetProps,
-    tooltipProps,
-  }
+  return useMemo(
+    () => ({
+      targetProps,
+      tooltipProps,
+    }),
+    [targetProps, tooltipProps]
+  )
 }

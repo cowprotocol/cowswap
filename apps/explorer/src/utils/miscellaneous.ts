@@ -1,12 +1,14 @@
-import BN from 'bn.js'
+import { Command } from '@cowprotocol/types'
+
 import BigNumber from 'bignumber.js'
+import BN from 'bn.js'
+import { DEFAULT_TIMEOUT, NATIVE_TOKEN_ADDRESS } from 'const'
+import { Network, Unpromise } from 'types'
 import Web3 from 'web3'
 
-import { Network, Unpromise } from 'types'
 import { AssertionError } from 'assert'
-import { DEFAULT_TIMEOUT, NATIVE_TOKEN_ADDRESS } from 'const'
 
-import { Command } from '@cowprotocol/types'
+
 
 const toChecksumAddress = Web3.utils.toChecksumAddress
 

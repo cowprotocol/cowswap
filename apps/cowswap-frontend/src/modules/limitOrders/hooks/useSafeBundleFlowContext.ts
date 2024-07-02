@@ -1,8 +1,10 @@
-import { useTokenContract } from '@cowprotocol/common-hooks'
+import { useMemo } from 'react'
+
 import { useSafeAppsSdk } from '@cowprotocol/wallet'
 
 import { SafeBundleFlowContext, TradeFlowContext } from 'modules/limitOrders/services/types'
 
+import { useTokenContract } from 'common/hooks/useContract'
 import { useTradeSpenderAddress } from 'common/hooks/useTradeSpenderAddress'
 
 export function useSafeBundleFlowContext(tradeContext: TradeFlowContext | null): SafeBundleFlowContext | null {
@@ -11,9 +13,11 @@ export function useSafeBundleFlowContext(tradeContext: TradeFlowContext | null):
   const spender = useTradeSpenderAddress()
   const safeAppsSdk = useSafeAppsSdk()
 
-  if (!tradeContext || !erc20Contract || !spender || !safeAppsSdk) {
-    return null
-  }
+  return useMemo(() => {
+    if (!tradeContext || !erc20Contract || !spender || !safeAppsSdk) {
+      return null
+    }
 
-  return { ...tradeContext, erc20Contract, spender, safeAppsSdk }
+    return { ...tradeContext, erc20Contract, spender, safeAppsSdk }
+  }, [tradeContext, erc20Contract, spender, safeAppsSdk])
 }

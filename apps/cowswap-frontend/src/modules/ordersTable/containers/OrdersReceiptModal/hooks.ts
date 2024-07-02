@@ -3,11 +3,11 @@ import { useCallback, useMemo } from 'react'
 
 import { Command, UiOrderType } from '@cowprotocol/types'
 
-import { useSetAlternativeOrder } from 'modules/trade/state/alternativeOrder'
+import { IS_EDIT_ORDER_ENABLED, useSetAlternativeOrder } from 'modules/trade/state/alternativeOrder'
 
-import { isPending } from 'common/hooks/useCategorizeRecentActivity'
+import { isCreating, isPending } from 'common/hooks/useCategorizeRecentActivity'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
-import { ParsedOrder } from 'utils/orderUtils/parseOrder'
+import { isOffchainOrder, ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import { receiptAtom, updateReceiptAtom } from '../../state/orderReceiptAtom'
 
@@ -27,14 +27,40 @@ export function useSelectedOrder(): ParsedOrder | null {
   return order
 }
 
-export function useGetShowRecreateModal(order: ParsedOrder | null): Command | null {
-  const setOrderToRecreate = useSetAlternativeOrder()
+export type AlternativeOrderModalContext = { showAlternativeOrderModal: Command; isEdit: boolean } | null
 
-  return useMemo(
-    () =>
-      !order || isPending(order) || getUiOrderType(order) !== UiOrderType.LIMIT
-        ? null
-        : () => setOrderToRecreate(order),
-    [order, setOrderToRecreate]
+export function useGetAlternativeOrderModalContext(order: ParsedOrder | null): AlternativeOrderModalContext {
+  const callback = useGetAlternativeOrderModalContextCallback()
+
+  return useMemo(() => callback(order), [callback, order])
+}
+
+export function useGetAlternativeOrderModalContextCallback(): (
+  order: ParsedOrder | null
+) => AlternativeOrderModalContext {
+  const setAlternativeOrder = useSetAlternativeOrder()
+
+  return useCallback(
+    (order: ParsedOrder | null) => getAlternativeOrderModalContext(order, setAlternativeOrder),
+    [setAlternativeOrder]
   )
+}
+
+function getAlternativeOrderModalContext(
+  order: ParsedOrder | null,
+  setAlternativeOrder: ReturnType<typeof useSetAlternativeOrder>
+): AlternativeOrderModalContext {
+  const isEdit = order && isPending(order)
+
+  if (
+    !order ||
+    isCreating(order) ||
+    getUiOrderType(order) !== UiOrderType.LIMIT ||
+    isEdit === null ||
+    (isEdit && (!isOffchainOrder(order) || !IS_EDIT_ORDER_ENABLED))
+  ) {
+    return null
+  } else {
+    return { showAlternativeOrderModal: () => setAlternativeOrder(order, isEdit), isEdit }
+  }
 }

@@ -1,26 +1,21 @@
 import React, { useMemo } from 'react'
-import { MemoryRouter } from 'react-router'
 
-// also exported from '@storybook/react' if you can deal with breaking changes in 6.1
-import { Frame } from 'components/common/Frame'
-import { ApolloProvider } from '@apollo/client'
-import { ApolloClient, InMemoryCache } from '@apollo/client'
-import { useForm, FormProvider, UseFormOptions } from 'react-hook-form'
-import ThemeProvider, { getThemePalette, StaticGlobalStyle, Theme, ThemedGlobalStyle } from 'theme'
-
+import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client'
+import { faLightbulb, faMoon } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faMoon, faLightbulb } from '@fortawesome/free-regular-svg-icons'
-
+// eslint-disable-next-line no-restricted-imports
+import { StoryFnReactReturnType } from '@storybook/react/dist/ts3.9/client/preview/types'
+import combineReducers from 'combine-reducers'
 import { ThemeToggle } from 'components/common/Button'
-import { useThemeManager } from 'hooks/useThemeManager'
-
+import { Frame } from 'components/common/Frame'
 import { withGlobalContext } from 'hooks/useGlobalState'
+import { useThemeManager } from 'hooks/useThemeManager'
+import { FormProvider, useForm, UseFormOptions } from 'react-hook-form'
+import { MemoryRouter } from 'react-router'
 import { GLOBAL_INITIAL_STATE, globalRootReducer } from 'state'
 import { reducer as networkReducer } from 'state/network'
-
+import { ThemeProvider, getThemePalette, StaticGlobalStyle, Theme, ThemedGlobalStyle } from 'theme'
 import { Network } from 'types'
-import combineReducers from 'combine-reducers'
-import { StoryFnReactReturnType } from '@storybook/react/dist/ts3.9/client/preview/types'
 
 export const GlobalStyles = (DecoratedStory: () => StoryFnReactReturnType): JSX.Element => (
   <>
@@ -62,7 +57,7 @@ export function NetworkDecorator(DecoratedStory: () => JSX.Element): JSX.Element
   const Component = withGlobalContext(
     DecoratedStory,
     () => ({ networkId: Network.MAINNET }),
-    combineReducers({ networkId: networkReducer }),
+    combineReducers({ networkId: networkReducer })
   )
   return <Component />
 }

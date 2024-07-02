@@ -1,7 +1,6 @@
 import { useCallback, useMemo } from 'react'
 
 import { V_COW } from '@cowprotocol/common-const'
-import { useVCowContract } from '@cowprotocol/common-hooks'
 import { Command } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import type { BigNumber } from '@ethersproject/bignumber'
@@ -11,6 +10,7 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import useSWR from 'swr'
 
 import { GAS_LIMIT_DEFAULT } from 'common/constants/common'
+import { useVCowContract } from 'common/hooks/useContract'
 
 import { setSwapVCowStatus, SwapVCowStatus } from './actions'
 
@@ -26,6 +26,7 @@ type VCowData = {
   unvested: CurrencyAmount<Currency> | undefined | null
   vested: CurrencyAmount<Currency> | undefined | null
 }
+
 interface SwapVCowCallbackParams {
   openModal: (message: string) => void
   closeModal: Command
@@ -56,21 +57,13 @@ export function useVCowData(): VCowData {
   const { account } = useWalletInfo()
 
   const { data: vestedResult, isLoading: isVestedLoading } = useSWR(
-    ['useVCowData.swappableBalanceOf', account, vCowContract],
-    async () => {
-      if (!account || !vCowContract) return undefined
-
-      return vCowContract.swappableBalanceOf(account)
-    }
+    account && vCowContract ? ['useVCowData.swappableBalanceOf', account, vCowContract] : null,
+    async ([, _account, contract]) => contract.swappableBalanceOf(_account)
   )
 
   const { data: totalResult, isLoading: isTotalLoading } = useSWR(
-    ['useVCowData.balanceOf', account, vCowContract],
-    async () => {
-      if (!account || !vCowContract) return undefined
-
-      return vCowContract.balanceOf(account)
-    }
+    account && vCowContract ? ['useVCowData.balanceOf', account, vCowContract] : null,
+    async ([, _account, contract]) => contract.balanceOf(_account)
   )
 
   const vested = useParseVCowResult(vestedResult)
@@ -91,7 +84,7 @@ export function useVCowData(): VCowData {
 
   const isLoading = isVestedLoading || isTotalLoading
 
-  return { isLoading, vested, unvested, total }
+  return useMemo(() => ({ isLoading, vested, unvested, total }), [isLoading, vested, unvested, total])
 }
 
 /**
@@ -104,7 +97,7 @@ export function useSwapVCowCallback({ openModal, closeModal }: SwapVCowCallbackP
   const addTransaction = useTransactionAdder()
   const vCowToken = chainId ? V_COW[chainId] : undefined
 
-  const swapCallback = useCallback(async () => {
+  return useCallback(async () => {
     if (!account) {
       throw new Error('Not connected')
     }
@@ -144,10 +137,6 @@ export function useSwapVCowCallback({ openModal, closeModal }: SwapVCowCallbackP
       })
       .finally(closeModal)
   }, [account, addTransaction, chainId, closeModal, openModal, vCowContract, vCowToken])
-
-  return {
-    swapCallback,
-  }
 }
 
 /**

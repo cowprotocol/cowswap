@@ -1,51 +1,48 @@
 import React from 'react'
 
-import { TokenSymbol } from '@cowprotocol/ui'
-import { Currency } from '@uniswap/sdk-core'
+import { TokenAmount } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 
 import { BalanceAndSubsidy } from 'legacy/hooks/useCowBalanceAndSubsidy'
 
-import { ReceiveAmountInfo } from 'modules/swap/helpers/tradeReceiveAmount'
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
+import { getOrderTypeReceiveAmounts } from 'modules/trade'
+import { ReceiveAmountInfo } from 'modules/trade/types'
 
 import * as styledEl from './styled'
 
 export interface ReceiveAmountInfoTooltipProps {
   receiveAmountInfo: ReceiveAmountInfo
-  currency: Currency
   subsidyAndBalance: BalanceAndSubsidy
   allowsOffchainSigning: boolean
 }
 
-const MAX_TOKEN_SYMBOL_LENGTH = 6
-
 export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps) {
   const isEoaEthFlow = useIsEoaEthFlow()
 
-  const { receiveAmountInfo, currency, subsidyAndBalance, allowsOffchainSigning } = props
+  const { receiveAmountInfo, subsidyAndBalance, allowsOffchainSigning } = props
   const {
-    type,
-    amountAfterFees,
-    amountAfterFeesRaw,
-    amountBeforeFees,
-    feeAmount,
-    feeAmountRaw,
-    partnerFeeAmount,
-    partnerFeeAmountRaw,
+    isSell,
+    costs: {
+      partnerFee: { amount: partnerFeeAmount },
+    },
   } = receiveAmountInfo
+  const { amountAfterFees, amountBeforeFees, networkFeeAmount } = getOrderTypeReceiveAmounts(receiveAmountInfo)
   const { subsidy } = subsidyAndBalance
   const { discount } = subsidy
 
-  const typeString = type === 'from' ? '+' : '-'
-  const hasFee = feeAmountRaw && feeAmountRaw.greaterThan(0)
-  const hasPartnerFee = partnerFeeAmountRaw && partnerFeeAmountRaw.greaterThan(0)
+  const typeString = !isSell ? '+' : '-'
+  const hasPartnerFee = !!partnerFeeAmount && partnerFeeAmount.greaterThan(0)
+  const hasNetworkFee = !!networkFeeAmount && networkFeeAmount.greaterThan(0)
+  const hasFee = hasNetworkFee || hasPartnerFee
+
+  const isEoaNotEthFlow = allowsOffchainSigning && !isEoaEthFlow
 
   const FeePercent = (
     <span>
-      <Trans>Fee</Trans>
-      {hasFee && discount ? ` [-${discount}%]` : ''}
+      <Trans>Network costs</Trans>
+      {hasNetworkFee && discount ? ` [-${discount}%]` : ''}
     </span>
   )
 
@@ -53,55 +50,55 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps) {
     <styledEl.Box>
       <div>
         <span>
-          <Trans>Before fee</Trans>
+          <Trans>Before costs</Trans>
         </span>
         <span>
-          {amountBeforeFees} {<TokenSymbol token={currency} length={MAX_TOKEN_SYMBOL_LENGTH} />}
+          <TokenAmount amount={amountBeforeFees} tokenSymbol={amountBeforeFees?.currency} defaultValue="0" />
         </span>
       </div>
-      <div>
-        {discount ? <styledEl.GreenText>{FeePercent}</styledEl.GreenText> : FeePercent}
-        {hasFee ? (
-          <span>
-            {typeString}
-            {feeAmount} {<TokenSymbol token={currency} length={MAX_TOKEN_SYMBOL_LENGTH} />}
-          </span>
-        ) : (
-          <styledEl.GreenText>
-            <strong>
-              <Trans>Free</Trans>
-            </strong>
-          </styledEl.GreenText>
-        )}
-      </div>
-      {hasPartnerFee && (
+      {networkFeeAmount && (
         <div>
-          <Trans>Partner fee</Trans>
-          <span>
-            {typeString}
-            {partnerFeeAmount} {<TokenSymbol token={currency} length={MAX_TOKEN_SYMBOL_LENGTH} />}
-          </span>
+          {discount ? <styledEl.GreenText>{FeePercent}</styledEl.GreenText> : FeePercent}
+          {hasFee ? (
+            <span>
+              {typeString}
+              <TokenAmount amount={networkFeeAmount} tokenSymbol={networkFeeAmount?.currency} defaultValue="0" />
+            </span>
+          ) : (
+            <styledEl.GreenText>
+              <strong>
+                <Trans>Free</Trans>
+              </strong>
+            </styledEl.GreenText>
+          )}
         </div>
       )}
-      {allowsOffchainSigning && !isEoaEthFlow && (
+      {(isEoaNotEthFlow || hasPartnerFee) && (
         <div>
           <span>
-            <Trans>Gas cost</Trans>
+            <Trans>Fee</Trans>
           </span>
-          <styledEl.GreenText>
-            <strong>
-              <Trans>Free</Trans>
-            </strong>
-          </styledEl.GreenText>
+          {hasPartnerFee ? (
+            <span>
+              {typeString}
+              <TokenAmount amount={partnerFeeAmount} tokenSymbol={partnerFeeAmount?.currency} defaultValue="0" />
+            </span>
+          ) : (
+            <styledEl.GreenText>
+              <strong>
+                <Trans>Free</Trans>
+              </strong>
+            </styledEl.GreenText>
+          )}
         </div>
       )}
-      {amountAfterFeesRaw.greaterThan(0) && (
+      {amountAfterFees.greaterThan(0) && (
         <styledEl.TotalAmount>
           <span>
-            <Trans>{type === 'from' ? 'From' : 'To'}</Trans>
+            <Trans>{!isSell ? 'From' : 'To'}</Trans>
           </span>
           <span>
-            {amountAfterFees} {<TokenSymbol token={currency} length={MAX_TOKEN_SYMBOL_LENGTH} />}
+            <TokenAmount amount={amountAfterFees} tokenSymbol={amountAfterFees.currency} defaultValue="0" />
           </span>
         </styledEl.TotalAmount>
       )}

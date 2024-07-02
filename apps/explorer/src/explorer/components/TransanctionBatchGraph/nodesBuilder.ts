@@ -1,6 +1,10 @@
-import { Network } from '../../../types'
-import { Order } from '../../../api/operator'
+import { getChainInfo } from '@cowprotocol/common-const'
+import { getBlockExplorerUrl, isSellOrder } from '@cowprotocol/common-utils'
+import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
+
+import BigNumber from 'bignumber.js'
 import { ElementDefinition } from 'cytoscape'
+
 import ElementsBuilder, { buildGridLayout } from './elementsBuilder'
 import {
   BuildNodesFn,
@@ -12,16 +16,14 @@ import {
   TypeEdgeOnTx,
   TypeNodeOnTx,
 } from './types'
-import { abbreviateString, FormatAmountPrecision, formattingAmountPrecision } from '../../../utils'
-import { getExplorerUrl } from '../../../utils/getExplorerUrl'
-import { SPECIAL_ADDRESSES, TOKEN_SYMBOL_UNKNOWN } from '../../const'
-import BigNumber from 'bignumber.js'
+
+import { Order } from '../../../api/operator'
 import { Account, ALIAS_TRADER_NAME, Trade, Transfer } from '../../../api/tenderly'
-import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { APP_NAME, NATIVE_TOKEN_ADDRESS_LOWERCASE, WRAPPED_NATIVE_ADDRESS } from '../../../const'
 import { SingleErc20State } from '../../../state/erc20'
-import { getChainInfo } from '@cowprotocol/common-const'
-import { isSellOrder } from '@cowprotocol/common-utils'
+import { Network } from '../../../types'
+import { abbreviateString, FormatAmountPrecision, formattingAmountPrecision } from '../../../utils'
+import { SPECIAL_ADDRESSES, TOKEN_SYMBOL_UNKNOWN } from '../../const'
 
 const PROTOCOL_NAME = APP_NAME
 const INTERNAL_NODE_NAME = `${APP_NAME} Buffer`
@@ -93,7 +95,7 @@ export const buildContractViewNodes: BuildNodesFn = function getNodes(
       // Set flag to prevent creating more
       internalNodeCreated = true
 
-      const account = { alias: fromId, href: getExplorerUrl(networkId, 'address', transfer.from) }
+      const account = { alias: fromId, href: getBlockExplorerUrl(networkId, 'address', transfer.from) }
       builder.node(
         {
           type: TypeNodeOnTx.Special,
@@ -388,7 +390,7 @@ export const buildTokenViewNodes: BuildNodesFn = function getNodesAlternative(
     const entity = accounts?.[node.address] || {
       alias: abbreviateString(node.address, 6, 4),
       address: node.address,
-      href: getExplorerUrl(networkId, 'contract', node.address),
+      href: getBlockExplorerUrl(networkId, 'contract', node.address),
     }
     const type = node.isHyperNode ? TypeNodeOnTx.Hyper : TypeNodeOnTx.Token
     const tooltip = getNodeTooltip(node, edges, tokens)

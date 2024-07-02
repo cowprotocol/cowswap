@@ -1,10 +1,8 @@
 // also exported from '@storybook/react' if you can deal with breaking changes in 6.1
 import { Meta, Story } from '@storybook/react/types-6-0'
-
-import { GlobalStyles, ThemeToggler } from 'storybook/decorators'
-
 import { Card, CardContent } from 'components/common/Card'
 import { CardRow, CardRowProps } from 'components/common/CardRow'
+import { GlobalStyles, ThemeToggler } from 'storybook/decorators'
 
 import QuestionIcon from '../../../assets/img/question1.svg'
 

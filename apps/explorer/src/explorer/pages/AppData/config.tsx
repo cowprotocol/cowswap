@@ -1,7 +1,10 @@
 import React, { RefObject } from 'react'
-import Form, { AjvError, FieldProps, FormValidation } from '@rjsf/core'
+
 import { LATEST_APP_DATA_VERSION } from '@cowprotocol/app-data'
+
+import Form, { AjvError, FieldProps, FormValidation } from '@rjsf/core'
 import { JSONSchema7 } from 'json-schema'
+
 import { HelpTooltip } from '../../../components/Tooltip'
 import { metadataApiSDK } from '../../../cowSdk'
 

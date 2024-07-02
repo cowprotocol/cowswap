@@ -1,12 +1,16 @@
 import { useAtomValue, useSetAtom } from 'jotai'
-import { IconType, removeSnackbarAtom, snackbarsAtom } from '../../state/snackbarsAtom'
-import styled from 'styled-components/macro'
-import { SnackbarPopup } from '../../pure/SnackbarPopup'
+import { useResetAtom } from 'jotai/utils'
+import { ReactElement, useCallback, useEffect, useMemo } from 'react'
+
+import { useMediaQuery } from '@cowprotocol/common-hooks'
+import { Media, UI } from '@cowprotocol/ui'
+
 import ms from 'ms.macro'
 import { AlertCircle, CheckCircle } from 'react-feather'
-import { ReactElement, useCallback, useMemo } from 'react'
-import { useResetAtom } from 'jotai/utils'
-import { UI } from '@cowprotocol/ui'
+import styled from 'styled-components/macro'
+
+import { SnackbarPopup } from '../../pure/SnackbarPopup'
+import { IconType, removeSnackbarAtom, snackbarsAtom } from '../../state/snackbarsAtom'
 
 const Overlay = styled.div`
   display: none;
@@ -22,27 +26,29 @@ const Overlay = styled.div`
 const List = styled.div`
   position: relative;
   z-index: 5;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 `
 
-const Host = styled.div`
+const Host = styled.div<{ hidden$: boolean }>`
   position: fixed;
   top: 80px;
-  right: 20px;
+  right: ${({ hidden$ }) => (hidden$ ? '-9999px' : '20px')};
   z-index: 6;
   min-width: 300px;
   max-width: 800px;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     width: 90%;
     left: 0;
-    right: 0;
+    right: ${({ hidden$ }) => (hidden$ ? '-9999px' : '0')};
     margin: auto;
-    top: 20px;
 
     ${Overlay} {
       display: block;
     }
-  `}
+  }
 `
 
 const SuccessIcon = styled(CheckCircle)`
@@ -61,7 +67,18 @@ const icons: Record<IconType, ReactElement | undefined> = {
   custom: undefined,
 }
 
-export function SnackbarsWidget() {
+interface SnackbarsWidgetProps {
+  /**
+   * This prop might seem a bit hacky and this is true
+   * The problem in `OrderNotification` and `getToastMessageCallback` functions
+   * In widget mode with `disableToastMessages` option we want to display notifications on the integrator side
+   * To do that, we need to render `OrderNotification` but not display it in the widget
+   * Having this, we use this flag to artificially hide the widget
+   */
+  hidden?: boolean
+}
+
+export function SnackbarsWidget({ hidden }: SnackbarsWidgetProps) {
   const snackbarsState = useAtomValue(snackbarsAtom)
   const resetSnackbarsState = useResetAtom(snackbarsAtom)
   const removeSnackbar = useSetAtom(removeSnackbarAtom)
@@ -77,8 +94,15 @@ export function SnackbarsWidget() {
     [removeSnackbar]
   )
 
+  const isUpToSmall = useMediaQuery(Media.upToSmall(false))
+  const isOverlayDisplayed = snackbars.length > 0 && !hidden && isUpToSmall
+
+  useEffect(() => {
+    document.body.style.overflow = isOverlayDisplayed ? 'hidden' : ''
+  }, [isOverlayDisplayed])
+
   return (
-    <Host>
+    <Host hidden$={!!hidden}>
       <List>
         {snackbars.map((snackbar) => {
           const icon = snackbar.icon
@@ -96,7 +120,7 @@ export function SnackbarsWidget() {
           )
         })}
       </List>
-      {snackbars.length > 0 && <Overlay onClick={resetSnackbarsState} />}
+      {isOverlayDisplayed && <Overlay onClick={resetSnackbarsState} />}
     </Host>
   )
 }

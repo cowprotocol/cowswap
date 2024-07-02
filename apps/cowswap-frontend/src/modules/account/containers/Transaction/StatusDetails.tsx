@@ -7,7 +7,7 @@ import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
 import { getSafeWebUrl } from '@cowprotocol/core'
 import { Command } from '@cowprotocol/types'
 
-import { ExternalLink as LinkIconFeather } from 'react-feather'
+import { ExternalLink as LinkIconFeather, Info } from 'react-feather'
 import SVG from 'react-inlinesvg'
 
 import { getActivityState } from 'legacy/hooks/useActivityDerivedState'
@@ -69,6 +69,7 @@ export function StatusDetails(props: StatusDetailsProps) {
     isTransaction,
     isCancelled,
     isCreating,
+    isReplaced,
     order,
     enhancedTransaction,
   } = activityDerivedState
@@ -97,8 +98,11 @@ export function StatusDetails(props: StatusDetailsProps) {
         isCancelling={isCancelling}
         isPresignaturePending={isPresignaturePending}
         isCreating={isCreating}
+        title={isReplaced ? 'Transaction was cancelled or sped up' : ''}
       >
-        {isConfirmed && isTransaction ? (
+        {isReplaced ? (
+          <Info size={16} />
+        ) : isConfirmed && isTransaction ? (
           <SVG src={OrderCheckImage} description="Transaction Confirmed" />
         ) : isConfirmed ? (
           <SVG src={OrderCheckImage} description="Order Filled" />
@@ -118,10 +122,10 @@ export function StatusDetails(props: StatusDetailsProps) {
         ) : isCancelling ? null : (
           <SVG src={OrderOpenImage} description="Order Open" />
         )}
-        {_getStateLabel(activityDerivedState)}
+        {isReplaced ? 'Replaced' : _getStateLabel(activityDerivedState)}
       </StatusLabel>
 
-      {showCancellationModal && isCancellable && (
+      {showCancellationModal && isCancellable && !isCancelled && (
         <StatusLabelBelow>
           <CancelButton onClick={showCancellationModal} />
         </StatusLabelBelow>

@@ -1,15 +1,17 @@
 import React from 'react'
-import { useParams } from 'react-router'
-import styled from 'styled-components'
-import { Helmet } from 'react-helmet'
 
-import OrdersTableWidget from '../components/OrdersTableWidget'
-import { useNetworkId } from '../../state/network'
+import { Helmet } from 'react-helmet'
+import { useParams } from 'react-router'
+import styled from 'styled-components/macro'
+
+import { TitleAddress, Wrapper as WrapperMod, FlexContainerVar } from './styled'
+
 import { BlockExplorerLink } from '../../components/common/BlockExplorerLink'
+import CowLoading from '../../components/common/CowLoading'
 import RedirectToSearch from '../../components/RedirectToSearch'
 import { useResolveEns } from '../../hooks/useResolveEns'
-import { TitleAddress, Wrapper as WrapperMod, FlexContainerVar } from './styled'
-import CowLoading from '../../components/common/CowLoading'
+import { useNetworkId } from '../../state/network'
+import OrdersTableWidget from '../components/OrdersTableWidget'
 import { APP_TITLE } from '../const'
 
 const Wrapper = styled(WrapperMod)`

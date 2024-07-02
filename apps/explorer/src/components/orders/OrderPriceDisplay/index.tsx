@@ -1,18 +1,18 @@
 import React, { useState } from 'react'
-import styled from 'styled-components'
+
+import { Command } from '@cowprotocol/types'
+
 import { faExchangeAlt } from '@fortawesome/free-solid-svg-icons'
-import BigNumber from 'bignumber.js'
-
 import { calculatePrice, formatSmart, invertPrice, safeTokenName, TokenErc20 } from '@gnosis.pm/dex-js'
-
+import BigNumber from 'bignumber.js'
 import Icon from 'components/Icon'
+import styled from 'styled-components/macro'
+
 import {
   HIGH_PRECISION_DECIMALS,
   HIGH_PRECISION_SMALL_LIMIT,
   NO_ADJUSTMENT_NEEDED_PRECISION,
 } from '../../../explorer/const'
-
-import { Command } from '@cowprotocol/types'
 
 const Wrapper = styled.span`
   display: flex;

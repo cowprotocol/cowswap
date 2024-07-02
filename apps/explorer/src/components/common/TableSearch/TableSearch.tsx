@@ -1,10 +1,12 @@
 import React from 'react'
-import styled from 'styled-components'
-import { Wrapper, Input, SearchIcon } from '../../../explorer/components/common/Search/Search.styled'
+
+import searchImg from 'assets/img/search2.svg'
+import styled from 'styled-components/macro'
 import { media } from 'theme/styles/media'
 
+import { Wrapper, Input, SearchIcon } from '../../../explorer/components/common/Search/Search.styled'
+
 // assets
-import searchImg from 'assets/img/search2.svg'
 
 interface SearchProps {
   query: string

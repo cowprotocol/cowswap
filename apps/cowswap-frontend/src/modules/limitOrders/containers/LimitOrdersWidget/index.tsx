@@ -9,8 +9,8 @@ import { LimitOrdersWarnings } from 'modules/limitOrders/containers/LimitOrdersW
 import { useLimitOrdersWidgetActions } from 'modules/limitOrders/containers/LimitOrdersWidget/hooks/useLimitOrdersWidgetActions'
 import { TradeButtons } from 'modules/limitOrders/containers/TradeButtons'
 import { TradeWidget, useTradePriceImpact } from 'modules/trade'
+import { useTradeConfirmState } from 'modules/trade'
 import { BulletListItem, UnlockWidgetScreen } from 'modules/trade/pure/UnlockWidgetScreen'
-import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
 import { useSetTradeQuoteParams, useTradeQuote } from 'modules/tradeQuote'
 
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
@@ -30,19 +30,16 @@ import { DeadlineInput } from '../DeadlineInput'
 import { LimitOrdersConfirmModal } from '../LimitOrdersConfirmModal'
 import { RateInput } from '../RateInput'
 import { SettingsWidget } from '../SettingsWidget'
+import { TradeRateDetails } from '../TradeRateDetails'
 
 export const LIMIT_BULLET_LIST_CONTENT: BulletListItem[] = [
   { content: 'Set any limit price and time horizon' },
   { content: 'FREE order placement and cancellation' },
   { content: 'Place multiple orders using the same balance' },
-  { content: 'Always receive 100% of your order surplus' },
+  { content: 'Receive surplus of your order' },
   { content: 'Protection from MEV by default' },
   {
-    content: (
-      <span>
-        NOW with&nbsp;<b>partial fills</b>&nbsp;support!
-      </span>
-    ),
+    content: <span>Place orders for higher than available balance!</span>,
   },
 ]
 
@@ -71,7 +68,6 @@ export function LimitOrdersWidget() {
   } = useLimitOrdersDerivedState()
   const settingsState = useAtomValue(limitOrdersSettingsAtom)
   const isSell = isSellOrder(orderKind)
-  const tradeContext = useTradeFlowContext()
   const { feeAmount } = useAtomValue(limitRateAtom)
   const { isLoading: isRateLoading } = useTradeQuote()
   const rateInfoParams = useRateInfoParams(inputCurrencyAmount, outputCurrencyAmount)
@@ -109,9 +105,6 @@ export function LimitOrdersWidget() {
     receiveAmountInfo: null,
   }
 
-  const localFormValidation = useLimitOrdersFormState()
-  const primaryFormValidation = useGetTradeFormValidation()
-
   const props: LimitOrdersProps = {
     inputCurrencyInfo,
     outputCurrencyInfo,
@@ -121,12 +114,9 @@ export function LimitOrdersWidget() {
     recipient,
     rateInfoParams,
     priceImpact,
-    tradeContext,
     settingsState,
     feeAmount,
     widgetActions,
-    localFormValidation,
-    primaryFormValidation,
   }
 
   return <LimitOrders {...props} />
@@ -143,10 +133,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
     recipient,
     rateInfoParams,
     priceImpact,
-    tradeContext,
     feeAmount,
-    localFormValidation,
-    primaryFormValidation,
   } = props
 
   const inputCurrency = inputCurrencyInfo.currency
@@ -158,7 +145,10 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
     return isRateLoading
   }, [isRateLoading, inputCurrency, outputCurrency])
 
+  const tradeContext = useTradeFlowContext()
   const updateLimitOrdersState = useUpdateLimitOrdersRawState()
+  const localFormValidation = useLimitOrdersFormState()
+  const { isOpen: isConfirmOpen } = useTradeConfirmState()
 
   const inputCurrencyPreviewInfo = {
     amount: inputCurrencyInfo.amount,
@@ -199,24 +189,18 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
     bottomContent: (
       <>
         <styledEl.FooterBox>
-          <styledEl.StyledRateInfo rateInfoParams={rateInfoParams} />
+          <TradeRateDetails rateInfoParams={rateInfoParams} />
         </styledEl.FooterBox>
 
         <LimitOrdersWarnings feeAmount={feeAmount} />
 
         <styledEl.TradeButtonBox>
-          <TradeButtons tradeContext={tradeContext} priceImpact={priceImpact} />
+          <TradeButtons isTradeContextReady={!!tradeContext} />
         </styledEl.TradeButtonBox>
       </>
     ),
     outerContent: <>{isUnlocked && <InfoBanner />}</>,
   }
-
-  const disablePriceImpact =
-    localFormValidation === LimitOrdersFormState.FeeExceedsFrom ||
-    primaryFormValidation === TradeFormValidation.QuoteErrors ||
-    primaryFormValidation === TradeFormValidation.CurrencyNotSupported ||
-    primaryFormValidation === TradeFormValidation.WrapUnwrapFlow
 
   const params = {
     compactView: false,
@@ -224,7 +208,8 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
     showRecipient,
     isTradePriceUpdating,
     priceImpact,
-    disablePriceImpact,
+    disablePriceImpact: localFormValidation === LimitOrdersFormState.FeeExceedsFrom,
+    disableQuotePolling: isConfirmOpen,
   }
 
   return (
@@ -234,16 +219,17 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
       params={params}
       inputCurrencyInfo={inputCurrencyInfo}
       outputCurrencyInfo={outputCurrencyInfo}
-    >
-      {tradeContext && (
-        <LimitOrdersConfirmModal
-          recipient={recipient}
-          tradeContext={tradeContext}
-          priceImpact={priceImpact}
-          inputCurrencyInfo={inputCurrencyPreviewInfo}
-          outputCurrencyInfo={outputCurrencyPreviewInfo}
-        />
-      )}
-    </TradeWidget>
+      confirmModal={
+        tradeContext ? (
+          <LimitOrdersConfirmModal
+            recipient={recipient}
+            tradeContext={tradeContext}
+            priceImpact={priceImpact}
+            inputCurrencyInfo={inputCurrencyPreviewInfo}
+            outputCurrencyInfo={outputCurrencyPreviewInfo}
+          />
+        ) : null
+      }
+    />
   )
 }, limitOrdersPropsChecker)

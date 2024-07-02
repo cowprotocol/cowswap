@@ -1,7 +1,6 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
-import { useGP2SettlementContract } from '@cowprotocol/common-hooks'
 import { useSafeAppsSdk } from '@cowprotocol/wallet'
 
 import { Order } from 'legacy/state/orders/actions'
@@ -9,6 +8,7 @@ import { Order } from 'legacy/state/orders/actions'
 import { useComposableCowContract } from 'modules/advancedOrders/hooks/useComposableCowContract'
 
 import type { OnChainCancellation } from 'common/hooks/useCancelOrder/onChainCancellation'
+import { useGP2SettlementContract } from 'common/hooks/useContract'
 
 import { cancelTwapOrderTxs, estimateCancelTwapOrderTxs } from '../services/cancelTwapOrderTxs'
 import { setTwapOrderStatusAtom } from '../state/twapOrdersListAtom'
@@ -28,7 +28,7 @@ export function useCancelTwapOrder(): (twapOrderId: string, order: Order) => Pro
         throw new Error('Context is not full to cancel TWAP order')
       }
 
-      const partOrder = twapPartOrders[twapOrderId].sort((a, b) => a.order.validTo - b.order.validTo)[0]
+      const partOrder = twapPartOrders[twapOrderId]?.sort((a, b) => a.order.validTo - b.order.validTo)[0]
       const partOrderId = partOrder?.uid
 
       const context = { composableCowContract, settlementContract, orderId: twapOrderId, partOrderId }

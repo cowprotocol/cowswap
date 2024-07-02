@@ -1,24 +1,23 @@
 import { useSetAtom } from 'jotai'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 
-import {
-  getExplorerOrderLink,
-  isOrderInPendingTooLong,
-  timeSinceInSeconds,
-  triggerAppziSurvey,
-} from '@cowprotocol/common-utils'
-import { EthflowData, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { getExplorerOrderLink, timeSinceInSeconds } from '@cowprotocol/common-utils'
+import { EnrichedOrder, EthflowData, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { Command, UiOrderType } from '@cowprotocol/types'
-import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
+import { GnosisSafeInfo, useGnosisSafeInfo, useWalletInfo } from '@cowprotocol/wallet'
 
-import { GetSafeInfo, useGetSafeInfo } from 'legacy/hooks/useGetSafeInfo'
-import { FulfillOrdersBatchParams, Order, OrderFulfillmentData, OrderStatus } from 'legacy/state/orders/actions'
+import { isOrderInPendingTooLong, triggerAppziSurvey } from 'appzi'
+
+import { GetSafeTxInfo, useGetSafeTxInfo } from 'legacy/hooks/useGetSafeTxInfo'
+import { useAllTransactions } from 'legacy/state/enhancedTransactions/hooks'
+import { CREATING_STATES, FulfillOrdersBatchParams, Order, OrderStatus } from 'legacy/state/orders/actions'
 import { LIMIT_OPERATOR_API_POLL_INTERVAL, MARKET_OPERATOR_API_POLL_INTERVAL } from 'legacy/state/orders/consts'
 import {
   AddOrUpdateOrdersCallback,
   CancelOrdersBatchCallback,
   ExpireOrdersBatchCallback,
   FulfillOrdersBatchCallback,
+  InvalidateOrdersBatchCallback,
   PresignOrdersCallback,
   UpdatePresignGnosisSafeTxCallback,
   useAddOrUpdateOrders,
@@ -26,36 +25,27 @@ import {
   useCombinedPendingOrders,
   useExpireOrdersBatch,
   useFulfillOrdersBatch,
+  useInvalidateOrdersBatch,
   usePresignOrders,
   useUpdatePresignGnosisSafeTx,
 } from 'legacy/state/orders/hooks'
 import { OrderTransitionStatus } from 'legacy/state/orders/utils'
 
+import {
+  emitCancelledOrderEvent,
+  emitExpiredOrderEvent,
+  emitFulfilledOrderEvent,
+  emitPresignedOrderEvent,
+} from 'modules/orders'
 import { useAddOrderToSurplusQueue } from 'modules/swap/state/surplusModal'
 
-import { getOrder } from 'api/gnosisProtocol'
+import { getOrder } from 'api/cowProtocol'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
-import { fetchOrderPopupData, OrderLogPopupMixData } from './utils'
+import { fetchAndClassifyOrder } from './utils'
 
 import { removeOrdersToCancelAtom } from '../../hooks/useMultipleOrdersCancellation/state'
 import { useTriggerTotalSurplusUpdateCallback } from '../../state/totalSurplusState'
-
-/**
- * Return the ids of the orders that we are not yet aware that are signed.
- * This is, pre-sign orders, in state of "PRESIGNATURE_PENDING", for which we now know they are signed
- *
- * Used as an auxiliar method to detect which orders we should mark as pre-signed, so we change their state
- *
- * @param allPendingOrders All pending orders
- * @param signedOrdersIds ids of orders we know are already pre-signed
- * @returns ids of the pending orders that were pending for pre-sign, and we now know are pre-signed
- */
-function _getNewlyPreSignedOrders(allPendingOrders: Order[], signedOrdersIds: string[]) {
-  return allPendingOrders
-    .filter((order) => order.status === OrderStatus.PRESIGNATURE_PENDING && signedOrdersIds.includes(order.id))
-    .map((order) => order.id)
-}
 
 /**
  *
@@ -64,8 +54,10 @@ function _getNewlyPreSignedOrders(allPendingOrders: Order[], signedOrdersIds: st
 async function _updatePresignGnosisSafeTx(
   chainId: ChainId,
   allPendingOrders: Order[],
-  getSafeInfo: GetSafeInfo,
-  updatePresignGnosisSafeTx: UpdatePresignGnosisSafeTxCallback
+  getSafeTxInfo: GetSafeTxInfo,
+  updatePresignGnosisSafeTx: UpdatePresignGnosisSafeTxCallback,
+  cancelOrdersBatch: CancelOrdersBatchCallback,
+  safeInfo: GnosisSafeInfo | undefined
 ) {
   const getSafeTxPromises = allPendingOrders
     // Update orders that are pending for presingature
@@ -75,13 +67,34 @@ async function _updatePresignGnosisSafeTx(
       const presignGnosisSafeTxHash = order.presignGnosisSafeTxHash as string
       console.log('[PendingOrdersUpdater] Get Gnosis Transaction info for tx:', presignGnosisSafeTxHash)
 
-      const { promise: safeTransactionPromise } = getSafeInfo(presignGnosisSafeTxHash)
+      const { promise: safeTransactionPromise } = getSafeTxInfo(presignGnosisSafeTxHash)
 
       // Get safe info
       return safeTransactionPromise
         .then((safeTransaction) => {
-          console.log('[PendingOrdersUpdater] Update Gnosis Safe transaction info: ', safeTransaction)
-          updatePresignGnosisSafeTx({ orderId: order.id, chainId, safeTransaction })
+          const safeNonce = safeInfo?.nonce
+
+          /**
+           * If an order has a nonce lower than the current Safe nonce, it means that the proposed transaction was replaced by another one.
+           * In this case, we should cancel the order.
+           */
+          const isOrderTxReplaced = !!(safeNonce && safeTransaction.nonce < safeNonce && !safeTransaction.isExecuted)
+
+          if (CREATING_STATES.includes(order.status) && isOrderTxReplaced) {
+            cancelOrdersBatch({
+              ids: [order.id],
+              chainId,
+              isSafeWallet: true,
+            })
+
+            console.warn('[PendingOrdersUpdater] Safe order tx was replaced, cancelling order:', order.id)
+          } else {
+            console.log('[PendingOrdersUpdater] Update Gnosis Safe transaction info: ', {
+              orderId: order.id,
+              safeTransaction,
+            })
+            updatePresignGnosisSafeTx({ orderId: order.id, chainId, safeTransaction })
+          }
         })
         .catch((error) => {
           if (!error.isCancelledError) {
@@ -148,13 +161,16 @@ interface UpdateOrdersParams {
   // Actions
   addOrUpdateOrders: AddOrUpdateOrdersCallback
   fulfillOrdersBatch: FulfillOrdersBatchCallback
+  invalidateOrdersBatch: InvalidateOrdersBatchCallback
   expireOrdersBatch: ExpireOrdersBatchCallback
   cancelOrdersBatch: CancelOrdersBatchCallback
   presignOrders: PresignOrdersCallback
   addOrderToSurplusQueue: (orderId: string) => void
   triggerTotalSurplusUpdate: Command | null
   updatePresignGnosisSafeTx: UpdatePresignGnosisSafeTxCallback
-  getSafeInfo: GetSafeInfo
+  getSafeTxInfo: GetSafeTxInfo
+  safeInfo: GnosisSafeInfo | undefined
+  allTransactions: ReturnType<typeof useAllTransactions>
 }
 
 async function _updateOrders({
@@ -167,11 +183,14 @@ async function _updateOrders({
   fulfillOrdersBatch,
   expireOrdersBatch,
   cancelOrdersBatch,
+  invalidateOrdersBatch,
   presignOrders,
   addOrderToSurplusQueue,
   triggerTotalSurplusUpdate,
   updatePresignGnosisSafeTx,
-  getSafeInfo,
+  getSafeTxInfo,
+  safeInfo,
+  allTransactions,
 }: UpdateOrdersParams): Promise<void> {
   // Only check pending orders of current connected account
   const lowerCaseAccount = account.toLowerCase()
@@ -186,17 +205,17 @@ async function _updateOrders({
 
   // Iterate over pending orders fetching API data
   const unfilteredOrdersData = await Promise.all(
-    pending.map(async (orderFromStore) => fetchOrderPopupData(orderFromStore, chainId))
+    pending.map(async (orderFromStore) => fetchAndClassifyOrder(orderFromStore, chainId))
   )
 
   // Group resolved promises by status
   // Only pick the status that are final
   const { fulfilled, expired, cancelled, presigned } = unfilteredOrdersData.reduce<
-    Record<OrderTransitionStatus, OrderLogPopupMixData[]>
+    Record<OrderTransitionStatus, EnrichedOrder[]>
   >(
     (acc, orderData) => {
-      if (orderData && orderData.popupData) {
-        acc[orderData.status].push(orderData.popupData)
+      if (orderData && orderData.order) {
+        acc[orderData.status].push(orderData.order)
       }
       return acc
     },
@@ -204,61 +223,119 @@ async function _updateOrders({
   )
 
   if (presigned.length > 0) {
-    // Only mark as presigned the orders we were not aware of their new state
-    const presignedOrderIds = presigned as string[]
-    const ordersPresignaturePendingSigned = _getNewlyPreSignedOrders(orders, presignedOrderIds)
+    const presignedMap = presigned.reduce<{ [key: string]: EnrichedOrder }>((acc, order) => {
+      acc[order.uid] = order
+      return acc
+    }, {})
 
-    if (ordersPresignaturePendingSigned.length > 0) {
+    const presignedIds = presigned.map((order) => order.uid)
+
+    const newlyPreSignedOrders = orders
+      .filter((order) => {
+        return order.status === OrderStatus.PRESIGNATURE_PENDING && presignedIds.includes(order.id)
+      })
+      .map((order) => presignedMap[order.id])
+
+    if (newlyPreSignedOrders.length > 0) {
       presignOrders({
-        ids: ordersPresignaturePendingSigned,
+        ids: newlyPreSignedOrders.map((order) => order.uid),
         chainId,
         isSafeWallet,
+      })
+
+      newlyPreSignedOrders.forEach((order) => {
+        emitPresignedOrderEvent({ chainId, order })
       })
     }
   }
 
   if (expired.length > 0) {
     expireOrdersBatch({
-      ids: expired as string[],
+      ids: expired.map(({ uid }) => uid),
       chainId,
       isSafeWallet,
+    })
+
+    expired.forEach((order) => {
+      emitExpiredOrderEvent({ order, chainId })
     })
   }
 
   if (cancelled.length > 0) {
     cancelOrdersBatch({
-      ids: cancelled as string[],
+      ids: cancelled.map(({ uid }) => uid),
       chainId,
       isSafeWallet,
+    })
+
+    cancelled.forEach((order) => {
+      emitCancelledOrderEvent({
+        chainId,
+        order,
+      })
     })
   }
 
   if (fulfilled.length > 0) {
-    const fulfilledOrders = fulfilled as OrderFulfillmentData[]
     // update redux state
     fulfillOrdersBatch({
-      ordersData: fulfilledOrders,
+      orders: fulfilled,
       chainId,
       isSafeWallet,
     })
     // add to surplus queue
-    fulfilledOrders.forEach(({ id, apiAdditionalInfo }) => {
-      if (
-        !apiAdditionalInfo ||
-        getUiOrderType({ fullAppData: apiAdditionalInfo.fullAppData, class: apiAdditionalInfo.class }) ===
-          UiOrderType.SWAP
-      ) {
-        addOrderToSurplusQueue(id)
+    fulfilled.forEach(({ uid, fullAppData, class: orderClass }) => {
+      if (getUiOrderType({ fullAppData, class: orderClass }) === UiOrderType.SWAP) {
+        addOrderToSurplusQueue(uid)
       }
     })
     // trigger total surplus update
     triggerTotalSurplusUpdate?.()
   }
 
+  const replacedOrCancelledEthFlowOrders = getReplacedOrCancelledEthFlowOrders(orders, allTransactions)
+
+  if (replacedOrCancelledEthFlowOrders.length > 0) {
+    invalidateOrdersBatch({
+      ids: replacedOrCancelledEthFlowOrders.map(({ id }) => id),
+      chainId,
+      isSafeWallet,
+    })
+  }
+
   // Update the presign Gnosis Safe Tx info (if applies)
-  await _updatePresignGnosisSafeTx(chainId, orders, getSafeInfo, updatePresignGnosisSafeTx)
+  await _updatePresignGnosisSafeTx(
+    chainId,
+    orders,
+    getSafeTxInfo,
+    updatePresignGnosisSafeTx,
+    cancelOrdersBatch,
+    safeInfo
+  )
   // Update the creating EthFlow orders (if any)
   await _updateCreatingOrders(chainId, orders, isSafeWallet, addOrUpdateOrders)
+}
+
+function getReplacedOrCancelledEthFlowOrders(
+  orders: Order[],
+  allTransactions: UpdateOrdersParams['allTransactions']
+): Order[] {
+  return orders.filter((order) => {
+    if (!order.orderCreationHash || order.status !== OrderStatus.CREATING) return false
+
+    const { orderCreationHash } = order
+
+    const creationTx = orderCreationHash ? allTransactions[orderCreationHash] : undefined
+    const creationLinkedTx = creationTx?.linkedTransactionHash
+      ? allTransactions[creationTx.linkedTransactionHash]
+      : undefined
+
+    if (!creationLinkedTx?.replacementType) return false
+
+    const { replacementType } = creationLinkedTx
+
+    return replacementType !== 'speedup'
+  })
 }
 
 // Check if there is any order pending for a long time
@@ -285,7 +362,8 @@ function _triggerNps(pending: Order[], chainId: ChainId) {
 }
 
 export function PendingOrdersUpdater(): null {
-  const isSafeWallet = useIsSafeWallet()
+  const safeInfo = useGnosisSafeInfo()
+  const isSafeWallet = !!safeInfo
   const { chainId, account } = useWalletInfo()
   const removeOrdersToCancel = useSetAtom(removeOrdersToCancelAtom)
 
@@ -314,19 +392,26 @@ export function PendingOrdersUpdater(): null {
   const expireOrdersBatch = useExpireOrdersBatch()
   const cancelOrdersBatch = useCancelOrdersBatch()
   const addOrUpdateOrders = useAddOrUpdateOrders()
+  const invalidateOrdersBatch = useInvalidateOrdersBatch()
   const presignOrders = usePresignOrders()
   const addOrderToSurplusQueue = useAddOrderToSurplusQueue()
   const triggerTotalSurplusUpdate = useTriggerTotalSurplusUpdateCallback()
   const updatePresignGnosisSafeTx = useUpdatePresignGnosisSafeTx()
-  const getSafeInfo = useGetSafeInfo()
+  const allTransactions = useAllTransactions()
+  const getSafeTxInfo = useGetSafeTxInfo()
 
   const fulfillOrdersBatch = useCallback(
     (fulfillOrdersBatchParams: FulfillOrdersBatchParams) => {
       _fulfillOrdersBatch(fulfillOrdersBatchParams)
+
+      fulfillOrdersBatchParams.orders.forEach((order) => {
+        emitFulfilledOrderEvent(chainId, order)
+      })
+
       // Remove orders from the cancelling queue (marked by checkbox in the orders table)
-      removeOrdersToCancel(fulfillOrdersBatchParams.ordersData.map((item) => item.id))
+      removeOrdersToCancel(fulfillOrdersBatchParams.orders.map(({ uid }) => uid))
     },
-    [_fulfillOrdersBatch, removeOrdersToCancel]
+    [chainId, _fulfillOrdersBatch, removeOrdersToCancel]
   )
 
   const updateOrders = useCallback(
@@ -346,13 +431,16 @@ export function PendingOrdersUpdater(): null {
           orders: pendingRef.current.filter((order) => getUiOrderType(order) === uiOrderType),
           addOrUpdateOrders,
           fulfillOrdersBatch,
+          invalidateOrdersBatch,
           expireOrdersBatch,
           cancelOrdersBatch,
           presignOrders,
           addOrderToSurplusQueue,
           triggerTotalSurplusUpdate,
           updatePresignGnosisSafeTx,
-          getSafeInfo,
+          getSafeTxInfo,
+          safeInfo,
+          allTransactions,
         }).finally(() => {
           isUpdating.current = false
         })
@@ -364,11 +452,14 @@ export function PendingOrdersUpdater(): null {
       fulfillOrdersBatch,
       expireOrdersBatch,
       cancelOrdersBatch,
+      invalidateOrdersBatch,
       presignOrders,
       addOrderToSurplusQueue,
       triggerTotalSurplusUpdate,
       updatePresignGnosisSafeTx,
-      getSafeInfo,
+      getSafeTxInfo,
+      safeInfo,
+      allTransactions,
     ]
   )
 

@@ -1,6 +1,6 @@
-import { Currency, NativeCurrency } from '@uniswap/sdk-core'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Currency, NativeCurrency } from '@uniswap/sdk-core'
 
 import { doesTokenMatchSymbolOrAddress } from './doesTokenMatchSymbolOrAddress'
 

@@ -8,6 +8,8 @@ on:
         required: true
         type: choice
         options:
+          - events
+          - types
           - permit-utils
           - widget-lib
           - widget-react
@@ -64,6 +66,6 @@ jobs:
 
       - name: Publish
         working-directory: ${{ env.DESTINATION_PATH }}
-        run: npm publish --tag ${{ inputs.tag }}
+        run: npm publish --tag ${{ inputs.tag }} --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

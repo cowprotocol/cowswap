@@ -1,5 +1,6 @@
+import styled from 'styled-components/macro'
+
 import { UI } from '../../enum'
-import styled from 'styled-components'
 
 export const SelectDropdown = styled.select`
   border-radius: 12px;
@@ -26,5 +27,9 @@ export const SelectDropdown = styled.select`
         no-repeat,
       linear-gradient(to right, var(--cow-color-lightBlue-opacity-80), var(--cow-color-lightBlue-opacity-80)) 100% 0 /
         26px 100% no-repeat;
+  }
+
+  option {
+    background: var(${UI.COLOR_PAPER});
   }
 `

@@ -1,9 +1,10 @@
 import { useAtomValue } from 'jotai'
-import { useState } from 'react'
+import React, { useState } from 'react'
 
-import { useWalletInfo } from '@cowprotocol/wallet'
+import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
+import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { TradeConfirmation, TradeConfirmModal, useTradeConfirmActions, useTradePriceImpact } from 'modules/trade'
 import { TradeBasicConfirmDetails } from 'modules/trade/containers/TradeBasicConfirmDetails'
 import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
@@ -11,22 +12,51 @@ import { DividerHorizontal } from 'modules/trade/pure/Row/styled'
 import { PRICE_UPDATE_INTERVAL } from 'modules/tradeQuote/hooks/useTradeQuotePolling'
 
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
+import { NetworkCostsSuffix } from 'common/pure/NetworkCostsSuffix'
 
 import { TwapConfirmDetails } from './TwapConfirmDetails'
 
 import { useCreateTwapOrder } from '../../hooks/useCreateTwapOrder'
 import { useIsFallbackHandlerRequired } from '../../hooks/useFallbackHandlerVerification'
 import { useTwapFormState } from '../../hooks/useTwapFormState'
+import { useTwapSlippage } from '../../hooks/useTwapSlippage'
 import { useTwapWarningsContext } from '../../hooks/useTwapWarningsContext'
-import { partsStateAtom } from '../../state/partsStateAtom'
+import { scaledReceiveAmountInfoAtom } from '../../state/scaledReceiveAmountInfoAtom'
 import { twapOrderAtom } from '../../state/twapOrderAtom'
-import { twapOrderSlippageAtom } from '../../state/twapOrdersSettingsAtom'
 import { TwapFormWarnings } from '../TwapFormWarnings'
 
 const CONFIRM_TITLE = 'TWAP'
 
+const CONFIRM_MODAL_CONFIG = {
+  priceLabel: 'Rate',
+  slippageLabel: 'Price protection',
+  slippageTooltip: (
+    <>
+      <p>
+        Since TWAP orders consist of multiple parts, prices are expected to fluctuate. However, to protect you against
+        bad prices, CoW Swap will not execute your TWAP if the price dips below this percentage.
+      </p>
+      <p>
+        This percentage only applies to dips; if prices are better than this percentage, CoW Swap will still execute
+        your order.
+      </p>
+    </>
+  ),
+  limitPriceLabel: 'Limit price (incl. costs)',
+  limitPriceTooltip: (
+    <>
+      If CoW Swap cannot get this price or better (taking into account fees and price protection tolerance), your TWAP
+      will not execute. CoW Swap will <strong>always</strong> improve on this price if possible.
+    </>
+  ),
+  minReceivedLabel: 'Minimum receive',
+  minReceivedTooltip:
+    'This is the minimum amount that you will receive across your entire TWAP order, assuming all parts of the order execute.',
+}
+
 export function TwapConfirmModal() {
   const { account } = useWalletInfo()
+  const { ensName, allowsOffchainSigning } = useWalletDetails()
   const {
     inputCurrencyAmount,
     inputCurrencyFiatAmount,
@@ -38,12 +68,14 @@ export function TwapConfirmModal() {
   } = useAdvancedOrdersDerivedState()
   // TODO: there's some overlap with what's in each atom
   const twapOrder = useAtomValue(twapOrderAtom)
-  const slippage = useAtomValue(twapOrderSlippageAtom)
-  const partsState = useAtomValue(partsStateAtom)
+  const receiveAmountInfo = useAtomValue(scaledReceiveAmountInfoAtom)
+  const slippage = useTwapSlippage()
   const { showPriceImpactWarning } = useTwapWarningsContext()
   const localFormValidation = useTwapFormState()
   const tradeConfirmActions = useTradeConfirmActions()
   const createTwapOrder = useCreateTwapOrder()
+
+  const widgetParams = useInjectedWidgetParams()
 
   const isInvertedState = useState(false)
 
@@ -63,13 +95,10 @@ export function TwapConfirmModal() {
     amount: outputCurrencyAmount,
     fiatAmount: outputCurrencyFiatAmount,
     balance: outputCurrencyBalance,
-    label: 'Estimated receive amount',
+    label: 'Receive (before fees)',
   }
 
   const rateInfoParams = useRateInfoParams(inputCurrencyInfo.amount, outputCurrencyInfo.amount)
-
-  // This already takes into account the full order
-  const minReceivedAmount = twapOrder?.buyAmount
 
   const { timeInterval, numOfParts } = twapOrder || {}
 
@@ -81,6 +110,7 @@ export function TwapConfirmModal() {
       <TradeConfirmation
         title={CONFIRM_TITLE}
         account={account}
+        ensName={ensName}
         inputCurrencyInfo={inputCurrencyInfo}
         outputCurrencyInfo={outputCurrencyInfo}
         onConfirm={() => createTwapOrder(fallbackHandlerIsNotSet)}
@@ -92,43 +122,34 @@ export function TwapConfirmModal() {
         recipient={recipient}
       >
         <>
-          <TradeBasicConfirmDetails
-            rateInfoParams={rateInfoParams}
-            minReceiveAmount={minReceivedAmount}
-            isInvertedState={isInvertedState}
-            slippage={slippage}
-            additionalProps={{
-              priceLabel: 'Rate (incl. fee)',
-              slippageLabel: 'Price protection',
-              slippageTooltip: (
-                <>
-                  <p>
-                    Since TWAP orders consist of multiple parts, prices are expected to fluctuate. However, to protect
-                    you against bad prices, CoW Swap will not execute your TWAP if the price dips below this percentage.
-                  </p>
-                  <p>
-                    This percentage only applies to dips; if prices are better than this percentage, CoW Swap will still
-                    execute your order.
-                  </p>
-                </>
-              ),
-              limitPriceLabel: 'Limit price',
-              limitPriceTooltip: (
-                <>
-                  If CoW Swap cannot get this price or better (taking into account fees and price protection tolerance),
-                  your TWAP will not execute. CoW Swap will <strong>always</strong> improve on this price if possible.
-                </>
-              ),
-              minReceivedLabel: 'Minimum receive',
-              minReceivedTooltip:
-                'This is the minimum amount that you will receive across your entire TWAP order, assuming all parts of the order execute.',
-            }}
-          />
+          {receiveAmountInfo && numOfParts && (
+            <TradeBasicConfirmDetails
+              widgetParams={widgetParams}
+              rateInfoParams={rateInfoParams}
+              receiveAmountInfo={receiveAmountInfo}
+              isInvertedState={isInvertedState}
+              slippage={slippage}
+              recipient={recipient}
+              account={account}
+              labelsAndTooltips={{
+                ...CONFIRM_MODAL_CONFIG,
+                networkCostsSuffix: !allowsOffchainSigning ? <NetworkCostsSuffix /> : null,
+                networkCostsTooltipSuffix: !allowsOffchainSigning ? (
+                  <>
+                    <br />
+                    <br />
+                    Because you are using a smart contract wallet, you will pay a separate gas cost for signing the
+                    order placement on-chain.
+                  </>
+                ) : null,
+              }}
+            />
+          )}
           <DividerHorizontal />
           <TwapConfirmDetails
             startTime={twapOrder?.startTime}
+            numOfParts={numOfParts}
             partDuration={partDuration}
-            partsState={partsState}
             totalDuration={totalDuration}
           />
           {showPriceImpactWarning && <NoImpactWarning withoutAccepting={true} isAccepted={true} />}

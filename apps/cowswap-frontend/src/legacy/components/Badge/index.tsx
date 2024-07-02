@@ -1,9 +1,9 @@
 import { PropsWithChildren } from 'react'
 
 import { readableColor } from 'color2k'
-import styled, { DefaultTheme } from 'styled-components/macro'
+import styled from 'styled-components/macro'
 
-import { Color } from 'legacy/theme/styled'
+import type { DefaultTheme } from 'styled-components'
 
 export enum BadgeVariant {
   DEFAULT = 'DEFAULT',
@@ -19,14 +19,14 @@ export interface BadgeProps {
   variant?: BadgeVariant
 }
 
-function pickBackgroundColor(variant: BadgeVariant | undefined, theme: DefaultTheme): Color {
+function pickBackgroundColor(variant: BadgeVariant | undefined, theme: DefaultTheme): string {
   switch (variant) {
     case BadgeVariant.NEGATIVE:
       return theme.error
     case BadgeVariant.POSITIVE:
       return theme.success
     case BadgeVariant.PRIMARY:
-      return theme.primary1
+      return theme.bg2
     case BadgeVariant.WARNING:
       return theme.warning
     case BadgeVariant.WARNING_OUTLINE:

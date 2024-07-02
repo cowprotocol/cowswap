@@ -36,9 +36,9 @@ const WarningIcon = styled(AlertCircle)`
   color: #764e0766;
 `
 
-export function WarningCard({ children }: PropsWithChildren) {
+export function WarningCard({ children, className }: PropsWithChildren & { className?: string }) {
   return (
-    <Wrapper>
+    <Wrapper className={className}>
       <LeftContainer>
         <WarningIcon />
       </LeftContainer>

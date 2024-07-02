@@ -1,7 +1,9 @@
 import { OrderKind } from '@cowprotocol/cow-sdk'
+
 import BigNumber from 'bignumber.js'
-import { ONE_BIG_NUMBER, ONE_HUNDRED_BIG_NUMBER, TEN_BIG_NUMBER, ZERO_BIG_NUMBER } from '../../../const'
 import { getOrderFilledAmount } from 'utils'
+
+import { ONE_BIG_NUMBER, ONE_HUNDRED_BIG_NUMBER, TEN_BIG_NUMBER, ZERO_BIG_NUMBER } from '../../../const'
 import { RAW_ORDER } from '../../../test/data'
 
 const TEN_PERCENT = new BigNumber('0.1')

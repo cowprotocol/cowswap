@@ -1,4 +1,4 @@
-import React, { ReactNode, useCallback, useEffect } from 'react'
+import { ReactNode, useCallback, useEffect } from 'react'
 
 import { useAddUserToken } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -7,10 +7,10 @@ import {
   ImportTokenModal,
   SelectTokenWidget,
   useSelectTokenWidgetState,
-  useUpdateSelectTokenWidgetState,
   useTokenListAddingError,
+  useUpdateSelectTokenWidgetState,
 } from 'modules/tokensList'
-import { useZeroApproveModalState, ZeroApprovalModal } from 'modules/zeroApproval'
+import { ZeroApprovalModal, useZeroApproveModalState } from 'modules/zeroApproval'
 
 import { TradeApproveModal } from 'common/containers/TradeApprove'
 import { useTradeApproveState } from 'common/hooks/useTradeApproveState'
@@ -24,7 +24,7 @@ import { useTradeState } from '../../hooks/useTradeState'
 import { useWrapNativeScreenState } from '../../hooks/useWrapNativeScreenState'
 import { WrapNativeModal } from '../WrapNativeModal'
 
-export function TradeWidgetModals(confirmModal: ReactNode | undefined) {
+export function TradeWidgetModals(confirmModal: ReactNode | undefined, genericModal: ReactNode | undefined) {
   const { chainId, account } = useWalletInfo()
   const { state: rawState } = useTradeState()
   const importTokenCallback = useAddUserToken()
@@ -69,8 +69,11 @@ export function TradeWidgetModals(confirmModal: ReactNode | undefined) {
    */
   useEffect(() => {
     resetAllScreens()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId, account])
+  }, [chainId, account, resetAllScreens])
+
+  if (genericModal) {
+    return genericModal
+  }
 
   if (isTradeReviewOpen || pendingTrade) {
     return confirmModal

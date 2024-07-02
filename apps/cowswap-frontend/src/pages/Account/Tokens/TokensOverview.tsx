@@ -2,17 +2,18 @@ import { useEffect, useMemo, useState, useCallback, useRef, ChangeEventHandler }
 
 import { useTokensBalances } from '@cowprotocol/balances-and-allowances'
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { useDebounce, useOnClickOutside, usePrevious, useTheme } from '@cowprotocol/common-hooks'
+import { useDebounce, useOnClickOutside, usePrevious } from '@cowprotocol/common-hooks'
+import { useTheme } from '@cowprotocol/common-hooks'
 import { isAddress, isTruthy } from '@cowprotocol/common-utils'
-import { useTokensByAddressMap, useFavouriteTokens, useResetFavouriteTokens } from '@cowprotocol/tokens'
+import { useTokensByAddressMap, useFavoriteTokens, useResetFavoriteTokens } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { useWeb3React } from '@web3-react/core'
+import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import { Trans, t } from '@lingui/macro'
 import { Check } from 'react-feather'
+import { CloseIcon } from 'theme'
 
 import TokensTable from 'legacy/components/Tokens/TokensTable'
-import { CloseIcon } from 'legacy/theme'
 
 import { PageTitle } from 'modules/application/containers/PageTitle'
 
@@ -51,7 +52,7 @@ const PageView = {
 
 export default function TokensOverview() {
   const { chainId, account } = useWalletInfo()
-  const { provider } = useWeb3React()
+  const provider = useWalletProvider()
 
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
   const [selectedView, setSelectedView] = useState<PageViewKeys>(PageViewKeys.ALL_TOKENS)
@@ -67,7 +68,7 @@ export default function TokensOverview() {
 
   const theme = useTheme()
   const allTokens = useTokensByAddressMap()
-  const favouriteTokens = useFavouriteTokens()
+  const favoriteTokens = useFavoriteTokens()
   const { values: balances } = useTokensBalances()
 
   // search - takes precedence re:filtering
@@ -75,13 +76,13 @@ export default function TokensOverview() {
   const debouncedQuery = useDebounce(query, 300)
   const prevQuery = usePrevious(debouncedQuery)
 
-  const removeAllFavouriteTokens = useResetFavouriteTokens()
+  const removeAllFavoriteTokens = useResetFavoriteTokens()
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
 
   const handleRestoreTokens = useCallback(() => {
-    removeAllFavouriteTokens()
+    removeAllFavoriteTokens()
     setPage(1)
-  }, [removeAllFavouriteTokens])
+  }, [removeAllFavoriteTokens])
 
   const formattedTokens = useMemo(() => {
     return Object.values(allTokens).filter(isTruthy)
@@ -93,8 +94,8 @@ export default function TokensOverview() {
     setIsMenuOpen(false)
   }, [])
 
-  const node = useRef<HTMLDivElement>()
-  useOnClickOutside(node, isMenuOpen ? toggleMenu : undefined)
+  const node = useRef<HTMLDivElement>(null)
+  useOnClickOutside([node], isMenuOpen ? toggleMenu : undefined)
 
   const renderTableContent = useCallback(() => {
     let tokensData: TokenWithLogo[] = []
@@ -102,7 +103,7 @@ export default function TokensOverview() {
     if (selectedView === PageViewKeys.ALL_TOKENS) {
       tokensData = formattedTokens
     } else if (selectedView === PageViewKeys.FAVORITE_TOKENS) {
-      tokensData = favouriteTokens
+      tokensData = favoriteTokens
     }
 
     if (!provider) {
@@ -124,7 +125,7 @@ export default function TokensOverview() {
         tokensData={tokensData}
       />
     )
-  }, [balances, debouncedQuery, favouriteTokens, formattedTokens, page, prevQuery, provider, query, selectedView])
+  }, [balances, debouncedQuery, favoriteTokens, formattedTokens, page, prevQuery, provider, query, selectedView])
 
   const handleSearch: ChangeEventHandler<HTMLInputElement> = useCallback(
     (event) => {
@@ -178,7 +179,7 @@ export default function TokensOverview() {
           {selectedView === PageViewKeys.FAVORITE_TOKENS && (
             <RemoveTokens onClick={handleRestoreTokens}>
               <span>
-                (<Trans>Reset favourites</Trans>)
+                (<Trans>Reset favorites</Trans>)
               </span>
             </RemoveTokens>
           )}

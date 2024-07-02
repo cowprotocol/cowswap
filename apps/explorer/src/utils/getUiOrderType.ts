@@ -1,5 +1,6 @@
 import { latest } from '@cowprotocol/app-data'
 import { OrderClass } from '@cowprotocol/cow-sdk'
+
 import { Order } from 'api/operator'
 import { decodeFullAppData } from 'utils/decodeFullAppData'
 

@@ -1,10 +1,11 @@
 import { useMemo } from 'react'
 
-import { useContract } from '@cowprotocol/common-hooks'
 import { useENSAddress } from '@cowprotocol/ens'
 
 import JSBI from 'jsbi'
 import useSWR from 'swr'
+
+import { useContract } from 'common/hooks/useContract'
 
 const CHAIN_DATA_ABI = [
   {
@@ -23,9 +24,9 @@ export default function useGasPrice(): JSBI | undefined {
   const { address } = useENSAddress('fast-gas-gwei.data.eth')
   const contract = useContract(address ?? undefined, CHAIN_DATA_ABI, false)
 
-  const { data: result } = useSWR(['useGasPrice', contract], async () => {
-    return contract?.callStatic.latestAnswer()
-  })
+  const { data: result } = useSWR(contract ? ['useGasPrice', contract] : null, async ([, _contract]) =>
+    _contract.callStatic.latestAnswer()
+  )
   const resultStr = result?.toString()
 
   return useMemo(() => (typeof resultStr === 'string' ? JSBI.BigInt(resultStr) : undefined), [resultStr])

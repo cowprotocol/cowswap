@@ -1,8 +1,10 @@
-import styled from 'styled-components'
-import { FeatureFlag, formatFiatAmount, FractionUtils } from '@cowprotocol/common-utils'
-import { AMOUNTS_FORMATTING_FEATURE_FLAG } from '../../consts'
-import { FractionLike, Nullish } from '../../types'
 import { LONG_PRECISION } from '@cowprotocol/common-const'
+import { formatFiatAmount, FractionUtils } from '@cowprotocol/common-utils'
+
+import styled from 'styled-components/macro'
+
+import { FractionLike, Nullish } from '../../types'
+
 export interface FiatAmountProps {
   amount: Nullish<FractionLike>
   accurate?: boolean
@@ -10,10 +12,7 @@ export interface FiatAmountProps {
   className?: string
 }
 
-const highlight = !!FeatureFlag.get(AMOUNTS_FORMATTING_FEATURE_FLAG)
-
-const Wrapper = styled.span<{ highlight: boolean }>`
-  background: ${({ highlight }) => (highlight ? 'rgba(113,255,18,0.4)' : '')};
+const Wrapper = styled.span`
   color: inherit;
 `
 
@@ -23,7 +22,7 @@ export function FiatAmount({ amount, defaultValue, className, accurate = false }
   const accuracySymbol = accurate ? '' : '≈ '
 
   return (
-    <Wrapper title={title} className={(className || '') + ' fiat-amount'} highlight={highlight}>
+    <Wrapper title={title} className={(className || '') + ' fiat-amount'}>
       {formattedAmount ? accuracySymbol + '$' : ''}
       {formattedAmount || defaultValue}
     </Wrapper>

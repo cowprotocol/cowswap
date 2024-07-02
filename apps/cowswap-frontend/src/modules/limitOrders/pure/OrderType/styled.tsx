@@ -1,7 +1,6 @@
 import { UI } from '@cowprotocol/ui'
 
 import { MenuButton, MenuItem, MenuList } from '@reach/menu-button'
-import { transparentize } from 'color2k'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
@@ -59,8 +58,9 @@ export const StyledMenuButton = styled(MenuButton)`
 `
 
 export const StyledMenuList = styled(MenuList)`
-  box-shadow: 0 4px 8px 0 ${({ theme }) => transparentize(theme.shadow1, 0.95)};
+  box-shadow: none;
   background: var(${UI.COLOR_PAPER});
+  border: 1px solid var(${UI.COLOR_BORDER});
   border-radius: 8px;
   z-index: 2;
   min-width: 100%;
@@ -82,6 +82,6 @@ export const StyledMenuItem = styled(MenuItem)`
 
   &:hover {
     background: var(${UI.COLOR_PRIMARY});
-    color: ${({ theme }) => theme.white};
+    color: var(${UI.COLOR_BUTTON_TEXT});
   }
 `

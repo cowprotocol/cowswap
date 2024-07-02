@@ -1,8 +1,10 @@
-import { gql } from '@apollo/client'
 import { useCallback, useEffect, useState } from 'react'
+
+import { gql } from '@apollo/client'
+
+import { subgraphApiSDK } from '../../../cowSdk'
 import { useNetworkId } from '../../../state/network'
 import { Network } from '../../../types'
-import { subgraphApiSDK } from '../../../cowSdk'
 
 export interface BatchInfo {
   lastBatchDate: Date

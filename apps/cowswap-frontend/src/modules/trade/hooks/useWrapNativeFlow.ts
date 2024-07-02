@@ -1,6 +1,5 @@
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 
-import { useWETHContract } from '@cowprotocol/common-hooks'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -14,12 +13,14 @@ import {
 } from 'legacy/hooks/useWrapCallback'
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 
+import { useWETHContract } from 'common/hooks/useContract'
+
 import { useDerivedTradeState } from './useDerivedTradeState'
 import { useWrapNativeScreenState } from './useWrapNativeScreenState'
 
 export function useWrapNativeFlow(): WrapUnwrapCallback {
-  const derivedTradeState = useDerivedTradeState()
-  const wrapCallback = useWrapNativeCallback(derivedTradeState.state?.inputCurrencyAmount)
+  const state = useDerivedTradeState()
+  const wrapCallback = useWrapNativeCallback(state?.inputCurrencyAmount)
 
   return useCallback(
     (params?: WrapUnwrapCallbackParams) => {
@@ -37,32 +38,36 @@ function useWrapNativeContext(amount: Nullish<CurrencyAmount<Currency>>): WrapUn
   const addTransaction = useTransactionAdder()
   const [, setWrapNativeState] = useWrapNativeScreenState()
 
-  if (!wethContract || !chainId || !amount) {
-    return null
-  }
+  return useMemo(() => {
+    if (!wethContract || !chainId || !amount) {
+      return null
+    }
 
-  return {
-    chainId,
-    wethContract,
-    amount,
-    addTransaction,
-    closeModals() {
-      setWrapNativeState({ isOpen: false })
-    },
-    openTransactionConfirmationModal() {
-      setWrapNativeState({ isOpen: true })
-    },
-  }
+    return {
+      chainId,
+      wethContract,
+      amount,
+      addTransaction,
+      closeModals() {
+        setWrapNativeState({ isOpen: false })
+      },
+      openTransactionConfirmationModal() {
+        setWrapNativeState({ isOpen: true })
+      },
+    }
+  }, [chainId, wethContract, amount, addTransaction, setWrapNativeState])
 }
 
 function useWrapNativeCallback(inputAmount: Nullish<CurrencyAmount<Currency>>): WrapUnwrapCallback | null {
   const context = useWrapNativeContext(inputAmount)
 
-  if (!context) {
-    return null
-  }
+  return useMemo(() => {
+    if (!context) {
+      return null
+    }
 
-  return (params?: WrapUnwrapCallbackParams) => {
-    return wrapUnwrapCallback(context, params)
-  }
+    return (params?: WrapUnwrapCallbackParams) => {
+      return wrapUnwrapCallback(context, params)
+    }
+  }, [context])
 }

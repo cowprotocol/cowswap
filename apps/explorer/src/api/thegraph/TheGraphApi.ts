@@ -1,6 +1,5 @@
 import { assert, DEFAULT_PRECISION } from '@gnosis.pm/dex-js'
 import BigNumber from 'bignumber.js'
-
 import { TEN_BIG_NUMBER } from 'const'
 
 export interface TheGraphApi {

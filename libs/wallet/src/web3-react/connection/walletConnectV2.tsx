@@ -2,31 +2,21 @@ import { useState, useSyncExternalStore } from 'react'
 
 import { RPC_URLS } from '@cowprotocol/common-const'
 import { getCurrentChainIdFromUrl } from '@cowprotocol/common-utils'
-
 import { ALL_SUPPORTED_CHAIN_IDS, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Command } from '@cowprotocol/types'
 import { initializeConnector, Web3ReactHooks } from '@web3-react/core'
 import { Web3ReactStore } from '@web3-react/types'
 
-import { default as WalletConnectV2Image } from '../../api/assets/walletConnectIcon.svg'
-
 import { ASYNC_CUSTOM_PROVIDER_EVENT, AsyncConnector } from './asyncConnector'
-import { Command } from '@cowprotocol/types'
-
-import { ConnectionOptionProps, Web3ReactConnection } from '../types'
-
 import { onError } from './onError'
-import { ConnectionType } from '../../api/types'
-import { useWalletMetaData } from '../hooks/useWalletMetadata'
-import { useIsActiveConnection } from '../hooks/useIsActiveConnection'
-import {
-  getConnectionName,
-  getIsAlphaWallet,
-  getIsAmbireWallet,
-  getIsTrustWallet,
-  getIsZengoWallet,
-} from '../../api/utils/connection'
-import { WC_DISABLED_TEXT, WC_PROJECT_ID } from '../../constants'
+
+import { default as WalletConnectV2Image } from '../../api/assets/walletConnectIcon.svg'
 import { ConnectWalletOption } from '../../api/pure/ConnectWalletOption'
+import { ConnectionType } from '../../api/types'
+import { getConnectionName } from '../../api/utils/connection'
+import { WC_PROJECT_ID } from '../../constants'
+import { useIsActiveConnection } from '../hooks/useIsActiveConnection'
+import { ConnectionOptionProps, Web3ReactConnection } from '../types'
 
 export const walletConnectV2Option = {
   color: '#4196FC',
@@ -142,24 +132,13 @@ function createWc2Connection(chainId = getCurrentChainIdFromUrl()): Web3ReactCon
 export const walletConnectConnectionV2 = createWc2Connection()
 
 export function WalletConnectV2Option({ selectedWallet, tryActivation }: ConnectionOptionProps) {
-  const { walletName } = useWalletMetaData()
-
-  const isWalletConnect = useIsActiveConnection(selectedWallet, walletConnectConnectionV2)
-  const isActive =
-    isWalletConnect &&
-    !getIsZengoWallet(walletName) &&
-    !getIsAmbireWallet(walletName) &&
-    !getIsAlphaWallet(walletName) &&
-    !getIsTrustWallet(walletName)
-
-  const tooltipText = !isActive && isWalletConnect ? WC_DISABLED_TEXT : undefined
+  const isActive = useIsActiveConnection(selectedWallet, walletConnectConnectionV2)
 
   return (
     <ConnectWalletOption
       {...walletConnectV2Option}
       isActive={isActive}
-      tooltipText={tooltipText}
-      clickable={!isWalletConnect}
+      clickable={!isActive}
       onClick={() => tryActivation(walletConnectConnectionV2.connector)}
       header={getConnectionName(ConnectionType.WALLET_CONNECT_V2)}
     />

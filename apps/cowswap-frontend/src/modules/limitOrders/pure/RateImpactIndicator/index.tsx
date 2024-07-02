@@ -1,5 +1,5 @@
 import { TokenSymbol } from '@cowprotocol/ui'
-import { MouseoverTooltipContent } from '@cowprotocol/ui'
+import { HoverTooltip } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 import { Currency } from '@uniswap/sdk-core'
 
@@ -53,7 +53,7 @@ export function RateImpactIndicator({ rateImpact, inputCurrency }: RateImpactPro
   )
 
   return (
-    <MouseoverTooltipContent wrap={false} content={tooltipContent} placement="bottom">
+    <HoverTooltip wrapInContainer={false} content={tooltipContent} placement="bottom">
       <PercentBox isPositive={isPositive} isTooLowRate={isTooLowRate}>
         <span>
           ({isPositive && !hugePositiveImpact ? '+' : ''}
@@ -61,6 +61,6 @@ export function RateImpactIndicator({ rateImpact, inputCurrency }: RateImpactPro
         </span>
         {isTooLowRate && <AlertTriangle size={14} />}
       </PercentBox>
-    </MouseoverTooltipContent>
+    </HoverTooltip>
   )
 }

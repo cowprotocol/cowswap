@@ -1,8 +1,8 @@
-import styled from 'styled-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { media } from 'theme/styles/media'
 import { ArrowIconCSS } from 'components/icons/cssIcons'
 import { NavLink } from 'react-router-dom'
+import styled from 'styled-components/macro'
+import { media } from 'theme/styles/media'
 
 export const SelectorContainer = styled.div`
   display: flex;
@@ -22,7 +22,7 @@ export const OptionsContainer = styled.div<{ width: number }>`
   width: ${(props: { width: number }): string => `${184 + props.width}px`};
   left: 15px;
   top: 54px;
-  background: ${({ theme }): string => theme.bg1};
+  background: ${({ theme }): string => theme.paper};
   border: 1px solid rgba(141, 141, 169, 0.3);
   box-sizing: border-box;
   border-radius: 6px;

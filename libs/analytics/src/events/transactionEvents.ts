@@ -1,7 +1,8 @@
+import { UiOrderType } from '@cowprotocol/types'
+
 import { sendEvent } from '../googleAnalytics'
 import { PixelEvent, sendAllPixels } from '../pixel'
 import { Category } from '../types'
-import { UiOrderType } from '@cowprotocol/types'
 
 const LABEL_FROM_TYPE: Record<UiOrderType, string> = {
   [UiOrderType.LIMIT]: 'Limit Order',
@@ -94,5 +95,12 @@ export function priceOutOfRangeAnalytics(isUnfillable: boolean, label: string) {
     category: Category.TRADE,
     action: `Order price is ${isUnfillable ? 'out of' : 'back to'} market`,
     label,
+  })
+}
+
+export function alternativeModalAnalytics(isEdit: boolean, action: 'clicked' | 'placed') {
+  sendEvent({
+    category: Category.TRADE,
+    action: `${isEdit ? 'Edit' : 'Recreate'} order: ${action}`,
   })
 }

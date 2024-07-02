@@ -1,12 +1,19 @@
 import { useCallback, useLayoutEffect, useMemo } from 'react'
 
 import { getIntOrFloat } from '@cowprotocol/common-utils'
+import { OrderKind } from '@cowprotocol/cow-sdk'
 
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 
 import { Field } from 'legacy/state/types'
 
-import { TRADE_URL_BUY_AMOUNT_KEY, TRADE_URL_SELL_AMOUNT_KEY } from 'modules/trade/const/tradeUrl'
+import {
+  TRADE_URL_BUY_AMOUNT_KEY,
+  TRADE_URL_ORDER_KIND_KEY,
+  TRADE_URL_SELL_AMOUNT_KEY,
+} from 'modules/trade/const/tradeUrl'
+
+import { useNavigate } from 'common/hooks/useNavigate'
 
 import { useSwapActionHandlers } from './useSwapState'
 
@@ -29,18 +36,20 @@ export function useSetupSwapAmountsFromUrl() {
 
     queryParams.delete(TRADE_URL_SELL_AMOUNT_KEY)
     queryParams.delete(TRADE_URL_BUY_AMOUNT_KEY)
+    queryParams.delete(TRADE_URL_ORDER_KIND_KEY)
 
     navigate({ pathname, search: queryParams.toString() }, { replace: true })
   }, [navigate, pathname, search])
 
   useLayoutEffect(() => {
+    const orderKind = params.get(TRADE_URL_ORDER_KIND_KEY) as OrderKind | null
     const sellAmount = getIntOrFloat(params.get(TRADE_URL_SELL_AMOUNT_KEY))
     const buyAmount = getIntOrFloat(params.get(TRADE_URL_BUY_AMOUNT_KEY))
 
-    if (sellAmount && +sellAmount >= 0) {
-      onUserInput(Field.INPUT, sellAmount)
-    } else if (buyAmount && +buyAmount >= 0) {
+    if (buyAmount && +buyAmount >= 0 && orderKind === OrderKind.BUY) {
       onUserInput(Field.OUTPUT, buyAmount)
+    } else if (sellAmount && +sellAmount >= 0) {
+      onUserInput(Field.INPUT, sellAmount)
     }
 
     // Clean params only at least one of them is set

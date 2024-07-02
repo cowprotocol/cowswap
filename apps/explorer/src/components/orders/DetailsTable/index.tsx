@@ -1,33 +1,34 @@
 import React from 'react'
-import styled from 'styled-components'
+
+import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Command } from '@cowprotocol/types'
+import { TruncatedText } from '@cowprotocol/ui/pure/TruncatedText'
+
+import { faFill, faProjectDiagram, faGroupArrowsRotate, faHistory } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faFill, faProjectDiagram } from '@fortawesome/free-solid-svg-icons'
-import { media } from 'theme/styles/media'
-
-import { Order } from 'api/operator'
-
-import { capitalize } from 'utils'
-
-import { HelpTooltip } from 'components/Tooltip'
-
+import { sendEvent } from 'components/analytics'
+import DecodeAppData from 'components/AppData/DecodeAppData'
+import { DateDisplay } from 'components/common/DateDisplay'
+import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
+import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 import { SimpleTable } from 'components/common/SimpleTable'
 import Spinner from 'components/common/Spinner'
-
 import { AmountsDisplay } from 'components/orders/AmountsDisplay'
-import { DateDisplay } from 'components/common/DateDisplay'
-import { OrderPriceDisplay } from 'components/orders/OrderPriceDisplay'
 import { FilledProgress } from 'components/orders/FilledProgress'
-import { OrderSurplusDisplay } from 'components/orders/OrderSurplusDisplay'
-import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
-import { StatusLabel } from 'components/orders/StatusLabel'
 import { GasFeeDisplay } from 'components/orders/GasFeeDisplay'
-import { sendEvent } from 'components/analytics'
-import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
-import DecodeAppData from 'components/AppData/DecodeAppData'
-import { TAB_QUERY_PARAM_KEY } from '../../../explorer/const'
+import { OrderPriceDisplay } from 'components/orders/OrderPriceDisplay'
+import { OrderSurplusDisplay } from 'components/orders/OrderSurplusDisplay'
+import { StatusLabel } from 'components/orders/StatusLabel'
+import { HelpTooltip } from 'components/Tooltip'
+import styled from 'styled-components/macro'
+import { media } from 'theme/styles/media'
+import { capitalize } from 'utils'
+
+import { Order } from 'api/operator'
 import { getUiOrderType } from 'utils/getUiOrderType'
 
-import { Command } from '@cowprotocol/types'
+import { TAB_QUERY_PARAM_KEY } from '../../../explorer/const'
 
 const Table = styled(SimpleTable)`
   > tbody > tr {
@@ -35,9 +36,15 @@ const Table = styled(SimpleTable)`
     grid-template-rows: max-content;
     padding: 1.4rem 0 1.4rem 1.1rem;
 
+    
+
     ${media.mediumDown} {
       grid-template-columns: 17rem auto;
       padding: 1.4rem 0;
+
+      :hover {
+        background: inherit;
+      }
     }
 
     > td {
@@ -45,16 +52,19 @@ const Table = styled(SimpleTable)`
 
       &:first-of-type {
         text-transform: capitalize;
+
         ${media.mediumUp} {
           font-weight: ${({ theme }): string => theme.fontLighter};
         }
 
         /* Question mark */
+
         > svg {
           margin: 0 1rem 0 0;
         }
 
         /* Column after text on first column */
+
         ::after {
           content: ':';
         }
@@ -79,6 +89,8 @@ const tooltip = {
     'The date and time at which the order was submitted. The timezone is based on the browser locale settings.',
   expiration:
     'The date and time at which an order will expire and effectively be cancelled. Depending on the type of order, it may have partial fills upon expiration.',
+  execution:
+    'The date and time at which the order has been executed. The timezone is based on the browser locale settings.',
   type: (
     <div>
       CoW Protocol supports three type of orders – market, limit and liquidity:
@@ -118,11 +130,13 @@ const tooltip = {
   fees: 'The amount of fees paid for this order. This will show a progressive number for orders with partial fills. Might take a few minutes to show the final value.',
 }
 
-export const Wrapper = styled.div`
+export const Wrapper = styled.div<{ gap?: boolean }>`
   display: flex;
   flex-direction: row;
+
   ${media.mobile} {
     flex-direction: column;
+    ${({ gap = true }) => gap && 'gap: 1rem;'}
   }
 `
 
@@ -132,22 +146,18 @@ export const LinkButton = styled(LinkWithPrefixNetwork)`
   justify-content: center;
   text-align: center;
   font-weight: ${({ theme }): string => theme.fontBold};
-  font-size: 1.3rem;
+  font-size: 1.1rem;
   color: ${({ theme }): string => theme.orange1};
   border: 1px solid ${({ theme }): string => theme.orange1};
   background-color: ${({ theme }): string => theme.orangeOpacity};
   border-radius: 0.4rem;
-  padding: 0.8rem 1.5rem;
+  padding: 0.5rem 1.5rem;
   margin: 0 0 0 2rem;
   transition-duration: 0.2s;
   transition-timing-function: ease-in-out;
 
   ${media.mobile} {
     margin: 1rem 0 0 0;
-  }
-
-  ${media.mediumDown} {
-    min-width: 18rem;
   }
 
   :hover {
@@ -161,7 +171,8 @@ export const LinkButton = styled(LinkWithPrefixNetwork)`
   }
 `
 
-export type Props = {
+export type DetailsTableProps = {
+  chainId: SupportedChainId
   order: Order
   showFillsButton: boolean | undefined
   areTradesLoading: boolean
@@ -170,11 +181,10 @@ export type Props = {
   invertPrice: Command
 }
 
-export function DetailsTable(props: Props): JSX.Element | null {
-  const { order, areTradesLoading, showFillsButton, viewFills, isPriceInverted, invertPrice } = props
+export function DetailsTable(props: DetailsTableProps): React.ReactNode | null {
+  const { chainId, order, areTradesLoading, showFillsButton, viewFills, isPriceInverted, invertPrice } = props
   const {
     uid,
-    shortId,
     owner,
     receiver,
     txHash,
@@ -182,6 +192,7 @@ export function DetailsTable(props: Props): JSX.Element | null {
     partiallyFillable,
     creationDate,
     expirationDate,
+    executionDate,
     buyAmount,
     sellAmount,
     executedBuyAmount,
@@ -216,7 +227,11 @@ export function DetailsTable(props: Props): JSX.Element | null {
               <HelpTooltip tooltip={tooltip.orderID} /> Order Id
             </td>
             <td>
-              <RowWithCopyButton textToCopy={uid} contentsToDisplay={shortId} onCopy={(): void => onCopy('orderId')} />
+              <RowWithCopyButton
+                textToCopy={uid}
+                contentsToDisplay={<TruncatedText text={uid} />}
+                onCopy={(): void => onCopy('orderId')}
+              />
             </td>
           </tr>
           <tr>
@@ -224,11 +239,18 @@ export function DetailsTable(props: Props): JSX.Element | null {
               <HelpTooltip tooltip={tooltip.from} /> From
             </td>
             <td>
-              <RowWithCopyButton
-                textToCopy={owner}
-                onCopy={(): void => onCopy('ownerAddress')}
-                contentsToDisplay={<LinkWithPrefixNetwork to={`/address/${owner}`}>{owner}</LinkWithPrefixNetwork>}
-              />
+
+              <Wrapper>
+                <RowWithCopyButton
+                  textToCopy={owner}
+                  onCopy={(): void => onCopy('ownerAddress')}
+                  contentsToDisplay={<LinkWithPrefixNetwork to={getExplorerLink(chainId, owner, ExplorerDataType.ADDRESS)} target='_blank'>{owner}↗</LinkWithPrefixNetwork>}
+                />
+                <LinkButton to={`/address/${owner}`}>
+                  <FontAwesomeIcon icon={faHistory} />
+                  Order History
+                </LinkButton>
+              </Wrapper>
             </td>
           </tr>
           <tr>
@@ -236,13 +258,18 @@ export function DetailsTable(props: Props): JSX.Element | null {
               <HelpTooltip tooltip={tooltip.to} /> To
             </td>
             <td>
-              <RowWithCopyButton
-                textToCopy={receiver}
-                onCopy={(): void => onCopy('receiverAddress')}
-                contentsToDisplay={
-                  <LinkWithPrefixNetwork to={`/address/${receiver}`}>{receiver}</LinkWithPrefixNetwork>
-                }
-              />
+              <Wrapper>
+                <RowWithCopyButton
+                  textToCopy={receiver}
+                  onCopy={(): void => onCopy('receiverAddress')}
+                  contentsToDisplay={<LinkWithPrefixNetwork to={getExplorerLink(chainId, receiver, ExplorerDataType.ADDRESS)} target='_blank'>{receiver}↗</LinkWithPrefixNetwork>}
+                />
+                <LinkButton to={`/address/${receiver}`}>
+                  <FontAwesomeIcon icon={faHistory} />
+                  Order History
+                </LinkButton>
+              </Wrapper>
+
             </td>
           </tr>
           {(!partiallyFillable || txHash) && (
@@ -258,12 +285,19 @@ export function DetailsTable(props: Props): JSX.Element | null {
                     <RowWithCopyButton
                       textToCopy={txHash}
                       onCopy={(): void => onCopy('settlementTx')}
-                      contentsToDisplay={<LinkWithPrefixNetwork to={`/tx/${txHash}`}>{txHash}</LinkWithPrefixNetwork>}
+                      contentsToDisplay={<LinkWithPrefixNetwork to={getExplorerLink(chainId, txHash, ExplorerDataType.TRANSACTION)} target='_blank'>{txHash}↗</LinkWithPrefixNetwork>}
                     />
-                    <LinkButton to={`/tx/${txHash}/?${TAB_QUERY_PARAM_KEY}=graph`}>
-                      <FontAwesomeIcon icon={faProjectDiagram} />
-                      View batch graph
-                    </LinkButton>
+                    <Wrapper gap={false}>
+                      <LinkButton to={`/tx/${txHash}`}>
+                        <FontAwesomeIcon icon={faGroupArrowsRotate} />
+                        Batch
+                      </LinkButton>
+
+                      <LinkButton to={`/tx/${txHash}/?${TAB_QUERY_PARAM_KEY}=graph`}>
+                        <FontAwesomeIcon icon={faProjectDiagram} />
+                        Graph
+                      </LinkButton>
+                    </Wrapper>
                   </Wrapper>
                 ) : (
                   '-'
@@ -287,6 +321,16 @@ export function DetailsTable(props: Props): JSX.Element | null {
               <DateDisplay date={creationDate} showIcon={true} />
             </td>
           </tr>
+          {executionDate && !showFillsButton && (
+            <tr>
+              <td>
+                <HelpTooltip tooltip={tooltip.execution} /> Execution Time
+              </td>
+              <td>
+                <DateDisplay date={executionDate} showIcon={true} />
+              </td>
+            </tr>
+          )}
           <tr>
             <td>
               <HelpTooltip tooltip={tooltip.expiration} /> Expiration Time

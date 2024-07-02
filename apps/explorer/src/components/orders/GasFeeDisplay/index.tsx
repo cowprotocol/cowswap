@@ -1,10 +1,10 @@
 import React from 'react'
-import styled from 'styled-components'
+
+import { ZERO_BIG_NUMBER } from 'const'
+import styled from 'styled-components/macro'
+import { formatSmartMaxPrecision, safeTokenName } from 'utils'
 
 import { Order } from 'api/operator'
-
-import { formatSmartMaxPrecision, safeTokenName } from 'utils'
-import { ZERO_BIG_NUMBER } from 'const'
 
 const Wrapper = styled.div`
   & > span {

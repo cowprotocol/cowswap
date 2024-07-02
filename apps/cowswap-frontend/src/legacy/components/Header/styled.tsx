@@ -1,6 +1,6 @@
 import { PropsWithChildren } from 'react'
 
-import { Row, RowFixed } from '@cowprotocol/ui'
+import { Media, Row, RowFixed } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 
 import useScrollPosition from '@react-hook/window-scroll'
@@ -16,37 +16,22 @@ export const TitleMod = styled.a`
   align-items: center;
   pointer-events: auto;
   justify-self: flex-start;
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    justify-self: center;
-  `};
-  :hover {
+
+  &:hover {
     cursor: pointer;
+  }
+
+  ${Media.upToSmall()} {
+    justify-self: center;
   }
 `
 
 export const HeaderLinksMod = styled(Row)`
   justify-content: center;
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+
+  ${Media.upToMedium()} {
     display: none;
-  `};
-`
-
-export const HeaderControlsUni = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-self: flex-end;
-
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    flex-direction: row;
-    justify-content: space-between;
-    justify-self: center;
-    max-width: 960px;
-    padding: 1rem;
-    z-index: 1;
-    height: 72px;
-    border-radius: 12px 12px 0 0;
-  `};
+  }
 `
 
 export const StyledNavLinkUni = styled(NavLink)`
@@ -83,7 +68,7 @@ export const StyledMenuButton = styled.button`
   margin: 0;
   padding: 0;
   height: 35px;
-  background-color: ${({ theme }) => theme.bg3};
+  background-color: ${({ theme }) => theme.background};
   margin-left: 8px;
   padding: 0.15rem 0.5rem;
   border-radius: 0.5rem;
@@ -93,7 +78,7 @@ export const StyledMenuButton = styled.button`
   &:focus {
     cursor: pointer;
     outline: none;
-    background-color: ${({ theme }) => theme.bg4};
+    background-color: ${({ theme }) => theme.paperCustom};
   }
 
   svg {
@@ -111,36 +96,22 @@ export const HeaderFrame = styled.div<{ showBackground: boolean }>`
   width: 100%;
   top: 0;
   position: relative;
-  border-bottom: ${({ theme }) => theme.header.border};
+  border-bottom: none;
   padding: 1rem;
   z-index: 2;
 
-  ${({ theme }) => theme.mediaWidth.upToLarge`
+  ${Media.upToLarge()} {
     grid-template-columns: 48px 1fr 1fr;
-  `};
+  }
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${Media.upToMedium()} {
     grid-template-columns: 1fr 1fr;
     position: relative;
-  `};
+  }
 
-  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+  ${Media.upToExtraSmall()} {
     padding: 0.5rem 1rem;
-  `};
-`
-
-export const HeaderElementUni = styled.div`
-  display: flex;
-  align-items: center;
-
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    flex-direction: row-reverse;
-    align-items: center;
-  `};
-
-  ${({ theme }) => theme.mediaWidth.upToVerySmall`
-    width: 115px;
-  `};
+  }
 `
 
 export const StyledNavLink = styled(StyledNavLinkUni)`
@@ -157,53 +128,52 @@ export const StyledNavLink = styled(StyledNavLinkUni)`
   }
 `
 
-export const HeaderControls = styled(HeaderControlsUni)`
+export const HeaderControls = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
   justify-content: flex-end;
-  gap: 12px;
+  gap: 6px;
+  max-width: 100%;
+  height: 100%;
 
-  ${({ theme }) => theme.mediaWidth.upToLarge`
-    max-width: 100%;
+  ${Media.upToMedium()} {
     margin: 0 0 0 auto;
-    padding: 0;
-    height: auto;
-    width: auto;
-  `};
-`
-
-export const HeaderElement = styled(HeaderElementUni)`
-  border-radius: 0;
-  gap: 12px;
-
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    flex-direction: row;
-    justify-content: flex-end;
-    position: fixed;
+    height: 56px;
+    width: 100%;
+    position: sticky;
     bottom: 0;
     left: 0;
-    width: 100%;
-    border-radius: 0;
-    height: 64px;
-    background-color: var(${UI.COLOR_PAPER});
-    border-top: 1px solid ${({ theme }) => theme.grey1};
-    backdrop-filter: blur(21px);
-    padding: 10px 16px;
-    gap: 8px;
-  `}
+    z-index: 101;
+    background: var(${UI.COLOR_PAPER});
+    padding: 5px 10px;
+    flex-flow: row-reverse;
+    justify-content: space-between;
+  }
+`
+
+export const HeaderElement = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0;
+  height: 100%;
 `
 
 export const Wrapper = styled.div<{ isMobileMenuOpen: boolean }>`
   width: 100%;
 
   ${HeaderFrame} {
-    padding: 16px;
     display: flex;
-    grid-template-rows: max-content;
+    padding: 16px;
+    gap: 16px;
 
-    ${({ theme, isMobileMenuOpen }) => theme.mediaWidth.upToLarge`
-      grid-template-columns: unset;
+    ${Media.upToExtraSmall()} {
+      gap: 10px;
+    }
 
-      ${
-        isMobileMenuOpen &&
+    ${Media.upToLarge()} {
+      ${({ isMobileMenuOpen }) => css`
+        ${isMobileMenuOpen &&
         css`
           position: absolute;
           top: 0;
@@ -220,9 +190,9 @@ export const Wrapper = styled.div<{ isMobileMenuOpen: boolean }>`
             left: 0;
             z-index: 101;
           }
-        `
-      }
-    `}
+        `}
+      `}
+    }
   }
 
   ${StyledMenuButton} {
@@ -246,14 +216,13 @@ export const Title = styled(TitleMod)<{ isMobileMenuOpen: boolean }>`
   text-decoration: none;
   color: inherit;
 
-  ${({ theme, isMobileMenuOpen }) => theme.mediaWidth.upToLarge`
-    ${
+  ${Media.upToLarge()} {
+    ${({ isMobileMenuOpen }) =>
       isMobileMenuOpen &&
       css`
         z-index: 101;
-      `
-    }
-  `};
+      `};
+  }
 `
 
 export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>`
@@ -277,7 +246,7 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
     transition: background var(${UI.ANIMATION_DURATION}) ease-in-out, color var(${UI.ANIMATION_DURATION}) ease-in-out;
     color: inherit;
 
-    ${({ theme }) => theme.mediaWidth.upToLarge`
+    ${Media.upToLarge()} {
       width: 100%;
       border-radius: 0;
       margin: 0;
@@ -286,7 +255,7 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
       padding: 28px 10px;
       color: inherit;
       border-bottom: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
-    `}
+    }
 
     > svg > path {
       fill: currentColor;
@@ -298,10 +267,10 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
       background: var(${UI.COLOR_PRIMARY});
       color: var(${UI.COLOR_BUTTON_TEXT});
 
-      ${({ theme }) => theme.mediaWidth.upToLarge`
+      ${Media.upToLarge()} {
         background: transparent;
         color: inherit;
-      `};
+      }
 
       > svg > path {
         fill: currentColor;
@@ -313,9 +282,9 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
     }
 
     &.expanded + ${MenuContent} {
-      ${({ theme }) => theme.mediaWidth.upToLarge`
+      ${Media.upToLarge()} {
         border: 0;
-      `}
+      }
     }
 
     &.ACTIVE {
@@ -325,7 +294,7 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
   }
 
   ${MenuFlyout} {
-    ${({ theme }) => theme.mediaWidth.upToLarge`
+    ${Media.upToLarge()} {
       width: 100%;
       flex-flow: column wrap;
 
@@ -333,38 +302,42 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
         margin: 0 0 0 auto;
         height: 10px;
       }
-    `};
+    }
 
-    ${({ theme }) => theme.mediaWidth.upToSmall`
+    ${Media.upToSmall()} {
       > button > svg {
         order: 3;
       }
-    `};
+    }
   }
 
   ${MenuContent} {
-    ${({ theme }) => theme.mediaWidth.upToLarge`
+    ${Media.upToLarge()} {
       padding: 8px 10px 28px;
       gap: 36px;
       margin: 0;
-    `};
+    }
   }
 
   ${MenuSection} {
-    ${({ theme }) => theme.mediaWidth.upToLarge`
+    ${Media.upToLarge()} {
       gap 36px;
       opacity: 0.7;
-    `};
+    };
+
+    ${Media.upToMedium()} {
+     width: 100%;
+    };
   }
 
   ${MenuTitle} {
-    ${({ theme }) => theme.mediaWidth.upToLarge`
+    ${Media.upToLarge()} {
       display: none;
-    `};
+    }
   }
 
-  ${({ theme, isMobileMenuOpen }) => theme.mediaWidth.upToLarge`
-    display: ${isMobileMenuOpen ? 'flex' : 'none'};
+  ${Media.upToLarge()} {
+    display: ${({ isMobileMenuOpen }) => (isMobileMenuOpen ? 'flex' : 'none')};
     width: 100%;
     height: 100%;
     position: fixed;
@@ -377,41 +350,10 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
     padding: 60px 8px;
     overflow-y: scroll;
     -webkit-overflow-scrolling: touch; // iOS scroll fix
-    transform: translate3d(0,0,0); // iOS scroll fix    
+    transform: translate3d(0,0,0); // iOS scroll fix
     flex-flow: column nowrap;
     justify-content: flex-start;
     align-items: flex-start;
-`};
-`
-
-export const TwitterLink = styled(StyledMenuButton)`
-  > a {
-    ${({ theme }) => theme.cursor};
-    padding: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-    width: 100%;
-  }
-
-  > a > svg {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    border: 0;
-    display: flex;
-    margin: 0;
-    padding: 0;
-    stroke: transparent;
-  }
-
-  > a > svg > path {
-    fill: var(${UI.COLOR_TEXT});
-  }
-
-  > a:hover > svg > path {
-    fill: var(${UI.COLOR_TEXT});
   }
 `
 
@@ -422,19 +364,19 @@ export const LogoImage = styled.div<{ isMobileMenuOpen?: boolean }>`
   margin: 0 32px 0 0;
   position: relative;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    height: 34px;
-    width: 106px;
-  `}
+  ${Media.upToSmall()} {
+    height: 30px;
+    width: auto;
+  }
 
-  ${({ theme, isMobileMenuOpen }) => theme.mediaWidth.upToLarge`
-    ${
+  ${Media.upToLarge()} {
+    ${({ isMobileMenuOpen }) =>
       isMobileMenuOpen &&
       css`
         height: 34px;
-      `
-    }
-  `}
+        width: auto;
+      `}
+  }
 
   > svg {
     width: inherit;
@@ -453,14 +395,10 @@ export const UniIcon = styled.div`
   }
 `
 
-export const CustomLogoImg = styled.img`
-  height: 100%;
-`
-
 export const HeaderRow = styled(RowFixed)`
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-   width: 100%;
-  `};
+  ${Media.upToMedium()} {
+    width: 100%;
+  }
 `
 
 export const WinterHat = styled.div`
@@ -469,11 +407,11 @@ export const WinterHat = styled.div`
   top: -10px;
   left: 6px;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${Media.upToSmall()} {
     left: 0;
     right: 0;
     margin: auto;
-  `}
+  }
 
   > svg {
     height: 15px;

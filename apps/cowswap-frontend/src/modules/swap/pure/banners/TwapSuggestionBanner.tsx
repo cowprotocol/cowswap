@@ -33,6 +33,7 @@ const PRICE_IMPACT_LIMIT = 1 // 1%
 const AMOUNT_LIMIT: Record<SupportedChainId, number> = {
   [SupportedChainId.MAINNET]: 50_000, // $50,000
   [SupportedChainId.GNOSIS_CHAIN]: 500, // $500
+  [SupportedChainId.ARBITRUM_ONE]: 500, // $500
   [SupportedChainId.SEPOLIA]: 100, // $100
 }
 

@@ -1,12 +1,24 @@
 {
   "name": "@cowprotocol/types",
-  "version": "0.0.1",
-  "main": "./index.js",
-  "types": "./index.d.ts",
+  "version": "1.0.0",
+  "type": "commonjs",
+  "description": "CoW Swap events",
+  "main": "index.js",
   "exports": {
-    ".": {
-      "import": "./index.mjs",
-      "require": "./index.js"
-    }
-  }
+    "import": "./index.js",
+    "require": "./index.mjs"
+  },
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cowprotocol/cowswap"
+  },
+  "keywords": [
+    "cowprotocol",
+    "types",
+    "cowswap",
+    "dex",
+    "widget-lib"
+  ],
+  "dependencies": {}
 }

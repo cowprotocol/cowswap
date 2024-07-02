@@ -1,18 +1,18 @@
 import { StrictMode, useMemo } from 'react'
 
 import { CssBaseline, GlobalStyles } from '@mui/material'
-import 'inter-ui'
 import Box from '@mui/material/Box'
 import { createTheme, PaletteOptions, ThemeProvider } from '@mui/material/styles'
+import 'inter-ui'
 import { createRoot } from 'react-dom/client'
-import { WagmiConfig } from 'wagmi'
 
 import { Configurator } from './app/configurator'
 import { ColorModeContext, globalStyles } from './theme/ColorModeContext'
 import { commonTypography } from './theme/commonTypography'
 import { useColorMode } from './theme/hooks/useColorMode'
 import { darkPalette, lightPalette } from './theme/paletteOptions'
-import { wagmiConfig } from './wagmiConfig'
+import { initWeb3Modal } from './web3modalConfig'
+import { WithLDProvider } from './WithLDProvider'
 
 const WrapperStyled = {
   display: 'flex',
@@ -20,6 +20,8 @@ const WrapperStyled = {
   height: '100%',
   width: '100%',
 }
+
+initWeb3Modal()
 
 function Root() {
   const colorMode = useColorMode()
@@ -58,17 +60,17 @@ function Root() {
 
   return (
     <StrictMode>
-      <WagmiConfig config={wagmiConfig}>
-        <ColorModeContext.Provider value={colorMode}>
-          <ThemeProvider theme={theme}>
-            <CssBaseline />
-            <GlobalStyles styles={globalStyles(theme, colorMode.mode)} />
-            <Box sx={WrapperStyled}>
+      <ColorModeContext.Provider value={colorMode}>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <GlobalStyles styles={globalStyles(theme, colorMode.mode)} />
+          <Box sx={WrapperStyled}>
+            <WithLDProvider>
               <Configurator title="CoW Widget" />
-            </Box>
-          </ThemeProvider>
-        </ColorModeContext.Provider>
-      </WagmiConfig>
+            </WithLDProvider>
+          </Box>
+        </ThemeProvider>
+      </ColorModeContext.Provider>
     </StrictMode>
   )
 }

@@ -1,15 +1,17 @@
-import { ChangeEvent, useContext, useEffect, useState } from 'react'
+import { ChangeEvent, useContext, useEffect, useMemo, useState } from 'react'
 
-import { CowEventListeners, CowEvents, ToastMessageType } from '@cowprotocol/events'
-import { TradeType } from '@cowprotocol/widget-lib'
+import { useAvailableChains } from '@cowprotocol/common-hooks'
+import { CowEventListeners } from '@cowprotocol/events'
+import { CowSwapWidgetParams, TokenInfo, TradeType } from '@cowprotocol/widget-lib'
 import { CowSwapWidget } from '@cowprotocol/widget-react'
 
 import ChromeReaderModeIcon from '@mui/icons-material/ChromeReaderMode'
+import CloseIcon from '@mui/icons-material/Close'
 import CodeIcon from '@mui/icons-material/Code'
 import EditIcon from '@mui/icons-material/Edit'
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft'
 import LanguageIcon from '@mui/icons-material/Language'
-import { Radio, RadioGroup, FormControlLabel, FormControl, FormLabel } from '@mui/material'
+import { FormControl, FormControlLabel, FormLabel, IconButton, Radio, RadioGroup, Snackbar } from '@mui/material'
 import Box from '@mui/material/Box'
 import Divider from '@mui/material/Divider'
 import Drawer from '@mui/material/Drawer'
@@ -19,31 +21,37 @@ import ListItemButton from '@mui/material/ListItemButton'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
 import Typography from '@mui/material/Typography'
-import { useAccount, useNetwork } from 'wagmi'
+import { useWeb3ModalAccount, useWeb3ModalTheme } from '@web3modal/ethers5/react'
 
-import { DEFAULT_TOKEN_LISTS, TRADE_MODES } from './consts'
+import { COW_LISTENERS, DEFAULT_PARTNER_FEE_RECIPIENT, DEFAULT_TOKEN_LISTS, IS_IFRAME, TRADE_MODES } from './consts'
 import { CurrencyInputControl } from './controls/CurrencyInputControl'
 import { CurrentTradeTypeControl } from './controls/CurrentTradeTypeControl'
+import { CustomImagesControl } from './controls/CustomImagesControl'
+import { CustomSoundsControl } from './controls/CustomSoundsControl'
 import { NetworkControl, NetworkOption, NetworkOptions } from './controls/NetworkControl'
 import { PaletteControl } from './controls/PaletteControl'
 import { PartnerFeeControl } from './controls/PartnerFeeControl'
 import { ThemeControl } from './controls/ThemeControl'
-import { TokenListControl } from './controls/TokenListControl' // Adjust the import path as needed
+import { TokenListControl } from './controls/TokenListControl'
 import { TradeModesControl } from './controls/TradeModesControl'
 import { useColorPaletteManager } from './hooks/useColorPaletteManager'
 import { useEmbedDialogState } from './hooks/useEmbedDialogState'
 import { useProvider } from './hooks/useProvider'
 import { useSyncWidgetNetwork } from './hooks/useSyncWidgetNetwork'
+import { useToastsManager } from './hooks/useToastsManager'
 import { useWidgetParams } from './hooks/useWidgetParamsAndSettings'
 import { ContentStyled, DrawerStyled, WalletConnectionWrapper, WrapperStyled } from './styled'
 import { ConfiguratorState, TokenListItem } from './types'
 
 import { ColorModeContext } from '../../theme/ColorModeContext'
-import { web3Modal } from '../../wagmiConfig'
 import { connectWalletToConfiguratorGA } from '../analytics'
 import { EmbedDialog } from '../embedDialog'
 
-const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
+declare global {
+  interface Window {
+    cowSwapWidgetParams?: Partial<CowSwapWidgetParams>
+  }
+}
 
 const DEFAULT_STATE = {
   sellToken: 'USDC',
@@ -52,59 +60,20 @@ const DEFAULT_STATE = {
   buyAmount: 0,
 }
 
-const COW_LISTENERS: CowEventListeners = [
-  {
-    event: CowEvents.ON_TOAST_MESSAGE,
-    handler: (event) => {
-      // You can provide a simplistic way to handle toast messages (use the "message" to show it in your app)
-      console.info('[configurator:ON_TOAST_MESSAGE:simple] 🍞 Message:', event.message)
-    },
-  },
-
-  {
-    event: CowEvents.ON_TOAST_MESSAGE,
-    handler: (event) => {
-      // You cn implement a more complex way to handle toast messages
-      switch (event.messageType) {
-        case ToastMessageType.SWAP_ETH_FLOW_SENT_TX:
-          console.info('[configurator:ON_TOAST_MESSAGE:complex] 🍞 New eth flow order. Tx:', event.data.tx)
-          break
-        case ToastMessageType.SWAP_POSTED_API:
-          console.info('[configurator:ON_TOAST_MESSAGE:complex] 🍞 Posted order', event.data.orderUid)
-          break
-        // ... and so on
-        default:
-          console.info('[configurator:ON_TOAST_MESSAGE:complex] 🍞 Default', event.message, event.data)
-      }
-    },
-  },
-
-  {
-    event: CowEvents.ON_POSTED_ORDER,
-    handler: (event) => console.log('[configurator:ON_POSTED_ORDER] 💌 Posted order:', event.orderUid),
-  },
-
-  {
-    event: CowEvents.ON_CANCELLED_ORDER,
-    handler: (event) =>
-      console.log(`[configurator:ON_CANCELLED_ORDER] ❌ Cancelled order ${event.orderUid}. Reason: ${event.reason}`),
-  },
-
-  {
-    event: CowEvents.ON_EXECUTED_ORDER,
-    handler: (event) => console.log(`[configurator:ON_EXECUTED_ORDER] ✅ Executed order ${event.orderUid}`),
-  },
-]
-
 const UTM_PARAMS = 'utm_content=cow-widget-configurator&utm_medium=web&utm_source=widget.cow.fi'
 
 export type WidgetMode = 'dapp' | 'standalone'
 
 export function Configurator({ title }: { title: string }) {
+  const { setThemeMode } = useWeb3ModalTheme()
+  const { chainId: walletChainId, isConnected } = useWeb3ModalAccount()
+  const provider = useProvider()
+
+  const [listeners, setListeners] = useState<CowEventListeners>(COW_LISTENERS)
   const { mode } = useContext(ColorModeContext)
 
   const [widgetMode, setWidgetMode] = useState<WidgetMode>('dapp')
-  const isDappMode = widgetMode === 'dapp'
+  const standaloneMode = widgetMode === 'standalone'
 
   const selectWidgetMode = (event: ChangeEvent<HTMLInputElement>) => {
     setWidgetMode(event.target.value as WidgetMode)
@@ -131,18 +100,26 @@ export function Configurator({ title }: { title: string }) {
   const [buyToken] = buyTokenState
   const [buyTokenAmount] = buyTokenAmountState
 
-  const tokenListsState = useState<TokenListItem[]>(DEFAULT_TOKEN_LISTS)
-  const [tokenLists] = tokenListsState
+  const tokenListUrlsState = useState<TokenListItem[]>(DEFAULT_TOKEN_LISTS)
+  const customTokensState = useState<TokenInfo[]>([])
+  const [tokenListUrls] = tokenListUrlsState
+  const [customTokens] = customTokensState
 
   const partnerFeeBpsState = useState<number>(0)
-  const partnerFeeRecipientState = useState<string>(ZERO_ADDRESS)
   const [partnerFeeBps] = partnerFeeBpsState
-  const [partnerFeeRecipient] = partnerFeeRecipientState
+
+  const customImagesState = useState<CowSwapWidgetParams['images']>({})
+  const customSoundsState = useState<CowSwapWidgetParams['sounds']>({})
+  const [customImages] = customImagesState
+  const [customSounds] = customSoundsState
 
   const paletteManager = useColorPaletteManager(mode)
   const { colorPalette, defaultPalette } = paletteManager
 
   const { dialogOpen, handleDialogClose, handleDialogOpen } = useEmbedDialogState()
+
+  const { closeToast, toasts, selectDisableToastMessages, disableToastMessages } = useToastsManager(setListeners)
+  const firstToast = toasts?.[0]
 
   const LINKS = [
     { icon: <CodeIcon />, label: 'View embed code', onClick: () => handleDialogOpen() },
@@ -154,19 +131,10 @@ export function Configurator({ title }: { title: string }) {
     },
   ]
 
-  const { isDisconnected, isConnected } = useAccount()
-  const network = useNetwork()
-
-  const walletChainId = network.chain?.id
-
-  useSyncWidgetNetwork(chainId, setNetworkControlState)
-
-  const provider = useProvider()
-
   // Don't change chainId in the widget URL if the user is connected to a wallet
   // Because useSyncWidgetNetwork() will send a request to change the network
   const state: ConfiguratorState = {
-    chainId: isDisconnected || !walletChainId ? chainId : walletChainId,
+    chainId: IS_IFRAME ? undefined : !isConnected || !walletChainId ? chainId : walletChainId,
     theme: mode,
     currentTradeType,
     enabledTradeTypes,
@@ -174,18 +142,30 @@ export function Configurator({ title }: { title: string }) {
     sellTokenAmount,
     buyToken,
     buyTokenAmount,
-    tokenLists,
+    tokenListUrls,
     customColors: colorPalette,
     defaultColors: defaultPalette,
     partnerFeeBps,
-    partnerFeeRecipient,
+    partnerFeeRecipient: DEFAULT_PARTNER_FEE_RECIPIENT,
+    standaloneMode,
+    disableToastMessages,
   }
 
-  const params = useWidgetParams(state, isDappMode)
+  const computedParams = useWidgetParams(state)
+  const params = useMemo(
+    () => ({
+      ...computedParams,
+      images: customImages,
+      sounds: customSounds,
+      customTokens,
+      ...window.cowSwapWidgetParams,
+    }),
+    [computedParams, customImages, customSounds, customTokens]
+  )
 
   useEffect(() => {
-    web3Modal.setThemeMode(mode)
-  }, [mode])
+    setThemeMode(mode)
+  }, [setThemeMode, mode])
 
   // Fire an event to GA when user connect a wallet
   useEffect(() => {
@@ -193,6 +173,10 @@ export function Configurator({ title }: { title: string }) {
       connectWalletToConfiguratorGA()
     }
   }, [isConnected])
+
+  useSyncWidgetNetwork(chainId, setNetworkControlState, standaloneMode)
+
+  const availableChains = useAvailableChains()
 
   return (
     <Box sx={WrapperStyled}>
@@ -216,18 +200,24 @@ export function Configurator({ title }: { title: string }) {
           {title}
         </Typography>
 
-        <FormControl component="fieldset">
-          <FormLabel component="legend">Select Mode:</FormLabel>
-          <RadioGroup row aria-label="mode" name="mode" value={widgetMode} onChange={selectWidgetMode}>
-            <FormControlLabel value="dapp" control={<Radio />} label="Dapp mode" />
-            <FormControlLabel value="standalone" control={<Radio />} label="Standalone mode" />
-          </RadioGroup>
-        </FormControl>
-        {isDappMode && (
-          <div style={WalletConnectionWrapper}>
-            <w3m-button />
-          </div>
+        {!IS_IFRAME && (
+          <>
+            <FormControl component="fieldset">
+              <FormLabel component="legend">Select Mode:</FormLabel>
+              <RadioGroup row aria-label="mode" name="mode" value={widgetMode} onChange={selectWidgetMode}>
+                <FormControlLabel value="dapp" control={<Radio />} label="Dapp mode" />
+                <FormControlLabel value="standalone" control={<Radio />} label="Standalone mode" />
+              </RadioGroup>
+            </FormControl>
+            {!standaloneMode && (
+              <div style={WalletConnectionWrapper}>
+                <w3m-button />
+              </div>
+            )}
+          </>
         )}
+
+        <Divider variant="middle">General</Divider>
 
         <ThemeControl />
 
@@ -237,11 +227,15 @@ export function Configurator({ title }: { title: string }) {
 
         <CurrentTradeTypeControl state={tradeTypeState} />
 
-        <NetworkControl state={networkControlState} />
+        {!IS_IFRAME && (
+          <NetworkControl
+            state={networkControlState}
+            standaloneMode={standaloneMode}
+            availableChains={availableChains}
+          />
+        )}
 
-        <TokenListControl tokenListsState={tokenListsState} />
-
-        <Divider variant="middle">Token selection</Divider>
+        <Divider variant="middle">Tokens</Divider>
 
         <CurrencyInputControl
           label="Sell token"
@@ -251,9 +245,32 @@ export function Configurator({ title }: { title: string }) {
 
         <CurrencyInputControl label="Buy token" tokenIdState={buyTokenState} tokenAmountState={buyTokenAmountState} />
 
+        <TokenListControl tokenListUrlsState={tokenListUrlsState} customTokensState={customTokensState} />
+
         <Divider variant="middle">Integrations</Divider>
 
-        <PartnerFeeControl feeBpsState={partnerFeeBpsState} recipientState={partnerFeeRecipientState} />
+        <PartnerFeeControl feeBpsState={partnerFeeBpsState} />
+
+        <Divider variant="middle">Customization</Divider>
+
+        <CustomImagesControl state={customImagesState} />
+
+        <CustomSoundsControl state={customSoundsState} />
+
+        <Divider variant="middle">Other settings</Divider>
+        <FormControl component="fieldset">
+          <FormLabel component="legend">Toast notifications:</FormLabel>
+          <RadioGroup
+            row
+            aria-label="mode"
+            name="mode"
+            value={disableToastMessages}
+            onChange={selectDisableToastMessages}
+          >
+            <FormControlLabel value="false" control={<Radio />} label="Self-contain in Widget" />
+            <FormControlLabel value="true" control={<Radio />} label="Dapp mode" />
+          </RadioGroup>
+        </FormControl>
 
         {isDrawerOpen && (
           <Fab
@@ -289,7 +306,7 @@ export function Configurator({ title }: { title: string }) {
         </List>
       </Drawer>
 
-      <Box sx={ContentStyled}>
+      <Box sx={{ ...ContentStyled, pl: isDrawerOpen ? '290px' : 0 }}>
         {params && (
           <>
             <EmbedDialog
@@ -298,8 +315,11 @@ export function Configurator({ title }: { title: string }) {
               open={dialogOpen}
               handleClose={handleDialogClose}
             />
-            <br />
-            <CowSwapWidget params={params} provider={isDappMode ? provider : undefined} listeners={COW_LISTENERS} />
+            <CowSwapWidget
+              params={params}
+              provider={!IS_IFRAME && !standaloneMode ? provider : undefined}
+              listeners={listeners}
+            />
           </>
         )}
       </Box>
@@ -314,6 +334,17 @@ export function Configurator({ title }: { title: string }) {
         <CodeIcon sx={{ mr: 1 }} />
         View Embed Code
       </Fab>
+      <Snackbar
+        open={!!firstToast}
+        autoHideDuration={6_000}
+        onClose={closeToast}
+        message={firstToast}
+        action={
+          <IconButton size="small" aria-label="close" color="inherit" onClick={closeToast}>
+            <CloseIcon fontSize="small" />
+          </IconButton>
+        }
+      />
     </Box>
   )
 }

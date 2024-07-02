@@ -1,23 +1,21 @@
 import { getMulticallContract } from '@cowprotocol/multicall'
+import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { BigNumber } from '@ethersproject/bignumber'
-import { useWeb3React } from '@web3-react/core'
 
 import ms from 'ms.macro'
 import useSWR, { SWRResponse } from 'swr'
 
 const SWR_CONFIG = { refreshInterval: ms`11s` }
 
-export function useNativeTokenBalance(account: string | undefined): SWRResponse<BigNumber | undefined> {
-  const { provider } = useWeb3React()
+export function useNativeTokenBalance(account: string | undefined): SWRResponse<BigNumber> {
+  const provider = useWalletProvider()
 
   return useSWR(
-    ['useNativeTokenBalance', account, provider],
-    async () => {
-      if (!provider || !account) return undefined
+    account && provider ? ['useNativeTokenBalance', account, provider] : null,
+    async ([, _account, _provider]) => {
+      const contract = getMulticallContract(_provider)
 
-      const contract = getMulticallContract(provider)
-
-      return contract.callStatic.getEthBalance(account)
+      return contract.callStatic.getEthBalance(_account)
     },
     SWR_CONFIG
   )

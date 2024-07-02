@@ -1,13 +1,11 @@
 import React from 'react'
 
+import { OrderDetails } from '../../../components/orders/OrderDetails'
 import { useOrderAndErc20s } from '../../../hooks/useOperatorOrder'
 import { useOrderTrades } from '../../../hooks/useOperatorTrades'
 import { useSanitizeOrderIdAndUpdateUrl } from '../../../hooks/useSanitizeOrderIdAndUpdateUrl'
-
-import { ORDER_QUERY_INTERVAL } from '../../const'
-
-import { OrderDetails } from '../../../components/orders/OrderDetails'
 import { RedirectToNetwork, useNetworkId } from '../../../state/network'
+import { ORDER_QUERY_INTERVAL } from '../../const'
 
 export const OrderWidget: React.FC = () => {
   const networkId = useNetworkId()

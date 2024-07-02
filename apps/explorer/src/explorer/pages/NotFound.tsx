@@ -1,10 +1,11 @@
 import React from 'react'
-import styled from 'styled-components'
+
+import { getNetworkFromId } from '@gnosis.pm/dex-js'
 import { Helmet } from 'react-helmet'
+import styled from 'styled-components/macro'
 
 import { ContentCard as Content, StyledLink, Title, Wrapper as WrapperTemplate } from './styled'
 
-import { getNetworkFromId } from '@gnosis.pm/dex-js'
 import { useNetworkId } from '../../state/network'
 import { media } from '../../theme/styles/media'
 import { APP_TITLE } from '../const'

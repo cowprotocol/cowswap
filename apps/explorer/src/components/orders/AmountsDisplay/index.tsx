@@ -1,21 +1,21 @@
 import React from 'react'
-import BigNumber from 'bignumber.js'
-import { formatSmartMaxPrecision, isNativeToken } from 'utils'
+
+import { isSellOrder } from '@cowprotocol/common-utils'
 
 import { TokenErc20 } from '@gnosis.pm/dex-js'
+import BigNumber from 'bignumber.js'
+import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
+import { TokenDisplay } from 'components/common/TokenDisplay'
+import { useNetworkId } from 'state/network'
+import { Network } from 'types'
+import { formatSmartMaxPrecision, isNativeToken } from 'utils'
+
 
 import { Order } from 'api/operator'
 
-import { Network } from 'types'
-
-import { useNetworkId } from 'state/network'
-
-import { TokenDisplay } from 'components/common/TokenDisplay'
-
-import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 
 import { RowContents, RowTitle, Wrapper } from './styled'
-import { isSellOrder } from '@cowprotocol/common-utils'
+
 
 type RowProps = {
   title: string
