@@ -66,12 +66,13 @@ interface PageProps {
   siteConfigData: typeof CONFIG
 }
 
-export default function Page({}: PageProps) {
+export default function Page() {
   return (
     <Layout
       bgColor={Color.neutral90}
       metaTitle="CoW Protocol - Do what you want, build what you want"
       metaDescription="CoW Protocol has the largest solver competition and the most advanced developer framework - so you can build any DEX-related action you can imagine"
+      ogImage={CONFIG.ogImageCOWPROTOCOL}
     >
       <PageWrapper>
         <HeroContainer variant="secondary">
@@ -406,7 +407,7 @@ export default function Page({}: PageProps) {
             <TopicList columns={3}>
               {TOP_LOGOS.map((logo, index) => (
                 <TopicCard
-                  key={index}
+                  key={logo.url}
                   contentAlign={'center'}
                   bgColor={Color.neutral100}
                   padding={'42px'}
@@ -428,7 +429,7 @@ export default function Page({}: PageProps) {
               ))}
 
               {CASE_STUDIES.map((study, index) => (
-                <TopicCard key={index} bgColor={Color.neutral100} padding={'52px'} gap={16} asProp="div">
+                <TopicCard key={study.link} bgColor={Color.neutral100} padding={'52px'} gap={16} asProp="div">
                   <TopicImage iconColor="#8702AA" bgColor="transparent" height={96} width={'auto'}>
                     <SVG src={study.logo} />
                   </TopicImage>
@@ -455,7 +456,7 @@ export default function Page({}: PageProps) {
             <TopicList columns={4} columnsTablet={2}>
               {ALL_LOGOS.map((logo, index) => (
                 <TopicCard
-                  key={index}
+                  key={logo.url}
                   contentAlign={'center'}
                   bgColor={Color.neutral100}
                   padding={'42px'}

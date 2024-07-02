@@ -28,6 +28,9 @@ const Wrapper = styled.div`
   }
 `
 
+const metaTitleWithShortDescription = `${CONFIG.title} - ${CONFIG.descriptionShort}`
+const metaTitleWithDescription = `${CONFIG.title} - ${CONFIG.description}`
+
 interface LayoutProps {
   children: React.ReactNode
   bgColor?: string
@@ -37,7 +40,14 @@ interface LayoutProps {
   host?: string
 }
 
-export default function Layout({ children, bgColor, metaTitle, metaDescription, ogImage, host }: LayoutProps) {
+export default function Layout({
+  children,
+  bgColor,
+  metaTitle,
+  metaDescription,
+  ogImage,
+  host,
+}: Readonly<LayoutProps>) {
   const GlobalStyles = GlobalCoWDAOStyles(CoWDAOFonts)
 
   const LocalStyles = createGlobalStyle(
@@ -48,26 +58,22 @@ export default function Layout({ children, bgColor, metaTitle, metaDescription, 
     `
   )
 
-  const finalHost = host || getURL('')
+  const finalHost = host ?? getURL('')
 
   return (
     <>
       <Head>
-        <title key="title">{`${metaTitle || `${CONFIG.title} - ${CONFIG.descriptionShort}`}`}</title>
-        <meta key="ogTitle" property="og:title" content={metaTitle || `${CONFIG.title} - ${CONFIG.descriptionShort}`} />
+        <title key="title">{`${metaTitle ?? metaTitleWithDescription}`}</title>
+        <meta key="ogTitle" property="og:title" content={metaTitle ?? metaTitleWithDescription} />
 
-        <meta key="description" name="description" content={metaDescription || CONFIG.description} />
-        <meta key="ogDescription" property="og:description" content={metaDescription || CONFIG.description} />
+        <meta key="description" name="description" content={metaDescription ?? CONFIG.description} />
+        <meta key="ogDescription" property="og:description" content={metaDescription ?? CONFIG.description} />
 
-        <meta
-          key="twitterTitle"
-          name="twitter:title"
-          content={`${metaTitle || `${CONFIG.title} - ${CONFIG.description}`}`}
-        />
-        <meta key="twitterDescription" name="twitter:description" content={metaDescription || CONFIG.description} />
+        <meta key="twitterTitle" name="twitter:title" content={`${metaTitle ?? metaTitleWithShortDescription}`} />
+        <meta key="twitterDescription" name="twitter:description" content={metaDescription ?? CONFIG.description} />
 
-        <meta key="ogImage" property="og:image" content={ogImage || CONFIG.ogImage} />
-        <meta key="twitterImage" name="twitter:image" content={ogImage || CONFIG.ogImage} />
+        <meta key="ogImage" property="og:image" content={ogImage ?? CONFIG.ogImage} />
+        <meta key="twitterImage" name="twitter:image" content={ogImage ?? CONFIG.ogImage} />
       </Head>
       <GlobalStyles />
       <LocalStyles />
