@@ -15,7 +15,7 @@ type TruncatedProps = {
 }
 
 export function TruncatedText(props: TruncatedProps) {
-  const { text, className, width = '10ch' } = props
+  const { text, className, width = '12ch' } = props
 
   return (
     <Wrapper className={className} width={width}>

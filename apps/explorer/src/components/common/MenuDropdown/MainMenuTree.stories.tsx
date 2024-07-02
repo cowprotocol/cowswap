@@ -7,13 +7,13 @@ import IMAGE_DISCORD from 'assets/img/discord.svg'
 import IMAGE_DOC from 'assets/img/doc.svg'
 import IMAGE_ANALYTICS from 'assets/img/pie.svg'
 import { MenuTree, MenuTreeProps } from 'components/common/MenuDropdown/MenuTree'
-import { useMediaBreakpoint } from 'hooks/useMediaBreakPoint'
 import { GlobalStyles, ThemeToggler, Router } from 'storybook/decorators'
+import { useMediaQuery } from '@cowprotocol/common-hooks'
+import { Media } from '@cowprotocol/ui'
 
 import { MenuItemKind, MenuTreeItem } from './types'
 
 import { DOCS_LINK, DISCORD_LINK, PROTOCOL_LINK, DUNE_DASHBOARD_LINK, Routes } from '../../../explorer/const'
-
 
 export default {
   title: 'Common/Menu',
@@ -88,7 +88,7 @@ const useMobileMenuOpen = (): {
 
 const Template: Story<MenuTreeProps> = (args) => {
   const context = useMobileMenuOpen()
-  const isMobile = useMediaBreakpoint(['xs', 'sm'])
+  const isMobile = useMediaQuery(Media.upToSmall(false))
 
   return (
     <MenuTree

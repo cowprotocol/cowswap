@@ -2,13 +2,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { ArrowIconCSS } from 'components/icons/cssIcons'
 import { NavLink } from 'react-router-dom'
 import styled from 'styled-components/macro'
-import { media } from 'theme/styles/media'
+import { Media } from '@cowprotocol/ui'
 
 export const SelectorContainer = styled.div`
   display: flex;
   align-items: center;
   cursor: pointer;
-  ${media.xSmallDown} {
+  ${Media.upToExtraSmall()} {
     padding-right: 2rem;
   }
 

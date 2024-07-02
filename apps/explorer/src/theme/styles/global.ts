@@ -1,22 +1,12 @@
 import variables from 'components/layout/GenericLayout/variablesCss'
 import { createGlobalStyle, css } from 'styled-components/macro'
 
-import { web3ModalOverride } from './overrides'
-
 // TODO: remove for constants from colour palette later
 
 const selection = css`
-  /* CSS for selecting text */
   *::selection {
-    background-color: var(--color-gradient-2); /* WebKit/Blink Browsers */
+    background-color: var(--color-gradient-2);
   }
-  *::-moz-selection {
-    background-color: var(--color-gradient-2); /* Gecko Browsers */
-  }
-  *::-webkit-selection {
-    background-color: var(--color-gradient-2); /* Chrome Browsers */
-  }
-  /* End CSS for selecting text */
 `
 
 export const StaticGlobalStyle = createGlobalStyle`
@@ -61,9 +51,6 @@ export const StaticGlobalStyle = createGlobalStyle`
   h2 {
     font-size: 1.6rem;
   }
-
-  /* Overrides CSS - see overrides.ts file */
-  ${web3ModalOverride}
 `
 
 export const ThemedGlobalStyle = createGlobalStyle`
@@ -87,7 +74,6 @@ export const ThemedGlobalStyle = createGlobalStyle`
     /* StyleLint fights you for the sans-serif as it requires a fallback and can't detect it from the theme prop */
     font-family: ${({ theme }): string => theme.fontDefault}, sans-serif;
     font-feature-settings: 'ss01' on, 'ss02' on;
-    font-display: fallback;
 
     @supports (font-variation-settings: normal) {
       font-family: ${({ theme }): string => theme.fontVariable}, sans-serif;

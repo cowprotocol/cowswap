@@ -13,13 +13,13 @@ import { Notification } from 'components/Notification'
 import { DetailsTable } from 'components/orders/DetailsTable'
 import RedirectToSearch from 'components/RedirectToSearch'
 import ExplorerTabs from 'explorer/components/common/ExplorerTabs/ExplorerTabs'
-import TablePagination, { PaginationWrapper } from 'explorer/components/common/TablePagination'
+import TablePagination from 'explorer/components/common/TablePagination'
 import { useTable } from 'explorer/components/TokensTableWidget/useTable'
 import { TAB_QUERY_PARAM_KEY } from 'explorer/const'
 import { useQuery, useUpdateQueryString } from 'hooks/useQuery'
 import { useNetworkId } from 'state/network'
 import styled from 'styled-components/macro'
-import { media } from 'theme/styles/media'
+
 import { Errors } from 'types'
 import { formatPercentage } from 'utils'
 
@@ -27,7 +27,8 @@ import { Order, Trade } from 'api/operator'
 
 import { FillsTableContext } from './context/FillsTableContext'
 import { FillsTableWithData } from './FillsTableWithData'
-
+import { FlexContainerVar } from '../../../explorer/pages/styled'
+import { Media } from '@cowprotocol/ui'
 
 const TitleUid = styled(RowWithCopyButton)`
   color: ${({ theme }): string => theme.grey};
@@ -45,12 +46,8 @@ const WrapperExtraComponents = styled.div`
   height: 100%;
   gap: 1rem;
 
-  ${media.mobile} {
-    ${PaginationWrapper} {
-      display: none;
-    }
-
-    justify-content: center;
+  ${Media.upToSmall()} {
+    width: 100%;
   }
 `
 
@@ -222,10 +219,11 @@ export const OrderDetails: React.FC<Props> = (props) => {
 
   return (
     <>
-      <h1>
-        {order && 'Order details'}
+      <FlexContainerVar>
+        <h1>{order && 'Order details'}</h1>{' '}
         {order && <TitleUid textToCopy={order.uid} contentsToDisplay={<TruncatedText text={order.uid} />} />}
-      </h1>
+      </FlexContainerVar>
+
       <ConnectionStatus />
       {Object.keys(errors).map((key) => (
         <Notification key={key} type={errors[key].type} message={errors[key].message} />

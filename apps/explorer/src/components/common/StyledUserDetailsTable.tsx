@@ -1,5 +1,6 @@
 import { SimpleTable, Props as SimpleTableProps } from 'components/common/SimpleTable'
 import styled from 'styled-components/macro'
+import { ScrollBarStyle } from '../../explorer/styled'
 
 export interface Props {
   showBorderTable?: boolean
@@ -11,6 +12,8 @@ const StyledUserDetailsTable = styled(SimpleTable)<StyledUserDetailsTableProps>`
   border: ${({ theme, showBorderTable }): string => (showBorderTable ? `0.1rem solid ${theme.borderPrimary}` : 'none')};
   border-radius: 0.4rem;
   margin-top: 0;
+  width: 100%;
+  max-width: 100%;
 
   tr td {
     &:not(:first-of-type) {
@@ -58,7 +61,7 @@ const StyledUserDetailsTable = styled(SimpleTable)<StyledUserDetailsTableProps>`
   }
 
   .span-copybtn-wrap {
-    display: block;
+    display: flex;
   }
 
   span.wrap-datedisplay > span:last-of-type {

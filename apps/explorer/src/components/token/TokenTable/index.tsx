@@ -9,7 +9,7 @@ import { Token } from 'hooks/useGetTokens'
 import { createChart, IChartApi } from 'lightweight-charts'
 import { useNetworkId } from 'state/network'
 import styled, { DefaultTheme, useTheme } from 'styled-components/macro'
-import { media } from 'theme/styles/media'
+import { Media } from '@cowprotocol/ui'
 
 import ShimmerBar from '../../../explorer/components/common/ShimmerBar'
 import { TextWithTooltip } from '../../../explorer/components/common/TextWithTooltip'
@@ -31,7 +31,8 @@ const Wrapper = styled(StyledUserDetailsTable)`
       min-height: 7.4rem;
       &.header-row {
         display: none;
-        ${media.mobile} {
+
+        ${Media.upToSmall()} {
           display: flex;
           background: transparent;
           border: none;
@@ -39,9 +40,11 @@ const Wrapper = styled(StyledUserDetailsTable)`
           margin: 0;
           box-shadow: none;
           min-height: 2rem;
+
           td {
             padding: 0;
             margin: 0;
+
             .mobile-header {
               margin: 0;
             }
@@ -82,7 +85,7 @@ const Wrapper = styled(StyledUserDetailsTable)`
       }
     }
   }
-  ${media.mobile} {
+  ${Media.upToSmall()} {
     > thead > tr {
       display: none;
 
@@ -133,17 +136,21 @@ const Wrapper = styled(StyledUserDetailsTable)`
         justify-content: space-between;
       }
     }
+
     .header-value {
       flex-wrap: wrap;
       text-align: end;
     }
+
     .span-copybtn-wrap {
       display: flex;
       flex-wrap: nowrap;
+
       span {
         display: flex;
         align-items: center;
       }
+
       .copy-text {
         display: none;
       }
@@ -152,21 +159,11 @@ const Wrapper = styled(StyledUserDetailsTable)`
   overflow: auto;
 `
 
-const HeaderTitle = styled.span`
-  display: none;
-  ${media.mobile} {
-    font-weight: 600;
-    align-items: center;
-    display: flex;
-    margin-right: 3rem;
-    svg {
-      margin-left: 5px;
-    }
-  }
-`
+const HeaderTitle = styled.span``
 
 const TokenWrapper = styled.div`
   display: flex;
+
   a {
     max-width: 10rem;
   }
@@ -184,7 +181,7 @@ const TokenWrapper = styled.div`
     height: 2.5rem;
   }
 
-  ${media.mobile} {
+  ${Media.upToSmall()} {
     a {
       max-width: none;
     }
@@ -193,7 +190,7 @@ const TokenWrapper = styled.div`
 
 const HeaderValue = styled.span<{ captionColor?: 'green' | 'red1' | 'grey' }>`
   color: ${({ theme, captionColor }): string => (captionColor ? theme[captionColor] : theme.textPrimary1)};
-  ${media.mobile} {
+  ${Media.upToSmall()} {
     flex-wrap: wrap;
     text-align: end;
   }
@@ -204,7 +201,7 @@ const TooltipWrapper = styled.div`
 `
 const ChartWrapper = styled.div`
   position: relative;
-  ${media.mobile} {
+  ${Media.upToSmall()} {
     table > tr > td:first-child {
       display: none;
     }

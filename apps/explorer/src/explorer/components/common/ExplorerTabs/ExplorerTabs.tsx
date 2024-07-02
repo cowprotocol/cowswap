@@ -1,7 +1,8 @@
 import React from 'react'
 
 import styled from 'styled-components/macro'
-import { DARK_COLOURS, media } from 'theme'
+import { DARK_COLOURS } from 'theme'
+import { Media } from '@cowprotocol/ui'
 
 import Tabs, {
   getTabTheme,
@@ -9,6 +10,7 @@ import Tabs, {
   IndicatorTabSize,
   TabList,
 } from '../../../../components/common/Tabs/Tabs'
+import { ScrollBarStyle } from '../../../styled'
 
 const StyledTabs = styled.div`
   display: flex;
@@ -16,7 +18,6 @@ const StyledTabs = styled.div`
   padding: 0;
   border: ${({ theme }): string => `1px solid ${theme.borderPrimary}`};
   border-radius: 4px;
-  min-height: 33rem;
 
   ${TabList} {
     justify-content: flex-start;
@@ -26,11 +27,15 @@ const StyledTabs = styled.div`
 
   ${TabList} > button {
     flex: 0 0 auto;
-    min-width: 96px;
-    padding: 12px 0.8rem;
+    min-width: 12rem;
+    padding: 1rem;
     line-height: 2;
     height: auto;
     font-family: var(--font-default);
+
+    ${Media.upToSmall()} {
+      flex: 1 1 auto;
+    }
   }
 
   > div > div:last-of-type {
@@ -39,13 +44,25 @@ const StyledTabs = styled.div`
   }
 
   .tab-content {
-    padding: 20px 16px;
+    padding: 0;
+    overflow-x: auto;
+    white-space: nowrap;
+    ${ScrollBarStyle}
   }
 
   .tab-extra-content {
-    width: 100%;
+    margin: 0 0 0 auto;
+    display: flex;
+    justify-content: flex-end;
+
+    ${Media.upToSmall()} {
+      order: -1;
+      width: 100%;
+      justify-content: space-between;
+    }
   }
-  ${media.mediumDown} {
+
+  ${Media.upToMedium()} {
     border: none;
   }
 `

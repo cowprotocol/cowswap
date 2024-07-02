@@ -1,8 +1,7 @@
 import * as CSS from 'csstype'
 import SVG from 'react-inlinesvg'
 import styled, { css, FlattenSimpleInterpolation } from 'styled-components/macro'
-
-import { media } from '../../../../theme/styles/media'
+import { Media } from '@cowprotocol/ui'
 
 export const Wrapper = styled.form`
   display: flex;
@@ -45,7 +44,7 @@ export const Input = styled.input`
   &::placeholder {
     color: inherit;
     transition: color 0.2s ease-in-out;
-    ${media.mobile} {
+    ${Media.upToSmall()} {
       color: transparent;
     }
   }
@@ -93,7 +92,7 @@ export const SearchIcon = styled(SVG)`
 `
 
 export const Placeholder = styled.span<Partial<CSS.Properties & { isActive: boolean }>>`
-  ${media.mobile} {
+  ${Media.upToSmall()} {
     display: flex;
     font-size: 1.4rem;
   }
