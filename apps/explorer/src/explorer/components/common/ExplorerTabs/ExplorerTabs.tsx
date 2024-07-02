@@ -10,6 +10,7 @@ import Tabs, {
   IndicatorTabSize,
   TabList,
 } from '../../../../components/common/Tabs/Tabs'
+import { ScrollBarStyle } from '../../../styled'
 
 const StyledTabs = styled.div`
   display: flex;
@@ -17,7 +18,6 @@ const StyledTabs = styled.div`
   padding: 0;
   border: ${({ theme }): string => `1px solid ${theme.borderPrimary}`};
   border-radius: 4px;
-  min-height: 33rem;
 
   ${TabList} {
     justify-content: flex-start;
@@ -32,6 +32,10 @@ const StyledTabs = styled.div`
     line-height: 2;
     height: auto;
     font-family: var(--font-default);
+
+    ${Media.upToSmall()} {
+      flex: 1 1 auto;
+    }
   }
 
   > div > div:last-of-type {
@@ -41,10 +45,21 @@ const StyledTabs = styled.div`
 
   .tab-content {
     padding: 0;
+    overflow-x: auto;
+    white-space: nowrap;
+    ${ScrollBarStyle}
   }
 
   .tab-extra-content {
-    width: 100%;
+    margin: 0 0 0 auto;
+    display: flex;
+    justify-content: flex-end;
+
+    ${Media.upToSmall()} {
+      order: -1;
+      width: 100%;
+      justify-content: space-between;
+    }
   }
 
   ${Media.upToMedium()} {

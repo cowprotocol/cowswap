@@ -26,21 +26,21 @@ const WrapperExtraComponents = styled.div`
   display: flex;
   justify-content: flex-end;
   height: 100%;
+
   ${Media.upToSmall()} {
-    justify-content: center;
+    width: 100%;
   }
 `
 
 const TableWrapper = styled(CardRow)`
   width: 100%;
+
   ${Media.upToSmall()} {
     width: 100%;
   }
+
   div.tab-content {
     padding: 0 !important;
-    table {
-      ${ScrollBarStyle}
-    }
   }
 `
 

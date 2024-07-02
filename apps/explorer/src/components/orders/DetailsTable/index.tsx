@@ -36,6 +36,10 @@ const Table = styled(SimpleTable)`
     grid-template-rows: max-content;
     padding: 1.4rem 0 1.4rem 1.1rem;
 
+    ${Media.upToSmall()} {
+      grid-template-columns: 11rem auto;
+    }
+
     > td {
       justify-content: flex-start;
 
@@ -44,6 +48,10 @@ const Table = styled(SimpleTable)`
 
         ${Media.MediumAndUp()} {
           font-weight: ${({ theme }): string => theme.fontLighter};
+        }
+
+        ${Media.upToSmall()} {
+          padding: 0.5rem 0;
         }
 
         /* Question mark */
@@ -56,6 +64,7 @@ const Table = styled(SimpleTable)`
 
         ::after {
           content: ':';
+          display: contents;
         }
       }
 

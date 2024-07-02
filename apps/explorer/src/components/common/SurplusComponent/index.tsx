@@ -60,7 +60,7 @@ export const SurplusComponent: React.FC<SurplusComponentProps> = (props) => {
   return (
     <Wrapper className={className}>
       {icon && <IconWrapper icon={icon} color={iconColor} />}
-      <Percentage>{showPercentage ? formatPercentage(percentage) : amountDisplay}</Percentage> &nbsp;
+      <Percentage>{showPercentage ? formatPercentage(percentage) : amountDisplay}</Percentage>
       {showPercentage && amountDisplay}
     </Wrapper>
   )

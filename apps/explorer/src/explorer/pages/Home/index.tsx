@@ -16,11 +16,16 @@ import { Wrapper as WrapperMod } from '../styled'
 import { Media } from '@cowprotocol/ui'
 
 const Wrapper = styled(WrapperMod)`
-  max-width: 140rem;
+  max-width: 100%;
+  height: 100%;
   flex-flow: column wrap;
   justify-content: center;
   display: flex;
-  padding-top: 10rem;
+  padding: 0;
+
+  ${Media.upToSmall()} {
+    padding: 0 1.6rem;
+  }
 
   > h1 {
     justify-content: center;

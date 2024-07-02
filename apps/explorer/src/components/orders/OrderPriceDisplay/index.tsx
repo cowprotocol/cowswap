@@ -18,6 +18,7 @@ const Wrapper = styled.span`
   display: flex;
   align-items: center;
   justify-content: flex-start;
+  gap: 0.5rem;
 
   > span {
     display: flex;
@@ -35,7 +36,9 @@ const Wrapper = styled.span`
   }
 
   > span:last-child {
+    gap: 0.5rem;
     white-space: nowrap;
+    width: 100%;
   }
 `
 

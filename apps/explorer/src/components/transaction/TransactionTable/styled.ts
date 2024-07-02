@@ -5,11 +5,6 @@ import StyledUserDetailsTable from '../../common/StyledUserDetailsTable'
 import { ScrollBarStyle } from '../../../explorer/styled'
 
 export const WrapperUserDetailsTable = styled(StyledUserDetailsTable)`
-  overflow-x: auto;
-  white-space: nowrap;
-
-  ${ScrollBarStyle}
-
   > thead > tr,
   > tbody > tr {
     display: grid;

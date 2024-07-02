@@ -17,7 +17,6 @@ import { TEN_BIG_NUMBER } from 'const'
 import { useMultipleErc20 } from 'hooks/useErc20'
 import { useNetworkId } from 'state/network'
 import styled, { useTheme } from 'styled-components/macro'
-import { Media } from '@cowprotocol/ui'
 import { abbreviateString } from 'utils'
 
 import { Order, Trade } from 'api/operator'
@@ -31,174 +30,18 @@ import StyledUserDetailsTable, {
 import { FilledProgress } from '../FilledProgress'
 
 const Wrapper = styled(StyledUserDetailsTable)`
-  > thead {
-    > tr > th:first-child {
-      padding: 0 2rem;
-    }
-  }
-
-  > tbody {
-    > tr {
-      min-height: 7.4rem;
-
-      &.header-row {
-        display: none;
-
-        ${Media.upToSmall()} {
-          display: flex;
-          background: transparent;
-          border: none;
-          padding: 0;
-          margin: 0;
-          box-shadow: none;
-          min-height: 2rem;
-
-          td {
-            padding: 0;
-            margin: 0;
-            margin-top: 1rem;
-
-            .mobile-header {
-              margin: 0;
-            }
-          }
-        }
-      }
-    }
-
-    > tr > td:first-child {
-      padding: 0 2rem;
-    }
-  }
-
   > thead > tr,
   > tbody > tr {
-    grid-template-columns: 3fr 3fr 3fr 3fr 3.5fr 3fr;
-    grid-template-rows: max-content;
-  }
-
-  > tbody > tr > td:nth-child(8),
-  > thead > tr > th:nth-child(8) {
-    justify-content: center;
-  }
-
-  tr > td {
-    span.span-inside-tooltip {
-      display: flex;
-      flex-direction: row;
-      flex-wrap: wrap;
-
-      img {
-        padding: 0;
-      }
-    }
-  }
-
-  ${Media.upToSmall()} {
-    > thead > tr {
-      display: none;
-
-      > th:first-child {
-        padding: 0 1rem;
-      }
-    }
-
-    > tbody > tr {
-      grid-template-columns: none;
-      grid-template-rows: max-content;
-      border: 0.1rem solid ${({ theme }): string => theme.tableRowBorder};
-      box-shadow: 0px 4px 12px ${({ theme }): string => theme.boxShadow};
-      border-radius: 6px;
-      margin-top: 10px;
-      padding: 12px;
-
-      &:hover {
-        background: none;
-        backdrop-filter: none;
-      }
-
-      td:first-child {
-        padding: 0 1rem;
-      }
-    }
-
-    tr > td {
-      display: flex;
-      flex: 1;
-      width: 100%;
-      justify-content: space-between;
-      margin: 0;
-      margin-bottom: 18px;
-      min-height: 32px;
-
-      span.span-inside-tooltip {
-        align-items: flex-end;
-        flex-direction: column;
-
-        img {
-          margin-left: 0;
-        }
-      }
-    }
-
-    > tbody > tr > td,
-    > thead > tr > th {
-      :nth-child(4),
-      :nth-child(5),
-      :nth-child(6),
-      :nth-child(7),
-      :nth-child(8) {
-        justify-content: space-between;
-      }
-    }
-
-    .header-value {
-      flex-wrap: wrap;
-      text-align: end;
-    }
-
-    .span-copybtn-wrap {
-      display: flex;
-      flex-wrap: nowrap;
-
-      span {
-        display: flex;
-        align-items: center;
-      }
-
-      .copy-text {
-        display: none;
-      }
-    }
-  }
-
-  overflow: auto;
-`
-
-const HeaderTitle = styled.span`
-  display: none;
-
-  ${Media.upToSmall()} {
-    font-weight: 600;
-    align-items: center;
-    display: flex;
-    margin-right: 3rem;
-
-    svg {
-      margin-left: 5px;
-    }
+    grid-template-columns: 14rem minmax(18rem, 1fr) minmax(18rem, 1fr) minmax(20rem, 1fr) minmax(15rem, 1fr) 19rem;
+    grid-template-rows: auto;
   }
 `
+
 const HeaderValue = styled.span<{ captionColor?: 'green' | 'red1' | 'grey' }>`
   color: ${({ theme, captionColor }): string => (captionColor ? theme[captionColor] : theme.textPrimary1)};
   display: flex;
   flex-flow: row wrap;
   align-items: center;
-
-  ${Media.upToSmall()} {
-    flex-wrap: wrap;
-    text-align: end;
-  }
 `
 
 const MainWrapper = styled.div`
@@ -277,7 +120,6 @@ const RowFill: React.FC<RowProps> = ({ trade, isPriceInverted, invertButton }) =
   return (
     <tr key={txHash}>
       <td>
-        <HeaderTitle>Tx hash</HeaderTitle>
         <HeaderValue>
           <RowWithCopyButton
             textToCopy={txHash}
@@ -290,19 +132,16 @@ const RowFill: React.FC<RowProps> = ({ trade, isPriceInverted, invertButton }) =
         </HeaderValue>
       </td>
       <td>
-        <HeaderTitle>Sell amount</HeaderTitle>
         <HeaderValue>
           <TokenAmount amount={sellAmount} token={sellToken} />
         </HeaderValue>
       </td>
       <td>
-        <HeaderTitle>Buy amount</HeaderTitle>
         <HeaderValue>
           <TokenAmount amount={buyAmount} token={buyToken} />
         </HeaderValue>
       </td>
       <td>
-        <HeaderTitle>Surplus</HeaderTitle>
         <HeaderValue>
           {surplus ? (
             <SurplusComponent icon={faIcon} iconColor={theme.green} surplus={surplus} token={surplusToken} />
@@ -312,13 +151,9 @@ const RowFill: React.FC<RowProps> = ({ trade, isPriceInverted, invertButton }) =
         </HeaderValue>
       </td>
       <td>
-        <HeaderTitle>
-          <span>Execution price</span> {invertButton}
-        </HeaderTitle>
         <HeaderValue>{executionPrice && <TokenAmount amount={executionPrice} token={executionToken} />}</HeaderValue>
       </td>
       <td>
-        <HeaderTitle>Execution time</HeaderTitle>
         <HeaderValue>
           {executionTime ? <DateDisplay date={executionTime} showIcon={true} /> : <StyledShimmerBar />}
         </HeaderValue>

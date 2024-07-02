@@ -1,5 +1,6 @@
 import { SimpleTable, Props as SimpleTableProps } from 'components/common/SimpleTable'
 import styled from 'styled-components/macro'
+import { ScrollBarStyle } from '../../explorer/styled'
 
 export interface Props {
   showBorderTable?: boolean

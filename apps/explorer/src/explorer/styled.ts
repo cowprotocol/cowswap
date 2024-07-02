@@ -85,17 +85,6 @@ export const MainWrapper = styled.div`
     width: 100%;
   }
 
-  footer {
-    flex-direction: row;
-    flex-wrap: wrap;
-    flex-grow: 0;
-
-    ${Media.upToExtraSmall()} {
-      flex-direction: column;
-      flex-wrap: nowrap;
-    }
-  }
-
   header {
     margin-left: 0;
     margin-right: 0;

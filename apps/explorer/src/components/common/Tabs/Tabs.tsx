@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-
+import { Media } from '@cowprotocol/ui'
 import TabContent from 'components/common/Tabs/TabContent'
 import TabItem from 'components/common/Tabs/TabItem'
 import styled from 'styled-components/macro'
@@ -52,7 +52,7 @@ const Wrapper = styled.div`
 
   > div {
     display: flex;
-    flex-flow: row nowrap;
+    flex-flow: row wrap;
     padding: 0;
     justify-content: space-between;
     width: 100%;
@@ -64,6 +64,7 @@ export const TabList = styled.div`
   top: 0;
   background: #16171f;
   z-index: 2;
+  max-width: 100%;
 `
 
 export const DEFAULT_TAB_THEME: TabTheme = {
@@ -85,7 +86,7 @@ interface ExtraContentProps {
   extra?: TabBarExtraContent
 }
 
-const ExtraContent = ({ extra }: ExtraContentProps): JSX.Element | null => {
+const ExtraContent = ({ extra }: ExtraContentProps): React.ReactNode | null => {
   if (!extra) return null
 
   return <div className="tab-extra-content">{extra}</div>

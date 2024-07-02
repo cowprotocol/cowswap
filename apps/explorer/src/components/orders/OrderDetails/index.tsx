@@ -13,13 +13,13 @@ import { Notification } from 'components/Notification'
 import { DetailsTable } from 'components/orders/DetailsTable'
 import RedirectToSearch from 'components/RedirectToSearch'
 import ExplorerTabs from 'explorer/components/common/ExplorerTabs/ExplorerTabs'
-import TablePagination, { PaginationWrapper } from 'explorer/components/common/TablePagination'
+import TablePagination from 'explorer/components/common/TablePagination'
 import { useTable } from 'explorer/components/TokensTableWidget/useTable'
 import { TAB_QUERY_PARAM_KEY } from 'explorer/const'
 import { useQuery, useUpdateQueryString } from 'hooks/useQuery'
 import { useNetworkId } from 'state/network'
 import styled from 'styled-components/macro'
-import { Media } from '@cowprotocol/ui'
+
 import { Errors } from 'types'
 import { formatPercentage } from 'utils'
 
@@ -27,7 +27,8 @@ import { Order, Trade } from 'api/operator'
 
 import { FillsTableContext } from './context/FillsTableContext'
 import { FillsTableWithData } from './FillsTableWithData'
-import { FlexContainer, FlexContainerVar } from '../../../explorer/pages/styled'
+import { FlexContainerVar } from '../../../explorer/pages/styled'
+import { Media } from '@cowprotocol/ui'
 
 const TitleUid = styled(RowWithCopyButton)`
   color: ${({ theme }): string => theme.grey};
@@ -46,7 +47,7 @@ const WrapperExtraComponents = styled.div`
   gap: 1rem;
 
   ${Media.upToSmall()} {
-    justify-content: center;
+    width: 100%;
   }
 `
 

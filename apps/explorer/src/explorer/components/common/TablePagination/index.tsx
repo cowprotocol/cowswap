@@ -20,6 +20,12 @@ export const PaginationWrapper = styled.span`
   display: flex;
   justify-content: center;
   padding-right: 1.5rem;
+
+  ${Media.upToSmall()} {
+    padding: 0 1.5rem;
+    width: 100%;
+    justify-content: space-between;
+  }
 `
 
 const PaginationText = styled.p`

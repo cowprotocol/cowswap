@@ -26,6 +26,7 @@ export type Props = {
 const StyledSurplusComponent = styled(SurplusComponent)`
   display: flex;
   flex-flow: column wrap;
+  align-items: flex-start;
   gap: 1rem;
 `
 
@@ -61,16 +62,20 @@ const Wrapper = styled.div`
 `
 
 const TableHeading = styled.div`
-  padding: 0 0 1rem;
+  padding: 1.6rem;
+  width: 100%;
   display: grid;
-  grid-template-columns: minmax(min-content, auto) auto auto auto;
+  grid-template-columns: minmax(min-content, 1fr) repeat(3, auto);
   grid-template-rows: max-content;
   justify-content: flex-start;
   gap: 1.6rem;
 
+  ${Media.upToMedium()} {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
   ${Media.upToSmall()} {
-    display: flex;
-    flex-flow: column wrap;
+    grid-template-columns: 1fr;
   }
 
   .title {
@@ -152,6 +157,7 @@ const FilledContainer = styled.div`
   flex-flow: column wrap;
   gap: 1.4rem;
   margin: 0;
+  width: 100%;
 
   > div {
     display: flex;

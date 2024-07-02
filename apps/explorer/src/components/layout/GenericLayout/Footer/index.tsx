@@ -16,12 +16,26 @@ const FooterStyled = styled.footer`
   align-items: center;
   box-sizing: border-box;
   font-size: 1.2rem;
-  padding: 2.4rem 1.6rem 4rem;
   flex: 1 1 auto;
   color: ${({ theme }): string => theme.textSecondary2};
   width: 100%;
   justify-content: space-around;
   margin: 0 auto;
+  position: static;
+  bottom: 0;
+  height: auto;
+  padding: 1rem;
+  max-height: 4rem;
+
+  ${Media.upToMedium()} {
+    margin: 15rem auto 0;
+    flex-flow: column wrap;
+    padding: 1.6rem 1.6rem 4rem;
+    justify-content: flex-start;
+    gap: 1.6rem;
+    bottom: initial;
+    max-height: initial;
+  }
 
   > a {
     text-decoration: none;
@@ -48,13 +62,18 @@ const BetaWrapper = styled.div`
 const ContractsWrapper = styled.div`
   display: flex;
   align-items: center;
+  gap: 1.6rem;
 
   ${Media.upToMedium()} {
-    flex-direction: column;
+    flex-flow: column wrap;
   }
 
   > :nth-child(2) {
     margin-right: 1rem;
+
+    ${Media.upToMedium()} {
+      margin-right: 0;
+    }
   }
 `
 
@@ -69,7 +88,7 @@ const VerifiedButton = styled(BlockExplorerLink)`
 
 const ContractContainer = styled.div`
   display: flex;
-  margin: 0 2rem 1.6rem 0;
+  margin: 0 0 0 auto;
 `
 
 const VersionsWrapper = styled.div`
