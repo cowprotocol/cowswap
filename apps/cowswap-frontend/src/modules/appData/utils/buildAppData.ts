@@ -1,4 +1,4 @@
-import { stringifyDeterministic } from '@cowprotocol/app-data'
+import { latest, stringifyDeterministic } from '@cowprotocol/app-data'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { metadataApiSDK } from 'cowSdk'
@@ -28,6 +28,8 @@ export type BuildAppDataParams = {
   partnerFee?: AppDataPartnerFee
   replacedOrderUid?: string
 }
+
+type OrderInteractionHooks = latest.OrderInteractionHooks
 
 async function generateAppDataFromDoc(
   doc: AppDataRootSchema
@@ -87,15 +89,17 @@ export async function updateHooksOnAppData(
 ): Promise<AppDataInfo> {
   const { doc } = appData
 
+  const existingHooks = doc.metadata.hooks
+
   const newDoc = {
     ...doc,
     metadata: {
       ...doc.metadata,
-      hooks,
+      hooks: mergeHooks(existingHooks, hooks),
     },
   }
 
-  if (!hooks) {
+  if (!newDoc.metadata.hooks) {
     delete newDoc.metadata.hooks
   }
 
@@ -105,5 +109,22 @@ export async function updateHooksOnAppData(
     doc: newDoc,
     fullAppData,
     appDataKeccak256,
+  }
+}
+
+function mergeHooks(
+  hooks1: OrderInteractionHooks | undefined,
+  hooks2: OrderInteractionHooks | undefined
+): OrderInteractionHooks | undefined {
+  if (!hooks1 || !hooks2) return undefined
+
+  if (hooks1 && !hooks2) return hooks1
+
+  if (!hooks1 && hooks2) return hooks2
+
+  return {
+    version: hooks1.version,
+    pre: (hooks1.pre || []).concat(hooks2.pre || []),
+    post: (hooks1.post || []).concat(hooks2.post || []),
   }
 }
