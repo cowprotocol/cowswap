@@ -5,8 +5,8 @@ import { USER_SWAP_REJECTED_ERROR } from 'modules/trade/utils/swapErrorHelper'
 
 export interface TradeFlowAnalyticsContext {
   account: string | null
-  recipient: string | null
-  recipientAddress: string | null
+  recipient?: string | null
+  recipientAddress?: string | null
   marketLabel?: string
   orderType: UiOrderType
 }

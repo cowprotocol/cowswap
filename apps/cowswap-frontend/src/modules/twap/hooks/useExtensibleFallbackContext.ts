@@ -1,3 +1,5 @@
+import { useMemo } from 'react'
+
 import { GPv2Settlement } from '@cowprotocol/abis'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -18,7 +20,11 @@ export function useExtensibleFallbackContext(): ExtensibleFallbackContext | null
   const settlementContract = useGP2SettlementContract()
   const provider = useWalletProvider()
 
-  if (!account || !settlementContract || !provider) return null
+  return useMemo(() => {
+    if (!account || !settlementContract || !provider) {
+      return null
+    }
 
-  return { settlementContract, provider, chainId, safeAddress: account }
+    return { settlementContract, provider, chainId, safeAddress: account }
+  }, [account, settlementContract, provider, chainId])
 }

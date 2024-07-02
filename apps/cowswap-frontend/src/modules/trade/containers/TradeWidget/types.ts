@@ -16,7 +16,7 @@ export interface TradeWidgetActions {
 }
 
 interface TradeWidgetParams {
-  recipient: string | null
+  recipient?: string | null
   isEoaEthFlow?: boolean
   compactView: boolean
   showRecipient: boolean

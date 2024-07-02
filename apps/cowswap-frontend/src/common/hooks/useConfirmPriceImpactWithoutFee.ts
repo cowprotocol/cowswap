@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 
 import { ALLOWED_PRICE_IMPACT_HIGH, PRICE_IMPACT_WITHOUT_FEE_CONFIRM_MIN } from '@cowprotocol/common-const'
 import { Percent } from '@uniswap/sdk-core'
@@ -60,8 +60,11 @@ export function useConfirmPriceImpactWithoutFee() {
     [triggerConfirmation]
   )
 
-  return {
-    confirmPriceImpactWithoutFee,
-    isConfirmed,
-  }
+  return useMemo(
+    () => ({
+      confirmPriceImpactWithoutFee,
+      isConfirmed,
+    }),
+    [confirmPriceImpactWithoutFee, isConfirmed]
+  )
 }

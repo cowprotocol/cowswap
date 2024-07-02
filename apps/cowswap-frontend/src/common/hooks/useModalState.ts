@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { Command } from '@cowprotocol/types'
 export interface ModalState<T> {
@@ -32,5 +32,5 @@ export function useModalState<T>(trigger?: boolean): ModalState<T> {
     }
   }, [trigger, openModal, closeModal])
 
-  return { isModalOpen, context, openModal, closeModal }
+  return useMemo(() => ({ isModalOpen, context, openModal, closeModal }), [isModalOpen, context, openModal, closeModal])
 }
