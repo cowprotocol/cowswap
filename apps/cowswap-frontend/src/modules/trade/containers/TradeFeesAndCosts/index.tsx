@@ -45,7 +45,7 @@ export function TradeFeesAndCosts(props: TradeFeesAndCostsProps) {
         partnerFeeUsd={partnerFeeUsd}
         partnerFeeAmount={partnerFeeAmount}
         partnerFeeBps={partnerFeeBps}
-        feeTooltipMarkdown={widgetParams.content?.feeTooltipMarkdown}
+        widgetContent={widgetParams.content}
       />
 
       {/*Network cost*/}
