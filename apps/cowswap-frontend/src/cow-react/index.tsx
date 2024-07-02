@@ -16,7 +16,7 @@ import { createRoot } from 'react-dom/client'
 import { Provider } from 'react-redux'
 import { HashRouter } from 'react-router-dom'
 import * as serviceWorkerRegistration from 'serviceWorkerRegistration'
-import { ThemeProvider, ThemedGlobalStyle } from 'theme'
+import { ThemedGlobalStyle, ThemeProvider } from 'theme'
 
 import { cowSwapStore } from 'legacy/state'
 import { useAppSelector } from 'legacy/state/hooks'
