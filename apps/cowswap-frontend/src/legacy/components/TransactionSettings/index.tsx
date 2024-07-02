@@ -29,6 +29,7 @@ import { useUserTransactionTTL } from 'legacy/state/user/hooks'
 
 import { useIsCurrentSlippageDefault } from 'modules/swap/hooks/useIsCurrentSlippageDefault'
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
+import { useIsSmartSlippageApplied } from 'modules/swap/hooks/useIsSmartSlippageApplied'
 import { useSetSlippage } from 'modules/swap/hooks/useSetSlippage'
 import { useSwapSlippage } from 'modules/swap/hooks/useSwapSlippage'
 import { getNativeOrderDeadlineTooltip, getNonNativeOrderDeadlineTooltip } from 'modules/swap/pure/Row/RowDeadline'
@@ -101,6 +102,11 @@ const SlippageEmojiContainer = styled.span`
   }
 `
 
+const SmartSlippageInfo = styled.span`
+  color: #f3841e;
+  font-size: 13px;
+`
+
 const Wrapper = styled.div`
   ${RowBetween} > button, ${OptionCustom} {
     &:disabled {
@@ -167,6 +173,7 @@ export function TransactionSettings() {
 
   const swapSlippage = useSwapSlippage()
   const setSwapSlippage = useSetSlippage()
+  const isSmartSlippageApplied = useIsSmartSlippageApplied()
 
   const [deadline, setDeadline] = useUserTransactionTTL()
 
@@ -287,7 +294,7 @@ export function TransactionSettings() {
             </Option>
             <OptionCustom active={!isCurrentSlippageDefault} warning={!!slippageError} tabIndex={-1}>
               <RowBetween>
-                {tooLow || tooHigh ? (
+                {!isSmartSlippageApplied && (tooLow || tooHigh) ? (
                   <SlippageEmojiContainer>
                     <span role="img" aria-label="warning">
                       ⚠️
@@ -318,7 +325,7 @@ export function TransactionSettings() {
               </RowBetween>
             </OptionCustom>
           </RowBetween>
-          {slippageError || tooLow || tooHigh ? (
+          {!isSmartSlippageApplied && (slippageError || tooLow || tooHigh) ? (
             <RowBetween
               style={{
                 fontSize: '14px',
@@ -339,6 +346,13 @@ export function TransactionSettings() {
               )}
             </RowBetween>
           ) : null}
+          {isSmartSlippageApplied && (
+            <RowBetween>
+              <SmartSlippageInfo>
+                The best slippage value is selected for the fastest order execution!
+              </SmartSlippageInfo>
+            </RowBetween>
+          )}
         </AutoColumn>
 
         {showCustomDeadlineRow && (

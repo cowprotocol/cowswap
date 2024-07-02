@@ -27,20 +27,33 @@ const defaultSlippageAtom = atom((get) => {
   return isEoaEthFlow ? DEFAULT_ETH_FLOW_SLIPPAGE_BPS[chainId] : DEFAULT_SLIPPAGE_BPS
 })
 
-export const smartSwapSlippageAtom = atom<number | null>(null)
-
-export const swapSlippageAtom = atom<number>((get) => {
+const currentSlippageAtom = atom<number>((get) => {
   const { chainId } = get(walletInfoAtom)
   const isEoaEthFlow = get(isEoaEthFlowAtom)
-  const smartSwapSlippage = get(smartSwapSlippageAtom)
   const normalSwapSlippage = get(normalSwapSlippageAtom)
   const ethFlowSlippage = get(ethFlowSlippageAtom)
+
+  return (isEoaEthFlow ? ethFlowSlippage : normalSwapSlippage)[chainId]
+})
+
+export const smartSwapSlippageAtom = atom<number | null>(null)
+
+export const isSmartSlippageAppliedAtom = atom((get) => {
+  const smartSwapSlippage = get(smartSwapSlippageAtom)
   const defaultSlippage = get(defaultSlippageAtom)
-  const currentSlippage = (isEoaEthFlow ? ethFlowSlippage : normalSwapSlippage)[chainId]
+  const currentSlippage = get(currentSlippageAtom)
   const isSlippageDefault = defaultSlippage === currentSlippage
 
   // Use smart slippage only when user didn't change it manually
-  if (isSlippageDefault && smartSwapSlippage !== null) return smartSwapSlippage
+  return isSlippageDefault && smartSwapSlippage !== null
+})
+
+export const swapSlippageAtom = atom<number>((get) => {
+  const smartSwapSlippage = get(smartSwapSlippageAtom)
+  const currentSlippage = get(currentSlippageAtom)
+  const isSmartSlippageApplied = get(isSmartSlippageAppliedAtom)
+
+  if (isSmartSlippageApplied) return smartSwapSlippage!
 
   return currentSlippage
 })
