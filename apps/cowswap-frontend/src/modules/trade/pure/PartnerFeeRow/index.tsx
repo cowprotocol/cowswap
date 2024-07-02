@@ -1,6 +1,8 @@
 import { bpsToPercent, formatPercent } from '@cowprotocol/common-utils'
+import { CowSwapWidgetContent } from '@cowprotocol/widget-lib'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
+import ReactMarkdown from 'react-markdown'
 import { Nullish } from 'types'
 
 import * as styledEl from '../../containers/TradeBasicConfirmDetails/styled'
@@ -12,7 +14,7 @@ interface PartnerFeeRowProps {
   partnerFeeBps: number | undefined
   withTimelineDot: boolean
   alwaysRow?: boolean
-  feeTooltipMarkdown?: string
+  widgetContent?: CowSwapWidgetContent
 }
 
 export function PartnerFeeRow({
@@ -21,7 +23,7 @@ export function PartnerFeeRow({
   partnerFeeBps,
   withTimelineDot,
   alwaysRow,
-  feeTooltipMarkdown,
+  widgetContent,
 }: PartnerFeeRowProps) {
   const feeAsPercent = partnerFeeBps ? formatPercent(bpsToPercent(partnerFeeBps)) : null
   const minPartnerFeeAmount = partnerFeeAmount?.equalTo(0)
@@ -37,7 +39,9 @@ export function PartnerFeeRow({
           fiatAmount={partnerFeeUsd}
           alwaysRow={alwaysRow}
           tooltip={
-            feeTooltipMarkdown || (
+            widgetContent?.feeTooltipMarkdown ? (
+              <ReactMarkdown>{widgetContent.feeTooltipMarkdown}</ReactMarkdown>
+            ) : (
               <>
                 This fee helps pay for maintenance & improvements to the trade experience.
                 <br />
@@ -46,7 +50,7 @@ export function PartnerFeeRow({
               </>
             )
           }
-          label={`Total fee (${feeAsPercent}%)`}
+          label={`${widgetContent?.feeLabel || 'Total fee'} (${feeAsPercent}%)`}
         />
       ) : (
         <ReviewOrderModalAmountRow
