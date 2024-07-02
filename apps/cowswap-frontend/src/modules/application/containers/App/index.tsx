@@ -20,10 +20,10 @@ import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { parameterizeTradeRoute, useTradeRouteContext } from 'modules/trade'
 import { useInitializeUtm } from 'modules/utm'
 
-import { MENU_ITEMS } from 'common/constants/routes'
 import { InvalidLocalTimeWarning } from 'common/containers/InvalidLocalTimeWarning'
 import { useAnalyticsReporter } from 'common/hooks/useAnalyticsReporter'
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
+import { useMenuItems } from 'common/hooks/useMenuItems'
 import { LoadingApp } from 'common/pure/LoadingApp'
 import { CoWDAOFonts } from 'common/styles/CoWDAOFonts'
 import RedirectAnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers/RedirectAnySwapAffectedUsers'
@@ -50,6 +50,7 @@ export function App() {
   useInitializeUtm()
 
   const isInjectedWidgetMode = isInjectedWidget()
+  const menuItems = useMenuItems()
 
   const [darkMode, toggleDarkMode] = useDarkModeManager()
 
@@ -69,7 +70,7 @@ export function App() {
     return [
       {
         label: 'Trade',
-        children: MENU_ITEMS.map((item) => {
+        children: menuItems.map((item) => {
           const href = parameterizeTradeRoute(tradeContext, item.route, true)
 
           return { href, label: item.label, description: item.description }
@@ -77,7 +78,7 @@ export function App() {
       },
       ...NAV_ITEMS,
     ]
-  }, [tradeContext])
+  }, [tradeContext, menuItems])
 
   const injectedWidgetParams = useInjectedWidgetParams()
   const { pendingActivity } = useCategorizeRecentActivity()
