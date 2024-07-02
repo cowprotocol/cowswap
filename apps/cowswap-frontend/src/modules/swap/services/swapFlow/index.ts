@@ -59,7 +59,7 @@ export async function swapFlow(
       tradeConfirmActions.requestPermitSignature(tradeAmounts)
     }
 
-    const { appData, /*account,*/ isSafeWallet/*, recipientAddressOrName, inputAmount, outputAmount, kind*/ } = orderParams
+    const { appData, account, isSafeWallet, recipientAddressOrName, inputAmount, outputAmount, kind } = orderParams
 
     orderParams.appData = appData
 

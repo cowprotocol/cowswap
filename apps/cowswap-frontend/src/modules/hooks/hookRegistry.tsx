@@ -89,10 +89,12 @@ export const PRE_HOOK_REGISTRY: Record<SupportedChainId, HookDapp[]> = {
   [SupportedChainId.MAINNET]: [PRE_CURVE, PRE_COWAMM, PRE_MAKER, PRE_BUILD],
   [SupportedChainId.GNOSIS_CHAIN]: [PRE_CLAIM_GNO, PRE_CURVE, PRE_COWAMM, PRE_MAKER, PRE_BUILD],
   [SupportedChainId.SEPOLIA]: [PRE_COWAMM, PRE_BUILD],
+  [SupportedChainId.ARBITRUM_ONE]: [PRE_COWAMM, PRE_BUILD],
 }
 
 export const POST_HOOK_REGISTRY: Record<SupportedChainId, HookDapp[]> = {
   [SupportedChainId.MAINNET]: POST_HOOK_DAPPS_ALL,
   [SupportedChainId.GNOSIS_CHAIN]: POST_HOOK_DAPPS_ALL,
   [SupportedChainId.SEPOLIA]: [],
+  [SupportedChainId.ARBITRUM_ONE]: [],
 }
