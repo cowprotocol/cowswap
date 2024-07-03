@@ -1,5 +1,5 @@
 import savingsIcon from '@cowprotocol/assets/cow-swap/savings.svg'
-import { DEFAULT_ETH_FLOW_SLIPPAGE, PERCENTAGE_PRECISION } from '@cowprotocol/common-const'
+import { MINIMUM_ETH_FLOW_SLIPPAGE, PERCENTAGE_PRECISION } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
 import { ButtonPrimary } from '@cowprotocol/ui'
@@ -33,7 +33,7 @@ export function EthFlowBannerContent(props: EthFlowBannerContentProps) {
   } = props
 
   const chainId = native.chainId as SupportedChainId
-  const minEthFlowSlippage = DEFAULT_ETH_FLOW_SLIPPAGE[chainId]
+  const minEthFlowSlippage = MINIMUM_ETH_FLOW_SLIPPAGE[chainId]
 
   return (
     <styledEl.BannerWrapper onClick={showBannerCallback} id="classic-eth-flow-banner">

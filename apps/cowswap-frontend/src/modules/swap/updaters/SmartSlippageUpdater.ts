@@ -8,14 +8,17 @@ import useSWR from 'swr'
 
 import { useDerivedTradeState } from 'modules/trade'
 
-import { smartSwapSlippageAtom } from '../state/swapSlippageAtom'
+import { smartSwapSlippageAtom } from '../state/slippageValueAndTypeAtom'
+import { BFF_BASE_URL } from '@cowprotocol/common-const'
+import ms from 'ms.macro'
+
+const SWR_OPTIONS = {
+  dedupingInterval: ms`1m`,
+}
 
 interface SlippageApiResponse {
   slippageBps: number
 }
-
-// TODO: remove once API is working
-const MOCKED_SMART_SLIPPAGE = 133
 
 export function SmartSlippageUpdater() {
   const { chainId } = useWalletInfo()
@@ -28,20 +31,16 @@ export function SmartSlippageUpdater() {
   const slippageBps = useSWR(
     !sellTokenAddress || !buyTokenAddress ? null : [chainId, sellTokenAddress, buyTokenAddress],
     async ([chainId, sellTokenAddress, buyTokenAddress]) => {
-      const url = `/chains/${chainId}/markets/${sellTokenAddress}-${buyTokenAddress}/defaultSlippageTolerance`
+      const url = `${BFF_BASE_URL}/chains/${chainId}/markets/${sellTokenAddress}-${buyTokenAddress}/defaultSlippageTolerance`
 
       const response: SlippageApiResponse = await fetch(url).then((res) => res.json())
 
       return response.slippageBps
-    }
+    },
+    SWR_OPTIONS
   ).data
 
   useEffect(() => {
-    if (MOCKED_SMART_SLIPPAGE) {
-      setSmartSwapSlippage(MOCKED_SMART_SLIPPAGE)
-      return
-    }
-
     setSmartSwapSlippage(typeof slippageBps === 'number' ? slippageBps : null)
   }, [slippageBps])
 

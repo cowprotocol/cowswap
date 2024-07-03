@@ -76,7 +76,7 @@ export const DEFAULT_ETH_FLOW_SLIPPAGE_BPS: Record<SupportedChainId, number> = {
   [SupportedChainId.SEPOLIA]: DEFAULT_SLIPPAGE_BPS,
 }
 
-export const DEFAULT_ETH_FLOW_SLIPPAGE: Record<SupportedChainId, Percent> = mapSupportedNetworks(
+export const MINIMUM_ETH_FLOW_SLIPPAGE: Record<SupportedChainId, Percent> = mapSupportedNetworks(
   (chainId) => new Percent(DEFAULT_ETH_FLOW_SLIPPAGE_BPS[chainId], 10_000)
 )
 export const HIGH_ETH_FLOW_SLIPPAGE_BPS = 1_000 // 10%

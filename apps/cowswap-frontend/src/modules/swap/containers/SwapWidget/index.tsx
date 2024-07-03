@@ -42,7 +42,7 @@ import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 import { SWAP_QUOTE_CHECK_INTERVAL } from 'common/updaters/FeesUpdater'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
-import { useIsCurrentSlippageDefault } from '../../hooks/useIsCurrentSlippageDefault'
+import { useIsSlippageModified } from '../../hooks/useIsSlippageModified'
 import { useIsSwapEth } from '../../hooks/useIsSwapEth'
 import { useSwapSlippage } from '../../hooks/useSwapSlippage'
 import {
@@ -63,7 +63,7 @@ export function SwapWidget() {
   const { chainId, account } = useWalletInfo()
   const { slippageAdjustedSellAmount, currencies, trade } = useDerivedSwapInfo()
   const slippage = useSwapSlippage()
-  const isCurrentSlippageDefault = useIsCurrentSlippageDefault()
+  const isSlippageModified = useIsSlippageModified()
   const parsedAmounts = useSwapCurrenciesAmounts()
   const { isSupportedWallet } = useWalletDetails()
   const isSwapUnsupported = useIsTradeUnsupported(currencies.INPUT, currencies.OUTPUT)
@@ -251,7 +251,7 @@ export function SwapWidget() {
     bottomContent: (
       <>
         <TradeRateDetails
-          allowedSlippage={isCurrentSlippageDefault ? null : slippage}
+          allowedSlippage={isSlippageModified ? slippage : null}
           rateInfoParams={rateInfoParams}
           receiveAmountInfo={receiveAmountInfo}
         />

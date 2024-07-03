@@ -3,18 +3,17 @@ import { useContext, useState } from 'react'
 import { orderExpirationTimeAnalytics, slippageToleranceAnalytics } from '@cowprotocol/analytics'
 import {
   DEFAULT_DEADLINE_FROM_NOW,
-  DEFAULT_SLIPPAGE_BPS,
   HIGH_ETH_FLOW_SLIPPAGE_BPS,
   HIGH_SLIPPAGE_BPS,
   LOW_SLIPPAGE_BPS,
   MAX_SLIPPAGE_BPS,
   MIN_SLIPPAGE_BPS,
   MINIMUM_ETH_FLOW_DEADLINE_SECONDS,
-  DEFAULT_ETH_FLOW_SLIPPAGE,
+  MINIMUM_ETH_FLOW_SLIPPAGE,
   DEFAULT_ETH_FLOW_SLIPPAGE_BPS,
   MINIMUM_ORDER_VALID_TO_TIME_SECONDS,
 } from '@cowprotocol/common-const'
-import { bpsToPercent, getWrappedToken, percentToBps } from '@cowprotocol/common-utils'
+import { getWrappedToken, percentToBps } from '@cowprotocol/common-utils'
 import { FancyButton, HelpTooltip, Media, RowBetween, RowFixed, UI } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Percent } from '@uniswap/sdk-core'
@@ -27,15 +26,16 @@ import { ThemedText } from 'theme'
 import { AutoColumn } from 'legacy/components/Column'
 import { useUserTransactionTTL } from 'legacy/state/user/hooks'
 
-import { useIsCurrentSlippageDefault } from 'modules/swap/hooks/useIsCurrentSlippageDefault'
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { useIsSmartSlippageApplied } from 'modules/swap/hooks/useIsSmartSlippageApplied'
 import { useSetSlippage } from 'modules/swap/hooks/useSetSlippage'
-import { useSwapSlippage } from 'modules/swap/hooks/useSwapSlippage'
+import { useDefaultSwapSlippage, useSwapSlippage } from 'modules/swap/hooks/useSwapSlippage'
 import { getNativeOrderDeadlineTooltip, getNonNativeOrderDeadlineTooltip } from 'modules/swap/pure/Row/RowDeadline'
 import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from 'modules/swap/pure/Row/RowSlippageContent'
 
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
+
+import { useIsSlippageModified } from '../../../modules/swap/hooks/useIsSlippageModified'
 
 const MAX_DEADLINE_MINUTES = 180 // 3h
 
@@ -172,6 +172,7 @@ export function TransactionSettings() {
   const nativeCurrency = useNativeCurrency()
 
   const swapSlippage = useSwapSlippage()
+  const defaultSwapSlippage = useDefaultSwapSlippage()
   const setSwapSlippage = useSetSlippage()
   const isSmartSlippageApplied = useIsSmartSlippageApplied()
 
@@ -184,9 +185,11 @@ export function TransactionSettings() {
   const [deadlineError, setDeadlineError] = useState<DeadlineError | false>(false)
 
   const minEthFlowSlippageBps = DEFAULT_ETH_FLOW_SLIPPAGE_BPS[chainId]
-  const minEthFlowSlippage = DEFAULT_ETH_FLOW_SLIPPAGE[chainId]
+  const minEthFlowSlippage = MINIMUM_ETH_FLOW_SLIPPAGE[chainId]
 
-  const isCurrentSlippageDefault = useIsCurrentSlippageDefault()
+  const isSlippageModified = useIsSlippageModified()
+
+  const placeholderSlippage = isSlippageModified ? defaultSwapSlippage : swapSlippage
 
   function parseSlippageInput(value: string) {
     // populate what the user typed and clear the error
@@ -194,7 +197,7 @@ export function TransactionSettings() {
     setSlippageError(false)
 
     if (value.length === 0) {
-      slippageToleranceAnalytics('Default', isEoaEthFlow ? minEthFlowSlippageBps : DEFAULT_SLIPPAGE_BPS)
+      slippageToleranceAnalytics('Default', placeholderSlippage.toFixed(2))
       setSwapSlippage(isEoaEthFlow ? percentToBps(minEthFlowSlippage) : null)
     } else {
       let v = value
@@ -214,15 +217,13 @@ export function TransactionSettings() {
         parsed < (isEoaEthFlow ? minEthFlowSlippageBps : MIN_SLIPPAGE_BPS) ||
         parsed > MAX_SLIPPAGE_BPS
       ) {
-        slippageToleranceAnalytics('Default', isEoaEthFlow ? minEthFlowSlippageBps : DEFAULT_SLIPPAGE_BPS)
-        setSwapSlippage(null)
         if (v !== '.') {
           setSlippageError(SlippageError.InvalidInput)
         }
-      } else {
-        slippageToleranceAnalytics('Custom', parsed)
-        setSwapSlippage(percentToBps(new Percent(parsed, 10_000)))
       }
+
+      slippageToleranceAnalytics('Custom', parsed)
+      setSwapSlippage(percentToBps(new Percent(parsed, 10_000)))
     }
   }
 
@@ -287,12 +288,11 @@ export function TransactionSettings() {
               onClick={() => {
                 parseSlippageInput('')
               }}
-              active={isCurrentSlippageDefault}
-              disabled={isEoaEthFlow}
+              active={!isSlippageModified}
             >
               <Trans>Auto</Trans>
             </Option>
-            <OptionCustom active={!isCurrentSlippageDefault} warning={!!slippageError} tabIndex={-1}>
+            <OptionCustom active={isSlippageModified} warning={!!slippageError} tabIndex={-1}>
               <RowBetween>
                 {!isSmartSlippageApplied && (tooLow || tooHigh) ? (
                   <SlippageEmojiContainer>
@@ -302,12 +302,15 @@ export function TransactionSettings() {
                   </SlippageEmojiContainer>
                 ) : null}
                 <Input
-                  placeholder={bpsToPercent(DEFAULT_SLIPPAGE_BPS).toFixed(2)}
-                  value={
-                    slippageInput.length > 0 ? slippageInput : isCurrentSlippageDefault ? '' : swapSlippage.toFixed(2)
-                  }
+                  placeholder={placeholderSlippage.toFixed(2)}
+                  value={slippageInput.length > 0 ? slippageInput : !isSlippageModified ? '' : swapSlippage.toFixed(2)}
                   onChange={(e) => parseSlippageInput(e.target.value)}
                   onBlur={() => {
+                    if (slippageError) {
+                      slippageToleranceAnalytics('Default', placeholderSlippage.toFixed(2))
+                      setSwapSlippage(null)
+                    }
+
                     setSlippageInput('')
                     setSlippageError((curr) => {
                       // When ethFlow and there was an error
