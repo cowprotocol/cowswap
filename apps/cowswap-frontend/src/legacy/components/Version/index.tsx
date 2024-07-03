@@ -51,8 +51,8 @@ const Dropdown = styled.div`
   display: inline-block;
 `
 
-const DropdownContent = styled.div<{ show: boolean }>`
-  display: ${({ show }) => (show ? 'block' : 'none')};
+const DropdownContent = styled.div`
+  display: block;
   position: absolute;
   background-color: var(${UI.COLOR_PAPER});
   min-width: 160px;
@@ -170,20 +170,22 @@ export const Version = ({ className }: { className?: string }) => {
       <DropdownButton onClick={() => setShowDropdown(!showDropdown)}>
         {webVersion} <SVG src={ICON_ARROW_DOWN} />
       </DropdownButton>
-      <DropdownContent show={showDropdown}>
-        <CloseButton onClick={() => setShowDropdown(false)}>
-          <SVG src={ICON_X} />
-        </CloseButton>
-        {versionsList.map((key) => {
-          const { href, version } = VERSIONS[key]
-          const chainHref = href(chainId)
-          return (
-            <VersionLink key={key} href={chainHref} onClick={handleLinkClick}>
-              {key} <span>{version}</span>
-            </VersionLink>
-          )
-        })}
-      </DropdownContent>
+      {showDropdown && (
+        <DropdownContent>
+          <CloseButton onClick={() => setShowDropdown(false)}>
+            <SVG src={ICON_X} />
+          </CloseButton>
+          {versionsList.map((key) => {
+            const { href, version } = VERSIONS[key]
+            const chainHref = href(chainId)
+            return (
+              <VersionLink key={key} href={chainHref} onClick={handleLinkClick}>
+                {key} <span>{version}</span>
+              </VersionLink>
+            )
+          })}
+        </DropdownContent>
+      )}
     </Dropdown>
   )
 }
