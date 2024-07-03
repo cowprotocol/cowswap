@@ -1,5 +1,6 @@
 import React, { Dispatch, ReactNode, SetStateAction, useMemo } from 'react'
 
+import { PercentDisplay } from '@cowprotocol/ui'
 import { CowSwapWidgetAppParams } from '@cowprotocol/widget-lib'
 import { Percent, Price } from '@uniswap/sdk-core'
 
@@ -7,7 +8,6 @@ import { Nullish } from 'types'
 
 import { useUsdAmount } from 'modules/usdAmount'
 
-import { PercentDisplay } from 'common/pure/PercentDisplay'
 import { RateInfoParams } from 'common/pure/RateInfo'
 
 import { LimitPriceRow } from './LimitPriceRow'
@@ -126,7 +126,7 @@ export function TradeBasicConfirmDetails(props: Props) {
           label={slippageLabel}
           alwaysRow={alwaysRow}
         >
-          <PercentDisplay percent={+slippage.toFixed(2)} />
+          <PercentDisplay percent={slippage.toFixed(2)} />
         </ReviewOrderModalAmountRow>
       }
 
