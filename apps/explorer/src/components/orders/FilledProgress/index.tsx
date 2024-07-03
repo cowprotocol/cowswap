@@ -218,7 +218,7 @@ export function FilledProgress(props: Props): JSX.Element {
   const mainSymbol = mainToken ? safeTokenName(mainToken) : mainAddress
   const swappedSymbol = swappedToken ? safeTokenName(swappedToken) : swappedAddress
   // In case the token object is empty, display the raw amount (`decimals || 0` part)
-  const formattedPercentage = filledPercentage.toNumber() * 100
+  const formattedPercentage = filledPercentage.times(100).toString()
 
   const surplus = { amount: surplusAmount, percentage: surplusPercentage }
   const surplusToken = (isSell ? buyToken : sellToken) || null
