@@ -1,4 +1,3 @@
-import React from 'react'
 import { ExternalLink } from '@cowprotocol/ui'
 
 import { HashLink } from 'react-router-hash-link'
