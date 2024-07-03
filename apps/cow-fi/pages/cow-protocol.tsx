@@ -405,7 +405,7 @@ export default function Page() {
             </SectionTitleWrapper>
 
             <TopicList columns={3}>
-              {TOP_LOGOS.map((logo, index) => (
+              {TOP_LOGOS.map((logo) => (
                 <TopicCard
                   key={logo.url}
                   contentAlign={'center'}
@@ -428,7 +428,7 @@ export default function Page() {
                 </TopicCard>
               ))}
 
-              {CASE_STUDIES.map((study, index) => (
+              {CASE_STUDIES.map((study) => (
                 <TopicCard key={study.link} bgColor={Color.neutral100} padding={'52px'} gap={16} asProp="div">
                   <TopicImage iconColor="#8702AA" bgColor="transparent" height={96} width={'auto'}>
                     <SVG src={study.logo} />
@@ -454,7 +454,7 @@ export default function Page() {
             </TopicList>
 
             <TopicList columns={4} columnsTablet={2}>
-              {ALL_LOGOS.map((logo, index) => (
+              {ALL_LOGOS.map((logo) => (
                 <TopicCard
                   key={logo.url}
                   contentAlign={'center'}
