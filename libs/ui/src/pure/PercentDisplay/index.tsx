@@ -1,9 +1,15 @@
-const ALMOST_HUNDRED = 99.99
+import BigNumber from 'bignumber.js'
 
-export const percentIsAlmostHundred = (percent: number) => percent > ALMOST_HUNDRED && percent < 100
+const ALMOST_HUNDRED = BigNumber(99.99)
+
+export function percentIsAlmostHundred(percent: string) {
+  const p = BigNumber(percent)
+
+  return p.gt(ALMOST_HUNDRED) && p.lt(100)
+}
 
 export interface PercentDisplayProps {
-  percent: number
+  percent: string
 }
 
 export function PercentDisplay({ percent }: PercentDisplayProps) {
