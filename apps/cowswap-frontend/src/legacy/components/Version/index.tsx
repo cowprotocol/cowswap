@@ -1,4 +1,9 @@
+import { useState, useRef } from 'react'
+
+import ICON_ARROW_DOWN from '@cowprotocol/assets/images/carret-down.svg'
+import ICON_X from '@cowprotocol/assets/images/x.svg'
 import { CODE_LINK } from '@cowprotocol/common-const'
+import { useOnClickOutside } from '@cowprotocol/common-hooks'
 import { getEtherscanLink } from '@cowprotocol/common-utils'
 import contractsPkg from '@cowprotocol/contracts/package.json'
 import {
@@ -6,131 +11,179 @@ import {
   COW_PROTOCOL_VAULT_RELAYER_ADDRESS,
   SupportedChainId as ChainId,
 } from '@cowprotocol/cow-sdk'
-import { Media, UI } from '@cowprotocol/ui'
-import { ExternalLink } from '@cowprotocol/ui'
+import { UI, ExternalLink, Media } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
 import pkg from '../../../../package.json'
 
-function _getContractsUrls(chainId: ChainId, contractAddressMap: typeof COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS) {
+const _getContractsUrls = (chainId: ChainId, contractAddressMap: typeof COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS) => {
   const contractAddress = contractAddressMap[chainId]
-  if (!contractAddress) return '-'
-  return getEtherscanLink(chainId, 'address', contractAddress)
+  return contractAddress ? getEtherscanLink(chainId, 'address', contractAddress) : '-'
 }
 
-const VERSIONS: Record<
-  string,
-  {
-    version: string
-    href: (_chainId: ChainId) => string
-    // | { github: string; etherscan: string }
-  }
-> = {
+type VersionInfo = {
+  version: string
+  href: (_chainId: ChainId) => string
+}
+
+const VERSIONS: Record<string, VersionInfo> = {
   Web: {
     version: 'v' + pkg.version,
-    href() {
-      return CODE_LINK
-    },
+    href: () => CODE_LINK,
   },
   'Vault Relayer': {
     version: 'v' + contractsPkg.version,
-    href(chainId: ChainId) {
-      // return Etherscan by default
-      return _getContractsUrls(chainId, COW_PROTOCOL_VAULT_RELAYER_ADDRESS)
-
-      // return {
-      //   etherscan: _getContractsUrls(chainId, GP_VAULT_RELAYER),
-      //   github: `https://github.com/cowprotocol/contracts/blob/v${CONTRACTS_VERSION}/src/contracts/GPv2VaultRelayer.sol`,
-      // }
-    },
+    href: (chainId: ChainId) => _getContractsUrls(chainId, COW_PROTOCOL_VAULT_RELAYER_ADDRESS),
   },
   'Settlement Contract': {
     version: 'v' + contractsPkg.version,
-    href(chainId: ChainId) {
-      // return Etherscan by default
-      return _getContractsUrls(chainId, COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS)
-
-      // return {
-      //   etherscan: _getContractsUrls(chainId, GP_SETTLEMENT_CONTRACT_ADDRESS),
-      //   github: `https://github.com/cowprotocol/contracts/blob/v${CONTRACTS_VERSION}/src/contracts/GPv2Settlement.sol`,
-      // }
-    },
+    href: (chainId: ChainId) => _getContractsUrls(chainId, COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS),
   },
 }
 
 const versionsList = Object.keys(VERSIONS)
 
-const StyledPolling = styled.div`
+const Dropdown = styled.div`
   position: relative;
-  display: flex;
-  flex-flow: column nowrap;
-  align-items: flex-start;
-  padding: 16px 0;
-  color: inherit;
-  gap: 10px;
+  display: inline-block;
 `
 
-const VersionsExternalLink = styled(ExternalLink)<{ isUnclickable?: boolean }>`
-  color: inherit;
+const DropdownContent = styled.div<{ show: boolean }>`
+  display: ${({ show }) => (show ? 'block' : 'none')};
+  position: absolute;
+  background-color: var(${UI.COLOR_PAPER});
+  min-width: 160px;
+  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+  padding: 12px 16px;
+  bottom: 100%;
+  right: 0;
+  height: min-content;
+  z-index: 999;
+  width: max-content;
+  border-radius: 16px;
+  margin: auto auto 12px;
 
-  > span {
-    display: inline-block;
-    transform: rotate(0);
-    transition: transform var(${UI.ANIMATION_DURATION}) ease-in-out;
+  ${Media.upToLarge()} {
+    left: 0;
+    right: initial;
   }
 
-  &:hover > span {
-    transform: rotate(404deg);
-  }
-
-  ${({ isUnclickable = false }): string | false =>
-    isUnclickable &&
-    `
-      pointer-events: none;
-      cursor: none;
-  `}
-`
-
-const VersionsLinkWrapper = styled.span`
-  font-size: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  opacity: 0.5;
-  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
-
-  ${Media.upToSmall()} {
-    opacity: 1;
-    font-size: 13px;
+  ${Media.upToMedium()} {
     width: 100%;
+    position: fixed;
+    bottom: 56px;
+    margin: 0;
+    padding: 18px 24px;
+    box-shadow: 0 -100vh 0 100vh rgb(0 0 0 / 40%);
+    border-bottom: 1px solid var(${UI.COLOR_BORDER});
+    border-radius: 16px 16px 0 0;
+  }
+`
+
+const DropdownButton = styled.div`
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  gap: 4px;
+  border-radius: 16px;
+
+  &:hover {
+    > svg {
+      transform: rotate(-90deg);
+    }
+  }
+
+  > svg {
+    --size: 12px;
+    color: inherit;
+    width: var(--size);
+    height: var(--size);
+    transition: transform 0.2s ease-in-out;
+  }
+`
+
+const VersionLink = styled(ExternalLink)<{ onClick: () => void }>`
+  display: block;
+  margin: 5px 0;
+
+  ${Media.upToMedium()} {
+    margin: 24px 0;
+    font-size: 16px;
+  }
+
+  span {
+    font-size: 12px;
+    color: var(${UI.COLOR_INFO_TEXT});
+    background: var(${UI.COLOR_INFO_BG});
+    border-radius: 8px;
+    padding: 2px 4px;
+  }
+`
+
+const CloseButton = styled.span`
+  position: absolute;
+  top: 4px;
+  right: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  color: var(${UI.COLOR_TEXT_OPACITY_50});
+  transition: color 0.2s ease-in-out;
+
+  ${Media.upToMedium()} {
+    top: 16px;
+    right: 16px;
   }
 
   &:hover {
-    opacity: 1;
+    color: var(${UI.COLOR_TEXT});
+  }
+
+  > svg {
+    --size: 8px;
+    width: var(--size);
+    height: var(--size);
+
+    ${Media.upToMedium()} {
+      --size: 16px;
+    }
   }
 `
 
 export const Version = ({ className }: { className?: string }) => {
   const { chainId } = useWalletInfo()
-  return (
-    <StyledPolling className={className}>
-      {/* it's hardcoded anyways */}
-      {versionsList.map((key) => {
-        const { href, version } = VERSIONS[key]
-        const chainHref = href(chainId)
+  const [showDropdown, setShowDropdown] = useState(false)
+  const dropdownRef = useRef<HTMLDivElement>(null)
 
-        return (
-          <VersionsLinkWrapper key={key}>
-            {typeof chainHref == 'string' && (
-              <VersionsExternalLink href={chainHref}>
-                {key} {version} <span>↗</span>
-              </VersionsExternalLink>
-            )}
-          </VersionsLinkWrapper>
-        )
-      })}
-    </StyledPolling>
+  const webVersion = VERSIONS['Web'].version
+
+  useOnClickOutside([dropdownRef], () => setShowDropdown(false))
+
+  const handleLinkClick = () => {
+    setShowDropdown(false)
+  }
+
+  return (
+    <Dropdown className={className} ref={dropdownRef}>
+      <DropdownButton onClick={() => setShowDropdown(!showDropdown)}>
+        {webVersion} <SVG src={ICON_ARROW_DOWN} />
+      </DropdownButton>
+      <DropdownContent show={showDropdown}>
+        <CloseButton onClick={() => setShowDropdown(false)}>
+          <SVG src={ICON_X} />
+        </CloseButton>
+        {versionsList.map((key) => {
+          const { href, version } = VERSIONS[key]
+          const chainHref = href(chainId)
+          return (
+            <VersionLink key={key} href={chainHref} onClick={handleLinkClick}>
+              {key} <span>{version}</span>
+            </VersionLink>
+          )
+        })}
+      </DropdownContent>
+    </Dropdown>
   )
 }
