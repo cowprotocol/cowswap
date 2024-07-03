@@ -1,4 +1,3 @@
-import { LONG_PRECISION } from '@cowprotocol/common-const'
 import { OrderClass, OrderKind, SigningScheme } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount, Price, Token } from '@uniswap/sdk-core'
 
@@ -26,7 +25,7 @@ export interface ParsedOrderExecutionData {
   surplusPercentage: BigNumber
   executedFeeAmount: string | undefined
   executedSurplusFee: string | null
-  filledPercentDisplay: number
+  filledPercentDisplay: string
   executedPrice: Price<Currency, Currency> | null
   activityId: string | undefined
   activityTitle: string
@@ -65,7 +64,7 @@ export const parseOrder = (order: Order): ParsedOrder => {
   const creationTime = new Date(order.creationTime)
   const fullyFilled = isOrderFilled(order)
   const partiallyFilled = isPartiallyFilled(order)
-  const filledPercentDisplay = +filledPercentage.toFixed(LONG_PRECISION) * 100
+  const filledPercentDisplay = filledPercentage.times(100).toString()
 
   const executedPrice = JSBI.greaterThan(executedBuyAmount, JSBI.BigInt(0))
     ? new Price({
