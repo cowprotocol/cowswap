@@ -94,7 +94,7 @@ export function getOrderFilledAmount(order: RawOrder): { amount: BigNumber; perc
     totalAmount = new BigNumber(buyAmount)
   }
 
-  return { amount: executedAmount, percentage: new BigNumber(executedAmount.toFixed() / totalAmount.toFixed()) }
+  return { amount: executedAmount, percentage: executedAmount.div(totalAmount) }
 }
 
 export type Surplus = {
