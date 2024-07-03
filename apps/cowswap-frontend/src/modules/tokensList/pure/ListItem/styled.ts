@@ -17,7 +17,7 @@ export const Wrapper = styled.div<{ $enabled: boolean }>`
 `
 
 export const SettingsButton = styled(MenuButton)`
-  ${blankButtonMixin}
+  ${blankButtonMixin};
   color: inherit;
 
   > svg {
