@@ -116,15 +116,17 @@ function mergeHooks(
   hooks1: OrderInteractionHooks | undefined,
   hooks2: OrderInteractionHooks | undefined
 ): OrderInteractionHooks | undefined {
-  if (!hooks1 || !hooks2) return undefined
-
   if (hooks1 && !hooks2) return hooks1
 
   if (!hooks1 && hooks2) return hooks2
 
-  return {
-    version: hooks1.version,
-    pre: (hooks1.pre || []).concat(hooks2.pre || []),
-    post: (hooks1.post || []).concat(hooks2.post || []),
+  if (hooks1 && hooks2) {
+    return {
+      version: hooks1.version,
+      pre: (hooks1.pre || []).concat(hooks2.pre || []),
+      post: (hooks1.post || []).concat(hooks2.post || []),
+    }
   }
+
+  return undefined
 }

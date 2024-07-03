@@ -79,7 +79,15 @@ export function TradeWidgetLinks({
         />
       )
     })
-  }, [enabledItems, tradeContext, location.pathname, highlightedBadgeText, highlightedBadgeType])
+  }, [
+    isDropdown,
+    isDropdownVisible,
+    enabledItems,
+    tradeContext,
+    location.pathname,
+    highlightedBadgeText,
+    highlightedBadgeType,
+  ])
 
   const singleMenuItem = menuItemsElements.length === 1
 
