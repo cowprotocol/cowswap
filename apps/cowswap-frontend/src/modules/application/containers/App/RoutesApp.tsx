@@ -22,12 +22,14 @@ import AnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers'
 import { SwapPage } from 'pages/Swap'
 
 // Async routes
-
 const LimitOrders = lazy(() => import(/* webpackChunkName: "limit_orders" */ 'pages/LimitOrders'))
 const AdvancedOrders = lazy(() => import(/* webpackChunkName: "advanced_orders" */ 'pages/AdvancedOrders'))
 const NotFound = lazy(() => import(/* webpackChunkName: "not_found" */ 'pages/error/NotFound'))
 const CowRunner = lazy(() => import(/* webpackChunkName: "cow_runner" */ 'pages/games/CowRunner'))
 const MevSlicer = lazy(() => import(/* webpackChunkName: "mev_slicer" */ 'pages/games/MevSlicer'))
+
+// External routes
+const LegalExternal = <ExternalRedirect url={COWDAO_LEGAL_LINK} />
 
 // Account
 const AccountTokensOverview = lazy(() => import(/* webpackChunkName: "tokens_overview" */ 'pages/Account/Tokens'))
@@ -61,9 +63,9 @@ const lazyRoutes: LazyRouteProps[] = [
   { route: RoutesEnum.FAQ_ETH_FLOW, element: <ExternalRedirect url={COWDAO_KNOWLEDGE_BASE_LINK} /> },
   { route: RoutesEnum.PLAY_COWRUNNER, element: <CowRunner /> },
   { route: RoutesEnum.PLAY_MEVSLICER, element: <MevSlicer /> },
-  { route: RoutesEnum.PRIVACY_POLICY, element: <ExternalRedirect url={COWDAO_LEGAL_LINK} /> },
-  { route: RoutesEnum.COOKIE_POLICY, element: <ExternalRedirect url={COWDAO_LEGAL_LINK} /> },
-  { route: RoutesEnum.TERMS_CONDITIONS, element: <ExternalRedirect url={COWDAO_LEGAL_LINK} /> },
+  { route: RoutesEnum.PRIVACY_POLICY, element: LegalExternal },
+  { route: RoutesEnum.COOKIE_POLICY, element: LegalExternal },
+  { route: RoutesEnum.TERMS_CONDITIONS, element: LegalExternal },
 ]
 
 export function RoutesApp() {
