@@ -22,8 +22,6 @@ import {
   HeroBackground,
   HeroContent,
   HeroTitle,
-  TopicCardInner,
-  TopicDescription,
 } from '@/styles/styled'
 
 import SVG from 'react-inlinesvg'
@@ -34,7 +32,7 @@ import { EventCategories, sendEventHandler } from '@cowprotocol/analytics'
 
 import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
 
-import { CHANNEL_LIST, PRODUCT_LIST } from '@/data/home/const'
+import { CHANNEL_LIST, PRODUCT_CONTAINERS } from '@/data/home/const'
 
 interface PageProps {
   siteConfigData: typeof CONFIG
@@ -57,57 +55,7 @@ export default function Page() {
           </HeroContent>
         </HeroContainer>
 
-        <ContainerCard bgColor={Color.neutral100}>
-          <ContainerCardSection>
-            <SectionTitleWrapper color={Color.neutral0} maxWidth={1200} margin="100px auto">
-              <SectionTitleText lineHeight={1.6} lineHeightMobile={1.8} fontSizeMobile={28}>
-                CoW DAO develops the <span className="wordtag-orange">most user-protective</span> products in DeFi – so
-                you can <span className="wordtag-purple">do more</span> with{' '}
-                <span className="wordtag-blue">less worry</span>
-              </SectionTitleText>
-            </SectionTitleWrapper>
-
-            <TopicList columns={2}>
-              {PRODUCT_LIST.map((topic, index) => (
-                <TopicCard
-                  key={index}
-                  contentAlign={'left'}
-                  bgColor={topic.bgColor}
-                  textColor={topic.textColor}
-                  padding={'32px'}
-                  asProp="div"
-                >
-                  <TopicCardInner contentAlign="left">
-                    <TopicTitle fontSize={51}>{topic.title}</TopicTitle>
-                    <TopicDescription fontSize={28} color={topic.descriptionColor}>
-                      {topic.description}
-                    </TopicDescription>
-                    <Link
-                      bgColor={topic.linkBgColor}
-                      color={topic.linkColor}
-                      href={topic.linkHref}
-                      linkType={LinkType.TopicButton}
-                      onClick={() => sendEventHandler(EventCategories.HOME, topic.linkEvent)}
-                      external={topic.linkExternal}
-                      utmContent={topic.linkUtmContent}
-                    >
-                      {topic.linkText}
-                    </Link>
-                  </TopicCardInner>
-                  <TopicImage
-                    iconColor="transparent"
-                    bgColor="transparent"
-                    margin={'0 0 0 auto'}
-                    height={'236px'}
-                    width={'auto'}
-                  >
-                    <SVG src={topic.iconImage} title={topic.title} />
-                  </TopicImage>
-                </TopicCard>
-              ))}
-            </TopicList>
-          </ContainerCardSection>
-        </ContainerCard>
+        {PRODUCT_CONTAINERS}
 
         <ContainerCard bgColor={'transparent'}>
           <ContainerCardSection>
