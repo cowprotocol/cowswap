@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.76.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.76.0...cowswap-v1.76.1) (2024-07-02)
+
+
+### Bug Fixes
+
+* **widget:** use custom label and content for partner fee ([#4646](https://github.com/cowprotocol/cowswap/issues/4646)) ([#4651](https://github.com/cowprotocol/cowswap/issues/4651)) ([2d71424](https://github.com/cowprotocol/cowswap/commit/2d714245fded22bba70b0d3197a28d43764eb6ee))
+
 ## [1.76.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.75.0...cowswap-v1.76.0) (2024-06-27)
 
 
