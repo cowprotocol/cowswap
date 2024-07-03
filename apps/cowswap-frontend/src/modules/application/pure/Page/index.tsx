@@ -22,7 +22,7 @@ export const Title = styled.h1`
   color: inherit;
   text-shadow: ${({ theme }) =>
     theme.darkMode
-      ? `0px 0px 26px ${`var(${UI.COLOR_TEXT_OPACITY_10})`}, 0px 0px 28px ${`var(${UI.COLOR_TEXT_OPACITY_25})`}`
+      ? `0px 0px 26px var(${UI.COLOR_TEXT_OPACITY_10}), 0px 0px 28px var(${UI.COLOR_TEXT_OPACITY_25})`
       : 'none'};
   font-weight: 500;
 
@@ -141,7 +141,6 @@ export const Content = styled.div`
 
 export const BackToTopStyle = css`
   #back-to-top {
-    border: 1px solid transparent;
     background: var(${UI.COLOR_PRIMARY});
     color: var(${UI.COLOR_BUTTON_TEXT});
     font-size: 18px;
