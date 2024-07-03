@@ -71,7 +71,6 @@ export function useSetupTradeAmountsFromUrl({ onAmountsUpdate, onlySell }: Setup
     }
 
     if (onlySell) {
-      debugger
       update.outputCurrencyAmount = null
 
       update.orderKind = OrderKind.SELL
