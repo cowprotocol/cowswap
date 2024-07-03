@@ -69,7 +69,7 @@ export function AppDataHooksUpdater(): null {
     } else {
       // There was a hook data, but not anymore. The hook needs to be removed
       updateAppDataHooks(undefined)
-      hooksPrev.current = hooks
+      hooksPrev.current = undefined
     }
   }, [updateAppDataHooks, permitData, hasTradeInfo, isSmartContractWallet, isNativeSell, preHooks, postHooks])
 

@@ -1,5 +1,6 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 
+import gnoLogo from '@cowprotocol/assets/cow-swap/network-gnosis-chain-logo.svg'
 import { GNO } from '@cowprotocol/common-const'
 import { HookDappInternal, HookDappType } from '@cowprotocol/types'
 import { ButtonPrimary, UI } from '@cowprotocol/ui'
@@ -10,8 +11,6 @@ import { formatUnits } from 'ethers/lib/utils'
 import styled from 'styled-components/macro'
 
 import { HookDappContext } from 'modules/hooks/context'
-
-import gnoLogo from './gnosis-logo.svg'
 
 import { SBC_DEPOSIT_CONTRACT_ADDRESS, useSBCDepositContract } from '../../hooks'
 
