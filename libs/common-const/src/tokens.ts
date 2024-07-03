@@ -67,7 +67,7 @@ export const USDC_GNOSIS_CHAIN = new TokenWithLogo(
   '0xDDAfbb505ad214D7b80b1f830fcCc89B60fb7A83',
   6,
   'USDC',
-  'USD Coin'
+  'USD Coin (old)'
 )
 export const USDCe_GNOSIS_CHAIN = new TokenWithLogo(
   USDC_MAINNET.logoURI,
