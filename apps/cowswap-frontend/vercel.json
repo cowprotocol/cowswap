@@ -1,8 +1,9 @@
 {
-  "rewrites": [
+  "redirects": [
     {
-      "source": "/:ignore",
-      "destination": "/"
+      "source": "/(.+)",
+      "destination": "/",
+      "permanent": false
     }
   ]
 }
