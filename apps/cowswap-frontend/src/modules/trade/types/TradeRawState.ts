@@ -14,8 +14,8 @@ export interface TradeRawState {
   readonly chainId: number | null
   readonly inputCurrencyId: string | null
   readonly outputCurrencyId: string | null
-  readonly recipient: string | null
-  readonly recipientAddress: string | null
+  readonly recipient?: string | null
+  readonly recipientAddress?: string | null
 }
 
 export interface ExtendedTradeRawState extends TradeRawState {

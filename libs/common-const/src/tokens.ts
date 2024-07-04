@@ -67,6 +67,14 @@ export const USDC_GNOSIS_CHAIN = new TokenWithLogo(
   '0xDDAfbb505ad214D7b80b1f830fcCc89B60fb7A83',
   6,
   'USDC',
+  'USD Coin (old)'
+)
+export const USDCe_GNOSIS_CHAIN = new TokenWithLogo(
+  USDC_MAINNET.logoURI,
+  ChainId.GNOSIS_CHAIN,
+  '0x2a22f9c3b484c3629090feed35f17ff8f88f76f0',
+  6,
+  'USDC.e',
   'USD Coin'
 )
 export const WBTC_GNOSIS_CHAIN = new TokenWithLogo(
@@ -289,6 +297,8 @@ export const GNO: Record<SupportedChainId, TokenWithLogo> = {
 const SDAI_GNOSIS_CHAIN_ADDRESS = '0xaf204776c7245bf4147c2612bf6e5972ee483701'
 const GBPE_GNOSIS_CHAIN_ADDRESS = '0x5cb9073902f2035222b9749f8fb0c9bfe5527108'
 
+// NOTE: whenever this list is updated, make sure to update the docs section regarding the volume fees
+// https://github.com/cowprotocol/docs/blob/main/docs/governance/fees/fees.md?plain=1#L40
 export const GNOSIS_CHAIN_STABLECOINS = [
   SDAI_GNOSIS_CHAIN_ADDRESS,
   NATIVE_CURRENCIES[SupportedChainId.GNOSIS_CHAIN].address, //xDAI
@@ -296,6 +306,7 @@ export const GNOSIS_CHAIN_STABLECOINS = [
   EURE_GNOSIS_CHAIN.address,
   GBPE_GNOSIS_CHAIN_ADDRESS,
   USDC_GNOSIS_CHAIN.address,
+  USDCe_GNOSIS_CHAIN.address,
   USDT_GNOSIS_CHAIN.address,
 ].map((t) => t.toLowerCase())
 

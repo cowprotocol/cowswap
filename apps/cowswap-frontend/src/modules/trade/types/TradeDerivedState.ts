@@ -26,8 +26,8 @@ export interface TradeDerivedState {
   readonly outputCurrencyBalance: CurrencyAmount<Currency> | null
   readonly inputCurrencyFiatAmount: CurrencyAmount<Currency> | null
   readonly outputCurrencyFiatAmount: CurrencyAmount<Currency> | null
-  readonly recipient: string | null
-  readonly recipientAddress: string | null
+  readonly recipient?: string | null
+  readonly recipientAddress?: string | null
   readonly orderKind: OrderKind
   readonly slippage: Percent | null
   readonly tradeType: TradeType | null

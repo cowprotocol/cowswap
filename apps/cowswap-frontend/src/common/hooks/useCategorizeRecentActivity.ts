@@ -41,7 +41,7 @@ export function useCategorizeRecentActivity() {
       [[], []]
     )
   }, [allRecentActivity, allTransactions])
-  return { pendingActivity, confirmedActivity }
+  return useMemo(() => ({ pendingActivity, confirmedActivity }), [pendingActivity, confirmedActivity])
 }
 
 function isEthFlowOrderNotCreated(

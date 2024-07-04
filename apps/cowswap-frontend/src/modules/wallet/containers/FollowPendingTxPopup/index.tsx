@@ -27,7 +27,7 @@ export function useLastPendingOrder(): { lastPendingOrder: Order | null; onClose
     setShowFollowPendingTxPopup(false)
   }, [lastPendingOrder, setLastOrderClosed, setShowFollowPendingTxPopup])
 
-  return { lastPendingOrder, onClose }
+  return useMemo(() => ({ lastPendingOrder, onClose }), [lastPendingOrder, onClose])
 }
 
 // Set pop up closed if it has not been closed and not fulfill a condition such as not pending tx
@@ -59,7 +59,7 @@ const useShowingPopupFirstTime = (orderId: string | undefined) => {
 
   const firstTimePopupOrderAppears = useAtomValue(_firstTimePopupOrderAppears)
 
-  return { showPopup: firstTimePopupOrderAppears && showingPopup, firstTimePopupOrderAppears }
+  return useMemo(() => ({ showPopup: firstTimePopupOrderAppears && showingPopup, firstTimePopupOrderAppears }), [firstTimePopupOrderAppears, showingPopup])
 }
 
 export const FollowPendingTxPopup: React.FC<PropsWithChildren> = ({ children }): JSX.Element => {

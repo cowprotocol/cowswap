@@ -97,7 +97,7 @@ export default function Profile() {
   const { isModalOpen, openModal, closeModal } = useModalState<string>()
 
   // Handle swaping
-  const { swapCallback } = useSwapVCowCallback({
+  const swapCallback = useSwapVCowCallback({
     openModal,
     closeModal,
   })
