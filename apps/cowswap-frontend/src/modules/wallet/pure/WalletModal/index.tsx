@@ -4,12 +4,10 @@ import { TryActivation } from '@cowprotocol/wallet'
 
 import { Trans } from '@lingui/macro'
 import { ThemedText } from 'theme'
-import { StyledInternalLink } from 'theme'
 
 import { LightCard } from 'legacy/components/Card'
 import { AutoColumn } from 'legacy/components/Column'
 
-import { Routes } from 'common/constants/routes'
 import { CloseIcon, ContentWrapper, CowModal, HeaderRow, HoverText } from 'common/pure/Modal'
 
 import { CloseColor, OptionGrid, TermsWrapper, UpperSection, Wrapper } from './styled'
@@ -30,7 +28,7 @@ interface WalletModalProps {
   account: string | undefined
 }
 
-export function WalletModal(props: WalletModalProps) {
+export function WalletModal(props: Readonly<WalletModalProps>) {
   const { isOpen, onDismiss, view, openOptions, pendingError, tryActivation, tryConnection } = props
 
   const isPending = view === 'pending'
@@ -82,9 +80,14 @@ function CustomTerms() {
     <TermsWrapper>
       <Trans>
         By connecting a wallet, you acknowledge that you have read, understood and agree to the interface’s{' '}
-        <StyledInternalLink style={{ marginRight: 5 }} to={Routes.TERMS_CONDITIONS} target="_blank">
-          Terms &amp; Conditions.
-        </StyledInternalLink>
+        <a
+          href="https://cow.fi/legal/cowswap-terms?utm_source=swap.cow.fi&utm_medium=web&utm_content=wallet-modal-terms-link"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Terms &amp; Conditions
+        </a>
+        .
       </Trans>
     </TermsWrapper>
   )
