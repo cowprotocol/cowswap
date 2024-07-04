@@ -259,7 +259,7 @@ export function SwapWidget({ hooksEnabled }: SwapWidgetProps) {
       <>
         {hooksEnabled && <PostHookButton />}
         <TradeRateDetails
-          allowedSlippage={isSlippageModified ? slippage : null}
+          allowedSlippage={isSlippageModified || isEoaEthFlow ? slippage : null}
           rateInfoParams={rateInfoParams}
           receiveAmountInfo={receiveAmountInfo}
         />
