@@ -56,7 +56,7 @@ jobs:
         run: yarn install --frozen-lockfile
 
       - name: Build
-        run: yarn nx build ${{ inputs.lib }}
+        run: npx nx build ${{ inputs.lib }}
 
       - name: Copy .npmrc to destination
         run: cp ${{ env.NPM_CONFIG_USERCONFIG }} ${{ env.DESTINATION_PATH }}/
