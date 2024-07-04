@@ -372,12 +372,14 @@ export function PendingOrdersUpdater(): null {
   const isUpdatingMarket = useRef(false)
   const isUpdatingLimit = useRef(false)
   const isUpdatingTwap = useRef(false)
+  const isUpdatingHooks = useRef(false)
 
   const updatersRefMap = useMemo(
     () => ({
       [UiOrderType.SWAP]: isUpdatingMarket,
       [UiOrderType.LIMIT]: isUpdatingLimit,
       [UiOrderType.TWAP]: isUpdatingTwap,
+      [UiOrderType.HOOKS]: isUpdatingHooks,
     }),
     []
   )
