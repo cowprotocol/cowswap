@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.13.1](https://github.com/cowprotocol/cowswap/compare/widget-lib-v0.13.0...widget-lib-v0.13.1) (2024-07-04)
+
+
+### Bug Fixes
+
+* **widget:** always listen activation event ([#4670](https://github.com/cowprotocol/cowswap/issues/4670)) ([#4673](https://github.com/cowprotocol/cowswap/issues/4673)) ([a74244d](https://github.com/cowprotocol/cowswap/commit/a74244d3ec35f4b96b52b87f0be2e4f082a240e5))
+
 ## [0.13.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v0.12.0...widget-lib-v0.13.0) (2024-06-18)
 
 
