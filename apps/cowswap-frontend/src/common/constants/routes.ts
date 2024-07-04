@@ -47,3 +47,9 @@ export const MENU_ITEMS: { route: RoutesValues; label: string; fullLabel?: strin
     description: 'Powerful tool to generate pre/post interaction for CoW Protocol',
   },
 ]
+
+export const HOOKS_STORE_MENU_ITEM = {
+  route: Routes.HOOKS,
+  label: 'Hooks',
+  description: 'Powerful tool to generate pre/post interaction for CoW Protocol',
+}

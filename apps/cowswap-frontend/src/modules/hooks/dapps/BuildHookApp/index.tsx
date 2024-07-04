@@ -49,10 +49,6 @@ const Header = styled.div`
   }
 `
 
-// const Label = styled.span`
-//   color: var(${UI.COLOR_TEXT2});
-// `
-
 const ContentWrapper = styled.div`
   flex-grow: 1;
   justify-content: center;

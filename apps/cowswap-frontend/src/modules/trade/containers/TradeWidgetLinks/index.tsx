@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 
 import { Command } from '@cowprotocol/types'
 import { BadgeType } from '@cowprotocol/ui'
@@ -12,7 +12,8 @@ import { matchPath, useLocation } from 'react-router-dom'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { ModalHeader } from 'modules/tokensList/pure/ModalHeader'
 
-import { MENU_ITEMS, Routes, RoutesValues } from 'common/constants/routes'
+import { Routes, RoutesValues } from 'common/constants/routes'
+import { useMenuItems } from 'common/hooks/useMenuItems'
 
 import * as styledEl from './styled'
 
@@ -45,39 +46,50 @@ export function TradeWidgetLinks({
   const location = useLocation()
   const [isDropdownVisible, setDropdownVisible] = useState(false)
   const { enabledTradeTypes } = useInjectedWidgetParams()
+  const menuItems = useMenuItems()
 
   const handleMenuItemClick = (_item?: MenuItemConfig) => {
-    if (menuItems.length === 1) return
+    if (menuItemsElements.length === 1) return
     setDropdownVisible(false)
   }
 
-  const enabledItems = MENU_ITEMS.filter((item) => {
-    if (!enabledTradeTypes?.length) return true
+  const enabledItems = useMemo(() => {
+    return menuItems.filter((item) => {
+      if (!enabledTradeTypes?.length) return true
 
-    return enabledTradeTypes.some((type: TradeType) => TRADE_TYPE_TO_ROUTE[type] === item.route)
-  })
+      return enabledTradeTypes.some((type: TradeType) => TRADE_TYPE_TO_ROUTE[type] === item.route)
+    })
+  }, [menuItems, enabledTradeTypes])
 
-  const menuItems = enabledItems.map((item) => {
-    const routePath = parameterizeTradeRoute(tradeContext, item.route, true)
-    const isActive = !!matchPath(location.pathname, routePath.split('?')[0])
+  const menuItemsElements = useMemo(() => {
+    return enabledItems.map((item) => {
+      const routePath = parameterizeTradeRoute(tradeContext, item.route, true)
+      const isActive = !!matchPath(location.pathname, routePath.split('?')[0])
 
-    const menuItem = (
-      <MenuItem
-        key={item.label}
-        routePath={routePath}
-        item={item}
-        isActive={isActive}
-        badgeText={highlightedBadgeText}
-        badgeType={highlightedBadgeType}
-        onClick={() => handleMenuItemClick(item)}
-        isDropdownVisible={isDropdown && isDropdownVisible}
-      />
-    )
+      return (
+        <MenuItem
+          key={item.label}
+          routePath={routePath}
+          item={item}
+          isActive={isActive}
+          badgeText={highlightedBadgeText}
+          badgeType={highlightedBadgeType}
+          onClick={() => handleMenuItemClick(item)}
+          isDropdownVisible={isDropdown && isDropdownVisible}
+        />
+      )
+    })
+  }, [
+    isDropdown,
+    isDropdownVisible,
+    enabledItems,
+    tradeContext,
+    location.pathname,
+    highlightedBadgeText,
+    highlightedBadgeType,
+  ])
 
-    return menuItem
-  })
-
-  const singleMenuItem = menuItems.length === 1
+  const singleMenuItem = menuItemsElements.length === 1
 
   return isDropdown ? (
     <>
@@ -85,9 +97,9 @@ export function TradeWidgetLinks({
         onClick={() => !singleMenuItem && setDropdownVisible(!isDropdownVisible)}
         isDropdownVisible={isDropdownVisible}
       >
-        <styledEl.Link to={menuItems.find((item) => item.props.isActive)?.props.routePath || '#'}>
+        <styledEl.Link to={menuItemsElements.find((item) => item.props.isActive)?.props.routePath || '#'}>
           <Trans>
-            {menuItems.find((item) => item.props.isActive)?.props.item.label}
+            {menuItemsElements.find((item) => item.props.isActive)?.props.item.label}
             {!singleMenuItem ? <SVG src={IMAGE_CARRET} title="select" /> : null}
           </Trans>
         </styledEl.Link>
@@ -96,12 +108,12 @@ export function TradeWidgetLinks({
       {isDropdownVisible && (
         <styledEl.SelectMenu>
           <ModalHeader onBack={handleMenuItemClick}>Trading mode</ModalHeader>
-          <styledEl.TradeWidgetContent>{menuItems}</styledEl.TradeWidgetContent>
+          <styledEl.TradeWidgetContent>{menuItemsElements}</styledEl.TradeWidgetContent>
         </styledEl.SelectMenu>
       )}
     </>
   ) : (
-    <styledEl.Wrapper>{menuItems}</styledEl.Wrapper>
+    <styledEl.Wrapper>{menuItemsElements}</styledEl.Wrapper>
   )
 }
 
