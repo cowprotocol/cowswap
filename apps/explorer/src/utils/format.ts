@@ -245,7 +245,7 @@ export function formatCalculatedPriceToDisplay(
   const buySymbol = safeTokenName(buyToken)
   const sellSymbol = safeTokenName(sellToken)
 
-  const [baseSymbol, quoteSymbol] = isPriceInverted ? [sellSymbol, buySymbol] : [buySymbol, sellSymbol]
+  const [quoteSymbol] = isPriceInverted ? [sellSymbol, buySymbol] : [buySymbol, sellSymbol]
 
   return `${formattedPrice} ${quoteSymbol}`
 }
