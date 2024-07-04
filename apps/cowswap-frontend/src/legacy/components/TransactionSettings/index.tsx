@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react'
+import { useCallback, useContext, useRef, useState } from 'react'
 
 import { orderExpirationTimeAnalytics, slippageToleranceAnalytics } from '@cowprotocol/analytics'
 import {
@@ -13,6 +13,7 @@ import {
   MINIMUM_ETH_FLOW_SLIPPAGE_BPS,
   MINIMUM_ORDER_VALID_TO_TIME_SECONDS,
 } from '@cowprotocol/common-const'
+import { useOnClickOutside } from '@cowprotocol/common-hooks'
 import { getWrappedToken, percentToBps } from '@cowprotocol/common-utils'
 import { FancyButton, HelpTooltip, Media, RowBetween, RowFixed, UI } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -265,6 +266,20 @@ export function TransactionSettings() {
 
   const showCustomDeadlineRow = Boolean(chainId)
 
+  const onSlippageInputBlur = useCallback(() => {
+    if (slippageError) {
+      slippageToleranceAnalytics('Default', placeholderSlippage.toFixed(2))
+      setSwapSlippage(null)
+      setSlippageError(false)
+    }
+
+    setSlippageInput('')
+  }, [slippageError, placeholderSlippage, setSwapSlippage])
+
+  const wrapperRef = useRef(null)
+
+  useOnClickOutside([wrapperRef], onSlippageInputBlur)
+
   return (
     <Wrapper>
       <AutoColumn gap="md">
@@ -304,15 +319,7 @@ export function TransactionSettings() {
                   placeholder={placeholderSlippage.toFixed(2)}
                   value={slippageInput.length > 0 ? slippageInput : !isSlippageModified ? '' : swapSlippage.toFixed(2)}
                   onChange={(e) => parseSlippageInput(e.target.value)}
-                  onBlur={() => {
-                    if (slippageError) {
-                      slippageToleranceAnalytics('Default', placeholderSlippage.toFixed(2))
-                      setSwapSlippage(null)
-                      setSlippageError(false)
-                    }
-
-                    setSlippageInput('')
-                  }}
+                  onBlur={onSlippageInputBlur}
                   color={slippageError ? 'red' : ''}
                 />
                 %
