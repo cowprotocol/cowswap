@@ -55,11 +55,12 @@ function migrateFavoriteTokensAtom(oldStorageKey: string, newStorageKey: string)
     }
 
     const state = JSON.parse(favoriteV1Raw) as FavoriteTokens
+    const USDC_address = USDC_GNOSIS_CHAIN.address.toLowerCase()
 
     // Replace USDC with USDC.e on Gnosis chain
     state[SupportedChainId.GNOSIS_CHAIN] = Object.keys(state[SupportedChainId.GNOSIS_CHAIN]).reduce<TokensMap>(
       (acc, address) => {
-        if (address.toLowerCase() === USDC_GNOSIS_CHAIN.address.toLowerCase()) {
+        if (address.toLowerCase() === USDC_address) {
           const { symbol = '', name = '' } = USDCe_GNOSIS_CHAIN
           acc[USDCe_GNOSIS_CHAIN.address] = { ...USDCe_GNOSIS_CHAIN, symbol, name }
         } else {
