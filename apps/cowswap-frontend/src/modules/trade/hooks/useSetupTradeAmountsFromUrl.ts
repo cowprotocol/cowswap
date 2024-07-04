@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 
 import { FractionUtils, getIntOrFloat, tryParseCurrencyAmount } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/cow-sdk'
@@ -13,6 +13,7 @@ import {
 } from 'modules/trade/const/tradeUrl'
 
 import { useNavigate } from 'common/hooks/useNavigate'
+import { useSafeEffect } from 'common/hooks/useSafeMemo'
 import { TradeAmounts } from 'common/types'
 
 import { useDerivedTradeState } from './useDerivedTradeState'
@@ -49,7 +50,7 @@ export function useSetupTradeAmountsFromUrl({ onAmountsUpdate, onlySell }: Setup
     navigate({ pathname, search: queryParams.toString() }, { replace: true })
   }, [navigate, pathname, search])
 
-  useEffect(() => {
+  useSafeEffect(() => {
     const orderKind = params.get(TRADE_URL_ORDER_KIND_KEY) as OrderKind | null
     const sellAmount = getIntOrFloat(params.get(TRADE_URL_SELL_AMOUNT_KEY))
     const buyAmount = getIntOrFloat(params.get(TRADE_URL_BUY_AMOUNT_KEY))
@@ -92,6 +93,5 @@ export function useSetupTradeAmountsFromUrl({ onAmountsUpdate, onlySell }: Setup
       }
     }
     // Trigger only when URL or assets are changed
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params, inputCurrency, outputCurrency, onlySell])
 }

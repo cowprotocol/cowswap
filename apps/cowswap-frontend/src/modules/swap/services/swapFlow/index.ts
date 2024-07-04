@@ -60,6 +60,7 @@ export async function swapFlow(
     }
 
     const { appData, account, isSafeWallet, recipientAddressOrName, inputAmount, outputAmount, kind } = orderParams
+
     orderParams.appData = await handlePermit({
       appData,
       account,

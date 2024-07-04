@@ -1,6 +1,7 @@
 import { MenuItem, ProductVariant } from '@cowprotocol/ui'
 
 import AppziButton from 'legacy/components/AppziButton'
+import { Version } from 'legacy/components/Version'
 
 import { FortuneWidget } from 'modules/fortune/containers/FortuneWidget'
 
@@ -67,6 +68,7 @@ export const NAV_ITEMS: MenuItem[] = [
 
 export const ADDITIONAL_FOOTER_CONTENT = (
   <>
+    <Version />
     <FortuneWidget />
     <AppziButton />
   </>
