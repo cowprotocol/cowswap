@@ -1,5 +1,8 @@
 import React, { Dispatch, SetStateAction, useState } from 'react'
 
+import { useMediaQuery } from '@cowprotocol/common-hooks'
+import { Media } from '@cowprotocol/ui'
+
 import { Story, Meta } from '@storybook/react/types-6-0'
 import IMAGE_APPDATA from 'assets/img/code.svg'
 import IMAGE_COW from 'assets/img/CowProtocol-logo.svg'
@@ -8,8 +11,6 @@ import IMAGE_DOC from 'assets/img/doc.svg'
 import IMAGE_ANALYTICS from 'assets/img/pie.svg'
 import { MenuTree, MenuTreeProps } from 'components/common/MenuDropdown/MenuTree'
 import { GlobalStyles, ThemeToggler, Router } from 'storybook/decorators'
-import { useMediaQuery } from '@cowprotocol/common-hooks'
-import { Media } from '@cowprotocol/ui'
 
 import { MenuItemKind, MenuTreeItem } from './types'
 

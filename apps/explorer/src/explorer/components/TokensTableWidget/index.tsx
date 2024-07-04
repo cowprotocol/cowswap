@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react'
 
+import { Media } from '@cowprotocol/ui'
+
 import styled from 'styled-components/macro'
 
 import { BlockchainNetwork, TokensTableContext } from './context/TokensTableContext'
@@ -8,7 +10,6 @@ import { useTable } from './useTable'
 
 import { CardRow } from '../../../components/common/CardRow'
 import CowLoading from '../../../components/common/CowLoading'
-import { EmptyItemWrapper } from '../../../components/common/StyledUserDetailsTable'
 import { TableSearch } from '../../../components/common/TableSearch/TableSearch'
 import { TabItemInterface } from '../../../components/common/Tabs/Tabs'
 import { TabList } from '../../../components/common/Tabs/Tabs'
@@ -16,8 +17,6 @@ import { ConnectionStatus } from '../../../components/ConnectionStatus'
 import { useFlexSearch } from '../../../hooks/useFlexSearch'
 import { Token, useGetTokens } from '../../../hooks/useGetTokens'
 import { useNetworkId } from '../../../state/network'
-import { Media } from '@cowprotocol/ui'
-import { ScrollBarStyle } from '../../styled'
 import ExplorerTabs from '../common/ExplorerTabs/ExplorerTabs'
 import TablePagination from '../common/TablePagination'
 
@@ -140,11 +139,7 @@ export const TokensTableWidget: React.FC<Props> = () => {
   }
 
   if (!tokens?.length) {
-    return (
-      <EmptyItemWrapper>
-        <CowLoading />
-      </EmptyItemWrapper>
-    )
+    return <CowLoading />
   }
 
   return (

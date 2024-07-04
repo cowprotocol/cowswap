@@ -1,8 +1,9 @@
 import React from 'react'
 
+import { Media } from '@cowprotocol/ui'
+
 import searchImg from 'assets/img/search2.svg'
 import styled from 'styled-components/macro'
-import { Media } from '@cowprotocol/ui'
 
 import { Wrapper, Input, SearchIcon } from '../../../explorer/components/common/Search/Search.styled'
 

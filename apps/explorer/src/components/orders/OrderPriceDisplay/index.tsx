@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 
 import { Command } from '@cowprotocol/types'
 
@@ -6,41 +6,12 @@ import { faExchangeAlt } from '@fortawesome/free-solid-svg-icons'
 import { calculatePrice, formatSmart, invertPrice, safeTokenName, TokenErc20 } from '@gnosis.pm/dex-js'
 import BigNumber from 'bignumber.js'
 import Icon from 'components/Icon'
-import styled from 'styled-components/macro'
 
 import {
   HIGH_PRECISION_DECIMALS,
   HIGH_PRECISION_SMALL_LIMIT,
   NO_ADJUSTMENT_NEEDED_PRECISION,
 } from '../../../explorer/const'
-
-const Wrapper = styled.span`
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 0.5rem;
-
-  > span {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    flex-wrap: wrap;
-  }
-
-  > span > span:first-child {
-    white-space: nowrap;
-  }
-
-  > span:first-child {
-    margin: 0 0.5rem 0 0;
-  }
-
-  > span:last-child {
-    gap: 0.5rem;
-    white-space: nowrap;
-    width: 100%;
-  }
-`
 
 export type Props = {
   buyAmount: string | BigNumber
@@ -52,7 +23,7 @@ export type Props = {
   showInvertButton?: boolean
 }
 
-export function OrderPriceDisplay(props: Props): JSX.Element {
+export function OrderPriceDisplay(props: Readonly<Props>): React.ReactNode {
   const {
     buyAmount,
     buyToken,
@@ -87,14 +58,9 @@ export function OrderPriceDisplay(props: Props): JSX.Element {
   const [baseSymbol, quoteSymbol] = isPriceInverted ? [sellSymbol, buySymbol] : [buySymbol, sellSymbol]
 
   return (
-    <Wrapper>
-      <span>
-        <span>{formattedPrice}</span> &nbsp;<span>{quoteSymbol}</span>
-      </span>
-      <span>
-        for {baseSymbol}
-        {showInvertButton && <Icon icon={faExchangeAlt} onClick={invert} />}
-      </span>
-    </Wrapper>
+    <>
+      {formattedPrice} {quoteSymbol} for {baseSymbol}{' '}
+      {showInvertButton && <Icon icon={faExchangeAlt} onClick={invert} />}
+    </>
   )
 }

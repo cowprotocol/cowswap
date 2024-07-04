@@ -1,5 +1,7 @@
 import React from 'react'
 
+import { Media } from '@cowprotocol/ui'
+
 import styled from 'styled-components/macro'
 
 import { OrdersTableContext, BlockchainNetwork } from './context/OrdersTableContext'
@@ -13,7 +15,6 @@ import { Notification } from '../../../components/Notification'
 import { useGetAccountOrders } from '../../../hooks/useGetOrders'
 import ExplorerTabs from '../common/ExplorerTabs/ExplorerTabs'
 import TablePagination from '../common/TablePagination'
-import { Media } from '@cowprotocol/ui'
 
 const StyledTabLoader = styled.span`
   padding-left: 4px;

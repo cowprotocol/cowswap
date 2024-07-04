@@ -1,6 +1,8 @@
 import React from 'react'
 
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
+import { Media } from '@cowprotocol/ui'
 import { TruncatedText } from '@cowprotocol/ui/pure/TruncatedText'
 
 import { faFill, faProjectDiagram } from '@fortawesome/free-solid-svg-icons'
@@ -20,59 +22,56 @@ import { OrderSurplusDisplay } from 'components/orders/OrderSurplusDisplay'
 import { StatusLabel } from 'components/orders/StatusLabel'
 import { HelpTooltip } from 'components/Tooltip'
 import styled from 'styled-components/macro'
-import { Media } from '@cowprotocol/ui'
 import { capitalize } from 'utils'
 
 import { Order } from 'api/operator'
 import { getUiOrderType } from 'utils/getUiOrderType'
 
 import { TAB_QUERY_PARAM_KEY } from '../../../explorer/const'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { ScrollBarStyle } from '../../../explorer/styled'
 
 const Table = styled(SimpleTable)`
-  > tbody > tr {
-    grid-template-columns: 19rem auto;
-    grid-template-rows: max-content;
-    padding: 1.4rem 0 1.4rem 1.1rem;
-
-    ${Media.upToSmall()} {
-      grid-template-columns: 11rem auto;
-    }
-
-    > td {
-      justify-content: flex-start;
-
-      &:first-of-type {
-        text-transform: capitalize;
-
-        ${Media.MediumAndUp()} {
-          font-weight: ${({ theme }): string => theme.fontLighter};
-        }
-
-        ${Media.upToSmall()} {
-          padding: 0.5rem 0;
-        }
-
-        /* Question mark */
-
-        > svg {
-          margin: 0 1rem 0 0;
-        }
-
-        /* Column after text on first column */
-
-        ::after {
-          content: ':';
-          display: contents;
-        }
-      }
-
-      &:last-of-type {
-        color: ${({ theme }): string => theme.textPrimary1};
-      }
-    }
-  }
+  // > tbody > tr {
+  //   grid-template-columns: 19rem auto;
+  //   grid-template-rows: max-content;
+  //   padding: 1.4rem 0 1.4rem 1.1rem;
+  //
+  //   ${Media.upToSmall()} {
+  //     grid-template-columns: 11rem auto;
+  //   }
+  //
+  //   > td {
+  //     justify-content: flex-start;
+  //
+  //     &:first-of-type {
+  //       text-transform: capitalize;
+  //
+  //       ${Media.MediumAndUp()} {
+  //         font-weight: ${({ theme }): string => theme.fontLighter};
+  //       }
+  //
+  //       ${Media.upToSmall()} {
+  //         padding: 0.5rem 0;
+  //       }
+  //
+  //       /* Question mark */
+  //
+  //       > svg {
+  //         margin: 0 1rem 0 0;
+  //       }
+  //
+  //       /* Column after text on first column */
+  //
+  //       ::after {
+  //         content: ':';
+  //         display: contents;
+  //       }
+  //     }
+  //
+  //     &:last-of-type {
+  //       color: ${({ theme }): string => theme.textPrimary1};
+  //     }
+  //   }
+  // }
 `
 
 const tooltip = {
@@ -221,7 +220,9 @@ export function DetailsTable(props: Props): JSX.Element | null {
         <>
           <tr>
             <td>
-              <HelpTooltip tooltip={tooltip.orderID} /> Order Id
+              <span>
+                <HelpTooltip tooltip={tooltip.orderID} /> Order Id
+              </span>
             </td>
             <td>
               <RowWithCopyButton
@@ -233,7 +234,9 @@ export function DetailsTable(props: Props): JSX.Element | null {
           </tr>
           <tr>
             <td>
-              <HelpTooltip tooltip={tooltip.from} /> From
+              <span>
+                <HelpTooltip tooltip={tooltip.from} /> From
+              </span>
             </td>
             <td>
               <RowWithCopyButton
@@ -245,7 +248,9 @@ export function DetailsTable(props: Props): JSX.Element | null {
           </tr>
           <tr>
             <td>
-              <HelpTooltip tooltip={tooltip.to} /> To
+              <span>
+                <HelpTooltip tooltip={tooltip.to} /> To
+              </span>
             </td>
             <td>
               <RowWithCopyButton
@@ -260,7 +265,9 @@ export function DetailsTable(props: Props): JSX.Element | null {
           {(!partiallyFillable || txHash) && (
             <tr>
               <td>
-                <HelpTooltip tooltip={tooltip.hash} /> Transaction hash
+                <span>
+                  <HelpTooltip tooltip={tooltip.hash} /> Transaction hash
+                </span>
               </td>
               <td>
                 {areTradesLoading ? (
@@ -285,7 +292,9 @@ export function DetailsTable(props: Props): JSX.Element | null {
           )}
           <tr>
             <td>
-              <HelpTooltip tooltip={tooltip.status} /> Status
+              <span>
+                <HelpTooltip tooltip={tooltip.status} /> Status
+              </span>
             </td>
             <td>
               <StatusLabel status={status} partiallyFilled={partiallyFilled} partialTagPosition="right" />
@@ -293,7 +302,9 @@ export function DetailsTable(props: Props): JSX.Element | null {
           </tr>
           <tr>
             <td>
-              <HelpTooltip tooltip={tooltip.submission} /> Submission Time
+              <span>
+                <HelpTooltip tooltip={tooltip.submission} /> Submission Time
+              </span>
             </td>
             <td>
               <DateDisplay date={creationDate} showIcon={true} />
@@ -302,7 +313,9 @@ export function DetailsTable(props: Props): JSX.Element | null {
           {executionDate && !showFillsButton && (
             <tr>
               <td>
-                <HelpTooltip tooltip={tooltip.execution} /> Execution Time
+                <span>
+                  <HelpTooltip tooltip={tooltip.execution} /> Execution Time
+                </span>
               </td>
               <td>
                 <DateDisplay date={executionDate} showIcon={true} />
@@ -311,7 +324,9 @@ export function DetailsTable(props: Props): JSX.Element | null {
           )}
           <tr>
             <td>
-              <HelpTooltip tooltip={tooltip.expiration} /> Expiration Time
+              <span>
+                <HelpTooltip tooltip={tooltip.expiration} /> Expiration Time
+              </span>
             </td>
             <td>
               <DateDisplay date={expirationDate} showIcon={true} />
@@ -319,7 +334,9 @@ export function DetailsTable(props: Props): JSX.Element | null {
           </tr>
           <tr>
             <td>
-              <HelpTooltip tooltip={tooltip.type} /> Type
+              <span>
+                <HelpTooltip tooltip={tooltip.type} /> Type
+              </span>
             </td>
             <td>
               {capitalize(kind)} {getUiOrderType(order).toLowerCase()} order{' '}
@@ -328,8 +345,9 @@ export function DetailsTable(props: Props): JSX.Element | null {
           </tr>
           <tr>
             <td>
-              <HelpTooltip tooltip={tooltip.amount} />
-              Amount
+              <span>
+                <HelpTooltip tooltip={tooltip.amount} /> Amount
+              </span>
             </td>
             <td>
               <AmountsDisplay order={order} />
@@ -337,7 +355,9 @@ export function DetailsTable(props: Props): JSX.Element | null {
           </tr>
           <tr>
             <td>
-              <HelpTooltip tooltip={tooltip.priceLimit} /> Limit Price
+              <span>
+                <HelpTooltip tooltip={tooltip.priceLimit} /> Limit Price
+              </span>
             </td>
             <td>
               <OrderPriceDisplay
@@ -354,7 +374,9 @@ export function DetailsTable(props: Props): JSX.Element | null {
           <>
             <tr>
               <td>
-                <HelpTooltip tooltip={tooltip.priceExecution} /> Execution price
+                <span>
+                  <HelpTooltip tooltip={tooltip.priceExecution} /> Execution price
+                </span>
               </td>
               <td>
                 {!filledAmount.isZero() ? (
@@ -374,7 +396,9 @@ export function DetailsTable(props: Props): JSX.Element | null {
             </tr>
             <tr>
               <td>
-                <HelpTooltip tooltip={tooltip.filled} /> Filled
+                <span>
+                  <HelpTooltip tooltip={tooltip.filled} /> Filled
+                </span>
               </td>
               <td>
                 <Wrapper>
@@ -390,14 +414,18 @@ export function DetailsTable(props: Props): JSX.Element | null {
             </tr>
             <tr>
               <td>
-                <HelpTooltip tooltip={tooltip.surplus} /> Order surplus
+                <span>
+                  <HelpTooltip tooltip={tooltip.surplus} /> Order surplus
+                </span>
               </td>
               <td>{!surplusAmount.isZero() ? <OrderSurplusDisplay order={order} /> : '-'}</td>
             </tr>
           </>
           <tr>
             <td>
-              <HelpTooltip tooltip={tooltip.fees} /> Fees
+              <span>
+                <HelpTooltip tooltip={tooltip.fees} /> Fees
+              </span>
             </td>
             <td>
               <GasFeeDisplay order={order} />
@@ -405,7 +433,9 @@ export function DetailsTable(props: Props): JSX.Element | null {
           </tr>
           <tr>
             <td>
-              <HelpTooltip tooltip={tooltip.appData} /> AppData
+              <span>
+                <HelpTooltip tooltip={tooltip.appData} /> AppData
+              </span>
             </td>
             <td>
               <DecodeAppData appData={appData} fullAppData={fullAppData ?? undefined} />

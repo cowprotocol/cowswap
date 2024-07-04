@@ -1,8 +1,9 @@
+import { Media } from '@cowprotocol/ui'
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { ArrowIconCSS } from 'components/icons/cssIcons'
 import { NavLink } from 'react-router-dom'
 import styled from 'styled-components/macro'
-import { Media } from '@cowprotocol/ui'
 
 export const SelectorContainer = styled.div`
   display: flex;

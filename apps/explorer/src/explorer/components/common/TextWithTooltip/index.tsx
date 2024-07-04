@@ -10,7 +10,9 @@ const Wrapper = styled.div`
   > span {
     margin: 0;
     display: flex;
-    flex-wrap: wrap;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: flex-start;
   }
 `
 interface TextTooltipProps {

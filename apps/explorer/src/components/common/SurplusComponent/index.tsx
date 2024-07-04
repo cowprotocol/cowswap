@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { TokenErc20 } from '@gnosis.pm/dex-js'
 import { TokenAmount } from 'components/token/TokenAmount'
 import { MAX_SURPLUS_PERCENTAGE } from 'const'
-import styled, { css, FlattenSimpleInterpolation } from 'styled-components/macro'
+import styled from 'styled-components/macro'
 import { formatPercentage, Surplus } from 'utils'
 
 const IconWrapper = styled(FontAwesomeIcon)`
@@ -60,7 +60,7 @@ export const SurplusComponent: React.FC<SurplusComponentProps> = (props) => {
   return (
     <Wrapper className={className}>
       {icon && <IconWrapper icon={icon} color={iconColor} />}
-      <Percentage>{showPercentage ? formatPercentage(percentage) : amountDisplay}</Percentage>
+      <Percentage>{showPercentage ? formatPercentage(percentage) : amountDisplay}</Percentage>&nbsp;
       {showPercentage && amountDisplay}
     </Wrapper>
   )

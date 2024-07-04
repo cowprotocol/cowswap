@@ -1,12 +1,12 @@
 import React from 'react'
 
 import { COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS, COW_PROTOCOL_VAULT_RELAYER_ADDRESS } from '@cowprotocol/cow-sdk'
+import { Media } from '@cowprotocol/ui'
 
 import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
 import LogoWrapper, { LOGO_MAP } from 'components/common/LogoWrapper'
 import { useNetworkId } from 'state/network'
 import styled from 'styled-components/macro'
-import { Media } from '@cowprotocol/ui'
 import { Network } from 'types'
 
 import { footerConfig } from './config'

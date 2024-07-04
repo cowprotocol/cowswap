@@ -1,5 +1,8 @@
 import React, { useState, createRef } from 'react'
 
+import { useMediaQuery } from '@cowprotocol/common-hooks'
+import { Media } from '@cowprotocol/ui'
+
 import IMAGE_CARRET_DOWN from 'assets/img/carret-down.svg'
 import { MenuFlyout, Content, MenuSection, MenuTitle, ButtonMenuItem } from 'components/common/MenuDropdown/styled'
 import useOnClickOutside from 'hooks/useOnClickOutside'
@@ -8,8 +11,6 @@ import SVG from 'react-inlinesvg'
 import InternalExternalMenuLink from './InternalExternalLink'
 import { MenuTreeProps } from './MenuTree'
 import { DropDownItem, MenuItemKind } from './types'
-import { useMediaQuery } from '@cowprotocol/common-hooks'
-import { Media } from '@cowprotocol/ui'
 
 interface MenuProps {
   title: string

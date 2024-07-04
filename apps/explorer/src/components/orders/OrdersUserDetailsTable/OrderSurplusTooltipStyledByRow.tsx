@@ -1,10 +1,11 @@
 import React from 'react'
 
+import { useMediaQuery } from '@cowprotocol/common-hooks'
+import { Media } from '@cowprotocol/ui'
+
 import { Order } from 'api/operator'
 
 import { OrderSurplusTooltipDisplay } from '../OrderSurplusDisplay'
-import { useMediaQuery } from '@cowprotocol/common-hooks'
-import { Media } from '@cowprotocol/ui'
 
 type Props = React.HTMLAttributes<HTMLSpanElement> & {
   order: Order

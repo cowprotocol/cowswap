@@ -1,10 +1,12 @@
 import React, { Context, useContext } from 'react'
 
+import { Media } from '@cowprotocol/ui'
+
 import { faChevronRight, faChevronLeft } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import styled, { css } from 'styled-components/macro'
+
 import { Dropdown, DropdownOption } from '../Dropdown'
-import { Media } from '@cowprotocol/ui'
 
 const PaginationTextCSS = css`
   color: ${({ theme }): string => theme.textPrimary1};

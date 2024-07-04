@@ -1,9 +1,10 @@
+import { Media } from '@cowprotocol/ui'
+
 import * as CSS from 'csstype'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components/macro'
 
 import { RowWithCopyButton } from '../../components/common/RowWithCopyButton'
-import { Media } from '@cowprotocol/ui'
 
 export const Wrapper = styled.div`
   padding: 1.6rem;
@@ -23,27 +24,6 @@ export const Wrapper = styled.div`
     align-items: center;
     font-weight: ${({ theme }): string => theme.fontBold};
     margin: 0;
-  }
-`
-
-export const WrapperCenter = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-`
-
-export const StyledTabLoader = styled.span`
-  padding-left: 4px;
-`
-
-export const FlexContainer = styled.div`
-  display: flex;
-  align-items: center;
-
-  ${Media.upToSmall()} {
-    flex-direction: column;
-    align-items: flex-start;
   }
 `
 

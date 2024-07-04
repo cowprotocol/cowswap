@@ -1,9 +1,10 @@
 import React from 'react'
 
+import { Media } from '@cowprotocol/ui'
+
 import Grid, { GridSize } from '@material-ui/core/Grid'
 import styled from 'styled-components/macro'
 import { COLOURS } from 'styles'
-import { Media } from '@cowprotocol/ui'
 
 const { white, fadedGreyishWhite, blackLight } = COLOURS
 

@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Media } from '@cowprotocol/ui'
 
 import { useFlags } from 'launchdarkly-react-client-sdk'
 import { Helmet } from 'react-helmet'
@@ -13,15 +14,18 @@ import { StatsSummaryCardsWidget } from '../../components/SummaryCardsWidget'
 import { TokensTableWidget } from '../../components/TokensTableWidget'
 import { APP_TITLE } from '../../const'
 import { Wrapper as WrapperMod } from '../styled'
-import { Media } from '@cowprotocol/ui'
 
 const Wrapper = styled(WrapperMod)`
   max-width: 100%;
-  height: 100%;
+  height: calc(100vh - 10rem);
   flex-flow: column wrap;
   justify-content: center;
   display: flex;
   padding: 0;
+
+  ${Media.upToMedium()} {
+    height: 50vh;
+  }
 
   ${Media.upToSmall()} {
     padding: 0 1.6rem;
@@ -65,7 +69,7 @@ const SHOW_TOKENS_TABLE: Record<SupportedChainId, boolean> = {
 }
 
 export const Home: React.FC = () => {
-  const networkId = useNetworkId() || undefined
+  const networkId = useNetworkId() ?? undefined
 
   const { isTheGraphEnabled } = useFlags()
 

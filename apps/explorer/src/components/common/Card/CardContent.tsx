@@ -1,7 +1,8 @@
 import React from 'react'
 
-import styled from 'styled-components/macro'
 import { Media } from '@cowprotocol/ui'
+
+import styled from 'styled-components/macro'
 
 import ShimmerBar from '../../../explorer/components/common/ShimmerBar'
 

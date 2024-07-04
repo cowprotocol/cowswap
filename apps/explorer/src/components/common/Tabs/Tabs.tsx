@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
+
 import { Media } from '@cowprotocol/ui'
+
 import TabContent from 'components/common/Tabs/TabContent'
 import TabItem from 'components/common/Tabs/TabItem'
 import styled from 'styled-components/macro'
@@ -45,18 +47,8 @@ export interface Props {
 }
 
 const Wrapper = styled.div`
-  display: flex;
-  flex-flow: column;
   width: 100%;
-  height: 100%;
-
-  > div {
-    display: flex;
-    flex-flow: row wrap;
-    padding: 0;
-    justify-content: space-between;
-    width: 100%;
-  }
+  max-width: 100%;
 `
 
 export const TabList = styled.div`
@@ -65,6 +57,24 @@ export const TabList = styled.div`
   background: #16171f;
   z-index: 2;
   max-width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  border-bottom: ${({ theme }): string => `1px solid ${theme.borderPrimary}`};
+  box-sizing: border-box;
+  flex-flow: row wrap;
+
+  > button {
+    flex: 0 0 auto;
+    min-width: 12rem;
+    padding: 1rem;
+    line-height: 2;
+    height: auto;
+    font-family: var(--font-default);
+
+    ${Media.upToSmall()} {
+      flex: 1 1 auto;
+    }
+  }
 `
 
 export const DEFAULT_TAB_THEME: TabTheme = {

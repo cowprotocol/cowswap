@@ -2,11 +2,11 @@ import React, { useCallback, useEffect, useState } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
+import { Media } from '@cowprotocol/ui'
 import { TruncatedText } from '@cowprotocol/ui/pure/TruncatedText'
 
 import CowLoading from 'components/common/CowLoading'
 import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
-import { EmptyItemWrapper } from 'components/common/StyledUserDetailsTable'
 import { TabItemInterface } from 'components/common/Tabs/Tabs'
 import { ConnectionStatus } from 'components/ConnectionStatus'
 import { Notification } from 'components/Notification'
@@ -19,7 +19,6 @@ import { TAB_QUERY_PARAM_KEY } from 'explorer/const'
 import { useQuery, useUpdateQueryString } from 'hooks/useQuery'
 import { useNetworkId } from 'state/network'
 import styled from 'styled-components/macro'
-
 import { Errors } from 'types'
 import { formatPercentage } from 'utils'
 
@@ -27,8 +26,8 @@ import { Order, Trade } from 'api/operator'
 
 import { FillsTableContext } from './context/FillsTableContext'
 import { FillsTableWithData } from './FillsTableWithData'
+
 import { FlexContainerVar } from '../../../explorer/pages/styled'
-import { Media } from '@cowprotocol/ui'
 
 const TitleUid = styled(RowWithCopyButton)`
   color: ${({ theme }): string => theme.grey};
@@ -116,11 +115,7 @@ const tabItems = (
           />
         )}
         {!isOrderLoading && order && !areTokensLoaded && <p>Not able to load tokens</p>}
-        {isLoadingForTheFirstTime && (
-          <EmptyItemWrapper>
-            <CowLoading />
-          </EmptyItemWrapper>
-        )}
+        {isLoadingForTheFirstTime && <CowLoading />}
       </>
     ),
   }

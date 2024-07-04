@@ -1,5 +1,8 @@
 import React from 'react'
 
+import { useMediaQuery } from '@cowprotocol/common-hooks'
+import { Media } from '@cowprotocol/ui'
+
 import { formatDistanceToNowStrict } from 'date-fns'
 import styled, { css } from 'styled-components/macro'
 
@@ -12,8 +15,6 @@ import { CardRow } from '../../../components/common/CardRow'
 import { CopyButton } from '../../../components/common/CopyButton'
 import { LinkWithPrefixNetwork } from '../../../components/common/LinkWithPrefixNetwork'
 import { abbreviateString, getPercentageDifference } from '../../../utils'
-import { Media } from '@cowprotocol/ui'
-import { useMediaQuery } from '@cowprotocol/common-hooks'
 
 const BatchInfoHeight = '21.6rem'
 const DESKTOP_TEXT_SIZE = 1.8 // rem

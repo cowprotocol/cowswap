@@ -8,50 +8,27 @@ import { DateDisplay } from 'components/common/DateDisplay'
 import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
 import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 import Spinner from 'components/common/Spinner'
-import StyledUserDetailsTable, {
-  EmptyItemWrapper,
-  Props as StyledUserDetailsTableProps,
-} from 'components/common/StyledUserDetailsTable'
 import { TokenDisplay } from 'components/common/TokenDisplay'
 import TradeOrderType from 'components/common/TradeOrderType'
 import Icon from 'components/Icon'
 import { HelpTooltip } from 'components/Tooltip'
 import { TextWithTooltip } from 'explorer/components/common/TextWithTooltip'
 import { useNetworkId } from 'state/network'
-import styled from 'styled-components/macro'
-import { FormatAmountPrecision, formatCalculatedPriceToDisplay, formattedAmount, getOrderLimitPrice } from 'utils'
+import { FormatAmountPrecision, formattedAmount } from 'utils'
 
 import { Order } from 'api/operator'
+import { getLimitPrice } from 'utils/getLimitPrice'
 
 import { OrderSurplusDisplayStyledByRow } from './OrderSurplusTooltipStyledByRow'
 
+import { SimpleTable, SimpleTableProps } from '../../common/SimpleTable'
 import { StatusLabel } from '../StatusLabel'
-import { ScrollBarStyle } from '../../../explorer/styled'
-import { WrapperUserDetailsTable } from '../../transaction/TransactionTable/styled'
-
-const Wrapper = styled(WrapperUserDetailsTable)``
-
-const HeaderValue = styled.span``
-
-function getLimitPrice(order: Order, isPriceInverted: boolean): string {
-  if (!order.buyToken || !order.sellToken) return '-'
-
-  const calculatedPrice = getOrderLimitPrice({
-    buyAmount: order.buyAmount,
-    sellAmount: order.sellAmount,
-    buyTokenDecimals: order.buyToken.decimals,
-    sellTokenDecimals: order.sellToken.decimals,
-    inverted: isPriceInverted,
-  })
-
-  return formatCalculatedPriceToDisplay(calculatedPrice, order.buyToken, order.sellToken, isPriceInverted)
-}
 
 const tooltip = {
   orderID: 'A unique identifier ID for this order.',
 }
 
-export type Props = StyledUserDetailsTableProps & {
+export type Props = SimpleTableProps & {
   orders: Order[] | undefined
   messageWhenEmpty?: string | React.ReactNode
 }
@@ -76,9 +53,9 @@ const RowOrder: React.FC<RowProps> = ({ order, isPriceInverted }) => {
     setIsPriceInverted(isPriceInverted)
   }, [isPriceInverted])
 
-  const invertLimitPrice = (): void => {
-    setIsPriceInverted((previousValue) => !previousValue)
-  }
+  // const invertLimitPrice = (): void => {
+  //   setIsPriceInverted((previousValue) => !previousValue)
+  // }
 
   const renderSpinnerWhenNoValue = (textValue: string): JSX.Element | void => {
     if (textValue === '-') return <Spinner spin size="1x" />
@@ -87,17 +64,15 @@ const RowOrder: React.FC<RowProps> = ({ order, isPriceInverted }) => {
   return (
     <tr key={uid}>
       <td>
-        <HeaderValue>
-          <RowWithCopyButton
-            className="span-copybtn-wrap"
-            textToCopy={uid}
-            contentsToDisplay={
-              <LinkWithPrefixNetwork to={`/orders/${order.uid}`} rel="noopener noreferrer" target="_self">
-                <TruncatedText text={uid} />
-              </LinkWithPrefixNetwork>
-            }
-          />
-        </HeaderValue>
+        <RowWithCopyButton
+          className="span-copybtn-wrap"
+          textToCopy={uid}
+          contentsToDisplay={
+            <LinkWithPrefixNetwork to={`/orders/${order.uid}`} rel="noopener noreferrer" target="_self">
+              <TruncatedText text={uid} />
+            </LinkWithPrefixNetwork>
+          }
+        />
       </td>
       <td>
         <span className="header-value">
@@ -105,49 +80,37 @@ const RowOrder: React.FC<RowProps> = ({ order, isPriceInverted }) => {
         </span>
       </td>
       <td>
-        <HeaderValue>
-          {renderSpinnerWhenNoValue(sellFormattedAmount) || (
-            <TextWithTooltip textInTooltip={`${sellFormattedAmount} ${sellTokenSymbol}`}>
-              {formattedAmount(sellToken, sellAmount.plus(order.feeAmount), FormatAmountPrecision.highPrecision)}{' '}
-              {sellToken && network && <TokenDisplay showAbbreviated erc20={sellToken} network={network} />}
-            </TextWithTooltip>
-          )}
-        </HeaderValue>
+        {renderSpinnerWhenNoValue(sellFormattedAmount) || (
+          <TextWithTooltip textInTooltip={`${sellFormattedAmount} ${sellTokenSymbol}`}>
+            {formattedAmount(sellToken, sellAmount.plus(order.feeAmount), FormatAmountPrecision.highPrecision)}{' '}
+            {sellToken && network && <TokenDisplay showAbbreviated erc20={sellToken} network={network} />}
+          </TextWithTooltip>
+        )}
       </td>
       <td>
-        <HeaderValue>
-          {renderSpinnerWhenNoValue(buyFormattedAmount) || (
-            <TextWithTooltip textInTooltip={`${buyFormattedAmount} ${buyTokenSymbol}`}>
-              {formattedAmount(buyToken, buyAmount, FormatAmountPrecision.highPrecision)}{' '}
-              {buyToken && network && <TokenDisplay showAbbreviated erc20={buyToken} network={network} />}
-            </TextWithTooltip>
-          )}
-        </HeaderValue>
+        {renderSpinnerWhenNoValue(buyFormattedAmount) || (
+          <TextWithTooltip textInTooltip={`${buyFormattedAmount} ${buyTokenSymbol}`}>
+            {formattedAmount(buyToken, buyAmount, FormatAmountPrecision.highPrecision)}{' '}
+            {buyToken && network && <TokenDisplay showAbbreviated erc20={buyToken} network={network} />}
+          </TextWithTooltip>
+        )}
+      </td>
+      <td>{renderSpinnerWhenNoValue(limitPriceSettled) || limitPriceSettled}</td>
+      <td>
+        <OrderSurplusDisplayStyledByRow order={order} />
       </td>
       <td>
-        <HeaderValue>{renderSpinnerWhenNoValue(limitPriceSettled) || limitPriceSettled}</HeaderValue>
+        <DateDisplay date={creationDate} showIcon={true} />
       </td>
       <td>
-        <HeaderValue>
-          <OrderSurplusDisplayStyledByRow order={order} />
-        </HeaderValue>
-      </td>
-      <td>
-        <HeaderValue>
-          <DateDisplay date={creationDate} showIcon={true} />
-        </HeaderValue>
-      </td>
-      <td>
-        <HeaderValue>
-          <StatusLabel status={order.status} partiallyFilled={partiallyFilled} filledPercentage={filledPercentage} />
-        </HeaderValue>
+        <StatusLabel status={order.status} partiallyFilled={partiallyFilled} filledPercentage={filledPercentage} />
       </td>
     </tr>
   )
 }
 
 const OrdersUserDetailsTable: React.FC<Props> = (props) => {
-  const { orders, showBorderTable = false, messageWhenEmpty } = props
+  const { orders, messageWhenEmpty } = props
   const [isPriceInverted, setIsPriceInverted] = useState(false)
 
   const invertLimitPrice = (): void => {
@@ -158,9 +121,7 @@ const OrdersUserDetailsTable: React.FC<Props> = (props) => {
     if (!items?.length)
       return (
         <tr className="row-empty">
-          <td className="row-td-empty">
-            <EmptyItemWrapper>{messageWhenEmpty || 'No orders.'}</EmptyItemWrapper>
-          </td>
+          <td className="row-td-empty">{messageWhenEmpty || 'No orders.'}</td>
         </tr>
       )
 
@@ -174,18 +135,21 @@ const OrdersUserDetailsTable: React.FC<Props> = (props) => {
   }
 
   return (
-    <Wrapper
-      showBorderTable={showBorderTable}
+    <SimpleTable
       header={
         <tr>
           <th>
-            Order ID <HelpTooltip tooltip={tooltip.orderID} />
+            <span>
+              Order ID <HelpTooltip tooltip={tooltip.orderID} />
+            </span>
           </th>
           <th>Type</th>
           <th>Sell amount</th>
           <th>Buy amount</th>
           <th>
-            Limit price <Icon icon={faExchangeAlt} onClick={invertLimitPrice} />
+            <span>
+              Limit price <Icon icon={faExchangeAlt} onClick={invertLimitPrice} />
+            </span>
           </th>
           <th>Surplus</th>
           <th>Created</th>

@@ -1,7 +1,8 @@
+import { Media } from '@cowprotocol/ui'
+
 import * as CSS from 'csstype'
 import SVG from 'react-inlinesvg'
 import styled, { css, FlattenSimpleInterpolation } from 'styled-components/macro'
-import { Media } from '@cowprotocol/ui'
 
 export const Wrapper = styled.form`
   display: flex;

@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react'
 
+import { Media } from '@cowprotocol/ui'
+
 import { faCopy } from '@fortawesome/free-regular-svg-icons'
 import { faCheck } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import styled, { css, FlattenSimpleInterpolation } from 'styled-components/macro'
-import { Media } from '@cowprotocol/ui'
 
 import { DISPLAY_TEXT_COPIED_CHECK } from '../../../explorer/const'
 

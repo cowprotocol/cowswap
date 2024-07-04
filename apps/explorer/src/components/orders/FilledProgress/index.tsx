@@ -2,13 +2,13 @@ import React from 'react'
 
 import { isSellOrder } from '@cowprotocol/common-utils'
 import { Command } from '@cowprotocol/types'
+import { Media } from '@cowprotocol/ui'
 import { PercentDisplay } from '@cowprotocol/ui/pure/PercentDisplay'
 
 import { ProgressBar } from 'components/common/ProgressBar'
 import { Amount, Percentage, SurplusComponent } from 'components/common/SurplusComponent'
 import { TokenAmount } from 'components/token/TokenAmount'
 import styled from 'styled-components/macro'
-import { Media } from '@cowprotocol/ui'
 import { safeTokenName } from 'utils'
 
 import { Order } from 'api/operator'

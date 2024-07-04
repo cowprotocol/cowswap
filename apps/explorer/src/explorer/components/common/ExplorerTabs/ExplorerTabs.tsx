@@ -1,16 +1,15 @@
 import React from 'react'
 
+import { Media } from '@cowprotocol/ui'
+
 import styled from 'styled-components/macro'
 import { DARK_COLOURS } from 'theme'
-import { Media } from '@cowprotocol/ui'
 
 import Tabs, {
   getTabTheme,
   Props as TabsProps,
   IndicatorTabSize,
-  TabList,
 } from '../../../../components/common/Tabs/Tabs'
-import { ScrollBarStyle } from '../../../styled'
 
 const StyledTabs = styled.div`
   display: flex;
@@ -19,35 +18,11 @@ const StyledTabs = styled.div`
   border: ${({ theme }): string => `1px solid ${theme.borderPrimary}`};
   border-radius: 4px;
 
-  ${TabList} {
-    justify-content: flex-start;
-    border-bottom: ${({ theme }): string => `1px solid ${theme.borderPrimary}`};
-    box-sizing: border-box;
-  }
-
-  ${TabList} > button {
-    flex: 0 0 auto;
-    min-width: 12rem;
-    padding: 1rem;
-    line-height: 2;
-    height: auto;
-    font-family: var(--font-default);
-
-    ${Media.upToSmall()} {
-      flex: 1 1 auto;
-    }
-  }
-
-  > div > div:last-of-type {
-    height: 100%;
-    position: relative;
-  }
-
   .tab-content {
+    position: relative;
     padding: 0;
-    overflow-x: auto;
-    white-space: nowrap;
-    ${ScrollBarStyle}
+    width: 100%;
+    max-width: 100%;
   }
 
   .tab-extra-content {

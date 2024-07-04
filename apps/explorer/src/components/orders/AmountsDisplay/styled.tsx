@@ -1,5 +1,6 @@
-import styled from 'styled-components/macro'
 import { Media } from '@cowprotocol/ui'
+
+import styled from 'styled-components/macro'
 
 export const Wrapper = styled.div`
   display: grid;

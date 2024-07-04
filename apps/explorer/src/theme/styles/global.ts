@@ -35,6 +35,7 @@ export const StaticGlobalStyle = createGlobalStyle`
     box-sizing: border-box;
     overscroll-behavior-y: none;
     scroll-behavior: smooth;
+    overflow-x: hidden;
   }
 
   *, *:before, *:after {
@@ -85,8 +86,10 @@ export const ThemedGlobalStyle = createGlobalStyle`
     &:hover {
       text-decoration: underline;
     }
+
     text-decoration: none;
     cursor: pointer;
+
     &:link,
     &:visited {
       color: ${({ theme }): string => theme.textActive1};

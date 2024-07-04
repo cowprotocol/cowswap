@@ -1,8 +1,9 @@
+import { Media } from '@cowprotocol/ui'
+
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
 
 import AppDataWrapper from '../../../components/common/AppDataWrapper'
-import { Media } from '@cowprotocol/ui'
 import ExplorerTabs from '../../components/common/ExplorerTabs/ExplorerTabs'
 import { ContentCard as Content, Wrapper as WrapperTemplate } from '../styled'
 
@@ -112,13 +113,17 @@ export const Wrapper = styled(WrapperTemplate)`
   .form-container {
     display: flex;
     flex: 1;
+    padding: 0 2rem;
+
     ${Media.upToSmall()} {
       margin: 2rem 0;
       flex-direction: column;
     }
+
     ${Media.upToMedium()} {
       margin: 2rem 0;
     }
+
     p {
       line-height: 1.6rem;
     }
@@ -179,52 +184,59 @@ export const Wrapper = styled(WrapperTemplate)`
     display: flex;
     gap: 10rem;
     flex: 1;
+    padding: 0 2rem;
+
     .left-pannel {
       display: flex;
       flex-direction: column;
       width: 40vw;
     }
+
     ${Media.upToSmall()} {
       margin: 2rem 0;
       flex-direction: column;
       gap: 5rem;
     }
+
     ${Media.upToMedium()} {
       margin: 2rem 0;
     }
   }
+
   .ipfs-container {
     display: flex;
     flex-direction: column;
     margin-top: 2rem;
     width: 40rem;
     gap: 2rem;
+
     ${Media.upToSmall()} {
       width: 100%;
     }
+
     form {
       input {
         width: 100%;
       }
     }
+
     p {
       padding-right: 0;
     }
   }
+
   button {
     &:disabled {
       opacity: 0.3;
       pointer-events: none;
     }
   }
+
   input[type='text'] {
     height: 5rem;
     width: 100%;
     flex: 1 1 auto;
     background: ${({ theme }): string => theme.greyOpacity};
-    &:read-only {
-      cursor: not-allowed;
-    }
     font-weight: ${({ theme }): string => theme.fontMedium};
     font-size: 1.6rem;
     border-radius: 0.6rem;
@@ -239,6 +251,10 @@ export const Wrapper = styled(WrapperTemplate)`
     border: 0.1rem solid transparent;
     transition: border 0.2s ease-in-out;
     margin: 0.5rem 0 1rem 0;
+
+    &:read-only {
+      cursor: not-allowed;
+    }
 
     &:focus {
       border: 0.1rem solid ${({ theme }): string => theme.borderPrimary};
@@ -308,6 +324,7 @@ export const Wrapper = styled(WrapperTemplate)`
   ${Media.upToMedium()} {
     flex-flow: column wrap;
   }
+
   .appData-tab {
     &--encode {
       .tab-content {
@@ -315,15 +332,18 @@ export const Wrapper = styled(WrapperTemplate)`
         flex-direction: column;
       }
     }
+
     &--decode {
       .data-container {
         line-height: 1.6;
         font-size: 1.3rem;
         margin: 1rem 0;
       }
+
       .main-container {
         width: 100%;
       }
+
       .data-form {
         width: 100%;
         max-width: 40rem;

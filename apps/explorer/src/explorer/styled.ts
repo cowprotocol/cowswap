@@ -1,9 +1,9 @@
-import styled, { createGlobalStyle, css } from 'styled-components/macro'
 import { Media } from '@cowprotocol/ui'
+
+import styled, { createGlobalStyle, css } from 'styled-components/macro'
 
 export const ScrollBarStyle = css`
   --scrollbarWidth: 0.6rem;
-
   scroll-behavior: smooth;
 
   &::-webkit-scrollbar {
@@ -29,9 +29,12 @@ export const GlobalStyle = createGlobalStyle`
   html,
   body,
   #root {
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
+    display: block;
+    max-width: 100vw;
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+    position: relative;
     ${ScrollBarStyle}
   }
 
@@ -60,7 +63,7 @@ export const GlobalStyle = createGlobalStyle`
 `
 
 export const MainWrapper = styled.div`
-  --pageMaxWidth: 160rem;
+  --pageMaxWidth: 140rem;
   max-width: var(--pageMaxWidth);
   width: 100%;
   margin: 0 auto;
@@ -75,14 +78,6 @@ export const MainWrapper = styled.div`
 
   ${Media.upToExtraSmall()} {
     flex-grow: 1;
-  }
-
-  > div {
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-    justify-content: space-between;
-    width: 100%;
   }
 
   header {

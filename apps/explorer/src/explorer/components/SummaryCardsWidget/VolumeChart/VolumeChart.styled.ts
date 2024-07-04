@@ -1,7 +1,8 @@
+import { Media } from '@cowprotocol/ui'
+
 import styled, { keyframes } from 'styled-components/macro'
 
 import GraphSkeleton from '../../../../assets/img/graph-skeleton.svg'
-import { Media } from '@cowprotocol/ui'
 import ShimmerBar from '../../common/ShimmerBar'
 
 const frameAnimation = keyframes`

@@ -92,7 +92,7 @@ export const EmptyOrdersMessage = ({
   ownerAddress,
   setLoadingState,
   errorMsg: hasErrorMsg,
-}: EmptyMessageProps): JSX.Element => {
+}: EmptyMessageProps): React.ReactNode => {
   const areOtherNetworks = ordersInNetworks.length > 0
 
   if (!networkId || isLoading) {
@@ -188,5 +188,8 @@ export const useSearchInAnotherNetwork = (
     fetchAnotherNetworks(networkId)
   }, [fetchAnotherNetworks, isOrdersLengthZero, networkId])
 
-  return useMemo(() => ({ isLoading, ordersInNetworks, setLoadingState: setIsLoading, errorMsg: error }), [isLoading, ordersInNetworks, setIsLoading, error])
+  return useMemo(
+    () => ({ isLoading, ordersInNetworks, setLoadingState: setIsLoading, errorMsg: error }),
+    [isLoading, ordersInNetworks, setIsLoading, error]
+  )
 }

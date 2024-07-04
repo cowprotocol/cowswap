@@ -1,6 +1,8 @@
 import React, { useState, useCallback, useEffect } from 'react'
 
 import { CHAIN_INFO } from '@cowprotocol/common-const'
+import { useMediaQuery } from '@cowprotocol/common-hooks'
+import { Media } from '@cowprotocol/ui'
 
 import { MenuTree } from '../../components/common/MenuDropdown/MenuTree'
 import { Header as GenericHeader } from '../../components/layout/GenericLayout/Header'
@@ -8,8 +10,6 @@ import { NetworkSelector } from '../../components/NetworkSelector'
 import { useNetworkId } from '../../state/network'
 import { addBodyClass, removeBodyClass } from '../../utils/toggleBodyClass'
 import { FlexWrap } from '../pages/styled'
-import { useMediaQuery } from '@cowprotocol/common-hooks'
-import { Media } from '@cowprotocol/ui'
 
 export const Header: React.FC = () => {
   const isMobile = useMediaQuery(Media.upToSmall(false))

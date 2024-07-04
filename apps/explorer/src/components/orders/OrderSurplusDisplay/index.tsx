@@ -39,14 +39,12 @@ function useGetSurplus(order: Order): OrderSurplus | null {
   // TODO: get USD estimation
   // const usdAmount = '55.555'
 
-
   return useMemo(() => {
-
     if (!surplusToken || surplusAmount.isZero()) {
       return null
     }
 
-    return ({ amount: surplusAmount, percentage: surplusPercentage, surplusToken })
+    return { amount: surplusAmount, percentage: surplusPercentage, surplusToken }
   }, [surplusToken, surplusAmount, surplusPercentage])
 }
 
@@ -65,7 +63,7 @@ const HiddenSection = styled.span<{ showHiddenSection: boolean; strechHiddenSect
     css`
       width: 3.4rem;
       display: inline-block;
-      justify-content: end;
+      justify-content: flex-start;
     `}
 `
 

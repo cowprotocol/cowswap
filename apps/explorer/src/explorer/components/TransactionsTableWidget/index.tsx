@@ -16,7 +16,7 @@ import { useGetTxOrders, useTxOrderExplorerLink } from '../../../hooks/useGetOrd
 import { useQuery, useUpdateQueryString } from '../../../hooks/useQuery'
 import { RedirectToNetwork, useNetworkId } from '../../../state/network'
 import { TAB_QUERY_PARAM_KEY } from '../../const'
-import { FlexContainer, FlexContainerVar, Title, TitleAddress } from '../../pages/styled'
+import { FlexContainerVar, TitleAddress } from '../../pages/styled'
 import ExplorerTabs from '../common/ExplorerTabs/ExplorerTabs'
 import { TransactionBatchGraph } from '../TransanctionBatchGraph'
 

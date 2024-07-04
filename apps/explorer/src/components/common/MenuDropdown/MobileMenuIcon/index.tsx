@@ -1,9 +1,9 @@
 import React from 'react'
 
 import { Command } from '@cowprotocol/types'
+import { Media } from '@cowprotocol/ui'
 
 import styled, { css, FlattenSimpleInterpolation } from 'styled-components/macro'
-import { Media } from '@cowprotocol/ui'
 
 const Wrapper = styled.div<{ isMobileMenuOpen: boolean }>`
   z-index: 102;
