@@ -286,7 +286,7 @@ export function TransactionSettings() {
           <RowBetween>
             <Option
               onClick={() => {
-                parseSlippageInput('')
+                setSwapSlippage(null)
               }}
               active={!isSlippageModified}
             >
@@ -309,18 +309,10 @@ export function TransactionSettings() {
                     if (slippageError) {
                       slippageToleranceAnalytics('Default', placeholderSlippage.toFixed(2))
                       setSwapSlippage(null)
+                      setSlippageError(false)
                     }
 
                     setSlippageInput('')
-                    setSlippageError((curr) => {
-                      // When ethFlow and there was an error
-                      // Set the slippage to minimum allowed
-                      // Otherwise it'll default to last value used
-                      if (curr && isEoaEthFlow) {
-                        setSwapSlippage(percentToBps(minEthFlowSlippage))
-                      }
-                      return false
-                    })
                   }}
                   color={slippageError ? 'red' : ''}
                 />
