@@ -12,15 +12,9 @@ type SlippageBpsPerNetwork = Record<SupportedChainId, number | null>
 
 type SlippageType = 'smart' | 'default' | 'user'
 
-const normalSwapSlippageAtom = atomWithStorage<SlippageBpsPerNetwork>(
-  'swap-slippage-atom:v0',
-  mapSupportedNetworks(null)
-)
+const normalSwapSlippageAtom = atomWithStorage<SlippageBpsPerNetwork>('swapSlippageAtom:v0', mapSupportedNetworks(null))
 
-const ethFlowSlippageAtom = atomWithStorage<SlippageBpsPerNetwork>(
-  'eth-flow-slippage-atom:v0',
-  mapSupportedNetworks(null)
-)
+const ethFlowSlippageAtom = atomWithStorage<SlippageBpsPerNetwork>('ethFlowSlippageAtom:v0', mapSupportedNetworks(null))
 
 export const defaultSlippageAtom = atom((get) => {
   const { chainId } = get(walletInfoAtom)
