@@ -5,5 +5,8 @@
       "destination": "/",
       "permanent": false
     }
-  ]
+  ],
+  "buildCommand": "cd ../../ && yarn build:cowswap",
+  "outputDirectory": "../../build/cowswap",
+  "installCommand": "cd ../../ && yarn"
 }
