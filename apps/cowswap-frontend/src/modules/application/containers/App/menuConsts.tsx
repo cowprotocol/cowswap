@@ -1,11 +1,11 @@
 import { MenuItem, ProductVariant } from '@cowprotocol/ui'
 
 import AppziButton from 'legacy/components/AppziButton'
+import { Version } from 'legacy/components/Version'
 
 import { FortuneWidget } from 'modules/fortune/containers/FortuneWidget'
 
 import { Routes } from 'common/constants/routes'
-import { Version } from 'legacy/components/Version'
 
 export const PRODUCT_VARIANT = ProductVariant.CowSwap
 export const NAV_ITEMS: MenuItem[] = [
