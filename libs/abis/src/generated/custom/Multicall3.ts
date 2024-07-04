@@ -14,7 +14,7 @@ import type {
 } from 'ethers'
 import type { FunctionFragment, Result } from '@ethersproject/abi'
 import type { Listener, Provider } from '@ethersproject/providers'
-import type { OnEvent, PromiseOrValue, TypedEvent, TypedEventFilter, TypedListener } from './common'
+import type { TypedEventFilter, TypedEvent, TypedListener, OnEvent, PromiseOrValue } from './common'
 
 export declare namespace Multicall3 {
   export type CallStruct = {
@@ -47,14 +47,12 @@ export interface Multicall3Interface extends utils.Interface {
   getFunction(nameOrSignatureOrTopic: 'getEthBalance' | 'tryAggregate'): FunctionFragment
 
   encodeFunctionData(functionFragment: 'getEthBalance', values: [PromiseOrValue<string>]): string
-
   encodeFunctionData(
     functionFragment: 'tryAggregate',
     values: [PromiseOrValue<boolean>, Multicall3.CallStruct[]]
   ): string
 
   decodeFunctionResult(functionFragment: 'getEthBalance', data: BytesLike): Result
-
   decodeFunctionResult(functionFragment: 'tryAggregate', data: BytesLike): Result
 
   events: {}
@@ -62,9 +60,7 @@ export interface Multicall3Interface extends utils.Interface {
 
 export interface Multicall3 extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this
-
   attach(addressOrName: string): this
-
   deployed(): Promise<this>
 
   interface: Multicall3Interface
@@ -76,13 +72,9 @@ export interface Multicall3 extends BaseContract {
   ): Promise<Array<TEvent>>
 
   listeners<TEvent extends TypedEvent>(eventFilter?: TypedEventFilter<TEvent>): Array<TypedListener<TEvent>>
-
   listeners(eventName?: string): Array<Listener>
-
   removeAllListeners<TEvent extends TypedEvent>(eventFilter: TypedEventFilter<TEvent>): this
-
   removeAllListeners(eventName?: string): this
-
   off: OnEvent<this>
   on: OnEvent<this>
   once: OnEvent<this>

@@ -9,8 +9,8 @@ export type CowEventListener<T extends CowEvents> = T extends CowEvents
 export type CowEventListeners = CowEventListener<CowEvents>[]
 
 export interface CowEventEmitter {
-  on(listener: CowEventListener<CowEvents>): void
-  off(listener: CowEventListener<CowEvents>): void
+  on(listener: CowEventListener<CowEvents>): CowEventListener<CowEvents>
+  off(listener: CowEventListener<CowEvents>): CowEventListener<CowEvents>
   emit<T extends CowEvents>(event: T, payload: CowEventPayloadMap[T]): void
 }
 
@@ -19,19 +19,23 @@ export class SimpleCowEventEmitter implements CowEventEmitter {
     [key: string]: CowEventHandler<any>[] // Use generic parameter for listener type
   } = {}
 
-  on(listener: CowEventListener<CowEvents>): void {
+  on(listener: CowEventListener<CowEvents>): CowEventListener<CowEvents> {
     const { event, handler } = listener
     if (!this.subscriptions[event]) {
       this.subscriptions[event] = []
     }
     this.subscriptions[event].push(handler)
+
+    return listener
   }
 
-  off(listener: CowEventListener<CowEvents>): void {
+  off(listener: CowEventListener<CowEvents>): CowEventListener<CowEvents> {
     const { event, handler } = listener
     if (this.subscriptions[event]) {
       this.subscriptions[event] = this.subscriptions[event].filter((listener) => listener !== handler)
     }
+
+    return listener
   }
 
   emit<T extends CowEvents>(event: T, payload: CowEventPayloadMap[T]): void {

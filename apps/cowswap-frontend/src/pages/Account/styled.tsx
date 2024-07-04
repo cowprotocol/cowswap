@@ -1,45 +1,15 @@
-import { Loader as SpinnerLoader, ButtonPrimary, Media } from '@cowprotocol/ui'
-import { ExternalLink } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
+import { UI, ExternalLink, Loader as SpinnerLoader, ButtonPrimary, Media } from '@cowprotocol/ui'
 
 import styled, { css } from 'styled-components/macro'
 
 import { CopyIcon as ClickToCopy } from 'legacy/components/Copy'
 
-import { Page, GdocsListStyle } from 'modules/application/pure/Page'
 import { WatchAssetInWallet } from 'modules/wallet/containers/WatchAssetInWallet'
 
 export const Container = styled.div`
   max-width: 100%;
   width: 100%;
   z-index: 1;
-`
-
-export const Wrapper = styled(Page)`
-  ${GdocsListStyle}
-  width: 100%;
-  max-width: 100%;
-  min-height: unset;
-  padding-top: 16px;
-  display: flex;
-  justify-content: flex-end;
-  flex-flow: column wrap;
-  margin: 0;
-  background: ${({ theme }) => theme.paper};
-  box-shadow: ${({ theme }) => theme.boxShadow1};
-  border: none;
-
-  ${Media.upToSmall()} {
-    padding: 16px;
-  }
-
-  span[role='img'] {
-    font-size: 55px;
-
-    ${Media.upToSmall()} {
-      font-size: 30px;
-    }
-  }
 `
 
 export const ExtLink = styled(ExternalLink)`
@@ -93,33 +63,6 @@ export const StyledWatchAssetInWallet = styled(WatchAssetInWallet)`
   }
 
   ${linkMixin}
-`
-
-export const StyledTime = styled.p`
-  margin: 0;
-`
-
-export const Loader = styled.div<{ isLoading: boolean }>`
-  display: flex;
-  flex: 1;
-  ${({ theme, isLoading }) =>
-    isLoading &&
-    css`
-      position: relative;
-      display: inline-block;
-
-      overflow: hidden;
-      &::after {
-        position: absolute;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        transform: translateX(-100%);
-        ${theme.shimmer}; // shimmer effect
-        content: '';
-      }
-    `}
 `
 
 export const CardsWrapper = styled.div`
@@ -411,10 +354,10 @@ export const CardActions = styled.div<{ justify?: string; content?: string }>`
   width: 100%;
   display: flex;
   flex-flow: row wrap;
-  justify-content: ${({ justify }) => justify || 'space-between'};
+  justify-content: ${({ justify }) => justify ?? 'space-between'};
   align-items: flex-end;
   margin: auto 0 0;
-  align-content: ${({ content }) => content || 'unset'};
+  align-content: ${({ content }) => content ?? 'unset'};
   color: inherit;
 
   ${Media.upToMedium()} {

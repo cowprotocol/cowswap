@@ -97,6 +97,9 @@ export function useCreateTwapOrder() {
         const fallbackSetupTxs = fallbackHandlerIsNotSet
           ? await extensibleFallbackSetupTxs(extensibleFallbackContext)
           : []
+
+        // upload the app data here, as application might need it to decode the order info before it is being signed
+        uploadAppData({ chainId, orderId, appData: appDataInfo })
         const createOrderTxs = createTwapOrderTxs(twapOrder, paramsStruct, twapOrderCreationContext)
         const { safeTxHash } = await safeAppsSdk.txs.send({ txs: [...fallbackSetupTxs, ...createOrderTxs] })
 
@@ -128,7 +131,6 @@ export function useCreateTwapOrder() {
 
         orderAnalytics('Posted', orderType, 'Presign')
 
-        uploadAppData({ chainId, orderId, appData: appDataInfo })
         updateAdvancedOrdersState({ recipient: null, recipientAddress: null })
         tradeConfirmActions.onSuccess(safeTxHash)
         tradeFlowAnalytics.sign(twapFlowAnalyticsContext)

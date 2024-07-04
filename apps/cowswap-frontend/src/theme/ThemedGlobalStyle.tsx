@@ -10,7 +10,6 @@ export const ThemedGlobalStyle = createGlobalStyle`
   textarea,
   button {
     font-family: 'Inter', sans-serif;
-    font-display: fallback;
   }
 
   @supports (font-variation-settings: normal) {
