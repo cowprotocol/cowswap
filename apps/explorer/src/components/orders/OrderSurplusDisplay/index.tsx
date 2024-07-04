@@ -1,25 +1,28 @@
 import React, { useMemo } from 'react'
+
 import { isSellOrder } from '@cowprotocol/common-utils'
+
 import { faArrowAltCircleUp as faIcon } from '@fortawesome/free-regular-svg-icons'
 import { TokenErc20 } from '@gnosis.pm/dex-js'
 import BigNumber from 'bignumber.js'
 import { SurplusComponent } from 'components/common/SurplusComponent'
+import { NumbersBreakdown } from 'components/orders/NumbersBreakdown'
 import { TokenAmount } from 'components/token/TokenAmount'
 import { BaseIconTooltipOnHover } from 'components/Tooltip'
 import styled, { css, FlattenSimpleInterpolation } from 'styled-components/macro'
+
 import { Order } from 'api/operator'
-import { NumbersBreakdown } from 'components/orders/NumbersBreakdown'
 
 const Wrapper = styled.div``
 
-const fetchSurplusBreakdown = async (): Promise<any> => {
+const fetchSurplusBreakdown = async (initialSurplus: React.ReactNode): Promise<any> => {
   // TODO: Simulating API call to fetch surplus breakdown data
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve({
-        networkCosts: '0.004569407764421721 ETH',
-        fee: 'FREE',
-        total: '1.006413752514 ETH',
+        networkCosts: 'TODO: BIG NUMBER HERE ETH',
+        fee: 'TODO: FEE NUMBER HERE',
+        total: initialSurplus,
       })
     }, 500)
   })
@@ -68,10 +71,15 @@ export function OrderSurplusDisplay(props: Props): React.ReactNode | null {
 
   if (!surplus) return null
 
+  const SurplusElement = <SurplusComponent surplus={surplus} token={surplus.surplusToken} icon={faIcon} />
+
   return (
     <Wrapper>
-      <SurplusComponent surplus={surplus} token={surplus.surplusToken} icon={faIcon} />
-      <NumbersBreakdown fetchData={() => fetchSurplusBreakdown()} renderContent={renderSurplusBreakdown} />
+      {SurplusElement}
+      <NumbersBreakdown
+        fetchData={() => fetchSurplusBreakdown(SurplusElement)}
+        renderContent={renderSurplusBreakdown}
+      />
     </Wrapper>
   )
 }

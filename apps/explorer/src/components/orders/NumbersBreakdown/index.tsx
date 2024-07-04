@@ -1,8 +1,9 @@
 import { useCallback, useEffect } from 'react'
-import styled from 'styled-components/macro'
+
 import Spinner from 'components/common/Spinner'
 import { Notification } from 'components/Notification'
 import useSafeState from 'hooks/useSafeState'
+import styled from 'styled-components/macro'
 
 const ShowMoreButton = styled.button`
   font-size: 1.2rem;
@@ -66,7 +67,7 @@ export const NumbersBreakdown = ({
 
   useEffect(() => {
     if (showExpanded) {
-      handleFetchData()
+      handleFetchData().catch(console.error)
     }
   }, [showExpanded, handleFetchData])
 
