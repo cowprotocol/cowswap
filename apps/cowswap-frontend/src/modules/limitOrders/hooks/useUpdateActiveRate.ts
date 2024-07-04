@@ -8,7 +8,10 @@ import { useUpdateLimitOrdersRawState } from 'modules/limitOrders/hooks/useLimit
 import { useUpdateCurrencyAmount } from 'modules/limitOrders/hooks/useUpdateCurrencyAmount'
 import { limitRateAtom, LimitRateState, updateLimitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
 
-type RateUpdateParams = Pick<LimitRateState, 'activeRate' | 'isTypedValue' | 'isRateFromUrl' | 'isAlternativeOrderRate'>
+type RateUpdateParams = Pick<
+  LimitRateState,
+  'isInitialPriceSet' | 'activeRate' | 'isTypedValue' | 'isRateFromUrl' | 'isAlternativeOrderRate'
+>
 
 export interface UpdateRateCallback {
   (update: RateUpdateParams): void
@@ -21,13 +24,21 @@ export function useUpdateActiveRate(): UpdateRateCallback {
   const updateCurrencyAmount = useUpdateCurrencyAmount()
   const updateRateState = useSetAtom(updateLimitRateAtom)
 
-  const { isRateFromUrl: currentIsRateFromUrl } = rateState
+  const { isRateFromUrl: _currentIsRateFromUrl } = rateState
 
   return useCallback(
     (update: RateUpdateParams) => {
-      const { activeRate, isRateFromUrl, isAlternativeOrderRate } = update
+      const { activeRate, isRateFromUrl, isAlternativeOrderRate, isInitialPriceSet } = update
 
-      updateRateState(update)
+      /**
+       * Don't update price with initial value when it's already set from URL
+       */
+      const shouldSkipPriceUpdate = _currentIsRateFromUrl && isInitialPriceSet
+      const currentIsRateFromUrl = shouldSkipPriceUpdate ? _currentIsRateFromUrl : false
+
+      if (!shouldSkipPriceUpdate) {
+        updateRateState(update)
+      }
 
       const isSell = isSellOrder(orderKind)
 
@@ -57,7 +68,7 @@ export function useUpdateActiveRate(): UpdateRateCallback {
     [
       updateRateState,
       orderKind,
-      currentIsRateFromUrl,
+      _currentIsRateFromUrl,
       updateCurrencyAmount,
       inputCurrencyAmount,
       outputCurrencyAmount,

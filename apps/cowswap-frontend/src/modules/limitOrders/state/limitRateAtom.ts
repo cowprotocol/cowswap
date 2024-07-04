@@ -17,6 +17,7 @@ export interface LimitRateState {
   readonly typedValue: string | null
   // Respect alternative order initial rate
   readonly isAlternativeOrderRate: boolean
+  readonly isInitialPriceSet?: boolean
 }
 
 export const initLimitRateState = () => ({
