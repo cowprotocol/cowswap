@@ -13,6 +13,7 @@ export const CONFIG = {
   ogImageCOWAMM: 'https://cow.fi/images/og-meta-cowamm.png',
   ogImageCOWSWAPP: 'https://cow.fi/images/og-meta-cowswap.png',
   ogImageMEVBLOCKER: 'https://cow.fi/images/og-meta-mevblocker.png',
+  ogImageCOWPROTOCOL: 'https://cow.fi/images/og-meta-cowprotocol.png',
   url: {
     root: 'https://cow.fi',
     swap: 'https://swap.cow.fi/#/1/swap/DAI/COW?sellAmount=500',

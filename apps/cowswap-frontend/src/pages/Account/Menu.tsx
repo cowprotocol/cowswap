@@ -8,8 +8,8 @@ export function AccountMenu() {
   return (
     <SideMenu longList={true}>
       <ul>
-        {ACCOUNT_MENU_LINKS.map(({ title, url }, i) => (
-          <li key={i}>
+        {ACCOUNT_MENU_LINKS.map(({ title, url }) => (
+          <li key={url}>
             <NavLink end to={url} className={({ isActive }) => (isActive ? 'active' : undefined)}>
               {title}
             </NavLink>
