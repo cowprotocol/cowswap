@@ -69,7 +69,7 @@ export const MINIMUM_ORDER_VALID_TO_TIME_SECONDS = 120
 // Minimum deadline for EthFlow orders. Like the default deadline, anything smaller will be replaced by this
 export const MINIMUM_ETH_FLOW_DEADLINE_SECONDS = 600 // 10 minutes in SECONDS
 
-export const DEFAULT_ETH_FLOW_SLIPPAGE_BPS: Record<SupportedChainId, number> = {
+export const MINIMUM_ETH_FLOW_SLIPPAGE_BPS: Record<SupportedChainId, number> = {
   [SupportedChainId.MAINNET]: 200, // 2%
   [SupportedChainId.GNOSIS_CHAIN]: DEFAULT_SLIPPAGE_BPS,
   [SupportedChainId.ARBITRUM_ONE]: DEFAULT_SLIPPAGE_BPS,
@@ -77,7 +77,7 @@ export const DEFAULT_ETH_FLOW_SLIPPAGE_BPS: Record<SupportedChainId, number> = {
 }
 
 export const MINIMUM_ETH_FLOW_SLIPPAGE: Record<SupportedChainId, Percent> = mapSupportedNetworks(
-  (chainId) => new Percent(DEFAULT_ETH_FLOW_SLIPPAGE_BPS[chainId], 10_000)
+  (chainId) => new Percent(MINIMUM_ETH_FLOW_SLIPPAGE_BPS[chainId], 10_000)
 )
 export const HIGH_ETH_FLOW_SLIPPAGE_BPS = 1_000 // 10%
 

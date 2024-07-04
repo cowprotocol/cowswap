@@ -10,7 +10,7 @@ import {
   MIN_SLIPPAGE_BPS,
   MINIMUM_ETH_FLOW_DEADLINE_SECONDS,
   MINIMUM_ETH_FLOW_SLIPPAGE,
-  DEFAULT_ETH_FLOW_SLIPPAGE_BPS,
+  MINIMUM_ETH_FLOW_SLIPPAGE_BPS,
   MINIMUM_ORDER_VALID_TO_TIME_SECONDS,
 } from '@cowprotocol/common-const'
 import { getWrappedToken, percentToBps } from '@cowprotocol/common-utils'
@@ -27,6 +27,7 @@ import { AutoColumn } from 'legacy/components/Column'
 import { useUserTransactionTTL } from 'legacy/state/user/hooks'
 
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
+import { useIsSlippageModified } from 'modules/swap/hooks/useIsSlippageModified'
 import { useIsSmartSlippageApplied } from 'modules/swap/hooks/useIsSmartSlippageApplied'
 import { useSetSlippage } from 'modules/swap/hooks/useSetSlippage'
 import { useDefaultSwapSlippage, useSwapSlippage } from 'modules/swap/hooks/useSwapSlippage'
@@ -34,8 +35,6 @@ import { getNativeOrderDeadlineTooltip, getNonNativeOrderDeadlineTooltip } from 
 import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from 'modules/swap/pure/Row/RowSlippageContent'
 
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
-
-import { useIsSlippageModified } from '../../../modules/swap/hooks/useIsSlippageModified'
 
 const MAX_DEADLINE_MINUTES = 180 // 3h
 
@@ -184,7 +183,7 @@ export function TransactionSettings() {
   const [deadlineInput, setDeadlineInput] = useState('')
   const [deadlineError, setDeadlineError] = useState<DeadlineError | false>(false)
 
-  const minEthFlowSlippageBps = DEFAULT_ETH_FLOW_SLIPPAGE_BPS[chainId]
+  const minEthFlowSlippageBps = MINIMUM_ETH_FLOW_SLIPPAGE_BPS[chainId]
   const minEthFlowSlippage = MINIMUM_ETH_FLOW_SLIPPAGE[chainId]
 
   const isSlippageModified = useIsSlippageModified()

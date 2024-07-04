@@ -1,7 +1,7 @@
 import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
-import { DEFAULT_SLIPPAGE_BPS, DEFAULT_ETH_FLOW_SLIPPAGE_BPS } from '@cowprotocol/common-const'
+import { DEFAULT_SLIPPAGE_BPS, MINIMUM_ETH_FLOW_SLIPPAGE_BPS } from '@cowprotocol/common-const'
 import { bpsToPercent } from '@cowprotocol/common-utils'
 import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { walletInfoAtom } from '@cowprotocol/wallet'
@@ -26,7 +26,7 @@ export const defaultSlippageAtom = atom((get) => {
   const { chainId } = get(walletInfoAtom)
   const isEoaEthFlow = get(isEoaEthFlowAtom)
 
-  return isEoaEthFlow ? DEFAULT_ETH_FLOW_SLIPPAGE_BPS[chainId] : DEFAULT_SLIPPAGE_BPS
+  return isEoaEthFlow ? MINIMUM_ETH_FLOW_SLIPPAGE_BPS[chainId] : DEFAULT_SLIPPAGE_BPS
 })
 
 const currentSlippageAtom = atom<number | null>((get) => {
