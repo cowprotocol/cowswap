@@ -11,6 +11,7 @@ import useSWR from 'swr'
 import { useDerivedTradeState } from 'modules/trade'
 
 import { smartSwapSlippageAtom } from '../state/slippageValueAndTypeAtom'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 
 const SWR_OPTIONS = {
   dedupingInterval: ms`1m`,
@@ -21,6 +22,7 @@ interface SlippageApiResponse {
 }
 
 export function SmartSlippageUpdater() {
+  const { isSmartSlippageEnabled } = useFeatureFlags()
   const { chainId } = useWalletInfo()
   const { inputCurrency, outputCurrency } = useDerivedTradeState() || {}
   const setSmartSwapSlippage = useSetAtom(smartSwapSlippageAtom)
@@ -29,7 +31,9 @@ export function SmartSlippageUpdater() {
   const buyTokenAddress = outputCurrency && getCurrencyAddress(outputCurrency).toLowerCase()
 
   const slippageBps = useSWR(
-    !sellTokenAddress || !buyTokenAddress ? null : [chainId, sellTokenAddress, buyTokenAddress],
+    !sellTokenAddress || !buyTokenAddress || !isSmartSlippageEnabled
+      ? null
+      : [chainId, sellTokenAddress, buyTokenAddress],
     async ([chainId, sellTokenAddress, buyTokenAddress]) => {
       const url = `${BFF_BASE_URL}/chains/${chainId}/markets/${sellTokenAddress}-${buyTokenAddress}/defaultSlippageTolerance`
 
