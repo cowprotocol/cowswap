@@ -1,16 +1,16 @@
 import { useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
+import { BFF_BASE_URL } from '@cowprotocol/common-const'
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import ms from 'ms.macro'
 import useSWR from 'swr'
 
 import { useDerivedTradeState } from 'modules/trade'
 
 import { smartSwapSlippageAtom } from '../state/slippageValueAndTypeAtom'
-import { BFF_BASE_URL } from '@cowprotocol/common-const'
-import ms from 'ms.macro'
 
 const SWR_OPTIONS = {
   dedupingInterval: ms`1m`,
