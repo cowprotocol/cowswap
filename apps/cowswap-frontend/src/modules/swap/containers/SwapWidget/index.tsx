@@ -13,6 +13,7 @@ import { useModalIsOpen } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
 import { Field } from 'legacy/state/types'
 
+import { PreHookButton, PostHookButton } from 'modules/hooks'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { EthFlowModal, EthFlowProps } from 'modules/swap/containers/EthFlow'
 import { SwapModals, SwapModalsProps } from 'modules/swap/containers/SwapModals'
@@ -59,7 +60,11 @@ import { TradeRateDetails } from '../TradeRateDetails'
 const BUTTON_STATES_TO_SHOW_BUNDLE_APPROVAL_BANNER = [SwapButtonState.ApproveAndSwap]
 const BUTTON_STATES_TO_SHOW_BUNDLE_WRAP_BANNER = [SwapButtonState.WrapAndSwap]
 
-export function SwapWidget() {
+export interface SwapWidgetProps {
+  hooksEnabled: boolean
+}
+
+export function SwapWidget({ hooksEnabled }: SwapWidgetProps) {
   const { chainId, account } = useWalletInfo()
   const { slippageAdjustedSellAmount, currencies, trade } = useDerivedSwapInfo()
   const slippage = useSwapSlippage()
@@ -248,8 +253,11 @@ export function SwapWidget() {
 
   const slots = {
     settingsWidget: <SettingsTab />,
+
+    topContent: hooksEnabled ? <PreHookButton /> : undefined,
     bottomContent: (
       <>
+        {hooksEnabled && <PostHookButton />}
         <TradeRateDetails
           allowedSlippage={isSlippageModified ? slippage : null}
           rateInfoParams={rateInfoParams}

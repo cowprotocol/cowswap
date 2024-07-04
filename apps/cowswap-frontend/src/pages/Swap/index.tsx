@@ -13,7 +13,11 @@ import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRou
 
 import { Routes } from 'common/constants/routes'
 
-export function SwapPage() {
+export interface SwapPageProps {
+  hooksEnabled: boolean
+}
+
+export function SwapPage({ hooksEnabled }: SwapPageProps) {
   const params = useParams()
   const slippage = useSwapSlippage()
 
@@ -27,7 +31,7 @@ export function SwapPage() {
       <SwapDerivedStateUpdater />
       <SwapAmountsFromUrlUpdater />
       <SmartSlippageUpdater />
-      <SwapWidget />
+      <SwapWidget hooksEnabled={hooksEnabled} />
     </>
   )
 }
