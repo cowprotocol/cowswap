@@ -4,3 +4,4 @@ export { useInjectedWidgetParams, useWidgetPartnerFee } from './hooks/useInjecte
 export { useInjectedWidgetMetaData } from './hooks/useInjectedWidgetMetaData'
 export { useInjectedWidgetPalette } from './hooks/useInjectedWidgetPalette'
 export { injectedWidgetPartnerFeeAtom } from './state/injectedWidgetParamsAtom'
+export { WidgetMarkdownContent } from './pure/WidgetMarkdownContent'
