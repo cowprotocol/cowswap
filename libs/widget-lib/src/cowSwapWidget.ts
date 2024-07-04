@@ -3,7 +3,7 @@ import { CowEventListeners } from '@cowprotocol/events'
 import { IframeCowEventEmitter } from './IframeCowEventEmitter'
 import { IframeRpcProviderBridge } from './IframeRpcProviderBridge'
 import { IframeSafeSdkBridge } from './IframeSafeSdkBridge'
-import { WindowListener, listenToMessageFromWindow, postMessageToWindow, stopListeningWindowListener } from './messages'
+import { WindowListener, listenToMessageFromWindow, postMessageToWindow } from './messages'
 import {
   CowSwapWidgetParams,
   CowSwapWidgetProps,
@@ -190,17 +190,12 @@ function updateParams(contentWindow: Window, params: CowSwapWidgetParams, provid
  * @param appCode - A unique identifier for the app.
  */
 function sendAppCodeOnActivation(contentWindow: Window, appCode: string | undefined) {
-  const listener = listenToMessageFromWindow(window, WidgetMethodsEmit.ACTIVATE, () => {
-    // Stop listening for the ACTIVATE (once is enough)
-    stopListeningWindowListener(window, listener)
-
+  return listenToMessageFromWindow(window, WidgetMethodsEmit.ACTIVATE, () => {
     // Update the appData
     postMessageToWindow(contentWindow, WidgetMethodsListen.UPDATE_APP_DATA, {
       metaData: appCode ? { appCode } : undefined,
     })
   })
-
-  return listener
 }
 
 /**
