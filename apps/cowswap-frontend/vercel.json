@@ -1,0 +1,9 @@
+{
+  "redirects": [
+    {
+      "source": "/((?!#|assets|emergency).+)",
+      "destination": "/",
+      "permanent": false
+    }
+  ]
+}
