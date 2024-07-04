@@ -29,7 +29,7 @@ const currentSlippageAtom = atom<number | null>((get) => {
   const normalSwapSlippage = get(normalSwapSlippageAtom)
   const ethFlowSlippage = get(ethFlowSlippageAtom)
 
-  return (isEoaEthFlow ? ethFlowSlippage : normalSwapSlippage)?.[chainId] || null
+  return (isEoaEthFlow ? ethFlowSlippage : normalSwapSlippage)?.[chainId] ?? null
 })
 
 export const smartSwapSlippageAtom = atom<number | null>(null)
@@ -40,7 +40,7 @@ export const slippageValueAndTypeAtom = atom<{ type: SlippageType; value: number
   const smartSwapSlippage = get(smartSwapSlippageAtom)
   const isEoaEthFlow = get(isEoaEthFlowAtom)
 
-  if (currentSlippage) {
+  if (typeof currentSlippage === 'number') {
     return { type: 'user', value: currentSlippage }
   }
 
