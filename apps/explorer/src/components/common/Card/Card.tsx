@@ -1,9 +1,10 @@
 import React from 'react'
 
+import { Media } from '@cowprotocol/ui'
+
 import Grid, { GridSize } from '@material-ui/core/Grid'
 import styled from 'styled-components/macro'
 import { COLOURS } from 'styles'
-import { media } from 'theme/styles/media'
 
 const { white, fadedGreyishWhite, blackLight } = COLOURS
 
@@ -15,7 +16,7 @@ const DefaultCard = styled.div`
   border-radius: 6px;
   box-shadow: 0 10px 15px -3px rgb(0 0 0 / 7%), 0 4px 6px -2px rgb(0 0 0 / 5%);
   margin: 0.8rem;
-  ${media.mobile} {
+  ${Media.upToSmall()} {
     min-width: 14rem;
     min-height: 9.8rem;
   }
@@ -39,7 +40,7 @@ const CardContent = styled.div`
   font-size: 1.5rem;
   padding: 1rem;
   line-height: normal;
-  ${media.xSmallDown} {
+  ${Media.upToExtraSmall()} {
     padding: 0.2rem;
     font-size: 1.1rem;
   }

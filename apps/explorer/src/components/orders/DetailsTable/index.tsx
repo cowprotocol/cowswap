@@ -1,11 +1,11 @@
 import React from 'react'
 
-import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
+import { Media } from '@cowprotocol/ui'
 import { TruncatedText } from '@cowprotocol/ui/pure/TruncatedText'
 
-import { faFill, faProjectDiagram, faGroupArrowsRotate, faHistory } from '@fortawesome/free-solid-svg-icons'
+import { faFill, faProjectDiagram } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { sendEvent } from 'components/analytics'
 import DecodeAppData from 'components/AppData/DecodeAppData'
@@ -22,7 +22,6 @@ import { OrderSurplusDisplay } from 'components/orders/OrderSurplusDisplay'
 import { StatusLabel } from 'components/orders/StatusLabel'
 import { HelpTooltip } from 'components/Tooltip'
 import styled from 'styled-components/macro'
-import { media } from 'theme/styles/media'
 import { capitalize } from 'utils'
 
 import { Order } from 'api/operator'
@@ -31,50 +30,48 @@ import { getUiOrderType } from 'utils/getUiOrderType'
 import { TAB_QUERY_PARAM_KEY } from '../../../explorer/const'
 
 const Table = styled(SimpleTable)`
-  > tbody > tr {
-    grid-template-columns: 27rem auto;
-    grid-template-rows: max-content;
-    padding: 1.4rem 0 1.4rem 1.1rem;
-
-    
-
-    ${media.mediumDown} {
-      grid-template-columns: 17rem auto;
-      padding: 1.4rem 0;
-
-      :hover {
-        background: inherit;
-      }
-    }
-
-    > td {
-      justify-content: flex-start;
-
-      &:first-of-type {
-        text-transform: capitalize;
-
-        ${media.mediumUp} {
-          font-weight: ${({ theme }): string => theme.fontLighter};
-        }
-
-        /* Question mark */
-
-        > svg {
-          margin: 0 1rem 0 0;
-        }
-
-        /* Column after text on first column */
-
-        ::after {
-          content: ':';
-        }
-      }
-
-      &:last-of-type {
-        color: ${({ theme }): string => theme.textPrimary1};
-      }
-    }
-  }
+  // > tbody > tr {
+  //   grid-template-columns: 19rem auto;
+  //   grid-template-rows: max-content;
+  //   padding: 1.4rem 0 1.4rem 1.1rem;
+  //
+  //   ${Media.upToSmall()} {
+  //     grid-template-columns: 11rem auto;
+  //   }
+  //
+  //   > td {
+  //     justify-content: flex-start;
+  //
+  //     &:first-of-type {
+  //       text-transform: capitalize;
+  //
+  //       ${Media.MediumAndUp()} {
+  //         font-weight: ${({ theme }): string => theme.fontLighter};
+  //       }
+  //
+  //       ${Media.upToSmall()} {
+  //         padding: 0.5rem 0;
+  //       }
+  //
+  //       /* Question mark */
+  //
+  //       > svg {
+  //         margin: 0 1rem 0 0;
+  //       }
+  //
+  //       /* Column after text on first column */
+  //
+  //       ::after {
+  //         content: ':';
+  //         display: contents;
+  //       }
+  //     }
+  //
+  //     &:last-of-type {
+  //       color: ${({ theme }): string => theme.textPrimary1};
+  //     }
+  //   }
+  // }
 `
 
 const tooltip = {
@@ -130,13 +127,12 @@ const tooltip = {
   fees: 'The amount of fees paid for this order. This will show a progressive number for orders with partial fills. Might take a few minutes to show the final value.',
 }
 
-export const Wrapper = styled.div<{ gap?: boolean }>`
+export const Wrapper = styled.div`
   display: flex;
   flex-direction: row;
 
-  ${media.mobile} {
+  ${Media.upToSmall()} {
     flex-direction: column;
-    ${({ gap = true }) => gap && 'gap: 1rem;'}
   }
 `
 
@@ -146,18 +142,18 @@ export const LinkButton = styled(LinkWithPrefixNetwork)`
   justify-content: center;
   text-align: center;
   font-weight: ${({ theme }): string => theme.fontBold};
-  font-size: 1.1rem;
+  font-size: 1.3rem;
   color: ${({ theme }): string => theme.orange1};
   border: 1px solid ${({ theme }): string => theme.orange1};
   background-color: ${({ theme }): string => theme.orangeOpacity};
   border-radius: 0.4rem;
-  padding: 0.5rem 1.5rem;
+  padding: 0.8rem 1.5rem;
   margin: 0 0 0 2rem;
   transition-duration: 0.2s;
   transition-timing-function: ease-in-out;
 
-  ${media.mobile} {
-    margin: 1rem 0 0 0;
+  ${Media.upToSmall()} {
+    margin: 1.6rem 0 0 0;
   }
 
   :hover {
@@ -171,7 +167,7 @@ export const LinkButton = styled(LinkWithPrefixNetwork)`
   }
 `
 
-export type DetailsTableProps = {
+export type Props = {
   chainId: SupportedChainId
   order: Order
   showFillsButton: boolean | undefined
@@ -181,8 +177,8 @@ export type DetailsTableProps = {
   invertPrice: Command
 }
 
-export function DetailsTable(props: DetailsTableProps): React.ReactNode | null {
-  const { chainId, order, areTradesLoading, showFillsButton, viewFills, isPriceInverted, invertPrice } = props
+export function DetailsTable(props: Props): JSX.Element | null {
+  const { order, areTradesLoading, showFillsButton, viewFills, isPriceInverted, invertPrice } = props
   const {
     uid,
     owner,
@@ -224,7 +220,9 @@ export function DetailsTable(props: DetailsTableProps): React.ReactNode | null {
         <>
           <tr>
             <td>
-              <HelpTooltip tooltip={tooltip.orderID} /> Order Id
+              <span>
+                <HelpTooltip tooltip={tooltip.orderID} /> Order Id
+              </span>
             </td>
             <td>
               <RowWithCopyButton
@@ -236,46 +234,40 @@ export function DetailsTable(props: DetailsTableProps): React.ReactNode | null {
           </tr>
           <tr>
             <td>
-              <HelpTooltip tooltip={tooltip.from} /> From
+              <span>
+                <HelpTooltip tooltip={tooltip.from} /> From
+              </span>
             </td>
             <td>
-
-              <Wrapper>
-                <RowWithCopyButton
-                  textToCopy={owner}
-                  onCopy={(): void => onCopy('ownerAddress')}
-                  contentsToDisplay={<LinkWithPrefixNetwork to={getExplorerLink(chainId, owner, ExplorerDataType.ADDRESS)} target='_blank'>{owner}↗</LinkWithPrefixNetwork>}
-                />
-                <LinkButton to={`/address/${owner}`}>
-                  <FontAwesomeIcon icon={faHistory} />
-                  Order History
-                </LinkButton>
-              </Wrapper>
+              <RowWithCopyButton
+                textToCopy={owner}
+                onCopy={(): void => onCopy('ownerAddress')}
+                contentsToDisplay={<LinkWithPrefixNetwork to={`/address/${owner}`}>{owner}</LinkWithPrefixNetwork>}
+              />
             </td>
           </tr>
           <tr>
             <td>
-              <HelpTooltip tooltip={tooltip.to} /> To
+              <span>
+                <HelpTooltip tooltip={tooltip.to} /> To
+              </span>
             </td>
             <td>
-              <Wrapper>
-                <RowWithCopyButton
-                  textToCopy={receiver}
-                  onCopy={(): void => onCopy('receiverAddress')}
-                  contentsToDisplay={<LinkWithPrefixNetwork to={getExplorerLink(chainId, receiver, ExplorerDataType.ADDRESS)} target='_blank'>{receiver}↗</LinkWithPrefixNetwork>}
-                />
-                <LinkButton to={`/address/${receiver}`}>
-                  <FontAwesomeIcon icon={faHistory} />
-                  Order History
-                </LinkButton>
-              </Wrapper>
-
+              <RowWithCopyButton
+                textToCopy={receiver}
+                onCopy={(): void => onCopy('receiverAddress')}
+                contentsToDisplay={
+                  <LinkWithPrefixNetwork to={`/address/${receiver}`}>{receiver}</LinkWithPrefixNetwork>
+                }
+              />
             </td>
           </tr>
           {(!partiallyFillable || txHash) && (
             <tr>
               <td>
-                <HelpTooltip tooltip={tooltip.hash} /> Transaction hash
+                <span>
+                  <HelpTooltip tooltip={tooltip.hash} /> Transaction hash
+                </span>
               </td>
               <td>
                 {areTradesLoading ? (
@@ -285,19 +277,12 @@ export function DetailsTable(props: DetailsTableProps): React.ReactNode | null {
                     <RowWithCopyButton
                       textToCopy={txHash}
                       onCopy={(): void => onCopy('settlementTx')}
-                      contentsToDisplay={<LinkWithPrefixNetwork to={getExplorerLink(chainId, txHash, ExplorerDataType.TRANSACTION)} target='_blank'>{txHash}↗</LinkWithPrefixNetwork>}
+                      contentsToDisplay={<LinkWithPrefixNetwork to={`/tx/${txHash}`}>{txHash}</LinkWithPrefixNetwork>}
                     />
-                    <Wrapper gap={false}>
-                      <LinkButton to={`/tx/${txHash}`}>
-                        <FontAwesomeIcon icon={faGroupArrowsRotate} />
-                        Batch
-                      </LinkButton>
-
-                      <LinkButton to={`/tx/${txHash}/?${TAB_QUERY_PARAM_KEY}=graph`}>
-                        <FontAwesomeIcon icon={faProjectDiagram} />
-                        Graph
-                      </LinkButton>
-                    </Wrapper>
+                    <LinkButton to={`/tx/${txHash}/?${TAB_QUERY_PARAM_KEY}=graph`}>
+                      <FontAwesomeIcon icon={faProjectDiagram} />
+                      View batch graph
+                    </LinkButton>
                   </Wrapper>
                 ) : (
                   '-'
@@ -307,7 +292,9 @@ export function DetailsTable(props: DetailsTableProps): React.ReactNode | null {
           )}
           <tr>
             <td>
-              <HelpTooltip tooltip={tooltip.status} /> Status
+              <span>
+                <HelpTooltip tooltip={tooltip.status} /> Status
+              </span>
             </td>
             <td>
               <StatusLabel status={status} partiallyFilled={partiallyFilled} partialTagPosition="right" />
@@ -315,7 +302,9 @@ export function DetailsTable(props: DetailsTableProps): React.ReactNode | null {
           </tr>
           <tr>
             <td>
-              <HelpTooltip tooltip={tooltip.submission} /> Submission Time
+              <span>
+                <HelpTooltip tooltip={tooltip.submission} /> Submission Time
+              </span>
             </td>
             <td>
               <DateDisplay date={creationDate} showIcon={true} />
@@ -324,7 +313,9 @@ export function DetailsTable(props: DetailsTableProps): React.ReactNode | null {
           {executionDate && !showFillsButton && (
             <tr>
               <td>
-                <HelpTooltip tooltip={tooltip.execution} /> Execution Time
+                <span>
+                  <HelpTooltip tooltip={tooltip.execution} /> Execution Time
+                </span>
               </td>
               <td>
                 <DateDisplay date={executionDate} showIcon={true} />
@@ -333,7 +324,9 @@ export function DetailsTable(props: DetailsTableProps): React.ReactNode | null {
           )}
           <tr>
             <td>
-              <HelpTooltip tooltip={tooltip.expiration} /> Expiration Time
+              <span>
+                <HelpTooltip tooltip={tooltip.expiration} /> Expiration Time
+              </span>
             </td>
             <td>
               <DateDisplay date={expirationDate} showIcon={true} />
@@ -341,7 +334,9 @@ export function DetailsTable(props: DetailsTableProps): React.ReactNode | null {
           </tr>
           <tr>
             <td>
-              <HelpTooltip tooltip={tooltip.type} /> Type
+              <span>
+                <HelpTooltip tooltip={tooltip.type} /> Type
+              </span>
             </td>
             <td>
               {capitalize(kind)} {getUiOrderType(order).toLowerCase()} order{' '}
@@ -350,8 +345,9 @@ export function DetailsTable(props: DetailsTableProps): React.ReactNode | null {
           </tr>
           <tr>
             <td>
-              <HelpTooltip tooltip={tooltip.amount} />
-              Amount
+              <span>
+                <HelpTooltip tooltip={tooltip.amount} /> Amount
+              </span>
             </td>
             <td>
               <AmountsDisplay order={order} />
@@ -359,7 +355,9 @@ export function DetailsTable(props: DetailsTableProps): React.ReactNode | null {
           </tr>
           <tr>
             <td>
-              <HelpTooltip tooltip={tooltip.priceLimit} /> Limit Price
+              <span>
+                <HelpTooltip tooltip={tooltip.priceLimit} /> Limit Price
+              </span>
             </td>
             <td>
               <OrderPriceDisplay
@@ -376,7 +374,9 @@ export function DetailsTable(props: DetailsTableProps): React.ReactNode | null {
           <>
             <tr>
               <td>
-                <HelpTooltip tooltip={tooltip.priceExecution} /> Execution price
+                <span>
+                  <HelpTooltip tooltip={tooltip.priceExecution} /> Execution price
+                </span>
               </td>
               <td>
                 {!filledAmount.isZero() ? (
@@ -396,7 +396,9 @@ export function DetailsTable(props: DetailsTableProps): React.ReactNode | null {
             </tr>
             <tr>
               <td>
-                <HelpTooltip tooltip={tooltip.filled} /> Filled
+                <span>
+                  <HelpTooltip tooltip={tooltip.filled} /> Filled
+                </span>
               </td>
               <td>
                 <Wrapper>
@@ -412,14 +414,18 @@ export function DetailsTable(props: DetailsTableProps): React.ReactNode | null {
             </tr>
             <tr>
               <td>
-                <HelpTooltip tooltip={tooltip.surplus} /> Order surplus
+                <span>
+                  <HelpTooltip tooltip={tooltip.surplus} /> Order surplus
+                </span>
               </td>
               <td>{!surplusAmount.isZero() ? <OrderSurplusDisplay order={order} /> : '-'}</td>
             </tr>
           </>
           <tr>
             <td>
-              <HelpTooltip tooltip={tooltip.fees} /> Fees
+              <span>
+                <HelpTooltip tooltip={tooltip.fees} /> Fees
+              </span>
             </td>
             <td>
               <GasFeeDisplay order={order} />
@@ -427,7 +433,9 @@ export function DetailsTable(props: DetailsTableProps): React.ReactNode | null {
           </tr>
           <tr>
             <td>
-              <HelpTooltip tooltip={tooltip.appData} /> AppData
+              <span>
+                <HelpTooltip tooltip={tooltip.appData} /> AppData
+              </span>
             </td>
             <td>
               <DecodeAppData appData={appData} fullAppData={fullAppData ?? undefined} />

@@ -1,8 +1,10 @@
 import React, { useState, createRef } from 'react'
 
+import { useMediaQuery } from '@cowprotocol/common-hooks'
+import { Media } from '@cowprotocol/ui'
+
 import IMAGE_CARRET_DOWN from 'assets/img/carret-down.svg'
 import { MenuFlyout, Content, MenuSection, MenuTitle, ButtonMenuItem } from 'components/common/MenuDropdown/styled'
-import { useMediaBreakpoint } from 'hooks/useMediaBreakPoint'
 import useOnClickOutside from 'hooks/useOnClickOutside'
 import SVG from 'react-inlinesvg'
 
@@ -19,7 +21,7 @@ interface MenuProps {
 }
 
 export function MenuItemsPanel({ title, children }: MenuProps): JSX.Element {
-  const isLargeAndUp = useMediaBreakpoint(['lg', 'xl'])
+  const isLargeAndUp = useMediaQuery(Media.LargeAndUp(false))
   const node = createRef<HTMLOListElement>()
   const [showMenu, setShowMenu] = useState(false)
 

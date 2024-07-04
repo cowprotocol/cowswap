@@ -1,4 +1,4 @@
-import React from 'react'
+import { Media } from '@cowprotocol/ui'
 
 import { getNetworkFromId } from '@gnosis.pm/dex-js'
 import { Helmet } from 'react-helmet'
@@ -7,19 +7,18 @@ import styled from 'styled-components/macro'
 import { ContentCard as Content, StyledLink, Title, Wrapper as WrapperTemplate } from './styled'
 
 import { useNetworkId } from '../../state/network'
-import { media } from '../../theme/styles/media'
 import { APP_TITLE } from '../const'
 
 const Wrapper = styled(WrapperTemplate)`
   max-width: 118rem;
 
-  ${media.mediumDown} {
+  ${Media.upToMedium()} {
     flex-flow: column wrap;
   }
 `
 
-const NotFoundRequestPage: React.FC = () => {
-  const networkId = useNetworkId() || 1
+const NotFoundRequestPage = () => {
+  const networkId = useNetworkId() ?? 1
   const network = networkId !== 1 ? getNetworkFromId(networkId).toLowerCase() : ''
 
   return (

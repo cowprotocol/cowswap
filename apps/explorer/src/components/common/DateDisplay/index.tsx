@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { faClock } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Placement } from '@popperjs/core'
@@ -8,18 +6,8 @@ import { formatDistanceToNowStrict, format } from 'date-fns'
 import { usePopperOnClick } from 'hooks/usePopper'
 import styled from 'styled-components/macro'
 
-const Wrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`
-
 const IconWrapper = styled(FontAwesomeIcon)`
-  padding: 0.6rem;
-  margin: -0.6rem 0 -0.6rem -0.6rem;
-  box-sizing: content-box;
-
-  :hover {
+  &:hover {
     cursor: pointer;
   }
 `
@@ -30,31 +18,26 @@ interface DateDisplayProps {
   tooltipPlacement?: Placement
 }
 
-export function DateDisplay({ date, showIcon, tooltipPlacement = 'top' }: DateDisplayProps): JSX.Element {
+export function DateDisplay({ date, showIcon, tooltipPlacement = 'top' }: Readonly<DateDisplayProps>): React.ReactNode {
   const { tooltipProps, targetProps } = usePopperOnClick<HTMLInputElement>(tooltipPlacement)
-  // '5 days ago', '1h from now' date format
   const distance = formatDistanceToNowStrict(date, { addSuffix: true })
-  // Long localized date and time '04/29/1453 12:00:00 AM'
-  // P: Long localized date: 04/29/1453
-  // pp: Long localized time: 12:00:00 AM
-  // For reference: https://date-fns.org/v2.17.0/docs/format
   const fullLocaleBased = format(date, 'P pp zzzz')
-  const previewDate = format(date, 'd MMMM yyyy - h:mm a')
+  const previewDate = format(date, 'dd/MM/yyyy - h:mma')
+
   return (
-    <span className="wrap-datedisplay">
+    <>
       <Tooltip {...tooltipProps}>
         {distance} - {fullLocaleBased}
       </Tooltip>
-      <Wrapper>
-        {showIcon ? (
-          <span {...targetProps}>
-            <IconWrapper icon={faClock} />
-            <span>{previewDate}</span>
-          </span>
-        ) : (
-          <span {...targetProps}>{previewDate}</span>
-        )}
-      </Wrapper>
-    </span>
+
+      {showIcon ? (
+        <span {...targetProps}>
+          <IconWrapper icon={faClock} />
+          &nbsp;{previewDate}
+        </span>
+      ) : (
+        <span {...targetProps}>{previewDate}</span>
+      )}
+    </>
   )
 }

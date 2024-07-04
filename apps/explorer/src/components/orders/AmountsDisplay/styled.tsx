@@ -1,5 +1,6 @@
+import { Media } from '@cowprotocol/ui'
+
 import styled from 'styled-components/macro'
-import { media } from 'theme/styles/media'
 
 export const Wrapper = styled.div`
   display: grid;
@@ -10,7 +11,7 @@ export const Wrapper = styled.div`
   grid-template-rows: max-content;
   padding: 0;
 
-  ${media.mobile} {
+  ${Media.upToSmall()} {
     display: flex;
     flex-flow: column wrap;
     align-items: flex-start;
@@ -22,7 +23,7 @@ export const RowTitle = styled.span`
   align-items: center;
   font-weight: ${({ theme }): string => theme.fontBold};
 
-  ${media.mobile} {
+  ${Media.upToSmall()} {
     margin: 1rem 0 0;
   }
 

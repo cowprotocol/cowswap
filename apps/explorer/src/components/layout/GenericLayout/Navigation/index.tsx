@@ -1,6 +1,7 @@
+import { Media } from '@cowprotocol/ui'
+
 import * as CSS from 'csstype'
 import styled from 'styled-components/macro'
-import { media } from 'theme/styles/media'
 
 export const Navigation = styled.ol<Partial<CSS.Properties & { isActive: boolean }>>`
   list-style: none;
@@ -9,7 +10,7 @@ export const Navigation = styled.ol<Partial<CSS.Properties & { isActive: boolean
   flex-grow: 1;
   justify-content: flex-end;
 
-  ${media.mediumDownMd} {
+  ${Media.upToMedium()} {
     flex-direction: column;
     flex-wrap: nowrap;
     justify-content: flex-start;
@@ -28,7 +29,7 @@ export const Navigation = styled.ol<Partial<CSS.Properties & { isActive: boolean
     z-index: ${({ isActive }): string => (isActive ? '99' : '-1')};
   }
 
-  ${media.xSmallDown} {
+  ${Media.upToExtraSmall()} {
     border-right: 1px solid var(--color-border);
     max-width: 100%;
     top: 0;
@@ -63,7 +64,7 @@ export const Navigation = styled.ol<Partial<CSS.Properties & { isActive: boolean
       opacity: 0.6;
     }
 
-    ${media.mediumDownMd} {
+    ${Media.upToMedium()} {
       padding: 10px 15px;
       text-align: center;
       &:not(:last-child):after {
