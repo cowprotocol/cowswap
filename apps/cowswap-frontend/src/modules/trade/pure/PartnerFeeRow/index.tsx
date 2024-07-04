@@ -2,8 +2,9 @@ import { bpsToPercent, formatPercent } from '@cowprotocol/common-utils'
 import { CowSwapWidgetContent } from '@cowprotocol/widget-lib'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import ReactMarkdown from 'react-markdown'
 import { Nullish } from 'types'
+
+import { WidgetMarkdownContent } from 'modules/injectedWidget'
 
 import * as styledEl from '../../containers/TradeBasicConfirmDetails/styled'
 import { ReviewOrderModalAmountRow } from '../ReviewOrderModalAmountRow'
@@ -40,7 +41,7 @@ export function PartnerFeeRow({
           alwaysRow={alwaysRow}
           tooltip={
             widgetContent?.feeTooltipMarkdown ? (
-              <ReactMarkdown>{widgetContent.feeTooltipMarkdown}</ReactMarkdown>
+              <WidgetMarkdownContent>{widgetContent.feeTooltipMarkdown}</WidgetMarkdownContent>
             ) : (
               <>
                 This fee helps pay for maintenance & improvements to the trade experience.
