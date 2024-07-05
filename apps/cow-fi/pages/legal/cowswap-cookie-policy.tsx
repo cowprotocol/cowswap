@@ -250,7 +250,7 @@ export default function Page({ siteConfigData }: PageProps) {
               <p>
                 For more information about Google Analytics cookies, please see Google&#39;s help pages and privacy
                 policy:{' '}
-                <a href="http://www.google.com/intl/en/policies/privacy/" target="_blank" rel="nofollow noopener">
+                <a href="https://www.google.com/intl/en/policies/privacy/" target="_blank" rel="nofollow noopener">
                   Google&#39;s Privacy Policy
                 </a>{' '}
                 and{' '}
@@ -279,7 +279,7 @@ export default function Page({ siteConfigData }: PageProps) {
               <p>
                 Most browsers are initially set to accept cookies. If you prefer, you can set your browser to refuse
                 cookies and control and/or delete cookies as you wish – for details, see{' '}
-                <a href="http://www.aboutcookies.org/" target="_blank" rel="nofollow noopener">
+                <a href="https://www.aboutcookies.org/" target="_blank" rel="nofollow noopener">
                   aboutcookies.org
                 </a>
                 . You can delete all cookies that are already on your device and you can set most browsers to prevent
@@ -306,8 +306,8 @@ export default function Page({ siteConfigData }: PageProps) {
                 To opt out of being tracked by Google Analytics across all websites, Google has developed the Google
                 Analytics opt-out browser add-on. If you would like to opt out of Google Analytics, you have the option
                 of downloading and installing this browser add-on which can be found under the link:{' '}
-                <a href="http://tools.google.com/dlpage/gaoptout" target="_blank" rel="nofollow noopener">
-                  http://tools.google.com/dlpage/gaoptout
+                <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="nofollow noopener">
+                  https://tools.google.com/dlpage/gaoptout
                 </a>
                 .
               </p>

@@ -15,7 +15,7 @@ import { X } from 'react-feather'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
-import Confetti from 'legacy/components/Confetti'
+import { Confetti } from '@cowprotocol/ui'
 
 import { useOpenRandomFortune } from 'modules/fortune/hooks/useOpenRandomFortune'
 import { lastCheckedFortuneAtom } from 'modules/fortune/state/checkedFortunesListAtom'

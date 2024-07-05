@@ -1,4 +1,4 @@
-import { Confetti } from '@/components/Confetti'
+import { Confetti } from '@cowprotocol/ui'
 import styled from 'styled-components/macro'
 import { darken, transparentize } from 'polished'
 import { useConnectAndAddToWallet } from '../../lib/hooks/useConnectAndAddToWallet'
