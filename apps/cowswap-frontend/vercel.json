@@ -1,7 +1,7 @@
 {
   "redirects": [
     {
-      "source": "/((?!#|assets/|audio/|fonts/|images/|manifest\\.|\\w+\\.xml|.+\\.html|.+\\.png|.+\\.svg|.+\\.txt|.+\\.js).+)",
+      "source": "/((?!#|.*[\\w\\d\\.-]\\.\\w{2,15}$).+)",
       "destination": "/",
       "permanent": false
     }
