@@ -23,6 +23,7 @@ import {
 
 import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
 import { clickOnKnowledgeBase } from 'modules/analytics'
+import { toCmsAbsoluteUrl } from '@/const/cms'
 
 interface PageProps {
   siteConfigData: typeof CONFIG
@@ -100,7 +101,7 @@ export default function Page({ siteConfigData, categories, articles }: PageProps
                     <TopicImage iconColor={iconColor}>
                       {imageUrl ? (
                         <img
-                          src={imageUrl}
+                          src={toCmsAbsoluteUrl(imageUrl)}
                           alt={name}
                           onError={(e) => {
                             e.currentTarget.onerror = null

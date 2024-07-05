@@ -3,6 +3,7 @@ import { PaginationParam } from 'types'
 import qs from 'qs'
 
 import { toQueryParams } from 'util/queryParams'
+import { CMS_BASE_URL } from '@/const/cms'
 
 const PAGE_SIZE = 50
 
@@ -61,7 +62,7 @@ export function isSharedVideoEmbedComponent(component: ArticleBlock): component 
  * Open API Fetch client. See docs for usage https://openapi-ts.pages.dev/openapi-fetch/
  */
 export const client = CmsClient({
-  url: process.env.NEXT_PUBLIC_CMS_BASE_URL || 'https://cms.cow.fi/api',
+  url: CMS_BASE_URL,
 })
 
 /**
@@ -253,35 +254,35 @@ async function getBySlugAux(slug: string, endpoint: '/categories' | '/articles')
   const populate =
     endpoint === '/categories'
       ? // Category
-      {
-        articles: {
-          populate: {
-            authorsBio: {
-              fields: ['name'],
+        {
+          articles: {
+            populate: {
+              authorsBio: {
+                fields: ['name'],
+              },
+              seo: '*',
             },
-            seo: '*',
           },
-        },
-        image: { fields: ['url'] }, // Ensure the image is populated
-      }
+          image: { fields: ['url'] }, // Ensure the image is populated
+        }
       : // Articles
-      {
-        cover: {
-          fields: ['url', 'width', 'height', 'alternativeText'],
-        },
-        blocks: '*',
-        seo: {
-          fields: ['metaTitle', 'metaDescription'],
-          populate: {
-            shareImage: {
-              fields: ['url'],
+        {
+          cover: {
+            fields: ['url', 'width', 'height', 'alternativeText'],
+          },
+          blocks: '*',
+          seo: {
+            fields: ['metaTitle', 'metaDescription'],
+            populate: {
+              shareImage: {
+                fields: ['url'],
+              },
             },
           },
-        },
-        authorsBio: {
-          fields: ['name'],
-        },
-      }
+          authorsBio: {
+            fields: ['name'],
+          },
+        }
 
   const query = toQueryParams({
     filters: {

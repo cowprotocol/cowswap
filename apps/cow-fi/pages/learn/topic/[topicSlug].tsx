@@ -19,6 +19,7 @@ import {
   CategoryLinks,
 } from '@/styles/styled'
 import { clickOnKnowledgeBase } from 'modules/analytics'
+import { toCmsAbsoluteUrl } from '@/const/cms'
 
 const Wrapper = styled.div`
   display: flex;
@@ -143,7 +144,7 @@ export default function TopicPage({ category, articles, allCategories }: TopicPa
               <CategoryTitle>
                 {imageUrl && (
                   <CategoryImageWrapper>
-                    <CategoryImage src={imageUrl} alt={name} />
+                    <CategoryImage src={toCmsAbsoluteUrl(imageUrl)} alt={name} />
                   </CategoryImageWrapper>
                 )}
                 <h1>{name}</h1>
