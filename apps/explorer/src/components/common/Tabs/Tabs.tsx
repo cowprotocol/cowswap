@@ -69,7 +69,6 @@ export const TabList = styled.div`
     padding: 1rem;
     line-height: 2;
     height: auto;
-    font-family: var(--font-default);
 
     ${Media.upToSmall()} {
       flex: 1 1 auto;

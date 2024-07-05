@@ -35,7 +35,7 @@ export function ExternalLink({
 }: Omit<HTMLProps<HTMLAnchorElement>, 'as' | 'ref' | 'onClick'> & {
   href: string
   onClickOptional?: React.MouseEventHandler<HTMLAnchorElement>
-}): JSX.Element {
+}): React.ReactNode {
   return (
     <a
       target={target}

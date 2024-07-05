@@ -18,13 +18,11 @@ const Wrapper = styled.div``
 const fetchSurplusBreakdown = async (initialSurplus: React.ReactNode): Promise<any> => {
   // TODO: Simulating API call to fetch surplus breakdown data
   return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({
-        networkCosts: 'TODO: BIG NUMBER HERE ETH',
-        fee: 'TODO: FEE NUMBER HERE',
-        total: initialSurplus,
-      })
-    }, 500)
+    resolve({
+      networkCosts: 'TODO: BIG NUMBER HERE ETH',
+      fee: 'TODO: FEE NUMBER HERE',
+      total: initialSurplus,
+    })
   })
 }
 

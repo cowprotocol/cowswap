@@ -29,7 +29,7 @@ function setStatusColors({
   theme: DefaultTheme
   status: CustomOrderStatus
 }): string | FlattenSimpleInterpolation {
-  let background, text
+  let background: string, text: string
 
   switch (status) {
     case 'expired':
@@ -97,7 +97,7 @@ const Wrapper = styled.div<PartiallyTagProps>`
   flex-direction: ${({ tagPosition }) => (tagPosition === 'bottom' ? 'column' : 'row')};
   font-size: 1.1rem;
   text-transform: uppercase;
-  width: min-content;
+  width: fit-content;
 
   ${PartiallyTagLabel}
 `
@@ -167,7 +167,7 @@ function getStatusIcon(status: CustomOrderStatus): IconDefinition {
   }
 }
 
-function StatusIcon({ status }: DisplayProps): JSX.Element {
+function StatusIcon({ status }: DisplayProps): React.ReactNode {
   const icon = getStatusIcon(status)
   const isOpen = status === 'open'
 
@@ -186,7 +186,7 @@ export function StatusLabel({
   partiallyFilled,
   filledPercentage,
   partialTagPosition = 'bottom',
-}: Props): JSX.Element {
+}: Props): React.ReactNode {
   const shimming = status === 'signing' || status === 'cancelling'
   const customizeStatus = status === 'expired' || status === 'cancelled'
   const tagPartiallyFilled = partiallyFilled && canBePartiallyFilled(status)

@@ -29,7 +29,7 @@ const logicalTimeRange = {
   [VolumePeriod.WEEKLY]: { from: 3.4, to: 9 }, // by the 7 points
 }
 
-export function VolumeChartWidget(): JSX.Element {
+export function VolumeChartWidget(): React.ReactNode {
   const [periodSelected, setVolumeTimePeriod] = useState(VolumePeriod.DAILY)
   const volumeData = useGetVolumeData(periodSelected)
   const containerRef = useRef<HTMLDivElement>(null)

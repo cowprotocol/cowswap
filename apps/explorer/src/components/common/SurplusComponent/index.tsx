@@ -13,7 +13,7 @@ const IconWrapper = styled(FontAwesomeIcon)`
   margin: 0;
   box-sizing: content-box;
 
-  :hover {
+  &:hover {
     cursor: pointer;
   }
 `

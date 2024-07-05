@@ -10,12 +10,9 @@ import { useNetworkId } from 'state/network'
 import { Network } from 'types'
 import { formatSmartMaxPrecision, isNativeToken } from 'utils'
 
-
 import { Order } from 'api/operator'
 
-
 import { RowContents, RowTitle, Wrapper } from './styled'
-
 
 type RowProps = {
   title: string
@@ -25,7 +22,7 @@ type RowProps = {
   network: Network
 }
 
-function Row(props: RowProps): JSX.Element {
+function Row(props: RowProps): React.ReactNode {
   const { title, titleSuffix, amount, erc20, network } = props
 
   // TODO: calculate real usd amount
@@ -54,7 +51,7 @@ function Row(props: RowProps): JSX.Element {
 
 export type Props = { order: Order }
 
-export function AmountsDisplay(props: Props): JSX.Element | null {
+export function AmountsDisplay(props: Props): React.ReactNode | null {
   const { order } = props
   const { kind, buyAmount, buyToken, sellAmount, feeAmount, sellToken } = order
   const network = useNetworkId()

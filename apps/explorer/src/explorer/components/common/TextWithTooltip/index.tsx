@@ -25,7 +25,7 @@ export const TextWithTooltip: React.FC<TextTooltipProps> = ({
   children,
   textInTooltip,
   tooltipPlacement = 'top',
-}): JSX.Element => {
+}): React.ReactNode => {
   const { tooltipProps, targetProps } = usePopperDefault<HTMLInputElement>(tooltipPlacement)
   return (
     <Wrapper>

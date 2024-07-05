@@ -1,24 +1,36 @@
 import React from 'react'
 
-import styled from 'styled-components/macro'
+import styled, { css } from 'styled-components/macro'
+import { Media } from '@cowprotocol/ui'
 
 import { ScrollBarStyle } from '../../../explorer/styled'
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<{ columnViewMobile?: boolean }>`
   display: block;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   padding: 0 0 2rem;
-
   ${ScrollBarStyle};
+
+  ${({ columnViewMobile }) =>
+    columnViewMobile &&
+    css`
+      ${Media.upToSmall()} {
+        overflow: hidden;
+        max-width: 100%;
+        width: 100%;
+      }
+    `}
 `
 
-const Table = styled.table<{ $numColumns?: number }>`
+const Table = styled.table<{ $numColumns?: number; columnViewMobile?: boolean }>`
   margin: 0;
   border-collapse: collapse;
   width: 100%;
   max-width: 100%;
-  font-size: ${({ theme }): string => theme.fontSizeDefault};
+  font-size: 1.4rem;
+  font-weight: 400;
+  line-height: 1;
   background: transparent;
   color: ${({ theme }): string => theme.textPrimary1};
   position: relative;
@@ -27,15 +39,30 @@ const Table = styled.table<{ $numColumns?: number }>`
   thead,
   tbody {
     width: 100%;
+    font-size: inherit;
+    line-height: inherit;
   }
 
   thead tr,
   tbody tr {
     text-align: left;
+    font-size: inherit;
+    line-height: inherit;
 
     &:hover {
       background-color: ${({ theme }): string => theme.background};
     }
+
+    ${({ columnViewMobile }) =>
+      columnViewMobile &&
+      css`
+        ${Media.upToSmall()} {
+          display: flex;
+          flex-flow: column wrap;
+          gap: 1.4rem;
+          padding: 2rem 1.4rem;
+        }
+      `}
   }
 
   thead tr.row-empty,
@@ -51,9 +78,20 @@ const Table = styled.table<{ $numColumns?: number }>`
   thead th,
   tbody td {
     padding: 1.2rem 1rem;
+    font-size: inherit;
     line-height: 1.2;
     vertical-align: middle;
     white-space: nowrap;
+
+    ${({ columnViewMobile }) =>
+      columnViewMobile &&
+      css`
+        ${Media.upToSmall()} {
+          white-space: normal;
+          word-break: break-all;
+          padding: 0;
+        }
+      `}
 
     > span {
       display: flex;
@@ -61,7 +99,19 @@ const Table = styled.table<{ $numColumns?: number }>`
     }
 
     &:first-child {
+      font-weight: 500;
+    }
+
+    &:first-child {
       padding-left: 1rem;
+
+      ${({ columnViewMobile }) =>
+        columnViewMobile &&
+        css`
+          ${Media.upToSmall()} {
+            padding: 0;
+          }
+        `}
     }
 
     &.long {
@@ -80,11 +130,18 @@ export type SimpleTableProps = {
   body?: React.ReactNode
   className?: string
   numColumns?: number
+  columnViewMobile?: boolean
 }
 
-export const SimpleTable = ({ header, body, className, numColumns }: SimpleTableProps): React.ReactNode => (
-  <Wrapper>
-    <Table $numColumns={numColumns} className={className}>
+export const SimpleTable = ({
+  header,
+  body,
+  className,
+  numColumns,
+  columnViewMobile,
+}: SimpleTableProps): React.ReactNode => (
+  <Wrapper columnViewMobile={columnViewMobile}>
+    <Table $numColumns={numColumns} className={className} columnViewMobile={columnViewMobile}>
       {header && <thead>{header}</thead>}
       <tbody>{body}</tbody>
     </Table>

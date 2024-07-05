@@ -39,17 +39,5 @@ export const RowContents = styled.span`
   display: flex;
   align-items: center;
   flex-flow: wrap;
-
-  & > span:first-child {
-    margin: 0 0.5rem 0 0;
-  }
-
-  & > :not(:first-child) {
-    margin: 0 0 0 0.5rem;
-  }
-`
-
-export const UsdAmount = styled.span`
-  color: ${({ theme }): string => theme.textPrimary1};
-  opacity: 0.5;
+  gap: 0.5rem;
 `

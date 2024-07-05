@@ -20,7 +20,7 @@ interface MenuProps {
   url?: string
 }
 
-export function MenuItemsPanel({ title, children }: MenuProps): JSX.Element {
+export function MenuItemsPanel({ title, children }: MenuProps): React.ReactNode {
   const isLargeAndUp = useMediaQuery(Media.LargeAndUp(false))
   const node = createRef<HTMLOListElement>()
   const [showMenu, setShowMenu] = useState(false)
@@ -46,7 +46,7 @@ export interface DropdownProps {
   context: Omit<MenuTreeProps, 'menuList' | 'isMobile'>
 }
 
-export const DropDown = ({ menuItem, context }: DropdownProps): JSX.Element => {
+export const DropDown = ({ menuItem, context }: DropdownProps): React.ReactNode => {
   const { isMobileMenuOpen, handleMobileMenuOnClick } = context
 
   return (

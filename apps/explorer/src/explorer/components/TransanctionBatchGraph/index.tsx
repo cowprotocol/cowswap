@@ -79,7 +79,7 @@ interface GraphBatchTxParams {
   networkId: Network | undefined
 }
 
-export function TransactionBatchGraph(params: GraphBatchTxParams): JSX.Element {
+export function TransactionBatchGraph(params: GraphBatchTxParams): React.ReactNode {
   const { orders, networkId, txHash } = params
   const { visualization, onChangeVisualization } = useVisualization()
 

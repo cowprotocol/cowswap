@@ -111,7 +111,7 @@ export const LinkButton = styled(LinkWithPrefixNetwork)`
     margin: 1.6rem 0 0 0;
   }
 
-  :hover {
+  &:hover {
     opacity: 0.8;
     color: ${({ theme }): string => theme.white};
     text-decoration: none;
@@ -171,6 +171,7 @@ export function DetailsTable(props: Props): React.ReactNode | null {
 
   return (
     <SimpleTable
+      columnViewMobile
       body={
         <>
           <tr>

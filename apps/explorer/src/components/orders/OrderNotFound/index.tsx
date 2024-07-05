@@ -9,7 +9,6 @@ import styled from 'styled-components/macro'
 
 import { Search } from '../../../explorer/components/common/Search'
 
-
 const Title = styled.h1`
   margin: 0.55rem 0 2.5rem;
   font-weight: ${({ theme }): string => theme.fontBold};
@@ -82,7 +81,7 @@ const Support = styled.a`
   }
 `
 
-export const OrderAddressNotFound: React.FC = (): JSX.Element => {
+export const OrderAddressNotFound: React.FC = (): React.ReactNode => {
   const { searchString } = useParams<{ searchString: string }>()
   const location = useLocation()
   const navigate = useNavigate()

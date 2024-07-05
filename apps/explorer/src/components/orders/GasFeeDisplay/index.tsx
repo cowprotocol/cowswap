@@ -5,7 +5,6 @@ import { formatSmartMaxPrecision, safeTokenName } from 'utils'
 
 import { Order } from 'api/operator'
 
-
 const Wrapper = styled.div`
   > span {
     margin: 0 0.5rem 0 0;
@@ -14,16 +13,14 @@ const Wrapper = styled.div`
 
 export type Props = { order: Order }
 
-const fetchFeeBreakdown = async (): Promise<any> => {
+const fetchFeeBreakdown = async (initialFee: string): Promise<any> => {
   // TODO: Simulating API call to fetch fee breakdown data
   return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({
-        networkCosts: '0.004569407764421721 ETH',
-        fee: 'FREE',
-        total: '1.006413752514 ETH',
-      })
-    }, 500)
+    resolve({
+      networkCosts: '0.004569407764421721 ETH',
+      fee: 'FREE',
+      total: initialFee,
+    })
   })
 }
 
@@ -66,9 +63,9 @@ export function GasFeeDisplay(props: Props): React.ReactNode | null {
 
   const noFee = feeAmount.isZero() && totalFee.isZero()
 
-  return (
-    <Wrapper>
-      <span>{noFee ? '-' : `${formattedExecutedFee} ${quoteSymbol}`}</span>
+  const FeeElement = (
+    <span>
+      {noFee ? '-' : `${formattedExecutedFee} ${quoteSymbol}`}
       {!fullyFilled && feeAmount.gt(ZERO_BIG_NUMBER) && (
         <>
           <span>
@@ -76,7 +73,16 @@ export function GasFeeDisplay(props: Props): React.ReactNode | null {
           </span>
         </>
       )}
-      <NumbersBreakdown fetchData={() => fetchFeeBreakdown()} renderContent={renderFeeBreakdown} />
+    </span>
+  )
+
+  return (
+    <Wrapper>
+      {FeeElement}
+      <NumbersBreakdown
+        fetchData={() => fetchFeeBreakdown(`${formattedExecutedFee} ${quoteSymbol}`)}
+        renderContent={renderFeeBreakdown}
+      />
     </Wrapper>
   )
 }

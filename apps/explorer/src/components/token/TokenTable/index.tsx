@@ -168,7 +168,7 @@ const RowToken: React.FC<RowProps> = ({ token, index }) => {
     setChartCreated(chart)
   }, [token, theme, chartCreated, lastWeekUsdPrices])
 
-  const handleLoadingState = (key: unknown | null | undefined, node: JSX.Element): JSX.Element => {
+  const handleLoadingState = (key: unknown | null | undefined, node: React.ReactNode): React.ReactNode => {
     if (key === null) {
       return <span>-</span>
     }
@@ -268,7 +268,7 @@ const RowToken: React.FC<RowProps> = ({ token, index }) => {
 
 const TokenTable: React.FC<Props> = (props) => {
   const { tokens, tableState } = props
-  const tokenItems = (items: Token[] | undefined): JSX.Element => {
+  const tokenItems = (items: Token[] | undefined): React.ReactNode => {
     let tableContent
     if (!items || items.length === 0) {
       tableContent = (
