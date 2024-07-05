@@ -10,13 +10,14 @@ import { useIsSmartContractWallet } from '@cowprotocol/wallet'
 
 import { useTransition } from '@react-spring/web'
 import ms from 'ms.macro'
+import styled from 'styled-components/macro'
 import useSWR from 'swr'
 
 import { getPercentage } from 'legacy/components/OrderProgressBar/utils'
 
 import { ActivityDerivedState } from 'modules/account/containers/Transaction'
 
-import { getOrderStatus } from 'api/cowProtocol/api'
+import { getOrderStatus, OrderStatus } from 'api/cowProtocol/api'
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
 
 import { ProgressBarWrapper } from './styled'
@@ -37,12 +38,17 @@ type happyPath = 'initial' | 'solving' | 'executing' | 'finished'
 type errorFlow = 'nextBatch' | 'delayed' | 'unfillable' | 'submissionFailed'
 type ExecutionState = happyPath | errorFlow
 
+type ProgressBarState = {
+  state: ExecutionState
+  value: undefined | OrderStatus['value']
+}
+
 function useProgressBarState(
   chainId: SupportedChainId,
   orderId: string,
   isUnfillable: boolean,
   isConfirmed: boolean
-): ExecutionState {
+): ProgressBarState {
   const [state, setState] = useState<ExecutionState>('initial')
   const [, setCount] = useState<number | null>(null)
   const { data: orderStatus } = useOrderStatus(chainId, orderId)
@@ -82,7 +88,7 @@ function useProgressBarState(
     return () => timerId && clearTimeout(timerId)
   }, [isConfirmed, isUnfillable, orderStatus])
 
-  return state
+  return { state, value: orderStatus?.value }
 }
 
 function useOrderStatus(chainId: SupportedChainId, orderId: string) {
@@ -90,6 +96,10 @@ function useOrderStatus(chainId: SupportedChainId, orderId: string) {
     refreshInterval: ms`1s`,
   })
 }
+
+const ProgressImage = styled.img`
+  width: 100%;
+`
 
 export function OrderProgressBar(props: OrderProgressBarProps) {
   const { activityDerivedState, chainId, hideWhenFinished = false, hash } = props
@@ -117,7 +127,12 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
     creationTime,
   })
 
-  const newState = useProgressBarState(chainId, order?.id || '', isUnfillable, isConfirmed)
+  const { state: newState, value: solverCompetition } = useProgressBarState(
+    chainId,
+    order?.id || '',
+    isUnfillable,
+    isConfirmed
+  )
   // const [executionState, setExecutionState] = useState<ExecutionState>('cow')
   const [percentage, setPercentage] = useState(getPercentage(elapsedSeconds, expirationInSeconds, chainId))
   const isSmartContractWallet = useIsSmartContractWallet()
@@ -179,8 +194,8 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
       case 'initial':
         return (
           <div>
-            <img src={progressBarStep1} alt="" />
-            <span>Your order has been submitted and will be included in the next solver auction.</span>
+            <ProgressImage src={progressBarStep1} alt="" />
+            <p>Your order has been submitted and will be included in the next solver auction.</p>
           </div>
         )
       case 'solving':
@@ -193,46 +208,55 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
       case 'executing':
         return (
           <div>
-            <img src={progressBarStep3} alt="" />X solvers joined the competition! The winner is submitting your order
-            on-chain...
+            <ProgressImage src={progressBarStep3} alt="" />
+            <p>
+              {solverCompetition?.length} solvers joined the competition! The winner is submitting your order
+              on-chain...
+            </p>
           </div>
         )
       case 'finished':
         return (
           <div>
-            You received 4.42 WETH!
-            <span>Solver ranking</span>
+            <span>You received {solverCompetition && solverCompetition[0].buyAmount}!</span>
+
+            <p>Solver ranking</p>
             <ul>
-              <li>Quasimodo 4.42 WETH</li>
-              <li>1inch 4.416 WETH</li>
-              <li>Otex 4.4154 WETH</li>
-              <li>SeaSolver 4.414 WETH</li>
-              <li>Barter Solver 4.4 WETH</li>
-              <li>PLM 4.2 WETH</li>
-              <li>Propellerheads 4 WETH</li>
+              {solverCompetition?.map((entry) => {
+                return (
+                  <li key={entry.solver}>
+                    {entry.solver} - {entry.sellAmount} / {entry.buyAmount}
+                  </li>
+                )
+              })}
             </ul>
-            <span>You would have gotten 0.26 WETH less on 1inch!</span>
+            {solverCompetition && solverCompetition.length > 1 && (
+              <p>
+                You would have gotten {solverCompetition[1].sellAmount} / {solverCompetition[1].sellAmount} on{' '}
+                {solverCompetition[1].solver}!
+              </p>
+            )}
           </div>
         )
       case 'unfillable':
         return (
           <div>
-            <img src={progressBarStep1a} alt="" />
-            Your order’s price is currently out of market. You can wait or cancel the order.{' '}
+            <ProgressImage src={progressBarStep1a} alt="" />
+            <p>Your order’s price is currently out of market. You can wait or cancel the order.</p>
           </div>
         )
       case 'delayed':
         return (
           <div>
-            <img src={progressBarStep2a} alt="" />
-            This is taking longer than expected! Solvers are still searching...
+            <ProgressImage src={progressBarStep2a} alt="" />
+            <p>This is taking longer than expected! Solvers are still searching...</p>
           </div>
         )
       case 'submissionFailed':
         return (
           <div>
-            <img src={progressBarStep2b} alt="" />
-            The order could not be settled on-chain. Solvers are competing to find a new solution...
+            <ProgressImage src={progressBarStep2b} alt="" />
+            <p>The order could not be settled on-chain. Solvers are competing to find a new solution...</p>
           </div>
         )
       default:
