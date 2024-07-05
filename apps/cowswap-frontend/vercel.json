@@ -1,7 +1,7 @@
 {
   "redirects": [
     {
-      "source": "/((?!#|assets|emergency|manifest).+)",
+      "source": "/((?!#|assets/|audio/|fonts/|images/|manifest\\.|\\w+\\.xml|.+\\.html|.+\\.png|.+\\.svg|.+\\.txt|.+\\.js).+)",
       "destination": "/",
       "permanent": false
     }
