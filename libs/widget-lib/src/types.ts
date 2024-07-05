@@ -1,7 +1,6 @@
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CowEventListeners, CowEventPayloadMap, CowEvents } from '@cowprotocol/events'
-
-export { SupportedChainId } from '@cowprotocol/cow-sdk'
+export type { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 export type PerTradeTypeConfig<T> = Partial<Record<TradeType, T>>
 
