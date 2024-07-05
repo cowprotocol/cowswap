@@ -1,5 +1,7 @@
 import { useCallback, useEffect } from 'react'
+
 import { Media } from '@cowprotocol/ui'
+
 import Spinner from 'components/common/Spinner'
 import { Notification } from 'components/Notification'
 import useSafeState from 'hooks/useSafeState'
