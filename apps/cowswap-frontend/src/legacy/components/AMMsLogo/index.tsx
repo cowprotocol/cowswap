@@ -12,7 +12,7 @@ import Sushi from '@cowprotocol/assets/cow-swap/ammslogo/sushi.png'
 import Swapr from '@cowprotocol/assets/cow-swap/ammslogo/swapr.png'
 import Symmetric from '@cowprotocol/assets/cow-swap/ammslogo/symmetric.png'
 import Uniswap from '@cowprotocol/assets/cow-swap/ammslogo/uniswap.png'
-import Gno from '@cowprotocol/assets/cow-swap/gno.png'
+import Gno from '@cowprotocol/assets/cow-swap/network-gnosis-chain-logo.svg'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import styled from 'styled-components/macro'
