@@ -6,7 +6,7 @@ import styled from 'styled-components/macro'
 const Wrapper = styled.span`
   display: flex;
   align-items: center;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
 
   & > :first-child {
     word-break: break-all;

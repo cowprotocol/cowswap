@@ -17,8 +17,8 @@ const fetchFeeBreakdown = async (initialFee: string): Promise<any> => {
   // TODO: Simulating API call to fetch fee breakdown data
   return new Promise((resolve) => {
     resolve({
-      networkCosts: '0.004569407764421721 ETH',
-      fee: 'FREE',
+      networkCosts: 'TODO: Get network costs here',
+      fee: 'TODO: Get fee here',
       total: initialFee,
     })
   })

@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from 'react'
-
+import { Media } from '@cowprotocol/ui'
 import Spinner from 'components/common/Spinner'
 import { Notification } from 'components/Notification'
 import useSafeState from 'hooks/useSafeState'
@@ -32,7 +32,12 @@ const DetailsWrapper = styled.div`
   padding: 0.6rem;
   background: rgb(151 151 184 / 10%);
 
+  ${Media.upToSmall()} {
+    width: 100%;
+  }
+
   table {
+    width: 100%;
     border-collapse: collapse;
   }
 `
