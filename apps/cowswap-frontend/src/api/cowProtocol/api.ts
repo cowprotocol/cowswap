@@ -250,3 +250,26 @@ export async function getProfileData(chainId: ChainId, address: string): Promise
     return response.json()
   }
 }
+
+export type OrderStatus = {
+  type: 'scheduled' | 'open' | 'active' | 'solved' | 'executing' | 'traded' | 'cancelled'
+  value?: {
+    solver: string
+    sellAmount: number
+    buyAmount: number
+  }[]
+}
+
+// v1/status/<orderId>
+export async function getOrderStatus(chainId: ChainId, orderId: string): Promise<OrderStatus | null> {
+  const response = await fetch('http://localhost:8080/api/v1/status/' + orderId, {
+    headers: { ...DEFAULT_HEADERS, 'Access-Control-Allow-Origin': '*' },
+    method: 'GET',
+  })
+
+  if (!response.ok) {
+    return null
+  }
+
+  return await response.json() // todo: arrange types etc
+}
