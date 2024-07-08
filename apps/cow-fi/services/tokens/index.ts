@@ -197,9 +197,3 @@ function _sortTokensInfoByMarketCap(a: TokenInfo, b: TokenInfo): number {
   }
   return a.marketCapRank - b.marketCapRank // usual comparison
 }
-function shortenString(text: string, size: number) {
-  if (text.length <= size) {
-    return text
-  }
-  return text.slice(0, size) + '...'
-}
