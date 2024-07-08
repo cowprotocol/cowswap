@@ -1,4 +1,6 @@
-import { NumbersBreakdown } from 'components/orders/NumbersBreakdown'
+// TODO: Enable once API is ready
+// import { NumbersBreakdown } from 'components/orders/NumbersBreakdown'
+
 import { ZERO_BIG_NUMBER } from 'const'
 import styled from 'styled-components/macro'
 import { formatSmartMaxPrecision, safeTokenName } from 'utils'
@@ -13,37 +15,39 @@ const Wrapper = styled.div`
 
 export type Props = { order: Order }
 
-const fetchFeeBreakdown = async (initialFee: string): Promise<any> => {
-  // TODO: Simulating API call to fetch fee breakdown data
-  return new Promise((resolve) => {
-    resolve({
-      networkCosts: 'TODO: Get network costs here',
-      fee: 'TODO: Get fee here',
-      total: initialFee,
-    })
-  })
-}
+// TODO: Enable once API is ready
+// const fetchFeeBreakdown = async (initialFee: string): Promise<any> => {
+//   // TODO: Simulating API call to fetch fee breakdown data
+//   return new Promise((resolve) => {
+//     resolve({
+//       networkCosts: 'TODO: Get network costs here',
+//       fee: 'TODO: Get fee here',
+//       total: initialFee,
+//     })
+//   })
+// }
 
-const renderFeeBreakdown = (data: any): React.ReactNode => {
-  return (
-    <table>
-      <tbody>
-        <tr>
-          <td>Network Costs:</td>
-          <td>{data.networkCosts}</td>
-        </tr>
-        <tr>
-          <td>Fee:</td>
-          <td>{data.fee}</td>
-        </tr>
-        <tr>
-          <td>Total Costs & Fees:</td>
-          <td>{data.total}</td>
-        </tr>
-      </tbody>
-    </table>
-  )
-}
+// TODO: Enable once API is ready
+// const renderFeeBreakdown = (data: any): React.ReactNode => {
+//   return (
+//     <table>
+//       <tbody>
+//         <tr>
+//           <td>Network Costs:</td>
+//           <td>{data.networkCosts}</td>
+//         </tr>
+//         <tr>
+//           <td>Fee:</td>
+//           <td>{data.fee}</td>
+//         </tr>
+//         <tr>
+//           <td>Total Costs & Fees:</td>
+//           <td>{data.total}</td>
+//         </tr>
+//       </tbody>
+//     </table>
+//   )
+// }
 
 export function GasFeeDisplay(props: Props): React.ReactNode | null {
   const {
@@ -79,10 +83,11 @@ export function GasFeeDisplay(props: Props): React.ReactNode | null {
   return (
     <Wrapper>
       {FeeElement}
-      <NumbersBreakdown
-        fetchData={() => fetchFeeBreakdown(`${formattedExecutedFee} ${quoteSymbol}`)}
-        renderContent={renderFeeBreakdown}
-      />
+      {/*TODO: Enable once API is ready*/}
+      {/*<NumbersBreakdown*/}
+      {/*  fetchData={() => fetchFeeBreakdown(`${formattedExecutedFee} ${quoteSymbol}`)}*/}
+      {/*  renderContent={renderFeeBreakdown}*/}
+      {/*/>*/}
     </Wrapper>
   )
 }

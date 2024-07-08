@@ -6,7 +6,10 @@ import { faArrowAltCircleUp as faIcon } from '@fortawesome/free-regular-svg-icon
 import { TokenErc20 } from '@gnosis.pm/dex-js'
 import BigNumber from 'bignumber.js'
 import { SurplusComponent } from 'components/common/SurplusComponent'
-import { NumbersBreakdown } from 'components/orders/NumbersBreakdown'
+
+// TODO: Enable once API is ready
+// import { NumbersBreakdown } from 'components/orders/NumbersBreakdown'
+
 import { TokenAmount } from 'components/token/TokenAmount'
 import { BaseIconTooltipOnHover } from 'components/Tooltip'
 import styled, { css, FlattenSimpleInterpolation } from 'styled-components/macro'
@@ -15,37 +18,39 @@ import { Order } from 'api/operator'
 
 const Wrapper = styled.div``
 
-const fetchSurplusBreakdown = async (initialSurplus: React.ReactNode): Promise<any> => {
-  // TODO: Simulating API call to fetch surplus breakdown data
-  return new Promise((resolve) => {
-    resolve({
-      networkCosts: 'TODO: BIG NUMBER HERE ETH',
-      fee: 'TODO: FEE NUMBER HERE',
-      total: initialSurplus,
-    })
-  })
-}
+// TODO: Enable once API is ready
+// const fetchSurplusBreakdown = async (initialSurplus: React.ReactNode): Promise<any> => {
+//   // TODO: Simulating API call to fetch surplus breakdown data
+//   return new Promise((resolve) => {
+//     resolve({
+//       networkCosts: 'TODO: BIG NUMBER HERE ETH',
+//       fee: 'TODO: FEE NUMBER HERE',
+//       total: initialSurplus,
+//     })
+//   })
+// }
 
-const renderSurplusBreakdown = (data: any): React.ReactNode => {
-  return (
-    <table>
-      <tbody>
-        <tr>
-          <td>Protected slippage:</td>
-          <td>{data.networkCosts}</td>
-        </tr>
-        <tr>
-          <td>Price improvement (user share):</td>
-          <td>{data.fee}</td>
-        </tr>
-        <tr>
-          <td>Total surplus:</td>
-          <td>{data.total}</td>
-        </tr>
-      </tbody>
-    </table>
-  )
-}
+// TODO: Enable once API is ready
+// const renderSurplusBreakdown = (data: any): React.ReactNode => {
+//   return (
+//     <table>
+//       <tbody>
+//         <tr>
+//           <td>Protected slippage:</td>
+//           <td>{data.networkCosts}</td>
+//         </tr>
+//         <tr>
+//           <td>Price improvement (user share):</td>
+//           <td>{data.fee}</td>
+//         </tr>
+//         <tr>
+//           <td>Total surplus:</td>
+//           <td>{data.total}</td>
+//         </tr>
+//       </tbody>
+//     </table>
+//   )
+// }
 
 export type Props = { order: Order; amountSmartFormatting?: boolean } & React.HTMLAttributes<HTMLDivElement>
 type OrderSurplus = { amount: BigNumber; percentage: BigNumber; surplusToken: TokenErc20 }
@@ -74,10 +79,11 @@ export function OrderSurplusDisplay(props: Props): React.ReactNode | null {
   return (
     <Wrapper>
       {SurplusElement}
-      <NumbersBreakdown
-        fetchData={() => fetchSurplusBreakdown(SurplusElement)}
-        renderContent={renderSurplusBreakdown}
-      />
+      {/*TODO: Enable once API is ready*/}
+      {/*<NumbersBreakdown*/}
+      {/*  fetchData={() => fetchSurplusBreakdown(SurplusElement)}*/}
+      {/*  renderContent={renderSurplusBreakdown}*/}
+      {/*/>*/}
     </Wrapper>
   )
 }
