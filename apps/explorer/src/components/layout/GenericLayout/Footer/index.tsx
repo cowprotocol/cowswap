@@ -26,7 +26,7 @@ const FooterStyled = styled.footer`
   max-height: 4rem;
 
   ${Media.upToMedium()} {
-    margin: 15rem auto 0;
+    margin: 0 auto;
     flex-flow: column wrap;
     padding: 1.6rem 1.6rem 4rem;
     justify-content: flex-start;

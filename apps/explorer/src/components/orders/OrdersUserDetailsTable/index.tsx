@@ -35,7 +35,7 @@ const Wrapper = styled.div`
   align-items: flex-start;
   font-size: 1.5rem;
   padding: 3.2rem;
-  min-height: 30rem;
+  min-height: 25rem;
 `
 
 export type Props = SimpleTableProps & {

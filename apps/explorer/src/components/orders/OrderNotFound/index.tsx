@@ -1,20 +1,36 @@
 import React, { useEffect } from 'react'
 
+import { Media } from '@cowprotocol/ui'
 import SupportIcon from 'assets/img/support.png'
 import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
-import { MEDIA } from 'const'
 import { useParams } from 'react-router'
 import { useLocation, useNavigate } from 'react-router-dom'
 import styled from 'styled-components/macro'
 
 import { Search } from '../../../explorer/components/common/Search'
 
+const Wrapper = styled.div`
+  max-width: 140rem;
+  display: flex;
+  flex-flow: column wrap;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 4.2rem 0 0;
+  min-height: 50vh;
+
+  ${Media.upToSmall()} {
+    padding: 4.2rem 1.6rem 0;
+  }
+`
+
 const Title = styled.h1`
-  margin: 0.55rem 0 2.5rem;
+  width: 100%;
+  margin: 0 0 2.4rem;
   font-weight: ${({ theme }): string => theme.fontBold};
 `
 
 const Content = styled.div`
+  width: 100%;
   font-size: 16px;
   border: 0.1rem solid ${({ theme }): string => theme.borderPrimary};
   padding: 20px;
@@ -39,7 +55,8 @@ const SearchSection = styled.div`
 
 const LinkData = styled.p`
   font-size: 1.6rem;
-  @media ${MEDIA.mobile} {
+
+  ${Media.upToSmall()} {
     line-height: 1.5;
   }
 `
@@ -50,7 +67,7 @@ const SearchContent = styled.div`
   align-items: center;
   gap: 2.5rem;
 
-  @media ${MEDIA.mediumDown} {
+  ${Media.upToMedium()} {
     flex-flow: column wrap;
     gap: 1.5rem;
 
@@ -102,7 +119,7 @@ export const OrderAddressNotFound: React.FC = (): React.ReactNode => {
   }, [navigate, location.pathname])
 
   return (
-    <>
+    <Wrapper>
       <Title>No results found</Title>
       <Content>
         {searchString ? (
@@ -132,6 +149,6 @@ export const OrderAddressNotFound: React.FC = (): React.ReactNode => {
           This is not a CoW Protocol transaction. See it on <BlockExplorerLink {...data} />
         </LinkData>
       )}
-    </>
+    </Wrapper>
   )
 }
