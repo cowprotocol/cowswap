@@ -1,4 +1,4 @@
-import styled, { createGlobalStyle } from 'styled-components/macro'
+import { createGlobalStyle } from 'styled-components/macro'
 import { Color, Media } from '@cowprotocol/ui'
 
 const GlobalStyles = createGlobalStyle`
@@ -168,21 +168,6 @@ span[class^='wordtag-'] {
   .wordtag-purple {
     color: #f996ee;
     background: #490072;
-  }
-`
-
-export const ExternalLink = styled.a`
-  display: inline-block;
-  color: ${Color.neutral0};
-  font-size: inherit;
-  white-space: nowrap;
-
-  &::after {
-    content: '↗';
-    color: inherit;
-    font-size: 16px;
-    display: inline-block;
-    margin: 0 0 0 0.2rem;
   }
 `
 

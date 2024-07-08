@@ -1,9 +1,7 @@
 import styled from 'styled-components/macro'
-import { Media } from 'styles/variables'
-import { Color } from '@cowprotocol/ui'
+import { Media, Color } from '@cowprotocol/ui'
 
 export const NetworkHeaderItem = styled.div`
-  display: contents;
   display: grid;
   grid-template-columns: 14rem auto auto;
   align-items: center;
@@ -13,7 +11,7 @@ export const NetworkHeaderItem = styled.div`
   gap: 0.8rem;
   width: 100%;
 
-  ${Media.mobile} {
+  ${Media.upToSmall()} {
     padding: 2.4rem 0;
     gap: 1.4rem;
     grid-template-columns: repeat(auto-fill, minmax(100%, 1fr));
@@ -73,7 +71,7 @@ export const ItemWrapper = styled(NetworkHeaderItem)`
     margin: 0 0 0 auto;
     position: relative;
 
-    ${Media.mobile} {
+    ${Media.upToSmall()} {
       width: 100%;
     }
   }
@@ -91,7 +89,7 @@ export const ItemWrapper = styled(NetworkHeaderItem)`
     align-items: center;
     font-size: 1.5rem;
 
-    ${Media.mobile} {
+    ${Media.upToSmall()} {
       flex-flow: column wrap;
       align-items: flex-start;
     }

@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { getJobs } from 'services/greenhouse'
 import { GetStaticProps } from 'next'
 import { Font, Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
@@ -32,7 +31,7 @@ interface PageProps {
 
 export default function Page({ siteConfigData, jobsData }: PageProps) {
   const { title } = siteConfigData
-  const [department, setDepartment] = useState('All')
+  const department = 'All'
 
   const jobsCount = Object.keys(jobsData).reduce((acc, cur) => acc + jobsData[cur].length, 0)
   const jobsCountForDepartment = department === 'All' ? jobsCount : jobsData[department].length
