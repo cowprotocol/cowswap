@@ -1,6 +1,5 @@
 import { LinkWithUtmComponent } from 'modules/utm'
-import { CONFIG } from '@/const/meta'
-import { IMAGE_PATH } from '@/const/paths'
+import { CONFIG, IMAGE_PATH } from '@/const/meta'
 
 const DAO_LOGOS_PATH = IMAGE_PATH + '/dao-logos/'
 

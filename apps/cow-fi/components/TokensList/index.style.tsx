@@ -1,6 +1,5 @@
 import styled from 'styled-components/macro'
-import { Media } from 'styles/variables'
-import { Color } from '@cowprotocol/ui'
+import { Media, Color } from '@cowprotocol/ui'
 
 export const Wrapper = styled.div`
   --tokenSize: 2.6rem;
@@ -12,7 +11,7 @@ export const Wrapper = styled.div`
   padding: 0 1.6rem;
   color: ${Color.neutral10};
 
-  ${Media.mobile} {
+  ${Media.upToSmall()} {
     max-width: 100%;
     padding: 0 2.4rem;
   }
@@ -58,7 +57,7 @@ export const HeaderItem = styled.div`
   gap: 1.4rem;
   width: 100%;
 
-  ${Media.mobile} {
+  ${Media.upToSmall()} {
     grid-template-columns: repeat(auto-fill, minmax(100%, 1fr));
     padding: 2.4rem 0;
   }

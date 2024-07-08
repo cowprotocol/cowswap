@@ -16,7 +16,6 @@ const LoadingChartContainer = styled.div`
   flex-direction: row;
   align-items: flex-end;
   height: 100%;
-  /* margin-bottom: 44px; */
   padding-bottom: 66px;
   overflow: hidden;
   max-width: 100%;

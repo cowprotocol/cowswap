@@ -25,7 +25,7 @@ export function ChartSection({ platforms }: ChartSectionProps) {
     return null
   }, [platforms.ethereum.contractAddress])
 
-  const { data, loading, error } = useQuery(tokenPriceQuery, {
+  const { data, loading } = useQuery(tokenPriceQuery, {
     variables: { ...queryVariables },
   })
 
