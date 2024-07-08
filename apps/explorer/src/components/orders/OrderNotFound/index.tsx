@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 
 import { Media } from '@cowprotocol/ui'
+
 import SupportIcon from 'assets/img/support.png'
 import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
 import { useParams } from 'react-router'
