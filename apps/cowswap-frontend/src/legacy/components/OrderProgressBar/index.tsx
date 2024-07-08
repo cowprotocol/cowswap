@@ -94,10 +94,16 @@ function useProgressBarState(
   return { state, value: orderStatus?.value }
 }
 
+const SWR_OPTIONS = {
+  refreshInterval: ms`1s`,
+}
+
 function useOrderStatus(chainId: SupportedChainId, orderId: string) {
-  return useSWR(`${chainId}/${orderId}/`, chainId && orderId ? () => getOrderStatus(chainId, orderId) : null, {
-    refreshInterval: ms`1s`,
-  })
+  return useSWR(
+    chainId && orderId ? ['getOrderStatus', chainId, orderId] : null,
+    async ([, _chainId, _orderId]) => getOrderStatus(_chainId, _orderId),
+    SWR_OPTIONS
+  )
 }
 
 const ProgressImage = styled.img`

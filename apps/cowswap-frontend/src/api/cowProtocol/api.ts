@@ -31,7 +31,7 @@ import { LegacyFeeQuoteParams as FeeQuoteParams } from 'legacy/state/price/types
 import { getAppData } from 'modules/appData'
 
 import { ApiErrorCodes } from './errors/OperatorError'
-import QuoteApiError, { QuoteApiErrorDetails, mapOperatorErrorToQuoteError } from './errors/QuoteError'
+import QuoteApiError, { mapOperatorErrorToQuoteError, QuoteApiErrorDetails } from './errors/QuoteError'
 import { getIsOrderBookTypedError } from './getIsOrderBookTypedError'
 
 function getProfileUrl(): Partial<Record<ChainId, string>> {
@@ -260,6 +260,7 @@ export type OrderStatus = {
   }[]
 }
 
+// TODO: move to SDK
 // v1/status/<orderId>
 export async function getOrderStatus(chainId: ChainId, orderId: string): Promise<OrderStatus | null> {
   const response = await fetch('http://localhost:8080/api/v1/status/' + orderId, {
