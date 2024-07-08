@@ -17,7 +17,7 @@ import { reducer as networkReducer } from 'state/network'
 import { ThemeProvider, getThemePalette, StaticGlobalStyle, Theme, ThemedGlobalStyle } from 'theme'
 import { Network } from 'types'
 
-export const GlobalStyles = (DecoratedStory: () => StoryFnReactReturnType): JSX.Element => (
+export const GlobalStyles = (DecoratedStory: () => StoryFnReactReturnType): React.ReactNode => (
   <>
     <StaticGlobalStyle />
     <ThemeProvider>
@@ -49,11 +49,11 @@ const ThemeTogglerUnwrapped: React.FC = ({ children }) => {
 const WrappedThemeToggler: React.FC = withGlobalContext(ThemeTogglerUnwrapped, GLOBAL_INITIAL_STATE, globalRootReducer)
 
 // Redux aware ThemeToggler - necessary for Theme
-export const ThemeToggler = (DecoratedStory: () => JSX.Element): JSX.Element => (
+export const ThemeToggler = (DecoratedStory: () => React.ReactNode): React.ReactNode => (
   <WrappedThemeToggler>{DecoratedStory()}</WrappedThemeToggler>
 )
 
-export function NetworkDecorator(DecoratedStory: () => JSX.Element): JSX.Element {
+export function NetworkDecorator(DecoratedStory: () => React.ReactNode): React.ReactNode {
   const Component = withGlobalContext(
     DecoratedStory,
     () => ({ networkId: Network.MAINNET }),
@@ -62,11 +62,11 @@ export function NetworkDecorator(DecoratedStory: () => JSX.Element): JSX.Element
   return <Component />
 }
 
-export const Router = (DecoratedStory: () => JSX.Element): JSX.Element => (
+export const Router = (DecoratedStory: () => React.ReactNode): React.ReactNode => (
   <MemoryRouter>{DecoratedStory()}</MemoryRouter>
 )
 
-export const CenteredAndFramed = (DecoratedStory: () => StoryFnReactReturnType): JSX.Element => (
+export const CenteredAndFramed = (DecoratedStory: () => StoryFnReactReturnType): React.ReactNode => (
   <div style={{ textAlign: 'center' }}>
     <Frame style={{ display: 'inline-block' }}>{DecoratedStory()}</Frame>
   </div>
@@ -77,14 +77,14 @@ const apolloClient = new ApolloClient({
   cache: new InMemoryCache(),
 })
 
-export const Apollo = (DecoratedStory: () => StoryFnReactReturnType): JSX.Element => (
+export const Apollo = (DecoratedStory: () => StoryFnReactReturnType): React.ReactNode => (
   <ApolloProvider client={apolloClient}>
     <Frame style={{ display: 'inline-block' }}>{DecoratedStory()}</Frame>
   </ApolloProvider>
 )
 
 export const Form = (args?: UseFormOptions) =>
-  function InnerForm(DecoratedStory: () => StoryFnReactReturnType): JSX.Element {
+  function InnerForm(DecoratedStory: () => StoryFnReactReturnType): React.ReactNode {
     const methods = useForm(args)
     return (
       <Frame>

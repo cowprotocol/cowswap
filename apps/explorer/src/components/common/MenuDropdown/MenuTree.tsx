@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { Command } from '@cowprotocol/types'
 
 import { MAIN_MENU } from 'components/common/MenuDropdown/mainMenu'
@@ -9,13 +7,12 @@ import { MenuItemKind, MenuTreeItem } from 'components/common/MenuDropdown/types
 
 import DropDown from '.'
 
-
 interface MenuItemWithDropDownProps {
   menuItem: MenuTreeItem
   context: MenuTreeProps
 }
 
-function MenuItemWithDropDown(props: MenuItemWithDropDownProps): JSX.Element | null {
+function MenuItemWithDropDown(props: MenuItemWithDropDownProps): React.ReactNode | null {
   const { menuItem, context } = props
 
   switch (menuItem.kind) {
@@ -38,7 +35,7 @@ export interface MenuTreeProps {
   isMobile?: boolean
 }
 
-export function MenuTree(props: MenuTreeProps): JSX.Element {
+export function MenuTree(props: MenuTreeProps): React.ReactNode {
   const { isMobileMenuOpen, handleMobileMenuOnClick, isMobile, menuList = MAIN_MENU } = props
   return (
     <Wrapper isMobileMenuOpen={isMobileMenuOpen}>

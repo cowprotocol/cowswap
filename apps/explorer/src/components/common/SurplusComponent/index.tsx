@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { TokenErc20 } from '@gnosis.pm/dex-js'
 import { TokenAmount } from 'components/token/TokenAmount'
 import { MAX_SURPLUS_PERCENTAGE } from 'const'
-import styled from 'styled-components/macro'
+import styled, { useTheme } from 'styled-components/macro'
 import { formatPercentage, Surplus } from 'utils'
 
 const IconWrapper = styled(FontAwesomeIcon)`
@@ -13,7 +13,7 @@ const IconWrapper = styled(FontAwesomeIcon)`
   margin: 0;
   box-sizing: content-box;
 
-  :hover {
+  &:hover {
     cursor: pointer;
   }
 `
@@ -23,14 +23,10 @@ export const Percentage = styled.span`
 `
 
 export const Amount = styled.span`
-  display: flex;
+  margin: 0 0.5rem 0 0;
 `
 
-const Wrapper = styled.span`
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-`
+const Wrapper = styled.span``
 
 export type SurplusComponentProps = {
   surplus: Surplus | null
@@ -41,7 +37,8 @@ export type SurplusComponentProps = {
 }
 
 export const SurplusComponent: React.FC<SurplusComponentProps> = (props) => {
-  const { surplus, token, className, icon, iconColor } = props
+  const theme = useTheme()
+  const { surplus, token, className, icon, iconColor = theme.green } = props
 
   if (!surplus || !token) {
     return null

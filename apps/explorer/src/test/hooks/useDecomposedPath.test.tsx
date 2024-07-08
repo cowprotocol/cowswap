@@ -9,7 +9,7 @@ interface Props {
   mockLocation: string
 }
 
-function wrapperMemoryRouter(props: Props): JSX.Element {
+function wrapperMemoryRouter(props: Props): React.ReactNode {
   return <MemoryRouter initialEntries={[props.mockLocation]}>{props.children}</MemoryRouter>
 }
 

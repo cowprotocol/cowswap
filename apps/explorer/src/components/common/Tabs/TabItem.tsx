@@ -18,15 +18,13 @@ const TabItemBase = styled(ButtonBase)`
   flex: 1 1 0;
   align-items: center;
   justify-content: center;
-
   border: 0;
   border-radius: 0;
   /* TODO: move this into baseStyles or sth similar */
   height: var(--height-button-default);
-
   text-align: center;
-
   appearance: none;
+  background: red;
 `
 
 // TODO: replace with DefaultTheme and remove `var` approach

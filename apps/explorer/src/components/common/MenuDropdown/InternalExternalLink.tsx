@@ -10,8 +10,7 @@ import SVG from 'react-inlinesvg'
 
 import { MenuImageProps, MenuItemKind, MenuLink } from './types'
 
-
-function MenuImage(props: MenuImageProps): JSX.Element | null {
+function MenuImage(props: MenuImageProps): React.ReactNode | null {
   const { title, iconSVG, icon } = props
 
   if (iconSVG) {
@@ -32,7 +31,7 @@ export default function InternalExternalMenuLink({
   link,
   handleMobileMenuOnClick,
   className,
-}: InternalExternalLinkProps): JSX.Element {
+}: InternalExternalLinkProps): React.ReactNode {
   const { kind, title, url, iconSVG, icon } = link
   const menuImage = <MenuImage title={title} icon={icon} iconSVG={iconSVG} />
   const menuImageExternal = <StyledIcon icon={faExternalLink} />
