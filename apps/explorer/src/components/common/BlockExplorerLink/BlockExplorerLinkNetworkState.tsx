@@ -7,7 +7,7 @@ import { BlockExplorerLink, Props } from './BlockExplorerLink'
 /**
  * BlockExplorerLink which relies on the network state
  */
-export function BlockExplorerLinkNetworkState(props: Props): JSX.Element {
+export function BlockExplorerLinkNetworkState(props: Props): React.ReactNode {
   const networkId = useNetworkId() || undefined
 
   return <BlockExplorerLink {...props} networkId={networkId} />

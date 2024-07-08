@@ -12,7 +12,7 @@ import { TokenImg, Props } from './TokenImg'
 export default {
   title: 'Common/TokenImg',
   decorators: [
-    (DecoratedStory): JSX.Element => (
+    (DecoratedStory): React.ReactNode => (
       <div style={{ textAlign: 'center' }}>
         <Frame style={{ display: 'inline-block', padding: 0 }}>{DecoratedStory()}</Frame>
       </div>

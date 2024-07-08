@@ -10,7 +10,7 @@ const TabIconWrapper = styled.div`
   }
 `
 
-export default function TabIcon({ title, iconFontName }: { title: string; iconFontName: IconProp }): JSX.Element {
+export default function TabIcon({ title, iconFontName }: { title: string; iconFontName: IconProp }): React.ReactNode {
   return (
     <TabIconWrapper>
       <FontAwesomeIcon icon={iconFontName} />

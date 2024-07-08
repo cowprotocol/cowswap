@@ -54,7 +54,7 @@ export function PeriodButton({
   isLoading,
   children,
   onClick,
-}: React.PropsWithChildren<{ active: boolean; isLoading: boolean | undefined; onClick: Command }>): JSX.Element {
+}: React.PropsWithChildren<{ active: boolean; isLoading: boolean | undefined; onClick: Command }>): React.ReactNode {
   return (
     <WrapperPeriodButton active={active} onClick={onClick}>
       {isLoading && active ? <Spinner spin size="1x" /> : children}
@@ -141,7 +141,7 @@ const PriceTooltip = ({
   crossHairData: CrossHairData | null
   period: VolumePeriod | undefined
   containerWidth: number | undefined
-}): JSX.Element | null => {
+}): React.ReactNode | null => {
   const { time, value, coordinates } = crossHairData || {}
   const isTopCoordinateValid = coordinates && coordinates.top > 1
   const formattedDate = React.useMemo(() => {
@@ -188,7 +188,7 @@ export function VolumeChart({
   period,
   children,
   logicalTimeScaleRange,
-}: React.PropsWithChildren<VolumeChartProps>): JSX.Element {
+}: React.PropsWithChildren<VolumeChartProps>): React.ReactNode {
   const { data: items, currentVolume, changedVolume, isLoading } = volumeData || {}
   const chartContainerRef = useRef<HTMLDivElement>(null)
   const [chartCreated, setChartCreated] = useState<IChartApi | null | undefined>()

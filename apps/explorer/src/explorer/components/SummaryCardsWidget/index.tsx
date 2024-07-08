@@ -6,7 +6,7 @@ import { SummaryCards } from './SummaryCards'
 import { useGetSummaryData } from './useGetSummaryData'
 import { VolumeChartWidget } from './VolumeChart/VolumeChartWidget'
 
-export function StatsSummaryCardsWidget(): JSX.Element {
+export function StatsSummaryCardsWidget(): React.ReactNode {
   const summaryData = useGetSummaryData()
 
   return (

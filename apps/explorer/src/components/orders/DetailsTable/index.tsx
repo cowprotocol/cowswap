@@ -29,51 +29,6 @@ import { getUiOrderType } from 'utils/getUiOrderType'
 
 import { TAB_QUERY_PARAM_KEY } from '../../../explorer/const'
 
-const Table = styled(SimpleTable)`
-  // > tbody > tr {
-  //   grid-template-columns: 19rem auto;
-  //   grid-template-rows: max-content;
-  //   padding: 1.4rem 0 1.4rem 1.1rem;
-  //
-  //   ${Media.upToSmall()} {
-  //     grid-template-columns: 11rem auto;
-  //   }
-  //
-  //   > td {
-  //     justify-content: flex-start;
-  //
-  //     &:first-of-type {
-  //       text-transform: capitalize;
-  //
-  //       ${Media.MediumAndUp()} {
-  //         font-weight: ${({ theme }): string => theme.fontLighter};
-  //       }
-  //
-  //       ${Media.upToSmall()} {
-  //         padding: 0.5rem 0;
-  //       }
-  //
-  //       /* Question mark */
-  //
-  //       > svg {
-  //         margin: 0 1rem 0 0;
-  //       }
-  //
-  //       /* Column after text on first column */
-  //
-  //       ::after {
-  //         content: ':';
-  //         display: contents;
-  //       }
-  //     }
-  //
-  //     &:last-of-type {
-  //       color: ${({ theme }): string => theme.textPrimary1};
-  //     }
-  //   }
-  // }
-`
-
 const tooltip = {
   orderID: 'A unique identifier ID for this order.',
   from: 'The account address which signed the order.',
@@ -156,7 +111,7 @@ export const LinkButton = styled(LinkWithPrefixNetwork)`
     margin: 1.6rem 0 0 0;
   }
 
-  :hover {
+  &:hover {
     opacity: 0.8;
     color: ${({ theme }): string => theme.white};
     text-decoration: none;
@@ -177,7 +132,7 @@ export type Props = {
   invertPrice: Command
 }
 
-export function DetailsTable(props: Props): JSX.Element | null {
+export function DetailsTable(props: Props): React.ReactNode | null {
   const { order, areTradesLoading, showFillsButton, viewFills, isPriceInverted, invertPrice } = props
   const {
     uid,
@@ -215,7 +170,8 @@ export function DetailsTable(props: Props): JSX.Element | null {
     })
 
   return (
-    <Table
+    <SimpleTable
+      columnViewMobile
       body={
         <>
           <tr>
@@ -424,7 +380,7 @@ export function DetailsTable(props: Props): JSX.Element | null {
           <tr>
             <td>
               <span>
-                <HelpTooltip tooltip={tooltip.fees} /> Fees
+                <HelpTooltip tooltip={tooltip.fees} /> Costs &amp; Fees
               </span>
             </td>
             <td>

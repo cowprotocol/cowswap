@@ -112,7 +112,7 @@ export const CardContent: React.FC<CardContentProps> = ({
   caption2,
   hint2,
   loading,
-}): JSX.Element => {
+}): React.ReactNode => {
   return (
     <CardBody
       variant={variant}

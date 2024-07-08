@@ -1,4 +1,3 @@
-import { Media } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
@@ -11,6 +10,7 @@ const AppDataWrapper = styled.div`
     padding: 0.75rem;
     background: ${({ theme }): string => theme.tableRowBorder};
     border-radius: 0.5rem;
+    white-space: pre-wrap;
 
     ::-webkit-scrollbar {
       width: 8px !important;
@@ -27,18 +27,6 @@ const AppDataWrapper = styled.div`
 
   .hidden-content {
     margin-top: 10px;
-
-    span div {
-      ${Media.MediumAndUp()} {
-        width: 95%;
-      }
-      ${Media.upToSmall()} {
-        width: 78vw;
-      }
-      ${Media.upToExtraSmall()} {
-        width: 70vw;
-      }
-    }
   }
 `
 

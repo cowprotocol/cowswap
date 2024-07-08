@@ -74,7 +74,7 @@ interface IconProps {
   onClick?: Command
 }
 
-export default function MobileMenuIcon(params: IconProps): JSX.Element {
+export default function MobileMenuIcon(params: IconProps): React.ReactNode {
   return (
     <Wrapper {...params}>
       <span></span>

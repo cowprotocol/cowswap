@@ -16,7 +16,7 @@ import { TokenAmount } from 'components/token/TokenAmount'
 import { TEN_BIG_NUMBER } from 'const'
 import { useMultipleErc20 } from 'hooks/useErc20'
 import { useNetworkId } from 'state/network'
-import styled, { useTheme } from 'styled-components/macro'
+import styled from 'styled-components/macro'
 import { abbreviateString } from 'utils'
 
 import { Order, Trade } from 'api/operator'
@@ -63,7 +63,6 @@ function calculateExecutionPrice(
 }
 
 const RowFill: React.FC<RowProps> = ({ trade, isPriceInverted }) => {
-  const theme = useTheme()
   const network = useNetworkId() ?? undefined
   const {
     txHash,
@@ -109,13 +108,7 @@ const RowFill: React.FC<RowProps> = ({ trade, isPriceInverted }) => {
       <td>
         <TokenAmount amount={buyAmount} token={buyToken} />
       </td>
-      <td>
-        {surplus ? (
-          <SurplusComponent icon={faIcon} iconColor={theme.green} surplus={surplus} token={surplusToken} />
-        ) : (
-          '-'
-        )}
-      </td>
+      <td>{surplus ? <SurplusComponent icon={faIcon} surplus={surplus} token={surplusToken} /> : '-'}</td>
       <td>{executionPrice && <TokenAmount amount={executionPrice} token={executionToken} />}</td>
       <td>{executionTime ? <DateDisplay date={executionTime} showIcon={true} /> : <StyledShimmerBar />}</td>
     </tr>

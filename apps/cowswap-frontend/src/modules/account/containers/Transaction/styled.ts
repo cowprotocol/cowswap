@@ -41,7 +41,6 @@ export const Summary = styled.div`
   flex-flow: row wrap;
   width: 100%;
   padding: 22px;
-  grid-template-rows: 1fr;
   grid-template-columns: 80px auto min-content;
   grid-template-rows: max-content;
   color: inherit;
@@ -121,7 +120,6 @@ export const SummaryInner = styled.div`
 
 export const SummaryInnerRow = styled.div<{ isExpired?: boolean; isCancelled?: boolean }>`
   display: grid;
-  color: inherit;
   grid-template-rows: 1fr;
   grid-template-columns: 100px 1fr;
   width: 100%;
@@ -180,7 +178,6 @@ export const TransactionStatusText = styled.div`
   margin: 0;
   width: 100%;
   display: flex;
-  align-items: center;
   flex-flow: column wrap;
   align-items: flex-start;
 
@@ -231,7 +228,7 @@ export const StatusLabel = styled.div<{
   ${({ isPending, isPresignaturePending, isCancelling, isCreating, theme }) =>
     !isCancelling &&
     (isPending || isPresignaturePending || isCreating) &&
-    `border:  1px solid ${`${theme.darkMode ? 'rgb(197 218 239 / 10%)' : 'rgb(16 42 72 / 20%)'}`};`}
+    `border:  1px solid ${theme.darkMode ? 'rgb(197 218 239 / 10%)' : 'rgb(16 42 72 / 20%)'};`}
   color: var(--statusColor);
   position: relative;
   border-radius: 4px;
@@ -310,7 +307,7 @@ export const OldTransactionState = styled(ExternalLink)<{ pending: boolean; succ
   justify-content: space-between;
   align-items: center;
   border-radius: 0.5rem;
-  padding: 0.25rem 0rem;
+  padding: 0.25rem 0;
   font-weight: 500;
   font-size: 0.825rem;
   color: var(${UI.COLOR_PRIMARY});

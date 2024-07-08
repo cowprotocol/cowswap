@@ -172,7 +172,7 @@ const HelperSpan = styled.span`
   display: flex;
   cursor: pointer;
   transition: color 0.1s;
-  padding: 0 0.6rem;
+  padding: 0 0.6rem 0 0;
   position: relative;
 `
 
