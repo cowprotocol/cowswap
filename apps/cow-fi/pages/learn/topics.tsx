@@ -23,7 +23,7 @@ import {
 
 import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
 import { clickOnKnowledgeBase } from 'modules/analytics'
-import { toCmsAbsoluteUrl } from '@/const/cms'
+import { CmsImage } from '@cowprotocol/ui'
 
 interface PageProps {
   siteConfigData: typeof CONFIG
@@ -100,10 +100,10 @@ export default function Page({ siteConfigData, categories, articles }: PageProps
                   >
                     <TopicImage iconColor={iconColor}>
                       {imageUrl ? (
-                        <img
-                          src={toCmsAbsoluteUrl(imageUrl)}
+                        <CmsImage
+                          src={imageUrl}
                           alt={name}
-                          onError={(e) => {
+                          onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
                             e.currentTarget.onerror = null
                             e.currentTarget.style.display = 'none'
                           }}

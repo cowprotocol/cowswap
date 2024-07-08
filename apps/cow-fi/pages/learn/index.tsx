@@ -42,7 +42,8 @@ import {
 import SVG from 'react-inlinesvg'
 import { clickOnKnowledgeBase } from 'modules/analytics'
 
-import { toCmsAbsoluteUrl } from '@/const/cms'
+import { EventCategories, sendEventHandler } from '@cowprotocol/analytics'
+import { CmsImage } from '@cowprotocol/ui'
 
 const PODCASTS = [
   {
@@ -198,9 +199,7 @@ export default function Page({ siteConfigData, categories, articles, featuredArt
               <ArticleList columnsTablet={2}>
                 {featuredArticles.map(({ title, description, cover, link }, index) => (
                   <ArticleCard key={index} href={link} onClick={() => clickOnKnowledgeBase(`click-article-${title}`)}>
-                    <ArticleImage color="#000">
-                      {cover && <img src={toCmsAbsoluteUrl(cover)} alt={title} />}
-                    </ArticleImage>
+                    <ArticleImage color="#000">{cover && <CmsImage src={cover} alt={title} />}</ArticleImage>
                     <ArticleTitle>{title}</ArticleTitle>
                     <ArticleDescription>{description}</ArticleDescription>
                   </ArticleCard>
@@ -224,8 +223,8 @@ export default function Page({ siteConfigData, categories, articles, featuredArt
                     >
                       <TopicImage iconColor={iconColor} bgColor={bgColor} borderRadius={90} widthMobile={'auto'}>
                         {imageUrl ? (
-                          <img
-                            src={toCmsAbsoluteUrl(imageUrl)}
+                          <CmsImage
+                            src={imageUrl}
                             alt={name}
                             onError={(e) => {
                               e.currentTarget.onerror = null
