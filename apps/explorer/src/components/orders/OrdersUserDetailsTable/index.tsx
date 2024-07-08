@@ -14,6 +14,7 @@ import Icon from 'components/Icon'
 import { HelpTooltip } from 'components/Tooltip'
 import { TextWithTooltip } from 'explorer/components/common/TextWithTooltip'
 import { useNetworkId } from 'state/network'
+import styled from 'styled-components/macro'
 import { FormatAmountPrecision, formattedAmount } from 'utils'
 
 import { Order } from 'api/operator'
@@ -27,6 +28,15 @@ import { StatusLabel } from '../StatusLabel'
 const tooltip = {
   orderID: 'A unique identifier ID for this order.',
 }
+
+const Wrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  font-size: 1.5rem;
+  padding: 3.2rem;
+  min-height: 30rem;
+`
 
 export type Props = SimpleTableProps & {
   orders: Order[] | undefined
@@ -52,10 +62,6 @@ const RowOrder: React.FC<RowProps> = ({ order, isPriceInverted }) => {
   useEffect(() => {
     setIsPriceInverted(isPriceInverted)
   }, [isPriceInverted])
-
-  // const invertLimitPrice = (): void => {
-  //   setIsPriceInverted((previousValue) => !previousValue)
-  // }
 
   const renderSpinnerWhenNoValue = (textValue: string): React.ReactNode | void => {
     if (textValue === '-') return <Spinner spin size="1x" />
@@ -117,21 +123,8 @@ const OrdersUserDetailsTable: React.FC<Props> = (props) => {
     setIsPriceInverted((previousValue) => !previousValue)
   }
 
-  const orderItems = (items: Order[] | undefined): React.ReactNode => {
-    if (!items?.length)
-      return (
-        <tr className="row-empty">
-          <td className="row-td-empty">{messageWhenEmpty || 'No orders.'}</td>
-        </tr>
-      )
-
-    return (
-      <>
-        {items.map((item) => (
-          <RowOrder key={item.uid} order={item} isPriceInverted={isPriceInverted} />
-        ))}
-      </>
-    )
+  if (!orders?.length) {
+    return <Wrapper>{messageWhenEmpty || 'No orders.'}</Wrapper>
   }
 
   return (
@@ -156,7 +149,13 @@ const OrdersUserDetailsTable: React.FC<Props> = (props) => {
           <th>Status</th>
         </tr>
       }
-      body={orderItems(orders)}
+      body={
+        <>
+          {orders.map((item) => (
+            <RowOrder key={item.uid} order={item} isPriceInverted={isPriceInverted} />
+          ))}
+        </>
+      }
     />
   )
 }

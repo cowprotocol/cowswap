@@ -20,9 +20,7 @@ const FooterStyled = styled.footer`
   color: ${({ theme }): string => theme.textSecondary2};
   width: 100%;
   justify-content: space-around;
-  margin: 0 auto;
-  position: static;
-  bottom: 0;
+  margin: auto auto 0;
   height: auto;
   padding: 1rem;
   max-height: 4rem;

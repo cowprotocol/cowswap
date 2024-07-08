@@ -22,6 +22,7 @@ const Wrapper = styled.div`
   align-items: center;
   justify-content: center;
   height: 100%;
+  gap: 2.4rem;
 
   > section {
     display: flex;
