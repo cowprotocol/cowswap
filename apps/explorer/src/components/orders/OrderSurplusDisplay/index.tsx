@@ -6,15 +6,13 @@ import { faArrowAltCircleUp as faIcon } from '@fortawesome/free-regular-svg-icon
 import { TokenErc20 } from '@gnosis.pm/dex-js'
 import BigNumber from 'bignumber.js'
 import { SurplusComponent } from 'components/common/SurplusComponent'
-
-// TODO: Enable once API is ready
-// import { NumbersBreakdown } from 'components/orders/NumbersBreakdown'
-
 import { TokenAmount } from 'components/token/TokenAmount'
 import { BaseIconTooltipOnHover } from 'components/Tooltip'
 import styled, { css, FlattenSimpleInterpolation } from 'styled-components/macro'
 
 import { Order } from 'api/operator'
+// TODO: Enable once API is ready
+// import { NumbersBreakdown } from 'components/orders/NumbersBreakdown'
 
 const Wrapper = styled.div``
 
