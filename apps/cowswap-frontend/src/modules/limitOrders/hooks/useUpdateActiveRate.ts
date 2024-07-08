@@ -46,7 +46,7 @@ export function useUpdateActiveRate(): UpdateRateCallback {
       }
 
       // Clear input/output amount based on the orderKind, when there is no active rate
-      if (activeRate === null) {
+      if (activeRate === null || activeRate.equalTo('0')) {
         if (isSell) {
           updateLimitOrdersState({ outputCurrencyAmount: null })
         } else {

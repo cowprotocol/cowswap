@@ -2,8 +2,7 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { formatInputAmount, getAddress, isFractionFalsy } from '@cowprotocol/common-utils'
-import { Loader, TokenSymbol } from '@cowprotocol/ui'
-import { HelpTooltip } from '@cowprotocol/ui'
+import { HelpTooltip, Loader, TokenSymbol } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { RefreshCw } from 'react-feather'
