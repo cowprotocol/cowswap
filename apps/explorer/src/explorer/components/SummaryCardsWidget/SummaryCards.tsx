@@ -59,7 +59,7 @@ interface SummaryCardsProps {
   children: React.ReactNode
 }
 
-export function SummaryCards({ summaryData, children }: SummaryCardsProps): JSX.Element {
+export function SummaryCards({ summaryData, children }: SummaryCardsProps): React.ReactNode {
   const { batchInfo, dailyTransactions, totalTokens, volumeUsd, dailyFees, isLoading } = summaryData || {}
   const isDesktop = useMediaQuery(Media.LargeAndUp(false))
   const valueTextSize = isDesktop ? DESKTOP_TEXT_SIZE : MOBILE_TEXT_SIZE

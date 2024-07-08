@@ -39,7 +39,7 @@ const Wrapper = styled.div<Props>`
   }
 `
 
-export function ProgressBar(props: Props): JSX.Element {
+export function ProgressBar(props: Props): React.ReactNode {
   const { percentage = '0', showLabel = true } = props
 
   return (

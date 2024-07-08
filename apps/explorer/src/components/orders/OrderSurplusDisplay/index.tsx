@@ -8,25 +8,47 @@ import BigNumber from 'bignumber.js'
 import { SurplusComponent } from 'components/common/SurplusComponent'
 import { TokenAmount } from 'components/token/TokenAmount'
 import { BaseIconTooltipOnHover } from 'components/Tooltip'
-import styled, { css, FlattenSimpleInterpolation, useTheme } from 'styled-components/macro'
+import styled, { css, FlattenSimpleInterpolation } from 'styled-components/macro'
 
 import { Order } from 'api/operator'
+// TODO: Enable once API is ready
+// import { NumbersBreakdown } from 'components/orders/NumbersBreakdown'
 
-const Wrapper = styled(SurplusComponent)`
-  display: flex;
-  & > * {
-    margin-right: 0.25rem;
-  }
+const Wrapper = styled.div``
 
-  & > :last-child {
-    margin-right: 0;
-  }
-`
+// TODO: Enable once API is ready
+// const fetchSurplusBreakdown = async (initialSurplus: React.ReactNode): Promise<any> => {
+//   // TODO: Simulating API call to fetch surplus breakdown data
+//   return new Promise((resolve) => {
+//     resolve({
+//       networkCosts: 'TODO: BIG NUMBER HERE ETH',
+//       fee: 'TODO: FEE NUMBER HERE',
+//       total: initialSurplus,
+//     })
+//   })
+// }
 
-// const UsdAmount = styled.span`
-//   color: ${({ theme }): string => theme.textPrimary1};
-//   opacity: 0.5;
-// `
+// TODO: Enable once API is ready
+// const renderSurplusBreakdown = (data: any): React.ReactNode => {
+//   return (
+//     <table>
+//       <tbody>
+//         <tr>
+//           <td>Protected slippage:</td>
+//           <td>{data.networkCosts}</td>
+//         </tr>
+//         <tr>
+//           <td>Price improvement (user share):</td>
+//           <td>{data.fee}</td>
+//         </tr>
+//         <tr>
+//           <td>Total surplus:</td>
+//           <td>{data.total}</td>
+//         </tr>
+//       </tbody>
+//     </table>
+//   )
+// }
 
 export type Props = { order: Order; amountSmartFormatting?: boolean } & React.HTMLAttributes<HTMLDivElement>
 type OrderSurplus = { amount: BigNumber; percentage: BigNumber; surplusToken: TokenErc20 }
@@ -35,9 +57,6 @@ function useGetSurplus(order: Order): OrderSurplus | null {
   const { kind, buyToken, sellToken, surplusAmount, surplusPercentage } = order
 
   const surplusToken = isSellOrder(kind) ? buyToken : sellToken
-
-  // TODO: get USD estimation
-  // const usdAmount = '55.555'
 
   return useMemo(() => {
     if (!surplusToken || surplusAmount.isZero()) {
@@ -48,18 +67,29 @@ function useGetSurplus(order: Order): OrderSurplus | null {
   }, [surplusToken, surplusAmount, surplusPercentage])
 }
 
-export function OrderSurplusDisplay(props: Props): JSX.Element | null {
+export function OrderSurplusDisplay(props: Props): React.ReactNode | null {
   const surplus = useGetSurplus(props.order)
 
   if (!surplus) return null
 
-  return <Wrapper surplus={surplus} token={surplus.surplusToken} />
+  const SurplusElement = <SurplusComponent surplus={surplus} token={surplus.surplusToken} icon={faIcon} />
+
+  return (
+    <Wrapper>
+      {SurplusElement}
+      {/*TODO: Enable once API is ready*/}
+      {/*<NumbersBreakdown*/}
+      {/*  fetchData={() => fetchSurplusBreakdown(SurplusElement)}*/}
+      {/*  renderContent={renderSurplusBreakdown}*/}
+      {/*/>*/}
+    </Wrapper>
+  )
 }
 
-const HiddenSection = styled.span<{ showHiddenSection: boolean; strechHiddenSection?: boolean }>`
+const HiddenSection = styled.span<{ showHiddenSection: boolean; stretchHiddenSection?: boolean }>`
   display: ${({ showHiddenSection }): string => (showHiddenSection ? 'flex' : 'none')};
-  ${({ strechHiddenSection }): FlattenSimpleInterpolation | false | undefined =>
-    strechHiddenSection &&
+  ${({ stretchHiddenSection }): FlattenSimpleInterpolation | false | undefined =>
+    stretchHiddenSection &&
     css`
       width: 3.4rem;
       display: inline-block;
@@ -70,18 +100,17 @@ const HiddenSection = styled.span<{ showHiddenSection: boolean; strechHiddenSect
 export function OrderSurplusTooltipDisplay({
   order,
   defaultWhenNoSurplus,
-  strechWhenNoSurplus = false,
+  stretchWhenNoSurplus = false,
 }: Props & {
   showHiddenSection?: boolean
   defaultWhenNoSurplus?: string
-  strechWhenNoSurplus?: boolean
+  stretchWhenNoSurplus?: boolean
 }): React.ReactNode {
   const surplus = useGetSurplus(order)
-  const theme = useTheme()
 
   if (!surplus)
     return (
-      <HiddenSection showHiddenSection strechHiddenSection={strechWhenNoSurplus}>
+      <HiddenSection showHiddenSection stretchHiddenSection={stretchWhenNoSurplus}>
         {defaultWhenNoSurplus}
       </HiddenSection>
     )
@@ -89,9 +118,7 @@ export function OrderSurplusTooltipDisplay({
   return (
     <BaseIconTooltipOnHover
       tooltip={<TokenAmount amount={surplus.amount} token={surplus.surplusToken} />}
-      targetContent={
-        <SurplusComponent surplus={surplus} token={surplus.surplusToken} icon={faIcon} iconColor={theme.green} />
-      }
+      targetContent={<SurplusComponent surplus={surplus} token={surplus.surplusToken} icon={faIcon} />}
     />
   )
 }

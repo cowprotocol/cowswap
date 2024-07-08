@@ -62,7 +62,7 @@ export type Props = { text: string; onCopy?: (value: string) => void; heightIcon
  * When clicked, displays a green check for DISPLAY_TEXT_COPIED_CHECK seconds,
  * then is back to original copy icon
  */
-export function CopyButton(props: Props): JSX.Element {
+export function CopyButton(props: Props): React.ReactNode {
   const { text, onCopy, heightIcon } = props
 
   const [copied, setCopied] = useState(false)

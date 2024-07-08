@@ -1,4 +1,5 @@
-import React from 'react'
+// TODO: Enable once API is ready
+// import { NumbersBreakdown } from 'components/orders/NumbersBreakdown'
 
 import { ZERO_BIG_NUMBER } from 'const'
 import styled from 'styled-components/macro'
@@ -7,30 +8,54 @@ import { formatSmartMaxPrecision, safeTokenName } from 'utils'
 import { Order } from 'api/operator'
 
 const Wrapper = styled.div`
-  & > span {
+  > span {
     margin: 0 0.5rem 0 0;
   }
 `
 
-// const UsdAmount = styled.span`
-//   color: ${({ theme }): string => theme.grey};
-// `
-
 export type Props = { order: Order }
 
-export function GasFeeDisplay(props: Props): JSX.Element | null {
+// TODO: Enable once API is ready
+// const fetchFeeBreakdown = async (initialFee: string): Promise<any> => {
+//   // TODO: Simulating API call to fetch fee breakdown data
+//   return new Promise((resolve) => {
+//     resolve({
+//       networkCosts: 'TODO: Get network costs here',
+//       fee: 'TODO: Get fee here',
+//       total: initialFee,
+//     })
+//   })
+// }
+
+// TODO: Enable once API is ready
+// const renderFeeBreakdown = (data: any): React.ReactNode => {
+//   return (
+//     <table>
+//       <tbody>
+//         <tr>
+//           <td>Network Costs:</td>
+//           <td>{data.networkCosts}</td>
+//         </tr>
+//         <tr>
+//           <td>Fee:</td>
+//           <td>{data.fee}</td>
+//         </tr>
+//         <tr>
+//           <td>Total Costs & Fees:</td>
+//           <td>{data.total}</td>
+//         </tr>
+//       </tbody>
+//     </table>
+//   )
+// }
+
+export function GasFeeDisplay(props: Props): React.ReactNode | null {
   const {
     order: { feeAmount, sellToken, sellTokenAddress, fullyFilled, totalFee },
   } = props
 
-  // TODO: fetch amount in USD
-  // const executedFeeUSD = '0.99'
-  // const totalFeeUSD = '0.35'
-
-  // When `sellToken` is not set, default to raw amounts
   let formattedExecutedFee: string = totalFee.toString(10)
   let formattedTotalFee: string = feeAmount.toString(10)
-  // When `sellToken` is not set, show token address
   let quoteSymbol: string = sellTokenAddress
 
   if (sellToken) {
@@ -40,21 +65,29 @@ export function GasFeeDisplay(props: Props): JSX.Element | null {
     quoteSymbol = safeTokenName(sellToken)
   }
 
-  // In case: the order hasn't had any fills OR it had but the fee hasn't been reported yet in the API
   const noFee = feeAmount.isZero() && totalFee.isZero()
 
-  return (
-    <Wrapper>
-      <span>{noFee ? '-' : `${formattedExecutedFee} ${quoteSymbol}`}</span>
-      {/* <UsdAmount>(~${totalFeeUSD})</UsdAmount> */}
+  const FeeElement = (
+    <span>
+      {noFee ? '-' : `${formattedExecutedFee} ${quoteSymbol}`}
       {!fullyFilled && feeAmount.gt(ZERO_BIG_NUMBER) && (
         <>
           <span>
             of {formattedTotalFee} {quoteSymbol}
           </span>
-          {/* <UsdAmount>(~${executedFeeUSD})</UsdAmount> */}
         </>
       )}
+    </span>
+  )
+
+  return (
+    <Wrapper>
+      {FeeElement}
+      {/*TODO: Enable once API is ready*/}
+      {/*<NumbersBreakdown*/}
+      {/*  fetchData={() => fetchFeeBreakdown(`${formattedExecutedFee} ${quoteSymbol}`)}*/}
+      {/*  renderContent={renderFeeBreakdown}*/}
+      {/*/>*/}
     </Wrapper>
   )
 }

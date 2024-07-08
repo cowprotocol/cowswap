@@ -53,12 +53,6 @@ const Wrapper = styled.div`
   > span > b {
     font-weight: ${({ theme }): string => theme.fontMedium};
   }
-
-  > div {
-    ${Media.upToSmall()} {
-      max-width: 150px;
-    }
-  }
 `
 
 const TableHeading = styled.div`
@@ -176,7 +170,7 @@ const OrderAssetsInfoWrapper = styled.span<{ lineBreak?: boolean }>`
   }
 `
 
-export function FilledProgress(props: Props): JSX.Element {
+export function FilledProgress(props: Props): React.ReactNode {
   const {
     lineBreak = false,
     fullView = false,
@@ -223,7 +217,7 @@ export function FilledProgress(props: Props): JSX.Element {
   const surplus = { amount: surplusAmount, percentage: surplusPercentage }
   const surplusToken = (isSell ? buyToken : sellToken) || null
 
-  const OrderAssetsInfo = (): JSX.Element => (
+  const OrderAssetsInfo = (): React.ReactNode => (
     <>
       {' '}
       <OrderAssetsInfoWrapper lineBreak={lineBreak}>

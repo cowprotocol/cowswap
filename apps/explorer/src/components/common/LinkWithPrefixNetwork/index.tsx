@@ -7,7 +7,7 @@ interface LinkWithPrefixProps extends LinkProps {
   onClickOptional?: React.MouseEventHandler<HTMLAnchorElement>
 }
 
-export function LinkWithPrefixNetwork(props: LinkWithPrefixProps): JSX.Element {
+export function LinkWithPrefixNetwork(props: LinkWithPrefixProps): React.ReactNode {
   const { to, children, onClickOptional, ...otherParams } = props
   const prefix = usePathPrefix()
   const _to = prefix ? `/${prefix}${to}` : to

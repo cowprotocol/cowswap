@@ -57,7 +57,7 @@ const RowOrder: React.FC<RowProps> = ({ order, isPriceInverted }) => {
   //   setIsPriceInverted((previousValue) => !previousValue)
   // }
 
-  const renderSpinnerWhenNoValue = (textValue: string): JSX.Element | void => {
+  const renderSpinnerWhenNoValue = (textValue: string): React.ReactNode | void => {
     if (textValue === '-') return <Spinner spin size="1x" />
   }
 
@@ -117,7 +117,7 @@ const OrdersUserDetailsTable: React.FC<Props> = (props) => {
     setIsPriceInverted((previousValue) => !previousValue)
   }
 
-  const orderItems = (items: Order[] | undefined): JSX.Element => {
+  const orderItems = (items: Order[] | undefined): React.ReactNode => {
     if (!items?.length)
       return (
         <tr className="row-empty">

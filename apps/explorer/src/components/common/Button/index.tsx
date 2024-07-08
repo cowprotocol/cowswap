@@ -255,29 +255,3 @@ export const ButtonBase = styled(ThemeWrappedButtonBase)<ButtonBaseProps>`
     pointer-events: none;
   }
 `
-
-const ThemeButtonToggleWrapper = styled.div<{ $mode: boolean }>`
-  display: inline-flex;
-  width: 5rem;
-  background-color: gainsboro;
-  border-radius: 2rem;
-
-  > button {
-    width: 75%;
-    margin-left: ${({ $mode }): string => ($mode ? 'auto' : '0')};
-  }
-`
-
-export const ThemeToggle: React.FC<
-  ButtonBaseProps & {
-    mode: boolean
-  }
-> = ({ mode, size = 'small', variant = 'theme', children, ...rest }) => {
-  return (
-    <ThemeButtonToggleWrapper $mode={mode}>
-      <ButtonBase {...rest} size={size} variant={variant}>
-        {children}
-      </ButtonBase>
-    </ThemeButtonToggleWrapper>
-  )
-}

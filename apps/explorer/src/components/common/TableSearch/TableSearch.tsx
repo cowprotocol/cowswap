@@ -63,7 +63,7 @@ export function TableSearch({
   query,
   setQuery,
   placeholder = 'Search token by name, symbol or hash',
-}: SearchProps): JSX.Element {
+}: SearchProps): React.ReactNode {
   return (
     <SearchWrapped onSubmit={(e): void => e.preventDefault()}>
       <SearchIcon src={searchImg} />

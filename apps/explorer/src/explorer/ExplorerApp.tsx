@@ -19,7 +19,6 @@ import { RedirectMainnet, RedirectXdai } from '../state/network'
 import { NetworkUpdater } from '../state/network/NetworkUpdater'
 import { environmentName } from '../utils/env'
 
-
 const SENTRY_DSN = process.env.REACT_APP_EXPLORER_SENTRY_DSN
 const SENTRY_TRACES_SAMPLE_RATE = process.env.REACT_APP_SENTRY_TRACES_SAMPLE_RATE
 
@@ -99,7 +98,7 @@ const TransactionDetails = React.lazy(
 /**
  * Update the global state
  */
-function StateUpdaters(): JSX.Element {
+function StateUpdaters(): React.ReactNode {
   return <NetworkUpdater />
 }
 
@@ -107,7 +106,7 @@ const networkPrefixes = CHAIN_INFO_ARRAY.map((info) => info.urlAlias)
 
 /** App content */
 
-const AppContent = (): JSX.Element => {
+const AppContent = (): React.ReactNode => {
   const location = useLocation()
   const { pathname: path } = location
   const prefix = path === '' ? '' : `${path.split('/')[1]}`
