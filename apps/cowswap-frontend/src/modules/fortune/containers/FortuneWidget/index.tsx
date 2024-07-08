@@ -8,6 +8,7 @@ import IMAGE_ICON_FORTUNE_COOKIE from '@cowprotocol/assets/images/icon-fortune-c
 import { addBodyClass, removeBodyClass } from '@cowprotocol/common-utils'
 import { ExternalLink, Media } from '@cowprotocol/ui'
 import { UI, Color } from '@cowprotocol/ui'
+import { Confetti } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import ReactDOM from 'react-dom'
@@ -15,7 +16,6 @@ import { X } from 'react-feather'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
-import { Confetti } from '@cowprotocol/ui'
 
 import { useOpenRandomFortune } from 'modules/fortune/hooks/useOpenRandomFortune'
 import { lastCheckedFortuneAtom } from 'modules/fortune/state/checkedFortunesListAtom'
