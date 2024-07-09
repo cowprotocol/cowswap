@@ -9,7 +9,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import ms from 'ms.macro'
 import useSWR from 'swr'
 
-import { useDerivedTradeState } from 'modules/trade'
+import { useDerivedTradeState, useIsWrapOrUnwrap } from 'modules/trade'
 
 import { smartSwapSlippageAtom } from '../state/slippageValueAndTypeAtom'
 
@@ -26,12 +26,13 @@ export function SmartSlippageUpdater() {
   const { chainId } = useWalletInfo()
   const { inputCurrency, outputCurrency } = useDerivedTradeState() || {}
   const setSmartSwapSlippage = useSetAtom(smartSwapSlippageAtom)
+  const isWrapOrUnwrap = useIsWrapOrUnwrap()
 
   const sellTokenAddress = inputCurrency && getCurrencyAddress(inputCurrency).toLowerCase()
   const buyTokenAddress = outputCurrency && getCurrencyAddress(outputCurrency).toLowerCase()
 
   const slippageBps = useSWR(
-    !sellTokenAddress || !buyTokenAddress || !isSmartSlippageEnabled
+    !sellTokenAddress || !buyTokenAddress || isWrapOrUnwrap || !isSmartSlippageEnabled
       ? null
       : [chainId, sellTokenAddress, buyTokenAddress],
     async ([chainId, sellTokenAddress, buyTokenAddress]) => {
