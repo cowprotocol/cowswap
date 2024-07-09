@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.13.2](https://github.com/cowprotocol/cowswap/compare/widget-lib-v0.13.1...widget-lib-v0.13.2) (2024-07-05)
+
+
+### Bug Fixes
+
+* **widget-lib:** exclude cow-sdk from the bundle ([#4681](https://github.com/cowprotocol/cowswap/issues/4681)) ([a2eaa3d](https://github.com/cowprotocol/cowswap/commit/a2eaa3d9198a4e5245a70b3a6c71a23337fd0ce8))
+
 ## [0.13.1](https://github.com/cowprotocol/cowswap/compare/widget-lib-v0.13.0...widget-lib-v0.13.1) (2024-07-04)
 
 

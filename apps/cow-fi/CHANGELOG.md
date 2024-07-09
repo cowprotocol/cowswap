@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.5.0...cow-fi-v1.6.0) (2024-07-05)
+
+
+### Features
+
+* pages cleanup ([#4623](https://github.com/cowprotocol/cowswap/issues/4623)) ([47d8138](https://github.com/cowprotocol/cowswap/commit/47d813882a1b9fbd848a1feed66bec86f626d271))
+
 ## [1.5.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.4.2...cow-fi-v1.5.0) (2024-06-27)
 
 
