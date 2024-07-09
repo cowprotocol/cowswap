@@ -87,6 +87,7 @@ export function TradeWidgetLinks({
     location.pathname,
     highlightedBadgeText,
     highlightedBadgeType,
+    handleMenuItemClick
   ])
 
   const singleMenuItem = menuItemsElements.length === 1

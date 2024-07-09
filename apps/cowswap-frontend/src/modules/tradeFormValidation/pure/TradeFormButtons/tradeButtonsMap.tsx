@@ -146,7 +146,7 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
       </TradeFormBlankButton>
     )
   },
-  [TradeFormValidation.ApproveRequired]: (context, isDisabled = false) => {
+  [TradeFormValidation.ApproveRequired]: (context) => {
     const amountToApprove = context.derivedState.slippageAdjustedSellAmount
 
     if (!amountToApprove) return null
