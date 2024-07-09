@@ -10,9 +10,8 @@ import { CurrencyAmount } from '@uniswap/sdk-core'
 import { formatUnits } from 'ethers/lib/utils'
 import styled from 'styled-components/macro'
 
-import { HookDappContext } from 'modules/hooks/context'
-
 import { SBC_DEPOSIT_CONTRACT_ADDRESS } from '../../const'
+import { HookDappContext } from '../../context'
 import { useSBCDepositContract } from '../../hooks/useSBCDepositContract'
 
 const TITLE = 'Claim GNO from validators'
