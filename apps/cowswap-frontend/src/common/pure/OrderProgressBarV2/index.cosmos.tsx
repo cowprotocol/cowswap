@@ -3,9 +3,9 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { getOrderMock } from 'mocks/orderMock'
 import styled from 'styled-components/macro'
 
-import { OrderProgressBar, OrderProgressBarProps } from './index'
+import { OrderProgressBarV2, OrderProgressBarV2Props } from './index'
 
-const defaultProps: OrderProgressBarProps = {
+const defaultProps: OrderProgressBarV2Props = {
   order: getOrderMock(SupportedChainId.MAINNET),
   stepName: 'initial',
   solverCompetition: [
@@ -27,37 +27,37 @@ const Wrapper = styled.div`
 const Fixtures = {
   '1-initial': (
     <Wrapper>
-      <OrderProgressBar {...defaultProps} />
+      <OrderProgressBarV2 {...defaultProps} />
     </Wrapper>
   ),
   '2-solving': (
     <Wrapper>
-      <OrderProgressBar {...defaultProps} stepName="solving" countdown={15} />
+      <OrderProgressBarV2 {...defaultProps} stepName="solving" countdown={15} />
     </Wrapper>
   ),
   '2a-delayed': (
     <Wrapper>
-      <OrderProgressBar {...defaultProps} stepName="delayed" />
+      <OrderProgressBarV2 {...defaultProps} stepName="delayed" />
     </Wrapper>
   ),
   '2b-unfillable': (
     <Wrapper>
-      <OrderProgressBar {...defaultProps} stepName="unfillable" />
+      <OrderProgressBarV2 {...defaultProps} stepName="unfillable" />
     </Wrapper>
   ),
   '3-executing': (
     <Wrapper>
-      <OrderProgressBar {...defaultProps} stepName="executing" />
+      <OrderProgressBarV2 {...defaultProps} stepName="executing" />
     </Wrapper>
   ),
   '3a-submissionFailed': (
     <Wrapper>
-      <OrderProgressBar {...defaultProps} stepName="submissionFailed" />
+      <OrderProgressBarV2 {...defaultProps} stepName="submissionFailed" />
     </Wrapper>
   ),
   '4-finished': (
     <Wrapper>
-      <OrderProgressBar {...defaultProps} stepName="finished" />
+      <OrderProgressBarV2 {...defaultProps} stepName="finished" />
     </Wrapper>
   ),
 }

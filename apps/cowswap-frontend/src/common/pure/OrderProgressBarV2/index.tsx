@@ -1,8 +1,8 @@
 import progressBarStep1 from '@cowprotocol/assets/cow-swap/progress-bar-step1.png'
-import progressBarStep3 from '@cowprotocol/assets/cow-swap/progress-bar-step3.png'
-import progressBarStep2a from '@cowprotocol/assets/cow-swap/progress-bar-step2a.png'
 import progressBarStep1a from '@cowprotocol/assets/cow-swap/progress-bar-step1a.png'
+import progressBarStep2a from '@cowprotocol/assets/cow-swap/progress-bar-step2a.png'
 import progressBarStep2b from '@cowprotocol/assets/cow-swap/progress-bar-step2b.png'
+import progressBarStep3 from '@cowprotocol/assets/cow-swap/progress-bar-step3.png'
 
 import { isSellOrder } from '@cowprotocol/common-utils'
 import { TokenAmount } from '@cowprotocol/ui'
@@ -10,21 +10,13 @@ import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
 
-import { OrderStatus } from 'api/cowProtocol/api'
+import { SolverCompetition } from 'api/cowProtocol/api'
+
+import { OrderProgressBarStepNames } from 'common/hooks/orderProgressBarV2'
 import { AMM_LOGOS } from 'legacy/components/AMMsLogo'
 import { Order } from 'legacy/state/orders/actions'
 import { Stepper, StepProps } from '../Stepper'
 
-type happyPath = 'initial' | 'solving' | 'executing' | 'finished'
-type errorFlow = 'nextBatch' | 'delayed' | 'unfillable' | 'submissionFailed'
-type OrderProgressBarStepNames = happyPath | errorFlow
-
-export type OrderProgressBarProps = {
-  stepName: OrderProgressBarStepNames
-  countdown?: number | null | undefined
-  solverCompetition?: OrderStatus['value']
-  order?: Order
-}
 
 const PROGRESS_BAR_STEPS: StepProps[] = [
   { stepState: 'open', stepNumber: 1, label: 'placing' },
@@ -33,37 +25,44 @@ const PROGRESS_BAR_STEPS: StepProps[] = [
   { stepState: 'open', stepNumber: 4, label: 'done' },
 ]
 
-export function OrderProgressBar(props: OrderProgressBarProps) {
+export type OrderProgressBarV2Props = {
+  stepName: OrderProgressBarStepNames
+  countdown?: number | null | undefined
+  solverCompetition?: SolverCompetition
+  order?: Order
+}
+
+export function OrderProgressBarV2(props: OrderProgressBarV2Props) {
   const { stepName } = props
 
   return STEP_NAME_TO_STEP_COMPONENT[stepName](props)
 }
 
-type StepCallback = (props: OrderProgressBarProps) => JSX.Element
+type StepCallback = (props: OrderProgressBarV2Props) => JSX.Element
 const STEP_NAME_TO_STEP_COMPONENT: Record<OrderProgressBarStepNames, StepCallback> = {
-  initial: (props: OrderProgressBarProps): JSX.Element => {
+  initial: (props: OrderProgressBarV2Props): JSX.Element => {
     return <InitialStep />
   },
-  solving: (props: OrderProgressBarProps): JSX.Element => {
+  solving: (props: OrderProgressBarV2Props): JSX.Element => {
     return <SolvingStep {...props} />
   },
-  executing: (props: OrderProgressBarProps): JSX.Element => {
+  executing: (props: OrderProgressBarV2Props): JSX.Element => {
     return <ExecutingStep {...props} />
   },
-  finished: (props: OrderProgressBarProps): JSX.Element => {
+  finished: (props: OrderProgressBarV2Props): JSX.Element => {
     return <FinishedStep {...props} />
   },
-  nextBatch: (props: OrderProgressBarProps): JSX.Element => {
+  nextBatch: (props: OrderProgressBarV2Props): JSX.Element => {
     // TODO: add a flow for `nextBatch`?
     return <SolvingStep {...props} />
   },
-  delayed: (props: OrderProgressBarProps): JSX.Element => {
+  delayed: (props: OrderProgressBarV2Props): JSX.Element => {
     return <DelayedStep />
   },
-  unfillable: (props: OrderProgressBarProps): JSX.Element => {
+  unfillable: (props: OrderProgressBarV2Props): JSX.Element => {
     return <UnfillableStep {...props} />
   },
-  submissionFailed: (props: OrderProgressBarProps): JSX.Element => {
+  submissionFailed: (props: OrderProgressBarV2Props): JSX.Element => {
     return <SubmissionFailedStep />
   },
 }
@@ -81,7 +80,7 @@ function InitialStep() {
   )
 }
 
-function SolvingStep({ countdown }: OrderProgressBarProps) {
+function SolvingStep({ countdown }: OrderProgressBarV2Props) {
   const localSteps = structuredClone(PROGRESS_BAR_STEPS)
   localSteps[0].stepState = 'finished'
   localSteps[1].stepState = 'loading'
@@ -97,7 +96,7 @@ function SolvingStep({ countdown }: OrderProgressBarProps) {
   )
 }
 
-function ExecutingStep({ solverCompetition }: OrderProgressBarProps) {
+function ExecutingStep({ solverCompetition }: OrderProgressBarV2Props) {
   const localSteps = structuredClone(PROGRESS_BAR_STEPS)
 
   localSteps[0].stepState = 'finished'
@@ -118,7 +117,7 @@ function ExecutingStep({ solverCompetition }: OrderProgressBarProps) {
   )
 }
 
-function FinishedStep({ solverCompetition, order }: OrderProgressBarProps) {
+function FinishedStep({ solverCompetition, order }: OrderProgressBarV2Props) {
   const localSteps = structuredClone(PROGRESS_BAR_STEPS)
   localSteps[0].stepState = 'finished'
   localSteps[1].stepState = 'finished'
@@ -179,7 +178,7 @@ function DelayedStep() {
   )
 }
 
-function UnfillableStep({}: OrderProgressBarProps) {
+function UnfillableStep({ }: OrderProgressBarV2Props) {
   // TODO: add link to cancel order
   const localSteps = structuredClone(PROGRESS_BAR_STEPS)
 
@@ -188,7 +187,7 @@ function UnfillableStep({}: OrderProgressBarProps) {
   return (
     <div>
       <ProgressImage src={progressBarStep1a} alt="" />
-      <p>Your order’s price is currently out of market. You can wait or cancel the order.</p>
+      <p>Your order's price is currently out of market. You can wait or cancel the order.</p>
       <Stepper steps={localSteps} />
     </div>
   )
