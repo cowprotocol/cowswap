@@ -1,9 +1,7 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import { faCode, faListUl } from '@fortawesome/free-solid-svg-icons'
 import { Helmet } from 'react-helmet'
-
-
 
 import { FormProps } from './config'
 import DecodePage from './DecodePage'
@@ -30,7 +28,7 @@ const DEFAULT_TAB = TabView[1]
 
 function useQueryViewParams(): string {
   const query = useQuery()
-  return query.get(TAB_QUERY_PARAM_KEY)?.toUpperCase() || DEFAULT_TAB  // if URL param empty will be used DEFAULT
+  return query.get(TAB_QUERY_PARAM_KEY)?.toUpperCase() ?? DEFAULT_TAB // if URL param empty will be used DEFAULT
 }
 
 const tabItems = (
@@ -52,7 +50,7 @@ const tabItems = (
   ]
 }
 
-const AppDataPage: React.FC = () => {
+const AppDataPage = () => {
   const tab = useQueryViewParams()
   const [tabData, setTabData] = useState<TabData>({
     encode: { formData: {}, options: {} },

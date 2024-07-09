@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react'
+import { useCallback, useEffect } from 'react'
 
 import { AnyAppDataDocVersion } from '@cowprotocol/app-data'
 
@@ -42,7 +42,7 @@ async function _getDecodedAppData(
   return { isError: false, decodedAppData }
 }
 
-const DecodeAppData = (props: Props): JSX.Element => {
+const DecodeAppData = (props: Props): React.ReactNode => {
   const { appData, showExpanded = false, fullAppData } = props
   const [appDataLoading, setAppDataLoading] = useSafeState(false)
   const [appDataError, setAppDataError] = useSafeState(false)
@@ -108,7 +108,7 @@ const DecodeAppData = (props: Props): JSX.Element => {
     }
   }, [showExpanded, handleDecodedAppData])
 
-  const renderAppData = (): JSX.Element | null => {
+  const renderAppData = (): React.ReactNode | null => {
     if (appDataLoading) return <Spinner />
     if (showDecodedAppData) {
       if (appDataError)
@@ -132,7 +132,7 @@ const DecodeAppData = (props: Props): JSX.Element => {
 
   return (
     <AppDataWrapper>
-      <div className="data-container">
+      <>
         {appDataError ? (
           <span className="app-data">{appData}</span>
         ) : isLegacyAppDataHex ? (
@@ -149,10 +149,11 @@ const DecodeAppData = (props: Props): JSX.Element => {
           //  https://cowservices.slack.com/archives/C0375NV72SC/p1689618027267289
           appData
         )}
-        <ShowMoreButton className="showMoreAnchor" onClick={(): Promise<void> => handleDecodedAppData(false)}>
+        &nbsp;
+        <ShowMoreButton onClick={(): Promise<void> => handleDecodedAppData(false)}>
           {showDecodedAppData ? '[-] Show less' : '[+] Show more'}
         </ShowMoreButton>
-      </div>
+      </>
       <div className={`hidden-content ${appDataError && 'error'}`}>{renderAppData()}</div>
     </AppDataWrapper>
   )

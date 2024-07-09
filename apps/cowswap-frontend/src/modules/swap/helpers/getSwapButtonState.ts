@@ -121,7 +121,7 @@ export function getSwapButtonState(input: SwapButtonStateParams): SwapButtonStat
     return SwapButtonState.QuoteExpired
   }
 
-  if (!input.isNativeIn && showApproveFlow) {
+  if (isValid && !input.isNativeIn && showApproveFlow) {
     if (input.isBundlingSupported) {
       return SwapButtonState.ApproveAndSwap
     }

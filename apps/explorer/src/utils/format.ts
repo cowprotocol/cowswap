@@ -1,6 +1,5 @@
 import { parseBytes32String } from '@ethersproject/strings'
 
-
 import { formatSmart, safeTokenName, TokenErc20 } from '@gnosis.pm/dex-js'
 import BigNumber from 'bignumber.js'
 import { DEFAULT_DECIMALS, MINIMUM_ATOM_VALUE, ONE_BIG_NUMBER, ONE_HUNDRED_BIG_NUMBER, TEN_BIG_NUMBER } from 'const'
@@ -246,9 +245,9 @@ export function formatCalculatedPriceToDisplay(
   const buySymbol = safeTokenName(buyToken)
   const sellSymbol = safeTokenName(sellToken)
 
-  const [baseSymbol, quoteSymbol] = isPriceInverted ? [sellSymbol, buySymbol] : [buySymbol, sellSymbol]
+  const [quoteSymbol] = isPriceInverted ? [sellSymbol, buySymbol] : [buySymbol, sellSymbol]
 
-  return `${formattedPrice} ${quoteSymbol} per ${baseSymbol}`
+  return `${formattedPrice} ${quoteSymbol}`
 }
 
 export function formatExecutedPriceToDisplay(

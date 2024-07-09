@@ -310,7 +310,7 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
   )
 }
 
-function JsonContent({ content, isError }: { content: string; isError: boolean }): JSX.Element {
+function JsonContent({ content, isError }: { content: string; isError: boolean }): React.ReactNode {
   return (
     <>
       <RowWithCopyButton

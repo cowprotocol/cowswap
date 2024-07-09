@@ -117,7 +117,7 @@ type UseOrderAndErc20sResult = {
  * @param updateInterval [Optional] How often should try to update the order
  */
 export function useOrderAndErc20s(orderId: string, updateInterval = 0): UseOrderAndErc20sResult {
-  const networkId = useNetworkId() || undefined
+  const networkId = useNetworkId() ?? undefined
 
   const {
     order,

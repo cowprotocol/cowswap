@@ -2,13 +2,13 @@ import React from 'react'
 
 import { isSellOrder } from '@cowprotocol/common-utils'
 import { Command } from '@cowprotocol/types'
+import { Media } from '@cowprotocol/ui'
 import { PercentDisplay } from '@cowprotocol/ui/pure/PercentDisplay'
 
 import { ProgressBar } from 'components/common/ProgressBar'
 import { Amount, Percentage, SurplusComponent } from 'components/common/SurplusComponent'
 import { TokenAmount } from 'components/token/TokenAmount'
 import styled from 'styled-components/macro'
-import { media } from 'theme/styles/media'
 import { safeTokenName } from 'utils'
 
 import { Order } from 'api/operator'
@@ -26,45 +26,50 @@ export type Props = {
 const StyledSurplusComponent = styled(SurplusComponent)`
   display: flex;
   flex-flow: column wrap;
+  align-items: flex-start;
   gap: 1rem;
 `
 
 const Wrapper = styled.div`
   display: flex;
+  flex-flow: row wrap;
   align-items: center;
   color: ${({ theme }): string => theme.textPrimary1};
+
+  ${Media.upToSmall()} {
+    gap: 1rem;
+  }
 
   > span {
     margin: 0 0 0 2rem;
     font-weight: ${({ theme }): string => theme.fontLighter};
 
-    ${media.mobile} {
+    ${Media.upToSmall()} {
       line-height: 1.5;
+      margin: 0;
     }
   }
 
   > span > b {
     font-weight: ${({ theme }): string => theme.fontMedium};
   }
-
-  > div {
-    ${media.mobile} {
-      max-width: 150px;
-    }
-  }
 `
 
 const TableHeading = styled.div`
-  padding: 0 0 1rem;
+  padding: 1.6rem;
+  width: 100%;
   display: grid;
-  grid-template-columns: minmax(min-content, auto) auto auto auto;
+  grid-template-columns: minmax(min-content, 1fr) repeat(3, auto);
   grid-template-rows: max-content;
   justify-content: flex-start;
   gap: 1.6rem;
 
-  ${media.mobile} {
-    display: flex;
-    flex-flow: column wrap;
+  ${Media.upToMedium()} {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  ${Media.upToSmall()} {
+    grid-template-columns: 1fr;
   }
 
   .title {
@@ -86,7 +91,7 @@ const TableHeading = styled.div`
     font-weight: ${({ theme }): string => theme.fontMedium};
     color: ${({ theme }): string => theme.green};
 
-    ${media.mobile} {
+    ${Media.upToSmall()} {
       font-size: 2.8rem;
     }
   }
@@ -105,7 +110,7 @@ const TableHeading = styled.div`
     font-size: 2.3rem;
     margin: 0;
 
-    ${media.mobile} {
+    ${Media.upToSmall()} {
       font-size: 1.8rem;
     }
 
@@ -131,7 +136,7 @@ const TableHeadingContent = styled.div`
   background: ${({ theme }): string => theme.tableRowBorder};
   padding: 2rem 1.8rem;
 
-  ${media.mobile} {
+  ${Media.upToSmall()} {
     flex-direction: column;
   }
 
@@ -146,6 +151,7 @@ const FilledContainer = styled.div`
   flex-flow: column wrap;
   gap: 1.4rem;
   margin: 0;
+  width: 100%;
 
   > div {
     display: flex;
@@ -164,7 +170,7 @@ const OrderAssetsInfoWrapper = styled.span<{ lineBreak?: boolean }>`
   }
 `
 
-export function FilledProgress(props: Props): JSX.Element {
+export function FilledProgress(props: Props): React.ReactNode {
   const {
     lineBreak = false,
     fullView = false,
@@ -211,7 +217,7 @@ export function FilledProgress(props: Props): JSX.Element {
   const surplus = { amount: surplusAmount, percentage: surplusPercentage }
   const surplusToken = (isSell ? buyToken : sellToken) || null
 
-  const OrderAssetsInfo = (): JSX.Element => (
+  const OrderAssetsInfo = (): React.ReactNode => (
     <>
       {' '}
       <OrderAssetsInfoWrapper lineBreak={lineBreak}>
@@ -271,7 +277,7 @@ export function FilledProgress(props: Props): JSX.Element {
       </TableHeadingContent>
       <TableHeadingContent className="surplus">
         <p className="title">Total Surplus</p>
-        <StyledSurplusComponent surplus={surplus} token={surplusToken} showHidden />
+        <StyledSurplusComponent surplus={surplus} token={surplusToken} />
       </TableHeadingContent>
       <TableHeadingContent>
         <p className="title">Limit Price</p>

@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { Helmet } from 'react-helmet'
 
 import { Wrapper } from './styled'
@@ -7,7 +5,7 @@ import { Wrapper } from './styled'
 import { OrderAddressNotFound } from '../../components/orders/OrderNotFound'
 import { APP_TITLE } from '../const'
 
-const SearchNotFound: React.FC = () => {
+const SearchNotFound = () => {
   return (
     <Wrapper>
       <Helmet>

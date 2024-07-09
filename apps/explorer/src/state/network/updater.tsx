@@ -25,7 +25,7 @@ export const usePathPrefix = (): string | undefined => useDecomposedPath()[0]
 export const usePathSuffix = (): string | undefined => useDecomposedPath()[1]
 
 /** Redirects to the canonnical URL for mainnet */
-export const RedirectToNetwork = (props: { networkId: Network }): JSX.Element | null => {
+export const RedirectToNetwork = (props: { networkId: Network }): React.ReactNode | null => {
   const pathnameSuffix = usePathSuffix()
   if (pathnameSuffix === undefined) {
     return null
@@ -49,14 +49,14 @@ const SubstituteNetworkName = (from: string, toNetworkName = ''): string => {
 }
 
 /** Redirects to the canonnical URL for mainnet */
-export const RedirectMainnet = (): JSX.Element => {
+export const RedirectMainnet = (): React.ReactNode => {
   const newPath = SubstituteNetworkName('mainnet')
 
   return <Navigate to={newPath} />
 }
 
 /** Redirects to the xDai to the GnosisChain new name */
-export const RedirectXdai = (): JSX.Element => {
+export const RedirectXdai = (): React.ReactNode => {
   const newPath = SubstituteNetworkName('xdai', '/gc')
 
   return <Navigate to={newPath} />

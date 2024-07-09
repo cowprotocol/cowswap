@@ -1,5 +1,7 @@
 import React from 'react'
 
+import { Media } from '@cowprotocol/ui'
+
 import styled from 'styled-components/macro'
 
 import { OrdersTableContext, BlockchainNetwork } from './context/OrdersTableContext'
@@ -42,6 +44,10 @@ const WrapperExtraComponents = styled.div`
   display: flex;
   justify-content: flex-end;
   height: 100%;
+
+  ${Media.upToSmall()} {
+    width: 100%;
+  }
 `
 
 const ExtraComponentNode: React.ReactNode = (

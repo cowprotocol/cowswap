@@ -1,5 +1,8 @@
 import React from 'react'
 
+import { useMediaQuery } from '@cowprotocol/common-hooks'
+import { Media } from '@cowprotocol/ui'
+
 import { formatDistanceToNowStrict } from 'date-fns'
 import styled, { css } from 'styled-components/macro'
 
@@ -11,8 +14,6 @@ import { getColorBySign } from '../../../components/common/Card/card.utils'
 import { CardRow } from '../../../components/common/CardRow'
 import { CopyButton } from '../../../components/common/CopyButton'
 import { LinkWithPrefixNetwork } from '../../../components/common/LinkWithPrefixNetwork'
-import { useMediaBreakpoint } from '../../../hooks/useMediaBreakPoint'
-import { media } from '../../../theme/styles/media'
 import { abbreviateString, getPercentageDifference } from '../../../utils'
 
 const BatchInfoHeight = '21.6rem'
@@ -35,7 +36,7 @@ const WrapperColumnChart = styled(Card)`
 const DoubleCardStyle = css`
   ${DoubleContentSize}
 
-  ${media.xSmallDown}, ${media.tinyDown} {
+  ${Media.upToExtraSmall()} {
     min-height: 15rem;
   }
 `
@@ -48,7 +49,7 @@ const WrapperDoubleContent = styled.div`
   flex-direction: column;
   gap: 3rem;
 
-  ${media.mediumDownMd} {
+  ${Media.upToMedium()} {
     gap: 2rem;
   }
 `
@@ -58,9 +59,9 @@ interface SummaryCardsProps {
   children: React.ReactNode
 }
 
-export function SummaryCards({ summaryData, children }: SummaryCardsProps): JSX.Element {
+export function SummaryCards({ summaryData, children }: SummaryCardsProps): React.ReactNode {
   const { batchInfo, dailyTransactions, totalTokens, volumeUsd, dailyFees, isLoading } = summaryData || {}
-  const isDesktop = useMediaBreakpoint(['xl', 'lg'])
+  const isDesktop = useMediaQuery(Media.LargeAndUp(false))
   const valueTextSize = isDesktop ? DESKTOP_TEXT_SIZE : MOBILE_TEXT_SIZE
   const rowsByCard = isDesktop ? '2row' : '3row'
   const diffTransactions =

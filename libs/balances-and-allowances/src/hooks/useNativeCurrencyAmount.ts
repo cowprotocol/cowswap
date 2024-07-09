@@ -10,13 +10,14 @@ export function useNativeCurrencyAmount(
   chainId: SupportedChainId,
   account: string | undefined
 ): CurrencyAmount<TokenWithLogo> | undefined {
-  const { data: nativeTokenBalance } = useNativeTokenBalance(account)
+  const { data } = useNativeTokenBalance(account)
+  const balance = data && data.toHexString()
 
   return useMemo(() => {
-    if (!nativeTokenBalance) return undefined
+    if (!balance) return undefined
 
     const nativeToken = NATIVE_CURRENCIES[chainId]
 
-    return CurrencyAmount.fromRawAmount(nativeToken, nativeTokenBalance.toHexString())
-  }, [chainId, nativeTokenBalance])
+    return CurrencyAmount.fromRawAmount(nativeToken, balance)
+  }, [chainId, balance])
 }

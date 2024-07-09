@@ -1,7 +1,7 @@
 {
   "redirects": [
     {
-      "source": "/((?!#|assets|emergency).+)",
+      "source": "/((?!#|.*[\\w\\d\\.-]\\.\\w{2,15}$).+)",
       "destination": "/",
       "permanent": false
     }

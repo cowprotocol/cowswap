@@ -8,8 +8,8 @@ export function withGlobalContext<P extends JSX.IntrinsicAttributes, State>(
   WrappedComponent: React.FC<P>,
   initialStateFunc: () => State,
   reducer: React.Reducer<State, AnyAction>
-): (props: P) => JSX.Element {
-  return function WrappedComponentWithGlobalState(props: P): JSX.Element {
+): (props: P) => React.ReactNode {
+  return function WrappedComponentWithGlobalState(props: P): React.ReactNode {
     const [state, dispatch] = useReducer(reducer, initialStateFunc())
 
     return (

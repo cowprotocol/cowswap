@@ -1,4 +1,4 @@
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { FlexibleConfig, PerNetworkConfig, PerTradeTypeConfig, TradeType } from './types'
 
@@ -30,8 +30,10 @@ export function isPerTradeTypeConfig<T>(config: FlexibleConfig<T>): config is Pe
   return Object.keys(config as object).every((key) => TradeTypes.includes(key as TradeType))
 }
 
+const D_REGEX = /^\d+$/
+
 export function isPerNetworkConfig<T>(config: FlexibleConfig<T>): config is PerNetworkConfig<T> {
   if (typeof config !== 'object') return false
 
-  return Object.keys(config as object).every((key) => key in SupportedChainId)
+  return Object.keys(config as object).every((key) => typeof key === 'number' || D_REGEX.test(key))
 }

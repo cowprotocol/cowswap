@@ -1,4 +1,6 @@
-import React, { useEffect, useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
+
+import { Media } from '@cowprotocol/ui'
 
 import {
   faDiceFive,
@@ -26,9 +28,7 @@ import { removePopper } from './utils'
 
 import { Order } from '../../../api/operator'
 import CowLoading from '../../../components/common/CowLoading'
-import { EmptyItemWrapper } from '../../../components/common/StyledUserDetailsTable'
 import { usePrevious } from '../../../hooks/usePrevious'
-import { media } from '../../../theme/styles/media'
 import { Network } from '../../../types'
 import { DropdownOption, DropdownPosition } from '../common/Dropdown'
 
@@ -43,7 +43,7 @@ const WrapperCytoscape = styled(CytoscapeComponent)`
   border-radius: 0.6rem;
 
   padding-top: 3rem;
-  ${media.mediumDown} {
+  ${Media.upToMedium()} {
     border: 0.1rem solid ${({ theme }): string => theme.borderPrimary};
     margin: 1.6rem 0;
   }
@@ -58,7 +58,7 @@ function DropdownButtonContent({
   label: string
   icon: IconDefinition
   open?: boolean
-}): JSX.Element {
+}): React.ReactNode {
   return (
     <>
       <FontAwesomeIcon icon={icon} />
@@ -79,7 +79,7 @@ interface GraphBatchTxParams {
   networkId: Network | undefined
 }
 
-export function TransactionBatchGraph(params: GraphBatchTxParams): JSX.Element {
+export function TransactionBatchGraph(params: GraphBatchTxParams): React.ReactNode {
   const { orders, networkId, txHash } = params
   const { visualization, onChangeVisualization } = useVisualization()
 
@@ -116,19 +116,11 @@ export function TransactionBatchGraph(params: GraphBatchTxParams): JSX.Element {
   }, [tokensStylesheets, theme])
 
   if (isLoading) {
-    return (
-      <EmptyItemWrapper>
-        <CowLoading />
-      </EmptyItemWrapper>
-    )
+    return <CowLoading />
   }
 
   if (failedToLoadGraph) {
-    return (
-      <EmptyItemWrapper>
-        <p>Failed to load graph, please try again later</p>
-      </EmptyItemWrapper>
-    )
+    return <p>Failed to load graph, please try again later</p>
   }
 
   return (

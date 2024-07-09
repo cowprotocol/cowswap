@@ -1,8 +1,7 @@
+import { useWindowSize } from '@cowprotocol/common-hooks'
+
 import ReactConfetti from 'react-confetti'
 
-import { useWindowSize } from '../lib/hooks/useWindowSize'
-
-// eslint-disable-next-line react/prop-types
 export function Confetti({ start, variant }: { start: boolean; variant?: string }) {
   const { width, height } = useWindowSize()
 
@@ -10,7 +9,7 @@ export function Confetti({ start, variant }: { start: boolean; variant?: string 
 
   return start && width && height ? (
     <ReactConfetti
-      style={{ zIndex: 1401, maxWidth: '100%' }}
+      style={{ zIndex: 1401, maxWidth: '100%' }} // mod fix for horizontal slider
       numberOfPieces={400}
       recycle={false}
       run={true}

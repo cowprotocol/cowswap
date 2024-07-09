@@ -1,17 +1,18 @@
 import React, { useState, useCallback, useEffect } from 'react'
 
 import { CHAIN_INFO } from '@cowprotocol/common-const'
+import { useMediaQuery } from '@cowprotocol/common-hooks'
+import { Media } from '@cowprotocol/ui'
 
 import { MenuTree } from '../../components/common/MenuDropdown/MenuTree'
 import { Header as GenericHeader } from '../../components/layout/GenericLayout/Header'
 import { NetworkSelector } from '../../components/NetworkSelector'
-import { useMediaBreakpoint } from '../../hooks/useMediaBreakPoint'
 import { useNetworkId } from '../../state/network'
 import { addBodyClass, removeBodyClass } from '../../utils/toggleBodyClass'
 import { FlexWrap } from '../pages/styled'
 
 export const Header: React.FC = () => {
-  const isMobile = useMediaBreakpoint(['xs', 'sm'])
+  const isMobile = useMediaQuery(Media.upToSmall(false))
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   // Toggle the 'noScroll' class on body, whenever the mobile menu or orders panel is open.

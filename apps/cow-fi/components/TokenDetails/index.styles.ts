@@ -1,6 +1,5 @@
 import styled from 'styled-components/macro'
-import { Media } from 'styles/variables'
-import { Color } from '@cowprotocol/ui'
+import { Media, Color } from '@cowprotocol/ui'
 
 export const Wrapper = styled.div`
   display: grid;
@@ -13,7 +12,7 @@ export const Wrapper = styled.div`
   position: relative;
   color: ${Color.neutral10};
 
-  ${Media.mobile} {
+  ${Media.upToSmall()} {
     display: flex;
     max-width: 100%;
     flex-flow: column wrap;
@@ -174,37 +173,6 @@ export const TokenTitle = styled.div`
     font-size: 1.4rem;
     letter-spacing: 0.05rem;
     font-weight: 600;
-  }
-`
-
-export const TokenPrice = styled.div<{ changeColor?: string }>`
-  font-size: 3.8rem;
-  display: flex;
-  align-items: center;
-  line-height: 1;
-  gap: 0.8rem;
-
-  > b {
-    font-weight: 600;
-  }
-
-  > span {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 2.2rem;
-    color: ${Color.neutral40};
-  }
-
-  > span > b {
-    font-weight: normal;
-    color: ${({ changeColor }) => changeColor || Color.neutral10};
-  }
-
-  > span > i {
-    font-size: 1.6rem;
-    font-style: normal;
-    font-weight: 400;
   }
 `
 
@@ -375,7 +343,7 @@ export const CopyWrapper = styled.div`
   text-align: right;
   justify-content: flex-end;
 
-  ${Media.mobile} {
+  ${Media.upToSmall()} {
     justify-content: flex-start;
   }
 `

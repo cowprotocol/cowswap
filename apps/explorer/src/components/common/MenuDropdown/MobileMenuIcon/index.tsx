@@ -1,9 +1,9 @@
 import React from 'react'
 
 import { Command } from '@cowprotocol/types'
+import { Media } from '@cowprotocol/ui'
 
 import styled, { css, FlattenSimpleInterpolation } from 'styled-components/macro'
-import { media } from 'theme/styles/media'
 
 const Wrapper = styled.div<{ isMobileMenuOpen: boolean }>`
   z-index: 102;
@@ -14,7 +14,7 @@ const Wrapper = styled.div<{ isMobileMenuOpen: boolean }>`
   width: 3.4rem;
   height: 1.8rem;
 
-  ${media.mobile} {
+  ${Media.upToSmall()} {
     width: 2.8rem;
   }
 
@@ -74,7 +74,7 @@ interface IconProps {
   onClick?: Command
 }
 
-export default function MobileMenuIcon(params: IconProps): JSX.Element {
+export default function MobileMenuIcon(params: IconProps): React.ReactNode {
   return (
     <Wrapper {...params}>
       <span></span>

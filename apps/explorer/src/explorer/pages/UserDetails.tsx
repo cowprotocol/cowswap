@@ -14,15 +14,11 @@ import { useNetworkId } from '../../state/network'
 import OrdersTableWidget from '../components/OrdersTableWidget'
 import { APP_TITLE } from '../const'
 
-const Wrapper = styled(WrapperMod)`
-  > h1 {
-    padding: 2.4rem 0 0.75rem;
-  }
-`
+const Wrapper = styled(WrapperMod)``
 
 const UserDetails: React.FC = () => {
   const { address } = useParams<{ address: string }>()
-  const networkId = useNetworkId() || undefined
+  const networkId = useNetworkId() ?? undefined
   const addressAccount = useResolveEns(address)
 
   if (addressAccount?.address === null) {
