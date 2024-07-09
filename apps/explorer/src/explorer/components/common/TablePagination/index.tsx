@@ -32,9 +32,11 @@ export const PaginationWrapper = styled.span`
 
 const PaginationText = styled.p`
   margin-right: 0.8rem;
+
   &.legend {
     margin-left: 2rem;
   }
+
   ${Media.upToMedium()} {
     &:not(.legend) {
       display: none;
@@ -129,6 +131,11 @@ const TablePagination: React.FC<PaginationProps<any>> = ({ context, fixedResults
     handlePreviousPage,
     data: rows,
   } = useContext(context)
+
+  // Return null if there are no results
+  if (!rows?.length || totalResults === 0) {
+    return null
+  }
 
   const renderPageLegend = (): string => {
     if (isLoading && !rows?.length) return '.. - ..'

@@ -10,8 +10,6 @@ import { useNetworkId } from '../../state/network'
 import { APP_TITLE } from '../const'
 
 const Wrapper = styled(WrapperTemplate)`
-  max-width: 118rem;
-
   ${Media.upToMedium()} {
     flex-flow: column wrap;
   }

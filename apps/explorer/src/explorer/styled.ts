@@ -66,6 +66,8 @@ export const MainWrapper = styled.div`
   --pageMaxWidth: 140rem;
   max-width: var(--pageMaxWidth);
   width: 100%;
+  min-height: 100vh;
+  height: auto;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
