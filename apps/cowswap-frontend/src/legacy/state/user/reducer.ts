@@ -18,9 +18,6 @@ export interface UserState {
   // TODO: mod, shouldn't be here
   recipientToggleVisible: boolean
 
-  // user defined slippage tolerance in bps, used in all txns
-  userSlippageTolerance: number | 'auto'
-
   // deadline set by user in minutes, used in all txns
   userDeadline: number
 }
@@ -32,7 +29,6 @@ export const initialState: UserState = {
   // TODO: mod, shouldn't be here
   recipientToggleVisible: false,
   userLocale: null,
-  userSlippageTolerance: 'auto',
   userDeadline: DEFAULT_DEADLINE_FROM_NOW,
 }
 
@@ -52,9 +48,6 @@ const userSlice = createSlice({
     updateUserLocale(state, action) {
       state.userLocale = action.payload.userLocale
     },
-    updateUserSlippageTolerance(state, action) {
-      state.userSlippageTolerance = action.payload.userSlippageTolerance
-    },
     updateUserDeadline(state, action) {
       state.userDeadline = action.payload.userDeadline
     },
@@ -70,7 +63,6 @@ export const {
   updateUserDarkMode,
   updateUserDeadline,
   updateUserLocale,
-  updateUserSlippageTolerance,
   updateRecipientToggleVisible,
 } = userSlice.actions
 export default userSlice.reducer

@@ -1,7 +1,7 @@
 import { atom } from 'jotai'
 
-import { GNOSIS_CHAIN_STABLECOINS, NATIVE_CURRENCY_ADDRESS } from '@cowprotocol/common-const'
-import { getIsNativeToken, isInjectedWidget } from '@cowprotocol/common-utils'
+import { GNOSIS_CHAIN_STABLECOINS } from '@cowprotocol/common-const'
+import { getCurrencyAddress, isInjectedWidget } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { walletInfoAtom } from '@cowprotocol/wallet'
 
@@ -31,12 +31,8 @@ export const cowSwapFeeAtom = atom((get) => {
 
   if (!inputCurrency || !outputCurrency) return null
 
-  const isInputTokenStable = GNOSIS_CHAIN_STABLECOINS.includes(
-    getIsNativeToken(inputCurrency) ? NATIVE_CURRENCY_ADDRESS.toLowerCase() : inputCurrency.address.toLowerCase()
-  )
-  const isOutputTokenStable = GNOSIS_CHAIN_STABLECOINS.includes(
-    getIsNativeToken(outputCurrency) ? NATIVE_CURRENCY_ADDRESS.toLowerCase() : outputCurrency.address.toLowerCase()
-  )
+  const isInputTokenStable = GNOSIS_CHAIN_STABLECOINS.includes(getCurrencyAddress(inputCurrency).toLowerCase())
+  const isOutputTokenStable = GNOSIS_CHAIN_STABLECOINS.includes(getCurrencyAddress(outputCurrency).toLowerCase())
 
   // No stable-stable trades
   if (isInputTokenStable && isOutputTokenStable) return null

@@ -9,7 +9,7 @@ import { UploadToIpfsUpdater } from 'modules/appData/updater/UploadToIpfsUpdater
 import { CowEventsUpdater, InjectedWidgetUpdater, useInjectedWidgetParams } from 'modules/injectedWidget'
 import { FinalizeTxUpdater } from 'modules/onchainTransactions'
 import { OrdersNotificationsUpdater } from 'modules/orders'
-import { EthFlowDeadlineUpdater, EthFlowSlippageUpdater } from 'modules/swap/state/EthFlow/updaters'
+import { EthFlowDeadlineUpdater } from 'modules/swap/state/EthFlow/updaters'
 import { useOnTokenListAddingError } from 'modules/tokensList'
 import { UsdPricesUpdater } from 'modules/usdAmount'
 
@@ -53,7 +53,6 @@ export function Updaters() {
       <GasPriceStrategyUpdater />
       <SentryUpdater />
       <UploadToIpfsUpdater />
-      <EthFlowSlippageUpdater />
       <EthFlowDeadlineUpdater />
       <SpotPricesUpdater />
       <InjectedWidgetUpdater />

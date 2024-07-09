@@ -80,6 +80,7 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
 
   const labelsAndTooltips = useMemo(
     () => ({
+      slippageLabel: isEoaEthFlow ? 'Slippage tolerance (modified)' : undefined,
       slippageTooltip: isEoaEthFlow
         ? getNativeSlippageTooltip(chainId, [nativeCurrency.symbol])
         : getNonNativeSlippageTooltip(),
