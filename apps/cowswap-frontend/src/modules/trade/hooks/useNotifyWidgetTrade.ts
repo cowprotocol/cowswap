@@ -1,7 +1,6 @@
 import { useEffect } from 'react'
 
-import { NATIVE_CURRENCY_ADDRESS } from '@cowprotocol/common-const'
-import { getIsNativeToken } from '@cowprotocol/common-utils'
+import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { AtomsAndUnits, CowEvents, OnTradeParamsPayload } from '@cowprotocol/events'
 import { TokenInfo, UiOrderType } from '@cowprotocol/types'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
@@ -51,7 +50,7 @@ function currencyToTokenInfo(currency: Currency | null): TokenInfo | undefined {
   if (!currency) return undefined
 
   return {
-    address: getIsNativeToken(currency) ? NATIVE_CURRENCY_ADDRESS : currency.address,
+    address: getCurrencyAddress(currency),
     chainId: currency.chainId,
     name: currency.name || '',
     decimals: currency.decimals,

@@ -1,16 +1,7 @@
-import { useMemo } from 'react'
+import { useAtomValue } from 'jotai/index'
 
-import { getIsWrapOrUnwrap } from '@cowprotocol/common-utils'
-import { useWalletInfo } from '@cowprotocol/wallet'
-
-import { useTradeState } from 'modules/trade/hooks/useTradeState'
+import { isWrapOrUnwrapAtom } from '../state/isWrapOrUnwrapAtom'
 
 export function useIsWrapOrUnwrap(): boolean {
-  const { chainId } = useWalletInfo()
-  const { state } = useTradeState()
-  const { inputCurrencyId, outputCurrencyId } = state || {}
-
-  return useMemo(() => {
-    return getIsWrapOrUnwrap(chainId, inputCurrencyId, outputCurrencyId)
-  }, [chainId, inputCurrencyId, outputCurrencyId])
+  return useAtomValue(isWrapOrUnwrapAtom)
 }

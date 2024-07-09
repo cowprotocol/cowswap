@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.32.1](https://github.com/cowprotocol/cowswap/compare/explorer-v2.32.0...explorer-v2.32.1) (2024-07-05)
+
+
+### Bug Fixes
+
+* **explorer:** invert fills table order (newest first) ([#4642](https://github.com/cowprotocol/cowswap/issues/4642)) ([b249413](https://github.com/cowprotocol/cowswap/commit/b2494137c75dbd98ccb3278940b409f0e4c95dd9))
+
 ## [2.32.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.31.1...explorer-v2.32.0) (2024-06-27)
 
 

@@ -1,14 +1,7 @@
-import { useIsSmartContractWallet } from '@cowprotocol/wallet'
+import { useAtomValue } from 'jotai/index'
 
-import { getEthFlowEnabled } from 'modules/swap/helpers/getEthFlowEnabled'
-
-import { useIsSwapEth } from './useIsSwapEth'
+import { isEoaEthFlowAtom } from '../state/isEoaEthFlowAtom'
 
 export function useIsEoaEthFlow(): boolean {
-  const isSwapEth = useIsSwapEth()
-
-  const isSmartContractWallet = useIsSmartContractWallet()
-  const isEnabled = getEthFlowEnabled(isSmartContractWallet === true)
-
-  return isEnabled && isSwapEth
+  return useAtomValue(isEoaEthFlowAtom)
 }

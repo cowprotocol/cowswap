@@ -8,7 +8,7 @@ import { useENS } from '@cowprotocol/ens'
 import { useAreThereTokensWithSameSymbol, useTokenBySymbolOrAddress } from '@cowprotocol/tokens'
 import { Command } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { Currency, CurrencyAmount, Percent, TradeType } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, TradeType } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/macro'
 
@@ -67,7 +67,6 @@ interface DerivedSwapInfo {
   slippageAdjustedBuyAmount: CurrencyAmount<Currency> | null
   inputError?: string
   trade: TradeGp | undefined
-  allowedSlippage: Percent
 }
 
 export function useSwapActionHandlers(): SwapActions {
@@ -101,17 +100,15 @@ export function useSwapActionHandlers(): SwapActions {
     [dispatch]
   )
 
-  return useMemo(() => ({
-    onSwitchTokens,
-    onCurrencySelection,
-    onUserInput,
-    onChangeRecipient,
-  }), [
-    onSwitchTokens,
-    onCurrencySelection,
-    onUserInput,
-    onChangeRecipient
-  ])
+  return useMemo(
+    () => ({
+      onSwitchTokens,
+      onCurrencySelection,
+      onUserInput,
+      onChangeRecipient,
+    }),
+    [onSwitchTokens, onCurrencySelection, onUserInput, onChangeRecipient]
+  )
 }
 
 /**
@@ -145,13 +142,16 @@ export function useHighFeeWarning(trade?: TradeGp) {
     setFeeWarningAccepted(false)
   }, [INPUT.currencyId, OUTPUT.currencyId, independentField])
 
-  return useSafeMemo(() => ({
-    isHighFee,
-    feePercentage,
-    // we only care/check about feeWarning being accepted if the fee is actually high..
-    feeWarningAccepted: _computeFeeWarningAcceptedState({ feeWarningAccepted, isHighFee }),
-    setFeeWarningAccepted,
-  }), [isHighFee, feePercentage, feeWarningAccepted, setFeeWarningAccepted])
+  return useSafeMemo(
+    () => ({
+      isHighFee,
+      feePercentage,
+      // we only care/check about feeWarning being accepted if the fee is actually high..
+      feeWarningAccepted: _computeFeeWarningAcceptedState({ feeWarningAccepted, isHighFee }),
+      setFeeWarningAccepted,
+    }),
+    [isHighFee, feePercentage, feeWarningAccepted, setFeeWarningAccepted]
+  )
 }
 
 function _computeFeeWarningAcceptedState({
@@ -182,15 +182,19 @@ export function useUnknownImpactWarning() {
     setImpactWarningAccepted(false)
   }, [INPUT.currencyId, OUTPUT.currencyId, independentField])
 
-  return useMemo(() => ({
-    impactWarningAccepted,
-    setImpactWarningAccepted,
-  }), [impactWarningAccepted, setImpactWarningAccepted])
+  return useMemo(
+    () => ({
+      impactWarningAccepted,
+      setImpactWarningAccepted,
+    }),
+    [impactWarningAccepted, setImpactWarningAccepted]
+  )
 }
 
 // from the current swap inputs, compute the best trade and return it.
 export function useDerivedSwapInfo(): DerivedSwapInfo {
-  const { account, chainId } = useWalletInfo() // MOD: chainId
+  const { account, chainId } = useWalletInfo()
+  const slippage = useSwapSlippage()
 
   const {
     independentField,
@@ -280,12 +284,8 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
   )
 
   // allowed slippage is either auto slippage, or custom user defined slippage if auto slippage disabled
-  // TODO: check whether we want to enable auto slippage tolerance
-  // const autoSlippageTolerance = useAutoSlippageTolerance(trade.trade)  // mod
-  // const allowedSlippage = useUserSlippageToleranceWithDefault(autoSlippageTolerance) // mod
-  const allowedSlippage = useSwapSlippage()
-  const slippageAdjustedSellAmount = trade?.maximumAmountIn(allowedSlippage) || null
-  const slippageAdjustedBuyAmount = trade?.minimumAmountOut(allowedSlippage) || null
+  const slippageAdjustedSellAmount = trade?.maximumAmountIn(slippage) || null
+  const slippageAdjustedBuyAmount = trade?.minimumAmountOut(slippage) || null
 
   const inputError = useMemo(() => {
     let inputError: string | undefined
@@ -336,14 +336,12 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
       parsedAmount,
       inputError,
       trade,
-      allowedSlippage,
       slippageAdjustedSellAmount,
       slippageAdjustedBuyAmount,
     }
   }, [
     currencies,
     trade,
-    allowedSlippage,
     currencyBalances,
     currenciesIds,
     inputError,

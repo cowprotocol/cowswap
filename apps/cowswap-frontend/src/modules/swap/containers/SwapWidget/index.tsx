@@ -8,11 +8,10 @@ import { useIsSafeViaWc, useWalletDetails, useWalletInfo } from '@cowprotocol/wa
 import { TradeType } from '@cowprotocol/widget-lib'
 
 import { NetworkAlert } from 'legacy/components/NetworkAlert/NetworkAlert'
-import SettingsTab from 'legacy/components/Settings'
+import { SettingsTab } from 'legacy/components/Settings'
 import { useModalIsOpen } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
 import { Field } from 'legacy/state/types'
-import { useUserSlippageTolerance } from 'legacy/state/user/hooks'
 
 import { PreHookButton, PostHookButton } from 'modules/hooks'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
@@ -44,7 +43,9 @@ import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 import { SWAP_QUOTE_CHECK_INTERVAL } from 'common/updaters/FeesUpdater'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
+import { useIsSlippageModified } from '../../hooks/useIsSlippageModified'
 import { useIsSwapEth } from '../../hooks/useIsSwapEth'
+import { useSwapSlippage } from '../../hooks/useSwapSlippage'
 import {
   useDerivedSwapInfo,
   useHighFeeWarning,
@@ -65,8 +66,9 @@ export interface SwapWidgetProps {
 
 export function SwapWidget({ hooksEnabled }: SwapWidgetProps) {
   const { chainId, account } = useWalletInfo()
-  const { slippageAdjustedSellAmount, allowedSlippage, currencies, trade } = useDerivedSwapInfo()
-  const useSlippage = useUserSlippageTolerance()
+  const { slippageAdjustedSellAmount, currencies, trade } = useDerivedSwapInfo()
+  const slippage = useSwapSlippage()
+  const isSlippageModified = useIsSlippageModified()
   const parsedAmounts = useSwapCurrenciesAmounts()
   const { isSupportedWallet } = useWalletDetails()
   const isSwapUnsupported = useIsTradeUnsupported(currencies.INPUT, currencies.OUTPUT)
@@ -250,14 +252,14 @@ export function SwapWidget({ hooksEnabled }: SwapWidgetProps) {
   }
 
   const slots = {
-    settingsWidget: <SettingsTab placeholderSlippage={allowedSlippage} />,
+    settingsWidget: <SettingsTab />,
 
     topContent: hooksEnabled ? <PreHookButton /> : undefined,
     bottomContent: (
       <>
         {hooksEnabled && <PostHookButton />}
         <TradeRateDetails
-          allowedSlippage={useSlippage === 'auto' ? null : allowedSlippage}
+          allowedSlippage={isSlippageModified || isEoaEthFlow ? slippage : null}
           rateInfoParams={rateInfoParams}
           receiveAmountInfo={receiveAmountInfo}
         />
@@ -297,7 +299,7 @@ export function SwapWidget({ hooksEnabled }: SwapWidgetProps) {
               chainId={chainId}
               rateInfoParams={rateInfoParams}
               trade={trade}
-              allowedSlippage={allowedSlippage}
+              allowedSlippage={slippage}
               doTrade={swapButtonContext.handleSwap}
               priceImpact={priceImpactParams}
               inputCurrencyInfo={inputCurrencyPreviewInfo}

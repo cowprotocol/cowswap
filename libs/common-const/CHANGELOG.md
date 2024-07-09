@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.6.2](https://github.com/cowprotocol/cowswap/compare/common-const-v1.6.1...common-const-v1.6.2) (2024-07-05)
+
+
+### Bug Fixes
+
+* **favorite:** replace gchain USDC favorite with USDC.e ([#4664](https://github.com/cowprotocol/cowswap/issues/4664)) ([99e5605](https://github.com/cowprotocol/cowswap/commit/99e56059aeaee28fac69ad425a156ebd08d00f4a))
+* **volume-fee:** add USDC.e to stable tokens list for gchain ([#4640](https://github.com/cowprotocol/cowswap/issues/4640)) ([7a0945c](https://github.com/cowprotocol/cowswap/commit/7a0945c6cf5e974ec323a4e8ce490b582d38a7f9))
+
 ## [1.6.1](https://github.com/cowprotocol/cowswap/compare/common-const-v1.6.0...common-const-v1.6.1) (2024-06-27)
 
 
