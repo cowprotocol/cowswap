@@ -10,6 +10,7 @@ import {
 } from '@cowprotocol/common-utils'
 import {
   Address,
+  SupportedChainId as ChainId,
   CowEnv,
   EnrichedOrder,
   NativePriceResponse,
@@ -19,7 +20,6 @@ import {
   OrderQuoteSideKindSell,
   PartialApiContext,
   SigningScheme,
-  SupportedChainId as ChainId,
   TotalSurplus,
   Trade,
 } from '@cowprotocol/cow-sdk'
@@ -251,18 +251,27 @@ export async function getProfileData(chainId: ChainId, address: string): Promise
   }
 }
 
-export type OrderStatus = {
-  type: 'scheduled' | 'open' | 'active' | 'solved' | 'executing' | 'traded' | 'cancelled'
-  value?: {
-    solver: string
-    sellAmount: string
-    buyAmount: string
-  }[]
+// TODO: this will come from SDK as well
+// TODO: and the name might change
+export type SolverCompetition = {
+  solver: string
+  sellAmount: string
+  buyAmount: string
+}[]
+
+export type PendingOrderStatusType = 'scheduled' | 'open' | 'active' | 'solved' | 'executing' | 'traded' | 'cancelled'
+
+export type PendingOrderStatusResult = {
+  type: PendingOrderStatusType
+  value?: SolverCompetition
 }
 
 // TODO: move to SDK
 // v1/status/<orderId>
-export async function getOrderStatus(chainId: ChainId, orderId: string): Promise<OrderStatus | null> {
+export async function getPendingOrderStatus(
+  chainId: ChainId,
+  orderId: string
+): Promise<PendingOrderStatusResult | null> {
   const response = await fetch('http://localhost:8080/api/v1/status/' + orderId, {
     headers: { ...DEFAULT_HEADERS, 'Access-Control-Allow-Origin': '*' },
     method: 'GET',
