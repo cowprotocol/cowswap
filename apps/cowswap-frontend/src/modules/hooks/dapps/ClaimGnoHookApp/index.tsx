@@ -12,7 +12,8 @@ import styled from 'styled-components/macro'
 
 import { HookDappContext } from 'modules/hooks/context'
 
-import { SBC_DEPOSIT_CONTRACT_ADDRESS, useSBCDepositContract } from '../../hooks'
+import { SBC_DEPOSIT_CONTRACT_ADDRESS } from '../../const'
+import { useSBCDepositContract } from '../../hooks/useSBCDepositContract'
 
 const TITLE = 'Claim GNO from validators'
 const DESCRIPTION = 'Allows you to withdraw the rewards from your Gnosis validators.'

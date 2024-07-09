@@ -10,7 +10,7 @@ import { NewModal } from 'common/pure/NewModal'
 
 import { HookDappContext } from '../context'
 import { POST_HOOK_REGISTRY, PRE_HOOK_REGISTRY } from '../hookRegistry'
-import { useAddHook } from '../hooks'
+import { useAddHook } from '../hooks/useAddHook'
 import { isHookDappIframe } from '../utils'
 
 const MODAL_MAX_WIDTH = 450
