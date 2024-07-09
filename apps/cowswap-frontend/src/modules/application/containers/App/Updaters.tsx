@@ -14,6 +14,7 @@ import { EthFlowDeadlineUpdater } from 'modules/swap/state/EthFlow/updaters'
 import { useOnTokenListAddingError } from 'modules/tokensList'
 import { UsdPricesUpdater } from 'modules/usdAmount'
 
+import { ProgressBarV2ExecutingOrdersCountdownUpdater } from 'common/hooks/orderProgressBarV2'
 import { TotalSurplusUpdater } from 'common/state/totalSurplusState'
 import { CancelReplaceTxUpdater } from 'common/updaters/CancelReplaceTxUpdater'
 import { FeatureFlagsUpdater } from 'common/updaters/FeatureFlagsUpdater'
@@ -61,6 +62,7 @@ export function Updaters() {
       <TotalSurplusUpdater />
       <UsdPricesUpdater />
       <OrdersNotificationsUpdater />
+      <ProgressBarV2ExecutingOrdersCountdownUpdater />
 
       <TokensListsUpdater chainId={chainId} isGeoBlockEnabled={isGeoBlockEnabled} />
       <WidgetTokensListsUpdater
