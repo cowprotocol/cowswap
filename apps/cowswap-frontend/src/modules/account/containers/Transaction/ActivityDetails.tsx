@@ -7,26 +7,27 @@ import { useENS } from '@cowprotocol/ens'
 import { TokenLogo, useTokenBySymbolOrAddress } from '@cowprotocol/tokens'
 import { UiOrderType } from '@cowprotocol/types'
 import {
-  ExternalLink,
-  TokenAmount,
-  UI,
-  Icon,
-  IconType,
   BannerOrientation,
   CustomRecipientWarningBanner,
+  ExternalLink,
+  Icon,
+  IconType,
+  TokenAmount,
+  UI,
 } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
-import { OrderProgressBar } from 'legacy/components/OrderProgressBar'
 import { getActivityState } from 'legacy/hooks/useActivityDerivedState'
 import { ActivityStatus } from 'legacy/hooks/useRecentActivity'
 import { OrderStatus } from 'legacy/state/orders/actions'
 
 import { EthFlowStepper } from 'modules/swap/containers/EthFlowStepper'
 
+import { useOrderProgressBarProps } from 'common/hooks/orderProgressBarV2'
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
 import { isPending } from 'common/hooks/useCategorizeRecentActivity'
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
+import { OrderProgressBarV2 } from 'common/pure/OrderProgressBarV2'
 import { RateInfo, RateInfoParams } from 'common/pure/RateInfo'
 import { SafeWalletLink } from 'common/pure/SafeWalletLink'
 import {
@@ -37,6 +38,7 @@ import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { StatusDetails } from './StatusDetails'
 import {
+  TransactionState as ActivityLink,
   ActivityVisual,
   CreationTimeText,
   FiatWrapper,
@@ -46,7 +48,6 @@ import {
   SummaryInnerRow,
   TextAlert,
   TransactionInnerDetail,
-  TransactionState as ActivityLink,
 } from './styled'
 
 import { ActivityDerivedState } from './index'
@@ -201,6 +202,7 @@ export function ActivityDetails(props: {
   // Check if Custom Recipient Warning Banner should be visible
   const isCustomRecipientWarningBannerVisible = !useIsReceiverWalletBannerHidden(id) && order && isPending(order)
   const hideCustomRecipientWarning = useHideReceiverWalletBanner()
+  const orderProgressBarV2Props = useOrderProgressBarProps({ activityDerivedState, chainId })
 
   if (!order && !enhancedTransaction) return null
 
@@ -394,8 +396,8 @@ export function ActivityDetails(props: {
       </Summary>
 
       <EthFlowStepper order={order} />
-      {showProgressBar && (
-        <OrderProgressBar activityDerivedState={activityDerivedState} chainId={chainId} hideWhenFinished={true} />
+      {showProgressBar && orderProgressBarV2Props && (
+        <OrderProgressBarV2 {...orderProgressBarV2Props} />
       )}
     </>
   )

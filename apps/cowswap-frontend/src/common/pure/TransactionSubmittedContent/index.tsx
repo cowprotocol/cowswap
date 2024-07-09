@@ -1,5 +1,3 @@
-import React from 'react'
-
 import GameIcon from '@cowprotocol/assets/cow-swap/game.gif'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
@@ -9,7 +7,6 @@ import { Currency } from '@uniswap/sdk-core'
 import { Text } from 'rebass'
 import { Nullish } from 'types'
 
-import { OrderProgressBar } from 'legacy/components/OrderProgressBar'
 import { DisplayLink } from 'legacy/components/TransactionConfirmationModal/DisplayLink'
 import { getActivityState } from 'legacy/hooks/useActivityDerivedState'
 import { ActivityStatus } from 'legacy/hooks/useRecentActivity'
@@ -23,6 +20,8 @@ import { Routes } from 'common/constants/routes'
 import * as styledEl from './styled'
 import { SurplusModal } from './SurplusModal'
 
+import { OrderProgressBarV2, OrderProgressBarV2Props } from '../OrderProgressBarV2'
+
 const activityStatusLabels: Partial<Record<ActivityStatus, string>> = {
   [ActivityStatus.CONFIRMED]: 'Confirmed',
   [ActivityStatus.EXPIRED]: 'Expired',
@@ -30,6 +29,7 @@ const activityStatusLabels: Partial<Record<ActivityStatus, string>> = {
   [ActivityStatus.CANCELLING]: 'Cancelling',
   [ActivityStatus.FAILED]: 'Failed',
 }
+
 function getTitleStatus(activityDerivedState: ActivityDerivedState | null): string {
   if (!activityDerivedState) {
     return ''
@@ -43,11 +43,13 @@ function getTitleStatus(activityDerivedState: ActivityDerivedState | null): stri
 
 export interface TransactionSubmittedContentProps {
   onDismiss(): void
+
   hash: string | undefined
   chainId: ChainId
   activityDerivedState: ActivityDerivedState | null
   currencyToAdd?: Nullish<Currency>
   showSurplus?: boolean | null
+  orderProgressBarV2Props?: OrderProgressBarV2Props | null
 }
 
 export function TransactionSubmittedContent({
@@ -57,6 +59,7 @@ export function TransactionSubmittedContent({
   currencyToAdd,
   activityDerivedState,
   showSurplus,
+  orderProgressBarV2Props,
 }: TransactionSubmittedContentProps) {
   const activityState = activityDerivedState && getActivityState(activityDerivedState)
   const showProgressBar = activityState === 'open' || activityState === 'filled'
@@ -81,9 +84,8 @@ export function TransactionSubmittedContent({
             </Text>
             <DisplayLink id={hash} chainId={chainId} />
             <EthFlowStepper order={order} />
-            {/*TODO: refactor OrderProgressBar to make it pure*/}
-            {activityDerivedState && showProgressBar && (
-              <OrderProgressBar hash={hash} activityDerivedState={activityDerivedState} chainId={chainId} />
+            {activityDerivedState && showProgressBar && orderProgressBarV2Props && (
+              <OrderProgressBarV2 {...orderProgressBarV2Props} />
             )}
             <styledEl.ButtonGroup>
               <WatchAssetInWallet shortLabel currency={currencyToAdd} />
