@@ -1,6 +1,7 @@
 import { useSetAtom } from 'jotai'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
+import { errorToString } from '@cowprotocol/common-utils'
 import { useWalletInfo, useActivateConnector, ConnectionType } from '@cowprotocol/wallet'
 
 import { useCloseModal, useModalIsOpen } from 'legacy/state/application/hooks'
@@ -67,11 +68,7 @@ export function WalletModal() {
         },
         onActivationError(error: any) {
           dispatch(updateSelectedWallet({ wallet: undefined }))
-          setWalletConnectionError(
-            typeof error === 'string'
-              ? error
-              : error.message || (typeof error === 'object' ? JSON.stringify(error) : error.toString())
-          )
+          setWalletConnectionError(errorToString(error))
         },
       }),
       [isWalletChangingFlow, closeWalletModal, dispatch, setWalletConnectionError, toggleAccountSelectorModal]

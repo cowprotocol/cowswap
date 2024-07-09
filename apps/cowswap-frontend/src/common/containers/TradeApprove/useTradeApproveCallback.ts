@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 
 import { approvalAnalytics } from '@cowprotocol/analytics'
-import { isRejectRequestProviderError } from '@cowprotocol/common-utils'
+import { errorToString, isRejectRequestProviderError } from '@cowprotocol/common-utils'
 import { TransactionResponse } from '@ethersproject/providers'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -51,7 +51,7 @@ export function useTradeApproveCallback(amountToApprove?: CurrencyAmount<Currenc
             const errorCode = error?.code && typeof error.code === 'number' ? error.code : null
 
             approvalAnalytics('Error', symbol, errorCode)
-            updateTradeApproveState({ error: typeof error === 'string' ? error : error.message || error.toString() })
+            updateTradeApproveState({ error: errorToString(error) })
           }
 
           return undefined

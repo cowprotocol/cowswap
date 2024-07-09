@@ -2,7 +2,6 @@ import { useAtomValue } from 'jotai/index'
 import { useState } from 'react'
 
 import { ButtonSecondaryAlt } from '@cowprotocol/ui'
-import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Link } from 'legacy/components/Link'
 
@@ -15,7 +14,6 @@ import { hooksAtom } from '../../state/hookDetailsAtom'
 import { HookStoreModal } from '../HookStoreModal'
 
 export function PreHookButton() {
-  const { chainId } = useWalletInfo()
   const [open, setOpen] = useState(false)
   const hooks = useAtomValue(hooksAtom)
   const removeHook = useRemoveHook()
@@ -24,7 +22,7 @@ export function PreHookButton() {
       {hooks.preHooks.length > 0 && (
         <styledEl.HookList>
           {hooks.preHooks.map((hookDetails, index) => (
-            <HookItem key={index} chainId={chainId} hookDetails={hookDetails} removeHook={removeHook} isPreHook />
+            <HookItem key={index} hookDetails={hookDetails} removeHook={removeHook} isPreHook />
           ))}
         </styledEl.HookList>
       )}
