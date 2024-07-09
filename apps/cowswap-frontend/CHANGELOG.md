@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.76.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.76.1...cowswap-v1.76.2) (2024-07-05)
+
+
+### Bug Fixes
+
+* don't reset output amount when it's not expected ([#4663](https://github.com/cowprotocol/cowswap/issues/4663)) ([2a0310e](https://github.com/cowprotocol/cowswap/commit/2a0310e6ea56f9115cd435a433520272dbb9bf22))
+* uploading appData too late ([#4667](https://github.com/cowprotocol/cowswap/issues/4667)) ([cf6f037](https://github.com/cowprotocol/cowswap/commit/cf6f0377e5f4b9a3fa5298acf6ba55c026ea3232))
+* **widget:** always open links from widget markdown in a new tab ([#4671](https://github.com/cowprotocol/cowswap/issues/4671)) ([#4684](https://github.com/cowprotocol/cowswap/issues/4684)) ([9edbe5b](https://github.com/cowprotocol/cowswap/commit/9edbe5bbda714463a7b035624c44aa523b494468))
+
 ## [1.76.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.76.0...cowswap-v1.76.1) (2024-07-02)
 
 

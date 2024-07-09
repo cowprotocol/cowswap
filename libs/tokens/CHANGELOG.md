@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.2](https://github.com/cowprotocol/cowswap/compare/tokens-v1.5.1...tokens-v1.5.2) (2024-07-05)
+
+
+### Bug Fixes
+
+* **favorite:** replace gchain USDC favorite with USDC.e ([#4664](https://github.com/cowprotocol/cowswap/issues/4664)) ([99e5605](https://github.com/cowprotocol/cowswap/commit/99e56059aeaee28fac69ad425a156ebd08d00f4a))
+
 ## [1.5.1](https://github.com/cowprotocol/cowswap/compare/tokens-v1.5.0...tokens-v1.5.1) (2024-06-27)
 
 
