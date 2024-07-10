@@ -223,13 +223,24 @@ export function DetailsTable(props: Props): React.ReactNode | null {
               </span>
             </td>
             <td>
-              <RowWithCopyButton
-                textToCopy={receiver}
-                onCopy={(): void => onCopy('receiverAddress')}
-                contentsToDisplay={
-                  <LinkWithPrefixNetwork to={`/address/${receiver}`}>{receiver}</LinkWithPrefixNetwork>
-                }
-              />
+              <Wrapper>
+                <RowWithCopyButton
+                  textToCopy={receiver}
+                  onCopy={(): void => onCopy('receiverAddress')}
+                  contentsToDisplay={
+                    <LinkWithPrefixNetwork
+                      to={getExplorerLink(chainId, receiver, ExplorerDataType.ADDRESS)}
+                      target="_blank"
+                    >
+                      {receiver}↗
+                    </LinkWithPrefixNetwork>
+                  }
+                />
+                <LinkButton to={`/address/${receiver}`}>
+                  <FontAwesomeIcon icon={faHistory} />
+                  Order History
+                </LinkButton>
+              </Wrapper>
             </td>
           </tr>
           {(!partiallyFillable || txHash) && (
