@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useState } from 'react'
+import { atom, useAtom } from 'jotai'
+import { useCallback, useState } from 'react'
 
 import { errorToString } from '@cowprotocol/common-utils'
 import { CowHook } from '@cowprotocol/types'
@@ -18,9 +19,17 @@ function isSimulationSuccessful(res: TenderlySimulation | SimulationError): res 
   return !!(res as TenderlySimulation).simulation
 }
 
+const tenderlySimulationLinksAtom = atom<Record<string, string | undefined>>({})
+const tenderlySimulationErrorsAtom = atom<Record<string, string | undefined>>({})
+
 export function TenderlySimulate({ hook }: TenderlySimulateProps) {
-  const [simulationLink, setSimulationLink] = useState<string | null>(null)
-  const [simulationError, setSimulationError] = useState<string | null>(null)
+  const hookId = [hook.target, hook.callData, hook.gasLimit].join(':')
+  const [simulationLinks, setSimulationLink] = useAtom(tenderlySimulationLinksAtom)
+  const simulationLink = simulationLinks[hookId]
+
+  const [simulationErrors, setSimulationError] = useAtom(tenderlySimulationErrorsAtom)
+  const simulationError = simulationErrors[hookId]
+
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const simulate = useTenderlySimulate()
 
@@ -33,21 +42,17 @@ export function TenderlySimulate({ hook }: TenderlySimulateProps) {
       if (isSimulationSuccessful(response)) {
         const link = getSimulationLink(response.simulation.id)
 
-        setSimulationLink(link)
+        setSimulationLink({ [hookId]: link })
+        setSimulationError({ [hookId]: undefined })
       } else {
-        setSimulationError(response.error.message)
+        setSimulationError({ [hookId]: response.error.message })
       }
     } catch (error: any) {
-      setSimulationError(errorToString(error))
+      setSimulationError({ [hookId]: errorToString(error) })
     } finally {
       setIsLoading(false)
     }
-  }, [simulate, hook])
-
-  useEffect(() => {
-    setSimulationLink(null)
-    setSimulationError(null)
-  }, [hook])
+  }, [simulate, hook, hookId])
 
   if (isLoading) {
     return (
