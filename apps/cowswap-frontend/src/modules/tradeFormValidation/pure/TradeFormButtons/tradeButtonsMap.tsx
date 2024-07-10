@@ -1,4 +1,3 @@
-
 import { getIsNativeToken, getWrappedToken } from '@cowprotocol/common-utils'
 import { HelpTooltip, TokenSymbol } from '@cowprotocol/ui'
 
@@ -147,13 +146,13 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
       </TradeFormBlankButton>
     )
   },
-  [TradeFormValidation.ApproveRequired]: (context, isDisabled = false) => {
+  [TradeFormValidation.ApproveRequired]: (context) => {
     const amountToApprove = context.derivedState.slippageAdjustedSellAmount
 
     if (!amountToApprove) return null
 
     return (
-      <TradeApproveButton isDisabled={isDisabled} amountToApprove={amountToApprove}>
+      <TradeApproveButton amountToApprove={amountToApprove}>
         <TradeFormBlankButton disabled={true}>
           <Trans>{context.defaultText}</Trans>
         </TradeFormBlankButton>

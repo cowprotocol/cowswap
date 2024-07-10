@@ -47,7 +47,7 @@ export function SmartSlippageUpdater() {
 
   useEffect(() => {
     setSmartSwapSlippage(typeof slippageBps === 'number' ? slippageBps : null)
-  }, [slippageBps])
+  }, [slippageBps, setSmartSwapSlippage])
 
   return null
 }
