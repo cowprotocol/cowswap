@@ -29,14 +29,13 @@ import { Order } from 'api/operator'
 import { getUiOrderType } from 'utils/getUiOrderType'
 
 import { TAB_QUERY_PARAM_KEY } from '../../../explorer/const'
+import { Link } from 'react-router-dom'
 
 const Table = styled(SimpleTable)`
   > tbody > tr {
     grid-template-columns: 27rem auto;
     grid-template-rows: max-content;
     padding: 1.4rem 0 1.4rem 1.1rem;
-
-    
 
     ${media.mediumDown} {
       grid-template-columns: 17rem auto;
@@ -239,12 +238,15 @@ export function DetailsTable(props: DetailsTableProps): React.ReactNode | null {
               <HelpTooltip tooltip={tooltip.from} /> From
             </td>
             <td>
-
               <Wrapper>
                 <RowWithCopyButton
                   textToCopy={owner}
                   onCopy={(): void => onCopy('ownerAddress')}
-                  contentsToDisplay={<LinkWithPrefixNetwork to={getExplorerLink(chainId, owner, ExplorerDataType.ADDRESS)} target='_blank'>{owner}↗</LinkWithPrefixNetwork>}
+                  contentsToDisplay={
+                    <Link to={getExplorerLink(chainId, owner, ExplorerDataType.ADDRESS)} target="_blank">
+                      {owner}↗
+                    </Link>
+                  }
                 />
                 <LinkButton to={`/address/${owner}`}>
                   <FontAwesomeIcon icon={faHistory} />
@@ -262,14 +264,17 @@ export function DetailsTable(props: DetailsTableProps): React.ReactNode | null {
                 <RowWithCopyButton
                   textToCopy={receiver}
                   onCopy={(): void => onCopy('receiverAddress')}
-                  contentsToDisplay={<LinkWithPrefixNetwork to={getExplorerLink(chainId, receiver, ExplorerDataType.ADDRESS)} target='_blank'>{receiver}↗</LinkWithPrefixNetwork>}
+                  contentsToDisplay={
+                    <Link to={getExplorerLink(chainId, receiver, ExplorerDataType.ADDRESS)} target="_blank">
+                      {receiver}↗
+                    </Link>
+                  }
                 />
                 <LinkButton to={`/address/${receiver}`}>
                   <FontAwesomeIcon icon={faHistory} />
                   Order History
                 </LinkButton>
               </Wrapper>
-
             </td>
           </tr>
           {(!partiallyFillable || txHash) && (
@@ -285,7 +290,11 @@ export function DetailsTable(props: DetailsTableProps): React.ReactNode | null {
                     <RowWithCopyButton
                       textToCopy={txHash}
                       onCopy={(): void => onCopy('settlementTx')}
-                      contentsToDisplay={<LinkWithPrefixNetwork to={getExplorerLink(chainId, txHash, ExplorerDataType.TRANSACTION)} target='_blank'>{txHash}↗</LinkWithPrefixNetwork>}
+                      contentsToDisplay={
+                        <Link to={getExplorerLink(chainId, txHash, ExplorerDataType.TRANSACTION)} target="_blank">
+                          {txHash}↗
+                        </Link>
+                      }
                     />
                     <Wrapper gap={false}>
                       <LinkButton to={`/tx/${txHash}`}>
