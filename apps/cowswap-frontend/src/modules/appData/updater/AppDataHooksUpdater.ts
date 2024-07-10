@@ -5,7 +5,7 @@ import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { PermitHookData } from '@cowprotocol/permit-utils'
 import { useIsSmartContractWallet } from '@cowprotocol/wallet'
 
-import { useHooks } from 'modules/hooks'
+import { useHooks } from 'modules/hooksStore'
 import { useAccountAgnosticPermitHookData } from 'modules/permit'
 import { useDerivedSwapInfo } from 'modules/swap/hooks/useSwapState'
 

@@ -5,8 +5,7 @@ import { ButtonPrimary } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-import { HookDappContext } from 'modules/hooks/context'
-
+import { HookDappContext } from '../../context'
 import buildImg from '../../images/build.png'
 
 const TITLE = 'Build your own Pre-hook'

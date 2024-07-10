@@ -13,7 +13,7 @@ import { useModalIsOpen } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
 import { Field } from 'legacy/state/types'
 
-import { PreHookButton, PostHookButton } from 'modules/hooks'
+import { PreHookButton, PostHookButton } from 'modules/hooksStore'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { EthFlowModal, EthFlowProps } from 'modules/swap/containers/EthFlow'
 import { SwapModals, SwapModalsProps } from 'modules/swap/containers/SwapModals'
