@@ -20,7 +20,7 @@ export function TradeTotalCostsDetails(props: TradeRatesProps) {
 
   const totalCostsUsd = useUsdAmount(totalCosts).value
 
-  if (!totalCosts || !totalCostsUsd) return null
+  if (!totalCosts) return null
 
   return (
     <TradeDetailsAccordion
