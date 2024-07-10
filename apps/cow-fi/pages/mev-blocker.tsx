@@ -48,6 +48,7 @@ import {
   ColorTableCell,
   ColorTableHeader,
   ColorTableContainer,
+  TopicTable,
 } from '@/styles/styled'
 
 import SVG from 'react-inlinesvg'
@@ -244,42 +245,41 @@ export default function Page() {
                       <TopicTitle color={Color.neutral0} fontSize={28}>
                         Add manually
                       </TopicTitle>
-                      <TopicDescription fontSize={21}>
-                        <table>
-                          <tbody>
-                            <tr>
-                              <td>Network name</td>
-                              <td>
-                                <b>MEV Blocker</b>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>New RPC URL</td>
-                              <td>
-                                <b>https://rpc.mevblocker.io</b>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>Chain ID</td>
-                              <td>
-                                <b>1</b>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>Currency symbol</td>
-                              <td>
-                                <b>ETH</b>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>Block Explorer URL</td>
-                              <td>
-                                <b>https://etherscan.io</b>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </TopicDescription>
+
+                      <TopicTable>
+                        <tbody>
+                          <tr>
+                            <td>Network name</td>
+                            <td>
+                              <b>MEV Blocker</b>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>New RPC URL</td>
+                            <td>
+                              <b>https://rpc.mevblocker.io</b>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>Chain ID</td>
+                            <td>
+                              <b>1</b>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>Currency symbol</td>
+                            <td>
+                              <b>ETH</b>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>Block Explorer URL</td>
+                            <td>
+                              <b>https://etherscan.io</b>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </TopicTable>
                     </TopicCardInner>
                   </TopicCard>
                 </TopicList>

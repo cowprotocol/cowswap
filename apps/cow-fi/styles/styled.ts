@@ -445,24 +445,27 @@ export const TopicDescription = styled.p<{
     min-height: ${({ minHeightMobile }) =>
       typeof minHeightMobile === 'number' ? `${minHeightMobile}px` : minHeightMobile || 'initial'};
   }
+`
 
-  > table,
-  > table > tbody {
+export const TopicTable = styled.table`
+  max-width: 100%;
+
+  > tbody {
     max-width: 100%;
-  }
 
-  > table > tbody > tr > td:first-child {
-    padding: 0 16px 0 0;
-  }
-
-  ${Media.upToMedium()} {
-    > table > tbody {
+    ${Media.upToMedium()} {
       display: flex;
       flex-flow: column wrap;
       gap: 16px;
     }
+  }
 
-    > table > tbody > tr {
+  > tbody > tr {
+    &:first-child {
+      padding: 0 16px 0 0;
+    }
+
+    ${Media.upToMedium()} {
       display: flex;
       flex-flow: column wrap;
     }
