@@ -1,11 +1,11 @@
 import { useAtom } from 'jotai'
 import { useLayoutEffect, useRef } from 'react'
 
-import { executingOrderCountdownAtom } from './atoms'
+import { executingOrdersCountdownAtom } from './atoms'
 import { ExecutingOrdersCountdown } from './types'
 
 export function ProgressBarV2ExecutingOrdersCountdownUpdater(): null {
-  const [allCountdowns, setCountdowns] = useAtom(executingOrderCountdownAtom)
+  const [allCountdowns, setCountdowns] = useAtom(executingOrdersCountdownAtom)
 
   const countdownsRef = useRef(allCountdowns)
   countdownsRef.current = allCountdowns

@@ -12,7 +12,7 @@ import styled from 'styled-components/macro'
 
 import { SolverCompetition } from 'api/cowProtocol/api'
 
-import { OrderProgressBarStepNames } from 'common/hooks/orderProgressBarV2'
+import { OrderProgressBarStepName } from 'common/hooks/orderProgressBarV2'
 import { AMM_LOGOS } from 'legacy/components/AMMsLogo'
 import { Order } from 'legacy/state/orders/actions'
 import { Stepper, StepProps } from '../Stepper'
@@ -26,7 +26,7 @@ const PROGRESS_BAR_STEPS: StepProps[] = [
 ]
 
 export type OrderProgressBarV2Props = {
-  stepName: OrderProgressBarStepNames
+  stepName: OrderProgressBarStepName
   countdown?: number | null | undefined
   solverCompetition?: SolverCompetition
   order?: Order
@@ -39,7 +39,7 @@ export function OrderProgressBarV2(props: OrderProgressBarV2Props) {
 }
 
 type StepCallback = (props: OrderProgressBarV2Props) => JSX.Element
-const STEP_NAME_TO_STEP_COMPONENT: Record<OrderProgressBarStepNames, StepCallback> = {
+const STEP_NAME_TO_STEP_COMPONENT: Record<OrderProgressBarStepName, StepCallback> = {
   initial: (props: OrderProgressBarV2Props): JSX.Element => {
     return <InitialStep />
   },

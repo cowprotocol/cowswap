@@ -12,11 +12,11 @@ import { getPendingOrderStatus, PendingOrderStatusType, SolverCompetition } from
 
 import { usePrevious } from '@cowprotocol/common-hooks'
 import { getIsFinalizedOrder } from 'utils/orderUtils/getIsFinalizedOrder'
-import { executingOrderCountdownAtom, updateSingleExecutingOrderCountdown } from './atoms'
-import { OrderProgressBarStepNames as OrderProgressBarStepName } from './types'
+import { executingOrdersCountdownAtom, updateSingleExecutingOrderCountdown } from './atoms'
+import { OrderProgressBarStepName } from './types'
 
 export function useGetExecutingOrderCountdownCallback() {
-  const allCountdowns = useAtomValue(executingOrderCountdownAtom)
+  const allCountdowns = useAtomValue(executingOrdersCountdownAtom)
 
   return useCallback(
     (orderId: string) => {
@@ -27,7 +27,7 @@ export function useGetExecutingOrderCountdownCallback() {
 }
 
 export function useGetExecutingOrderCountdown(orderId: string | undefined) {
-  const allCountdowns = useAtomValue(executingOrderCountdownAtom)
+  const allCountdowns = useAtomValue(executingOrdersCountdownAtom)
 
   return useMemo(() => {
     if (!orderId) {
