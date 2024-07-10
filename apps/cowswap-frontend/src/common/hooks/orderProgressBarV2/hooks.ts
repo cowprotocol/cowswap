@@ -12,7 +12,7 @@ import { getPendingOrderStatus, PendingOrderStatusType, SolverCompetition } from
 
 import { usePrevious } from '@cowprotocol/common-hooks'
 import { getIsFinalizedOrder } from 'utils/orderUtils/getIsFinalizedOrder'
-import { executingOrderCountdownAtom } from './atoms'
+import { executingOrderCountdownAtom, updateSingleExecutingOrderCountdown } from './atoms'
 import { OrderProgressBarStepNames as OrderProgressBarStepName } from './types'
 
 export function useGetExecutingOrderCountdownCallback() {
@@ -39,21 +39,9 @@ export function useGetExecutingOrderCountdown(orderId: string | undefined) {
 }
 
 export function useSetExecutingOrderCountdownCallback() {
-  const setCountdowns = useSetAtom(executingOrderCountdownAtom)
+  const setCountdown = useSetAtom(updateSingleExecutingOrderCountdown)
 
-  return useCallback(
-    (orderId: string, value: number | null) => {
-      setCountdowns((values) => {
-        if (value === null) {
-          delete values[orderId]
-        } else {
-          values[orderId] = value
-        }
-        return { ...values }
-      })
-    },
-    [setCountdowns]
-  )
+  return useCallback((orderId: string, value: number | null) => setCountdown({ orderId, value }), [setCountdown])
 }
 
 export type UseOrderProgressBarPropsParams = {

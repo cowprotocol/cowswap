@@ -8,12 +8,18 @@ export function ProgressBarV2ExecutingOrdersCountdownUpdater(): null {
   const [allCountdowns, setCountdowns] = useAtom(executingOrderCountdownAtom)
 
   const countdownsRef = useRef(allCountdowns)
+  countdownsRef.current = allCountdowns
 
   useLayoutEffect(() => {
     function updateCountdowns() {
       const countdowns = countdownsRef.current
 
-      const newCountdowns = Object.keys(countdowns).reduce<ExecutingOrdersCountdown>((acc, orderId) => {
+      const orderIds = Object.keys(countdowns)
+      if (!orderIds.length || orderIds.every((orderId) => !countdowns[orderId])) {
+        return
+      }
+
+      const newCountdowns = orderIds.reduce<ExecutingOrdersCountdown>((acc, orderId) => {
         const value = countdowns[orderId]
         acc[orderId] = value && value - 1 >= 0 ? value - 1 : value
 
