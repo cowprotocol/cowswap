@@ -27,7 +27,7 @@ export function useResetRecipient(onChangeRecipient: (recipient: string | null) 
    */
   useEffect(() => {
     onChangeRecipient(null)
-  }, [chainId])
+  }, [chainId, onChangeRecipient])
 
   return null
 }

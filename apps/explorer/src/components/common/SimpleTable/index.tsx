@@ -124,6 +124,10 @@ const Table = styled.table<{ $numColumns?: number; columnViewMobile?: boolean }>
       border-left: 0.2rem solid var(--color-short);
     }
   }
+
+  thead th > span {
+    gap: 0.5rem;
+  }
 `
 
 export type SimpleTableProps = {

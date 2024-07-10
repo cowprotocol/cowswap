@@ -7,6 +7,7 @@ import { useTradeConfirmActions } from 'modules/trade'
 import {
   TradeFormBlankButton,
   TradeFormButtons,
+  TradeFormValidation,
   useGetTradeFormValidation,
   useTradeFormButtonContext,
 } from 'modules/tradeFormValidation'
@@ -16,6 +17,11 @@ import { limitOrdersTradeButtonsMap } from './limitOrdersTradeButtonsMap'
 import { useLimitOrdersFormState } from '../../hooks/useLimitOrdersFormState'
 
 const CONFIRM_TEXT = 'Review limit order'
+
+const PRIMARY_VALIDATION_OVERRIDEN_BY_LOCAL_VALIDATION: TradeFormValidation[] = [
+  TradeFormValidation.ApproveAndSwap,
+  TradeFormValidation.ApproveRequired,
+]
 
 interface TradeButtonsProps {
   isTradeContextReady: boolean
@@ -29,16 +35,18 @@ export function TradeButtons({ isTradeContextReady }: TradeButtonsProps) {
 
   const confirmTrade = tradeConfirmActions.onOpen
 
-  const defaultText = CONFIRM_TEXT
-
-  const tradeFormButtonContext = useTradeFormButtonContext(defaultText, confirmTrade)
+  const tradeFormButtonContext = useTradeFormButtonContext(CONFIRM_TEXT, confirmTrade)
 
   const isDisabled = !warningsAccepted || !isTradeContextReady
 
   if (!tradeFormButtonContext) return null
 
   // Display local form validation errors only when there are no primary errors
-  if (!primaryFormValidation && localFormValidation) {
+  if (
+    (!primaryFormValidation ||
+      PRIMARY_VALIDATION_OVERRIDEN_BY_LOCAL_VALIDATION.indexOf(primaryFormValidation) !== -1) &&
+    localFormValidation
+  ) {
     const buttonFactory = limitOrdersTradeButtonsMap[localFormValidation]
 
     return typeof buttonFactory === 'function' ? (

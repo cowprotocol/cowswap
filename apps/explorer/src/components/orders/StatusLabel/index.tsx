@@ -75,6 +75,7 @@ const PartiallyTagLabel = css<PartiallyTagProps>`
             font-size: 0.71em; /* Intentional use of "em" to be relative to parent's font size */
             min-height: 1.35rem;
             border: solid 0.1rem ${theme.greyOpacity};
+            white-space: nowrap;
             ${tagPosition === 'bottom'
               ? `
               padding: 0.4rem 0 0.1rem 0;

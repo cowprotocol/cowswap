@@ -5,7 +5,7 @@ import { BadgeType } from '@cowprotocol/ui'
 import type { TradeType } from '@cowprotocol/widget-lib'
 
 import { Trans } from '@lingui/macro'
-import IMAGE_CARRET from 'assets/icon/carret.svg'
+import IMAGE_CARET from 'assets/icon/caret.svg'
 import SVG from 'react-inlinesvg'
 import { matchPath, useLocation } from 'react-router-dom'
 
@@ -87,6 +87,7 @@ export function TradeWidgetLinks({
     location.pathname,
     highlightedBadgeText,
     highlightedBadgeType,
+    handleMenuItemClick
   ])
 
   const singleMenuItem = menuItemsElements.length === 1
@@ -100,7 +101,7 @@ export function TradeWidgetLinks({
         <styledEl.Link to={menuItemsElements.find((item) => item.props.isActive)?.props.routePath || '#'}>
           <Trans>
             {menuItemsElements.find((item) => item.props.isActive)?.props.item.label}
-            {!singleMenuItem ? <SVG src={IMAGE_CARRET} title="select" /> : null}
+            {!singleMenuItem ? <SVG src={IMAGE_CARET} title="select" /> : null}
           </Trans>
         </styledEl.Link>
       </styledEl.MenuItem>

@@ -15,7 +15,7 @@ export const Wrapper = styled.div`
   max-width: 100%;
 
   ${Media.upToMedium()} {
-    padding: 0;
+    padding: 0 0 4.2rem;
   }
 
   > h1 {

@@ -6,7 +6,8 @@ import styled from 'styled-components/macro'
 const Wrapper = styled.span`
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
+  flex-flow: row nowrap;
+  gap: 0.5rem;
 
   & > :first-child {
     word-break: break-all;
@@ -33,7 +34,8 @@ export function RowWithCopyButton(props: Props): React.ReactNode {
 
   return (
     <Wrapper className={className}>
-      <Content>{contentsComponent}</Content> <CopyButton text={textToCopy} onCopy={onCopy} />
+      <Content>{contentsComponent}</Content>
+      <CopyButton text={textToCopy} onCopy={onCopy} />
     </Wrapper>
   )
 }
