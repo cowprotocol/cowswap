@@ -1,11 +1,12 @@
 import React from 'react'
 
+import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
 import { Media } from '@cowprotocol/ui'
 import { TruncatedText } from '@cowprotocol/ui/pure/TruncatedText'
 
-import { faFill, faProjectDiagram } from '@fortawesome/free-solid-svg-icons'
+import { faFill, faProjectDiagram, faGroupArrowsRotate, faHistory } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { sendEvent } from 'components/analytics'
 import DecodeAppData from 'components/AppData/DecodeAppData'
@@ -133,7 +134,7 @@ export type Props = {
 }
 
 export function DetailsTable(props: Props): React.ReactNode | null {
-  const { order, areTradesLoading, showFillsButton, viewFills, isPriceInverted, invertPrice } = props
+  const { chainId, order, areTradesLoading, showFillsButton, viewFills, isPriceInverted, invertPrice } = props
   const {
     uid,
     owner,
@@ -195,11 +196,24 @@ export function DetailsTable(props: Props): React.ReactNode | null {
               </span>
             </td>
             <td>
-              <RowWithCopyButton
-                textToCopy={owner}
-                onCopy={(): void => onCopy('ownerAddress')}
-                contentsToDisplay={<LinkWithPrefixNetwork to={`/address/${owner}`}>{owner}</LinkWithPrefixNetwork>}
-              />
+              <Wrapper>
+                <RowWithCopyButton
+                  textToCopy={owner}
+                  onCopy={(): void => onCopy('ownerAddress')}
+                  contentsToDisplay={
+                    <LinkWithPrefixNetwork
+                      to={getExplorerLink(chainId, owner, ExplorerDataType.ADDRESS)}
+                      target="_blank"
+                    >
+                      {owner}↗
+                    </LinkWithPrefixNetwork>
+                  }
+                />
+                <LinkButton to={`/address/${owner}`}>
+                  <FontAwesomeIcon icon={faHistory} />
+                  Order History
+                </LinkButton>
+              </Wrapper>
             </td>
           </tr>
           <tr>
@@ -233,12 +247,27 @@ export function DetailsTable(props: Props): React.ReactNode | null {
                     <RowWithCopyButton
                       textToCopy={txHash}
                       onCopy={(): void => onCopy('settlementTx')}
-                      contentsToDisplay={<LinkWithPrefixNetwork to={`/tx/${txHash}`}>{txHash}</LinkWithPrefixNetwork>}
+                      contentsToDisplay={
+                        <LinkWithPrefixNetwork
+                          to={getExplorerLink(chainId, txHash, ExplorerDataType.TRANSACTION)}
+                          target="_blank"
+                        >
+                          {txHash}↗
+                        </LinkWithPrefixNetwork>
+                      }
                     />
-                    <LinkButton to={`/tx/${txHash}/?${TAB_QUERY_PARAM_KEY}=graph`}>
-                      <FontAwesomeIcon icon={faProjectDiagram} />
-                      View batch graph
-                    </LinkButton>
+
+                    <Wrapper>
+                      <LinkButton to={`/tx/${txHash}`}>
+                        <FontAwesomeIcon icon={faGroupArrowsRotate} />
+                        Batch
+                      </LinkButton>
+
+                      <LinkButton to={`/tx/${txHash}/?${TAB_QUERY_PARAM_KEY}=graph`}>
+                        <FontAwesomeIcon icon={faProjectDiagram} />
+                        Graph
+                      </LinkButton>
+                    </Wrapper>
                   </Wrapper>
                 ) : (
                   '-'
