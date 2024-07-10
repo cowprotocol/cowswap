@@ -22,6 +22,7 @@ const Wrapper = styled.div`
   align-items: center;
   justify-content: center;
   height: 100%;
+  gap: 2.4rem;
 
   > section {
     display: flex;
@@ -42,6 +43,7 @@ const Wrapper = styled.div`
     > li {
       list-style: none;
       padding-bottom: 1.5rem;
+      text-align: center;
 
       :last-child {
         padding-bottom: 0;
