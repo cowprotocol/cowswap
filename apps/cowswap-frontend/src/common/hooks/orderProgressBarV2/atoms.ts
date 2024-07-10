@@ -62,6 +62,41 @@ export const updateSingleExecutingOrderCountdown = atom(
   }
 )
 
+type UpdateSingleExecutingOrderBackendInfoParams = {
+  orderId: string
+  value: Pick<ExecutingOrderState, 'backendApiStatus' | 'solverCompetition'>
+}
+
+export const updateSingleExecutingOrderBackendInfo = atom(
+  null,
+  (
+    get,
+    set,
+    { orderId, value: { backendApiStatus, solverCompetition } }: UpdateSingleExecutingOrderBackendInfoParams
+  ) => {
+    const fullState = get(executingOrdersStateAtom)
+
+    const singleOrderState = { ...fullState[orderId] }
+    const currentBackendApiStatus = singleOrderState.backendApiStatus
+    const currentSolverCompetition = singleOrderState.solverCompetition
+
+    if (
+      currentBackendApiStatus === backendApiStatus &&
+      // Both are empty
+      (currentSolverCompetition === solverCompetition ||
+        // Both are not empty
+        (currentSolverCompetition && solverCompetition && deepEqual(currentSolverCompetition, solverCompetition)))
+    ) {
+      return
+    }
+
+    set(executingOrdersStateAtom, {
+      ...fullState,
+      [orderId]: { ...singleOrderState, backendApiStatus, solverCompetition },
+    })
+  }
+)
+
 type UpdateSingleExecutingOrderStateParams = {
   orderId: string
   value: ExecutingOrderState | null

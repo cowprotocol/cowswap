@@ -4,7 +4,13 @@ import { useLayoutEffect, useRef } from 'react'
 import { executingOrdersCountdownAtom } from './atoms'
 import { ExecutingOrdersCountdown } from './types'
 
-export function ProgressBarV2ExecutingOrdersCountdownUpdater(): null {
+export function ProgressBarV2ExecutingOrdersUpdater(): null {
+  useCountdownUpdater()
+
+  return null
+}
+
+export function useCountdownUpdater() {
   const [allCountdowns, setCountdowns] = useAtom(executingOrdersCountdownAtom)
 
   const countdownsRef = useRef(allCountdowns)
@@ -33,6 +39,4 @@ export function ProgressBarV2ExecutingOrdersCountdownUpdater(): null {
 
     return () => clearInterval(timer)
   }, [setCountdowns])
-
-  return null
 }
