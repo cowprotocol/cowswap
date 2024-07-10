@@ -12,7 +12,7 @@ import { HookStoreModal } from '../HookStoreModal'
 import * as styledEl from '../PreHookButton/styled'
 
 export function PostHookButton() {
-  const { chainId } = useWalletInfo()
+  const { account } = useWalletInfo()
   const [open, setOpen] = useState(false)
   const hooks = useAtomValue(hooksAtom)
   const removeHook = useRemoveHook()
@@ -22,7 +22,7 @@ export function PostHookButton() {
       {hooks.postHooks && (
         <styledEl.HookList>
           {hooks.postHooks.map((hook, index) => (
-            <HookItem key={index} chainId={chainId} hookDetails={hook} removeHook={removeHook} isPreHook={false} />
+            <HookItem key={index} account={account} hookDetails={hook} removeHook={removeHook} isPreHook={false} />
           ))}
         </styledEl.HookList>
       )}

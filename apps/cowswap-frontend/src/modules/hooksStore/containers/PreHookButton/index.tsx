@@ -15,7 +15,7 @@ import { hooksAtom } from '../../state/hookDetailsAtom'
 import { HookStoreModal } from '../HookStoreModal'
 
 export function PreHookButton() {
-  const { chainId } = useWalletInfo()
+  const { account } = useWalletInfo()
   const [open, setOpen] = useState(false)
   const hooks = useAtomValue(hooksAtom)
   const removeHook = useRemoveHook()
@@ -24,7 +24,7 @@ export function PreHookButton() {
       {hooks.preHooks.length > 0 && (
         <styledEl.HookList>
           {hooks.preHooks.map((hookDetails, index) => (
-            <HookItem key={index} chainId={chainId} hookDetails={hookDetails} removeHook={removeHook} isPreHook />
+            <HookItem key={index} account={account} hookDetails={hookDetails} removeHook={removeHook} isPreHook />
           ))}
         </styledEl.HookList>
       )}
