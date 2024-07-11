@@ -93,7 +93,7 @@ function useProgressBarState(orderId: string, isUnfillable: boolean, isConfirmed
   useEffect(() => {
     if (backendApiStatus === 'active' && prevOrderStatusType !== 'active') {
       // Start countdown when it becomes active
-      setCountdown(orderId, 15)
+      setCountdown(orderId, 16)
     } else if (backendApiStatus !== 'active' && prevOrderStatusType === 'active') {
       // clear countdown when it's no longer active
       setCountdown(orderId, null)
