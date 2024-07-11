@@ -10,6 +10,7 @@ import { ActivityDerivedState } from 'modules/account/containers/Transaction'
 
 import { getPendingOrderStatus, PendingOrderStatusType, SolverCompetition } from 'api/cowProtocol/api'
 
+import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
 import { usePrevious } from '@cowprotocol/common-hooks'
 import { getIsFinalizedOrder } from 'utils/orderUtils/getIsFinalizedOrder'
 import {
@@ -67,8 +68,8 @@ export function useOrderProgressBarProps(params: UseOrderProgressBarPropsParams)
   const { order, isConfirmed = false, isUnfillable = false } = activityDerivedState || {}
   const isFinal = !!(order && getIsFinalizedOrder(order))
 
-  // Updater to pool backend api, to run only when this hook is instantiated and the order is pending
-  useBackendApiStatusUpdater(chainId, !isFinal && order ? order.id : '')
+  // Updater to pool backend api, to run only when this hook is instantiated
+  useBackendApiStatusUpdater(chainId, order ? order.id : '', isFinal)
 
   const state = useProgressBarState(order?.id || '', isUnfillable, isConfirmed)
 
@@ -85,8 +86,6 @@ function useProgressBarState(orderId: string, isUnfillable: boolean, isConfirmed
   const setCountdown = useSetExecutingOrderCountdownCallback()
   const { countdown, backendApiStatus, solverCompetition } = useGetExecutingOrderState(orderId) || {}
 
-  // updated every second until isFinished
-  // const { type: backendApiStatus, value } = usePendingOrderStatus(chainId, !isFinal ? orderId : '') || {}
   const prevOrderStatusType = usePrevious(backendApiStatus)
 
   // Maybe this shouldn't be in this hook
@@ -133,9 +132,9 @@ const PENDING_ORDER_STATUS_TYPE_TO_PROGRESS_BAR_STEP_NAME: Record<PendingOrderSt
   cancelled: 'initial', // TODO: maybe add another state for finished with error?
 }
 
-export function useBackendApiStatusUpdater(chainId: SupportedChainId, orderId: string): null {
+export function useBackendApiStatusUpdater(chainId: SupportedChainId, orderId: string, isFinal: boolean): null {
   const update = useSetAtom(updateSingleExecutingOrderBackendInfo)
-  const { type: backendApiStatus, value: solverCompetition } = usePendingOrderStatus(chainId, orderId) || {}
+  const { type: backendApiStatus, value: solverCompetition } = usePendingOrderStatus(chainId, orderId, isFinal) || {}
 
   useEffect(() => {
     if (orderId && (backendApiStatus || solverCompetition)) {
@@ -146,14 +145,14 @@ export function useBackendApiStatusUpdater(chainId: SupportedChainId, orderId: s
   return null
 }
 
-const SWR_OPTIONS = {
+const POOLING_SWR_OPTIONS = {
   refreshInterval: ms`1s`,
 }
 
-function usePendingOrderStatus(chainId: SupportedChainId, orderId: string) {
+function usePendingOrderStatus(chainId: SupportedChainId, orderId: string, stopQuerying?: boolean) {
   return useSWR(
     chainId && orderId ? ['getPendingOrderStatus', chainId, orderId] : null,
     async ([, _chainId, _orderId]) => getPendingOrderStatus(_chainId, _orderId),
-    SWR_OPTIONS
+    stopQuerying ? SWR_NO_REFRESH_OPTIONS : POOLING_SWR_OPTIONS
   ).data
 }
