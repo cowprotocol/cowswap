@@ -4,7 +4,7 @@ export type ExecutingOrderState = {
   countdown?: number | null
   backendApiStatus?: PendingOrderStatusType
   solverCompetition?: SolverCompetition
-  progressBarState?: OrderProgressBarStepName
+  progressBarStepName?: OrderProgressBarStepName
 }
 
 export type ExecutingOrdersState = Record<string, ExecutingOrderState>

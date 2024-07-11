@@ -1,7 +1,7 @@
 import { atom } from 'jotai'
 
 import { deepEqual } from '@cowprotocol/common-utils'
-import { ExecutingOrdersCountdown, ExecutingOrdersState, ExecutingOrderState } from './types'
+import { ExecutingOrdersCountdown, ExecutingOrdersState, ExecutingOrderState, OrderProgressBarStepName } from './types'
 
 /**
  * Base Atom for executing orders state
@@ -62,11 +62,40 @@ export const updateSingleExecutingOrderCountdown = atom(
   }
 )
 
+type UpdateSingleExecutingOrderProgressBarStepNameParams = {
+  orderId: string
+  value: OrderProgressBarStepName
+}
+
+/**
+ * Derived write-only atom for updating a single progressBarStepName at a time
+ */
+export const updateSingleExecutingOrderProgressBarStepName = atom(
+  null,
+  (get, set, { orderId, value }: UpdateSingleExecutingOrderProgressBarStepNameParams) => {
+    const fullState = get(executingOrdersStateAtom)
+
+    const singleOrderState = { ...fullState[orderId] }
+    const currentValue = singleOrderState.progressBarStepName
+
+    if (currentValue === value) {
+      return
+    }
+
+    singleOrderState.progressBarStepName = value
+
+    set(executingOrdersStateAtom, { ...fullState, [orderId]: singleOrderState })
+  }
+)
+
 type UpdateSingleExecutingOrderBackendInfoParams = {
   orderId: string
   value: Pick<ExecutingOrderState, 'backendApiStatus' | 'solverCompetition'>
 }
 
+/**
+ * Derived write-only atom for updating a single order backendApiStatus and solverCompetition
+ */
 export const updateSingleExecutingOrderBackendInfo = atom(
   null,
   (
