@@ -91,14 +91,14 @@ function useProgressBarState(orderId: string, isUnfillable: boolean, isConfirmed
 
   // Maybe this shouldn't be in this hook
   useEffect(() => {
-    if (backendApiStatus === 'active' && prevOrderStatusType !== 'active') {
+    if (!countdown && backendApiStatus === 'active' && prevOrderStatusType !== 'active') {
       // Start countdown when it becomes active
       setCountdown(orderId, 16)
     } else if (backendApiStatus !== 'active' && prevOrderStatusType === 'active') {
       // clear countdown when it's no longer active
       setCountdown(orderId, null)
     }
-  }, [backendApiStatus, prevOrderStatusType, setCountdown])
+  }, [backendApiStatus, prevOrderStatusType, setCountdown, countdown])
 
   return useMemo(() => {
     if (isUnfillable) {
