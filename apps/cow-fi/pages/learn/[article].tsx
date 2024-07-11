@@ -357,5 +357,5 @@ export const getStaticPaths: GetStaticPaths = async () => {
   const slugs = await getAllArticleSlugs()
   const paths = slugs.map((slug) => ({ params: { article: slug } }))
 
-  return { paths, fallback: false }
+  return { paths, fallback: 'blocking' }
 }
