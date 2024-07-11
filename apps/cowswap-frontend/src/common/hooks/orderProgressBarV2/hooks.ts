@@ -71,8 +71,8 @@ export function useOrderProgressBarProps(params: UseOrderProgressBarPropsParams)
   useCountdownStartUpdater(orderId, countdown, backendApiStatus)
 
   return useMemo(
-    () => ({ countdown, solverCompetition, stepName: progressBarStepName || 'initial', order }),
-    [countdown, solverCompetition, progressBarStepName, order]
+    () => ({ countdown, solverCompetition, stepName: progressBarStepName || 'initial' }),
+    [countdown, solverCompetition, progressBarStepName]
   )
 }
 

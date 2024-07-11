@@ -396,8 +396,8 @@ export function ActivityDetails(props: {
       </Summary>
 
       <EthFlowStepper order={order} />
-      {showProgressBar && orderProgressBarV2Props && (
-        <OrderProgressBarV2 {...orderProgressBarV2Props} />
+      {showProgressBar && orderProgressBarV2Props && orderProgressBarV2Props.stepName !== 'finished' && (
+        <OrderProgressBarV2 {...orderProgressBarV2Props} order={order} />
       )}
     </>
   )

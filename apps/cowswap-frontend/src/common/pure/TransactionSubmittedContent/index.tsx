@@ -85,7 +85,7 @@ export function TransactionSubmittedContent({
             <DisplayLink id={hash} chainId={chainId} />
             <EthFlowStepper order={order} />
             {activityDerivedState && showProgressBar && orderProgressBarV2Props && (
-              <OrderProgressBarV2 {...orderProgressBarV2Props} />
+              <OrderProgressBarV2 {...orderProgressBarV2Props} order={order} />
             )}
             <styledEl.ButtonGroup>
               <WatchAssetInWallet shortLabel currency={currencyToAdd} />
