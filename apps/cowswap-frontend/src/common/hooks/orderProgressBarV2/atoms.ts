@@ -2,21 +2,26 @@ import { atom } from 'jotai'
 
 import { deepEqual } from '@cowprotocol/common-utils'
 
-import { ExecutingOrdersCountdown, ExecutingOrdersState, ExecutingOrderState, OrderProgressBarStepName } from './types'
+import {
+  OrderProgressBarState,
+  OrderProgressBarStepName,
+  OrdersProgressBarCountdown,
+  OrdersProgressBarState
+} from './types'
 
 /**
- * Base Atom for executing orders state
+ * Base Atom for orders progress bar state
  */
-export const executingOrdersStateAtom = atom<ExecutingOrdersState>({})
+export const ordersProgressBarStateAtom = atom<OrdersProgressBarState>({})
 
 /**
  * Derived atom exposing only the countdown
  */
-export const executingOrdersCountdownAtom = atom(
+export const ordersProgressBarCountdown = atom(
   (get) => {
-    const fullState = get(executingOrdersStateAtom)
+    const fullState = get(ordersProgressBarStateAtom)
 
-    return Object.keys(fullState).reduce<ExecutingOrdersCountdown>((acc, orderId) => {
+    return Object.keys(fullState).reduce<OrdersProgressBarCountdown>((acc, orderId) => {
       const countdown = fullState[orderId].countdown
       if (countdown) {
         acc[orderId] = countdown
@@ -24,16 +29,16 @@ export const executingOrdersCountdownAtom = atom(
       return acc
     }, {})
   },
-  (get, set, countdowns: ExecutingOrdersCountdown) => {
-    const fullState = { ...get(executingOrdersStateAtom) }
+  (get, set, countdowns: OrdersProgressBarCountdown) => {
+    const fullState = { ...get(ordersProgressBarStateAtom) }
     Object.keys(countdowns).forEach((orderId) => {
       fullState[orderId].countdown = countdowns[orderId]
     })
-    set(executingOrdersStateAtom, fullState)
+    set(ordersProgressBarStateAtom, fullState)
   }
 )
 
-type UpdateSingleExecutingOrderCountdownParams = {
+type UpdateOrderProgressBarCountdownParams = {
   orderId: string
   value: number | null
 }
@@ -41,10 +46,10 @@ type UpdateSingleExecutingOrderCountdownParams = {
 /**
  * Derived write-only atom for updating a single countdown at a time
  */
-export const updateSingleExecutingOrderCountdown = atom(
+export const updateOrderProgressBarCountdown = atom(
   null,
-  (get, set, { orderId, value }: UpdateSingleExecutingOrderCountdownParams) => {
-    const fullState = get(executingOrdersStateAtom)
+  (get, set, { orderId, value }: UpdateOrderProgressBarCountdownParams) => {
+    const fullState = get(ordersProgressBarStateAtom)
 
     const singleOrderState = { ...fullState[orderId] }
     const currentValue = singleOrderState.countdown
@@ -59,11 +64,11 @@ export const updateSingleExecutingOrderCountdown = atom(
       singleOrderState.countdown = value
     }
 
-    set(executingOrdersStateAtom, { ...fullState, [orderId]: singleOrderState })
+    set(ordersProgressBarStateAtom, { ...fullState, [orderId]: singleOrderState })
   }
 )
 
-type UpdateSingleExecutingOrderProgressBarStepNameParams = {
+type UpdateOrderProgressBarStepNameParams = {
   orderId: string
   value: OrderProgressBarStepName
 }
@@ -71,10 +76,10 @@ type UpdateSingleExecutingOrderProgressBarStepNameParams = {
 /**
  * Derived write-only atom for updating a single progressBarStepName at a time
  */
-export const updateSingleExecutingOrderProgressBarStepName = atom(
+export const updateOrderProgressBarStepName = atom(
   null,
-  (get, set, { orderId, value }: UpdateSingleExecutingOrderProgressBarStepNameParams) => {
-    const fullState = get(executingOrdersStateAtom)
+  (get, set, { orderId, value }: UpdateOrderProgressBarStepNameParams) => {
+    const fullState = get(ordersProgressBarStateAtom)
 
     const singleOrderState = { ...fullState[orderId] }
     const currentValue = singleOrderState.progressBarStepName
@@ -85,26 +90,22 @@ export const updateSingleExecutingOrderProgressBarStepName = atom(
 
     singleOrderState.progressBarStepName = value
 
-    set(executingOrdersStateAtom, { ...fullState, [orderId]: singleOrderState })
+    set(ordersProgressBarStateAtom, { ...fullState, [orderId]: singleOrderState })
   }
 )
 
-type UpdateSingleExecutingOrderBackendInfoParams = {
+type UpdateOrderProgressBarBackendInfoParams = {
   orderId: string
-  value: Pick<ExecutingOrderState, 'backendApiStatus' | 'solverCompetition'>
+  value: Pick<OrderProgressBarState, 'backendApiStatus' | 'solverCompetition'>
 }
 
 /**
  * Derived write-only atom for updating a single order backendApiStatus and solverCompetition
  */
-export const updateSingleExecutingOrderBackendInfo = atom(
+export const updateOrderProgressBarBackendInfo = atom(
   null,
-  (
-    get,
-    set,
-    { orderId, value: { backendApiStatus, solverCompetition } }: UpdateSingleExecutingOrderBackendInfoParams
-  ) => {
-    const fullState = get(executingOrdersStateAtom)
+  (get, set, { orderId, value: { backendApiStatus, solverCompetition } }: UpdateOrderProgressBarBackendInfoParams) => {
+    const fullState = get(ordersProgressBarStateAtom)
 
     const singleOrderState = { ...fullState[orderId] }
     const currentBackendApiStatus = singleOrderState.backendApiStatus
@@ -120,38 +121,9 @@ export const updateSingleExecutingOrderBackendInfo = atom(
       return
     }
 
-    set(executingOrdersStateAtom, {
+    set(ordersProgressBarStateAtom, {
       ...fullState,
       [orderId]: { ...singleOrderState, backendApiStatus, solverCompetition },
     })
-  }
-)
-
-type UpdateSingleExecutingOrderStateParams = {
-  orderId: string
-  value: ExecutingOrderState | null
-}
-
-/**
- * Derived write-only atom for updating a single state at a time
- */
-export const updateSingleExecutingOrderState = atom(
-  null,
-  (get, set, { orderId, value }: UpdateSingleExecutingOrderStateParams) => {
-    const fullState = { ...get(executingOrdersStateAtom) }
-
-    const currentValue = fullState[orderId]
-
-    if (deepEqual(currentValue, value)) {
-      return
-    }
-
-    if (value === null) {
-      delete fullState[orderId]
-    } else {
-      fullState[orderId] = value
-    }
-
-    set(executingOrdersStateAtom, fullState)
   }
 )

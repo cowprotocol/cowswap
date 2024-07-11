@@ -1,8 +1,8 @@
 import { useAtom } from 'jotai'
 import { useLayoutEffect, useRef } from 'react'
 
-import { executingOrdersCountdownAtom } from './atoms'
-import { ExecutingOrdersCountdown } from './types'
+import { ordersProgressBarCountdown } from './atoms'
+import { OrdersProgressBarCountdown } from './types'
 
 export function ProgressBarV2ExecutingOrdersUpdater(): null {
   useCountdownUpdater()
@@ -11,7 +11,7 @@ export function ProgressBarV2ExecutingOrdersUpdater(): null {
 }
 
 function useCountdownUpdater() {
-  const [allCountdowns, setCountdowns] = useAtom(executingOrdersCountdownAtom)
+  const [allCountdowns, setCountdowns] = useAtom(ordersProgressBarCountdown)
 
   // Use a ref to not restart the updater on every change
   const countdownsRef = useRef(allCountdowns)
@@ -28,7 +28,7 @@ function useCountdownUpdater() {
         return
       }
 
-      const newCountdowns = orderIds.reduce<ExecutingOrdersCountdown>((acc, orderId) => {
+      const newCountdowns = orderIds.reduce<OrdersProgressBarCountdown>((acc, orderId) => {
         const value = countdowns[orderId]
 
         // Decrement counter

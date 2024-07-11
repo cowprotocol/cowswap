@@ -1,15 +1,15 @@
 import { PendingOrderStatusType, SolverCompetition } from 'api/cowProtocol/api'
 
-export type ExecutingOrderState = {
+export type OrderProgressBarState = {
   countdown?: number | null
   backendApiStatus?: PendingOrderStatusType
   solverCompetition?: SolverCompetition
   progressBarStepName?: OrderProgressBarStepName
 }
 
-export type ExecutingOrdersState = Record<string, ExecutingOrderState>
+export type OrdersProgressBarState = Record<string, OrderProgressBarState>
 
-export type ExecutingOrdersCountdown = Record<string, number | null>
+export type OrdersProgressBarCountdown = Record<string, number | null>
 
 type happyPath = 'initial' | 'solving' | 'executing' | 'finished'
 type errorFlow = 'nextBatch' | 'delayed' | 'unfillable' | 'submissionFailed'

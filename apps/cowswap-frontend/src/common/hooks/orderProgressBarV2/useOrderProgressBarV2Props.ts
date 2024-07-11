@@ -13,20 +13,20 @@ import { getPendingOrderStatus, PendingOrderStatusType } from 'api/cowProtocol/a
 import { getIsFinalizedOrder } from 'utils/orderUtils/getIsFinalizedOrder'
 
 import {
-  executingOrdersStateAtom,
-  updateSingleExecutingOrderBackendInfo,
-  updateSingleExecutingOrderCountdown,
-  updateSingleExecutingOrderProgressBarStepName,
+  ordersProgressBarStateAtom,
+  updateOrderProgressBarBackendInfo,
+  updateOrderProgressBarCountdown,
+  updateOrderProgressBarStepName,
 } from './atoms'
-import { ExecutingOrderState, OrderProgressBarStepName } from './types'
+import { OrderProgressBarState, OrderProgressBarStepName } from './types'
 
 export type UseOrderProgressBarPropsParams = {
   activityDerivedState: ActivityDerivedState | null
   chainId: SupportedChainId
 }
 
-export type UseOrderProgressBarV2Result = Pick<ExecutingOrderState, 'countdown' | 'solverCompetition'> & {
-  stepName: Exclude<ExecutingOrderState['progressBarStepName'], undefined>
+export type UseOrderProgressBarV2Result = Pick<OrderProgressBarState, 'countdown' | 'solverCompetition'> & {
+  stepName: Exclude<OrderProgressBarState['progressBarStepName'], undefined>
 }
 
 /**
@@ -57,21 +57,21 @@ export function useOrderProgressBarV2Props(params: UseOrderProgressBarPropsParam
 
 // atom related hooks
 
-function useGetExecutingOrderState(orderId: string): ExecutingOrderState {
-  const fullState = useAtomValue(executingOrdersStateAtom)
+function useGetExecutingOrderState(orderId: string): OrderProgressBarState {
+  const fullState = useAtomValue(ordersProgressBarStateAtom)
   const singleState = fullState[orderId]
 
   return useMemo(() => singleState || {}, [singleState])
 }
 
 function useSetExecutingOrderCountdownCallback() {
-  const setAtom = useSetAtom(updateSingleExecutingOrderCountdown)
+  const setAtom = useSetAtom(updateOrderProgressBarCountdown)
 
   return useCallback((orderId: string, value: number | null) => setAtom({ orderId, value }), [setAtom])
 }
 
 function useSetExecutingOrderProgressBarStepNameCallback() {
-  const setValue = useSetAtom(updateSingleExecutingOrderProgressBarStepName)
+  const setValue = useSetAtom(updateOrderProgressBarStepName)
 
   return useCallback((orderId: string, value: OrderProgressBarStepName) => setValue({ orderId, value }), [setValue])
 }
@@ -80,8 +80,8 @@ function useSetExecutingOrderProgressBarStepNameCallback() {
 
 function useCountdownStartUpdater(
   orderId: string,
-  countdown: ExecutingOrderState['countdown'],
-  backendApiStatus: ExecutingOrderState['backendApiStatus']
+  countdown: OrderProgressBarState['countdown'],
+  backendApiStatus: OrderProgressBarState['backendApiStatus']
 ) {
   const setCountdown = useSetExecutingOrderCountdownCallback()
 
@@ -100,8 +100,8 @@ function useProgressBarStepNameUpdater(
   orderId: string,
   isUnfillable: boolean,
   isConfirmed: boolean,
-  countdown: ExecutingOrderState['countdown'],
-  backendApiStatus: ExecutingOrderState['backendApiStatus']
+  countdown: OrderProgressBarState['countdown'],
+  backendApiStatus: OrderProgressBarState['backendApiStatus']
 ) {
   const setProgressBarStepName = useSetExecutingOrderProgressBarStepNameCallback()
 
@@ -115,8 +115,8 @@ function useProgressBarStepNameUpdater(
 function getProgressBarStepName(
   isUnfillable: boolean,
   isConfirmed: boolean,
-  countdown: ExecutingOrderState['countdown'],
-  backendApiStatus: ExecutingOrderState['backendApiStatus']
+  countdown: OrderProgressBarState['countdown'],
+  backendApiStatus: OrderProgressBarState['backendApiStatus']
 ): OrderProgressBarStepName {
   if (isUnfillable) {
     // out of market order
@@ -146,7 +146,7 @@ const BACKEND_TYPE_TO_PROGRESS_BAR_STEP_NAME: Record<PendingOrderStatusType, Ord
 }
 
 function useBackendApiStatusUpdater(chainId: SupportedChainId, orderId: string, isFinal: boolean) {
-  const setAtom = useSetAtom(updateSingleExecutingOrderBackendInfo)
+  const setAtom = useSetAtom(updateOrderProgressBarBackendInfo)
   const { type: backendApiStatus, value: solverCompetition } = usePendingOrderStatus(chainId, orderId, isFinal) || {}
 
   useEffect(() => {
