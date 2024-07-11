@@ -29,6 +29,7 @@ import { Order } from 'api/operator'
 import { getUiOrderType } from 'utils/getUiOrderType'
 
 import { TAB_QUERY_PARAM_KEY } from '../../../explorer/const'
+import { Link } from 'react-router-dom'
 
 const tooltip = {
   orderID: 'A unique identifier ID for this order.',
@@ -201,12 +202,9 @@ export function DetailsTable(props: Props): React.ReactNode | null {
                   textToCopy={owner}
                   onCopy={(): void => onCopy('ownerAddress')}
                   contentsToDisplay={
-                    <LinkWithPrefixNetwork
-                      to={getExplorerLink(chainId, owner, ExplorerDataType.ADDRESS)}
-                      target="_blank"
-                    >
+                    <Link to={getExplorerLink(chainId, owner, ExplorerDataType.ADDRESS)} target="_blank">
                       {owner}↗
-                    </LinkWithPrefixNetwork>
+                    </Link>
                   }
                 />
                 <LinkButton to={`/address/${owner}`}>
@@ -228,12 +226,9 @@ export function DetailsTable(props: Props): React.ReactNode | null {
                   textToCopy={receiver}
                   onCopy={(): void => onCopy('receiverAddress')}
                   contentsToDisplay={
-                    <LinkWithPrefixNetwork
-                      to={getExplorerLink(chainId, receiver, ExplorerDataType.ADDRESS)}
-                      target="_blank"
-                    >
+                    <Link to={getExplorerLink(chainId, receiver, ExplorerDataType.ADDRESS)} target="_blank">
                       {receiver}↗
-                    </LinkWithPrefixNetwork>
+                    </Link>
                   }
                 />
                 <LinkButton to={`/address/${receiver}`}>
@@ -259,12 +254,9 @@ export function DetailsTable(props: Props): React.ReactNode | null {
                       textToCopy={txHash}
                       onCopy={(): void => onCopy('settlementTx')}
                       contentsToDisplay={
-                        <LinkWithPrefixNetwork
-                          to={getExplorerLink(chainId, txHash, ExplorerDataType.TRANSACTION)}
-                          target="_blank"
-                        >
+                        <Link to={getExplorerLink(chainId, txHash, ExplorerDataType.TRANSACTION)} target="_blank">
                           {txHash}↗
-                        </LinkWithPrefixNetwork>
+                        </Link>
                       }
                     />
 
