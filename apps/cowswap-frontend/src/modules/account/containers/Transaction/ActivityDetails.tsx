@@ -23,7 +23,7 @@ import { OrderStatus } from 'legacy/state/orders/actions'
 
 import { EthFlowStepper } from 'modules/swap/containers/EthFlowStepper'
 
-import { useOrderProgressBarProps } from 'common/hooks/orderProgressBarV2'
+import { useOrderProgressBarV2Props } from 'common/hooks/orderProgressBarV2'
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
 import { isPending } from 'common/hooks/useCategorizeRecentActivity'
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
@@ -38,7 +38,6 @@ import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { StatusDetails } from './StatusDetails'
 import {
-  TransactionState as ActivityLink,
   ActivityVisual,
   CreationTimeText,
   FiatWrapper,
@@ -48,6 +47,7 @@ import {
   SummaryInnerRow,
   TextAlert,
   TransactionInnerDetail,
+  TransactionState as ActivityLink,
 } from './styled'
 
 import { ActivityDerivedState } from './index'
@@ -202,7 +202,7 @@ export function ActivityDetails(props: {
   // Check if Custom Recipient Warning Banner should be visible
   const isCustomRecipientWarningBannerVisible = !useIsReceiverWalletBannerHidden(id) && order && isPending(order)
   const hideCustomRecipientWarning = useHideReceiverWalletBanner()
-  const orderProgressBarV2Props = useOrderProgressBarProps({ activityDerivedState, chainId })
+  const orderProgressBarV2Props = useOrderProgressBarV2Props({ activityDerivedState, chainId })
 
   if (!order && !enhancedTransaction) return null
 

@@ -1,6 +1,7 @@
 import { atom } from 'jotai'
 
 import { deepEqual } from '@cowprotocol/common-utils'
+
 import { ExecutingOrdersCountdown, ExecutingOrdersState, ExecutingOrderState, OrderProgressBarStepName } from './types'
 
 /**
@@ -113,7 +114,7 @@ export const updateSingleExecutingOrderBackendInfo = atom(
       currentBackendApiStatus === backendApiStatus &&
       // Both are empty
       (currentSolverCompetition === solverCompetition ||
-        // Both are not empty
+        // Both are not empty, can compare with deepEqual
         (currentSolverCompetition && solverCompetition && deepEqual(currentSolverCompetition, solverCompetition)))
     ) {
       return

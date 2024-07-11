@@ -10,10 +10,12 @@ export function ProgressBarV2ExecutingOrdersUpdater(): null {
   return null
 }
 
-export function useCountdownUpdater() {
+function useCountdownUpdater() {
   const [allCountdowns, setCountdowns] = useAtom(executingOrdersCountdownAtom)
 
+  // Use a ref to not restart the updater on every change
   const countdownsRef = useRef(allCountdowns)
+  // Important! Update the ref on every re-render
   countdownsRef.current = allCountdowns
 
   useLayoutEffect(() => {
@@ -22,11 +24,14 @@ export function useCountdownUpdater() {
 
       const orderIds = Object.keys(countdowns)
       if (!orderIds.length || orderIds.every((orderId) => !countdowns[orderId])) {
+        // Skip update if there are no countdowns or none of them are truthy
         return
       }
 
       const newCountdowns = orderIds.reduce<ExecutingOrdersCountdown>((acc, orderId) => {
         const value = countdowns[orderId]
+
+        // Decrement counter
         acc[orderId] = value && value - 1 >= 0 ? value - 1 : value
 
         return acc

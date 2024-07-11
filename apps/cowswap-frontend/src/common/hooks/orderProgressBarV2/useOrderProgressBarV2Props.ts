@@ -13,7 +13,6 @@ import { getPendingOrderStatus, PendingOrderStatusType } from 'api/cowProtocol/a
 import { getIsFinalizedOrder } from 'utils/orderUtils/getIsFinalizedOrder'
 
 import {
-  executingOrdersCountdownAtom,
   executingOrdersStateAtom,
   updateSingleExecutingOrderBackendInfo,
   updateSingleExecutingOrderCountdown,
@@ -21,43 +20,23 @@ import {
 } from './atoms'
 import { ExecutingOrderState, OrderProgressBarStepName } from './types'
 
-export function useGetExecutingOrderCountdown(orderId: string | undefined) {
-  const allCountdowns = useAtomValue(executingOrdersCountdownAtom)
-
-  const countdown = orderId ? allCountdowns[orderId] : undefined
-
-  return useMemo(() => countdown, [countdown])
-}
-
-export function useGetExecutingOrderState(orderId: string): ExecutingOrderState {
-  const fullState = useAtomValue(executingOrdersStateAtom)
-  const singleState = fullState[orderId]
-
-  return useMemo(() => singleState || {}, [singleState])
-}
-
-export function useSetExecutingOrderCountdownCallback() {
-  const setAtom = useSetAtom(updateSingleExecutingOrderCountdown)
-
-  return useCallback((orderId: string, value: number | null) => setAtom({ orderId, value }), [setAtom])
-}
-
-export function useSetExecutingOrderProgressBarStepNameCallback() {
-  const setValue = useSetAtom(updateSingleExecutingOrderProgressBarStepName)
-
-  return useCallback((orderId: string, value: OrderProgressBarStepName) => setValue({ orderId, value }), [setValue])
-}
-
 export type UseOrderProgressBarPropsParams = {
   activityDerivedState: ActivityDerivedState | null
   chainId: SupportedChainId
 }
 
-export function useOrderProgressBarProps(params: UseOrderProgressBarPropsParams) {
+export type UseOrderProgressBarV2Result = Pick<ExecutingOrderState, 'countdown' | 'solverCompetition'> & {
+  stepName: Exclude<ExecutingOrderState['progressBarStepName'], undefined>
+}
+
+/**
+ * Hook for fetching ProgressBarV2 props
+ */
+export function useOrderProgressBarV2Props(params: UseOrderProgressBarPropsParams): UseOrderProgressBarV2Result {
   const { activityDerivedState, chainId } = params
 
   const { order, isConfirmed = false, isUnfillable = false } = activityDerivedState || {}
-  // Whether the order is in a final state, to avoid querying backend after
+  // Whether the order is in a final state, to avoid querying backend unnecessarily
   const isFinal = !!(order && getIsFinalizedOrder(order))
 
   const orderId = order?.id || ''
@@ -65,7 +44,7 @@ export function useOrderProgressBarProps(params: UseOrderProgressBarPropsParams)
   // Fetch state from atom
   const { countdown, backendApiStatus, solverCompetition, progressBarStepName } = useGetExecutingOrderState(orderId)
 
-  // Local updaters
+  // Local updaters of the respective atom
   useBackendApiStatusUpdater(chainId, orderId, isFinal)
   useProgressBarStepNameUpdater(orderId, isUnfillable, isConfirmed, countdown, backendApiStatus)
   useCountdownStartUpdater(orderId, countdown, backendApiStatus)
@@ -75,6 +54,29 @@ export function useOrderProgressBarProps(params: UseOrderProgressBarPropsParams)
     [countdown, solverCompetition, progressBarStepName]
   )
 }
+
+// atom related hooks
+
+function useGetExecutingOrderState(orderId: string): ExecutingOrderState {
+  const fullState = useAtomValue(executingOrdersStateAtom)
+  const singleState = fullState[orderId]
+
+  return useMemo(() => singleState || {}, [singleState])
+}
+
+function useSetExecutingOrderCountdownCallback() {
+  const setAtom = useSetAtom(updateSingleExecutingOrderCountdown)
+
+  return useCallback((orderId: string, value: number | null) => setAtom({ orderId, value }), [setAtom])
+}
+
+function useSetExecutingOrderProgressBarStepNameCallback() {
+  const setValue = useSetAtom(updateSingleExecutingOrderProgressBarStepName)
+
+  return useCallback((orderId: string, value: OrderProgressBarStepName) => setValue({ orderId, value }), [setValue])
+}
+
+// local updaters
 
 function useCountdownStartUpdater(
   orderId: string,
@@ -127,13 +129,13 @@ function getProgressBarStepName(
     return 'delayed'
   } else if (backendApiStatus) {
     // straight mapping API status to progress bar steps
-    return PENDING_ORDER_STATUS_TYPE_TO_PROGRESS_BAR_STEP_NAME[backendApiStatus]
+    return BACKEND_TYPE_TO_PROGRESS_BAR_STEP_NAME[backendApiStatus]
   }
 
   return 'initial'
 }
 
-const PENDING_ORDER_STATUS_TYPE_TO_PROGRESS_BAR_STEP_NAME: Record<PendingOrderStatusType, OrderProgressBarStepName> = {
+const BACKEND_TYPE_TO_PROGRESS_BAR_STEP_NAME: Record<PendingOrderStatusType, OrderProgressBarStepName> = {
   scheduled: 'initial',
   open: 'initial',
   active: 'solving',
@@ -143,15 +145,15 @@ const PENDING_ORDER_STATUS_TYPE_TO_PROGRESS_BAR_STEP_NAME: Record<PendingOrderSt
   cancelled: 'initial', // TODO: maybe add another state for finished with error?
 }
 
-export function useBackendApiStatusUpdater(chainId: SupportedChainId, orderId: string, isFinal: boolean) {
-  const update = useSetAtom(updateSingleExecutingOrderBackendInfo)
+function useBackendApiStatusUpdater(chainId: SupportedChainId, orderId: string, isFinal: boolean) {
+  const setAtom = useSetAtom(updateSingleExecutingOrderBackendInfo)
   const { type: backendApiStatus, value: solverCompetition } = usePendingOrderStatus(chainId, orderId, isFinal) || {}
 
   useEffect(() => {
     if (orderId && (backendApiStatus || solverCompetition)) {
-      update({ orderId, value: { backendApiStatus, solverCompetition } })
+      setAtom({ orderId, value: { backendApiStatus, solverCompetition } })
     }
-  }, [orderId, update, backendApiStatus, solverCompetition])
+  }, [orderId, setAtom, backendApiStatus, solverCompetition])
 }
 
 const POOLING_SWR_OPTIONS = {

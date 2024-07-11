@@ -24,7 +24,7 @@ import { RateInfoParams } from 'common/pure/RateInfo'
 import { TransactionSubmittedContent } from 'common/pure/TransactionSubmittedContent'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
-import { useOrderProgressBarProps } from 'common/hooks/orderProgressBarV2'
+import { useOrderProgressBarV2Props } from 'common/hooks/orderProgressBarV2'
 import { useIsEoaEthFlow } from '../../hooks/useIsEoaEthFlow'
 import { useShouldPayGas } from '../../hooks/useShouldPayGas'
 import { useSwapConfirmButtonText } from '../../hooks/useSwapConfirmButtonText'
@@ -97,7 +97,7 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
   const submittedContent = (order: Order | undefined, onDismiss: Command) => {
     const activity = createActivityDescriptor(chainId, undefined, order)
     const activityDerivedState = getActivityDerivedState({ chainId, activityData: activity, gnosisSafeInfo })
-    const orderProgressBarV2Props = useOrderProgressBarProps({ activityDerivedState, chainId })
+    const orderProgressBarV2Props = useOrderProgressBarV2Props({ activityDerivedState, chainId })
 
     return (
       <TransactionSubmittedContent
