@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.32.2](https://github.com/cowprotocol/cowswap/compare/explorer-v2.32.1...explorer-v2.32.2) (2024-07-10)
+
+
+### Bug Fixes
+
+* fix broken links in gnosis chain ([#4706](https://github.com/cowprotocol/cowswap/issues/4706)) ([af8172d](https://github.com/cowprotocol/cowswap/commit/af8172d3b2d97e3c7c1150a8237344e5182a310d))
+
 ## [2.32.1](https://github.com/cowprotocol/cowswap/compare/explorer-v2.32.0...explorer-v2.32.1) (2024-07-05)
 
 
