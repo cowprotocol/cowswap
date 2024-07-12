@@ -1,6 +1,5 @@
 import { useCallback } from 'react'
 
-import { switchTokensAnalytics } from '@cowprotocol/analytics'
 import { FractionUtils } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -10,6 +9,7 @@ import { useTradeNavigate } from './useTradeNavigate'
 import { useTradeState } from './useTradeState'
 
 import { ExtendedTradeRawState } from '../types/TradeRawState'
+import { switchTokensAnalytics } from 'modules/analytics'
 
 const EMPTY_CURRENCY_ID = '_'
 

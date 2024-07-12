@@ -1,7 +1,6 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect, useLayoutEffect, useMemo, useState } from 'react'
 
-import { openAdvancedOrdersTabAnalytics, twapWalletCompatibilityAnalytics } from '@cowprotocol/analytics'
 import { renderTooltip } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -35,6 +34,7 @@ import { deadlinePartsDisplay } from '../../utils/deadlinePartsDisplay'
 import { ActionButtons } from '../ActionButtons'
 import { AmountParts } from '../AmountParts'
 import { TwapFormWarnings } from '../TwapFormWarnings'
+import { openAdvancedOrdersTabAnalytics, twapWalletCompatibilityAnalytics } from 'modules/analytics'
 
 export type { LabelTooltip, LabelTooltipItems } from './tooltips'
 

@@ -1,7 +1,6 @@
 import { useSetAtom } from 'jotai'
 import { useCallback, useEffect, useRef } from 'react'
 
-import { priceOutOfRangeAnalytics } from '@cowprotocol/analytics'
 import { useTokensBalances } from '@cowprotocol/balances-and-allowances'
 import { NATIVE_CURRENCY_ADDRESS, WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { useIsWindowVisible } from '@cowprotocol/common-hooks'
@@ -23,7 +22,7 @@ import {
   getEstimatedExecutionPrice,
   getOrderMarketPrice,
   getRemainderAmount,
-  isOrderUnfillable
+  isOrderUnfillable,
 } from 'legacy/state/orders/utils'
 import type { LegacyFeeQuoteParams } from 'legacy/state/price/types'
 import { getBestQuote } from 'legacy/utils/price'
@@ -33,6 +32,7 @@ import { updatePendingOrderPricesAtom } from 'modules/orders/state/pendingOrders
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { PRICE_QUOTE_VALID_TO_TIME } from '../../constants/quote'
+import { priceOutOfRangeAnalytics } from 'modules/analytics'
 
 /**
  * Updater that checks whether pending orders are still "fillable"

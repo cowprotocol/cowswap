@@ -1,13 +1,12 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
-import { alternativeModalAnalytics } from '@cowprotocol/analytics'
-
 import { Order } from 'legacy/state/orders/actions'
 
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import { alternativeOrderAtom, isAlternativeOrderModalVisibleAtom } from './atoms'
+import { alternativeModalAnalytics } from 'modules/analytics'
 
 export function useIsAlternativeOrderModalVisible() {
   return useAtomValue(isAlternativeOrderModalVisibleAtom)

@@ -1,6 +1,5 @@
 import { useCallback, useMemo } from 'react'
 
-import { changeSwapAmountAnalytics } from '@cowprotocol/analytics'
 import { Currency } from '@uniswap/sdk-core'
 
 import { Field } from 'legacy/state/types'
@@ -10,6 +9,7 @@ import { useResetTradeQuote } from 'modules/tradeQuote'
 
 import { useAdvancedOrdersDerivedState } from './useAdvancedOrdersDerivedState'
 import { useUpdateAdvancedOrdersRawState } from './useAdvancedOrdersRawState'
+import { changeSwapAmountAnalytics } from 'modules/analytics'
 
 // TODO: this should be also unified for each trade widget (swap, limit, advanced)
 export function useAdvancedOrdersActions() {

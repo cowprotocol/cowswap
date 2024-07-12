@@ -1,7 +1,6 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
-import { modifySafeHandlerAnalytics } from '@cowprotocol/analytics'
 import { BundleTxApprovalBanner } from '@cowprotocol/ui'
 import { useIsSafeViaWc, useWalletInfo } from '@cowprotocol/wallet'
 
@@ -33,6 +32,7 @@ import { swapAmountDifferenceAtom } from '../../state/swapAmountDifferenceAtom'
 import { twapDeadlineAtom, twapOrderAtom } from '../../state/twapOrderAtom'
 import { twapOrdersSettingsAtom, updateTwapOrdersSettingsAtom } from '../../state/twapOrdersSettingsAtom'
 import { isPriceProtectionNotEnough } from '../../utils/isPriceProtectionNotEnough'
+import { modifySafeHandlerAnalytics } from 'modules/analytics'
 
 const BUNDLE_APPROVAL_STATES = [TradeFormValidation.ApproveAndSwap]
 

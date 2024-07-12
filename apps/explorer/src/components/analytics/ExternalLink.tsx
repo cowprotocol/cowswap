@@ -1,27 +1,8 @@
 import React, { HTMLProps } from 'react'
 
-import { outboundLink } from 'components/analytics'
-
 import { anonymizeLink } from 'utils/anonymizeLink'
-
-export function handleClickExternalLink(event: React.MouseEvent<HTMLAnchorElement>): void {
-  const { target, href } = event.currentTarget
-
-  const anonymizedHref = anonymizeLink(href)
-
-  // don't prevent default, don't redirect if it's a new tab
-  if (target === '_blank' || event.ctrlKey || event.metaKey) {
-    outboundLink({ label: anonymizedHref }, () => {
-      console.debug('Fired outbound link event', anonymizedHref)
-    })
-  } else {
-    event.preventDefault()
-    // send a ReactGA event and then trigger a location change
-    outboundLink({ label: anonymizedHref }, () => {
-      window.location.href = anonymizedHref
-    })
-  }
-}
+import { cowAnalytics } from 'analytics'
+import { CowAnalytics } from '@cowprotocol/analytics'
 
 /**
  * Outbound link that handles firing google analytics events
@@ -43,9 +24,34 @@ export function ExternalLink({
       href={href}
       onClick={(event): void => {
         if (onClickOptional) onClickOptional(event)
-        handleClickExternalLink(event)
+        handleClickExternalLink(cowAnalytics, event)
       }}
       {...rest}
     />
   )
+}
+
+function handleClickExternalLink(cowAnalytics: CowAnalytics, event: React.MouseEvent<HTMLAnchorElement>): void {
+  const { target, href } = event.currentTarget
+
+  const anonymizedHref = anonymizeLink(href)
+
+  const isNewTab = target === '_blank' || event.ctrlKey || event.metaKey
+
+  // don't prevent default, don't redirect if it's a new tab
+  if (!isNewTab) {
+    event.preventDefault()
+  }
+
+  cowAnalytics.outboundLink({
+    label: anonymizedHref,
+    hitCallback: () => {
+      if (isNewTab) {
+        console.debug('Fired outbound link event', anonymizedHref)
+      } else {
+        // send a ReactGA event and then trigger a location change
+        window.location.href = anonymizedHref
+      }
+    },
+  })
 }

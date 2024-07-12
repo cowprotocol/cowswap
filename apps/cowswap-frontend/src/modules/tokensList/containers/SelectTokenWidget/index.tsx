@@ -1,6 +1,5 @@
 import { useCallback, useState } from 'react'
 
-import { addListAnalytics } from '@cowprotocol/analytics'
 import { useTokensBalances } from '@cowprotocol/balances-and-allowances'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
@@ -26,6 +25,7 @@ import { ImportListModal } from '../../pure/ImportListModal'
 import { ImportTokenModal } from '../../pure/ImportTokenModal'
 import { SelectTokenModal } from '../../pure/SelectTokenModal'
 import { ManageListsAndTokens } from '../ManageListsAndTokens'
+import { addListAnalytics } from 'modules/analytics'
 
 const Wrapper = styled.div`
   width: 100%;

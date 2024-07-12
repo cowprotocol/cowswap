@@ -1,7 +1,3 @@
-import React from 'react'
-
-import { twapConversionAnalytics } from '@cowprotocol/analytics'
-
 import { useTradeConfirmActions } from 'modules/trade'
 import { TradeFormButtons, TradeFormValidation, useTradeFormButtonContext } from 'modules/tradeFormValidation'
 
@@ -9,6 +5,7 @@ import { useAreWarningsAccepted } from '../../hooks/useAreWarningsAccepted'
 import { useTwapWarningsContext } from '../../hooks/useTwapWarningsContext'
 import { PrimaryActionButton } from '../../pure/PrimaryActionButton'
 import { TwapFormState } from '../../pure/PrimaryActionButton/getTwapFormState'
+import { twapConversionAnalytics } from 'modules/analytics'
 
 interface ActionButtonsProps {
   localFormValidation: TwapFormState | null

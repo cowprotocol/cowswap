@@ -3,7 +3,6 @@ import GlobalStyles from 'styles/global.styles'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { CONFIG } from '@/const/meta'
-import { Analytics } from '@/components/Analytics'
 import { ApolloProvider } from '@apollo/client'
 import { apolloClient } from 'services/uniswap-price/apollo-client'
 import { useInitializeUtm } from 'modules/utm'
@@ -50,7 +49,6 @@ export default function App(props: AppProps) {
       </Head>
 
       <GlobalStyles />
-      <Analytics />
       <ApolloProvider client={apolloClient}>
         <WithLDProvider>
           <ThemeProvider>

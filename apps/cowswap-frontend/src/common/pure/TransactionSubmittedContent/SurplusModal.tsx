@@ -1,6 +1,3 @@
-import React, { useCallback } from 'react'
-
-import { sendEvent } from '@cowprotocol/analytics'
 import CheckSingular from '@cowprotocol/assets/cow-swap/check-singular.svg'
 import SurplusCow from '@cowprotocol/assets/cow-swap/surplus-cow.svg'
 import twitterImage from '@cowprotocol/assets/cow-swap/twitter.svg'
@@ -14,6 +11,7 @@ import styled from 'styled-components/macro'
 import { Order } from 'legacy/state/orders/actions'
 
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
+import { shareSurplusOnTwitter } from 'modules/analytics'
 
 const SELL_SURPLUS_WORD = 'got'
 const BUY_SURPLUS_WORD = 'saved'
@@ -160,13 +158,6 @@ export function SurplusModal(props: SurplusModalProps) {
 
   const { surplusFiatValue, showFiatValue, surplusToken, surplusAmount, showSurplus } = useGetSurplusData(order)
 
-  const onTweetShare = useCallback(() => {
-    sendEvent({
-      category: 'Surplus Modal',
-      action: 'Share on Twitter',
-    })
-  }, [])
-
   if (!order || !showSurplus) {
     return null
   }
@@ -189,7 +180,7 @@ export function SurplusModal(props: SurplusModalProps) {
       {showFiatValue && <FiatAmount amount={surplusFiatValue} accurate={false} />}
       {surplusAmount && surplusToken && (
         <StyledExternalLink
-          onClickOptional={onTweetShare}
+          onClickOptional={shareSurplusOnTwitter}
           href={`https://twitter.com/intent/tweet?text=${getTwitterText(
             surplusAmount.toSignificant(),
             surplusToken.symbol || 'Unknown token',

@@ -21,9 +21,8 @@ import {
   TopicTitle,
 } from '@/styles/styled'
 
-import { EventCategories, sendEventHandler } from '@cowprotocol/analytics'
-
 import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
+import { clickOnKnowledgeBase } from 'modules/analytics'
 
 interface PageProps {
   siteConfigData: typeof CONFIG
@@ -96,7 +95,7 @@ export default function Page({ siteConfigData, categories, articles }: PageProps
                     bgColor={bgColor}
                     textColor={textColor}
                     href={link}
-                    onClick={() => sendEventHandler(EventCategories.KNOWLEDGEBASE, `click-topic-${name}`)}
+                    onClick={() => clickOnKnowledgeBase(`click-topic-${name}`)}
                   >
                     <TopicImage iconColor={iconColor}>
                       {imageUrl ? (

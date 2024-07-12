@@ -9,8 +9,6 @@ import { Link, LinkType } from '@/components/Link'
 
 import { CowSwapWidget, CowSwapWidgetParams } from '@cowprotocol/widget-react'
 
-import { EventCategories, sendEventHandler } from '@cowprotocol/analytics'
-
 import {
   PageWrapper,
   ContainerCard,
@@ -39,6 +37,7 @@ import { DAO_CONTENT as CONTENT } from '@/data/widget/const'
 import SVG from 'react-inlinesvg'
 
 import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
+import { clickOnWidget } from 'modules/analytics'
 
 const FEATURE_ITEMS = [
   'Live styling configurator',
@@ -87,7 +86,7 @@ export default function Page() {
                 utmContent="widget-page-configure-widget-cta-hero"
                 external
                 linkType={LinkType.HeroButton}
-                onClick={() => sendEventHandler(EventCategories.WIDGET, 'click-config-widget')}
+                onClick={() => clickOnWidget('click-config-widget')}
               >
                 {' '}
                 Configure widget{' '}
@@ -100,7 +99,7 @@ export default function Page() {
                 utmContent="widget-page-readdocs-cta-hero"
                 external
                 linkType={LinkType.HeroButton}
-                onClick={() => sendEventHandler(EventCategories.WIDGET, 'click-read-docs')}
+                onClick={() => clickOnWidget('click-read-docs')}
               >
                 {' '}
                 Read docs
@@ -309,7 +308,7 @@ export default function Page() {
                   utmContent="widget-page-configure-widget-cta-hero"
                   external
                   linkType={LinkType.HeroButton}
-                  onClick={() => sendEventHandler(EventCategories.WIDGET, 'click-config-widget')}
+                  onClick={() => clickOnWidget('click-config-widget')}
                 >
                   {' '}
                   Configure widget{' '}
@@ -322,7 +321,7 @@ export default function Page() {
                   utmContent="widget-page-readdocs-cta-hero"
                   external
                   linkType={LinkType.HeroButton}
-                  onClick={() => sendEventHandler(EventCategories.WIDGET, 'click-read-docs')}
+                  onClick={() => clickOnWidget('click-read-docs')}
                 >
                   {' '}
                   Read docs

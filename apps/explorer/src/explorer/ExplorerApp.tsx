@@ -12,7 +12,7 @@ import { INITIAL_STATE, rootReducer } from './state'
 import { GlobalStyle, MainWrapper } from './styled'
 
 import { version } from '../../package.json'
-import { useAnalyticsReporter } from '../components/analytics'
+import { useAnalyticsReporter } from '../analytics'
 import { GenericLayout } from '../components/layout'
 import { withGlobalContext } from '../hooks/useGlobalState'
 import { RedirectMainnet, RedirectXdai } from '../state/network'

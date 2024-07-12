@@ -44,8 +44,8 @@ import { ContentStyled, DrawerStyled, WalletConnectionWrapper, WrapperStyled } f
 import { ConfiguratorState, TokenListItem } from './types'
 
 import { ColorModeContext } from '../../theme/ColorModeContext'
-import { connectWalletToConfiguratorGA } from '../analytics'
 import { EmbedDialog } from '../embedDialog'
+import { connectWalletToConfiguratorGA } from '../analytics'
 
 declare global {
   interface Window {

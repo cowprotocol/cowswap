@@ -1,4 +1,3 @@
-import { gameAnalytics } from '@cowprotocol/analytics'
 import ninjaCowImg from '@cowprotocol/assets/cow-swap/ninja-cow.png'
 import { ButtonPrimary } from '@cowprotocol/ui'
 
@@ -6,6 +5,7 @@ import styled from 'styled-components/macro'
 
 import { PageTitle } from 'modules/application/containers/PageTitle'
 import { Page, Content } from 'modules/application/pure/Page'
+import { gameAnalytics } from 'modules/analytics'
 
 const GAME_URL = 'https://mevslicer.netlify.app/'
 

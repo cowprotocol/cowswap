@@ -21,7 +21,7 @@ import { parameterizeTradeRoute, useTradeRouteContext } from 'modules/trade'
 import { useInitializeUtm } from 'modules/utm'
 
 import { InvalidLocalTimeWarning } from 'common/containers/InvalidLocalTimeWarning'
-import { useAnalyticsReporter } from 'common/hooks/useAnalyticsReporter'
+import { useAnalyticsReporter } from 'modules/analytics'
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
 import { useMenuItems } from 'common/hooks/useMenuItems'
 import { LoadingApp } from 'common/pure/LoadingApp'
@@ -30,6 +30,7 @@ import RedirectAnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers/Redir
 
 import { ADDITIONAL_FOOTER_CONTENT, NAV_ITEMS, PRODUCT_VARIANT } from './menuConsts'
 import * as styledEl from './styled'
+import { cowAnalytics } from 'modules/analytics'
 
 const RoutesApp = lazy(() => import('./RoutesApp').then((module) => ({ default: module.RoutesApp })))
 
@@ -140,6 +141,7 @@ export function App() {
               productVariant={PRODUCT_VARIANT}
               additionalFooterContent={ADDITIONAL_FOOTER_CONTENT}
               hasTouchFooter
+              cowAnalytics={cowAnalytics}
             />
           )}
 

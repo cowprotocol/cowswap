@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
-import { changeSwapAmountAnalytics, switchTokensAnalytics } from '@cowprotocol/analytics'
 import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
 import { FEE_SIZE_THRESHOLD } from '@cowprotocol/common-const'
 import { formatSymbol, getIsNativeToken, isAddress, tryParseCurrencyAmount } from '@cowprotocol/common-utils'
@@ -29,6 +28,7 @@ import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetwo
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
 import { useSwapSlippage } from './useSwapSlippage'
+import { changeSwapAmountAnalytics, switchTokensAnalytics } from 'modules/analytics'
 
 export const BAD_RECIPIENT_ADDRESSES: { [address: string]: true } = {
   '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f': true, // v2 factory

@@ -39,9 +39,9 @@ import {
 import SVG from 'react-inlinesvg'
 import IMG_ICON_FAQ from '@cowprotocol/assets/images/icon-faq.svg'
 import { FAQ_DATA, TWEETS, COW_IS_DIFFERENT, ADVANCED_ORDER_TYPES, BETTER_UX } from '@/data/cow-swap/const'
-import { EventCategories, sendEventHandler } from '@cowprotocol/analytics'
 import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
 import LazyLoadTweet from '@/components/LazyLoadTweet'
+import { clickOnCowSwap } from 'modules/analytics'
 
 interface PageProps {
   siteConfigData: typeof CONFIG
@@ -82,7 +82,7 @@ export default function Page({ tweets }: PageProps) {
               external
               linkType={LinkType.HeroButton}
               utmContent="cow-swap-launch-app-button"
-              onClick={() => sendEventHandler(EventCategories.COWSWAP, 'click-launch-app')}
+              onClick={() => clickOnCowSwap('click-launch-app')}
             >
               Launch app
             </Link>
@@ -115,7 +115,7 @@ export default function Page({ tweets }: PageProps) {
             external
             linkType={LinkType.SectionTitleButton}
             utmContent="cow-swap-metrics-link"
-            onClick={() => sendEventHandler(EventCategories.COWSWAP, 'click-metrics-link')}
+            onClick={() => clickOnCowSwap('click-metrics-link')}
           >
             View all metrics on DUNE &#8599;
           </Link>
@@ -176,7 +176,7 @@ export default function Page({ tweets }: PageProps) {
                 color="#012F7A"
                 href="/cow-protocol"
                 linkType={LinkType.SectionTitleButton}
-                onClick={() => sendEventHandler(EventCategories.COWSWAP, 'click-learn-about-cow-protocol')}
+                onClick={() => clickOnCowSwap('click-learn-about-cow-protocol')}
               >
                 Learn about CoW Protocol
               </Link>
@@ -396,7 +396,7 @@ export default function Page({ tweets }: PageProps) {
                 external
                 linkType={LinkType.SectionTitleButton}
                 utmContent="cow-swap-launch-app-button"
-                onClick={() => sendEventHandler(EventCategories.COWSWAP, 'click-launch-app')}
+                onClick={() => clickOnCowSwap('click-launch-app')}
               >
                 Launch app
               </Link>
