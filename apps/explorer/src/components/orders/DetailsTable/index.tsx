@@ -22,6 +22,7 @@ import { OrderPriceDisplay } from 'components/orders/OrderPriceDisplay'
 import { OrderSurplusDisplay } from 'components/orders/OrderSurplusDisplay'
 import { StatusLabel } from 'components/orders/StatusLabel'
 import { HelpTooltip } from 'components/Tooltip'
+import { Link } from 'react-router-dom'
 import styled from 'styled-components/macro'
 import { capitalize } from 'utils'
 
@@ -29,7 +30,6 @@ import { Order } from 'api/operator'
 import { getUiOrderType } from 'utils/getUiOrderType'
 
 import { TAB_QUERY_PARAM_KEY } from '../../../explorer/const'
-import { Link } from 'react-router-dom'
 
 const tooltip = {
   orderID: 'A unique identifier ID for this order.',
