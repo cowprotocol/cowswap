@@ -11,6 +11,7 @@ export function initCowAnalyticsGoogle(): CowAnalytics {
   }
 
   const googleAnalyticsId = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS || process.env.REACT_APP_GOOGLE_ANALYTICS_ID
+  console.log('[lib:analytics] Init analytics', googleAnalyticsId)
   const cowAnalytics = new CowAnalyticsGoogle({
     googleAnalyticsId,
     options: {
