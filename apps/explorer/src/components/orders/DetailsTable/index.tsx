@@ -6,7 +6,7 @@ import { Command } from '@cowprotocol/types'
 import { Media } from '@cowprotocol/ui'
 import { TruncatedText } from '@cowprotocol/ui/pure/TruncatedText'
 
-import { faFill, faProjectDiagram, faGroupArrowsRotate, faHistory } from '@fortawesome/free-solid-svg-icons'
+import { faFill, faGroupArrowsRotate, faHistory, faProjectDiagram } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { sendEvent } from 'components/analytics'
 import DecodeAppData from 'components/AppData/DecodeAppData'
@@ -22,6 +22,7 @@ import { OrderPriceDisplay } from 'components/orders/OrderPriceDisplay'
 import { OrderSurplusDisplay } from 'components/orders/OrderSurplusDisplay'
 import { StatusLabel } from 'components/orders/StatusLabel'
 import { HelpTooltip } from 'components/Tooltip'
+import { TAB_QUERY_PARAM_KEY } from 'explorer/const'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components/macro'
 import { capitalize } from 'utils'
@@ -29,7 +30,6 @@ import { capitalize } from 'utils'
 import { Order } from 'api/operator'
 import { getUiOrderType } from 'utils/getUiOrderType'
 
-import { TAB_QUERY_PARAM_KEY } from '../../../explorer/const'
 
 const tooltip = {
   orderID: 'A unique identifier ID for this order.',
