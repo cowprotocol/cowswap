@@ -1,8 +1,14 @@
-import { INITIAL_ALLOWED_SLIPPAGE_PERCENT } from '@cowprotocol/common-const'
+import { useAtomValue } from 'jotai/index'
+
+import { bpsToPercent } from '@cowprotocol/common-utils'
 import { Percent } from '@uniswap/sdk-core'
 
-import { useUserSlippageToleranceWithDefault } from 'legacy/state/user/hooks'
+import { defaultSlippageAtom, swapSlippagePercentAtom } from '../state/slippageValueAndTypeAtom'
 
 export function useSwapSlippage(): Percent {
-  return useUserSlippageToleranceWithDefault(INITIAL_ALLOWED_SLIPPAGE_PERCENT)
+  return useAtomValue(swapSlippagePercentAtom)
+}
+
+export function useDefaultSwapSlippage() {
+  return bpsToPercent(useAtomValue(defaultSlippageAtom))
 }

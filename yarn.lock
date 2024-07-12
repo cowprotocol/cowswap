@@ -2370,6 +2370,11 @@
   dependencies:
     chalk "^4.1.0"
 
+"@corex/deepmerge@^4.0.43":
+  version "4.0.43"
+  resolved "https://registry.yarnpkg.com/@corex/deepmerge/-/deepmerge-4.0.43.tgz#9bd42559ebb41cc5a7fb7cfeea5f231c20977dca"
+  integrity sha512-N8uEMrMPL0cu/bdboEWpQYb/0i2K5Qn8eCsxzOmxSggJbbQte7ljMRoXm917AbntqTGOzdTu+vP3KOOzoC70HQ==
+
 "@cowprotocol/app-data@^2.1.0":
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/@cowprotocol/app-data/-/app-data-2.1.0.tgz#55c95e7ffd3fb0dcfecd0fc64a4273955d1d63d1"
@@ -5032,6 +5037,11 @@
   resolved "https://registry.yarnpkg.com/@next/env/-/env-14.0.4.tgz#d5cda0c4a862d70ae760e58c0cd96a8899a2e49a"
   integrity sha512-irQnbMLbUNQpP1wcE5NstJtbuA/69kRfzBrpAD7Gsn8zm/CY6YQYc3HQBz8QPxwISG26tIm5afvvVbu508oBeQ==
 
+"@next/env@^13.4.3":
+  version "13.5.6"
+  resolved "https://registry.yarnpkg.com/@next/env/-/env-13.5.6.tgz#c1148e2e1aa166614f05161ee8f77ded467062bc"
+  integrity sha512-Yac/bV5sBGkkEXmAX5FWPS9Mmo2rthrOPRQQNfycJPkjUAUclomCPH7QFVCDQ4Mp2k2K1SSM6m0zrxYrOwtFQw==
+
 "@next/eslint-plugin-next@14.0.4":
   version "14.0.4"
   resolved "https://registry.yarnpkg.com/@next/eslint-plugin-next/-/eslint-plugin-next-14.0.4.tgz#474fd88d92209270021186043513fbdc4203f5ec"
@@ -5905,10 +5915,10 @@
     redux-thunk "^2.4.2"
     reselect "^4.1.8"
 
-"@remix-run/router@1.6.2":
-  version "1.6.2"
-  resolved "https://registry.yarnpkg.com/@remix-run/router/-/router-1.6.2.tgz#bbe75f8c59e0b7077584920ce2cc76f8f354934d"
-  integrity sha512-LzqpSrMK/3JBAVBI9u3NWtOhWNw5AMQfrUFYB0+bDHTSw17z++WJLsPsxAuK+oSddsxk4d7F/JcdDPM1M5YAhA==
+"@remix-run/router@1.17.0":
+  version "1.17.0"
+  resolved "https://registry.yarnpkg.com/@remix-run/router/-/router-1.17.0.tgz#fbb0add487478ef42247d5942e7a5d8a2e20095f"
+  integrity sha512-2D6XaHEVvkCn682XBnipbJjgZUU7xjLtA4dGJRBVUKpEaDYOZMENZoZjAOSb7qirxt5RupjzZxz4fK2FO+EFPw==
 
 "@rjsf/core@^4.2.2":
   version "4.2.3"
@@ -14539,6 +14549,11 @@ dotenv@^16.3.1, dotenv@~16.3.1:
   resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-16.3.1.tgz#369034de7d7e5b120972693352a3bf112172cc3e"
   integrity sha512-IPzF4w4/Rd94bA9imS68tZBaYyBWSCE47V1RGuMrB94iyTOIEwRmVL2x/4An+6mETpLrKJ5hQkB8W4kFAadeIQ==
 
+dotenv@^16.4.5:
+  version "16.4.5"
+  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-16.4.5.tgz#cdd3b3b604cb327e286b4762e13502f717cb099f"
+  integrity sha512-ZmdL2rui+eB2YwhsWzjInR8LldtZHGDoQ1ugH85ppHKwpUHL7j7rN0Ti9NCnGiQbhaZ11FpR+7ao1dNsmduNUg==
+
 dotenv@^8.2.0:
   version "8.6.0"
   resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-8.6.0.tgz#061af664d19f7f4d8fc6e4ff9b584ce237adcb8b"
@@ -22853,6 +22868,16 @@ neo-async@^2.6.2:
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.6.2.tgz#b4aafb93e3aeb2d8174ca53cf163ab7d7308305f"
   integrity sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==
 
+next-sitemap@^4.2.3:
+  version "4.2.3"
+  resolved "https://registry.yarnpkg.com/next-sitemap/-/next-sitemap-4.2.3.tgz#5db3f650351a51e84b9fd6b58c5af2f9257b5058"
+  integrity sha512-vjdCxeDuWDzldhCnyFCQipw5bfpl4HmZA7uoo3GAaYGjGgfL4Cxb1CiztPuWGmS+auYs7/8OekRS8C2cjdAsjQ==
+  dependencies:
+    "@corex/deepmerge" "^4.0.43"
+    "@next/env" "^13.4.3"
+    fast-glob "^3.2.12"
+    minimist "^1.2.8"
+
 next-tick@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/next-tick/-/next-tick-1.1.0.tgz#1836ee30ad56d67ef281b22bd199f709449b35eb"
@@ -25728,13 +25753,13 @@ react-remove-scroll@2.5.7:
     use-callback-ref "^1.3.0"
     use-sidecar "^1.1.2"
 
-react-router-dom@6.11.2:
-  version "6.11.2"
-  resolved "https://registry.yarnpkg.com/react-router-dom/-/react-router-dom-6.11.2.tgz#324d55750ffe2ecd54ca4ec6b7bc7ab01741f170"
-  integrity sha512-JNbKtAeh1VSJQnH6RvBDNhxNwemRj7KxCzc5jb7zvDSKRnPWIFj9pO+eXqjM69gQJ0r46hSz1x4l9y0651DKWw==
+react-router-dom@6.24.0:
+  version "6.24.0"
+  resolved "https://registry.yarnpkg.com/react-router-dom/-/react-router-dom-6.24.0.tgz#ec49dc38c49bb9bd25b310a8ae849268d3085e1d"
+  integrity sha512-960sKuau6/yEwS8e+NVEidYQb1hNjAYM327gjEyXlc6r3Skf2vtwuJ2l7lssdegD2YjoKG5l8MsVyeTDlVeY8g==
   dependencies:
-    "@remix-run/router" "1.6.2"
-    react-router "6.11.2"
+    "@remix-run/router" "1.17.0"
+    react-router "6.24.0"
 
 react-router-hash-link@^2.4.3:
   version "2.4.3"
@@ -25743,12 +25768,12 @@ react-router-hash-link@^2.4.3:
   dependencies:
     prop-types "^15.7.2"
 
-react-router@6.11.2:
-  version "6.11.2"
-  resolved "https://registry.yarnpkg.com/react-router/-/react-router-6.11.2.tgz#006301c4da1a173d7ad76b7ecd2da01b9dd3837a"
-  integrity sha512-74z9xUSaSX07t3LM+pS6Un0T55ibUE/79CzfZpy5wsPDZaea1F8QkrsiyRnA2YQ7LwE/umaydzXZV80iDCPkMg==
+react-router@6.24.0:
+  version "6.24.0"
+  resolved "https://registry.yarnpkg.com/react-router/-/react-router-6.24.0.tgz#aa46648f26b6525e07f908ad3e1ad2e68d131155"
+  integrity sha512-sQrgJ5bXk7vbcC4BxQxeNa5UmboFm35we1AFK0VvQaz9g0LzxEIuLOhHIoZ8rnu9BO21ishGeL9no1WB76W/eg==
   dependencies:
-    "@remix-run/router" "1.6.2"
+    "@remix-run/router" "1.17.0"
 
 react-scripts@5.0.1:
   version "5.0.1"

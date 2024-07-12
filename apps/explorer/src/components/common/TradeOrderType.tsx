@@ -20,7 +20,7 @@ export type TradeTypeProps = {
   kind: OrderKind
 }
 
-const TradeOrderType = ({ kind }: TradeTypeProps): JSX.Element | null => {
+const TradeOrderType = ({ kind }: TradeTypeProps): React.ReactNode | null => {
   return (
     <TradeTypeWrapper>
       <span className={isSellOrder(kind) ? 'short' : 'long'}>{capitalize(kind)}</span>

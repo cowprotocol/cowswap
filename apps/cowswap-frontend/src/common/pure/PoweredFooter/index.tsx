@@ -1,10 +1,7 @@
 import { COW_PROTOCOL_LINK } from '@cowprotocol/common-const'
-import { ExternalLink, UI } from '@cowprotocol/ui'
+import { ExternalLink, UI, ProductLogo, ProductVariant } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
-// TODO: update icon
-import cowIcon from 'assets/logo/cow-icon.svg'
-import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
 const Wrapper = styled.div`
@@ -46,7 +43,7 @@ export function PoweredFooter() {
   return (
     <Wrapper>
       <StyledExternalLink href={COW_PROTOCOL_LINK}>
-        <SVG src={cowIcon} title="CoW Protocol" />
+        <ProductLogo variant={ProductVariant.CowExplorer} height={11} logoIconOnly />
         <Trans>Powered by CoW Protocol</Trans>
       </StyledExternalLink>
     </Wrapper>

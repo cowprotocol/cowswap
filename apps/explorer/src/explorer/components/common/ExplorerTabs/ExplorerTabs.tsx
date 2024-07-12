@@ -1,13 +1,14 @@
 import React from 'react'
 
+import { Media } from '@cowprotocol/ui'
+
 import styled from 'styled-components/macro'
-import { DARK_COLOURS, media } from 'theme'
+import { DARK_COLOURS } from 'theme'
 
 import Tabs, {
   getTabTheme,
   Props as TabsProps,
   IndicatorTabSize,
-  TabList,
 } from '../../../../components/common/Tabs/Tabs'
 
 const StyledTabs = styled.div`
@@ -16,36 +17,27 @@ const StyledTabs = styled.div`
   padding: 0;
   border: ${({ theme }): string => `1px solid ${theme.borderPrimary}`};
   border-radius: 4px;
-  min-height: 33rem;
-
-  ${TabList} {
-    justify-content: flex-start;
-    border-bottom: ${({ theme }): string => `1px solid ${theme.borderPrimary}`};
-    box-sizing: border-box;
-  }
-
-  ${TabList} > button {
-    flex: 0 0 auto;
-    min-width: 96px;
-    padding: 12px 0.8rem;
-    line-height: 2;
-    height: auto;
-    font-family: var(--font-default);
-  }
-
-  > div > div:last-of-type {
-    height: 100%;
-    position: relative;
-  }
 
   .tab-content {
-    padding: 20px 16px;
+    position: relative;
+    padding: 0;
+    width: 100%;
+    max-width: 100%;
   }
 
   .tab-extra-content {
-    width: 100%;
+    margin: 0 0 0 auto;
+    display: flex;
+    justify-content: flex-end;
+
+    ${Media.upToSmall()} {
+      order: -1;
+      width: 100%;
+      justify-content: space-between;
+    }
   }
-  ${media.mediumDown} {
+
+  ${Media.upToMedium()} {
     border: none;
   }
 `

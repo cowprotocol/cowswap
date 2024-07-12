@@ -6,10 +6,10 @@ import styled from 'styled-components/macro'
 const Wrapper = styled.span`
   display: flex;
   align-items: center;
-  flex-wrap: nowrap;
+  flex-flow: row nowrap;
+  gap: 0.5rem;
 
   & > :first-child {
-    margin-right: 0.75rem;
     word-break: break-all;
   }
 `
@@ -21,12 +21,12 @@ const Content = styled.div`
 
 type Props = {
   textToCopy: string
-  contentsToDisplay: string | JSX.Element
+  contentsToDisplay: string | React.ReactNode
   className?: string
   onCopy?: (value: string) => void
 }
 
-export function RowWithCopyButton(props: Props): JSX.Element {
+export function RowWithCopyButton(props: Props): React.ReactNode {
   const { textToCopy, contentsToDisplay, className, onCopy } = props
 
   // Wrap contents in a <span> if it's a raw string for proper CSS spacing
@@ -34,7 +34,8 @@ export function RowWithCopyButton(props: Props): JSX.Element {
 
   return (
     <Wrapper className={className}>
-      <Content>{contentsComponent}</Content> <CopyButton text={textToCopy} onCopy={onCopy} />
+      <Content>{contentsComponent}</Content>
+      <CopyButton text={textToCopy} onCopy={onCopy} />
     </Wrapper>
   )
 }

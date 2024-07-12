@@ -1,17 +1,14 @@
-import React from 'react'
-
 import { renderHook, act } from '@testing-library/react-hooks'
 import { LocationDescriptorObject } from 'history'
 import { useSearchSubmit } from 'hooks/useSearchSubmit'
 import { MemoryRouter, useLocation } from 'react-router-dom'
-
 
 interface Props {
   children?: React.ReactNode
   location?: LocationDescriptorObject
 }
 
-function wrapperMemoryRouter(props: Props): JSX.Element {
+function wrapperMemoryRouter(props: Props): React.ReactNode {
   return <MemoryRouter initialEntries={props.location ? [props.location] : undefined}>{props.children}</MemoryRouter>
 }
 

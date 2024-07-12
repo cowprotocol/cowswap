@@ -1,40 +1,46 @@
 import React from 'react'
 
 import { COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS, COW_PROTOCOL_VAULT_RELAYER_ADDRESS } from '@cowprotocol/cow-sdk'
+import { Media } from '@cowprotocol/ui'
 
 import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
 import LogoWrapper, { LOGO_MAP } from 'components/common/LogoWrapper'
 import { useNetworkId } from 'state/network'
 import styled from 'styled-components/macro'
-import { media } from 'theme/styles/media'
 import { Network } from 'types'
 
-import { footerConfig } from '../Footer/config'
+import { footerConfig } from './config'
 
 const FooterStyled = styled.footer`
   display: flex;
   align-items: center;
   box-sizing: border-box;
   font-size: 1.2rem;
-  padding: 2.4rem 1.6rem 4rem;
   flex: 1 1 auto;
   color: ${({ theme }): string => theme.textSecondary2};
   width: 100%;
   justify-content: space-around;
-  margin: 0 auto;
+  margin: auto auto 0;
+  height: auto;
+  padding: 1rem;
+  max-height: 4rem;
 
-  ${media.mediumDown} {
+  ${Media.upToMedium()} {
+    margin: 0 auto;
     flex-flow: column wrap;
+    padding: 1.6rem 1.6rem 4rem;
+    justify-content: flex-start;
+    gap: 1.6rem;
+    bottom: initial;
+    max-height: initial;
   }
+
   > a {
     text-decoration: none;
 
     &:hover {
       text-decoration: underline;
     }
-  }
-  ${media.xSmallDown} {
-    align-items: flex-start;
   }
 `
 
@@ -46,7 +52,7 @@ const BetaWrapper = styled.div`
   padding: 0 1rem 0 0;
   position: relative;
 
-  ${media.mediumDown} {
+  ${Media.upToMedium()} {
     margin: 0 0 1.6rem;
   }
 `
@@ -54,11 +60,18 @@ const BetaWrapper = styled.div`
 const ContractsWrapper = styled.div`
   display: flex;
   align-items: center;
+  gap: 1.6rem;
+
+  ${Media.upToMedium()} {
+    flex-flow: column wrap;
+  }
+
   > :nth-child(2) {
     margin-right: 1rem;
-  }
-  ${media.xSmallDown} {
-    flex-direction: column;
+
+    ${Media.upToMedium()} {
+      margin-right: 0;
+    }
   }
 `
 
@@ -73,14 +86,7 @@ const VerifiedButton = styled(BlockExplorerLink)`
 
 const ContractContainer = styled.div`
   display: flex;
-  margin: 0 2rem 1.6rem 0;
-  a:nth-of-type(2) {
-    ${media.xSmallDown} {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-  }
+  margin: 0 0 0 auto;
 `
 
 const VersionsWrapper = styled.div`
@@ -88,7 +94,7 @@ const VersionsWrapper = styled.div`
   margin: 0 0 0 auto;
   align-items: center;
 
-  ${media.mediumDown} {
+  ${Media.upToMedium()} {
     margin: 0 0 1.6rem;
   }
 

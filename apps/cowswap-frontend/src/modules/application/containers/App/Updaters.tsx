@@ -1,8 +1,7 @@
 import { BalancesAndAllowancesUpdater } from '@cowprotocol/balances-and-allowances'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { TokensListsUpdater, UnsupportedTokensUpdater, WidgetTokensListsUpdater } from '@cowprotocol/tokens'
-import { useWalletInfo, WalletUpdater } from '@cowprotocol/wallet'
-import { HwAccountIndexUpdater } from '@cowprotocol/wallet'
+import { HwAccountIndexUpdater, useWalletInfo, WalletUpdater } from '@cowprotocol/wallet'
 
 import { GasPriceStrategyUpdater } from 'legacy/state/gas/gas-price-strategy-updater'
 
@@ -10,7 +9,7 @@ import { UploadToIpfsUpdater } from 'modules/appData/updater/UploadToIpfsUpdater
 import { CowEventsUpdater, InjectedWidgetUpdater, useInjectedWidgetParams } from 'modules/injectedWidget'
 import { FinalizeTxUpdater } from 'modules/onchainTransactions'
 import { OrdersNotificationsUpdater } from 'modules/orders'
-import { EthFlowDeadlineUpdater, EthFlowSlippageUpdater } from 'modules/swap/state/EthFlow/updaters'
+import { EthFlowDeadlineUpdater } from 'modules/swap/state/EthFlow/updaters'
 import { useOnTokenListAddingError } from 'modules/tokensList'
 import { UsdPricesUpdater } from 'modules/usdAmount'
 
@@ -54,7 +53,6 @@ export function Updaters() {
       <GasPriceStrategyUpdater />
       <SentryUpdater />
       <UploadToIpfsUpdater />
-      <EthFlowSlippageUpdater />
       <EthFlowDeadlineUpdater />
       <SpotPricesUpdater />
       <InjectedWidgetUpdater />

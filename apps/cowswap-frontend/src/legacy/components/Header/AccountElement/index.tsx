@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 
 import { useNativeCurrencyAmount } from '@cowprotocol/balances-and-allowances'
 import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
@@ -29,7 +29,7 @@ export function AccountElement({ className, standaloneMode, pendingActivities }:
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
   const userEthBalance = useNativeCurrencyAmount(chainId, account)
   const toggleAccountModal = useToggleAccountModal()
-  const nativeToken = NATIVE_CURRENCIES[chainId].symbol
+  const nativeTokenSymbol = NATIVE_CURRENCIES[chainId].symbol
   const isUpToLarge = useMediaQuery(upToLarge)
   const { isNotificationsFeedEnabled } = useFeatureFlags()
 
@@ -40,7 +40,7 @@ export function AccountElement({ className, standaloneMode, pendingActivities }:
       <Wrapper className={className} active={!!account}>
         {standaloneMode !== false && account && !isChainIdUnsupported && userEthBalance && chainId && !isUpToLarge && (
           <BalanceText>
-            <TokenAmount amount={userEthBalance} tokenSymbol={{ symbol: nativeToken }} />
+            <TokenAmount amount={userEthBalance} tokenSymbol={{ symbol: nativeTokenSymbol }} />
           </BalanceText>
         )}
         <Web3Status pendingActivities={pendingActivities} onClick={() => account && toggleAccountModal()} />

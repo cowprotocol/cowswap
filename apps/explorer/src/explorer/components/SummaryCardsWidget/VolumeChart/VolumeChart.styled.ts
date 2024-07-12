@@ -1,7 +1,8 @@
+import { Media } from '@cowprotocol/ui'
+
 import styled, { keyframes } from 'styled-components/macro'
 
 import GraphSkeleton from '../../../../assets/img/graph-skeleton.svg'
-import { media } from '../../../../theme/styles/media'
 import ShimmerBar from '../../common/ShimmerBar'
 
 const frameAnimation = keyframes`
@@ -57,7 +58,7 @@ export const WrapperChart = styled.div`
     display: none;
     box-sizing: border-box;
     font-size: 12px;
-    color: '#20262E';
+    color: #20262e;
     background-color: rgba(255, 255, 255, 0.23);
     text-align: center;
     z-index: 1;
@@ -76,7 +77,7 @@ export const WrapperChart = styled.div`
     top: 3rem !important;
     height: calc(100% - 3rem) !important;
   }
-  ${media.mobile} {
+  ${Media.upToSmall()} {
     canvas {
       top: 5rem !important;
       height: calc(100% - 5rem) !important;
@@ -94,7 +95,7 @@ export const ContainerTitle = styled.span<{ captionColor?: 'green' | 'red1' | 'g
     font-size: small;
     font-weight: ${({ theme }): string => theme.fontMedium};
     margin: 0;
-    ${media.mobile} {
+    ${Media.upToSmall()} {
       top: 0.5rem;
       word-wrap: break-word;
       max-width: 13rem;
@@ -123,7 +124,7 @@ export const ContainerTitle = styled.span<{ captionColor?: 'green' | 'red1' | 'g
         color: ${({ theme }): string => theme.grey};
         font-size: 1.1rem;
       }
-      ${media.mobile} {
+      ${Media.upToSmall()} {
         font-size: small;
       }
     }
@@ -145,7 +146,7 @@ export const WrapperPeriodButton = styled.button<{ active: boolean }>`
   height: 2.5rem;
   width: 3.8rem;
 
-  ${media.mobile} {
+  ${Media.upToSmall()} {
     padding: 0;
     margin: 0 0.5rem;
     font-size: 1.2rem;

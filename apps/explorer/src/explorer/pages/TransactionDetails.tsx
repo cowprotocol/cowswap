@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { Helmet } from 'react-helmet'
 import { useParams } from 'react-router'
 
@@ -11,9 +9,9 @@ import { isATxHash } from '../../utils'
 import { TransactionsTableWidget } from '../components/TransactionsTableWidget'
 import { APP_TITLE } from '../const'
 
-const TransactionDetails: React.FC = () => {
+const TransactionDetails = () => {
   const { txHash } = useParams<{ txHash: string }>()
-  const networkId = useNetworkId() || undefined
+  const networkId = useNetworkId() ?? undefined
 
   if (txHash ? !isATxHash(txHash) : false) {
     return <RedirectToSearch from="tx" />

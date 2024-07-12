@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 
 import { Command } from '@cowprotocol/types'
 import { HoverTooltip } from '@cowprotocol/ui'
@@ -12,6 +11,8 @@ import { useIsDarkMode } from 'legacy/state/user/hooks'
 
 import { useHighFeeWarning } from 'modules/swap/hooks/useSwapState'
 import { StyledInfoIcon } from 'modules/swap/pure/styled'
+
+import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
 import { AuxInformationContainer } from '../swap/styleds'
 
@@ -44,15 +45,15 @@ const WarningCheckboxContainer = styled.span`
 const WarningContainer = styled(AuxInformationContainer).attrs((props) => ({
   ...props,
   hideInput: true,
-}))<HighFeeContainerProps>`
+})) <HighFeeContainerProps>`
   --warningColor: ${({ theme, level }) =>
     level === HIGH_TIER_FEE
       ? theme.danger
       : level === MEDIUM_TIER_FEE
-      ? theme.warning
-      : LOW_TIER_FEE
-      ? theme.alert
-      : theme.info};
+        ? theme.warning
+        : LOW_TIER_FEE
+          ? theme.alert
+          : theme.info};
   color: inherit;
   padding: ${({ padding = '16px' }) => padding};
   width: ${({ width = '100%' }) => width};
@@ -147,10 +148,7 @@ export const HighFeeWarning = (props: WarningProps) => {
   const darkMode = useIsDarkMode()
 
   const { isHighFee, feePercentage } = useHighFeeWarning(trade)
-  const [level] = useMemo(() => {
-    const level = _getWarningInfo(feePercentage)
-    return [level]
-  }, [feePercentage])
+  const level = useSafeMemo(() => _getWarningInfo(feePercentage), [feePercentage])
 
   if (!isHighFee) return null
 

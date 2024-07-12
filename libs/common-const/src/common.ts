@@ -68,29 +68,27 @@ export const ORDER_BOOK_API_UPDATE_INTERVAL = ms`30s` // 30s
 export const MINIMUM_ORDER_VALID_TO_TIME_SECONDS = 120
 // Minimum deadline for EthFlow orders. Like the default deadline, anything smaller will be replaced by this
 export const MINIMUM_ETH_FLOW_DEADLINE_SECONDS = 600 // 10 minutes in SECONDS
+
 export const MINIMUM_ETH_FLOW_SLIPPAGE_BPS: Record<SupportedChainId, number> = {
   [SupportedChainId.MAINNET]: 200, // 2%
   [SupportedChainId.GNOSIS_CHAIN]: DEFAULT_SLIPPAGE_BPS,
   [SupportedChainId.ARBITRUM_ONE]: DEFAULT_SLIPPAGE_BPS,
   [SupportedChainId.SEPOLIA]: DEFAULT_SLIPPAGE_BPS,
 }
+
 export const MINIMUM_ETH_FLOW_SLIPPAGE: Record<SupportedChainId, Percent> = mapSupportedNetworks(
   (chainId) => new Percent(MINIMUM_ETH_FLOW_SLIPPAGE_BPS[chainId], 10_000)
 )
 export const HIGH_ETH_FLOW_SLIPPAGE_BPS = 1_000 // 10%
 
-export const WETH_LOGO_URI =
-  'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png'
-export const XDAI_LOGO_URI =
-  'https://raw.githubusercontent.com/1Hive/default-token-list/master/src/assets/xdai/0xe91d153e0b41518a2ce8dd3d7944fa863463a97d/logo.png'
-
 const GITHUB_REPOSITORY = 'cowprotocol/cowswap'
 export const CODE_LINK = 'https://github.com/' + GITHUB_REPOSITORY
 export const RAW_CODE_LINK = 'https://raw.githubusercontent.com/' + GITHUB_REPOSITORY
 
-export const COW_PROTOCOL_LINK = 'https://cow.fi/'
-export const COWDAO_KNOWLEDGE_BASE_LINK = 'https://cow.fi/learn/'
-export const COWDAO_COWSWAP_ABOUT_LINK = 'https://cow.fi/cow-swap/'
+export const COW_PROTOCOL_LINK = 'https://cow.fi'
+export const COWDAO_KNOWLEDGE_BASE_LINK = 'https://cow.fi/learn'
+export const COWDAO_LEGAL_LINK = 'https://cow.fi/legal'
+export const COWDAO_COWSWAP_ABOUT_LINK = 'https://cow.fi/cow-swap'
 export const DOCS_LINK = 'https://docs.cow.fi'
 export const CONTRACTS_CODE_LINK = 'https://github.com/cowprotocol/contracts'
 export const DISCORD_LINK = 'https://discord.com/invite/cowprotocol'

@@ -3,7 +3,6 @@ import React, { useContext, useState, useEffect } from 'react'
 import { TransactionsTableContext } from './context/TransactionsTableContext'
 
 import CowLoading from '../../../components/common/CowLoading'
-import { EmptyItemWrapper } from '../../../components/common/StyledUserDetailsTable'
 import TransactionTable from '../../../components/transaction/TransactionTable'
 import { DEFAULT_TIMEOUT } from '../../../const'
 import useFirstRender from '../../../hooks/useFirstRender'
@@ -35,11 +34,5 @@ export const TransactionsTableWithData: React.FC = () => {
     }
   }, [orders, orders?.length])
 
-  return isFirstRender || isFirstLoading ? (
-    <EmptyItemWrapper>
-      <CowLoading />
-    </EmptyItemWrapper>
-  ) : (
-    <TransactionTable orders={orders} />
-  )
+  return isFirstRender || isFirstLoading ? <CowLoading /> : <TransactionTable orders={orders} />
 }

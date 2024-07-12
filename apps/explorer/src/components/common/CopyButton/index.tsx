@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react'
 
+import { Media } from '@cowprotocol/ui'
+
 import { faCopy } from '@fortawesome/free-regular-svg-icons'
 import { faCheck } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import styled, { css, FlattenSimpleInterpolation } from 'styled-components/macro'
-import { media } from 'theme/styles/media'
 
 import { DISPLAY_TEXT_COPIED_CHECK } from '../../../explorer/const'
 
@@ -44,7 +45,8 @@ const Icon = styled(FontAwesomeIcon)<{ copied?: string; height?: number }>`
     border-radius: 0.4rem;
     margin-top: -3rem;
     margin-left: -3.3rem;
-    ${media.mediumDownMd} {
+
+    ${Media.upToMedium()} {
       display: none;
     }
   }
@@ -60,7 +62,7 @@ export type Props = { text: string; onCopy?: (value: string) => void; heightIcon
  * When clicked, displays a green check for DISPLAY_TEXT_COPIED_CHECK seconds,
  * then is back to original copy icon
  */
-export function CopyButton(props: Props): JSX.Element {
+export function CopyButton(props: Props): React.ReactNode {
   const { text, onCopy, heightIcon } = props
 
   const [copied, setCopied] = useState(false)

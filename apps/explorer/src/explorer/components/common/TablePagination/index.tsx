@@ -1,10 +1,11 @@
 import React, { Context, useContext } from 'react'
 
+import { Media } from '@cowprotocol/ui'
+
 import { faChevronRight, faChevronLeft } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import styled, { css } from 'styled-components/macro'
 
-import { media } from '../../../../theme/styles/media'
 import { Dropdown, DropdownOption } from '../Dropdown'
 
 const PaginationTextCSS = css`
@@ -15,19 +16,28 @@ const PaginationTextCSS = css`
 `
 
 export const PaginationWrapper = styled.span`
-  ${PaginationTextCSS}
+  ${PaginationTextCSS};
+
   align-items: center;
   display: flex;
   justify-content: center;
   padding-right: 1.5rem;
+
+  ${Media.upToSmall()} {
+    padding: 0 1.5rem;
+    width: 100%;
+    justify-content: space-between;
+  }
 `
 
 const PaginationText = styled.p`
   margin-right: 0.8rem;
+
   &.legend {
     margin-left: 2rem;
   }
-  ${media.mediumDown} {
+
+  ${Media.upToMedium()} {
     &:not(.legend) {
       display: none;
     }
@@ -88,7 +98,8 @@ const DropdownPagination = styled(Dropdown)`
   }
 `
 const PaginationDropdownButton = styled.button`
-  ${PaginationTextCSS}
+  ${PaginationTextCSS};
+
   background: none;
   border: none;
   white-space: nowrap;
@@ -120,6 +131,11 @@ const TablePagination: React.FC<PaginationProps<any>> = ({ context, fixedResults
     handlePreviousPage,
     data: rows,
   } = useContext(context)
+
+  // Return null if there are no results
+  if (!rows?.length || totalResults === 0) {
+    return null
+  }
 
   const renderPageLegend = (): string => {
     if (isLoading && !rows?.length) return '.. - ..'

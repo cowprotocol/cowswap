@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
 
+import { Media } from '@cowprotocol/ui'
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
 import { BASE_COLOURS } from 'theme'
-import { media } from 'theme/styles/media'
 
 import { faCircleCheck, faExclamationEllipsis, faExclamationTriangle } from './icons'
 
@@ -34,7 +35,7 @@ export const NotificationWrap = styled.p<{ isActive?: boolean; type: string }>`
     margin: 0 16px;
     line-height: 1.2;
     max-width: calc(100% - 90px);
-    ${media.mobile} {
+    ${Media.upToSmall()} {
       max-width: none;
     }
     a {

@@ -1,7 +1,8 @@
 import React from 'react'
 
+import { Media } from '@cowprotocol/ui'
+
 import styled from 'styled-components/macro'
-import { media } from 'theme/styles/media'
 
 import ShimmerBar from '../../../explorer/components/common/ShimmerBar'
 
@@ -69,7 +70,7 @@ const CardBody = styled.div<{
       > h3 {
         font-size: ${({ valueSize }): number => valueSize || 1.8}rem;
         margin: 0;
-        ${media.mobile} {
+        ${Media.upToSmall()} {
           font-size: 1.45rem;
         }
       }
@@ -111,7 +112,7 @@ export const CardContent: React.FC<CardContentProps> = ({
   caption2,
   hint2,
   loading,
-}): JSX.Element => {
+}): React.ReactNode => {
   return (
     <CardBody
       variant={variant}

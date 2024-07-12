@@ -9,10 +9,12 @@ import { TradeType, TradeTypeInfo } from '../types'
 
 export function useTradeTypeInfoFromUrl(): TradeTypeInfo | null {
   const swapMatch = !!useMatchTradeRoute('swap')
+  const hooksMatch = !!useMatchTradeRoute('swap/hooks')
   const limitOrderMatch = !!useMatchTradeRoute('limit')
   const advancedOrdersMatch = !!useMatchTradeRoute('advanced')
 
   return useMemo(() => {
+    if (hooksMatch) return { tradeType: TradeType.SWAP, route: Routes.HOOKS }
     if (swapMatch) return { tradeType: TradeType.SWAP, route: Routes.SWAP }
     if (limitOrderMatch) return { tradeType: TradeType.LIMIT_ORDER, route: Routes.LIMIT_ORDER }
     if (advancedOrdersMatch) return { tradeType: TradeType.ADVANCED_ORDERS, route: Routes.ADVANCED_ORDERS }

@@ -1,7 +1,7 @@
 {
   "name": "@cowprotocol/cow-fi",
   "version": "1.6.0",
-  "description": "CoW Swap landing page",
+  "description": "CoW DAO website",
   "main": "index.js",
   "author": "",
   "license": "ISC",

@@ -3,14 +3,12 @@ import React, { useContext } from 'react'
 import { Command } from '@cowprotocol/types'
 
 import CowLoading from 'components/common/CowLoading'
-import { EmptyItemWrapper } from 'components/common/StyledUserDetailsTable'
 import useFirstRender from 'hooks/useFirstRender'
 
 import { Order } from 'api/operator'
 
 import { FillsTableContext } from './context/FillsTableContext'
 import FillsTable from './FillsTable'
-
 
 type Props = {
   areTokensLoaded: boolean
@@ -24,9 +22,7 @@ export const FillsTableWithData: React.FC<Props> = ({ areTokensLoaded, order, is
   const isFirstRender = useFirstRender()
 
   return isFirstRender || !areTokensLoaded ? (
-    <EmptyItemWrapper>
-      <CowLoading />
-    </EmptyItemWrapper>
+    <CowLoading />
   ) : (
     <FillsTable
       order={order}
