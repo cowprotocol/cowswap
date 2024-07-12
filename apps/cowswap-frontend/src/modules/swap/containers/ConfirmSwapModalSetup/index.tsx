@@ -1,30 +1,30 @@
-import { useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 
 import { getMinimumReceivedTooltip } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
-import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
+import { GnosisSafeInfo, useGnosisSafeInfo, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { Percent, TradeType } from '@uniswap/sdk-core'
 
 import { HighFeeWarning } from 'legacy/components/SwapWarnings'
 import { getActivityDerivedState } from 'legacy/hooks/useActivityDerivedState'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { createActivityDescriptor } from 'legacy/hooks/useRecentActivity'
-import { Order } from 'legacy/state/orders/actions'
+import { useOrder } from 'legacy/state/orders/hooks'
 import TradeGp from 'legacy/state/swap/TradeGp'
 
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
-import { TradeConfirmation, TradeConfirmModal, useReceiveAmountInfo, useTradeConfirmActions } from 'modules/trade'
+import { TradeConfirmation, TradeConfirmModal, useReceiveAmountInfo, useTradeConfirmActions, useTradeConfirmState } from 'modules/trade'
 import { TradeBasicConfirmDetails } from 'modules/trade/containers/TradeBasicConfirmDetails'
 import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
 
+import { useOrderProgressBarV2Props } from 'common/hooks/orderProgressBarV2'
 import { CurrencyPreviewInfo } from 'common/pure/CurrencyAmountPreview'
 import { NetworkCostsSuffix } from 'common/pure/NetworkCostsSuffix'
 import { RateInfoParams } from 'common/pure/RateInfo'
 import { TransactionSubmittedContent } from 'common/pure/TransactionSubmittedContent'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
-import { useOrderProgressBarV2Props } from 'common/hooks/orderProgressBarV2'
 import { useIsEoaEthFlow } from '../../hooks/useIsEoaEthFlow'
 import { useShouldPayGas } from '../../hooks/useShouldPayGas'
 import { useSwapConfirmButtonText } from '../../hooks/useSwapConfirmButtonText'
@@ -94,21 +94,7 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
     [chainId, allowedSlippage, nativeCurrency.symbol, isEoaEthFlow, isExactIn, shouldPayGas]
   )
 
-  const submittedContent = (order: Order | undefined, onDismiss: Command) => {
-    const activity = createActivityDescriptor(chainId, undefined, order)
-    const activityDerivedState = getActivityDerivedState({ chainId, activityData: activity, gnosisSafeInfo })
-    const orderProgressBarV2Props = useOrderProgressBarV2Props({ activityDerivedState, chainId })
-
-    return (
-      <TransactionSubmittedContent
-        chainId={chainId}
-        hash={order?.id}
-        onDismiss={onDismiss}
-        activityDerivedState={activityDerivedState}
-        orderProgressBarV2Props={orderProgressBarV2Props}
-      />
-    )
-  }
+  const submittedContent = useSubmittedContent(chainId, gnosisSafeInfo)
 
   return (
     <TradeConfirmModal title={CONFIRM_TITLE} submittedContent={submittedContent}>
@@ -152,3 +138,21 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
     </TradeConfirmModal>
   )
 }
+
+function useSubmittedContent(chainId: SupportedChainId, gnosisSafeInfo: GnosisSafeInfo | undefined) {
+  const { transactionHash } = useTradeConfirmState()
+  const order = useOrder({ chainId, id: transactionHash || undefined })
+  const activity = createActivityDescriptor(chainId, undefined, order)
+  const activityDerivedState = getActivityDerivedState({ chainId, activityData: activity, gnosisSafeInfo })
+  const orderProgressBarV2Props = useOrderProgressBarV2Props({ activityDerivedState, chainId })
+
+  return useCallback((onDismiss: Command) => (
+    <TransactionSubmittedContent
+      chainId={chainId}
+      hash={transactionHash || undefined}
+      onDismiss={onDismiss}
+      activityDerivedState={activityDerivedState}
+      orderProgressBarV2Props={orderProgressBarV2Props} />
+  ), [chainId, transactionHash, activityDerivedState, orderProgressBarV2Props])
+}
+
