@@ -3,18 +3,18 @@ import progressBarStep1a from '@cowprotocol/assets/cow-swap/progress-bar-step1a.
 import progressBarStep2a from '@cowprotocol/assets/cow-swap/progress-bar-step2a.png'
 import progressBarStep2b from '@cowprotocol/assets/cow-swap/progress-bar-step2b.png'
 import progressBarStep3 from '@cowprotocol/assets/cow-swap/progress-bar-step3.png'
-
 import { isSellOrder } from '@cowprotocol/common-utils'
 import { TokenAmount } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
 
-import { SolverCompetition } from 'api/cowProtocol/api'
-
-import { OrderProgressBarStepName } from 'common/hooks/orderProgressBarV2'
 import { AMM_LOGOS } from 'legacy/components/AMMsLogo'
 import { Order } from 'legacy/state/orders/actions'
+
+import { SolverCompetition } from 'api/cowProtocol/api'
+import { OrderProgressBarStepName } from 'common/hooks/orderProgressBarV2'
+
 import { Stepper, StepProps } from '../Stepper'
 
 
@@ -40,7 +40,7 @@ export function OrderProgressBarV2(props: OrderProgressBarV2Props) {
 
 type StepCallback = (props: OrderProgressBarV2Props) => JSX.Element
 const STEP_NAME_TO_STEP_COMPONENT: Record<OrderProgressBarStepName, StepCallback> = {
-  initial: (props: OrderProgressBarV2Props): JSX.Element => {
+  initial: (_props: OrderProgressBarV2Props): JSX.Element => {
     return <InitialStep />
   },
   solving: (props: OrderProgressBarV2Props): JSX.Element => {
@@ -56,13 +56,13 @@ const STEP_NAME_TO_STEP_COMPONENT: Record<OrderProgressBarStepName, StepCallback
     // TODO: add a flow for `nextBatch`?
     return <SolvingStep {...props} />
   },
-  delayed: (props: OrderProgressBarV2Props): JSX.Element => {
+  delayed: (_props: OrderProgressBarV2Props): JSX.Element => {
     return <DelayedStep />
   },
   unfillable: (props: OrderProgressBarV2Props): JSX.Element => {
     return <UnfillableStep {...props} />
   },
-  submissionFailed: (props: OrderProgressBarV2Props): JSX.Element => {
+  submissionFailed: (_props: OrderProgressBarV2Props): JSX.Element => {
     return <SubmissionFailedStep />
   },
 }
