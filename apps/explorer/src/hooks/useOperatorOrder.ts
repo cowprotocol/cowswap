@@ -141,5 +141,5 @@ export function useOrderAndErc20s(orderId: string, updateInterval = 0): UseOrder
     }
 
     return { order, isLoading: isOrderLoading || areErc20Loading, errors, errorOrderPresentInNetworkId }
-  }, [orderError, order, isOrderLoading, areErc20Loading, errors, errorOrderPresentInNetworkId, value])
+  }, [orderError, order, isOrderLoading, areErc20Loading, errors, errorOrderPresentInNetworkId, value, orderId])
 }

@@ -1,4 +1,4 @@
-import { BlockExplorerLinkNetworkState } from '../../../../components/common/BlockExplorerLink'
+import { BlockExplorerLinkNetworkState } from 'components/common/BlockExplorerLink'
 
 /**
  * Explorer app version of BlockExplorerLink
