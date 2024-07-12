@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.0](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v1.3.2...widget-configurator-v1.4.0) (2024-07-12)
+
+
+### Features
+
+* update favicon icons and manifest ([#4689](https://github.com/cowprotocol/cowswap/issues/4689)) ([549bcc0](https://github.com/cowprotocol/cowswap/commit/549bcc0dea929efdb6adbffa956dac013a73c679))
+
 ## [1.3.2](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v1.3.1...widget-configurator-v1.3.2) (2024-06-24)
 
 

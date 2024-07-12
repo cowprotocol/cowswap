@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.6.0](https://github.com/cowprotocol/cowswap/compare/assets-v1.5.0...assets-v1.6.0) (2024-07-12)
+
+
+### Features
+
+* **hooks:** simulate hook transaction via Tenderly ([#4702](https://github.com/cowprotocol/cowswap/issues/4702)) ([19ee90a](https://github.com/cowprotocol/cowswap/commit/19ee90ab37638df29269bd47572898dcc94be8f4))
+* update widget cow logo ([#4659](https://github.com/cowprotocol/cowswap/issues/4659)) ([d7d40f7](https://github.com/cowprotocol/cowswap/commit/d7d40f718012b1d4dc039c57dcbfe2070795b3e0))
+
 ## [1.5.0](https://github.com/cowprotocol/cowswap/compare/assets-v1.4.1...assets-v1.5.0) (2024-06-25)
 
 

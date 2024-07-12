@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.6.2...common-const-v1.7.0) (2024-07-12)
+
+
+### Features
+
+* **swap:** use smart slippage ([#4649](https://github.com/cowprotocol/cowswap/issues/4649)) ([ebb22ce](https://github.com/cowprotocol/cowswap/commit/ebb22cec497dfc696d32a2fd75ecc17cfd58eb41))
+
 ## [1.6.2](https://github.com/cowprotocol/cowswap/compare/common-const-v1.6.1...common-const-v1.6.2) (2024-07-05)
 
 

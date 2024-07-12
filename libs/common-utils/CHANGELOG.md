@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.5.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.4.1...common-utils-v1.5.0) (2024-07-12)
+
+
+### Features
+
+* **hooks:** simulate hook transaction via Tenderly ([#4702](https://github.com/cowprotocol/cowswap/issues/4702)) ([19ee90a](https://github.com/cowprotocol/cowswap/commit/19ee90ab37638df29269bd47572898dcc94be8f4))
+* **swap:** use smart slippage ([#4649](https://github.com/cowprotocol/cowswap/issues/4649)) ([ebb22ce](https://github.com/cowprotocol/cowswap/commit/ebb22cec497dfc696d32a2fd75ecc17cfd58eb41))
+
 ## [1.4.1](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.4.0...common-utils-v1.4.1) (2024-06-27)
 
 
