@@ -1,5 +1,24 @@
 # Changelog
 
+## [1.77.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.76.2...cowswap-v1.77.0) (2024-07-12)
+
+
+### Features
+
+* **hooks:** simulate hook transaction via Tenderly ([#4702](https://github.com/cowprotocol/cowswap/issues/4702)) ([19ee90a](https://github.com/cowprotocol/cowswap/commit/19ee90ab37638df29269bd47572898dcc94be8f4))
+* **swap:** use smart slippage ([#4649](https://github.com/cowprotocol/cowswap/issues/4649)) ([ebb22ce](https://github.com/cowprotocol/cowswap/commit/ebb22cec497dfc696d32a2fd75ecc17cfd58eb41))
+* update favicon icons and manifest ([#4689](https://github.com/cowprotocol/cowswap/issues/4689)) ([549bcc0](https://github.com/cowprotocol/cowswap/commit/549bcc0dea929efdb6adbffa956dac013a73c679))
+
+
+### Bug Fixes
+
+* **hooks:** link hooks page to swap trade state ([#4698](https://github.com/cowprotocol/cowswap/issues/4698)) ([bab250c](https://github.com/cowprotocol/cowswap/commit/bab250cb9888b3ec3dab422fc91fbaf23541b778))
+* **limit:** clear limit output amount when price is empty ([#4678](https://github.com/cowprotocol/cowswap/issues/4678)) ([0620a9a](https://github.com/cowprotocol/cowswap/commit/0620a9a70a31687f70ec4abc6da280d54a823cb8))
+* **limit:** missing price error takes precedence over missing approval ([#4693](https://github.com/cowprotocol/cowswap/issues/4693)) ([306059e](https://github.com/cowprotocol/cowswap/commit/306059ee46c57cb14bb69eb48f06aa6c85a9e4f6))
+* **safe-bundle:** don't show active SWAP button unless trade is valid ([#4672](https://github.com/cowprotocol/cowswap/issues/4672)) ([1ea49ea](https://github.com/cowprotocol/cowswap/commit/1ea49ea7552ce8a314b35c9092bc234ba38fa66f))
+* **trade:** display trade details when there is no usd value of costs ([#4704](https://github.com/cowprotocol/cowswap/issues/4704)) ([62e6b78](https://github.com/cowprotocol/cowswap/commit/62e6b78ea934836f709ef4a4c6ab5f817baf592a))
+* vercel redirects ([#4686](https://github.com/cowprotocol/cowswap/issues/4686)) ([107ed3a](https://github.com/cowprotocol/cowswap/commit/107ed3ad74318c14ef608cd090d1086d6389426b))
+
 ## [1.76.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.76.1...cowswap-v1.76.2) (2024-07-05)
 
 

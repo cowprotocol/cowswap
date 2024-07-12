@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.6.0](https://github.com/cowprotocol/cowswap/compare/ui-v1.5.0...ui-v1.6.0) (2024-07-12)
+
+
+### Features
+
+* explorer app cleanup ([#4625](https://github.com/cowprotocol/cowswap/issues/4625)) ([4148b0a](https://github.com/cowprotocol/cowswap/commit/4148b0a2f8e33d0b5d2c09a0f5eeacdb8d4eb66a))
+
+
+### Bug Fixes
+
+* **explorer:** fix almost filled orders on Explorer ([#4650](https://github.com/cowprotocol/cowswap/issues/4650)) ([fb4f593](https://github.com/cowprotocol/cowswap/commit/fb4f593d8a30f6fe3834d298178994aa9af3abf5))
+
 ## [1.5.0](https://github.com/cowprotocol/cowswap/compare/ui-v1.4.1...ui-v1.5.0) (2024-06-25)
 
 

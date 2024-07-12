@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.6.0...cow-fi-v1.7.0) (2024-07-12)
+
+
+### Features
+
+* sitemap.xml generating cow.fi ([#4687](https://github.com/cowprotocol/cowswap/issues/4687)) ([571bb7d](https://github.com/cowprotocol/cowswap/commit/571bb7d2fabedceb5484bf59e3c26b39de3e5717))
+
 ## [1.6.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.5.0...cow-fi-v1.6.0) (2024-07-05)
 
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.0](https://github.com/cowprotocol/cowswap/compare/analytics-v1.3.0...analytics-v1.4.0) (2024-07-12)
+
+
+### Features
+
+* hook store & hook Dapps 🪝 ([#4652](https://github.com/cowprotocol/cowswap/issues/4652)) ([b38321e](https://github.com/cowprotocol/cowswap/commit/b38321e0665e1ad5f0633868f8934128601ad313))
+
 ## [1.3.0](https://github.com/cowprotocol/cowswap/compare/analytics-v1.2.0...analytics-v1.3.0) (2024-06-24)
 
 
