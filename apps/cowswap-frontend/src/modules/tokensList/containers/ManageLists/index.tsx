@@ -8,6 +8,7 @@ import * as styledEl from './styled'
 import { useAddListImport } from '../../hooks/useAddListImport'
 import { ImportTokenListItem } from '../../pure/ImportTokenListItem'
 import { ListItem } from '../../pure/ListItem'
+import { removeListAnalytics, toggleListAnalytics } from 'modules/analytics'
 
 interface ListSearchState {
   source: 'existing' | 'external'
@@ -25,8 +26,8 @@ export function ManageLists(props: ManageListsProps) {
 
   const activeTokenListsIds = useListsEnabledState()
   const addListImport = useAddListImport()
-  const removeList = useRemoveList()
-  const toggleList = useToggleList()
+  const removeList = useRemoveList((source) => removeListAnalytics('Confirm', source))
+  const toggleList = useToggleList((enabled, source) => toggleListAnalytics(enabled, source))
 
   const { source, listToImport, loading } = useListSearchResponse(listSearchResponse)
 

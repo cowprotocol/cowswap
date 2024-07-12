@@ -1,6 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react'
 
-import { toggleDarkModeAnalytics } from '@cowprotocol/analytics'
 import { CHRISTMAS_THEME_ENABLED } from '@cowprotocol/common-const'
 import { addBodyClass, removeBodyClass } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -39,6 +38,7 @@ import {
   UniIcon,
   Wrapper,
 } from './styled'
+import { toggleDarkModeAnalytics } from 'modules/analytics'
 
 export default function Header() {
   const { account, chainId } = useWalletInfo()

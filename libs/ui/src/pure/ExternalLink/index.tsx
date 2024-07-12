@@ -1,12 +1,13 @@
 import React, { HTMLProps } from 'react'
 
-import { externalLinkAnalytics, outboundLink } from '@cowprotocol/analytics'
 import { anonymizeLink } from '@cowprotocol/common-utils'
 
 import { ExternalLink as LinkIconFeather } from 'react-feather'
 import styled from 'styled-components/macro'
 
 import { UI } from '../../enum'
+import { CowAnalytics } from '@cowprotocol/analytics'
+import { externalLinkAnalytics } from 'src/analytics/events'
 
 export const StyledLink = styled.a`
   text-decoration: none;
@@ -82,10 +83,12 @@ export function ExternalLink({
   href,
   rel = 'noopener noreferrer',
   onClickOptional,
+  cowAnalytics,
   ...rest
 }: Omit<HTMLProps<HTMLAnchorElement>, 'as' | 'ref' | 'onClick'> & {
   href: string
   onClickOptional?: React.MouseEventHandler<HTMLAnchorElement>
+  cowAnalytics: CowAnalytics
 }) {
   return (
     <StyledLink
@@ -95,7 +98,8 @@ export function ExternalLink({
       onClick={(event) => {
         if (onClickOptional) onClickOptional(event)
         handleClickExternalLink(event)
-        externalLinkAnalytics(href)
+        cowAnalytics.outboundLink({})
+        externalLinkAnalytics(cowAnalytics, href)
       }}
       {...rest}
     />

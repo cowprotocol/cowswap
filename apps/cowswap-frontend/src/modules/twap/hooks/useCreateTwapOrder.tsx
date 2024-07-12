@@ -1,7 +1,6 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
-import { orderAnalytics, twapConversionAnalytics } from '@cowprotocol/analytics'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
 import { useSafeAppsSdk, useWalletInfo } from '@cowprotocol/wallet'
@@ -31,6 +30,7 @@ import { buildTwapOrderParamsStruct } from '../utils/buildTwapOrderParamsStruct'
 import { getConditionalOrderId } from '../utils/getConditionalOrderId'
 import { getErrorMessage } from '../utils/parseTwapError'
 import { twapOrderToStruct } from '../utils/twapOrderToStruct'
+import { orderAnalytics, twapConversionAnalytics } from 'modules/analytics'
 
 export function useCreateTwapOrder() {
   const { chainId, account } = useWalletInfo()

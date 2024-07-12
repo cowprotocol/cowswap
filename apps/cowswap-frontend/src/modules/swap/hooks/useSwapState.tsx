@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
-import { changeSwapAmountAnalytics, switchTokensAnalytics } from '@cowprotocol/analytics'
 import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
 import { FEE_SIZE_THRESHOLD } from '@cowprotocol/common-const'
 import { formatSymbol, getIsNativeToken, isAddress, tryParseCurrencyAmount } from '@cowprotocol/common-utils'
@@ -29,6 +28,7 @@ import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetwo
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
 import { useSwapSlippage } from './useSwapSlippage'
+import { changeSwapAmountAnalytics, switchTokensAnalytics } from 'modules/analytics'
 
 export const BAD_RECIPIENT_ADDRESSES: { [address: string]: true } = {
   '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f': true, // v2 factory
@@ -101,17 +101,15 @@ export function useSwapActionHandlers(): SwapActions {
     [dispatch]
   )
 
-  return useMemo(() => ({
-    onSwitchTokens,
-    onCurrencySelection,
-    onUserInput,
-    onChangeRecipient,
-  }), [
-    onSwitchTokens,
-    onCurrencySelection,
-    onUserInput,
-    onChangeRecipient
-  ])
+  return useMemo(
+    () => ({
+      onSwitchTokens,
+      onCurrencySelection,
+      onUserInput,
+      onChangeRecipient,
+    }),
+    [onSwitchTokens, onCurrencySelection, onUserInput, onChangeRecipient]
+  )
 }
 
 /**
@@ -145,13 +143,16 @@ export function useHighFeeWarning(trade?: TradeGp) {
     setFeeWarningAccepted(false)
   }, [INPUT.currencyId, OUTPUT.currencyId, independentField])
 
-  return useSafeMemo(() => ({
-    isHighFee,
-    feePercentage,
-    // we only care/check about feeWarning being accepted if the fee is actually high..
-    feeWarningAccepted: _computeFeeWarningAcceptedState({ feeWarningAccepted, isHighFee }),
-    setFeeWarningAccepted,
-  }), [isHighFee, feePercentage, feeWarningAccepted, setFeeWarningAccepted])
+  return useSafeMemo(
+    () => ({
+      isHighFee,
+      feePercentage,
+      // we only care/check about feeWarning being accepted if the fee is actually high..
+      feeWarningAccepted: _computeFeeWarningAcceptedState({ feeWarningAccepted, isHighFee }),
+      setFeeWarningAccepted,
+    }),
+    [isHighFee, feePercentage, feeWarningAccepted, setFeeWarningAccepted]
+  )
 }
 
 function _computeFeeWarningAcceptedState({
@@ -182,10 +183,13 @@ export function useUnknownImpactWarning() {
     setImpactWarningAccepted(false)
   }, [INPUT.currencyId, OUTPUT.currencyId, independentField])
 
-  return useMemo(() => ({
-    impactWarningAccepted,
-    setImpactWarningAccepted,
-  }), [impactWarningAccepted, setImpactWarningAccepted])
+  return useMemo(
+    () => ({
+      impactWarningAccepted,
+      setImpactWarningAccepted,
+    }),
+    [impactWarningAccepted, setImpactWarningAccepted]
+  )
 }
 
 // from the current swap inputs, compute the best trade and return it.

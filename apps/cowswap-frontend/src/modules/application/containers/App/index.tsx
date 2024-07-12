@@ -22,7 +22,7 @@ import { useInitializeUtm } from 'modules/utm'
 
 import { MENU_ITEMS } from 'common/constants/routes'
 import { InvalidLocalTimeWarning } from 'common/containers/InvalidLocalTimeWarning'
-import { useAnalyticsReporter } from 'common/hooks/useAnalyticsReporter'
+import { useAnalyticsReporter } from 'modules/analytics'
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
 import { LoadingApp } from 'common/pure/LoadingApp'
 import { CoWDAOFonts } from 'common/styles/CoWDAOFonts'
@@ -30,6 +30,7 @@ import RedirectAnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers/Redir
 
 import { ADDITIONAL_FOOTER_CONTENT, NAV_ITEMS, PRODUCT_VARIANT } from './menuConsts'
 import * as styledEl from './styled'
+import { cowAnalytics } from 'modules/analytics'
 
 const RoutesApp = lazy(() => import('./RoutesApp').then((module) => ({ default: module.RoutesApp })))
 
@@ -139,6 +140,7 @@ export function App() {
               productVariant={PRODUCT_VARIANT}
               additionalFooterContent={ADDITIONAL_FOOTER_CONTENT}
               hasTouchFooter
+              cowAnalytics={cowAnalytics}
             />
           )}
 

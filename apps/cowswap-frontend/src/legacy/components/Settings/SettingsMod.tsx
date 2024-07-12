@@ -1,6 +1,5 @@
 import { useCallback, useRef } from 'react'
 
-import { toggleRecepientAddressAnalytics } from '@cowprotocol/analytics'
 import { useOnClickOutside } from '@cowprotocol/common-hooks'
 import { HelpTooltip, Media, RowBetween, RowFixed, UI } from '@cowprotocol/ui'
 
@@ -17,6 +16,7 @@ import { ApplicationModal } from 'legacy/state/application/reducer'
 import { useRecipientToggleManager } from 'legacy/state/user/hooks'
 
 import { SettingsTabProp } from './index'
+import { toggleRecepientAddressAnalytics } from 'modules/analytics'
 
 export const StyledMenuIcon = styled.span`
   --size: var(${UI.ICON_SIZE_NORMAL});

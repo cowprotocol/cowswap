@@ -1,12 +1,13 @@
 import { useState, ReactNode, useEffect, useRef } from 'react'
 
-import { EventCategories, sendEventHandler } from '@cowprotocol/analytics'
+import { CowAnalytics } from '@cowprotocol/analytics'
 import IMG_ICON_ARROW_RIGHT_CIRCULAR from '@cowprotocol/assets/images/arrow-right-circular.svg'
 import IMG_ICON_SOCIAL_DISCORD from '@cowprotocol/assets/images/icon-social-discord.svg'
 import IMG_ICON_SOCIAL_FORUM from '@cowprotocol/assets/images/icon-social-forum.svg'
 import IMG_ICON_SOCIAL_GITHUB from '@cowprotocol/assets/images/icon-social-github.svg'
 import IMG_ICON_SOCIAL_SNAPSHOT from '@cowprotocol/assets/images/icon-social-snapshot.svg'
 import IMG_ICON_SOCIAL_X from '@cowprotocol/assets/images/icon-social-x.svg'
+
 import { useTheme } from '@cowprotocol/common-hooks'
 
 import SVG from 'react-inlinesvg'
@@ -35,8 +36,9 @@ import {
 import { Color } from '../../consts'
 import { MenuItem } from '../MenuBar'
 import { ProductLogo, ProductVariant } from '../ProductLogo'
+import { clickOnFooter } from 'src/analytics/events'
 
-interface FooterProps {
+export interface FooterProps {
   description?: string
   navItems?: MenuItem[]
   productVariant: ProductVariant
@@ -45,6 +47,7 @@ interface FooterProps {
   hasTouchFooter?: boolean
   maxWidth?: number
   host?: string
+  cowAnalytics: CowAnalytics
 }
 
 const SOCIAL_LINKS: { href: string; label: string; icon: string; external: boolean; utmContent: string }[] = [
@@ -210,21 +213,17 @@ const GLOBAL_FOOTER_NAV_ITEMS: MenuItem[] = [
   },
 ]
 
-const FooterLink = ({
-  href,
-  external,
-  label,
-  utmSource,
-  utmContent,
-  rootDomain,
-}: {
+interface FooterLinkProps {
   href: string
   external?: boolean
   label?: string
   utmSource?: string
   utmContent?: string
   rootDomain?: string
-}) => {
+  cowAnalytics: CowAnalytics
+}
+
+const FooterLink = ({ href, external, label, utmSource, utmContent, rootDomain, cowAnalytics }: FooterLinkProps) => {
   const finalRootDomain = rootDomain || (typeof window !== 'undefined' ? window.location.host : '')
 
   const finalHref = external
@@ -237,16 +236,12 @@ const FooterLink = ({
         }
       })()
 
-  const handleClick = () => {
-    sendEventHandler(EventCategories.FOOTER, `click-${utmContent || label?.toLowerCase().replace(/\s+/g, '-')}`)
-  }
-
   return (
     <Link
       href={finalHref}
       target={external ? '_blank' : '_self'}
       rel={external ? 'noopener noreferrer' : undefined}
-      onClick={handleClick}
+      onClick={() => clickOnFooter(cowAnalytics, `click-${utmContent || label?.toLowerCase().replace(/\s+/g, '-')}`)}
     >
       {label}
     </Link>
@@ -295,6 +290,7 @@ export const Footer = ({
   hasTouchFooter = false,
   maxWidth,
   host,
+  cowAnalytics,
 }: FooterProps) => {
   const [isFooterExpanded, setIsFooterExpanded] = useState(expanded)
   const footerRef = useRef<HTMLDivElement>(null)
@@ -358,6 +354,7 @@ export const Footer = ({
                           utmSource={child.utmSource}
                           utmContent={child.utmContent}
                           rootDomain={rootDomain}
+                          cowAnalytics={cowAnalytics}
                         />
                       </li>
                     ))}

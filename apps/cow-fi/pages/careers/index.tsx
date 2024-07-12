@@ -21,9 +21,8 @@ import {
   TopicCardInner,
 } from '@/styles/styled'
 
-import { EventCategories, sendEventHandler } from '@cowprotocol/analytics'
-
 import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
+import { clickOnCareers } from 'modules/analytics'
 
 interface PageProps {
   siteConfigData: typeof CONFIG
@@ -97,7 +96,7 @@ export default function Page({ siteConfigData, jobsData }: PageProps) {
                                 utmContent={`job-${title}`}
                                 margin="auto auto 0 0"
                                 marginTablet="auto auto 0"
-                                onClick={() => sendEventHandler(EventCategories.CAREERS, `click-job-${title}`)}
+                                onClick={() => clickOnCareers(`click-job-${title}`)}
                               >
                                 Apply
                               </Link>
@@ -128,7 +127,7 @@ export default function Page({ siteConfigData, jobsData }: PageProps) {
                                 linkType={LinkType.TopicButton}
                                 href={absolute_url}
                                 utmContent={`job-${title}`}
-                                onClick={() => sendEventHandler(EventCategories.CAREERS, `click-job-${title}`)}
+                                onClick={() => clickOnCareers(`click-job-${title}`)}
                               >
                                 Apply
                               </Link>
@@ -159,7 +158,7 @@ export default function Page({ siteConfigData, jobsData }: PageProps) {
                     bgColor="#194D05"
                     color="#BCEC79"
                     href="/careers/refer-to-earn"
-                    onClick={() => sendEventHandler(EventCategories.CAREERS, `click-refer-to-earn`)}
+                    onClick={() => clickOnCareers(`click-refer-to-earn`)}
                   >
                     Refer-to-Earn details
                   </Link>

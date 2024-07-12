@@ -2,7 +2,6 @@ import { Color } from '@cowprotocol/ui'
 import Layout from '@/components/Layout'
 import { PRODUCT_LIST } from '@/data/home/const'
 import { Link, LinkType } from '@/components/Link'
-import { EventCategories, sendEventHandler } from '@cowprotocol/analytics'
 import SVG from 'react-inlinesvg'
 
 import {
@@ -18,6 +17,7 @@ import {
   SectionTitleText,
   TopicCardInner,
 } from '@/styles/styled'
+import { clickOnHome } from 'modules/analytics'
 
 export default function Page() {
   return (
@@ -53,7 +53,7 @@ export default function Page() {
                       color={topic.linkColor}
                       href={topic.linkHref}
                       linkType={LinkType.TopicButton}
-                      onClick={() => sendEventHandler(EventCategories.HOME, topic.linkEvent)}
+                      onClick={() => clickOnHome(topic.linkEvent)}
                       external={topic.linkExternal}
                       utmContent={topic.linkUtmContent}
                     >

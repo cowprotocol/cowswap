@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
-import { setMaxSellTokensAnalytics } from '@cowprotocol/analytics'
 import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { formatInputAmount, getIsNativeToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -20,6 +19,7 @@ import { CurrencySelectButton } from 'common/pure/CurrencySelectButton'
 import { FiatValue } from 'common/pure/FiatValue'
 
 import * as styledEl from './styled'
+import { setMaxSellTokensAnalytics } from 'modules/analytics'
 
 interface BuiltItProps {
   className: string
@@ -161,7 +161,13 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
             />
           </div>
           <div>
-            {inputTooltip ? <HoverTooltip wrapInContainer content={inputTooltip}>{numericalInput}</HoverTooltip> : numericalInput}
+            {inputTooltip ? (
+              <HoverTooltip wrapInContainer content={inputTooltip}>
+                {numericalInput}
+              </HoverTooltip>
+            ) : (
+              numericalInput
+            )}
           </div>
         </styledEl.CurrencyInputBox>
 

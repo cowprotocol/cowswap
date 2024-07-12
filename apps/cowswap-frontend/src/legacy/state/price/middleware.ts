@@ -1,10 +1,9 @@
-import { initialPriceLoadAnalytics } from '@cowprotocol/analytics'
-
 import { Middleware, isAnyOf } from '@reduxjs/toolkit'
 
 import * as PriceActions from './actions'
 
 import { AppState } from '../index'
+import { initialPriceLoadAnalytics } from 'modules/analytics'
 
 const isUpdateQuoteAction = isAnyOf(PriceActions.updateQuote)
 
