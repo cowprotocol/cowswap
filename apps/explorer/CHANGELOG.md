@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.32.3](https://github.com/cowprotocol/cowswap/compare/explorer-v2.32.2...explorer-v2.32.3) (2024-07-12)
+
+
+### Bug Fixes
+
+* **explorer:** fix linter issues ([#4714](https://github.com/cowprotocol/cowswap/issues/4714)) ([7cebbdc](https://github.com/cowprotocol/cowswap/commit/7cebbdccc1e71c878be6a97c7f894ed57c7d4821))
+
 ## [2.32.2](https://github.com/cowprotocol/cowswap/compare/explorer-v2.32.1...explorer-v2.32.2) (2024-07-10)
 
 
