@@ -1,4 +1,4 @@
-import ReactGA, { GaOptions, InitOptions } from 'react-ga4/types/ga4'
+import ReactGA from 'react-ga4'
 import { AnalyticsContext, CowAnalytics, EventOptions, OutboundLinkParams } from '../CowAnalytics'
 
 import { debounce } from '@cowprotocol/common-utils'
@@ -15,12 +15,12 @@ type CowDimensionKey = keyof typeof DIMENSION_MAP
 type CowDimensionValues = { [key in CowDimensionKey]: string }
 
 export interface CowAnalyticsGoogleParams {
-  googleAnalyticsId?: InitOptions[] | string
+  googleAnalyticsId?: string
   options?: {
     legacyDimensionMetric?: boolean
     nonce?: string
     testMode?: boolean
-    gaOptions?: GaOptions | any
+    gaOptions?: unknown
     gtagOptions?: any
   }
 }

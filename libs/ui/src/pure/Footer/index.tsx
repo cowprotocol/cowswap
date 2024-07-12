@@ -36,7 +36,7 @@ import {
 import { Color } from '../../consts'
 import { MenuItem } from '../MenuBar'
 import { ProductLogo, ProductVariant } from '../ProductLogo'
-import { clickOnFooter } from 'src/analytics/events'
+import { clickOnFooter } from '../../analytics/events'
 
 export interface FooterProps {
   description?: string

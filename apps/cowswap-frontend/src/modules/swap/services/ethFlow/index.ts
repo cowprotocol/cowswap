@@ -14,12 +14,12 @@ import { appDataContainsHooks } from 'modules/permit/utils/appDataContainsHooks'
 import { signEthFlowOrderStep } from 'modules/swap/services/ethFlow/steps/signEthFlowOrderStep'
 import { EthFlowContext } from 'modules/swap/services/types'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
-import { tradeFlowAnalytics } from 'modules/trade/utils/analytics'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
 import { isQuoteExpired } from 'modules/tradeQuote'
 
 import { calculateUniqueOrderId } from './steps/calculateUniqueOrderId'
+import { tradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
 
 export async function ethFlow(
   ethFlowContext: EthFlowContext,

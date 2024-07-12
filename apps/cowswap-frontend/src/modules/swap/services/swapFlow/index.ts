@@ -18,13 +18,13 @@ import { handlePermit } from 'modules/permit'
 import { appDataContainsHooks } from 'modules/permit/utils/appDataContainsHooks'
 import { appDataContainsPermitSigner } from 'modules/permit/utils/appDataContainsPermitSigner'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
-import { tradeFlowAnalytics } from 'modules/trade/utils/analytics'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
 
 import { presignOrderStep } from './steps/presignOrderStep'
 
 import { SwapFlowContext } from '../types'
+import { tradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
 
 export async function swapFlow(
   input: SwapFlowContext,

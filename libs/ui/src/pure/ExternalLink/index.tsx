@@ -7,7 +7,7 @@ import styled from 'styled-components/macro'
 
 import { UI } from '../../enum'
 import { CowAnalytics } from '@cowprotocol/analytics'
-import { externalLinkAnalytics } from 'src/analytics/events'
+import { externalLinkAnalytics } from '../../analytics/events'
 
 export const StyledLink = styled.a`
   text-decoration: none;

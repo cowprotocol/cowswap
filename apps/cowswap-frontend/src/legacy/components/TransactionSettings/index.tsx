@@ -1,6 +1,5 @@
 import { useCallback, useContext, useRef, useState } from 'react'
 
-import { orderExpirationTimeAnalytics, slippageToleranceAnalytics } from '@cowprotocol/analytics'
 import {
   DEFAULT_DEADLINE_FROM_NOW,
   HIGH_ETH_FLOW_SLIPPAGE_BPS,
@@ -36,6 +35,7 @@ import { getNativeOrderDeadlineTooltip, getNonNativeOrderDeadlineTooltip } from 
 import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from 'modules/swap/pure/Row/RowSlippageContent'
 
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
+import { orderExpirationTimeAnalytics, slippageToleranceAnalytics } from 'modules/analytics'
 
 const MAX_DEADLINE_MINUTES = 180 // 3h
 

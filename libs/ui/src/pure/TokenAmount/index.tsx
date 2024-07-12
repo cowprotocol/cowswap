@@ -1,5 +1,5 @@
-import { LONG_PRECISION } from '@cowprotocol/common-const'
 import { formatTokenAmount, FractionUtils } from '@cowprotocol/common-utils'
+import { LONG_PRECISION } from '@cowprotocol/common-const'
 
 import styled from 'styled-components/macro'
 
