@@ -449,6 +449,9 @@ export const TopicDescription = styled.p<{
 
 export const TopicTable = styled.table`
   max-width: 100%;
+  font-size: inherit;
+  line-height: 1.2;
+  font-weight: ${Font.weight.regular};
 
   > tbody {
     max-width: 100%;
@@ -463,11 +466,24 @@ export const TopicTable = styled.table`
   > tbody > tr {
     &:first-child {
       padding: 0 16px 0 0;
+
+      ${Media.upToMedium()} {
+        padding: 0 0 12px;
+      }
     }
 
     ${Media.upToMedium()} {
       display: flex;
       flex-flow: column wrap;
+    }
+  }
+
+  > tbody > tr > td:first-child {
+    color: ${Color.neutral30};
+    padding: 0 16px 0 0;
+
+    ${Media.upToMedium()} {
+      padding: 0 0 4px;
     }
   }
 `
