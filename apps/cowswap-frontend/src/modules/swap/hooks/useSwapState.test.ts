@@ -3,7 +3,7 @@ import { parse } from 'qs'
 import { queryParametersToSwapState } from 'legacy/state/swap/utils'
 import { Field } from 'legacy/state/types'
 
-jest.mock('common/hooks/useAnalyticsReporter')
+jest.mock('modules/analytics/useAnalyticsReporterCowSwap')
 
 describe('hooks', () => {
   describe('#queryParametersToSwapState', () => {
