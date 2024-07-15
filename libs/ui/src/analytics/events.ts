@@ -5,6 +5,7 @@ import { CowAnalytics } from '../../../analytics/src'
  * Common UI shared events
  */
 enum Category {
+  SERVICE_WORKER = 'Service Worker',
   FOOTER = 'Footer',
   EXTERNAL_LINK = 'External Link',
 }
@@ -23,5 +24,15 @@ export function clickOnFooter(cowAnalytics: CowAnalytics, name: string) {
   cowAnalytics.sendEvent({
     category: Category.FOOTER,
     action: name,
+  })
+}
+
+export function serviceWorkerLoad(cowAnalytics: CowAnalytics, installed: boolean, hit: boolean) {
+  const action = installed ? (hit ? 'Cache hit' : 'Cache miss') : 'Not installed'
+
+  cowAnalytics.sendEvent({
+    category: Category.SERVICE_WORKER,
+    action,
+    nonInteraction: true,
   })
 }

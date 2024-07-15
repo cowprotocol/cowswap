@@ -6,7 +6,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import LogoWrapper, { LOGO_MAP } from 'components/common/LogoWrapper'
 import { abbreviateString } from 'utils'
-import { ExternalLink } from 'components/ExternalLink'
+import { ExternalLink } from '@cowprotocol/ui'
 
 export interface Props {
   /**

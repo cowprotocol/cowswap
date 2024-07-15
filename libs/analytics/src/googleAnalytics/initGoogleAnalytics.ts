@@ -1,15 +1,16 @@
-import { isMobile } from '@cowprotocol/common-utils'
-import { AnalyticsContext, CowAnalytics } from '../CowAnalytics'
+import { CowAnalytics } from '../CowAnalytics'
 import { CowAnalyticsGoogle } from './CowAnalyticsGoogle'
 
 export const GOOGLE_ANALYTICS_CLIENT_ID_STORAGE_KEY = 'ga_client_id'
 
 export function initCowAnalyticsGoogle(): CowAnalytics {
+  // Load stored client id
   let storedClientId: string | null = null
   if (typeof window !== 'undefined') {
     storedClientId = window.localStorage.getItem(GOOGLE_ANALYTICS_CLIENT_ID_STORAGE_KEY)
   }
 
+  // Init analytics
   const googleAnalyticsId = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS || process.env.REACT_APP_GOOGLE_ANALYTICS_ID
   console.log('[lib:analytics] Init analytics', googleAnalyticsId)
   const cowAnalytics = new CowAnalyticsGoogle({
@@ -24,13 +25,7 @@ export function initCowAnalyticsGoogle(): CowAnalytics {
     },
   })
 
-  if (typeof window !== 'undefined') {
-    cowAnalytics.setContext(
-      AnalyticsContext.customBrowserType,
-      !isMobile ? 'desktop' : 'web3' in window || 'ethereum' in window ? 'mobileWeb3' : 'mobileRegular'
-    )
-  }
-
+  // Persist analytics client id
   cowAnalytics.ga((tracker: any) => {
     if (!tracker) return
 

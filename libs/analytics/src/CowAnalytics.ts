@@ -12,8 +12,7 @@ export type EventOptions = {
   category: string
   label?: string
   value?: number
-  // nonInteraction?: boolean;
-  // transport?: ('beacon' | 'xhr' | 'image');
+  nonInteraction?: boolean
 }
 
 export interface OutboundLinkParams {

@@ -22,7 +22,6 @@ enum Category {
   THEME = 'Theme',
   GAMES = 'Games',
   INIT = 'Init',
-  SERVICE_WORKER = 'Service worker',
   TWAP = 'TWAP',
   COW_FORTUNE = 'CoWFortune',
   SURPLUS_MODAL = 'Surplus Modal',
