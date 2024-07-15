@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 
-import { TradeType, useTradeTypeInfo } from 'modules/trade'
+import { TradeType } from 'modules/trade/types'
+import { useTradeTypeInfo } from 'modules/trade'
 import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
 
 const widgetTypeMap: Record<TradeType, string> = {
