@@ -13,6 +13,8 @@ import { useColorMode } from './theme/hooks/useColorMode'
 import { darkPalette, lightPalette } from './theme/paletteOptions'
 import { initWeb3Modal } from './web3modalConfig'
 import { WithLDProvider } from './WithLDProvider'
+import { CowAnalyticsProvider } from '@cowprotocol/analytics'
+import { cowAnalytics } from './app/analytics'
 
 const WrapperStyled = {
   display: 'flex',
@@ -66,7 +68,9 @@ function Root() {
           <GlobalStyles styles={globalStyles(theme, colorMode.mode)} />
           <Box sx={WrapperStyled}>
             <WithLDProvider>
-              <Configurator title="CoW Widget" />
+              <CowAnalyticsProvider cowAnalytics={cowAnalytics}>
+                <Configurator title="CoW Widget" />
+              </CowAnalyticsProvider>
             </WithLDProvider>
           </Box>
         </ThemeProvider>

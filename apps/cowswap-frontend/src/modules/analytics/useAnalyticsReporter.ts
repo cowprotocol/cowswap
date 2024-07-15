@@ -1,70 +1,38 @@
 import { useEffect } from 'react'
 
-import { AnalyticsContext, PixelEvent } from '@cowprotocol/analytics'
-import { usePrevious } from '@cowprotocol/common-hooks'
-import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
-
-import { useLocation } from 'react-router-dom'
+import { AnalyticsContext, CowAnalytics, PixelAnalytics, WebVitalsAnalytics } from '@cowprotocol/analytics'
+import { useAnalyticsReporter } from '@cowprotocol/ui'
 
 import { useInjectedWidgetMetaData } from 'modules/injectedWidget'
-
 import { useGetMarketDimension } from '../../common/hooks/useGetMarketDimension'
-import { cowAnalytics, pixelAnalytics } from 'modules/analytics'
 
-let initiatedPixel = false
+interface UseAnalyticsReporterProps {
+  cowAnalytics: CowAnalytics
+  pixelAnalytics?: PixelAnalytics
+  webVitalsAnalytics?: WebVitalsAnalytics
+}
 
-export function useAnalyticsReporter() {
-  const { pathname, search } = useLocation()
-
-  const { chainId, account } = useWalletInfo()
-  const { walletName } = useWalletDetails()
-  const injectedWidgetMetaData = useInjectedWidgetMetaData()
-  const prevAccount = usePrevious(account)
-
+/**
+ * Hook to report analytics for CowSwap app
+ * @param props
+ * @returns
+ */
+export function useAnalyticsReporterCowSwap(props: UseAnalyticsReporterProps) {
+  const { cowAnalytics } = props
   const marketDimension = useGetMarketDimension()
 
-  useEffect(() => {
-    // Set analytics context: chainId
-    cowAnalytics.setContext(AnalyticsContext.chainId, chainId.toString())
-  }, [chainId])
-
-  // Handle wallet name custom dimension
+  const injectedWidgetMetaData = useInjectedWidgetMetaData()
   const injectedWidgetAppId = injectedWidgetMetaData?.appCode
 
+  // Set analytics context: injected widget app id
   useEffect(() => {
-    // Set analytics context: user account and wallet name
-    cowAnalytics.setUserAccount(AnalyticsContext.userAddress)
-    cowAnalytics.setContext(AnalyticsContext.walletName, account ? walletName : 'Not connected')
-
-    // Handle pixel tracking on wallet connection
-    if (!prevAccount && account && pixelAnalytics) {
-      pixelAnalytics.sendAllPixels(PixelEvent.CONNECT_WALLET)
-    }
-  }, [account, walletName, prevAccount])
-
-  useEffect(() => {
-    // Set analytics context: market
-    cowAnalytics.setContext(AnalyticsContext.market, marketDimension || undefined)
-  }, [marketDimension])
-
-  useEffect(() => {
-    // Set analytics context: injected widget app id
     cowAnalytics.setContext(AnalyticsContext.injectedWidgetAppId, injectedWidgetAppId)
   }, [injectedWidgetAppId])
 
+  // Set analytics context: market
   useEffect(() => {
-    cowAnalytics.sendPageView(`${pathname}${search}`)
-  }, [pathname, search])
+    cowAnalytics.setContext(AnalyticsContext.market, marketDimension || undefined)
+  }, [marketDimension])
 
-  // Handle initiate pixel tracking
-  useEffect(() => {
-    if (!initiatedPixel) {
-      if (pixelAnalytics) {
-        // Sent all pixels
-        pixelAnalytics.sendAllPixels(PixelEvent.INIT)
-      }
-
-      initiatedPixel = true
-    }
-  }, [])
+  return useAnalyticsReporter(props)
 }

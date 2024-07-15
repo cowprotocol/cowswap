@@ -8,6 +8,8 @@ import { apolloClient } from 'services/uniswap-price/apollo-client'
 import { useInitializeUtm } from 'modules/utm'
 import { WithLDProvider } from '@/components/WithLDProvider'
 import { ThemeProvider } from '../theme'
+import { CowAnalyticsProvider } from '@cowprotocol/analytics'
+import { cowAnalytics } from 'modules/analytics'
 
 export default function App(props: AppProps) {
   const { Component, pageProps } = props
@@ -52,7 +54,9 @@ export default function App(props: AppProps) {
       <ApolloProvider client={apolloClient}>
         <WithLDProvider>
           <ThemeProvider>
-            <Component {...pageProps} />
+            <CowAnalyticsProvider cowAnalytics={cowAnalytics}>
+              <Component {...pageProps} />
+            </CowAnalyticsProvider>
           </ThemeProvider>
         </WithLDProvider>
       </ApolloProvider>

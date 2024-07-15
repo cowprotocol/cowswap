@@ -8,10 +8,10 @@ import { TwitterPixel } from './providers/twitter'
 
 import { isEns, isProd } from '@cowprotocol/common-utils'
 
-export function initPixelAnalytics(): PixelAnalytics | null {
+export function initPixelAnalytics(): PixelAnalytics | undefined {
   const isPixelEnabled = isProd || isEns
   if (!isPixelEnabled) {
-    return null
+    return undefined
   }
 
   return new PixelAnalytics([

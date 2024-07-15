@@ -6,6 +6,8 @@ import { ReactNode, StrictMode } from 'react'
 
 import { nodeRemoveChildFix } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
+import { CowAnalyticsProvider } from '@cowprotocol/analytics'
+
 import { SnackbarsWidget } from '@cowprotocol/snackbars'
 import { Web3Provider } from '@cowprotocol/wallet'
 
@@ -26,6 +28,7 @@ import { useInjectedWidgetParams } from 'modules/injectedWidget'
 
 import { WalletUnsupportedNetworkBanner } from '../common/containers/WalletUnsupportedNetworkBanner'
 import { BlockNumberProvider } from '../common/hooks/useBlockNumber'
+import { cowAnalytics } from 'modules/analytics'
 
 // Node removeChild hackaround
 // based on: https://github.com/facebook/react/issues/11538#issuecomment-417504600
@@ -47,11 +50,13 @@ function Main() {
                   <ThemedGlobalStyle />
                   <BlockNumberProvider>
                     <WithLDProvider>
-                      <WalletUnsupportedNetworkBanner />
-                      <Updaters />
+                      <CowAnalyticsProvider cowAnalytics={cowAnalytics}>
+                        <WalletUnsupportedNetworkBanner />
+                        <Updaters />
 
-                      <Toasts />
-                      <App />
+                        <Toasts />
+                        <App />
+                      </CowAnalyticsProvider>
                     </WithLDProvider>
                   </BlockNumberProvider>
                 </ThemeProvider>

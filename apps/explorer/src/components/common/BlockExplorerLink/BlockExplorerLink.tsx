@@ -4,10 +4,9 @@ import { CHAIN_INFO } from '@cowprotocol/common-const'
 import { BlockExplorerLinkType, getBlockExplorerUrl } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { ExternalLink } from 'components/analytics/ExternalLink'
 import LogoWrapper, { LOGO_MAP } from 'components/common/LogoWrapper'
 import { abbreviateString } from 'utils'
-import { CowAnalytics } from '../../../../../../libs/analytics/src/CowAnalytics'
+import { ExternalLink } from 'components/ExternalLink'
 
 export interface Props {
   /**
@@ -39,8 +38,6 @@ export interface Props {
    * to show explorer logo
    */
   showLogo?: boolean
-
-  cowAnalytics: CowAnalytics
 }
 
 /**
@@ -50,16 +47,7 @@ export interface Props {
  * Expects all data as input. Does not use any hooks internally.
  */
 export const BlockExplorerLink: React.FC<Props> = (props: Props) => {
-  const {
-    type,
-    identifier,
-    label: labelProp,
-    useUrlAsLabel = false,
-    className,
-    networkId,
-    showLogo = false,
-    cowAnalytics,
-  } = props
+  const { type, identifier, label: labelProp, useUrlAsLabel = false, className, networkId, showLogo = false } = props
 
   if (!networkId || !identifier) {
     return null
@@ -69,13 +57,7 @@ export const BlockExplorerLink: React.FC<Props> = (props: Props) => {
   const label = labelProp || (useUrlAsLabel && url) || abbreviateString(identifier, 6, 4)
 
   return (
-    <ExternalLink
-      href={url}
-      target="_blank"
-      rel="noopener noreferrer"
-      className={className}
-      cowAnalytics={cowAnalytics}
-    >
+    <ExternalLink href={url} target="_blank" rel="noopener noreferrer" className={className}>
       <span>{label}</span>
       {showLogo && <LogoWrapper title={`Open it on ${CHAIN_INFO[networkId].explorerTitle}`} src={LOGO_MAP.etherscan} />}
     </ExternalLink>

@@ -1,6 +1,6 @@
 import { initCowAnalyticsGoogle } from '@cowprotocol/analytics'
 
-const cowAnalytics = initCowAnalyticsGoogle()
+export const cowAnalytics = initCowAnalyticsGoogle()
 
 enum Category {
   WIDGET_CONFIGURATOR = 'Widget configurator',

@@ -28,6 +28,7 @@ import {
 import { SpotPricesUpdater } from 'common/updaters/orders/SpotPricesUpdater'
 import { SentryUpdater } from 'common/updaters/SentryUpdater'
 import { UserUpdater } from 'common/updaters/UserUpdater'
+import { addListAnalytics, cowAnalytics, removeListAnalytics } from 'modules/analytics'
 
 export function Updaters() {
   const { chainId, account } = useWalletInfo()
@@ -67,6 +68,8 @@ export function Updaters() {
         customTokens={customTokens}
         appCode={appCode}
         onTokenListAddingError={onTokenListAddingError}
+        onAddList={(source) => addListAnalytics('Success', source)}
+        onRemoveList={(source) => removeListAnalytics('Confirm', source)}
       />
       <UnsupportedTokensUpdater />
       <BalancesAndAllowancesUpdater chainId={chainId} account={account} />

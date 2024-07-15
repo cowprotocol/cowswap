@@ -1,4 +1,4 @@
-import React, { HTMLProps } from 'react'
+import React, { HTMLProps, PropsWithChildren } from 'react'
 
 import { anonymizeLink } from '@cowprotocol/common-utils'
 
@@ -6,7 +6,7 @@ import { ExternalLink as LinkIconFeather } from 'react-feather'
 import styled from 'styled-components/macro'
 
 import { UI } from '../../enum'
-import { CowAnalytics } from '@cowprotocol/analytics'
+import { CowAnalytics, useCowAnalytics } from '@cowprotocol/analytics'
 import { externalLinkAnalytics } from '../../analytics/events'
 
 export const StyledLink = styled.a`
@@ -56,40 +56,23 @@ export const LinkIcon = styled(LinkIconFeather as any)`
   stroke: currentColor;
 `
 
-export function handleClickExternalLink(event: React.MouseEvent<HTMLAnchorElement>) {
-  const { target, href } = event.currentTarget
-
-  const anonymizedHref = anonymizeLink(href)
-
-  // don't prevent default, don't redirect if it's a new tab
-  if (target === '_blank' || event.ctrlKey || event.metaKey) {
-    outboundLink({ label: anonymizedHref }, () => {
-      console.debug('Fired outbound link event', anonymizedHref)
-    })
-  } else {
-    event.preventDefault()
-    // send a ReactGA event and then trigger a location change
-    outboundLink({ label: anonymizedHref }, () => {
-      window.location.href = anonymizedHref
-    })
-  }
-}
+export type ExternalLinkProps = Omit<HTMLProps<HTMLAnchorElement>, 'as' | 'ref' | 'onClick'> & {
+  href: string
+  onClickOptional?: React.MouseEventHandler<HTMLAnchorElement>
+} & PropsWithChildren
 
 /**
  * Outbound link that handles firing google analytics events
  */
 export function ExternalLink({
+  children,
   target = '_blank',
   href,
   rel = 'noopener noreferrer',
   onClickOptional,
-  cowAnalytics,
   ...rest
-}: Omit<HTMLProps<HTMLAnchorElement>, 'as' | 'ref' | 'onClick'> & {
-  href: string
-  onClickOptional?: React.MouseEventHandler<HTMLAnchorElement>
-  cowAnalytics: CowAnalytics
-}) {
+}: ExternalLinkProps) {
+  const cowAnalytics = useCowAnalytics()
   return (
     <StyledLink
       target={target}
@@ -97,13 +80,39 @@ export function ExternalLink({
       href={href}
       onClick={(event) => {
         if (onClickOptional) onClickOptional(event)
-        handleClickExternalLink(event)
-        cowAnalytics.outboundLink({})
+        handleClickExternalLink(cowAnalytics, event)
         externalLinkAnalytics(cowAnalytics, href)
       }}
       {...rest}
-    />
+    >
+      {children}
+    </StyledLink>
   )
+}
+
+function handleClickExternalLink(cowAnalytics: CowAnalytics, event: React.MouseEvent<HTMLAnchorElement>): void {
+  const { target, href } = event.currentTarget
+
+  const anonymizedHref = anonymizeLink(href)
+
+  const isNewTab = target === '_blank' || event.ctrlKey || event.metaKey
+
+  // don't prevent default, don't redirect if it's a new tab
+  if (!isNewTab) {
+    event.preventDefault()
+  }
+
+  cowAnalytics.outboundLink({
+    label: anonymizedHref,
+    hitCallback: () => {
+      if (isNewTab) {
+        console.debug('Fired outbound link event', anonymizedHref)
+      } else {
+        // send a ReactGA event and then trigger a location change
+        window.location.href = anonymizedHref
+      }
+    },
+  })
 }
 
 export function ExternalLinkIcon({
@@ -112,8 +121,16 @@ export function ExternalLinkIcon({
   rel = 'noopener noreferrer',
   ...rest
 }: Omit<HTMLProps<HTMLAnchorElement>, 'as' | 'ref' | 'onClick'> & { href: string }) {
+  const cowAnalytics = useCowAnalytics()
+
   return (
-    <LinkIconWrapper target={target} rel={rel} href={href} onClick={handleClickExternalLink} {...rest}>
+    <LinkIconWrapper
+      target={target}
+      rel={rel}
+      href={href}
+      onClick={(e) => handleClickExternalLink(cowAnalytics, e)}
+      {...rest}
+    >
       <LinkIcon />
     </LinkIconWrapper>
   )

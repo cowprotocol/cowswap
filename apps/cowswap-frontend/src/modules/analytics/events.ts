@@ -7,6 +7,7 @@ import { initCowAnalyticsGoogle, initPixelAnalytics } from '@cowprotocol/analyti
 export const cowAnalytics = initCowAnalyticsGoogle()
 export const pixelAnalytics = initPixelAnalytics()
 export const webVitalsAnalytics = new WebVitalsAnalytics(cowAnalytics)
+webVitalsAnalytics.reportWebVitals()
 
 enum Category {
   TRADE = 'Trade',
@@ -166,6 +167,7 @@ const LABEL_FROM_TYPE: Record<UiOrderType, string> = {
   [UiOrderType.LIMIT]: 'Limit Order',
   [UiOrderType.SWAP]: 'Market Order',
   [UiOrderType.TWAP]: 'TWAP Order',
+  [UiOrderType.HOOKS]: 'Hooks',
 }
 
 function getClassLabel(orderClass: UiOrderType, label?: string) {

@@ -1,6 +1,6 @@
 import { initCowAnalyticsGoogle } from '@cowprotocol/analytics'
 
-const cowAnalytics = initCowAnalyticsGoogle()
+export const cowAnalytics = initCowAnalyticsGoogle()
 
 export enum Category {
   HOME = 'Homepage',

@@ -1,13 +1,17 @@
-import { initCowAnalyticsGoogle } from '@cowprotocol/analytics'
+import { WebVitalsAnalytics, initCowAnalyticsGoogle, initPixelAnalytics } from '@cowprotocol/analytics'
 
 export const cowAnalytics = initCowAnalyticsGoogle()
+export const pixelAnalytics = initPixelAnalytics()
+export const webVitalsAnalytics = new WebVitalsAnalytics(cowAnalytics)
 
-export enum Category {}
-// HOME = 'Homepage',
+export enum Category {
+  ORDER_DETAILS = 'Order details',
+}
 
-export function clickOnToken(name: string) {
+export function clickOnOrderDetails(action: string, label?: string) {
   cowAnalytics.sendEvent({
-    category: Category.TOKENS,
-    action: `click-token-${name}`,
+    category: Category.ORDER_DETAILS,
+    action,
+    label,
   })
 }

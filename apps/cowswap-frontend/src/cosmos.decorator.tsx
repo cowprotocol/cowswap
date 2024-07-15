@@ -6,6 +6,7 @@ import { ReactNode, StrictMode, useCallback, useContext } from 'react'
 import IMAGE_MOON from '@cowprotocol/assets/cow-swap/moon.svg'
 import IMAGE_SUN from '@cowprotocol/assets/cow-swap/sun.svg'
 import { injectedWalletConnection, WalletUpdater } from '@cowprotocol/wallet'
+import { CowAnalyticsProvider } from '@cowprotocol/analytics'
 import { Web3ReactProvider } from '@web3-react/core'
 
 import { LanguageProvider } from 'i18n'
@@ -20,6 +21,7 @@ import { cowSwapStore } from 'legacy/state'
 import { useDarkModeManager } from 'legacy/state/user/hooks'
 
 import { BlockNumberProvider } from './common/hooks/useBlockNumber'
+import { cowAnalytics } from 'modules/analytics'
 
 const DarkModeToggleButton = styled.button`
   display: flex;
@@ -101,9 +103,11 @@ const Fixture = ({ children }: { children: ReactNode }) => {
                 <BlockNumberProvider>
                   <WalletUpdater />
                   <Wrapper>
-                    <DarkModeToggle>
-                      <WrapperInner>{children}</WrapperInner>
-                    </DarkModeToggle>
+                    <CowAnalyticsProvider cowAnalytics={cowAnalytics}>
+                      <DarkModeToggle>
+                        <WrapperInner>{children}</WrapperInner>
+                      </DarkModeToggle>
+                    </CowAnalyticsProvider>
                   </Wrapper>
                 </BlockNumberProvider>
               </Web3ReactProvider>

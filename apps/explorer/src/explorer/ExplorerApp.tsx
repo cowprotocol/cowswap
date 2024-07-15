@@ -1,6 +1,8 @@
 import React from 'react'
 
 import { CHAIN_INFO_ARRAY } from '@cowprotocol/common-const'
+import { useAnalyticsReporter } from '@cowprotocol/ui'
+import { CowAnalyticsProvider } from '@cowprotocol/analytics'
 
 import * as Sentry from '@sentry/react'
 import { Integrations } from '@sentry/tracing'
@@ -12,12 +14,12 @@ import { INITIAL_STATE, rootReducer } from './state'
 import { GlobalStyle, MainWrapper } from './styled'
 
 import { version } from '../../package.json'
-import { useAnalyticsReporter } from '../analytics'
 import { GenericLayout } from '../components/layout'
 import { withGlobalContext } from '../hooks/useGlobalState'
 import { RedirectMainnet, RedirectXdai } from '../state/network'
 import { NetworkUpdater } from '../state/network/NetworkUpdater'
 import { environmentName } from '../utils/env'
+import { cowAnalytics, pixelAnalytics, webVitalsAnalytics } from 'analytics'
 
 const SENTRY_DSN = process.env.REACT_APP_EXPLORER_SENTRY_DSN
 const SENTRY_TRACES_SAMPLE_RATE = process.env.REACT_APP_SENTRY_TRACES_SAMPLE_RATE
@@ -107,12 +109,12 @@ const networkPrefixes = CHAIN_INFO_ARRAY.map((info) => info.urlAlias)
 /** App content */
 
 const AppContent = (): React.ReactNode => {
+  useAnalyticsReporter({ cowAnalytics, pixelAnalytics, webVitalsAnalytics })
+
   const location = useLocation()
   const { pathname: path } = location
   const prefix = path === '' ? '' : `${path.split('/')[1]}`
   const pathPrefix = networkPrefixes.includes(prefix) ? `/${prefix}` : '/'
-
-  useAnalyticsReporter(location, 'Explorer')
 
   return (
     <WithLDProvider>
@@ -141,7 +143,7 @@ const AppContent = (): React.ReactNode => {
  */
 export const ExplorerApp: React.FC = () => {
   return (
-    <>
+    <CowAnalyticsProvider cowAnalytics={cowAnalytics}>
       <GlobalStyle />
       <MainWrapper>
         <Router basename={process.env.BASE_URL}>
@@ -153,7 +155,7 @@ export const ExplorerApp: React.FC = () => {
           </Routes>
         </Router>
       </MainWrapper>
-    </>
+    </CowAnalyticsProvider>
   )
 }
 

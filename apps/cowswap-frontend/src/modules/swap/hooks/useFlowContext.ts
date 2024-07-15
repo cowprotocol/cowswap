@@ -27,7 +27,6 @@ import { useGetCachedPermit } from 'modules/permit'
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { BaseFlowContext } from 'modules/swap/services/types'
 import { TradeConfirmActions, useTradeConfirmActions } from 'modules/trade'
-import { TradeFlowAnalyticsContext } from 'modules/trade/utils/analytics'
 
 import { useTokenContract, useWETHContract } from 'common/hooks/useContract'
 import { useIsSafeApprovalBundle } from 'common/hooks/useIsSafeApprovalBundle'
@@ -39,6 +38,7 @@ import { useDerivedSwapInfo, useSwapState } from './useSwapState'
 
 import { getOrderValidTo } from '../../tradeQuote/utils/quoteDeadline'
 import { getAmountsForSignature } from '../helpers/getAmountsForSignature'
+import { TradeFlowAnalyticsContext } from 'modules/trade/utils/tradeFlowAnalytics'
 
 export enum FlowType {
   REGULAR = 'REGULAR',

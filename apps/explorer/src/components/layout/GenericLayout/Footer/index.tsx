@@ -10,7 +10,6 @@ import styled from 'styled-components/macro'
 import { Network } from 'types'
 
 import { footerConfig } from './config'
-import { cowAnalytics } from 'analytics'
 
 const FooterStyled = styled.footer`
   display: flex;
@@ -140,7 +139,6 @@ export const Footer: React.FC<FooterType> = (props) => {
               identifier={settlementContractAddress}
               networkId={networkId}
               label="Settlement contract"
-              cowAnalytics={cowAnalytics}
             />
             <a target="_blank" rel="noopener noreferrer" href={url.contracts.settlement}>
               <LogoWrapper className="github-logo" src={LOGO_MAP.github} title="Open it on Github" />
@@ -155,7 +153,6 @@ export const Footer: React.FC<FooterType> = (props) => {
               identifier={vaultRelayerContractAddress}
               networkId={networkId}
               label="Vault Relayer contract"
-              cowAnalytics={cowAnalytics}
             />
             <a target="_blank" rel="noopener noreferrer" href={url.contracts.vaultRelayer}>
               <LogoWrapper className="github-logo" src={LOGO_MAP.github} title="Open it on Github" />

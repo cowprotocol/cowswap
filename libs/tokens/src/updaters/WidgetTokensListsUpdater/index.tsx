@@ -20,6 +20,8 @@ export interface CustomTokensListsUpdaterProps {
   customTokens?: TokenInfo[]
   appCode?: string
   onTokenListAddingError(error: Error): void
+  onRemoveList: (source: string) => void
+  onAddList: (source: string) => void
 }
 
 /**
@@ -29,9 +31,11 @@ export interface CustomTokensListsUpdaterProps {
  * Important! Added token lists would be shown only for this widget, they are distinguished by `appCode`
  */
 export function WidgetTokensListsUpdater(props: CustomTokensListsUpdaterProps) {
-  const { tokenLists, appCode, customTokens, onTokenListAddingError } = props
-  const addList = useAddList()
-  const removeList = useRemoveList()
+  const { tokenLists, appCode, customTokens, onTokenListAddingError, onRemoveList, onAddList } = props
+  const addList = useAddList(onAddList)
+  const removeList = useRemoveList(onRemoveList)
+  // const removeList = useRemoveList((source) => removeListAnalytics('Confirm', source))
+  // const toggleList = useToggleList((enabled, source) => toggleListAnalytics(enabled, source))
   const allTokensLists = useAtomValue(allListsSourcesAtom)
   const setEnvironment = useSetAtom(updateEnvironmentAtom)
 

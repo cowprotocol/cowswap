@@ -43,7 +43,7 @@ export function SelectTokenWidget() {
 
   const updateSelectTokenWidget = useUpdateSelectTokenWidgetState()
 
-  const addCustomTokenLists = useAddList()
+  const addCustomTokenLists = useAddList((source) => addListAnalytics('Success', source))
   const importTokenCallback = useAddUserToken()
 
   const allTokens = useAllTokens()
