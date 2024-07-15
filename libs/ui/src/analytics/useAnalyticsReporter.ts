@@ -3,15 +3,18 @@ import { isMobile } from '@cowprotocol/common-utils'
 
 import { AnalyticsContext, PixelEvent, CowAnalytics, PixelAnalytics, WebVitalsAnalytics } from '@cowprotocol/analytics'
 import { usePrevious } from '@cowprotocol/common-hooks'
-import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useLocation } from 'react-router-dom'
 import { serviceWorkerLoad } from './events'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 let initiatedPixel = false
 let initiated = false
 
 interface UseAnalyticsReporterProps {
+  account: string | undefined
+  walletName: string | undefined
+  chainId: SupportedChainId | undefined
   cowAnalytics: CowAnalytics
   pixelAnalytics?: PixelAnalytics
   webVitalsAnalytics?: WebVitalsAnalytics
@@ -22,11 +25,9 @@ interface UseAnalyticsReporterProps {
  * @param props
  */
 export function useAnalyticsReporter(props: UseAnalyticsReporterProps) {
-  const { cowAnalytics, pixelAnalytics, webVitalsAnalytics } = props
+  const { account, walletName, chainId, cowAnalytics, pixelAnalytics, webVitalsAnalytics } = props
   const { pathname, search } = useLocation()
 
-  const { chainId, account } = useWalletInfo()
-  const { walletName } = useWalletDetails()
   const prevAccount = usePrevious(account)
 
   useEffect(() => {
@@ -56,6 +57,10 @@ export function useAnalyticsReporter(props: UseAnalyticsReporterProps) {
 
   // Set analytics context: chainId
   useEffect(() => {
+    if (!chainId) {
+      return
+    }
+
     cowAnalytics.setContext(AnalyticsContext.chainId, chainId.toString())
   }, [chainId])
 

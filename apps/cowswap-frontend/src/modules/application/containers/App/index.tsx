@@ -47,7 +47,7 @@ const LinkComponent = ({ href, children }: PropsWithChildren<{ href: string }>) 
 }
 
 export function App() {
-  useAnalyticsReporterCowSwap({ cowAnalytics, pixelAnalytics, webVitalsAnalytics })
+  useAnalyticsReporterCowSwap()
   useInitializeUtm()
 
   const isInjectedWidgetMode = isInjectedWidget()

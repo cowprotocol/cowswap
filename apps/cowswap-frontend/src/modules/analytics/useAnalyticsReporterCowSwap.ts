@@ -1,24 +1,21 @@
 import { useEffect } from 'react'
 
-import { AnalyticsContext, CowAnalytics, PixelAnalytics, WebVitalsAnalytics } from '@cowprotocol/analytics'
+import { cowAnalytics, pixelAnalytics, webVitalsAnalytics } from 'modules/analytics'
+import { AnalyticsContext } from '@cowprotocol/analytics'
 import { useAnalyticsReporter } from '@cowprotocol/ui'
+import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useInjectedWidgetMetaData } from 'modules/injectedWidget'
 import { useGetMarketDimension } from '../../common/hooks/useGetMarketDimension'
-
-interface UseAnalyticsReporterProps {
-  cowAnalytics: CowAnalytics
-  pixelAnalytics?: PixelAnalytics
-  webVitalsAnalytics?: WebVitalsAnalytics
-}
 
 /**
  * Hook to report analytics for CowSwap app
  * @param props
  * @returns
  */
-export function useAnalyticsReporterCowSwap(props: UseAnalyticsReporterProps) {
-  const { cowAnalytics } = props
+export function useAnalyticsReporterCowSwap() {
+  const { chainId, account } = useWalletInfo()
+  const { walletName } = useWalletDetails()
   const marketDimension = useGetMarketDimension()
 
   const injectedWidgetMetaData = useInjectedWidgetMetaData()
@@ -34,5 +31,5 @@ export function useAnalyticsReporterCowSwap(props: UseAnalyticsReporterProps) {
     cowAnalytics.setContext(AnalyticsContext.market, marketDimension || undefined)
   }, [marketDimension])
 
-  return useAnalyticsReporter(props)
+  return useAnalyticsReporter({ account, chainId, walletName, cowAnalytics, pixelAnalytics, webVitalsAnalytics })
 }
