@@ -181,7 +181,7 @@ export const useSearchInAnotherNetwork = (
       setOrdersInNetworks(networksHaveOrders.map((e) => (e.status === 'fulfilled' ? e.value : e.reason)))
       setIsLoading(false)
     },
-    [ownerAddress]
+    [ownerAddress, availableChains]
   )
 
   useEffect(() => {

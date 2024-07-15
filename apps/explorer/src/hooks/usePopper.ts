@@ -72,7 +72,7 @@ export const usePopper = <T extends HTMLElement, U extends HTMLElement = HTMLDiv
     return (): void => {
       popperRef.current?.destroy()
     }
-  }, [])
+  }, [config])
 
   // memoize what doesn't change between rerenders
   const stableProps = useMemo(
