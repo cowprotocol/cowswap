@@ -6,6 +6,8 @@ import { keccak256, toUtf8Bytes } from 'ethers/lib/utils'
 
 import { UtmParams } from 'modules/utm'
 
+import { filterHooks, HooksFilter } from './appDataFilter'
+
 import {
   AppDataHooks,
   AppDataInfo,
@@ -85,11 +87,13 @@ export function toKeccak256(fullAppData: string) {
 
 export async function updateHooksOnAppData(
   appData: AppDataInfo,
-  hooks: AppDataHooks | undefined
+  hooks: AppDataHooks | undefined,
+  preHooksFilter?: HooksFilter,
+  postHooksFilter?: HooksFilter
 ): Promise<AppDataInfo> {
   const { doc } = appData
 
-  const existingHooks = doc.metadata.hooks
+  const existingHooks = filterHooks(doc.metadata.hooks, preHooksFilter, postHooksFilter)
 
   const newDoc = {
     ...doc,

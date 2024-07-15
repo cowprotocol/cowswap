@@ -43,3 +43,5 @@ export type AppDataRootSchema = latest.AppDataRootSchema
 export type AppDataWidget = latest.Widget
 
 export type AppDataPartnerFee = latest.PartnerFee
+
+export type OrderInteractionHooks = latest.OrderInteractionHooks
