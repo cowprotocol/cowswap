@@ -1,6 +1,6 @@
 import { useState, ReactNode, useEffect, useRef } from 'react'
 
-import { CowAnalytics } from '@cowprotocol/analytics'
+import { CowAnalytics, useCowAnalytics } from '@cowprotocol/analytics'
 import IMG_ICON_ARROW_RIGHT_CIRCULAR from '@cowprotocol/assets/images/arrow-right-circular.svg'
 import IMG_ICON_SOCIAL_DISCORD from '@cowprotocol/assets/images/icon-social-discord.svg'
 import IMG_ICON_SOCIAL_FORUM from '@cowprotocol/assets/images/icon-social-forum.svg'
@@ -47,7 +47,6 @@ export interface FooterProps {
   hasTouchFooter?: boolean
   maxWidth?: number
   host?: string
-  cowAnalytics: CowAnalytics
 }
 
 const SOCIAL_LINKS: { href: string; label: string; icon: string; external: boolean; utmContent: string }[] = [
@@ -290,8 +289,8 @@ export const Footer = ({
   hasTouchFooter = false,
   maxWidth,
   host,
-  cowAnalytics,
 }: FooterProps) => {
+  const cowAnalytics = useCowAnalytics()
   const [isFooterExpanded, setIsFooterExpanded] = useState(expanded)
   const footerRef = useRef<HTMLDivElement>(null)
   const hasMounted = useRef(false)
