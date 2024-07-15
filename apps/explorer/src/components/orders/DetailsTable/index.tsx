@@ -30,7 +30,6 @@ import { capitalize } from 'utils'
 import { Order } from 'api/operator'
 import { getUiOrderType } from 'utils/getUiOrderType'
 
-
 const tooltip = {
   orderID: 'A unique identifier ID for this order.',
   from: 'The account address which signed the order.',
