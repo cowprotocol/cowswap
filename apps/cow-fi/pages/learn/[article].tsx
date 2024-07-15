@@ -251,12 +251,7 @@ export default function ArticlePage({
                   <li key={article.id}>
                     <a
                       href={`/learn/${article.attributes?.slug}`}
-                      onClick={() =>
-                        sendEventHandler(
-                          EventCategories.KNOWLEDGEBASE,
-                          `click-related-article-${article.attributes?.title}`
-                        )
-                      }
+                      onClick={() => clickOnKnowledgeBase(`click-related-article-${article.attributes?.title}`)}
                     >
                       {article.attributes?.title}
                     </a>

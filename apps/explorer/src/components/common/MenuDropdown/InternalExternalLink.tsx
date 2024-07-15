@@ -3,12 +3,12 @@ import React from 'react'
 import { Command } from '@cowprotocol/types'
 
 import { faExternalLink } from '@fortawesome/free-solid-svg-icons'
-import { ExternalLink } from 'components/analytics/ExternalLink'
 import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
 import { StyledIcon } from 'components/common/MenuDropdown/styled'
 import SVG from 'react-inlinesvg'
 
 import { MenuImageProps, MenuItemKind, MenuLink } from './types'
+import { ExternalLink } from '@cowprotocol/ui'
 
 function MenuImage(props: MenuImageProps): React.ReactNode | null {
   const { title, iconSVG, icon } = props
