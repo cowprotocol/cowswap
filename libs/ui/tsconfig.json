@@ -1,13 +1,5 @@
 {
   "compilerOptions": {
-    // "baseUrl": ".",
-    // "paths": {
-    //   "@cowprotocol/core": ["../core/src/index.ts"],
-    //   "@cowprotocol/common-utils": ["../common-utils/src/index.ts"],
-    //   "@cowprotocol/analytics": ["../analytics/src/index.ts"],
-    //   "@cowprotocol/common-hooks": ["../common-hooks/src/index.ts"],
-    //   "@cowprotocol/common-const": ["../common-const/src/index.ts"]
-    // },
     "jsx": "react-jsx",
     "allowJs": false,
     "esModuleInterop": false,

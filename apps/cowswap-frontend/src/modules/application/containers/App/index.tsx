@@ -141,7 +141,6 @@ export function App() {
               productVariant={PRODUCT_VARIANT}
               additionalFooterContent={ADDITIONAL_FOOTER_CONTENT}
               hasTouchFooter
-              cowAnalytics={cowAnalytics}
             />
           )}
 
