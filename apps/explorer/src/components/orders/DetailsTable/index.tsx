@@ -8,6 +8,7 @@ import { TruncatedText } from '@cowprotocol/ui/pure/TruncatedText'
 
 import { faFill, faGroupArrowsRotate, faHistory, faProjectDiagram } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { clickOnOrderDetails } from 'analytics'
 import DecodeAppData from 'components/AppData/DecodeAppData'
 import { DateDisplay } from 'components/common/DateDisplay'
 import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
@@ -28,7 +29,6 @@ import { capitalize } from 'utils'
 
 import { Order } from 'api/operator'
 import { getUiOrderType } from 'utils/getUiOrderType'
-import { clickOnOrderDetails } from 'analytics'
 
 const tooltip = {
   orderID: 'A unique identifier ID for this order.',

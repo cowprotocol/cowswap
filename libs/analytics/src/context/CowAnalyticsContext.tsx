@@ -1,4 +1,5 @@
-import React, { createContext, useContext, ReactNode, PropsWithChildren } from 'react'
+import React, { createContext, useContext, PropsWithChildren } from 'react'
+
 import { CowAnalytics } from '../CowAnalytics'
 
 interface AnalyticsContextType {

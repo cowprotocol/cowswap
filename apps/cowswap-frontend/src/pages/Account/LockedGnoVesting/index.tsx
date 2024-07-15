@@ -26,11 +26,12 @@ import SVG from 'react-inlinesvg'
 import CopyHelper from 'legacy/components/Copy'
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
 
+import { claimAnalytics } from 'modules/analytics'
+
 import { HelpCircle } from 'common/pure/HelpCircle'
 import { BalanceDisplay, Card, CardActions, ConvertWrapper, ExtLink, VestingBreakdown } from 'pages/Account/styled'
 
 import { useClaimCowFromLockedGnoCallback } from './hooks'
-import { claimAnalytics } from 'modules/analytics'
 
 enum ClaimStatus {
   INITIAL,

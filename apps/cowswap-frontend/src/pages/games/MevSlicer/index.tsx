@@ -3,9 +3,9 @@ import { ButtonPrimary } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
+import { gameAnalytics } from 'modules/analytics'
 import { PageTitle } from 'modules/application/containers/PageTitle'
 import { Page, Content } from 'modules/application/pure/Page'
-import { gameAnalytics } from 'modules/analytics'
 
 const GAME_URL = 'https://mevslicer.netlify.app/'
 

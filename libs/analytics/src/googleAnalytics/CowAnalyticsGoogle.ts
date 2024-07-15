@@ -1,7 +1,9 @@
+import { debounce } from '@cowprotocol/common-utils'
+
 import ReactGA from 'react-ga4'
+
 import { AnalyticsContext, CowAnalytics, EventOptions, OutboundLinkParams } from '../CowAnalytics'
 
-import { debounce } from '@cowprotocol/common-utils'
 
 const DIMENSION_MAP = {
   [AnalyticsContext.chainId]: 'dimension1',

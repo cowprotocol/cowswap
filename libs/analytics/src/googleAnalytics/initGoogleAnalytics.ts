@@ -1,5 +1,6 @@
-import { CowAnalytics } from '../CowAnalytics'
 import { CowAnalyticsGoogle } from './CowAnalyticsGoogle'
+
+import { CowAnalytics } from '../CowAnalytics'
 
 export const GOOGLE_ANALYTICS_CLIENT_ID_STORAGE_KEY = 'ga_client_id'
 

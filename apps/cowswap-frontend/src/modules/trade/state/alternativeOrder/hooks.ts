@@ -3,10 +3,11 @@ import { useCallback } from 'react'
 
 import { Order } from 'legacy/state/orders/actions'
 
+import { alternativeModalAnalytics } from 'modules/analytics'
+
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import { alternativeOrderAtom, isAlternativeOrderModalVisibleAtom } from './atoms'
-import { alternativeModalAnalytics } from 'modules/analytics'
 
 export function useIsAlternativeOrderModalVisible() {
   return useAtomValue(isAlternativeOrderModalVisibleAtom)

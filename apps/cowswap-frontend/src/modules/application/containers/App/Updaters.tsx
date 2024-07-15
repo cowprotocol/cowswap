@@ -5,6 +5,7 @@ import { HwAccountIndexUpdater, useWalletInfo, WalletUpdater } from '@cowprotoco
 
 import { GasPriceStrategyUpdater } from 'legacy/state/gas/gas-price-strategy-updater'
 
+import { addListAnalytics, removeListAnalytics } from 'modules/analytics'
 import { UploadToIpfsUpdater } from 'modules/appData/updater/UploadToIpfsUpdater'
 import { CowEventsUpdater, InjectedWidgetUpdater, useInjectedWidgetParams } from 'modules/injectedWidget'
 import { FinalizeTxUpdater } from 'modules/onchainTransactions'
@@ -28,7 +29,6 @@ import {
 import { SpotPricesUpdater } from 'common/updaters/orders/SpotPricesUpdater'
 import { SentryUpdater } from 'common/updaters/SentryUpdater'
 import { UserUpdater } from 'common/updaters/UserUpdater'
-import { addListAnalytics, cowAnalytics, removeListAnalytics } from 'modules/analytics'
 
 export function Updaters() {
   const { chainId, account } = useWalletInfo()

@@ -10,8 +10,9 @@ import styled from 'styled-components/macro'
 
 import { Order } from 'legacy/state/orders/actions'
 
-import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
 import { shareSurplusOnTwitter } from 'modules/analytics'
+
+import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
 
 const SELL_SURPLUS_WORD = 'got'
 const BUY_SURPLUS_WORD = 'saved'

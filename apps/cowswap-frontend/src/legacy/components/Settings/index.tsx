@@ -16,8 +16,8 @@ import { useModalIsOpen, useToggleSettingsMenu } from 'legacy/state/application/
 import { ApplicationModal } from 'legacy/state/application/reducer'
 import { useRecipientToggleManager } from 'legacy/state/user/hooks'
 
-import { SettingsIcon } from 'modules/trade/pure/Settings'
 import { toggleRecepientAddressAnalytics } from 'modules/analytics'
+import { SettingsIcon } from 'modules/trade/pure/Settings'
 
 export const StyledMenuButton = styled.button`
   position: relative;

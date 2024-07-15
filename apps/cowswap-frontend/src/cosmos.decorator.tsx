@@ -3,10 +3,10 @@ import './polyfills'
 
 import { ReactNode, StrictMode, useCallback, useContext } from 'react'
 
+import { CowAnalyticsProvider } from '@cowprotocol/analytics'
 import IMAGE_MOON from '@cowprotocol/assets/cow-swap/moon.svg'
 import IMAGE_SUN from '@cowprotocol/assets/cow-swap/sun.svg'
 import { injectedWalletConnection, WalletUpdater } from '@cowprotocol/wallet'
-import { CowAnalyticsProvider } from '@cowprotocol/analytics'
 import { Web3ReactProvider } from '@web3-react/core'
 
 import { LanguageProvider } from 'i18n'
@@ -20,8 +20,9 @@ import { ThemedGlobalStyle, ThemeProvider, WIDGET_MAX_WIDTH } from 'theme'
 import { cowSwapStore } from 'legacy/state'
 import { useDarkModeManager } from 'legacy/state/user/hooks'
 
-import { BlockNumberProvider } from './common/hooks/useBlockNumber'
 import { cowAnalytics } from 'modules/analytics'
+
+import { BlockNumberProvider } from './common/hooks/useBlockNumber'
 
 const DarkModeToggleButton = styled.button`
   display: flex;

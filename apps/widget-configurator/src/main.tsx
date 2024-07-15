@@ -1,11 +1,14 @@
 import { StrictMode, useMemo } from 'react'
 
+import { CowAnalyticsProvider } from '@cowprotocol/analytics'
+
 import { CssBaseline, GlobalStyles } from '@mui/material'
 import Box from '@mui/material/Box'
 import { createTheme, PaletteOptions, ThemeProvider } from '@mui/material/styles'
 import 'inter-ui'
 import { createRoot } from 'react-dom/client'
 
+import { cowAnalytics } from './app/analytics'
 import { Configurator } from './app/configurator'
 import { ColorModeContext, globalStyles } from './theme/ColorModeContext'
 import { commonTypography } from './theme/commonTypography'
@@ -13,8 +16,6 @@ import { useColorMode } from './theme/hooks/useColorMode'
 import { darkPalette, lightPalette } from './theme/paletteOptions'
 import { initWeb3Modal } from './web3modalConfig'
 import { WithLDProvider } from './WithLDProvider'
-import { CowAnalyticsProvider } from '@cowprotocol/analytics'
-import { cowAnalytics } from './app/analytics'
 
 const WrapperStyled = {
   display: 'flex',

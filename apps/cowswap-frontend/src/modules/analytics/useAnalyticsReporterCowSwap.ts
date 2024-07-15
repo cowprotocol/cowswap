@@ -1,11 +1,12 @@
 import { useEffect } from 'react'
 
-import { cowAnalytics, pixelAnalytics, webVitalsAnalytics } from 'modules/analytics'
 import { AnalyticsContext } from '@cowprotocol/analytics'
 import { useAnalyticsReporter } from '@cowprotocol/ui'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
+import { cowAnalytics, pixelAnalytics, webVitalsAnalytics } from 'modules/analytics'
 import { useInjectedWidgetMetaData } from 'modules/injectedWidget'
+
 import { useGetMarketDimension } from '../../common/hooks/useGetMarketDimension'
 
 /**

@@ -12,6 +12,7 @@ import { BalanceAndSubsidy } from 'legacy/hooks/useCowBalanceAndSubsidy'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { Field } from 'legacy/state/types'
 
+import { setMaxSellTokensAnalytics } from 'modules/analytics'
 import { ReceiveAmount } from 'modules/swap/pure/ReceiveAmount'
 
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
@@ -19,7 +20,6 @@ import { CurrencySelectButton } from 'common/pure/CurrencySelectButton'
 import { FiatValue } from 'common/pure/FiatValue'
 
 import * as styledEl from './styled'
-import { setMaxSellTokensAnalytics } from 'modules/analytics'
 
 interface BuiltItProps {
   className: string

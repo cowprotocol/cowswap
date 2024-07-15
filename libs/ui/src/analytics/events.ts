@@ -1,5 +1,6 @@
+import { CowAnalytics } from '@cowprotocol/analytics';
 import { detectExplorer } from '@cowprotocol/common-utils'
-import { CowAnalytics } from '../../../analytics/src'
+
 
 /**
  * Common UI shared events

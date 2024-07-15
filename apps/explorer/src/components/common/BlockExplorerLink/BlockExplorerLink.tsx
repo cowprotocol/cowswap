@@ -3,10 +3,10 @@ import React, { ReactElement } from 'react'
 import { CHAIN_INFO } from '@cowprotocol/common-const'
 import { BlockExplorerLinkType, getBlockExplorerUrl } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { ExternalLink } from '@cowprotocol/ui'
 
 import LogoWrapper, { LOGO_MAP } from 'components/common/LogoWrapper'
 import { abbreviateString } from 'utils'
-import { ExternalLink } from '@cowprotocol/ui'
 
 export interface Props {
   /**

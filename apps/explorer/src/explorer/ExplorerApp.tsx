@@ -1,11 +1,12 @@
 import React from 'react'
 
-import { CHAIN_INFO_ARRAY } from '@cowprotocol/common-const'
-import { useAnalyticsReporter } from '@cowprotocol/ui'
 import { CowAnalyticsProvider } from '@cowprotocol/analytics'
+import { CHAIN_INFO_ARRAY } from '@cowprotocol/common-const'
 
 import * as Sentry from '@sentry/react'
 import { Integrations } from '@sentry/tracing'
+import { cowAnalytics } from 'analytics'
+import { useAnalyticsReporterExplorer } from 'analytics/useAnalyticsReporterExplorer'
 import { BrowserRouter, HashRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom'
 
 import { WithLDProvider } from './components/common/WithLDProvider'
@@ -19,8 +20,6 @@ import { withGlobalContext } from '../hooks/useGlobalState'
 import { RedirectMainnet, RedirectXdai } from '../state/network'
 import { NetworkUpdater } from '../state/network/NetworkUpdater'
 import { environmentName } from '../utils/env'
-import { cowAnalytics, pixelAnalytics, webVitalsAnalytics } from 'analytics'
-import { useAnalyticsReporterExplorer } from 'analytics/useAnalyticsReporterExplorer'
 
 const SENTRY_DSN = process.env.REACT_APP_EXPLORER_SENTRY_DSN
 const SENTRY_TRACES_SAMPLE_RATE = process.env.REACT_APP_SENTRY_TRACES_SAMPLE_RATE

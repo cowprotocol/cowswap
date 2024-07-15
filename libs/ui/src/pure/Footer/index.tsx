@@ -7,7 +7,6 @@ import IMG_ICON_SOCIAL_FORUM from '@cowprotocol/assets/images/icon-social-forum.
 import IMG_ICON_SOCIAL_GITHUB from '@cowprotocol/assets/images/icon-social-github.svg'
 import IMG_ICON_SOCIAL_SNAPSHOT from '@cowprotocol/assets/images/icon-social-snapshot.svg'
 import IMG_ICON_SOCIAL_X from '@cowprotocol/assets/images/icon-social-x.svg'
-
 import { useTheme } from '@cowprotocol/common-hooks'
 
 import SVG from 'react-inlinesvg'
@@ -33,10 +32,10 @@ import {
   ToggleFooterButton,
 } from './styled'
 
+import { clickOnFooter } from '../../analytics/events'
 import { Color } from '../../consts'
 import { MenuItem } from '../MenuBar'
 import { ProductLogo, ProductVariant } from '../ProductLogo'
-import { clickOnFooter } from '../../analytics/events'
 
 export interface FooterProps {
   description?: string

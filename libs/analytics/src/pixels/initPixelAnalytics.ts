@@ -1,3 +1,5 @@
+import { isEns, isProd } from '@cowprotocol/common-utils'
+
 import { PixelAnalytics } from './PixelAnalytics'
 import { FacebookPixel } from './providers/facebook'
 import { LinkedinPixel } from './providers/linkedin'
@@ -6,7 +8,6 @@ import { PavedPixel } from './providers/paved'
 import { RedditPixel } from './providers/reddit'
 import { TwitterPixel } from './providers/twitter'
 
-import { isEns, isProd } from '@cowprotocol/common-utils'
 
 export function initPixelAnalytics(): PixelAnalytics | undefined {
   const isPixelEnabled = isProd || isEns

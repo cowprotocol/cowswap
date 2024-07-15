@@ -1,4 +1,5 @@
 import { ReactElement, useCallback, useState } from 'react'
+
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { getWrappedToken } from '@cowprotocol/common-utils'
 import { getTokenLogoUrls } from '@cowprotocol/tokens'
@@ -6,10 +7,11 @@ import { useIsAssetWatchingSupported, useWalletDetails } from '@cowprotocol/wall
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { Currency } from '@uniswap/sdk-core'
 
+import { watchAssetInWalletAnalytics } from 'modules/analytics'
+
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
 import { WatchAssetInWallet as WatchAssetInWalletPure } from '../../pure/WatchAssetInWallet'
-import { watchAssetInWalletAnalytics } from 'modules/analytics'
 
 export type WatchAssetInWalletProps = {
   currency: Currency | null | undefined

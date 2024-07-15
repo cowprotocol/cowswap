@@ -14,10 +14,10 @@ import { PostOrderParams } from 'legacy/utils/trade'
 import { AppDataInfo, TypedAppDataHooks, UploadAppDataParams } from 'modules/appData'
 import { GeneratePermitHook, IsTokenPermittableResult, useGetCachedPermit } from 'modules/permit'
 import { TradeConfirmActions } from 'modules/trade'
+import { TradeFlowAnalyticsContext } from 'modules/trade/utils/tradeFlowAnalytics'
 
 import { EthFlowOrderExistsCallback } from '../hooks/useCheckEthFlowOrderExists'
 import { FlowType } from '../hooks/useFlowContext'
-import { TradeFlowAnalyticsContext } from 'modules/trade/utils/tradeFlowAnalytics'
 export interface BaseFlowContext {
   context: {
     chainId: number

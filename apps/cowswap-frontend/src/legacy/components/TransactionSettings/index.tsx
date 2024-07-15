@@ -26,6 +26,7 @@ import { ThemedText } from 'theme'
 import { AutoColumn } from 'legacy/components/Column'
 import { useUserTransactionTTL } from 'legacy/state/user/hooks'
 
+import { orderExpirationTimeAnalytics, slippageToleranceAnalytics } from 'modules/analytics'
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { useIsSlippageModified } from 'modules/swap/hooks/useIsSlippageModified'
 import { useIsSmartSlippageApplied } from 'modules/swap/hooks/useIsSmartSlippageApplied'
@@ -35,7 +36,6 @@ import { getNativeOrderDeadlineTooltip, getNonNativeOrderDeadlineTooltip } from 
 import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from 'modules/swap/pure/Row/RowSlippageContent'
 
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
-import { orderExpirationTimeAnalytics, slippageToleranceAnalytics } from 'modules/analytics'
 
 const MAX_DEADLINE_MINUTES = 180 // 3h
 

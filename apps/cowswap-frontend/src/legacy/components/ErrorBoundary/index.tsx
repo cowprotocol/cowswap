@@ -10,10 +10,10 @@ import { ChunkLoadError } from 'legacy/components/ErrorBoundary/ChunkLoadError'
 import { ErrorWithStackTrace } from 'legacy/components/ErrorBoundary/ErrorWithStackTrace'
 import { HeaderRow, LogoImage, UniIcon } from 'legacy/components/Header/styled'
 
+import { cowAnalytics } from 'modules/analytics'
 import { Page } from 'modules/application/pure/Page'
 
 import { Routes } from 'common/constants/routes'
-import { cowAnalytics } from 'modules/analytics'
 
 type ErrorBoundaryState = {
   error: Error | null

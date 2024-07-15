@@ -15,6 +15,7 @@ import { X } from 'react-feather'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
+import { openFortuneCookieAnalytics, shareFortuneTwitterAnalytics } from 'modules/analytics'
 import { useOpenRandomFortune } from 'modules/fortune/hooks/useOpenRandomFortune'
 import { lastCheckedFortuneAtom } from 'modules/fortune/state/checkedFortunesListAtom'
 import {
@@ -24,7 +25,6 @@ import {
 } from 'modules/fortune/state/fortuneStateAtom'
 
 import { SuccessBanner } from './styled'
-import { openFortuneCookieAnalytics, shareFortuneTwitterAnalytics } from 'modules/analytics'
 
 const FortuneButton = styled.div<{ isDailyFortuneChecked: boolean }>`
   --size: 32px;

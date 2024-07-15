@@ -5,6 +5,7 @@ import { BundleTxApprovalBanner } from '@cowprotocol/ui'
 import { useIsSafeViaWc, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
+import { modifySafeHandlerAnalytics } from 'modules/analytics'
 import { SellNativeWarningBanner } from 'modules/trade/containers/SellNativeWarningBanner'
 import { useTradeRouteContext } from 'modules/trade/hooks/useTradeRouteContext'
 import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
@@ -32,7 +33,6 @@ import { swapAmountDifferenceAtom } from '../../state/swapAmountDifferenceAtom'
 import { twapDeadlineAtom, twapOrderAtom } from '../../state/twapOrderAtom'
 import { twapOrdersSettingsAtom, updateTwapOrdersSettingsAtom } from '../../state/twapOrdersSettingsAtom'
 import { isPriceProtectionNotEnough } from '../../utils/isPriceProtectionNotEnough'
-import { modifySafeHandlerAnalytics } from 'modules/analytics'
 
 const BUNDLE_APPROVAL_STATES = [TradeFormValidation.ApproveAndSwap]
 

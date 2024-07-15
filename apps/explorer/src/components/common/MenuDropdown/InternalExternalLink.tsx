@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { Command } from '@cowprotocol/types'
+import { ExternalLink } from '@cowprotocol/ui'
 
 import { faExternalLink } from '@fortawesome/free-solid-svg-icons'
 import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
@@ -8,7 +9,6 @@ import { StyledIcon } from 'components/common/MenuDropdown/styled'
 import SVG from 'react-inlinesvg'
 
 import { MenuImageProps, MenuItemKind, MenuLink } from './types'
-import { ExternalLink } from '@cowprotocol/ui'
 
 function MenuImage(props: MenuImageProps): React.ReactNode | null {
   const { title, iconSVG, icon } = props

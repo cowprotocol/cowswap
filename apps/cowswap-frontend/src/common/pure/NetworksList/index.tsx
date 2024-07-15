@@ -1,11 +1,11 @@
 import { getChainInfo } from '@cowprotocol/common-const'
 import { getExplorerBaseUrl } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { ExternalLink } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 
 import * as styledEl from './styled'
-import { ExternalLink } from '@cowprotocol/ui'
 
 export interface NetworksListProps {
   currentChainId: SupportedChainId | null

@@ -20,11 +20,11 @@ import { appDataContainsPermitSigner } from 'modules/permit/utils/appDataContain
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
+import { tradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
 
 import { presignOrderStep } from './steps/presignOrderStep'
 
 import { SwapFlowContext } from '../types'
-import { tradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
 
 export async function swapFlow(
   input: SwapFlowContext,

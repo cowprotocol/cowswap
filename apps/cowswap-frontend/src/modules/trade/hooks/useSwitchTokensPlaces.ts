@@ -3,13 +3,14 @@ import { useCallback } from 'react'
 import { FractionUtils } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { switchTokensAnalytics } from 'modules/analytics'
+
 import { useDerivedTradeState } from './useDerivedTradeState'
 import { useIsWrapOrUnwrap } from './useIsWrapOrUnwrap'
 import { useTradeNavigate } from './useTradeNavigate'
 import { useTradeState } from './useTradeState'
 
 import { ExtendedTradeRawState } from '../types/TradeRawState'
-import { switchTokensAnalytics } from 'modules/analytics'
 
 const EMPTY_CURRENCY_ID = '_'
 

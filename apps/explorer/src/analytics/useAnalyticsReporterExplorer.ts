@@ -1,7 +1,8 @@
-import { useEffect } from 'react'
 
 import { useAnalyticsReporter } from '@cowprotocol/ui'
+
 import { useNetworkId } from 'state/network'
+
 import { cowAnalytics, pixelAnalytics, webVitalsAnalytics } from '.'
 
 /**

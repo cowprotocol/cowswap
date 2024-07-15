@@ -27,12 +27,12 @@ import {
 import type { LegacyFeeQuoteParams } from 'legacy/state/price/types'
 import { getBestQuote } from 'legacy/utils/price'
 
+import { priceOutOfRangeAnalytics } from 'modules/analytics'
 import { updatePendingOrderPricesAtom } from 'modules/orders/state/pendingOrdersPricesAtom'
 
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { PRICE_QUOTE_VALID_TO_TIME } from '../../constants/quote'
-import { priceOutOfRangeAnalytics } from 'modules/analytics'
 
 /**
  * Updater that checks whether pending orders are still "fillable"

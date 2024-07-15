@@ -1,6 +1,6 @@
 import { UiOrderType } from '@cowprotocol/types'
-import { signTradeAnalytics, tradeAnalytics } from 'modules/analytics'
 
+import { signTradeAnalytics, tradeAnalytics } from 'modules/analytics'
 import { USER_SWAP_REJECTED_ERROR } from 'modules/trade/utils/swapErrorHelper'
 
 export interface TradeFlowAnalyticsContext {

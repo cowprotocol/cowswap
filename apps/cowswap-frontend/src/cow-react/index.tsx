@@ -4,10 +4,9 @@ import './sentry'
 import { Provider as AtomProvider } from 'jotai'
 import { ReactNode, StrictMode } from 'react'
 
+import { CowAnalyticsProvider } from '@cowprotocol/analytics'
 import { nodeRemoveChildFix } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
-import { CowAnalyticsProvider } from '@cowprotocol/analytics'
-
 import { SnackbarsWidget } from '@cowprotocol/snackbars'
 import { Web3Provider } from '@cowprotocol/wallet'
 
@@ -21,6 +20,7 @@ import { ThemedGlobalStyle, ThemeProvider } from 'theme'
 import { cowSwapStore } from 'legacy/state'
 import { useAppSelector } from 'legacy/state/hooks'
 
+import { cowAnalytics } from 'modules/analytics'
 import { App } from 'modules/application/containers/App'
 import { Updaters } from 'modules/application/containers/App/Updaters'
 import { WithLDProvider } from 'modules/application/containers/WithLDProvider'
@@ -28,7 +28,6 @@ import { useInjectedWidgetParams } from 'modules/injectedWidget'
 
 import { WalletUnsupportedNetworkBanner } from '../common/containers/WalletUnsupportedNetworkBanner'
 import { BlockNumberProvider } from '../common/hooks/useBlockNumber'
-import { cowAnalytics } from 'modules/analytics'
 
 // Node removeChild hackaround
 // based on: https://github.com/facebook/react/issues/11538#issuecomment-417504600

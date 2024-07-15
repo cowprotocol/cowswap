@@ -4,11 +4,12 @@ import { errorToString, isRejectRequestProviderError } from '@cowprotocol/common
 import { TransactionResponse } from '@ethersproject/providers'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
+import { approvalAnalytics } from 'modules/analytics'
+
 import { useApproveCallback } from 'common/hooks/useApproveCallback'
 import { useTradeSpenderAddress } from 'common/hooks/useTradeSpenderAddress'
 
 import { useUpdateTradeApproveState } from '../../hooks/useUpdateTradeApproveState'
-import { approvalAnalytics } from 'modules/analytics'
 
 interface TradeApproveCallbackParams {
   useModals: boolean

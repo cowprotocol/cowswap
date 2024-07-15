@@ -3,12 +3,13 @@ import { useMemo } from 'react'
 import { ListSearchResponse, ListState, useListsEnabledState, useRemoveList, useToggleList } from '@cowprotocol/tokens'
 import { Loader } from '@cowprotocol/ui'
 
+import { removeListAnalytics, toggleListAnalytics } from 'modules/analytics'
+
 import * as styledEl from './styled'
 
 import { useAddListImport } from '../../hooks/useAddListImport'
 import { ImportTokenListItem } from '../../pure/ImportTokenListItem'
 import { ListItem } from '../../pure/ListItem'
-import { removeListAnalytics, toggleListAnalytics } from 'modules/analytics'
 
 interface ListSearchState {
   source: 'existing' | 'external'

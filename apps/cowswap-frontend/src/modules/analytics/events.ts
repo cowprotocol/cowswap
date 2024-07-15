@@ -1,8 +1,7 @@
-import { UiOrderType } from '@cowprotocol/types'
-import { debounce } from '@cowprotocol/common-utils'
 import { PixelEvent, WebVitalsAnalytics } from '@cowprotocol/analytics'
-
 import { initCowAnalyticsGoogle, initPixelAnalytics } from '@cowprotocol/analytics'
+import { debounce } from '@cowprotocol/common-utils'
+import { UiOrderType } from '@cowprotocol/types'
 
 export const cowAnalytics = initCowAnalyticsGoogle()
 export const pixelAnalytics = initPixelAnalytics()
