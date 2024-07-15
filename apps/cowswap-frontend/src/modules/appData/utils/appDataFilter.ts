@@ -7,7 +7,7 @@ export type HooksFilter = (cowHook: CowHook) => boolean
 
 // Address used when bug with multiple permits per order was introduced
 // Should not be the case once we rotate the key, but kept for sanity check
-const FORMER_PERMIT_HOOK_ADDRESS = '4ed18E9489d82784F98118d5A6aB3AD4340802fb'
+const FORMER_PERMIT_HOOK_ADDRESS = '4ed18e9489d82784f98118d5a6ab3ad4340802fb'
 
 /**
  * Filter to identify any hook containing the permit signer address
@@ -16,8 +16,8 @@ const FORMER_PERMIT_HOOK_ADDRESS = '4ed18E9489d82784F98118d5A6aB3AD4340802fb'
  * @param cowHook
  */
 export const filterPermitSignerPermit: HooksFilter = (cowHook: CowHook): boolean => {
-  const hasFormerAddress = cowHook.target.includes(FORMER_PERMIT_HOOK_ADDRESS)
-  const hasCurrentAddress = cowHook.target.includes(PERMIT_SIGNER.address.slice(2))
+  const hasFormerAddress = cowHook.callData.toLowerCase().includes(FORMER_PERMIT_HOOK_ADDRESS)
+  const hasCurrentAddress = cowHook.callData.toLowerCase().includes(PERMIT_SIGNER.address.slice(2).toLowerCase())
 
   console.log(`bug:filterPermitSignerPermit`, cowHook, hasFormerAddress, hasCurrentAddress)
 
