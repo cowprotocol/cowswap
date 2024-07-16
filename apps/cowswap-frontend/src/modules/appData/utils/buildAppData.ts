@@ -97,18 +97,6 @@ export async function updateHooksOnAppData(
 ): Promise<AppDataInfo> {
   const { doc } = appData
 
-  const existingHooks = filterHooks(doc.metadata.hooks, preHooksFilter, postHooksFilter)
-
-  const mergedHooks = mergeHooks(existingHooks, hooks)
-  const noDuplicateHooks = mergedHooks
-    ? {
-        ...mergedHooks,
-        ...(mergedHooks.pre ? { pre: removeDuplicatedHook(mergedHooks.pre) } : undefined),
-        ...(mergedHooks.post ? { post: removeDuplicatedHook(mergedHooks.post) } : undefined),
-      }
-    : mergedHooks
-
-  console.log(`bug:updateHooksOnAppData`, noDuplicateHooks)
   const filteredHooks = filterHooks(doc.metadata.hooks, preHooksFilter, postHooksFilter)
 
   const newDoc = {
@@ -132,6 +120,7 @@ export async function updateHooksOnAppData(
   }
 }
 
+// TODO: no longer used. Will we ever need it?
 function mergeHooks(
   hooks1: OrderInteractionHooks | undefined,
   hooks2: OrderInteractionHooks | undefined
@@ -163,6 +152,7 @@ function mergeHooks(
   return undefined
 }
 
+// TODO: no longer used. Will we ever need it?
 function removeDuplicatedHook<T extends PreHooks | PostHooks>(hooks: T | undefined): T | undefined {
   if (!hooks || hooks.length < 2) {
     console.log(`bug:removeDuplicatedHook no hooks or only 1`, hooks?.length)
