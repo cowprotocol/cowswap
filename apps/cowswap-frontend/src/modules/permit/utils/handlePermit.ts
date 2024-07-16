@@ -1,6 +1,6 @@
 import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
 
-import { AppDataInfo, buildAppDataHooks, filterPermitSignerPermit, updateHooksOnAppData } from 'modules/appData'
+import { addPermitHookToHooks, AppDataInfo, filterPermitSignerPermit, updateHooksOnAppData } from 'modules/appData'
 
 import { HandlePermitParams } from '../types'
 
@@ -15,7 +15,7 @@ import { HandlePermitParams } from '../types'
  * Returns the updated appData
  */
 export async function handlePermit(params: HandlePermitParams): Promise<AppDataInfo> {
-  const { permitInfo, inputToken, account, appData, generatePermitHook } = params
+  const { permitInfo, inputToken, account, appData, typedHooks, generatePermitHook } = params
 
   if (isSupportedPermitInfo(permitInfo) && 'address' in inputToken) {
     // permitInfo will only be set if there's NOT enough allowance
@@ -30,9 +30,7 @@ export async function handlePermit(params: HandlePermitParams): Promise<AppDataI
       throw new Error(`Unable to generate permit data`)
     }
 
-    const hooks = buildAppDataHooks({
-      preInteractionHooks: [permitData],
-    })
+    const hooks = addPermitHookToHooks(typedHooks, permitData)
 
     return updateHooksOnAppData(appData, hooks, filterPermitSignerPermit)
   } else {

@@ -19,7 +19,9 @@ import {
   OrderInteractionHooks,
   PostHooks,
   PreHooks,
+  TypedAppDataHooks,
 } from '../types'
+import { typedAppDataHooksToAppDataHooks } from './typedHooks'
 
 export type BuildAppDataParams = {
   appCode: string
@@ -29,7 +31,7 @@ export type BuildAppDataParams = {
   orderClass: AppDataOrderClass
   referrerAccount?: string
   utm: UtmParams | undefined
-  hooks?: AppDataHooks
+  typedHooks?: TypedAppDataHooks
   widget?: AppDataWidget
   partnerFee?: AppDataPartnerFee
   replacedOrderUid?: string
@@ -51,7 +53,7 @@ export async function buildAppData({
   environment,
   orderClass: orderClassName,
   utm,
-  hooks,
+  typedHooks,
   widget,
   partnerFee,
   replacedOrderUid,
@@ -71,7 +73,7 @@ export async function buildAppData({
       quote: quoteParams,
       orderClass,
       utm,
-      hooks,
+      hooks: typedAppDataHooksToAppDataHooks(typedHooks),
       widget,
       partnerFee,
       ...{ replacedOrder },
@@ -107,12 +109,13 @@ export async function updateHooksOnAppData(
     : mergedHooks
 
   console.log(`bug:updateHooksOnAppData`, noDuplicateHooks)
+  const filteredHooks = filterHooks(doc.metadata.hooks, preHooksFilter, postHooksFilter)
 
   const newDoc = {
     ...doc,
     metadata: {
       ...doc.metadata,
-      hooks: noDuplicateHooks,
+      hooks: filteredHooks,
     },
   }
 

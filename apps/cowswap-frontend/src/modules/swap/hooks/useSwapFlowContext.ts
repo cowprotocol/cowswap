@@ -15,6 +15,7 @@ import {
 import { SwapFlowContext } from 'modules/swap/services/types'
 import { useEnoughBalanceAndAllowance } from 'modules/tokens'
 import { TradeType } from 'modules/trade'
+import { useAppDataHooks } from 'modules/appData'
 
 import { useGP2SettlementContract } from 'common/hooks/useContract'
 
@@ -24,6 +25,7 @@ export function useSwapFlowContext(): SwapFlowContext | null {
   const sellCurrency = baseProps.trade?.inputAmount?.currency
   const permitInfo = usePermitInfo(sellCurrency, TradeType.SWAP)
   const generatePermitHook = useGeneratePermitHook()
+  const typedHooks = useAppDataHooks()
 
   const checkAllowanceAddress = COW_PROTOCOL_VAULT_RELAYER_ADDRESS[baseProps.chainId || SupportedChainId.MAINNET]
   const { enoughAllowance } = useEnoughBalanceAndAllowance({
@@ -52,6 +54,7 @@ export function useSwapFlowContext(): SwapFlowContext | null {
       contract,
       permitInfo: !enoughAllowance ? permitInfo : undefined,
       generatePermitHook,
+      typedHooks,
     }
   }, [baseProps, contract, enoughAllowance, permitInfo, generatePermitHook])
 }

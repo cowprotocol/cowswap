@@ -40,6 +40,7 @@ export async function swapFlow(
     context: {
       trade: { inputAmount, outputAmount },
     },
+    typedHooks,
   } = input
   const tradeAmounts = { inputAmount, outputAmount }
 
@@ -63,6 +64,7 @@ export async function swapFlow(
 
     orderParams.appData = await handlePermit({
       appData,
+      typedHooks,
       account,
       inputToken: inputCurrency,
       permitInfo,
