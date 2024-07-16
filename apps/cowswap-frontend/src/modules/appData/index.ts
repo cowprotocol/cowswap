@@ -1,6 +1,7 @@
 export { getAppData } from './utils/fullAppData'
 export * from './updater/AppDataUpdater'
 export { useAppData, useUploadAppData } from './hooks'
+export { filterPermitSignerPermit } from './utils/appDataFilter'
 export { updateHooksOnAppData, buildAppData } from './utils/buildAppData'
 export { buildAppDataHooks } from './utils/buildAppDataHooks'
 export * from './utils/getAppDataHooks'

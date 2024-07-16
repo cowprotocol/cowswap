@@ -7,12 +7,12 @@ export function buildAppDataHooks({
   preInteractionHooks?: PreHooks
   postInteractionHooks?: PostHooks
 }): AppDataHooks | undefined {
-  if (!preInteractionHooks && !postInteractionHooks) {
+  if (!preInteractionHooks?.length && !postInteractionHooks?.length) {
     return undefined
   }
 
   return {
-    ...(preInteractionHooks ? { pre: preInteractionHooks } : undefined),
-    ...(postInteractionHooks ? { post: postInteractionHooks } : undefined),
+    ...(preInteractionHooks?.length ? { pre: preInteractionHooks } : undefined),
+    ...(postInteractionHooks?.length ? { post: postInteractionHooks } : undefined),
   }
 }
