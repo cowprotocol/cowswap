@@ -1,6 +1,5 @@
 import { stringifyDeterministic } from '@cowprotocol/app-data'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { CowHook } from '@cowprotocol/types'
 
 import { metadataApiSDK } from 'cowSdk'
 import { keccak256, toUtf8Bytes } from 'ethers/lib/utils'
@@ -8,6 +7,7 @@ import { keccak256, toUtf8Bytes } from 'ethers/lib/utils'
 import { UtmParams } from 'modules/utm'
 
 import { filterHooks, HooksFilter } from './appDataFilter'
+import { typedAppDataHooksToAppDataHooks } from './typedHooks'
 
 import {
   AppDataHooks,
@@ -16,12 +16,8 @@ import {
   AppDataPartnerFee,
   AppDataRootSchema,
   AppDataWidget,
-  OrderInteractionHooks,
-  PostHooks,
-  PreHooks,
   TypedAppDataHooks,
 } from '../types'
-import { typedAppDataHooksToAppDataHooks } from './typedHooks'
 
 export type BuildAppDataParams = {
   appCode: string
@@ -118,74 +114,4 @@ export async function updateHooksOnAppData(
     fullAppData,
     appDataKeccak256,
   }
-}
-
-// TODO: no longer used. Will we ever need it?
-function mergeHooks(
-  hooks1: OrderInteractionHooks | undefined,
-  hooks2: OrderInteractionHooks | undefined
-): OrderInteractionHooks | undefined {
-  if (hooks1 && !hooks2) return hooks1
-
-  if (!hooks1 && hooks2) return hooks2
-
-  if (hooks1 && hooks2) {
-    const pre = (hooks1.pre || []).concat(hooks2.pre || [])
-    const post = (hooks1.post || []).concat(hooks2.post || [])
-
-    if (!pre && !post) {
-      // Avoid empty hooks
-      console.log(`bug:mergeHooks empty pre and post`, hooks1, hooks2)
-      return undefined
-    }
-
-    console.log(`bug:mergeHooks has either pre, post or both`, hooks1, hooks2, pre, post)
-
-    return {
-      version: hooks1.version,
-      // Remove the ones that are empty here too
-      ...(pre ? { pre } : undefined),
-      ...(post ? { post } : undefined),
-    }
-  }
-
-  return undefined
-}
-
-// TODO: no longer used. Will we ever need it?
-function removeDuplicatedHook<T extends PreHooks | PostHooks>(hooks: T | undefined): T | undefined {
-  if (!hooks || hooks.length < 2) {
-    console.log(`bug:removeDuplicatedHook no hooks or only 1`, hooks?.length)
-    return hooks
-  }
-
-  const duplicatedIndices: Set<number> = new Set()
-
-  // Check all hooks against each other to identify duplicates
-  for (let i = 0; i < hooks.length; i++) {
-    if (duplicatedIndices.has(i)) {
-      console.log(`bug:removeDuplicatedHook skipping duplicate`, i)
-      continue
-    }
-
-    const hookA = hooks[i]
-
-    for (let j = i + 1; j < hooks.length; j++) {
-      const hookB = hooks[j]
-
-      if (hooksAreEqual(hookA, hookB)) {
-        console.log(`bug:removeDuplicatedHook found duplicate`, hookB)
-        duplicatedIndices.add(j)
-      }
-    }
-  }
-
-  return duplicatedIndices.size ? (hooks.filter((hook, index) => !duplicatedIndices.has(index)) as T) : hooks
-}
-
-function hooksAreEqual(hookA: CowHook, hookB: CowHook): boolean {
-  return (
-    hookA.callData.toLowerCase() === hookB.callData.toLowerCase() &&
-    hookA.target.toLowerCase() === hookB.target.toLowerCase()
-  )
 }

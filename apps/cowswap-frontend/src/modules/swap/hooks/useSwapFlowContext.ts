@@ -5,6 +5,7 @@ import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS, OrderKind, SupportedChainId } from 
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { TradeType as UniTradeType } from '@uniswap/sdk-core'
 
+import { useAppDataHooks } from 'modules/appData'
 import { useGeneratePermitHook, usePermitInfo } from 'modules/permit'
 import {
   FlowType,
@@ -15,7 +16,6 @@ import {
 import { SwapFlowContext } from 'modules/swap/services/types'
 import { useEnoughBalanceAndAllowance } from 'modules/tokens'
 import { TradeType } from 'modules/trade'
-import { useAppDataHooks } from 'modules/appData'
 
 import { useGP2SettlementContract } from 'common/hooks/useContract'
 
@@ -56,7 +56,7 @@ export function useSwapFlowContext(): SwapFlowContext | null {
       generatePermitHook,
       typedHooks,
     }
-  }, [baseProps, contract, enoughAllowance, permitInfo, generatePermitHook])
+  }, [baseProps, contract, enoughAllowance, permitInfo, generatePermitHook, typedHooks])
 }
 
 export function useSwapEnoughAllowance(): boolean | undefined {
