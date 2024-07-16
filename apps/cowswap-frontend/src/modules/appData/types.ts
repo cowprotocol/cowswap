@@ -32,7 +32,18 @@ export type UploadAppDataParams = AppDataKeyParams & {
 export type UpdateAppDataOnUploadQueueParams = AppDataKeyParams & Partial<AppDataUploadStatus>
 export type RemoveAppDataFromUploadQueueParams = AppDataKeyParams
 
+export type CowHook = latest.CoWHook
+
+export type TypedCowHook = CowHook & {
+  type: 'permit' | 'hookStore'
+}
+
 export type AppDataHooks = latest.OrderInteractionHooks
+
+export type TypedAppDataHooks = Omit<AppDataHooks, 'pre' | 'post'> & {
+  pre?: TypedCowHook[]
+  post?: TypedCowHook[]
+}
 
 export type PreHooks = latest.PreHooks
 
