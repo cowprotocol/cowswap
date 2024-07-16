@@ -1,12 +1,12 @@
-import { AppDataHooks, PostHooks, PreHooks } from '../types'
+import { AppDataHooks, CowHook } from '../types'
 
-export function buildAppDataHooks({
+export function buildAppDataHooks<T extends CowHook[], V extends AppDataHooks>({
   preInteractionHooks,
   postInteractionHooks,
 }: {
-  preInteractionHooks?: PreHooks
-  postInteractionHooks?: PostHooks
-}): AppDataHooks | undefined {
+  preInteractionHooks?: T
+  postInteractionHooks?: T
+}): V | undefined {
   if (!preInteractionHooks?.length && !postInteractionHooks?.length) {
     return undefined
   }
@@ -14,5 +14,5 @@ export function buildAppDataHooks({
   return {
     ...(preInteractionHooks?.length ? { pre: preInteractionHooks } : undefined),
     ...(postInteractionHooks?.length ? { post: postInteractionHooks } : undefined),
-  }
+  } as V
 }
