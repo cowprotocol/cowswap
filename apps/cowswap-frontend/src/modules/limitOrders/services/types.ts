@@ -10,12 +10,11 @@ import { TypedAppDataHooks } from 'modules/appData'
 import { GeneratePermitHook, IsTokenPermittableResult, useGetCachedPermit } from 'modules/permit'
 import type { TradeQuoteState } from 'modules/tradeQuote'
 
-
 export interface TradeFlowContext {
   // signer changes creates redundant re-renders
   // validTo must be calculated just before signing of an order
   postOrderParams: Omit<PostOrderParams, 'validTo' | 'signer'>
-  typedHooks: TypedAppDataHooks
+  typedHooks?: TypedAppDataHooks
   settlementContract: GPv2Settlement
   chainId: SupportedChainId
   dispatch: AppDispatch
