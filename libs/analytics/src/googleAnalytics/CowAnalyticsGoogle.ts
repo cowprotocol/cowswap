@@ -51,8 +51,8 @@ export class CowAnalyticsGoogle implements CowAnalytics {
   }
   setUserAccount(account: string | undefined): void {
     // Custom dimension 4 - user id - because ReactGA.set might not be working
-    const userId = account ? `"${account}"` : ''
-    this.setContext(AnalyticsContext.userAddress, userId)
+    const userId = account ? `"${account}"` : null
+    this.setContext(AnalyticsContext.userAddress, userId || 'disconnected')
 
     ReactGA.set({ userId })
   }
