@@ -1,6 +1,12 @@
 import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
 
-import { addPermitHookToHooks, AppDataInfo, filterPermitSignerPermit, updateHooksOnAppData } from 'modules/appData'
+import {
+  addPermitHookToHooks,
+  AppDataInfo,
+  filterPermitSignerPermit,
+  removePermitHookFromHooks,
+  updateHooksOnAppData
+} from 'modules/appData'
 
 import { HandlePermitParams } from '../types'
 
@@ -34,7 +40,7 @@ export async function handlePermit(params: HandlePermitParams): Promise<AppDataI
 
     return updateHooksOnAppData(appData, hooks, filterPermitSignerPermit)
   } else {
-    // Otherwise, remove hooks (if any) from appData to avoid stale data
-    return updateHooksOnAppData(appData, undefined)
+    // Otherwise, pass along exiting hooks, minus permit
+    return updateHooksOnAppData(appData, removePermitHookFromHooks(typedHooks))
   }
 }

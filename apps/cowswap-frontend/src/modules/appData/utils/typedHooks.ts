@@ -51,3 +51,20 @@ export function addPermitHookToHooks(hooks: TypedAppDataHooks | undefined, permi
 
   return typedAppDataHooksToAppDataHooks({ ...rest, pre: updatedPreHooks })
 }
+
+export function removePermitHookFromHooks(hooks: TypedAppDataHooks | undefined): AppDataHooks | undefined {
+  if (!hooks) {
+    return hooks
+  }
+
+  const { pre, ...rest } = hooks
+
+  const filteredPre = pre?.reduce<TypedCowHook[]>((acc, hook) => {
+    if (hook.type !== 'permit') {
+      acc.push(hook)
+    }
+    return acc
+  }, [])
+
+  return typedAppDataHooksToAppDataHooks({ ...rest, pre: filteredPre })
+}
