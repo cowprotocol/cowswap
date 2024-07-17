@@ -34,8 +34,8 @@ import {
 
 import { clickOnFooter } from '../../analytics/events'
 import { Color } from '../../consts'
-import { MenuItem } from '../MenuBar'
-import { ProductLogo, ProductVariant } from '../ProductLogo'
+import { MenuItem } from '../../pure/MenuBar'
+import { ProductLogo, ProductVariant } from '../../pure/ProductLogo'
 
 export interface FooterProps {
   description?: string

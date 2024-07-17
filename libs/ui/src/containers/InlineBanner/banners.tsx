@@ -4,10 +4,10 @@ import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 import styled from 'styled-components/macro'
 
 import { Nullish } from '../../types'
-import { ButtonSecondaryAlt } from '../ButtonSecondaryAlt'
-import { CowSwapSafeAppLink } from '../CowSwapSafeAppLink'
-import { LinkStyledButton } from '../LinkStyledButton'
-import { TokenAmount } from '../TokenAmount'
+import { ButtonSecondaryAlt } from '../../pure/ButtonSecondaryAlt'
+import { CowSwapSafeAppLink } from '../../containers/CowSwapSafeAppLink'
+import { LinkStyledButton } from '../../pure/LinkStyledButton'
+import { TokenAmount } from '../../pure/TokenAmount'
 
 import { InlineBanner, InlineBannerProps } from './index'
 

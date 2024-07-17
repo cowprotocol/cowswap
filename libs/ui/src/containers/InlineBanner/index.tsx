@@ -7,7 +7,7 @@ import styled from 'styled-components/macro'
 import { BannerOrientation } from './banners'
 
 import { UI } from '../../enum'
-import { Icon, IconType } from '../Icon'
+import { Icon, IconType } from '../../pure/Icon'
 
 export type BannerType = 'alert' | 'information' | 'success' | 'danger' | 'savings'
 
