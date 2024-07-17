@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.77.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.77.0...cowswap-v1.77.1) (2024-07-17)
+
+
+### Bug Fixes
+
+* **permit:** filter out permit signer and rotate it ([#4719](https://github.com/cowprotocol/cowswap/issues/4719)) ([bfb1f29](https://github.com/cowprotocol/cowswap/commit/bfb1f295997ba8cf16744afce45dbd19eb8990c6))
+* **permit:** typefy hooks and allow only 1 permit ([#4726](https://github.com/cowprotocol/cowswap/issues/4726)) ([0e59ce1](https://github.com/cowprotocol/cowswap/commit/0e59ce1ef730ce37e15a50407da19b6816878c4d))
+
 ## [1.77.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.76.2...cowswap-v1.77.0) (2024-07-12)
 
 
