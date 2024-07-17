@@ -26,11 +26,7 @@ export const TradeDetailsAccordion = ({
   onToggle,
 }: TradeDetailsAccordionProps) => {
   const handleToggle = () => {
-    if (typeof onToggle === 'function') {
-      onToggle()
-    } else {
-      console.error('onToggle is not a function:', onToggle)
-    }
+    onToggle?.()
   }
 
   const handleKeyDown = (e: { key: string; preventDefault: () => void }) => {
