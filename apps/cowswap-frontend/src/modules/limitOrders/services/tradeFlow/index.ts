@@ -16,7 +16,7 @@ import { handlePermit } from 'modules/permit'
 import { appDataContainsPermitSigner } from 'modules/permit/utils/appDataContainsPermitSigner'
 import { presignOrderStep } from 'modules/swap/services/swapFlow/steps/presignOrderStep'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
-import { TradeFlowAnalyticsContext, tradeFlowAnalytics } from 'modules/trade/utils/analytics'
+import { tradeFlowAnalytics, TradeFlowAnalyticsContext } from 'modules/trade/utils/analytics'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
 
@@ -30,6 +30,7 @@ export async function tradeFlow(
 ): Promise<string> {
   const {
     postOrderParams,
+    typedHooks,
     rateImpact,
     permitInfo,
     provider,
@@ -68,6 +69,7 @@ export async function tradeFlow(
       inputToken: sellToken,
       account,
       appData,
+      typedHooks,
       generatePermitHook,
     })
 

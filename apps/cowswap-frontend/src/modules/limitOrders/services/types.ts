@@ -6,6 +6,7 @@ import SafeAppsSDK from '@safe-global/safe-apps-sdk'
 import { AppDispatch } from 'legacy/state'
 import { PostOrderParams } from 'legacy/utils/trade'
 
+import { TypedAppDataHooks } from 'modules/appData'
 import { GeneratePermitHook, IsTokenPermittableResult, useGetCachedPermit } from 'modules/permit'
 import type { TradeQuoteState } from 'modules/tradeQuote'
 
@@ -13,6 +14,7 @@ export interface TradeFlowContext {
   // signer changes creates redundant re-renders
   // validTo must be calculated just before signing of an order
   postOrderParams: Omit<PostOrderParams, 'validTo' | 'signer'>
+  typedHooks?: TypedAppDataHooks
   settlementContract: GPv2Settlement
   chainId: SupportedChainId
   dispatch: AppDispatch

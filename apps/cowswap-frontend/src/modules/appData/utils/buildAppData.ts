@@ -1,4 +1,4 @@
-import { latest, stringifyDeterministic } from '@cowprotocol/app-data'
+import { stringifyDeterministic } from '@cowprotocol/app-data'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { metadataApiSDK } from 'cowSdk'
@@ -7,6 +7,7 @@ import { keccak256, toUtf8Bytes } from 'ethers/lib/utils'
 import { UtmParams } from 'modules/utm'
 
 import { filterHooks, HooksFilter } from './appDataFilter'
+import { typedAppDataHooksToAppDataHooks } from './typedHooks'
 
 import {
   AppDataHooks,
@@ -15,6 +16,7 @@ import {
   AppDataPartnerFee,
   AppDataRootSchema,
   AppDataWidget,
+  TypedAppDataHooks,
 } from '../types'
 
 export type BuildAppDataParams = {
@@ -25,13 +27,11 @@ export type BuildAppDataParams = {
   orderClass: AppDataOrderClass
   referrerAccount?: string
   utm: UtmParams | undefined
-  hooks?: AppDataHooks
+  typedHooks?: TypedAppDataHooks
   widget?: AppDataWidget
   partnerFee?: AppDataPartnerFee
   replacedOrderUid?: string
 }
-
-type OrderInteractionHooks = latest.OrderInteractionHooks
 
 async function generateAppDataFromDoc(
   doc: AppDataRootSchema
@@ -49,7 +49,7 @@ export async function buildAppData({
   environment,
   orderClass: orderClassName,
   utm,
-  hooks,
+  typedHooks,
   widget,
   partnerFee,
   replacedOrderUid,
@@ -69,7 +69,7 @@ export async function buildAppData({
       quote: quoteParams,
       orderClass,
       utm,
-      hooks,
+      hooks: typedAppDataHooksToAppDataHooks(typedHooks),
       widget,
       partnerFee,
       ...{ replacedOrder },
@@ -85,7 +85,7 @@ export function toKeccak256(fullAppData: string) {
   return keccak256(toUtf8Bytes(fullAppData))
 }
 
-export async function updateHooksOnAppData(
+export async function replaceHooksOnAppData(
   appData: AppDataInfo,
   hooks: AppDataHooks | undefined,
   preHooksFilter?: HooksFilter,
@@ -93,13 +93,13 @@ export async function updateHooksOnAppData(
 ): Promise<AppDataInfo> {
   const { doc } = appData
 
-  const existingHooks = filterHooks(doc.metadata.hooks, preHooksFilter, postHooksFilter)
+  const filteredHooks = filterHooks(hooks, preHooksFilter, postHooksFilter)
 
   const newDoc = {
     ...doc,
     metadata: {
       ...doc.metadata,
-      hooks: mergeHooks(existingHooks, hooks),
+      hooks: filteredHooks,
     },
   }
 
@@ -114,23 +114,4 @@ export async function updateHooksOnAppData(
     fullAppData,
     appDataKeccak256,
   }
-}
-
-function mergeHooks(
-  hooks1: OrderInteractionHooks | undefined,
-  hooks2: OrderInteractionHooks | undefined
-): OrderInteractionHooks | undefined {
-  if (hooks1 && !hooks2) return hooks1
-
-  if (!hooks1 && hooks2) return hooks2
-
-  if (hooks1 && hooks2) {
-    return {
-      version: hooks1.version,
-      pre: (hooks1.pre || []).concat(hooks2.pre || []),
-      post: (hooks1.post || []).concat(hooks2.post || []),
-    }
-  }
-
-  return undefined
 }

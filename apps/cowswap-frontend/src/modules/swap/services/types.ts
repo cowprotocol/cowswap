@@ -11,13 +11,14 @@ import type { QuoteInformationObject } from 'legacy/state/price/reducer'
 import TradeGp from 'legacy/state/swap/TradeGp'
 import { PostOrderParams } from 'legacy/utils/trade'
 
-import { AppDataInfo, UploadAppDataParams } from 'modules/appData'
+import { AppDataInfo, TypedAppDataHooks, UploadAppDataParams } from 'modules/appData'
 import { GeneratePermitHook, IsTokenPermittableResult, useGetCachedPermit } from 'modules/permit'
 import { TradeConfirmActions } from 'modules/trade'
 import { TradeFlowAnalyticsContext } from 'modules/trade/utils/analytics'
 
 import { EthFlowOrderExistsCallback } from '../hooks/useCheckEthFlowOrderExists'
 import { FlowType } from '../hooks/useFlowContext'
+
 export interface BaseFlowContext {
   context: {
     chainId: number
@@ -48,6 +49,7 @@ export type SwapFlowContext = BaseFlowContext & {
   contract: GPv2Settlement
   permitInfo: IsTokenPermittableResult
   generatePermitHook: GeneratePermitHook
+  typedHooks?: TypedAppDataHooks
 }
 
 export type EthFlowContext = BaseFlowContext & {

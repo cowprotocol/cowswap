@@ -19,8 +19,6 @@ export const filterPermitSignerPermit: HooksFilter = (cowHook: CowHook): boolean
   const hasFormerAddress = cowHook.callData.toLowerCase().includes(FORMER_PERMIT_HOOK_ADDRESS)
   const hasCurrentAddress = cowHook.callData.toLowerCase().includes(PERMIT_SIGNER.address.slice(2).toLowerCase())
 
-  console.log(`bug:filterPermitSignerPermit`, cowHook, hasFormerAddress, hasCurrentAddress)
-
   return !hasFormerAddress && !hasCurrentAddress
 }
 
@@ -30,7 +28,6 @@ export function filterHooks(
   postHooksFilter: HooksFilter | undefined
 ): OrderInteractionHooks | undefined {
   if (!hooks) {
-    console.log(`bug:filterHooks no hooks`)
     return hooks
   }
 
@@ -41,11 +38,8 @@ export function filterHooks(
 
   // Remove metadata completely if nothing is left after filter
   if (!filteredPre?.length && !filteredPost?.length) {
-    console.log(`bug:filterHooks filtered out everything`, hooks)
     return undefined
   }
-
-  console.log(`bug:filterHooks something left after filtering`, hooks, filteredPre, filteredPost)
 
   return {
     ...rest,
