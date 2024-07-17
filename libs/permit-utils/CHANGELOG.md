@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.1](https://github.com/cowprotocol/cowswap/compare/permit-utils-v0.3.0...permit-utils-v0.3.1) (2024-07-17)
+
+
+### Bug Fixes
+
+* **permit:** filter out permit signer and rotate it ([#4719](https://github.com/cowprotocol/cowswap/issues/4719)) ([bfb1f29](https://github.com/cowprotocol/cowswap/commit/bfb1f295997ba8cf16744afce45dbd19eb8990c6))
+
 ## [0.3.0](https://github.com/cowprotocol/cowswap/compare/permit-utils-v0.2.1...permit-utils-v0.3.0) (2024-05-29)
 
 

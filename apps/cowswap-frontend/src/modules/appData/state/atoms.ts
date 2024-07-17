@@ -6,12 +6,12 @@ import { deepEqual } from '@cowprotocol/common-utils'
 import { buildDocFilterFn, buildInverseDocFilterFn } from './utils'
 
 import {
-  AppDataHooks,
   AppDataInfo,
   AppDataPendingToUpload,
   RemoveAppDataFromUploadQueueParams,
+  TypedAppDataHooks,
   UpdateAppDataOnUploadQueueParams,
-  UploadAppDataParams,
+  UploadAppDataParams
 } from '../types'
 import { updateFullAppData } from '../utils/fullAppData'
 
@@ -107,4 +107,4 @@ export const removeAppDataFromUploadQueueAtom = atom(
 /**
  * In memory atom for storing the current appData hooks info
  */
-export const appDataHooksAtom = atom<AppDataHooks | undefined>(undefined)
+export const appDataHooksAtom = atom<TypedAppDataHooks | undefined>(undefined)

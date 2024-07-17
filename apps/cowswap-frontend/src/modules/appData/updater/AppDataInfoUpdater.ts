@@ -7,7 +7,7 @@ import { AppCodeWithWidgetMetadata } from 'modules/injectedWidget/hooks/useAppCo
 import { UtmParams } from 'modules/utm'
 
 import { appDataInfoAtom } from '../state/atoms'
-import { AppDataHooks, AppDataOrderClass, AppDataPartnerFee } from '../types'
+import { AppDataOrderClass, AppDataPartnerFee, TypedAppDataHooks } from '../types'
 import { buildAppData, BuildAppDataParams } from '../utils/buildAppData'
 import { getAppData } from '../utils/fullAppData'
 
@@ -17,7 +17,7 @@ export type UseAppDataParams = {
   slippageBips: number
   orderClass: AppDataOrderClass
   utm: UtmParams | undefined
-  hooks?: AppDataHooks
+  typedHooks?: TypedAppDataHooks
   volumeFee?: AppDataPartnerFee
   replacedOrderUid?: string
 }
@@ -32,7 +32,7 @@ export function AppDataInfoUpdater({
   slippageBips,
   orderClass,
   utm,
-  hooks,
+  typedHooks,
   volumeFee,
   replacedOrderUid,
 }: UseAppDataParams): void {
@@ -56,7 +56,7 @@ export function AppDataInfoUpdater({
       environment,
       orderClass,
       utm,
-      hooks,
+      typedHooks,
       partnerFee: volumeFee,
       widget,
       replacedOrderUid,
@@ -82,7 +82,7 @@ export function AppDataInfoUpdater({
     slippageBips,
     orderClass,
     utm,
-    hooks,
+    typedHooks,
     volumeFee,
     replacedOrderUid,
   ])
