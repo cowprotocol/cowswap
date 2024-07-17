@@ -93,7 +93,7 @@ export async function updateHooksOnAppData(
 ): Promise<AppDataInfo> {
   const { doc } = appData
 
-  const filteredHooks = filterHooks(doc.metadata.hooks, preHooksFilter, postHooksFilter)
+  const filteredHooks = filterHooks(hooks, preHooksFilter, postHooksFilter)
 
   const newDoc = {
     ...doc,
