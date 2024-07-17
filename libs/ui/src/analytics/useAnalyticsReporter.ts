@@ -67,7 +67,9 @@ export function useAnalyticsReporter(props: UseAnalyticsReporterProps) {
 
   // Set analytics context: user account and wallet name
   useEffect(() => {
-    cowAnalytics.setUserAccount(AnalyticsContext.userAddress)
+    if (account) {
+      cowAnalytics.setUserAccount(account)
+    }
     cowAnalytics.setContext(AnalyticsContext.walletName, account ? walletName : 'Not connected')
 
     // Handle pixel tracking on wallet connection
