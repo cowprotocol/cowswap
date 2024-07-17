@@ -4,7 +4,6 @@ import ReactGA from 'react-ga4'
 
 import { AnalyticsContext, CowAnalytics, EventOptions, OutboundLinkParams } from '../CowAnalytics'
 
-
 const DIMENSION_MAP = {
   [AnalyticsContext.chainId]: 'dimension1',
   [AnalyticsContext.walletName]: 'dimension2',
@@ -47,6 +46,7 @@ export class CowAnalyticsGoogle implements CowAnalytics {
     }, {} as CowDimensionValues)
 
     // Init Google analytics
+    console.log('[CowAnalyticsGoogle] Init analytics: ', googleAnalyticsId)
     ReactGA.initialize(googleAnalyticsId, options)
   }
   setUserAccount(account: string): void {
