@@ -417,18 +417,15 @@ export default function Page({ siteConfigData }: PageProps) {
                 Terms, your licence to use the Interface will automatically be revoked and terminated immediately.
               </p>
               <h2 id="bug-and-default">Bug and Default</h2>
-              <p>
-                <strong>No Warranties</strong>:
-                <em>
-                  THE PRODUCTS ARE PROVIDED &quot;AS IS&quot; AND WITHOUT ANY WARRANTY OF ANY KIND, EXPRESS OR IMPLIED.
-                  TO THE FULLEST EXTENT PERMITTED BY LAW, WE DISCLAIM ALL WARRANTIES, EXPRESS, IMPLIED, OR STATUTORY,
-                  INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
-                  PURPOSE, TITLE, AND NON-INFRINGEMENT.
-                </em>
+              <p className={'warn'}>
+                <strong>No Warranties</strong>: THE PRODUCTS ARE PROVIDED &quot;AS IS&quot; AND WITHOUT ANY WARRANTY OF
+                ANY KIND, EXPRESS OR IMPLIED. TO THE FULLEST EXTENT PERMITTED BY LAW, WE DISCLAIM ALL WARRANTIES,
+                EXPRESS, IMPLIED, OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+                MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, AND NON-INFRINGEMENT.
               </p>
-              <p>
-                <strong>Specific Disclaimers</strong>:
-                <em>WITHOUT LIMITING THE FOREGOING, COW DAO DOES NOT WARRANT THAT THE SOFTWARE:</em>
+              <p className={'warn'}>
+                <strong>Specific Disclaimers</strong>: WITHOUT LIMITING THE FOREGOING, COW DAO DOES NOT WARRANT THAT THE
+                SOFTWARE:
               </p>
               <ul>
                 <li>
@@ -637,17 +634,15 @@ export default function Page({ siteConfigData }: PageProps) {
                 We do not exclude or limit our liability to you where it would be unlawful to do so. This includes
                 liability for death or personal injury caused by our negligence or fraud.
               </p>
-              <p>
-                <em>
-                  YOU USE THIS INTERFACE AT YOUR OWN RISK AND YOU ASSUME FULL RESPONSIBILITY FOR SUCH USE. TO THE
-                  MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, WE EXCLUDE ALL IMPLIED CONDITIONS, WARRANTIES,
-                  REPRESENTATIONS OR OTHER TERMS THAT MAY APPLY TO THE INTERFACE. WE WILL NOT BE LIABLE TO YOU FOR ANY
-                  LOSS OR DAMAGE, WHETHER IN CONTRACT, TORT (INCLUDING NEGLIGENCE), BREACH OF STATUTORY DUTY, OR
-                  OTHERWISE, EVEN IF FORESEEABLE, ARISING UNDER OR IN CONNECTION WITH THE USE OF, OR INABILITY TO USE,
-                  THE INTERFACE; OR THE USE OF OR RELIANCE ON ANY CONTENT DISPLAYED ON THE INTERFACE. WE WILL NOT BE
-                  LIABLE FOR LOSS OF PROFITS, SALES, BUSINESS, OR REVENUE, BUSINESS INTERRUPTION, ANTICIPATED SAVINGS,
-                  BUSINESS OPPORTUNITY, GOODWILL OR REPUTATION OR ANY INDIRECT OR CONSEQUENTIAL LOSS OR DAMAGE.
-                </em>
+              <p className={'warn'}>
+                YOU USE THIS INTERFACE AT YOUR OWN RISK AND YOU ASSUME FULL RESPONSIBILITY FOR SUCH USE. TO THE MAXIMUM
+                EXTENT PERMITTED BY APPLICABLE LAW, WE EXCLUDE ALL IMPLIED CONDITIONS, WARRANTIES, REPRESENTATIONS OR
+                OTHER TERMS THAT MAY APPLY TO THE INTERFACE. WE WILL NOT BE LIABLE TO YOU FOR ANY LOSS OR DAMAGE,
+                WHETHER IN CONTRACT, TORT (INCLUDING NEGLIGENCE), BREACH OF STATUTORY DUTY, OR OTHERWISE, EVEN IF
+                FORESEEABLE, ARISING UNDER OR IN CONNECTION WITH THE USE OF, OR INABILITY TO USE, THE INTERFACE; OR THE
+                USE OF OR RELIANCE ON ANY CONTENT DISPLAYED ON THE INTERFACE. WE WILL NOT BE LIABLE FOR LOSS OF PROFITS,
+                SALES, BUSINESS, OR REVENUE, BUSINESS INTERRUPTION, ANTICIPATED SAVINGS, BUSINESS OPPORTUNITY, GOODWILL
+                OR REPUTATION OR ANY INDIRECT OR CONSEQUENTIAL LOSS OR DAMAGE.
               </p>
               <p>
                 We are not liable for any funds lost due to your interaction with scam websites or activities imitating
@@ -715,11 +710,9 @@ export default function Page({ siteConfigData }: PageProps) {
                 Dispute.
               </p>
               <h3 id="no-class-action">No Class Action</h3>
-              <p>
-                <em>
-                  YOU AGREE AND UNDERSTAND THAT BY ENTERING INTO THIS AGREEMENT, YOU EXPRESSLY WAIVE ANY RIGHT, IF ANY,
-                  TO A TRIAL BY JURY AND RIGHT TO PARTICIPATE IN A CLASS ACTION LAWSUIT.
-                </em>
+              <p className={'warn'}>
+                YOU AGREE AND UNDERSTAND THAT BY ENTERING INTO THIS AGREEMENT, YOU EXPRESSLY WAIVE ANY RIGHT, IF ANY, TO
+                A TRIAL BY JURY AND RIGHT TO PARTICIPATE IN A CLASS ACTION LAWSUIT.
               </p>
               <h2 id="governing-law">Governing law</h2>
               <p>

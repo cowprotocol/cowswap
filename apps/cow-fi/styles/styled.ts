@@ -1531,7 +1531,7 @@ export const BodyContent = styled.div<{ color?: string }>`
     }
   }
 
-  > p em {
+  p.warn {
     display: block;
     font-weight: ${Font.weight.bold};
     font-style: normal;
