@@ -49,7 +49,7 @@ export class CowAnalyticsGoogle implements CowAnalytics {
     console.log('[CowAnalyticsGoogle] Init analytics: ', googleAnalyticsId)
     ReactGA.initialize(googleAnalyticsId, options)
   }
-  setUserAccount(account: string): void {
+  setUserAccount(account: string | undefined): void {
     // Custom dimension 4 - user id - because ReactGA.set might not be working
     const userId = account ? `"${account}"` : ''
     this.setContext(AnalyticsContext.userAddress, userId)

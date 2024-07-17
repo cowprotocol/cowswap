@@ -21,7 +21,7 @@ export interface OutboundLinkParams {
 }
 
 export interface CowAnalytics {
-  setUserAccount(account: string): void
+  setUserAccount(account: string | undefined): void
   sendPageView(path?: string, params?: string[], title?: string): void
   sendEvent(event: string | EventOptions, params?: unknown): void
   sendTiming(timingCategory: string, timingVar: string, timingValue: number, timingLabel: string): void
