@@ -12,7 +12,7 @@ import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
 import { signAndPostOrder } from 'legacy/utils/trade'
 
-import { updateHooksOnAppData } from 'modules/appData'
+import { replaceHooksOnAppData } from 'modules/appData'
 import { emitPostedOrderEvent } from 'modules/orders'
 import { handlePermit } from 'modules/permit'
 import { appDataContainsHooks } from 'modules/permit/utils/appDataContainsHooks'
@@ -40,6 +40,7 @@ export async function swapFlow(
     context: {
       trade: { inputAmount, outputAmount },
     },
+    typedHooks,
   } = input
   const tradeAmounts = { inputAmount, outputAmount }
 
@@ -63,6 +64,7 @@ export async function swapFlow(
 
     orderParams.appData = await handlePermit({
       appData,
+      typedHooks,
       account,
       inputToken: inputCurrency,
       permitInfo,
@@ -81,7 +83,7 @@ export async function swapFlow(
     ) {
       reportAppDataWithHooks(orderParams)
       // wipe out the hooks
-      orderParams.appData = await updateHooksOnAppData(orderParams.appData, undefined)
+      orderParams.appData = await replaceHooksOnAppData(orderParams.appData, undefined)
     }
 
     logTradeFlow('SWAP FLOW', 'STEP 3: send transaction')

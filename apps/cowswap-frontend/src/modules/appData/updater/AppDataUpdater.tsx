@@ -26,7 +26,7 @@ export const AppDataUpdater = React.memo(({ slippage, orderClass }: AppDataUpdat
   const appCode = useAppCode()
   const slippageBips = percentToBps(slippage)
   const utm = useUtm()
-  const hooks = useAppDataHooks()
+  const typedHooks = useAppDataHooks()
   const appCodeWithWidgetMetadata = useAppCodeWidgetAware(appCode)
   const volumeFee = useVolumeFee()
   const replacedOrderUid = useReplacedOrderUid()
@@ -40,7 +40,7 @@ export const AppDataUpdater = React.memo(({ slippage, orderClass }: AppDataUpdat
       slippageBips={slippageBips}
       orderClass={orderClass}
       utm={utm}
-      hooks={hooks}
+      typedHooks={typedHooks}
       volumeFee={volumeFee}
       replacedOrderUid={replacedOrderUid}
     />
