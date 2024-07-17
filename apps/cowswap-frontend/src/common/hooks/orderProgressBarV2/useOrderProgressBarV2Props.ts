@@ -139,8 +139,8 @@ const BACKEND_TYPE_TO_PROGRESS_BAR_STEP_NAME: Record<PendingOrderStatusType, Ord
   scheduled: 'initial',
   open: 'initial',
   active: 'solving',
+  solved: 'solved',
   executing: 'executing',
-  solved: 'executing',
   traded: 'finished',
   cancelled: 'initial', // TODO: maybe add another state for finished with error?
 }

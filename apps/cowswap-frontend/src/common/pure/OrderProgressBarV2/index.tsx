@@ -17,7 +17,6 @@ import { OrderProgressBarStepName } from 'common/hooks/orderProgressBarV2'
 
 import { Stepper, StepProps } from '../Stepper'
 
-
 const PROGRESS_BAR_STEPS: StepProps[] = [
   { stepState: 'open', stepNumber: 1, label: 'placing' },
   { stepState: 'open', stepNumber: 2, label: 'solving' },
@@ -45,6 +44,9 @@ const STEP_NAME_TO_STEP_COMPONENT: Record<OrderProgressBarStepName, StepCallback
   },
   solving: (props: OrderProgressBarV2Props): JSX.Element => {
     return <SolvingStep {...props} />
+  },
+  solved(props: OrderProgressBarV2Props): JSX.Element {
+    return <SolvedStep {...props} />
   },
   executing: (props: OrderProgressBarV2Props): JSX.Element => {
     return <ExecutingStep {...props} />
@@ -91,6 +93,28 @@ function SolvingStep({ countdown }: OrderProgressBarV2Props) {
         <strong style={{ alignSelf: 'center', fontSize: '5em' }}>{countdown}</strong>
         <p>The auction has started! Solvers are competing to find the best solution for you...</p>
       </div>
+      <Stepper steps={localSteps} />
+    </>
+  )
+}
+
+function SolvedStep({ solverCompetition }: OrderProgressBarV2Props) {
+  const localSteps = structuredClone(PROGRESS_BAR_STEPS)
+  localSteps[0].stepState = 'finished'
+  localSteps[1].stepState = 'finished'
+
+  const winningSolver = solverCompetition?.[0]
+
+  return (
+    <>
+      <ProgressImage src={progressBarStep3} alt="" />
+      <p>
+        <strong>
+          {solverCompetition?.length} solver{solverCompetition && solverCompetition?.length > 1 && 's'} joined the
+          competition!
+        </strong>
+      </p>
+      <p>Solver {winningSolver?.solver} proposed the best solution. It'll be executed on-chain shortly</p>
       <Stepper steps={localSteps} />
     </>
   )
@@ -178,7 +202,7 @@ function DelayedStep() {
   )
 }
 
-function UnfillableStep({ }: OrderProgressBarV2Props) {
+function UnfillableStep({}: OrderProgressBarV2Props) {
   // TODO: add link to cancel order
   const localSteps = structuredClone(PROGRESS_BAR_STEPS)
 
