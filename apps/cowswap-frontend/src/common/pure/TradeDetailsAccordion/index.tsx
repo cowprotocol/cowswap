@@ -1,4 +1,3 @@
-import React from 'react'
 
 import CarretIcon from '@cowprotocol/assets/cow-swap/carret-down.svg'
 import { FiatAmount, TokenAmount } from '@cowprotocol/ui'
