@@ -7,7 +7,7 @@ import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
 import { signAndPostOrder } from 'legacy/utils/trade'
 
-import { updateHooksOnAppData } from 'modules/appData'
+import { replaceHooksOnAppData } from 'modules/appData'
 import { LOW_RATE_THRESHOLD_PERCENT } from 'modules/limitOrders/const/trade'
 import { PriceImpactDeclineError, SafeBundleFlowContext } from 'modules/limitOrders/services/types'
 import { LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
@@ -18,12 +18,13 @@ import { buildZeroApproveTx } from 'modules/operations/bundle/buildZeroApproveTx
 import { emitPostedOrderEvent } from 'modules/orders'
 import { appDataContainsHooks } from 'modules/permit/utils/appDataContainsHooks'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
-import { TradeFlowAnalyticsContext, tradeFlowAnalytics } from 'modules/trade/utils/analytics'
+import { tradeFlowAnalytics, TradeFlowAnalyticsContext } from 'modules/trade/utils/analytics'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
 import { shouldZeroApprove as shouldZeroApproveFn } from 'modules/zeroApproval'
 
 const LOG_PREFIX = 'LIMIT ORDER SAFE BUNDLE FLOW'
+
 export async function safeBundleFlow(
   params: SafeBundleFlowContext,
   priceImpact: PriceImpact,
@@ -45,7 +46,7 @@ export async function safeBundleFlow(
   if (appDataContainsHooks(params.postOrderParams.appData.fullAppData)) {
     reportAppDataWithHooks(params.postOrderParams)
     // wipe out the hooks
-    params.postOrderParams.appData = await updateHooksOnAppData(params.postOrderParams.appData, undefined)
+    params.postOrderParams.appData = await replaceHooksOnAppData(params.postOrderParams.appData, undefined)
   }
 
   const swapFlowAnalyticsContext: TradeFlowAnalyticsContext = {

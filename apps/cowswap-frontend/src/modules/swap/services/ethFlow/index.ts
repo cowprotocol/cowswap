@@ -8,7 +8,7 @@ import { Percent } from '@uniswap/sdk-core'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
-import { updateHooksOnAppData } from 'modules/appData'
+import { replaceHooksOnAppData } from 'modules/appData'
 import { emitPostedOrderEvent } from 'modules/orders'
 import { appDataContainsHooks } from 'modules/permit/utils/appDataContainsHooks'
 import { signEthFlowOrderStep } from 'modules/swap/services/ethFlow/steps/signEthFlowOrderStep'
@@ -55,7 +55,7 @@ export async function ethFlow(
   if (appDataContainsHooks(orderParamsOriginal.appData.fullAppData)) {
     reportAppDataWithHooks(orderParamsOriginal)
     // wipe out the hooks
-    orderParamsOriginal.appData = await updateHooksOnAppData(orderParamsOriginal.appData, undefined)
+    orderParamsOriginal.appData = await replaceHooksOnAppData(orderParamsOriginal.appData, undefined)
   }
 
   logTradeFlow('ETH FLOW', 'STEP 2: send transaction')
