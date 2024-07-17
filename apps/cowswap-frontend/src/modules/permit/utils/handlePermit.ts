@@ -5,7 +5,7 @@ import {
   AppDataInfo,
   filterPermitSignerPermit,
   removePermitHookFromHooks,
-  updateHooksOnAppData
+  replaceHooksOnAppData
 } from 'modules/appData'
 
 import { HandlePermitParams } from '../types'
@@ -38,9 +38,9 @@ export async function handlePermit(params: HandlePermitParams): Promise<AppDataI
 
     const hooks = addPermitHookToHooks(typedHooks, permitData)
 
-    return updateHooksOnAppData(appData, hooks, filterPermitSignerPermit)
+    return replaceHooksOnAppData(appData, hooks, filterPermitSignerPermit)
   } else {
     // Otherwise, pass along exiting hooks, minus permit
-    return updateHooksOnAppData(appData, removePermitHookFromHooks(typedHooks))
+    return replaceHooksOnAppData(appData, removePermitHookFromHooks(typedHooks))
   }
 }

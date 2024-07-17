@@ -85,7 +85,7 @@ export function toKeccak256(fullAppData: string) {
   return keccak256(toUtf8Bytes(fullAppData))
 }
 
-export async function updateHooksOnAppData(
+export async function replaceHooksOnAppData(
   appData: AppDataInfo,
   hooks: AppDataHooks | undefined,
   preHooksFilter?: HooksFilter,
