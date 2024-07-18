@@ -1,4 +1,3 @@
-import { isEns, isProd } from '@cowprotocol/common-utils'
 
 import { PixelAnalytics } from './PixelAnalytics'
 import { FacebookPixel } from './providers/facebook'

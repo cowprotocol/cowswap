@@ -3,11 +3,11 @@ import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
 
-import { Nullish } from '../../types'
-import { ButtonSecondaryAlt } from '../../pure/ButtonSecondaryAlt'
 import { CowSwapSafeAppLink } from '../../containers/CowSwapSafeAppLink'
+import { ButtonSecondaryAlt } from '../../pure/ButtonSecondaryAlt'
 import { LinkStyledButton } from '../../pure/LinkStyledButton'
 import { TokenAmount } from '../../pure/TokenAmount'
+import { Nullish } from '../../types'
 
 import { InlineBanner, InlineBannerProps } from './index'
 
