@@ -1,6 +1,6 @@
+import { getCmsClient } from '@cowprotocol/core'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { cmsClient } from 'cmsClient'
 import ms from 'ms.macro'
 import useSWR, { SWRConfiguration } from 'swr'
 
@@ -12,6 +12,8 @@ const swrOptions: SWRConfiguration = {
   refreshWhenOffline: false,
   revalidateOnFocus: false,
 }
+
+const cmsClient = getCmsClient()
 
 export function useAccountNotifications() {
   const { account } = useWalletInfo()

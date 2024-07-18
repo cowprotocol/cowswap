@@ -45,6 +45,7 @@ import { Link, LinkType } from '@/components/Link'
 
 import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
 import { clickOnKnowledgeBase } from 'modules/analytics'
+import { CmsImage } from '@cowprotocol/ui'
 
 interface ArticlePageProps {
   siteConfigData: typeof CONFIG
@@ -281,7 +282,7 @@ export default function ArticlePage({
                   >
                     {imageUrl && (
                       <ArticleImage>
-                        <img src={imageUrl} alt={article.attributes?.title ?? 'Article Image'} />
+                        <CmsImage src={imageUrl} alt={article.attributes?.title ?? 'Article Image'} />
                       </ArticleImage>
                     )}
                     <ArticleTitle>{article.attributes?.title}</ArticleTitle>

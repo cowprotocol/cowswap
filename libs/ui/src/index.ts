@@ -30,6 +30,7 @@ export * from './pure/Popover'
 export * from './pure/BackButton'
 export * from './pure/ClosableBanner'
 export * from './pure/PercentDisplay'
+export * from './pure/CmsImage'
 
 export * from './containers/CowSwapSafeAppLink'
 export * from './containers/InlineBanner'
