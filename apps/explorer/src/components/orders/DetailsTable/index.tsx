@@ -8,7 +8,7 @@ import { TruncatedText } from '@cowprotocol/ui/pure/TruncatedText'
 
 import { faFill, faGroupArrowsRotate, faHistory, faProjectDiagram } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { sendEvent } from 'components/analytics'
+import { clickOnOrderDetails } from 'analytics'
 import DecodeAppData from 'components/AppData/DecodeAppData'
 import { DateDisplay } from 'components/common/DateDisplay'
 import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
@@ -29,7 +29,6 @@ import { capitalize } from 'utils'
 
 import { Order } from 'api/operator'
 import { getUiOrderType } from 'utils/getUiOrderType'
-
 
 const tooltip = {
   orderID: 'A unique identifier ID for this order.',
@@ -164,12 +163,7 @@ export function DetailsTable(props: Props): React.ReactNode | null {
     return null
   }
 
-  const onCopy = (label: string): void =>
-    sendEvent({
-      category: 'Order details',
-      action: 'Copy',
-      label,
-    })
+  const onCopy = (label: string): void => clickOnOrderDetails('Copy', label)
 
   return (
     <SimpleTable

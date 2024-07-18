@@ -1,9 +1,9 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
-import { alternativeModalAnalytics } from '@cowprotocol/analytics'
-
 import { Order } from 'legacy/state/orders/actions'
+
+import { alternativeModalAnalytics } from 'modules/analytics'
 
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 

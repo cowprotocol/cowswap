@@ -8,9 +8,8 @@ import { Link } from '@/components/Link'
 
 import { ContainerCard, ArticleContent, Breadcrumbs, ArticleMainTitle, BodyContent } from '@/styles/styled'
 
-import { EventCategories, sendEventHandler } from '@cowprotocol/analytics'
-
 import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
+import { clickOnLegal } from 'modules/analytics'
 
 interface PageProps {
   siteConfigData: typeof CONFIG
@@ -36,10 +35,10 @@ export default function Page({ siteConfigData }: PageProps) {
         <ContainerCard bgColor={Color.neutral100} minHeight="70vh" gap={62} gapMobile={42} centerContent touchFooter>
           <ArticleContent maxWidth="100%">
             <Breadcrumbs>
-              <Link href="/ " onClick={() => sendEventHandler(EventCategories.LEGAL, 'click-legal-breadcrumbs')}>
+              <Link href="/ " onClick={() => clickOnLegal('click-legal-breadcrumbs')}>
                 Home
               </Link>
-              <Link href="/legal" onClick={() => sendEventHandler(EventCategories.LEGAL, 'click-legal-breadcrumbs')}>
+              <Link href="/legal" onClick={() => clickOnLegal('click-legal-breadcrumbs')}>
                 Legal
               </Link>
               <span>{title}</span>
@@ -99,13 +98,11 @@ export default function Page({ siteConfigData }: PageProps) {
                 In most cases ultimate decisions to (i) transact on the blockchain using your wallet address, as well as
                 (ii) share the public key relating to your wallet address with anyone (including us) rests with you.
               </p>
-              <p>
-                <em>
-                  IF YOU WANT TO ENSURE YOUR PRIVACY RIGHTS ARE NOT AFFECTED IN ANY WAY, YOU SHOULD NOT TRANSACT ON
-                  BLOCKCHAINS AS CERTAIN RIGHTS MAY NOT BE FULLY AVAILABLE OR EXERCISABLE BY YOU OR US DUE TO THE
-                  TECHNOLOGICAL INFRASTRUCTURE OF THE BLOCKCHAIN. IN PARTICULAR THE BLOCKCHAIN IS AVAILABLE TO THE
-                  PUBLIC AND ANY PERSONAL DATA SHARED ON THE BLOCKCHAIN WILL BECOME PUBLICLY AVAILABLE
-                </em>
+              <p className={'warn'}>
+                IF YOU WANT TO ENSURE YOUR PRIVACY RIGHTS ARE NOT AFFECTED IN ANY WAY, YOU SHOULD NOT TRANSACT ON
+                BLOCKCHAINS AS CERTAIN RIGHTS MAY NOT BE FULLY AVAILABLE OR EXERCISABLE BY YOU OR US DUE TO THE
+                TECHNOLOGICAL INFRASTRUCTURE OF THE BLOCKCHAIN. IN PARTICULAR THE BLOCKCHAIN IS AVAILABLE TO THE PUBLIC
+                AND ANY PERSONAL DATA SHARED ON THE BLOCKCHAIN WILL BECOME PUBLICLY AVAILABLE
               </p>
               <h2 id="2-how-we-use-personal-data">2. How We Use Personal Data</h2>
               <p>
@@ -510,14 +507,12 @@ export default function Page({ siteConfigData }: PageProps) {
                     <li>We unlawfully processed your personal information; and</li>
                     <li>Erasure is required to comply with a legal obligation that applies to us.</li>
                   </ul>
-                  <p>
-                    <em>
-                      However, when interacting with the blockchain we may not be able to ensure that your personal data
-                      is deleted. This is because the blockchain is a public decentralised network and blockchain
-                      technology does not generally allow for data to be deleted and your right to erasure may not be
-                      able to be fully enforced. In these circumstances we will only be able to ensure that all personal
-                      data that is held by us is permanently deleted.
-                    </em>
+                  <p className={'warn'}>
+                    However, when interacting with the blockchain we may not be able to ensure that your personal data
+                    is deleted. This is because the blockchain is a public decentralised network and blockchain
+                    technology does not generally allow for data to be deleted and your right to erasure may not be able
+                    to be fully enforced. In these circumstances we will only be able to ensure that all personal data
+                    that is held by us is permanently deleted.
                   </p>
                   <p>
                     We will proceed to comply with an erasure request without delay unless continued retention is

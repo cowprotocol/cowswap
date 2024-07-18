@@ -1,11 +1,11 @@
 import { Link } from '@/components/Link'
-import { EventCategories, sendEventHandler } from '@cowprotocol/analytics'
-
 import IMG_COWAMM_LVR from '@cowprotocol/assets/images/image-cowamm-lvr.svg'
 import IMG_COWAMM_LP_1 from '@cowprotocol/assets/images/image-cowamm-lp-1.svg'
 import IMG_COWAMM_LP_2 from '@cowprotocol/assets/images/image-cowamm-lp-2.svg'
 import IMG_COWAMM_LP_3 from '@cowprotocol/assets/images/image-cowamm-lp-3.svg'
 import IMG_COWAMM_LP_4 from '@cowprotocol/assets/images/image-cowamm-lp-4.svg'
+
+import { clickOnCowAmm } from 'modules/analytics'
 
 export const QUOTES = [
   {
@@ -174,12 +174,7 @@ export const FAQ_DATA = [
           href="https://cowprotocol.typeform.com/cow-amm-lpers"
           external
           utmContent="cow-amm-contact-us"
-          onClick={() =>
-            sendEventHandler({
-              category: EventCategories.COWAMM,
-              action: 'Content link click - FAQ:Contact us',
-            })
-          }
+          onClick={() => clickOnCowAmm('Content link click - FAQ:Contact us')}
         >
           contact us
         </Link>{' '}

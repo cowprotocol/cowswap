@@ -1,6 +1,5 @@
 import { Link } from '@/components/Link'
 import { Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
-import { EventCategories, sendEventHandler } from '@cowprotocol/analytics'
 
 import IMG_LOGO_SAFE from '@cowprotocol/assets/images/logo-safe.svg'
 import IMG_LOGO_KARPATKEY from '@cowprotocol/assets/images/logo-karpatkey.svg'
@@ -21,6 +20,7 @@ import IMAGE_MEVBLOCKER_REVIEW_6 from '@cowprotocol/assets/images/image-mevblock
 import IMAGE_FULLPROTECTION from '@cowprotocol/assets/images/image-fullprotection.svg'
 import IMGAGE_FASTFREE from '@cowprotocol/assets/images/image-fastfree.svg'
 import IMAGE_PROFIT from '@cowprotocol/assets/images/image-profit.svg'
+import { clickOnMevBlocker } from 'modules/analytics'
 
 export const MEV_BLOCKER_LIST = [
   {
@@ -166,7 +166,7 @@ export const FAQ_DATA = [
           href="https://t.me/+yonLSGoFPRI0YTFk"
           external
           utmContent="mev-blocker-contact"
-          onClick={() => sendEventHandler(EventCategories.MEVBLOCKER, 'click-contact-us')}
+          onClick={() => clickOnMevBlocker('click-contact-us')}
         >
           Get in touch
         </Link>{' '}
@@ -210,7 +210,7 @@ export const FAQ_DATA = [
           href="https://swap.cow.fi/"
           external
           utmContent="mev-blocker-cow-swap"
-          onClick={() => sendEventHandler(EventCategories.MEVBLOCKER, 'click-cow-swap')}
+          onClick={() => clickOnMevBlocker('click-cow-swap')}
         >
           CoW Swap
         </Link>{' '}
@@ -239,7 +239,7 @@ export const FAQ_DATA = [
       <>
         To use MEV Blocker, you will need to add the MEV Blocker RPC endpoint to your wallet. You can do that easily by
         following the instructions{' '}
-        <Link href="#rpc" onClick={() => sendEventHandler(EventCategories.MEVBLOCKER, 'click-rpc')}>
+        <Link href="#rpc" onClick={() => clickOnMevBlocker('click-rpc')}>
           here
         </Link>
         . (Note that once your MEV Blocker is added to your wallet, you might need to check that it is your selected
@@ -290,11 +290,7 @@ export const FAQ_DATA = [
         <br />
         This separate endpoint focuses on providing revert protection first, at the expense of possibly slower inclusion
         time. You can use this second endpoint by using{' '}
-        <Link
-          href="https://rpc.mevblocker.io/noreverts"
-          external
-          onClick={() => sendEventHandler(EventCategories.MEVBLOCKER, 'click-noreverts')}
-        >
+        <Link href="https://rpc.mevblocker.io/noreverts" external onClick={() => clickOnMevBlocker('click-noreverts')}>
           https://rpc.mevblocker.io/noreverts
         </Link>{' '}
         as the url instead.
@@ -307,11 +303,7 @@ export const FAQ_DATA = [
       <>
         Yes! if you want your transactions to be completely private, and you don’t care about the refund, you need to
         connect to the following endpoint:{' '}
-        <Link
-          href="https://rpc.mevblocker.io/norefunds"
-          external
-          onClick={() => sendEventHandler(EventCategories.MEVBLOCKER, 'click-norefunds')}
-        >
+        <Link href="https://rpc.mevblocker.io/norefunds" external onClick={() => clickOnMevBlocker('click-norefunds')}>
           https://rpc.mevblocker.io/norefunds
         </Link>{' '}
         as the url instead.
@@ -346,7 +338,7 @@ export const FAQ_DATA = [
           href="https://cow.fi/"
           external
           utmContent="mev-blocker-cow-protocol"
-          onClick={() => sendEventHandler(EventCategories.MEVBLOCKER, 'click-cow-protocol')}
+          onClick={() => clickOnMevBlocker('click-cow-protocol')}
         >
           CoW Protocol
         </Link>
@@ -355,7 +347,7 @@ export const FAQ_DATA = [
           href="https://agnostic-relay.net/"
           external
           utmContent="mev-blocker-agnostic"
-          onClick={() => sendEventHandler(EventCategories.MEVBLOCKER, 'click-agnostic')}
+          onClick={() => clickOnMevBlocker('click-agnostic')}
         >
           Agnostic Relay
         </Link>
@@ -364,7 +356,7 @@ export const FAQ_DATA = [
           href="https://beaverbuild.org/"
           external
           utmContent="mev-blocker-beaver"
-          onClick={() => sendEventHandler(EventCategories.MEVBLOCKER, 'click-beaver')}
+          onClick={() => clickOnMevBlocker('click-beaver')}
         >
           Beaver Build
         </Link>
@@ -386,7 +378,7 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/mevblocker"
           external
           utmContent="mev-blocker-docs"
-          onClick={() => sendEventHandler(EventCategories.MEVBLOCKER, 'click-docs')}
+          onClick={() => clickOnMevBlocker('click-docs')}
         >
           documentation
         </Link>{' '}
@@ -395,7 +387,7 @@ export const FAQ_DATA = [
           href="https://t.me/+yonLSGoFPRI0YTFk"
           external
           utmContent="mev-blocker-telegram"
-          onClick={() => sendEventHandler(EventCategories.MEVBLOCKER, 'click-telegram')}
+          onClick={() => clickOnMevBlocker('click-telegram')}
         >
           join the community
         </Link>
@@ -413,7 +405,7 @@ export const FAQ_DATA = [
           href="https://t.me/+yonLSGoFPRI0YTFk"
           external
           utmContent="mev-blocker-telegram"
-          onClick={() => sendEventHandler(EventCategories.MEVBLOCKER, 'click-telegram')}
+          onClick={() => clickOnMevBlocker('click-telegram')}
         >
           Telegram
         </Link>
