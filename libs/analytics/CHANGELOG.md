@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.0](https://github.com/cowprotocol/cowswap/compare/analytics-v1.4.0...analytics-v1.5.0) (2024-07-18)
+
+
+### Features
+
+* refactor and untangle analytics ([#4718](https://github.com/cowprotocol/cowswap/issues/4718)) ([ee396eb](https://github.com/cowprotocol/cowswap/commit/ee396eb1c4ef9a786810ed20b20020b4cb986460))
+
 ## [1.4.0](https://github.com/cowprotocol/cowswap/compare/analytics-v1.3.0...analytics-v1.4.0) (2024-07-12)
 
 
