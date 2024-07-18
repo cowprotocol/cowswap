@@ -89,6 +89,10 @@ export const updateOrderProgressBarStepName = atom(
     }
 
     singleOrderState.progressBarStepName = value
+    // We need to know when it was last changed
+    singleOrderState.lastTimeChangedSteps = singleOrderState.currentTimeChangedSteps
+    // For this reason, we use another variable to keep track of when the change happens
+    singleOrderState.currentTimeChangedSteps = Date.now()
 
     set(ordersProgressBarStateAtom, { ...fullState, [orderId]: singleOrderState })
   }

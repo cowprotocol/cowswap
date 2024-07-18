@@ -29,6 +29,8 @@ export type UseOrderProgressBarV2Result = Pick<OrderProgressBarState, 'countdown
   stepName: Exclude<OrderProgressBarState['progressBarStepName'], undefined>
 }
 
+const MINIMUM_STEP_DISPLAY_TIME = ms`2s`
+
 /**
  * Hook for fetching ProgressBarV2 props
  */
@@ -42,15 +44,20 @@ export function useOrderProgressBarV2Props(params: UseOrderProgressBarPropsParam
   const orderId = order?.id || ''
 
   // Fetch state from atom
-  const { countdown, backendApiStatus, solverCompetition, progressBarStepName } = useGetExecutingOrderState(orderId)
+  const { countdown, backendApiStatus, solverCompetition, progressBarStepName, lastTimeChangedSteps } =
+    useGetExecutingOrderState(orderId)
 
   // Local updaters of the respective atom
   useBackendApiStatusUpdater(chainId, orderId, isFinal)
-  useProgressBarStepNameUpdater(orderId, isUnfillable, isConfirmed, countdown, backendApiStatus)
+  useProgressBarStepNameUpdater(orderId, isUnfillable, isConfirmed, countdown, backendApiStatus, lastTimeChangedSteps)
   useCountdownStartUpdater(orderId, countdown, backendApiStatus)
 
   return useMemo(
-    () => ({ countdown, solverCompetition, stepName: progressBarStepName || 'initial' }),
+    () => ({
+      countdown,
+      solverCompetition,
+      stepName: progressBarStepName || 'initial',
+    }),
     [countdown, solverCompetition, progressBarStepName]
   )
 }
@@ -101,15 +108,34 @@ function useProgressBarStepNameUpdater(
   isUnfillable: boolean,
   isConfirmed: boolean,
   countdown: OrderProgressBarState['countdown'],
-  backendApiStatus: OrderProgressBarState['backendApiStatus']
+  backendApiStatus: OrderProgressBarState['backendApiStatus'],
+  lastTimeChangedSteps: OrderProgressBarState['lastTimeChangedSteps']
 ) {
   const setProgressBarStepName = useSetExecutingOrderProgressBarStepNameCallback()
 
   const stepName = getProgressBarStepName(isUnfillable, isConfirmed, countdown, backendApiStatus)
 
+  // Update state with new step name
   useEffect(() => {
-    setProgressBarStepName(orderId, stepName)
-  }, [setProgressBarStepName, orderId, stepName])
+    function updateStepName() {
+      setProgressBarStepName(orderId, stepName || 'initial')
+    }
+
+    let timer: NodeJS.Timeout
+
+    const timeSinceLastChange = lastTimeChangedSteps ? Date.now() - lastTimeChangedSteps : 0
+
+    if (lastTimeChangedSteps === undefined || timeSinceLastChange >= MINIMUM_STEP_DISPLAY_TIME) {
+      updateStepName()
+    } else {
+      // Delay if it was updated less than MINIMUM_STEP_DISPLAY_TIME ago
+      timer = setTimeout(updateStepName, MINIMUM_STEP_DISPLAY_TIME - timeSinceLastChange)
+    }
+
+    return () => {
+      clearInterval(timer)
+    }
+  }, [orderId, stepName, lastTimeChangedSteps])
 }
 
 function getProgressBarStepName(
