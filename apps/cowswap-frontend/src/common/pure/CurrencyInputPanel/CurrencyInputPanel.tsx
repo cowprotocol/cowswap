@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
-import { setMaxSellTokensAnalytics } from '@cowprotocol/analytics'
 import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { formatInputAmount, getIsNativeToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -13,6 +12,7 @@ import { BalanceAndSubsidy } from 'legacy/hooks/useCowBalanceAndSubsidy'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { Field } from 'legacy/state/types'
 
+import { setMaxSellTokensAnalytics } from 'modules/analytics'
 import { ReceiveAmount } from 'modules/swap/pure/ReceiveAmount'
 
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
@@ -161,7 +161,13 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
             />
           </div>
           <div>
-            {inputTooltip ? <HoverTooltip wrapInContainer content={inputTooltip}>{numericalInput}</HoverTooltip> : numericalInput}
+            {inputTooltip ? (
+              <HoverTooltip wrapInContainer content={inputTooltip}>
+                {numericalInput}
+              </HoverTooltip>
+            ) : (
+              numericalInput
+            )}
           </div>
         </styledEl.CurrencyInputBox>
 

@@ -40,8 +40,7 @@ import {
 } from '@/styles/styled'
 
 import SVG from 'react-inlinesvg'
-
-import { EventCategories, sendEventHandler } from '@cowprotocol/analytics'
+import { clickOnKnowledgeBase } from 'modules/analytics'
 
 const PODCASTS = [
   {
@@ -177,7 +176,7 @@ export default function Page({ siteConfigData, categories, articles, featuredArt
             <li key={category.slug}>
               <a
                 href={`/learn/topic/${category.slug}`}
-                onClick={() => sendEventHandler(EventCategories.KNOWLEDGEBASE, `click-topic-${category.name}`)}
+                onClick={() => clickOnKnowledgeBase(`click-topic-${category.name}`)}
               >
                 {category.name}
               </a>
@@ -196,11 +195,7 @@ export default function Page({ siteConfigData, categories, articles, featuredArt
               </ContainerCardSectionTop>
               <ArticleList columnsTablet={2}>
                 {featuredArticles.map(({ title, description, cover, link }, index) => (
-                  <ArticleCard
-                    key={index}
-                    href={link}
-                    onClick={() => sendEventHandler(EventCategories.KNOWLEDGEBASE, `click-article-${title}`)}
-                  >
+                  <ArticleCard key={index} href={link} onClick={() => clickOnKnowledgeBase(`click-article-${title}`)}>
                     <ArticleImage color="#000">{cover && <img src={cover} alt={title} />}</ArticleImage>
                     <ArticleTitle>{title}</ArticleTitle>
                     <ArticleDescription>{description}</ArticleDescription>
@@ -221,7 +216,7 @@ export default function Page({ siteConfigData, categories, articles, featuredArt
                       bgColor={bgColor}
                       textColor={textColor}
                       href={link}
-                      onClick={() => sendEventHandler(EventCategories.KNOWLEDGEBASE, `click-topic-${name}`)}
+                      onClick={() => clickOnKnowledgeBase(`click-topic-${name}`)}
                     >
                       <TopicImage iconColor={iconColor} bgColor={bgColor} borderRadius={90} widthMobile={'auto'}>
                         {imageUrl ? (
@@ -257,7 +252,7 @@ export default function Page({ siteConfigData, categories, articles, featuredArt
                       href={`${podcast.link}?utm_source=cow.fi&utm_medium=web&utm_content=podcast-${podcast.title}`}
                       rel="noopener noreferrer nofollow"
                       target="_blank"
-                      onClick={() => sendEventHandler(EventCategories.KNOWLEDGEBASE, `click-podcast-${podcast.title}`)}
+                      onClick={() => clickOnKnowledgeBase(`click-podcast-${podcast.title}`)}
                     >
                       {podcast.title}
                       <span>→</span>
@@ -273,7 +268,7 @@ export default function Page({ siteConfigData, categories, articles, featuredArt
                       href={`${space.link}?utm_source=cow.fi&utm_medium=web&utm_content=space-${space.title}`}
                       rel="noopener noreferrer nofollow"
                       target="_blank"
-                      onClick={() => sendEventHandler(EventCategories.KNOWLEDGEBASE, `click-space-${space.title}`)}
+                      onClick={() => clickOnKnowledgeBase(`click-space-${space.title}`)}
                     >
                       {space.title}
                       <span>→</span>
@@ -294,7 +289,7 @@ export default function Page({ siteConfigData, categories, articles, featuredArt
                     href={`${link}?utm_source=cow.fi&utm_medium=web&utm_content=media-${title}`}
                     target={linkExternal ? '_blank' : '_self'}
                     rel={linkExternal ? 'noopener' : ''}
-                    onClick={() => sendEventHandler(EventCategories.KNOWLEDGEBASE, `click-media-${title}`)}
+                    onClick={() => clickOnKnowledgeBase(`click-media-${title}`)}
                   >
                     <ArticleImage>{image && <img src={image} alt={title} />}</ArticleImage>
                     <ArticleTitle fontSize={21}>{title}</ArticleTitle>
@@ -317,7 +312,7 @@ export default function Page({ siteConfigData, categories, articles, featuredArt
               href="https://docs.cow.fi/?utm_source=cow.fi&utm_medium=web&utm_content=cta-read-docs"
               target="_blank"
               rel="noopener noreferrer"
-              onClick={() => sendEventHandler(EventCategories.KNOWLEDGEBASE, 'click-read-docs')}
+              onClick={() => clickOnKnowledgeBase('click-read-docs')}
             >
               Read the docs
             </CTAButton>

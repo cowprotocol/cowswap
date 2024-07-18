@@ -53,10 +53,10 @@ import {
 
 import SVG from 'react-inlinesvg'
 
-import { EventCategories, sendEventHandler } from '@cowprotocol/analytics'
 import { FAQ_DATA, TRUSTED_BY_CONTENT, TESTIMONIAL_LIST, MEV_BLOCKER_LIST } from '@/data/mev-blocker/const'
 
 import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
+import { clickOnMevBlocker } from 'modules/analytics'
 
 // Configure chains and providers
 const { chains, publicClient } = configureChains([mainnet], [publicProvider()])
@@ -122,7 +122,7 @@ export default function Page() {
                   bgColor={'#EC4612'}
                   color={'#FEE7CF'}
                   href="#rpc"
-                  onClick={() => sendEventHandler(EventCategories.MEVBLOCKER, 'click-get-protected')}
+                  onClick={() => clickOnMevBlocker('click-get-protected')}
                 >
                   Get protected
                 </Link>
@@ -155,7 +155,7 @@ export default function Page() {
                 external
                 linkType={LinkType.SectionTitleButton}
                 utmContent="mev-blocker-metrics-link"
-                onClick={() => sendEventHandler(EventCategories.MEVBLOCKER, 'click-metrics-dune')}
+                onClick={() => clickOnMevBlocker('click-metrics-dune')}
               >
                 View all metrics on DUNE &#8599;
               </Link>
@@ -174,7 +174,7 @@ export default function Page() {
                       href="https://dune.com/queries/2259793/3703605"
                       external
                       utmContent="mev-blocker-dune-link"
-                      onClick={() => sendEventHandler(EventCategories.MEVBLOCKER, 'click-dune-link')}
+                      onClick={() => clickOnMevBlocker('click-dune-link')}
                     >
                       $1.38 billion
                     </Link>{' '}
@@ -205,7 +205,7 @@ export default function Page() {
                       href="https://www.mevscanner.com/"
                       external
                       utmContent="mev-blocker-mev-scanner-link"
-                      onClick={() => sendEventHandler(EventCategories.MEVBLOCKER, 'click-mev-scanner-link')}
+                      onClick={() => clickOnMevBlocker('click-mev-scanner-link')}
                     >
                       Use MEV Scanner
                     </Link>{' '}
@@ -356,7 +356,7 @@ export default function Page() {
                       href="https://docs.cow.fi/mevblocker"
                       external
                       utmContent="mev-blocker-docs-link"
-                      onClick={() => sendEventHandler(EventCategories.MEVBLOCKER, 'click-mev-blocker-docs-link')}
+                      onClick={() => clickOnMevBlocker('click-mev-blocker-docs-link')}
                     >
                       read the MEV Blocker docs
                     </Link>
@@ -438,7 +438,7 @@ export default function Page() {
                     external
                     linkType={LinkType.SectionTitleButton}
                     utmContent="mev-blocker-learn-more"
-                    onClick={() => sendEventHandler(EventCategories.MEVBLOCKER, 'click-mev-blocker-learn-more')}
+                    onClick={() => clickOnMevBlocker('click-mev-blocker-learn-more')}
                   >
                     Learn more
                   </Link>
@@ -465,7 +465,7 @@ export default function Page() {
                       href={item.href}
                       rel={'noopener noreferrer nofollow'}
                       target="_blank"
-                      onClick={() => sendEventHandler(EventCategories.MEVBLOCKER, `click-trusted-by-${item.href}`)}
+                      onClick={() => clickOnMevBlocker(`click-trusted-by-${item.href}`)}
                     >
                       <TopicImage
                         iconColor={Color.neutral20}

@@ -7,8 +7,6 @@ import { getCategoryBySlug, getAllCategorySlugs, getArticles, getCategories } fr
 import { SearchBar } from '@/components/SearchBar'
 import { ArrowButton } from '@/components/ArrowButton'
 
-import { EventCategories, sendEventHandler } from '@cowprotocol/analytics'
-
 import {
   Breadcrumbs,
   ContainerCard,
@@ -20,6 +18,7 @@ import {
   LinkItem,
   CategoryLinks,
 } from '@/styles/styled'
+import { clickOnKnowledgeBase } from 'modules/analytics'
 
 const Wrapper = styled.div`
   display: flex;
@@ -107,7 +106,7 @@ export default function TopicPage({ category, articles, allCategories }: TopicPa
       <Wrapper>
         <CategoryLinks>
           <li>
-            <a href="/learn" onClick={() => sendEventHandler(EventCategories.KNOWLEDGEBASE, 'click-categories-home')}>
+            <a href="/learn" onClick={() => clickOnKnowledgeBase('click-categories-home')}>
               Knowledge Base
             </a>
           </li>
@@ -115,7 +114,7 @@ export default function TopicPage({ category, articles, allCategories }: TopicPa
             <li key={category.slug}>
               <a
                 href={`/learn/topic/${category.slug}`}
-                onClick={() => sendEventHandler(EventCategories.KNOWLEDGEBASE, `click-categories-${category.name}`)}
+                onClick={() => clickOnKnowledgeBase(`click-categories-${category.name}`)}
               >
                 {category.name}
               </a>
@@ -128,19 +127,13 @@ export default function TopicPage({ category, articles, allCategories }: TopicPa
         <ContainerCard gap={42} gapMobile={24} minHeight="100vh" alignContent="flex-start" touchFooter>
           <ContainerCardInner maxWidth={970} gap={24} gapMobile={24}>
             <Breadcrumbs padding={'0'}>
-              <a href="/" onClick={() => sendEventHandler(EventCategories.KNOWLEDGEBASE, 'click-breadcrumbs-home')}>
+              <a href="/" onClick={() => clickOnKnowledgeBase('click-breadcrumbs-home')}>
                 Home
               </a>
-              <a
-                href="/learn"
-                onClick={() => sendEventHandler(EventCategories.KNOWLEDGEBASE, 'click-breadcrumbs-knowledgebase')}
-              >
+              <a href="/learn" onClick={() => clickOnKnowledgeBase('click-breadcrumbs-knowledgebase')}>
                 Knowledge Base
               </a>
-              <a
-                href="/learn/topics/"
-                onClick={() => sendEventHandler(EventCategories.KNOWLEDGEBASE, 'click-breadcrumbs-topics')}
-              >
+              <a href="/learn/topics/" onClick={() => clickOnKnowledgeBase('click-breadcrumbs-topics')}>
                 Topic
               </a>
               <span>{name}</span>
@@ -171,9 +164,7 @@ export default function TopicPage({ category, articles, allCategories }: TopicPa
                       <LinkItem
                         key={article.id}
                         href={`/learn/${article.attributes.slug}`}
-                        onClick={() =>
-                          sendEventHandler(EventCategories.KNOWLEDGEBASE, `click-article-${article.attributes.title}`)
-                        }
+                        onClick={() => clickOnKnowledgeBase(`click-article-${article.attributes.title}`)}
                       >
                         {article.attributes.title}
                         <span>→</span>

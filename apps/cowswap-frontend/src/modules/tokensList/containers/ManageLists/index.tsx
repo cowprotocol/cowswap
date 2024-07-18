@@ -3,6 +3,8 @@ import { useMemo } from 'react'
 import { ListSearchResponse, ListState, useListsEnabledState, useRemoveList, useToggleList } from '@cowprotocol/tokens'
 import { Loader } from '@cowprotocol/ui'
 
+import { removeListAnalytics, toggleListAnalytics } from 'modules/analytics'
+
 import * as styledEl from './styled'
 
 import { useAddListImport } from '../../hooks/useAddListImport'
@@ -25,8 +27,8 @@ export function ManageLists(props: ManageListsProps) {
 
   const activeTokenListsIds = useListsEnabledState()
   const addListImport = useAddListImport()
-  const removeList = useRemoveList()
-  const toggleList = useToggleList()
+  const removeList = useRemoveList((source) => removeListAnalytics('Confirm', source))
+  const toggleList = useToggleList((enabled, source) => toggleListAnalytics(enabled, source))
 
   const { source, listToImport, loading } = useListSearchResponse(listSearchResponse)
 

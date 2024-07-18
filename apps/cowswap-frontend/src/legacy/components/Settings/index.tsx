@@ -1,6 +1,5 @@
 import { useCallback, useRef } from 'react'
 
-import { toggleRecepientAddressAnalytics } from '@cowprotocol/analytics'
 import { useOnClickOutside } from '@cowprotocol/common-hooks'
 import { HelpTooltip, Media, RowBetween, RowFixed, UI } from '@cowprotocol/ui'
 
@@ -17,6 +16,7 @@ import { useModalIsOpen, useToggleSettingsMenu } from 'legacy/state/application/
 import { ApplicationModal } from 'legacy/state/application/reducer'
 import { useRecipientToggleManager } from 'legacy/state/user/hooks'
 
+import { toggleRecepientAddressAnalytics } from 'modules/analytics'
 import { SettingsIcon } from 'modules/trade/pure/Settings'
 
 export const StyledMenuButton = styled.button`

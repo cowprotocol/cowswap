@@ -1,9 +1,10 @@
 import { useCallback } from 'react'
 
-import { approvalAnalytics } from '@cowprotocol/analytics'
 import { errorToString, isRejectRequestProviderError } from '@cowprotocol/common-utils'
 import { TransactionResponse } from '@ethersproject/providers'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+
+import { approvalAnalytics } from 'modules/analytics'
 
 import { useApproveCallback } from 'common/hooks/useApproveCallback'
 import { useTradeSpenderAddress } from 'common/hooks/useTradeSpenderAddress'

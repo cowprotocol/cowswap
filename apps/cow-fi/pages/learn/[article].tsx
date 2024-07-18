@@ -43,9 +43,8 @@ import useWebShare from 'hooks/useWebShare'
 
 import { Link, LinkType } from '@/components/Link'
 
-import { EventCategories, sendEventHandler } from '@cowprotocol/analytics'
-
 import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
+import { clickOnKnowledgeBase } from 'modules/analytics'
 
 interface ArticlePageProps {
   siteConfigData: typeof CONFIG
@@ -167,7 +166,7 @@ export default function ArticlePage({
       <Wrapper>
         <CategoryLinks>
           <li>
-            <a href="/learn" onClick={() => sendEventHandler(EventCategories.KNOWLEDGEBASE, 'click-knowledge-base')}>
+            <a href="/learn" onClick={() => clickOnKnowledgeBase('click-knowledge-base')}>
               Knowledge Base
             </a>
           </li>
@@ -175,7 +174,7 @@ export default function ArticlePage({
             <li key={category.slug}>
               <a
                 href={`/learn/topic/${category.slug}`}
-                onClick={() => sendEventHandler(EventCategories.KNOWLEDGEBASE, `click-topic-${category.name}`)}
+                onClick={() => clickOnKnowledgeBase(`click-topic-${category.name}`)}
               >
                 {category.name}
               </a>
@@ -187,13 +186,10 @@ export default function ArticlePage({
         <ContainerCard gap={62} gapMobile={42} margin="0 auto" centerContent>
           <ArticleContent>
             <Breadcrumbs>
-              <a href="/" onClick={() => sendEventHandler(EventCategories.KNOWLEDGEBASE, 'click-breadcrumbs-home')}>
+              <a href="/" onClick={() => clickOnKnowledgeBase('click-breadcrumbs-home')}>
                 Home
               </a>
-              <a
-                href="/learn"
-                onClick={() => sendEventHandler(EventCategories.KNOWLEDGEBASE, 'click-breadcrumbs-knowledge-base')}
-              >
+              <a href="/learn" onClick={() => clickOnKnowledgeBase('click-breadcrumbs-knowledge-base')}>
                 Knowledge Base
               </a>
               <span>{title}</span>
@@ -205,9 +201,7 @@ export default function ArticlePage({
                   <a
                     key={category.id}
                     href={`/learn/topic/${category.attributes?.slug ?? ''}`}
-                    onClick={() =>
-                      sendEventHandler(EventCategories.KNOWLEDGEBASE, `click-category-${category.attributes?.name}`)
-                    }
+                    onClick={() => clickOnKnowledgeBase(`click-category-${category.attributes?.name}`)}
                   >
                     {category.attributes?.name ?? ''}
                   </a>
@@ -257,12 +251,7 @@ export default function ArticlePage({
                   <li key={article.id}>
                     <a
                       href={`/learn/${article.attributes?.slug}`}
-                      onClick={() =>
-                        sendEventHandler(
-                          EventCategories.KNOWLEDGEBASE,
-                          `click-related-article-${article.attributes?.title}`
-                        )
-                      }
+                      onClick={() => clickOnKnowledgeBase(`click-related-article-${article.attributes?.title}`)}
                     >
                       {article.attributes?.title}
                     </a>
@@ -288,9 +277,7 @@ export default function ArticlePage({
                   <ArticleCard
                     key={article.id}
                     href={`/learn/${article.attributes?.slug}`}
-                    onClick={() =>
-                      sendEventHandler(EventCategories.KNOWLEDGEBASE, `click-read-more-${article.attributes?.title}`)
-                    }
+                    onClick={() => clickOnKnowledgeBase(`click-read-more-${article.attributes?.title}`)}
                   >
                     {imageUrl && (
                       <ArticleImage>
