@@ -88,6 +88,9 @@ export const updateOrderProgressBarStepName = atom(
       return
     }
 
+    // Keep track of previous status
+    singleOrderState.previousStepName = singleOrderState.progressBarStepName
+    // Update current status
     singleOrderState.progressBarStepName = value
     // We need to know when it was last changed
     singleOrderState.lastTimeChangedSteps = singleOrderState.currentTimeChangedSteps
@@ -115,19 +118,25 @@ export const updateOrderProgressBarBackendInfo = atom(
     const currentBackendApiStatus = singleOrderState.backendApiStatus
     const currentSolverCompetition = singleOrderState.solverCompetition
 
-    if (
-      currentBackendApiStatus === backendApiStatus &&
-      // Both are empty
-      (currentSolverCompetition === solverCompetition ||
-        // Both are not empty, can compare with deepEqual
-        (currentSolverCompetition && solverCompetition && deepEqual(currentSolverCompetition, solverCompetition)))
-    ) {
+    const backendApiStatusChanged = currentBackendApiStatus !== backendApiStatus
+
+    const solverCompetitionChanged =
+      currentSolverCompetition !== solverCompetition ||
+      (currentSolverCompetition && solverCompetition && !deepEqual(currentSolverCompetition, solverCompetition))
+
+    if (!backendApiStatusChanged && !solverCompetitionChanged) {
       return
+    }
+
+    singleOrderState.backendApiStatus = backendApiStatus
+    // Only update solver competition if changed and not falsy
+    if (solverCompetitionChanged && solverCompetition) {
+      singleOrderState.solverCompetition = solverCompetition
     }
 
     set(ordersProgressBarStateAtom, {
       ...fullState,
-      [orderId]: { ...singleOrderState, backendApiStatus, solverCompetition },
+      [orderId]: singleOrderState,
     })
   }
 )

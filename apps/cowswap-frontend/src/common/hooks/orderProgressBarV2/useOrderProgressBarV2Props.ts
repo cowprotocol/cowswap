@@ -44,12 +44,26 @@ export function useOrderProgressBarV2Props(params: UseOrderProgressBarPropsParam
   const orderId = order?.id || ''
 
   // Fetch state from atom
-  const { countdown, backendApiStatus, solverCompetition, progressBarStepName, lastTimeChangedSteps } =
-    useGetExecutingOrderState(orderId)
+  const {
+    countdown,
+    backendApiStatus,
+    solverCompetition,
+    progressBarStepName,
+    previousStepName,
+    lastTimeChangedSteps,
+  } = useGetExecutingOrderState(orderId)
 
   // Local updaters of the respective atom
   useBackendApiStatusUpdater(chainId, orderId, isFinal)
-  useProgressBarStepNameUpdater(orderId, isUnfillable, isConfirmed, countdown, backendApiStatus, lastTimeChangedSteps)
+  useProgressBarStepNameUpdater(
+    orderId,
+    isUnfillable,
+    isConfirmed,
+    countdown,
+    backendApiStatus,
+    lastTimeChangedSteps,
+    previousStepName
+  )
   useCountdownStartUpdater(orderId, countdown, backendApiStatus)
 
   return useMemo(
@@ -109,16 +123,17 @@ function useProgressBarStepNameUpdater(
   isConfirmed: boolean,
   countdown: OrderProgressBarState['countdown'],
   backendApiStatus: OrderProgressBarState['backendApiStatus'],
-  lastTimeChangedSteps: OrderProgressBarState['lastTimeChangedSteps']
+  lastTimeChangedSteps: OrderProgressBarState['lastTimeChangedSteps'],
+  previousStepName: OrderProgressBarState['previousStepName']
 ) {
   const setProgressBarStepName = useSetExecutingOrderProgressBarStepNameCallback()
 
-  const stepName = getProgressBarStepName(isUnfillable, isConfirmed, countdown, backendApiStatus)
+  const stepName = getProgressBarStepName(isUnfillable, isConfirmed, countdown, backendApiStatus, previousStepName)
 
   // Update state with new step name
   useEffect(() => {
-    function updateStepName() {
-      setProgressBarStepName(orderId, stepName || 'initial')
+    function updateStepName(name: OrderProgressBarStepName) {
+      setProgressBarStepName(orderId, name || 'initial')
     }
 
     let timer: NodeJS.Timeout
@@ -126,10 +141,15 @@ function useProgressBarStepNameUpdater(
     const timeSinceLastChange = lastTimeChangedSteps ? Date.now() - lastTimeChangedSteps : 0
 
     if (lastTimeChangedSteps === undefined || timeSinceLastChange >= MINIMUM_STEP_DISPLAY_TIME) {
-      updateStepName()
+      updateStepName(stepName)
+
+      // schedule update for temporary steps
+      if (stepName === 'submissionFailed' || stepName === 'nextBatch') {
+        timer = setTimeout(() => updateStepName('solving'), MINIMUM_STEP_DISPLAY_TIME)
+      }
     } else {
       // Delay if it was updated less than MINIMUM_STEP_DISPLAY_TIME ago
-      timer = setTimeout(updateStepName, MINIMUM_STEP_DISPLAY_TIME - timeSinceLastChange)
+      timer = setTimeout(() => updateStepName(stepName), MINIMUM_STEP_DISPLAY_TIME - timeSinceLastChange)
     }
 
     return () => {
@@ -142,7 +162,8 @@ function getProgressBarStepName(
   isUnfillable: boolean,
   isConfirmed: boolean,
   countdown: OrderProgressBarState['countdown'],
-  backendApiStatus: OrderProgressBarState['backendApiStatus']
+  backendApiStatus: OrderProgressBarState['backendApiStatus'],
+  previousStepName: OrderProgressBarState['previousStepName']
 ): OrderProgressBarStepName {
   if (isUnfillable) {
     // out of market order
@@ -150,6 +171,18 @@ function getProgressBarStepName(
   } else if (isConfirmed) {
     // already traded
     return 'finished'
+  } else if (
+    previousStepName === 'executing' &&
+    (backendApiStatus === 'active' || backendApiStatus === 'open' || backendApiStatus === 'scheduled')
+  ) {
+    // moved back from executing to active
+    return 'submissionFailed'
+  } else if (
+    previousStepName === 'solved' &&
+    (backendApiStatus === 'active' || backendApiStatus === 'open' || backendApiStatus === 'scheduled')
+  ) {
+    // moved back from solving to active
+    return 'nextBatch'
   } else if (backendApiStatus === 'active' && countdown === 0) {
     // solving, but took longer than stipulated countdown
     return 'delayed'

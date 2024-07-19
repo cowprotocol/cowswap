@@ -5,6 +5,7 @@ export type OrderProgressBarState = {
   backendApiStatus?: PendingOrderStatusType
   solverCompetition?: SolverCompetition
   progressBarStepName?: OrderProgressBarStepName
+  previousStepName?: OrderProgressBarStepName
   lastTimeChangedSteps?: number
   currentTimeChangedSteps?: number
 }
