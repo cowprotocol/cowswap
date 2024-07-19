@@ -51,6 +51,7 @@ const InlineBannerWithCheckbox = styled(InlineBanner)``
 
 interface FallbackHandlerWarningProps {
   isFallbackHandlerSetupAccepted: boolean
+
   toggleFallbackHandlerSetupFlag(isChecked: boolean): void
 }
 
@@ -65,7 +66,7 @@ export function FallbackHandlerWarning({
         checked={isFallbackHandlerSetupAccepted}
         onChange={(event) => toggleFallbackHandlerSetupFlag(event.currentTarget.checked)}
       />
-      <span>Modify Safe's fallback handler when placing order</span>
+      <span>Make the modification when placing order</span>
     </WarningCheckbox>
   )
 
@@ -81,10 +82,9 @@ export function FallbackHandlerWarning({
     return (
       <Wrapper>
         <InlineBannerWithCheckbox bannerType="alert">
-          <strong>Unsupported Safe detected</strong>
+          <strong>Your Safe needs a modification</strong>
           <p>
-            Connected Safe lacks required fallback handler. Switch to a compatible Safe or modify fallback handler for
-            TWAP orders when placing your order.
+            TWAP orders require a one-time update to your Safe to enable automated execution of scheduled transactions.
           </p>
           <ExternalLink href={UNSUPPORTED_SAFE_LINK}>Learn more</ExternalLink>
           <WarningCheckboxWrapper>{fallbackHandlerCheckbox}</WarningCheckboxWrapper>
