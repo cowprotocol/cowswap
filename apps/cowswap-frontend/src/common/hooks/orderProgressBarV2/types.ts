@@ -16,4 +16,5 @@ export type OrdersProgressBarCountdown = Record<string, number | null>
 
 type happyPath = 'initial' | 'solving' | 'solved' | 'executing' | 'finished'
 type errorFlow = 'nextBatch' | 'delayed' | 'unfillable' | 'submissionFailed'
-export type OrderProgressBarStepName = happyPath | errorFlow
+type cancellationFlow = 'cancelling' | 'cancelled' | 'expired' | 'cancellationFailed'
+export type OrderProgressBarStepName = happyPath | errorFlow | cancellationFlow

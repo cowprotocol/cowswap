@@ -66,6 +66,18 @@ const STEP_NAME_TO_STEP_COMPONENT: Record<OrderProgressBarStepName, StepCallback
   submissionFailed: (_props: OrderProgressBarV2Props): JSX.Element => {
     return <SubmissionFailedStep />
   },
+  cancelling(_props: OrderProgressBarV2Props): JSX.Element {
+    return <CancellingStep />
+  },
+  cancelled(_props: OrderProgressBarV2Props): JSX.Element {
+    return <CancelledStep />
+  },
+  expired(_props: OrderProgressBarV2Props): JSX.Element {
+    return <ExpiredStep />
+  },
+  cancellationFailed(_props: OrderProgressBarV2Props): JSX.Element {
+    return <CancellationFailedStep />
+  },
 }
 
 function InitialStep() {
@@ -273,6 +285,23 @@ function SubmissionFailedStep() {
       <Stepper steps={localSteps} />
     </div>
   )
+}
+
+function CancellingStep() {
+  return <div>Your order is being cancelled</div>
+}
+
+function CancelledStep() {
+  return <div>Your order has been cancelled</div>
+}
+
+function ExpiredStep() {
+  return <div>Your order has expired</div>
+}
+
+function CancellationFailedStep() {
+  // TODO: re-use component for <FinishedStep> and add msg about cancellation
+  return <div>Failed to cancel, order executed instead. Ops!</div>
 }
 
 const ProgressImage = styled.img`
