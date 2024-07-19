@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.8.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.7.0...cow-fi-v1.8.0) (2024-07-18)
+
+
+### Features
+
+* refactor and untangle analytics ([#4718](https://github.com/cowprotocol/cowswap/issues/4718)) ([ee396eb](https://github.com/cowprotocol/cowswap/commit/ee396eb1c4ef9a786810ed20b20020b4cb986460))
+
+
+### Bug Fixes
+
+* cowfi em element styles ([#4724](https://github.com/cowprotocol/cowswap/issues/4724)) ([a78364e](https://github.com/cowprotocol/cowswap/commit/a78364e0f50e542643d34340b72a93350342e7f2))
+* invalid HTML tag nesting ([#4708](https://github.com/cowprotocol/cowswap/issues/4708)) ([f6b09a0](https://github.com/cowprotocol/cowswap/commit/f6b09a0ba5e12b65b85d53b68f993fe690c0eddb))
+
 ## [1.7.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.6.0...cow-fi-v1.7.0) (2024-07-12)
 
 

@@ -1,11 +1,10 @@
 import '@reach/dialog/styles.css'
 import 'inter-ui'
-
-import '@cowprotocol/analytics'
 import './sentry'
 import { Provider as AtomProvider } from 'jotai'
 import { ReactNode, StrictMode } from 'react'
 
+import { CowAnalyticsProvider } from '@cowprotocol/analytics'
 import { nodeRemoveChildFix } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
 import { SnackbarsWidget } from '@cowprotocol/snackbars'
@@ -21,6 +20,7 @@ import { ThemedGlobalStyle, ThemeProvider } from 'theme'
 import { cowSwapStore } from 'legacy/state'
 import { useAppSelector } from 'legacy/state/hooks'
 
+import { cowAnalytics } from 'modules/analytics'
 import { App } from 'modules/application/containers/App'
 import { Updaters } from 'modules/application/containers/App/Updaters'
 import { WithLDProvider } from 'modules/application/containers/WithLDProvider'
@@ -49,11 +49,13 @@ function Main() {
                   <ThemedGlobalStyle />
                   <BlockNumberProvider>
                     <WithLDProvider>
-                      <WalletUnsupportedNetworkBanner />
-                      <Updaters />
+                      <CowAnalyticsProvider cowAnalytics={cowAnalytics}>
+                        <WalletUnsupportedNetworkBanner />
+                        <Updaters />
 
-                      <Toasts />
-                      <App />
+                        <Toasts />
+                        <App />
+                      </CowAnalyticsProvider>
                     </WithLDProvider>
                   </BlockNumberProvider>
                 </ThemeProvider>

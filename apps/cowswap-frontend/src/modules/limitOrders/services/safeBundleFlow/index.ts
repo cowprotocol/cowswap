@@ -18,9 +18,9 @@ import { buildZeroApproveTx } from 'modules/operations/bundle/buildZeroApproveTx
 import { emitPostedOrderEvent } from 'modules/orders'
 import { appDataContainsHooks } from 'modules/permit/utils/appDataContainsHooks'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
-import { tradeFlowAnalytics, TradeFlowAnalyticsContext } from 'modules/trade/utils/analytics'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
+import { TradeFlowAnalyticsContext, tradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
 import { shouldZeroApprove as shouldZeroApproveFn } from 'modules/zeroApproval'
 
 const LOG_PREFIX = 'LIMIT ORDER SAFE BUNDLE FLOW'

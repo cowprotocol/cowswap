@@ -28,11 +28,10 @@ import SVG from 'react-inlinesvg'
 import IMG_ICON_BULB_COW from '@cowprotocol/assets/images/icon-bulb-cow.svg'
 import IMG_ICON_GRANTS_CARTON from '@cowprotocol/assets/images/icon-grants-carton.svg'
 
-import { EventCategories, sendEventHandler } from '@cowprotocol/analytics'
-
 import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
 
 import { CHANNEL_LIST, PRODUCT_CONTAINERS } from '@/data/home/const'
+import { clickOnHome } from 'modules/analytics'
 
 interface PageProps {
   siteConfigData: typeof CONFIG
@@ -74,7 +73,7 @@ export default function Page() {
               <Link
                 linkType={LinkType.SectionTitleButton}
                 href="/learn"
-                onClick={() => sendEventHandler(EventCategories.HOME, 'click-cow-knowledge-base-learn-more')}
+                onClick={() => clickOnHome('click-cow-knowledge-base-learn-more')}
               >
                 Learn more
               </Link>
@@ -93,7 +92,7 @@ export default function Page() {
                 Anyone can join CoW DAO by holding{' '}
                 <Link
                   href="https://swap.cow.fi/#/1/swap/USDC/COW"
-                  onClick={() => sendEventHandler(EventCategories.HOME, 'click-cow-tokens')}
+                  onClick={() => clickOnHome('click-cow-tokens')}
                   external
                 >
                   COW tokens
@@ -112,7 +111,7 @@ export default function Page() {
                   href={social.href}
                   rel="noopener noreferrer"
                   target="_blank"
-                  onClick={() => sendEventHandler(EventCategories.HOME, social.linkEvent)}
+                  onClick={() => clickOnHome(social.linkEvent)}
                 >
                   <TopicImage iconColor="transparent" maxWidth={290} maxHeight={290} height={290} width={290}>
                     <SVG src={social.iconImage} title={social.title} />
@@ -140,7 +139,7 @@ export default function Page() {
                 linkType={LinkType.SectionTitleButton}
                 utmContent="home-page-apply-for-a-grant"
                 href="https://grants.cow.fi/"
-                onClick={() => sendEventHandler(EventCategories.HOME, 'click-apply-for-a-grant')}
+                onClick={() => clickOnHome('click-apply-for-a-grant')}
               >
                 Explore grants
               </Link>

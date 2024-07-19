@@ -16,9 +16,9 @@ import { emitPostedOrderEvent } from 'modules/orders'
 import { appDataContainsHooks } from 'modules/permit/utils/appDataContainsHooks'
 import { SafeBundleEthFlowContext } from 'modules/swap/services/types'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
-import { tradeFlowAnalytics } from 'modules/trade/utils/analytics'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
+import { tradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
 
 const LOG_PREFIX = 'SAFE BUNDLE ETH FLOW'
 
