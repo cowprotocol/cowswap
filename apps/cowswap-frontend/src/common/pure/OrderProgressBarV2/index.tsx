@@ -55,8 +55,7 @@ const STEP_NAME_TO_STEP_COMPONENT: Record<OrderProgressBarStepName, StepCallback
     return <FinishedStep {...props} />
   },
   nextBatch: (props: OrderProgressBarV2Props): JSX.Element => {
-    // TODO: add a flow for `nextBatch`?
-    return <SolvingStep {...props} />
+    return <NextBatchStep {...props} />
   },
   delayed: (_props: OrderProgressBarV2Props): JSX.Element => {
     return <DelayedStep />
@@ -93,6 +92,50 @@ function SolvingStep({ countdown }: OrderProgressBarV2Props) {
         <strong style={{ alignSelf: 'center', fontSize: '5em' }}>{countdown}</strong>
         <p>The auction has started! Solvers are competing to find the best solution for you...</p>
       </div>
+      <Stepper steps={localSteps} />
+    </>
+  )
+}
+
+function NextBatchStep({ solverCompetition }: OrderProgressBarV2Props) {
+  const localSteps = structuredClone(PROGRESS_BAR_STEPS)
+  localSteps[0].stepState = 'finished'
+  localSteps[1].stepState = 'loading'
+
+  return (
+    <>
+      <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <p>
+          Your order wasn't a part of the winning solution for this auction. It will be included in the next auction.
+        </p>
+      </div>
+
+      {solverCompetition && (
+        <>
+          <p>Solver ranking</p>
+          <ol>
+            {solverCompetition?.map((entry) => {
+              const imageProps = AMM_LOGOS[entry.solver] || AMM_LOGOS.default
+
+              return (
+                <li key={entry.solver}>
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <img
+                      style={{ height: '20px', width: '20px', marginRight: '5px' }}
+                      {...imageProps}
+                      alt="Solver logo"
+                    />
+                    <span>
+                      {entry.solver}
+                      {entry.sellAmount && ' <- your order was included in this solution'}
+                    </span>
+                  </div>
+                </li>
+              )
+            })}
+          </ol>
+        </>
+      )}
       <Stepper steps={localSteps} />
     </>
   )
