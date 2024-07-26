@@ -140,3 +140,23 @@ export const updateOrderProgressBarBackendInfo = atom(
     })
   }
 )
+
+/**
+ * Derived write-only atom for setting cancellationTriggered
+ *
+ * Can only set it to true, since there's no way to cancel a cancellation once requested
+ */
+export const setOrderProgressBarCancellationTriggered = atom(null, (get, set, orderId: string) => {
+  const fullState = get(ordersProgressBarStateAtom)
+
+  const singleState = { ...fullState[orderId] }
+
+  if (singleState.cancellationTriggered) {
+    // Already triggered, nothing to do here
+    return
+  }
+
+  singleState.cancellationTriggered = true
+
+  set(ordersProgressBarStateAtom, { ...fullState, [orderId]: singleState })
+})

@@ -8,6 +8,7 @@ export type OrderProgressBarState = {
   previousStepName?: OrderProgressBarStepName
   lastTimeChangedSteps?: number
   currentTimeChangedSteps?: number
+  cancellationTriggered?: true
 }
 
 export type OrdersProgressBarState = Record<string, OrderProgressBarState>

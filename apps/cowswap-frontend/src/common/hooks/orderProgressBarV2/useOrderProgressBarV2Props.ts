@@ -14,6 +14,7 @@ import { getIsFinalizedOrder } from 'utils/orderUtils/getIsFinalizedOrder'
 
 import {
   ordersProgressBarStateAtom,
+  setOrderProgressBarCancellationTriggered,
   updateOrderProgressBarBackendInfo,
   updateOrderProgressBarCountdown,
   updateOrderProgressBarStepName,
@@ -37,7 +38,14 @@ const MINIMUM_STEP_DISPLAY_TIME = ms`2s`
 export function useOrderProgressBarV2Props(params: UseOrderProgressBarPropsParams): UseOrderProgressBarV2Result {
   const { activityDerivedState, chainId } = params
 
-  const { order, isConfirmed = false, isUnfillable = false } = activityDerivedState || {}
+  const {
+    order,
+    isConfirmed = false,
+    isUnfillable = false,
+    isCancelling = false,
+    isCancelled = false,
+    isExpired = false,
+  } = activityDerivedState || {}
   // Whether the order is in a final state, to avoid querying backend unnecessarily
   const isFinal = !!(order && getIsFinalizedOrder(order))
 
@@ -51,6 +59,7 @@ export function useOrderProgressBarV2Props(params: UseOrderProgressBarPropsParam
     progressBarStepName,
     previousStepName,
     lastTimeChangedSteps,
+    cancellationTriggered,
   } = useGetExecutingOrderState(orderId)
 
   // Local updaters of the respective atom
@@ -58,12 +67,17 @@ export function useOrderProgressBarV2Props(params: UseOrderProgressBarPropsParam
   useProgressBarStepNameUpdater(
     orderId,
     isUnfillable,
+    isCancelled,
+    isExpired,
+    isCancelling,
+    cancellationTriggered,
     isConfirmed,
     countdown,
     backendApiStatus,
     lastTimeChangedSteps,
     previousStepName
   )
+  useCancellingOrderUpdater(orderId, isCancelling)
   useCountdownStartUpdater(orderId, countdown, backendApiStatus)
 
   return useMemo(
@@ -117,9 +131,21 @@ function useCountdownStartUpdater(
   }, [backendApiStatus, setCountdown, countdown, orderId])
 }
 
+function useCancellingOrderUpdater(orderId: string, isCancelling: boolean) {
+  const setCancellationTriggered = useSetAtom(setOrderProgressBarCancellationTriggered)
+
+  useEffect(() => {
+    if (isCancelling) setCancellationTriggered(orderId)
+  }, [orderId, isCancelling])
+}
+
 function useProgressBarStepNameUpdater(
   orderId: string,
   isUnfillable: boolean,
+  isCancelled: boolean,
+  isExpired: boolean,
+  isCancelling: boolean,
+  cancellationTriggered: undefined | true,
   isConfirmed: boolean,
   countdown: OrderProgressBarState['countdown'],
   backendApiStatus: OrderProgressBarState['backendApiStatus'],
@@ -128,7 +154,17 @@ function useProgressBarStepNameUpdater(
 ) {
   const setProgressBarStepName = useSetExecutingOrderProgressBarStepNameCallback()
 
-  const stepName = getProgressBarStepName(isUnfillable, isConfirmed, countdown, backendApiStatus, previousStepName)
+  const stepName = getProgressBarStepName(
+    isUnfillable,
+    isCancelled,
+    isExpired,
+    isCancelling,
+    cancellationTriggered,
+    isConfirmed,
+    countdown,
+    backendApiStatus,
+    previousStepName
+  )
 
   // Update state with new step name
   useEffect(() => {
@@ -160,6 +196,10 @@ function useProgressBarStepNameUpdater(
 
 function getProgressBarStepName(
   isUnfillable: boolean,
+  isCancelled: boolean,
+  isExpired: boolean,
+  isCancelling: boolean,
+  cancellationTriggered: undefined | true,
   isConfirmed: boolean,
   countdown: OrderProgressBarState['countdown'],
   backendApiStatus: OrderProgressBarState['backendApiStatus'],
@@ -168,6 +208,15 @@ function getProgressBarStepName(
   if (isUnfillable) {
     // out of market order
     return 'unfillable'
+  } else if (isExpired) {
+    return 'expired'
+  } else if (isCancelled) {
+    return 'cancelled'
+  } else if (isCancelling) {
+    return 'cancelling'
+  } else if (cancellationTriggered && (backendApiStatus === 'traded' || isConfirmed)) {
+    // Was cancelling, but got executed in the meantime
+    return 'cancellationFailed'
   } else if (isConfirmed) {
     // already traded
     return 'finished'
