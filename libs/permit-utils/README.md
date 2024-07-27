@@ -25,7 +25,7 @@ const permitInfo = await getTokenPermitInfo({
 ```typescript
 import { getPermitUtilsInstance } from "@cowprotocol/permit-utils"
 
-// Using the a static account defined in the library
+// Using a static account defined in the library
 const staticEip2612PermitUtils = getPermitUtilsInstance(chainId, provider)
 
 // Using a provided account address

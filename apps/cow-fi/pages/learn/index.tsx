@@ -70,7 +70,7 @@ const SPACES = [
     link: 'https://x.com/cryptotesters/status/1501505365833248774',
   },
   {
-    title: 'CoW Protocoll & Yearn Finance Partnership Deep Dive',
+    title: 'CoW Protocol & Yearn Finance Partnership Deep Dive',
     link: 'https://x.com/CoWSwap/status/1605593667682476032',
   },
   {
