@@ -2,6 +2,7 @@ import { Confetti } from '@cowprotocol/ui'
 import styled from 'styled-components/macro'
 import { darken, transparentize } from 'polished'
 import { useConnectAndAddToWallet } from '../../lib/hooks/useConnectAndAddToWallet'
+import { clickOnMevBlocker } from 'modules/analytics'
 
 import { Link, LinkType } from '@/components/Link'
 
@@ -28,6 +29,17 @@ export function AddRpcButton() {
   const { addWalletState, connectAndAddToWallet } = useConnectAndAddToWallet()
   const { errorMessage, state } = addWalletState
 
+  // Wrap the connectAndAddToWallet function to include analytics events
+  const handleClick = async () => {
+    clickOnMevBlocker('click-add-rpc-to-wallet')
+    try {
+      if (connectAndAddToWallet) connectAndAddToWallet()
+      clickOnMevBlocker('click-add-rpc-to-wallet-success')
+    } catch (error) {
+      clickOnMevBlocker('click-add-rpc-to-wallet-error')
+    }
+  }
+
   // Get the label and enable state of button
   const isAdding = state === 'adding'
   const isConnecting = state === 'connecting'
@@ -48,7 +60,7 @@ export function AddRpcButton() {
             fontSize={21}
             color={'#FEE7CF'}
             bgColor="#EC4612"
-            onClick={connectAndAddToWallet || (() => {})}
+            onClick={handleClick}
             disabled={disabledButton}
             asButton
           >
