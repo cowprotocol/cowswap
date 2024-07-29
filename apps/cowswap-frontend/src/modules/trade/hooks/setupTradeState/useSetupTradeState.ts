@@ -72,7 +72,11 @@ export function useSetupTradeState(): void {
         }
       }
 
-      tradeNavigate(providerChainId, getDefaultTradeRawState(providerChainId))
+      // Adding timeout of 500ms to avoid running into infinity loop of updating provider and url state.
+      // issue GH : https://github.com/cowprotocol/cowswap/issues/4734
+      setTimeout(() => {
+        tradeNavigate(providerChainId, getDefaultTradeRawState(providerChainId))
+      }, 500)
     }
     // Triggering only when chainId was changed in the provider
     // eslint-disable-next-line react-hooks/exhaustive-deps
