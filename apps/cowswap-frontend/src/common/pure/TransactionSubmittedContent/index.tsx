@@ -8,7 +8,6 @@ import { Text } from 'rebass'
 import { Nullish } from 'types'
 
 import { DisplayLink } from 'legacy/components/TransactionConfirmationModal/DisplayLink'
-import { getActivityState } from 'legacy/hooks/useActivityDerivedState'
 import { ActivityStatus } from 'legacy/hooks/useRecentActivity'
 
 import { ActivityDerivedState } from 'modules/account/containers/Transaction'
@@ -61,8 +60,6 @@ export function TransactionSubmittedContent({
   showSurplus,
   orderProgressBarV2Props,
 }: TransactionSubmittedContentProps) {
-  const activityState = activityDerivedState && getActivityState(activityDerivedState)
-  const showProgressBar = activityState === 'open' || activityState === 'filled'
   const { order } = activityDerivedState || {}
 
   if (!chainId) {
@@ -84,7 +81,7 @@ export function TransactionSubmittedContent({
             </Text>
             <DisplayLink id={hash} chainId={chainId} />
             <EthFlowStepper order={order} />
-            {activityDerivedState && showProgressBar && orderProgressBarV2Props && (
+            {activityDerivedState && orderProgressBarV2Props && (
               <OrderProgressBarV2 {...orderProgressBarV2Props} order={order} />
             )}
             <styledEl.ButtonGroup>
