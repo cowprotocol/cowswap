@@ -29,7 +29,6 @@ export function AddRpcButton() {
   const { addWalletState, connectAndAddToWallet } = useConnectAndAddToWallet()
   const { errorMessage, state } = addWalletState
 
-  // Wrap the connectAndAddToWallet function to include analytics events
   const handleClick = async () => {
     clickOnMevBlocker('click-add-rpc-to-wallet')
     try {
