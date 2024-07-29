@@ -30,7 +30,7 @@ export type UseOrderProgressBarV2Result = Pick<OrderProgressBarState, 'countdown
   stepName: Exclude<OrderProgressBarState['progressBarStepName'], undefined>
 }
 
-const MINIMUM_STEP_DISPLAY_TIME = ms`2s`
+const MINIMUM_STEP_DISPLAY_TIME = ms`5s`
 
 /**
  * Hook for fetching ProgressBarV2 props
