@@ -79,10 +79,10 @@ export function TransactionSubmittedContent({
         </styledEl.Header>
         {(showSurplus && <SurplusModal order={order} />) || (
           <>
-            <Text fontWeight={600} fontSize={28}>
-              {getTitleStatus(activityDerivedState)}
-            </Text>
-            <DisplayLink id={hash} chainId={chainId} />
+            {/*<Text fontWeight={600} fontSize={28}>*/}
+            {/*  {getTitleStatus(activityDerivedState)}*/}
+            {/*</Text>*/}
+            {/*<DisplayLink id={hash} chainId={chainId} />*/}
             <EthFlowStepper order={order} />
             {activityDerivedState && showProgressBar && orderProgressBarV2Props && (
               <OrderProgressBarV2 {...orderProgressBarV2Props} order={order} />
@@ -90,18 +90,9 @@ export function TransactionSubmittedContent({
             <styledEl.ButtonGroup>
               <WatchAssetInWallet shortLabel currency={currencyToAdd} />
 
-              {!isInjectedWidgetMode && (
-                <a href={`#${Routes.PLAY_COWRUNNER}`} target="_blank" rel="noreferrer noopener">
-                  <styledEl.ButtonCustom cowGame>
-                    <styledEl.StyledIcon src={GameIcon} alt="Play CowGame" />
-                    Play the CoW Runner Game!
-                  </styledEl.ButtonCustom>
-                </a>
-              )}
-
-              {activityDerivedState?.status === ActivityStatus.PENDING && (
-                <styledEl.ButtonCustom onClick={onDismiss}>Close</styledEl.ButtonCustom>
-              )}
+              {/*{activityDerivedState?.status === ActivityStatus.PENDING && (*/}
+              {/*  <styledEl.ButtonCustom onClick={onDismiss}>Close</styledEl.ButtonCustom>*/}
+              {/*)}*/}
             </styledEl.ButtonGroup>
           </>
         )}

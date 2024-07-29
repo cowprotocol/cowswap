@@ -1,3 +1,21 @@
+import React, { useState } from 'react'
+import { PiDotsThreeCircle, PiCheckCircleFill, PiSpinnerBallFill } from 'react-icons/pi'
+import {
+  LoadingEllipsis,
+  ProgressImageWrapper,
+  DebugPanel,
+  ProgressTopSection,
+  ProgressContainer,
+  StepsWrapper,
+  Step,
+  Icon,
+  Content,
+  Title,
+  Description,
+  LearnMore,
+  OriginalOrderIntent,
+} from './styled'
+
 import progressBarStep1 from '@cowprotocol/assets/cow-swap/progress-bar-step1.png'
 import progressBarStep1a from '@cowprotocol/assets/cow-swap/progress-bar-step1a.png'
 import progressBarStep2a from '@cowprotocol/assets/cow-swap/progress-bar-step2a.png'
@@ -7,128 +25,298 @@ import { isSellOrder } from '@cowprotocol/common-utils'
 import { TokenAmount } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
-import styled from 'styled-components/macro'
-
 import { AMM_LOGOS } from 'legacy/components/AMMsLogo'
 import { Order } from 'legacy/state/orders/actions'
 
 import { SolverCompetition } from 'api/cowProtocol/api'
 import { OrderProgressBarStepName } from 'common/hooks/orderProgressBarV2'
 
-import { Stepper, StepProps } from '../Stepper'
-
-const PROGRESS_BAR_STEPS: StepProps[] = [
-  { stepState: 'open', stepNumber: 1, label: 'placing' },
-  { stepState: 'open', stepNumber: 2, label: 'solving' },
-  { stepState: 'open', stepNumber: 3, label: 'executing' },
-  { stepState: 'open', stepNumber: 4, label: 'done' },
-]
-
 export type OrderProgressBarV2Props = {
   stepName: OrderProgressBarStepName
   countdown?: number | null | undefined
   solverCompetition?: SolverCompetition
   order?: Order
+  debugMode?: boolean
+}
+
+const steps = [
+  {
+    title: 'Placing order',
+    description: 'Your order has been submitted and will be included in the next solver auction',
+  },
+  {
+    title: 'Solving',
+    description: 'The auction has started! Solvers are competing to find the best solution for you...',
+  },
+  { title: 'Executing', description: 'The winning solver will execute your order.' },
+]
+
+const StepComponent: React.FC<{
+  status: string
+  isFirst: boolean
+  step: { title: string; description?: string }
+  index: number
+  extraContent?: React.ReactNode
+}> = ({ status, isFirst, step, index, extraContent }) => (
+  <Step status={status} isFirst={isFirst}>
+    <Icon status={status}>
+      <StatusIcon status={status} />
+    </Icon>
+    <Content>
+      <Title>
+        {step.title}
+        {status === 'active' && <LoadingEllipsis />}
+      </Title>
+      {step.description && <Description>{step.description}</Description>}
+      {extraContent}
+      {status === 'active' && <LearnMore href="#">Learn more ↗</LearnMore>}
+    </Content>
+  </Step>
+)
+
+const StatusIcon: React.FC<{ status: string }> = ({ status }) => {
+  if (status === 'done') return <PiCheckCircleFill />
+  if (status === 'active') return <PiSpinnerBallFill className="spinner" />
+  return <PiDotsThreeCircle />
 }
 
 export function OrderProgressBarV2(props: OrderProgressBarV2Props) {
-  const { stepName } = props
+  const { stepName, debugMode = true } = props
+  const [debugStep, setDebugStep] = useState<OrderProgressBarStepName>(stepName)
 
-  return STEP_NAME_TO_STEP_COMPONENT[stepName](props)
-}
-
-type StepCallback = (props: OrderProgressBarV2Props) => JSX.Element
-const STEP_NAME_TO_STEP_COMPONENT: Record<OrderProgressBarStepName, StepCallback> = {
-  initial: (_props: OrderProgressBarV2Props): JSX.Element => {
-    return <InitialStep />
-  },
-  solving: (props: OrderProgressBarV2Props): JSX.Element => {
-    return <SolvingStep {...props} />
-  },
-  solved(props: OrderProgressBarV2Props): JSX.Element {
-    return <SolvedStep {...props} />
-  },
-  executing: (props: OrderProgressBarV2Props): JSX.Element => {
-    return <ExecutingStep {...props} />
-  },
-  finished: (props: OrderProgressBarV2Props): JSX.Element => {
-    return <FinishedStep {...props} />
-  },
-  nextBatch: (props: OrderProgressBarV2Props): JSX.Element => {
-    return <NextBatchStep {...props} />
-  },
-  delayed: (_props: OrderProgressBarV2Props): JSX.Element => {
-    return <DelayedStep />
-  },
-  unfillable: (props: OrderProgressBarV2Props): JSX.Element => {
-    return <UnfillableStep {...props} />
-  },
-  submissionFailed: (_props: OrderProgressBarV2Props): JSX.Element => {
-    return <SubmissionFailedStep />
-  },
-  cancelling(_props: OrderProgressBarV2Props): JSX.Element {
-    return <CancellingStep />
-  },
-  cancelled(_props: OrderProgressBarV2Props): JSX.Element {
-    return <CancelledStep />
-  },
-  expired(_props: OrderProgressBarV2Props): JSX.Element {
-    return <ExpiredStep />
-  },
-  cancellationFailed(_props: OrderProgressBarV2Props): JSX.Element {
-    return <CancellationFailedStep />
-  },
-}
-
-function InitialStep() {
-  const localSteps = structuredClone(PROGRESS_BAR_STEPS)
-  localSteps[0].stepState = 'loading'
-
-  return (
-    <div>
-      <ProgressImage src={progressBarStep1} alt="" />
-      <p>Your order has been submitted and will be included in the next solver auction.</p>
-      <Stepper steps={localSteps} />
-    </div>
-  )
-}
-
-function SolvingStep({ countdown }: OrderProgressBarV2Props) {
-  const localSteps = structuredClone(PROGRESS_BAR_STEPS)
-  localSteps[0].stepState = 'finished'
-  localSteps[1].stepState = 'loading'
+  const currentStep = debugMode ? debugStep : stepName
 
   return (
     <>
-      <div style={{ display: 'flex', flexDirection: 'column' }}>
-        <strong style={{ alignSelf: 'center', fontSize: '5em' }}>{countdown}</strong>
-        <p>The auction has started! Solvers are competing to find the best solution for you...</p>
-      </div>
-      <Stepper steps={localSteps} />
+      {STEP_NAME_TO_STEP_COMPONENT[currentStep](props)}
+      {debugMode && (
+        <DebugPanel>
+          <select value={debugStep} onChange={(e) => setDebugStep(e.target.value as OrderProgressBarStepName)}>
+            {Object.keys(STEP_NAME_TO_STEP_COMPONENT).map((step) => (
+              <option key={step} value={step}>
+                {step}
+              </option>
+            ))}
+          </select>
+        </DebugPanel>
+      )}
     </>
   )
 }
 
-function NextBatchStep({ solverCompetition }: OrderProgressBarV2Props) {
-  const localSteps = structuredClone(PROGRESS_BAR_STEPS)
-  localSteps[0].stepState = 'finished'
-  localSteps[1].stepState = 'loading'
+type StepCallback = (props: OrderProgressBarV2Props) => React.ReactNode
+const STEP_NAME_TO_STEP_COMPONENT: Record<OrderProgressBarStepName, StepCallback> = {
+  initial: InitialStep,
+  solving: SolvingStep,
+  solved: SolvedStep,
+  executing: ExecutingStep,
+  finished: FinishedStep,
+  nextBatch: NextBatchStep,
+  delayed: DelayedStep,
+  unfillable: UnfillableStep,
+  submissionFailed: SubmissionFailedStep,
+  cancelling: CancellingStep,
+  cancelled: CancelledStep,
+  expired: ExpiredStep,
+  cancellationFailed: CancellationFailedStep,
+}
+
+function InitialStep() {
+  return (
+    <ProgressContainer>
+      <ProgressTopSection>
+        <ProgressImageWrapper>
+          <img src={progressBarStep1} alt="" />
+        </ProgressImageWrapper>
+        <OriginalOrderIntent>1.43 WETH for at least 4832.43 USDC</OriginalOrderIntent>
+      </ProgressTopSection>
+      <StepsWrapper>
+        {steps.map((step, index) => (
+          <StepComponent
+            key={index}
+            status={index === 0 ? 'active' : index === 1 ? 'next' : 'future'}
+            isFirst={index === 0}
+            step={step}
+            index={index}
+          />
+        ))}
+      </StepsWrapper>
+    </ProgressContainer>
+  )
+}
+
+function SolvingStep({ countdown }: OrderProgressBarV2Props) {
+  return (
+    <ProgressContainer>
+      <StepsWrapper>
+        {steps.map((step, index) => (
+          <StepComponent
+            key={index}
+            status={index === 0 ? 'done' : index === 1 ? 'active' : 'next'}
+            isFirst={false}
+            step={step}
+            index={index}
+            extraContent={
+              index === 1 ? <strong style={{ alignSelf: 'center', fontSize: '2em' }}>{countdown}</strong> : null
+            }
+          />
+        ))}
+      </StepsWrapper>
+    </ProgressContainer>
+  )
+}
+
+function SolvedStep({ solverCompetition }: OrderProgressBarV2Props) {
+  const winningSolver = solverCompetition?.[0]
 
   return (
-    <>
-      <div style={{ display: 'flex', flexDirection: 'column' }}>
-        <p>
-          Your order wasn't a part of the winning solution for this auction. It will be included in the next auction.
-        </p>
-      </div>
+    <ProgressContainer>
+      <ProgressImageWrapper>
+        <img src={progressBarStep3} alt="" />
+      </ProgressImageWrapper>
+      <StepsWrapper>
+        {steps.map((step, index) => (
+          <StepComponent
+            key={index}
+            status={index === 2 ? 'active' : 'done'}
+            isFirst={false}
+            step={step}
+            index={index}
+            extraContent={
+              index === 1 ? (
+                <Description>
+                  <strong>
+                    {solverCompetition?.length} solver{solverCompetition && solverCompetition?.length > 1 && 's'} joined
+                    the competition!
+                  </strong>
+                </Description>
+              ) : index === 2 ? (
+                <Description>
+                  Solver {winningSolver?.solver} proposed the best solution. It'll be executed on-chain shortly
+                </Description>
+              ) : null
+            }
+          />
+        ))}
+      </StepsWrapper>
+    </ProgressContainer>
+  )
+}
 
+function ExecutingStep({ solverCompetition }: OrderProgressBarV2Props) {
+  return (
+    <ProgressContainer>
+      <ProgressImageWrapper>
+        <img src={progressBarStep3} alt="" />
+      </ProgressImageWrapper>
+      <StepsWrapper>
+        {steps.map((step, index) => (
+          <StepComponent
+            key={index}
+            status={index === 2 ? 'active' : 'done'}
+            isFirst={false}
+            step={step}
+            index={index}
+            extraContent={
+              index === 1 ? (
+                <Description>
+                  <strong>
+                    {solverCompetition?.length} solver{solverCompetition && solverCompetition?.length > 1 && 's'} joined
+                    the competition!
+                  </strong>
+                </Description>
+              ) : null
+            }
+          />
+        ))}
+      </StepsWrapper>
+    </ProgressContainer>
+  )
+}
+
+function FinishedStep({ solverCompetition, order }: OrderProgressBarV2Props) {
+  const isSell = order && isSellOrder(order.kind)
+  const displayToken = isSell ? order?.outputToken : order?.inputToken
+  const solution = solverCompetition && solverCompetition[0]
+  const displayAmount =
+    displayToken &&
+    solution &&
+    CurrencyAmount.fromRawAmount(displayToken, isSell ? solution?.buyAmount : solution?.sellAmount)
+
+  return (
+    <ProgressContainer>
+      <StepsWrapper>
+        {steps.map((step, index) => (
+          <StepComponent
+            key={index}
+            status="done"
+            isFirst={false}
+            step={step}
+            index={index}
+            extraContent={
+              index === 2 ? (
+                <Description>
+                  You {isSell ? 'received' : 'sold'} <TokenAmount amount={displayAmount} tokenSymbol={displayToken} />!
+                </Description>
+              ) : null
+            }
+          />
+        ))}
+      </StepsWrapper>
       {solverCompetition && (
-        <>
+        <div>
           <p>Solver ranking</p>
           <ol>
-            {solverCompetition?.map((entry) => {
+            {solverCompetition.map((entry) => {
               const imageProps = AMM_LOGOS[entry.solver] || AMM_LOGOS.default
+              return (
+                <li key={entry.solver}>
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <img
+                      style={{ height: '20px', width: '20px', marginRight: '5px' }}
+                      {...imageProps}
+                      alt="Solver logo"
+                    />
+                    <span>{entry.solver}</span>
+                  </div>
+                </li>
+              )
+            })}
+          </ol>
+        </div>
+      )}
+    </ProgressContainer>
+  )
+}
 
+function NextBatchStep({ solverCompetition }: OrderProgressBarV2Props) {
+  return (
+    <ProgressContainer>
+      <StepsWrapper>
+        {steps.map((step, index) => (
+          <StepComponent
+            key={index}
+            status={index === 0 ? 'done' : index === 1 ? 'active' : 'next'}
+            isFirst={false}
+            step={step}
+            index={index}
+            extraContent={
+              index === 1 ? (
+                <Description>
+                  Your order wasn't a part of the winning solution for this auction. It will be included in the next
+                  auction.
+                </Description>
+              ) : null
+            }
+          />
+        ))}
+      </StepsWrapper>
+      {solverCompetition && (
+        <div>
+          <p>Solver ranking</p>
+          <ol>
+            {solverCompetition.map((entry) => {
+              const imageProps = AMM_LOGOS[entry.solver] || AMM_LOGOS.default
               return (
                 <li key={entry.solver}>
                   <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -146,144 +334,91 @@ function NextBatchStep({ solverCompetition }: OrderProgressBarV2Props) {
               )
             })}
           </ol>
-        </>
+        </div>
       )}
-      <Stepper steps={localSteps} />
-    </>
-  )
-}
-
-function SolvedStep({ solverCompetition }: OrderProgressBarV2Props) {
-  const localSteps = structuredClone(PROGRESS_BAR_STEPS)
-  localSteps[0].stepState = 'finished'
-  localSteps[1].stepState = 'finished'
-
-  const winningSolver = solverCompetition?.[0]
-
-  return (
-    <>
-      <ProgressImage src={progressBarStep3} alt="" />
-      <p>
-        <strong>
-          {solverCompetition?.length} solver{solverCompetition && solverCompetition?.length > 1 && 's'} joined the
-          competition!
-        </strong>
-      </p>
-      <p>Solver {winningSolver?.solver} proposed the best solution. It'll be executed on-chain shortly</p>
-      <Stepper steps={localSteps} />
-    </>
-  )
-}
-
-function ExecutingStep({ solverCompetition }: OrderProgressBarV2Props) {
-  const localSteps = structuredClone(PROGRESS_BAR_STEPS)
-
-  localSteps[0].stepState = 'finished'
-  localSteps[1].stepState = 'finished'
-  localSteps[2].stepState = 'loading'
-  return (
-    <div>
-      <ProgressImage src={progressBarStep3} alt="" />
-      <p>
-        <strong>
-          {solverCompetition?.length} solver{solverCompetition && solverCompetition?.length > 1 && 's'} joined the
-          competition!
-        </strong>
-      </p>
-      <p>The winner is submitting your order on-chain...</p>
-      <Stepper steps={localSteps} />
-    </div>
-  )
-}
-
-function FinishedStep({ solverCompetition, order }: OrderProgressBarV2Props) {
-  const localSteps = structuredClone(PROGRESS_BAR_STEPS)
-  localSteps[0].stepState = 'finished'
-  localSteps[1].stepState = 'finished'
-  localSteps[2].stepState = 'finished'
-  localSteps[3].stepState = 'finished'
-
-  const isSell = order && isSellOrder(order.kind)
-  const displayToken = isSell ? order?.outputToken : order?.inputToken
-  const solution = solverCompetition && solverCompetition[0]
-  const displayAmount =
-    displayToken &&
-    solution &&
-    CurrencyAmount.fromRawAmount(displayToken, isSell ? solution?.buyAmount : solution?.sellAmount)
-  return (
-    <div>
-      <span>
-        You {isSell ? 'received' : 'sold'} <TokenAmount amount={displayAmount} tokenSymbol={displayToken} />!
-      </span>
-
-      <p>Solver ranking</p>
-      <ol>
-        {solverCompetition?.map((entry) => {
-          const imageProps = AMM_LOGOS[entry.solver] || AMM_LOGOS.default
-
-          return (
-            <li key={entry.solver}>
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <img style={{ height: '20px', width: '20px', marginRight: '5px' }} {...imageProps} alt="Solver logo" />
-                <span>{entry.solver}</span>
-              </div>
-            </li>
-          )
-        })}
-      </ol>
-      {/*TODO: if we want to display the runner up, uncomment */}
-      {/*{solverCompetition && solverCompetition.length > 1 && (*/}
-      {/*  <p>*/}
-      {/*    You would have gotten {solverCompetition[1].sellAmount} / {solverCompetition[1].sellAmount} on{' '}*/}
-      {/*    {solverCompetition[1].solver}!*/}
-      {/*  </p>*/}
-      {/*)}*/}
-      <Stepper steps={localSteps} />
-    </div>
+    </ProgressContainer>
   )
 }
 
 function DelayedStep() {
-  const localSteps = structuredClone(PROGRESS_BAR_STEPS)
-
-  localSteps[0].stepState = 'finished'
-  localSteps[1].stepState = 'loading'
   return (
-    <div>
-      <ProgressImage src={progressBarStep2a} alt="" />
-      <p>This is taking longer than expected! Solvers are still searching...</p>
-      <Stepper steps={localSteps} />
-    </div>
+    <ProgressContainer>
+      <ProgressImageWrapper>
+        <img src={progressBarStep2a} alt="" />
+      </ProgressImageWrapper>
+      <StepsWrapper>
+        {steps.map((step, index) => (
+          <StepComponent
+            key={index}
+            status={index === 0 ? 'done' : index === 1 ? 'active' : 'next'}
+            isFirst={false}
+            step={step}
+            index={index}
+            extraContent={
+              index === 1 ? (
+                <Description>This is taking longer than expected! Solvers are still searching...</Description>
+              ) : null
+            }
+          />
+        ))}
+      </StepsWrapper>
+    </ProgressContainer>
   )
 }
 
-function UnfillableStep({}: OrderProgressBarV2Props) {
-  // TODO: add link to cancel order
-  const localSteps = structuredClone(PROGRESS_BAR_STEPS)
-
-  localSteps[0].stepState = 'finished'
-  localSteps[1].stepState = 'error'
+function UnfillableStep() {
   return (
-    <div>
-      <ProgressImage src={progressBarStep1a} alt="" />
-      <p>Your order's price is currently out of market. You can wait or cancel the order.</p>
-      <Stepper steps={localSteps} />
-    </div>
+    <ProgressContainer>
+      <ProgressImageWrapper>
+        <img src={progressBarStep1a} alt="" />
+      </ProgressImageWrapper>
+      <StepsWrapper>
+        {steps.map((step, index) => (
+          <StepComponent
+            key={index}
+            status={index === 0 ? 'done' : index === 1 ? 'error' : 'future'}
+            isFirst={false}
+            step={step}
+            index={index}
+            extraContent={
+              index === 1 ? (
+                <Description>
+                  Your order's price is currently out of market. You can wait or cancel the order.
+                </Description>
+              ) : null
+            }
+          />
+        ))}
+      </StepsWrapper>
+    </ProgressContainer>
   )
 }
 
 function SubmissionFailedStep() {
-  const localSteps = structuredClone(PROGRESS_BAR_STEPS)
-
-  localSteps[0].stepState = 'finished'
-  localSteps[1].stepState = 'loading'
-  localSteps[2].stepState = 'error'
   return (
-    <div>
-      <ProgressImage src={progressBarStep2b} alt="" />
-      <p>The order could not be settled on-chain. Solvers are competing to find a new solution...</p>
-      <Stepper steps={localSteps} />
-    </div>
+    <ProgressContainer>
+      <ProgressImageWrapper>
+        <img src={progressBarStep2b} alt="" />
+      </ProgressImageWrapper>
+      <StepsWrapper>
+        {steps.map((step, index) => (
+          <StepComponent
+            key={index}
+            status={index === 2 ? 'error' : index === 1 ? 'active' : 'done'}
+            isFirst={false}
+            step={step}
+            index={index}
+            extraContent={
+              index === 2 ? (
+                <Description>
+                  The order could not be settled on-chain. Solvers are competing to find a new solution...
+                </Description>
+              ) : null
+            }
+          />
+        ))}
+      </StepsWrapper>
+    </ProgressContainer>
   )
 }
 
@@ -300,10 +435,7 @@ function ExpiredStep() {
 }
 
 function CancellationFailedStep() {
-  // TODO: re-use component for <FinishedStep> and add msg about cancellation
-  return <div>Failed to cancel, order executed instead. Ops!</div>
+  return <div>Failed to cancel, order executed instead. Oops!</div>
 }
 
-const ProgressImage = styled.img`
-  width: 100%;
-`
+export default OrderProgressBarV2
