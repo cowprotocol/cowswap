@@ -283,6 +283,13 @@ function FinishedStep({ solverCompetition, order }: OrderProgressBarV2Props) {
               )
             })}
           </ol>
+          {/*TODO: if we want to display the runner up, uncomment */}
+          {/*{solverCompetition && solverCompetition.length > 1 && (*/}
+          {/*  <p>*/}
+          {/*    You would have gotten {solverCompetition[1].sellAmount} / {solverCompetition[1].sellAmount} on{' '}*/}
+          {/*    {solverCompetition[1].solver}!*/}
+          {/*  </p>*/}
+          {/*)}*/}
         </div>
       )}
     </ProgressContainer>
