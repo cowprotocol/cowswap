@@ -5,7 +5,7 @@ import ms from 'ms.macro'
 
 // PK used only for signing permit requests for quoting and identifying token 'permittability'
 // Do not use or try to send funds to it. Or do. It'll be your funds 🤷
-const PERMIT_PK = '0x1b80501ea68b883241ac5b9f92e8635aa3df23c89b7bbb87e762be65b8c6eb75' // address: 0x4ed18E9489d82784F98118d5A6aB3AD4340802fb
+const PERMIT_PK = '0x68012a4467ce455b6b278b1a6815db9b7224deaa6bced68c3848ec21e6380f8a' // address: 0xD711bD26Bf5B153001a7C0ACcb289782b6f775e9
 
 export const PERMIT_SIGNER = new Wallet(PERMIT_PK)
 

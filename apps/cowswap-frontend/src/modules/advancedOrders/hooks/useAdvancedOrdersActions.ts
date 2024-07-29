@@ -1,10 +1,10 @@
 import { useCallback, useMemo } from 'react'
 
-import { changeSwapAmountAnalytics } from '@cowprotocol/analytics'
 import { Currency } from '@uniswap/sdk-core'
 
 import { Field } from 'legacy/state/types'
 
+import { changeSwapAmountAnalytics } from 'modules/analytics'
 import { useNavigateOnCurrencySelection, useSwitchTokensPlaces, useUpdateCurrencyAmount } from 'modules/trade'
 import { useResetTradeQuote } from 'modules/tradeQuote'
 

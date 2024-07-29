@@ -5,6 +5,7 @@ import { HwAccountIndexUpdater, useWalletInfo, WalletUpdater } from '@cowprotoco
 
 import { GasPriceStrategyUpdater } from 'legacy/state/gas/gas-price-strategy-updater'
 
+import { addListAnalytics, removeListAnalytics } from 'modules/analytics'
 import { UploadToIpfsUpdater } from 'modules/appData/updater/UploadToIpfsUpdater'
 import { CowEventsUpdater, InjectedWidgetUpdater, useInjectedWidgetParams } from 'modules/injectedWidget'
 import { FinalizeTxUpdater } from 'modules/onchainTransactions'
@@ -67,6 +68,8 @@ export function Updaters() {
         customTokens={customTokens}
         appCode={appCode}
         onTokenListAddingError={onTokenListAddingError}
+        onAddList={(source) => addListAnalytics('Success', source)}
+        onRemoveList={(source) => removeListAnalytics('Confirm', source)}
       />
       <UnsupportedTokensUpdater />
       <BalancesAndAllowancesUpdater chainId={chainId} account={account} />

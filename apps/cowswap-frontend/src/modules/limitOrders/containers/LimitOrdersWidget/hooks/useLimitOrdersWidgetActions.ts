@@ -1,12 +1,12 @@
 import { useAtomValue } from 'jotai'
 import { useCallback, useMemo } from 'react'
 
-import { changeSwapAmountAnalytics } from '@cowprotocol/analytics'
 import { isSellOrder, tryParseCurrencyAmount } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 
 import { Field } from 'legacy/state/types'
 
+import { changeSwapAmountAnalytics } from 'modules/analytics'
 import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
 import { useUpdateLimitOrdersRawState } from 'modules/limitOrders/hooks/useLimitOrdersRawState'
 import { useUpdateCurrencyAmount } from 'modules/limitOrders/hooks/useUpdateCurrencyAmount'

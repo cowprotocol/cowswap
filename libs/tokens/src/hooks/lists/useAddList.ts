@@ -24,7 +24,7 @@ Tokens in update: ${updateCount}.
   `
 }
 
-export function useAddList() {
+export function useAddList(onAddList: (source: string) => void) {
   const { chainId } = useAtomValue(environmentAtom)
   const listsStatesByChain = useAtomValue(listsStatesByChainAtom)
   const addList = useSetAtom(addListAtom)
@@ -41,6 +41,7 @@ export function useAddList() {
       }
 
       addList(state)
+      onAddList(state.source)
     },
     [addList, listsStatesByChain, chainId]
   )

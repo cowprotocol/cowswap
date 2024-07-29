@@ -2,7 +2,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { PermitHookData, PermitHookParams, PermitInfo } from '@cowprotocol/permit-utils'
 import { Currency } from '@uniswap/sdk-core'
 
-import { AppDataInfo } from 'modules/appData'
+import { AppDataInfo, TypedAppDataHooks } from 'modules/appData'
 
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
@@ -23,6 +23,7 @@ export type HandlePermitParams = Omit<GeneratePermitHookParams, 'permitInfo' | '
   appData: AppDataInfo
   generatePermitHook: GeneratePermitHook
   inputToken: Currency
+  typedHooks?: TypedAppDataHooks
 }
 
 export type PermitCache = Record<string, string>

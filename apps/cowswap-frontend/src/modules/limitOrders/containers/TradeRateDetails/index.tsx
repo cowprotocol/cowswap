@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useCallback } from 'react'
 
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { TradeTotalCostsDetails, PartnerFeeRow } from 'modules/trade'
@@ -12,12 +12,18 @@ import { useLimitOrderPartnerFeeAmount } from '../../hooks/useLimitOrderPartnerF
 interface TradeRateDetailsProps {
   rateInfoParams?: RateInfoParams
 }
+
 export function TradeRateDetails({ rateInfoParams }: TradeRateDetailsProps) {
+  const [isFeeDetailsOpen, setFeeDetailsOpen] = useState(false)
   const widgetParams = useInjectedWidgetParams()
   const volumeFee = useVolumeFee()
   const partnerFeeAmount = useLimitOrderPartnerFeeAmount()
   const partnerFeeUsd = useUsdAmount(partnerFeeAmount).value
   const partnerFeeBps = volumeFee?.bps
+
+  const toggleAccordion = useCallback(() => {
+    setFeeDetailsOpen((prev) => !prev)
+  }, [])
 
   const partnerFeeRow = (
     <PartnerFeeRow
@@ -35,7 +41,12 @@ export function TradeRateDetails({ rateInfoParams }: TradeRateDetailsProps) {
   }
 
   return (
-    <TradeTotalCostsDetails rateInfoParams={rateInfoParams} totalCosts={partnerFeeAmount}>
+    <TradeTotalCostsDetails
+      rateInfoParams={rateInfoParams}
+      totalCosts={partnerFeeAmount}
+      isFeeDetailsOpen={isFeeDetailsOpen}
+      toggleAccordion={toggleAccordion}
+    >
       {partnerFeeRow}
     </TradeTotalCostsDetails>
   )
