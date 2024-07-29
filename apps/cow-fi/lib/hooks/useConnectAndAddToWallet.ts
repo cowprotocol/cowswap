@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useConnect } from './useConnect'
+import { useDisconnect } from 'wagmi'
 import { useWalletClient } from 'wagmi'
 import { handleRpcError } from '@/util/handleRpcError'
 import { useAddRpcWithTimeout } from './useAddRpcWithTimeout'
@@ -11,11 +12,14 @@ const ADDED_STATE: AddToWalletState = { state: 'added', autoConnect: false }
 
 export interface UseConnectAndAddToWalletPros {
   addWalletState: AddToWalletState
-  connectAndAddToWallet: (() => void) | null
+  connectAndAddToWallet: (() => Promise<void>) | null
+  disconnectWallet: (() => void) | null
 }
 
 export function useConnectAndAddToWallet(): UseConnectAndAddToWalletPros {
   const { isConnected, connect } = useConnect()
+  const { disconnect } = useDisconnect()
+
   const { data: walletClient } = useWalletClient()
   const [addWalletState, setState] = useState<AddToWalletState>(DEFAULT_STATE)
   const [addingPromise, setAddRpcPromise] = useState<Promise<boolean> | null>(null)
@@ -68,24 +72,35 @@ export function useConnectAndAddToWallet(): UseConnectAndAddToWalletPros {
 
   // Connect and auto-add the RPC endpoint
   const allowToConnectAndAddToWallet = !isConnected || walletClient // allow to connectAndAddToWallet if not connected, or if the client is ready
-  const connectAndAddToWallet = useCallback(() => {
+  const connectAndAddToWallet = useCallback((): Promise<void> => {
     if (!allowToConnectAndAddToWallet) {
-      return
+      return Promise.reject(new Error('Connection not allowed'))
     }
 
-    if (!isConnected) {
-      console.debug('[useConnectAndAddToWallet] Connecting...')
-      connect()
-        .then(() => {
-          console.debug('[useConnectAndAddToWallet] 🔌 Connected!')
-          addToWallet()
-        })
-        .catch(handleError)
-    } else {
-      console.debug('[useConnectAndAddToWallet] Already connected. Adding RPC endpoint...')
-      addToWallet()
-    }
+    return new Promise<void>((resolve, reject) => {
+      if (!isConnected) {
+        console.debug('[useConnectAndAddToWallet] Connecting...')
+        connect()
+          .then(() => {
+            console.debug('[useConnectAndAddToWallet] 🔌 Connected!')
+            addToWallet()
+            resolve()
+          })
+          .catch((error) => {
+            handleError(error)
+            reject(error)
+          })
+      } else {
+        console.debug('[useConnectAndAddToWallet] Already connected. Adding RPC endpoint...')
+        addToWallet()
+        resolve()
+      }
+    })
   }, [allowToConnectAndAddToWallet, isConnected, handleError, connect, addToWallet])
+
+  const disconnectWallet = useCallback(() => {
+    disconnect()
+  }, [disconnect])
 
   // Auto-connect (once we have )
   useEffect(() => {
@@ -96,6 +111,7 @@ export function useConnectAndAddToWallet(): UseConnectAndAddToWalletPros {
 
   return {
     connectAndAddToWallet: allowToConnectAndAddToWallet ? connectAndAddToWallet : null,
+    disconnectWallet: isConnected ? disconnectWallet : null,
     addWalletState,
   }
 }

@@ -26,16 +26,26 @@ const Message = styled.p<{ state: AddToWalletStateValues }>`
 `
 
 export function AddRpcButton() {
-  const { addWalletState, connectAndAddToWallet } = useConnectAndAddToWallet()
+  const { addWalletState, connectAndAddToWallet, disconnectWallet } = useConnectAndAddToWallet()
   const { errorMessage, state } = addWalletState
 
   const handleClick = async () => {
     clickOnMevBlocker('click-add-rpc-to-wallet')
     try {
-      if (connectAndAddToWallet) connectAndAddToWallet()
-      clickOnMevBlocker('click-add-rpc-to-wallet-success')
+      if (connectAndAddToWallet) {
+        await connectAndAddToWallet()
+        clickOnMevBlocker('click-add-rpc-to-wallet-success')
+      } else {
+        throw new Error('connectAndAddToWallet is not defined')
+      }
     } catch (error) {
       clickOnMevBlocker('click-add-rpc-to-wallet-error')
+    }
+  }
+
+  const handleDisconnect = () => {
+    if (disconnectWallet) {
+      disconnectWallet()
     }
   }
 
@@ -66,6 +76,18 @@ export function AddRpcButton() {
             {buttonLabel}
           </Link>
           {errorMessage && <Message state={state}>{errorMessage}</Message>}
+          {disconnectWallet && (
+            <Link
+              linkType={LinkType.TopicButton}
+              fontSize={21}
+              color={'#FEE7CF'}
+              bgColor="#333"
+              onClick={handleDisconnect}
+              asButton
+            >
+              Disconnect
+            </Link>
+          )}
         </>
       )}
     </>
