@@ -7,7 +7,7 @@ See also:
 
 ![UTM module](./utm-module.drawio.svg)
 
-## Desciption
+## Description
 
 This module adds support for handling UTM codes.
 

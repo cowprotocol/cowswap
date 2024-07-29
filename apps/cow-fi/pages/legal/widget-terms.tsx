@@ -169,7 +169,7 @@ export default function Page({ siteConfigData }: PageProps) {
               </p>
               <h2>Obligations of the Partner</h2>
               <p>
-                You are prohibited from misusing the the Widget, the Interface, the Protocol or its infrastructure by
+                You are prohibited from misusing the Widget, the Interface, the Protocol or its infrastructure by
                 knowingly introducing any material that is:
               </p>
               <ul>
@@ -182,14 +182,14 @@ export default function Page({ siteConfigData }: PageProps) {
               <p>You are prohibited from attempting to gain unauthorized access to the:</p>
               <ul>
                 <li>the Widget, the Interface, the Protocol or its infrastructure;</li>
-                <li>Server(s) hosting the the Widget, the Interface, the Protocol or its infrastructure;</li>
+                <li>Server(s) hosting the Widget, the Interface, the Protocol or its infrastructure;</li>
                 <li>
-                  Any computer or database connected to the the Widget, the Interface, the Protocol or its
+                  Any computer or database connected to the Widget, the Interface, the Protocol or its
                   infrastructure.
                 </li>
               </ul>
               <p>
-                You are prohibited from attacking the the Widget, the Interface, the Protocol or its infrastructure
+                You are prohibited from attacking the Widget, the Interface, the Protocol or its infrastructure
                 through:
               </p>
               <ul>
