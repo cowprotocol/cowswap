@@ -1,48 +1,47 @@
+import { Color, Font, Media } from '@cowprotocol/ui'
 import { GetStaticProps } from 'next'
-import { Font, Color, Media } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
 import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
 
 import Layout from '@/components/Layout'
-import { getCategories, getArticles, ArticleListResponse } from 'services/cms'
+import { ArticleListResponse, getArticles, getCategories } from 'services/cms'
 
-import { SearchBar } from '@/components/SearchBar'
 import { ArrowButton } from '@/components/ArrowButton'
+import { SearchBar } from '@/components/SearchBar'
 
 import IMG_ICON_BULB_COW from '@cowprotocol/assets/images/icon-bulb-cow.svg'
 
 import {
-  ContainerCard,
-  ContainerCardSection,
-  ContainerCardInner,
-  ContainerCardSectionTop,
-  CategoryLinks,
-  ArticleList,
   ArticleCard,
-  ArticleImage,
-  ArticleTitle,
   ArticleDescription,
-  TopicList,
-  TopicCard,
-  TopicImage,
-  LinkSection,
-  LinkColumn,
-  LinkItem,
-  CTASectionWrapper,
+  ArticleImage,
+  ArticleList,
+  ArticleTitle,
+  CTAButton,
   CTAImage,
+  CTASectionWrapper,
   CTASubtitle,
   CTATitle,
-  CTAButton,
+  CategoryLinks,
+  ContainerCard,
+  ContainerCardInner,
+  ContainerCardSection,
+  ContainerCardSectionTop,
   ContainerCardSectionTopTitle,
+  LinkColumn,
+  LinkItem,
+  LinkSection,
+  TopicCard,
+  TopicImage,
+  TopicList,
   TopicTitle,
 } from '@/styles/styled'
 
-import SVG from 'react-inlinesvg'
 import { clickOnKnowledgeBase } from 'modules/analytics'
+import SVG from 'react-inlinesvg'
 
-import { EventCategories, sendEventHandler } from '@cowprotocol/analytics'
 import { CmsImage } from '@cowprotocol/ui'
 
 const PODCASTS = [
