@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.33.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.32.3...explorer-v2.33.0) (2024-07-18)
+
+
+### Features
+
+* refactor and untangle analytics ([#4718](https://github.com/cowprotocol/cowswap/issues/4718)) ([ee396eb](https://github.com/cowprotocol/cowswap/commit/ee396eb1c4ef9a786810ed20b20020b4cb986460))
+
+
+### Bug Fixes
+
+* invalid HTML tag nesting ([#4708](https://github.com/cowprotocol/cowswap/issues/4708)) ([f6b09a0](https://github.com/cowprotocol/cowswap/commit/f6b09a0ba5e12b65b85d53b68f993fe690c0eddb))
+
 ## [2.32.3](https://github.com/cowprotocol/cowswap/compare/explorer-v2.32.2...explorer-v2.32.3) (2024-07-12)
 
 

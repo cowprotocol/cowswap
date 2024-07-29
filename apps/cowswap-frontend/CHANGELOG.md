@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.78.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.77.1...cowswap-v1.78.0) (2024-07-18)
+
+
+### Features
+
+* refactor and untangle analytics ([#4718](https://github.com/cowprotocol/cowswap/issues/4718)) ([ee396eb](https://github.com/cowprotocol/cowswap/commit/ee396eb1c4ef9a786810ed20b20020b4cb986460))
+
+
+### Bug Fixes
+
+* keep accordion open on price refresh ([#4725](https://github.com/cowprotocol/cowswap/issues/4725)) ([99ef519](https://github.com/cowprotocol/cowswap/commit/99ef519b48ea64e9bd76acbfe032778b23997e2d))
+
 ## [1.77.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.77.0...cowswap-v1.77.1) (2024-07-17)
 
 
