@@ -2,7 +2,7 @@ import styled, { keyframes } from 'styled-components/macro'
 import { UI } from '@cowprotocol/ui'
 
 export const Icon = styled.div<{ status: string }>`
-  --width: 40px;
+  --width: 28px;
   width: var(--width);
   height: auto;
   min-width: var(--width);
@@ -14,8 +14,11 @@ export const Icon = styled.div<{ status: string }>`
   font-weight: bold;
   font-size: 24px;
 
-  svg {
+  > svg {
     color: ${(props) => (props.status === 'done' ? '#4CAF50' : props.status === 'active' ? '#2196F3' : '#666')};
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
   }
 `
 
@@ -69,7 +72,7 @@ export const Step = styled.div<{ status: string; isFirst: boolean }>`
   align-items: flex-start;
   margin-bottom: 20px;
   opacity: ${(props) =>
-    props.status === 'active' ? 1 : props.status === 'next' ? 0.7 : props.status === 'future' ? 0.4 : 0.5};
+    props.status === 'active' ? 1 : props.status === 'next' ? 0.3 : props.status === 'future' ? 0.08 : 0.08};
   transform: translateY(
     ${(props) => (props.status === 'done' ? '-10px' : props.status === 'active' && props.isFirst ? '10px' : '0')}
   );
@@ -85,14 +88,13 @@ export const Content = styled.div`
 
 export const Title = styled.h3`
   margin: 0;
-  font-size: 18px;
-  color: #333;
+  font-size: 21px;
 `
 
 export const Description = styled.p`
   margin: 5px 0 0;
   font-size: 14px;
-  color: #666;
+  color: var(${UI.COLOR_TEXT_OPACITY_70});
 `
 
 export const LearnMore = styled.a`
@@ -165,9 +167,21 @@ export const ProgressTopSection = styled.div`
 `
 
 export const OriginalOrderIntent = styled.span`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 13px;
   color: var(${UI.COLOR_TEXT_OPACITY_70});
   padding: 10px;
   width: 100%;
   text-align: center;
+  gap: 5px;
+`
+
+export const OrderTokenImage = styled.img`
+  --size: 20px;
+  width: var(--size);
+  height: var(--size);
+  border-radius: var(--size);
+  background: var(${UI.COLOR_PAPER_DARKEST});
 `

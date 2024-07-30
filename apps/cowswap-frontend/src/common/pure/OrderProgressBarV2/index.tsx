@@ -1,20 +1,6 @@
 import React, { useState } from 'react'
 import { PiDotsThreeCircle, PiCheckCircleFill, PiSpinnerBallFill } from 'react-icons/pi'
-import {
-  LoadingEllipsis,
-  ProgressImageWrapper,
-  DebugPanel,
-  ProgressTopSection,
-  ProgressContainer,
-  StepsWrapper,
-  Step,
-  Icon,
-  Content,
-  Title,
-  Description,
-  LearnMore,
-  OriginalOrderIntent,
-} from './styled'
+import * as styledEl from './styled'
 
 import progressBarStep1 from '@cowprotocol/assets/cow-swap/progress-bar-step1.png'
 import progressBarStep1a from '@cowprotocol/assets/cow-swap/progress-bar-step1a.png'
@@ -58,20 +44,20 @@ const StepComponent: React.FC<{
   index: number
   extraContent?: React.ReactNode
 }> = ({ status, isFirst, step, index, extraContent }) => (
-  <Step status={status} isFirst={isFirst}>
-    <Icon status={status}>
+  <styledEl.Step status={status} isFirst={isFirst}>
+    <styledEl.Icon status={status}>
       <StatusIcon status={status} />
-    </Icon>
-    <Content>
-      <Title>
+    </styledEl.Icon>
+    <styledEl.Content>
+      <styledEl.Title>
         {step.title}
-        {status === 'active' && <LoadingEllipsis />}
-      </Title>
-      {step.description && <Description>{step.description}</Description>}
+        {status === 'active' && <styledEl.LoadingEllipsis />}
+      </styledEl.Title>
+      {step.description && <styledEl.Description>{step.description}</styledEl.Description>}
       {extraContent}
-      {status === 'active' && <LearnMore href="#">Learn more ↗</LearnMore>}
-    </Content>
-  </Step>
+      {status === 'active' && <styledEl.LearnMore href="#">Learn more ↗</styledEl.LearnMore>}
+    </styledEl.Content>
+  </styledEl.Step>
 )
 
 const StatusIcon: React.FC<{ status: string }> = ({ status }) => {
@@ -90,7 +76,7 @@ export function OrderProgressBarV2(props: OrderProgressBarV2Props) {
     <>
       {STEP_NAME_TO_STEP_COMPONENT[currentStep](props)}
       {debugMode && (
-        <DebugPanel>
+        <styledEl.DebugPanel>
           <select value={debugStep} onChange={(e) => setDebugStep(e.target.value as OrderProgressBarStepName)}>
             {Object.keys(STEP_NAME_TO_STEP_COMPONENT).map((step) => (
               <option key={step} value={step}>
@@ -98,7 +84,7 @@ export function OrderProgressBarV2(props: OrderProgressBarV2Props) {
               </option>
             ))}
           </select>
-        </DebugPanel>
+        </styledEl.DebugPanel>
       )}
     </>
   )
@@ -123,14 +109,16 @@ const STEP_NAME_TO_STEP_COMPONENT: Record<OrderProgressBarStepName, StepCallback
 
 function InitialStep() {
   return (
-    <ProgressContainer>
-      <ProgressTopSection>
-        <ProgressImageWrapper>
+    <styledEl.ProgressContainer>
+      <styledEl.ProgressTopSection>
+        <styledEl.ProgressImageWrapper>
           <img src={progressBarStep1} alt="" />
-        </ProgressImageWrapper>
-        <OriginalOrderIntent>1.43 WETH for at least 4832.43 USDC</OriginalOrderIntent>
-      </ProgressTopSection>
-      <StepsWrapper>
+        </styledEl.ProgressImageWrapper>
+        <styledEl.OriginalOrderIntent>
+          <styledEl.OrderTokenImage /> 1.43 WETH for at least <styledEl.OrderTokenImage /> 4832.43 USDC
+        </styledEl.OriginalOrderIntent>
+      </styledEl.ProgressTopSection>
+      <styledEl.StepsWrapper>
         {steps.map((step, index) => (
           <StepComponent
             key={index}
@@ -140,15 +128,15 @@ function InitialStep() {
             index={index}
           />
         ))}
-      </StepsWrapper>
-    </ProgressContainer>
+      </styledEl.StepsWrapper>
+    </styledEl.ProgressContainer>
   )
 }
 
 function SolvingStep({ countdown }: OrderProgressBarV2Props) {
   return (
-    <ProgressContainer>
-      <StepsWrapper>
+    <styledEl.ProgressContainer>
+      <styledEl.StepsWrapper>
         {steps.map((step, index) => (
           <StepComponent
             key={index}
@@ -161,8 +149,8 @@ function SolvingStep({ countdown }: OrderProgressBarV2Props) {
             }
           />
         ))}
-      </StepsWrapper>
-    </ProgressContainer>
+      </styledEl.StepsWrapper>
+    </styledEl.ProgressContainer>
   )
 }
 
@@ -170,11 +158,11 @@ function SolvedStep({ solverCompetition }: OrderProgressBarV2Props) {
   const winningSolver = solverCompetition?.[0]
 
   return (
-    <ProgressContainer>
-      <ProgressImageWrapper>
+    <styledEl.ProgressContainer>
+      <styledEl.ProgressImageWrapper>
         <img src={progressBarStep3} alt="" />
-      </ProgressImageWrapper>
-      <StepsWrapper>
+      </styledEl.ProgressImageWrapper>
+      <styledEl.StepsWrapper>
         {steps.map((step, index) => (
           <StepComponent
             key={index}
@@ -184,32 +172,32 @@ function SolvedStep({ solverCompetition }: OrderProgressBarV2Props) {
             index={index}
             extraContent={
               index === 1 ? (
-                <Description>
+                <styledEl.Description>
                   <strong>
                     {solverCompetition?.length} solver{solverCompetition && solverCompetition?.length > 1 && 's'} joined
                     the competition!
                   </strong>
-                </Description>
+                </styledEl.Description>
               ) : index === 2 ? (
-                <Description>
+                <styledEl.Description>
                   Solver {winningSolver?.solver} proposed the best solution. It'll be executed on-chain shortly
-                </Description>
+                </styledEl.Description>
               ) : null
             }
           />
         ))}
-      </StepsWrapper>
-    </ProgressContainer>
+      </styledEl.StepsWrapper>
+    </styledEl.ProgressContainer>
   )
 }
 
 function ExecutingStep({ solverCompetition }: OrderProgressBarV2Props) {
   return (
-    <ProgressContainer>
-      <ProgressImageWrapper>
+    <styledEl.ProgressContainer>
+      <styledEl.ProgressImageWrapper>
         <img src={progressBarStep3} alt="" />
-      </ProgressImageWrapper>
-      <StepsWrapper>
+      </styledEl.ProgressImageWrapper>
+      <styledEl.StepsWrapper>
         {steps.map((step, index) => (
           <StepComponent
             key={index}
@@ -219,18 +207,18 @@ function ExecutingStep({ solverCompetition }: OrderProgressBarV2Props) {
             index={index}
             extraContent={
               index === 1 ? (
-                <Description>
+                <styledEl.Description>
                   <strong>
                     {solverCompetition?.length} solver{solverCompetition && solverCompetition?.length > 1 && 's'} joined
                     the competition!
                   </strong>
-                </Description>
+                </styledEl.Description>
               ) : null
             }
           />
         ))}
-      </StepsWrapper>
-    </ProgressContainer>
+      </styledEl.StepsWrapper>
+    </styledEl.ProgressContainer>
   )
 }
 
@@ -244,8 +232,8 @@ function FinishedStep({ solverCompetition, order }: OrderProgressBarV2Props) {
     CurrencyAmount.fromRawAmount(displayToken, isSell ? solution?.buyAmount : solution?.sellAmount)
 
   return (
-    <ProgressContainer>
-      <StepsWrapper>
+    <styledEl.ProgressContainer>
+      <styledEl.StepsWrapper>
         {steps.map((step, index) => (
           <StepComponent
             key={index}
@@ -255,14 +243,14 @@ function FinishedStep({ solverCompetition, order }: OrderProgressBarV2Props) {
             index={index}
             extraContent={
               index === 2 ? (
-                <Description>
+                <styledEl.Description>
                   You {isSell ? 'received' : 'sold'} <TokenAmount amount={displayAmount} tokenSymbol={displayToken} />!
-                </Description>
+                </styledEl.Description>
               ) : null
             }
           />
         ))}
-      </StepsWrapper>
+      </styledEl.StepsWrapper>
       {solverCompetition && (
         <div>
           <p>Solver ranking</p>
@@ -292,14 +280,14 @@ function FinishedStep({ solverCompetition, order }: OrderProgressBarV2Props) {
           {/*)}*/}
         </div>
       )}
-    </ProgressContainer>
+    </styledEl.ProgressContainer>
   )
 }
 
 function NextBatchStep({ solverCompetition }: OrderProgressBarV2Props) {
   return (
-    <ProgressContainer>
-      <StepsWrapper>
+    <styledEl.ProgressContainer>
+      <styledEl.StepsWrapper>
         {steps.map((step, index) => (
           <StepComponent
             key={index}
@@ -309,15 +297,15 @@ function NextBatchStep({ solverCompetition }: OrderProgressBarV2Props) {
             index={index}
             extraContent={
               index === 1 ? (
-                <Description>
+                <styledEl.Description>
                   Your order wasn't a part of the winning solution for this auction. It will be included in the next
                   auction.
-                </Description>
+                </styledEl.Description>
               ) : null
             }
           />
         ))}
-      </StepsWrapper>
+      </styledEl.StepsWrapper>
       {solverCompetition && (
         <div>
           <p>Solver ranking</p>
@@ -343,17 +331,17 @@ function NextBatchStep({ solverCompetition }: OrderProgressBarV2Props) {
           </ol>
         </div>
       )}
-    </ProgressContainer>
+    </styledEl.ProgressContainer>
   )
 }
 
 function DelayedStep() {
   return (
-    <ProgressContainer>
-      <ProgressImageWrapper>
+    <styledEl.ProgressContainer>
+      <styledEl.ProgressImageWrapper>
         <img src={progressBarStep2a} alt="" />
-      </ProgressImageWrapper>
-      <StepsWrapper>
+      </styledEl.ProgressImageWrapper>
+      <styledEl.StepsWrapper>
         {steps.map((step, index) => (
           <StepComponent
             key={index}
@@ -363,23 +351,25 @@ function DelayedStep() {
             index={index}
             extraContent={
               index === 1 ? (
-                <Description>This is taking longer than expected! Solvers are still searching...</Description>
+                <styledEl.Description>
+                  This is taking longer than expected! Solvers are still searching...
+                </styledEl.Description>
               ) : null
             }
           />
         ))}
-      </StepsWrapper>
-    </ProgressContainer>
+      </styledEl.StepsWrapper>
+    </styledEl.ProgressContainer>
   )
 }
 
 function UnfillableStep() {
   return (
-    <ProgressContainer>
-      <ProgressImageWrapper>
+    <styledEl.ProgressContainer>
+      <styledEl.ProgressImageWrapper>
         <img src={progressBarStep1a} alt="" />
-      </ProgressImageWrapper>
-      <StepsWrapper>
+      </styledEl.ProgressImageWrapper>
+      <styledEl.StepsWrapper>
         {steps.map((step, index) => (
           <StepComponent
             key={index}
@@ -389,25 +379,25 @@ function UnfillableStep() {
             index={index}
             extraContent={
               index === 1 ? (
-                <Description>
+                <styledEl.Description>
                   Your order's price is currently out of market. You can wait or cancel the order.
-                </Description>
+                </styledEl.Description>
               ) : null
             }
           />
         ))}
-      </StepsWrapper>
-    </ProgressContainer>
+      </styledEl.StepsWrapper>
+    </styledEl.ProgressContainer>
   )
 }
 
 function SubmissionFailedStep() {
   return (
-    <ProgressContainer>
-      <ProgressImageWrapper>
+    <styledEl.ProgressContainer>
+      <styledEl.ProgressImageWrapper>
         <img src={progressBarStep2b} alt="" />
-      </ProgressImageWrapper>
-      <StepsWrapper>
+      </styledEl.ProgressImageWrapper>
+      <styledEl.StepsWrapper>
         {steps.map((step, index) => (
           <StepComponent
             key={index}
@@ -417,15 +407,15 @@ function SubmissionFailedStep() {
             index={index}
             extraContent={
               index === 2 ? (
-                <Description>
+                <styledEl.Description>
                   The order could not be settled on-chain. Solvers are competing to find a new solution...
-                </Description>
+                </styledEl.Description>
               ) : null
             }
           />
         ))}
-      </StepsWrapper>
-    </ProgressContainer>
+      </styledEl.StepsWrapper>
+    </styledEl.ProgressContainer>
   )
 }
 

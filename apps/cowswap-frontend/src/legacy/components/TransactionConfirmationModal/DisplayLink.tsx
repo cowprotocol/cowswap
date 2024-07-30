@@ -28,11 +28,5 @@ export function DisplayLink({ id, chainId }: DisplayLinkProps) {
     : getEtherscanLink(chainId, 'transaction', id)
   const label = getExplorerLabel(chainId, 'transaction', ethFlowHash || id)
 
-  return (
-    <ExternalLinkCustom href={href}>
-      <Text fontWeight={500} fontSize={14}>
-        {label} ↗
-      </Text>
-    </ExternalLinkCustom>
-  )
+  return <ExternalLinkCustom href={href}>{label} ↗</ExternalLinkCustom>
 }

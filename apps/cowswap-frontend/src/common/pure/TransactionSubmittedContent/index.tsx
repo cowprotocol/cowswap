@@ -76,6 +76,11 @@ export function TransactionSubmittedContent({
       <styledEl.Section>
         <styledEl.Header>
           <BackButton onClick={onDismiss} />
+          <styledEl.ActionsWrapper>
+            {/*TODO: Add cancel tx logic*/}
+            <a href={'#'}>Cancel</a>
+            <DisplayLink id={hash} chainId={chainId} />
+          </styledEl.ActionsWrapper>
         </styledEl.Header>
         {(showSurplus && <SurplusModal order={order} />) || (
           <>
