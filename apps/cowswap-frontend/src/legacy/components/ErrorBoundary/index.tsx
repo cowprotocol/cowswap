@@ -1,6 +1,5 @@
 import React, { ErrorInfo, PropsWithChildren } from 'react'
 
-import { sendError } from '@cowprotocol/analytics'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { MEDIA_WIDTHS } from '@cowprotocol/ui'
 
@@ -11,6 +10,7 @@ import { ChunkLoadError } from 'legacy/components/ErrorBoundary/ChunkLoadError'
 import { ErrorWithStackTrace } from 'legacy/components/ErrorBoundary/ErrorWithStackTrace'
 import { HeaderRow, LogoImage, UniIcon } from 'legacy/components/Header/styled'
 
+import { cowAnalytics } from 'modules/analytics'
 import { Page } from 'modules/application/pure/Page'
 
 import { Routes } from 'common/constants/routes'
@@ -94,7 +94,7 @@ export default class ErrorBoundary extends React.Component<PropsWithChildren, Er
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    sendError(error, errorInfo)
+    cowAnalytics.sendError(error, errorInfo.toString())
   }
 
   render() {

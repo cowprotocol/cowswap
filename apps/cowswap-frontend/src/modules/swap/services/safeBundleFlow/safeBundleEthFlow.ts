@@ -8,7 +8,7 @@ import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
 import { signAndPostOrder } from 'legacy/utils/trade'
 
-import { updateHooksOnAppData } from 'modules/appData'
+import { replaceHooksOnAppData } from 'modules/appData'
 import { buildApproveTx } from 'modules/operations/bundle/buildApproveTx'
 import { buildPresignTx } from 'modules/operations/bundle/buildPresignTx'
 import { buildWrapTx } from 'modules/operations/bundle/buildWrapTx'
@@ -16,9 +16,9 @@ import { emitPostedOrderEvent } from 'modules/orders'
 import { appDataContainsHooks } from 'modules/permit/utils/appDataContainsHooks'
 import { SafeBundleEthFlowContext } from 'modules/swap/services/types'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
-import { tradeFlowAnalytics } from 'modules/trade/utils/analytics'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
+import { tradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
 
 const LOG_PREFIX = 'SAFE BUNDLE ETH FLOW'
 
@@ -93,7 +93,7 @@ export async function safeBundleEthFlow(
     if (appDataContainsHooks(orderParams.appData.fullAppData)) {
       reportAppDataWithHooks(orderParams)
       // wipe out the hooks
-      orderParams.appData = await updateHooksOnAppData(orderParams.appData, undefined)
+      orderParams.appData = await replaceHooksOnAppData(orderParams.appData, undefined)
     }
 
     logTradeFlow(LOG_PREFIX, 'STEP 4: post order')

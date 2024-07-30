@@ -3,11 +3,10 @@ import React, { ReactElement } from 'react'
 import { CHAIN_INFO } from '@cowprotocol/common-const'
 import { BlockExplorerLinkType, getBlockExplorerUrl } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { ExternalLink } from '@cowprotocol/ui'
 
-import { ExternalLink } from 'components/analytics/ExternalLink'
 import LogoWrapper, { LOGO_MAP } from 'components/common/LogoWrapper'
 import { abbreviateString } from 'utils'
-
 
 export interface Props {
   /**
@@ -60,12 +59,7 @@ export const BlockExplorerLink: React.FC<Props> = (props: Props) => {
   return (
     <ExternalLink href={url} target="_blank" rel="noopener noreferrer" className={className}>
       <span>{label}</span>
-      {showLogo && (
-        <LogoWrapper
-          title={`Open it on ${CHAIN_INFO[networkId].explorerTitle}`}
-          src={LOGO_MAP.etherscan}
-        />
-      )}
+      {showLogo && <LogoWrapper title={`Open it on ${CHAIN_INFO[networkId].explorerTitle}`} src={LOGO_MAP.etherscan} />}
     </ExternalLink>
   )
 }

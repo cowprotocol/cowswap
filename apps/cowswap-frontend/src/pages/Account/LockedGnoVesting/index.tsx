@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
 
-import { claimAnalytics } from '@cowprotocol/analytics'
 import ArrowIcon from '@cowprotocol/assets/cow-swap/arrow.svg'
 import cowImage from '@cowprotocol/assets/cow-swap/cow_token.svg'
 import {
@@ -26,6 +25,8 @@ import SVG from 'react-inlinesvg'
 
 import CopyHelper from 'legacy/components/Copy'
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
+
+import { claimAnalytics } from 'modules/analytics'
 
 import { HelpCircle } from 'common/pure/HelpCircle'
 import { BalanceDisplay, Card, CardActions, ConvertWrapper, ExtLink, VestingBreakdown } from 'pages/Account/styled'

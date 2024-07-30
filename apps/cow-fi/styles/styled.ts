@@ -445,26 +445,45 @@ export const TopicDescription = styled.p<{
     min-height: ${({ minHeightMobile }) =>
       typeof minHeightMobile === 'number' ? `${minHeightMobile}px` : minHeightMobile || 'initial'};
   }
+`
 
-  > table,
-  > table > tbody {
+export const TopicTable = styled.table`
+  max-width: 100%;
+  font-size: inherit;
+  line-height: 1.2;
+  font-weight: ${Font.weight.regular};
+
+  > tbody {
     max-width: 100%;
-  }
 
-  > table > tbody > tr > td:first-child {
-    padding: 0 16px 0 0;
-  }
-
-  ${Media.upToMedium()} {
-    > table > tbody {
+    ${Media.upToMedium()} {
       display: flex;
       flex-flow: column wrap;
       gap: 16px;
     }
+  }
 
-    > table > tbody > tr {
+  > tbody > tr {
+    &:first-child {
+      padding: 0 16px 0 0;
+
+      ${Media.upToMedium()} {
+        padding: 0 0 12px;
+      }
+    }
+
+    ${Media.upToMedium()} {
       display: flex;
       flex-flow: column wrap;
+    }
+  }
+
+  > tbody > tr > td:first-child {
+    color: ${Color.neutral30};
+    padding: 0 16px 0 0;
+
+    ${Media.upToMedium()} {
+      padding: 0 0 4px;
     }
   }
 `
@@ -1512,7 +1531,7 @@ export const BodyContent = styled.div<{ color?: string }>`
     }
   }
 
-  > p em {
+  p.warn {
     display: block;
     font-weight: ${Font.weight.bold};
     font-style: normal;
