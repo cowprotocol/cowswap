@@ -1,46 +1,52 @@
 import { useAccount, useConnect as useConnectWagmi } from 'wagmi'
-import { useCallback, useMemo } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
 import { ConnectResult, PublicClient } from '@wagmi/core'
+import { clickOnMevBlocker } from '../../modules/analytics'
 
 export function useConnect() {
   const { isConnected } = useAccount()
   const { openConnectModal } = useConnectModal()
   const { connectAsync, connectors } = useConnectWagmi()
+  const [connectionPromise, setConnectionPromise] = useState<Promise<ConnectResult<PublicClient> | undefined> | null>(
+    null
+  )
 
-  const [injectedConnector, hasInjectedProviderPromise] = useMemo(() => {
-    const connector = connectors.find((c) => c.id === 'injected')
+  const injectedConnector = connectors.find((c) => c.id === 'injected')
 
-    if (!connector || typeof connector.getProvider !== 'function') {
-      return [undefined, Promise.resolve(false)] as const
+  useEffect(() => {
+    if (isConnected && connectionPromise) {
+      console.log('GA: wallet-connected')
+      clickOnMevBlocker('wallet-connected')
+      setConnectionPromise(null)
     }
+  }, [isConnected, connectionPromise])
 
-    return [connector, connector.getProvider().then((p) => !!p)] as const
-  }, [connectors])
+  const connect = useCallback((): Promise<ConnectResult<PublicClient> | undefined> => {
+    console.debug('[useConnect] Initiating connection')
 
-  const connect = useCallback(async (): Promise<ConnectResult<PublicClient> | undefined> => {
-    const hasInjectedProvider = await hasInjectedProviderPromise
-
-    // Shows connect modal if there's no injected wallet
-    if (!hasInjectedProvider || !injectedConnector) {
-      console.debug('[useConnect] No injected connector or provider. Using connect modal')
+    const promise = new Promise<ConnectResult<PublicClient> | undefined>((resolve, reject) => {
       if (openConnectModal) {
+        console.debug('[useConnect] Showing connect modal')
         openConnectModal()
       }
-      return undefined
-    }
 
-    if (!connectAsync) {
-      console.debug('[useConnect] connectAsync is undefined')
-      return undefined
-    }
-
-    // Connects with injected wallet (if available)
-    console.debug('[useConnect] Connect using injected wallet')
-    return connectAsync({
-      connector: injectedConnector,
+      const checkConnection = setInterval(async () => {
+        if (isConnected) {
+          clearInterval(checkConnection)
+          try {
+            const result = await connectAsync({ connector: injectedConnector })
+            resolve(result)
+          } catch (error) {
+            reject(error)
+          }
+        }
+      }, 500)
     })
-  }, [connectAsync, injectedConnector, hasInjectedProviderPromise, openConnectModal])
+
+    setConnectionPromise(promise)
+    return promise
+  }, [connectAsync, injectedConnector, openConnectModal, isConnected])
 
   return {
     isConnected,

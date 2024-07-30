@@ -3,6 +3,7 @@ import styled from 'styled-components/macro'
 import { darken, transparentize } from 'polished'
 import { useConnectAndAddToWallet } from '../../lib/hooks/useConnectAndAddToWallet'
 import { clickOnMevBlocker } from 'modules/analytics'
+import { useAccount } from 'wagmi'
 
 import { Link, LinkType } from '@/components/Link'
 
@@ -28,41 +29,24 @@ const Message = styled.p<{ state: AddToWalletStateValues }>`
 export function AddRpcButton() {
   const { addWalletState, connectAndAddToWallet, disconnectWallet } = useConnectAndAddToWallet()
   const { errorMessage, state } = addWalletState
+  const { isConnected } = useAccount() // Add this line to get the connection status
 
   const handleClick = async () => {
     clickOnMevBlocker('click-add-rpc-to-wallet')
+    console.log('GA: click-add-rpc-to-wallet')
     try {
       if (connectAndAddToWallet) {
-        clickOnMevBlocker('click-add-rpc-to-wallet-connecting')
-
         // Start the connection process
         const connectionPromise = connectAndAddToWallet()
 
         // Wait for the connection process to complete
         await connectionPromise
-
-        // At this point, the user has either connected their wallet or cancelled
-        if (addWalletState.state === 'added') {
-          clickOnMevBlocker('click-add-rpc-to-wallet-connected')
-          clickOnMevBlocker('click-add-rpc-to-wallet-success')
-        } else if (addWalletState.state === 'unknown') {
-          // The user likely cancelled the connection
-          clickOnMevBlocker('click-add-rpc-to-wallet-cancelled')
-        } else {
-          // Connected but RPC not added yet
-          clickOnMevBlocker('click-add-rpc-to-wallet-connected')
-        }
       } else {
         throw new Error('connectAndAddToWallet is not defined')
       }
     } catch (error) {
       clickOnMevBlocker('click-add-rpc-to-wallet-error')
-    }
-  }
-
-  const handleDisconnect = () => {
-    if (disconnectWallet) {
-      disconnectWallet()
+      console.log('GA: click-add-rpc-to-wallet-error')
     }
   }
 
@@ -70,7 +54,13 @@ export function AddRpcButton() {
   const isAdding = state === 'adding'
   const isConnecting = state === 'connecting'
   const disabledButton = isConnecting || isAdding || !connectAndAddToWallet
-  const buttonLabel = isConnecting ? 'Connecting Wallet...' : isAdding ? 'Adding to Wallet...' : 'Get protected'
+  const buttonLabel = isConnecting
+    ? 'Connecting Wallet...'
+    : isAdding
+    ? 'Adding to Wallet...'
+    : isConnected
+    ? 'Add MEV Blocker RPC'
+    : 'Get protected'
 
   return (
     <>
@@ -99,7 +89,7 @@ export function AddRpcButton() {
               fontSize={21}
               color={'#FEE7CF'}
               bgColor="#333"
-              onClick={handleDisconnect}
+              onClick={disconnectWallet}
               asButton
             >
               Disconnect
