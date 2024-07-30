@@ -33,7 +33,6 @@ export function AddRpcButton() {
 
   const handleClick = async () => {
     clickOnMevBlocker('click-add-rpc-to-wallet')
-    console.log('GA: click-add-rpc-to-wallet')
     try {
       if (connectAndAddToWallet) {
         // Start the connection process
@@ -46,7 +45,6 @@ export function AddRpcButton() {
       }
     } catch (error) {
       clickOnMevBlocker('click-add-rpc-to-wallet-error')
-      console.log('GA: click-add-rpc-to-wallet-error')
     }
   }
 

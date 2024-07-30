@@ -16,7 +16,6 @@ export function useConnect() {
 
   useEffect(() => {
     if (isConnected && connectionPromise) {
-      console.log('GA: wallet-connected')
       clickOnMevBlocker('wallet-connected')
       setConnectionPromise(null)
     }
