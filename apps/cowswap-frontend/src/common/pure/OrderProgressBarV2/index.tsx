@@ -12,9 +12,9 @@ import styled from 'styled-components/macro'
 import { AMM_LOGOS } from 'legacy/components/AMMsLogo'
 import { Order } from 'legacy/state/orders/actions'
 
-import { SolverCompetition } from 'api/cowProtocol/api'
 import { OrderProgressBarStepName } from 'common/hooks/orderProgressBarV2'
 
+import { CompetitionOrderStatus } from '@cowprotocol/cow-sdk'
 import { Stepper, StepProps } from '../Stepper'
 
 const PROGRESS_BAR_STEPS: StepProps[] = [
@@ -27,7 +27,7 @@ const PROGRESS_BAR_STEPS: StepProps[] = [
 export type OrderProgressBarV2Props = {
   stepName: OrderProgressBarStepName
   countdown?: number | null | undefined
-  solverCompetition?: SolverCompetition
+  solverCompetition?: CompetitionOrderStatus['value']
   order?: Order
 }
 
@@ -139,7 +139,7 @@ function NextBatchStep({ solverCompetition }: OrderProgressBarV2Props) {
                     />
                     <span>
                       {entry.solver}
-                      {entry.sellAmount && ' <- your order was included in this solution'}
+                      {entry?.executedAmounts && ' <- your order was included in this solution'}
                     </span>
                   </div>
                 </li>
@@ -206,15 +206,17 @@ function FinishedStep({ solverCompetition, order }: OrderProgressBarV2Props) {
   const isSell = order && isSellOrder(order.kind)
   const displayToken = isSell ? order?.outputToken : order?.inputToken
   const solution = solverCompetition && solverCompetition[0]
+  const { executedAmounts } = solution || {}
+  const { sell, buy } = executedAmounts || {}
   const displayAmount =
     displayToken &&
-    solution &&
-    CurrencyAmount.fromRawAmount(displayToken, isSell ? solution?.buyAmount : solution?.sellAmount)
+    sell && buy &&
+    CurrencyAmount.fromRawAmount(displayToken, isSell ? buy : sell)
   return (
     <div>
-      <span>
+      {displayAmount && <span>
         You {isSell ? 'received' : 'sold'} <TokenAmount amount={displayAmount} tokenSymbol={displayToken} />!
-      </span>
+      </span>}
 
       <p>Solver ranking</p>
       <ol>
@@ -257,7 +259,7 @@ function DelayedStep() {
   )
 }
 
-function UnfillableStep({}: OrderProgressBarV2Props) {
+function UnfillableStep({ }: OrderProgressBarV2Props) {
   // TODO: add link to cancel order
   const localSteps = structuredClone(PROGRESS_BAR_STEPS)
 
