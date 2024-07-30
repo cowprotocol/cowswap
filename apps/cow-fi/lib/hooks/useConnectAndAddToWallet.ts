@@ -81,10 +81,16 @@ export function useConnectAndAddToWallet(): UseConnectAndAddToWalletPros {
       if (!isConnected) {
         console.debug('[useConnectAndAddToWallet] Connecting...')
         connect()
-          .then(() => {
-            console.debug('[useConnectAndAddToWallet] 🔌 Connected!')
-            addToWallet()
-            resolve()
+          .then((result) => {
+            if (result) {
+              console.debug('[useConnectAndAddToWallet] 🔌 Connected!')
+              addToWallet()
+              resolve()
+            } else {
+              // User cancelled the connection
+              setState(DEFAULT_STATE)
+              resolve()
+            }
           })
           .catch((error) => {
             handleError(error)
