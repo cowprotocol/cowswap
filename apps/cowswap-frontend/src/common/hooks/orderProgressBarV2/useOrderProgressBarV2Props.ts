@@ -12,6 +12,7 @@ import { ActivityDerivedState } from 'modules/account/containers/Transaction'
 import { getOrderCompetitionStatus } from 'api/cowProtocol/api'
 import { getIsFinalizedOrder } from 'utils/orderUtils/getIsFinalizedOrder'
 
+import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import {
   ordersProgressBarStateAtom,
   setOrderProgressBarCancellationTriggered,
@@ -35,7 +36,9 @@ const MINIMUM_STEP_DISPLAY_TIME = ms`5s`
 /**
  * Hook for fetching ProgressBarV2 props
  */
-export function useOrderProgressBarV2Props(params: UseOrderProgressBarPropsParams): UseOrderProgressBarV2Result {
+export function useOrderProgressBarV2Props(
+  params: UseOrderProgressBarPropsParams
+): UseOrderProgressBarV2Result | undefined {
   const { activityDerivedState, chainId } = params
 
   const {
@@ -46,8 +49,11 @@ export function useOrderProgressBarV2Props(params: UseOrderProgressBarPropsParam
     isCancelled = false,
     isExpired = false,
   } = activityDerivedState || {}
+
+  const { disableProgressBar = false } = useInjectedWidgetParams()
+
   // When the order is in a final state, avoid querying backend unnecessarily
-  const doNotQuery = !!(order && getIsFinalizedOrder(order))
+  const doNotQuery = !!(order && getIsFinalizedOrder(order)) || disableProgressBar
 
   const orderId = order?.id || ''
 
@@ -80,14 +86,17 @@ export function useOrderProgressBarV2Props(params: UseOrderProgressBarPropsParam
   useCancellingOrderUpdater(orderId, isCancelling)
   useCountdownStartUpdater(orderId, countdown, backendApiStatus)
 
-  return useMemo(
-    () => ({
+  return useMemo(() => {
+    if (disableProgressBar) {
+      return undefined
+    }
+
+    return {
       countdown,
       solverCompetition,
       stepName: progressBarStepName || 'initial',
-    }),
-    [countdown, solverCompetition, progressBarStepName]
-  )
+    }
+  }, [disableProgressBar, countdown, solverCompetition, progressBarStepName])
 }
 
 // atom related hooks
