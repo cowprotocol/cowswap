@@ -33,8 +33,25 @@ export function AddRpcButton() {
     clickOnMevBlocker('click-add-rpc-to-wallet')
     try {
       if (connectAndAddToWallet) {
-        await connectAndAddToWallet()
-        clickOnMevBlocker('click-add-rpc-to-wallet-success')
+        clickOnMevBlocker('click-add-rpc-to-wallet-connecting')
+
+        // Start the connection process
+        const connectionPromise = connectAndAddToWallet()
+
+        // Wait for the connection process to complete
+        await connectionPromise
+
+        // At this point, the user has either connected their wallet or cancelled
+        if (addWalletState.state === 'added') {
+          clickOnMevBlocker('click-add-rpc-to-wallet-connected')
+          clickOnMevBlocker('click-add-rpc-to-wallet-success')
+        } else if (addWalletState.state === 'unknown') {
+          // The user likely cancelled the connection
+          clickOnMevBlocker('click-add-rpc-to-wallet-cancelled')
+        } else {
+          // Connected but RPC not added yet
+          clickOnMevBlocker('click-add-rpc-to-wallet-connected')
+        }
       } else {
         throw new Error('connectAndAddToWallet is not defined')
       }
