@@ -29,7 +29,7 @@ const Message = styled.p<{ state: AddToWalletStateValues }>`
 export function AddRpcButton() {
   const { addWalletState, connectAndAddToWallet, disconnectWallet } = useConnectAndAddToWallet()
   const { errorMessage, state } = addWalletState
-  const { isConnected } = useAccount() // Add this line to get the connection status
+  const { isConnected } = useAccount()
 
   const handleClick = async () => {
     clickOnMevBlocker('click-add-rpc-to-wallet')
