@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.78.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.78.0...cowswap-v1.78.1) (2024-07-31)
+
+
+### Bug Fixes
+
+* flashing network selector/tokens when connect to a wallet in ano… ([#4747](https://github.com/cowprotocol/cowswap/issues/4747)) ([856240f](https://github.com/cowprotocol/cowswap/commit/856240f688a8238ed4138a1c8ec053c34b2e4ce6))
+* **twap:** make TWAP warning less scary ([#4728](https://github.com/cowprotocol/cowswap/issues/4728)) ([00b24d1](https://github.com/cowprotocol/cowswap/commit/00b24d1ada6b0673ddefbb3bff5ba4eb9b0988c9))
+
 ## [1.78.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.77.1...cowswap-v1.78.0) (2024-07-18)
 
 
