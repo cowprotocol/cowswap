@@ -1,46 +1,48 @@
+import { Color, Font, Media } from '@cowprotocol/ui'
 import { GetStaticProps } from 'next'
-import { Font, Color, Media } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
 import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
 
 import Layout from '@/components/Layout'
-import { getCategories, getArticles, ArticleListResponse } from 'services/cms'
+import { ArticleListResponse, getArticles, getCategories } from 'services/cms'
 
-import { SearchBar } from '@/components/SearchBar'
 import { ArrowButton } from '@/components/ArrowButton'
+import { SearchBar } from '@/components/SearchBar'
 
 import IMG_ICON_BULB_COW from '@cowprotocol/assets/images/icon-bulb-cow.svg'
 
 import {
-  ContainerCard,
-  ContainerCardSection,
-  ContainerCardInner,
-  ContainerCardSectionTop,
-  CategoryLinks,
-  ArticleList,
   ArticleCard,
-  ArticleImage,
-  ArticleTitle,
   ArticleDescription,
-  TopicList,
-  TopicCard,
-  TopicImage,
-  LinkSection,
-  LinkColumn,
-  LinkItem,
-  CTASectionWrapper,
+  ArticleImage,
+  ArticleList,
+  ArticleTitle,
+  CTAButton,
   CTAImage,
+  CTASectionWrapper,
   CTASubtitle,
   CTATitle,
-  CTAButton,
+  CategoryLinks,
+  ContainerCard,
+  ContainerCardInner,
+  ContainerCardSection,
+  ContainerCardSectionTop,
   ContainerCardSectionTopTitle,
+  LinkColumn,
+  LinkItem,
+  LinkSection,
+  TopicCard,
+  TopicImage,
+  TopicList,
   TopicTitle,
 } from '@/styles/styled'
 
-import SVG from 'react-inlinesvg'
 import { clickOnKnowledgeBase } from 'modules/analytics'
+import SVG from 'react-inlinesvg'
+
+import { CmsImage } from '@cowprotocol/ui'
 
 const PODCASTS = [
   {
@@ -67,7 +69,7 @@ const SPACES = [
     link: 'https://x.com/cryptotesters/status/1501505365833248774',
   },
   {
-    title: 'CoW Protocoll & Yearn Finance Partnership Deep Dive',
+    title: 'CoW Protocol & Yearn Finance Partnership Deep Dive',
     link: 'https://x.com/CoWSwap/status/1605593667682476032',
   },
   {
@@ -196,7 +198,7 @@ export default function Page({ siteConfigData, categories, articles, featuredArt
               <ArticleList columnsTablet={2}>
                 {featuredArticles.map(({ title, description, cover, link }, index) => (
                   <ArticleCard key={index} href={link} onClick={() => clickOnKnowledgeBase(`click-article-${title}`)}>
-                    <ArticleImage color="#000">{cover && <img src={cover} alt={title} />}</ArticleImage>
+                    <ArticleImage color="#000">{cover && <CmsImage src={cover} alt={title} />}</ArticleImage>
                     <ArticleTitle>{title}</ArticleTitle>
                     <ArticleDescription>{description}</ArticleDescription>
                   </ArticleCard>
@@ -220,7 +222,7 @@ export default function Page({ siteConfigData, categories, articles, featuredArt
                     >
                       <TopicImage iconColor={iconColor} bgColor={bgColor} borderRadius={90} widthMobile={'auto'}>
                         {imageUrl ? (
-                          <img
+                          <CmsImage
                             src={imageUrl}
                             alt={name}
                             onError={(e) => {

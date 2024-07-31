@@ -19,6 +19,7 @@ import {
   CategoryLinks,
 } from '@/styles/styled'
 import { clickOnKnowledgeBase } from 'modules/analytics'
+import { CmsImage } from '@cowprotocol/ui'
 
 const Wrapper = styled.div`
   display: flex;
@@ -61,7 +62,7 @@ const CategoryImageWrapper = styled.div`
   justify-content: center;
 `
 
-const CategoryImage = styled.img`
+const CategoryImage = styled(CmsImage)`
   width: 100%;
   height: 100%;
   object-fit: cover;
