@@ -1,5 +1,6 @@
-import styled, { keyframes } from 'styled-components/macro'
 import { UI } from '@cowprotocol/ui'
+
+import styled, { keyframes } from 'styled-components/macro'
 
 export const Icon = styled.div<{ status: string }>`
   --width: 28px;
@@ -15,7 +16,12 @@ export const Icon = styled.div<{ status: string }>`
   font-size: 24px;
 
   > svg {
-    color: ${(props) => (props.status === 'done' ? '#4CAF50' : props.status === 'active' ? '#2196F3' : '#666')};
+    color: ${(props) => {
+      if (props.status === 'done') return '#4CAF50'
+      if (props.status === 'active') return '#2196F3'
+      if (props.status === 'error') return '#F44336'
+      return '#666'
+    }};
     width: 100%;
     height: 100%;
     object-fit: contain;
@@ -71,14 +77,27 @@ export const Step = styled.div<{ status: string; isFirst: boolean }>`
   display: flex;
   align-items: flex-start;
   margin-bottom: 20px;
-  opacity: ${(props) =>
-    props.status === 'active' ? 1 : props.status === 'next' ? 0.3 : props.status === 'future' ? 0.08 : 0.08};
+  opacity: ${(props) => {
+    if (props.status === 'done') return 0.1
+    if (props.status === 'active') return 1
+    if (props.status === 'next') return 0.4
+    if (props.status === 'future' || props.status === 'disabled') return 0.3
+    return 1
+  }};
   transform: translateY(
-    ${(props) => (props.status === 'done' ? '-10px' : props.status === 'active' && props.isFirst ? '10px' : '0')}
+    ${(props) => {
+      if (props.status === 'done') return '-10px'
+      if (props.status === 'active' && props.isFirst) return '10px'
+      return '0'
+    }}
   );
   transition: all 0.3s ease;
-  animation: ${(props) => (props.status === 'done' ? slideUp : props.status === 'active' ? slideDown : 'none')} 0.3s
-    ease;
+  animation: ${(props) => {
+      if (props.status === 'done') return slideUp
+      if (props.status === 'active') return slideDown
+      return 'none'
+    }}
+    0.3s ease;
 `
 
 export const Content = styled.div`
@@ -159,6 +178,7 @@ export const LoadingEllipsis = styled.span`
 `
 
 export const ProgressTopSection = styled.div`
+  width: 100%;
   display: flex;
   flex-flow: column wrap;
   align-items: center;
