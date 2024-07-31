@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.9.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.8.0...cow-fi-v1.9.0) (2024-07-31)
+
+
+### Features
+
+* add click event add rpc ([#4746](https://github.com/cowprotocol/cowswap/issues/4746)) ([0571451](https://github.com/cowprotocol/cowswap/commit/057145196a5f756978e5fe6132f1570520c0ae8e))
+
 ## [1.8.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.7.0...cow-fi-v1.8.0) (2024-07-18)
 
 
