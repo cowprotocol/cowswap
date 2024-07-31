@@ -2,6 +2,8 @@ import { Confetti } from '@cowprotocol/ui'
 import styled from 'styled-components/macro'
 import { darken, transparentize } from 'polished'
 import { useConnectAndAddToWallet } from '../../lib/hooks/useConnectAndAddToWallet'
+import { clickOnMevBlocker } from 'modules/analytics'
+import { useAccount } from 'wagmi'
 
 import { Link, LinkType } from '@/components/Link'
 
@@ -25,14 +27,38 @@ const Message = styled.p<{ state: AddToWalletStateValues }>`
 `
 
 export function AddRpcButton() {
-  const { addWalletState, connectAndAddToWallet } = useConnectAndAddToWallet()
+  const { addWalletState, connectAndAddToWallet, disconnectWallet } = useConnectAndAddToWallet()
   const { errorMessage, state } = addWalletState
+  const { isConnected } = useAccount()
+
+  const handleClick = async () => {
+    clickOnMevBlocker('click-add-rpc-to-wallet')
+    try {
+      if (connectAndAddToWallet) {
+        // Start the connection process
+        const connectionPromise = connectAndAddToWallet()
+
+        // Wait for the connection process to complete
+        await connectionPromise
+      } else {
+        throw new Error('connectAndAddToWallet is not defined')
+      }
+    } catch (error) {
+      clickOnMevBlocker('click-add-rpc-to-wallet-error')
+    }
+  }
 
   // Get the label and enable state of button
   const isAdding = state === 'adding'
   const isConnecting = state === 'connecting'
   const disabledButton = isConnecting || isAdding || !connectAndAddToWallet
-  const buttonLabel = isConnecting ? 'Connecting Wallet...' : isAdding ? 'Adding to Wallet...' : 'Get protected'
+  const buttonLabel = isConnecting
+    ? 'Connecting Wallet...'
+    : isAdding
+    ? 'Adding to Wallet...'
+    : isConnected
+    ? 'Add MEV Blocker RPC'
+    : 'Get protected'
 
   return (
     <>
@@ -48,13 +74,25 @@ export function AddRpcButton() {
             fontSize={21}
             color={'#FEE7CF'}
             bgColor="#EC4612"
-            onClick={connectAndAddToWallet || (() => {})}
+            onClick={handleClick}
             disabled={disabledButton}
             asButton
           >
             {buttonLabel}
           </Link>
           {errorMessage && <Message state={state}>{errorMessage}</Message>}
+          {disconnectWallet && (
+            <Link
+              linkType={LinkType.TopicButton}
+              fontSize={21}
+              color={'#FEE7CF'}
+              bgColor="#333"
+              onClick={disconnectWallet}
+              asButton
+            >
+              Disconnect
+            </Link>
+          )}
         </>
       )}
     </>
