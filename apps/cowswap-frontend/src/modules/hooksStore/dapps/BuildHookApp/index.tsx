@@ -8,18 +8,18 @@ import styled from 'styled-components/macro'
 import { HookDappContext } from '../../context'
 import buildImg from '../../images/build.png'
 
-const TITLE = 'Build your own Pre-hook'
-const DESCRIPTION = 'Add an arbitrary calldata to be executed before your hook'
-
-export const PRE_BUILD: HookDappInternal = {
-  name: TITLE,
-  description: DESCRIPTION,
+const getAppDetails = (isPreHook: boolean) => ({
+  name: `Build your own ${isPreHook ? 'Pre' : 'Post'}-hook`,
+  description: `Add an arbitrary calldata to be executed ${isPreHook ? 'before' : 'after'} your hook`,
   type: HookDappType.INTERNAL,
   path: '/hooks-dapps/pre/build',
   image: buildImg,
-  component: <ClaimGnoHookApp />,
+  component: <BuildHookApp isPreHook={isPreHook} />,
   version: 'v0.1.0',
-}
+})
+
+export const PRE_BUILD = getAppDetails(true)
+export const POST_BUILD = getAppDetails(false)
 
 const Wrapper = styled.div`
   display: flex;
@@ -80,13 +80,19 @@ const Row = styled.div`
   }
 `
 
-export function ClaimGnoHookApp() {
+export interface BuildHookAppProps {
+  isPreHook: boolean
+}
+
+export function BuildHookApp({ isPreHook }: BuildHookAppProps) {
   const hookDappContext = useContext(HookDappContext)
   const [hook, setHook] = useState<CowHook>({
     target: '',
     callData: '',
     gasLimit: '',
   })
+
+  const dapp = isPreHook ? PRE_BUILD : POST_BUILD
 
   const clickOnAddHook = useCallback(() => {
     const { callData, gasLimit, target } = hook
@@ -97,10 +103,10 @@ export function ClaimGnoHookApp() {
     hookDappContext.addHook(
       {
         hook: hook,
-        dapp: PRE_BUILD,
+        dapp,
         outputTokens: undefined, // TODO: Simulate and extract the output tokens
       },
-      true
+      isPreHook
     )
   }, [hook, hookDappContext])
 
@@ -111,8 +117,8 @@ export function ClaimGnoHookApp() {
   return (
     <Wrapper>
       <Header>
-        <img src={buildImg} alt={TITLE} width="60" />
-        <p>{DESCRIPTION}</p>
+        <img src={buildImg} alt={dapp.name} width="60" />
+        <p>{dapp.description}</p>
       </Header>
       <ContentWrapper>
         <Row>
@@ -141,7 +147,7 @@ export function ClaimGnoHookApp() {
           />
         </Row>
       </ContentWrapper>
-      <ButtonPrimary onClick={clickOnAddHook}>+Add Pre-hook</ButtonPrimary>
+      <ButtonPrimary onClick={clickOnAddHook}>+Add {isPreHook ? 'Pre' : 'Post'}-hook</ButtonPrimary>
       <Link
         onClick={(e) => {
           e.preventDefault()
