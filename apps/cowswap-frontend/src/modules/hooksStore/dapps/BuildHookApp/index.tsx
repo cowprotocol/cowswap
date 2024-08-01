@@ -8,7 +8,7 @@ import styled from 'styled-components/macro'
 import { HookDappContext } from '../../context'
 import buildImg from '../../images/build.png'
 
-const getAppDetails = (isPreHook: boolean) => ({
+const getAppDetails = (isPreHook: boolean): HookDappInternal => ({
   name: `Build your own ${isPreHook ? 'Pre' : 'Post'}-hook`,
   description: `Add an arbitrary calldata to be executed ${isPreHook ? 'before' : 'after'} your hook`,
   type: HookDappType.INTERNAL,
