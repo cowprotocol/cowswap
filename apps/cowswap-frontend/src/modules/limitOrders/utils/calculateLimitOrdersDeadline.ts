@@ -1,7 +1,7 @@
 import { Timestamp } from 'types'
 
 import { LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
-import { TradeQuoteState, getOrderValidTo } from 'modules/tradeQuote'
+import { TradeQuoteState } from 'modules/tradeQuote'
 
 export function calculateLimitOrdersDeadline(
   settingsState: LimitOrdersSettingsState,
@@ -9,9 +9,10 @@ export function calculateLimitOrdersDeadline(
 ): Timestamp {
   return settingsState.customDeadlineTimestamp
     ? settingsState.customDeadlineTimestamp
-    : getOrderValidTo(settingsState.deadlineMilliseconds / 1000, {
-        validFor: quoteState.quoteParams?.validFor,
-        quoteValidTo: quoteState.response?.quote.validTo,
-        localQuoteTimestamp: quoteState.localQuoteTimestamp,
-      })
+    : Math.floor((settingsState.deadlineMilliseconds + Date.now()) / 1000)
+  // : getOrderValidTo(settingsState.deadlineMilliseconds / 1000, {
+  //     validFor: quoteState.quoteParams?.validFor,
+  //     quoteValidTo: quoteState.response?.quote.validTo,
+  //     localQuoteTimestamp: quoteState.localQuoteTimestamp,
+  //   })
 }
