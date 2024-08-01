@@ -73,7 +73,7 @@ export const ThemedGlobalStyle = createGlobalStyle`
 
   // TODO: Can be removed once we control this component
   [data-reach-dialog-overlay] {
-    z-index: 10 !important;
+    z-index: 99999 !important;
 
     ${Media.upToMedium()} {
       top: 0 !important;
