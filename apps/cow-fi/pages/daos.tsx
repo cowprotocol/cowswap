@@ -45,9 +45,8 @@ import 'swiper/css/navigation'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Autoplay, Pagination, Navigation } from 'swiper/modules'
 
-import { EventCategories, sendEventHandler } from '@cowprotocol/analytics'
-
 import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
+import { clickOnDaos } from 'modules/analytics'
 
 interface PageProps {
   siteConfigData: typeof CONFIG
@@ -170,7 +169,7 @@ export default function Page() {
                       href="https://github.com/charlesndalton/milkman"
                       external
                       utmContent="link-to-milkman"
-                      onClick={() => sendEventHandler(EventCategories.DAOS, 'click-milkman')}
+                      onClick={() => clickOnDaos('click-milkman')}
                     >
                       Milkman bot
                     </Link>
@@ -229,7 +228,7 @@ export default function Page() {
                       href="https://dump.services/"
                       external
                       utmContent="link-to-dump-services"
-                      onClick={() => sendEventHandler(EventCategories.DAOS, 'click-dump-services')}
+                      onClick={() => clickOnDaos('click-dump-services')}
                     >
                       Dump.services
                     </Link>
@@ -259,7 +258,7 @@ export default function Page() {
               utmContent="link-to-advanced-order-types"
               margin="24px auto 0"
               external
-              onClick={() => sendEventHandler(EventCategories.DAOS, 'click-advanced-order-types')}
+              onClick={() => clickOnDaos('click-advanced-order-types')}
             >
               Explore advanced order types
             </Link>
@@ -304,7 +303,7 @@ export default function Page() {
                         href={dao.link}
                         utmContent={`dao-${dao.title.toLowerCase().replace(/\s/g, '-')}`}
                         external
-                        onClick={() => sendEventHandler(EventCategories.DAOS, `click-${dao.title.toLowerCase()}`)}
+                        onClick={() => clickOnDaos(`click-${dao.title.toLowerCase()}`)}
                       >
                         Learn more
                       </Link>
@@ -319,7 +318,7 @@ export default function Page() {
                     href={`${dao.link}?utm_source=cow.fi&utm_medium=web&utm_content=dao-${dao.title}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    onClick={() => sendEventHandler(EventCategories.DAOS, `click-${dao.title.toLowerCase()}`)}
+                    onClick={() => clickOnDaos(`click-${dao.title.toLowerCase()}`)}
                   >
                     <TopicImage
                       iconColor={Color.neutral0}

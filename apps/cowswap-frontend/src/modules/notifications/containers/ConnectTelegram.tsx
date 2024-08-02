@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 
+import { getCmsClient } from '@cowprotocol/core'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { cmsClient } from 'cmsClient'
 import { CheckCircle } from 'react-feather'
 
 interface TelegramData {
@@ -13,6 +13,8 @@ interface TelegramData {
   photo_url: string
   username: string
 }
+
+const cmsClient = getCmsClient()
 
 export function ConnectTelegram() {
   const { account } = useWalletInfo()

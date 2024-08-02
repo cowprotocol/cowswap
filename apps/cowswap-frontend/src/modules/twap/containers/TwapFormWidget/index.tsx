@@ -1,11 +1,11 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect, useLayoutEffect, useMemo, useState } from 'react'
 
-import { openAdvancedOrdersTabAnalytics, twapWalletCompatibilityAnalytics } from '@cowprotocol/analytics'
 import { renderTooltip } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
+import { openAdvancedOrdersTabAnalytics, twapWalletCompatibilityAnalytics } from 'modules/analytics'
 import { useReceiveAmountInfo } from 'modules/trade'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 import { useTradeState } from 'modules/trade/hooks/useTradeState'

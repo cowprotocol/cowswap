@@ -48,8 +48,6 @@ import {
 import SVG from 'react-inlinesvg'
 import IMG_ICON_FAQ from '@cowprotocol/assets/images/icon-faq.svg'
 
-import { EventCategories, sendEventHandler } from '@cowprotocol/analytics'
-
 import {
   FAQ_DATA,
   TOP_LOGOS,
@@ -61,6 +59,7 @@ import {
 } from '@/data/cow-protocol/const'
 
 import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
+import { clickOnCowProtocol } from 'modules/analytics'
 
 interface PageProps {
   siteConfigData: typeof CONFIG
@@ -89,7 +88,7 @@ export default function Page() {
               href="https://docs.cow.fi/category/tutorials"
               external
               linkType={LinkType.HeroButton}
-              onClick={() => sendEventHandler(EventCategories.COWPROTOCOL, 'click-hero-start-building')}
+              onClick={() => clickOnCowProtocol('click-hero-start-building')}
             >
               Start building
             </Link>
@@ -123,7 +122,7 @@ export default function Page() {
             external
             linkType={LinkType.SectionTitleButton}
             utmContent="cow-protocol-metrics"
-            onClick={() => sendEventHandler(EventCategories.COWPROTOCOL, 'click-metrics-view-all')}
+            onClick={() => clickOnCowProtocol('click-metrics-view-all')}
           >
             View all metrics on DUNE &#8599;
           </Link>
@@ -172,7 +171,7 @@ export default function Page() {
                     bgColor="#66018E"
                     color="#F996EE"
                     href="/learn"
-                    onClick={() => sendEventHandler(EventCategories.COWPROTOCOL, 'click-intents-learn-more')}
+                    onClick={() => clickOnCowProtocol('click-intents-learn-more')}
                     linkType={LinkType.TopicButton}
                   >
                     Learn more
@@ -216,7 +215,7 @@ export default function Page() {
                     bgColor="#66018E"
                     color="#F996EE"
                     href="/learn"
-                    onClick={() => sendEventHandler(EventCategories.COWPROTOCOL, 'click-solvers-learn-more')}
+                    onClick={() => clickOnCowProtocol('click-solvers-learn-more')}
                     linkType={LinkType.TopicButton}
                   >
                     Learn more
@@ -240,7 +239,7 @@ export default function Page() {
                     color="#F996EE"
                     href="/learn"
                     linkType={LinkType.TopicButton}
-                    onClick={() => sendEventHandler(EventCategories.COWPROTOCOL, 'click-batch-auctions-learn-more')}
+                    onClick={() => clickOnCowProtocol('click-batch-auctions-learn-more')}
                   >
                     Learn more
                   </Link>
@@ -414,7 +413,7 @@ export default function Page() {
                   href={`${logo.url}?utm_source=cow.fi&utm_medium=web&utm_content=cow-protocol-logos`}
                   target="_blank"
                   rel="noopener noreferrer nofollow"
-                  onClick={() => sendEventHandler(EventCategories.COWPROTOCOL, `click-logo-${logo.alt}`)}
+                  onClick={() => clickOnCowProtocol(`click-logo-${logo.alt}`)}
                 >
                   <TopicImage
                     iconColor={Color.neutral20}
@@ -444,7 +443,7 @@ export default function Page() {
                       external
                       linkType={LinkType.TopicButton}
                       utmContent={`cow-protocol-case-study-${study.title}`}
-                      onClick={() => sendEventHandler(EventCategories.COWPROTOCOL, `click-case-study-${study.title}`)}
+                      onClick={() => clickOnCowProtocol(`click-case-study-${study.title}`)}
                     >
                       Read more
                     </Link>
@@ -463,7 +462,7 @@ export default function Page() {
                   href={`${logo.url}?utm_source=cow.fi&utm_medium=web&utm_content=cow-protocol-logos`}
                   target="_blank"
                   rel="noopener noreferrer nofollow"
-                  onClick={() => sendEventHandler(EventCategories.COWPROTOCOL, `click-logo-${logo.alt}`)}
+                  onClick={() => clickOnCowProtocol(`click-logo-${logo.alt}`)}
                 >
                   <TopicImage
                     iconColor={Color.neutral20}
@@ -511,7 +510,7 @@ export default function Page() {
                       fontSizeMobile={24}
                       href={topic.linkHref}
                       linkType={LinkType.TopicButton}
-                      onClick={() => sendEventHandler(EventCategories.COWPROTOCOL, topic.linkEvent)}
+                      onClick={() => clickOnCowProtocol(topic.linkEvent)}
                       utmContent={topic.linkUtmContent}
                       external={topic.linkHref.startsWith('http')}
                     >
@@ -554,7 +553,7 @@ export default function Page() {
                 linkType={LinkType.SectionTitleButton}
                 utmContent="cow-protocol-solvers"
                 margin="28px 0 0"
-                onClick={() => sendEventHandler(EventCategories.COWPROTOCOL, `click-solvers-read-docs`)}
+                onClick={() => clickOnCowProtocol(`click-solvers-read-docs`)}
               >
                 Read the docs
               </Link>

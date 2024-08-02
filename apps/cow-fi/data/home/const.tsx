@@ -21,8 +21,8 @@ import {
   TopicTitle,
 } from '@/styles/styled'
 import { Link, LinkType } from '@/components/Link'
-import { EventCategories, sendEventHandler } from '@cowprotocol/analytics'
 import SVG from 'react-inlinesvg'
+import { clickOnHome } from 'modules/analytics'
 
 export const PRODUCT_LIST = [
   {
@@ -142,7 +142,7 @@ export const PRODUCT_CONTAINERS = (
                 color={topic.linkColor}
                 href={topic.linkHref}
                 linkType={LinkType.TopicButton}
-                onClick={() => sendEventHandler(EventCategories.HOME, topic.linkEvent)}
+                onClick={() => clickOnHome(topic.linkEvent)}
                 external={topic.linkExternal}
                 utmContent={topic.linkUtmContent}
               >

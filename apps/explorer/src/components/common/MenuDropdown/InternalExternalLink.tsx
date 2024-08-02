@@ -1,9 +1,9 @@
 import React from 'react'
 
 import { Command } from '@cowprotocol/types'
+import { ExternalLink } from '@cowprotocol/ui'
 
 import { faExternalLink } from '@fortawesome/free-solid-svg-icons'
-import { ExternalLink } from 'components/analytics/ExternalLink'
 import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
 import { StyledIcon } from 'components/common/MenuDropdown/styled'
 import SVG from 'react-inlinesvg'

@@ -8,9 +8,8 @@ import { Link } from '@/components/Link'
 
 import { ContainerCard, ArticleContent, Breadcrumbs, ArticleMainTitle, BodyContent } from '@/styles/styled'
 
-import { EventCategories, sendEventHandler } from '@cowprotocol/analytics'
-
 import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
+import { clickOnLegal } from 'modules/analytics'
 
 interface PageProps {
   siteConfigData: typeof CONFIG
@@ -40,10 +39,10 @@ export default function Page({ siteConfigData }: PageProps) {
         <ContainerCard bgColor={Color.neutral100} minHeight="70vh" gap={62} gapMobile={42} centerContent touchFooter>
           <ArticleContent maxWidth="100%">
             <Breadcrumbs>
-              <Link href="/ " onClick={() => sendEventHandler(EventCategories.LEGAL, 'click-legal-breadcrumbs')}>
+              <Link href="/ " onClick={() => clickOnLegal('click-legal-breadcrumbs')}>
                 Home
               </Link>
-              <Link href="/legal" onClick={() => sendEventHandler(EventCategories.LEGAL, 'click-legal-breadcrumbs')}>
+              <Link href="/legal" onClick={() => clickOnLegal('click-legal-breadcrumbs')}>
                 Legal
               </Link>
               <span>{title}</span>
@@ -170,7 +169,7 @@ export default function Page({ siteConfigData }: PageProps) {
               </p>
               <h2>Obligations of the Partner</h2>
               <p>
-                You are prohibited from misusing the the Widget, the Interface, the Protocol or its infrastructure by
+                You are prohibited from misusing the Widget, the Interface, the Protocol or its infrastructure by
                 knowingly introducing any material that is:
               </p>
               <ul>
@@ -183,14 +182,14 @@ export default function Page({ siteConfigData }: PageProps) {
               <p>You are prohibited from attempting to gain unauthorized access to the:</p>
               <ul>
                 <li>the Widget, the Interface, the Protocol or its infrastructure;</li>
-                <li>Server(s) hosting the the Widget, the Interface, the Protocol or its infrastructure;</li>
+                <li>Server(s) hosting the Widget, the Interface, the Protocol or its infrastructure;</li>
                 <li>
-                  Any computer or database connected to the the Widget, the Interface, the Protocol or its
+                  Any computer or database connected to the Widget, the Interface, the Protocol or its
                   infrastructure.
                 </li>
               </ul>
               <p>
-                You are prohibited from attacking the the Widget, the Interface, the Protocol or its infrastructure
+                You are prohibited from attacking the Widget, the Interface, the Protocol or its infrastructure
                 through:
               </p>
               <ul>

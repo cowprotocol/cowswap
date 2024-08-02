@@ -51,11 +51,12 @@ jobs:
           REACT_APP_WC_PROJECT_ID=${{ secrets.REACT_APP_WC_PROJECT_ID }}
           REACT_APP_IPFS_READ_URI=${{ secrets.REACT_APP_IPFS_READ_URI }}
           REACT_APP_EXPLORER_SENTRY_DSN=${{ secrets.EXPLORER_SENTRY_DSN }}
-          REACT_APP_EXPLORER_GOOGLE_ANALYTICS_ID=${{ secrets.EXPLORER_GOOGLE_ANALYTICS_ID }}
           REACT_APP_SUBGRAPH_URL_MAINNET=${{ secrets.REACT_APP_SUBGRAPH_URL_MAINNET }}
           REACT_APP_SUBGRAPH_URL_ARBITRUM_ONE=${{ secrets.REACT_APP_SUBGRAPH_URL_ARBITRUM_ONE }}
           REACT_APP_SUBGRAPH_URL_GNOSIS_CHAIN=${{ secrets.REACT_APP_SUBGRAPH_URL_GNOSIS_CHAIN }}
           REACT_APP_BFF_BASE_URL=${{ secrets.BFF_BASE_URL }}
+          REACT_APP_CMS_BASE_URL=${{ secrets.CMS_BASE_URL }}
+          NEXT_PUBLIC_CMS_BASE_URL=${{ secrets.CMS_BASE_URL }}
           vercel build -t ${{ secrets.VERCEL_TOKEN }} --prod
 
       - name: Get the version

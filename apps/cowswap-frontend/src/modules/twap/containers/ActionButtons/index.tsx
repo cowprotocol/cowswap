@@ -1,7 +1,4 @@
-import React from 'react'
-
-import { twapConversionAnalytics } from '@cowprotocol/analytics'
-
+import { twapConversionAnalytics } from 'modules/analytics'
 import { useTradeConfirmActions } from 'modules/trade'
 import { TradeFormButtons, TradeFormValidation, useTradeFormButtonContext } from 'modules/tradeFormValidation'
 

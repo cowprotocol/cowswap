@@ -1,8 +1,9 @@
 import { useCallback } from 'react'
 
-import { switchTokensAnalytics } from '@cowprotocol/analytics'
 import { FractionUtils } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
+
+import { switchTokensAnalytics } from 'modules/analytics'
 
 import { useDerivedTradeState } from './useDerivedTradeState'
 import { useIsWrapOrUnwrap } from './useIsWrapOrUnwrap'

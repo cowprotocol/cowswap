@@ -27,7 +27,7 @@ import { useGetCachedPermit } from 'modules/permit'
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { BaseFlowContext } from 'modules/swap/services/types'
 import { TradeConfirmActions, useTradeConfirmActions } from 'modules/trade'
-import { TradeFlowAnalyticsContext } from 'modules/trade/utils/analytics'
+import { TradeFlowAnalyticsContext } from 'modules/trade/utils/tradeFlowAnalytics'
 
 import { useTokenContract, useWETHContract } from 'common/hooks/useContract'
 import { useIsSafeApprovalBundle } from 'common/hooks/useIsSafeApprovalBundle'
