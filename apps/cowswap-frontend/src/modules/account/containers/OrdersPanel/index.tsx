@@ -45,7 +45,6 @@ const SideBar = styled.div`
     height: 100%;
     max-width: 100%;
     border-radius: ${({ theme }) => (theme.isInjectedWidgetMode ? '24px' : '0')};
-    z-index: 10000;
   }
 `
 
