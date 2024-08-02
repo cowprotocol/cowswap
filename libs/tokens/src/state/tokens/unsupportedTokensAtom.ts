@@ -7,7 +7,6 @@ import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { UnsupportedTokensState } from '../../types'
 import { environmentAtom } from '../environmentAtom'
 
-
 export const unsupportedTokensAtom = atomWithStorage<Record<SupportedChainId, UnsupportedTokensState>>(
   'unsupportedTokensAtom:v2',
   mapSupportedNetworks({}),
@@ -20,8 +19,7 @@ export const currentUnsupportedTokensAtom = atom((get) => {
   return get(unsupportedTokensAtom)[chainId]
 })
 
-export const addUnsupportedTokenAtom = atom(null, (get, set, tokenAddress: string) => {
-  const { chainId } = get(environmentAtom)
+export const addUnsupportedTokenAtom = atom(null, (get, set, chainId: SupportedChainId, tokenAddress: string) => {
   const tokenId = tokenAddress.toLowerCase()
   const tokenList = get(unsupportedTokensAtom)
 
