@@ -167,7 +167,7 @@ export function AccountDetails({
         <AccountGroupingRow>
           <AccountControl>
             <WalletSecondaryActions>
-              {isInjectedMobileBrowser && (
+              {!isInjectedMobileBrowser && (
                 <>
                   {account && !isChainIdUnsupported && (
                     <AddressLink
