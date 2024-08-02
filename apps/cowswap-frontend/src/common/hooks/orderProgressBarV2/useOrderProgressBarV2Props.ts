@@ -121,10 +121,10 @@ function useCountdownStartUpdater(
   const setCountdown = useSetExecutingOrderCountdownCallback()
 
   useEffect(() => {
-    if (!countdown && countdown !== 0 && backendApiStatus === 'Active') {
+    if (!countdown && countdown !== 0 && backendApiStatus === 'active') {
       // Start countdown when it becomes active
       setCountdown(orderId, 15)
-    } else if (backendApiStatus === 'Scheduled' || backendApiStatus === 'Open') {
+    } else if (backendApiStatus === 'scheduled' || backendApiStatus === 'open') {
       // If for some reason it went back to start, reset it
       setCountdown(orderId, null)
     }
@@ -214,7 +214,7 @@ function getProgressBarStepName(
     return 'cancelled'
   } else if (isCancelling) {
     return 'cancelling'
-  } else if (cancellationTriggered && (backendApiStatus === 'Traded' || isConfirmed)) {
+  } else if (cancellationTriggered && (backendApiStatus === 'traded' || isConfirmed)) {
     // Was cancelling, but got executed in the meantime
     return 'cancellationFailed'
   } else if (isConfirmed) {
@@ -222,17 +222,17 @@ function getProgressBarStepName(
     return 'finished'
   } else if (
     previousStepName === 'executing' &&
-    (backendApiStatus === 'Active' || backendApiStatus === 'Open' || backendApiStatus === 'Scheduled')
+    (backendApiStatus === 'active' || backendApiStatus === 'open' || backendApiStatus === 'scheduled')
   ) {
-    // moved back from executing to Active
+    // moved back from executing to active
     return 'submissionFailed'
   } else if (
     previousStepName === 'solved' &&
-    (backendApiStatus === 'Active' || backendApiStatus === 'Open' || backendApiStatus === 'Scheduled')
+    (backendApiStatus === 'active' || backendApiStatus === 'open' || backendApiStatus === 'scheduled')
   ) {
-    // moved back from solving to Active
+    // moved back from solving to active
     return 'nextBatch'
-  } else if (backendApiStatus === 'Active' && countdown === 0) {
+  } else if (backendApiStatus === 'active' && countdown === 0) {
     // solving, but took longer than stipulated countdown
     return 'delayed'
   } else if (backendApiStatus) {
@@ -244,13 +244,13 @@ function getProgressBarStepName(
 }
 
 const BACKEND_TYPE_TO_PROGRESS_BAR_STEP_NAME: Record<CompetitionOrderStatus.type, OrderProgressBarStepName> = {
-  Scheduled: 'initial',
-  Open: 'initial',
-  Active: 'solving',
-  Solved: 'solved',
-  Executing: 'executing',
-  Traded: 'finished',
-  Cancelled: 'initial', // TODO: maybe add another state for finished with error?
+  scheduled: 'initial',
+  open: 'initial',
+  active: 'solving',
+  solved: 'solved',
+  executing: 'executing',
+  traded: 'finished',
+  cancelled: 'initial', // TODO: maybe add another state for finished with error?
 }
 
 function useBackendApiStatusUpdater(chainId: SupportedChainId, orderId: string, isFinal: boolean) {
