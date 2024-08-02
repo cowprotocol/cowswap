@@ -12,7 +12,9 @@ import { useDerivedSwapInfo } from 'modules/swap/hooks/useSwapState'
 import { useLimitHasEnoughAllowance } from '../../limitOrders/hooks/useLimitHasEnoughAllowance'
 import { useSwapEnoughAllowance } from '../../swap/hooks/useSwapFlowContext'
 import { useUpdateAppDataHooks } from '../hooks'
+import { TypedAppDataHooks, TypedCowHook } from '../types'
 import { buildAppDataHooks } from '../utils/buildAppDataHooks'
+import { cowHookToTypedCowHook } from '../utils/typedHooks'
 
 type OrderInteractionHooks = latest.OrderInteractionHooks
 
@@ -47,10 +49,16 @@ export function AppDataHooksUpdater(): null {
   const isNativeSell = trade?.inputAmount.currency ? getIsNativeToken(trade?.inputAmount.currency) : false
 
   useEffect(() => {
-    const preInteractionHooks = preHooks.map((hookDetails) => hookDetails.hook)
-    const postInteractionHooks = postHooks.map((hookDetails) => hookDetails.hook)
-    const hooks = buildAppDataHooks({
-      preInteractionHooks: permitData ? preInteractionHooks.concat([permitData]) : preInteractionHooks,
+    const preInteractionHooks = preHooks.map<TypedCowHook>((hookDetails) =>
+      cowHookToTypedCowHook(hookDetails.hook, 'hookStore')
+    )
+    const postInteractionHooks = postHooks.map<TypedCowHook>((hookDetails) =>
+      cowHookToTypedCowHook(hookDetails.hook, 'hookStore')
+    )
+    const hooks = buildAppDataHooks<TypedCowHook[], TypedAppDataHooks>({
+      preInteractionHooks: permitData
+        ? preInteractionHooks.concat([cowHookToTypedCowHook(permitData, 'permit')])
+        : preInteractionHooks,
       postInteractionHooks,
     })
 

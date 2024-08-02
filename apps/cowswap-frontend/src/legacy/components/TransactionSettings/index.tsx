@@ -1,6 +1,5 @@
 import { useCallback, useContext, useRef, useState } from 'react'
 
-import { orderExpirationTimeAnalytics, slippageToleranceAnalytics } from '@cowprotocol/analytics'
 import {
   DEFAULT_DEADLINE_FROM_NOW,
   HIGH_ETH_FLOW_SLIPPAGE_BPS,
@@ -27,6 +26,7 @@ import { ThemedText } from 'theme'
 import { AutoColumn } from 'legacy/components/Column'
 import { useUserTransactionTTL } from 'legacy/state/user/hooks'
 
+import { orderExpirationTimeAnalytics, slippageToleranceAnalytics } from 'modules/analytics'
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { useIsSlippageModified } from 'modules/swap/hooks/useIsSlippageModified'
 import { useIsSmartSlippageApplied } from 'modules/swap/hooks/useIsSmartSlippageApplied'

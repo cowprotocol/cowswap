@@ -1,10 +1,10 @@
 import { useEffect } from 'react'
 
-import { gameAnalytics } from '@cowprotocol/analytics'
 import { CowGame } from '@cowprotocol/cow-runner-game'
 
 import styled from 'styled-components/macro'
 
+import { gameAnalytics } from 'modules/analytics'
 import { PageTitle } from 'modules/application/containers/PageTitle'
 import { Page, Content } from 'modules/application/pure/Page'
 

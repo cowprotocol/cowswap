@@ -52,18 +52,21 @@ enum Explorers {
   Blockscout = 'Blockscout',
   Etherscan = 'Etherscan',
   Arbiscan = 'Arbiscan',
+  GnosisScan = 'GnosisScan',
 }
 
 // Used for GA ExternalLink detection
 export function detectExplorer(href: string) {
-  if (href.includes('explorer')) {
+  if (href.includes('explorer.cow.fi')) {
     return Explorers.Explorer
-  } else if (href.includes('blockscout')) {
+  } else if (href.includes('blockscout.com')) {
     return Explorers.Blockscout
-  } else if (href.includes('etherscan')) {
+  } else if (href.includes('etherscan.io')) {
     return Explorers.Etherscan
-  } else if (href.includes('arbiscan')) {
+  } else if (href.includes('arbiscan.io')) {
     return Explorers.Arbiscan
+  } else if (href.includes('gnosisscan.io')) {
+    return Explorers.GnosisScan
   } else {
     return undefined
   }

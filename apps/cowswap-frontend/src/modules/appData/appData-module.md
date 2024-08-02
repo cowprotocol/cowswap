@@ -7,7 +7,7 @@ See also:
 
 ![appData module](./appData-module.drawio.svg)
 
-## Desciption
+## Description
 
 This module returns the `appData` metadata, which should be used for attaching additional information to the orders.
 

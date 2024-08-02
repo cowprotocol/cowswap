@@ -5,6 +5,7 @@ import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS, OrderKind, SupportedChainId } from 
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { TradeType as UniTradeType } from '@uniswap/sdk-core'
 
+import { useAppDataHooks } from 'modules/appData'
 import { useGeneratePermitHook, usePermitInfo } from 'modules/permit'
 import {
   FlowType,
@@ -24,6 +25,7 @@ export function useSwapFlowContext(): SwapFlowContext | null {
   const sellCurrency = baseProps.trade?.inputAmount?.currency
   const permitInfo = usePermitInfo(sellCurrency, TradeType.SWAP)
   const generatePermitHook = useGeneratePermitHook()
+  const typedHooks = useAppDataHooks()
 
   const checkAllowanceAddress = COW_PROTOCOL_VAULT_RELAYER_ADDRESS[baseProps.chainId || SupportedChainId.MAINNET]
   const { enoughAllowance } = useEnoughBalanceAndAllowance({
@@ -52,8 +54,9 @@ export function useSwapFlowContext(): SwapFlowContext | null {
       contract,
       permitInfo: !enoughAllowance ? permitInfo : undefined,
       generatePermitHook,
+      typedHooks,
     }
-  }, [baseProps, contract, enoughAllowance, permitInfo, generatePermitHook])
+  }, [baseProps, contract, enoughAllowance, permitInfo, generatePermitHook, typedHooks])
 }
 
 export function useSwapEnoughAllowance(): boolean | undefined {

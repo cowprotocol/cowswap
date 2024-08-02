@@ -140,7 +140,9 @@ export function AddressInputPanel({
 
   return (
     <InputPanel id={id}>
-      {chainPrefixWarning && <ChainPrefixWarning chainPrefixWarning={chainPrefixWarning} chainInfo={chainInfo} isDarkMode={isDarkMode} />}
+      {chainPrefixWarning && (
+        <ChainPrefixWarning chainPrefixWarning={chainPrefixWarning} chainInfo={chainInfo} isDarkMode={isDarkMode} />
+      )}
       <ContainerRow error={error}>
         <InputContainer>
           <AutoColumn gap="md">

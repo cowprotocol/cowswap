@@ -25,6 +25,7 @@ const rateInfoParams = {
 }
 
 const tradeContext: TradeFlowContext = {
+  typedHooks: undefined,
   permitInfo: undefined,
   generatePermitHook: () => Promise.resolve(undefined),
   getCachedPermit: () => Promise.resolve(undefined),

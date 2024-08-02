@@ -1,6 +1,5 @@
 import { useCallback, useState } from 'react'
 
-import { addListAnalytics } from '@cowprotocol/analytics'
 import { useTokensBalances } from '@cowprotocol/balances-and-allowances'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
@@ -17,6 +16,7 @@ import {
 
 import styled from 'styled-components/macro'
 
+import { addListAnalytics } from 'modules/analytics'
 import { usePermitCompatibleTokens } from 'modules/permit'
 
 import { useOnTokenListAddingError } from '../../hooks/useOnTokenListAddingError'
@@ -43,7 +43,7 @@ export function SelectTokenWidget() {
 
   const updateSelectTokenWidget = useUpdateSelectTokenWidgetState()
 
-  const addCustomTokenLists = useAddList()
+  const addCustomTokenLists = useAddList((source) => addListAnalytics('Success', source))
   const importTokenCallback = useAddUserToken()
 
   const allTokens = useAllTokens()

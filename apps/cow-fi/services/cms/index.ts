@@ -3,6 +3,7 @@ import { PaginationParam } from 'types'
 import qs from 'qs'
 
 import { toQueryParams } from 'util/queryParams'
+import { getCmsClient } from '@cowprotocol/core'
 
 const PAGE_SIZE = 50
 
@@ -60,9 +61,7 @@ export function isSharedVideoEmbedComponent(component: ArticleBlock): component 
 /**
  * Open API Fetch client. See docs for usage https://openapi-ts.pages.dev/openapi-fetch/
  */
-export const client = CmsClient({
-  url: 'https://cms.cow.fi/api',
-})
+export const client = getCmsClient()
 
 /**
  * Returns the article slugs for the given page.
