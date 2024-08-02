@@ -2,7 +2,6 @@ import { useAtom, useAtomValue } from 'jotai'
 import { useSetAtom } from 'jotai'
 import { useCallback, useMemo, useRef, useState } from 'react'
 
-import { openFortuneCookieAnalytics, shareFortuneTwitterAnalytics } from '@cowprotocol/analytics'
 import twitterImage from '@cowprotocol/assets/cow-swap/twitter.svg'
 import IMAGE_ICON_FORTUNE_COOKIE from '@cowprotocol/assets/images/icon-fortune-cookie.svg'
 import { addBodyClass, removeBodyClass } from '@cowprotocol/common-utils'
@@ -16,7 +15,7 @@ import { X } from 'react-feather'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
-
+import { openFortuneCookieAnalytics, shareFortuneTwitterAnalytics } from 'modules/analytics'
 import { useOpenRandomFortune } from 'modules/fortune/hooks/useOpenRandomFortune'
 import { lastCheckedFortuneAtom } from 'modules/fortune/state/checkedFortunesListAtom'
 import {

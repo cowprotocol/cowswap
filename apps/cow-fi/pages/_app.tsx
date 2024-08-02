@@ -3,12 +3,13 @@ import GlobalStyles from 'styles/global.styles'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { CONFIG } from '@/const/meta'
-import { Analytics } from '@/components/Analytics'
 import { ApolloProvider } from '@apollo/client'
 import { apolloClient } from 'services/uniswap-price/apollo-client'
 import { useInitializeUtm } from 'modules/utm'
 import { WithLDProvider } from '@/components/WithLDProvider'
 import { ThemeProvider } from '../theme'
+import { CowAnalyticsProvider } from '@cowprotocol/analytics'
+import { cowAnalytics } from 'modules/analytics'
 
 export default function App(props: AppProps) {
   const { Component, pageProps } = props
@@ -50,11 +51,12 @@ export default function App(props: AppProps) {
       </Head>
 
       <GlobalStyles />
-      <Analytics />
       <ApolloProvider client={apolloClient}>
         <WithLDProvider>
           <ThemeProvider>
-            <Component {...pageProps} />
+            <CowAnalyticsProvider cowAnalytics={cowAnalytics}>
+              <Component {...pageProps} />
+            </CowAnalyticsProvider>
           </ThemeProvider>
         </WithLDProvider>
       </ApolloProvider>

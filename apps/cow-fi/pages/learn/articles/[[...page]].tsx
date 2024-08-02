@@ -20,12 +20,11 @@ import {
   CategoryLinks,
 } from '@/styles/styled'
 
-import { EventCategories, sendEventHandler } from '@cowprotocol/analytics'
-
 const LEARN_PATH = '/learn/'
 const ARTICLES_PATH = `${LEARN_PATH}articles/`
 
 import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
+import { clickOnKnowledgeBase } from 'modules/analytics'
 const ITEMS_PER_PAGE = 24
 
 const Wrapper = styled.div`
@@ -92,7 +91,7 @@ export default function ArticlesPage({
       <Wrapper>
         <CategoryLinks>
           <li>
-            <a href="/learn" onClick={sendEventHandler(EventCategories.KNOWLEDGEBASE, 'click-categories-home')}>
+            <a href="/learn" onClick={() => clickOnKnowledgeBase('click-categories-home')}>
               Knowledge Base
             </a>
           </li>
@@ -100,7 +99,7 @@ export default function ArticlesPage({
             <li key={category.slug}>
               <a
                 href={`/learn/topic/${category.slug}`}
-                onClick={sendEventHandler(EventCategories.KNOWLEDGEBASE, `click-categories-${category.name}`)}
+                onClick={() => clickOnKnowledgeBase(`click-categories-${category.name}`)}
               >
                 {category.name}
               </a>
@@ -114,7 +113,7 @@ export default function ArticlesPage({
           <ContainerCardInner maxWidth={970} gap={24} gapMobile={24}>
             <ContainerCardSectionTop>
               <Breadcrumbs padding={'0'}>
-                <a href="/learn" onClick={sendEventHandler(EventCategories.KNOWLEDGEBASE, 'click-breadcrumbs-home')}>
+                <a href="/learn" onClick={() => clickOnKnowledgeBase('click-breadcrumbs-home')}>
                   Knowledge Base
                 </a>
                 <h1>All articles</h1>
@@ -134,10 +133,7 @@ export default function ArticlesPage({
                       <LinkItem
                         key={article.id}
                         href={`${LEARN_PATH}${article.attributes.slug}`}
-                        onClick={sendEventHandler(
-                          EventCategories.KNOWLEDGEBASE,
-                          `click-article-${article.attributes.title}`
-                        )}
+                        onClick={() => clickOnKnowledgeBase(`click-article-${article.attributes.title}`)}
                       >
                         {article.attributes.title}
                         <span>→</span>
@@ -154,7 +150,7 @@ export default function ArticlesPage({
                   key={i}
                   href={`${ARTICLES_PATH}${i + 1}`}
                   className={i + 1 === currentPage ? 'active' : ''}
-                  onClick={sendEventHandler(EventCategories.KNOWLEDGEBASE, `click-pagination-${i + 1}`)}
+                  onClick={() => clickOnKnowledgeBase(`click-pagination-${i + 1}`)}
                 >
                   {i + 1}
                 </a>

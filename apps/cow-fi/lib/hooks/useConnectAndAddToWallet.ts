@@ -1,38 +1,39 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { useConnect } from './useConnect'
-import { useWalletClient } from 'wagmi'
+import { useDisconnect, useWalletClient } from 'wagmi'
 import { handleRpcError } from '@/util/handleRpcError'
 import { useAddRpcWithTimeout } from './useAddRpcWithTimeout'
 import { AddToWalletState, AddToWalletStateValues } from '@/components/AddRpcButton'
+import { clickOnMevBlocker } from '../../modules/analytics'
 
 const DEFAULT_STATE: AddToWalletState = { state: 'unknown', autoConnect: false }
 const ADDING_STATE: AddToWalletState = { state: 'adding', autoConnect: false }
 const ADDED_STATE: AddToWalletState = { state: 'added', autoConnect: false }
 
-export interface UseConnectAndAddToWalletPros {
+export interface UseConnectAndAddToWalletProps {
   addWalletState: AddToWalletState
-  connectAndAddToWallet: (() => void) | null
+  connectAndAddToWallet: (() => Promise<void>) | null
+  disconnectWallet: (() => void) | null
 }
 
-export function useConnectAndAddToWallet(): UseConnectAndAddToWalletPros {
+export function useConnectAndAddToWallet(): UseConnectAndAddToWalletProps {
   const { isConnected, connect } = useConnect()
+  const { disconnect } = useDisconnect()
   const { data: walletClient } = useWalletClient()
   const [addWalletState, setState] = useState<AddToWalletState>(DEFAULT_STATE)
   const [addingPromise, setAddRpcPromise] = useState<Promise<boolean> | null>(null)
-  const { state, autoConnect } = addWalletState
 
-  // Handle RPC errors
   const handleError = useCallback(
     (error: unknown) => {
       console.error(`[connectAndAddToWallet] handleError`, error)
-
       const { errorMessage: message, isError, isUserRejection } = handleRpcError(error)
-
-      if (isError || isUserRejection) {
-        // Display the error
+      if (isUserRejection) {
+        clickOnMevBlocker('click-add-rpc-to-wallet-user-rejected')
+        setState({ state: 'unknown', errorMessage: 'User rejected the request', autoConnect: false })
+      } else if (isError) {
+        clickOnMevBlocker('click-add-rpc-to-wallet-error')
         setState({ state: 'error', errorMessage: message || undefined, autoConnect: false })
       } else {
-        // Not an error: i.e The user is connecting
         setState(DEFAULT_STATE)
       }
       setAddRpcPromise(null)
@@ -40,62 +41,78 @@ export function useConnectAndAddToWallet(): UseConnectAndAddToWalletPros {
     [setState]
   )
 
-  // Add RPC endpoint to wallet (with analytics + handle timeout state)
   const addToWallet = useAddRpcWithTimeout({
-    isAdding: state === 'adding',
+    isAdding: addWalletState.state === 'adding',
     addingPromise,
     onAdding(newAddRpcPromise) {
       console.debug('[connectAndAddToWallet] Adding RPC...')
+      clickOnMevBlocker('click-add-rpc-to-wallet-adding')
       setAddRpcPromise(newAddRpcPromise)
       setState(ADDING_STATE)
     },
     onAdded() {
       console.debug('[connectAndAddToWallet] 🎉 RPC has been added!')
+      clickOnMevBlocker('click-add-rpc-to-wallet-added-success')
       setState(ADDED_STATE)
       setAddRpcPromise(null)
     },
     onTimeout(errorMessage: string, newState: AddToWalletStateValues) {
       console.debug(`[connectAndAddToWallet] New State: ${newState}. Message`, errorMessage)
+      clickOnMevBlocker('click-add-rpc-to-wallet-timeout')
       setState({
         state: newState,
         errorMessage: errorMessage || undefined,
-        autoConnect,
+        autoConnect: addWalletState.autoConnect,
       })
     },
     walletClient: walletClient ?? undefined,
     handleError,
   })
 
-  // Connect and auto-add the RPC endpoint
-  const allowToConnectAndAddToWallet = !isConnected || walletClient // allow to connectAndAddToWallet if not connected, or if the client is ready
-  const connectAndAddToWallet = useCallback(() => {
-    if (!allowToConnectAndAddToWallet) {
-      return
+  const connectAndAddToWallet = useCallback((): Promise<void> => {
+    if (!walletClient && isConnected) {
+      return Promise.reject(new Error('Connection not allowed'))
     }
 
-    if (!isConnected) {
-      console.debug('[useConnectAndAddToWallet] Connecting...')
-      connect()
-        .then(() => {
-          console.debug('[useConnectAndAddToWallet] 🔌 Connected!')
-          addToWallet()
-        })
-        .catch(handleError)
-    } else {
-      console.debug('[useConnectAndAddToWallet] Already connected. Adding RPC endpoint...')
-      addToWallet()
-    }
-  }, [allowToConnectAndAddToWallet, isConnected, handleError, connect, addToWallet])
+    return new Promise<void>((resolve, reject) => {
+      if (!isConnected) {
+        console.debug('[useConnectAndAddToWallet] Connecting...')
+        clickOnMevBlocker('click-add-rpc-to-wallet-connecting')
+        connect()
+          .then((result) => {
+            if (result) {
+              console.debug('[useConnectAndAddToWallet] 🔌 Connected!')
+              clickOnMevBlocker('click-add-rpc-to-wallet-connected')
+              addToWallet()
+              resolve()
+            } else {
+              console.debug('[useConnectAndAddToWallet] Connection process incomplete')
+              setState(DEFAULT_STATE)
+              resolve()
+            }
+          })
+          .catch((error: unknown) => {
+            handleError(error)
+            reject(error)
+          })
+      } else {
+        console.debug('[useConnectAndAddToWallet] Already connected. Adding RPC endpoint...')
+        clickOnMevBlocker('click-add-rpc-to-wallet-connected')
+        addToWallet()
+        resolve()
+      }
+    })
+  }, [isConnected, connect, addToWallet, handleError, walletClient])
 
-  // Auto-connect (once we have )
-  useEffect(() => {
-    if (isConnected && walletClient && autoConnect) {
-      addToWallet()
-    }
-  }, [isConnected, walletClient, autoConnect, addToWallet])
+  const disconnectWallet = useCallback(() => {
+    clickOnMevBlocker('click-disconnect-wallet')
+    disconnect()
+    setState(DEFAULT_STATE)
+  }, [disconnect])
 
   return {
-    connectAndAddToWallet: allowToConnectAndAddToWallet ? connectAndAddToWallet : null,
+    connectAndAddToWallet: walletClient || !isConnected ? connectAndAddToWallet : null,
+    disconnectWallet: isConnected ? disconnectWallet : null,
     addWalletState,
   }
 }

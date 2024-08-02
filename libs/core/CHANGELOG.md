@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/cowprotocol/cowswap/compare/core-v1.1.0...core-v1.2.0) (2024-07-31)
+
+
+### Features
+
+* support barn CMS and refactor ([#4630](https://github.com/cowprotocol/cowswap/issues/4630)) ([3b9bbff](https://github.com/cowprotocol/cowswap/commit/3b9bbffd9b916a0f5ec493941bcffd7fb9182972))
+
 ## [1.1.0](https://github.com/cowprotocol/cowswap/compare/core-v1.0.0...core-v1.1.0) (2024-05-29)
 
 

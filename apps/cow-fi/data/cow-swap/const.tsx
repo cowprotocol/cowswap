@@ -1,5 +1,4 @@
 import { Link } from '@/components/Link'
-import { EventCategories, sendEventHandler } from '@cowprotocol/analytics'
 
 import IMG_COWSWAP_COINS from '@cowprotocol/assets/images/image-coins.svg'
 import IMG_COWSWAP_MEV from '@cowprotocol/assets/images/image-cowswap-mev.svg'
@@ -10,6 +9,7 @@ import IMG_COWSWAP_TWAP from '@cowprotocol/assets/images/image-cowswap-twap.svg'
 import IMG_COWSWAP_GASLESS from '@cowprotocol/assets/images/image-cowswap-gasless.svg'
 import IMG_COWSWAP_NOFEES from '@cowprotocol/assets/images/image-cowswap-nofees.svg'
 import IMG_COWSWAP_MULTIPLE from '@cowprotocol/assets/images/image-cowswap-multiple.svg'
+import { clickOnCowSwap } from 'modules/analytics'
 
 export const COW_IS_DIFFERENT = [
   {
@@ -101,7 +101,7 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/introduction/intents"
           external
           utmContent="cow-protocol-introduction-intents"
-          onClick={() => sendEventHandler(EventCategories.COWSWAP, 'click-introduction-intents')}
+          onClick={() => clickOnCowSwap('click-introduction-intents')}
         >
           intents
         </Link>{' '}
@@ -110,7 +110,7 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/introduction/batch-auctions"
           external
           utmContent="cow-protocol-introduction-batch-auctions"
-          onClick={() => sendEventHandler(EventCategories.COWSWAP, 'click-introduction-batch-auctions')}
+          onClick={() => clickOnCowSwap('click-introduction-batch-auctions')}
         >
           batch auctions{' '}
         </Link>
@@ -121,7 +121,7 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/introduction/solvers"
           external
           utmContent="cow-protocol-introduction-solvers"
-          onClick={() => sendEventHandler(EventCategories.COWSWAP, 'click-introduction-solvers')}
+          onClick={() => clickOnCowSwap('click-introduction-solvers')}
         >
           solvers
         </Link>{' '}
@@ -130,7 +130,7 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/introduction/intents"
           external
           utmContent="cow-protocol-introduction-intents"
-          onClick={() => sendEventHandler(EventCategories.COWSWAP, 'click-introduction-intents')}
+          onClick={() => clickOnCowSwap('click-introduction-intents')}
         >
           trade intent
         </Link>{' '}
@@ -139,7 +139,7 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/how-it-works/coincidence-of-wants"
           external
           utmContent="cow-protocol-coincidence-of-wants"
-          onClick={() => sendEventHandler(EventCategories.COWSWAP, 'click-coincidence-of-wants')}
+          onClick={() => clickOnCowSwap('click-coincidence-of-wants')}
         >
           Coincidences of Wants
         </Link>{' '}
@@ -168,7 +168,7 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/how-it-works/coincidence-of-wants"
           external
           utmContent="cow-protocol-coincidence-of-wants"
-          onClick={() => sendEventHandler(EventCategories.COWSWAP, 'click-coincidence-of-wants')}
+          onClick={() => clickOnCowSwap('click-coincidence-of-wants')}
         >
           Coincidence of Wants
         </Link>
@@ -180,7 +180,7 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/introduction/batch-auctions"
           external
           utmContent="cow-protocol-introduction-batch-auctions"
-          onClick={() => sendEventHandler(EventCategories.COWSWAP, 'click-introduction-batch-auctions')}
+          onClick={() => clickOnCowSwap('click-introduction-batch-auctions')}
         >
           batching mechanism
         </Link>
@@ -202,7 +202,7 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/introduction/solvers"
           external
           utmContent="cow-protocol-introduction-solvers"
-          onClick={() => sendEventHandler(EventCategories.COWSWAP, 'click-introduction-solvers')}
+          onClick={() => clickOnCowSwap('click-introduction-solvers')}
         >
           solvers
         </Link>{' '}
@@ -238,7 +238,7 @@ export const FAQ_DATA = [
           href="https://docs.cow.fi/cow-protocol/concepts/introduction/batch-auctions"
           external
           utmContent="cow-protocol-introduction-batch-auctions"
-          onClick={() => sendEventHandler(EventCategories.COWSWAP, 'click-introduction-batch-auctions')}
+          onClick={() => clickOnCowSwap('click-introduction-batch-auctions')}
         >
           batch auctions
         </Link>{' '}
@@ -256,11 +256,7 @@ export const FAQ_DATA = [
       <>
         Please beware of fake links and phishing scams. The official CoW DAO channels can be found at the footer of all
         our pages on{' '}
-        <Link
-          href="https://www.cow.fi"
-          utmContent="cow-website"
-          onClick={() => sendEventHandler(EventCategories.COWSWAP, 'click-website')}
-        >
+        <Link href="https://www.cow.fi" utmContent="cow-website" onClick={() => clickOnCowSwap('click-website')}>
           www.cow.fi
         </Link>
         .
@@ -273,7 +269,7 @@ export const FAQ_DATA = [
           href="https://x.com/CoWSwap"
           external
           utmContent="cow-twitter"
-          onClick={() => sendEventHandler(EventCategories.COWSWAP, 'click-twitter')}
+          onClick={() => clickOnCowSwap('click-twitter')}
         >
           https://x.com/CoWSwap
         </Link>
@@ -283,7 +279,7 @@ export const FAQ_DATA = [
           href="https://discord.gg/cowprotocol"
           external
           utmContent="cow-discord"
-          onClick={() => sendEventHandler(EventCategories.COWSWAP, 'click-discord')}
+          onClick={() => clickOnCowSwap('click-discord')}
         >
           https://discord.gg/cowprotocol
         </Link>
@@ -293,7 +289,7 @@ export const FAQ_DATA = [
           href="https://forum.cow.fi/"
           external
           utmContent="cow-forum"
-          onClick={() => sendEventHandler(EventCategories.COWSWAP, 'click-forum')}
+          onClick={() => clickOnCowSwap('click-forum')}
         >
           https://forum.cow.fi/
         </Link>
@@ -303,7 +299,7 @@ export const FAQ_DATA = [
           href="https://snapshot.org/#/cow.eth"
           external
           utmContent="cow-snapshot"
-          onClick={() => sendEventHandler(EventCategories.COWSWAP, 'click-snapshot')}
+          onClick={() => clickOnCowSwap('click-snapshot')}
         >
           https://snapshot.org/#/cow.eth
         </Link>
@@ -313,7 +309,7 @@ export const FAQ_DATA = [
           href="https://github.com/cowprotocol/"
           external
           utmContent="cow-github"
-          onClick={() => sendEventHandler(EventCategories.COWSWAP, 'click-github')}
+          onClick={() => clickOnCowSwap('click-github')}
         >
           https://github.com/cowprotocol/
         </Link>
@@ -338,7 +334,7 @@ export const FAQ_DATA = [
           href="https://discord.gg/cowprotocol"
           external
           utmContent="cow-discord"
-          onClick={() => sendEventHandler(EventCategories.COWSWAP, 'click-discord')}
+          onClick={() => clickOnCowSwap('click-discord')}
         >
           https://discord.gg/cowprotocol
         </Link>

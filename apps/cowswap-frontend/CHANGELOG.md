@@ -1,5 +1,33 @@
 # Changelog
 
+## [1.78.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.78.0...cowswap-v1.78.1) (2024-07-31)
+
+
+### Bug Fixes
+
+* flashing network selector/tokens when connect to a wallet in ano… ([#4747](https://github.com/cowprotocol/cowswap/issues/4747)) ([856240f](https://github.com/cowprotocol/cowswap/commit/856240f688a8238ed4138a1c8ec053c34b2e4ce6))
+* **twap:** make TWAP warning less scary ([#4728](https://github.com/cowprotocol/cowswap/issues/4728)) ([00b24d1](https://github.com/cowprotocol/cowswap/commit/00b24d1ada6b0673ddefbb3bff5ba4eb9b0988c9))
+
+## [1.78.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.77.1...cowswap-v1.78.0) (2024-07-18)
+
+
+### Features
+
+* refactor and untangle analytics ([#4718](https://github.com/cowprotocol/cowswap/issues/4718)) ([ee396eb](https://github.com/cowprotocol/cowswap/commit/ee396eb1c4ef9a786810ed20b20020b4cb986460))
+
+
+### Bug Fixes
+
+* keep accordion open on price refresh ([#4725](https://github.com/cowprotocol/cowswap/issues/4725)) ([99ef519](https://github.com/cowprotocol/cowswap/commit/99ef519b48ea64e9bd76acbfe032778b23997e2d))
+
+## [1.77.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.77.0...cowswap-v1.77.1) (2024-07-17)
+
+
+### Bug Fixes
+
+* **permit:** filter out permit signer and rotate it ([#4719](https://github.com/cowprotocol/cowswap/issues/4719)) ([bfb1f29](https://github.com/cowprotocol/cowswap/commit/bfb1f295997ba8cf16744afce45dbd19eb8990c6))
+* **permit:** typefy hooks and allow only 1 permit ([#4726](https://github.com/cowprotocol/cowswap/issues/4726)) ([0e59ce1](https://github.com/cowprotocol/cowswap/commit/0e59ce1ef730ce37e15a50407da19b6816878c4d))
+
 ## [1.77.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.76.2...cowswap-v1.77.0) (2024-07-12)
 
 

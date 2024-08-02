@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useState, useCallback } from 'react'
 
 import { CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
@@ -29,6 +29,7 @@ interface TradeRateDetailsProps {
 }
 
 export function TradeRateDetails({ allowedSlippage, receiveAmountInfo, rateInfoParams }: TradeRateDetailsProps) {
+  const [isFeeDetailsOpen, setFeeDetailsOpen] = useState(false)
   const derivedTradeState = useDerivedTradeState()
   const tradeQuote = useTradeQuote()
   const shouldPayGas = useShouldPayGas()
@@ -44,6 +45,10 @@ export function TradeRateDetails({ allowedSlippage, receiveAmountInfo, rateInfoP
 
   const widgetParams = useInjectedWidgetParams()
   const networkFeeAmountUsd = useUsdAmount(networkFeeAmount).value
+
+  const toggleAccordion = useCallback(() => {
+    setFeeDetailsOpen((prev) => !prev)
+  }, [])
 
   if (!receiveAmountInfo) {
     if (!networkFeeAmount) return null
@@ -65,7 +70,12 @@ export function TradeRateDetails({ allowedSlippage, receiveAmountInfo, rateInfoP
   const totalCosts = getTotalCosts(receiveAmountInfo)
 
   return (
-    <TradeTotalCostsDetails totalCosts={totalCosts} rateInfoParams={rateInfoParams}>
+    <TradeTotalCostsDetails
+      totalCosts={totalCosts}
+      rateInfoParams={rateInfoParams}
+      isFeeDetailsOpen={isFeeDetailsOpen}
+      toggleAccordion={toggleAccordion}
+    >
       <TradeFeesAndCosts
         receiveAmountInfo={receiveAmountInfo}
         widgetParams={widgetParams}
