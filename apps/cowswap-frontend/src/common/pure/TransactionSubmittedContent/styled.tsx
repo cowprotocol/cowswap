@@ -93,10 +93,13 @@ export const ActionsWrapper = styled.div`
   font-size: 14px;
 
   > a {
+    transition: color var(${UI.ANIMATION_DURATION}) ease-in-out;
     text-decoration: none;
+    color: var(${UI.COLOR_TEXT_OPACITY_70});
 
     &:hover {
       text-decoration: underline;
+      color: var(${UI.COLOR_TEXT});
     }
   }
 `

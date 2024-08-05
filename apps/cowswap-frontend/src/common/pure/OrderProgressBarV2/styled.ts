@@ -1,7 +1,9 @@
-import { UI } from '@cowprotocol/ui'
 import IMAGE_STAR_SHINE from '@cowprotocol/assets/cow-swap/star-shine.svg'
+import { UI, Media } from '@cowprotocol/ui'
 
 import styled, { css, keyframes } from 'styled-components/macro'
+
+const SUCCESS_COLOR = '#04795b' // TODO: Fix hardcoded color
 
 export const Icon = styled.div<{ status: string; customColor?: string }>`
   --width: 28px;
@@ -114,10 +116,11 @@ export const Title = styled.h3<{ customColor?: string }>`
   font-size: 21px;
 `
 
-export const Description = styled.p`
-  margin: 8px 0 0;
+export const Description = styled.p<{ center?: boolean; margin?: string }>`
+  margin: ${({ margin }) => margin || '8px 0 0'};
   font-size: 14px;
   color: var(${UI.COLOR_TEXT_OPACITY_70});
+  text-align: ${({ center }) => (center ? 'center' : 'left')};
 `
 
 export const Link = styled.a<{ underline?: boolean }>`
@@ -338,11 +341,10 @@ export const FinishedStepContainer = styled.div`
   width: 100%;
 `
 
-export const FinishedContent = styled.div`
+export const ConclusionContent = styled.div`
   display: flex;
   flex-flow: column wrap;
   align-items: center;
-  gap: 10px;
   padding: 0;
   width: 100%;
   margin: 20px auto 0;
@@ -357,6 +359,12 @@ export const CowImage = styled.div`
   display: flex;
   align-items: flex-end;
   justify-content: flex-start;
+
+  // mobile from Media
+  ${Media.upToSmall()} {
+    left: -50px;
+    width: 200px;
+  }
 `
 
 export const TokenPairTitle = styled.h3`
@@ -370,6 +378,11 @@ export const TokenPairTitle = styled.h3`
   flex-flow: column wrap;
   justify-content: center;
   align-items: flex-end;
+
+  // mobile
+  ${Media.upToSmall()} {
+    display: none;
+  }
 `
 
 export const TokenImages = styled.div`
@@ -405,6 +418,10 @@ export const Surplus = styled.div`
   > b {
     font-size: 46px;
     font-weight: 700;
+
+    ${Media.upToSmall()} {
+      font-size: 32px;
+    }
   }
 `
 
@@ -448,6 +465,11 @@ export const ShareButton = styled.button`
   bottom: 13px;
   left: 10px;
 
+  // mobile
+  ${Media.upToSmall()} {
+    border: 1px solid var(${UI.COLOR_TEXT});
+  }
+
   > svg {
     --size: 17px;
     width: var(--size);
@@ -455,20 +477,24 @@ export const ShareButton = styled.button`
   }
 `
 
-export const TransactionStatus = styled.div`
+export const TransactionStatus = styled.div<{ status?: string }>`
   display: flex;
   align-items: center;
   gap: 10px;
   font-size: 21px;
   font-weight: bold;
-  margin: 0;
-  color: #04795b;
+  margin: 24px auto;
+  color: ${({ status }) => (status === 'expired' ? `var(${UI.COLOR_ALERT_TEXT})` : `var(${UI.COLOR_SUCCESS_TEXT})`)};
 
   > svg {
     --size: 28px;
     color: currentColor;
     width: var(--size);
     height: var(--size);
+    background-color: ${({ status }) =>
+      status === 'expired' ? `var(${UI.COLOR_ALERT_BG})` : `var(${UI.COLOR_SUCCESS_BG})`};
+    border-radius: var(--size);
+    padding: 2px;
   }
 `
 
@@ -500,11 +526,13 @@ export const SolverTable = styled.table`
   width: 100%;
   border-collapse: separate;
   border-spacing: 0 4px;
-  margin-top: 10px;
+  margin: 14px auto 0;
 `
 
 export const SolverTableCell = styled.td<{ isFirst?: boolean; isSecond?: boolean; isLast?: boolean }>`
   padding: 10px;
+  color: inherit;
+
   ${({ isFirst }) =>
     isFirst &&
     css`
@@ -531,7 +559,8 @@ export const SolverTableCell = styled.td<{ isFirst?: boolean; isSecond?: boolean
 
 export const SolverTableRow = styled.tr<{ isWinner: boolean }>`
   background: ${({ isWinner }) => (isWinner ? 'rgba(4, 121, 91, 0.15)' : `var(${UI.COLOR_PAPER_DARKER})`)};
-  color: ${({ isWinner }) => (isWinner ? '#007B28' : `var(${UI.COLOR_TEXT_PAPER})`)};
+  color: ${({ isWinner }) =>
+    isWinner ? `${SUCCESS_COLOR}` : `var(${UI.COLOR_TEXT_OPACITY_70})`}; // TODO: Fix hardcoded color
   font-weight: ${({ isWinner }) => (isWinner ? 'bold' : 'normal')};
   font-size: 14px;
   transition: background 0.15s ease-in-out;
@@ -541,12 +570,15 @@ export const SolverTableRow = styled.tr<{ isWinner: boolean }>`
   }
 `
 
-export const SolverRank = styled(SolverTableCell)``
+export const SolverRank = styled(SolverTableCell)`
+  color: inherit;
+`
 
 export const SolverInfo = styled.div`
   display: flex;
   align-items: center;
   gap: 6px;
+  color: inherit;
 `
 
 export const SolverLogo = styled.div`
@@ -557,6 +589,7 @@ export const SolverLogo = styled.div`
 
 export const SolverName = styled.span`
   flex-grow: 1;
+  color: inherit;
 `
 
 export const TrophyIcon = styled.span`
@@ -600,12 +633,67 @@ export const ViewMoreButton = styled.button`
 `
 
 export const ReceivedAmount = styled.p`
-  font-size: 16px;
-  font-weight: bold;
-  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: 4px;
+  font-size: 14px;
+  font-weight: normal;
+  margin: 20px auto 0;
+  color: var(${UI.COLOR_TEXT_OPACITY_70});
+
+  > b {
+    color: var(${UI.COLOR_TEXT_PAPER});
+  }
 `
 
 export const ExtraAmount = styled.p`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  color: var(${UI.COLOR_TEXT_OPACITY_70});
   font-size: 14px;
-  color: #4caf50;
+  margin: 4px auto 0;
+  gap: 4px;
+
+  > i {
+    color: ${SUCCESS_COLOR}; // TODO: Fix hardcoded color
+    font-weight: bold;
+    font-style: normal;
+  }
+`
+
+export const CardWrapper = styled.div`
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  width: 100%;
+  margin: 0 auto 16px;
+  gap: 5px;
+`
+
+export const InfoCard = styled.div<{ variant: 'warning' | 'success' }>`
+  flex: 1;
+  padding: 20px;
+  border-radius: 16px;
+  background-color: ${({ variant }) => (variant === 'warning' ? '#FFF5E6' : '#E6F5ED')};
+  color: ${({ variant }) => (variant === 'warning' ? '#996815' : '#1E7F4E')};
+  display: flex;
+  flex-flow: column wrap;
+  align-items: center;
+  justify-content: center;
+
+  h3 {
+    margin: 0 0 16px;
+    font-size: 16px;
+    font-weight: bold;
+  }
+
+  p {
+    margin: 0;
+    font-size: 14px;
+    text-align: center;
+  }
 `

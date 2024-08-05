@@ -94,10 +94,12 @@ export function TransactionSubmittedContent({
             )}
             <styledEl.ButtonGroup>
               <WatchAssetInWallet shortLabel currency={currencyToAdd} />
-
               {/*{activityDerivedState?.status === ActivityStatus.PENDING && (*/}
               {/*  <styledEl.ButtonCustom onClick={onDismiss}>Close</styledEl.ButtonCustom>*/}
               {/*)}*/}
+              {activityDerivedState?.status === (ActivityStatus.CONFIRMED || ActivityStatus.EXPIRED) && (
+                <styledEl.ButtonCustom onClick={onDismiss}>Close</styledEl.ButtonCustom>
+              )}
             </styledEl.ButtonGroup>
           </>
         )}

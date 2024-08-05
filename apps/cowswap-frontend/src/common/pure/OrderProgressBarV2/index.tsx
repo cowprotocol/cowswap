@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 
-import progressBarStep1 from '@cowprotocol/assets/cow-swap/progress-bar-step1.png'
 import progressBarStep2b from '@cowprotocol/assets/cow-swap/progress-bar-step2b.png'
 import PROGRESSBAR_COW_SURPLUS from '@cowprotocol/assets/cow-swap/progressbar-cow-surplus.svg'
 import STEP_IMAGE_EXECUTING from '@cowprotocol/assets/cow-swap/progressbar-step-executing.svg'
@@ -8,11 +7,12 @@ import STEP_IMAGE_SOLVING from '@cowprotocol/assets/cow-swap/progressbar-step-so
 import STEP_IMAGE_UNFILLABLE from '@cowprotocol/assets/cow-swap/progressbar-step-unfillable.svg'
 import STEP_IMAGE_WAIT from '@cowprotocol/assets/cow-swap/progressbar-step-wait.svg'
 import ICON_SOCIAL_X from '@cowprotocol/assets/images/icon-social-x.svg'
+import { TokenWithLogo } from '@cowprotocol/common-const'
 import { isSellOrder } from '@cowprotocol/common-utils'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { UI } from '@cowprotocol/ui'
 import { ProductLogo, ProductVariant } from '@cowprotocol/ui'
-import { CurrencyAmount } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { MdOutlineMotionPhotosPause } from 'react-icons/md'
 import {
@@ -91,13 +91,30 @@ const StatusIcon: React.FC<{ status: string; customColor?: string }> = ({ status
   }
 }
 
-const OrderIntent: React.FC = () => (
-  <styledEl.OriginalOrderIntent>
-    <styledEl.OrderTokenImage /> 1.43 WETH for at least <styledEl.OrderTokenImage /> 4832.43 USDC
-  </styledEl.OriginalOrderIntent>
-)
+const OrderIntent: React.FC<{ order?: Order }> = ({ order }) => {
+  if (!order) return null
+  const { inputToken, outputToken, kind, sellAmount, buyAmount } = order
+  const isSell = isSellOrder(kind)
 
-const AnimatedTokens: React.FC<{ sellToken: string; buyToken: string }> = ({ sellToken, buyToken }) => (
+  const formatAmount = (amount: string, token: Currency | TokenWithLogo) => {
+    const currencyAmount = CurrencyAmount.fromRawAmount(token, amount)
+    return `${currencyAmount.toSignificant(6)} ${token.symbol}`
+  }
+
+  return (
+    <styledEl.OriginalOrderIntent>
+      <TokenLogo token={inputToken} size={20} />
+      {formatAmount(sellAmount, inputToken)} for {isSell ? 'at least' : 'at most'}{' '}
+      <TokenLogo token={outputToken} size={20} />
+      {formatAmount(buyAmount, outputToken)}
+    </styledEl.OriginalOrderIntent>
+  )
+}
+
+const AnimatedTokens: React.FC<{
+  sellToken: Currency | TokenWithLogo | null | undefined
+  buyToken: Currency | TokenWithLogo | null | undefined
+}> = ({ sellToken, buyToken }) => (
   <styledEl.AnimatedTokensWrapper>
     <styledEl.TokenWrapper position="left">
       <TokenLogo token={sellToken} size={136} />
@@ -132,13 +149,12 @@ const CircularCountdown: React.FC<CircularCountdownProps> = ({ countdown }) => {
 export function OrderProgressBarV2(props: OrderProgressBarV2Props) {
   const { stepName, debugMode = true } = props
   const [debugStep, setDebugStep] = useState<OrderProgressBarStepName>(stepName)
-
   const currentStep = debugMode ? debugStep : stepName
-  const StepComponent = STEP_NAME_TO_STEP_COMPONENT[currentStep]
+  const StepComponent = STEP_NAME_TO_STEP_COMPONENT[currentStep as keyof typeof STEP_NAME_TO_STEP_COMPONENT]
 
   return (
     <>
-      <StepComponent {...props} />
+      {StepComponent && <StepComponent {...props} />}
       {debugMode && (
         <styledEl.DebugPanel>
           <select value={debugStep} onChange={(e) => setDebugStep(e.target.value as OrderProgressBarStepName)}>
@@ -155,16 +171,13 @@ export function OrderProgressBarV2(props: OrderProgressBarV2Props) {
 }
 
 function InitialStep({ order }: OrderProgressBarV2Props) {
-  const sellToken = order?.inputToken?.address || ''
-  const buyToken = order?.outputToken?.address || ''
-
   return (
     <styledEl.ProgressContainer>
       <styledEl.ProgressTopSection>
         <styledEl.ProgressImageWrapper bgColor={'#65D9FF'}>
-          <AnimatedTokens sellToken={sellToken} buyToken={buyToken} />
+          <AnimatedTokens sellToken={order?.inputToken} buyToken={order?.outputToken} />
         </styledEl.ProgressImageWrapper>
-        <OrderIntent />
+        <OrderIntent order={order} />
       </styledEl.ProgressTopSection>
       <styledEl.StepsWrapper>
         <StepComponent
@@ -201,9 +214,8 @@ function InitialStep({ order }: OrderProgressBarV2Props) {
   )
 }
 
-function SolvingStep() {
+function SolvingStep({ order }: OrderProgressBarV2Props) {
   const [countdown, setCountdown] = useState(15)
-  const maxCountdown = 15
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -220,7 +232,7 @@ function SolvingStep() {
           <SVG src={STEP_IMAGE_SOLVING} />
           <CircularCountdown countdown={countdown} />
         </styledEl.ProgressImageWrapper>
-        <OrderIntent />
+        <OrderIntent order={order} />
       </styledEl.ProgressTopSection>
       <styledEl.StepsWrapper>
         <StepComponent status="done" isFirst={false} step={steps[0]} _index={0} />
@@ -251,7 +263,7 @@ function SolvingStep() {
   )
 }
 
-function ExecutingStep({ solverCompetition }: OrderProgressBarV2Props) {
+function ExecutingStep({ solverCompetition, order }: OrderProgressBarV2Props) {
   const solversCount = solverCompetition?.length || 0
 
   return (
@@ -260,7 +272,7 @@ function ExecutingStep({ solverCompetition }: OrderProgressBarV2Props) {
         <styledEl.ProgressImageWrapper bgColor={'#65D9FF'} padding={'42px 24px'}>
           <SVG src={STEP_IMAGE_EXECUTING} />
         </styledEl.ProgressImageWrapper>
-        <OrderIntent />
+        <OrderIntent order={order} />
       </styledEl.ProgressTopSection>
       <styledEl.StepsWrapper>
         <StepComponent status="done" isFirst={false} step={steps[0]} _index={0} />
@@ -355,8 +367,8 @@ export const FinishedStep: React.FC<FinishedStepProps> = ({ solverCompetition, o
             <b>WETH/USDC</b>
           </styledEl.TokenPairTitle>
           <styledEl.TokenImages>
-            <TokenLogo token={order?.inputToken?.address || ''} size={34} />
-            <TokenLogo token={order?.outputToken?.address || ''} size={34} />
+            <TokenLogo token={order?.inputToken} size={34} />
+            <TokenLogo token={order?.outputToken} size={34} />
           </styledEl.TokenImages>
           <styledEl.Surplus>
             <span>Your surplus</span>
@@ -365,7 +377,7 @@ export const FinishedStep: React.FC<FinishedStepProps> = ({ solverCompetition, o
         </styledEl.ProgressImageWrapper>
       </styledEl.ProgressTopSection>
 
-      <styledEl.FinishedContent>
+      <styledEl.ConclusionContent>
         <styledEl.TransactionStatus>
           <PiCheckCircleFill />
           Transaction completed!
@@ -428,25 +440,29 @@ export const FinishedStep: React.FC<FinishedStepProps> = ({ solverCompetition, o
             </styledEl.ViewMoreButton>
           )}
         </styledEl.SolverRankings>
-
         <styledEl.ReceivedAmount>
-          You received <TokenLogo token={displayToken?.address || ''} size={20} /> {displayAmount?.toSignificant(6)}{' '}
-          {displayToken?.symbol}
+          You received <TokenLogo token={displayToken} size={16} />{' '}
+          <b>
+            {displayAmount?.toSignificant(6)} {displayToken?.symbol}
+          </b>
         </styledEl.ReceivedAmount>
-        <styledEl.ExtraAmount>and got an extra +32.12 USDC (~$31.22)</styledEl.ExtraAmount>
-      </styledEl.FinishedContent>
+        <styledEl.ExtraAmount>
+          and got an extra <i>+32.12 USDC</i> (~$31.22)
+        </styledEl.ExtraAmount>
+        {/*TODO: Add states for when there's no surplus and/or when there's a custom recipient*/}
+      </styledEl.ConclusionContent>
     </styledEl.FinishedStepContainer>
   )
 }
 
-function NextBatchStep({ solverCompetition }: OrderProgressBarV2Props) {
+function NextBatchStep({ solverCompetition, order }: OrderProgressBarV2Props) {
   return (
     <styledEl.ProgressContainer>
       <styledEl.ProgressTopSection>
         <styledEl.ProgressImageWrapper bgColor={'#FFDB9C'} padding={'40px 20px 0'}>
           <img src={STEP_IMAGE_WAIT} alt="Order unfillable" />
         </styledEl.ProgressImageWrapper>
-        <OrderIntent />
+        <OrderIntent order={order} />
       </styledEl.ProgressTopSection>
       <styledEl.StepsWrapper>
         <StepComponent status="done" isFirst={false} step={steps[0]} _index={0} />
@@ -504,14 +520,14 @@ function NextBatchStep({ solverCompetition }: OrderProgressBarV2Props) {
   )
 }
 
-function DelayedStep() {
+function DelayedStep({ order }: OrderProgressBarV2Props) {
   return (
     <styledEl.ProgressContainer>
       <styledEl.ProgressTopSection>
         <styledEl.ProgressImageWrapper bgColor={'#65D9FF'} padding={'24px'}>
           <SVG src={STEP_IMAGE_SOLVING} />
         </styledEl.ProgressImageWrapper>
-        <OrderIntent />
+        <OrderIntent order={order} />
       </styledEl.ProgressTopSection>
       <styledEl.StepsWrapper>
         <StepComponent status="done" isFirst={false} step={steps[0]} _index={0} />
@@ -532,14 +548,14 @@ function DelayedStep() {
   )
 }
 
-function UnfillableStep() {
+function UnfillableStep({ order }: OrderProgressBarV2Props) {
   return (
     <styledEl.ProgressContainer>
       <styledEl.ProgressTopSection>
         <styledEl.ProgressImageWrapper bgColor={'#FFDB9C'} padding={'20px 0 0'}>
           <img src={STEP_IMAGE_UNFILLABLE} alt="Order unfillable" />
         </styledEl.ProgressImageWrapper>
-        <OrderIntent />
+        <OrderIntent order={order} />
       </styledEl.ProgressTopSection>
       <styledEl.StepsWrapper>
         <StepComponent status="done" isFirst={false} step={steps[0]} _index={0} />
@@ -571,14 +587,14 @@ function UnfillableStep() {
   )
 }
 
-function SubmissionFailedStep() {
+function SubmissionFailedStep({ order }: OrderProgressBarV2Props) {
   return (
     <styledEl.ProgressContainer>
       <styledEl.ProgressTopSection>
         <styledEl.ProgressImageWrapper>
           <img src={progressBarStep2b} alt="" />
         </styledEl.ProgressImageWrapper>
-        <OrderIntent />
+        <OrderIntent order={order} />
       </styledEl.ProgressTopSection>
       <styledEl.StepsWrapper>
         <StepComponent status="done" isFirst={false} step={steps[0]} _index={0} />
@@ -608,40 +624,44 @@ function CancelledStep() {
   return <div>Your order has been cancelled. TODO: This should show our existing cancellation flow</div>
 }
 
-function ExpiredStep() {
+function ExpiredStep({ order }: OrderProgressBarV2Props) {
   return (
     <styledEl.ProgressContainer>
       <styledEl.ProgressTopSection>
-        <styledEl.ProgressImageWrapper>
-          <img src={progressBarStep1} alt="" />
+        <styledEl.ProgressImageWrapper bgColor={'#FFDB9C'} padding={'40px 20px 0'}>
+          <img src={STEP_IMAGE_WAIT} alt="Order expired" />
         </styledEl.ProgressImageWrapper>
-        <OrderIntent />
+        <OrderIntent order={order} />
       </styledEl.ProgressTopSection>
-      <div>
-        <div>
-          <PiClockCountdown />
-          <h2>Your order expired</h2>
-        </div>
-        <div>
-          <div>
-            <div className="bad" />
-            <h3>The bad news</h3>
-            <p>Your order expired. This could be due to gas spikes, volatile prices, or problems with the network.</p>
-          </div>
-          <div>
-            <div className="good" />
-            <h3>The good news</h3>
-            <p>
-              Unlike on other exchanges, you won't be charged for this! Feel free to <a>place a new order</a> without
-              worry.
-            </p>
-          </div>
-        </div>
-        <div>
-          If your orders often expire, consider increasing your slippage or <a>contacting us</a> so we can investigate
-          the problem.
-        </div>
-      </div>
+      <styledEl.TransactionStatus status={'expired'}>
+        <PiClockCountdown />
+        Your order expired
+      </styledEl.TransactionStatus>
+
+      <styledEl.CardWrapper>
+        <styledEl.InfoCard variant="warning">
+          <h3>The bad news</h3>
+          <p>Your order expired. This could be due to gas spikes, volatile prices, or problems with the network.</p>
+        </styledEl.InfoCard>
+        <styledEl.InfoCard variant="success">
+          <h3>The good news</h3>
+          <p>
+            Unlike on other exchanges, you won't be charged for this! Feel free to{' '}
+            <styledEl.Link href="#" underline>
+              place a new order
+            </styledEl.Link>{' '}
+            without worry.
+          </p>
+        </styledEl.InfoCard>
+      </styledEl.CardWrapper>
+
+      <styledEl.Description center margin="10px 0">
+        If your orders often expire, consider increasing your slippage or{' '}
+        <styledEl.Link href="#" target="_blank">
+          contacting us
+        </styledEl.Link>{' '}
+        so we can investigate the problem.
+      </styledEl.Description>
     </styledEl.ProgressContainer>
   )
 }
