@@ -8,7 +8,7 @@ import {
   isPromiseFulfilled,
   onlyResolvesLast,
 } from '@cowprotocol/common-utils'
-import { PriceQuality } from '@cowprotocol/cow-sdk'
+import { PriceQuality, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useAddUnsupportedToken, useIsUnsupportedToken, useRemoveUnsupportedToken } from '@cowprotocol/tokens'
 
 import { useGetGpPriceStrategy } from 'legacy/hooks/useGetGpPriceStrategy'
@@ -31,7 +31,7 @@ import QuoteApiError, {
 interface HandleQuoteErrorParams {
   quoteData: QuoteInformationObject | LegacyFeeQuoteParams
   error: unknown
-  addUnsupportedToken: (tokenAddress: string) => void
+  addUnsupportedToken: (chainId: SupportedChainId, tokenAddress: string) => void
 }
 
 type QuoteParamsForFetching = Omit<LegacyQuoteParams, 'strategy'>
@@ -45,7 +45,7 @@ function handleQuoteError({ quoteData, error, addUnsupportedToken }: HandleQuote
 
         // Add token to unsupported token list
         if (unsupportedTokenAddress) {
-          addUnsupportedToken(unsupportedTokenAddress)
+          addUnsupportedToken(quoteData.chainId, unsupportedTokenAddress)
         }
 
         return 'unsupported-token'
@@ -82,7 +82,7 @@ function handleQuoteError({ quoteData, error, addUnsupportedToken }: HandleQuote
 
         // Add token to unsupported token list
         if (unsupportedTokenAddress) {
-          addUnsupportedToken(unsupportedTokenAddress)
+          addUnsupportedToken(quoteData.chainId, unsupportedTokenAddress)
         }
 
         return 'unsupported-token'

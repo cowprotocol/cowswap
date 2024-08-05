@@ -123,7 +123,7 @@ export function currencySelectAnalytics(field: string, label: string | undefined
 export function setMaxSellTokensAnalytics() {
   cowAnalytics.sendEvent({
     category: Category.TRADE,
-    action: 'Set Maximun Sell Tokens',
+    action: 'Set Maximum Sell Tokens',
   })
 }
 

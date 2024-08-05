@@ -122,7 +122,7 @@ export default function Page() {
                   bgColor={'#EC4612'}
                   color={'#FEE7CF'}
                   href="#rpc"
-                  onClick={() => clickOnMevBlocker('click-get-protected')}
+                  onClick={() => clickOnMevBlocker('click-get-protected-heroSection')}
                 >
                   Get protected
                 </Link>
