@@ -1,10 +1,10 @@
 import { useCallback } from 'react'
 
 import { getQuoteUnsupportedToken } from '@cowprotocol/common-utils'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useAddUnsupportedToken } from '@cowprotocol/tokens'
 
 import QuoteApiError from 'api/cowProtocol/errors/QuoteError'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 export function useProcessUnsupportedTokenError() {
   const addGpUnsupportedToken = useAddUnsupportedToken()
