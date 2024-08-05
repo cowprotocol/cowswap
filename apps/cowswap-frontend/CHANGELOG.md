@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.78.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.78.1...cowswap-v1.78.2) (2024-08-02)
+
+
+### Bug Fixes
+
+* fix race condition with unsuported tokens ([#4762](https://github.com/cowprotocol/cowswap/issues/4762)) ([ee70bb0](https://github.com/cowprotocol/cowswap/commit/ee70bb0b10e98621909d1811c4fece520ae5c6b3))
+
 ## [1.78.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.78.0...cowswap-v1.78.1) (2024-07-31)
 
 
