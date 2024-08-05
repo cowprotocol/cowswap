@@ -4,6 +4,7 @@ import progressBarStep2a from '@cowprotocol/assets/cow-swap/progress-bar-step2a.
 import progressBarStep2b from '@cowprotocol/assets/cow-swap/progress-bar-step2b.png'
 import progressBarStep3 from '@cowprotocol/assets/cow-swap/progress-bar-step3.png'
 import { isSellOrder } from '@cowprotocol/common-utils'
+import { CompetitionOrderStatus } from '@cowprotocol/cow-sdk'
 import { TokenAmount } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -14,7 +15,6 @@ import { Order } from 'legacy/state/orders/actions'
 
 import { OrderProgressBarStepName } from 'common/hooks/orderProgressBarV2'
 
-import { CompetitionOrderStatus } from '@cowprotocol/cow-sdk'
 import { Stepper, StepProps } from '../Stepper'
 
 const PROGRESS_BAR_STEPS: StepProps[] = [
