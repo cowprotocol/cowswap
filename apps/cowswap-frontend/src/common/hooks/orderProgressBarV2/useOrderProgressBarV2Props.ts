@@ -8,11 +8,11 @@ import ms from 'ms.macro'
 import useSWR from 'swr'
 
 import { ActivityDerivedState } from 'modules/account/containers/Transaction'
+import { useInjectedWidgetParams } from 'modules/injectedWidget'
 
 import { getOrderCompetitionStatus } from 'api/cowProtocol/api'
 import { getIsFinalizedOrder } from 'utils/orderUtils/getIsFinalizedOrder'
 
-import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import {
   ordersProgressBarStateAtom,
   setOrderProgressBarCancellationTriggered,
