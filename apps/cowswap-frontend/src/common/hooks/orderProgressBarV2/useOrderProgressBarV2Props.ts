@@ -2,14 +2,14 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback, useEffect, useMemo } from 'react'
 
 import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { CompetitionOrderStatus, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import ms from 'ms.macro'
 import useSWR from 'swr'
 
 import { ActivityDerivedState } from 'modules/account/containers/Transaction'
 
-import { getPendingOrderStatus, PendingOrderStatusType } from 'api/cowProtocol/api'
+import { getOrderCompetitionStatus } from 'api/cowProtocol/api'
 import { getIsFinalizedOrder } from 'utils/orderUtils/getIsFinalizedOrder'
 
 import {
@@ -243,7 +243,7 @@ function getProgressBarStepName(
   return 'initial'
 }
 
-const BACKEND_TYPE_TO_PROGRESS_BAR_STEP_NAME: Record<PendingOrderStatusType, OrderProgressBarStepName> = {
+const BACKEND_TYPE_TO_PROGRESS_BAR_STEP_NAME: Record<CompetitionOrderStatus.type, OrderProgressBarStepName> = {
   scheduled: 'initial',
   open: 'initial',
   active: 'solving',
@@ -270,8 +270,8 @@ const POOLING_SWR_OPTIONS = {
 
 function usePendingOrderStatus(chainId: SupportedChainId, orderId: string, stopQuerying?: boolean) {
   return useSWR(
-    chainId && orderId ? ['getPendingOrderStatus', chainId, orderId] : null,
-    async ([, _chainId, _orderId]) => getPendingOrderStatus(_chainId, _orderId),
+    chainId && orderId ? ['getOrderCompetitionStatus', chainId, orderId] : null,
+    async ([, _chainId, _orderId]) => getOrderCompetitionStatus(_chainId, _orderId),
     stopQuerying ? SWR_NO_REFRESH_OPTIONS : POOLING_SWR_OPTIONS
   ).data
 }

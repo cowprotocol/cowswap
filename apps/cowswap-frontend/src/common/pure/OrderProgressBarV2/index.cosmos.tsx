@@ -11,11 +11,13 @@ const defaultProps: OrderProgressBarV2Props = {
   solverCompetition: [
     {
       solver: 'naive',
-      sellAmount: '5000000000000000000',
-      buyAmount: '1000000000000000000000',
+      executedAmounts: {
+        sell: '5000000000000000000',
+        buy: '1000000000000000000000',
+      }
     },
-    { solver: 'uniswap', sellAmount: '5000000000000000000', buyAmount: '500000000000000000000' },
-    { solver: 'oneinch', sellAmount: '5000000000000000000', buyAmount: '400000000000000000000' },
+    { solver: 'uniswap', executedAmounts: { sell: '5000000000000000000', buy: '500000000000000000000' } },
+    { solver: 'oneinch', executedAmounts: { sell: '5000000000000000000', buy: '400000000000000000000' } },
   ],
 }
 
