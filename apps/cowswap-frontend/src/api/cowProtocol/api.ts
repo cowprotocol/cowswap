@@ -11,6 +11,7 @@ import {
 import {
   Address,
   SupportedChainId as ChainId,
+  CompetitionOrderStatus,
   CowEnv,
   EnrichedOrder,
   NativePriceResponse,
@@ -224,9 +225,16 @@ export async function getSurplusData(chainId: ChainId, address: string): Promise
   return orderBookApi.getTotalSurplus(address, { chainId })
 }
 
-export async function getOrderCompetitionStatus(chainId: ChainId, orderId: string) {
-  // TODO: handle errors here?
-  return orderBookApi.getOrderCompetitionStatus(orderId, { chainId })
+export async function getOrderCompetitionStatus(
+  chainId: ChainId,
+  orderId: string
+): Promise<CompetitionOrderStatus | undefined> {
+  try {
+    return await orderBookApi.getOrderCompetitionStatus(orderId, { chainId })
+  } catch (e) {
+    console.debug(`[getOrderCompetitionStatus] Non successful response:`, e?.message || e)
+    return
+  }
 }
 
 export type ProfileData = {
