@@ -2,14 +2,15 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback, useEffect, useMemo } from 'react'
 
 import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { CompetitionOrderStatus, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import ms from 'ms.macro'
 import useSWR from 'swr'
 
 import { ActivityDerivedState } from 'modules/account/containers/Transaction'
+import { useInjectedWidgetParams } from 'modules/injectedWidget'
 
-import { getPendingOrderStatus, PendingOrderStatusType } from 'api/cowProtocol/api'
+import { getOrderCompetitionStatus } from 'api/cowProtocol/api'
 import { getIsFinalizedOrder } from 'utils/orderUtils/getIsFinalizedOrder'
 
 import {
@@ -30,12 +31,14 @@ export type UseOrderProgressBarV2Result = Pick<OrderProgressBarState, 'countdown
   stepName: Exclude<OrderProgressBarState['progressBarStepName'], undefined>
 }
 
-const MINIMUM_STEP_DISPLAY_TIME = ms`2s`
+const MINIMUM_STEP_DISPLAY_TIME = ms`5s`
 
 /**
  * Hook for fetching ProgressBarV2 props
  */
-export function useOrderProgressBarV2Props(params: UseOrderProgressBarPropsParams): UseOrderProgressBarV2Result {
+export function useOrderProgressBarV2Props(
+  params: UseOrderProgressBarPropsParams
+): UseOrderProgressBarV2Result | undefined {
   const { activityDerivedState, chainId } = params
 
   const {
@@ -46,8 +49,11 @@ export function useOrderProgressBarV2Props(params: UseOrderProgressBarPropsParam
     isCancelled = false,
     isExpired = false,
   } = activityDerivedState || {}
-  // Whether the order is in a final state, to avoid querying backend unnecessarily
-  const isFinal = !!(order && getIsFinalizedOrder(order))
+
+  const { disableProgressBar = false } = useInjectedWidgetParams()
+
+  // When the order is in a final state, avoid querying backend unnecessarily
+  const doNotQuery = !!(order && getIsFinalizedOrder(order)) || disableProgressBar
 
   const orderId = order?.id || ''
 
@@ -63,7 +69,7 @@ export function useOrderProgressBarV2Props(params: UseOrderProgressBarPropsParam
   } = useGetExecutingOrderState(orderId)
 
   // Local updaters of the respective atom
-  useBackendApiStatusUpdater(chainId, orderId, isFinal)
+  useBackendApiStatusUpdater(chainId, orderId, doNotQuery)
   useProgressBarStepNameUpdater(
     orderId,
     isUnfillable,
@@ -80,14 +86,17 @@ export function useOrderProgressBarV2Props(params: UseOrderProgressBarPropsParam
   useCancellingOrderUpdater(orderId, isCancelling)
   useCountdownStartUpdater(orderId, countdown, backendApiStatus)
 
-  return useMemo(
-    () => ({
+  return useMemo(() => {
+    if (disableProgressBar) {
+      return undefined
+    }
+
+    return {
       countdown,
       solverCompetition,
       stepName: progressBarStepName || 'initial',
-    }),
-    [countdown, solverCompetition, progressBarStepName]
-  )
+    }
+  }, [disableProgressBar, countdown, solverCompetition, progressBarStepName])
 }
 
 // atom related hooks
@@ -243,7 +252,7 @@ function getProgressBarStepName(
   return 'initial'
 }
 
-const BACKEND_TYPE_TO_PROGRESS_BAR_STEP_NAME: Record<PendingOrderStatusType, OrderProgressBarStepName> = {
+const BACKEND_TYPE_TO_PROGRESS_BAR_STEP_NAME: Record<CompetitionOrderStatus.type, OrderProgressBarStepName> = {
   scheduled: 'initial',
   open: 'initial',
   active: 'solving',
@@ -253,9 +262,9 @@ const BACKEND_TYPE_TO_PROGRESS_BAR_STEP_NAME: Record<PendingOrderStatusType, Ord
   cancelled: 'initial', // TODO: maybe add another state for finished with error?
 }
 
-function useBackendApiStatusUpdater(chainId: SupportedChainId, orderId: string, isFinal: boolean) {
+function useBackendApiStatusUpdater(chainId: SupportedChainId, orderId: string, doNotQuery: boolean) {
   const setAtom = useSetAtom(updateOrderProgressBarBackendInfo)
-  const { type: backendApiStatus, value: solverCompetition } = usePendingOrderStatus(chainId, orderId, isFinal) || {}
+  const { type: backendApiStatus, value: solverCompetition } = usePendingOrderStatus(chainId, orderId, doNotQuery) || {}
 
   useEffect(() => {
     if (orderId && (backendApiStatus || solverCompetition)) {
@@ -268,10 +277,10 @@ const POOLING_SWR_OPTIONS = {
   refreshInterval: ms`1s`,
 }
 
-function usePendingOrderStatus(chainId: SupportedChainId, orderId: string, stopQuerying?: boolean) {
+function usePendingOrderStatus(chainId: SupportedChainId, orderId: string, doNotQuery?: boolean) {
   return useSWR(
-    chainId && orderId ? ['getPendingOrderStatus', chainId, orderId] : null,
-    async ([, _chainId, _orderId]) => getPendingOrderStatus(_chainId, _orderId),
-    stopQuerying ? SWR_NO_REFRESH_OPTIONS : POOLING_SWR_OPTIONS
+    chainId && orderId ? ['getOrderCompetitionStatus', chainId, orderId] : null,
+    async ([, _chainId, _orderId]) => getOrderCompetitionStatus(_chainId, _orderId),
+    doNotQuery ? SWR_NO_REFRESH_OPTIONS : POOLING_SWR_OPTIONS
   ).data
 }
