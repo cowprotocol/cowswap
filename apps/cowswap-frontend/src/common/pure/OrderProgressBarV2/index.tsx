@@ -31,6 +31,7 @@ import { Order } from 'legacy/state/orders/actions'
 
 import { SolverCompetition } from 'api/cowProtocol/api'
 import { OrderProgressBarStepName } from 'common/hooks/orderProgressBarV2'
+import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
 
 import * as styledEl from './styled'
 
@@ -147,7 +148,7 @@ const CircularCountdown: React.FC<CircularCountdownProps> = ({ countdown }) => {
 }
 
 export function OrderProgressBarV2(props: OrderProgressBarV2Props) {
-  const { stepName, debugMode = true } = props
+  const { stepName, debugMode = false } = props
   const [debugStep, setDebugStep] = useState<OrderProgressBarStepName>(stepName)
   const currentStep = debugMode ? debugStep : stepName
   const StepComponent = STEP_NAME_TO_STEP_COMPONENT[currentStep as keyof typeof STEP_NAME_TO_STEP_COMPONENT]
@@ -326,13 +327,7 @@ interface FinishedStepProps {
 
 export const FinishedStep: React.FC<FinishedStepProps> = ({ solverCompetition, order }) => {
   const [showAllSolvers, setShowAllSolvers] = useState(false)
-  const isSell = order && isSellOrder(order.kind)
-  const displayToken = isSell ? order?.outputToken : order?.inputToken
-  const solution = solverCompetition && solverCompetition[0]
-  const displayAmount =
-    displayToken &&
-    solution &&
-    CurrencyAmount.fromRawAmount(displayToken, isSell ? solution?.buyAmount : solution?.sellAmount)
+  const { surplusFiatValue, surplusPercent } = useGetSurplusData(order)
 
   const toggleSolvers = () => setShowAllSolvers(!showAllSolvers)
 
@@ -372,7 +367,7 @@ export const FinishedStep: React.FC<FinishedStepProps> = ({ solverCompetition, o
           </styledEl.TokenImages>
           <styledEl.Surplus>
             <span>Your surplus</span>
-            <b>+12.54%</b>
+            {surplusPercent ? <b>+{parseFloat(surplusPercent).toFixed(2)}%</b> : <b>N/A</b>}
           </styledEl.Surplus>
         </styledEl.ProgressImageWrapper>
       </styledEl.ProgressTopSection>
@@ -440,15 +435,28 @@ export const FinishedStep: React.FC<FinishedStepProps> = ({ solverCompetition, o
             </styledEl.ViewMoreButton>
           )}
         </styledEl.SolverRankings>
-        <styledEl.ReceivedAmount>
-          You received <TokenLogo token={displayToken} size={16} />{' '}
-          <b>
-            {displayAmount?.toSignificant(6)} {displayToken?.symbol}
-          </b>
-        </styledEl.ReceivedAmount>
-        <styledEl.ExtraAmount>
-          and got an extra <i>+32.12 USDC</i> (~$31.22)
-        </styledEl.ExtraAmount>
+        {order && (
+          <styledEl.ReceivedAmount>
+            You received <TokenLogo token={order.outputToken} size={16} />{' '}
+            <b>
+              {order.kind === 'sell'
+                ? CurrencyAmount.fromRawAmount(
+                    order.outputToken,
+                    order.apiAdditionalInfo?.executedBuyAmount || order.buyAmount || '0'
+                  ).toSignificant(6)
+                : CurrencyAmount.fromRawAmount(
+                    order.outputToken,
+                    order.apiAdditionalInfo?.executedSellAmount || order.sellAmount || '0'
+                  ).toSignificant(6)}{' '}
+              {order.outputToken.symbol}
+            </b>
+          </styledEl.ReceivedAmount>
+        )}
+        {surplusFiatValue ? (
+          <styledEl.ExtraAmount>
+            and got an extra <i>+{surplusFiatValue.toFixed(2)} USDC</i> (~${surplusFiatValue.toFixed(2)})
+          </styledEl.ExtraAmount>
+        ) : null}
         {/*TODO: Add states for when there's no surplus and/or when there's a custom recipient*/}
       </styledEl.ConclusionContent>
     </styledEl.FinishedStepContainer>

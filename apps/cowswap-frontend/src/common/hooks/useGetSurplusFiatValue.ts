@@ -17,23 +17,24 @@ export type SurplusData = {
   surplusFiatValue: Nullish<CurrencyAmount<Currency>>
   surplusAmount: Nullish<CurrencyAmount<Currency>>
   surplusToken: Nullish<Currency>
+  surplusPercent: Nullish<string>
   showFiatValue: boolean
   showSurplus: boolean | null
 }
 
 export function useGetSurplusData(order: Order | ParsedOrder | undefined): SurplusData {
-  const { surplusAmount, surplusToken } = useMemo(() => {
-    const output: { surplusToken?: Currency; surplusAmount?: CurrencyAmount<Currency> } = {}
+  const { surplusAmount, surplusToken, surplusPercent } = useMemo(() => {
+    const output: { surplusToken?: Currency; surplusAmount?: CurrencyAmount<Currency>; surplusPercent?: string } = {}
 
     if (order) {
       const summaryData = getExecutedSummaryData(order)
       output.surplusAmount = summaryData.surplusAmount
       output.surplusToken = summaryData.surplusToken
+      output.surplusPercent = summaryData.surplusPercent
     }
 
     return output
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [JSON.stringify(order)])
+  }, [order])
 
   const surplusFiatValue = useUsdAmount(surplusAmount).value
   const showFiatValue = Number(surplusFiatValue?.toExact()) >= MIN_FIAT_SURPLUS_VALUE
@@ -46,9 +47,10 @@ export function useGetSurplusData(order: Order | ParsedOrder | undefined): Surpl
       showFiatValue,
       surplusToken,
       surplusAmount,
+      surplusPercent,
       showSurplus,
     }),
-    [surplusFiatValue, showFiatValue, surplusToken, surplusAmount, showSurplus]
+    [surplusFiatValue, showFiatValue, surplusToken, surplusAmount, surplusPercent, showSurplus]
   )
 }
 
