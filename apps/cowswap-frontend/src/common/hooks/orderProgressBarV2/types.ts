@@ -1,9 +1,9 @@
-import type { CompetitionOrderStatus } from '@cowprotocol/cow-sdk'
+import { PendingOrderStatusType, SolverCompetition } from 'api/cowProtocol/api'
 
 export type OrderProgressBarState = {
   countdown?: number | null
-  backendApiStatus?: CompetitionOrderStatus.type
-  solverCompetition?: CompetitionOrderStatus['value']
+  backendApiStatus?: PendingOrderStatusType
+  solverCompetition?: SolverCompetition
   progressBarStepName?: OrderProgressBarStepName
   previousStepName?: OrderProgressBarStepName
   lastTimeChangedSteps?: number

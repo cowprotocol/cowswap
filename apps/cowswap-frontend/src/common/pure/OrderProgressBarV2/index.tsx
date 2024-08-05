@@ -4,7 +4,6 @@ import progressBarStep2a from '@cowprotocol/assets/cow-swap/progress-bar-step2a.
 import progressBarStep2b from '@cowprotocol/assets/cow-swap/progress-bar-step2b.png'
 import progressBarStep3 from '@cowprotocol/assets/cow-swap/progress-bar-step3.png'
 import { isSellOrder } from '@cowprotocol/common-utils'
-import { CompetitionOrderStatus } from '@cowprotocol/cow-sdk'
 import { TokenAmount } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -13,6 +12,7 @@ import styled from 'styled-components/macro'
 import { AMM_LOGOS } from 'legacy/components/AMMsLogo'
 import { Order } from 'legacy/state/orders/actions'
 
+import { SolverCompetition } from 'api/cowProtocol/api'
 import { OrderProgressBarStepName } from 'common/hooks/orderProgressBarV2'
 
 import { Stepper, StepProps } from '../Stepper'
@@ -27,7 +27,7 @@ const PROGRESS_BAR_STEPS: StepProps[] = [
 export type OrderProgressBarV2Props = {
   stepName: OrderProgressBarStepName
   countdown?: number | null | undefined
-  solverCompetition?: CompetitionOrderStatus['value']
+  solverCompetition?: SolverCompetition
   order?: Order
 }
 
@@ -139,7 +139,7 @@ function NextBatchStep({ solverCompetition }: OrderProgressBarV2Props) {
                     />
                     <span>
                       {entry.solver}
-                      {entry?.executedAmounts && ' <- your order was included in this solution'}
+                      {entry.sellAmount && ' <- your order was included in this solution'}
                     </span>
                   </div>
                 </li>
@@ -206,17 +206,15 @@ function FinishedStep({ solverCompetition, order }: OrderProgressBarV2Props) {
   const isSell = order && isSellOrder(order.kind)
   const displayToken = isSell ? order?.outputToken : order?.inputToken
   const solution = solverCompetition && solverCompetition[0]
-  const { executedAmounts } = solution || {}
-  const { sell, buy } = executedAmounts || {}
   const displayAmount =
     displayToken &&
-    sell && buy &&
-    CurrencyAmount.fromRawAmount(displayToken, isSell ? buy : sell)
+    solution &&
+    CurrencyAmount.fromRawAmount(displayToken, isSell ? solution?.buyAmount : solution?.sellAmount)
   return (
     <div>
-      {displayAmount && <span>
+      <span>
         You {isSell ? 'received' : 'sold'} <TokenAmount amount={displayAmount} tokenSymbol={displayToken} />!
-      </span>}
+      </span>
 
       <p>Solver ranking</p>
       <ol>
@@ -259,7 +257,7 @@ function DelayedStep() {
   )
 }
 
-function UnfillableStep({ }: OrderProgressBarV2Props) {
+function UnfillableStep({}: OrderProgressBarV2Props) {
   // TODO: add link to cancel order
   const localSteps = structuredClone(PROGRESS_BAR_STEPS)
 

@@ -249,15 +249,6 @@ export interface CowSwapWidgetParams {
   disablePostedOrderConfirmationModal?: boolean
 
   /**
-   * Disables showing the progress bar after a SWAP order is placed.
-   * The SWAP progress bar offers a transparent view into CoW Protocol's unique solution finding mechanism.
-   * If you wish to not show it, set `disableProgressBar` to `true`.
-   *
-   * Defaults to false.
-   */
-  disableProgressBar?: boolean
-
-  /**
    * Disables showing the toast messages.
    * Some UI might want to disable it and subscribe to WidgetMethodsEmit.ON_TOAST_MESSAGE event to handle the toast messages itself.
    * Defaults to false.

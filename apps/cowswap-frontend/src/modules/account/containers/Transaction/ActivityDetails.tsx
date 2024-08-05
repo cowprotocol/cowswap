@@ -59,7 +59,7 @@ const DEFAULT_ORDER_SUMMARY = {
   validTo: '',
 }
 
-export function GnosisSafeTxDetails(props: {
+function GnosisSafeTxDetails(props: {
   chainId: number
   activityDerivedState: ActivityDerivedState
 }): JSX.Element | null {
@@ -79,7 +79,7 @@ export function GnosisSafeTxDetails(props: {
     ? order?.fulfillmentTime !== undefined
     : enhancedTransaction?.confirmedTime !== undefined
 
-  // Check if it's in a state where we don't need more signatures. We do this, because this state comes from CoW Swap API, which
+  // Check if its in a state where we dont need more signatures. We do this, because this state comes from CoW Swap API, which
   // sometimes can be faster getting the state than Gnosis Safe API (that would give us the pending signatures). We use
   // this check to infer that we don't need to sign anything anymore
   const alreadySigned = isOrder ? status !== ActivityStatus.PRESIGNATURE_PENDING : status !== ActivityStatus.PENDING

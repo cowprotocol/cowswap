@@ -1,4 +1,4 @@
-import { ChangeEvent, useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import { ChangeEvent, useContext, useEffect, useMemo, useState } from 'react'
 
 import { useAvailableChains } from '@cowprotocol/common-hooks'
 import { CowEventListeners } from '@cowprotocol/events'
@@ -121,9 +121,6 @@ export function Configurator({ title }: { title: string }) {
   const { closeToast, toasts, selectDisableToastMessages, disableToastMessages } = useToastsManager(setListeners)
   const firstToast = toasts?.[0]
 
-  const [disableProgressBar, setDisableProgressBar] = useState<boolean>(false)
-  const toggleDisableProgressBar = useCallback(() => { setDisableProgressBar((curr) => !curr) }, [])
-
   const LINKS = [
     { icon: <CodeIcon />, label: 'View embed code', onClick: () => handleDialogOpen() },
     { icon: <LanguageIcon />, label: 'Widget web', url: `https://cow.fi/widget/?${UTM_PARAMS}` },
@@ -152,7 +149,6 @@ export function Configurator({ title }: { title: string }) {
     partnerFeeRecipient: DEFAULT_PARTNER_FEE_RECIPIENT,
     standaloneMode,
     disableToastMessages,
-    disableProgressBar,
   }
 
   const computedParams = useWidgetParams(state)
@@ -273,19 +269,6 @@ export function Configurator({ title }: { title: string }) {
           >
             <FormControlLabel value="false" control={<Radio />} label="Self-contain in Widget" />
             <FormControlLabel value="true" control={<Radio />} label="Dapp mode" />
-          </RadioGroup>
-        </FormControl>
-        <FormControl component="fieldset">
-          <FormLabel component="legend">Progress bar:</FormLabel>
-          <RadioGroup
-            row
-            aria-label="mode"
-            name="mode"
-            value={disableProgressBar}
-            onChange={toggleDisableProgressBar}
-          >
-            <FormControlLabel value="false" control={<Radio />} label="Show SWAP progress bar" />
-            <FormControlLabel value="true" control={<Radio />} label="Hide SWAP progress bar" />
           </RadioGroup>
         </FormControl>
 

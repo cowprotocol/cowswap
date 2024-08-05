@@ -11,7 +11,6 @@ import {
 import {
   Address,
   SupportedChainId as ChainId,
-  CompetitionOrderStatus,
   CowEnv,
   EnrichedOrder,
   NativePriceResponse,
@@ -225,18 +224,6 @@ export async function getSurplusData(chainId: ChainId, address: string): Promise
   return orderBookApi.getTotalSurplus(address, { chainId })
 }
 
-export async function getOrderCompetitionStatus(
-  chainId: ChainId,
-  orderId: string
-): Promise<CompetitionOrderStatus | undefined> {
-  try {
-    return await orderBookApi.getOrderCompetitionStatus(orderId, { chainId })
-  } catch (e) {
-    console.debug(`[getOrderCompetitionStatus] Non successful response:`, e?.message || e)
-    return
-  }
-}
-
 export type ProfileData = {
   totalTrades: number
   totalReferrals: number
@@ -262,4 +249,37 @@ export async function getProfileData(chainId: ChainId, address: string): Promise
   } else {
     return response.json()
   }
+}
+
+// TODO: this will come from SDK as well
+// TODO: and the name might change
+export type SolverCompetition = {
+  solver: string
+  sellAmount: string
+  buyAmount: string
+}[]
+
+export type PendingOrderStatusType = 'scheduled' | 'open' | 'active' | 'solved' | 'executing' | 'traded' | 'cancelled'
+
+export type PendingOrderStatusResult = {
+  type: PendingOrderStatusType
+  value?: SolverCompetition
+}
+
+// TODO: move to SDK
+// v1/status/<orderId>
+export async function getPendingOrderStatus(
+  chainId: ChainId,
+  orderId: string
+): Promise<PendingOrderStatusResult | null> {
+  const response = await fetch('http://localhost:8080/api/v1/status/' + orderId, {
+    headers: { ...DEFAULT_HEADERS, 'Access-Control-Allow-Origin': '*' },
+    method: 'GET',
+  })
+
+  if (!response.ok) {
+    return null
+  }
+
+  return await response.json()
 }
