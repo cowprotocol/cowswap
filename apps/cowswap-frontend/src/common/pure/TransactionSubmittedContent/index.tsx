@@ -11,6 +11,7 @@ import { DisplayLink } from 'legacy/components/TransactionConfirmationModal/Disp
 import { ActivityStatus } from 'legacy/hooks/useRecentActivity'
 
 import { ActivityDerivedState } from 'modules/account/containers/Transaction'
+import { GnosisSafeTxDetails } from 'modules/account/containers/Transaction/ActivityDetails'
 import { EthFlowStepper } from 'modules/swap/containers/EthFlowStepper'
 import { WatchAssetInWallet } from 'modules/wallet/containers/WatchAssetInWallet'
 
@@ -68,6 +69,11 @@ export function TransactionSubmittedContent({
 
   const isInjectedWidgetMode = isInjectedWidget()
 
+  const isPresignaturePending = activityDerivedState?.isPresignaturePending
+  const showSafeSigningInfo = isPresignaturePending && activityDerivedState && !!activityDerivedState.gnosisSafeInfo
+  const showProgressBar =
+    !showSafeSigningInfo && !isPresignaturePending && activityDerivedState && orderProgressBarV2Props
+
   return (
     <styledEl.Wrapper>
       <styledEl.Section>
@@ -81,9 +87,10 @@ export function TransactionSubmittedContent({
             </Text>
             <DisplayLink id={hash} chainId={chainId} />
             <EthFlowStepper order={order} />
-            {activityDerivedState && orderProgressBarV2Props && (
-              <OrderProgressBarV2 {...orderProgressBarV2Props} order={order} />
+            {showSafeSigningInfo && (
+              <GnosisSafeTxDetails chainId={chainId} activityDerivedState={activityDerivedState} />
             )}
+            {showProgressBar && <OrderProgressBarV2 {...orderProgressBarV2Props} order={order} />}
             <styledEl.ButtonGroup>
               <WatchAssetInWallet shortLabel currency={currencyToAdd} />
 
