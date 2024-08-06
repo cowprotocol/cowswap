@@ -66,13 +66,13 @@ export default function Page() {
             <Link
               bgColor={'#194D05'}
               color={'#BCEC79'}
-              href="https://deploy-cow-amm.bleu.fi/"
+              href="https://balancer.fi/pools/cow"
               external
               linkType={LinkType.HeroButton}
-              utmContent={'cow-amm-hero-button-protect-liquidity'}
-              onClick={() => clickOnCowAmm('click-protect-liquidity')}
+              utmContent={'cow-amm-hero-button-lp-on-cow-amm'}
+              onClick={() => clickOnCowAmm('click-lp-on-cow-amm')}
             >
-              Protect your liquidity
+              LP on CoW AMM ↗
             </Link>
           </HeroContent>
           <HeroImage width={470} height={470} color={'#194D05'} marginMobile="24px auto 56px">

@@ -108,3 +108,10 @@ export function clickOnLegal(event: string) {
     action: event,
   })
 }
+
+export function clickOnNavigation(event: string) {
+  cowAnalytics.sendEvent({
+    category: Category.NAVIGATION,
+    action: event,
+  })
+}
