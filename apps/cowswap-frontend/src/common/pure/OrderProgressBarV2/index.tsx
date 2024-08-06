@@ -324,9 +324,10 @@ const mockSolvers = [
 interface FinishedStepProps {
   solverCompetition?: SolverCompetition
   order?: Order
+  cancellationFailed?: boolean
 }
 
-export const FinishedStep: React.FC<FinishedStepProps> = ({ solverCompetition, order }) => {
+export const FinishedStep: React.FC<FinishedStepProps> = ({ solverCompetition, order, cancellationFailed }) => {
   const [showAllSolvers, setShowAllSolvers] = useState(false)
   const { surplusFiatValue, surplusPercent } = useGetSurplusData(order)
 
@@ -338,6 +339,11 @@ export const FinishedStep: React.FC<FinishedStepProps> = ({ solverCompetition, o
 
   return (
     <styledEl.FinishedStepContainer>
+      {cancellationFailed && (
+        <styledEl.CancellationFailedBanner>
+          <b>Cancellation failed:</b> The order was executed before it could be cancelled.
+        </styledEl.CancellationFailedBanner>
+      )}
       <styledEl.ProgressTopSection>
         <styledEl.ProgressImageWrapper bgColor={'#65D9FF'}>
           <styledEl.ShareButton>
@@ -720,10 +726,6 @@ function ExpiredStep({ order }: OrderProgressBarV2Props) {
   )
 }
 
-function CancellationFailedStep() {
-  return <div>Failed to cancel, order executed instead. Oops!</div>
-}
-
 type StepNameWithoutSolved = Exclude<OrderProgressBarStepName, 'solved'>
 const STEP_NAME_TO_STEP_COMPONENT: Record<StepNameWithoutSolved, React.ComponentType<OrderProgressBarV2Props>> = {
   initial: InitialStep,
@@ -737,7 +739,7 @@ const STEP_NAME_TO_STEP_COMPONENT: Record<StepNameWithoutSolved, React.Component
   cancelling: CancellingStep,
   cancelled: CancelledStep,
   expired: ExpiredStep,
-  cancellationFailed: CancellationFailedStep,
+  cancellationFailed: (props) => <FinishedStep {...props} cancellationFailed={true} />,
 }
 
 export default OrderProgressBarV2
