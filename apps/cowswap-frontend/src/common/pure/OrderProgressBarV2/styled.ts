@@ -63,6 +63,8 @@ export const StepsWrapper = styled.div`
   flex-flow: column wrap;
   padding: 30px 30px 0;
   gap: 28px;
+  width: 100%;
+  margin: 0 auto;
 
   .spinner {
     animation: spin 1s linear infinite;
@@ -484,7 +486,8 @@ export const TransactionStatus = styled.div<{ status?: string }>`
   font-size: 21px;
   font-weight: bold;
   margin: 24px auto;
-  color: ${({ status }) => (status === 'expired' ? `var(${UI.COLOR_ALERT_TEXT})` : `var(${UI.COLOR_SUCCESS_TEXT})`)};
+  color: ${({ status }) =>
+    status === 'expired' || status === 'cancelled' ? `var(${UI.COLOR_ALERT_TEXT})` : `var(${UI.COLOR_SUCCESS_TEXT})`};
 
   > svg {
     --size: 28px;
@@ -492,7 +495,7 @@ export const TransactionStatus = styled.div<{ status?: string }>`
     width: var(--size);
     height: var(--size);
     background-color: ${({ status }) =>
-      status === 'expired' ? `var(${UI.COLOR_ALERT_BG})` : `var(${UI.COLOR_SUCCESS_BG})`};
+      status === 'expired' || status === 'cancelled' ? `var(${UI.COLOR_ALERT_BG})` : `var(${UI.COLOR_SUCCESS_BG})`};
     border-radius: var(--size);
     padding: 2px;
   }
@@ -694,6 +697,13 @@ export const InfoCard = styled.div<{ variant: 'warning' | 'success' }>`
   p {
     margin: 0;
     font-size: 14px;
+    line-height: 1.4;
     text-align: center;
+  }
+
+  > svg {
+    max-width: 100%;
+    height: auto;
+    margin: 0 auto 16px;
   }
 `
