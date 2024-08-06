@@ -9,10 +9,10 @@ import { Currency } from '@uniswap/sdk-core'
 import { Nullish } from 'types'
 
 import { DisplayLink } from 'legacy/components/TransactionConfirmationModal/DisplayLink'
-import { getActivityState } from 'legacy/hooks/useActivityDerivedState'
 import { ActivityStatus } from 'legacy/hooks/useRecentActivity'
 
 import { ActivityDerivedState } from 'modules/account/containers/Transaction'
+// import { GnosisSafeTxDetails } from 'modules/account/containers/Transaction/ActivityDetails'
 import { EthFlowStepper } from 'modules/swap/containers/EthFlowStepper'
 import { WatchAssetInWallet } from 'modules/wallet/containers/WatchAssetInWallet'
 
@@ -65,8 +65,6 @@ export function TransactionSubmittedContent({
   orderProgressBarV2Props,
   showCancellationModal,
 }: TransactionSubmittedContentProps) {
-  const activityState = activityDerivedState && getActivityState(activityDerivedState)
-  const showProgressBar = activityState === 'open' || activityState === 'filled'
   const { order, isOrder, isCreating, isPending } = activityDerivedState || {}
   const showCancellationButton = isOrder && (isCreating || isPending)
 
@@ -75,6 +73,11 @@ export function TransactionSubmittedContent({
   }
 
   // const isInjectedWidgetMode = isInjectedWidget()
+
+  const isPresignaturePending = activityDerivedState?.isPresignaturePending
+  const showSafeSigningInfo = isPresignaturePending && activityDerivedState && !!activityDerivedState.gnosisSafeInfo
+  const showProgressBar =
+    !showSafeSigningInfo && !isPresignaturePending && activityDerivedState && orderProgressBarV2Props
 
   return (
     <styledEl.Wrapper>

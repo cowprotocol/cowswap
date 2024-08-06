@@ -10,6 +10,7 @@ import STEP_IMAGE_WAIT from '@cowprotocol/assets/cow-swap/progressbar-step-wait.
 import ICON_SOCIAL_X from '@cowprotocol/assets/images/icon-social-x.svg'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { isSellOrder } from '@cowprotocol/common-utils'
+import type { CompetitionOrderStatus } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { UI } from '@cowprotocol/ui'
 import { ProductLogo, ProductVariant } from '@cowprotocol/ui'
@@ -30,7 +31,6 @@ import SVG from 'react-inlinesvg'
 import { AMM_LOGOS } from 'legacy/components/AMMsLogo'
 import { Order } from 'legacy/state/orders/actions'
 
-import { SolverCompetition } from 'api/cowProtocol/api'
 import { OrderProgressBarStepName } from 'common/hooks/orderProgressBarV2'
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
 
@@ -39,7 +39,7 @@ import * as styledEl from './styled'
 export type OrderProgressBarV2Props = {
   stepName: OrderProgressBarStepName
   countdown?: number | null | undefined
-  solverCompetition?: SolverCompetition
+  solverCompetition?: CompetitionOrderStatus['value']
   order?: Order
   debugMode?: boolean
 }
@@ -322,7 +322,7 @@ const mockSolvers = [
 // END TEMP ==========================
 
 interface FinishedStepProps {
-  solverCompetition?: SolverCompetition
+  solverCompetition?: CompetitionOrderStatus['value']
   order?: Order
   cancellationFailed?: boolean
 }
@@ -393,7 +393,7 @@ export const FinishedStep: React.FC<FinishedStepProps> = ({ solverCompetition, o
 
           <styledEl.SolverTable>
             <tbody>
-              {visibleSolvers.map((solver, index) => (
+              {visibleSolvers.map((solver: any, index: number) => (
                 <styledEl.SolverTableRow key={`${solver.solver}-${index}`} isWinner={index === 0}>
                   <styledEl.SolverRank isFirst>{index + 1}</styledEl.SolverRank>
                   <styledEl.SolverTableCell isSecond>
@@ -522,7 +522,7 @@ function NextBatchStep({ solverCompetition, order }: OrderProgressBarV2Props) {
                     />
                     <span>
                       {entry.solver}
-                      {entry.sellAmount && ' <- your order was included in this solution'}
+                      {entry?.executedAmounts && ' <- your order was included in this solution'}
                     </span>
                   </div>
                 </li>
