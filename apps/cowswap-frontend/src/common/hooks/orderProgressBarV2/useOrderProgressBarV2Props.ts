@@ -285,7 +285,7 @@ const POOLING_SWR_OPTIONS = {
 
 function usePendingOrderStatus(chainId: SupportedChainId, orderId: string, doNotQuery?: boolean) {
   return useSWR(
-    chainId && orderId ? ['getOrderCompetitionStatus', chainId, orderId] : null,
+    chainId && orderId && !doNotQuery ? ['getOrderCompetitionStatus', chainId, orderId] : null,
     async ([, _chainId, _orderId]) => getOrderCompetitionStatus(_chainId, _orderId),
     doNotQuery ? SWR_NO_REFRESH_OPTIONS : POOLING_SWR_OPTIONS
   ).data
