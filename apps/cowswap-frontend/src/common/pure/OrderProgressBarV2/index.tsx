@@ -148,7 +148,7 @@ const CircularCountdown: React.FC<CircularCountdownProps> = ({ countdown }) => {
 }
 
 export function OrderProgressBarV2(props: OrderProgressBarV2Props) {
-  const { stepName, debugMode = false } = props
+  const { stepName, debugMode = true } = props
   const [debugStep, setDebugStep] = useState<OrderProgressBarStepName>(stepName)
   const currentStep = debugMode ? debugStep : stepName
   const StepComponent = STEP_NAME_TO_STEP_COMPONENT[currentStep as keyof typeof STEP_NAME_TO_STEP_COMPONENT]
@@ -359,7 +359,7 @@ export const FinishedStep: React.FC<FinishedStepProps> = ({ solverCompetition, o
           </styledEl.CowImage>
           <styledEl.TokenPairTitle>
             <span>Swap order</span>
-            <b>WETH/USDC</b>
+            <b>{order ? `${order.inputToken.symbol}/${order.outputToken.symbol}` : 'N/A'}</b>
           </styledEl.TokenPairTitle>
           <styledEl.TokenImages>
             <TokenLogo token={order?.inputToken} size={34} />
