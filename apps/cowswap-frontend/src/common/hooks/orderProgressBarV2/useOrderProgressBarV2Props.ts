@@ -214,10 +214,7 @@ function getProgressBarStepName(
   backendApiStatus: OrderProgressBarState['backendApiStatus'],
   previousStepName: OrderProgressBarState['previousStepName']
 ): OrderProgressBarStepName {
-  if (isUnfillable) {
-    // out of market order
-    return 'unfillable'
-  } else if (isExpired) {
+  if (isExpired) {
     return 'expired'
   } else if (isCancelled) {
     return 'cancelled'
@@ -241,6 +238,10 @@ function getProgressBarStepName(
   ) {
     // moved back from solving to active
     return 'nextBatch'
+  }
+  if (isUnfillable) {
+    // out of market order
+    return 'unfillable'
   } else if (backendApiStatus === 'active' && countdown === 0) {
     // solving, but took longer than stipulated countdown
     return 'delayed'
