@@ -1,6 +1,5 @@
 import { getBlockExplorerUrl, getEtherscanLink, getExplorerLabel } from '@cowprotocol/common-utils'
 
-import { Text } from 'rebass'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
 import { useOrder } from 'legacy/state/orders/hooks'
