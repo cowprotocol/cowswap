@@ -92,7 +92,8 @@ export const ActionsWrapper = styled.div`
   flex-flow: row wrap;
   font-size: 14px;
 
-  > a {
+  > a,
+  > button {
     transition: color var(${UI.ANIMATION_DURATION}) ease-in-out;
     text-decoration: none;
     color: var(${UI.COLOR_TEXT_OPACITY_70});

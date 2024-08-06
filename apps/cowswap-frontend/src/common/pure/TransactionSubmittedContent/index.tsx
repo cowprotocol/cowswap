@@ -1,3 +1,4 @@
+import { Order } from '@cowprotocol/cow-sdk'
 // import GameIcon from '@cowprotocol/assets/cow-swap/game.gif'
 // import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
@@ -18,8 +19,9 @@ import { WatchAssetInWallet } from 'modules/wallet/containers/WatchAssetInWallet
 // import { Routes } from 'common/constants/routes'
 
 import * as styledEl from './styled'
-import { SurplusModal } from './SurplusModal'
+// import { SurplusModal } from './SurplusModal'
 
+import { CancelButton } from '../CancelButton'
 import { OrderProgressBarV2, OrderProgressBarV2Props } from '../OrderProgressBarV2'
 
 // const activityStatusLabels: Partial<Record<ActivityStatus, string>> = {
@@ -50,6 +52,7 @@ export interface TransactionSubmittedContentProps {
   currencyToAdd?: Nullish<Currency>
   showSurplus?: boolean | null
   orderProgressBarV2Props?: OrderProgressBarV2Props | null
+  showCancellationModal: ((order: Order) => void) | null
 }
 
 export function TransactionSubmittedContent({
@@ -58,12 +61,14 @@ export function TransactionSubmittedContent({
   hash,
   currencyToAdd,
   activityDerivedState,
-  showSurplus,
+  // showSurplus,
   orderProgressBarV2Props,
+  showCancellationModal,
 }: TransactionSubmittedContentProps) {
   const activityState = activityDerivedState && getActivityState(activityDerivedState)
   const showProgressBar = activityState === 'open' || activityState === 'filled'
-  const { order } = activityDerivedState || {}
+  const { order, isOrder, isCreating, isPending } = activityDerivedState || {}
+  const showCancellationButton = isOrder && (isCreating || isPending)
 
   if (!chainId) {
     return null
@@ -77,32 +82,33 @@ export function TransactionSubmittedContent({
         <styledEl.Header>
           <BackButton onClick={onDismiss} />
           <styledEl.ActionsWrapper>
-            {/*TODO: Add cancel tx logic*/}
-            <a href={'#'}>Cancel</a>
+            {showCancellationButton && (
+              <CancelButton
+                onClick={() => order && showCancellationModal && showCancellationModal(order as unknown as Order)}
+              />
+            )}
             <DisplayLink id={hash} chainId={chainId} />
           </styledEl.ActionsWrapper>
         </styledEl.Header>
-        {(showSurplus && <SurplusModal order={order} />) || (
-          <>
-            {/*<Text fontWeight={600} fontSize={28}>*/}
-            {/*  {getTitleStatus(activityDerivedState)}*/}
-            {/*</Text>*/}
-            {/*<DisplayLink id={hash} chainId={chainId} />*/}
-            <EthFlowStepper order={order} />
-            {activityDerivedState && showProgressBar && orderProgressBarV2Props && (
-              <OrderProgressBarV2 {...orderProgressBarV2Props} order={order} />
+        <>
+          {/*<Text fontWeight={600} fontSize={28}>*/}
+          {/*  {getTitleStatus(activityDerivedState)}*/}
+          {/*</Text>*/}
+          {/*<DisplayLink id={hash} chainId={chainId} />*/}
+          <EthFlowStepper order={order} />
+          {activityDerivedState && showProgressBar && orderProgressBarV2Props && (
+            <OrderProgressBarV2 {...orderProgressBarV2Props} order={order} />
+          )}
+          <styledEl.ButtonGroup>
+            <WatchAssetInWallet shortLabel currency={currencyToAdd} />
+            {/*{activityDerivedState?.status === ActivityStatus.PENDING && (*/}
+            {/*  <styledEl.ButtonCustom onClick={onDismiss}>Close</styledEl.ButtonCustom>*/}
+            {/*)}*/}
+            {activityDerivedState?.status === (ActivityStatus.CONFIRMED || ActivityStatus.EXPIRED) && (
+              <styledEl.ButtonCustom onClick={onDismiss}>Close</styledEl.ButtonCustom>
             )}
-            <styledEl.ButtonGroup>
-              <WatchAssetInWallet shortLabel currency={currencyToAdd} />
-              {/*{activityDerivedState?.status === ActivityStatus.PENDING && (*/}
-              {/*  <styledEl.ButtonCustom onClick={onDismiss}>Close</styledEl.ButtonCustom>*/}
-              {/*)}*/}
-              {activityDerivedState?.status === (ActivityStatus.CONFIRMED || ActivityStatus.EXPIRED) && (
-                <styledEl.ButtonCustom onClick={onDismiss}>Close</styledEl.ButtonCustom>
-              )}
-            </styledEl.ButtonGroup>
-          </>
-        )}
+          </styledEl.ButtonGroup>
+        </>
       </styledEl.Section>
     </styledEl.Wrapper>
   )
