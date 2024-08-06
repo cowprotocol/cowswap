@@ -1,10 +1,10 @@
-import GameIcon from '@cowprotocol/assets/cow-swap/game.gif'
-import { isInjectedWidget } from '@cowprotocol/common-utils'
+// import GameIcon from '@cowprotocol/assets/cow-swap/game.gif'
+// import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { BackButton } from '@cowprotocol/ui'
 import { Currency } from '@uniswap/sdk-core'
 
-import { Text } from 'rebass'
+// import { Text } from 'rebass'
 import { Nullish } from 'types'
 
 import { DisplayLink } from 'legacy/components/TransactionConfirmationModal/DisplayLink'
@@ -15,31 +15,31 @@ import { ActivityDerivedState } from 'modules/account/containers/Transaction'
 import { EthFlowStepper } from 'modules/swap/containers/EthFlowStepper'
 import { WatchAssetInWallet } from 'modules/wallet/containers/WatchAssetInWallet'
 
-import { Routes } from 'common/constants/routes'
+// import { Routes } from 'common/constants/routes'
 
 import * as styledEl from './styled'
 import { SurplusModal } from './SurplusModal'
 
 import { OrderProgressBarV2, OrderProgressBarV2Props } from '../OrderProgressBarV2'
 
-const activityStatusLabels: Partial<Record<ActivityStatus, string>> = {
-  [ActivityStatus.CONFIRMED]: 'Confirmed',
-  [ActivityStatus.EXPIRED]: 'Expired',
-  [ActivityStatus.CANCELLED]: 'Cancelled',
-  [ActivityStatus.CANCELLING]: 'Cancelling',
-  [ActivityStatus.FAILED]: 'Failed',
-}
+// const activityStatusLabels: Partial<Record<ActivityStatus, string>> = {
+//   [ActivityStatus.CONFIRMED]: 'Confirmed',
+//   [ActivityStatus.EXPIRED]: 'Expired',
+//   [ActivityStatus.CANCELLED]: 'Cancelled',
+//   [ActivityStatus.CANCELLING]: 'Cancelling',
+//   [ActivityStatus.FAILED]: 'Failed',
+// }
 
-function getTitleStatus(activityDerivedState: ActivityDerivedState | null): string {
-  if (!activityDerivedState) {
-    return ''
-  }
+// function getTitleStatus(activityDerivedState: ActivityDerivedState | null): string {
+//   if (!activityDerivedState) {
+//     return ''
+//   }
 
-  const prefix = activityDerivedState.isOrder ? 'Order' : 'Transaction'
-  const postfix = activityStatusLabels[activityDerivedState.status] || 'Submitted'
+//   const prefix = activityDerivedState.isOrder ? 'Order' : 'Transaction'
+//   const postfix = activityStatusLabels[activityDerivedState.status] || 'Submitted'
 
-  return `${prefix} ${postfix}`
-}
+//   return `${prefix} ${postfix}`
+// }
 
 export interface TransactionSubmittedContentProps {
   onDismiss(): void
@@ -69,7 +69,7 @@ export function TransactionSubmittedContent({
     return null
   }
 
-  const isInjectedWidgetMode = isInjectedWidget()
+  // const isInjectedWidgetMode = isInjectedWidget()
 
   return (
     <styledEl.Wrapper>
