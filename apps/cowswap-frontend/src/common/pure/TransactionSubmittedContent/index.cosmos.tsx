@@ -29,7 +29,7 @@ const Wrapper = styled.div`
 const Fixtures = {
   default: (
     <Wrapper>
-      <TransactionSubmittedContent {...defaultProps} />
+      <TransactionSubmittedContent {...defaultProps} showCancellationModal={() => {}} />
     </Wrapper>
   ),
 }
