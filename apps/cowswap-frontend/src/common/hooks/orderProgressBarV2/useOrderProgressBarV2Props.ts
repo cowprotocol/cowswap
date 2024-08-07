@@ -13,6 +13,8 @@ import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { getOrderCompetitionStatus } from 'api/cowProtocol/api'
 import { getIsFinalizedOrder } from 'utils/orderUtils/getIsFinalizedOrder'
 
+import { Command } from '@cowprotocol/types'
+import { useCancelOrder } from 'common/hooks/useCancelOrder'
 import {
   ordersProgressBarStateAtom,
   setOrderProgressBarCancellationTriggered,
@@ -29,6 +31,7 @@ export type UseOrderProgressBarPropsParams = {
 
 export type UseOrderProgressBarV2Result = Pick<OrderProgressBarState, 'countdown' | 'solverCompetition'> & {
   stepName: Exclude<OrderProgressBarState['progressBarStepName'], undefined>
+  showCancellationModal: Command | null
 }
 
 const MINIMUM_STEP_DISPLAY_TIME = ms`5s`
@@ -56,6 +59,9 @@ export function useOrderProgressBarV2Props(
   const doNotQuery = !!(order && getIsFinalizedOrder(order)) || disableProgressBar
 
   const orderId = order?.id || ''
+
+  const getCancelOrder = useCancelOrder()
+  const showCancellationModal = order && getCancelOrder ? getCancelOrder(order) : null
 
   // Fetch state from atom
   const {
@@ -95,8 +101,9 @@ export function useOrderProgressBarV2Props(
       countdown,
       solverCompetition,
       stepName: progressBarStepName || 'initial',
+      showCancellationModal,
     }
-  }, [disableProgressBar, countdown, solverCompetition, progressBarStepName])
+  }, [disableProgressBar, countdown, solverCompetition, progressBarStepName, showCancellationModal])
 }
 
 // atom related hooks

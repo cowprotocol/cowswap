@@ -12,6 +12,7 @@ import { TokenWithLogo } from '@cowprotocol/common-const'
 import { isSellOrder } from '@cowprotocol/common-utils'
 import type { CompetitionOrderStatus } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
+import { Command } from '@cowprotocol/types'
 import { ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -35,13 +36,15 @@ import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
 
 import * as styledEl from './styled'
 
+import { CancelButton } from '../CancelButton'
+
 export type OrderProgressBarV2Props = {
   stepName: OrderProgressBarStepName
   countdown?: number | null | undefined
   solverCompetition?: CompetitionOrderStatus['value']
   order?: Order
   debugMode?: boolean
-  // cancelOrder: () => void // TODO: pass down cancel fn
+  showCancellationModal: Command | null
   // surplus: // TODO: pass down surplus data
 }
 
@@ -570,7 +573,7 @@ function DelayedStep({ order }: OrderProgressBarV2Props) {
   )
 }
 
-function UnfillableStep({ order }: OrderProgressBarV2Props) {
+function UnfillableStep({ order, showCancellationModal }: OrderProgressBarV2Props) {
   return (
     <styledEl.ProgressContainer>
       <styledEl.ProgressTopSection>
@@ -589,11 +592,12 @@ function UnfillableStep({ order }: OrderProgressBarV2Props) {
           customColor={'#996815'}
           extraContent={
             <styledEl.Description>
-              Your order's price is currently out of market. You can either wait or{' '}
-              <styledEl.Link href={'#'} underline>
-                cancel the order
-              </styledEl.Link>
-              .
+              Your order's price is currently out of market.{' '}
+              {showCancellationModal && (
+                <>
+                  You can either wait or <CancelButton onClick={showCancellationModal}>cancel the order</CancelButton>.
+                </>
+              )}
             </styledEl.Description>
           }
         />
