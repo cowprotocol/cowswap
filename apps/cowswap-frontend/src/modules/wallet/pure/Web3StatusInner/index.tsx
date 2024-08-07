@@ -7,11 +7,10 @@ import { Trans } from '@lingui/macro'
 import ICON_WALLET from 'assets/icon/wallet.svg'
 import SVG from 'react-inlinesvg'
 
-import { upToTiny, upToExtraSmall, useMediaQuery } from 'legacy/hooks/useMediaQuery'
+import { upToExtraSmall, upToTiny, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 
 import { Text, Web3StatusConnect, Web3StatusConnected } from './styled'
 
-import { FollowPendingTxPopup } from '../../containers/FollowPendingTxPopup'
 import { StatusIcon } from '../StatusIcon'
 
 export interface Web3StatusInnerProps {
@@ -34,11 +33,9 @@ export function Web3StatusInner(props: Web3StatusInnerProps) {
       <Web3StatusConnected id="web3-status-connected" pending={hasPendingTransactions}>
         {hasPendingTransactions ? (
           <RowBetween gap="6px">
-            <FollowPendingTxPopup>
-              <Text>
-                <Trans>{pendingCount} Pending</Trans>
-              </Text>{' '}
-            </FollowPendingTxPopup>
+            <Text>
+              <Trans>{pendingCount} Pending</Trans>
+            </Text>{' '}
             <Loader stroke="currentColor" />
           </RowBetween>
         ) : (

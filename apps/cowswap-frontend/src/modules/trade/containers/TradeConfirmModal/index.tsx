@@ -1,5 +1,3 @@
-import { useCallback } from 'react'
-
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
 import { UI } from '@cowprotocol/ui'
@@ -15,7 +13,6 @@ import { OrderSubmittedContent } from 'common/pure/OrderSubmittedContent'
 import { TransactionErrorContent } from 'common/pure/TransactionErrorContent'
 import { TradeAmounts } from 'common/types'
 
-import { useSetShowFollowPendingTxPopup } from '../../../wallet/hooks/useSetShowFollowPendingTxPopup'
 import { useTradeConfirmActions } from '../../hooks/useTradeConfirmActions'
 import { useTradeConfirmState } from '../../hooks/useTradeConfirmState'
 
@@ -43,14 +40,8 @@ export function TradeConfirmModal(props: TradeConfirmModalProps) {
   const isSafeWallet = useIsSafeWallet()
   const { permitSignatureState, pendingTrade, transactionHash, error } = useTradeConfirmState()
   const { onDismiss } = useTradeConfirmActions()
-  const setShowFollowPendingTxPopup = useSetShowFollowPendingTxPopup()
 
   const order = useOrder({ chainId, id: transactionHash || undefined })
-
-  const dismissConfirmation = useCallback(() => {
-    setShowFollowPendingTxPopup(true)
-    onDismiss()
-  }, [onDismiss, setShowFollowPendingTxPopup])
 
   if (!account) return null
 
@@ -63,7 +54,7 @@ export function TradeConfirmModal(props: TradeConfirmModalProps) {
         title={title}
         pendingTrade={pendingTrade}
         transactionHash={transactionHash}
-        onDismiss={dismissConfirmation}
+        onDismiss={onDismiss}
         permitSignatureState={permitSignatureState}
         isSafeWallet={isSafeWallet}
         submittedContent={submittedContent}
@@ -89,6 +80,7 @@ type InnerComponentProps = {
   submittedContent?: CustomSubmittedContent
   order?: Order
 }
+
 function InnerComponent(props: InnerComponentProps) {
   const {
     account,
