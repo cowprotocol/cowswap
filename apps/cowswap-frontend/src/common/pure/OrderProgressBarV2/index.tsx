@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import PROGRESS_BAR_BAD_NEWS from '@cowprotocol/assets/cow-swap/progressbar-bad-news.svg'
 import PROGRESSBAR_COW_SURPLUS from '@cowprotocol/assets/cow-swap/progressbar-cow-surplus.svg'
@@ -12,18 +12,17 @@ import { TokenWithLogo } from '@cowprotocol/common-const'
 import { isSellOrder } from '@cowprotocol/common-utils'
 import type { CompetitionOrderStatus } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
-import { UI } from '@cowprotocol/ui'
-import { ProductLogo, ProductVariant } from '@cowprotocol/ui'
+import { ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { MdOutlineMotionPhotosPause } from 'react-icons/md'
 import {
-  PiDotsThreeCircle,
-  PiCheckCircleFill,
-  PiSpinnerBallFill,
-  PiClockCountdown,
   PiCaretDown,
   PiCaretUp,
+  PiCheckCircleFill,
+  PiClockCountdown,
+  PiDotsThreeCircle,
+  PiSpinnerBallFill,
   PiTrophyFill,
 } from 'react-icons/pi'
 import SVG from 'react-inlinesvg'
@@ -42,8 +41,11 @@ export type OrderProgressBarV2Props = {
   solverCompetition?: CompetitionOrderStatus['value']
   order?: Order
   debugMode?: boolean
+  // cancelOrder: () => void // TODO: pass down cancel fn
+  // surplus: // TODO: pass down surplus data
 }
 
+// TODO: const, capitalize
 const steps = [
   {
     title: 'Placing order',
@@ -55,6 +57,7 @@ const steps = [
   { title: 'Executing', description: 'The winning solver will execute your order.' },
 ]
 
+// TODO: move to another file?
 const StepComponent: React.FC<{
   status: string
   isFirst: boolean
@@ -217,6 +220,7 @@ function InitialStep({ order }: OrderProgressBarV2Props) {
 }
 
 function SolvingStep({ order }: OrderProgressBarV2Props) {
+  // TODO: use countdown from props
   const [countdown, setCountdown] = useState(15)
 
   useEffect(() => {
@@ -319,16 +323,19 @@ const mockSolvers = [
   { solver: 'FlashSolve', logo: 'flashsolve-logo.png' },
   { solver: 'LiquidityPro', logo: 'liquiditypro-logo.png' },
 ]
+
 // END TEMP ==========================
 
 interface FinishedStepProps {
   solverCompetition?: CompetitionOrderStatus['value']
   order?: Order
   cancellationFailed?: boolean
+  // TODO: add surplus info
 }
 
 export const FinishedStep: React.FC<FinishedStepProps> = ({ solverCompetition, order, cancellationFailed }) => {
   const [showAllSolvers, setShowAllSolvers] = useState(false)
+  // TODO: move out of pure component
   const { surplusFiatValue, surplusPercent } = useGetSurplusData(order)
 
   const toggleSolvers = () => setShowAllSolvers(!showAllSolvers)
@@ -742,4 +749,5 @@ const STEP_NAME_TO_STEP_COMPONENT: Record<StepNameWithoutSolved, React.Component
   cancellationFailed: (props) => <FinishedStep {...props} cancellationFailed={true} />,
 }
 
+// TODO: unused, remove
 export default OrderProgressBarV2
