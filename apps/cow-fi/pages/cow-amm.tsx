@@ -82,16 +82,16 @@ export default function Page() {
 
         <MetricsCard bgColor={Color.neutral100} color="#194D05" columns={3} touchFooter>
           <MetricsItem dividerColor="#9BD955">
-            <h2>3%</h2>
-            <p>performance improvement over reference pool</p>
+            <h2>4.75%</h2>
+            <p>more TVL achieved than reference pool (beta phase)</p>
           </MetricsItem>
           <MetricsItem dividerColor="#9BD955">
-            <h2>$4.8M+</h2>
-            <p>liquidity protected from LVR</p>
+            <h2>$5m+</h2>
+            <p>liquidity protected from LVR (beta phase)</p>
           </MetricsItem>
           <MetricsItem>
-            <h2>$59K+</h2>
-            <p>surplus captured for LPs</p>
+            <h2>$90k+</h2>
+            <p>surplus captured for LPs (beta phase)</p>
           </MetricsItem>
 
           <Link
@@ -298,11 +298,12 @@ export default function Page() {
                 paddingMobile="0"
               >
                 <TopicCardInner contentAlign="left">
-                  <TopicTitle fontSize={52}>Unlock the power of passive income</TopicTitle>
+                  <TopicTitle fontSize={52}>Unlock the power of passive income while reducing risk</TopicTitle>
                   <TopicDescription fontSize={24} color={Color.neutral50}>
                     With LVR in the rear view mirror, providing liquidity becomes identical to running a passive
                     investment strategy: solvers rebalance the pool at the correct market price to keep the value of its
-                    reserves equal, thereby keeping portfolios balanced and reducing risk.
+                    reserves equal, thereby keeping portfolios balanced and reducing risk. On top of that, liquidity
+                    providers earn surplus when they trade with CoW Protocol traders.
                   </TopicDescription>
                 </TopicCardInner>
                 <TopicImage
