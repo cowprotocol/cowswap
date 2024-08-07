@@ -50,12 +50,13 @@ export function useOrderProgressBarV2Props(
     isExpired = false,
     isCreating = false,
     isPresignaturePending = false,
+    isFailed = false,
   } = activityDerivedState || {}
 
   const { disableProgressBar: widgetDisabled = false } = useInjectedWidgetParams()
 
   // Do not build progress bar data when these conditions are set
-  const disableProgressBar = widgetDisabled || isCreating || isPresignaturePending
+  const disableProgressBar = widgetDisabled || isCreating || isFailed || isPresignaturePending
 
   // When the order is in a final state or progress bar is disabled, avoid querying backend unnecessarily
   const doNotQuery = !!(order && getIsFinalizedOrder(order)) || disableProgressBar
