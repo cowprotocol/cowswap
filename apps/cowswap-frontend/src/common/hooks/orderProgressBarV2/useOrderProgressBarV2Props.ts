@@ -15,7 +15,6 @@ import { getOrderCompetitionStatus } from 'api/cowProtocol/api'
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
 import { getIsFinalizedOrder } from 'utils/orderUtils/getIsFinalizedOrder'
 
-
 import {
   ordersProgressBarStateAtom,
   setOrderProgressBarCancellationTriggered,
@@ -159,7 +158,7 @@ function useCancellingOrderUpdater(orderId: string, isCancelling: boolean) {
 
   useEffect(() => {
     if (isCancelling) setCancellationTriggered(orderId)
-  }, [orderId, isCancelling])
+  }, [orderId, isCancelling, setCancellationTriggered])
 }
 
 function useProgressBarStepNameUpdater(
@@ -214,7 +213,7 @@ function useProgressBarStepNameUpdater(
     return () => {
       clearInterval(timer)
     }
-  }, [orderId, stepName, lastTimeChangedSteps])
+  }, [orderId, stepName, lastTimeChangedSteps, setProgressBarStepName])
 }
 
 function getProgressBarStepName(

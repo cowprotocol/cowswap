@@ -181,6 +181,13 @@ function useSubmittedContent(chainId: SupportedChainId, gnosisSafeInfo: GnosisSa
         showCancellationModal={showCancellationModal}
       />
     ),
-    [chainId, transactionHash, activityDerivedState, orderProgressBarV2Props, order]
+    [
+      chainId,
+      transactionHash,
+      activityDerivedState,
+      orderProgressBarV2PropsWithSurplusData,
+      order,
+      showCancellationModal,
+    ]
   )
 }

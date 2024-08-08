@@ -7,7 +7,7 @@ export interface SwapModalsProps {
   showCowSubsidyModal: boolean
 }
 
-export const SwapModals = React.memo(function (props: SwapModalsProps) {
+export const SwapModals = React.memo(function (_props: SwapModalsProps) {
   return (
     <>
       {/* TODO: Re-enable modal once subsidy is back  */}
