@@ -327,7 +327,7 @@ const mockSolvers = [
 
 function FinishedStep({ stepName, solverCompetition, order, surplusData }: OrderProgressBarV2Props) {
   const [showAllSolvers, setShowAllSolvers] = useState(false)
-  const { surplusFiatValue, surplusPercent, surplusAmount } = surplusData || {}
+  const { surplusFiatValue, surplusPercent, surplusAmount, showSurplus } = surplusData || {}
   const cancellationFailed = stepName === 'cancellationFailed'
 
   const toggleSolvers = () => setShowAllSolvers(!showAllSolvers)
@@ -359,22 +359,42 @@ function FinishedStep({ stepName, solverCompetition, order, surplusData }: Order
             />
           </styledEl.FinishedLogo>
           <styledEl.FinishedTagLine>
-            ...gets you <b>moooooore.</b>
+            {showSurplus ? (
+              <>
+                ...gets you <b>moooooore.</b>
+              </>
+            ) : (
+              <>
+                Did you <b>know?</b>
+              </>
+            )}
           </styledEl.FinishedTagLine>
           <styledEl.CowImage>
             <SVG src={PROGRESSBAR_COW_SURPLUS} />
           </styledEl.CowImage>
-          <styledEl.TokenPairTitle>
-            <span>Swap order</span>
-            <b>{order ? `${order.inputToken.symbol}/${order.outputToken.symbol}` : 'N/A'}</b>
-          </styledEl.TokenPairTitle>
-          <styledEl.TokenImages>
-            <TokenLogo token={order?.inputToken} size={34} />
-            <TokenLogo token={order?.outputToken} size={34} />
-          </styledEl.TokenImages>
-          <styledEl.Surplus>
-            <span>Your surplus</span>
-            {surplusPercent ? <b>+{parseFloat(surplusPercent).toFixed(2)}%</b> : <b>N/A</b>}
+          {showSurplus && (
+            <>
+              <styledEl.TokenPairTitle>
+                <span>Swap order</span>
+                <b>{order ? `${order.inputToken.symbol}/${order.outputToken.symbol}` : 'N/A'}</b>
+              </styledEl.TokenPairTitle>
+              <styledEl.TokenImages>
+                <TokenLogo token={order?.inputToken} size={34} />
+                <TokenLogo token={order?.outputToken} size={34} />
+              </styledEl.TokenImages>
+            </>
+          )}
+          <styledEl.Surplus showSurplus={!!showSurplus}>
+            {showSurplus ? (
+              <>
+                <span>Your surplus</span>
+                {surplusPercent ? <b>+{parseFloat(surplusPercent).toFixed(2)}%</b> : <b>N/A</b>}
+              </>
+            ) : (
+              <>
+                <span>Unlike other exchanges, here you don't pay any fees if your trade fails.</span>
+              </>
+            )}
           </styledEl.Surplus>
         </styledEl.ProgressImageWrapper>
       </styledEl.ProgressTopSection>
@@ -453,17 +473,16 @@ function FinishedStep({ stepName, solverCompetition, order, surplusData }: Order
             </b>
           </styledEl.ReceivedAmount>
         )}
-        {surplusFiatValue ? (
+        {showSurplus ? (
           <styledEl.ExtraAmount>
             {isSell ? 'and got an extra ' : 'and saved '}
             <i>
               +<TokenAmount amount={surplusAmount} tokenSymbol={surplusAmount?.currency} />
             </i>{' '}
-            (~${surplusFiatValue.toFixed(2)})
+            {surplusFiatValue && +surplusFiatValue.toFixed(2) > 0 && <>(~${surplusFiatValue.toFixed(2)})</>}
           </styledEl.ExtraAmount>
         ) : null}
-        {/*TODO: Add states for when there's no surplus and/or when there's a custom recipient*/}
-        {/*TODO: use surplusData.showSurplus flag to determine when there's relevant surplus */}
+        {/*TODO: Add states for when there's a custom recipient*/}
       </styledEl.ConclusionContent>
     </styledEl.FinishedStepContainer>
   )
