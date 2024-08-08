@@ -13,7 +13,7 @@ import { isSellOrder } from '@cowprotocol/common-utils'
 import type { CompetitionOrderStatus } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { Command } from '@cowprotocol/types'
-import { ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
+import { ProductLogo, ProductVariant, TokenAmount, UI } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { MdOutlineMotionPhotosPause } from 'react-icons/md'
@@ -32,7 +32,7 @@ import { AMM_LOGOS } from 'legacy/components/AMMsLogo'
 import { Order } from 'legacy/state/orders/actions'
 
 import { OrderProgressBarStepName } from 'common/hooks/orderProgressBarV2'
-import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
+import { SurplusData } from 'common/hooks/useGetSurplusFiatValue'
 
 import * as styledEl from './styled'
 
@@ -45,7 +45,7 @@ export type OrderProgressBarV2Props = {
   order?: Order
   debugMode?: boolean
   showCancellationModal: Command | null
-  // surplus: // TODO: pass down surplus data
+  surplusData?: SurplusData
 }
 
 // TODO: const, capitalize
@@ -101,20 +101,38 @@ const StatusIcon: React.FC<{ status: string; customColor?: string }> = ({ status
 
 const OrderIntent: React.FC<{ order?: Order }> = ({ order }) => {
   if (!order) return null
+
   const { inputToken, outputToken, kind, sellAmount, buyAmount } = order
   const isSell = isSellOrder(kind)
 
-  const formatAmount = (amount: string, token: Currency | TokenWithLogo) => {
-    const currencyAmount = CurrencyAmount.fromRawAmount(token, amount)
-    return `${currencyAmount.toSignificant(6)} ${token.symbol}`
-  }
+  const sellCurrencyAmount = CurrencyAmount.fromRawAmount(inputToken, sellAmount)
+  const buyCurrencyAmount = CurrencyAmount.fromRawAmount(outputToken, buyAmount)
+
+  const sellTokenPart = (
+    <>
+      <TokenLogo token={inputToken} size={20} />
+      <TokenAmount amount={sellCurrencyAmount} tokenSymbol={inputToken} />
+    </>
+  )
+
+  const buyTokenPart = (
+    <>
+      <TokenLogo token={outputToken} size={20} />
+      <TokenAmount amount={buyCurrencyAmount} tokenSymbol={outputToken} />
+    </>
+  )
 
   return (
     <styledEl.OriginalOrderIntent>
-      <TokenLogo token={inputToken} size={20} />
-      {formatAmount(sellAmount, inputToken)} for {isSell ? 'at least' : 'at most'}{' '}
-      <TokenLogo token={outputToken} size={20} />
-      {formatAmount(buyAmount, outputToken)}
+      {isSell ? (
+        <>
+          {sellTokenPart} for at least {buyTokenPart}
+        </>
+      ) : (
+        <>
+          {buyTokenPart} for at most {sellTokenPart}
+        </>
+      )}
     </styledEl.OriginalOrderIntent>
   )
 }
@@ -329,23 +347,17 @@ const mockSolvers = [
 
 // END TEMP ==========================
 
-interface FinishedStepProps {
-  solverCompetition?: CompetitionOrderStatus['value']
-  order?: Order
-  cancellationFailed?: boolean
-  // TODO: add surplus info
-}
-
-export const FinishedStep: React.FC<FinishedStepProps> = ({ solverCompetition, order, cancellationFailed }) => {
+function FinishedStep({ stepName, solverCompetition, order, surplusData }: OrderProgressBarV2Props) {
   const [showAllSolvers, setShowAllSolvers] = useState(false)
-  // TODO: move out of pure component
-  const { surplusFiatValue, surplusPercent } = useGetSurplusData(order)
+  const { surplusFiatValue, surplusPercent, surplusAmount, showSurplus } = surplusData || {}
+  const cancellationFailed = stepName === 'cancellationFailed'
 
   const toggleSolvers = () => setShowAllSolvers(!showAllSolvers)
 
   // TODO: Don't use mock data if no solverCompetition is provided
   const solvers = solverCompetition?.length ? solverCompetition : mockSolvers
   const visibleSolvers = showAllSolvers ? solvers : solvers.slice(0, 3)
+  const isSell = order && isSellOrder(order.kind)
 
   return (
     <styledEl.FinishedStepContainer>
@@ -369,22 +381,42 @@ export const FinishedStep: React.FC<FinishedStepProps> = ({ solverCompetition, o
             />
           </styledEl.FinishedLogo>
           <styledEl.FinishedTagLine>
-            ...gets you <b>moooooore.</b>
+            {showSurplus ? (
+              <>
+                ...gets you <b>moooooore.</b>
+              </>
+            ) : (
+              <>
+                Did you <b>know?</b>
+              </>
+            )}
           </styledEl.FinishedTagLine>
           <styledEl.CowImage>
             <SVG src={PROGRESSBAR_COW_SURPLUS} />
           </styledEl.CowImage>
-          <styledEl.TokenPairTitle>
-            <span>Swap order</span>
-            <b>{order ? `${order.inputToken.symbol}/${order.outputToken.symbol}` : 'N/A'}</b>
-          </styledEl.TokenPairTitle>
-          <styledEl.TokenImages>
-            <TokenLogo token={order?.inputToken} size={34} />
-            <TokenLogo token={order?.outputToken} size={34} />
-          </styledEl.TokenImages>
-          <styledEl.Surplus>
-            <span>Your surplus</span>
-            {surplusPercent ? <b>+{parseFloat(surplusPercent).toFixed(2)}%</b> : <b>N/A</b>}
+          {showSurplus && (
+            <>
+              <styledEl.TokenPairTitle>
+                <span>Swap order</span>
+                <b>{order ? `${order.inputToken.symbol}/${order.outputToken.symbol}` : 'N/A'}</b>
+              </styledEl.TokenPairTitle>
+              <styledEl.TokenImages>
+                <TokenLogo token={order?.inputToken} size={34} />
+                <TokenLogo token={order?.outputToken} size={34} />
+              </styledEl.TokenImages>
+            </>
+          )}
+          <styledEl.Surplus showSurplus={!!showSurplus}>
+            {showSurplus ? (
+              <>
+                <span>Your surplus</span>
+                {surplusPercent ? <b>+{parseFloat(surplusPercent).toFixed(2)}%</b> : <b>N/A</b>}
+              </>
+            ) : (
+              <>
+                <span>Unlike other exchanges, here you don't pay any fees if your trade fails.</span>
+              </>
+            )}
           </styledEl.Surplus>
         </styledEl.ProgressImageWrapper>
       </styledEl.ProgressTopSection>
@@ -452,29 +484,27 @@ export const FinishedStep: React.FC<FinishedStepProps> = ({ solverCompetition, o
             </styledEl.ViewMoreButton>
           )}
         </styledEl.SolverRankings>
-        {order && (
+        {order?.apiAdditionalInfo?.executedBuyAmount && (
           <styledEl.ReceivedAmount>
             You received <TokenLogo token={order.outputToken} size={16} />{' '}
             <b>
-              {order.kind === 'sell'
-                ? CurrencyAmount.fromRawAmount(
-                    order.outputToken,
-                    order.apiAdditionalInfo?.executedBuyAmount || order.buyAmount || '0'
-                  ).toSignificant(6)
-                : CurrencyAmount.fromRawAmount(
-                    order.outputToken,
-                    order.apiAdditionalInfo?.executedSellAmount || order.sellAmount || '0'
-                  ).toSignificant(6)}{' '}
-              {order.outputToken.symbol}
+              <TokenAmount
+                amount={CurrencyAmount.fromRawAmount(order.outputToken, order.apiAdditionalInfo.executedBuyAmount)}
+                tokenSymbol={order.outputToken}
+              />
             </b>
           </styledEl.ReceivedAmount>
         )}
-        {surplusFiatValue ? (
+        {showSurplus ? (
           <styledEl.ExtraAmount>
-            and got an extra <i>+{surplusFiatValue.toFixed(2)} USDC</i> (~${surplusFiatValue.toFixed(2)})
+            {isSell ? 'and got an extra ' : 'and saved '}
+            <i>
+              +<TokenAmount amount={surplusAmount} tokenSymbol={surplusAmount?.currency} />
+            </i>{' '}
+            {surplusFiatValue && +surplusFiatValue.toFixed(2) > 0 && <>(~${surplusFiatValue.toFixed(2)})</>}
           </styledEl.ExtraAmount>
         ) : null}
-        {/*TODO: Add states for when there's no surplus and/or when there's a custom recipient*/}
+        {/*TODO: Add states for when there's a custom recipient*/}
       </styledEl.ConclusionContent>
     </styledEl.FinishedStepContainer>
   )
@@ -499,6 +529,7 @@ function NextBatchStep({ solverCompetition, order }: OrderProgressBarV2Props) {
           customColor={'#996815'}
           extraContent={
             <styledEl.Description>
+              {/*TODO: replace with actual data*/}
               The <strong>Gnosis_1inch</strong> solver had the best solution for this batch. Unfortunately, your order
               wasn't part of their winning solution, so we're waiting for solvers to find a new solution that includes
               your order for the next batch.{' '}
@@ -750,7 +781,7 @@ const STEP_NAME_TO_STEP_COMPONENT: Record<StepNameWithoutSolved, React.Component
   cancelling: CancellingStep,
   cancelled: CancelledStep,
   expired: ExpiredStep,
-  cancellationFailed: (props) => <FinishedStep {...props} cancellationFailed={true} />,
+  cancellationFailed: FinishedStep,
 }
 
 // TODO: unused, remove

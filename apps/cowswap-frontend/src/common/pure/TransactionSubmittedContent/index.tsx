@@ -49,7 +49,6 @@ export interface TransactionSubmittedContentProps {
   chainId: ChainId
   activityDerivedState: ActivityDerivedState | null
   currencyToAdd?: Nullish<Currency>
-  showSurplus?: boolean | null
   orderProgressBarV2Props?: OrderProgressBarV2Props | null
   showCancellationModal: Command | null
 }
@@ -60,7 +59,6 @@ export function TransactionSubmittedContent({
   hash,
   currencyToAdd,
   activityDerivedState,
-  // showSurplus,
   orderProgressBarV2Props,
   showCancellationModal,
 }: TransactionSubmittedContentProps) {

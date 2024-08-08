@@ -203,6 +203,7 @@ export function ActivityDetails(props: {
   const isCustomRecipientWarningBannerVisible = !useIsReceiverWalletBannerHidden(id) && order && isPending(order)
   const hideCustomRecipientWarning = useHideReceiverWalletBanner()
   const orderProgressBarV2Props = useOrderProgressBarV2Props({ activityDerivedState, chainId })
+  const surplusData = useGetSurplusData(order)
 
   if (!order && !enhancedTransaction) return null
 
@@ -397,7 +398,7 @@ export function ActivityDetails(props: {
 
       <EthFlowStepper order={order} />
       {showProgressBar && orderProgressBarV2Props && orderProgressBarV2Props.stepName !== 'finished' && (
-        <OrderProgressBarV2 {...orderProgressBarV2Props} order={order} />
+        <OrderProgressBarV2 {...orderProgressBarV2Props} order={order} surplusData={surplusData} />
       )}
     </>
   )
