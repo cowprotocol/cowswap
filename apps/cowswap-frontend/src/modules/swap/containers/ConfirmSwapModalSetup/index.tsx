@@ -14,11 +14,18 @@ import { useOrder } from 'legacy/state/orders/hooks'
 import TradeGp from 'legacy/state/swap/TradeGp'
 
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
-import { TradeConfirmation, TradeConfirmModal, useReceiveAmountInfo, useTradeConfirmActions, useTradeConfirmState } from 'modules/trade'
+import {
+  TradeConfirmation,
+  TradeConfirmModal,
+  useReceiveAmountInfo,
+  useTradeConfirmActions,
+  useTradeConfirmState,
+} from 'modules/trade'
 import { TradeBasicConfirmDetails } from 'modules/trade/containers/TradeBasicConfirmDetails'
 import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
 
 import { useOrderProgressBarV2Props } from 'common/hooks/orderProgressBarV2'
+import { useCancelOrder } from 'common/hooks/useCancelOrder'
 import { CurrencyPreviewInfo } from 'common/pure/CurrencyAmountPreview'
 import { NetworkCostsSuffix } from 'common/pure/NetworkCostsSuffix'
 import { RateInfoParams } from 'common/pure/RateInfo'
@@ -146,13 +153,24 @@ function useSubmittedContent(chainId: SupportedChainId, gnosisSafeInfo: GnosisSa
   const activityDerivedState = getActivityDerivedState({ chainId, activityData: activity, gnosisSafeInfo })
   const orderProgressBarV2Props = useOrderProgressBarV2Props({ activityDerivedState, chainId })
 
-  return useCallback((onDismiss: Command) => (
-    <TransactionSubmittedContent
-      chainId={chainId}
-      hash={transactionHash || undefined}
-      onDismiss={onDismiss}
-      activityDerivedState={activityDerivedState}
-      orderProgressBarV2Props={orderProgressBarV2Props} />
-  ), [chainId, transactionHash, activityDerivedState, orderProgressBarV2Props])
-}
+  const getCancellation = useCancelOrder()
+  const showCancellationModal = useMemo(
+    // Sort of duplicate cancellation logic since ethflow on creating state don't have progress bar props
+    () => orderProgressBarV2Props?.showCancellationModal || (order && getCancellation ? getCancellation(order) : null),
+    [orderProgressBarV2Props?.showCancellationModal, order, getCancellation]
+  )
 
+  return useCallback(
+    (onDismiss: Command) => (
+      <TransactionSubmittedContent
+        chainId={chainId}
+        hash={transactionHash || undefined}
+        onDismiss={onDismiss}
+        activityDerivedState={activityDerivedState}
+        orderProgressBarV2Props={orderProgressBarV2Props}
+        showCancellationModal={showCancellationModal}
+      />
+    ),
+    [chainId, transactionHash, activityDerivedState, orderProgressBarV2Props, order]
+  )
+}

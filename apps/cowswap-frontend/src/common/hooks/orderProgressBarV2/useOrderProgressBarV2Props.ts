@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo } from 'react'
 
 import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
 import { CompetitionOrderStatus, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Command } from '@cowprotocol/types'
 
 import ms from 'ms.macro'
 import useSWR from 'swr'
@@ -11,7 +12,9 @@ import { ActivityDerivedState } from 'modules/account/containers/Transaction'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 
 import { getOrderCompetitionStatus } from 'api/cowProtocol/api'
+import { useCancelOrder } from 'common/hooks/useCancelOrder'
 import { getIsFinalizedOrder } from 'utils/orderUtils/getIsFinalizedOrder'
+
 
 import {
   ordersProgressBarStateAtom,
@@ -29,6 +32,7 @@ export type UseOrderProgressBarPropsParams = {
 
 export type UseOrderProgressBarV2Result = Pick<OrderProgressBarState, 'countdown' | 'solverCompetition'> & {
   stepName: Exclude<OrderProgressBarState['progressBarStepName'], undefined>
+  showCancellationModal: Command | null
 }
 
 const MINIMUM_STEP_DISPLAY_TIME = ms`5s`
@@ -62,6 +66,9 @@ export function useOrderProgressBarV2Props(
   const doNotQuery = !!(order && getIsFinalizedOrder(order)) || disableProgressBar
 
   const orderId = order?.id || ''
+
+  const getCancelOrder = useCancelOrder()
+  const showCancellationModal = order && getCancelOrder ? getCancelOrder(order) : null
 
   // Fetch state from atom
   const {
@@ -101,8 +108,9 @@ export function useOrderProgressBarV2Props(
       countdown,
       solverCompetition,
       stepName: progressBarStepName || 'initial',
+      showCancellationModal,
     }
-  }, [disableProgressBar, countdown, solverCompetition, progressBarStepName])
+  }, [disableProgressBar, countdown, solverCompetition, progressBarStepName, showCancellationModal])
 }
 
 // atom related hooks

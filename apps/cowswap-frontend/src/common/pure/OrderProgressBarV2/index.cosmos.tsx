@@ -8,13 +8,16 @@ import { OrderProgressBarV2, OrderProgressBarV2Props } from './index'
 const defaultProps: OrderProgressBarV2Props = {
   order: getOrderMock(SupportedChainId.MAINNET),
   stepName: 'initial',
+  showCancellationModal: () => {
+    alert('cancellation triggered o/')
+  },
   solverCompetition: [
     {
       solver: 'naive',
       executedAmounts: {
         sell: '5000000000000000000',
         buy: '1000000000000000000000',
-      }
+      },
     },
     { solver: 'uniswap', executedAmounts: { sell: '5000000000000000000', buy: '500000000000000000000' } },
     { solver: 'oneinch', executedAmounts: { sell: '5000000000000000000', buy: '400000000000000000000' } },
