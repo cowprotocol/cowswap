@@ -162,7 +162,7 @@ function useSubmittedContent(chainId: SupportedChainId, gnosisSafeInfo: GnosisSa
   )
   const surplusData = useGetSurplusData(order)
 
-  const props = useMemo(() => {
+  const orderProgressBarV2PropsWithSurplusData = useMemo(() => {
     if (!orderProgressBarV2Props) {
       return undefined
     }
@@ -177,7 +177,7 @@ function useSubmittedContent(chainId: SupportedChainId, gnosisSafeInfo: GnosisSa
         hash={transactionHash || undefined}
         onDismiss={onDismiss}
         activityDerivedState={activityDerivedState}
-        orderProgressBarV2Props={props}
+        orderProgressBarV2Props={orderProgressBarV2PropsWithSurplusData}
         showCancellationModal={showCancellationModal}
       />
     ),
