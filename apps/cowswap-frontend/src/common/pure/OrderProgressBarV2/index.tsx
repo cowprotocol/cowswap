@@ -32,7 +32,7 @@ import { AMM_LOGOS } from 'legacy/components/AMMsLogo'
 import { Order } from 'legacy/state/orders/actions'
 
 import { OrderProgressBarStepName } from 'common/hooks/orderProgressBarV2'
-import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
+import { SurplusData } from 'common/hooks/useGetSurplusFiatValue'
 
 import * as styledEl from './styled'
 
@@ -45,7 +45,7 @@ export type OrderProgressBarV2Props = {
   order?: Order
   debugMode?: boolean
   showCancellationModal: Command | null
-  // surplus: // TODO: pass down surplus data
+  surplusData?: SurplusData
 }
 
 // TODO: const, capitalize
@@ -329,17 +329,10 @@ const mockSolvers = [
 
 // END TEMP ==========================
 
-interface FinishedStepProps {
-  solverCompetition?: CompetitionOrderStatus['value']
-  order?: Order
-  cancellationFailed?: boolean
-  // TODO: add surplus info
-}
-
-export const FinishedStep: React.FC<FinishedStepProps> = ({ solverCompetition, order, cancellationFailed }) => {
+function FinishedStep({ stepName, solverCompetition, order, surplusData }: OrderProgressBarV2Props) {
   const [showAllSolvers, setShowAllSolvers] = useState(false)
-  // TODO: move out of pure component
-  const { surplusFiatValue, surplusPercent } = useGetSurplusData(order)
+  const { surplusFiatValue, surplusPercent, surplusAmount } = surplusData || {}
+  const cancellationFailed = stepName === 'cancellationFailed'
 
   const toggleSolvers = () => setShowAllSolvers(!showAllSolvers)
 
@@ -475,6 +468,7 @@ export const FinishedStep: React.FC<FinishedStepProps> = ({ solverCompetition, o
           </styledEl.ExtraAmount>
         ) : null}
         {/*TODO: Add states for when there's no surplus and/or when there's a custom recipient*/}
+        {/*TODO: use surplusData.showSurplus flag to determine when there's relevant surplus */}
       </styledEl.ConclusionContent>
     </styledEl.FinishedStepContainer>
   )
@@ -750,7 +744,7 @@ const STEP_NAME_TO_STEP_COMPONENT: Record<StepNameWithoutSolved, React.Component
   cancelling: CancellingStep,
   cancelled: CancelledStep,
   expired: ExpiredStep,
-  cancellationFailed: (props) => <FinishedStep {...props} cancellationFailed={true} />,
+  cancellationFailed: FinishedStep,
 }
 
 // TODO: unused, remove
