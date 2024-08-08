@@ -513,10 +513,13 @@ function NextBatchStep({ solverCompetition, order }: OrderProgressBarV2Props) {
           customColor={'#996815'}
           extraContent={
             <styledEl.Description>
-              {/*TODO: replace with actual data*/}
-              The <strong>Gnosis_1inch</strong> solver had the best solution for this batch. Unfortunately, your order
-              wasn't part of their winning solution, so we're waiting for solvers to find a new solution that includes
-              your order for the next batch.{' '}
+              {solverCompetition?.length && (
+                <>
+                  The <strong>{solverCompetition[0].solver}</strong> solver had the best solution for this batch.
+                </>
+              )}{' '}
+              Unfortunately, your order wasn't part of their winning solution, so we're waiting for solvers to find a
+              new solution that includes your order for the next batch.{' '}
               <styledEl.Link href="#" target={'_blank'}>
                 Learn more ↗
               </styledEl.Link>
@@ -531,31 +534,6 @@ function NextBatchStep({ solverCompetition, order }: OrderProgressBarV2Props) {
           extraContent={<styledEl.Description>The winning solver will execute your order.</styledEl.Description>}
         />
       </styledEl.StepsWrapper>
-      {solverCompetition && (
-        <div>
-          <p>Solver ranking</p>
-          <ol>
-            {solverCompetition.map((entry) => {
-              const imageProps = AMM_LOGOS[entry.solver] || AMM_LOGOS.default
-              return (
-                <li key={entry.solver}>
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <img
-                      style={{ height: '20px', width: '20px', marginRight: '5px' }}
-                      {...imageProps}
-                      alt="Solver logo"
-                    />
-                    <span>
-                      {entry.solver}
-                      {entry?.executedAmounts && ' <- your order was included in this solution'}
-                    </span>
-                  </div>
-                </li>
-              )
-            })}
-          </ol>
-        </div>
-      )}
     </styledEl.ProgressContainer>
   )
 }
