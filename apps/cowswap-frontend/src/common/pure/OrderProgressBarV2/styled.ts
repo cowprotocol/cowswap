@@ -4,7 +4,6 @@ import { UI, Media } from '@cowprotocol/ui'
 import styled, { css, keyframes } from 'styled-components/macro'
 
 // Constants
-const SUCCESS_COLOR = '#04795b'
 const BLUE_COLOR = '#65d9ff'
 
 // Animations
@@ -418,7 +417,7 @@ export const Surplus = styled.div`
   align-items: flex-end;
   flex-flow: column wrap;
   justify-content: center;
-  color: #006922; // Todo: Fix hardcoded color
+  color: var(${UI.COLOR_SUCCESS_TEXT});
   font-size: 23px;
   font-weight: 400;
 
@@ -456,8 +455,8 @@ export const FinishedTagLine = styled.p`
 `
 
 export const ShareButton = styled.button`
-  background: #65d9ff; // Todo: Fix hardcoded color
-  color: #012f7a; // Todo: Fix hardcoded color
+  background: var(${UI.COLOR_PRIMARY});
+  color: var(${UI.COLOR_BUTTON_TEXT});
   border: none;
   padding: 10px 20px;
   border-radius: 20px;
@@ -471,6 +470,11 @@ export const ShareButton = styled.button`
   position: absolute;
   bottom: 13px;
   left: 10px;
+  transition: background 0.15s ease-in-out, color 0.15s ease-in-out;
+  &:hover {
+    background: var(${UI.COLOR_BUTTON_TEXT});
+    color: var(${UI.COLOR_PRIMARY});
+  }
 
   // mobile
   ${Media.upToSmall()} {
@@ -567,15 +571,14 @@ export const SolverTableCell = styled.td<{ isFirst?: boolean; isSecond?: boolean
 `
 
 export const SolverTableRow = styled.tr<{ isWinner: boolean }>`
-  background: ${({ isWinner }) => (isWinner ? 'rgba(4, 121, 91, 0.15)' : `var(${UI.COLOR_PAPER_DARKER})`)};
-  color: ${({ isWinner }) =>
-    isWinner ? `${SUCCESS_COLOR}` : `var(${UI.COLOR_TEXT_OPACITY_70})`}; // TODO: Fix hardcoded color
+  background: ${({ isWinner }) => (isWinner ? `var(${UI.COLOR_SUCCESS_BG})` : `var(${UI.COLOR_PAPER_DARKER})`)};
+  color: ${({ isWinner }) => (isWinner ? `var(${UI.COLOR_SUCCESS_TEXT})` : `var(${UI.COLOR_TEXT})`)};
   font-weight: ${({ isWinner }) => (isWinner ? 'bold' : 'normal')};
   font-size: 14px;
   transition: background 0.15s ease-in-out;
 
   &:hover {
-    background: ${({ isWinner }) => (isWinner ? 'rgba(4, 121, 91, 0.15)' : `var(${UI.COLOR_PAPER_DARKEST})`)};
+    background: ${({ isWinner }) => (isWinner ? `var(${UI.COLOR_SUCCESS_BG})` : `var(${UI.COLOR_PAPER_DARKEST})`)};
   }
 `
 
@@ -611,8 +614,8 @@ export const WinningBadge = styled.span`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: #007b28;
-  color: white;
+  background: var(${UI.COLOR_SUCCESS_BG});
+  color: var(${UI.COLOR_SUCCESS_TEXT});
   padding: 4px 8px;
   border-radius: 12px;
   font-size: 12px;
@@ -629,7 +632,8 @@ export const ViewMoreButton = styled.button`
   margin: 10px auto;
   padding: 5px 10px;
   background-color: transparent;
-  border: 1px solid var(${UI.COLOR_PAPER_DARKER});
+  border: 1px solid var(${UI.COLOR_TEXT_OPACITY_70});
+  color: var(${UI.COLOR_TEXT});
   border-radius: 20px;
   cursor: pointer;
   display: flex;
@@ -668,7 +672,7 @@ export const ExtraAmount = styled.p`
   gap: 4px;
 
   > i {
-    color: ${SUCCESS_COLOR}; // TODO: Fix hardcoded color
+    color: var(${UI.COLOR_SUCCESS_TEXT});
     font-weight: bold;
     font-style: normal;
   }
