@@ -3,8 +3,53 @@ import { UI, Media } from '@cowprotocol/ui'
 
 import styled, { css, keyframes } from 'styled-components/macro'
 
-const SUCCESS_COLOR = '#04795b' // TODO: Fix hardcoded color
+// Constants
+const SUCCESS_COLOR = '#04795b'
+const BLUE_COLOR = '#65d9ff'
 
+// Animations
+const slideAnimation = (direction: 'up' | 'down') => keyframes`
+  from {
+    transform: translateY(${direction === 'up' ? '20px' : '-20px'}); 
+    opacity: 0; 
+  }
+  to { 
+    transform: translateY(0); 
+    opacity: ${direction === 'up' ? 0.1 : 1}; 
+  }
+`
+
+const animationMixin = css<{ status: string }>`
+  animation: ${({ status }) => {
+      if (status === 'done') return slideAnimation('up')
+      if (status === 'active') return slideAnimation('down')
+      return 'none'
+    }}
+    1s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+`
+
+// Utility functions
+const getOpacity = (status: string): number => {
+  const opacityMap = {
+    done: 0.1,
+    active: 1,
+    next: 0.5,
+    future: 0.2,
+    disabled: 0.2,
+  }
+  return opacityMap[status as keyof typeof opacityMap] || 1
+}
+
+const getStatusColor = (status: string): string => {
+  const colorMap: Record<string, string> = {
+    done: '#4CAF50',
+    active: '#2196F3',
+    error: '#F44336',
+  }
+  return colorMap[status] || 'currentColor'
+}
+
+// Styled components
 export const Icon = styled.div<{ status: string; customColor?: string }>`
   --width: 28px;
   width: var(--width);
@@ -14,38 +59,15 @@ export const Icon = styled.div<{ status: string; customColor?: string }>`
   justify-content: center;
   align-items: center;
   margin-right: 15px;
-  color: ${(props) => props.customColor || `var(${UI.COLOR_PRIMARY_LIGHTER})`};
+  color: ${({ customColor }) => customColor || `var(${UI.COLOR_PRIMARY_LIGHTER})`};
   font-weight: bold;
   font-size: 24px;
 
   > svg {
-    color: ${(props) => {
-      if (props.status === 'done') return '#4CAF50'
-      if (props.status === 'active') return '#2196F3'
-      if (props.status === 'error') return '#F44336'
-      return 'currentColor'
-    }};
+    color: ${({ status }) => getStatusColor(status)};
     width: 100%;
     height: 100%;
     object-fit: contain;
-  }
-`
-
-export const slideUp = keyframes`
-  from {
-    transform: translateY(10px);
-  }
-  to {
-    transform: translateY(0);
-  }
-`
-
-export const slideDown = keyframes`
-  from {
-    transform: translateY(-10px);
-  }
-  to {
-    transform: translateY(0);
   }
 `
 
@@ -71,10 +93,10 @@ export const StepsWrapper = styled.div`
   }
 
   @keyframes spin {
-    0% {
+    from {
       transform: rotate(0deg);
     }
-    100% {
+    to {
       transform: rotate(360deg);
     }
   }
@@ -84,27 +106,9 @@ export const Step = styled.div<{ status: string; isFirst: boolean }>`
   display: flex;
   align-items: flex-start;
   margin: 0;
-  opacity: ${(props) => {
-    if (props.status === 'done') return 0.1
-    if (props.status === 'active') return 1
-    if (props.status === 'next') return 0.4
-    if (props.status === 'future' || props.status === 'disabled') return 0.3
-    return 1
-  }};
-  transform: translateY(
-    ${(props) => {
-      if (props.status === 'done') return '-10px'
-      if (props.status === 'active' && props.isFirst) return '10px'
-      return '0'
-    }}
-  );
-  transition: all 0.3s ease;
-  animation: ${(props) => {
-      if (props.status === 'done') return slideUp
-      if (props.status === 'active') return slideDown
-      return 'none'
-    }}
-    0.3s ease;
+  opacity: ${({ status }) => getOpacity(status)};
+  transition: opacity 0.35s cubic-bezier(0.19, 1, 0.22, 1);
+  ${animationMixin}
 `
 
 export const Content = styled.div`
@@ -240,37 +244,38 @@ export const TokenWrapper = styled.div<{ position: 'left' | 'center' | 'right' }
   height: var(--size);
   border-radius: var(--size);
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   position: absolute;
   right: 0;
-  margin: auto;
   left: 0;
+  margin: auto;
   animation: ${({ position }) => (position === 'left' ? 'appear-left' : position === 'right' ? 'appear-right' : 'none')}
     2.5s cubic-bezier(0.19, 1, 0.22, 1) forwards;
   animation-delay: ${({ position }) => (position === 'center' ? '0s' : '0.75s')};
-  border: ${({ position }) => (position === 'right' ? '8px solid #65D9FF' : '0')}; // TODO: Fix hardcoded colors
-  border: 8px solid #65d9ff;
+  border: ${({ position }) => (position === 'right' ? `8px solid ${BLUE_COLOR}` : '0')};
   box-sizing: content-box;
   background: ${({ position }) => (position === 'right' ? `var(${UI.COLOR_PRIMARY})` : 'transparent')};
 
   ${({ position }) =>
     position === 'right' &&
-    `&::after {
-    --size: 36px;
-    content: '';
-    position: absolute;
-    right: 0;
-    top: 0;
-    width: var(--size);
-    height: var(--size);
-    background: url(${IMAGE_STAR_SHINE}) no-repeat;
-    background-size: 100% 100%;
-    animation: star-shine 1s infinite;
-  }`}
+    css`
+      &::after {
+        --size: 36px;
+        content: '';
+        position: absolute;
+        right: 0;
+        top: 0;
+        width: var(--size);
+        height: var(--size);
+        background: url(${IMAGE_STAR_SHINE}) no-repeat;
+        background-size: 100% 100%;
+        animation: star-shine 1s infinite;
+      }
+    `}
 
   > span {
-    padding: ${({ position }) => (position === 'right' ? '45px 40px 34px;' : '0')};
+    padding: ${({ position }) => (position === 'right' ? '45px 40px 34px' : '0')};
   }
 
   @keyframes appear-left {
@@ -479,13 +484,14 @@ export const ShareButton = styled.button`
   }
 `
 
-export const TransactionStatus = styled.div<{ status?: string }>`
+export const TransactionStatus = styled.div<{ status?: string; flexFlow?: string; gap?: string }>`
   display: flex;
+  flex-flow: ${({ flexFlow }) => flexFlow || 'row wrap'};
   align-items: center;
-  gap: 10px;
+  gap: ${({ gap }) => gap || '0'};
   font-size: 21px;
   font-weight: bold;
-  margin: 24px auto;
+  margin: 0 auto 14px;
   color: ${({ status }) =>
     status === 'expired' || status === 'cancelled' ? `var(${UI.COLOR_ALERT_TEXT})` : `var(${UI.COLOR_SUCCESS_TEXT})`};
 

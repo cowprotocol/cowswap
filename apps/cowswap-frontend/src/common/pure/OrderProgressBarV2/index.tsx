@@ -8,6 +8,10 @@ import STEP_IMAGE_SOLVING from '@cowprotocol/assets/cow-swap/progressbar-step-so
 import STEP_IMAGE_UNFILLABLE from '@cowprotocol/assets/cow-swap/progressbar-step-unfillable.svg'
 import STEP_IMAGE_WAIT from '@cowprotocol/assets/cow-swap/progressbar-step-wait.svg'
 import ICON_SOCIAL_X from '@cowprotocol/assets/images/icon-social-x.svg'
+import LOTTIE_GREEN_CHECKMARK from '@cowprotocol/assets/lottie/green-checkmark.json'
+import LOTTIE_RED_CROSS from '@cowprotocol/assets/lottie/red-cross.json'
+import LOTTIE_TIME_EXPIRED from '@cowprotocol/assets/lottie/time-expired.json'
+import LOTTIE_YELLOW_CHECKMARK from '@cowprotocol/assets/lottie/yellow-checkmark.json'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { isSellOrder } from '@cowprotocol/common-utils'
 import type { CompetitionOrderStatus } from '@cowprotocol/cow-sdk'
@@ -16,12 +20,12 @@ import { UI } from '@cowprotocol/ui'
 import { ProductLogo, ProductVariant } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
+import Lottie from 'lottie-react'
 import { MdOutlineMotionPhotosPause } from 'react-icons/md'
 import {
   PiDotsThreeCircle,
   PiCheckCircleFill,
   PiSpinnerBallFill,
-  PiClockCountdown,
   PiCaretDown,
   PiCaretUp,
   PiTrophyFill,
@@ -88,6 +92,15 @@ const StatusIcon: React.FC<{ status: string; customColor?: string }> = ({ status
     case 'error':
     case 'unfillable':
       return <MdOutlineMotionPhotosPause color={iconColor} />
+    case 'cancelling':
+      return (
+        <Lottie
+          animationData={LOTTIE_RED_CROSS}
+          loop={true}
+          autoplay={true}
+          style={{ width: '24px', height: '24px' }}
+        />
+      )
     default:
       return <PiDotsThreeCircle color={iconColor} />
   }
@@ -149,7 +162,7 @@ const CircularCountdown: React.FC<CircularCountdownProps> = ({ countdown }) => {
 }
 
 export function OrderProgressBarV2(props: OrderProgressBarV2Props) {
-  const { stepName, debugMode = false } = props
+  const { stepName, debugMode = true } = props
   const [debugStep, setDebugStep] = useState<OrderProgressBarStepName>(stepName)
   const currentStep = debugMode ? debugStep : stepName
   const StepComponent = STEP_NAME_TO_STEP_COMPONENT[currentStep as keyof typeof STEP_NAME_TO_STEP_COMPONENT]
@@ -205,7 +218,7 @@ function InitialStep({ order }: OrderProgressBarV2Props) {
           }
         />
         <StepComponent
-          status="next"
+          status="future"
           isFirst={false}
           step={steps[2]}
           _index={2}
@@ -380,8 +393,13 @@ export const FinishedStep: React.FC<FinishedStepProps> = ({ solverCompetition, o
       </styledEl.ProgressTopSection>
 
       <styledEl.ConclusionContent>
-        <styledEl.TransactionStatus>
-          <PiCheckCircleFill />
+        <styledEl.TransactionStatus flexFlow="column">
+          <Lottie
+            animationData={LOTTIE_GREEN_CHECKMARK}
+            loop={false}
+            autoplay
+            style={{ width: '56px', height: '56px' }}
+          />
           Transaction completed!
         </styledEl.TransactionStatus>
 
@@ -649,7 +667,7 @@ function CancellingStep({ order }: OrderProgressBarV2Props) {
       <styledEl.StepsWrapper>
         <StepComponent status="done" isFirst={false} step={steps[0]} _index={0} />
         <StepComponent
-          status="active"
+          status="cancelling"
           isFirst={false}
           step={{ ...steps[1], title: 'Cancelling order' }}
           _index={1}
@@ -670,12 +688,17 @@ function CancelledStep({ order }: OrderProgressBarV2Props) {
         </styledEl.ProgressImageWrapper>
         <OrderIntent order={order} />
       </styledEl.ProgressTopSection>
-      <styledEl.TransactionStatus status={'cancelled'}>
-        <PiCheckCircleFill />
+      <styledEl.TransactionStatus status={'cancelled'} flexFlow="column">
+        <Lottie
+          animationData={LOTTIE_YELLOW_CHECKMARK}
+          loop={false}
+          autoplay
+          style={{ width: '56px', height: '56px' }}
+        />
         Your order was cancelled
       </styledEl.TransactionStatus>
 
-      <styledEl.Description center margin="10px auto">
+      <styledEl.Description center margin="10px auto 40px">
         Your order was successfully cancelled.
       </styledEl.Description>
     </styledEl.ProgressContainer>
@@ -691,8 +714,8 @@ function ExpiredStep({ order }: OrderProgressBarV2Props) {
         </styledEl.ProgressImageWrapper>
         <OrderIntent order={order} />
       </styledEl.ProgressTopSection>
-      <styledEl.TransactionStatus status={'expired'}>
-        <PiClockCountdown />
+      <styledEl.TransactionStatus status={'expired'} flexFlow="column">
+        <Lottie animationData={LOTTIE_TIME_EXPIRED} loop={false} autoplay style={{ width: '56px', height: '56px' }} />
         Your order expired
       </styledEl.TransactionStatus>
 
