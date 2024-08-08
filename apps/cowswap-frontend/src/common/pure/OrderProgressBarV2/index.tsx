@@ -13,7 +13,7 @@ import { isSellOrder } from '@cowprotocol/common-utils'
 import type { CompetitionOrderStatus } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { Command } from '@cowprotocol/types'
-import { ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
+import { ProductLogo, ProductVariant, TokenAmount, UI } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { MdOutlineMotionPhotosPause } from 'react-icons/md'
@@ -101,20 +101,16 @@ const StatusIcon: React.FC<{ status: string; customColor?: string }> = ({ status
 
 const OrderIntent: React.FC<{ order?: Order }> = ({ order }) => {
   if (!order) return null
+
   const { inputToken, outputToken, kind, sellAmount, buyAmount } = order
   const isSell = isSellOrder(kind)
-
-  const formatAmount = (amount: string, token: Currency | TokenWithLogo) => {
-    const currencyAmount = CurrencyAmount.fromRawAmount(token, amount)
-    return `${currencyAmount.toSignificant(6)} ${token.symbol}`
-  }
 
   return (
     <styledEl.OriginalOrderIntent>
       <TokenLogo token={inputToken} size={20} />
-      {formatAmount(sellAmount, inputToken)} for {isSell ? 'at least' : 'at most'}{' '}
-      <TokenLogo token={outputToken} size={20} />
-      {formatAmount(buyAmount, outputToken)}
+      <TokenAmount amount={CurrencyAmount.fromRawAmount(inputToken, sellAmount)} tokenSymbol={inputToken} /> for{' '}
+      {isSell ? 'at least' : 'at most'} <TokenLogo token={outputToken} size={20} />
+      <TokenAmount amount={CurrencyAmount.fromRawAmount(outputToken, buyAmount)} tokenSymbol={outputToken} />
     </styledEl.OriginalOrderIntent>
   )
 }
@@ -449,22 +445,25 @@ function FinishedStep({ stepName, solverCompetition, order, surplusData }: Order
           <styledEl.ReceivedAmount>
             You received <TokenLogo token={order.outputToken} size={16} />{' '}
             <b>
-              {order.kind === 'sell'
-                ? CurrencyAmount.fromRawAmount(
-                    order.outputToken,
-                    order.apiAdditionalInfo?.executedBuyAmount || order.buyAmount || '0'
-                  ).toSignificant(6)
-                : CurrencyAmount.fromRawAmount(
-                    order.outputToken,
-                    order.apiAdditionalInfo?.executedSellAmount || order.sellAmount || '0'
-                  ).toSignificant(6)}{' '}
-              {order.outputToken.symbol}
+              <TokenAmount
+                amount={CurrencyAmount.fromRawAmount(
+                  order.outputToken,
+                  isSellOrder(order.kind)
+                    ? order.apiAdditionalInfo?.executedBuyAmount || order.buyAmount
+                    : order.apiAdditionalInfo?.executedSellAmount || order.sellAmount
+                )}
+                tokenSymbol={order.outputToken}
+              />
             </b>
           </styledEl.ReceivedAmount>
         )}
         {surplusFiatValue ? (
           <styledEl.ExtraAmount>
-            and got an extra <i>+{surplusFiatValue.toFixed(2)} USDC</i> (~${surplusFiatValue.toFixed(2)})
+            and got an extra{' '}
+            <i>
+              +<TokenAmount amount={surplusAmount} tokenSymbol={surplusAmount?.currency} />
+            </i>{' '}
+            (~${surplusFiatValue.toFixed(2)})
           </styledEl.ExtraAmount>
         ) : null}
         {/*TODO: Add states for when there's no surplus and/or when there's a custom recipient*/}
