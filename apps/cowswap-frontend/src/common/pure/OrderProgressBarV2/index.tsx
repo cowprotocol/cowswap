@@ -273,6 +273,7 @@ function SolvingStep({ order }: OrderProgressBarV2Props) {
               The auction has started! Solvers are competing to find the best solution for you...
               <br />
               <styledEl.Link href="#" target="_blank">
+                {/*TODO: add competition learn more link*/}
                 Learn more ↗
               </styledEl.Link>
             </styledEl.Description>
@@ -513,11 +514,15 @@ function NextBatchStep({ solverCompetition, order }: OrderProgressBarV2Props) {
           customColor={'#996815'}
           extraContent={
             <styledEl.Description>
-              {/*TODO: replace with actual data*/}
-              The <strong>Gnosis_1inch</strong> solver had the best solution for this batch. Unfortunately, your order
-              wasn't part of their winning solution, so we're waiting for solvers to find a new solution that includes
-              your order for the next batch.{' '}
+              {solverCompetition?.length && (
+                <>
+                  The <strong>{solverCompetition[0].solver}</strong> solver had the best solution for this batch.
+                </>
+              )}{' '}
+              Unfortunately, your order wasn't part of their winning solution, so we're waiting for solvers to find a
+              new solution that includes your order for the next batch.{' '}
               <styledEl.Link href="#" target={'_blank'}>
+                {/*TODO: add learn more link*/}
                 Learn more ↗
               </styledEl.Link>
             </styledEl.Description>
@@ -531,31 +536,6 @@ function NextBatchStep({ solverCompetition, order }: OrderProgressBarV2Props) {
           extraContent={<styledEl.Description>The winning solver will execute your order.</styledEl.Description>}
         />
       </styledEl.StepsWrapper>
-      {solverCompetition && (
-        <div>
-          <p>Solver ranking</p>
-          <ol>
-            {solverCompetition.map((entry) => {
-              const imageProps = AMM_LOGOS[entry.solver] || AMM_LOGOS.default
-              return (
-                <li key={entry.solver}>
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <img
-                      style={{ height: '20px', width: '20px', marginRight: '5px' }}
-                      {...imageProps}
-                      alt="Solver logo"
-                    />
-                    <span>
-                      {entry.solver}
-                      {entry?.executedAmounts && ' <- your order was included in this solution'}
-                    </span>
-                  </div>
-                </li>
-              )
-            })}
-          </ol>
-        </div>
-      )}
     </styledEl.ProgressContainer>
   )
 }
@@ -734,6 +714,7 @@ function ExpiredStep({ order }: OrderProgressBarV2Props) {
           <p>
             Unlike on other exchanges, you won't be charged for this! Feel free to{' '}
             <styledEl.Link href="#" underline>
+              {/*TODO: add link to new order*/}
               place a new order
             </styledEl.Link>{' '}
             without worry.
@@ -744,6 +725,7 @@ function ExpiredStep({ order }: OrderProgressBarV2Props) {
       <styledEl.Description center margin="10px 0">
         If your orders often expire, consider increasing your slippage or{' '}
         <styledEl.Link href="#" target="_blank">
+          {/*TODO: add contact us link*/}
           contacting us
         </styledEl.Link>{' '}
         so we can investigate the problem.
@@ -752,12 +734,12 @@ function ExpiredStep({ order }: OrderProgressBarV2Props) {
   )
 }
 
-type StepNameWithoutSolved = Exclude<OrderProgressBarStepName, 'solved'>
-const STEP_NAME_TO_STEP_COMPONENT: Record<StepNameWithoutSolved, React.ComponentType<OrderProgressBarV2Props>> = {
+const STEP_NAME_TO_STEP_COMPONENT: Record<OrderProgressBarStepName, React.ComponentType<OrderProgressBarV2Props>> = {
   initial: InitialStep,
   solving: SolvingStep,
   executing: ExecutingStep,
   finished: FinishedStep,
+  solved: NextBatchStep, // for now just show nextBatch view
   nextBatch: NextBatchStep,
   delayed: DelayedStep,
   unfillable: UnfillableStep,
@@ -767,6 +749,3 @@ const STEP_NAME_TO_STEP_COMPONENT: Record<StepNameWithoutSolved, React.Component
   expired: ExpiredStep,
   cancellationFailed: FinishedStep,
 }
-
-// TODO: unused, remove
-export default OrderProgressBarV2
