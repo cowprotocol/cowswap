@@ -273,6 +273,7 @@ function SolvingStep({ order }: OrderProgressBarV2Props) {
               The auction has started! Solvers are competing to find the best solution for you...
               <br />
               <styledEl.Link href="#" target="_blank">
+                {/*TODO: add competition learn more link*/}
                 Learn more ↗
               </styledEl.Link>
             </styledEl.Description>
@@ -521,6 +522,7 @@ function NextBatchStep({ solverCompetition, order }: OrderProgressBarV2Props) {
               Unfortunately, your order wasn't part of their winning solution, so we're waiting for solvers to find a
               new solution that includes your order for the next batch.{' '}
               <styledEl.Link href="#" target={'_blank'}>
+                {/*TODO: add learn more link*/}
                 Learn more ↗
               </styledEl.Link>
             </styledEl.Description>
@@ -712,6 +714,7 @@ function ExpiredStep({ order }: OrderProgressBarV2Props) {
           <p>
             Unlike on other exchanges, you won't be charged for this! Feel free to{' '}
             <styledEl.Link href="#" underline>
+              {/*TODO: add link to new order*/}
               place a new order
             </styledEl.Link>{' '}
             without worry.
@@ -722,6 +725,7 @@ function ExpiredStep({ order }: OrderProgressBarV2Props) {
       <styledEl.Description center margin="10px 0">
         If your orders often expire, consider increasing your slippage or{' '}
         <styledEl.Link href="#" target="_blank">
+          {/*TODO: add contact us link*/}
           contacting us
         </styledEl.Link>{' '}
         so we can investigate the problem.
