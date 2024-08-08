@@ -19,6 +19,9 @@ const defaultProps = {
     ...activityDerivedStateMock,
     order,
   },
+  showCancellationModal: () => {
+    alert('Cancellation triggered!!')
+  },
 }
 
 const Wrapper = styled.div`
@@ -29,7 +32,7 @@ const Wrapper = styled.div`
 const Fixtures = {
   default: (
     <Wrapper>
-      <TransactionSubmittedContent {...defaultProps} showCancellationModal={() => {}} />
+      <TransactionSubmittedContent {...defaultProps} />
     </Wrapper>
   ),
 }

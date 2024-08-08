@@ -1,7 +1,7 @@
-import { Order } from '@cowprotocol/cow-sdk'
 // import GameIcon from '@cowprotocol/assets/cow-swap/game.gif'
 // import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { Command } from '@cowprotocol/types'
 import { BackButton } from '@cowprotocol/ui'
 import { Currency } from '@uniswap/sdk-core'
 
@@ -17,10 +17,9 @@ import { EthFlowStepper } from 'modules/swap/containers/EthFlowStepper'
 import { WatchAssetInWallet } from 'modules/wallet/containers/WatchAssetInWallet'
 
 // import { Routes } from 'common/constants/routes'
-
 import * as styledEl from './styled'
-// import { SurplusModal } from './SurplusModal'
 
+// import { SurplusModal } from './SurplusModal'
 import { CancelButton } from '../CancelButton'
 import { OrderProgressBarV2, OrderProgressBarV2Props } from '../OrderProgressBarV2'
 
@@ -52,7 +51,7 @@ export interface TransactionSubmittedContentProps {
   currencyToAdd?: Nullish<Currency>
   showSurplus?: boolean | null
   orderProgressBarV2Props?: OrderProgressBarV2Props | null
-  showCancellationModal: ((order: Order) => void) | null
+  showCancellationModal: Command | null
 }
 
 export function TransactionSubmittedContent({
@@ -66,7 +65,7 @@ export function TransactionSubmittedContent({
   showCancellationModal,
 }: TransactionSubmittedContentProps) {
   const { order, isOrder, isCreating, isPending } = activityDerivedState || {}
-  const showCancellationButton = isOrder && (isCreating || isPending)
+  const showCancellationButton = isOrder && (isCreating || isPending) && showCancellationModal
 
   if (!chainId) {
     return null
@@ -85,11 +84,7 @@ export function TransactionSubmittedContent({
         <styledEl.Header>
           <BackButton onClick={onDismiss} />
           <styledEl.ActionsWrapper>
-            {showCancellationButton && (
-              <CancelButton
-                onClick={() => order && showCancellationModal && showCancellationModal(order as unknown as Order)}
-              />
-            )}
+            {showCancellationButton && <CancelButton onClick={showCancellationModal}>Cancel</CancelButton>}
             <DisplayLink id={hash} chainId={chainId} />
           </styledEl.ActionsWrapper>
         </styledEl.Header>

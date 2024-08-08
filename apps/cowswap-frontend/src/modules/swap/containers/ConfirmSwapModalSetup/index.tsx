@@ -152,7 +152,13 @@ function useSubmittedContent(chainId: SupportedChainId, gnosisSafeInfo: GnosisSa
   const activity = createActivityDescriptor(chainId, undefined, order)
   const activityDerivedState = getActivityDerivedState({ chainId, activityData: activity, gnosisSafeInfo })
   const orderProgressBarV2Props = useOrderProgressBarV2Props({ activityDerivedState, chainId })
-  const cancelOrder = useCancelOrder()
+
+  const getCancellation = useCancelOrder()
+  const showCancellationModal = useMemo(
+    // Sort of duplicate cancellation logic since ethflow on creating state don't have progress bar props
+    () => orderProgressBarV2Props?.showCancellationModal || (order && getCancellation ? getCancellation(order) : null),
+    [orderProgressBarV2Props?.showCancellationModal, order, getCancellation]
+  )
 
   return useCallback(
     (onDismiss: Command) => (
@@ -162,9 +168,9 @@ function useSubmittedContent(chainId: SupportedChainId, gnosisSafeInfo: GnosisSa
         onDismiss={onDismiss}
         activityDerivedState={activityDerivedState}
         orderProgressBarV2Props={orderProgressBarV2Props}
-        showCancellationModal={order ? cancelOrder(order) : null}
+        showCancellationModal={showCancellationModal}
       />
     ),
-    [chainId, transactionHash, activityDerivedState, orderProgressBarV2Props, cancelOrder, order]
+    [chainId, transactionHash, activityDerivedState, orderProgressBarV2Props, order]
   )
 }
