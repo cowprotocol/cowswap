@@ -442,17 +442,12 @@ function FinishedStep({ stepName, solverCompetition, order, surplusData }: Order
             </styledEl.ViewMoreButton>
           )}
         </styledEl.SolverRankings>
-        {order && (
+        {order?.apiAdditionalInfo?.executedBuyAmount && (
           <styledEl.ReceivedAmount>
             You received <TokenLogo token={order.outputToken} size={16} />{' '}
             <b>
               <TokenAmount
-                amount={CurrencyAmount.fromRawAmount(
-                  order.outputToken,
-                  isSellOrder(order.kind)
-                    ? order.apiAdditionalInfo?.executedBuyAmount || order.buyAmount
-                    : order.apiAdditionalInfo?.executedSellAmount || order.sellAmount
-                )}
+                amount={CurrencyAmount.fromRawAmount(order.outputToken, order.apiAdditionalInfo.executedBuyAmount)}
                 tokenSymbol={order.outputToken}
               />
             </b>
