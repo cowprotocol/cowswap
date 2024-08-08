@@ -105,12 +105,34 @@ const OrderIntent: React.FC<{ order?: Order }> = ({ order }) => {
   const { inputToken, outputToken, kind, sellAmount, buyAmount } = order
   const isSell = isSellOrder(kind)
 
+  const sellCurrencyAmount = CurrencyAmount.fromRawAmount(inputToken, sellAmount)
+  const buyCurrencyAmount = CurrencyAmount.fromRawAmount(outputToken, buyAmount)
+
+  const sellTokenPart = (
+    <>
+      <TokenLogo token={inputToken} size={20} />
+      <TokenAmount amount={sellCurrencyAmount} tokenSymbol={inputToken} />
+    </>
+  )
+
+  const buyTokenPart = (
+    <>
+      <TokenLogo token={outputToken} size={20} />
+      <TokenAmount amount={buyCurrencyAmount} tokenSymbol={outputToken} />
+    </>
+  )
+
   return (
     <styledEl.OriginalOrderIntent>
-      <TokenLogo token={inputToken} size={20} />
-      <TokenAmount amount={CurrencyAmount.fromRawAmount(inputToken, sellAmount)} tokenSymbol={inputToken} /> for{' '}
-      {isSell ? 'at least' : 'at most'} <TokenLogo token={outputToken} size={20} />
-      <TokenAmount amount={CurrencyAmount.fromRawAmount(outputToken, buyAmount)} tokenSymbol={outputToken} />
+      {isSell ? (
+        <>
+          {sellTokenPart} for at least {buyTokenPart}
+        </>
+      ) : (
+        <>
+          {buyTokenPart} for at most {sellTokenPart}
+        </>
+      )}
     </styledEl.OriginalOrderIntent>
   )
 }
