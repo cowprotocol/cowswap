@@ -493,6 +493,7 @@ function NextBatchStep({ solverCompetition, order }: OrderProgressBarV2Props) {
           customColor={'#996815'}
           extraContent={
             <styledEl.Description>
+              {/*TODO: replace with actual data*/}
               The <strong>Gnosis_1inch</strong> solver had the best solution for this batch. Unfortunately, your order
               wasn't part of their winning solution, so we're waiting for solvers to find a new solution that includes
               your order for the next batch.{' '}
