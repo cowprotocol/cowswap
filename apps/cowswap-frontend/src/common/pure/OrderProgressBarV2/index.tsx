@@ -730,12 +730,12 @@ function ExpiredStep({ order }: OrderProgressBarV2Props) {
   )
 }
 
-type StepNameWithoutSolved = Exclude<OrderProgressBarStepName, 'solved'>
-const STEP_NAME_TO_STEP_COMPONENT: Record<StepNameWithoutSolved, React.ComponentType<OrderProgressBarV2Props>> = {
+const STEP_NAME_TO_STEP_COMPONENT: Record<OrderProgressBarStepName, React.ComponentType<OrderProgressBarV2Props>> = {
   initial: InitialStep,
   solving: SolvingStep,
   executing: ExecutingStep,
   finished: FinishedStep,
+  solved: NextBatchStep, // for now just show nextBatch view
   nextBatch: NextBatchStep,
   delayed: DelayedStep,
   unfillable: UnfillableStep,
