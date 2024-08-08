@@ -82,6 +82,29 @@ export const Header = styled.div`
   z-index: 20;
 `
 
+export const ActionsWrapper = styled.div`
+  display: flex;
+  gap: 16px;
+  width: auto;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  flex-flow: row wrap;
+  font-size: 14px;
+
+  > a,
+  > button {
+    transition: color var(${UI.ANIMATION_DURATION}) ease-in-out;
+    text-decoration: none;
+    color: var(${UI.COLOR_TEXT_OPACITY_70});
+
+    &:hover {
+      text-decoration: underline;
+      color: var(${UI.COLOR_TEXT});
+    }
+  }
+`
+
 export const Section = styled.div`
   padding: 0 16px 16px;
   align-items: center;

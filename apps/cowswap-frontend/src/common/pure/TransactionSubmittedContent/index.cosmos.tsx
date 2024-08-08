@@ -19,6 +19,9 @@ const defaultProps = {
     ...activityDerivedStateMock,
     order,
   },
+  showCancellationModal: () => {
+    alert('Cancellation triggered!!')
+  },
 }
 
 const Wrapper = styled.div`

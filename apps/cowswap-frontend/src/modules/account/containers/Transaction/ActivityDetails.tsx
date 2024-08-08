@@ -7,26 +7,27 @@ import { useENS } from '@cowprotocol/ens'
 import { TokenLogo, useTokenBySymbolOrAddress } from '@cowprotocol/tokens'
 import { UiOrderType } from '@cowprotocol/types'
 import {
-  ExternalLink,
-  TokenAmount,
-  UI,
-  Icon,
-  IconType,
   BannerOrientation,
   CustomRecipientWarningBanner,
+  ExternalLink,
+  Icon,
+  IconType,
+  TokenAmount,
+  UI,
 } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
-import { OrderProgressBar } from 'legacy/components/OrderProgressBar'
 import { getActivityState } from 'legacy/hooks/useActivityDerivedState'
 import { ActivityStatus } from 'legacy/hooks/useRecentActivity'
 import { OrderStatus } from 'legacy/state/orders/actions'
 
 import { EthFlowStepper } from 'modules/swap/containers/EthFlowStepper'
 
+import { useOrderProgressBarV2Props } from 'common/hooks/orderProgressBarV2'
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
 import { isPending } from 'common/hooks/useCategorizeRecentActivity'
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
+import { OrderProgressBarV2 } from 'common/pure/OrderProgressBarV2'
 import { RateInfo, RateInfoParams } from 'common/pure/RateInfo'
 import { SafeWalletLink } from 'common/pure/SafeWalletLink'
 import {
@@ -58,7 +59,7 @@ const DEFAULT_ORDER_SUMMARY = {
   validTo: '',
 }
 
-function GnosisSafeTxDetails(props: {
+export function GnosisSafeTxDetails(props: {
   chainId: number
   activityDerivedState: ActivityDerivedState
 }): JSX.Element | null {
@@ -78,7 +79,7 @@ function GnosisSafeTxDetails(props: {
     ? order?.fulfillmentTime !== undefined
     : enhancedTransaction?.confirmedTime !== undefined
 
-  // Check if its in a state where we dont need more signatures. We do this, because this state comes from CoW Swap API, which
+  // Check if it's in a state where we don't need more signatures. We do this, because this state comes from CoW Swap API, which
   // sometimes can be faster getting the state than Gnosis Safe API (that would give us the pending signatures). We use
   // this check to infer that we don't need to sign anything anymore
   const alreadySigned = isOrder ? status !== ActivityStatus.PRESIGNATURE_PENDING : status !== ActivityStatus.PENDING
@@ -201,6 +202,8 @@ export function ActivityDetails(props: {
   // Check if Custom Recipient Warning Banner should be visible
   const isCustomRecipientWarningBannerVisible = !useIsReceiverWalletBannerHidden(id) && order && isPending(order)
   const hideCustomRecipientWarning = useHideReceiverWalletBanner()
+  const orderProgressBarV2Props = useOrderProgressBarV2Props({ activityDerivedState, chainId })
+  const surplusData = useGetSurplusData(order)
 
   if (!order && !enhancedTransaction) return null
 
@@ -394,8 +397,8 @@ export function ActivityDetails(props: {
       </Summary>
 
       <EthFlowStepper order={order} />
-      {showProgressBar && (
-        <OrderProgressBar activityDerivedState={activityDerivedState} chainId={chainId} hideWhenFinished={true} />
+      {showProgressBar && orderProgressBarV2Props && orderProgressBarV2Props.stepName !== 'finished' && (
+        <OrderProgressBarV2 {...orderProgressBarV2Props} order={order} surplusData={surplusData} />
       )}
     </>
   )

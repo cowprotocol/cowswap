@@ -28,4 +28,5 @@ export interface ConfiguratorState {
   partnerFeeRecipient: string
   standaloneMode: boolean
   disableToastMessages: boolean
+  disableProgressBar: boolean
 }

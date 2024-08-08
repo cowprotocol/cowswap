@@ -75,7 +75,8 @@ const Wrapper = styled.div`
   grid-template-rows: max-content;
   align-items: flex-start;
   width: 100%;
-  padding: 20px;
+  padding: 20px 20px 60px;
+  margin: 0 0 -40px;
   border-radius: 12px;
   background: var(${UI.COLOR_PAPER_DARKER});
   font-size: 15px;

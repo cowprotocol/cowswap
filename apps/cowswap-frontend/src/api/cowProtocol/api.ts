@@ -10,6 +10,8 @@ import {
 } from '@cowprotocol/common-utils'
 import {
   Address,
+  SupportedChainId as ChainId,
+  CompetitionOrderStatus,
   CowEnv,
   EnrichedOrder,
   NativePriceResponse,
@@ -19,7 +21,6 @@ import {
   OrderQuoteSideKindSell,
   PartialApiContext,
   SigningScheme,
-  SupportedChainId as ChainId,
   TotalSurplus,
   Trade,
 } from '@cowprotocol/cow-sdk'
@@ -31,7 +32,7 @@ import { LegacyFeeQuoteParams as FeeQuoteParams } from 'legacy/state/price/types
 import { getAppData } from 'modules/appData'
 
 import { ApiErrorCodes } from './errors/OperatorError'
-import QuoteApiError, { QuoteApiErrorDetails, mapOperatorErrorToQuoteError } from './errors/QuoteError'
+import QuoteApiError, { mapOperatorErrorToQuoteError, QuoteApiErrorDetails } from './errors/QuoteError'
 import { getIsOrderBookTypedError } from './getIsOrderBookTypedError'
 
 function getProfileUrl(): Partial<Record<ChainId, string>> {
@@ -222,6 +223,18 @@ export async function getNativePrice(chainId: ChainId, currencyAddress: string):
 
 export async function getSurplusData(chainId: ChainId, address: string): Promise<TotalSurplus> {
   return orderBookApi.getTotalSurplus(address, { chainId })
+}
+
+export async function getOrderCompetitionStatus(
+  chainId: ChainId,
+  orderId: string
+): Promise<CompetitionOrderStatus | undefined> {
+  try {
+    return await orderBookApi.getOrderCompetitionStatus(orderId, { chainId })
+  } catch (e) {
+    console.debug(`[getOrderCompetitionStatus] Non successful response:`, e?.message || e)
+    return
+  }
 }
 
 export type ProfileData = {
