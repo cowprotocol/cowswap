@@ -86,11 +86,11 @@ export default function Page() {
             <p>more TVL achieved than reference pool (beta phase)</p>
           </MetricsItem>
           <MetricsItem dividerColor="#9BD955">
-            <h2>$5m+</h2>
+            <h2>$5M+</h2>
             <p>liquidity protected from LVR (beta phase)</p>
           </MetricsItem>
           <MetricsItem>
-            <h2>$90k+</h2>
+            <h2>$90K+</h2>
             <p>surplus captured for LPs (beta phase)</p>
           </MetricsItem>
 
