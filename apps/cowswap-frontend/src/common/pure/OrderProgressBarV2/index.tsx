@@ -48,8 +48,7 @@ export type OrderProgressBarV2Props = {
   surplusData?: SurplusData
 }
 
-// TODO: const, capitalize
-const steps = [
+const STEPS = [
   {
     title: 'Placing order',
     description: 'Your order has been submitted and will be included in the next solver auction',
@@ -209,7 +208,7 @@ function InitialStep({ order }: OrderProgressBarV2Props) {
         <StepComponent
           status="active"
           isFirst={true}
-          step={steps[0]}
+          step={STEPS[0]}
           _index={0}
           extraContent={
             <styledEl.Description>
@@ -220,7 +219,7 @@ function InitialStep({ order }: OrderProgressBarV2Props) {
         <StepComponent
           status="next"
           isFirst={false}
-          step={steps[1]}
+          step={STEPS[1]}
           _index={1}
           extraContent={
             <styledEl.Description>
@@ -231,7 +230,7 @@ function InitialStep({ order }: OrderProgressBarV2Props) {
         <StepComponent
           status="next"
           isFirst={false}
-          step={steps[2]}
+          step={STEPS[2]}
           _index={2}
           extraContent={<styledEl.Description>The winning solver will execute your order.</styledEl.Description>}
         />
@@ -262,11 +261,11 @@ function SolvingStep({ order }: OrderProgressBarV2Props) {
         <OrderIntent order={order} />
       </styledEl.ProgressTopSection>
       <styledEl.StepsWrapper>
-        <StepComponent status="done" isFirst={false} step={steps[0]} _index={0} />
+        <StepComponent status="done" isFirst={false} step={STEPS[0]} _index={0} />
         <StepComponent
           status="active"
           isFirst={false}
-          step={steps[1]}
+          step={STEPS[1]}
           _index={1}
           extraContent={
             <styledEl.Description>
@@ -282,7 +281,7 @@ function SolvingStep({ order }: OrderProgressBarV2Props) {
         <StepComponent
           status="next"
           isFirst={false}
-          step={steps[2]}
+          step={STEPS[2]}
           _index={2}
           extraContent={<styledEl.Description>The winning solver will execute your order.</styledEl.Description>}
         />
@@ -303,11 +302,11 @@ function ExecutingStep({ solverCompetition, order }: OrderProgressBarV2Props) {
         <OrderIntent order={order} />
       </styledEl.ProgressTopSection>
       <styledEl.StepsWrapper>
-        <StepComponent status="done" isFirst={false} step={steps[0]} _index={0} />
+        <StepComponent status="done" isFirst={false} step={STEPS[0]} _index={0} />
         <StepComponent
           status="active"
           isFirst={false}
-          step={{ ...steps[1], title: 'Executing' }}
+          step={{ ...STEPS[1], title: 'Executing' }}
           _index={1}
           extraContent={
             <styledEl.Description>
@@ -505,11 +504,11 @@ function NextBatchStep({ solverCompetition, order }: OrderProgressBarV2Props) {
         <OrderIntent order={order} />
       </styledEl.ProgressTopSection>
       <styledEl.StepsWrapper>
-        <StepComponent status="done" isFirst={false} step={steps[0]} _index={0} />
+        <StepComponent status="done" isFirst={false} step={STEPS[0]} _index={0} />
         <StepComponent
           status="active"
           isFirst={false}
-          step={{ ...steps[1], title: 'Solving: Finding new solution' }}
+          step={{ ...STEPS[1], title: 'Solving: Finding new solution' }}
           _index={1}
           customColor={'#996815'}
           extraContent={
@@ -531,7 +530,7 @@ function NextBatchStep({ solverCompetition, order }: OrderProgressBarV2Props) {
         <StepComponent
           status="next"
           isFirst={false}
-          step={steps[2]}
+          step={STEPS[2]}
           _index={2}
           extraContent={<styledEl.Description>The winning solver will execute your order.</styledEl.Description>}
         />
@@ -550,11 +549,11 @@ function DelayedStep({ order }: OrderProgressBarV2Props) {
         <OrderIntent order={order} />
       </styledEl.ProgressTopSection>
       <styledEl.StepsWrapper>
-        <StepComponent status="done" isFirst={false} step={steps[0]} _index={0} />
+        <StepComponent status="done" isFirst={false} step={STEPS[0]} _index={0} />
         <StepComponent
           status="active"
           isFirst={false}
-          step={{ ...steps[1], title: 'Solving: Still searching' }}
+          step={{ ...STEPS[1], title: 'Solving: Still searching' }}
           _index={1}
           extraContent={
             <styledEl.Description>
@@ -562,7 +561,7 @@ function DelayedStep({ order }: OrderProgressBarV2Props) {
             </styledEl.Description>
           }
         />
-        <StepComponent status="next" isFirst={false} step={steps[2]} _index={2} />
+        <StepComponent status="next" isFirst={false} step={STEPS[2]} _index={2} />
       </styledEl.StepsWrapper>
     </styledEl.ProgressContainer>
   )
@@ -578,11 +577,11 @@ function UnfillableStep({ order, showCancellationModal }: OrderProgressBarV2Prop
         <OrderIntent order={order} />
       </styledEl.ProgressTopSection>
       <styledEl.StepsWrapper>
-        <StepComponent status="done" isFirst={false} step={steps[0]} _index={0} />
+        <StepComponent status="done" isFirst={false} step={STEPS[0]} _index={0} />
         <StepComponent
           status="unfillable"
           isFirst={false}
-          step={{ ...steps[1], title: 'Solving: out of market' }}
+          step={{ ...STEPS[1], title: 'Solving: out of market' }}
           _index={1}
           customColor={'#996815'}
           extraContent={
@@ -599,7 +598,7 @@ function UnfillableStep({ order, showCancellationModal }: OrderProgressBarV2Prop
         <StepComponent
           status="disabled"
           isFirst={false}
-          step={steps[2]}
+          step={STEPS[2]}
           _index={2}
           extraContent={<styledEl.Description>The winning solver will execute your order.</styledEl.Description>}
         />
@@ -618,11 +617,11 @@ function SubmissionFailedStep({ order }: OrderProgressBarV2Props) {
         <OrderIntent order={order} />
       </styledEl.ProgressTopSection>
       <styledEl.StepsWrapper>
-        <StepComponent status="done" isFirst={false} step={steps[0]} _index={0} />
+        <StepComponent status="done" isFirst={false} step={STEPS[0]} _index={0} />
         <StepComponent
           status="active"
           isFirst={false}
-          step={{ ...steps[1], title: 'Solving: Finding new solution' }}
+          step={{ ...STEPS[1], title: 'Solving: Finding new solution' }}
           _index={1}
           customColor={'#996815'}
           extraContent={
@@ -634,7 +633,7 @@ function SubmissionFailedStep({ order }: OrderProgressBarV2Props) {
         <StepComponent
           status="next"
           isFirst={false}
-          step={steps[2]}
+          step={STEPS[2]}
           _index={2}
           extraContent={<styledEl.Description>The winning solver will execute your order.</styledEl.Description>}
         />
@@ -653,11 +652,11 @@ function CancellingStep({ order }: OrderProgressBarV2Props) {
         <OrderIntent order={order} />
       </styledEl.ProgressTopSection>
       <styledEl.StepsWrapper>
-        <StepComponent status="done" isFirst={false} step={steps[0]} _index={0} />
+        <StepComponent status="done" isFirst={false} step={STEPS[0]} _index={0} />
         <StepComponent
           status="active"
           isFirst={false}
-          step={{ ...steps[1], title: 'Cancelling order' }}
+          step={{ ...STEPS[1], title: 'Cancelling order' }}
           _index={1}
           customColor={`var(${UI.COLOR_DANGER_TEXT})`}
           extraContent={<styledEl.Description>Your order is being cancelled.</styledEl.Description>}
