@@ -331,32 +331,14 @@ function ExecutingStep({ solverCompetition, order }: OrderProgressBarV2Props) {
   )
 }
 
-// TEMP =============================
-const mockSolvers = [
-  { solver: 'Naive', logo: 'naive-logo.png' },
-  { solver: 'Gnosis_1inch', logo: 'gnosis-1inch-logo.png' },
-  { solver: 'Baseline', logo: 'baseline-logo.png' },
-  { solver: 'ParaSwap', logo: 'paraswap-logo.png' },
-  { solver: 'CowDex', logo: 'cowdex-logo.png' },
-  { solver: 'MegaSolver', logo: 'megasolver-logo.png' },
-  { solver: 'QuickSwap', logo: 'quickswap-logo.png' },
-  { solver: 'OptimizedDEX', logo: 'optimizeddex-logo.png' },
-  { solver: 'FlashSolve', logo: 'flashsolve-logo.png' },
-  { solver: 'LiquidityPro', logo: 'liquiditypro-logo.png' },
-]
-
-// END TEMP ==========================
-
-function FinishedStep({ stepName, solverCompetition, order, surplusData }: OrderProgressBarV2Props) {
+function FinishedStep({ stepName, solverCompetition: solvers, order, surplusData }: OrderProgressBarV2Props) {
   const [showAllSolvers, setShowAllSolvers] = useState(false)
   const { surplusFiatValue, surplusPercent, surplusAmount, showSurplus } = surplusData || {}
   const cancellationFailed = stepName === 'cancellationFailed'
 
   const toggleSolvers = () => setShowAllSolvers(!showAllSolvers)
 
-  // TODO: Don't use mock data if no solverCompetition is provided
-  const solvers = solverCompetition?.length ? solverCompetition : mockSolvers
-  const visibleSolvers = showAllSolvers ? solvers : solvers.slice(0, 3)
+  const visibleSolvers = (showAllSolvers ? solvers : solvers?.slice(0, 3)) || []
   const isSell = order && isSellOrder(order.kind)
 
   return (
@@ -427,63 +409,65 @@ function FinishedStep({ stepName, solverCompetition, order, surplusData }: Order
           Transaction completed!
         </styledEl.TransactionStatus>
 
-        <styledEl.SolverRankings>
-          <h3>Solver auction rankings</h3>
-          <p>
-            <b>{solvers.length}</b> out of <b>25</b> solvers submitted a solution
-          </p>
+        {solvers?.length && (
+          <styledEl.SolverRankings>
+            <h3>Solver auction rankings</h3>
+            <p>
+              <b>{solvers.length}</b> out of <b>25</b> solvers submitted a solution
+            </p>
 
-          <styledEl.SolverTable>
-            <tbody>
-              {visibleSolvers.map((solver: any, index: number) => (
-                <styledEl.SolverTableRow key={`${solver.solver}-${index}`} isWinner={index === 0}>
-                  <styledEl.SolverRank isFirst>{index + 1}</styledEl.SolverRank>
-                  <styledEl.SolverTableCell isSecond>
-                    <styledEl.SolverInfo>
-                      <styledEl.SolverLogo>
-                        <img
-                          src={
-                            AMM_LOGOS[solver.solver]?.src ||
-                            AMM_LOGOS.default.src ||
-                            ('logo' in solver ? solver.logo : undefined)
-                          }
-                          alt={`${solver.solver} logo`}
-                          width="24"
-                          height="24"
-                        />
-                      </styledEl.SolverLogo>
-                      <styledEl.SolverName>{solver.solver}</styledEl.SolverName>
-                    </styledEl.SolverInfo>
-                  </styledEl.SolverTableCell>
-                  <styledEl.SolverTableCell isLast>
-                    {index === 0 && (
-                      <styledEl.WinningBadge>
-                        <styledEl.TrophyIcon>
-                          <PiTrophyFill />
-                        </styledEl.TrophyIcon>
-                        <span>Winning solver</span>
-                      </styledEl.WinningBadge>
-                    )}
-                  </styledEl.SolverTableCell>
-                </styledEl.SolverTableRow>
-              ))}
-            </tbody>
-          </styledEl.SolverTable>
+            <styledEl.SolverTable>
+              <tbody>
+                {visibleSolvers.map((solver: any, index: number) => (
+                  <styledEl.SolverTableRow key={`${solver.solver}-${index}`} isWinner={index === 0}>
+                    <styledEl.SolverRank isFirst>{index + 1}</styledEl.SolverRank>
+                    <styledEl.SolverTableCell isSecond>
+                      <styledEl.SolverInfo>
+                        <styledEl.SolverLogo>
+                          <img
+                            src={
+                              AMM_LOGOS[solver.solver]?.src ||
+                              AMM_LOGOS.default.src ||
+                              ('logo' in solver ? solver.logo : undefined)
+                            }
+                            alt={`${solver.solver} logo`}
+                            width="24"
+                            height="24"
+                          />
+                        </styledEl.SolverLogo>
+                        <styledEl.SolverName>{solver.solver}</styledEl.SolverName>
+                      </styledEl.SolverInfo>
+                    </styledEl.SolverTableCell>
+                    <styledEl.SolverTableCell isLast>
+                      {index === 0 && (
+                        <styledEl.WinningBadge>
+                          <styledEl.TrophyIcon>
+                            <PiTrophyFill />
+                          </styledEl.TrophyIcon>
+                          <span>Winning solver</span>
+                        </styledEl.WinningBadge>
+                      )}
+                    </styledEl.SolverTableCell>
+                  </styledEl.SolverTableRow>
+                ))}
+              </tbody>
+            </styledEl.SolverTable>
 
-          {solvers.length > 3 && (
-            <styledEl.ViewMoreButton onClick={toggleSolvers}>
-              {showAllSolvers ? (
-                <>
-                  Collapse <PiCaretUp />
-                </>
-              ) : (
-                <>
-                  View {solvers.length - 3} more <PiCaretDown />
-                </>
-              )}
-            </styledEl.ViewMoreButton>
-          )}
-        </styledEl.SolverRankings>
+            {solvers.length > 3 && (
+              <styledEl.ViewMoreButton onClick={toggleSolvers}>
+                {showAllSolvers ? (
+                  <>
+                    Collapse <PiCaretUp />
+                  </>
+                ) : (
+                  <>
+                    View {solvers.length - 3} more <PiCaretDown />
+                  </>
+                )}
+              </styledEl.ViewMoreButton>
+            )}
+          </styledEl.SolverRankings>
+        )}
         {order?.apiAdditionalInfo?.executedBuyAmount && (
           <styledEl.ReceivedAmount>
             You received <TokenLogo token={order.outputToken} size={16} />{' '}
