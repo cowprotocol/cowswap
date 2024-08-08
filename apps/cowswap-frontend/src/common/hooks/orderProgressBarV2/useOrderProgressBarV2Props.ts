@@ -52,11 +52,17 @@ export function useOrderProgressBarV2Props(
     isCancelling = false,
     isCancelled = false,
     isExpired = false,
+    isCreating = false,
+    isPresignaturePending = false,
+    isFailed = false,
   } = activityDerivedState || {}
 
-  const { disableProgressBar = false } = useInjectedWidgetParams()
+  const { disableProgressBar: widgetDisabled = false } = useInjectedWidgetParams()
 
-  // When the order is in a final state, avoid querying backend unnecessarily
+  // Do not build progress bar data when these conditions are set
+  const disableProgressBar = widgetDisabled || isCreating || isFailed || isPresignaturePending
+
+  // When the order is in a final state or progress bar is disabled, avoid querying backend unnecessarily
   const doNotQuery = !!(order && getIsFinalizedOrder(order)) || disableProgressBar
 
   const orderId = order?.id || ''
@@ -222,10 +228,7 @@ function getProgressBarStepName(
   backendApiStatus: OrderProgressBarState['backendApiStatus'],
   previousStepName: OrderProgressBarState['previousStepName']
 ): OrderProgressBarStepName {
-  if (isUnfillable) {
-    // out of market order
-    return 'unfillable'
-  } else if (isExpired) {
+  if (isExpired) {
     return 'expired'
   } else if (isCancelled) {
     return 'cancelled'
@@ -249,6 +252,10 @@ function getProgressBarStepName(
   ) {
     // moved back from solving to active
     return 'nextBatch'
+  }
+  if (isUnfillable) {
+    // out of market order
+    return 'unfillable'
   } else if (backendApiStatus === 'active' && countdown === 0) {
     // solving, but took longer than stipulated countdown
     return 'delayed'
@@ -287,7 +294,7 @@ const POOLING_SWR_OPTIONS = {
 
 function usePendingOrderStatus(chainId: SupportedChainId, orderId: string, doNotQuery?: boolean) {
   return useSWR(
-    chainId && orderId ? ['getOrderCompetitionStatus', chainId, orderId] : null,
+    chainId && orderId && !doNotQuery ? ['getOrderCompetitionStatus', chainId, orderId] : null,
     async ([, _chainId, _orderId]) => getOrderCompetitionStatus(_chainId, _orderId),
     doNotQuery ? SWR_NO_REFRESH_OPTIONS : POOLING_SWR_OPTIONS
   ).data
