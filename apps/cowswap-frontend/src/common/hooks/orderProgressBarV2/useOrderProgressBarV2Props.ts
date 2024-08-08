@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo } from 'react'
 
 import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
 import { CompetitionOrderStatus, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Command } from '@cowprotocol/types'
 
 import ms from 'ms.macro'
 import useSWR from 'swr'
@@ -11,10 +12,10 @@ import { ActivityDerivedState } from 'modules/account/containers/Transaction'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 
 import { getOrderCompetitionStatus } from 'api/cowProtocol/api'
+import { useCancelOrder } from 'common/hooks/useCancelOrder'
 import { getIsFinalizedOrder } from 'utils/orderUtils/getIsFinalizedOrder'
 
-import { Command } from '@cowprotocol/types'
-import { useCancelOrder } from 'common/hooks/useCancelOrder'
+
 import {
   ordersProgressBarStateAtom,
   setOrderProgressBarCancellationTriggered,
