@@ -488,7 +488,7 @@ export const TransactionStatus = styled.div<{ status?: string; flexFlow?: string
   display: flex;
   flex-flow: ${({ flexFlow }) => flexFlow || 'row wrap'};
   align-items: center;
-  gap: ${({ gap }) => gap || '0'};
+  gap: ${({ gap }) => gap || '10px'};
   font-size: 21px;
   font-weight: bold;
   margin: 0 auto 14px;
