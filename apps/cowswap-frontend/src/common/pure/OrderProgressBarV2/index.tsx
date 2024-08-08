@@ -335,6 +335,7 @@ function FinishedStep({ stepName, solverCompetition, order, surplusData }: Order
   // TODO: Don't use mock data if no solverCompetition is provided
   const solvers = solverCompetition?.length ? solverCompetition : mockSolvers
   const visibleSolvers = showAllSolvers ? solvers : solvers.slice(0, 3)
+  const isSell = order && isSellOrder(order.kind)
 
   return (
     <styledEl.FinishedStepContainer>
@@ -459,7 +460,7 @@ function FinishedStep({ stepName, solverCompetition, order, surplusData }: Order
         )}
         {surplusFiatValue ? (
           <styledEl.ExtraAmount>
-            and got an extra{' '}
+            {isSell ? 'and got an extra ' : 'and saved '}
             <i>
               +<TokenAmount amount={surplusAmount} tokenSymbol={surplusAmount?.currency} />
             </i>{' '}
