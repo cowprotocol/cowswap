@@ -745,6 +745,3 @@ const STEP_NAME_TO_STEP_COMPONENT: Record<OrderProgressBarStepName, React.Compon
   expired: ExpiredStep,
   cancellationFailed: FinishedStep,
 }
-
-// TODO: unused, remove
-export default OrderProgressBarV2
