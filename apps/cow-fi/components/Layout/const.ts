@@ -1,4 +1,5 @@
 import { MenuItem, ProductVariant } from '@cowprotocol/ui'
+import { clickOnNavigation } from 'modules/analytics'
 
 export const PAGE_MAX_WIDTH = 1760
 export const THEME_MODE = 'dark'
@@ -80,20 +81,30 @@ export const NAV_ITEMS: MenuItem[] = [
 ]
 
 export const NAV_ADDITIONAL_BUTTONS = [
+  // {
+  //   label: 'Use MEV Blocker',
+  //   href: 'https://cow.fi/mev-blocker',
+  //   utmContent: 'menubar-nav-button-use-mev-blocker',
+  //   external: true,
+  //   isButton: true,
+  //   bgColor: '#EC4612',
+  //   color: '#FEE7CF',
+  // },
   {
-    label: 'Use MEV Blocker',
-    href: 'https://cow.fi/mev-blocker',
-    utmContent: 'menubar-nav-button-use-mev-blocker',
+    label: 'LP on CoW AMM',
+    href: 'https://balancer.fi/pools/cow',
+    utmContent: 'menubar-nav-button-lp-on-cow-amm',
+    onClick: () => clickOnNavigation('click-lp-on-cow-amm'),
     external: true,
     isButton: true,
-    bgColor: '#EC4612',
-    color: '#FEE7CF',
+    bgColor: '#194D05',
+    color: '#BCEC79',
   },
-
   {
     label: 'Trade on CoW Swap',
     href: 'https://swap.cow.fi/#/1/swap/USDC/COW',
     utmContent: 'menubar-nav-button-trade-on-cow-swap',
+    onClick: () => clickOnNavigation('click-trade-on-cow-swap'),
     external: true,
     isButton: true,
     bgColor: '#65D9FF',
