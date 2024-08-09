@@ -583,7 +583,8 @@ function DelayedStep({ order }: OrderProgressBarV2Props) {
           _index={1}
           extraContent={
             <styledEl.Description>
-              This is taking longer than expected! Solvers are still searching...
+              This is taking longer than expected! There may be a network issue (such as a gas spike) that is preventing
+              solvers from picking up your order. The issue should resolve momentarily.
             </styledEl.Description>
           }
         />
