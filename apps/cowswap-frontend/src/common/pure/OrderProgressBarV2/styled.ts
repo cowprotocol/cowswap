@@ -323,6 +323,7 @@ export const CircleProgress = styled.circle<{ duration: number }>`
   stroke: #012f7a;
   stroke-width: 7;
   stroke-linecap: round;
+  // TODO: start animation at different position based on how far from 15s it is
   animation: ${progressAnimation} ${({ duration }) => duration}s linear infinite;
 `
 
