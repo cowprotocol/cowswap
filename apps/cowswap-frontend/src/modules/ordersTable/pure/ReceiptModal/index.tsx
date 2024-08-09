@@ -25,6 +25,7 @@ import {
   useHideReceiverWalletBanner,
   useIsReceiverWalletBannerHidden,
 } from 'common/state/receiverWalletBannerVisibility'
+import { getIsCustomRecipient } from 'utils/orderUtils/getIsCustomRecipient'
 import { getSellAmountWithFee } from 'utils/orderUtils/getSellAmountWithFee'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
@@ -116,8 +117,7 @@ export function ReceiptModal({
   const isCustomRecipientWarningBannerVisible = !useIsReceiverWalletBannerHidden(order.id)
   const hideCustomRecipientWarning = useHideReceiverWalletBanner()
 
-  const isCustomRecipient = Boolean(order.receiver && order.owner !== order.receiver)
-
+  const isCustomRecipient = getIsCustomRecipient(order)
   const showCustomRecipientBanner = isCustomRecipient && isCustomRecipientWarningBannerVisible && isPending(order)
 
   if (!order || !chainId) {
