@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 
 import PROGRESS_BAR_BAD_NEWS from '@cowprotocol/assets/cow-swap/progressbar-bad-news.svg'
 import PROGRESSBAR_COW_SURPLUS from '@cowprotocol/assets/cow-swap/progressbar-cow-surplus.svg'
@@ -164,7 +164,7 @@ const CircularCountdown: React.FC<CircularCountdownProps> = ({ countdown }) => {
   return (
     <styledEl.CountdownWrapper>
       <styledEl.CircularProgress viewBox="0 0 100 100">
-        <styledEl.CircleProgress cx="50" cy="50" r={radius} strokeDasharray={circumference} />
+        <styledEl.CircleProgress cx="50" cy="50" r={radius} strokeDasharray={circumference} duration={countdown} />
       </styledEl.CircularProgress>
       <styledEl.CountdownText>{countdown}</styledEl.CountdownText>
     </styledEl.CountdownWrapper>
@@ -239,24 +239,13 @@ function InitialStep({ order }: OrderProgressBarV2Props) {
   )
 }
 
-function SolvingStep({ order }: OrderProgressBarV2Props) {
-  // TODO: use countdown from props
-  const [countdown, setCountdown] = useState(15)
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCountdown((prevCountdown) => (prevCountdown > 1 ? prevCountdown - 1 : 15))
-    }, 1000)
-
-    return () => clearInterval(timer)
-  }, [])
-
+function SolvingStep({ order, countdown }: OrderProgressBarV2Props) {
   return (
     <styledEl.ProgressContainer>
       <styledEl.ProgressTopSection>
         <styledEl.ProgressImageWrapper bgColor={'#65D9FF'} padding={'24px'}>
           <SVG src={STEP_IMAGE_SOLVING} />
-          <CircularCountdown countdown={countdown} />
+          <CircularCountdown countdown={countdown || 0} />
         </styledEl.ProgressImageWrapper>
         <OrderIntent order={order} />
       </styledEl.ProgressTopSection>

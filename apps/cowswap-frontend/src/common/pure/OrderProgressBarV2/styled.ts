@@ -318,12 +318,12 @@ export const CircularProgress = styled.svg`
   padding: 8px;
 `
 
-export const CircleProgress = styled.circle`
+export const CircleProgress = styled.circle<{ duration: number }>`
   fill: none;
   stroke: #012f7a;
   stroke-width: 7;
   stroke-linecap: round;
-  animation: ${progressAnimation} 15s linear infinite;
+  animation: ${progressAnimation} ${({ duration }) => duration}s linear infinite;
 `
 
 export const CountdownText = styled.div`
