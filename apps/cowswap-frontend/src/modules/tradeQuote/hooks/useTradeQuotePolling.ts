@@ -66,6 +66,12 @@ export function useTradeQuotePolling() {
         })
         .catch((error: QuoteApiError) => {
           console.log('[useGetQuote]:: fetchQuote error', error)
+          if (error.type === QuoteApiErrorCodes.InsufficientLiquidity) {
+            // ignore
+            console.log(`fuck:useTradeQuotePolling`)
+            updateQuoteState({ isLoading: false, hasParamsChanged: false })
+            return
+          }
           updateQuoteState({ isLoading: false, error, hasParamsChanged: false })
 
           if (error.type === QuoteApiErrorCodes.UnsupportedToken) {

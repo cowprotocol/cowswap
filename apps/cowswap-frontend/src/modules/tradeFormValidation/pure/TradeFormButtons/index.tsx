@@ -18,9 +18,13 @@ export function TradeFormButtons(props: TradeFormButtonsProps) {
   const { validation, context, isDisabled, confirmText } = props
 
   // When there are no validation errors
-  if (validation === null) {
+  if (
+    validation === null ||
+    validation === TradeFormValidation.QuoteErrors ||
+    validation === TradeFormValidation.QuoteLoading
+  ) {
     return (
-      <TradeFormBlankButton id="do-trade-button" disabled={isDisabled} onClick={() => context.confirmTrade()}>
+      <TradeFormBlankButton id="do-trade-button" disabled={false} onClick={() => context.confirmTrade()}>
         {confirmText}
       </TradeFormBlankButton>
     )

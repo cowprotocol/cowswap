@@ -1,10 +1,8 @@
 import { getIsNativeToken, isAddress, isFractionFalsy } from '@cowprotocol/common-utils'
 
-import { TradeType } from 'modules/trade'
-import { isQuoteExpired } from 'modules/tradeQuote'
-
 import { ApprovalState } from 'common/hooks/useApproveState'
 
+import { QuoteApiErrorCodes } from '../../../api/cowProtocol/errors/QuoteError'
 import { TradeFormValidation, TradeFormValidationContext } from '../types'
 
 export function validateTradeForm(context: TradeFormValidationContext): TradeFormValidation | null {
@@ -35,7 +33,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
 
   const inputAmountIsNotSet = !inputCurrencyAmount || isFractionFalsy(inputCurrencyAmount)
 
-  if (!isWrapUnwrap && tradeQuote.error) {
+  if (!isWrapUnwrap && tradeQuote.error && tradeQuote.error.type !== QuoteApiErrorCodes.InsufficientLiquidity) {
     return TradeFormValidation.QuoteErrors
   }
 
@@ -72,24 +70,24 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
       return TradeFormValidation.CurrencyNotSupported
     }
 
-    if (!tradeQuote.response) {
-      return TradeFormValidation.QuoteLoading
-    }
+    // if (!tradeQuote.response) {
+    //   return TradeFormValidation.QuoteLoading
+    // }
 
-    if (
-      derivedTradeState.tradeType !== TradeType.LIMIT_ORDER &&
-      !tradeQuote.isLoading &&
-      isQuoteExpired({
-        expirationDate: tradeQuote.response?.expiration,
-        deadlineParams: {
-          validFor: tradeQuote.quoteParams?.validFor,
-          quoteValidTo: tradeQuote.response.quote.validTo,
-          localQuoteTimestamp: tradeQuote.localQuoteTimestamp,
-        },
-      })
-    ) {
-      return TradeFormValidation.QuoteExpired
-    }
+    // if (
+    //   derivedTradeState.tradeType !== TradeType.LIMIT_ORDER &&
+    //   !tradeQuote.isLoading &&
+    //   isQuoteExpired({
+    //     expirationDate: tradeQuote.response?.expiration,
+    //     deadlineParams: {
+    //       validFor: tradeQuote.quoteParams?.validFor,
+    //       quoteValidTo: tradeQuote.response.quote.validTo,
+    //       localQuoteTimestamp: tradeQuote.localQuoteTimestamp,
+    //     },
+    //   })
+    // ) {
+    //   return TradeFormValidation.QuoteExpired
+    // }
   }
 
   if (!canPlaceOrderWithoutBalance) {

@@ -46,7 +46,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
   const generatePermitHook = useGeneratePermitHook()
   const getCachedPermit = useGetCachedPermit()
 
-  const isQuoteReady = !!quoteState.response && !quoteState.isLoading && !!quoteState.localQuoteTimestamp
+  // const isQuoteReady = !!quoteState.response && !quoteState.isLoading && !!quoteState.localQuoteTimestamp
 
   const recipientAddressOrName = state.recipient || state.recipientAddress
   const recipient = state.recipientAddress || state.recipient || account
@@ -65,7 +65,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
       !state.outputCurrency ||
       !provider ||
       !settlementContract ||
-      !isQuoteReady ||
+      // !isQuoteReady ||
       !appData
     ) {
       return null
@@ -112,7 +112,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
     state.orderKind,
     provider,
     settlementContract,
-    isQuoteReady,
+    // isQuoteReady,
     appData,
     chainId,
     settlementContract,
