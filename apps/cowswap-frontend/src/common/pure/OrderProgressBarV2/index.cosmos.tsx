@@ -16,6 +16,7 @@ const order = {
 
 const defaultProps: OrderProgressBarV2Props = {
   order,
+  chainId: 1,
   stepName: 'initial',
   showCancellationModal: () => {
     alert('cancellation triggered o/')
@@ -90,6 +91,25 @@ const Fixtures = {
   '4-finished': (
     <Wrapper>
       <OrderProgressBarV2 {...defaultProps} stepName="finished" />
+    </Wrapper>
+  ),
+  '4-finished-customReceiver': (
+    <Wrapper>
+      <OrderProgressBarV2
+        {...defaultProps}
+        order={{ ...order, receiver: '0xdd9EB88C5C6D2A85A08a96c7F0ccccE27Cb843cb' }}
+        stepName="finished"
+      />
+    </Wrapper>
+  ),
+  '4-finished-customReceiver-ensName': (
+    <Wrapper>
+      <OrderProgressBarV2
+        {...defaultProps}
+        order={{ ...order, receiver: '0xdd9EB88C5C6D2A85A08a96c7F0ccccE27Cb843cb' }}
+        receiverEnsName={'ihaveaname.eth'}
+        stepName="finished"
+      />
     </Wrapper>
   ),
   '4a-cancellationFailed': (

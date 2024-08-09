@@ -398,7 +398,13 @@ export function ActivityDetails(props: {
 
       <EthFlowStepper order={order} />
       {showProgressBar && orderProgressBarV2Props && orderProgressBarV2Props.stepName !== 'finished' && (
-        <OrderProgressBarV2 {...orderProgressBarV2Props} order={order} surplusData={surplusData} />
+        <OrderProgressBarV2
+          {...orderProgressBarV2Props}
+          order={order}
+          surplusData={surplusData}
+          chainId={chainId}
+          receiverEnsName={receiverEnsName || undefined}
+        />
       )}
     </>
   )

@@ -9,11 +9,11 @@ import STEP_IMAGE_UNFILLABLE from '@cowprotocol/assets/cow-swap/progressbar-step
 import STEP_IMAGE_WAIT from '@cowprotocol/assets/cow-swap/progressbar-step-wait.svg'
 import ICON_SOCIAL_X from '@cowprotocol/assets/images/icon-social-x.svg'
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { isSellOrder } from '@cowprotocol/common-utils'
-import type { CompetitionOrderStatus } from '@cowprotocol/cow-sdk'
+import { ExplorerDataType, getExplorerLink, isSellOrder, shortenAddress } from '@cowprotocol/common-utils'
+import type { CompetitionOrderStatus, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { Command } from '@cowprotocol/types'
-import { ProductLogo, ProductVariant, TokenAmount, UI } from '@cowprotocol/ui'
+import { ExternalLink, ProductLogo, ProductVariant, TokenAmount, UI } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { MdOutlineMotionPhotosPause } from 'react-icons/md'
@@ -33,6 +33,7 @@ import { Order } from 'legacy/state/orders/actions'
 
 import { OrderProgressBarStepName, PROGRESS_BAR_TIMER_DURATION } from 'common/hooks/orderProgressBarV2'
 import { SurplusData } from 'common/hooks/useGetSurplusFiatValue'
+import { getIsCustomRecipient } from 'utils/orderUtils/getIsCustomRecipient'
 
 import * as styledEl from './styled'
 
@@ -40,12 +41,14 @@ import { CancelButton } from '../CancelButton'
 
 export type OrderProgressBarV2Props = {
   stepName: OrderProgressBarStepName
+  chainId: SupportedChainId
   countdown?: number | null | undefined
   solverCompetition?: CompetitionOrderStatus['value']
   order?: Order
   debugMode?: boolean
   showCancellationModal: Command | null
   surplusData?: SurplusData
+  receiverEnsName?: string
 }
 
 const STEPS = [
@@ -327,7 +330,14 @@ function ExecutingStep({ solverCompetition, order }: OrderProgressBarV2Props) {
   )
 }
 
-function FinishedStep({ stepName, solverCompetition: solvers, order, surplusData }: OrderProgressBarV2Props) {
+function FinishedStep({
+  stepName,
+  solverCompetition: solvers,
+  order,
+  surplusData,
+  chainId,
+  receiverEnsName,
+}: OrderProgressBarV2Props) {
   const [showAllSolvers, setShowAllSolvers] = useState(false)
   const { surplusFiatValue, surplusPercent, surplusAmount, showSurplus } = surplusData || {}
   const cancellationFailed = stepName === 'cancellationFailed'
@@ -336,6 +346,8 @@ function FinishedStep({ stepName, solverCompetition: solvers, order, surplusData
 
   const visibleSolvers = (showAllSolvers ? solvers : solvers?.slice(0, 3)) || []
   const isSell = order && isSellOrder(order.kind)
+  const isCustomRecipient = order && getIsCustomRecipient(order)
+  const receiver = order?.receiver || order?.owner
 
   return (
     <styledEl.FinishedStepContainer>
@@ -466,28 +478,46 @@ function FinishedStep({ stepName, solverCompetition: solvers, order, surplusData
         )}
         {order?.apiAdditionalInfo?.executedBuyAmount && (
           <styledEl.ReceivedAmount>
-            You received <TokenLogo token={order.outputToken} size={16} />{' '}
+            {!isCustomRecipient && 'You received '}
+            <TokenLogo token={order.outputToken} size={16} />
             <b>
               <TokenAmount
                 amount={CurrencyAmount.fromRawAmount(order.outputToken, order.apiAdditionalInfo.executedBuyAmount)}
                 tokenSymbol={order.outputToken}
               />
-            </b>
+            </b>{' '}
+            {isCustomRecipient && receiver && (
+              <>
+                was sent to
+                <ExternalLink href={getExplorerLink(chainId, receiver, ExplorerDataType.ADDRESS)}>
+                  {receiverEnsName || shortenAddress(receiver)} ↗
+                </ExternalLink>
+              </>
+            )}
           </styledEl.ReceivedAmount>
         )}
         {showSurplus ? (
           <styledEl.ExtraAmount>
-            {isSell ? 'and got an extra ' : 'and saved '}
+            {getSurplusText(isSell, isCustomRecipient)}
             <i>
               +<TokenAmount amount={surplusAmount} tokenSymbol={surplusAmount?.currency} />
             </i>{' '}
             {surplusFiatValue && +surplusFiatValue.toFixed(2) > 0 && <>(~${surplusFiatValue.toFixed(2)})</>}
           </styledEl.ExtraAmount>
         ) : null}
-        {/*TODO: Add states for when there's a custom recipient*/}
       </styledEl.ConclusionContent>
     </styledEl.FinishedStepContainer>
   )
+}
+
+function getSurplusText(isSell: boolean | undefined, isCustomRecipient: boolean | undefined): string {
+  if (isSell) {
+    if (isCustomRecipient) {
+      return 'including an extra '
+    }
+    return 'and got an extra '
+  }
+  return 'and saved '
 }
 
 function NextBatchStep({ solverCompetition, order }: OrderProgressBarV2Props) {
