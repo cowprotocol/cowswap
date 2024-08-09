@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.10.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.9.0...cow-fi-v1.10.0) (2024-08-09)
+
+
+### Features
+
+* switch cowfi header cta button ([#4769](https://github.com/cowprotocol/cowswap/issues/4769)) ([f87c0fe](https://github.com/cowprotocol/cowswap/commit/f87c0feee1bd3dce0a524ff61b54c86265b81605))
+
 ## [1.9.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.8.0...cow-fi-v1.9.0) (2024-07-31)
 
 
