@@ -35,6 +35,7 @@ export type UseOrderProgressBarV2Result = Pick<OrderProgressBarState, 'countdown
 }
 
 const MINIMUM_STEP_DISPLAY_TIME = ms`5s`
+export const PROGRESS_BAR_TIMER_DURATION = 15 // in seconds
 
 /**
  * Hook for fetching ProgressBarV2 props
@@ -145,7 +146,7 @@ function useCountdownStartUpdater(
   useEffect(() => {
     if (!countdown && countdown !== 0 && backendApiStatus === 'active') {
       // Start countdown when it becomes active
-      setCountdown(orderId, 15)
+      setCountdown(orderId, PROGRESS_BAR_TIMER_DURATION)
     } else if (backendApiStatus === 'scheduled' || backendApiStatus === 'open') {
       // If for some reason it went back to start, reset it
       setCountdown(orderId, null)
