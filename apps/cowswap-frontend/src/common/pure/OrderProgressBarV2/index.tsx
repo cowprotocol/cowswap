@@ -8,6 +8,13 @@ import STEP_IMAGE_SOLVING from '@cowprotocol/assets/cow-swap/progressbar-step-so
 import STEP_IMAGE_UNFILLABLE from '@cowprotocol/assets/cow-swap/progressbar-step-unfillable.svg'
 import STEP_IMAGE_WAIT from '@cowprotocol/assets/cow-swap/progressbar-step-wait.svg'
 import ICON_SOCIAL_X from '@cowprotocol/assets/images/icon-social-x.svg'
+import LOTTIE_GREEN_CHECKMARK_DARK from '@cowprotocol/assets/lottie/green-checkmark-dark.json'
+import LOTTIE_GREEN_CHECKMARK from '@cowprotocol/assets/lottie/green-checkmark.json'
+import LOTTIE_RED_CROSS from '@cowprotocol/assets/lottie/red-cross.json'
+import LOTTIE_TIME_EXPIRED_DARK from '@cowprotocol/assets/lottie/time-expired-dark.json'
+import LOTTIE_TIME_EXPIRED from '@cowprotocol/assets/lottie/time-expired.json'
+import LOTTIE_YELLOW_CHECKMARK_DARK from '@cowprotocol/assets/lottie/yellow-checkmark-dark.json'
+import LOTTIE_YELLOW_CHECKMARK from '@cowprotocol/assets/lottie/yellow-checkmark.json'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { isSellOrder } from '@cowprotocol/common-utils'
 import type { CompetitionOrderStatus } from '@cowprotocol/cow-sdk'
@@ -16,12 +23,12 @@ import { Command } from '@cowprotocol/types'
 import { ProductLogo, ProductVariant, TokenAmount, UI } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
+import Lottie from 'lottie-react'
 import { MdOutlineMotionPhotosPause } from 'react-icons/md'
 import {
   PiCaretDown,
   PiCaretUp,
   PiCheckCircleFill,
-  PiClockCountdown,
   PiDotsThreeCircle,
   PiSpinnerBallFill,
   PiTrophyFill,
@@ -33,6 +40,7 @@ import { Order } from 'legacy/state/orders/actions'
 
 import { OrderProgressBarStepName } from 'common/hooks/orderProgressBarV2'
 import { SurplusData } from 'common/hooks/useGetSurplusFiatValue'
+import { useTheme } from 'common/hooks/useTheme'
 
 import * as styledEl from './styled'
 
@@ -84,6 +92,7 @@ const StepComponent: React.FC<{
 )
 
 const StatusIcon: React.FC<{ status: string; customColor?: string }> = ({ status, customColor }) => {
+  const theme = useTheme()
   const iconColor = customColor || (status === 'done' ? 'green' : 'inherit')
 
   switch (status) {
@@ -94,6 +103,15 @@ const StatusIcon: React.FC<{ status: string; customColor?: string }> = ({ status
     case 'error':
     case 'unfillable':
       return <MdOutlineMotionPhotosPause color={iconColor} />
+    case 'cancelling':
+      return (
+        <Lottie
+          animationData={theme.darkMode ? LOTTIE_RED_CROSS : LOTTIE_RED_CROSS} // TODO: Get dark mode animation icon
+          loop={true}
+          autoplay={true}
+          style={{ width: '24px', height: '24px' }}
+        />
+      )
     default:
       return <PiDotsThreeCircle color={iconColor} />
   }
@@ -140,19 +158,31 @@ const OrderIntent: React.FC<{ order?: Order }> = ({ order }) => {
 const AnimatedTokens: React.FC<{
   sellToken: Currency | TokenWithLogo | null | undefined
   buyToken: Currency | TokenWithLogo | null | undefined
-}> = ({ sellToken, buyToken }) => (
-  <styledEl.AnimatedTokensWrapper>
-    <styledEl.TokenWrapper position="left">
-      <TokenLogo token={sellToken} size={136} />
-    </styledEl.TokenWrapper>
-    <styledEl.TokenWrapper position="center">
-      <TokenLogo token={buyToken} size={136} />
-    </styledEl.TokenWrapper>
-    <styledEl.TokenWrapper position="right">
-      <ProductLogo variant={ProductVariant.CowSwap} theme={'dark'} height={136} logoIconOnly />
-    </styledEl.TokenWrapper>
-  </styledEl.AnimatedTokensWrapper>
-)
+}> = ({ sellToken, buyToken }) => {
+  const theme = useTheme()
+  const backgroundImage = theme.darkMode
+    ? 'url(assets/images/background-cowswap-darkmode.svg)'
+    : 'url(assets/images/background-cowswap-lightmode.svg)'
+
+  return (
+    <styledEl.AnimatedTokensWrapper style={{ backgroundImage }}>
+      <styledEl.TokenWrapper position="left">
+        <TokenLogo token={sellToken} size={136} />
+      </styledEl.TokenWrapper>
+      <styledEl.TokenWrapper position="center">
+        <TokenLogo token={buyToken} size={136} />
+      </styledEl.TokenWrapper>
+      <styledEl.TokenWrapper position="right">
+        <ProductLogo
+          variant={ProductVariant.CowSwap}
+          theme={theme.darkMode ? 'dark' : 'light'}
+          height={136}
+          logoIconOnly
+        />
+      </styledEl.TokenWrapper>
+    </styledEl.AnimatedTokensWrapper>
+  )
+}
 
 interface CircularCountdownProps {
   countdown: number
@@ -217,24 +247,8 @@ function InitialStep({ order }: OrderProgressBarV2Props) {
             </styledEl.Description>
           }
         />
-        <StepComponent
-          status="next"
-          isFirst={false}
-          step={steps[1]}
-          _index={1}
-          extraContent={
-            <styledEl.Description>
-              The auction will start! Solvers will be competing to find the best solution for you.
-            </styledEl.Description>
-          }
-        />
-        <StepComponent
-          status="next"
-          isFirst={false}
-          step={steps[2]}
-          _index={2}
-          extraContent={<styledEl.Description>The winning solver will execute your order.</styledEl.Description>}
-        />
+        <StepComponent status="next" isFirst={false} step={steps[1]} _index={1} />
+        <StepComponent status="future" isFirst={false} step={steps[2]} _index={2} />
       </styledEl.StepsWrapper>
     </styledEl.ProgressContainer>
   )
@@ -279,13 +293,7 @@ function SolvingStep({ order }: OrderProgressBarV2Props) {
             </styledEl.Description>
           }
         />
-        <StepComponent
-          status="next"
-          isFirst={false}
-          step={steps[2]}
-          _index={2}
-          extraContent={<styledEl.Description>The winning solver will execute your order.</styledEl.Description>}
-        />
+        <StepComponent status="next" isFirst={false} step={steps[2]} _index={2} />
       </styledEl.StepsWrapper>
     </styledEl.ProgressContainer>
   )
@@ -320,13 +328,7 @@ function ExecutingStep({ solverCompetition, order }: OrderProgressBarV2Props) {
             </styledEl.Description>
           }
         />
-        <StepComponent
-          status="next"
-          isFirst={false}
-          step={{ title: 'Transaction completed' }}
-          _index={2}
-          extraContent={<styledEl.Description>You'll receive the settlement in your wallet.</styledEl.Description>}
-        />
+        <StepComponent status="next" isFirst={false} step={{ title: 'Transaction completed' }} _index={2} />
       </styledEl.StepsWrapper>
     </styledEl.ProgressContainer>
   )
@@ -341,6 +343,8 @@ function FinishedStep({ stepName, solverCompetition: solvers, order, surplusData
 
   const visibleSolvers = (showAllSolvers ? solvers : solvers?.slice(0, 3)) || []
   const isSell = order && isSellOrder(order.kind)
+
+  const theme = useTheme()
 
   return (
     <styledEl.FinishedStepContainer>
@@ -405,16 +409,21 @@ function FinishedStep({ stepName, solverCompetition: solvers, order, surplusData
       </styledEl.ProgressTopSection>
 
       <styledEl.ConclusionContent>
-        <styledEl.TransactionStatus>
-          <PiCheckCircleFill />
+        <styledEl.TransactionStatus flexFlow="column">
+          <Lottie
+            animationData={theme.darkMode ? LOTTIE_GREEN_CHECKMARK_DARK : LOTTIE_GREEN_CHECKMARK}
+            loop={false}
+            autoplay
+            style={{ width: '56px', height: '56px' }}
+          />
           Transaction completed!
         </styledEl.TransactionStatus>
 
-        {solvers?.length && (
+        {solvers && solvers.length > 0 && (
           <styledEl.SolverRankings>
             <h3>Solver auction rankings</h3>
             <p>
-              <b>{solvers.length}</b> out of <b>25</b> solvers submitted a solution
+              <b>{solvers.length} out of 25 solvers</b> submitted a solution
             </p>
 
             <styledEl.SolverTable>
@@ -511,7 +520,7 @@ function NextBatchStep({ solverCompetition, order }: OrderProgressBarV2Props) {
           isFirst={false}
           step={{ ...steps[1], title: 'Solving: Finding new solution' }}
           _index={1}
-          customColor={'#996815'}
+          customColor={`var(${UI.COLOR_ALERT_TEXT})`}
           extraContent={
             <styledEl.Description>
               {solverCompetition?.length && (
@@ -528,13 +537,7 @@ function NextBatchStep({ solverCompetition, order }: OrderProgressBarV2Props) {
             </styledEl.Description>
           }
         />
-        <StepComponent
-          status="next"
-          isFirst={false}
-          step={steps[2]}
-          _index={2}
-          extraContent={<styledEl.Description>The winning solver will execute your order.</styledEl.Description>}
-        />
+        <StepComponent status="next" isFirst={false} step={steps[2]} _index={2} />
       </styledEl.StepsWrapper>
     </styledEl.ProgressContainer>
   )
@@ -584,7 +587,7 @@ function UnfillableStep({ order, showCancellationModal }: OrderProgressBarV2Prop
           isFirst={false}
           step={{ ...steps[1], title: 'Solving: out of market' }}
           _index={1}
-          customColor={'#996815'}
+          customColor={`var(${UI.COLOR_ALERT_TEXT})`}
           extraContent={
             <styledEl.Description>
               Your order's price is currently out of market.{' '}
@@ -596,13 +599,7 @@ function UnfillableStep({ order, showCancellationModal }: OrderProgressBarV2Prop
             </styledEl.Description>
           }
         />
-        <StepComponent
-          status="disabled"
-          isFirst={false}
-          step={steps[2]}
-          _index={2}
-          extraContent={<styledEl.Description>The winning solver will execute your order.</styledEl.Description>}
-        />
+        <StepComponent status="disabled" isFirst={false} step={steps[2]} _index={2} />
       </styledEl.StepsWrapper>
     </styledEl.ProgressContainer>
   )
@@ -624,20 +621,14 @@ function SubmissionFailedStep({ order }: OrderProgressBarV2Props) {
           isFirst={false}
           step={{ ...steps[1], title: 'Solving: Finding new solution' }}
           _index={1}
-          customColor={'#996815'}
+          customColor={`var(${UI.COLOR_ALERT_TEXT})`}
           extraContent={
             <styledEl.Description>
               The order could not be settled on-chain. Solvers are competing to find a new solution.
             </styledEl.Description>
           }
         />
-        <StepComponent
-          status="next"
-          isFirst={false}
-          step={steps[2]}
-          _index={2}
-          extraContent={<styledEl.Description>The winning solver will execute your order.</styledEl.Description>}
-        />
+        <StepComponent status="next" isFirst={false} step={steps[2]} _index={2} />
       </styledEl.StepsWrapper>
     </styledEl.ProgressContainer>
   )
@@ -655,7 +646,7 @@ function CancellingStep({ order }: OrderProgressBarV2Props) {
       <styledEl.StepsWrapper>
         <StepComponent status="done" isFirst={false} step={steps[0]} _index={0} />
         <StepComponent
-          status="active"
+          status="cancelling"
           isFirst={false}
           step={{ ...steps[1], title: 'Cancelling order' }}
           _index={1}
@@ -668,6 +659,8 @@ function CancellingStep({ order }: OrderProgressBarV2Props) {
 }
 
 function CancelledStep({ order }: OrderProgressBarV2Props) {
+  const theme = useTheme()
+
   return (
     <styledEl.ProgressContainer>
       <styledEl.ProgressTopSection>
@@ -676,12 +669,19 @@ function CancelledStep({ order }: OrderProgressBarV2Props) {
         </styledEl.ProgressImageWrapper>
         <OrderIntent order={order} />
       </styledEl.ProgressTopSection>
-      <styledEl.TransactionStatus status={'cancelled'}>
-        <PiCheckCircleFill />
-        Your order was cancelled
-      </styledEl.TransactionStatus>
+      <styledEl.ConclusionContent>
+        <styledEl.TransactionStatus status={'cancelled'} flexFlow="column">
+          <Lottie
+            animationData={theme.darkMode ? LOTTIE_YELLOW_CHECKMARK_DARK : LOTTIE_YELLOW_CHECKMARK}
+            loop={false}
+            autoplay
+            style={{ width: '56px', height: '56px' }}
+          />
+          Your order was cancelled
+        </styledEl.TransactionStatus>
+      </styledEl.ConclusionContent>
 
-      <styledEl.Description center margin="10px auto">
+      <styledEl.Description center margin="10px auto 40px">
         Your order was successfully cancelled.
       </styledEl.Description>
     </styledEl.ProgressContainer>
@@ -689,6 +689,8 @@ function CancelledStep({ order }: OrderProgressBarV2Props) {
 }
 
 function ExpiredStep({ order }: OrderProgressBarV2Props) {
+  const theme = useTheme()
+
   return (
     <styledEl.ProgressContainer>
       <styledEl.ProgressTopSection>
@@ -697,10 +699,17 @@ function ExpiredStep({ order }: OrderProgressBarV2Props) {
         </styledEl.ProgressImageWrapper>
         <OrderIntent order={order} />
       </styledEl.ProgressTopSection>
-      <styledEl.TransactionStatus status={'expired'}>
-        <PiClockCountdown />
-        Your order expired
-      </styledEl.TransactionStatus>
+      <styledEl.ConclusionContent>
+        <styledEl.TransactionStatus status={'expired'} flexFlow="column">
+          <Lottie
+            animationData={theme.darkMode ? LOTTIE_TIME_EXPIRED_DARK : LOTTIE_TIME_EXPIRED}
+            loop={false}
+            autoplay
+            style={{ width: '56px', height: '56px' }}
+          />
+          Your order expired
+        </styledEl.TransactionStatus>
+      </styledEl.ConclusionContent>
 
       <styledEl.CardWrapper>
         <styledEl.InfoCard variant="warning">
