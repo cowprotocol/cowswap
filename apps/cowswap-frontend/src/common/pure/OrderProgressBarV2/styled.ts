@@ -3,6 +3,8 @@ import { Media, UI } from '@cowprotocol/ui'
 
 import styled, { css, keyframes } from 'styled-components/macro'
 
+import { PROGRESS_BAR_TIMER_DURATION } from 'common/hooks/orderProgressBarV2'
+
 const SUCCESS_COLOR = '#04795b' // TODO: Fix hardcoded color
 
 export const Icon = styled.div<{ status: string; customColor?: string }>`
@@ -324,7 +326,7 @@ export const CircleProgress = styled.circle<{ duration: number }>`
   stroke-width: 7;
   stroke-linecap: round;
   // TODO: start animation at different position based on how far from 15s it is
-  animation: ${progressAnimation} ${({ duration }) => duration}s linear infinite;
+  animation: ${progressAnimation} ${PROGRESS_BAR_TIMER_DURATION}s linear infinite;
 `
 
 export const CountdownText = styled.div`
