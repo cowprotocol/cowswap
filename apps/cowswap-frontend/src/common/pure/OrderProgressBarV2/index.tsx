@@ -38,7 +38,7 @@ import { useIsDarkMode } from 'legacy/state/user/hooks'
 
 import { Category, cowAnalytics } from 'modules/analytics'
 
-import { OrderProgressBarStepName, SolverCompetition } from 'common/hooks/orderProgressBarV2'
+import { OrderProgressBarStepName, PROGRESS_BAR_TIMER_DURATION, SolverCompetition } from 'common/hooks/orderProgressBarV2'
 import { SurplusData } from 'common/hooks/useGetSurplusFiatValue'
 import { getIsCustomRecipient } from 'utils/orderUtils/getIsCustomRecipient'
 
@@ -236,7 +236,14 @@ const CircularCountdown: React.FC<CircularCountdownProps> = ({ countdown }) => {
   return (
     <styledEl.CountdownWrapper>
       <styledEl.CircularProgress viewBox="0 0 100 100">
-        <styledEl.CircleProgress cx="50" cy="50" r={radius} strokeDasharray={circumference} />
+        <styledEl.CircleProgress
+          cx="50"
+          cy="50"
+          r={radius}
+          strokeDasharray={circumference}
+          startAt={countdown}
+          end={PROGRESS_BAR_TIMER_DURATION}
+        />
       </styledEl.CircularProgress>
       <styledEl.CountdownText>{countdown}</styledEl.CountdownText>
     </styledEl.CountdownWrapper>

@@ -8,14 +8,18 @@ import { CancelButton as CancelButtonOriginal } from '../CancelButton'
 
 const BLUE_COLOR = '#65d9ff'
 
-const progressAnimation = keyframes`
-  0% {
-    stroke-dashoffset: 0;
-  }
-  100% {
-    stroke-dashoffset: -283;  // Approximately 2 * PI * 45
-  }
-`
+const progressAnimation = (startAt: number, end: number) => {
+  const start = end - startAt
+
+  return keyframes`
+    0% {
+      stroke-dashoffset: ${-(start * 283) / end};
+    }
+    100% {
+      stroke-dashoffset: -283; // Approximately 2 * PI * 45
+    }
+  `
+}
 
 const sweatDropAnimation = keyframes`
   0% {
@@ -911,10 +915,14 @@ export const CircularProgress = styled.svg`
   padding: 8px;
 `
 
-export const CircleProgress = styled.circle`
+export const CircleProgress = styled.circle<{ startAt: number; end: number }>`
   fill: none;
   stroke: #05a1ff;
   stroke-width: 6;
   stroke-linecap: round;
-  animation: ${progressAnimation} 15s linear infinite;
+
+  ${({ startAt, end }) =>
+    css`
+      animation: ${progressAnimation(startAt, end)} ${startAt}s linear infinite;
+    `};
 `
