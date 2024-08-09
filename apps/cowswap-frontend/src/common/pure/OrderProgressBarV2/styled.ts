@@ -1,5 +1,5 @@
 import IMAGE_STAR_SHINE from '@cowprotocol/assets/cow-swap/star-shine.svg'
-import { UI, Media } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 
 import styled, { css, keyframes } from 'styled-components/macro'
 
@@ -295,7 +295,7 @@ const progressAnimation = keyframes`
     stroke-dashoffset: 0;
   }
   100% {
-    stroke-dashoffset: -283;  // Approximately 2 * PI * 45
+    stroke-dashoffset: -283; // Approximately 2 * PI * 45
   }
 `
 
@@ -367,6 +367,7 @@ export const CowImage = styled.div`
   justify-content: flex-start;
 
   // mobile from Media
+
   ${Media.upToSmall()} {
     left: -50px;
     width: 200px;
@@ -386,6 +387,7 @@ export const TokenPairTitle = styled.h3`
   align-items: flex-end;
 
   // mobile
+
   ${Media.upToSmall()} {
     display: none;
   }
@@ -408,9 +410,9 @@ export const TokenImages = styled.div`
   }
 `
 
-export const Surplus = styled.div`
+export const Surplus = styled.div<{ showSurplus: boolean }>`
   position: absolute;
-  top: 34px;
+  top: ${({ showSurplus }) => (showSurplus ? '34px' : '54px')};
   right: 20px;
   height: calc(100% - 86px);
   display: flex;
@@ -477,6 +479,7 @@ export const ShareButton = styled.button`
   }
 
   // mobile
+
   ${Media.upToSmall()} {
     border: 1px solid var(${UI.COLOR_TEXT});
   }
@@ -552,9 +555,7 @@ export const SolverTableCell = styled.td<{ isFirst?: boolean; isSecond?: boolean
       border-top-left-radius: 5px;
       border-bottom-left-radius: 5px;
       padding: 10px 0 10px 10px;
-    `}
-
-  // isSecond
+    `} // isSecond
   ${({ isSecond }) =>
     isSecond &&
     css`

@@ -26,6 +26,7 @@ import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
 
 import { useOrderProgressBarV2Props } from 'common/hooks/orderProgressBarV2'
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
+import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
 import { CurrencyPreviewInfo } from 'common/pure/CurrencyAmountPreview'
 import { NetworkCostsSuffix } from 'common/pure/NetworkCostsSuffix'
 import { RateInfoParams } from 'common/pure/RateInfo'
@@ -159,6 +160,15 @@ function useSubmittedContent(chainId: SupportedChainId, gnosisSafeInfo: GnosisSa
     () => orderProgressBarV2Props?.showCancellationModal || (order && getCancellation ? getCancellation(order) : null),
     [orderProgressBarV2Props?.showCancellationModal, order, getCancellation]
   )
+  const surplusData = useGetSurplusData(order)
+
+  const orderProgressBarV2PropsWithSurplusData = useMemo(() => {
+    if (!orderProgressBarV2Props) {
+      return undefined
+    }
+    // Add surplus data
+    return { ...orderProgressBarV2Props, surplusData }
+  }, [orderProgressBarV2Props, surplusData])
 
   return useCallback(
     (onDismiss: Command) => (
@@ -167,10 +177,17 @@ function useSubmittedContent(chainId: SupportedChainId, gnosisSafeInfo: GnosisSa
         hash={transactionHash || undefined}
         onDismiss={onDismiss}
         activityDerivedState={activityDerivedState}
-        orderProgressBarV2Props={orderProgressBarV2Props}
+        orderProgressBarV2Props={orderProgressBarV2PropsWithSurplusData}
         showCancellationModal={showCancellationModal}
       />
     ),
-    [chainId, transactionHash, activityDerivedState, orderProgressBarV2Props, order]
+    [
+      chainId,
+      transactionHash,
+      activityDerivedState,
+      orderProgressBarV2PropsWithSurplusData,
+      order,
+      showCancellationModal,
+    ]
   )
 }

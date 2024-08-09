@@ -20,7 +20,7 @@ import { isSellOrder } from '@cowprotocol/common-utils'
 import type { CompetitionOrderStatus } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { Command } from '@cowprotocol/types'
-import { ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
+import { ProductLogo, ProductVariant, TokenAmount, UI } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import Lottie from 'lottie-react'
@@ -39,7 +39,7 @@ import { AMM_LOGOS } from 'legacy/components/AMMsLogo'
 import { Order } from 'legacy/state/orders/actions'
 
 import { OrderProgressBarStepName } from 'common/hooks/orderProgressBarV2'
-import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
+import { SurplusData } from 'common/hooks/useGetSurplusFiatValue'
 import { useTheme } from 'common/hooks/useTheme'
 
 import * as styledEl from './styled'
@@ -53,7 +53,7 @@ export type OrderProgressBarV2Props = {
   order?: Order
   debugMode?: boolean
   showCancellationModal: Command | null
-  // surplus: // TODO: pass down surplus data
+  surplusData?: SurplusData
 }
 
 // TODO: const, capitalize
@@ -119,20 +119,38 @@ const StatusIcon: React.FC<{ status: string; customColor?: string }> = ({ status
 
 const OrderIntent: React.FC<{ order?: Order }> = ({ order }) => {
   if (!order) return null
+
   const { inputToken, outputToken, kind, sellAmount, buyAmount } = order
   const isSell = isSellOrder(kind)
 
-  const formatAmount = (amount: string, token: Currency | TokenWithLogo) => {
-    const currencyAmount = CurrencyAmount.fromRawAmount(token, amount)
-    return `${currencyAmount.toSignificant(6)} ${token.symbol}`
-  }
+  const sellCurrencyAmount = CurrencyAmount.fromRawAmount(inputToken, sellAmount)
+  const buyCurrencyAmount = CurrencyAmount.fromRawAmount(outputToken, buyAmount)
+
+  const sellTokenPart = (
+    <>
+      <TokenLogo token={inputToken} size={20} />
+      <TokenAmount amount={sellCurrencyAmount} tokenSymbol={inputToken} />
+    </>
+  )
+
+  const buyTokenPart = (
+    <>
+      <TokenLogo token={outputToken} size={20} />
+      <TokenAmount amount={buyCurrencyAmount} tokenSymbol={outputToken} />
+    </>
+  )
 
   return (
     <styledEl.OriginalOrderIntent>
-      <TokenLogo token={inputToken} size={20} />
-      {formatAmount(sellAmount, inputToken)} for {isSell ? 'at least' : 'at most'}{' '}
-      <TokenLogo token={outputToken} size={20} />
-      {formatAmount(buyAmount, outputToken)}
+      {isSell ? (
+        <>
+          {sellTokenPart} for at least {buyTokenPart}
+        </>
+      ) : (
+        <>
+          {buyTokenPart} for at most {sellTokenPart}
+        </>
+      )}
     </styledEl.OriginalOrderIntent>
   )
 }
@@ -185,7 +203,7 @@ const CircularCountdown: React.FC<CircularCountdownProps> = ({ countdown }) => {
 }
 
 export function OrderProgressBarV2(props: OrderProgressBarV2Props) {
-  const { stepName, debugMode = true } = props
+  const { stepName, debugMode = false } = props
   const [debugStep, setDebugStep] = useState<OrderProgressBarStepName>(stepName)
   const currentStep = debugMode ? debugStep : stepName
   const StepComponent = STEP_NAME_TO_STEP_COMPONENT[currentStep as keyof typeof STEP_NAME_TO_STEP_COMPONENT]
@@ -269,6 +287,7 @@ function SolvingStep({ order }: OrderProgressBarV2Props) {
               The auction has started! Solvers are competing to find the best solution for you...
               <br />
               <styledEl.Link href="#" target="_blank">
+                {/*TODO: add competition learn more link*/}
                 Learn more ↗
               </styledEl.Link>
             </styledEl.Description>
@@ -315,40 +334,17 @@ function ExecutingStep({ solverCompetition, order }: OrderProgressBarV2Props) {
   )
 }
 
-// TEMP =============================
-const mockSolvers = [
-  { solver: 'Naive', logo: 'naive-logo.png' },
-  { solver: 'Gnosis_1inch', logo: 'gnosis-1inch-logo.png' },
-  { solver: 'Baseline', logo: 'baseline-logo.png' },
-  { solver: 'ParaSwap', logo: 'paraswap-logo.png' },
-  { solver: 'CowDex', logo: 'cowdex-logo.png' },
-  { solver: 'MegaSolver', logo: 'megasolver-logo.png' },
-  { solver: 'QuickSwap', logo: 'quickswap-logo.png' },
-  { solver: 'OptimizedDEX', logo: 'optimizeddex-logo.png' },
-  { solver: 'FlashSolve', logo: 'flashsolve-logo.png' },
-  { solver: 'LiquidityPro', logo: 'liquiditypro-logo.png' },
-]
-
-// END TEMP ==========================
-
-interface FinishedStepProps {
-  solverCompetition?: CompetitionOrderStatus['value']
-  order?: Order
-  cancellationFailed?: boolean
-  // TODO: add surplus info
-}
-
-export const FinishedStep: React.FC<FinishedStepProps> = ({ solverCompetition, order, cancellationFailed }) => {
+function FinishedStep({ stepName, solverCompetition: solvers, order, surplusData }: OrderProgressBarV2Props) {
   const [showAllSolvers, setShowAllSolvers] = useState(false)
-  const { surplusFiatValue, surplusPercent } = useGetSurplusData(order)
-  const theme = useTheme()
+  const { surplusFiatValue, surplusPercent, surplusAmount, showSurplus } = surplusData || {}
+  const cancellationFailed = stepName === 'cancellationFailed'
 
   const toggleSolvers = () => setShowAllSolvers(!showAllSolvers)
 
-  const solvers = solverCompetition?.length ? solverCompetition : mockSolvers
-  const visibleSolvers = showAllSolvers ? solvers : solvers.slice(0, 3)
+  const visibleSolvers = (showAllSolvers ? solvers : solvers?.slice(0, 3)) || []
+  const isSell = order && isSellOrder(order.kind)
 
-  const solverText = solvers.length === 1 ? '1 solver' : `${solvers.length} out of 25 solvers`
+  const theme = useTheme()
 
   return (
     <styledEl.FinishedStepContainer>
@@ -372,22 +368,42 @@ export const FinishedStep: React.FC<FinishedStepProps> = ({ solverCompetition, o
             />
           </styledEl.FinishedLogo>
           <styledEl.FinishedTagLine>
-            ...gets you <b>moooooore.</b>
+            {showSurplus ? (
+              <>
+                ...gets you <b>moooooore.</b>
+              </>
+            ) : (
+              <>
+                Did you <b>know?</b>
+              </>
+            )}
           </styledEl.FinishedTagLine>
           <styledEl.CowImage>
             <SVG src={PROGRESSBAR_COW_SURPLUS} />
           </styledEl.CowImage>
-          <styledEl.TokenPairTitle>
-            <span>Swap order</span>
-            <b>{order ? `${order.inputToken.symbol}/${order.outputToken.symbol}` : 'N/A'}</b>
-          </styledEl.TokenPairTitle>
-          <styledEl.TokenImages>
-            <TokenLogo token={order?.inputToken} size={34} />
-            <TokenLogo token={order?.outputToken} size={34} />
-          </styledEl.TokenImages>
-          <styledEl.Surplus>
-            <span>Your surplus</span>
-            {surplusPercent ? <b>+{parseFloat(surplusPercent).toFixed(2)}%</b> : <b>N/A</b>}
+          {showSurplus && (
+            <>
+              <styledEl.TokenPairTitle>
+                <span>Swap order</span>
+                <b>{order ? `${order.inputToken.symbol}/${order.outputToken.symbol}` : 'N/A'}</b>
+              </styledEl.TokenPairTitle>
+              <styledEl.TokenImages>
+                <TokenLogo token={order?.inputToken} size={34} />
+                <TokenLogo token={order?.outputToken} size={34} />
+              </styledEl.TokenImages>
+            </>
+          )}
+          <styledEl.Surplus showSurplus={!!showSurplus}>
+            {showSurplus ? (
+              <>
+                <span>Your surplus</span>
+                {surplusPercent ? <b>+{parseFloat(surplusPercent).toFixed(2)}%</b> : <b>N/A</b>}
+              </>
+            ) : (
+              <>
+                <span>Unlike other exchanges, here you don't pay any fees if your trade fails.</span>
+              </>
+            )}
           </styledEl.Surplus>
         </styledEl.ProgressImageWrapper>
       </styledEl.ProgressTopSection>
@@ -403,84 +419,86 @@ export const FinishedStep: React.FC<FinishedStepProps> = ({ solverCompetition, o
           Transaction completed!
         </styledEl.TransactionStatus>
 
-        <styledEl.SolverRankings>
-          <h3>Solver auction rankings</h3>
-          <p>{solverText} submitted a solution</p>
+        {solvers && solvers.length > 0 && (
+          <styledEl.SolverRankings>
+            <h3>Solver auction rankings</h3>
+            <p>
+              <b>{solvers.length} out of 25 solvers</b> submitted a solution
+            </p>
 
-          <styledEl.SolverTable>
-            <tbody>
-              {visibleSolvers.map((solver: any, index: number) => (
-                <styledEl.SolverTableRow key={`${solver.solver}-${index}`} isWinner={index === 0}>
-                  <styledEl.SolverRank isFirst>{index + 1}</styledEl.SolverRank>
-                  <styledEl.SolverTableCell isSecond>
-                    <styledEl.SolverInfo>
-                      <styledEl.SolverLogo>
-                        <img
-                          src={
-                            AMM_LOGOS[solver.solver]?.src ||
-                            AMM_LOGOS.default.src ||
-                            ('logo' in solver ? solver.logo : undefined)
-                          }
-                          alt={`${solver.solver} logo`}
-                          width="24"
-                          height="24"
-                        />
-                      </styledEl.SolverLogo>
-                      <styledEl.SolverName>{solver.solver}</styledEl.SolverName>
-                    </styledEl.SolverInfo>
-                  </styledEl.SolverTableCell>
-                  <styledEl.SolverTableCell isLast>
-                    {index === 0 && (
-                      <styledEl.WinningBadge>
-                        <styledEl.TrophyIcon>
-                          <PiTrophyFill />
-                        </styledEl.TrophyIcon>
-                        <span>Winning solver</span>
-                      </styledEl.WinningBadge>
-                    )}
-                  </styledEl.SolverTableCell>
-                </styledEl.SolverTableRow>
-              ))}
-            </tbody>
-          </styledEl.SolverTable>
+            <styledEl.SolverTable>
+              <tbody>
+                {visibleSolvers.map((solver: any, index: number) => (
+                  <styledEl.SolverTableRow key={`${solver.solver}-${index}`} isWinner={index === 0}>
+                    <styledEl.SolverRank isFirst>{index + 1}</styledEl.SolverRank>
+                    <styledEl.SolverTableCell isSecond>
+                      <styledEl.SolverInfo>
+                        <styledEl.SolverLogo>
+                          <img
+                            src={
+                              AMM_LOGOS[solver.solver]?.src ||
+                              AMM_LOGOS.default.src ||
+                              ('logo' in solver ? solver.logo : undefined)
+                            }
+                            alt={`${solver.solver} logo`}
+                            width="24"
+                            height="24"
+                          />
+                        </styledEl.SolverLogo>
+                        <styledEl.SolverName>{solver.solver}</styledEl.SolverName>
+                      </styledEl.SolverInfo>
+                    </styledEl.SolverTableCell>
+                    <styledEl.SolverTableCell isLast>
+                      {index === 0 && (
+                        <styledEl.WinningBadge>
+                          <styledEl.TrophyIcon>
+                            <PiTrophyFill />
+                          </styledEl.TrophyIcon>
+                          <span>Winning solver</span>
+                        </styledEl.WinningBadge>
+                      )}
+                    </styledEl.SolverTableCell>
+                  </styledEl.SolverTableRow>
+                ))}
+              </tbody>
+            </styledEl.SolverTable>
 
-          {solvers.length > 3 && (
-            <styledEl.ViewMoreButton onClick={toggleSolvers}>
-              {showAllSolvers ? (
-                <>
-                  Collapse <PiCaretUp />
-                </>
-              ) : (
-                <>
-                  View {solvers.length - 3} more <PiCaretDown />
-                </>
-              )}
-            </styledEl.ViewMoreButton>
-          )}
-        </styledEl.SolverRankings>
-        {order && (
+            {solvers.length > 3 && (
+              <styledEl.ViewMoreButton onClick={toggleSolvers}>
+                {showAllSolvers ? (
+                  <>
+                    Collapse <PiCaretUp />
+                  </>
+                ) : (
+                  <>
+                    View {solvers.length - 3} more <PiCaretDown />
+                  </>
+                )}
+              </styledEl.ViewMoreButton>
+            )}
+          </styledEl.SolverRankings>
+        )}
+        {order?.apiAdditionalInfo?.executedBuyAmount && (
           <styledEl.ReceivedAmount>
             You received <TokenLogo token={order.outputToken} size={16} />{' '}
             <b>
-              {order.kind === 'sell'
-                ? CurrencyAmount.fromRawAmount(
-                    order.outputToken,
-                    order.apiAdditionalInfo?.executedBuyAmount || order.buyAmount || '0'
-                  ).toSignificant(6)
-                : CurrencyAmount.fromRawAmount(
-                    order.outputToken,
-                    order.apiAdditionalInfo?.executedSellAmount || order.sellAmount || '0'
-                  ).toSignificant(6)}{' '}
-              {order.outputToken.symbol}
+              <TokenAmount
+                amount={CurrencyAmount.fromRawAmount(order.outputToken, order.apiAdditionalInfo.executedBuyAmount)}
+                tokenSymbol={order.outputToken}
+              />
             </b>
           </styledEl.ReceivedAmount>
         )}
-        {surplusFiatValue ? (
+        {showSurplus ? (
           <styledEl.ExtraAmount>
-            and got an extra <i>+{surplusFiatValue.toFixed(2)} USDC</i> (~${surplusFiatValue.toFixed(2)})
+            {isSell ? 'and got an extra ' : 'and saved '}
+            <i>
+              +<TokenAmount amount={surplusAmount} tokenSymbol={surplusAmount?.currency} />
+            </i>{' '}
+            {surplusFiatValue && +surplusFiatValue.toFixed(2) > 0 && <>(~${surplusFiatValue.toFixed(2)})</>}
           </styledEl.ExtraAmount>
         ) : null}
-        {/*TODO: Add states for when there's no surplus and/or when there's a custom recipient*/}
+        {/*TODO: Add states for when there's a custom recipient*/}
       </styledEl.ConclusionContent>
     </styledEl.FinishedStepContainer>
   )
@@ -505,10 +523,15 @@ function NextBatchStep({ solverCompetition, order }: OrderProgressBarV2Props) {
           customColor={`var(${UI.COLOR_ALERT_TEXT})`}
           extraContent={
             <styledEl.Description>
-              The <strong>Gnosis_1inch</strong> solver had the best solution for this batch. Unfortunately, your order
-              wasn't part of their winning solution, so we're waiting for solvers to find a new solution that includes
-              your order for the next batch.{' '}
+              {solverCompetition?.length && (
+                <>
+                  The <strong>{solverCompetition[0].solver}</strong> solver had the best solution for this batch.
+                </>
+              )}{' '}
+              Unfortunately, your order wasn't part of their winning solution, so we're waiting for solvers to find a
+              new solution that includes your order for the next batch.{' '}
               <styledEl.Link href="#" target={'_blank'}>
+                {/*TODO: add learn more link*/}
                 Learn more ↗
               </styledEl.Link>
             </styledEl.Description>
@@ -516,31 +539,6 @@ function NextBatchStep({ solverCompetition, order }: OrderProgressBarV2Props) {
         />
         <StepComponent status="next" isFirst={false} step={steps[2]} _index={2} />
       </styledEl.StepsWrapper>
-      {solverCompetition && (
-        <div>
-          <p>Solver ranking</p>
-          <ol>
-            {solverCompetition.map((entry) => {
-              const imageProps = AMM_LOGOS[entry.solver] || AMM_LOGOS.default
-              return (
-                <li key={entry.solver}>
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <img
-                      style={{ height: '20px', width: '20px', marginRight: '5px' }}
-                      {...imageProps}
-                      alt="Solver logo"
-                    />
-                    <span>
-                      {entry.solver}
-                      {entry?.executedAmounts && ' <- your order was included in this solution'}
-                    </span>
-                  </div>
-                </li>
-              )
-            })}
-          </ol>
-        </div>
-      )}
     </styledEl.ProgressContainer>
   )
 }
@@ -725,6 +723,7 @@ function ExpiredStep({ order }: OrderProgressBarV2Props) {
           <p>
             Unlike on other exchanges, you won't be charged for this! Feel free to{' '}
             <styledEl.Link href="#" underline>
+              {/*TODO: add link to new order*/}
               place a new order
             </styledEl.Link>{' '}
             without worry.
@@ -735,6 +734,7 @@ function ExpiredStep({ order }: OrderProgressBarV2Props) {
       <styledEl.Description center margin="10px 0">
         If your orders often expire, consider increasing your slippage or{' '}
         <styledEl.Link href="#" target="_blank">
+          {/*TODO: add contact us link*/}
           contacting us
         </styledEl.Link>{' '}
         so we can investigate the problem.
@@ -743,12 +743,12 @@ function ExpiredStep({ order }: OrderProgressBarV2Props) {
   )
 }
 
-type StepNameWithoutSolved = Exclude<OrderProgressBarStepName, 'solved'>
-const STEP_NAME_TO_STEP_COMPONENT: Record<StepNameWithoutSolved, React.ComponentType<OrderProgressBarV2Props>> = {
+const STEP_NAME_TO_STEP_COMPONENT: Record<OrderProgressBarStepName, React.ComponentType<OrderProgressBarV2Props>> = {
   initial: InitialStep,
   solving: SolvingStep,
   executing: ExecutingStep,
   finished: FinishedStep,
+  solved: NextBatchStep, // for now just show nextBatch view
   nextBatch: NextBatchStep,
   delayed: DelayedStep,
   unfillable: UnfillableStep,
@@ -756,8 +756,5 @@ const STEP_NAME_TO_STEP_COMPONENT: Record<StepNameWithoutSolved, React.Component
   cancelling: CancellingStep,
   cancelled: CancelledStep,
   expired: ExpiredStep,
-  cancellationFailed: (props) => <FinishedStep {...props} cancellationFailed={true} />,
+  cancellationFailed: FinishedStep,
 }
-
-// TODO: unused, remove
-export default OrderProgressBarV2
