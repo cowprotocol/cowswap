@@ -9,6 +9,7 @@ import { EnhancedTransactionLink } from 'legacy/components/EnhancedTransactionLi
 import { HashType } from 'legacy/state/enhancedTransactions/reducer'
 
 import AnimatedConfirmation from 'common/pure/AnimatedConfirmation'
+import { GnosisSafeInfo, useGnosisSafeInfo } from '@cowprotocol/wallet'
 
 const Wrapper = styled.div`
   width: 100%;
@@ -32,15 +33,16 @@ const ActionButton = styled(ButtonPrimary)`
 export interface OrderSubmittedContentProps {
   onDismiss(): void
   chainId: SupportedChainId
-  isSafeWallet: boolean
+  safeWallet: GnosisSafeInfo | undefined
   account: string
   hash: string
 }
 
-export function OrderSubmittedContent({ chainId, account, isSafeWallet, hash, onDismiss }: OrderSubmittedContentProps) {
+export function OrderSubmittedContent({ chainId, account, safeWallet, hash, onDismiss }: OrderSubmittedContentProps) {
+
   const tx = {
     hash,
-    hashType: isSafeWallet && !isCowOrder('transaction', hash) ? HashType.GNOSIS_SAFE_TX : HashType.ETHEREUM_TX,
+    hashType: safeWallet && !isCowOrder('transaction', hash) ? HashType.GNOSIS_SAFE_TX : HashType.ETHEREUM_TX,
     safeTransaction: {
       safeTxHash: hash,
       safe: account,
@@ -51,7 +53,11 @@ export function OrderSubmittedContent({ chainId, account, isSafeWallet, hash, on
     <Wrapper>
       <AnimatedConfirmation />
       <Caption>
-        <Trans>Order Submitted</Trans>
+        {safeWallet && safeWallet.threshold > 1 ? (
+          <Trans>{`Order Submitted, but won't be processed until the transaction is signed by all your Safe{Wallet} signers.`}</Trans>
+        ) : (
+          <Trans>Order Submitted</Trans>
+        )}
       </Caption>
       <EnhancedTransactionLink chainId={chainId} tx={tx} />
       <ActionButton onClick={onDismiss}>

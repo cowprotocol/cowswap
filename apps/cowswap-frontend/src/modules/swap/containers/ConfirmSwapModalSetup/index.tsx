@@ -103,6 +103,7 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
         hash={order?.id}
         onDismiss={onDismiss}
         activityDerivedState={activityDerivedState}
+        safeWallet={gnosisSafeInfo}
       />
     )
   }
