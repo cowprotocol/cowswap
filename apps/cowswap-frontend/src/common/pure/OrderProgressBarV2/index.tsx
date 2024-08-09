@@ -31,7 +31,7 @@ import SVG from 'react-inlinesvg'
 import { AMM_LOGOS } from 'legacy/components/AMMsLogo'
 import { Order } from 'legacy/state/orders/actions'
 
-import { OrderProgressBarStepName } from 'common/hooks/orderProgressBarV2'
+import { OrderProgressBarStepName, PROGRESS_BAR_TIMER_DURATION } from 'common/hooks/orderProgressBarV2'
 import { SurplusData } from 'common/hooks/useGetSurplusFiatValue'
 
 import * as styledEl from './styled'
@@ -164,7 +164,14 @@ const CircularCountdown: React.FC<CircularCountdownProps> = ({ countdown }) => {
   return (
     <styledEl.CountdownWrapper>
       <styledEl.CircularProgress viewBox="0 0 100 100">
-        <styledEl.CircleProgress cx="50" cy="50" r={radius} strokeDasharray={circumference} duration={countdown} />
+        <styledEl.CircleProgress
+          cx="50"
+          cy="50"
+          r={radius}
+          strokeDasharray={circumference}
+          duration={countdown}
+          max={PROGRESS_BAR_TIMER_DURATION}
+        />
       </styledEl.CircularProgress>
       <styledEl.CountdownText>{countdown}</styledEl.CountdownText>
     </styledEl.CountdownWrapper>
