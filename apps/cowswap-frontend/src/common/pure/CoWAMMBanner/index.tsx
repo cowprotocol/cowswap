@@ -15,7 +15,7 @@ const BannerWrapper = styled.div`
   right: 10px;
   z-index: 3;
   width: 400px;
-  height: 327px;
+  height: 345px;
   border-radius: 24px;
   background-color: var(--darkGreen);
   color: var(--lightGreen);
