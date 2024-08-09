@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.79.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.78.2...cowswap-v1.79.0) (2024-08-09)
+
+
+### Features
+
+* add cow amm banner ([#4780](https://github.com/cowprotocol/cowswap/issues/4780)) ([#4781](https://github.com/cowprotocol/cowswap/issues/4781)) ([19791e5](https://github.com/cowprotocol/cowswap/commit/19791e58c7f55248f475bb9ee767d3ca6d6936af))
+* switch cowfi header cta button ([#4769](https://github.com/cowprotocol/cowswap/issues/4769)) ([f87c0fe](https://github.com/cowprotocol/cowswap/commit/f87c0feee1bd3dce0a524ff61b54c86265b81605))
+
+
+### Bug Fixes
+
+* height ([a224463](https://github.com/cowprotocol/cowswap/commit/a22446352e52a9752d5888fd86cbdec43d3f5d64))
+
 ## [1.78.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.78.1...cowswap-v1.78.2) (2024-08-02)
 
 
