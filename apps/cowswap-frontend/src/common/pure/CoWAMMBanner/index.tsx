@@ -211,7 +211,7 @@ export function CoWAmmBanner() {
       <i></i>
       <CloseButton size={24} onClick={close} />
       <div>
-        <Title>The first MEV-capturing AMM</Title>
+        <Title>Now live: the first MEV-capturing AMM</Title>
         <Description>
           CoW AMM shields you from LVR, so you can provide liquidity with less risk and more rewards.
         </Description>
