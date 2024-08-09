@@ -2,6 +2,7 @@ import { useCallback, useMemo, useState } from 'react'
 
 import { getMinimumReceivedTooltip } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { useENS } from '@cowprotocol/ens'
 import { Command } from '@cowprotocol/types'
 import { GnosisSafeInfo, useGnosisSafeInfo, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { Percent, TradeType } from '@uniswap/sdk-core'
@@ -161,14 +162,15 @@ function useSubmittedContent(chainId: SupportedChainId, gnosisSafeInfo: GnosisSa
     [orderProgressBarV2Props?.showCancellationModal, order, getCancellation]
   )
   const surplusData = useGetSurplusData(order)
+  const receiverEnsName = useENS(order?.receiver).name || undefined
 
-  const orderProgressBarV2PropsWithSurplusData = useMemo(() => {
+  const completeOrderProgressBarV2Props = useMemo(() => {
     if (!orderProgressBarV2Props) {
       return undefined
     }
-    // Add surplus data
-    return { ...orderProgressBarV2Props, surplusData }
-  }, [orderProgressBarV2Props, surplusData])
+    // Add supplementary stuff
+    return { ...orderProgressBarV2Props, surplusData, chainId, receiverEnsName }
+  }, [orderProgressBarV2Props, surplusData, chainId, receiverEnsName])
 
   return useCallback(
     (onDismiss: Command) => (
@@ -177,17 +179,10 @@ function useSubmittedContent(chainId: SupportedChainId, gnosisSafeInfo: GnosisSa
         hash={transactionHash || undefined}
         onDismiss={onDismiss}
         activityDerivedState={activityDerivedState}
-        orderProgressBarV2Props={orderProgressBarV2PropsWithSurplusData}
+        orderProgressBarV2Props={completeOrderProgressBarV2Props}
         showCancellationModal={showCancellationModal}
       />
     ),
-    [
-      chainId,
-      transactionHash,
-      activityDerivedState,
-      orderProgressBarV2PropsWithSurplusData,
-      order,
-      showCancellationModal,
-    ]
+    [chainId, transactionHash, activityDerivedState, completeOrderProgressBarV2Props, order, showCancellationModal]
   )
 }
