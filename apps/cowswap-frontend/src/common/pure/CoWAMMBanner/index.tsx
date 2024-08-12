@@ -15,7 +15,7 @@ const BannerWrapper = styled.div`
   right: 10px;
   z-index: 3;
   width: 400px;
-  height: 327px;
+  height: 345px;
   border-radius: 24px;
   background-color: var(--darkGreen);
   color: var(--lightGreen);
@@ -211,7 +211,7 @@ export function CoWAmmBanner() {
       <i></i>
       <CloseButton size={24} onClick={close} />
       <div>
-        <Title>The first MEV-capturing AMM</Title>
+        <Title>Now live: the first MEV-capturing AMM</Title>
         <Description>
           CoW AMM shields you from LVR, so you can provide liquidity with less risk and more rewards.
         </Description>
