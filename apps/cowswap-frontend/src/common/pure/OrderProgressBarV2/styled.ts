@@ -290,14 +290,18 @@ export const TokenWrapper = styled.div<{ position: 'left' | 'center' | 'right' }
   }
 `
 
-const progressAnimation = keyframes`
-  0% {
-    stroke-dashoffset: 0;
-  }
-  100% {
-    stroke-dashoffset: -283; // Approximately 2 * PI * 45
-  }
-`
+const progressAnimation = (duration: number, max: number) => {
+  const start = max - duration
+
+  return keyframes`
+    0% {
+      stroke-dashoffset: ${-(start * 283) / max};
+    }
+    100% {
+      stroke-dashoffset: -283; // Approximately 2 * PI * 45
+    }
+  `
+}
 
 export const CountdownWrapper = styled.div`
   --size: 172px;
@@ -323,12 +327,16 @@ export const CircularProgress = styled.svg`
   padding: 8px;
 `
 
-export const CircleProgress = styled.circle`
+export const CircleProgress = styled.circle<{ duration: number; max: number }>`
   fill: none;
   stroke: #012f7a;
   stroke-width: 7;
   stroke-linecap: round;
-  animation: ${progressAnimation} 15s linear infinite;
+  // TODO: start animation at different position based on how far from 15s it is
+  ${({ duration, max }) =>
+    css`
+      animation: ${progressAnimation(duration, max)} ${duration}s linear infinite;
+    `};
 `
 
 export const CountdownText = styled.div`

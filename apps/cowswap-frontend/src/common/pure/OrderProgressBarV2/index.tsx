@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 
 import PROGRESS_BAR_BAD_NEWS from '@cowprotocol/assets/cow-swap/progressbar-bad-news.svg'
 import PROGRESSBAR_COW_SURPLUS from '@cowprotocol/assets/cow-swap/progressbar-cow-surplus.svg'
@@ -16,11 +16,11 @@ import LOTTIE_TIME_EXPIRED from '@cowprotocol/assets/lottie/time-expired.json'
 import LOTTIE_YELLOW_CHECKMARK_DARK from '@cowprotocol/assets/lottie/yellow-checkmark-dark.json'
 import LOTTIE_YELLOW_CHECKMARK from '@cowprotocol/assets/lottie/yellow-checkmark.json'
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { isSellOrder } from '@cowprotocol/common-utils'
-import type { CompetitionOrderStatus } from '@cowprotocol/cow-sdk'
+import { ExplorerDataType, getExplorerLink, isSellOrder, shortenAddress } from '@cowprotocol/common-utils'
+import type { CompetitionOrderStatus, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { Command } from '@cowprotocol/types'
-import { ProductLogo, ProductVariant, TokenAmount, UI } from '@cowprotocol/ui'
+import { ExternalLink, ProductLogo, ProductVariant, TokenAmount, UI } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import Lottie from 'lottie-react'
@@ -38,9 +38,10 @@ import SVG from 'react-inlinesvg'
 import { AMM_LOGOS } from 'legacy/components/AMMsLogo'
 import { Order } from 'legacy/state/orders/actions'
 
-import { OrderProgressBarStepName } from 'common/hooks/orderProgressBarV2'
+import { OrderProgressBarStepName, PROGRESS_BAR_TIMER_DURATION } from 'common/hooks/orderProgressBarV2'
 import { SurplusData } from 'common/hooks/useGetSurplusFiatValue'
 import { useTheme } from 'common/hooks/useTheme'
+import { getIsCustomRecipient } from 'utils/orderUtils/getIsCustomRecipient'
 
 import * as styledEl from './styled'
 
@@ -48,16 +49,17 @@ import { CancelButton } from '../CancelButton'
 
 export type OrderProgressBarV2Props = {
   stepName: OrderProgressBarStepName
+  chainId: SupportedChainId
   countdown?: number | null | undefined
   solverCompetition?: CompetitionOrderStatus['value']
   order?: Order
   debugMode?: boolean
   showCancellationModal: Command | null
   surplusData?: SurplusData
+  receiverEnsName?: string
 }
 
-// TODO: const, capitalize
-const steps = [
+const STEPS = [
   {
     title: 'Placing order',
     description: 'Your order has been submitted and will be included in the next solver auction',
@@ -195,7 +197,14 @@ const CircularCountdown: React.FC<CircularCountdownProps> = ({ countdown }) => {
   return (
     <styledEl.CountdownWrapper>
       <styledEl.CircularProgress viewBox="0 0 100 100">
-        <styledEl.CircleProgress cx="50" cy="50" r={radius} strokeDasharray={circumference} />
+        <styledEl.CircleProgress
+          cx="50"
+          cy="50"
+          r={radius}
+          strokeDasharray={circumference}
+          duration={countdown}
+          max={PROGRESS_BAR_TIMER_DURATION}
+        />
       </styledEl.CircularProgress>
       <styledEl.CountdownText>{countdown}</styledEl.CountdownText>
     </styledEl.CountdownWrapper>
@@ -247,7 +256,7 @@ function InitialStep({ order }: OrderProgressBarV2Props) {
         <StepComponent
           status="active"
           isFirst={true}
-          step={steps[0]}
+          step={STEPS[0]}
           _index={0}
           extraContent={
             <styledEl.Description>
@@ -255,40 +264,39 @@ function InitialStep({ order }: OrderProgressBarV2Props) {
             </styledEl.Description>
           }
         />
-        <StepComponent status="next" isFirst={false} step={steps[1]} _index={1} />
-        <StepComponent status="future" isFirst={false} step={steps[2]} _index={2} />
+        <StepComponent
+          status="next"
+          isFirst={false}
+          step={STEPS[1]}
+          _index={1}
+          extraContent={
+            <styledEl.Description>
+              The auction will start! Solvers will be competing to find the best solution for you.
+            </styledEl.Description>
+          }
+        />
+        <StepComponent status="next" isFirst={false} step={STEPS[2]} _index={2} />
       </styledEl.StepsWrapper>
     </styledEl.ProgressContainer>
   )
 }
 
-function SolvingStep({ order }: OrderProgressBarV2Props) {
-  // TODO: use countdown from props
-  const [countdown, setCountdown] = useState(15)
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCountdown((prevCountdown) => (prevCountdown > 1 ? prevCountdown - 1 : 15))
-    }, 1000)
-
-    return () => clearInterval(timer)
-  }, [])
-
+function SolvingStep({ order, countdown }: OrderProgressBarV2Props) {
   return (
     <styledEl.ProgressContainer>
       <styledEl.ProgressTopSection>
         <styledEl.ProgressImageWrapper bgColor={'#65D9FF'} padding={'24px'}>
           <SVG src={STEP_IMAGE_SOLVING} />
-          <CircularCountdown countdown={countdown} />
+          <CircularCountdown countdown={countdown || 0} />
         </styledEl.ProgressImageWrapper>
         <OrderIntent order={order} />
       </styledEl.ProgressTopSection>
       <styledEl.StepsWrapper>
-        <StepComponent status="done" isFirst={false} step={steps[0]} _index={0} />
+        <StepComponent status="done" isFirst={false} step={STEPS[0]} _index={0} />
         <StepComponent
           status="active"
           isFirst={false}
-          step={steps[1]}
+          step={STEPS[1]}
           _index={1}
           extraContent={
             <styledEl.Description>
@@ -301,7 +309,13 @@ function SolvingStep({ order }: OrderProgressBarV2Props) {
             </styledEl.Description>
           }
         />
-        <StepComponent status="next" isFirst={false} step={steps[2]} _index={2} />
+        <StepComponent
+          status="next"
+          isFirst={false}
+          step={STEPS[2]}
+          _index={2}
+          extraContent={<styledEl.Description>The winning solver will execute your order.</styledEl.Description>}
+        />
       </styledEl.StepsWrapper>
     </styledEl.ProgressContainer>
   )
@@ -319,11 +333,11 @@ function ExecutingStep({ solverCompetition, order }: OrderProgressBarV2Props) {
         <OrderIntent order={order} />
       </styledEl.ProgressTopSection>
       <styledEl.StepsWrapper>
-        <StepComponent status="done" isFirst={false} step={steps[0]} _index={0} />
+        <StepComponent status="done" isFirst={false} step={STEPS[0]} _index={0} />
         <StepComponent
           status="active"
           isFirst={false}
-          step={{ ...steps[1], title: 'Executing' }}
+          step={{ ...STEPS[1], title: 'Executing' }}
           _index={1}
           extraContent={
             <styledEl.Description>
@@ -342,8 +356,14 @@ function ExecutingStep({ solverCompetition, order }: OrderProgressBarV2Props) {
   )
 }
 
-function FinishedStep({ stepName, solverCompetition: solvers, order, surplusData }: OrderProgressBarV2Props) {
-  console.log('FinishedStep - stepName:', stepName)
+function FinishedStep({
+  stepName,
+  solverCompetition: solvers,
+  order,
+  surplusData,
+  chainId,
+  receiverEnsName,
+}: OrderProgressBarV2Props) {
   const [showAllSolvers, setShowAllSolvers] = useState(false)
   const { surplusFiatValue, surplusPercent, surplusAmount, showSurplus } = surplusData || {}
   const cancellationFailed = stepName === 'cancellationFailed'
@@ -353,6 +373,8 @@ function FinishedStep({ stepName, solverCompetition: solvers, order, surplusData
 
   const visibleSolvers = (showAllSolvers ? solvers : solvers?.slice(0, 3)) || []
   const isSell = order && isSellOrder(order.kind)
+  const isCustomRecipient = order && getIsCustomRecipient(order)
+  const receiver = order?.receiver || order?.owner
 
   const theme = useTheme()
 
@@ -490,28 +512,46 @@ function FinishedStep({ stepName, solverCompetition: solvers, order, surplusData
         )}
         {order?.apiAdditionalInfo?.executedBuyAmount && (
           <styledEl.ReceivedAmount>
-            You received <TokenLogo token={order.outputToken} size={16} />{' '}
+            {!isCustomRecipient && 'You received '}
+            <TokenLogo token={order.outputToken} size={16} />
             <b>
               <TokenAmount
                 amount={CurrencyAmount.fromRawAmount(order.outputToken, order.apiAdditionalInfo.executedBuyAmount)}
                 tokenSymbol={order.outputToken}
               />
-            </b>
+            </b>{' '}
+            {isCustomRecipient && receiver && (
+              <>
+                was sent to
+                <ExternalLink href={getExplorerLink(chainId, receiver, ExplorerDataType.ADDRESS)}>
+                  {receiverEnsName || shortenAddress(receiver)} ↗
+                </ExternalLink>
+              </>
+            )}
           </styledEl.ReceivedAmount>
         )}
         {showSurplus ? (
           <styledEl.ExtraAmount>
-            {isSell ? 'and got an extra ' : 'and saved '}
+            {getSurplusText(isSell, isCustomRecipient)}
             <i>
               +<TokenAmount amount={surplusAmount} tokenSymbol={surplusAmount?.currency} />
             </i>{' '}
             {surplusFiatValue && +surplusFiatValue.toFixed(2) > 0 && <>(~${surplusFiatValue.toFixed(2)})</>}
           </styledEl.ExtraAmount>
         ) : null}
-        {/*TODO: Add states for when there's a custom recipient*/}
       </styledEl.ConclusionContent>
     </styledEl.FinishedStepContainer>
   )
+}
+
+function getSurplusText(isSell: boolean | undefined, isCustomRecipient: boolean | undefined): string {
+  if (isSell) {
+    if (isCustomRecipient) {
+      return 'including an extra '
+    }
+    return 'and got an extra '
+  }
+  return 'and saved '
 }
 
 function NextBatchStep({ solverCompetition, order }: OrderProgressBarV2Props) {
@@ -524,11 +564,11 @@ function NextBatchStep({ solverCompetition, order }: OrderProgressBarV2Props) {
         <OrderIntent order={order} />
       </styledEl.ProgressTopSection>
       <styledEl.StepsWrapper>
-        <StepComponent status="done" isFirst={false} step={steps[0]} _index={0} />
+        <StepComponent status="done" isFirst={false} step={STEPS[0]} _index={0} />
         <StepComponent
           status="active"
           isFirst={false}
-          step={{ ...steps[1], title: 'Solving: Finding new solution' }}
+          step={{ ...STEPS[1], title: 'Solving: Finding new solution' }}
           _index={1}
           customColor={`var(${UI.COLOR_ALERT_TEXT})`}
           extraContent={
@@ -547,7 +587,13 @@ function NextBatchStep({ solverCompetition, order }: OrderProgressBarV2Props) {
             </styledEl.Description>
           }
         />
-        <StepComponent status="next" isFirst={false} step={steps[2]} _index={2} />
+        <StepComponent
+          status="next"
+          isFirst={false}
+          step={STEPS[2]}
+          _index={2}
+          extraContent={<styledEl.Description>The winning solver will execute your order.</styledEl.Description>}
+        />
       </styledEl.StepsWrapper>
     </styledEl.ProgressContainer>
   )
@@ -563,11 +609,11 @@ function DelayedStep({ order }: OrderProgressBarV2Props) {
         <OrderIntent order={order} />
       </styledEl.ProgressTopSection>
       <styledEl.StepsWrapper>
-        <StepComponent status="done" isFirst={false} step={steps[0]} _index={0} />
+        <StepComponent status="done" isFirst={false} step={STEPS[0]} _index={0} />
         <StepComponent
           status="active"
           isFirst={false}
-          step={{ ...steps[1], title: 'Solving: Still searching' }}
+          step={{ ...STEPS[1], title: 'Solving: Still searching' }}
           _index={1}
           extraContent={
             <styledEl.Description>
@@ -575,7 +621,7 @@ function DelayedStep({ order }: OrderProgressBarV2Props) {
             </styledEl.Description>
           }
         />
-        <StepComponent status="next" isFirst={false} step={steps[2]} _index={2} />
+        <StepComponent status="next" isFirst={false} step={STEPS[2]} _index={2} />
       </styledEl.StepsWrapper>
     </styledEl.ProgressContainer>
   )
@@ -591,11 +637,11 @@ function UnfillableStep({ order, showCancellationModal }: OrderProgressBarV2Prop
         <OrderIntent order={order} />
       </styledEl.ProgressTopSection>
       <styledEl.StepsWrapper>
-        <StepComponent status="done" isFirst={false} step={steps[0]} _index={0} />
+        <StepComponent status="done" isFirst={false} step={STEPS[0]} _index={0} />
         <StepComponent
           status="unfillable"
           isFirst={false}
-          step={{ ...steps[1], title: 'Solving: out of market' }}
+          step={{ ...STEPS[1], title: 'Solving: out of market' }}
           _index={1}
           customColor={`var(${UI.COLOR_ALERT_TEXT})`}
           extraContent={
@@ -609,7 +655,13 @@ function UnfillableStep({ order, showCancellationModal }: OrderProgressBarV2Prop
             </styledEl.Description>
           }
         />
-        <StepComponent status="disabled" isFirst={false} step={steps[2]} _index={2} />
+        <StepComponent
+          status="disabled"
+          isFirst={false}
+          step={STEPS[2]}
+          _index={2}
+          extraContent={<styledEl.Description>The winning solver will execute your order.</styledEl.Description>}
+        />
       </styledEl.StepsWrapper>
     </styledEl.ProgressContainer>
   )
@@ -625,11 +677,11 @@ function SubmissionFailedStep({ order }: OrderProgressBarV2Props) {
         <OrderIntent order={order} />
       </styledEl.ProgressTopSection>
       <styledEl.StepsWrapper>
-        <StepComponent status="done" isFirst={false} step={steps[0]} _index={0} />
+        <StepComponent status="done" isFirst={false} step={STEPS[0]} _index={0} />
         <StepComponent
           status="active"
           isFirst={false}
-          step={{ ...steps[1], title: 'Solving: Finding new solution' }}
+          step={{ ...STEPS[1], title: 'Solving: Finding new solution' }}
           _index={1}
           customColor={`var(${UI.COLOR_ALERT_TEXT})`}
           extraContent={
@@ -638,7 +690,13 @@ function SubmissionFailedStep({ order }: OrderProgressBarV2Props) {
             </styledEl.Description>
           }
         />
-        <StepComponent status="next" isFirst={false} step={steps[2]} _index={2} />
+        <StepComponent
+          status="next"
+          isFirst={false}
+          step={STEPS[2]}
+          _index={2}
+          extraContent={<styledEl.Description>The winning solver will execute your order.</styledEl.Description>}
+        />
       </styledEl.StepsWrapper>
     </styledEl.ProgressContainer>
   )
@@ -654,11 +712,11 @@ function CancellingStep({ order }: OrderProgressBarV2Props) {
         <OrderIntent order={order} />
       </styledEl.ProgressTopSection>
       <styledEl.StepsWrapper>
-        <StepComponent status="done" isFirst={false} step={steps[0]} _index={0} />
+        <StepComponent status="done" isFirst={false} step={STEPS[0]} _index={0} />
         <StepComponent
           status="cancelling"
           isFirst={false}
-          step={{ ...steps[1], title: 'Cancelling order' }}
+          step={{ ...STEPS[1], title: 'Cancelling order' }}
           _index={1}
           customColor={`var(${UI.COLOR_DANGER_TEXT})`}
           extraContent={<styledEl.Description>Your order is being cancelled.</styledEl.Description>}
