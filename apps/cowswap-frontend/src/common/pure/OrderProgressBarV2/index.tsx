@@ -758,8 +758,7 @@ function ExpiredStep({ order, chainId }: OrderProgressBarV2Props) {
 
       <styledEl.Description center margin="10px 0">
         If your orders often expire, consider increasing your slippage or{' '}
-        <styledEl.Link href="#" target="_blank">
-          {/*TODO: add contact us link*/}
+        <styledEl.Link href="mailto:help@cow.fi" target="_blank">
           contacting us
         </styledEl.Link>{' '}
         so we can investigate the problem.
