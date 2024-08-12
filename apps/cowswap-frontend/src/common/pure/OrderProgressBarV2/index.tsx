@@ -3,25 +3,28 @@ import React, { useState } from 'react'
 import PROGRESS_BAR_BAD_NEWS from '@cowprotocol/assets/cow-swap/progressbar-bad-news.svg'
 import PROGRESSBAR_COW_SURPLUS from '@cowprotocol/assets/cow-swap/progressbar-cow-surplus.svg'
 import PROGRESS_BAR_GOOD_NEWS from '@cowprotocol/assets/cow-swap/progressbar-good-news.svg'
-import STEP_IMAGE_EXECUTING from '@cowprotocol/assets/cow-swap/progressbar-step-executing.svg'
+import STEP_IMAGE_EXPIRED from '@cowprotocol/assets/cow-swap/progressbar-step-expired.svg'
 import STEP_IMAGE_SOLVING from '@cowprotocol/assets/cow-swap/progressbar-step-solving.svg'
 import STEP_IMAGE_UNFILLABLE from '@cowprotocol/assets/cow-swap/progressbar-step-unfillable.svg'
 import STEP_IMAGE_WAIT from '@cowprotocol/assets/cow-swap/progressbar-step-wait.svg'
 import ICON_SOCIAL_X from '@cowprotocol/assets/images/icon-social-x.svg'
 import LOTTIE_GREEN_CHECKMARK_DARK from '@cowprotocol/assets/lottie/green-checkmark-dark.json'
 import LOTTIE_GREEN_CHECKMARK from '@cowprotocol/assets/lottie/green-checkmark.json'
+import STEP_LOTTIE_EXECUTING from '@cowprotocol/assets/lottie/progressbar-step-executing.json'
+import STEP_LOTTIE_INITIAL from '@cowprotocol/assets/lottie/progressbar-step-initial.json'
+import STEP_LOTTIE_NEXTBATCH from '@cowprotocol/assets/lottie/progressbar-step-nextbatch.json'
+import STEP_LOTTIE_SOLVING from '@cowprotocol/assets/lottie/progressbar-step-solving.json'
 import LOTTIE_RED_CROSS from '@cowprotocol/assets/lottie/red-cross.json'
 import LOTTIE_TIME_EXPIRED_DARK from '@cowprotocol/assets/lottie/time-expired-dark.json'
 import LOTTIE_TIME_EXPIRED from '@cowprotocol/assets/lottie/time-expired.json'
 import LOTTIE_YELLOW_CHECKMARK_DARK from '@cowprotocol/assets/lottie/yellow-checkmark-dark.json'
 import LOTTIE_YELLOW_CHECKMARK from '@cowprotocol/assets/lottie/yellow-checkmark.json'
-import { TokenWithLogo } from '@cowprotocol/common-const'
 import { ExplorerDataType, getExplorerLink, isSellOrder, shortenAddress } from '@cowprotocol/common-utils'
 import type { CompetitionOrderStatus, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { Command } from '@cowprotocol/types'
 import { ExternalLink, ProductLogo, ProductVariant, TokenAmount, UI } from '@cowprotocol/ui'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import Lottie from 'lottie-react'
 import { MdOutlineMotionPhotosPause } from 'react-icons/md'
@@ -38,7 +41,7 @@ import SVG from 'react-inlinesvg'
 import { AMM_LOGOS } from 'legacy/components/AMMsLogo'
 import { Order } from 'legacy/state/orders/actions'
 
-import { OrderProgressBarStepName, PROGRESS_BAR_TIMER_DURATION } from 'common/hooks/orderProgressBarV2'
+import { OrderProgressBarStepName } from 'common/hooks/orderProgressBarV2'
 import { SurplusData } from 'common/hooks/useGetSurplusFiatValue'
 import { useTheme } from 'common/hooks/useTheme'
 import { getIsCustomRecipient } from 'utils/orderUtils/getIsCustomRecipient'
@@ -157,56 +160,17 @@ const OrderIntent: React.FC<{ order?: Order }> = ({ order }) => {
   )
 }
 
-const AnimatedTokens: React.FC<{
-  sellToken: Currency | TokenWithLogo | null | undefined
-  buyToken: Currency | TokenWithLogo | null | undefined
-}> = ({ sellToken, buyToken }) => {
-  const theme = useTheme()
-  const backgroundImage = theme.darkMode
-    ? 'url(assets/images/background-cowswap-darkmode.svg)'
-    : 'url(assets/images/background-cowswap-lightmode.svg)'
-
-  return (
-    <styledEl.AnimatedTokensWrapper style={{ backgroundImage }}>
-      <styledEl.TokenWrapper position="left">
-        <TokenLogo token={sellToken} size={136} />
-      </styledEl.TokenWrapper>
-      <styledEl.TokenWrapper position="center">
-        <TokenLogo token={buyToken} size={136} />
-      </styledEl.TokenWrapper>
-      <styledEl.TokenWrapper position="right">
-        <ProductLogo
-          variant={ProductVariant.CowSwap}
-          theme={theme.darkMode ? 'dark' : 'light'}
-          height={136}
-          logoIconOnly
-        />
-      </styledEl.TokenWrapper>
-    </styledEl.AnimatedTokensWrapper>
-  )
-}
-
-interface CircularCountdownProps {
+interface CountdownElProps {
   countdown: number
 }
 
-const CircularCountdown: React.FC<CircularCountdownProps> = ({ countdown }) => {
-  const radius = 45
-  const circumference = 2 * Math.PI * radius
-
+const CountdownEl: React.FC<CountdownElProps> = ({ countdown }) => {
   return (
     <styledEl.CountdownWrapper>
-      <styledEl.CircularProgress viewBox="0 0 100 100">
-        <styledEl.CircleProgress
-          cx="50"
-          cy="50"
-          r={radius}
-          strokeDasharray={circumference}
-          duration={countdown}
-          max={PROGRESS_BAR_TIMER_DURATION}
-        />
-      </styledEl.CircularProgress>
-      <styledEl.CountdownText>{countdown}</styledEl.CountdownText>
+      <styledEl.CountdownText>
+        {countdown}
+        <small>s</small>
+      </styledEl.CountdownText>
     </styledEl.CountdownWrapper>
   )
 }
@@ -247,8 +211,13 @@ function InitialStep({ order }: OrderProgressBarV2Props) {
   return (
     <styledEl.ProgressContainer>
       <styledEl.ProgressTopSection>
-        <styledEl.ProgressImageWrapper bgColor={'#65D9FF'}>
-          <AnimatedTokens sellToken={order?.inputToken} buyToken={order?.outputToken} />
+        <styledEl.ProgressImageWrapper bgColor={'#65D9FF'} height={'auto'}>
+          <Lottie
+            animationData={STEP_LOTTIE_INITIAL}
+            loop={true}
+            autoplay={true}
+            style={{ width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+          />
         </styledEl.ProgressImageWrapper>
         <OrderIntent order={order} />
       </styledEl.ProgressTopSection>
@@ -275,7 +244,7 @@ function InitialStep({ order }: OrderProgressBarV2Props) {
             </styledEl.Description>
           }
         />
-        <StepComponent status="next" isFirst={false} step={STEPS[2]} _index={2} />
+        <StepComponent status="future" isFirst={false} step={STEPS[2]} _index={2} />
       </styledEl.StepsWrapper>
     </styledEl.ProgressContainer>
   )
@@ -285,9 +254,14 @@ function SolvingStep({ order, countdown }: OrderProgressBarV2Props) {
   return (
     <styledEl.ProgressContainer>
       <styledEl.ProgressTopSection>
-        <styledEl.ProgressImageWrapper bgColor={'#65D9FF'} padding={'24px'}>
-          <SVG src={STEP_IMAGE_SOLVING} />
-          <CircularCountdown countdown={countdown || 0} />
+        <styledEl.ProgressImageWrapper height={'auto'}>
+          <Lottie
+            animationData={STEP_LOTTIE_SOLVING}
+            loop={true}
+            autoplay={true}
+            style={{ width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+          />
+          <CountdownEl countdown={countdown || 0} />
         </styledEl.ProgressImageWrapper>
         <OrderIntent order={order} />
       </styledEl.ProgressTopSection>
@@ -327,13 +301,18 @@ function ExecutingStep({ solverCompetition, order }: OrderProgressBarV2Props) {
   return (
     <styledEl.ProgressContainer>
       <styledEl.ProgressTopSection>
-        <styledEl.ProgressImageWrapper bgColor={'#65D9FF'} padding={'42px 24px'}>
-          <SVG src={STEP_IMAGE_EXECUTING} />
+        <styledEl.ProgressImageWrapper height={'auto'}>
+          <Lottie
+            animationData={STEP_LOTTIE_EXECUTING}
+            loop={true}
+            autoplay={true}
+            style={{ width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+          />
         </styledEl.ProgressImageWrapper>
         <OrderIntent order={order} />
       </styledEl.ProgressTopSection>
       <styledEl.StepsWrapper>
-        <StepComponent status="done" isFirst={false} step={STEPS[0]} _index={0} />
+        <StepComponent status="done" isFirst={false} step={{ ...STEPS[0], title: 'Solved' }} _index={0} />
         <StepComponent
           status="active"
           isFirst={false}
@@ -356,6 +335,13 @@ function ExecutingStep({ solverCompetition, order }: OrderProgressBarV2Props) {
   )
 }
 
+const COW_SWAP_BENEFITS = [
+  "Unlike other exchanges, here you don't pay any fees if your trade fails.",
+  'COW Swap finds the best prices across multiple liquidity sources for you.',
+  "Enjoy MEV protection and no front-running with COW Swap's unique order settlement.",
+  "Experience gasless trading with COW Swap's off-chain order matching.",
+]
+
 function FinishedStep({
   stepName,
   solverCompetition: solvers,
@@ -377,6 +363,9 @@ function FinishedStep({
   const receiver = order?.receiver || order?.owner
 
   const theme = useTheme()
+
+  // Randomly select a benefit message on component initialization
+  const [randomBenefit] = useState(() => COW_SWAP_BENEFITS[Math.floor(Math.random() * COW_SWAP_BENEFITS.length)])
 
   return (
     <styledEl.FinishedStepContainer>
@@ -426,17 +415,14 @@ function FinishedStep({
             </>
           )}
           <styledEl.Surplus showSurplus={!!showSurplus}>
-            {showSurplus ? (
+            {showSurplus && (
               <>
                 <span>Your surplus</span>
                 {surplusPercent ? <b>+{parseFloat(surplusPercent).toFixed(2)}%</b> : <b>N/A</b>}
               </>
-            ) : (
-              <>
-                <span>Unlike other exchanges, here you don't pay any fees if your trade fails.</span>
-              </>
             )}
           </styledEl.Surplus>
+          {!showSurplus && <styledEl.RandomMessage>{randomBenefit}</styledEl.RandomMessage>}
         </styledEl.ProgressImageWrapper>
       </styledEl.ProgressTopSection>
 
@@ -558,8 +544,13 @@ function NextBatchStep({ solverCompetition, order }: OrderProgressBarV2Props) {
   return (
     <styledEl.ProgressContainer>
       <styledEl.ProgressTopSection>
-        <styledEl.ProgressImageWrapper bgColor={'#FFDB9C'} padding={'40px 20px 0'}>
-          <img src={STEP_IMAGE_WAIT} alt="Order unfillable" />
+        <styledEl.ProgressImageWrapper height={'auto'}>
+          <Lottie
+            animationData={STEP_LOTTIE_NEXTBATCH}
+            loop={false}
+            autoplay
+            style={{ width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+          />
         </styledEl.ProgressImageWrapper>
         <OrderIntent order={order} />
       </styledEl.ProgressTopSection>
@@ -631,8 +622,8 @@ function UnfillableStep({ order, showCancellationModal }: OrderProgressBarV2Prop
   return (
     <styledEl.ProgressContainer>
       <styledEl.ProgressTopSection>
-        <styledEl.ProgressImageWrapper bgColor={'#FFDB9C'} padding={'20px 0 0'}>
-          <img src={STEP_IMAGE_UNFILLABLE} alt="Order unfillable" />
+        <styledEl.ProgressImageWrapper>
+          <img src={STEP_IMAGE_UNFILLABLE} alt="Order out of market" />
         </styledEl.ProgressImageWrapper>
         <OrderIntent order={order} />
       </styledEl.ProgressTopSection>
@@ -762,8 +753,8 @@ function ExpiredStep({ order }: OrderProgressBarV2Props) {
   return (
     <styledEl.ProgressContainer>
       <styledEl.ProgressTopSection>
-        <styledEl.ProgressImageWrapper bgColor={'#FFDB9C'} padding={'40px 20px 0'}>
-          <img src={STEP_IMAGE_WAIT} alt="Order expired" />
+        <styledEl.ProgressImageWrapper height={'auto'}>
+          <img src={STEP_IMAGE_EXPIRED} alt="Order expired" />
         </styledEl.ProgressImageWrapper>
         <OrderIntent order={order} />
       </styledEl.ProgressTopSection>

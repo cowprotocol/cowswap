@@ -140,9 +140,9 @@ export const Link = styled.a<{ underline?: boolean }>`
   }
 `
 
-export const ProgressImageWrapper = styled.div<{ bgColor?: string; padding?: string }>`
+export const ProgressImageWrapper = styled.div<{ bgColor?: string; padding?: string; height?: string }>`
   width: 100%;
-  height: 246px;
+  height: ${({ height }) => height || '246px'};
   max-height: 246px;
   display: flex;
   justify-content: center;
@@ -290,60 +290,28 @@ export const TokenWrapper = styled.div<{ position: 'left' | 'center' | 'right' }
   }
 `
 
-const progressAnimation = (duration: number, max: number) => {
-  const start = max - duration
-
-  return keyframes`
-    0% {
-      stroke-dashoffset: ${-(start * 283) / max};
-    }
-    100% {
-      stroke-dashoffset: -283; // Approximately 2 * PI * 45
-    }
-  `
-}
-
 export const CountdownWrapper = styled.div`
-  --size: 172px;
-  height: var(--size);
-  width: var(--size);
-  top: 0;
-  bottom: 0;
   margin: auto;
-  left: 40px;
-  background: #65d9ff;
-  border-radius: var(--size);
   position: absolute;
   display: flex;
   justify-content: center;
   align-items: center;
-`
-
-export const CircularProgress = styled.svg`
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  transform: rotate(-90deg);
-  padding: 8px;
-`
-
-export const CircleProgress = styled.circle<{ duration: number; max: number }>`
-  fill: none;
-  stroke: #012f7a;
-  stroke-width: 7;
-  stroke-linecap: round;
-  // TODO: start animation at different position based on how far from 15s it is
-  ${({ duration, max }) =>
-    css`
-      animation: ${progressAnimation(duration, max)} ${duration}s linear infinite;
-    `};
+  height: 71px;
+  width: 150px;
+  top: initial;
+  left: 0;
+  bottom: 50px;
 `
 
 export const CountdownText = styled.div`
   font-size: 70px;
-  font-weight: 600;
-  color: #012f7a;
+  font-weight: bold;
+  color: var(${UI.COLOR_PRIMARY});
   z-index: 1;
+
+  > small {
+    font-size: 36px;
+  }
 `
 
 export const FinishedStepContainer = styled.div`
@@ -439,6 +407,21 @@ export const Surplus = styled.div<{ showSurplus: boolean }>`
       font-size: 32px;
     }
   }
+`
+
+export const RandomMessage = styled.div`
+  position: absolute;
+  right: 16px;
+  top: 0;
+  left: initial;
+  font-size: 22px;
+  width: 100%;
+  max-width: 190px;
+  text-align: right;
+  height: 100%;
+  padding: 48px 0 16px;
+  display: flex;
+  align-items: center;
 `
 
 export const FinishedLogo = styled.div`
@@ -700,8 +683,9 @@ export const InfoCard = styled.div<{ variant: 'warning' | 'success' }>`
   flex: 1;
   padding: 20px;
   border-radius: 16px;
-  background-color: ${({ variant }) => (variant === 'warning' ? '#FFF5E6' : '#E6F5ED')};
-  color: ${({ variant }) => (variant === 'warning' ? '#996815' : '#1E7F4E')};
+  background-color: ${({ variant }) =>
+    variant === 'warning' ? `var(${UI.COLOR_ALERT_BG})` : `var(${UI.COLOR_SUCCESS_BG})`};
+  color: ${({ variant }) => (variant === 'warning' ? `var(${UI.COLOR_ALERT_TEXT})` : `var(${UI.COLOR_SUCCESS_TEXT})`)};
   display: flex;
   flex-flow: column wrap;
   align-items: center;
