@@ -1,11 +1,11 @@
-// import GameIcon from '@cowprotocol/assets/cow-swap/game.gif'
-// import { isInjectedWidget } from '@cowprotocol/common-utils'
+import GameIcon from '@cowprotocol/assets/cow-swap/game.gif'
+import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
 import { BackButton } from '@cowprotocol/ui'
 import { Currency } from '@uniswap/sdk-core'
 
-// import { Text } from 'rebass'
+import { Text } from 'rebass'
 import { Nullish } from 'types'
 
 import { DisplayLink } from 'legacy/components/TransactionConfirmationModal/DisplayLink'
@@ -17,31 +17,32 @@ import { NavigateToNewOrderCallback } from 'modules/swap/containers/ConfirmSwapM
 import { EthFlowStepper } from 'modules/swap/containers/EthFlowStepper'
 import { WatchAssetInWallet } from 'modules/wallet/containers/WatchAssetInWallet'
 
-// import { Routes } from 'common/constants/routes'
+import { Routes } from 'common/constants/routes'
+
 import * as styledEl from './styled'
 
 // import { SurplusModal } from './SurplusModal'
 import { CancelButton } from '../CancelButton'
 import { OrderProgressBarV2, OrderProgressBarV2Props } from '../OrderProgressBarV2'
 
-// const activityStatusLabels: Partial<Record<ActivityStatus, string>> = {
-//   [ActivityStatus.CONFIRMED]: 'Confirmed',
-//   [ActivityStatus.EXPIRED]: 'Expired',
-//   [ActivityStatus.CANCELLED]: 'Cancelled',
-//   [ActivityStatus.CANCELLING]: 'Cancelling',
-//   [ActivityStatus.FAILED]: 'Failed',
-// }
+const activityStatusLabels: Partial<Record<ActivityStatus, string>> = {
+  [ActivityStatus.CONFIRMED]: 'Confirmed',
+  [ActivityStatus.EXPIRED]: 'Expired',
+  [ActivityStatus.CANCELLED]: 'Cancelled',
+  [ActivityStatus.CANCELLING]: 'Cancelling',
+  [ActivityStatus.FAILED]: 'Failed',
+}
 
-// function getTitleStatus(activityDerivedState: ActivityDerivedState | null): string {
-//   if (!activityDerivedState) {
-//     return ''
-//   }
+function getTitleStatus(activityDerivedState: ActivityDerivedState | null): string {
+  if (!activityDerivedState) {
+    return ''
+  }
 
-//   const prefix = activityDerivedState.isOrder ? 'Order' : 'Transaction'
-//   const postfix = activityStatusLabels[activityDerivedState.status] || 'Submitted'
+  const prefix = activityDerivedState.isOrder ? 'Order' : 'Transaction'
+  const postfix = activityStatusLabels[activityDerivedState.status] || 'Submitted'
 
-//   return `${prefix} ${postfix}`
-// }
+  return `${prefix} ${postfix}`
+}
 
 export interface TransactionSubmittedContentProps {
   onDismiss(): void
@@ -72,7 +73,7 @@ export function TransactionSubmittedContent({
     return null
   }
 
-  // const isInjectedWidgetMode = isInjectedWidget()
+  const isInjectedWidgetMode = isInjectedWidget()
 
   const isPresignaturePending = activityDerivedState?.isPresignaturePending
   const showSafeSigningInfo = isPresignaturePending && activityDerivedState && !!activityDerivedState.gnosisSafeInfo
@@ -90,10 +91,13 @@ export function TransactionSubmittedContent({
           </styledEl.ActionsWrapper>
         </styledEl.Header>
         <>
-          {/*<Text fontWeight={600} fontSize={28}>*/}
-          {/*  {getTitleStatus(activityDerivedState)}*/}
-          {/*</Text>*/}
-          {/*<DisplayLink id={hash} chainId={chainId} />*/}
+          {!orderProgressBarV2Props && (
+            <>
+              <Text fontWeight={600} fontSize={28}>
+                {getTitleStatus(activityDerivedState)}
+              </Text>
+            </>
+          )}
           <EthFlowStepper order={order} />
           {activityDerivedState && showProgressBar && orderProgressBarV2Props && (
             <OrderProgressBarV2
@@ -104,10 +108,18 @@ export function TransactionSubmittedContent({
           )}
           <styledEl.ButtonGroup>
             <WatchAssetInWallet shortLabel currency={currencyToAdd} />
-            {/*{activityDerivedState?.status === ActivityStatus.PENDING && (*/}
-            {/*  <styledEl.ButtonCustom onClick={onDismiss}>Close</styledEl.ButtonCustom>*/}
-            {/*)}*/}
-            {activityDerivedState?.status === (ActivityStatus.CONFIRMED || ActivityStatus.EXPIRED) && (
+
+            {!isInjectedWidgetMode && !orderProgressBarV2Props && (
+              <a href={`#${Routes.PLAY_COWRUNNER}`} target="_blank" rel="noreferrer noopener">
+                <styledEl.ButtonCustom cowGame>
+                  <styledEl.StyledIcon src={GameIcon} alt="Play CowGame" />
+                  Play the CoW Runner Game!
+                </styledEl.ButtonCustom>
+              </a>
+            )}
+
+            {(activityDerivedState?.status === (ActivityStatus.CONFIRMED || ActivityStatus.EXPIRED) ||
+              (activityDerivedState?.status === ActivityStatus.PENDING && !orderProgressBarV2Props)) && (
               <styledEl.ButtonCustom onClick={onDismiss}>Close</styledEl.ButtonCustom>
             )}
           </styledEl.ButtonGroup>
