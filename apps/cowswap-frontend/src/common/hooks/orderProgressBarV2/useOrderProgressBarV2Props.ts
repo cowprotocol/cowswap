@@ -13,6 +13,7 @@ import { useInjectedWidgetParams } from 'modules/injectedWidget'
 
 import { getOrderCompetitionStatus } from 'api/cowProtocol/api'
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
+import { featureFlagsAtom } from 'common/state/featureFlagsState'
 import { getIsFinalizedOrder } from 'utils/orderUtils/getIsFinalizedOrder'
 
 import {
@@ -23,6 +24,7 @@ import {
   updateOrderProgressBarStepName,
 } from './atoms'
 import { OrderProgressBarState, OrderProgressBarStepName } from './types'
+
 
 export type UseOrderProgressBarPropsParams = {
   activityDerivedState: ActivityDerivedState | null
@@ -58,9 +60,10 @@ export function useOrderProgressBarV2Props(
   } = activityDerivedState || {}
 
   const { disableProgressBar: widgetDisabled = false } = useInjectedWidgetParams()
+  const { disableProgressBar: featureFlagDisabled } = useAtomValue(featureFlagsAtom)
 
   // Do not build progress bar data when these conditions are set
-  const disableProgressBar = widgetDisabled || isCreating || isFailed || isPresignaturePending
+  const disableProgressBar = widgetDisabled || isCreating || isFailed || isPresignaturePending || featureFlagDisabled
 
   // When the order is in a final state or progress bar is disabled, avoid querying backend unnecessarily
   const doNotQuery = !!(order && getIsFinalizedOrder(order)) || disableProgressBar
