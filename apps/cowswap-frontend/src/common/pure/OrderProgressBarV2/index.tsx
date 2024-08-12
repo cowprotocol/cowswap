@@ -37,8 +37,6 @@ import { getIsCustomRecipient } from 'utils/orderUtils/getIsCustomRecipient'
 
 import * as styledEl from './styled'
 
-import { CancelButton } from '../CancelButton'
-
 export type OrderProgressBarV2Props = {
   stepName: OrderProgressBarStepName
   chainId: SupportedChainId
@@ -616,7 +614,8 @@ function UnfillableStep({ order, showCancellationModal }: OrderProgressBarV2Prop
               Your order's price is currently out of market.{' '}
               {showCancellationModal && (
                 <>
-                  You can either wait or <CancelButton onClick={showCancellationModal}>cancel the order</CancelButton>.
+                  You can either wait or{' '}
+                  <styledEl.CancelButton onClick={showCancellationModal}>cancel the order</styledEl.CancelButton>.
                 </>
               )}
             </styledEl.Description>

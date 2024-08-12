@@ -3,6 +3,8 @@ import { Media, UI } from '@cowprotocol/ui'
 
 import styled, { css, keyframes } from 'styled-components/macro'
 
+import { CancelButton as CancelButtonOriginal } from '../CancelButton'
+
 const SUCCESS_COLOR = '#04795b' // TODO: Fix hardcoded color
 
 export const Icon = styled.div<{ status: string; customColor?: string }>`
@@ -724,4 +726,9 @@ export const CancellationFailedBanner = styled.div`
   border-radius: 16px;
   text-align: center;
   font-size: 15px;
+`
+
+export const CancelButton = styled(CancelButtonOriginal)`
+  padding: 1px 0;
+  text-decoration: underline;
 `
