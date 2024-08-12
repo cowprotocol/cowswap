@@ -140,6 +140,27 @@ export const Link = styled.a<{ underline?: boolean }>`
   }
 `
 
+export const CancelButton = styled(CancelButtonOriginal)`
+  color: var(${UI.COLOR_TEXT_PAPER});
+  font-size: 14px;
+  margin: 8px 0 0;
+  padding: 1px 0;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+`
+
+export const NavLink = styled(NavLinkOriginal)`
+  text-decoration: none;
+  color: var(${UI.COLOR_TEXT_PAPER});
+
+  &:hover {
+    text-decoration: underline;
+  }
+`
+
 export const ProgressImageWrapper = styled.div<{ bgColor?: string; padding?: string }>`
   width: 100%;
   height: 246px;
@@ -727,25 +748,4 @@ export const CancellationFailedBanner = styled.div`
   border-radius: 16px;
   text-align: center;
   font-size: 15px;
-`
-
-export const CancelButton = styled(CancelButtonOriginal)`
-  color: var(${UI.COLOR_TEXT_PAPER});
-  font-size: 14px;
-  margin: 8px 0 0;
-  padding: 1px 0;
-  text-decoration: underline;
-
-  &:hover {
-    text-decoration: none;
-  }
-`
-
-export const NavLink = styled(NavLinkOriginal)`
-  text-decoration: underline;
-  color: var(${UI.COLOR_TEXT_PAPER});
-
-  &:hover {
-    text-decoration: none;
-  }
 `
