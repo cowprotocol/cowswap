@@ -41,7 +41,6 @@ import { getIsCustomRecipient } from 'utils/orderUtils/getIsCustomRecipient'
 
 import * as styledEl from './styled'
 
-
 export type OrderProgressBarV2Props = {
   stepName: OrderProgressBarStepName
   chainId: SupportedChainId
@@ -273,8 +272,7 @@ function SolvingStep({ order, countdown }: OrderProgressBarV2Props) {
             <styledEl.Description>
               The auction has started! Solvers are competing to find the best solution for you...
               <br />
-              <styledEl.Link href="#" target="_blank">
-                {/*TODO: add competition learn more link*/}
+              <styledEl.Link href="https://cow.fi/learn/understanding-batch-auctions" target="_blank">
                 Learn more ↗
               </styledEl.Link>
             </styledEl.Description>
@@ -549,8 +547,7 @@ function NextBatchStep({ solverCompetition, order }: OrderProgressBarV2Props) {
               )}{' '}
               Unfortunately, your order wasn't part of their winning solution, so we're waiting for solvers to find a
               new solution that includes your order for the next batch.{' '}
-              <styledEl.Link href="#" target={'_blank'}>
-                {/*TODO: add learn more link*/}
+              <styledEl.Link href="https://cow.fi/learn/understanding-batch-auctions" target={'_blank'}>
                 Learn more ↗
               </styledEl.Link>
             </styledEl.Description>
