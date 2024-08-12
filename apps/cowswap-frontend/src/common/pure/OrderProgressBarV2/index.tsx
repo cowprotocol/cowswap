@@ -203,14 +203,22 @@ const CircularCountdown: React.FC<CircularCountdownProps> = ({ countdown }) => {
 }
 
 export function OrderProgressBarV2(props: OrderProgressBarV2Props) {
-  const { stepName, debugMode = false } = props
+  const { stepName, debugMode = true } = props
   const [debugStep, setDebugStep] = useState<OrderProgressBarStepName>(stepName)
   const currentStep = debugMode ? debugStep : stepName
-  const StepComponent = STEP_NAME_TO_STEP_COMPONENT[currentStep as keyof typeof STEP_NAME_TO_STEP_COMPONENT]
+  console.log('OrderProgressBarV2 - currentStep:', currentStep)
+
+  let StepComponent: React.ComponentType<OrderProgressBarV2Props> | null = null
+
+  if (currentStep === 'cancellationFailed' || currentStep === 'finished') {
+    StepComponent = FinishedStep
+  } else {
+    StepComponent = STEP_NAME_TO_STEP_COMPONENT[currentStep as keyof typeof STEP_NAME_TO_STEP_COMPONENT] || null
+  }
 
   return (
     <>
-      {StepComponent && <StepComponent {...props} />}
+      {StepComponent && <StepComponent {...props} stepName={currentStep} />}
       {debugMode && (
         <styledEl.DebugPanel>
           <select value={debugStep} onChange={(e) => setDebugStep(e.target.value as OrderProgressBarStepName)}>
@@ -335,9 +343,11 @@ function ExecutingStep({ solverCompetition, order }: OrderProgressBarV2Props) {
 }
 
 function FinishedStep({ stepName, solverCompetition: solvers, order, surplusData }: OrderProgressBarV2Props) {
+  console.log('FinishedStep - stepName:', stepName)
   const [showAllSolvers, setShowAllSolvers] = useState(false)
   const { surplusFiatValue, surplusPercent, surplusAmount, showSurplus } = surplusData || {}
   const cancellationFailed = stepName === 'cancellationFailed'
+  console.log('FinishedStep - cancellationFailed:', cancellationFailed)
 
   const toggleSolvers = () => setShowAllSolvers(!showAllSolvers)
 
