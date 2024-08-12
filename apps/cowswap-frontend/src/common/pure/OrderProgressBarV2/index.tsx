@@ -750,8 +750,7 @@ function ExpiredStep({ order, chainId }: OrderProgressBarV2Props) {
           <h3>The good news</h3>
           <p>
             Unlike on other exchanges, you won't be charged for this! Feel free to{' '}
-            <styledEl.NavLink to={swapLink}>place a new order</styledEl.NavLink>
-            without worry.
+            <styledEl.NavLink to={swapLink}>place a new order</styledEl.NavLink> without worry.
           </p>
         </styledEl.InfoCard>
       </styledEl.CardWrapper>
