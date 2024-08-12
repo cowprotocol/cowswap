@@ -323,10 +323,11 @@ export function shareSurplusOnTwitter() {
   })
 }
 
-export function clickNotifications(event: string, notificationId?: number) {
+export function clickNotifications(event: string, notificationId?: number, title?: string) {
   cowAnalytics.sendEvent({
     category: Category.NOTIFICATIONS,
     action: event,
     value: notificationId,
+    label: title,
   })
 }

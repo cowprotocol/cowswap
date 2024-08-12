@@ -51,7 +51,7 @@ export function NotificationsList({ children }: { children: ReactNode }) {
                     target={target}
                     noImage={!thumbnail}
                     rel={target === '_blank' ? 'noopener noreferrer' : ''}
-                    onClick={() => clickNotifications('click-notification-card')}
+                    onClick={() => clickNotifications('click-notification-card', id, title)}
                   >
                     {thumbnail && (
                       <NotificationThumb>
