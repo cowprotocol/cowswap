@@ -59,14 +59,12 @@ const Icon = styled.div<{ hasNotification?: boolean }>`
 
 interface NotificationBellProps {
   onClick: Command
+  unreadCount: number
 }
 
-export function NotificationBell({ onClick }: NotificationBellProps) {
-  const unreadNotifications = useUnreadNotifications()
-  const unreadNotificationsCount = Object.keys(unreadNotifications).length
-
+export function NotificationBell({ onClick, unreadCount }: NotificationBellProps) {
   return (
-    <Icon hasNotification={unreadNotificationsCount > 0} onClick={onClick}>
+    <Icon hasNotification={unreadCount > 0} onClick={onClick}>
       <SVG src={ICON_NOTIFICATION} />
     </Icon>
   )

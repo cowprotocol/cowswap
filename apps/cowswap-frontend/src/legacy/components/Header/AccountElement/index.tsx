@@ -5,6 +5,7 @@ import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { TokenAmount } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
+import { clickNotifications } from 'modules/analytics'
 
 import ReactDOM from 'react-dom'
 
@@ -17,6 +18,7 @@ import { Web3Status } from 'modules/wallet/containers/Web3Status'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
 import { BalanceText, Wrapper } from './styled'
+import { useUnreadNotifications } from 'modules/notifications/hooks/useUnreadNotifications'
 
 interface AccountElementProps {
   pendingActivities: string[]
@@ -33,6 +35,9 @@ export function AccountElement({ className, standaloneMode, pendingActivities }:
   const isUpToLarge = useMediaQuery(upToLarge)
   const { isNotificationsFeedEnabled } = useFeatureFlags()
 
+  const unreadNotifications = useUnreadNotifications()
+  const unreadNotificationsCount = Object.keys(unreadNotifications).length
+
   const [isSidebarOpen, setSidebarOpen] = useState(false)
 
   return (
@@ -44,7 +49,15 @@ export function AccountElement({ className, standaloneMode, pendingActivities }:
           </BalanceText>
         )}
         <Web3Status pendingActivities={pendingActivities} onClick={() => account && toggleAccountModal()} />
-        {account && isNotificationsFeedEnabled && <NotificationBell onClick={() => setSidebarOpen(true)} />}
+        {account && isNotificationsFeedEnabled && (
+          <NotificationBell
+            unreadCount={unreadNotificationsCount}
+            onClick={() => {
+              clickNotifications(unreadNotificationsCount ? 'click-bell' : 'click-bell-with-pending-notifications')
+              setSidebarOpen(true)
+            }}
+          />
+        )}
       </Wrapper>
 
       {ReactDOM.createPortal(

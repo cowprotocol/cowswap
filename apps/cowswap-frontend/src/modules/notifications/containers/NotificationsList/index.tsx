@@ -7,6 +7,7 @@ import { useAccountNotifications } from '../../hooks/useAccountNotifications'
 import { useUnreadNotifications } from '../../hooks/useUnreadNotifications'
 import { markNotificationsAsReadAtom } from '../../state/readNotificationsAtom'
 import { groupNotificationsByDate } from '../../utils/groupNotificationsByDate'
+import { clickNotifications } from 'modules/analytics'
 
 const DATE_FORMAT_OPTION: Intl.DateTimeFormatOptions = {
   dateStyle: 'long',
@@ -50,6 +51,7 @@ export function NotificationsList({ children }: { children: ReactNode }) {
                     target={target}
                     noImage={!thumbnail}
                     rel={target === '_blank' ? 'noopener noreferrer' : ''}
+                    onClick={() => clickNotifications('click-notification-card')}
                   >
                     {thumbnail && (
                       <NotificationThumb>
