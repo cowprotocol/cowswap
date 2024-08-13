@@ -141,7 +141,6 @@ export const Link = styled.a<{ underline?: boolean }>`
 
 export const CancelButton = styled(CancelButtonOriginal)`
   font-size: 14px;
-  margin: 8px 0 0;
   padding: 1px 0;
   text-decoration: underline;
 

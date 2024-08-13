@@ -562,7 +562,7 @@ function NextBatchStep({ solverCompetition, order }: OrderProgressBarV2Props) {
   )
 }
 
-function DelayedStep({ order }: OrderProgressBarV2Props) {
+function DelayedStep({ order, showCancellationModal }: OrderProgressBarV2Props) {
   return (
     <styledEl.ProgressContainer>
       <styledEl.ProgressTopSection>
@@ -581,7 +581,13 @@ function DelayedStep({ order }: OrderProgressBarV2Props) {
           extraContent={
             <styledEl.Description>
               This is taking longer than expected! There may be a network issue (such as a gas spike) that is preventing
-              solvers from picking up your order. The issue should resolve momentarily.
+              solvers from picking up your order. The issue should resolve momentarily.{' '}
+              {showCancellationModal && (
+                <>
+                  You can wait or{' '}
+                  <styledEl.CancelButton onClick={showCancellationModal}>cancel the order</styledEl.CancelButton>.
+                </>
+              )}
             </styledEl.Description>
           }
         />
