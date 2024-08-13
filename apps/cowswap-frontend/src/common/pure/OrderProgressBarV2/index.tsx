@@ -1,24 +1,24 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 import PROGRESS_BAR_BAD_NEWS from '@cowprotocol/assets/cow-swap/progressbar-bad-news.svg'
 import PROGRESSBAR_COW_SURPLUS from '@cowprotocol/assets/cow-swap/progressbar-cow-surplus.svg'
 import PROGRESS_BAR_GOOD_NEWS from '@cowprotocol/assets/cow-swap/progressbar-good-news.svg'
 import STEP_IMAGE_EXPIRED from '@cowprotocol/assets/cow-swap/progressbar-step-expired.svg'
-import STEP_IMAGE_SOLVING from '@cowprotocol/assets/cow-swap/progressbar-step-solving.svg'
+
+import SWEAT_DROP from '@cowprotocol/assets/cow-swap/sweat-drop.svg'
 import STEP_IMAGE_UNFILLABLE from '@cowprotocol/assets/cow-swap/progressbar-step-unfillable.svg'
-import STEP_IMAGE_WAIT from '@cowprotocol/assets/cow-swap/progressbar-step-wait.svg'
+import STEP_IMAGE_CANCELLED from '@cowprotocol/assets/cow-swap/progressbar-step-cancelled.svg'
 import ICON_SOCIAL_X from '@cowprotocol/assets/images/icon-social-x.svg'
 import LOTTIE_GREEN_CHECKMARK_DARK from '@cowprotocol/assets/lottie/green-checkmark-dark.json'
 import LOTTIE_GREEN_CHECKMARK from '@cowprotocol/assets/lottie/green-checkmark.json'
 import STEP_LOTTIE_EXECUTING from '@cowprotocol/assets/lottie/progressbar-step-executing.json'
 import STEP_LOTTIE_INITIAL from '@cowprotocol/assets/lottie/progressbar-step-initial.json'
 import STEP_LOTTIE_NEXTBATCH from '@cowprotocol/assets/lottie/progressbar-step-nextbatch.json'
-import STEP_LOTTIE_SOLVING from '@cowprotocol/assets/lottie/progressbar-step-solving.json'
+import STEP_IMAGE_SOLVING_1 from '@cowprotocol/assets/cow-swap/progressbar-step-solving-1.svg'
+import STEP_IMAGE_SOLVING_2 from '@cowprotocol/assets/cow-swap/progressbar-step-solving-2.svg'
+import STEP_IMAGE_SOLVING_3 from '@cowprotocol/assets/cow-swap/progressbar-step-solving-3.svg'
 import LOTTIE_RED_CROSS from '@cowprotocol/assets/lottie/red-cross.json'
 import LOTTIE_TIME_EXPIRED_DARK from '@cowprotocol/assets/lottie/time-expired-dark.json'
-import LOTTIE_TIME_EXPIRED from '@cowprotocol/assets/lottie/time-expired.json'
-import LOTTIE_YELLOW_CHECKMARK_DARK from '@cowprotocol/assets/lottie/yellow-checkmark-dark.json'
-import LOTTIE_YELLOW_CHECKMARK from '@cowprotocol/assets/lottie/yellow-checkmark.json'
 import { ExplorerDataType, getExplorerLink, isSellOrder, shortenAddress } from '@cowprotocol/common-utils'
 import type { CompetitionOrderStatus, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
@@ -165,18 +165,17 @@ interface CountdownElProps {
 }
 
 const CountdownEl: React.FC<CountdownElProps> = ({ countdown }) => {
+  const formattedCountdown = countdown < 10 ? `0${countdown}` : `${countdown}`
+
   return (
     <styledEl.CountdownWrapper>
-      <styledEl.CountdownText>
-        {countdown}
-        <small>s</small>
-      </styledEl.CountdownText>
+      <styledEl.CountdownText>{formattedCountdown}s</styledEl.CountdownText>
     </styledEl.CountdownWrapper>
   )
 }
 
 export function OrderProgressBarV2(props: OrderProgressBarV2Props) {
-  const { stepName, debugMode = false } = props
+  const { stepName, debugMode = true } = props
   const [debugStep, setDebugStep] = useState<OrderProgressBarStepName>(stepName)
   const currentStep = debugMode ? debugStep : stepName
   console.log('OrderProgressBarV2 - currentStep:', currentStep)
@@ -251,15 +250,31 @@ function InitialStep({ order }: OrderProgressBarV2Props) {
 }
 
 function SolvingStep({ order, countdown }: OrderProgressBarV2Props) {
+  const [currentFrame, setCurrentFrame] = useState(0)
+  const frames = [STEP_IMAGE_SOLVING_1, STEP_IMAGE_SOLVING_2, STEP_IMAGE_SOLVING_3]
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentFrame((prevFrame) => (prevFrame + 1) % frames.length)
+    }, 250)
+
+    return () => clearInterval(interval)
+  }, [])
+
   return (
     <styledEl.ProgressContainer>
       <styledEl.ProgressTopSection>
         <styledEl.ProgressImageWrapper height={'auto'}>
-          <Lottie
-            animationData={STEP_LOTTIE_SOLVING}
-            loop={true}
-            autoplay={true}
-            style={{ width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+          <img
+            src={frames[currentFrame]}
+            alt="Solving animation"
+            style={{
+              width: '100%',
+              height: '100%',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
           />
           <CountdownEl countdown={countdown || 0} />
         </styledEl.ProgressImageWrapper>
@@ -427,7 +442,7 @@ function FinishedStep({
       </styledEl.ProgressTopSection>
 
       <styledEl.ConclusionContent>
-        <styledEl.TransactionStatus flexFlow="column">
+        <styledEl.TransactionStatus flexFlow="column" margin={'0 auto 14px'}>
           <Lottie
             animationData={theme.darkMode ? LOTTIE_GREEN_CHECKMARK_DARK : LOTTIE_GREEN_CHECKMARK}
             loop={false}
@@ -591,11 +606,35 @@ function NextBatchStep({ solverCompetition, order }: OrderProgressBarV2Props) {
 }
 
 function DelayedStep({ order }: OrderProgressBarV2Props) {
+  const [currentFrame, setCurrentFrame] = useState(0)
+  const frames = [STEP_IMAGE_SOLVING_1, STEP_IMAGE_SOLVING_2, STEP_IMAGE_SOLVING_3]
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentFrame((prevFrame) => (prevFrame + 1) % frames.length)
+    }, 150)
+
+    return () => clearInterval(interval)
+  }, [])
+
   return (
     <styledEl.ProgressContainer>
       <styledEl.ProgressTopSection>
-        <styledEl.ProgressImageWrapper bgColor={'#65D9FF'} padding={'24px'}>
-          <SVG src={STEP_IMAGE_SOLVING} />
+        <styledEl.ProgressImageWrapper height={'auto'}>
+          <styledEl.SweatDrop>
+            <SVG src={SWEAT_DROP} />
+          </styledEl.SweatDrop>
+          <img
+            src={frames[currentFrame]}
+            alt="Solving animation"
+            style={{
+              width: '100%',
+              height: '100%',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          />
         </styledEl.ProgressImageWrapper>
         <OrderIntent order={order} />
       </styledEl.ProgressTopSection>
@@ -622,7 +661,7 @@ function UnfillableStep({ order, showCancellationModal }: OrderProgressBarV2Prop
   return (
     <styledEl.ProgressContainer>
       <styledEl.ProgressTopSection>
-        <styledEl.ProgressImageWrapper>
+        <styledEl.ProgressImageWrapper height={'auto'}>
           <img src={STEP_IMAGE_UNFILLABLE} alt="Order out of market" />
         </styledEl.ProgressImageWrapper>
         <OrderIntent order={order} />
@@ -662,8 +701,13 @@ function SubmissionFailedStep({ order }: OrderProgressBarV2Props) {
   return (
     <styledEl.ProgressContainer>
       <styledEl.ProgressTopSection>
-        <styledEl.ProgressImageWrapper bgColor={'#FFDB9C'} padding={'40px 20px 0'}>
-          <img src={STEP_IMAGE_WAIT} alt="Submission failed" />
+        <styledEl.ProgressImageWrapper height={'auto'}>
+          <Lottie
+            animationData={STEP_LOTTIE_NEXTBATCH}
+            loop={false}
+            autoplay
+            style={{ width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+          />
         </styledEl.ProgressImageWrapper>
         <OrderIntent order={order} />
       </styledEl.ProgressTopSection>
@@ -697,8 +741,8 @@ function CancellingStep({ order }: OrderProgressBarV2Props) {
   return (
     <styledEl.ProgressContainer>
       <styledEl.ProgressTopSection>
-        <styledEl.ProgressImageWrapper bgColor={'#FFDB9C'} padding={'40px 20px 0'}>
-          <img src={STEP_IMAGE_WAIT} alt="Cancelling order" />
+        <styledEl.ProgressImageWrapper height={'auto'}>
+          <img src={STEP_IMAGE_CANCELLED} alt="Cancelling order" />
         </styledEl.ProgressImageWrapper>
         <OrderIntent order={order} />
       </styledEl.ProgressTopSection>
@@ -723,21 +767,13 @@ function CancelledStep({ order }: OrderProgressBarV2Props) {
   return (
     <styledEl.ProgressContainer>
       <styledEl.ProgressTopSection>
-        <styledEl.ProgressImageWrapper bgColor={'#FFDB9C'} padding={'40px 20px 0'}>
-          <img src={STEP_IMAGE_WAIT} alt="Order cancelled" />
+        <styledEl.ProgressImageWrapper height={'auto'}>
+          <img src={STEP_IMAGE_CANCELLED} alt="Cancelling order" />
         </styledEl.ProgressImageWrapper>
         <OrderIntent order={order} />
       </styledEl.ProgressTopSection>
       <styledEl.ConclusionContent>
-        <styledEl.TransactionStatus status={'cancelled'} flexFlow="column">
-          <Lottie
-            animationData={theme.darkMode ? LOTTIE_YELLOW_CHECKMARK_DARK : LOTTIE_YELLOW_CHECKMARK}
-            loop={false}
-            autoplay
-            style={{ width: '56px', height: '56px' }}
-          />
-          Your order was cancelled
-        </styledEl.TransactionStatus>
+        <styledEl.TransactionStatus flexFlow="column">Your order was cancelled</styledEl.TransactionStatus>
       </styledEl.ConclusionContent>
 
       <styledEl.Description center margin="10px auto 40px">
@@ -748,24 +784,24 @@ function CancelledStep({ order }: OrderProgressBarV2Props) {
 }
 
 function ExpiredStep({ order }: OrderProgressBarV2Props) {
-  const theme = useTheme()
-
   return (
     <styledEl.ProgressContainer>
       <styledEl.ProgressTopSection>
         <styledEl.ProgressImageWrapper height={'auto'}>
+          <styledEl.ClockAnimation>
+            <Lottie
+              animationData={LOTTIE_TIME_EXPIRED_DARK}
+              loop={false}
+              autoplay
+              style={{ width: '100%', height: '100%' }}
+            />
+          </styledEl.ClockAnimation>
           <img src={STEP_IMAGE_EXPIRED} alt="Order expired" />
         </styledEl.ProgressImageWrapper>
         <OrderIntent order={order} />
       </styledEl.ProgressTopSection>
       <styledEl.ConclusionContent>
-        <styledEl.TransactionStatus status={'expired'} flexFlow="column">
-          <Lottie
-            animationData={theme.darkMode ? LOTTIE_TIME_EXPIRED_DARK : LOTTIE_TIME_EXPIRED}
-            loop={false}
-            autoplay
-            style={{ width: '56px', height: '56px' }}
-          />
+        <styledEl.TransactionStatus status={'expired'} flexFlow="column" margin={'14px auto 24px'}>
           Your order expired
         </styledEl.TransactionStatus>
       </styledEl.ConclusionContent>

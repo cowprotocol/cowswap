@@ -41,6 +41,7 @@ export const Media = {
 export const Font = {
   family: `'studiofeixen', Arial, sans-serif`,
   familySerif: `'studiofeixenserif', Arial, serif`,
+  familyMono: `'studiofeixenmono', monospace, sans-serif`,
   weight: {
     ultralight: 200,
     light: 300,
@@ -67,3 +68,9 @@ export const Color = {
   neutral10: '#23191A',
   neutral0: '#000000',
 }
+
+document.fonts.ready.then(() => {
+  if (document.fonts.check('1em studiofeixenmono')) {
+    document.documentElement.classList.add('fonts-loaded')
+  }
+})

@@ -1,5 +1,5 @@
 import IMAGE_STAR_SHINE from '@cowprotocol/assets/cow-swap/star-shine.svg'
-import { Media, UI } from '@cowprotocol/ui'
+import { Font, Media, UI } from '@cowprotocol/ui'
 
 import styled, { css, keyframes } from 'styled-components/macro'
 
@@ -25,6 +25,21 @@ const animationMixin = css<{ status: string }>`
       return 'none'
     }}
     1s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+`
+
+const sweatDropAnimation = keyframes`
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  80% {
+    transform: translateY(20px);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(40px);
+    opacity: 0;
+  }
 `
 
 // Utility functions
@@ -149,10 +164,11 @@ export const ProgressImageWrapper = styled.div<{ bgColor?: string; padding?: str
   align-items: center;
   flex-flow: column wrap;
   border-radius: 21px;
-  overflow: hidden;
   padding: ${({ padding }) => padding || '0'};
   background: ${({ bgColor }) => bgColor || `var(${UI.COLOR_PAPER_DARKER})`};
+  transition: all 0.3s ease-in-out;
   position: relative;
+  overflow: hidden;
 
   > img,
   > svg {
@@ -300,18 +316,16 @@ export const CountdownWrapper = styled.div`
   width: 150px;
   top: initial;
   left: 0;
-  bottom: 50px;
+  bottom: 52px;
 `
 
 export const CountdownText = styled.div`
+  font-family: ${Font.familyMono};
   font-size: 70px;
   font-weight: bold;
-  color: var(${UI.COLOR_PRIMARY});
+  color: var(${UI.COLOR_BLUE});
   z-index: 1;
-
-  > small {
-    font-size: 36px;
-  }
+  font-variant-numeric: slashed-zero;
 `
 
 export const FinishedStepContainer = styled.div`
@@ -482,16 +496,20 @@ export const ShareButton = styled.button`
   }
 `
 
-export const TransactionStatus = styled.div<{ status?: string; flexFlow?: string; gap?: string }>`
+export const TransactionStatus = styled.div<{ status?: string; flexFlow?: string; gap?: string; margin?: string }>`
   display: flex;
   flex-flow: ${({ flexFlow }) => flexFlow || 'row wrap'};
   align-items: center;
   gap: ${({ gap }) => gap || '10px'};
   font-size: 21px;
   font-weight: bold;
-  margin: 0 auto 14px;
+  margin: ${({ margin }) => margin || '14px auto 0'};
   color: ${({ status }) =>
-    status === 'expired' || status === 'cancelled' ? `var(${UI.COLOR_ALERT_TEXT})` : `var(${UI.COLOR_SUCCESS_TEXT})`};
+    status === 'expired' || status === 'cancelled'
+      ? `var(${UI.COLOR_ALERT_TEXT})`
+      : status === 'success'
+      ? `var(${UI.COLOR_SUCCESS_TEXT})`
+      : `var(${UI.COLOR_TEXT})`};
 
   > svg {
     --size: 28px;
@@ -499,7 +517,11 @@ export const TransactionStatus = styled.div<{ status?: string; flexFlow?: string
     width: var(--size);
     height: var(--size);
     background-color: ${({ status }) =>
-      status === 'expired' || status === 'cancelled' ? `var(${UI.COLOR_ALERT_BG})` : `var(${UI.COLOR_SUCCESS_BG})`};
+      status === 'expired' || status === 'cancelled'
+        ? `var(${UI.COLOR_ALERT_BG})`
+        : status === 'success'
+        ? `var(${UI.COLOR_SUCCESS_BG})`
+        : 'transparent'};
     border-radius: var(--size);
     padding: 2px;
   }
@@ -718,4 +740,35 @@ export const CancellationFailedBanner = styled.div`
   border-radius: 16px;
   text-align: center;
   font-size: 15px;
+`
+
+export const SweatDrop = styled.div`
+  color: #ffffff;
+  position: absolute;
+  left: 160px;
+  top: 75px;
+  width: 15px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: ${sweatDropAnimation} 2s cubic-bezier(0.19, 1, 0.22, 1) infinite;
+
+  > svg {
+    width: 100%;
+    height: 100%;
+    color: inherit;
+  }
+`
+
+export const ClockAnimation = styled.div`
+  --size: 85px;
+  width: var(--size);
+  height: var(--size);
+  position: absolute;
+  bottom: 36px;
+  right: 71px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `
