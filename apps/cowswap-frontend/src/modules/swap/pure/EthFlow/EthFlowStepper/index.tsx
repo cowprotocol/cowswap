@@ -2,7 +2,7 @@ import React from 'react'
 
 import { Media, UI } from '@cowprotocol/ui'
 
-import styled from 'styled-components/macro'
+import styled, { css } from 'styled-components/macro'
 
 import { StatusIconState } from './StatusIcon'
 import { Progress1 } from './steps/Progress1'
@@ -67,16 +67,28 @@ export interface EthFlowStepperProps {
    * To track cancellation tx
    */
   cancellation: TxState
+
+  /**
+   * To control whether margin should go over
+   */
+  extend?: boolean
 }
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<{ extend: boolean }>`
   display: grid;
   grid-template-columns: 0.8fr minmax(44px, 0.3fr) 0.8fr minmax(44px, 0.3fr) 0.8fr;
   grid-template-rows: max-content;
   align-items: flex-start;
   width: 100%;
-  padding: 20px 20px 60px;
-  margin: 0 0 -40px;
+  ${({ extend }) =>
+    extend
+      ? css`
+          padding: 20px 20px 60px;
+          margin: 0 0 -40px;
+        `
+      : css`
+          padding: 20px;
+        `}
   border-radius: 12px;
   background: var(${UI.COLOR_PAPER_DARKER});
   font-size: 15px;
@@ -95,6 +107,7 @@ export interface ProgressProps {
   status: StatusIconState
   value: number
 }
+
 export const Progress = styled.div<ProgressProps>`
   --height: 2px;
   height: var(--height);
@@ -143,7 +156,7 @@ export const Progress = styled.div<ProgressProps>`
 
 export function EthFlowStepper(props: EthFlowStepperProps) {
   return (
-    <Wrapper>
+    <Wrapper extend={!!props.extend}>
       <Step1 {...props} />
       <Progress1 {...props} />
       <Step2 {...props} />

@@ -98,7 +98,7 @@ export function TransactionSubmittedContent({
               </Text>
             </>
           )}
-          <EthFlowStepper order={order} />
+          <EthFlowStepper order={order} extend={!!orderProgressBarV2Props} />
           {activityDerivedState && showProgressBar && orderProgressBarV2Props && (
             <OrderProgressBarV2
               {...orderProgressBarV2Props}

@@ -16,10 +16,11 @@ import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 type EthFlowStepperProps = {
   order: Order | undefined
+  extend?: boolean
 }
 
 export function EthFlowStepper(props: EthFlowStepperProps) {
-  const { order } = props
+  const { order, extend } = props
   const native = useNativeCurrency()
 
   const allTxs = useAllTransactions()
@@ -69,6 +70,7 @@ export function EthFlowStepper(props: EthFlowStepperProps) {
       hash: cancellationHash,
       failed: didCancellationFail(order, cancellationTx),
     },
+    extend,
   }
 
   return <Pure {...stepperProps} />
