@@ -1,7 +1,10 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 
 import PROGRESS_BAR_BAD_NEWS from '@cowprotocol/assets/cow-swap/progressbar-bad-news.svg'
-import PROGRESSBAR_COW_SURPLUS from '@cowprotocol/assets/cow-swap/progressbar-cow-surplus.svg'
+import PROGRESSBAR_COW_SURPLUS_1 from '@cowprotocol/assets/cow-swap/progressbar-finished-image-1.svg'
+import PROGRESSBAR_COW_SURPLUS_2 from '@cowprotocol/assets/cow-swap/progressbar-finished-image-2.svg'
+import PROGRESSBAR_COW_SURPLUS_3 from '@cowprotocol/assets/cow-swap/progressbar-finished-image-3.svg'
+import PROGRESSBAR_COW_SURPLUS_4 from '@cowprotocol/assets/cow-swap/progressbar-finished-image-4.svg'
 import PROGRESS_BAR_GOOD_NEWS from '@cowprotocol/assets/cow-swap/progressbar-good-news.svg'
 import STEP_IMAGE_EXPIRED from '@cowprotocol/assets/cow-swap/progressbar-step-expired.svg'
 
@@ -44,6 +47,7 @@ import { Order } from 'legacy/state/orders/actions'
 import { OrderProgressBarStepName } from 'common/hooks/orderProgressBarV2'
 import { SurplusData } from 'common/hooks/useGetSurplusFiatValue'
 import { useTheme } from 'common/hooks/useTheme'
+import { useFitText } from '@cowprotocol/common-hooks'
 import { getIsCustomRecipient } from 'utils/orderUtils/getIsCustomRecipient'
 
 import * as styledEl from './styled'
@@ -60,6 +64,7 @@ export type OrderProgressBarV2Props = {
   showCancellationModal: Command | null
   surplusData?: SurplusData
   receiverEnsName?: string
+  debugShowSurplus?: boolean
 }
 
 const STEPS = [
@@ -175,7 +180,7 @@ const CountdownEl: React.FC<CountdownElProps> = ({ countdown }) => {
 }
 
 export function OrderProgressBarV2(props: OrderProgressBarV2Props) {
-  const { stepName, debugMode = false } = props
+  const { stepName, debugMode = true } = props
   const [debugStep, setDebugStep] = useState<OrderProgressBarStepName>(stepName)
   const currentStep = debugMode ? debugStep : stepName
   console.log('OrderProgressBarV2 - currentStep:', currentStep)
@@ -228,7 +233,10 @@ function InitialStep({ order }: OrderProgressBarV2Props) {
           _index={0}
           extraContent={
             <styledEl.Description>
-              Your order has been submitted and will be included in the next solver auction
+              Your order has been submitted and will be included in the next solver auction. &nbsp;
+              <styledEl.Link href="https://cow.fi/learn/understanding-batch-auctions" target="_blank">
+                Learn more ↗
+              </styledEl.Link>
             </styledEl.Description>
           }
         />
@@ -289,10 +297,8 @@ function SolvingStep({ order, countdown }: OrderProgressBarV2Props) {
           _index={1}
           extraContent={
             <styledEl.Description>
-              The auction has started! Solvers are competing to find the best solution for you...
-              <br />
-              <styledEl.Link href="#" target="_blank">
-                {/*TODO: add competition learn more link*/}
+              The auction has started! Solvers are competing to find the best solution for you... &nbsp;
+              <styledEl.Link href="https://cow.fi/learn/understanding-batch-auctions" target="_blank">
                 Learn more ↗
               </styledEl.Link>
             </styledEl.Description>
@@ -364,11 +370,14 @@ function FinishedStep({
   surplusData,
   chainId,
   receiverEnsName,
+  debugShowSurplus = true,
 }: OrderProgressBarV2Props) {
   const [showAllSolvers, setShowAllSolvers] = useState(false)
-  const { surplusFiatValue, surplusPercent, surplusAmount, showSurplus } = surplusData || {}
+  const { surplusFiatValue, surplusPercent, surplusAmount, showSurplus: originalShowSurplus } = surplusData || {}
+  const showSurplus = debugShowSurplus !== undefined ? debugShowSurplus : originalShowSurplus
   const cancellationFailed = stepName === 'cancellationFailed'
   console.log('FinishedStep - cancellationFailed:', cancellationFailed)
+  console.log('FinishedStep - showSurplus:', showSurplus)
 
   const toggleSolvers = () => setShowAllSolvers(!showAllSolvers)
 
@@ -382,6 +391,41 @@ function FinishedStep({
   // Randomly select a benefit message on component initialization
   const [randomBenefit] = useState(() => COW_SWAP_BENEFITS[Math.floor(Math.random() * COW_SWAP_BENEFITS.length)])
 
+  const surplusPercentValue = surplusPercent ? parseFloat(surplusPercent).toFixed(2) : 'N/A'
+  const { fontSize, textRef, containerRef } = useFitText(18, 50)
+
+  const [surplusSize, setSurplusSize] = useState(1)
+  const surplusRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (surplusRef.current) {
+      const container = surplusRef.current.parentElement
+      if (container) {
+        const fitText = () => {
+          let fontSize = 1
+          surplusRef.current!.style.fontSize = `${fontSize}px`
+
+          while (
+            surplusRef.current!.scrollWidth <= container.clientWidth &&
+            surplusRef.current!.scrollHeight <= container.clientHeight &&
+            fontSize < 50 // Cap at 50px
+          ) {
+            fontSize += 0.5
+            surplusRef.current!.style.fontSize = `${fontSize}px`
+          }
+
+          // Step back once to ensure it fits
+          fontSize -= 0.5
+          setSurplusSize(Math.min(fontSize, 50)) // Ensure it doesn't exceed 50px
+        }
+
+        fitText()
+        window.addEventListener('resize', fitText)
+        return () => window.removeEventListener('resize', fitText)
+      }
+    }
+  }, [showSurplus, surplusPercentValue])
+
   return (
     <styledEl.FinishedStepContainer>
       {cancellationFailed && (
@@ -390,54 +434,63 @@ function FinishedStep({
         </styledEl.CancellationFailedBanner>
       )}
       <styledEl.ProgressTopSection>
-        <styledEl.ProgressImageWrapper bgColor={'#65D9FF'}>
-          <styledEl.ShareButton>
-            <SVG src={ICON_SOCIAL_X} />
-            <span>Share this win!</span>
-          </styledEl.ShareButton>
-          <styledEl.FinishedLogo>
-            <ProductLogo
-              variant={ProductVariant.CowSwap}
-              theme="light"
-              overrideColor={UI.COLOR_PRIMARY_DARKER}
-              height={19}
-            />
-          </styledEl.FinishedLogo>
-          <styledEl.FinishedTagLine>
-            {showSurplus ? (
-              <>
-                ...gets you <b>moooooore.</b>
-              </>
-            ) : (
-              <>
-                Did you <b>know?</b>
-              </>
-            )}
-          </styledEl.FinishedTagLine>
+        <styledEl.ProgressImageWrapper bgColor={'#65D9FF'} padding={'10px'} gap={'10px'}>
           <styledEl.CowImage>
-            <SVG src={PROGRESSBAR_COW_SURPLUS} />
+            <styledEl.ShareButton>
+              <SVG src={ICON_SOCIAL_X} />
+              <span>Share this win!</span>
+            </styledEl.ShareButton>
+            <SVG
+              src={React.useMemo(() => {
+                const images = [
+                  PROGRESSBAR_COW_SURPLUS_1,
+                  PROGRESSBAR_COW_SURPLUS_2,
+                  PROGRESSBAR_COW_SURPLUS_3,
+                  PROGRESSBAR_COW_SURPLUS_4,
+                ]
+                return images[Math.floor(Math.random() * images.length)]
+              }, [])}
+            />
           </styledEl.CowImage>
-          {showSurplus && (
-            <>
-              <styledEl.TokenPairTitle>
-                <span>Swap order</span>
-                <b>{order ? `${order.inputToken.symbol}/${order.outputToken.symbol}` : 'N/A'}</b>
-              </styledEl.TokenPairTitle>
-              <styledEl.TokenImages>
-                <TokenLogo token={order?.inputToken} size={34} />
-                <TokenLogo token={order?.outputToken} size={34} />
-              </styledEl.TokenImages>
-            </>
-          )}
-          <styledEl.Surplus showSurplus={!!showSurplus}>
-            {showSurplus && (
-              <>
-                <span>Your surplus</span>
-                {surplusPercent ? <b>+{parseFloat(surplusPercent).toFixed(2)}%</b> : <b>N/A</b>}
-              </>
-            )}
-          </styledEl.Surplus>
-          {!showSurplus && <styledEl.RandomMessage>{randomBenefit}</styledEl.RandomMessage>}
+          <styledEl.FinishedImageContent>
+            <styledEl.FinishedTagLine>
+              {!showSurplus && (
+                <>
+                  Did you <b>know?</b>
+                </>
+              )}
+              {showSurplus && (
+                <>
+                  I just received surplus on my&nbsp;
+                  <styledEl.TokenPairTitle>
+                    {order ? `${order.inputToken.symbol}/${order.outputToken.symbol}` : 'N/A'}
+                  </styledEl.TokenPairTitle>{' '}
+                  trade
+                  <styledEl.Surplus
+                    ref={surplusRef}
+                    showSurplus={!!showSurplus}
+                    style={{ fontSize: `${surplusSize}px` }}
+                    data-content={showSurplus && surplusPercentValue !== 'N/A' ? `+${surplusPercentValue}%` : 'N/A'}
+                  >
+                    <span>{showSurplus && surplusPercentValue !== 'N/A' ? `+${surplusPercentValue}%` : 'N/A'}</span>
+                  </styledEl.Surplus>
+                </>
+              )}
+
+              {!showSurplus && <styledEl.RandomMessage>{randomBenefit}</styledEl.RandomMessage>}
+            </styledEl.FinishedTagLine>
+
+            <styledEl.FinishedLogo>
+              <ProductLogo
+                variant={ProductVariant.CowSwap}
+                theme="light"
+                overrideColor={UI.COLOR_PRIMARY_DARKER}
+                height={19}
+                logoIconOnly
+              />
+              <b>CoW Swap</b>
+            </styledEl.FinishedLogo>
+          </styledEl.FinishedImageContent>
         </styledEl.ProgressImageWrapper>
       </styledEl.ProgressTopSection>
 
@@ -585,9 +638,8 @@ function NextBatchStep({ solverCompetition, order }: OrderProgressBarV2Props) {
                 </>
               )}{' '}
               Unfortunately, your order wasn't part of their winning solution, so we're waiting for solvers to find a
-              new solution that includes your order for the next batch.{' '}
-              <styledEl.Link href="#" target={'_blank'}>
-                {/*TODO: add learn more link*/}
+              new solution that includes your order for the next batch.&nbsp;
+              <styledEl.Link href="https://cow.fi/learn/understanding-batch-auctions" target="_blank">
                 Learn more ↗
               </styledEl.Link>
             </styledEl.Description>
@@ -647,7 +699,11 @@ function DelayedStep({ order }: OrderProgressBarV2Props) {
           _index={1}
           extraContent={
             <styledEl.Description>
-              This is taking longer than expected! Solvers are still searching...
+              This is taking longer than expected! There may be a network issue (such as a gas spike) that is preventing
+              solvers from picking up your order. The issue should resolve momentarily.&nbsp;
+              <styledEl.Link href="https://cow.fi/learn/understanding-batch-auctions" target="_blank">
+                Learn more ↗
+              </styledEl.Link>
             </styledEl.Description>
           }
         />
@@ -676,12 +732,8 @@ function UnfillableStep({ order, showCancellationModal }: OrderProgressBarV2Prop
           customColor={`var(${UI.COLOR_ALERT_TEXT})`}
           extraContent={
             <styledEl.Description>
-              Your order's price is currently out of market.{' '}
-              {showCancellationModal && (
-                <>
-                  You can either wait or <CancelButton onClick={showCancellationModal}>cancel the order</CancelButton>.
-                </>
-              )}
+              Your order's price is currently out of market. You can either wait or{' '}
+              {showCancellationModal && <CancelButton onClick={showCancellationModal}>cancel the order</CancelButton>}
             </styledEl.Description>
           }
         />
@@ -722,6 +774,10 @@ function SubmissionFailedStep({ order }: OrderProgressBarV2Props) {
           extraContent={
             <styledEl.Description>
               The order could not be settled on-chain. Solvers are competing to find a new solution.
+              <br />
+              <styledEl.Link href="https://cow.fi/learn/understanding-batch-auctions" target="_blank">
+                Learn more ↗
+              </styledEl.Link>
             </styledEl.Description>
           }
         />
@@ -827,10 +883,13 @@ function ExpiredStep({ order }: OrderProgressBarV2Props) {
       </styledEl.CardWrapper>
 
       <styledEl.Description center margin="10px 0">
-        If your orders often expire, consider increasing your slippage or{' '}
-        <styledEl.Link href="#" target="_blank">
-          {/*TODO: add contact us link*/}
-          contacting us
+        If your orders often expire, consider increasing your slippage or contact us on{' '}
+        <styledEl.Link href="https://discord.com/invite/cowprotocol" target="_blank">
+          Discord
+        </styledEl.Link>{' '}
+        or send us an email at{' '}
+        <styledEl.Link href="mailto:help@cow.fi" target="_blank">
+          help@cow.fi
         </styledEl.Link>{' '}
         so we can investigate the problem.
       </styledEl.Description>

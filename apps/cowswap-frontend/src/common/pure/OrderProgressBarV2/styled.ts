@@ -141,6 +141,11 @@ export const Description = styled.p<{ center?: boolean; margin?: string }>`
   font-size: 14px;
   color: var(${UI.COLOR_TEXT_OPACITY_70});
   text-align: ${({ center }) => (center ? 'center' : 'left')};
+
+  > button {
+    font-weight: 700;
+    text-decoration: underline;
+  }
 `
 
 export const Link = styled.a<{ underline?: boolean }>`
@@ -155,7 +160,7 @@ export const Link = styled.a<{ underline?: boolean }>`
   }
 `
 
-export const ProgressImageWrapper = styled.div<{ bgColor?: string; padding?: string; height?: string }>`
+export const ProgressImageWrapper = styled.div<{ bgColor?: string; padding?: string; height?: string; gap?: string }>`
   width: 100%;
   height: ${({ height }) => height || '246px'};
   max-height: 246px;
@@ -165,6 +170,7 @@ export const ProgressImageWrapper = styled.div<{ bgColor?: string; padding?: str
   flex-flow: column wrap;
   border-radius: 21px;
   padding: ${({ padding }) => padding || '0'};
+  gap: ${({ gap }) => gap || '0'};
   background: ${({ bgColor }) => bgColor || `var(${UI.COLOR_PAPER_DARKER})`};
   transition: all 0.3s ease-in-out;
   position: relative;
@@ -347,37 +353,30 @@ export const ConclusionContent = styled.div`
 `
 
 export const CowImage = styled.div`
-  position: absolute;
   height: 100%;
-  width: 220px;
-  left: 0;
-  bottom: 0;
+  width: auto;
   display: flex;
   align-items: flex-end;
   justify-content: flex-start;
+  position: relative;
 
-  // mobile from Media
+  > svg {
+    height: 100%;
+    width: 100%;
+    max-width: 199px;
+  }
 
   ${Media.upToSmall()} {
-    left: -50px;
-    width: 200px;
   }
 `
 
-export const TokenPairTitle = styled.h3`
-  position: absolute;
-  right: 80px;
-  bottom: 16px;
-  font-size: 13px;
-  font-weight: 300;
+export const TokenPairTitle = styled.span`
   margin: 0;
-  display: flex;
-  flex-flow: column wrap;
-  justify-content: center;
-  align-items: flex-end;
+  background: #99ecff;
+  border-radius: 12px;
+  padding: 3px 6px;
 
   // mobile
-
   ${Media.upToSmall()} {
     display: none;
   }
@@ -401,25 +400,30 @@ export const TokenImages = styled.div`
 `
 
 export const Surplus = styled.div<{ showSurplus: boolean }>`
-  position: absolute;
-  top: ${({ showSurplus }) => (showSurplus ? '34px' : '54px')};
-  right: 20px;
-  height: calc(100% - 86px);
-  display: flex;
-  align-items: flex-end;
-  flex-flow: column wrap;
-  justify-content: center;
-  color: var(${UI.COLOR_SUCCESS_TEXT});
-  font-size: 23px;
-  font-weight: 400;
+  font-size: 1em;
+  font-weight: ${({ showSurplus }) => (showSurplus ? 'bold' : 'normal')};
+  color: inherit;
+  width: 100%;
+  text-align: left;
+  line-height: 1.2;
+  margin: 0;
 
-  > b {
-    font-size: 46px;
-    font-weight: 700;
+  // Use CSS grid for precise sizing
+  display: grid;
 
-    ${Media.upToSmall()} {
-      font-size: 32px;
-    }
+  span {
+    grid-area: 1 / 1 / 2 / 2;
+    white-space: nowrap;
+  }
+
+  &::after {
+    content: attr(data-content);
+    display: block;
+    font-weight: bold;
+    height: 0;
+    overflow: hidden;
+    visibility: hidden;
+    grid-area: 1 / 1 / 2 / 2;
   }
 `
 
@@ -439,25 +443,29 @@ export const RandomMessage = styled.div`
 `
 
 export const FinishedLogo = styled.div`
-  position: absolute;
-  top: 16px;
-  left: 20px;
-  z-index: 1;
-`
-
-export const FinishedTagLine = styled.p`
-  font-size: 14px;
-  color: var(${UI.COLOR_PRIMARY_DARKER});
-  position: absolute;
-  top: 16px;
-  right: 20px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   z-index: 1;
   padding: 0;
   margin: 0;
 
   > b {
     font-weight: 700;
-    // TODO: Activate serif font
+  }
+`
+
+export const FinishedTagLine = styled.div`
+  line-height: 1.7;
+  font-weight: bold;
+  font-size: 17px;
+  color: inherit;
+  max-width: 100%;
+  width: 100%;
+
+  > b {
+    font-weight: 700;
   }
 `
 
@@ -475,16 +483,18 @@ export const ShareButton = styled.button`
   font-size: 17px;
   z-index: 2;
   position: absolute;
-  bottom: 13px;
-  left: 10px;
+  left: 6px;
+  right: 0;
+  bottom: 6px;
+  width: calc(100% - 12px);
   transition: background 0.15s ease-in-out, color 0.15s ease-in-out;
+
   &:hover {
     background: var(${UI.COLOR_BUTTON_TEXT});
     color: var(${UI.COLOR_PRIMARY});
   }
 
   // mobile
-
   ${Media.upToSmall()} {
     border: 1px solid var(${UI.COLOR_TEXT});
   }
@@ -713,17 +723,22 @@ export const InfoCard = styled.div<{ variant: 'warning' | 'success' }>`
   align-items: center;
   justify-content: center;
 
-  h3 {
+  > h3 {
     margin: 0 0 16px;
     font-size: 16px;
     font-weight: bold;
   }
 
-  p {
+  > p {
     margin: 0;
     font-size: 14px;
     line-height: 1.4;
     text-align: center;
+  }
+
+  > p > a {
+    color: inherit;
+    text-decoration: underline;
   }
 
   > svg {
@@ -771,4 +786,17 @@ export const ClockAnimation = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+`
+
+export const FinishedImageContent = styled.div`
+  display: flex;
+  flex-flow: column wrap;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
+  width: 50%;
+  position: relative;
+  border: 2px solid #99ecff;
+  border-radius: 21px;
+  padding: 14px;
 `
