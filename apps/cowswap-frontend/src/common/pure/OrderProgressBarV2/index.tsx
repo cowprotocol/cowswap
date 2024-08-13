@@ -175,7 +175,7 @@ const CountdownEl: React.FC<CountdownElProps> = ({ countdown }) => {
 }
 
 export function OrderProgressBarV2(props: OrderProgressBarV2Props) {
-  const { stepName, debugMode = true } = props
+  const { stepName, debugMode = false } = props
   const [debugStep, setDebugStep] = useState<OrderProgressBarStepName>(stepName)
   const currentStep = debugMode ? debugStep : stepName
   console.log('OrderProgressBarV2 - currentStep:', currentStep)
