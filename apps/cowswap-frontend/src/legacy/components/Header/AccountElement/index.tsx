@@ -53,7 +53,9 @@ export function AccountElement({ className, standaloneMode, pendingActivities }:
           <NotificationBell
             unreadCount={unreadNotificationsCount}
             onClick={() => {
-              clickNotifications(unreadNotificationsCount ? 'click-bell' : 'click-bell-with-pending-notifications')
+              clickNotifications(
+                unreadNotificationsCount === 0 ? 'click-bell' : 'click-bell-with-pending-notifications'
+              )
               setSidebarOpen(true)
             }}
           />
