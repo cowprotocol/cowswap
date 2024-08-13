@@ -1,7 +1,6 @@
 import IMAGE_STAR_SHINE from '@cowprotocol/assets/cow-swap/star-shine.svg'
-import { Media, UI } from '@cowprotocol/ui'
+import { LinkStyledButton, Media, UI } from '@cowprotocol/ui'
 
-import { NavLink as NavLinkOriginal } from 'react-router-dom'
 import styled, { css, keyframes } from 'styled-components/macro'
 
 import { CancelButton as CancelButtonOriginal } from '../CancelButton'
@@ -141,23 +140,22 @@ export const Link = styled.a<{ underline?: boolean }>`
 `
 
 export const CancelButton = styled(CancelButtonOriginal)`
-  color: var(${UI.COLOR_TEXT_PAPER});
   font-size: 14px;
   margin: 8px 0 0;
   padding: 1px 0;
-  text-decoration: none;
+  text-decoration: underline;
 
   &:hover {
-    text-decoration: underline;
+    text-decoration: none;
   }
 `
 
-export const NavLink = styled(NavLinkOriginal)`
-  text-decoration: none;
-  color: var(${UI.COLOR_TEXT_PAPER});
+export const Button = styled(LinkStyledButton)`
+  font-size: 14px;
+  text-decoration: underline;
 
   &:hover {
-    text-decoration: underline;
+    text-decoration: none;
   }
 `
 

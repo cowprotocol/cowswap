@@ -13,6 +13,7 @@ import { ActivityStatus } from 'legacy/hooks/useRecentActivity'
 
 import { ActivityDerivedState } from 'modules/account/containers/Transaction'
 // import { GnosisSafeTxDetails } from 'modules/account/containers/Transaction/ActivityDetails'
+import { NavigateToNewOrderCallback } from 'modules/swap/containers/ConfirmSwapModalSetup'
 import { EthFlowStepper } from 'modules/swap/containers/EthFlowStepper'
 import { WatchAssetInWallet } from 'modules/wallet/containers/WatchAssetInWallet'
 
@@ -51,6 +52,7 @@ export interface TransactionSubmittedContentProps {
   currencyToAdd?: Nullish<Currency>
   orderProgressBarV2Props?: OrderProgressBarV2Props | null
   showCancellationModal: Command | null
+  navigateToNewOrderCallback?: NavigateToNewOrderCallback
 }
 
 export function TransactionSubmittedContent({
@@ -61,6 +63,7 @@ export function TransactionSubmittedContent({
   activityDerivedState,
   orderProgressBarV2Props,
   showCancellationModal,
+  navigateToNewOrderCallback,
 }: TransactionSubmittedContentProps) {
   const { order, isOrder, isCreating, isPending } = activityDerivedState || {}
   const showCancellationButton = isOrder && (isCreating || isPending) && showCancellationModal
@@ -93,7 +96,11 @@ export function TransactionSubmittedContent({
           {/*<DisplayLink id={hash} chainId={chainId} />*/}
           <EthFlowStepper order={order} />
           {activityDerivedState && showProgressBar && orderProgressBarV2Props && (
-            <OrderProgressBarV2 {...orderProgressBarV2Props} order={order} />
+            <OrderProgressBarV2
+              {...orderProgressBarV2Props}
+              order={order}
+              navigateToNewOrder={navigateToNewOrderCallback?.(chainId, order, onDismiss)}
+            />
           )}
           <styledEl.ButtonGroup>
             <WatchAssetInWallet shortLabel currency={currencyToAdd} />

@@ -31,10 +31,6 @@ import SVG from 'react-inlinesvg'
 import { AMM_LOGOS } from 'legacy/components/AMMsLogo'
 import { Order } from 'legacy/state/orders/actions'
 
-import { parameterizeTradeRoute } from 'modules/trade'
-import { TradeUrlParams } from 'modules/trade/types/TradeRawState'
-
-import { Routes } from 'common/constants/routes'
 import { OrderProgressBarStepName, PROGRESS_BAR_TIMER_DURATION } from 'common/hooks/orderProgressBarV2'
 import { SurplusData } from 'common/hooks/useGetSurplusFiatValue'
 import { getIsCustomRecipient } from 'utils/orderUtils/getIsCustomRecipient'
@@ -51,6 +47,7 @@ export type OrderProgressBarV2Props = {
   showCancellationModal: Command | null
   surplusData?: SurplusData
   receiverEnsName?: string
+  navigateToNewOrder?: Command
 }
 
 const STEPS = [
@@ -715,17 +712,7 @@ function CancelledStep({ order }: OrderProgressBarV2Props) {
   )
 }
 
-function ExpiredStep({ order, chainId }: OrderProgressBarV2Props) {
-  const tradeUrlParam: TradeUrlParams = {
-    chainId: String(chainId),
-    inputCurrencyId: order?.sellToken,
-    inputCurrencyAmount: order?.sellAmountBeforeFee?.toString(),
-    outputCurrencyId: order?.buyToken,
-    outputCurrencyAmount: order?.buyAmount?.toString(),
-    orderKind: order?.kind,
-  }
-  const swapLink = parameterizeTradeRoute(tradeUrlParam, Routes.SWAP, true)
-
+function ExpiredStep({ order, navigateToNewOrder }: OrderProgressBarV2Props) {
   return (
     <styledEl.ProgressContainer>
       <styledEl.ProgressTopSection>
@@ -750,7 +737,8 @@ function ExpiredStep({ order, chainId }: OrderProgressBarV2Props) {
           <h3>The good news</h3>
           <p>
             Unlike on other exchanges, you won't be charged for this! Feel free to{' '}
-            <styledEl.NavLink to={swapLink}>place a new order</styledEl.NavLink> without worry.
+            <styledEl.Button onClick={navigateToNewOrder}>place a new order</styledEl.Button>
+            without worry.
           </p>
         </styledEl.InfoCard>
       </styledEl.CardWrapper>

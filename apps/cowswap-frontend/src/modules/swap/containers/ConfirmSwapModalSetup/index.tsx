@@ -5,7 +5,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useENS } from '@cowprotocol/ens'
 import { Command } from '@cowprotocol/types'
 import { GnosisSafeInfo, useGnosisSafeInfo, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
-import { Percent, TradeType } from '@uniswap/sdk-core'
+import { CurrencyAmount, Percent, TradeType } from '@uniswap/sdk-core'
 
 import { HighFeeWarning } from 'legacy/components/SwapWarnings'
 import { getActivityDerivedState } from 'legacy/hooks/useActivityDerivedState'
@@ -16,6 +16,7 @@ import TradeGp from 'legacy/state/swap/TradeGp'
 
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import {
+  parameterizeTradeRoute,
   TradeConfirmation,
   TradeConfirmModal,
   useReceiveAmountInfo,
@@ -33,7 +34,6 @@ import { NetworkCostsSuffix } from 'common/pure/NetworkCostsSuffix'
 import { RateInfoParams } from 'common/pure/RateInfo'
 import { TransactionSubmittedContent } from 'common/pure/TransactionSubmittedContent'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
-
 import { useIsEoaEthFlow } from '../../hooks/useIsEoaEthFlow'
 import { useShouldPayGas } from '../../hooks/useShouldPayGas'
 import { useSwapConfirmButtonText } from '../../hooks/useSwapConfirmButtonText'
@@ -41,6 +41,10 @@ import { useSwapState } from '../../hooks/useSwapState'
 import { NetworkCostsTooltipSuffix } from '../../pure/NetworkCostsTooltipSuffix'
 import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from '../../pure/Row/RowSlippageContent'
 import { RowDeadline } from '../Row/RowDeadline'
+import { Order } from 'legacy/state/orders/actions'
+import { useNavigate } from 'common/hooks/useNavigate'
+import { TradeUrlParams } from '../../../trade/types/TradeRawState'
+import { Routes } from 'common/constants/routes'
 
 const CONFIRM_TITLE = 'Swap'
 
@@ -164,6 +168,8 @@ function useSubmittedContent(chainId: SupportedChainId, gnosisSafeInfo: GnosisSa
   const surplusData = useGetSurplusData(order)
   const receiverEnsName = useENS(order?.receiver).name || undefined
 
+  const navigateToNewOrderCallback = useNavigateToNewOrderCallback()
+
   const completeOrderProgressBarV2Props = useMemo(() => {
     if (!orderProgressBarV2Props) {
       return undefined
@@ -181,8 +187,43 @@ function useSubmittedContent(chainId: SupportedChainId, gnosisSafeInfo: GnosisSa
         activityDerivedState={activityDerivedState}
         orderProgressBarV2Props={completeOrderProgressBarV2Props}
         showCancellationModal={showCancellationModal}
+        navigateToNewOrderCallback={navigateToNewOrderCallback}
       />
     ),
     [chainId, transactionHash, activityDerivedState, completeOrderProgressBarV2Props, order, showCancellationModal]
+  )
+}
+
+// TODO: move to its own file/module
+export type NavigateToNewOrderCallback = (chainId: SupportedChainId, order?: Order, callback?: Command) => () => void
+
+export function useNavigateToNewOrderCallback(): NavigateToNewOrderCallback {
+  const navigate = useNavigate()
+
+  return useCallback(
+    (chainId: SupportedChainId, order?: Order, callback?: Command) => {
+      const inputCurrencyAmount = order
+        ? CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount).toFixed(order.inputToken.decimals)
+        : ''
+      const outputCurrencyAmount = order
+        ? CurrencyAmount.fromRawAmount(order.outputToken, order.buyAmount).toFixed(order.outputToken.decimals)
+        : ''
+
+      const tradeUrlParam: TradeUrlParams = {
+        chainId: String(chainId),
+        inputCurrencyId: order?.sellToken,
+        inputCurrencyAmount,
+        outputCurrencyId: order?.buyToken,
+        outputCurrencyAmount,
+        orderKind: order?.kind,
+      }
+      const swapLink = parameterizeTradeRoute(tradeUrlParam, Routes.SWAP, true)
+
+      return () => {
+        navigate(swapLink)
+        callback?.()
+      }
+    },
+    [navigate]
   )
 }
