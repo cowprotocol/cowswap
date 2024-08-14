@@ -28,6 +28,8 @@ import { TokenLogo } from '@cowprotocol/tokens'
 import { Command } from '@cowprotocol/types'
 import { ExternalLink, ProductLogo, ProductVariant, TokenAmount, UI } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
+import { OrderKind } from '@cowprotocol/cow-sdk'
+import { shareSurplusOnTwitter as trackSurplusShare } from 'modules/analytics'
 
 import Lottie from 'lottie-react'
 import { MdOutlineMotionPhotosPause } from 'react-icons/md'
@@ -363,6 +365,36 @@ const COW_SWAP_BENEFITS = [
   "Experience gasless trading with COW Swap's off-chain order matching.",
 ]
 
+function truncateWithEllipsis(str: string, maxLength: number): string {
+  if (str.length <= maxLength) return str
+  return str.slice(0, maxLength - 3) + '...'
+}
+
+function getTwitterText(surplusAmount: string, surplusToken: string, orderKind: OrderKind) {
+  const actionWord = isSellOrder(orderKind) ? 'got' : 'saved'
+  const surplus = `${surplusAmount} ${surplusToken}`
+  return encodeURIComponent(
+    `Hey, I just ${actionWord} an extra ${surplus} on @CoWSwap! 🐮💸\n\nStart swapping on swap.cow.fi`
+  )
+}
+
+function getTwitterShareUrl(surplusData: SurplusData | undefined, order: Order | undefined): string {
+  const surplusAmount = surplusData?.surplusAmount?.toSignificant() || '0'
+  const surplusToken = surplusData?.surplusAmount?.currency.symbol || 'Unknown token'
+  const orderKind = order?.kind || OrderKind.SELL
+
+  const twitterText = getTwitterText(surplusAmount, surplusToken, orderKind)
+  return `https://x.com/intent/tweet?text=${twitterText}`
+}
+
+function shareSurplusOnTwitter(surplusData: SurplusData | undefined, order: Order | undefined) {
+  return () => {
+    const twitterUrl = getTwitterShareUrl(surplusData, order)
+    window.open(twitterUrl, '_blank', 'noopener,noreferrer')
+    trackSurplusShare()
+  }
+}
+
 function FinishedStep({
   stepName,
   solverCompetition: solvers,
@@ -414,7 +446,6 @@ function FinishedStep({
             surplusRef.current!.style.fontSize = `${fontSize}px`
           }
 
-          // Step back once to ensure it fits
           fontSize -= 0.5
           setSurplusSize(Math.min(fontSize, 50)) // Ensure it doesn't exceed 50px
         }
@@ -424,6 +455,7 @@ function FinishedStep({
         return () => window.removeEventListener('resize', fitText)
       }
     }
+    return () => {}
   }, [showSurplus, surplusPercentValue])
 
   return (
@@ -436,7 +468,7 @@ function FinishedStep({
       <styledEl.ProgressTopSection>
         <styledEl.ProgressImageWrapper bgColor={'#65D9FF'} padding={'10px'} gap={'10px'}>
           <styledEl.CowImage>
-            <styledEl.ShareButton>
+            <styledEl.ShareButton onClick={shareSurplusOnTwitter(surplusData, order)}>
               <SVG src={ICON_SOCIAL_X} />
               <span>Share this win!</span>
             </styledEl.ShareButton>
@@ -461,9 +493,11 @@ function FinishedStep({
               )}
               {showSurplus && (
                 <>
-                  I just received surplus on my&nbsp;
-                  <styledEl.TokenPairTitle>
-                    {order ? `${order.inputToken.symbol}/${order.outputToken.symbol}` : 'N/A'}
+                  I just received surplus on my
+                  <styledEl.TokenPairTitle
+                    title={order ? `${order.inputToken.symbol}/${order.outputToken.symbol}` : 'N/A'}
+                  >
+                    {order ? truncateWithEllipsis(`${order.inputToken.symbol}/${order.outputToken.symbol}`, 30) : 'N/A'}
                   </styledEl.TokenPairTitle>{' '}
                   trade
                   <styledEl.Surplus
@@ -508,15 +542,17 @@ function FinishedStep({
         {solvers && solvers.length > 0 && (
           <styledEl.SolverRankings>
             <h3>Solver auction rankings</h3>
-            <p>
-              <b>{solvers.length} out of 25 solvers</b> submitted a solution
-            </p>
+            {solvers.length > 1 && (
+              <p>
+                <b>{solvers.length} out of 25 solvers</b> submitted a solution
+              </p>
+            )}
 
             <styledEl.SolverTable>
               <tbody>
                 {visibleSolvers.map((solver: any, index: number) => (
                   <styledEl.SolverTableRow key={`${solver.solver}-${index}`} isWinner={index === 0}>
-                    <styledEl.SolverRank isFirst>{index + 1}</styledEl.SolverRank>
+                    {solvers.length > 1 && <styledEl.SolverRank isFirst>{index + 1}</styledEl.SolverRank>}
                     <styledEl.SolverTableCell isSecond>
                       <styledEl.SolverInfo>
                         <styledEl.SolverLogo>
@@ -600,10 +636,7 @@ function FinishedStep({
 
 function getSurplusText(isSell: boolean | undefined, isCustomRecipient: boolean | undefined): string {
   if (isSell) {
-    if (isCustomRecipient) {
-      return 'including an extra '
-    }
-    return 'and got an extra '
+    return isCustomRecipient ? 'including an extra ' : 'and got an extra '
   }
   return 'and saved '
 }

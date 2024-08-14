@@ -371,12 +371,12 @@ export const CowImage = styled.div`
 `
 
 export const TokenPairTitle = styled.span`
-  margin: 0;
+  margin: 0 0 0 4px;
   background: #99ecff;
   border-radius: 12px;
   padding: 3px 6px;
+  word-break: break-all;
 
-  // mobile
   ${Media.upToSmall()} {
     display: none;
   }
@@ -443,13 +443,16 @@ export const RandomMessage = styled.div`
 `
 
 export const FinishedLogo = styled.div`
-  width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
   z-index: 1;
   padding: 0;
   margin: 0;
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  width: calc(100% - 20px);
 
   > b {
     font-weight: 700;
@@ -578,11 +581,12 @@ export const SolverTableCell = styled.td<{ isFirst?: boolean; isSecond?: boolean
       border-top-left-radius: 5px;
       border-bottom-left-radius: 5px;
       padding: 10px 0 10px 10px;
-    `} // isSecond
+    `}
   ${({ isSecond }) =>
     isSecond &&
     css`
-      padding: 10px 10px 10px 0;
+      border-top-left-radius: 5px;
+      border-bottom-left-radius: 5px;
     `}
 
   ${({ isLast }) =>
@@ -798,5 +802,5 @@ export const FinishedImageContent = styled.div`
   position: relative;
   border: 2px solid #99ecff;
   border-radius: 21px;
-  padding: 14px;
+  padding: 14px 14px 40px;
 `
