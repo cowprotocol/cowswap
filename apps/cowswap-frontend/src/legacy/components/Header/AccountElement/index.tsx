@@ -5,20 +5,22 @@ import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { TokenAmount } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { clickNotifications } from 'modules/analytics'
 
 import ReactDOM from 'react-dom'
+
+
 
 import { upToLarge, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 
 import { useToggleAccountModal } from 'modules/account'
+import { clickNotifications } from 'modules/analytics'
 import { NotificationBell, NotificationSidebar } from 'modules/notifications'
+import { useUnreadNotifications } from 'modules/notifications/hooks/useUnreadNotifications'
 import { Web3Status } from 'modules/wallet/containers/Web3Status'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
 import { BalanceText, Wrapper } from './styled'
-import { useUnreadNotifications } from 'modules/notifications/hooks/useUnreadNotifications'
 
 interface AccountElementProps {
   pendingActivities: string[]

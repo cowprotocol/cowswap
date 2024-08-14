@@ -7,7 +7,6 @@ import { UI } from '@cowprotocol/ui'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
-import { useUnreadNotifications } from '../hooks/useUnreadNotifications'
 
 const Icon = styled.div<{ hasNotification?: boolean }>`
   --size: 18px;

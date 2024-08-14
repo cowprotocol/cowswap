@@ -1,13 +1,14 @@
 import { useSetAtom } from 'jotai/index'
 import React, { ReactNode, useEffect, useMemo } from 'react'
 
+import { clickNotifications } from 'modules/analytics'
+
 import { ListWrapper, NoNotifications, NotificationCard, NotificationsListWrapper, NotificationThumb } from './styled'
 
 import { useAccountNotifications } from '../../hooks/useAccountNotifications'
 import { useUnreadNotifications } from '../../hooks/useUnreadNotifications'
 import { markNotificationsAsReadAtom } from '../../state/readNotificationsAtom'
 import { groupNotificationsByDate } from '../../utils/groupNotificationsByDate'
-import { clickNotifications } from 'modules/analytics'
 
 const DATE_FORMAT_OPTION: Intl.DateTimeFormatOptions = {
   dateStyle: 'long',
