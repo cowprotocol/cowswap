@@ -87,10 +87,12 @@ export function TradeWidgetLinks({
     location.pathname,
     highlightedBadgeText,
     highlightedBadgeType,
-    handleMenuItemClick
+    handleMenuItemClick,
   ])
 
   const singleMenuItem = menuItemsElements.length === 1
+
+  const selectedMenuItem = menuItemsElements.find((item) => item.props.isActive) || menuItemsElements[0]
 
   return isDropdown ? (
     <>
@@ -98,11 +100,9 @@ export function TradeWidgetLinks({
         onClick={() => !singleMenuItem && setDropdownVisible(!isDropdownVisible)}
         isDropdownVisible={isDropdownVisible}
       >
-        <styledEl.Link to={menuItemsElements.find((item) => item.props.isActive)?.props.routePath || '#'}>
-          <Trans>
-            {menuItemsElements.find((item) => item.props.isActive)?.props.item.label}
-            {!singleMenuItem ? <SVG src={IMAGE_CARET} title="select" /> : null}
-          </Trans>
+        <styledEl.Link to={selectedMenuItem.props.routePath || '#'}>
+          {selectedMenuItem.props.item.label}
+          {!singleMenuItem ? <SVG src={IMAGE_CARET} title="select" /> : null}
         </styledEl.Link>
       </styledEl.MenuItem>
 
