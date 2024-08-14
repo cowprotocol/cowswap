@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.7.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.6.1...tokens-v1.7.0) (2024-08-14)
+
+
+### Features
+
+* improve finding tokens in other networks ([#4794](https://github.com/cowprotocol/cowswap/issues/4794)) ([87ee5aa](https://github.com/cowprotocol/cowswap/commit/87ee5aac719db1fcaecd17d06bddecda172e8a95))
+
+
+### Bug Fixes
+
+* replace gateway.ipfs.io with ipfs.io ([#4788](https://github.com/cowprotocol/cowswap/issues/4788)) ([df1235b](https://github.com/cowprotocol/cowswap/commit/df1235b20ab9a888e085d1d90a9e5ab73da54d13))
+
 ## [1.6.1](https://github.com/cowprotocol/cowswap/compare/tokens-v1.6.0...tokens-v1.6.1) (2024-08-02)
 
 

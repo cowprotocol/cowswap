@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.1](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v1.5.0...widget-configurator-v1.5.1) (2024-08-14)
+
+
+### Bug Fixes
+
+* replace gateway.ipfs.io with ipfs.io ([#4788](https://github.com/cowprotocol/cowswap/issues/4788)) ([df1235b](https://github.com/cowprotocol/cowswap/commit/df1235b20ab9a888e085d1d90a9e5ab73da54d13))
+
 ## [1.5.0](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v1.4.0...widget-configurator-v1.5.0) (2024-07-18)
 
 
