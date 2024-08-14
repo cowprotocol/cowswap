@@ -69,6 +69,7 @@ export type OrderProgressBarV2Props = {
   showCancellationModal: Command | null
   surplusData?: SurplusData
   receiverEnsName?: string
+  navigateToNewOrder?: Command
 }
 
 const STEPS = [
@@ -301,7 +302,8 @@ function SolvingStep({ order, countdown }: OrderProgressBarV2Props) {
           _index={1}
           extraContent={
             <styledEl.Description>
-              The auction has started! Solvers are competing to find the best solution for you... &nbsp;
+              The auction has started! Solvers are competing to find the best solution for you...
+              <br />
               <styledEl.Link href="https://cow.fi/learn/understanding-batch-auctions" target="_blank">
                 Learn more ↗
               </styledEl.Link>
@@ -724,7 +726,7 @@ function NextBatchStep({ solverCompetition, order }: OrderProgressBarV2Props) {
   )
 }
 
-function DelayedStep({ order }: OrderProgressBarV2Props) {
+function DelayedStep({ order, showCancellationModal }: OrderProgressBarV2Props) {
   const [currentFrame, setCurrentFrame] = useState(0)
   const frames = [STEP_IMAGE_SOLVING_1, STEP_IMAGE_SOLVING_2, STEP_IMAGE_SOLVING_3]
 
@@ -767,10 +769,13 @@ function DelayedStep({ order }: OrderProgressBarV2Props) {
           extraContent={
             <styledEl.Description>
               This is taking longer than expected! There may be a network issue (such as a gas spike) that is preventing
-              solvers from picking up your order. The issue should resolve momentarily.&nbsp;
-              <styledEl.Link href="https://cow.fi/learn/understanding-batch-auctions" target="_blank">
-                Learn more ↗
-              </styledEl.Link>
+              solvers from picking up your order. The issue should resolve momentarily.{' '}
+              {showCancellationModal && (
+                <>
+                  You can wait or{' '}
+                  <styledEl.CancelButton onClick={showCancellationModal}>cancel the order</styledEl.CancelButton>.
+                </>
+              )}
             </styledEl.Description>
           }
         />
@@ -799,8 +804,13 @@ function UnfillableStep({ order, showCancellationModal }: OrderProgressBarV2Prop
           customColor={`var(${UI.COLOR_ALERT_TEXT})`}
           extraContent={
             <styledEl.Description>
-              Your order's price is currently out of market. You can either wait or{' '}
-              {showCancellationModal && <CancelButton onClick={showCancellationModal}>cancel the order</CancelButton>}
+              Your order's price is currently out of market.{' '}
+              {showCancellationModal && (
+                <>
+                  You can either wait or{' '}
+                  <styledEl.CancelButton onClick={showCancellationModal}>cancel the order</styledEl.CancelButton>.
+                </>
+              )}
             </styledEl.Description>
           }
         />
@@ -906,7 +916,7 @@ function CancelledStep({ order }: OrderProgressBarV2Props) {
   )
 }
 
-function ExpiredStep({ order }: OrderProgressBarV2Props) {
+function ExpiredStep({ order, navigateToNewOrder }: OrderProgressBarV2Props) {
   return (
     <styledEl.ProgressContainer>
       <styledEl.ProgressTopSection>
@@ -940,10 +950,7 @@ function ExpiredStep({ order }: OrderProgressBarV2Props) {
           <h3>The good news</h3>
           <p>
             Unlike on other exchanges, you won't be charged for this! Feel free to{' '}
-            <styledEl.Link href="#" underline>
-              {/*TODO: add link to new order*/}
-              place a new order
-            </styledEl.Link>{' '}
+            <styledEl.Button onClick={navigateToNewOrder}>place a new order</styledEl.Button>
             without worry.
           </p>
         </styledEl.InfoCard>

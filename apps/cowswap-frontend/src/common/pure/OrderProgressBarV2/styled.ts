@@ -1,7 +1,9 @@
 import IMAGE_STAR_SHINE from '@cowprotocol/assets/cow-swap/star-shine.svg'
-import { Font, Media, UI } from '@cowprotocol/ui'
+import { LinkStyledButton, Font, Media, UI } from '@cowprotocol/ui'
 
 import styled, { css, keyframes } from 'styled-components/macro'
+
+import { CancelButton as CancelButtonOriginal } from '../CancelButton'
 
 const BLUE_COLOR = '#65d9ff'
 
@@ -157,6 +159,25 @@ export const Link = styled.a<{ underline?: boolean }>`
 
   &:hover {
     text-decoration: underline;
+  }
+`
+
+export const CancelButton = styled(CancelButtonOriginal)`
+  font-size: 14px;
+  padding: 1px 0;
+  text-decoration: underline;
+
+  &:hover {
+    text-decoration: none;
+  }
+`
+
+export const Button = styled(LinkStyledButton)`
+  font-size: 14px;
+  text-decoration: underline;
+
+  &:hover {
+    text-decoration: none;
   }
 `
 
