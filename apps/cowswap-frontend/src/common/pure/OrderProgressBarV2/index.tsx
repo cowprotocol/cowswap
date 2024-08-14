@@ -55,7 +55,7 @@ import { useIsDarkMode } from 'legacy/state/user/hooks'
 
 import * as styledEl from './styled'
 
-const IS_DEBUG_MODE = true
+const IS_DEBUG_MODE = false
 const DEBUG_FORCE_SHOW_SURPLUS = false
 
 export type OrderProgressBarV2Props = {
