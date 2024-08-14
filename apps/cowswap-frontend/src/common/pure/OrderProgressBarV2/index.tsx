@@ -56,7 +56,7 @@ import * as styledEl from './styled'
 
 import { CancelButton } from '../CancelButton'
 
-const IS_DEBUG_MODE = false
+const IS_DEBUG_MODE = true
 const DEBUG_FORCE_SHOW_SURPLUS = false
 
 export type OrderProgressBarV2Props = {

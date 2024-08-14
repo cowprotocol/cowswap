@@ -483,7 +483,7 @@ export const FinishedTagLine = styled.div`
   display: flex;
   align-items: center;
   overflow: hidden;
-  padding: 0 0 10px;
+  padding: 0;
 `
 
 export const FinishedLogo = styled.div`
@@ -854,11 +854,10 @@ export const FinishedImageContent = styled.div`
 
 export const BenefitSurplusContainer = styled.div`
   width: 100%;
-  height: 100%;
+  height: 98%;
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
 
   > span {
     width: 100%;
