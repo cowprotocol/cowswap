@@ -103,19 +103,6 @@ export const StepsWrapper = styled.div`
   ${Media.upToSmall()} {
     padding: 30px 0 0;
   }
-
-  .spinner {
-    animation: spin 1s linear infinite;
-  }
-
-  @keyframes spin {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(360deg);
-    }
-  }
 `
 
 export const Step = styled.div<{ status: string; isFirst: boolean }>`
@@ -793,6 +780,27 @@ export const CancellationFailedBanner = styled.div`
   border-radius: 16px;
   text-align: center;
   font-size: 15px;
+`
+
+const spinAnimation = keyframes`
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+`
+
+export const SpinnerIcon = styled.div`
+  width: var(--width);
+  height: var(--width);
+  animation: ${spinAnimation} 1s linear infinite;
+
+  > svg {
+    width: 100%;
+    height: 100%;
+    color: inherit;
+  }
 `
 
 export const SweatDrop = styled.div`

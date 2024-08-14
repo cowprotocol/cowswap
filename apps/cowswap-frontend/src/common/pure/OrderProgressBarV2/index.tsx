@@ -54,8 +54,6 @@ import { getIsCustomRecipient } from 'utils/orderUtils/getIsCustomRecipient'
 
 import * as styledEl from './styled'
 
-import { CancelButton } from '../CancelButton'
-
 const IS_DEBUG_MODE = true
 const DEBUG_FORCE_SHOW_SURPLUS = false
 
@@ -114,7 +112,11 @@ const StatusIcon: React.FC<{ status: string; customColor?: string }> = ({ status
     case 'done':
       return <PiCheckCircleFill color={iconColor} />
     case 'active':
-      return <PiSpinnerBallFill className="spinner" color={iconColor} />
+      return (
+        <styledEl.SpinnerIcon>
+          <PiSpinnerBallFill color={iconColor} />
+        </styledEl.SpinnerIcon>
+      )
     case 'error':
     case 'unfillable':
       return <MdOutlineMotionPhotosPause color={iconColor} />
