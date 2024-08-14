@@ -490,6 +490,11 @@ function FinishedStep({
     ? shareSurplusOnTwitter(surplusData, order)
     : shareBenefitOnTwitter(randomBenefit)
 
+  // Early return if order is not set
+  if (!order) {
+    return null
+  }
+
   return (
     <styledEl.FinishedStepContainer>
       {cancellationFailed && (
@@ -522,12 +527,8 @@ function FinishedStep({
                 <styledEl.BenefitSurplusContainer ref={surplusContainerRef}>
                   <span ref={surplusTextRef} style={{ fontSize: `${surplusFontSize}px` }}>
                     I just received surplus on my
-                    <styledEl.TokenPairTitle
-                      title={order ? `${order.inputToken.symbol}/${order.outputToken.symbol}` : 'N/A'}
-                    >
-                      {order
-                        ? truncateWithEllipsis(`${order.inputToken.symbol}/${order.outputToken.symbol}`, 30)
-                        : 'N/A'}
+                    <styledEl.TokenPairTitle title={`${order.inputToken.symbol}/${order.outputToken.symbol}`}>
+                      {truncateWithEllipsis(`${order.inputToken.symbol}/${order.outputToken.symbol}`, 30)}
                     </styledEl.TokenPairTitle>{' '}
                     trade
                     <styledEl.Surplus
