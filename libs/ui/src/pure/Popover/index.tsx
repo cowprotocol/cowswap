@@ -56,7 +56,10 @@ export default function Popover(props: PopoverProps) {
           className={className}
           show={show}
           ref={setPopperElement as any}
-          style={styles.popper}
+          style={{
+            ...styles.popper,
+            zIndex: 999999,
+          }}
           {...attributes.popper}
           bgColor={bgColor}
           color={color}

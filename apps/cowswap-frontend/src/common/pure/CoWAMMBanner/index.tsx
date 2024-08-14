@@ -209,7 +209,16 @@ export function CoWAmmBanner() {
   return ClosableBanner('cow_amm_banner', (close) => (
     <BannerWrapper>
       <i></i>
-      <CloseButton size={24} onClick={close} />
+      <CloseButton
+        size={24}
+        onClick={() => {
+          cowAnalytics.sendEvent({
+            category: 'CoW Swap',
+            action: 'CoW AMM Banner CTA Closed',
+          })
+          close()
+        }}
+      />
       <div>
         <Title>Now live: the first MEV-capturing AMM</Title>
         <Description>

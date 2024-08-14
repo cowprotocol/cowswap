@@ -47,7 +47,7 @@ export const MenuBarWrapper = styled.div<{
   display: flex;
   width: 100%;
   padding: ${({ padding }) => padding || '10px'};
-  z-index: 10;
+  z-index: 9;
   position: sticky;
   top: 0;
   color: var(--color);

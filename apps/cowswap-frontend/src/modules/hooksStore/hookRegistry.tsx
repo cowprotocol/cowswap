@@ -1,10 +1,9 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { HookDapp, HookDappIframe, HookDappType } from '@cowprotocol/types'
 
-import { PRE_BUILD } from './dapps/BuildHookApp'
+import { PRE_BUILD, POST_BUILD } from './dapps/BuildHookApp'
 import { PRE_CLAIM_GNO } from './dapps/ClaimGnoHookApp'
 import bridgeImg from './images/bridge.svg'
-import buildImg from './images/build.png'
 import cowAMM from './images/cowAMM.png'
 import curveImg from './images/curve.svg'
 import daiImg from './images/dai.svg'
@@ -74,15 +73,6 @@ const POST_MAKER: HookDappIframe = {
   version: FAKE_VERSION,
 }
 
-const POST_BUILD: HookDappIframe = {
-  name: 'Build your own Post-hook',
-  description: 'Add an arbitrary calldata to be executed after your hook',
-  type: HookDappType.IFRAME,
-  url: FAKE_URL,
-  image: buildImg,
-  version: FAKE_VERSION,
-}
-
 const POST_HOOK_DAPPS_ALL = [POST_BRIDGE, POST_MAKER, POST_BUILD]
 
 export const PRE_HOOK_REGISTRY: Record<SupportedChainId, HookDapp[]> = {
@@ -95,6 +85,6 @@ export const PRE_HOOK_REGISTRY: Record<SupportedChainId, HookDapp[]> = {
 export const POST_HOOK_REGISTRY: Record<SupportedChainId, HookDapp[]> = {
   [SupportedChainId.MAINNET]: POST_HOOK_DAPPS_ALL,
   [SupportedChainId.GNOSIS_CHAIN]: POST_HOOK_DAPPS_ALL,
-  [SupportedChainId.SEPOLIA]: [],
-  [SupportedChainId.ARBITRUM_ONE]: [],
+  [SupportedChainId.SEPOLIA]: [POST_BUILD],
+  [SupportedChainId.ARBITRUM_ONE]: [POST_BUILD],
 }

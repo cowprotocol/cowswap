@@ -7,11 +7,6 @@ type Address = `0x${string}`
 
 type Chain = 'ARBITRUM' | 'ETHEREUM' | 'ETHEREUM_SEPOLIA' | 'OPTIMISM' | 'POLYGON' | 'CELO' | 'BNB' | 'UNKNOWN_CHAIN'
 
-const CHAIN_TO_CHAIN_ID: { [key: string]: SupportedChainId } = {
-  ETHEREUM: SupportedChainId.MAINNET,
-  ETHEREUM_SEPOLIA: SupportedChainId.SEPOLIA,
-}
-
 interface FetchTokensResult {
   id: string
   decimals: number
@@ -22,7 +17,12 @@ interface FetchTokensResult {
   symbol: string
   project: {
     id: string
+    name: string
     logoUrl: string
+    logo: {
+      id: string
+      url: string
+    }
     safetyLevel: string
   }
 }
@@ -36,8 +36,9 @@ export interface TokenSearchFromApiResult extends FetchTokensResult {
 }
 
 const SEARCH_TOKENS = gql`
-  query SearchTokens($searchQuery: String!) {
-    searchTokens(searchQuery: $searchQuery) {
+  query SearchTokensWeb($searchQuery: String!, $chains: [Chain!]) {
+    searchTokens(searchQuery: $searchQuery, chains: $chains) {
+      ...SimpleTokenDetails
       id
       decimals
       name
@@ -45,28 +46,110 @@ const SEARCH_TOKENS = gql`
       standard
       address
       symbol
+      market(currency: USD) {
+        id
+        price {
+          id
+          value
+          currency
+          __typename
+        }
+        pricePercentChange(duration: DAY) {
+          id
+          value
+          __typename
+        }
+        volume24H: volume(duration: DAY) {
+          id
+          value
+          currency
+          __typename
+        }
+        __typename
+      }
       project {
         id
-        logoUrl
+        name
+        logo {
+          id
+          url
+          __typename
+        }
         safetyLevel
+        logoUrl
+        isSpam
         __typename
       }
       __typename
     }
+  }
+
+  fragment SimpleTokenDetails on Token {
+    id
+    address
+    chain
+    symbol
+    name
+    decimals
+    standard
+    project {
+      id
+      name
+      logo {
+        id
+        url
+        __typename
+      }
+      safetyLevel
+      logoUrl
+      isSpam
+      __typename
+    }
+    __typename
   }
 `
 
 const BASE_URL = `${BFF_BASE_URL}/proxies/tokens`
 const GQL_CLIENT = new GraphQLClient(BASE_URL)
 
-export async function searchTokensInApi(searchQuery: string): Promise<TokenSearchFromApiResult[]> {
+const CHAIN_NAMES: Record<SupportedChainId, Chain | null> = {
+  [SupportedChainId.MAINNET]: 'ETHEREUM',
+  [SupportedChainId.ARBITRUM_ONE]: 'ARBITRUM',
+  [SupportedChainId.SEPOLIA]: null,
+  [SupportedChainId.GNOSIS_CHAIN]: null,
+}
+
+const CHAIN_IDS = Object.entries(CHAIN_NAMES).reduce((acc, [supportedChainId, chain]) => {
+  if (chain) {
+    acc[chain] = parseInt(supportedChainId)
+  }
+
+  return acc
+}, {} as Record<Chain, SupportedChainId>)
+
+export async function searchTokensInApi(
+  chainId: SupportedChainId,
+  searchQuery: string
+): Promise<TokenSearchFromApiResult[]> {
+  const chain = CHAIN_NAMES[chainId]
+
+  if (!chain) {
+    return []
+  }
+
   return await GQL_CLIENT.request<FetchTokensApiResult>(SEARCH_TOKENS, {
     searchQuery,
+    chains: [chain],
   }).then((result) => {
     if (!result?.searchTokens?.length) {
       return []
     }
 
-    return result.searchTokens.map((token) => ({ ...token, chainId: CHAIN_TO_CHAIN_ID[token.chain] }))
+    return result.searchTokens.map((token) => {
+      return {
+        ...token,
+        chainId: CHAIN_IDS[token.chain],
+      }
+    })
   })
 }
