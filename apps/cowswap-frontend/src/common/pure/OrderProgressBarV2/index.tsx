@@ -6,30 +6,30 @@ import PROGRESSBAR_COW_SURPLUS_2 from '@cowprotocol/assets/cow-swap/progressbar-
 import PROGRESSBAR_COW_SURPLUS_3 from '@cowprotocol/assets/cow-swap/progressbar-finished-image-3.svg'
 import PROGRESSBAR_COW_SURPLUS_4 from '@cowprotocol/assets/cow-swap/progressbar-finished-image-4.svg'
 import PROGRESS_BAR_GOOD_NEWS from '@cowprotocol/assets/cow-swap/progressbar-good-news.svg'
-import STEP_IMAGE_EXPIRED from '@cowprotocol/assets/cow-swap/progressbar-step-expired.svg'
-
-import SWEAT_DROP from '@cowprotocol/assets/cow-swap/sweat-drop.svg'
-import STEP_IMAGE_UNFILLABLE from '@cowprotocol/assets/cow-swap/progressbar-step-unfillable.svg'
 import STEP_IMAGE_CANCELLED from '@cowprotocol/assets/cow-swap/progressbar-step-cancelled.svg'
+import STEP_IMAGE_EXPIRED from '@cowprotocol/assets/cow-swap/progressbar-step-expired.svg'
+import STEP_IMAGE_SOLVING_1 from '@cowprotocol/assets/cow-swap/progressbar-step-solving-1.svg'
+import STEP_IMAGE_SOLVING_2 from '@cowprotocol/assets/cow-swap/progressbar-step-solving-2.svg'
+import STEP_IMAGE_SOLVING_3 from '@cowprotocol/assets/cow-swap/progressbar-step-solving-3.svg'
+import STEP_IMAGE_UNFILLABLE from '@cowprotocol/assets/cow-swap/progressbar-step-unfillable.svg'
+import SWEAT_DROP from '@cowprotocol/assets/cow-swap/sweat-drop.svg'
 import ICON_SOCIAL_X from '@cowprotocol/assets/images/icon-social-x.svg'
 import LOTTIE_GREEN_CHECKMARK_DARK from '@cowprotocol/assets/lottie/green-checkmark-dark.json'
 import LOTTIE_GREEN_CHECKMARK from '@cowprotocol/assets/lottie/green-checkmark.json'
 import STEP_LOTTIE_EXECUTING from '@cowprotocol/assets/lottie/progressbar-step-executing.json'
 import STEP_LOTTIE_INITIAL from '@cowprotocol/assets/lottie/progressbar-step-initial.json'
 import STEP_LOTTIE_NEXTBATCH from '@cowprotocol/assets/lottie/progressbar-step-nextbatch.json'
-import STEP_IMAGE_SOLVING_1 from '@cowprotocol/assets/cow-swap/progressbar-step-solving-1.svg'
-import STEP_IMAGE_SOLVING_2 from '@cowprotocol/assets/cow-swap/progressbar-step-solving-2.svg'
-import STEP_IMAGE_SOLVING_3 from '@cowprotocol/assets/cow-swap/progressbar-step-solving-3.svg'
 import LOTTIE_RED_CROSS from '@cowprotocol/assets/lottie/red-cross.json'
 import LOTTIE_TIME_EXPIRED_DARK from '@cowprotocol/assets/lottie/time-expired-dark.json'
+import { useFitText } from '@cowprotocol/common-hooks'
 import { ExplorerDataType, getExplorerLink, isSellOrder, shortenAddress } from '@cowprotocol/common-utils'
+import { getRandomInt } from '@cowprotocol/common-utils'
 import type { CompetitionOrderStatus, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { OrderKind } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { Command } from '@cowprotocol/types'
 import { ExternalLink, ProductLogo, ProductVariant, TokenAmount, UI } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
-import { OrderKind } from '@cowprotocol/cow-sdk'
-import { shareSurplusOnTwitter as trackSurplusShare } from 'modules/analytics'
 
 import Lottie from 'lottie-react'
 import { MdOutlineMotionPhotosPause } from 'react-icons/md'
@@ -45,17 +45,17 @@ import SVG from 'react-inlinesvg'
 
 import { AMM_LOGOS } from 'legacy/components/AMMsLogo'
 import { Order } from 'legacy/state/orders/actions'
+import { useIsDarkMode } from 'legacy/state/user/hooks'
+
+import { shareSurplusOnTwitter as trackSurplusShare } from 'modules/analytics'
 
 import { OrderProgressBarStepName } from 'common/hooks/orderProgressBarV2'
 import { SurplusData } from 'common/hooks/useGetSurplusFiatValue'
-import { useFitText } from '@cowprotocol/common-hooks'
 import { getIsCustomRecipient } from 'utils/orderUtils/getIsCustomRecipient'
-import { getRandomInt } from '@cowprotocol/common-utils'
-import { useIsDarkMode } from 'legacy/state/user/hooks'
 
 import * as styledEl from './styled'
 
-const IS_DEBUG_MODE = false
+const IS_DEBUG_MODE = true
 const DEBUG_FORCE_SHOW_SURPLUS = false
 
 export type OrderProgressBarV2Props = {
@@ -275,7 +275,7 @@ function SolvingStep({ order, countdown }: OrderProgressBarV2Props) {
     }, 250)
 
     return () => clearInterval(interval)
-  }, [])
+  }, [frames.length])
 
   return (
     <styledEl.ProgressContainer>
@@ -416,10 +416,16 @@ function shareBenefitOnTwitter(benefit: string) {
   return () => {
     const twitterUrl = getTwitterShareUrlForBenefit(benefit)
     window.open(twitterUrl, '_blank', 'noopener,noreferrer')
-    // You might want to add analytics tracking for benefit sharing as well
-    // trackBenefitShare()
+    // TODO: add analytics tracking
   }
 }
+
+const SURPLUS_IMAGES = [
+  PROGRESSBAR_COW_SURPLUS_1,
+  PROGRESSBAR_COW_SURPLUS_2,
+  PROGRESSBAR_COW_SURPLUS_3,
+  PROGRESSBAR_COW_SURPLUS_4,
+]
 
 function FinishedStep({
   stepName,
@@ -430,12 +436,20 @@ function FinishedStep({
   receiverEnsName,
 }: OrderProgressBarV2Props) {
   const [showAllSolvers, setShowAllSolvers] = useState(false)
+
+  const { randomImage, randomBenefit } = useMemo(
+    () => ({
+      randomImage: SURPLUS_IMAGES[getRandomInt(0, SURPLUS_IMAGES.length - 1)],
+      randomBenefit: COW_SWAP_BENEFITS[getRandomInt(0, COW_SWAP_BENEFITS.length - 1)],
+    }),
+    []
+  )
+
   const { surplusFiatValue, surplusPercent, surplusAmount, showSurplus } = surplusData || {}
   const cancellationFailed = stepName === 'cancellationFailed'
   console.log('FinishedStep - cancellationFailed:', cancellationFailed)
   console.log('FinishedStep - showSurplus:', showSurplus)
 
-  // Modify this line to include the debug flag
   const shouldShowSurplus = DEBUG_FORCE_SHOW_SURPLUS || showSurplus
 
   const toggleSolvers = () => setShowAllSolvers(!showAllSolvers)
@@ -446,9 +460,6 @@ function FinishedStep({
   const receiver = order?.receiver || order?.owner
 
   const isDarkMode = useIsDarkMode()
-
-  // Randomly select a benefit message on component initialization
-  const randomBenefit = useMemo(() => COW_SWAP_BENEFITS[getRandomInt(0, COW_SWAP_BENEFITS.length - 1)], [])
 
   const surplusPercentValue = surplusPercent ? parseFloat(surplusPercent).toFixed(2) : 'N/A'
   const { fontSize: surplusFontSize, textRef: surplusTextRef, containerRef: surplusContainerRef } = useFitText(18, 50)
@@ -509,17 +520,7 @@ function FinishedStep({
               <SVG src={ICON_SOCIAL_X} />
               <span>Share this {shouldShowSurplus ? 'win' : 'tip'}!</span>
             </styledEl.ShareButton>
-            <SVG
-              src={React.useMemo(() => {
-                const images = [
-                  PROGRESSBAR_COW_SURPLUS_1,
-                  PROGRESSBAR_COW_SURPLUS_2,
-                  PROGRESSBAR_COW_SURPLUS_3,
-                  PROGRESSBAR_COW_SURPLUS_4,
-                ]
-                return images[Math.floor(Math.random() * images.length)]
-              }, [])}
-            />
+            <SVG src={randomImage} />
           </styledEl.CowImage>
           <styledEl.FinishedImageContent>
             <styledEl.FinishedTagLine>
@@ -740,7 +741,7 @@ function DelayedStep({ order, showCancellationModal }: OrderProgressBarV2Props) 
     }, 150)
 
     return () => clearInterval(interval)
-  }, [])
+  }, [frames.length])
 
   return (
     <styledEl.ProgressContainer>
