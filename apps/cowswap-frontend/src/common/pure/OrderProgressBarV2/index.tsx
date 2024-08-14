@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useMemo } from 'react'
 
 import PROGRESS_BAR_BAD_NEWS from '@cowprotocol/assets/cow-swap/progressbar-bad-news.svg'
 import PROGRESSBAR_COW_SURPLUS_1 from '@cowprotocol/assets/cow-swap/progressbar-finished-image-1.svg'
@@ -51,10 +51,11 @@ import { SurplusData } from 'common/hooks/useGetSurplusFiatValue'
 import { useTheme } from 'common/hooks/useTheme'
 import { useFitText } from '@cowprotocol/common-hooks'
 import { getIsCustomRecipient } from 'utils/orderUtils/getIsCustomRecipient'
+import { getRandomInt } from '@cowprotocol/common-utils'
 
 import * as styledEl from './styled'
 
-const IS_DEBUG_MODE = false
+const IS_DEBUG_MODE = true
 const DEBUG_FORCE_SHOW_SURPLUS = false
 
 export type OrderProgressBarV2Props = {
@@ -447,7 +448,7 @@ function FinishedStep({
   const theme = useTheme()
 
   // Randomly select a benefit message on component initialization
-  const [randomBenefit] = useState(() => COW_SWAP_BENEFITS[Math.floor(Math.random() * COW_SWAP_BENEFITS.length)])
+  const randomBenefit = useMemo(() => COW_SWAP_BENEFITS[getRandomInt(0, COW_SWAP_BENEFITS.length - 1)], [])
 
   const surplusPercentValue = surplusPercent ? parseFloat(surplusPercent).toFixed(2) : 'N/A'
   const { fontSize: surplusFontSize, textRef: surplusTextRef, containerRef: surplusContainerRef } = useFitText(18, 50)
