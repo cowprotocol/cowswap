@@ -3,10 +3,8 @@ import { Font, Media, UI } from '@cowprotocol/ui'
 
 import styled, { css, keyframes } from 'styled-components/macro'
 
-// Constants
 const BLUE_COLOR = '#65d9ff'
 
-// Animations
 const slideAnimation = (direction: 'up' | 'down') => keyframes`
   from {
     transform: translateY(${direction === 'up' ? '20px' : '-20px'}); 
@@ -42,7 +40,6 @@ const sweatDropAnimation = keyframes`
   }
 `
 
-// Utility functions
 const getOpacity = (status: string): number => {
   const opacityMap = {
     done: 0.1,
@@ -63,7 +60,6 @@ const getStatusColor = (status: string): string => {
   return colorMap[status] || 'currentColor'
 }
 
-// Styled components
 export const Icon = styled.div<{ status: string; customColor?: string }>`
   --width: 28px;
   width: var(--width);
@@ -101,6 +97,10 @@ export const StepsWrapper = styled.div`
   gap: 28px;
   width: 100%;
   margin: 0 auto;
+
+  ${Media.upToSmall()} {
+    padding: 30px 0 0;
+  }
 
   .spinner {
     animation: spin 1s linear infinite;
@@ -231,6 +231,7 @@ export const ProgressTopSection = styled.div`
 
 export const OriginalOrderIntent = styled.span`
   display: flex;
+  flex-flow: row wrap;
   align-items: center;
   justify-content: center;
   font-size: 13px;
@@ -323,6 +324,12 @@ export const CountdownWrapper = styled.div`
   top: initial;
   left: 0;
   bottom: 52px;
+
+  ${Media.upToSmall()} {
+    background: #05a1ff;
+    bottom: 0;
+    border-top-right-radius: 16px;
+  }
 `
 
 export const CountdownText = styled.div`
@@ -341,6 +348,17 @@ export const FinishedStepContainer = styled.div`
   gap: 10px;
   padding: 0;
   width: 100%;
+
+  ${Media.upToSmall()} {
+    flex-flow: column-reverse;
+    gap: 30px;
+
+    ${ProgressImageWrapper} {
+      height: auto;
+      max-height: initial;
+      flex-flow: column-reverse;
+    }
+  }
 `
 
 export const ConclusionContent = styled.div`
@@ -360,13 +378,20 @@ export const CowImage = styled.div`
   justify-content: flex-start;
   position: relative;
 
+  ${Media.upToSmall()} {
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+  }
+
   > svg {
     height: 100%;
     width: 100%;
     max-width: 199px;
-  }
 
-  ${Media.upToSmall()} {
+    ${Media.upToSmall()} {
+      max-width: 100%;
+    }
   }
 `
 
@@ -407,8 +432,6 @@ export const Surplus = styled.div<{ showSurplus: boolean }>`
   text-align: left;
   line-height: 1.2;
   margin: 0;
-
-  // Use CSS grid for precise sizing
   display: grid;
 
   span {
@@ -484,15 +507,19 @@ export const ShareButton = styled.button`
     color: var(${UI.COLOR_PRIMARY});
   }
 
-  // mobile
   ${Media.upToSmall()} {
     border: 1px solid var(${UI.COLOR_TEXT});
+    justify-content: center;
   }
 
   > svg {
     --size: 17px;
     width: var(--size);
     height: var(--size);
+
+    ${Media.upToSmall()} {
+      max-width: 100%;
+    }
   }
 `
 
@@ -558,31 +585,21 @@ export const SolverTable = styled.table`
   margin: 14px auto 0;
 `
 
-export const SolverTableCell = styled.td<{ isFirst?: boolean; isSecond?: boolean; isLast?: boolean }>`
+export const SolverTableCell = styled.td`
   padding: 10px;
   color: inherit;
 
-  ${({ isFirst }) =>
-    isFirst &&
-    css`
-      border-top-left-radius: 5px;
-      border-bottom-left-radius: 5px;
-      padding: 10px 0 10px 10px;
-    `}
-  ${({ isSecond }) =>
-    isSecond &&
-    css`
-      border-top-left-radius: 5px;
-      border-bottom-left-radius: 5px;
-    `}
+  &:first-child {
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    padding: 10px 0 10px 10px;
+  }
 
-  ${({ isLast }) =>
-    isLast &&
-    css`
-      border-top-right-radius: 5px;
-      border-bottom-right-radius: 5px;
-      text-align: right;
-    `}
+  &:last-child {
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    text-align: right;
+  }
 `
 
 export const SolverTableRow = styled.tr<{ isWinner: boolean }>`
@@ -617,6 +634,7 @@ export const SolverLogo = styled.div`
 export const SolverName = styled.span`
   flex-grow: 1;
   color: inherit;
+  text-transform: capitalize;
 `
 
 export const TrophyIcon = styled.span`
@@ -696,7 +714,7 @@ export const ExtraAmount = styled.p`
 export const CardWrapper = styled.div`
   display: flex;
   flex-flow: row wrap;
-  align-items: center;
+  align-items: flex-start;
   width: 100%;
   margin: 0 auto 16px;
   gap: 5px;
@@ -736,6 +754,14 @@ export const InfoCard = styled.div<{ variant: 'warning' | 'success' }>`
     max-width: 100%;
     height: auto;
     margin: 0 auto 16px;
+
+    > path:last-child {
+      ${({ theme, variant }) =>
+        theme.darkMode &&
+        css`
+          fill: ${variant === 'warning' ? `var(${UI.COLOR_ALERT_TEXT})` : `var(${UI.COLOR_SUCCESS_TEXT})`};
+        `}
+    }
   }
 `
 
@@ -774,9 +800,17 @@ export const ClockAnimation = styled.div`
   position: absolute;
   bottom: 36px;
   right: 71px;
+  background: #996815;
+  border-radius: var(--size);
+  padding: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
+
+  ${Media.upToSmall()} {
+    bottom: 16px;
+    right: 16px;
+  }
 `
 
 export const FinishedImageContent = styled.div`
@@ -790,15 +824,25 @@ export const FinishedImageContent = styled.div`
   border: 2px solid #99ecff;
   border-radius: 21px;
   padding: 14px 14px 40px;
+  color: ${({ theme }) => (theme.darkMode ? `var(${UI.COLOR_BUTTON_TEXT})` : `var(${UI.COLOR_TEXT})`)};
+
+  ${Media.upToSmall()} {
+    width: 100%;
+  }
 `
 
-export const BenefitContainer = styled.div`
+export const BenefitSurplusContainer = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
+
+  > span {
+    width: 100%;
+    text-align: left;
+  }
 `
 
 export const BenefitText = styled.span<{ fontSize: number }>`

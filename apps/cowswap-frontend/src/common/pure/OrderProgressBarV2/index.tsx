@@ -56,6 +56,9 @@ import * as styledEl from './styled'
 
 import { CancelButton } from '../CancelButton'
 
+const IS_DEBUG_MODE = false
+const DEBUG_FORCE_SHOW_SURPLUS = false
+
 export type OrderProgressBarV2Props = {
   stepName: OrderProgressBarStepName
   chainId: SupportedChainId
@@ -181,7 +184,7 @@ const CountdownEl: React.FC<CountdownElProps> = ({ countdown }) => {
 }
 
 export function OrderProgressBarV2(props: OrderProgressBarV2Props) {
-  const { stepName, debugMode = true } = props
+  const { stepName, debugMode = IS_DEBUG_MODE } = props
   const [debugStep, setDebugStep] = useState<OrderProgressBarStepName>(stepName)
   const currentStep = debugMode ? debugStep : stepName
   console.log('OrderProgressBarV2 - currentStep:', currentStep)
@@ -427,6 +430,9 @@ function FinishedStep({
   console.log('FinishedStep - cancellationFailed:', cancellationFailed)
   console.log('FinishedStep - showSurplus:', showSurplus)
 
+  // Modify this line to include the debug flag
+  const shouldShowSurplus = DEBUG_FORCE_SHOW_SURPLUS || showSurplus
+
   const toggleSolvers = () => setShowAllSolvers(!showAllSolvers)
 
   const visibleSolvers = (showAllSolvers ? solvers : solvers?.slice(0, 3)) || []
@@ -473,9 +479,11 @@ function FinishedStep({
       }
     }
     return () => {}
-  }, [showSurplus, surplusPercentValue])
+  }, [shouldShowSurplus, surplusPercentValue])
 
-  const shareOnTwitter = showSurplus ? shareSurplusOnTwitter(surplusData, order) : shareBenefitOnTwitter(randomBenefit)
+  const shareOnTwitter = shouldShowSurplus
+    ? shareSurplusOnTwitter(surplusData, order)
+    : shareBenefitOnTwitter(randomBenefit)
 
   return (
     <styledEl.FinishedStepContainer>
@@ -489,7 +497,7 @@ function FinishedStep({
           <styledEl.CowImage>
             <styledEl.ShareButton onClick={shareOnTwitter}>
               <SVG src={ICON_SOCIAL_X} />
-              <span>Share this {showSurplus ? 'win' : 'tip'}!</span>
+              <span>Share this {shouldShowSurplus ? 'win' : 'tip'}!</span>
             </styledEl.ShareButton>
             <SVG
               src={React.useMemo(() => {
@@ -505,8 +513,8 @@ function FinishedStep({
           </styledEl.CowImage>
           <styledEl.FinishedImageContent>
             <styledEl.FinishedTagLine>
-              {showSurplus ? (
-                <div ref={surplusContainerRef}>
+              {shouldShowSurplus ? (
+                <styledEl.BenefitSurplusContainer ref={surplusContainerRef}>
                   <span ref={surplusTextRef} style={{ fontSize: `${surplusFontSize}px` }}>
                     I just received surplus on my
                     <styledEl.TokenPairTitle
@@ -519,20 +527,24 @@ function FinishedStep({
                     trade
                     <styledEl.Surplus
                       ref={surplusRef}
-                      showSurplus={!!showSurplus}
+                      showSurplus={!!shouldShowSurplus}
                       style={{ fontSize: `${surplusSize}px` }}
-                      data-content={showSurplus && surplusPercentValue !== 'N/A' ? `+${surplusPercentValue}%` : 'N/A'}
+                      data-content={
+                        shouldShowSurplus && surplusPercentValue !== 'N/A' ? `+${surplusPercentValue}%` : 'N/A'
+                      }
                     >
-                      <span>{showSurplus && surplusPercentValue !== 'N/A' ? `+${surplusPercentValue}%` : 'N/A'}</span>
+                      <span>
+                        {shouldShowSurplus && surplusPercentValue !== 'N/A' ? `+${surplusPercentValue}%` : 'N/A'}
+                      </span>
                     </styledEl.Surplus>
                   </span>
-                </div>
+                </styledEl.BenefitSurplusContainer>
               ) : (
-                <styledEl.BenefitContainer ref={benefitContainerRef}>
+                <styledEl.BenefitSurplusContainer ref={benefitContainerRef}>
                   <styledEl.BenefitText ref={benefitTextRef} fontSize={benefitFontSize}>
                     {randomBenefit}
                   </styledEl.BenefitText>
-                </styledEl.BenefitContainer>
+                </styledEl.BenefitSurplusContainer>
               )}
             </styledEl.FinishedTagLine>
 
@@ -574,8 +586,8 @@ function FinishedStep({
               <tbody>
                 {visibleSolvers.map((solver: any, index: number) => (
                   <styledEl.SolverTableRow key={`${solver.solver}-${index}`} isWinner={index === 0}>
-                    {solvers.length > 1 && <styledEl.SolverRank isFirst>{index + 1}</styledEl.SolverRank>}
-                    <styledEl.SolverTableCell isSecond>
+                    {solvers.length > 1 && <styledEl.SolverRank>{index + 1}</styledEl.SolverRank>}
+                    <styledEl.SolverTableCell>
                       <styledEl.SolverInfo>
                         <styledEl.SolverLogo>
                           <img
@@ -592,7 +604,7 @@ function FinishedStep({
                         <styledEl.SolverName>{solver.solver}</styledEl.SolverName>
                       </styledEl.SolverInfo>
                     </styledEl.SolverTableCell>
-                    <styledEl.SolverTableCell isLast>
+                    <styledEl.SolverTableCell>
                       {index === 0 && (
                         <styledEl.WinningBadge>
                           <styledEl.TrophyIcon>
@@ -642,7 +654,7 @@ function FinishedStep({
             )}
           </styledEl.ReceivedAmount>
         )}
-        {showSurplus ? (
+        {shouldShowSurplus ? (
           <styledEl.ExtraAmount>
             {getSurplusText(isSell, isCustomRecipient)}
             <i>
