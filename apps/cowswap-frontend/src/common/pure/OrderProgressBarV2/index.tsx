@@ -579,7 +579,7 @@ function FinishedStep({
           Transaction completed!
         </styledEl.TransactionStatus>
 
-        {solvers && solvers.length > 0 && (
+        {solvers?.length && (
           <styledEl.SolverRankings>
             <h3>Solver auction rankings</h3>
             {solvers.length > 1 && (
