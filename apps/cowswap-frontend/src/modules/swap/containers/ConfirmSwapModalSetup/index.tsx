@@ -11,6 +11,7 @@ import { HighFeeWarning } from 'legacy/components/SwapWarnings'
 import { getActivityDerivedState } from 'legacy/hooks/useActivityDerivedState'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { createActivityDescriptor } from 'legacy/hooks/useRecentActivity'
+import { Order } from 'legacy/state/orders/actions'
 import { useOrder } from 'legacy/state/orders/hooks'
 import TradeGp from 'legacy/state/swap/TradeGp'
 
@@ -26,14 +27,18 @@ import {
 import { TradeBasicConfirmDetails } from 'modules/trade/containers/TradeBasicConfirmDetails'
 import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
 
+import { Routes } from 'common/constants/routes'
 import { useOrderProgressBarV2Props } from 'common/hooks/orderProgressBarV2'
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
+import { useNavigate } from 'common/hooks/useNavigate'
 import { CurrencyPreviewInfo } from 'common/pure/CurrencyAmountPreview'
 import { NetworkCostsSuffix } from 'common/pure/NetworkCostsSuffix'
 import { RateInfoParams } from 'common/pure/RateInfo'
 import { TransactionSubmittedContent } from 'common/pure/TransactionSubmittedContent'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
+
+import { TradeUrlParams } from '../../../trade/types/TradeRawState'
 import { useIsEoaEthFlow } from '../../hooks/useIsEoaEthFlow'
 import { useShouldPayGas } from '../../hooks/useShouldPayGas'
 import { useSwapConfirmButtonText } from '../../hooks/useSwapConfirmButtonText'
@@ -41,10 +46,8 @@ import { useSwapState } from '../../hooks/useSwapState'
 import { NetworkCostsTooltipSuffix } from '../../pure/NetworkCostsTooltipSuffix'
 import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from '../../pure/Row/RowSlippageContent'
 import { RowDeadline } from '../Row/RowDeadline'
-import { Order } from 'legacy/state/orders/actions'
-import { useNavigate } from 'common/hooks/useNavigate'
-import { TradeUrlParams } from '../../../trade/types/TradeRawState'
-import { Routes } from 'common/constants/routes'
+
+
 
 const CONFIRM_TITLE = 'Swap'
 
