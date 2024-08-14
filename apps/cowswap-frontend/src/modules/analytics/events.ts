@@ -24,6 +24,7 @@ enum Category {
   TWAP = 'TWAP',
   COW_FORTUNE = 'CoWFortune',
   SURPLUS_MODAL = 'Surplus Modal',
+  NOTIFICATIONS = 'Notifications',
 }
 
 export function shareFortuneTwitterAnalytics() {
@@ -319,5 +320,14 @@ export function shareSurplusOnTwitter() {
   cowAnalytics.sendEvent({
     category: Category.SURPLUS_MODAL,
     action: `Share on Twitter`,
+  })
+}
+
+export function clickNotifications(event: string, notificationId?: number, title?: string) {
+  cowAnalytics.sendEvent({
+    category: Category.NOTIFICATIONS,
+    action: event,
+    value: notificationId,
+    label: title,
   })
 }

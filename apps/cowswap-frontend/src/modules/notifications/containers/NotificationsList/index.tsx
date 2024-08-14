@@ -1,6 +1,8 @@
 import { useSetAtom } from 'jotai/index'
 import React, { ReactNode, useEffect, useMemo } from 'react'
 
+import { clickNotifications } from 'modules/analytics'
+
 import { ListWrapper, NoNotifications, NotificationCard, NotificationsListWrapper, NotificationThumb } from './styled'
 
 import { useAccountNotifications } from '../../hooks/useAccountNotifications'
@@ -50,6 +52,7 @@ export function NotificationsList({ children }: { children: ReactNode }) {
                     target={target}
                     noImage={!thumbnail}
                     rel={target === '_blank' ? 'noopener noreferrer' : ''}
+                    onClick={() => clickNotifications('click-notification-card', id, title)}
                   >
                     {thumbnail && (
                       <NotificationThumb>
