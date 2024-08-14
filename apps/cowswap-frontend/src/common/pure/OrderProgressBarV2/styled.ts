@@ -427,19 +427,19 @@ export const Surplus = styled.div<{ showSurplus: boolean }>`
   }
 `
 
-export const RandomMessage = styled.div`
-  position: absolute;
-  right: 16px;
-  top: 0;
-  left: initial;
+export const FinishedTagLine = styled.div`
+  line-height: 1.7;
+  font-weight: bold;
+  color: inherit;
+  max-width: 100%;
   font-size: 22px;
   width: 100%;
-  max-width: 190px;
   text-align: right;
   height: 100%;
-  padding: 48px 0 16px;
   display: flex;
   align-items: center;
+  overflow: hidden;
+  padding: 0 0 10px;
 `
 
 export const FinishedLogo = styled.div`
@@ -453,19 +453,6 @@ export const FinishedLogo = styled.div`
   bottom: 10px;
   left: 10px;
   width: calc(100% - 20px);
-
-  > b {
-    font-weight: 700;
-  }
-`
-
-export const FinishedTagLine = styled.div`
-  line-height: 1.7;
-  font-weight: bold;
-  font-size: 17px;
-  color: inherit;
-  max-width: 100%;
-  width: 100%;
 
   > b {
     font-weight: 700;
@@ -803,4 +790,26 @@ export const FinishedImageContent = styled.div`
   border: 2px solid #99ecff;
   border-radius: 21px;
   padding: 14px 14px 40px;
+`
+
+export const BenefitContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+`
+
+export const BenefitText = styled.span<{ fontSize: number }>`
+  font-size: ${({ fontSize }) => `${fontSize}px`};
+  line-height: 1.2;
+  text-align: left;
+  max-width: 100%;
+  height: 100%;
+  max-height: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `

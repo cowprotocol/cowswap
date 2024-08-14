@@ -66,7 +66,6 @@ export type OrderProgressBarV2Props = {
   showCancellationModal: Command | null
   surplusData?: SurplusData
   receiverEnsName?: string
-  debugShowSurplus?: boolean
 }
 
 const STEPS = [
@@ -363,6 +362,7 @@ const COW_SWAP_BENEFITS = [
   'COW Swap finds the best prices across multiple liquidity sources for you.',
   "Enjoy MEV protection and no front-running with COW Swap's unique order settlement.",
   "Experience gasless trading with COW Swap's off-chain order matching.",
+  "Don't worry, trade happy!",
 ]
 
 function truncateWithEllipsis(str: string, maxLength: number): string {
@@ -395,6 +395,24 @@ function shareSurplusOnTwitter(surplusData: SurplusData | undefined, order: Orde
   }
 }
 
+function getTwitterTextForBenefit(benefit: string): string {
+  return encodeURIComponent(`Did you know? ${benefit}\n\nStart swapping on swap.cow.fi #CoWSwap @CoWSwap 🐮`)
+}
+
+function getTwitterShareUrlForBenefit(benefit: string): string {
+  const twitterText = getTwitterTextForBenefit(benefit)
+  return `https://x.com/intent/tweet?text=${twitterText}`
+}
+
+function shareBenefitOnTwitter(benefit: string) {
+  return () => {
+    const twitterUrl = getTwitterShareUrlForBenefit(benefit)
+    window.open(twitterUrl, '_blank', 'noopener,noreferrer')
+    // You might want to add analytics tracking for benefit sharing as well
+    // trackBenefitShare()
+  }
+}
+
 function FinishedStep({
   stepName,
   solverCompetition: solvers,
@@ -402,11 +420,9 @@ function FinishedStep({
   surplusData,
   chainId,
   receiverEnsName,
-  debugShowSurplus = true,
 }: OrderProgressBarV2Props) {
   const [showAllSolvers, setShowAllSolvers] = useState(false)
-  const { surplusFiatValue, surplusPercent, surplusAmount, showSurplus: originalShowSurplus } = surplusData || {}
-  const showSurplus = debugShowSurplus !== undefined ? debugShowSurplus : originalShowSurplus
+  const { surplusFiatValue, surplusPercent, surplusAmount, showSurplus } = surplusData || {}
   const cancellationFailed = stepName === 'cancellationFailed'
   console.log('FinishedStep - cancellationFailed:', cancellationFailed)
   console.log('FinishedStep - showSurplus:', showSurplus)
@@ -424,7 +440,8 @@ function FinishedStep({
   const [randomBenefit] = useState(() => COW_SWAP_BENEFITS[Math.floor(Math.random() * COW_SWAP_BENEFITS.length)])
 
   const surplusPercentValue = surplusPercent ? parseFloat(surplusPercent).toFixed(2) : 'N/A'
-  const { fontSize, textRef, containerRef } = useFitText(18, 50)
+  const { fontSize: surplusFontSize, textRef: surplusTextRef, containerRef: surplusContainerRef } = useFitText(18, 50)
+  const { fontSize: benefitFontSize, textRef: benefitTextRef, containerRef: benefitContainerRef } = useFitText(18, 72)
 
   const [surplusSize, setSurplusSize] = useState(1)
   const surplusRef = useRef<HTMLDivElement>(null)
@@ -458,6 +475,8 @@ function FinishedStep({
     return () => {}
   }, [showSurplus, surplusPercentValue])
 
+  const shareOnTwitter = showSurplus ? shareSurplusOnTwitter(surplusData, order) : shareBenefitOnTwitter(randomBenefit)
+
   return (
     <styledEl.FinishedStepContainer>
       {cancellationFailed && (
@@ -468,9 +487,9 @@ function FinishedStep({
       <styledEl.ProgressTopSection>
         <styledEl.ProgressImageWrapper bgColor={'#65D9FF'} padding={'10px'} gap={'10px'}>
           <styledEl.CowImage>
-            <styledEl.ShareButton onClick={shareSurplusOnTwitter(surplusData, order)}>
+            <styledEl.ShareButton onClick={shareOnTwitter}>
               <SVG src={ICON_SOCIAL_X} />
-              <span>Share this win!</span>
+              <span>Share this {showSurplus ? 'win' : 'tip'}!</span>
             </styledEl.ShareButton>
             <SVG
               src={React.useMemo(() => {
@@ -486,32 +505,35 @@ function FinishedStep({
           </styledEl.CowImage>
           <styledEl.FinishedImageContent>
             <styledEl.FinishedTagLine>
-              {!showSurplus && (
-                <>
-                  Did you <b>know?</b>
-                </>
+              {showSurplus ? (
+                <div ref={surplusContainerRef}>
+                  <span ref={surplusTextRef} style={{ fontSize: `${surplusFontSize}px` }}>
+                    I just received surplus on my
+                    <styledEl.TokenPairTitle
+                      title={order ? `${order.inputToken.symbol}/${order.outputToken.symbol}` : 'N/A'}
+                    >
+                      {order
+                        ? truncateWithEllipsis(`${order.inputToken.symbol}/${order.outputToken.symbol}`, 30)
+                        : 'N/A'}
+                    </styledEl.TokenPairTitle>{' '}
+                    trade
+                    <styledEl.Surplus
+                      ref={surplusRef}
+                      showSurplus={!!showSurplus}
+                      style={{ fontSize: `${surplusSize}px` }}
+                      data-content={showSurplus && surplusPercentValue !== 'N/A' ? `+${surplusPercentValue}%` : 'N/A'}
+                    >
+                      <span>{showSurplus && surplusPercentValue !== 'N/A' ? `+${surplusPercentValue}%` : 'N/A'}</span>
+                    </styledEl.Surplus>
+                  </span>
+                </div>
+              ) : (
+                <styledEl.BenefitContainer ref={benefitContainerRef}>
+                  <styledEl.BenefitText ref={benefitTextRef} fontSize={benefitFontSize}>
+                    {randomBenefit}
+                  </styledEl.BenefitText>
+                </styledEl.BenefitContainer>
               )}
-              {showSurplus && (
-                <>
-                  I just received surplus on my
-                  <styledEl.TokenPairTitle
-                    title={order ? `${order.inputToken.symbol}/${order.outputToken.symbol}` : 'N/A'}
-                  >
-                    {order ? truncateWithEllipsis(`${order.inputToken.symbol}/${order.outputToken.symbol}`, 30) : 'N/A'}
-                  </styledEl.TokenPairTitle>{' '}
-                  trade
-                  <styledEl.Surplus
-                    ref={surplusRef}
-                    showSurplus={!!showSurplus}
-                    style={{ fontSize: `${surplusSize}px` }}
-                    data-content={showSurplus && surplusPercentValue !== 'N/A' ? `+${surplusPercentValue}%` : 'N/A'}
-                  >
-                    <span>{showSurplus && surplusPercentValue !== 'N/A' ? `+${surplusPercentValue}%` : 'N/A'}</span>
-                  </styledEl.Surplus>
-                </>
-              )}
-
-              {!showSurplus && <styledEl.RandomMessage>{randomBenefit}</styledEl.RandomMessage>}
             </styledEl.FinishedTagLine>
 
             <styledEl.FinishedLogo>
