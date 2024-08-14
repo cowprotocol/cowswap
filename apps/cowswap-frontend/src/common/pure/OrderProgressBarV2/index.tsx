@@ -48,10 +48,10 @@ import { Order } from 'legacy/state/orders/actions'
 
 import { OrderProgressBarStepName } from 'common/hooks/orderProgressBarV2'
 import { SurplusData } from 'common/hooks/useGetSurplusFiatValue'
-import { useTheme } from 'common/hooks/useTheme'
 import { useFitText } from '@cowprotocol/common-hooks'
 import { getIsCustomRecipient } from 'utils/orderUtils/getIsCustomRecipient'
 import { getRandomInt } from '@cowprotocol/common-utils'
+import { useIsDarkMode } from 'legacy/state/user/hooks'
 
 import * as styledEl from './styled'
 
@@ -106,7 +106,7 @@ const StepComponent: React.FC<{
 )
 
 const StatusIcon: React.FC<{ status: string; customColor?: string }> = ({ status, customColor }) => {
-  const theme = useTheme()
+  const isDarkMode = useIsDarkMode()
   const iconColor = customColor || (status === 'done' ? 'green' : 'inherit')
 
   switch (status) {
@@ -124,7 +124,7 @@ const StatusIcon: React.FC<{ status: string; customColor?: string }> = ({ status
     case 'cancelling':
       return (
         <Lottie
-          animationData={theme.darkMode ? LOTTIE_RED_CROSS : LOTTIE_RED_CROSS} // TODO: Get dark mode animation icon
+          animationData={isDarkMode ? LOTTIE_RED_CROSS : LOTTIE_RED_CROSS}
           loop={true}
           autoplay={true}
           style={{ width: '24px', height: '24px' }}
@@ -445,7 +445,7 @@ function FinishedStep({
   const isCustomRecipient = order && getIsCustomRecipient(order)
   const receiver = order?.receiver || order?.owner
 
-  const theme = useTheme()
+  const isDarkMode = useIsDarkMode()
 
   // Randomly select a benefit message on component initialization
   const randomBenefit = useMemo(() => COW_SWAP_BENEFITS[getRandomInt(0, COW_SWAP_BENEFITS.length - 1)], [])
@@ -571,7 +571,7 @@ function FinishedStep({
       <styledEl.ConclusionContent>
         <styledEl.TransactionStatus flexFlow="column" margin={'0 auto 14px'}>
           <Lottie
-            animationData={theme.darkMode ? LOTTIE_GREEN_CHECKMARK_DARK : LOTTIE_GREEN_CHECKMARK}
+            animationData={isDarkMode ? LOTTIE_GREEN_CHECKMARK_DARK : LOTTIE_GREEN_CHECKMARK}
             loop={false}
             autoplay
             style={{ width: '56px', height: '56px' }}
@@ -899,8 +899,6 @@ function CancellingStep({ order }: OrderProgressBarV2Props) {
 }
 
 function CancelledStep({ order }: OrderProgressBarV2Props) {
-  const theme = useTheme()
-
   return (
     <styledEl.ProgressContainer>
       <styledEl.ProgressTopSection>
