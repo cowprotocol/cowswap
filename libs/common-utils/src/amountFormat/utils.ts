@@ -5,7 +5,6 @@ import JSBI from 'jsbi'
 import { FractionUtils } from '../fractionUtils'
 import { FractionLike, Nullish } from '../types'
 
-
 const ONE = JSBI.BigInt(1)
 const HUNDRED_K = JSBI.BigInt(100_000)
 const MILLION = JSBI.BigInt(1_000_000)
@@ -14,7 +13,7 @@ const BILLION = JSBI.BigInt(1_000_000_000)
 const TRILLION = JSBI.BigInt(1_000_000_000_000)
 
 function getPrecisionForFraction(fraction: Fraction): number {
-  if (FractionUtils.lte(fraction, ONE)) return 6
+  if (FractionUtils.lte(fraction, ONE)) return 8
   if (FractionUtils.lte(fraction, HUNDRED_K)) return 4
   if (FractionUtils.lte(fraction, MILLION)) return 3
   if (FractionUtils.lte(fraction, TEN_MILLION)) return 2
