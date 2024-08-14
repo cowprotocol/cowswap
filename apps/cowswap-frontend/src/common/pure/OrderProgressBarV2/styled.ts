@@ -1,7 +1,9 @@
 import IMAGE_STAR_SHINE from '@cowprotocol/assets/cow-swap/star-shine.svg'
-import { Media, UI } from '@cowprotocol/ui'
+import { LinkStyledButton, Media, UI } from '@cowprotocol/ui'
 
 import styled, { css, keyframes } from 'styled-components/macro'
+
+import { CancelButton as CancelButtonOriginal } from '../CancelButton'
 
 const SUCCESS_COLOR = '#04795b' // TODO: Fix hardcoded color
 
@@ -134,6 +136,25 @@ export const Link = styled.a<{ underline?: boolean }>`
 
   &:hover {
     text-decoration: underline;
+  }
+`
+
+export const CancelButton = styled(CancelButtonOriginal)`
+  font-size: 14px;
+  padding: 1px 0;
+  text-decoration: underline;
+
+  &:hover {
+    text-decoration: none;
+  }
+`
+
+export const Button = styled(LinkStyledButton)`
+  font-size: 14px;
+  text-decoration: underline;
+
+  &:hover {
+    text-decoration: none;
   }
 `
 
@@ -327,7 +348,6 @@ export const CircleProgress = styled.circle<{ duration: number; max: number }>`
   stroke: #012f7a;
   stroke-width: 7;
   stroke-linecap: round;
-  // TODO: start animation at different position based on how far from 15s it is
   ${({ duration, max }) =>
     css`
       animation: ${progressAnimation(duration, max)} ${duration}s linear infinite;

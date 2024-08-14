@@ -37,8 +37,6 @@ import { getIsCustomRecipient } from 'utils/orderUtils/getIsCustomRecipient'
 
 import * as styledEl from './styled'
 
-import { CancelButton } from '../CancelButton'
-
 export type OrderProgressBarV2Props = {
   stepName: OrderProgressBarStepName
   chainId: SupportedChainId
@@ -49,6 +47,7 @@ export type OrderProgressBarV2Props = {
   showCancellationModal: Command | null
   surplusData?: SurplusData
   receiverEnsName?: string
+  navigateToNewOrder?: Command
 }
 
 const STEPS = [
@@ -270,8 +269,7 @@ function SolvingStep({ order, countdown }: OrderProgressBarV2Props) {
             <styledEl.Description>
               The auction has started! Solvers are competing to find the best solution for you...
               <br />
-              <styledEl.Link href="#" target="_blank">
-                {/*TODO: add competition learn more link*/}
+              <styledEl.Link href="https://cow.fi/learn/understanding-batch-auctions" target="_blank">
                 Learn more ↗
               </styledEl.Link>
             </styledEl.Description>
@@ -546,8 +544,7 @@ function NextBatchStep({ solverCompetition, order }: OrderProgressBarV2Props) {
               )}{' '}
               Unfortunately, your order wasn't part of their winning solution, so we're waiting for solvers to find a
               new solution that includes your order for the next batch.{' '}
-              <styledEl.Link href="#" target={'_blank'}>
-                {/*TODO: add learn more link*/}
+              <styledEl.Link href="https://cow.fi/learn/understanding-batch-auctions" target={'_blank'}>
                 Learn more ↗
               </styledEl.Link>
             </styledEl.Description>
@@ -565,7 +562,7 @@ function NextBatchStep({ solverCompetition, order }: OrderProgressBarV2Props) {
   )
 }
 
-function DelayedStep({ order }: OrderProgressBarV2Props) {
+function DelayedStep({ order, showCancellationModal }: OrderProgressBarV2Props) {
   return (
     <styledEl.ProgressContainer>
       <styledEl.ProgressTopSection>
@@ -583,7 +580,14 @@ function DelayedStep({ order }: OrderProgressBarV2Props) {
           _index={1}
           extraContent={
             <styledEl.Description>
-              This is taking longer than expected! Solvers are still searching...
+              This is taking longer than expected! There may be a network issue (such as a gas spike) that is preventing
+              solvers from picking up your order. The issue should resolve momentarily.{' '}
+              {showCancellationModal && (
+                <>
+                  You can wait or{' '}
+                  <styledEl.CancelButton onClick={showCancellationModal}>cancel the order</styledEl.CancelButton>.
+                </>
+              )}
             </styledEl.Description>
           }
         />
@@ -615,7 +619,8 @@ function UnfillableStep({ order, showCancellationModal }: OrderProgressBarV2Prop
               Your order's price is currently out of market.{' '}
               {showCancellationModal && (
                 <>
-                  You can either wait or <CancelButton onClick={showCancellationModal}>cancel the order</CancelButton>.
+                  You can either wait or{' '}
+                  <styledEl.CancelButton onClick={showCancellationModal}>cancel the order</styledEl.CancelButton>.
                 </>
               )}
             </styledEl.Description>
@@ -713,7 +718,7 @@ function CancelledStep({ order }: OrderProgressBarV2Props) {
   )
 }
 
-function ExpiredStep({ order }: OrderProgressBarV2Props) {
+function ExpiredStep({ order, navigateToNewOrder }: OrderProgressBarV2Props) {
   return (
     <styledEl.ProgressContainer>
       <styledEl.ProgressTopSection>
@@ -738,10 +743,7 @@ function ExpiredStep({ order }: OrderProgressBarV2Props) {
           <h3>The good news</h3>
           <p>
             Unlike on other exchanges, you won't be charged for this! Feel free to{' '}
-            <styledEl.Link href="#" underline>
-              {/*TODO: add link to new order*/}
-              place a new order
-            </styledEl.Link>{' '}
+            <styledEl.Button onClick={navigateToNewOrder}>place a new order</styledEl.Button>
             without worry.
           </p>
         </styledEl.InfoCard>
@@ -749,8 +751,7 @@ function ExpiredStep({ order }: OrderProgressBarV2Props) {
 
       <styledEl.Description center margin="10px 0">
         If your orders often expire, consider increasing your slippage or{' '}
-        <styledEl.Link href="#" target="_blank">
-          {/*TODO: add contact us link*/}
+        <styledEl.Link href="mailto:help@cow.fi" target="_blank">
           contacting us
         </styledEl.Link>{' '}
         so we can investigate the problem.
