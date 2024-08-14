@@ -159,7 +159,7 @@ function useSearchTokensInApi(input: string | undefined, isTokenAlreadyFoundByAd
       return null
     }
 
-    return searchTokensInApi(input).then((result) => parseTokensFromApi(result, chainId))
+    return searchTokensInApi(chainId, input).then((result) => parseTokensFromApi(result, chainId))
   })
 }
 
