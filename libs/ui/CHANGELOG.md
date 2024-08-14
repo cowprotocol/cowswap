@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.7.1](https://github.com/cowprotocol/cowswap/compare/ui-v1.7.0...ui-v1.7.1) (2024-08-14)
+
+
+### Bug Fixes
+
+* cancel modal does not pop-up when press on Cancel button in mobile view ([#4757](https://github.com/cowprotocol/cowswap/issues/4757)) ([f84d6b5](https://github.com/cowprotocol/cowswap/commit/f84d6b5cfe0710e33c02a692bf7f8b1e2464eb06))
+* total surplus tooltip cannot be open in iOS mobile device ([#4756](https://github.com/cowprotocol/cowswap/issues/4756)) ([22ca5e0](https://github.com/cowprotocol/cowswap/commit/22ca5e0a9aa156e124cf6c34858e90c65cb0175c))
+
 ## [1.7.0](https://github.com/cowprotocol/cowswap/compare/ui-v1.6.0...ui-v1.7.0) (2024-07-18)
 
 
