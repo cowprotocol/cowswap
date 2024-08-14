@@ -25,7 +25,6 @@ import {
 } from './atoms'
 import { OrderProgressBarState, OrderProgressBarStepName } from './types'
 
-
 export type UseOrderProgressBarPropsParams = {
   activityDerivedState: ActivityDerivedState | null
   chainId: SupportedChainId
