@@ -6,7 +6,7 @@ import {
   OrderProgressBarState,
   OrderProgressBarStepName,
   OrdersProgressBarCountdown,
-  OrdersProgressBarState,
+  OrdersProgressBarState
 } from './types'
 
 /**
@@ -92,10 +92,8 @@ export const updateOrderProgressBarStepName = atom(
     singleOrderState.previousStepName = singleOrderState.progressBarStepName
     // Update current status
     singleOrderState.progressBarStepName = value
-    // We need to know when it was last changed
-    singleOrderState.lastTimeChangedSteps = singleOrderState.currentTimeChangedSteps
-    // For this reason, we use another variable to keep track of when the change happens
-    singleOrderState.currentTimeChangedSteps = Date.now()
+    // Keep track when state was changed
+    singleOrderState.lastTimeChangedSteps = Date.now()
 
     set(ordersProgressBarStateAtom, { ...fullState, [orderId]: singleOrderState })
   }

@@ -7,7 +7,6 @@ export type OrderProgressBarState = {
   progressBarStepName?: OrderProgressBarStepName
   previousStepName?: OrderProgressBarStepName
   lastTimeChangedSteps?: number
-  currentTimeChangedSteps?: number
   cancellationTriggered?: true
 }
 

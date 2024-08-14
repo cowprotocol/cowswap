@@ -25,7 +25,6 @@ import {
 } from './atoms'
 import { OrderProgressBarState, OrderProgressBarStepName } from './types'
 
-
 export type UseOrderProgressBarPropsParams = {
   activityDerivedState: ActivityDerivedState | null
   chainId: SupportedChainId
@@ -36,7 +35,7 @@ export type UseOrderProgressBarV2Result = Pick<OrderProgressBarState, 'countdown
   showCancellationModal: Command | null
 }
 
-const MINIMUM_STEP_DISPLAY_TIME = ms`5s`
+const MINIMUM_STEP_DISPLAY_TIME = ms`2s`
 export const PROGRESS_BAR_TIMER_DURATION = 15 // in seconds
 
 /**
