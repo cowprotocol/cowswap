@@ -1,7 +1,8 @@
 import { useSetAtom } from 'jotai'
-import { solversInfoAtom } from '../state'
 import { useEffect } from 'react'
+
 import { useCmsSolversInfo } from '../hooks'
+import { solversInfoAtom } from '../state'
 import { mapCmsSolversInfoToSolversInfo } from '../utils'
 
 export function SolversInfoUpdater() {
