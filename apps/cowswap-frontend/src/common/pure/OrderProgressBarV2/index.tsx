@@ -55,7 +55,7 @@ import { getIsCustomRecipient } from 'utils/orderUtils/getIsCustomRecipient'
 
 import * as styledEl from './styled'
 
-const IS_DEBUG_MODE = false
+const IS_DEBUG_MODE = true
 const DEBUG_FORCE_SHOW_SURPLUS = false
 
 export type OrderProgressBarV2Props = {
@@ -366,11 +366,15 @@ function ExecutingStep({ solverCompetition, order }: OrderProgressBarV2Props) {
 }
 
 const COW_SWAP_BENEFITS = [
-  "Unlike other exchanges, here you don't pay any fees if your trade fails.",
-  'COW Swap finds the best prices across multiple liquidity sources for you.',
-  "Enjoy MEV protection and no front-running with COW Swap's unique order settlement.",
-  "Experience gasless trading with COW Swap's off-chain order matching.",
-  "Don't worry, trade happy!",
+  'CoW Swap solvers search Uniswap, 1inch, Matcha, Sushi, and more to find you the best price.',
+  'CoW Swap sets the standard for protecting against MEV attacks such as frontrunning and sandwiching.',
+  "Enjoy intent-based trading with gasless swaps and CoW Swap's unique Coincidences of Wants (CoWs) feature.",
+  'Place and cancel limit orders for free on CoW Swap, capturing surplus if the price moves in your favor.',
+  'Protect all your Ethereum transactions from MEV by installing MEV Blocker.',
+  'Switch to Arbitrum on CoW Swap for quick, cheap transactions with no price impact on large trades.',
+  "Liquidity pools on CoW AMM grow faster as they don't lose money to arbitrage bots.",
+  "CoW Swap's robust solver competition protects your slippage from being exploited by MEV bots.",
+  'Advanced users can create complex, conditional orders directly through CoW Protocol.',
 ]
 
 function truncateWithEllipsis(str: string, maxLength: number): string {
@@ -463,7 +467,11 @@ function FinishedStep({
 
   const surplusPercentValue = surplusPercent ? parseFloat(surplusPercent).toFixed(2) : 'N/A'
   const { fontSize: surplusFontSize, textRef: surplusTextRef, containerRef: surplusContainerRef } = useFitText(18, 50)
-  const { fontSize: benefitFontSize, textRef: benefitTextRef, containerRef: benefitContainerRef } = useFitText(18, 72)
+  const {
+    fontSize: benefitFontSize,
+    textRef: benefitTextRef,
+    containerRef: benefitContainerRef,
+  } = useFitText(14, 24, 1)
 
   const [surplusSize, setSurplusSize] = useState(1)
   const surplusRef = useRef<HTMLDivElement>(null)
@@ -547,9 +555,10 @@ function FinishedStep({
                   </span>
                 </styledEl.BenefitSurplusContainer>
               ) : (
-                <styledEl.BenefitSurplusContainer ref={benefitContainerRef}>
-                  <styledEl.BenefitText ref={benefitTextRef} fontSize={benefitFontSize}>
-                    {randomBenefit}
+                <styledEl.BenefitSurplusContainer>
+                  <styledEl.BenefitTagLine>Did you know?</styledEl.BenefitTagLine>
+                  <styledEl.BenefitText ref={benefitContainerRef} fontSize={benefitFontSize}>
+                    <span ref={benefitTextRef}>{randomBenefit}</span>
                   </styledEl.BenefitText>
                 </styledEl.BenefitSurplusContainer>
               )}

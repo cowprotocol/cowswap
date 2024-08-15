@@ -471,6 +471,11 @@ export const FinishedTagLine = styled.div`
   align-items: center;
   overflow: hidden;
   padding: 0;
+  flex: 1 1 0;
+
+  ${Media.upToSmall()} {
+    flex: 0 0 auto;
+  }
 `
 
 export const FinishedLogo = styled.div`
@@ -479,11 +484,9 @@ export const FinishedLogo = styled.div`
   justify-content: space-between;
   z-index: 1;
   padding: 0;
-  margin: 0;
-  position: absolute;
-  bottom: 10px;
-  left: 10px;
-  width: calc(100% - 20px);
+  margin: auto 0 0;
+  width: 100%;
+  flex: 0;
 
   > b {
     font-weight: 700;
@@ -852,7 +855,8 @@ export const FinishedImageContent = styled.div`
   position: relative;
   border: 2px solid #99ecff;
   border-radius: 21px;
-  padding: 14px 14px 40px;
+  padding: 12px;
+  gap: 14px;
   color: ${({ theme }) => (theme.darkMode ? `var(${UI.COLOR_BUTTON_TEXT})` : `var(${UI.COLOR_TEXT})`)};
 
   ${Media.upToSmall()} {
@@ -862,26 +866,39 @@ export const FinishedImageContent = styled.div`
 
 export const BenefitSurplusContainer = styled.div`
   width: 100%;
-  height: 98%;
+  height: 100%;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 8px;
+`
+
+export const BenefitText = styled.div<{ fontSize: number }>`
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
 
   > span {
-    width: 100%;
+    display: inline-block;
+    font-size: ${({ fontSize }) => `${fontSize}px`};
+    line-height: 1.2;
     text-align: left;
+    word-break: break-word;
+    hyphens: auto;
+    width: 100%;
   }
 `
 
-export const BenefitText = styled.span<{ fontSize: number }>`
-  font-size: ${({ fontSize }) => `${fontSize}px`};
-  line-height: 1.2;
-  text-align: left;
-  max-width: 100%;
-  height: 100%;
-  max-height: 100%;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+export const BenefitTagLine = styled.div`
+  width: auto;
+  font-size: 14px;
+  margin: 0 auto auto 0;
+  border-radius: 12px;
+  padding: 2px 10px;
+  background-color: #3fc4ff;
+  color: var(${UI.COLOR_TEXT});
 `
