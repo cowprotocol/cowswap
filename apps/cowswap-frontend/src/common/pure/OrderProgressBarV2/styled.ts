@@ -404,7 +404,7 @@ export const CowImage = styled.div`
 `
 
 export const TokenPairTitle = styled.span`
-  margin: 0 0 0 4px;
+  margin: 4px 0 4px 4px;
   background: #99ecff;
   border-radius: 12px;
   padding: 0 6px;
@@ -433,34 +433,18 @@ export const TokenImages = styled.div`
   }
 `
 
-export const Surplus = styled.div<{ showSurplus: boolean }>`
-  font-size: 1em;
-  font-weight: ${({ showSurplus }) => (showSurplus ? 'bold' : 'normal')};
+export const Surplus = styled.div`
+  font-weight: bold;
   color: inherit;
   width: 100%;
-  text-align: left;
+  height: 100%;
+  text-align: right;
   line-height: 1.2;
   margin: 0;
-  display: grid;
-
-  span {
-    grid-area: 1 / 1 / 2 / 2;
-    white-space: nowrap;
-  }
-
-  &::after {
-    content: attr(data-content);
-    display: block;
-    font-weight: bold;
-    height: 0;
-    overflow: hidden;
-    visibility: hidden;
-    grid-area: 1 / 1 / 2 / 2;
-  }
 `
 
 export const FinishedTagLine = styled.div`
-  line-height: 1.7;
+  line-height: 1.2;
   font-weight: bold;
   color: inherit;
   max-width: 100%;
@@ -870,26 +854,24 @@ export const BenefitSurplusContainer = styled.div`
   height: 100%;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: flex-end;
+  text-align: right;
   justify-content: flex-start;
-  gap: 8px;
-
-  > span {
-    width: 100%;
-  }
+  gap: 0;
+  font-size: 20px;
+  line-height: 1.4;
 `
 
-export const BenefitText = styled.div<{ fontSize: number }>`
+export const BenefitText = styled.div`
   width: 100%;
   height: 100%;
   overflow: hidden;
-  padding: 0;
+  padding: 6px 0 0;
   margin: 0;
   box-sizing: border-box;
 
   > span {
     display: inline-block;
-    font-size: ${({ fontSize }) => `${fontSize}px`};
     line-height: 1.2;
     text-align: left;
     word-break: break-word;
@@ -905,5 +887,5 @@ export const BenefitTagLine = styled.div`
   border-radius: 12px;
   padding: 2px 10px;
   background-color: #3fc4ff;
-  color: var(${UI.COLOR_TEXT});
+  color: #000000;
 `

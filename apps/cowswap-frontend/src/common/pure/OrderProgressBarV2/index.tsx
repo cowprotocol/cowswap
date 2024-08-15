@@ -21,7 +21,6 @@ import STEP_LOTTIE_INITIAL from '@cowprotocol/assets/lottie/progressbar-step-ini
 import STEP_LOTTIE_NEXTBATCH from '@cowprotocol/assets/lottie/progressbar-step-nextbatch.json'
 import LOTTIE_RED_CROSS from '@cowprotocol/assets/lottie/red-cross.json'
 import LOTTIE_TIME_EXPIRED_DARK from '@cowprotocol/assets/lottie/time-expired-dark.json'
-import { useFitText } from '@cowprotocol/common-hooks'
 import { ExplorerDataType, getExplorerLink, isSellOrder, shortenAddress } from '@cowprotocol/common-utils'
 import { getRandomInt } from '@cowprotocol/common-utils'
 import type { CompetitionOrderStatus, SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -42,6 +41,7 @@ import {
   PiTrophyFill,
 } from 'react-icons/pi'
 import SVG from 'react-inlinesvg'
+import { Textfit } from 'react-textfit'
 
 import { AMM_LOGOS } from 'legacy/components/AMMsLogo'
 import { Order } from 'legacy/state/orders/actions'
@@ -55,7 +55,7 @@ import { getIsCustomRecipient } from 'utils/orderUtils/getIsCustomRecipient'
 
 import * as styledEl from './styled'
 
-const IS_DEBUG_MODE = false
+const IS_DEBUG_MODE = true
 const DEBUG_FORCE_SHOW_SURPLUS = false
 
 export type OrderProgressBarV2Props = {
@@ -534,44 +534,6 @@ function FinishedStep({
   const isDarkMode = useIsDarkMode()
 
   const surplusPercentValue = surplusPercent ? parseFloat(surplusPercent).toFixed(2) : 'N/A'
-  const { fontSize: surplusFontSize, textRef: surplusTextRef, containerRef: surplusContainerRef } = useFitText(18, 50)
-  const {
-    fontSize: benefitFontSize,
-    textRef: benefitTextRef,
-    containerRef: benefitContainerRef,
-  } = useFitText(14, 24, 1)
-
-  const [surplusSize, setSurplusSize] = useState(1)
-  const surplusRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    if (surplusRef.current) {
-      const container = surplusRef.current.parentElement
-      if (container) {
-        const fitText = () => {
-          let fontSize = 1
-          surplusRef.current!.style.fontSize = `${fontSize}px`
-
-          while (
-            surplusRef.current!.scrollWidth <= container.clientWidth &&
-            surplusRef.current!.scrollHeight <= container.clientHeight &&
-            fontSize < 50 // Cap at 50px
-          ) {
-            fontSize += 0.5
-            surplusRef.current!.style.fontSize = `${fontSize}px`
-          }
-
-          fontSize -= 0.5
-          setSurplusSize(Math.min(fontSize, 50)) // Ensure it doesn't exceed 50px
-        }
-
-        fitText()
-        window.addEventListener('resize', fitText)
-        return () => window.removeEventListener('resize', fitText)
-      }
-    }
-    return () => {}
-  }, [shouldShowSurplus, surplusPercentValue])
 
   const shareOnTwitter = shouldShowSurplus
     ? shareSurplusOnTwitter(surplusData, order)
@@ -614,32 +576,48 @@ function FinishedStep({
           <styledEl.FinishedImageContent>
             <styledEl.FinishedTagLine>
               {shouldShowSurplus ? (
-                <styledEl.BenefitSurplusContainer ref={surplusContainerRef}>
-                  <span ref={surplusTextRef} style={{ fontSize: `${surplusFontSize}px` }}>
-                    I just received surplus on my
-                    <styledEl.TokenPairTitle title={`${order.inputToken.symbol} / ${order.outputToken.symbol}`}>
-                      {truncateWithEllipsis(`${order.inputToken.symbol} / ${order.outputToken.symbol}`, 30)}
-                    </styledEl.TokenPairTitle>{' '}
-                    trade
-                    <styledEl.Surplus
-                      ref={surplusRef}
-                      showSurplus={!!shouldShowSurplus}
-                      style={{ fontSize: `${surplusSize}px` }}
-                      data-content={
-                        shouldShowSurplus && surplusPercentValue !== 'N/A' ? `+${surplusPercentValue}%` : 'N/A'
-                      }
+                <styledEl.BenefitSurplusContainer>
+                  I just received surplus on
+                  <styledEl.TokenPairTitle title={`${order.inputToken.symbol} / ${order.outputToken.symbol}`}>
+                    {truncateWithEllipsis(`${order.inputToken.symbol} / ${order.outputToken.symbol}`, 30)}
+                  </styledEl.TokenPairTitle>{' '}
+                  <styledEl.Surplus>
+                    <Textfit
+                      mode="multi"
+                      min={14}
+                      max={60}
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                        lineHeight: 1.2,
+                      }}
                     >
-                      <span>
-                        {shouldShowSurplus && surplusPercentValue !== 'N/A' ? `+${surplusPercentValue}%` : 'N/A'}
-                      </span>
-                    </styledEl.Surplus>
-                  </span>
+                      {shouldShowSurplus && surplusPercentValue !== 'N/A' ? `+${surplusPercentValue}%` : 'N/A'}
+                    </Textfit>
+                  </styledEl.Surplus>
                 </styledEl.BenefitSurplusContainer>
               ) : (
                 <styledEl.BenefitSurplusContainer>
                   <styledEl.BenefitTagLine>Did you know?</styledEl.BenefitTagLine>
-                  <styledEl.BenefitText ref={benefitContainerRef} fontSize={benefitFontSize}>
-                    <span ref={benefitTextRef}>{randomBenefit}</span>
+                  <styledEl.BenefitText>
+                    <Textfit
+                      mode="multi"
+                      min={12}
+                      max={50}
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                        lineHeight: 1.2,
+                      }}
+                    >
+                      {randomBenefit}
+                    </Textfit>
                   </styledEl.BenefitText>
                 </styledEl.BenefitSurplusContainer>
               )}
