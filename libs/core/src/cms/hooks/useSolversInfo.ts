@@ -4,10 +4,20 @@ import { useMemo } from 'react'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { solversInfoAtom } from '../state'
-import { SolversInfo } from '../types'
+import { SolverInfo } from '../types'
 
-export function useSolversInfo(chainId: SupportedChainId): SolversInfo {
+export function useSolversInfo(chainId: SupportedChainId): Record<string, SolverInfo> {
   const allSolversInfo = useAtomValue(solversInfoAtom)
 
-  return useMemo(() => allSolversInfo.filter((info) => info.chainIds.includes(chainId)), [chainId, allSolversInfo])
+  return useMemo(
+    () =>
+      allSolversInfo.reduce<Record<string, SolverInfo>>((acc, info) => {
+        if (info.chainIds.includes(chainId)) {
+          acc[info.solverId] = info
+        }
+
+        return acc
+      }, {}),
+    [chainId, allSolversInfo]
+  )
 }
