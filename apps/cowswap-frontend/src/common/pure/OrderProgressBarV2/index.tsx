@@ -191,9 +191,8 @@ const FINAL_STATES: OrderProgressBarStepName[] = ['expired', 'finished', 'cancel
 
 function formatDuration(milliseconds: number): string {
   if (milliseconds < 1000) return `${milliseconds}ms`
-  if (milliseconds < 60000) return `${(milliseconds / 1000).toFixed(2)}s`
-  if (milliseconds < 3600000) return `${(milliseconds / 60000).toFixed(2)}min`
-  return `${(milliseconds / 3600000).toFixed(2)}h`
+  const seconds = milliseconds / 1000
+  return `${seconds.toFixed(2)}s` // Format with 2 decimal places
 }
 
 export function OrderProgressBarV2(props: OrderProgressBarV2Props) {
@@ -219,7 +218,7 @@ export function OrderProgressBarV2(props: OrderProgressBarV2Props) {
         category: Category.PROGRESS_BAR,
         action: 'Step Triggered',
         label: currentStep,
-        value: '0ms',
+        value: 0, // This remains 0 for the initial step
       })
     }
   }, [currentStep])
@@ -232,6 +231,7 @@ export function OrderProgressBarV2(props: OrderProgressBarV2Props) {
     const isFinalState = FINAL_STATES.includes(currentStep)
 
     if (duration !== null) {
+      const durationInSeconds = duration / 1000
       const formattedDuration = formatDuration(duration)
       console.log(`Step duration: ${formattedDuration}`)
 
@@ -239,7 +239,7 @@ export function OrderProgressBarV2(props: OrderProgressBarV2Props) {
         category: Category.PROGRESS_BAR,
         action: 'Step Triggered',
         label: currentStep,
-        value: formattedDuration,
+        value: parseFloat(durationInSeconds.toFixed(2)),
       })
 
       if (isFinalState) {
@@ -247,7 +247,7 @@ export function OrderProgressBarV2(props: OrderProgressBarV2Props) {
           category: Category.PROGRESS_BAR,
           action: 'Order Completed',
           label: currentStep,
-          value: formattedDuration,
+          value: parseFloat(durationInSeconds.toFixed(2)),
         })
         console.log(`Final state reached: ${currentStep}. Total duration: ${formattedDuration}`)
         startTimeRef.current = null // Reset the timer for the next order
