@@ -1,3 +1,10 @@
+import FONT_STUDIO_FEIXEN_MONO_BOLD from '@cowprotocol/assets/fonts/StudioFeixenMono-Bold.woff2'
+import FONT_STUDIO_FEIXEN_MONO_BOOK from '@cowprotocol/assets/fonts/StudioFeixenMono-Book.woff2'
+import FONT_STUDIO_FEIXEN_MONO_LIGHT from '@cowprotocol/assets/fonts/StudioFeixenMono-Light.woff2'
+import FONT_STUDIO_FEIXEN_MONO_MEDIUM from '@cowprotocol/assets/fonts/StudioFeixenMono-Medium.woff2'
+import FONT_STUDIO_FEIXEN_MONO_REGULAR from '@cowprotocol/assets/fonts/StudioFeixenMono-Regular.woff2'
+import FONT_STUDIO_FEIXEN_MONO_SEMIBOLD from '@cowprotocol/assets/fonts/StudioFeixenMono-Semibold.woff2'
+import FONT_STUDIO_FEIXEN_MONO_ULTRALIGHT from '@cowprotocol/assets/fonts/StudioFeixenMono-Ultralight.woff2'
 import FONT_STUDIO_FEIXEN_BOLD from '@cowprotocol/assets/fonts/StudioFeixenSans-Bold.woff2'
 import FONT_STUDIO_FEIXEN_BOLD_ITALIC from '@cowprotocol/assets/fonts/StudioFeixenSans-BoldItalic.woff2'
 import FONT_STUDIO_FEIXEN_BOOK from '@cowprotocol/assets/fonts/StudioFeixenSans-Book.woff2'
@@ -36,4 +43,11 @@ export const CoWDAOFonts = {
   FONT_STUDIO_FEIXEN_SERIF_MEDIUM,
   FONT_STUDIO_FEIXEN_SERIF_REGULAR,
   FONT_STUDIO_FEIXEN_SERIF_BOOK,
+  FONT_STUDIO_FEIXEN_MONO_BOOK,
+  FONT_STUDIO_FEIXEN_MONO_REGULAR,
+  FONT_STUDIO_FEIXEN_MONO_BOLD,
+  FONT_STUDIO_FEIXEN_MONO_MEDIUM,
+  FONT_STUDIO_FEIXEN_MONO_SEMIBOLD,
+  FONT_STUDIO_FEIXEN_MONO_LIGHT,
+  FONT_STUDIO_FEIXEN_MONO_ULTRALIGHT,
 }

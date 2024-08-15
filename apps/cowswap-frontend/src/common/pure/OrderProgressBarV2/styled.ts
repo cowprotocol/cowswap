@@ -1,11 +1,66 @@
 import IMAGE_STAR_SHINE from '@cowprotocol/assets/cow-swap/star-shine.svg'
-import { LinkStyledButton, Media, UI } from '@cowprotocol/ui'
+import { LinkStyledButton, Font, Media, UI } from '@cowprotocol/ui'
 
 import styled, { css, keyframes } from 'styled-components/macro'
 
 import { CancelButton as CancelButtonOriginal } from '../CancelButton'
 
-const SUCCESS_COLOR = '#04795b' // TODO: Fix hardcoded color
+const BLUE_COLOR = '#65d9ff'
+
+const slideAnimation = (direction: 'up' | 'down') => keyframes`
+  from {
+    transform: translateY(${direction === 'up' ? '20px' : '-20px'}); 
+    opacity: 0; 
+  }
+  to { 
+    transform: translateY(0); 
+    opacity: ${direction === 'up' ? 0.1 : 1}; 
+  }
+`
+
+const animationMixin = css<{ status: string }>`
+  animation: ${({ status }) => {
+      if (status === 'done') return slideAnimation('up')
+      if (status === 'active') return slideAnimation('down')
+      return 'none'
+    }}
+    1s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+`
+
+const sweatDropAnimation = keyframes`
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  80% {
+    transform: translateY(20px);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(40px);
+    opacity: 0;
+  }
+`
+
+const getOpacity = (status: string): number => {
+  const opacityMap = {
+    done: 0.1,
+    active: 1,
+    next: 0.5,
+    future: 0.2,
+    disabled: 0.2,
+  }
+  return opacityMap[status as keyof typeof opacityMap] || 1
+}
+
+const getStatusColor = (status: string): string => {
+  const colorMap: Record<string, string> = {
+    done: '#4CAF50',
+    active: '#2196F3',
+    error: '#F44336',
+  }
+  return colorMap[status] || 'currentColor'
+}
 
 export const Icon = styled.div<{ status: string; customColor?: string }>`
   --width: 28px;
@@ -16,38 +71,15 @@ export const Icon = styled.div<{ status: string; customColor?: string }>`
   justify-content: center;
   align-items: center;
   margin-right: 15px;
-  color: ${(props) => props.customColor || `var(${UI.COLOR_PRIMARY_LIGHTER})`};
+  color: ${({ customColor }) => customColor || `var(${UI.COLOR_PRIMARY_LIGHTER})`};
   font-weight: bold;
   font-size: 24px;
 
   > svg {
-    color: ${(props) => {
-      if (props.status === 'done') return '#4CAF50'
-      if (props.status === 'active') return '#2196F3'
-      if (props.status === 'error') return '#F44336'
-      return 'currentColor'
-    }};
+    color: ${({ status }) => getStatusColor(status)};
     width: 100%;
     height: 100%;
     object-fit: contain;
-  }
-`
-
-export const slideUp = keyframes`
-  from {
-    transform: translateY(10px);
-  }
-  to {
-    transform: translateY(0);
-  }
-`
-
-export const slideDown = keyframes`
-  from {
-    transform: translateY(-10px);
-  }
-  to {
-    transform: translateY(0);
   }
 `
 
@@ -68,17 +100,8 @@ export const StepsWrapper = styled.div`
   width: 100%;
   margin: 0 auto;
 
-  .spinner {
-    animation: spin 1s linear infinite;
-  }
-
-  @keyframes spin {
-    0% {
-      transform: rotate(0deg);
-    }
-    100% {
-      transform: rotate(360deg);
-    }
+  ${Media.upToSmall()} {
+    padding: 30px 0 0;
   }
 `
 
@@ -86,27 +109,9 @@ export const Step = styled.div<{ status: string; isFirst: boolean }>`
   display: flex;
   align-items: flex-start;
   margin: 0;
-  opacity: ${(props) => {
-    if (props.status === 'done') return 0.1
-    if (props.status === 'active') return 1
-    if (props.status === 'next') return 0.4
-    if (props.status === 'future' || props.status === 'disabled') return 0.3
-    return 1
-  }};
-  transform: translateY(
-    ${(props) => {
-      if (props.status === 'done') return '-10px'
-      if (props.status === 'active' && props.isFirst) return '10px'
-      return '0'
-    }}
-  );
-  transition: all 0.3s ease;
-  animation: ${(props) => {
-      if (props.status === 'done') return slideUp
-      if (props.status === 'active') return slideDown
-      return 'none'
-    }}
-    0.3s ease;
+  opacity: ${({ status }) => getOpacity(status)};
+  transition: opacity 0.35s cubic-bezier(0.19, 1, 0.22, 1);
+  ${animationMixin}
 `
 
 export const Content = styled.div`
@@ -125,6 +130,11 @@ export const Description = styled.p<{ center?: boolean; margin?: string }>`
   font-size: 14px;
   color: var(${UI.COLOR_TEXT_OPACITY_70});
   text-align: ${({ center }) => (center ? 'center' : 'left')};
+
+  > button {
+    font-weight: 700;
+    text-decoration: underline;
+  }
 `
 
 export const Link = styled.a<{ underline?: boolean }>`
@@ -158,19 +168,21 @@ export const Button = styled(LinkStyledButton)`
   }
 `
 
-export const ProgressImageWrapper = styled.div<{ bgColor?: string; padding?: string }>`
+export const ProgressImageWrapper = styled.div<{ bgColor?: string; padding?: string; height?: string; gap?: string }>`
   width: 100%;
-  height: 246px;
+  height: ${({ height }) => height || '246px'};
   max-height: 246px;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-flow: column wrap;
   border-radius: 21px;
-  overflow: hidden;
   padding: ${({ padding }) => padding || '0'};
+  gap: ${({ gap }) => gap || '0'};
   background: ${({ bgColor }) => bgColor || `var(${UI.COLOR_PAPER_DARKER})`};
+  transition: all 0.3s ease-in-out;
   position: relative;
+  overflow: hidden;
 
   > img,
   > svg {
@@ -227,6 +239,7 @@ export const ProgressTopSection = styled.div`
 
 export const OriginalOrderIntent = styled.span`
   display: flex;
+  flex-flow: row wrap;
   align-items: center;
   justify-content: center;
   font-size: 13px;
@@ -261,36 +274,38 @@ export const TokenWrapper = styled.div<{ position: 'left' | 'center' | 'right' }
   height: var(--size);
   border-radius: var(--size);
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   position: absolute;
   right: 0;
-  margin: auto;
   left: 0;
+  margin: auto;
   animation: ${({ position }) => (position === 'left' ? 'appear-left' : position === 'right' ? 'appear-right' : 'none')}
     2.5s cubic-bezier(0.19, 1, 0.22, 1) forwards;
   animation-delay: ${({ position }) => (position === 'center' ? '0s' : '0.75s')};
-  border: ${({ position }) => (position === 'right' ? '8px solid #65D9FF' : '0')}; // TODO: Fix hardcoded colors
-  border: 8px solid #65d9ff;
+  border: ${({ position }) => (position === 'right' ? `8px solid ${BLUE_COLOR}` : '0')};
   box-sizing: content-box;
   background: ${({ position }) => (position === 'right' ? `var(${UI.COLOR_PRIMARY})` : 'transparent')};
 
   ${({ position }) =>
     position === 'right' &&
-    `&::after {
-    --size: 36px;
-    content: '';
-    position: absolute;
-    right: 0;
-    top: 0;
-    width: var(--size);
-    height: var(--size);
-    background: url(${IMAGE_STAR_SHINE}) no-repeat;
-    background-size: 100% 100%;
-    animation: star-shine 1s infinite;
-  }`}
+    css`
+      &::after {
+        --size: 36px;
+        content: '';
+        position: absolute;
+        right: 0;
+        top: 0;
+        width: var(--size);
+        height: var(--size);
+        background: url(${IMAGE_STAR_SHINE}) no-repeat;
+        background-size: 100% 100%;
+        animation: star-shine 1s infinite;
+      }
+    `}
+
   > span {
-    padding: ${({ position }) => (position === 'right' ? '45px 40px 34px;' : '0')};
+    padding: ${({ position }) => (position === 'right' ? '45px 40px 34px' : '0')};
   }
 
   @keyframes appear-left {
@@ -306,59 +321,32 @@ export const TokenWrapper = styled.div<{ position: 'left' | 'center' | 'right' }
   }
 `
 
-const progressAnimation = (duration: number, max: number) => {
-  const start = max - duration
-
-  return keyframes`
-    0% {
-      stroke-dashoffset: ${-(start * 283) / max};
-    }
-    100% {
-      stroke-dashoffset: -283; // Approximately 2 * PI * 45
-    }
-  `
-}
-
 export const CountdownWrapper = styled.div`
-  --size: 172px;
-  height: var(--size);
-  width: var(--size);
-  top: 0;
-  bottom: 0;
   margin: auto;
-  left: 40px;
-  background: #65d9ff;
-  border-radius: var(--size);
   position: absolute;
   display: flex;
   justify-content: center;
   align-items: center;
-`
+  height: 71px;
+  width: 150px;
+  top: initial;
+  left: 0;
+  bottom: 52px;
 
-export const CircularProgress = styled.svg`
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  transform: rotate(-90deg);
-  padding: 8px;
-`
-
-export const CircleProgress = styled.circle<{ duration: number; max: number }>`
-  fill: none;
-  stroke: #012f7a;
-  stroke-width: 7;
-  stroke-linecap: round;
-  ${({ duration, max }) =>
-    css`
-      animation: ${progressAnimation(duration, max)} ${duration}s linear infinite;
-    `};
+  ${Media.upToSmall()} {
+    background: #05a1ff;
+    bottom: 0;
+    border-top-right-radius: 16px;
+  }
 `
 
 export const CountdownText = styled.div`
+  font-family: ${Font.familyMono};
   font-size: 70px;
-  font-weight: 600;
-  color: #012f7a;
+  font-weight: bold;
+  color: var(${UI.COLOR_BLUE});
   z-index: 1;
+  font-variant-numeric: slashed-zero;
 `
 
 export const FinishedStepContainer = styled.div`
@@ -368,6 +356,17 @@ export const FinishedStepContainer = styled.div`
   gap: 10px;
   padding: 0;
   width: 100%;
+
+  ${Media.upToSmall()} {
+    flex-flow: column-reverse;
+    gap: 30px;
+
+    ${ProgressImageWrapper} {
+      height: auto;
+      max-height: initial;
+      flex-flow: column-reverse;
+    }
+  }
 `
 
 export const ConclusionContent = styled.div`
@@ -380,36 +379,36 @@ export const ConclusionContent = styled.div`
 `
 
 export const CowImage = styled.div`
-  position: absolute;
   height: 100%;
-  width: 220px;
-  left: 0;
-  bottom: 0;
+  width: auto;
   display: flex;
   align-items: flex-end;
   justify-content: flex-start;
-
-  // mobile from Media
+  position: relative;
 
   ${Media.upToSmall()} {
-    left: -50px;
-    width: 200px;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+  }
+
+  > svg {
+    height: 100%;
+    width: 100%;
+    max-width: 199px;
+
+    ${Media.upToSmall()} {
+      max-width: 100%;
+    }
   }
 `
 
-export const TokenPairTitle = styled.h3`
-  position: absolute;
-  right: 80px;
-  bottom: 16px;
-  font-size: 13px;
-  font-weight: 300;
-  margin: 0;
-  display: flex;
-  flex-flow: column wrap;
-  justify-content: center;
-  align-items: flex-end;
-
-  // mobile
+export const TokenPairTitle = styled.span`
+  margin: 0 0 0 4px;
+  background: #99ecff;
+  border-radius: 12px;
+  padding: 3px 6px;
+  word-break: break-all;
 
   ${Media.upToSmall()} {
     display: none;
@@ -434,55 +433,66 @@ export const TokenImages = styled.div`
 `
 
 export const Surplus = styled.div<{ showSurplus: boolean }>`
-  position: absolute;
-  top: ${({ showSurplus }) => (showSurplus ? '34px' : '54px')};
-  right: 20px;
-  height: calc(100% - 86px);
-  display: flex;
-  align-items: flex-end;
-  flex-flow: column wrap;
-  justify-content: center;
-  ${({ showSurplus }) =>
-    showSurplus ? 'color: #006922;' : 'text-align: right; width: 180px;'} // Todo: Fix hardcoded color
-  font-size: 23px;
-  font-weight: 400;
+  font-size: 1em;
+  font-weight: ${({ showSurplus }) => (showSurplus ? 'bold' : 'normal')};
+  color: inherit;
+  width: 100%;
+  text-align: left;
+  line-height: 1.2;
+  margin: 0;
+  display: grid;
 
-  > b {
-    font-size: 46px;
-    font-weight: 700;
+  span {
+    grid-area: 1 / 1 / 2 / 2;
+    white-space: nowrap;
+  }
 
-    ${Media.upToSmall()} {
-      font-size: 32px;
-    }
+  &::after {
+    content: attr(data-content);
+    display: block;
+    font-weight: bold;
+    height: 0;
+    overflow: hidden;
+    visibility: hidden;
+    grid-area: 1 / 1 / 2 / 2;
   }
 `
 
-export const FinishedLogo = styled.div`
-  position: absolute;
-  top: 16px;
-  left: 20px;
-  z-index: 1;
+export const FinishedTagLine = styled.div`
+  line-height: 1.7;
+  font-weight: bold;
+  color: inherit;
+  max-width: 100%;
+  font-size: 22px;
+  width: 100%;
+  text-align: right;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  padding: 0;
 `
 
-export const FinishedTagLine = styled.p`
-  font-size: 14px;
-  color: var(${UI.COLOR_PRIMARY_DARKER});
-  position: absolute;
-  top: 16px;
-  right: 20px;
+export const FinishedLogo = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   z-index: 1;
   padding: 0;
   margin: 0;
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  width: calc(100% - 20px);
 
   > b {
     font-weight: 700;
-    // TODO: Activate serif font
   }
 `
 
 export const ShareButton = styled.button`
-  background: #65d9ff; // Todo: Fix hardcoded color
-  color: #012f7a; // Todo: Fix hardcoded color
+  background: var(${UI.COLOR_PRIMARY});
+  color: var(${UI.COLOR_BUTTON_TEXT});
   border: none;
   padding: 10px 20px;
   border-radius: 20px;
@@ -494,31 +504,47 @@ export const ShareButton = styled.button`
   font-size: 17px;
   z-index: 2;
   position: absolute;
-  bottom: 13px;
-  left: 10px;
+  left: 6px;
+  right: 0;
+  bottom: 6px;
+  width: calc(100% - 12px);
+  transition: background 0.15s ease-in-out, color 0.15s ease-in-out;
 
-  // mobile
+  &:hover {
+    background: var(${UI.COLOR_BUTTON_TEXT});
+    color: var(${UI.COLOR_PRIMARY});
+  }
 
   ${Media.upToSmall()} {
     border: 1px solid var(${UI.COLOR_TEXT});
+    justify-content: center;
   }
 
   > svg {
     --size: 17px;
     width: var(--size);
     height: var(--size);
+
+    ${Media.upToSmall()} {
+      max-width: 100%;
+    }
   }
 `
 
-export const TransactionStatus = styled.div<{ status?: string }>`
+export const TransactionStatus = styled.div<{ status?: string; flexFlow?: string; gap?: string; margin?: string }>`
   display: flex;
+  flex-flow: ${({ flexFlow }) => flexFlow || 'row wrap'};
   align-items: center;
-  gap: 10px;
+  gap: ${({ gap }) => gap || '10px'};
   font-size: 21px;
   font-weight: bold;
-  margin: 24px auto;
+  margin: ${({ margin }) => margin || '14px auto 0'};
   color: ${({ status }) =>
-    status === 'expired' || status === 'cancelled' ? `var(${UI.COLOR_ALERT_TEXT})` : `var(${UI.COLOR_SUCCESS_TEXT})`};
+    status === 'expired' || status === 'cancelled'
+      ? `var(${UI.COLOR_ALERT_TEXT})`
+      : status === 'success'
+      ? `var(${UI.COLOR_SUCCESS_TEXT})`
+      : `var(${UI.COLOR_TEXT})`};
 
   > svg {
     --size: 28px;
@@ -526,7 +552,11 @@ export const TransactionStatus = styled.div<{ status?: string }>`
     width: var(--size);
     height: var(--size);
     background-color: ${({ status }) =>
-      status === 'expired' || status === 'cancelled' ? `var(${UI.COLOR_ALERT_BG})` : `var(${UI.COLOR_SUCCESS_BG})`};
+      status === 'expired' || status === 'cancelled'
+        ? `var(${UI.COLOR_ALERT_BG})`
+        : status === 'success'
+        ? `var(${UI.COLOR_SUCCESS_BG})`
+        : 'transparent'};
     border-radius: var(--size);
     padding: 2px;
   }
@@ -563,42 +593,32 @@ export const SolverTable = styled.table`
   margin: 14px auto 0;
 `
 
-export const SolverTableCell = styled.td<{ isFirst?: boolean; isSecond?: boolean; isLast?: boolean }>`
+export const SolverTableCell = styled.td`
   padding: 10px;
   color: inherit;
 
-  ${({ isFirst }) =>
-    isFirst &&
-    css`
-      border-top-left-radius: 5px;
-      border-bottom-left-radius: 5px;
-      padding: 10px 0 10px 10px;
-    `} // isSecond
-  ${({ isSecond }) =>
-    isSecond &&
-    css`
-      padding: 10px 10px 10px 0;
-    `}
+  &:first-child {
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    padding: 10px 0 10px 10px;
+  }
 
-  ${({ isLast }) =>
-    isLast &&
-    css`
-      border-top-right-radius: 5px;
-      border-bottom-right-radius: 5px;
-      text-align: right;
-    `}
+  &:last-child {
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    text-align: right;
+  }
 `
 
 export const SolverTableRow = styled.tr<{ isWinner: boolean }>`
-  background: ${({ isWinner }) => (isWinner ? 'rgba(4, 121, 91, 0.15)' : `var(${UI.COLOR_PAPER_DARKER})`)};
-  color: ${({ isWinner }) =>
-    isWinner ? `${SUCCESS_COLOR}` : `var(${UI.COLOR_TEXT_OPACITY_70})`}; // TODO: Fix hardcoded color
+  background: ${({ isWinner }) => (isWinner ? `var(${UI.COLOR_SUCCESS_BG})` : `var(${UI.COLOR_PAPER_DARKER})`)};
+  color: ${({ isWinner }) => (isWinner ? `var(${UI.COLOR_SUCCESS_TEXT})` : `var(${UI.COLOR_TEXT})`)};
   font-weight: ${({ isWinner }) => (isWinner ? 'bold' : 'normal')};
   font-size: 14px;
   transition: background 0.15s ease-in-out;
 
   &:hover {
-    background: ${({ isWinner }) => (isWinner ? 'rgba(4, 121, 91, 0.15)' : `var(${UI.COLOR_PAPER_DARKEST})`)};
+    background: ${({ isWinner }) => (isWinner ? `var(${UI.COLOR_SUCCESS_BG})` : `var(${UI.COLOR_PAPER_DARKEST})`)};
   }
 `
 
@@ -622,6 +642,7 @@ export const SolverLogo = styled.div`
 export const SolverName = styled.span`
   flex-grow: 1;
   color: inherit;
+  text-transform: capitalize;
 `
 
 export const TrophyIcon = styled.span`
@@ -634,8 +655,8 @@ export const WinningBadge = styled.span`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: #007b28;
-  color: white;
+  background: var(${UI.COLOR_SUCCESS_BG});
+  color: var(${UI.COLOR_SUCCESS_TEXT});
   padding: 4px 8px;
   border-radius: 12px;
   font-size: 12px;
@@ -652,7 +673,8 @@ export const ViewMoreButton = styled.button`
   margin: 10px auto;
   padding: 5px 10px;
   background-color: transparent;
-  border: 1px solid var(${UI.COLOR_PAPER_DARKER});
+  border: 1px solid var(${UI.COLOR_TEXT_OPACITY_70});
+  color: var(${UI.COLOR_TEXT});
   border-radius: 20px;
   cursor: pointer;
   display: flex;
@@ -691,7 +713,7 @@ export const ExtraAmount = styled.p`
   gap: 4px;
 
   > i {
-    color: ${SUCCESS_COLOR}; // TODO: Fix hardcoded color
+    color: var(${UI.COLOR_SUCCESS_TEXT});
     font-weight: bold;
     font-style: normal;
   }
@@ -700,7 +722,7 @@ export const ExtraAmount = styled.p`
 export const CardWrapper = styled.div`
   display: flex;
   flex-flow: row wrap;
-  align-items: center;
+  align-items: flex-start;
   width: 100%;
   margin: 0 auto 16px;
   gap: 5px;
@@ -710,30 +732,44 @@ export const InfoCard = styled.div<{ variant: 'warning' | 'success' }>`
   flex: 1;
   padding: 20px;
   border-radius: 16px;
-  background-color: ${({ variant }) => (variant === 'warning' ? '#FFF5E6' : '#E6F5ED')};
-  color: ${({ variant }) => (variant === 'warning' ? '#996815' : '#1E7F4E')};
+  background-color: ${({ variant }) =>
+    variant === 'warning' ? `var(${UI.COLOR_ALERT_BG})` : `var(${UI.COLOR_SUCCESS_BG})`};
+  color: ${({ variant }) => (variant === 'warning' ? `var(${UI.COLOR_ALERT_TEXT})` : `var(${UI.COLOR_SUCCESS_TEXT})`)};
   display: flex;
   flex-flow: column wrap;
   align-items: center;
   justify-content: center;
 
-  h3 {
+  > h3 {
     margin: 0 0 16px;
     font-size: 16px;
     font-weight: bold;
   }
 
-  p {
+  > p {
     margin: 0;
     font-size: 14px;
     line-height: 1.4;
     text-align: center;
   }
 
+  > p > a {
+    color: inherit;
+    text-decoration: underline;
+  }
+
   > svg {
     max-width: 100%;
     height: auto;
     margin: 0 auto 16px;
+
+    > path:last-child {
+      ${({ theme, variant }) =>
+        theme.darkMode &&
+        css`
+          fill: ${variant === 'warning' ? `var(${UI.COLOR_ALERT_TEXT})` : `var(${UI.COLOR_SUCCESS_TEXT})`};
+        `}
+    }
   }
 `
 
@@ -744,4 +780,108 @@ export const CancellationFailedBanner = styled.div`
   border-radius: 16px;
   text-align: center;
   font-size: 15px;
+`
+
+const spinAnimation = keyframes`
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+`
+
+export const SpinnerIcon = styled.div`
+  width: var(--width);
+  height: var(--width);
+  animation: ${spinAnimation} 1s linear infinite;
+
+  > svg {
+    width: 100%;
+    height: 100%;
+    color: inherit;
+  }
+`
+
+export const SweatDrop = styled.div`
+  color: #ffffff;
+  position: absolute;
+  left: 160px;
+  top: 75px;
+  width: 15px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: ${sweatDropAnimation} 2s cubic-bezier(0.19, 1, 0.22, 1) infinite;
+
+  > svg {
+    width: 100%;
+    height: 100%;
+    color: inherit;
+  }
+`
+
+export const ClockAnimation = styled.div`
+  --size: 85px;
+  width: var(--size);
+  height: var(--size);
+  position: absolute;
+  bottom: 36px;
+  right: 71px;
+  background: #996815;
+  border-radius: var(--size);
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  ${Media.upToSmall()} {
+    bottom: 16px;
+    right: 16px;
+  }
+`
+
+export const FinishedImageContent = styled.div`
+  display: flex;
+  flex-flow: column wrap;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
+  width: 50%;
+  position: relative;
+  border: 2px solid #99ecff;
+  border-radius: 21px;
+  padding: 14px 14px 40px;
+  color: ${({ theme }) => (theme.darkMode ? `var(${UI.COLOR_BUTTON_TEXT})` : `var(${UI.COLOR_TEXT})`)};
+
+  ${Media.upToSmall()} {
+    width: 100%;
+  }
+`
+
+export const BenefitSurplusContainer = styled.div`
+  width: 100%;
+  height: 98%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  > span {
+    width: 100%;
+    text-align: left;
+  }
+`
+
+export const BenefitText = styled.span<{ fontSize: number }>`
+  font-size: ${({ fontSize }) => `${fontSize}px`};
+  line-height: 1.2;
+  text-align: left;
+  max-width: 100%;
+  height: 100%;
+  max-height: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `
