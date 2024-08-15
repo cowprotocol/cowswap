@@ -22,7 +22,7 @@ export async function getSolversInfo(): Promise<CmsSolversInfo> {
           // },
           populate: {
             networks: { fields: ['chainId'] },
-            image: { fields: ['data'] },
+            image: { fields: ['url'] },
           },
           fields: ['displayName', 'solverId'],
         },
