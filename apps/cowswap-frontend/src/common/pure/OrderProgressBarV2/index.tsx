@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react'
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react'
 
 import PROGRESS_BAR_BAD_NEWS from '@cowprotocol/assets/cow-swap/progressbar-bad-news.svg'
 import PROGRESSBAR_COW_SURPLUS_1 from '@cowprotocol/assets/cow-swap/progressbar-finished-image-1.svg'
@@ -47,7 +47,7 @@ import { AMM_LOGOS } from 'legacy/components/AMMsLogo'
 import { Order } from 'legacy/state/orders/actions'
 import { useIsDarkMode } from 'legacy/state/user/hooks'
 
-import { shareSurplusOnTwitter as trackSurplusShare } from 'modules/analytics'
+import { cowAnalytics, Category } from 'modules/analytics'
 
 import { OrderProgressBarStepName } from 'common/hooks/orderProgressBarV2'
 import { SurplusData } from 'common/hooks/useGetSurplusFiatValue'
@@ -55,8 +55,8 @@ import { getIsCustomRecipient } from 'utils/orderUtils/getIsCustomRecipient'
 
 import * as styledEl from './styled'
 
-const IS_DEBUG_MODE = true
-const DEBUG_FORCE_SHOW_SURPLUS = true
+const IS_DEBUG_MODE = false
+const DEBUG_FORCE_SHOW_SURPLUS = false
 
 export type OrderProgressBarV2Props = {
   stepName: OrderProgressBarStepName
@@ -187,11 +187,74 @@ const CountdownEl: React.FC<CountdownElProps> = ({ countdown }) => {
   )
 }
 
+const FINAL_STATES: OrderProgressBarStepName[] = ['expired', 'finished', 'cancelled', 'cancellationFailed']
+
+function formatDuration(milliseconds: number): string {
+  if (milliseconds < 1000) return `${milliseconds}ms`
+  if (milliseconds < 60000) return `${(milliseconds / 1000).toFixed(2)}s`
+  if (milliseconds < 3600000) return `${(milliseconds / 60000).toFixed(2)}min`
+  return `${(milliseconds / 3600000).toFixed(2)}h`
+}
+
 export function OrderProgressBarV2(props: OrderProgressBarV2Props) {
   const { stepName, debugMode = IS_DEBUG_MODE } = props
   const [debugStep, setDebugStep] = useState<OrderProgressBarStepName>(stepName)
   const currentStep = debugMode ? debugStep : stepName
   console.log('OrderProgressBarV2 - currentStep:', currentStep)
+
+  const startTimeRef = useRef<number | null>(null)
+  const initialStepTriggeredRef = useRef<boolean>(false)
+  const getDuration = useCallback(() => {
+    if (startTimeRef.current === null) return null
+    return Date.now() - startTimeRef.current
+  }, [])
+
+  // Separate useEffect for initial step
+  useEffect(() => {
+    if (currentStep === 'initial' && !initialStepTriggeredRef.current) {
+      startTimeRef.current = Date.now()
+      initialStepTriggeredRef.current = true
+      console.log('Initial step triggered')
+      cowAnalytics.sendEvent({
+        category: Category.PROGRESS_BAR,
+        action: 'Step Triggered',
+        label: currentStep,
+        value: '0ms',
+      })
+    }
+  }, [currentStep])
+
+  // useEffect for other steps
+  useEffect(() => {
+    if (currentStep === 'initial') return // Skip for initial step
+
+    const duration = getDuration()
+    const isFinalState = FINAL_STATES.includes(currentStep)
+
+    if (duration !== null) {
+      const formattedDuration = formatDuration(duration)
+      console.log(`Step duration: ${formattedDuration}`)
+
+      cowAnalytics.sendEvent({
+        category: Category.PROGRESS_BAR,
+        action: 'Step Triggered',
+        label: currentStep,
+        value: formattedDuration,
+      })
+
+      if (isFinalState) {
+        cowAnalytics.sendEvent({
+          category: Category.PROGRESS_BAR,
+          action: 'Order Completed',
+          label: currentStep,
+          value: formattedDuration,
+        })
+        console.log(`Final state reached: ${currentStep}. Total duration: ${formattedDuration}`)
+        startTimeRef.current = null // Reset the timer for the next order
+        initialStepTriggeredRef.current = false // Reset the initial step trigger flag
+      }
+    }
+  }, [currentStep, getDuration])
 
   let StepComponent: React.ComponentType<OrderProgressBarV2Props> | null = null
 
@@ -403,7 +466,10 @@ function shareSurplusOnTwitter(surplusData: SurplusData | undefined, order: Orde
   return () => {
     const twitterUrl = getTwitterShareUrl(surplusData, order)
     window.open(twitterUrl, '_blank', 'noopener,noreferrer')
-    trackSurplusShare()
+    cowAnalytics.sendEvent({
+      category: Category.PROGRESS_BAR,
+      action: 'Click Share Surplus on Twitter',
+    })
   }
 }
 
@@ -420,7 +486,6 @@ function shareBenefitOnTwitter(benefit: string) {
   return () => {
     const twitterUrl = getTwitterShareUrlForBenefit(benefit)
     window.open(twitterUrl, '_blank', 'noopener,noreferrer')
-    // TODO: add analytics tracking
   }
 }
 
@@ -456,7 +521,14 @@ function FinishedStep({
 
   const shouldShowSurplus = DEBUG_FORCE_SHOW_SURPLUS || showSurplus
 
-  const toggleSolvers = () => setShowAllSolvers(!showAllSolvers)
+  const toggleSolvers = () => {
+    setShowAllSolvers(!showAllSolvers)
+    cowAnalytics.sendEvent({
+      category: Category.PROGRESS_BAR,
+      action: 'Click Toggle Solvers',
+      label: showAllSolvers ? 'Collapse' : 'View More',
+    })
+  }
 
   const visibleSolvers = (showAllSolvers ? solvers : solvers?.slice(0, 3)) || []
   const isSell = order && isSellOrder(order.kind)
@@ -509,6 +581,14 @@ function FinishedStep({
     ? shareSurplusOnTwitter(surplusData, order)
     : shareBenefitOnTwitter(randomBenefit)
 
+  const trackShareClick = () => {
+    cowAnalytics.sendEvent({
+      category: Category.PROGRESS_BAR,
+      action: 'Click Share Button',
+      label: shouldShowSurplus ? 'Surplus' : 'Benefit',
+    })
+  }
+
   // Early return if order is not set
   if (!order) {
     return null
@@ -524,7 +604,12 @@ function FinishedStep({
       <styledEl.ProgressTopSection>
         <styledEl.ProgressImageWrapper bgColor={'#65D9FF'} padding={'10px'} gap={'10px'}>
           <styledEl.CowImage>
-            <styledEl.ShareButton onClick={shareOnTwitter}>
+            <styledEl.ShareButton
+              onClick={() => {
+                shareOnTwitter()
+                trackShareClick()
+              }}
+            >
               <SVG src={ICON_SOCIAL_X} />
               <span>Share this {shouldShowSurplus ? 'win' : 'tip'}!</span>
             </styledEl.ShareButton>
@@ -752,6 +837,14 @@ function DelayedStep({ order, showCancellationModal }: OrderProgressBarV2Props) 
     return () => clearInterval(interval)
   }, [frames.length])
 
+  const trackCancelClick = () => {
+    cowAnalytics.sendEvent({
+      category: Category.PROGRESS_BAR,
+      action: 'Click Cancel Order',
+      label: 'Delayed Step',
+    })
+  }
+
   return (
     <styledEl.ProgressContainer>
       <styledEl.ProgressTopSection>
@@ -787,7 +880,15 @@ function DelayedStep({ order, showCancellationModal }: OrderProgressBarV2Props) 
               {showCancellationModal && (
                 <>
                   You can wait or{' '}
-                  <styledEl.CancelButton onClick={showCancellationModal}>cancel the order</styledEl.CancelButton>.
+                  <styledEl.CancelButton
+                    onClick={() => {
+                      showCancellationModal && showCancellationModal()
+                      trackCancelClick()
+                    }}
+                  >
+                    cancel the order
+                  </styledEl.CancelButton>
+                  .
                 </>
               )}
             </styledEl.Description>
@@ -800,6 +901,14 @@ function DelayedStep({ order, showCancellationModal }: OrderProgressBarV2Props) 
 }
 
 function UnfillableStep({ order, showCancellationModal }: OrderProgressBarV2Props) {
+  const trackCancelClick = () => {
+    cowAnalytics.sendEvent({
+      category: Category.PROGRESS_BAR,
+      action: 'Click Cancel Order',
+      label: 'Unfillable Step',
+    })
+  }
+
   return (
     <styledEl.ProgressContainer>
       <styledEl.ProgressTopSection>
@@ -822,7 +931,15 @@ function UnfillableStep({ order, showCancellationModal }: OrderProgressBarV2Prop
               {showCancellationModal && (
                 <>
                   You can either wait or{' '}
-                  <styledEl.CancelButton onClick={showCancellationModal}>cancel the order</styledEl.CancelButton>.
+                  <styledEl.CancelButton
+                    onClick={() => {
+                      showCancellationModal && showCancellationModal()
+                      trackCancelClick()
+                    }}
+                  >
+                    cancel the order
+                  </styledEl.CancelButton>
+                  .
                 </>
               )}
             </styledEl.Description>
@@ -929,6 +1046,14 @@ function CancelledStep({ order }: OrderProgressBarV2Props) {
 }
 
 function ExpiredStep({ order, navigateToNewOrder }: OrderProgressBarV2Props) {
+  const trackNewOrderClick = () => {
+    cowAnalytics.sendEvent({
+      category: Category.PROGRESS_BAR,
+      action: 'Click Place New Order',
+      label: 'Expired Step',
+    })
+  }
+
   return (
     <styledEl.ProgressContainer>
       <styledEl.ProgressTopSection>
@@ -962,7 +1087,14 @@ function ExpiredStep({ order, navigateToNewOrder }: OrderProgressBarV2Props) {
           <h3>The good news</h3>
           <p>
             Unlike on other exchanges, you won't be charged for this! Feel free to{' '}
-            <styledEl.Button onClick={navigateToNewOrder}>place a new order</styledEl.Button>
+            <styledEl.Button
+              onClick={() => {
+                navigateToNewOrder && navigateToNewOrder()
+                trackNewOrderClick()
+              }}
+            >
+              place a new order
+            </styledEl.Button>
             without worry.
           </p>
         </styledEl.InfoCard>

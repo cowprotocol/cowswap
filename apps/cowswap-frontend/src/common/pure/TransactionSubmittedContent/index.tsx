@@ -12,6 +12,7 @@ import { DisplayLink } from 'legacy/components/TransactionConfirmationModal/Disp
 import { ActivityStatus } from 'legacy/hooks/useRecentActivity'
 
 import { ActivityDerivedState } from 'modules/account/containers/Transaction'
+import { cowAnalytics, Category } from 'modules/analytics'
 // import { GnosisSafeTxDetails } from 'modules/account/containers/Transaction/ActivityDetails'
 import { NavigateToNewOrderCallback } from 'modules/swap/containers/ConfirmSwapModalSetup'
 import { EthFlowStepper } from 'modules/swap/containers/EthFlowStepper'
@@ -80,13 +81,43 @@ export function TransactionSubmittedContent({
   const showProgressBar =
     !showSafeSigningInfo && !isPresignaturePending && activityDerivedState && orderProgressBarV2Props
 
+  const trackCancelClick = () => {
+    cowAnalytics.sendEvent({
+      category: Category.PROGRESS_BAR,
+      action: 'Click Cancel Order',
+    })
+  }
+
+  const trackPlayGameClick = () => {
+    cowAnalytics.sendEvent({
+      category: Category.PROGRESS_BAR,
+      action: 'Click Play CoW Runner Game',
+    })
+  }
+
+  const trackCloseClick = () => {
+    cowAnalytics.sendEvent({
+      category: Category.PROGRESS_BAR,
+      action: 'Click Close',
+    })
+  }
+
   return (
     <styledEl.Wrapper>
       <styledEl.Section>
         <styledEl.Header>
           <BackButton onClick={onDismiss} />
           <styledEl.ActionsWrapper>
-            {showCancellationButton && <CancelButton onClick={showCancellationModal}>Cancel</CancelButton>}
+            {showCancellationButton && (
+              <CancelButton
+                onClick={() => {
+                  showCancellationModal()
+                  trackCancelClick()
+                }}
+              >
+                Cancel
+              </CancelButton>
+            )}
             <DisplayLink id={hash} chainId={chainId} />
           </styledEl.ActionsWrapper>
         </styledEl.Header>
@@ -110,7 +141,12 @@ export function TransactionSubmittedContent({
             <WatchAssetInWallet shortLabel currency={currencyToAdd} />
 
             {!isInjectedWidgetMode && !orderProgressBarV2Props && (
-              <a href={`#${Routes.PLAY_COWRUNNER}`} target="_blank" rel="noreferrer noopener">
+              <a
+                href={`#${Routes.PLAY_COWRUNNER}`}
+                target="_blank"
+                rel="noreferrer noopener"
+                onClick={trackPlayGameClick}
+              >
                 <styledEl.ButtonCustom cowGame>
                   <styledEl.StyledIcon src={GameIcon} alt="Play CowGame" />
                   Play the CoW Runner Game!
@@ -120,7 +156,14 @@ export function TransactionSubmittedContent({
 
             {(activityDerivedState?.status === (ActivityStatus.CONFIRMED || ActivityStatus.EXPIRED) ||
               (activityDerivedState?.status === ActivityStatus.PENDING && !orderProgressBarV2Props)) && (
-              <styledEl.ButtonCustom onClick={onDismiss}>Close</styledEl.ButtonCustom>
+              <styledEl.ButtonCustom
+                onClick={() => {
+                  onDismiss()
+                  trackCloseClick()
+                }}
+              >
+                Close
+              </styledEl.ButtonCustom>
             )}
           </styledEl.ButtonGroup>
         </>

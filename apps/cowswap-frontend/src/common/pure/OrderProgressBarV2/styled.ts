@@ -690,7 +690,7 @@ export const ViewMoreButton = styled.button`
   }
 `
 
-export const ReceivedAmount = styled.p`
+export const ReceivedAmount = styled.span`
   display: flex;
   align-items: center;
   justify-content: center;
