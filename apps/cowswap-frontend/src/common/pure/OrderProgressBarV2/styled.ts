@@ -407,8 +407,9 @@ export const TokenPairTitle = styled.span`
   margin: 0 0 0 4px;
   background: #99ecff;
   border-radius: 12px;
-  padding: 3px 6px;
-  word-break: break-all;
+  padding: 0 6px;
+  word-break: break-word;
+  line-height: 1;
 
   ${Media.upToSmall()} {
     display: none;
@@ -872,6 +873,10 @@ export const BenefitSurplusContainer = styled.div`
   align-items: flex-start;
   justify-content: flex-start;
   gap: 8px;
+
+  > span {
+    width: 100%;
+  }
 `
 
 export const BenefitText = styled.div<{ fontSize: number }>`

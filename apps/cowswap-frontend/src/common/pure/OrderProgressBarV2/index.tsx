@@ -56,7 +56,7 @@ import { getIsCustomRecipient } from 'utils/orderUtils/getIsCustomRecipient'
 import * as styledEl from './styled'
 
 const IS_DEBUG_MODE = true
-const DEBUG_FORCE_SHOW_SURPLUS = false
+const DEBUG_FORCE_SHOW_SURPLUS = true
 
 export type OrderProgressBarV2Props = {
   stepName: OrderProgressBarStepName
@@ -536,8 +536,8 @@ function FinishedStep({
                 <styledEl.BenefitSurplusContainer ref={surplusContainerRef}>
                   <span ref={surplusTextRef} style={{ fontSize: `${surplusFontSize}px` }}>
                     I just received surplus on my
-                    <styledEl.TokenPairTitle title={`${order.inputToken.symbol}/${order.outputToken.symbol}`}>
-                      {truncateWithEllipsis(`${order.inputToken.symbol}/${order.outputToken.symbol}`, 30)}
+                    <styledEl.TokenPairTitle title={`${order.inputToken.symbol} / ${order.outputToken.symbol}`}>
+                      {truncateWithEllipsis(`${order.inputToken.symbol} / ${order.outputToken.symbol}`, 30)}
                     </styledEl.TokenPairTitle>{' '}
                     trade
                     <styledEl.Surplus
