@@ -466,10 +466,6 @@ function shareSurplusOnTwitter(surplusData: SurplusData | undefined, order: Orde
   return () => {
     const twitterUrl = getTwitterShareUrl(surplusData, order)
     window.open(twitterUrl, '_blank', 'noopener,noreferrer')
-    cowAnalytics.sendEvent({
-      category: Category.PROGRESS_BAR,
-      action: 'Click Share Surplus on Twitter',
-    })
   }
 }
 
