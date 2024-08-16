@@ -38,7 +38,7 @@ export type UseOrderProgressBarV2Result = Pick<OrderProgressBarState, 'countdown
   totalSolvers: number
 }
 
-const MINIMUM_STEP_DISPLAY_TIME = ms`2s`
+const MINIMUM_STEP_DISPLAY_TIME = ms`5s`
 export const PROGRESS_BAR_TIMER_DURATION = 15 // in seconds
 
 /**
@@ -216,7 +216,11 @@ function useProgressBarStepNameUpdater(
 
     const timeSinceLastChange = lastTimeChangedSteps ? Date.now() - lastTimeChangedSteps : 0
 
-    if (lastTimeChangedSteps === undefined || timeSinceLastChange >= MINIMUM_STEP_DISPLAY_TIME) {
+    if (
+      lastTimeChangedSteps === undefined ||
+      timeSinceLastChange >= MINIMUM_STEP_DISPLAY_TIME ||
+      stepName === 'finished'
+    ) {
       updateStepName(stepName)
 
       // schedule update for temporary steps
