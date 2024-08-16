@@ -5,7 +5,7 @@ import { CmsSolversInfo } from '../types'
 import { getSolversInfo } from '../utils'
 
 const SOLVERS_INFO_SWR_CONFIG: SWRConfiguration = {
-  refreshInterval: ms`1day`,
+  refreshInterval: ms`1hour`,
   refreshWhenHidden: false,
   refreshWhenOffline: false,
   revalidateOnFocus: false,
