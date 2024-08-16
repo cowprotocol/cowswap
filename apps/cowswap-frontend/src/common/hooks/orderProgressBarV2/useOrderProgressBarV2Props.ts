@@ -9,6 +9,8 @@ import { Command } from '@cowprotocol/types'
 import ms from 'ms.macro'
 import useSWR from 'swr'
 
+import { OrderStatus } from 'legacy/state/orders/actions'
+
 import { ActivityDerivedState } from 'modules/account/containers/Transaction'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 
@@ -25,6 +27,7 @@ import {
   updateOrderProgressBarStepName,
 } from './atoms'
 import { ApiSolverCompetition, OrderProgressBarState, OrderProgressBarStepName, SolverCompetition } from './types'
+
 
 export type UseOrderProgressBarPropsParams = {
   activityDerivedState: ActivityDerivedState | null
@@ -67,9 +70,6 @@ export function useOrderProgressBarV2Props(
   // Do not build progress bar data when these conditions are set
   const disableProgressBar = widgetDisabled || isCreating || isFailed || isPresignaturePending || featureFlagDisabled
 
-  // When the order is in a final state or progress bar is disabled, avoid querying backend unnecessarily
-  const doNotQuery = !!(order && getIsFinalizedOrder(order)) || disableProgressBar
-
   const orderId = order?.id || ''
 
   const getCancelOrder = useCancelOrder()
@@ -85,8 +85,14 @@ export function useOrderProgressBarV2Props(
     lastTimeChangedSteps,
     cancellationTriggered,
   } = useGetExecutingOrderState(orderId)
+
   const solversInfo = useSolversInfo(chainId)
   const totalSolvers = Object.keys(solversInfo).length
+
+  // When the order is in a final state or progress bar is disabled, avoid querying backend unnecessarily
+  const doNotQuery =
+    !!(order && getIsFinalizedOrder(order) && (order.status !== OrderStatus.FULFILLED || apiSolverCompetition)) ||
+    disableProgressBar
 
   // Local updaters of the respective atom
   useBackendApiStatusUpdater(chainId, orderId, doNotQuery)
