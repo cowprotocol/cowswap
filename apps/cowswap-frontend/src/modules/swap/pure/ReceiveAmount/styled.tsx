@@ -1,4 +1,4 @@
-import { Media, UI } from '@cowprotocol/ui'
+import { Font, Media, UI } from '@cowprotocol/ui'
 import { HelpTooltip } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
@@ -35,6 +35,8 @@ export const ReceiveAmountBox = styled.div`
 
 export const ReceiveAmountValue = styled.span`
   font-size: 21px;
+  font-family: ${Font.familyMonoVariable};
+  font-variation-settings: 'wght' 750, 'ital' 0;
 `
 
 export const QuestionHelperWrapped = styled(HelpTooltip)`

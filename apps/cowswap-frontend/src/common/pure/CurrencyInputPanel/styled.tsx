@@ -1,4 +1,4 @@
-import { TokenAmount, loadingOpacityMixin, Media } from '@cowprotocol/ui'
+import { TokenAmount, loadingOpacityMixin, Media, Font } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
@@ -78,9 +78,11 @@ export const NumericalInput = styled(Input)<{ $loading: boolean }>`
   display: flex;
   align-items: center;
   background: none;
-  font-size: 28px;
-  font-weight: 500;
   color: inherit;
+  font-family: ${Font.familyMonoVariable};
+  font-variation-settings: 'wght' 750, 'ital' 0;
+  font-size: 32px;
+  letter-spacing: -1px;
 
   &::placeholder {
     opacity: 0.7;

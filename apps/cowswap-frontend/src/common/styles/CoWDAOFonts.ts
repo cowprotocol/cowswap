@@ -5,6 +5,7 @@ import FONT_STUDIO_FEIXEN_MONO_MEDIUM from '@cowprotocol/assets/fonts/StudioFeix
 import FONT_STUDIO_FEIXEN_MONO_REGULAR from '@cowprotocol/assets/fonts/StudioFeixenMono-Regular.woff2'
 import FONT_STUDIO_FEIXEN_MONO_SEMIBOLD from '@cowprotocol/assets/fonts/StudioFeixenMono-Semibold.woff2'
 import FONT_STUDIO_FEIXEN_MONO_ULTRALIGHT from '@cowprotocol/assets/fonts/StudioFeixenMono-Ultralight.woff2'
+import FONT_STUDIO_FEIXEN_MONO_VARIABLE from '@cowprotocol/assets/fonts/StudioFeixenMonoVFGX.ttf'
 import FONT_STUDIO_FEIXEN_BOLD from '@cowprotocol/assets/fonts/StudioFeixenSans-Bold.woff2'
 import FONT_STUDIO_FEIXEN_BOLD_ITALIC from '@cowprotocol/assets/fonts/StudioFeixenSans-BoldItalic.woff2'
 import FONT_STUDIO_FEIXEN_BOOK from '@cowprotocol/assets/fonts/StudioFeixenSans-Book.woff2'
@@ -19,6 +20,7 @@ import FONT_STUDIO_FEIXEN_SEMIBOLD from '@cowprotocol/assets/fonts/StudioFeixenS
 import FONT_STUDIO_FEIXEN_SEMIBOLD_ITALIC from '@cowprotocol/assets/fonts/StudioFeixenSans-SemiboldItalic.woff2'
 import FONT_STUDIO_FEIXEN_ULTRALIGHT from '@cowprotocol/assets/fonts/StudioFeixenSans-Ultralight.woff2'
 import FONT_STUDIO_FEIXEN_ULTRALIGHT_ITALIC from '@cowprotocol/assets/fonts/StudioFeixenSans-UltralightItalic.woff2'
+import FONT_STUDIO_FEIXEN_SANS_VARIABLE from '@cowprotocol/assets/fonts/StudioFeixenSansVFGX.ttf'
 import FONT_STUDIO_FEIXEN_SERIF_BOLD from '@cowprotocol/assets/fonts/StudioFeixenSerif-Bold.woff2'
 import FONT_STUDIO_FEIXEN_SERIF_BOOK from '@cowprotocol/assets/fonts/StudioFeixenSerif-Book.woff2'
 import FONT_STUDIO_FEIXEN_SERIF_MEDIUM from '@cowprotocol/assets/fonts/StudioFeixenSerif-Medium.woff2'
@@ -50,4 +52,6 @@ export const CoWDAOFonts = {
   FONT_STUDIO_FEIXEN_MONO_SEMIBOLD,
   FONT_STUDIO_FEIXEN_MONO_LIGHT,
   FONT_STUDIO_FEIXEN_MONO_ULTRALIGHT,
+  FONT_STUDIO_FEIXEN_MONO_VARIABLE,
+  FONT_STUDIO_FEIXEN_SANS_VARIABLE,
 }

@@ -36,6 +36,8 @@ type GlobalCowDAOFonts = {
   FONT_STUDIO_FEIXEN_MONO_SEMIBOLD: GlobalFontConfig
   FONT_STUDIO_FEIXEN_MONO_LIGHT: GlobalFontConfig
   FONT_STUDIO_FEIXEN_MONO_ULTRALIGHT: GlobalFontConfig
+  FONT_STUDIO_FEIXEN_MONO_VARIABLE: GlobalFontConfig
+  FONT_STUDIO_FEIXEN_SANS_VARIABLE: GlobalFontConfig
 }
 
 export const GlobalCoWDAOStyles = (fonts: GlobalCowDAOFonts, bgColor?: string, color?: string) =>
@@ -209,6 +211,20 @@ export const GlobalCoWDAOStyles = (fonts: GlobalCowDAOFonts, bgColor?: string, c
         font-style: normal;
       }
 
+      @font-face {
+        font-family: 'studiofeixenmono-variable';
+        src: url(${fonts.FONT_STUDIO_FEIXEN_MONO_VARIABLE}) format('woff2-variations');
+        font-weight: 200 700;
+        font-style: normal;
+      }
+
+      @font-face {
+        font-family: 'studiofeixen-variable';
+        src: url(${fonts.FONT_STUDIO_FEIXEN_SANS_VARIABLE}) format('woff2-variations');
+        font-weight: 200 700;
+        font-style: normal;
+      }
+
       body {
         font-family: ${Font.family};
         margin: 0;
@@ -223,6 +239,26 @@ export const GlobalCoWDAOStyles = (fonts: GlobalCowDAOFonts, bgColor?: string, c
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
         -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+      }
+
+      @supports (font-variation-settings: normal) {
+        body {
+          font-family: ${Font.familyVariable};
+          font-variation-settings: 'wght' ${Font.weight.regular};
+        }
+      }
+
+      pre,
+      code {
+        font-family: ${Font.familyMono};
+      }
+
+      @supports (font-variation-settings: normal) {
+        pre,
+        code {
+          font-family: ${Font.familyMonoVariable};
+          font-variation-settings: 'wght' ${Font.weight.regular};
+        }
       }
 
       a {
