@@ -12,7 +12,7 @@ import { DisplayLink } from 'legacy/components/TransactionConfirmationModal/Disp
 import { ActivityStatus } from 'legacy/hooks/useRecentActivity'
 
 import { ActivityDerivedState } from 'modules/account/containers/Transaction'
-// import { GnosisSafeTxDetails } from 'modules/account/containers/Transaction/ActivityDetails'
+import { GnosisSafeTxDetails } from 'modules/account/containers/Transaction/ActivityDetails'
 import { NavigateToNewOrderCallback } from 'modules/swap/containers/ConfirmSwapModalSetup'
 import { EthFlowStepper } from 'modules/swap/containers/EthFlowStepper'
 import { WatchAssetInWallet } from 'modules/wallet/containers/WatchAssetInWallet'
@@ -98,6 +98,7 @@ export function TransactionSubmittedContent({
               </Text>
             </>
           )}
+          {showSafeSigningInfo && <GnosisSafeTxDetails chainId={chainId} activityDerivedState={activityDerivedState} />}
           <EthFlowStepper order={order} extend={!!orderProgressBarV2Props} />
           {activityDerivedState && showProgressBar && orderProgressBarV2Props && (
             <OrderProgressBarV2
