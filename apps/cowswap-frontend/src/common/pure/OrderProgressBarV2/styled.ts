@@ -131,9 +131,11 @@ export const Description = styled.p<{ center?: boolean; margin?: string }>`
   color: var(${UI.COLOR_TEXT_OPACITY_70});
   text-align: ${({ center }) => (center ? 'center' : 'left')};
 
-  > button {
+  > button,
+  > a {
     font-weight: 700;
     text-decoration: underline;
+    color: var(${UI.COLOR_TEXT_PAPER});
   }
 `
 
@@ -143,6 +145,7 @@ export const Link = styled.a<{ underline?: boolean }>`
   font-size: 14px;
   margin: 8px 0 0;
   display: inline;
+  line-height: 1.4;
 
   &:hover {
     text-decoration: underline;
