@@ -8,7 +8,7 @@ import { ExternalLinkCustom } from './styled'
 type DisplayLinkProps = {
   id: string | undefined
   chainId: number
-  onClick: () => void
+  onClick?: () => void
 }
 
 export function DisplayLink({ id, chainId }: DisplayLinkProps) {
