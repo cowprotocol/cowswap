@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 
 import PROGRESS_BAR_BAD_NEWS from '@cowprotocol/assets/cow-swap/progressbar-bad-news.svg'
 import PROGRESSBAR_COW_SURPLUS_1 from '@cowprotocol/assets/cow-swap/progressbar-finished-image-1.svg'
@@ -22,9 +22,8 @@ import STEP_LOTTIE_NEXTBATCH from '@cowprotocol/assets/lottie/progressbar-step-n
 import LOTTIE_RED_CROSS from '@cowprotocol/assets/lottie/red-cross.json'
 import LOTTIE_TIME_EXPIRED_DARK from '@cowprotocol/assets/lottie/time-expired-dark.json'
 import { useFitText } from '@cowprotocol/common-hooks'
-import { ExplorerDataType, getExplorerLink, isSellOrder, shortenAddress } from '@cowprotocol/common-utils'
-import { getRandomInt } from '@cowprotocol/common-utils'
-import type { CompetitionOrderStatus, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { ExplorerDataType, getExplorerLink, getRandomInt, isSellOrder, shortenAddress } from '@cowprotocol/common-utils'
+import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { Command } from '@cowprotocol/types'
@@ -49,7 +48,7 @@ import { useIsDarkMode } from 'legacy/state/user/hooks'
 
 import { shareSurplusOnTwitter as trackSurplusShare } from 'modules/analytics'
 
-import { OrderProgressBarStepName } from 'common/hooks/orderProgressBarV2'
+import { OrderProgressBarStepName, SolverCompetition } from 'common/hooks/orderProgressBarV2'
 import { SurplusData } from 'common/hooks/useGetSurplusFiatValue'
 import { getIsCustomRecipient } from 'utils/orderUtils/getIsCustomRecipient'
 
@@ -62,7 +61,8 @@ export type OrderProgressBarV2Props = {
   stepName: OrderProgressBarStepName
   chainId: SupportedChainId
   countdown?: number | null | undefined
-  solverCompetition?: CompetitionOrderStatus['value']
+  solverCompetition?: SolverCompetition[]
+  totalSolvers: number
   order?: Order
   debugMode?: boolean
   showCancellationModal: Command | null
@@ -193,7 +193,7 @@ export function OrderProgressBarV2(props: OrderProgressBarV2Props) {
   const currentStep = debugMode ? debugStep : stepName
   console.log('OrderProgressBarV2 - currentStep:', currentStep)
 
-  let StepComponent: React.ComponentType<OrderProgressBarV2Props> | null = null
+  let StepComponent: React.ComponentType<OrderProgressBarV2Props> | null
 
   if (currentStep === 'cancellationFailed' || currentStep === 'finished') {
     StepComponent = FinishedStep
@@ -430,6 +430,7 @@ const SURPLUS_IMAGES = [
 function FinishedStep({
   stepName,
   solverCompetition: solvers,
+  totalSolvers,
   order,
   surplusData,
   chainId,
@@ -585,30 +586,29 @@ function FinishedStep({
             <h3>Solver auction rankings</h3>
             {solvers.length > 1 && (
               <p>
-                <b>{solvers.length} out of 25 solvers</b> submitted a solution
+                <b>
+                  {solvers.length} out of {totalSolvers} solvers
+                </b>{' '}
+                submitted a solution
               </p>
             )}
 
             <styledEl.SolverTable>
               <tbody>
-                {visibleSolvers.map((solver: any, index: number) => (
+                {visibleSolvers.map((solver, index) => (
                   <styledEl.SolverTableRow key={`${solver.solver}-${index}`} isWinner={index === 0}>
                     {solvers.length > 1 && <styledEl.SolverRank>{index + 1}</styledEl.SolverRank>}
                     <styledEl.SolverTableCell>
                       <styledEl.SolverInfo>
                         <styledEl.SolverLogo>
                           <img
-                            src={
-                              AMM_LOGOS[solver.solver]?.src ||
-                              AMM_LOGOS.default.src ||
-                              ('logo' in solver ? solver.logo : undefined)
-                            }
+                            src={solver.image || AMM_LOGOS[solver.solver]?.src || AMM_LOGOS.default.src}
                             alt={`${solver.solver} logo`}
                             width="24"
                             height="24"
                           />
                         </styledEl.SolverLogo>
-                        <styledEl.SolverName>{solver.solver}</styledEl.SolverName>
+                        <styledEl.SolverName>{solver.displayName || solver.solver}</styledEl.SolverName>
                       </styledEl.SolverInfo>
                     </styledEl.SolverTableCell>
                     <styledEl.SolverTableCell>
@@ -708,7 +708,7 @@ function NextBatchStep({ solverCompetition, order }: OrderProgressBarV2Props) {
             <styledEl.Description>
               {solverCompetition?.length && (
                 <>
-                  The <strong>{solverCompetition[0].solver}</strong> solver had the best solution for this batch.
+                  The <strong>{solverCompetition[0].displayName}</strong> solver had the best solution for this batch.
                 </>
               )}{' '}
               Unfortunately, your order wasn't part of their winning solution, so we're waiting for solvers to find a

@@ -1,3 +1,4 @@
+import { SolverInfo } from '@cowprotocol/core'
 import type { CompetitionOrderStatus } from '@cowprotocol/cow-sdk'
 
 export type OrderProgressBarState = {
@@ -18,3 +19,7 @@ type happyPath = 'initial' | 'solving' | 'solved' | 'executing' | 'finished'
 type errorFlow = 'nextBatch' | 'delayed' | 'unfillable' | 'submissionFailed'
 type cancellationFlow = 'cancelling' | 'cancelled' | 'expired' | 'cancellationFailed'
 export type OrderProgressBarStepName = happyPath | errorFlow | cancellationFlow
+
+type Unpacked<T> = T extends (infer U)[] ? U : never
+export type ApiSolverCompetition = Unpacked<CompetitionOrderStatus['value']>
+export type SolverCompetition = ApiSolverCompetition & Partial<SolverInfo>
