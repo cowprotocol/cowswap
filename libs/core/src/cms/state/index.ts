@@ -1,5 +1,5 @@
-import { atom } from 'jotai'
+import { atomWithStorage } from 'jotai/utils'
 
 import { SolversInfo } from '../types'
 
-export const solversInfoAtom = atom<SolversInfo>([])
+export const solversInfoAtom = atomWithStorage<SolversInfo>('solversInfoAtom:v0', [])
