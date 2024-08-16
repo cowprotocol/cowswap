@@ -129,7 +129,7 @@ export const NATIVE_TOKEN_PER_NETWORK: Record<SupportedChainId, TokenErc20> = {
 }
 
 export const TENDERLY_API_URL = 'https://api.tenderly.co/api/v1/public-contract'
-export const DEFAULT_IPFS_READ_URI = process.env.REACT_APP_IPFS_READ_URI || 'https://cloudflare-ipfs.com/ipfs'
+export const DEFAULT_IPFS_READ_URI = process.env.REACT_APP_IPFS_READ_URI || 'https://ipfs.io/ipfs'
 export const IPFS_INVALID_APP_IDS = [
   '0x0000000000000000000000000000000000000000000000000000000000000000',
   '0x0000000000000000000000000000000000000000000000000000000000000001',

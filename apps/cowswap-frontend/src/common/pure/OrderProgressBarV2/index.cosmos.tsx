@@ -32,6 +32,7 @@ const defaultProps: OrderProgressBarV2Props = {
     { solver: 'uniswap', executedAmounts: { sell: '5000000000000000000', buy: '500000000000000000000' } },
     { solver: 'oneinch', executedAmounts: { sell: '5000000000000000000', buy: '400000000000000000000' } },
   ],
+  totalSolvers: 52,
   surplusData: {
     surplusFiatValue: CurrencyAmount.fromRawAmount(USDC_GNOSIS_CHAIN, '10000000'),
     surplusAmount: CurrencyAmount.fromRawAmount(order.outputToken, '1000000000000000000'),

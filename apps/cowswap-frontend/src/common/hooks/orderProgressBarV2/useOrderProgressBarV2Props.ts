@@ -2,6 +2,7 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback, useEffect, useMemo } from 'react'
 
 import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
+import { SolverInfo, useSolversInfo } from '@cowprotocol/core'
 import { CompetitionOrderStatus, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
 
@@ -23,19 +24,21 @@ import {
   updateOrderProgressBarCountdown,
   updateOrderProgressBarStepName,
 } from './atoms'
-import { OrderProgressBarState, OrderProgressBarStepName } from './types'
+import { ApiSolverCompetition, OrderProgressBarState, OrderProgressBarStepName, SolverCompetition } from './types'
 
 export type UseOrderProgressBarPropsParams = {
   activityDerivedState: ActivityDerivedState | null
   chainId: SupportedChainId
 }
 
-export type UseOrderProgressBarV2Result = Pick<OrderProgressBarState, 'countdown' | 'solverCompetition'> & {
+export type UseOrderProgressBarV2Result = Pick<OrderProgressBarState, 'countdown'> & {
   stepName: Exclude<OrderProgressBarState['progressBarStepName'], undefined>
   showCancellationModal: Command | null
+  solverCompetition?: SolverCompetition[]
+  totalSolvers: number
 }
 
-const MINIMUM_STEP_DISPLAY_TIME = ms`2s`
+const MINIMUM_STEP_DISPLAY_TIME = ms`5s`
 export const PROGRESS_BAR_TIMER_DURATION = 15 // in seconds
 
 /**
@@ -76,12 +79,14 @@ export function useOrderProgressBarV2Props(
   const {
     countdown,
     backendApiStatus,
-    solverCompetition,
+    solverCompetition: apiSolverCompetition,
     progressBarStepName,
     previousStepName,
     lastTimeChangedSteps,
     cancellationTriggered,
   } = useGetExecutingOrderState(orderId)
+  const solversInfo = useSolversInfo(chainId)
+  const totalSolvers = Object.keys(solversInfo).length
 
   // Local updaters of the respective atom
   useBackendApiStatusUpdater(chainId, orderId, doNotQuery)
@@ -101,6 +106,15 @@ export function useOrderProgressBarV2Props(
   useCancellingOrderUpdater(orderId, isCancelling)
   useCountdownStartUpdater(orderId, countdown, backendApiStatus)
 
+  const solverCompetition = useMemo(
+    () =>
+      apiSolverCompetition
+        ?.map((entry) => mergeSolverData(entry, solversInfo))
+        // Reverse it since backend returns the solutions ranked ascending. Winner is the last one.
+        .reverse(),
+    [apiSolverCompetition, solversInfo]
+  )
+
   return useMemo(() => {
     if (disableProgressBar) {
       return undefined
@@ -108,11 +122,12 @@ export function useOrderProgressBarV2Props(
 
     return {
       countdown,
+      totalSolvers,
       solverCompetition,
       stepName: progressBarStepName || 'initial',
       showCancellationModal,
     }
-  }, [disableProgressBar, countdown, solverCompetition, progressBarStepName, showCancellationModal])
+  }, [disableProgressBar, countdown, totalSolvers, solverCompetition, progressBarStepName, showCancellationModal])
 }
 
 // atom related hooks
@@ -201,7 +216,11 @@ function useProgressBarStepNameUpdater(
 
     const timeSinceLastChange = lastTimeChangedSteps ? Date.now() - lastTimeChangedSteps : 0
 
-    if (lastTimeChangedSteps === undefined || timeSinceLastChange >= MINIMUM_STEP_DISPLAY_TIME) {
+    if (
+      lastTimeChangedSteps === undefined ||
+      timeSinceLastChange >= MINIMUM_STEP_DISPLAY_TIME ||
+      stepName === 'finished'
+    ) {
       updateStepName(stepName)
 
       // schedule update for temporary steps
@@ -300,4 +319,23 @@ function usePendingOrderStatus(chainId: SupportedChainId, orderId: string, doNot
     async ([, _chainId, _orderId]) => getOrderCompetitionStatus(_chainId, _orderId),
     doNotQuery ? SWR_NO_REFRESH_OPTIONS : POOLING_SWR_OPTIONS
   ).data
+}
+
+/**
+ * Merges solverCompetition data returned by the orderbook /status endpoint with
+ * solver info fetched from CMS
+ *
+ * @param solverCompetition
+ * @param solversInfo
+ */
+function mergeSolverData(
+  solverCompetition: ApiSolverCompetition,
+  solversInfo: Record<string, SolverInfo>
+): SolverCompetition {
+  // Backend has the prefix `-solve` on some solvers. We should discard that for now.
+  // In the future this prefix will be removed.
+  const solverId = solverCompetition.solver.replace(/-solve$/, '')
+  const solverInfo = solversInfo[solverId]
+
+  return { ...solverCompetition, ...solverInfo, solverId, solver: solverId }
 }

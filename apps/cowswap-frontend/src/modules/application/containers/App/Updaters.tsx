@@ -1,5 +1,6 @@
 import { BalancesAndAllowancesUpdater } from '@cowprotocol/balances-and-allowances'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { SolversInfoUpdater } from '@cowprotocol/core'
 import { TokensListsUpdater, UnsupportedTokensUpdater, WidgetTokensListsUpdater } from '@cowprotocol/tokens'
 import { HwAccountIndexUpdater, useWalletInfo, WalletUpdater } from '@cowprotocol/wallet'
 
@@ -63,6 +64,7 @@ export function Updaters() {
       <UsdPricesUpdater />
       <OrdersNotificationsUpdater />
       <ProgressBarV2ExecutingOrdersUpdater />
+      <SolversInfoUpdater />
 
       <TokensListsUpdater chainId={chainId} isGeoBlockEnabled={isGeoBlockEnabled} />
       <WidgetTokensListsUpdater

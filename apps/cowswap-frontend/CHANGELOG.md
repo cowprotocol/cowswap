@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.80.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.79.0...cowswap-v1.80.0) (2024-08-14)
+
+
+### Features
+
+* add analytics event for closing CoW AMM banner ([#4790](https://github.com/cowprotocol/cowswap/issues/4790)) ([46add78](https://github.com/cowprotocol/cowswap/commit/46add78c41e8612986514ffa946cb60d1c180a33))
+* add analytics for notifications ([#4785](https://github.com/cowprotocol/cowswap/issues/4785)) ([5755ca0](https://github.com/cowprotocol/cowswap/commit/5755ca0b60707319c88d210c32ee8ec0b2e198cd))
+
+
+### Bug Fixes
+
+* fix issue with the swap label don't showing ([#4789](https://github.com/cowprotocol/cowswap/issues/4789)) ([63c0f55](https://github.com/cowprotocol/cowswap/commit/63c0f55c3a5e6565484708fc0bb27251843cf1ee))
+
 ## [1.79.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.78.2...cowswap-v1.79.0) (2024-08-09)
 
 

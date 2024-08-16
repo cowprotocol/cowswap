@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.33.1](https://github.com/cowprotocol/cowswap/compare/explorer-v2.33.0...explorer-v2.33.1) (2024-08-14)
+
+
+### Bug Fixes
+
+* fix wrong quote in explorer ([#4791](https://github.com/cowprotocol/cowswap/issues/4791)) ([b70b27c](https://github.com/cowprotocol/cowswap/commit/b70b27cf6d25e76ae79b3906693095a2e92e64d9))
+* replace cloudflare-ipfs.com with ipfs.io ([#4786](https://github.com/cowprotocol/cowswap/issues/4786)) ([a10df31](https://github.com/cowprotocol/cowswap/commit/a10df31010c34c90cffdad34b69a320a4167e119))
+
 ## [2.33.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.32.3...explorer-v2.33.0) (2024-07-18)
 
 

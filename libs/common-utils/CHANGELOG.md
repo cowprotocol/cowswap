@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.1](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.6.0...common-utils-v1.6.1) (2024-08-14)
+
+
+### Bug Fixes
+
+* replace cloudflare-ipfs.com with ipfs.io ([#4786](https://github.com/cowprotocol/cowswap/issues/4786)) ([a10df31](https://github.com/cowprotocol/cowswap/commit/a10df31010c34c90cffdad34b69a320a4167e119))
+
 ## [1.6.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.5.0...common-utils-v1.6.0) (2024-07-18)
 
 
