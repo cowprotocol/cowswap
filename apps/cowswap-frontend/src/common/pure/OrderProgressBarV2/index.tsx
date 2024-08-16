@@ -54,8 +54,7 @@ import { SurplusData } from 'common/hooks/useGetSurplusFiatValue'
 import { getIsCustomRecipient } from 'utils/orderUtils/getIsCustomRecipient'
 
 import * as styledEl from './styled'
-
-const IS_DEBUG_MODE = false
+const IS_DEBUG_MODE = true
 const DEBUG_FORCE_SHOW_SURPLUS = false
 
 export type OrderProgressBarV2Props = {
@@ -195,6 +194,14 @@ function formatDuration(milliseconds: number): string {
   return `${seconds.toFixed(2)}s` // Format with 2 decimal places
 }
 
+const trackLearnMoreClick = (stepName: string) => {
+  cowAnalytics.sendEvent({
+    category: Category.PROGRESS_BAR,
+    action: 'Click Learn More',
+    label: stepName,
+  })
+}
+
 export function OrderProgressBarV2(props: OrderProgressBarV2Props) {
   const { stepName, debugMode = IS_DEBUG_MODE } = props
   const [debugStep, setDebugStep] = useState<OrderProgressBarStepName>(stepName)
@@ -305,7 +312,11 @@ function InitialStep({ order }: OrderProgressBarV2Props) {
           extraContent={
             <styledEl.Description>
               Your order has been submitted and will be included in the next solver auction. &nbsp;
-              <styledEl.Link href="https://cow.fi/learn/understanding-batch-auctions" target="_blank">
+              <styledEl.Link
+                href="https://cow.fi/learn/understanding-batch-auctions"
+                target="_blank"
+                onClick={() => trackLearnMoreClick('Initial')}
+              >
                 Learn more ↗
               </styledEl.Link>
             </styledEl.Description>
@@ -370,7 +381,11 @@ function SolvingStep({ order, countdown }: OrderProgressBarV2Props) {
             <styledEl.Description>
               The auction has started! Solvers are competing to find the best solution for you...
               <br />
-              <styledEl.Link href="https://cow.fi/learn/understanding-batch-auctions" target="_blank">
+              <styledEl.Link
+                href="https://cow.fi/learn/understanding-batch-auctions"
+                target="_blank"
+                onClick={() => trackLearnMoreClick('Solving')}
+              >
                 Learn more ↗
               </styledEl.Link>
             </styledEl.Description>
@@ -781,7 +796,11 @@ function NextBatchStep({ solverCompetition, order }: OrderProgressBarV2Props) {
               )}{' '}
               Unfortunately, your order wasn't part of their winning solution, so we're waiting for solvers to find a
               new solution that includes your order for the next batch.&nbsp;
-              <styledEl.Link href="https://cow.fi/learn/understanding-batch-auctions" target="_blank">
+              <styledEl.Link
+                href="https://cow.fi/learn/understanding-batch-auctions"
+                target="_blank"
+                onClick={() => trackLearnMoreClick('NextBatch')}
+              >
                 Learn more ↗
               </styledEl.Link>
             </styledEl.Description>
@@ -957,7 +976,11 @@ function SubmissionFailedStep({ order }: OrderProgressBarV2Props) {
             <styledEl.Description>
               The order could not be settled on-chain. Solvers are competing to find a new solution.
               <br />
-              <styledEl.Link href="https://cow.fi/learn/understanding-batch-auctions" target="_blank">
+              <styledEl.Link
+                href="https://cow.fi/learn/understanding-batch-auctions"
+                target="_blank"
+                onClick={() => trackLearnMoreClick('SubmissionFailed')}
+              >
                 Learn more ↗
               </styledEl.Link>
             </styledEl.Description>
@@ -1028,6 +1051,22 @@ function ExpiredStep({ order, navigateToNewOrder }: OrderProgressBarV2Props) {
     })
   }
 
+  const trackDiscordClick = () => {
+    cowAnalytics.sendEvent({
+      category: Category.PROGRESS_BAR,
+      action: 'Click Discord Link',
+      label: 'Expired Step',
+    })
+  }
+
+  const trackEmailClick = () => {
+    cowAnalytics.sendEvent({
+      category: Category.PROGRESS_BAR,
+      action: 'Click Email Link',
+      label: 'Expired Step',
+    })
+  }
+
   return (
     <styledEl.ProgressContainer>
       <styledEl.ProgressTopSection>
@@ -1076,11 +1115,11 @@ function ExpiredStep({ order, navigateToNewOrder }: OrderProgressBarV2Props) {
 
       <styledEl.Description center margin="10px 0">
         If your orders often expire, consider increasing your slippage or contact us on{' '}
-        <styledEl.Link href="https://discord.com/invite/cowprotocol" target="_blank">
+        <styledEl.Link href="https://discord.com/invite/cowprotocol" target="_blank" onClick={trackDiscordClick}>
           Discord
         </styledEl.Link>{' '}
         or send us an email at{' '}
-        <styledEl.Link href="mailto:help@cow.fi" target="_blank">
+        <styledEl.Link href="mailto:help@cow.fi" target="_blank" onClick={trackEmailClick}>
           help@cow.fi
         </styledEl.Link>{' '}
         so we can investigate the problem.

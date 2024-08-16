@@ -130,3 +130,10 @@ export const Wrapper = styled.div`
   height: inherit;
   ${({ theme }) => theme.colorScrollbar};
 `
+
+export const Title = styled.div`
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 1.2;
+  margin: 0 0 16px;
+`

@@ -369,13 +369,6 @@ const STEPS: Step[] = [
       refund: { hash: TX, failed: true },
     },
   },
-  {
-    description: '[Extend] Extend margin',
-    props: {
-      ...defaultProps,
-      extend: true,
-    },
-  },
 ]
 
 const STEPS_BY_DESCRIPTION = STEPS.reduce<{ [description: string]: EthFlowStepperProps }>((acc, step) => {

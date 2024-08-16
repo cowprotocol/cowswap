@@ -18,6 +18,7 @@ export type WatchAssetInWalletProps = {
   shortLabel?: boolean
   className?: string
   fallback?: ReactElement
+  onClick?: () => void
 }
 
 export function WatchAssetInWallet(props: WatchAssetInWalletProps) {

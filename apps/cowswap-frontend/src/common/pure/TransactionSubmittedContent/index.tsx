@@ -5,7 +5,6 @@ import { Command } from '@cowprotocol/types'
 import { BackButton } from '@cowprotocol/ui'
 import { Currency } from '@uniswap/sdk-core'
 
-import { Text } from 'rebass'
 import { Nullish } from 'types'
 
 import { DisplayLink } from 'legacy/components/TransactionConfirmationModal/DisplayLink'
@@ -102,11 +101,37 @@ export function TransactionSubmittedContent({
     })
   }
 
+  const trackBackClick = () => {
+    cowAnalytics.sendEvent({
+      category: Category.PROGRESS_BAR,
+      action: 'Click Back Arrow Button',
+    })
+  }
+
+  const trackDisplayLinkClick = () => {
+    cowAnalytics.sendEvent({
+      category: Category.PROGRESS_BAR,
+      action: 'Click Transaction Link',
+    })
+  }
+
+  const trackWatchAssetClick = () => {
+    cowAnalytics.sendEvent({
+      category: Category.PROGRESS_BAR,
+      action: 'Click Watch Asset',
+    })
+  }
+
   return (
     <styledEl.Wrapper>
       <styledEl.Section>
         <styledEl.Header>
-          <BackButton onClick={onDismiss} />
+          <BackButton
+            onClick={() => {
+              onDismiss()
+              trackBackClick()
+            }}
+          />
           <styledEl.ActionsWrapper>
             {showCancellationButton && (
               <CancelButton
@@ -118,18 +143,12 @@ export function TransactionSubmittedContent({
                 Cancel
               </CancelButton>
             )}
-            <DisplayLink id={hash} chainId={chainId} />
+            <DisplayLink id={hash} chainId={chainId} onClick={trackDisplayLinkClick} />
           </styledEl.ActionsWrapper>
         </styledEl.Header>
         <>
-          {!orderProgressBarV2Props && (
-            <>
-              <Text fontWeight={600} fontSize={28}>
-                {getTitleStatus(activityDerivedState)}
-              </Text>
-            </>
-          )}
-          <EthFlowStepper order={order} extend={!!orderProgressBarV2Props} />
+          {!orderProgressBarV2Props && <styledEl.Title>{getTitleStatus(activityDerivedState)}</styledEl.Title>}
+          <EthFlowStepper order={order} showProgressBar={!!showProgressBar} />
           {activityDerivedState && showProgressBar && orderProgressBarV2Props && (
             <OrderProgressBarV2
               {...orderProgressBarV2Props}
@@ -138,7 +157,7 @@ export function TransactionSubmittedContent({
             />
           )}
           <styledEl.ButtonGroup>
-            <WatchAssetInWallet shortLabel currency={currencyToAdd} />
+            <WatchAssetInWallet shortLabel currency={currencyToAdd} onClick={trackWatchAssetClick} />
 
             {!isInjectedWidgetMode && !orderProgressBarV2Props && (
               <a

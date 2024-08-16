@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { Media, UI } from '@cowprotocol/ui'
 
 import styled, { css } from 'styled-components/macro'
@@ -36,6 +34,7 @@ type TxState = {
 }
 
 export interface EthFlowStepperProps {
+  showProgressBar?: boolean
   nativeTokenSymbol: string
   tokenLabel: string
 
@@ -67,28 +66,15 @@ export interface EthFlowStepperProps {
    * To track cancellation tx
    */
   cancellation: TxState
-
-  /**
-   * To control whether margin should go over
-   */
-  extend?: boolean
 }
 
-const Wrapper = styled.div<{ extend: boolean }>`
+export const Wrapper = styled.div<{ showProgressBar?: boolean }>`
   display: grid;
   grid-template-columns: 0.8fr minmax(44px, 0.3fr) 0.8fr minmax(44px, 0.3fr) 0.8fr;
   grid-template-rows: max-content;
   align-items: flex-start;
   width: 100%;
-  ${({ extend }) =>
-    extend
-      ? css`
-          padding: 20px 20px 60px;
-          margin: 0 0 -40px;
-        `
-      : css`
-          padding: 20px;
-        `}
+  padding: 20px;
   border-radius: 12px;
   background: var(${UI.COLOR_PAPER_DARKER});
   font-size: 15px;
@@ -101,6 +87,19 @@ const Wrapper = styled.div<{ extend: boolean }>`
     align-items: center;
     padding: 42px 22px;
   }
+
+  ${({ showProgressBar }) =>
+    showProgressBar &&
+    css`
+      margin: 0 0 -40px;
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+      padding: 20px 20px 60px;
+
+      ${Media.upToSmall()} {
+        padding: 20px 20px 60px;
+      }
+    `}
 `
 
 export interface ProgressProps {
@@ -155,8 +154,10 @@ export const Progress = styled.div<ProgressProps>`
 `
 
 export function EthFlowStepper(props: EthFlowStepperProps) {
+  const { showProgressBar } = props
+
   return (
-    <Wrapper extend={!!props.extend}>
+    <Wrapper showProgressBar={showProgressBar}>
       <Step1 {...props} />
       <Progress1 {...props} />
       <Step2 {...props} />

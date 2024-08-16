@@ -709,30 +709,33 @@ export const ExtraAmount = styled.p`
 `
 
 export const CardWrapper = styled.div`
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   flex-flow: row wrap;
-  align-items: flex-start;
+  align-items: stretch;
   width: 100%;
   margin: 0 auto 16px;
   gap: 5px;
 `
 
 export const InfoCard = styled.div<{ variant: 'warning' | 'success' }>`
-  flex: 1;
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  justify-content: flex-start;
   padding: 20px;
   border-radius: 16px;
   background-color: ${({ variant }) =>
     variant === 'warning' ? `var(${UI.COLOR_ALERT_BG})` : `var(${UI.COLOR_SUCCESS_BG})`};
   color: ${({ variant }) => (variant === 'warning' ? `var(${UI.COLOR_ALERT_TEXT})` : `var(${UI.COLOR_SUCCESS_TEXT})`)};
-  display: flex;
-  flex-flow: column wrap;
-  align-items: center;
-  justify-content: center;
+  height: 100%;
+  box-sizing: border-box;
 
   > h3 {
     margin: 0 0 16px;
     font-size: 16px;
     font-weight: bold;
+    text-align: center;
   }
 
   > p {
@@ -742,9 +745,15 @@ export const InfoCard = styled.div<{ variant: 'warning' | 'success' }>`
     text-align: center;
   }
 
-  > p > a {
+  > p > a,
+  > p > button {
     color: inherit;
     text-decoration: underline;
+    padding: 0;
+
+    &:hover {
+      text-decoration: underline;
+    }
   }
 
   > svg {
