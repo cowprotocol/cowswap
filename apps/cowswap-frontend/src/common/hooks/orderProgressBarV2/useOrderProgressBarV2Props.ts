@@ -245,7 +245,10 @@ function useProgressBarStepNameUpdater(
     if (
       lastTimeChangedSteps === undefined ||
       timeSinceLastChange >= MINIMUM_STEP_DISPLAY_TIME ||
-      stepName === 'finished'
+      stepName === 'finished' ||
+      stepName === 'cancellationFailed' ||
+      stepName === 'cancelled' ||
+      stepName === 'expired'
     ) {
       updateStepName(stepName)
 
