@@ -12,14 +12,15 @@ export async function getSolversInfo(): Promise<CmsSolversInfo> {
     .GET('/solvers', {
       params: {
         query: {
-          // TODO: if we ever want to filter the query per chain, uncomment this
-          // filters: {
-          //   networks: {
-          //     chainId: {
-          //       $eq: chainId,
-          //     },
-          //   },
-          // },
+          filters: {
+            // TODO: if we ever want to filter the query per chain, uncomment this
+            //   networks: {
+            //     chainId: {
+            //       $eq: chainId,
+            //     },
+            //   },
+            active: { $eq: true },
+          },
           populate: {
             networks: { fields: ['chainId'] },
             image: { fields: ['url'] },
