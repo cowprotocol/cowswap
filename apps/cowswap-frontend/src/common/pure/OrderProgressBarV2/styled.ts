@@ -650,6 +650,7 @@ export const WinningBadge = styled.span`
   font-size: 12px;
   font-weight: bold;
   line-height: 1;
+  white-space: pre;
 
   > span {
     font-size: inherit;
