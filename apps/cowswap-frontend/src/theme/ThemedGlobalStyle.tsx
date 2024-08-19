@@ -4,6 +4,21 @@ import { createGlobalStyle } from 'styled-components/macro'
 
 export const ThemedGlobalStyle = createGlobalStyle`
   ${ThemeColorVars}
+
+  html,
+  input,
+  textarea,
+  button {
+    font-family: 'Inter', sans-serif;
+  }
+  @supports (font-variation-settings: normal) {
+    html,
+    input,
+    textarea,
+    button {
+      font-family: 'Inter var', sans-serif;
+    }
+  }
  
   html,
   body {

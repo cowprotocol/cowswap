@@ -7,21 +7,21 @@ import { CancelButton as CancelButtonOriginal } from '../CancelButton'
 
 const BLUE_COLOR = '#65d9ff'
 
-const slideAnimation = (direction: 'up' | 'down') => keyframes`
+const slideAnimation = (direction: 'up' | 'down', status: string, isDarkMode: boolean) => keyframes`
   from {
     transform: translateY(${direction === 'up' ? '20px' : '-20px'}); 
     opacity: 0; 
   }
   to { 
     transform: translateY(0); 
-    opacity: ${direction === 'up' ? 0.1 : 1}; 
+    opacity: ${getOpacity(status, isDarkMode)}; 
   }
 `
 
 const animationMixin = css<{ status: string }>`
-  animation: ${({ status }) => {
-      if (status === 'done') return slideAnimation('up')
-      if (status === 'active') return slideAnimation('down')
+  animation: ${({ status, theme }) => {
+      if (status === 'done') return slideAnimation('up', status, theme.darkMode)
+      if (status === 'active') return slideAnimation('down', status, theme.darkMode)
       return 'none'
     }}
     1s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
@@ -42,12 +42,12 @@ const sweatDropAnimation = keyframes`
   }
 `
 
-const getOpacity = (status: string): number => {
+const getOpacity = (status: string, isDarkMode: boolean): number => {
   const opacityMap = {
-    done: 0.1,
+    done: isDarkMode ? 0.3 : 0.1,
     active: 1,
-    next: 0.5,
-    future: 0.2,
+    next: isDarkMode ? 0.6 : 0.5,
+    future: isDarkMode ? 0.3 : 0.2,
     disabled: 0.2,
   }
   return opacityMap[status as keyof typeof opacityMap] || 1
@@ -109,7 +109,7 @@ export const Step = styled.div<{ status: string; isFirst: boolean }>`
   display: flex;
   align-items: flex-start;
   margin: 0;
-  opacity: ${({ status }) => getOpacity(status)};
+  opacity: ${({ status, theme }) => getOpacity(status, theme.darkMode)};
   transition: opacity 0.35s cubic-bezier(0.19, 1, 0.22, 1);
   ${animationMixin}
 `

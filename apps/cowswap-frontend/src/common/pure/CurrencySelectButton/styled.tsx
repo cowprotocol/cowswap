@@ -54,7 +54,7 @@ export const CurrencySelectWrapper = styled.button<{ isLoading: boolean; $stubbe
 
 export const CurrencySymbol = styled.div<{ $stubbed: boolean }>`
   font-size: 19px;
-  font-weight: bold;
+  font-weight: 500;
   text-align: left;
   color: inherit;
   transition: color var(${UI.ANIMATION_DURATION}) ease-in-out;
