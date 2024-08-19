@@ -9,6 +9,8 @@ import { Command } from '@cowprotocol/types'
 import ms from 'ms.macro'
 import useSWR from 'swr'
 
+import { Order, OrderStatus } from 'legacy/state/orders/actions'
+
 import { ActivityDerivedState } from 'modules/account/containers/Transaction'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 
@@ -67,9 +69,6 @@ export function useOrderProgressBarV2Props(
   // Do not build progress bar data when these conditions are set
   const disableProgressBar = widgetDisabled || isCreating || isFailed || isPresignaturePending || featureFlagDisabled
 
-  // When the order is in a final state or progress bar is disabled, avoid querying backend unnecessarily
-  const doNotQuery = !!(order && getIsFinalizedOrder(order)) || disableProgressBar
-
   const orderId = order?.id || ''
 
   const getCancelOrder = useCancelOrder()
@@ -85,8 +84,11 @@ export function useOrderProgressBarV2Props(
     lastTimeChangedSteps,
     cancellationTriggered,
   } = useGetExecutingOrderState(orderId)
+
   const solversInfo = useSolversInfo(chainId)
   const totalSolvers = Object.keys(solversInfo).length
+
+  const doNotQuery = getDoNotQueryStatusEndpoint(order, apiSolverCompetition, disableProgressBar)
 
   // Local updaters of the respective atom
   useBackendApiStatusUpdater(chainId, orderId, doNotQuery)
@@ -128,6 +130,30 @@ export function useOrderProgressBarV2Props(
       showCancellationModal,
     }
   }, [disableProgressBar, countdown, totalSolvers, solverCompetition, progressBarStepName, showCancellationModal])
+}
+
+/**
+ * Returns whether to pool backend's /status endpoint for given order
+ *
+ * @param order
+ * @param apiSolverCompetition
+ * @param disableProgressBar
+ */
+function getDoNotQueryStatusEndpoint(
+  order: Order | undefined,
+  apiSolverCompetition: CompetitionOrderStatus['value'] | undefined,
+  disableProgressBar: boolean
+) {
+  return (
+    !!(
+      (
+        order && // when the order exists
+        getIsFinalizedOrder(order) && // and it's already in a final state
+        (order.status !== OrderStatus.FULFILLED || // when in a state other than fulfilled (cancelled, expired)
+          apiSolverCompetition)
+      ) // or the solver competition data is present
+    ) || disableProgressBar // or the progress bar is completely disabled
+  )
 }
 
 // atom related hooks
@@ -219,7 +245,10 @@ function useProgressBarStepNameUpdater(
     if (
       lastTimeChangedSteps === undefined ||
       timeSinceLastChange >= MINIMUM_STEP_DISPLAY_TIME ||
-      stepName === 'finished'
+      stepName === 'finished' ||
+      stepName === 'cancellationFailed' ||
+      stepName === 'cancelled' ||
+      stepName === 'expired'
     ) {
       updateStepName(stepName)
 
