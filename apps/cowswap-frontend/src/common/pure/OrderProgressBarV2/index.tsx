@@ -53,7 +53,7 @@ import { SurplusData } from 'common/hooks/useGetSurplusFiatValue'
 import { getIsCustomRecipient } from 'utils/orderUtils/getIsCustomRecipient'
 
 import * as styledEl from './styled'
-const IS_DEBUG_MODE = false
+const IS_DEBUG_MODE = true
 const DEBUG_FORCE_SHOW_SURPLUS = false
 
 export type OrderProgressBarV2Props = {
@@ -654,7 +654,7 @@ function FinishedStep({
       </styledEl.ProgressTopSection>
 
       <styledEl.ConclusionContent>
-        <styledEl.TransactionStatus flexFlow="column" margin={'0 auto 14px'}>
+        <styledEl.TransactionStatus flexFlow="column" margin={'0 auto 24px'}>
           <Lottie
             animationData={isDarkMode ? LOTTIE_GREEN_CHECKMARK_DARK : LOTTIE_GREEN_CHECKMARK}
             loop={false}
@@ -663,6 +663,48 @@ function FinishedStep({
           />
           Transaction completed!
         </styledEl.TransactionStatus>
+
+        {order?.apiAdditionalInfo?.executedSellAmount && (
+          <styledEl.SoldAmount>
+            You sold <TokenLogo token={order.inputToken} size={20} />
+            <b>
+              <TokenAmount
+                amount={CurrencyAmount.fromRawAmount(order.inputToken, order.apiAdditionalInfo.executedSellAmount)}
+                tokenSymbol={order.inputToken}
+              />
+            </b>
+          </styledEl.SoldAmount>
+        )}
+
+        {order?.apiAdditionalInfo?.executedBuyAmount && (
+          <styledEl.ReceivedAmount>
+            {!isCustomRecipient && 'You received '}
+            <TokenLogo token={order.outputToken} size={20} />
+            <b>
+              <TokenAmount
+                amount={CurrencyAmount.fromRawAmount(order.outputToken, order.apiAdditionalInfo.executedBuyAmount)}
+                tokenSymbol={order.outputToken}
+              />
+            </b>{' '}
+            {isCustomRecipient && receiver && (
+              <>
+                was sent to
+                <ExternalLink href={getExplorerLink(chainId, receiver, ExplorerDataType.ADDRESS)}>
+                  {receiverEnsName || shortenAddress(receiver)} ↗
+                </ExternalLink>
+              </>
+            )}
+          </styledEl.ReceivedAmount>
+        )}
+        {shouldShowSurplus ? (
+          <styledEl.ExtraAmount>
+            {getSurplusText(isSell, isCustomRecipient)}
+            <i>
+              +<TokenAmount amount={surplusAmount} tokenSymbol={surplusAmount?.currency} />
+            </i>{' '}
+            {surplusFiatValue && +surplusFiatValue.toFixed(2) > 0 && <>(~${surplusFiatValue.toFixed(2)})</>}
+          </styledEl.ExtraAmount>
+        ) : null}
 
         {solvers?.length && (
           <styledEl.SolverRankings>
@@ -724,35 +766,6 @@ function FinishedStep({
             )}
           </styledEl.SolverRankings>
         )}
-        {order?.apiAdditionalInfo?.executedBuyAmount && (
-          <styledEl.ReceivedAmount>
-            {!isCustomRecipient && 'You received '}
-            <TokenLogo token={order.outputToken} size={16} />
-            <b>
-              <TokenAmount
-                amount={CurrencyAmount.fromRawAmount(order.outputToken, order.apiAdditionalInfo.executedBuyAmount)}
-                tokenSymbol={order.outputToken}
-              />
-            </b>{' '}
-            {isCustomRecipient && receiver && (
-              <>
-                was sent to
-                <ExternalLink href={getExplorerLink(chainId, receiver, ExplorerDataType.ADDRESS)}>
-                  {receiverEnsName || shortenAddress(receiver)} ↗
-                </ExternalLink>
-              </>
-            )}
-          </styledEl.ReceivedAmount>
-        )}
-        {shouldShowSurplus ? (
-          <styledEl.ExtraAmount>
-            {getSurplusText(isSell, isCustomRecipient)}
-            <i>
-              +<TokenAmount amount={surplusAmount} tokenSymbol={surplusAmount?.currency} />
-            </i>{' '}
-            {surplusFiatValue && +surplusFiatValue.toFixed(2) > 0 && <>(~${surplusFiatValue.toFixed(2)})</>}
-          </styledEl.ExtraAmount>
-        ) : null}
       </styledEl.ConclusionContent>
     </styledEl.FinishedStepContainer>
   )
