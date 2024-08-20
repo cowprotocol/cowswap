@@ -20,8 +20,7 @@ export function SurplusModalSetup() {
   const order = useOrder({ id: orderId, chainId })
 
   const progressBarV2Props = useSetupAdditionalProgressBarProps(chainId, order)
-  const { surplusData, isProgressBarSetup, activityDerivedState } = progressBarV2Props
-  const { showSurplus } = surplusData
+  const { isProgressBarSetup, activityDerivedState } = progressBarV2Props
 
   const { isOpen: isConfirmationModalOpen, transactionHash } = useTradeConfirmState()
 
@@ -35,8 +34,8 @@ export function SurplusModalSetup() {
     !!orderId &&
     // Open when confirmation modal is closed OR the order we are trying to show is not the one in display
     (!isConfirmationModalOpen || (!!transactionHash && transactionHash !== orderId)) &&
-    // Open when we want to show surplus or when the progress bar is active
-    (showSurplus === true || isProgressBarSetup)
+    // Open when the progress bar is active
+    isProgressBarSetup
 
   useEffect(() => {
     // If we should NOT show the screen, remove the orderId from the queue
@@ -44,14 +43,13 @@ export function SurplusModalSetup() {
       orderId &&
       // Don't remove it while the modal is open
       !isOpen &&
-      // Remove when there's no relevant surplus and the order is filled
-      ((showSurplus === false && order?.status === 'fulfilled') ||
-        // OR when the confirmation is open and the current order is already in display
-        (isConfirmationModalOpen && transactionHash === orderId))
+      // Remove when the confirmation is open and the current order is already in display
+      isConfirmationModalOpen &&
+      transactionHash === orderId
     ) {
       removeOrderId(orderId)
     }
-  }, [orderId, isOpen, order?.status, removeOrderId, showSurplus, isConfirmationModalOpen])
+  }, [orderId, isOpen, order?.status, removeOrderId, isConfirmationModalOpen])
 
   if (!orderId) {
     return null
