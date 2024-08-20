@@ -31,10 +31,19 @@ export function SurplusModalSetup() {
 
   const navigateToNewOrderCallback = useNavigateToNewOrderCallback()
 
+  const isOpen =
+    !!orderId &&
+    // Open when confirmation modal is closed OR the order we are trying to show is not the one in display
+    (!isConfirmationModalOpen || (!!transactionHash && transactionHash !== orderId)) &&
+    // Open when we want to show surplus or when the progress bar is active
+    (showSurplus === true || isProgressBarSetup)
+
   useEffect(() => {
     // If we should NOT show the screen, remove the orderId from the queue
     if (
       orderId &&
+      // Don't remove it while the modal is open
+      !isOpen &&
       // Remove when there's no relevant surplus and the order is filled
       ((showSurplus === false && order?.status === 'fulfilled') ||
         // OR when the confirmation is open and the current order is already in display
@@ -42,14 +51,7 @@ export function SurplusModalSetup() {
     ) {
       removeOrderId(orderId)
     }
-  }, [orderId, order?.status, removeOrderId, showSurplus, isConfirmationModalOpen])
-
-  const isOpen =
-    !!orderId &&
-    // Open when confirmation modal is closed OR the order we are trying to show is not the one in display
-    (!isConfirmationModalOpen || transactionHash !== orderId) &&
-    // Open when we want to show surplus or when the progress bar is active
-    (showSurplus === true || isProgressBarSetup)
+  }, [orderId, isOpen, order?.status, removeOrderId, showSurplus, isConfirmationModalOpen])
 
   if (!orderId) {
     return null
