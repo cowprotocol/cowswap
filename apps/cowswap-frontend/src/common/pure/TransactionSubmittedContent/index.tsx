@@ -9,7 +9,7 @@ import { ActivityStatus } from 'legacy/hooks/useRecentActivity'
 
 import { ActivityDerivedState } from 'modules/account/containers/Transaction'
 import { GnosisSafeTxDetails } from 'modules/account/containers/Transaction/ActivityDetails'
-import { cowAnalytics, Category } from 'modules/analytics'
+import { Category, cowAnalytics } from 'modules/analytics'
 import { NavigateToNewOrderCallback } from 'modules/swap/containers/ConfirmSwapModalSetup'
 import { EthFlowStepper } from 'modules/swap/containers/EthFlowStepper'
 import { WatchAssetInWallet } from 'modules/wallet/containers/WatchAssetInWallet'
@@ -69,43 +69,7 @@ export function TransactionSubmittedContent({
 
   const isPresignaturePending = activityDerivedState?.isPresignaturePending
   const showSafeSigningInfo = isPresignaturePending && activityDerivedState && !!activityDerivedState.gnosisSafeInfo
-  const showProgressBar =
-    !showSafeSigningInfo && !isPresignaturePending && activityDerivedState && isProgressBarSetup
-
-  const trackCancelClick = () => {
-    cowAnalytics.sendEvent({
-      category: Category.PROGRESS_BAR,
-      action: 'Click Cancel Order',
-    })
-  }
-
-  const trackCloseClick = () => {
-    cowAnalytics.sendEvent({
-      category: Category.PROGRESS_BAR,
-      action: 'Click Close',
-    })
-  }
-
-  const trackBackClick = () => {
-    cowAnalytics.sendEvent({
-      category: Category.PROGRESS_BAR,
-      action: 'Click Back Arrow Button',
-    })
-  }
-
-  const trackDisplayLinkClick = () => {
-    cowAnalytics.sendEvent({
-      category: Category.PROGRESS_BAR,
-      action: 'Click Transaction Link',
-    })
-  }
-
-  const trackWatchAssetClick = () => {
-    cowAnalytics.sendEvent({
-      category: Category.PROGRESS_BAR,
-      action: 'Click Watch Asset',
-    })
-  }
+  const showProgressBar = !showSafeSigningInfo && !isPresignaturePending && activityDerivedState && isProgressBarSetup
 
   return (
     <styledEl.Wrapper>
@@ -147,7 +111,7 @@ export function TransactionSubmittedContent({
 
             {(activityDerivedState?.status === (ActivityStatus.CONFIRMED || ActivityStatus.EXPIRED) ||
               (activityDerivedState?.status === ActivityStatus.PENDING && !isProgressBarSetup)) && (
-                <styledEl.ButtonCustom
+              <styledEl.ButtonCustom
                 onClick={() => {
                   onDismiss()
                   trackCloseClick()
@@ -155,10 +119,45 @@ export function TransactionSubmittedContent({
               >
                 Close
               </styledEl.ButtonCustom>
-              )}
+            )}
           </styledEl.ButtonGroup>
         </>
       </styledEl.Section>
     </styledEl.Wrapper>
   )
+}
+
+const trackCancelClick = () => {
+  cowAnalytics.sendEvent({
+    category: Category.PROGRESS_BAR,
+    action: 'Click Cancel Order',
+  })
+}
+
+const trackCloseClick = () => {
+  cowAnalytics.sendEvent({
+    category: Category.PROGRESS_BAR,
+    action: 'Click Close',
+  })
+}
+
+const trackBackClick = () => {
+  cowAnalytics.sendEvent({
+    category: Category.PROGRESS_BAR,
+    action: 'Click Back Arrow Button',
+  })
+}
+
+const trackDisplayLinkClick = () => {
+  cowAnalytics.sendEvent({
+    category: Category.PROGRESS_BAR,
+    action: 'Click Transaction Link',
+  })
+}
+
+const trackWatchAssetClick = () => {
+  cowAnalytics.sendEvent({
+    category: Category.PROGRESS_BAR,
+    action: 'Click Watch Asset',
+  })
 }
