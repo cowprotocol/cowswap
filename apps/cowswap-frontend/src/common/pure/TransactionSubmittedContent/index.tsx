@@ -1,5 +1,3 @@
-import GameIcon from '@cowprotocol/assets/cow-swap/game.gif'
-import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
 import { BackButton } from '@cowprotocol/ui'
@@ -16,8 +14,6 @@ import { cowAnalytics, Category } from 'modules/analytics'
 import { NavigateToNewOrderCallback } from 'modules/swap/containers/ConfirmSwapModalSetup'
 import { EthFlowStepper } from 'modules/swap/containers/EthFlowStepper'
 import { WatchAssetInWallet } from 'modules/wallet/containers/WatchAssetInWallet'
-
-import { Routes } from 'common/constants/routes'
 
 import * as styledEl from './styled'
 
@@ -73,8 +69,6 @@ export function TransactionSubmittedContent({
     return null
   }
 
-  const isInjectedWidgetMode = isInjectedWidget()
-
   const isPresignaturePending = activityDerivedState?.isPresignaturePending
   const showSafeSigningInfo = isPresignaturePending && activityDerivedState && !!activityDerivedState.gnosisSafeInfo
   const showProgressBar =
@@ -84,13 +78,6 @@ export function TransactionSubmittedContent({
     cowAnalytics.sendEvent({
       category: Category.PROGRESS_BAR,
       action: 'Click Cancel Order',
-    })
-  }
-
-  const trackPlayGameClick = () => {
-    cowAnalytics.sendEvent({
-      category: Category.PROGRESS_BAR,
-      action: 'Click Play CoW Runner Game',
     })
   }
 
@@ -159,20 +146,6 @@ export function TransactionSubmittedContent({
           )}
           <styledEl.ButtonGroup>
             <WatchAssetInWallet shortLabel currency={currencyToAdd} onClick={trackWatchAssetClick} />
-
-            {!isInjectedWidgetMode && !orderProgressBarV2Props && (
-              <a
-                href={`#${Routes.PLAY_COWRUNNER}`}
-                target="_blank"
-                rel="noreferrer noopener"
-                onClick={trackPlayGameClick}
-              >
-                <styledEl.ButtonCustom cowGame>
-                  <styledEl.StyledIcon src={GameIcon} alt="Play CowGame" />
-                  Play the CoW Runner Game!
-                </styledEl.ButtonCustom>
-              </a>
-            )}
 
             {(activityDerivedState?.status === (ActivityStatus.CONFIRMED || ActivityStatus.EXPIRED) ||
               (activityDerivedState?.status === ActivityStatus.PENDING && !orderProgressBarV2Props)) && (

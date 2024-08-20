@@ -158,7 +158,7 @@ export function GnosisSafeTxDetails(props: {
       {signaturesMessage}
 
       {/* View in: Gnosis Safe */}
-      <SafeWalletLink chainId={chainId} safeTransaction={safeTransaction} />
+      <SafeWalletLink chainId={chainId} safeTransaction={safeTransaction} asButton />
     </TransactionInnerDetail>
   )
 }

@@ -3,6 +3,7 @@ import { ReactElement, useCallback, useState } from 'react'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { getWrappedToken } from '@cowprotocol/common-utils'
 import { getTokenLogoUrls } from '@cowprotocol/tokens'
+import { Command } from '@cowprotocol/types'
 import { useIsAssetWatchingSupported, useWalletDetails } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { Currency } from '@uniswap/sdk-core'
@@ -18,7 +19,7 @@ export type WatchAssetInWalletProps = {
   shortLabel?: boolean
   className?: string
   fallback?: ReactElement
-  onClick?: () => void
+  onClick?: Command
 }
 
 export function WatchAssetInWallet(props: WatchAssetInWalletProps) {
