@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import { ReactNode, useMemo } from 'react'
 
 import { COW, V_COW, V_COW_CONTRACT_ADDRESS } from '@cowprotocol/common-const'
 import { ExplorerDataType, getExplorerLink, shortenAddress } from '@cowprotocol/common-utils'
@@ -21,13 +21,13 @@ import { getActivityState } from 'legacy/hooks/useActivityDerivedState'
 import { ActivityStatus } from 'legacy/hooks/useRecentActivity'
 import { OrderStatus } from 'legacy/state/orders/actions'
 
+import { useToggleAccountModal } from 'modules/account'
 import { EthFlowStepper } from 'modules/swap/containers/EthFlowStepper'
 
 import { useOrderProgressBarV2Props } from 'common/hooks/orderProgressBarV2'
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
 import { isPending } from 'common/hooks/useCategorizeRecentActivity'
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
-import { OrderProgressBarV2 } from 'common/pure/OrderProgressBarV2'
 import { RateInfo, RateInfoParams } from 'common/pure/RateInfo'
 import { SafeWalletLink } from 'common/pure/SafeWalletLink'
 import {
@@ -38,6 +38,7 @@ import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { StatusDetails } from './StatusDetails'
 import {
+  TransactionState as ActivityLink,
   ActivityVisual,
   CreationTimeText,
   FiatWrapper,
@@ -47,8 +48,9 @@ import {
   SummaryInnerRow,
   TextAlert,
   TransactionInnerDetail,
-  TransactionState as ActivityLink,
 } from './styled'
+
+import { useAddOrderToSurplusQueue } from '../../../swap/state/surplusModal'
 
 import { ActivityDerivedState } from './index'
 
@@ -192,7 +194,7 @@ export function ActivityDetails(props: {
 
   const isSwap = order && getUiOrderType(order) === UiOrderType.SWAP
 
-  const showProgressBar = (activityState === 'open' || activityState === 'filled') && isSwap
+  const showProgressBar = activityState === 'open' && isSwap && order
   const showCancellationModal = order ? getShowCancellationModal(order) : null
 
   const { surplusFiatValue, showFiatValue, surplusToken, surplusAmount } = useGetSurplusData(order)
@@ -203,7 +205,19 @@ export function ActivityDetails(props: {
   const isCustomRecipientWarningBannerVisible = !useIsReceiverWalletBannerHidden(id) && order && isPending(order)
   const hideCustomRecipientWarning = useHideReceiverWalletBanner()
   const orderProgressBarV2Props = useOrderProgressBarV2Props({ activityDerivedState, chainId })
-  const surplusData = useGetSurplusData(order)
+  const setShowProgressBar = useAddOrderToSurplusQueue() // TODO: not exactly the proper tool, rethink this
+  const toggleAccountModal = useToggleAccountModal()
+
+  const showProgressBarCallback = useMemo(() => {
+    if (!showProgressBar) {
+      return null
+    }
+
+    return () => {
+      setShowProgressBar(order.id)
+      toggleAccountModal()
+    }
+  }, [showProgressBar, setShowProgressBar, order?.id, toggleAccountModal])
 
   if (!order && !enhancedTransaction) return null
 
@@ -393,19 +407,11 @@ export function ActivityDetails(props: {
           chainId={chainId}
           showCancellationModal={showCancellationModal}
           activityDerivedState={activityDerivedState}
+          showProgressBar={showProgressBarCallback}
         />
       </Summary>
 
       <EthFlowStepper order={order} />
-      {showProgressBar && orderProgressBarV2Props && orderProgressBarV2Props.stepName !== 'finished' && (
-        <OrderProgressBarV2
-          {...orderProgressBarV2Props}
-          order={order}
-          surplusData={surplusData}
-          chainId={chainId}
-          receiverEnsName={receiverEnsName || undefined}
-        />
-      )}
     </>
   )
 }

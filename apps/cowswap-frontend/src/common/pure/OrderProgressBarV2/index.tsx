@@ -57,17 +57,18 @@ const IS_DEBUG_MODE = false
 const DEBUG_FORCE_SHOW_SURPLUS = false
 
 export type OrderProgressBarV2Props = {
-  stepName: OrderProgressBarStepName
+  stepName?: OrderProgressBarStepName
   chainId: SupportedChainId
   countdown?: number | null | undefined
   solverCompetition?: SolverCompetition[]
-  totalSolvers: number
+  totalSolvers?: number
   order?: Order
   debugMode?: boolean
   showCancellationModal: Command | null
   surplusData?: SurplusData
   receiverEnsName?: string
   navigateToNewOrder?: Command
+  isProgressBarSetup: boolean
 }
 
 const STEPS = [
@@ -203,7 +204,7 @@ const trackLearnMoreClick = (stepName: string) => {
 }
 
 export function OrderProgressBarV2(props: OrderProgressBarV2Props) {
-  const { stepName, debugMode = IS_DEBUG_MODE } = props
+  const { stepName = 'initial', debugMode = IS_DEBUG_MODE } = props
   const [debugStep, setDebugStep] = useState<OrderProgressBarStepName>(stepName)
   const currentStep = debugMode ? debugStep : stepName
   console.log('OrderProgressBarV2 - currentStep:', currentStep)

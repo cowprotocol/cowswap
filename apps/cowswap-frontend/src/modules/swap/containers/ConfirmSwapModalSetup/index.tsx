@@ -4,13 +4,13 @@ import { getMinimumReceivedTooltip } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useENS } from '@cowprotocol/ens'
 import { Command } from '@cowprotocol/types'
-import { GnosisSafeInfo, useGnosisSafeInfo, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
+import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount, Percent, TradeType } from '@uniswap/sdk-core'
 
 import { HighFeeWarning } from 'legacy/components/SwapWarnings'
-import { getActivityDerivedState } from 'legacy/hooks/useActivityDerivedState'
+import { useActivityDerivedState } from 'legacy/hooks/useActivityDerivedState'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
-import { createActivityDescriptor } from 'legacy/hooks/useRecentActivity'
+import { useMultipleActivityDescriptors } from 'legacy/hooks/useRecentActivity'
 import { Order } from 'legacy/state/orders/actions'
 import { useOrder } from 'legacy/state/orders/hooks'
 import TradeGp from 'legacy/state/swap/TradeGp'
@@ -47,8 +47,6 @@ import { NetworkCostsTooltipSuffix } from '../../pure/NetworkCostsTooltipSuffix'
 import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from '../../pure/Row/RowSlippageContent'
 import { RowDeadline } from '../Row/RowDeadline'
 
-
-
 const CONFIRM_TITLE = 'Swap'
 
 export interface ConfirmSwapModalSetupProps {
@@ -80,7 +78,6 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
   const { account } = useWalletInfo()
   const { ensName } = useWalletDetails()
   const { recipient } = useSwapState()
-  const gnosisSafeInfo = useGnosisSafeInfo()
   const tradeConfirmActions = useTradeConfirmActions()
   const receiveAmountInfo = useReceiveAmountInfo()
   const widgetParams = useInjectedWidgetParams()
@@ -110,7 +107,7 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
     [chainId, allowedSlippage, nativeCurrency.symbol, isEoaEthFlow, isExactIn, shouldPayGas]
   )
 
-  const submittedContent = useSubmittedContent(chainId, gnosisSafeInfo)
+  const submittedContent = useSubmittedContent(chainId)
 
   return (
     <TradeConfirmModal title={CONFIRM_TITLE} submittedContent={submittedContent}>
@@ -155,31 +152,13 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
   )
 }
 
-function useSubmittedContent(chainId: SupportedChainId, gnosisSafeInfo: GnosisSafeInfo | undefined) {
+function useSubmittedContent(chainId: SupportedChainId) {
   const { transactionHash } = useTradeConfirmState()
   const order = useOrder({ chainId, id: transactionHash || undefined })
-  const activity = createActivityDescriptor(chainId, undefined, order)
-  const activityDerivedState = getActivityDerivedState({ chainId, activityData: activity, gnosisSafeInfo })
-  const orderProgressBarV2Props = useOrderProgressBarV2Props({ activityDerivedState, chainId })
 
-  const getCancellation = useCancelOrder()
-  const showCancellationModal = useMemo(
-    // Sort of duplicate cancellation logic since ethflow on creating state don't have progress bar props
-    () => orderProgressBarV2Props?.showCancellationModal || (order && getCancellation ? getCancellation(order) : null),
-    [orderProgressBarV2Props?.showCancellationModal, order, getCancellation]
-  )
-  const surplusData = useGetSurplusData(order)
-  const receiverEnsName = useENS(order?.receiver).name || undefined
+  const orderProgressBarV2Props = useSetupAdditionalProgressBarProps(chainId, order)
 
   const navigateToNewOrderCallback = useNavigateToNewOrderCallback()
-
-  const completeOrderProgressBarV2Props = useMemo(() => {
-    if (!orderProgressBarV2Props) {
-      return undefined
-    }
-    // Add supplementary stuff
-    return { ...orderProgressBarV2Props, surplusData, chainId, receiverEnsName }
-  }, [orderProgressBarV2Props, surplusData, chainId, receiverEnsName])
 
   return useCallback(
     (onDismiss: Command) => (
@@ -187,14 +166,41 @@ function useSubmittedContent(chainId: SupportedChainId, gnosisSafeInfo: GnosisSa
         chainId={chainId}
         hash={transactionHash || undefined}
         onDismiss={onDismiss}
-        activityDerivedState={activityDerivedState}
-        orderProgressBarV2Props={completeOrderProgressBarV2Props}
-        showCancellationModal={showCancellationModal}
+        activityDerivedState={orderProgressBarV2Props.activityDerivedState}
+        orderProgressBarV2Props={orderProgressBarV2Props}
         navigateToNewOrderCallback={navigateToNewOrderCallback}
       />
     ),
-    [chainId, transactionHash, activityDerivedState, completeOrderProgressBarV2Props, order, showCancellationModal]
+    [chainId, transactionHash, orderProgressBarV2Props, order, navigateToNewOrderCallback]
   )
+}
+
+// TODO: doesn't belong here
+export function useSetupAdditionalProgressBarProps(chainId: SupportedChainId, order: Order | undefined) {
+  const orderId = order?.id
+  const [activity] = useMultipleActivityDescriptors({ chainId, ids: orderId ? [orderId] : [] })
+  const activityDerivedState = useActivityDerivedState({ chainId, activity })
+  const progressBarV2Props = useOrderProgressBarV2Props({ chainId, activityDerivedState })
+
+  const getCancellation = useCancelOrder()
+  const showCancellationModal = useMemo(
+    // Sort of duplicate cancellation logic since ethflow on creating state don't have progress bar props
+    () => progressBarV2Props?.showCancellationModal || (order && getCancellation ? getCancellation(order) : null),
+    [progressBarV2Props?.showCancellationModal, order, getCancellation]
+  )
+  const surplusData = useGetSurplusData(order)
+  const receiverEnsName = useENS(order?.receiver).name || undefined
+
+  return useMemo(() => {
+    const data = { ...progressBarV2Props, activityDerivedState, surplusData, chainId, receiverEnsName, showCancellationModal, isProgressBarSetup: true }
+
+    if (!progressBarV2Props) {
+      // Not setup, but cancellation still needed for ethflow
+      return { ...data, isProgressBarSetup: false }
+    }
+    // Add supplementary stuff
+    return data
+  }, [progressBarV2Props, activityDerivedState, surplusData, chainId, receiverEnsName, showCancellationModal])
 }
 
 // TODO: move to its own file/module

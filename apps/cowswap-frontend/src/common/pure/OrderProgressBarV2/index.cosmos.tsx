@@ -41,6 +41,7 @@ const defaultProps: OrderProgressBarV2Props = {
     showFiatValue: true,
     showSurplus: true,
   },
+  isProgressBarSetup: true
 }
 
 const Wrapper = styled.div`
