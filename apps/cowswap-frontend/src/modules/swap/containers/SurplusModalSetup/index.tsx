@@ -40,6 +40,10 @@ export function SurplusModalSetup() {
 
   const isOpen = !!orderId && !isConfirmationModalOpen && (showSurplus === true || isProgressBarSetup)
 
+  if (!orderId) {
+    return null
+  }
+
   return (
     <CowModal isOpen={isOpen} onDismiss={onDismiss} maxHeight={90} maxWidth={470}>
       <TransactionSubmittedContent
