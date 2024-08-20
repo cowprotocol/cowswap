@@ -390,6 +390,7 @@ export const CowImage = styled.div`
     width: 100%;
     align-items: center;
     justify-content: center;
+    max-height: 100%;
   }
 
   > svg {
@@ -857,6 +858,7 @@ export const FinishedImageContent = styled.div`
 
   ${Media.upToSmall()} {
     width: 100%;
+    max-height: 246px;
   }
 `
 

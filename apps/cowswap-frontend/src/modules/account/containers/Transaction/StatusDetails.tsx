@@ -132,7 +132,7 @@ export function StatusDetails(props: StatusDetailsProps) {
         </StatusLabelBelow>
       )}
       {/* TODO: Probably not the right component, just placeholder for now */}
-      {showProgressBar && <CancelButton onClick={showProgressBar}>Show progress</CancelButton>}
+      {showProgressBar && <span onClick={showProgressBar}>Show progress</span>}
       {hasCancellationHash && cancellationTxLink && (
         <CancelTxLink href={cancellationTxLink} target="_blank" title="Cancellation transaction">
           <LinkIconFeather size={16} />

@@ -5,7 +5,6 @@ import { UI } from '@cowprotocol/ui'
 
 import { transparentize } from 'color2k'
 import styled, { css, keyframes } from 'styled-components/macro'
-import { LinkStyledButton } from 'theme'
 
 import { RateWrapper } from 'common/pure/RateInfo'
 
@@ -41,7 +40,7 @@ export const Summary = styled.div`
   flex-flow: row wrap;
   width: 100%;
   padding: 22px;
-  grid-template-columns: 80px auto min-content;
+  grid-template-columns: 80px auto max-content;
   grid-template-rows: max-content;
   color: inherit;
 
@@ -198,10 +197,35 @@ export const StatusLabelWrapper = styled.div<{ withCancellationHash$: boolean }>
   justify-content: center;
   align-items: center;
   margin: 0 0 auto auto;
+  gap: 4px;
+  font-size: 14px;
+  font-weight: 500;
+
+  > span,
+  > button {
+    cursor: pointer;
+    font-size: inherit;
+    padding: 0;
+  }
+
+  > span {
+    color: inherit;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  > button {
+    appearance: none;
+    border: none;
+    background: none;
+  }
 
   ${Media.upToSmall()} {
     margin: 16px auto 0;
     width: 100%;
+    gap: 20px;
   }
 `
 
@@ -294,12 +318,6 @@ export const StatusLabelBelow = styled.div<{ isCancelling?: boolean }>`
   line-height: 1.1;
   margin: 7px auto 0;
   color: ${({ isCancelling }) => (isCancelling ? `var(${UI.COLOR_TEXT})` : 'inherit')};
-
-  > ${LinkStyledButton} {
-    margin: 2px 0;
-    opacity: 1;
-    color: inherit;
-  }
 `
 
 export const OldTransactionState = styled(ExternalLink)<{ pending: boolean; success?: boolean }>`
