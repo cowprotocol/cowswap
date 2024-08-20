@@ -56,7 +56,6 @@ const DarkModeToggle = ({ children }: { children?: ReactNode }) => {
 }
 
 const Wrapper = styled(Flex)`
-  font-family: 'Inter var', sans-serif;
   height: 100%;
   width: 100%;
   justify-content: center;

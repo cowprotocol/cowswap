@@ -5,7 +5,6 @@ import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
 
 import styled from 'styled-components/macro'
 
-
 import { PermitModal } from 'common/containers/PermitModal'
 import { OrderSubmittedContent } from 'common/pure/OrderSubmittedContent'
 import { TransactionErrorContent } from 'common/pure/TransactionErrorContent'
@@ -38,7 +37,6 @@ export function TradeConfirmModal(props: TradeConfirmModalProps) {
   const isSafeWallet = useIsSafeWallet()
   const { permitSignatureState, pendingTrade, transactionHash, error } = useTradeConfirmState()
   const { onDismiss } = useTradeConfirmActions()
-
 
   if (!account) return null
 

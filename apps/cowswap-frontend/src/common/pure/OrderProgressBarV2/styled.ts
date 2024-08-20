@@ -7,21 +7,21 @@ import { CancelButton as CancelButtonOriginal } from '../CancelButton'
 
 const BLUE_COLOR = '#65d9ff'
 
-const slideAnimation = (direction: 'up' | 'down') => keyframes`
+const slideAnimation = (direction: 'up' | 'down', status: string, isDarkMode: boolean) => keyframes`
   from {
     transform: translateY(${direction === 'up' ? '20px' : '-20px'}); 
     opacity: 0; 
   }
   to { 
     transform: translateY(0); 
-    opacity: ${direction === 'up' ? 0.1 : 1}; 
+    opacity: ${getOpacity(status, isDarkMode)}; 
   }
 `
 
 const animationMixin = css<{ status: string }>`
-  animation: ${({ status }) => {
-      if (status === 'done') return slideAnimation('up')
-      if (status === 'active') return slideAnimation('down')
+  animation: ${({ status, theme }) => {
+      if (status === 'done') return slideAnimation('up', status, theme.darkMode)
+      if (status === 'active') return slideAnimation('down', status, theme.darkMode)
       return 'none'
     }}
     1s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
@@ -42,12 +42,12 @@ const sweatDropAnimation = keyframes`
   }
 `
 
-const getOpacity = (status: string): number => {
+const getOpacity = (status: string, isDarkMode: boolean): number => {
   const opacityMap = {
-    done: 0.1,
+    done: isDarkMode ? 0.3 : 0.1,
     active: 1,
-    next: 0.5,
-    future: 0.2,
+    next: isDarkMode ? 0.6 : 0.5,
+    future: isDarkMode ? 0.3 : 0.2,
     disabled: 0.2,
   }
   return opacityMap[status as keyof typeof opacityMap] || 1
@@ -109,7 +109,7 @@ export const Step = styled.div<{ status: string; isFirst: boolean }>`
   display: flex;
   align-items: flex-start;
   margin: 0;
-  opacity: ${({ status }) => getOpacity(status)};
+  opacity: ${({ status, theme }) => getOpacity(status, theme.darkMode)};
   transition: opacity 0.35s cubic-bezier(0.19, 1, 0.22, 1);
   ${animationMixin}
 `
@@ -131,9 +131,11 @@ export const Description = styled.p<{ center?: boolean; margin?: string }>`
   color: var(${UI.COLOR_TEXT_OPACITY_70});
   text-align: ${({ center }) => (center ? 'center' : 'left')};
 
-  > button {
+  > button,
+  > a {
     font-weight: 700;
     text-decoration: underline;
+    color: var(${UI.COLOR_TEXT_PAPER});
   }
 `
 
@@ -143,6 +145,7 @@ export const Link = styled.a<{ underline?: boolean }>`
   font-size: 14px;
   margin: 8px 0 0;
   display: inline;
+  line-height: 1.4;
 
   &:hover {
     text-decoration: underline;
@@ -404,11 +407,12 @@ export const CowImage = styled.div`
 `
 
 export const TokenPairTitle = styled.span`
-  margin: 0 0 0 4px;
+  margin: 4px 0 4px 4px;
   background: #99ecff;
   border-radius: 12px;
-  padding: 3px 6px;
-  word-break: break-all;
+  padding: 0 6px;
+  word-break: break-word;
+  line-height: 1;
 
   ${Media.upToSmall()} {
     display: none;
@@ -432,34 +436,18 @@ export const TokenImages = styled.div`
   }
 `
 
-export const Surplus = styled.div<{ showSurplus: boolean }>`
-  font-size: 1em;
-  font-weight: ${({ showSurplus }) => (showSurplus ? 'bold' : 'normal')};
+export const Surplus = styled.div`
+  font-weight: bold;
   color: inherit;
   width: 100%;
-  text-align: left;
+  height: 100%;
+  text-align: right;
   line-height: 1.2;
   margin: 0;
-  display: grid;
-
-  span {
-    grid-area: 1 / 1 / 2 / 2;
-    white-space: nowrap;
-  }
-
-  &::after {
-    content: attr(data-content);
-    display: block;
-    font-weight: bold;
-    height: 0;
-    overflow: hidden;
-    visibility: hidden;
-    grid-area: 1 / 1 / 2 / 2;
-  }
 `
 
 export const FinishedTagLine = styled.div`
-  line-height: 1.7;
+  line-height: 1.2;
   font-weight: bold;
   color: inherit;
   max-width: 100%;
@@ -471,6 +459,11 @@ export const FinishedTagLine = styled.div`
   align-items: center;
   overflow: hidden;
   padding: 0;
+  flex: 1 1 0;
+
+  ${Media.upToSmall()} {
+    flex: 0 0 auto;
+  }
 `
 
 export const FinishedLogo = styled.div`
@@ -479,11 +472,9 @@ export const FinishedLogo = styled.div`
   justify-content: space-between;
   z-index: 1;
   padding: 0;
-  margin: 0;
-  position: absolute;
-  bottom: 10px;
-  left: 10px;
-  width: calc(100% - 20px);
+  margin: auto 0 0;
+  width: 100%;
+  flex: 0;
 
   > b {
     font-weight: 700;
@@ -662,6 +653,7 @@ export const WinningBadge = styled.span`
   font-size: 12px;
   font-weight: bold;
   line-height: 1;
+  white-space: pre;
 
   > span {
     font-size: inherit;
@@ -686,7 +678,7 @@ export const ViewMoreButton = styled.button`
   }
 `
 
-export const ReceivedAmount = styled.p`
+export const ReceivedAmount = styled.span`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -720,30 +712,33 @@ export const ExtraAmount = styled.p`
 `
 
 export const CardWrapper = styled.div`
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   flex-flow: row wrap;
-  align-items: flex-start;
+  align-items: stretch;
   width: 100%;
   margin: 0 auto 16px;
   gap: 5px;
 `
 
 export const InfoCard = styled.div<{ variant: 'warning' | 'success' }>`
-  flex: 1;
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  justify-content: flex-start;
   padding: 20px;
   border-radius: 16px;
   background-color: ${({ variant }) =>
     variant === 'warning' ? `var(${UI.COLOR_ALERT_BG})` : `var(${UI.COLOR_SUCCESS_BG})`};
   color: ${({ variant }) => (variant === 'warning' ? `var(${UI.COLOR_ALERT_TEXT})` : `var(${UI.COLOR_SUCCESS_TEXT})`)};
-  display: flex;
-  flex-flow: column wrap;
-  align-items: center;
-  justify-content: center;
+  height: 100%;
+  box-sizing: border-box;
 
   > h3 {
     margin: 0 0 16px;
     font-size: 16px;
     font-weight: bold;
+    text-align: center;
   }
 
   > p {
@@ -753,9 +748,15 @@ export const InfoCard = styled.div<{ variant: 'warning' | 'success' }>`
     text-align: center;
   }
 
-  > p > a {
+  > p > a,
+  > p > button {
     color: inherit;
     text-decoration: underline;
+    padding: 0;
+
+    &:hover {
+      text-decoration: underline;
+    }
   }
 
   > svg {
@@ -852,7 +853,8 @@ export const FinishedImageContent = styled.div`
   position: relative;
   border: 2px solid #99ecff;
   border-radius: 21px;
-  padding: 14px 14px 40px;
+  padding: 12px;
+  gap: 14px;
   color: ${({ theme }) => (theme.darkMode ? `var(${UI.COLOR_BUTTON_TEXT})` : `var(${UI.COLOR_TEXT})`)};
 
   ${Media.upToSmall()} {
@@ -862,26 +864,41 @@ export const FinishedImageContent = styled.div`
 
 export const BenefitSurplusContainer = styled.div`
   width: 100%;
-  height: 98%;
+  height: 100%;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: right;
+  justify-content: flex-start;
+  gap: 0;
+  font-size: 20px;
+  line-height: 1.4;
+`
+
+export const BenefitText = styled.div`
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  padding: 6px 0 0;
+  margin: 0;
+  box-sizing: border-box;
 
   > span {
-    width: 100%;
+    display: inline-block;
+    line-height: 1.2;
     text-align: left;
+    word-break: break-word;
+    hyphens: auto;
+    width: 100%;
   }
 `
 
-export const BenefitText = styled.span<{ fontSize: number }>`
-  font-size: ${({ fontSize }) => `${fontSize}px`};
-  line-height: 1.2;
-  text-align: left;
-  max-width: 100%;
-  height: 100%;
-  max-height: 100%;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+export const BenefitTagLine = styled.div`
+  width: auto;
+  font-size: 14px;
+  margin: 0 auto auto 0;
+  border-radius: 12px;
+  padding: 2px 10px;
+  background-color: #3fc4ff;
+  color: #000000;
 `

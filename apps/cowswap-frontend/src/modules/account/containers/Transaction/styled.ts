@@ -342,11 +342,14 @@ export const TransactionState = styled(OldTransactionState).attrs(
 export const TransactionInnerDetail = styled.div`
   display: flex;
   flex-flow: column wrap;
+  align-items: center;
+  text-align: center;
   border-radius: 12px;
-  padding: 20px;
+  padding: 20px 16px 16px;
   color: inherit;
   margin: 24px auto 0 0;
   border: 1px solid ${({ theme }) => `${theme.darkMode ? 'rgb(197 218 239 / 10%)' : 'rgb(16 42 72 / 20%)'}`};
+  gap: 10px;
 
   ${Media.upToSmall()} {
     margin: 24px auto 12px;
@@ -362,18 +365,6 @@ export const TransactionInnerDetail = styled.div`
 
   > span:last-of-type {
     margin: 3px 0 12px;
-  }
-
-  > a {
-    text-align: left;
-    display: block;
-    margin: 0;
-    font-size: 14px;
-    font-weight: 500;
-  }
-
-  > a:focus {
-    text-decoration: none;
   }
 `
 

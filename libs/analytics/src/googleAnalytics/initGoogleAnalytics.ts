@@ -26,6 +26,13 @@ export function initCowAnalyticsGoogle(): CowAnalytics {
     },
   })
 
+  // Add logging to sendEvent
+  const originalSendEvent = cowAnalytics.sendEvent.bind(cowAnalytics)
+  cowAnalytics.sendEvent = (...args) => {
+    console.log('CowAnalytics event:', ...args)
+    return originalSendEvent(...args)
+  }
+
   // Persist analytics client id
   cowAnalytics.ga((tracker: any) => {
     if (!tracker) return

@@ -1,11 +1,12 @@
 import { getSafeWebUrl } from '@cowprotocol/core'
-import { ExternalLink } from '@cowprotocol/ui'
+import { ExternalLink, ButtonPrimary } from '@cowprotocol/ui'
 
 export function SafeWalletLink(props: {
   chainId: number
   safeTransaction?: { safe: string; safeTxHash: string }
+  asButton?: boolean
 }): JSX.Element | null {
-  const { chainId, safeTransaction } = props
+  const { chainId, safeTransaction, asButton } = props
 
   if (!safeTransaction) {
     return null
@@ -19,5 +20,16 @@ export function SafeWalletLink(props: {
     return null
   }
 
-  return <ExternalLink href={safeUrl}>View on Safe ↗</ExternalLink>
+  const linkProps = {
+    href: safeUrl,
+    ...(asButton && { target: '_blank', rel: 'noopener noreferrer' }),
+  }
+
+  const LinkComponent = asButton ? ButtonPrimary : ExternalLink
+
+  return (
+    <LinkComponent as={asButton ? 'a' : undefined} {...linkProps}>
+      View on Safe ↗
+    </LinkComponent>
+  )
 }

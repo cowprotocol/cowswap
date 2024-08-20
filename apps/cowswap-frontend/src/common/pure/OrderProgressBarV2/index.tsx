@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react'
 
 import PROGRESS_BAR_BAD_NEWS from '@cowprotocol/assets/cow-swap/progressbar-bad-news.svg'
 import PROGRESSBAR_COW_SURPLUS_1 from '@cowprotocol/assets/cow-swap/progressbar-finished-image-1.svg'
@@ -21,7 +21,6 @@ import STEP_LOTTIE_INITIAL from '@cowprotocol/assets/lottie/progressbar-step-ini
 import STEP_LOTTIE_NEXTBATCH from '@cowprotocol/assets/lottie/progressbar-step-nextbatch.json'
 import LOTTIE_RED_CROSS from '@cowprotocol/assets/lottie/red-cross.json'
 import LOTTIE_TIME_EXPIRED_DARK from '@cowprotocol/assets/lottie/time-expired-dark.json'
-import { useFitText } from '@cowprotocol/common-hooks'
 import { ExplorerDataType, getExplorerLink, getRandomInt, isSellOrder, shortenAddress } from '@cowprotocol/common-utils'
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { OrderKind } from '@cowprotocol/cow-sdk'
@@ -41,19 +40,19 @@ import {
   PiTrophyFill,
 } from 'react-icons/pi'
 import SVG from 'react-inlinesvg'
+import { Textfit } from 'react-textfit'
 
 import { AMM_LOGOS } from 'legacy/components/AMMsLogo'
 import { Order } from 'legacy/state/orders/actions'
 import { useIsDarkMode } from 'legacy/state/user/hooks'
 
-import { shareSurplusOnTwitter as trackSurplusShare } from 'modules/analytics'
+import { cowAnalytics, Category } from 'modules/analytics'
 
 import { OrderProgressBarStepName, SolverCompetition } from 'common/hooks/orderProgressBarV2'
 import { SurplusData } from 'common/hooks/useGetSurplusFiatValue'
 import { getIsCustomRecipient } from 'utils/orderUtils/getIsCustomRecipient'
 
 import * as styledEl from './styled'
-
 const IS_DEBUG_MODE = false
 const DEBUG_FORCE_SHOW_SURPLUS = false
 
@@ -187,13 +186,84 @@ const CountdownEl: React.FC<CountdownElProps> = ({ countdown }) => {
   )
 }
 
+const FINAL_STATES: OrderProgressBarStepName[] = ['expired', 'finished', 'cancelled', 'cancellationFailed']
+
+function formatDuration(milliseconds: number): string {
+  if (milliseconds < 1000) return `${milliseconds}ms`
+  const seconds = milliseconds / 1000
+  return `${seconds.toFixed(2)}s` // Format with 2 decimal places
+}
+
+const trackLearnMoreClick = (stepName: string) => {
+  cowAnalytics.sendEvent({
+    category: Category.PROGRESS_BAR,
+    action: 'Click Learn More',
+    label: stepName,
+  })
+}
+
 export function OrderProgressBarV2(props: OrderProgressBarV2Props) {
   const { stepName, debugMode = IS_DEBUG_MODE } = props
   const [debugStep, setDebugStep] = useState<OrderProgressBarStepName>(stepName)
   const currentStep = debugMode ? debugStep : stepName
   console.log('OrderProgressBarV2 - currentStep:', currentStep)
 
-  let StepComponent: React.ComponentType<OrderProgressBarV2Props> | null
+  const startTimeRef = useRef<number | null>(null)
+  const initialStepTriggeredRef = useRef<boolean>(false)
+  const getDuration = useCallback(() => {
+    if (startTimeRef.current === null) return null
+    return Date.now() - startTimeRef.current
+  }, [])
+
+  // Separate useEffect for initial step
+  useEffect(() => {
+    if (currentStep === 'initial' && !initialStepTriggeredRef.current) {
+      startTimeRef.current = Date.now()
+      initialStepTriggeredRef.current = true
+      console.log('Initial step triggered')
+      cowAnalytics.sendEvent({
+        category: Category.PROGRESS_BAR,
+        action: 'Step Triggered',
+        label: currentStep,
+        value: 0, // This remains 0 for the initial step
+      })
+    }
+  }, [currentStep])
+
+  // useEffect for other steps
+  useEffect(() => {
+    if (currentStep === 'initial') return // Skip for initial step
+
+    const duration = getDuration()
+    const isFinalState = FINAL_STATES.includes(currentStep)
+
+    if (duration !== null) {
+      const durationInSeconds = duration / 1000
+      const formattedDuration = formatDuration(duration)
+      console.log(`Step duration: ${formattedDuration}`)
+
+      cowAnalytics.sendEvent({
+        category: Category.PROGRESS_BAR,
+        action: 'Step Triggered',
+        label: currentStep,
+        value: parseFloat(durationInSeconds.toFixed(2)),
+      })
+
+      if (isFinalState) {
+        cowAnalytics.sendEvent({
+          category: Category.PROGRESS_BAR,
+          action: 'Order Completed',
+          label: currentStep,
+          value: parseFloat(durationInSeconds.toFixed(2)),
+        })
+        console.log(`Final state reached: ${currentStep}. Total duration: ${formattedDuration}`)
+        startTimeRef.current = null // Reset the timer for the next order
+        initialStepTriggeredRef.current = false // Reset the initial step trigger flag
+      }
+    }
+  }, [currentStep, getDuration])
+
+  let StepComponent: React.ComponentType<OrderProgressBarV2Props> | null = null
 
   if (currentStep === 'cancellationFailed' || currentStep === 'finished') {
     StepComponent = FinishedStep
@@ -242,7 +312,11 @@ function InitialStep({ order }: OrderProgressBarV2Props) {
           extraContent={
             <styledEl.Description>
               Your order has been submitted and will be included in the next solver auction. &nbsp;
-              <styledEl.Link href="https://cow.fi/learn/understanding-batch-auctions" target="_blank">
+              <styledEl.Link
+                href="https://cow.fi/learn/understanding-batch-auctions"
+                target="_blank"
+                onClick={() => trackLearnMoreClick('Initial')}
+              >
                 Learn more ↗
               </styledEl.Link>
             </styledEl.Description>
@@ -307,7 +381,11 @@ function SolvingStep({ order, countdown }: OrderProgressBarV2Props) {
             <styledEl.Description>
               The auction has started! Solvers are competing to find the best solution for you...
               <br />
-              <styledEl.Link href="https://cow.fi/learn/understanding-batch-auctions" target="_blank">
+              <styledEl.Link
+                href="https://cow.fi/learn/understanding-batch-auctions"
+                target="_blank"
+                onClick={() => trackLearnMoreClick('Solving')}
+              >
                 Learn more ↗
               </styledEl.Link>
             </styledEl.Description>
@@ -366,11 +444,15 @@ function ExecutingStep({ solverCompetition, order }: OrderProgressBarV2Props) {
 }
 
 const COW_SWAP_BENEFITS = [
-  "Unlike other exchanges, here you don't pay any fees if your trade fails.",
-  'COW Swap finds the best prices across multiple liquidity sources for you.',
-  "Enjoy MEV protection and no front-running with COW Swap's unique order settlement.",
-  "Experience gasless trading with COW Swap's off-chain order matching.",
-  "Don't worry, trade happy!",
+  'CoW Swap solvers search Uniswap, 1inch, Matcha, Sushi, and more to find you the best price.',
+  'CoW Swap sets the standard for protecting against MEV attacks such as frontrunning and sandwiching.',
+  "Enjoy intent-based trading with gasless swaps and CoW Swap's unique Coincidences of Wants (CoWs) feature.",
+  'Place and cancel limit orders for free on CoW Swap, capturing surplus if the price moves in your favor.',
+  'Protect all your Ethereum transactions from MEV by installing MEV Blocker.',
+  'Switch to Arbitrum on CoW Swap for quick, cheap transactions with no price impact on large trades.',
+  "Liquidity pools on CoW AMM grow faster as they don't lose money to arbitrage bots.",
+  "CoW Swap's robust solver competition protects your slippage from being exploited by MEV bots.",
+  'Advanced users can create complex, conditional orders directly through CoW Protocol.',
 ]
 
 function truncateWithEllipsis(str: string, maxLength: number): string {
@@ -399,7 +481,6 @@ function shareSurplusOnTwitter(surplusData: SurplusData | undefined, order: Orde
   return () => {
     const twitterUrl = getTwitterShareUrl(surplusData, order)
     window.open(twitterUrl, '_blank', 'noopener,noreferrer')
-    trackSurplusShare()
   }
 }
 
@@ -416,7 +497,6 @@ function shareBenefitOnTwitter(benefit: string) {
   return () => {
     const twitterUrl = getTwitterShareUrlForBenefit(benefit)
     window.open(twitterUrl, '_blank', 'noopener,noreferrer')
-    // TODO: add analytics tracking
   }
 }
 
@@ -453,7 +533,14 @@ function FinishedStep({
 
   const shouldShowSurplus = DEBUG_FORCE_SHOW_SURPLUS || showSurplus
 
-  const toggleSolvers = () => setShowAllSolvers(!showAllSolvers)
+  const toggleSolvers = () => {
+    setShowAllSolvers(!showAllSolvers)
+    cowAnalytics.sendEvent({
+      category: Category.PROGRESS_BAR,
+      action: 'Click Toggle Solvers',
+      label: showAllSolvers ? 'Collapse' : 'View More',
+    })
+  }
 
   const visibleSolvers = (showAllSolvers ? solvers : solvers?.slice(0, 3)) || []
   const isSell = order && isSellOrder(order.kind)
@@ -463,44 +550,18 @@ function FinishedStep({
   const isDarkMode = useIsDarkMode()
 
   const surplusPercentValue = surplusPercent ? parseFloat(surplusPercent).toFixed(2) : 'N/A'
-  const { fontSize: surplusFontSize, textRef: surplusTextRef, containerRef: surplusContainerRef } = useFitText(18, 50)
-  const { fontSize: benefitFontSize, textRef: benefitTextRef, containerRef: benefitContainerRef } = useFitText(18, 72)
-
-  const [surplusSize, setSurplusSize] = useState(1)
-  const surplusRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    if (surplusRef.current) {
-      const container = surplusRef.current.parentElement
-      if (container) {
-        const fitText = () => {
-          let fontSize = 1
-          surplusRef.current!.style.fontSize = `${fontSize}px`
-
-          while (
-            surplusRef.current!.scrollWidth <= container.clientWidth &&
-            surplusRef.current!.scrollHeight <= container.clientHeight &&
-            fontSize < 50 // Cap at 50px
-          ) {
-            fontSize += 0.5
-            surplusRef.current!.style.fontSize = `${fontSize}px`
-          }
-
-          fontSize -= 0.5
-          setSurplusSize(Math.min(fontSize, 50)) // Ensure it doesn't exceed 50px
-        }
-
-        fitText()
-        window.addEventListener('resize', fitText)
-        return () => window.removeEventListener('resize', fitText)
-      }
-    }
-    return () => {}
-  }, [shouldShowSurplus, surplusPercentValue])
 
   const shareOnTwitter = shouldShowSurplus
     ? shareSurplusOnTwitter(surplusData, order)
     : shareBenefitOnTwitter(randomBenefit)
+
+  const trackShareClick = () => {
+    cowAnalytics.sendEvent({
+      category: Category.PROGRESS_BAR,
+      action: 'Click Share Button',
+      label: shouldShowSurplus ? 'Surplus' : 'Benefit',
+    })
+  }
 
   // Early return if order is not set
   if (!order) {
@@ -517,7 +578,12 @@ function FinishedStep({
       <styledEl.ProgressTopSection>
         <styledEl.ProgressImageWrapper bgColor={'#65D9FF'} padding={'10px'} gap={'10px'}>
           <styledEl.CowImage>
-            <styledEl.ShareButton onClick={shareOnTwitter}>
+            <styledEl.ShareButton
+              onClick={() => {
+                shareOnTwitter()
+                trackShareClick()
+              }}
+            >
               <SVG src={ICON_SOCIAL_X} />
               <span>Share this {shouldShowSurplus ? 'win' : 'tip'}!</span>
             </styledEl.ShareButton>
@@ -526,31 +592,48 @@ function FinishedStep({
           <styledEl.FinishedImageContent>
             <styledEl.FinishedTagLine>
               {shouldShowSurplus ? (
-                <styledEl.BenefitSurplusContainer ref={surplusContainerRef}>
-                  <span ref={surplusTextRef} style={{ fontSize: `${surplusFontSize}px` }}>
-                    I just received surplus on my
-                    <styledEl.TokenPairTitle title={`${order.inputToken.symbol}/${order.outputToken.symbol}`}>
-                      {truncateWithEllipsis(`${order.inputToken.symbol}/${order.outputToken.symbol}`, 30)}
-                    </styledEl.TokenPairTitle>{' '}
-                    trade
-                    <styledEl.Surplus
-                      ref={surplusRef}
-                      showSurplus={!!shouldShowSurplus}
-                      style={{ fontSize: `${surplusSize}px` }}
-                      data-content={
-                        shouldShowSurplus && surplusPercentValue !== 'N/A' ? `+${surplusPercentValue}%` : 'N/A'
-                      }
+                <styledEl.BenefitSurplusContainer>
+                  I just received surplus on
+                  <styledEl.TokenPairTitle title={`${order.inputToken.symbol} / ${order.outputToken.symbol}`}>
+                    {truncateWithEllipsis(`${order.inputToken.symbol} / ${order.outputToken.symbol}`, 30)}
+                  </styledEl.TokenPairTitle>{' '}
+                  <styledEl.Surplus>
+                    <Textfit
+                      mode="multi"
+                      min={14}
+                      max={60}
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                        lineHeight: 1.2,
+                      }}
                     >
-                      <span>
-                        {shouldShowSurplus && surplusPercentValue !== 'N/A' ? `+${surplusPercentValue}%` : 'N/A'}
-                      </span>
-                    </styledEl.Surplus>
-                  </span>
+                      {shouldShowSurplus && surplusPercentValue !== 'N/A' ? `+${surplusPercentValue}%` : 'N/A'}
+                    </Textfit>
+                  </styledEl.Surplus>
                 </styledEl.BenefitSurplusContainer>
               ) : (
-                <styledEl.BenefitSurplusContainer ref={benefitContainerRef}>
-                  <styledEl.BenefitText ref={benefitTextRef} fontSize={benefitFontSize}>
-                    {randomBenefit}
+                <styledEl.BenefitSurplusContainer>
+                  <styledEl.BenefitTagLine>Did you know?</styledEl.BenefitTagLine>
+                  <styledEl.BenefitText>
+                    <Textfit
+                      mode="multi"
+                      min={12}
+                      max={50}
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                        lineHeight: 1.2,
+                      }}
+                    >
+                      {randomBenefit}
+                    </Textfit>
                   </styledEl.BenefitText>
                 </styledEl.BenefitSurplusContainer>
               )}
@@ -713,7 +796,11 @@ function NextBatchStep({ solverCompetition, order }: OrderProgressBarV2Props) {
               )}{' '}
               Unfortunately, your order wasn't part of their winning solution, so we're waiting for solvers to find a
               new solution that includes your order for the next batch.&nbsp;
-              <styledEl.Link href="https://cow.fi/learn/understanding-batch-auctions" target="_blank">
+              <styledEl.Link
+                href="https://cow.fi/learn/understanding-batch-auctions"
+                target="_blank"
+                onClick={() => trackLearnMoreClick('NextBatch')}
+              >
                 Learn more ↗
               </styledEl.Link>
             </styledEl.Description>
@@ -742,6 +829,14 @@ function DelayedStep({ order, showCancellationModal }: OrderProgressBarV2Props) 
 
     return () => clearInterval(interval)
   }, [frames.length])
+
+  const trackCancelClick = () => {
+    cowAnalytics.sendEvent({
+      category: Category.PROGRESS_BAR,
+      action: 'Click Cancel Order',
+      label: 'Delayed Step',
+    })
+  }
 
   return (
     <styledEl.ProgressContainer>
@@ -778,7 +873,15 @@ function DelayedStep({ order, showCancellationModal }: OrderProgressBarV2Props) 
               {showCancellationModal && (
                 <>
                   You can wait or{' '}
-                  <styledEl.CancelButton onClick={showCancellationModal}>cancel the order</styledEl.CancelButton>.
+                  <styledEl.CancelButton
+                    onClick={() => {
+                      showCancellationModal && showCancellationModal()
+                      trackCancelClick()
+                    }}
+                  >
+                    cancel the order
+                  </styledEl.CancelButton>
+                  .
                 </>
               )}
             </styledEl.Description>
@@ -791,6 +894,14 @@ function DelayedStep({ order, showCancellationModal }: OrderProgressBarV2Props) 
 }
 
 function UnfillableStep({ order, showCancellationModal }: OrderProgressBarV2Props) {
+  const trackCancelClick = () => {
+    cowAnalytics.sendEvent({
+      category: Category.PROGRESS_BAR,
+      action: 'Click Cancel Order',
+      label: 'Unfillable Step',
+    })
+  }
+
   return (
     <styledEl.ProgressContainer>
       <styledEl.ProgressTopSection>
@@ -813,7 +924,15 @@ function UnfillableStep({ order, showCancellationModal }: OrderProgressBarV2Prop
               {showCancellationModal && (
                 <>
                   You can either wait or{' '}
-                  <styledEl.CancelButton onClick={showCancellationModal}>cancel the order</styledEl.CancelButton>.
+                  <styledEl.CancelButton
+                    onClick={() => {
+                      showCancellationModal && showCancellationModal()
+                      trackCancelClick()
+                    }}
+                  >
+                    cancel the order
+                  </styledEl.CancelButton>
+                  .
                 </>
               )}
             </styledEl.Description>
@@ -857,7 +976,11 @@ function SubmissionFailedStep({ order }: OrderProgressBarV2Props) {
             <styledEl.Description>
               The order could not be settled on-chain. Solvers are competing to find a new solution.
               <br />
-              <styledEl.Link href="https://cow.fi/learn/understanding-batch-auctions" target="_blank">
+              <styledEl.Link
+                href="https://cow.fi/learn/understanding-batch-auctions"
+                target="_blank"
+                onClick={() => trackLearnMoreClick('SubmissionFailed')}
+              >
                 Learn more ↗
               </styledEl.Link>
             </styledEl.Description>
@@ -920,6 +1043,30 @@ function CancelledStep({ order }: OrderProgressBarV2Props) {
 }
 
 function ExpiredStep({ order, navigateToNewOrder }: OrderProgressBarV2Props) {
+  const trackNewOrderClick = () => {
+    cowAnalytics.sendEvent({
+      category: Category.PROGRESS_BAR,
+      action: 'Click Place New Order',
+      label: 'Expired Step',
+    })
+  }
+
+  const trackDiscordClick = () => {
+    cowAnalytics.sendEvent({
+      category: Category.PROGRESS_BAR,
+      action: 'Click Discord Link',
+      label: 'Expired Step',
+    })
+  }
+
+  const trackEmailClick = () => {
+    cowAnalytics.sendEvent({
+      category: Category.PROGRESS_BAR,
+      action: 'Click Email Link',
+      label: 'Expired Step',
+    })
+  }
+
   return (
     <styledEl.ProgressContainer>
       <styledEl.ProgressTopSection>
@@ -953,7 +1100,14 @@ function ExpiredStep({ order, navigateToNewOrder }: OrderProgressBarV2Props) {
           <h3>The good news</h3>
           <p>
             Unlike on other exchanges, you won't be charged for this! Feel free to{' '}
-            <styledEl.Button onClick={navigateToNewOrder}>place a new order</styledEl.Button>
+            <styledEl.Button
+              onClick={() => {
+                navigateToNewOrder && navigateToNewOrder()
+                trackNewOrderClick()
+              }}
+            >
+              place a new order
+            </styledEl.Button>
             without worry.
           </p>
         </styledEl.InfoCard>
@@ -961,11 +1115,11 @@ function ExpiredStep({ order, navigateToNewOrder }: OrderProgressBarV2Props) {
 
       <styledEl.Description center margin="10px 0">
         If your orders often expire, consider increasing your slippage or contact us on{' '}
-        <styledEl.Link href="https://discord.com/invite/cowprotocol" target="_blank">
+        <styledEl.Link href="https://discord.com/invite/cowprotocol" target="_blank" onClick={trackDiscordClick}>
           Discord
         </styledEl.Link>{' '}
         or send us an email at{' '}
-        <styledEl.Link href="mailto:help@cow.fi" target="_blank">
+        <styledEl.Link href="mailto:help@cow.fi" target="_blank" onClick={trackEmailClick}>
           help@cow.fi
         </styledEl.Link>{' '}
         so we can investigate the problem.

@@ -3,6 +3,8 @@ import { Media, UI } from '@cowprotocol/ui'
 import styled from 'styled-components/macro'
 import { CloseIcon } from 'theme'
 
+import { TransactionInnerDetail } from 'modules/account/containers/Transaction/styled'
+
 export const ButtonCustom = styled.button<{ cowGame?: boolean }>`
   display: flex;
   flex: 1 1 auto;
@@ -111,6 +113,12 @@ export const Section = styled.div`
   justify-content: flex-start;
   display: flex;
   flex-flow: column wrap;
+
+  ${TransactionInnerDetail} {
+    margin: 0 auto;
+    width: 100%;
+    align-items: center;
+  }
 `
 
 export const StyledIcon = styled.img`
@@ -129,4 +137,11 @@ export const Wrapper = styled.div`
   overflow-y: overlay;
   height: inherit;
   ${({ theme }) => theme.colorScrollbar};
+`
+
+export const Title = styled.div`
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 1.2;
+  margin: 0 0 16px;
 `

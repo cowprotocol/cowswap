@@ -158,7 +158,7 @@ export function GnosisSafeTxDetails(props: {
       {signaturesMessage}
 
       {/* View in: Gnosis Safe */}
-      <SafeWalletLink chainId={chainId} safeTransaction={safeTransaction} />
+      <SafeWalletLink chainId={chainId} safeTransaction={safeTransaction} asButton />
     </TransactionInnerDetail>
   )
 }
@@ -396,7 +396,7 @@ export function ActivityDetails(props: {
         />
       </Summary>
 
-      <EthFlowStepper order={order} extend={!!orderProgressBarV2Props} />
+      <EthFlowStepper order={order} />
       {showProgressBar && orderProgressBarV2Props && orderProgressBarV2Props.stepName !== 'finished' && (
         <OrderProgressBarV2
           {...orderProgressBarV2Props}

@@ -1,5 +1,5 @@
 import { getBlockExplorerUrl, getEtherscanLink, getExplorerLabel } from '@cowprotocol/common-utils'
-
+import { Command } from '@cowprotocol/types'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
 import { useOrder } from 'legacy/state/orders/hooks'
@@ -9,6 +9,7 @@ import { ExternalLinkCustom } from './styled'
 type DisplayLinkProps = {
   id: string | undefined
   chainId: number
+  onClick?: Command
 }
 
 export function DisplayLink({ id, chainId }: DisplayLinkProps) {
