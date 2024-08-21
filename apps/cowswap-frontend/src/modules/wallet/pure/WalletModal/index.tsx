@@ -34,7 +34,7 @@ export function WalletModal(props: Readonly<WalletModalProps>) {
   const isPending = view === 'pending'
 
   return (
-    <CowModal maxWidth={600} isOpen={isOpen} onDismiss={onDismiss} minHeight={false} maxHeight={90}>
+    <CowModal maxWidth={600} isOpen={isOpen} onDismiss={onDismiss} minHeight={false} maxHeight={90} id="wallet-modal">
       <Wrapper>
         <UpperSection>
           {!isPending && (

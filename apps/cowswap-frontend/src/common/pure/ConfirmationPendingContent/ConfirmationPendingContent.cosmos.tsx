@@ -4,7 +4,7 @@ import { CowModal } from '../Modal'
 
 const Fixtures = {
   default: (
-    <CowModal onDismiss={console.log} isOpen={true}>
+    <CowModal onDismiss={console.log} isOpen={true} id="confirmation-pending-content">
       <ConfirmationPendingContent
         onDismiss={() => alert('dismiss')}
         title={

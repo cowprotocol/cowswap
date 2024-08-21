@@ -135,7 +135,7 @@ export function ReceiptModal({
   const volumeFee = getOrderVolumeFee(order.fullAppData)
 
   return (
-    <CowModal onDismiss={onDismiss} isOpen={isOpen}>
+    <CowModal onDismiss={onDismiss} isOpen={isOpen} id="receipt-modal">
       <styledEl.Wrapper>
         <styledEl.Header>
           <div>

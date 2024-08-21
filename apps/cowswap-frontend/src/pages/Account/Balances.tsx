@@ -199,7 +199,7 @@ export default function Profile() {
 
   return (
     <>
-      <CowModal isOpen={isModalOpen} onDismiss={closeModal}>
+      <CowModal isOpen={isModalOpen} onDismiss={closeModal} id="convert-v-cow-to-cow-modal">
         <ConfirmationPendingContent
           modalMode
           onDismiss={closeModal}

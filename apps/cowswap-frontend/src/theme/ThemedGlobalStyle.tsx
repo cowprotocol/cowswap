@@ -70,15 +70,7 @@ export const ThemedGlobalStyle = createGlobalStyle`
     color: var(${UI.COLOR_BUTTON_TEXT});
   }
 
-  // TODO: Can be removed once we control this component
-  [data-reach-dialog-overlay] {
-    z-index: 10 !important;
-
-    ${Media.upToMedium()} {
-      top: 0 !important;
-      bottom: 0 !important;
-    }
-  }
+ 
 
   // Appzi Container override
   div[id*='appzi-wfo-'] {

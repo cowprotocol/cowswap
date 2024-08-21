@@ -57,16 +57,16 @@ export const ContentWrapper = styled.div`
 const AnimatedDialogOverlay = animated(DialogOverlay)
 export const StyledDialogOverlay = styled(AnimatedDialogOverlay)`
   &[data-reach-dialog-overlay] {
-    z-index: 2;
+    z-index: 10;
     background-color: transparent;
     overflow: hidden;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     background-color: ${({ theme }) => (theme.darkMode ? 'rgba(0,0,0,.425)' : 'rgba(0,0,0,0.3)')};
     backdrop-filter: blur(5px);
+    border-radius: 0;
+    width: 100%;
   }
 `
 
