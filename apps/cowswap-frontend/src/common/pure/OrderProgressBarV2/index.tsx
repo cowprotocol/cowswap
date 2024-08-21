@@ -175,23 +175,6 @@ const CircularCountdown: React.FC<CircularCountdownProps> = ({ countdown }) => {
   )
 }
 
-interface AnimatedStepTransitionProps {
-  currentStep: React.ReactNode
-  previousStep: React.ReactNode | null
-  direction: 'up' | 'down' | 'none'
-}
-
-export function AnimatedStepTransition({ currentStep, previousStep, direction }: AnimatedStepTransitionProps) {
-  return (
-    <styledEl.TransitionWrapper>
-      <styledEl.StepContainer direction={direction}>
-        {previousStep}
-        {currentStep}
-      </styledEl.StepContainer>
-    </styledEl.TransitionWrapper>
-  )
-}
-
 export function OrderProgressBarV2(props: OrderProgressBarV2Props) {
   const { stepName = 'initial', debugMode = IS_DEBUG_MODE } = props
   const [debugStep, setDebugStep] = useState<OrderProgressBarStepName>(stepName)
