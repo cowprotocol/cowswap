@@ -171,7 +171,7 @@ function useSubmittedContent(chainId: SupportedChainId) {
         navigateToNewOrderCallback={navigateToNewOrderCallback}
       />
     ),
-    [chainId, transactionHash, orderProgressBarV2Props, order, navigateToNewOrderCallback]
+    [chainId, transactionHash, orderProgressBarV2Props, navigateToNewOrderCallback]
   )
 }
 
