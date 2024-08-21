@@ -33,9 +33,12 @@ export const openModalAtom = atom(
 
 export const closeModalAtom = atom(null, (get, set, id: string) => {
   const currentStack = get(modalStackAtom)
-  const updatedStack = currentStack
-    .map((modal) => (modal.id === id ? { ...modal, isOpen: false } : modal))
-    .filter((modal) => modal.isOpen)
+  const updatedStack = currentStack.reduce<ModalState[]>((acc, modal) => {
+    if (modal.id !== id && modal.isOpen) {
+      return [...acc, modal] // Keep only open modals that are not being closed
+    }
+    return acc // Filter out closed modals and the one being closed
+  }, [])
   set(modalStackAtom, updatedStack)
 })
 

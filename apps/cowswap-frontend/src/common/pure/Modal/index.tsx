@@ -1,4 +1,4 @@
-import { useAtom } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 import React, { useCallback, useEffect } from 'react'
 
 import { isMobile } from '@cowprotocol/common-utils'
@@ -11,7 +11,7 @@ import styled from 'styled-components/macro'
 
 import { ContentWrapper, HeaderRow, HoverText, StyledDialogContent, StyledDialogOverlay } from './styled'
 
-import { openModalAtom, closeModalAtom, getModalStateAtom } from '../../state/openModalState'
+import { closeModalAtom, getModalStateAtom, openModalAtom } from '../../state/openModalState'
 
 export * from './styled'
 
@@ -47,9 +47,9 @@ export function Modal({
   border,
   padding,
 }: ModalProps) {
-  const [, openModal] = useAtom(openModalAtom)
-  const [, closeModal] = useAtom(closeModalAtom)
-  const [getModalState] = useAtom(getModalStateAtom)
+  const openModal = useSetAtom(openModalAtom)
+  const closeModal = useSetAtom(closeModalAtom)
+  const getModalState = useAtomValue(getModalStateAtom)
 
   const fadeTransition = useTransition(isOpen, {
     config: { duration: 200 },
@@ -103,9 +103,9 @@ export function Modal({
               <StyledDialogContent
                 {...(isMobile
                   ? {
-                      ...bind(),
-                      style: { transform: y.interpolate((y) => `translateY(${(y as number) > 0 ? y : 0}px)`) },
-                    }
+                    ...bind(),
+                    style: { transform: y.interpolate((y) => `translateY(${(y as number) > 0 ? y : 0}px)`) },
+                  }
                   : {})}
                 aria-label="dialog content"
                 $minHeight={minHeight}
