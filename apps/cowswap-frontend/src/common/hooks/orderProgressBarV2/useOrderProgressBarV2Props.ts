@@ -190,8 +190,8 @@ function useCountdownStartUpdater(
     if (!countdown && countdown !== 0 && backendApiStatus === 'active') {
       // Start countdown when it becomes active
       setCountdown(orderId, PROGRESS_BAR_TIMER_DURATION)
-    } else if (backendApiStatus === 'scheduled' || backendApiStatus === 'open') {
-      // If for some reason it went back to start, reset it
+    } else if (backendApiStatus !== 'active' && countdown) {
+      // Every time backend status is not `active` and countdown is set, reset the countdown
       setCountdown(orderId, null)
     }
   }, [backendApiStatus, setCountdown, countdown, orderId])
