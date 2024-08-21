@@ -9,6 +9,7 @@ export type SolverInfo = {
   solverId: string
   displayName: string
   solverNetworks: SolverNetwork[]
+  description?: string
   image?: string
 }
 
