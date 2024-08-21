@@ -18,7 +18,7 @@ export const HeaderControls = styled.div`
     position: sticky;
     bottom: 0;
     left: 0;
-    z-index: 10;
+    z-index: 101;
     background: var(${UI.COLOR_PAPER});
     padding: 5px 10px;
     flex-flow: row-reverse;
