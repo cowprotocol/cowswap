@@ -51,9 +51,8 @@ export function ConfirmationModal({
 }: ConfirmationModalProps) {
   const shouldShowDescription = !!description
   const shouldShowWarning = !!warning
-
   return (
-    <Modal isOpen={isOpen} onDismiss={onDismiss} maxHeight={100}>
+    <Modal isOpen={isOpen} onDismiss={onDismiss} maxHeight={100} id="confirmation-modal">
       <ModalContentWrapper>
         <ConfirmationModalHeader onCloseClick={onDismiss}>
           <Trans>{title}</Trans>

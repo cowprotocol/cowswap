@@ -8,7 +8,7 @@ import { Currency } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
-import { ThemedText, Z_INDEX, CloseIcon } from 'theme'
+import { CloseIcon, ThemedText, Z_INDEX } from 'theme'
 
 import Card, { OutlineCard } from 'legacy/components/Card'
 import { AutoColumn } from 'legacy/components/Column'
@@ -68,15 +68,15 @@ export default function UnsupportedCurrencyFooter({
   const tokens =
     chainId && currencies
       ? currencies.map((currency) => {
-          return currency && getWrappedToken(currency)
-        })
+        return currency && getWrappedToken(currency)
+      })
       : []
 
   const isUnsupportedToken = useIsUnsupportedToken()
 
   return (
     <DetailsFooter show={show}>
-      <Modal isOpen={showDetails} onDismiss={() => setShowDetails(false)}>
+      <Modal isOpen={showDetails} onDismiss={() => setShowDetails(false)} id="unsupported-currency-footer-modal">
         <Card padding="2rem">
           <AutoColumn gap="lg">
             <RowBetween>

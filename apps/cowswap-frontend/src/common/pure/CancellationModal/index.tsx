@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 
 import { shortenOrderId } from '@cowprotocol/common-utils'
 import { Command } from '@cowprotocol/types'
@@ -87,7 +87,7 @@ export function CancellationModal(props: CancellationModalProps): JSX.Element | 
 
   return (
     content && (
-      <Modal isOpen={isOpen} onDismiss={onDismiss}>
+      <Modal isOpen={isOpen} onDismiss={onDismiss} id="cancellation-modal">
         {content}
       </Modal>
     )

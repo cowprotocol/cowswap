@@ -143,7 +143,7 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
       </Menu>
 
       {/* Custom deadline modal */}
-      <Modal isOpen={isOpen} onDismiss={onDismiss}>
+      <Modal isOpen={isOpen} onDismiss={onDismiss} id="deadline-selector-modal">
         <styledEl.ModalWrapper>
           <styledEl.ModalHeader>
             <h3>

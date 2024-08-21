@@ -34,7 +34,7 @@ interface ConnectedAccountBlockedProps {
 export default function ConnectedAccountBlocked(props: ConnectedAccountBlockedProps) {
   const theme = useTheme()
   return (
-    <Modal isOpen={props.isOpen} onDismiss={Function.prototype()}>
+    <Modal isOpen={props.isOpen} onDismiss={Function.prototype()} id="connected-account-blocked-modal">
       <ContentWrapper>
         <WarningIcon />
         <ThemedText.LargeHeader lineHeight={2} marginBottom={1} marginTop={1}>

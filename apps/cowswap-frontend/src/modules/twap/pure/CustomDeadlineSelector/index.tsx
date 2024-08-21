@@ -49,7 +49,7 @@ export function CustomDeadlineSelector(props: CustomDeadlineSelectorProps) {
   }, [hours, minutes, onDismiss])
 
   return (
-    <Modal isOpen={isOpen} onDismiss={_onDismiss}>
+    <Modal isOpen={isOpen} onDismiss={_onDismiss} id="custom-deadline-selector-modal">
       <styledEl.ModalWrapper>
         <styledEl.ModalHeader>
           <h3>

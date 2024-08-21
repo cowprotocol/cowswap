@@ -1,5 +1,5 @@
 import { useAtomValue, useSetAtom } from 'jotai'
-import React, { useCallback, useState } from 'react'
+import { useCallback, useState } from 'react'
 
 import { isRejectRequestProviderError } from '@cowprotocol/common-utils'
 import { Command } from '@cowprotocol/types'
@@ -70,9 +70,8 @@ export function MultipleOrdersCancellationModal(props: Props) {
     const errorMessage = isRejectRequestProviderError(cancellationError)
       ? 'User rejected signing'
       : cancellationError.message
-
     return (
-      <Modal isOpen={true} onDismiss={dismissAll}>
+      <Modal isOpen={true} onDismiss={dismissAll} id="cancellation-error-modal">
         <TransactionErrorContent modalMode onDismiss={dismissAll} message={errorMessage} />
       </Modal>
     )
@@ -80,10 +79,10 @@ export function MultipleOrdersCancellationModal(props: Props) {
 
   if (cancellationInProgress) {
     return (
-      <Modal isOpen={true} onDismiss={dismissAll}>
+      <Modal isOpen={true} onDismiss={dismissAll} id="cancellation-progress-modal">
         <ConfirmationPendingContent
           modalMode
-          onDismiss={onDismiss}
+          onDismiss={dismissAll}
           title={<>Cancelling {ordersCount} orders</>}
           description="Canceling your order"
           operationLabel="cancellation"
@@ -91,9 +90,8 @@ export function MultipleOrdersCancellationModal(props: Props) {
       </Modal>
     )
   }
-
   return (
-    <Modal isOpen={isOpen} onDismiss={onDismiss}>
+    <Modal isOpen={isOpen} onDismiss={onDismiss} id="multiple-orders-cancellation-modal">
       <LegacyConfirmationModalContent
         title={`Cancel multiple orders: ${ordersCount}`}
         onDismiss={onDismiss}
