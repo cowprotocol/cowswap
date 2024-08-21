@@ -27,6 +27,15 @@ const animationMixin = css<{ status: string }>`
     1s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
 `
 
+const progressAnimation = keyframes`
+  0% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: -283;  // Approximately 2 * PI * 45
+  }
+`
+
 const sweatDropAnimation = keyframes`
   0% {
     transform: translateY(0);
@@ -55,6 +64,7 @@ const getOpacity = (status: string, isDarkMode: boolean): number => {
 
 export const ProgressContainer = styled.div`
   width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -181,25 +191,6 @@ export const DebugPanel = styled.div`
   z-index: 1000;
 `
 
-export const LoadingEllipsis = styled.span`
-  &::after {
-    content: '...';
-    animation: ellipsis 1s infinite;
-  }
-
-  @keyframes ellipsis {
-    0% {
-      content: '.';
-    }
-    33% {
-      content: '..';
-    }
-    66% {
-      content: '...';
-    }
-  }
-`
-
 export const ProgressTopSection = styled.div`
   position: relative;
   width: 100%;
@@ -295,31 +286,29 @@ export const TokenWrapper = styled.div<{ position: 'left' | 'center' | 'right' }
 `
 
 export const CountdownWrapper = styled.div`
+  --size: 160px;
+  height: var(--size);
+  width: var(--size);
+  top: 0;
+  bottom: 0;
   margin: auto;
+  left: 40px;
+  background: #66d9ff;
+  border-radius: var(--size);
   position: absolute;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 71px;
-  width: 150px;
-  top: initial;
-  left: 0;
-  bottom: 52px;
-
-  ${Media.upToSmall()} {
-    background: #05a1ff;
-    bottom: 0;
-    border-top-right-radius: 16px;
-  }
 `
 
 export const CountdownText = styled.div`
   font-family: ${Font.familyMono};
-  font-size: 70px;
+  font-size: 68px;
   font-weight: bold;
   color: var(${UI.COLOR_BLUE});
   z-index: 1;
   font-variant-numeric: slashed-zero;
+  letter-spacing: -3px;
 `
 
 export const FinishedStepContainer = styled.div`
@@ -761,6 +750,7 @@ const getStatusColor = (status: string): string => {
     active: '#2196F3',
     error: '#F44336',
     cancelling: `var(${UI.COLOR_DANGER_BG})`,
+    unfillable: `var(${UI.COLOR_ALERT_TEXT})`,
   }
   return colorMap[status] || `var(${UI.COLOR_TEXT_PAPER})`
 }
@@ -901,4 +891,20 @@ export const BenefitTagLine = styled.div`
   padding: 2px 10px;
   background-color: #3fc4ff;
   color: #000000;
+`
+
+export const CircularProgress = styled.svg`
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  transform: rotate(-90deg);
+  padding: 8px;
+`
+
+export const CircleProgress = styled.circle`
+  fill: none;
+  stroke: #05a1ff;
+  stroke-width: 6;
+  stroke-linecap: round;
+  animation: ${progressAnimation} 15s linear infinite;
 `

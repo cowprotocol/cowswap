@@ -8,9 +8,7 @@ import PROGRESSBAR_COW_SURPLUS_4 from '@cowprotocol/assets/cow-swap/progressbar-
 import PROGRESS_BAR_GOOD_NEWS from '@cowprotocol/assets/cow-swap/progressbar-good-news.svg'
 import STEP_IMAGE_CANCELLED from '@cowprotocol/assets/cow-swap/progressbar-step-cancelled.svg'
 import STEP_IMAGE_EXPIRED from '@cowprotocol/assets/cow-swap/progressbar-step-expired.svg'
-import STEP_IMAGE_SOLVING_1 from '@cowprotocol/assets/cow-swap/progressbar-step-solving-1.svg'
-import STEP_IMAGE_SOLVING_2 from '@cowprotocol/assets/cow-swap/progressbar-step-solving-2.svg'
-import STEP_IMAGE_SOLVING_3 from '@cowprotocol/assets/cow-swap/progressbar-step-solving-3.svg'
+import STEP_IMAGE_SOLVING from '@cowprotocol/assets/cow-swap/progressbar-step-solving.svg'
 import STEP_IMAGE_UNFILLABLE from '@cowprotocol/assets/cow-swap/progressbar-step-unfillable.svg'
 import SWEAT_DROP from '@cowprotocol/assets/cow-swap/sweat-drop.svg'
 import ICON_SOCIAL_X from '@cowprotocol/assets/images/icon-social-x.svg'
@@ -99,10 +97,7 @@ const StepComponent: React.FC<{
       )}
     </styledEl.NumberedElement>
     <styledEl.Content>
-      <styledEl.Title customColor={customColor}>
-        {step.title}
-        {status === 'active' && <styledEl.LoadingEllipsis />}
-      </styledEl.Title>
+      <styledEl.Title customColor={customColor}>{step.title}</styledEl.Title>
       {extraContent}
     </styledEl.Content>
   </styledEl.Step>
@@ -146,20 +141,6 @@ const OrderIntent: React.FC<{ order?: Order }> = ({ order }) => {
   )
 }
 
-interface CountdownElProps {
-  countdown: number
-}
-
-const CountdownEl: React.FC<CountdownElProps> = ({ countdown }) => {
-  const formattedCountdown = countdown < 10 ? `0${countdown}` : `${countdown}`
-
-  return (
-    <styledEl.CountdownWrapper>
-      <styledEl.CountdownText>{formattedCountdown}s</styledEl.CountdownText>
-    </styledEl.CountdownWrapper>
-  )
-}
-
 const FINAL_STATES: OrderProgressBarStepName[] = ['expired', 'finished', 'cancelled', 'cancellationFailed']
 
 function formatDuration(milliseconds: number): string {
@@ -174,6 +155,41 @@ const trackLearnMoreClick = (stepName: string) => {
     action: 'Click Learn More',
     label: stepName,
   })
+}
+
+interface CircularCountdownProps {
+  countdown: number
+}
+
+const CircularCountdown: React.FC<CircularCountdownProps> = ({ countdown }) => {
+  const radius = 45
+  const circumference = 2 * Math.PI * radius
+
+  return (
+    <styledEl.CountdownWrapper>
+      <styledEl.CircularProgress viewBox="0 0 100 100">
+        <styledEl.CircleProgress cx="50" cy="50" r={radius} strokeDasharray={circumference} />
+      </styledEl.CircularProgress>
+      <styledEl.CountdownText>{countdown}</styledEl.CountdownText>
+    </styledEl.CountdownWrapper>
+  )
+}
+
+interface AnimatedStepTransitionProps {
+  currentStep: React.ReactNode
+  previousStep: React.ReactNode | null
+  direction: 'up' | 'down' | 'none'
+}
+
+export function AnimatedStepTransition({ currentStep, previousStep, direction }: AnimatedStepTransitionProps) {
+  return (
+    <styledEl.TransitionWrapper>
+      <styledEl.StepContainer direction={direction}>
+        {previousStep}
+        {currentStep}
+      </styledEl.StepContainer>
+    </styledEl.TransitionWrapper>
+  )
 }
 
 export function OrderProgressBarV2(props: OrderProgressBarV2Props) {
@@ -325,33 +341,12 @@ function InitialStep({ order }: OrderProgressBarV2Props) {
 }
 
 function SolvingStep({ order, countdown }: OrderProgressBarV2Props) {
-  const [currentFrame, setCurrentFrame] = useState(0)
-  const frames = [STEP_IMAGE_SOLVING_1, STEP_IMAGE_SOLVING_2, STEP_IMAGE_SOLVING_3]
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentFrame((prevFrame) => (prevFrame + 1) % frames.length)
-    }, 250)
-
-    return () => clearInterval(interval)
-  }, [frames.length])
-
   return (
     <styledEl.ProgressContainer>
       <styledEl.ProgressTopSection>
-        <styledEl.ProgressImageWrapper height={'auto'}>
-          <img
-            src={frames[currentFrame]}
-            alt="Solving animation"
-            style={{
-              width: '100%',
-              height: '100%',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-          />
-          <CountdownEl countdown={countdown || 0} />
+        <styledEl.ProgressImageWrapper bgColor={'#65D9FF'} padding={'24px'}>
+          <SVG src={STEP_IMAGE_SOLVING} />
+          <CircularCountdown countdown={countdown || 0} />
         </styledEl.ProgressImageWrapper>
         <OrderIntent order={order} />
       </styledEl.ProgressTopSection>
@@ -814,17 +809,6 @@ function NextBatchStep({ solverCompetition, order }: OrderProgressBarV2Props) {
 }
 
 function DelayedStep({ order, showCancellationModal }: OrderProgressBarV2Props) {
-  const [currentFrame, setCurrentFrame] = useState(0)
-  const frames = [STEP_IMAGE_SOLVING_1, STEP_IMAGE_SOLVING_2, STEP_IMAGE_SOLVING_3]
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentFrame((prevFrame) => (prevFrame + 1) % frames.length)
-    }, 150)
-
-    return () => clearInterval(interval)
-  }, [frames.length])
-
   const trackCancelClick = () => {
     cowAnalytics.sendEvent({
       category: Category.PROGRESS_BAR,
@@ -840,17 +824,6 @@ function DelayedStep({ order, showCancellationModal }: OrderProgressBarV2Props) 
           <styledEl.SweatDrop>
             <SVG src={SWEAT_DROP} />
           </styledEl.SweatDrop>
-          <img
-            src={frames[currentFrame]}
-            alt="Solving animation"
-            style={{
-              width: '100%',
-              height: '100%',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-          />
         </styledEl.ProgressImageWrapper>
         <OrderIntent order={order} />
       </styledEl.ProgressTopSection>
@@ -899,7 +872,7 @@ function UnfillableStep({ order, showCancellationModal }: OrderProgressBarV2Prop
   return (
     <styledEl.ProgressContainer>
       <styledEl.ProgressTopSection>
-        <styledEl.ProgressImageWrapper height={'auto'}>
+        <styledEl.ProgressImageWrapper bgColor={'#FFDB9C'} padding={'20px 0 0'}>
           <img src={STEP_IMAGE_UNFILLABLE} alt="Order out of market" />
         </styledEl.ProgressImageWrapper>
         <OrderIntent order={order} />
@@ -1024,7 +997,9 @@ function CancelledStep({ order }: OrderProgressBarV2Props) {
         <OrderIntent order={order} />
       </styledEl.ProgressTopSection>
       <styledEl.ConclusionContent>
-        <styledEl.TransactionStatus flexFlow="column">Your order was cancelled</styledEl.TransactionStatus>
+        <styledEl.TransactionStatus status={'expired'} flexFlow="column" margin={'14px auto 24px'}>
+          Your order was cancelled
+        </styledEl.TransactionStatus>
       </styledEl.ConclusionContent>
 
       <styledEl.Description center margin="10px auto 40px">
