@@ -4,44 +4,67 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useOrder } from 'legacy/state/orders/hooks'
 
-import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
 import { CowModal } from 'common/pure/Modal'
-import * as styledEl from 'common/pure/TransactionSubmittedContent/styled'
-import { SurplusModal } from 'common/pure/TransactionSubmittedContent/SurplusModal'
+import { TransactionSubmittedContent } from 'common/pure/TransactionSubmittedContent'
 
+import { useTradeConfirmState } from '../../../trade'
 import { useOrderIdForSurplusModal, useRemoveOrderFromSurplusQueue } from '../../state/surplusModal'
+import { useNavigateToNewOrderCallback, useSetupAdditionalProgressBarProps } from '../ConfirmSwapModalSetup'
 
+// TODO: rename?
 export function SurplusModalSetup() {
   const orderId = useOrderIdForSurplusModal()
   const removeOrderId = useRemoveOrderFromSurplusQueue()
 
   const { chainId } = useWalletInfo()
   const order = useOrder({ id: orderId, chainId })
-  const { showSurplus } = useGetSurplusData(order)
+
+  const progressBarV2Props = useSetupAdditionalProgressBarProps(chainId, order)
+  const { isProgressBarSetup, activityDerivedState } = progressBarV2Props
+
+  const { isOpen: isConfirmationModalOpen, transactionHash } = useTradeConfirmState()
 
   const onDismiss = useCallback(() => {
     orderId && removeOrderId(orderId)
   }, [orderId, removeOrderId])
 
+  const navigateToNewOrderCallback = useNavigateToNewOrderCallback()
+
+  const isOpen =
+    !!orderId &&
+    // Open when confirmation modal is closed OR the order we are trying to show is not the one in display
+    (!isConfirmationModalOpen || (!!transactionHash && transactionHash !== orderId)) &&
+    // Open when the progress bar is active
+    isProgressBarSetup
+
   useEffect(() => {
-    // If we should NOT show the surplus, remove the orderId from the queue
-    if (showSurplus === false && orderId) {
+    // If we should NOT show the screen, remove the orderId from the queue
+    if (
+      orderId &&
+      // Don't remove it while the modal is open
+      !isOpen &&
+      // Remove when the confirmation is open and the current order is already in display
+      isConfirmationModalOpen &&
+      transactionHash === orderId
+    ) {
       removeOrderId(orderId)
     }
-  }, [orderId, removeOrderId, showSurplus])
+  }, [orderId, isOpen, order?.status, removeOrderId, isConfirmationModalOpen])
 
-  const isOpen = !!orderId && showSurplus === true
+  if (!orderId) {
+    return null
+  }
 
   return (
     <CowModal isOpen={isOpen} onDismiss={onDismiss} maxHeight={90} maxWidth={470}>
-      <styledEl.Wrapper>
-        <styledEl.Section>
-          <styledEl.Header>
-            <styledEl.CloseIconWrapper onClick={onDismiss} />
-          </styledEl.Header>
-          <SurplusModal order={order} />
-        </styledEl.Section>
-      </styledEl.Wrapper>
+      <TransactionSubmittedContent
+        onDismiss={onDismiss}
+        chainId={chainId}
+        hash={orderId}
+        activityDerivedState={activityDerivedState}
+        orderProgressBarV2Props={progressBarV2Props}
+        navigateToNewOrderCallback={navigateToNewOrderCallback}
+      />
     </CowModal>
   )
 }

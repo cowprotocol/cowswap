@@ -82,6 +82,10 @@ export const Header = styled.div`
   width: 100%;
   padding: 16px 0;
   z-index: 20;
+
+  ${Media.upToSmall()} {
+    background: var(${UI.COLOR_PAPER});
+  }
 `
 
 export const ActionsWrapper = styled.div`
@@ -113,6 +117,10 @@ export const Section = styled.div`
   justify-content: flex-start;
   display: flex;
   flex-flow: column wrap;
+
+  ${Media.upToSmall()} {
+    padding: 0 16px 78px;
+  }
 
   ${TransactionInnerDetail} {
     margin: 0 auto;

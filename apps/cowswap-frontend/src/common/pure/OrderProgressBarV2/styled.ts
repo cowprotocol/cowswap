@@ -393,6 +393,7 @@ export const CowImage = styled.div`
     width: 100%;
     align-items: center;
     justify-content: center;
+    max-height: 100%;
   }
 
   > svg {
@@ -413,10 +414,6 @@ export const TokenPairTitle = styled.span`
   padding: 0 6px;
   word-break: break-word;
   line-height: 1;
-
-  ${Media.upToSmall()} {
-    display: none;
-  }
 `
 
 export const TokenImages = styled.div`
@@ -463,6 +460,7 @@ export const FinishedTagLine = styled.div`
 
   ${Media.upToSmall()} {
     flex: 0 0 auto;
+    height: auto;
   }
 `
 
@@ -863,6 +861,7 @@ export const FinishedImageContent = styled.div`
 
   ${Media.upToSmall()} {
     width: 100%;
+    max-height: 290px;
   }
 `
 
