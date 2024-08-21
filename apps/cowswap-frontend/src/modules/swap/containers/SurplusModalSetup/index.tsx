@@ -56,7 +56,7 @@ export function SurplusModalSetup() {
   }
 
   return (
-    <CowModal isOpen={isOpen} onDismiss={onDismiss} maxHeight={90} maxWidth={470}>
+    <CowModal isOpen={isOpen} onDismiss={onDismiss} maxHeight={90} id="surplus-modal">
       <TransactionSubmittedContent
         onDismiss={onDismiss}
         chainId={chainId}

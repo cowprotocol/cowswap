@@ -4,10 +4,10 @@ import { useLayoutEffect, useRef } from 'react'
 import { MEDIA_WIDTHS } from '@cowprotocol/ui'
 import { WidgetMethodsEmit, postMessageToWindow } from '@cowprotocol/widget-lib'
 
-import { openModalState } from 'common/state/openModalState'
+import { openModalAtom } from 'common/state/openModalState'
 
 export function IframeResizer() {
-  const isModalOpen = useAtomValue(openModalState)
+  const isModalOpen = useAtomValue(openModalAtom)
   const previousHeightRef = useRef(0)
 
   useLayoutEffect(() => {

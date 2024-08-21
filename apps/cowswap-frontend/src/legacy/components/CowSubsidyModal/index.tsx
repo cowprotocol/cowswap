@@ -67,7 +67,14 @@ export default function CowSubsidyModal({
 
   // TODO: use TradeConfirmModal
   return (
-    <CowModal isOpen={isOpen} onDismiss={onDismiss} maxHeight={90} maxWidth={500} padding={'12px 0 18px'}>
+    <CowModal
+      isOpen={isOpen}
+      onDismiss={onDismiss}
+      maxHeight={90}
+      maxWidth={500}
+      padding={'12px 0 18px'}
+      id="cow-subsidy-modal"
+    >
       <LegacyConfirmationModalContent
         {...restProps}
         title="CoWmunity fees discount"

@@ -15,16 +15,19 @@ export default function useTransactionErrorModal() {
 
   const TransactionErrorModal = useCallback(
     ({ message, onDismiss }: { message?: string; onDismiss: Command }) => (
-      <CowModal isOpen={!!message && showTransactionErrorModal} onDismiss={closeModal}>
+      <CowModal isOpen={!!message && showTransactionErrorModal} onDismiss={closeModal} id="transaction-error-modal">
         <TransactionErrorContent modalMode onDismiss={onDismiss} message={message || ''} />
       </CowModal>
     ),
     [closeModal, showTransactionErrorModal]
   )
 
-  return useMemo(() => ({
-    openModal,
-    closeModal,
-    TransactionErrorModal,
-  }), [openModal, closeModal, TransactionErrorModal])
+  return useMemo(
+    () => ({
+      openModal,
+      closeModal,
+      TransactionErrorModal,
+    }),
+    [openModal, closeModal, TransactionErrorModal]
+  )
 }

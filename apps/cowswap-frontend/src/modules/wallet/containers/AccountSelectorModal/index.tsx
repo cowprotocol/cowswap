@@ -83,7 +83,14 @@ export function AccountSelectorModal() {
   if (!accountsList || !accountsLoader) return null
 
   return (
-    <CowModal maxWidth={600} isOpen={isOpen} onDismiss={closeModal} minHeight={false} maxHeight={90}>
+    <CowModal
+      maxWidth={600}
+      isOpen={isOpen}
+      onDismiss={closeModal}
+      minHeight={false}
+      maxHeight={90}
+      id="account-selector-modal"
+    >
       <styledEl.Wrapper>
         <styledEl.Header>
           <h3>

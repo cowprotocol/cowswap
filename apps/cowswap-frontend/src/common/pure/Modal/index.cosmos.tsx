@@ -10,21 +10,27 @@ const Wrapper = styled.div`
 const ModalFixtures = {
   'default modal': (
     <Wrapper>
-      <Modal isOpen={true} onDismiss={() => console.log('Dismissed')}>
+      <Modal isOpen={true} onDismiss={() => console.log('Dismissed')} id="default-modal">
         Default modal content here
       </Modal>
     </Wrapper>
   ),
   'modal with minHeight and maxHeight': (
     <Wrapper>
-      <Modal isOpen={true} onDismiss={() => console.log('Dismissed')} minHeight={50} maxHeight={80}>
+      <Modal
+        isOpen={true}
+        onDismiss={() => console.log('Dismissed')}
+        minHeight={50}
+        maxHeight={80}
+        id="modal-with-min-and-max-height"
+      >
         Modal with minHeight and maxHeight
       </Modal>
     </Wrapper>
   ),
   'cow modal': (
     <Wrapper>
-      <CowModal isOpen={true} onDismiss={() => console.log('Cow Modal Dismissed')} maxWidth={400}>
+      <CowModal isOpen={true} onDismiss={() => console.log('Cow Modal Dismissed')} maxWidth={400} id="cow-modal">
         Cow Modal Content
       </CowModal>
     </Wrapper>
@@ -36,6 +42,7 @@ const ModalFixtures = {
         onDismiss={() => console.log('Cow Modal Dismissed')}
         maxWidth={400}
         backgroundColor="pink"
+        id="cow-modal-with-background-color"
       >
         Cow Modal with Pink Background
       </CowModal>

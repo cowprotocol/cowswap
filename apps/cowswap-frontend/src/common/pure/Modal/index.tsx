@@ -1,4 +1,4 @@
-import { useSetAtom } from 'jotai'
+import { useAtom } from 'jotai'
 import React, { useCallback, useEffect } from 'react'
 
 import { isMobile } from '@cowprotocol/common-utils'
@@ -11,9 +11,10 @@ import styled from 'styled-components/macro'
 
 import { ContentWrapper, HeaderRow, HoverText, StyledDialogContent, StyledDialogOverlay } from './styled'
 
-import { openModalState } from '../../state/openModalState'
+import { openModalAtom, closeModalAtom, getModalStateAtom } from '../../state/openModalState'
 
 export * from './styled'
+
 interface ModalProps {
   isOpen: boolean
   onDismiss: Command
@@ -22,6 +23,11 @@ interface ModalProps {
   initialFocusRef?: React.RefObject<any>
   className?: string
   children?: React.ReactNode
+  id: string
+  maxWidth?: number | string
+  backgroundColor?: string
+  border?: string
+  padding?: string
 }
 
 /**
@@ -35,8 +41,16 @@ export function Modal({
   initialFocusRef,
   className,
   children,
+  id,
+  maxWidth,
+  backgroundColor,
+  border,
+  padding,
 }: ModalProps) {
-  const setOpenModal = useSetAtom(openModalState)
+  const [, openModal] = useAtom(openModalAtom)
+  const [, closeModal] = useAtom(closeModalAtom)
+  const [getModalState] = useAtom(getModalStateAtom)
+
   const fadeTransition = useTransition(isOpen, {
     config: { duration: 200 },
     from: { opacity: 0 },
@@ -56,12 +70,16 @@ export function Modal({
 
   const onDismissCallback = useCallback(() => {
     onDismiss()
-    setOpenModal(false)
-  }, [onDismiss, setOpenModal])
+    closeModal(id)
+  }, [onDismiss, closeModal, id])
 
   useEffect(() => {
-    setOpenModal(isOpen)
-  }, [isOpen, setOpenModal])
+    if (isOpen) {
+      openModal(id)
+    }
+  }, [isOpen, openModal, id])
+
+  const { zIndex } = getModalState(id)
 
   return (
     <>
@@ -70,7 +88,14 @@ export function Modal({
           item && (
             <StyledDialogOverlay
               className={className}
-              style={props}
+              style={{
+                ...props,
+                zIndex,
+                maxWidth,
+                backgroundColor,
+                border,
+                padding,
+              }}
               onDismiss={onDismissCallback}
               initialFocusRef={initialFocusRef}
               dangerouslyBypassFocusLock={true}
@@ -86,8 +111,11 @@ export function Modal({
                 $minHeight={minHeight}
                 $maxHeight={maxHeight}
                 $mobile={isMobile}
+                $maxWidth={maxWidth}
+                $backgroundColor={backgroundColor}
+                $border={border}
+                $padding={padding}
               >
-                {/* prevents the automatic focusing of inputs on mobile by the reach dialog */}
                 {!initialFocusRef && isMobile ? <div tabIndex={1} /> : null}
                 {children}
               </StyledDialogContent>
@@ -99,25 +127,17 @@ export function Modal({
   )
 }
 
-export const CowModal = styled(Modal)<{
-  maxWidth?: number | string
-  backgroundColor?: string
-  border?: string
-  padding?: string
-}>`
+export const CowModal = styled(Modal).attrs<ModalProps>((props) => ({
+  id: props.id || `modal-${Math.random().toString(36).substr(2, 9)}`,
+}))`
   border-radius: var(${UI.BORDER_RADIUS_NORMAL});
   color: var(${UI.COLOR_TEXT_PAPER});
 
   > [data-reach-dialog-content] {
     color: inherit;
     width: 100%;
-    max-width: ${({ maxWidth = 500 }) => `${maxWidth}px`};
-    border: ${({ border = 'inherit' }) => `${border}`};
-    z-index: 100;
-    padding: ${({ padding = '0px' }) => `${padding}`};
     margin: auto;
     transition: max-width 0.4s ease;
-    background-color: var(${UI.COLOR_PAPER});
     overflow: hidden;
     border-radius: var(${UI.BORDER_RADIUS_NORMAL});
 

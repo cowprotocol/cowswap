@@ -35,7 +35,7 @@ const Host = styled.div<{ hidden$: boolean }>`
   position: fixed;
   top: 80px;
   right: ${({ hidden$ }) => (hidden$ ? '-9999px' : '20px')};
-  z-index: 6;
+  z-index: 10;
   min-width: 300px;
   max-width: 800px;
 

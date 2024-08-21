@@ -108,7 +108,7 @@ function Custom() {
   return (
     <>
       {opened ? (
-        <CowModal isOpen onDismiss={onDismiss}>
+        <CowModal isOpen onDismiss={onDismiss} id="eth-flow-modal">
           <Wrapper>
             <EthFlowModalContent {...modalProps} />
           </Wrapper>
