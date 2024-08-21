@@ -26,7 +26,7 @@ import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { Command } from '@cowprotocol/types'
-import { ExternalLink, HoverTooltip, ProductLogo, ProductVariant, TokenAmount, UI } from '@cowprotocol/ui'
+import { ExternalLink, InfoTooltip, ProductLogo, ProductVariant, TokenAmount, UI } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import Lottie from 'lottie-react'
@@ -734,13 +734,10 @@ function FinishedStep({
                             height="24"
                           />
                         </styledEl.SolverLogo>
-                        {solver.description ? (
-                          <HoverTooltip content={solver.description}>
-                            <styledEl.SolverName>{solver.displayName || solver.solver}</styledEl.SolverName>
-                          </HoverTooltip>
-                        ) : (
-                          <styledEl.SolverName>{solver.displayName || solver.solver}</styledEl.SolverName>
-                        )}
+                        <styledEl.SolverName>
+                          {solver.displayName || solver.solver}
+                          {solver.description && <span><InfoTooltip content={solver.description} /></span>}
+                        </styledEl.SolverName>
                       </styledEl.SolverInfo>
                     </styledEl.SolverTableCell>
                     <styledEl.SolverTableCell>
