@@ -247,7 +247,7 @@ export const TokenWrapper = styled.div<{ position: 'left' | 'center' | 'right' }
   animation: ${({ position }) => (position === 'left' ? 'appear-left' : position === 'right' ? 'appear-right' : 'none')}
     2.5s cubic-bezier(0.19, 1, 0.22, 1) forwards;
   animation-delay: ${({ position }) => (position === 'center' ? '0s' : '0.75s')};
-  border: ${({ position }) => (position === 'right' ? `8px solid ${BLUE_COLOR}` : '0')};
+  border: ${({ position }) => (position === 'right' || 'center' ? `8px solid ${BLUE_COLOR}` : '0')};
   box-sizing: content-box;
   background: ${({ position }) => (position === 'right' ? `var(${UI.COLOR_PRIMARY})` : 'transparent')};
 
