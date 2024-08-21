@@ -559,10 +559,12 @@ export const SolverRankings = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
+  margin: 52px auto 0;
 
   > h3 {
+    font-size: 17px;
     font-weight: 600;
-    margin: 20px auto 0;
+    margin: 0;
   }
 
   > p {
@@ -684,9 +686,9 @@ export const ReceivedAmount = styled.span`
   justify-content: center;
   width: 100%;
   gap: 4px;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: normal;
-  margin: 20px auto 0;
+  margin: 0 auto 10px;
   color: var(${UI.COLOR_TEXT_OPACITY_70});
 
   > b {
@@ -694,14 +696,16 @@ export const ReceivedAmount = styled.span`
   }
 `
 
+export const SoldAmount = styled(ReceivedAmount)``
+
 export const ExtraAmount = styled.p`
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
   color: var(${UI.COLOR_TEXT_OPACITY_70});
-  font-size: 14px;
-  margin: 4px auto 0;
+  font-size: 15px;
+  margin: 0 auto;
   gap: 4px;
 
   > i {
