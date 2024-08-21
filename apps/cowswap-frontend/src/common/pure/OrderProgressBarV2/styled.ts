@@ -53,36 +53,6 @@ const getOpacity = (status: string, isDarkMode: boolean): number => {
   return opacityMap[status as keyof typeof opacityMap] || 1
 }
 
-const getStatusColor = (status: string): string => {
-  const colorMap: Record<string, string> = {
-    done: '#4CAF50',
-    active: '#2196F3',
-    error: '#F44336',
-  }
-  return colorMap[status] || 'currentColor'
-}
-
-export const Icon = styled.div<{ status: string; customColor?: string }>`
-  --width: 28px;
-  width: var(--width);
-  height: auto;
-  min-width: var(--width);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-right: 15px;
-  color: ${({ customColor }) => customColor || `var(${UI.COLOR_PRIMARY_LIGHTER})`};
-  font-weight: bold;
-  font-size: 24px;
-
-  > svg {
-    color: ${({ status }) => getStatusColor(status)};
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-  }
-`
-
 export const ProgressContainer = styled.div`
   width: 100%;
   display: flex;
@@ -785,24 +755,51 @@ export const CancellationFailedBanner = styled.div`
   font-size: 15px;
 `
 
-const spinAnimation = keyframes`
-  from {
-    transform: rotate(0deg);
+const getStatusColor = (status: string): string => {
+  const colorMap: Record<string, string> = {
+    done: '#4CAF50',
+    active: '#2196F3',
+    error: '#F44336',
+    cancelling: `var(${UI.COLOR_DANGER_BG})`,
   }
-  to {
-    transform: rotate(360deg);
-  }
+  return colorMap[status] || `var(${UI.COLOR_TEXT_PAPER})`
+}
+
+export const NumberedElement = styled.div<{ status: string; customColor?: string }>`
+  --size: 28px;
+  width: var(--size);
+  height: var(--size);
+  min-width: var(--size);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 15px;
+  color: ${({ status }) => (status === 'active' ? `var(${UI.COLOR_PAPER})` : `var(${UI.COLOR_PAPER})`)};
+  font-weight: bold;
+  font-size: 16px;
+  background-color: ${({ status }) => getStatusColor(status)};
+  border-radius: 50%;
+  position: relative;
 `
 
-export const SpinnerIcon = styled.div`
-  width: var(--width);
-  height: var(--width);
-  animation: ${spinAnimation} 1s linear infinite;
+export const Spinner = styled.div`
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  right: -4px;
+  bottom: -4px;
+  border: 2px solid transparent;
+  border-top-color: ${`var(${UI.COLOR_PRIMARY_LIGHTER})`};
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
 
-  > svg {
-    width: 100%;
-    height: 100%;
-    color: inherit;
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
   }
 `
 

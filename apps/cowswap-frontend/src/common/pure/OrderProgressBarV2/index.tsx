@@ -17,28 +17,20 @@ import ICON_SOCIAL_X from '@cowprotocol/assets/images/icon-social-x.svg'
 import LOTTIE_GREEN_CHECKMARK_DARK from '@cowprotocol/assets/lottie/green-checkmark-dark.json'
 import LOTTIE_GREEN_CHECKMARK from '@cowprotocol/assets/lottie/green-checkmark.json'
 import STEP_LOTTIE_EXECUTING from '@cowprotocol/assets/lottie/progressbar-step-executing.json'
-import STEP_LOTTIE_INITIAL from '@cowprotocol/assets/lottie/progressbar-step-initial.json'
 import STEP_LOTTIE_NEXTBATCH from '@cowprotocol/assets/lottie/progressbar-step-nextbatch.json'
 import LOTTIE_RED_CROSS from '@cowprotocol/assets/lottie/red-cross.json'
 import LOTTIE_TIME_EXPIRED_DARK from '@cowprotocol/assets/lottie/time-expired-dark.json'
+import { TokenWithLogo } from '@cowprotocol/common-const'
 import { ExplorerDataType, getExplorerLink, getRandomInt, isSellOrder, shortenAddress } from '@cowprotocol/common-utils'
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { Command } from '@cowprotocol/types'
 import { ExternalLink, ProductLogo, ProductVariant, TokenAmount, UI } from '@cowprotocol/ui'
-import { CurrencyAmount } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import Lottie from 'lottie-react'
-import { MdOutlineMotionPhotosPause } from 'react-icons/md'
-import {
-  PiCaretDown,
-  PiCaretUp,
-  PiCheckCircleFill,
-  PiDotsThreeCircle,
-  PiSpinnerBallFill,
-  PiTrophyFill,
-} from 'react-icons/pi'
+import { PiCaretDown, PiCaretUp, PiTrophyFill } from 'react-icons/pi'
 import SVG from 'react-inlinesvg'
 import { Textfit } from 'react-textfit'
 
@@ -53,7 +45,7 @@ import { SurplusData } from 'common/hooks/useGetSurplusFiatValue'
 import { getIsCustomRecipient } from 'utils/orderUtils/getIsCustomRecipient'
 
 import * as styledEl from './styled'
-const IS_DEBUG_MODE = false
+const IS_DEBUG_MODE = true
 const DEBUG_FORCE_SHOW_SURPLUS = false
 
 export type OrderProgressBarV2Props = {
@@ -82,7 +74,6 @@ const STEPS = [
   { title: 'Executing', description: 'The winning solver will execute your order.' },
 ]
 
-// TODO: move to another file?
 const StepComponent: React.FC<{
   status: string
   isFirst: boolean
@@ -90,11 +81,23 @@ const StepComponent: React.FC<{
   _index: number
   extraContent?: React.ReactNode
   customColor?: string
-}> = ({ status, isFirst, step, extraContent, customColor }) => (
+}> = ({ status, isFirst, step, _index, extraContent, customColor }) => (
   <styledEl.Step status={status} isFirst={isFirst}>
-    <styledEl.Icon status={status} customColor={customColor}>
-      <StatusIcon status={status} customColor={customColor} />
-    </styledEl.Icon>
+    <styledEl.NumberedElement status={status} customColor={customColor}>
+      {status === 'cancelling' ? (
+        <Lottie
+          animationData={LOTTIE_RED_CROSS}
+          loop={true}
+          autoplay={true}
+          style={{ width: '24px', height: '24px' }}
+        />
+      ) : (
+        <>
+          {_index + 1}
+          {status === 'active' && <styledEl.Spinner />}
+        </>
+      )}
+    </styledEl.NumberedElement>
     <styledEl.Content>
       <styledEl.Title customColor={customColor}>
         {step.title}
@@ -104,36 +107,6 @@ const StepComponent: React.FC<{
     </styledEl.Content>
   </styledEl.Step>
 )
-
-const StatusIcon: React.FC<{ status: string; customColor?: string }> = ({ status, customColor }) => {
-  const isDarkMode = useIsDarkMode()
-  const iconColor = customColor || (status === 'done' ? 'green' : 'inherit')
-
-  switch (status) {
-    case 'done':
-      return <PiCheckCircleFill color={iconColor} />
-    case 'active':
-      return (
-        <styledEl.SpinnerIcon>
-          <PiSpinnerBallFill color={iconColor} />
-        </styledEl.SpinnerIcon>
-      )
-    case 'error':
-    case 'unfillable':
-      return <MdOutlineMotionPhotosPause color={iconColor} />
-    case 'cancelling':
-      return (
-        <Lottie
-          animationData={isDarkMode ? LOTTIE_RED_CROSS : LOTTIE_RED_CROSS}
-          loop={true}
-          autoplay={true}
-          style={{ width: '24px', height: '24px' }}
-        />
-      )
-    default:
-      return <PiDotsThreeCircle color={iconColor} />
-  }
-}
 
 const OrderIntent: React.FC<{ order?: Order }> = ({ order }) => {
   if (!order) return null
@@ -290,17 +263,29 @@ export function OrderProgressBarV2(props: OrderProgressBarV2Props) {
   )
 }
 
+const AnimatedTokens: React.FC<{
+  sellToken: Currency | TokenWithLogo | null | undefined
+  buyToken: Currency | TokenWithLogo | null | undefined
+}> = ({ sellToken, buyToken }) => (
+  <styledEl.AnimatedTokensWrapper>
+    <styledEl.TokenWrapper position="left">
+      <TokenLogo token={sellToken} size={136} />
+    </styledEl.TokenWrapper>
+    <styledEl.TokenWrapper position="center">
+      <TokenLogo token={buyToken} size={136} />
+    </styledEl.TokenWrapper>
+    <styledEl.TokenWrapper position="right">
+      <ProductLogo variant={ProductVariant.CowSwap} theme={'dark'} height={136} logoIconOnly />
+    </styledEl.TokenWrapper>
+  </styledEl.AnimatedTokensWrapper>
+)
+
 function InitialStep({ order }: OrderProgressBarV2Props) {
   return (
     <styledEl.ProgressContainer>
       <styledEl.ProgressTopSection>
-        <styledEl.ProgressImageWrapper bgColor={'#65D9FF'} height={'auto'}>
-          <Lottie
-            animationData={STEP_LOTTIE_INITIAL}
-            loop={true}
-            autoplay={true}
-            style={{ width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
-          />
+        <styledEl.ProgressImageWrapper bgColor={'#65D9FF'}>
+          <AnimatedTokens sellToken={order?.inputToken} buyToken={order?.outputToken} />
         </styledEl.ProgressImageWrapper>
         <OrderIntent order={order} />
       </styledEl.ProgressTopSection>
@@ -334,7 +319,6 @@ function InitialStep({ order }: OrderProgressBarV2Props) {
             </styledEl.Description>
           }
         />
-        <StepComponent status="future" isFirst={false} step={STEPS[2]} _index={2} />
       </styledEl.StepsWrapper>
     </styledEl.ProgressContainer>
   )
@@ -372,7 +356,6 @@ function SolvingStep({ order, countdown }: OrderProgressBarV2Props) {
         <OrderIntent order={order} />
       </styledEl.ProgressTopSection>
       <styledEl.StepsWrapper>
-        <StepComponent status="done" isFirst={false} step={STEPS[0]} _index={0} />
         <StepComponent
           status="active"
           isFirst={false}
@@ -421,7 +404,6 @@ function ExecutingStep({ solverCompetition, order }: OrderProgressBarV2Props) {
         <OrderIntent order={order} />
       </styledEl.ProgressTopSection>
       <styledEl.StepsWrapper>
-        <StepComponent status="done" isFirst={false} step={{ ...STEPS[0], title: 'Solved' }} _index={0} />
         <StepComponent
           status="active"
           isFirst={false}
@@ -794,7 +776,6 @@ function NextBatchStep({ solverCompetition, order }: OrderProgressBarV2Props) {
         <OrderIntent order={order} />
       </styledEl.ProgressTopSection>
       <styledEl.StepsWrapper>
-        <StepComponent status="done" isFirst={false} step={STEPS[0]} _index={0} />
         <StepComponent
           status="active"
           isFirst={false}
@@ -874,7 +855,6 @@ function DelayedStep({ order, showCancellationModal }: OrderProgressBarV2Props) 
         <OrderIntent order={order} />
       </styledEl.ProgressTopSection>
       <styledEl.StepsWrapper>
-        <StepComponent status="done" isFirst={false} step={STEPS[0]} _index={0} />
         <StepComponent
           status="active"
           isFirst={false}
@@ -925,7 +905,6 @@ function UnfillableStep({ order, showCancellationModal }: OrderProgressBarV2Prop
         <OrderIntent order={order} />
       </styledEl.ProgressTopSection>
       <styledEl.StepsWrapper>
-        <StepComponent status="done" isFirst={false} step={STEPS[0]} _index={0} />
         <StepComponent
           status="unfillable"
           isFirst={false}
@@ -979,7 +958,6 @@ function SubmissionFailedStep({ order }: OrderProgressBarV2Props) {
         <OrderIntent order={order} />
       </styledEl.ProgressTopSection>
       <styledEl.StepsWrapper>
-        <StepComponent status="done" isFirst={false} step={STEPS[0]} _index={0} />
         <StepComponent
           status="active"
           isFirst={false}
