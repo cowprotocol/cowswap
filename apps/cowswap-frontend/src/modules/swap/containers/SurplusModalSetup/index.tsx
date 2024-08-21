@@ -49,7 +49,7 @@ export function SurplusModalSetup() {
     ) {
       removeOrderId(orderId)
     }
-  }, [orderId, isOpen, order?.status, removeOrderId, isConfirmationModalOpen])
+  }, [orderId, transactionHash, isOpen, order?.status, removeOrderId, isConfirmationModalOpen])
 
   if (!orderId) {
     return null
