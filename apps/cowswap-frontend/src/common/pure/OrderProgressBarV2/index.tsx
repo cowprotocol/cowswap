@@ -349,7 +349,13 @@ const AnimatedTokens: React.FC<{
       <TokenLogo token={buyToken} size={136} />
     </styledEl.TokenWrapper>
     <styledEl.TokenWrapper position="right" bgColor={'#012F7A'}>
-      <ProductLogo variant={ProductVariant.CowSwap} theme={'dark'} height={136} logoIconOnly />
+      <ProductLogo
+        variant={ProductVariant.CowSwap}
+        theme={'dark'}
+        overrideHoverColor={'#65D9FF'}
+        height={136}
+        logoIconOnly
+      />
     </styledEl.TokenWrapper>
   </styledEl.AnimatedTokensWrapper>
 )
@@ -843,7 +849,7 @@ function FinishedStep({
           </styledEl.ExtraAmount>
         ) : null}
 
-        {solvers?.length > 0 && (
+        {solvers && solvers.length > 0 && (
           <styledEl.SolverRankings>
             <h3>Solver auction rankings</h3>
             {solvers.length > 1 && (
