@@ -7,26 +7,6 @@ import { CancelButton as CancelButtonOriginal } from '../CancelButton'
 
 const BLUE_COLOR = '#65d9ff'
 
-const slideAnimation = (direction: 'up' | 'down', status: string, isDarkMode: boolean) => keyframes`
-  from {
-    transform: translateY(${direction === 'up' ? '20px' : '-20px'}); 
-    opacity: 0; 
-  }
-  to { 
-    transform: translateY(0); 
-    opacity: ${getOpacity(status, isDarkMode)}; 
-  }
-`
-
-const animationMixin = css<{ status: string }>`
-  animation: ${({ status, theme }) => {
-      if (status === 'done') return slideAnimation('up', status, theme.darkMode)
-      if (status === 'active') return slideAnimation('down', status, theme.darkMode)
-      return 'none'
-    }}
-    1s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
-`
-
 const progressAnimation = keyframes`
   0% {
     stroke-dashoffset: 0;
@@ -71,14 +51,34 @@ export const ProgressContainer = styled.div`
   padding: 0 0 24px;
 `
 
-export const StepsWrapper = styled.div`
-  overflow: hidden;
-  display: flex;
-  flex-flow: column wrap;
-  padding: 30px 30px 0;
-  gap: 28px;
+export const StepsContainer = styled.div<{ $height: number }>`
+  height: ${({ $height }) => `${$height}px`};
   width: 100%;
-  margin: 0 auto;
+  overflow: hidden;
+  position: relative;
+  transition: height 0.15s ease-in-out;
+  padding: 0;
+  min-height: 166px;
+  position: relative;
+
+  // implement a gradient to hide the bottom of the steps container using white to opacity white using pseudo element
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 70px;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
+  }
+`
+
+export const StepsWrapper = styled.div`
+  display: flex;
+  flex-flow: column nowrap;
+  padding: 0;
+  width: 100%;
+  transition: transform 1s ease-in-out;
 
   ${Media.upToSmall()} {
     padding: 30px 0 0;
@@ -88,10 +88,10 @@ export const StepsWrapper = styled.div`
 export const Step = styled.div<{ status: string; isFirst: boolean }>`
   display: flex;
   align-items: flex-start;
-  margin: 0;
+  margin: 0 auto;
+  width: 100%;
+  padding: 30px 30px 10px;
   opacity: ${({ status, theme }) => getOpacity(status, theme.darkMode)};
-  transition: opacity 0.35s cubic-bezier(0.19, 1, 0.22, 1);
-  ${animationMixin}
 `
 
 export const Content = styled.div`
@@ -199,6 +199,7 @@ export const ProgressTopSection = styled.div`
   align-items: center;
   border-radius: 21px;
   background: var(${UI.COLOR_PAPER_DARKER});
+  min-height: 230px;
 `
 
 export const OriginalOrderIntent = styled.span`
