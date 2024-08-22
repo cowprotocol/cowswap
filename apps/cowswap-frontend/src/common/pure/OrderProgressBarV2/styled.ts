@@ -79,10 +79,6 @@ export const StepsWrapper = styled.div`
   padding: 0;
   width: 100%;
   transition: transform 1s ease-in-out;
-
-  ${Media.upToSmall()} {
-    padding: 30px 0 0;
-  }
 `
 
 export const Step = styled.div<{ status: string; isFirst: boolean }>`

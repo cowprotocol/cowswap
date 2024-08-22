@@ -917,11 +917,20 @@ function getSurplusText(isSell: boolean | undefined, isCustomRecipient: boolean 
   return 'and saved '
 }
 
-function SolvingStep({ order, countdown, stepName, showCancellationModal }: OrderProgressBarV2Props) {
+function SolvingStep({
+  order,
+  countdown,
+  stepName,
+  showCancellationModal,
+  solverCompetition,
+}: OrderProgressBarV2Props) {
   const isUnfillable = stepName === 'unfillable'
   const isDelayed = stepName === 'delayed'
   const isSubmissionFailed = stepName === 'submissionFailed'
   const isNextBatch = stepName === 'nextBatch'
+  const isSolved = stepName === 'solved'
+
+  const winningSolver = solverCompetition?.[0]
 
   const trackCancelClick = () => {
     cowAnalytics.sendEvent({
@@ -936,7 +945,7 @@ function SolvingStep({ order, countdown, stepName, showCancellationModal }: Orde
       <RenderProgressTopSection
         stepName={stepName}
         order={order}
-        countdown={isUnfillable || isDelayed || isSubmissionFailed || isNextBatch ? undefined : countdown}
+        countdown={isUnfillable || isDelayed || isSubmissionFailed || isNextBatch || isSolved ? undefined : countdown}
         showCancellationModal={showCancellationModal}
       />
       <StepsWrapper
@@ -951,6 +960,8 @@ function SolvingStep({ order, countdown, stepName, showCancellationModal }: Orde
             ? { 1: 'Submission failed' }
             : isNextBatch
             ? { 1: 'Waiting for next batch' }
+            : isSolved
+            ? { 1: 'Solved' }
             : undefined
         }
         extraContent={
@@ -976,9 +987,18 @@ function SolvingStep({ order, countdown, stepName, showCancellationModal }: Orde
             ) : isDelayed ? (
               <>Your order has been delayed due to high gas fees. Please wait for the next batch.</>
             ) : isSubmissionFailed ? (
-              <>There was an issue submitting your order. Please try again later.</>
+              <>The order could not be settled on-chain. Solvers are competing to find a new solution.</>
             ) : isNextBatch ? (
               <>Waiting for the next batch to submit your order.</>
+            ) : isSolved ? (
+              <>
+                <strong>
+                  {solverCompetition?.length} solver{solverCompetition && solverCompetition?.length > 1 && 's'} joined
+                  the competition!
+                </strong>
+                <br />
+                Solver {winningSolver?.solver} proposed the best solution. It'll be executed on-chain shortly.
+              </>
             ) : (
               <>
                 The auction has started! Solvers are competing to find the best solution for you...
