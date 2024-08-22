@@ -84,51 +84,18 @@ const StepsWrapper: React.FC<{
 }> = ({ steps, currentStep, extraContent, customStepTitles, customColor, isCancelling, isUnfillable }) => {
   const wrapperRef = useRef<HTMLDivElement>(null)
   const [containerHeight, setContainerHeight] = useState(0)
-  const prevHeightRef = useRef(0)
 
   useEffect(() => {
     if (wrapperRef.current) {
       const stepElements = Array.from(wrapperRef.current.children)
-
       const activeStepHeight = stepElements[currentStep]?.clientHeight || 0
       const nextStepHeight = stepElements[currentStep + 1]?.clientHeight || 0
-
       const totalHeight = activeStepHeight + nextStepHeight
-      const prevHeight = prevHeightRef.current
 
-      // Animate from the previous height to the new height
-      const animateHeight = () => {
-        const start = prevHeight
-        const end = totalHeight
-        const duration = 300 // milliseconds
-        const startTime = performance.now()
-
-        const animate = (time: number) => {
-          const elapsedTime = time - startTime
-          const progress = Math.min(elapsedTime / duration, 1)
-          const currentHeight = start + (end - start) * progress
-
-          setContainerHeight(currentHeight)
-
-          if (progress < 1) {
-            requestAnimationFrame(animate)
-          } else {
-            prevHeightRef.current = totalHeight
-          }
-        }
-
-        requestAnimationFrame(animate)
-      }
-
-      animateHeight()
+      setContainerHeight(totalHeight)
 
       const offsetY = stepElements.slice(0, currentStep).reduce((acc, el) => acc + el.clientHeight, 0)
       wrapperRef.current.style.transform = `translateY(-${offsetY}px)`
-
-      console.log('Active Step Height:', activeStepHeight)
-      console.log('Next Step Height:', nextStepHeight)
-      console.log('Total Height:', totalHeight)
-      console.log('Offset Y:', offsetY)
     }
   }, [currentStep, steps.length])
 
@@ -152,18 +119,18 @@ const StepsWrapper: React.FC<{
               ? 'done'
               : 'future'
           return (
-            <motion.div key={index} style={{ height: 'auto', overflow: 'hidden' }}>
+            <div key={index}>
               <StepComponent
                 status={status}
                 isFirst={index === 0}
                 step={{ ...step, title: customTitle || step.title }}
                 _index={index}
-                extraContent={index === currentStep ? extraContent : undefined}
+                extraContent={index === currentStep ? extraContent : step.description}
                 customColor={index === currentStep ? customColor : undefined}
                 isUnfillable={isUnfillable && index === currentStep}
                 isCancelling={isCancelling}
               />
-            </motion.div>
+            </div>
           )
         })}
       </styledEl.StepsWrapper>
@@ -174,15 +141,13 @@ const StepsWrapper: React.FC<{
 const StepComponent: React.FC<{
   status: string
   isFirst: boolean
-  step: { title: string; description?: string }
+  step: { title: string }
   _index: number
   extraContent?: React.ReactNode
   customColor?: string
   isUnfillable?: boolean
   isCancelling?: boolean
 }> = ({ status, isFirst, step, _index, extraContent, customColor, isUnfillable, isCancelling }) => {
-  console.log('StepComponent status:', status) // Add this line for debugging
-
   return (
     <styledEl.Step status={status} isFirst={isFirst}>
       <styledEl.NumberedElement
@@ -207,7 +172,7 @@ const StepComponent: React.FC<{
       </styledEl.NumberedElement>
       <styledEl.Content>
         <styledEl.Title customColor={customColor}>{step.title}</styledEl.Title>
-        {extraContent}
+        {status !== 'next' && extraContent && <styledEl.Description>{extraContent}</styledEl.Description>}
       </styledEl.Content>
     </styledEl.Step>
   )

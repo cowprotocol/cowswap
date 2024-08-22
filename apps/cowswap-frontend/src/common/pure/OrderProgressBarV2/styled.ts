@@ -52,14 +52,13 @@ export const ProgressContainer = styled.div`
 `
 
 export const StepsContainer = styled.div<{ $height: number; $minHeight?: string; bottomGradient?: boolean }>`
-  height: ${({ $height }) => `${$height}px`};
-  width: 100%;
+  position: relative;
+  height: ${({ $height }) => $height}px;
+  min-height: ${({ $minHeight }) => $minHeight || '192px'};
   overflow: hidden;
-  position: relative;
-  transition: height 0.2s ease-in-out;
+  transition: height 0.5s ease-in-out;
+  width: 100%;
   padding: 0;
-  min-height: ${({ $minHeight }) => $minHeight || '166px'};
-  position: relative;
 
   // implement a gradient to hide the bottom of the steps container using white to opacity white using pseudo element
   &::after {
@@ -78,10 +77,12 @@ export const StepsWrapper = styled.div`
   flex-flow: column nowrap;
   padding: 0;
   width: 100%;
+  position: relative;
   transition: transform 1s ease-in-out;
 `
 
 export const Step = styled.div<{ status: string; isFirst: boolean }>`
+  transition: opacity 0.3s ease-in-out;
   display: flex;
   align-items: flex-start;
   margin: 0 auto;
