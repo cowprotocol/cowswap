@@ -81,13 +81,13 @@ export function App() {
     ]
   }, [tradeContext, menuItems])
 
-  const injectedWidgetParams = useInjectedWidgetParams()
+  const { hideNetworkSelector } = useInjectedWidgetParams()
   const { pendingActivity } = useCategorizeRecentActivity()
   const isMobile = useMediaQuery(Media.upToMedium(false))
 
   const persistentAdditionalContent = (
     <HeaderControls>
-      {!injectedWidgetParams.hideNetworkSelector && <NetworkSelector />}
+      {!hideNetworkSelector && <NetworkSelector />}
       <HeaderElement>
         <AccountElement pendingActivities={pendingActivity} />
       </HeaderElement>
