@@ -362,6 +362,33 @@ const RenderProgressTopSection: React.FC<{
   showCancellationModal: Command | null
   surplusData?: SurplusData
 }> = ({ stepName, order, countdown, solverCompetition, showCancellationModal, surplusData }) => {
+  const { randomImage, randomBenefit } = useMemo(
+    () => ({
+      randomImage: SURPLUS_IMAGES[getRandomInt(0, SURPLUS_IMAGES.length - 1)],
+      randomBenefit: COW_SWAP_BENEFITS[getRandomInt(0, COW_SWAP_BENEFITS.length - 1)],
+    }),
+    []
+  )
+
+  const { surplusFiatValue, surplusPercent, surplusAmount, showSurplus } = surplusData || {}
+  const shouldShowSurplus = DEBUG_FORCE_SHOW_SURPLUS || showSurplus
+  const surplusPercentValue = surplusPercent ? parseFloat(surplusPercent).toFixed(2) : 'N/A'
+
+  const shareOnTwitter = useCallback(() => {
+    const twitterUrl = shouldShowSurplus
+      ? getTwitterShareUrl(surplusData, order)
+      : getTwitterShareUrlForBenefit(randomBenefit)
+    window.open(twitterUrl, '_blank', 'noopener,noreferrer')
+  }, [shouldShowSurplus, surplusData, order, randomBenefit])
+
+  const trackShareClick = useCallback(() => {
+    cowAnalytics.sendEvent({
+      category: Category.PROGRESS_BAR,
+      action: 'Click Share Button',
+      label: shouldShowSurplus ? 'Surplus' : 'Benefit',
+    })
+  }, [shouldShowSurplus])
+
   const content = useMemo(() => {
     switch (stepName) {
       case 'initial':
@@ -424,27 +451,6 @@ const RenderProgressTopSection: React.FC<{
         )
       case 'finished':
       case 'cancellationFailed':
-        const { randomImage, randomBenefit } = useMemo(
-          () => ({
-            randomImage: SURPLUS_IMAGES[getRandomInt(0, SURPLUS_IMAGES.length - 1)],
-            randomBenefit: COW_SWAP_BENEFITS[getRandomInt(0, COW_SWAP_BENEFITS.length - 1)],
-          }),
-          []
-        )
-        const { surplusFiatValue, surplusPercent, surplusAmount, showSurplus } = surplusData || {}
-        const shouldShowSurplus = DEBUG_FORCE_SHOW_SURPLUS || showSurplus
-        const surplusPercentValue = surplusPercent ? parseFloat(surplusPercent).toFixed(2) : 'N/A'
-        const shareOnTwitter = shouldShowSurplus
-          ? shareSurplusOnTwitter(surplusData, order)
-          : shareBenefitOnTwitter(randomBenefit)
-        const trackShareClick = () => {
-          cowAnalytics.sendEvent({
-            category: Category.PROGRESS_BAR,
-            action: 'Click Share Button',
-            label: shouldShowSurplus ? 'Surplus' : 'Benefit',
-          })
-        }
-
         return (
           <styledEl.ProgressTopSection>
             <styledEl.ProgressImageWrapper bgColor={'#65D9FF'} padding={'10px'} gap={'10px'}>
@@ -548,7 +554,20 @@ const RenderProgressTopSection: React.FC<{
       default:
         return null
     }
-  }, [stepName, order, countdown, solverCompetition, showCancellationModal, surplusData])
+  }, [
+    stepName,
+    order,
+    countdown,
+    solverCompetition,
+    showCancellationModal,
+    surplusData,
+    randomImage,
+    randomBenefit,
+    shouldShowSurplus,
+    surplusPercentValue,
+    shareOnTwitter,
+    trackShareClick,
+  ])
 
   return (
     <styledEl.ProgressTopSection>
@@ -716,16 +735,19 @@ function FinishedStep({
 
   const shouldShowSurplus = DEBUG_FORCE_SHOW_SURPLUS || showSurplus
 
-  const toggleSolvers = () => {
-    setShowAllSolvers(!showAllSolvers)
+  const visibleSolvers = useMemo(() => {
+    return showAllSolvers ? solvers : solvers?.slice(0, 3)
+  }, [showAllSolvers, solvers])
+
+  const toggleSolvers = useCallback(() => {
+    setShowAllSolvers((prev) => !prev)
     cowAnalytics.sendEvent({
       category: Category.PROGRESS_BAR,
       action: 'Click Toggle Solvers',
       label: showAllSolvers ? 'Collapse' : 'View More',
     })
-  }
+  }, [showAllSolvers])
 
-  const visibleSolvers = (showAllSolvers ? solvers : solvers?.slice(0, 3)) || []
   const isSell = order && isSellOrder(order.kind)
   const isCustomRecipient = order && getIsCustomRecipient(order)
   const receiver = order?.receiver || order?.owner
@@ -734,17 +756,20 @@ function FinishedStep({
 
   const surplusPercentValue = surplusPercent ? parseFloat(surplusPercent).toFixed(2) : 'N/A'
 
-  const shareOnTwitter = shouldShowSurplus
-    ? shareSurplusOnTwitter(surplusData, order)
-    : shareBenefitOnTwitter(randomBenefit)
+  const shareOnTwitter = useCallback(() => {
+    const twitterUrl = shouldShowSurplus
+      ? getTwitterShareUrl(surplusData, order)
+      : getTwitterShareUrlForBenefit(randomBenefit)
+    window.open(twitterUrl, '_blank', 'noopener,noreferrer')
+  }, [shouldShowSurplus, surplusData, order, randomBenefit])
 
-  const trackShareClick = () => {
+  const trackShareClick = useCallback(() => {
     cowAnalytics.sendEvent({
       category: Category.PROGRESS_BAR,
       action: 'Click Share Button',
       label: shouldShowSurplus ? 'Surplus' : 'Benefit',
     })
-  }
+  }, [shouldShowSurplus])
 
   // Early return if order is not set
   if (!order) {
@@ -818,7 +843,7 @@ function FinishedStep({
           </styledEl.ExtraAmount>
         ) : null}
 
-        {solvers?.length && (
+        {solvers?.length > 0 && (
           <styledEl.SolverRankings>
             <h3>Solver auction rankings</h3>
             {solvers.length > 1 && (
@@ -832,7 +857,7 @@ function FinishedStep({
 
             <styledEl.SolverTable>
               <tbody>
-                {visibleSolvers.map((solver, index) => (
+                {visibleSolvers?.map((solver, index) => (
                   <styledEl.SolverTableRow key={`${solver.solver}-${index}`} isWinner={index === 0}>
                     {solvers.length > 1 && <styledEl.SolverRank>{index + 1}</styledEl.SolverRank>}
                     <styledEl.SolverTableCell>
