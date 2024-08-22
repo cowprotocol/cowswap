@@ -51,24 +51,24 @@ export const ProgressContainer = styled.div`
   padding: 0 0 24px;
 `
 
-export const StepsContainer = styled.div<{ $height: number }>`
+export const StepsContainer = styled.div<{ $height: number; $minHeight?: string; bottomGradient?: boolean }>`
   height: ${({ $height }) => `${$height}px`};
   width: 100%;
   overflow: hidden;
   position: relative;
-  transition: height 0.15s ease-in-out;
+  transition: height 0.2s ease-in-out;
   padding: 0;
-  min-height: 166px;
+  min-height: ${({ $minHeight }) => $minHeight || '166px'};
   position: relative;
 
   // implement a gradient to hide the bottom of the steps container using white to opacity white using pseudo element
   &::after {
-    content: '';
+    content: ${({ bottomGradient }) => (bottomGradient ? '""' : 'none')};
     position: absolute;
     bottom: 0;
     left: 0;
     width: 100%;
-    height: 70px;
+    height: 30px;
     background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
   }
 `
@@ -741,18 +741,12 @@ export const CancellationFailedBanner = styled.div`
   font-size: 15px;
 `
 
-const getStatusColor = (status: string): string => {
-  const colorMap: Record<string, string> = {
-    done: '#4CAF50',
-    active: '#2196F3',
-    error: '#F44336',
-    cancelling: `var(${UI.COLOR_DANGER_BG})`,
-    unfillable: `var(${UI.COLOR_ALERT_TEXT})`,
-  }
-  return colorMap[status] || `var(${UI.COLOR_TEXT_PAPER})`
-}
-
-export const NumberedElement = styled.div<{ status: string; customColor?: string }>`
+export const NumberedElement = styled.div<{
+  status: string
+  customColor?: string
+  isUnfillable?: boolean
+  isCancelling?: boolean
+}>`
   --size: 28px;
   width: var(--size);
   height: var(--size);
@@ -764,7 +758,12 @@ export const NumberedElement = styled.div<{ status: string; customColor?: string
   color: ${({ status }) => (status === 'active' ? `var(${UI.COLOR_PAPER})` : `var(${UI.COLOR_PAPER})`)};
   font-weight: bold;
   font-size: 16px;
-  background-color: ${({ status }) => getStatusColor(status)};
+  background-color: ${({ status, customColor, isUnfillable, isCancelling }) =>
+    isCancelling
+      ? `var(${UI.COLOR_DANGER_BG})`
+      : isUnfillable
+      ? '#996815'
+      : customColor || (status === 'active' ? '#2196F3' : `var(${UI.COLOR_TEXT})`)};
   border-radius: 50%;
   position: relative;
 `

@@ -11,7 +11,6 @@ import STEP_IMAGE_CANCELLED from '@cowprotocol/assets/cow-swap/progressbar-step-
 import STEP_IMAGE_EXPIRED from '@cowprotocol/assets/cow-swap/progressbar-step-expired.svg'
 import STEP_IMAGE_SOLVING from '@cowprotocol/assets/cow-swap/progressbar-step-solving.svg'
 import STEP_IMAGE_UNFILLABLE from '@cowprotocol/assets/cow-swap/progressbar-step-unfillable.svg'
-import SWEAT_DROP from '@cowprotocol/assets/cow-swap/sweat-drop.svg'
 import ICON_SOCIAL_X from '@cowprotocol/assets/images/icon-social-x.svg'
 import LOTTIE_GREEN_CHECKMARK_DARK from '@cowprotocol/assets/lottie/green-checkmark-dark.json'
 import LOTTIE_GREEN_CHECKMARK from '@cowprotocol/assets/lottie/green-checkmark.json'
@@ -44,7 +43,7 @@ import { SurplusData } from 'common/hooks/useGetSurplusFiatValue'
 import { getIsCustomRecipient } from 'utils/orderUtils/getIsCustomRecipient'
 
 import * as styledEl from './styled'
-const IS_DEBUG_MODE = true
+const IS_DEBUG_MODE = false
 const DEBUG_FORCE_SHOW_SURPLUS = false
 
 export type OrderProgressBarV2Props = {
@@ -81,7 +80,8 @@ const StepsWrapper: React.FC<{
   customStepTitles?: { [key: number]: string }
   customColor?: string
   isCancelling?: boolean
-}> = ({ steps, currentStep, extraContent, customStepTitles, customColor, isCancelling }) => {
+  isUnfillable?: boolean
+}> = ({ steps, currentStep, extraContent, customStepTitles, customColor, isCancelling, isUnfillable }) => {
   const wrapperRef = useRef<HTMLDivElement>(null)
   const [containerHeight, setContainerHeight] = useState(0)
   const prevHeightRef = useRef(0)
@@ -133,7 +133,11 @@ const StepsWrapper: React.FC<{
   }, [currentStep, steps.length])
 
   return (
-    <styledEl.StepsContainer $height={containerHeight}>
+    <styledEl.StepsContainer
+      $height={containerHeight}
+      $minHeight={isCancelling ? '80px' : undefined}
+      bottomGradient={!isCancelling}
+    >
       <styledEl.StepsWrapper ref={wrapperRef}>
         {steps.map((step, index) => {
           const customTitle = customStepTitles && customStepTitles[index]
@@ -156,6 +160,8 @@ const StepsWrapper: React.FC<{
                 _index={index}
                 extraContent={index === currentStep ? extraContent : undefined}
                 customColor={index === currentStep ? customColor : undefined}
+                isUnfillable={isUnfillable && index === currentStep}
+                isCancelling={isCancelling}
               />
             </motion.div>
           )
@@ -172,12 +178,19 @@ const StepComponent: React.FC<{
   _index: number
   extraContent?: React.ReactNode
   customColor?: string
-}> = ({ status, isFirst, step, _index, extraContent, customColor }) => {
+  isUnfillable?: boolean
+  isCancelling?: boolean
+}> = ({ status, isFirst, step, _index, extraContent, customColor, isUnfillable, isCancelling }) => {
   console.log('StepComponent status:', status) // Add this line for debugging
 
   return (
     <styledEl.Step status={status} isFirst={isFirst}>
-      <styledEl.NumberedElement status={status} customColor={customColor}>
+      <styledEl.NumberedElement
+        status={status}
+        customColor={customColor}
+        isUnfillable={isUnfillable}
+        isCancelling={isCancelling}
+      >
         {status === 'cancelling' ? (
           <Lottie
             animationData={LOTTIE_RED_CROSS}
@@ -188,7 +201,7 @@ const StepComponent: React.FC<{
         ) : (
           <>
             {_index + 1}
-            {status === 'active' && <styledEl.Spinner />}
+            {status === 'active' && !isUnfillable && <styledEl.Spinner />}
           </>
         )}
       </styledEl.NumberedElement>
@@ -395,6 +408,7 @@ const RenderProgressTopSection: React.FC<{
           </>
         )
       case 'solving':
+      case 'solved':
       case 'unfillable':
       case 'nextBatch':
       case 'delayed':
@@ -404,26 +418,20 @@ const RenderProgressTopSection: React.FC<{
             bgColor={
               stepName === 'unfillable'
                 ? '#FFDB9C'
-                : stepName === 'delayed'
+                : stepName === 'delayed' || stepName === 'submissionFailed'
                 ? '#FFB3B3'
-                : stepName === 'submissionFailed'
-                ? '#FF9999'
                 : '#65D9FF'
             }
-            padding={stepName === 'unfillable' ? '20px 0 0' : '24px'}
+            padding={
+              stepName === 'unfillable' ? '20px 0 0' : stepName === 'solving' || stepName === 'solved' ? '16px' : '0'
+            }
+            height={
+              stepName === 'nextBatch' || stepName === 'delayed' || stepName === 'submissionFailed' ? '229px' : 'auto'
+            }
           >
             {stepName === 'unfillable' ? (
               <img src={STEP_IMAGE_UNFILLABLE} alt="Order out of market" />
-            ) : stepName === 'delayed' ? (
-              <SVG src={SWEAT_DROP} />
-            ) : stepName === 'submissionFailed' ? (
-              <Lottie
-                animationData={LOTTIE_RED_CROSS}
-                loop={true}
-                autoplay={true}
-                style={{ width: '100px', height: '100px' }}
-              />
-            ) : stepName === 'nextBatch' ? (
+            ) : stepName === 'nextBatch' || stepName === 'delayed' || stepName === 'submissionFailed' ? (
               <Lottie
                 animationData={STEP_LOTTIE_NEXTBATCH}
                 loop={true}
@@ -433,7 +441,7 @@ const RenderProgressTopSection: React.FC<{
             ) : (
               <>
                 <SVG src={STEP_IMAGE_SOLVING} />
-                <CircularCountdown countdown={countdown || 0} />
+                {stepName === 'solving' && <CircularCountdown countdown={countdown || 0} />}
               </>
             )}
           </styledEl.ProgressImageWrapper>
@@ -1015,12 +1023,9 @@ function SolvingStep({
           </styledEl.Description>
         }
         customColor={
-          isUnfillable || isDelayed || isSubmissionFailed
-            ? `var(${UI.COLOR_DANGER_TEXT})`
-            : isNextBatch
-            ? `var(${UI.COLOR_WARNING_TEXT})`
-            : undefined
+          isUnfillable || isDelayed ? '#996815' : isSubmissionFailed ? `var(${UI.COLOR_DANGER_TEXT})` : undefined
         }
+        isUnfillable={isUnfillable}
       />
     </styledEl.ProgressContainer>
   )
@@ -1031,7 +1036,7 @@ function CancellingStep({ order, stepName }: OrderProgressBarV2Props) {
     <styledEl.ProgressContainer>
       <RenderProgressTopSection stepName={stepName} order={order} showCancellationModal={null} />
       <StepsWrapper
-        steps={[{ title: 'Cancelling' }]} // Only one step
+        steps={[{ title: 'Cancelling' }]}
         currentStep={0}
         extraContent={<styledEl.Description>Your order is being cancelled.</styledEl.Description>}
         customColor={`var(${UI.COLOR_DANGER_TEXT})`}
