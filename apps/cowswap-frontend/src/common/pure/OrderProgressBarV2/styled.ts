@@ -69,7 +69,7 @@ export const StepsContainer = styled.div<{ $height: number; $minHeight?: string;
     left: 0;
     width: 100%;
     height: 30px;
-    background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
+    background: linear-gradient(to bottom, transparent, var(${UI.COLOR_PAPER}));
   }
 `
 
@@ -229,7 +229,7 @@ export const AnimatedTokensWrapper = styled.div`
   overflow: hidden;
 `
 
-export const TokenWrapper = styled.div<{ position: 'left' | 'center' | 'right' }>`
+export const TokenWrapper = styled.div<{ position: 'left' | 'center' | 'right'; bgColor?: string }>`
   --size: 136px;
   width: var(--size);
   height: var(--size);
@@ -246,7 +246,8 @@ export const TokenWrapper = styled.div<{ position: 'left' | 'center' | 'right' }
   animation-delay: ${({ position }) => (position === 'center' ? '0s' : '0.75s')};
   border: ${({ position }) => (position === 'right' || 'center' ? `8px solid ${BLUE_COLOR}` : '0')};
   box-sizing: content-box;
-  background: ${({ position }) => (position === 'right' ? `var(${UI.COLOR_PRIMARY})` : 'transparent')};
+  background: ${({ position, bgColor }) =>
+    position === 'right' ? bgColor || `var(${UI.COLOR_PRIMARY})` : 'transparent'};
 
   ${({ position }) =>
     position === 'right' &&

@@ -383,7 +383,7 @@ const AnimatedTokens: React.FC<{
     <styledEl.TokenWrapper position="center">
       <TokenLogo token={buyToken} size={136} />
     </styledEl.TokenWrapper>
-    <styledEl.TokenWrapper position="right">
+    <styledEl.TokenWrapper position="right" bgColor={'#012F7A'}>
       <ProductLogo variant={ProductVariant.CowSwap} theme={'dark'} height={136} logoIconOnly />
     </styledEl.TokenWrapper>
   </styledEl.AnimatedTokensWrapper>
