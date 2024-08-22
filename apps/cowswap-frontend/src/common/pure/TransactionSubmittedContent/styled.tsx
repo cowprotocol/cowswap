@@ -154,4 +154,6 @@ export const Title = styled.div`
   font-weight: 600;
   line-height: 1.2;
   margin: 0 0 16px;
+  width: 100%;
+  text-align: center;
 `
