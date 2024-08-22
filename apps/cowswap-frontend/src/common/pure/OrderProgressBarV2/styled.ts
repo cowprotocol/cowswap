@@ -1,5 +1,5 @@
 import IMAGE_STAR_SHINE from '@cowprotocol/assets/cow-swap/star-shine.svg'
-import { LinkStyledButton, Font, Media, UI } from '@cowprotocol/ui'
+import { Font, LinkStyledButton, Media, UI } from '@cowprotocol/ui'
 
 import styled, { css, keyframes } from 'styled-components/macro'
 
@@ -9,12 +9,12 @@ const BLUE_COLOR = '#65d9ff'
 
 const slideAnimation = (direction: 'up' | 'down', status: string, isDarkMode: boolean) => keyframes`
   from {
-    transform: translateY(${direction === 'up' ? '20px' : '-20px'}); 
-    opacity: 0; 
+    transform: translateY(${direction === 'up' ? '20px' : '-20px'});
+    opacity: 0;
   }
-  to { 
-    transform: translateY(0); 
-    opacity: ${getOpacity(status, isDarkMode)}; 
+  to {
+    transform: translateY(0);
+    opacity: ${getOpacity(status, isDarkMode)};
   }
 `
 
@@ -634,6 +634,12 @@ export const SolverName = styled.span`
   flex-grow: 1;
   color: inherit;
   text-transform: capitalize;
+  display: flex;
+  align-items: center;
+
+  > span {
+    margin-left: 4px;
+  }
 `
 
 export const TrophyIcon = styled.span`

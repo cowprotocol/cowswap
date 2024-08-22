@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import PROGRESS_BAR_BAD_NEWS from '@cowprotocol/assets/cow-swap/progressbar-bad-news.svg'
 import PROGRESSBAR_COW_SURPLUS_1 from '@cowprotocol/assets/cow-swap/progressbar-finished-image-1.svg'
@@ -26,7 +26,7 @@ import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { Command } from '@cowprotocol/types'
-import { ExternalLink, ProductLogo, ProductVariant, TokenAmount, UI } from '@cowprotocol/ui'
+import { ExternalLink, InfoTooltip, ProductLogo, ProductVariant, TokenAmount, UI } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import Lottie from 'lottie-react'
@@ -46,7 +46,7 @@ import { AMM_LOGOS } from 'legacy/components/AMMsLogo'
 import { Order } from 'legacy/state/orders/actions'
 import { useIsDarkMode } from 'legacy/state/user/hooks'
 
-import { cowAnalytics, Category } from 'modules/analytics'
+import { Category, cowAnalytics } from 'modules/analytics'
 
 import { OrderProgressBarStepName, SolverCompetition } from 'common/hooks/orderProgressBarV2'
 import { SurplusData } from 'common/hooks/useGetSurplusFiatValue'
@@ -734,7 +734,10 @@ function FinishedStep({
                             height="24"
                           />
                         </styledEl.SolverLogo>
-                        <styledEl.SolverName>{solver.displayName || solver.solver}</styledEl.SolverName>
+                        <styledEl.SolverName>
+                          {solver.displayName || solver.solver}
+                          {solver.description && <span><InfoTooltip content={solver.description} /></span>}
+                        </styledEl.SolverName>
                       </styledEl.SolverInfo>
                     </styledEl.SolverTableCell>
                     <styledEl.SolverTableCell>
