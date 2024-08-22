@@ -944,7 +944,7 @@ function SolvingStep({
     cowAnalytics.sendEvent({
       category: Category.PROGRESS_BAR,
       action: 'Click Cancel Order',
-      label: isUnfillable ? 'Unfillable Step' : 'Solving Step',
+      label: isUnfillable ? 'Unfillable Step' : isDelayed ? 'Delayed Step' : 'Solving Step',
     })
   }
 
@@ -993,7 +993,24 @@ function SolvingStep({
                 )}
               </>
             ) : isDelayed ? (
-              <>Your order has been delayed due to high gas fees. Please wait for the next batch.</>
+              <>
+                Your order has been delayed due to high gas fees. Please wait for the next batch
+                {showCancellationModal && (
+                  <>
+                    {' '}
+                    or{' '}
+                    <styledEl.CancelButton
+                      onClick={() => {
+                        showCancellationModal && showCancellationModal()
+                        trackCancelClick()
+                      }}
+                    >
+                      cancel your order
+                    </styledEl.CancelButton>
+                  </>
+                )}
+                .
+              </>
             ) : isSubmissionFailed ? (
               <>The order could not be settled on-chain. Solvers are competing to find a new solution.</>
             ) : isNextBatch ? (
