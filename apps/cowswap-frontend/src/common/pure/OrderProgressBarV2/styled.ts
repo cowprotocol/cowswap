@@ -64,11 +64,11 @@ const getOpacity = (status: string, isDarkMode: boolean): number => {
 
 export const ProgressContainer = styled.div`
   width: 100%;
-  height: 100%;
+  height: auto;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding: 0;
+  padding: 0 0 24px;
 `
 
 export const StepsWrapper = styled.div`
@@ -781,7 +781,7 @@ export const Spinner = styled.div`
   border: 2px solid transparent;
   border-top-color: ${`var(${UI.COLOR_PRIMARY_LIGHTER})`};
   border-radius: 50%;
-  animation: spin 1s linear infinite;
+  animation: spin 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
 
   @keyframes spin {
     0% {

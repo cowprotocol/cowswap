@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 
 import PROGRESS_BAR_BAD_NEWS from '@cowprotocol/assets/cow-swap/progressbar-bad-news.svg'
 import PROGRESSBAR_COW_SURPLUS_1 from '@cowprotocol/assets/cow-swap/progressbar-finished-image-1.svg'
@@ -70,7 +71,39 @@ const STEPS = [
     title: 'Solving',
   },
   { title: 'Executing', description: 'The winning solver will execute your order.' },
+  { title: 'Transaction completed' },
 ]
+
+const StepsWrapper: React.FC<{
+  steps: typeof STEPS
+  currentStep: number
+  extraContent?: React.ReactNode
+  customStepTitles?: { [key: number]: string }
+  customColor?: string
+}> = ({ steps, currentStep, extraContent, customStepTitles, customColor }) => {
+  const isCancelling = customColor && customStepTitles && customStepTitles[currentStep] === 'Cancelling'
+  const visibleSteps = isCancelling ? [steps[currentStep]] : steps.slice(currentStep, currentStep + 2)
+
+  return (
+    <styledEl.StepsWrapper>
+      {visibleSteps.map((step, index) => {
+        const stepIndex = currentStep + index
+        const customTitle = customStepTitles && customStepTitles[stepIndex]
+        return (
+          <StepComponent
+            key={index}
+            status={isCancelling ? 'cancelling' : index === 0 ? 'active' : 'next'}
+            isFirst={index === 0}
+            step={{ ...step, title: customTitle || step.title }}
+            _index={stepIndex}
+            extraContent={index === 0 ? extraContent : undefined}
+            customColor={index === 0 ? customColor : undefined}
+          />
+        )
+      })}
+    </styledEl.StepsWrapper>
+  )
+}
 
 const StepComponent: React.FC<{
   status: string
@@ -279,127 +312,302 @@ const AnimatedTokens: React.FC<{
   </styledEl.AnimatedTokensWrapper>
 )
 
-function InitialStep({ order }: OrderProgressBarV2Props) {
+const RenderProgressTopSection: React.FC<{
+  stepName: OrderProgressBarStepName | undefined
+  order?: Order
+  countdown?: number | null | undefined
+  solverCompetition?: SolverCompetition[]
+  showCancellationModal: Command | null
+  surplusData?: SurplusData
+}> = ({ stepName, order, countdown, solverCompetition, showCancellationModal, surplusData }) => {
+  const content = useMemo(() => {
+    switch (stepName) {
+      case 'initial':
+        return (
+          <>
+            <styledEl.ProgressImageWrapper bgColor={'#65D9FF'}>
+              <AnimatedTokens sellToken={order?.inputToken} buyToken={order?.outputToken} />
+            </styledEl.ProgressImageWrapper>
+          </>
+        )
+      case 'solving':
+        return (
+          <styledEl.ProgressImageWrapper bgColor={'#65D9FF'} padding={'24px'}>
+            <SVG src={STEP_IMAGE_SOLVING} />
+            <CircularCountdown countdown={countdown || 0} />
+          </styledEl.ProgressImageWrapper>
+        )
+      case 'executing':
+        return (
+          <styledEl.ProgressImageWrapper height={'auto'}>
+            <Lottie
+              animationData={STEP_LOTTIE_EXECUTING}
+              loop={true}
+              autoplay={true}
+              style={{ width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+            />
+          </styledEl.ProgressImageWrapper>
+        )
+      case 'finished':
+      case 'cancellationFailed':
+        const { randomImage, randomBenefit } = useMemo(
+          () => ({
+            randomImage: SURPLUS_IMAGES[getRandomInt(0, SURPLUS_IMAGES.length - 1)],
+            randomBenefit: COW_SWAP_BENEFITS[getRandomInt(0, COW_SWAP_BENEFITS.length - 1)],
+          }),
+          []
+        )
+        const { surplusFiatValue, surplusPercent, surplusAmount, showSurplus } = surplusData || {}
+        const shouldShowSurplus = DEBUG_FORCE_SHOW_SURPLUS || showSurplus
+        const surplusPercentValue = surplusPercent ? parseFloat(surplusPercent).toFixed(2) : 'N/A'
+        const shareOnTwitter = shouldShowSurplus
+          ? shareSurplusOnTwitter(surplusData, order)
+          : shareBenefitOnTwitter(randomBenefit)
+        const trackShareClick = () => {
+          cowAnalytics.sendEvent({
+            category: Category.PROGRESS_BAR,
+            action: 'Click Share Button',
+            label: shouldShowSurplus ? 'Surplus' : 'Benefit',
+          })
+        }
+
+        return (
+          <styledEl.ProgressTopSection>
+            <styledEl.ProgressImageWrapper bgColor={'#65D9FF'} padding={'10px'} gap={'10px'}>
+              <styledEl.CowImage>
+                <styledEl.ShareButton
+                  onClick={() => {
+                    shareOnTwitter()
+                    trackShareClick()
+                  }}
+                >
+                  <SVG src={ICON_SOCIAL_X} />
+                  <span>Share this {shouldShowSurplus ? 'win' : 'tip'}!</span>
+                </styledEl.ShareButton>
+                <SVG src={randomImage} />
+              </styledEl.CowImage>
+              <styledEl.FinishedImageContent>
+                <styledEl.FinishedTagLine>
+                  {shouldShowSurplus ? (
+                    <styledEl.BenefitSurplusContainer>
+                      I just received surplus on
+                      <styledEl.TokenPairTitle title={`${order?.inputToken.symbol} / ${order?.outputToken.symbol}`}>
+                        {truncateWithEllipsis(`${order?.inputToken.symbol} / ${order?.outputToken.symbol}`, 30)}
+                      </styledEl.TokenPairTitle>{' '}
+                      <styledEl.Surplus>
+                        <Textfit
+                          mode="multi"
+                          min={14}
+                          max={60}
+                          style={{
+                            width: '100%',
+                            height: '100%',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'center',
+                            lineHeight: 1.2,
+                          }}
+                        >
+                          {shouldShowSurplus && surplusPercentValue !== 'N/A' ? `+${surplusPercentValue}%` : 'N/A'}
+                        </Textfit>
+                      </styledEl.Surplus>
+                    </styledEl.BenefitSurplusContainer>
+                  ) : (
+                    <styledEl.BenefitSurplusContainer>
+                      <styledEl.BenefitTagLine>Did you know?</styledEl.BenefitTagLine>
+                      <styledEl.BenefitText>
+                        <Textfit
+                          mode="multi"
+                          min={12}
+                          max={50}
+                          style={{
+                            width: '100%',
+                            height: '100%',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'center',
+                            lineHeight: 1.2,
+                          }}
+                        >
+                          {randomBenefit}
+                        </Textfit>
+                      </styledEl.BenefitText>
+                    </styledEl.BenefitSurplusContainer>
+                  )}
+                </styledEl.FinishedTagLine>
+
+                <styledEl.FinishedLogo>
+                  <ProductLogo
+                    variant={ProductVariant.CowSwap}
+                    theme="light"
+                    overrideColor={UI.COLOR_PRIMARY_DARKER}
+                    height={19}
+                    logoIconOnly
+                  />
+                  <b>CoW Swap</b>
+                </styledEl.FinishedLogo>
+              </styledEl.FinishedImageContent>
+            </styledEl.ProgressImageWrapper>
+          </styledEl.ProgressTopSection>
+        )
+      case 'nextBatch':
+      case 'submissionFailed':
+        return (
+          <styledEl.ProgressImageWrapper height={'auto'}>
+            <Lottie
+              animationData={STEP_LOTTIE_NEXTBATCH}
+              loop={false}
+              autoplay
+              style={{ width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+            />
+          </styledEl.ProgressImageWrapper>
+        )
+      case 'delayed':
+        return (
+          <styledEl.ProgressImageWrapper height={'auto'}>
+            <styledEl.SweatDrop>
+              <SVG src={SWEAT_DROP} />
+            </styledEl.SweatDrop>
+          </styledEl.ProgressImageWrapper>
+        )
+      case 'unfillable':
+        return (
+          <styledEl.ProgressImageWrapper bgColor={'#FFDB9C'} padding={'20px 0 0'}>
+            <img src={STEP_IMAGE_UNFILLABLE} alt="Order out of market" />
+          </styledEl.ProgressImageWrapper>
+        )
+      case 'cancelling':
+      case 'cancelled':
+        return (
+          <styledEl.ProgressImageWrapper height={'auto'}>
+            <img src={STEP_IMAGE_CANCELLED} alt="Cancelling order" />
+          </styledEl.ProgressImageWrapper>
+        )
+      case 'expired':
+        return (
+          <styledEl.ProgressImageWrapper height={'auto'}>
+            <styledEl.ClockAnimation>
+              <Lottie
+                animationData={LOTTIE_TIME_EXPIRED_DARK}
+                loop={false}
+                autoplay
+                style={{ width: '100%', height: '100%' }}
+              />
+            </styledEl.ClockAnimation>
+            <img src={STEP_IMAGE_EXPIRED} alt="Order expired" />
+          </styledEl.ProgressImageWrapper>
+        )
+      default:
+        return null
+    }
+  }, [stepName, order, countdown, solverCompetition, showCancellationModal, surplusData])
+
+  return (
+    <styledEl.ProgressTopSection>
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={stepName}
+          initial={{ opacity: 0, width: '100%', scale: 0.98 }}
+          animate={{
+            opacity: 1,
+            width: '100%',
+            scale: 1,
+            transition: {
+              duration: 0.2,
+              ease: 'easeOut',
+            },
+          }}
+          exit={{
+            opacity: 0,
+            width: '100%',
+            scale: 0.98,
+            transition: {
+              duration: 0.15,
+              ease: 'easeIn',
+            },
+          }}
+          style={{ width: '100%' }}
+        >
+          {content}
+        </motion.div>
+      </AnimatePresence>
+      <OrderIntent order={order} />
+    </styledEl.ProgressTopSection>
+  )
+}
+
+function InitialStep({ order, stepName }: OrderProgressBarV2Props) {
   return (
     <styledEl.ProgressContainer>
-      <styledEl.ProgressTopSection>
-        <styledEl.ProgressImageWrapper bgColor={'#65D9FF'}>
-          <AnimatedTokens sellToken={order?.inputToken} buyToken={order?.outputToken} />
-        </styledEl.ProgressImageWrapper>
-        <OrderIntent order={order} />
-      </styledEl.ProgressTopSection>
-      <styledEl.StepsWrapper>
-        <StepComponent
-          status="active"
-          isFirst={true}
-          step={STEPS[0]}
-          _index={0}
-          extraContent={
-            <styledEl.Description>
-              Your order has been submitted and will be included in the next solver auction. &nbsp;
-              <styledEl.Link
-                href="https://cow.fi/learn/understanding-batch-auctions"
-                target="_blank"
-                onClick={() => trackLearnMoreClick('Initial')}
-              >
-                Learn more ↗
-              </styledEl.Link>
-            </styledEl.Description>
-          }
-        />
-        <StepComponent
-          status="next"
-          isFirst={false}
-          step={STEPS[1]}
-          _index={1}
-          extraContent={
-            <styledEl.Description>
-              The auction will start! Solvers will be competing to find the best solution for you.
-            </styledEl.Description>
-          }
-        />
-      </styledEl.StepsWrapper>
+      <RenderProgressTopSection stepName={stepName} order={order} showCancellationModal={null} />
+      <StepsWrapper
+        steps={STEPS}
+        currentStep={0}
+        extraContent={
+          <styledEl.Description>
+            Your order has been submitted and will be included in the next solver auction. &nbsp;
+            <styledEl.Link
+              href="https://cow.fi/learn/understanding-batch-auctions"
+              target="_blank"
+              onClick={() => trackLearnMoreClick('Initial')}
+            >
+              Learn more ↗
+            </styledEl.Link>
+          </styledEl.Description>
+        }
+      />
     </styledEl.ProgressContainer>
   )
 }
 
-function SolvingStep({ order, countdown }: OrderProgressBarV2Props) {
+function SolvingStep({ order, countdown, stepName }: OrderProgressBarV2Props) {
   return (
     <styledEl.ProgressContainer>
-      <styledEl.ProgressTopSection>
-        <styledEl.ProgressImageWrapper bgColor={'#65D9FF'} padding={'24px'}>
-          <SVG src={STEP_IMAGE_SOLVING} />
-          <CircularCountdown countdown={countdown || 0} />
-        </styledEl.ProgressImageWrapper>
-        <OrderIntent order={order} />
-      </styledEl.ProgressTopSection>
-      <styledEl.StepsWrapper>
-        <StepComponent
-          status="active"
-          isFirst={false}
-          step={STEPS[1]}
-          _index={1}
-          extraContent={
-            <styledEl.Description>
-              The auction has started! Solvers are competing to find the best solution for you...
-              <br />
-              <styledEl.Link
-                href="https://cow.fi/learn/understanding-batch-auctions"
-                target="_blank"
-                onClick={() => trackLearnMoreClick('Solving')}
-              >
-                Learn more ↗
-              </styledEl.Link>
-            </styledEl.Description>
-          }
-        />
-        <StepComponent
-          status="next"
-          isFirst={false}
-          step={STEPS[2]}
-          _index={2}
-          extraContent={<styledEl.Description>The winning solver will execute your order.</styledEl.Description>}
-        />
-      </styledEl.StepsWrapper>
+      <RenderProgressTopSection stepName={stepName} order={order} countdown={countdown} showCancellationModal={null} />
+      <StepsWrapper
+        steps={STEPS}
+        currentStep={1}
+        extraContent={
+          <styledEl.Description>
+            The auction has started! Solvers are competing to find the best solution for you...
+            <br />
+            <styledEl.Link
+              href="https://cow.fi/learn/understanding-batch-auctions"
+              target="_blank"
+              onClick={() => trackLearnMoreClick('Solving')}
+            >
+              Learn more ↗
+            </styledEl.Link>
+          </styledEl.Description>
+        }
+      />
     </styledEl.ProgressContainer>
   )
 }
 
-function ExecutingStep({ solverCompetition, order }: OrderProgressBarV2Props) {
-  const solversCount = solverCompetition?.length || 0
-
+function ExecutingStep({ solverCompetition, order, stepName }: OrderProgressBarV2Props) {
   return (
     <styledEl.ProgressContainer>
-      <styledEl.ProgressTopSection>
-        <styledEl.ProgressImageWrapper height={'auto'}>
-          <Lottie
-            animationData={STEP_LOTTIE_EXECUTING}
-            loop={true}
-            autoplay={true}
-            style={{ width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
-          />
-        </styledEl.ProgressImageWrapper>
-        <OrderIntent order={order} />
-      </styledEl.ProgressTopSection>
-      <styledEl.StepsWrapper>
-        <StepComponent
-          status="active"
-          isFirst={false}
-          step={{ ...STEPS[1], title: 'Executing' }}
-          _index={1}
-          extraContent={
-            <styledEl.Description>
-              <strong>
-                {solversCount} solver{solversCount !== 1 && 's'}{' '}
-              </strong>{' '}
-              joined the competition!
-              <br />
-              The winner will submit your order on-chain.
-            </styledEl.Description>
-          }
-        />
-        <StepComponent status="next" isFirst={false} step={{ title: 'Transaction completed' }} _index={2} />
-      </styledEl.StepsWrapper>
+      <RenderProgressTopSection
+        stepName={stepName}
+        solverCompetition={solverCompetition}
+        order={order}
+        showCancellationModal={null}
+      />
+      <StepsWrapper
+        steps={STEPS}
+        currentStep={2}
+        extraContent={
+          <styledEl.Description>
+            <strong>
+              {solverCompetition?.length || 0} solver{solverCompetition?.length !== 1 && 's'}{' '}
+            </strong>{' '}
+            joined the competition!
+            <br />
+            The winner will submit your order on-chain.
+          </styledEl.Description>
+        }
+      />
     </styledEl.ProgressContainer>
   )
 }
@@ -536,83 +744,12 @@ function FinishedStep({
           <b>Cancellation failed:</b> The order was executed before it could be cancelled.
         </styledEl.CancellationFailedBanner>
       )}
-      <styledEl.ProgressTopSection>
-        <styledEl.ProgressImageWrapper bgColor={'#65D9FF'} padding={'10px'} gap={'10px'}>
-          <styledEl.CowImage>
-            <styledEl.ShareButton
-              onClick={() => {
-                shareOnTwitter()
-                trackShareClick()
-              }}
-            >
-              <SVG src={ICON_SOCIAL_X} />
-              <span>Share this {shouldShowSurplus ? 'win' : 'tip'}!</span>
-            </styledEl.ShareButton>
-            <SVG src={randomImage} />
-          </styledEl.CowImage>
-          <styledEl.FinishedImageContent>
-            <styledEl.FinishedTagLine>
-              {shouldShowSurplus ? (
-                <styledEl.BenefitSurplusContainer>
-                  I just received surplus on
-                  <styledEl.TokenPairTitle title={`${order.inputToken.symbol} / ${order.outputToken.symbol}`}>
-                    {truncateWithEllipsis(`${order.inputToken.symbol} / ${order.outputToken.symbol}`, 30)}
-                  </styledEl.TokenPairTitle>{' '}
-                  <styledEl.Surplus>
-                    <Textfit
-                      mode="multi"
-                      min={14}
-                      max={60}
-                      style={{
-                        width: '100%',
-                        height: '100%',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'center',
-                        lineHeight: 1.2,
-                      }}
-                    >
-                      {shouldShowSurplus && surplusPercentValue !== 'N/A' ? `+${surplusPercentValue}%` : 'N/A'}
-                    </Textfit>
-                  </styledEl.Surplus>
-                </styledEl.BenefitSurplusContainer>
-              ) : (
-                <styledEl.BenefitSurplusContainer>
-                  <styledEl.BenefitTagLine>Did you know?</styledEl.BenefitTagLine>
-                  <styledEl.BenefitText>
-                    <Textfit
-                      mode="multi"
-                      min={12}
-                      max={50}
-                      style={{
-                        width: '100%',
-                        height: '100%',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'center',
-                        lineHeight: 1.2,
-                      }}
-                    >
-                      {randomBenefit}
-                    </Textfit>
-                  </styledEl.BenefitText>
-                </styledEl.BenefitSurplusContainer>
-              )}
-            </styledEl.FinishedTagLine>
-
-            <styledEl.FinishedLogo>
-              <ProductLogo
-                variant={ProductVariant.CowSwap}
-                theme="light"
-                overrideColor={UI.COLOR_PRIMARY_DARKER}
-                height={19}
-                logoIconOnly
-              />
-              <b>CoW Swap</b>
-            </styledEl.FinishedLogo>
-          </styledEl.FinishedImageContent>
-        </styledEl.ProgressImageWrapper>
-      </styledEl.ProgressTopSection>
+      <RenderProgressTopSection
+        stepName={stepName}
+        order={order}
+        showCancellationModal={null}
+        surplusData={surplusData}
+      />
 
       <styledEl.ConclusionContent>
         <styledEl.TransactionStatus flexFlow="column" margin={'0 auto 24px'}>
@@ -739,54 +876,37 @@ function getSurplusText(isSell: boolean | undefined, isCustomRecipient: boolean 
   return 'and saved '
 }
 
-function NextBatchStep({ solverCompetition, order }: OrderProgressBarV2Props) {
+function NextBatchStep({ solverCompetition, order, stepName }: OrderProgressBarV2Props) {
   return (
     <styledEl.ProgressContainer>
-      <styledEl.ProgressTopSection>
-        <styledEl.ProgressImageWrapper height={'auto'}>
-          <Lottie
-            animationData={STEP_LOTTIE_NEXTBATCH}
-            loop={false}
-            autoplay
-            style={{ width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
-          />
-        </styledEl.ProgressImageWrapper>
-        <OrderIntent order={order} />
-      </styledEl.ProgressTopSection>
-      <styledEl.StepsWrapper>
-        <StepComponent
-          status="active"
-          isFirst={false}
-          step={{ ...STEPS[1], title: 'Solving: Finding new solution' }}
-          _index={1}
-          customColor={`var(${UI.COLOR_ALERT_TEXT})`}
-          extraContent={
-            <styledEl.Description>
-              {solverCompetition?.length && (
-                <>
-                  The <strong>{solverCompetition[0].displayName}</strong> solver had the best solution for this batch.
-                </>
-              )}{' '}
-              Unfortunately, your order wasn't part of their winning solution, so we're waiting for solvers to find a
-              new solution that includes your order for the next batch.&nbsp;
-              <styledEl.Link
-                href="https://cow.fi/learn/understanding-batch-auctions"
-                target="_blank"
-                onClick={() => trackLearnMoreClick('NextBatch')}
-              >
-                Learn more ↗
-              </styledEl.Link>
-            </styledEl.Description>
-          }
-        />
-        <StepComponent
-          status="next"
-          isFirst={false}
-          step={STEPS[2]}
-          _index={2}
-          extraContent={<styledEl.Description>The winning solver will execute your order.</styledEl.Description>}
-        />
-      </styledEl.StepsWrapper>
+      <RenderProgressTopSection
+        stepName={stepName}
+        solverCompetition={solverCompetition}
+        order={order}
+        showCancellationModal={null}
+      />
+      <StepsWrapper
+        steps={STEPS}
+        currentStep={1}
+        extraContent={
+          <styledEl.Description>
+            {solverCompetition?.length && (
+              <>
+                The <strong>{solverCompetition[0].displayName}</strong> solver had the best solution for this batch.
+              </>
+            )}{' '}
+            Unfortunately, your order wasn't part of their winning solution, so we're waiting for solvers to find a new
+            solution that includes your order for the next batch.&nbsp;
+            <styledEl.Link
+              href="https://cow.fi/learn/understanding-batch-auctions"
+              target="_blank"
+              onClick={() => trackLearnMoreClick('NextBatch')}
+            >
+              Learn more ↗
+            </styledEl.Link>
+          </styledEl.Description>
+        }
+      />
     </styledEl.ProgressContainer>
   )
 }
@@ -802,43 +922,31 @@ function DelayedStep({ order, showCancellationModal }: OrderProgressBarV2Props) 
 
   return (
     <styledEl.ProgressContainer>
-      <styledEl.ProgressTopSection>
-        <styledEl.ProgressImageWrapper height={'auto'}>
-          <styledEl.SweatDrop>
-            <SVG src={SWEAT_DROP} />
-          </styledEl.SweatDrop>
-        </styledEl.ProgressImageWrapper>
-        <OrderIntent order={order} />
-      </styledEl.ProgressTopSection>
-      <styledEl.StepsWrapper>
-        <StepComponent
-          status="active"
-          isFirst={false}
-          step={{ ...STEPS[1], title: 'Solving: Still searching' }}
-          _index={1}
-          extraContent={
-            <styledEl.Description>
-              This is taking longer than expected! There may be a network issue (such as a gas spike) that is preventing
-              solvers from picking up your order. The issue should resolve momentarily.{' '}
-              {showCancellationModal && (
-                <>
-                  You can wait or{' '}
-                  <styledEl.CancelButton
-                    onClick={() => {
-                      showCancellationModal && showCancellationModal()
-                      trackCancelClick()
-                    }}
-                  >
-                    cancel the order
-                  </styledEl.CancelButton>
-                  .
-                </>
-              )}
-            </styledEl.Description>
-          }
-        />
-        <StepComponent status="next" isFirst={false} step={STEPS[2]} _index={2} />
-      </styledEl.StepsWrapper>
+      <RenderProgressTopSection stepName="delayed" order={order} showCancellationModal={showCancellationModal} />
+      <StepsWrapper
+        steps={STEPS}
+        currentStep={1}
+        extraContent={
+          <styledEl.Description>
+            This is taking longer than expected! There may be a network issue (such as a gas spike) that is preventing
+            solvers from picking up your order. The issue should resolve momentarily.{' '}
+            {showCancellationModal && (
+              <>
+                You can wait or{' '}
+                <styledEl.CancelButton
+                  onClick={() => {
+                    showCancellationModal && showCancellationModal()
+                    trackCancelClick()
+                  }}
+                >
+                  cancel the order
+                </styledEl.CancelButton>
+                .
+              </>
+            )}
+          </styledEl.Description>
+        }
+      />
     </styledEl.ProgressContainer>
   )
 }
@@ -854,131 +962,80 @@ function UnfillableStep({ order, showCancellationModal }: OrderProgressBarV2Prop
 
   return (
     <styledEl.ProgressContainer>
-      <styledEl.ProgressTopSection>
-        <styledEl.ProgressImageWrapper bgColor={'#FFDB9C'} padding={'20px 0 0'}>
-          <img src={STEP_IMAGE_UNFILLABLE} alt="Order out of market" />
-        </styledEl.ProgressImageWrapper>
-        <OrderIntent order={order} />
-      </styledEl.ProgressTopSection>
-      <styledEl.StepsWrapper>
-        <StepComponent
-          status="unfillable"
-          isFirst={false}
-          step={{ ...STEPS[1], title: 'Solving: out of market' }}
-          _index={1}
-          customColor={`var(${UI.COLOR_ALERT_TEXT})`}
-          extraContent={
-            <styledEl.Description>
-              Your order's price is currently out of market.{' '}
-              {showCancellationModal && (
-                <>
-                  You can either wait or{' '}
-                  <styledEl.CancelButton
-                    onClick={() => {
-                      showCancellationModal && showCancellationModal()
-                      trackCancelClick()
-                    }}
-                  >
-                    cancel the order
-                  </styledEl.CancelButton>
-                  .
-                </>
-              )}
-            </styledEl.Description>
-          }
-        />
-        <StepComponent
-          status="disabled"
-          isFirst={false}
-          step={STEPS[2]}
-          _index={2}
-          extraContent={<styledEl.Description>The winning solver will execute your order.</styledEl.Description>}
-        />
-      </styledEl.StepsWrapper>
+      <RenderProgressTopSection stepName="unfillable" order={order} showCancellationModal={showCancellationModal} />
+      <StepsWrapper
+        steps={STEPS}
+        currentStep={1}
+        customStepTitles={{ 1: 'Price out of market' }}
+        extraContent={
+          <styledEl.Description>
+            Your order's price is currently out of market.{' '}
+            {showCancellationModal && (
+              <>
+                You can either wait or{' '}
+                <styledEl.CancelButton
+                  onClick={() => {
+                    showCancellationModal && showCancellationModal()
+                    trackCancelClick()
+                  }}
+                >
+                  cancel the order
+                </styledEl.CancelButton>
+                .
+              </>
+            )}
+          </styledEl.Description>
+        }
+        customColor={`var(${UI.COLOR_DANGER_TEXT})`}
+      />
     </styledEl.ProgressContainer>
   )
 }
 
-function SubmissionFailedStep({ order }: OrderProgressBarV2Props) {
+function SubmissionFailedStep({ order, stepName }: OrderProgressBarV2Props) {
   return (
     <styledEl.ProgressContainer>
-      <styledEl.ProgressTopSection>
-        <styledEl.ProgressImageWrapper height={'auto'}>
-          <Lottie
-            animationData={STEP_LOTTIE_NEXTBATCH}
-            loop={false}
-            autoplay
-            style={{ width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
-          />
-        </styledEl.ProgressImageWrapper>
-        <OrderIntent order={order} />
-      </styledEl.ProgressTopSection>
-      <styledEl.StepsWrapper>
-        <StepComponent
-          status="active"
-          isFirst={false}
-          step={{ ...STEPS[1], title: 'Solving: Finding new solution' }}
-          _index={1}
-          customColor={`var(${UI.COLOR_ALERT_TEXT})`}
-          extraContent={
-            <styledEl.Description>
-              The order could not be settled on-chain. Solvers are competing to find a new solution.
-              <br />
-              <styledEl.Link
-                href="https://cow.fi/learn/understanding-batch-auctions"
-                target="_blank"
-                onClick={() => trackLearnMoreClick('SubmissionFailed')}
-              >
-                Learn more ↗
-              </styledEl.Link>
-            </styledEl.Description>
-          }
-        />
-        <StepComponent
-          status="next"
-          isFirst={false}
-          step={STEPS[2]}
-          _index={2}
-          extraContent={<styledEl.Description>The winning solver will execute your order.</styledEl.Description>}
-        />
-      </styledEl.StepsWrapper>
+      <RenderProgressTopSection stepName={stepName} order={order} showCancellationModal={null} />
+      <StepsWrapper
+        steps={STEPS}
+        currentStep={1}
+        extraContent={
+          <styledEl.Description>
+            The order could not be settled on-chain. Solvers are competing to find a new solution.
+            <br />
+            <styledEl.Link
+              href="https://cow.fi/learn/understanding-batch-auctions"
+              target="_blank"
+              onClick={() => trackLearnMoreClick('SubmissionFailed')}
+            >
+              Learn more ↗
+            </styledEl.Link>
+          </styledEl.Description>
+        }
+      />
     </styledEl.ProgressContainer>
   )
 }
 
-function CancellingStep({ order }: OrderProgressBarV2Props) {
+function CancellingStep({ order, stepName }: OrderProgressBarV2Props) {
   return (
     <styledEl.ProgressContainer>
-      <styledEl.ProgressTopSection>
-        <styledEl.ProgressImageWrapper height={'auto'}>
-          <img src={STEP_IMAGE_CANCELLED} alt="Cancelling order" />
-        </styledEl.ProgressImageWrapper>
-        <OrderIntent order={order} />
-      </styledEl.ProgressTopSection>
-      <styledEl.StepsWrapper>
-        <StepComponent status="done" isFirst={false} step={STEPS[0]} _index={0} />
-        <StepComponent
-          status="cancelling"
-          isFirst={false}
-          step={{ ...STEPS[1], title: 'Cancelling order' }}
-          _index={1}
-          customColor={`var(${UI.COLOR_DANGER_TEXT})`}
-          extraContent={<styledEl.Description>Your order is being cancelled.</styledEl.Description>}
-        />
-      </styledEl.StepsWrapper>
+      <RenderProgressTopSection stepName={stepName} order={order} showCancellationModal={null} />
+      <StepsWrapper
+        steps={STEPS}
+        currentStep={1}
+        customStepTitles={{ 1: 'Cancelling' }}
+        extraContent={<styledEl.Description>Your order is being cancelled.</styledEl.Description>}
+        customColor={`var(${UI.COLOR_DANGER_TEXT})`}
+      />
     </styledEl.ProgressContainer>
   )
 }
 
-function CancelledStep({ order }: OrderProgressBarV2Props) {
+function CancelledStep({ order, stepName }: OrderProgressBarV2Props) {
   return (
     <styledEl.ProgressContainer>
-      <styledEl.ProgressTopSection>
-        <styledEl.ProgressImageWrapper height={'auto'}>
-          <img src={STEP_IMAGE_CANCELLED} alt="Cancelling order" />
-        </styledEl.ProgressImageWrapper>
-        <OrderIntent order={order} />
-      </styledEl.ProgressTopSection>
+      <RenderProgressTopSection stepName={stepName} order={order} showCancellationModal={null} />
       <styledEl.ConclusionContent>
         <styledEl.TransactionStatus status={'expired'} flexFlow="column" margin={'14px auto 24px'}>
           Your order was cancelled
@@ -1019,20 +1076,7 @@ function ExpiredStep({ order, navigateToNewOrder }: OrderProgressBarV2Props) {
 
   return (
     <styledEl.ProgressContainer>
-      <styledEl.ProgressTopSection>
-        <styledEl.ProgressImageWrapper height={'auto'}>
-          <styledEl.ClockAnimation>
-            <Lottie
-              animationData={LOTTIE_TIME_EXPIRED_DARK}
-              loop={false}
-              autoplay
-              style={{ width: '100%', height: '100%' }}
-            />
-          </styledEl.ClockAnimation>
-          <img src={STEP_IMAGE_EXPIRED} alt="Order expired" />
-        </styledEl.ProgressImageWrapper>
-        <OrderIntent order={order} />
-      </styledEl.ProgressTopSection>
+      <RenderProgressTopSection stepName="expired" order={order} showCancellationModal={null} />
       <styledEl.ConclusionContent>
         <styledEl.TransactionStatus status={'expired'} flexFlow="column" margin={'14px auto 24px'}>
           Your order expired

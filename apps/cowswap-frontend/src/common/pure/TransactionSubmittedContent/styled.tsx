@@ -117,6 +117,7 @@ export const Section = styled.div`
   justify-content: flex-start;
   display: flex;
   flex-flow: row wrap;
+  transition: height 1s ease-in-out;
 
   ${Media.upToSmall()} {
     padding: 0 16px 78px;
@@ -144,6 +145,7 @@ export const Wrapper = styled.div`
   overflow-y: auto; // fallback for 'overlay'
   overflow-y: overlay;
   height: inherit;
+  transition: height 1s ease-in-out;
   ${({ theme }) => theme.colorScrollbar};
 `
 
