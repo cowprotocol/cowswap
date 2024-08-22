@@ -116,7 +116,7 @@ export const Section = styled.div`
   align-items: center;
   justify-content: flex-start;
   display: flex;
-  flex-flow: column wrap;
+  flex-flow: row wrap;
 
   ${Media.upToSmall()} {
     padding: 0 16px 78px;
