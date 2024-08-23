@@ -22,6 +22,7 @@ import { ActivityStatus } from 'legacy/hooks/useRecentActivity'
 import { OrderStatus } from 'legacy/state/orders/actions'
 
 import { useToggleAccountModal } from 'modules/account'
+import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { EthFlowStepper } from 'modules/swap/containers/EthFlowStepper'
 
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
@@ -193,7 +194,9 @@ export function ActivityDetails(props: {
 
   const isSwap = order && getUiOrderType(order) === UiOrderType.SWAP
 
-  const showProgressBar = activityState === 'open' && isSwap && order
+  const { disableProgressBar } = useInjectedWidgetParams()
+
+  const showProgressBar = activityState === 'open' && isSwap && order && !disableProgressBar
   const showCancellationModal = order ? getShowCancellationModal(order) : null
 
   const { surplusFiatValue, showFiatValue, surplusToken, surplusAmount } = useGetSurplusData(order)
