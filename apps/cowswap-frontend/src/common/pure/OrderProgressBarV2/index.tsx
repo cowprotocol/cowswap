@@ -366,7 +366,7 @@ const RenderProgressTopSection: React.FC<{
   solverCompetition?: SolverCompetition[]
   showCancellationModal: Command | null
   surplusData?: SurplusData
-}> = ({ stepName, order, countdown, solverCompetition, showCancellationModal, surplusData }) => {
+}> = ({ stepName, order, countdown, surplusData }) => {
   const { randomImage, randomBenefit } = useMemo(
     () => ({
       randomImage: SURPLUS_IMAGES[getRandomInt(0, SURPLUS_IMAGES.length - 1)],
@@ -723,15 +723,15 @@ function FinishedStep({
 }: OrderProgressBarV2Props) {
   const [showAllSolvers, setShowAllSolvers] = useState(false)
 
-  const { randomBenefit } = useMemo(
-    () => ({
-      randomImage: SURPLUS_IMAGES[getRandomInt(0, SURPLUS_IMAGES.length - 1)],
-      randomBenefit: COW_SWAP_BENEFITS[getRandomInt(0, COW_SWAP_BENEFITS.length - 1)],
-    }),
-    []
-  )
+  // const { randomBenefit } = useMemo(
+  //   () => ({
+  //     randomImage: SURPLUS_IMAGES[getRandomInt(0, SURPLUS_IMAGES.length - 1)],
+  //     randomBenefit: COW_SWAP_BENEFITS[getRandomInt(0, COW_SWAP_BENEFITS.length - 1)],
+  //   }),
+  //   []
+  // )
 
-  const { surplusFiatValue, surplusPercent, surplusAmount, showSurplus } = surplusData || {}
+  const { surplusFiatValue, surplusAmount, showSurplus } = surplusData || {}
   const cancellationFailed = stepName === 'cancellationFailed'
   console.log('FinishedStep - cancellationFailed:', cancellationFailed)
   console.log('FinishedStep - showSurplus:', showSurplus)
@@ -930,14 +930,14 @@ function SolvingStep({
   countdown,
   stepName,
   showCancellationModal,
-  solverCompetition,
+  // solverCompetition,
 }: OrderProgressBarV2Props) {
   const isUnfillable = stepName === 'unfillable'
   const isDelayed = stepName === 'delayed'
   const isSubmissionFailed = stepName === 'submissionFailed'
   const isSolved = stepName === 'solved'
 
-  const winningSolver = solverCompetition?.[0]
+  // const winningSolver = solverCompetition?.[0]
 
   const trackCancelClick = () => {
     cowAnalytics.sendEvent({
