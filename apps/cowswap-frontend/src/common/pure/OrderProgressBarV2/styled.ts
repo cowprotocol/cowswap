@@ -4,6 +4,8 @@ import { Font, LinkStyledButton, Media, UI } from '@cowprotocol/ui'
 import styled, { css, keyframes } from 'styled-components/macro'
 
 import { CancelButton as CancelButtonOriginal } from '../CancelButton'
+import { TokenLogoWrapper } from '../../../../../../libs/tokens/src/pure/TokenLogo'
+import { SingleLetterLogoWrapper } from '../../../../../../libs/tokens/src/pure/TokenLogo/SingleLetterLogo'
 
 const BLUE_COLOR = '#65d9ff'
 
@@ -150,7 +152,8 @@ export const Button = styled(LinkStyledButton)`
 export const ProgressImageWrapper = styled.div<{ bgColor?: string; padding?: string; height?: string; gap?: string }>`
   width: 100%;
   height: ${({ height }) => height || '246px'};
-  max-height: 246px;
+  min-height: 200px;
+  max-height: ${({ height }) => height || '246px'};
   display: flex;
   justify-content: center;
   align-items: center;
@@ -159,7 +162,7 @@ export const ProgressImageWrapper = styled.div<{ bgColor?: string; padding?: str
   padding: ${({ padding }) => padding || '0'};
   gap: ${({ gap }) => gap || '0'};
   background: ${({ bgColor }) => bgColor || `var(${UI.COLOR_PAPER_DARKER})`};
-  transition: all 0.3s ease-in-out;
+  transition: height 0.3s ease-in-out;
   position: relative;
   overflow: hidden;
 
@@ -209,6 +212,11 @@ export const OriginalOrderIntent = styled.span`
   width: 100%;
   text-align: center;
   gap: 5px;
+
+  ${SingleLetterLogoWrapper} {
+    background: ${({ theme }) => (theme.darkMode ? `var(${UI.COLOR_TEXT})` : `var(${UI.COLOR_PAPER_DARKEST})`)};
+    color: ${({ theme }) => (theme.darkMode ? `var(${UI.COLOR_PAPER_DARKER})` : `var(${UI.COLOR_TEXT})`)};
+  }
 `
 
 export const OrderTokenImage = styled.img`

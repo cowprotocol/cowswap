@@ -77,6 +77,8 @@ export const Header = styled.div`
   justify-content: space-between;
   align-items: center;
   background: var(${UI.COLOR_PAPER});
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
   position: sticky;
   top: 0;
   left: 0;
