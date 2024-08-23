@@ -49,11 +49,13 @@ export default function Page({ siteConfigData }: PageProps) {
             <BodyContent>
               <h2>
                 Know someone who is not just looking for a job but for a great opportunity to grow? Refer them to us to
-                earn $6,000 in USDC or USD.
+                earn up to $6,000 in USDC or USD.
               </h2>
               <p>
-                We will reward you with a referral bonus of <b>6,000 USDC or USD</b> per placement. Your referral is
-                successful and paid once the Candidate clears <b>their first 3 months</b> of work in their new role.
+                We will reward you with a referral bonus of up to <b>6,000 USDC or USD</b> per placement. The referral
+                bonus amount can vary for each role. You can find the exact amount listed in the job description on our
+                website at <a href="https://cow.fi/careers">https://cow.fi/careers</a>. Your referral is successful and
+                paid once the Candidate clears <b>their first 3 months</b> of work in their new role.
               </p>
 
               <p>
@@ -89,15 +91,15 @@ export default function Page({ siteConfigData }: PageProps) {
                   someone else first, the Referrer is not eligible.
                 </li>
                 <li>
-                  If two or more Referrers refer the same Candidate, then only the <b>first</b> Referrer provided by
-                  such Candidate will be eligible for the referral bonus. We will let the Referrers know.
+                  If two or more Referrers refer the same Candidate, only the <b>first</b> Referrer provided by such
+                  Candidate will be eligible for the referral bonus. We will let the Referrers know.
                 </li>
                 <li>There is no limit to the number of referrals that a Referrer can make.</li>
               </ul>
 
               <h4>Candidates Eligibility</h4>
               <ul>
-                <li>Any individual (or entity) who is not the Referrer, or a current or former contractor of CoW.</li>
+                <li>Any individual (or entity) who is not the Referrer or a current or former contractor of CoW.</li>
                 <li>
                   Any individual who is not bound by non-compete agreements or any other similar agreements that would
                   prohibit CoW from engaging with them.
@@ -106,6 +108,12 @@ export default function Page({ siteConfigData }: PageProps) {
 
               <h4>Referral Procedures</h4>
               <ul>
+                <li>
+                  The referrer should reach out to a CoW core team member or directly contact the People department via
+                  email at <a href="mailto:people@cow.fi">people@cow.fi</a>, LinkedIn, or Telegram. When reaching out,
+                  the Referrer must include the candidate's name, surname, and email or LinkedIn profile. The Referrer
+                  is responsible for ensuring that the Candidate has given consent to share this information.
+                </li>
                 <li>
                   To apply for a specific role at CoW, <b>Candidates</b> are required to submit their application
                   through the official website: <a href="https://cow.fi/careers">https://cow.fi/careers</a>.{' '}
@@ -130,10 +138,12 @@ export default function Page({ siteConfigData }: PageProps) {
               <h4>Referral bonus and invoice</h4>
               <ul>
                 <li>
-                  The Referrer becomes eligible to receive the full referral bonus of five thousand USDC or USD (6,000)
-                  after three (3) months from the Candidate&apos;s start date, provided that the Candidate remains
-                  providing services to CoW during this period. The Referrer can decide if they want to be paid in USDC
-                  or USD.
+                  The Referrer becomes eligible to receive the full referral bonus up to six thousand USDC or USD
+                  (6,000) after six (6) months from the Candidate's start date, provided that the Candidate remains
+                  providing services to CoW during this period. The referral bonus amount can vary for each role. You
+                  can find the exact amount listed in the job description on our website at{' '}
+                  <a href="https://cow.fi/careers">https://cow.fi/careers</a>. The Referrer can decide if they want to
+                  be paid in USDC or USD.
                 </li>
                 <li>
                   The referral bonus is excl. VAT (VAT can be added), but net of any other tax, such as, income tax or
