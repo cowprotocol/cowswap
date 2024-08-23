@@ -1,11 +1,10 @@
 import IMAGE_STAR_SHINE from '@cowprotocol/assets/cow-swap/star-shine.svg'
+import { SingleLetterLogoWrapper } from '@cowprotocol/tokens'
 import { Font, LinkStyledButton, Media, UI } from '@cowprotocol/ui'
 
 import styled, { css, keyframes } from 'styled-components/macro'
 
 import { CancelButton as CancelButtonOriginal } from '../CancelButton'
-import { TokenLogoWrapper } from '../../../../../../libs/tokens/src/pure/TokenLogo'
-import { SingleLetterLogoWrapper } from '../../../../../../libs/tokens/src/pure/TokenLogo/SingleLetterLogo'
 
 const BLUE_COLOR = '#65d9ff'
 
