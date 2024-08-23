@@ -7,24 +7,13 @@ import { CancelButton as CancelButtonOriginal } from '../CancelButton'
 
 const BLUE_COLOR = '#65d9ff'
 
-const slideAnimation = (direction: 'up' | 'down', status: string, isDarkMode: boolean) => keyframes`
-  from {
-    transform: translateY(${direction === 'up' ? '20px' : '-20px'});
-    opacity: 0;
+const progressAnimation = keyframes`
+  0% {
+    stroke-dashoffset: 0;
   }
-  to {
-    transform: translateY(0);
-    opacity: ${getOpacity(status, isDarkMode)};
+  100% {
+    stroke-dashoffset: -283;  // Approximately 2 * PI * 45
   }
-`
-
-const animationMixin = css<{ status: string }>`
-  animation: ${({ status, theme }) => {
-      if (status === 'done') return slideAnimation('up', status, theme.darkMode)
-      if (status === 'active') return slideAnimation('down', status, theme.darkMode)
-      return 'none'
-    }}
-    1s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
 `
 
 const sweatDropAnimation = keyframes`
@@ -53,65 +42,53 @@ const getOpacity = (status: string, isDarkMode: boolean): number => {
   return opacityMap[status as keyof typeof opacityMap] || 1
 }
 
-const getStatusColor = (status: string): string => {
-  const colorMap: Record<string, string> = {
-    done: '#4CAF50',
-    active: '#2196F3',
-    error: '#F44336',
-  }
-  return colorMap[status] || 'currentColor'
-}
-
-export const Icon = styled.div<{ status: string; customColor?: string }>`
-  --width: 28px;
-  width: var(--width);
-  height: auto;
-  min-width: var(--width);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-right: 15px;
-  color: ${({ customColor }) => customColor || `var(${UI.COLOR_PRIMARY_LIGHTER})`};
-  font-weight: bold;
-  font-size: 24px;
-
-  > svg {
-    color: ${({ status }) => getStatusColor(status)};
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-  }
-`
-
 export const ProgressContainer = styled.div`
   width: 100%;
+  height: auto;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding: 0;
+  padding: 0 0 24px;
 `
 
-export const StepsWrapper = styled.div`
+export const StepsContainer = styled.div<{ $height: number; $minHeight?: string; bottomGradient?: boolean }>`
+  position: relative;
+  height: ${({ $height }) => $height}px;
+  min-height: ${({ $minHeight }) => $minHeight || '192px'};
   overflow: hidden;
-  display: flex;
-  flex-flow: column wrap;
-  padding: 30px 30px 0;
-  gap: 28px;
+  transition: height 0.5s ease-in-out;
   width: 100%;
-  margin: 0 auto;
+  padding: 0;
 
-  ${Media.upToSmall()} {
-    padding: 30px 0 0;
+  // implement a gradient to hide the bottom of the steps container using white to opacity white using pseudo element
+  &::after {
+    content: ${({ bottomGradient }) => (bottomGradient ? '""' : 'none')};
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 30px;
+    background: linear-gradient(to bottom, transparent, var(${UI.COLOR_PAPER}));
   }
 `
 
+export const StepsWrapper = styled.div`
+  display: flex;
+  flex-flow: column nowrap;
+  padding: 0;
+  width: 100%;
+  position: relative;
+  transition: transform 1s ease-in-out;
+`
+
 export const Step = styled.div<{ status: string; isFirst: boolean }>`
+  transition: opacity 0.3s ease-in-out;
   display: flex;
   align-items: flex-start;
-  margin: 0;
+  margin: 0 auto;
+  width: 100%;
+  padding: 30px 30px 10px;
   opacity: ${({ status, theme }) => getOpacity(status, theme.darkMode)};
-  transition: opacity 0.35s cubic-bezier(0.19, 1, 0.22, 1);
-  ${animationMixin}
 `
 
 export const Content = styled.div`
@@ -211,25 +188,6 @@ export const DebugPanel = styled.div`
   z-index: 1000;
 `
 
-export const LoadingEllipsis = styled.span`
-  &::after {
-    content: '...';
-    animation: ellipsis 1s infinite;
-  }
-
-  @keyframes ellipsis {
-    0% {
-      content: '.';
-    }
-    33% {
-      content: '..';
-    }
-    66% {
-      content: '...';
-    }
-  }
-`
-
 export const ProgressTopSection = styled.div`
   position: relative;
   width: 100%;
@@ -238,6 +196,7 @@ export const ProgressTopSection = styled.div`
   align-items: center;
   border-radius: 21px;
   background: var(${UI.COLOR_PAPER_DARKER});
+  min-height: 230px;
 `
 
 export const OriginalOrderIntent = styled.span`
@@ -271,7 +230,7 @@ export const AnimatedTokensWrapper = styled.div`
   overflow: hidden;
 `
 
-export const TokenWrapper = styled.div<{ position: 'left' | 'center' | 'right' }>`
+export const TokenWrapper = styled.div<{ position: 'left' | 'center' | 'right'; bgColor?: string }>`
   --size: 136px;
   width: var(--size);
   height: var(--size);
@@ -286,9 +245,10 @@ export const TokenWrapper = styled.div<{ position: 'left' | 'center' | 'right' }
   animation: ${({ position }) => (position === 'left' ? 'appear-left' : position === 'right' ? 'appear-right' : 'none')}
     2.5s cubic-bezier(0.19, 1, 0.22, 1) forwards;
   animation-delay: ${({ position }) => (position === 'center' ? '0s' : '0.75s')};
-  border: ${({ position }) => (position === 'right' ? `8px solid ${BLUE_COLOR}` : '0')};
+  border: ${({ position }) => (position === 'right' || 'center' ? `8px solid ${BLUE_COLOR}` : '0')};
   box-sizing: content-box;
-  background: ${({ position }) => (position === 'right' ? `var(${UI.COLOR_PRIMARY})` : 'transparent')};
+  background: ${({ position, bgColor }) =>
+    position === 'right' ? bgColor || `var(${UI.COLOR_PRIMARY})` : 'transparent'};
 
   ${({ position }) =>
     position === 'right' &&
@@ -325,31 +285,29 @@ export const TokenWrapper = styled.div<{ position: 'left' | 'center' | 'right' }
 `
 
 export const CountdownWrapper = styled.div`
+  --size: 160px;
+  height: var(--size);
+  width: var(--size);
+  top: 0;
+  bottom: 0;
   margin: auto;
+  left: 40px;
+  background: #66d9ff;
+  border-radius: var(--size);
   position: absolute;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 71px;
-  width: 150px;
-  top: initial;
-  left: 0;
-  bottom: 52px;
-
-  ${Media.upToSmall()} {
-    background: #05a1ff;
-    bottom: 0;
-    border-top-right-radius: 16px;
-  }
 `
 
 export const CountdownText = styled.div`
   font-family: ${Font.familyMono};
-  font-size: 70px;
+  font-size: 68px;
   font-weight: bold;
   color: var(${UI.COLOR_BLUE});
   z-index: 1;
   font-variant-numeric: slashed-zero;
+  letter-spacing: -3px;
 `
 
 export const FinishedStepContainer = styled.div`
@@ -791,24 +749,51 @@ export const CancellationFailedBanner = styled.div`
   font-size: 15px;
 `
 
-const spinAnimation = keyframes`
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+export const NumberedElement = styled.div<{
+  status: string
+  customColor?: string
+  isUnfillable?: boolean
+  isCancelling?: boolean
+}>`
+  --size: 28px;
+  width: var(--size);
+  height: var(--size);
+  min-width: var(--size);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 15px;
+  color: ${({ status }) => (status === 'active' ? `var(${UI.COLOR_PAPER})` : `var(${UI.COLOR_PAPER})`)};
+  font-weight: bold;
+  font-size: 16px;
+  background-color: ${({ status, customColor, isUnfillable, isCancelling }) =>
+    isCancelling
+      ? `var(${UI.COLOR_DANGER_BG})`
+      : isUnfillable
+      ? '#996815'
+      : customColor || (status === 'active' ? '#2196F3' : `var(${UI.COLOR_TEXT})`)};
+  border-radius: 50%;
+  position: relative;
 `
 
-export const SpinnerIcon = styled.div`
-  width: var(--width);
-  height: var(--width);
-  animation: ${spinAnimation} 1s linear infinite;
+export const Spinner = styled.div`
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  right: -4px;
+  bottom: -4px;
+  border: 2px solid transparent;
+  border-top-color: ${`var(${UI.COLOR_PRIMARY_LIGHTER})`};
+  border-radius: 50%;
+  animation: spin 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
 
-  > svg {
-    width: 100%;
-    height: 100%;
-    color: inherit;
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
   }
 `
 
@@ -910,4 +895,20 @@ export const BenefitTagLine = styled.div`
   padding: 2px 10px;
   background-color: #3fc4ff;
   color: #000000;
+`
+
+export const CircularProgress = styled.svg`
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  transform: rotate(-90deg);
+  padding: 8px;
+`
+
+export const CircleProgress = styled.circle`
+  fill: none;
+  stroke: #05a1ff;
+  stroke-width: 6;
+  stroke-linecap: round;
+  animation: ${progressAnimation} 15s linear infinite;
 `
