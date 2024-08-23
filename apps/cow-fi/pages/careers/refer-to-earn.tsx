@@ -55,7 +55,7 @@ export default function Page({ siteConfigData }: PageProps) {
                 We will reward you with a referral bonus of up to <b>6,000 USDC or USD</b> per placement. The referral
                 bonus amount can vary for each role. You can find the exact amount listed in the job description on our
                 website at <a href="https://cow.fi/careers">https://cow.fi/careers</a>. Your referral is successful and
-                paid once the Candidate clears <b>their first 3 months</b> of work in their new role.
+                paid once the Candidate clears <b>their first 6 months</b> of work in their new role.
               </p>
 
               <p>

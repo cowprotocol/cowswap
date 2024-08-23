@@ -146,11 +146,11 @@ export default function Page({ siteConfigData, jobsData }: PageProps) {
                 fullWidth
               >
                 <TopicCardInner contentAlign="left" height="100%">
-                  <TopicTitle fontSize={34}>💸 Refer a friend and earn 6,000 in USDC or USD!</TopicTitle>
+                  <TopicTitle fontSize={34}>💸 Refer a friend and earn up to 6,000 in USDC or USD!</TopicTitle>
 
                   <TopicDescription fontSize={24} fontWeight={Font.weight.regular} margin="0 0 24px">
                     Know someone who is looking not just for a job, but for a great opportunity to grow? Refer them to
-                    earn $6,000 in USD or USDC.{' '}
+                    earn up to $6,000 in USD or USDC.{' '}
                   </TopicDescription>
                   <Link
                     linkType={LinkType.TopicButton}
