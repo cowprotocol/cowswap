@@ -75,11 +75,6 @@ const Fixtures = {
       <OrderProgressBarV2 {...defaultProps} stepName="solved" />
     </Wrapper>
   ),
-  '2d-nextBatch': (
-    <Wrapper>
-      <OrderProgressBarV2 {...defaultProps} stepName="nextBatch" />
-    </Wrapper>
-  ),
   '3-executing': (
     <Wrapper>
       <OrderProgressBarV2 {...defaultProps} stepName="executing" />

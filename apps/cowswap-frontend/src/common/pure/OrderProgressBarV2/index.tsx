@@ -1,4 +1,3 @@
-import { AnimatePresence, motion } from 'framer-motion'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import PROGRESS_BAR_BAD_NEWS from '@cowprotocol/assets/cow-swap/progressbar-bad-news.svg'
@@ -27,6 +26,7 @@ import { Command } from '@cowprotocol/types'
 import { ExternalLink, InfoTooltip, ProductLogo, ProductVariant, TokenAmount, UI } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
+import { AnimatePresence, motion } from 'framer-motion'
 import Lottie from 'lottie-react'
 import { PiCaretDown, PiCaretUp, PiTrophyFill } from 'react-icons/pi'
 import SVG from 'react-inlinesvg'
@@ -108,7 +108,7 @@ const StepsWrapper: React.FC<{
       <styledEl.StepsWrapper ref={wrapperRef}>
         {steps.map((step, index) => {
           const customTitle = customStepTitles && customStepTitles[index]
-          let status =
+          const status =
             index === currentStep
               ? isCancelling
                 ? 'cancelling'
@@ -376,7 +376,7 @@ const RenderProgressTopSection: React.FC<{
     []
   )
 
-  const { surplusFiatValue, surplusPercent, surplusAmount, showSurplus } = surplusData || {}
+  const { surplusPercent, showSurplus } = surplusData || {}
   const shouldShowSurplus = DEBUG_FORCE_SHOW_SURPLUS || showSurplus
   const surplusPercentValue = surplusPercent ? parseFloat(surplusPercent).toFixed(2) : 'N/A'
 
@@ -408,7 +408,6 @@ const RenderProgressTopSection: React.FC<{
       case 'solving':
       case 'solved':
       case 'unfillable':
-      case 'nextBatch':
       case 'delayed':
       case 'submissionFailed':
         return (
@@ -424,12 +423,12 @@ const RenderProgressTopSection: React.FC<{
               stepName === 'unfillable' ? '20px 0 0' : stepName === 'solving' || stepName === 'solved' ? '16px' : '0'
             }
             height={
-              stepName === 'nextBatch' || stepName === 'delayed' || stepName === 'submissionFailed' ? '229px' : 'auto'
+              stepName === 'delayed' || stepName === 'submissionFailed' ? '229px' : 'auto'
             }
           >
             {stepName === 'unfillable' ? (
               <img src={STEP_IMAGE_UNFILLABLE} alt="Order out of market" />
-            ) : stepName === 'nextBatch' || stepName === 'delayed' || stepName === 'submissionFailed' ? (
+            ) : stepName === 'delayed' || stepName === 'submissionFailed' ? (
               <Lottie
                 animationData={STEP_LOTTIE_NEXTBATCH}
                 loop={true}
@@ -564,9 +563,6 @@ const RenderProgressTopSection: React.FC<{
     stepName,
     order,
     countdown,
-    solverCompetition,
-    showCancellationModal,
-    surplusData,
     randomImage,
     randomBenefit,
     shouldShowSurplus,
@@ -685,12 +681,12 @@ function getTwitterShareUrl(surplusData: SurplusData | undefined, order: Order |
   return `https://x.com/intent/tweet?text=${twitterText}`
 }
 
-function shareSurplusOnTwitter(surplusData: SurplusData | undefined, order: Order | undefined) {
-  return () => {
-    const twitterUrl = getTwitterShareUrl(surplusData, order)
-    window.open(twitterUrl, '_blank', 'noopener,noreferrer')
-  }
-}
+// function shareSurplusOnTwitter(surplusData: SurplusData | undefined, order: Order | undefined) {
+//   return () => {
+//     const twitterUrl = getTwitterShareUrl(surplusData, order)
+//     window.open(twitterUrl, '_blank', 'noopener,noreferrer')
+//   }
+// }
 
 function getTwitterTextForBenefit(benefit: string): string {
   return encodeURIComponent(`Did you know? ${benefit}\n\nStart swapping on swap.cow.fi #CoWSwap @CoWSwap 🐮`)
@@ -701,12 +697,12 @@ function getTwitterShareUrlForBenefit(benefit: string): string {
   return `https://x.com/intent/tweet?text=${twitterText}`
 }
 
-function shareBenefitOnTwitter(benefit: string) {
-  return () => {
-    const twitterUrl = getTwitterShareUrlForBenefit(benefit)
-    window.open(twitterUrl, '_blank', 'noopener,noreferrer')
-  }
-}
+// function shareBenefitOnTwitter(benefit: string) {
+//   return () => {
+//     const twitterUrl = getTwitterShareUrlForBenefit(benefit)
+//     window.open(twitterUrl, '_blank', 'noopener,noreferrer')
+//   }
+// }
 
 const SURPLUS_IMAGES = [
   PROGRESSBAR_COW_SURPLUS_1,
@@ -726,7 +722,7 @@ function FinishedStep({
 }: OrderProgressBarV2Props) {
   const [showAllSolvers, setShowAllSolvers] = useState(false)
 
-  const { randomImage, randomBenefit } = useMemo(
+  const { randomBenefit } = useMemo(
     () => ({
       randomImage: SURPLUS_IMAGES[getRandomInt(0, SURPLUS_IMAGES.length - 1)],
       randomBenefit: COW_SWAP_BENEFITS[getRandomInt(0, COW_SWAP_BENEFITS.length - 1)],
@@ -760,22 +756,22 @@ function FinishedStep({
 
   const isDarkMode = useIsDarkMode()
 
-  const surplusPercentValue = surplusPercent ? parseFloat(surplusPercent).toFixed(2) : 'N/A'
+  // const surplusPercentValue = surplusPercent ? parseFloat(surplusPercent).toFixed(2) : 'N/A'
 
-  const shareOnTwitter = useCallback(() => {
-    const twitterUrl = shouldShowSurplus
-      ? getTwitterShareUrl(surplusData, order)
-      : getTwitterShareUrlForBenefit(randomBenefit)
-    window.open(twitterUrl, '_blank', 'noopener,noreferrer')
-  }, [shouldShowSurplus, surplusData, order, randomBenefit])
+  // const shareOnTwitter = useCallback(() => {
+  //   const twitterUrl = shouldShowSurplus
+  //     ? getTwitterShareUrl(surplusData, order)
+  //     : getTwitterShareUrlForBenefit(randomBenefit)
+  //   window.open(twitterUrl, '_blank', 'noopener,noreferrer')
+  // }, [shouldShowSurplus, surplusData, order, randomBenefit])
 
-  const trackShareClick = useCallback(() => {
-    cowAnalytics.sendEvent({
-      category: Category.PROGRESS_BAR,
-      action: 'Click Share Button',
-      label: shouldShowSurplus ? 'Surplus' : 'Benefit',
-    })
-  }, [shouldShowSurplus])
+  // const trackShareClick = useCallback(() => {
+  //   cowAnalytics.sendEvent({
+  //     category: Category.PROGRESS_BAR,
+  //     action: 'Click Share Button',
+  //     label: shouldShowSurplus ? 'Surplus' : 'Benefit',
+  //   })
+  // }, [shouldShowSurplus])
 
   // Early return if order is not set
   if (!order) {
@@ -934,7 +930,6 @@ function SolvingStep({
   const isUnfillable = stepName === 'unfillable'
   const isDelayed = stepName === 'delayed'
   const isSubmissionFailed = stepName === 'submissionFailed'
-  const isNextBatch = stepName === 'nextBatch'
   const isSolved = stepName === 'solved'
 
   const winningSolver = solverCompetition?.[0]
@@ -952,7 +947,7 @@ function SolvingStep({
       <RenderProgressTopSection
         stepName={stepName}
         order={order}
-        countdown={isUnfillable || isDelayed || isSubmissionFailed || isNextBatch || isSolved ? undefined : countdown}
+        countdown={isUnfillable || isDelayed || isSubmissionFailed || isSolved ? undefined : countdown}
         showCancellationModal={showCancellationModal}
       />
       <StepsWrapper
@@ -965,11 +960,9 @@ function SolvingStep({
               ? { 1: 'Order delayed' }
               : isSubmissionFailed
                 ? { 1: 'Submission failed' }
-                : isNextBatch
-                  ? { 1: 'Waiting for next batch' }
-                  : isSolved
-                    ? { 1: 'Solved' }
-                    : undefined
+                : isSolved
+                  ? { 1: 'Solved' }
+                  : undefined
         }
         extraContent={
           <styledEl.Description>
@@ -1012,8 +1005,6 @@ function SolvingStep({
               </>
             ) : isSubmissionFailed ? (
               <>The order could not be settled on-chain. Solvers are competing to find a new solution.</>
-            ) : isNextBatch ? (
-              <>Waiting for the next batch to submit your order.</>
             ) : isSolved ? (
               <>
                 <strong>
@@ -1158,7 +1149,6 @@ const STEP_NAME_TO_STEP_COMPONENT: Record<OrderProgressBarStepName, React.Compon
   executing: ExecutingStep,
   finished: FinishedStep,
   solved: SolvingStep, // Use SolvingStep for 'solved' state
-  nextBatch: SolvingStep,
   delayed: SolvingStep,
   unfillable: SolvingStep,
   submissionFailed: SolvingStep,
