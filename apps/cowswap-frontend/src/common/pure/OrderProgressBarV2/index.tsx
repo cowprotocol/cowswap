@@ -367,6 +367,8 @@ const RenderProgressTopSection: React.FC<{
   showCancellationModal: Command | null
   surplusData?: SurplusData
 }> = ({ stepName, order, countdown, surplusData }) => {
+  const hideIntent = stepName === 'finished' || stepName === 'cancellationFailed'
+
   const { randomImage, randomBenefit } = useMemo(
     () => ({
       randomImage: SURPLUS_IMAGES[getRandomInt(0, SURPLUS_IMAGES.length - 1)],
@@ -588,7 +590,7 @@ const RenderProgressTopSection: React.FC<{
           {content}
         </motion.div>
       </AnimatePresence>
-      <OrderIntent order={order} />
+      {!hideIntent && <OrderIntent order={order} />}
     </styledEl.ProgressTopSection>
   )
 }
