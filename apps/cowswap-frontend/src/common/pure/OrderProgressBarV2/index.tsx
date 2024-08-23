@@ -113,10 +113,10 @@ const StepsWrapper: React.FC<{
                 ? 'cancelling'
                 : 'active'
               : index === currentStep + 1
-              ? 'next'
-              : index < currentStep
-              ? 'done'
-              : 'future'
+                ? 'next'
+                : index < currentStep
+                  ? 'done'
+                  : 'future'
           return (
             <div key={index}>
               <StepComponent
@@ -217,12 +217,6 @@ const OrderIntent: React.FC<{ order?: Order }> = ({ order }) => {
 
 const FINAL_STATES: OrderProgressBarStepName[] = ['expired', 'finished', 'cancelled', 'cancellationFailed']
 
-function formatDuration(milliseconds: number): string {
-  if (milliseconds < 1000) return `${milliseconds}ms`
-  const seconds = milliseconds / 1000
-  return `${seconds.toFixed(2)}s` // Format with 2 decimal places
-}
-
 const trackLearnMoreClick = (stepName: string) => {
   cowAnalytics.sendEvent({
     category: Category.PROGRESS_BAR,
@@ -253,7 +247,6 @@ export function OrderProgressBarV2(props: OrderProgressBarV2Props) {
   const { stepName = 'initial', debugMode = IS_DEBUG_MODE } = props
   const [debugStep, setDebugStep] = useState<OrderProgressBarStepName>(stepName)
   const currentStep = debugMode ? debugStep : stepName
-  console.log('OrderProgressBarV2 - currentStep:', currentStep)
 
   const startTimeRef = useRef<number | null>(null)
   const initialStepTriggeredRef = useRef<boolean>(false)
@@ -267,7 +260,6 @@ export function OrderProgressBarV2(props: OrderProgressBarV2Props) {
     if (currentStep === 'initial' && !initialStepTriggeredRef.current) {
       startTimeRef.current = Date.now()
       initialStepTriggeredRef.current = true
-      console.log('Initial step triggered')
       cowAnalytics.sendEvent({
         category: Category.PROGRESS_BAR,
         action: 'Step Triggered',
@@ -286,8 +278,6 @@ export function OrderProgressBarV2(props: OrderProgressBarV2Props) {
 
     if (duration !== null) {
       const durationInSeconds = duration / 1000
-      const formattedDuration = formatDuration(duration)
-      console.log(`Step duration: ${formattedDuration}`)
 
       cowAnalytics.sendEvent({
         category: Category.PROGRESS_BAR,
@@ -303,7 +293,6 @@ export function OrderProgressBarV2(props: OrderProgressBarV2Props) {
           label: currentStep,
           value: parseFloat(durationInSeconds.toFixed(2)),
         })
-        console.log(`Final state reached: ${currentStep}. Total duration: ${formattedDuration}`)
         startTimeRef.current = null // Reset the timer for the next order
         initialStepTriggeredRef.current = false // Reset the initial step trigger flag
       }
@@ -417,8 +406,8 @@ const RenderProgressTopSection: React.FC<{
               stepName === 'unfillable'
                 ? '#FFDB9C'
                 : stepName === 'delayed' || stepName === 'submissionFailed' || stepName === 'solved'
-                ? '#FFB3B3'
-                : '#65D9FF'
+                  ? '#FFB3B3'
+                  : '#65D9FF'
             }
             padding={stepName === 'unfillable' ? '20px 0 0' : stepName === 'solving' ? '16px' : '0'}
             height={
@@ -706,8 +695,6 @@ function FinishedStep({
 
   const { surplusFiatValue, surplusAmount, showSurplus } = surplusData || {}
   const cancellationFailed = stepName === 'cancellationFailed'
-  console.log('FinishedStep - cancellationFailed:', cancellationFailed)
-  console.log('FinishedStep - showSurplus:', showSurplus)
 
   const shouldShowSurplus = DEBUG_FORCE_SHOW_SURPLUS || showSurplus
 
@@ -918,12 +905,12 @@ function SolvingStep({ order, countdown, stepName, showCancellationModal }: Orde
           isUnfillable
             ? { 1: 'Price change' }
             : isDelayed
-            ? { 1: 'Still searching' }
-            : isSubmissionFailed
-            ? { 1: 'A new competition has started' }
-            : isSolved
-            ? { 1: 'A new competition has started' }
-            : undefined
+              ? { 1: 'Still searching' }
+              : isSubmissionFailed
+                ? { 1: 'A new competition has started' }
+                : isSolved
+                  ? { 1: 'A new competition has started' }
+                  : undefined
         }
         extraContent={
           <styledEl.Description>
