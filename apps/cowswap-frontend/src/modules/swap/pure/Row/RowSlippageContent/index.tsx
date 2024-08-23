@@ -1,7 +1,7 @@
 import { INPUT_OUTPUT_EXPLANATION, MINIMUM_ETH_FLOW_SLIPPAGE, PERCENTAGE_PRECISION } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
-import { HoverTooltip, RowFixed } from '@cowprotocol/ui'
+import { HoverTooltip, RowFixed, UI } from '@cowprotocol/ui'
 import { Percent } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
@@ -23,6 +23,23 @@ export const ClickableText = styled.button`
 
   > div {
     display: inline-block;
+  }
+`
+
+const DefaultSlippage = styled.span`
+  display: inline-block;
+  margin-left: 4px;
+  color: var(${UI.COLOR_TEXT_OPACITY_70});
+  text-decoration: strikethrough;
+  font-size: 0.8em;
+
+  a {
+    text-decoration: underline;
+    cursor: pointer;
+
+    &:hover {
+      color: var(${UI.COLOR_TEXT});
+    }
   }
 `
 
@@ -60,6 +77,7 @@ export interface RowSlippageContentProps {
   showSettingOnClick?: boolean
   slippageLabel?: React.ReactNode
   slippageTooltip?: React.ReactNode
+  isSlippageModified: boolean
 }
 
 // TODO: RowDeadlineContent and RowSlippageContent are very similar. Refactor and extract base component?
@@ -75,10 +93,17 @@ export function RowSlippageContent(props: RowSlippageContentProps) {
     slippageLabel,
     slippageTooltip,
     styleProps,
+    isSlippageModified,
   } = props
 
   const tooltipContent =
     slippageTooltip || (isEoaEthFlow ? getNativeSlippageTooltip(chainId, symbols) : getNonNativeSlippageTooltip())
+
+  const displayDefaultSlippage = isSlippageModified && (
+    <DefaultSlippage>
+      (<a onClick={() => alert('Set the slippage to the suggested one')}>Suggested: 0.96%</a>)
+    </DefaultSlippage>
+  )
 
   return (
     <StyledRowBetween {...styleProps}>
@@ -98,9 +123,13 @@ export function RowSlippageContent(props: RowSlippageContentProps) {
       </RowFixed>
       <TextWrapper textAlign="right">
         {showSettingOnClick ? (
-          <ClickableText onClick={toggleSettings}>{displaySlippage}</ClickableText>
+          <ClickableText onClick={toggleSettings}>
+            {displaySlippage} {displayDefaultSlippage}
+          </ClickableText>
         ) : (
-          <span>{displaySlippage}</span>
+          <span>
+            {displaySlippage} {displayDefaultSlippage}
+          </span>
         )}
       </TextWrapper>
     </StyledRowBetween>

@@ -16,6 +16,7 @@ export interface RowSlippageProps {
   showSettingOnClick?: boolean
   slippageLabel?: React.ReactNode
   slippageTooltip?: React.ReactNode
+  isSlippageModified: boolean
 }
 
 export function RowSlippage({
@@ -23,6 +24,7 @@ export function RowSlippage({
   showSettingOnClick = true,
   slippageTooltip,
   slippageLabel,
+  isSlippageModified,
 }: RowSlippageProps) {
   const { chainId } = useWalletInfo()
   const toggleSettings = useToggleSettingsMenu()
@@ -44,5 +46,5 @@ export function RowSlippage({
     [chainId, isEoaEthFlow, nativeCurrency.symbol, showSettingOnClick, allowedSlippage, slippageLabel, slippageTooltip]
   )
 
-  return <RowSlippageContent {...props} toggleSettings={toggleSettings} />
+  return <RowSlippageContent {...props} toggleSettings={toggleSettings} isSlippageModified={isSlippageModified} />
 }
