@@ -110,7 +110,6 @@ export const Description = styled.p<{ center?: boolean; margin?: string }>`
 
   > button,
   > a {
-    font-weight: 700;
     text-decoration: underline;
     color: var(${UI.COLOR_TEXT_PAPER});
   }

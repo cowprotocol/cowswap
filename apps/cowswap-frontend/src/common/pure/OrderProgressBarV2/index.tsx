@@ -63,13 +63,12 @@ export type OrderProgressBarV2Props = {
 
 const STEPS = [
   {
-    title: 'Placing order',
-    description: 'Your order has been submitted and will be included in the next solver auction',
+    title: 'Batching orders',
   },
   {
-    title: 'Solving',
+    title: 'The competition has started',
   },
-  { title: 'Executing', description: 'The winning solver will execute your order.' },
+  { title: 'Executing', description: 'The winner of the competition is now executing your order on-chain.' },
   { title: 'Transaction completed' },
 ]
 
@@ -367,7 +366,7 @@ const RenderProgressTopSection: React.FC<{
   solverCompetition?: SolverCompetition[]
   showCancellationModal: Command | null
   surplusData?: SurplusData
-}> = ({ stepName, order, countdown, solverCompetition, showCancellationModal, surplusData }) => {
+}> = ({ stepName, order, countdown, surplusData }) => {
   const { randomImage, randomBenefit } = useMemo(
     () => ({
       randomImage: SURPLUS_IMAGES[getRandomInt(0, SURPLUS_IMAGES.length - 1)],
@@ -415,32 +414,37 @@ const RenderProgressTopSection: React.FC<{
             bgColor={
               stepName === 'unfillable'
                 ? '#FFDB9C'
-                : stepName === 'delayed' || stepName === 'submissionFailed'
+                : stepName === 'delayed' || stepName === 'submissionFailed' || stepName === 'solved'
                   ? '#FFB3B3'
                   : '#65D9FF'
             }
-            padding={
-              stepName === 'unfillable' ? '20px 0 0' : stepName === 'solving' || stepName === 'solved' ? '16px' : '0'
-            }
+            padding={stepName === 'unfillable' ? '20px 0 0' : stepName === 'solving' ? '16px' : '0'}
             height={
-              stepName === 'delayed' || stepName === 'submissionFailed' ? '229px' : 'auto'
+              stepName === 'delayed' ||
+                stepName === 'submissionFailed' ||
+                stepName === 'solved'
+                ? '229px'
+                : 'auto'
             }
           >
             {stepName === 'unfillable' ? (
               <img src={STEP_IMAGE_UNFILLABLE} alt="Order out of market" />
-            ) : stepName === 'delayed' || stepName === 'submissionFailed' ? (
-              <Lottie
-                animationData={STEP_LOTTIE_NEXTBATCH}
-                loop={true}
-                autoplay={true}
-                style={{ width: '100%', height: '100%' }}
-              />
-            ) : (
-              <>
-                <SVG src={STEP_IMAGE_SOLVING} />
-                {stepName === 'solving' && <CircularCountdown countdown={countdown || 0} />}
-              </>
-            )}
+            ) :
+              stepName === 'delayed' ||
+                stepName === 'submissionFailed' ||
+                stepName === 'solved' ? (
+                <Lottie
+                  animationData={STEP_LOTTIE_NEXTBATCH}
+                  loop={true}
+                  autoplay={true}
+                  style={{ width: '100%', height: '100%' }}
+                />
+              ) : (
+                <>
+                  <SVG src={STEP_IMAGE_SOLVING} />
+                  {stepName === 'solving' && <CircularCountdown countdown={countdown || 0} />}
+                </>
+              )}
           </styledEl.ProgressImageWrapper>
         )
       case 'executing':
@@ -605,14 +609,15 @@ function InitialStep({ order, stepName }: OrderProgressBarV2Props) {
         currentStep={0}
         extraContent={
           <styledEl.Description>
-            Your order has been submitted and will be included in the next solver auction. &nbsp;
+            On CoW Swap, orders placed at the same time are{' '}
             <styledEl.Link
               href="https://cow.fi/learn/understanding-batch-auctions"
               target="_blank"
               onClick={() => trackLearnMoreClick('Initial')}
             >
-              Learn more ↗
-            </styledEl.Link>
+              batched
+            </styledEl.Link>{' '}
+            together to save on costs!
           </styledEl.Description>
         }
       />
@@ -632,14 +637,10 @@ function ExecutingStep({ solverCompetition, order, stepName }: OrderProgressBarV
       <StepsWrapper
         steps={STEPS}
         currentStep={2}
+        customStepTitles={{ 2: 'Best price found!' }}
         extraContent={
           <styledEl.Description>
-            <strong>
-              {solverCompetition?.length || 0} solver{solverCompetition?.length !== 1 && 's'}{' '}
-            </strong>{' '}
-            joined the competition!
-            <br />
-            The winner will submit your order on-chain.
+            The winner of the competition is now executing your order on-chain.
           </styledEl.Description>
         }
       />
@@ -681,13 +682,6 @@ function getTwitterShareUrl(surplusData: SurplusData | undefined, order: Order |
   return `https://x.com/intent/tweet?text=${twitterText}`
 }
 
-// function shareSurplusOnTwitter(surplusData: SurplusData | undefined, order: Order | undefined) {
-//   return () => {
-//     const twitterUrl = getTwitterShareUrl(surplusData, order)
-//     window.open(twitterUrl, '_blank', 'noopener,noreferrer')
-//   }
-// }
-
 function getTwitterTextForBenefit(benefit: string): string {
   return encodeURIComponent(`Did you know? ${benefit}\n\nStart swapping on swap.cow.fi #CoWSwap @CoWSwap 🐮`)
 }
@@ -696,13 +690,6 @@ function getTwitterShareUrlForBenefit(benefit: string): string {
   const twitterText = getTwitterTextForBenefit(benefit)
   return `https://x.com/intent/tweet?text=${twitterText}`
 }
-
-// function shareBenefitOnTwitter(benefit: string) {
-//   return () => {
-//     const twitterUrl = getTwitterShareUrlForBenefit(benefit)
-//     window.open(twitterUrl, '_blank', 'noopener,noreferrer')
-//   }
-// }
 
 const SURPLUS_IMAGES = [
   PROGRESSBAR_COW_SURPLUS_1,
@@ -722,15 +709,7 @@ function FinishedStep({
 }: OrderProgressBarV2Props) {
   const [showAllSolvers, setShowAllSolvers] = useState(false)
 
-  const { randomBenefit } = useMemo(
-    () => ({
-      randomImage: SURPLUS_IMAGES[getRandomInt(0, SURPLUS_IMAGES.length - 1)],
-      randomBenefit: COW_SWAP_BENEFITS[getRandomInt(0, COW_SWAP_BENEFITS.length - 1)],
-    }),
-    []
-  )
-
-  const { surplusFiatValue, surplusPercent, surplusAmount, showSurplus } = surplusData || {}
+  const { surplusFiatValue, surplusAmount, showSurplus } = surplusData || {}
   const cancellationFailed = stepName === 'cancellationFailed'
   console.log('FinishedStep - cancellationFailed:', cancellationFailed)
   console.log('FinishedStep - showSurplus:', showSurplus)
@@ -755,23 +734,6 @@ function FinishedStep({
   const receiver = order?.receiver || order?.owner
 
   const isDarkMode = useIsDarkMode()
-
-  // const surplusPercentValue = surplusPercent ? parseFloat(surplusPercent).toFixed(2) : 'N/A'
-
-  // const shareOnTwitter = useCallback(() => {
-  //   const twitterUrl = shouldShowSurplus
-  //     ? getTwitterShareUrl(surplusData, order)
-  //     : getTwitterShareUrlForBenefit(randomBenefit)
-  //   window.open(twitterUrl, '_blank', 'noopener,noreferrer')
-  // }, [shouldShowSurplus, surplusData, order, randomBenefit])
-
-  // const trackShareClick = useCallback(() => {
-  //   cowAnalytics.sendEvent({
-  //     category: Category.PROGRESS_BAR,
-  //     action: 'Click Share Button',
-  //     label: shouldShowSurplus ? 'Surplus' : 'Benefit',
-  //   })
-  // }, [shouldShowSurplus])
 
   // Early return if order is not set
   if (!order) {
@@ -874,7 +836,11 @@ function FinishedStep({
                         </styledEl.SolverLogo>
                         <styledEl.SolverName>
                           {solver.displayName || solver.solver}
-                          {solver.description && <span><InfoTooltip content={solver.description} /></span>}
+                          {solver.description && (
+                            <span>
+                              <InfoTooltip content={solver.description} />
+                            </span>
+                          )}
                         </styledEl.SolverName>
                       </styledEl.SolverInfo>
                     </styledEl.SolverTableCell>
@@ -925,20 +891,25 @@ function SolvingStep({
   countdown,
   stepName,
   showCancellationModal,
-  solverCompetition,
 }: OrderProgressBarV2Props) {
   const isUnfillable = stepName === 'unfillable'
   const isDelayed = stepName === 'delayed'
   const isSubmissionFailed = stepName === 'submissionFailed'
   const isSolved = stepName === 'solved'
 
-  const winningSolver = solverCompetition?.[0]
-
   const trackCancelClick = () => {
     cowAnalytics.sendEvent({
       category: Category.PROGRESS_BAR,
       action: 'Click Cancel Order',
-      label: isUnfillable ? 'Unfillable Step' : isDelayed ? 'Delayed Step' : 'Solving Step',
+      label: isUnfillable ? 'Unfillable Step' : isDelayed ? 'Delayed Step' : isSolved ? 'Solved Step' : 'Solving Step',
+    })
+  }
+
+  const trackLearnMoreClick = (label: string) => {
+    cowAnalytics.sendEvent({
+      category: Category.PROGRESS_BAR,
+      action: 'Click Learn More',
+      label,
     })
   }
 
@@ -955,23 +926,24 @@ function SolvingStep({
         currentStep={1}
         customStepTitles={
           isUnfillable
-            ? { 1: 'Price out of market' }
+            ? { 1: 'Price change' }
             : isDelayed
-              ? { 1: 'Order delayed' }
+              ? { 1: 'Still searching' }
               : isSubmissionFailed
-                ? { 1: 'Submission failed' }
+                ? { 1: 'A new competition has started' }
                 : isSolved
-                  ? { 1: 'Solved' }
+                  ? { 1: 'A new competition has started' }
                   : undefined
         }
         extraContent={
           <styledEl.Description>
             {isUnfillable ? (
               <>
-                Your order's price is currently out of market.{' '}
+                Uh oh! The market price has moved outside of your slippage tolerance. You can wait for prices to change
                 {showCancellationModal && (
                   <>
-                    You can either wait or{' '}
+                    {' '}
+                    or{' '}
                     <styledEl.CancelButton
                       onClick={() => {
                         showCancellationModal && showCancellationModal()
@@ -980,13 +952,14 @@ function SolvingStep({
                     >
                       cancel the order
                     </styledEl.CancelButton>
-                    .
                   </>
                 )}
+                .
               </>
             ) : isDelayed ? (
               <>
-                Your order has been delayed due to high gas fees. Please wait for the next batch
+                There may be a network issue (such as a gas spike) that is delaying your order. You can wait for the
+                issue to resolve
                 {showCancellationModal && (
                   <>
                     {' '}
@@ -1004,34 +977,37 @@ function SolvingStep({
                 .
               </>
             ) : isSubmissionFailed ? (
-              <>The order could not be settled on-chain. Solvers are competing to find a new solution.</>
+              <>
+                Something went wrong. But don't worry!{' '}
+                <styledEl.Link
+                  href="https://docs.cow.fi/cow-protocol/concepts/introduction/solvers"
+                  target="_blank"
+                  onClick={() => trackLearnMoreClick('Submission Failed')}
+                >
+                  CoW Swap solvers
+                </styledEl.Link>{' '}
+                are searching again for the best price for you.
+              </>
             ) : isSolved ? (
               <>
-                <strong>
-                  {solverCompetition?.length} solver{solverCompetition && solverCompetition?.length > 1 && 's'} joined
-                  the competition!
-                </strong>
-                <br />
-                Solver {winningSolver?.solver} proposed the best solution. It'll be executed on-chain shortly.
+                Something went wrong and your order couldn't be executed with this batch. But don't worry! CoW Swap is
+                already holding another competition for your order.
               </>
             ) : (
               <>
-                The auction has started! Solvers are competing to find the best solution for you...
-                <br />
                 <styledEl.Link
-                  href="https://cow.fi/learn/understanding-batch-auctions"
+                  href="https://docs.cow.fi/cow-protocol/concepts/introduction/solvers"
                   target="_blank"
                   onClick={() => trackLearnMoreClick('Solving')}
                 >
-                  Learn more ↗
-                </styledEl.Link>
+                  CoW Swap solvers
+                </styledEl.Link>{' '}
+                are scanning liquidity sources across DeFi. The one that finds you the best price wins!
               </>
             )}
           </styledEl.Description>
         }
-        customColor={
-          isUnfillable || isDelayed ? '#996815' : isSubmissionFailed ? `var(${UI.COLOR_DANGER_TEXT})` : undefined
-        }
+        customColor={isUnfillable || isDelayed || isSolved || isSubmissionFailed ? '#996815' : undefined}
         isUnfillable={isUnfillable}
       />
     </styledEl.ProgressContainer>
