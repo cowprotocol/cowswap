@@ -253,7 +253,7 @@ function useProgressBarStepNameUpdater(
       updateStepName(stepName)
 
       // schedule update for temporary steps
-      if (stepName === 'submissionFailed' || stepName === 'nextBatch') {
+      if (stepName === 'submissionFailed') {
         timer = setTimeout(() => updateStepName('solving'), MINIMUM_STEP_DISPLAY_TIME)
       }
     } else {
@@ -296,14 +296,7 @@ function getProgressBarStepName(
   ) {
     // moved back from executing to active
     return 'submissionFailed'
-  } else if (
-    previousStepName === 'solved' &&
-    (backendApiStatus === 'active' || backendApiStatus === 'open' || backendApiStatus === 'scheduled')
-  ) {
-    // moved back from solving to active
-    return 'nextBatch'
-  }
-  if (isUnfillable) {
+  } else if (isUnfillable) {
     // out of market order
     return 'unfillable'
   } else if (backendApiStatus === 'active' && countdown === 0) {

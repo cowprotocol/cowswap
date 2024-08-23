@@ -1,4 +1,3 @@
-import { AnimatePresence, motion } from 'framer-motion'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import PROGRESS_BAR_BAD_NEWS from '@cowprotocol/assets/cow-swap/progressbar-bad-news.svg'
@@ -27,6 +26,7 @@ import { Command } from '@cowprotocol/types'
 import { ExternalLink, InfoTooltip, ProductLogo, ProductVariant, TokenAmount, UI } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
+import { AnimatePresence, motion } from 'framer-motion'
 import Lottie from 'lottie-react'
 import { PiCaretDown, PiCaretUp, PiTrophyFill } from 'react-icons/pi'
 import SVG from 'react-inlinesvg'
@@ -108,7 +108,7 @@ const StepsWrapper: React.FC<{
       <styledEl.StepsWrapper ref={wrapperRef}>
         {steps.map((step, index) => {
           const customTitle = customStepTitles && customStepTitles[index]
-          let status =
+          const status =
             index === currentStep
               ? isCancelling
                 ? 'cancelling'
@@ -408,7 +408,6 @@ const RenderProgressTopSection: React.FC<{
       case 'solving':
       case 'solved':
       case 'unfillable':
-      case 'nextBatch':
       case 'delayed':
       case 'submissionFailed':
         return (
@@ -424,12 +423,12 @@ const RenderProgressTopSection: React.FC<{
               stepName === 'unfillable' ? '20px 0 0' : stepName === 'solving' || stepName === 'solved' ? '16px' : '0'
             }
             height={
-              stepName === 'nextBatch' || stepName === 'delayed' || stepName === 'submissionFailed' ? '229px' : 'auto'
+              stepName === 'delayed' || stepName === 'submissionFailed' ? '229px' : 'auto'
             }
           >
             {stepName === 'unfillable' ? (
               <img src={STEP_IMAGE_UNFILLABLE} alt="Order out of market" />
-            ) : stepName === 'nextBatch' || stepName === 'delayed' || stepName === 'submissionFailed' ? (
+            ) : stepName === 'delayed' || stepName === 'submissionFailed' ? (
               <Lottie
                 animationData={STEP_LOTTIE_NEXTBATCH}
                 loop={true}
@@ -934,7 +933,6 @@ function SolvingStep({
   const isUnfillable = stepName === 'unfillable'
   const isDelayed = stepName === 'delayed'
   const isSubmissionFailed = stepName === 'submissionFailed'
-  const isNextBatch = stepName === 'nextBatch'
   const isSolved = stepName === 'solved'
 
   const winningSolver = solverCompetition?.[0]
@@ -952,7 +950,7 @@ function SolvingStep({
       <RenderProgressTopSection
         stepName={stepName}
         order={order}
-        countdown={isUnfillable || isDelayed || isSubmissionFailed || isNextBatch || isSolved ? undefined : countdown}
+        countdown={isUnfillable || isDelayed || isSubmissionFailed || isSolved ? undefined : countdown}
         showCancellationModal={showCancellationModal}
       />
       <StepsWrapper
@@ -965,11 +963,9 @@ function SolvingStep({
               ? { 1: 'Order delayed' }
               : isSubmissionFailed
                 ? { 1: 'Submission failed' }
-                : isNextBatch
-                  ? { 1: 'Waiting for next batch' }
-                  : isSolved
-                    ? { 1: 'Solved' }
-                    : undefined
+                : isSolved
+                  ? { 1: 'Solved' }
+                  : undefined
         }
         extraContent={
           <styledEl.Description>
@@ -1012,8 +1008,6 @@ function SolvingStep({
               </>
             ) : isSubmissionFailed ? (
               <>The order could not be settled on-chain. Solvers are competing to find a new solution.</>
-            ) : isNextBatch ? (
-              <>Waiting for the next batch to submit your order.</>
             ) : isSolved ? (
               <>
                 <strong>
@@ -1158,7 +1152,6 @@ const STEP_NAME_TO_STEP_COMPONENT: Record<OrderProgressBarStepName, React.Compon
   executing: ExecutingStep,
   finished: FinishedStep,
   solved: SolvingStep, // Use SolvingStep for 'solved' state
-  nextBatch: SolvingStep,
   delayed: SolvingStep,
   unfillable: SolvingStep,
   submissionFailed: SolvingStep,
