@@ -76,16 +76,13 @@ export const Header = styled.div`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  background: var(${UI.COLOR_PAPER});
   position: sticky;
   top: 0;
   left: 0;
   width: 100%;
   padding: 16px 0;
   z-index: 20;
-
-  ${Media.upToSmall()} {
-    background: var(${UI.COLOR_PAPER});
-  }
 `
 
 export const ActionsWrapper = styled.div`
