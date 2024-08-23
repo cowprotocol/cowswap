@@ -302,6 +302,13 @@ function getProgressBarStepName(
   } else if (backendApiStatus === 'active' && countdown === 0) {
     // solving, but took longer than stipulated countdown
     return 'delayed'
+  } else if (
+    (backendApiStatus === 'open' || backendApiStatus === 'scheduled') &&
+    previousStepName &&
+    previousStepName !== 'initial'
+  ) {
+    // once moved out of initial state, never go back to it
+    return 'delayed'
   } else if (backendApiStatus) {
     // straight mapping API status to progress bar steps
     return BACKEND_TYPE_TO_PROGRESS_BAR_STEP_NAME[backendApiStatus]
