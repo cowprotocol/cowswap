@@ -376,7 +376,7 @@ const RenderProgressTopSection: React.FC<{
     []
   )
 
-  const { surplusFiatValue, surplusPercent, surplusAmount, showSurplus } = surplusData || {}
+  const { surplusPercent, showSurplus } = surplusData || {}
   const shouldShowSurplus = DEBUG_FORCE_SHOW_SURPLUS || showSurplus
   const surplusPercentValue = surplusPercent ? parseFloat(surplusPercent).toFixed(2) : 'N/A'
 
@@ -563,9 +563,6 @@ const RenderProgressTopSection: React.FC<{
     stepName,
     order,
     countdown,
-    solverCompetition,
-    showCancellationModal,
-    surplusData,
     randomImage,
     randomBenefit,
     shouldShowSurplus,
@@ -684,12 +681,12 @@ function getTwitterShareUrl(surplusData: SurplusData | undefined, order: Order |
   return `https://x.com/intent/tweet?text=${twitterText}`
 }
 
-function shareSurplusOnTwitter(surplusData: SurplusData | undefined, order: Order | undefined) {
-  return () => {
-    const twitterUrl = getTwitterShareUrl(surplusData, order)
-    window.open(twitterUrl, '_blank', 'noopener,noreferrer')
-  }
-}
+// function shareSurplusOnTwitter(surplusData: SurplusData | undefined, order: Order | undefined) {
+//   return () => {
+//     const twitterUrl = getTwitterShareUrl(surplusData, order)
+//     window.open(twitterUrl, '_blank', 'noopener,noreferrer')
+//   }
+// }
 
 function getTwitterTextForBenefit(benefit: string): string {
   return encodeURIComponent(`Did you know? ${benefit}\n\nStart swapping on swap.cow.fi #CoWSwap @CoWSwap 🐮`)
@@ -700,12 +697,12 @@ function getTwitterShareUrlForBenefit(benefit: string): string {
   return `https://x.com/intent/tweet?text=${twitterText}`
 }
 
-function shareBenefitOnTwitter(benefit: string) {
-  return () => {
-    const twitterUrl = getTwitterShareUrlForBenefit(benefit)
-    window.open(twitterUrl, '_blank', 'noopener,noreferrer')
-  }
-}
+// function shareBenefitOnTwitter(benefit: string) {
+//   return () => {
+//     const twitterUrl = getTwitterShareUrlForBenefit(benefit)
+//     window.open(twitterUrl, '_blank', 'noopener,noreferrer')
+//   }
+// }
 
 const SURPLUS_IMAGES = [
   PROGRESSBAR_COW_SURPLUS_1,
@@ -725,7 +722,7 @@ function FinishedStep({
 }: OrderProgressBarV2Props) {
   const [showAllSolvers, setShowAllSolvers] = useState(false)
 
-  const { randomImage, randomBenefit } = useMemo(
+  const { randomBenefit } = useMemo(
     () => ({
       randomImage: SURPLUS_IMAGES[getRandomInt(0, SURPLUS_IMAGES.length - 1)],
       randomBenefit: COW_SWAP_BENEFITS[getRandomInt(0, COW_SWAP_BENEFITS.length - 1)],
@@ -759,22 +756,22 @@ function FinishedStep({
 
   const isDarkMode = useIsDarkMode()
 
-  const surplusPercentValue = surplusPercent ? parseFloat(surplusPercent).toFixed(2) : 'N/A'
+  // const surplusPercentValue = surplusPercent ? parseFloat(surplusPercent).toFixed(2) : 'N/A'
 
-  const shareOnTwitter = useCallback(() => {
-    const twitterUrl = shouldShowSurplus
-      ? getTwitterShareUrl(surplusData, order)
-      : getTwitterShareUrlForBenefit(randomBenefit)
-    window.open(twitterUrl, '_blank', 'noopener,noreferrer')
-  }, [shouldShowSurplus, surplusData, order, randomBenefit])
+  // const shareOnTwitter = useCallback(() => {
+  //   const twitterUrl = shouldShowSurplus
+  //     ? getTwitterShareUrl(surplusData, order)
+  //     : getTwitterShareUrlForBenefit(randomBenefit)
+  //   window.open(twitterUrl, '_blank', 'noopener,noreferrer')
+  // }, [shouldShowSurplus, surplusData, order, randomBenefit])
 
-  const trackShareClick = useCallback(() => {
-    cowAnalytics.sendEvent({
-      category: Category.PROGRESS_BAR,
-      action: 'Click Share Button',
-      label: shouldShowSurplus ? 'Surplus' : 'Benefit',
-    })
-  }, [shouldShowSurplus])
+  // const trackShareClick = useCallback(() => {
+  //   cowAnalytics.sendEvent({
+  //     category: Category.PROGRESS_BAR,
+  //     action: 'Click Share Button',
+  //     label: shouldShowSurplus ? 'Surplus' : 'Benefit',
+  //   })
+  // }, [shouldShowSurplus])
 
   // Early return if order is not set
   if (!order) {
