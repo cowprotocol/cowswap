@@ -43,7 +43,7 @@ import { SurplusData } from 'common/hooks/useGetSurplusFiatValue'
 import { getIsCustomRecipient } from 'utils/orderUtils/getIsCustomRecipient'
 
 import * as styledEl from './styled'
-const IS_DEBUG_MODE = false
+const IS_DEBUG_MODE = true
 const DEBUG_FORCE_SHOW_SURPLUS = false
 
 export type OrderProgressBarV2Props = {
@@ -113,10 +113,10 @@ const StepsWrapper: React.FC<{
                 ? 'cancelling'
                 : 'active'
               : index === currentStep + 1
-                ? 'next'
-                : index < currentStep
-                  ? 'done'
-                  : 'future'
+              ? 'next'
+              : index < currentStep
+              ? 'done'
+              : 'future'
           return (
             <div key={index}>
               <StepComponent
@@ -415,36 +415,29 @@ const RenderProgressTopSection: React.FC<{
               stepName === 'unfillable'
                 ? '#FFDB9C'
                 : stepName === 'delayed' || stepName === 'submissionFailed' || stepName === 'solved'
-                  ? '#FFB3B3'
-                  : '#65D9FF'
+                ? '#FFB3B3'
+                : '#65D9FF'
             }
             padding={stepName === 'unfillable' ? '20px 0 0' : stepName === 'solving' ? '16px' : '0'}
             height={
-              stepName === 'delayed' ||
-                stepName === 'submissionFailed' ||
-                stepName === 'solved'
-                ? '229px'
-                : 'auto'
+              stepName === 'delayed' || stepName === 'submissionFailed' || stepName === 'solved' ? '229px' : 'auto'
             }
           >
             {stepName === 'unfillable' ? (
               <img src={STEP_IMAGE_UNFILLABLE} alt="Order out of market" />
-            ) :
-              stepName === 'delayed' ||
-                stepName === 'submissionFailed' ||
-                stepName === 'solved' ? (
-                <Lottie
-                  animationData={STEP_LOTTIE_NEXTBATCH}
-                  loop={true}
-                  autoplay={true}
-                  style={{ width: '100%', height: '100%' }}
-                />
-              ) : (
-                <>
-                  <SVG src={STEP_IMAGE_SOLVING} />
-                  {stepName === 'solving' && <CircularCountdown countdown={countdown || 0} />}
-                </>
-              )}
+            ) : stepName === 'delayed' || stepName === 'submissionFailed' || stepName === 'solved' ? (
+              <Lottie
+                animationData={STEP_LOTTIE_NEXTBATCH}
+                loop={true}
+                autoplay={true}
+                style={{ width: '100%', height: '100%' }}
+              />
+            ) : (
+              <>
+                <SVG src={STEP_IMAGE_SOLVING} />
+                {stepName === 'solving' && <CircularCountdown countdown={countdown || 0} />}
+              </>
+            )}
           </styledEl.ProgressImageWrapper>
         )
       case 'executing':
@@ -615,9 +608,9 @@ function InitialStep({ order, stepName }: OrderProgressBarV2Props) {
               target="_blank"
               onClick={() => trackLearnMoreClick('Initial')}
             >
-              batched
+              batched together
             </styledEl.Link>{' '}
-            together to save on costs!
+            to save on costs!
           </styledEl.Description>
         }
       />
@@ -886,12 +879,7 @@ function getSurplusText(isSell: boolean | undefined, isCustomRecipient: boolean 
   return 'and saved '
 }
 
-function SolvingStep({
-  order,
-  countdown,
-  stepName,
-  showCancellationModal,
-}: OrderProgressBarV2Props) {
+function SolvingStep({ order, countdown, stepName, showCancellationModal }: OrderProgressBarV2Props) {
   const isUnfillable = stepName === 'unfillable'
   const isDelayed = stepName === 'delayed'
   const isSubmissionFailed = stepName === 'submissionFailed'
@@ -928,12 +916,12 @@ function SolvingStep({
           isUnfillable
             ? { 1: 'Price change' }
             : isDelayed
-              ? { 1: 'Still searching' }
-              : isSubmissionFailed
-                ? { 1: 'A new competition has started' }
-                : isSolved
-                  ? { 1: 'A new competition has started' }
-                  : undefined
+            ? { 1: 'Still searching' }
+            : isSubmissionFailed
+            ? { 1: 'A new competition has started' }
+            : isSolved
+            ? { 1: 'A new competition has started' }
+            : undefined
         }
         extraContent={
           <styledEl.Description>
