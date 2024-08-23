@@ -3,7 +3,7 @@ import { CmsSolversInfo, SolverNetwork, SolversInfo } from '../types'
 export function mapCmsSolversInfoToSolversInfo(cmsSolversInfo: CmsSolversInfo): SolversInfo {
   return cmsSolversInfo.reduce<SolversInfo>((acc, info) => {
     if (info?.attributes) {
-      const { solverId, displayName, image, solver_networks } = info.attributes
+      const { solverId, displayName, image, solver_networks, description } = info.attributes
 
       const solverNetworks = solver_networks?.data?.reduce<SolverNetwork[]>((acc, entry) => {
         if (entry.attributes) {
@@ -29,7 +29,7 @@ export function mapCmsSolversInfoToSolversInfo(cmsSolversInfo: CmsSolversInfo): 
         return acc
       }
 
-      acc.push({ solverId, displayName, image: image?.data?.attributes?.url, solverNetworks })
+      acc.push({ solverId, displayName, description, image: image?.data?.attributes?.url, solverNetworks })
     }
 
     return acc

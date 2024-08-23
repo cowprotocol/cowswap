@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import PROGRESS_BAR_BAD_NEWS from '@cowprotocol/assets/cow-swap/progressbar-bad-news.svg'
 import PROGRESSBAR_COW_SURPLUS_1 from '@cowprotocol/assets/cow-swap/progressbar-finished-image-1.svg'
@@ -24,7 +24,7 @@ import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { Command } from '@cowprotocol/types'
-import { ExternalLink, ProductLogo, ProductVariant, TokenAmount, UI } from '@cowprotocol/ui'
+import { ExternalLink, InfoTooltip, ProductLogo, ProductVariant, TokenAmount, UI } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import Lottie from 'lottie-react'
@@ -36,7 +36,7 @@ import { AMM_LOGOS } from 'legacy/components/AMMsLogo'
 import { Order } from 'legacy/state/orders/actions'
 import { useIsDarkMode } from 'legacy/state/user/hooks'
 
-import { cowAnalytics, Category } from 'modules/analytics'
+import { Category, cowAnalytics } from 'modules/analytics'
 
 import { OrderProgressBarStepName, SolverCompetition } from 'common/hooks/orderProgressBarV2'
 import { SurplusData } from 'common/hooks/useGetSurplusFiatValue'
@@ -114,10 +114,10 @@ const StepsWrapper: React.FC<{
                 ? 'cancelling'
                 : 'active'
               : index === currentStep + 1
-              ? 'next'
-              : index < currentStep
-              ? 'done'
-              : 'future'
+                ? 'next'
+                : index < currentStep
+                  ? 'done'
+                  : 'future'
           return (
             <div key={index}>
               <StepComponent
@@ -417,8 +417,8 @@ const RenderProgressTopSection: React.FC<{
               stepName === 'unfillable'
                 ? '#FFDB9C'
                 : stepName === 'delayed' || stepName === 'submissionFailed'
-                ? '#FFB3B3'
-                : '#65D9FF'
+                  ? '#FFB3B3'
+                  : '#65D9FF'
             }
             padding={
               stepName === 'unfillable' ? '20px 0 0' : stepName === 'solving' || stepName === 'solved' ? '16px' : '0'
@@ -876,7 +876,10 @@ function FinishedStep({
                             height="24"
                           />
                         </styledEl.SolverLogo>
-                        <styledEl.SolverName>{solver.displayName || solver.solver}</styledEl.SolverName>
+                        <styledEl.SolverName>
+                          {solver.displayName || solver.solver}
+                          {solver.description && <span><InfoTooltip content={solver.description} /></span>}
+                        </styledEl.SolverName>
                       </styledEl.SolverInfo>
                     </styledEl.SolverTableCell>
                     <styledEl.SolverTableCell>
@@ -959,14 +962,14 @@ function SolvingStep({
           isUnfillable
             ? { 1: 'Price out of market' }
             : isDelayed
-            ? { 1: 'Order delayed' }
-            : isSubmissionFailed
-            ? { 1: 'Submission failed' }
-            : isNextBatch
-            ? { 1: 'Waiting for next batch' }
-            : isSolved
-            ? { 1: 'Solved' }
-            : undefined
+              ? { 1: 'Order delayed' }
+              : isSubmissionFailed
+                ? { 1: 'Submission failed' }
+                : isNextBatch
+                  ? { 1: 'Waiting for next batch' }
+                  : isSolved
+                    ? { 1: 'Solved' }
+                    : undefined
         }
         extraContent={
           <styledEl.Description>

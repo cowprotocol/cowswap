@@ -26,7 +26,7 @@ export async function getSolversInfo(): Promise<CmsSolversInfo> {
             },
             image: { fields: ['url'] },
           },
-          fields: ['displayName', 'solverId'],
+          fields: ['displayName', 'solverId', 'description'],
           pagination: { pageSize: 100 },
         },
       },

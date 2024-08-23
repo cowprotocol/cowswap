@@ -1,5 +1,5 @@
 import IMAGE_STAR_SHINE from '@cowprotocol/assets/cow-swap/star-shine.svg'
-import { LinkStyledButton, Font, Media, UI } from '@cowprotocol/ui'
+import { Font, LinkStyledButton, Media, UI } from '@cowprotocol/ui'
 
 import styled, { css, keyframes } from 'styled-components/macro'
 
@@ -592,6 +592,12 @@ export const SolverName = styled.span`
   flex-grow: 1;
   color: inherit;
   text-transform: capitalize;
+  display: flex;
+  align-items: center;
+
+  > span {
+    margin-left: 4px;
+  }
 `
 
 export const TrophyIcon = styled.span`
