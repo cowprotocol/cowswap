@@ -18,12 +18,16 @@ export function useActivityDerivedState({
   activity,
 }: {
   chainId: number | undefined
-  activity: ActivityDescriptors
+  activity: ActivityDescriptors | undefined
 }): ActivityDerivedState | null {
   const allTransactions = useAllTransactions()
   const gnosisSafeInfo = useGnosisSafeInfo()
 
   const orderCreationTxInfo: OrderCreationTxInfo | undefined = useMemo(() => {
+    if (!activity) {
+      return undefined
+    }
+
     const isOrder = activity.type === ActivityType.ORDER
     const order = isOrder ? (activity.activity as Order) : undefined
 
@@ -43,10 +47,13 @@ export function useActivityDerivedState({
   }, [allTransactions, activity])
 
   // Get some derived information about the activity. It helps to simplify the rendering of the subcomponents
-  return useMemo(
-    () => getActivityDerivedState({ chainId, activityData: activity, gnosisSafeInfo, orderCreationTxInfo }),
-    [chainId, activity, gnosisSafeInfo, orderCreationTxInfo]
-  )
+  return useMemo(() => {
+    if (!activity) {
+      return null
+    }
+
+    return getActivityDerivedState({ chainId, activityData: activity, gnosisSafeInfo, orderCreationTxInfo })
+  }, [chainId, activity, gnosisSafeInfo, orderCreationTxInfo])
 }
 
 export function getActivityDerivedState(props: {

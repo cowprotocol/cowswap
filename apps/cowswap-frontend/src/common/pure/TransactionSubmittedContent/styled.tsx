@@ -3,6 +3,8 @@ import { Media, UI } from '@cowprotocol/ui'
 import styled from 'styled-components/macro'
 import { CloseIcon } from 'theme'
 
+import { TransactionInnerDetail } from 'modules/account/containers/Transaction/styled'
+
 export const ButtonCustom = styled.button<{ cowGame?: boolean }>`
   display: flex;
   flex: 1 1 auto;
@@ -74,6 +76,9 @@ export const Header = styled.div`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  background: var(${UI.COLOR_PAPER});
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
   position: sticky;
   top: 0;
   left: 0;
@@ -82,12 +87,46 @@ export const Header = styled.div`
   z-index: 20;
 `
 
+export const ActionsWrapper = styled.div`
+  display: flex;
+  gap: 16px;
+  width: auto;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  flex-flow: row wrap;
+  font-size: 14px;
+
+  > a,
+  > button {
+    transition: color var(${UI.ANIMATION_DURATION}) ease-in-out;
+    text-decoration: none;
+    color: var(${UI.COLOR_TEXT_OPACITY_70});
+
+    &:hover {
+      text-decoration: underline;
+      color: var(${UI.COLOR_TEXT});
+    }
+  }
+`
+
 export const Section = styled.div`
   padding: 0 16px 16px;
   align-items: center;
   justify-content: flex-start;
   display: flex;
-  flex-flow: column wrap;
+  flex-flow: row wrap;
+  transition: height 1s ease-in-out;
+
+  ${Media.upToSmall()} {
+    padding: 0 16px 78px;
+  }
+
+  ${TransactionInnerDetail} {
+    margin: 0 auto;
+    width: 100%;
+    align-items: center;
+  }
 `
 
 export const StyledIcon = styled.img`
@@ -105,5 +144,15 @@ export const Wrapper = styled.div`
   overflow-y: auto; // fallback for 'overlay'
   overflow-y: overlay;
   height: inherit;
+  transition: height 1s ease-in-out;
   ${({ theme }) => theme.colorScrollbar};
+`
+
+export const Title = styled.div`
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 1.2;
+  margin: 0 0 16px;
+  width: 100%;
+  text-align: center;
 `

@@ -15,21 +15,23 @@ import { SingleLetterLogo } from './SingleLetterLogo'
 import { getTokenLogoUrls } from '../../utils/getTokenLogoUrls'
 
 const invalidUrlsAtom = atom<{ [url: string]: boolean }>({})
+const defaultSize = 42
 
 export const TokenLogoWrapper = styled.div<{ size?: number; sizeMobile?: number }>`
   display: inline-block;
   background: var(${UI.COLOR_DARK_IMAGE_PAPER});
   color: var(${UI.COLOR_DARK_IMAGE_PAPER_TEXT});
-  border-radius: ${({ size }) => size}px;
-  width: ${({ size }) => size}px;
-  height: ${({ size }) => size}px;
+  border-radius: ${({ size }) => size ?? defaultSize}px;
+  width: ${({ size }) => size ?? defaultSize}px;
+  height: ${({ size }) => size ?? defaultSize}px;
+  font-size: ${({ size }) => size ?? defaultSize}px;
   overflow: hidden;
 
   > img,
   > svg {
     width: 100%;
     height: 100%;
-    border-radius: ${({ size }) => size}px;
+    border-radius: ${({ size }) => size ?? defaultSize}px;
     object-fit: contain;
   }
 

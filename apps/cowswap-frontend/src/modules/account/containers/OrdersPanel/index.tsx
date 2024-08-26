@@ -47,6 +47,10 @@ const SideBar = styled.div`
     border-radius: ${({ theme }) => (theme.isInjectedWidgetMode ? '24px' : '0')};
     z-index: 10;
   }
+
+  ${Media.upToSmall()} {
+    padding: 0 0 58px;
+  }
 `
 
 const SidebarBackground = styled.div`

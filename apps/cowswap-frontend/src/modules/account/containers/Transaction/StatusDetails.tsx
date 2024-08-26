@@ -7,7 +7,7 @@ import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
 import { getSafeWebUrl } from '@cowprotocol/core'
 import { Command } from '@cowprotocol/types'
 
-import { ExternalLink as LinkIconFeather, Info } from 'react-feather'
+import { Info, ExternalLink as LinkIconFeather } from 'react-feather'
 import SVG from 'react-inlinesvg'
 
 import { getActivityState } from 'legacy/hooks/useActivityDerivedState'
@@ -52,10 +52,11 @@ export type StatusDetailsProps = {
   chainId: number
   activityDerivedState: ActivityDerivedState
   showCancellationModal: Command | null
+  showProgressBar: Command | null
 }
 
 export function StatusDetails(props: StatusDetailsProps) {
-  const { chainId, activityDerivedState, showCancellationModal } = props
+  const { chainId, activityDerivedState, showCancellationModal, showProgressBar } = props
 
   const {
     status,
@@ -130,6 +131,7 @@ export function StatusDetails(props: StatusDetailsProps) {
           <CancelButton onClick={showCancellationModal} />
         </StatusLabelBelow>
       )}
+      {showProgressBar && <span onClick={showProgressBar}>Show progress</span>}
       {hasCancellationHash && cancellationTxLink && (
         <CancelTxLink href={cancellationTxLink} target="_blank" title="Cancellation transaction">
           <LinkIconFeather size={16} />
