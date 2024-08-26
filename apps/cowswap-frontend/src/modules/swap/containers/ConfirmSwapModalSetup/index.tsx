@@ -4,17 +4,15 @@ import { getMinimumReceivedTooltip } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
-import { CurrencyAmount, Percent, TradeType } from '@uniswap/sdk-core'
+import { Percent, TradeType } from '@uniswap/sdk-core'
 
 import { HighFeeWarning } from 'legacy/components/SwapWarnings'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
-import { Order } from 'legacy/state/orders/actions'
 import { useOrder } from 'legacy/state/orders/hooks'
 import TradeGp from 'legacy/state/swap/TradeGp'
 
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import {
-  parameterizeTradeRoute,
   TradeConfirmation,
   TradeConfirmModal,
   useReceiveAmountInfo,
@@ -24,17 +22,15 @@ import {
 import { TradeBasicConfirmDetails } from 'modules/trade/containers/TradeBasicConfirmDetails'
 import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
 
-import { Routes } from 'common/constants/routes'
 import { useOrderProgressBarV2Props } from 'common/hooks/orderProgressBarV2'
-import { useNavigate } from 'common/hooks/useNavigate'
 import { CurrencyPreviewInfo } from 'common/pure/CurrencyAmountPreview'
 import { NetworkCostsSuffix } from 'common/pure/NetworkCostsSuffix'
 import { RateInfoParams } from 'common/pure/RateInfo'
 import { TransactionSubmittedContent } from 'common/pure/TransactionSubmittedContent'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
-import { TradeUrlParams } from '../../../trade/types/TradeRawState'
 import { useIsEoaEthFlow } from '../../hooks/useIsEoaEthFlow'
+import { useNavigateToNewOrderCallback } from '../../hooks/useNavigateToNewOrderCallback'
 import { useShouldPayGas } from '../../hooks/useShouldPayGas'
 import { useSwapConfirmButtonText } from '../../hooks/useSwapConfirmButtonText'
 import { useSwapState } from '../../hooks/useSwapState'
@@ -170,37 +166,3 @@ function useSubmittedContent(chainId: SupportedChainId) {
   )
 }
 
-
-// TODO: move to its own file/module
-export type NavigateToNewOrderCallback = (chainId: SupportedChainId, order?: Order, callback?: Command) => () => void
-
-export function useNavigateToNewOrderCallback(): NavigateToNewOrderCallback {
-  const navigate = useNavigate()
-
-  return useCallback(
-    (chainId: SupportedChainId, order?: Order, callback?: Command) => {
-      const inputCurrencyAmount = order
-        ? CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount).toFixed(order.inputToken.decimals)
-        : ''
-      const outputCurrencyAmount = order
-        ? CurrencyAmount.fromRawAmount(order.outputToken, order.buyAmount).toFixed(order.outputToken.decimals)
-        : ''
-
-      const tradeUrlParam: TradeUrlParams = {
-        chainId: String(chainId),
-        inputCurrencyId: order?.sellToken,
-        inputCurrencyAmount,
-        outputCurrencyId: order?.buyToken,
-        outputCurrencyAmount,
-        orderKind: order?.kind,
-      }
-      const swapLink = parameterizeTradeRoute(tradeUrlParam, Routes.SWAP, true)
-
-      return () => {
-        navigate(swapLink)
-        callback?.()
-      }
-    },
-    [navigate]
-  )
-}

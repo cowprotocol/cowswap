@@ -10,8 +10,8 @@ import { ActivityStatus } from 'legacy/hooks/useRecentActivity'
 import { ActivityDerivedState } from 'modules/account/containers/Transaction'
 import { GnosisSafeTxDetails } from 'modules/account/containers/Transaction/ActivityDetails'
 import { Category, cowAnalytics } from 'modules/analytics'
-import { NavigateToNewOrderCallback } from 'modules/swap/containers/ConfirmSwapModalSetup'
 import { EthFlowStepper } from 'modules/swap/containers/EthFlowStepper'
+import { NavigateToNewOrderCallback } from 'modules/swap/hooks/useNavigateToNewOrderCallback'
 import { WatchAssetInWallet } from 'modules/wallet/containers/WatchAssetInWallet'
 
 

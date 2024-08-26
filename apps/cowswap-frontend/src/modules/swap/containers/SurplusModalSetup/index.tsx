@@ -4,6 +4,8 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useOrder } from 'legacy/state/orders/hooks'
 
+import { useNavigateToNewOrderCallback } from 'modules/swap/hooks/useNavigateToNewOrderCallback'
+
 import { useOrderProgressBarV2Props } from 'common/hooks/orderProgressBarV2'
 import { CowModal } from 'common/pure/Modal'
 import { TransactionSubmittedContent } from 'common/pure/TransactionSubmittedContent'
