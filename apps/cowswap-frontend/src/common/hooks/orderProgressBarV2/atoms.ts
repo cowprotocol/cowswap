@@ -6,7 +6,7 @@ import {
   OrderProgressBarState,
   OrderProgressBarStepName,
   OrdersProgressBarCountdown,
-  OrdersProgressBarState
+  OrdersProgressBarState,
 } from './types'
 
 /**
@@ -127,7 +127,9 @@ export const updateOrderProgressBarBackendInfo = atom(
       return
     }
 
+    singleOrderState.previousBackendApiStatus = currentBackendApiStatus
     singleOrderState.backendApiStatus = backendApiStatus
+
     // Only update solver competition if changed and not falsy
     if (solverCompetitionChanged && solverCompetition) {
       singleOrderState.solverCompetition = solverCompetition
