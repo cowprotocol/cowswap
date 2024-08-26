@@ -18,9 +18,6 @@ stateDiagram-v2
             pending_order --> initial: backend [open, scheduled]
         state solving
             initial --> solving: backend [active]
-        state solved
-            solving --> solved: backend [solved]
-            solved --> solving: backend [active, initial]
         state executing
             solving --> executing: backend [executing]
         state finished
@@ -33,22 +30,18 @@ stateDiagram-v2
         state unfillable
             initial --> unfillable: out of market
             solving --> unfillable: out of market
-            solved --> unfillable: out of market
             executing --> unfillable: out of market
             unfillable --> initial: back on market
             unfillable --> solving: back on market
-            unfillable --> solved: back on market
             unfillable --> executing: back on market
         state expired
             initial --> expired
             solving --> expired
-            solved --> expired
             executing --> expired
             expired --> [*]
         state cancelling
             initial --> cancelling
             solving --> cancelling
-            solved --> cancelling
             executing --> cancelling
             cancelling --> cancelled
             cancelling --> cancellation_failed: backend [traded]
@@ -62,6 +55,6 @@ stateDiagram-v2
             executing --> submission_failed: backend [active, open, scheduled]
             submission_failed --> solving: 5s timer
         state next_batch
-            solved --> next_batch: backend [active, open, scheduled]
+            solving --> next_batch: backend [active, open, scheduled]
             next_batch --> solving: 5s timer
 ```
