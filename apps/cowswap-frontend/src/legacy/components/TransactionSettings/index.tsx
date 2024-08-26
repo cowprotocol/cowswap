@@ -102,9 +102,15 @@ const SlippageEmojiContainer = styled.span`
   }
 `
 
-const SmartSlippageInfo = styled.span`
-  color: #f3841e;
+const SmartSlippageInfo = styled.div`
+  color: var(${UI.COLOR_GREEN});
   font-size: 13px;
+  text-align: right;
+  width: 100%;
+  padding-right: 0.2rem;
+  display: flex;
+  justify-content: flex-end;
+  padding-bottom: 0.35rem;
 `
 
 const Wrapper = styled.div`
@@ -350,7 +356,15 @@ export function TransactionSettings() {
           {isSmartSlippageApplied && (
             <RowBetween>
               <SmartSlippageInfo>
-                The best slippage value is selected for the fastest order execution!
+                <span>Dynamic</span>
+                <HelpTooltip
+                  text={
+                    <Trans>
+                      Based on recent volatility observed for this token pair. Its recommended to leave the default to
+                      account for price changes
+                    </Trans>
+                  }
+                />
               </SmartSlippageInfo>
             </RowBetween>
           )}
