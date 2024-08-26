@@ -17,7 +17,6 @@ import { WatchAssetInWallet } from 'modules/wallet/containers/WatchAssetInWallet
 
 import * as styledEl from './styled'
 
-// import { SurplusModal } from './SurplusModal'
 import { CancelButton } from '../CancelButton'
 import { OrderProgressBarV2, OrderProgressBarV2Props } from '../OrderProgressBarV2'
 
