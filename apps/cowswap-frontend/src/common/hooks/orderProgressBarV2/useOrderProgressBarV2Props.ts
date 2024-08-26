@@ -4,11 +4,14 @@ import { useCallback, useEffect, useMemo } from 'react'
 import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
 import { SolverInfo, useSolversInfo } from '@cowprotocol/core'
 import { CompetitionOrderStatus, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { useENS } from '@cowprotocol/ens'
 import { Command } from '@cowprotocol/types'
 
 import ms from 'ms.macro'
 import useSWR from 'swr'
 
+import { useActivityDerivedState } from 'legacy/hooks/useActivityDerivedState'
+import { useMultipleActivityDescriptors } from 'legacy/hooks/useRecentActivity'
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 
 import { ActivityDerivedState } from 'modules/account/containers/Transaction'
@@ -28,6 +31,8 @@ import {
 } from './atoms'
 import { ApiSolverCompetition, OrderProgressBarState, OrderProgressBarStepName, SolverCompetition } from './types'
 
+import { useGetSurplusData } from '../useGetSurplusFiatValue'
+
 export type UseOrderProgressBarPropsParams = {
   activityDerivedState: ActivityDerivedState | null
   chainId: SupportedChainId
@@ -46,7 +51,42 @@ export const PROGRESS_BAR_TIMER_DURATION = 15 // in seconds
 /**
  * Hook for fetching ProgressBarV2 props
  */
-export function useOrderProgressBarV2Props(
+export function useOrderProgressBarV2Props(chainId: SupportedChainId, order: Order | undefined) {
+  const orderId = order?.id
+  const [activity] = useMultipleActivityDescriptors({ chainId, ids: orderId ? [orderId] : [] })
+  const activityDerivedState = useActivityDerivedState({ chainId, activity })
+  const progressBarV2Props = useOrderBaseProgressBarV2Props({ chainId, activityDerivedState })
+
+  const getCancellation = useCancelOrder()
+  const showCancellationModal = useMemo(
+    // Sort of duplicate cancellation logic since ethflow on creating state don't have progress bar props
+    () => progressBarV2Props?.showCancellationModal || (order && getCancellation ? getCancellation(order) : null),
+    [progressBarV2Props?.showCancellationModal, order, getCancellation]
+  )
+  const surplusData = useGetSurplusData(order)
+  const receiverEnsName = useENS(order?.receiver).name || undefined
+
+  return useMemo(() => {
+    // Add supplementary stuff
+    const data = {
+      ...progressBarV2Props,
+      activityDerivedState,
+      surplusData,
+      chainId,
+      receiverEnsName,
+      showCancellationModal,
+      isProgressBarSetup: true,
+    }
+
+    if (!progressBarV2Props) {
+      // Not setup, progress bar shouldn't be displayed, but cancellation still needed for ethflow
+      return { ...data, isProgressBarSetup: false }
+    }
+    return data
+  }, [progressBarV2Props, activityDerivedState, surplusData, chainId, receiverEnsName, showCancellationModal])
+}
+
+function useOrderBaseProgressBarV2Props(
   params: UseOrderProgressBarPropsParams
 ): UseOrderProgressBarV2Result | undefined {
   const { activityDerivedState, chainId } = params

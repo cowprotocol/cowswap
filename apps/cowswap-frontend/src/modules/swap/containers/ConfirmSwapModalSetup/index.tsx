@@ -2,15 +2,12 @@ import { useCallback, useMemo, useState } from 'react'
 
 import { getMinimumReceivedTooltip } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { useENS } from '@cowprotocol/ens'
 import { Command } from '@cowprotocol/types'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount, Percent, TradeType } from '@uniswap/sdk-core'
 
 import { HighFeeWarning } from 'legacy/components/SwapWarnings'
-import { useActivityDerivedState } from 'legacy/hooks/useActivityDerivedState'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
-import { useMultipleActivityDescriptors } from 'legacy/hooks/useRecentActivity'
 import { Order } from 'legacy/state/orders/actions'
 import { useOrder } from 'legacy/state/orders/hooks'
 import TradeGp from 'legacy/state/swap/TradeGp'
@@ -29,8 +26,6 @@ import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
 
 import { Routes } from 'common/constants/routes'
 import { useOrderProgressBarV2Props } from 'common/hooks/orderProgressBarV2'
-import { useCancelOrder } from 'common/hooks/useCancelOrder'
-import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
 import { useNavigate } from 'common/hooks/useNavigate'
 import { CurrencyPreviewInfo } from 'common/pure/CurrencyAmountPreview'
 import { NetworkCostsSuffix } from 'common/pure/NetworkCostsSuffix'
@@ -156,7 +151,7 @@ function useSubmittedContent(chainId: SupportedChainId) {
   const { transactionHash } = useTradeConfirmState()
   const order = useOrder({ chainId, id: transactionHash || undefined })
 
-  const orderProgressBarV2Props = useSetupAdditionalProgressBarProps(chainId, order)
+  const orderProgressBarV2Props = useOrderProgressBarV2Props(chainId, order)
 
   const navigateToNewOrderCallback = useNavigateToNewOrderCallback()
 
@@ -175,33 +170,6 @@ function useSubmittedContent(chainId: SupportedChainId) {
   )
 }
 
-// TODO: doesn't belong here
-export function useSetupAdditionalProgressBarProps(chainId: SupportedChainId, order: Order | undefined) {
-  const orderId = order?.id
-  const [activity] = useMultipleActivityDescriptors({ chainId, ids: orderId ? [orderId] : [] })
-  const activityDerivedState = useActivityDerivedState({ chainId, activity })
-  const progressBarV2Props = useOrderProgressBarV2Props({ chainId, activityDerivedState })
-
-  const getCancellation = useCancelOrder()
-  const showCancellationModal = useMemo(
-    // Sort of duplicate cancellation logic since ethflow on creating state don't have progress bar props
-    () => progressBarV2Props?.showCancellationModal || (order && getCancellation ? getCancellation(order) : null),
-    [progressBarV2Props?.showCancellationModal, order, getCancellation]
-  )
-  const surplusData = useGetSurplusData(order)
-  const receiverEnsName = useENS(order?.receiver).name || undefined
-
-  return useMemo(() => {
-    const data = { ...progressBarV2Props, activityDerivedState, surplusData, chainId, receiverEnsName, showCancellationModal, isProgressBarSetup: true }
-
-    if (!progressBarV2Props) {
-      // Not setup, but cancellation still needed for ethflow
-      return { ...data, isProgressBarSetup: false }
-    }
-    // Add supplementary stuff
-    return data
-  }, [progressBarV2Props, activityDerivedState, surplusData, chainId, receiverEnsName, showCancellationModal])
-}
 
 // TODO: move to its own file/module
 export type NavigateToNewOrderCallback = (chainId: SupportedChainId, order?: Order, callback?: Command) => () => void
