@@ -36,7 +36,7 @@ export function SmartSlippageUpdater() {
       ? null
       : [chainId, sellTokenAddress, buyTokenAddress],
     async ([chainId, sellTokenAddress, buyTokenAddress]) => {
-      const url = `${BFF_BASE_URL}/chains/${chainId}/markets/${sellTokenAddress}-${buyTokenAddress}/defaultSlippageTolerance`
+      const url = `${BFF_BASE_URL}/${chainId}/markets/${sellTokenAddress}-${buyTokenAddress}/slippageTolerance`
 
       const response: SlippageApiResponse = await fetch(url).then((res) => res.json())
 
