@@ -14,6 +14,7 @@ import { NavigateToNewOrderCallback } from 'modules/swap/containers/ConfirmSwapM
 import { EthFlowStepper } from 'modules/swap/containers/EthFlowStepper'
 import { WatchAssetInWallet } from 'modules/wallet/containers/WatchAssetInWallet'
 
+
 import * as styledEl from './styled'
 
 // import { SurplusModal } from './SurplusModal'
@@ -60,7 +61,7 @@ export function TransactionSubmittedContent({
   navigateToNewOrderCallback,
 }: TransactionSubmittedContentProps) {
   const { order, isOrder, isCreating, isPending } = activityDerivedState || {}
-  const { isProgressBarSetup, showCancellationModal } = orderProgressBarV2Props
+  const { isProgressBarSetup, showCancellationModal, stepName } = orderProgressBarV2Props
   const showCancellationButton = isOrder && (isCreating || isPending) && showCancellationModal
 
   if (!chainId) {
@@ -70,6 +71,7 @@ export function TransactionSubmittedContent({
   const isPresignaturePending = activityDerivedState?.isPresignaturePending
   const showSafeSigningInfo = isPresignaturePending && activityDerivedState && !!activityDerivedState.gnosisSafeInfo
   const showProgressBar = !showSafeSigningInfo && !isPresignaturePending && activityDerivedState && isProgressBarSetup
+  const cancellationFailed = stepName === 'cancellationFailed'
 
   return (
     <styledEl.Wrapper>
@@ -98,7 +100,7 @@ export function TransactionSubmittedContent({
         <>
           {!isProgressBarSetup && <styledEl.Title>{getTitleStatus(activityDerivedState)}</styledEl.Title>}
           {showSafeSigningInfo && <GnosisSafeTxDetails chainId={chainId} activityDerivedState={activityDerivedState} />}
-          <EthFlowStepper order={order} showProgressBar={!!showProgressBar} />
+          <EthFlowStepper order={order} showProgressBar={!!showProgressBar && !cancellationFailed} />
           {activityDerivedState && showProgressBar && isProgressBarSetup && (
             <OrderProgressBarV2
               {...orderProgressBarV2Props}
@@ -111,15 +113,15 @@ export function TransactionSubmittedContent({
 
             {(activityDerivedState?.status === (ActivityStatus.CONFIRMED || ActivityStatus.EXPIRED) ||
               (activityDerivedState?.status === ActivityStatus.PENDING && !isProgressBarSetup)) && (
-              <styledEl.ButtonCustom
-                onClick={() => {
-                  onDismiss()
-                  trackCloseClick()
-                }}
-              >
-                Close
-              </styledEl.ButtonCustom>
-            )}
+                <styledEl.ButtonCustom
+                  onClick={() => {
+                    onDismiss()
+                    trackCloseClick()
+                  }}
+                >
+                  Close
+                </styledEl.ButtonCustom>
+              )}
           </styledEl.ButtonGroup>
         </>
       </styledEl.Section>

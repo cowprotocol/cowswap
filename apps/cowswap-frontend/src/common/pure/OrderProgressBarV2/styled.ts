@@ -754,6 +754,7 @@ export const CancellationFailedBanner = styled.div`
   background-color: var(${UI.COLOR_DANGER_BG});
   color: var(${UI.COLOR_DANGER_TEXT});
   padding: 10px;
+  margin-top: 10px;
   border-radius: 16px;
   text-align: center;
   font-size: 15px;
