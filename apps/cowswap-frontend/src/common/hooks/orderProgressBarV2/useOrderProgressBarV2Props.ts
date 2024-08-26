@@ -78,6 +78,7 @@ export function useOrderProgressBarV2Props(
   const {
     countdown,
     backendApiStatus,
+    previousBackendApiStatus,
     solverCompetition: apiSolverCompetition,
     progressBarStepName,
     previousStepName,
@@ -102,6 +103,7 @@ export function useOrderProgressBarV2Props(
     isConfirmed,
     countdown,
     backendApiStatus,
+    previousBackendApiStatus,
     lastTimeChangedSteps,
     previousStepName
   )
@@ -215,6 +217,7 @@ function useProgressBarStepNameUpdater(
   isConfirmed: boolean,
   countdown: OrderProgressBarState['countdown'],
   backendApiStatus: OrderProgressBarState['backendApiStatus'],
+  previousBackendApiStatus: OrderProgressBarState['previousBackendApiStatus'],
   lastTimeChangedSteps: OrderProgressBarState['lastTimeChangedSteps'],
   previousStepName: OrderProgressBarState['previousStepName']
 ) {
@@ -229,6 +232,7 @@ function useProgressBarStepNameUpdater(
     isConfirmed,
     countdown,
     backendApiStatus,
+    previousBackendApiStatus,
     previousStepName
   )
 
@@ -276,6 +280,7 @@ function getProgressBarStepName(
   isConfirmed: boolean,
   countdown: OrderProgressBarState['countdown'],
   backendApiStatus: OrderProgressBarState['backendApiStatus'],
+  previousBackendApiStatus: OrderProgressBarState['previousBackendApiStatus'],
   previousStepName: OrderProgressBarState['previousStepName']
 ): OrderProgressBarStepName {
   if (isExpired) {
@@ -291,7 +296,7 @@ function getProgressBarStepName(
     // already traded
     return 'finished'
   } else if (
-    previousStepName === 'executing' &&
+    previousBackendApiStatus === 'executing' &&
     (backendApiStatus === 'active' || backendApiStatus === 'open' || backendApiStatus === 'scheduled')
   ) {
     // moved back from executing to active
