@@ -71,7 +71,15 @@ const STEPS = [
   { title: 'Transaction completed' },
 ]
 
-const StepsWrapper: React.FC<{
+function StepsWrapper({
+  steps,
+  currentStep,
+  extraContent,
+  customStepTitles,
+  customColor,
+  isCancelling,
+  isUnfillable
+}: {
   steps: typeof STEPS
   currentStep: number
   extraContent?: React.ReactNode
@@ -79,7 +87,7 @@ const StepsWrapper: React.FC<{
   customColor?: string
   isCancelling?: boolean
   isUnfillable?: boolean
-}> = ({ steps, currentStep, extraContent, customStepTitles, customColor, isCancelling, isUnfillable }) => {
+}) {
   const wrapperRef = useRef<HTMLDivElement>(null)
   const [containerHeight, setContainerHeight] = useState(0)
 
@@ -136,7 +144,16 @@ const StepsWrapper: React.FC<{
   )
 }
 
-const StepComponent: React.FC<{
+function StepComponent({
+  status,
+  isFirst,
+  step,
+  _index,
+  extraContent,
+  customColor,
+  isUnfillable,
+  isCancelling
+}: {
   status: string
   isFirst: boolean
   step: { title: string }
@@ -145,7 +162,7 @@ const StepComponent: React.FC<{
   customColor?: string
   isUnfillable?: boolean
   isCancelling?: boolean
-}> = ({ status, isFirst, step, _index, extraContent, customColor, isUnfillable, isCancelling }) => {
+}) {
   return (
     <styledEl.Step status={status} isFirst={isFirst}>
       <styledEl.NumberedElement
@@ -176,7 +193,7 @@ const StepComponent: React.FC<{
   )
 }
 
-const OrderIntent: React.FC<{ order?: Order }> = ({ order }) => {
+function OrderIntent({ order }: { order?: Order }) {
   if (!order) return null
 
   const { inputToken, outputToken, kind, sellAmount, buyAmount } = order
@@ -228,7 +245,7 @@ interface CircularCountdownProps {
   countdown: number
 }
 
-const CircularCountdown: React.FC<CircularCountdownProps> = ({ countdown }) => {
+function CircularCountdown({ countdown }: CircularCountdownProps) {
   const radius = 45
   const circumference = 2 * Math.PI * radius
 
@@ -331,28 +348,33 @@ export function OrderProgressBarV2(props: OrderProgressBarV2Props) {
   )
 }
 
-const AnimatedTokens: React.FC<{
+function AnimatedTokens({
+  sellToken,
+  buyToken,
+}: {
   sellToken: Currency | TokenWithLogo | null | undefined
   buyToken: Currency | TokenWithLogo | null | undefined
-}> = ({ sellToken, buyToken }) => (
-  <styledEl.AnimatedTokensWrapper>
-    <styledEl.TokenWrapper position="left">
-      <TokenLogo token={sellToken} size={136} />
-    </styledEl.TokenWrapper>
-    <styledEl.TokenWrapper position="center">
-      <TokenLogo token={buyToken} size={136} />
-    </styledEl.TokenWrapper>
-    <styledEl.TokenWrapper position="right" bgColor={'#012F7A'}>
-      <ProductLogo
-        variant={ProductVariant.CowSwap}
-        theme={'dark'}
-        overrideHoverColor={'#65D9FF'}
-        height={136}
-        logoIconOnly
-      />
-    </styledEl.TokenWrapper>
-  </styledEl.AnimatedTokensWrapper>
-)
+}): JSX.Element {
+  return (
+    <styledEl.AnimatedTokensWrapper>
+      <styledEl.TokenWrapper position="left">
+        <TokenLogo token={sellToken} size={136} />
+      </styledEl.TokenWrapper>
+      <styledEl.TokenWrapper position="center">
+        <TokenLogo token={buyToken} size={136} />
+      </styledEl.TokenWrapper>
+      <styledEl.TokenWrapper position="right" bgColor={'#012F7A'}>
+        <ProductLogo
+          variant={ProductVariant.CowSwap}
+          theme={'dark'}
+          overrideHoverColor={'#65D9FF'}
+          height={136}
+          logoIconOnly
+        />
+      </styledEl.TokenWrapper>
+    </styledEl.AnimatedTokensWrapper>
+  )
+}
 
 function RenderProgressTopSection({
   stepName,
