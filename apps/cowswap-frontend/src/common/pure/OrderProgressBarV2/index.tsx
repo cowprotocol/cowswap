@@ -19,8 +19,7 @@ import LOTTIE_RED_CROSS from '@cowprotocol/assets/lottie/red-cross.json'
 import LOTTIE_TIME_EXPIRED_DARK from '@cowprotocol/assets/lottie/time-expired-dark.json'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { ExplorerDataType, getExplorerLink, getRandomInt, isSellOrder, shortenAddress } from '@cowprotocol/common-utils'
-import type { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { OrderKind } from '@cowprotocol/cow-sdk'
+import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { Command } from '@cowprotocol/types'
 import { ExternalLink, InfoTooltip, ProductLogo, ProductVariant, TokenAmount, UI } from '@cowprotocol/ui'
@@ -355,22 +354,25 @@ const AnimatedTokens: React.FC<{
   </styledEl.AnimatedTokensWrapper>
 )
 
-const RenderProgressTopSection: React.FC<{
-  stepName: OrderProgressBarStepName | undefined
-  order?: Order
-  countdown?: number | null | undefined
-  solverCompetition?: SolverCompetition[]
-  showCancellationModal: Command | null
-  surplusData?: SurplusData
-}> = ({ stepName, order, countdown, surplusData }) => {
+function RenderProgressTopSection({
+  stepName,
+  order,
+  countdown,
+  chainId,
+  surplusData
+}: Pick<OrderProgressBarV2Props, 'stepName' | 'order' | 'countdown' | 'chainId' | 'surplusData'>) {
   const hideIntent = stepName === 'finished' || stepName === 'cancellationFailed'
 
   const { randomImage, randomBenefit } = useMemo(
-    () => ({
-      randomImage: SURPLUS_IMAGES[getRandomInt(0, SURPLUS_IMAGES.length - 1)],
-      randomBenefit: COW_SWAP_BENEFITS[getRandomInt(0, COW_SWAP_BENEFITS.length - 1)],
-    }),
-    []
+    () => {
+      const benefits = CHAIN_SPECIFIC_BENEFITS[chainId]
+
+      return ({
+        randomImage: SURPLUS_IMAGES[getRandomInt(0, SURPLUS_IMAGES.length - 1)],
+        randomBenefit: benefits[getRandomInt(0, benefits.length - 1)],
+      })
+    },
+    [chainId]
   )
 
   const { surplusPercent, showSurplus } = surplusData || {}
@@ -591,10 +593,10 @@ const RenderProgressTopSection: React.FC<{
   )
 }
 
-function InitialStep({ order, stepName }: OrderProgressBarV2Props) {
+function InitialStep(props: OrderProgressBarV2Props) {
   return (
     <styledEl.ProgressContainer>
-      <RenderProgressTopSection stepName={stepName} order={order} showCancellationModal={null} />
+      <RenderProgressTopSection {...props} />
       <StepsWrapper
         steps={STEPS}
         currentStep={0}
@@ -616,15 +618,10 @@ function InitialStep({ order, stepName }: OrderProgressBarV2Props) {
   )
 }
 
-function ExecutingStep({ solverCompetition, order, stepName }: OrderProgressBarV2Props) {
+function ExecutingStep(props: OrderProgressBarV2Props) {
   return (
     <styledEl.ProgressContainer>
-      <RenderProgressTopSection
-        stepName={stepName}
-        solverCompetition={solverCompetition}
-        order={order}
-        showCancellationModal={null}
-      />
+      <RenderProgressTopSection {...props} />
       <StepsWrapper
         steps={STEPS}
         currentStep={2}
@@ -640,16 +637,30 @@ function ExecutingStep({ solverCompetition, order, stepName }: OrderProgressBarV
 }
 
 const COW_SWAP_BENEFITS = [
-  'CoW Swap solvers search Uniswap, 1inch, Matcha, Sushi, and more to find you the best price.',
-  'CoW Swap sets the standard for protecting against MEV attacks such as frontrunning and sandwiching.',
-  "Enjoy intent-based trading with gasless swaps and CoW Swap's unique Coincidences of Wants (CoWs) feature.",
-  'Place and cancel limit orders for free on CoW Swap, capturing surplus if the price moves in your favor.',
-  'Protect all your Ethereum transactions from MEV by installing MEV Blocker.',
-  'Switch to Arbitrum on CoW Swap for quick, cheap transactions with no price impact on large trades.',
-  "Liquidity pools on CoW AMM grow faster as they don't lose money to arbitrage bots.",
+  "CoW Swap solvers search Uniswap, 1inch, Matcha, Sushi and more to find you the best price.",
+  "CoW Swap sets the standard for protecting against MEV attacks such as frontrunning and sandwiching.",
+  "CoW Swap was the first DEX to offer intent-based trading, gasless swaps, coincidences of wants, and many other DeFi innovations.",
+  "CoW Swap is the only exchange that matches Coincidences of Wants (CoWs): peer-to-peer swaps that save on settlement costs.",
+  "You can avoid price impact on large trades by using TWAP orders on CoW Swap.",
+  "Limit orders on CoW Swap capture surplus - so if the price moves in your favor, you're likely to get more than you asked for.",
+  "On CoW Swap, you can set limit orders for balances you don't have yet.",
+  "Limit orders on CoW Swap are free to place and cancel. That's unique in DeFi!",
+  "You can protect all your Ethereum transactions from MEV - not just trades on CoW Swap - by installing MEV Blocker.",
+  "Liquidity pools on CoW AMM grow faster than on other AMMs because they don't lose money to arbitrage bots.",
+  "CoW Swap has over 20 active solvers - more than any other exchange.",
   "CoW Swap's robust solver competition protects your slippage from being exploited by MEV bots.",
-  'Advanced users can create complex, conditional orders directly through CoW Protocol.',
+  "Advanced users can create complex, conditional orders directly through CoW Protocol. Read the docs for more info.",
+  "Unlike most other exchanges, CoW Swap doesn't charge you any fees if your trade fails."
 ]
+
+const TRADE_ON_ARBITRUM_BENEFIT = "CoW Swap is now live on Arbitrum. Switch the network toggle in the nav bar for quick, cheap transactions."
+
+const CHAIN_SPECIFIC_BENEFITS: Record<SupportedChainId, string[]> = {
+  [SupportedChainId.MAINNET]: [TRADE_ON_ARBITRUM_BENEFIT, ...COW_SWAP_BENEFITS],
+  [SupportedChainId.ARBITRUM_ONE]: COW_SWAP_BENEFITS,
+  [SupportedChainId.GNOSIS_CHAIN]: [TRADE_ON_ARBITRUM_BENEFIT, ...COW_SWAP_BENEFITS],
+  [SupportedChainId.SEPOLIA]: [TRADE_ON_ARBITRUM_BENEFIT, ...COW_SWAP_BENEFITS],
+}
 
 function truncateWithEllipsis(str: string, maxLength: number): string {
   if (str.length <= maxLength) return str
@@ -689,15 +700,16 @@ const SURPLUS_IMAGES = [
   PROGRESSBAR_COW_SURPLUS_4,
 ]
 
-function FinishedStep({
-  stepName,
-  solverCompetition: solvers,
-  totalSolvers,
-  order,
-  surplusData,
-  chainId,
-  receiverEnsName,
-}: OrderProgressBarV2Props) {
+function FinishedStep(props: OrderProgressBarV2Props) {
+  const {
+    stepName,
+    solverCompetition: solvers,
+    totalSolvers,
+    order,
+    surplusData,
+    chainId,
+    receiverEnsName,
+  } = props
   const [showAllSolvers, setShowAllSolvers] = useState(false)
 
   const { surplusFiatValue, surplusAmount, showSurplus } = surplusData || {}
@@ -736,12 +748,7 @@ function FinishedStep({
           <b>Cancellation failed:</b> The order was executed before it could be cancelled.
         </styledEl.CancellationFailedBanner>
       )}
-      <RenderProgressTopSection
-        stepName={stepName}
-        order={order}
-        showCancellationModal={null}
-        surplusData={surplusData}
-      />
+      <RenderProgressTopSection {...props} />
 
       <styledEl.ConclusionContent>
         <styledEl.TransactionStatus flexFlow="column" margin={'0 auto 24px'}>
@@ -875,7 +882,8 @@ function getSurplusText(isSell: boolean | undefined, isCustomRecipient: boolean 
   return 'and saved '
 }
 
-function SolvingStep({ order, countdown, stepName, showCancellationModal }: OrderProgressBarV2Props) {
+function SolvingStep(props: OrderProgressBarV2Props) {
+  const { countdown, stepName, showCancellationModal } = props
   const isUnfillable = stepName === 'unfillable'
   const isDelayed = stepName === 'delayed'
   const isSubmissionFailed = stepName === 'submissionFailed'
@@ -899,12 +907,7 @@ function SolvingStep({ order, countdown, stepName, showCancellationModal }: Orde
 
   return (
     <styledEl.ProgressContainer>
-      <RenderProgressTopSection
-        stepName={stepName}
-        order={order}
-        countdown={isUnfillable || isDelayed || isSubmissionFailed || isSolved ? undefined : countdown}
-        showCancellationModal={showCancellationModal}
-      />
+      <RenderProgressTopSection {...props} countdown={isUnfillable || isDelayed || isSubmissionFailed || isSolved ? undefined : countdown} />
       <StepsWrapper
         steps={STEPS}
         currentStep={1}
@@ -998,10 +1001,10 @@ function SolvingStep({ order, countdown, stepName, showCancellationModal }: Orde
   )
 }
 
-function CancellingStep({ order, stepName }: OrderProgressBarV2Props) {
+function CancellingStep(props: OrderProgressBarV2Props) {
   return (
     <styledEl.ProgressContainer>
-      <RenderProgressTopSection stepName={stepName} order={order} showCancellationModal={null} />
+      <RenderProgressTopSection {...props} />
       <StepsWrapper
         steps={[{ title: 'Cancelling' }]}
         currentStep={0}
@@ -1013,10 +1016,10 @@ function CancellingStep({ order, stepName }: OrderProgressBarV2Props) {
   )
 }
 
-function CancelledStep({ order, stepName }: OrderProgressBarV2Props) {
+function CancelledStep(props: OrderProgressBarV2Props) {
   return (
     <styledEl.ProgressContainer>
-      <RenderProgressTopSection stepName={stepName} order={order} showCancellationModal={null} />
+      <RenderProgressTopSection {...props} />
       <styledEl.ConclusionContent>
         <styledEl.TransactionStatus status={'expired'} flexFlow="column" margin={'14px auto 24px'}>
           Your order was cancelled
@@ -1030,7 +1033,7 @@ function CancelledStep({ order, stepName }: OrderProgressBarV2Props) {
   )
 }
 
-function ExpiredStep({ order, navigateToNewOrder }: OrderProgressBarV2Props) {
+function ExpiredStep(props: OrderProgressBarV2Props) {
   const trackNewOrderClick = () => {
     cowAnalytics.sendEvent({
       category: Category.PROGRESS_BAR,
@@ -1057,7 +1060,7 @@ function ExpiredStep({ order, navigateToNewOrder }: OrderProgressBarV2Props) {
 
   return (
     <styledEl.ProgressContainer>
-      <RenderProgressTopSection stepName="expired" order={order} showCancellationModal={null} />
+      <RenderProgressTopSection {...props} />
       <styledEl.ConclusionContent>
         <styledEl.TransactionStatus status={'expired'} flexFlow="column" margin={'14px auto 24px'}>
           Your order expired
@@ -1077,7 +1080,7 @@ function ExpiredStep({ order, navigateToNewOrder }: OrderProgressBarV2Props) {
             Unlike on other exchanges, you won't be charged for this! Feel free to{' '}
             <styledEl.Button
               onClick={() => {
-                navigateToNewOrder && navigateToNewOrder()
+                props.navigateToNewOrder?.()
                 trackNewOrderClick()
               }}
             >
