@@ -4,6 +4,7 @@ import type { CompetitionOrderStatus } from '@cowprotocol/cow-sdk'
 export type OrderProgressBarState = {
   countdown?: number | null
   backendApiStatus?: CompetitionOrderStatus.type
+  previousBackendApiStatus?: CompetitionOrderStatus.type
   solverCompetition?: CompetitionOrderStatus['value']
   progressBarStepName?: OrderProgressBarStepName
   previousStepName?: OrderProgressBarStepName
