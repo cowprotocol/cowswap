@@ -1082,7 +1082,7 @@ function ExpiredStep({ order, navigateToNewOrder }: OrderProgressBarV2Props) {
               }}
             >
               place a new order
-            </styledEl.Button>
+            </styledEl.Button>{' '}
             without worry.
           </p>
         </styledEl.InfoCard>
