@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v0.13.2...widget-lib-v0.14.0) (2024-08-27)
+
+
+### Features
+
+* **progress-bar-v2:** replace progress bar with v2 ([#4033](https://github.com/cowprotocol/cowswap/issues/4033)) ([e199bff](https://github.com/cowprotocol/cowswap/commit/e199bff492ad3f91df23be34a829ebe1f246444a))
+
 ## [0.13.2](https://github.com/cowprotocol/cowswap/compare/widget-lib-v0.13.1...widget-lib-v0.13.2) (2024-07-05)
 
 

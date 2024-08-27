@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.11.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.10.0...cow-fi-v1.11.0) (2024-08-27)
+
+
+### Features
+
+* **progress-bar-v2:** replace progress bar with v2 ([#4033](https://github.com/cowprotocol/cowswap/issues/4033)) ([e199bff](https://github.com/cowprotocol/cowswap/commit/e199bff492ad3f91df23be34a829ebe1f246444a))
+* update refer to earn text ([#4821](https://github.com/cowprotocol/cowswap/issues/4821)) ([c90dba0](https://github.com/cowprotocol/cowswap/commit/c90dba0c1bfbf1923354e08476eaaf2e039d73b2))
+
 ## [1.10.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.9.0...cow-fi-v1.10.0) (2024-08-09)
 
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.6.1...common-utils-v1.7.0) (2024-08-27)
+
+
+### Features
+
+* **dynamic-slippage:** add tooltip and change message ([#4819](https://github.com/cowprotocol/cowswap/issues/4819)) ([75a16ac](https://github.com/cowprotocol/cowswap/commit/75a16aca98541b42583399b6aad3a99f7ced3ab7))
+
 ## [1.6.1](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.6.0...common-utils-v1.6.1) (2024-08-14)
 
 
