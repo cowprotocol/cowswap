@@ -111,6 +111,10 @@ const SmartSlippageInfo = styled.div`
   display: flex;
   justify-content: flex-end;
   padding-bottom: 0.35rem;
+
+  > span {
+    margin-left: 4px;
+  }
 `
 
 const Wrapper = styled.div`
@@ -356,15 +360,15 @@ export function TransactionSettings() {
           {isSmartSlippageApplied && (
             <RowBetween>
               <SmartSlippageInfo>
-                <span>Dynamic</span>
                 <HelpTooltip
                   text={
                     <Trans>
-                      Based on recent volatility observed for this token pair. Its recommended to leave the default to
-                      account for price changes
+                      Based on recent volatility observed for this token pair, it's recommended to leave the default
+                      to account for price changes.
                     </Trans>
                   }
                 />
+                <span>Dynamic</span>
               </SmartSlippageInfo>
             </RowBetween>
           )}
