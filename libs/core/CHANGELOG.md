@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/cowprotocol/cowswap/compare/core-v1.2.0...core-v1.3.0) (2024-08-27)
+
+
+### Features
+
+* **progress-bar-v2:** replace progress bar with v2 ([#4033](https://github.com/cowprotocol/cowswap/issues/4033)) ([e199bff](https://github.com/cowprotocol/cowswap/commit/e199bff492ad3f91df23be34a829ebe1f246444a))
+
 ## [1.2.0](https://github.com/cowprotocol/cowswap/compare/core-v1.1.0...core-v1.2.0) (2024-07-31)
 
 

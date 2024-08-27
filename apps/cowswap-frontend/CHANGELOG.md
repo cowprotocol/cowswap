@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.81.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.80.0...cowswap-v1.81.0) (2024-08-27)
+
+
+### Features
+
+* **dynamic-slippage:** add tooltip and change message ([#4819](https://github.com/cowprotocol/cowswap/issues/4819)) ([75a16ac](https://github.com/cowprotocol/cowswap/commit/75a16aca98541b42583399b6aad3a99f7ced3ab7))
+* **progress-bar-v2:** replace progress bar with v2 ([#4033](https://github.com/cowprotocol/cowswap/issues/4033)) ([e199bff](https://github.com/cowprotocol/cowswap/commit/e199bff492ad3f91df23be34a829ebe1f246444a))
+
+
+### Bug Fixes
+
+* adjust dynamic slippage wording ([a2375e6](https://github.com/cowprotocol/cowswap/commit/a2375e6651a6fba7d2a99cc67395011133486676))
+
 ## [1.80.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.79.0...cowswap-v1.80.0) (2024-08-14)
 
 
