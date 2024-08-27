@@ -31,7 +31,7 @@ export function getExecutedSummaryData(order: Order | ParsedOrder) {
   const surplusToken = isSellOrder(order.kind) ? parsedOutputToken : parsedInputToken
 
   const surplusAmount = CurrencyAmount.fromRawAmount(surplusToken, amount?.decimalPlaces(0).toFixed())
-  const suprlusPercent = percentage?.multipliedBy(100)?.toFixed(2)
+  const surplusPercent = percentage?.multipliedBy(100)?.toFixed(2)
 
   const { formattedFilledAmount, formattedSwappedAmount } = getFilledAmounts({
     ...parsedOrder,
@@ -41,7 +41,7 @@ export function getExecutedSummaryData(order: Order | ParsedOrder) {
 
   return {
     surplusAmount,
-    suprlusPercent,
+    surplusPercent,
     surplusToken,
     formattedFilledAmount,
     formattedSwappedAmount,

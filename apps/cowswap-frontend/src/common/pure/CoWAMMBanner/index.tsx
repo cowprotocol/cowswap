@@ -206,16 +206,20 @@ export function CoWAmmBanner() {
     )
   }
 
+  const handleClose = () => {
+    cowAnalytics.sendEvent({
+      category: 'CoW Swap',
+      action: 'CoW AMM Banner Closed',
+    })
+  }
+
   return ClosableBanner('cow_amm_banner', (close) => (
     <BannerWrapper>
       <i></i>
       <CloseButton
         size={24}
         onClick={() => {
-          cowAnalytics.sendEvent({
-            category: 'CoW Swap',
-            action: 'CoW AMM Banner CTA Closed',
-          })
+          handleClose()
           close()
         }}
       />

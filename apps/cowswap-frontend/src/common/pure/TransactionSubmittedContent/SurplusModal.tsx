@@ -58,8 +58,6 @@ export const Wrapper = styled.div`
       background: var(${UI.COLOR_SUCCESS_BG});
       color: var(${UI.COLOR_SUCCESS_TEXT});
       border-radius: 50%;
-      width: var(--size);
-      height: var(--size);
       object-fit: contain;
       margin: 0 10px 0 0;
       padding: 6px;

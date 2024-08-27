@@ -2,7 +2,7 @@ import { UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-const SingleLetterLogoWrapper = styled.div`
+export const SingleLetterLogoWrapper = styled.div`
   width: 100%;
   height: 100%;
   border-radius: 100%;
@@ -12,6 +12,7 @@ const SingleLetterLogoWrapper = styled.div`
   line-height: 1;
   color: var(${UI.COLOR_TEXT});
   background: var(${UI.COLOR_PAPER_DARKER});
+  font-size: 65%;
 `
 
 type SingleLetterLogoProps = {

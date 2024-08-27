@@ -1,4 +1,4 @@
-import { UI, Media, RowFixed } from '@cowprotocol/ui'
+import { Media, RowFixed, UI } from '@cowprotocol/ui'
 
 import styled, { css } from 'styled-components/macro'
 
@@ -18,7 +18,7 @@ export const HeaderControls = styled.div`
     position: sticky;
     bottom: 0;
     left: 0;
-    z-index: 101;
+    z-index: 10;
     background: var(${UI.COLOR_PAPER});
     padding: 5px 10px;
     flex-flow: row-reverse;
@@ -47,8 +47,8 @@ export const LogoImage = styled.div<{ isMobileMenuOpen?: boolean }>`
 
   ${Media.upToLarge()} {
     ${({ isMobileMenuOpen }) =>
-      isMobileMenuOpen &&
-      css`
+    isMobileMenuOpen &&
+    css`
         height: 34px;
         width: auto;
       `}

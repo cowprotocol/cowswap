@@ -5,9 +5,6 @@ import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
 
 import styled from 'styled-components/macro'
 
-import { Order } from 'legacy/state/orders/actions'
-import { useOrder } from 'legacy/state/orders/hooks'
-
 import { PermitModal } from 'common/containers/PermitModal'
 import { OrderSubmittedContent } from 'common/pure/OrderSubmittedContent'
 import { TransactionErrorContent } from 'common/pure/TransactionErrorContent'
@@ -25,7 +22,7 @@ const Container = styled.div`
     box-shadow: none;
   }
 `
-type CustomSubmittedContent = (order: Order | undefined, onDismiss: Command) => JSX.Element
+type CustomSubmittedContent = (onDismiss: Command) => JSX.Element
 
 export interface TradeConfirmModalProps {
   children: JSX.Element
@@ -40,8 +37,6 @@ export function TradeConfirmModal(props: TradeConfirmModalProps) {
   const isSafeWallet = useIsSafeWallet()
   const { permitSignatureState, pendingTrade, transactionHash, error } = useTradeConfirmState()
   const { onDismiss } = useTradeConfirmActions()
-
-  const order = useOrder({ chainId, id: transactionHash || undefined })
 
   if (!account) return null
 
@@ -58,7 +53,6 @@ export function TradeConfirmModal(props: TradeConfirmModalProps) {
         permitSignatureState={permitSignatureState}
         isSafeWallet={isSafeWallet}
         submittedContent={submittedContent}
-        order={order}
       >
         {children}
       </InnerComponent>
@@ -78,7 +72,6 @@ type InnerComponentProps = {
   permitSignatureState: string | undefined
   isSafeWallet: boolean
   submittedContent?: CustomSubmittedContent
-  order?: Order
 }
 
 function InnerComponent(props: InnerComponentProps) {
@@ -93,7 +86,6 @@ function InnerComponent(props: InnerComponentProps) {
     pendingTrade,
     permitSignatureState,
     transactionHash,
-    order,
     submittedContent,
   } = props
 
@@ -118,7 +110,7 @@ function InnerComponent(props: InnerComponentProps) {
 
   if (transactionHash) {
     return submittedContent ? (
-      submittedContent(order, onDismiss)
+      submittedContent(onDismiss)
     ) : (
       <OrderSubmittedContent
         chainId={chainId}

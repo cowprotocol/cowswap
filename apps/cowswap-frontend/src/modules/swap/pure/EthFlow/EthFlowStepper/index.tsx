@@ -1,8 +1,6 @@
-import React from 'react'
-
 import { Media, UI } from '@cowprotocol/ui'
 
-import styled from 'styled-components/macro'
+import styled, { css } from 'styled-components/macro'
 
 import { StatusIconState } from './StatusIcon'
 import { Progress1 } from './steps/Progress1'
@@ -36,6 +34,7 @@ type TxState = {
 }
 
 export interface EthFlowStepperProps {
+  showProgressBar?: boolean
   nativeTokenSymbol: string
   tokenLabel: string
 
@@ -69,7 +68,7 @@ export interface EthFlowStepperProps {
   cancellation: TxState
 }
 
-const Wrapper = styled.div`
+export const Wrapper = styled.div<{ showProgressBar?: boolean }>`
   display: grid;
   grid-template-columns: 0.8fr minmax(44px, 0.3fr) 0.8fr minmax(44px, 0.3fr) 0.8fr;
   grid-template-rows: max-content;
@@ -88,12 +87,26 @@ const Wrapper = styled.div`
     align-items: center;
     padding: 42px 22px;
   }
+
+  ${({ showProgressBar }) =>
+    showProgressBar &&
+    css`
+      margin: 0 0 -40px;
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+      padding: 20px 20px 60px;
+
+      ${Media.upToSmall()} {
+        padding: 20px 20px 60px;
+      }
+    `}
 `
 
 export interface ProgressProps {
   status: StatusIconState
   value: number
 }
+
 export const Progress = styled.div<ProgressProps>`
   --height: 2px;
   height: var(--height);
@@ -141,8 +154,10 @@ export const Progress = styled.div<ProgressProps>`
 `
 
 export function EthFlowStepper(props: EthFlowStepperProps) {
+  const { showProgressBar } = props
+
   return (
-    <Wrapper>
+    <Wrapper showProgressBar={showProgressBar}>
       <Step1 {...props} />
       <Progress1 {...props} />
       <Step2 {...props} />
