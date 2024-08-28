@@ -3,7 +3,7 @@
   "apps/explorer": "2.33.1",
   "libs/permit-utils": "0.3.1",
   "libs/widget-lib": "0.14.0",
-  "libs/widget-react": "0.9.0",
+  "libs/widget-react": "0.10.0",
   "apps/widget-configurator": "1.6.0",
   "libs/analytics": "1.6.0",
   "libs/assets": "1.7.0",

@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.10.0](https://github.com/cowprotocol/cowswap/compare/widget-react-v0.9.0...widget-react-v0.10.0) (2024-08-28)
+
+
+### Features
+
+* **widget-react:** bump widget-lib version to 0.14.0 ([468e780](https://github.com/cowprotocol/cowswap/commit/468e78047acaf577b66a22798bcf2298d5ed426a))
+
 ## [0.9.0](https://github.com/cowprotocol/cowswap/compare/widget-react-v0.8.2...widget-react-v0.9.0) (2024-05-01)
 
 
