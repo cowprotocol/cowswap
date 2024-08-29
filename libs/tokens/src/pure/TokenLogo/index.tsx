@@ -18,7 +18,9 @@ const invalidUrlsAtom = atom<{ [url: string]: boolean }>({})
 const defaultSize = 42
 
 export const TokenLogoWrapper = styled.div<{ size?: number; sizeMobile?: number }>`
-  display: inline-block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: var(${UI.COLOR_DARK_IMAGE_PAPER});
   color: var(${UI.COLOR_DARK_IMAGE_PAPER_TEXT});
   border-radius: ${({ size }) => size ?? defaultSize}px;
@@ -42,6 +44,7 @@ export const TokenLogoWrapper = styled.div<{ size?: number; sizeMobile?: number 
             border-radius: ${sizeMobile}px;
             width: ${sizeMobile}px;
             height: ${sizeMobile}px;
+            font-size: ${sizeMobile}px;
 
             > img,
             > svg {
