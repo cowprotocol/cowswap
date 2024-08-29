@@ -10,7 +10,6 @@ import {
   createCowSwapWidget,
 } from '@cowprotocol/widget-lib'
 
-
 export function CowSwapWidget(props: CowSwapWidgetProps) {
   const { params, provider, listeners } = props
   const [error, setError] = useState<{ error: Error; message: string } | null>(null)

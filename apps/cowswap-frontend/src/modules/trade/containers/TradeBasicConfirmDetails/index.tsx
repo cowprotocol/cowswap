@@ -1,4 +1,4 @@
-import React, { Dispatch, ReactNode, SetStateAction, useMemo } from 'react'
+import { Dispatch, ReactNode, SetStateAction, useMemo } from 'react'
 
 import { PercentDisplay } from '@cowprotocol/ui'
 import { CowSwapWidgetAppParams } from '@cowprotocol/widget-lib'
