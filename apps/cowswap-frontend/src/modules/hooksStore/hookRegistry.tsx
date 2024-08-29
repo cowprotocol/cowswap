@@ -3,6 +3,7 @@ import { HookDapp, HookDappIframe, HookDappType } from '@cowprotocol/types'
 
 import { PRE_BUILD, POST_BUILD } from './dapps/BuildHookApp'
 import { PRE_CLAIM_GNO } from './dapps/ClaimGnoHookApp'
+import {PRE_AIRDROP} from './dapps/AirdropHookApp'
 import bridgeImg from './images/bridge.svg'
 import cowAMM from './images/cowAMM.png'
 import curveImg from './images/curve.svg'
@@ -78,7 +79,7 @@ const POST_HOOK_DAPPS_ALL = [POST_BRIDGE, POST_MAKER, POST_BUILD]
 export const PRE_HOOK_REGISTRY: Record<SupportedChainId, HookDapp[]> = {
   [SupportedChainId.MAINNET]: [PRE_CURVE, PRE_COWAMM, PRE_MAKER, PRE_BUILD],
   [SupportedChainId.GNOSIS_CHAIN]: [PRE_CLAIM_GNO, PRE_CURVE, PRE_COWAMM, PRE_MAKER, PRE_BUILD],
-  [SupportedChainId.SEPOLIA]: [PRE_COWAMM, PRE_BUILD],
+  [SupportedChainId.SEPOLIA]: [PRE_AIRDROP, PRE_COWAMM, PRE_BUILD],
   [SupportedChainId.ARBITRUM_ONE]: [PRE_COWAMM, PRE_BUILD],
 }
 
