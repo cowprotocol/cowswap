@@ -196,7 +196,7 @@ const SelectButton = styled.div`
 
 `
 
-const airdropPlatforms = [
+const airdrops = [
     {
         name:"COW",
     },
@@ -213,8 +213,8 @@ export function AirdropHookApp() {
     gasLimit: 'test',
   })
   const [showDropdown, setShowDropdown] = useState(false)
-  const [selectedPlatform, setSelectedPlatform] = useState({})
-  const [dropDownText, setDropDownText] = useState("Select your platform")
+  const [selectedAirdrop, setSelectedAirdrop] = useState({})
+  const [dropDownText, setDropDownText] = useState("Select your airdrop")
   
 
   const clickOnAddHook = useCallback(() => {
@@ -233,9 +233,9 @@ export function AirdropHookApp() {
     )
   }, [hook, hookDappContext])
 
-  function handleSelectPlatform(platform:any) {
-    setSelectedPlatform(platform)
-    setDropDownText(platform.name)
+  function handleSelectAirdrop(airdrop:any) {
+    setSelectedAirdrop(airdrop)
+    setDropDownText(airdrop.name)
     setShowDropdown(false)
   }
 
@@ -248,12 +248,12 @@ export function AirdropHookApp() {
         </DropdownButton>
         {showDropdown && (
         <DropdownContent>
-            {airdropPlatforms.map((platform) => {
+            {airdrops.map((airdrop) => {
                 return (
                     <SelectButton
-                    onClick={() => handleSelectPlatform(platform)}
+                    onClick={() => handleSelectAirdrop(airdrop)}
                     >
-                        {platform.name}
+                        {airdrop.name}
                     </SelectButton>
                 )
             })}
