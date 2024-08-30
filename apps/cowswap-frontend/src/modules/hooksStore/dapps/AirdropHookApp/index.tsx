@@ -7,6 +7,8 @@ import styled from 'styled-components/macro'
 import { UI } from '@cowprotocol/ui'
 import { HookDappContext } from '../../context'
 
+import { AIRDROP_OPTIONS } from './constants'
+
 import ICON_ARROW_DOWN from '@cowprotocol/assets/images/carret-down.svg'
 import SVG from 'react-inlinesvg'
 
@@ -185,25 +187,17 @@ const SelectButton = styled.div`
     justify-content: space-between;
     cursor: pointer;
     border-radius: 16px;
-    background-color: #18193B;
+    margin-bottom:4px;
+    background-color: var(${UI.COLOR_PAPER_DARKER});
     padding:1rem;
     width:100%;
 
     &:hover {
-    background-color: #65D9FF;
-    color:#000000;
+    background-color: var(${UI.COLOR_PRIMARY_LIGHTER});
+    color:var(${UI.COLOR_BUTTON_TEXT});
     }
 
 `
-
-const airdrops = [
-    {
-        name:"COW",
-    },
-    {
-        name:"OTHER"
-    },
-]
 
 export function AirdropHookApp() {
   const hookDappContext = useContext(HookDappContext)
@@ -248,7 +242,7 @@ export function AirdropHookApp() {
         </DropdownButton>
         {showDropdown && (
         <DropdownContent>
-            {airdrops.map((airdrop) => {
+            {AIRDROP_OPTIONS.map((airdrop) => {
                 return (
                     <SelectButton
                     onClick={() => handleSelectAirdrop(airdrop)}
@@ -277,15 +271,6 @@ export function AirdropHookApp() {
         <Row>
             <DropDownMenu />
         </Row>
-        {/* <Row>
-          <Input
-            name="gasLimit"
-            type="number"
-            placeholder='Gas Limit'
-            value={hook.gasLimit}
-            onChange={(e) => setHook((hook) => ({ ...hook, gasLimit: e.target.value }))}
-          />
-        </Row> */}
       </ContentWrapper>
       <ButtonPrimary onClick={clickOnAddHook}>+Add Pre-hook</ButtonPrimary>
       <Link
