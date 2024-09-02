@@ -1,4 +1,4 @@
-import { bpsToPercent, formatPercent } from '@cowprotocol/common-utils'
+import { bpsToPercent, formatPercent, FractionUtils } from '@cowprotocol/common-utils'
 import { CowSwapWidgetContent } from '@cowprotocol/widget-lib'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -27,9 +27,7 @@ export function PartnerFeeRow({
   widgetContent,
 }: PartnerFeeRowProps) {
   const feeAsPercent = partnerFeeBps ? formatPercent(bpsToPercent(partnerFeeBps)) : null
-  const minPartnerFeeAmount = partnerFeeAmount?.equalTo(0)
-    ? CurrencyAmount.fromRawAmount(partnerFeeAmount.currency, 1)
-    : partnerFeeAmount
+  const minPartnerFeeAmount = FractionUtils.amountToAtLeastOneWei(partnerFeeAmount)
 
   return (
     <>
