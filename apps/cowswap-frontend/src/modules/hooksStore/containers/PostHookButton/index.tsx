@@ -1,8 +1,10 @@
 import { useAtomValue } from 'jotai/index'
 import { useState } from 'react'
 
-import { ButtonSecondaryAlt } from '@cowprotocol/ui'
+import PLUS_ICON from '@cowprotocol/assets/cow-swap/plus.svg'
 import { useWalletInfo } from '@cowprotocol/wallet'
+
+import SVG from 'react-inlinesvg'
 
 import { useRemoveHook } from '../../hooks/useRemoveHook'
 import { HookItem } from '../../pure/HookItem'
@@ -27,10 +29,9 @@ export function PostHookButton() {
         </styledEl.HookList>
       )}
       <styledEl.Wrapper>
-        <styledEl.ButtonGroup>
-          <ButtonSecondaryAlt onClick={() => setOpen(true)}>🪝 Add Post-hook</ButtonSecondaryAlt>{' '}
-          <HookTooltip isPreHook={false} />
-        </styledEl.ButtonGroup>
+        <styledEl.AddHookButton onClick={() => setOpen(true)}>
+          <SVG src={PLUS_ICON} /> Add Post-Hook Action <HookTooltip isPreHook={false} />
+        </styledEl.AddHookButton>{' '}
       </styledEl.Wrapper>
       {open && <HookStoreModal onDismiss={() => setOpen(false)} isPreHook={false} />}
     </>

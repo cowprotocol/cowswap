@@ -1,9 +1,11 @@
 import { useCallback, useMemo, useState } from 'react'
 
+import ICON_HOOK from '@cowprotocol/assets/cow-swap/hook.svg'
 import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
 import { NATIVE_CURRENCIES, TokenWithLogo } from '@cowprotocol/common-const'
 import { isFractionFalsy } from '@cowprotocol/common-utils'
 import { useIsTradeUnsupported } from '@cowprotocol/tokens'
+import { InlineBanner, BannerOrientation } from '@cowprotocol/ui'
 import { useIsSafeViaWc, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { TradeType } from '@cowprotocol/widget-lib'
 
@@ -254,7 +256,19 @@ export function SwapWidget({ hooksEnabled }: SwapWidgetProps) {
   const slots = {
     settingsWidget: <SettingsTab />,
 
-    topContent: hooksEnabled ? <PreHookButton /> : undefined,
+    topContent: hooksEnabled ? (
+      <>
+        <InlineBanner orientation={BannerOrientation.Horizontal} customIcon={ICON_HOOK} iconSize={36}>
+          <p>
+            With hooks you can add specific actions <b>before</b> and <b>after</b> your swap.{' '}
+            <a href="https://docs.cow.fi/cow-protocol/reference/sdks/cow-sdk" target="_blank" rel="noopener noreferrer">
+              Learn more.
+            </a>
+          </p>
+        </InlineBanner>
+        <PreHookButton />
+      </>
+    ) : undefined,
     bottomContent: (
       <>
         {hooksEnabled && <PostHookButton />}
