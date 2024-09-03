@@ -1,5 +1,4 @@
 import { useAtomValue } from 'jotai/index'
-import { useState } from 'react'
 
 import { ButtonSecondaryAlt } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -12,11 +11,13 @@ import { useRemoveHook } from '../../hooks/useRemoveHook'
 import { HookItem } from '../../pure/HookItem'
 import { HookTooltip } from '../../pure/HookTooltip'
 import { hooksAtom } from '../../state/hookDetailsAtom'
-import { HookStoreModal } from '../HookStoreModal'
 
-export function PreHookButton() {
+export interface PreHookButtonProps {
+  onOpen(): void
+}
+
+export function PreHookButton({ onOpen }: PreHookButtonProps) {
   const { account } = useWalletInfo()
-  const [open, setOpen] = useState(false)
   const hooks = useAtomValue(hooksAtom)
   const removeHook = useRemoveHook()
   return (
@@ -31,8 +32,7 @@ export function PreHookButton() {
 
       <styledEl.Wrapper>
         <styledEl.ButtonGroup>
-          <ButtonSecondaryAlt onClick={() => setOpen(true)}>🪝 Add Pre-hook</ButtonSecondaryAlt>{' '}
-          <HookTooltip isPreHook />
+          <ButtonSecondaryAlt onClick={onOpen}>🪝 Add Pre-hook</ButtonSecondaryAlt> <HookTooltip isPreHook />
         </styledEl.ButtonGroup>
         <styledEl.List>
           <li>
@@ -43,7 +43,6 @@ export function PreHookButton() {
           </li>
         </styledEl.List>
       </styledEl.Wrapper>
-      {open && <HookStoreModal onDismiss={() => setOpen(false)} isPreHook />}
     </>
   )
 }
