@@ -33,9 +33,7 @@ export const CONFIG = {
     grants: 'https://grants.cow.fi',
     mevBlocker: 'https://mevblocker.io/',
   },
-  greenhouse: {
-    api: 'https://boards-api.greenhouse.io/v1/boards/cowswap/jobs?content=true',
-  },
+  ashbyHqApi: 'https://jobs.ashbyhq.com/api/non-user-graphql',
   social: {
     twitter: { label: 'Twitter', account: '@CoWSwap', url: 'https://twitter.com/CoWSwap' },
     discord: { label: 'Discord', url: 'https://discord.com/invite/cowprotocol' },
