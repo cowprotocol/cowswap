@@ -3,8 +3,7 @@ import { ReactNode } from 'react'
 import cowMeditatingV2 from '@cowprotocol/assets/cow-swap/meditating-cow-v2.svg'
 import imageConnectWallet from '@cowprotocol/assets/cow-swap/wallet-plus.svg'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
-import { ExternalLink, Media } from '@cowprotocol/ui'
-import { UI, CowSwapSafeAppLink, MY_ORDERS_ID } from '@cowprotocol/ui'
+import { CowSwapSafeAppLink, ExternalLink, Media, MY_ORDERS_ID, UI } from '@cowprotocol/ui'
 import type { CowSwapWidgetAppParams } from '@cowprotocol/widget-lib'
 
 import { Trans } from '@lingui/macro'
@@ -234,7 +233,7 @@ export function OrdersTableContainer({
         <Content>
           <span>
             {emptyOrdersImage ? (
-              <img src={injectedWidgetParams.images?.emptyOrders || cowMeditatingV2} alt="There are no orders" />
+              <img src={emptyOrdersImage || cowMeditatingV2} alt="There are no orders" />
             ) : (
               <MeditatingCowImg src={cowMeditatingV2} alt="Cow meditating ..." />
             )}

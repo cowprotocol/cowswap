@@ -8,7 +8,7 @@ export const pixelAnalytics = initPixelAnalytics()
 export const webVitalsAnalytics = new WebVitalsAnalytics(cowAnalytics)
 webVitalsAnalytics.reportWebVitals()
 
-enum Category {
+export enum Category {
   TRADE = 'Trade',
   LIST = 'Lists',
   CURRENCY_SELECT = 'Currency Select',
@@ -24,6 +24,7 @@ enum Category {
   TWAP = 'TWAP',
   COW_FORTUNE = 'CoWFortune',
   SURPLUS_MODAL = 'Surplus Modal',
+  PROGRESS_BAR = 'Progress Bar',
   NOTIFICATIONS = 'Notifications',
 }
 

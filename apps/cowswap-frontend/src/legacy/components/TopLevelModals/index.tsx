@@ -3,11 +3,14 @@ import { useAtomValue } from 'jotai'
 import { useModalIsOpen, useToggleModal } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
 
+import { SurplusModalSetup } from 'modules/swap/containers/SurplusModalSetup'
+
 import { CancellationModal } from 'common/containers/CancellationModal'
 import { ConfirmationModal } from 'common/containers/ConfirmationModal'
 import { MultipleOrdersCancellationModal } from 'common/containers/MultipleOrdersCancellationModal'
 import { cancellationModalContextAtom } from 'common/hooks/useCancelOrder/state'
 import { confirmationModalContextAtom } from 'common/hooks/useConfirmationRequest'
+
 
 export default function TopLevelModals() {
   const cancelModalOpen = useModalIsOpen(ApplicationModal.CANCELLATION)
@@ -29,6 +32,7 @@ export default function TopLevelModals() {
       />
       <CancellationModal isOpen={cancelModalOpen} onDismiss={onDismissCancellationModal || cancelModalToggle} />
       <MultipleOrdersCancellationModal isOpen={multipleCancelModalOpen} onDismiss={multipleCancelModalToggle} />
+      <SurplusModalSetup />
     </>
   )
 }

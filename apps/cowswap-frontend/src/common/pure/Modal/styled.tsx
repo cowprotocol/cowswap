@@ -117,6 +117,7 @@ export const StyledDialogContent = styled(({ ...rest }) => <AnimatedDialogConten
           border-radius: 20px;
           border-bottom-left-radius: 0;
           border-bottom-right-radius: 0;
+          padding: 0 0 58px;
         `}
       `}
     }

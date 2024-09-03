@@ -76,5 +76,7 @@ export const GPModalHeader = styled(RowBetween)`
 `
 
 export const ExternalLinkCustom = styled(ExternalLink)`
-  margin: 12px auto 32px;
+  font-size: inherit;
+  font-weight: inherit;
+  color: inherit;
 `

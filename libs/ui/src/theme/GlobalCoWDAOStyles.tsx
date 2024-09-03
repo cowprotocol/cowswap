@@ -30,6 +30,12 @@ type GlobalCowDAOFonts = {
   FONT_STUDIO_FEIXEN_SERIF_MEDIUM: GlobalFontConfig
   FONT_STUDIO_FEIXEN_SERIF_REGULAR: GlobalFontConfig
   FONT_STUDIO_FEIXEN_SERIF_BOOK: GlobalFontConfig
+  FONT_STUDIO_FEIXEN_MONO_REGULAR: GlobalFontConfig
+  FONT_STUDIO_FEIXEN_MONO_BOLD: GlobalFontConfig
+  FONT_STUDIO_FEIXEN_MONO_BOOK: GlobalFontConfig
+  FONT_STUDIO_FEIXEN_MONO_SEMIBOLD: GlobalFontConfig
+  FONT_STUDIO_FEIXEN_MONO_LIGHT: GlobalFontConfig
+  FONT_STUDIO_FEIXEN_MONO_ULTRALIGHT: GlobalFontConfig
 }
 
 export const GlobalCoWDAOStyles = (fonts: GlobalCowDAOFonts, bgColor?: string, color?: string) =>
@@ -158,6 +164,48 @@ export const GlobalCoWDAOStyles = (fonts: GlobalCowDAOFonts, bgColor?: string, c
         font-family: 'studiofeixenserif';
         src: url(${fonts.FONT_STUDIO_FEIXEN_SERIF_BOOK}) format('woff2');
         font-weight: ${Font.weight.book};
+        font-style: normal;
+      }
+
+      @font-face {
+        font-family: 'studiofeixenmono';
+        src: url(${fonts.FONT_STUDIO_FEIXEN_MONO_REGULAR}) format('woff2');
+        font-weight: ${Font.weight.regular};
+        font-style: normal;
+      }
+
+      @font-face {
+        font-family: 'studiofeixenmono';
+        src: url(${fonts.FONT_STUDIO_FEIXEN_MONO_BOLD}) format('woff2');
+        font-weight: ${Font.weight.bold};
+        font-style: normal;
+      }
+
+      @font-face {
+        font-family: 'studiofeixenmono';
+        src: url(${fonts.FONT_STUDIO_FEIXEN_MONO_BOOK}) format('woff2');
+        font-weight: ${Font.weight.book};
+        font-style: normal;
+      }
+
+      @font-face {
+        font-family: 'studiofeixenmono';
+        src: url(${fonts.FONT_STUDIO_FEIXEN_MONO_SEMIBOLD}) format('woff2');
+        font-weight: ${Font.weight.semibold};
+        font-style: normal;
+      }
+
+      @font-face {
+        font-family: 'studiofeixenmono';
+        src: url(${fonts.FONT_STUDIO_FEIXEN_MONO_LIGHT}) format('woff2');
+        font-weight: ${Font.weight.light};
+        font-style: normal;
+      }
+
+      @font-face {
+        font-family: 'studiofeixenmono';
+        src: url(${fonts.FONT_STUDIO_FEIXEN_MONO_ULTRALIGHT}) format('woff2');
+        font-weight: ${Font.weight.ultralight};
         font-style: normal;
       }
 

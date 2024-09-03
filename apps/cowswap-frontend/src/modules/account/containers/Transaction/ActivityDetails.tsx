@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import { ReactNode, useMemo } from 'react'
 
 import { COW, V_COW, V_COW_CONTRACT_ADDRESS } from '@cowprotocol/common-const'
 import { ExplorerDataType, getExplorerLink, shortenAddress } from '@cowprotocol/common-utils'
@@ -7,21 +7,22 @@ import { useENS } from '@cowprotocol/ens'
 import { TokenLogo, useTokenBySymbolOrAddress } from '@cowprotocol/tokens'
 import { UiOrderType } from '@cowprotocol/types'
 import {
-  ExternalLink,
-  TokenAmount,
-  UI,
-  Icon,
-  IconType,
   BannerOrientation,
   CustomRecipientWarningBanner,
+  ExternalLink,
+  Icon,
+  IconType,
+  TokenAmount,
+  UI,
 } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
-import { OrderProgressBar } from 'legacy/components/OrderProgressBar'
 import { getActivityState } from 'legacy/hooks/useActivityDerivedState'
 import { ActivityStatus } from 'legacy/hooks/useRecentActivity'
 import { OrderStatus } from 'legacy/state/orders/actions'
 
+import { useToggleAccountModal } from 'modules/account'
+import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { EthFlowStepper } from 'modules/swap/containers/EthFlowStepper'
 
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
@@ -37,6 +38,7 @@ import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { StatusDetails } from './StatusDetails'
 import {
+  TransactionState as ActivityLink,
   ActivityVisual,
   CreationTimeText,
   FiatWrapper,
@@ -46,8 +48,9 @@ import {
   SummaryInnerRow,
   TextAlert,
   TransactionInnerDetail,
-  TransactionState as ActivityLink,
 } from './styled'
+
+import { useAddOrderToSurplusQueue } from '../../../swap/state/surplusModal'
 
 import { ActivityDerivedState } from './index'
 
@@ -58,7 +61,7 @@ const DEFAULT_ORDER_SUMMARY = {
   validTo: '',
 }
 
-function GnosisSafeTxDetails(props: {
+export function GnosisSafeTxDetails(props: {
   chainId: number
   activityDerivedState: ActivityDerivedState
 }): JSX.Element | null {
@@ -78,7 +81,7 @@ function GnosisSafeTxDetails(props: {
     ? order?.fulfillmentTime !== undefined
     : enhancedTransaction?.confirmedTime !== undefined
 
-  // Check if its in a state where we dont need more signatures. We do this, because this state comes from CoW Swap API, which
+  // Check if it's in a state where we don't need more signatures. We do this, because this state comes from CoW Swap API, which
   // sometimes can be faster getting the state than Gnosis Safe API (that would give us the pending signatures). We use
   // this check to infer that we don't need to sign anything anymore
   const alreadySigned = isOrder ? status !== ActivityStatus.PRESIGNATURE_PENDING : status !== ActivityStatus.PENDING
@@ -157,7 +160,7 @@ function GnosisSafeTxDetails(props: {
       {signaturesMessage}
 
       {/* View in: Gnosis Safe */}
-      <SafeWalletLink chainId={chainId} safeTransaction={safeTransaction} />
+      <SafeWalletLink chainId={chainId} safeTransaction={safeTransaction} asButton />
     </TransactionInnerDetail>
   )
 }
@@ -191,7 +194,9 @@ export function ActivityDetails(props: {
 
   const isSwap = order && getUiOrderType(order) === UiOrderType.SWAP
 
-  const showProgressBar = (activityState === 'open' || activityState === 'filled') && isSwap
+  const { disableProgressBar } = useInjectedWidgetParams()
+
+  const showProgressBar = activityState === 'open' && isSwap && order && !disableProgressBar
   const showCancellationModal = order ? getShowCancellationModal(order) : null
 
   const { surplusFiatValue, showFiatValue, surplusToken, surplusAmount } = useGetSurplusData(order)
@@ -201,6 +206,19 @@ export function ActivityDetails(props: {
   // Check if Custom Recipient Warning Banner should be visible
   const isCustomRecipientWarningBannerVisible = !useIsReceiverWalletBannerHidden(id) && order && isPending(order)
   const hideCustomRecipientWarning = useHideReceiverWalletBanner()
+  const setShowProgressBar = useAddOrderToSurplusQueue() // TODO: not exactly the proper tool, rethink this
+  const toggleAccountModal = useToggleAccountModal()
+
+  const showProgressBarCallback = useMemo(() => {
+    if (!showProgressBar) {
+      return null
+    }
+
+    return () => {
+      setShowProgressBar(order.id)
+      toggleAccountModal()
+    }
+  }, [showProgressBar, setShowProgressBar, order?.id, toggleAccountModal])
 
   if (!order && !enhancedTransaction) return null
 
@@ -390,13 +408,11 @@ export function ActivityDetails(props: {
           chainId={chainId}
           showCancellationModal={showCancellationModal}
           activityDerivedState={activityDerivedState}
+          showProgressBar={showProgressBarCallback}
         />
       </Summary>
 
       <EthFlowStepper order={order} />
-      {showProgressBar && (
-        <OrderProgressBar activityDerivedState={activityDerivedState} chainId={chainId} hideWhenFinished={true} />
-      )}
     </>
   )
 }

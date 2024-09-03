@@ -12,6 +12,7 @@ export { WidgetTokensListsUpdater } from './updaters/WidgetTokensListsUpdater'
 
 // Pure components
 export { TokenLogo, TokenLogoWrapper } from './pure/TokenLogo'
+export { SingleLetterLogoWrapper } from './pure/TokenLogo/SingleLetterLogo'
 
 // Types
 export * from './types'

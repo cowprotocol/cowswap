@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.8.0](https://github.com/cowprotocol/cowswap/compare/ui-v1.7.1...ui-v1.8.0) (2024-08-27)
+
+
+### Features
+
+* **progress-bar-v2:** replace progress bar with v2 ([#4033](https://github.com/cowprotocol/cowswap/issues/4033)) ([e199bff](https://github.com/cowprotocol/cowswap/commit/e199bff492ad3f91df23be34a829ebe1f246444a))
+
 ## [1.7.1](https://github.com/cowprotocol/cowswap/compare/ui-v1.7.0...ui-v1.7.1) (2024-08-14)
 
 

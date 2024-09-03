@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.0](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v1.5.1...widget-configurator-v1.6.0) (2024-08-27)
+
+
+### Features
+
+* **progress-bar-v2:** replace progress bar with v2 ([#4033](https://github.com/cowprotocol/cowswap/issues/4033)) ([e199bff](https://github.com/cowprotocol/cowswap/commit/e199bff492ad3f91df23be34a829ebe1f246444a))
+
 ## [1.5.1](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v1.5.0...widget-configurator-v1.5.1) (2024-08-14)
 
 

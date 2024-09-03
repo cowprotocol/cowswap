@@ -11,7 +11,6 @@ export const ThemedGlobalStyle = createGlobalStyle`
   button {
     font-family: 'Inter', sans-serif;
   }
-
   @supports (font-variation-settings: normal) {
     html,
     input,
@@ -20,7 +19,7 @@ export const ThemedGlobalStyle = createGlobalStyle`
       font-family: 'Inter var', sans-serif;
     }
   }
-
+ 
   html,
   body {
     margin: 0;

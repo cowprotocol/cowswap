@@ -16,6 +16,12 @@ const FONT_STUDIO_FEIXEN_SERIF_BOLD = require('@cowprotocol/assets/fonts/StudioF
 const FONT_STUDIO_FEIXEN_SERIF_MEDIUM = require('@cowprotocol/assets/fonts/StudioFeixenSerif-Medium.woff2')
 const FONT_STUDIO_FEIXEN_SERIF_REGULAR = require('@cowprotocol/assets/fonts/StudioFeixenSerif-Regular.woff2')
 const FONT_STUDIO_FEIXEN_SERIF_BOOK = require('@cowprotocol/assets/fonts/StudioFeixenSerif-Book.woff2')
+const FONT_STUDIO_FEIXEN_MONO_REGULAR = require('@cowprotocol/assets/fonts/StudioFeixenMono-Regular.woff2')
+const FONT_STUDIO_FEIXEN_MONO_BOLD = require('@cowprotocol/assets/fonts/StudioFeixenMono-Bold.woff2')
+const FONT_STUDIO_FEIXEN_MONO_BOOK = require('@cowprotocol/assets/fonts/StudioFeixenMono-Book.woff2')
+const FONT_STUDIO_FEIXEN_MONO_SEMIBOLD = require('@cowprotocol/assets/fonts/StudioFeixenMono-Semibold.woff2')
+const FONT_STUDIO_FEIXEN_MONO_LIGHT = require('@cowprotocol/assets/fonts/StudioFeixenMono-Light.woff2')
+const FONT_STUDIO_FEIXEN_MONO_ULTRALIGHT = require('@cowprotocol/assets/fonts/StudioFeixenMono-Ultralight.woff2')
 
 export const CoWDAOFonts = {
   FONT_STUDIO_FEIXEN_BOLD,
@@ -36,4 +42,10 @@ export const CoWDAOFonts = {
   FONT_STUDIO_FEIXEN_SERIF_MEDIUM,
   FONT_STUDIO_FEIXEN_SERIF_REGULAR,
   FONT_STUDIO_FEIXEN_SERIF_BOOK,
+  FONT_STUDIO_FEIXEN_MONO_REGULAR,
+  FONT_STUDIO_FEIXEN_MONO_BOLD,
+  FONT_STUDIO_FEIXEN_MONO_BOOK,
+  FONT_STUDIO_FEIXEN_MONO_SEMIBOLD,
+  FONT_STUDIO_FEIXEN_MONO_LIGHT,
+  FONT_STUDIO_FEIXEN_MONO_ULTRALIGHT,
 }

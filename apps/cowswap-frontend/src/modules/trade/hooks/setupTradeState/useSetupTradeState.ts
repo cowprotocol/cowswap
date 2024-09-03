@@ -16,6 +16,7 @@ import { useTradeStateFromUrl } from './useTradeStateFromUrl'
 import { useTradeState } from '../useTradeState'
 
 const INITIAL_CHAIN_ID_FROM_URL = getRawCurrentChainIdFromUrl()
+const EMPTY_TOKEN_ID = '_'
 
 export function useSetupTradeState(): void {
   const { chainId: providerChainId, account } = useWalletInfo()
@@ -124,7 +125,9 @@ export function useSetupTradeState(): void {
     const tokensAreEmpty = !inputCurrencyId && !outputCurrencyId
 
     const sameTokens =
-      (inputCurrencyId || outputCurrencyId) && inputCurrencyId?.toLowerCase() === outputCurrencyId?.toLowerCase()
+      inputCurrencyId !== EMPTY_TOKEN_ID &&
+      (inputCurrencyId || outputCurrencyId) &&
+      inputCurrencyId?.toLowerCase() === outputCurrencyId?.toLowerCase()
 
     const defaultState = getDefaultTradeRawState(currentChainId)
 

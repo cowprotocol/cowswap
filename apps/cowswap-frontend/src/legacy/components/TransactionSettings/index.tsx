@@ -47,7 +47,7 @@ enum DeadlineError {
   InvalidInput = 'InvalidInput',
 }
 
-const Option = styled(FancyButton)<{ active: boolean }>`
+const Option = styled(FancyButton) <{ active: boolean }>`
   margin-right: 8px;
 
   :hover {
@@ -75,7 +75,7 @@ export const Input = styled.input`
   text-align: right;
 `
 
-export const OptionCustom = styled(FancyButton)<{ active?: boolean; warning?: boolean }>`
+export const OptionCustom = styled(FancyButton) <{ active?: boolean; warning?: boolean }>`
   height: 2rem;
   position: relative;
   padding: 0 0.75rem;
@@ -84,7 +84,7 @@ export const OptionCustom = styled(FancyButton)<{ active?: boolean; warning?: bo
 
   :hover {
     border: ${({ theme, active, warning }) =>
-      active && `1px solid ${warning ? darken(theme.error, 0.1) : darken(theme.bg2, 0.1)}`};
+    active && `1px solid ${warning ? darken(theme.error, 0.1) : darken(theme.bg2, 0.1)}`};
   }
 
   input {
@@ -111,6 +111,10 @@ const SmartSlippageInfo = styled.div`
   display: flex;
   justify-content: flex-end;
   padding-bottom: 0.35rem;
+
+  > span {
+    margin-left: 4px;
+  }
 `
 
 const Wrapper = styled.div`
@@ -252,10 +256,10 @@ export function TransactionSettings() {
         if (
           !Number.isInteger(parsed) || // Check deadline is a number
           parsed <
-            (isEoaEthFlow
-              ? // 10 minute low threshold for eth flow
-                MINIMUM_ETH_FLOW_DEADLINE_SECONDS
-              : MINIMUM_ORDER_VALID_TO_TIME_SECONDS) || // Check deadline is not too small
+          (isEoaEthFlow
+            ? // 10 minute low threshold for eth flow
+            MINIMUM_ETH_FLOW_DEADLINE_SECONDS
+            : MINIMUM_ORDER_VALID_TO_TIME_SECONDS) || // Check deadline is not too small
           parsed > MAX_DEADLINE_MINUTES * 60 // Check deadline is not too big
         ) {
           setDeadlineError(DeadlineError.InvalidInput)
@@ -356,15 +360,15 @@ export function TransactionSettings() {
           {isSmartSlippageApplied && (
             <RowBetween>
               <SmartSlippageInfo>
-                <span>Dynamic</span>
                 <HelpTooltip
                   text={
                     <Trans>
-                      Based on recent volatility observed for this token pair. Its recommended to leave the default to
-                      account for price changes
+                      Based on recent volatility observed for this token pair, it's recommended to leave the default
+                      to account for price changes.
                     </Trans>
                   }
                 />
+                <span>Dynamic</span>
               </SmartSlippageInfo>
             </RowBetween>
           )}
@@ -394,8 +398,8 @@ export function TransactionSettings() {
                     deadlineInput.length > 0
                       ? deadlineInput
                       : deadline === DEFAULT_DEADLINE_FROM_NOW
-                      ? ''
-                      : (deadline / 60).toString()
+                        ? ''
+                        : (deadline / 60).toString()
                   }
                   onChange={(e) => parseCustomDeadline(e.target.value)}
                   onBlur={() => {

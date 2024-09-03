@@ -16,10 +16,11 @@ import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 type EthFlowStepperProps = {
   order: Order | undefined
+  showProgressBar?: boolean
 }
 
 export function EthFlowStepper(props: EthFlowStepperProps) {
-  const { order } = props
+  const { order, showProgressBar } = props
   const native = useNativeCurrency()
 
   const allTxs = useAllTransactions()
@@ -54,6 +55,7 @@ export function EthFlowStepper(props: EthFlowStepperProps) {
       isCreated: !!order.apiAdditionalInfo,
       rejectedReason,
     },
+    showProgressBar,
     creation: {
       hash: creationHash,
       failed: creationTxFailed,

@@ -19,6 +19,11 @@ const defaultProps = {
     ...activityDerivedStateMock,
     order,
   },
+  orderProgressBarV2Props: {
+    chainId: SupportedChainId.MAINNET, isProgressBarSetup: false, showCancellationModal: () => {
+      alert('Cancellation triggered!!')
+    }
+  }
 }
 
 const Wrapper = styled.div`
