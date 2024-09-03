@@ -1,5 +1,6 @@
 import { Dispatch, ReactNode, SetStateAction, useMemo } from 'react'
 
+import { FractionUtils } from '@cowprotocol/common-utils'
 import { PercentDisplay } from '@cowprotocol/ui'
 import { CowSwapWidgetAppParams } from '@cowprotocol/widget-lib'
 import { Percent, Price } from '@uniswap/sdk-core'
@@ -83,8 +84,12 @@ export function TradeBasicConfirmDetails(props: Props) {
   const limitPrice = useMemo(() => {
     const { afterNetworkCosts, afterSlippage } = receiveAmountInfo
 
+    const quoteAmount = FractionUtils.amountToAtLeastOneWei(afterSlippage.buyAmount)
+
+    if (!quoteAmount) return null
+
     return new Price({
-      quoteAmount: afterSlippage.buyAmount,
+      quoteAmount,
       baseAmount: afterNetworkCosts.sellAmount,
     })
   }, [receiveAmountInfo])

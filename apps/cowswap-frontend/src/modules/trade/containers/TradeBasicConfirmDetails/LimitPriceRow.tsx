@@ -24,7 +24,13 @@ export function LimitPriceRow(props: Props) {
     <RateWrapper onClick={() => setIsInverted((curr) => !curr)}>
       <ConfirmDetailsItem withTimelineDot={true} label={limitPriceLabel} tooltip={limitPriceTooltip}>
         {price ? (
-          <ExecutionPrice executionPrice={price} isInverted={isInverted} showBaseCurrency separatorSymbol="=" />
+          <ExecutionPrice
+            executionPrice={price}
+            isInverted={isInverted}
+            hideFiat
+            showBaseCurrency
+            separatorSymbol="="
+          />
         ) : (
           '-'
         )}
