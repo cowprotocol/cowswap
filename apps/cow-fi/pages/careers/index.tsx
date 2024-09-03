@@ -1,4 +1,4 @@
-import { getJobs } from 'services/greenhouse'
+import { getJobs } from 'services/ashByHq'
 import { GetStaticProps } from 'next'
 import { Font, Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
 
@@ -63,14 +63,18 @@ export default function Page({ siteConfigData, jobsData }: PageProps) {
               </SectionTitleText>
             </SectionTitleWrapper>
 
-            {jobsCount < 1 && <p>There are currently no open positions.</p>}
+            {jobsCount < 1 && (
+              <SectionTitleWrapper maxWidth={900} margin="0 auto">
+                <SectionTitleText fontSize={32}>There are currently no open positions.</SectionTitleText>
+              </SectionTitleWrapper>
+            )}
 
             <TopicList columns={2} columnsTablet={2} maxWidth={900} margin="16px auto 0">
               {jobsCount > 0 &&
                 (department === 'All'
                   ? Object.keys(jobsData).map((deptName: string) => (
                       <>
-                        {jobsData[deptName].map(({ absolute_url, title, location }: any, index: number) => (
+                        {jobsData[deptName].map(({ id, title, locationName }: any, index: number) => (
                           <TopicCard
                             key={index}
                             contentAlign={'left'}
@@ -86,12 +90,12 @@ export default function Page({ siteConfigData, jobsData }: PageProps) {
                               </TopicTitle>
                               <TopicTitle fontSize={34}>{title}</TopicTitle>
                               <TopicDescription fontSize={18} color={Color.neutral40} margin="0 0 24px">
-                                {location.name}
+                                {locationName}
                               </TopicDescription>
                               <Link
                                 external
                                 linkType={LinkType.TopicButton}
-                                href={absolute_url}
+                                href={`https://jobs.ashbyhq.com/cow-dao/${id}`}
                                 utmContent={`job-${title}`}
                                 margin="auto auto 0 0"
                                 marginTablet="auto auto 0"
@@ -107,7 +111,7 @@ export default function Page({ siteConfigData, jobsData }: PageProps) {
                   : jobsCount > 0 && (
                       <>
                         <h4>{department}</h4>
-                        {jobsData[department].map(({ absolute_url, title, location }: any, index: number) => (
+                        {jobsData[department].map(({ id, title, locationName }: any, index: number) => (
                           <TopicCard
                             key={index}
                             contentAlign={'left'}
@@ -119,12 +123,12 @@ export default function Page({ siteConfigData, jobsData }: PageProps) {
                             <TopicCardInner contentAlign="left">
                               <TopicTitle>{title}</TopicTitle>
                               <TopicDescription fontSize={18} color={Color.neutral40} margin="0">
-                                {location.name}
+                                {locationName}
                               </TopicDescription>
                               <Link
                                 external
                                 linkType={LinkType.TopicButton}
-                                href={absolute_url}
+                                href={`https://jobs.ashbyhq.com/cow-dao/${id}`}
                                 utmContent={`job-${title}`}
                                 onClick={() => clickOnCareers(`click-job-${title}`)}
                               >
@@ -184,13 +188,25 @@ export default function Page({ siteConfigData, jobsData }: PageProps) {
 
 export const getStaticProps: GetStaticProps<PageProps> = async () => {
   const siteConfigData = CONFIG
-  const jobsData = await getJobs()
-
-  return {
-    props: {
-      siteConfigData,
-      jobsData,
-    },
-    revalidate: DATA_CACHE_TIME_SECONDS,
+  console.log('Fetching jobs data...')
+  try {
+    const jobsData = (await getJobs()) || {}
+    console.log('Jobs data fetched:', jobsData)
+    return {
+      props: {
+        siteConfigData,
+        jobsData,
+      },
+      revalidate: DATA_CACHE_TIME_SECONDS,
+    }
+  } catch (error) {
+    console.error('Error fetching jobs data:', error)
+    return {
+      props: {
+        siteConfigData,
+        jobsData: {},
+      },
+      revalidate: DATA_CACHE_TIME_SECONDS,
+    }
   }
 }
