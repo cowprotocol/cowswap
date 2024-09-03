@@ -1,98 +1,24 @@
 import { useCallback, useContext, useState } from 'react'
 
-import { CowHook, HookDappInternal, HookDappType } from '@cowprotocol/types'
+import { CowHook, HookDapp } from '@cowprotocol/types'
 import { ButtonPrimary } from '@cowprotocol/ui'
 
-import styled from 'styled-components/macro'
-
 import { HookDappContext } from '../../context'
-import buildImg from '../../images/build.png'
-
-const getAppDetails = (isPreHook: boolean): HookDappInternal => ({
-  name: `Build your own ${isPreHook ? 'Pre' : 'Post'}-hook`,
-  description: `Add an arbitrary calldata to be executed ${isPreHook ? 'before' : 'after'} your hook`,
-  type: HookDappType.INTERNAL,
-  path: '/hooks-dapps/pre/build',
-  image: buildImg,
-  component: <BuildHookApp isPreHook={isPreHook} />,
-  version: 'v0.1.0',
-})
-
-export const PRE_BUILD = getAppDetails(true)
-export const POST_BUILD = getAppDetails(false)
-
-const Wrapper = styled.div`
-  display: flex;
-  flex-flow: column wrap;
-
-  flex-grow: 1;
-`
-
-const Link = styled.button`
-  border: none;
-  padding: 0;
-  text-decoration: underline;
-  display: text;
-  cursor: pointer;
-  background: none;
-  color: white;
-  margin: 10px 0;
-`
-
-const Header = styled.div`
-  display: flex;
-  padding: 1.5em;
-
-  p {
-    padding: 0 1em;
-  }
-`
-
-const ContentWrapper = styled.div`
-  flex-grow: 1;
-  justify-content: center;
-  align-items: center;
-  flex-flow: column wrap;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  padding: 1em;
-  text-align: center;
-`
-
-const Row = styled.div`
-  display: flex;
-  flex-flow: row wrap;
-  margin: 10px;
-  width: 100%;
-
-  label {
-    margin: 10px;
-    flex-grow: 0;
-    width: 5em;
-  }
-
-  input,
-  textarea {
-    flex-grow: 1;
-  }
-`
+import buildImg from './build.png'
+import { ContentWrapper, Header, Link, Row, Wrapper } from './styled'
 
 export interface BuildHookAppProps {
   isPreHook: boolean
+  dapp: HookDapp
 }
 
-export function BuildHookApp({ isPreHook }: BuildHookAppProps) {
+export function BuildHookApp({ isPreHook, dapp }: BuildHookAppProps) {
   const hookDappContext = useContext(HookDappContext)
   const [hook, setHook] = useState<CowHook>({
     target: '',
     callData: '',
     gasLimit: '',
   })
-
-  const dapp = isPreHook ? PRE_BUILD : POST_BUILD
 
   const clickOnAddHook = useCallback(() => {
     const { callData, gasLimit, target } = hook
@@ -106,7 +32,7 @@ export function BuildHookApp({ isPreHook }: BuildHookAppProps) {
         dapp,
         outputTokens: undefined, // TODO: Simulate and extract the output tokens
       },
-      isPreHook
+      isPreHook,
     )
   }, [hook, hookDappContext])
 

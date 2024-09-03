@@ -177,7 +177,7 @@ export function HookDappUi({ dapp }: HookDappUiProps) {
     return <>{dapp.name}</>
   }
 
-  return dapp.component
+  return dapp.component(dapp)
 }
 
 export function HookDappItem({ dapp, onSelect }: { dapp: HookDapp; onSelect: (dapp: HookDapp) => void }) {

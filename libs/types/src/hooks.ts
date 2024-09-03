@@ -43,7 +43,7 @@ export interface HookDappBase {
 export interface HookDappInternal extends HookDappBase {
   type: HookDappType.INTERNAL
   path: string
-  component: ReactNode
+  component: (dapp: HookDapp) => ReactNode
 }
 
 export interface HookDappIframe extends HookDappBase {
