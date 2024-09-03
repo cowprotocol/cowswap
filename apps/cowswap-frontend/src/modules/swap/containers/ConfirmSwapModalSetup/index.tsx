@@ -12,6 +12,7 @@ import { useOrder } from 'legacy/state/orders/hooks'
 import TradeGp from 'legacy/state/swap/TradeGp'
 
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
+import { useIsSmartSlippageApplied } from 'modules/swap/hooks/useIsSmartSlippageApplied'
 import {
   TradeConfirmation,
   TradeConfirmModal,
@@ -29,7 +30,6 @@ import { RateInfoParams } from 'common/pure/RateInfo'
 import { TransactionSubmittedContent } from 'common/pure/TransactionSubmittedContent'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
-import { useIsSmartSlippageApplied } from 'modules/swap/hooks/useIsSmartSlippageApplied'
 import { useIsEoaEthFlow } from '../../hooks/useIsEoaEthFlow'
 import { useNavigateToNewOrderCallback } from '../../hooks/useNavigateToNewOrderCallback'
 import { useShouldPayGas } from '../../hooks/useShouldPayGas'

@@ -8,11 +8,11 @@ import { useToggleSettingsMenu } from 'legacy/state/application/hooks'
 
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { useIsSmartSlippageApplied } from 'modules/swap/hooks/useIsSmartSlippageApplied'
+import { useSetSlippage } from 'modules/swap/hooks/useSetSlippage'
+import { useSmartSwapSlippage } from 'modules/swap/hooks/useSwapSlippage'
 import { RowSlippageContent } from 'modules/swap/pure/Row/RowSlippageContent'
 
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
-import { useSetSlippage } from 'modules/swap/hooks/useSetSlippage'
-import { useSmartSwapSlippage } from 'modules/swap/hooks/useSwapSlippage'
 
 export interface RowSlippageProps {
   allowedSlippage: Percent
