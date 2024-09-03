@@ -30,7 +30,7 @@ const HookDappsList = styled.ul`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  flex-wrap: wrap
+  flex-wrap: wrap;
   align-items: stretch;
 
   img {
@@ -39,20 +39,14 @@ const HookDappsList = styled.ul`
     height: 100%;
     cursor: pointer;
   }
-
 `
 
 const HookDappListItem = styled.li`
-  flex: 1 1 100px;
-  margin: 8px;
-  box-sizing: border-box;
-  text-align: center;
-  background-color: var(${UI.COLOR_PAPER});
-
+  width: 100%;
+  background: transparent;
   display: flex;
-  flex-direction: row;
+  flex-flow: row wrap;
   justify-content: space-between;
-
   position: relative;
 `
 
@@ -185,15 +179,14 @@ export function HookDappItem({ dapp, onSelect }: { dapp: HookDapp; onSelect: (da
 
   return (
     <HookDappListItem>
-      <div>
-        <img onClick={() => onSelect(dapp)} src={image} alt={name} />
-      </div>
+      <img src={image} alt={name} />
+
       <HookDappDetails>
         <h3>{name}</h3>
-        <p>{description}</p>
-        <Link onClick={() => onSelect(dapp)}>+ Add hook</Link>
-
-        <Version>{version}</Version>
+        <p>
+          {description} <Version>{version}</Version>
+        </p>
+        <Link onClick={() => onSelect(dapp)}>Add</Link>
       </HookDappDetails>
     </HookDappListItem>
   )
