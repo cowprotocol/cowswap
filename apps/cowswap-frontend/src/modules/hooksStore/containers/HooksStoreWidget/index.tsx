@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 
 import { SwapWidget } from 'modules/swap'
 
-import { HookStoreModal } from '../HookStoreModal'
+import { HookRegistryList } from '../HookRegistryList'
 import { PostHookButton } from '../PostHookButton'
 import { PreHookButton } from '../PreHookButton'
 
@@ -12,7 +12,9 @@ export function HooksStoreWidget() {
   const [selectedHookPosition, setSelectedHookPosition] = useState<HookPosition | null>(null)
 
   if (selectedHookPosition) {
-    return <HookStoreModal onDismiss={() => setSelectedHookPosition(null)} isPreHook={selectedHookPosition === 'pre'} />
+    return (
+      <HookRegistryList onDismiss={() => setSelectedHookPosition(null)} isPreHook={selectedHookPosition === 'pre'} />
+    )
   }
 
   return (

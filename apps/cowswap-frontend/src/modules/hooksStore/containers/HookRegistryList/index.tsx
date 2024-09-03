@@ -19,7 +19,7 @@ interface HookStoreModal {
   isPreHook: boolean
 }
 
-export function HookStoreModal({ onDismiss, isPreHook }: HookStoreModal) {
+export function HookRegistryList({ onDismiss, isPreHook }: HookStoreModal) {
   const { chainId, account } = useWalletInfo()
   const [selectedDapp, setSelectedDapp] = useState<HookDapp | null>(null)
   const addHook = useAddHook()
