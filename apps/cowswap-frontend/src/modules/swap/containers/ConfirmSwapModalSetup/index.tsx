@@ -29,6 +29,7 @@ import { RateInfoParams } from 'common/pure/RateInfo'
 import { TransactionSubmittedContent } from 'common/pure/TransactionSubmittedContent'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
+import { useIsSmartSlippageApplied } from 'modules/swap/hooks/useIsSmartSlippageApplied'
 import { useIsEoaEthFlow } from '../../hooks/useIsEoaEthFlow'
 import { useNavigateToNewOrderCallback } from '../../hooks/useNavigateToNewOrderCallback'
 import { useShouldPayGas } from '../../hooks/useShouldPayGas'
@@ -52,6 +53,7 @@ export interface ConfirmSwapModalSetupProps {
 
   doTrade(): void
 }
+
 
 export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
   const {
@@ -83,9 +85,11 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
 
   const buttonText = useSwapConfirmButtonText(slippageAdjustedSellAmount)
 
+  const isSmartSlippageApplied = useIsSmartSlippageApplied()
+
   const labelsAndTooltips = useMemo(
     () => ({
-      slippageLabel: isEoaEthFlow ? 'Slippage tolerance (modified)' : undefined,
+      slippageLabel: isEoaEthFlow || isSmartSlippageApplied ? `Slippage tolerance (${isEoaEthFlow ? 'modified' : 'dynamic'})` : undefined,
       slippageTooltip: isEoaEthFlow
         ? getNativeSlippageTooltip(chainId, [nativeCurrency.symbol])
         : getNonNativeSlippageTooltip(),
