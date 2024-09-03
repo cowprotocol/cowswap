@@ -1,7 +1,6 @@
 import { defaultAbiCoder } from '@ethersproject/abi'
 import type { JsonRpcProvider } from '@ethersproject/providers'
 
-
 import { getContract } from './getContract'
 
 import { VERSION_ABIS } from '../abi/versionAbis'
@@ -9,7 +8,7 @@ import { VERSION_ABIS } from '../abi/versionAbis'
 export async function getTokenPermitVersion(
   tokenAddress: string,
   provider: JsonRpcProvider,
-  index = 0
+  index = 0,
 ): Promise<string> {
   const abi = VERSION_ABIS[index]
 
@@ -30,7 +29,7 @@ export async function getTokenPermitVersion(
     }
 
     return defaultAbiCoder.decode(['string'], response).toString()
-  } catch (e) {
+  } catch {
     return getTokenPermitVersion(tokenAddress, provider, index + 1)
   }
 }

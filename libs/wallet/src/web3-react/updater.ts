@@ -42,7 +42,7 @@ function _useWalletInfo(): WalletInfo {
       active,
       account,
     }),
-    [chainId, active, account, isChainIdUnsupported]
+    [chainId, active, account, isChainIdUnsupported],
   )
 }
 
@@ -89,7 +89,7 @@ function _useSafeInfo(walletInfo: WalletInfo): GnosisSafeInfo | undefined {
               isReadOnly,
             }
           })
-        } catch (error) {
+        } catch {
           console.debug(`[WalletUpdater] Error fetching safe info over iframe ${account}`)
           setSafeInfo(undefined)
         }
@@ -107,7 +107,7 @@ function _useSafeInfo(walletInfo: WalletInfo): GnosisSafeInfo | undefined {
               nonce,
               isReadOnly: false,
             }))
-          } catch (error) {
+          } catch {
             console.debug(`[WalletUpdater] Address ${account} is likely not a Safe (API didn't return Safe info)`)
             setSafeInfo(undefined)
           }
