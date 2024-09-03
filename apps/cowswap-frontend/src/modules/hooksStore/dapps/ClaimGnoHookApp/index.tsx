@@ -11,9 +11,9 @@ import { formatUnits } from 'ethers/lib/utils'
 
 import { Amount, ContentWrapper, ErrorLabel, Header, Label, Link, LoadingLabel, Wrapper } from './styled'
 
-import { SBC_DEPOSIT_CONTRACT_ADDRESS } from '../../const'
+import { SBC_DEPOSIT_CONTRACT_ADDRESS } from './const'
 import { HookDappContext } from '../../context'
-import { useSBCDepositContract } from '../../hooks/useSBCDepositContract'
+import { useSBCDepositContract } from './useSBCDepositContract'
 
 /**
  * Dapp that creates the hook to the connected wallet GNO Rewards.
@@ -115,7 +115,7 @@ export function ClaimGnoHookApp({ dapp }: { dapp: HookDapp }) {
   )
 }
 
-export function ClaimableAmount(props: { loading: boolean; error: boolean; claimable: BigNumber | undefined }) {
+function ClaimableAmount(props: { loading: boolean; error: boolean; claimable: BigNumber | undefined }) {
   const { loading, error, claimable } = props
   if (error) {
     return <ErrorLabel>Error loading the claimable amount</ErrorLabel>
