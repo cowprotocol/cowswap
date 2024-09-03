@@ -35,25 +35,29 @@ export type CowHookCreation = Omit<CowHookDetails, 'uuid'>
 export interface HookDappBase {
   name: string
   description: string
+  descriptionFull?: ReactNode | string
   type: HookDappType
   version: string
+  website?: string
   image: string
 }
 
 export interface HookDappInternal extends HookDappBase {
   type: HookDappType.INTERNAL
   path: string
+  imageBgContrast?: boolean
   component: ReactNode
 }
 
 export interface HookDappIframe extends HookDappBase {
   type: HookDappType.IFRAME
   url: string
+  imageBgContrast?: boolean
 }
 
 export type AddHook = (hookToAdd: CowHookCreation, isPreHook: boolean) => CowHookDetails
 export type RemoveHook = (uuid: string, isPreHook: boolean) => void
-
+export type AddCustomHook = (hookToAdd: CowHookCreation) => CowHookDetails
 export interface HookDappContext {
   chainId: SupportedChainId
   account?: string

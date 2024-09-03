@@ -6,13 +6,12 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import SVG from 'react-inlinesvg'
 
-import * as styledEl from './styled'
-
 import { useRemoveHook } from '../../hooks/useRemoveHook'
 import { HookItem } from '../../pure/HookItem'
 import { HookTooltip } from '../../pure/HookTooltip'
 import { hooksAtom } from '../../state/hookDetailsAtom'
 import { HookStoreModal } from '../HookStoreModal'
+import * as styledEl from '../styled'
 
 export function PreHookButton() {
   const { account } = useWalletInfo()

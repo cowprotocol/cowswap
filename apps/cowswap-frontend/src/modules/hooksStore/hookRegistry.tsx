@@ -8,7 +8,7 @@ import cowAMM from './images/cowAMM.png'
 import curveImg from './images/curve.svg'
 import daiImg from './images/dai.svg'
 
-const FAKE_URL = 'https://google.com'
+const FAKE_URL = 'https://cow.fi'
 
 const FAKE_VERSION = 'v1.0.0'
 // const FAKE_IMAGE = 'https://swap.cow.fi/images/og-meta-cowswap.png?v=2'
@@ -16,10 +16,24 @@ const FAKE_VERSION = 'v1.0.0'
 const PRE_CURVE: HookDappIframe = {
   name: 'Withdraw from Curve Pools',
   description: 'Allow you to un-stake and withdraw funds from Curve',
+  descriptionFull: (
+    <>
+      The "Withdraw from Curve Pools" hook for CoW Swap provides users with a seamless integration to un-stake and
+      withdraw their funds from Curve Finance's liquidity pools directly through the CoW Swap platform. This hook
+      simplifies the process of reclaiming staked assets, allowing users to easily manage their liquidity without
+      needing to leave the CoW Swap environment.
+      <br />
+      <br />
+      By leveraging this hook, users can efficiently un-stake their funds from Curve, offering them greater flexibility
+      to reinvest or utilize their assets in other strategies available within the CoW Swap ecosystem. This tool is
+      invaluable for those looking to maintain full control over their DeFi investments while using CoW Swap.
+    </>
+  ),
   type: HookDappType.IFRAME,
   url: FAKE_URL,
   image: curveImg,
   version: FAKE_VERSION,
+  website: FAKE_URL,
 }
 // const PRE_NFT: HookDappIframe = {
 //   name: 'Wrap NFT',
@@ -36,6 +50,7 @@ const PRE_COWAMM: HookDappIframe = {
   type: HookDappType.IFRAME,
   url: FAKE_URL,
   image: cowAMM,
+  imageBgContrast: true,
   version: FAKE_VERSION,
 }
 

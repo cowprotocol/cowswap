@@ -5,7 +5,7 @@ import { errorToString } from '@cowprotocol/common-utils'
 import { CowHook } from '@cowprotocol/types'
 import { ButtonOutlined, ExternalLink, LinkIcon, Loader } from '@cowprotocol/ui'
 
-import { ErrorText, ErrorWrapper, ExternalLinkContent, LoaderWrapper } from './styled'
+import { ErrorText, ErrorWrapper, ExternalLinkContent, LoaderWrapper } from '../styled'
 
 import { getSimulationLink } from '../../const'
 import { useTenderlySimulate } from '../../hooks/useTenderlySimulate'

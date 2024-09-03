@@ -13,27 +13,34 @@ import { hooksAtom } from '../../state/hookDetailsAtom'
 import { HookStoreModal } from '../HookStoreModal'
 import * as styledEl from '../styled'
 
-export function PostHookButton() {
+// TODO: Add custom hook logic
+export function CustomHookButton() {
   const { account } = useWalletInfo()
   const [open, setOpen] = useState(false)
   const hooks = useAtomValue(hooksAtom)
   const removeHook = useRemoveHook()
-
   return (
     <>
-      {hooks.postHooks && (
+      {hooks.customHooks.length > 0 && (
         <styledEl.HookList>
-          {hooks.postHooks.map((hook, index) => (
-            <HookItem key={index} account={account} hookDetails={hook} removeHook={removeHook} isPreHook={false} />
+          {hooks.customHooks.map((hookDetails, index) => (
+            <HookItem
+              key={index}
+              account={account}
+              hookDetails={hookDetails}
+              removeHook={removeHook}
+              isPreHook={false}
+            />
           ))}
         </styledEl.HookList>
       )}
+
       <styledEl.Wrapper>
         <styledEl.AddHookButton onClick={() => setOpen(true)}>
-          <SVG src={PLUS_ICON} /> Add Post-Hook Action <HookTooltip isPreHook={false} />
+          <SVG src={PLUS_ICON} /> Add Custom Hook
         </styledEl.AddHookButton>{' '}
       </styledEl.Wrapper>
-      {open && <HookStoreModal onDismiss={() => setOpen(false)} isPreHook={false} />}
+      {open && <HookStoreModal onDismiss={() => setOpen(false)} isPreHook />}
     </>
   )
 }

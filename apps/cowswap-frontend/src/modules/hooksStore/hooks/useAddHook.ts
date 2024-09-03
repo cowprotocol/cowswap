@@ -17,9 +17,9 @@ export function useAddHook(): AddHook {
       const hookDetails = { ...hookToAdd, uuid }
       updateHooks((hooks) => {
         if (isPreHook) {
-          return { preHooks: [...hooks.preHooks, hookDetails], postHooks: hooks.postHooks }
+          return { ...hooks, preHooks: [...hooks.preHooks, hookDetails] }
         } else {
-          return { preHooks: hooks.preHooks, postHooks: [...hooks.postHooks, hookDetails] }
+          return { ...hooks, postHooks: [...hooks.postHooks, hookDetails] }
         }
       })
 

@@ -1,110 +1,26 @@
 import { useCallback, useMemo, useState } from 'react'
 
+import ICON_INFO from '@cowprotocol/assets/cow-swap/info.svg'
 import { Command, HookDapp, HookDappContext as HookDappContextType } from '@cowprotocol/types'
-import { UI } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
 import { NewModal } from 'common/pure/NewModal'
+
+import { CustomHookButton } from './CustomHookButton'
+import * as Styled from './styled'
 
 import { HookDappContext } from '../context'
 import { POST_HOOK_REGISTRY, PRE_HOOK_REGISTRY } from '../hookRegistry'
 import { useAddHook } from '../hooks/useAddHook'
 import { isHookDappIframe } from '../utils'
 
-const MODAL_MAX_WIDTH = 450
-
 const Wrapper = styled.div`
   display: flex;
   flex-flow: column wrap;
   width: 100%;
-  max-width: ${MODAL_MAX_WIDTH}px;
-`
-
-const HookDappsList = styled.ul`
-  list-style: none;
-  padding: 0;
-  margin: 0;
-
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  align-items: stretch;
-
-  img {
-    width: 120px;
-    max-height: 120px;
-    height: 100%;
-    cursor: pointer;
-  }
-`
-
-const HookDappListItem = styled.li`
-  width: 100%;
-  background: transparent;
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: space-between;
-  position: relative;
-`
-
-const HookDappDetails = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 0.5em;
-
-  flex-grow: 1;
-
-  h3 {
-  }
-
-  p {
-    text-align: left;
-    padding: 0;
-    margin: 0;
-    flex-grow: 1;
-    color: var(${UI.COLOR_TEXT2});
-  }
-
-  a {
-    display: block;
-    margin: 20px 0 0px 0;
-    font-size: 0.8em;
-    text-decoration: underline;
-    font-weight: 600;
-  }
-`
-
-export const Link = styled.button`
-  display: inline-block;
-  cursor: pointer;
-  margin: 0;
-  background: none;
-  border: none;
-  outline: none;
-  color: inherit;
-
-  font-weight: 600;
-  font-size: 12px;
-  text-decoration: underline;
-
-  &:hover {
-    text-decoration: none;
-  }
-`
-
-const Version = styled.div`
-  position: absolute;
-  top: 0;
-  right: 0;
-
-  padding: 5px;
-  font-size: 0.8em;
-  color: var(${UI.COLOR_TEXT2});
-  font-weight: 600;
 `
 
 interface HookStoreModal {
@@ -115,19 +31,30 @@ interface HookStoreModal {
 export function HookStoreModal({ onDismiss, isPreHook }: HookStoreModal) {
   const { chainId, account } = useWalletInfo()
   const [selectedDapp, setSelectedDapp] = useState<HookDapp | null>(null)
+  const [selectedDappDescription, setSelectedDappDescription] = useState<HookDapp | null>(null)
   const addHook = useAddHook()
 
   const dapps = isPreHook ? PRE_HOOK_REGISTRY[chainId] : POST_HOOK_REGISTRY[chainId]
 
-  const title = selectedDapp ? selectedDapp.name : 'Hook Store'
+  const openDescriptionModal = useCallback((dapp: HookDapp) => {
+    setSelectedDappDescription(dapp)
+  }, [])
+
+  const closeDescriptionModal = useCallback(() => {
+    setSelectedDappDescription(null)
+  }, [])
+
+  const title = selectedDappDescription ? 'Hook description' : selectedDapp ? selectedDapp.name : 'Hook Store'
 
   const onDismissModal = useCallback(() => {
-    if (selectedDapp) {
+    if (selectedDappDescription) {
+      closeDescriptionModal()
+    } else if (selectedDapp) {
       setSelectedDapp(null)
     } else {
       onDismiss()
     }
-  }, [onDismiss, selectedDapp])
+  }, [onDismiss, selectedDapp, selectedDappDescription, closeDescriptionModal])
 
   const hookDappContext = useMemo<HookDappContextType>(() => {
     return {
@@ -145,15 +72,28 @@ export function HookStoreModal({ onDismiss, isPreHook }: HookStoreModal) {
   return (
     <Wrapper>
       <HookDappContext.Provider value={hookDappContext}>
-        <NewModal modalMode={!selectedDapp} title={title} onDismiss={onDismissModal} maxWidth={MODAL_MAX_WIDTH}>
-          {selectedDapp ? (
+        <NewModal modalMode={!selectedDapp} title={title} onDismiss={onDismissModal}>
+          {selectedDappDescription ? (
+            <HookDescriptionModal
+              dapp={selectedDappDescription}
+              onSelect={setSelectedDapp}
+              onDismiss={closeDescriptionModal}
+            />
+          ) : selectedDapp ? (
             <HookDappUi dapp={selectedDapp} />
           ) : (
-            <HookDappsList>
+            <Styled.HookDappsList>
+              <CustomHookButton />
+
               {dapps.map((dapp) => (
-                <HookDappItem key={dapp.name} dapp={dapp} onSelect={setSelectedDapp} />
+                <HookDappItem
+                  key={dapp.name}
+                  dapp={dapp}
+                  onSelect={setSelectedDapp}
+                  onOpenDescription={openDescriptionModal}
+                />
               ))}
-            </HookDappsList>
+            </Styled.HookDappsList>
           )}
         </NewModal>
       </HookDappContext.Provider>
@@ -174,20 +114,73 @@ export function HookDappUi({ dapp }: HookDappUiProps) {
   return dapp.component
 }
 
-export function HookDappItem({ dapp, onSelect }: { dapp: HookDapp; onSelect: (dapp: HookDapp) => void }) {
-  const { name, description, image, version } = dapp
+export function HookDappItem({
+  dapp,
+  onSelect,
+  onOpenDescription,
+}: {
+  dapp: HookDapp
+  onSelect: (dapp: HookDapp) => void
+  onOpenDescription: (dapp: HookDapp) => void
+}) {
+  const { name, description, image, version, imageBgContrast = false } = dapp
 
   return (
-    <HookDappListItem>
+    <Styled.HookDappListItem imageBgContrast={imageBgContrast}>
       <img src={image} alt={name} />
 
-      <HookDappDetails>
+      <Styled.HookDappDetails>
         <h3>{name}</h3>
         <p>
-          {description} <Version>{version}</Version>
+          {description} <Styled.Version>{version}</Styled.Version>
         </p>
-        <Link onClick={() => onSelect(dapp)}>Add</Link>
-      </HookDappDetails>
-    </HookDappListItem>
+      </Styled.HookDappDetails>
+      <span>
+        <Styled.LinkButton onClick={() => onSelect(dapp)}>Add</Styled.LinkButton>
+        <i
+          onClick={(e) => {
+            e.stopPropagation()
+            onOpenDescription(dapp)
+          }}
+        >
+          <SVG src={ICON_INFO} /> details
+        </i>
+      </span>
+    </Styled.HookDappListItem>
+  )
+}
+
+interface HookDescriptionModalProps {
+  dapp: HookDapp
+  onSelect: (dapp: HookDapp) => void
+  onDismiss: () => void // Add this prop
+}
+
+function HookDescriptionModal({ dapp, onSelect, onDismiss }: HookDescriptionModalProps) {
+  const handleAddClick = useCallback(() => {
+    onSelect(dapp)
+    onDismiss() // Close the modal after selecting
+  }, [dapp, onSelect, onDismiss])
+
+  return (
+    <>
+      <Styled.HookDappListItem imageBgContrast={dapp.imageBgContrast} isDescriptionView>
+        <span>
+          <img src={dapp.image} alt={dapp.name} />
+          <Styled.Version isDescriptionView>{dapp.version}</Styled.Version>
+        </span>
+        <Styled.HookDappDetails isDescriptionView>
+          <h3>{dapp.name}</h3>
+          <p>{dapp.descriptionFull || dapp.description}</p>
+          {dapp.website && (
+            <Styled.TextLink href={dapp.website} target="_blank" rel="noopener noreferrer">
+              {dapp.website}
+            </Styled.TextLink>
+          )}
+
+          <Styled.LinkButton onClick={handleAddClick}>Add</Styled.LinkButton>
+        </Styled.HookDappDetails>
+      </Styled.HookDappListItem>
+    </>
   )
 }
