@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 import TenderlyLogo from '@cowprotocol/assets/cow-swap/tenderly-logo.svg'
-import { CowHookDetails } from '@cowprotocol/types'
+import { CowHookDetailsSerialized } from '@cowprotocol/types'
 import { InfoTooltip } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
@@ -12,7 +12,7 @@ import { TenderlySimulate } from '../../containers/TenderlySimulate'
 
 interface HookItemProp {
   account: string | undefined
-  hookDetails: CowHookDetails
+  hookDetails: CowHookDetailsSerialized
   isPreHook: boolean
   removeHook: (uuid: string, isPreHook: boolean) => void
 }

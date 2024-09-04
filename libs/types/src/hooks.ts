@@ -2,7 +2,6 @@ import { ReactNode } from 'react'
 
 import { latest } from '@cowprotocol/app-data'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Command } from './common'
 
@@ -41,16 +40,17 @@ export interface HookDappIframe extends HookDappBase {
 
 export type HookDapp = HookDappInternal | HookDappIframe
 
-export interface CowHookDetails {
+export interface CowHookDetails<DappType = HookDapp> {
   uuid: string
   hook: CowHook
-  dapp: HookDapp
-  outputTokens?: CurrencyAmount<Currency>[]
+  dapp: DappType
 }
+
+export interface CowHookDetailsSerialized extends CowHookDetails<HookDappBase> {}
 
 export type CowHookCreation = Omit<CowHookDetails, 'uuid' | 'dapp'>
 
-export type AddHook = (hookToAdd: CowHookCreation) => CowHookDetails
+export type AddHook = (hookToAdd: CowHookCreation) => CowHookDetailsSerialized
 export type RemoveHook = (uuid: string, isPreHook: boolean) => void
 
 export interface HookDappContext {
