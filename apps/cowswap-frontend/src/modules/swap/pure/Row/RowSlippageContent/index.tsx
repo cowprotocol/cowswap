@@ -27,8 +27,7 @@ export const ClickableText = styled.button`
 `
 
 const DefaultSlippage = styled.span`
-  display: inline-block;
-  margin-left: 4px;
+  display: inline-flex;
   color: var(${UI.COLOR_TEXT_OPACITY_70});
   text-decoration: strikethrough;
   font-size: 0.8em;
@@ -64,6 +63,8 @@ export const getNonNativeSlippageTooltip = () => (
     {INPUT_OUTPUT_EXPLANATION}
   </Trans>
 )
+
+const SUGGESTED_SLIPPAGE_TOOLTIP = "Based on recent volatility for the selected token pair, this is the suggested slippage for ensuring quick execution of your order."
 
 export interface RowSlippageContentProps {
   chainId: SupportedChainId
@@ -111,6 +112,9 @@ export function RowSlippageContent(props: RowSlippageContentProps) {
   const displayDefaultSlippage = isSlippageModified && setAutoSlippage && smartSlippage && !suggestedEqualToUserSlippage && (
     <DefaultSlippage>
       <LinkStyledButton onClick={setAutoSlippage}>(Suggested: {smartSlippage})</LinkStyledButton>
+      <HoverTooltip wrapInContainer content={SUGGESTED_SLIPPAGE_TOOLTIP}>
+        <StyledInfoIcon size={16} />
+      </HoverTooltip>
     </DefaultSlippage>
   )
 
@@ -133,11 +137,11 @@ export function RowSlippageContent(props: RowSlippageContentProps) {
       <TextWrapper textAlign="right">
         {showSettingOnClick ? (
           <ClickableText onClick={toggleSettings}>
-            {displaySlippage} {displayDefaultSlippage}
+            {displaySlippage}{displayDefaultSlippage}
           </ClickableText>
         ) : (
           <span>
-            {displaySlippage} {displayDefaultSlippage}
+            {displaySlippage}{displayDefaultSlippage}
           </span>
         )}
       </TextWrapper>
