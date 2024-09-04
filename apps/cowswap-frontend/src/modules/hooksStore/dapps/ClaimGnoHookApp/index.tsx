@@ -1,18 +1,16 @@
-import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import gnoLogo from '@cowprotocol/assets/cow-swap/network-gnosis-chain-logo.svg'
 import { GNO } from '@cowprotocol/common-const'
-import { HookDapp } from '@cowprotocol/types'
+import { HookDappProps } from '@cowprotocol/types'
 import { ButtonPrimary } from '@cowprotocol/ui'
 import { BigNumber } from '@ethersproject/bignumber'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { formatUnits } from 'ethers/lib/utils'
 
-import { Amount, ContentWrapper, ErrorLabel, Header, Label, Link, LoadingLabel, Wrapper } from './styled'
-
 import { SBC_DEPOSIT_CONTRACT_ADDRESS } from './const'
-import { HookDappContext } from '../../context'
+import { Amount, ContentWrapper, ErrorLabel, Header, Label, Link, LoadingLabel, Wrapper } from './styled'
 import { useSBCDepositContract } from './useSBCDepositContract'
 
 /**
@@ -22,8 +20,7 @@ import { useSBCDepositContract } from './useSBCDepositContract'
  *    - Proxy: 0x0B98057eA310F4d31F2a452B414647007d1645d9 (https://gnosisscan.io/address/0x0B98057eA310F4d31F2a452B414647007d1645d9#readProxyContract)
  *    - Master: 0x4fef25519256e24a1fc536f7677152da742fe3ef
  */
-export function ClaimGnoHookApp({ dapp }: { dapp: HookDapp }) {
-  const hookDappContext = useContext(HookDappContext)
+export function ClaimGnoHookApp({ dapp, context }: HookDappProps) {
   const SbcDepositContract = useSBCDepositContract()
   const [claimable, setClaimable] = useState<BigNumber | undefined>(undefined)
   const [gasLimit, setGasLimit] = useState<BigNumber | undefined>(undefined)
@@ -33,15 +30,15 @@ export function ClaimGnoHookApp({ dapp }: { dapp: HookDapp }) {
 
   const SbcDepositContractInterface = SbcDepositContract?.interface
   const callData = useMemo(() => {
-    if (!SbcDepositContractInterface || !hookDappContext?.account) {
+    if (!SbcDepositContractInterface || !context?.account) {
       return null
     }
 
-    return SbcDepositContractInterface.encodeFunctionData('claimWithdrawal', [hookDappContext.account])
-  }, [SbcDepositContractInterface, hookDappContext])
+    return SbcDepositContractInterface.encodeFunctionData('claimWithdrawal', [context.account])
+  }, [SbcDepositContractInterface, context])
 
   useEffect(() => {
-    if (!SbcDepositContract || !hookDappContext?.account) {
+    if (!SbcDepositContract || !context?.account) {
       return
     }
     const handleError = (e: any) => {
@@ -50,7 +47,7 @@ export function ClaimGnoHookApp({ dapp }: { dapp: HookDapp }) {
     }
 
     // Get balance
-    SbcDepositContract.withdrawableAmount(hookDappContext.account)
+    SbcDepositContract.withdrawableAmount(context.account)
       .then((claimable) => {
         console.log('[ClaimGnoHookApp] get claimable', claimable)
         setClaimable(claimable)
@@ -58,39 +55,31 @@ export function ClaimGnoHookApp({ dapp }: { dapp: HookDapp }) {
       .catch(handleError)
 
     // Get gas estimation
-    SbcDepositContract.estimateGas.claimWithdrawal(hookDappContext.account).then(setGasLimit).catch(handleError)
-  }, [SbcDepositContract, setClaimable, hookDappContext])
+    SbcDepositContract.estimateGas.claimWithdrawal(context.account).then(setGasLimit).catch(handleError)
+  }, [SbcDepositContract, setClaimable, context])
 
   const clickOnAddHook = useCallback(() => {
-    if (!callData || !gasLimit || !hookDappContext || !claimable) {
+    if (!callData || !gasLimit || !context || !claimable) {
       return
     }
 
-    const gno = GNO[hookDappContext.chainId]
-    hookDappContext.addHook(
-      {
-        hook: {
-          callData,
-          gasLimit: gasLimit.toString(),
-          target: SBC_DEPOSIT_CONTRACT_ADDRESS,
-        },
-        dapp,
-        outputTokens: [CurrencyAmount.fromRawAmount(gno, claimable.toString())],
+    const gno = GNO[context.chainId]
+    context.addHook({
+      hook: {
+        callData,
+        gasLimit: gasLimit.toString(),
+        target: SBC_DEPOSIT_CONTRACT_ADDRESS,
       },
-      true,
-    )
-  }, [callData, gasLimit, hookDappContext, claimable])
+      outputTokens: [CurrencyAmount.fromRawAmount(gno, claimable.toString())],
+    })
+  }, [callData, gasLimit, context, claimable])
 
   if (!SbcDepositContractInterface) {
     return 'Unsupported network. Please change to Gnosis Chain'
   }
 
-  if (!hookDappContext?.account) {
+  if (!context?.account) {
     return 'Connect your wallet first'
-  }
-
-  if (!hookDappContext) {
-    return 'Loading...'
   }
 
   return (
@@ -106,7 +95,7 @@ export function ClaimGnoHookApp({ dapp }: { dapp: HookDapp }) {
       <Link
         onClick={(e) => {
           e.preventDefault()
-          hookDappContext.close()
+          context.close()
         }}
       >
         Close

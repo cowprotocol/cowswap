@@ -30,7 +30,7 @@ export interface CowHookDetails {
   outputTokens?: CurrencyAmount<Currency>[]
 }
 
-export type CowHookCreation = Omit<CowHookDetails, 'uuid'>
+export type CowHookCreation = Omit<CowHookDetails, 'uuid' | 'dapp'>
 
 export interface HookDappBase {
   name: string
@@ -42,8 +42,7 @@ export interface HookDappBase {
 
 export interface HookDappInternal extends HookDappBase {
   type: HookDappType.INTERNAL
-  path: string
-  component: (dapp: HookDapp) => ReactNode
+  component: (props: HookDappProps) => ReactNode
 }
 
 export interface HookDappIframe extends HookDappBase {
@@ -51,7 +50,7 @@ export interface HookDappIframe extends HookDappBase {
   url: string
 }
 
-export type AddHook = (hookToAdd: CowHookCreation, isPreHook: boolean) => CowHookDetails
+export type AddHook = (hookToAdd: CowHookCreation) => CowHookDetails
 export type RemoveHook = (uuid: string, isPreHook: boolean) => void
 
 export interface HookDappContext {
@@ -59,4 +58,10 @@ export interface HookDappContext {
   account?: string
   addHook: AddHook
   close: Command
+}
+
+export interface HookDappProps {
+  isPreHook: boolean
+  dapp: HookDapp
+  context: HookDappContext
 }

@@ -7,8 +7,7 @@ export const PRE_CLAIM_GNO: HookDappInternal = {
   name: 'Claim GNO from validators',
   description: 'Allows you to withdraw the rewards from your Gnosis validators.',
   type: HookDappType.INTERNAL,
-  path: '/hooks-dapps/pre/claim-gno',
-  component: (dapp) => <ClaimGnoHookApp dapp={dapp} />,
+  component: (props) => <ClaimGnoHookApp {...props} />,
   image: gnoLogo,
   version: 'v0.1.1',
 }

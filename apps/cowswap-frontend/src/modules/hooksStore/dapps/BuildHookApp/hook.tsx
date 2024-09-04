@@ -1,4 +1,4 @@
-import { HookDapp, HookDappInternal, HookDappType } from '@cowprotocol/types'
+import { HookDappInternal, HookDappType } from '@cowprotocol/types'
 
 import buildImg from './build.png'
 
@@ -9,9 +9,8 @@ const getAppDetails = (isPreHook: boolean): HookDappInternal => {
     name: `Build your own ${isPreHook ? 'Pre' : 'Post'}-hook`,
     description: `Add an arbitrary calldata to be executed ${isPreHook ? 'before' : 'after'} your hook`,
     type: HookDappType.INTERNAL,
-    path: '/hooks-dapps/pre/build',
     image: buildImg,
-    component: (dapp: HookDapp) => <BuildHookApp isPreHook={isPreHook} dapp={dapp} />,
+    component: (props) => <BuildHookApp {...props} />,
     version: 'v0.1.0',
   }
 }

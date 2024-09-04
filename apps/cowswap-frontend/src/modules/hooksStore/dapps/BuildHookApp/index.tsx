@@ -1,19 +1,12 @@
-import { useCallback, useContext, useState } from 'react'
+import { useCallback, useState } from 'react'
 
-import { CowHook, HookDapp } from '@cowprotocol/types'
+import { CowHook, HookDappProps } from '@cowprotocol/types'
 import { ButtonPrimary } from '@cowprotocol/ui'
 
-import { HookDappContext } from '../../context'
 import buildImg from './build.png'
 import { ContentWrapper, Header, Link, Row, Wrapper } from './styled'
 
-export interface BuildHookAppProps {
-  isPreHook: boolean
-  dapp: HookDapp
-}
-
-export function BuildHookApp({ isPreHook, dapp }: BuildHookAppProps) {
-  const hookDappContext = useContext(HookDappContext)
+export function BuildHookApp({ isPreHook, dapp, context }: HookDappProps) {
   const [hook, setHook] = useState<CowHook>({
     target: '',
     callData: '',
@@ -22,23 +15,15 @@ export function BuildHookApp({ isPreHook, dapp }: BuildHookAppProps) {
 
   const clickOnAddHook = useCallback(() => {
     const { callData, gasLimit, target } = hook
-    if (!hookDappContext || !callData || !gasLimit || !target) {
+    if (!callData || !gasLimit || !target) {
       return
     }
 
-    hookDappContext.addHook(
-      {
-        hook: hook,
-        dapp,
-        outputTokens: undefined, // TODO: Simulate and extract the output tokens
-      },
-      isPreHook,
-    )
-  }, [hook, hookDappContext])
-
-  if (!hookDappContext) {
-    return 'Loading...'
-  }
+    context.addHook({
+      hook,
+      outputTokens: undefined, // TODO: Simulate and extract the output tokens
+    })
+  }, [hook, context])
 
   return (
     <Wrapper>
@@ -77,7 +62,7 @@ export function BuildHookApp({ isPreHook, dapp }: BuildHookAppProps) {
       <Link
         onClick={(e) => {
           e.preventDefault()
-          hookDappContext.close()
+          context.close()
         }}
       >
         Close
