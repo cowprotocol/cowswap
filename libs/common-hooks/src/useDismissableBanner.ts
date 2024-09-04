@@ -1,21 +1,30 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useAtom } from 'jotai'
+import { atomWithStorage } from 'jotai/utils'
+import { useCallback } from 'react'
+
+import { getJotaiMergerStorage } from '@cowprotocol/core'
+
+type ClosableBannersState = Record<string, true | undefined>
+
+const DEFAULT_STATE: ClosableBannersState = {}
+
+const closableBannersStateAtom = atomWithStorage<ClosableBannersState>(
+  'closableBanners:v0',
+  DEFAULT_STATE,
+  getJotaiMergerStorage()
+)
 
 export function useDismissableBanner(bannerId: string | undefined) {
-  const [isBannerDismissed, setIsBannerDismissed] = useState<boolean>(false)
+  const [state, setState] = useAtom(closableBannersStateAtom)
 
-  useEffect(() => {
-    if (bannerId) {
-      const storedValue = localStorage.getItem(`dismissedBanner_${bannerId}`)
-      setIsBannerDismissed(storedValue === 'true')
-    }
-  }, [bannerId])
+  const isStateLoading = state === DEFAULT_STATE
+  const isBannerDismissed = isStateLoading ? false : !!state[bannerId]
 
   const dismissBanner = useCallback(() => {
     if (bannerId) {
-      localStorage.setItem(`dismissedBanner_${bannerId}`, 'true')
-      setIsBannerDismissed(true)
+      setState((prev) => ({ ...prev, [bannerId]: true }))
     }
-  }, [bannerId])
+  }, [setState, bannerId])
 
   return { isBannerDismissed, dismissBanner }
 }
