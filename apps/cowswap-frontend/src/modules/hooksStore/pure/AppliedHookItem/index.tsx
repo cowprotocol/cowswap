@@ -17,7 +17,7 @@ interface HookItemProp {
   removeHook: (uuid: string, isPreHook: boolean) => void
 }
 
-export function HookItem({ account, hookDetails, isPreHook, removeHook }: HookItemProp) {
+export function AppliedHookItem({ account, hookDetails, isPreHook, removeHook }: HookItemProp) {
   const { uuid, hook, dapp, outputTokens } = hookDetails
   const { callData, gasLimit, target } = hook
 

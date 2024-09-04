@@ -4,7 +4,7 @@ import { ButtonSecondaryAlt } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useRemoveHook } from '../../hooks/useRemoveHook'
-import { HookItem } from '../../pure/HookItem'
+import { AppliedHookItem } from '../../pure/AppliedHookItem'
 import { HookTooltip } from '../../pure/HookTooltip'
 import { hooksAtom } from '../../state/hookDetailsAtom'
 import * as styledEl from '../PreHookButton/styled'
@@ -23,7 +23,13 @@ export function PostHookButton({ onOpen }: PostHookButtonProps) {
       {hooks.postHooks && (
         <styledEl.HookList>
           {hooks.postHooks.map((hook, index) => (
-            <HookItem key={index} account={account} hookDetails={hook} removeHook={removeHook} isPreHook={false} />
+            <AppliedHookItem
+              key={index}
+              account={account}
+              hookDetails={hook}
+              removeHook={removeHook}
+              isPreHook={false}
+            />
           ))}
         </styledEl.HookList>
       )}

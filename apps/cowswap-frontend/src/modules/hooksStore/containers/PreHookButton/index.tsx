@@ -8,7 +8,7 @@ import { Link } from 'legacy/components/Link'
 import * as styledEl from './styled'
 
 import { useRemoveHook } from '../../hooks/useRemoveHook'
-import { HookItem } from '../../pure/HookItem'
+import { AppliedHookItem } from '../../pure/AppliedHookItem'
 import { HookTooltip } from '../../pure/HookTooltip'
 import { hooksAtom } from '../../state/hookDetailsAtom'
 
@@ -25,7 +25,13 @@ export function PreHookButton({ onOpen }: PreHookButtonProps) {
       {hooks.preHooks.length > 0 && (
         <styledEl.HookList>
           {hooks.preHooks.map((hookDetails, index) => (
-            <HookItem key={index} account={account} hookDetails={hookDetails} removeHook={removeHook} isPreHook />
+            <AppliedHookItem
+              key={index}
+              account={account}
+              hookDetails={hookDetails}
+              removeHook={removeHook}
+              isPreHook
+            />
           ))}
         </styledEl.HookList>
       )}
