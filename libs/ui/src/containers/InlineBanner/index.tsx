@@ -1,5 +1,7 @@
 import React, { ReactNode } from 'react'
 
+import { useDismissableBanner } from '@cowprotocol/common-hooks'
+
 import { X } from 'react-feather'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
@@ -9,7 +11,7 @@ import { BannerOrientation } from './banners'
 import { UI } from '../../enum'
 import { Icon, IconType } from '../../pure/Icon'
 
-export type BannerType = 'alert' | 'information' | 'success' | 'danger' | 'savings'
+export type BannerType = 'alert' | 'information' | 'success' | 'Zdanger' | 'savings'
 
 interface ColorEnums {
   icon?: IconType
@@ -168,6 +170,8 @@ export interface InlineBannerProps {
   margin?: string
   width?: string
   onClose?: () => void
+  isDismissable?: boolean
+  bannerId?: string
 }
 
 export function InlineBanner({
@@ -184,8 +188,22 @@ export function InlineBanner({
   margin,
   width,
   onClose,
+  isDismissable = false,
+  bannerId,
 }: InlineBannerProps) {
   const colorEnums = getColorEnums(bannerType)
+  const { isBannerDismissed, dismissBanner } = useDismissableBanner(bannerId)
+
+  if (isDismissable && isBannerDismissed) {
+    return null
+  }
+
+  const handleClose = () => {
+    if (isDismissable && bannerId) {
+      dismissBanner()
+    }
+    onClose?.()
+  }
 
   return (
     <Wrapper
@@ -196,7 +214,7 @@ export function InlineBanner({
       padding={padding}
       margin={margin}
       width={width}
-      dismissable={!!onClose}
+      dismissable={!!onClose || isDismissable}
     >
       <span>
         {!hideIcon && customIcon ? (
@@ -215,7 +233,7 @@ export function InlineBanner({
         <span>{children}</span>
       </span>
 
-      {onClose && <CloseIcon onClick={onClose} />}
+      {(onClose || isDismissable) && <CloseIcon onClick={handleClose} />}
     </Wrapper>
   )
 }
