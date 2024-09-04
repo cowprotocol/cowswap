@@ -1,9 +1,9 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { HookDapp, HookDappIframe, HookDappType } from '@cowprotocol/types'
 
+import { PRE_AIRDROP } from './dapps/AirdropHookApp'
 import { PRE_BUILD, POST_BUILD } from './dapps/BuildHookApp'
 import { PRE_CLAIM_GNO } from './dapps/ClaimGnoHookApp'
-import {PRE_AIRDROP} from './dapps/AirdropHookApp'
 import bridgeImg from './images/bridge.svg'
 import cowAMM from './images/cowAMM.png'
 import curveImg from './images/curve.svg'

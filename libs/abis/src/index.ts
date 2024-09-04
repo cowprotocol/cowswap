@@ -47,7 +47,7 @@ export type {
   Erc721,
   Erc1155,
   Weth,
-  UniswapInterfaceMulticall
+  UniswapInterfaceMulticall,
 } from './generated/legacy'
 
 export type { Erc20Interface } from './generated/legacy/Erc20'
