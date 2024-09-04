@@ -8,8 +8,6 @@ import Web3 from 'web3'
 
 import { AssertionError } from 'assert'
 
-
-
 const toChecksumAddress = Web3.utils.toChecksumAddress
 
 export function assertNonNull<T>(val: T, message: string): asserts val is NonNullable<T> {
@@ -18,13 +16,10 @@ export function assertNonNull<T>(val: T, message: string): asserts val is NonNul
   }
 }
 
-// eslint-disable-next-line
 function noop(..._args: any[]): void {}
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const logInfo = process.env.NODE_ENV === 'test' ? noop : (...args: any[]): void => console.log(...args)
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let debugEnabled = process.env.NODE_ENV === 'development'
 
 declare global {
@@ -38,14 +33,12 @@ window.toggleDebug = (): boolean => {
   return debugEnabled
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const logDebug = (...args: any[]): void => {
   if (debugEnabled) {
     console.log(...args)
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const debug = process.env.NODE_ENV === 'development' ? noop : (...args: any[]): void => console.log(...args)
 
 export const delay = <T = void>(ms = 100, result?: T): Promise<T> =>
@@ -59,7 +52,7 @@ export function getImageUrl(tokenAddress?: string): string | undefined {
   try {
     const checksummedAddress = toChecksumAddress(tokenAddress)
     return `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/${checksummedAddress}/logo.png`
-  } catch (e) {
+  } catch {
     return undefined
   }
 }
@@ -110,13 +103,13 @@ interface RetryOptions {
  * @param interval How long to wait between retries. Defaults to 1s
  * @param exponentialBackOff Whether to use exponential back off, doubling wait interval. Defaults to true
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 export async function retry<T extends () => any>(fn: T, options?: RetryOptions): Promise<Unpromise<ReturnType<T>>> {
   const { retriesLeft = 3, interval = 1000, exponentialBackOff = true } = options || {}
 
   try {
     return await fn()
-  } catch (error) {
+  } catch {
     if (retriesLeft) {
       await delay(interval)
 

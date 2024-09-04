@@ -42,14 +42,14 @@ export async function shouldZeroApprove({
     await tokenContract.estimateGas.approve(spender, amountToApprove.quotient.toString())
 
     return false
-  } catch (err) {
+  } catch {
     try {
       // Check for the trade has failed. Check if a trade with 0 amount is possible.
       // If it is, then we need to first reset the allowance to 0.
       await tokenContract.estimateGas.approve(spender, '0')
 
       return true
-    } catch (err) {
+    } catch {
       // If the trade with 0 amount is also not possible, we have an actual error case.
       // We can't do anything about it, so we just return false.
       return false
