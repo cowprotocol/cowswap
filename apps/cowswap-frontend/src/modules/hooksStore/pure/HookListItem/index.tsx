@@ -1,22 +1,41 @@
-import { HookDapp } from '@cowprotocol/types'
+import ICON_INFO from '@cowprotocol/assets/cow-swap/info.svg'
+import { Command, HookDapp } from '@cowprotocol/types'
+import { TruncatedText } from '@cowprotocol/ui'
 
-import { HookDappDetails, HookDappListItem, Link, Version } from './styled'
+import SVG from 'react-inlinesvg'
 
-export function HookListItem({ dapp, onSelect }: { dapp: HookDapp; onSelect: (dapp: HookDapp) => void }) {
+import * as styled from './styled'
+
+interface HookListItemProps {
+  dapp: HookDapp
+  onSelect: Command
+  onOpenDetails: Command
+}
+
+export function HookListItem({ dapp, onSelect, onOpenDetails }: HookListItemProps) {
   const { name, description, image, version } = dapp
 
   return (
-    <HookDappListItem>
-      <div>
-        <img onClick={() => onSelect(dapp)} src={image} alt={name} />
-      </div>
-      <HookDappDetails>
-        <h3>{name}</h3>
-        <p>{description}</p>
-        <Link onClick={() => onSelect(dapp)}>+ Add hook</Link>
+    <styled.HookDappListItem>
+      <img src={image} alt={name} />
 
-        <Version>{version}</Version>
-      </HookDappDetails>
-    </HookDappListItem>
+      <styled.HookDappDetails>
+        <h3>{name}</h3>
+        <p>
+          <TruncatedText width="24ch">{description}</TruncatedText> <styled.Version>{version}</styled.Version>
+        </p>
+      </styled.HookDappDetails>
+      <span>
+        <styled.LinkButton onClick={onSelect}>Add</styled.LinkButton>
+        <i
+          onClick={(e) => {
+            e.stopPropagation()
+            onOpenDetails()
+          }}
+        >
+          <SVG src={ICON_INFO} /> details
+        </i>
+      </span>
+    </styled.HookDappListItem>
   )
 }

@@ -1,9 +1,9 @@
 import { useAtomValue } from 'jotai/index'
 
-import { ButtonSecondaryAlt } from '@cowprotocol/ui'
+import PLUS_ICON from '@cowprotocol/assets/cow-swap/plus.svg'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { Link } from 'legacy/components/Link'
+import SVG from 'react-inlinesvg'
 
 import * as styledEl from './styled'
 
@@ -11,7 +11,6 @@ import { useRemoveHook } from '../../hooks/useRemoveHook'
 import { AppliedHookItem } from '../../pure/AppliedHookItem'
 import { HookTooltip } from '../../pure/HookTooltip'
 import { hooksAtom } from '../../state/hookDetailsAtom'
-
 export interface PreHookButtonProps {
   onOpen(): void
 }
@@ -37,17 +36,9 @@ export function PreHookButton({ onOpen }: PreHookButtonProps) {
       )}
 
       <styledEl.Wrapper>
-        <styledEl.ButtonGroup>
-          <ButtonSecondaryAlt onClick={onOpen}>🪝 Add Pre-hook</ButtonSecondaryAlt> <HookTooltip isPreHook />
-        </styledEl.ButtonGroup>
-        <styledEl.List>
-          <li>
-            📚 <Link href="https://docs.cow.fi/cow-protocol/reference/sdks/cow-sdk">Learn more about hooks</Link>
-          </li>
-          <li>
-            🪝 <Link href="https://docs.cow.fi/cow-protocol/reference/sdks/cow-sdk">Create your own hook</Link>
-          </li>
-        </styledEl.List>
+        <styledEl.AddHookButton onClick={onOpen}>
+          <SVG src={PLUS_ICON} /> Add Pre-Hook Action <HookTooltip isPreHook />
+        </styledEl.AddHookButton>{' '}
       </styledEl.Wrapper>
     </>
   )

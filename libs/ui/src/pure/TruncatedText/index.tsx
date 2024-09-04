@@ -9,17 +9,17 @@ const Wrapper = styled.span<{ width: string }>`
 `
 
 type TruncatedProps = {
-  text: string
+  children: string
   width?: string
   className?: string
 }
 
 export function TruncatedText(props: TruncatedProps) {
-  const { text, className, width = '12ch' } = props
+  const { children, className, width = '12ch' } = props
 
   return (
     <Wrapper className={className} width={width}>
-      {text}
+      {children}
     </Wrapper>
   )
 }

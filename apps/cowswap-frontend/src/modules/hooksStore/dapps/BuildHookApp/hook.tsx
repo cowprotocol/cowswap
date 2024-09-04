@@ -7,7 +7,7 @@ import { BuildHookApp } from './index'
 const getAppDetails = (isPreHook: boolean): HookDappInternal => {
   return {
     name: `Build your own ${isPreHook ? 'Pre' : 'Post'}-hook`,
-    description: `Add an arbitrary calldata to be executed ${isPreHook ? 'before' : 'after'} your hook`,
+    description: `Didn't find a suitable hook? You can always create your own! To do this, you need to specify which smart contract you want to call, the parameters for the call and the gas limit.`,
     type: HookDappType.INTERNAL,
     image: buildImg,
     component: (props) => <BuildHookApp {...props} />,

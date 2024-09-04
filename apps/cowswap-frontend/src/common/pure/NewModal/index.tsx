@@ -156,13 +156,22 @@ export const NewModalContentBottom = styled(NewModalContentTop)`
 export interface NewModalProps {
   maxWidth?: number
   minHeight?: number
+  contentPadding?: string
   title?: string
   onDismiss?: Command
   children?: React.ReactNode
   modalMode?: boolean
 }
 
-export function NewModal({ maxWidth = 450, minHeight = 350, modalMode, title, children, onDismiss }: NewModalProps) {
+export function NewModal({
+  maxWidth = 450,
+  minHeight = 350,
+  contentPadding,
+  modalMode,
+  title,
+  children,
+  onDismiss,
+}: NewModalProps) {
   const onDismissCallback = useCallback(() => onDismiss?.(), [onDismiss])
 
   return (
@@ -180,7 +189,9 @@ export function NewModal({ maxWidth = 450, minHeight = 350, modalMode, title, ch
           </Heading>
         )}
 
-        <NewModalContent className={modalMode ? 'modalMode' : ''}>{children}</NewModalContent>
+        <NewModalContent className={modalMode ? 'modalMode' : ''} padding={contentPadding}>
+          {children}
+        </NewModalContent>
       </ModalInner>
     </Wrapper>
   )

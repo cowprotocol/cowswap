@@ -1,24 +1,24 @@
 import styled from 'styled-components/macro'
-
-const MODAL_MAX_WIDTH = 450
+import { WIDGET_MAX_WIDTH } from 'theme'
 
 export const Wrapper = styled.div`
-  display: flex;
-  flex-flow: column wrap;
   width: 100%;
-  max-width: ${MODAL_MAX_WIDTH}px;
+  max-width: ${WIDGET_MAX_WIDTH.swap};
+  margin: 0 auto;
+  position: relative;
 `
 
 export const HookDappsList = styled.ul`
   list-style: none;
   padding: 0;
-  margin: 0;
+  margin: 10px 0 0 0;
 
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  flex-wrap: wrap
+  flex-wrap: wrap;
   align-items: stretch;
+  flex: 1;
 
   img {
     width: 120px;
@@ -26,5 +26,4 @@ export const HookDappsList = styled.ul`
     height: 100%;
     cursor: pointer;
   }
-
 `

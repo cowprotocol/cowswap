@@ -179,7 +179,7 @@ export function DetailsTable(props: Props): React.ReactNode | null {
             <td>
               <RowWithCopyButton
                 textToCopy={uid}
-                contentsToDisplay={<TruncatedText text={uid} />}
+                contentsToDisplay={<TruncatedText>{uid}</TruncatedText>}
                 onCopy={(): void => onCopy('orderId')}
               />
             </td>
