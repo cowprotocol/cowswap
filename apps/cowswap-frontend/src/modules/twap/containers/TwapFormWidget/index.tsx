@@ -15,6 +15,7 @@ import { useGetTradeFormValidation } from 'modules/tradeFormValidation'
 import { useTradeQuote } from 'modules/tradeQuote'
 import { TwapFormState } from 'modules/twap/pure/PrimaryActionButton/getTwapFormState'
 
+import { usePrice } from 'common/hooks/usePrice'
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 
 import * as styledEl from './styled'
@@ -62,7 +63,10 @@ export function TwapFormWidget() {
 
   const receiveAmountInfo = useReceiveAmountInfo()
 
-  const limitPrice = receiveAmountInfo?.quotePrice
+  const limitPriceAfterSlippage = usePrice(
+    receiveAmountInfo?.afterSlippage.sellAmount,
+    receiveAmountInfo?.afterSlippage.buyAmount
+  )
 
   const deadlineState = {
     deadline,
@@ -133,9 +137,9 @@ export function TwapFormWidget() {
         upDownArrowsLeftAlign={true}
         prefixComponent={
           <em>
-            {limitPrice ? (
+            {limitPriceAfterSlippage ? (
               <styledEl.ExecutionPriceStyled
-                executionPrice={limitPrice}
+                executionPrice={limitPriceAfterSlippage}
                 isInverted={isInverted}
                 hideFiat
                 hideSeparator

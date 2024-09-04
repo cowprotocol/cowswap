@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.81.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.81.0...cowswap-v1.81.1) (2024-08-29)
+
+
+### Bug Fixes
+
+* **widget:** update tokens based on widget params ([#4820](https://github.com/cowprotocol/cowswap/issues/4820)) ([659c95d](https://github.com/cowprotocol/cowswap/commit/659c95d225a0af2c58a5596ae1e55f3f4b4a1019))
+
 ## [1.81.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.80.0...cowswap-v1.81.0) (2024-08-27)
 
 

@@ -164,7 +164,9 @@ export class FractionUtils {
    *
    * @param amount
    */
-  static amountToAtLeastOneWei(amount: CurrencyAmount<Token>): CurrencyAmount<Token> {
-    return JSBI.EQ(amount.quotient, 0) ? CurrencyAmount.fromRawAmount(amount.currency, 1) : amount
+  static amountToAtLeastOneWei<T extends Currency>(amount: Nullish<CurrencyAmount<T>>): Nullish<CurrencyAmount<T>> {
+    if (!amount) return null
+
+    return amount.equalTo(0) ? CurrencyAmount.fromRawAmount(amount.currency, 1) : amount
   }
 }

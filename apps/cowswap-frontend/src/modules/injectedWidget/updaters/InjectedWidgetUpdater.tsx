@@ -87,13 +87,24 @@ export function InjectedWidgetUpdater() {
   const navigate = useNavigate()
   const prevData = useRef<UpdateParamsPayload | null>(null)
 
+  // Pathname is updated independently of the widget, thus we need to track it separately
+  const pathNameRef = useRef<string | null>(null)
+  pathNameRef.current = window.location.pathname
+
   useEffect(() => {
     // Stop listening of message outside of React
     window.removeEventListener('message', cacheMessages)
 
     // Start listening for messages inside of React
     const updateParamsListener = listenToMessageFromWindow(window, WidgetMethodsListen.UPDATE_PARAMS, (data) => {
-      if (prevData.current && deepEqual(prevData.current, data)) return
+      if (
+        // If the data is the same as the previous data
+        prevData.current && deepEqual(prevData.current, data) &&
+        // And the pathname is the same as the current widget pathname, do nothing
+        // This is needed since the app updates the pathname independently of the widget params
+        pathNameRef.current === data.urlParams.pathname) {
+        return
+      }
 
       // Update params
       prevData.current = data
