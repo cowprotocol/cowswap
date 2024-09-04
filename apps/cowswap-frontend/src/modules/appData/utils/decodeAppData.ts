@@ -16,7 +16,7 @@ export function decodeAppData(appData: Nullish<string>): AnyAppDataDocVersion | 
   try {
     // TODO: returned value can be a valid JSON but not necessarily a valid AppDataDoc
     return JSON.parse(appData)
-  } catch (e) {
+  } catch {
     console.info(`[decodeAppData] given appData is not a valid JSON`, appData)
 
     return undefined

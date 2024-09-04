@@ -54,7 +54,7 @@ export function computeOrderSummary({
     const outputPrefix = !isFulfilled && isSell ? 'at least ' : ''
 
     summary = `${orderTitle} ${inputPrefix}${formatTokenAmount(inputAmount)} ${formatSymbol(
-      inputAmount.currency.symbol
+      inputAmount.currency.symbol,
     )} for ${outputPrefix}${formatTokenAmount(outputAmount)} ${formatSymbol(outputAmount.currency.symbol)}`
   } else {
     // We only have the API order info, let's at least use that
@@ -89,9 +89,9 @@ export async function fetchAndClassifyOrder(orderFromStore: Order, chainId: Chai
     const status = classifyOrder(order)
 
     return { status, order }
-  } catch (e: any) {
+  } catch {
     console.debug(
-      `[PendingOrdersUpdater] Failed to fetch order popup data on chain ${chainId} for order ${orderFromStore.id}`
+      `[PendingOrdersUpdater] Failed to fetch order popup data on chain ${chainId} for order ${orderFromStore.id}`,
     )
     return null
   }

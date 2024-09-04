@@ -74,7 +74,7 @@ export function TwapOrdersUpdater(props: {
       safeAddress,
       allOrdersInfo,
       ordersAuthResult,
-      twapOrderExecutions.current
+      twapOrderExecutions.current,
     )
 
     ordersToDelete.forEach((id) => {
@@ -114,7 +114,7 @@ function parseOrdersSafeData(ordersSafeData: TwapOrdersSafeData[]): TwapOrderInf
       }
 
       acc[id] = info
-    } catch (e) {
+    } catch {
       // Do nothing
     }
 
