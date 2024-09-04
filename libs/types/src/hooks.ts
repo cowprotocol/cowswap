@@ -21,17 +21,6 @@ export enum HookDappType {
   IFRAME = 'IFRAME',
 }
 
-export type HookDapp = HookDappInternal | HookDappIframe
-
-export interface CowHookDetails {
-  uuid: string
-  hook: CowHook
-  dapp: HookDapp
-  outputTokens?: CurrencyAmount<Currency>[]
-}
-
-export type CowHookCreation = Omit<CowHookDetails, 'uuid' | 'dapp'>
-
 export interface HookDappBase {
   name: string
   description: string
@@ -49,6 +38,17 @@ export interface HookDappIframe extends HookDappBase {
   type: HookDappType.IFRAME
   url: string
 }
+
+export type HookDapp = HookDappInternal | HookDappIframe
+
+export interface CowHookDetails {
+  uuid: string
+  hook: CowHook
+  dapp: HookDapp
+  outputTokens?: CurrencyAmount<Currency>[]
+}
+
+export type CowHookCreation = Omit<CowHookDetails, 'uuid' | 'dapp'>
 
 export type AddHook = (hookToAdd: CowHookCreation) => CowHookDetails
 export type RemoveHook = (uuid: string, isPreHook: boolean) => void

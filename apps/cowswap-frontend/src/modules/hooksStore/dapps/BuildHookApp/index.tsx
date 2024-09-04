@@ -19,10 +19,7 @@ export function BuildHookApp({ isPreHook, dapp, context }: HookDappProps) {
       return
     }
 
-    context.addHook({
-      hook,
-      outputTokens: undefined, // TODO: Simulate and extract the output tokens
-    })
+    context.addHook({ hook })
   }, [hook, context])
 
   return (

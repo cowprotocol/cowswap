@@ -1,11 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import gnoLogo from '@cowprotocol/assets/cow-swap/network-gnosis-chain-logo.svg'
-import { GNO } from '@cowprotocol/common-const'
 import { HookDappProps } from '@cowprotocol/types'
 import { ButtonPrimary } from '@cowprotocol/ui'
 import { BigNumber } from '@ethersproject/bignumber'
-import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { formatUnits } from 'ethers/lib/utils'
 
@@ -63,14 +61,12 @@ export function ClaimGnoHookApp({ dapp, context }: HookDappProps) {
       return
     }
 
-    const gno = GNO[context.chainId]
     context.addHook({
       hook: {
         callData,
         gasLimit: gasLimit.toString(),
         target: SBC_DEPOSIT_CONTRACT_ADDRESS,
       },
-      outputTokens: [CurrencyAmount.fromRawAmount(gno, claimable.toString())],
     })
   }, [callData, gasLimit, context, claimable])
 

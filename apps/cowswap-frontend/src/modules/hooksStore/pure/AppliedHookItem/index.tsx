@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 import TenderlyLogo from '@cowprotocol/assets/cow-swap/tenderly-logo.svg'
 import { CowHookDetails } from '@cowprotocol/types'
-import { InfoTooltip, TokenAmount } from '@cowprotocol/ui'
+import { InfoTooltip } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
 
@@ -18,7 +18,7 @@ interface HookItemProp {
 }
 
 export function AppliedHookItem({ account, hookDetails, isPreHook, removeHook }: HookItemProp) {
-  const { uuid, hook, dapp, outputTokens } = hookDetails
+  const { uuid, hook, dapp } = hookDetails
   const { callData, gasLimit, target } = hook
 
   const [showDetails, setShowDetails] = useState(false)
@@ -34,17 +34,6 @@ export function AppliedHookItem({ account, hookDetails, isPreHook, removeHook }:
           <dd>
             <img src={dapp.image} alt={dapp.name} /> <span>GNO</span>
           </dd>
-
-          {outputTokens && (
-            <>
-              <dt>Amount</dt>
-              <dd>
-                {outputTokens.map((token) => (
-                  <TokenAmount amount={token} tokenSymbol={token.currency} />
-                ))}
-              </dd>
-            </>
-          )}
         </dl>
       </styledEl.HookItemInfo>
 
