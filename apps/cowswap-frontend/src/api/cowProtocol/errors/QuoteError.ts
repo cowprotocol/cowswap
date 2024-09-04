@@ -92,7 +92,7 @@ export default class QuoteApiError extends Error {
         console.error('Unknown reason for bad quote fetch', orderPostError)
         return orderPostError.description
       }
-    } catch (error: any) {
+    } catch {
       console.error('Error handling 400/404 error. Likely a problem deserialising the JSON response')
       return QuoteApiError.quoteErrorDetails.UNHANDLED_ERROR
     }
@@ -108,7 +108,7 @@ export default class QuoteApiError extends Error {
       default:
         console.error(
           '[QuoteError::getErrorFromStatusCode] Error fetching quote, status code:',
-          response.status || 'unknown'
+          response.status || 'unknown',
         )
         return 'Error fetching quote'
     }

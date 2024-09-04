@@ -59,7 +59,7 @@ export function UnfillableOrdersUpdater(): null {
       order: Order,
       fee: FeeInformation | null,
       marketPrice: Price<Currency, Currency>,
-      estimatedExecutionPrice: Price<Currency, Currency> | null
+      estimatedExecutionPrice: Price<Currency, Currency> | null,
     ) => {
       if (!fee?.amount) return
 
@@ -73,7 +73,7 @@ export function UnfillableOrdersUpdater(): null {
         },
       })
     },
-    [updatePendingOrderPrices]
+    [updatePendingOrderPrices],
   )
 
   const updateIsUnfillableFlag = useCallback(
@@ -84,7 +84,7 @@ export function UnfillableOrdersUpdater(): null {
         order.inputToken,
         order.outputToken,
         order.sellAmount.toString(),
-        order.buyAmount.toString()
+        order.buyAmount.toString(),
       )
 
       const marketPrice = getOrderMarketPrice(order, priceAmount, fee.amount)
@@ -106,7 +106,7 @@ export function UnfillableOrdersUpdater(): null {
 
       updateOrderMarketPriceCallback(order, fee, marketPrice, estimatedExecutionPrice)
     },
-    [setIsOrderUnfillable, updateOrderMarketPriceCallback]
+    [setIsOrderUnfillable, updateOrderMarketPriceCallback],
   )
 
   const balancesRef = useRef(balances)
@@ -151,7 +151,7 @@ export function UnfillableOrdersUpdater(): null {
 
             console.debug(
               `[UnfillableOrdersUpdater::updateUnfillable] Failed to get quote on chain ${chainId} for order ${order?.id}`,
-              e
+              e,
             )
           })
       })
@@ -232,7 +232,7 @@ async function _getOrderPrice(chainId: ChainId, order: Order, strategy: PriceStr
 
   try {
     return getBestQuote({ strategy, quoteParams, fetchFee: false, isPriceRefresh: false })
-  } catch (e: any) {
+  } catch {
     return null
   }
 }

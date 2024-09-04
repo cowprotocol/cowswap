@@ -13,7 +13,7 @@ export function useMultipleContractSingleData<T = Result>(
   methodName: string,
   params: unknown[] | undefined,
   multicallOptions: MultiCallOptions = {},
-  swrConfig?: SWRConfiguration
+  swrConfig?: SWRConfiguration,
 ): SWRResponse<(T | undefined)[] | null> {
   const provider = useWalletProvider()
 
@@ -43,12 +43,12 @@ export function useMultipleContractSingleData<T = Result>(
         return results.map((result) => {
           try {
             return contractInterface.decodeFunctionResult(methodName, result.returnData) as T
-          } catch (error) {
+          } catch {
             return undefined
           }
         })
       })
     },
-    swrConfig
+    swrConfig,
   )
 }

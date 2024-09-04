@@ -22,7 +22,7 @@ type Props = {
 async function _getDecodedAppData(
   appData: string,
   isLegacyAppDataHex: boolean,
-  fullAppData?: string
+  fullAppData?: string,
 ): Promise<{ decodedAppData?: void | AnyAppDataDocVersion; isError: boolean }> {
   // If the full appData is available, we try to parse it as JSON
   if (fullAppData) {
@@ -82,7 +82,7 @@ const DecodeAppData = (props: Props): React.ReactNode => {
         } else {
           setDecodedAppData(decodedAppData)
         }
-      } catch (e) {
+      } catch {
         setDecodedAppData(undefined)
         setAppDataError(true)
       } finally {
@@ -99,7 +99,7 @@ const DecodeAppData = (props: Props): React.ReactNode => {
       setShowDecodedAppData,
       showDecodedAppData,
       isLegacyAppDataHex,
-    ]
+    ],
   )
 
   useEffect(() => {

@@ -17,7 +17,7 @@ import { GAS_LIMIT_DEFAULT } from '../constants/common'
 export async function estimateApprove(
   tokenContract: Erc20,
   spender: string,
-  amountToApprove: CurrencyAmount<Currency>
+  amountToApprove: CurrencyAmount<Currency>,
 ): Promise<{
   approveAmount: BigNumber | string
   gasLimit: BigNumber
@@ -27,7 +27,7 @@ export async function estimateApprove(
       approveAmount: MaxUint256,
       gasLimit: await tokenContract.estimateGas.approve(spender, MaxUint256),
     }
-  } catch (e: any) {
+  } catch {
     // Fallback: Attempt to set an approval for the maximum wallet balance (instead of the MaxUint256).
     // Some tokens revert if you try to use more than what you have.
     try {
@@ -41,7 +41,7 @@ export async function estimateApprove(
       console.error(
         '[useApproveCallbackMod] Error estimating gas for approval. Using default gas limit ' +
           GAS_LIMIT_DEFAULT.toString(),
-        error
+        error,
       )
 
       return {
@@ -54,7 +54,7 @@ export async function estimateApprove(
 
 export function useApproveCallback(
   amountToApprove?: CurrencyAmount<Currency>,
-  spender?: string
+  spender?: string,
 ): (summary?: string) => Promise<TransactionResponse | undefined> {
   const { chainId } = useWalletInfo()
   const currency = amountToApprove?.currency

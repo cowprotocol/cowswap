@@ -28,14 +28,14 @@ export type GetOrderApi<T, R> = {
 export async function tryGetOrderOnAllNetworksAndEnvironments<TypeOrderResult>(
   networkId: Network,
   getOrderApi: GetOrderApi<GetOrderParams, TypeOrderResult> | GetOrderApi<GetTxOrdersParams, TypeOrderResult>,
-  networkIdSearchListRemaining: Network[] = ALL_SUPPORTED_CHAIN_IDS
+  networkIdSearchListRemaining: Network[] = ALL_SUPPORTED_CHAIN_IDS,
 ): Promise<GetOrderResult<TypeOrderResult>> {
   // Get order
   let order: TypeOrderResult | null = null
   try {
     // TODO: fix type
     order = await getOrderApi.api({ ...getOrderApi.defaultParams, networkId } as never)
-  } catch (error) {
+  } catch {
     console.log('Order not found', { ...getOrderApi.defaultParams, networkId })
   }
 
@@ -54,7 +54,7 @@ export async function tryGetOrderOnAllNetworksAndEnvironments<TypeOrderResult>(
     let order: TypeOrderResult | null = null
     try {
       order = await getOrderApi.api({ ...getOrderApi.defaultParams, networkId: currentNetworkId } as never)
-    } catch (error) {
+    } catch {
       console.log('Order not found', { ...getOrderApi.defaultParams, networkId: currentNetworkId })
     }
 

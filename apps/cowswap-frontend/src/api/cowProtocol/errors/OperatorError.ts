@@ -102,7 +102,7 @@ function _mapActionToErrorDetail(action?: ApiActionType) {
       return ApiErrorCodeDetails.UNHANDLED_DELETE_ERROR
     default:
       console.error(
-        '[OperatorError::_mapActionToErrorDetails] Uncaught error mapping error action type to server error. Please try again later.'
+        '[OperatorError::_mapActionToErrorDetails] Uncaught error mapping error action type to server error. Please try again later.',
       )
       return 'Something failed. Please try again later.'
   }
@@ -127,7 +127,7 @@ export default class OperatorError extends Error {
         console.error('Unknown reason for bad order submission', orderPostError)
         return orderPostError.description
       }
-    } catch (error: any) {
+    } catch {
       console.error('Error handling a 400 error. Likely a problem deserialising the JSON response')
       return _mapActionToErrorDetail(action)
     }
@@ -152,7 +152,7 @@ export default class OperatorError extends Error {
           `[OperatorError::getErrorFromStatusCode] Error ${
             action === 'create' ? 'creating' : 'cancelling'
           } the order, status code:`,
-          statusCode || 'unknown'
+          statusCode || 'unknown',
         )
         return `Error ${action === 'create' ? 'creating' : 'cancelling'} the order`
     }
