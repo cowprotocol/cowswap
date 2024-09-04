@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 import ICON_ARROW_DOWN from '@cowprotocol/assets/images/carret-down.svg'
 import { Media, UI } from '@cowprotocol/ui'
 
@@ -8,10 +10,7 @@ import { AirdropOption } from '../constants'
 
 interface DropdownParams {
   airdropOptions: AirdropOption[]
-  dropdownText: string
-  showDropdown: boolean
-  setShowDropdown: React.Dispatch<boolean>
-  handleSelectAirdrop: (airdrop: AirdropOption) => void
+  setSelectedAirdrop: (airdrop: AirdropOption) => void
 }
 
 export const Dropdown = styled.div`
@@ -93,18 +92,22 @@ export const SelectButton = styled.div`
     color: #000000;
   }
 `
+const dropdownInitialText = 'Select your airdrop'
 
-export function DropDownMenu({
-  airdropOptions,
-  dropdownText,
-  showDropdown,
-  setShowDropdown,
-  handleSelectAirdrop,
-}: DropdownParams) {
+export function DropDownMenu({ airdropOptions, setSelectedAirdrop }: DropdownParams) {
+  const [dropDownText, setDropDownText] = useState(dropdownInitialText)
+  const [showDropdown, setShowDropdown] = useState(false)
+
+  function handleSelectAirdrop(airdrop: AirdropOption) {
+    setSelectedAirdrop(airdrop)
+    setDropDownText(airdrop.name)
+    setShowDropdown(false)
+  }
+
   return (
     <Dropdown>
       <DropdownButton onClick={() => setShowDropdown(!showDropdown)}>
-        {dropdownText}
+        {dropDownText}
         <SVG src={ICON_ARROW_DOWN} />
       </DropdownButton>
       {showDropdown && (

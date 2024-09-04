@@ -22,8 +22,6 @@ const DESCRIPTION = 'Claim an aidrop before swapping!'
 const IMAGE_URL =
   'https://static.vecteezy.com/system/resources/previews/017/317/302/original/an-icon-of-medical-airdrop-editable-and-easy-to-use-vector.jpg'
 
-const dropdownInitialText = 'Select your airdrop'
-
 export const PRE_AIRDROP: HookDappInternal = {
   name: NAME,
   description: DESCRIPTION,
@@ -41,9 +39,7 @@ export function AirdropHookApp() {
     callData: 'test',
     gasLimit: 'test',
   })
-  const [showDropdown, setShowDropdown] = useState(false)
   const [selectedAirdrop, setSelectedAirdrop] = useState<AirdropOption>()
-  const [dropDownText, setDropDownText] = useState(dropdownInitialText)
   const { data: claimData, isLoading, error } = usePreviewClaimableTokens(selectedAirdrop)
   const [message, setMessage] = useState('')
   const { account } = useWalletInfo()
@@ -63,12 +59,6 @@ export function AirdropHookApp() {
       true
     )
   }, [hook, hookDappContext])
-
-  async function handleSelectAirdrop(airdrop: AirdropOption) {
-    setSelectedAirdrop(airdrop)
-    setDropDownText(airdrop.name)
-    setShowDropdown(false)
-  }
 
   const canClaim = claimData?.amount && !claimData?.isClaimed
 
@@ -105,13 +95,7 @@ export function AirdropHookApp() {
       </Header>
       <ContentWrapper>
         <Row>
-          <DropDownMenu
-            airdropOptions={AIRDROP_OPTIONS}
-            dropdownText={dropDownText}
-            showDropdown={showDropdown}
-            setShowDropdown={setShowDropdown}
-            handleSelectAirdrop={handleSelectAirdrop}
-          />
+          <DropDownMenu airdropOptions={AIRDROP_OPTIONS} setSelectedAirdrop={setSelectedAirdrop} />
         </Row>
         {selectedAirdrop && <Row>{message}</Row>}
       </ContentWrapper>
