@@ -49,8 +49,8 @@ export function RowSlippage({
       slippageTooltip,
       displaySlippage: `${formatPercent(allowedSlippage)}%`,
       isSmartSlippageApplied,
-      smartSlippage: smartSwapSlippage ? `${formatPercent(new Percent(smartSwapSlippage, 10_000))}%` : undefined,
-      setAutoSlippage: smartSwapSlippage ? () => setSlippage(null) : undefined,
+      smartSlippage: smartSwapSlippage && !isEoaEthFlow ? `${formatPercent(new Percent(smartSwapSlippage, 10_000))}%` : undefined,
+      setAutoSlippage: smartSwapSlippage && !isEoaEthFlow ? () => setSlippage(null) : undefined,
     }),
     [chainId, isEoaEthFlow, nativeCurrency.symbol, showSettingOnClick, allowedSlippage, slippageLabel, slippageTooltip, smartSwapSlippage, isSmartSlippageApplied]
   )
