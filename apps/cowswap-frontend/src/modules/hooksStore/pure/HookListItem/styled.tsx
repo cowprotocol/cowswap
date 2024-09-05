@@ -10,10 +10,11 @@ export const HookDappListItem = styled.li<{ isDescriptionView?: boolean }>`
   justify-content: space-between;
   position: relative;
   gap: 16px;
+  border: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
   border-radius: ${({ isDescriptionView }) => (isDescriptionView ? '0' : '16px')};
   padding: ${({ isDescriptionView }) => (isDescriptionView ? '0' : '16px 10px')};
   transition: all 0.2s ease-in-out;
-  margin: 0 0 auto;
+  margin-bottom: 16px;
 
   &:hover {
     background: ${({ isDescriptionView }) =>

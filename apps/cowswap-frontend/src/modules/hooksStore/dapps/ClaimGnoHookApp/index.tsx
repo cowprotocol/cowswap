@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
-import gnoLogo from '@cowprotocol/assets/cow-swap/network-gnosis-chain-logo.svg'
 import { HookDappProps } from '@cowprotocol/types'
 import { ButtonPrimary } from '@cowprotocol/ui'
 import { BigNumber } from '@ethersproject/bignumber'
@@ -8,7 +7,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { formatUnits } from 'ethers/lib/utils'
 
 import { SBC_DEPOSIT_CONTRACT_ADDRESS } from './const'
-import { Amount, ContentWrapper, ErrorLabel, Header, Label, Link, LoadingLabel, Wrapper } from './styled'
+import { Amount, ContentWrapper, ErrorLabel, Label, LoadingLabel, Wrapper } from './styled'
 import { useSBCDepositContract } from './useSBCDepositContract'
 
 /**
@@ -18,7 +17,7 @@ import { useSBCDepositContract } from './useSBCDepositContract'
  *    - Proxy: 0x0B98057eA310F4d31F2a452B414647007d1645d9 (https://gnosisscan.io/address/0x0B98057eA310F4d31F2a452B414647007d1645d9#readProxyContract)
  *    - Master: 0x4fef25519256e24a1fc536f7677152da742fe3ef
  */
-export function ClaimGnoHookApp({ dapp, context }: HookDappProps) {
+export function ClaimGnoHookApp({ context }: HookDappProps) {
   const SbcDepositContract = useSBCDepositContract()
   const [claimable, setClaimable] = useState<BigNumber | undefined>(undefined)
   const [gasLimit, setGasLimit] = useState<BigNumber | undefined>(undefined)
@@ -80,22 +79,10 @@ export function ClaimGnoHookApp({ dapp, context }: HookDappProps) {
 
   return (
     <Wrapper>
-      <Header>
-        <img src={gnoLogo} alt={dapp.name} width="60" />
-        <p>{dapp.description}</p>
-      </Header>
       <ContentWrapper>
         <ClaimableAmount loading={loading} claimable={claimable} error={error} />
       </ContentWrapper>
-      {claimable && !error && <ButtonPrimary onClick={clickOnAddHook}>+Add Pre-hook</ButtonPrimary>}
-      <Link
-        onClick={(e) => {
-          e.preventDefault()
-          context.close()
-        }}
-      >
-        Close
-      </Link>
+      {claimable && !error && <ButtonPrimary onClick={clickOnAddHook}>Add Pre-hook</ButtonPrimary>}
     </Wrapper>
   )
 }

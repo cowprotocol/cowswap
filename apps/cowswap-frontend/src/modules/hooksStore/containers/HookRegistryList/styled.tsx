@@ -1,3 +1,5 @@
+import { UI } from '@cowprotocol/ui'
+
 import styled from 'styled-components/macro'
 import { WIDGET_MAX_WIDTH } from 'theme'
 
@@ -11,19 +13,22 @@ export const Wrapper = styled.div`
 export const HookDappsList = styled.ul`
   list-style: none;
   padding: 0;
-  margin: 10px 0 0 0;
-
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  align-items: stretch;
+  margin: 16px 0 0 0;
   flex: 1;
+`
 
-  img {
-    width: 120px;
-    max-height: 120px;
-    height: 100%;
-    cursor: pointer;
+export const DappInfoHeader = styled.div`
+  display: flex;
+  padding: 10px 0 20px 0;
+  margin-top: 10px;
+  border-bottom: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
+  align-items: center;
+
+  p {
+    padding: 0 1em;
+  }
+
+  > img {
+    width: 60px;
   }
 `

@@ -5,7 +5,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { NewModal } from 'common/pure/NewModal'
 
-import { HookDappsList, Wrapper } from './styled'
+import { DappInfoHeader, HookDappsList, Wrapper } from './styled'
 
 import { POST_HOOK_REGISTRY, PRE_HOOK_REGISTRY } from '../../hookRegistry'
 import { HookDappDetails } from '../../pure/HookDappDetails'
@@ -47,12 +47,18 @@ export function HookRegistryList({ onDismiss, isPreHook }: HookStoreModal) {
         {(() => {
           if (selectedDapp) {
             return (
-              <HookDappContainer
-                isPreHook={isPreHook}
-                onDismiss={onDismiss}
-                onDismissModal={onDismissModal}
-                dapp={selectedDapp}
-              />
+              <>
+                <DappInfoHeader>
+                  <img src={selectedDapp.image} alt={selectedDapp.name} />
+                  <p>{selectedDapp.description}</p>
+                </DappInfoHeader>
+                <HookDappContainer
+                  isPreHook={isPreHook}
+                  onDismiss={onDismiss}
+                  onDismissModal={onDismissModal}
+                  dapp={selectedDapp}
+                />
+              </>
             )
           }
 
