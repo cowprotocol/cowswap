@@ -5,12 +5,26 @@ import { ButtonPrimary } from '@cowprotocol/ui'
 
 import { ContentWrapper, Row, Wrapper } from './styled'
 
+const DEFAULT_HOOK_STATE = {
+  target: '',
+  callData: '',
+  gasLimit: '',
+}
+
 export function BuildHookApp({ isPreHook, context }: HookDappProps) {
-  const [hook, setHook] = useState<CowHook>({
-    target: '',
-    callData: '',
-    gasLimit: '',
-  })
+  const hookToEdit = context.hookToEdit
+  const [hook, setHook] = useState<CowHook>(hookToEdit?.hook || DEFAULT_HOOK_STATE)
+
+  const onEditHook = useCallback(() => {
+    if (!hookToEdit) return
+
+    const { callData, gasLimit, target } = hook
+    if (!callData || !gasLimit || !target) {
+      return
+    }
+
+    context.editHook(hookToEdit.uuid, hook, isPreHook)
+  }, [hook, context, hookToEdit, isPreHook])
 
   const clickOnAddHook = useCallback(() => {
     const { callData, gasLimit, target } = hook
@@ -56,7 +70,11 @@ export function BuildHookApp({ isPreHook, context }: HookDappProps) {
           </div>
         </Row>
       </ContentWrapper>
-      <ButtonPrimary onClick={clickOnAddHook}>Add {isPreHook ? 'Pre' : 'Post'}-hook</ButtonPrimary>
+      {hookToEdit ? (
+        <ButtonPrimary onClick={onEditHook}>Save changes</ButtonPrimary>
+      ) : (
+        <ButtonPrimary onClick={clickOnAddHook}>Add {isPreHook ? 'Pre' : 'Post'}-hook</ButtonPrimary>
+      )}
     </Wrapper>
   )
 }

@@ -13,22 +13,25 @@ import { HookTooltip } from '../../pure/HookTooltip'
 import { hooksAtom } from '../../state/hookDetailsAtom'
 export interface PreHookButtonProps {
   onOpen(): void
+  onEditHook(uuid: string): void
 }
 
-export function PreHookButton({ onOpen }: PreHookButtonProps) {
+export function PreHookButton({ onOpen, onEditHook }: PreHookButtonProps) {
   const { account } = useWalletInfo()
-  const hooks = useAtomValue(hooksAtom)
+  const { preHooks } = useAtomValue(hooksAtom)
   const removeHook = useRemoveHook()
+
   return (
     <>
-      {hooks.preHooks.length > 0 && (
+      {preHooks.length > 0 && (
         <styledEl.HookList>
-          {hooks.preHooks.map((hookDetails, index) => (
+          {preHooks.map((hookDetails, index) => (
             <AppliedHookItem
               key={index}
               account={account}
               hookDetails={hookDetails}
               removeHook={removeHook}
+              editHook={onEditHook}
               isPreHook
             />
           ))}

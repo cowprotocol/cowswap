@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { Command, HookDapp } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -8,6 +8,7 @@ import { NewModal } from 'common/pure/NewModal'
 import { DappInfoHeader, HookDappsList, Wrapper } from './styled'
 
 import { POST_HOOK_REGISTRY, PRE_HOOK_REGISTRY } from '../../hookRegistry'
+import { useHookById } from '../../hooks/useHookById'
 import { HookDappDetails } from '../../pure/HookDappDetails'
 import { HookListItem } from '../../pure/HookListItem'
 import { HookDappContainer } from '../HookDappContainer'
@@ -15,13 +16,15 @@ import { HookDappContainer } from '../HookDappContainer'
 interface HookStoreModal {
   onDismiss: Command
   isPreHook: boolean
+  hookToEdit?: string
 }
 
-export function HookRegistryList({ onDismiss, isPreHook }: HookStoreModal) {
+export function HookRegistryList({ onDismiss, isPreHook, hookToEdit }: HookStoreModal) {
   const { chainId } = useWalletInfo()
   const [selectedDapp, setSelectedDapp] = useState<HookDapp | null>(null)
   const [dappDetails, setDappDetails] = useState<HookDapp | null>(null)
 
+  const hookToEditDetails = useHookById(hookToEdit, isPreHook)
   const dapps = isPreHook ? PRE_HOOK_REGISTRY[chainId] : POST_HOOK_REGISTRY[chainId]
 
   const title = useMemo(() => {
@@ -32,6 +35,12 @@ export function HookRegistryList({ onDismiss, isPreHook }: HookStoreModal) {
   }, [selectedDapp, dappDetails])
 
   const onDismissModal = useCallback(() => {
+    if (hookToEdit) {
+      setSelectedDapp(null)
+      onDismiss()
+      return
+    }
+
     if (dappDetails) {
       setDappDetails(null)
     } else if (selectedDapp) {
@@ -39,7 +48,15 @@ export function HookRegistryList({ onDismiss, isPreHook }: HookStoreModal) {
     } else {
       onDismiss()
     }
-  }, [onDismiss, selectedDapp, dappDetails])
+  }, [onDismiss, selectedDapp, dappDetails, hookToEdit])
+
+  useEffect(() => {
+    if (!hookToEditDetails) {
+      setSelectedDapp(null)
+    } else {
+      setSelectedDapp(dapps.find((i) => i.name === hookToEditDetails.dapp.name) || null)
+    }
+  }, [hookToEditDetails, dapps])
 
   return (
     <Wrapper>
@@ -57,6 +74,7 @@ export function HookRegistryList({ onDismiss, isPreHook }: HookStoreModal) {
                   onDismiss={onDismiss}
                   onDismissModal={onDismissModal}
                   dapp={selectedDapp}
+                  hookToEdit={hookToEdit}
                 />
               </>
             )

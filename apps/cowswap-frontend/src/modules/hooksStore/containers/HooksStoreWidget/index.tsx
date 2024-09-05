@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 
 import ICON_HOOK from '@cowprotocol/assets/cow-swap/hook.svg'
 import { BannerOrientation, InlineBanner } from '@cowprotocol/ui'
@@ -12,11 +12,25 @@ type HookPosition = 'pre' | 'post'
 
 export function HooksStoreWidget() {
   const [selectedHookPosition, setSelectedHookPosition] = useState<HookPosition | null>(null)
+  const [hookToEdit, setHookToEdit] = useState<string | undefined>(undefined)
 
-  if (selectedHookPosition) {
-    return (
-      <HookRegistryList onDismiss={() => setSelectedHookPosition(null)} isPreHook={selectedHookPosition === 'pre'} />
-    )
+  const onDismiss = useCallback(() => {
+    setSelectedHookPosition(null)
+    setHookToEdit(undefined)
+  }, [])
+
+  const onPreHookEdit = useCallback((uuid: string) => {
+    setSelectedHookPosition('pre')
+    setHookToEdit(uuid)
+  }, [])
+
+  const onPostHookEdit = useCallback((uuid: string) => {
+    setSelectedHookPosition('post')
+    setHookToEdit(uuid)
+  }, [])
+
+  if (selectedHookPosition || hookToEdit) {
+    return <HookRegistryList onDismiss={onDismiss} hookToEdit={hookToEdit} isPreHook={selectedHookPosition === 'pre'} />
   }
 
   const TopContent = (
@@ -29,14 +43,14 @@ export function HooksStoreWidget() {
           </a>
         </p>
       </InlineBanner>
-      <PreHookButton onOpen={() => setSelectedHookPosition('pre')} />
+      <PreHookButton onOpen={() => setSelectedHookPosition('pre')} onEditHook={onPreHookEdit} />
     </>
   )
 
   return (
     <SwapWidget
       topContent={TopContent}
-      bottomContent={<PostHookButton onOpen={() => setSelectedHookPosition('post')} />}
+      bottomContent={<PostHookButton onOpen={() => setSelectedHookPosition('post')} onEditHook={onPostHookEdit} />}
     />
   )
 }
