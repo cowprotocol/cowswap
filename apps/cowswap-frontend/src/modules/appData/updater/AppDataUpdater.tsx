@@ -15,10 +15,11 @@ import { AppDataOrderClass } from '../types'
 
 interface AppDataUpdaterProps {
   slippageBips: number
+  isSmartSlippage?: boolean
   orderClass: AppDataOrderClass
 }
 
-export const AppDataUpdater = React.memo(({ slippageBips, orderClass }: AppDataUpdaterProps) => {
+export const AppDataUpdater = React.memo(({ slippageBips, isSmartSlippage, orderClass }: AppDataUpdaterProps) => {
   const { chainId } = useWalletInfo()
 
   const appCode = useAppCode()
@@ -35,6 +36,7 @@ export const AppDataUpdater = React.memo(({ slippageBips, orderClass }: AppDataU
       appCodeWithWidgetMetadata={appCodeWithWidgetMetadata}
       chainId={chainId}
       slippageBips={slippageBips}
+      isSmartSlippage={isSmartSlippage}
       orderClass={orderClass}
       utm={utm}
       typedHooks={typedHooks}
