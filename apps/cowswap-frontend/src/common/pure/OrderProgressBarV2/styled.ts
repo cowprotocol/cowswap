@@ -169,6 +169,11 @@ export const ProgressImageWrapper = styled.div<{ bgColor?: string; padding?: str
   position: relative;
   overflow: hidden;
 
+  ${Media.upToSmall()} {
+    min-height: auto;
+    height: auto;
+  }
+
   > img,
   > svg {
     --size: 100%;
@@ -202,6 +207,10 @@ export const ProgressTopSection = styled.div`
   border-radius: 21px;
   background: var(${UI.COLOR_PAPER_DARKER});
   min-height: 230px;
+
+  ${Media.upToSmall()} {
+    min-height: auto;
+  }
 `
 
 export const OriginalOrderIntent = styled.span`
@@ -240,8 +249,14 @@ export const AnimatedTokensWrapper = styled.div`
   overflow: hidden;
 `
 
-export const TokenWrapper = styled.div<{ position: 'left' | 'center' | 'right'; bgColor?: string }>`
-  --size: 136px;
+export const TokenWrapper = styled.div<{
+  position: 'left' | 'center' | 'right'
+  bgColor?: string
+  size: number
+  sizeMobile: number
+}>`
+  --size: ${({ size }) => (size ? `${size}px` : '136px')};
+  --sizeMobile: ${({ sizeMobile }) => (sizeMobile ? `${sizeMobile}px` : 'var(--size)')};
   width: var(--size);
   height: var(--size);
   border-radius: var(--size);
@@ -260,6 +275,12 @@ export const TokenWrapper = styled.div<{ position: 'left' | 'center' | 'right'; 
   background: ${({ position, bgColor }) =>
     position === 'right' ? bgColor || `var(${UI.COLOR_PRIMARY})` : 'transparent'};
 
+  ${Media.upToSmall()} {
+    height: var(--sizeMobile);
+    width: var(--sizeMobile);
+    border-radius: var(--sizeMobile);
+  }
+
   ${({ position }) =>
     position === 'right' &&
     css`
@@ -274,22 +295,36 @@ export const TokenWrapper = styled.div<{ position: 'left' | 'center' | 'right'; 
         background: url(${IMAGE_STAR_SHINE}) no-repeat;
         background-size: 100% 100%;
         animation: star-shine 1s infinite;
+
+        ${Media.upToSmall()} {
+          --size: 18px;
+        }
       }
     `}
 
-  > span {
-    padding: ${({ position }) => (position === 'right' ? '45px 40px 34px' : '0')};
-  }
-
   @keyframes appear-left {
     to {
-      transform: translateX(-68px);
+      transform: translateX(calc(var(--size) / -2));
     }
   }
 
   @keyframes appear-right {
     to {
-      transform: translateX(68px);
+      transform: translateX(calc(var(--size) / 2));
+    }
+  }
+
+  ${Media.upToSmall()} {
+    @keyframes appear-left {
+      to {
+        transform: translateX(calc(var(--sizeMobile) / -2));
+      }
+    }
+
+    @keyframes appear-right {
+      to {
+        transform: translateX(calc(var(--sizeMobile) / 2));
+      }
     }
   }
 `
