@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.11.0...cow-fi-v1.12.0) (2024-09-03)
+
+
+### Features
+
+* **cow-fi:** change greenhouse to ashbyhq ([#4849](https://github.com/cowprotocol/cowswap/issues/4849)) ([73ff905](https://github.com/cowprotocol/cowswap/commit/73ff905b3b206a440b07afc0d5d7edff6297bcd1))
+
 ## [1.11.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.10.0...cow-fi-v1.11.0) (2024-08-27)
 
 

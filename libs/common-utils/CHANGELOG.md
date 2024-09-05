@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.1](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.7.0...common-utils-v1.7.1) (2024-09-05)
+
+
+### Bug Fixes
+
+* **twap:** don't crash when slippage is 100 ([#4845](https://github.com/cowprotocol/cowswap/issues/4845)) ([f2f092c](https://github.com/cowprotocol/cowswap/commit/f2f092c66050b7fd9f5e7d56cf71d921c974af12))
+
 ## [1.7.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.6.1...common-utils-v1.7.0) (2024-08-27)
 
 
