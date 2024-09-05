@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.10.1](https://github.com/cowprotocol/cowswap/compare/widget-react-v0.10.0...widget-react-v0.10.1) (2024-09-05)
+
+
+### Bug Fixes
+
+* **widget-react:** fix @cowprotocol/widget-lib build export path ([#4839](https://github.com/cowprotocol/cowswap/issues/4839)) ([2b56673](https://github.com/cowprotocol/cowswap/commit/2b566737e603aeca7f278c059c892f6cc6fe539d))
+
 ## [0.10.0](https://github.com/cowprotocol/cowswap/compare/widget-react-v0.9.0...widget-react-v0.10.0) (2024-08-28)
 
 
