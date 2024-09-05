@@ -45,7 +45,7 @@ export function UsdPricesUpdater() {
 
       return processQueue(queue, getUsdcPrice)
     },
-    swrOptions
+    swrOptions,
   )
 
   useEffect(() => {
@@ -76,7 +76,7 @@ function usdcPriceLoader(chainId: SupportedChainId): () => Promise<Fraction | nu
     }
 
     return usdcPricePromise.then((usdcPrice) =>
-      typeof usdcPrice === 'number' ? FractionUtils.fromNumber(usdcPrice) : null
+      typeof usdcPrice === 'number' ? FractionUtils.fromNumber(usdcPrice) : null,
     )
   }
 }
@@ -99,12 +99,12 @@ async function processQueue(queue: Token[], getUsdcPrice: () => Promise<Fraction
           state.price = price
           state.updatedAt = Date.now()
         }
-      } catch (e) {
+      } catch {
         console.debug(`[UsdPricesUpdater]: Failed to fetch price for`, currency.symbol)
       }
 
       return { [currency.address.toLowerCase()]: state }
-    })
+    }),
   )
 
   return results.reduce<UsdRawPrices>((acc, result) => ({ ...acc, ...result }), {})

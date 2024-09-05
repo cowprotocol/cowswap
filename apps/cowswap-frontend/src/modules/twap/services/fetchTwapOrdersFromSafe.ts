@@ -26,7 +26,7 @@ export async function fetchTwapOrdersFromSafe(
    * https://safe-transaction-goerli.safe.global/api/v1/safes/0xe9B79591E270B3bCd0CC7e84f7B7De74BA3D0E2F/all-transactions/?executed=false&limit=20&offset=40&queued=true&trusted=true
    */
   nextUrl?: string,
-  accumulator: TwapOrdersSafeData[][] = []
+  accumulator: TwapOrdersSafeData[][] = [],
 ): Promise<TwapOrdersSafeData[]> {
   const response = await fetchSafeTransactionsChunk(safeAddress, safeApiKit, nextUrl)
 
@@ -46,7 +46,7 @@ export async function fetchTwapOrdersFromSafe(
 async function fetchSafeTransactionsChunk(
   safeAddress: string,
   safeApiKit: SafeApiKit,
-  nextUrl?: string
+  nextUrl?: string,
 ): Promise<AllTransactionsListResponse> {
   if (nextUrl) {
     try {
@@ -68,7 +68,7 @@ async function fetchSafeTransactionsChunk(
 function parseSafeTranasctionsResult(
   safeAddress: string,
   composableCowContract: ComposableCoW,
-  results: AllTransactionsListResponse['results']
+  results: AllTransactionsListResponse['results'],
 ): TwapOrdersSafeData[] {
   return results
     .map<TwapOrdersSafeData | null>((result) => {
@@ -101,14 +101,14 @@ function isSafeMultisigTransactionListResponse(response: any): response is SafeM
 function parseConditionalOrderParams(
   safeAddress: string,
   composableCowContract: ComposableCoW,
-  callData: string
+  callData: string,
 ): ConditionalOrderParams | null {
   try {
     const _result = composableCowContract.interface.decodeFunctionData('createWithContext', callData)
     const { params } = _result as any as { params: ConditionalOrderParams }
 
     return { handler: params.handler, salt: params.salt, staticInput: params.staticInput }
-  } catch (e) {
+  } catch {
     return null
   }
 }

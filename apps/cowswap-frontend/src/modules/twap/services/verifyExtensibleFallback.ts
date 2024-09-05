@@ -14,7 +14,7 @@ export enum ExtensibleFallbackVerification {
  * The function verifies if a safe has ExtensibleFallback and contains ComposableCow contract as domain verifier
  */
 export async function verifyExtensibleFallback(
-  context: ExtensibleFallbackContext
+  context: ExtensibleFallbackContext,
 ): Promise<ExtensibleFallbackVerification> {
   const { chainId, safeAddress, settlementContract } = context
   const composableCowContractAddress = COMPOSABLE_COW_ADDRESS[chainId]
@@ -30,7 +30,7 @@ export async function verifyExtensibleFallback(
     }
 
     return ExtensibleFallbackVerification.HAS_EXTENSIBLE_FALLBACK
-  } catch (e) {
+  } catch {
     return ExtensibleFallbackVerification.HAS_NOTHING
   }
 }
