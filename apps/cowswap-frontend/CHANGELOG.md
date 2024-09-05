@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.81.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.81.1...cowswap-v1.81.2) (2024-09-05)
+
+
+### Bug Fixes
+
+* **progress-bar:** fix styling issues ([#4841](https://github.com/cowprotocol/cowswap/issues/4841)) ([083d489](https://github.com/cowprotocol/cowswap/commit/083d489198033516d58e769075707d42e4fcaedc))
+* **twap:** display relevant price after slippage ([#4844](https://github.com/cowprotocol/cowswap/issues/4844)) ([14064c0](https://github.com/cowprotocol/cowswap/commit/14064c0a8ebc9bbf7ca42edaec1e7311c1dfa641))
+* **twap:** don't crash when slippage is 100 ([#4845](https://github.com/cowprotocol/cowswap/issues/4845)) ([f2f092c](https://github.com/cowprotocol/cowswap/commit/f2f092c66050b7fd9f5e7d56cf71d921c974af12))
+
 ## [1.81.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.81.0...cowswap-v1.81.1) (2024-08-29)
 
 
