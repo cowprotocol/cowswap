@@ -1,4 +1,5 @@
-import React from 'react'
+
+import { percentToBps } from '@cowprotocol/common-utils'
 
 import { AppDataUpdater } from '../../../appData'
 import { useSwapSlippage } from '../../hooks/useSwapSlippage'
@@ -11,7 +12,7 @@ export function SwapUpdaters() {
 
   return (
     <>
-      <AppDataUpdater orderClass="market" slippage={slippage} />
+      <AppDataUpdater orderClass="market" slippageBips={percentToBps(slippage)} />
       <SwapDerivedStateUpdater />
       <SwapAmountsFromUrlUpdater />
       <SmartSlippageUpdater />
