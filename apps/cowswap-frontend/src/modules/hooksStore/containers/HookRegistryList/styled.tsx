@@ -11,8 +11,9 @@ export const Wrapper = styled.div`
 export const HookDappsList = styled.ul`
   list-style: none;
   padding: 0;
-  margin: 10px 0 0 0;
-
+  margin: 10px 0;
+  gap: 8px;
+  width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;

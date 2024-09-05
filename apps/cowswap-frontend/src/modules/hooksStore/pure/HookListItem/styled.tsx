@@ -2,6 +2,32 @@ import { UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
+
+export const LinkButton = styled.button`
+  display: flex;
+  cursor: pointer;
+  background: var(${UI.COLOR_PRIMARY});
+  color: var(${UI.COLOR_PAPER});
+  border: none;
+  outline: none;
+  font-weight: 600;
+  font-size: 16px;
+  text-decoration: none;
+  padding: 11px;
+  line-height: 1;
+  display: block;
+  margin: 0;
+  border-radius: 21px;
+  min-width: 84px;
+  justify-content: center;
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    background: var(${UI.COLOR_PRIMARY_DARKEST});
+  }
+`
+
+
 export const HookDappListItem = styled.li<{ isDescriptionView?: boolean }>`
   width: 100%;
   background: transparent;
@@ -12,12 +38,16 @@ export const HookDappListItem = styled.li<{ isDescriptionView?: boolean }>`
   gap: 16px;
   border-radius: ${({ isDescriptionView }) => (isDescriptionView ? '0' : '16px')};
   padding: ${({ isDescriptionView }) => (isDescriptionView ? '0' : '16px 10px')};
+  border: 1px solid var(${UI.COLOR_PRIMARY_OPACITY_10});
   transition: all 0.2s ease-in-out;
   margin: 0 0 auto;
-
+  cursor: pointer;
   &:hover {
     background: ${({ isDescriptionView }) =>
       isDescriptionView ? 'transparent' : `var(${UI.COLOR_PRIMARY_OPACITY_10})`};
+    border: 1px solid transparent;
+
+ 
   }
 
   > img,
@@ -32,12 +62,14 @@ export const HookDappListItem = styled.li<{ isDescriptionView?: boolean }>`
     overflow: hidden;
     background-color: var(${UI.COLOR_PAPER_DARKER});
     padding: 10px;
+ 
   }
 
   > span {
     display: flex;
     flex-flow: column wrap;
     align-items: center;
+    justify-content: center;
     gap: 8px;
 
     > i {
@@ -45,7 +77,7 @@ export const HookDappListItem = styled.li<{ isDescriptionView?: boolean }>`
       display: flex;
       align-items: center;
       gap: 3px;
-      cursor: pointer;
+ 
       transition: all 0.2s ease-in-out;
       font-style: normal;
       color: var(${UI.COLOR_TEXT_OPACITY_50});
@@ -67,6 +99,8 @@ export const HookDappListItem = styled.li<{ isDescriptionView?: boolean }>`
       }
     }
   }
+
+
 `
 
 export const HookDappDetails = styled.div<{ isDescriptionView?: boolean }>`
@@ -84,6 +118,7 @@ export const HookDappDetails = styled.div<{ isDescriptionView?: boolean }>`
     font-weight: 600;
     margin: 0;
     line-height: 1;
+    cursor: pointer;
   }
 
   > h3 > i {
@@ -140,30 +175,4 @@ export const Version = styled.div<{ isDescriptionView?: boolean }>`
   margin: 10px 0 0;
   font-size: 12px;
   text-align: ${({ isDescriptionView }) => (isDescriptionView ? 'center' : 'left')};
-`
-
-export const LinkButton = styled.button`
-  display: flex;
-  cursor: pointer;
-  margin: 0;
-  background: var(${UI.COLOR_PRIMARY_OPACITY_10});
-  border: none;
-  outline: none;
-  color: inherit;
-  font-weight: 600;
-  font-size: 16px;
-  text-decoration: none;
-  padding: 11px;
-  line-height: 1;
-  display: block;
-  margin: auto 0;
-  border-radius: 21px;
-  min-width: 84px;
-  justify-content: center;
-  transition: all 0.2s ease-in-out;
-
-  &:hover {
-    background: var(${UI.COLOR_PRIMARY});
-    color: var(${UI.COLOR_PAPER});
-  }
 `

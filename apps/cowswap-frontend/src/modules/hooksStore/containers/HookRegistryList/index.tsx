@@ -57,7 +57,10 @@ export function HookRegistryList({ onDismiss, isPreHook }: HookStoreModal) {
           }
 
           if (dappDetails) {
-            return <HookDappDetails dapp={dappDetails} />
+            return <HookDappDetails 
+              dapp={dappDetails} 
+              onSelect={() => setSelectedDapp(dappDetails)}
+            />
           }
 
           return (
