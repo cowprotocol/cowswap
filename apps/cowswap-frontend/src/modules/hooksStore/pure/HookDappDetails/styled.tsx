@@ -13,7 +13,7 @@ export const Wrapper = styled.div`
 export const Header = styled.div`
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 20px;
 
   > img {
     --size: 140px;
