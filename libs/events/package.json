@@ -19,5 +19,7 @@
     "cowswap",
     "dex"
   ],
-  "dependencies": {}
+  "dependencies": {
+    "@cowprotocol/types": "^1.1.0"
+  }
 }
