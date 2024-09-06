@@ -20,6 +20,7 @@ export default defineConfig(({ mode }) => {
       dts({
         entryRoot: 'src',
         tsconfigPath: path.join(__dirname, 'tsconfig.lib.json'),
+        pathsToAliases: false,
       }),
       react(),
       viteTsConfigPaths({
