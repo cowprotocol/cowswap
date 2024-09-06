@@ -11,6 +11,7 @@ import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 import { useTradeQuote } from 'modules/tradeQuote'
 
 import { useApproveState } from 'common/hooks/useApproveState'
+
 import { TradeType } from '../../trade'
 import { TradeFormValidationCommonContext } from '../types'
 
