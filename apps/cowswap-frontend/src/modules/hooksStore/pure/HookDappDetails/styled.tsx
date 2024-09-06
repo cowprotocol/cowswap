@@ -6,8 +6,6 @@ import styled from 'styled-components/macro'
 export const Wrapper = styled.div`
   flex: 1;
   width: 100%;
-  padding: 10px;
-  margin-top: 10px;
 `
 
 export const Header = styled.div`
@@ -55,7 +53,7 @@ export const Header = styled.div`
 
 export const Body = styled.div`
   margin: 24px 0;
-  padding: 0;
+  padding: 0 10px;
   color: var(${UI.COLOR_TEXT_OPACITY_70});
   font-size: 15px;
   line-height: 1.4;
@@ -69,8 +67,9 @@ export const Body = styled.div`
 `
 
 export const Tags = styled.div`
-  margin: 32px auto 0;
+  margin: 32px auto 16px;
   font-size: 14px;
+  padding: 0 10px;
 
   h3 {
     margin: 0;
@@ -113,6 +112,7 @@ export const Tags = styled.div`
 
     &:hover {
       text-decoration: underline;
+    }
     }
   }
 `

@@ -16,9 +16,8 @@ const closableBannersStateAtom = atomWithStorage<ClosableBannersState>(
 
 export function useDismissableBanner(bannerId: string | undefined) {
   const [state, setState] = useAtom(closableBannersStateAtom)
-
   const isStateLoading = state === DEFAULT_STATE
-  const isBannerDismissed = isStateLoading ? false : !!state[bannerId]
+  const isBannerDismissed = isStateLoading ? false : !!state[bannerId as keyof ClosableBannersState]
 
   const dismissBanner = useCallback(() => {
     if (bannerId) {

@@ -3,6 +3,10 @@ import React, { useCallback, useState } from 'react'
 import ICON_HOOK from '@cowprotocol/assets/cow-swap/hook.svg'
 import { BannerOrientation, InlineBanner } from '@cowprotocol/ui'
 
+import { DndProvider } from 'react-dnd'
+import { HTML5Backend } from 'react-dnd-html5-backend'
+
+
 import { SwapWidget } from 'modules/swap'
 
 import { HookRegistryList } from '../HookRegistryList'
@@ -48,9 +52,11 @@ export function HooksStoreWidget() {
   )
 
   return (
-    <SwapWidget
-      topContent={TopContent}
-      bottomContent={<PostHookButton onOpen={() => setSelectedHookPosition('post')} onEditHook={onPostHookEdit} />}
-    />
+    <DndProvider backend={HTML5Backend}>
+      <SwapWidget
+        topContent={TopContent}
+        bottomContent={<PostHookButton onOpen={() => setSelectedHookPosition('post')} onEditHook={onPostHookEdit} />}
+      />
+    </DndProvider>
   )
 }

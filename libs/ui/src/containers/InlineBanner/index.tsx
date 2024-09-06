@@ -11,7 +11,7 @@ import { BannerOrientation } from './banners'
 import { UI } from '../../enum'
 import { Icon, IconType } from '../../pure/Icon'
 
-export type BannerType = 'alert' | 'information' | 'success' | 'Zdanger' | 'savings'
+export type BannerType = 'alert' | 'information' | 'success' | 'danger' | 'savings'
 
 interface ColorEnums {
   icon?: IconType

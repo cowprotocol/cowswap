@@ -69,20 +69,22 @@ export function ClaimGnoHookApp({ context }: HookDappProps) {
     })
   }, [callData, gasLimit, context, claimable])
 
-  if (!SbcDepositContractInterface) {
-    return 'Unsupported network. Please change to Gnosis Chain'
-  }
-
-  if (!context?.account) {
-    return 'Connect your wallet first'
-  }
-
   return (
     <Wrapper>
       <ContentWrapper>
-        <ClaimableAmount loading={loading} claimable={claimable} error={error} />
+        {!SbcDepositContractInterface ? (
+          'Unsupported network. Please change to Gnosis Chain'
+        ) : !context?.account ? (
+          'Connect your wallet first'
+        ) : (
+          <>
+            <ClaimableAmount loading={loading} claimable={claimable} error={error} />
+            {claimable && !error && (
+              <ButtonPrimary onClick={clickOnAddHook}>Add Pre-hook</ButtonPrimary>
+            )}
+          </>
+        )}
       </ContentWrapper>
-      {claimable && !error && <ButtonPrimary onClick={clickOnAddHook}>Add Pre-hook</ButtonPrimary>}
     </Wrapper>
   )
 }
@@ -98,11 +100,9 @@ function ClaimableAmount(props: { loading: boolean; error: boolean; claimable: B
   }
 
   return (
-    <>
-      <div>
-        <Label>Total claimable rewards</Label>:
-      </div>
+    <div>
+      <Label>Total claimable rewards</Label>:
       <Amount>{formatUnits(claimable, 18)} GNO</Amount>
-    </>
+    </div>
   )
 }

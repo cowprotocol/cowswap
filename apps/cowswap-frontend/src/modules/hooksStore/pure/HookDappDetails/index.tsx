@@ -4,9 +4,7 @@ import { HelpTooltip } from '@cowprotocol/ui'
 
 import * as styled from './styled'
 
-import { LinkButton } from '../HookListItem/styled'
-
-
+import { HookDetailHeader } from '../../containers/HookDetailHeader'
 
 interface HookDappDetailsProps {
   dapp: HookDapp
@@ -14,7 +12,7 @@ interface HookDappDetailsProps {
 }
 
 export function HookDappDetails({ dapp, onSelect }: HookDappDetailsProps) {
-  const { name, image, description, version, website, descriptionShort, type } = dapp
+  const {  description, version, website, type } = dapp
 
   const tags = [
     {
@@ -36,14 +34,7 @@ export function HookDappDetails({ dapp, onSelect }: HookDappDetailsProps) {
 
   return (
     <styled.Wrapper>
-      <styled.Header>
-        <img src={image} alt={name} />
-        <span>
-          <h3>{name}</h3>
-          <p>{descriptionShort}</p>
-          <LinkButton onClick={onSelect}>Add</LinkButton>
-        </span>
-      </styled.Header>
+      <HookDetailHeader dapp={dapp} onSelect={onSelect} />
       <styled.Body>
         <p>{description}</p>
       </styled.Body>

@@ -1,4 +1,6 @@
+import { useSetAtom } from 'jotai'
 import { useAtomValue } from 'jotai/index'
+import { useCallback } from 'react'
 
 import PLUS_ICON from '@cowprotocol/assets/cow-swap/plus.svg'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -21,18 +23,32 @@ export function PostHookButton({ onOpen, onEditHook }: PostHookButtonProps) {
   const { postHooks } = useAtomValue(hooksAtom)
   const removeHook = useRemoveHook()
 
+  const setHooks = useSetAtom(hooksAtom)
+
+  const moveHook = useCallback(
+    (dragIndex: number, hoverIndex: number) => {
+      const newPostHooks = [...postHooks]
+      const [removed] = newPostHooks.splice(dragIndex, 1)
+      newPostHooks.splice(hoverIndex, 0, removed)
+      setHooks((prevState: { preHooks: any[]; postHooks: any[] }) => ({ ...prevState, postHooks: newPostHooks }))
+    },
+    [postHooks, setHooks]
+  )
+
   return (
     <>
       {postHooks && (
         <styledEl.HookList>
           {postHooks.map((hook, index) => (
             <AppliedHookItem
-              key={index}
+              key={hook.uuid}
               account={account}
               hookDetails={hook}
               removeHook={removeHook}
               editHook={onEditHook}
               isPreHook={false}
+              index={index}
+              moveHook={moveHook}
             />
           ))}
         </styledEl.HookList>
