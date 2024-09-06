@@ -1,8 +1,8 @@
 import { ReactNode } from 'react'
 
-import { latest } from '@cowprotocol/app-data'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import type { latest } from '@cowprotocol/app-data'
+import type { SupportedChainId } from '@cowprotocol/cow-sdk'
+import type { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Command } from './common'
 
