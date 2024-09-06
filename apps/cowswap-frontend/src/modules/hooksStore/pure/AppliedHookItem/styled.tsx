@@ -5,19 +5,32 @@ import styled from 'styled-components/macro'
 import { CloseIcon as CloseIconOriginal } from 'common/pure/CloseIcon'
 
 export const HookItemWrapper = styled.li`
-  position: relative;
+  border: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
+  border-radius: 16px;
+
+  &:hover {
+    border: 1px solid var(${UI.COLOR_TEXT_OPACITY_25});
+    box-shadow: ${({ theme }) => theme.boxShadow1};
+  }
+`
+
+export const HookItemHeader = styled.div`
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(${UI.COLOR_TEXT_OPACITY_70});
+`
 
-  dl {
-    background-color: var(${UI.COLOR_BACKGROUND});
-    padding: 20px;
-  }
-
-  dd {
-    color: var(${UI.COLOR_TEXT2});
-    word-break: break-all;
-  }
+export const HookItemInfo = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
 
   img {
     width: 35px;
@@ -25,43 +38,22 @@ export const HookItemWrapper = styled.li`
   }
 `
 
-export const HookItemInfo = styled.div`
-  display: flex;
-  flex-direction: row;
-  padding: 0.5em;
+export const ActionBtn = styled.button`
+  background: none;
+  border: none;
+  padding: 10px;
+  margin: 0;
+  outline: none;
+  cursor: pointer;
+  border-radius: 12px;
+  font-size: 0;
 
-  dl {
-    margin: 0;
-    padding: 0 1em;
-    background-color: inherit;
+  > svg {
+    color: var(${UI.COLOR_TEXT_OPACITY_50});
   }
 
-  dt {
-    width: 6em;
-  }
-
-  dd {
-    display: flex;
-    align-items: center;
-    padding: 0;
-
-    img {
-      width: 20px;
-      vertical-align: middle;
-      margin-right: 10px;
-    }
-  }
-
-  dt,
-  dd {
-    float: left;
-    margin: 5px;
-  }
-
-  dt {
-    font-weight: bold;
-    clear: left;
-    margin-right: 5px;
+  &:hover {
+    background: var(${UI.COLOR_TEXT_OPACITY_10});
   }
 `
 
@@ -82,13 +74,14 @@ export const CloseIcon = styled(CloseIconOriginal)`
 `
 
 export const SimulateContainer = styled.div`
-  border: 1px solid var(${UI.COLOR_TEXT_OPACITY_25});
+  border: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
   border-radius: 4px;
   padding: 10px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  margin: 10px;
 `
 
 export const SimulateHeader = styled.div`

@@ -4,6 +4,8 @@ import { Command, HookDapp, HookDappContext as HookDappContextType } from '@cowp
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useAddHook } from '../../hooks/useAddHook'
+import { useEditHook } from '../../hooks/useEditHook'
+import { useHookById } from '../../hooks/useHookById'
 import { isHookDappIframe } from '../../utils'
 
 interface HookDappContainerProps {
@@ -11,16 +13,25 @@ interface HookDappContainerProps {
   isPreHook: boolean
   onDismiss: Command
   onDismissModal: Command
+  hookToEdit?: string
 }
 
-export function HookDappContainer({ dapp, isPreHook, onDismiss, onDismissModal }: HookDappContainerProps) {
+export function HookDappContainer({ dapp, isPreHook, onDismiss, onDismissModal, hookToEdit }: HookDappContainerProps) {
   const { chainId, account } = useWalletInfo()
   const addHook = useAddHook(dapp, isPreHook)
+  const editHook = useEditHook()
+
+  const hookToEditDetails = useHookById(hookToEdit, isPreHook)
 
   const context = useMemo<HookDappContextType>(() => {
     return {
       chainId,
       account,
+      hookToEdit: hookToEditDetails,
+      editHook: (...args) => {
+        editHook(...args)
+        onDismiss()
+      },
       addHook: (hookToAdd) => {
         const hook = addHook(hookToAdd)
         onDismiss()
@@ -29,7 +40,7 @@ export function HookDappContainer({ dapp, isPreHook, onDismiss, onDismissModal }
       },
       close: onDismissModal,
     }
-  }, [addHook, onDismiss, onDismissModal, chainId, account])
+  }, [addHook, editHook, onDismiss, onDismissModal, chainId, account, hookToEditDetails])
 
   const dappProps = useMemo(() => ({ context, dapp, isPreHook }), [context, dapp, isPreHook])
 

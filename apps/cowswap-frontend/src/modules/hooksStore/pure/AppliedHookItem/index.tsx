@@ -1,9 +1,8 @@
-import { useState } from 'react'
-
 import TenderlyLogo from '@cowprotocol/assets/cow-swap/tenderly-logo.svg'
 import { CowHookDetailsSerialized } from '@cowprotocol/types'
 import { InfoTooltip } from '@cowprotocol/ui'
 
+import { Edit2, Trash2 } from 'react-feather'
 import SVG from 'react-inlinesvg'
 
 import * as styledEl from './styled'
@@ -15,27 +14,28 @@ interface HookItemProp {
   hookDetails: CowHookDetailsSerialized
   isPreHook: boolean
   removeHook: (uuid: string, isPreHook: boolean) => void
+  editHook: (uuid: string) => void
 }
 
-export function AppliedHookItem({ account, hookDetails, isPreHook, removeHook }: HookItemProp) {
-  const { uuid, hook, dapp } = hookDetails
-  const { callData, gasLimit, target } = hook
+export function AppliedHookItem({ account, hookDetails, isPreHook, editHook, removeHook }: HookItemProp) {
+  const { hook, dapp } = hookDetails
 
-  const [showDetails, setShowDetails] = useState(false)
   return (
     <styledEl.HookItemWrapper>
-      <styledEl.HookItemInfo>
-        <img src={dapp.image} alt={dapp.name} />
-        <dl>
-          <dt>Action</dt>
-          <dd>{dapp.name}</dd>
-
-          <dt>Token</dt>
-          <dd>
-            <img src={dapp.image} alt={dapp.name} /> <span>GNO</span>
-          </dd>
-        </dl>
-      </styledEl.HookItemInfo>
+      <styledEl.HookItemHeader>
+        <styledEl.HookItemInfo>
+          <img src={dapp.image} alt={dapp.name} />
+          <span>{dapp.name}</span>
+        </styledEl.HookItemInfo>
+        <div>
+          <styledEl.ActionBtn onClick={() => editHook(hookDetails.uuid)}>
+            <Edit2 size={14} />
+          </styledEl.ActionBtn>
+          <styledEl.ActionBtn onClick={() => removeHook(hookDetails.uuid, isPreHook)}>
+            <Trash2 size={14} />
+          </styledEl.ActionBtn>
+        </div>
+      </styledEl.HookItemHeader>
 
       {account && (
         <styledEl.SimulateContainer>
@@ -54,33 +54,6 @@ export function AppliedHookItem({ account, hookDetails, isPreHook, removeHook }:
           </div>
         </styledEl.SimulateContainer>
       )}
-
-      <styledEl.CustomLink
-        onClick={(e) => {
-          e.preventDefault()
-          setShowDetails((details) => !details)
-        }}
-        href="#"
-      >
-        👀 See hook details
-      </styledEl.CustomLink>
-
-      {showDetails && (
-        <dl>
-          <dt>UUID</dt>
-          <dd>{uuid}</dd>
-
-          <dt>target</dt>
-          <dd>{target}</dd>
-
-          <dt>gasLimit</dt>
-          <dd>{gasLimit}</dd>
-
-          <dt>callData</dt>
-          <dd>{callData}</dd>
-        </dl>
-      )}
-      <styledEl.CloseIcon onClick={() => removeHook(hookDetails.uuid, isPreHook)} />
     </styledEl.HookItemWrapper>
   )
 }

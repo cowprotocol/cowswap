@@ -7,10 +7,10 @@ import { useTradeConfirmActions } from 'modules/trade'
 import {
   TradeFormBlankButton,
   TradeFormButtons,
-  TradeFormValidation,
   useGetTradeFormValidation,
   useTradeFormButtonContext,
 } from 'modules/tradeFormValidation'
+import { TradeFormValidation } from 'modules/tradeFormValidation/types'
 
 import { limitOrdersTradeButtonsMap } from './limitOrdersTradeButtonsMap'
 

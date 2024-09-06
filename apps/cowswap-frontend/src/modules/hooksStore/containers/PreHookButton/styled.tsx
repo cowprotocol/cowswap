@@ -47,7 +47,7 @@ export const AddHookButton = styled.div`
 export const HookList = styled.ul`
   max-width: 100%;
   list-style: none;
-  padding: 0 10px 0 0;
+  padding: 0;
   margin: 0;
   display: flex;
   flex-direction: column;

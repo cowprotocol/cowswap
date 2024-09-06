@@ -34,10 +34,10 @@ export function useAddHook(dapp: HookDapp, isPreHook: boolean): AddHook {
 
 function serializeHookDapp(dapp: HookDapp): HookDappBase {
   if (isHookDappIframe(dapp)) {
-    const { url, ...rest } = dapp
+    const { url: _, ...rest } = dapp
     return rest
   }
 
-  const { component, ...rest } = dapp
+  const { component: _, ...rest } = dapp
   return rest
 }

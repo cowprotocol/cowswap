@@ -13,23 +13,25 @@ import * as styledEl from '../PreHookButton/styled'
 
 export interface PostHookButtonProps {
   onOpen(): void
+  onEditHook(uuid: string): void
 }
 
-export function PostHookButton({ onOpen }: PostHookButtonProps) {
+export function PostHookButton({ onOpen, onEditHook }: PostHookButtonProps) {
   const { account } = useWalletInfo()
-  const hooks = useAtomValue(hooksAtom)
+  const { postHooks } = useAtomValue(hooksAtom)
   const removeHook = useRemoveHook()
 
   return (
     <>
-      {hooks.postHooks && (
+      {postHooks && (
         <styledEl.HookList>
-          {hooks.postHooks.map((hook, index) => (
+          {postHooks.map((hook, index) => (
             <AppliedHookItem
               key={index}
               account={account}
               hookDetails={hook}
               removeHook={removeHook}
+              editHook={onEditHook}
               isPreHook={false}
             />
           ))}

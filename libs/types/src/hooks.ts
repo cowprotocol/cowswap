@@ -53,13 +53,16 @@ export interface CowHookDetailsSerialized extends CowHookDetails<HookDappBase> {
 export type CowHookCreation = Omit<CowHookDetails, 'uuid' | 'dapp'>
 
 export type AddHook = (hookToAdd: CowHookCreation) => CowHookDetailsSerialized
+export type EditHook = (uuid: string, update: CowHook, isPreHook: boolean) => void
 export type RemoveHook = (uuid: string, isPreHook: boolean) => void
 
 export interface HookDappContext {
   chainId: SupportedChainId
   account?: string
   addHook: AddHook
+  editHook: EditHook
   close: Command
+  hookToEdit?: CowHookDetailsSerialized
 }
 
 export interface HookDappProps {

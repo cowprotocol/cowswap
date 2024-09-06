@@ -36,6 +36,7 @@ export const HookDappListItem = styled.li<{ isDescriptionView?: boolean }>`
   justify-content: space-between;
   position: relative;
   gap: 16px;
+  border: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
   border-radius: ${({ isDescriptionView }) => (isDescriptionView ? '0' : '16px')};
   padding: ${({ isDescriptionView }) => (isDescriptionView ? '0' : '16px 10px')};
   border: 1px solid var(${UI.COLOR_PRIMARY_OPACITY_10});
@@ -106,7 +107,7 @@ export const HookDappListItem = styled.li<{ isDescriptionView?: boolean }>`
 export const HookDappDetails = styled.div<{ isDescriptionView?: boolean }>`
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
   flex: 1 1 0;
   font-size: 14px;
   gap: ${({ isDescriptionView }) => (isDescriptionView ? '16px' : '4px')};
@@ -139,7 +140,6 @@ export const HookDappDetails = styled.div<{ isDescriptionView?: boolean }>`
 
   > p {
     text-align: left;
-    flex-grow: 1;
     color: var(${UI.COLOR_TEXT_OPACITY_70});
     margin: 0;
     padding: 0;
@@ -169,7 +169,7 @@ export const Link = styled.button`
   }
 `
 
-export const Version = styled.div<{ isDescriptionView?: boolean }>`
+export const Version = styled.span<{ isDescriptionView?: boolean }>`
   color: var(${UI.COLOR_TEXT_OPACITY_50});
   display: block;
   margin: 10px 0 0;

@@ -3,6 +3,8 @@ import { useMemo } from 'react'
 import { useENSAddress } from '@cowprotocol/ens'
 import { useIsTradeUnsupported } from '@cowprotocol/tokens'
 import { useGnosisSafeInfo, useIsBundlingSupported, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
+
+import { isUnsupportedTokenInQuote } from 'modules/limitOrders/utils/isUnsupportedTokenInQuote'
 import { useTokenSupportsPermit } from 'modules/permit'
 import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
@@ -12,7 +14,6 @@ import { useApproveState } from 'common/hooks/useApproveState'
 
 import { TradeType } from '../../trade'
 import { TradeFormValidationCommonContext } from '../types'
-import { QuoteApiErrorCodes } from '../../../api/cowProtocol/errors/QuoteError'
 
 export function useTradeFormValidationContext(): TradeFormValidationCommonContext | null {
   const { account } = useWalletInfo()
@@ -23,8 +24,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
   const { state: approvalState } = useApproveState(slippageAdjustedSellAmount)
   const { address: recipientEnsAddress } = useENSAddress(recipient)
   const isSwapUnsupported =
-    useIsTradeUnsupported(inputCurrency, outputCurrency) ||
-    tradeQuote.error?.type === QuoteApiErrorCodes.UnsupportedToken
+    useIsTradeUnsupported(inputCurrency, outputCurrency) || isUnsupportedTokenInQuote(tradeQuote)
 
   const isBundlingSupported = useIsBundlingSupported()
   const isWrapUnwrap = useIsWrapOrUnwrap()

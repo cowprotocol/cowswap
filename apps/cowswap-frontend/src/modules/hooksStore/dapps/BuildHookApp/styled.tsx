@@ -1,30 +1,14 @@
+import { UI } from '@cowprotocol/ui'
+
 import styled from 'styled-components/macro'
 
 export const Wrapper = styled.div`
   display: flex;
   flex-flow: column wrap;
+  width: 100%;
+  padding-bottom: 10px;
 
   flex-grow: 1;
-`
-
-export const Link = styled.button`
-  border: none;
-  padding: 0;
-  text-decoration: underline;
-  display: text;
-  cursor: pointer;
-  background: none;
-  color: white;
-  margin: 10px 0;
-`
-
-export const Header = styled.div`
-  display: flex;
-  padding: 1.5em;
-
-  p {
-    padding: 0 1em;
-  }
 `
 
 export const ContentWrapper = styled.div`
@@ -32,6 +16,7 @@ export const ContentWrapper = styled.div`
   justify-content: center;
   align-items: center;
   flex-flow: column wrap;
+  margin-right: 10px;
 
   display: flex;
   justify-content: center;
@@ -42,19 +27,29 @@ export const ContentWrapper = styled.div`
 `
 
 export const Row = styled.div`
-  display: flex;
-  flex-flow: row wrap;
-  margin: 10px;
+  display: grid;
+  grid-template-columns: 6rem 1fr;
   width: 100%;
+  margin-bottom: 16px;
+  align-items: center;
 
   label {
-    margin: 10px;
-    flex-grow: 0;
-    width: 5em;
+    text-align: right;
+    padding-right: 10px;
+    font-size: 14px;
   }
 
   input,
   textarea {
-    flex-grow: 1;
+    width: 100%;
+    resize: vertical;
+    border: 1px solid var(${UI.COLOR_TEXT_OPACITY_25});
+    padding: 5px;
+    border-radius: 4px;
+
+    &:focus {
+      outline: none;
+      border: 1px solid var(${UI.COLOR_TEXT_OPACITY_50});
+    }
   }
 `
