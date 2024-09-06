@@ -12,7 +12,7 @@ export const Wrapper = styled.div`
 
 export const Header = styled.div`
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 20px;
 
   > img {
@@ -22,13 +22,14 @@ export const Header = styled.div`
     object-fit: contain;
     background: var(${UI.COLOR_TEXT_OPACITY_10});
     border-radius: 16px;
+    padding: 14px;
   }
 
   > span {
     display: flex;
     flex-flow: column wrap;
     justify-content: space-between;
-    gap: 4px;
+    gap: 10px;
     height: 100%;
 
     > button {
@@ -39,6 +40,7 @@ export const Header = styled.div`
   > h3 {
       font-size: 21px;
       font-weight: bold;
+      line-height: 1.2;
     }
 
   > p {
@@ -76,7 +78,11 @@ export const Tags = styled.div`
 
   table {
     width: 100%;
-    border-collapse: collapse;
+    border-collapse: collapse; 
+  }
+
+  tbody {
+   
   }
 
   tr {
@@ -92,8 +98,14 @@ export const Tags = styled.div`
   }
 
   td:first-child {
-    width: 30%;
     color: var(${UI.COLOR_TEXT_OPACITY_50});
+    white-space: nowrap;
+    padding: 0 10px 0 0;
+
+    > span {
+      display: inline-block;
+      vertical-align: sub;
+    }
 
   a {
     color: inherit;

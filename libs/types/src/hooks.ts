@@ -23,7 +23,7 @@ export enum HookDappType {
 export interface HookDappBase {
   name: string
   descriptionShort?: string
-  description?: string
+  description?: ReactNode | string
   type: HookDappType
   version: string
   website: string

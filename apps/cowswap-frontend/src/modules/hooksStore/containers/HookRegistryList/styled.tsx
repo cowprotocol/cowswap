@@ -18,9 +18,9 @@ export const HookDappsList = styled.ul`
   width: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  align-items: center;
+  justify-content: flex-start;
   flex-wrap: wrap;
-  align-items: stretch;
   flex: 1;
 `
 
