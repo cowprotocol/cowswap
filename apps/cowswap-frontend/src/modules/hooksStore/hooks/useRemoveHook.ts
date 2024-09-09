@@ -3,10 +3,10 @@ import { useCallback } from 'react'
 
 import { RemoveHook } from '@cowprotocol/types'
 
-import { hooksAtom } from '../state/hookDetailsAtom'
+import { setHooksAtom } from '../state/hookDetailsAtom'
 
 export function useRemoveHook(): RemoveHook {
-  const updateHooks = useSetAtom(hooksAtom)
+  const updateHooks = useSetAtom(setHooksAtom)
 
   return useCallback(
     (uuid, isPreHook) => {
@@ -26,6 +26,6 @@ export function useRemoveHook(): RemoveHook {
         }
       })
     },
-    [updateHooks]
+    [updateHooks],
   )
 }
