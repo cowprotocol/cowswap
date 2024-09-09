@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 
 import { latest } from '@cowprotocol/app-data'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
@@ -6,12 +6,9 @@ import { PermitHookData } from '@cowprotocol/permit-utils'
 import { useIsSmartContractWallet } from '@cowprotocol/wallet'
 
 import { useHooks } from 'modules/hooksStore'
-import { useLimitHasEnoughAllowance } from 'modules/limitOrders/hooks/useLimitHasEnoughAllowance'
 import { useAccountAgnosticPermitHookData } from 'modules/permit'
-import { useDerivedSwapInfo } from 'modules/swap/hooks/useSwapState'
-import { useIsHooksTradeType } from 'modules/trade'
+import { useDerivedTradeState, useHasTradeEnoughAllowance, useIsHooksTradeType } from 'modules/trade'
 
-import { useSwapEnoughAllowance } from '../../swap/hooks/useSwapFlowContext'
 import { useUpdateAppDataHooks } from '../hooks'
 import { TypedAppDataHooks, TypedCowHook } from '../types'
 import { buildAppDataHooks } from '../utils/buildAppDataHooks'
@@ -20,24 +17,17 @@ import { cowHookToTypedCowHook } from '../utils/typedHooks'
 type OrderInteractionHooks = latest.OrderInteractionHooks
 
 function useAgnosticPermitDataIfUserHasNoAllowance(): PermitHookData | undefined {
-  const { target, callData, gasLimit } = useAccountAgnosticPermitHookData() || {}
+  const hookData = useAccountAgnosticPermitHookData()
 
   // Remove permitData if the user has enough allowance for the current trade
-  const swapHasEnoughAllowance = useSwapEnoughAllowance()
-  const limitHasEnoughAllowance = useLimitHasEnoughAllowance()
-  const shouldUsePermit = swapHasEnoughAllowance === false || limitHasEnoughAllowance === false
+  const hasTradeEnoughAllowance = useHasTradeEnoughAllowance()
+  const shouldUsePermit = hasTradeEnoughAllowance === false
 
-  return useMemo(() => {
-    if (!target || !callData || !gasLimit) {
-      return undefined
-    }
-
-    return shouldUsePermit ? { target, callData, gasLimit } : undefined
-  }, [shouldUsePermit, target, callData, gasLimit])
+  return shouldUsePermit ? hookData : undefined
 }
 
 export function AppDataHooksUpdater(): null {
-  const { trade } = useDerivedSwapInfo()
+  const tradeState = useDerivedTradeState()
   const isHooksTradeType = useIsHooksTradeType()
   const hooksStoreState = useHooks()
   const preHooks = isHooksTradeType ? hooksStoreState.preHooks : null
@@ -45,12 +35,12 @@ export function AppDataHooksUpdater(): null {
   const updateAppDataHooks = useUpdateAppDataHooks()
   const permitData = useAgnosticPermitDataIfUserHasNoAllowance()
   const hooksPrev = useRef<OrderInteractionHooks | undefined>(undefined)
-  const hasTradeInfo = !!trade
+  const hasTradeInfo = !!tradeState
   // This is already covered up the dependency chain, but it still slips through some times
   // Adding this additional check here to try to prevent a race condition to ever allowing this to pass through
   const isSmartContractWallet = useIsSmartContractWallet()
   // Remove hooks if the order is selling native. There's no need for approval
-  const isNativeSell = trade?.inputAmount.currency ? getIsNativeToken(trade?.inputAmount.currency) : false
+  const isNativeSell = tradeState?.inputCurrency ? getIsNativeToken(tradeState.inputCurrency) : false
 
   useEffect(() => {
     const preInteractionHooks = (preHooks || []).map<TypedCowHook>((hookDetails) =>
