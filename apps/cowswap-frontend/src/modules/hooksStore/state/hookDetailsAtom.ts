@@ -9,7 +9,7 @@ type HooksStoreState = {
 }
 
 export const hooksAtom = atomWithStorage<HooksStoreState>(
-  'hooks-store-atom:v1',
+  'hooksStoreAtom:v0',
   {
     preHooks: [],
     postHooks: [],

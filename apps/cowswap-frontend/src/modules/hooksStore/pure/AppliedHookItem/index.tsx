@@ -42,7 +42,7 @@ export function AppliedHookItem({ account, hookDetails, isPreHook, editHook, rem
           <div>
             <styledEl.SimulateHeader>
               <strong>Run a simulation</strong>
-              <InfoTooltip content="This transaction can be simulated before execution to ensure that it will be succeed, generating a detailed report of the transaction execution." />
+              <InfoTooltip content="This transaction can be simulated before execution to ensure that it will succeed, generating a detailed report of the transaction execution." />
             </styledEl.SimulateHeader>
             <styledEl.SimulateFooter>
               <span>Powered by</span>

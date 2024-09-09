@@ -37,7 +37,7 @@ export function HooksStoreWidget() {
     <>
       <InlineBanner orientation={BannerOrientation.Horizontal} customIcon={ICON_HOOK} iconSize={36}>
         <p>
-          With hooks you can add specific actions <b>before</b> and <b>after</b> your swap.{' '}
+          With hooks you can add specific actions <b>before</b> and <b>after</b> your swap. {/*TODO: update the link*/}
           <a href="https://docs.cow.fi/cow-protocol/reference/sdks/cow-sdk" target="_blank" rel="noopener noreferrer">
             Learn more.
           </a>
