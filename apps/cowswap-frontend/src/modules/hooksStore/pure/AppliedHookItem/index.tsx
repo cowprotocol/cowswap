@@ -21,8 +21,8 @@ export function AppliedHookItem({ account, hookDetails, isPreHook, editHook, rem
   const { hook, dapp } = hookDetails
 
   return (
-    <styledEl.HookItemWrapper>
-      <styledEl.HookItemHeader>
+    <styledEl.HookItemWrapper data-uid={hookDetails.uuid}>
+      <styledEl.HookItemHeader title={hookDetails.uuid}>
         <styledEl.HookItemInfo>
           <img src={dapp.image} alt={dapp.name} />
           <span>{dapp.name}</span>
