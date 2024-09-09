@@ -2,6 +2,7 @@ import { ReactNode } from 'react'
 
 import { latest } from '@cowprotocol/app-data'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import type { Signer } from '@ethersproject/abstract-signer'
 
 import { Command } from './common'
 
@@ -44,6 +45,7 @@ export interface CowHookDetails<DappType = HookDapp> {
   uuid: string
   hook: CowHook
   dapp: DappType
+  receiverOverride?: string
 }
 
 export interface CowHookDetailsSerialized extends CowHookDetails<HookDappBase> {}
@@ -54,13 +56,21 @@ export type AddHook = (hookToAdd: CowHookCreation) => CowHookDetailsSerialized
 export type EditHook = (uuid: string, update: CowHook, isPreHook: boolean) => void
 export type RemoveHook = (uuid: string, isPreHook: boolean) => void
 
+export interface HookDappOrderParams {
+  validTo: number
+  sellTokenAddress: string
+  buyTokenAddress: string
+}
+
 export interface HookDappContext {
   chainId: SupportedChainId
   account?: string
+  orderParams: HookDappOrderParams | null
   addHook: AddHook
   editHook: EditHook
   close: Command
   hookToEdit?: CowHookDetailsSerialized
+  signer?: Signer
 }
 
 export interface HookDappProps {

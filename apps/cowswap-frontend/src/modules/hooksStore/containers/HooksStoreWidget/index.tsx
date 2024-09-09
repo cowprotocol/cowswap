@@ -5,6 +5,8 @@ import { BannerOrientation, InlineBanner } from '@cowprotocol/ui'
 
 import { SwapWidget } from 'modules/swap'
 
+import { useSetRecipientOverride } from '../../hooks/useSetRecipientOverride'
+import { useSetupHooksStoreOrderParams } from '../../hooks/useSetupHooksStoreOrderParams'
 import { HookRegistryList } from '../HookRegistryList'
 import { PostHookButton } from '../PostHookButton'
 import { PreHookButton } from '../PreHookButton'
@@ -28,6 +30,9 @@ export function HooksStoreWidget() {
     setSelectedHookPosition('post')
     setHookToEdit(uuid)
   }, [])
+
+  useSetupHooksStoreOrderParams()
+  useSetRecipientOverride()
 
   if (selectedHookPosition || hookToEdit) {
     return <HookRegistryList onDismiss={onDismiss} hookToEdit={hookToEdit} isPreHook={selectedHookPosition === 'pre'} />
