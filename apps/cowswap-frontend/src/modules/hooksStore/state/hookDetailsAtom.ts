@@ -11,27 +11,35 @@ type HooksStoreState = {
   postHooks: CowHookDetailsSerialized[]
 }
 
-const hooksAtomInner = atomWithStorage<Record<SupportedChainId, HooksStoreState>>(
+type StatePerAccount = Record<string, HooksStoreState>
+type StatePerNetwork = Record<SupportedChainId, StatePerAccount>
+
+const EMPTY_STATE: HooksStoreState = {
+  preHooks: [],
+  postHooks: [],
+}
+
+const hooksAtomInner = atomWithStorage<StatePerNetwork>(
   'hooksStoreAtom:v0',
-  mapSupportedNetworks({
-    preHooks: [],
-    postHooks: [],
-  }),
+  mapSupportedNetworks({}),
   getJotaiIsolatedStorage(),
 )
 
 export const hooksAtom = atom((get) => {
-  const { chainId } = get(walletInfoAtom)
+  const { chainId, account = '' } = get(walletInfoAtom)
   const state = get(hooksAtomInner)
 
-  return state[chainId]
+  return state[chainId][account] || EMPTY_STATE
 })
 
 export const setHooksAtom = atom(null, (get, set, update: SetStateAction<HooksStoreState>) => {
-  const { chainId } = get(walletInfoAtom)
+  const { chainId, account = '' } = get(walletInfoAtom)
 
   set(hooksAtomInner, (state) => ({
     ...state,
-    [chainId]: typeof update === 'function' ? update(state[chainId]) : update,
+    [chainId]: {
+      ...[state[chainId]],
+      [account]: typeof update === 'function' ? update(state[chainId][account] || EMPTY_STATE) : update,
+    },
   }))
 })
