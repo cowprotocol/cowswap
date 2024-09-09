@@ -10,6 +10,7 @@ export const HookItemWrapper = styled.li`
   background: var(${UI.COLOR_PAPER_DARKER});
   box-shadow: 0 5px 16px 0 transparent;
   transition: all 0.2s ease-in-out;
+  overflow: hidden;
 
   &:hover {
     border: 1px solid var(${UI.COLOR_TEXT_OPACITY_50});
@@ -36,11 +37,11 @@ export const DragIcon = styled.div`
   box-sizing: content-box;
   width: 10px;
   height: 16px;
+  cursor: move;
 
   > svg {
     width: 100%;
     height: 100%;
-
   }
 `
 
@@ -49,7 +50,6 @@ export const HookItemInfo = styled.div`
   flex-flow: row nowrap;
   align-items: center;
   gap: 8px;
-
 
   > img {
     --size: 26px;
@@ -85,10 +85,10 @@ export const ActionBtn = styled.button<{ actionType?: 'remove' | 'edit' }>`
   &:hover {
     background: ${({ actionType }) =>
       actionType === 'remove' ? `var(${UI.COLOR_DANGER_BG})` : `var(${UI.COLOR_ALERT_BG})`};
-      > svg {
-        color: ${({ actionType }) =>
-          actionType === 'remove' ? `var(${UI.COLOR_DANGER_TEXT})` : `var(${UI.COLOR_ALERT_TEXT})`};
-      }
+    > svg {
+      color: ${({ actionType }) =>
+        actionType === 'remove' ? `var(${UI.COLOR_DANGER_TEXT})` : `var(${UI.COLOR_ALERT_TEXT})`};
+    }
   }
 
   > svg {
