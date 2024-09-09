@@ -6,10 +6,11 @@ import { PermitHookData } from '@cowprotocol/permit-utils'
 import { useIsSmartContractWallet } from '@cowprotocol/wallet'
 
 import { useHooks } from 'modules/hooksStore'
+import { useLimitHasEnoughAllowance } from 'modules/limitOrders/hooks/useLimitHasEnoughAllowance'
 import { useAccountAgnosticPermitHookData } from 'modules/permit'
 import { useDerivedSwapInfo } from 'modules/swap/hooks/useSwapState'
+import { useIsHooksTradeType } from 'modules/trade'
 
-import { useLimitHasEnoughAllowance } from '../../limitOrders/hooks/useLimitHasEnoughAllowance'
 import { useSwapEnoughAllowance } from '../../swap/hooks/useSwapFlowContext'
 import { useUpdateAppDataHooks } from '../hooks'
 import { TypedAppDataHooks, TypedCowHook } from '../types'
@@ -37,7 +38,10 @@ function useAgnosticPermitDataIfUserHasNoAllowance(): PermitHookData | undefined
 
 export function AppDataHooksUpdater(): null {
   const { trade } = useDerivedSwapInfo()
-  const { preHooks, postHooks } = useHooks()
+  const isHooksTradeType = useIsHooksTradeType()
+  const hooksStoreState = useHooks()
+  const preHooks = isHooksTradeType ? hooksStoreState.preHooks : null
+  const postHooks = isHooksTradeType ? hooksStoreState.postHooks : null
   const updateAppDataHooks = useUpdateAppDataHooks()
   const permitData = useAgnosticPermitDataIfUserHasNoAllowance()
   const hooksPrev = useRef<OrderInteractionHooks | undefined>(undefined)
@@ -49,24 +53,29 @@ export function AppDataHooksUpdater(): null {
   const isNativeSell = trade?.inputAmount.currency ? getIsNativeToken(trade?.inputAmount.currency) : false
 
   useEffect(() => {
-    const preInteractionHooks = preHooks.map<TypedCowHook>((hookDetails) =>
-      cowHookToTypedCowHook(hookDetails.hook, 'hookStore')
+    const preInteractionHooks = (preHooks || []).map<TypedCowHook>((hookDetails) =>
+      cowHookToTypedCowHook(hookDetails.hook, 'hookStore'),
     )
-    const postInteractionHooks = postHooks.map<TypedCowHook>((hookDetails) =>
-      cowHookToTypedCowHook(hookDetails.hook, 'hookStore')
+    const postInteractionHooks = (postHooks || []).map<TypedCowHook>((hookDetails) =>
+      cowHookToTypedCowHook(hookDetails.hook, 'hookStore'),
     )
+
+    if (permitData) {
+      preInteractionHooks.push(cowHookToTypedCowHook(permitData, 'permit'))
+    }
+
     const hooks = buildAppDataHooks<TypedCowHook[], TypedAppDataHooks>({
-      preInteractionHooks: permitData
-        ? preInteractionHooks.concat([cowHookToTypedCowHook(permitData, 'permit')])
-        : preInteractionHooks,
+      preInteractionHooks,
       postInteractionHooks,
     })
 
-    if (
+    const areHooksChanged = JSON.stringify(hooksPrev.current) !== JSON.stringify(hooks)
+
+    const shouldNotUpdateHooks =
       !hasTradeInfo || // If there's no trade info, wait until we have one to update the hooks (i.e. missing quote)
-      isSmartContractWallet === undefined || // We don't know what type of wallet it is, wait until it's defined
-      JSON.stringify(hooksPrev.current) === JSON.stringify(hooks) // Or if the hooks has not changed
-    ) {
+      isSmartContractWallet === undefined // We don't know what type of wallet it is, wait until it's defined
+
+    if (shouldNotUpdateHooks && !areHooksChanged) {
       return undefined
     }
 
@@ -79,7 +88,16 @@ export function AppDataHooksUpdater(): null {
       updateAppDataHooks(undefined)
       hooksPrev.current = undefined
     }
-  }, [updateAppDataHooks, permitData, hasTradeInfo, isSmartContractWallet, isNativeSell, preHooks, postHooks])
+  }, [
+    updateAppDataHooks,
+    permitData,
+    hasTradeInfo,
+    isSmartContractWallet,
+    isNativeSell,
+    preHooks,
+    postHooks,
+    isHooksTradeType,
+  ])
 
   return null
 }

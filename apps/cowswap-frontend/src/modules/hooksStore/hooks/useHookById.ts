@@ -1,9 +1,7 @@
-import { useAtomValue } from 'jotai'
-
-import { hooksAtom } from '../state/hookDetailsAtom'
+import { useHooks } from './useHooks'
 
 export function useHookById(uuid: string | undefined, isPreHook: boolean) {
-  const hooks = useAtomValue(hooksAtom)
+  const hooks = useHooks()
 
   if (!uuid) return undefined
 
