@@ -35,11 +35,13 @@ export const hooksAtom = atom((get) => {
 export const setHooksAtom = atom(null, (get, set, update: SetStateAction<HooksStoreState>) => {
   const { chainId, account = '' } = get(walletInfoAtom)
 
-  set(hooksAtomInner, (state) => ({
-    ...state,
-    [chainId]: {
-      ...[state[chainId]],
-      [account]: typeof update === 'function' ? update(state[chainId][account] || EMPTY_STATE) : update,
-    },
-  }))
+  set(hooksAtomInner, (state) => {
+    return {
+      ...state,
+      [chainId]: {
+        ...state[chainId],
+        [account]: typeof update === 'function' ? update(state[chainId][account] || EMPTY_STATE) : update,
+      },
+    }
+  })
 })
