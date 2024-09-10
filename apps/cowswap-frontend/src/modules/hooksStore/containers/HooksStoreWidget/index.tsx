@@ -4,6 +4,7 @@ import ICON_HOOK from '@cowprotocol/assets/cow-swap/hook.svg'
 import { BannerOrientation, InlineBanner } from '@cowprotocol/ui'
 
 import { SwapWidget } from 'modules/swap'
+import { useIsSellNative } from 'modules/trade'
 
 import { HookRegistryList } from '../HookRegistryList'
 import { PostHookButton } from '../PostHookButton'
@@ -13,6 +14,8 @@ type HookPosition = 'pre' | 'post'
 export function HooksStoreWidget() {
   const [selectedHookPosition, setSelectedHookPosition] = useState<HookPosition | null>(null)
   const [hookToEdit, setHookToEdit] = useState<string | undefined>(undefined)
+
+  const isNativeSell = useIsSellNative()
 
   const onDismiss = useCallback(() => {
     setSelectedHookPosition(null)
@@ -33,7 +36,9 @@ export function HooksStoreWidget() {
     return <HookRegistryList onDismiss={onDismiss} hookToEdit={hookToEdit} isPreHook={selectedHookPosition === 'pre'} />
   }
 
-  const TopContent = (
+  const shouldNotUseHooks = isNativeSell
+
+  const TopContent = shouldNotUseHooks ? null : (
     <>
       <InlineBanner orientation={BannerOrientation.Horizontal} customIcon={ICON_HOOK} iconSize={36}>
         <p>
@@ -47,10 +52,9 @@ export function HooksStoreWidget() {
     </>
   )
 
-  return (
-    <SwapWidget
-      topContent={TopContent}
-      bottomContent={<PostHookButton onOpen={() => setSelectedHookPosition('post')} onEditHook={onPostHookEdit} />}
-    />
+  const BottomContent = shouldNotUseHooks ? null : (
+    <PostHookButton onOpen={() => setSelectedHookPosition('post')} onEditHook={onPostHookEdit} />
   )
+
+  return <SwapWidget topContent={TopContent} bottomContent={BottomContent} />
 }

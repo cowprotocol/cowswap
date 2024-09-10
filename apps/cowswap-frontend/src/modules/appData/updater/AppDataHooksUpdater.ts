@@ -1,13 +1,12 @@
 import { useEffect, useRef } from 'react'
 
 import { latest } from '@cowprotocol/app-data'
-import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { PermitHookData } from '@cowprotocol/permit-utils'
 import { useIsSmartContractWallet } from '@cowprotocol/wallet'
 
 import { useHooks } from 'modules/hooksStore'
 import { useAccountAgnosticPermitHookData } from 'modules/permit'
-import { useDerivedTradeState, useHasTradeEnoughAllowance, useIsHooksTradeType } from 'modules/trade'
+import { useDerivedTradeState, useHasTradeEnoughAllowance, useIsHooksTradeType, useIsSellNative } from 'modules/trade'
 
 import { useUpdateAppDataHooks } from '../hooks'
 import { TypedAppDataHooks, TypedCowHook } from '../types'
@@ -40,7 +39,7 @@ export function AppDataHooksUpdater(): null {
   // Adding this additional check here to try to prevent a race condition to ever allowing this to pass through
   const isSmartContractWallet = useIsSmartContractWallet()
   // Remove hooks if the order is selling native. There's no need for approval
-  const isNativeSell = tradeState?.inputCurrency ? getIsNativeToken(tradeState.inputCurrency) : false
+  const isNativeSell = useIsSellNative()
 
   useEffect(() => {
     const preInteractionHooks = (preHooks || []).map<TypedCowHook>((hookDetails) =>
@@ -50,7 +49,8 @@ export function AppDataHooksUpdater(): null {
       cowHookToTypedCowHook(hookDetails.hook, 'hookStore'),
     )
 
-    if (permitData) {
+    // Add permit hook
+    if (permitData && !isSmartContractWallet) {
       preInteractionHooks.push(cowHookToTypedCowHook(permitData, 'permit'))
     }
 
@@ -69,7 +69,8 @@ export function AppDataHooksUpdater(): null {
       return undefined
     }
 
-    if (!isSmartContractWallet && !isNativeSell && hooks) {
+    // Hooks are not available for eth-flow orders now
+    if (hooks && !isNativeSell) {
       // Update the hooks
       updateAppDataHooks(hooks)
       hooksPrev.current = hooks
