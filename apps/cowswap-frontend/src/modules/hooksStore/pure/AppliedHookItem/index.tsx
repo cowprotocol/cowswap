@@ -1,21 +1,15 @@
-import { useRef } from 'react'
-
 import ICON_GRID from '@cowprotocol/assets/cow-swap/grid.svg'
 import TenderlyLogo from '@cowprotocol/assets/cow-swap/tenderly-logo.svg'
 import { CowHookDetailsSerialized } from '@cowprotocol/types'
 import { InfoTooltip } from '@cowprotocol/ui'
 
-import { useDrag, useDrop } from 'react-dnd'
 import { Edit2, Trash2 } from 'react-feather'
 import SVG from 'react-inlinesvg'
 
 import * as styledEl from './styled'
+import { useDragAndDrop } from './useDragAndDrop'
 
 import { TenderlySimulate } from '../../containers/TenderlySimulate'
-
-const ItemTypes = {
-  HOOK: 'hook',
-}
 
 interface HookItemProp {
   account: string | undefined
@@ -27,52 +21,17 @@ interface HookItemProp {
   moveHook: (dragIndex: number, hoverIndex: number) => void
 }
 
-export function AppliedHookItem({ account, hookDetails, isPreHook, editHook, removeHook, index, moveHook }: HookItemProp) {
+export function AppliedHookItem({
+  account,
+  hookDetails,
+  isPreHook,
+  editHook,
+  removeHook,
+  index,
+  moveHook,
+}: HookItemProp) {
   const { hook, dapp } = hookDetails
-  const ref = useRef<HTMLLIElement>(null)
-
-  const [, drop] = useDrop({
-    accept: ItemTypes.HOOK,
-    hover(item: { id: string; index: number }, monitor) {
-      if (!ref.current) {
-        return
-      }
-      const dragIndex = item.index
-      const hoverIndex = index
-
-      if (dragIndex === hoverIndex) {
-        return
-      }
-
-      const hoverBoundingRect = ref.current?.getBoundingClientRect()
-      const hoverThresholdY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 6
-      const clientOffset = monitor.getClientOffset()
-      const hoverClientY = clientOffset!.y - hoverBoundingRect.top
-
-      if (dragIndex < hoverIndex && hoverClientY < hoverThresholdY) {
-        return
-      }
-
-      if (dragIndex > hoverIndex && hoverClientY > hoverThresholdY * 5) {
-        return
-      }
-
-      moveHook(dragIndex, hoverIndex)
-      item.index = hoverIndex
-    },
-  })
-
-  const [{ isDragging }, drag] = useDrag({
-    type: ItemTypes.HOOK,
-    item: () => {
-      return { id: hookDetails.uuid, index }
-    },
-    collect: (monitor) => ({
-      isDragging: monitor.isDragging(),
-    }),
-  })
-
-  drag(drop(ref))
+  const { ref, isDragging } = useDragAndDrop(index, hookDetails.uuid, moveHook)
 
   return (
     <styledEl.HookItemWrapper data-uid={hookDetails.uuid} ref={ref} style={{ opacity: isDragging ? 0.5 : 1 }}>
