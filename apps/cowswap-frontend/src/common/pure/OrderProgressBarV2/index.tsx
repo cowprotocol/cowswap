@@ -46,7 +46,7 @@ import { SurplusData } from 'common/hooks/useGetSurplusFiatValue'
 import { getIsCustomRecipient } from 'utils/orderUtils/getIsCustomRecipient'
 
 import * as styledEl from './styled'
-const IS_DEBUG_MODE = false
+const IS_DEBUG_MODE = true
 const DEBUG_FORCE_SHOW_SURPLUS = false
 
 export type OrderProgressBarV2Props = {
@@ -124,10 +124,10 @@ function StepsWrapper({
                 ? 'cancelling'
                 : 'active'
               : index === currentStep + 1
-              ? 'next'
-              : index < currentStep
-              ? 'done'
-              : 'future'
+                ? 'next'
+                : index < currentStep
+                  ? 'done'
+                  : 'future'
           return (
             <div key={index}>
               <StepComponent
@@ -442,8 +442,8 @@ function RenderProgressTopSection({
               stepName === 'unfillable'
                 ? '#FFDB9C'
                 : stepName === 'delayed' || stepName === 'submissionFailed' || stepName === 'solved'
-                ? '#FFB3B3'
-                : '#65D9FF'
+                  ? '#FFB3B3'
+                  : '#65D9FF'
             }
             padding={stepName === 'unfillable' ? '20px 0 0' : stepName === 'solving' ? '16px' : '0'}
             height={
@@ -699,7 +699,7 @@ function getTwitterText(surplusAmount: string, surplusToken: string, orderKind: 
   const actionWord = isSellOrder(orderKind) ? 'got' : 'saved'
   const surplus = `${surplusAmount} ${surplusToken}`
   return encodeURIComponent(
-    `Hey, I just ${actionWord} an extra ${surplus} on @CoWSwap! 🐮💸\n\nStart swapping on swap.cow.fi`
+    `Hey, I just ${actionWord} an extra ${surplus} on @CoWSwap! 🐮💸\n\nStart swapping on swap.cow.fi`,
   )
 }
 
@@ -938,12 +938,12 @@ function SolvingStep(props: OrderProgressBarV2Props) {
           isUnfillable
             ? { 1: 'Price change' }
             : isDelayed
-            ? { 1: 'Still searching' }
-            : isSubmissionFailed
-            ? { 1: 'A new competition has started' }
-            : isSolved
-            ? { 1: 'A new competition has started' }
-            : undefined
+              ? { 1: 'Still searching' }
+              : isSubmissionFailed
+                ? { 1: 'A new competition has started' }
+                : isSolved
+                  ? { 1: 'A new competition has started' }
+                  : undefined
         }
         extraContent={
           <styledEl.Description>
