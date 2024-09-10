@@ -9,6 +9,7 @@ import SVG from 'react-inlinesvg'
 
 import * as styledEl from './styled'
 
+import { useHooks } from '../../hooks/useHooks'
 import { useRemoveHook } from '../../hooks/useRemoveHook'
 import { AppliedHookItem } from '../../pure/AppliedHookItem'
 import { HookTooltip } from '../../pure/HookTooltip'
@@ -25,7 +26,7 @@ export interface PreHookButtonProps {
 
 export function PreHookButton({ onOpen, onEditHook }: PreHookButtonProps) {
   const { account } = useWalletInfo()
-  const { preHooks } = useAtomValue(hooksAtom)
+  const { preHooks } = useHooks()
   const setHooks = useSetAtom(hooksAtom)
   const removeHook = useRemoveHook()
 

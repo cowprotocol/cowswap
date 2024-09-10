@@ -5,11 +5,11 @@ import { AddHook, CowHookDetailsSerialized, HookDapp, HookDappBase } from '@cowp
 
 import { v4 as uuidv4 } from 'uuid'
 
-import { hooksAtom } from '../state/hookDetailsAtom'
+import { setHooksAtom } from '../state/hookDetailsAtom'
 import { isHookDappIframe } from '../utils'
 
 export function useAddHook(dapp: HookDapp, isPreHook: boolean): AddHook {
-  const updateHooks = useSetAtom(hooksAtom)
+  const updateHooks = useSetAtom(setHooksAtom)
 
   return useCallback(
     (hookToAdd) => {

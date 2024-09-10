@@ -75,8 +75,8 @@ export function AppliedHookItem({ account, hookDetails, isPreHook, editHook, rem
   drag(drop(ref))
 
   return (
-    <styledEl.HookItemWrapper ref={ref} style={{ opacity: isDragging ? 0.5 : 1 }}>
-      <styledEl.HookItemHeader>
+    <styledEl.HookItemWrapper data-uid={hookDetails.uuid} ref={ref} style={{ opacity: isDragging ? 0.5 : 1 }}>
+      <styledEl.HookItemHeader title={hookDetails.uuid}>
         <styledEl.HookItemInfo>
           <styledEl.DragIcon>
             <SVG src={ICON_GRID} />
@@ -99,7 +99,7 @@ export function AppliedHookItem({ account, hookDetails, isPreHook, editHook, rem
           <div>
             <styledEl.SimulateHeader>
               <strong>Run a simulation</strong>
-              <InfoTooltip content="This transaction can be simulated before execution to ensure that it will be succeed, generating a detailed report of the transaction execution." />
+              <InfoTooltip content="This transaction can be simulated before execution to ensure that it will succeed, generating a detailed report of the transaction execution." />
             </styledEl.SimulateHeader>
             <styledEl.SimulateFooter>
               <span>Powered by</span>

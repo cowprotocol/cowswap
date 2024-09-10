@@ -7,10 +7,10 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import SVG from 'react-inlinesvg'
 
+import { useHooks } from '../../hooks/useHooks'
 import { useRemoveHook } from '../../hooks/useRemoveHook'
 import { AppliedHookItem } from '../../pure/AppliedHookItem'
 import { HookTooltip } from '../../pure/HookTooltip'
-import { hooksAtom } from '../../state/hookDetailsAtom'
 import * as styledEl from '../PreHookButton/styled'
 
 export interface PostHookButtonProps {
@@ -20,7 +20,7 @@ export interface PostHookButtonProps {
 
 export function PostHookButton({ onOpen, onEditHook }: PostHookButtonProps) {
   const { account } = useWalletInfo()
-  const { postHooks } = useAtomValue(hooksAtom)
+  const { postHooks } = useHooks()
   const removeHook = useRemoveHook()
 
   const setHooks = useSetAtom(hooksAtom)
