@@ -1,7 +1,5 @@
 import React, { ReactNode } from 'react'
 
-import { useDismissableBanner } from '@cowprotocol/common-hooks'
-
 import { X } from 'react-feather'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
@@ -170,8 +168,6 @@ export interface InlineBannerProps {
   margin?: string
   width?: string
   onClose?: () => void
-  isDismissable?: boolean
-  bannerId?: string
 }
 
 export function InlineBanner({
@@ -188,22 +184,8 @@ export function InlineBanner({
   margin,
   width,
   onClose,
-  isDismissable = false,
-  bannerId,
 }: InlineBannerProps) {
   const colorEnums = getColorEnums(bannerType)
-  const { isBannerDismissed, dismissBanner } = useDismissableBanner(bannerId)
-
-  if (isDismissable && isBannerDismissed) {
-    return null
-  }
-
-  const handleClose = () => {
-    if (isDismissable && bannerId) {
-      dismissBanner()
-    }
-    onClose?.()
-  }
 
   return (
     <Wrapper
@@ -214,7 +196,7 @@ export function InlineBanner({
       padding={padding}
       margin={margin}
       width={width}
-      dismissable={!!onClose || isDismissable}
+      dismissable={!!onClose}
     >
       <span>
         {!hideIcon && customIcon ? (
@@ -233,7 +215,7 @@ export function InlineBanner({
         <span>{children}</span>
       </span>
 
-      {(onClose || isDismissable) && <CloseIcon onClick={handleClose} />}
+      {onClose && <CloseIcon onClick={onClose} />}
     </Wrapper>
   )
 }

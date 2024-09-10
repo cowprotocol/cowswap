@@ -1,7 +1,3 @@
-import { useSetAtom } from 'jotai'
-import { useAtomValue } from 'jotai/index'
-import { useCallback } from 'react'
-
 import PLUS_ICON from '@cowprotocol/assets/cow-swap/plus.svg'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -9,6 +5,7 @@ import SVG from 'react-inlinesvg'
 
 import { useHooks } from '../../hooks/useHooks'
 import { useRemoveHook } from '../../hooks/useRemoveHook'
+import { useReorderHooks } from '../../hooks/useReorderHooks'
 import { AppliedHookItem } from '../../pure/AppliedHookItem'
 import { HookTooltip } from '../../pure/HookTooltip'
 import * as styledEl from '../PreHookButton/styled'
@@ -22,18 +19,7 @@ export function PostHookButton({ onOpen, onEditHook }: PostHookButtonProps) {
   const { account } = useWalletInfo()
   const { postHooks } = useHooks()
   const removeHook = useRemoveHook()
-
-  const setHooks = useSetAtom(hooksAtom)
-
-  const moveHook = useCallback(
-    (dragIndex: number, hoverIndex: number) => {
-      const newPostHooks = [...postHooks]
-      const [removed] = newPostHooks.splice(dragIndex, 1)
-      newPostHooks.splice(hoverIndex, 0, removed)
-      setHooks((prevState: { preHooks: any[]; postHooks: any[] }) => ({ ...prevState, postHooks: newPostHooks }))
-    },
-    [postHooks, setHooks]
-  )
+  const moveHook = useReorderHooks('postHooks')
 
   return (
     <>

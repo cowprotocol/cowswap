@@ -4,7 +4,7 @@ import { HelpTooltip } from '@cowprotocol/ui'
 
 import * as styled from './styled'
 
-import { HookDetailHeader } from '../../containers/HookDetailHeader'
+import { HookDetailHeader } from '../HookDetailHeader'
 
 interface HookDappDetailsProps {
   dapp: HookDapp
@@ -12,7 +12,7 @@ interface HookDappDetailsProps {
 }
 
 export function HookDappDetails({ dapp, onSelect }: HookDappDetailsProps) {
-  const {  description, version, website, type } = dapp
+  const { description, version, website, type } = dapp
 
   const tags = [
     {
@@ -26,9 +26,10 @@ export function HookDappDetails({ dapp, onSelect }: HookDappDetailsProps) {
     {
       label: 'Type',
       value: type === HookDappType.INTERNAL ? 'Native' : 'External',
-      tooltip: type === HookDappType.INTERNAL
-        ? 'Native hooks are integrated code and part of the CoW Swap codebase.'
-        : 'External hooks load an iframe and are externally hosted code which needs to be independently verified by the user.'
+      tooltip:
+        type === HookDappType.INTERNAL
+          ? 'Native hooks are integrated code and part of the CoW Swap codebase.'
+          : 'External hooks load an iframe and are externally hosted code which needs to be independently verified by the user.',
     },
   ]
 
@@ -44,7 +45,7 @@ export function HookDappDetails({ dapp, onSelect }: HookDappDetailsProps) {
           <table>
             <tbody>
               {tags
-                .filter(tag => tag.value || tag.link)
+                .filter((tag) => tag.value || tag.link)
                 .map((tag) => (
                   <tr key={tag.label}>
                     <td>

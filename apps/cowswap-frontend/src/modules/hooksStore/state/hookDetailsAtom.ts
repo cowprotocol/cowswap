@@ -6,7 +6,7 @@ import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CowHookDetailsSerialized } from '@cowprotocol/types'
 import { walletInfoAtom } from '@cowprotocol/wallet'
 
-type HooksStoreState = {
+export type HooksStoreState = {
   preHooks: CowHookDetailsSerialized[]
   postHooks: CowHookDetailsSerialized[]
 }

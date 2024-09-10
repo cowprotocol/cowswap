@@ -5,14 +5,14 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { NewModal } from 'common/pure/NewModal'
 
-import {   HookDappsList, Wrapper } from './styled'
+import { HookDappsList, Wrapper } from './styled'
 
 import { POST_HOOK_REGISTRY, PRE_HOOK_REGISTRY } from '../../hookRegistry'
 import { useHookById } from '../../hooks/useHookById'
 import { HookDappDetails } from '../../pure/HookDappDetails'
+import { HookDetailHeader } from '../../pure/HookDetailHeader'
 import { HookListItem } from '../../pure/HookListItem'
 import { HookDappContainer } from '../HookDappContainer'
-import { HookDetailHeader } from '../HookDetailHeader'
 interface HookStoreModal {
   onDismiss: Command
   isPreHook: boolean
@@ -60,7 +60,13 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit }: HookStore
 
   return (
     <Wrapper>
-      <NewModal modalMode={false} title={title} onDismiss={onDismissModal} contentPadding="0" justifyContent="flex-start">
+      <NewModal
+        modalMode={false}
+        title={title}
+        onDismiss={onDismissModal}
+        contentPadding="0"
+        justifyContent="flex-start"
+      >
         {(() => {
           if (selectedDapp) {
             return (
@@ -78,10 +84,7 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit }: HookStore
           }
 
           if (dappDetails) {
-            return <HookDappDetails 
-              dapp={dappDetails} 
-              onSelect={() => setSelectedDapp(dappDetails)}
-            />
+            return <HookDappDetails dapp={dappDetails} onSelect={() => setSelectedDapp(dappDetails)} />
           }
 
           return (

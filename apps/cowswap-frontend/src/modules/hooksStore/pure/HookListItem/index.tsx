@@ -10,20 +10,12 @@ interface HookListItemProps {
   onSelect: Command
   onOpenDetails: Command
 }
- 
 
 export function HookListItem({ dapp, onSelect, onOpenDetails }: HookListItemProps) {
   const { name, descriptionShort, image, version } = dapp
 
-  const handleDetailsClick = (e: React.MouseEvent) => {
-    if (!(e.target as HTMLElement).closest('.link-button')) {
-      e.stopPropagation()
-      onOpenDetails()
-    }
-  }
-
   return (
-    <styled.HookDappListItem onClick={handleDetailsClick}>
+    <styled.HookDappListItem>
       <img src={image} alt={name} />
 
       <styled.HookDappDetails>
@@ -34,8 +26,10 @@ export function HookListItem({ dapp, onSelect, onOpenDetails }: HookListItemProp
         </p>
       </styled.HookDappDetails>
       <span>
-        <styled.LinkButton onClick={onSelect} className="link-button">Add</styled.LinkButton>
-        <i>
+        <styled.LinkButton onClick={onSelect} className="link-button">
+          Add
+        </styled.LinkButton>
+        <i onClick={onOpenDetails}>
           <SVG src={ICON_INFO} /> details
         </i>
       </span>
