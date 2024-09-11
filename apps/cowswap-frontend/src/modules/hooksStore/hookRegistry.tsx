@@ -1,9 +1,9 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { PRE_BUILD, POST_BUILD } from './dapps/BuildHookApp/hook'
+import { POST_BUILD, PRE_BUILD } from './dapps/BuildHookApp/hook'
 import { PRE_CLAIM_GNO } from './dapps/ClaimGnoHookApp/hook'
-import { HookDapp } from './types/hooks'
 import { POST_OMNIBRIDGE_HOOK } from './dapps/OmnibridgeApp/hook'
+import { HookDapp } from './types/hooks'
 
 export const PRE_HOOK_REGISTRY: Record<SupportedChainId, HookDapp[]> = {
   [SupportedChainId.MAINNET]: [PRE_BUILD],
