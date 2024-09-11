@@ -80,6 +80,7 @@ export async function buildOmnibridgePostHook({
       encodeInputArg(true, 0), // user address
       // balance, fixed length input, read from state index 1, this is where
       // previous command stored it
+      // TODO: we should not bridge the whole balance but only what was received after swap
       encodeInputArg(true, 1), // balance
       // other 3 input args are unused
       END_OF_ARGS,
