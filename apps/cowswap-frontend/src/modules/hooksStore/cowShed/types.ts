@@ -1,6 +1,5 @@
 export interface ICoWShedOptions {
   factoryAddress: string
-  proxyCreationCode?: string
   implementationAddress: string
 }
 
@@ -14,7 +13,6 @@ export interface ICoWShedCall {
 
 export interface ICoWShedOptions {
   factoryAddress: string
-  proxyCreationCode?: string
   implementationAddress: string
 }
 

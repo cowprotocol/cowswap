@@ -9,18 +9,11 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { Signer } from '@ethersproject/abstract-signer'
 
 import { TypedDataDomain } from 'ethers'
-import {
-  arrayify,
-  defaultAbiCoder,
-  getCreate2Address,
-  joinSignature,
-  solidityKeccak256,
-  splitSignature,
-} from 'ethers/lib/utils'
+import { arrayify, joinSignature, splitSignature } from 'ethers/lib/utils'
 
 import { COW_SHED_FACTORY, COW_SHED_IMPLEMENTATION } from './consts'
 import { getCoWShedFactoryInterface } from './contracts'
-import { COW_SHED_PROXY_INIT_CODE } from './proxyInitCode'
+import { CoWShedFactory__factory } from './generated'
 import { COW_SHED_712_TYPES, ICoWShedCall, ICoWShedOptions } from './types'
 
 export class CowShedHooks {
@@ -29,16 +22,11 @@ export class CowShedHooks {
     private customOptions?: ICoWShedOptions,
   ) {}
 
-  computeProxyAddress(user: string) {
-    const salt = defaultAbiCoder.encode(['address'], [user])
-    const initCodeHash = solidityKeccak256(
-      ['bytes', 'bytes'],
-      [
-        this.proxyCreationCode(),
-        defaultAbiCoder.encode(['address', 'address'], [this.getImplementationAddress(), user]),
-      ],
-    )
-    return getCreate2Address(this.getFactoryAddress(), salt, initCodeHash)
+  async computeProxyAddress(user: string, signer: Signer): Promise<string> {
+    // TODO: cache the instance
+    const coWShedFactory = CoWShedFactory__factory.connect(COW_SHED_FACTORY, signer)
+
+    return coWShedFactory.callStatic.proxyOf(user)
   }
 
   encodeExecuteHooksForFactory(
@@ -59,7 +47,7 @@ export class CowShedHooks {
     signingScheme: EcdsaSigningScheme,
   ): Promise<string> {
     const user = await signer.getAddress()
-    const proxy = this.computeProxyAddress(user)
+    const proxy = await this.computeProxyAddress(user, signer)
 
     const { domain, types, message } = this.infoToSign(calls, nonce, deadline, proxy)
 
@@ -83,10 +71,6 @@ export class CowShedHooks {
       verifyingContract: proxy,
     }
     return domain
-  }
-
-  proxyCreationCode() {
-    return this.customOptions?.proxyCreationCode ?? COW_SHED_PROXY_INIT_CODE
   }
 
   getFactoryAddress() {

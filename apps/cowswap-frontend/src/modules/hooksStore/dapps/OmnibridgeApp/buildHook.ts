@@ -1,13 +1,14 @@
 import { SigningScheme } from '@cowprotocol/contracts/src/ts/sign'
-import { CowHook } from '@cowprotocol/types'
 import type { Signer } from '@ethersproject/abstract-signer'
 import { MaxUint256 } from '@ethersproject/constants'
 
 import { ethers } from 'ethers'
 
-import { COW_SHED_FACTORY_ADDRESS, OMNIBRIDGE_ADDRESS, WEIROLL_ADDRESS } from './consts'
+import { OMNIBRIDGE_ADDRESS, WEIROLL_ADDRESS } from './consts'
 
 import { CowShedHooks } from '../../cowShed'
+import { COW_SHED_FACTORY } from '../../cowShed/consts'
+import { CowHook } from '../../types/hooks'
 import {
   CallType,
   encodeCommand,
@@ -109,7 +110,7 @@ export async function buildOmnibridgePostHook({
       target: tokenAddress,
       callData: fnCalldata(
         'approve(address,uint256)',
-        ABI_CODER.encode(['address', 'uint256'], [OMNIBRIDGE_ADDRESS, MaxUint256]),
+        ABI_CODER.encode(['address', 'uint256'], [OMNIBRIDGE_ADDRESS, MaxUint256.toHexString()]),
       ),
       value: 0n,
       isDelegateCall: false,
@@ -139,7 +140,7 @@ export async function buildOmnibridgePostHook({
   )
 
   // TODO: add estimation
-  const gasLimit = '300000'
+  const gasLimit = '850000'
 
-  return { target: COW_SHED_FACTORY_ADDRESS, callData: hooksCalldata, gasLimit }
+  return { target: COW_SHED_FACTORY, callData: hooksCalldata, gasLimit }
 }

@@ -5,7 +5,7 @@ const ABI_CODER = ethers.utils.defaultAbiCoder
 export const fnSelector = (sig: string) => ethers.utils.keccak256(ethers.utils.toUtf8Bytes(sig)).slice(0, 10)
 
 export const fnCalldata = (sig: string, encodedData: string) =>
-  ABI_CODER.encode(['bytes4', 'bytes'], [fnSelector(sig), encodedData])
+  ethers.utils.solidityPack(['bytes4', 'bytes'], [fnSelector(sig), encodedData])
 
 // see weiroll: https://github.com/weiroll/weiroll/blob/main/README.md
 
