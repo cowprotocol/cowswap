@@ -5,23 +5,6 @@ import { defineConfig } from 'vite'
 import dts from 'vite-plugin-dts'
 import viteTsConfigPaths from 'vite-tsconfig-paths'
 
-import { writeFileSync } from 'fs'
-import { join } from 'path'
-
-// Workaround to generate the declaration file for the bundle in a way that does not replace the import of the widget-lib with a local path
-// If you know a better way to do this, please let me know
-function generateBundleDeclarationFile(outDir: string) {
-  return {
-    name: 'generate-bundle-declaration-file',
-    writeBundle() {
-      const content = `export * from './lib/CowSwapWidget';\nexport * from '@cowprotocol/widget-lib';`
-      const outputPath = join(outDir, 'index.d.ts')
-      writeFileSync(outputPath, content)
-      console.log(`Generated declaration file at: ${outputPath}`)
-    },
-  }
-}
-
 export default defineConfig({
   cacheDir: '../../../node_modules/.vite/widget-react',
 
@@ -29,12 +12,12 @@ export default defineConfig({
     dts({
       entryRoot: 'src',
       tsconfigPath: joinPathFragments(__dirname, 'tsconfig.lib.json'),
+      pathsToAliases: false,
     }),
     react(),
     viteTsConfigPaths({
       root: '../../../',
     }),
-    generateBundleDeclarationFile('dist/libs/widget-react'),
   ],
 
   // Uncomment this if you are using workers.

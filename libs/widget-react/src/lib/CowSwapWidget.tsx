@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 import type { CowEventListeners } from '@cowprotocol/events'
-import { Command } from '@cowprotocol/types'
+import type { Command } from '@cowprotocol/types'
 import {
   CowSwapWidgetHandler,
   CowSwapWidgetParams,

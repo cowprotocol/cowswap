@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 
-import { latest } from '@cowprotocol/app-data'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import type { latest } from '@cowprotocol/app-data'
+import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { Command } from './common'
 
