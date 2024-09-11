@@ -15,6 +15,8 @@ import { PreHookButton } from '../PreHookButton'
 
 type HookPosition = 'pre' | 'post'
 
+console.log(ICON_HOOK)
+
 export function HooksStoreWidget() {
   const [selectedHookPosition, setSelectedHookPosition] = useState<HookPosition | null>(null)
   const [hookToEdit, setHookToEdit] = useState<string | undefined>(undefined)
