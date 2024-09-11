@@ -14,7 +14,10 @@ import { useSetupHooksStoreOrderParams } from '../../hooks/useSetupHooksStoreOrd
 import { HookRegistryList } from '../HookRegistryList'
 import { PostHookButton } from '../PostHookButton'
 import { PreHookButton } from '../PreHookButton'
+
 type HookPosition = 'pre' | 'post'
+
+console.log(ICON_HOOK)
 
 export function HooksStoreWidget() {
   const [selectedHookPosition, setSelectedHookPosition] = useState<HookPosition | null>(null)
