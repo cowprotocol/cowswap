@@ -1,6 +1,6 @@
-import { HookDappInternal, HookDappType } from '@cowprotocol/types'
-
 import buildImg from './build.png'
+
+import { HookDappInternal, HookDappType } from '../../types/hooks'
 
 import { BuildHookApp } from './index'
 

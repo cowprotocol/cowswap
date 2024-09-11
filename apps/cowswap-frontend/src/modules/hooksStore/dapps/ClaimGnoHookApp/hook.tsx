@@ -1,5 +1,6 @@
 import gnoLogo from '@cowprotocol/assets/cow-swap/network-gnosis-chain-logo.svg'
-import { HookDappInternal, HookDappType } from '@cowprotocol/types'
+
+import { HookDappInternal, HookDappType } from '../../types/hooks'
 
 import { ClaimGnoHookApp } from './index'
 

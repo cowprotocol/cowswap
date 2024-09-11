@@ -1,7 +1,7 @@
 import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
-import { AddHook, CowHookDetailsSerialized, HookDapp, HookDappBase } from '@cowprotocol/types'
+import { AddHook, CowHookDetailsSerialized, HookDapp, HookDappBase } from '../types/hooks'
 
 import { v4 as uuidv4 } from 'uuid'
 

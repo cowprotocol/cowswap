@@ -1,5 +1,5 @@
-import { SupportedChainId, EnrichedOrder, OrderKind } from '@cowprotocol/cow-sdk'
-import { TokenInfo, UiOrderType } from '@cowprotocol/types'
+import type { EnrichedOrder, OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
+import type { TokenInfo, UiOrderType } from '@cowprotocol/types'
 
 type BaseOrderPayload = {
   chainId: SupportedChainId

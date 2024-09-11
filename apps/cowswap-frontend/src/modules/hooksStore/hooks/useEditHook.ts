@@ -1,9 +1,8 @@
 import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
-import { CowHook, EditHook } from '@cowprotocol/types'
-
 import { setHooksAtom } from '../state/hookDetailsAtom'
+import { CowHook, EditHook } from '../types/hooks'
 
 export function useEditHook(): EditHook {
   const updateHooks = useSetAtom(setHooksAtom)

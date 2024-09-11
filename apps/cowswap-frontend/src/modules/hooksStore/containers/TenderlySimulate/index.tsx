@@ -2,7 +2,7 @@ import { atom, useAtom } from 'jotai'
 import { useCallback, useState } from 'react'
 
 import { errorToString } from '@cowprotocol/common-utils'
-import { CowHook } from '@cowprotocol/types'
+import { CowHook } from '../../types/hooks'
 import { ButtonOutlined, ExternalLink, LinkIcon, Loader } from '@cowprotocol/ui'
 
 import { ErrorText, ErrorWrapper, ExternalLinkContent, LoaderWrapper } from './styled'

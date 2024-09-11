@@ -1,9 +1,11 @@
 import ICON_INFO from '@cowprotocol/assets/cow-swap/info.svg'
-import { Command, HookDapp } from '@cowprotocol/types'
+import { Command } from '@cowprotocol/types'
 
 import SVG from 'react-inlinesvg'
 
 import * as styled from './styled'
+
+import { HookDapp } from '../../types/hooks'
 
 interface HookListItemProps {
   dapp: HookDapp
