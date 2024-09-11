@@ -12,6 +12,7 @@ import { useIsSellNative } from 'modules/trade'
 import { HookRegistryList } from '../HookRegistryList'
 import { PostHookButton } from '../PostHookButton'
 import { PreHookButton } from '../PreHookButton'
+
 type HookPosition = 'pre' | 'post'
 
 export function HooksStoreWidget() {
