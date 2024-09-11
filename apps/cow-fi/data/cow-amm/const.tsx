@@ -169,16 +169,16 @@ export const FAQ_DATA = [
     question: 'Who can create a CoW AMM pool (and how)?',
     answer: (
       <>
-        Anyone can create a CoW AMM pool permissionlessly. Docs are coming soon. In the meantime, you can{' '}
+        Anyone can create a CoW AMM pool permissionlessly. To learn how,{' '}
         <Link
-          href="https://cowprotocol.typeform.com/cow-amm-lpers"
+          href="https://cow.fi/learn/how-to-create-a-lvr-protected-liquidity-pool-on-cowamm"
           external
           utmContent="cow-amm-contact-us"
           onClick={() => clickOnCowAmm('Content link click - FAQ:Contact us')}
         >
-          contact us
-        </Link>{' '}
-        for instructions.
+          see our tutorial
+        </Link>
+        .
       </>
     ),
   },

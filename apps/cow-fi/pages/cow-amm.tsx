@@ -86,7 +86,7 @@ export default function Page() {
             <p>more TVL achieved than reference pool (beta phase)</p>
           </MetricsItem>
           <MetricsItem dividerColor="#9BD955">
-            <h2>$5M+</h2>
+            <h2>$15M+</h2>
             <p>liquidity protected from LVR (beta phase)</p>
           </MetricsItem>
           <MetricsItem>
@@ -99,7 +99,7 @@ export default function Page() {
             color="#194D05"
             margin="56px auto 0"
             gridFullWidth
-            href="https://dune.com/cowprotocol/cowamms"
+            href="https://dune.com/cowprotocol/cow-amms-v2"
             external
             linkType={LinkType.SectionTitleButton}
             utmContent={'cow-amm-metrics-button-view-all'}
