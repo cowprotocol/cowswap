@@ -20,7 +20,8 @@ import {
 import { useTradePriceImpact } from 'modules/trade'
 import { SellNativeWarningBanner } from 'modules/trade/containers/SellNativeWarningBanner'
 import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
-import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
+import { useGetTradeFormValidation } from 'modules/tradeFormValidation'
+import { TradeFormValidation } from 'modules/tradeFormValidation/types'
 import { useTradeQuote } from 'modules/tradeQuote'
 import { useShouldZeroApprove } from 'modules/zeroApproval'
 
@@ -122,7 +123,7 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
     (value: boolean) => {
       updateLimitOrdersWarnings({ isRateImpactAccepted: value })
     },
-    [updateLimitOrdersWarnings]
+    [updateLimitOrdersWarnings],
   )
 
   return isVisible ? (

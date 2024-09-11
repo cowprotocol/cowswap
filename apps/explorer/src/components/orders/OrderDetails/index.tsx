@@ -90,7 +90,7 @@ const tabItems = (
   isOrderLoading: boolean,
   onChangeTab: (tab: TabView) => void,
   isPriceInverted: boolean,
-  invertPrice: Command
+  invertPrice: Command,
 ): TabItemInterface[] => {
   const order = getOrderWithTxHash(_order, trades)
   const areTokensLoaded = order?.buyToken && order?.sellToken
@@ -201,7 +201,7 @@ export const OrderDetails: React.FC<Props> = (props) => {
 
   useEffect(
     () => updateQueryString(TAB_QUERY_PARAM_KEY, TabView[tabViewSelected].toLowerCase()),
-    [tabViewSelected, updateQueryString]
+    [tabViewSelected, updateQueryString],
   )
 
   if (!chainId) {
@@ -216,7 +216,7 @@ export const OrderDetails: React.FC<Props> = (props) => {
     <>
       <FlexContainerVar>
         <h1>{order && 'Order details'}</h1>{' '}
-        {order && <TitleUid textToCopy={order.uid} contentsToDisplay={<TruncatedText text={order.uid} />} />}
+        {order && <TitleUid textToCopy={order.uid} contentsToDisplay={<TruncatedText>{order.uid}</TruncatedText>} />}
       </FlexContainerVar>
 
       <ConnectionStatus />
@@ -244,7 +244,7 @@ export const OrderDetails: React.FC<Props> = (props) => {
             isOrderLoading,
             onChangeTab,
             isPriceInverted,
-            invertPrice
+            invertPrice,
           )}
           selectedTab={tabViewSelected}
           updateSelectedTab={(key: number): void => onChangeTab(key)}
