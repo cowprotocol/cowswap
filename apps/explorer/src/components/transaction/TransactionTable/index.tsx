@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 
 import { Command } from '@cowprotocol/types'
 import { TruncatedText } from '@cowprotocol/ui/pure/TruncatedText'
@@ -69,7 +69,7 @@ const RowTransaction: React.FC<RowProps> = ({ order, isPriceInverted }) => {
           textToCopy={uid}
           contentsToDisplay={
             <LinkWithPrefixNetwork to={`/orders/${order.uid}`} rel="noopener noreferrer" target="_self">
-              <TruncatedText text={uid} />
+              <TruncatedText>{uid}</TruncatedText>
             </LinkWithPrefixNetwork>
           }
         />

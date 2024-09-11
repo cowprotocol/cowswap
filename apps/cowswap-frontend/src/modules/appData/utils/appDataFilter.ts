@@ -1,7 +1,6 @@
 import { PERMIT_SIGNER } from '@cowprotocol/permit-utils'
-import { CowHook } from '@cowprotocol/types'
 
-import { OrderInteractionHooks } from '../types'
+import { CowHook, OrderInteractionHooks } from '../types'
 
 export type HooksFilter = (cowHook: CowHook) => boolean
 
@@ -25,7 +24,7 @@ export const filterPermitSignerPermit: HooksFilter = (cowHook: CowHook): boolean
 export function filterHooks(
   hooks: OrderInteractionHooks | undefined,
   preHooksFilter: HooksFilter | undefined,
-  postHooksFilter: HooksFilter | undefined
+  postHooksFilter: HooksFilter | undefined,
 ): OrderInteractionHooks | undefined {
   if (!hooks) {
     return hooks

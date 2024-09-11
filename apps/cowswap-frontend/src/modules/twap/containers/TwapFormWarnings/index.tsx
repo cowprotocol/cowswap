@@ -9,7 +9,8 @@ import { modifySafeHandlerAnalytics } from 'modules/analytics'
 import { SellNativeWarningBanner } from 'modules/trade/containers/SellNativeWarningBanner'
 import { useTradeRouteContext } from 'modules/trade/hooks/useTradeRouteContext'
 import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
-import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
+import { useGetTradeFormValidation } from 'modules/tradeFormValidation'
+import { TradeFormValidation } from 'modules/tradeFormValidation/types'
 import { useTradeQuoteFeeFiatAmount } from 'modules/tradeQuote'
 import { useShouldZeroApprove } from 'modules/zeroApproval'
 
@@ -63,7 +64,7 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
       modifySafeHandlerAnalytics(isFallbackHandlerSetupAccepted ? 'enabled' : 'disabled')
       updateTwapOrdersSettings({ isFallbackHandlerSetupAccepted })
     },
-    [updateTwapOrdersSettings]
+    [updateTwapOrdersSettings],
   )
 
   const shouldZeroApprove = useShouldZeroApprove(twapOrder?.sellAmount)

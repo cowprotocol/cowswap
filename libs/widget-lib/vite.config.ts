@@ -32,8 +32,8 @@ export default defineConfig(({ command }) => {
       dts({
         entryRoot: 'src',
         tsconfigPath: joinPathFragments(__dirname, 'tsconfig.lib.json'),
+        pathsToAliases: false,
       }),
-
       viteTsConfigPaths({
         root: '../../../',
       }),
