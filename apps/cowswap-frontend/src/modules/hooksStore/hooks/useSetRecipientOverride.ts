@@ -1,7 +1,8 @@
+import { useEffect } from 'react'
+
 import { useSwapActionHandlers } from 'modules/swap/hooks/useSwapState'
 
 import { useHooks } from './useHooks'
-import { useEffect } from 'react'
 
 // TODO: remove override when needed
 export function useSetRecipientOverride() {

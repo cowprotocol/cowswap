@@ -7,6 +7,7 @@ import { OmnibridgeApp } from './index'
 export const POST_OMNIBRIDGE_HOOK: HookDappInternal = {
   name: 'Omnibridge',
   description: 'Bridge from Gnosis Chain to Mainnet',
+  website: 'https://omni.legacy.gnosischain.com',
   type: HookDappType.INTERNAL,
   component: (props) => <OmnibridgeApp {...props} />,
   image: omniLogo,

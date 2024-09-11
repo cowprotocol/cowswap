@@ -1,4 +1,4 @@
-import { SigningScheme } from '@cowprotocol/contracts/src/ts/sign'
+import { SigningScheme } from '@cowprotocol/contracts'
 import type { Signer } from '@ethersproject/abstract-signer'
 import { MaxUint256 } from '@ethersproject/constants'
 

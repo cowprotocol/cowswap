@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
 
 import { useSwapFlowContext } from 'modules/swap/hooks/useSwapFlowContext'
