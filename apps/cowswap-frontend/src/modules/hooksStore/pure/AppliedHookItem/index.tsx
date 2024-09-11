@@ -1,5 +1,4 @@
 import TenderlyLogo from '@cowprotocol/assets/cow-swap/tenderly-logo.svg'
-import { CowHookDetailsSerialized } from '@cowprotocol/types'
 import { InfoTooltip } from '@cowprotocol/ui'
 
 import { Edit2, Trash2 } from 'react-feather'
@@ -8,6 +7,7 @@ import SVG from 'react-inlinesvg'
 import * as styledEl from './styled'
 
 import { TenderlySimulate } from '../../containers/TenderlySimulate'
+import { CowHookDetailsSerialized } from '../../types/hooks'
 
 interface HookItemProp {
   account: string | undefined
@@ -21,8 +21,8 @@ export function AppliedHookItem({ account, hookDetails, isPreHook, editHook, rem
   const { hook, dapp } = hookDetails
 
   return (
-    <styledEl.HookItemWrapper>
-      <styledEl.HookItemHeader>
+    <styledEl.HookItemWrapper data-uid={hookDetails.uuid}>
+      <styledEl.HookItemHeader title={hookDetails.uuid}>
         <styledEl.HookItemInfo>
           <img src={dapp.image} alt={dapp.name} />
           <span>{dapp.name}</span>
@@ -42,7 +42,7 @@ export function AppliedHookItem({ account, hookDetails, isPreHook, editHook, rem
           <div>
             <styledEl.SimulateHeader>
               <strong>Run a simulation</strong>
-              <InfoTooltip content="This transaction can be simulated before execution to ensure that it will be succeed, generating a detailed report of the transaction execution." />
+              <InfoTooltip content="This transaction can be simulated before execution to ensure that it will succeed, generating a detailed report of the transaction execution." />
             </styledEl.SimulateHeader>
             <styledEl.SimulateFooter>
               <span>Powered by</span>

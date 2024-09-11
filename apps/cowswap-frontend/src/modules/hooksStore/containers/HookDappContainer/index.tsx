@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import { Command, HookDapp, HookDappContext as HookDappContextType } from '@cowprotocol/types'
+import { Command } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
@@ -8,6 +8,7 @@ import { useAddHook } from '../../hooks/useAddHook'
 import { useEditHook } from '../../hooks/useEditHook'
 import { useHookById } from '../../hooks/useHookById'
 import { useOrderParams } from '../../hooks/useOrderParams'
+import { HookDapp, HookDappContext as HookDappContextType } from '../../types/hooks'
 import { isHookDappIframe } from '../../utils'
 
 interface HookDappContainerProps {

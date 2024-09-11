@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
-import { HookDappProps } from '@cowprotocol/types'
 import { ButtonPrimary } from '@cowprotocol/ui'
 import { BigNumber } from '@ethersproject/bignumber'
 
@@ -9,6 +8,8 @@ import { formatUnits } from 'ethers/lib/utils'
 import { SBC_DEPOSIT_CONTRACT_ADDRESS } from './const'
 import { Amount, ContentWrapper, ErrorLabel, Label, LoadingLabel, Wrapper } from './styled'
 import { useSBCDepositContract } from './useSBCDepositContract'
+
+import { HookDappProps } from '../../types/hooks'
 
 /**
  * Dapp that creates the hook to the connected wallet GNO Rewards.

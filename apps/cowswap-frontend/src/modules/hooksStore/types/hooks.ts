@@ -1,10 +1,9 @@
-import { ReactNode } from 'react'
+import type { ReactNode } from 'react'
 
-import { latest } from '@cowprotocol/app-data'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import type { latest } from '@cowprotocol/app-data'
+import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { Signer } from '@ethersproject/abstract-signer'
-
-import { Command } from './common'
+import type { Command } from '@cowprotocol/types'
 
 interface HookInfoPayload {
   hookDetails: CowHookDetails

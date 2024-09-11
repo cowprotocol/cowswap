@@ -1,24 +1,21 @@
 import { useSetAtom } from 'jotai'
-import { useAtomValue } from 'jotai/index'
 import { useCallback } from 'react'
 
-import { CowHook, EditHook } from '@cowprotocol/types'
-
-import { hooksAtom } from '../state/hookDetailsAtom'
+import { setHooksAtom } from '../state/hookDetailsAtom'
+import { CowHook, EditHook } from '../types/hooks'
 
 export function useEditHook(): EditHook {
-  const hooksState = useAtomValue(hooksAtom)
-  const updateHooks = useSetAtom(hooksAtom)
+  const updateHooks = useSetAtom(setHooksAtom)
 
   return useCallback(
     (uuid: string, update: CowHook, isPreHook: boolean) => {
-      const type = isPreHook ? 'preHooks' : 'postHooks'
-      const hookIndex = hooksState[type].findIndex((i) => i.uuid === uuid)
-
-      if (hookIndex < 0) return
-
       updateHooks((state) => {
-        const typeState = [...hooksState[type]]
+        const type = isPreHook ? 'preHooks' : 'postHooks'
+        const hookIndex = state[type].findIndex((i) => i.uuid === uuid)
+
+        if (hookIndex < 0) return state
+
+        const typeState = [...state[type]]
         typeState[hookIndex] = { ...typeState[hookIndex], hook: update }
 
         return {
@@ -27,6 +24,6 @@ export function useEditHook(): EditHook {
         }
       })
     },
-    [updateHooks, hooksState],
+    [updateHooks],
   )
 }
