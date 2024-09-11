@@ -1,9 +1,8 @@
-import { ReactNode } from 'react'
+import type { ReactNode } from 'react'
 
 import type { latest } from '@cowprotocol/app-data'
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
-
-import { Command } from './common'
+import type { Command } from '@cowprotocol/types'
 
 interface HookInfoPayload {
   hookDetails: CowHookDetails

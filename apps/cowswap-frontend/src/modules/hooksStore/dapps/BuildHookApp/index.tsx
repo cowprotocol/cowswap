@@ -1,9 +1,10 @@
 import { useCallback, useState } from 'react'
 
-import { CowHook, HookDappProps } from '@cowprotocol/types'
 import { ButtonPrimary } from '@cowprotocol/ui'
 
 import { ContentWrapper, Row, Wrapper } from './styled'
+
+import { CowHook, HookDappProps } from '../../types/hooks'
 
 const DEFAULT_HOOK_STATE = {
   target: '',

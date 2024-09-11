@@ -1,11 +1,12 @@
 import { useMemo } from 'react'
 
-import { Command, HookDapp, HookDappContext as HookDappContextType } from '@cowprotocol/types'
+import { Command } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useAddHook } from '../../hooks/useAddHook'
 import { useEditHook } from '../../hooks/useEditHook'
 import { useHookById } from '../../hooks/useHookById'
+import { HookDapp, HookDappContext as HookDappContextType } from '../../types/hooks'
 import { isHookDappIframe } from '../../utils'
 
 interface HookDappContainerProps {

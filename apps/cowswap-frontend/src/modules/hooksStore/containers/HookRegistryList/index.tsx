@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
-import { Command, HookDapp } from '@cowprotocol/types'
+import { Command } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { NewModal } from 'common/pure/NewModal'
@@ -11,6 +11,7 @@ import { POST_HOOK_REGISTRY, PRE_HOOK_REGISTRY } from '../../hookRegistry'
 import { useHookById } from '../../hooks/useHookById'
 import { HookDappDetails } from '../../pure/HookDappDetails'
 import { HookListItem } from '../../pure/HookListItem'
+import { HookDapp } from '../../types/hooks'
 import { HookDappContainer } from '../HookDappContainer'
 
 interface HookStoreModal {

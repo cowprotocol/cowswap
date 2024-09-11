@@ -1,5 +1,4 @@
 import TenderlyLogo from '@cowprotocol/assets/cow-swap/tenderly-logo.svg'
-import { CowHookDetailsSerialized } from '@cowprotocol/types'
 import { InfoTooltip } from '@cowprotocol/ui'
 
 import { Edit2, Trash2 } from 'react-feather'
@@ -8,6 +7,7 @@ import SVG from 'react-inlinesvg'
 import * as styledEl from './styled'
 
 import { TenderlySimulate } from '../../containers/TenderlySimulate'
+import { CowHookDetailsSerialized } from '../../types/hooks'
 
 interface HookItemProp {
   account: string | undefined
