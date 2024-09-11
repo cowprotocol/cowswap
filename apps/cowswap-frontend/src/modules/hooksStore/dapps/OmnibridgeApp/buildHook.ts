@@ -126,7 +126,8 @@ export async function buildOmnibridgePostHook({
       allowFailure: false,
     },
   ]
-  const nonce = ethers.utils.formatBytes32String('1')
+  // TODO fetch it from blockchain
+  const nonce = ethers.utils.formatBytes32String('2')
 
   // signing the hooks intent
   // TODO: support sc wallets
