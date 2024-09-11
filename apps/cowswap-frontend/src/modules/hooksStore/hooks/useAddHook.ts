@@ -1,11 +1,11 @@
 import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
-import { AddHook, CowHookDetailsSerialized, HookDapp, HookDappBase } from '../types/hooks'
 
 import { v4 as uuidv4 } from 'uuid'
 
 import { setHooksAtom } from '../state/hookDetailsAtom'
+import { AddHook, CowHookDetailsSerialized, HookDapp, HookDappBase } from '../types/hooks'
 import { isHookDappIframe } from '../utils'
 
 export function useAddHook(dapp: HookDapp, isPreHook: boolean): AddHook {
