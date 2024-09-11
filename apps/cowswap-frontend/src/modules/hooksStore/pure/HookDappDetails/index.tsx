@@ -1,3 +1,5 @@
+import { useMemo } from 'react'
+
 import { Command } from '@cowprotocol/types'
 import { HookDappType } from '@cowprotocol/types'
 import { HelpTooltip } from '@cowprotocol/ui'
@@ -13,34 +15,35 @@ interface HookDappDetailsProps {
 }
 
 export function HookDappDetails({ dapp, onSelect }: HookDappDetailsProps) {
-  const { description, version, website, type } = dapp
-
-  const tags = [
-    {
-      label: 'Hook version',
-      value: version,
-    },
-    {
-      label: 'Website',
-      link: website,
-    },
-    {
-      label: 'Type',
-      value: type === HookDappType.INTERNAL ? 'Native' : 'External',
-      tooltip:
-        type === HookDappType.INTERNAL
-          ? 'Native hooks are integrated code and part of the CoW Swap codebase.'
-          : 'External hooks load an iframe and are externally hosted code which needs to be independently verified by the user.',
-    },
-  ]
+  const tags = useMemo(() => {
+    const { version, website, type } = dapp
+    return [
+      {
+        label: 'Hook version',
+        value: version,
+      },
+      {
+        label: 'Website',
+        link: website,
+      },
+      {
+        label: 'Type',
+        value: type === HookDappType.INTERNAL ? 'Native' : 'External',
+        tooltip:
+          type === HookDappType.INTERNAL
+            ? 'Native hooks are integrated code and part of the CoW Swap codebase.'
+            : 'External hooks load an iframe and are externally hosted code which needs to be independently verified by the user.',
+      },
+    ]
+  }, [dapp])
 
   return (
     <styled.Wrapper>
       <HookDetailHeader dapp={dapp} onSelect={onSelect} />
       <styled.Body>
-        <p>{description}</p>
+        <p>{dapp.description}</p>
       </styled.Body>
-      {version && (
+      {dapp.version && (
         <styled.Tags>
           <h3>Information</h3>
           <table>
