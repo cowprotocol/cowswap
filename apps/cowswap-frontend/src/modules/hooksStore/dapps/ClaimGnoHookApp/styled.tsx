@@ -13,25 +13,24 @@ export const Wrapper = styled.div`
 
 export const Label = styled.span`
   color: var(${UI.COLOR_TEXT2});
+  margin: 0 0 10px;
+  display: inline-block;
 `
 
 export const ContentWrapper = styled.div`
-  flex-grow: 1;
-  justify-content: center;
-  align-items: center;
+display: flex;
   flex-flow: column wrap;
-
-  display: flex;
-  justify-content: center;
+  justify-content: space-between;
+  padding: 24px 0 0;
   align-items: center;
-
-  padding: 1em;
   text-align: center;
+  flex: 1 1 auto;
 `
 
 export const Amount = styled.div`
-  font-weight: 600;
-  margin-top: 0.3em;
+  font-weight: bold;
+  font-size: 36px;
+
 `
 
 export const ErrorLabel = styled.div`

@@ -1,7 +1,10 @@
 import React, { useCallback, useState } from 'react'
 
 import ICON_HOOK from '@cowprotocol/assets/cow-swap/hook.svg'
-import { BannerOrientation, InlineBanner } from '@cowprotocol/ui'
+import { BannerOrientation, DismissableInlineBanner } from '@cowprotocol/ui'
+
+import { DndProvider } from 'react-dnd'
+import { HTML5Backend } from 'react-dnd-html5-backend'
 
 import { SwapWidget } from 'modules/swap'
 import { useIsSellNative } from 'modules/trade'
@@ -45,14 +48,19 @@ export function HooksStoreWidget() {
 
   const TopContent = shouldNotUseHooks ? null : (
     <>
-      <InlineBanner orientation={BannerOrientation.Horizontal} customIcon={ICON_HOOK} iconSize={36}>
+      <DismissableInlineBanner
+        orientation={BannerOrientation.Horizontal}
+        customIcon={ICON_HOOK}
+        iconSize={36}
+        bannerId="hooks-store-banner-tradeContainer"
+      >
         <p>
           With hooks you can add specific actions <b>before</b> and <b>after</b> your swap. {/*TODO: update the link*/}
           <a href="https://docs.cow.fi/cow-protocol/reference/sdks/cow-sdk" target="_blank" rel="noopener noreferrer">
             Learn more.
           </a>
         </p>
-      </InlineBanner>
+      </DismissableInlineBanner>
       <PreHookButton onOpen={() => setSelectedHookPosition('pre')} onEditHook={onPreHookEdit} />
     </>
   )
@@ -61,5 +69,9 @@ export function HooksStoreWidget() {
     <PostHookButton onOpen={() => setSelectedHookPosition('post')} onEditHook={onPostHookEdit} />
   )
 
-  return <SwapWidget topContent={TopContent} bottomContent={BottomContent} />
+  return (
+    <DndProvider backend={HTML5Backend}>
+      <SwapWidget topContent={TopContent} bottomContent={BottomContent} />
+    </DndProvider>
+  )
 }
