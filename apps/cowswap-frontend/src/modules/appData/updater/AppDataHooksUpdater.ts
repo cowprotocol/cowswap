@@ -4,6 +4,8 @@ import { latest } from '@cowprotocol/app-data'
 import { PermitHookData } from '@cowprotocol/permit-utils'
 import { useIsSmartContractWallet } from '@cowprotocol/wallet'
 
+import { Nullish } from 'types'
+
 import { useHooks } from 'modules/hooksStore'
 import { useAccountAgnosticPermitHookData } from 'modules/permit'
 import { useDerivedTradeState, useHasTradeEnoughAllowance, useIsHooksTradeType, useIsSellNative } from 'modules/trade'
@@ -15,14 +17,17 @@ import { cowHookToTypedCowHook } from '../utils/typedHooks'
 
 type OrderInteractionHooks = latest.OrderInteractionHooks
 
-function useAgnosticPermitDataIfUserHasNoAllowance(): PermitHookData | undefined {
+function useAgnosticPermitDataIfUserHasNoAllowance(): Nullish<PermitHookData> {
   const hookData = useAccountAgnosticPermitHookData()
 
   // Remove permitData if the user has enough allowance for the current trade
   const hasTradeEnoughAllowance = useHasTradeEnoughAllowance()
+
+  if (hasTradeEnoughAllowance === undefined) return undefined
+
   const shouldUsePermit = hasTradeEnoughAllowance === false
 
-  return shouldUsePermit ? hookData : undefined
+  return shouldUsePermit ? hookData : null
 }
 
 export function AppDataHooksUpdater(): null {
@@ -48,6 +53,11 @@ export function AppDataHooksUpdater(): null {
     const postInteractionHooks = (postHooks || []).map<TypedCowHook>((hookDetails) =>
       cowHookToTypedCowHook(hookDetails.hook, 'hookStore'),
     )
+
+    // Permit data is not loaded yet, wait until it's loaded
+    if (permitData === undefined) {
+      return
+    }
 
     // Add permit hook
     if (permitData && !isSmartContractWallet) {
