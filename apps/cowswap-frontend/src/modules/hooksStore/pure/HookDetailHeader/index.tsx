@@ -1,6 +1,6 @@
-import { HookDapp } from '@cowprotocol/types'
-
 import * as styled from './styled'
+
+import { HookDapp } from '../../types/hooks'
 
 interface HookDetailHeaderProps {
   dapp: HookDapp

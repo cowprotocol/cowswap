@@ -1,12 +1,11 @@
 import { useMemo } from 'react'
 
 import { Command } from '@cowprotocol/types'
-import { HookDappType } from '@cowprotocol/types'
 import { HelpTooltip } from '@cowprotocol/ui'
 
 import * as styled from './styled'
 
-import { HookDapp } from '../../types/hooks'
+import { HookDapp, HookDappType } from '../../types/hooks'
 import { HookDetailHeader } from '../HookDetailHeader'
 
 interface HookDappDetailsProps {
