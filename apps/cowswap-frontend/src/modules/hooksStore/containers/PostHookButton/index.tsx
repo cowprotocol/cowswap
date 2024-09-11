@@ -5,6 +5,7 @@ import SVG from 'react-inlinesvg'
 
 import { useHooks } from '../../hooks/useHooks'
 import { useRemoveHook } from '../../hooks/useRemoveHook'
+import { useReorderHooks } from '../../hooks/useReorderHooks'
 import { AppliedHookItem } from '../../pure/AppliedHookItem'
 import { HookTooltip } from '../../pure/HookTooltip'
 import * as styledEl from '../PreHookButton/styled'
@@ -18,6 +19,7 @@ export function PostHookButton({ onOpen, onEditHook }: PostHookButtonProps) {
   const { account } = useWalletInfo()
   const { postHooks } = useHooks()
   const removeHook = useRemoveHook()
+  const moveHook = useReorderHooks('postHooks')
 
   return (
     <>
@@ -25,12 +27,14 @@ export function PostHookButton({ onOpen, onEditHook }: PostHookButtonProps) {
         <styledEl.HookList>
           {postHooks.map((hook, index) => (
             <AppliedHookItem
-              key={index}
+              key={hook.uuid}
               account={account}
               hookDetails={hook}
               removeHook={removeHook}
               editHook={onEditHook}
               isPreHook={false}
+              index={index}
+              moveHook={moveHook}
             />
           ))}
         </styledEl.HookList>

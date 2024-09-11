@@ -16,6 +16,7 @@ const ModalInner = styled.div`
   background: transparent;
   padding: 0;
   position: relative;
+ 
 `
 
 const Wrapper = styled.div<{
@@ -91,10 +92,9 @@ const BackButtonStyled = styled(BackButton)`
   left: 10px;
 `
 
-const NewModalContent = styled.div<{ padding?: string }>`
+const NewModalContent = styled.div<{ padding?: string, justifyContent?: string }>`
   display: flex;
-  align-items: center;
-  justify-content: center;
+  justify-content: ${({ justifyContent }) => justifyContent || 'center'};
   flex-flow: column wrap;
   flex: 1;
   width: 100%;
@@ -161,12 +161,14 @@ export interface NewModalProps {
   onDismiss?: Command
   children?: React.ReactNode
   modalMode?: boolean
+  justifyContent?: string
 }
 
 export function NewModal({
   maxWidth = 450,
   minHeight = 350,
   contentPadding,
+  justifyContent,
   modalMode,
   title,
   children,
@@ -175,7 +177,7 @@ export function NewModal({
   const onDismissCallback = useCallback(() => onDismiss?.(), [onDismiss])
 
   return (
-    <Wrapper maxWidth={maxWidth} minHeight={minHeight} modalMode={modalMode}>
+    <Wrapper maxWidth={maxWidth} minHeight={minHeight} modalMode={modalMode}  >
       <ModalInner>
         {!modalMode && <BackButtonStyled onClick={onDismissCallback} />}
         {title && (
@@ -189,7 +191,7 @@ export function NewModal({
           </Heading>
         )}
 
-        <NewModalContent className={modalMode ? 'modalMode' : ''} padding={contentPadding}>
+        <NewModalContent className={modalMode ? 'modalMode' : ''} padding={contentPadding} justifyContent={justifyContent}>
           {children}
         </NewModalContent>
       </ModalInner>

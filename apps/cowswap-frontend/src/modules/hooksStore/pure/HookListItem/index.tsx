@@ -1,6 +1,5 @@
 import ICON_INFO from '@cowprotocol/assets/cow-swap/info.svg'
 import { Command } from '@cowprotocol/types'
-import { TruncatedText } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
 
@@ -15,7 +14,7 @@ interface HookListItemProps {
 }
 
 export function HookListItem({ dapp, onSelect, onOpenDetails }: HookListItemProps) {
-  const { name, description, image, version } = dapp
+  const { name, descriptionShort, image, version } = dapp
 
   return (
     <styled.HookDappListItem>
@@ -24,17 +23,15 @@ export function HookListItem({ dapp, onSelect, onOpenDetails }: HookListItemProp
       <styled.HookDappDetails>
         <h3>{name}</h3>
         <p>
-          <TruncatedText width="24ch">{description}</TruncatedText> <styled.Version>{version}</styled.Version>
+          {descriptionShort}
+          <styled.Version>{version}</styled.Version>
         </p>
       </styled.HookDappDetails>
       <span>
-        <styled.LinkButton onClick={onSelect}>Add</styled.LinkButton>
-        <i
-          onClick={(e) => {
-            e.stopPropagation()
-            onOpenDetails()
-          }}
-        >
+        <styled.LinkButton onClick={onSelect} className="link-button">
+          Add
+        </styled.LinkButton>
+        <i onClick={onOpenDetails}>
           <SVG src={ICON_INFO} /> details
         </i>
       </span>

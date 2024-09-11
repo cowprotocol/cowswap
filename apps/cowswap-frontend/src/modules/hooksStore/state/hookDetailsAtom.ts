@@ -7,7 +7,7 @@ import { walletInfoAtom } from '@cowprotocol/wallet'
 
 import { CowHookDetailsSerialized } from '../types/hooks'
 
-type HooksStoreState = {
+export type HooksStoreState = {
   preHooks: CowHookDetailsSerialized[]
   postHooks: CowHookDetailsSerialized[]
 }
