@@ -1,6 +1,6 @@
-import { HookDappInternal, HookDappType } from '@cowprotocol/types'
-
 import omniLogo from './omnilogo.png'
+
+import { HookDappInternal, HookDappType } from '../../types/hooks'
 
 import { OmnibridgeApp } from './index'
 
