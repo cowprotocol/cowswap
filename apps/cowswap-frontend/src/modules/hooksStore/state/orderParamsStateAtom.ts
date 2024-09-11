@@ -1,5 +1,5 @@
 import { atom } from 'jotai'
 
-import { HookDappOrderParams } from '@cowprotocol/types'
+import { HookDappOrderParams } from '../types/hooks'
 
 export const orderParamsStateAtom = atom<HookDappOrderParams | null>(null)
