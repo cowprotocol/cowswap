@@ -1,10 +1,10 @@
 import { useCallback } from 'react'
 
 import { COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS, SupportedChainId } from '@cowprotocol/cow-sdk'
-import { CowHook } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { TENDERLY_SIMULATE_ENDPOINT_URL } from '../const'
+import { CowHook } from '../types/hooks'
 import { SimulationError, TenderlySimulatePayload, TenderlySimulation } from '../types/TenderlySimulation'
 
 export function useTenderlySimulate(): (params: CowHook) => Promise<TenderlySimulation | SimulationError> {
@@ -20,7 +20,7 @@ export function useTenderlySimulate(): (params: CowHook) => Promise<TenderlySimu
 
       return response as TenderlySimulation | SimulationError
     },
-    [account, chainId]
+    [account, chainId],
   )
 }
 

@@ -1,38 +1,49 @@
-import { useAtomValue } from 'jotai/index'
-import { useState } from 'react'
-
-import { ButtonSecondaryAlt } from '@cowprotocol/ui'
+import PLUS_ICON from '@cowprotocol/assets/cow-swap/plus.svg'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import SVG from 'react-inlinesvg'
+
+import { useHooks } from '../../hooks/useHooks'
 import { useRemoveHook } from '../../hooks/useRemoveHook'
-import { HookItem } from '../../pure/HookItem'
+import { useReorderHooks } from '../../hooks/useReorderHooks'
+import { AppliedHookItem } from '../../pure/AppliedHookItem'
 import { HookTooltip } from '../../pure/HookTooltip'
-import { hooksAtom } from '../../state/hookDetailsAtom'
-import { HookStoreModal } from '../HookStoreModal'
 import * as styledEl from '../PreHookButton/styled'
 
-export function PostHookButton() {
+export interface PostHookButtonProps {
+  onOpen(): void
+  onEditHook(uuid: string): void
+}
+
+export function PostHookButton({ onOpen, onEditHook }: PostHookButtonProps) {
   const { account } = useWalletInfo()
-  const [open, setOpen] = useState(false)
-  const hooks = useAtomValue(hooksAtom)
+  const { postHooks } = useHooks()
   const removeHook = useRemoveHook()
+  const moveHook = useReorderHooks('postHooks')
 
   return (
     <>
-      {hooks.postHooks && (
+      {postHooks && (
         <styledEl.HookList>
-          {hooks.postHooks.map((hook, index) => (
-            <HookItem key={index} account={account} hookDetails={hook} removeHook={removeHook} isPreHook={false} />
+          {postHooks.map((hook, index) => (
+            <AppliedHookItem
+              key={hook.uuid}
+              account={account}
+              hookDetails={hook}
+              removeHook={removeHook}
+              editHook={onEditHook}
+              isPreHook={false}
+              index={index}
+              moveHook={moveHook}
+            />
           ))}
         </styledEl.HookList>
       )}
       <styledEl.Wrapper>
-        <styledEl.ButtonGroup>
-          <ButtonSecondaryAlt onClick={() => setOpen(true)}>🪝 Add Post-hook</ButtonSecondaryAlt>{' '}
-          <HookTooltip isPreHook={false} />
-        </styledEl.ButtonGroup>
+        <styledEl.AddHookButton onClick={onOpen}>
+          <SVG src={PLUS_ICON} /> Add Post-Hook Action <HookTooltip isPreHook={false} />
+        </styledEl.AddHookButton>{' '}
       </styledEl.Wrapper>
-      {open && <HookStoreModal onDismiss={() => setOpen(false)} isPreHook={false} />}
     </>
   )
 }

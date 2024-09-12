@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.2](https://github.com/cowprotocol/cowswap/compare/wallet-v1.5.1...wallet-v1.5.2) (2024-09-05)
+
+
+### Bug Fixes
+
+* **wallet:** connect eagerly only once ([#4846](https://github.com/cowprotocol/cowswap/issues/4846)) ([65142d5](https://github.com/cowprotocol/cowswap/commit/65142d5b3d2d2d5ee750b5d6a18ef2b0702bc957))
+
 ## [1.5.1](https://github.com/cowprotocol/cowswap/compare/wallet-v1.5.0...wallet-v1.5.1) (2024-06-25)
 
 

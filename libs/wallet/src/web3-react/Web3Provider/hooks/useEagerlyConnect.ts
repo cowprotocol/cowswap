@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { getCurrentChainIdFromUrl, isInjectedWidget } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
@@ -29,10 +29,14 @@ async function connect(connector: Connector) {
 
 export function useEagerlyConnect(selectedWallet: ConnectionType | undefined) {
   const [tryConnectEip6963Provider, setTryConnectEip6963Provider] = useState(false)
+  const eagerlyConnectInitRef = useRef(false)
   const selectedEip6963ProviderInfo = useSelectedEip6963ProviderInfo()
   const setEip6963Provider = useSetEip6963Provider()
 
   useEffect(() => {
+    // Initialize EagerlyConnect once
+    if (eagerlyConnectInitRef.current) return
+
     const isIframe = window.top !== window.self
 
     // autoConnect is set to true in the e2e tests
@@ -62,6 +66,8 @@ export function useEagerlyConnect(selectedWallet: ConnectionType | undefined) {
 
       connect(connection.connector)
     }
+
+    eagerlyConnectInitRef.current = true
     // The dependency list is empty so this is only run once on mount
   }, [selectedWallet])
 

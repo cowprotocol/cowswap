@@ -169,6 +169,11 @@ export const ProgressImageWrapper = styled.div<{ bgColor?: string; padding?: str
   position: relative;
   overflow: hidden;
 
+  ${Media.upToSmall()} {
+    min-height: auto;
+    height: auto;
+  }
+
   > img,
   > svg {
     --size: 100%;
@@ -179,6 +184,10 @@ export const ProgressImageWrapper = styled.div<{ bgColor?: string; padding?: str
     object-fit: contain;
     padding: 0;
     margin: 0;
+  }
+
+  > div {
+    display: flex;
   }
 `
 
@@ -202,6 +211,10 @@ export const ProgressTopSection = styled.div`
   border-radius: 21px;
   background: var(${UI.COLOR_PAPER_DARKER});
   min-height: 230px;
+
+  ${Media.upToSmall()} {
+    min-height: auto;
+  }
 `
 
 export const OriginalOrderIntent = styled.span`
@@ -240,8 +253,14 @@ export const AnimatedTokensWrapper = styled.div`
   overflow: hidden;
 `
 
-export const TokenWrapper = styled.div<{ position: 'left' | 'center' | 'right'; bgColor?: string }>`
-  --size: 136px;
+export const TokenWrapper = styled.div<{
+  position: 'left' | 'center' | 'right'
+  bgColor?: string
+  size: number
+  sizeMobile: number
+}>`
+  --size: ${({ size }) => (size ? `${size}px` : '136px')};
+  --sizeMobile: ${({ sizeMobile }) => (sizeMobile ? `${sizeMobile}px` : 'var(--size)')};
   width: var(--size);
   height: var(--size);
   border-radius: var(--size);
@@ -260,6 +279,12 @@ export const TokenWrapper = styled.div<{ position: 'left' | 'center' | 'right'; 
   background: ${({ position, bgColor }) =>
     position === 'right' ? bgColor || `var(${UI.COLOR_PRIMARY})` : 'transparent'};
 
+  ${Media.upToSmall()} {
+    height: var(--sizeMobile);
+    width: var(--sizeMobile);
+    border-radius: var(--sizeMobile);
+  }
+
   ${({ position }) =>
     position === 'right' &&
     css`
@@ -274,22 +299,36 @@ export const TokenWrapper = styled.div<{ position: 'left' | 'center' | 'right'; 
         background: url(${IMAGE_STAR_SHINE}) no-repeat;
         background-size: 100% 100%;
         animation: star-shine 1s infinite;
+
+        ${Media.upToSmall()} {
+          --size: 18px;
+        }
       }
     `}
 
-  > span {
-    padding: ${({ position }) => (position === 'right' ? '45px 40px 34px' : '0')};
-  }
-
   @keyframes appear-left {
     to {
-      transform: translateX(-68px);
+      transform: translateX(calc(var(--size) / -2));
     }
   }
 
   @keyframes appear-right {
     to {
-      transform: translateX(68px);
+      transform: translateX(calc(var(--size) / 2));
+    }
+  }
+
+  ${Media.upToSmall()} {
+    @keyframes appear-left {
+      to {
+        transform: translateX(calc(var(--sizeMobile) / -2));
+      }
+    }
+
+    @keyframes appear-right {
+      to {
+        transform: translateX(calc(var(--sizeMobile) / 2));
+      }
     }
   }
 `
@@ -465,7 +504,9 @@ export const ShareButton = styled.button`
   right: 0;
   bottom: 6px;
   width: calc(100% - 12px);
-  transition: background 0.15s ease-in-out, color 0.15s ease-in-out;
+  transition:
+    background 0.15s ease-in-out,
+    color 0.15s ease-in-out;
 
   &:hover {
     background: var(${UI.COLOR_BUTTON_TEXT});
@@ -500,8 +541,8 @@ export const TransactionStatus = styled.div<{ status?: string; flexFlow?: string
     status === 'expired' || status === 'cancelled'
       ? `var(${UI.COLOR_ALERT_TEXT})`
       : status === 'success'
-      ? `var(${UI.COLOR_SUCCESS_TEXT})`
-      : `var(${UI.COLOR_TEXT})`};
+        ? `var(${UI.COLOR_SUCCESS_TEXT})`
+        : `var(${UI.COLOR_TEXT})`};
 
   > svg {
     --size: 28px;
@@ -512,8 +553,8 @@ export const TransactionStatus = styled.div<{ status?: string; flexFlow?: string
       status === 'expired' || status === 'cancelled'
         ? `var(${UI.COLOR_ALERT_BG})`
         : status === 'success'
-        ? `var(${UI.COLOR_SUCCESS_BG})`
-        : 'transparent'};
+          ? `var(${UI.COLOR_SUCCESS_BG})`
+          : 'transparent'};
     border-radius: var(--size);
     padding: 2px;
   }
@@ -781,8 +822,8 @@ export const NumberedElement = styled.div<{
     isCancelling
       ? `var(${UI.COLOR_DANGER_BG})`
       : isUnfillable
-      ? '#996815'
-      : customColor || (status === 'active' ? '#2196F3' : `var(${UI.COLOR_TEXT})`)};
+        ? '#996815'
+        : customColor || (status === 'active' ? '#2196F3' : `var(${UI.COLOR_TEXT})`)};
   border-radius: 50%;
   position: relative;
 `
@@ -922,8 +963,7 @@ export const CircleProgress = styled.circle<{ startAt: number; end: number }>`
   stroke-width: 6;
   stroke-linecap: round;
 
-  ${({ startAt, end }) =>
-    css`
-      animation: ${progressAnimation(startAt, end)} ${startAt}s linear infinite;
-    `};
+  ${({ startAt, end }) => css`
+    animation: ${progressAnimation(startAt, end)} ${startAt}s linear infinite;
+  `};
 `

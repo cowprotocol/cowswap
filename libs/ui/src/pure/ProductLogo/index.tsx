@@ -11,6 +11,7 @@ import { useTheme } from '@cowprotocol/common-hooks'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
+import { Media } from '../../consts'
 import { Color } from '../../consts'
 import { CowSwapTheme } from '../../types'
 
@@ -208,12 +209,20 @@ export interface LogoProps {
   overrideColor?: string // Optional override color
   overrideHoverColor?: string // Optional override hover color
   height?: number | string
+  heightMobile?: number | string
   href?: string // Optional href for the logo
   external?: boolean // Indicates if the href is an external link
 }
 
-export const ProductLogoWrapper = styled.span<{ color?: string; hoverColor?: string; height?: number | string }>`
+export const ProductLogoWrapper = styled.span<{
+  color?: string
+  hoverColor?: string
+  height?: number | string
+  heightMobile?: number | string
+}>`
   --height: ${({ height }) => (typeof height === 'number' ? `${height}px` : height || '28px')};
+  --heightMobile: ${({ heightMobile }) =>
+    typeof heightMobile === 'number' ? `${heightMobile}px` : heightMobile || 'var(--height)'};
   --color: ${({ color }) => color || 'inherit'};
   --hoverColor: ${({ hoverColor }) => hoverColor || 'inherit'};
 
@@ -225,6 +234,10 @@ export const ProductLogoWrapper = styled.span<{ color?: string; hoverColor?: str
   color: var(--color);
   height: var(--height);
   transition: color 0.2s ease-in-out;
+
+  ${Media.upToSmall()} {
+    height: var(--heightMobile);
+  }
 
   > a,
   > a > svg,
@@ -252,6 +265,7 @@ export const ProductLogo = ({
   overrideColor,
   overrideHoverColor,
   height,
+  heightMobile,
   href,
   external = false,
 }: LogoProps) => {
@@ -263,7 +277,12 @@ export const ProductLogo = ({
   const logoElement = <SVG src={logoInfo.src} description={logoInfo.alt} />
 
   return (
-    <ProductLogoWrapper color={initialColor} hoverColor={overrideHoverColor || 'inherit'} height={height}>
+    <ProductLogoWrapper
+      color={initialColor}
+      hoverColor={overrideHoverColor || 'inherit'}
+      height={height}
+      heightMobile={heightMobile}
+    >
       {href ? (
         <a href={href} target={external ? '_blank' : '_self'} rel={external ? 'noopener noreferrer' : undefined}>
           {logoElement}

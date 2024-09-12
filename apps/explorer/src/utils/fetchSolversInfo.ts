@@ -42,7 +42,7 @@ export async function fetchSolversInfo(network: number): Promise<SolversInfo> {
     SOLVERS_INFO_CACHE[network] = result
 
     return result
-  } catch (e) {
+  } catch {
     console.error(`Failed to fetch solvers info from '${url}'`)
     return []
   }

@@ -55,7 +55,7 @@ function unwatchTxChanges(pendingHashes: string[], chainId: number) {
   for (const hash of pendingHashes) {
     try {
       blocknativeSdk.unsubscribe(hash)
-    } catch (error: any) {
+    } catch {
       console.error('[CancelReplaceTxUpdater][unwatchTxChanges] Failed to unsubscribe', { hash })
     }
   }
@@ -68,7 +68,12 @@ export function CancelReplaceTxUpdater(): null {
   const accountLowerCase = account?.toLowerCase() || ''
   const pendingHashes = useAllTransactionHashes(
     (tx) =>
-      !!tx.hash && !tx.receipt && !tx.replacementType && !tx.linkedTransactionHash && tx.hashType === HashType.ETHEREUM_TX && tx.from.toLowerCase() === accountLowerCase
+      !!tx.hash &&
+      !tx.receipt &&
+      !tx.replacementType &&
+      !tx.linkedTransactionHash &&
+      tx.hashType === HashType.ETHEREUM_TX &&
+      tx.from.toLowerCase() === accountLowerCase,
   )
 
   useEffect(() => {

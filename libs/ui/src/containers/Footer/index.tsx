@@ -229,7 +229,7 @@ const FooterLink = ({ href, external, label, utmSource, utmContent, rootDomain, 
     : (() => {
         try {
           return `${new URL(href, `https://${finalRootDomain}`).pathname}`
-        } catch (e) {
+        } catch {
           return href.startsWith('/') ? href : `/${href}`
         }
       })()
@@ -252,7 +252,7 @@ const appendUtmParams = (
   utmContent: string | undefined,
   rootDomain: string,
   isExternal: boolean,
-  label: string | undefined
+  label: string | undefined,
 ) => {
   const finalRootDomain = rootDomain || (typeof window !== 'undefined' ? window.location.host : '')
 

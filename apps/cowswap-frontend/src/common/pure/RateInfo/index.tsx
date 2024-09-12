@@ -196,6 +196,8 @@ export function RateInfo({
 
     const [quoteCurrencyAddress, inputCurrencyAddress] = [getAddress(quoteCurrency), getAddress(inputCurrency)]
 
+    if (!quoteCurrencyAddress || !inputCurrencyAddress) return
+
     setCurrentIsInverted(quoteCurrencyAddress !== inputCurrencyAddress)
 
     if (setSmartQuoteSelectionOnce) {

@@ -37,7 +37,11 @@ import { useIsDarkMode } from 'legacy/state/user/hooks'
 
 import { Category, cowAnalytics } from 'modules/analytics'
 
-import { OrderProgressBarStepName, PROGRESS_BAR_TIMER_DURATION, SolverCompetition } from 'common/hooks/orderProgressBarV2'
+import {
+  OrderProgressBarStepName,
+  PROGRESS_BAR_TIMER_DURATION,
+  SolverCompetition,
+} from 'common/hooks/orderProgressBarV2'
 import { SurplusData } from 'common/hooks/useGetSurplusFiatValue'
 import { getIsCustomRecipient } from 'utils/orderUtils/getIsCustomRecipient'
 
@@ -78,7 +82,7 @@ function StepsWrapper({
   customStepTitles,
   customColor,
   isCancelling,
-  isUnfillable
+  isUnfillable,
 }: {
   steps: typeof STEPS
   currentStep: number
@@ -152,7 +156,7 @@ function StepComponent({
   extraContent,
   customColor,
   isUnfillable,
-  isCancelling
+  isCancelling,
 }: {
   status: string
   isFirst: boolean
@@ -355,20 +359,24 @@ function AnimatedTokens({
   sellToken: Currency | TokenWithLogo | null | undefined
   buyToken: Currency | TokenWithLogo | null | undefined
 }): JSX.Element {
+  const ICON_SIZE = 136
+  const MOBILE_ICON_SIZE = 72
+
   return (
     <styledEl.AnimatedTokensWrapper>
-      <styledEl.TokenWrapper position="left">
-        <TokenLogo token={sellToken} size={136} />
+      <styledEl.TokenWrapper position="left" size={ICON_SIZE} sizeMobile={MOBILE_ICON_SIZE}>
+        <TokenLogo token={sellToken} size={ICON_SIZE} sizeMobile={MOBILE_ICON_SIZE} />
       </styledEl.TokenWrapper>
-      <styledEl.TokenWrapper position="center">
-        <TokenLogo token={buyToken} size={136} />
+      <styledEl.TokenWrapper position="center" size={ICON_SIZE} sizeMobile={MOBILE_ICON_SIZE}>
+        <TokenLogo token={buyToken} size={ICON_SIZE} sizeMobile={MOBILE_ICON_SIZE} />
       </styledEl.TokenWrapper>
-      <styledEl.TokenWrapper position="right" bgColor={'#012F7A'}>
+      <styledEl.TokenWrapper position="right" bgColor={'#012F7A'} size={ICON_SIZE} sizeMobile={MOBILE_ICON_SIZE}>
         <ProductLogo
           variant={ProductVariant.CowSwap}
           theme={'dark'}
           overrideHoverColor={'#65D9FF'}
-          height={136}
+          height={58}
+          heightMobile={32}
           logoIconOnly
         />
       </styledEl.TokenWrapper>
@@ -381,21 +389,18 @@ function RenderProgressTopSection({
   order,
   countdown,
   chainId,
-  surplusData
+  surplusData,
 }: Pick<OrderProgressBarV2Props, 'stepName' | 'order' | 'countdown' | 'chainId' | 'surplusData'>) {
   const hideIntent = stepName === 'finished' || stepName === 'cancellationFailed'
 
-  const { randomImage, randomBenefit } = useMemo(
-    () => {
-      const benefits = CHAIN_SPECIFIC_BENEFITS[chainId]
+  const { randomImage, randomBenefit } = useMemo(() => {
+    const benefits = CHAIN_SPECIFIC_BENEFITS[chainId]
 
-      return ({
-        randomImage: SURPLUS_IMAGES[getRandomInt(0, SURPLUS_IMAGES.length - 1)],
-        randomBenefit: benefits[getRandomInt(0, benefits.length - 1)],
-      })
-    },
-    [chainId]
-  )
+    return {
+      randomImage: SURPLUS_IMAGES[getRandomInt(0, SURPLUS_IMAGES.length - 1)],
+      randomBenefit: benefits[getRandomInt(0, benefits.length - 1)],
+    }
+  }, [chainId])
 
   const { surplusPercent, showSurplus } = surplusData || {}
   const shouldShowSurplus = DEBUG_FORCE_SHOW_SURPLUS || showSurplus
@@ -421,7 +426,7 @@ function RenderProgressTopSection({
       case 'initial':
         return (
           <>
-            <styledEl.ProgressImageWrapper bgColor={'#65D9FF'}>
+            <styledEl.ProgressImageWrapper bgColor={'#65D9FF'} padding={'24px'}>
               <AnimatedTokens sellToken={order?.inputToken} buyToken={order?.outputToken} />
             </styledEl.ProgressImageWrapper>
           </>
@@ -659,23 +664,24 @@ function ExecutingStep(props: OrderProgressBarV2Props) {
 }
 
 const COW_SWAP_BENEFITS = [
-  "CoW Swap solvers search Uniswap, 1inch, Matcha, Sushi and more to find you the best price.",
-  "CoW Swap sets the standard for protecting against MEV attacks such as frontrunning and sandwiching.",
-  "CoW Swap was the first DEX to offer intent-based trading, gasless swaps, coincidences of wants, and many other DeFi innovations.",
-  "CoW Swap is the only exchange that matches Coincidences of Wants (CoWs): peer-to-peer swaps that save on settlement costs.",
-  "You can avoid price impact on large trades by using TWAP orders on CoW Swap.",
+  'CoW Swap solvers search Uniswap, 1inch, Matcha, Sushi and more to find you the best price.',
+  'CoW Swap sets the standard for protecting against MEV attacks such as frontrunning and sandwiching.',
+  'CoW Swap was the first DEX to offer intent-based trading, gasless swaps, coincidences of wants, and many other DeFi innovations.',
+  'CoW Swap is the only exchange that matches Coincidences of Wants (CoWs): peer-to-peer swaps that save on settlement costs.',
+  'You can avoid price impact on large trades by using TWAP orders on CoW Swap.',
   "Limit orders on CoW Swap capture surplus - so if the price moves in your favor, you're likely to get more than you asked for.",
   "On CoW Swap, you can set limit orders for balances you don't have yet.",
   "Limit orders on CoW Swap are free to place and cancel. That's unique in DeFi!",
-  "You can protect all your Ethereum transactions from MEV - not just trades on CoW Swap - by installing MEV Blocker.",
+  'You can protect all your Ethereum transactions from MEV - not just trades on CoW Swap - by installing MEV Blocker.',
   "Liquidity pools on CoW AMM grow faster than on other AMMs because they don't lose money to arbitrage bots.",
-  "CoW Swap has over 20 active solvers - more than any other exchange.",
+  'CoW Swap has over 20 active solvers - more than any other exchange.',
   "CoW Swap's robust solver competition protects your slippage from being exploited by MEV bots.",
-  "Advanced users can create complex, conditional orders directly through CoW Protocol. Read the docs for more info.",
-  "Unlike most other exchanges, CoW Swap doesn't charge you any fees if your trade fails."
+  'Advanced users can create complex, conditional orders directly through CoW Protocol. Read the docs for more info.',
+  "Unlike most other exchanges, CoW Swap doesn't charge you any fees if your trade fails.",
 ]
 
-const TRADE_ON_ARBITRUM_BENEFIT = "CoW Swap is now live on Arbitrum. Switch the network toggle in the nav bar for quick, cheap transactions."
+const TRADE_ON_ARBITRUM_BENEFIT =
+  'CoW Swap is now live on Arbitrum. Switch the network toggle in the nav bar for quick, cheap transactions.'
 
 const CHAIN_SPECIFIC_BENEFITS: Record<SupportedChainId, string[]> = {
   [SupportedChainId.MAINNET]: [TRADE_ON_ARBITRUM_BENEFIT, ...COW_SWAP_BENEFITS],
@@ -693,7 +699,7 @@ function getTwitterText(surplusAmount: string, surplusToken: string, orderKind: 
   const actionWord = isSellOrder(orderKind) ? 'got' : 'saved'
   const surplus = `${surplusAmount} ${surplusToken}`
   return encodeURIComponent(
-    `Hey, I just ${actionWord} an extra ${surplus} on @CoWSwap! 🐮💸\n\nStart swapping on swap.cow.fi`
+    `Hey, I just ${actionWord} an extra ${surplus} on @CoWSwap! 🐮💸\n\nStart swapping on swap.cow.fi`,
   )
 }
 
@@ -723,15 +729,7 @@ const SURPLUS_IMAGES = [
 ]
 
 function FinishedStep(props: OrderProgressBarV2Props) {
-  const {
-    stepName,
-    solverCompetition: solvers,
-    totalSolvers,
-    order,
-    surplusData,
-    chainId,
-    receiverEnsName,
-  } = props
+  const { stepName, solverCompetition: solvers, totalSolvers, order, surplusData, chainId, receiverEnsName } = props
   const [showAllSolvers, setShowAllSolvers] = useState(false)
 
   const { surplusFiatValue, surplusAmount, showSurplus } = surplusData || {}
@@ -929,7 +927,10 @@ function SolvingStep(props: OrderProgressBarV2Props) {
 
   return (
     <styledEl.ProgressContainer>
-      <RenderProgressTopSection {...props} countdown={isUnfillable || isDelayed || isSubmissionFailed || isSolved ? undefined : countdown} />
+      <RenderProgressTopSection
+        {...props}
+        countdown={isUnfillable || isDelayed || isSubmissionFailed || isSolved ? undefined : countdown}
+      />
       <StepsWrapper
         steps={STEPS}
         currentStep={1}

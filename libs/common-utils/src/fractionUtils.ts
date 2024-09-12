@@ -25,7 +25,7 @@ export class FractionUtils {
     try {
       const { numerator, denominator, decimals } = JSON.parse(s)
       return { value: new Fraction(numerator, denominator), decimals }
-    } catch (e: any) {
+    } catch {
       return null
     }
   }
@@ -47,7 +47,7 @@ export class FractionUtils {
         }
 
         return amount.toFixed(max) || ''
-      })()
+      })(),
     )
   }
 
@@ -88,7 +88,7 @@ export class FractionUtils {
     const adjustedFraction = FractionUtils.adjustDecimalsAtoms(
       fraction,
       inputCurrency.decimals,
-      outputCurrency.decimals
+      outputCurrency.decimals,
     )
 
     return new Price({
@@ -110,7 +110,7 @@ export class FractionUtils {
     return FractionUtils.adjustDecimalsAtoms(
       new Fraction(price.numerator, price.denominator),
       price.quoteCurrency.decimals,
-      price.baseCurrency.decimals
+      price.baseCurrency.decimals,
     )
   }
 
@@ -122,13 +122,13 @@ export class FractionUtils {
   static adjustDecimalsAtoms(
     value: CurrencyAmount<Currency>,
     decimalsA: number,
-    decimalsB: number
+    decimalsB: number,
   ): CurrencyAmount<Currency>
   static adjustDecimalsAtoms(value: Fraction, decimalsA: number, decimalsB: number): Fraction
   static adjustDecimalsAtoms(
     value: Fraction | CurrencyAmount<Currency>,
     decimalsA: number,
-    decimalsB: number
+    decimalsB: number,
   ): Fraction | CurrencyAmount<Currency> {
     if (decimalsA === decimalsB) {
       return value
@@ -164,7 +164,9 @@ export class FractionUtils {
    *
    * @param amount
    */
-  static amountToAtLeastOneWei(amount: CurrencyAmount<Token>): CurrencyAmount<Token> {
-    return JSBI.EQ(amount.quotient, 0) ? CurrencyAmount.fromRawAmount(amount.currency, 1) : amount
+  static amountToAtLeastOneWei<T extends Currency>(amount: Nullish<CurrencyAmount<T>>): Nullish<CurrencyAmount<T>> {
+    if (!amount) return null
+
+    return amount.equalTo(0) ? CurrencyAmount.fromRawAmount(amount.currency, 1) : amount
   }
 }

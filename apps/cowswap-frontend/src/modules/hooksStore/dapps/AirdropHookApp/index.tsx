@@ -17,46 +17,29 @@ import { Link } from './styled/Link'
 import { Row } from './styled/Row'
 import { Wrapper } from './styled/Wrapper'
 import { AirdropOption, IClaimData } from './types'
-
-import { HookDappContext } from '../../context'
+import { HookDappProps } from 'modules/hooksStore/types/hooks'
 
 const NAME = 'Airdrop'
 const DESCRIPTION = 'Claim an aidrop before swapping!'
 const IMAGE_URL =
   'https://static.vecteezy.com/system/resources/previews/017/317/302/original/an-icon-of-medical-airdrop-editable-and-easy-to-use-vector.jpg'
 
-export const PRE_AIRDROP: HookDappInternal = {
-  name: NAME,
-  description: DESCRIPTION,
-  type: HookDappType.INTERNAL,
-  path: '/hooks-dapps/pre/build',
-  image: IMAGE_URL,
-  component: <AirdropHookApp />,
-  version: '0.1.0',
-}
-
-export function AirdropHookApp() {
-  const hookDappContext = useContext(HookDappContext)
+export function AirdropHookApp({ context }: HookDappProps) {
   const [selectedAirdrop, setSelectedAirdrop] = useState<AirdropOption>()
   const { data: claimData, isValidating, error } = useClaimData(selectedAirdrop)
   const gasLimit = useGasLimit(claimData?.contract.address, claimData?.callData)
 
   const clickOnAddHook = useCallback(async () => {
-    if (!hookDappContext || !claimData || !gasLimit) return
+    if (!context || !claimData || !gasLimit) return
 
-    hookDappContext.addHook(
-      {
-        hook: {
-          target: claimData.contract.address,
-          callData: claimData.callData,
-          gasLimit,
-        },
-        dapp: PRE_AIRDROP,
-        outputTokens: [CurrencyAmount.fromRawAmount(claimData.token, claimData.amount)],
+    context.addHook({
+      hook: {
+        target: claimData.contract.address,
+        callData: claimData.callData,
+        gasLimit,
       },
-      true
-    )
-  }, [hookDappContext, claimData, gasLimit])
+    })
+  }, [context, claimData, gasLimit])
 
   const canClaim = claimData?.amount && !claimData?.isClaimed
 

@@ -57,7 +57,7 @@ async function actuallyCheckTokenIsPermittable(params: GetTokenPermitInfoParams)
   // Try to get eip712domain, which contains most of the info we'll need here
   try {
     domain = await getEip712Domain(tokenAddress, chainId, provider)
-  } catch (e) {
+  } catch {
     console.debug(`[checkTokenIsPermittable] Couldn't fetch eip712domain for token ${tokenAddress}`)
   }
 
@@ -74,7 +74,7 @@ async function actuallyCheckTokenIsPermittable(params: GetTokenPermitInfoParams)
     }
     console.debug(
       `[checkTokenIsPermittable] Couldn't fetch token name from the contract for token ${tokenAddress}, using provided '${tokenName}'`,
-      e
+      e,
     )
   }
 
@@ -144,7 +144,7 @@ async function actuallyCheckTokenIsPermittable(params: GetTokenPermitInfoParams)
         if (/invalid signature/.test(e) || e?.code === 'UNPREDICTABLE_GAS_LIMIT') {
           console.debug(
             `[checkTokenIsPermittable] Token ${tokenAddress} - ${tokenName} might be permittable, but it's not supported for now. Reason:`,
-            e?.reason
+            e?.reason,
           )
           return { ...UNSUPPORTED, name: tokenName }
         }
@@ -152,7 +152,7 @@ async function actuallyCheckTokenIsPermittable(params: GetTokenPermitInfoParams)
         // Maybe a temporary failure
         console.debug(
           `[checkTokenIsPermittable] Failed to estimate eip-2612 permit for ${tokenAddress} - ${tokenName}`,
-          e
+          e,
         )
         return { error: e.message || e.toString() }
       }
@@ -162,7 +162,7 @@ async function actuallyCheckTokenIsPermittable(params: GetTokenPermitInfoParams)
       // Not dai-like either, return error
       console.debug(
         `[checkTokenIsPermittable] Failed to estimate dai-like permit for ${tokenAddress} - ${tokenName}`,
-        e
+        e,
       )
       return { error: e.message || e.toString() }
     }
