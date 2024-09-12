@@ -51,7 +51,7 @@ export default function Page() {
   return (
     <Layout
       bgColor={Color.neutral90}
-      metaTitle="CoW AMM - The first MEV-capturing AMM"
+      metaTitle="CoW AMM - The first MEV-capturing AMM, now live on Balancer"
       metaDescription="CoW AMM protects LPs from LVR so they can provide liquidity with less risk and more return"
       ogImage={CONFIG.ogImageCOWAMM}
     >
@@ -59,7 +59,7 @@ export default function Page() {
         <HeroContainer variant="secondary" maxWidth={1300}>
           <HeroContent variant="secondary">
             <HeroSubtitle color={'#194D05'}>CoW AMM</HeroSubtitle>
-            <HeroTitle>The first MEV-capturing AMM</HeroTitle>
+            <HeroTitle>The first MEV-capturing AMM, now live on Balancer</HeroTitle>
             <HeroDescription>
               CoW AMM protects LPs from LVR so they can provide liquidity with less risk and more return
             </HeroDescription>
@@ -86,8 +86,8 @@ export default function Page() {
             <p>more TVL achieved than reference pool (beta phase)</p>
           </MetricsItem>
           <MetricsItem dividerColor="#9BD955">
-            <h2>$15M+</h2>
-            <p>liquidity protected from LVR (beta phase)</p>
+            <h2>$11M+</h2>
+            <p>liquidity protected from LVR</p>
           </MetricsItem>
           <MetricsItem>
             <h2>$90K+</h2>
