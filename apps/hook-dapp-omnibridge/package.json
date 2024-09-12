@@ -1,0 +1,26 @@
+{
+  "name": "@cow-hooks/omnibridge",
+  "version": "1.0.0",
+  "description": "CoW hook dapp: Omnibridge",
+  "main": "src/main.tsx",
+  "author": "",
+  "license": "ISC",
+  "scripts": {},
+  "browser": {
+    "crypto": false
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}
