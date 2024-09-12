@@ -1,4 +1,4 @@
-import { findIntervalKey } from '../hooks/usePreviewClaimableTokens'
+import { findIntervalKey } from '../hooks/useClaimData'
 
 describe('findIntervalKey', () => {
   const testIntervals = {

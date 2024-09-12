@@ -1,29 +1,20 @@
+import { VCow, vCowAbi } from '@cowprotocol/abis'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import useSWR from 'swr'
 
-import { useVirtualTokenAirdropContract } from './useAirdropContract'
+import { useContract } from 'common/hooks/useContract'
 
-import { AirdropOption } from '../constants'
+import { AirdropDataInfo, IClaimData, AirdropOption } from '../types'
+
+type IntervalsType = { [key: string]: string }
+
+type ChunkDataType = { [key: string]: AirdropDataInfo[] }
 
 export interface PreviewClaimableTokensParams {
   dataBaseUrl: string
   address: string
 }
-
-type IntervalsType = { [key: string]: string }
-
-export interface AirdropDataInfo {
-  index: number
-  type: string
-  amount: string
-  proof: any[]
-}
-export interface IClaimData extends AirdropDataInfo {
-  isClaimed: boolean
-}
-
-type ChunkDataType = { [key: string]: AirdropDataInfo[] }
 
 export const AIRDROP_PREVIEW_ERRORS = {
   NO_CLAIMABLE_TOKENS: "You don't have claimable tokens",
@@ -43,28 +34,32 @@ name4 > name3 > name2 > name1
 
 returns the interval key if the condition is checked, else undefined
 */
-export function findIntervalKey(name: string, intervals: IntervalsType) {
+export function findIntervalKey(name: string, intervals: IntervalsType): string | undefined {
   const keys = Object.keys(intervals)
-  const numberOfKeys = keys.length
-  let currentKeyIndex = 0
-  let found = false
-  while (!found) {
-    const currentKey = keys[currentKeyIndex]
-    if (currentKey <= name && intervals[currentKey] >= name) {
-      return currentKey
-      found = true
+
+  if (keys.length === 0) {
+    return
+  }
+
+  for (let i = 0; i < keys.length; i++) {
+    const key = keys[i]
+
+    if (key <= name && intervals[key] >= name) {
+      return key
     }
+
     // Quit at once when verifying that name will not be in the intervals
     // Imagine searching for "Albert" in a phone list, but you've finished the "A" section
-    if (currentKey > name) {
-      return undefined
+    if (key > name) {
+      return
     }
-    currentKeyIndex += 1
-    if (currentKeyIndex > numberOfKeys) {
-      return undefined
+
+    if (i === keys.length - 1) {
+      return
     }
   }
-  return undefined
+
+  return
 }
 
 const fetchIntervals = async (dataBaseUrl: string): Promise<IntervalsType> => {
@@ -106,26 +101,39 @@ const fetchAddressIsEligible = async ({
   return airDropData[0]
 }
 
-export const usePreviewClaimableTokens = (selectedAirdrop?: AirdropOption) => {
-  const airdropContract = useVirtualTokenAirdropContract(selectedAirdrop?.addressesMapping)
-  const { account } = useWalletInfo()
+export const useClaimData = (selectedAirdrop?: AirdropOption) => {
+  const { account, chainId } = useWalletInfo()
+  const airdropContract = useContract<VCow>(selectedAirdrop?.addressesMapping, vCowAbi)
 
   const fetchPreviewClaimableTokens = async ({
     dataBaseUrl,
     address,
   }: PreviewClaimableTokensParams): Promise<IClaimData> => {
-    const newClaimData = await fetchAddressIsEligible({ dataBaseUrl, address })
-    if (!newClaimData || !airdropContract || !newClaimData.index)
+    const isEligibleData = await fetchAddressIsEligible({ dataBaseUrl, address })
+    if (!isEligibleData || !airdropContract || !isEligibleData.index || !selectedAirdrop || !account)
       throw new Error(AIRDROP_PREVIEW_ERRORS.ERROR_FETCHING_DATA)
 
-    const isClaimed = await airdropContract?.isClaimed(newClaimData.index)
+    const isClaimed = await airdropContract?.isClaimed(isEligibleData.index)
+
+    const callData = airdropContract.interface.encodeFunctionData('claim', [
+      isEligibleData.index, //index
+      0, //claimType
+      account, //claimant
+      isEligibleData.amount, //claimableAmount
+      isEligibleData.amount, //claimedAmount
+      isEligibleData.proof, //merkleProof
+    ])
+
     return {
-      ...newClaimData,
+      ...isEligibleData,
       isClaimed,
+      callData,
+      contract: airdropContract,
+      token: selectedAirdrop.tokenMapping[chainId],
     }
   }
 
-  return useSWR<IClaimData | undefined>(
+  return useSWR<IClaimData | undefined, Error>(
     selectedAirdrop && account
       ? {
           dataBaseUrl: selectedAirdrop.dataBaseUrl,
