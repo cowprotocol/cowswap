@@ -1,8 +1,9 @@
 import { useSetAtom } from 'jotai'
-import { tradeStateFromUrlAtom } from 'modules/trade/state/tradeStateFromUrlAtom'
 import { useEffect } from 'react'
 
 import { useLocation, useParams } from 'react-router-dom'
+
+import { tradeStateFromUrlAtom } from 'modules/trade/state/tradeStateFromUrlAtom'
 
 import { TradeRawState } from '../../types/TradeRawState'
 
@@ -32,11 +33,8 @@ export function useSetupTradeStateFromUrl(): null {
       ...(recipient ? { recipient } : undefined),
       ...(recipientAddress ? { recipientAddress } : undefined),
     }
-    console.log(`trade state`, location.search, params, state)
 
     setState(state)
-
-    return () => console.log(`trade state unmounted`)
   }, [location.search, stringifiedParams, setState])
 
   return null
