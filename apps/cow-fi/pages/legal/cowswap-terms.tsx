@@ -572,8 +572,8 @@ export default function Page({ siteConfigData }: PageProps) {
                 <li>you are using the Interface at your own risk;</li>
                 <li>
                   the risks of using the Interface are substantial and include, but are not limited to, the ones set out
-                  in the ones set out in these Terms, which is hereby expressly incorporated into these Terms, and you
-                  are willing to accept the risk of loss associated therewith.
+                  in these Terms, which is hereby expressly incorporated into these Terms, and you are willing to accept
+                  the risk of loss associated therewith.
                 </li>
               </ul>
               <h2 id="limitation-of-liability">Limitation of Liability</h2>
