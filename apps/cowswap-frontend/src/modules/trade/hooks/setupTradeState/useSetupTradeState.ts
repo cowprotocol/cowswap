@@ -14,11 +14,13 @@ import { useResetStateWithSymbolDuplication } from './useResetStateWithSymbolDup
 import { useTradeStateFromUrl } from './useTradeStateFromUrl'
 
 import { useTradeState } from '../useTradeState'
+import { useSetupTradeStateFromUrl } from './useSetupTradeStateFromUrl'
 
 const INITIAL_CHAIN_ID_FROM_URL = getRawCurrentChainIdFromUrl()
 const EMPTY_TOKEN_ID = '_'
 
 export function useSetupTradeState(): void {
+  useSetupTradeStateFromUrl()
   const { chainId: providerChainId, account } = useWalletInfo()
   const prevProviderChainId = usePrevious(providerChainId)
 
@@ -35,7 +37,7 @@ export function useSetupTradeState(): void {
   const [isFirstLoad, setIsFirstLoad] = useState(true)
 
   const isWalletConnected = !!account
-  const urlChainId = tradeStateFromUrl.chainId
+  const urlChainId = tradeStateFromUrl?.chainId
   const prevTradeStateFromUrl = usePrevious(tradeStateFromUrl)
 
   const currentChainId = !urlChainId ? prevProviderChainId || SupportedChainId.MAINNET : urlChainId
@@ -52,7 +54,7 @@ export function useSetupTradeState(): void {
         console.error('Network switching error: ', error)
       })
     },
-    [switchNetwork]
+    [switchNetwork],
   )
 
   const debouncedSwitchNetworkInWallet = debounce(([targetChainId]: [SupportedChainId]) => {
@@ -113,6 +115,10 @@ export function useSetupTradeState(): void {
     if (isAlternativeModalVisible) {
       return
     }
+    // Not loaded yet, ignore
+    if (!tradeStateFromUrl) {
+      return
+    }
 
     const { inputCurrencyId, outputCurrencyId } = tradeStateFromUrl
     const providerAndUrlChainIdMismatch = currentChainId !== prevProviderChainId
@@ -143,7 +149,7 @@ export function useSetupTradeState(): void {
       console.debug(
         '[TRADE STATE]',
         'Remembering a new state from URL while changing chainId in provider',
-        tradeStateFromUrl
+        tradeStateFromUrl,
       )
 
       return
