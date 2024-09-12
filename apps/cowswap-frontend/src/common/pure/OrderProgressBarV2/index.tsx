@@ -24,6 +24,7 @@ import { TokenLogo } from '@cowprotocol/tokens'
 import { Command } from '@cowprotocol/types'
 import { ExternalLink, InfoTooltip, ProductLogo, ProductVariant, TokenAmount, UI } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import { Confetti } from '@cowprotocol/ui'
 
 import { AnimatePresence, motion } from 'framer-motion'
 import Lottie from 'lottie-react'
@@ -326,6 +327,7 @@ export function OrderProgressBarV2(props: OrderProgressBarV2Props) {
     }
   }, [currentStep, getDuration])
 
+  // Ensure StepComponent will be a valid React component or null
   let StepComponent: React.ComponentType<OrderProgressBarV2Props> | null = null
 
   if (currentStep === 'cancellationFailed' || currentStep === 'finished') {
@@ -334,9 +336,10 @@ export function OrderProgressBarV2(props: OrderProgressBarV2Props) {
     StepComponent = STEP_NAME_TO_STEP_COMPONENT[currentStep as keyof typeof STEP_NAME_TO_STEP_COMPONENT] || null
   }
 
-  return (
+  // Always return a value from the function
+  return StepComponent ? (
     <>
-      {StepComponent && <StepComponent {...props} stepName={currentStep} />}
+      <StepComponent {...props} stepName={currentStep} />
       {debugMode && (
         <styledEl.DebugPanel>
           <select value={debugStep} onChange={(e) => setDebugStep(e.target.value as OrderProgressBarStepName)}>
@@ -349,7 +352,7 @@ export function OrderProgressBarV2(props: OrderProgressBarV2Props) {
         </styledEl.DebugPanel>
       )}
     </>
-  )
+  ) : null // Fallback return value if StepComponent is not found
 }
 
 function AnimatedTokens({
@@ -722,6 +725,7 @@ const SURPLUS_IMAGES = [
 function FinishedStep(props: OrderProgressBarV2Props) {
   const { stepName, solverCompetition: solvers, totalSolvers, order, surplusData, chainId, receiverEnsName } = props
   const [showAllSolvers, setShowAllSolvers] = useState(false)
+  const [showConfetti, setShowConfetti] = useState(stepName === 'finished')
 
   const { surplusFiatValue, surplusAmount, showSurplus } = surplusData || {}
   const cancellationFailed = stepName === 'cancellationFailed'
@@ -771,13 +775,29 @@ function FinishedStep(props: OrderProgressBarV2Props) {
     })
   }, [shouldShowSurplus])
 
-  // Early return if order is not set
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout> | undefined
+
+    if (stepName === 'finished') {
+      setShowConfetti(true)
+      timer = setTimeout(() => setShowConfetti(false), 5000)
+    }
+
+    return () => {
+      if (timer) {
+        clearTimeout(timer)
+      }
+    }
+  }, [stepName])
+
+  // If order is not set, return null
   if (!order) {
     return null
   }
 
   return (
     <styledEl.FinishedStepContainer>
+      {showConfetti && <Confetti start={true} />}
       {cancellationFailed && (
         <styledEl.CancellationFailedBanner>
           <b>Cancellation failed:</b> The order was executed before it could be cancelled.
