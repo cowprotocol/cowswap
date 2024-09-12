@@ -46,7 +46,7 @@ import { SurplusData } from 'common/hooks/useGetSurplusFiatValue'
 import { getIsCustomRecipient } from 'utils/orderUtils/getIsCustomRecipient'
 
 import * as styledEl from './styled'
-const IS_DEBUG_MODE = false
+const IS_DEBUG_MODE = true
 const DEBUG_FORCE_SHOW_SURPLUS = false
 
 export type OrderProgressBarV2Props = {
@@ -484,15 +484,6 @@ function RenderProgressTopSection({
           <styledEl.ProgressTopSection>
             <styledEl.ProgressImageWrapper bgColor={'#65D9FF'} padding={'10px'} gap={'10px'}>
               <styledEl.CowImage>
-                <styledEl.ShareButton
-                  onClick={() => {
-                    shareOnTwitter()
-                    trackShareClick()
-                  }}
-                >
-                  <SVG src={ICON_SOCIAL_X} />
-                  <span>Share this {shouldShowSurplus ? 'win' : 'tip'}!</span>
-                </styledEl.ShareButton>
                 <SVG src={randomImage} />
               </styledEl.CowImage>
               <styledEl.FinishedImageContent>
@@ -756,6 +747,30 @@ function FinishedStep(props: OrderProgressBarV2Props) {
 
   const isDarkMode = useIsDarkMode()
 
+  const { randomImage, randomBenefit } = useMemo(() => {
+    const benefits = CHAIN_SPECIFIC_BENEFITS[chainId]
+
+    return {
+      randomImage: SURPLUS_IMAGES[getRandomInt(0, SURPLUS_IMAGES.length - 1)],
+      randomBenefit: benefits[getRandomInt(0, benefits.length - 1)],
+    }
+  }, [chainId])
+
+  const shareOnTwitter = useCallback(() => {
+    const twitterUrl = shouldShowSurplus
+      ? getTwitterShareUrl(surplusData, order)
+      : getTwitterShareUrlForBenefit(randomBenefit)
+    window.open(twitterUrl, '_blank', 'noopener,noreferrer')
+  }, [shouldShowSurplus, surplusData, order, randomBenefit])
+
+  const trackShareClick = useCallback(() => {
+    cowAnalytics.sendEvent({
+      category: Category.PROGRESS_BAR,
+      action: 'Click Share Button',
+      label: shouldShowSurplus ? 'Surplus' : 'Benefit',
+    })
+  }, [shouldShowSurplus])
+
   // Early return if order is not set
   if (!order) {
     return null
@@ -768,7 +783,6 @@ function FinishedStep(props: OrderProgressBarV2Props) {
           <b>Cancellation failed:</b> The order was executed before it could be cancelled.
         </styledEl.CancellationFailedBanner>
       )}
-      <RenderProgressTopSection {...props} />
 
       <styledEl.ConclusionContent>
         <styledEl.TransactionStatus flexFlow="column" margin={'0 auto 24px'}>
@@ -891,6 +905,17 @@ function FinishedStep(props: OrderProgressBarV2Props) {
           </styledEl.SolverRankings>
         )}
       </styledEl.ConclusionContent>
+
+      <RenderProgressTopSection {...props} />
+      <styledEl.ShareButton
+        onClick={() => {
+          shareOnTwitter()
+          trackShareClick()
+        }}
+      >
+        <SVG src={ICON_SOCIAL_X} />
+        <span>Share this {shouldShowSurplus ? 'win' : 'tip'}!</span>
+      </styledEl.ShareButton>
     </styledEl.FinishedStepContainer>
   )
 }

@@ -1,4 +1,4 @@
-import { Media, UI } from '@cowprotocol/ui'
+import { ButtonOutlined, Media, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 import { CloseIcon } from 'theme'
@@ -36,6 +36,12 @@ export const ButtonCustom = styled.button<{ cowGame?: boolean }>`
     color: inherit;
     text-decoration: none;
   }
+`
+
+export const ButtonSecondary = styled(ButtonOutlined)`
+  width: 100%;
+  min-height: 46px;
+  font-size: 16px;
 `
 
 export const ButtonGroup = styled.div`

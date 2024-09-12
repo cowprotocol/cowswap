@@ -1,6 +1,6 @@
 import IMAGE_STAR_SHINE from '@cowprotocol/assets/cow-swap/star-shine.svg'
 import { SingleLetterLogoWrapper } from '@cowprotocol/tokens'
-import { Font, LinkStyledButton, Media, UI } from '@cowprotocol/ui'
+import { ButtonPrimary, Font, LinkStyledButton, Media, UI } from '@cowprotocol/ui'
 
 import styled, { css, keyframes } from 'styled-components/macro'
 
@@ -363,7 +363,7 @@ export const FinishedStepContainer = styled.div`
   display: flex;
   flex-flow: column wrap;
   align-items: center;
-  gap: 10px;
+  gap: 16px;
   padding: 0;
   width: 100%;
 
@@ -486,37 +486,8 @@ export const FinishedLogo = styled.div`
   }
 `
 
-export const ShareButton = styled.button`
-  background: var(${UI.COLOR_PRIMARY});
-  color: var(${UI.COLOR_BUTTON_TEXT});
-  border: none;
-  padding: 10px 20px;
-  border-radius: 20px;
-  cursor: pointer;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  font-size: 17px;
-  z-index: 2;
-  position: absolute;
-  left: 6px;
-  right: 0;
-  bottom: 6px;
-  width: calc(100% - 12px);
-  transition:
-    background 0.15s ease-in-out,
-    color 0.15s ease-in-out;
-
-  &:hover {
-    background: var(${UI.COLOR_BUTTON_TEXT});
-    color: var(${UI.COLOR_PRIMARY});
-  }
-
-  ${Media.upToSmall()} {
-    border: 1px solid var(${UI.COLOR_TEXT});
-    justify-content: center;
-  }
+export const ShareButton = styled(ButtonPrimary)`
+  gap: 10px;
 
   > svg {
     --size: 17px;
@@ -795,7 +766,7 @@ export const CancellationFailedBanner = styled.div`
   background-color: var(${UI.COLOR_DANGER_BG});
   color: var(${UI.COLOR_DANGER_TEXT});
   padding: 10px;
-  margin-top: 10px;
+  margin: 0 auto;
   border-radius: 16px;
   text-align: center;
   font-size: 15px;
