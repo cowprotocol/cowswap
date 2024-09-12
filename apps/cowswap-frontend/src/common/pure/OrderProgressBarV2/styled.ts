@@ -368,9 +368,6 @@ export const FinishedStepContainer = styled.div`
   width: 100%;
 
   ${Media.upToSmall()} {
-    flex-flow: column-reverse;
-    gap: 30px;
-
     ${ProgressImageWrapper} {
       height: auto;
       max-height: initial;

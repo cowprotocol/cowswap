@@ -91,6 +91,10 @@ export const Header = styled.div`
   width: 100%;
   padding: 16px 0;
   z-index: 20;
+
+  ${Media.upToSmall()} {
+    border-radius: 0;
+  }
 `
 
 export const ActionsWrapper = styled.div`
