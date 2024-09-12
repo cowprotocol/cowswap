@@ -192,6 +192,8 @@
     "react-copy-to-clipboard": "^5.0.2",
     "react-cytoscapejs": "^1.2.1",
     "react-device-detect": "^1.6.2",
+    "react-dnd": "^16.0.1",
+    "react-dnd-html5-backend": "^16.0.1",
     "react-dom": "18.2.0",
     "react-feather": "^2.0.10",
     "react-ga4": "^1.4.1",

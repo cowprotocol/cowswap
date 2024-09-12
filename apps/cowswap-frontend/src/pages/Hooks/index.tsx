@@ -1,7 +1,13 @@
 import React from 'react'
 
-import { SwapPage } from 'pages/Swap'
+import { HooksStoreWidget } from 'modules/hooksStore'
+import { SwapUpdaters } from 'modules/swap'
 
 export function HooksPage() {
-  return <SwapPage hooksEnabled={true} />
+  return (
+    <>
+      <SwapUpdaters />
+      <HooksStoreWidget />
+    </>
+  )
 }

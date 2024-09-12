@@ -1,49 +1,51 @@
-import { useAtomValue } from 'jotai/index'
-import { useState } from 'react'
-
-import { ButtonSecondaryAlt } from '@cowprotocol/ui'
+import PLUS_ICON from '@cowprotocol/assets/cow-swap/plus.svg'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { Link } from 'legacy/components/Link'
+import SVG from 'react-inlinesvg'
 
 import * as styledEl from './styled'
 
+import { useHooks } from '../../hooks/useHooks'
 import { useRemoveHook } from '../../hooks/useRemoveHook'
-import { HookItem } from '../../pure/HookItem'
+import { useReorderHooks } from '../../hooks/useReorderHooks'
+import { AppliedHookItem } from '../../pure/AppliedHookItem'
 import { HookTooltip } from '../../pure/HookTooltip'
-import { hooksAtom } from '../../state/hookDetailsAtom'
-import { HookStoreModal } from '../HookStoreModal'
 
-export function PreHookButton() {
+export interface PreHookButtonProps {
+  onOpen(): void
+  onEditHook(uuid: string): void
+}
+
+export function PreHookButton({ onOpen, onEditHook }: PreHookButtonProps) {
   const { account } = useWalletInfo()
-  const [open, setOpen] = useState(false)
-  const hooks = useAtomValue(hooksAtom)
+  const { preHooks } = useHooks()
   const removeHook = useRemoveHook()
+  const moveHook = useReorderHooks('preHooks')
+
   return (
     <>
-      {hooks.preHooks.length > 0 && (
+      {preHooks.length > 0 && (
         <styledEl.HookList>
-          {hooks.preHooks.map((hookDetails, index) => (
-            <HookItem key={index} account={account} hookDetails={hookDetails} removeHook={removeHook} isPreHook />
+          {preHooks.map((hookDetails, index) => (
+            <AppliedHookItem
+              key={hookDetails.uuid}
+              index={index}
+              account={account}
+              hookDetails={hookDetails}
+              removeHook={removeHook}
+              editHook={onEditHook}
+              moveHook={moveHook}
+              isPreHook
+            />
           ))}
         </styledEl.HookList>
       )}
 
       <styledEl.Wrapper>
-        <styledEl.ButtonGroup>
-          <ButtonSecondaryAlt onClick={() => setOpen(true)}>🪝 Add Pre-hook</ButtonSecondaryAlt>{' '}
-          <HookTooltip isPreHook />
-        </styledEl.ButtonGroup>
-        <styledEl.List>
-          <li>
-            📚 <Link href="https://docs.cow.fi/cow-protocol/reference/sdks/cow-sdk">Learn more about hooks</Link>
-          </li>
-          <li>
-            🪝 <Link href="https://docs.cow.fi/cow-protocol/reference/sdks/cow-sdk">Create your own hook</Link>
-          </li>
-        </styledEl.List>
+        <styledEl.AddHookButton onClick={onOpen}>
+          <SVG src={PLUS_ICON} /> Add Pre-Hook Action <HookTooltip isPreHook />
+        </styledEl.AddHookButton>{' '}
       </styledEl.Wrapper>
-      {open && <HookStoreModal onDismiss={() => setOpen(false)} isPreHook />}
     </>
   )
 }

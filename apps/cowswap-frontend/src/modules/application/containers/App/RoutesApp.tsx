@@ -83,7 +83,7 @@ export function RoutesApp() {
         <Route path="profile" element={<Navigate to={RoutesEnum.ACCOUNT} />} />
 
         {/*Swap*/}
-        <Route path={RoutesEnum.SWAP} element={<SwapPage hooksEnabled={false} />} />
+        <Route path={RoutesEnum.SWAP} element={<SwapPage />} />
         <Route path={RoutesEnum.HOOKS} element={<HooksPage />} />
         <Route path={RoutesEnum.SEND} element={<RedirectPathToSwapOnly />} />
 
