@@ -1,4 +1,4 @@
-import { CowEventListeners } from '@cowprotocol/events'
+import { CowWidgetEventListeners } from '@cowprotocol/events'
 
 import { IframeCowEventEmitter } from './IframeCowEventEmitter'
 import { IframeRpcProviderBridge } from './IframeRpcProviderBridge'
@@ -29,7 +29,7 @@ const HEIGHT_THRESHOLD = 20
  */
 export interface CowSwapWidgetHandler {
   updateParams: (params: CowSwapWidgetParams) => void
-  updateListeners: (newListeners?: CowEventListeners) => void
+  updateListeners: (newListeners?: CowWidgetEventListeners) => void
   updateProvider: (newProvider?: EthereumProvider) => void
   destroy: () => void
 }
@@ -86,7 +86,7 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
       currentParams = newParams
       updateParams(iframeWindow, currentParams, provider)
     },
-    updateListeners: (newListeners?: CowEventListeners) => iFrameCowEventEmitter.updateListeners(newListeners),
+    updateListeners: (newListeners?: CowWidgetEventListeners) => iFrameCowEventEmitter.updateListeners(newListeners),
     updateProvider: (newProvider) => {
       provider = newProvider
       iframeRpcProviderBridge = updateProvider(iframeWindow, iframeRpcProviderBridge, newProvider)
@@ -124,7 +124,7 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
 function updateProvider(
   iframe: Window,
   iframeRpcProviderBridge: IframeRpcProviderBridge | null,
-  newProvider?: EthereumProvider
+  newProvider?: EthereumProvider,
 ): IframeRpcProviderBridge {
   // Disconnect from the previous provider bridge
   if (iframeRpcProviderBridge) {

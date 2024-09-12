@@ -1,5 +1,5 @@
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { CowEventListeners, CowEventPayloadMap, CowEvents } from '@cowprotocol/events'
+import { CowWidgetEventListeners, CowWidgetEventPayloadMap, CowWidgetEvents } from '@cowprotocol/events'
 export type { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 export type PerTradeTypeConfig<T> = Partial<Record<TradeType, T>>
@@ -32,7 +32,7 @@ export enum WidgetMethodsListen {
 export interface CowSwapWidgetProps {
   params: CowSwapWidgetParams
   provider?: EthereumProvider
-  listeners?: CowEventListeners
+  listeners?: CowWidgetEventListeners
 }
 
 export interface JsonRpcRequest {
@@ -317,7 +317,7 @@ export interface CowSwapWidgetParams {
 // Define types for event payloads
 export interface WidgetMethodsEmitPayloadMap {
   [WidgetMethodsEmit.ACTIVATE]: void
-  [WidgetMethodsEmit.EMIT_COW_EVENT]: EmitCowEventPayload<CowEvents>
+  [WidgetMethodsEmit.EMIT_COW_EVENT]: EmitCowEventPayload<CowWidgetEvents>
   [WidgetMethodsEmit.UPDATE_HEIGHT]: UpdateWidgetHeightPayload
   [WidgetMethodsEmit.SET_FULL_HEIGHT]: SetWidgetFullHeightPayload
   [WidgetMethodsEmit.PROVIDER_RPC_REQUEST]: ProviderRpcRequestPayload
@@ -360,9 +360,9 @@ export interface SetWidgetFullHeightPayload {
   isUpToSmall?: boolean
 }
 
-export interface EmitCowEventPayload<T extends CowEvents> {
+export interface EmitCowEventPayload<T extends CowWidgetEvents> {
   event: T
-  payload: CowEventPayloadMap[T]
+  payload: CowWidgetEventPayloadMap[T]
 }
 
 export type WidgetMethodsEmitListener<T extends WidgetMethodsEmit> = T extends WidgetMethodsEmit
