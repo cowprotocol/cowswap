@@ -46,7 +46,7 @@ export async function safeBundleApprovalFlow(
   } = input
 
   const { chainId } = context
-  const { appData, account, isSafeWallet, recipientAddressOrName, inputAmount, outputAmount, kind } = orderParams
+  const { account, isSafeWallet, recipientAddressOrName, inputAmount, outputAmount, kind } = orderParams
   const tradeAmounts = { inputAmount, outputAmount }
 
   tradeFlowAnalytics.approveAndPresign(swapFlowAnalyticsContext)
