@@ -785,12 +785,12 @@ function FinishedStep(props: OrderProgressBarV2Props) {
       )}
 
       <styledEl.ConclusionContent>
-        <styledEl.TransactionStatus flexFlow="column" margin={'0 auto 24px'}>
+        <styledEl.TransactionStatus margin={'0 auto 24px'}>
           <Lottie
             animationData={isDarkMode ? LOTTIE_GREEN_CHECKMARK_DARK : LOTTIE_GREEN_CHECKMARK}
             loop={false}
             autoplay
-            style={{ width: '56px', height: '56px' }}
+            style={{ width: '36px', height: '36px' }}
           />
           Transaction completed!
         </styledEl.TransactionStatus>

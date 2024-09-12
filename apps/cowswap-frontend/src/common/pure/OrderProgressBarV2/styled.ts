@@ -534,7 +534,7 @@ export const SolverRankings = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
-  margin: 52px auto 0;
+  margin: 32px auto 0;
 
   > h3 {
     font-size: 17px;
