@@ -11,10 +11,10 @@ import { useIsAlternativeOrderModalVisible } from 'modules/trade/state/alternati
 import { getDefaultTradeRawState, TradeRawState } from 'modules/trade/types/TradeRawState'
 
 import { useResetStateWithSymbolDuplication } from './useResetStateWithSymbolDuplication'
+import { useSetupTradeStateFromUrl } from './useSetupTradeStateFromUrl'
 import { useTradeStateFromUrl } from './useTradeStateFromUrl'
 
 import { useTradeState } from '../useTradeState'
-import { useSetupTradeStateFromUrl } from './useSetupTradeStateFromUrl'
 
 const INITIAL_CHAIN_ID_FROM_URL = getRawCurrentChainIdFromUrl()
 const EMPTY_TOKEN_ID = '_'
