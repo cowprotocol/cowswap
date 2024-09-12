@@ -1,4 +1,4 @@
-import { VCow, vCowAbi } from '@cowprotocol/abis'
+import { Airdrop, AirdropAbi } from '@cowprotocol/abis'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import useSWR from 'swr'
@@ -92,9 +92,7 @@ const fetchAddressIsEligible = async ({
   // The user address is not listed in chunk
   if (!(addressLowerCase in chunkData)) throw new Error(AIRDROP_PREVIEW_ERRORS.NO_CLAIMABLE_TOKENS)
 
-  const claimData = chunkData[addressLowerCase]
-
-  const airDropData = claimData.filter((row: AirdropDataInfo) => row.type == 'Airdrop')
+  const airDropData = chunkData[addressLowerCase]
   // The user has other kind of tokens, but not airdrops
   if (airDropData.length < 1) throw new Error(AIRDROP_PREVIEW_ERRORS.NO_CLAIMABLE_AIRDROPS)
 
@@ -103,7 +101,7 @@ const fetchAddressIsEligible = async ({
 
 export const useClaimData = (selectedAirdrop?: AirdropOption) => {
   const { account, chainId } = useWalletInfo()
-  const airdropContract = useContract<VCow>(selectedAirdrop?.addressesMapping, vCowAbi)
+  const airdropContract = useContract<Airdrop>(selectedAirdrop?.addressesMapping, AirdropAbi)
 
   const fetchPreviewClaimableTokens = async ({
     dataBaseUrl,
@@ -117,10 +115,8 @@ export const useClaimData = (selectedAirdrop?: AirdropOption) => {
 
     const callData = airdropContract.interface.encodeFunctionData('claim', [
       isEligibleData.index, //index
-      0, //claimType
       account, //claimant
       isEligibleData.amount, //claimableAmount
-      isEligibleData.amount, //claimedAmount
       isEligibleData.proof, //merkleProof
     ])
 

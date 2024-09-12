@@ -6,7 +6,7 @@ import { Media, UI } from '@cowprotocol/ui'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
-import { AirdropOption } from '../constants'
+import { AirdropOption } from '../types'
 
 interface DropdownParams {
   airdropOptions: AirdropOption[]

@@ -6,7 +6,7 @@ import { AirdropOption } from './types'
 export const AIRDROP_OPTIONS = [
   {
     name: 'COW',
-    dataBaseUrl: 'https://raw.githubusercontent.com/bleu/cow-airdrop-token-mock/main/mock-airdrop-data/',
+    dataBaseUrl: 'https://raw.githubusercontent.com/bleu/cow-airdrop-contract-deployer/example/mock-airdrop-data/',
     addressesMapping: {
       [SupportedChainId.SEPOLIA]: '0xD1fB81659c434DDebC8468713E482134be0D85C0',
     },

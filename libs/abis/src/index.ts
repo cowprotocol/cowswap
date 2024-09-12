@@ -3,6 +3,7 @@ import _ethFlowBarnJson from '@cowprotocol/ethflowcontract/networks.barn.json'
 import _ethFlowProdJson from '@cowprotocol/ethflowcontract/networks.prod.json'
 import { Interface } from '@ethersproject/abi'
 
+import _AirdropAbi from './abis/Airdrop.json'
 import _ComposableCoWAbi from './abis/ComposableCoW.json'
 import _CoWSwapEthFlowAbi from './abis/CoWSwapEthFlow.json'
 import _GPv2SettlementAbi from './abis/GPv2Settlement.json'
@@ -34,6 +35,7 @@ export const MerkleDropAbi = _MerkleDropAbi
 export const TokenDistroAbi = _TokenDistroAbi
 export const CoWSwapEthFlowAbi = _CoWSwapEthFlowAbi
 export const SBCDepositContractAbi = _SBCDepositContractAbi
+export const AirdropAbi = _AirdropAbi
 
 export * from './generated/custom'
 export type { GPv2Order } from './generated/custom/ComposableCoW'
