@@ -9,6 +9,9 @@ type DragObject = {
 
 type DragAndDropContext = {
   isDragging: boolean
+  isOver: boolean
+  canDrop: boolean
+  draggedItem: DragObject | null
   ref: RefObject<HTMLLIElement>
 }
 
@@ -23,22 +26,29 @@ export function useDragAndDrop(
 ): DragAndDropContext {
   const ref = useRef<HTMLLIElement>(null)
 
-  const [, drop] = useDrop<DragObject>({
+  const [{ isOver, canDrop, draggedItem }, drop] = useDrop<
+    DragObject,
+    void,
+    { isOver: boolean; canDrop: boolean; draggedItem: DragObject | null }
+  >({
     accept: ItemTypes.HOOK,
-    drop(item: { id: string; index: number }) {
+    drop(item: DragObject) {
       const dragIndex = item.index
       const hoverIndex = index
 
       moveHook(dragIndex, hoverIndex)
       item.index = hoverIndex
     },
+    collect: (monitor) => ({
+      isOver: monitor.isOver(),
+      canDrop: monitor.canDrop(),
+      draggedItem: monitor.getItem(),
+    }),
   })
 
-  const [{ isDragging }, drag] = useDrag<DragObject, unknown, { isDragging: boolean }>({
+  const [{ isDragging }, drag] = useDrag<DragObject, void, { isDragging: boolean }>({
     type: ItemTypes.HOOK,
-    item: () => {
-      return { id: uuid, index }
-    },
+    item: { id: uuid, index },
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
     }),
@@ -46,5 +56,5 @@ export function useDragAndDrop(
 
   drag(drop(ref))
 
-  return { ref, isDragging }
+  return { ref, isDragging, isOver, canDrop, draggedItem }
 }
