@@ -1,9 +1,4 @@
-import {
-  getAddress,
-  getIsNativeToken,
-  reportAppDataWithHooks,
-  reportPermitWithDefaultSigner,
-} from '@cowprotocol/common-utils'
+import { getAddress, reportPermitWithDefaultSigner } from '@cowprotocol/common-utils'
 import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
 import { UiOrderType } from '@cowprotocol/types'
 import { Percent } from '@uniswap/sdk-core'
@@ -12,11 +7,9 @@ import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
 import { signAndPostOrder } from 'legacy/utils/trade'
 
-import { replaceHooksOnAppData } from 'modules/appData'
 import { emitPostedOrderEvent } from 'modules/orders'
 import { handlePermit } from 'modules/permit'
-import { appDataContainsHooks } from 'modules/permit/utils/appDataContainsHooks'
-import { appDataContainsPermitSigner } from 'modules/permit/utils/appDataContainsPermitSigner'
+import { callDataContainsPermitSigner } from 'modules/permit'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
@@ -29,7 +22,7 @@ import { SwapFlowContext } from '../types'
 export async function swapFlow(
   input: SwapFlowContext,
   priceImpactParams: PriceImpact,
-  confirmPriceImpactWithoutFee: (priceImpact: Percent) => Promise<boolean>
+  confirmPriceImpactWithoutFee: (priceImpact: Percent) => Promise<boolean>,
 ): Promise<void | false> {
   const {
     tradeConfirmActions,
@@ -71,19 +64,8 @@ export async function swapFlow(
       generatePermitHook,
     })
 
-    if (appDataContainsPermitSigner(orderParams.appData.fullAppData)) {
+    if (callDataContainsPermitSigner(orderParams.appData.fullAppData)) {
       reportPermitWithDefaultSigner(orderParams)
-    } else if (
-      // TODO: remove once we figure out what's adding this to appData in the first place
-      // Last resort in case of a race condition
-      // It should not have a permit in the first place if it's selling native
-      // But there are several cases where it has
-      getIsNativeToken(inputCurrency) &&
-      appDataContainsHooks(orderParams.appData.fullAppData)
-    ) {
-      reportAppDataWithHooks(orderParams)
-      // wipe out the hooks
-      orderParams.appData = await replaceHooksOnAppData(orderParams.appData, undefined)
     }
 
     logTradeFlow('SWAP FLOW', 'STEP 3: send transaction')
@@ -106,7 +88,7 @@ export async function swapFlow(
         },
         isSafeWallet,
       },
-      dispatch
+      dispatch,
     )
 
     logTradeFlow('SWAP FLOW', 'STEP 5: presign order (optional)')
@@ -137,7 +119,7 @@ export async function swapFlow(
           },
           isSafeWallet,
         },
-        dispatch
+        dispatch,
       )
     }
 
