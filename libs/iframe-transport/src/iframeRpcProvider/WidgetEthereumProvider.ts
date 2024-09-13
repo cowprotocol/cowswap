@@ -10,24 +10,24 @@
  *  ===========================================================================
  */
 
-import {
-  JsonRpcErrorResponseMessage,
-  JsonRpcRequestMessage,
-  JsonRpcSucessfulResponseMessage,
-  ProviderOnEventPayload,
-  ProviderRpcResponsePayload,
-  WidgetMethodsEmit,
-  WidgetMethodsListen,
-  listenToMessageFromWindow,
-  postMessageToWindow,
-} from '@cowprotocol/widget-lib'
 import { ProviderConnectInfo, ProviderRpcError } from '@web3-react/types'
 
 import { EventEmitter } from 'eventemitter3'
 import ms from 'ms.macro'
 
-// eslint-disable-next-line no-restricted-imports
-import type { ProviderMessage } from '@walletconnect/ethereum-provider/dist/types/types'
+import {
+  IframeRpcProviderEvents,
+  iframeRpcProviderTransport,
+  ProviderOnEventPayload,
+  ProviderRpcResponsePayload,
+} from './iframeRpcProviderEvents'
+
+import { JsonRpcErrorResponseMessage, JsonRpcRequestMessage, JsonRpcSucessfulResponseMessage } from '../types'
+
+interface ProviderMessage {
+  type: string
+  data: unknown
+}
 
 // By default timeout is 10 minutes
 const DEFAULT_TIMEOUT_MILLISECONDS = ms`10m`
@@ -166,13 +166,21 @@ export class WidgetEthereumProvider extends EventEmitter<IFrameEthereumProviderE
     this.eventSource = eventSource
     this.eventTarget = eventTarget
 
-    listenToMessageFromWindow(this.eventSource, WidgetMethodsListen.PROVIDER_RPC_RESPONSE, (message) => {
-      this.handleRpcRequests(message)
-    })
+    iframeRpcProviderTransport.listenToMessageFromWindow(
+      this.eventSource,
+      IframeRpcProviderEvents.PROVIDER_RPC_RESPONSE,
+      (message) => {
+        this.handleRpcRequests(message)
+      },
+    )
 
-    listenToMessageFromWindow(this.eventSource, WidgetMethodsListen.PROVIDER_ON_EVENT, (message) => {
-      this.handleOnEvent(message)
-    })
+    iframeRpcProviderTransport.listenToMessageFromWindow(
+      this.eventSource,
+      IframeRpcProviderEvents.PROVIDER_ON_EVENT,
+      (message) => {
+        this.handleOnEvent(message)
+      },
+    )
   }
 
   /**
@@ -182,7 +190,7 @@ export class WidgetEthereumProvider extends EventEmitter<IFrameEthereumProviderE
    */
   private async execute<TResult, TErrorData>(
     method: string,
-    params: unknown[]
+    params: unknown[],
   ): Promise<JsonRpcSucessfulResponseMessage<TResult> | JsonRpcErrorResponseMessage<TErrorData>> {
     const id = getUniqueId()
 
@@ -194,11 +202,11 @@ export class WidgetEthereumProvider extends EventEmitter<IFrameEthereumProviderE
     }
 
     const promise = new Promise<JsonRpcSucessfulResponseMessage<TResult> | JsonRpcErrorResponseMessage<TErrorData>>(
-      (resolve, reject) => (this.completers[id] = { resolve, reject })
+      (resolve, reject) => (this.completers[id] = { resolve, reject }),
     )
 
     // Send the JSON RPC to the event source.
-    postMessageToWindow(this.eventTarget, WidgetMethodsEmit.PROVIDER_RPC_REQUEST, {
+    iframeRpcProviderTransport.postMessageToWindow(this.eventTarget, IframeRpcProviderEvents.PROVIDER_RPC_REQUEST, {
       rpcRequest,
     })
 
@@ -254,7 +262,7 @@ export class WidgetEthereumProvider extends EventEmitter<IFrameEthereumProviderE
    */
   public async sendAsync(
     payload: { method: string; params: unknown[] },
-    callback: (error: string | null, result: { method: string; params?: any[]; result: any } | any) => void
+    callback: (error: string | null, result: { method: string; params?: any[]; result: any } | any) => void,
   ): Promise<void> {
     try {
       const result = await this.execute(payload.method, payload.params)
