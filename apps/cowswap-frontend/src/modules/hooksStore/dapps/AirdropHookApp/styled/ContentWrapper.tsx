@@ -10,6 +10,5 @@ export const ContentWrapper = styled.div`
   justify-content: center;
   align-items: center;
 
-  padding: 1em;
   text-align: center;
 `

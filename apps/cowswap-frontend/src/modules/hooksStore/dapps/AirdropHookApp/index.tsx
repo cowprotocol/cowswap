@@ -1,28 +1,22 @@
-import { useCallback, useContext, useState } from 'react'
+import { useCallback, useState } from 'react'
 
 import { formatTokenAmount } from '@cowprotocol/common-utils'
-import { HookDappInternal, HookDappType } from '@cowprotocol/types'
 import { ButtonPrimary } from '@cowprotocol/ui'
 import { Fraction } from '@uniswap/sdk-core'
-import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useGasLimit } from 'modules/hooksStore/hooks/useGasLimitHooks'
+import { HookDappProps } from 'modules/hooksStore/types/hooks'
 
 import { AIRDROP_OPTIONS } from './constants'
 import { useClaimData } from './hooks/useClaimData'
 import { ContentWrapper } from './styled/ContentWrapper'
 import { DropDownMenu } from './styled/DropDown'
-import { Header } from './styled/Header'
 import { Link } from './styled/Link'
 import { Row } from './styled/Row'
 import { Wrapper } from './styled/Wrapper'
 import { AirdropOption, IClaimData } from './types'
-import { HookDappProps } from 'modules/hooksStore/types/hooks'
 
-const NAME = 'Airdrop'
-const DESCRIPTION = 'Claim an aidrop before swapping!'
-const IMAGE_URL =
-  'https://static.vecteezy.com/system/resources/previews/017/317/302/original/an-icon-of-medical-airdrop-editable-and-easy-to-use-vector.jpg'
+
 
 export function AirdropHookApp({ context }: HookDappProps) {
   const [selectedAirdrop, setSelectedAirdrop] = useState<AirdropOption>()
@@ -45,13 +39,25 @@ export function AirdropHookApp({ context }: HookDappProps) {
 
   return (
     <Wrapper>
-      <Header>
-        <img src={IMAGE_URL} alt={NAME} width="120" />
-        <p>{DESCRIPTION}</p>
-      </Header>
       <ContentWrapper>
         <Row>
+          <label style={{width:"fit-content",fontWeight:"600"}}>Select Airdrop</label>
           <DropDownMenu airdropOptions={AIRDROP_OPTIONS} setSelectedAirdrop={setSelectedAirdrop} />
+        </Row>
+        <Row>
+          <div style={{
+            display:"flex",
+            justifyContent:"space-between",
+            alignItems:"center",
+            padding:"0.75rem",
+            backgroundColor:"#ECF1F8",
+            marginTop:"0.5rem",
+            marginBottom:"0.5rem",
+            borderRadius:"0.75rem"
+          }}>
+            <span>Total Available to claim</span>
+            <span>0.00 GNO</span>
+          </div>
         </Row>
         {selectedAirdrop && <AirdropMessage claimData={claimData} error={error} isValidating={isValidating} />}
       </ContentWrapper>
@@ -61,7 +67,7 @@ export function AirdropHookApp({ context }: HookDappProps) {
       <Link
         onClick={(e) => {
           e.preventDefault()
-          hookDappContext?.close()
+          context.close()
         }}
       >
         Close

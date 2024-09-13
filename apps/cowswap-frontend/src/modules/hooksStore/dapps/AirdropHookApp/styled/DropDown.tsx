@@ -16,20 +16,20 @@ interface DropdownParams {
 export const Dropdown = styled.div`
   position: relative;
   display: inline-block;
-  width: 100%;
+  /* width: 100%; */
 `
 
 export const DropdownContent = styled.div`
   display: block;
   background-color: var(${UI.COLOR_PAPER});
-  min-width: 80%;
+  /* min-width: 80%; */
   box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
   padding: 12px 16px;
   bottom: 100%;
   right: 0;
   height: min-content;
   z-index: 999;
-  width: 100%;
+  /* width: 100%; */
   border-radius: 16px;
   margin: auto auto 12px;
 
@@ -39,7 +39,7 @@ export const DropdownContent = styled.div`
   }
 
   ${Media.upToMedium()} {
-    width: 100%;
+    /* width: 100%; */
     position: fixed;
     bottom: 56px;
     margin: 0;
@@ -56,12 +56,13 @@ export const DropdownButton = styled.div`
   justify-content: space-between;
   cursor: pointer;
   border-radius: 12px;
-  background-color: var(${UI.COLOR_PAPER_DARKER});
+  /* background-color: var(${UI.COLOR_PAPER_DARKER}); */
+  border: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
   padding: 12px;
-  width: 100%;
+  /* width: 100%; */
 
   &:hover {
-    background-color: var(${UI.COLOR_PRIMARY_LIGHTER});
+    /* background-color: var(${UI.COLOR_PRIMARY_LIGHTER}); */
     color: #000000;
     /* > svg {
       transform: rotate(-90deg);
@@ -85,14 +86,14 @@ export const SelectButton = styled.div`
   border-radius: 16px;
   background-color: #18193b;
   padding: 1rem;
-  width: 100%;
+  /* width: 100%; */
 
   &:hover {
     background-color: #65d9ff;
     color: #000000;
   }
 `
-const dropdownInitialText = 'Select your airdrop'
+const dropdownInitialText = '-'
 
 export function DropDownMenu({ airdropOptions, setSelectedAirdrop }: DropdownParams) {
   const [dropDownText, setDropDownText] = useState(dropdownInitialText)
