@@ -24,7 +24,7 @@ export const DropdownContent = styled.div`
   top: 0;
   left: 0;
   width: 100%;
-  min-height: 9rem;
+  min-height: 12rem;
   background-color: var(${UI.COLOR_PAPER});
   cursor: pointer;
   padding: 12px;
