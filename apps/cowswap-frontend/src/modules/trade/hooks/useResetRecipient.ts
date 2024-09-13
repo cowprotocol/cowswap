@@ -17,7 +17,7 @@ export function useResetRecipient(onChangeRecipient: (recipient: string | null) 
   const postHooksRecipientOverride = usePostHooksRecipientOverride()
   const { chainId } = useWalletInfo()
 
-  const prevPstHooksRecipientOverride = usePrevious(postHooksRecipientOverride)
+  const prevPostHooksRecipientOverride = usePrevious(postHooksRecipientOverride)
   const recipient = tradeState?.recipient
   const hasRecipientInUrl = !!tradeStateFromUrl.recipient
 
@@ -44,10 +44,10 @@ export function useResetRecipient(onChangeRecipient: (recipient: string | null) 
    * Remove recipient override when its source hook was deleted
    */
   useEffect(() => {
-    if (!postHooksRecipientOverride && recipient === prevPstHooksRecipientOverride) {
+    if (!postHooksRecipientOverride && recipient === prevPostHooksRecipientOverride) {
       onChangeRecipient(null)
     }
-  }, [recipient, postHooksRecipientOverride, prevPstHooksRecipientOverride, onChangeRecipient])
+  }, [recipient, postHooksRecipientOverride, prevPostHooksRecipientOverride, onChangeRecipient])
 
   return null
 }

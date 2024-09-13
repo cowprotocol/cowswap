@@ -1,5 +1,4 @@
 import { Erc20 } from '@cowprotocol/abis'
-import { reportAppDataWithHooks } from '@cowprotocol/common-utils'
 import { UiOrderType } from '@cowprotocol/types'
 import { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import { Percent } from '@uniswap/sdk-core'
@@ -8,12 +7,11 @@ import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
 import { signAndPostOrder } from 'legacy/utils/trade'
 
-import { replaceHooksOnAppData } from 'modules/appData'
+import { removePermitHookFromAppData } from 'modules/appData'
 import { buildApproveTx } from 'modules/operations/bundle/buildApproveTx'
 import { buildPresignTx } from 'modules/operations/bundle/buildPresignTx'
 import { buildWrapTx } from 'modules/operations/bundle/buildWrapTx'
 import { emitPostedOrderEvent } from 'modules/orders'
-import { appDataContainsHooks } from 'modules/permit/utils/appDataContainsHooks'
 import { SafeBundleEthFlowContext } from 'modules/swap/services/types'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { logTradeFlow } from 'modules/trade/utils/logger'
@@ -25,7 +23,7 @@ const LOG_PREFIX = 'SAFE BUNDLE ETH FLOW'
 export async function safeBundleEthFlow(
   input: SafeBundleEthFlowContext,
   priceImpactParams: PriceImpact,
-  confirmPriceImpactWithoutFee: (priceImpact: Percent) => Promise<boolean>
+  confirmPriceImpactWithoutFee: (priceImpact: Percent) => Promise<boolean>,
 ): Promise<void | false> {
   logTradeFlow(LOG_PREFIX, 'STEP 1: confirm price impact')
 
@@ -45,6 +43,7 @@ export async function safeBundleEthFlow(
     safeAppsSdk,
     swapFlowAnalyticsContext,
     tradeConfirmActions,
+    typedHooks,
   } = input
 
   const { account, recipientAddressOrName, kind } = orderParams
@@ -89,12 +88,7 @@ export async function safeBundleEthFlow(
       })
     }
 
-    // TODO: remove once we figure out what's adding this to appData in the first place
-    if (appDataContainsHooks(orderParams.appData.fullAppData)) {
-      reportAppDataWithHooks(orderParams)
-      // wipe out the hooks
-      orderParams.appData = await replaceHooksOnAppData(orderParams.appData, undefined)
-    }
+    orderParams.appData = await removePermitHookFromAppData(orderParams.appData, typedHooks)
 
     logTradeFlow(LOG_PREFIX, 'STEP 4: post order')
     const { id: orderId, order } = await signAndPostOrder(orderParams).finally(() => {
@@ -113,7 +107,7 @@ export async function safeBundleEthFlow(
         },
         isSafeWallet,
       },
-      dispatch
+      dispatch,
     )
 
     logTradeFlow(LOG_PREFIX, 'STEP 5: build presign tx')
@@ -154,7 +148,7 @@ export async function safeBundleEthFlow(
         },
         isSafeWallet,
       },
-      dispatch
+      dispatch,
     )
     tradeFlowAnalytics.sign(swapFlowAnalyticsContext)
 

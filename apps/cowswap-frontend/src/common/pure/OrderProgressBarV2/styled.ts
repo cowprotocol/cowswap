@@ -185,6 +185,10 @@ export const ProgressImageWrapper = styled.div<{ bgColor?: string; padding?: str
     padding: 0;
     margin: 0;
   }
+
+  > div {
+    display: flex;
+  }
 `
 
 export const DebugPanel = styled.div`
@@ -500,7 +504,9 @@ export const ShareButton = styled.button`
   right: 0;
   bottom: 6px;
   width: calc(100% - 12px);
-  transition: background 0.15s ease-in-out, color 0.15s ease-in-out;
+  transition:
+    background 0.15s ease-in-out,
+    color 0.15s ease-in-out;
 
   &:hover {
     background: var(${UI.COLOR_BUTTON_TEXT});
@@ -535,8 +541,8 @@ export const TransactionStatus = styled.div<{ status?: string; flexFlow?: string
     status === 'expired' || status === 'cancelled'
       ? `var(${UI.COLOR_ALERT_TEXT})`
       : status === 'success'
-      ? `var(${UI.COLOR_SUCCESS_TEXT})`
-      : `var(${UI.COLOR_TEXT})`};
+        ? `var(${UI.COLOR_SUCCESS_TEXT})`
+        : `var(${UI.COLOR_TEXT})`};
 
   > svg {
     --size: 28px;
@@ -547,8 +553,8 @@ export const TransactionStatus = styled.div<{ status?: string; flexFlow?: string
       status === 'expired' || status === 'cancelled'
         ? `var(${UI.COLOR_ALERT_BG})`
         : status === 'success'
-        ? `var(${UI.COLOR_SUCCESS_BG})`
-        : 'transparent'};
+          ? `var(${UI.COLOR_SUCCESS_BG})`
+          : 'transparent'};
     border-radius: var(--size);
     padding: 2px;
   }
@@ -816,8 +822,8 @@ export const NumberedElement = styled.div<{
     isCancelling
       ? `var(${UI.COLOR_DANGER_BG})`
       : isUnfillable
-      ? '#996815'
-      : customColor || (status === 'active' ? '#2196F3' : `var(${UI.COLOR_TEXT})`)};
+        ? '#996815'
+        : customColor || (status === 'active' ? '#2196F3' : `var(${UI.COLOR_TEXT})`)};
   border-radius: 50%;
   position: relative;
 `
@@ -957,8 +963,7 @@ export const CircleProgress = styled.circle<{ startAt: number; end: number }>`
   stroke-width: 6;
   stroke-linecap: round;
 
-  ${({ startAt, end }) =>
-    css`
-      animation: ${progressAnimation(startAt, end)} ${startAt}s linear infinite;
-    `};
+  ${({ startAt, end }) => css`
+    animation: ${progressAnimation(startAt, end)} ${startAt}s linear infinite;
+  `};
 `

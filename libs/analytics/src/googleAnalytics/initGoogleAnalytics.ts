@@ -29,7 +29,7 @@ export function initCowAnalyticsGoogle(): CowAnalytics {
   // Add logging to sendEvent
   const originalSendEvent = cowAnalytics.sendEvent.bind(cowAnalytics)
   cowAnalytics.sendEvent = (...args) => {
-    console.log('CowAnalytics event:', ...args)
+    // console.debug('CowAnalytics event:', ...args) // TODO: turn on with DEBUG_MODE flag
     return originalSendEvent(...args)
   }
 

@@ -1,6 +1,6 @@
 import { PERMIT_SIGNER } from '@cowprotocol/permit-utils'
 
-export function appDataContainsPermitSigner(fullAppData: string | undefined): boolean {
+export function callDataContainsPermitSigner(fullAppData: string | undefined): boolean {
   if (!fullAppData) {
     return false
   }

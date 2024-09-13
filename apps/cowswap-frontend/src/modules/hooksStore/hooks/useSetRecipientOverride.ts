@@ -6,11 +6,11 @@ import { usePostHooksRecipientOverride } from './usePostHooksRecipientOverride'
 
 export function useSetRecipientOverride() {
   const { onChangeRecipient } = useSwapActionHandlers()
-  const hookReceiverOverride = usePostHooksRecipientOverride()
+  const hookRecipientOverride = usePostHooksRecipientOverride()
 
   useEffect(() => {
-    if (!hookReceiverOverride) return
+    if (!hookRecipientOverride) return
 
-    onChangeRecipient(hookReceiverOverride)
-  }, [hookReceiverOverride])
+    onChangeRecipient(hookRecipientOverride)
+  }, [hookRecipientOverride])
 }
