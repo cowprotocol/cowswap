@@ -13,6 +13,7 @@ on:
           - permit-utils
           - widget-lib
           - widget-react
+          - hook-dapp-lib
           # Add more publishable libs here
       tag:
         description: NPM package tag

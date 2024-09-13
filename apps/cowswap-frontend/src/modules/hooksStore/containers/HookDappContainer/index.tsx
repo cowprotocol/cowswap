@@ -10,19 +10,19 @@ import { useHookById } from '../../hooks/useHookById'
 import { useOrderParams } from '../../hooks/useOrderParams'
 import { HookDapp, HookDappContext as HookDappContextType } from '../../types/hooks'
 import { isHookDappIframe } from '../../utils'
+import { IframeDappContainer } from '../IframeDappContainer'
 
 interface HookDappContainerProps {
   dapp: HookDapp
   isPreHook: boolean
   onDismiss: Command
-  onDismissModal: Command
   hookToEdit?: string
 }
 
-export function HookDappContainer({ dapp, isPreHook, onDismiss, onDismissModal, hookToEdit }: HookDappContainerProps) {
+export function HookDappContainer({ dapp, isPreHook, onDismiss, hookToEdit }: HookDappContainerProps) {
   const { chainId, account } = useWalletInfo()
   const addHook = useAddHook(dapp, isPreHook)
-  const editHook = useEditHook()
+  const editHook = useEditHook(isPreHook)
 
   const hookToEditDetails = useHookById(hookToEdit, isPreHook)
   const orderParams = useOrderParams()
@@ -46,15 +46,13 @@ export function HookDappContainer({ dapp, isPreHook, onDismiss, onDismissModal, 
 
         return hook
       },
-      close: onDismissModal,
     }
-  }, [addHook, editHook, onDismiss, onDismissModal, chainId, account, hookToEditDetails, signer])
+  }, [addHook, editHook, onDismiss, chainId, account, hookToEditDetails, signer])
 
   const dappProps = useMemo(() => ({ context, dapp, isPreHook }), [context, dapp, isPreHook])
 
   if (isHookDappIframe(dapp)) {
-    // TODO: Create iFrame
-    return <>{dapp.name}</>
+    return <IframeDappContainer dapp={dapp} context={context} />
   }
 
   return dapp.component(dappProps)

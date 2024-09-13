@@ -4,11 +4,11 @@ import { useCallback } from 'react'
 import { setHooksAtom } from '../state/hookDetailsAtom'
 import { CowHook, EditHook } from '../types/hooks'
 
-export function useEditHook(): EditHook {
+export function useEditHook(isPreHook: boolean): EditHook {
   const updateHooks = useSetAtom(setHooksAtom)
 
   return useCallback(
-    (uuid: string, update: CowHook, isPreHook: boolean) => {
+    (uuid: string, update: CowHook) => {
       updateHooks((state) => {
         const type = isPreHook ? 'preHooks' : 'postHooks'
         const hookIndex = state[type].findIndex((i) => i.uuid === uuid)
@@ -24,6 +24,6 @@ export function useEditHook(): EditHook {
         }
       })
     },
-    [updateHooks],
+    [updateHooks, isPreHook],
   )
 }

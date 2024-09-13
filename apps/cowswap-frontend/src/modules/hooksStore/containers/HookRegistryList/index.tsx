@@ -76,7 +76,6 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit }: HookStore
                 <HookDappContainer
                   isPreHook={isPreHook}
                   onDismiss={onDismiss}
-                  onDismissModal={onDismissModal}
                   dapp={selectedDapp}
                   hookToEdit={hookToEdit}
                 />

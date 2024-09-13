@@ -2,7 +2,6 @@ import type { ReactNode } from 'react'
 
 import type { latest } from '@cowprotocol/app-data'
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
-import type { Command } from '@cowprotocol/types'
 import type { Signer } from '@ethersproject/abstract-signer'
 
 interface HookInfoPayload {
@@ -54,7 +53,7 @@ export interface CowHookDetailsSerialized extends CowHookDetails<HookDappBase> {
 export type CowHookCreation = Omit<CowHookDetails, 'uuid' | 'dapp'>
 
 export type AddHook = (hookToAdd: CowHookCreation) => CowHookDetailsSerialized
-export type EditHook = (uuid: string, update: CowHook, isPreHook: boolean) => void
+export type EditHook = (uuid: string, update: CowHook) => void
 export type RemoveHook = (uuid: string, isPreHook: boolean) => void
 
 export interface HookDappOrderParams {
@@ -69,7 +68,6 @@ export interface HookDappContext {
   orderParams: HookDappOrderParams | null
   addHook: AddHook
   editHook: EditHook
-  close: Command
   hookToEdit?: CowHookDetailsSerialized
   signer?: Signer
 }

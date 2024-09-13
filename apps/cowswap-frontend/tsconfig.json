@@ -23,6 +23,7 @@
       "@cowprotocol/common-utils": ["../../../libs/common-utils/src/index.ts"],
       "@cowprotocol/events": ["../../../libs/events/src/index.ts"],
       "@cowprotocol/iframe-transport": ["../../../libs/iframe-transport/src/index.ts"],
+      "@cowprotocol/hook-dapp-lib": ["../../../libs/hook-dapp-lib/src/index.ts"],
       "@cowprotocol/types": ["../../../libs/types/src/index.ts"],
       "@cowprotocol/common-hooks": ["../../../libs/common-hooks/src/index.ts"],
       "@cowprotocol/ens": ["../../../libs/ens/src/index.ts"],

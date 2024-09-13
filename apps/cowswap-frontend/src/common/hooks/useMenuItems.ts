@@ -8,6 +8,6 @@ export function useMenuItems() {
   const { isHooksStoreEnabled } = useFeatureFlags()
 
   return useMemo(() => {
-    return isHooksStoreEnabled ? MENU_ITEMS.concat(HOOKS_STORE_MENU_ITEM) : MENU_ITEMS
+    return MENU_ITEMS.concat(HOOKS_STORE_MENU_ITEM)
   }, [isHooksStoreEnabled])
 }

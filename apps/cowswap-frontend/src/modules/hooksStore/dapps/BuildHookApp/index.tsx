@@ -24,8 +24,8 @@ export function BuildHookApp({ isPreHook, context }: HookDappProps) {
       return
     }
 
-    context.editHook(hookToEdit.uuid, hook, isPreHook)
-  }, [hook, context, hookToEdit, isPreHook])
+    context.editHook(hookToEdit.uuid, hook)
+  }, [hook, context, hookToEdit])
 
   const clickOnAddHook = useCallback(() => {
     const { callData, gasLimit, target } = hook
