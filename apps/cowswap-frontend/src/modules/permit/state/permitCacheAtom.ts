@@ -91,8 +91,8 @@ export const getPermitCacheAtom = atom(null, (get, set, params: GetPermitCachePa
   }
 })
 
-function buildKey({ chainId, tokenAddress, account }: PermitCacheKeyParams) {
-  const base = `${chainId}-${tokenAddress.toLowerCase()}`
+function buildKey({ chainId, tokenAddress, account, spender }: PermitCacheKeyParams) {
+  const base = `${chainId}-${tokenAddress.toLowerCase()}-${spender.toLowerCase()}`
 
   return account ? `${base}-${account.toLowerCase()}` : base
 }
