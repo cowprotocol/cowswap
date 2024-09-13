@@ -19,4 +19,19 @@ export const AIRDROP_OPTIONS = [
 
     decimals: 18,
   },
+  {
+    name: 'YYY',
+    dataBaseUrl: 'todo/',
+    addressesMapping: {
+      [SupportedChainId.SEPOLIA]: '',
+    },
+    tokenMapping: {
+      [SupportedChainId.SEPOLIA]: {
+        ...COW[SupportedChainId.SEPOLIA],
+        address: '',
+      },
+    },
+
+    decimals: 18,
+  },
 ] as AirdropOption[]

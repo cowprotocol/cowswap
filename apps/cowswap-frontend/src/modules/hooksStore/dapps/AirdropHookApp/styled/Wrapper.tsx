@@ -5,5 +5,7 @@ export const Wrapper = styled.div`
   flex-flow: column wrap;
   width: 100%;
 
+  padding-bottom: 1rem;
+
   flex-grow: 1;
 `

@@ -9,14 +9,12 @@ import { HookDappProps } from 'modules/hooksStore/types/hooks'
 
 import { AIRDROP_OPTIONS } from './constants'
 import { useClaimData } from './hooks/useClaimData'
+import { ClaimableAmountContainer } from './styled/ClaimableAmountContainer'
 import { ContentWrapper } from './styled/ContentWrapper'
 import { DropDownMenu } from './styled/DropDown'
-import { Link } from './styled/Link'
 import { Row } from './styled/Row'
 import { Wrapper } from './styled/Wrapper'
 import { AirdropOption, IClaimData } from './types'
-
-
 
 export function AirdropHookApp({ context }: HookDappProps) {
   const [selectedAirdrop, setSelectedAirdrop] = useState<AirdropOption>()
@@ -25,7 +23,6 @@ export function AirdropHookApp({ context }: HookDappProps) {
 
   const clickOnAddHook = useCallback(async () => {
     if (!context || !claimData || !gasLimit) return
-
     context.addHook({
       hook: {
         target: claimData.contract.address,
@@ -41,65 +38,70 @@ export function AirdropHookApp({ context }: HookDappProps) {
     <Wrapper>
       <ContentWrapper>
         <Row>
-          <label style={{width:"fit-content",fontWeight:"600"}}>Select Airdrop</label>
+          <label style={{ width: 'fit-content', fontWeight: '600', fontSize: '10pt' }}>Select Airdrop</label>
           <DropDownMenu airdropOptions={AIRDROP_OPTIONS} setSelectedAirdrop={setSelectedAirdrop} />
         </Row>
         <Row>
-          <div style={{
-            display:"flex",
-            justifyContent:"space-between",
-            alignItems:"center",
-            padding:"0.75rem",
-            backgroundColor:"#ECF1F8",
-            marginTop:"0.5rem",
-            marginBottom:"0.5rem",
-            borderRadius:"0.75rem"
-          }}>
-            <span>Total Available to claim</span>
-            <span>0.00 GNO</span>
-          </div>
+          {claimData?.amount ? (
+            <ClaimableAmountContainer>
+              <span>Total Available to claim</span>
+              <span>
+                {formatTokenAmount(new Fraction(claimData.amount, 10 ** claimData.token.decimals))}{' '}
+                {claimData?.token.symbol}
+              </span>
+            </ClaimableAmountContainer>
+          ) : undefined}
         </Row>
-        {selectedAirdrop && <AirdropMessage claimData={claimData} error={error} isValidating={isValidating} />}
       </ContentWrapper>
       <ButtonPrimary disabled={!canClaim || isValidating} onClick={clickOnAddHook}>
-        +Add Pre-hook
+        <ButtonPrimaryMessage
+          account={context.account}
+          selectedAirdrop={selectedAirdrop}
+          claimData={claimData}
+          error={error}
+          isValidating={isValidating}
+        />
       </ButtonPrimary>
-      <Link
-        onClick={(e) => {
-          e.preventDefault()
-          context.close()
-        }}
-      >
-        Close
-      </Link>
     </Wrapper>
   )
 }
 
-function AirdropMessage({
+function ButtonPrimaryMessage({
+  account,
+  selectedAirdrop,
   claimData,
   error,
   isValidating,
 }: {
+  account?: string | undefined
+  selectedAirdrop?: AirdropOption
   claimData?: IClaimData
   error?: Error
   isValidating?: boolean
 }) {
+  if (!selectedAirdrop) {
+    return <span>Select your airdrop</span>
+  }
+
+  if (!account) {
+    return <span>Connect your wallet</span>
+  }
+
   if (isValidating) {
-    return <Row>Loading...</Row>
+    return <span>Loading...</span>
   }
 
   if (error) {
-    return <Row>{error.message}</Row>
+    return <span>There was an unexpected error</span>
   }
 
   if (!claimData?.amount) {
-    return <Row>You are not eligible for this airdrop</Row>
+    return <span>You are not eligible for this airdrop</span>
   }
 
-  const tokenAmount = formatTokenAmount(new Fraction(claimData.amount, 10 ** 18))
-  const message = claimData?.isClaimed
-    ? `You have already claimed this airdrop`
-    : `You have ${tokenAmount} ${claimData?.token.symbol} to claim`
-  return <Row>{message}</Row>
+  if (claimData.isClaimed) {
+    return <span>You have already claimed this airdrop`</span>
+  }
+
+  return <span>Add pre-hook</span>
 }

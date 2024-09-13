@@ -1,5 +1,6 @@
 import { useState } from 'react'
 
+// import iconSuccess from '@cowprotocol/assets/cow-swap/checkmark.svg'
 import ICON_ARROW_DOWN from '@cowprotocol/assets/images/carret-down.svg'
 import { Media, UI } from '@cowprotocol/ui'
 
@@ -16,22 +17,20 @@ interface DropdownParams {
 export const Dropdown = styled.div`
   position: relative;
   display: inline-block;
-  /* width: 100%; */
 `
 
 export const DropdownContent = styled.div`
-  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
   background-color: var(${UI.COLOR_PAPER});
-  /* min-width: 80%; */
-  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
-  padding: 12px 16px;
-  bottom: 100%;
-  right: 0;
-  height: min-content;
+  cursor: pointer;
+  padding: 12px;
+
+  display: flex;
+  flex-flow: column wrap;
   z-index: 999;
-  /* width: 100%; */
-  border-radius: 16px;
-  margin: auto auto 12px;
 
   ${Media.upToLarge()} {
     left: 0;
@@ -39,7 +38,6 @@ export const DropdownContent = styled.div`
   }
 
   ${Media.upToMedium()} {
-    /* width: 100%; */
     position: fixed;
     bottom: 56px;
     margin: 0;
@@ -56,17 +54,15 @@ export const DropdownButton = styled.div`
   justify-content: space-between;
   cursor: pointer;
   border-radius: 12px;
-  /* background-color: var(${UI.COLOR_PAPER_DARKER}); */
   border: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
   padding: 12px;
-  /* width: 100%; */
+  transition:
+    background-color var(${UI.ANIMATION_DURATION}) ease-in-out,
+    color var(${UI.ANIMATION_DURATION}) ease-in-out;
 
   &:hover {
-    /* background-color: var(${UI.COLOR_PRIMARY_LIGHTER}); */
-    color: #000000;
-    /* > svg {
-      transform: rotate(-90deg);
-    } */
+    background-color: var(${UI.COLOR_PRIMARY_LIGHTER});
+    color: var(${UI.COLOR_PAPER_DARKEST});
   }
 
   > svg {
@@ -83,14 +79,28 @@ export const SelectButton = styled.div`
   align-items: center;
   justify-content: space-between;
   cursor: pointer;
-  border-radius: 16px;
-  background-color: #18193b;
-  padding: 1rem;
-  /* width: 100%; */
+  background-color: inherit;
+  padding: 0.5rem;
+  div {
+    display: flex;
+    gap: 0.5rem;
+
+    img {
+      opacity: 0;
+    }
+  }
 
   &:hover {
-    background-color: #65d9ff;
-    color: #000000;
+    font-weight: bold;
+
+    div {
+      img {
+        opacity: 1;
+        fill: white;
+        stroke: white;
+        color: white;
+      }
+    }
   }
 `
 const dropdownInitialText = '-'
@@ -114,7 +124,14 @@ export function DropDownMenu({ airdropOptions, setSelectedAirdrop }: DropdownPar
       {showDropdown && (
         <DropdownContent>
           {airdropOptions.map((airdrop) => {
-            return <SelectButton onClick={() => handleSelectAirdrop(airdrop)}>{airdrop.name}</SelectButton>
+            return (
+              <SelectButton onClick={() => handleSelectAirdrop(airdrop)}>
+                <div>
+                  {/* <img src={iconSuccess} width={12} /> */}
+                  {airdrop.name}
+                </div>
+              </SelectButton>
+            )
           })}
         </DropdownContent>
       )}
