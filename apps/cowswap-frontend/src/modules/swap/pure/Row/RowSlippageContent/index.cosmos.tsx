@@ -13,6 +13,12 @@ const defaultProps: RowSlippageContentProps = {
   toggleSettings() {
     console.log('RowSlippageContent settings toggled!')
   },
+  isSlippageModified: false,
+  isSmartSlippageApplied: false,
+  smartSlippage: '0.2%',
+  setAutoSlippage: () => {
+    console.log('setAutoSlippage called!')
+  },
 }
 
 export default <RowSlippageContent {...defaultProps} />
