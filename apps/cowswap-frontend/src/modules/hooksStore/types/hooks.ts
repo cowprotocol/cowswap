@@ -46,7 +46,7 @@ export interface CowHookDetails<DappType = HookDapp> {
   uuid: string
   hook: CowHook
   dapp: DappType
-  receiverOverride?: string
+  recipientOverride?: string
 }
 
 export interface CowHookDetailsSerialized extends CowHookDetails<HookDappBase> {}

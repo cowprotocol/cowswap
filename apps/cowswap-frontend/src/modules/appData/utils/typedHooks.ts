@@ -59,12 +59,7 @@ export function removePermitHookFromHooks(hooks: TypedAppDataHooks | undefined):
 
   const { pre, ...rest } = hooks
 
-  const filteredPre = pre?.reduce<TypedCowHook[]>((acc, hook) => {
-    if (hook.type !== 'permit') {
-      acc.push(hook)
-    }
-    return acc
-  }, [])
+  const filteredPre = pre?.filter((hook) => hook.type !== 'permit')
 
   return typedAppDataHooksToAppDataHooks({ ...rest, pre: filteredPre })
 }
