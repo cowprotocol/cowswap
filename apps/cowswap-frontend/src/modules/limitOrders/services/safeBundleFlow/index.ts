@@ -1,4 +1,3 @@
-import { reportAppDataWithHooks } from '@cowprotocol/common-utils'
 import { Command, UiOrderType } from '@cowprotocol/types'
 import { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import { Percent } from '@uniswap/sdk-core'
@@ -7,7 +6,7 @@ import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
 import { signAndPostOrder } from 'legacy/utils/trade'
 
-import { replaceHooksOnAppData } from 'modules/appData'
+import { removePermitHookFromAppData } from 'modules/appData'
 import { LOW_RATE_THRESHOLD_PERCENT } from 'modules/limitOrders/const/trade'
 import { PriceImpactDeclineError, SafeBundleFlowContext } from 'modules/limitOrders/services/types'
 import { LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
@@ -16,7 +15,6 @@ import { buildApproveTx } from 'modules/operations/bundle/buildApproveTx'
 import { buildPresignTx } from 'modules/operations/bundle/buildPresignTx'
 import { buildZeroApproveTx } from 'modules/operations/bundle/buildZeroApproveTx'
 import { emitPostedOrderEvent } from 'modules/orders'
-import { appDataContainsHooks } from 'modules/permit/utils/appDataContainsHooks'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
@@ -30,7 +28,7 @@ export async function safeBundleFlow(
   priceImpact: PriceImpact,
   settingsState: LimitOrdersSettingsState,
   confirmPriceImpactWithoutFee: (priceImpact: Percent) => Promise<boolean>,
-  beforeTrade?: Command
+  beforeTrade?: Command,
 ): Promise<string> {
   logTradeFlow(LOG_PREFIX, 'STEP 1: confirm price impact')
   const isTooLowRate = params.rateImpact < LOW_RATE_THRESHOLD_PERCENT
@@ -42,12 +40,7 @@ export async function safeBundleFlow(
   const { account, recipientAddressOrName, sellToken, buyToken, inputAmount, outputAmount, isSafeWallet } =
     params.postOrderParams
 
-  // TODO: remove once we figure out what's adding this to appData in the first place
-  if (appDataContainsHooks(params.postOrderParams.appData.fullAppData)) {
-    reportAppDataWithHooks(params.postOrderParams)
-    // wipe out the hooks
-    params.postOrderParams.appData = await replaceHooksOnAppData(params.postOrderParams.appData, undefined)
-  }
+  params.postOrderParams.appData = await removePermitHookFromAppData(params.postOrderParams.appData, params.typedHooks)
 
   const swapFlowAnalyticsContext: TradeFlowAnalyticsContext = {
     account,
@@ -94,7 +87,7 @@ export async function safeBundleFlow(
         },
         isSafeWallet,
       },
-      dispatch
+      dispatch,
     )
 
     logTradeFlow(LOG_PREFIX, 'STEP 5: build presign tx')
@@ -153,7 +146,7 @@ export async function safeBundleFlow(
         },
         isSafeWallet,
       },
-      dispatch
+      dispatch,
     )
     tradeFlowAnalytics.sign(swapFlowAnalyticsContext)
 

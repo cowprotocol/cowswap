@@ -1,4 +1,4 @@
-import { PERMIT_SIGNER } from '@cowprotocol/permit-utils'
+import { callDataContainsPermitSigner } from 'modules/permit'
 
 import { CowHook, OrderInteractionHooks } from '../types'
 
@@ -16,7 +16,7 @@ const FORMER_PERMIT_HOOK_ADDRESS = '4ed18e9489d82784f98118d5a6ab3ad4340802fb'
  */
 export const filterPermitSignerPermit: HooksFilter = (cowHook: CowHook): boolean => {
   const hasFormerAddress = cowHook.callData.toLowerCase().includes(FORMER_PERMIT_HOOK_ADDRESS)
-  const hasCurrentAddress = cowHook.callData.toLowerCase().includes(PERMIT_SIGNER.address.slice(2).toLowerCase())
+  const hasCurrentAddress = callDataContainsPermitSigner(cowHook.callData)
 
   return !hasFormerAddress && !hasCurrentAddress
 }
