@@ -725,12 +725,12 @@ const SURPLUS_IMAGES = [
 function FinishedStep(props: OrderProgressBarV2Props) {
   const { stepName, solverCompetition: solvers, totalSolvers, order, surplusData, chainId, receiverEnsName } = props
   const [showAllSolvers, setShowAllSolvers] = useState(false)
-  const [showConfetti, setShowConfetti] = useState(stepName === 'finished')
-
-  const { surplusFiatValue, surplusAmount, showSurplus } = surplusData || {}
   const cancellationFailed = stepName === 'cancellationFailed'
 
+  const { surplusFiatValue, surplusAmount, showSurplus } = surplusData || {}
   const shouldShowSurplus = DEBUG_FORCE_SHOW_SURPLUS || showSurplus
+
+  const [showConfetti, setShowConfetti] = useState(stepName === 'finished' && shouldShowSurplus)
 
   const visibleSolvers = useMemo(() => {
     return showAllSolvers ? solvers : solvers?.slice(0, 3)
@@ -778,9 +778,9 @@ function FinishedStep(props: OrderProgressBarV2Props) {
   useEffect(() => {
     let timer: ReturnType<typeof setTimeout> | undefined
 
-    if (stepName === 'finished') {
+    if (stepName === 'finished' && shouldShowSurplus) {
       setShowConfetti(true)
-      timer = setTimeout(() => setShowConfetti(false), 5000)
+      timer = setTimeout(() => setShowConfetti(false), 3000)
     }
 
     return () => {
@@ -788,7 +788,7 @@ function FinishedStep(props: OrderProgressBarV2Props) {
         clearTimeout(timer)
       }
     }
-  }, [stepName])
+  }, [stepName, shouldShowSurplus])
 
   // If order is not set, return null
   if (!order) {
