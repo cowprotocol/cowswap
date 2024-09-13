@@ -55,7 +55,7 @@ export function AppDataHooksUpdater(): null {
     )
 
     // Permit data is not loaded yet, wait until it's loaded
-    // Permit data with sc-wallets is always undefined
+    // Permit data for sc-wallets is always undefined, so we ignore this check
     if (permitData === undefined && !isSmartContractWallet) {
       return
     }
