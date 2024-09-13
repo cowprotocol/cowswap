@@ -9,6 +9,8 @@ import { HTML5Backend } from 'react-dnd-html5-backend'
 import { SwapWidget } from 'modules/swap'
 import { useIsSellNative } from 'modules/trade'
 
+import { useSetRecipientOverride } from '../../hooks/useSetRecipientOverride'
+import { useSetupHooksStoreOrderParams } from '../../hooks/useSetupHooksStoreOrderParams'
 import { HookRegistryList } from '../HookRegistryList'
 import { PostHookButton } from '../PostHookButton'
 import { PreHookButton } from '../PreHookButton'
@@ -37,6 +39,9 @@ export function HooksStoreWidget() {
     setSelectedHookPosition('post')
     setHookToEdit(uuid)
   }, [])
+
+  useSetupHooksStoreOrderParams()
+  useSetRecipientOverride()
 
   if (selectedHookPosition || hookToEdit) {
     return <HookRegistryList onDismiss={onDismiss} hookToEdit={hookToEdit} isPreHook={selectedHookPosition === 'pre'} />
