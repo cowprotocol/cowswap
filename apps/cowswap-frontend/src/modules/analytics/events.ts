@@ -1,5 +1,4 @@
-import { PixelEvent, WebVitalsAnalytics } from '@cowprotocol/analytics'
-import { initCowAnalyticsGoogle, initPixelAnalytics } from '@cowprotocol/analytics'
+import { initCowAnalyticsGoogle, initPixelAnalytics, PixelEvent, WebVitalsAnalytics } from '@cowprotocol/analytics'
 import { debounce } from '@cowprotocol/common-utils'
 import { UiOrderType } from '@cowprotocol/types'
 
@@ -85,7 +84,7 @@ export function gameAnalytics(gameType: GameType) {
   })
 }
 
-export function toggleRecepientAddressAnalytics(enable: boolean) {
+export function toggleRecipientAddressAnalytics(enable: boolean) {
   cowAnalytics.sendEvent({
     category: Category.RECIPIENT_ADDRESS,
     action: 'Toggle Recipient Address',
