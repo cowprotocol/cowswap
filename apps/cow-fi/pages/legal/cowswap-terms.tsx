@@ -54,7 +54,7 @@ export default function Page({ siteConfigData }: PageProps) {
 
             <BodyContent>
               <p>
-                <strong>Last updated: February 2024</strong>
+                <strong>Last updated: September 2024</strong>
               </p>
               <p>
                 These Terms of Use (the &quot;Terms&quot;) govern your access to{' '}
@@ -212,18 +212,13 @@ export default function Page({ siteConfigData }: PageProps) {
                 undertaking for which you may access or use the Interface.
               </p>
               <p>
-                <strong>
+                <b>
                   Furthermore, you confirm that you are not (a) subject to economic or trade sanctions imposed by any
                   government agency or listed on any prohibited or restricted party list or (b) a citizen, resident, or
-                  organization located in a jurisdiction subject to comprehensive economic sanctions by, without being
+                  organisation located in a jurisdiction subject to comprehensive economic sanctions by, without being
                   limited to the United Nations, the European Union and its Member States, the United States and the
                   United Kingdom.
-                </strong>
-              </p>
-              <p>
-                You further warrant that you are not a United States citizen, permanent resident alien, entity organized
-                under the laws of the United States or any jurisdiction within the United States (including foreign
-                branches), or any person in the United States.
+                </b>
               </p>
               <p>
                 Finally, you confirm that your use of the Interface will fully comply with all applicable laws and
@@ -519,113 +514,66 @@ export default function Page({ siteConfigData }: PageProps) {
               <h2 id="warranties">Warranties</h2>
               <p>By using our Products you hereby agree, represent and warrant that:</p>
               <ul>
+                <li>you have read and understood the Terms and agree to be bound by them;</li>
                 <li>
-                  <p>you have read and understood the Terms and agree to be bound by them;</p>
+                  you do not rely on, and shall have no remedies in respect of, any statement, representation, assurance
+                  or warranty (whether made innocently or negligently) that is not set out in these Terms;
                 </li>
                 <li>
-                  <p>
-                    you do not rely on, and shall have no remedies in respect of, any statement, representation,
-                    assurance or warranty (whether made innocently or negligently) that is not set out in these Terms;
-                  </p>
+                  you have reached the legal age of majority applicable to you and you agree to provide legitimate and
+                  lawful documentation proving such status if we so request;
                 </li>
                 <li>
-                  <p>
-                    you have reached the legal age of majority applicable to you and you agree to provide legitimate and
-                    lawful documentation proving such status if we so request;
-                  </p>
+                  your usage of the Interface is legal under the laws of your jurisdiction or under the laws of any
+                  other jurisdiction to which you may be subject;
+                </li>
+                <li>you are not a person subject to sanction set out by the EU or Portugal;</li>
+                <li>
+                  you understand the functionality, usage, storage, transmission mechanisms and intricacies associated
+                  with cryptographic assets, token storage facilities (including wallets), blockchain technology and
+                  blockchain-based software systems;
                 </li>
                 <li>
-                  <p>
-                    your usage of the Interface is legal under the laws of your jurisdiction or under the laws of any
-                    other jurisdiction to which you may be subject;
-                  </p>
+                  you understand that transactions on the Ethereum Mainnet, Gnosis Chain and compatible layer 2
+                  solutions are irreversible and may not be erased and that your wallet address and any transaction is
+                  displayed permanently and publicly and that you relinquish any right of rectification or erasure of
+                  personal data;
                 </li>
                 <li>
-                  <p>
-                    you are not (a) the subject of economic or trade sanctions administered or enforced by any
-                    governmental authority or otherwise designated on any list of prohibited or restricted parties
-                    (including but not limited to the list maintained by the Office of Foreign Assets Control of the
-                    U.S. Department of the Treasury) or (b) a citizen, resident, or organized in a jurisdiction or
-                    territory that is the subject of comprehensive country-wide, territory-wide, or regional economic
-                    sanctions by the United States or the European Union;
-                  </p>
+                  you shall comply with any applicable tax obligations in your jurisdiction arising from your use of the
+                  interface;
                 </li>
                 <li>
-                  <p>
-                    you are not a United States citizen, permanent resident alien, entity organized under the laws of
-                    the United States or any jurisdiction within the United States (including foreign branches), or any
-                    person in the United States;
-                  </p>
+                  you shall not misuse or gain unauthorised access to the Interface by knowingly introducing viruses,
+                  Trojan horses, worms, time-bombs, keystroke loggers, spyware, adware or any other harmful programs or
+                  similar computer code designed to adversely affect the Interface and that in the event you do so or
+                  otherwise attack the Interface, we report any such activity to the relevant law enforcement
+                  authorities;
                 </li>
                 <li>
-                  <p>you are not a person subject to sanction set out by the EU or Portugal;</p>
+                  you shall not access without authority, interfere with, damage or disrupt any part of the Interface,
+                  any equipment or network on which the Interface is stored, any software used in the provision of the
+                  Interface or any equipment or network or software owned or used by any third party;
                 </li>
                 <li>
-                  <p>
-                    you understand the functionality, usage, storage, transmission mechanisms and intricacies associated
-                    with cryptographic assets, token storage facilities (including wallets), blockchain technology and
-                    blockchain-based software systems;
-                  </p>
+                  you shall not use the Interface for activities that are unlawful or fraudulent or have such purpose or
+                  effect or otherwise support any activities that breach applicable local, national or international law
+                  or regulations;
                 </li>
                 <li>
-                  <p>
-                    you understand that transactions on the Ethereum Mainnet, Gnosis Chain and Ethereum Virtual Machine
-                    compatible validation mechanisms are irreversible and may not be erased and that your wallet address
-                    and any transaction is displayed permanently and publicly and that you relinquish any right of
-                    rectification or erasure of personal data;
-                  </p>
+                  you shall not use the Interface to trade cryptographic assets that are proceeds of criminal or
+                  fraudulent activity;
                 </li>
                 <li>
-                  <p>
-                    you shall comply with any applicable tax obligations in your jurisdiction arising from your use of
-                    the interface;
-                  </p>
+                  the Interface, the Protocol, the Ethereum Blockchain, Gnosis Chain and compatible layer 2 solutions
+                  are in an early development stage and we accordingly do not guarantee an error-free process and give
+                  no price or liquidity guarantee;
                 </li>
+                <li>you are using the Interface at your own risk;</li>
                 <li>
-                  <p>
-                    you shall not misuse or gain unauthorized access to the Interface by knowingly introducing viruses,
-                    Trojan horses, worms, time-bombs, keystroke loggers, spyware, adware or any other harmful programs
-                    or similar computer code designed to adversely affect the Interface and that in the event you do so
-                    or otherwise attack the Interface, we report any such activity to the relevant law enforcement
-                    authorities;
-                  </p>
-                </li>
-                <li>
-                  <p>
-                    you shall not access without authority, interfere with, damage or disrupt any part of the Interface,
-                    any equipment or network on which the Interface is stored, any software used in the provision of the
-                    Interface or any equipment or network or software owned or used by any third party;
-                  </p>
-                </li>
-                <li>
-                  <p>
-                    you shall not use the Interface for activities that are unlawful or fraudulent or have such purpose
-                    or effect or otherwise support any activities that breach applicable local, national or
-                    international law or regulations;
-                  </p>
-                </li>
-                <li>
-                  <p>
-                    you shall not use the Interface to trade cryptographic assets that are proceeds of criminal or
-                    fraudulent activity;
-                  </p>
-                </li>
-                <li>
-                  <p>
-                    the Interface, Protocol, the Ethereum Blockchain, Gnosis Chain and Ethereum Virtual Machine
-                    compatible validation mechanisms are in an early development stage and we accordingly do not
-                    guarantee an error-free process and give no price or liquidity guarantee;
-                  </p>
-                </li>
-                <li>
-                  <p>you are using the Interface at your own risk;</p>
-                </li>
-                <li>
-                  <p>
-                    the risks of using the Interface are substantial and include, but are not limited to, the ones set
-                    out in the APPENDIX, which is hereby expressly incorporated into these Terms, and you are willing to
-                    accept the risk of loss associated therewith.
-                  </p>
+                  the risks of using the Interface are substantial and include, but are not limited to, the ones set out
+                  in these Terms, which is hereby expressly incorporated into these Terms, and you are willing to accept
+                  the risk of loss associated therewith.
                 </li>
               </ul>
               <h2 id="limitation-of-liability">Limitation of Liability</h2>

@@ -13,7 +13,7 @@ import { LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersS
 import { calculateLimitOrdersDeadline } from 'modules/limitOrders/utils/calculateLimitOrdersDeadline'
 import { emitPostedOrderEvent } from 'modules/orders'
 import { handlePermit } from 'modules/permit'
-import { appDataContainsPermitSigner } from 'modules/permit/utils/appDataContainsPermitSigner'
+import { callDataContainsPermitSigner } from 'modules/permit'
 import { presignOrderStep } from 'modules/swap/services/swapFlow/steps/presignOrderStep'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { logTradeFlow } from 'modules/trade/utils/logger'
@@ -26,7 +26,7 @@ export async function tradeFlow(
   settingsState: LimitOrdersSettingsState,
   confirmPriceImpactWithoutFee: (priceImpact: Percent) => Promise<boolean>,
   beforePermit: () => Promise<void>,
-  beforeTrade: Command
+  beforeTrade: Command,
 ): Promise<string> {
   const {
     postOrderParams,
@@ -73,7 +73,7 @@ export async function tradeFlow(
       generatePermitHook,
     })
 
-    if (appDataContainsPermitSigner(postOrderParams.appData.fullAppData)) {
+    if (callDataContainsPermitSigner(postOrderParams.appData.fullAppData)) {
       reportPermitWithDefaultSigner(postOrderParams)
     }
 
@@ -100,7 +100,7 @@ export async function tradeFlow(
         },
         isSafeWallet,
       },
-      dispatch
+      dispatch,
     )
 
     logTradeFlow('LIMIT ORDER FLOW', 'STEP 6: presign order (optional)')
@@ -120,7 +120,7 @@ export async function tradeFlow(
           },
           isSafeWallet,
         },
-        dispatch
+        dispatch,
       )
     }
 
