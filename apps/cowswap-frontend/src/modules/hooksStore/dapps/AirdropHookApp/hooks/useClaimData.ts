@@ -17,7 +17,7 @@ export interface PreviewClaimableTokensParams {
 }
 
 export const AIRDROP_PREVIEW_ERRORS = {
-  NO_CLAIMABLE_TOKENS: "You don't have claimable tokens",
+  NO_CLAIMABLE_TOKENS: 'You are not eligible for this airdrop',
   ERROR_FETCHING_DATA: 'There was an error trying to load claimable tokens',
   NO_CLAIMABLE_AIRDROPS: 'You possibly have other items to claim, but not Airdrops',
   UNEXPECTED_WRONG_FORMAT_DATA: 'Unexpected error fetching data: wrong format data',
@@ -137,6 +137,6 @@ export const useClaimData = (selectedAirdrop?: AirdropOption) => {
         }
       : null,
     fetchPreviewClaimableTokens,
-    { errorRetryCount: 0 }
+    { errorRetryCount: 0 },
   )
 }

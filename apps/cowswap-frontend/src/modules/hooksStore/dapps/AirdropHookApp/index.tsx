@@ -8,7 +8,7 @@ import { useGasLimit } from 'modules/hooksStore/hooks/useGasLimitHooks'
 import { HookDappProps } from 'modules/hooksStore/types/hooks'
 
 import { AIRDROP_OPTIONS } from './constants'
-import { useClaimData } from './hooks/useClaimData'
+import { AIRDROP_PREVIEW_ERRORS, useClaimData } from './hooks/useClaimData'
 import { ClaimableAmountContainer } from './styled/ClaimableAmountContainer'
 import { ContentWrapper } from './styled/ContentWrapper'
 import { DropDownMenu } from './styled/DropDown'
@@ -92,7 +92,11 @@ function ButtonPrimaryMessage({
   }
 
   if (error) {
-    return <span>There was an unexpected error</span>
+    if (Object.values(AIRDROP_PREVIEW_ERRORS).includes(error.message)) {
+      return <span>{error.message}</span>
+    } else {
+      return <span>An unexpected error occurred</span>
+    }
   }
 
   if (!claimData?.amount) {

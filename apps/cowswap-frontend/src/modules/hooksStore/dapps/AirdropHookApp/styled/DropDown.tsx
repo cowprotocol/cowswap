@@ -1,8 +1,8 @@
 import { useState } from 'react'
 
-// import iconSuccess from '@cowprotocol/assets/cow-swap/checkmark.svg'
+import ICON_CHECKMARK from '@cowprotocol/assets/cow-swap/checkmark.svg'
 import ICON_ARROW_DOWN from '@cowprotocol/assets/images/carret-down.svg'
-import { Media, UI } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
@@ -24,6 +24,7 @@ export const DropdownContent = styled.div`
   top: 0;
   left: 0;
   width: 100%;
+  min-height: 9rem;
   background-color: var(${UI.COLOR_PAPER});
   cursor: pointer;
   padding: 12px;
@@ -31,21 +32,6 @@ export const DropdownContent = styled.div`
   display: flex;
   flex-flow: column wrap;
   z-index: 999;
-
-  ${Media.upToLarge()} {
-    left: 0;
-    right: initial;
-  }
-
-  ${Media.upToMedium()} {
-    position: fixed;
-    bottom: 56px;
-    margin: 0;
-    padding: 18px 24px;
-    box-shadow: 0 -100vh 0 100vh rgb(0 0 0 / 40%);
-    border-bottom: 1px solid var(${UI.COLOR_BORDER});
-    border-radius: 16px 16px 0 0;
-  }
 `
 
 export const DropdownButton = styled.div`
@@ -85,8 +71,14 @@ export const SelectButton = styled.div`
     display: flex;
     gap: 0.5rem;
 
-    img {
+    svg {
+      --size: 12px;
+      width: var(--size);
+      height: var(--size);
+      transition: transform 0.2s ease-in-out;
       opacity: 0;
+      stroke-width: 2.9;
+      stroke: var(${UI.COLOR_TEXT});
     }
   }
 
@@ -94,11 +86,8 @@ export const SelectButton = styled.div`
     font-weight: bold;
 
     div {
-      img {
+      svg {
         opacity: 1;
-        fill: white;
-        stroke: white;
-        color: white;
       }
     }
   }
@@ -127,7 +116,7 @@ export function DropDownMenu({ airdropOptions, setSelectedAirdrop }: DropdownPar
             return (
               <SelectButton onClick={() => handleSelectAirdrop(airdrop)}>
                 <div>
-                  {/* <img src={iconSuccess} width={12} /> */}
+                  <SVG src={ICON_CHECKMARK} />
                   {airdrop.name}
                 </div>
               </SelectButton>
