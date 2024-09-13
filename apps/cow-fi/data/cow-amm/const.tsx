@@ -166,26 +166,52 @@ export const FAQ_DATA = [
       `,
   },
   {
-    question: 'Who can create a CoW AMM pool (and how)?',
-    answer: (
-      <>
-        Anyone can create a CoW AMM pool permissionlessly. Docs are coming soon. In the meantime, you can{' '}
-        <Link
-          href="https://cowprotocol.typeform.com/cow-amm-lpers"
-          external
-          utmContent="cow-amm-contact-us"
-          onClick={() => clickOnCowAmm('Content link click - FAQ:Contact us')}
-        >
-          contact us
-        </Link>{' '}
-        for instructions.
-      </>
-    ),
-  },
-  {
     question: 'What is a CoW AMM pool ideal for?',
     answer: `
         CoW AMM pools are optimal for every token pair that is not stable-to-stable. Since volatility dictates the amount of LVR that takes place in any given liquidity pool, CoW AMM pools are most effective for volatile token pairs as LPs are protected from arbitrageurs.
       `,
+  },
+  {
+    question: 'Who can create a CoW AMM pool (and how)?',
+    answer: (
+      <>
+        Anyone can create a CoW AMM pool easily and permissionlessly with the{' '}
+        <Link
+          href="https://pool-creator.balancer.fi/cow"
+          external
+          utmContent="cow-amm-pool-creator"
+          onClick={() => clickOnCowAmm('Content link click - FAQ:Contact us')}
+        >
+          CoW AMM pool creator
+        </Link>
+        . Engineers may also{' '}
+        <Link
+          href="https://docs.cow.fi/cow-amm/tutorials/cow-amm-deployer"
+          external
+          utmContent="cow-amm-deployer"
+          onClick={() => clickOnCowAmm('Content link click - FAQ:Deploy a pool')}
+        >
+          follow these instructions in the CoW AMM docs
+        </Link>{' '}
+        to deploy pools directly.
+      </>
+    ),
+  },
+  {
+    question: 'Where can I see existing CoW AMM pools?',
+    answer: (
+      <>
+        CoW AMM pools live on Balancer can be found at{' '}
+        <Link
+          href="http://balancer.fi/pools/cow"
+          external
+          utmContent="cow-amm-balancer-pools"
+          onClick={() => clickOnCowAmm('Content link click - FAQ:Balancer pools')}
+        >
+          balancer.fi/pools/cow
+        </Link>
+        . It is easy to create a new pool or enter an existing pool directly from this interface.
+      </>
+    ),
   },
 ]

@@ -1,7 +1,7 @@
 import { INPUT_OUTPUT_EXPLANATION, MINIMUM_ETH_FLOW_SLIPPAGE, PERCENTAGE_PRECISION } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
-import { HoverTooltip, RowFixed } from '@cowprotocol/ui'
+import { HoverTooltip, LinkStyledButton, RowFixed, UI } from '@cowprotocol/ui'
 import { Percent } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
@@ -26,6 +26,22 @@ export const ClickableText = styled.button`
   }
 `
 
+const DefaultSlippage = styled.span`
+  display: inline-flex;
+  color: var(${UI.COLOR_TEXT_OPACITY_70});
+  text-decoration: strikethrough;
+  font-size: 0.8em;
+
+  a {
+    text-decoration: underline;
+    cursor: pointer;
+
+    &:hover {
+      color: var(${UI.COLOR_TEXT});
+    }
+  }
+`
+
 export const getNativeSlippageTooltip = (chainId: SupportedChainId, symbols: (string | undefined)[] | undefined) => (
   <Trans>
     When selling {symbols?.[0] || 'a native currency'}, the minimum slippage tolerance is set to{' '}
@@ -41,12 +57,14 @@ export const getNonNativeSlippageTooltip = () => (
     Your slippage is MEV protected: all orders are submitted with tight spread (0.1%) on-chain.
     <br />
     <br />
-    The slippage you pick here enables a resubmission of your order in case of unfavourable price movements.
+    The slippage set enables a resubmission of your order in case of unfavourable price movements.
     <br />
     <br />
     {INPUT_OUTPUT_EXPLANATION}
   </Trans>
 )
+
+const SUGGESTED_SLIPPAGE_TOOLTIP = "Based on recent volatility for the selected token pair, this is the suggested slippage for ensuring quick execution of your order."
 
 export interface RowSlippageContentProps {
   chainId: SupportedChainId
@@ -60,6 +78,10 @@ export interface RowSlippageContentProps {
   showSettingOnClick?: boolean
   slippageLabel?: React.ReactNode
   slippageTooltip?: React.ReactNode
+  isSlippageModified: boolean
+  setAutoSlippage?: Command // todo: make them optional
+  smartSlippage?: string
+  isSmartSlippageApplied: boolean
 }
 
 // TODO: RowDeadlineContent and RowSlippageContent are very similar. Refactor and extract base component?
@@ -75,10 +97,26 @@ export function RowSlippageContent(props: RowSlippageContentProps) {
     slippageLabel,
     slippageTooltip,
     styleProps,
+    isSlippageModified,
+    setAutoSlippage,
+    smartSlippage,
+    isSmartSlippageApplied,
   } = props
 
   const tooltipContent =
     slippageTooltip || (isEoaEthFlow ? getNativeSlippageTooltip(chainId, symbols) : getNonNativeSlippageTooltip())
+
+  // In case the user happened to set the same slippage as the suggestion, do not show the suggestion
+  const suggestedEqualToUserSlippage = smartSlippage && smartSlippage === displaySlippage
+
+  const displayDefaultSlippage = isSlippageModified && setAutoSlippage && smartSlippage && !suggestedEqualToUserSlippage && (
+    <DefaultSlippage>
+      <LinkStyledButton onClick={setAutoSlippage}>(Suggested: {smartSlippage})</LinkStyledButton>
+      <HoverTooltip wrapInContainer content={SUGGESTED_SLIPPAGE_TOOLTIP}>
+        <StyledInfoIcon size={16} />
+      </HoverTooltip>
+    </DefaultSlippage>
+  )
 
   return (
     <StyledRowBetween {...styleProps}>
@@ -86,10 +124,10 @@ export function RowSlippageContent(props: RowSlippageContentProps) {
         <TextWrapper>
           {showSettingOnClick ? (
             <ClickableText onClick={toggleSettings}>
-              <SlippageTextContents isEoaEthFlow={isEoaEthFlow} slippageLabel={slippageLabel} />
+              <SlippageTextContents isEoaEthFlow={isEoaEthFlow} slippageLabel={slippageLabel} isDynamicSlippageSet={isSmartSlippageApplied} />
             </ClickableText>
           ) : (
-            <SlippageTextContents isEoaEthFlow={isEoaEthFlow} slippageLabel={slippageLabel} />
+            <SlippageTextContents isEoaEthFlow={isEoaEthFlow} slippageLabel={slippageLabel} isDynamicSlippageSet={isSmartSlippageApplied} />
           )}
         </TextWrapper>
         <HoverTooltip wrapInContainer content={tooltipContent}>
@@ -98,22 +136,27 @@ export function RowSlippageContent(props: RowSlippageContentProps) {
       </RowFixed>
       <TextWrapper textAlign="right">
         {showSettingOnClick ? (
-          <ClickableText onClick={toggleSettings}>{displaySlippage}</ClickableText>
+          <ClickableText onClick={toggleSettings}>
+            {displaySlippage}{displayDefaultSlippage}
+          </ClickableText>
         ) : (
-          <span>{displaySlippage}</span>
+          <span>
+            {displaySlippage}{displayDefaultSlippage}
+          </span>
         )}
       </TextWrapper>
     </StyledRowBetween>
   )
 }
 
-type SlippageTextContentsProps = { isEoaEthFlow: boolean; slippageLabel?: React.ReactNode }
+type SlippageTextContentsProps = { isEoaEthFlow: boolean; slippageLabel?: React.ReactNode, isDynamicSlippageSet: boolean }
 
-function SlippageTextContents({ isEoaEthFlow, slippageLabel }: SlippageTextContentsProps) {
+function SlippageTextContents({ isEoaEthFlow, slippageLabel, isDynamicSlippageSet }: SlippageTextContentsProps) {
   return (
     <TransactionText>
       <Trans>{slippageLabel || 'Slippage tolerance'}</Trans>
       {isEoaEthFlow && <i>(modified)</i>}
+      {isDynamicSlippageSet && <i>(dynamic)</i>}
     </TransactionText>
   )
 }

@@ -26,9 +26,15 @@ interface TradeRateDetailsProps {
   receiveAmountInfo: ReceiveAmountInfo | null
   rateInfoParams: RateInfoParams
   allowedSlippage: Percent | null
+  isSlippageModified: boolean
 }
 
-export function TradeRateDetails({ allowedSlippage, receiveAmountInfo, rateInfoParams }: TradeRateDetailsProps) {
+export function TradeRateDetails({
+  allowedSlippage,
+  receiveAmountInfo,
+  rateInfoParams,
+  isSlippageModified,
+}: TradeRateDetailsProps) {
   const [isFeeDetailsOpen, setFeeDetailsOpen] = useState(false)
   const derivedTradeState = useDerivedTradeState()
   const tradeQuote = useTradeQuote()
@@ -84,7 +90,7 @@ export function TradeRateDetails({ allowedSlippage, receiveAmountInfo, rateInfoP
         networkCostsTooltipSuffix={<NetworkCostsTooltipSuffix />}
         alwaysRow
       />
-      {allowedSlippage && <RowSlippage allowedSlippage={allowedSlippage} />}
+      {allowedSlippage && <RowSlippage allowedSlippage={allowedSlippage} isSlippageModified={isSlippageModified} />}
       <RowDeadline />
     </TradeTotalCostsDetails>
   )
