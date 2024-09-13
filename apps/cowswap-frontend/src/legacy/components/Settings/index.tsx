@@ -16,7 +16,7 @@ import { useModalIsOpen, useToggleSettingsMenu } from 'legacy/state/application/
 import { ApplicationModal } from 'legacy/state/application/reducer'
 import { useRecipientToggleManager } from 'legacy/state/user/hooks'
 
-import { toggleRecepientAddressAnalytics } from 'modules/analytics'
+import { toggleRecipientAddressAnalytics } from 'modules/analytics'
 import { SettingsIcon } from 'modules/trade/pure/Settings'
 
 export const StyledMenuButton = styled.button`
@@ -112,7 +112,7 @@ export function SettingsTab({ className }: SettingsTabProps) {
   const toggleRecipientVisibility = useCallback(
     (value?: boolean) => {
       const isVisible = value ?? !recipientToggleVisible
-      toggleRecepientAddressAnalytics(isVisible)
+      toggleRecipientAddressAnalytics(isVisible)
       toggleRecipientVisibilityAux(isVisible)
     },
     [toggleRecipientVisibilityAux, recipientToggleVisible]

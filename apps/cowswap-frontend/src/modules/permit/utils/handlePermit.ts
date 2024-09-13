@@ -1,11 +1,12 @@
+import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
 
 import {
   addPermitHookToHooks,
   AppDataInfo,
   filterPermitSignerPermit,
-  removePermitHookFromHooks,
-  replaceHooksOnAppData
+  replaceHooksOnAppData,
+  removePermitHookFromAppData,
 } from 'modules/appData'
 
 import { HandlePermitParams } from '../types'
@@ -23,7 +24,7 @@ import { HandlePermitParams } from '../types'
 export async function handlePermit(params: HandlePermitParams): Promise<AppDataInfo> {
   const { permitInfo, inputToken, account, appData, typedHooks, generatePermitHook } = params
 
-  if (isSupportedPermitInfo(permitInfo) && 'address' in inputToken) {
+  if (isSupportedPermitInfo(permitInfo) && !getIsNativeToken(inputToken)) {
     // permitInfo will only be set if there's NOT enough allowance
 
     const permitData = await generatePermitHook({
@@ -41,6 +42,6 @@ export async function handlePermit(params: HandlePermitParams): Promise<AppDataI
     return replaceHooksOnAppData(appData, hooks, filterPermitSignerPermit)
   } else {
     // Otherwise, pass along exiting hooks, minus permit
-    return replaceHooksOnAppData(appData, removePermitHookFromHooks(typedHooks))
+    return removePermitHookFromAppData(appData, typedHooks)
   }
 }
