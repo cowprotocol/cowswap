@@ -42,6 +42,7 @@ export interface BaseFlowContext {
   appDataInfo: AppDataInfo
   tradeConfirmActions: TradeConfirmActions
   quote: QuoteInformationObject | undefined
+  typedHooks?: TypedAppDataHooks
 }
 
 export type SwapFlowContext = BaseFlowContext & {

@@ -7,7 +7,7 @@ import { keccak256, toUtf8Bytes } from 'ethers/lib/utils'
 import { UtmParams } from 'modules/utm'
 
 import { filterHooks, HooksFilter } from './appDataFilter'
-import { typedAppDataHooksToAppDataHooks } from './typedHooks'
+import { removePermitHookFromHooks, typedAppDataHooksToAppDataHooks } from './typedHooks'
 
 import {
   AppDataHooks,
@@ -34,7 +34,7 @@ export type BuildAppDataParams = {
 }
 
 async function generateAppDataFromDoc(
-  doc: AppDataRootSchema
+  doc: AppDataRootSchema,
 ): Promise<Pick<AppDataInfo, 'fullAppData' | 'appDataKeccak256'>> {
   const fullAppData = await stringifyDeterministic(doc)
   const appDataKeccak256 = toKeccak256(fullAppData)
@@ -89,7 +89,7 @@ export async function replaceHooksOnAppData(
   appData: AppDataInfo,
   hooks: AppDataHooks | undefined,
   preHooksFilter?: HooksFilter,
-  postHooksFilter?: HooksFilter
+  postHooksFilter?: HooksFilter,
 ): Promise<AppDataInfo> {
   const { doc } = appData
 
@@ -114,4 +114,11 @@ export async function replaceHooksOnAppData(
     fullAppData,
     appDataKeccak256,
   }
+}
+
+export function removePermitHookFromAppData(
+  appData: AppDataInfo,
+  typedHooks: TypedAppDataHooks | undefined,
+): Promise<AppDataInfo> {
+  return replaceHooksOnAppData(appData, removePermitHookFromHooks(typedHooks))
 }
