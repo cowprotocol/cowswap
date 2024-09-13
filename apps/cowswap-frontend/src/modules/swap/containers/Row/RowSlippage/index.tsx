@@ -7,6 +7,9 @@ import { Percent } from '@uniswap/sdk-core'
 import { useToggleSettingsMenu } from 'legacy/state/application/hooks'
 
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
+import { useIsSmartSlippageApplied } from 'modules/swap/hooks/useIsSmartSlippageApplied'
+import { useSetSlippage } from 'modules/swap/hooks/useSetSlippage'
+import { useSmartSwapSlippage } from 'modules/swap/hooks/useSwapSlippage'
 import { RowSlippageContent } from 'modules/swap/pure/Row/RowSlippageContent'
 
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
@@ -16,6 +19,7 @@ export interface RowSlippageProps {
   showSettingOnClick?: boolean
   slippageLabel?: React.ReactNode
   slippageTooltip?: React.ReactNode
+  isSlippageModified: boolean
 }
 
 export function RowSlippage({
@@ -23,12 +27,16 @@ export function RowSlippage({
   showSettingOnClick = true,
   slippageTooltip,
   slippageLabel,
+  isSlippageModified,
 }: RowSlippageProps) {
   const { chainId } = useWalletInfo()
   const toggleSettings = useToggleSettingsMenu()
 
   const isEoaEthFlow = useIsEoaEthFlow()
   const nativeCurrency = useNativeCurrency()
+  const smartSwapSlippage = useSmartSwapSlippage()
+  const isSmartSlippageApplied = useIsSmartSlippageApplied()
+  const setSlippage = useSetSlippage()
 
   const props = useMemo(
     () => ({
@@ -40,9 +48,12 @@ export function RowSlippage({
       slippageLabel,
       slippageTooltip,
       displaySlippage: `${formatPercent(allowedSlippage)}%`,
+      isSmartSlippageApplied,
+      smartSlippage: smartSwapSlippage && !isEoaEthFlow ? `${formatPercent(new Percent(smartSwapSlippage, 10_000))}%` : undefined,
+      setAutoSlippage: smartSwapSlippage && !isEoaEthFlow ? () => setSlippage(null) : undefined,
     }),
-    [chainId, isEoaEthFlow, nativeCurrency.symbol, showSettingOnClick, allowedSlippage, slippageLabel, slippageTooltip]
+    [chainId, isEoaEthFlow, nativeCurrency.symbol, showSettingOnClick, allowedSlippage, slippageLabel, slippageTooltip, smartSwapSlippage, isSmartSlippageApplied]
   )
 
-  return <RowSlippageContent {...props} toggleSettings={toggleSettings} />
+  return <RowSlippageContent {...props} toggleSettings={toggleSettings} isSlippageModified={isSlippageModified} />
 }
