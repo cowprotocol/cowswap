@@ -13,6 +13,7 @@ import { ClaimableAmountContainer } from './styled/ClaimableAmountContainer'
 import { ContentWrapper } from './styled/ContentWrapper'
 import { DropDownMenu } from './styled/DropDown'
 import { Row } from './styled/Row'
+import { SelectAirdropLabel } from './styled/SelectAirdropLabel'
 import { Wrapper } from './styled/Wrapper'
 import { AirdropOption, IClaimData } from './types'
 
@@ -38,7 +39,7 @@ export function AirdropHookApp({ context }: HookDappProps) {
     <Wrapper>
       <ContentWrapper>
         <Row>
-          <label style={{ width: 'fit-content', fontWeight: '600', fontSize: '10pt' }}>Select Airdrop</label>
+          <SelectAirdropLabel>Select Airdrop</SelectAirdropLabel>
           <DropDownMenu airdropOptions={AIRDROP_OPTIONS} setSelectedAirdrop={setSelectedAirdrop} />
         </Row>
         <Row>
@@ -99,11 +100,7 @@ function ButtonPrimaryMessage({
     }
   }
 
-  if (!claimData?.amount) {
-    return <span>You are not eligible for this airdrop</span>
-  }
-
-  if (claimData.isClaimed) {
+  if (claimData?.isClaimed) {
     return <span>You have already claimed this airdrop`</span>
   }
 

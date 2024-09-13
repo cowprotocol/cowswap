@@ -3,6 +3,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { AirdropOption } from './types'
 
+// TODO: update this list to use real airdrops
 export const AIRDROP_OPTIONS = [
   {
     name: 'COW',
