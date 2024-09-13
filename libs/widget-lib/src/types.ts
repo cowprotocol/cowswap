@@ -41,7 +41,7 @@ export interface JsonRpcRequest {
   params: unknown[]
 }
 
-// https://eips.ethereum.org/EIPS/ei  p-1193
+// https://eips.ethereum.org/EIPS/eip-1193
 export interface EthereumProvider {
   /**
    * Subscribes to Ethereum-related events.
@@ -331,6 +331,8 @@ export interface WidgetMethodsListenPayloadMap {
   [WidgetMethodsListen.PROVIDER_ON_EVENT]: ProviderOnEventPayload
 }
 
+export type WidgetEventsPayloadMap = WidgetMethodsEmitPayloadMap & WidgetMethodsListenPayloadMap
+
 export type WidgetMethodsEmitPayloads = WidgetMethodsEmitPayloadMap[WidgetMethodsEmit]
 export type WidgetMethodsListenPayloads = WidgetMethodsListenPayloadMap[WidgetMethodsListen]
 
@@ -419,3 +421,5 @@ export interface ProviderOnEventPayload {
   event: string
   params: unknown
 }
+
+export type WindowListener = (event: MessageEvent<unknown>) => void
