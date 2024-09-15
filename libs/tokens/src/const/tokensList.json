@@ -49,6 +49,11 @@
     {
       "priority": 12,
       "source": "t2crtokens.eth"
+    },
+    {
+      "priority": 13,
+      "enabledByDefault": true,
+      "source": "https://curvefi.github.io/curve-assets/ethereum.json"
     }
   ],
   "100": [
@@ -71,6 +76,11 @@
       "priority": 4,
       "enabledByDefault": true,
       "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/GnosisCoingeckoTokensList.json"
+    },
+    {
+      "priority": 5,
+      "enabledByDefault": true,
+      "source": "https://curvefi.github.io/curve-assets/gnosis.json"
     }
   ],
   "42161": [
@@ -88,6 +98,11 @@
       "priority": 3,
       "enabledByDefault": true,
       "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/ArbitrumOneCoingeckoTokensList.json"
+    },
+    {
+      "priority": 4,
+      "enabledByDefault": true,
+      "source": "https://curvefi.github.io/curve-assets/arbitrum.json"
     }
   ],
   "11155111": [
