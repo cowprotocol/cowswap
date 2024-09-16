@@ -8,7 +8,6 @@ import { ContentWrapper, Row, Wrapper } from './styled'
 
 import { HookDappProps } from '../../types/hooks'
 import { TradeType } from 'modules/trade'
-import { Token } from '@uniswap/sdk-core'
 import { isAddress } from '@cowprotocol/common-utils'
 
 export function PermitHookApp({ isPreHook, context }: HookDappProps) {
@@ -16,14 +15,7 @@ export function PermitHookApp({ isPreHook, context }: HookDappProps) {
   const [tokenAddress, setTokenAddress] = useState<string>()
   const [spenderAddress, setSpenderAddress] = useState<string>()
   const generatePermitHook = useGeneratePermitHook()
-  const token = useMemo(() => {
-    try {
-      return new Token(context.chainId, tokenAddress || '', 18)
-    } catch (e) {
-      return null
-    }
-  }, [tokenAddress])
-  const tokenSupportsPermit = useTokenSupportsPermit(token, TradeType.SWAP)
+  const token = useTokenBySymbolOrAddress(tokenAddress)
   const permitInfo = usePermitInfo(token, TradeType.SWAP, spenderAddress)
 
   const onButtonClick = useCallback(async () => {
