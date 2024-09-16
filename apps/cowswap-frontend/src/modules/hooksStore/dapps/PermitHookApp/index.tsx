@@ -59,13 +59,13 @@ export function PermitHookApp({ isPreHook, context }: HookDappProps) {
         <Row>
           <label>Token</label>
           <div>
-            <input name="token" value={tokenAddress} onChange={(e) => setTokenAddress(e.target.value)} />
+            <input name="token" value={tokenAddress} onChange={(e) => setTokenAddress(e.target.value.trim())} />
           </div>
         </Row>
         <Row>
           <label>Spender</label>
           <div>
-            <input name="spender" value={spenderAddress} onChange={(e) => setSpenderAddress(e.target.value)} />
+            <input name="spender" value={spenderAddress} onChange={(e) => setSpenderAddress(e.target.value.trim())} />
           </div>
         </Row>
       </ContentWrapper>
