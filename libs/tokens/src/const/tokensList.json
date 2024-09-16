@@ -52,7 +52,6 @@
     },
     {
       "priority": 13,
-      "enabledByDefault": true,
       "source": "https://curvefi.github.io/curve-assets/ethereum.json"
     }
   ],
@@ -79,7 +78,6 @@
     },
     {
       "priority": 5,
-      "enabledByDefault": true,
       "source": "https://curvefi.github.io/curve-assets/gnosis.json"
     }
   ],
@@ -101,7 +99,6 @@
     },
     {
       "priority": 4,
-      "enabledByDefault": true,
       "source": "https://curvefi.github.io/curve-assets/arbitrum.json"
     }
   ],
