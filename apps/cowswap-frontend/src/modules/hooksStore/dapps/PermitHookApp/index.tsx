@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState } from 'react'
 
 import { ButtonPrimary } from '@cowprotocol/ui'
 
-import { useGeneratePermitHook, usePermitInfo, useTokenSupportsPermit } from 'modules/permit'
+import { recoverSpenderFromCalldata, useGeneratePermitHook, usePermitInfo } from 'modules/permit'
 
 import { ContentWrapper, Row, Wrapper } from './styled'
 
@@ -12,8 +12,11 @@ import { isAddress } from '@cowprotocol/common-utils'
 
 export function PermitHookApp({ isPreHook, context }: HookDappProps) {
   const hookToEdit = context.hookToEdit
-  const [tokenAddress, setTokenAddress] = useState<string>()
-  const [spenderAddress, setSpenderAddress] = useState<string>()
+  const [tokenAddress, setTokenAddress] = useState<string>(context.hookToEdit?.hook.target || '')
+  const isPermitEnabled = useIsPermitEnabled()
+  const [spenderAddress, setSpenderAddress] = useState<string>(
+    recoverSpenderFromCalldata(context.hookToEdit?.hook.callData) || '',
+  )
   const generatePermitHook = useGeneratePermitHook()
   const token = useTokenBySymbolOrAddress(tokenAddress)
   const permitInfo = usePermitInfo(token, TradeType.SWAP, spenderAddress)
