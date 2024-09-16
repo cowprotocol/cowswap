@@ -16,17 +16,10 @@ interface HookItemProp {
   isPreHook: boolean
   removeHook: (uuid: string, isPreHook: boolean) => void
   editHook: (uuid: string) => void
-  index: number // Add index to props
+  index: number
 }
 
-export function AppliedHookItem({
-  account,
-  hookDetails,
-  isPreHook,
-  editHook,
-  removeHook,
-  index, // Destructure index
-}: HookItemProp) {
+export function AppliedHookItem({ account, hookDetails, isPreHook, editHook, removeHook, index }: HookItemProp) {
   const { hook, dapp } = hookDetails
 
   return (
