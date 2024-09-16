@@ -1,16 +1,11 @@
-import {
-  getEthFlowContractAddress,
-  reportAppDataWithHooks,
-  reportPlaceOrderWithExpiredQuote,
-} from '@cowprotocol/common-utils'
+import { getEthFlowContractAddress, reportPlaceOrderWithExpiredQuote } from '@cowprotocol/common-utils'
 import { UiOrderType } from '@cowprotocol/types'
 import { Percent } from '@uniswap/sdk-core'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
-import { replaceHooksOnAppData } from 'modules/appData'
+import { removePermitHookFromAppData } from 'modules/appData'
 import { emitPostedOrderEvent } from 'modules/orders'
-import { appDataContainsHooks } from 'modules/permit/utils/appDataContainsHooks'
 import { signEthFlowOrderStep } from 'modules/swap/services/ethFlow/steps/signEthFlowOrderStep'
 import { EthFlowContext } from 'modules/swap/services/types'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
@@ -24,7 +19,7 @@ import { calculateUniqueOrderId } from './steps/calculateUniqueOrderId'
 export async function ethFlow(
   ethFlowContext: EthFlowContext,
   priceImpactParams: PriceImpact,
-  confirmPriceImpactWithoutFee: (priceImpact: Percent) => Promise<boolean>
+  confirmPriceImpactWithoutFee: (priceImpact: Percent) => Promise<boolean>,
 ): Promise<void | false> {
   const {
     tradeConfirmActions,
@@ -38,6 +33,7 @@ export async function ethFlow(
     checkEthFlowOrderExists,
     addInFlightOrderId,
     quote,
+    typedHooks,
   } = ethFlowContext
   const {
     chainId,
@@ -51,12 +47,7 @@ export async function ethFlow(
     return false
   }
 
-  // TODO: remove once we figure out what's adding this to appData in the first place
-  if (appDataContainsHooks(orderParamsOriginal.appData.fullAppData)) {
-    reportAppDataWithHooks(orderParamsOriginal)
-    // wipe out the hooks
-    orderParamsOriginal.appData = await replaceHooksOnAppData(orderParamsOriginal.appData, undefined)
-  }
+  orderParamsOriginal.appData = await removePermitHookFromAppData(orderParamsOriginal.appData, typedHooks)
 
   logTradeFlow('ETH FLOW', 'STEP 2: send transaction')
   // TODO: check if we need own eth flow analytics or more generic
@@ -90,7 +81,7 @@ export async function ethFlow(
     const { order, txReceipt } = await signEthFlowOrderStep(orderId, orderParams, contract, addInFlightOrderId).finally(
       () => {
         callbacks.closeModals()
-      }
+      },
     )
 
     emitPostedOrderEvent({
@@ -114,7 +105,7 @@ export async function ethFlow(
         order,
         isSafeWallet: orderParams.isSafeWallet,
       },
-      dispatch
+      dispatch,
     )
     // TODO: maybe move this into addPendingOrderStep?
     ethFlowContext.addTransaction({ hash: txReceipt.hash, ethFlow: { orderId: order.id, subType: 'creation' } })
