@@ -1,14 +1,15 @@
 import { useEffect } from 'react'
 
+import { usePrevious } from '@cowprotocol/common-hooks'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { usePostHooksRecipientOverride } from 'modules/hooksStore'
+
 import { useTradeStateFromUrl } from './setupTradeState/useTradeStateFromUrl'
+import { useDerivedTradeState } from './useDerivedTradeState'
 
 import { useIsAlternativeOrderModalVisible } from '../state/alternativeOrder'
 
-import { usePostHooksRecipientOverride } from 'modules/hooksStore'
-import { useDerivedTradeState } from './useDerivedTradeState'
-import { usePrevious } from '@cowprotocol/common-hooks'
 
 export function useResetRecipient(onChangeRecipient: (recipient: string | null) => void): null {
   const isAlternativeOrderModalVisible = useIsAlternativeOrderModalVisible()
