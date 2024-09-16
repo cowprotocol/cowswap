@@ -102,7 +102,7 @@ export function TransactionSubmittedContent({
         <>
           {!isProgressBarSetup && <styledEl.Title>{getTitleStatus(activityDerivedState)}</styledEl.Title>}
           {showSafeSigningInfo && <GnosisSafeTxDetails chainId={chainId} activityDerivedState={activityDerivedState} />}
-          {!cancellationFailed && !isFinished && <EthFlowStepper order={order} showProgressBar={!!showProgressBar} />}
+          {!isFinished && <EthFlowStepper order={order} showProgressBar={!!showProgressBar} />}
           {activityDerivedState && showProgressBar && isProgressBarSetup && (
             <OrderProgressBarV2
               {...orderProgressBarV2Props}
