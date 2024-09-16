@@ -9,6 +9,9 @@ import { ContentWrapper, Row, Wrapper } from './styled'
 import { HookDappProps } from '../../types/hooks'
 import { TradeType } from 'modules/trade'
 import { isAddress } from '@cowprotocol/common-utils'
+import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
+import { useTokenBySymbolOrAddress } from '@cowprotocol/tokens'
+import { useIsPermitEnabled } from 'common/hooks/featureFlags/useIsPermitEnabled'
 
 export function PermitHookApp({ isPreHook, context }: HookDappProps) {
   const hookToEdit = context.hookToEdit
@@ -40,11 +43,12 @@ export function PermitHookApp({ isPreHook, context }: HookDappProps) {
   }, [generatePermitHook, context, permitInfo, token, spenderAddress])
 
   const buttonProps = useMemo(() => {
+    if (!context.account) return { message: 'Connect wallet', disabled: true }
+    if (!isPermitEnabled) return { message: 'Unsupported Wallet', disabled: true }
     const confirmMessage = hookToEdit ? 'Save changes' : `Add ${isPreHook ? 'Pre' : 'Post'}-hook`
     if (!spenderAddress || !tokenAddress) return { message: confirmMessage, disabled: true }
-    if (!context.account) return { message: 'Connect wallet', disabled: true }
     if (!token || !isAddress(spenderAddress)) return { message: 'Invalid parameters', disabled: true }
-    if (!tokenSupportsPermit) return { message: 'Token not permittable', disabled: true }
+    if (!isSupportedPermitInfo(permitInfo)) return { message: 'Token not permittable', disabled: true }
     return { message: confirmMessage, disabled: false }
   }, [hookToEdit, token, permitInfo, context.account, tokenAddress, spenderAddress])
 
