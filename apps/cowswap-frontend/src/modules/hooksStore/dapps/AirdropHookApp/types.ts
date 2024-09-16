@@ -2,6 +2,8 @@ import { Airdrop } from '@cowprotocol/abis'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
+import type { Address } from 'viem'
+
 export interface AirdropDataInfo {
   index: number
   amount: string
@@ -12,12 +14,13 @@ export interface IClaimData extends AirdropDataInfo {
   contract: Airdrop
   callData: string
   token: TokenWithLogo
+  formattedAmount: string
 }
 
 export interface AirdropOption {
   name: string
   dataBaseUrl: string
-  decimals: number
-  addressesMapping: Record<SupportedChainId, string>
-  tokenMapping: Record<SupportedChainId, TokenWithLogo>
+  chainId: SupportedChainId
+  address: Address
+  token: TokenWithLogo
 }

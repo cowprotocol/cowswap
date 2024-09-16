@@ -1,8 +1,6 @@
 import { useCallback, useState } from 'react'
 
-import { formatTokenAmount } from '@cowprotocol/common-utils'
 import { ButtonPrimary } from '@cowprotocol/ui'
-import { Fraction } from '@uniswap/sdk-core'
 
 import { useGasLimit } from 'modules/hooksStore/hooks/useGasLimitHooks'
 import { HookDappProps } from 'modules/hooksStore/types/hooks'
@@ -35,6 +33,8 @@ export function AirdropHookApp({ context }: HookDappProps) {
 
   const canClaim = claimData?.amount && !claimData?.isClaimed
 
+  const connectedChainAirdrops = AIRDROP_OPTIONS.filter((airdrop) => airdrop.chainId === context.chainId)
+
   return (
     <Wrapper>
       <ContentWrapper>
@@ -42,31 +42,18 @@ export function AirdropHookApp({ context }: HookDappProps) {
           <LabelContainer>
             <label>Select Airdrop</label>
           </LabelContainer>
-          {/* <label style={{ width: 'fit-content' }}>Select Airdrop</label> */}
-          <DropDownMenu airdropOptions={AIRDROP_OPTIONS} setSelectedAirdrop={setSelectedAirdrop} />
+          <DropDownMenu airdropOptions={connectedChainAirdrops} setSelectedAirdrop={setSelectedAirdrop} />
         </Row>
         <Row>
-          {claimData?.amount ? (
-            <ClaimableAmountContainer>
-              <span>Total Available to claim</span>
-              <span>
-                {formatTokenAmount(new Fraction(claimData.amount, 10 ** claimData.token.decimals))}{' '}
-                {claimData?.token.symbol}
-              </span>
-            </ClaimableAmountContainer>
-          ) : (
-            <ClaimableAmountContainer>
-              <span>Total Available to claim</span>
-              <span>
-                {'0,0 '}
-                {claimData?.token.symbol}
-              </span>
-            </ClaimableAmountContainer>
-          )}
+          <ClaimableAmountContainer>
+            <span>Total Available to claim</span>
+            <span>{claimData?.formattedAmount}</span>
+          </ClaimableAmountContainer>
         </Row>
       </ContentWrapper>
       <ButtonPrimary disabled={!canClaim || isValidating} onClick={clickOnAddHook}>
         <ButtonPrimaryMessage
+          connectedChainAirdrops={connectedChainAirdrops}
           account={context.account}
           selectedAirdrop={selectedAirdrop}
           claimData={claimData}
@@ -79,18 +66,24 @@ export function AirdropHookApp({ context }: HookDappProps) {
 }
 
 function ButtonPrimaryMessage({
+  connectedChainAirdrops,
   account,
   selectedAirdrop,
   claimData,
   error,
   isValidating,
 }: {
+  connectedChainAirdrops?: AirdropOption[]
   account?: string | undefined
   selectedAirdrop?: AirdropOption
   claimData?: IClaimData
   error?: Error
   isValidating?: boolean
 }) {
+  if (connectedChainAirdrops !== undefined && connectedChainAirdrops.length === 0) {
+    return <span>There are no airdrops for the connected chain</span>
+  }
+
   if (!selectedAirdrop) {
     return <span>Select your airdrop</span>
   }

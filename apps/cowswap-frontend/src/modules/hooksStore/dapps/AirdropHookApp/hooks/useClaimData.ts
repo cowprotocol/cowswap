@@ -1,5 +1,7 @@
 import { Airdrop, AirdropAbi } from '@cowprotocol/abis'
+import { formatTokenAmount } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
+import { Fraction } from '@uniswap/sdk-core'
 
 import useSWR from 'swr'
 
@@ -100,8 +102,8 @@ const fetchAddressIsEligible = async ({
 }
 
 export const useClaimData = (selectedAirdrop?: AirdropOption) => {
-  const { account, chainId } = useWalletInfo()
-  const airdropContract = useContract<Airdrop>(selectedAirdrop?.addressesMapping, AirdropAbi)
+  const { account } = useWalletInfo()
+  const airdropContract = useContract<Airdrop>(selectedAirdrop?.address, AirdropAbi)
 
   const fetchPreviewClaimableTokens = async ({
     dataBaseUrl,
@@ -120,12 +122,18 @@ export const useClaimData = (selectedAirdrop?: AirdropOption) => {
       isEligibleData.proof, //merkleProof
     ])
 
+    const token = selectedAirdrop.token
+    const formattedAmount = isEligibleData.amount
+      ? `${formatTokenAmount(new Fraction(isEligibleData.amount, 10 ** token.decimals))} ${token.symbol}`
+      : `0,0 ${token.symbol}`
+
     return {
       ...isEligibleData,
       isClaimed,
       callData,
       contract: airdropContract,
-      token: selectedAirdrop.tokenMapping[chainId],
+      token,
+      formattedAmount,
     }
   }
 
