@@ -4,8 +4,8 @@ import { HookDappInternal, HookDappType } from '../../types/hooks'
 
 import { PermitHookApp } from './index'
 
-export const PRE_PERMIT: HookDappInternal = {
-  name: `Permit one token`,
+export const PERMIT_HOOK: HookDappInternal = {
+  name: `Permit a token`,
   descriptionShort: 'Infinite permit an address to spend one token on your behalf',
   description: `This hook allows you to permit an address to spend your tokens on your behalf. This is useful for allowing a smart contract to spend your tokens without needing to approve each transaction.`,
   type: HookDappType.INTERNAL,
