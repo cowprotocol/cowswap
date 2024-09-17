@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.0](https://github.com/cowprotocol/cowswap/compare/analytics-v1.6.0...analytics-v1.7.0) (2024-09-17)
+
+
+### Features
+
+* **smart-slippage:** improve ux ([#4826](https://github.com/cowprotocol/cowswap/issues/4826)) ([ce3ba87](https://github.com/cowprotocol/cowswap/commit/ce3ba875c5f6ebce3032e89ec5b231f59a9a4fc1))
+
 ## [1.6.0](https://github.com/cowprotocol/cowswap/compare/analytics-v1.5.0...analytics-v1.6.0) (2024-08-27)
 
 

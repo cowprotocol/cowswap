@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.1](https://github.com/cowprotocol/cowswap/compare/widget-lib-v0.14.0...widget-lib-v0.14.1) (2024-09-17)
+
+
+### Bug Fixes
+
+* **libs:** fix import error on multiple libs ([#4869](https://github.com/cowprotocol/cowswap/issues/4869)) ([8cfd70b](https://github.com/cowprotocol/cowswap/commit/8cfd70b6000a1a021b76ad1f924829cb42cb2bcd))
+
 ## [0.14.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v0.13.2...widget-lib-v0.14.0) (2024-08-27)
 
 
