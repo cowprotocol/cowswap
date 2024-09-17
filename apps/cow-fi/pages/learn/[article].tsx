@@ -46,6 +46,7 @@ import { Link, LinkType } from '@/components/Link'
 import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
 import { clickOnKnowledgeBase } from 'modules/analytics'
 import { CmsImage } from '@cowprotocol/ui'
+import { useLazyLoadImages } from 'hooks/useLazyLoadImages'
 
 interface ArticlePageProps {
   siteConfigData: typeof CONFIG
@@ -99,86 +100,6 @@ export function ArticleSubtitle({
   )
 }
 
-const LAZY_LOADING_CONFIG = {
-  rootMargin: '24px', // Load images when they're 200px from entering the viewport
-  placeholderColor: '#f0f0f0', // Color of the placeholder
-  fadeInDuration: '0.3s', // Duration of the fade-in effect
-  minHeight: '100px', // Minimum height of the image placeholder
-}
-
-// Function to replace image URLs with placeholders
-function replaceImageUrls(html: string): string {
-  return html.replace(/<img([^>]*)src="([^"]*)"([^>]*)>/g, (match, before, src, after) => {
-    return `<img${before}data-src="${src}" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%' height='100%' viewBox='0 0 1 1' preserveAspectRatio='none'%3E%3Crect width='1' height='1' fill='${LAZY_LOADING_CONFIG.placeholderColor.replace('#', '%23')}' /%3E%3C/svg%3E"${after}>`
-  })
-}
-
-// Custom Image component
-const LazyImage = ({ src, alt, ...props }: React.ImgHTMLAttributes<HTMLImageElement>) => {
-  const [isLoaded, setIsLoaded] = React.useState(false)
-  const imgRef = React.useRef<HTMLImageElement>(null)
-
-  React.useEffect(() => {
-    if (!imgRef.current) return
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting && imgRef.current) {
-            const dataSrc = imgRef.current.getAttribute('data-src')
-            if (dataSrc) {
-              imgRef.current.src = dataSrc
-              setIsLoaded(true)
-              observer.disconnect()
-            }
-          }
-        })
-      },
-      { rootMargin: LAZY_LOADING_CONFIG.rootMargin },
-    )
-
-    observer.observe(imgRef.current)
-
-    return () => {
-      observer.disconnect()
-    }
-  }, [])
-
-  return (
-    <img
-      ref={imgRef}
-      src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%' height='100%' viewBox='0 0 1 1' preserveAspectRatio='none'%3E%3Crect width='1' height='1' fill='${LAZY_LOADING_CONFIG.placeholderColor.replace('#', '%23')}' /%3E%3C/svg%3E"
-      data-src={src}
-      alt={alt}
-      {...props}
-      style={{
-        ...props.style,
-        minHeight: LAZY_LOADING_CONFIG.minHeight,
-        opacity: isLoaded ? 1 : 0,
-        transition: `opacity ${LAZY_LOADING_CONFIG.fadeInDuration}`,
-      }}
-    />
-  )
-}
-
-export function ArticleSharedRichTextComponent({ sharedRichText }: { sharedRichText: SharedRichTextComponent }) {
-  // Preprocess the HTML content
-  const processedContent = React.useMemo(() => {
-    return sharedRichText.body ? replaceImageUrls(sharedRichText.body) : ''
-  }, [sharedRichText.body])
-
-  return (
-    <ReactMarkdown
-      rehypePlugins={[rehypeRaw]}
-      components={{
-        img: ({ node, ...props }) => <LazyImage {...props} />,
-      }}
-    >
-      {processedContent}
-    </ReactMarkdown>
-  )
-}
-
 function calculateReadTime(text: string): string {
   const wordsPerMinute = 200 // Average case.
   const textLength = text.split(/\s+/).length // Split by words
@@ -193,6 +114,29 @@ function isRichTextComponent(block: any): block is SharedRichTextComponent {
 function getRandomArticles(articles: Article[], count: number): Article[] {
   const shuffled = articles.sort(() => 0.5 - Math.random())
   return shuffled.slice(0, count)
+}
+
+export function ArticleSharedRichTextComponent({ sharedRichText }: { sharedRichText: SharedRichTextComponent }) {
+  const { replaceImageUrls, LazyImage } = useLazyLoadImages()
+
+  // Preprocess the HTML content
+  const processedContent = React.useMemo(() => {
+    return sharedRichText.body ? replaceImageUrls(sharedRichText.body) : ''
+  }, [sharedRichText.body, replaceImageUrls])
+
+  return (
+    <ReactMarkdown
+      rehypePlugins={[rehypeRaw]}
+      components={{
+        img: ({ src, alt, ...props }) => {
+          if (!src) return null
+          return <LazyImage src={src} alt={alt || ''} {...props} width={725} height={400} />
+        },
+      }}
+    >
+      {processedContent}
+    </ReactMarkdown>
+  )
 }
 
 export default function ArticlePage({

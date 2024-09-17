@@ -42,7 +42,7 @@ import {
 import { clickOnKnowledgeBase } from 'modules/analytics'
 import SVG from 'react-inlinesvg'
 
-import { CmsImage } from '@cowprotocol/ui'
+import { useLazyLoadImages } from 'hooks/useLazyLoadImages'
 
 const PODCASTS = [
   {
@@ -81,7 +81,7 @@ const SPACES = [
 
 const MEDIA_COVERAGE = [
   {
-    title: 'Bots fleece DeFi liquidity providers for $500m every year. CoW DAO’s new exchange stops them ',
+    title: "Bots fleece DeFi liquidity providers for $500m every year. CoW DAO's new exchange stops them",
     publisher: 'DLNews',
     image: '/images/media-coverage/DLNews-bots-fleece.webp',
     link: 'https://www.dlnews.com/articles/defi/new-cow-swap-amm-will-stop-mev-bots-and-save-users-millions/',
@@ -95,7 +95,7 @@ const MEDIA_COVERAGE = [
     linkExternal: true,
   },
   {
-    title: 'CoW Swap: A Beginner’s Guide to This New Decentralized Exchange',
+    title: "CoW Swap: A Beginner's Guide to This New Decentralized Exchange",
     publisher: 'BeInCrypto',
     image: '/images/media-coverage/learn_CoW_Swap-covers_logo.webp',
     link: 'https://beincrypto.com/learn/cow-swap-guide/',
@@ -166,6 +166,7 @@ const Wrapper = styled.div`
 
 export default function Page({ siteConfigData, categories, articles, featuredArticles }: PageProps) {
   const { title } = siteConfigData
+  const { LazyImage } = useLazyLoadImages()
 
   return (
     <Layout metaTitle={`Knowledge Base - ${title}`}>
@@ -198,7 +199,7 @@ export default function Page({ siteConfigData, categories, articles, featuredArt
               <ArticleList columnsTablet={2}>
                 {featuredArticles.map(({ title, description, cover, link }, index) => (
                   <ArticleCard key={index} href={link} onClick={() => clickOnKnowledgeBase(`click-article-${title}`)}>
-                    <ArticleImage color="#000">{cover && <CmsImage src={cover} alt={title} />}</ArticleImage>
+                    <ArticleImage color="#000">{cover && <LazyImage src={cover} alt={title} />}</ArticleImage>
                     <ArticleTitle>{title}</ArticleTitle>
                     <ArticleDescription>{description}</ArticleDescription>
                   </ArticleCard>
@@ -222,7 +223,7 @@ export default function Page({ siteConfigData, categories, articles, featuredArt
                     >
                       <TopicImage iconColor={iconColor} bgColor={bgColor} borderRadius={90} widthMobile={'auto'}>
                         {imageUrl ? (
-                          <CmsImage
+                          <LazyImage
                             src={imageUrl}
                             alt={name}
                             onError={(e) => {
@@ -293,7 +294,7 @@ export default function Page({ siteConfigData, categories, articles, featuredArt
                     rel={linkExternal ? 'noopener' : ''}
                     onClick={() => clickOnKnowledgeBase(`click-media-${title}`)}
                   >
-                    <ArticleImage>{image && <img src={image} alt={title} />}</ArticleImage>
+                    <ArticleImage>{image && <LazyImage src={image} alt={title} />}</ArticleImage>
                     <ArticleTitle fontSize={21}>{title}</ArticleTitle>
                     <ArticleDescription>Published by {publisher}</ArticleDescription>
                   </ArticleCard>

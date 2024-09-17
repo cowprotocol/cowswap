@@ -296,8 +296,8 @@ export const TopicCardInner = styled.div<{
       contentAlignMobile === 'left'
         ? 'flex-start'
         : contentAlignMobile === 'right'
-        ? 'flex-end'
-        : contentAlignMobile || 'center'};
+          ? 'flex-end'
+          : contentAlignMobile || 'center'};
   }
 
   > .twitter-tweet {
@@ -345,8 +345,8 @@ export const TopicImage = styled.div<{
         ? `${maxWidth}px`
         : maxWidth
       : typeof width === 'number'
-      ? `${width}px`
-      : '100%'};
+        ? `${width}px`
+        : '100%'};
   height: ${({ height }) => (typeof height === 'number' ? `${height}px` : height || 'var(--size)')};
   max-height: ${({ maxHeight, height }) =>
     maxHeight !== undefined
@@ -354,8 +354,8 @@ export const TopicImage = styled.div<{
         ? `${maxHeight}px`
         : maxHeight
       : typeof height === 'number'
-      ? `${height}px`
-      : height || '100%'};
+        ? `${height}px`
+        : height || '100%'};
   border-radius: ${({ borderRadius }) => (borderRadius ? `${borderRadius}px` : 0)};
   background: ${({ bgColor, iconColor }) => bgColor || iconColor || Color.neutral90};
   color: ${({ iconColor }) => iconColor || Color.neutral90};
@@ -379,8 +379,8 @@ export const TopicImage = styled.div<{
           ? `${heightMobile}px`
           : heightMobile
         : typeof height === 'number'
-        ? `${height}px`
-        : height || 'var(--size)'};
+          ? `${height}px`
+          : height || 'var(--size)'};
     order: ${({ orderReverseMobile }) => (orderReverseMobile ? -1 : 'initial')};
     margin: ${({ marginMobile }) => marginMobile || '0 0 16px'};
   }
@@ -535,7 +535,11 @@ export const LinkItem = styled.a`
   padding: 8px 0;
   text-decoration: none;
   color: ${Color.neutral20};
-  transition: background 0.2s ease-in-out, 0.2s ease-in-out, padding 0.2s ease-in-out, color 0.2s ease-in-out;
+  transition:
+    background 0.2s ease-in-out,
+    0.2s ease-in-out,
+    padding 0.2s ease-in-out,
+    color 0.2s ease-in-out;
   line-height: 1.3;
   gap: 16px;
 
@@ -641,7 +645,9 @@ export const CTAButton = styled.a`
   border-radius: var(--height);
   text-decoration: none;
   cursor: pointer;
-  transition: background 0.2s ease-in-out, color 0.2s ease-in-out;
+  transition:
+    background 0.2s ease-in-out,
+    color 0.2s ease-in-out;
 
   &:hover {
     color: ${Color.neutral100};
@@ -671,7 +677,7 @@ export const Breadcrumbs = styled.div<{ padding?: string }>`
   }
 
   > a {
-    color: ${Color.neutral50};
+    color: ${Color.neutral40};
     text-decoration: none;
     margin-right: 8px;
     transition: color 0.2s ease-in-out;
@@ -726,7 +732,9 @@ export const Pagination = styled.div`
     font-weight: inherit;
     color: inherit;
     background: transparent;
-    transition: background 0.2s, color 0.2s;
+    transition:
+      background 0.2s,
+      color 0.2s;
 
     &:hover {
       background: ${Color.neutral80};
@@ -1499,6 +1507,8 @@ export const BodyContent = styled.div<{ color?: string }>`
     max-width: 100%;
     border-radius: 10px;
     margin-top: 20px;
+    height: auto;
+    object-fit: contain;
   }
 
   iframe {
@@ -1703,7 +1713,9 @@ export const CategoryTags = styled.div`
     background: ${Color.neutral98};
     border-radius: 16px;
     text-decoration: none;
-    transition: background 0.2s ease-in-out, color 0.2s ease-in-out;
+    transition:
+      background 0.2s ease-in-out,
+      color 0.2s ease-in-out;
     color: inherit;
     font-weight: inherit;
     font-size: inherit;
@@ -1779,7 +1791,7 @@ export const CategoryLinks = styled.ul<{ noDivider?: boolean }>`
   }
 
   a {
-    color: ${Color.neutral50};
+    color: ${Color.neutral40};
     text-decoration: none;
     transition: color 0.2s ease-in-out;
     white-space: nowrap;
