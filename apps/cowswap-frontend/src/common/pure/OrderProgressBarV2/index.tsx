@@ -751,7 +751,7 @@ function FinishedStep(props: OrderProgressBarV2Props) {
 
   const isDarkMode = useIsDarkMode()
 
-  const { randomImage, randomBenefit } = useMemo(() => {
+  const { randomBenefit } = useMemo(() => {
     const benefits = CHAIN_SPECIFIC_BENEFITS[chainId]
 
     return {
