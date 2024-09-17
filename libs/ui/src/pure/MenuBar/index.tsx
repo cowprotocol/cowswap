@@ -537,7 +537,7 @@ const appendUtmParams = (
   utmContent: string | undefined,
   rootDomain: string,
   isExternal: boolean,
-  label: string | undefined
+  label: string | undefined,
 ) => {
   const defaultUtm = {
     utmSource: rootDomain,
@@ -594,11 +594,11 @@ const GlobalSettingsDropdown = forwardRef(
                         item.utmContent,
                         rootDomain,
                         item.external,
-                        item.label
+                        item.label,
                       )
                     : item.href
-                    ? `${new URL(item.href, `https://${rootDomain}`).pathname}`
-                    : undefined
+                      ? `${new URL(item.href, `https://${rootDomain}`).pathname}`
+                      : undefined
 
                   const content = (
                     <>
@@ -649,7 +649,7 @@ const GlobalSettingsDropdown = forwardRef(
           ))}
       </>
     )
-  }
+  },
 )
 
 function _onDropdownItemClickFactory(item: MenuItem, postClick?: () => void) {
@@ -732,6 +732,7 @@ export const MenuBar = (props: MenuBarProps) => {
   const handleSettingsToggle = () => setIsSettingsOpen((prev) => !prev)
 
   const isMobile = useMediaQuery(Media.upToLarge(false))
+  const isMedium = useMediaQuery(Media.upToMedium(false))
 
   useOnClickOutside([menuRef], () => setIsDaoOpen(false))
 
@@ -789,7 +790,7 @@ export const MenuBar = (props: MenuBarProps) => {
         <NavDaoTrigger
           isOpen={isDaoOpen}
           setIsOpen={setIsDaoOpen}
-          mobileMode={isMobile}
+          mobileMode={isMedium}
           rootDomain={rootDomain}
           LinkComponent={LinkComponent}
         />
@@ -812,10 +813,10 @@ export const MenuBar = (props: MenuBarProps) => {
           </NavItems>
         )}
 
-        <RightAligned mobileMode={isMobile} flexFlowMobile="row wrap">
+        <RightAligned mobileMode={isMedium} flexFlowMobile="row wrap">
           {persistentAdditionalContent} {/* Always render this content */}
-          {!isMobile && additionalContent} {/* Render this content only on desktop */}
-          {!isMobile &&
+          {!isMedium && additionalContent} {/* Render this content only on desktop */}
+          {!isMedium &&
             isLoaded &&
             additionalNavButtons &&
             additionalNavButtons.map((item, index) => {
@@ -832,7 +833,7 @@ export const MenuBar = (props: MenuBarProps) => {
                   color={item.color}
                   hoverBgColor={item.hoverBgColor}
                   hoverColor={item.hoverColor}
-                  mobileMode={isMobile}
+                  mobileMode={isMedium}
                 >
                   <LinkComponent href={href}>
                     <DropdownContentItemText>
@@ -845,12 +846,12 @@ export const MenuBar = (props: MenuBarProps) => {
             })}
           {showGlobalSettings && settingsNavItems && (
             <>
-              <GlobalSettingsButton ref={settingsButtonRef} mobileMode={isMobile} onClick={handleSettingsToggle}>
+              <GlobalSettingsButton ref={settingsButtonRef} mobileMode={isMedium} onClick={handleSettingsToggle}>
                 <SVG src={IMG_ICON_SETTINGS_GLOBAL} />
               </GlobalSettingsButton>
               {isSettingsOpen && (
                 <GlobalSettingsDropdown
-                  mobileMode={isMobile}
+                  mobileMode={isMedium}
                   settingsNavItems={settingsNavItems}
                   isOpen={isSettingsOpen}
                   closeDropdown={handleSettingsToggle}
@@ -906,7 +907,7 @@ export const MenuBar = (props: MenuBarProps) => {
                         item.utmContent,
                         rootDomain,
                         !!item.external,
-                        item.label
+                        item.label,
                       )}
                     >
                       <DropdownContentItemText>
