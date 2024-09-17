@@ -1,4 +1,4 @@
-import { UI } from '@cowprotocol/ui'
+import { UI, Media } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
@@ -54,6 +54,11 @@ export const Body = styled.div`
   font-size: 15px;
   line-height: 1.4;
 
+  ${Media.upToSmall()} {
+    font-size: 14px;
+    padding: 0 20px;
+  }
+
   > p {
     color: inherit;
     font-size: inherit;
@@ -65,6 +70,11 @@ export const Tags = styled.div`
   margin: 32px auto 16px;
   font-size: 14px;
   padding: 0 10px;
+
+  ${Media.upToSmall()} {
+    padding: 0 20px;
+    overflow-x: auto;
+  }
 
   h3 {
     margin: 0;
@@ -79,7 +89,7 @@ export const Tags = styled.div`
   }
 
   tr {
-    border-bottom: 1px solid var(${UI.COLOR_BORDER});
+    border-bottom: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
   }
 
   tr:last-child {

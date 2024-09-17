@@ -16,7 +16,6 @@ const ModalInner = styled.div`
   background: transparent;
   padding: 0;
   position: relative;
- 
 `
 
 const Wrapper = styled.div<{
@@ -36,9 +35,6 @@ const Wrapper = styled.div<{
 
   ${Media.upToSmall()} {
     margin: 0;
-    border-radius: 0;
-    border-top-left-radius: var(${UI.BORDER_RADIUS_NORMAL});
-    border-top-right-radius: var(${UI.BORDER_RADIUS_NORMAL});
     box-shadow: none;
   }
 
@@ -92,7 +88,7 @@ const BackButtonStyled = styled(BackButton)`
   left: 10px;
 `
 
-const NewModalContent = styled.div<{ padding?: string, justifyContent?: string }>`
+const NewModalContent = styled.div<{ padding?: string; justifyContent?: string }>`
   display: flex;
   justify-content: ${({ justifyContent }) => justifyContent || 'center'};
   flex-flow: column wrap;
@@ -177,7 +173,7 @@ export function NewModal({
   const onDismissCallback = useCallback(() => onDismiss?.(), [onDismiss])
 
   return (
-    <Wrapper maxWidth={maxWidth} minHeight={minHeight} modalMode={modalMode}  >
+    <Wrapper maxWidth={maxWidth} minHeight={minHeight} modalMode={modalMode}>
       <ModalInner>
         {!modalMode && <BackButtonStyled onClick={onDismissCallback} />}
         {title && (
@@ -191,7 +187,11 @@ export function NewModal({
           </Heading>
         )}
 
-        <NewModalContent className={modalMode ? 'modalMode' : ''} padding={contentPadding} justifyContent={justifyContent}>
+        <NewModalContent
+          className={modalMode ? 'modalMode' : ''}
+          padding={contentPadding}
+          justifyContent={justifyContent}
+        >
           {children}
         </NewModalContent>
       </ModalInner>
