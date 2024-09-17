@@ -1,3 +1,5 @@
+import { percentToBps } from '@cowprotocol/common-utils'
+
 import { AppDataUpdater } from 'modules/appData'
 import {
   AlternativeLimitOrderUpdater,
@@ -19,7 +21,7 @@ export default function LimitOrderPage() {
 
   return (
     <>
-      <AppDataUpdater orderClass="limit" slippage={LIMIT_ORDER_SLIPPAGE} />
+      <AppDataUpdater orderClass="limit" slippageBips={percentToBps(LIMIT_ORDER_SLIPPAGE)} />
       <QuoteObserverUpdater />
       <FillLimitOrdersDerivedStateUpdater />
       <ExecutionPriceUpdater />

@@ -1,4 +1,7 @@
-import React from 'react'
+
+import { percentToBps } from '@cowprotocol/common-utils'
+
+import { useIsSmartSlippageApplied } from 'modules/swap/hooks/useIsSmartSlippageApplied'
 
 import { AppDataUpdater } from '../../../appData'
 import { useSwapSlippage } from '../../hooks/useSwapSlippage'
@@ -8,10 +11,11 @@ import { SwapDerivedStateUpdater } from '../../updaters/SwapDerivedStateUpdater'
 
 export function SwapUpdaters() {
   const slippage = useSwapSlippage()
+  const isSmartSlippageApplied = useIsSmartSlippageApplied()
 
   return (
     <>
-      <AppDataUpdater orderClass="market" slippage={slippage} />
+      <AppDataUpdater orderClass="market" slippageBips={percentToBps(slippage)} isSmartSlippage={isSmartSlippageApplied} />
       <SwapDerivedStateUpdater />
       <SwapAmountsFromUrlUpdater />
       <SmartSlippageUpdater />

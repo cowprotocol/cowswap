@@ -15,6 +15,7 @@ export type UseAppDataParams = {
   appCodeWithWidgetMetadata: AppCodeWithWidgetMetadata | null
   chainId: SupportedChainId
   slippageBips: number
+  isSmartSlippage?: boolean
   orderClass: AppDataOrderClass
   utm: UtmParams | undefined
   typedHooks?: TypedAppDataHooks
@@ -30,6 +31,7 @@ export function AppDataInfoUpdater({
   appCodeWithWidgetMetadata,
   chainId,
   slippageBips,
+  isSmartSlippage,
   orderClass,
   utm,
   typedHooks,
@@ -52,6 +54,7 @@ export function AppDataInfoUpdater({
     const params: BuildAppDataParams = {
       chainId,
       slippageBips,
+      isSmartSlippage,
       appCode,
       environment,
       orderClass,
