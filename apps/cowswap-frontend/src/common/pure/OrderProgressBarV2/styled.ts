@@ -1,6 +1,6 @@
 import IMAGE_STAR_SHINE from '@cowprotocol/assets/cow-swap/star-shine.svg'
 import { SingleLetterLogoWrapper } from '@cowprotocol/tokens'
-import { Font, LinkStyledButton, Media, UI } from '@cowprotocol/ui'
+import { ButtonPrimary, Font, LinkStyledButton, Media, UI } from '@cowprotocol/ui'
 
 import styled, { css, keyframes } from 'styled-components/macro'
 
@@ -185,6 +185,10 @@ export const ProgressImageWrapper = styled.div<{ bgColor?: string; padding?: str
     padding: 0;
     margin: 0;
   }
+
+  > div {
+    display: flex;
+  }
 `
 
 export const DebugPanel = styled.div`
@@ -359,14 +363,11 @@ export const FinishedStepContainer = styled.div`
   display: flex;
   flex-flow: column wrap;
   align-items: center;
-  gap: 10px;
+  gap: 16px;
   padding: 0;
   width: 100%;
 
   ${Media.upToSmall()} {
-    flex-flow: column-reverse;
-    gap: 30px;
-
     ${ProgressImageWrapper} {
       height: auto;
       max-height: initial;
@@ -482,35 +483,8 @@ export const FinishedLogo = styled.div`
   }
 `
 
-export const ShareButton = styled.button`
-  background: var(${UI.COLOR_PRIMARY});
-  color: var(${UI.COLOR_BUTTON_TEXT});
-  border: none;
-  padding: 10px 20px;
-  border-radius: 20px;
-  cursor: pointer;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  font-size: 17px;
-  z-index: 2;
-  position: absolute;
-  left: 6px;
-  right: 0;
-  bottom: 6px;
-  width: calc(100% - 12px);
-  transition: background 0.15s ease-in-out, color 0.15s ease-in-out;
-
-  &:hover {
-    background: var(${UI.COLOR_BUTTON_TEXT});
-    color: var(${UI.COLOR_PRIMARY});
-  }
-
-  ${Media.upToSmall()} {
-    border: 1px solid var(${UI.COLOR_TEXT});
-    justify-content: center;
-  }
+export const ShareButton = styled(ButtonPrimary)`
+  gap: 10px;
 
   > svg {
     --size: 17px;
@@ -535,8 +509,8 @@ export const TransactionStatus = styled.div<{ status?: string; flexFlow?: string
     status === 'expired' || status === 'cancelled'
       ? `var(${UI.COLOR_ALERT_TEXT})`
       : status === 'success'
-      ? `var(${UI.COLOR_SUCCESS_TEXT})`
-      : `var(${UI.COLOR_TEXT})`};
+        ? `var(${UI.COLOR_SUCCESS_TEXT})`
+        : `var(${UI.COLOR_TEXT})`};
 
   > svg {
     --size: 28px;
@@ -547,8 +521,8 @@ export const TransactionStatus = styled.div<{ status?: string; flexFlow?: string
       status === 'expired' || status === 'cancelled'
         ? `var(${UI.COLOR_ALERT_BG})`
         : status === 'success'
-        ? `var(${UI.COLOR_SUCCESS_BG})`
-        : 'transparent'};
+          ? `var(${UI.COLOR_SUCCESS_BG})`
+          : 'transparent'};
     border-radius: var(--size);
     padding: 2px;
   }
@@ -560,7 +534,7 @@ export const SolverRankings = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
-  margin: 52px auto 0;
+  margin: 32px auto 0;
 
   > h3 {
     font-size: 17px;
@@ -789,7 +763,7 @@ export const CancellationFailedBanner = styled.div`
   background-color: var(${UI.COLOR_DANGER_BG});
   color: var(${UI.COLOR_DANGER_TEXT});
   padding: 10px;
-  margin-top: 10px;
+  margin: 0 auto;
   border-radius: 16px;
   text-align: center;
   font-size: 15px;
@@ -816,8 +790,8 @@ export const NumberedElement = styled.div<{
     isCancelling
       ? `var(${UI.COLOR_DANGER_BG})`
       : isUnfillable
-      ? '#996815'
-      : customColor || (status === 'active' ? '#2196F3' : `var(${UI.COLOR_TEXT})`)};
+        ? '#996815'
+        : customColor || (status === 'active' ? '#2196F3' : `var(${UI.COLOR_TEXT})`)};
   border-radius: 50%;
   position: relative;
 `
@@ -957,8 +931,7 @@ export const CircleProgress = styled.circle<{ startAt: number; end: number }>`
   stroke-width: 6;
   stroke-linecap: round;
 
-  ${({ startAt, end }) =>
-    css`
-      animation: ${progressAnimation(startAt, end)} ${startAt}s linear infinite;
-    `};
+  ${({ startAt, end }) => css`
+    animation: ${progressAnimation(startAt, end)} ${startAt}s linear infinite;
+  `};
 `

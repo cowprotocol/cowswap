@@ -12,6 +12,7 @@ import { useOrder } from 'legacy/state/orders/hooks'
 import TradeGp from 'legacy/state/swap/TradeGp'
 
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
+import { useIsSmartSlippageApplied } from 'modules/swap/hooks/useIsSmartSlippageApplied'
 import {
   TradeConfirmation,
   TradeConfirmModal,
@@ -53,6 +54,7 @@ export interface ConfirmSwapModalSetupProps {
   doTrade(): void
 }
 
+
 export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
   const {
     chainId,
@@ -83,9 +85,11 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
 
   const buttonText = useSwapConfirmButtonText(slippageAdjustedSellAmount)
 
+  const isSmartSlippageApplied = useIsSmartSlippageApplied()
+
   const labelsAndTooltips = useMemo(
     () => ({
-      slippageLabel: isEoaEthFlow ? 'Slippage tolerance (modified)' : undefined,
+      slippageLabel: isEoaEthFlow || isSmartSlippageApplied ? `Slippage tolerance (${isEoaEthFlow ? 'modified' : 'dynamic'})` : undefined,
       slippageTooltip: isEoaEthFlow
         ? getNativeSlippageTooltip(chainId, [nativeCurrency.symbol])
         : getNonNativeSlippageTooltip(),

@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import { ReactNode, useCallback, useMemo, useState } from 'react'
 
 import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
 import { NATIVE_CURRENCIES, TokenWithLogo } from '@cowprotocol/common-const'
@@ -13,7 +13,6 @@ import { useModalIsOpen } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
 import { Field } from 'legacy/state/types'
 
-import { PreHookButton, PostHookButton } from 'modules/hooksStore'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { EthFlowModal, EthFlowProps } from 'modules/swap/containers/EthFlow'
 import { SwapModals, SwapModalsProps } from 'modules/swap/containers/SwapModals'
@@ -61,10 +60,11 @@ const BUTTON_STATES_TO_SHOW_BUNDLE_APPROVAL_BANNER = [SwapButtonState.ApproveAnd
 const BUTTON_STATES_TO_SHOW_BUNDLE_WRAP_BANNER = [SwapButtonState.WrapAndSwap]
 
 export interface SwapWidgetProps {
-  hooksEnabled: boolean
+  topContent?: ReactNode
+  bottomContent?: ReactNode
 }
 
-export function SwapWidget({ hooksEnabled }: SwapWidgetProps) {
+export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
   const { chainId, account } = useWalletInfo()
   const { slippageAdjustedSellAmount, currencies, trade } = useDerivedSwapInfo()
   const slippage = useSwapSlippage()
@@ -115,7 +115,7 @@ export function SwapWidget({ hooksEnabled }: SwapWidgetProps) {
     trade?.outputAmountWithoutFee || parsedAmounts.OUTPUT,
     inputToken,
     outputToken,
-    true
+    true,
   )
 
   // TODO: unify CurrencyInfo assembling between Swap and Limit orders
@@ -156,7 +156,7 @@ export function SwapWidget({ hooksEnabled }: SwapWidgetProps) {
 
   const buyingFiatAmount = useMemo(
     () => (isSellTrade ? outputCurrencyInfo.fiatAmount : inputCurrencyInfo.fiatAmount),
-    [isSellTrade, outputCurrencyInfo.fiatAmount, inputCurrencyInfo.fiatAmount]
+    [isSellTrade, outputCurrencyInfo.fiatAmount, inputCurrencyInfo.fiatAmount],
   )
 
   const [showNativeWrapModal, setOpenNativeWrapModal] = useState(false)
@@ -202,7 +202,7 @@ export function SwapWidget({ hooksEnabled }: SwapWidgetProps) {
   }
 
   const showApprovalBundlingBanner = BUTTON_STATES_TO_SHOW_BUNDLE_APPROVAL_BANNER.includes(
-    swapButtonContext.swapButtonState
+    swapButtonContext.swapButtonState,
   )
   const showWrapBundlingBanner = BUTTON_STATES_TO_SHOW_BUNDLE_WRAP_BANNER.includes(swapButtonContext.swapButtonState)
 
@@ -254,14 +254,15 @@ export function SwapWidget({ hooksEnabled }: SwapWidgetProps) {
   const slots = {
     settingsWidget: <SettingsTab />,
 
-    topContent: hooksEnabled ? <PreHookButton /> : undefined,
+    topContent,
     bottomContent: (
       <>
-        {hooksEnabled && <PostHookButton />}
+        {bottomContent}
         <TradeRateDetails
-          allowedSlippage={isSlippageModified || isEoaEthFlow ? slippage : null}
+          allowedSlippage={slippage}
           rateInfoParams={rateInfoParams}
           receiveAmountInfo={receiveAmountInfo}
+          isSlippageModified={isSlippageModified}
         />
         <SwapWarningsTop {...swapWarningsTopProps} />
         <SwapButtons {...swapButtonContext} />

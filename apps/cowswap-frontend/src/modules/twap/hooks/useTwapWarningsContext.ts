@@ -3,7 +3,8 @@ import { useMemo } from 'react'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useTradePriceImpact } from 'modules/trade'
-import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
+import { useGetTradeFormValidation } from 'modules/tradeFormValidation'
+import { TradeFormValidation } from 'modules/tradeFormValidation/types'
 
 const NOT_BLOCKING_VALIDATIONS = [TradeFormValidation.ApproveAndSwap, TradeFormValidation.ApproveRequired]
 

@@ -63,7 +63,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
 
   const inputCurrencyInfo = useMemo(
     () => (isWrapOrUnwrap ? { ...props.inputCurrencyInfo, receiveAmountInfo: null } : props.inputCurrencyInfo),
-    [isWrapOrUnwrap, props.inputCurrencyInfo]
+    [isWrapOrUnwrap, props.inputCurrencyInfo],
   )
 
   const outputCurrencyInfo = useMemo(
@@ -71,7 +71,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
       isWrapOrUnwrap
         ? { ...props.outputCurrencyInfo, amount: props.inputCurrencyInfo.amount, receiveAmountInfo: null }
         : props.outputCurrencyInfo,
-    [isWrapOrUnwrap, props.outputCurrencyInfo, props.inputCurrencyInfo.amount]
+    [isWrapOrUnwrap, props.outputCurrencyInfo, props.inputCurrencyInfo.amount],
   )
 
   const { chainId, account } = useWalletInfo()
@@ -86,7 +86,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
   const areCurrenciesLoading = !inputCurrencyInfo.currency && !outputCurrencyInfo.currency
   const bothCurrenciesSet = !!inputCurrencyInfo.currency && !!outputCurrencyInfo.currency
 
-  const hasRecipientInUrl = !!tradeStateFromUrl.recipient
+  const hasRecipientInUrl = !!tradeStateFromUrl?.recipient
   const withRecipient = !isWrapOrUnwrap && (showRecipient || hasRecipientInUrl)
   const maxBalance = maxAmountSpend(inputCurrencyInfo.balance || undefined, isSafeWallet)
   const showSetMax = maxBalance?.greaterThan(0) && !inputCurrencyInfo.amount?.equalTo(maxBalance)
@@ -163,7 +163,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
           lockScreen
         ) : (
           <>
-            {topContent}
+            {!isWrapOrUnwrap && topContent}
             <div>
               <CurrencyInputPanel
                 id="input-currency-input"

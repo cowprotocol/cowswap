@@ -1,25 +1,26 @@
 import styled from 'styled-components/macro'
 
-const Wrapper = styled.span<{ width: string }>`
+const Wrapper = styled.span<{ width: string; whiteSpace: string }>`
   width: ${({ width }) => width};
-  white-space: nowrap;
+  white-space: ${({ whiteSpace }) => whiteSpace};
   overflow: hidden;
   text-overflow: ellipsis;
   display: block;
 `
 
 type TruncatedProps = {
-  text: string
+  children: string
   width?: string
   className?: string
+  whiteSpace?: string
 }
 
 export function TruncatedText(props: TruncatedProps) {
-  const { text, className, width = '12ch' } = props
+  const { children, className, width = '12ch', whiteSpace = 'nowrap' } = props
 
   return (
-    <Wrapper className={className} width={width}>
-      {text}
+    <Wrapper className={className} width={width} whiteSpace={whiteSpace}>
+      {children}
     </Wrapper>
   )
 }
