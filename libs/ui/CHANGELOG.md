@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.9.0](https://github.com/cowprotocol/cowswap/compare/ui-v1.8.1...ui-v1.9.0) (2024-09-17)
+
+
+### Features
+
+* **hooks-store:** new design & refactoring ([#4859](https://github.com/cowprotocol/cowswap/issues/4859)) ([1b989fa](https://github.com/cowprotocol/cowswap/commit/1b989fa037b276d507adfa0462129ab53fe2ac6d))
+* menu logic ([#4892](https://github.com/cowprotocol/cowswap/issues/4892)) ([8fee64e](https://github.com/cowprotocol/cowswap/commit/8fee64eb8bdf41a9da456adf04adadf372f8efb6))
+
 ## [1.8.1](https://github.com/cowprotocol/cowswap/compare/ui-v1.8.0...ui-v1.8.1) (2024-09-05)
 
 
