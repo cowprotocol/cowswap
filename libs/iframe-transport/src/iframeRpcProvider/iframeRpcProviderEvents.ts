@@ -25,4 +25,6 @@ export interface IframeEventsPayloadMap {
   [IframeRpcProviderEvents.PROVIDER_ON_EVENT]: ProviderOnEventPayload
 }
 
-export const iframeRpcProviderTransport = new IframeTransport<IframeEventsPayloadMap>('cowSwapIframeTransport')
+export const iframeRpcProviderTransport = new IframeTransport<IframeEventsPayloadMap>(
+  'cowSwapIframeRpcProviderTransport',
+)
