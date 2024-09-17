@@ -14,7 +14,6 @@ import { EthFlowStepper } from 'modules/swap/containers/EthFlowStepper'
 import { NavigateToNewOrderCallback } from 'modules/swap/hooks/useNavigateToNewOrderCallback'
 import { WatchAssetInWallet } from 'modules/wallet/containers/WatchAssetInWallet'
 
-
 import * as styledEl from './styled'
 
 import { CancelButton } from '../CancelButton'
@@ -71,6 +70,10 @@ export function TransactionSubmittedContent({
   const showSafeSigningInfo = isPresignaturePending && activityDerivedState && !!activityDerivedState.gnosisSafeInfo
   const showProgressBar = !showSafeSigningInfo && !isPresignaturePending && activityDerivedState && isProgressBarSetup
   const cancellationFailed = stepName === 'cancellationFailed'
+  const isFinished =
+    activityDerivedState?.status === ActivityStatus.CONFIRMED ||
+    activityDerivedState?.status === ActivityStatus.EXPIRED ||
+    cancellationFailed
 
   return (
     <styledEl.Wrapper>
@@ -99,7 +102,7 @@ export function TransactionSubmittedContent({
         <>
           {!isProgressBarSetup && <styledEl.Title>{getTitleStatus(activityDerivedState)}</styledEl.Title>}
           {showSafeSigningInfo && <GnosisSafeTxDetails chainId={chainId} activityDerivedState={activityDerivedState} />}
-          <EthFlowStepper order={order} showProgressBar={!!showProgressBar && !cancellationFailed} />
+          {!isFinished && <EthFlowStepper order={order} showProgressBar={!!showProgressBar} />}
           {activityDerivedState && showProgressBar && isProgressBarSetup && (
             <OrderProgressBarV2
               {...orderProgressBarV2Props}
@@ -110,17 +113,27 @@ export function TransactionSubmittedContent({
           <styledEl.ButtonGroup>
             <WatchAssetInWallet shortLabel currency={currencyToAdd} onClick={trackWatchAssetClick} />
 
-            {(activityDerivedState?.status === (ActivityStatus.CONFIRMED || ActivityStatus.EXPIRED) ||
-              (activityDerivedState?.status === ActivityStatus.PENDING && !isProgressBarSetup)) && (
-                <styledEl.ButtonCustom
-                  onClick={() => {
-                    onDismiss()
-                    trackCloseClick()
-                  }}
-                >
-                  Close
-                </styledEl.ButtonCustom>
-              )}
+            {activityDerivedState?.status === ActivityStatus.PENDING && !isProgressBarSetup && (
+              <styledEl.ButtonCustom
+                onClick={() => {
+                  onDismiss()
+                  trackCloseClick()
+                }}
+              >
+                Close
+              </styledEl.ButtonCustom>
+            )}
+
+            {isFinished && (
+              <styledEl.ButtonSecondary
+                onClick={() => {
+                  onDismiss()
+                  trackCloseClick()
+                }}
+              >
+                Close
+              </styledEl.ButtonSecondary>
+            )}
           </styledEl.ButtonGroup>
         </>
       </styledEl.Section>

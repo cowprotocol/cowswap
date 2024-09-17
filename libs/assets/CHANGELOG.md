@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.8.0](https://github.com/cowprotocol/cowswap/compare/assets-v1.7.0...assets-v1.8.0) (2024-09-17)
+
+
+### Features
+
+* **hooks-store:** new design & refactoring ([#4859](https://github.com/cowprotocol/cowswap/issues/4859)) ([1b989fa](https://github.com/cowprotocol/cowswap/commit/1b989fa037b276d507adfa0462129ab53fe2ac6d))
+
 ## [1.7.0](https://github.com/cowprotocol/cowswap/compare/assets-v1.6.0...assets-v1.7.0) (2024-08-27)
 
 
