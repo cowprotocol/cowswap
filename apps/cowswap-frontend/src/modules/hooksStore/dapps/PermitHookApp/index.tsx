@@ -15,10 +15,10 @@ import { useIsPermitEnabled } from 'common/hooks/featureFlags/useIsPermitEnabled
 
 export function PermitHookApp({ isPreHook, context }: HookDappProps) {
   const hookToEdit = context.hookToEdit
-  const [tokenAddress, setTokenAddress] = useState<string>(context.hookToEdit?.hook.target || '')
+  const [tokenAddress, setTokenAddress] = useState<string>(hookToEdit?.hook.target || '')
   const isPermitEnabled = useIsPermitEnabled()
   const [spenderAddress, setSpenderAddress] = useState<string>(
-    recoverSpenderFromCalldata(context.hookToEdit?.hook.callData) || '',
+    recoverSpenderFromCalldata(hookToEdit?.hook.callData) || '',
   )
   const generatePermitHook = useGeneratePermitHook()
   const token = useTokenBySymbolOrAddress(tokenAddress)
