@@ -9,5 +9,5 @@ function toCmsAbsoluteUrl(url: string) {
 export function CmsImage({ src, className, alt, ...props }: JSX.IntrinsicElements['img']) {
   if (!src) return null
 
-  return <img src={toCmsAbsoluteUrl(src)} className={className} alt={alt} {...props} />
+  return <img src={toCmsAbsoluteUrl(src)} className={className} alt={alt} {...props} loading="lazy" />
 }
