@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.10.2](https://github.com/cowprotocol/cowswap/compare/widget-react-v0.10.1...widget-react-v0.10.2) (2024-09-17)
+
+
+### Bug Fixes
+
+* **libs:** fix import error on multiple libs ([#4869](https://github.com/cowprotocol/cowswap/issues/4869)) ([8cfd70b](https://github.com/cowprotocol/cowswap/commit/8cfd70b6000a1a021b76ad1f924829cb42cb2bcd))
+
 ## [0.10.1](https://github.com/cowprotocol/cowswap/compare/widget-react-v0.10.0...widget-react-v0.10.1) (2024-09-05)
 
 

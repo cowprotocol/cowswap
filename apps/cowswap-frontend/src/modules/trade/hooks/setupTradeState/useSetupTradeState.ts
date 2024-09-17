@@ -40,7 +40,7 @@ export function useSetupTradeState(): void {
   const urlChainId = tradeStateFromUrl?.chainId
   const prevTradeStateFromUrl = usePrevious(tradeStateFromUrl)
 
-  const currentChainId = !urlChainId ? prevProviderChainId || SupportedChainId.MAINNET : urlChainId
+  const currentChainId = !urlChainId ? prevProviderChainId || providerChainId || SupportedChainId.MAINNET : urlChainId
 
   const isAlternativeModalVisible = useIsAlternativeOrderModalVisible()
 
