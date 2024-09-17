@@ -1,11 +1,13 @@
-import { ethers } from 'ethers'
+import { defaultAbiCoder } from '@ethersproject/abi'
+import { keccak256 } from '@ethersproject/keccak256'
+import { pack } from '@ethersproject/solidity'
+import { toUtf8Bytes } from '@ethersproject/strings'
 
-const ABI_CODER = ethers.utils.defaultAbiCoder
-
-export const fnSelector = (sig: string) => ethers.utils.keccak256(ethers.utils.toUtf8Bytes(sig)).slice(0, 10)
+const ABI_CODER = defaultAbiCoder
+export const fnSelector = (sig: string) => keccak256(toUtf8Bytes(sig)).slice(0, 10)
 
 export const fnCalldata = (sig: string, encodedData: string) =>
-  ethers.utils.solidityPack(['bytes4', 'bytes'], [fnSelector(sig), encodedData])
+  pack(['bytes4', 'bytes'], [fnSelector(sig), encodedData])
 
 // see weiroll: https://github.com/weiroll/weiroll/blob/main/README.md
 
@@ -20,10 +22,7 @@ export const END_OF_ARGS = 0xff
 
 // encode command args for weiroll
 export const encodeCommand = (selector: string, flags: number, input: bigint, output: number, target: string) => {
-  return ethers.utils.solidityPack(
-    ['bytes4', 'uint8', 'uint48', 'uint8', 'address'],
-    [selector, flags, input, output, target],
-  )
+  return pack(['bytes4', 'uint8', 'uint48', 'uint8', 'address'], [selector, flags, input, output, target])
 }
 
 // calltype to number encoding
@@ -47,9 +46,7 @@ export const encodeFlag = (isTuple: boolean, isExtendedCommand: boolean, callTyp
 
 // encode the input part of the weiroll command
 export const encodeInput = (a1: number, a2: number, a3: number, a4: number, a5: number, a6: number): bigint => {
-  return BigInt(
-    ethers.utils.solidityPack(['uint8', 'uint8', 'uint8', 'uint8', 'uint8', 'uint8'], [a1, a2, a3, a4, a5, a6]),
-  )
+  return BigInt(pack(['uint8', 'uint8', 'uint8', 'uint8', 'uint8', 'uint8'], [a1, a2, a3, a4, a5, a6]))
 }
 
 // encode individual input arg of the weiroll command inputs
