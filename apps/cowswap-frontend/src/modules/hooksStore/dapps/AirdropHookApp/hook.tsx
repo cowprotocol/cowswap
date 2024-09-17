@@ -21,7 +21,7 @@ const Description = () => {
   )
 }
 
-export const PRE_AIRDROP: HookDappInternal = {
+export const AIRDROP_HOOK_APP: HookDappInternal = {
   name: 'Claim Airdrop',
   description: <Description />,
   descriptionShort: 'Retrieve tokens before a swap',
