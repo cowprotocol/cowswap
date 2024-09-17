@@ -1,8 +1,6 @@
 import React from 'react'
 
-import { percentToBps } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { Percent } from '@uniswap/sdk-core'
 
 import { useAppCodeWidgetAware } from 'modules/injectedWidget/hooks/useAppCodeWidgetAware'
 import { useReplacedOrderUid } from 'modules/trade/state/alternativeOrder'
@@ -16,15 +14,15 @@ import { useAppCode, useAppDataHooks } from '../hooks'
 import { AppDataOrderClass } from '../types'
 
 interface AppDataUpdaterProps {
-  slippage: Percent
+  slippageBips: number
+  isSmartSlippage?: boolean
   orderClass: AppDataOrderClass
 }
 
-export const AppDataUpdater = React.memo(({ slippage, orderClass }: AppDataUpdaterProps) => {
+export const AppDataUpdater = React.memo(({ slippageBips, isSmartSlippage, orderClass }: AppDataUpdaterProps) => {
   const { chainId } = useWalletInfo()
 
   const appCode = useAppCode()
-  const slippageBips = percentToBps(slippage)
   const utm = useUtm()
   const typedHooks = useAppDataHooks()
   const appCodeWithWidgetMetadata = useAppCodeWidgetAware(appCode)
@@ -38,6 +36,7 @@ export const AppDataUpdater = React.memo(({ slippage, orderClass }: AppDataUpdat
       appCodeWithWidgetMetadata={appCodeWithWidgetMetadata}
       chainId={chainId}
       slippageBips={slippageBips}
+      isSmartSlippage={isSmartSlippage}
       orderClass={orderClass}
       utm={utm}
       typedHooks={typedHooks}

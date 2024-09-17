@@ -24,6 +24,7 @@ export type BuildAppDataParams = {
   environment?: string
   chainId: SupportedChainId
   slippageBips: number
+  isSmartSlippage?: boolean
   orderClass: AppDataOrderClass
   referrerAccount?: string
   utm: UtmParams | undefined
@@ -44,6 +45,7 @@ async function generateAppDataFromDoc(
 export async function buildAppData({
   chainId,
   slippageBips,
+  isSmartSlippage,
   referrerAccount,
   appCode,
   environment,
@@ -57,7 +59,10 @@ export async function buildAppData({
   const referrerParams =
     referrerAccount && chainId === SupportedChainId.MAINNET ? { address: referrerAccount } : undefined
 
-  const quoteParams = { slippageBips }
+  const quoteParams = {
+    slippageBips,
+    ...(isSmartSlippage !== undefined ? { smartSlippage: isSmartSlippage } : undefined),
+  }
   const orderClass = { orderClass: orderClassName }
   const replacedOrder = replacedOrderUid ? { uid: replacedOrderUid } : undefined
 

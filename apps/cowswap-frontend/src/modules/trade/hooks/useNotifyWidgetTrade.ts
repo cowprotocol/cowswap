@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { AtomsAndUnits, CowEvents, OnTradeParamsPayload } from '@cowprotocol/events'
@@ -14,10 +14,17 @@ import { TradeDerivedState } from '../types/TradeDerivedState'
 
 export function useNotifyWidgetTrade() {
   const state = useDerivedTradeState()
+  const isFirstLoad = useRef(true)
 
   useEffect(() => {
-    if (!state?.tradeType) return
+    if (isFirstLoad.current && !!state) {
+      isFirstLoad.current = false
+      return
+    }
 
+    if (!state?.tradeType) {
+      return
+    }
     EVENT_EMITTER.emit(CowEvents.ON_CHANGE_TRADE_PARAMS, getTradeParamsEventPayload(state.tradeType, state))
   }, [state])
 }
