@@ -23,6 +23,7 @@ import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { Command } from '@cowprotocol/types'
 import { ExternalLink, InfoTooltip, ProductLogo, ProductVariant, TokenAmount, UI } from '@cowprotocol/ui'
+import { Confetti } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { AnimatePresence, motion } from 'framer-motion'
@@ -326,6 +327,7 @@ export function OrderProgressBarV2(props: OrderProgressBarV2Props) {
     }
   }, [currentStep, getDuration])
 
+  // Ensure StepComponent will be a valid React component or null
   let StepComponent: React.ComponentType<OrderProgressBarV2Props> | null = null
 
   if (currentStep === 'cancellationFailed' || currentStep === 'finished') {
@@ -334,9 +336,10 @@ export function OrderProgressBarV2(props: OrderProgressBarV2Props) {
     StepComponent = STEP_NAME_TO_STEP_COMPONENT[currentStep as keyof typeof STEP_NAME_TO_STEP_COMPONENT] || null
   }
 
-  return (
+  // Always return a value from the function
+  return StepComponent ? (
     <>
-      {StepComponent && <StepComponent {...props} stepName={currentStep} />}
+      <StepComponent {...props} stepName={currentStep} />
       {debugMode && (
         <styledEl.DebugPanel>
           <select value={debugStep} onChange={(e) => setDebugStep(e.target.value as OrderProgressBarStepName)}>
@@ -349,7 +352,7 @@ export function OrderProgressBarV2(props: OrderProgressBarV2Props) {
         </styledEl.DebugPanel>
       )}
     </>
-  )
+  ) : null // Fallback return value if StepComponent is not found
 }
 
 function AnimatedTokens({
@@ -484,15 +487,6 @@ function RenderProgressTopSection({
           <styledEl.ProgressTopSection>
             <styledEl.ProgressImageWrapper bgColor={'#65D9FF'} padding={'10px'} gap={'10px'}>
               <styledEl.CowImage>
-                <styledEl.ShareButton
-                  onClick={() => {
-                    shareOnTwitter()
-                    trackShareClick()
-                  }}
-                >
-                  <SVG src={ICON_SOCIAL_X} />
-                  <span>Share this {shouldShowSurplus ? 'win' : 'tip'}!</span>
-                </styledEl.ShareButton>
                 <SVG src={randomImage} />
               </styledEl.CowImage>
               <styledEl.FinishedImageContent>
@@ -731,11 +725,12 @@ const SURPLUS_IMAGES = [
 function FinishedStep(props: OrderProgressBarV2Props) {
   const { stepName, solverCompetition: solvers, totalSolvers, order, surplusData, chainId, receiverEnsName } = props
   const [showAllSolvers, setShowAllSolvers] = useState(false)
-
-  const { surplusFiatValue, surplusAmount, showSurplus } = surplusData || {}
   const cancellationFailed = stepName === 'cancellationFailed'
 
+  const { surplusFiatValue, surplusAmount, showSurplus } = surplusData || {}
   const shouldShowSurplus = DEBUG_FORCE_SHOW_SURPLUS || showSurplus
+
+  const [showConfetti, setShowConfetti] = useState(stepName === 'finished' && shouldShowSurplus)
 
   const visibleSolvers = useMemo(() => {
     return showAllSolvers ? solvers : solvers?.slice(0, 3)
@@ -756,27 +751,66 @@ function FinishedStep(props: OrderProgressBarV2Props) {
 
   const isDarkMode = useIsDarkMode()
 
-  // Early return if order is not set
+  const { randomBenefit } = useMemo(() => {
+    const benefits = CHAIN_SPECIFIC_BENEFITS[chainId]
+
+    return {
+      randomImage: SURPLUS_IMAGES[getRandomInt(0, SURPLUS_IMAGES.length - 1)],
+      randomBenefit: benefits[getRandomInt(0, benefits.length - 1)],
+    }
+  }, [chainId])
+
+  const shareOnTwitter = useCallback(() => {
+    const twitterUrl = shouldShowSurplus
+      ? getTwitterShareUrl(surplusData, order)
+      : getTwitterShareUrlForBenefit(randomBenefit)
+    window.open(twitterUrl, '_blank', 'noopener,noreferrer')
+  }, [shouldShowSurplus, surplusData, order, randomBenefit])
+
+  const trackShareClick = useCallback(() => {
+    cowAnalytics.sendEvent({
+      category: Category.PROGRESS_BAR,
+      action: 'Click Share Button',
+      label: shouldShowSurplus ? 'Surplus' : 'Benefit',
+    })
+  }, [shouldShowSurplus])
+
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout> | undefined
+
+    if (stepName === 'finished' && shouldShowSurplus) {
+      setShowConfetti(true)
+      timer = setTimeout(() => setShowConfetti(false), 3000)
+    }
+
+    return () => {
+      if (timer) {
+        clearTimeout(timer)
+      }
+    }
+  }, [stepName, shouldShowSurplus])
+
+  // If order is not set, return null
   if (!order) {
     return null
   }
 
   return (
     <styledEl.FinishedStepContainer>
+      {showConfetti && <Confetti start={true} />}
       {cancellationFailed && (
         <styledEl.CancellationFailedBanner>
           <b>Cancellation failed:</b> The order was executed before it could be cancelled.
         </styledEl.CancellationFailedBanner>
       )}
-      <RenderProgressTopSection {...props} />
 
       <styledEl.ConclusionContent>
-        <styledEl.TransactionStatus flexFlow="column" margin={'0 auto 24px'}>
+        <styledEl.TransactionStatus margin={'0 auto 24px'}>
           <Lottie
             animationData={isDarkMode ? LOTTIE_GREEN_CHECKMARK_DARK : LOTTIE_GREEN_CHECKMARK}
             loop={false}
             autoplay
-            style={{ width: '56px', height: '56px' }}
+            style={{ width: '36px', height: '36px' }}
           />
           Transaction completed!
         </styledEl.TransactionStatus>
@@ -891,6 +925,17 @@ function FinishedStep(props: OrderProgressBarV2Props) {
           </styledEl.SolverRankings>
         )}
       </styledEl.ConclusionContent>
+
+      <RenderProgressTopSection {...props} />
+      <styledEl.ShareButton
+        onClick={() => {
+          shareOnTwitter()
+          trackShareClick()
+        }}
+      >
+        <SVG src={ICON_SOCIAL_X} />
+        <span>Share this {shouldShowSurplus ? 'win' : 'tip'}!</span>
+      </styledEl.ShareButton>
     </styledEl.FinishedStepContainer>
   )
 }
