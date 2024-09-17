@@ -8,7 +8,7 @@ export interface CowHook {
 
 export interface CowHookCreation {
   hook: CowHook
-  receiverOverride?: string
+  recipientOverride?: string
 }
 
 export interface CowHookDetails extends CowHookCreation {

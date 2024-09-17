@@ -47,10 +47,10 @@ export function AppDataHooksUpdater(): null {
   const isNativeSell = useIsSellNative()
 
   useEffect(() => {
-    const preInteractionHooks = (preHooks || []).map<TypedCowHook>((hookDetails) =>
+    const preInteractionHooks = (preHooks || []).map<TypedCowHook>(({ hookDetails }) =>
       cowHookToTypedCowHook(hookDetails.hook, 'hookStore'),
     )
-    const postInteractionHooks = (postHooks || []).map<TypedCowHook>((hookDetails) =>
+    const postInteractionHooks = (postHooks || []).map<TypedCowHook>(({ hookDetails }) =>
       cowHookToTypedCowHook(hookDetails.hook, 'hookStore'),
     )
 

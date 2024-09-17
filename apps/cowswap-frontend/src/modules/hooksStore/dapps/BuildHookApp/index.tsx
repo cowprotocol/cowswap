@@ -24,7 +24,10 @@ export function BuildHookApp({ isPreHook, context }: HookDappProps) {
       return
     }
 
-    context.editHook(hookToEdit.uuid, hook)
+    context.editHook({
+      ...hookToEdit,
+      hook,
+    })
   }, [hook, context, hookToEdit])
 
   const clickOnAddHook = useCallback(() => {

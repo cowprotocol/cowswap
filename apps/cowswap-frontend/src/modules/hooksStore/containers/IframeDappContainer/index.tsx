@@ -53,7 +53,7 @@ export function IframeDappContainer({ dapp, context }: IframeDappContainerProps)
       window,
       CoWHookDappEvents.EDIT_HOOK,
       (payload) => {
-        editHookRef.current(payload.uuid, payload.hook)
+        editHookRef.current(payload)
       },
     )
 
@@ -75,7 +75,6 @@ export function IframeDappContainer({ dapp, context }: IframeDappContainerProps)
 
     if (!iframeWindow || !isIframeActive) return
 
-    // TODO: check if the context includes all necessary
     hookDappIframeTransport.postMessageToWindow(iframeWindow, CoWHookDappEvents.CONTEXT_UPDATE, {
       account: context.account,
       chainId: context.chainId,

@@ -1,18 +1,16 @@
 import type { ReactNode } from 'react'
 
-import type { latest } from '@cowprotocol/app-data'
-import type { SupportedChainId } from '@cowprotocol/cow-sdk'
+import type {
+  CowHook,
+  CowHookCreation,
+  HookDappOrderParams,
+  CoWHookDappActions,
+  HookDappContext as GenericHookDappContext,
+  CowHookDetails,
+} from '@cowprotocol/hook-dapp-lib'
 import type { Signer } from '@ethersproject/abstract-signer'
 
-interface HookInfoPayload {
-  hookDetails: CowHookDetails
-  isPreHook: boolean
-}
-
-export type OnAddedHookPayload = HookInfoPayload
-export type OnRemovedPayload = HookInfoPayload
-
-export type CowHook = latest.CoWHook
+export type { CowHook, CowHookCreation, HookDappOrderParams }
 
 export enum HookDappType {
   INTERNAL = 'INTERNAL',
@@ -41,34 +39,18 @@ export interface HookDappIframe extends HookDappBase {
 
 export type HookDapp = HookDappInternal | HookDappIframe
 
-export interface CowHookDetails<DappType = HookDapp> {
-  uuid: string
-  hook: CowHook
-  dapp: DappType
-  recipientOverride?: string
+export interface CowHookDetailsSerialized {
+  hookDetails: CowHookDetails
+  dappName: string
 }
 
-export interface CowHookDetailsSerialized extends CowHookDetails<HookDappBase> {}
+export type AddHook = CoWHookDappActions['addHook']
+export type EditHook = CoWHookDappActions['editHook']
+export type RemoveHook = (uuid: string) => void
 
-export type CowHookCreation = Omit<CowHookDetails, 'uuid' | 'dapp'>
-
-export type AddHook = (hookToAdd: CowHookCreation) => CowHookDetailsSerialized
-export type EditHook = (uuid: string, update: CowHook) => void
-export type RemoveHook = (uuid: string, isPreHook: boolean) => void
-
-export interface HookDappOrderParams {
-  validTo: number
-  sellTokenAddress: string
-  buyTokenAddress: string
-}
-
-export interface HookDappContext {
-  chainId: SupportedChainId
-  account?: string
-  orderParams: HookDappOrderParams | null
+export interface HookDappContext extends GenericHookDappContext {
   addHook: AddHook
   editHook: EditHook
-  hookToEdit?: CowHookDetailsSerialized
   signer?: Signer
 }
 

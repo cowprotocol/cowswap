@@ -3,6 +3,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import SVG from 'react-inlinesvg'
 
+import { POST_HOOK_REGISTRY } from '../../hookRegistry'
 import { useHooks } from '../../hooks/useHooks'
 import { useRemoveHook } from '../../hooks/useRemoveHook'
 import { useReorderHooks } from '../../hooks/useReorderHooks'
@@ -15,11 +16,14 @@ export interface PostHookButtonProps {
   onEditHook(uuid: string): void
 }
 
+const isPreHook = false
+
 export function PostHookButton({ onOpen, onEditHook }: PostHookButtonProps) {
-  const { account } = useWalletInfo()
+  const { account, chainId } = useWalletInfo()
   const { postHooks } = useHooks()
-  const removeHook = useRemoveHook()
+  const removeHook = useRemoveHook(isPreHook)
   const moveHook = useReorderHooks('postHooks')
+  const dapps = POST_HOOK_REGISTRY[chainId]
 
   return (
     <>
@@ -27,12 +31,13 @@ export function PostHookButton({ onOpen, onEditHook }: PostHookButtonProps) {
         <styledEl.HookList>
           {postHooks.map((hook, index) => (
             <AppliedHookItem
-              key={hook.uuid}
+              key={hook.hookDetails.uuid}
+              dapp={dapps.find((dapp) => dapp.name === hook.dappName)!}
               account={account}
               hookDetails={hook}
               removeHook={removeHook}
               editHook={onEditHook}
-              isPreHook={false}
+              isPreHook={isPreHook}
               index={index}
               moveHook={moveHook}
             />

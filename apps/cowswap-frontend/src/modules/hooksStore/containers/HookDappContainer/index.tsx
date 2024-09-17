@@ -34,7 +34,7 @@ export function HookDappContainer({ dapp, isPreHook, onDismiss, hookToEdit }: Ho
       chainId,
       account,
       orderParams,
-      hookToEdit: hookToEditDetails,
+      hookToEdit: hookToEditDetails?.hookDetails,
       signer,
       editHook: (...args) => {
         editHook(...args)

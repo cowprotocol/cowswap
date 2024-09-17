@@ -9,11 +9,12 @@ import * as styledEl from './styled'
 import { useDragAndDrop } from './useDragAndDrop'
 
 import { TenderlySimulate } from '../../containers/TenderlySimulate'
-import { CowHookDetailsSerialized } from '../../types/hooks'
+import { CowHookDetailsSerialized, HookDapp } from '../../types/hooks'
 
 interface HookItemProp {
   account: string | undefined
   hookDetails: CowHookDetailsSerialized
+  dapp: HookDapp
   isPreHook: boolean
   removeHook: (uuid: string, isPreHook: boolean) => void
   editHook: (uuid: string) => void
@@ -23,14 +24,14 @@ interface HookItemProp {
 
 export function AppliedHookItem({
   account,
-  hookDetails,
+  hookDetails: { hookDetails },
+  dapp,
   isPreHook,
   editHook,
   removeHook,
   index,
   moveHook,
 }: HookItemProp) {
-  const { hook, dapp } = hookDetails
   const { ref, isDragging } = useDragAndDrop(index, hookDetails.uuid, moveHook)
 
   return (
@@ -66,7 +67,7 @@ export function AppliedHookItem({
             </styledEl.SimulateFooter>
           </div>
           <div>
-            <TenderlySimulate hook={hook} />
+            <TenderlySimulate hook={hookDetails.hook} />
           </div>
         </styledEl.SimulateContainer>
       )}
