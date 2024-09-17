@@ -7,12 +7,7 @@ import { HookDappProps } from 'modules/hooksStore/types/hooks'
 
 import { AIRDROP_OPTIONS } from './constants'
 import { AIRDROP_PREVIEW_ERRORS, useClaimData } from './hooks/useClaimData'
-import { ClaimableAmountContainer } from './styled/ClaimableAmountContainer'
-import { ContentWrapper } from './styled/ContentWrapper'
-import { DropDownMenu } from './styled/DropDown'
-import { LabelContainer } from './styled/LabelContainer'
-import { Row } from './styled/Row'
-import { Wrapper } from './styled/Wrapper'
+import { ClaimableAmountContainer, ContentWrapper, DropDownMenu, LabelContainer, Row, Wrapper } from './styled'
 import { AirdropOption, IClaimData } from './types'
 
 export function AirdropHookApp({ context }: HookDappProps) {
