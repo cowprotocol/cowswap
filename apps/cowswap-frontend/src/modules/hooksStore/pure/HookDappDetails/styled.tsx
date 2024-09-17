@@ -2,7 +2,6 @@ import { UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-
 export const Wrapper = styled.div`
   flex: 1;
   width: 100%;
@@ -31,25 +30,22 @@ export const Header = styled.div`
     height: 100%;
 
     > button {
-    margin: auto 0 0;
-    width: min-content;
-  }
+      margin: auto 0 0;
+      width: min-content;
+    }
 
-  > h3 {
+    > h3 {
       font-size: 21px;
       font-weight: bold;
       line-height: 1.2;
     }
 
-  > p {
-    margin: 0 0 16px;
-    color: var(${UI.COLOR_TEXT_OPACITY_70});
+    > p {
+      margin: 0 0 16px;
+      color: var(${UI.COLOR_TEXT_OPACITY_70});
+    }
   }
-}  
 `
-
-
- 
 
 export const Body = styled.div`
   margin: 24px 0;
@@ -63,7 +59,6 @@ export const Body = styled.div`
     font-size: inherit;
     line-height: inherit;
   }
- 
 `
 
 export const Tags = styled.div`
@@ -77,11 +72,10 @@ export const Tags = styled.div`
 
   table {
     width: 100%;
-    border-collapse: collapse; 
+    border-collapse: collapse;
   }
 
   tbody {
-   
   }
 
   tr {
@@ -106,13 +100,13 @@ export const Tags = styled.div`
       vertical-align: sub;
     }
 
-  a {
-    color: inherit;
-    text-decoration: none;
+    a {
+      color: inherit;
+      text-decoration: none;
 
-    &:hover {
-      text-decoration: underline;
-    }
+      &:hover {
+        text-decoration: underline;
+      }
     }
   }
 `

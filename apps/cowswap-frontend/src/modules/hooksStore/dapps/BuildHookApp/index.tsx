@@ -2,80 +2,101 @@ import { useCallback, useState } from 'react'
 
 import { ButtonPrimary } from '@cowprotocol/ui'
 
-import { ContentWrapper, Row, Wrapper } from './styled'
-
 import { CowHook, HookDappProps } from '../../types/hooks'
+import { ContentWrapper, Row, Wrapper, ErrorText } from '../styled'
 
-const DEFAULT_HOOK_STATE = {
+const DEFAULT_HOOK_STATE: CowHook = {
   target: '',
   callData: '',
   gasLimit: '',
 }
 
+const DEFAULT_ERRORS_STATE: Record<keyof CowHook, string> = {
+  target: '',
+  callData: '',
+  gasLimit: '',
+}
+
+const FIELDS = [
+  { name: 'target', label: 'Target', type: 'text' },
+  { name: 'gasLimit', label: 'Gas limit', type: 'number' },
+  { name: 'callData', label: 'Calldata', type: 'textarea', rows: 8 },
+] as const
+
 export function BuildHookApp({ isPreHook, context }: HookDappProps) {
   const hookToEdit = context.hookToEdit
   const [hook, setHook] = useState<CowHook>(hookToEdit?.hook || DEFAULT_HOOK_STATE)
+  const [errors, setErrors] = useState<Record<keyof CowHook, string>>(DEFAULT_ERRORS_STATE)
 
-  const onEditHook = useCallback(() => {
-    if (!hookToEdit) return
+  const validateInput = useCallback((name: keyof CowHook, value: string) => {
+    setErrors((prev) => ({ ...prev, [name]: value.trim() ? '' : `${name} is required` }))
+  }, [])
 
-    const { callData, gasLimit, target } = hook
-    if (!callData || !gasLimit || !target) {
+  const handleInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      const { name, value } = e.target
+      setHook((prev) => ({ ...prev, [name]: value }))
+      validateInput(name as keyof CowHook, value)
+    },
+    [validateInput],
+  )
+
+  const handleSubmit = useCallback(() => {
+    const newErrors: Record<keyof CowHook, string> = { ...DEFAULT_ERRORS_STATE }
+    const hasErrors = Object.entries(hook).some(([key, value]) => {
+      if (!value.trim()) {
+        newErrors[key as keyof CowHook] = `${key} is required`
+        return true
+      }
+      return false
+    })
+
+    if (hasErrors) {
+      setErrors(newErrors)
       return
     }
 
-    context.editHook(hookToEdit.uuid, hook, isPreHook)
+    hookToEdit ? context.editHook(hookToEdit.uuid, hook, isPreHook) : context.addHook({ hook })
   }, [hook, context, hookToEdit, isPreHook])
 
-  const clickOnAddHook = useCallback(() => {
-    const { callData, gasLimit, target } = hook
-    if (!callData || !gasLimit || !target) {
-      return
-    }
-
-    context.addHook({ hook })
-  }, [hook, context])
+  const renderField = ({ name, label, type, ...rest }: (typeof FIELDS)[number]) => (
+    <>
+      <Row key={name}>
+        {type === 'textarea' ? (
+          <textarea
+            name={name}
+            placeholder=" "
+            value={hook[name as keyof CowHook]}
+            onChange={handleInputChange}
+            className={errors[name as keyof CowHook] ? 'error' : ''}
+            required
+            {...rest}
+          />
+        ) : (
+          <input
+            type={type}
+            name={name}
+            placeholder=" "
+            value={hook[name as keyof CowHook]}
+            onChange={handleInputChange}
+            className={errors[name as keyof CowHook] ? 'error' : ''}
+            required
+          />
+        )}
+        <label htmlFor={name} className={errors[name as keyof CowHook] ? 'error' : ''}>
+          {label}*
+        </label>
+      </Row>
+      {errors[name as keyof CowHook] && <ErrorText>{errors[name as keyof CowHook]}</ErrorText>}
+    </>
+  )
 
   return (
     <Wrapper>
-      <ContentWrapper>
-        <Row>
-          <label>Target</label>
-          <div>
-            <input
-              name="target"
-              value={hook.target}
-              onChange={(e) => setHook((hook) => ({ ...hook, target: e.target.value }))}
-            />
-          </div>
-        </Row>
-        <Row>
-          <label>Gas Limit</label>
-          <div>
-            <input
-              name="gasLimit"
-              value={hook.gasLimit}
-              onChange={(e) => setHook((hook) => ({ ...hook, gasLimit: e.target.value }))}
-            />
-          </div>
-        </Row>
-
-        <Row>
-          <label>Calldata</label>
-          <div>
-            <textarea
-              name="callData"
-              value={hook.callData}
-              onChange={(e) => setHook((hook) => ({ ...hook, callData: e.target.value }))}
-            />
-          </div>
-        </Row>
-      </ContentWrapper>
-      {hookToEdit ? (
-        <ButtonPrimary onClick={onEditHook}>Save changes</ButtonPrimary>
-      ) : (
-        <ButtonPrimary onClick={clickOnAddHook}>Add {isPreHook ? 'Pre' : 'Post'}-hook</ButtonPrimary>
-      )}
+      <ContentWrapper>{FIELDS.map(renderField)}</ContentWrapper>
+      <ButtonPrimary onClick={handleSubmit}>
+        {hookToEdit ? 'Save changes' : `Add ${isPreHook ? 'Pre' : 'Post'}-hook`}
+      </ButtonPrimary>
     </Wrapper>
   )
 }
