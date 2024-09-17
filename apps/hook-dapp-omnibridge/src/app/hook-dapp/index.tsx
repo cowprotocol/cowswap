@@ -42,7 +42,7 @@ export function OmnibridgeApp() {
         signer,
       })
 
-      actions.addHook({ hook, receiverOverride: proxyAddress })
+      actions.addHook({ hook, recipientOverride: proxyAddress })
     } catch (e) {
       console.error(e)
     }

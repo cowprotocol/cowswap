@@ -1,3 +1,4 @@
+import { isLocal } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { PRE_BUILD, POST_BUILD } from './dapps/BuildHookApp/hook'
@@ -14,7 +15,11 @@ export const PRE_HOOK_REGISTRY: Record<SupportedChainId, HookDapp[]> = {
 
 export const POST_HOOK_REGISTRY: Record<SupportedChainId, HookDapp[]> = {
   [SupportedChainId.MAINNET]: [POST_BUILD],
-  [SupportedChainId.GNOSIS_CHAIN]: [POST_BUILD, OMNIBRIDGE_POST_HOOK],
+  [SupportedChainId.GNOSIS_CHAIN]: [POST_BUILD],
   [SupportedChainId.SEPOLIA]: [POST_BUILD],
   [SupportedChainId.ARBITRUM_ONE]: [POST_BUILD],
+}
+
+if (isLocal) {
+  POST_HOOK_REGISTRY[SupportedChainId.GNOSIS_CHAIN].push(OMNIBRIDGE_POST_HOOK)
 }

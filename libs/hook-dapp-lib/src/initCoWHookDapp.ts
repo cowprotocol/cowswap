@@ -17,9 +17,7 @@ export function initCoWHookDapp({ onContext }: CoWHookDappInit): CoWHookDappHand
   const provider = new WidgetEthereumProvider()
   const actions = getCoWHookDappActions()
 
-  hookDappIframeTransport.listenToMessageFromWindow(window, CoWHookDappEvents.CONTEXT_UPDATE, (context) => {
-    onContext(context)
-  })
+  hookDappIframeTransport.listenToMessageFromWindow(window, CoWHookDappEvents.CONTEXT_UPDATE, onContext)
 
   hookDappIframeTransport.postMessageToWindow(parent, CoWHookDappEvents.ACTIVATE, void 0)
 

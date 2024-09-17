@@ -39,7 +39,8 @@ export function IframeDappContainer({ dapp, context }: IframeDappContainerProps)
       setIsIframeActive(true),
     )
 
-    setBridge(new IframeRpcProviderBridge(iframeWindow))
+    const rpcBridge = new IframeRpcProviderBridge(iframeWindow)
+    setBridge(rpcBridge)
 
     const addHookListener = hookDappIframeTransport.listenToMessageFromWindow(
       window,
@@ -61,6 +62,7 @@ export function IframeDappContainer({ dapp, context }: IframeDappContainerProps)
       hookDappIframeTransport.stopListeningWindowListener(window, activateListener)
       hookDappIframeTransport.stopListeningWindowListener(window, addHookListener)
       hookDappIframeTransport.stopListeningWindowListener(window, editHookListener)
+      rpcBridge.disconnect()
     }
   }, [])
 
