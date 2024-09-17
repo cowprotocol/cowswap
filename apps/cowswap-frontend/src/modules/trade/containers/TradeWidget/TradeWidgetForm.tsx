@@ -86,7 +86,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
   const areCurrenciesLoading = !inputCurrencyInfo.currency && !outputCurrencyInfo.currency
   const bothCurrenciesSet = !!inputCurrencyInfo.currency && !!outputCurrencyInfo.currency
 
-  const hasRecipientInUrl = !!tradeStateFromUrl.recipient
+  const hasRecipientInUrl = !!tradeStateFromUrl?.recipient
   const withRecipient = !isWrapOrUnwrap && (showRecipient || hasRecipientInUrl)
   const maxBalance = maxAmountSpend(inputCurrencyInfo.balance || undefined, isSafeWallet)
   const showSetMax = maxBalance?.greaterThan(0) && !inputCurrencyInfo.amount?.equalTo(maxBalance)
