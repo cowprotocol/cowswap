@@ -1,16 +1,27 @@
-# CoW Swap Widget Library
+# CoW Protocol hooks
 
-Integrate the power of `CowSwap` into your product!
-With the widget, you can create an incredible trading interface. Specify the required pair of currencies, customize the
-look and much more!
+>CoW Hooks allow users to call arbitrary Ethereum action before and/or after swap.  
+>For example: before swap give a permission to CoW Protocol smart-contract and after swap bridge tokens to another chain.
 
-## Live example
+Main docs: https://docs.cow.fi/cow-protocol/reference/core/intents/hooks
 
-See the widget in action in the [widget configurator](https://widget.cow.fi)
+Tutorial: https://v1.docs.cow.fi/overview/cow-hooks/cow-hooks-example/permit-swap-and-bridge-cow-hook
 
-## Docs
+![](./demo.png)
 
-You can find a detailed description of all widget parameters in the [documentation](https://docs.cow.fi/cow-protocol/tutorials/widget)
+## CoW Hooks Dapp library
+
+[CoW Swap](https://swap.cow.fi/) provides an opportunity to use external dapps to build hooks.  
+So, you can put a link to some hook-daap and it will be automatically integrate in CoW Swap!
+
+This library is for developers who are interested in developing dapps for CoW Hooks.
+It provides:
+ - `EIP-1193` provider to interact with a user wallet
+ - `HookDappContext` which contains environment parameters (chainId, account, etc.) and current order parameters (sell token, validTo, etc.)
+
+And it expects calling two callbacks:
+ - `addHook()` when a hook data is ready and can be added to an order
+ - `editHook()` when a hook parameters were changed
 
 ## Quick start
 
@@ -22,37 +33,46 @@ npm install @cowprotocol/hook-dapp-lib --save
 yarn add @cowprotocol/hook-dapp-lib
 ```
 
-Create a container somewhere in your website, the widget will be rendered inside it:
+Let's create a simple hook-dapp that will check the COW token balance of the order creator.
 
 ```html
-<div id="cowswap-widget"></div>
-```
+<html>
+  <body>
+  <button id="actionButton">Add hook</button>
 
-Import the widget and initialise it:
+  <script>
+    import { initCoWHookDapp, HookDappContext } from '@cowprotocol/hook-dapp-lib'
 
-```js
-import { createCowSwapWidget, CowSwapWidgetParams } from '@cowprotocol/hook-dapp-lib'
+    const COW_TOKEN_ADDRESS = '0xdef1ca1fb7fbcdc777520aa7f396b4e015f497ab'
+    // ERC20.balanceOf(account)
+    const CALL_DATA = (account: string) => `0x70a08231000000000000000000000000${account.slice(2)}`
+    
+    let context: HookDappContext | null = null
+  
+    const { actions } = initCoWHookDapp({ onContext: (_context) => context = _context })
+    
+    document.getElementById('actionButton').addEventListener('click', () => {
+      if (!context) {
+        console.log('App is not loaded yet, please wait a bit.')
+        return
+      }
+      
+      if (context.hookToEdit) {
+        // Implement a logic for editing an existing hook
+        // And call actions.editHook() with new parameters
+      }
 
-// Initialise the widget
-const widgetContainer = document.getElementById('cowswap-widget')
-
-// instantiate your own web3 provider
-const provider = window.ethereum
-
-const params: CowSwapWidgetParams = {
-  appCode: 'NAME-OF-YOU-APP', // Add here the name of your app. e.g. "Pig Swap"
-  sell: { asset: 'DAI' },
-  buy: { asset: 'USDC', amount: '0.1' },
-}
-
-const {updateParams} = createCowSwapWidget(
-  widgetContainer,
-  // Optionally, you can provide some additional params to customise your widget
-  {params, provider}
-)
-
-// You also can change widget configuration on the fly
-updateParams({ ...params, tradeType: 'limit' })
+      actions.addHook({
+        hook: {
+          target: COW_TOKEN_ADDRESS,
+          callData: CALL_DATA(context.account),
+          gasLimit: '32000'
+        }
+      })
+    })
+  </script>
+  </body>
+</html>
 ```
 
 ## Developers
