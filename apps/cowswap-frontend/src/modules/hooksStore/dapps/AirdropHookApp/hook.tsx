@@ -9,8 +9,8 @@ const Description = () => {
     <>
       <p>
         <strong>Effortless Airdrop Claims! </strong>
-        The Claim Airdrop feature simplifies the process of collecting free tokens right before your swap, seamlessly
-        integrating into the CoW Swap platform.
+        The Claim COW Airdrop feature simplifies the process of collecting free COW tokens right before your swap,
+        seamlessly integrating into the CoW Swap platform.
       </p>
       <br />
       <p>
@@ -22,9 +22,9 @@ const Description = () => {
 }
 
 export const AIRDROP_HOOK_APP: HookDappInternal = {
-  name: 'Claim Airdrop',
+  name: 'Claim COW Airdrop',
   description: <Description />,
-  descriptionShort: 'Retrieve tokens before a swap',
+  descriptionShort: 'Retrieve COW tokens before a swap',
   type: HookDappType.INTERNAL,
   image: airdropImage,
   component: (props) => <AirdropHookApp {...props} />,

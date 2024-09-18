@@ -1,18 +1,32 @@
-import { useCallback, useState } from 'react'
+import { useCallback } from 'react'
 
+import { COW } from '@cowprotocol/common-const'
+import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useGasLimit } from '@cowprotocol/common-hooks'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ButtonPrimary } from '@cowprotocol/ui'
+import { Token } from '@uniswap/sdk-core'
 
 import { HookDappProps } from 'modules/hooksStore/types/hooks'
 
-import { AIRDROP_OPTIONS } from './constants'
 import { AIRDROP_PREVIEW_ERRORS, useClaimData } from './hooks/useClaimData'
-import { ClaimableAmountContainer, ContentWrapper, DropDownMenu, LabelContainer, Row, Wrapper } from './styled'
-import { AirdropOption, IClaimData } from './types'
+import { ClaimableAmountContainer, ContentWrapper, Row, Wrapper } from './styled'
+import { IAirdrop, IClaimData } from './types'
+
+const cowSepolia = COW[SupportedChainId.SEPOLIA]
+const COW_AIRDROP = {
+  name: 'COW',
+  dataBaseUrl: 'https://raw.githubusercontent.com/bleu/cow-airdrop-contract-deployer/example/mock-airdrop-data/',
+  chainId: SupportedChainId.SEPOLIA,
+  address: '0xD1fB81659c434DDebC8468713E482134be0D85C0',
+  token: TokenWithLogo.fromToken(
+    new Token(cowSepolia.chainId, cowSepolia.address, cowSepolia.decimals, cowSepolia.symbol, cowSepolia.name),
+    cowSepolia.logoURI,
+  ),
+} as IAirdrop
 
 export function AirdropHookApp({ context }: HookDappProps) {
-  const [selectedAirdrop, setSelectedAirdrop] = useState<AirdropOption>()
-  const { data: claimData, isValidating, error } = useClaimData(selectedAirdrop)
+  const { data: claimData, isValidating, error } = useClaimData(COW_AIRDROP)
   const { data: gasLimit } = useGasLimit({ to: claimData?.contract.address, data: claimData?.callData })
 
   const clickOnAddHook = useCallback(async () => {
@@ -28,17 +42,9 @@ export function AirdropHookApp({ context }: HookDappProps) {
 
   const canClaim = claimData?.amount && !claimData?.isClaimed
 
-  const connectedChainAirdrops = AIRDROP_OPTIONS.filter((airdrop) => airdrop.chainId === context.chainId)
-
   return (
     <Wrapper>
       <ContentWrapper>
-        <Row>
-          <LabelContainer>
-            <label>Select Airdrop</label>
-          </LabelContainer>
-          <DropDownMenu airdropOptions={connectedChainAirdrops} setSelectedAirdrop={setSelectedAirdrop} />
-        </Row>
         <Row>
           <ClaimableAmountContainer>
             <span>Total Available to claim</span>
@@ -48,9 +54,7 @@ export function AirdropHookApp({ context }: HookDappProps) {
       </ContentWrapper>
       <ButtonPrimary disabled={!canClaim || isValidating} onClick={clickOnAddHook}>
         <ButtonPrimaryMessage
-          connectedChainAirdrops={connectedChainAirdrops}
           account={context.account}
-          selectedAirdrop={selectedAirdrop}
           claimData={claimData}
           error={error}
           isValidating={isValidating}
@@ -61,28 +65,17 @@ export function AirdropHookApp({ context }: HookDappProps) {
 }
 
 function ButtonPrimaryMessage({
-  connectedChainAirdrops,
   account,
-  selectedAirdrop,
   claimData,
   error,
   isValidating,
 }: {
-  connectedChainAirdrops?: AirdropOption[]
   account?: string | undefined
-  selectedAirdrop?: AirdropOption
+  selectedAirdrop?: IAirdrop
   claimData?: IClaimData
   error?: Error
   isValidating?: boolean
 }) {
-  if (connectedChainAirdrops !== undefined && connectedChainAirdrops.length === 0) {
-    return <span>There are no airdrops for the connected chain</span>
-  }
-
-  if (!selectedAirdrop) {
-    return <span>Select your airdrop</span>
-  }
-
   if (!account) {
     return <span>Connect your wallet</span>
   }

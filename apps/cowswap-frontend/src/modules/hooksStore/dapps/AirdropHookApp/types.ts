@@ -17,7 +17,7 @@ export interface IClaimData extends AirdropDataInfo {
   formattedAmount: string
 }
 
-export interface AirdropOption {
+export interface IAirdrop {
   name: string
   dataBaseUrl: string
   chainId: SupportedChainId

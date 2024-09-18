@@ -7,7 +7,7 @@ import useSWR from 'swr'
 
 import { useContract } from 'common/hooks/useContract'
 
-import { AirdropDataInfo, IClaimData, AirdropOption } from '../types'
+import { AirdropDataInfo, IClaimData, IAirdrop } from '../types'
 import { useCallback } from 'react'
 
 type IntervalsType = { [key: string]: string }
@@ -102,7 +102,7 @@ const fetchAddressIsEligible = async ({
   return airDropData[0]
 }
 
-export const useClaimData = (selectedAirdrop?: AirdropOption) => {
+export const useClaimData = (selectedAirdrop?: IAirdrop) => {
   const { account } = useWalletInfo()
   const airdropContract = useContract<Airdrop>(selectedAirdrop?.address, AirdropAbi)
 
