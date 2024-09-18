@@ -8,6 +8,7 @@ import useSWR from 'swr'
 import { useContract } from 'common/hooks/useContract'
 
 import { AirdropDataInfo, IClaimData, AirdropOption } from '../types'
+import { useCallback } from 'react'
 
 type IntervalsType = { [key: string]: string }
 
@@ -105,37 +106,37 @@ export const useClaimData = (selectedAirdrop?: AirdropOption) => {
   const { account } = useWalletInfo()
   const airdropContract = useContract<Airdrop>(selectedAirdrop?.address, AirdropAbi)
 
-  const fetchPreviewClaimableTokens = async ({
-    dataBaseUrl,
-    address,
-  }: PreviewClaimableTokensParams): Promise<IClaimData> => {
-    const isEligibleData = await fetchAddressIsEligible({ dataBaseUrl, address })
-    if (!isEligibleData || !airdropContract || !isEligibleData.index || !selectedAirdrop || !account)
-      throw new Error(AIRDROP_PREVIEW_ERRORS.ERROR_FETCHING_DATA)
+  const fetchPreviewClaimableTokens = useCallback(
+    async ({ dataBaseUrl, address }: PreviewClaimableTokensParams): Promise<IClaimData> => {
+      const isEligibleData = await fetchAddressIsEligible({ dataBaseUrl, address })
+      if (!isEligibleData || !airdropContract || !isEligibleData.index || !selectedAirdrop || !account)
+        throw new Error(AIRDROP_PREVIEW_ERRORS.ERROR_FETCHING_DATA)
 
-    const isClaimed = await airdropContract?.isClaimed(isEligibleData.index)
+      const isClaimed = await airdropContract?.isClaimed(isEligibleData.index)
 
-    const callData = airdropContract.interface.encodeFunctionData('claim', [
-      isEligibleData.index, //index
-      account, //claimant
-      isEligibleData.amount, //claimableAmount
-      isEligibleData.proof, //merkleProof
-    ])
+      const callData = airdropContract.interface.encodeFunctionData('claim', [
+        isEligibleData.index, //index
+        account, //claimant
+        isEligibleData.amount, //claimableAmount
+        isEligibleData.proof, //merkleProof
+      ])
 
-    const token = selectedAirdrop.token
-    const formattedAmount = isEligibleData.amount
-      ? `${formatTokenAmount(new Fraction(isEligibleData.amount, 10 ** token.decimals))} ${token.symbol}`
-      : `0,0 ${token.symbol}`
+      const token = selectedAirdrop.token
+      const formattedAmount = isEligibleData.amount
+        ? `${formatTokenAmount(new Fraction(isEligibleData.amount, 10 ** token.decimals))} ${token.symbol}`
+        : `0,0 ${token.symbol}`
 
-    return {
-      ...isEligibleData,
-      isClaimed,
-      callData,
-      contract: airdropContract,
-      token,
-      formattedAmount,
-    }
-  }
+      return {
+        ...isEligibleData,
+        isClaimed,
+        callData,
+        contract: airdropContract,
+        token,
+        formattedAmount,
+      }
+    },
+    [account, airdropContract],
+  )
 
   return useSWR<IClaimData | undefined, Error>(
     selectedAirdrop && account
