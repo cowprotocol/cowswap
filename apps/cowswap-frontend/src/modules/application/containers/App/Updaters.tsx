@@ -17,7 +17,6 @@ import { UsdPricesUpdater } from 'modules/usdAmount'
 
 import { ProgressBarV2ExecutingOrdersUpdater } from 'common/hooks/orderProgressBarV2'
 import { TotalSurplusUpdater } from 'common/state/totalSurplusState'
-import { CancelReplaceTxUpdater } from 'common/updaters/CancelReplaceTxUpdater'
 import { FeatureFlagsUpdater } from 'common/updaters/FeatureFlagsUpdater'
 import { FeesUpdater } from 'common/updaters/FeesUpdater'
 import { GasUpdater } from 'common/updaters/GasUpdater'
@@ -45,7 +44,7 @@ export function Updaters() {
       <HwAccountIndexUpdater />
       <UserUpdater />
       <FinalizeTxUpdater />
-      <CancelReplaceTxUpdater />
+      {/*<CancelReplaceTxUpdater />*/}
       <PendingOrdersUpdater />
       <CancelledOrdersUpdater />
       <ExpiredOrdersUpdater />
