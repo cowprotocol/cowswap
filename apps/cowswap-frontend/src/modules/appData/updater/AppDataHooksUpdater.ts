@@ -54,12 +54,6 @@ export function AppDataHooksUpdater(): null {
       cowHookToTypedCowHook(hookDetails.hook, 'hookStore'),
     )
 
-    // Permit data is not loaded yet, wait until it's loaded
-    // Permit data for sc-wallets is always undefined, so we ignore this check
-    if (permitData === undefined && !isSmartContractWallet) {
-      return
-    }
-
     // Add permit hook
     if (permitData && !isSmartContractWallet) {
       preInteractionHooks.push(cowHookToTypedCowHook(permitData, 'permit'))
