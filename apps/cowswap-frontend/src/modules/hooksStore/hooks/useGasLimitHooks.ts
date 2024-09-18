@@ -1,33 +1,27 @@
-import { useCallback, useEffect, useState } from 'react'
-
 import { calculateGasMargin } from '@cowprotocol/common-utils'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
+import type { TransactionRequest } from '@ethersproject/abstract-provider'
+import type { Deferrable } from '@ethersproject/properties'
 
-import { CowHook } from 'modules/appData/types'
+import useSWR from 'swr'
+import { SWRConfiguration } from 'swr'
 
-type ITransactionData = Omit<CowHook, 'gasLimit'>
+type ITransactionData = Deferrable<TransactionRequest>
 
 type IHookGasCalculator = (transactionData: ITransactionData) => Promise<string>
 
 export const useHookGasLimitCalculator = (): IHookGasCalculator => {
   const provider = useWalletProvider()
 
-  return async (transactionData: Omit<CowHook, 'gasLimit'>) => {
+  return async (transactionData) => {
     if (!provider) throw new Error('Provider is not defined')
-    const gasEstimation = await provider.estimateGas({ to: transactionData.target, data: transactionData.callData })
+    const gasEstimation = await provider.estimateGas(transactionData)
     return calculateGasMargin(gasEstimation).toString()
   }
 }
 
-export const useGasLimit = (to?: string, calldata?: string): string | undefined => {
-  const [gasLimit, setGasLimit] = useState<string>()
-
+export const useGasLimit = (transactionData: ITransactionData, swrConfig?: SWRConfiguration) => {
   const gasCalculator = useHookGasLimitCalculator()
 
-  useEffect(() => {
-    if (!to || !calldata) return
-    gasCalculator({ target: to, callData: calldata }).then(setGasLimit)
-  }, [to, calldata])
-
-  return gasLimit
+  return useSWR<string | undefined>(transactionData, gasCalculator, swrConfig)
 }

@@ -13,7 +13,7 @@ import { AirdropOption, IClaimData } from './types'
 export function AirdropHookApp({ context }: HookDappProps) {
   const [selectedAirdrop, setSelectedAirdrop] = useState<AirdropOption>()
   const { data: claimData, isValidating, error } = useClaimData(selectedAirdrop)
-  const gasLimit = useGasLimit(claimData?.contract.address, claimData?.callData)
+  const { data: gasLimit } = useGasLimit({ to: claimData?.contract.address, data: claimData?.callData })
 
   const clickOnAddHook = useCallback(async () => {
     if (!context || !claimData || !gasLimit) return
