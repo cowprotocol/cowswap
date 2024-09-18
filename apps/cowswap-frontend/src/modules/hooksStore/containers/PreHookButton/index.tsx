@@ -8,7 +8,7 @@ import * as styledEl from './styled'
 import { useHooks } from '../../hooks/useHooks'
 import { useRemoveHook } from '../../hooks/useRemoveHook'
 import { useReorderHooks } from '../../hooks/useReorderHooks'
-import { AppliedHookItem } from '../../pure/AppliedHookItem'
+import { AppliedHookList } from '../../pure/AppliedHookList'
 import { HookTooltip } from '../../pure/HookTooltip'
 
 export interface PreHookButtonProps {
@@ -25,20 +25,14 @@ export function PreHookButton({ onOpen, onEditHook }: PreHookButtonProps) {
   return (
     <>
       {preHooks.length > 0 && (
-        <styledEl.HookList>
-          {preHooks.map((hookDetails, index) => (
-            <AppliedHookItem
-              key={hookDetails.uuid}
-              index={index}
-              account={account}
-              hookDetails={hookDetails}
-              removeHook={removeHook}
-              editHook={onEditHook}
-              moveHook={moveHook}
-              isPreHook
-            />
-          ))}
-        </styledEl.HookList>
+        <AppliedHookList
+          account={account}
+          hooks={preHooks}
+          isPreHook={true}
+          removeHook={removeHook}
+          editHook={onEditHook}
+          moveHook={moveHook}
+        />
       )}
 
       <styledEl.Wrapper>

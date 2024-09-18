@@ -6,7 +6,6 @@ import { Edit2, Trash2 } from 'react-feather'
 import SVG from 'react-inlinesvg'
 
 import * as styledEl from './styled'
-import { useDragAndDrop } from './useDragAndDrop'
 
 import { TenderlySimulate } from '../../containers/TenderlySimulate'
 import { CowHookDetailsSerialized } from '../../types/hooks'
@@ -18,28 +17,19 @@ interface HookItemProp {
   removeHook: (uuid: string, isPreHook: boolean) => void
   editHook: (uuid: string) => void
   index: number
-  moveHook: (dragIndex: number, hoverIndex: number) => void
 }
 
-export function AppliedHookItem({
-  account,
-  hookDetails,
-  isPreHook,
-  editHook,
-  removeHook,
-  index,
-  moveHook,
-}: HookItemProp) {
+export function AppliedHookItem({ account, hookDetails, isPreHook, editHook, removeHook, index }: HookItemProp) {
   const { hook, dapp } = hookDetails
-  const { ref, isDragging } = useDragAndDrop(index, hookDetails.uuid, moveHook)
 
   return (
-    <styledEl.HookItemWrapper data-uid={hookDetails.uuid} ref={ref} style={{ opacity: isDragging ? 0.5 : 1 }}>
+    <styledEl.HookItemWrapper data-uid={hookDetails.uuid} as="li">
       <styledEl.HookItemHeader title={hookDetails.uuid}>
-        <styledEl.HookItemInfo>
+        <styledEl.HookItemInfo className="DragArea">
           <styledEl.DragIcon>
             <SVG src={ICON_GRID} />
           </styledEl.DragIcon>
+          <styledEl.HookNumber>{index + 1}</styledEl.HookNumber>
           <img src={dapp.image} alt={dapp.name} />
           <span>{dapp.name}</span>
         </styledEl.HookItemInfo>
