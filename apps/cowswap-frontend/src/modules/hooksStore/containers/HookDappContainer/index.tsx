@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
 import { Command } from '@cowprotocol/types'
-import { useWalletInfo } from '@cowprotocol/wallet'
+import { useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import { useAddHook } from '../../hooks/useAddHook'
@@ -26,6 +26,7 @@ export function HookDappContainer({ dapp, isPreHook, onDismiss, hookToEdit }: Ho
 
   const hookToEditDetails = useHookById(hookToEdit, isPreHook)
   const orderParams = useOrderParams()
+  const isSmartContract = useIsSmartContractWallet()
   const provider = useWalletProvider()
   const signer = useMemo(() => provider?.getSigner(), [provider])
 
@@ -36,6 +37,7 @@ export function HookDappContainer({ dapp, isPreHook, onDismiss, hookToEdit }: Ho
       orderParams,
       hookToEdit: hookToEditDetails?.hookDetails,
       signer,
+      isSmartContract,
       editHook: (...args) => {
         editHook(...args)
         onDismiss()
@@ -47,7 +49,7 @@ export function HookDappContainer({ dapp, isPreHook, onDismiss, hookToEdit }: Ho
         return hook
       },
     }
-  }, [addHook, editHook, onDismiss, chainId, account, hookToEditDetails, signer])
+  }, [addHook, editHook, onDismiss, chainId, account, hookToEditDetails, signer, isSmartContract])
 
   const dappProps = useMemo(() => ({ context, dapp, isPreHook }), [context, dapp, isPreHook])
 

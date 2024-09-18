@@ -31,4 +31,5 @@ export interface HookDappContext {
   account?: string
   orderParams: HookDappOrderParams | null
   hookToEdit?: CowHookDetails
+  isSmartContract: boolean | undefined
 }

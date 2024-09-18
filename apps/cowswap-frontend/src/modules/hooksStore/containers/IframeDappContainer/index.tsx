@@ -77,12 +77,10 @@ export function IframeDappContainer({ dapp, context }: IframeDappContainerProps)
 
     if (!iframeWindow || !isIframeActive) return
 
-    hookDappIframeTransport.postMessageToWindow(iframeWindow, CoWHookDappEvents.CONTEXT_UPDATE, {
-      account: context.account,
-      chainId: context.chainId,
-      orderParams: context.orderParams,
-      hookToEdit: context.hookToEdit,
-    })
+    // Omit unnecessary parameter
+    const { addHook: _, editHook: _1, signer: _2, ...iframeContext } = context
+
+    hookDappIframeTransport.postMessageToWindow(iframeWindow, CoWHookDappEvents.CONTEXT_UPDATE, iframeContext)
   }, [context, isIframeActive])
 
   return <Iframe ref={iframeRef} src={dapp.url} allow="clipboard-read; clipboard-write" />
