@@ -9,7 +9,7 @@ import { PRE_HOOK_REGISTRY } from '../../hookRegistry'
 import { useHooks } from '../../hooks/useHooks'
 import { useRemoveHook } from '../../hooks/useRemoveHook'
 import { useReorderHooks } from '../../hooks/useReorderHooks'
-import { AppliedHookItem } from '../../pure/AppliedHookItem'
+import { AppliedHookList } from '../../pure/AppliedHookList'
 import { HookTooltip } from '../../pure/HookTooltip'
 
 export interface PreHookButtonProps {
@@ -29,21 +29,15 @@ export function PreHookButton({ onOpen, onEditHook }: PreHookButtonProps) {
   return (
     <>
       {preHooks.length > 0 && (
-        <styledEl.HookList>
-          {preHooks.map((hookDetails, index) => (
-            <AppliedHookItem
-              key={hookDetails.hookDetails.uuid}
-              dapp={dapps.find((dapp) => dapp.name === hookDetails.dappName)!}
-              index={index}
-              account={account}
-              hookDetails={hookDetails}
-              removeHook={removeHook}
-              editHook={onEditHook}
-              moveHook={moveHook}
-              isPreHook={isPreHook}
-            />
-          ))}
-        </styledEl.HookList>
+        <AppliedHookList
+          dapps={dapps}
+          account={account}
+          hooks={preHooks}
+          isPreHook={true}
+          removeHook={removeHook}
+          editHook={onEditHook}
+          moveHook={moveHook}
+        />
       )}
 
       <styledEl.Wrapper>

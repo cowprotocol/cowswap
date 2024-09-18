@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { HooksStoreWidget } from 'modules/hooksStore'
 import { SwapUpdaters } from 'modules/swap'
 

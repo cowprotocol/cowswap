@@ -21,7 +21,7 @@ It provides:
 
 And it expects calling two callbacks:
  - `addHook()` when a hook data is ready and can be added to an order
- - `editHook()` when a hook parameters were changed
+ - `editHook()` when hook parameters were changed
 
 ## Quick start
 
