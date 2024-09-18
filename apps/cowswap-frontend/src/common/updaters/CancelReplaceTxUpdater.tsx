@@ -5,62 +5,68 @@ import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import { Dispatch } from 'redux'
 
-import { replaceTransaction } from 'legacy/state/enhancedTransactions/actions'
 import { useAllTransactionHashes } from 'legacy/state/enhancedTransactions/hooks'
 import { HashType } from 'legacy/state/enhancedTransactions/reducer'
 import { useAppDispatch } from 'legacy/state/hooks'
 
-import { sdk } from 'api/blocknative'
-
-function watchTxChanges(pendingHashes: string[], chainId: number, dispatch: Dispatch) {
-  for (const hash of pendingHashes) {
-    try {
-      const blocknativeSdk = sdk[chainId]
-
-      if (!blocknativeSdk) {
-        console.error('[CancelReplaceTxUpdater][watchTxChanges] No blocknative sdk for chainId', chainId)
-        return
-      }
-
-      const { emitter } = blocknativeSdk.transaction(hash)
-      console.info('[CancelReplaceTxUpdater][watchTxChanges]', { chainId, hash })
-      const currentHash = hash
-
-      emitter.on('txSpeedUp', (e) => {
-        console.info('[CancelReplaceTxUpdater][watchTxChanges][txSpeedUp event]', { ...e })
-        if ('replaceHash' in e && typeof e.replaceHash === 'string') {
-          dispatch(replaceTransaction({ chainId, oldHash: currentHash, newHash: e.replaceHash, type: 'speedup' }))
-        }
-      })
-
-      emitter.on('txCancel', (e) => {
-        console.info('[CancelReplaceTxUpdater][watchTxChanges][txCancel event]', { ...e })
-        if ('replaceHash' in e && typeof e.replaceHash === 'string') {
-          dispatch(replaceTransaction({ chainId, oldHash: currentHash, newHash: e.replaceHash, type: 'cancel' }))
-        }
-      })
-    } catch (error: any) {
-      console.error('[CancelReplaceTxUpdater][watchTxChanges] Failed to watch tx', { hash }, error)
-    }
-  }
+function watchTxChanges(_pendingHashes: string[], _chainId: number, _dispatch: Dispatch) {
+  return
+  // for (const hash of pendingHashes) {
+  // try {
+  //   const blocknativeSdk = null
+  //
+  //   if (!blocknativeSdk) {
+  //     console.error('[CancelReplaceTxUpdater][watchTxChanges] No blocknative sdk for chainId', chainId)
+  //     return
+  //   }
+  //
+  //   const { emitter } = blocknativeSdk.transaction(hash)
+  //   console.info('[CancelReplaceTxUpdater][watchTxChanges]', { chainId, hash })
+  //   const currentHash = hash
+  //
+  //   emitter.on('txSpeedUp', (e) => {
+  //     console.info('[CancelReplaceTxUpdater][watchTxChanges][txSpeedUp event]', { ...e })
+  //     if ('replaceHash' in e && typeof e.replaceHash === 'string') {
+  //       dispatch(replaceTransaction({ chainId, oldHash: currentHash, newHash: e.replaceHash, type: 'speedup' }))
+  //     }
+  //   })
+  //
+  //   emitter.on('txCancel', (e) => {
+  //     console.info('[CancelReplaceTxUpdater][watchTxChanges][txCancel event]', { ...e })
+  //     if ('replaceHash' in e && typeof e.replaceHash === 'string') {
+  //       dispatch(replaceTransaction({ chainId, oldHash: currentHash, newHash: e.replaceHash, type: 'cancel' }))
+  //     }
+  //   })
+  // } catch (error: any) {
+  //   console.error('[CancelReplaceTxUpdater][watchTxChanges] Failed to watch tx', { hash }, error)
+  // }
+  // }
 }
 
-function unwatchTxChanges(pendingHashes: string[], chainId: number) {
-  const blocknativeSdk = sdk[chainId]
-
-  if (!blocknativeSdk) {
-    return
-  }
-
-  for (const hash of pendingHashes) {
-    try {
-      blocknativeSdk.unsubscribe(hash)
-    } catch {
-      console.error('[CancelReplaceTxUpdater][unwatchTxChanges] Failed to unsubscribe', { hash })
-    }
-  }
+function unwatchTxChanges(_pendingHashes: string[], _chainId: number) {
+  return
+  // const blocknativeSdk = null
+  //
+  // if (!blocknativeSdk) {
+  //   return
+  // }
+  //
+  // for (const hash of pendingHashes) {
+  //   try {
+  //     blocknativeSdk.unsubscribe(hash)
+  //   } catch {
+  //     console.error('[CancelReplaceTxUpdater][unwatchTxChanges] Failed to unsubscribe', { hash })
+  //   }
+  // }
 }
 
+/**
+ * Updater to watch the mempoll and detect when a tx has been cancelled/replaced
+ *
+ * Currently disabled as previous provider (BlockNative) is no longer available
+ *
+ * TODO: find a new provider https://github.com/cowprotocol/cowswap/issues/4901
+ */
 export function CancelReplaceTxUpdater(): null {
   const provider = useWalletProvider()
   const { chainId, account } = useWalletInfo()
