@@ -11,10 +11,17 @@ export const HookItemWrapper = styled.li`
   box-shadow: 0 5px 16px 0 transparent;
   transition: all 0.2s ease-in-out;
   overflow: hidden;
+  position: relative;
 
   &:hover {
     border: 1px solid var(${UI.COLOR_TEXT_OPACITY_50});
     box-shadow: 0 5px 16px 0 var(${UI.COLOR_PRIMARY_OPACITY_25});
+  }
+
+  &.blue-background-class {
+    background: var(${UI.COLOR_INFO_BG});
+    color: var(${UI.COLOR_INFO_TEXT});
+    border: 1px dotted var(${UI.COLOR_INFO_TEXT});
   }
 `
 
@@ -26,18 +33,21 @@ export const HookItemHeader = styled.div`
   align-items: center;
   padding: 6px 10px;
   font-size: 14px;
+  gap: 8px;
   font-weight: 600;
   color: var(${UI.COLOR_TEXT_OPACITY_70});
   background: var(${UI.COLOR_PAPER});
   border-top-left-radius: 16px;
   border-top-right-radius: 16px;
+  transition: all 0.2s ease-in-out;
 `
 
 export const DragIcon = styled.div`
   box-sizing: content-box;
   width: 10px;
   height: 16px;
-  cursor: move;
+  cursor: grab;
+  flex: 0 0 auto;
 
   > svg {
     width: 100%;
@@ -50,6 +60,10 @@ export const HookItemInfo = styled.div`
   flex-flow: row nowrap;
   align-items: center;
   gap: 8px;
+  cursor: grab;
+  position: relative;
+  width: 100%;
+  user-select: none;
 
   > img {
     --size: 26px;
@@ -63,6 +77,31 @@ export const HookItemInfo = styled.div`
 
   > span {
     font-weight: 500;
+  }
+`
+
+export const HookNumber = styled.i`
+  --minSize: 26px;
+  min-height: var(--minSize);
+  min-width: var(--minSize);
+  border-radius: 9px;
+  margin: 0;
+  padding: 3px 6px;
+  color: var(${UI.COLOR_TEXT});
+  font-weight: 500;
+  background: var(${UI.COLOR_PAPER_DARKER});
+  border: 1px dotted transparent;
+  font-style: normal;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease-in-out;
+
+  .blue-background-class & {
+    background: var(${UI.COLOR_INFO_BG});
+    color: var(${UI.COLOR_INFO_TEXT});
+    border: 2px dotted var(${UI.COLOR_INFO_TEXT});
   }
 `
 
