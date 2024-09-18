@@ -4,7 +4,8 @@ import type { TransactionRequest } from '@ethersproject/abstract-provider'
 import type { Deferrable } from '@ethersproject/properties'
 
 import useSWR from 'swr'
-import { SWRConfiguration } from 'swr'
+
+import type { SWRConfiguration } from 'swr'
 
 type ITransactionData = Deferrable<TransactionRequest>
 

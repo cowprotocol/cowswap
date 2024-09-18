@@ -1,8 +1,8 @@
 import { useCallback, useState } from 'react'
 
+import { useGasLimit } from '@cowprotocol/common-hooks'
 import { ButtonPrimary } from '@cowprotocol/ui'
 
-import { useGasLimit } from 'modules/hooksStore/hooks/useGasLimitHooks'
 import { HookDappProps } from 'modules/hooksStore/types/hooks'
 
 import { AIRDROP_OPTIONS } from './constants'
