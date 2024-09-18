@@ -10,7 +10,7 @@ import { Token } from '@uniswap/sdk-core'
 import { HookDappProps } from 'modules/hooksStore/types/hooks'
 
 import { AIRDROP_PREVIEW_ERRORS, useClaimData } from './hooks/useClaimData'
-import { ClaimableAmountContainer, ContentWrapper, Row, Wrapper } from './styled'
+import { Amount, ContentWrapper, Label, Wrapper } from './styled'
 import { IAirdrop, IClaimData } from './types'
 
 const cowSepolia = COW[SupportedChainId.SEPOLIA]
@@ -42,29 +42,31 @@ export function AirdropHookApp({ context }: HookDappProps) {
 
   const canClaim = claimData?.amount && !claimData?.isClaimed
 
+  const messageToUser = getMessageToUser({ account: context.account, claimData, error, isValidating })
+
   return (
     <Wrapper>
       <ContentWrapper>
-        <Row>
-          <ClaimableAmountContainer>
-            <span>Total Available to claim</span>
-            <span>{claimData?.formattedAmount}</span>
-          </ClaimableAmountContainer>
-        </Row>
+        {messageToUser === null ? (
+          <div>
+            <Label>Claimable amount</Label>:<Amount>{claimData?.formattedAmount}</Amount>
+          </div>
+        ) : (
+          messageToUser
+        )}
       </ContentWrapper>
-      <ButtonPrimary disabled={!canClaim || isValidating} onClick={clickOnAddHook}>
-        <ButtonPrimaryMessage
-          account={context.account}
-          claimData={claimData}
-          error={error}
-          isValidating={isValidating}
-        />
-      </ButtonPrimary>
+      {context.hookToEdit ? (
+        <ButtonPrimary onClick={context.close}>Return to Swap</ButtonPrimary>
+      ) : messageToUser === null ? (
+        <ButtonPrimary disabled={!canClaim || isValidating} onClick={clickOnAddHook}>
+          Add Hook
+        </ButtonPrimary>
+      ) : undefined}
     </Wrapper>
   )
 }
 
-function ButtonPrimaryMessage({
+function getMessageToUser({
   account,
   claimData,
   error,
@@ -96,5 +98,5 @@ function ButtonPrimaryMessage({
     return <span>You have already claimed this airdrop`</span>
   }
 
-  return <span>Add pre-hook</span>
+  return null
 }

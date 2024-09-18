@@ -1,6 +1,6 @@
 import { HookDappInternal, HookDappType } from 'modules/hooksStore/types/hooks'
 
-import airdropImage from './airdrop.png'
+import airdropImage from './airdrop.svg'
 
 import { AirdropHookApp } from './index'
 

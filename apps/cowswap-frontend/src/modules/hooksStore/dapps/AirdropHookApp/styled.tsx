@@ -18,18 +18,14 @@ export const ClaimableAmountContainer = styled.div`
     font-weight: 600;
   }
 `
-
 export const ContentWrapper = styled.div`
-  flex-grow: 1;
-  justify-content: center;
-  align-items: center;
-  flex-flow: column wrap;
-
   display: flex;
-  justify-content: center;
+  flex-flow: column wrap;
+  justify-content: space-between;
+  padding: 24px 0 0;
   align-items: center;
-
   text-align: center;
+  flex: 1 1 auto;
 `
 
 export const Input = styled.input`
@@ -50,41 +46,6 @@ export const Input = styled.input`
   }
 `
 
-export const Link = styled.button`
-  border: none;
-  padding: 0;
-  text-decoration: underline;
-  display: text;
-  cursor: pointer;
-  background: none;
-  color: white;
-  margin: 10px 0;
-`
-
-export const Row = styled.div`
-  display: flex;
-  flex-flow: column;
-  width: 100%;
-
-  label {
-    margin: 10px;
-    flex-grow: 0;
-    width: 5em;
-  }
-
-  input,
-  textarea {
-    flex-grow: 1;
-  }
-
-  /* Chrome, Safari, Edge, Opera */
-  input::-webkit-outer-spin-button,
-  input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-  }
-`
-
 export const Wrapper = styled.div`
   display: flex;
   flex-flow: column wrap;
@@ -93,4 +54,14 @@ export const Wrapper = styled.div`
   padding-bottom: 1rem;
 
   flex-grow: 1;
+`
+export const Label = styled.span`
+  color: var(${UI.COLOR_TEXT2});
+  margin: 0 0 10px;
+  display: inline-block;
+`
+
+export const Amount = styled.div`
+  font-weight: bold;
+  font-size: 36px;
 `
