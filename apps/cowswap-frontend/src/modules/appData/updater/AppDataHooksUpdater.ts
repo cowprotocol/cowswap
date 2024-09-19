@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { latest } from '@cowprotocol/app-data'
 import { PermitHookData } from '@cowprotocol/permit-utils'
@@ -46,6 +46,8 @@ export function AppDataHooksUpdater(): null {
   // Remove hooks if the order is selling native. There's no need for approval
   const isNativeSell = useIsSellNative()
 
+  const [permitHook, setPermitHook] = useState<TypedCowHook | undefined>(undefined)
+
   useEffect(() => {
     const preInteractionHooks = (preHooks || []).map<TypedCowHook>(({ hookDetails }) =>
       cowHookToTypedCowHook(hookDetails.hook, 'hookStore'),
@@ -54,9 +56,8 @@ export function AppDataHooksUpdater(): null {
       cowHookToTypedCowHook(hookDetails.hook, 'hookStore'),
     )
 
-    // Add permit hook
-    if (permitData && !isSmartContractWallet) {
-      preInteractionHooks.push(cowHookToTypedCowHook(permitData, 'permit'))
+    if (permitHook) {
+      preInteractionHooks.push(permitHook)
     }
 
     const hooks = buildAppDataHooks<TypedCowHook[], TypedAppDataHooks>({
@@ -86,14 +87,28 @@ export function AppDataHooksUpdater(): null {
     }
   }, [
     updateAppDataHooks,
-    permitData,
     hasTradeInfo,
     isSmartContractWallet,
     isNativeSell,
     preHooks,
     postHooks,
     isHooksTradeType,
+    permitHook,
   ])
+
+  useEffect(() => {
+    // Permit data is not loaded yet, wait until it's loaded
+    // Permit data for sc-wallets is always undefined, so we ignore this check
+    if (permitData === undefined && !isSmartContractWallet) {
+      return
+    }
+
+    if (permitData && !isSmartContractWallet) {
+      setPermitHook(cowHookToTypedCowHook(permitData, 'permit'))
+    } else {
+      setPermitHook(undefined)
+    }
+  }, [permitData, isSmartContractWallet])
 
   return null
 }
