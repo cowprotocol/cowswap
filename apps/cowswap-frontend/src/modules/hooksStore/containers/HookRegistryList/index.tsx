@@ -5,7 +5,7 @@ import { useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
 
 import { NewModal } from 'common/pure/NewModal'
 
-import { HookDappsList, Wrapper } from './styled'
+import { EmptyList, HookDappsList, Wrapper } from './styled'
 
 import { POST_HOOK_REGISTRY, PRE_HOOK_REGISTRY } from '../../hookRegistry'
 import { useAddExternalHookDapp } from '../../hooks/useAddExternalHookDapp'
@@ -78,6 +78,11 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit }: HookStore
     }
   }, [hookToEditDetails, dapps])
 
+  // close details view when tab changed
+  useEffect(() => {
+    setDappDetails(null)
+  }, [isVerifiedHooksTab])
+
   return (
     <Wrapper>
       <NewModal
@@ -119,7 +124,9 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit }: HookStore
                 />
               ))}
             </HookDappsList>
-          ) : null
+          ) : (
+            <EmptyList>No hook-dapps yet</EmptyList>
+          )
 
           return (
             <>

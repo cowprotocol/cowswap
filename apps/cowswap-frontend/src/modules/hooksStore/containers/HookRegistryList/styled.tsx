@@ -1,3 +1,5 @@
+import { UI } from '@cowprotocol/ui'
+
 import styled from 'styled-components/macro'
 import { WIDGET_MAX_WIDTH } from 'theme'
 
@@ -22,4 +24,12 @@ export const HookDappsList = styled.ul`
   flex: 1;
 `
 
- 
+export const EmptyList = styled.div`
+  color: var(${UI.COLOR_TEXT_OPACITY_50});
+  background: var(${UI.COLOR_PAPER_DARKER});
+  font-size: 16px;
+  padding: 30px 10px;
+  border-radius: 10px;
+  margin: 10px;
+  text-align: center;
+`
