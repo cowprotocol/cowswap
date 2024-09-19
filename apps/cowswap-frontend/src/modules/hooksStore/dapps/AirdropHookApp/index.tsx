@@ -18,7 +18,7 @@ const COW_AIRDROP = {
   name: 'COW',
   dataBaseUrl: 'https://raw.githubusercontent.com/bleu/cow-airdrop-contract-deployer/example/mock-airdrop-data/',
   chainId: SupportedChainId.SEPOLIA,
-  address: '0xD1fB81659c434DDebC8468713E482134be0D85C0',
+  address: '0x0D6361f70f54b0e63A34D3F2D2C2552a21F100Fc',
   token: TokenWithLogo.fromToken(
     new Token(cowSepolia.chainId, cowSepolia.address, cowSepolia.decimals, cowSepolia.symbol, cowSepolia.name),
     cowSepolia.logoURI,
@@ -95,7 +95,7 @@ function getMessageToUser({
   }
 
   if (claimData?.isClaimed) {
-    return <span>You have already claimed this airdrop`</span>
+    return <span>You have already claimed this airdrop</span>
   }
 
   return null
