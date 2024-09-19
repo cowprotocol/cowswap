@@ -11,6 +11,7 @@ import { useOrderParams } from '../../hooks/useOrderParams'
 import { HookDapp, HookDappContext as HookDappContextType } from '../../types/hooks'
 import { isHookDappIframe } from '../../utils'
 import { IframeDappContainer } from '../IframeDappContainer'
+import { useTradeState, useTradeNavigate } from 'modules/trade'
 
 interface HookDappContainerProps {
   dapp: HookDapp
@@ -28,6 +29,9 @@ export function HookDappContainer({ dapp, isPreHook, onDismiss, hookToEdit }: Ho
   const orderParams = useOrderParams()
   const isSmartContract = useIsSmartContractWallet()
   const provider = useWalletProvider()
+  const tradeState = useTradeState()
+  const tradeNavigate = useTradeNavigate()
+  const { inputCurrencyId = null, outputCurrencyId = null } = tradeState.state || {}
   const signer = useMemo(() => provider?.getSigner(), [provider])
 
   const context = useMemo<HookDappContextType>(() => {
@@ -38,18 +42,36 @@ export function HookDappContainer({ dapp, isPreHook, onDismiss, hookToEdit }: Ho
       hookToEdit: hookToEditDetails?.hookDetails,
       signer,
       isSmartContract,
-      editHook: (...args) => {
+      isPreHook,
+      editHook(...args) {
         editHook(...args)
         onDismiss()
       },
-      addHook: (hookToAdd) => {
-        const hook = addHook(hookToAdd)
+      addHook(hookToAdd) {
+        addHook(hookToAdd)
         onDismiss()
-
-        return hook
+      },
+      setSellToken(tokenAddress: string) {
+        tradeNavigate(chainId, { inputCurrencyId: tokenAddress, outputCurrencyId })
+      },
+      setBuyToken(tokenAddress: string) {
+        tradeNavigate(chainId, { inputCurrencyId, outputCurrencyId: tokenAddress })
       },
     }
-  }, [addHook, editHook, onDismiss, chainId, account, hookToEditDetails, signer, isSmartContract])
+  }, [
+    addHook,
+    editHook,
+    onDismiss,
+    isPreHook,
+    chainId,
+    account,
+    hookToEditDetails,
+    signer,
+    isSmartContract,
+    tradeNavigate,
+    inputCurrencyId,
+    outputCurrencyId,
+  ])
 
   const dappProps = useMemo(() => ({ context, dapp, isPreHook }), [context, dapp, isPreHook])
 

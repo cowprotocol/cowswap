@@ -51,11 +51,12 @@ export type RemoveHook = (uuid: string) => void
 export interface HookDappContext extends GenericHookDappContext {
   addHook: AddHook
   editHook: EditHook
+  setSellToken(tokenAddress: string): void
+  setBuyToken(tokenAddress: string): void
   signer?: Signer
 }
 
 export interface HookDappProps {
-  isPreHook: boolean
   dapp: HookDapp
   context: HookDappContext
 }

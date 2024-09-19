@@ -21,6 +21,8 @@ export function IframeDappContainer({ dapp, context }: IframeDappContainerProps)
   const iframeRef = useRef<HTMLIFrameElement | null>(null)
   const addHookRef = useRef(context.addHook)
   const editHookRef = useRef(context.editHook)
+  const setSellTokenRef = useRef(context.setSellToken)
+  const setBuyTokenRef = useRef(context.setBuyToken)
 
   const [bridge, setBridge] = useState<IframeRpcProviderBridge | null>(null)
   const [isIframeActive, setIsIframeActive] = useState<boolean>(false)
@@ -29,39 +31,40 @@ export function IframeDappContainer({ dapp, context }: IframeDappContainerProps)
 
   addHookRef.current = context.addHook
   editHookRef.current = context.editHook
+  setSellTokenRef.current = context.setSellToken
+  setBuyTokenRef.current = context.setBuyToken
 
   useLayoutEffect(() => {
     const iframeWindow = iframeRef.current?.contentWindow
 
     if (!iframeWindow) return
 
-    const activateListener = hookDappIframeTransport.listenToMessageFromWindow(window, CoWHookDappEvents.ACTIVATE, () =>
-      setIsIframeActive(true),
-    )
+    const listeners = [
+      hookDappIframeTransport.listenToMessageFromWindow(window, CoWHookDappEvents.ACTIVATE, () =>
+        setIsIframeActive(true),
+      ),
+    ]
 
     const rpcBridge = new IframeRpcProviderBridge(iframeWindow)
     setBridge(rpcBridge)
 
-    const addHookListener = hookDappIframeTransport.listenToMessageFromWindow(
-      window,
-      CoWHookDappEvents.ADD_HOOK,
-      (payload) => {
-        addHookRef.current(payload)
-      },
-    )
-
-    const editHookListener = hookDappIframeTransport.listenToMessageFromWindow(
-      window,
-      CoWHookDappEvents.EDIT_HOOK,
-      (payload) => {
-        editHookRef.current(payload)
-      },
+    listeners.push(
+      hookDappIframeTransport.listenToMessageFromWindow(window, CoWHookDappEvents.ADD_HOOK, (payload) =>
+        addHookRef.current(payload),
+      ),
+      hookDappIframeTransport.listenToMessageFromWindow(window, CoWHookDappEvents.EDIT_HOOK, (payload) =>
+        editHookRef.current(payload),
+      ),
+      hookDappIframeTransport.listenToMessageFromWindow(window, CoWHookDappEvents.SET_SELL_TOKEN, (payload) =>
+        setSellTokenRef.current(payload.address),
+      ),
+      hookDappIframeTransport.listenToMessageFromWindow(window, CoWHookDappEvents.SET_BUY_TOKEN, (payload) =>
+        setBuyTokenRef.current(payload.address),
+      ),
     )
 
     return () => {
-      hookDappIframeTransport.stopListeningWindowListener(window, activateListener)
-      hookDappIframeTransport.stopListeningWindowListener(window, addHookListener)
-      hookDappIframeTransport.stopListeningWindowListener(window, editHookListener)
+      listeners.forEach((listener) => hookDappIframeTransport.stopListeningWindowListener(window, listener))
       rpcBridge.disconnect()
     }
   }, [])

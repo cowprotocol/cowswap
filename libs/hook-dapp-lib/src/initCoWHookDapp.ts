@@ -1,7 +1,7 @@
 import { WidgetEthereumProvider } from '@cowprotocol/iframe-transport'
 
 import { CoWHookDappEvents, hookDappIframeTransport } from './hookDappIframeTransport'
-import { CowHookCreation, CoWHookDappActions, CowHookDetails, HookDappContext } from './types'
+import { CowHookCreation, CoWHookDappActions, CowHookDetails, HookDappContext, TokenData } from './types'
 
 interface CoWHookDappInit {
   onContext(context: HookDappContext): void
@@ -31,6 +31,12 @@ function getCoWHookDappActions(): CoWHookDappActions {
     },
     editHook(payload: CowHookDetails) {
       hookDappIframeTransport.postMessageToWindow(parent, CoWHookDappEvents.EDIT_HOOK, payload)
+    },
+    setSellToken(token: TokenData) {
+      hookDappIframeTransport.postMessageToWindow(parent, CoWHookDappEvents.SET_SELL_TOKEN, token)
+    },
+    setBuyToken(token: TokenData) {
+      hookDappIframeTransport.postMessageToWindow(parent, CoWHookDappEvents.SET_BUY_TOKEN, token)
     },
   }
 }

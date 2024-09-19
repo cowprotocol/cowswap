@@ -12,7 +12,7 @@ const DEFAULT_HOOK_STATE = {
   gasLimit: '',
 }
 
-export function BuildHookApp({ isPreHook, context }: HookDappProps) {
+export function BuildHookApp({ context }: HookDappProps) {
   const hookToEdit = context.hookToEdit
   const [hook, setHook] = useState<CowHook>(hookToEdit?.hook || DEFAULT_HOOK_STATE)
 
@@ -77,7 +77,7 @@ export function BuildHookApp({ isPreHook, context }: HookDappProps) {
       {hookToEdit ? (
         <ButtonPrimary onClick={onEditHook}>Save changes</ButtonPrimary>
       ) : (
-        <ButtonPrimary onClick={clickOnAddHook}>Add {isPreHook ? 'Pre' : 'Post'}-hook</ButtonPrimary>
+        <ButtonPrimary onClick={clickOnAddHook}>Add {context.isPreHook ? 'Pre' : 'Post'}-hook</ButtonPrimary>
       )}
     </Wrapper>
   )
