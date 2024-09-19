@@ -9,7 +9,7 @@ interface HookDappConditions {
 type HookDappBaseInfo = Omit<HookDappBase, 'type'>
 
 type HookDappManifest = HookDappBaseInfo & {
-  conditions: HookDappConditions
+  conditions?: HookDappConditions
 }
 
 const MANDATORY_DAPP_FIELDS: (keyof HookDappBaseInfo)[] = ['name', 'image', 'version', 'website']
@@ -41,7 +41,7 @@ export function ExternalDappLoader({
       .then((data) => {
         if (!isRequestRelevant) return
 
-        const { conditions, ...dapp } = data.cow_hook_dapp as HookDappManifest
+        const { conditions = {}, ...dapp } = data.cow_hook_dapp as HookDappManifest
 
         if (dapp) {
           const emptyFields = MANDATORY_DAPP_FIELDS.filter((field) => typeof dapp[field] === 'undefined')
