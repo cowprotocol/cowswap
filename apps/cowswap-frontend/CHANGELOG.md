@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.83.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.82.0...cowswap-v1.83.0) (2024-09-18)
+
+
+### Features
+
+* **hook-store:** enhance items sorting ux ([#4893](https://github.com/cowprotocol/cowswap/issues/4893)) ([9d72b77](https://github.com/cowprotocol/cowswap/commit/9d72b77f35358e25510495eeb8903ba9a7c18558))
+
+
+### Bug Fixes
+
+* don't request network switching at page load ([#4903](https://github.com/cowprotocol/cowswap/issues/4903)) ([da375be](https://github.com/cowprotocol/cowswap/commit/da375be55f34bd35e5cf1152e0f3f5d0bcc92aa5))
+* remove blocknative mempool checking ([#4902](https://github.com/cowprotocol/cowswap/issues/4902)) ([79fcfe4](https://github.com/cowprotocol/cowswap/commit/79fcfe41c84a272077e735382ffbbf313b01398c))
+
 ## [1.82.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.81.2...cowswap-v1.82.0) (2024-09-17)
 
 
