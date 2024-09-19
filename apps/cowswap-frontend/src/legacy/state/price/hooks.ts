@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 
 import { SupportedChainId, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 
@@ -62,7 +62,7 @@ export const useGetQuoteAndStatus = (params: QuoteParams): UseGetQuoteAndStatus 
   const isGettingNewQuote = Boolean(isLoading && !quote?.price?.amount)
   const isRefreshingQuote = Boolean(isLoading && quote?.price?.amount)
 
-  return { quote, isGettingNewQuote, isRefreshingQuote }
+  return useMemo(() => ({ quote, isGettingNewQuote, isRefreshingQuote }), [quote, isGettingNewQuote, isRefreshingQuote])
 }
 
 export const useGetNewQuote = (): GetNewQuoteCallback => {
