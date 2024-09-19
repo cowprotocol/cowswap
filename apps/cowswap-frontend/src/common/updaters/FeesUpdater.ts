@@ -18,7 +18,7 @@ import { isWrappingTrade } from 'legacy/state/swap/utils'
 import { Field } from 'legacy/state/types'
 import { useUserTransactionTTL } from 'legacy/state/user/hooks'
 
-import { useAppData } from 'modules/appData'
+import { decodeAppData, useAppData } from 'modules/appData'
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { useDerivedSwapInfo, useSwapState } from 'modules/swap/hooks/useSwapState'
 
@@ -61,6 +61,7 @@ function quoteUsingSameParameters(currentParams: FeeQuoteParams, quoteInfo: Quot
   } = currentParams
   const { amount, buyToken, sellToken, kind, userAddress, receiver, appData } = quoteInfo
   const hasSameReceiver = currentReceiver && receiver ? currentReceiver === receiver : true
+  const hasSameAppData = compareAppDataWithoutQuoteData(appData, currentAppData)
 
   // cache the base quote params without quoteInfo user address to check
   const paramsWithoutAddress =
@@ -68,11 +69,43 @@ function quoteUsingSameParameters(currentParams: FeeQuoteParams, quoteInfo: Quot
     buyToken === currentBuyToken &&
     amount === currentAmount &&
     kind === currentKind &&
-    appData === currentAppData &&
+    hasSameAppData &&
     hasSameReceiver
   // 2 checks: if there's a quoteInfo user address (meaning quote was already calculated once) and one without
   // in case user is not connected
   return userAddress ? currentUserAddress === userAddress && paramsWithoutAddress : paramsWithoutAddress
+}
+
+/**
+ * Compares appData without taking into account the `quote` metadata
+ */
+function compareAppDataWithoutQuoteData<T extends string | undefined>(a: T, b: T): boolean {
+  if (a === b) {
+    return true
+  }
+  const cleanedA = removeQuoteMetadata(a)
+  const cleanedB = removeQuoteMetadata(b)
+
+  return cleanedA === cleanedB
+}
+
+/**
+ * If appData is set and is valid, remove `quote` metadata from it
+ */
+function removeQuoteMetadata(appData: string | undefined): string | undefined {
+  if (!appData) {
+    return
+  }
+
+  const decoded = decodeAppData(appData)
+
+  if (!decoded) {
+    return
+  }
+
+  const { metadata: fullMetadata, ...rest } = decoded
+  const { quote: _, ...metadata } = fullMetadata
+  return JSON.stringify({ ...rest, metadata })
 }
 
 /**
@@ -81,7 +114,7 @@ function quoteUsingSameParameters(currentParams: FeeQuoteParams, quoteInfo: Quot
 function isRefetchQuoteRequired(
   isLoading: boolean,
   currentParams: FeeQuoteParams,
-  quoteInformation?: QuoteInformationObject
+  quoteInformation?: QuoteInformationObject,
 ): boolean {
   // If there's no quote/fee information, we always re-fetch
   if (!quoteInformation) {
@@ -219,7 +252,7 @@ export function FeesUpdater(): null {
     // Callback to re-fetch both the fee and the price
     const refetchQuoteIfRequired = () => {
       // if no token is unsupported and needs refetching
-      const hasToRefetch = !unsupportedToken && isRefetchQuoteRequired(isLoading, quoteParams, quoteInfo)
+      const hasToRefetch = !unsupportedToken && isRefetchQuoteRequired(isLoading, quoteParams, quoteInfo) //
 
       if (hasToRefetch) {
         // Decide if this is a new quote, or just a refresh
