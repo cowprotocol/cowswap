@@ -1,69 +1,97 @@
-import React from 'react'
+import React, { useEffect, useRef, useCallback } from 'react'
+
+// Shared IntersectionObserver instance
+let observer: IntersectionObserver | null = null
 
 const LAZY_LOADING_CONFIG = {
-  rootMargin: '10px',
+  rootMargin: '25px',
   placeholderColor: '#f0f0f0',
   fadeInDuration: '0.3s',
   minHeight: '100px',
 }
 
-export function useLazyLoadImages() {
-  const replaceImageUrls = React.useCallback((html: string): string => {
-    return html.replace(/<img([^>]*)src="([^"]*)"([^>]*)>/g, (match, before, src, after) => {
-      return `<img${before}data-src="${src}" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%' height='100%' viewBox='0 0 1 1' preserveAspectRatio='none'%3E%3Crect width='1' height='1' fill='${LAZY_LOADING_CONFIG.placeholderColor.replace('#', '%23')}' /%3E%3C/svg%3E"${after}>`
-    })
-  }, [])
+// Utility function to generate placeholder src
+const getPlaceholderSrc = (placeholderColor: string): string => {
+  const encodedColor = encodeURIComponent(placeholderColor)
+  return `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='100%' height='100%' viewBox='0 0 1 1' preserveAspectRatio='none'><rect width='1' height='1' fill='${encodedColor}' /></svg>`
+}
 
-  const LazyImage = React.useCallback(
-    ({ src, alt, width, height, ...props }: React.ImgHTMLAttributes<HTMLImageElement>) => {
-      const [isLoaded, setIsLoaded] = React.useState(false)
-      const imgRef = React.useRef<HTMLImageElement>(null)
+// Initialize a shared IntersectionObserver
+const initObserver = (onIntersect: (entry: IntersectionObserverEntry) => void) => {
+  if (observer) return
 
-      React.useEffect(() => {
-        if (!imgRef.current || !src) return
-
-        const observer = new IntersectionObserver(
-          (entries) => {
-            entries.forEach((entry) => {
-              if (entry.isIntersecting && imgRef.current) {
-                imgRef.current.src = src
-                setIsLoaded(true)
-                observer.disconnect()
-              }
-            })
-          },
-          { rootMargin: LAZY_LOADING_CONFIG.rootMargin },
-        )
-
-        observer.observe(imgRef.current)
-
-        return () => {
-          observer.disconnect()
-        }
-      }, [src])
-
-      if (!src) return null
-
-      return (
-        <img
-          ref={imgRef}
-          src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%' height='100%' viewBox='0 0 1 1' preserveAspectRatio='none'%3E%3Crect width='1' height='1' fill='${LAZY_LOADING_CONFIG.placeholderColor.replace('#', '%23')}' /%3E%3C/svg%3E"
-          data-src={src}
-          alt={alt || ''}
-          width={width}
-          height={height}
-          {...props}
-          style={{
-            ...props.style,
-            minHeight: LAZY_LOADING_CONFIG.minHeight,
-            opacity: isLoaded ? 1 : 0,
-            transition: `opacity ${LAZY_LOADING_CONFIG.fadeInDuration}`,
-          }}
-        />
-      )
+  observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach(onIntersect)
     },
-    [],
+    { rootMargin: LAZY_LOADING_CONFIG.rootMargin },
+  )
+}
+
+export function useLazyLoadImages() {
+  const placeholderSrc = useRef(getPlaceholderSrc(LAZY_LOADING_CONFIG.placeholderColor)).current
+
+  const replaceImageUrls = useCallback(
+    (html: string): string => {
+      return html.replace(/<img([^>]*)src="([^"]*)"([^>]*)>/g, (_, before, src, after) => {
+        return `<img${before}data-src="${src}" src="${placeholderSrc}"${after}>`
+      })
+    },
+    [placeholderSrc],
   )
 
-  return { replaceImageUrls, LazyImage }
+  const LazyImage: React.FC<React.ImgHTMLAttributes<HTMLImageElement>> = ({
+    src,
+    alt = '',
+    width,
+    height,
+    style,
+    ...props
+  }) => {
+    const imgRef = useRef<HTMLImageElement>(null)
+
+    useEffect(() => {
+      if (!imgRef.current || !src) return
+
+      const handleIntersect = (entry: IntersectionObserverEntry) => {
+        const img = entry.target as HTMLImageElement
+        if (entry.isIntersecting && img.dataset.src) {
+          img.src = img.dataset.src
+          img.style.opacity = '1'
+          observer?.unobserve(img)
+        }
+      }
+
+      initObserver(handleIntersect)
+      observer?.observe(imgRef.current)
+
+      return () => {
+        if (imgRef.current) {
+          observer?.unobserve(imgRef.current)
+        }
+      }
+    }, [src])
+
+    return (
+      <img
+        ref={imgRef}
+        src={placeholderSrc}
+        data-src={src}
+        alt={alt}
+        width={width}
+        height={height}
+        {...props}
+        style={{
+          minHeight: LAZY_LOADING_CONFIG.minHeight,
+          opacity: 0, // Start with opacity 0
+          transition: `opacity ${LAZY_LOADING_CONFIG.fadeInDuration}`,
+          ...style,
+        }}
+      />
+    )
+  }
+
+  const MemoizedLazyImage = React.memo(LazyImage)
+
+  return { replaceImageUrls, LazyImage: MemoizedLazyImage }
 }
