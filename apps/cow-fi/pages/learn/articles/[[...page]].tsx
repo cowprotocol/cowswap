@@ -20,11 +20,12 @@ import {
   CategoryLinks,
 } from '@/styles/styled'
 
+import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
+import { clickOnKnowledgeBase } from 'modules/analytics'
+
 const LEARN_PATH = '/learn/'
 const ARTICLES_PATH = `${LEARN_PATH}articles/`
 
-import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
-import { clickOnKnowledgeBase } from 'modules/analytics'
 const ITEMS_PER_PAGE = 24
 
 const Wrapper = styled.div`
@@ -75,8 +76,45 @@ export type ArticlesResponse = {
   }
 }
 
+const renderCategoryLinks = (allCategories: { name: string; slug: string }[]) => (
+  <CategoryLinks>
+    <li>
+      <a href="/learn" onClick={() => clickOnKnowledgeBase('click-categories-home')}>
+        Knowledge Base
+      </a>
+    </li>
+    {allCategories.map((category) => (
+      <li key={category.slug}>
+        <a
+          href={`/learn/topic/${category.slug}`}
+          onClick={() => clickOnKnowledgeBase(`click-categories-${category.name}`)}
+        >
+          {category.name}
+        </a>
+      </li>
+    ))}
+  </CategoryLinks>
+)
+
+const renderArticles = (articles: any[]) => (
+  <LinkColumn>
+    {articles.map((article) =>
+      article.attributes ? (
+        <LinkItem
+          key={article.id}
+          href={`${LEARN_PATH}${article.attributes.slug}`}
+          onClick={() => clickOnKnowledgeBase(`click-article-${article.attributes.title}`)}
+        >
+          {article.attributes.title}
+          <span>→</span>
+        </LinkItem>
+      ) : null,
+    )}
+  </LinkColumn>
+)
+
 export default function ArticlesPage({
-  articles,
+  articles = [],
   totalArticles = 0,
   currentPage = 1,
   allCategories,
@@ -89,61 +127,27 @@ export default function ArticlesPage({
       metaDescription="All knowledge base articles in the Cow DAO ecosystem"
     >
       <Wrapper>
-        <CategoryLinks>
-          <li>
-            <a href="/learn" onClick={() => clickOnKnowledgeBase('click-categories-home')}>
-              Knowledge Base
-            </a>
-          </li>
-          {(allCategories || []).map((category) => (
-            <li key={category.slug}>
-              <a
-                href={`/learn/topic/${category.slug}`}
-                onClick={() => clickOnKnowledgeBase(`click-categories-${category.name}`)}
-              >
-                {category.name}
-              </a>
-            </li>
-          ))}
-        </CategoryLinks>
-
-        <SearchBar articles={articles || []} />
-
+        {renderCategoryLinks(allCategories)}
+        <SearchBar articles={articles} />
         <ContainerCard gap={42} gapMobile={24} touchFooter>
           <ContainerCardInner maxWidth={970} gap={24} gapMobile={24}>
             <ContainerCardSectionTop>
-              <Breadcrumbs padding={'0'}>
+              <Breadcrumbs padding="0">
                 <a href="/learn" onClick={() => clickOnKnowledgeBase('click-breadcrumbs-home')}>
                   Knowledge Base
                 </a>
                 <h1>All articles</h1>
               </Breadcrumbs>
-
               <ArticleCount>
                 Showing {ITEMS_PER_PAGE * (currentPage - 1) + 1}-{Math.min(ITEMS_PER_PAGE * currentPage, totalArticles)}{' '}
                 of {totalArticles} articles
               </ArticleCount>
             </ContainerCardSectionTop>
-
             <ContainerCardSection>
               <LinkSection bgColor={'transparent'} columns={1} padding="0">
-                <LinkColumn>
-                  {articles?.map((article) =>
-                    article.attributes ? (
-                      <LinkItem
-                        key={article.id}
-                        href={`${LEARN_PATH}${article.attributes.slug}`}
-                        onClick={() => clickOnKnowledgeBase(`click-article-${article.attributes.title}`)}
-                      >
-                        {article.attributes.title}
-                        <span>→</span>
-                      </LinkItem>
-                    ) : null
-                  )}
-                </LinkColumn>
+                {renderArticles(articles)}
               </LinkSection>
             </ContainerCardSection>
-
             <Pagination>
               {Array.from({ length: totalPages }, (_, i) => (
                 <a
