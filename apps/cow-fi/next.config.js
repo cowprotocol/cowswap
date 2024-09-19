@@ -55,7 +55,7 @@ const nextConfig = {
             },
           },
         ],
-      }
+      },
     )
 
     return config
@@ -83,6 +83,13 @@ const nextConfig = {
         permanent: true,
       },
     ]
+  },
+  i18n: {
+    locales: ['en'],
+    defaultLocale: 'en',
+  },
+  images: {
+    domains: ['celebrated-gift-f83e5c9419.media.strapiapp.com'],
   },
 }
 

@@ -302,7 +302,12 @@ export default function ArticlePage({
                   >
                     {imageUrl && (
                       <ArticleImage>
-                        <CmsImage src={imageUrl} alt={article.attributes?.title ?? 'Article Image'} />
+                        <CmsImage
+                          src={imageUrl}
+                          alt={`Cover image for article: ${article.attributes?.title}`}
+                          width={700}
+                          height={200}
+                        />
                       </ArticleImage>
                     )}
                     <ArticleTitle>{article.attributes?.title}</ArticleTitle>
