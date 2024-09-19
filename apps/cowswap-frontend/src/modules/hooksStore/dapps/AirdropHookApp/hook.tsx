@@ -24,7 +24,7 @@ const Description = () => {
 export const AIRDROP_HOOK_APP: HookDappInternal = {
   name: 'Claim COW Airdrop',
   description: <Description />,
-  descriptionShort: 'Retrieve COW tokens before a swap',
+  descriptionShort: 'Retrieve COW tokens before or after a swap',
   type: HookDappType.INTERNAL,
   image: airdropImage,
   component: (props) => <AirdropHookApp {...props} />,
