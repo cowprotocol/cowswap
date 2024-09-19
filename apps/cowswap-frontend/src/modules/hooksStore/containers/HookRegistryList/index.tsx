@@ -1,19 +1,26 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { Command } from '@cowprotocol/types'
-import { useWalletInfo } from '@cowprotocol/wallet'
+import { useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
 
 import { NewModal } from 'common/pure/NewModal'
 
 import { HookDappsList, Wrapper } from './styled'
 
 import { POST_HOOK_REGISTRY, PRE_HOOK_REGISTRY } from '../../hookRegistry'
+import { useAddExternalHookDapp } from '../../hooks/useAddExternalHookDapp'
+import { useExternalHookDapps } from '../../hooks/useExternalHookDapps'
 import { useHookById } from '../../hooks/useHookById'
+import { useRemoveExternalHookDapp } from '../../hooks/useRemoveExternalHookDapp'
+import { AddExternalHookForm } from '../../pure/AddExternalHookForm'
 import { HookDappDetails } from '../../pure/HookDappDetails'
 import { HookDetailHeader } from '../../pure/HookDetailHeader'
 import { HookListItem } from '../../pure/HookListItem'
-import { HookDapp } from '../../types/hooks'
+import { HookListsTabs } from '../../pure/HookListsTabs'
+import { HookDapp, HookDappIframe } from '../../types/hooks'
+import { findHookDappById } from '../../utils'
 import { HookDappContainer } from '../HookDappContainer'
+
 interface HookStoreModal {
   onDismiss: Command
   isPreHook: boolean
@@ -25,8 +32,20 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit }: HookStore
   const [selectedDapp, setSelectedDapp] = useState<HookDapp | null>(null)
   const [dappDetails, setDappDetails] = useState<HookDapp | null>(null)
 
+  const tabsState = useState(true)
+  const [isVerifiedHooksTab] = tabsState
+
+  const isSmartContractWallet = useIsSmartContractWallet()
+  const addExternalHookDapp = useAddExternalHookDapp()
+  const removeExternalHookDapp = useRemoveExternalHookDapp()
+  const externalHookDapps = useExternalHookDapps()
   const hookToEditDetails = useHookById(hookToEdit, isPreHook)
-  const dapps = isPreHook ? PRE_HOOK_REGISTRY[chainId] : POST_HOOK_REGISTRY[chainId]
+
+  const dapps = isVerifiedHooksTab
+    ? isPreHook
+      ? PRE_HOOK_REGISTRY[chainId]
+      : POST_HOOK_REGISTRY[chainId]
+    : externalHookDapps
 
   const title = useMemo(() => {
     if (selectedDapp) return selectedDapp.name
@@ -55,7 +74,7 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit }: HookStore
     if (!hookToEditDetails) {
       setSelectedDapp(null)
     } else {
-      setSelectedDapp(dapps.find((i) => i.name === hookToEditDetails.dappName) || null)
+      setSelectedDapp(findHookDappById(dapps, hookToEditDetails) || null)
     }
   }, [hookToEditDetails, dapps])
 
@@ -68,6 +87,7 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit }: HookStore
         contentPadding="0"
         justifyContent="flex-start"
       >
+        <HookListsTabs tabsState={tabsState} />
         {(() => {
           if (selectedDapp) {
             return (
@@ -87,17 +107,34 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit }: HookStore
             return <HookDappDetails dapp={dappDetails} onSelect={() => setSelectedDapp(dappDetails)} />
           }
 
-          return (
+          const dappsList = dapps.length ? (
             <HookDappsList>
               {dapps.map((dapp) => (
                 <HookListItem
                   key={dapp.name}
                   dapp={dapp}
+                  onRemove={isVerifiedHooksTab ? undefined : () => removeExternalHookDapp(dapp as HookDappIframe)}
                   onSelect={() => setSelectedDapp(dapp)}
                   onOpenDetails={() => setDappDetails(dapp)}
                 />
               ))}
             </HookDappsList>
+          ) : null
+
+          return (
+            <>
+              {isVerifiedHooksTab ? (
+                dappsList
+              ) : (
+                <AddExternalHookForm
+                  isPreHook={isPreHook}
+                  isSmartContractWallet={isSmartContractWallet}
+                  addHookDapp={addExternalHookDapp}
+                >
+                  {dappsList}
+                </AddExternalHookForm>
+              )}
+            </>
           )
         })()}
       </NewModal>

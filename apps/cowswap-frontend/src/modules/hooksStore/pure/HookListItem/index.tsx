@@ -11,9 +11,10 @@ interface HookListItemProps {
   dapp: HookDapp
   onSelect: Command
   onOpenDetails: Command
+  onRemove?: Command
 }
 
-export function HookListItem({ dapp, onSelect, onOpenDetails }: HookListItemProps) {
+export function HookListItem({ dapp, onSelect, onOpenDetails, onRemove }: HookListItemProps) {
   const { name, descriptionShort, image, version } = dapp
 
   return (
@@ -31,6 +32,7 @@ export function HookListItem({ dapp, onSelect, onOpenDetails }: HookListItemProp
         <styled.LinkButton onClick={onSelect} className="link-button">
           Add
         </styled.LinkButton>
+        {onRemove ? <styled.RemoveButton onClick={onRemove}>Remove</styled.RemoveButton> : null}
         <i onClick={onOpenDetails}>
           <SVG src={ICON_INFO} /> details
         </i>
