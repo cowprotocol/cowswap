@@ -37,7 +37,7 @@ import {
 
 import { DAO_CONTENT as CONTENT } from '@/data/widget/const'
 
-import SVG from 'react-inlinesvg'
+import LazySVG from '@/components/LazySVG'
 
 import 'swiper/css'
 import 'swiper/css/pagination'
@@ -67,7 +67,7 @@ export default function Page() {
             <HeroDescription>The smartest DAOs trust CoW Swap with their most-important trades</HeroDescription>
           </HeroContent>
           <HeroImage width={470} height={400} color={'#66018E'}>
-            <SVG src={IMG_ICON_BULB_COW} />
+            <LazySVG src={IMG_ICON_BULB_COW} />
           </HeroImage>
         </HeroContainer>
 
@@ -79,11 +79,11 @@ export default function Page() {
                 ({ icon, title, volume }, index) =>
                   volume && (
                     <li key={index}>
-                      <SVG src={icon} title={title} />
+                      <LazySVG src={icon} title={title} />
                       <small>with</small>
                       <strong>{volume}</strong>
                     </li>
-                  )
+                  ),
               )}
             </ul>
           </TrustedBy>
@@ -93,7 +93,7 @@ export default function Page() {
           <ContainerCardSection>
             <SectionTitleWrapper color={Color.neutral100} maxWidth={1100} gap={56}>
               <SectionTitleIcon size={98}>
-                <SVG src={IMG_ICON_CROWN_COW} />
+                <LazySVG src={IMG_ICON_CROWN_COW} />
               </SectionTitleIcon>
               <SectionTitleText>Expert trading for expert DAOs</SectionTitleText>
               <SectionTitleDescription maxWidth={900}>
@@ -159,7 +159,7 @@ export default function Page() {
             <TopicList columns={3} columnsTablet={2}>
               <TopicCard contentAlign={'left'} bgColor={Color.neutral100} padding={'32px'} gap={16} asProp="div">
                 <TopicImage bgColor="transparent" height={75} width={'auto'}>
-                  <SVG src="images/icon-milkman.svg" />
+                  <LazySVG src="images/icon-milkman.svg" />
                 </TopicImage>
                 <TopicCardInner contentAlign="left">
                   <TopicTitle>Milkman Orders</TopicTitle>
@@ -180,7 +180,7 @@ export default function Page() {
 
               <TopicCard contentAlign={'left'} bgColor={Color.neutral100} padding={'32px'} gap={16} asProp="div">
                 <TopicImage bgColor="transparent" height={75} width={'auto'}>
-                  <SVG src="images/icon-twap-orders.svg" />
+                  <LazySVG src="images/icon-twap-orders.svg" />
                 </TopicImage>
                 <TopicCardInner contentAlign="left">
                   <TopicTitle>TWAP Orders</TopicTitle>
@@ -193,7 +193,7 @@ export default function Page() {
 
               <TopicCard contentAlign={'left'} bgColor={Color.neutral100} padding={'32px'} gap={16} asProp="div">
                 <TopicImage bgColor="transparent" height={75} width={'auto'}>
-                  <SVG src="images/icon-limit-orders.svg" />
+                  <LazySVG src="images/icon-limit-orders.svg" />
                 </TopicImage>
                 <TopicCardInner contentAlign="left">
                   <TopicTitle>Limit Orders</TopicTitle>
@@ -206,7 +206,7 @@ export default function Page() {
 
               <TopicCard contentAlign={'left'} bgColor={Color.neutral100} padding={'32px'} gap={16} asProp="div">
                 <TopicImage bgColor="transparent" height={75} width={'auto'}>
-                  <SVG src="images/icon-price-walls.svg" />
+                  <LazySVG src="images/icon-price-walls.svg" />
                 </TopicImage>
                 <TopicCardInner contentAlign="left">
                   <TopicTitle>Price Walls</TopicTitle>
@@ -219,7 +219,7 @@ export default function Page() {
 
               <TopicCard contentAlign={'left'} bgColor={Color.neutral100} padding={'32px'} gap={16} asProp="div">
                 <TopicImage bgColor="transparent" height={75} width={'auto'}>
-                  <SVG src="images/icon-basket-sells.svg" />
+                  <LazySVG src="images/icon-basket-sells.svg" />
                 </TopicImage>
                 <TopicCardInner contentAlign="left">
                   <TopicTitle>Basket Sells</TopicTitle>
@@ -240,7 +240,7 @@ export default function Page() {
 
               <TopicCard contentAlign={'left'} bgColor={Color.neutral100} padding={'32px'} gap={16} asProp="div">
                 <TopicImage bgColor="transparent" height={75} width={'auto'}>
-                  <SVG src="images/icon-logic.svg" />
+                  <LazySVG src="images/icon-logic.svg" />
                 </TopicImage>
                 <TopicCardInner contentAlign="left">
                   <TopicTitle>Place Your Logic Here</TopicTitle>
@@ -269,9 +269,9 @@ export default function Page() {
           <ContainerCardSection>
             <SectionTitleWrapper padding="150px 0 0">
               <SectionTitleIcon multiple>
-                <SVG src={IMG_ICON_OWL} />
+                <LazySVG src={IMG_ICON_OWL} />
                 <ProductLogo variant={ProductVariant.CowProtocol} theme="dark" logoIconOnly height={60} />
-                <SVG src={IMG_ICON_GHOST} />
+                <LazySVG src={IMG_ICON_GHOST} />
               </SectionTitleIcon>
               <SectionTitleText>Trusted by the best</SectionTitleText>
             </SectionTitleWrapper>
@@ -289,7 +289,7 @@ export default function Page() {
                     asProp="div"
                   >
                     <TopicImage iconColor={Color.neutral98} bgColor={'transparent'} height={100}>
-                      {isPng ? <img src={dao.icon} alt={dao.title} /> : <SVG src={dao.icon} />}
+                      {isPng ? <img src={dao.icon} alt={dao.title} /> : <LazySVG src={dao.icon} />}
                     </TopicImage>
                     <TopicCardInner contentAlign="center">
                       <TopicTitle fontSize={28} color={Color.neutral98}>
@@ -331,7 +331,7 @@ export default function Page() {
                       {isPng ? (
                         <img src={dao.icon} alt={dao.title} style={{ maxWidth: '100%' }} />
                       ) : (
-                        <SVG src={dao.icon} />
+                        <LazySVG src={dao.icon} />
                       )}
                     </TopicImage>
                   </TopicCard>

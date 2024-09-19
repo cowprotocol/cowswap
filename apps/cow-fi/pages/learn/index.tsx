@@ -40,7 +40,7 @@ import {
 } from '@/styles/styled'
 
 import { clickOnKnowledgeBase } from 'modules/analytics'
-import SVG from 'react-inlinesvg'
+import LazySVG from '@/components/LazySVG'
 
 import { useLazyLoadImages } from 'hooks/useLazyLoadImages'
 
@@ -307,7 +307,7 @@ export default function Page({ siteConfigData, categories, articles, featuredArt
         <ContainerCard bgColor={Color.neutral98} padding="0" touchFooter>
           <CTASectionWrapper>
             <CTAImage color={'#00A1FF'}>
-              <SVG src={IMG_ICON_BULB_COW} />
+              <LazySVG src={IMG_ICON_BULB_COW} />
             </CTAImage>
             <CTASubtitle>Explore, learn, integrate</CTASubtitle>
             <CTATitle>CoW DAO documentation</CTATitle>
