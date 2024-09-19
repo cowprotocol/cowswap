@@ -11,6 +11,7 @@ import { useSetupHooksStoreOrderParams } from '../../hooks/useSetupHooksStoreOrd
 import { HookRegistryList } from '../HookRegistryList'
 import { PostHookButton } from '../PostHookButton'
 import { PreHookButton } from '../PreHookButton'
+import { BundleTenderlySimulate } from '../TenderlyBundleSimulation'
 
 type HookPosition = 'pre' | 'post'
 
@@ -66,7 +67,10 @@ export function HooksStoreWidget() {
   )
 
   const BottomContent = shouldNotUseHooks ? null : (
-    <PostHookButton onOpen={() => setSelectedHookPosition('post')} onEditHook={onPostHookEdit} />
+    <>
+      <PostHookButton onOpen={() => setSelectedHookPosition('post')} onEditHook={onPostHookEdit} />
+      <BundleTenderlySimulate />
+    </>
   )
 
   return <SwapWidget topContent={TopContent} bottomContent={BottomContent} />
