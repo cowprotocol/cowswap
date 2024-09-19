@@ -153,6 +153,7 @@ export default function ArticlePage({
 }) {
   const attributes: {
     title?: string
+    description?: string
     blocks?: SharedRichTextComponent[]
     publishedAt?: string
     publishDate?: string
@@ -160,7 +161,7 @@ export default function ArticlePage({
     categories?: any
     cover?: any
   } = article.attributes || {}
-  const { title, blocks, publishedAt, categories, cover } = attributes
+  const { title, description, blocks, publishedAt, categories, cover } = attributes
   const publishDate = attributes.publishDate || null
   const publishDateVisible = attributes.publishDateVisible ?? true
   const content =
@@ -173,17 +174,20 @@ export default function ArticlePage({
   const handleShareClick = () => {
     share({
       title: title || 'CoW DAO Article',
-      text: content.split(' ').slice(0, 50).join(' ') + '...',
+      text: plainContent.split(' ').slice(0, 50).join(' ') + '...',
       url: window.location.href,
     })
   }
 
+  // Generate metaDescription
+  const metaDescription = description
+    ? stripHtmlTags(description)
+    : plainContent.length > 150
+      ? stripHtmlTags(plainContent.substring(0, 147)) + '...'
+      : stripHtmlTags(plainContent)
+
   return (
-    <Layout
-      metaTitle={`${title} - ${siteConfigData.title}`}
-      metaDescription={plainContent.split(' ').slice(0, 50).join(' ') + '...'}
-      ogImage={coverImageUrl}
-    >
+    <Layout metaTitle={`${title} - ${siteConfigData.title}`} metaDescription={metaDescription} ogImage={coverImageUrl}>
       <Wrapper>
         <CategoryLinks>
           <li>
