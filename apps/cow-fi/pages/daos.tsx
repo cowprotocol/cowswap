@@ -329,7 +329,7 @@ export default function Page() {
                       margin={'auto'}
                     >
                       {isPng ? (
-                        <img src={dao.icon} alt={dao.title} style={{ maxWidth: '100%' }} />
+                        <img src={dao.icon} alt={dao.title} style={{ maxWidth: '100%' }} loading="lazy" />
                       ) : (
                         <LazySVG src={dao.icon} />
                       )}

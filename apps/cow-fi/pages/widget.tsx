@@ -150,7 +150,7 @@ export default function Page() {
                 textColor={Color.neutral100}
               >
                 <TopicImage width={400} height={400} heightMobile={300} orderReverseMobile bgColor="transparent">
-                  <img src="images/eth-blocks.svg" alt="Integrate With Ease" width="340" height="214" />
+                  <img src="images/eth-blocks.svg" alt="Integrate With Ease" width="340" height="214" loading="lazy" />
                 </TopicImage>
                 <TopicCardInner contentAlign="left">
                   <TopicTitle fontSize={67}>Integrate With Ease</TopicTitle>
@@ -283,7 +283,7 @@ export default function Page() {
                       margin={'auto'}
                     >
                       {isPng ? (
-                        <img src={dao.icon} alt={dao.title} style={{ maxWidth: '100%' }} />
+                        <img src={dao.icon} alt={dao.title} style={{ maxWidth: '100%' }} loading="lazy" />
                       ) : (
                         <LazySVG src={dao.icon} />
                       )}
