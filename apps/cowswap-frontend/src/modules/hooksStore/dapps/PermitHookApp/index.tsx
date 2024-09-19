@@ -1,17 +1,19 @@
 import { useCallback, useMemo, useState } from 'react'
 
+import { isAddress } from '@cowprotocol/common-utils'
+import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
+import { useTokenBySymbolOrAddress } from '@cowprotocol/tokens'
 import { ButtonPrimary } from '@cowprotocol/ui'
 
 import { recoverSpenderFromCalldata, useGeneratePermitHook, usePermitInfo } from 'modules/permit'
+import { TradeType } from 'modules/trade'
+
+import { useIsPermitEnabled } from 'common/hooks/featureFlags/useIsPermitEnabled'
 
 import { ContentWrapper, Row, Wrapper } from './styled'
 
 import { HookDappProps } from '../../types/hooks'
-import { TradeType } from 'modules/trade'
-import { isAddress } from '@cowprotocol/common-utils'
-import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
-import { useTokenBySymbolOrAddress } from '@cowprotocol/tokens'
-import { useIsPermitEnabled } from 'common/hooks/featureFlags/useIsPermitEnabled'
+
 
 export function PermitHookApp({ isPreHook, context }: HookDappProps) {
   const hookToEdit = context.hookToEdit
