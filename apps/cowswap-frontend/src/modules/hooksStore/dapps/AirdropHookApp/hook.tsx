@@ -9,7 +9,7 @@ const Description = () => {
     <>
       <p>
         <strong>Effortless Airdrop Claims! </strong>
-        The Claim COW Airdrop feature simplifies the process of collecting free COW tokens right before your swap,
+        The Claim COW Airdrop feature simplifies the process of collecting free COW tokens before or after your swap,
         seamlessly integrating into the CoW Swap platform.
       </p>
       <br />
