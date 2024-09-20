@@ -54,7 +54,9 @@
       "@cowprotocol/wallet": ["libs/wallet/src/index.ts"],
       "@cowprotocol/wallet-provider": ["libs/wallet-provider/src/index.ts"],
       "@cowprotocol/widget-lib": ["libs/widget-lib/src/index.ts"],
-      "@cowprotocol/widget-react": ["libs/widget-react/src/index.ts"]
+      "@cowprotocol/widget-react": ["libs/widget-react/src/index.ts"],
+      "@cowprotocol/hook-dapp-lib": ["libs/hook-dapp-lib/src/index.ts"],
+      "@cowprotocol/iframe-transport": ["libs/iframe-transport/src/index.ts"],
     }
   },
   "exclude": ["node_modules", "tmp"]

@@ -1,7 +1,7 @@
-import { CowEvents, OnTransactionPayload } from '@cowprotocol/events'
+import { CowWidgetEvents, OnTransactionPayload } from '@cowprotocol/events'
 
-import { EVENT_EMITTER } from 'eventEmitter'
+import { WIDGET_EVENT_EMITTER } from 'widgetEventEmitter'
 
 export function emitOnchainTransactionEvent(payload: OnTransactionPayload) {
-  EVENT_EMITTER.emit(CowEvents.ON_ONCHAIN_TRANSACTION, payload)
+  WIDGET_EVENT_EMITTER.emit(CowWidgetEvents.ON_ONCHAIN_TRANSACTION, payload)
 }

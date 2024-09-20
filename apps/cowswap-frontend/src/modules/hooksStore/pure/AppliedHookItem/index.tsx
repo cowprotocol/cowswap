@@ -8,20 +8,27 @@ import SVG from 'react-inlinesvg'
 import * as styledEl from './styled'
 
 import { TenderlySimulate } from '../../containers/TenderlySimulate'
-import { CowHookDetailsSerialized } from '../../types/hooks'
+import { CowHookDetailsSerialized, HookDapp } from '../../types/hooks'
 
 interface HookItemProp {
   account: string | undefined
   hookDetails: CowHookDetailsSerialized
+  dapp: HookDapp
   isPreHook: boolean
   removeHook: (uuid: string, isPreHook: boolean) => void
   editHook: (uuid: string) => void
   index: number
 }
 
-export function AppliedHookItem({ account, hookDetails, isPreHook, editHook, removeHook, index }: HookItemProp) {
-  const { hook, dapp } = hookDetails
-
+export function AppliedHookItem({
+  account,
+  hookDetails: { hookDetails },
+  dapp,
+  isPreHook,
+  editHook,
+  removeHook,
+  index,
+}: HookItemProp) {
   return (
     <styledEl.HookItemWrapper data-uid={hookDetails.uuid} as="li">
       <styledEl.HookItemHeader title={hookDetails.uuid}>
@@ -56,7 +63,7 @@ export function AppliedHookItem({ account, hookDetails, isPreHook, editHook, rem
             </styledEl.SimulateFooter>
           </div>
           <div>
-            <TenderlySimulate hook={hook} />
+            <TenderlySimulate hook={hookDetails.hook} />
           </div>
         </styledEl.SimulateContainer>
       )}

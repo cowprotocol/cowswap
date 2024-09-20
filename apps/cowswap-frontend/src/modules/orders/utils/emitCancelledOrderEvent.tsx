@@ -1,7 +1,7 @@
-import { CowEvents, OnCancelledOrderPayload } from '@cowprotocol/events'
+import { CowWidgetEvents, OnCancelledOrderPayload } from '@cowprotocol/events'
 
-import { EVENT_EMITTER } from 'eventEmitter'
+import { WIDGET_EVENT_EMITTER } from 'widgetEventEmitter'
 
 export function emitCancelledOrderEvent(payload: OnCancelledOrderPayload) {
-  EVENT_EMITTER.emit(CowEvents.ON_CANCELLED_ORDER, payload)
+  WIDGET_EVENT_EMITTER.emit(CowWidgetEvents.ON_CANCELLED_ORDER, payload)
 }

@@ -1,35 +1,40 @@
 import { useEffect } from 'react'
 
-import { CowEventListener, CowEventListeners, CowEventPayloadMap, CowEvents } from '@cowprotocol/events'
-import { WidgetMethodsEmit, postMessageToWindow } from '@cowprotocol/widget-lib'
+import {
+  CowWidgetEventListener,
+  CowWidgetEventListeners,
+  CowWidgetEventPayloadMap,
+  CowWidgetEvents,
+} from '@cowprotocol/events'
+import { WidgetMethodsEmit, widgetIframeTransport } from '@cowprotocol/widget-lib'
 
-import { EVENT_EMITTER } from 'eventEmitter'
+import { WIDGET_EVENT_EMITTER } from 'widgetEventEmitter'
 
-const ALL_EVENTS = Object.values(CowEvents)
+const ALL_EVENTS = Object.values(CowWidgetEvents)
 
 export function CowEventsUpdater() {
   // Setup listeners only once
   useEffect(() => {
     // Create all listeners
-    const allHandlers: CowEventListeners = ALL_EVENTS.map((event) => {
+    const allHandlers: CowWidgetEventListeners = ALL_EVENTS.map((event) => {
       return {
         event,
         handler: (payload: any) => forwardEventToIframe(event, payload),
       }
     })
-    allHandlers.forEach((listener) => EVENT_EMITTER.on(listener as CowEventListener<CowEvents>))
+    allHandlers.forEach((listener) => WIDGET_EVENT_EMITTER.on(listener as CowWidgetEventListener))
 
     // Cleanup: Remove all listeners
     return () => {
-      allHandlers.forEach((listener) => EVENT_EMITTER.off(listener as CowEventListener<CowEvents>))
+      allHandlers.forEach((listener) => WIDGET_EVENT_EMITTER.off(listener as CowWidgetEventListener))
     }
   }, [])
 
   return null
 }
 
-function forwardEventToIframe<T extends CowEvents>(event: CowEvents, payload: CowEventPayloadMap[T]) {
-  postMessageToWindow(window.parent, WidgetMethodsEmit.EMIT_COW_EVENT, {
+function forwardEventToIframe<T extends CowWidgetEvents>(event: CowWidgetEvents, payload: CowWidgetEventPayloadMap[T]) {
+  widgetIframeTransport.postMessageToWindow(window.parent, WidgetMethodsEmit.EMIT_COW_EVENT, {
     event,
     payload,
   })

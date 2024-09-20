@@ -1,6 +1,6 @@
 export { createCowSwapWidget } from './cowSwapWidget'
+export { widgetIframeTransport } from './widgetIframeTransport'
 export type { CowSwapWidgetHandler } from './cowSwapWidget'
 export * from './types'
-export * from './messages'
 export * from './themeUtils'
 export * from './flexibleConfig'

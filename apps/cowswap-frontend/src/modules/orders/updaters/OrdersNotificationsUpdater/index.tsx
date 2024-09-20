@@ -1,9 +1,9 @@
 import { useEffect } from 'react'
 
-import { CowEventListener, CowEventPayloadMap, CowEvents } from '@cowprotocol/events'
+import { CowWidgetEventListener, CowWidgetEventPayloadMap, CowWidgetEvents } from '@cowprotocol/events'
 import { useAddSnackbar } from '@cowprotocol/snackbars'
 
-import { EVENT_EMITTER } from 'eventEmitter'
+import { WIDGET_EVENT_EMITTER } from 'widgetEventEmitter'
 
 import { ORDERS_NOTIFICATION_HANDLERS } from './handlers'
 
@@ -12,10 +12,10 @@ export function OrdersNotificationsUpdater() {
 
   useEffect(() => {
     const listeners = Object.keys(ORDERS_NOTIFICATION_HANDLERS).map((event) => {
-      const eventTyped = event as CowEvents
+      const eventTyped = event as CowWidgetEvents
       return {
         event: eventTyped,
-        handler(payload: CowEventPayloadMap[keyof CowEventPayloadMap]) {
+        handler(payload: CowWidgetEventPayloadMap[keyof CowWidgetEventPayloadMap]) {
           const { handler, icon } = ORDERS_NOTIFICATION_HANDLERS[eventTyped]
 
           const content = handler(payload as Parameters<typeof handler>[0])
@@ -28,13 +28,13 @@ export function OrdersNotificationsUpdater() {
             content,
           })
         },
-      } as CowEventListener<CowEvents>
+      } as CowWidgetEventListener
     })
 
-    listeners.forEach((listener) => EVENT_EMITTER.on(listener))
+    listeners.forEach((listener) => WIDGET_EVENT_EMITTER.on(listener))
 
     return () => {
-      listeners.forEach((listener) => EVENT_EMITTER.off(listener))
+      listeners.forEach((listener) => WIDGET_EVENT_EMITTER.off(listener))
     }
   }, [addSnackbar])
 

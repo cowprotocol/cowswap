@@ -1,37 +1,47 @@
-import { SimpleCowEventEmitter, CowEventListener, CowEventListeners, CowEvents } from '@cowprotocol/events'
+import {
+  SimpleCowEventEmitter,
+  CowWidgetEventListeners,
+  CowWidgetEvents,
+  CowWidgetEventPayloadMap,
+} from '@cowprotocol/events'
 
-import { WindowListener, listenToMessageFromWindow, stopListeningWindowListener } from './messages'
-import { WidgetMethodsEmit } from './types'
+import { WindowListener, WidgetMethodsEmit } from './types'
+import { widgetIframeTransport } from './widgetIframeTransport'
 
 export class IframeCowEventEmitter {
-  private eventEmitter: SimpleCowEventEmitter = new SimpleCowEventEmitter()
-  private listeners: CowEventListeners = []
+  private eventEmitter = new SimpleCowEventEmitter<CowWidgetEventPayloadMap, CowWidgetEvents>()
+  private listeners: CowWidgetEventListeners = []
   private widgetListener: WindowListener
 
-  constructor(private contentWindow: Window, listeners: CowEventListeners = []) {
+  constructor(
+    private contentWindow: Window,
+    listeners: CowWidgetEventListeners = [],
+  ) {
     // Subscribe listeners to local event emitter
     this.updateListeners(listeners)
 
     // Listen to iFrame, and forward to local event emitter
-    this.widgetListener = listenToMessageFromWindow(this.contentWindow, WidgetMethodsEmit.EMIT_COW_EVENT, (cowEvent) =>
-      this.eventEmitter.emit(cowEvent.event, cowEvent.payload)
+    this.widgetListener = widgetIframeTransport.listenToMessageFromWindow(
+      this.contentWindow,
+      WidgetMethodsEmit.EMIT_COW_EVENT,
+      (cowEvent) => this.eventEmitter.emit(cowEvent.event, cowEvent.payload),
     )
   }
 
   public stopListeningIframe() {
-    stopListeningWindowListener(this.contentWindow, this.widgetListener)
+    widgetIframeTransport.stopListeningWindowListener(this.contentWindow, this.widgetListener)
   }
 
-  public updateListeners(listeners?: CowEventListeners): void {
+  public updateListeners(listeners?: CowWidgetEventListeners): void {
     // Unsubscribe from previous listeners
     for (const listener of this.listeners) {
-      this.eventEmitter.off(listener as CowEventListener<CowEvents>)
+      this.eventEmitter.off(listener)
     }
 
     // Subscribe to events
     this.listeners = listeners || []
     for (const listener of this.listeners) {
-      this.eventEmitter.on(listener as CowEventListener<CowEvents>)
+      this.eventEmitter.on(listener)
     }
   }
 }
