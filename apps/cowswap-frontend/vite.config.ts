@@ -65,7 +65,7 @@ export default defineConfig(({ mode }) => {
         gzipSize: true,
         brotliSize: true,
         filename: 'analyse.html', // will be saved in project's root
-      }) as PluginOption
+      }) as PluginOption,
     )
   }
 
@@ -90,6 +90,12 @@ export default defineConfig(({ mode }) => {
           'apps/cowswap-frontend/src',
           'libs',
         ],
+      },
+      proxy: {
+        '/hook-dapp-omnibridge': {
+          target: 'http://localhost:4317',
+          changeOrigin: true,
+        },
       },
     },
 

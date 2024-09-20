@@ -10,10 +10,7 @@
  *  ===========================================================================
  */
 
-import { ProviderConnectInfo, ProviderRpcError } from '@web3-react/types'
-
 import { EventEmitter } from 'eventemitter3'
-import ms from 'ms.macro'
 
 import {
   IframeRpcProviderEvents,
@@ -22,15 +19,32 @@ import {
   ProviderRpcResponsePayload,
 } from './iframeRpcProviderEvents'
 
-import { JsonRpcErrorResponseMessage, JsonRpcRequestMessage, JsonRpcSucessfulResponseMessage } from '../types'
+import {
+  JsonRpcErrorResponseMessage,
+  JsonRpcRequest,
+  JsonRpcRequestMessage,
+  JsonRpcSucessfulResponseMessage,
+} from '../types'
+
+interface ProviderConnectInfo {
+  readonly chainId: string
+}
+
+interface ProviderRpcError extends Error {
+  message: string
+  code: number
+  data?: unknown
+}
 
 interface ProviderMessage {
   type: string
   data: unknown
 }
 
+type RpcCallback = (error: any, response: any) => void
+
 // By default timeout is 10 minutes
-const DEFAULT_TIMEOUT_MILLISECONDS = ms`10m`
+const DEFAULT_TIMEOUT_MILLISECONDS = 600000
 
 const JSON_RPC_VERSION = '2.0'
 
@@ -124,7 +138,7 @@ export class RpcError extends Error {
  * This is the primary artifact of this library.
  */
 export class WidgetEthereumProvider extends EventEmitter<IFrameEthereumProviderEventTypes> {
-  request({ method, params }: { method: string; params: unknown[] }) {
+  request({ method, params }: JsonRpcRequest) {
     return this.send(method, params)
   }
 
@@ -190,7 +204,7 @@ export class WidgetEthereumProvider extends EventEmitter<IFrameEthereumProviderE
    */
   private async execute<TResult, TErrorData>(
     method: string,
-    params: unknown[],
+    params: unknown[] | undefined,
   ): Promise<JsonRpcSucessfulResponseMessage<TResult> | JsonRpcErrorResponseMessage<TErrorData>> {
     const id = getUniqueId()
 
@@ -223,10 +237,18 @@ export class WidgetEthereumProvider extends EventEmitter<IFrameEthereumProviderE
 
   /**
    * Send the JSON RPC and return the result.
-   * @param method method to send to the parent provider
-   * @param params parameters to send
    */
-  public async send<TResult = any>(method: string, params: unknown[]): Promise<TResult> {
+  public async send<TResult = any>(request: JsonRpcRequest, callback: RpcCallback): Promise<TResult>
+  public async send<TResult = any>(method: string, params: unknown[] | undefined): Promise<TResult>
+  public async send<TResult = any>(
+    methodOrRequest: string | JsonRpcRequest,
+    paramsOrCallback: unknown[] | undefined | RpcCallback,
+  ): Promise<TResult> {
+    const { method, params } =
+      typeof methodOrRequest === 'string'
+        ? { method: methodOrRequest, params: paramsOrCallback as unknown[] }
+        : { method: methodOrRequest.method, params: methodOrRequest.params }
+
     const response = await this.execute<TResult, any>(method, params)
 
     if ('error' in response) {
@@ -261,7 +283,7 @@ export class WidgetEthereumProvider extends EventEmitter<IFrameEthereumProviderE
    * @param callback callback to be called when the provider resolves
    */
   public async sendAsync(
-    payload: { method: string; params: unknown[] },
+    payload: JsonRpcRequest,
     callback: (error: string | null, result: { method: string; params?: any[]; result: any } | any) => void,
   ): Promise<void> {
     try {
