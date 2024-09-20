@@ -14,9 +14,9 @@ import { ContentWrapper, Row, Wrapper } from './styled'
 
 import { HookDappProps } from '../../types/hooks'
 
-
-export function PermitHookApp({ isPreHook, context }: HookDappProps) {
+export function PermitHookApp({ context }: HookDappProps) {
   const hookToEdit = context.hookToEdit
+  const isPreHook = context.isPreHook
   const [tokenAddress, setTokenAddress] = useState<string>(hookToEdit?.hook.target || '')
   const isPermitEnabled = useIsPermitEnabled()
   const [spenderAddress, setSpenderAddress] = useState<string>(
@@ -37,7 +37,7 @@ export function PermitHookApp({ isPreHook, context }: HookDappProps) {
     if (!hook) return
 
     if (hookToEdit) {
-      context.editHook(hookToEdit.uuid, hook, isPreHook)
+      context.editHook({ hook, uuid: hookToEdit.uuid })
       return
     }
 
