@@ -89,7 +89,7 @@ function useSmartSlippageFromFeePercentage(): number | undefined {
     }
     // TODO: more granularity?
 
-    // > 30%, cap it at 20% slippage
+    // > 20%, cap it at 20% slippage
     return 2000
   }, [percentage])
 }
