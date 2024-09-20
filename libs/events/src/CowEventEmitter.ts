@@ -1,25 +1,25 @@
-import { CowEvents, CowEventPayloadMap } from './types'
+type EventKey = string
 
-export type CowEventHandler<T extends CowEvents> = (payload: CowEventPayloadMap[T]) => void
+type EventMap<K extends EventKey> = Record<K, unknown>
 
-export type CowEventListener<T extends CowEvents> = T extends CowEvents
-  ? { event: T; handler: CowEventHandler<T> }
+export type CowEventHandler<M extends EventMap<E>, E extends EventKey> = (payload: M[E]) => void
+
+export type CowEventListener<M extends EventMap<E>, E extends EventKey> = E extends EventKey
+  ? { event: E; handler: CowEventHandler<M, E> }
   : never
 
-export type CowEventListeners = CowEventListener<CowEvents>[]
-
-export interface CowEventEmitter {
-  on(listener: CowEventListener<CowEvents>): CowEventListener<CowEvents>
-  off(listener: CowEventListener<CowEvents>): CowEventListener<CowEvents>
-  emit<T extends CowEvents>(event: T, payload: CowEventPayloadMap[T]): void
+export interface CowEventEmitter<M extends EventMap<E>, E extends EventKey> {
+  on(listener: CowEventListener<M, E>): CowEventListener<M, E>
+  off(listener: CowEventListener<M, E>): CowEventListener<M, E>
+  emit<T extends E>(event: T, payload: M[T]): void
 }
 
-export class SimpleCowEventEmitter implements CowEventEmitter {
+export class SimpleCowEventEmitter<M extends EventMap<E>, E extends EventKey> implements CowEventEmitter<M, E> {
   private subscriptions: {
-    [key: string]: CowEventHandler<any>[] // Use generic parameter for listener type
+    [key: string]: CowEventHandler<any, any>[] // Use generic parameter for listener type
   } = {}
 
-  on(listener: CowEventListener<CowEvents>): CowEventListener<CowEvents> {
+  on(listener: CowEventListener<M, E>): CowEventListener<M, E> {
     const { event, handler } = listener
     if (!this.subscriptions[event]) {
       this.subscriptions[event] = []
@@ -29,7 +29,7 @@ export class SimpleCowEventEmitter implements CowEventEmitter {
     return listener
   }
 
-  off(listener: CowEventListener<CowEvents>): CowEventListener<CowEvents> {
+  off(listener: CowEventListener<M, E>): CowEventListener<M, E> {
     const { event, handler } = listener
     if (this.subscriptions[event]) {
       this.subscriptions[event] = this.subscriptions[event].filter((listener) => listener !== handler)
@@ -38,7 +38,7 @@ export class SimpleCowEventEmitter implements CowEventEmitter {
     return listener
   }
 
-  emit<T extends CowEvents>(event: T, payload: CowEventPayloadMap[T]): void {
+  emit<T extends E>(event: T, payload: M[T]): void {
     if (this.subscriptions[event]) {
       this.subscriptions[event].forEach((handler) => handler(payload))
     }
