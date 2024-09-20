@@ -1,17 +1,18 @@
 import { CowWidgetEventListeners } from '@cowprotocol/events'
+import { IframeRpcProviderBridge } from '@cowprotocol/iframe-transport'
 
 import { IframeCowEventEmitter } from './IframeCowEventEmitter'
-import { IframeRpcProviderBridge } from './IframeRpcProviderBridge'
 import { IframeSafeSdkBridge } from './IframeSafeSdkBridge'
-import { WindowListener, listenToMessageFromWindow, postMessageToWindow } from './messages'
 import {
   CowSwapWidgetParams,
   CowSwapWidgetProps,
   EthereumProvider,
   WidgetMethodsEmit,
   WidgetMethodsListen,
+  WindowListener,
 } from './types'
 import { buildWidgetPath, buildWidgetUrl, buildWidgetUrlQuery } from './urlUtils'
+import { widgetIframeTransport } from './widgetIframeTransport'
 
 const DEFAULT_HEIGHT = '640px'
 const DEFAULT_WIDTH = '450px'
@@ -174,7 +175,7 @@ function updateParams(contentWindow: Window, params: CowSwapWidgetParams, provid
   // Omit theme from appParams
   const { theme: _theme, ...appParams } = params
 
-  postMessageToWindow(contentWindow, WidgetMethodsListen.UPDATE_PARAMS, {
+  widgetIframeTransport.postMessageToWindow(contentWindow, WidgetMethodsListen.UPDATE_PARAMS, {
     urlParams: {
       pathname,
       search,
@@ -191,9 +192,9 @@ function updateParams(contentWindow: Window, params: CowSwapWidgetParams, provid
  * @param appCode - A unique identifier for the app.
  */
 function sendAppCodeOnActivation(contentWindow: Window, appCode: string | undefined) {
-  return listenToMessageFromWindow(window, WidgetMethodsEmit.ACTIVATE, () => {
+  return widgetIframeTransport.listenToMessageFromWindow(window, WidgetMethodsEmit.ACTIVATE, () => {
     // Update the appData
-    postMessageToWindow(contentWindow, WidgetMethodsListen.UPDATE_APP_DATA, {
+    widgetIframeTransport.postMessageToWindow(contentWindow, WidgetMethodsListen.UPDATE_APP_DATA, {
       metaData: appCode ? { appCode } : undefined,
     })
   })
@@ -203,14 +204,18 @@ function sendAppCodeOnActivation(contentWindow: Window, appCode: string | undefi
  * Since deeplinks are not supported in iframes, this function intercepts the window.open calls from the widget and opens
  */
 function interceptDeepLinks() {
-  return listenToMessageFromWindow(window, WidgetMethodsEmit.INTERCEPT_WINDOW_OPEN, ({ href, rel, target }) => {
-    const url = href.toString()
+  return widgetIframeTransport.listenToMessageFromWindow(
+    window,
+    WidgetMethodsEmit.INTERCEPT_WINDOW_OPEN,
+    ({ href, rel, target }) => {
+      const url = href.toString()
 
-    if (!url.startsWith('http') && url.match(/^[a-zA-Z0-9]+:\/\//)) {
-      window.open(url, target, rel)
-      return
-    }
-  })
+      if (!url.startsWith('http') && url.match(/^[a-zA-Z0-9]+:\/\//)) {
+        window.open(url, target, rel)
+        return
+      }
+    },
+  )
 }
 
 /**
@@ -221,10 +226,10 @@ function interceptDeepLinks() {
  */
 function listenToHeightChanges(iframe: HTMLIFrameElement, defaultHeight = DEFAULT_HEIGHT): WindowListener[] {
   return [
-    listenToMessageFromWindow(window, WidgetMethodsEmit.UPDATE_HEIGHT, (data) => {
+    widgetIframeTransport.listenToMessageFromWindow(window, WidgetMethodsEmit.UPDATE_HEIGHT, (data) => {
       iframe.style.height = data.height ? `${data.height + HEIGHT_THRESHOLD}px` : defaultHeight
     }),
-    listenToMessageFromWindow(window, WidgetMethodsEmit.SET_FULL_HEIGHT, ({ isUpToSmall }) => {
+    widgetIframeTransport.listenToMessageFromWindow(window, WidgetMethodsEmit.SET_FULL_HEIGHT, ({ isUpToSmall }) => {
       iframe.style.height = isUpToSmall ? defaultHeight : `${document.body.offsetHeight}px`
     }),
   ]

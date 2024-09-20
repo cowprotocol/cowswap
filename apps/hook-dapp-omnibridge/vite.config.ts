@@ -26,6 +26,7 @@ const plugins = [
 
 export default defineConfig(({ mode }) => {
   return {
+    base: '/hook-dapp-omnibridge',
     define: {
       ...getReactProcessEnv(mode),
     },

@@ -1,0 +1,24 @@
+{
+  "name": "@cowprotocol/iframe-transport",
+  "version": "1.0.0-RC0",
+  "type": "commonjs",
+  "description": "CoW Swap iframe-transport",
+  "main": "index.js",
+  "exports": {
+    "import": "./index.js",
+    "require": "./index.mjs"
+  },
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cowprotocol/cowswap"
+  },
+  "keywords": [
+    "cowprotocol",
+    "iframe-transport",
+    "cowswap",
+    "dex"
+  ],
+  "dependencies": {
+  }
+}

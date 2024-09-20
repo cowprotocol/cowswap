@@ -4,10 +4,8 @@ import { useEffect, useRef } from 'react'
 import { usePrevious } from '@cowprotocol/common-hooks'
 import { deepEqual } from '@cowprotocol/common-utils'
 import {
-  listenToMessageFromWindow,
-  postMessageToWindow,
-  stopListeningWindowListener,
   UpdateParamsPayload,
+  widgetIframeTransport,
   WidgetMethodsEmit,
   WidgetMethodsListen,
 } from '@cowprotocol/widget-lib'
@@ -18,7 +16,6 @@ import { useNavigate } from 'common/hooks/useNavigate'
 
 import { IframeResizer } from './IframeResizer'
 
-import { COW_SWAP_WIDGET_EVENT_KEY } from '../consts'
 import { WidgetParamsErrorsScreen } from '../pure/WidgetParamsErrorsScreen'
 import { injectedWidgetMetaDataAtom } from '../state/injectedWidgetMetaDataAtom'
 import { injectedWidgetParamsAtom } from '../state/injectedWidgetParamsAtom'
@@ -27,7 +24,7 @@ import { validateWidgetParams } from '../utils/validateWidgetParams'
 const messagesCache: { [method: string]: unknown } = {}
 
 const getEventMethod = (event: MessageEvent) =>
-  (event.data.key === COW_SWAP_WIDGET_EVENT_KEY && (event.data.method as string)) || null
+  (event.data.key === widgetIframeTransport.key && (event.data.method as string)) || null
 
 const cacheMessages = (event: MessageEvent) => {
   const method = getEventMethod(event)
@@ -48,7 +45,7 @@ const cacheMessages = (event: MessageEvent) => {
    * To avoid delays, immediately send an activation message and start listening messages
    */
   window.addEventListener('message', cacheMessages)
-  postMessageToWindow(parent, WidgetMethodsEmit.ACTIVATE, void 0)
+  widgetIframeTransport.postMessageToWindow(parent, WidgetMethodsEmit.ACTIVATE, void 0)
 
   /**
    * Intercept window.open and anchor clicks to send a message to the parent window
@@ -59,7 +56,7 @@ const cacheMessages = (event: MessageEvent) => {
   window.open = function (...args) {
     const [href = '', target = '', rel = ''] = args
 
-    postMessageToWindow(parent, WidgetMethodsEmit.INTERCEPT_WINDOW_OPEN, { href, target, rel })
+    widgetIframeTransport.postMessageToWindow(parent, WidgetMethodsEmit.INTERCEPT_WINDOW_OPEN, { href, target, rel })
 
     return originalWinOpen.apply(this, args)
   }
@@ -68,7 +65,7 @@ const cacheMessages = (event: MessageEvent) => {
     if (event.target instanceof HTMLAnchorElement) {
       const { href, target, rel } = event.target
 
-      postMessageToWindow(parent, WidgetMethodsEmit.INTERCEPT_WINDOW_OPEN, { href, target, rel })
+      widgetIframeTransport.postMessageToWindow(parent, WidgetMethodsEmit.INTERCEPT_WINDOW_OPEN, { href, target, rel })
     }
   })
 })()
@@ -96,48 +93,58 @@ export function InjectedWidgetUpdater() {
     window.removeEventListener('message', cacheMessages)
 
     // Start listening for messages inside of React
-    const updateParamsListener = listenToMessageFromWindow(window, WidgetMethodsListen.UPDATE_PARAMS, (data) => {
-      if (
-        // If the data is the same as the previous data
-        prevData.current && deepEqual(prevData.current, data) &&
-        // And the pathname is the same as the current widget pathname, do nothing
-        // This is needed since the app updates the pathname independently of the widget params
-        pathNameRef.current === data.urlParams.pathname) {
-        return
-      }
+    const updateParamsListener = widgetIframeTransport.listenToMessageFromWindow(
+      window,
+      WidgetMethodsListen.UPDATE_PARAMS,
+      (data) => {
+        if (
+          // If the data is the same as the previous data
+          prevData.current &&
+          deepEqual(prevData.current, data) &&
+          // And the pathname is the same as the current widget pathname, do nothing
+          // This is needed since the app updates the pathname independently of the widget params
+          pathNameRef.current === data.urlParams.pathname
+        ) {
+          return
+        }
 
-      // Update params
-      prevData.current = data
+        // Update params
+        prevData.current = data
 
-      const appParams = data.appParams
+        const appParams = data.appParams
 
-      const errors = validateWidgetParams(appParams)
+        const errors = validateWidgetParams(appParams)
 
-      updateParams({
-        params: appParams,
-        errors,
-      })
+        updateParams({
+          params: appParams,
+          errors,
+        })
 
-      // Navigate to the new path
-      navigate(data.urlParams, { replace: true })
-    })
+        // Navigate to the new path
+        navigate(data.urlParams, { replace: true })
+      },
+    )
 
-    const updateAppDataListener = listenToMessageFromWindow(window, WidgetMethodsListen.UPDATE_APP_DATA, (data) => {
-      if (data.metaData) {
-        updateMetaData(data.metaData)
-      }
-    })
+    const updateAppDataListener = widgetIframeTransport.listenToMessageFromWindow(
+      window,
+      WidgetMethodsListen.UPDATE_APP_DATA,
+      (data) => {
+        if (data.metaData) {
+          updateMetaData(data.metaData)
+        }
+      },
+    )
 
     // Process all cached messages
     Object.keys(messagesCache).forEach((method) => {
-      postMessageToWindow(window, method as any, messagesCache[method])
+      widgetIframeTransport.postMessageToWindow(window, method as any, messagesCache[method])
 
       delete messagesCache[method]
     })
 
     return () => {
-      stopListeningWindowListener(window, updateParamsListener)
-      stopListeningWindowListener(window, updateAppDataListener)
+      widgetIframeTransport.stopListeningWindowListener(window, updateParamsListener)
+      widgetIframeTransport.stopListeningWindowListener(window, updateAppDataListener)
     }
   }, [updateMetaData, navigate, updateParams])
 
@@ -150,7 +157,7 @@ export function InjectedWidgetUpdater() {
         new Error(`AppCode: ${appCode}, BPS: ${prevPartnerFee.bps}, recipient: ${prevPartnerFee.recipient}`),
         {
           name: 'PartnerFeeDiscarded',
-        }
+        },
       )
 
       Sentry.captureException(sentryError, {

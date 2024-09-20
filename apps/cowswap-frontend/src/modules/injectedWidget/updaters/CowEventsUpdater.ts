@@ -6,7 +6,7 @@ import {
   CowWidgetEventPayloadMap,
   CowWidgetEvents,
 } from '@cowprotocol/events'
-import { WidgetMethodsEmit, postMessageToWindow } from '@cowprotocol/widget-lib'
+import { WidgetMethodsEmit, widgetIframeTransport } from '@cowprotocol/widget-lib'
 
 import { WIDGET_EVENT_EMITTER } from 'widgetEventEmitter'
 
@@ -34,7 +34,7 @@ export function CowEventsUpdater() {
 }
 
 function forwardEventToIframe<T extends CowWidgetEvents>(event: CowWidgetEvents, payload: CowWidgetEventPayloadMap[T]) {
-  postMessageToWindow(window.parent, WidgetMethodsEmit.EMIT_COW_EVENT, {
+  widgetIframeTransport.postMessageToWindow(window.parent, WidgetMethodsEmit.EMIT_COW_EVENT, {
     event,
     payload,
   })
