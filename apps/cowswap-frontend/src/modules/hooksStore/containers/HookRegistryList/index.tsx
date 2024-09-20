@@ -55,7 +55,7 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit }: HookStore
     if (!hookToEditDetails) {
       setSelectedDapp(null)
     } else {
-      setSelectedDapp(dapps.find((i) => i.name === hookToEditDetails.dapp.name) || null)
+      setSelectedDapp(dapps.find((i) => i.name === hookToEditDetails.dappName) || null)
     }
   }, [hookToEditDetails, dapps])
 
@@ -76,7 +76,6 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit }: HookStore
                 <HookDappContainer
                   isPreHook={isPreHook}
                   onDismiss={onDismiss}
-                  onDismissModal={onDismissModal}
                   dapp={selectedDapp}
                   hookToEdit={hookToEdit}
                 />

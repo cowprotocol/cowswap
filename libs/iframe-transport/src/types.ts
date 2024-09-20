@@ -1,7 +1,7 @@
 export interface JsonRpcRequest {
-  id: number
+  id?: number
   method: string
-  params: unknown[]
+  params?: any[]
 }
 
 export interface JsonRpcRequestMessage {
@@ -9,7 +9,7 @@ export interface JsonRpcRequestMessage {
   // Optional in the request.
   id?: number
   method: string
-  params: unknown[]
+  params: unknown[] | undefined
 }
 
 export interface BaseJsonRpcResponseMessage {

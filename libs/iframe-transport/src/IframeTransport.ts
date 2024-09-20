@@ -1,11 +1,11 @@
 // Yes, this is a hack. For some reason I can't specify other types as a key
-// @ts-ignore
 import { WindowListener } from './types'
 
+// @ts-ignore
 type AbstractRecord = Record<unknown, unknown>
 
 export class IframeTransport<MethodsEmitPayloadMap extends AbstractRecord> {
-  constructor(private key: string) {}
+  constructor(public readonly key: string) {}
 
   postMessageToWindow<T extends keyof MethodsEmitPayloadMap>(
     contentWindow: Window,

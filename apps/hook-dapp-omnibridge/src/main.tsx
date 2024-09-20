@@ -3,12 +3,12 @@ import { StrictMode } from 'react'
 import 'inter-ui'
 import { createRoot } from 'react-dom/client'
 
-import { HookDapp } from './app/hook-dapp'
+import { OmnibridgeApp } from './app/hook-dapp'
 
 function Root() {
   return (
     <StrictMode>
-      <HookDapp />
+      <OmnibridgeApp />
     </StrictMode>
   )
 }

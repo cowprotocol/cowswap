@@ -5,8 +5,8 @@ import {
   CowWidgetEventPayloadMap,
 } from '@cowprotocol/events'
 
-import { WindowListener, listenToMessageFromWindow, stopListeningWindowListener } from './messages'
-import { WidgetMethodsEmit } from './types'
+import { WindowListener, WidgetMethodsEmit } from './types'
+import { widgetIframeTransport } from './widgetIframeTransport'
 
 export class IframeCowEventEmitter {
   private eventEmitter = new SimpleCowEventEmitter<CowWidgetEventPayloadMap, CowWidgetEvents>()
@@ -21,13 +21,15 @@ export class IframeCowEventEmitter {
     this.updateListeners(listeners)
 
     // Listen to iFrame, and forward to local event emitter
-    this.widgetListener = listenToMessageFromWindow(this.contentWindow, WidgetMethodsEmit.EMIT_COW_EVENT, (cowEvent) =>
-      this.eventEmitter.emit(cowEvent.event, cowEvent.payload),
+    this.widgetListener = widgetIframeTransport.listenToMessageFromWindow(
+      this.contentWindow,
+      WidgetMethodsEmit.EMIT_COW_EVENT,
+      (cowEvent) => this.eventEmitter.emit(cowEvent.event, cowEvent.payload),
     )
   }
 
   public stopListeningIframe() {
-    stopListeningWindowListener(this.contentWindow, this.widgetListener)
+    widgetIframeTransport.stopListeningWindowListener(this.contentWindow, this.widgetListener)
   }
 
   public updateListeners(listeners?: CowWidgetEventListeners): void {

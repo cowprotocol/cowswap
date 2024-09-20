@@ -21,6 +21,7 @@
       "@cowprotocol/common-utils": ["../../libs/common-utils/src/index.ts"],
       "@cowprotocol/common-const": ["../../libs/common-const/src/index.ts"],
       "@cowprotocol/common-hooks": ["../../libs/common-hooks/src/index.ts"],
+      "@cowprotocol/iframe-transport": ["../../libs/iframe-transport/src/index.ts"],
       "@cowprotocol/abis": ["../../libs/abis/src/index.ts"]
     },
     "jsx": "preserve",
