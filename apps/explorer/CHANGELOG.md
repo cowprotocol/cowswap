@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.34.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.33.1...explorer-v2.34.0) (2024-09-17)
+
+
+### Features
+
+* **hooks-store:** new design & refactoring ([#4859](https://github.com/cowprotocol/cowswap/issues/4859)) ([1b989fa](https://github.com/cowprotocol/cowswap/commit/1b989fa037b276d507adfa0462129ab53fe2ac6d))
+
 ## [2.33.1](https://github.com/cowprotocol/cowswap/compare/explorer-v2.33.0...explorer-v2.33.1) (2024-08-14)
 
 

@@ -44,6 +44,19 @@ export function AirdropHookApp({ context }: HookDappProps) {
 
   const messageToUser = getMessageToUser({ account: context.account, claimData, error, isValidating })
 
+  const onEditHook = useCallback(() => {
+    if (!context.hookToEdit || !claimData || !gasLimit) return
+
+    context.editHook({
+      ...context.hookToEdit,
+      hook: {
+        target: claimData.contract.address,
+        callData: claimData.callData,
+        gasLimit,
+      },
+    })
+  }, [context, claimData, gasLimit])
+
   return (
     <Wrapper>
       <ContentWrapper>
@@ -56,7 +69,7 @@ export function AirdropHookApp({ context }: HookDappProps) {
         )}
       </ContentWrapper>
       {context.hookToEdit ? (
-        <ButtonPrimary onClick={context.close}>Return to Swap</ButtonPrimary>
+        <ButtonPrimary onClick={onEditHook}>Return to Swap</ButtonPrimary>
       ) : messageToUser === null ? (
         <ButtonPrimary disabled={!canClaim || isValidating} onClick={clickOnAddHook}>
           Add Hook

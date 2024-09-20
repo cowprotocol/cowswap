@@ -1,7 +1,6 @@
 import { USDC_GNOSIS_CHAIN, USDC_SEPOLIA, WETH_SEPOLIA } from '@cowprotocol/common-const'
 import { CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
-
 import { formatAmountWithPrecision, formatFiatAmount, formatPercent, formatTokenAmount } from './index'
 
 describe('Amounts formatting', () => {
@@ -19,7 +18,7 @@ describe('Amounts formatting', () => {
     it('Extra small amount', () => {
       const result = formatTokenAmount(getAmount('1', -decimals)) // 1e-18 WETH
 
-      expect(result).toBe('< 0.000001')
+      expect(result).toBe('0.000000000000000001')
     })
 
     it('Small amount', () => {
@@ -150,8 +149,8 @@ describe('Amounts formatting', () => {
         CurrencyAmount.fromFractionalAmount(
           USDC_GNOSIS_CHAIN,
           '994582567877074269904770000000000000000000',
-          '999200146079960203000000000000000000'
-        )
+          '999200146079960203000000000000000000',
+        ),
       )
 
       expect(result).toBe('1')

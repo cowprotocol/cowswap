@@ -1,14 +1,13 @@
-import React, { useCallback, useState } from 'react'
+import { useCallback, useState } from 'react'
 
 import ICON_HOOK from '@cowprotocol/assets/cow-swap/hook.svg'
 import { BannerOrientation, DismissableInlineBanner } from '@cowprotocol/ui'
 
-import { DndProvider } from 'react-dnd'
-import { HTML5Backend } from 'react-dnd-html5-backend'
-
 import { SwapWidget } from 'modules/swap'
 import { useIsSellNative } from 'modules/trade'
 
+import { useSetRecipientOverride } from '../../hooks/useSetRecipientOverride'
+import { useSetupHooksStoreOrderParams } from '../../hooks/useSetupHooksStoreOrderParams'
 import { HookRegistryList } from '../HookRegistryList'
 import { PostHookButton } from '../PostHookButton'
 import { PreHookButton } from '../PreHookButton'
@@ -37,6 +36,9 @@ export function HooksStoreWidget() {
     setSelectedHookPosition('post')
     setHookToEdit(uuid)
   }, [])
+
+  useSetupHooksStoreOrderParams()
+  useSetRecipientOverride()
 
   if (selectedHookPosition || hookToEdit) {
     return <HookRegistryList onDismiss={onDismiss} hookToEdit={hookToEdit} isPreHook={selectedHookPosition === 'pre'} />
@@ -67,9 +69,5 @@ export function HooksStoreWidget() {
     <PostHookButton onOpen={() => setSelectedHookPosition('post')} onEditHook={onPostHookEdit} />
   )
 
-  return (
-    <DndProvider backend={HTML5Backend}>
-      <SwapWidget topContent={TopContent} bottomContent={BottomContent} />
-    </DndProvider>
-  )
+  return <SwapWidget topContent={TopContent} bottomContent={BottomContent} />
 }

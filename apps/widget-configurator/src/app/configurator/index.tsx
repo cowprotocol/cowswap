@@ -1,7 +1,7 @@
 import { ChangeEvent, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 
 import { useAvailableChains } from '@cowprotocol/common-hooks'
-import { CowEventListeners } from '@cowprotocol/events'
+import { CowWidgetEventListeners } from '@cowprotocol/events'
 import { CowSwapWidgetParams, TokenInfo, TradeType } from '@cowprotocol/widget-lib'
 import { CowSwapWidget } from '@cowprotocol/widget-react'
 
@@ -69,7 +69,7 @@ export function Configurator({ title }: { title: string }) {
   const { chainId: walletChainId, isConnected } = useWeb3ModalAccount()
   const provider = useProvider()
 
-  const [listeners, setListeners] = useState<CowEventListeners>(COW_LISTENERS)
+  const [listeners, setListeners] = useState<CowWidgetEventListeners>(COW_LISTENERS)
   const { mode } = useContext(ColorModeContext)
 
   const [widgetMode, setWidgetMode] = useState<WidgetMode>('dapp')
@@ -122,7 +122,9 @@ export function Configurator({ title }: { title: string }) {
   const firstToast = toasts?.[0]
 
   const [disableProgressBar, setDisableProgressBar] = useState<boolean>(false)
-  const toggleDisableProgressBar = useCallback(() => { setDisableProgressBar((curr) => !curr) }, [])
+  const toggleDisableProgressBar = useCallback(() => {
+    setDisableProgressBar((curr) => !curr)
+  }, [])
 
   const LINKS = [
     { icon: <CodeIcon />, label: 'View embed code', onClick: () => handleDialogOpen() },
@@ -164,7 +166,7 @@ export function Configurator({ title }: { title: string }) {
       customTokens,
       ...window.cowSwapWidgetParams,
     }),
-    [computedParams, customImages, customSounds, customTokens]
+    [computedParams, customImages, customSounds, customTokens],
   )
 
   useEffect(() => {
@@ -277,13 +279,7 @@ export function Configurator({ title }: { title: string }) {
         </FormControl>
         <FormControl component="fieldset">
           <FormLabel component="legend">Progress bar:</FormLabel>
-          <RadioGroup
-            row
-            aria-label="mode"
-            name="mode"
-            value={disableProgressBar}
-            onChange={toggleDisableProgressBar}
-          >
+          <RadioGroup row aria-label="mode" name="mode" value={disableProgressBar} onChange={toggleDisableProgressBar}>
             <FormControlLabel value="false" control={<Radio />} label="Show SWAP progress bar" />
             <FormControlLabel value="true" control={<Radio />} label="Hide SWAP progress bar" />
           </RadioGroup>

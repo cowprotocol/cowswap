@@ -21,7 +21,7 @@ import { useUserTransactionTTL } from 'legacy/state/user/hooks'
 import { computeSlippageAdjustedAmounts } from 'legacy/utils/prices'
 import { PostOrderParams } from 'legacy/utils/trade'
 
-import type { AppDataInfo, UploadAppDataParams } from 'modules/appData'
+import { AppDataInfo, TypedAppDataHooks, UploadAppDataParams, useAppDataHooks } from 'modules/appData'
 import { useAppData, useUploadAppData } from 'modules/appData'
 import { useGetCachedPermit } from 'modules/permit'
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
@@ -72,11 +72,12 @@ interface BaseFlowContextSetup {
   tradeConfirmActions: TradeConfirmActions
   getCachedPermit: ReturnType<typeof useGetCachedPermit>
   quote: QuoteInformationObject | undefined
+  typedHooks: TypedAppDataHooks | undefined
 }
 
 export function useSwapAmountsWithSlippage(): [
   CurrencyAmount<Currency> | undefined,
-  CurrencyAmount<Currency> | undefined
+  CurrencyAmount<Currency> | undefined,
 ] {
   const slippage = useSwapSlippage()
   const { trade } = useDerivedSwapInfo()
@@ -100,6 +101,7 @@ export function useBaseFlowContextSetup(): BaseFlowContextSetup {
   })
 
   const appData = useAppData()
+  const typedHooks = useAppDataHooks()
   const closeModals = useCloseModals()
   const uploadAppData = useUploadAppData()
   const addOrderCallback = useAddPendingOrder()
@@ -146,6 +148,7 @@ export function useBaseFlowContextSetup(): BaseFlowContextSetup {
       tradeConfirmActions,
       getCachedPermit,
       quote,
+      typedHooks,
     }),
     [
       chainId,
@@ -172,7 +175,8 @@ export function useBaseFlowContextSetup(): BaseFlowContextSetup {
       tradeConfirmActions,
       getCachedPermit,
       quote,
-    ]
+      typedHooks,
+    ],
   )
 }
 
@@ -222,6 +226,7 @@ export function getFlowContext({ baseProps, sellToken, kind }: BaseGetFlowContex
     tradeConfirmActions,
     getCachedPermit,
     quote,
+    typedHooks,
   } = baseProps
 
   if (
@@ -313,5 +318,6 @@ export function getFlowContext({ baseProps, sellToken, kind }: BaseGetFlowContex
     sellTokenContract,
     tradeConfirmActions,
     quote,
+    typedHooks,
   }
 }

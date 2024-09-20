@@ -1,3 +1,4 @@
+import { percentToBps } from '@cowprotocol/common-utils'
 import { useIsSafeApp, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useComposableCowContract } from 'modules/advancedOrders/hooks/useComposableCowContract'
@@ -25,7 +26,7 @@ export function TwapUpdaters() {
     <>
       <CreatedInOrderBookOrdersUpdater />
       <QuoteParamsUpdater />
-      <AppDataUpdater orderClass="twap" slippage={twapOrderSlippage} />
+      <AppDataUpdater orderClass="twap" slippageBips={percentToBps(twapOrderSlippage)} />
       <QuoteObserverUpdater />
       {shouldLoadTwapOrders && (
         <>

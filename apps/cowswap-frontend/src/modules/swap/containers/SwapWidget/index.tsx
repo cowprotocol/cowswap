@@ -259,9 +259,10 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
       <>
         {bottomContent}
         <TradeRateDetails
-          allowedSlippage={isSlippageModified || isEoaEthFlow ? slippage : null}
+          allowedSlippage={slippage}
           rateInfoParams={rateInfoParams}
           receiveAmountInfo={receiveAmountInfo}
+          isSlippageModified={isSlippageModified}
         />
         <SwapWarningsTop {...swapWarningsTopProps} />
         <SwapButtons {...swapButtonContext} />

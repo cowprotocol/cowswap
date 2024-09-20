@@ -1,5 +1,35 @@
 # Changelog
 
+## [1.83.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.82.0...cowswap-v1.83.0) (2024-09-18)
+
+
+### Features
+
+* **hook-store:** enhance items sorting ux ([#4893](https://github.com/cowprotocol/cowswap/issues/4893)) ([9d72b77](https://github.com/cowprotocol/cowswap/commit/9d72b77f35358e25510495eeb8903ba9a7c18558))
+
+
+### Bug Fixes
+
+* don't request network switching at page load ([#4903](https://github.com/cowprotocol/cowswap/issues/4903)) ([da375be](https://github.com/cowprotocol/cowswap/commit/da375be55f34bd35e5cf1152e0f3f5d0bcc92aa5))
+* remove blocknative mempool checking ([#4902](https://github.com/cowprotocol/cowswap/issues/4902)) ([79fcfe4](https://github.com/cowprotocol/cowswap/commit/79fcfe41c84a272077e735382ffbbf313b01398c))
+
+## [1.82.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.81.2...cowswap-v1.82.0) (2024-09-17)
+
+
+### Features
+
+* change finished step layout ([#4880](https://github.com/cowprotocol/cowswap/issues/4880)) ([181acb1](https://github.com/cowprotocol/cowswap/commit/181acb11f55485d6c76cfadbae618a6ed10ea79c))
+* **hooks-store:** add order params and signer to hook dapp context ([#4878](https://github.com/cowprotocol/cowswap/issues/4878)) ([700da7e](https://github.com/cowprotocol/cowswap/commit/700da7e64c680072bf97ac240b04439a26ceaa0d))
+* **hooks-store:** new design & refactoring ([#4859](https://github.com/cowprotocol/cowswap/issues/4859)) ([1b989fa](https://github.com/cowprotocol/cowswap/commit/1b989fa037b276d507adfa0462129ab53fe2ac6d))
+* **smart-slippage:** add smartSlippage flag to appData quote metadata ([#4866](https://github.com/cowprotocol/cowswap/issues/4866)) ([e28364f](https://github.com/cowprotocol/cowswap/commit/e28364fee6c0c0d9b8c07b8bf5892b52e4c6e3dd))
+* **smart-slippage:** improve ux ([#4826](https://github.com/cowprotocol/cowswap/issues/4826)) ([ce3ba87](https://github.com/cowprotocol/cowswap/commit/ce3ba875c5f6ebce3032e89ec5b231f59a9a4fc1))
+
+
+### Bug Fixes
+
+* **hooks-store:** ignore permit data for sc wallets ([#4875](https://github.com/cowprotocol/cowswap/issues/4875)) ([3d0bc32](https://github.com/cowprotocol/cowswap/commit/3d0bc32ea4a2ffa9cb073e321e8382e4a9b6a2e4))
+* **widget:** widget tokens flickering ([#4883](https://github.com/cowprotocol/cowswap/issues/4883)) ([0f8f256](https://github.com/cowprotocol/cowswap/commit/0f8f256d3d0e717306be8def7d44aeb35811bb9e))
+
 ## [1.81.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.81.1...cowswap-v1.81.2) (2024-09-05)
 
 
