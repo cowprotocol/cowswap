@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 
 import { formatPercent } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -13,6 +13,7 @@ import { useSmartSwapSlippage } from 'modules/swap/hooks/useSwapSlippage'
 import { RowSlippageContent } from 'modules/swap/pure/Row/RowSlippageContent'
 
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
+import { useTradePricesUpdate } from 'modules/swap/hooks/useTradePricesUpdate'
 
 export interface RowSlippageProps {
   allowedSlippage: Percent
@@ -37,6 +38,7 @@ export function RowSlippage({
   const smartSwapSlippage = useSmartSwapSlippage()
   const isSmartSlippageApplied = useIsSmartSlippageApplied()
   const setSlippage = useSetSlippage()
+  const isTradePriceUpdating = useTradePricesUpdate()
 
   const props = useMemo(
     () => ({
@@ -49,10 +51,11 @@ export function RowSlippage({
       slippageTooltip,
       displaySlippage: `${formatPercent(allowedSlippage)}%`,
       isSmartSlippageApplied,
+      isSmartSlippageLoading: isTradePriceUpdating,
       smartSlippage: smartSwapSlippage && !isEoaEthFlow ? `${formatPercent(new Percent(smartSwapSlippage, 10_000))}%` : undefined,
       setAutoSlippage: smartSwapSlippage && !isEoaEthFlow ? () => setSlippage(null) : undefined,
     }),
-    [chainId, isEoaEthFlow, nativeCurrency.symbol, showSettingOnClick, allowedSlippage, slippageLabel, slippageTooltip, smartSwapSlippage, isSmartSlippageApplied]
+    [chainId, isEoaEthFlow, nativeCurrency.symbol, showSettingOnClick, allowedSlippage, slippageLabel, slippageTooltip, smartSwapSlippage, isSmartSlippageApplied, isTradePriceUpdating]
   )
 
   return <RowSlippageContent {...props} toggleSettings={toggleSettings} isSlippageModified={isSlippageModified} />
