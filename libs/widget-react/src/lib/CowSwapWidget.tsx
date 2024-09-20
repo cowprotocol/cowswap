@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-import type { CowEventListeners } from '@cowprotocol/events'
+import type { CowWidgetEventListeners } from '@cowprotocol/events'
 import type { Command } from '@cowprotocol/types'
 import {
   CowSwapWidgetHandler,
@@ -15,7 +15,7 @@ export function CowSwapWidget(props: CowSwapWidgetProps) {
   const [error, setError] = useState<{ error: Error; message: string } | null>(null)
   const paramsRef = useRef<CowSwapWidgetParams | null>(null)
   const providerRef = useRef<EthereumProvider | undefined>(provider)
-  const listenersRef = useRef<CowEventListeners | undefined>(listeners)
+  const listenersRef = useRef<CowWidgetEventListeners | undefined>(listeners)
   const containerRef = useRef<HTMLDivElement | null>(null)
   const widgetHandlerRef = useRef<CowSwapWidgetHandler | null>(null)
 
@@ -31,7 +31,7 @@ export function CowSwapWidget(props: CowSwapWidgetProps) {
         setError({ message: errorMessage, error })
       }
     },
-    [setError]
+    [setError],
   )
 
   // Cleanup widget

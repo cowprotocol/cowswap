@@ -1,9 +1,9 @@
 import { EnrichedOrder, OrderKind } from '@cowprotocol/cow-sdk'
-import { CowEvents, OnToastMessagePayload, ToastMessagePayloads, ToastMessageType } from '@cowprotocol/events'
+import { CowWidgetEvents, OnToastMessagePayload, ToastMessagePayloads, ToastMessageType } from '@cowprotocol/events'
 import { TokensByAddress } from '@cowprotocol/tokens'
 import { TokenInfo } from '@cowprotocol/types'
 
-import { EVENT_EMITTER } from 'eventEmitter'
+import { WIDGET_EVENT_EMITTER } from 'widgetEventEmitter'
 
 import type { Order } from 'legacy/state/orders/actions'
 
@@ -19,7 +19,7 @@ export interface OrderInfo {
 
 export function getToastMessageCallback(
   messageType: ToastMessageType,
-  data: ToastMessagePayloads[typeof messageType]
+  data: ToastMessagePayloads[typeof messageType],
 ): (toastMessage: string) => void {
   return (toastMessage: string) => {
     const payload = {
@@ -28,7 +28,7 @@ export function getToastMessageCallback(
       data,
     }
 
-    EVENT_EMITTER.emit(CowEvents.ON_TOAST_MESSAGE, payload as OnToastMessagePayload)
+    WIDGET_EVENT_EMITTER.emit(CowWidgetEvents.ON_TOAST_MESSAGE, payload as OnToastMessagePayload)
   }
 }
 

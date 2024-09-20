@@ -5,10 +5,11 @@ import SVG from 'react-inlinesvg'
 
 import * as styledEl from './styled'
 
+import { PRE_HOOK_REGISTRY } from '../../hookRegistry'
 import { useHooks } from '../../hooks/useHooks'
 import { useRemoveHook } from '../../hooks/useRemoveHook'
 import { useReorderHooks } from '../../hooks/useReorderHooks'
-import { AppliedHookItem } from '../../pure/AppliedHookItem'
+import { AppliedHookList } from '../../pure/AppliedHookList'
 import { HookTooltip } from '../../pure/HookTooltip'
 
 export interface PreHookButtonProps {
@@ -16,29 +17,27 @@ export interface PreHookButtonProps {
   onEditHook(uuid: string): void
 }
 
+const isPreHook = true
+
 export function PreHookButton({ onOpen, onEditHook }: PreHookButtonProps) {
-  const { account } = useWalletInfo()
+  const { account, chainId } = useWalletInfo()
   const { preHooks } = useHooks()
-  const removeHook = useRemoveHook()
+  const removeHook = useRemoveHook(isPreHook)
   const moveHook = useReorderHooks('preHooks')
+  const dapps = PRE_HOOK_REGISTRY[chainId]
 
   return (
     <>
       {preHooks.length > 0 && (
-        <styledEl.HookList>
-          {preHooks.map((hookDetails, index) => (
-            <AppliedHookItem
-              key={hookDetails.uuid}
-              index={index}
-              account={account}
-              hookDetails={hookDetails}
-              removeHook={removeHook}
-              editHook={onEditHook}
-              moveHook={moveHook}
-              isPreHook
-            />
-          ))}
-        </styledEl.HookList>
+        <AppliedHookList
+          dapps={dapps}
+          account={account}
+          hooks={preHooks}
+          isPreHook={true}
+          removeHook={removeHook}
+          editHook={onEditHook}
+          moveHook={moveHook}
+        />
       )}
 
       <styledEl.Wrapper>

@@ -1,7 +1,7 @@
-import { CowEvents, OnExpiredOrderPayload } from '@cowprotocol/events'
+import { CowWidgetEvents, OnExpiredOrderPayload } from '@cowprotocol/events'
 
-import { EVENT_EMITTER } from 'eventEmitter'
+import { WIDGET_EVENT_EMITTER } from 'widgetEventEmitter'
 
 export function emitExpiredOrderEvent(payload: OnExpiredOrderPayload) {
-  EVENT_EMITTER.emit(CowEvents.ON_EXPIRED_ORDER, payload)
+  WIDGET_EVENT_EMITTER.emit(CowWidgetEvents.ON_EXPIRED_ORDER, payload)
 }

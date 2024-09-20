@@ -1,12 +1,10 @@
 import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
-
 import { v4 as uuidv4 } from 'uuid'
 
 import { setHooksAtom } from '../state/hookDetailsAtom'
-import { AddHook, CowHookDetailsSerialized, HookDapp, HookDappBase } from '../types/hooks'
-import { isHookDappIframe } from '../utils'
+import { AddHook, CowHookDetailsSerialized, HookDapp } from '../types/hooks'
 
 export function useAddHook(dapp: HookDapp, isPreHook: boolean): AddHook {
   const updateHooks = useSetAtom(setHooksAtom)
@@ -16,7 +14,7 @@ export function useAddHook(dapp: HookDapp, isPreHook: boolean): AddHook {
       console.log('[hooks] Add ' + (isPreHook ? 'pre-hook' : 'post-hook'), hookToAdd, isPreHook)
 
       const uuid = uuidv4()
-      const hookDetails: CowHookDetailsSerialized = { ...hookToAdd, uuid, dapp: serializeHookDapp(dapp) }
+      const hookDetails: CowHookDetailsSerialized = { hookDetails: { ...hookToAdd, uuid }, dappName: dapp.name }
 
       updateHooks((hooks) => {
         if (isPreHook) {
@@ -25,19 +23,7 @@ export function useAddHook(dapp: HookDapp, isPreHook: boolean): AddHook {
           return { preHooks: hooks.preHooks, postHooks: [...hooks.postHooks, hookDetails] }
         }
       })
-
-      return hookDetails
     },
     [updateHooks, dapp],
   )
-}
-
-function serializeHookDapp(dapp: HookDapp): HookDappBase {
-  if (isHookDappIframe(dapp)) {
-    const { url: _, ...rest } = dapp
-    return rest
-  }
-
-  const { component: _, ...rest } = dapp
-  return rest
 }

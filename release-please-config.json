@@ -57,6 +57,22 @@
       "draft": false,
       "prerelease": false
     },
+    "libs/iframe-transport": {
+      "changelog-path": "CHANGELOG.md",
+      "release-type": "node",
+      "bump-minor-pre-major": false,
+      "bump-patch-for-minor-pre-major": false,
+      "draft": false,
+      "prerelease": false
+    },
+    "libs/hook-dapp-lib": {
+      "changelog-path": "CHANGELOG.md",
+      "release-type": "node",
+      "bump-minor-pre-major": false,
+      "bump-patch-for-minor-pre-major": false,
+      "draft": false,
+      "prerelease": false
+    },
     "libs/abis": {
       "changelog-path": "CHANGELOG.md",
       "release-type": "node",

@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.2.0](https://github.com/cowprotocol/cowswap/compare/types-v1.1.0...types-v1.2.0) (2024-09-17)
+
+
+### Features
+
+* **hooks-store:** new design & refactoring ([#4859](https://github.com/cowprotocol/cowswap/issues/4859)) ([1b989fa](https://github.com/cowprotocol/cowswap/commit/1b989fa037b276d507adfa0462129ab53fe2ac6d))
+
+
+### Bug Fixes
+
+* **libs:** fix import error on multiple libs ([#4869](https://github.com/cowprotocol/cowswap/issues/4869)) ([8cfd70b](https://github.com/cowprotocol/cowswap/commit/8cfd70b6000a1a021b76ad1f924829cb42cb2bcd))
+
 ## [1.1.0](https://github.com/cowprotocol/cowswap/compare/types-v1.0.0...types-v1.1.0) (2024-07-12)
 
 

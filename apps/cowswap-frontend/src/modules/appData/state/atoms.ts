@@ -11,7 +11,7 @@ import {
   RemoveAppDataFromUploadQueueParams,
   TypedAppDataHooks,
   UpdateAppDataOnUploadQueueParams,
-  UploadAppDataParams
+  UploadAppDataParams,
 } from '../types'
 import { updateFullAppData } from '../utils/fullAppData'
 
@@ -30,7 +30,7 @@ export const appDataInfoAtom = atom<AppDataInfo | null, [AppDataInfo | null], un
 
     set(appDataInfoAtom, appDataInfo)
     updateFullAppData(appDataInfo?.fullAppData)
-  }
+  },
 )
 
 /**
@@ -38,7 +38,7 @@ export const appDataInfoAtom = atom<AppDataInfo | null, [AppDataInfo | null], un
  */
 export const appDataUploadQueueAtom = atomWithStorage<AppDataPendingToUpload>(
   'appDataUploadQueue:v1', // local storage key
-  []
+  [],
 )
 
 /**
@@ -57,7 +57,7 @@ export const addAppDataToUploadQueueAtom = atom(
 
       return [...docs, { chainId, orderId, ...appData, uploading: false, failedAttempts: 0 }]
     })
-  }
+  },
 )
 
 /**
@@ -91,7 +91,7 @@ export const updateAppDataOnUploadQueueAtom = atom(
 
       return updateDocs
     })
-  }
+  },
 )
 
 /**
@@ -101,7 +101,7 @@ export const removeAppDataFromUploadQueueAtom = atom(
   null,
   (get, set, { chainId, orderId }: RemoveAppDataFromUploadQueueParams) => {
     set(appDataUploadQueueAtom, () => get(appDataUploadQueueAtom).filter(buildInverseDocFilterFn(chainId, orderId)))
-  }
+  },
 )
 
 /**
