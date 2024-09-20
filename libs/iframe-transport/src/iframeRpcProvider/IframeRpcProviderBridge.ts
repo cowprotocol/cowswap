@@ -1,12 +1,11 @@
-import { listenToMessageFromWindow, postMessageToWindow, stopListeningToMessageFromWindow } from './messages'
 import {
-  EthereumProvider,
-  JsonRpcRequestMessage,
-  ProviderRpcRequestPayload,
+  IframeRpcProviderEvents,
+  iframeRpcProviderTransport,
   ProviderRpcResponsePayload,
-  WidgetMethodsEmit,
-  WidgetMethodsListen,
-} from './types'
+  ProviderRpcRequestPayload,
+} from './iframeRpcProviderEvents'
+
+import { EthereumProvider, JsonRpcRequestMessage } from '../types'
 
 const EVENTS_TO_FORWARD_TO_IFRAME = ['connect', 'disconnect', 'close', 'chainChanged', 'accountsChanged']
 
@@ -39,7 +38,11 @@ export class IframeRpcProviderBridge {
   disconnect() {
     // Disconnect provider
     this.ethereumProvider = null
-    stopListeningToMessageFromWindow(window, WidgetMethodsEmit.PROVIDER_RPC_REQUEST, this.processRpcCallFromWindow)
+    iframeRpcProviderTransport.stopListeningToMessageFromWindow(
+      window,
+      IframeRpcProviderEvents.PROVIDER_RPC_REQUEST,
+      this.processRpcCallFromWindow,
+    )
   }
 
   /**
@@ -52,7 +55,11 @@ export class IframeRpcProviderBridge {
       this.disconnect()
     } else {
       // Listen for messages coming to the main window (from the iFrame window)
-      listenToMessageFromWindow(window, WidgetMethodsEmit.PROVIDER_RPC_REQUEST, this.processRpcCallFromWindow)
+      iframeRpcProviderTransport.listenToMessageFromWindow(
+        window,
+        IframeRpcProviderEvents.PROVIDER_RPC_REQUEST,
+        this.processRpcCallFromWindow,
+      )
     }
 
     // Save the provider
@@ -94,12 +101,12 @@ export class IframeRpcProviderBridge {
       .then((result) =>
         this.forwardRpcResponseToIframe({
           rpcResponse: { jsonrpc, id, result },
-        })
+        }),
       )
       .catch((error) =>
         this.forwardRpcResponseToIframe({
           rpcResponse: { jsonrpc, id, error },
-        })
+        }),
       )
   }
 
@@ -116,7 +123,7 @@ export class IframeRpcProviderBridge {
   }
 
   private onProviderEvent(event: string, params: unknown): void {
-    postMessageToWindow(this.iframeWidow, WidgetMethodsListen.PROVIDER_ON_EVENT, {
+    iframeRpcProviderTransport.postMessageToWindow(this.iframeWidow, IframeRpcProviderEvents.PROVIDER_ON_EVENT, {
       event,
       params,
     })
@@ -126,6 +133,10 @@ export class IframeRpcProviderBridge {
    * Forward a JSON-RPC message to the content window.
    */
   private forwardRpcResponseToIframe(params: ProviderRpcResponsePayload) {
-    postMessageToWindow(this.iframeWidow, WidgetMethodsListen.PROVIDER_RPC_RESPONSE, params)
+    iframeRpcProviderTransport.postMessageToWindow(
+      this.iframeWidow,
+      IframeRpcProviderEvents.PROVIDER_RPC_RESPONSE,
+      params,
+    )
   }
 }
