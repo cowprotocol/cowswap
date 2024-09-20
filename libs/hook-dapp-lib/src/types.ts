@@ -8,7 +8,11 @@ export interface CowHook {
 
 export interface CowHookCreation {
   hook: CowHook
-  receiverOverride?: string
+  recipientOverride?: string
+}
+
+export interface TokenData {
+  address: string
 }
 
 export interface CowHookDetails extends CowHookCreation {
@@ -18,6 +22,8 @@ export interface CowHookDetails extends CowHookCreation {
 export interface CoWHookDappActions {
   addHook(payload: CowHookCreation): void
   editHook(payload: CowHookDetails): void
+  setSellToken(token: TokenData): void
+  setBuyToken(token: TokenData): void
 }
 
 export interface HookDappOrderParams {
@@ -31,4 +37,6 @@ export interface HookDappContext {
   account?: string
   orderParams: HookDappOrderParams | null
   hookToEdit?: CowHookDetails
+  isSmartContract: boolean | undefined
+  isPreHook: boolean
 }

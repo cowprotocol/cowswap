@@ -10,10 +10,7 @@
  *  ===========================================================================
  */
 
-import { ProviderConnectInfo, ProviderRpcError } from '@web3-react/types'
-
 import { EventEmitter } from 'eventemitter3'
-import ms from 'ms.macro'
 
 import {
   IframeRpcProviderEvents,
@@ -29,6 +26,16 @@ import {
   JsonRpcSucessfulResponseMessage,
 } from '../types'
 
+interface ProviderConnectInfo {
+  readonly chainId: string
+}
+
+interface ProviderRpcError extends Error {
+  message: string
+  code: number
+  data?: unknown
+}
+
 interface ProviderMessage {
   type: string
   data: unknown
@@ -37,7 +44,7 @@ interface ProviderMessage {
 type RpcCallback = (error: any, response: any) => void
 
 // By default timeout is 10 minutes
-const DEFAULT_TIMEOUT_MILLISECONDS = ms`10m`
+const DEFAULT_TIMEOUT_MILLISECONDS = 600000
 
 const JSON_RPC_VERSION = '2.0'
 
