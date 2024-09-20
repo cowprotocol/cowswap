@@ -2,7 +2,9 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
+import ICON_HOOK from '@cowprotocol/assets/cow-swap/hook.svg'
 import { Command } from '@cowprotocol/types'
+import { BannerOrientation, DismissableInlineBanner, SearchInput } from '@cowprotocol/ui'
 import { useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
 
 import { NewModal } from 'common/pure/NewModal'
@@ -51,12 +53,17 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit }: HookStore
   const externalHookDapps = useExternalHookDapps()
   const hookToEditDetails = useHookById(hookToEdit, isPreHook)
 
+  // State for Search Input
+  const [searchQuery, setSearchQuery] = useState<string>('')
+
+  // Compute customHookDapps
   const customHookDapps = useMemo(() => {
     const filtered = externalHookDapps.filter(isHookDappIframe).filter((dapp) => dapp.isCustom)
     console.log('Custom Hook Dapps:', filtered) // Debugging
     return filtered
   }, [externalHookDapps])
 
+  // Compute dapps based on the current tab and isPreHook
   const dapps = useMemo(() => {
     if (isAllHooksTab) {
       if (isPreHook) {
@@ -69,6 +76,20 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit }: HookStore
     }
   }, [isAllHooksTab, isPreHook, chainId, externalHookDapps, customHookDapps])
 
+  // Compute filteredDapps based on searchQuery
+  const filteredDapps = useMemo(() => {
+    if (!searchQuery.trim()) return dapps
+    const lowerQuery = searchQuery.toLowerCase()
+    return dapps.filter((dapp) => {
+      // Ensure dapp.name is a string
+      const name = typeof dapp.name === 'string' ? dapp.name.toLowerCase() : ''
+      // Ensure dapp.description is a string
+      const description = typeof dapp.description === 'string' ? dapp.description.toLowerCase() : ''
+      return name.includes(lowerQuery) || description.includes(lowerQuery)
+    })
+  }, [dapps, searchQuery])
+
+  // Compute counts for tabs
   const allHooksCount = useMemo(() => {
     if (isPreHook) {
       return PRE_HOOK_REGISTRY[chainId]?.length || 0
@@ -79,12 +100,14 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit }: HookStore
 
   const customHooksCount = useMemo(() => customHookDapps.length, [customHookDapps])
 
+  // Compute title based on selected dapp or details
   const title = useMemo(() => {
     if (selectedDapp) return selectedDapp.name
     if (dappDetails) return 'Hook description'
     return 'Hook Store'
   }, [selectedDapp, dappDetails])
 
+  // Handle modal dismiss
   const onDismissModal = useCallback(() => {
     if (hookToEdit) {
       setSelectedDapp(null)
@@ -101,6 +124,7 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit }: HookStore
     }
   }, [onDismiss, selectedDapp, dappDetails, hookToEdit])
 
+  // Handle hookToEditDetails
   useEffect(() => {
     if (!hookToEditDetails) {
       setSelectedDapp(null)
@@ -115,6 +139,7 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit }: HookStore
     }
   }, [hookToEditDetails, dapps])
 
+  // Reset dappDetails when tab changes
   useEffect(() => {
     setDappDetails(null)
   }, [isAllHooksTab])
@@ -122,6 +147,68 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit }: HookStore
   useEffect(() => {
     console.log('External Hook Dapps:', externalHookDapps)
   }, [externalHookDapps])
+
+  // Handle add custom hook button
+  const handleAddCustomHook = useCallback(() => {
+    setIsAllHooksTab(false)
+  }, [setIsAllHooksTab])
+
+  // Determine the message for EmptyList based on the active tab and search query
+  const emptyListMessage = useMemo(() => {
+    if (isAllHooksTab) {
+      return searchQuery.trim() ? 'No hooks match your search.' : 'No hooks available.'
+    } else {
+      return "You haven't added any custom hooks yet. Add a custom hook to get started."
+    }
+  }, [isAllHooksTab, searchQuery])
+
+  // Extract search input component
+  const SearchInputComponent = (
+    <SearchInput
+      type="text"
+      placeholder="Search hooks by title or description"
+      value={searchQuery}
+      onChange={(e) => setSearchQuery(e.target.value)}
+      aria-label="Search hooks"
+      style={{ marginBottom: '16px', flex: 1 }}
+    />
+  )
+
+  const renderContent = () => (
+    <div>
+      {SearchInputComponent}
+      {isAllHooksTab && (
+        <DismissableInlineBanner
+          orientation={BannerOrientation.Horizontal}
+          customIcon={ICON_HOOK}
+          iconSize={36}
+          bannerId="hooks-store-banner-tradeContainer-customHooks"
+        >
+          <p>
+            Can't find a hook that you like?{' '}
+            <span onClick={handleAddCustomHook} style={{ cursor: 'pointer', textDecoration: 'underline' }}>
+              Add a custom hook
+            </span>
+          </p>
+        </DismissableInlineBanner>
+      )}
+      {filteredDapps.length > 0 ? (
+        <HookDappsList>
+          {filteredDapps.map((dapp) => (
+            <HookListItem
+              key={isHookDappIframe(dapp) ? dapp.url : dapp.name}
+              dapp={dapp}
+              onRemove={isAllHooksTab ? undefined : () => removeExternalHookDapp(dapp as HookDappIframe)}
+              onSelect={() => setSelectedDapp(dapp)}
+              onOpenDetails={() => setDappDetails(dapp)}
+            />
+          ))}
+        </HookDappsList>
+      ) : (
+        <EmptyList>{emptyListMessage}</EmptyList>
+      )}
+    </div>
+  )
 
   return (
     <Wrapper>
@@ -132,12 +219,15 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit }: HookStore
         contentPadding="0"
         justifyContent="flex-start"
       >
-        <HookListsTabs
-          isAllHooksTab={isAllHooksTab}
-          setIsAllHooksTab={setIsAllHooksTab}
-          allHooksCount={allHooksCount}
-          customHooksCount={customHooksCount}
-        />
+        {!dappDetails && (
+          <HookListsTabs
+            isAllHooksTab={isAllHooksTab}
+            setIsAllHooksTab={setIsAllHooksTab}
+            allHooksCount={allHooksCount}
+            customHooksCount={customHooksCount}
+            onAddCustomHook={handleAddCustomHook}
+          />
+        )}
         {(() => {
           if (selectedDapp) {
             return (
@@ -157,36 +247,16 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit }: HookStore
             return <HookDappDetails dapp={dappDetails} onSelect={() => setSelectedDapp(dappDetails)} />
           }
 
-          const dappsList = dapps.length ? (
-            <HookDappsList>
-              {dapps.map((dapp) => (
-                <HookListItem
-                  key={isHookDappIframe(dapp) ? dapp.url : dapp.name}
-                  dapp={dapp}
-                  onRemove={isAllHooksTab ? undefined : () => removeExternalHookDapp(dapp as HookDappIframe)}
-                  onSelect={() => setSelectedDapp(dapp)}
-                  onOpenDetails={() => setDappDetails(dapp)}
-                />
-              ))}
-            </HookDappsList>
+          return isAllHooksTab ? (
+            renderContent()
           ) : (
-            <EmptyList>No hook-dapps yet</EmptyList>
-          )
-
-          return (
-            <>
-              {isAllHooksTab ? (
-                dappsList
-              ) : (
-                <AddExternalHookForm
-                  isPreHook={isPreHook}
-                  isSmartContractWallet={isSmartContractWallet}
-                  addHookDapp={addExternalHookDapp}
-                >
-                  {dappsList}
-                </AddExternalHookForm>
-              )}
-            </>
+            <AddExternalHookForm
+              isPreHook={isPreHook}
+              isSmartContractWallet={isSmartContractWallet}
+              addHookDapp={addExternalHookDapp}
+            >
+              {renderContent()}
+            </AddExternalHookForm>
           )
         })()}
       </NewModal>

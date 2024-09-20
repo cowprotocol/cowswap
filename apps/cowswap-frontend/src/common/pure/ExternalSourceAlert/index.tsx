@@ -17,12 +17,11 @@ export function ExternalSourceAlert({ onChange, title, children }: ExternalSourc
       <AlertTriangle size={48} strokeWidth={1} />
       <h3>{title}</h3>
       {children}
-      <div>
-        <styledEl.AcceptanceBox>
-          <input type="checkbox" onChange={onChange} />
-          <span>I understand</span>
-        </styledEl.AcceptanceBox>
-      </div>
+
+      <styledEl.AcceptanceBox>
+        <input type="checkbox" onChange={onChange} />
+        <span>I understand</span>
+      </styledEl.AcceptanceBox>
     </styledEl.Contents>
   )
 }

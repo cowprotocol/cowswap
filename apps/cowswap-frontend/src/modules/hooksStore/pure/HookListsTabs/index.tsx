@@ -7,6 +7,7 @@ interface HookListsTabsProps {
   setIsAllHooksTab: Dispatch<SetStateAction<boolean>>
   allHooksCount: number
   customHooksCount: number
+  onAddCustomHook: () => void
 }
 
 export function HookListsTabs({

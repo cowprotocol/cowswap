@@ -12,8 +12,8 @@ export const Wrapper = styled.div`
 
 export const HookDappsList = styled.ul`
   list-style: none;
-  padding: 10px;
   margin: 0 auto;
+  padding: 10px;
   gap: 8px;
   width: 100%;
   display: flex;
@@ -26,10 +26,12 @@ export const HookDappsList = styled.ul`
 
 export const EmptyList = styled.div`
   color: var(${UI.COLOR_TEXT_OPACITY_50});
-  background: var(${UI.COLOR_PAPER_DARKER});
+  background: transparent;
+  min-height: 160px;
   font-size: 16px;
   padding: 30px 10px;
   border-radius: 10px;
-  margin: 10px;
+  margin: 10px 0;
+  line-height: 1.3;
   text-align: center;
 `
