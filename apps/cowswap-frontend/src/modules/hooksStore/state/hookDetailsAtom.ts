@@ -8,7 +8,7 @@ import { walletInfoAtom } from '@cowprotocol/wallet'
 
 interface CowHookDetailsSerialized {
   hookDetails: CowHookDetails
-  dappName: string
+  dappId: string
 }
 
 export type HooksStoreState = {
