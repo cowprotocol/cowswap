@@ -1,3 +1,5 @@
+// apps/cowswap-frontend/src/modules/hooksStore/containers/HookRegistryList/index.tsx
+
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { Command } from '@cowprotocol/types'
@@ -17,9 +19,18 @@ import { HookDappDetails } from '../../pure/HookDappDetails'
 import { HookDetailHeader } from '../../pure/HookDetailHeader'
 import { HookListItem } from '../../pure/HookListItem'
 import { HookListsTabs } from '../../pure/HookListsTabs'
-import { HookDapp, HookDappIframe } from '../../types/hooks'
+import { HookDapp, HookDappIframe, CowHookDetailsSerialized } from '../../types/hooks'
 import { findHookDappById } from '../../utils'
 import { HookDappContainer } from '../HookDappContainer'
+
+// Type Guards
+function isCowHookDetailsSerialized(obj: any): obj is CowHookDetailsSerialized {
+  return obj && typeof obj === 'object' && 'hookDetails' in obj && 'dappId' in obj
+}
+
+function isHookDappIframe(dapp: HookDapp): dapp is HookDappIframe {
+  return 'url' in dapp && typeof dapp.url === 'string'
+}
 
 interface HookStoreModal {
   onDismiss: Command
@@ -32,8 +43,7 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit }: HookStore
   const [selectedDapp, setSelectedDapp] = useState<HookDapp | null>(null)
   const [dappDetails, setDappDetails] = useState<HookDapp | null>(null)
 
-  const tabsState = useState(true)
-  const [isVerifiedHooksTab] = tabsState
+  const [isAllHooksTab, setIsAllHooksTab] = useState<boolean>(true)
 
   const isSmartContractWallet = useIsSmartContractWallet()
   const addExternalHookDapp = useAddExternalHookDapp()
@@ -41,16 +51,37 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit }: HookStore
   const externalHookDapps = useExternalHookDapps()
   const hookToEditDetails = useHookById(hookToEdit, isPreHook)
 
-  const dapps = isVerifiedHooksTab
-    ? isPreHook
-      ? PRE_HOOK_REGISTRY[chainId]
-      : POST_HOOK_REGISTRY[chainId]
-    : externalHookDapps
+  const customHookDapps = useMemo(() => {
+    const filtered = externalHookDapps.filter(isHookDappIframe).filter((dapp) => dapp.isCustom)
+    console.log('Custom Hook Dapps:', filtered) // Debugging
+    return filtered
+  }, [externalHookDapps])
+
+  const dapps = useMemo(() => {
+    if (isAllHooksTab) {
+      if (isPreHook) {
+        return PRE_HOOK_REGISTRY[chainId] || []
+      } else {
+        return [...(POST_HOOK_REGISTRY[chainId] || []), ...externalHookDapps]
+      }
+    } else {
+      return customHookDapps
+    }
+  }, [isAllHooksTab, isPreHook, chainId, externalHookDapps, customHookDapps])
+
+  const allHooksCount = useMemo(() => {
+    if (isPreHook) {
+      return PRE_HOOK_REGISTRY[chainId]?.length || 0
+    } else {
+      return (POST_HOOK_REGISTRY[chainId]?.length || 0) + externalHookDapps.length
+    }
+  }, [isPreHook, chainId, externalHookDapps])
+
+  const customHooksCount = useMemo(() => customHookDapps.length, [customHookDapps])
 
   const title = useMemo(() => {
     if (selectedDapp) return selectedDapp.name
     if (dappDetails) return 'Hook description'
-
     return 'Hook Store'
   }, [selectedDapp, dappDetails])
 
@@ -74,17 +105,23 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit }: HookStore
     if (!hookToEditDetails) {
       setSelectedDapp(null)
     } else {
-      setSelectedDapp(findHookDappById(dapps, { ...hookToEditDetails, dappId: hookToEditDetails.dappId }) || null)
+      if (!isCowHookDetailsSerialized(hookToEditDetails)) {
+        console.error('hookToEditDetails is missing dappId:', hookToEditDetails)
+        setSelectedDapp(null)
+        return
+      }
+
+      setSelectedDapp(findHookDappById(dapps, hookToEditDetails) || null)
     }
   }, [hookToEditDetails, dapps])
 
-  // close details view when tab changed
   useEffect(() => {
     setDappDetails(null)
-  }, [isVerifiedHooksTab])
+  }, [isAllHooksTab])
 
-  const verifiedHooksCount = isPreHook ? PRE_HOOK_REGISTRY[chainId].length : POST_HOOK_REGISTRY[chainId].length
-  const externalHooksCount = externalHookDapps.length
+  useEffect(() => {
+    console.log('External Hook Dapps:', externalHookDapps)
+  }, [externalHookDapps])
 
   return (
     <Wrapper>
@@ -96,9 +133,10 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit }: HookStore
         justifyContent="flex-start"
       >
         <HookListsTabs
-          tabsState={tabsState}
-          verifiedHooksCount={verifiedHooksCount}
-          externalHooksCount={externalHooksCount}
+          isAllHooksTab={isAllHooksTab}
+          setIsAllHooksTab={setIsAllHooksTab}
+          allHooksCount={allHooksCount}
+          customHooksCount={customHooksCount}
         />
         {(() => {
           if (selectedDapp) {
@@ -123,9 +161,9 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit }: HookStore
             <HookDappsList>
               {dapps.map((dapp) => (
                 <HookListItem
-                  key={dapp.name}
+                  key={isHookDappIframe(dapp) ? dapp.url : dapp.name}
                   dapp={dapp}
-                  onRemove={isVerifiedHooksTab ? undefined : () => removeExternalHookDapp(dapp as HookDappIframe)}
+                  onRemove={isAllHooksTab ? undefined : () => removeExternalHookDapp(dapp as HookDappIframe)}
                   onSelect={() => setSelectedDapp(dapp)}
                   onOpenDetails={() => setDappDetails(dapp)}
                 />
@@ -137,7 +175,7 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit }: HookStore
 
           return (
             <>
-              {isVerifiedHooksTab ? (
+              {isAllHooksTab ? (
                 dappsList
               ) : (
                 <AddExternalHookForm

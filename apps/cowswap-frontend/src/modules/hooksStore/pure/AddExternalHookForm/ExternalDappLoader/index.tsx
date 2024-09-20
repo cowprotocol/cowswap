@@ -15,13 +15,15 @@ type HookDappManifest = HookDappBaseInfo & {
 
 const MANDATORY_DAPP_FIELDS: (keyof HookDappBaseInfo)[] = ['name', 'image', 'version', 'website']
 
+import { Dispatch, SetStateAction } from 'react'
+
 interface ExternalDappLoaderProps {
   input: string
   isPreHook: boolean
   isSmartContractWallet: boolean | undefined
-  setLoading(value: boolean): void
-  setManifestError(error: string | null): void
-  setDappInfo(dapp: HookDappIframe): void
+  setDappInfo: Dispatch<SetStateAction<HookDappIframe | null>>
+  setLoading: Dispatch<SetStateAction<boolean>>
+  setManifestError: Dispatch<SetStateAction<string | React.ReactNode | null>>
 }
 
 export function ExternalDappLoader({
@@ -53,9 +55,17 @@ export function ExternalDappLoader({
             if (conditions.smartContractWalletSupported === false && isSmartContractWallet === true) {
               setManifestError('The app does not support smart-contract wallets.')
             } else if (conditions.position === 'post' && isPreHook) {
-              setManifestError('The app is might be used only as a post-hook.')
+              setManifestError(
+                <>
+                  This app/hook can only be used as a <b>post-hook</b> and cannot be added as a pre-hook.
+                </>,
+              )
             } else if (conditions.position === 'pre' && !isPreHook) {
-              setManifestError('The app is might be used only as a pre-hook.')
+              setManifestError(
+                <>
+                  This app/hook can only be used as a <b>pre-hook</b> and cannot be added as a post-hook.
+                </>,
+              )
             } else {
               setManifestError(null)
               setDappInfo({

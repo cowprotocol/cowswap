@@ -1,4 +1,4 @@
-import { atom } from 'jotai/index'
+import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
 import { getJotaiIsolatedStorage } from '@cowprotocol/core'
@@ -30,12 +30,13 @@ export const externalHookDappsAtom = atom((get) => {
 export const addExternalHookDappsAtom = atom(null, (get, set, dapp: HookDappIframe) => {
   const { chainId } = get(walletInfoAtom)
   const state = get(externalHookDappsInner)
+  const customDapp = { ...dapp, isCustom: true }
 
-  return set(externalHookDappsInner, {
+  set(externalHookDappsInner, {
     ...state,
     [chainId]: {
       ...state[chainId],
-      [dapp.url]: dapp,
+      [customDapp.url]: customDapp,
     },
   })
 })

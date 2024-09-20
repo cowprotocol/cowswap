@@ -69,7 +69,7 @@ export function IframeDappContainer({ dapp, context }: IframeDappContainerProps)
   }, [])
 
   useLayoutEffect(() => {
-    if (!walletProvider || !bridgeRef.current) return
+    if (!walletProvider || !walletProvider.provider || !bridgeRef.current) return
 
     bridgeRef.current.onConnect(walletProvider.provider as EthereumProvider)
   }, [walletProvider])

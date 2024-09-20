@@ -3,19 +3,18 @@ import { ReactElement, useCallback, useEffect, useState } from 'react'
 import { uriToHttp } from '@cowprotocol/common-utils'
 import { ButtonOutlined, ButtonPrimary, InlineBanner, Loader, SearchInput } from '@cowprotocol/ui'
 
+import { ExternalSourceAlert } from 'common/pure/ExternalSourceAlert'
+
 import { ExternalDappLoader } from './ExternalDappLoader'
 import { Wrapper } from './styled'
 
-import { ExternalSourceAlert } from 'common/pure/ExternalSourceAlert'
 import { HookDappIframe } from '../../types/hooks'
 import { HookDappDetails } from '../HookDappDetails'
 
 interface AddExternalHookFormProps {
   isPreHook: boolean
   isSmartContractWallet: boolean | undefined
-
   addHookDapp(dapp: HookDappIframe): void
-
   children: ReactElement | null
 }
 
@@ -31,7 +30,7 @@ export function AddExternalHookForm({
   const [isUrlValid, setUrlValid] = useState<boolean>(true)
   const [loading, setLoading] = useState<boolean>(false)
   const [isFinalStep, setFinalStep] = useState<boolean>(false)
-  const [manifestError, setManifestError] = useState<string | null>(null)
+  const [manifestError, setManifestError] = useState<string | React.ReactNode | null>(null)
   const [dappInfo, setDappInfo] = useState<HookDappIframe | null>(null)
 
   const dismiss = useCallback(() => {
@@ -47,18 +46,18 @@ export function AddExternalHookForm({
     dismiss()
     setInput(undefined)
     setSearchOpen(false)
-  }, [])
+  }, [dismiss])
 
   const addHookDappCallback = useCallback(() => {
     if (!dappInfo) return
     addHookDapp(dappInfo)
     goBack()
-  }, [addHookDapp, dappInfo])
+  }, [addHookDapp, dappInfo, goBack])
 
   useEffect(() => {
     dismiss()
     setUrlValid(input ? uriToHttp(input).length > 0 : true)
-  }, [input])
+  }, [input, dismiss])
 
   return (
     <div>
@@ -75,11 +74,16 @@ export function AddExternalHookForm({
       )}
       <Wrapper>
         {isSearchOpen && (
-          <SearchInput type="text" placeholder="Enter a hook dapp URL" onChange={(e) => setInput(e.target.value)} />
+          <SearchInput
+            type="text"
+            placeholder="Enter a hook dapp URL"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+          />
         )}
         {input && !isUrlValid && (
           <InlineBanner bannerType="danger" hideIcon>
-            Hook Dapp Url must match "https://website" format
+            Hook Dapp URL must match "https://website" format
           </InlineBanner>
         )}
         {manifestError && (
@@ -95,16 +99,16 @@ export function AddExternalHookForm({
             >
               <>
                 <p>
-                  By adding this app you clearly understand what you are doing. The app will be able to request actions
-                  for your wallet and will have access to information about your trading.
+                  Adding this app/hook grants it access to your wallet actions and trading information. Ensure you
+                  understand the implications.
                 </p>
                 <p>
-                  <strong>Please check your wallet requests with caution.</strong>
+                  <strong>Always review wallet requests carefully before approving.</strong>
                 </p>
               </>
             </ExternalSourceAlert>
             <ButtonPrimary disabled={!isWarningAccepted} onClick={addHookDappCallback}>
-              Add external hook
+              Add custom hook
             </ButtonPrimary>
           </>
         )}
@@ -113,7 +117,7 @@ export function AddExternalHookForm({
         ) : (
           !isFinalStep && (
             <ButtonPrimary disabled={isSearchOpen} onClick={() => setSearchOpen(true)}>
-              {loading ? <Loader /> : 'Add external hook'}
+              {loading ? <Loader /> : 'Add custom hook'}
             </ButtonPrimary>
           )
         )}

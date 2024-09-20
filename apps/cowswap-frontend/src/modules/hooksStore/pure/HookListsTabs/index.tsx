@@ -3,21 +3,25 @@ import { Dispatch, SetStateAction } from 'react'
 import * as styledEl from './styled'
 
 interface HookListsTabsProps {
-  tabsState: [boolean, Dispatch<SetStateAction<boolean>>]
-  verifiedHooksCount: number
-  externalHooksCount: number
+  isAllHooksTab: boolean
+  setIsAllHooksTab: Dispatch<SetStateAction<boolean>>
+  allHooksCount: number
+  customHooksCount: number
 }
 
-export function HookListsTabs({ tabsState, verifiedHooksCount, externalHooksCount }: HookListsTabsProps) {
-  const [isVerifiedHooksTab, setVerifiedHooksTab] = tabsState
-
+export function HookListsTabs({
+  isAllHooksTab,
+  setIsAllHooksTab,
+  allHooksCount,
+  customHooksCount,
+}: HookListsTabsProps) {
   return (
     <styledEl.TabsContainer>
-      <styledEl.Tab active$={isVerifiedHooksTab} onClick={() => setVerifiedHooksTab(true)}>
-        Verified Hooks ({verifiedHooksCount})
+      <styledEl.Tab active$={isAllHooksTab} onClick={() => setIsAllHooksTab(true)}>
+        All Hooks ({allHooksCount})
       </styledEl.Tab>
-      <styledEl.Tab active$={!isVerifiedHooksTab} onClick={() => setVerifiedHooksTab(false)}>
-        External Hooks ({externalHooksCount})
+      <styledEl.Tab active$={!isAllHooksTab} onClick={() => setIsAllHooksTab(false)}>
+        My Custom Hooks ({customHooksCount})
       </styledEl.Tab>
     </styledEl.TabsContainer>
   )
