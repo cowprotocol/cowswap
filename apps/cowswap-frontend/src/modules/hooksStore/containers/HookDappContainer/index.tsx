@@ -4,6 +4,8 @@ import { Command } from '@cowprotocol/types'
 import { useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
+import { useTradeState, useTradeNavigate } from 'modules/trade'
+
 import { useAddHook } from '../../hooks/useAddHook'
 import { useEditHook } from '../../hooks/useEditHook'
 import { useHookById } from '../../hooks/useHookById'
@@ -11,7 +13,6 @@ import { useOrderParams } from '../../hooks/useOrderParams'
 import { HookDapp, HookDappContext as HookDappContextType } from '../../types/hooks'
 import { isHookDappIframe } from '../../utils'
 import { IframeDappContainer } from '../IframeDappContainer'
-import { useTradeState, useTradeNavigate } from 'modules/trade'
 
 interface HookDappContainerProps {
   dapp: HookDapp

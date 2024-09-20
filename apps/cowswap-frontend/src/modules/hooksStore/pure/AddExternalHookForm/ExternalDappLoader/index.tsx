@@ -1,5 +1,6 @@
-import { HookDappBase, HookDappIframe, HookDappType } from '../../../types/hooks'
 import { useEffect } from 'react'
+
+import { HookDappBase, HookDappIframe, HookDappType } from '../../../types/hooks'
 
 interface HookDappConditions {
   position?: 'post' | 'pre'
