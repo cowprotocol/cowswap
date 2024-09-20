@@ -74,7 +74,7 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit }: HookStore
     if (!hookToEditDetails) {
       setSelectedDapp(null)
     } else {
-      setSelectedDapp(findHookDappById(dapps, hookToEditDetails) || null)
+      setSelectedDapp(findHookDappById(dapps, { ...hookToEditDetails, dappId: hookToEditDetails.dappId }) || null)
     }
   }, [hookToEditDetails, dapps])
 
@@ -82,6 +82,9 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit }: HookStore
   useEffect(() => {
     setDappDetails(null)
   }, [isVerifiedHooksTab])
+
+  const verifiedHooksCount = isPreHook ? PRE_HOOK_REGISTRY[chainId].length : POST_HOOK_REGISTRY[chainId].length
+  const externalHooksCount = externalHookDapps.length
 
   return (
     <Wrapper>
@@ -92,7 +95,11 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit }: HookStore
         contentPadding="0"
         justifyContent="flex-start"
       >
-        <HookListsTabs tabsState={tabsState} />
+        <HookListsTabs
+          tabsState={tabsState}
+          verifiedHooksCount={verifiedHooksCount}
+          externalHooksCount={externalHooksCount}
+        />
         {(() => {
           if (selectedDapp) {
             return (
