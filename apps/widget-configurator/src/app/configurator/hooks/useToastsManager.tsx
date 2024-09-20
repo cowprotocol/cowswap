@@ -1,10 +1,15 @@
 import { ChangeEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
-import { BaseToastMessagePayload, CowEventListeners, CowEvents, ToastMessageType } from '@cowprotocol/events'
+import {
+  BaseToastMessagePayload,
+  CowWidgetEventListeners,
+  CowWidgetEvents,
+  ToastMessageType,
+} from '@cowprotocol/events'
 
 import { COW_LISTENERS } from '../consts'
 
-export function useToastsManager(setListeners: (listeners: CowEventListeners) => void) {
+export function useToastsManager(setListeners: (listeners: CowWidgetEventListeners) => void) {
   const isInitRef = useRef(false)
   const [disableToastMessages, setDisableToastMessages] = useState<boolean>(false)
   const [toasts, setToasts] = useState<(JSX.Element | string)[]>([])
@@ -26,7 +31,7 @@ export function useToastsManager(setListeners: (listeners: CowEventListeners) =>
       closeToast(undefined)
       setDisableToastMessages(event.target.value === 'true')
     },
-    [closeToast]
+    [closeToast],
   )
 
   useEffect(() => {
@@ -40,7 +45,7 @@ export function useToastsManager(setListeners: (listeners: CowEventListeners) =>
     if (disableToastMessages) {
       openToast('Toast messages are enabled. Using Dapp mode toasts.')
       newListeners.push({
-        event: CowEvents.ON_TOAST_MESSAGE,
+        event: CowWidgetEvents.ON_TOAST_MESSAGE,
         handler: (event: BaseToastMessagePayload<ToastMessageType>) => {
           // You can provide a simplistic way to handle toast messages (use the "message" to show it in your app)
           const prettyMessage = (
