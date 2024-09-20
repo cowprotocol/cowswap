@@ -3,10 +3,11 @@ import { ReactElement, useCallback, useEffect, useState } from 'react'
 import { uriToHttp } from '@cowprotocol/common-utils'
 import { ButtonOutlined, ButtonPrimary, InlineBanner, Loader, SearchInput } from '@cowprotocol/ui'
 
+import { ExternalSourceAlert } from 'common/pure/ExternalSourceAlert'
+
 import { ExternalDappLoader } from './ExternalDappLoader'
 import { Wrapper } from './styled'
 
-import { ExternalSourceAlert } from 'common/pure/ExternalSourceAlert'
 import { HookDappIframe } from '../../types/hooks'
 import { HookDappDetails } from '../HookDappDetails'
 
