@@ -137,55 +137,38 @@ export const ActionBtn = styled.button<{ actionType?: 'remove' | 'edit' }>`
   }
 `
 
-export const CustomLink = styled.a`
-  margin: 0.5em 0;
-  padding: 0 10em;
-  text-decoration: none;
+export const SimulateContainer = styled.div<{ isSuccessful: boolean }>`
+  --colorBG: ${({ isSuccessful }) => (isSuccessful ? `var(${UI.COLOR_SUCCESS_BG})` : `var(${UI.COLOR_DANGER_BG})`)};
+  --colorText: ${({ isSuccessful }) =>
+    isSuccessful ? `var(${UI.COLOR_SUCCESS_TEXT})` : `var(${UI.COLOR_DANGER_TEXT})`};
 
-  :hover {
-    text-decoration: underline;
-  }
-`
-
-export const CloseIcon = styled(CloseIconOriginal)`
-  position: absolute;
-  top: 0;
-  right: 0;
-`
-
-export const SimulateContainer = styled.div`
-  border: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
-  border-radius: 4px;
+  border: 1px solid var(--colorBG);
+  background: var(--colorBG);
+  color: var(--colorText);
+  border-radius: 9px;
   padding: 10px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
   margin: 10px;
-`
-
-export const SimulateHeader = styled.div`
-  display: flex;
-  flex-direction: row;
-  gap: 5px;
-  align-items: center;
-  margin-bottom: 5px;
-  min-width: 150px;
-`
-
-export const SimulateFooter = styled.div`
-  color: var(${UI.COLOR_TEXT2});
-  display: flex;
-  flex-direction: row;
-  gap: 5px;
-  align-items: center;
+  font-size: 14px;
 
   > svg {
-    height: 16px;
-    width: 70px;
-    display: inline-block;
-    background: #fff;
-    border-radius: 4px;
-    padding: 2px;
+    margin: 0 7px 0 0;
+    color: inherit;
+  }
+
+  > svg > path {
+    fill: currentColor;
+  }
+
+  > a,
+  > span {
+    margin: 0 auto 0 0;
+    color: inherit;
+    display: flex;
+    align-items: center;
+    gap: 4px;
   }
 `
