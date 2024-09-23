@@ -2,8 +2,6 @@ import { UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-import { CloseIcon as CloseIconOriginal } from 'common/pure/CloseIcon'
-
 export const HookItemWrapper = styled.li`
   border: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
   border-radius: 16px;
