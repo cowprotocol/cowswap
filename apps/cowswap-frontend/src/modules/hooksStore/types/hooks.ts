@@ -4,6 +4,7 @@ import type { latest } from '@cowprotocol/app-data'
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { Command } from '@cowprotocol/types'
 import type { Signer } from '@ethersproject/abstract-signer'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 interface HookInfoPayload {
   hookDetails: CowHookDetails
@@ -61,6 +62,9 @@ export interface HookDappOrderParams {
   validTo: number
   sellTokenAddress: string
   buyTokenAddress: string
+  receiver: string
+  sellAmount: CurrencyAmount<Currency>
+  buyAmount: CurrencyAmount<Currency>
 }
 
 export interface HookDappContext {
