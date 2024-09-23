@@ -5,8 +5,6 @@ import { ButtonOutlined, ButtonPrimary, InlineBanner, Loader } from '@cowprotoco
 
 import { ExternalSourceAlert } from 'common/pure/ExternalSourceAlert'
 
-import { ExternalSourceAlert } from 'common/pure/ExternalSourceAlert'
-
 import { ExternalDappLoader } from './ExternalDappLoader'
 import { Wrapper } from './styled'
 
