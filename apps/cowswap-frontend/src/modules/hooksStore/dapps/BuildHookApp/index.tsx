@@ -37,7 +37,7 @@ export function BuildHookApp({ context }: HookDappProps) {
   const [errors, setErrors] = useState<Record<keyof CowHook, string>>(DEFAULT_ERRORS_STATE)
 
   const validateInput = useCallback((name: keyof CowHook, value: string) => {
-    setErrors((prev) => ({ ...prev, [name]: value.trim() ? '' : `${name} is required` }))
+    setErrors((prev) => ({ ...prev, [name]: value.trim() ? '' : `${capitalizeFirstLetter(name)} is required` }))
   }, [])
 
   const handleInputChange = useCallback(
