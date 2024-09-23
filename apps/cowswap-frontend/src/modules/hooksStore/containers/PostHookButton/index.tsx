@@ -1,5 +1,4 @@
 import PLUS_ICON from '@cowprotocol/assets/cow-swap/plus.svg'
-import { useWalletInfo } from '@cowprotocol/wallet'
 
 import SVG from 'react-inlinesvg'
 
@@ -16,7 +15,6 @@ export interface PostHookButtonProps {
 }
 
 export function PostHookButton({ onOpen, onEditHook }: PostHookButtonProps) {
-  const { account } = useWalletInfo()
   const { postHooks } = useHooks()
   const removeHook = useRemoveHook()
   const moveHook = useReorderHooks('postHooks')
@@ -25,7 +23,6 @@ export function PostHookButton({ onOpen, onEditHook }: PostHookButtonProps) {
     <>
       {postHooks.length > 0 && (
         <AppliedHookList
-          account={account}
           hooks={postHooks}
           isPreHook={false} // Indicate that these are post-hooks
           removeHook={removeHook}

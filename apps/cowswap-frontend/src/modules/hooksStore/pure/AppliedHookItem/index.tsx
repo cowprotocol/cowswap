@@ -1,17 +1,13 @@
 import ICON_GRID from '@cowprotocol/assets/cow-swap/grid.svg'
-import TenderlyLogo from '@cowprotocol/assets/cow-swap/tenderly-logo.svg'
-import { InfoTooltip } from '@cowprotocol/ui'
 
 import { Edit2, Trash2 } from 'react-feather'
 import SVG from 'react-inlinesvg'
 
 import * as styledEl from './styled'
 
-import { TenderlySimulate } from '../../containers/TenderlySimulate'
 import { CowHookDetailsSerialized } from '../../types/hooks'
 
 interface HookItemProp {
-  account: string | undefined
   hookDetails: CowHookDetailsSerialized
   isPreHook: boolean
   removeHook: (uuid: string, isPreHook: boolean) => void
@@ -19,8 +15,8 @@ interface HookItemProp {
   index: number
 }
 
-export function AppliedHookItem({ account, hookDetails, isPreHook, editHook, removeHook, index }: HookItemProp) {
-  const { hook, dapp } = hookDetails
+export function AppliedHookItem({ hookDetails, isPreHook, editHook, removeHook, index }: HookItemProp) {
+  const { dapp } = hookDetails
 
   return (
     <styledEl.HookItemWrapper data-uid={hookDetails.uuid} as="li">
@@ -42,24 +38,6 @@ export function AppliedHookItem({ account, hookDetails, isPreHook, editHook, rem
           </styledEl.ActionBtn>
         </styledEl.HookItemActions>
       </styledEl.HookItemHeader>
-
-      {account && (
-        <styledEl.SimulateContainer>
-          <div>
-            <styledEl.SimulateHeader>
-              <strong>Run a simulation</strong>
-              <InfoTooltip content="This transaction can be simulated before execution to ensure that it will succeed, generating a detailed report of the transaction execution." />
-            </styledEl.SimulateHeader>
-            <styledEl.SimulateFooter>
-              <span>Powered by</span>
-              <SVG src={TenderlyLogo} description="Tenderly" />
-            </styledEl.SimulateFooter>
-          </div>
-          <div>
-            <TenderlySimulate hook={hook} />
-          </div>
-        </styledEl.SimulateContainer>
-      )}
     </styledEl.HookItemWrapper>
   )
 }
