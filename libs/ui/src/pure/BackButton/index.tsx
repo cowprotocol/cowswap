@@ -12,6 +12,7 @@ const BackIcon = styled(ArrowLeft as any)<{ onClick: Command }>`
   opacity: 1;
   transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
   margin-right: 10px;
+  z-index: 10;
 
   &:hover {
     opacity: 0.6;
