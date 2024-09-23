@@ -1,4 +1,4 @@
-import { UI } from '@cowprotocol/ui'
+import { UI, Media } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
@@ -21,26 +21,13 @@ export const LinkButton = styled.button`
   justify-content: center;
   transition: all 0.2s ease-in-out;
 
+  ${Media.upToSmall()} {
+    width: 100%;
+    padding: 16px;
+  }
+
   &:hover {
     background: var(${UI.COLOR_PRIMARY_DARKEST});
-  }
-`
-
-export const RemoveButton = styled.button`
-  display: inline-block;
-  cursor: pointer;
-  background: var(${UI.COLOR_PAPER_DARKEST});
-  color: var(${UI.COLOR_TEXT});
-  border: none;
-  outline: none;
-  font-size: 14px;
-  text-decoration: none;
-  padding: 6px 16px;
-  border-radius: 21px;
-
-  &:hover {
-    outline: 1px solid var(${UI.COLOR_PAPER_DARKEST});
-    background: transparent;
   }
 `
 
@@ -86,15 +73,23 @@ export const HookDappListItem = styled.li<{ isDescriptionView?: boolean }>`
     justify-content: center;
     gap: 8px;
 
+    ${Media.upToSmall()} {
+      width: 100%;
+      gap: 21px;
+    }
+
     > i {
       font-size: 13px;
       display: flex;
       align-items: center;
       gap: 3px;
-
       transition: all 0.2s ease-in-out;
       font-style: normal;
       color: var(${UI.COLOR_TEXT_OPACITY_50});
+
+      ${Media.upToSmall()} {
+        font-size: 15px;
+      }
 
       &:hover {
         color: var(${UI.COLOR_TEXT});
