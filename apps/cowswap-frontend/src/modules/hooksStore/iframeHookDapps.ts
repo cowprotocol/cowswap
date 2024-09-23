@@ -1,4 +1,4 @@
-import { HookDappIframe, HookDappType } from './types/hooks'
+import { HookDappIframe, HookDappType, HookDappWalletCompatibility } from './types/hooks'
 
 export const OMNIBRIDGE_POST_HOOK: HookDappIframe = {
   url: 'http://localhost:3000/hook-dapp-omnibridge/',
@@ -10,4 +10,5 @@ export const OMNIBRIDGE_POST_HOOK: HookDappIframe = {
   version: '0.0.1',
   website: 'https://omni.legacy.gnosischain.com',
   image: 'http://localhost:3000/hook-dapp-omnibridge/android-chrome-192x192.png',
+  walletCompatibility: [HookDappWalletCompatibility.EOA, HookDappWalletCompatibility.SMART_CONTRACT],
 }

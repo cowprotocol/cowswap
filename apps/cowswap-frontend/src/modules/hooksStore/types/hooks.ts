@@ -17,6 +17,11 @@ export enum HookDappType {
   IFRAME = 'IFRAME',
 }
 
+export enum HookDappWalletCompatibility {
+  EOA = 'EOA',
+  SMART_CONTRACT = 'Smart contract',
+}
+
 export interface HookDappBase {
   name: string
   descriptionShort?: string
@@ -25,11 +30,13 @@ export interface HookDappBase {
   version: string
   website: string
   image: string
+  walletCompatibility: HookDappWalletCompatibility[]
 }
 
 export interface HookDappInternal extends HookDappBase {
   type: HookDappType.INTERNAL
   component: (props: HookDappProps) => ReactNode
+  walletCompatibility: HookDappWalletCompatibility[]
 }
 
 export interface HookDappIframe extends HookDappBase {
