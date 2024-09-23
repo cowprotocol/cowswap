@@ -5,8 +5,8 @@ import { Font, Color, Media } from '@cowprotocol/ui'
 import Layout from '@/components/Layout'
 import { getArticles, getCategories, Article } from 'services/cms'
 import { SearchBar } from '@/components/SearchBar'
-import { CategoryLinks } from '../../../components/CategoryLinks'
-import { ArticlesList } from '../../../components/ArticlesList'
+import { CategoryLinks } from '@/components/CategoryLinks'
+import { ArticlesList } from '@/components/ArticlesList'
 
 import {
   ContainerCard,
