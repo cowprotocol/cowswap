@@ -199,7 +199,9 @@ export default function Page({ siteConfigData, categories, articles, featuredArt
               <ArticleList columnsTablet={2}>
                 {featuredArticles.map(({ title, description, cover, link }, index) => (
                   <ArticleCard key={index} href={link} onClick={() => clickOnKnowledgeBase(`click-article-${title}`)}>
-                    <ArticleImage color="#000">{cover && <LazyImage src={cover} alt={title} />}</ArticleImage>
+                    <ArticleImage color="#000">
+                      {cover && <LazyImage src={cover} alt={title} width={700} height={200} />}
+                    </ArticleImage>
                     <ArticleTitle>{title}</ArticleTitle>
                     <ArticleDescription>{description}</ArticleDescription>
                   </ArticleCard>
@@ -226,6 +228,8 @@ export default function Page({ siteConfigData, categories, articles, featuredArt
                           <LazyImage
                             src={imageUrl}
                             alt={name}
+                            width={82}
+                            height={82}
                             onError={(e) => {
                               e.currentTarget.onerror = null
                               e.currentTarget.style.display = 'none'

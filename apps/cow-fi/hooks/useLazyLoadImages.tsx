@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useCallback } from 'react'
+import React, { useEffect, useRef, useCallback, FC, ImgHTMLAttributes, memo } from 'react'
 
-// Shared IntersectionObserver instance
 let observer: IntersectionObserver | null = null
+const callbacks: ((entry: IntersectionObserverEntry) => void)[] = []
 
 const LAZY_LOADING_CONFIG = {
   rootMargin: '25px',
@@ -16,38 +16,46 @@ const getPlaceholderSrc = (placeholderColor: string): string => {
   return `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='100%' height='100%' viewBox='0 0 1 1' preserveAspectRatio='none'><rect width='1' height='1' fill='${encodedColor}' /></svg>`
 }
 
-// Initialize a shared IntersectionObserver
-const initObserver = (onIntersect: (entry: IntersectionObserverEntry) => void) => {
+const PLACEHOLDER_SRC = getPlaceholderSrc(LAZY_LOADING_CONFIG.placeholderColor)
+
+const initObserver = () => {
   if (observer) return
 
   observer = new IntersectionObserver(
     (entries) => {
-      entries.forEach(onIntersect)
+      entries.forEach((entry) => {
+        callbacks.forEach((cb) => cb(entry))
+      })
     },
     { rootMargin: LAZY_LOADING_CONFIG.rootMargin },
   )
 }
 
+const addCallback = (cb: (entry: IntersectionObserverEntry) => void) => {
+  callbacks.push(cb)
+  initObserver()
+}
+
+const removeCallback = (cb: (entry: IntersectionObserverEntry) => void) => {
+  const index = callbacks.indexOf(cb)
+  if (index > -1) {
+    callbacks.splice(index, 1)
+  }
+  // If no callbacks remain, disconnect the observer
+  if (callbacks.length === 0 && observer) {
+    observer.disconnect()
+    observer = null
+  }
+}
+
 export function useLazyLoadImages() {
-  const placeholderSrc = useRef(getPlaceholderSrc(LAZY_LOADING_CONFIG.placeholderColor)).current
+  const replaceImageUrls = useCallback((html: string): string => {
+    return html.replace(/<img([^>]*)src="([^"]*)"([^>]*)>/g, (_, before, src, after) => {
+      return `<img${before}data-src="${src}" src="${PLACEHOLDER_SRC}"${after}>`
+    })
+  }, [])
 
-  const replaceImageUrls = useCallback(
-    (html: string): string => {
-      return html.replace(/<img([^>]*)src="([^"]*)"([^>]*)>/g, (_, before, src, after) => {
-        return `<img${before}data-src="${src}" src="${placeholderSrc}"${after}>`
-      })
-    },
-    [placeholderSrc],
-  )
-
-  const LazyImage: React.FC<React.ImgHTMLAttributes<HTMLImageElement>> = ({
-    src,
-    alt = '',
-    width,
-    height,
-    style,
-    ...props
-  }) => {
+  const LazyImage: FC<ImgHTMLAttributes<HTMLImageElement>> = ({ src, alt = '', width, height, style, ...props }) => {
     const imgRef = useRef<HTMLImageElement>(null)
 
     useEffect(() => {
@@ -62,20 +70,23 @@ export function useLazyLoadImages() {
         }
       }
 
-      initObserver(handleIntersect)
+      addCallback(handleIntersect)
+
       observer?.observe(imgRef.current)
 
       return () => {
         if (imgRef.current) {
           observer?.unobserve(imgRef.current)
         }
+
+        removeCallback(handleIntersect)
       }
     }, [src])
 
     return (
       <img
         ref={imgRef}
-        src={placeholderSrc}
+        src={PLACEHOLDER_SRC}
         data-src={src}
         alt={alt}
         width={width}
@@ -83,7 +94,7 @@ export function useLazyLoadImages() {
         {...props}
         style={{
           minHeight: LAZY_LOADING_CONFIG.minHeight,
-          opacity: 0, // Start with opacity 0
+          opacity: 0,
           transition: `opacity ${LAZY_LOADING_CONFIG.fadeInDuration}`,
           ...style,
         }}
@@ -91,7 +102,7 @@ export function useLazyLoadImages() {
     )
   }
 
-  const MemoizedLazyImage = React.memo(LazyImage)
+  const MemoizedLazyImage = memo(LazyImage)
 
   return { replaceImageUrls, LazyImage: MemoizedLazyImage }
 }

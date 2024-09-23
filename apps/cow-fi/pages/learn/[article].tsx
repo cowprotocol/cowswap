@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { GetStaticPaths, GetStaticProps } from 'next'
 import styled from 'styled-components/macro'
 import { Color, Media } from '@cowprotocol/ui'
@@ -119,8 +119,7 @@ function getRandomArticles(articles: Article[], count: number): Article[] {
 export function ArticleSharedRichTextComponent({ sharedRichText }: { sharedRichText: SharedRichTextComponent }) {
   const { replaceImageUrls, LazyImage } = useLazyLoadImages()
 
-  // Preprocess the HTML content
-  const processedContent = React.useMemo(() => {
+  const processedContent = useMemo(() => {
     return sharedRichText.body ? replaceImageUrls(sharedRichText.body) : ''
   }, [sharedRichText.body, replaceImageUrls])
 

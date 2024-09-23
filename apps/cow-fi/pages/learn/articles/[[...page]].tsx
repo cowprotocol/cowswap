@@ -5,6 +5,8 @@ import { Font, Color, Media } from '@cowprotocol/ui'
 import Layout from '@/components/Layout'
 import { getArticles, getCategories, Article } from 'services/cms'
 import { SearchBar } from '@/components/SearchBar'
+import CategoryLinksComponent from './CategoryLinks'
+import ArticlesList from './ArticlesList'
 
 import {
   ContainerCard,
@@ -14,10 +16,7 @@ import {
   ArticleCount,
   Pagination,
   LinkSection,
-  LinkColumn,
-  LinkItem,
   ContainerCardInner,
-  CategoryLinks,
 } from '@/styles/styled'
 
 import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
@@ -61,9 +60,9 @@ const Wrapper = styled.div`
 
 interface ArticlesPageProps {
   siteConfigData: typeof CONFIG
-  articles?: any[]
-  totalArticles?: number
-  currentPage?: number
+  articles: Article[]
+  totalArticles: number
+  currentPage: number
   allCategories: { name: string; slug: string }[]
 }
 
@@ -76,50 +75,13 @@ export type ArticlesResponse = {
   }
 }
 
-const renderCategoryLinks = (allCategories: { name: string; slug: string }[]) => (
-  <CategoryLinks>
-    <li>
-      <a href="/learn" onClick={() => clickOnKnowledgeBase('click-categories-home')}>
-        Knowledge Base
-      </a>
-    </li>
-    {allCategories.map((category) => (
-      <li key={category.slug}>
-        <a
-          href={`/learn/topic/${category.slug}`}
-          onClick={() => clickOnKnowledgeBase(`click-categories-${category.name}`)}
-        >
-          {category.name}
-        </a>
-      </li>
-    ))}
-  </CategoryLinks>
-)
-
-const renderArticles = (articles: any[]) => (
-  <LinkColumn>
-    {articles.map((article) =>
-      article.attributes ? (
-        <LinkItem
-          key={article.id}
-          href={`${LEARN_PATH}${article.attributes.slug}`}
-          onClick={() => clickOnKnowledgeBase(`click-article-${article.attributes.title}`)}
-        >
-          {article.attributes.title}
-          <span>→</span>
-        </LinkItem>
-      ) : null,
-    )}
-  </LinkColumn>
-)
-
-export default function ArticlesPage({
-  articles = [],
-  totalArticles = 0,
-  currentPage = 1,
+const ArticlesPage = ({
+  articles,
+  totalArticles,
+  currentPage,
   allCategories,
-}: InferGetStaticPropsType<typeof getStaticProps>) {
-  const totalPages = articles ? Math.ceil(totalArticles / ITEMS_PER_PAGE) : 0
+}: InferGetStaticPropsType<typeof getStaticProps>) => {
+  const totalPages = Math.ceil(totalArticles / ITEMS_PER_PAGE)
 
   return (
     <Layout
@@ -127,7 +89,7 @@ export default function ArticlesPage({
       metaDescription="All knowledge base articles in the Cow DAO ecosystem"
     >
       <Wrapper>
-        {renderCategoryLinks(allCategories)}
+        <CategoryLinksComponent allCategories={allCategories} />
         <SearchBar articles={articles} />
         <ContainerCard gap={42} gapMobile={24} touchFooter>
           <ContainerCardInner maxWidth={970} gap={24} gapMobile={24}>
@@ -145,7 +107,7 @@ export default function ArticlesPage({
             </ContainerCardSectionTop>
             <ContainerCardSection>
               <LinkSection bgColor={'transparent'} columns={1} padding="0">
-                {renderArticles(articles)}
+                <ArticlesList articles={articles} />
               </LinkSection>
             </ContainerCardSection>
             <Pagination>
@@ -167,6 +129,8 @@ export default function ArticlesPage({
   )
 }
 
+export default ArticlesPage
+
 export const getStaticProps: GetStaticProps<ArticlesPageProps> = async (context: GetStaticPropsContext) => {
   const siteConfigData = CONFIG
   const pageParam = context.params?.page as string[] | undefined
@@ -181,6 +145,11 @@ export const getStaticProps: GetStaticProps<ArticlesPageProps> = async (context:
       id: article.id || 0,
       attributes: {
         ...article.attributes,
+        title: article.attributes?.title ?? 'Untitled',
+        description: article.attributes?.description ?? '',
+        slug: article.attributes?.slug ?? 'no-slug',
+        featured: article.attributes?.featured ?? false,
+        publishDateVisible: article.attributes?.publishDateVisible ?? false,
         cover: article.attributes?.cover ?? {},
         blocks: article.attributes?.blocks ?? [],
       },

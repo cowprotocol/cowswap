@@ -144,7 +144,7 @@ export default function TopicPage({ category, articles, allCategories }: TopicPa
               <CategoryTitle>
                 {imageUrl && (
                   <CategoryImageWrapper>
-                    <CategoryImage src={imageUrl} alt={name} />
+                    <CategoryImage src={imageUrl} alt={name} width={82} height={82} />
                   </CategoryImageWrapper>
                 )}
                 <h1>{name}</h1>
@@ -170,7 +170,7 @@ export default function TopicPage({ category, articles, allCategories }: TopicPa
                         {article.attributes.title}
                         <span>→</span>
                       </LinkItem>
-                    ) : null
+                    ) : null,
                   )}
                 </LinkColumn>
               </LinkSection>

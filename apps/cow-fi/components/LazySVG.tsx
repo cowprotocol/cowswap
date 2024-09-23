@@ -20,7 +20,6 @@ const LazySVG: React.FC<LazySVGProps> = ({
 
   useEffect(() => {
     if (!wrapperRef.current) {
-      console.log('wrapperRef is null')
       return
     }
 
