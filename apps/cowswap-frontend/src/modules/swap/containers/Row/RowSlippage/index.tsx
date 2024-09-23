@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 
 import { formatPercent } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -10,10 +10,10 @@ import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { useIsSmartSlippageApplied } from 'modules/swap/hooks/useIsSmartSlippageApplied'
 import { useSetSlippage } from 'modules/swap/hooks/useSetSlippage'
 import { useSmartSwapSlippage } from 'modules/swap/hooks/useSwapSlippage'
+import { useTradePricesUpdate } from 'modules/swap/hooks/useTradePricesUpdate'
 import { RowSlippageContent } from 'modules/swap/pure/Row/RowSlippageContent'
 
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
-import { useTradePricesUpdate } from 'modules/swap/hooks/useTradePricesUpdate'
 
 export interface RowSlippageProps {
   allowedSlippage: Percent
