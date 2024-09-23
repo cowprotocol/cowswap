@@ -9,7 +9,7 @@ export const PRE_CLAIM_GNO: HookDappInternal = {
   descriptionShort: 'Withdraw rewards from your Gnosis validators.',
   description: (
     <>
-      This hook allows you to withdraw rewards from your Gnosis Chain validators through CowSwap. It automates the
+      This hook allows you to withdraw rewards from your Gnosis Chain validators through CoW Swap. It automates the
       process of interacting with the Gnosis Deposit Contract, enabling you to claim any available rewards directly to
       your specified withdrawal address.
       <br />
