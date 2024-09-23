@@ -23,9 +23,9 @@ export function HookDappDetails({ dapp, onSelect }: HookDappDetailsProps) {
 
       return `This hook is compatible with ${
         isSmartContract && isEOA
-          ? 'both smart contracts (e.g. Gnosis Safe) and EOA wallets'
+          ? 'both smart contracts (e.g. Safe) and EOA wallets'
           : isSmartContract
-            ? 'smart contracts (e.g. Gnosis Safe)'
+            ? 'smart contracts (e.g. Safe)'
             : 'EOA wallets'
       }.`
     }

@@ -4,6 +4,7 @@ import { ButtonPrimary } from '@cowprotocol/ui'
 
 import { CowHook, HookDappProps } from '../../types/hooks'
 import { ContentWrapper, Row, Wrapper, ErrorText } from '../styled'
+import { capitalizeFirstLetter } from '@cowprotocol/common-utils'
 
 interface FormFieldParams {
   name: string
@@ -49,9 +50,10 @@ export function BuildHookApp({ context }: HookDappProps) {
 
   const handleSubmit = useCallback(() => {
     const newErrors: Record<keyof CowHook, string> = { ...DEFAULT_ERRORS_STATE }
+
     const hasErrors = Object.entries(hook).some(([key, value]) => {
       if (!value.trim()) {
-        newErrors[key as keyof CowHook] = `${key} is required`
+        newErrors[key as keyof CowHook] = `${capitalizeFirstLetter(key)} is required`
         return true
       }
       return false
@@ -76,6 +78,7 @@ export function BuildHookApp({ context }: HookDappProps) {
         {FIELDS.map((params) => {
           return (
             <FormField
+              key={params.name}
               params={params}
               value={hook[params.name as keyof CowHook]}
               error={errors[params.name as keyof CowHook]}

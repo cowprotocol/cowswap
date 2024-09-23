@@ -88,6 +88,11 @@ export const Row = styled.div`
     &.error {
       border-color: var(${UI.COLOR_DANGER});
     }
+
+    ::-webkit-outer-spin-button,
+    ::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+    }
   }
 
   label {
