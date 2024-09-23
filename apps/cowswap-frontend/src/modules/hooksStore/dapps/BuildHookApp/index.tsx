@@ -1,10 +1,10 @@
 import { useCallback, useState } from 'react'
 
+import { capitalizeFirstLetter } from '@cowprotocol/common-utils'
 import { ButtonPrimary } from '@cowprotocol/ui'
 
 import { CowHook, HookDappProps } from '../../types/hooks'
 import { ContentWrapper, Row, Wrapper, ErrorText } from '../styled'
-import { capitalizeFirstLetter } from '@cowprotocol/common-utils'
 
 interface FormFieldParams {
   name: string
