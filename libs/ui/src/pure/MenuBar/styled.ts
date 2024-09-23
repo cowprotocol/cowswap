@@ -166,6 +166,7 @@ export const NavItems = styled.ul<{ mobileMode?: boolean; theme: CowSwapTheme }>
   align-items: stretch;
   gap: 4px;
   list-style-type: none;
+  list-style: none;
   margin: 0 0 0 var(--marginLeft);
   padding: 0;
   color: inherit;
