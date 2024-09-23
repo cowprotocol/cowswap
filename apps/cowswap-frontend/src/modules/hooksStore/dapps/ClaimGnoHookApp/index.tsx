@@ -80,9 +80,7 @@ export function ClaimGnoHookApp({ context }: HookDappProps) {
         ) : (
           <>
             <ClaimableAmount loading={loading} claimable={claimable} error={error} />
-            {claimable && !error && (
-              <ButtonPrimary onClick={clickOnAddHook}>Add Pre-hook</ButtonPrimary>
-            )}
+            {claimable && !error && <ButtonPrimary onClick={clickOnAddHook}>Add Pre-hook</ButtonPrimary>}
           </>
         )}
       </ContentWrapper>
@@ -102,8 +100,7 @@ function ClaimableAmount(props: { loading: boolean; error: boolean; claimable: B
 
   return (
     <div>
-      <Label>Total claimable rewards</Label>:
-      <Amount>{formatUnits(claimable, 18)} GNO</Amount>
+      <Label>Total claimable rewards</Label>:<Amount>{formatUnits(claimable, 18)} GNO</Amount>
     </div>
   )
 }

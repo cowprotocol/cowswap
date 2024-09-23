@@ -18,19 +18,19 @@ export const Label = styled.span`
 `
 
 export const ContentWrapper = styled.div`
-display: flex;
+  display: flex;
   flex-flow: column wrap;
   justify-content: space-between;
-  padding: 24px 0 0;
+  padding: 24px 10px 0;
   align-items: center;
   text-align: center;
   flex: 1 1 auto;
+  gap: 24px;
 `
 
 export const Amount = styled.div`
   font-weight: bold;
   font-size: 36px;
-
 `
 
 export const ErrorLabel = styled.div`

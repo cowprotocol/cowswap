@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import ICON_HOOK from '@cowprotocol/assets/cow-swap/hook.svg'
 import { Command } from '@cowprotocol/types'
-import { BannerOrientation, DismissableInlineBanner, SearchInput } from '@cowprotocol/ui'
+import { BannerOrientation, DismissableInlineBanner } from '@cowprotocol/ui'
 import { useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
 
 import { NewModal } from 'common/pure/NewModal'
@@ -24,6 +24,7 @@ import { HookListsTabs } from '../../pure/HookListsTabs'
 import { HookDapp, HookDappIframe, CowHookDetailsSerialized } from '../../types/hooks'
 import { findHookDappById } from '../../utils'
 import { HookDappContainer } from '../HookDappContainer'
+import { HookSearchInput } from '../HookSearchInput'
 
 // Type Guards
 function isCowHookDetailsSerialized(obj: any): obj is CowHookDetailsSerialized {
@@ -55,6 +56,11 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit }: HookStore
 
   // State for Search Input
   const [searchQuery, setSearchQuery] = useState<string>('')
+
+  // Clear search input handler
+  const handleClearSearch = useCallback(() => {
+    setSearchQuery('')
+  }, [])
 
   // Compute customHookDapps
   const customHookDapps = useMemo(() => {
@@ -162,27 +168,26 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit }: HookStore
     }
   }, [isAllHooksTab, searchQuery])
 
-  // Extract search input component
+  // Extract search input component using HookSearchInput
   const SearchInputComponent = (
-    <SearchInput
-      type="text"
-      placeholder="Search hooks by title or description"
+    <HookSearchInput
       value={searchQuery}
       onChange={(e) => setSearchQuery(e.target.value)}
-      aria-label="Search hooks"
-      style={{ marginBottom: '16px', flex: 1 }}
+      placeholder="Search hooks by title or description"
+      ariaLabel="Search hooks"
+      onClear={handleClearSearch}
     />
   )
 
   const renderContent = () => (
-    <div>
-      {SearchInputComponent}
+    <>
       {isAllHooksTab && (
         <DismissableInlineBanner
           orientation={BannerOrientation.Horizontal}
           customIcon={ICON_HOOK}
           iconSize={36}
           bannerId="hooks-store-banner-tradeContainer-customHooks"
+          margin="0 10px 10px"
         >
           <p>
             Can't find a hook that you like?{' '}
@@ -192,6 +197,9 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit }: HookStore
           </p>
         </DismissableInlineBanner>
       )}
+
+      {(isAllHooksTab || customHookDapps.length > 0) && SearchInputComponent}
+
       {filteredDapps.length > 0 ? (
         <HookDappsList>
           {filteredDapps.map((dapp) => (
@@ -207,7 +215,7 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit }: HookStore
       ) : (
         <EmptyList>{emptyListMessage}</EmptyList>
       )}
-    </div>
+    </>
   )
 
   return (

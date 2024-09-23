@@ -1,7 +1,7 @@
 import { ReactElement, useCallback, useEffect, useState } from 'react'
 
 import { uriToHttp } from '@cowprotocol/common-utils'
-import { ButtonOutlined, ButtonPrimary, InlineBanner, Loader } from '@cowprotocol/ui'
+import { ButtonOutlined, ButtonPrimary, InlineBanner, Loader, SearchInput } from '@cowprotocol/ui'
 
 import { ExternalSourceAlert } from 'common/pure/ExternalSourceAlert'
 
@@ -33,6 +33,7 @@ export function AddExternalHookForm({
   const [manifestError, setManifestError] = useState<string | React.ReactNode | null>(null)
   const [dappInfo, setDappInfo] = useState<HookDappIframe | null>(null)
 
+  // Function to reset all states
   const dismiss = useCallback(() => {
     setDappInfo(null)
     setManifestError(null)
@@ -42,47 +43,65 @@ export function AddExternalHookForm({
     setWarningAccepted(false)
   }, [])
 
+  // Function to handle going back from search mode
   const goBack = useCallback(() => {
     dismiss()
     setInput(undefined)
     setSearchOpen(false)
   }, [dismiss])
 
+  // Function to handle adding the hook dapp
   const addHookDappCallback = useCallback(() => {
     if (!dappInfo) return
     addHookDapp(dappInfo)
     goBack()
   }, [addHookDapp, dappInfo, goBack])
 
+  // Effect to validate the URL whenever the input changes
   useEffect(() => {
+    // Reset state whenever input changes
     dismiss()
     setUrlValid(input ? uriToHttp(input).length > 0 : true)
   }, [input, dismiss])
 
   return (
     <>
-      {children}
+      {/* Render children when not in search mode */}
+      {!isSearchOpen && children}
 
-      <Wrapper>
-        <ButtonPrimary disabled={loading} onClick={() => setSearchOpen(true)}>
-          {loading ? <Loader /> : 'Add custom hook'}
-        </ButtonPrimary>
-      </Wrapper>
+      {/* Render the "Add custom hook" button when not in search mode */}
+      {!isSearchOpen && (
+        <Wrapper>
+          <ButtonPrimary disabled={loading} onClick={() => setSearchOpen(true)}>
+            {loading ? <Loader /> : 'Add custom hook'}
+          </ButtonPrimary>
+        </Wrapper>
+      )}
 
+      {/* Render the search form when in search mode */}
       {isSearchOpen && (
         <Wrapper>
+          {/* Search Input Field */}
+          <SearchInput
+            type="text"
+            placeholder="Enter a hook dapp URL"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+          />
+
+          {/* Validation and Error Messages */}
           {input && !isUrlValid && (
             <InlineBanner bannerType="danger" hideIcon>
               Hook Dapp URL must match "https://website" format
             </InlineBanner>
           )}
-
           {manifestError && (
             <InlineBanner bannerType="danger" hideIcon>
               {manifestError}
             </InlineBanner>
           )}
 
+          {/* Load external dapp information */}
           {input && isUrlValid && (
             <ExternalDappLoader
               input={input}
@@ -94,8 +113,10 @@ export function AddExternalHookForm({
             />
           )}
 
+          {/* Display dapp details */}
           {dappInfo && !isFinalStep && <HookDappDetails dapp={dappInfo} onSelect={() => setFinalStep(true)} />}
 
+          {/* Final Step: Warning and Confirmation */}
           {isFinalStep && (
             <>
               <ExternalSourceAlert
@@ -115,16 +136,7 @@ export function AddExternalHookForm({
             </>
           )}
 
-          {/* Remove unnecessary duplicate conditions */}
-          {/* {!isFinalStep && dappInfo && !isFinalStep && null} */}
-          {/* {!isFinalStep && dappInfo && null} */}
-
-          {!isFinalStep && !dappInfo && (
-            <ButtonPrimary disabled={isSearchOpen} onClick={() => setSearchOpen(true)}>
-              {loading ? <Loader /> : 'Add custom hook'}
-            </ButtonPrimary>
-          )}
-
+          {/* Display the "Back" button */}
           <ButtonOutlined style={{ fontSize: '16px', padding: '12px 0' }} onClick={goBack}>
             Back
           </ButtonOutlined>
