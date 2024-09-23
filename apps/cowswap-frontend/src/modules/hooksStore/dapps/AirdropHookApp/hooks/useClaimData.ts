@@ -1,3 +1,5 @@
+import { useCallback } from 'react'
+
 import { Airdrop, AirdropAbi } from '@cowprotocol/abis'
 import { formatTokenAmount } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -8,7 +10,6 @@ import useSWR from 'swr'
 import { useContract } from 'common/hooks/useContract'
 
 import { AirdropDataInfo, IClaimData, IAirdrop } from '../types'
-import { useCallback } from 'react'
 
 type IntervalsType = { [key: string]: string }
 
