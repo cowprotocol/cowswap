@@ -3,13 +3,9 @@ import { atomWithStorage } from 'jotai/utils'
 
 import { getJotaiIsolatedStorage } from '@cowprotocol/core'
 import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
-import type { CowHookDetails } from '@cowprotocol/hook-dapp-lib'
 import { walletInfoAtom } from '@cowprotocol/wallet'
 
-interface CowHookDetailsSerialized {
-  hookDetails: CowHookDetails
-  dappId: string
-}
+import { CowHookDetailsSerialized } from '../types/hooks'
 
 export type HooksStoreState = {
   preHooks: CowHookDetailsSerialized[]
