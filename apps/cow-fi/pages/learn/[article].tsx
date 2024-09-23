@@ -34,13 +34,12 @@ import {
   ArticleMainTitle,
   ArticleSubtitleWrapper,
   CategoryTags,
-  CategoryLinks,
   StickyMenu,
   RelatedArticles,
   SectionTitleDescription,
 } from '@/styles/styled'
 import useWebShare from 'hooks/useWebShare'
-
+import { CategoryLinks } from '@/components/CategoryLinks'
 import { Link, LinkType } from '@/components/Link'
 
 import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
@@ -188,23 +187,7 @@ export default function ArticlePage({
   return (
     <Layout metaTitle={`${title} - ${siteConfigData.title}`} metaDescription={metaDescription} ogImage={coverImageUrl}>
       <Wrapper>
-        <CategoryLinks>
-          <li>
-            <a href="/learn" onClick={() => clickOnKnowledgeBase('click-knowledge-base')}>
-              Knowledge Base
-            </a>
-          </li>
-          {allCategories.map((category: { name: string; slug: string }) => (
-            <li key={category.slug}>
-              <a
-                href={`/learn/topic/${category.slug}`}
-                onClick={() => clickOnKnowledgeBase(`click-topic-${category.name}`)}
-              >
-                {category.name}
-              </a>
-            </li>
-          ))}
-        </CategoryLinks>
+        <CategoryLinks allCategories={allCategories} />
 
         <SearchBar articles={articles} />
         <ContainerCard gap={62} gapMobile={42} margin="0 auto" centerContent>

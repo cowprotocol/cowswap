@@ -9,7 +9,7 @@ interface ArticlesListProps {
 
 const ARTICLES_PATH = '/learn/articles/'
 
-const ArticlesList: React.FC<ArticlesListProps> = ({ articles }) => (
+export const ArticlesList: React.FC<ArticlesListProps> = ({ articles }) => (
   <LinkColumn>
     {articles.map((article) => {
       if (!article.attributes) return null
@@ -29,5 +29,3 @@ const ArticlesList: React.FC<ArticlesListProps> = ({ articles }) => (
     })}
   </LinkColumn>
 )
-
-export default ArticlesList

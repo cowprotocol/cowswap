@@ -24,7 +24,6 @@ import {
   CTASectionWrapper,
   CTASubtitle,
   CTATitle,
-  CategoryLinks,
   ContainerCard,
   ContainerCardInner,
   ContainerCardSection,
@@ -41,6 +40,7 @@ import {
 
 import { clickOnKnowledgeBase } from 'modules/analytics'
 import LazySVG from '@/components/LazySVG'
+import { CategoryLinks } from '@/components/CategoryLinks'
 
 import { useLazyLoadImages } from 'hooks/useLazyLoadImages'
 
@@ -174,18 +174,7 @@ export default function Page({ siteConfigData, categories, articles, featuredArt
         <h1>Learn - Knowledge Base</h1>
         <h2>Hi, how can we help?</h2>
 
-        <CategoryLinks noDivider>
-          {categories.map((category: { name: string; slug: string }) => (
-            <li key={category.slug}>
-              <a
-                href={`/learn/topic/${category.slug}`}
-                onClick={() => clickOnKnowledgeBase(`click-topic-${category.name}`)}
-              >
-                {category.name}
-              </a>
-            </li>
-          ))}
-        </CategoryLinks>
+        <CategoryLinks allCategories={categories} noDivider />
 
         <SearchBar articles={articles} />
 

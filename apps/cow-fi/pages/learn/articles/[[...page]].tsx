@@ -5,8 +5,8 @@ import { Font, Color, Media } from '@cowprotocol/ui'
 import Layout from '@/components/Layout'
 import { getArticles, getCategories, Article } from 'services/cms'
 import { SearchBar } from '@/components/SearchBar'
-import CategoryLinksComponent from './CategoryLinks'
-import ArticlesList from './ArticlesList'
+import { CategoryLinks } from '../../../components/CategoryLinks'
+import { ArticlesList } from '../../../components/ArticlesList'
 
 import {
   ContainerCard,
@@ -89,7 +89,7 @@ const ArticlesPage = ({
       metaDescription="All knowledge base articles in the Cow DAO ecosystem"
     >
       <Wrapper>
-        <CategoryLinksComponent allCategories={allCategories} />
+        <CategoryLinks allCategories={allCategories} />
         <SearchBar articles={articles} />
         <ContainerCard gap={42} gapMobile={24} touchFooter>
           <ContainerCardInner maxWidth={970} gap={24} gapMobile={24}>
