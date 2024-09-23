@@ -1,6 +1,6 @@
 import permitImg from './icon.png'
 
-import { HookDappInternal, HookDappType } from '../../types/hooks'
+import { HookDappInternal, HookDappType, HookDappWalletCompatibility } from '../../types/hooks'
 
 import { PermitHookApp } from './index'
 
@@ -13,4 +13,5 @@ export const PERMIT_HOOK: HookDappInternal = {
   component: (props) => <PermitHookApp {...props} />,
   version: 'v0.1.0',
   website: 'https://docs.cow.fi/cow-protocol/reference/core/intents/hooks',
+  walletCompatibility: [HookDappWalletCompatibility.EOA],
 }
