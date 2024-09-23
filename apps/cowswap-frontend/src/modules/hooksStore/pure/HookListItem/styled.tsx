@@ -1,7 +1,6 @@
-import { UI } from '@cowprotocol/ui'
+import { UI, Media } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
-
 
 export const LinkButton = styled.button`
   display: flex;
@@ -22,11 +21,15 @@ export const LinkButton = styled.button`
   justify-content: center;
   transition: all 0.2s ease-in-out;
 
+  ${Media.upToSmall()} {
+    width: 100%;
+    padding: 16px;
+  }
+
   &:hover {
     background: var(${UI.COLOR_PRIMARY_DARKEST});
   }
 `
-
 
 export const HookDappListItem = styled.li<{ isDescriptionView?: boolean }>`
   width: 100%;
@@ -47,8 +50,6 @@ export const HookDappListItem = styled.li<{ isDescriptionView?: boolean }>`
     background: ${({ isDescriptionView }) =>
       isDescriptionView ? 'transparent' : `var(${UI.COLOR_PRIMARY_OPACITY_10})`};
     border: 1px solid transparent;
-
- 
   }
 
   > img,
@@ -63,7 +64,6 @@ export const HookDappListItem = styled.li<{ isDescriptionView?: boolean }>`
     overflow: hidden;
     background-color: var(${UI.COLOR_PAPER_DARKER});
     padding: 10px;
- 
   }
 
   > span {
@@ -73,15 +73,23 @@ export const HookDappListItem = styled.li<{ isDescriptionView?: boolean }>`
     justify-content: center;
     gap: 8px;
 
+    ${Media.upToSmall()} {
+      width: 100%;
+      gap: 21px;
+    }
+
     > i {
       font-size: 13px;
       display: flex;
       align-items: center;
       gap: 3px;
- 
       transition: all 0.2s ease-in-out;
       font-style: normal;
       color: var(${UI.COLOR_TEXT_OPACITY_50});
+
+      ${Media.upToSmall()} {
+        font-size: 15px;
+      }
 
       &:hover {
         color: var(${UI.COLOR_TEXT});
@@ -100,8 +108,6 @@ export const HookDappListItem = styled.li<{ isDescriptionView?: boolean }>`
       }
     }
   }
-
-
 `
 
 export const HookDappDetails = styled.div<{ isDescriptionView?: boolean }>`
