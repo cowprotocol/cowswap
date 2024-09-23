@@ -20,6 +20,7 @@ import { GeneratePermitHook, GeneratePermitHookParams } from '../types'
  * Hook that returns callback to generate permit hook data
  */
 export function useGeneratePermitHook(): GeneratePermitHook {
+  const { chainId } = useWalletInfo()
   const storePermit = useSetAtom(storePermitCacheAtom)
   const getCachedPermit = useGetCachedPermit()
 
@@ -31,20 +32,18 @@ export function useGeneratePermitHook(): GeneratePermitHook {
   useAtomValue(staticPermitCacheAtom)
   useAtomValue(userPermitCacheAtom)
 
-  const { chainId } = useWalletInfo()
   const provider = useWalletProvider()
-
-  const spender = COW_PROTOCOL_VAULT_RELAYER_ADDRESS[chainId]
 
   return useCallback(
     async (params: GeneratePermitHookParams): Promise<PermitHookData | undefined> => {
-      const { inputToken, account, permitInfo } = params
+      const { inputToken, account, permitInfo, customSpender } = params
 
       if (!provider || !isSupportedPermitInfo(permitInfo)) {
         return
       }
 
       const eip2162Utils = getPermitUtilsInstance(chainId, provider, account)
+      const spender = customSpender || COW_PROTOCOL_VAULT_RELAYER_ADDRESS[chainId]
 
       // Always get the nonce for the real account, to know whether the cache should be invalidated
       // Static account should never need to pre-check the nonce as it'll never change once cached
@@ -52,7 +51,7 @@ export function useGeneratePermitHook(): GeneratePermitHook {
 
       const permitParams = { chainId, tokenAddress: inputToken.address, account, nonce }
 
-      const cachedPermit = await getCachedPermit(inputToken.address)
+      const cachedPermit = await getCachedPermit(inputToken.address, spender)
 
       if (cachedPermit) {
         return cachedPermit
@@ -69,10 +68,10 @@ export function useGeneratePermitHook(): GeneratePermitHook {
         nonce,
       })
 
-      hookData && storePermit({ ...permitParams, hookData })
+      hookData && storePermit({ ...permitParams, hookData, spender })
 
       return hookData
     },
-    [provider, chainId, getCachedPermit, spender, storePermit]
+    [provider, chainId, getCachedPermit, storePermit],
   )
 }

@@ -14,7 +14,9 @@ export type AddPermitTokenParams = {
   permitInfo: PermitInfo
 }
 
-export type GeneratePermitHookParams = Pick<PermitHookParams, 'inputToken' | 'permitInfo' | 'account'>
+export type GeneratePermitHookParams = Pick<PermitHookParams, 'inputToken' | 'permitInfo' | 'account'> & {
+  customSpender?: string
+}
 
 export type GeneratePermitHook = (params: GeneratePermitHookParams) => Promise<PermitHookData | undefined>
 
@@ -38,6 +40,7 @@ export type PermitCacheKeyParams = {
   tokenAddress: string
   account: string | undefined
   nonce: number | undefined
+  spender: string
 }
 
 export type StorePermitCacheParams = PermitCacheKeyParams & { hookData: PermitHookData }
