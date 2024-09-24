@@ -9,7 +9,7 @@ import { HookDapp } from '../types/hooks'
 
 export function useAllHookDapps(isPreHook: boolean): HookDapp[] {
   const { chainId } = useWalletInfo()
-  const customHookDapps = useCustomHookDapps()
+  const customHookDapps = useCustomHookDapps(isPreHook)
 
   return useMemo(() => {
     return (isPreHook ? PRE_HOOK_REGISTRY : POST_HOOK_REGISTRY)[chainId].concat(customHookDapps)

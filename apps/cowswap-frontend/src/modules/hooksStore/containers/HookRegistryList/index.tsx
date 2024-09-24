@@ -38,9 +38,9 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit }: HookStore
   const [isAllHooksTab, setIsAllHooksTab] = useState<boolean>(true)
 
   const isSmartContractWallet = useIsSmartContractWallet()
-  const addCustomHookDapp = useAddCustomHookDapp()
+  const addCustomHookDapp = useAddCustomHookDapp(isPreHook)
   const removeCustomHookDapp = useRemoveCustomHookDapp()
-  const customHookDapps = useCustomHookDapps()
+  const customHookDapps = useCustomHookDapps(isPreHook)
   const hookToEditDetails = useHookById(hookToEdit, isPreHook)
 
   // State for Search Input
