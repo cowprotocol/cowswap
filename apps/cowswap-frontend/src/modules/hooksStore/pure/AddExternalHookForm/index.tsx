@@ -76,7 +76,11 @@ export function AddExternalHookForm({
       )}
       <Wrapper>
         {isSearchOpen && (
-          <SearchInput type="text" placeholder="Enter a hook dapp URL" onChange={(e) => setInput(e.target.value)} />
+          <SearchInput
+            type="text"
+            placeholder="Enter a hook dapp URL"
+            onChange={(e) => setInput(e.target.value?.trim())}
+          />
         )}
         {input && !isUrlValid && (
           <InlineBanner bannerType="danger" hideIcon>
