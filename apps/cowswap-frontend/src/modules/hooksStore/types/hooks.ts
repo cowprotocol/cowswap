@@ -44,7 +44,6 @@ export interface HookDappInternal extends HookDappBase {
 export interface HookDappIframe extends HookDappBase {
   type: HookDappType.IFRAME
   url: string
-  isCustom?: boolean
 }
 
 export type HookDapp = HookDappInternal | HookDappIframe

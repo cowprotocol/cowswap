@@ -7,9 +7,9 @@ import { usePostHooksRecipientOverride } from 'modules/hooksStore'
 
 import { useTradeStateFromUrl } from './setupTradeState/useTradeStateFromUrl'
 import { useDerivedTradeState } from './useDerivedTradeState'
+import { useIsHooksTradeType } from './useIsHooksTradeType'
 
 import { useIsAlternativeOrderModalVisible } from '../state/alternativeOrder'
-import { useIsHooksTradeType } from './useIsHooksTradeType'
 
 export function useResetRecipient(onChangeRecipient: (recipient: string | null) => void): null {
   const isAlternativeOrderModalVisible = useIsAlternativeOrderModalVisible()

@@ -1,5 +1,3 @@
-// apps/cowswap-frontend/src/modules/hooksStore/containers/HookRegistryList/index.tsx
-
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import ICON_HOOK from '@cowprotocol/assets/cow-swap/hook.svg'
@@ -21,19 +19,10 @@ import { HookDappDetails } from '../../pure/HookDappDetails'
 import { HookDetailHeader } from '../../pure/HookDetailHeader'
 import { HookListItem } from '../../pure/HookListItem'
 import { HookListsTabs } from '../../pure/HookListsTabs'
-import { HookDapp, HookDappIframe, CowHookDetailsSerialized } from '../../types/hooks'
-import { findHookDappById } from '../../utils'
+import { HookDapp, HookDappIframe } from '../../types/hooks'
+import { findHookDappById, isHookDappIframe } from '../../utils'
 import { HookDappContainer } from '../HookDappContainer'
 import { HookSearchInput } from '../HookSearchInput'
-
-// Type Guards
-function isCowHookDetailsSerialized(obj: any): obj is CowHookDetailsSerialized {
-  return obj && typeof obj === 'object' && 'hookDetails' in obj && 'dappId' in obj
-}
-
-function isHookDappIframe(dapp: HookDapp): dapp is HookDappIframe {
-  return 'url' in dapp && typeof dapp.url === 'string'
-}
 
 interface HookStoreModal {
   onDismiss: Command
@@ -62,49 +51,31 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit }: HookStore
     setSearchQuery('')
   }, [])
 
-  // Compute customHookDapps
-  const customHookDapps = useMemo(() => {
-    const filtered = externalHookDapps.filter(isHookDappIframe).filter((dapp) => dapp.isCustom)
-    console.log('Custom Hook Dapps:', filtered) // Debugging
-    return filtered
-  }, [externalHookDapps])
+  const internalHookDapps = useMemo(() => {
+    return (isPreHook ? PRE_HOOK_REGISTRY[chainId] : POST_HOOK_REGISTRY[chainId]) || []
+  }, [isPreHook, chainId])
 
-  // Compute dapps based on the current tab and isPreHook
-  const dapps = useMemo(() => {
-    if (isAllHooksTab) {
-      if (isPreHook) {
-        return PRE_HOOK_REGISTRY[chainId] || []
-      } else {
-        return [...(POST_HOOK_REGISTRY[chainId] || []), ...externalHookDapps]
-      }
-    } else {
-      return customHookDapps
-    }
-  }, [isAllHooksTab, isPreHook, chainId, externalHookDapps, customHookDapps])
+  const currentDapps = useMemo(() => {
+    return isAllHooksTab ? internalHookDapps : externalHookDapps
+  }, [isAllHooksTab, internalHookDapps, externalHookDapps])
 
   // Compute filteredDapps based on searchQuery
   const filteredDapps = useMemo(() => {
-    if (!searchQuery.trim()) return dapps
+    if (!searchQuery) return currentDapps
+
     const lowerQuery = searchQuery.toLowerCase()
-    return dapps.filter((dapp) => {
-      // Ensure dapp.name is a string
-      const name = typeof dapp.name === 'string' ? dapp.name.toLowerCase() : ''
-      // Ensure dapp.description is a string
-      const description = typeof dapp.description === 'string' ? dapp.description.toLowerCase() : ''
+
+    return currentDapps.filter((dapp) => {
+      const name = dapp.name?.toLowerCase() || ''
+      const description = dapp.descriptionShort?.toLowerCase() || ''
+
       return name.includes(lowerQuery) || description.includes(lowerQuery)
     })
-  }, [dapps, searchQuery])
+  }, [currentDapps, searchQuery])
 
-  // Compute counts for tabs
-  const allHooksCount = useMemo(() => {
-    if (isPreHook) {
-      return PRE_HOOK_REGISTRY[chainId]?.length || 0
-    } else {
-      return (POST_HOOK_REGISTRY[chainId]?.length || 0) + externalHookDapps.length
-    }
-  }, [isPreHook, chainId, externalHookDapps])
+  const allHooksCount = internalHookDapps.length
 
-  const customHooksCount = useMemo(() => customHookDapps.length, [customHookDapps])
+  const externalHooksCount = externalHookDapps.length
 
   // Compute title based on selected dapp or details
   const title = useMemo(() => {
@@ -135,24 +106,14 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit }: HookStore
     if (!hookToEditDetails) {
       setSelectedDapp(null)
     } else {
-      if (!isCowHookDetailsSerialized(hookToEditDetails)) {
-        console.error('hookToEditDetails is missing dappId:', hookToEditDetails)
-        setSelectedDapp(null)
-        return
-      }
-
-      setSelectedDapp(findHookDappById(dapps, hookToEditDetails) || null)
+      setSelectedDapp(findHookDappById(currentDapps, hookToEditDetails) || null)
     }
-  }, [hookToEditDetails, dapps])
+  }, [hookToEditDetails, currentDapps])
 
   // Reset dappDetails when tab changes
   useEffect(() => {
     setDappDetails(null)
   }, [isAllHooksTab])
-
-  useEffect(() => {
-    console.log('External Hook Dapps:', externalHookDapps)
-  }, [externalHookDapps])
 
   // Handle add custom hook button
   const handleAddCustomHook = useCallback(() => {
@@ -162,24 +123,13 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit }: HookStore
   // Determine the message for EmptyList based on the active tab and search query
   const emptyListMessage = useMemo(() => {
     if (isAllHooksTab) {
-      return searchQuery.trim() ? 'No hooks match your search.' : 'No hooks available.'
+      return searchQuery ? 'No hooks match your search.' : 'No hooks available.'
     } else {
       return "You haven't added any custom hooks yet. Add a custom hook to get started."
     }
   }, [isAllHooksTab, searchQuery])
 
-  // Extract search input component using HookSearchInput
-  const SearchInputComponent = (
-    <HookSearchInput
-      value={searchQuery}
-      onChange={(e) => setSearchQuery(e.target.value)}
-      placeholder="Search hooks by title or description"
-      ariaLabel="Search hooks"
-      onClear={handleClearSearch}
-    />
-  )
-
-  const renderContent = () => (
+  const DappsListContent = (
     <>
       {isAllHooksTab && (
         <DismissableInlineBanner
@@ -198,7 +148,13 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit }: HookStore
         </DismissableInlineBanner>
       )}
 
-      {(isAllHooksTab || customHookDapps.length > 0) && SearchInputComponent}
+      <HookSearchInput
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value?.trim())}
+        placeholder="Search hooks by title or description"
+        ariaLabel="Search hooks"
+        onClear={handleClearSearch}
+      />
 
       {filteredDapps.length > 0 ? (
         <HookDappsList>
@@ -232,7 +188,7 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit }: HookStore
             isAllHooksTab={isAllHooksTab}
             setIsAllHooksTab={setIsAllHooksTab}
             allHooksCount={allHooksCount}
-            customHooksCount={customHooksCount}
+            customHooksCount={externalHooksCount}
             onAddCustomHook={handleAddCustomHook}
           />
         )}
@@ -256,14 +212,14 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit }: HookStore
           }
 
           return isAllHooksTab ? (
-            renderContent()
+            DappsListContent
           ) : (
             <AddExternalHookForm
               isPreHook={isPreHook}
               isSmartContractWallet={isSmartContractWallet}
               addHookDapp={addExternalHookDapp}
             >
-              {renderContent()}
+              {DappsListContent}
             </AddExternalHookForm>
           )
         })()}

@@ -30,13 +30,12 @@ export const externalHookDappsAtom = atom((get) => {
 export const addExternalHookDappsAtom = atom(null, (get, set, dapp: HookDappIframe) => {
   const { chainId } = get(walletInfoAtom)
   const state = get(externalHookDappsInner)
-  const customDapp = { ...dapp, isCustom: true }
 
   set(externalHookDappsInner, {
     ...state,
     [chainId]: {
       ...state[chainId],
-      [customDapp.url]: customDapp,
+      [dapp.url]: dapp,
     },
   })
 })

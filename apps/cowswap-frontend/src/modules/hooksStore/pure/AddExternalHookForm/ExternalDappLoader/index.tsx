@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { Dispatch, SetStateAction, useEffect } from 'react'
 
 import { HookDappBase, HookDappIframe, HookDappType } from '../../../types/hooks'
 
@@ -14,8 +14,6 @@ type HookDappManifest = HookDappBaseInfo & {
 }
 
 const MANDATORY_DAPP_FIELDS: (keyof HookDappBaseInfo)[] = ['name', 'image', 'version', 'website']
-
-import { Dispatch, SetStateAction } from 'react'
 
 interface ExternalDappLoaderProps {
   input: string
