@@ -326,6 +326,7 @@ export const MobileDropdownContainer = styled.div<{ mobileMode: boolean }>`
       box-sizing: border-box;
       scrollbar-width: thin;
       scrollbar-color: var(--scrollbarColor) var(--scrollbarBackground);
+      list-style: none;
 
       > div {
         width: 100%;
