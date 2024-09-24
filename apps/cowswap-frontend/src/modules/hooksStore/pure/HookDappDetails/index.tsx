@@ -15,7 +15,7 @@ interface HookDappDetailsProps {
 
 export function HookDappDetails({ dapp, onSelect }: HookDappDetailsProps) {
   const tags = useMemo(() => {
-    const { version, website, type, walletCompatibility } = dapp
+    const { version, website, type, walletCompatibility = [] } = dapp
 
     const getWalletCompatibilityTooltip = () => {
       const isSmartContract = walletCompatibility.includes(HookDappWalletCompatibility.SMART_CONTRACT)
