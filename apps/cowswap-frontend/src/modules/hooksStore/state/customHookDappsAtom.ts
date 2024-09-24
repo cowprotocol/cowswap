@@ -10,28 +10,28 @@ import { setHooksAtom } from './hookDetailsAtom'
 import { HookDappIframe } from '../types/hooks'
 import { getHookDappId } from '../utils'
 
-type ExternalHookDapps = Record<HookDappIframe['url'], HookDappIframe>
+type CustomHookDapps = Record<HookDappIframe['url'], HookDappIframe>
 
-const EMPTY_STATE: ExternalHookDapps = {}
+const EMPTY_STATE: CustomHookDapps = {}
 
-const externalHookDappsInner = atomWithStorage<Record<SupportedChainId, ExternalHookDapps>>(
-  'externalHookDappsAtom:v1',
+const customHookDappsInner = atomWithStorage<Record<SupportedChainId, CustomHookDapps>>(
+  'customHookDappsAtom:v1',
   mapSupportedNetworks({}),
   getJotaiIsolatedStorage(),
 )
 
-export const externalHookDappsAtom = atom((get) => {
+export const customHookDappsAtom = atom((get) => {
   const { chainId } = get(walletInfoAtom)
-  const state = get(externalHookDappsInner)
+  const state = get(customHookDappsInner)
 
   return Object.values(state[chainId] || EMPTY_STATE) as HookDappIframe[]
 })
 
-export const addExternalHookDappsAtom = atom(null, (get, set, dapp: HookDappIframe) => {
+export const addCustomHookDappAtom = atom(null, (get, set, dapp: HookDappIframe) => {
   const { chainId } = get(walletInfoAtom)
-  const state = get(externalHookDappsInner)
+  const state = get(customHookDappsInner)
 
-  set(externalHookDappsInner, {
+  set(customHookDappsInner, {
     ...state,
     [chainId]: {
       ...state[chainId],
@@ -40,14 +40,14 @@ export const addExternalHookDappsAtom = atom(null, (get, set, dapp: HookDappIfra
   })
 })
 
-export const removeExternalHookDappsAtom = atom(null, (get, set, dapp: HookDappIframe) => {
+export const removeCustomHookDappAtom = atom(null, (get, set, dapp: HookDappIframe) => {
   const { chainId } = get(walletInfoAtom)
-  const state = get(externalHookDappsInner)
+  const state = get(customHookDappsInner)
   const currentState = { ...state[chainId] }
 
   delete currentState[dapp.url]
 
-  set(externalHookDappsInner, {
+  set(customHookDappsInner, {
     ...state,
     [chainId]: currentState,
   })

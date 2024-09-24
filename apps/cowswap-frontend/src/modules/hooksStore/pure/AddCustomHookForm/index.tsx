@@ -5,25 +5,20 @@ import { ButtonOutlined, ButtonPrimary, InlineBanner, Loader, SearchInput } from
 
 import { ExternalSourceAlert } from 'common/pure/ExternalSourceAlert'
 
-import { ExternalDappLoader } from './ExternalDappLoader'
+import { ExternalDappLoader } from './CustomDappLoader'
 import { Wrapper } from './styled'
 
 import { HookDappIframe } from '../../types/hooks'
 import { HookDappDetails } from '../HookDappDetails'
 
-interface AddExternalHookFormProps {
+interface AddCustomHookFormProps {
   isPreHook: boolean
   isSmartContractWallet: boolean | undefined
   addHookDapp(dapp: HookDappIframe): void
   children: ReactElement | null
 }
 
-export function AddExternalHookForm({
-  addHookDapp,
-  children,
-  isPreHook,
-  isSmartContractWallet,
-}: AddExternalHookFormProps) {
+export function AddCustomHookForm({ addHookDapp, children, isPreHook, isSmartContractWallet }: AddCustomHookFormProps) {
   const [input, setInput] = useState<string | undefined>(undefined)
   const [isSearchOpen, setSearchOpen] = useState<boolean>(false)
   const [isWarningAccepted, setWarningAccepted] = useState<boolean>(false)

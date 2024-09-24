@@ -10,11 +10,11 @@ import { NewModal } from 'common/pure/NewModal'
 import { EmptyList, HookDappsList, Wrapper } from './styled'
 
 import { POST_HOOK_REGISTRY, PRE_HOOK_REGISTRY } from '../../hookRegistry'
-import { useAddExternalHookDapp } from '../../hooks/useAddExternalHookDapp'
-import { useExternalHookDapps } from '../../hooks/useExternalHookDapps'
+import { useAddCustomHookDapp } from '../../hooks/useAddCustomHookDapp'
+import { useCustomHookDapps } from '../../hooks/useCustomHookDapps'
 import { useHookById } from '../../hooks/useHookById'
-import { useRemoveExternalHookDapp } from '../../hooks/useRemoveExternalHookDapp'
-import { AddExternalHookForm } from '../../pure/AddExternalHookForm'
+import { useRemoveCustomHookDapp } from '../../hooks/useRemoveCustomHookDapp'
+import { AddCustomHookForm } from '../../pure/AddCustomHookForm'
 import { HookDappDetails } from '../../pure/HookDappDetails'
 import { HookDetailHeader } from '../../pure/HookDetailHeader'
 import { HookListItem } from '../../pure/HookListItem'
@@ -38,9 +38,9 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit }: HookStore
   const [isAllHooksTab, setIsAllHooksTab] = useState<boolean>(true)
 
   const isSmartContractWallet = useIsSmartContractWallet()
-  const addExternalHookDapp = useAddExternalHookDapp()
-  const removeExternalHookDapp = useRemoveExternalHookDapp()
-  const externalHookDapps = useExternalHookDapps()
+  const addCustomHookDapp = useAddCustomHookDapp()
+  const removeCustomHookDapp = useRemoveCustomHookDapp()
+  const customHookDapps = useCustomHookDapps()
   const hookToEditDetails = useHookById(hookToEdit, isPreHook)
 
   // State for Search Input
@@ -56,8 +56,8 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit }: HookStore
   }, [isPreHook, chainId])
 
   const currentDapps = useMemo(() => {
-    return isAllHooksTab ? internalHookDapps : externalHookDapps
-  }, [isAllHooksTab, internalHookDapps, externalHookDapps])
+    return isAllHooksTab ? internalHookDapps : customHookDapps
+  }, [isAllHooksTab, internalHookDapps, customHookDapps])
 
   // Compute filteredDapps based on searchQuery
   const filteredDapps = useMemo(() => {
@@ -75,7 +75,7 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit }: HookStore
 
   const allHooksCount = internalHookDapps.length
 
-  const externalHooksCount = externalHookDapps.length
+  const customHooksCount = customHookDapps.length
 
   // Compute title based on selected dapp or details
   const title = useMemo(() => {
@@ -162,7 +162,7 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit }: HookStore
             <HookListItem
               key={isHookDappIframe(dapp) ? dapp.url : dapp.name}
               dapp={dapp}
-              onRemove={isAllHooksTab ? undefined : () => removeExternalHookDapp(dapp as HookDappIframe)}
+              onRemove={isAllHooksTab ? undefined : () => removeCustomHookDapp(dapp as HookDappIframe)}
               onSelect={() => setSelectedDapp(dapp)}
               onOpenDetails={() => setDappDetails(dapp)}
             />
@@ -188,7 +188,7 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit }: HookStore
             isAllHooksTab={isAllHooksTab}
             setIsAllHooksTab={setIsAllHooksTab}
             allHooksCount={allHooksCount}
-            customHooksCount={externalHooksCount}
+            customHooksCount={customHooksCount}
             onAddCustomHook={handleAddCustomHook}
           />
         )}
@@ -214,13 +214,13 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit }: HookStore
           return isAllHooksTab ? (
             DappsListContent
           ) : (
-            <AddExternalHookForm
+            <AddCustomHookForm
               isPreHook={isPreHook}
               isSmartContractWallet={isSmartContractWallet}
-              addHookDapp={addExternalHookDapp}
+              addHookDapp={addCustomHookDapp}
             >
               {DappsListContent}
-            </AddExternalHookForm>
+            </AddCustomHookForm>
           )
         })()}
       </NewModal>
