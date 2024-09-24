@@ -175,3 +175,40 @@ export const SimulateContainer = styled.div<{ isSuccessful: boolean }>`
     gap: 4px;
   }
 `
+
+export const OldSimulateContainer = styled.div`
+  border: 1px solid var(${UI.COLOR_TEXT_OPACITY_25});
+  border-radius: 4px;
+  padding: 10px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+`
+
+export const SimulateHeader = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  align-items: center;
+  margin-bottom: 5px;
+  min-width: 150px;
+`
+
+export const SimulateFooter = styled.div`
+  color: var(${UI.COLOR_TEXT2});
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  align-items: center;
+
+  > svg {
+    height: 16px;
+    width: 70px;
+    display: inline-block;
+    background: #fff;
+    border-radius: 4px;
+    padding: 2px;
+  }
+`

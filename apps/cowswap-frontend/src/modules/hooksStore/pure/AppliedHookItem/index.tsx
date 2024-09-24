@@ -2,6 +2,7 @@
 
 import ICON_CHECK_ICON from '@cowprotocol/assets/cow-swap/check-singular.svg'
 import ICON_GRID from '@cowprotocol/assets/cow-swap/grid.svg'
+import TenderlyLogo from '@cowprotocol/assets/cow-swap/tenderly-logo.svg'
 import ICON_X from '@cowprotocol/assets/cow-swap/x.svg'
 import { InfoTooltip } from '@cowprotocol/ui'
 
@@ -10,6 +11,7 @@ import SVG from 'react-inlinesvg'
 
 import * as styledEl from './styled'
 
+import { TenderlySimulate } from '../../containers/TenderlySimulate'
 import { CowHookDetailsSerialized, HookDapp } from '../../types/hooks'
 
 interface HookItemProp {
@@ -21,6 +23,9 @@ interface HookItemProp {
   editHook: (uuid: string) => void
   index: number
 }
+
+// TODO: remove once a tenderly bundle simulation is ready
+const isBundleSimulationReady = false
 
 export function AppliedHookItem({
   account,
@@ -66,7 +71,7 @@ export function AppliedHookItem({
         </styledEl.HookItemActions>
       </styledEl.HookItemHeader>
 
-      {account && (
+      {account && isBundleSimulationReady && (
         <styledEl.SimulateContainer isSuccessful={isSimulationSuccessful}>
           {isSimulationSuccessful ? (
             <SVG src={ICON_CHECK_ICON} color="green" width={16} height={16} aria-label="Simulation Successful" />
@@ -83,6 +88,24 @@ export function AppliedHookItem({
           )}
           <InfoTooltip content={simulationTooltip} />
         </styledEl.SimulateContainer>
+      )}
+
+      {!isBundleSimulationReady && (
+        <styledEl.OldSimulateContainer>
+          <div>
+            <styledEl.SimulateHeader>
+              <strong>Run a simulation</strong>
+              <InfoTooltip content="This transaction can be simulated before execution to ensure that it will be succeed, generating a detailed report of the transaction execution." />
+            </styledEl.SimulateHeader>
+            <styledEl.SimulateFooter>
+              <span>Powered by</span>
+              <SVG src={TenderlyLogo} description="Tenderly" />
+            </styledEl.SimulateFooter>
+          </div>
+          <div>
+            <TenderlySimulate hook={hookDetails.hook} />
+          </div>
+        </styledEl.OldSimulateContainer>
       )}
     </styledEl.HookItemWrapper>
   )
