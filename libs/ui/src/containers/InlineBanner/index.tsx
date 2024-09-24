@@ -81,7 +81,7 @@ const Wrapper = styled.span<{
   font-size: 14px;
   font-weight: 400;
   line-height: 1.2;
-  width: ${({ width = 'auto' }) => width};
+  width: ${({ width = '100%' }) => width};
 
   // Icon + Text content wrapper
   > span {
