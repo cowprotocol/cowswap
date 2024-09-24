@@ -1,4 +1,4 @@
-import { HookDappInternal, HookDappType } from 'modules/hooksStore/types/hooks'
+import { HookDappInternal, HookDappType, HookDappWalletCompatibility } from 'modules/hooksStore/types/hooks'
 
 import airdropImage from './airdrop.svg'
 
@@ -30,4 +30,5 @@ export const AIRDROP_HOOK_APP: HookDappInternal = {
   component: (props) => <AirdropHookApp {...props} />,
   version: '0.1.0',
   website: 'https://github.com/bleu/cow-airdrop-contract-deployer',
+  walletCompatibility: [HookDappWalletCompatibility.EOA, HookDappWalletCompatibility.SMART_CONTRACT],
 }
