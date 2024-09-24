@@ -9,12 +9,14 @@ import { useTradeStateFromUrl } from './setupTradeState/useTradeStateFromUrl'
 import { useDerivedTradeState } from './useDerivedTradeState'
 
 import { useIsAlternativeOrderModalVisible } from '../state/alternativeOrder'
+import { useIsHooksTradeType } from './useIsHooksTradeType'
 
 export function useResetRecipient(onChangeRecipient: (recipient: string | null) => void): null {
   const isAlternativeOrderModalVisible = useIsAlternativeOrderModalVisible()
   const tradeState = useDerivedTradeState()
   const tradeStateFromUrl = useTradeStateFromUrl()
   const postHooksRecipientOverride = usePostHooksRecipientOverride()
+  const isHooksTradeType = useIsHooksTradeType()
   const hasTradeState = !!tradeStateFromUrl
   const { chainId } = useWalletInfo()
 
@@ -45,10 +47,12 @@ export function useResetRecipient(onChangeRecipient: (recipient: string | null) 
    * Remove recipient override when its source hook was deleted
    */
   useEffect(() => {
-    if (!postHooksRecipientOverride && recipient === prevPostHooksRecipientOverride) {
+    const recipientOverrideWasRemoved = !postHooksRecipientOverride && recipient === prevPostHooksRecipientOverride
+
+    if (recipientOverrideWasRemoved || !isHooksTradeType) {
       onChangeRecipient(null)
     }
-  }, [recipient, postHooksRecipientOverride, prevPostHooksRecipientOverride, onChangeRecipient])
+  }, [recipient, isHooksTradeType, postHooksRecipientOverride, prevPostHooksRecipientOverride, onChangeRecipient])
 
   return null
 }

@@ -86,7 +86,7 @@ export function AddExternalHookForm({
             type="text"
             placeholder="Enter a hook dapp URL"
             value={input}
-            onChange={(e) => setInput(e.target.value)}
+            onChange={(e) => setInput(e.target.value?.trim())}
           />
 
           {/* Validation and Error Messages */}
