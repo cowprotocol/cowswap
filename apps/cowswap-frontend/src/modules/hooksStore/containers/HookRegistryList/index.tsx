@@ -138,6 +138,7 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit }: HookStore
           iconSize={36}
           bannerId="hooks-store-banner-tradeContainer-customHooks"
           margin="0 10px 10px"
+          width="auto"
         >
           <p>
             Can't find a hook that you like?{' '}
