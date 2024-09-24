@@ -8,7 +8,7 @@ const SYMBOL_AND_NAME_VALIDATION = [
     const: '',
   },
   {
-    pattern: '^[^\\n]+$',
+    pattern: '^[\\w\\d\\-\\+_\\.\\s]+$',
   },
 ]
 
