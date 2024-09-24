@@ -54,15 +54,15 @@ export function ExternalDappLoader({
               setManifestError('The app does not support smart-contract wallets.')
             } else if (conditions.position === 'post' && isPreHook) {
               setManifestError(
-                <>
-                  This app/hook can only be used as a <b>post-hook</b> and cannot be added as a pre-hook.
-                </>,
+                <p>
+                  This app/hook can only be used as a <strong>post-hook</strong> and cannot be added as a pre-hook.
+                </p>,
               )
             } else if (conditions.position === 'pre' && !isPreHook) {
               setManifestError(
-                <>
-                  This app/hook can only be used as a <b>pre-hook</b> and cannot be added as a post-hook.
-                </>,
+                <p>
+                  This app/hook can only be used as a <strong>pre-hook</strong> and cannot be added as a post-hook.
+                </p>,
               )
             } else {
               setManifestError(null)

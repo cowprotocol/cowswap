@@ -183,7 +183,7 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit }: HookStore
         contentPadding="0"
         justifyContent="flex-start"
       >
-        {!dappDetails && (
+        {!dappDetails && !hookToEditDetails && (
           <HookListsTabs
             isAllHooksTab={isAllHooksTab}
             setIsAllHooksTab={setIsAllHooksTab}
