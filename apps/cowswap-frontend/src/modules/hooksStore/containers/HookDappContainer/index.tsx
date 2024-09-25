@@ -4,6 +4,8 @@ import { Command } from '@cowprotocol/types'
 import { useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
+import { useIsDarkMode } from 'legacy/state/user/hooks'
+
 import { useTradeState, useTradeNavigate } from 'modules/trade'
 
 import { useAddHook } from '../../hooks/useAddHook'
@@ -32,6 +34,8 @@ export function HookDappContainer({ dapp, isPreHook, onDismiss, hookToEdit }: Ho
   const provider = useWalletProvider()
   const tradeState = useTradeState()
   const tradeNavigate = useTradeNavigate()
+  const isDarkMode = useIsDarkMode()
+
   const { inputCurrencyId = null, outputCurrencyId = null } = tradeState.state || {}
   const signer = useMemo(() => provider?.getSigner(), [provider])
 
@@ -44,6 +48,7 @@ export function HookDappContainer({ dapp, isPreHook, onDismiss, hookToEdit }: Ho
       signer,
       isSmartContract,
       isPreHook,
+      isDarkMode,
       editHook(...args) {
         editHook(...args)
         onDismiss()

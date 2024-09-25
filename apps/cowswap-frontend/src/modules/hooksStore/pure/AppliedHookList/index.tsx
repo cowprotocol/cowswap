@@ -4,6 +4,7 @@ import Sortable from 'sortablejs'
 import styled from 'styled-components/macro'
 
 import { CowHookDetailsSerialized, HookDapp } from '../../types/hooks'
+import { findHookDappById } from '../../utils'
 import { AppliedHookItem } from '../AppliedHookItem'
 
 const HookList = styled.ul`
@@ -68,7 +69,7 @@ export function AppliedHookList({
         return (
           <AppliedHookItem
             key={hookDetails.hookDetails.uuid}
-            dapp={dapps.find((i) => i.name === hookDetails.dappName)!}
+            dapp={findHookDappById(dapps, hookDetails)!}
             index={index}
             account={account}
             hookDetails={hookDetails}

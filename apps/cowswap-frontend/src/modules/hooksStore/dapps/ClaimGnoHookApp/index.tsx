@@ -62,13 +62,24 @@ export function ClaimGnoHookApp({ context }: HookDappProps) {
       return
     }
 
-    context.addHook({
-      hook: {
-        callData,
-        gasLimit: gasLimit.toString(),
-        target: SBC_DEPOSIT_CONTRACT_ADDRESS,
-      },
-    })
+    if (context.hookToEdit) {
+      context.editHook({
+        ...context.hookToEdit,
+        hook: {
+          callData,
+          gasLimit: gasLimit.toString(),
+          target: SBC_DEPOSIT_CONTRACT_ADDRESS,
+        },
+      })
+    } else {
+      context.addHook({
+        hook: {
+          callData,
+          gasLimit: gasLimit.toString(),
+          target: SBC_DEPOSIT_CONTRACT_ADDRESS,
+        },
+      })
+    }
   }, [callData, gasLimit, context, claimable])
 
   return (
@@ -84,7 +95,11 @@ export function ClaimGnoHookApp({ context }: HookDappProps) {
           </>
         )}
       </ContentWrapper>
-      {claimable && !error && <ButtonPrimary onClick={clickOnAddHook}>Add Pre-hook</ButtonPrimary>}
+      {claimable && !error && (
+        <ButtonPrimary onClick={clickOnAddHook}>
+          {context.hookToEdit ? 'Update Pre-hook' : 'Add Pre-hook'}
+        </ButtonPrimary>
+      )}
     </Wrapper>
   )
 }

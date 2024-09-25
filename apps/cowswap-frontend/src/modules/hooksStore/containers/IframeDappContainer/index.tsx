@@ -19,12 +19,12 @@ interface IframeDappContainerProps {
 }
 export function IframeDappContainer({ dapp, context }: IframeDappContainerProps) {
   const iframeRef = useRef<HTMLIFrameElement | null>(null)
+  const bridgeRef = useRef<IframeRpcProviderBridge | null>(null)
   const addHookRef = useRef(context.addHook)
   const editHookRef = useRef(context.editHook)
   const setSellTokenRef = useRef(context.setSellToken)
   const setBuyTokenRef = useRef(context.setBuyToken)
 
-  const [bridge, setBridge] = useState<IframeRpcProviderBridge | null>(null)
   const [isIframeActive, setIsIframeActive] = useState<boolean>(false)
 
   const walletProvider = useWalletProvider()
@@ -45,8 +45,7 @@ export function IframeDappContainer({ dapp, context }: IframeDappContainerProps)
       ),
     ]
 
-    const rpcBridge = new IframeRpcProviderBridge(iframeWindow)
-    setBridge(rpcBridge)
+    bridgeRef.current = new IframeRpcProviderBridge(iframeWindow)
 
     listeners.push(
       hookDappIframeTransport.listenToMessageFromWindow(window, CoWHookDappEvents.ADD_HOOK, (payload) =>
@@ -65,15 +64,15 @@ export function IframeDappContainer({ dapp, context }: IframeDappContainerProps)
 
     return () => {
       listeners.forEach((listener) => hookDappIframeTransport.stopListeningWindowListener(window, listener))
-      rpcBridge.disconnect()
+      bridgeRef.current?.disconnect()
     }
   }, [])
 
   useLayoutEffect(() => {
-    if (!walletProvider || !bridge) return
+    if (!walletProvider || !walletProvider.provider || !bridgeRef.current) return
 
-    bridge.onConnect(walletProvider.provider as EthereumProvider)
-  }, [bridge, walletProvider])
+    bridgeRef.current.onConnect(walletProvider.provider as EthereumProvider)
+  }, [walletProvider])
 
   useLayoutEffect(() => {
     const iframeWindow = iframeRef.current?.contentWindow
@@ -81,7 +80,7 @@ export function IframeDappContainer({ dapp, context }: IframeDappContainerProps)
     if (!iframeWindow || !isIframeActive) return
 
     // Omit unnecessary parameter
-    const { addHook: _, editHook: _1, signer: _2, ...iframeContext } = context
+    const { addHook: _, editHook: _1, signer: _2, setSellToken: _3, setBuyToken: _4, ...iframeContext } = context
 
     hookDappIframeTransport.postMessageToWindow(iframeWindow, CoWHookDappEvents.CONTEXT_UPDATE, iframeContext)
   }, [context, isIframeActive])

@@ -33,6 +33,8 @@ export interface HookDappBase {
   walletCompatibility: HookDappWalletCompatibility[]
 }
 
+export type DappId = `${HookDappType}:::${HookDappBase['name']}`
+
 export interface HookDappInternal extends HookDappBase {
   type: HookDappType.INTERNAL
   component: (props: HookDappProps) => ReactNode
@@ -48,7 +50,7 @@ export type HookDapp = HookDappInternal | HookDappIframe
 
 export interface CowHookDetailsSerialized {
   hookDetails: CowHookDetails
-  dappName: string
+  dappId: DappId
 }
 
 export type AddHook = CoWHookDappActions['addHook']

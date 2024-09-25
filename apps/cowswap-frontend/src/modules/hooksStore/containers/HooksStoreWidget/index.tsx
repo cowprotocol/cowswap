@@ -3,6 +3,8 @@ import { useCallback, useState } from 'react'
 import ICON_HOOK from '@cowprotocol/assets/cow-swap/hook.svg'
 import { BannerOrientation, DismissableInlineBanner } from '@cowprotocol/ui'
 
+import styled from 'styled-components/macro'
+
 import { SwapWidget } from 'modules/swap'
 import { useIsSellNative } from 'modules/trade'
 
@@ -15,6 +17,13 @@ import { PreHookButton } from '../PreHookButton'
 type HookPosition = 'pre' | 'post'
 
 console.log(ICON_HOOK)
+
+const TradeWidgetWrapper = styled.div<{ visible$: boolean }>`
+  visibility: ${({ visible$ }) => (visible$ ? 'visible' : 'hidden')};
+  height: ${({ visible$ }) => (visible$ ? '' : '0px')};
+  width: ${({ visible$ }) => (visible$ ? '100%' : '0px')};
+  overflow: hidden;
+`
 
 export function HooksStoreWidget() {
   const [selectedHookPosition, setSelectedHookPosition] = useState<HookPosition | null>(null)
@@ -40,9 +49,7 @@ export function HooksStoreWidget() {
   useSetupHooksStoreOrderParams()
   useSetRecipientOverride()
 
-  if (selectedHookPosition || hookToEdit) {
-    return <HookRegistryList onDismiss={onDismiss} hookToEdit={hookToEdit} isPreHook={selectedHookPosition === 'pre'} />
-  }
+  const isHookSelectionOpen = !!(selectedHookPosition || hookToEdit)
 
   const shouldNotUseHooks = isNativeSell
 
@@ -69,5 +76,14 @@ export function HooksStoreWidget() {
     <PostHookButton onOpen={() => setSelectedHookPosition('post')} onEditHook={onPostHookEdit} />
   )
 
-  return <SwapWidget topContent={TopContent} bottomContent={BottomContent} />
+  return (
+    <>
+      <TradeWidgetWrapper visible$={!isHookSelectionOpen}>
+        <SwapWidget topContent={TopContent} bottomContent={BottomContent} />
+      </TradeWidgetWrapper>
+      {isHookSelectionOpen && (
+        <HookRegistryList onDismiss={onDismiss} hookToEdit={hookToEdit} isPreHook={selectedHookPosition === 'pre'} />
+      )}
+    </>
+  )
 }

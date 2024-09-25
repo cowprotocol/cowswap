@@ -5,7 +5,7 @@ import SVG from 'react-inlinesvg'
 
 import * as styledEl from './styled'
 
-import { PRE_HOOK_REGISTRY } from '../../hookRegistry'
+import { useAllHookDapps } from '../../hooks/useAllHookDapps'
 import { useHooks } from '../../hooks/useHooks'
 import { useRemoveHook } from '../../hooks/useRemoveHook'
 import { useReorderHooks } from '../../hooks/useReorderHooks'
@@ -20,11 +20,11 @@ export interface PreHookButtonProps {
 const isPreHook = true
 
 export function PreHookButton({ onOpen, onEditHook }: PreHookButtonProps) {
-  const { account, chainId } = useWalletInfo()
+  const { account } = useWalletInfo()
   const { preHooks } = useHooks()
   const removeHook = useRemoveHook(isPreHook)
   const moveHook = useReorderHooks('preHooks')
-  const dapps = PRE_HOOK_REGISTRY[chainId]
+  const dapps = useAllHookDapps(isPreHook)
 
   return (
     <>

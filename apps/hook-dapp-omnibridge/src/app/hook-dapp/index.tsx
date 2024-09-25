@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CoWHookDappActions, HookDappContext, initCoWHookDapp } from '@cowprotocol/hook-dapp-lib'
@@ -57,8 +57,8 @@ export function OmnibridgeApp() {
     setSigner(signer)
   }, [])
 
-  if (!orderParams) return <p>Please, specify valid order first</p>
-  if (!proxyAddress) return <p>Please, connect wallet first</p>
+  if (!proxyAddress) return <p>Please connect your wallet to continue</p>
+  if (!orderParams) return <p>Please specify your swap order before proceeding</p>
 
   return (
     <div>
