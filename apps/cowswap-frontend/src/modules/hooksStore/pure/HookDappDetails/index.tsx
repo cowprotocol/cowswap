@@ -1,11 +1,12 @@
 import { useMemo } from 'react'
 
+import { HookDappWalletCompatibility } from '@cowprotocol/hook-dapp-lib'
 import { Command } from '@cowprotocol/types'
 import { HelpTooltip } from '@cowprotocol/ui'
 
 import * as styled from './styled'
 
-import { HookDapp, HookDappType, HookDappWalletCompatibility } from '../../types/hooks'
+import { HookDapp, HookDappType } from '../../types/hooks'
 import { HookDetailHeader } from '../HookDetailHeader'
 
 interface HookDappDetailsProps {
@@ -15,7 +16,8 @@ interface HookDappDetailsProps {
 
 export function HookDappDetails({ dapp, onSelect }: HookDappDetailsProps) {
   const tags = useMemo(() => {
-    const { version, website, type, walletCompatibility = [] } = dapp
+    const { version, website, type, conditions } = dapp
+    const walletCompatibility = conditions?.walletCompatibility || []
 
     const getWalletCompatibilityTooltip = () => {
       const isSmartContract = walletCompatibility.includes(HookDappWalletCompatibility.SMART_CONTRACT)

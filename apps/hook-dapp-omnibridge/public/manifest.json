@@ -31,7 +31,8 @@
     "image":  "http://localhost:3000/hook-dapp-omnibridge/apple-touch-icon.png",
     "conditions": {
       "position": "post",
-      "smartContractWalletSupported": false
+      "smartContractWalletSupported": false,
+      "supportedNetworks": [100]
     }
   }
 }

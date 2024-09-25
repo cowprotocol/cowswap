@@ -21,7 +21,6 @@
     "hook-dapp-lib"
   ],
   "dependencies": {
-    "@cowprotocol/cow-sdk": "^5.4.1",
     "@cowprotocol/iframe-transport": "^1.0.0"
   }
 }

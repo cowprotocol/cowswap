@@ -3,16 +3,16 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import ICON_HOOK from '@cowprotocol/assets/cow-swap/hook.svg'
 import { Command } from '@cowprotocol/types'
 import { BannerOrientation, DismissableInlineBanner } from '@cowprotocol/ui'
-import { useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
+import { useIsSmartContractWallet } from '@cowprotocol/wallet'
 
 import { NewModal } from 'common/pure/NewModal'
 
 import { EmptyList, HookDappsList, Wrapper } from './styled'
 
-import { POST_HOOK_REGISTRY, PRE_HOOK_REGISTRY } from '../../hookRegistry'
 import { useAddCustomHookDapp } from '../../hooks/useAddCustomHookDapp'
 import { useCustomHookDapps } from '../../hooks/useCustomHookDapps'
 import { useHookById } from '../../hooks/useHookById'
+import { useInternalHookDapps } from '../../hooks/useInternalHookDapps'
 import { useRemoveCustomHookDapp } from '../../hooks/useRemoveCustomHookDapp'
 import { AddCustomHookForm } from '../../pure/AddCustomHookForm'
 import { HookDappDetails } from '../../pure/HookDappDetails'
@@ -31,7 +31,6 @@ interface HookStoreModal {
 }
 
 export function HookRegistryList({ onDismiss, isPreHook, hookToEdit }: HookStoreModal) {
-  const { chainId } = useWalletInfo()
   const [selectedDapp, setSelectedDapp] = useState<HookDapp | null>(null)
   const [dappDetails, setDappDetails] = useState<HookDapp | null>(null)
 
@@ -51,9 +50,7 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit }: HookStore
     setSearchQuery('')
   }, [])
 
-  const internalHookDapps = useMemo(() => {
-    return (isPreHook ? PRE_HOOK_REGISTRY[chainId] : POST_HOOK_REGISTRY[chainId]) || []
-  }, [isPreHook, chainId])
+  const internalHookDapps = useInternalHookDapps(isPreHook)
 
   const currentDapps = useMemo(() => {
     return isAllHooksTab ? internalHookDapps.concat(customHookDapps) : customHookDapps

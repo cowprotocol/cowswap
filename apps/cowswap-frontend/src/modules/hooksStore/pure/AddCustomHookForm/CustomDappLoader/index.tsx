@@ -1,17 +1,13 @@
 import { Dispatch, SetStateAction, useEffect } from 'react'
 
+import { HookDappWalletCompatibility } from '@cowprotocol/hook-dapp-lib'
+
+import { v4 as uuidv4 } from 'uuid'
+
 import { HookDappBase, HookDappIframe, HookDappType } from '../../../types/hooks'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
-interface HookDappConditions {
-  position?: 'post' | 'pre'
-  smartContractWalletSupported?: boolean
-}
-
-type HookDappBaseInfo = Omit<HookDappBase, 'type'>
-
-type HookDappManifest = HookDappBaseInfo & {
-  conditions?: HookDappConditions
-}
+type HookDappBaseInfo = Omit<HookDappBase, 'type' | 'conditions'>
 
 const MANDATORY_DAPP_FIELDS: (keyof HookDappBaseInfo)[] = ['name', 'image', 'version', 'website']
 
@@ -32,6 +28,8 @@ export function ExternalDappLoader({
   isSmartContractWallet,
   isPreHook,
 }: ExternalDappLoaderProps) {
+  const { chainId } = useWalletInfo()
+
   useEffect(() => {
     let isRequestRelevant = true
 
@@ -42,7 +40,8 @@ export function ExternalDappLoader({
       .then((data) => {
         if (!isRequestRelevant) return
 
-        const { conditions = {}, ...dapp } = data.cow_hook_dapp as HookDappManifest
+        const id = uuidv4()
+        const { conditions = {}, ...dapp } = data.cow_hook_dapp as Omit<HookDappBase, 'id'>
 
         if (dapp) {
           const emptyFields = MANDATORY_DAPP_FIELDS.filter((field) => typeof dapp[field] === 'undefined')
@@ -50,8 +49,14 @@ export function ExternalDappLoader({
           if (emptyFields.length > 0) {
             setManifestError(`${emptyFields.join(',')} fields are no set.`)
           } else {
-            if (conditions.smartContractWalletSupported === false && isSmartContractWallet === true) {
+            if (
+              isSmartContractWallet === true &&
+              conditions.walletCompatibility &&
+              !conditions.walletCompatibility.includes(HookDappWalletCompatibility.SMART_CONTRACT)
+            ) {
               setManifestError('The app does not support smart-contract wallets.')
+            } else if (conditions.supportedNetworks && !conditions.supportedNetworks.includes(chainId)) {
+              setManifestError(<p>This app/hook doesn't support current network (chainId={chainId}).</p>)
             } else if (conditions.position === 'post' && isPreHook) {
               setManifestError(
                 <p>
@@ -68,6 +73,7 @@ export function ExternalDappLoader({
               setManifestError(null)
               setDappInfo({
                 ...dapp,
+                id,
                 type: HookDappType.IFRAME,
                 url: input,
               })
@@ -92,7 +98,7 @@ export function ExternalDappLoader({
     return () => {
       isRequestRelevant = false
     }
-  }, [input])
+  }, [input, chainId])
 
   return null
 }
