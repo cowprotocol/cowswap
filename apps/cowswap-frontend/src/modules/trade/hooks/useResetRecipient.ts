@@ -10,6 +10,7 @@ import { useDerivedTradeState } from './useDerivedTradeState'
 import { useIsHooksTradeType } from './useIsHooksTradeType'
 
 import { useIsAlternativeOrderModalVisible } from '../state/alternativeOrder'
+import { useIsNativeIn } from './useIsNativeInOrOut'
 
 export function useResetRecipient(onChangeRecipient: (recipient: string | null) => void): null {
   const isAlternativeOrderModalVisible = useIsAlternativeOrderModalVisible()
@@ -17,6 +18,7 @@ export function useResetRecipient(onChangeRecipient: (recipient: string | null) 
   const tradeStateFromUrl = useTradeStateFromUrl()
   const postHooksRecipientOverride = usePostHooksRecipientOverride()
   const isHooksTradeType = useIsHooksTradeType()
+  const isNativeIn = useIsNativeIn()
   const hasTradeState = !!tradeStateFromUrl
   const { chainId } = useWalletInfo()
 
@@ -52,16 +54,16 @@ export function useResetRecipient(onChangeRecipient: (recipient: string | null) 
     if (recipientOverrideWasRemoved) {
       onChangeRecipient(null)
     }
-  }, [recipient, postHooksRecipientOverride, prevPostHooksRecipientOverride, onChangeRecipient])
+  }, [recipient, postHooksRecipientOverride, prevPostHooksRecipientOverride, isNativeIn, onChangeRecipient])
 
   /**
    * Remove recipient when going out from hooks-store page
    */
   useEffect(() => {
-    if (!isHooksTradeType) {
+    if (!isHooksTradeType || (isHooksTradeType && isNativeIn)) {
       onChangeRecipient(null)
     }
-  }, [isHooksTradeType, onChangeRecipient])
+  }, [isHooksTradeType, isNativeIn, onChangeRecipient])
 
   return null
 }

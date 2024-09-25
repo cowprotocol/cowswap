@@ -56,7 +56,7 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit }: HookStore
   }, [isPreHook, chainId])
 
   const currentDapps = useMemo(() => {
-    return isAllHooksTab ? internalHookDapps : customHookDapps
+    return isAllHooksTab ? internalHookDapps.concat(customHookDapps) : customHookDapps
   }, [isAllHooksTab, internalHookDapps, customHookDapps])
 
   // Compute filteredDapps based on searchQuery
@@ -73,9 +73,8 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit }: HookStore
     })
   }, [currentDapps, searchQuery])
 
-  const allHooksCount = internalHookDapps.length
-
   const customHooksCount = customHookDapps.length
+  const allHooksCount = internalHookDapps.length + customHooksCount
 
   // Compute title based on selected dapp or details
   const title = useMemo(() => {
