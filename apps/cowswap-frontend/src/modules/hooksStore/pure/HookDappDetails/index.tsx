@@ -47,8 +47,11 @@ export function HookDappDetails({ dapp, onSelect }: HookDappDetailsProps) {
       },
       {
         label: 'Wallet support',
-        value: walletCompatibility.join(', '),
-        tooltip: getWalletCompatibilityTooltip(),
+        value: walletCompatibility.length > 0 ? walletCompatibility.join(', ') : 'N/A',
+        tooltip:
+          walletCompatibility.length > 0
+            ? getWalletCompatibilityTooltip()
+            : 'No wallet compatibility information available.',
       },
     ]
   }, [dapp])

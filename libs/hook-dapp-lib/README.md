@@ -3,9 +3,7 @@
 >CoW Hooks allow users to call arbitrary Ethereum action before and/or after swap.  
 >For example: before swap give a permission to CoW Protocol smart-contract and after swap bridge tokens to another chain.
 
-Main docs: https://docs.cow.fi/cow-protocol/reference/core/intents/hooks
-
-Tutorial: https://v1.docs.cow.fi/overview/cow-hooks/cow-hooks-example/permit-swap-and-bridge-cow-hook
+### Docs: https://docs.cow.fi/cow-protocol/tutorials/hook-dapp
 
 ![](./demo.png)
 

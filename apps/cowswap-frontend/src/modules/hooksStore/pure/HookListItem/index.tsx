@@ -17,11 +17,19 @@ interface HookListItemProps {
 export function HookListItem({ dapp, onSelect, onOpenDetails, onRemove }: HookListItemProps) {
   const { name, descriptionShort, image, version } = dapp
 
+  const handleItemClick = (event: React.MouseEvent<HTMLLIElement>) => {
+    const target = event.target as HTMLElement
+    // Check if the click target is not a button or the info icon
+    if (!target.closest('.link-button') && !target.closest('.remove-button') && !target.closest('i')) {
+      onOpenDetails()
+    }
+  }
+
   return (
-    <styled.HookDappListItem>
+    <styled.HookDappListItem onClick={handleItemClick}>
       <img src={image} alt={name} />
 
-      <styled.HookDappDetails>
+      <styled.HookDappDetails onClick={onOpenDetails}>
         <h3>{name}</h3>
         <p>
           {descriptionShort}
@@ -32,8 +40,17 @@ export function HookListItem({ dapp, onSelect, onOpenDetails, onRemove }: HookLi
         <styled.LinkButton onClick={onSelect} className="link-button">
           Add
         </styled.LinkButton>
-        {onRemove ? <styled.RemoveButton onClick={onRemove}>Remove</styled.RemoveButton> : null}
-        <i onClick={onOpenDetails}>
+        {onRemove ? (
+          <styled.RemoveButton onClick={onRemove} className="remove-button">
+            Remove
+          </styled.RemoveButton>
+        ) : null}
+        <i
+          onClick={(e) => {
+            e.stopPropagation()
+            onOpenDetails()
+          }}
+        >
           <SVG src={ICON_INFO} /> details
         </i>
       </span>
