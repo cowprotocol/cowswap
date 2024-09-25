@@ -49,10 +49,19 @@ export function useResetRecipient(onChangeRecipient: (recipient: string | null) 
   useEffect(() => {
     const recipientOverrideWasRemoved = !postHooksRecipientOverride && recipient === prevPostHooksRecipientOverride
 
-    if (recipientOverrideWasRemoved || !isHooksTradeType) {
+    if (recipientOverrideWasRemoved) {
       onChangeRecipient(null)
     }
-  }, [recipient, isHooksTradeType, postHooksRecipientOverride, prevPostHooksRecipientOverride, onChangeRecipient])
+  }, [recipient, postHooksRecipientOverride, prevPostHooksRecipientOverride, onChangeRecipient])
+
+  /**
+   * Remove recipient when going out from hooks-store page
+   */
+  useEffect(() => {
+    if (!isHooksTradeType) {
+      onChangeRecipient(null)
+    }
+  }, [isHooksTradeType, onChangeRecipient])
 
   return null
 }
