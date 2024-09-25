@@ -4,7 +4,6 @@ import styled from 'styled-components/macro'
 import { getTokensInfo } from 'services/tokens'
 import { TokenInfo } from 'types'
 import { GetStaticProps } from 'next'
-import Head from 'next/head'
 import { TokenList, TokenListProps } from '@/components/TokensList'
 import { CONFIG } from '@/const/meta'
 
@@ -24,16 +23,15 @@ const Wrapper = styled.div`
 
 export default function TokenListPage({ tokens }: { tokens: TokenInfo[] }) {
   return (
-    <>
-      <Head>
-        <title>Tokens - {CONFIG.title}</title>
-      </Head>
-      <Layout bgColor={Color.neutral90}>
-        <Wrapper>
-          <TokenList tokens={tokens} />
-        </Wrapper>
-      </Layout>
-    </>
+    <Layout
+      metaTitle={`Tokens - ${CONFIG.title}`}
+      metaDescription="Track the latest tokens price, market cap, trading volume, and more with CoW DAO's live token price tracker."
+      bgColor={Color.neutral90}
+    >
+      <Wrapper>
+        <TokenList tokens={tokens} />
+      </Wrapper>
+    </Layout>
   )
 }
 

@@ -24,7 +24,6 @@ import {
   CTASectionWrapper,
   CTASubtitle,
   CTATitle,
-  CategoryLinks,
   ContainerCard,
   ContainerCardInner,
   ContainerCardSection,
@@ -40,9 +39,10 @@ import {
 } from '@/styles/styled'
 
 import { clickOnKnowledgeBase } from 'modules/analytics'
-import SVG from 'react-inlinesvg'
+import LazySVG from '@/components/LazySVG'
+import { CategoryLinks } from '@/components/CategoryLinks'
 
-import { CmsImage } from '@cowprotocol/ui'
+import { useLazyLoadImages } from 'hooks/useLazyLoadImages'
 
 const PODCASTS = [
   {
@@ -81,7 +81,7 @@ const SPACES = [
 
 const MEDIA_COVERAGE = [
   {
-    title: 'Bots fleece DeFi liquidity providers for $500m every year. CoW DAO’s new exchange stops them ',
+    title: "Bots fleece DeFi liquidity providers for $500m every year. CoW DAO's new exchange stops them",
     publisher: 'DLNews',
     image: '/images/media-coverage/DLNews-bots-fleece.webp',
     link: 'https://www.dlnews.com/articles/defi/new-cow-swap-amm-will-stop-mev-bots-and-save-users-millions/',
@@ -95,7 +95,7 @@ const MEDIA_COVERAGE = [
     linkExternal: true,
   },
   {
-    title: 'CoW Swap: A Beginner’s Guide to This New Decentralized Exchange',
+    title: "CoW Swap: A Beginner's Guide to This New Decentralized Exchange",
     publisher: 'BeInCrypto',
     image: '/images/media-coverage/learn_CoW_Swap-covers_logo.webp',
     link: 'https://beincrypto.com/learn/cow-swap-guide/',
@@ -166,6 +166,7 @@ const Wrapper = styled.div`
 
 export default function Page({ siteConfigData, categories, articles, featuredArticles }: PageProps) {
   const { title } = siteConfigData
+  const { LazyImage } = useLazyLoadImages()
 
   return (
     <Layout metaTitle={`Knowledge Base - ${title}`}>
@@ -173,18 +174,7 @@ export default function Page({ siteConfigData, categories, articles, featuredArt
         <h1>Learn - Knowledge Base</h1>
         <h2>Hi, how can we help?</h2>
 
-        <CategoryLinks noDivider>
-          {categories.map((category: { name: string; slug: string }) => (
-            <li key={category.slug}>
-              <a
-                href={`/learn/topic/${category.slug}`}
-                onClick={() => clickOnKnowledgeBase(`click-topic-${category.name}`)}
-              >
-                {category.name}
-              </a>
-            </li>
-          ))}
-        </CategoryLinks>
+        <CategoryLinks allCategories={categories} noDivider />
 
         <SearchBar articles={articles} />
 
@@ -198,7 +188,9 @@ export default function Page({ siteConfigData, categories, articles, featuredArt
               <ArticleList columnsTablet={2}>
                 {featuredArticles.map(({ title, description, cover, link }, index) => (
                   <ArticleCard key={index} href={link} onClick={() => clickOnKnowledgeBase(`click-article-${title}`)}>
-                    <ArticleImage color="#000">{cover && <CmsImage src={cover} alt={title} />}</ArticleImage>
+                    <ArticleImage color="#000">
+                      {cover && <LazyImage src={cover} alt={title} width={700} height={200} />}
+                    </ArticleImage>
                     <ArticleTitle>{title}</ArticleTitle>
                     <ArticleDescription>{description}</ArticleDescription>
                   </ArticleCard>
@@ -222,9 +214,11 @@ export default function Page({ siteConfigData, categories, articles, featuredArt
                     >
                       <TopicImage iconColor={iconColor} bgColor={bgColor} borderRadius={90} widthMobile={'auto'}>
                         {imageUrl ? (
-                          <CmsImage
+                          <LazyImage
                             src={imageUrl}
                             alt={name}
+                            width={82}
+                            height={82}
                             onError={(e) => {
                               e.currentTarget.onerror = null
                               e.currentTarget.style.display = 'none'
@@ -293,7 +287,7 @@ export default function Page({ siteConfigData, categories, articles, featuredArt
                     rel={linkExternal ? 'noopener' : ''}
                     onClick={() => clickOnKnowledgeBase(`click-media-${title}`)}
                   >
-                    <ArticleImage>{image && <img src={image} alt={title} />}</ArticleImage>
+                    <ArticleImage>{image && <LazyImage src={image} alt={title} />}</ArticleImage>
                     <ArticleTitle fontSize={21}>{title}</ArticleTitle>
                     <ArticleDescription>Published by {publisher}</ArticleDescription>
                   </ArticleCard>
@@ -306,7 +300,7 @@ export default function Page({ siteConfigData, categories, articles, featuredArt
         <ContainerCard bgColor={Color.neutral98} padding="0" touchFooter>
           <CTASectionWrapper>
             <CTAImage color={'#00A1FF'}>
-              <SVG src={IMG_ICON_BULB_COW} />
+              <LazySVG src={IMG_ICON_BULB_COW} />
             </CTAImage>
             <CTASubtitle>Explore, learn, integrate</CTASubtitle>
             <CTATitle>CoW DAO documentation</CTATitle>

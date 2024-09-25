@@ -1,6 +1,6 @@
 import {
   CowEventPayloads,
-  CowEvents,
+  CowWidgetEvents,
   OnCancelledOrderPayload,
   OnExpiredOrderPayload,
   OnFulfilledOrderPayload,
@@ -20,8 +20,8 @@ type OrdersNotificationsHandler = {
   handler(payload: CowEventPayloads[keyof CowEventPayloads]): JSX.Element | null
 }
 
-export const ORDERS_NOTIFICATION_HANDLERS: Record<CowEvents, OrdersNotificationsHandler> = {
-  [CowEvents.ON_POSTED_ORDER]: {
+export const ORDERS_NOTIFICATION_HANDLERS: Record<CowWidgetEvents, OrdersNotificationsHandler> = {
+  [CowWidgetEvents.ON_POSTED_ORDER]: {
     icon: 'success',
     handler: (payload: OnPostedOrderPayload) => {
       const { chainId, orderUid, orderType, orderCreationHash, isEthFlow } = payload
@@ -40,7 +40,7 @@ export const ORDERS_NOTIFICATION_HANDLERS: Record<CowEvents, OrdersNotifications
       )
     },
   },
-  [CowEvents.ON_FULFILLED_ORDER]: {
+  [CowWidgetEvents.ON_FULFILLED_ORDER]: {
     icon: 'success',
     handler: (payload: OnFulfilledOrderPayload) => {
       const { chainId, order } = payload
@@ -58,7 +58,7 @@ export const ORDERS_NOTIFICATION_HANDLERS: Record<CowEvents, OrdersNotifications
       )
     },
   },
-  [CowEvents.ON_CANCELLED_ORDER]: {
+  [CowWidgetEvents.ON_CANCELLED_ORDER]: {
     icon: 'success',
     handler: (payload: OnCancelledOrderPayload) => {
       const { chainId, order, transactionHash } = payload
@@ -76,7 +76,7 @@ export const ORDERS_NOTIFICATION_HANDLERS: Record<CowEvents, OrdersNotifications
       )
     },
   },
-  [CowEvents.ON_EXPIRED_ORDER]: {
+  [CowWidgetEvents.ON_EXPIRED_ORDER]: {
     icon: 'alert',
     handler: (payload: OnExpiredOrderPayload) => {
       const { chainId, order } = payload
@@ -92,7 +92,7 @@ export const ORDERS_NOTIFICATION_HANDLERS: Record<CowEvents, OrdersNotifications
       )
     },
   },
-  [CowEvents.ON_PRESIGNED_ORDER]: {
+  [CowWidgetEvents.ON_PRESIGNED_ORDER]: {
     icon: 'success',
     handler: (payload: OnPresignedOrderPayload) => {
       const { chainId, order } = payload
@@ -108,21 +108,21 @@ export const ORDERS_NOTIFICATION_HANDLERS: Record<CowEvents, OrdersNotifications
       )
     },
   },
-  [CowEvents.ON_TOAST_MESSAGE]: {
+  [CowWidgetEvents.ON_TOAST_MESSAGE]: {
     icon: 'success',
     handler: (info) => {
       console.debug('[ON_TOAST_MESSAGE]', info)
       return null
     },
   },
-  [CowEvents.ON_ONCHAIN_TRANSACTION]: {
+  [CowWidgetEvents.ON_ONCHAIN_TRANSACTION]: {
     icon: 'success',
     handler: () => {
       // Handled in OnchainTransactionEventsUpdater
       return null
     },
   },
-  [CowEvents.ON_CHANGE_TRADE_PARAMS]: {
+  [CowWidgetEvents.ON_CHANGE_TRADE_PARAMS]: {
     icon: 'success',
     handler: () => null,
   },

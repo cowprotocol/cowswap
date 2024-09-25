@@ -24,7 +24,7 @@ import {
   HeroTitle,
 } from '@/styles/styled'
 
-import SVG from 'react-inlinesvg'
+import LazySVG from '@/components/LazySVG'
 import IMG_ICON_BULB_COW from '@cowprotocol/assets/images/icon-bulb-cow.svg'
 import IMG_ICON_GRANTS_CARTON from '@cowprotocol/assets/images/icon-grants-carton.svg'
 
@@ -60,7 +60,7 @@ export default function Page() {
           <ContainerCardSection>
             <SectionTitleWrapper maxWidth={900}>
               <SectionTitleIcon size={126}>
-                <SVG src={IMG_ICON_BULB_COW} />
+                <LazySVG src={IMG_ICON_BULB_COW} />
               </SectionTitleIcon>
               <SectionTitleText>Innovation in action</SectionTitleText>
               <SectionTitleDescription color={Color.neutral30}>
@@ -85,7 +85,7 @@ export default function Page() {
           <ContainerCardSection>
             <SectionTitleWrapper padding="150px 0 0" maxWidth={900}>
               <SectionTitleIcon size={90}>
-                <SVG src={IMG_ICON_GOVERNANCE} />
+                <LazySVG src={IMG_ICON_GOVERNANCE} />
               </SectionTitleIcon>
               <SectionTitleText textAlign="center">Governance</SectionTitleText>
               <SectionTitleDescription color={Color.neutral60} fontWeight={Font.weight.regular} textAlign="center">
@@ -114,7 +114,7 @@ export default function Page() {
                   onClick={() => clickOnHome(social.linkEvent)}
                 >
                   <TopicImage iconColor="transparent" maxWidth={290} maxHeight={290} height={290} width={290}>
-                    <SVG src={social.iconImage} title={social.title} />
+                    <LazySVG src={social.iconImage} title={social.title} />
                   </TopicImage>
                   <TopicTitle fontSize={38}>{social.title}</TopicTitle>
                 </TopicCard>
@@ -127,7 +127,7 @@ export default function Page() {
           <ContainerCardSection>
             <SectionTitleWrapper maxWidth={900}>
               <SectionTitleIcon size={90}>
-                <SVG src={IMG_ICON_GRANTS_CARTON} />
+                <LazySVG src={IMG_ICON_GRANTS_CARTON} />
               </SectionTitleIcon>
               <SectionTitleText textAlign="center">Grants</SectionTitleText>
               <SectionTitleDescription color={Color.neutral30} fontWeight={Font.weight.regular} textAlign="center">

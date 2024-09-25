@@ -1,10 +1,10 @@
 import { EnrichedOrder, SupportedChainId } from '@cowprotocol/cow-sdk'
-import { CowEvents } from '@cowprotocol/events'
+import { CowWidgetEvents } from '@cowprotocol/events'
 
-import { EVENT_EMITTER } from 'eventEmitter'
+import { WIDGET_EVENT_EMITTER } from 'widgetEventEmitter'
 
 export function emitFulfilledOrderEvent(chainId: SupportedChainId, order: EnrichedOrder) {
-  EVENT_EMITTER.emit(CowEvents.ON_FULFILLED_ORDER, {
+  WIDGET_EVENT_EMITTER.emit(CowWidgetEvents.ON_FULFILLED_ORDER, {
     chainId,
     order,
   })

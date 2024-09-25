@@ -1,11 +1,11 @@
 import { useEffect, useRef } from 'react'
 
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
-import { AtomsAndUnits, CowEvents, OnTradeParamsPayload } from '@cowprotocol/events'
+import { AtomsAndUnits, CowWidgetEvents, OnTradeParamsPayload } from '@cowprotocol/events'
 import { TokenInfo, UiOrderType } from '@cowprotocol/types'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { EVENT_EMITTER } from 'eventEmitter'
+import { WIDGET_EVENT_EMITTER } from 'widgetEventEmitter'
 
 import { useDerivedTradeState } from './useDerivedTradeState'
 
@@ -25,7 +25,10 @@ export function useNotifyWidgetTrade() {
     if (!state?.tradeType) {
       return
     }
-    EVENT_EMITTER.emit(CowEvents.ON_CHANGE_TRADE_PARAMS, getTradeParamsEventPayload(state.tradeType, state))
+    WIDGET_EVENT_EMITTER.emit(
+      CowWidgetEvents.ON_CHANGE_TRADE_PARAMS,
+      getTradeParamsEventPayload(state.tradeType, state),
+    )
   }, [state])
 }
 
