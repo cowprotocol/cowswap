@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { GetStaticPaths, GetStaticProps } from 'next'
 import styled from 'styled-components/macro'
 import { Color, Media } from '@cowprotocol/ui'
@@ -34,18 +34,18 @@ import {
   ArticleMainTitle,
   ArticleSubtitleWrapper,
   CategoryTags,
-  CategoryLinks,
   StickyMenu,
   RelatedArticles,
   SectionTitleDescription,
 } from '@/styles/styled'
 import useWebShare from 'hooks/useWebShare'
-
+import { CategoryLinks } from '@/components/CategoryLinks'
 import { Link, LinkType } from '@/components/Link'
 
 import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
 import { clickOnKnowledgeBase } from 'modules/analytics'
 import { CmsImage } from '@cowprotocol/ui'
+import { useLazyLoadImages } from 'hooks/useLazyLoadImages'
 
 interface ArticlePageProps {
   siteConfigData: typeof CONFIG
@@ -99,10 +99,6 @@ export function ArticleSubtitle({
   )
 }
 
-export function ArticleSharedRichTextComponent({ sharedRichText }: { sharedRichText: SharedRichTextComponent }) {
-  return <ReactMarkdown rehypePlugins={[rehypeRaw]}>{sharedRichText.body}</ReactMarkdown>
-}
-
 function calculateReadTime(text: string): string {
   const wordsPerMinute = 200 // Average case.
   const textLength = text.split(/\s+/).length // Split by words
@@ -119,6 +115,28 @@ function getRandomArticles(articles: Article[], count: number): Article[] {
   return shuffled.slice(0, count)
 }
 
+export function ArticleSharedRichTextComponent({ sharedRichText }: { sharedRichText: SharedRichTextComponent }) {
+  const { replaceImageUrls, LazyImage } = useLazyLoadImages()
+
+  const processedContent = useMemo(() => {
+    return sharedRichText.body ? replaceImageUrls(sharedRichText.body) : ''
+  }, [sharedRichText.body, replaceImageUrls])
+
+  return (
+    <ReactMarkdown
+      rehypePlugins={[rehypeRaw]}
+      components={{
+        img: ({ src, alt, ...props }) => {
+          if (!src) return null
+          return <LazyImage src={src} alt={alt || ''} {...props} width={725} height={400} />
+        },
+      }}
+    >
+      {processedContent}
+    </ReactMarkdown>
+  )
+}
+
 export default function ArticlePage({
   siteConfigData,
   article,
@@ -133,6 +151,7 @@ export default function ArticlePage({
 }) {
   const attributes: {
     title?: string
+    description?: string
     blocks?: SharedRichTextComponent[]
     publishedAt?: string
     publishDate?: string
@@ -140,7 +159,7 @@ export default function ArticlePage({
     categories?: any
     cover?: any
   } = article.attributes || {}
-  const { title, blocks, publishedAt, categories, cover } = attributes
+  const { title, description, blocks, publishedAt, categories, cover } = attributes
   const publishDate = attributes.publishDate || null
   const publishDateVisible = attributes.publishDateVisible ?? true
   const content =
@@ -153,35 +172,22 @@ export default function ArticlePage({
   const handleShareClick = () => {
     share({
       title: title || 'CoW DAO Article',
-      text: content.split(' ').slice(0, 50).join(' ') + '...',
+      text: plainContent.split(' ').slice(0, 50).join(' ') + '...',
       url: window.location.href,
     })
   }
 
+  // Generate metaDescription
+  const metaDescription = description
+    ? stripHtmlTags(description)
+    : plainContent.length > 150
+      ? stripHtmlTags(plainContent.substring(0, 147)) + '...'
+      : stripHtmlTags(plainContent)
+
   return (
-    <Layout
-      metaTitle={`${title} - ${siteConfigData.title}`}
-      metaDescription={plainContent.split(' ').slice(0, 50).join(' ') + '...'}
-      ogImage={coverImageUrl}
-    >
+    <Layout metaTitle={`${title} - ${siteConfigData.title}`} metaDescription={metaDescription} ogImage={coverImageUrl}>
       <Wrapper>
-        <CategoryLinks>
-          <li>
-            <a href="/learn" onClick={() => clickOnKnowledgeBase('click-knowledge-base')}>
-              Knowledge Base
-            </a>
-          </li>
-          {allCategories.map((category: { name: string; slug: string }) => (
-            <li key={category.slug}>
-              <a
-                href={`/learn/topic/${category.slug}`}
-                onClick={() => clickOnKnowledgeBase(`click-topic-${category.name}`)}
-              >
-                {category.name}
-              </a>
-            </li>
-          ))}
-        </CategoryLinks>
+        <CategoryLinks allCategories={allCategories} />
 
         <SearchBar articles={articles} />
         <ContainerCard gap={62} gapMobile={42} margin="0 auto" centerContent>
@@ -222,7 +228,7 @@ export default function ArticlePage({
                 blocks.map((block: SharedRichTextComponent) =>
                   isRichTextComponent(block) ? (
                     <ArticleSharedRichTextComponent key={block.id} sharedRichText={block} />
-                  ) : null
+                  ) : null,
                 )}
 
               <br />
@@ -282,7 +288,12 @@ export default function ArticlePage({
                   >
                     {imageUrl && (
                       <ArticleImage>
-                        <CmsImage src={imageUrl} alt={article.attributes?.title ?? 'Article Image'} />
+                        <CmsImage
+                          src={imageUrl}
+                          alt={`Cover image for article: ${article.attributes?.title}`}
+                          width={700}
+                          height={200}
+                        />
                       </ArticleImage>
                     )}
                     <ArticleTitle>{article.attributes?.title}</ArticleTitle>

@@ -36,7 +36,7 @@ import {
   MetricsItem,
 } from '@/styles/styled'
 
-import SVG from 'react-inlinesvg'
+import LazySVG from '@/components/LazySVG'
 import IMG_ICON_FAQ from '@cowprotocol/assets/images/icon-faq.svg'
 import { FAQ_DATA, TWEETS, COW_IS_DIFFERENT, ADVANCED_ORDER_TYPES, BETTER_UX } from '@/data/cow-swap/const'
 import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
@@ -88,7 +88,7 @@ export default function Page({ tweets }: PageProps) {
             </Link>
           </HeroContent>
           <HeroImage width={470} height={470} color={'#012F7A'} marginMobile="24px auto 56px">
-            <SVG src={IMG_COWSWAP_HERO} />
+            <LazySVG src={IMG_COWSWAP_HERO} />
           </HeroImage>
         </HeroContainer>
 
@@ -125,9 +125,9 @@ export default function Page({ tweets }: PageProps) {
           <ContainerCardSection gap={90}>
             <SectionTitleWrapper color={Color.neutral10} maxWidth={1100} gap={56}>
               <SectionTitleIcon multiple size={82}>
-                <SVG src={IMG_ICON_UNICORN} />
+                <LazySVG src={IMG_ICON_UNICORN} />
                 <ProductLogo variant={ProductVariant.CowProtocol} theme="dark" logoIconOnly />
-                <SVG src={IMG_ICON_UNICORN} className="image-reverse" />
+                <LazySVG src={IMG_ICON_UNICORN} className="image-reverse" />
               </SectionTitleIcon>
 
               <SectionTitleText>CoW Swap is different</SectionTitleText>
@@ -152,7 +152,7 @@ export default function Page({ tweets }: PageProps) {
                     height={187}
                     width={'auto'}
                   >
-                    <SVG src={topic.imgSrc} />
+                    <LazySVG src={topic.imgSrc} />
                   </TopicImage>
                 </TopicCard>
               ))}
@@ -164,7 +164,7 @@ export default function Page({ tweets }: PageProps) {
           <ContainerCardSection>
             <SectionTitleWrapper maxWidth={800}>
               <SectionTitleIcon size={126}>
-                <SVG src={ICON_BULB} />
+                <LazySVG src={ICON_BULB} />
               </SectionTitleIcon>
               <SectionTitleText>CoW Swap is the first user interface built on top of CoW Protocol</SectionTitleText>
               <SectionTitleDescription color={Color.neutral50}>
@@ -188,7 +188,7 @@ export default function Page({ tweets }: PageProps) {
           <ContainerCardSection>
             <SectionTitleWrapper padding="150px 0 0" maxWidth={900}>
               <SectionTitleIcon size={140}>
-                <SVG src={IMG_ICON_FLOWER_COW} />
+                <LazySVG src={IMG_ICON_FLOWER_COW} />
               </SectionTitleIcon>
               <SectionTitleText>S-moooo-th trading</SectionTitleText>
               <SectionTitleDescription color={Color.neutral60}>
@@ -220,7 +220,7 @@ export default function Page({ tweets }: PageProps) {
                     height={187}
                     width={'auto'}
                   >
-                    <SVG src={topic.imgSrc} />
+                    <LazySVG src={topic.imgSrc} />
                   </TopicImage>
                 </TopicCard>
               ))}
@@ -252,7 +252,7 @@ export default function Page({ tweets }: PageProps) {
                     height={187}
                     width={'auto'}
                   >
-                    <SVG src={topic.imgSrc} />
+                    <LazySVG src={topic.imgSrc} />
                   </TopicImage>
                 </TopicCard>
               ))}
@@ -370,7 +370,7 @@ export default function Page({ tweets }: PageProps) {
           <ContainerCardSection>
             <SectionTitleWrapper>
               <SectionTitleIcon size={62}>
-                <SVG src={IMG_ICON_FAQ} />
+                <LazySVG src={IMG_ICON_FAQ} />
               </SectionTitleIcon>
               <SectionTitleText>FAQs</SectionTitleText>
             </SectionTitleWrapper>
