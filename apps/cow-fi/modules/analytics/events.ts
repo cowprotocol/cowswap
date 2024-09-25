@@ -1,6 +1,7 @@
 import { initCowAnalyticsGoogle } from '@cowprotocol/analytics'
 
-export const cowAnalytics = initCowAnalyticsGoogle()
+// Loads Analytics with GTM
+export const cowAnalytics = initCowAnalyticsGoogle(true)
 
 export enum Category {
   HOME = 'Homepage',
