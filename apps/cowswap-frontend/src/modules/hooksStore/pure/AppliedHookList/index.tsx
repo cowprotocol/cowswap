@@ -16,6 +16,7 @@ const HookList = styled.ul`
 `
 
 interface AppliedHookListProps {
+  account?: string
   hooks: CowHookDetailsSerialized[]
   isPreHook: boolean
   removeHook: (uuid: string, isPreHook: boolean) => void
@@ -23,7 +24,7 @@ interface AppliedHookListProps {
   moveHook: (fromIndex: number, toIndex: number) => void
 }
 
-export function AppliedHookList({ hooks, isPreHook, removeHook, editHook, moveHook }: AppliedHookListProps) {
+export function AppliedHookList({ account, hooks, isPreHook, removeHook, editHook, moveHook }: AppliedHookListProps) {
   const listRef = useRef<HTMLUListElement>(null)
 
   useEffect(() => {
@@ -59,6 +60,7 @@ export function AppliedHookList({ hooks, isPreHook, removeHook, editHook, moveHo
           key={hookDetails.uuid}
           index={index}
           hookDetails={hookDetails}
+          account={account}
           isPreHook={isPreHook}
           removeHook={removeHook}
           editHook={editHook}

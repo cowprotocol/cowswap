@@ -1,4 +1,5 @@
 import PLUS_ICON from '@cowprotocol/assets/cow-swap/plus.svg'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import SVG from 'react-inlinesvg'
 
@@ -16,6 +17,8 @@ export interface PreHookButtonProps {
 }
 
 export function PreHookButton({ onOpen, onEditHook }: PreHookButtonProps) {
+  const { account } = useWalletInfo()
+
   const { preHooks } = useHooks()
   const removeHook = useRemoveHook()
   const moveHook = useReorderHooks('preHooks')
@@ -26,6 +29,7 @@ export function PreHookButton({ onOpen, onEditHook }: PreHookButtonProps) {
         <AppliedHookList
           hooks={preHooks}
           isPreHook={true}
+          account={account}
           removeHook={removeHook}
           editHook={onEditHook}
           moveHook={moveHook}
