@@ -39,4 +39,5 @@ export interface HookDappContext {
   hookToEdit?: CowHookDetails
   isSmartContract: boolean | undefined
   isPreHook: boolean
+  isDarkMode: boolean
 }
