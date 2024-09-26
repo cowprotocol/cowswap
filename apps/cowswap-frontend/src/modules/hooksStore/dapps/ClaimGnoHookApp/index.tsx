@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ButtonPrimary } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
+import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { formatUnits } from 'ethers/lib/utils'
@@ -22,6 +23,7 @@ const SbcDepositContractInterface = SBCDepositContract.interface
  *    - Master: 0x4fef25519256e24a1fc536f7677152da742fe3ef
  */
 export function ClaimGnoHookApp({ context }: HookDappProps) {
+  const provider = useWalletProvider()
   const [claimable, setClaimable] = useState<BigNumber | undefined>(undefined)
   const [gasLimit, setGasLimit] = useState<BigNumber | undefined>(undefined)
   const [error, setError] = useState<boolean>(false)
@@ -39,25 +41,26 @@ export function ClaimGnoHookApp({ context }: HookDappProps) {
   }, [context])
 
   useEffect(() => {
-    if (!account) {
+    if (!account || !provider) {
       return
     }
+
     const handleError = (e: any) => {
       console.error('[ClaimGnoHookApp] Error getting balance/gasEstimation', e)
       setError(true)
     }
 
     // Get balance
-    SBCDepositContract.withdrawableAmount(account)
+    SBCDepositContract.connect(provider)
+      .withdrawableAmount(account)
       .then((claimable) => {
         console.log('[ClaimGnoHookApp] get claimable', claimable)
         setClaimable(claimable)
       })
       .catch(handleError)
 
-    // Get gas estimation
-    SBCDepositContract.estimateGas.claimWithdrawal(account).then(setGasLimit).catch(handleError)
-  }, [setClaimable, account])
+    SBCDepositContract.connect(provider).estimateGas.claimWithdrawal(account).then(setGasLimit).catch(handleError)
+  }, [setClaimable, account, provider])
 
   const clickOnAddHook = useCallback(() => {
     if (!callData || !gasLimit || !context || !claimable) {

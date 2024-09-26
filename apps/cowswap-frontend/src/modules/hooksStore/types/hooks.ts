@@ -7,36 +7,19 @@ import {
   CoWHookDappActions,
   HookDappContext as GenericHookDappContext,
   CowHookDetails,
-  HookDappConditions,
+  HookDappBase,
+  HookDappType,
 } from '@cowprotocol/hook-dapp-lib'
 import type { Signer } from '@ethersproject/abstract-signer'
 
 export type { CowHook, CowHookCreation, HookDappOrderParams }
 
-export enum HookDappType {
-  INTERNAL = 'INTERNAL',
-  IFRAME = 'IFRAME',
-}
-
-export interface HookDappBase {
-  name: string
-  descriptionShort?: string
-  description?: ReactNode | string
-  type: HookDappType
-  version: string
-  website: string
-  image: string
-  conditions?: HookDappConditions
-}
-
 export interface HookDappInternal extends HookDappBase {
-  id: string
   type: HookDappType.INTERNAL
   component: (props: HookDappProps) => ReactNode
 }
 
 export interface HookDappIframe extends HookDappBase {
-  id: string
   type: HookDappType.IFRAME
   url: string
 }

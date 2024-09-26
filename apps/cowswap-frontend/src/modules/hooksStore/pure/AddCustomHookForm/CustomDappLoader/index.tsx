@@ -1,15 +1,20 @@
 import { Dispatch, SetStateAction, useEffect } from 'react'
 
-import { HookDappWalletCompatibility } from '@cowprotocol/hook-dapp-lib'
-
-import { v4 as uuidv4 } from 'uuid'
-
-import { HookDappBase, HookDappIframe, HookDappType } from '../../../types/hooks'
+import {
+  HOOK_DAPP_ID_LENGTH,
+  HookDappBase,
+  HookDappType,
+  HookDappWalletCompatibility,
+} from '@cowprotocol/hook-dapp-lib'
 import { useWalletInfo } from '@cowprotocol/wallet'
+
+import { HookDappIframe } from '../../../types/hooks'
 
 type HookDappBaseInfo = Omit<HookDappBase, 'type' | 'conditions'>
 
-const MANDATORY_DAPP_FIELDS: (keyof HookDappBaseInfo)[] = ['name', 'image', 'version', 'website']
+const MANDATORY_DAPP_FIELDS: (keyof HookDappBaseInfo)[] = ['id', 'name', 'image', 'version', 'website']
+
+const isHex = (val: string) => Boolean(val.match(/^[0-9a-f]+$/i))
 
 interface ExternalDappLoaderProps {
   input: string
@@ -40,8 +45,7 @@ export function ExternalDappLoader({
       .then((data) => {
         if (!isRequestRelevant) return
 
-        const id = uuidv4()
-        const { conditions = {}, ...dapp } = data.cow_hook_dapp as Omit<HookDappBase, 'id'>
+        const { conditions = {}, ...dapp } = data.cow_hook_dapp as HookDappBase
 
         if (dapp) {
           const emptyFields = MANDATORY_DAPP_FIELDS.filter((field) => typeof dapp[field] === 'undefined')
@@ -55,6 +59,8 @@ export function ExternalDappLoader({
               !conditions.walletCompatibility.includes(HookDappWalletCompatibility.SMART_CONTRACT)
             ) {
               setManifestError('The app does not support smart-contract wallets.')
+            } else if (!isHex(dapp.id) || dapp.id.length !== HOOK_DAPP_ID_LENGTH) {
+              setManifestError(<p>Hook dapp id must be a hex with length 64.</p>)
             } else if (conditions.supportedNetworks && !conditions.supportedNetworks.includes(chainId)) {
               setManifestError(<p>This app/hook doesn't support current network (chainId={chainId}).</p>)
             } else if (conditions.position === 'post' && isPreHook) {
@@ -73,7 +79,6 @@ export function ExternalDappLoader({
               setManifestError(null)
               setDappInfo({
                 ...dapp,
-                id,
                 type: HookDappType.IFRAME,
                 url: input,
               })

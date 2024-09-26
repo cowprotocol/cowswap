@@ -1,12 +1,12 @@
 import { useMemo } from 'react'
 
-import { HookDappWalletCompatibility } from '@cowprotocol/hook-dapp-lib'
+import { HookDappType, HookDappWalletCompatibility } from '@cowprotocol/hook-dapp-lib'
 import { Command } from '@cowprotocol/types'
 import { HelpTooltip } from '@cowprotocol/ui'
 
 import * as styled from './styled'
 
-import { HookDapp, HookDappType } from '../../types/hooks'
+import { HookDapp } from '../../types/hooks'
 import { HookDetailHeader } from '../HookDetailHeader'
 
 interface HookDappDetailsProps {

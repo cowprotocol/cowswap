@@ -1,4 +1,6 @@
-import type { HookDappWalletCompatibility } from './consts'
+import type { ReactNode } from 'react'
+
+import { HookDappType, HookDappWalletCompatibility } from './consts'
 
 export interface CowHook {
   target: string
@@ -46,4 +48,16 @@ export interface HookDappContext {
   isSmartContract: boolean | undefined
   isPreHook: boolean
   isDarkMode: boolean
+}
+
+export interface HookDappBase {
+  id: string
+  name: string
+  descriptionShort?: string
+  description?: ReactNode | string
+  type: HookDappType
+  version: string
+  website: string
+  image: string
+  conditions?: HookDappConditions
 }

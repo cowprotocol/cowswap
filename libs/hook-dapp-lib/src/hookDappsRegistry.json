@@ -1,5 +1,6 @@
 {
   "BUILD_CUSTOM_HOOK": {
+    "id": "c768665aa144bcf18c14eea0249b6322050e5daeba046d7e94df743a2e504586",
     "type": "INTERNAL",
     "name": "Build your own hook",
     "descriptionShort": "Call any smart contract with your own parameters",
@@ -9,6 +10,7 @@
     "website": "https://docs.cow.fi/cow-protocol/tutorials/hook-dapp"
   },
   "CLAIM_GNO_FROM_VALIDATORS": {
+    "id": "ee4a6b1065cda592972b9ff7448ec111f29a566f137fef101ead7fbf8b01dd0b",
     "type": "INTERNAL",
     "name": "Claim GNO from validators",
     "descriptionShort": "Withdraw rewards from your Gnosis validators.",
@@ -22,6 +24,7 @@
     }
   },
   "PERMIT_TOKEN": {
+    "id": "1db4bacb661a90fb6b475fd5b585acba9745bc373573c65ecc3e8f5bfd5dee1f",
     "type": "INTERNAL",
     "name": "Permit a token",
     "descriptionShort": "Infinite permit an address to spend one token on your behalf.",
@@ -35,6 +38,7 @@
     }
   },
   "CLAIM_COW_AIRDROP": {
+    "id": "40ed08569519f3b58c410ba35a8e684612663a7c9b58025e0a9c3a54551fb0ff",
     "type": "INTERNAL",
     "name": "Claim COW Airdrop",
     "descriptionShort": "Retrieve COW tokens before or after a swap.",
