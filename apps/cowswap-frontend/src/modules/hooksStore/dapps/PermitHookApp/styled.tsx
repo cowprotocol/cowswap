@@ -6,7 +6,7 @@ export const Wrapper = styled.div`
   display: flex;
   flex-flow: column wrap;
   width: 100%;
-  padding-bottom: 10px;
+  padding: 10px;
 
   flex-grow: 1;
 `
@@ -16,12 +16,7 @@ export const ContentWrapper = styled.div`
   justify-content: center;
   align-items: center;
   flex-flow: column wrap;
-  margin-right: 10px;
-
   display: flex;
-  justify-content: center;
-  align-items: center;
-
   padding: 1em;
   text-align: center;
 `

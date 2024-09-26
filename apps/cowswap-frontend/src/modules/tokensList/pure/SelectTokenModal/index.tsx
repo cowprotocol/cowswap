@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { BalancesState } from '@cowprotocol/balances-and-allowances'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { UnsupportedTokensState } from '@cowprotocol/tokens'
-import { BackButton } from '@cowprotocol/ui'
+import { BackButton, SearchInput } from '@cowprotocol/ui'
 
 import { Edit } from 'react-feather'
 
@@ -69,7 +69,7 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
         <h3>Select a token</h3>
       </styledEl.Header>
       <styledEl.Row>
-        <styledEl.SearchInput
+        <SearchInput
           id="token-search-input"
           value={inputValue}
           onKeyDown={(e) => e.key === 'Enter' && onInputPressEnter?.()}

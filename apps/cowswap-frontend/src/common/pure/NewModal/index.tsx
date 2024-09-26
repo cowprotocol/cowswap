@@ -161,8 +161,8 @@ export interface NewModalProps {
 }
 
 export function NewModal({
-  maxWidth = 450,
-  minHeight = 350,
+  maxWidth,
+  minHeight,
   contentPadding,
   justifyContent,
   modalMode,

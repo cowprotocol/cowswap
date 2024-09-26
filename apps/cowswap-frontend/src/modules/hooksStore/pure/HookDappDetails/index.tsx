@@ -15,7 +15,7 @@ interface HookDappDetailsProps {
 
 export function HookDappDetails({ dapp, onSelect }: HookDappDetailsProps) {
   const tags = useMemo(() => {
-    const { version, website, type, walletCompatibility } = dapp
+    const { version, website, type, walletCompatibility = [] } = dapp
 
     const getWalletCompatibilityTooltip = () => {
       const isSmartContract = walletCompatibility.includes(HookDappWalletCompatibility.SMART_CONTRACT)
@@ -47,8 +47,11 @@ export function HookDappDetails({ dapp, onSelect }: HookDappDetailsProps) {
       },
       {
         label: 'Wallet support',
-        value: walletCompatibility.join(', '),
-        tooltip: getWalletCompatibilityTooltip(),
+        value: walletCompatibility.length > 0 ? walletCompatibility.join(', ') : 'N/A',
+        tooltip:
+          walletCompatibility.length > 0
+            ? getWalletCompatibilityTooltip()
+            : 'No wallet compatibility information available.',
       },
     ]
   }, [dapp])

@@ -32,6 +32,7 @@ export * from './pure/ClosableBanner'
 export * from './pure/PercentDisplay'
 export * from './pure/CmsImage'
 export * from './pure/DismissableInlineBanner'
+export * from './pure/Input'
 
 export * from './containers/CowSwapSafeAppLink'
 export * from './containers/InlineBanner'
