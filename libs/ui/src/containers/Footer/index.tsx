@@ -293,6 +293,7 @@ export const Footer = ({
   const [isFooterExpanded, setIsFooterExpanded] = useState(expanded)
   const footerRef = useRef<HTMLDivElement>(null)
   const hasMounted = useRef(false)
+  const [rootDomain, setRootDomain] = useState(host || '')
 
   const theme = useTheme()
 
@@ -310,9 +311,10 @@ export const Footer = ({
     } else {
       hasMounted.current = true
     }
-  }, [isFooterExpanded])
 
-  const rootDomain = host || (typeof window !== 'undefined' ? window.location.host : '')
+    // Set the rootDomain on the client side
+    setRootDomain(host || window.location.host)
+  }, [isFooterExpanded, host])
 
   return (
     <FooterContainer ref={footerRef} expanded={isFooterExpanded} hasTouchFooter={hasTouchFooter}>
@@ -369,15 +371,17 @@ export const Footer = ({
         <BottomText>&copy; CoW DAO - {new Date().getFullYear()}</BottomText>
         <FooterBottomLogos>
           {PRODUCT_LOGO_LINKS.map((product, index) => (
-            <a key={index} href={product.href}>
-              <ProductLogo
-                variant={product.productVariant}
-                logoIconOnly={false}
-                overrideColor={!theme.darkMode ? Color.neutral40 : Color.neutral40}
-                overrideHoverColor={Color.neutral98}
-                height={24}
-              />
-            </a>
+            <ProductLogo
+              key={index}
+              variant={product.productVariant}
+              logoIconOnly={false}
+              overrideColor={!theme.darkMode ? Color.neutral40 : Color.neutral40}
+              overrideHoverColor={Color.neutral98}
+              height={24}
+              href={product.href}
+              external={true}
+              aria-label={`Visit the ${product.label} website`}
+            />
           ))}
         </FooterBottomLogos>
 

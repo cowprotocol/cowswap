@@ -34,7 +34,7 @@ import {
 
 import { DAO_CONTENT as CONTENT } from '@/data/widget/const'
 
-import SVG from 'react-inlinesvg'
+import LazySVG from '@/components/LazySVG'
 
 import { CONFIG, DATA_CACHE_TIME_SECONDS } from '@/const/meta'
 import { clickOnWidget } from 'modules/analytics'
@@ -150,7 +150,7 @@ export default function Page() {
                 textColor={Color.neutral100}
               >
                 <TopicImage width={400} height={400} heightMobile={300} orderReverseMobile bgColor="transparent">
-                  <img src="images/eth-blocks.svg" alt="Integrate With Ease" width="340" height="214" />
+                  <img src="images/eth-blocks.svg" alt="Integrate With Ease" width="340" height="214" loading="lazy" />
                 </TopicImage>
                 <TopicCardInner contentAlign="left">
                   <TopicTitle fontSize={67}>Integrate With Ease</TopicTitle>
@@ -180,7 +180,7 @@ export default function Page() {
             <TopicList columns={3} columnsTablet={2}>
               <TopicCard contentAlign={'left'} bgColor={Color.neutral100} padding={'32px'} gap={16} asProp="div">
                 <TopicImage bgColor="transparent" height={75} width={'auto'}>
-                  <SVG src="images/protection.svg" />
+                  <LazySVG src="images/protection.svg" />
                 </TopicImage>
                 <TopicCardInner contentAlign="left">
                   <TopicTitle>Full protection from MEV</TopicTitle>
@@ -193,7 +193,7 @@ export default function Page() {
 
               <TopicCard contentAlign={'left'} bgColor={Color.neutral100} padding={'32px'} gap={16} asProp="div">
                 <TopicImage bgColor="transparent" height={75} width={'auto'}>
-                  <SVG src="images/surplus.svg" />
+                  <LazySVG src="images/surplus.svg" />
                 </TopicImage>
                 <TopicCardInner contentAlign="left">
                   <TopicTitle>Surplus-capturing orders</TopicTitle>
@@ -206,7 +206,7 @@ export default function Page() {
 
               <TopicCard contentAlign={'left'} bgColor={Color.neutral100} padding={'32px'} gap={16} asProp="div">
                 <TopicImage bgColor="transparent" height={75} width={'auto'}>
-                  <SVG src="images/gasless.svg" />
+                  <LazySVG src="images/gasless.svg" />
                 </TopicImage>
                 <TopicCardInner contentAlign="left">
                   <TopicTitle>Gasless trading</TopicTitle>
@@ -240,7 +240,7 @@ export default function Page() {
                   asProp="div"
                 >
                   <TopicImage bgColor="transparent" height={42} width={'auto'}>
-                    <SVG src="images/icons/check-color.svg" />
+                    <LazySVG src="images/icons/check-color.svg" />
                   </TopicImage>
                   <TopicCardInner contentAlign="left">
                     <TopicTitle fontSize={23} fontWeight={Font.weight.medium}>
@@ -257,9 +257,9 @@ export default function Page() {
           <ContainerCardSection>
             <SectionTitleWrapper>
               <SectionTitleIcon multiple>
-                <SVG src={IMG_ICON_OWL} />
+                <LazySVG src={IMG_ICON_OWL} />
                 <ProductLogo variant={ProductVariant.CowProtocol} theme="dark" logoIconOnly height={60} />
-                <SVG src={IMG_ICON_GHOST} />
+                <LazySVG src={IMG_ICON_GHOST} />
               </SectionTitleIcon>
               <SectionTitleText fontSize={90}>Trusted by the best</SectionTitleText>
             </SectionTitleWrapper>
@@ -283,9 +283,9 @@ export default function Page() {
                       margin={'auto'}
                     >
                       {isPng ? (
-                        <img src={dao.icon} alt={dao.title} style={{ maxWidth: '100%' }} />
+                        <img src={dao.icon} alt={dao.title} style={{ maxWidth: '100%' }} loading="lazy" />
                       ) : (
-                        <SVG src={dao.icon} />
+                        <LazySVG src={dao.icon} />
                       )}
                     </TopicImage>
                   </TopicCard>

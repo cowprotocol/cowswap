@@ -21,6 +21,9 @@ export default function App(props: AppProps) {
   return (
     <>
       <Head>
+        <link rel="preconnect" href="https://strapiapp.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://www.googletagmanager.com" crossOrigin="anonymous" />
+
         {/* Prevent indexing of development and preview environments */}
         {(process.env.NEXT_PUBLIC_ENVIRONMENT === 'DEVELOPMENT' ||
           process.env.NEXT_PUBLIC_ENVIRONMENT === 'PREVIEW') && <meta name="robots" content="noindex" key="robots" />}
