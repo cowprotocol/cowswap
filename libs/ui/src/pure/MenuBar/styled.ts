@@ -329,7 +329,8 @@ export const MobileDropdownContainer = styled.div<{ mobileMode: boolean }>`
       scrollbar-color: var(--scrollbarColor) var(--scrollbarBackground);
       list-style: none;
 
-      > div {
+      > div,
+      > ul {
         width: 100%;
         position: relative;
         left: initial;
@@ -339,8 +340,6 @@ export const MobileDropdownContainer = styled.div<{ mobileMode: boolean }>`
         margin: 0;
         border-radius: 28px;
       }
-
-      /* For WebKit-based browsers (Chrome, Safari) */
 
       &::-webkit-scrollbar {
         width: 10px;
