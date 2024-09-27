@@ -252,6 +252,7 @@ export const DropdownContent = styled.ul<DropdownContentProps>`
   backdrop-filter: blur(var(--blur));
   z-index: 1000;
   padding: ${({ isThirdLevel }) => (isThirdLevel ? '6px' : '6px')};
+  margin: 0;
   width: ${({ isThirdLevel }) => (isThirdLevel ? '100%' : '320px')};
   height: auto;
   border-radius: 28px;
