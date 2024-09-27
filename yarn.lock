@@ -5074,9 +5074,9 @@
   integrity sha512-irQnbMLbUNQpP1wcE5NstJtbuA/69kRfzBrpAD7Gsn8zm/CY6YQYc3HQBz8QPxwISG26tIm5afvvVbu508oBeQ==
 
 "@next/env@^13.4.3":
-  version "13.5.6"
-  resolved "https://registry.yarnpkg.com/@next/env/-/env-13.5.6.tgz#c1148e2e1aa166614f05161ee8f77ded467062bc"
-  integrity sha512-Yac/bV5sBGkkEXmAX5FWPS9Mmo2rthrOPRQQNfycJPkjUAUclomCPH7QFVCDQ4Mp2k2K1SSM6m0zrxYrOwtFQw==
+  version "13.5.7"
+  resolved "https://registry.yarnpkg.com/@next/env/-/env-13.5.7.tgz#5006f4460a7fa598a03e1c2aa4e59e45c71082d3"
+  integrity sha512-uVuRqoj28Ys/AI/5gVEgRAISd0KWI0HRjOO1CTpNgmX3ZsHb5mdn14Y59yk0IxizXdo7ZjsI2S7qbWnO+GNBcA==
 
 "@next/eslint-plugin-next@14.2.7":
   version "14.2.7"

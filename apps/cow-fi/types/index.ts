@@ -23,7 +23,6 @@ export interface TokenInfo {
 
 export interface TokenDetails extends TokenInfo {
   description: string
-  metaDescription: string
   platforms: Platforms
   allTimeHigh: string | null
   allTimeLow: string | null

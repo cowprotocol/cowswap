@@ -38,24 +38,24 @@ const LOGOS: Record<ProductVariant, ThemedLogo> = {
     light: {
       default: {
         src: LOGO_COWSWAP,
-        alt: 'CoW Swap light mode',
+        alt: 'CoW Swap',
         color: '#004293',
       },
       logoIconOnly: {
         src: LOGO_ICON_COW,
-        alt: 'CoW Swap icon only light mode',
+        alt: 'CoW Swap',
         color: '#004293',
       },
     },
     dark: {
       default: {
         src: LOGO_COWSWAP,
-        alt: 'CoW Swap dark mode',
+        alt: 'CoW Swap',
         color: '#65D9FF',
       },
       logoIconOnly: {
         src: LOGO_ICON_COW,
-        alt: 'CoW Swap icon only dark mode',
+        alt: 'CoW Swap',
         color: '#65D9FF',
       },
     },
@@ -66,24 +66,24 @@ const LOGOS: Record<ProductVariant, ThemedLogo> = {
     light: {
       default: {
         src: LOGO_COWEXPLORER,
-        alt: 'CoW Explorer light mode',
+        alt: 'CoW Explorer',
         color: Color.neutral0,
       },
       logoIconOnly: {
         src: LOGO_ICON_COW,
-        alt: 'CoW Explorer icon only light mode',
+        alt: 'CoW Explorer',
         color: Color.neutral0,
       },
     },
     dark: {
       default: {
         src: LOGO_COWEXPLORER,
-        alt: 'CoW Explorer dark mode',
+        alt: 'CoW Explorer',
         color: Color.neutral100,
       },
       logoIconOnly: {
         src: LOGO_ICON_COW,
-        alt: 'CoW Explorer icon only dark mode',
+        alt: 'CoW Explorer',
         color: Color.neutral100,
       },
     },
@@ -94,24 +94,24 @@ const LOGOS: Record<ProductVariant, ThemedLogo> = {
     light: {
       default: {
         src: LOGO_COWDAO,
-        alt: 'CoW DAO light mode',
+        alt: 'CoW DAO',
         color: Color.neutral0,
       },
       logoIconOnly: {
         src: LOGO_ICON_COW,
-        alt: 'CoW DAO icon only light mode',
+        alt: 'CoW DAO',
         color: Color.neutral0,
       },
     },
     dark: {
       default: {
         src: LOGO_COWDAO,
-        alt: 'CoW DAO dark mode',
+        alt: 'CoW DAO',
         color: Color.neutral100,
       },
       logoIconOnly: {
         src: LOGO_ICON_COW,
-        alt: 'CoW DAO icon only dark mode',
+        alt: 'CoW DAO',
         color: Color.neutral100,
       },
     },
@@ -122,24 +122,24 @@ const LOGOS: Record<ProductVariant, ThemedLogo> = {
     light: {
       default: {
         src: LOGO_COWPROTOCOL,
-        alt: 'CoW Protocol light mode',
+        alt: 'CoW Protocol',
         color: Color.neutral0,
       },
       logoIconOnly: {
         src: LOGO_ICON_COW,
-        alt: 'CoW Protocol icon only light mode',
+        alt: 'CoW Protocol',
         color: Color.neutral0,
       },
     },
     dark: {
       default: {
         src: LOGO_COWPROTOCOL,
-        alt: 'CoW Protocol dark mode',
+        alt: 'CoW Protocol',
         color: Color.neutral100,
       },
       logoIconOnly: {
         src: LOGO_ICON_COW,
-        alt: 'CoW Protocol icon only dark mode',
+        alt: 'CoW Protocol',
         color: Color.neutral100,
       },
     },
@@ -150,24 +150,24 @@ const LOGOS: Record<ProductVariant, ThemedLogo> = {
     light: {
       default: {
         src: LOGO_MEVBLOCKER,
-        alt: 'MEV Blocker light mode',
+        alt: 'MEV Blocker',
         color: '#EC4612',
       },
       logoIconOnly: {
         src: LOGO_ICON_MEVBLOCKER,
-        alt: 'MEV Blocker icon only light mode',
+        alt: 'MEV Blocker',
         color: '#EC4612',
       },
     },
     dark: {
       default: {
         src: LOGO_MEVBLOCKER,
-        alt: 'MEV Blocker dark mode',
+        alt: 'MEV Blocker',
         color: '#EC4612',
       },
       logoIconOnly: {
         src: LOGO_ICON_MEVBLOCKER,
-        alt: 'MEV Blocker icon only dark mode',
+        alt: 'MEV Blocker',
         color: '#EC4612',
       },
     },
@@ -178,24 +178,24 @@ const LOGOS: Record<ProductVariant, ThemedLogo> = {
     light: {
       default: {
         src: LOGO_COWAMM,
-        alt: 'CoW AMM light mode',
+        alt: 'CoW AMM',
         color: '#012F7A',
       },
       logoIconOnly: {
         src: LOGO_ICON_COW,
-        alt: 'CoW AMM icon only light mode',
+        alt: 'CoW AMM',
         color: '#012F7A',
       },
     },
     dark: {
       default: {
         src: LOGO_COWAMM,
-        alt: 'CoW AMM dark mode',
+        alt: 'CoW AMM',
         color: '#007CDB',
       },
       logoIconOnly: {
         src: LOGO_ICON_COW,
-        alt: 'CoW AMM icon only dark mode',
+        alt: 'CoW AMM',
         color: '#007CDB',
       },
     },
@@ -274,7 +274,13 @@ export const ProductLogo = ({
   const logoInfo = logoIconOnly && logoForTheme.logoIconOnly ? logoForTheme.logoIconOnly : logoForTheme.default
   const initialColor = overrideColor || logoInfo.color
 
-  const logoElement = <SVG src={logoInfo.src} description={logoInfo.alt} />
+  const getAccessibleAltText = () => {
+    const baseAlt = logoInfo.alt
+    const linkText = href ? (external ? 'Visit external site: ' : 'Go to: ') : ''
+    return `${linkText}${baseAlt}`
+  }
+
+  const logoElement = <SVG src={logoInfo.src} description={getAccessibleAltText()} />
 
   return (
     <ProductLogoWrapper
@@ -284,7 +290,12 @@ export const ProductLogo = ({
       heightMobile={heightMobile}
     >
       {href ? (
-        <a href={href} target={external ? '_blank' : '_self'} rel={external ? 'noopener noreferrer' : undefined}>
+        <a
+          href={href}
+          target={external ? '_blank' : '_self'}
+          rel={external ? 'noopener noreferrer' : undefined}
+          aria-label={getAccessibleAltText()}
+        >
           {logoElement}
         </a>
       ) : (

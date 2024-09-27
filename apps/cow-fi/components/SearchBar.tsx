@@ -40,7 +40,7 @@ const Input = styled.input`
   min-height: 56px;
   border: 2px solid transparent;
   font-size: 21px;
-  color: ${Color.neutral50};
+  color: ${Color.neutral40};
   width: 100%;
   background: ${Color.neutral90};
   border-radius: 56px;
@@ -215,7 +215,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ articles }) => {
   useEffect(() => {
     if (query.trim()) {
       const filtered = (articles || []).filter((article) =>
-        article.attributes?.title?.toLowerCase().includes(query.toLowerCase())
+        article.attributes?.title?.toLowerCase().includes(query.toLowerCase()),
       )
       setFilteredArticles(filtered)
     } else {
@@ -230,7 +230,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ articles }) => {
         <HighlightedText key={index}>{part}</HighlightedText>
       ) : (
         <span key={index}>{part}</span>
-      )
+      ),
     )
   }
 

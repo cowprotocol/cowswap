@@ -55,27 +55,4 @@ interface MetaTokenDetails extends TokenInfoExcluded {
   change24hTrimmed: string
 }
 
-export const META_DESCRIPTION_TEMPLATES = [
-  ({ name, symbol, priceUsd, change24hTrimmed, volume, marketCap }: MetaTokenDetails) =>
-    `Moo-ve over to ${name} (${symbol})! Grazing at $${priceUsd} with ${change24hTrimmed}% change in 24h. Trading volume: $${volume}. Their market cap: $${marketCap}. Learn about ${symbol}'s pasture.`,
-
-  ({ name, symbol, priceUsd, change24hTrimmed, volume, marketCap }: MetaTokenDetails) =>
-    `The grass is greener with ${name} (${symbol})! At $${priceUsd}, with ${change24hTrimmed}% change in 24h. Trading volume: $${volume}. Their market cap: $${marketCap}. Discover more about ${symbol}.`,
-
-  ({ name, symbol, priceUsd, change24hTrimmed, volume, marketCap }: MetaTokenDetails) =>
-    `Interested in ${name} (${symbol})? Priced at $${priceUsd}, with ${change24hTrimmed}% change in 24h. Trading volume: $${volume}. Their market cap: $${marketCap}. Learn more about ${symbol}!`,
-
-  ({ name, symbol, priceUsd, change24hTrimmed, volume, marketCap }: MetaTokenDetails) =>
-    `Graze on this: ${name} (${symbol}) at $${priceUsd}, with ${change24hTrimmed}% change in 24h. Trading volume: $${volume}. They boast a market cap of $${marketCap}. Learn about ${symbol}.`,
-
-  ({ name, symbol, priceUsd, change24hTrimmed, volume, marketCap }: MetaTokenDetails) =>
-    `Ever heard of ${name} (${symbol})? At $${priceUsd}, they've marked a ${change24hTrimmed}% change in 24h. Trading volume: $${volume}. Their market cap: $${marketCap}. Get to know them.`,
-
-  ({ name, symbol, priceUsd, change24hTrimmed, volume, marketCap }: MetaTokenDetails) =>
-    `Check out ${name} (${symbol})! Grazing at $${priceUsd}, with ${change24hTrimmed}% change in 24h. Trading volume: $${volume}. Their market cap: $${marketCap}. Discover ${symbol}'s secrets.`,
-
-  ({ name, symbol, priceUsd, change24hTrimmed, volume, marketCap }: MetaTokenDetails) =>
-    `Latest on ${name} (${symbol}): priced at $${priceUsd}. Experienced a ${change24hTrimmed}% change in 24h. Trading volume: $${volume}. Their market cap: $${marketCap}. Learn more.`,
-]
-
 export type SiteConfig = typeof CONFIG

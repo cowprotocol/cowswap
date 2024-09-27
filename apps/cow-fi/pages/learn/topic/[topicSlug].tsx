@@ -16,11 +16,10 @@ import {
   LinkSection,
   LinkColumn,
   LinkItem,
-  CategoryLinks,
 } from '@/styles/styled'
 import { clickOnKnowledgeBase } from 'modules/analytics'
 import { CmsImage } from '@cowprotocol/ui'
-
+import { CategoryLinks } from '@/components/CategoryLinks'
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -105,23 +104,7 @@ export default function TopicPage({ category, articles, allCategories }: TopicPa
   return (
     <Layout metaTitle={`${name} - Knowledge Base`} metaDescription={description}>
       <Wrapper>
-        <CategoryLinks>
-          <li>
-            <a href="/learn" onClick={() => clickOnKnowledgeBase('click-categories-home')}>
-              Knowledge Base
-            </a>
-          </li>
-          {allCategories.map((category) => (
-            <li key={category.slug}>
-              <a
-                href={`/learn/topic/${category.slug}`}
-                onClick={() => clickOnKnowledgeBase(`click-categories-${category.name}`)}
-              >
-                {category.name}
-              </a>
-            </li>
-          ))}
-        </CategoryLinks>
+        <CategoryLinks allCategories={allCategories} />
 
         <SearchBar articles={articles} />
 
@@ -144,7 +127,7 @@ export default function TopicPage({ category, articles, allCategories }: TopicPa
               <CategoryTitle>
                 {imageUrl && (
                   <CategoryImageWrapper>
-                    <CategoryImage src={imageUrl} alt={name} />
+                    <CategoryImage src={imageUrl} alt={name} width={82} height={82} />
                   </CategoryImageWrapper>
                 )}
                 <h1>{name}</h1>
@@ -170,7 +153,7 @@ export default function TopicPage({ category, articles, allCategories }: TopicPa
                         {article.attributes.title}
                         <span>→</span>
                       </LinkItem>
-                    ) : null
+                    ) : null,
                   )}
                 </LinkColumn>
               </LinkSection>

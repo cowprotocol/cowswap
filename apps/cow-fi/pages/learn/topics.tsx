@@ -103,6 +103,8 @@ export default function Page({ siteConfigData, categories, articles }: PageProps
                         <CmsImage
                           src={imageUrl}
                           alt={name}
+                          width={82}
+                          height={82}
                           onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
                             e.currentTarget.onerror = null
                             e.currentTarget.style.display = 'none'

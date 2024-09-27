@@ -45,7 +45,7 @@ import {
   SectionImage,
 } from '@/styles/styled'
 
-import SVG from 'react-inlinesvg'
+import LazySVG from '@/components/LazySVG'
 import IMG_ICON_FAQ from '@cowprotocol/assets/images/icon-faq.svg'
 
 import {
@@ -94,7 +94,7 @@ export default function Page() {
             </Link>
           </HeroContent>
           <HeroImage width={470} height={470} color={'#66018E'}>
-            <SVG src={IMG_COW_BITS} />
+            <LazySVG src={IMG_COW_BITS} />
           </HeroImage>
         </HeroContainer>
 
@@ -132,7 +132,7 @@ export default function Page() {
           <ContainerCardSection>
             <SectionTitleWrapper color={Color.neutral0} maxWidth={700} gap={56}>
               <SectionTitleIcon size={82}>
-                <SVG src={IMG_ICON_CROWN_COW} />
+                <LazySVG src={IMG_ICON_CROWN_COW} />
               </SectionTitleIcon>
               <SectionTitleText>The leading intents-based DEX aggregation protocol</SectionTitleText>
               <SectionTitleDescription maxWidth={900} color={Color.neutral50}>
@@ -141,7 +141,7 @@ export default function Page() {
               </SectionTitleDescription>
             </SectionTitleWrapper>
             <SectionImage>
-              <SVG src={IMG_LEADING} />
+              <LazySVG src={IMG_LEADING} />
             </SectionImage>
           </ContainerCardSection>
         </ContainerCard>
@@ -150,7 +150,7 @@ export default function Page() {
           <ContainerCardSection>
             <SectionTitleWrapper>
               <SectionTitleIcon size={132}>
-                <SVG src={IMG_COW_LENS} />
+                <LazySVG src={IMG_COW_LENS} />
               </SectionTitleIcon>
               <SectionTitleText>How it works</SectionTitleText>
               <SectionTitleDescription maxWidth={900} color={Color.neutral50}>
@@ -187,7 +187,7 @@ export default function Page() {
                   orderReverseTablet
                   borderRadius={90}
                 >
-                  <SVG src={IMG_INTENTS} />
+                  <LazySVG src={IMG_INTENTS} />
                 </TopicImage>
               </TopicCard>
 
@@ -202,7 +202,7 @@ export default function Page() {
                   orderReverseTablet
                   borderRadius={90}
                 >
-                  <SVG src={IMG_SOLVERS} />
+                  <LazySVG src={IMG_SOLVERS} />
                 </TopicImage>
                 <TopicCardInner contentAlign="left">
                   <TopicTitle fontSize={51}>Solvers</TopicTitle>
@@ -253,7 +253,7 @@ export default function Page() {
                   orderReverseMobile
                   borderRadius={90}
                 >
-                  <SVG src={IMG_BATCHAUCTIONS} />
+                  <LazySVG src={IMG_BATCHAUCTIONS} />
                 </TopicImage>
               </TopicCard>
             </TopicList>
@@ -296,7 +296,7 @@ export default function Page() {
                     height="auto"
                     width="100%"
                   >
-                    <SVG src={topic.imageSrc} />
+                    <LazySVG src={topic.imageSrc} />
                   </TopicImage>
                 </TopicCard>
               ))}
@@ -328,7 +328,7 @@ export default function Page() {
                     height="auto"
                     width="100%"
                   >
-                    <SVG src={topic.imageSrc} />
+                    <LazySVG src={topic.imageSrc} />
                   </TopicImage>
                 </TopicCard>
               ))}
@@ -340,7 +340,7 @@ export default function Page() {
           <ContainerCardSection>
             <SectionTitleWrapper maxWidth={878} color={Color.neutral10}>
               <SectionTitleIcon size={128}>
-                <SVG src={IMG_ICON_BULB_COW} />
+                <LazySVG src={IMG_ICON_BULB_COW} />
               </SectionTitleIcon>
               <SectionTitleText textAlign="center">Powering innovation across DeFi</SectionTitleText>
             </SectionTitleWrapper>
@@ -348,7 +348,7 @@ export default function Page() {
             <TopicList columns={3} columnsTablet={2}>
               <TopicCard contentAlign={'left'} bgColor="#66018E" textColor="#F996EE" padding={'32px'} asProp="div">
                 <TopicImage iconColor="#8702AA" bgColor="transparent" height={96} width={'auto'}>
-                  <SVG src={IMG_LOGO_CURVE} />
+                  <LazySVG src={IMG_LOGO_CURVE} />
                 </TopicImage>
                 <TopicCardInner contentAlign="left">
                   <TopicTitle color={Color.neutral100}>Automating advanced treasury tasks</TopicTitle>
@@ -362,7 +362,7 @@ export default function Page() {
 
               <TopicCard contentAlign={'left'} bgColor="#66018E" textColor="#F996EE" padding={'32px'} asProp="div">
                 <TopicImage iconColor="#8702AA" bgColor="transparent" height={96} width={'auto'}>
-                  <SVG src={IMG_LOGO_LIDO} />
+                  <LazySVG src={IMG_LOGO_LIDO} />
                 </TopicImage>
                 <TopicCardInner contentAlign="left">
                   <TopicTitle color={Color.neutral100}>Adding security to sensitive transactions</TopicTitle>
@@ -377,7 +377,7 @@ export default function Page() {
 
               <TopicCard contentAlign={'left'} bgColor="#66018E" textColor="#F996EE" padding={'32px'} asProp="div">
                 <TopicImage iconColor="#8702AA" bgColor="transparent" height={96} width={'auto'}>
-                  <SVG src={IMG_LOGO_SAFE} />
+                  <LazySVG src={IMG_LOGO_SAFE} />
                 </TopicImage>
                 <TopicCardInner contentAlign="left">
                   <TopicTitle color={Color.neutral100}>Powering native swaps</TopicTitle>
@@ -396,9 +396,9 @@ export default function Page() {
           <ContainerCardSection>
             <SectionTitleWrapper padding="150px 0 0">
               <SectionTitleIcon multiple size={60}>
-                <SVG src={IMG_ICON_OWL} />
+                <LazySVG src={IMG_ICON_OWL} />
                 <ProductLogo variant={ProductVariant.CowProtocol} theme="dark" logoIconOnly height={60} />
-                <SVG src={IMG_ICON_GHOST} />
+                <LazySVG src={IMG_ICON_GHOST} />
               </SectionTitleIcon>
               <SectionTitleText>Trusted by the best</SectionTitleText>
             </SectionTitleWrapper>
@@ -422,7 +422,7 @@ export default function Page() {
                     height={54}
                     margin={'auto'}
                   >
-                    <SVG src={logo.src} title={logo.alt} />
+                    <LazySVG src={logo.src} title={logo.alt} />
                   </TopicImage>
                 </TopicCard>
               ))}
@@ -430,7 +430,7 @@ export default function Page() {
               {CASE_STUDIES.map((study) => (
                 <TopicCard key={study.link} bgColor={Color.neutral100} padding={'52px'} gap={16} asProp="div">
                   <TopicImage iconColor="#8702AA" bgColor="transparent" height={96} width={'auto'}>
-                    <SVG src={study.logo} />
+                    <LazySVG src={study.logo} />
                   </TopicImage>
                   <TopicCardInner>
                     <TopicTitle fontSize={38}>{study.title}</TopicTitle>
@@ -471,7 +471,7 @@ export default function Page() {
                     height={90}
                     margin={'auto'}
                   >
-                    <SVG src={logo.src} title={logo.alt} />
+                    <LazySVG src={logo.src} title={logo.alt} />
                   </TopicImage>
                 </TopicCard>
               ))}
@@ -483,7 +483,7 @@ export default function Page() {
           <ContainerCardSection>
             <SectionTitleWrapper color={Color.neutral10} maxWidth={1100}>
               <SectionTitleIcon size={78}>
-                <SVG src={IMG_ICON_BUILD_WITH_COW} />
+                <LazySVG src={IMG_ICON_BUILD_WITH_COW} />
               </SectionTitleIcon>
               <SectionTitleText>Build with CoW Protocol</SectionTitleText>
             </SectionTitleWrapper>
@@ -518,7 +518,7 @@ export default function Page() {
                     </Link>
                   </TopicCardInner>
                   <TopicImage iconColor="#8702AA" bgColor="transparent" margin="0 0 0 auto" height={187} width="auto">
-                    <SVG src={topic.imageSrc} />
+                    <LazySVG src={topic.imageSrc} />
                   </TopicImage>
                 </TopicCard>
               ))}
@@ -530,7 +530,7 @@ export default function Page() {
           <ContainerCardSection>
             <SectionTitleWrapper maxWidth={1000}>
               <SectionTitleIcon size={100}>
-                <SVG src={IMG_ICON_SECURE} />
+                <LazySVG src={IMG_ICON_SECURE} />
               </SectionTitleIcon>
               <SectionTitleText textAlign="center">Want to build a solver?</SectionTitleText>
               <SectionTitleDescription fontSize={28} color={Color.neutral30}>
@@ -565,7 +565,7 @@ export default function Page() {
           <ContainerCardSection>
             <SectionTitleWrapper>
               <SectionTitleIcon size={62}>
-                <SVG src={IMG_ICON_FAQ} />
+                <LazySVG src={IMG_ICON_FAQ} />
               </SectionTitleIcon>
               <SectionTitleText>FAQs</SectionTitleText>
             </SectionTitleWrapper>
