@@ -4,7 +4,6 @@ import styled from 'styled-components/macro'
 
 export const Wrapper = styled.div`
   display: flex;
-  flex-direction: row;
   text-align: left;
   gap: 16px;
   font-weight: 500;
