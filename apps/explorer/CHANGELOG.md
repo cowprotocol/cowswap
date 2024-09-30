@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.34.1](https://github.com/cowprotocol/cowswap/compare/explorer-v2.34.0...explorer-v2.34.1) (2024-09-30)
+
+
+### Bug Fixes
+
+* **explorer:** get token logo url from known token lists ([#4922](https://github.com/cowprotocol/cowswap/issues/4922)) ([2f2f572](https://github.com/cowprotocol/cowswap/commit/2f2f572c1e05e65fc41e89361d28b267054a8428))
+
 ## [2.34.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.33.1...explorer-v2.34.0) (2024-09-17)
 
 
