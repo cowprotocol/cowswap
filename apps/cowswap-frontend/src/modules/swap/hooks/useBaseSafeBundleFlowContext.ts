@@ -6,15 +6,15 @@ import { useSafeAppsSdk } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { TradeType } from '@uniswap/sdk-core'
 
-import { getFlowContext, useBaseFlowContextSetup } from 'modules/swap/hooks/useFlowContext'
+import { getFlowContext, useBaseFlowContextSource } from 'modules/swap/hooks/useFlowContext'
 import { BaseSafeFlowContext } from 'modules/swap/services/types'
 
 import { useGP2SettlementContract } from 'common/hooks/useContract'
 import { useTradeSpenderAddress } from 'common/hooks/useTradeSpenderAddress'
 
 export function useBaseSafeBundleFlowContext(): BaseSafeFlowContext | null {
-  const baseProps = useBaseFlowContextSetup()
-  const sellToken = baseProps.trade ? getWrappedToken(baseProps.trade.inputAmount.currency) : undefined
+  const baseProps = useBaseFlowContextSource()
+  const sellToken = baseProps?.trade ? getWrappedToken(baseProps.trade.inputAmount.currency) : undefined
   const settlementContract = useGP2SettlementContract()
   const spender = useTradeSpenderAddress()
 
@@ -22,7 +22,7 @@ export function useBaseSafeBundleFlowContext(): BaseSafeFlowContext | null {
   const provider = useWalletProvider()
 
   return useMemo(() => {
-    if (!baseProps.trade || !settlementContract || !spender || !safeAppsSdk || !provider) return null
+    if (!baseProps?.trade || !settlementContract || !spender || !safeAppsSdk || !provider) return null
 
     const baseContext = getFlowContext({
       baseProps,
