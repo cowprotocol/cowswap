@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useRef } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useVirtualizer } from '@tanstack/react-virtual'
 import ms from 'ms.macro'
@@ -30,6 +31,9 @@ export interface TokensVirtualListProps extends SelectTokenContext {
 export function TokensVirtualList(props: TokensVirtualListProps) {
   const { allTokens, selectedToken, balancesState, onSelectToken, unsupportedTokens, permitCompatibleTokens } = props
   const { values: balances, isLoading: balancesLoading } = balancesState
+
+  const { account } = useWalletInfo()
+  const isWalletConnected = !!account
 
   const scrollTimeoutRef = useRef<NodeJS.Timeout>()
   const parentRef = useRef<HTMLDivElement>(null)
@@ -83,6 +87,7 @@ export function TokensVirtualList(props: TokensVirtualListProps) {
                 selectedToken={selectedToken}
                 balance={balance}
                 onSelectToken={onSelectToken}
+                isWalletConnected={isWalletConnected}
               />
             )
           })}
