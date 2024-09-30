@@ -6,12 +6,6 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { HookDappIframe } from '../../../types/hooks'
 import { validateHookDappManifest } from '../../../validateHookDappManifest'
 
-type HookDappBaseInfo = Omit<HookDappBase, 'type' | 'conditions'>
-
-const MANDATORY_DAPP_FIELDS: (keyof HookDappBaseInfo)[] = ['id', 'name', 'image', 'version', 'website']
-
-const isHex = (val: string) => Boolean(val.match(/^[0-9a-f]+$/i))
-
 interface ExternalDappLoaderProps {
   input: string
   isPreHook: boolean
