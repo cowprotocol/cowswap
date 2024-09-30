@@ -39,7 +39,11 @@ export const PERMIT_GAS_LIMIT_MIN: Record<SupportedChainId, number> = mapSupport
  * When it is not, returned type is `{type: 'unsupported'}`
  * When it is unknown, returned type is `undefined`
  */
-export function usePermitInfo(token: Nullish<Currency>, tradeType: Nullish<TradeType>): IsTokenPermittableResult {
+export function usePermitInfo(
+  token: Nullish<Currency>,
+  tradeType: Nullish<TradeType>,
+  customSpender?: string,
+): IsTokenPermittableResult {
   const { chainId } = useWalletInfo()
   const provider = useWalletProvider()
 
@@ -54,10 +58,10 @@ export function usePermitInfo(token: Nullish<Currency>, tradeType: Nullish<Trade
   const addPermitInfo = useAddPermitInfo()
   const permitInfo = _usePermitInfo(chainId, isPermitEnabled ? lowerCaseAddress : undefined)
   const { permitInfo: preGeneratedInfo, isLoading: preGeneratedIsLoading } = usePreGeneratedPermitInfoForToken(
-    isPermitEnabled && !isNative ? token : undefined
+    isPermitEnabled && !isNative ? token : undefined,
   )
 
-  const spender = COW_PROTOCOL_VAULT_RELAYER_ADDRESS[chainId]
+  const spender = customSpender || COW_PROTOCOL_VAULT_RELAYER_ADDRESS[chainId]
 
   useEffect(() => {
     if (
@@ -81,7 +85,7 @@ export function usePermitInfo(token: Nullish<Currency>, tradeType: Nullish<Trade
       if ('error' in result) {
         // When error, we don't know. Log and don't cache.
         console.debug(
-          `useIsTokenPermittable: failed to check whether token ${lowerCaseAddress} is permittable: ${result.error}`
+          `useIsTokenPermittable: failed to check whether token ${lowerCaseAddress} is permittable: ${result.error}`,
         )
       } else {
         // TODO: there is a Single Responsibility Principle breach here. This hook should not be responsible for caching.

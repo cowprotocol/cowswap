@@ -1,15 +1,16 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { ButtonPrimary } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { formatUnits } from 'ethers/lib/utils'
 
 import { SBC_DEPOSIT_CONTRACT_ADDRESS } from './const'
-import { Amount, ContentWrapper, ErrorLabel, Label, LoadingLabel, Wrapper } from './styled'
 import { useSBCDepositContract } from './useSBCDepositContract'
 
 import { HookDappProps } from '../../types/hooks'
+import { ContentWrapper, Text, LoadingLabel, Wrapper } from '../styled'
 
 /**
  * Dapp that creates the hook to the connected wallet GNO Rewards.
@@ -61,13 +62,24 @@ export function ClaimGnoHookApp({ context }: HookDappProps) {
       return
     }
 
-    context.addHook({
-      hook: {
-        callData,
-        gasLimit: gasLimit.toString(),
-        target: SBC_DEPOSIT_CONTRACT_ADDRESS,
-      },
-    })
+    if (context.hookToEdit) {
+      context.editHook({
+        ...context.hookToEdit,
+        hook: {
+          callData,
+          gasLimit: gasLimit.toString(),
+          target: SBC_DEPOSIT_CONTRACT_ADDRESS,
+        },
+      })
+    } else {
+      context.addHook({
+        hook: {
+          callData,
+          gasLimit: gasLimit.toString(),
+          target: SBC_DEPOSIT_CONTRACT_ADDRESS,
+        },
+      })
+    }
   }, [callData, gasLimit, context, claimable])
 
   return (
@@ -80,12 +92,14 @@ export function ClaimGnoHookApp({ context }: HookDappProps) {
         ) : (
           <>
             <ClaimableAmount loading={loading} claimable={claimable} error={error} />
-            {claimable && !error && (
-              <ButtonPrimary onClick={clickOnAddHook}>Add Pre-hook</ButtonPrimary>
-            )}
           </>
         )}
       </ContentWrapper>
+      {claimable && !error && (
+        <ButtonPrimary onClick={clickOnAddHook}>
+          {context.hookToEdit ? 'Update Pre-hook' : 'Add Pre-hook'}
+        </ButtonPrimary>
+      )}
     </Wrapper>
   )
 }
@@ -93,7 +107,7 @@ export function ClaimGnoHookApp({ context }: HookDappProps) {
 function ClaimableAmount(props: { loading: boolean; error: boolean; claimable: BigNumber | undefined }) {
   const { loading, error, claimable } = props
   if (error) {
-    return <ErrorLabel>Error loading the claimable amount</ErrorLabel>
+    return <Text color={`var(${UI.COLOR_DANGER})`}>Error loading the claimable amount</Text>
   }
 
   if (loading || !claimable) {
@@ -101,9 +115,11 @@ function ClaimableAmount(props: { loading: boolean; error: boolean; claimable: B
   }
 
   return (
-    <div>
-      <Label>Total claimable rewards</Label>:
-      <Amount>{formatUnits(claimable, 18)} GNO</Amount>
-    </div>
+    <>
+      <Text color={`var(${UI.COLOR_TEXT_OPACITY_70})`}>Total claimable rewards:</Text>
+      <Text fontSize="36px" fontWeight="bold">
+        {formatUnits(claimable, 18)} GNO
+      </Text>
+    </>
   )
 }

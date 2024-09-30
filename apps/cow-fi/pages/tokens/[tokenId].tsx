@@ -1,5 +1,5 @@
 import React from 'react'
-import Head from 'next/head'
+
 import { getTokensIds as getTokensIds, getTokenDetails as getTokenDetails } from 'services/tokens'
 import { TokenDetails as TokenDetailsPure, TokenDetailProps } from '@/components/TokenDetails'
 import { GetStaticPaths, GetStaticProps } from 'next'
@@ -26,30 +26,21 @@ const Wrapper = styled.div`
 export type TokenDetailPageProps = TokenDetailProps
 
 export default function TokenDetailsPage({ token }: TokenDetailPageProps) {
-  const { name, symbol, metaDescription, change24h, priceUsd } = token
+  const { name, symbol, change24h, priceUsd } = token
   const change24 = parseFloat(change24h as string)
   const change24hFormatted = change24.toFixed(2)
   const isIncrease = parseFloat(change24h as string) >= 0
   const priceChangeEmoji = isIncrease ? '🟢' : '🔴'
   const changeDirection = isIncrease ? '▲' : '▼'
-  const metaTitle = `${priceChangeEmoji} ${name} (${symbol}) $${priceUsd} (${change24hFormatted}% ${changeDirection}) - ${CONFIG.metatitle_tokenDetail}`
+  const metaTitle = `${priceChangeEmoji} ${name} (${symbol}) $${priceUsd} (${change24hFormatted}% ${changeDirection}) - ${CONFIG.metatitle_tokenDetail} - ${CONFIG.title}`
+  const metaDescription = `Track the latest ${name} (${symbol}) price, market cap, trading volume, and more with CoW DAO's live ${name} price chart.`
 
   return (
-    <>
-      <Head>
-        <title>{metaTitle}</title>
-        <meta key="description" name="description" content={metaDescription} />
-        <meta key="ogTitle" property="og:title" content={metaTitle} />
-        <meta key="ogDescription" property="og:description" content={metaDescription} />
-        <meta key="twitterTitle" name="twitter:title" content={CONFIG.title} />
-      </Head>
-
-      <Layout bgColor={Color.neutral90}>
-        <Wrapper>
-          <TokenDetailsPure token={token} />
-        </Wrapper>
-      </Layout>
-    </>
+    <Layout metaTitle={metaTitle} metaDescription={metaDescription} bgColor={Color.neutral90}>
+      <Wrapper>
+        <TokenDetailsPure token={token} />
+      </Wrapper>
+    </Layout>
   )
 }
 

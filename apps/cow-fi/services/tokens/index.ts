@@ -2,7 +2,6 @@ import fs from 'fs'
 import path from 'path'
 import { PlatformData, Platforms, TokenDetails, TokenInfo } from 'types'
 import { backOff } from 'exponential-backoff'
-import { META_DESCRIPTION_TEMPLATES } from '@/const/meta'
 
 const NETWORKS = ['ethereum', 'xdai']
 const COW_TOKEN_ID = 'cow-protocol'
@@ -33,8 +32,8 @@ export async function getTokensInfo(): Promise<TokenInfo[]> {
   sortedTokens.unshift(
     tokens.splice(
       tokens.findIndex((item) => item.id === COW_TOKEN_ID),
-      1
-    )[0]
+      1,
+    )[0],
   )
 
   return sortedTokens
@@ -87,7 +86,7 @@ async function fetchWithBackoff(url: string) {
         console.log(`Error fetching ${url}, attempt ${attemptNum}. Retrying soon...`, e)
         return true
       },
-    }
+    },
   )
 }
 
@@ -118,21 +117,6 @@ async function _getAllTokensData(): Promise<TokenDetails[]> {
 function _getTokenDescription(id: string): string {
   const filePath = path.join(DESCRIPTIONS_DIR_PATH, `${id}.md`)
   return fs.readFileSync(filePath, 'utf-8')
-}
-
-function _getTokenMetaDescription(token: TokenDetails): string {
-  if (!token) {
-    throw new Error('Token details are required.')
-  }
-
-  const { name, symbol, priceUsd, volume, change24h, marketCap } = token
-  const change24hTrimmed = parseFloat(change24h as string).toFixed(2)
-  const isIncrease = parseFloat(change24h as string) >= 0
-  const changeDirection = isIncrease ? 'increase ▲' : 'decrease ▼'
-  const randomIndex = Math.floor(Math.random() * META_DESCRIPTION_TEMPLATES.length)
-  const chosenTemplate = META_DESCRIPTION_TEMPLATES[randomIndex]
-
-  return chosenTemplate({ name, symbol, changeDirection, priceUsd, change24hTrimmed, volume, marketCap })
 }
 
 function _toTokenDetails(tokenRaw: any, description: string): TokenDetails {
@@ -170,9 +154,7 @@ function _toTokenDetails(tokenRaw: any, description: string): TokenDetails {
     platforms,
   }
 
-  const metaDescription = _getTokenMetaDescription(token)
-
-  return { ...token, metaDescription }
+  return { ...token }
 }
 
 function _toTokenInfo(token: TokenDetails): TokenInfo {

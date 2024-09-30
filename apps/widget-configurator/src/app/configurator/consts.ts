@@ -1,4 +1,4 @@
-import { CowEventListeners, CowEvents, ToastMessageType } from '@cowprotocol/events'
+import { CowWidgetEventListeners, CowWidgetEvents, ToastMessageType } from '@cowprotocol/events'
 import { CowSwapWidgetPaletteParams, TokenInfo, TradeType } from '@cowprotocol/widget-lib'
 
 import { TokenListItem } from './types'
@@ -60,9 +60,9 @@ export const DEFAULT_DARK_PALETTE: CowSwapWidgetPaletteParams = {
   success: '#00D897',
 }
 
-export const COW_LISTENERS: CowEventListeners = [
+export const COW_LISTENERS: CowWidgetEventListeners = [
   {
-    event: CowEvents.ON_TOAST_MESSAGE,
+    event: CowWidgetEvents.ON_TOAST_MESSAGE,
     handler: (event) => {
       // You cn implement a more complex way to handle toast messages
       switch (event.messageType) {
@@ -80,25 +80,25 @@ export const COW_LISTENERS: CowEventListeners = [
   },
 
   {
-    event: CowEvents.ON_POSTED_ORDER,
+    event: CowWidgetEvents.ON_POSTED_ORDER,
     handler: (event) => console.log('[configurator:ON_POSTED_ORDER] 💌 Posted order:', event.orderUid),
   },
 
   {
-    event: CowEvents.ON_CANCELLED_ORDER,
+    event: CowWidgetEvents.ON_CANCELLED_ORDER,
     handler: (event) =>
       console.log(
-        `[configurator:ON_CANCELLED_ORDER] ❌ Cancelled order ${event.order.uid}. Transaction hash: ${event.transactionHash}`
+        `[configurator:ON_CANCELLED_ORDER] ❌ Cancelled order ${event.order.uid}. Transaction hash: ${event.transactionHash}`,
       ),
   },
 
   {
-    event: CowEvents.ON_FULFILLED_ORDER,
+    event: CowWidgetEvents.ON_FULFILLED_ORDER,
     handler: (event) => console.log(`[configurator:ON_FULFILLED_ORDER] ✅ Executed order ${event.order.uid}`),
   },
 
   {
-    event: CowEvents.ON_CHANGE_TRADE_PARAMS,
+    event: CowWidgetEvents.ON_CHANGE_TRADE_PARAMS,
     handler: (event) => console.log(`[configurator:ON_TRADE_PARAMS] ✅ Trade params:`, event),
   },
 ]

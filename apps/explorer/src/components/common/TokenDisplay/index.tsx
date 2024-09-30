@@ -48,7 +48,7 @@ export function TokenDisplay(props: Readonly<Props>): React.ReactNode {
 
   return (
     <Wrapper>
-      <StyledImg address={imageAddress} />
+      <StyledImg address={imageAddress} network={network} />
       {isNativeToken(erc20.address) ? (
         // There's nowhere to link when it's a native token, so, only display the symbol
         <NativeWrapper>{erc20.symbol}</NativeWrapper>

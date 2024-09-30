@@ -3,7 +3,8 @@ import { useRef, useEffect } from 'react'
 import Sortable from 'sortablejs'
 import styled from 'styled-components/macro'
 
-import { CowHookDetailsSerialized } from '../../types/hooks'
+import { CowHookDetailsSerialized, HookDapp } from '../../types/hooks'
+import { findHookDappById } from '../../utils'
 import { AppliedHookItem } from '../AppliedHookItem'
 
 const HookList = styled.ul`
@@ -17,6 +18,7 @@ const HookList = styled.ul`
 
 interface AppliedHookListProps {
   account: string | undefined
+  dapps: HookDapp[]
   hooks: CowHookDetailsSerialized[]
   isPreHook: boolean
   removeHook: (uuid: string, isPreHook: boolean) => void
@@ -24,7 +26,15 @@ interface AppliedHookListProps {
   moveHook: (fromIndex: number, toIndex: number) => void
 }
 
-export function AppliedHookList({ account, hooks, isPreHook, removeHook, editHook, moveHook }: AppliedHookListProps) {
+export function AppliedHookList({
+  account,
+  dapps,
+  hooks,
+  isPreHook,
+  removeHook,
+  editHook,
+  moveHook,
+}: AppliedHookListProps) {
   const listRef = useRef<HTMLUListElement>(null)
 
   useEffect(() => {
@@ -55,17 +65,20 @@ export function AppliedHookList({ account, hooks, isPreHook, removeHook, editHoo
 
   return (
     <HookList ref={listRef}>
-      {hooks.map((hookDetails, index) => (
-        <AppliedHookItem
-          key={hookDetails.uuid}
-          index={index}
-          account={account}
-          hookDetails={hookDetails}
-          isPreHook={isPreHook}
-          removeHook={removeHook}
-          editHook={editHook}
-        />
-      ))}
+      {hooks.map((hookDetails, index) => {
+        return (
+          <AppliedHookItem
+            key={hookDetails.hookDetails.uuid}
+            dapp={findHookDappById(dapps, hookDetails)!}
+            index={index}
+            account={account}
+            hookDetails={hookDetails}
+            isPreHook={isPreHook}
+            removeHook={removeHook}
+            editHook={editHook}
+          />
+        )
+      })}
     </HookList>
   )
 }

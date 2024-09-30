@@ -2,7 +2,7 @@ import { useAtomValue } from 'jotai'
 import { useLayoutEffect, useRef } from 'react'
 
 import { MEDIA_WIDTHS } from '@cowprotocol/ui'
-import { WidgetMethodsEmit, postMessageToWindow } from '@cowprotocol/widget-lib'
+import { WidgetMethodsEmit, widgetIframeTransport } from '@cowprotocol/widget-lib'
 
 import { openModalState } from 'common/state/openModalState'
 
@@ -18,14 +18,16 @@ export function IframeResizer() {
       if (isModalOpen) {
         const isUpToSmall = document.body.offsetWidth <= MEDIA_WIDTHS.upToSmall
 
-        postMessageToWindow(window.parent, WidgetMethodsEmit.SET_FULL_HEIGHT, { isUpToSmall })
+        widgetIframeTransport.postMessageToWindow(window.parent, WidgetMethodsEmit.SET_FULL_HEIGHT, { isUpToSmall })
 
         previousHeightRef.current = 0
         return
       }
 
       if (contentHeight !== previousHeightRef.current) {
-        postMessageToWindow(window.parent, WidgetMethodsEmit.UPDATE_HEIGHT, { height: contentHeight })
+        widgetIframeTransport.postMessageToWindow(window.parent, WidgetMethodsEmit.UPDATE_HEIGHT, {
+          height: contentHeight,
+        })
         previousHeightRef.current = contentHeight
       }
     }

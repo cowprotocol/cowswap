@@ -5,7 +5,7 @@ import { HelpTooltip } from '@cowprotocol/ui'
 
 import * as styled from './styled'
 
-import { HookDapp, HookDappType } from '../../types/hooks'
+import { HookDapp, HookDappType, HookDappWalletCompatibility } from '../../types/hooks'
 import { HookDetailHeader } from '../HookDetailHeader'
 
 interface HookDappDetailsProps {
@@ -15,23 +15,43 @@ interface HookDappDetailsProps {
 
 export function HookDappDetails({ dapp, onSelect }: HookDappDetailsProps) {
   const tags = useMemo(() => {
-    const { version, website, type } = dapp
+    const { version, website, type, walletCompatibility = [] } = dapp
+
+    const getWalletCompatibilityTooltip = () => {
+      const isSmartContract = walletCompatibility.includes(HookDappWalletCompatibility.SMART_CONTRACT)
+      const isEOA = walletCompatibility.includes(HookDappWalletCompatibility.EOA)
+
+      return `This hook is compatible with ${
+        isSmartContract && isEOA
+          ? 'both smart contracts (e.g. Safe) and EOA wallets'
+          : isSmartContract
+            ? 'smart contracts (e.g. Safe)'
+            : 'EOA wallets'
+      }.`
+    }
+
+    const isInternal = type === HookDappType.INTERNAL
+    const typeLabel = isInternal ? 'Native' : 'External'
+
     return [
-      {
-        label: 'Hook version',
-        value: version,
-      },
-      {
-        label: 'Website',
-        link: website,
-      },
+      { label: 'Hook version', value: version },
+      { label: 'Website', link: website },
       {
         label: 'Type',
-        value: type === HookDappType.INTERNAL ? 'Native' : 'External',
+        value: typeLabel,
+        tooltip: `${typeLabel} hooks are ${
+          isInternal
+            ? 'integrated code and part of the CoW Swap codebase'
+            : 'externally hosted code which needs to be independently verified by the user'
+        }.`,
+      },
+      {
+        label: 'Wallet support',
+        value: walletCompatibility.length > 0 ? walletCompatibility.join(', ') : 'N/A',
         tooltip:
-          type === HookDappType.INTERNAL
-            ? 'Native hooks are integrated code and part of the CoW Swap codebase.'
-            : 'External hooks load an iframe and are externally hosted code which needs to be independently verified by the user.',
+          walletCompatibility.length > 0
+            ? getWalletCompatibilityTooltip()
+            : 'No wallet compatibility information available.',
       },
     ]
   }, [dapp])
@@ -48,20 +68,20 @@ export function HookDappDetails({ dapp, onSelect }: HookDappDetailsProps) {
           <table>
             <tbody>
               {tags
-                .filter((tag) => tag.value || tag.link)
-                .map((tag) => (
-                  <tr key={tag.label}>
+                .filter(({ value, link }) => value || link)
+                .map(({ label, value, link, tooltip }) => (
+                  <tr key={label}>
                     <td>
-                      {tag.label}
-                      {tag.tooltip && <HelpTooltip wrapInContainer text={tag.tooltip} />}
+                      {label}
+                      {tooltip && <HelpTooltip wrapInContainer text={tooltip} />}
                     </td>
                     <td>
-                      {tag.link ? (
-                        <a href={tag.link} target="_blank" rel="noopener noreferrer">
-                          {tag.value || tag.link}
+                      {link ? (
+                        <a href={link} target="_blank" rel="noopener noreferrer">
+                          {value || link}
                         </a>
                       ) : (
-                        tag.value
+                        value
                       )}
                     </td>
                   </tr>

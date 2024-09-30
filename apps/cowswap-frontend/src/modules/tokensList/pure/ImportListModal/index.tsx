@@ -3,8 +3,6 @@ import { useState } from 'react'
 import { TokenLogo, getTokenListViewLink, ListState } from '@cowprotocol/tokens'
 import { ButtonPrimary } from '@cowprotocol/ui'
 
-import { AlertTriangle } from 'react-feather'
-
 import * as styledEl from './styled'
 
 import { ModalHeader } from '../ModalHeader'
@@ -39,23 +37,21 @@ export function ImportListModal(props: ImportListModalProps) {
           </styledEl.ListLink>
         </div>
       </styledEl.ListInfo>
-      <styledEl.Contents>
-        <AlertTriangle size={48} strokeWidth={1} />
-        <h3>Import at your own risk</h3>
-        <p>
-          By adding this list you are implicitly trusting that the data is correct. Anyone can create a list, including
-          creating fake versions of existing lists and lists that claim to represent projects that do not have one.
-        </p>
-        <p>
-          <strong>If you purchase a token from this list, you may not be able to sell it back.</strong>
-        </p>
-        <div>
-          <styledEl.AcceptanceBox>
-            <input type="checkbox" onChange={() => setIsAccepted((state) => !state)} />
-            <span>I understand</span>
-          </styledEl.AcceptanceBox>
-        </div>
-      </styledEl.Contents>
+      <styledEl.ExternalSourceAlertStyled
+        title="Import at your own risk"
+        onChange={() => setIsAccepted((state) => !state)}
+      >
+        <>
+          <p>
+            By adding this list you are implicitly trusting that the data is correct. Anyone can create a list,
+            including creating fake versions of existing lists and lists that claim to represent projects that do not
+            have one.
+          </p>
+          <p>
+            <strong>If you purchase a token from this list, you may not be able to sell it back.</strong>
+          </p>
+        </>
+      </styledEl.ExternalSourceAlertStyled>
       <styledEl.ActionButtonWrapper>
         <ButtonPrimary disabled={!isAccepted} onClick={() => onImport(list)}>
           Import

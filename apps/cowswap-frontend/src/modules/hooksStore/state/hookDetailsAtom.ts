@@ -21,7 +21,7 @@ const EMPTY_STATE: HooksStoreState = {
 }
 
 const hooksAtomInner = atomWithStorage<StatePerNetwork>(
-  'hooksStoreAtom:v0',
+  'hooksStoreAtom:v2',
   mapSupportedNetworks({}),
   getJotaiIsolatedStorage(),
 )

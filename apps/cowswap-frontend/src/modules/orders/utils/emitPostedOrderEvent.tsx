@@ -1,12 +1,12 @@
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { currencyAmountToTokenAmount } from '@cowprotocol/common-utils'
 import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
-import { CowEvents, OnPostedOrderPayload } from '@cowprotocol/events'
+import { CowWidgetEvents, OnPostedOrderPayload } from '@cowprotocol/events'
 import { UiOrderType } from '@cowprotocol/types'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
-import { EVENT_EMITTER } from 'eventEmitter'
 import { Nullish } from 'types'
+import { WIDGET_EVENT_EMITTER } from 'widgetEventEmitter'
 
 interface PendingOrderNotificationParams {
   chainId: SupportedChainId
@@ -62,7 +62,7 @@ export function emitPostedOrderEvent(params: PendingOrderNotificationParams) {
     isEthFlow,
   }
 
-  EVENT_EMITTER.emit(CowEvents.ON_POSTED_ORDER, postedOrderPayload)
+  WIDGET_EVENT_EMITTER.emit(CowWidgetEvents.ON_POSTED_ORDER, postedOrderPayload)
 }
 
 /**

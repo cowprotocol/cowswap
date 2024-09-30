@@ -2,8 +2,6 @@ import { UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-import { CloseIcon as CloseIconOriginal } from 'common/pure/CloseIcon'
-
 export const HookItemWrapper = styled.li`
   border: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
   border-radius: 16px;
@@ -52,6 +50,11 @@ export const DragIcon = styled.div`
   > svg {
     width: 100%;
     height: 100%;
+    color: var(${UI.COLOR_TEXT});
+  }
+
+  > svg > path {
+    fill: currentColor;
   }
 `
 
@@ -137,31 +140,51 @@ export const ActionBtn = styled.button<{ actionType?: 'remove' | 'edit' }>`
   }
 `
 
-export const CustomLink = styled.a`
-  margin: 0.5em 0;
-  padding: 0 10em;
-  text-decoration: none;
+export const SimulateContainer = styled.div<{ isSuccessful: boolean }>`
+  --colorBG: ${({ isSuccessful }) => (isSuccessful ? `var(${UI.COLOR_SUCCESS_BG})` : `var(${UI.COLOR_DANGER_BG})`)};
+  --colorText: ${({ isSuccessful }) =>
+    isSuccessful ? `var(${UI.COLOR_SUCCESS_TEXT})` : `var(${UI.COLOR_DANGER_TEXT})`};
 
-  :hover {
-    text-decoration: underline;
-  }
-`
-
-export const CloseIcon = styled(CloseIconOriginal)`
-  position: absolute;
-  top: 0;
-  right: 0;
-`
-
-export const SimulateContainer = styled.div`
-  border: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
-  border-radius: 4px;
+  border: 1px solid var(--colorBG);
+  background: var(--colorBG);
+  color: var(--colorText);
+  border-radius: 9px;
   padding: 10px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
   margin: 10px;
+  font-size: 14px;
+
+  > svg {
+    margin: 0 7px 0 0;
+    color: inherit;
+  }
+
+  > svg > path {
+    fill: currentColor;
+  }
+
+  > a,
+  > span {
+    margin: 0 auto 0 0;
+    color: inherit;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+`
+
+export const OldSimulateContainer = styled.div`
+  border: 1px solid var(${UI.COLOR_TEXT_OPACITY_25});
+  border-radius: 4px;
+  padding: 10px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
 `
 
 export const SimulateHeader = styled.div`

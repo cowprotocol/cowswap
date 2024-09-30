@@ -92,7 +92,9 @@ export const NavDaoTriggerElement = styled.div<{ isActive: boolean; mobileMode?:
   background: ${({ isActive }) => (isActive ? 'var(--activeBackground)' : 'transparent')};
   color: ${({ isActive }) => (isActive ? 'var(--activeFill)' : 'var(--defaultFill)')};
   cursor: pointer;
-  transition: background 0.2s, fill 0.2s;
+  transition:
+    background 0.2s,
+    fill 0.2s;
 
   &:hover {
     background: var(--activeBackground);
@@ -129,7 +131,9 @@ export const MobileMenuTrigger = styled.div<{ theme: CowSwapTheme; mobileMode?: 
   background: transparent;
   color: var(--defaultFill);
   cursor: pointer;
-  transition: background 0.2s, fill 0.2s;
+  transition:
+    background 0.2s,
+    fill 0.2s;
 
   &:hover {
     background: var(--activeBackground);
@@ -162,6 +166,7 @@ export const NavItems = styled.ul<{ mobileMode?: boolean; theme: CowSwapTheme }>
   align-items: stretch;
   gap: 4px;
   list-style-type: none;
+  list-style: none;
   margin: 0 0 0 var(--marginLeft);
   padding: 0;
   color: inherit;
@@ -235,7 +240,7 @@ interface DropdownContentProps {
   isNavItemDropdown?: boolean
 }
 
-export const DropdownContent = styled.div<DropdownContentProps>`
+export const DropdownContent = styled.ul<DropdownContentProps>`
   --dropdownOffset: 8px;
 
   display: ${({ isOpen }) => (isOpen ? 'block' : 'none')};
@@ -247,6 +252,7 @@ export const DropdownContent = styled.div<DropdownContentProps>`
   backdrop-filter: blur(var(--blur));
   z-index: 1000;
   padding: ${({ isThirdLevel }) => (isThirdLevel ? '6px' : '6px')};
+  margin: 0;
   width: ${({ isThirdLevel }) => (isThirdLevel ? '100%' : '320px')};
   height: auto;
   border-radius: 28px;
@@ -256,6 +262,7 @@ export const DropdownContent = styled.div<DropdownContentProps>`
   left: ${({ alignRight }) => (alignRight ? 'initial' : 0)};
   cursor: pointer;
   border: 1px solid var(--hoverBackground);
+  list-style: none;
 
   ${({ mobileMode }) =>
     mobileMode &&
@@ -320,8 +327,10 @@ export const MobileDropdownContainer = styled.div<{ mobileMode: boolean }>`
       box-sizing: border-box;
       scrollbar-width: thin;
       scrollbar-color: var(--scrollbarColor) var(--scrollbarBackground);
+      list-style: none;
 
-      > div {
+      > div,
+      > ul {
         width: 100%;
         position: relative;
         left: initial;
@@ -331,8 +340,6 @@ export const MobileDropdownContainer = styled.div<{ mobileMode: boolean }>`
         margin: 0;
         border-radius: 28px;
       }
-
-      /* For WebKit-based browsers (Chrome, Safari) */
 
       &::-webkit-scrollbar {
         width: 10px;
@@ -351,7 +358,7 @@ export const MobileDropdownContainer = styled.div<{ mobileMode: boolean }>`
     `}
 `
 
-export const StyledDropdownContentItem = styled.div<{
+export const StyledDropdownContentItem = styled.li<{
   isOpen?: boolean
   isThirdLevel?: boolean
   bgColor?: string
@@ -371,7 +378,9 @@ export const StyledDropdownContentItem = styled.div<{
     padding: 16px;
     text-decoration: none;
     color: inherit;
-    transition: background 0.2s ease-in-out, color 0.2s ease-in-out;
+    transition:
+      background 0.2s ease-in-out,
+      color 0.2s ease-in-out;
     gap: 20px;
     position: relative;
     width: 100%;
@@ -435,7 +444,9 @@ export const StyledDropdownContentItem = styled.div<{
     object-fit: contain;
     color: inherit;
     transform: ${({ isOpen }) => (isOpen ? 'rotate(180deg)' : 'rotate(0deg)')};
-    transition: transform 0.2s ease-in-out, opacity 0.2s ease-in-out;
+    transition:
+      transform 0.2s ease-in-out,
+      opacity 0.2s ease-in-out;
 
     &.arrow-icon-right {
       opacity: 0;
@@ -519,7 +530,7 @@ export const DropdownContentItemButton = styled(StyledDropdownContentItem)<{
   }
 `
 
-export const DropdownMenu = styled.div<{
+export const DropdownMenu = styled.li<{
   mobileMode?: boolean
 }>`
   position: relative;
@@ -527,6 +538,8 @@ export const DropdownMenu = styled.div<{
   border-radius: inherit;
   border-radius: var(--borderRadius);
   color: inherit;
+  list-style: none;
+  padding: 0;
 
   ${DropdownContent} {
     --dropdownOffset: 14px;
@@ -543,7 +556,7 @@ export const DropdownMenu = styled.div<{
     `}
 `
 
-export const RootNavItem = styled.div<{ isOpen?: boolean; mobileMode?: boolean }>`
+export const RootNavItem = styled.li<{ isOpen?: boolean; mobileMode?: boolean }>`
   color: inherit;
   font-size: 16px;
   padding: 12px 16px;
@@ -646,7 +659,10 @@ export const GlobalSettingsButton = styled.button<{ mobileMode?: boolean }>`
   border: 0;
   background: transparent;
   cursor: pointer;
-  transition: background 0.2s ease-in-out, fill 0.2s ease-in-out, transform 0.2s ease-in-out;
+  transition:
+    background 0.2s ease-in-out,
+    fill 0.2s ease-in-out,
+    transform 0.2s ease-in-out;
   color: inherit;
 
   ${({ mobileMode }) =>

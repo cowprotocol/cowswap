@@ -51,7 +51,7 @@ import {
   TopicTable,
 } from '@/styles/styled'
 
-import SVG from 'react-inlinesvg'
+import LazySVG from '@/components/LazySVG'
 
 import { FAQ_DATA, TRUSTED_BY_CONTENT, TESTIMONIAL_LIST, MEV_BLOCKER_LIST } from '@/data/mev-blocker/const'
 
@@ -128,7 +128,7 @@ export default function Page() {
                 </Link>
               </HeroContent>
               <HeroImage width={470} height={'auto'} color={'#EC4612'}>
-                <SVG src={IMAGE_SANDWICH_GUY} />
+                <LazySVG src={IMAGE_SANDWICH_GUY} />
               </HeroImage>
             </HeroContainer>
 
@@ -165,7 +165,7 @@ export default function Page() {
               <ContainerCardSection gap={60}>
                 <SectionTitleWrapper color={Color.neutral10} maxWidth={1300} gap={56}>
                   <SectionTitleIcon multiple size={82}>
-                    <SVG src={IMAGE_ICON_MEVBLOCKER_PROTECT} />
+                    <LazySVG src={IMAGE_ICON_MEVBLOCKER_PROTECT} />
                   </SectionTitleIcon>
                   <SectionTitleText maxWidth={500}>Broad spectrum MEV defense</SectionTitleText>
                   <SectionTitleDescription maxWidth={'100%'} color={Color.neutral50}>
@@ -192,7 +192,7 @@ export default function Page() {
                         </TopicDescription>
                       </TopicCardInner>
                       <TopicImage bgColor="transparent" margin={'auto 0 0 auto'} height={200} width={'auto'}>
-                        <SVG src={item.iconImage} title={item.description} />
+                        <LazySVG src={item.iconImage} title={item.description} />
                       </TopicImage>
                     </TopicCard>
                   ))}
@@ -219,7 +219,7 @@ export default function Page() {
               <ContainerCardSection>
                 <SectionTitleWrapper maxWidth={850} gap={56} margin="24px auto">
                   <SectionTitleIcon multiple size={82}>
-                    <SVG src={IMAGE_ICON_MEVBLOCKER_PROTECT2} />
+                    <LazySVG src={IMAGE_ICON_MEVBLOCKER_PROTECT2} />
                   </SectionTitleIcon>
                   <SectionTitleText>Get Protected</SectionTitleText>
                   <SectionTitleDescription color={Color.neutral50}>
@@ -370,7 +370,7 @@ export default function Page() {
               <ContainerCardSection>
                 <SectionTitleWrapper>
                   <SectionTitleIcon>
-                    <SVG src={IMAGE_ICON_MEVBLOCKER_CHATBALLOON} />
+                    <LazySVG src={IMAGE_ICON_MEVBLOCKER_CHATBALLOON} />
                   </SectionTitleIcon>
                   <SectionTitleText>What others are saying...</SectionTitleText>
                 </SectionTitleWrapper>
@@ -409,7 +409,7 @@ export default function Page() {
                         bottom={0}
                         right={0}
                       >
-                        <SVG src={testimonial.iconImage} title={testimonial.title} />
+                        <LazySVG src={testimonial.iconImage} title={testimonial.title} />
                       </TopicImage>
                     </TopicCard>
                   ))}
@@ -450,7 +450,7 @@ export default function Page() {
               <ContainerCardSection>
                 <SectionTitleWrapper>
                   <SectionTitleIcon size={90}>
-                    <SVG src={IMAGE_ICON_MEVBLOCKER_TRUST} />
+                    <LazySVG src={IMAGE_ICON_MEVBLOCKER_TRUST} />
                   </SectionTitleIcon>
                   <SectionTitleText>Trusted by the best</SectionTitleText>
                 </SectionTitleWrapper>
@@ -474,7 +474,7 @@ export default function Page() {
                         height={72}
                         margin={'auto'}
                       >
-                        {item.component || <SVG src={item.src} />}
+                        {item.component || <LazySVG src={item.src} />}
                       </TopicImage>
                     </TopicCard>
                   ))}
@@ -486,7 +486,7 @@ export default function Page() {
               <ContainerCardSection>
                 <SectionTitleWrapper>
                   <SectionTitleIcon>
-                    <SVG src={IMAGE_ICON_QUESTIONBALLOON} />
+                    <LazySVG src={IMAGE_ICON_QUESTIONBALLOON} />
                   </SectionTitleIcon>
                   <SectionTitleText>FAQs</SectionTitleText>
                 </SectionTitleWrapper>

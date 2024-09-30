@@ -1,32 +1,52 @@
-import { UI } from '@cowprotocol/ui'
+import { UI, Media } from '@cowprotocol/ui'
 
-import styled from 'styled-components/macro'
+import styled, { css } from 'styled-components/macro'
 
-
-export const LinkButton = styled.button`
+const BaseButton = css`
   display: flex;
   cursor: pointer;
-  background: var(${UI.COLOR_PRIMARY});
-  color: var(${UI.COLOR_PAPER});
-  border: none;
   outline: none;
-  font-weight: 600;
-  font-size: 16px;
+  font-size: 14px;
   text-decoration: none;
   padding: 11px;
   line-height: 1;
-  display: block;
   margin: 0;
   border-radius: 21px;
   min-width: 84px;
   justify-content: center;
   transition: all 0.2s ease-in-out;
+`
+
+export const LinkButton = styled.button`
+  ${BaseButton}
+  background: var(${UI.COLOR_PRIMARY});
+  color: var(${UI.COLOR_PAPER});
+  border: none;
+  font-weight: 600;
+  font-size: 16px;
+
+  ${Media.upToSmall()} {
+    width: 100%;
+    padding: 16px;
+  }
 
   &:hover {
     background: var(${UI.COLOR_PRIMARY_DARKEST});
   }
 `
 
+export const RemoveButton = styled.button`
+  ${BaseButton}
+  background: transparent;
+  border: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
+  color: var(${UI.COLOR_TEXT});
+
+  &:hover {
+    background: var(${UI.COLOR_DANGER_BG});
+    color: var(${UI.COLOR_DANGER_TEXT});
+    border-color: var(${UI.COLOR_DANGER_BG});
+  }
+`
 
 export const HookDappListItem = styled.li<{ isDescriptionView?: boolean }>`
   width: 100%;
@@ -47,8 +67,6 @@ export const HookDappListItem = styled.li<{ isDescriptionView?: boolean }>`
     background: ${({ isDescriptionView }) =>
       isDescriptionView ? 'transparent' : `var(${UI.COLOR_PRIMARY_OPACITY_10})`};
     border: 1px solid transparent;
-
- 
   }
 
   > img,
@@ -63,7 +81,6 @@ export const HookDappListItem = styled.li<{ isDescriptionView?: boolean }>`
     overflow: hidden;
     background-color: var(${UI.COLOR_PAPER_DARKER});
     padding: 10px;
- 
   }
 
   > span {
@@ -73,15 +90,24 @@ export const HookDappListItem = styled.li<{ isDescriptionView?: boolean }>`
     justify-content: center;
     gap: 8px;
 
+    ${Media.upToSmall()} {
+      width: 100%;
+      gap: 21px;
+    }
+
     > i {
       font-size: 13px;
       display: flex;
       align-items: center;
       gap: 3px;
- 
+      margin: 10px 0 0;
       transition: all 0.2s ease-in-out;
       font-style: normal;
       color: var(${UI.COLOR_TEXT_OPACITY_50});
+
+      ${Media.upToSmall()} {
+        font-size: 15px;
+      }
 
       &:hover {
         color: var(${UI.COLOR_TEXT});
@@ -100,8 +126,6 @@ export const HookDappListItem = styled.li<{ isDescriptionView?: boolean }>`
       }
     }
   }
-
-
 `
 
 export const HookDappDetails = styled.div<{ isDescriptionView?: boolean }>`

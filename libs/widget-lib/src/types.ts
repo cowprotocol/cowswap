@@ -1,5 +1,5 @@
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { CowEventListeners, CowEventPayloadMap, CowEvents } from '@cowprotocol/events'
+import { CowWidgetEventListeners, CowWidgetEventPayloadMap, CowWidgetEvents } from '@cowprotocol/events'
 export type { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 export type PerTradeTypeConfig<T> = Partial<Record<TradeType, T>>
@@ -32,7 +32,7 @@ export enum WidgetMethodsListen {
 export interface CowSwapWidgetProps {
   params: CowSwapWidgetParams
   provider?: EthereumProvider
-  listeners?: CowEventListeners
+  listeners?: CowWidgetEventListeners
 }
 
 export interface JsonRpcRequest {
@@ -41,7 +41,7 @@ export interface JsonRpcRequest {
   params: unknown[]
 }
 
-// https://eips.ethereum.org/EIPS/ei  p-1193
+// https://eips.ethereum.org/EIPS/eip-1193
 export interface EthereumProvider {
   /**
    * Subscribes to Ethereum-related events.
@@ -317,7 +317,7 @@ export interface CowSwapWidgetParams {
 // Define types for event payloads
 export interface WidgetMethodsEmitPayloadMap {
   [WidgetMethodsEmit.ACTIVATE]: void
-  [WidgetMethodsEmit.EMIT_COW_EVENT]: EmitCowEventPayload<CowEvents>
+  [WidgetMethodsEmit.EMIT_COW_EVENT]: EmitCowEventPayload<CowWidgetEvents>
   [WidgetMethodsEmit.UPDATE_HEIGHT]: UpdateWidgetHeightPayload
   [WidgetMethodsEmit.SET_FULL_HEIGHT]: SetWidgetFullHeightPayload
   [WidgetMethodsEmit.PROVIDER_RPC_REQUEST]: ProviderRpcRequestPayload
@@ -330,6 +330,8 @@ export interface WidgetMethodsListenPayloadMap {
   [WidgetMethodsListen.PROVIDER_RPC_RESPONSE]: ProviderRpcResponsePayload
   [WidgetMethodsListen.PROVIDER_ON_EVENT]: ProviderOnEventPayload
 }
+
+export type WidgetEventsPayloadMap = WidgetMethodsEmitPayloadMap & WidgetMethodsListenPayloadMap
 
 export type WidgetMethodsEmitPayloads = WidgetMethodsEmitPayloadMap[WidgetMethodsEmit]
 export type WidgetMethodsListenPayloads = WidgetMethodsListenPayloadMap[WidgetMethodsListen]
@@ -360,9 +362,9 @@ export interface SetWidgetFullHeightPayload {
   isUpToSmall?: boolean
 }
 
-export interface EmitCowEventPayload<T extends CowEvents> {
+export interface EmitCowEventPayload<T extends CowWidgetEvents> {
   event: T
-  payload: CowEventPayloadMap[T]
+  payload: CowWidgetEventPayloadMap[T]
 }
 
 export type WidgetMethodsEmitListener<T extends WidgetMethodsEmit> = T extends WidgetMethodsEmit
@@ -419,3 +421,5 @@ export interface ProviderOnEventPayload {
   event: string
   params: unknown
 }
+
+export type WindowListener = (event: MessageEvent<unknown>) => void

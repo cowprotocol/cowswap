@@ -3,6 +3,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import SVG from 'react-inlinesvg'
 
+import { useAllHookDapps } from '../../hooks/useAllHookDapps'
 import { useHooks } from '../../hooks/useHooks'
 import { useRemoveHook } from '../../hooks/useRemoveHook'
 import { useReorderHooks } from '../../hooks/useReorderHooks'
@@ -15,16 +16,20 @@ export interface PostHookButtonProps {
   onEditHook(uuid: string): void
 }
 
+const isPreHook = false
+
 export function PostHookButton({ onOpen, onEditHook }: PostHookButtonProps) {
   const { account } = useWalletInfo()
   const { postHooks } = useHooks()
-  const removeHook = useRemoveHook()
+  const removeHook = useRemoveHook(isPreHook)
   const moveHook = useReorderHooks('postHooks')
+  const dapps = useAllHookDapps(isPreHook)
 
   return (
     <>
       {postHooks.length > 0 && (
         <AppliedHookList
+          dapps={dapps}
           account={account}
           hooks={postHooks}
           isPreHook={false} // Indicate that these are post-hooks

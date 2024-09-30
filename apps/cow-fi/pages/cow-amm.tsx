@@ -35,7 +35,7 @@ import {
   MetricsItem,
 } from '@/styles/styled'
 
-import SVG from 'react-inlinesvg'
+import LazySVG from '@/components/LazySVG'
 import IMG_ICON_FAQ from '@cowprotocol/assets/images/icon-faq.svg'
 
 import { FAQ_DATA, QUOTES, LVR_CONTENT, COW_AMM_CONTENT } from '@/data/cow-amm/const'
@@ -76,7 +76,7 @@ export default function Page() {
             </Link>
           </HeroContent>
           <HeroImage width={470} height={470} color={'#194D05'} marginMobile="24px auto 56px">
-            <SVG src={IMG_COWAMM_HERO} />
+            <LazySVG src={IMG_COWAMM_HERO} />
           </HeroImage>
         </HeroContainer>
 
@@ -113,7 +113,7 @@ export default function Page() {
           <ContainerCardSection>
             <SectionTitleWrapper color={Color.neutral100} maxWidth={1100} gap={56}>
               <SectionTitleIcon size={98}>
-                <SVG src={IMG_ICON_CROWN_COW} />
+                <LazySVG src={IMG_ICON_CROWN_COW} />
               </SectionTitleIcon>
               <SectionTitleText>AMMs don&apos;t want you to know about LVR</SectionTitleText>
             </SectionTitleWrapper>
@@ -147,7 +147,7 @@ export default function Page() {
                     orderReverseTablet
                     borderRadius={90}
                   >
-                    <SVG src={content.image} />
+                    <LazySVG src={content.image} />
                   </TopicImage>
                 </TopicCard>
               ))}
@@ -159,7 +159,7 @@ export default function Page() {
           <ContainerCardSection>
             <SectionTitleWrapper padding="150px 0 0" marginMobile="0 auto" maxWidth={1170} color={Color.neutral10}>
               <SectionTitleIcon size={128}>
-                <SVG src={IMG_ICON_BULB_COW} />
+                <LazySVG src={IMG_ICON_BULB_COW} />
               </SectionTitleIcon>
               <SectionTitleText textAlign="center">Finally, an AMM designed with LPs in mind</SectionTitleText>
               <SectionTitleDescription textAlign="center">
@@ -192,7 +192,7 @@ export default function Page() {
                     width="100%"
                     margin="auto 0 0 auto"
                   >
-                    <SVG src={content.image} />
+                    <LazySVG src={content.image} />
                   </TopicImage>
                 </TopicCard>
               ))}
@@ -204,7 +204,7 @@ export default function Page() {
           <ContainerCardSection>
             <SectionTitleWrapper color={Color.neutral10} maxWidth={1100} gap={56}>
               <SectionTitleIcon size={98}>
-                <SVG src={IMG_ICON_CROWN_COW} />
+                <LazySVG src={IMG_ICON_CROWN_COW} />
               </SectionTitleIcon>
               <SectionTitleText>
                 Raising the <s>bar</s> curve
@@ -240,7 +240,7 @@ export default function Page() {
                   orderReverseTablet
                   borderRadius={32}
                 >
-                  <SVG src={IMG_COWAMM_RAISING} />
+                  <LazySVG src={IMG_COWAMM_RAISING} />
                 </TopicImage>
               </TopicCard>
             </TopicList>
@@ -251,7 +251,7 @@ export default function Page() {
           <ContainerCardSection>
             <SectionTitleWrapper color={Color.neutral10} maxWidth={1100} gap={56}>
               <SectionTitleIcon size={128}>
-                <SVG src={IMG_ICON_BULB_COW} />
+                <LazySVG src={IMG_ICON_BULB_COW} />
               </SectionTitleIcon>
               <SectionTitleText>CoW AMM benefits LPs of all types</SectionTitleText>
             </SectionTitleWrapper>
@@ -275,7 +275,7 @@ export default function Page() {
                   orderReverseTablet
                   borderRadius={32}
                 >
-                  <SVG src={IMG_COWAMM_REKT} />
+                  <LazySVG src={IMG_COWAMM_REKT} />
                 </TopicImage>
                 <TopicCardInner contentAlign="left">
                   <TopicTitle fontSize={52}>Provide liquidity for your token without getting rekt</TopicTitle>
@@ -315,7 +315,7 @@ export default function Page() {
                   orderReverseTablet
                   borderRadius={32}
                 >
-                  <SVG src={IMG_COWAMM_PASSIVE} />
+                  <LazySVG src={IMG_COWAMM_PASSIVE} />
                 </TopicImage>
               </TopicCard>
             </TopicList>
@@ -357,7 +357,7 @@ export default function Page() {
           <ContainerCardSection padding={'0 0 100px'}>
             <SectionTitleWrapper>
               <SectionTitleIcon size={62}>
-                <SVG src={IMG_ICON_FAQ} />
+                <LazySVG src={IMG_ICON_FAQ} />
               </SectionTitleIcon>
               <SectionTitleText>FAQs</SectionTitleText>
             </SectionTitleWrapper>

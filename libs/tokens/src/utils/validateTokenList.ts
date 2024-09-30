@@ -3,6 +3,37 @@ import type { TokenList } from '@uniswap/token-lists'
 
 import type { Ajv, ValidateFunction } from 'ajv'
 
+const SYMBOL_AND_NAME_VALIDATION = [
+  {
+    const: '',
+  },
+  {
+    pattern: '^[^<>]+$',
+  },
+]
+
+const patchValidationSchema = (schema: any) => ({
+  ...schema,
+  definitions: {
+    ...schema.definitions,
+    TokenInfo: {
+      ...schema.definitions.TokenInfo,
+      properties: {
+        ...schema.definitions.TokenInfo.properties,
+        symbol: {
+          ...schema.definitions.TokenInfo.properties.symbol,
+          maxLength: 80,
+          anyOf: SYMBOL_AND_NAME_VALIDATION,
+        },
+        name: {
+          ...schema.definitions.TokenInfo.properties.name,
+          maxLength: 100,
+          anyOf: SYMBOL_AND_NAME_VALIDATION,
+        },
+      },
+    },
+  },
+})
 enum ValidationSchema {
   LIST = 'list',
   TOKENS = 'tokens',
@@ -11,15 +42,15 @@ enum ValidationSchema {
 const validator = new Promise<Ajv>((resolve) => {
   Promise.all([import('ajv'), import('@uniswap/token-lists/src/tokenlist.schema.json')]).then(([ajv, schema]) => {
     const validator = new ajv.default({ allErrors: true })
-      .addSchema(schema, ValidationSchema.LIST)
+      .addSchema(patchValidationSchema(schema), ValidationSchema.LIST)
       // Adds a meta scheme of Pick<TokenList, 'tokens'>
       .addSchema(
         {
-          ...schema,
+          ...patchValidationSchema(schema),
           $id: schema.$id + '#tokens',
           required: ['tokens'],
         },
-        ValidationSchema.TOKENS
+        ValidationSchema.TOKENS,
       )
     resolve(validator)
   })
