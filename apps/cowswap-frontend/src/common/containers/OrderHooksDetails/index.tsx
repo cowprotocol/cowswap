@@ -42,7 +42,8 @@ export function OrderHooksDetails({ appData, children }: OrderHooksDetailsProps)
     ) : (
       <Wrapper>
         <span>
-          {preHooksToDapp.length ? `Pre: ${preHooksToDapp.length}, ` : ''}
+          {preHooksToDapp.length ? `Pre: ${preHooksToDapp.length}` : ''}
+          {preHooksToDapp.length && postHooksToDapp.length ? ' | ' : ''}
           {postHooksToDapp.length ? `Post: ${postHooksToDapp.length}` : ''}
         </span>
         <ToggleButton onClick={() => setOpen(true)}>
