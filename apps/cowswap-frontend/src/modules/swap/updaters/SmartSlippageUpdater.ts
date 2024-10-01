@@ -5,6 +5,7 @@ import { BFF_BASE_URL } from '@cowprotocol/common-const'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
+import { Fraction, TradeType } from '@uniswap/sdk-core'
 
 import ms from 'ms.macro'
 import useSWR from 'swr'
@@ -46,20 +47,82 @@ export function SmartSlippageUpdater() {
     SWR_OPTIONS,
   ).data
 
-  const tradeSizeSlippageBps = useSmartSlippageFromFeePercentage()
+  // TODO: remove v1
+  const tradeSizeSlippageBpsV1 = useSmartSlippageFromFeePercentage()
+  const tradeSizeSlippageBps = useSmartSlippageFromFeePercentageV2()
 
   useEffect(() => {
-    // Trade size slippage takes precedence
-    if (tradeSizeSlippageBps !== undefined) {
-      setSmartSwapSlippage(tradeSizeSlippageBps)
-    } else {
-      setSmartSwapSlippage(typeof bffSlippageBps === 'number' ? bffSlippageBps : null)
-    }
+    // Add both slippage values, when present
+    const slippage = tradeSizeSlippageBps + (bffSlippageBps || 0)
+
+    setSmartSwapSlippage(slippage)
   }, [bffSlippageBps, setSmartSwapSlippage, tradeSizeSlippageBps])
+
+  // TODO: remove before merging
+  useEffect(() => {
+    console.log(`SmartSlippageUpdater`, {
+      granularSlippage: tradeSizeSlippageBpsV1,
+      fiftyPercentFeeSlippage: tradeSizeSlippageBps,
+      bffSlippageBps,
+    })
+  }, [tradeSizeSlippageBpsV1, tradeSizeSlippageBps])
 
   return null
 }
 
+const FEE_MULTIPLIER_FACTOR = new Fraction(15, 10) // 50% more fee, applied to the whole value => 150% => 15/10 in fraction
+const ONE = new Fraction(1)
+const ZERO = new Fraction(0)
+
+/**
+ * Calculates smart slippage in bps, based on quoted fee
+ *
+ * Apply a multiplying factor to the fee (e.g.: 50%), and from there calculate how much slippage would be needed
+ * for the limit price to take this much more fee.
+ * More relevant for small orders in relation to fee amount, negligent for larger orders.
+ */
+function useSmartSlippageFromFeePercentageV2(): number {
+  const { trade } = useDerivedSwapInfo() || {}
+  const { fee, inputAmountWithFee, inputAmountWithoutFee, tradeType } = trade || {}
+  const { feeAsCurrency } = fee || {}
+
+  const percentage = useMemo(() => {
+    if (!inputAmountWithFee || !inputAmountWithoutFee || !feeAsCurrency || tradeType === undefined) {
+      return ZERO
+    }
+
+    if (tradeType === TradeType.EXACT_INPUT) {
+      // sell
+      // 1 - (sellAmount - feeAmount * 1.5) / (sellAmount - feeAmount)
+      // 1 - (inputAmountWithoutFee - feeAsCurrency * 1.5) / inputAmountWithFee
+      return ONE.subtract(
+        inputAmountWithoutFee
+          .subtract(feeAsCurrency.multiply(FEE_MULTIPLIER_FACTOR))
+          // !!! Need to convert to fraction before division to not lose precision
+          .asFraction.divide(inputAmountWithFee.asFraction),
+      )
+    } else {
+      // buy
+      // (sellAmount + feeAmount * 1.5) / (sellAmount + feeAmount) - 1
+      // (inputAmountWithFee + feeAsCurrency * 1.5) / inputAmountWithFee - 1
+      return (
+        inputAmountWithFee
+          .add(feeAsCurrency.multiply(FEE_MULTIPLIER_FACTOR))
+          // !!! Need to convert to fraction before division to not lose precision
+          .asFraction.divide(inputAmountWithFee.asFraction)
+          .subtract(ONE)
+      )
+    }
+  }, [tradeType, inputAmountWithFee, inputAmountWithoutFee, feeAsCurrency])
+
+  // Stable reference
+  // convert % to BPS. E.g.: 1% => 0.01 => 100 BPS
+  const bps = percentage.multiply(10_000).toFixed(0)
+
+  return useMemo(() => +bps, [bps])
+}
+
+// TODO: remove
 /**
  * Calculates smart slippage in bps, based on trade size in relation to fee
  */
