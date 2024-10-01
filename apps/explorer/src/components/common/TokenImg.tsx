@@ -1,8 +1,12 @@
 import React from 'react'
 
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+
 import unknownTokenImg from 'assets/img/unknown-token.png'
 import styled from 'styled-components/macro'
 import { getImageUrl, RequireContextMock, safeTokenName } from 'utils'
+
+import { useTokenList } from '../../hooks/useTokenList'
 
 const Wrapper = styled.img<WrapperProps>`
   width: 2.8rem;
@@ -19,6 +23,7 @@ function _loadFallbackTokenImage(event: React.SyntheticEvent<HTMLImageElement>):
 }
 
 export interface Props {
+  network: SupportedChainId
   symbol?: string
   name?: string
   address: string
@@ -41,7 +46,7 @@ const tokensIconsFilesByAddress: Record<string, string> = Object.keys(tokensIcon
   const address = TOKEN_ICON_FILENAME_REGEX.exec(file)?.[0]
   if (!address) {
     throw new Error(
-      "Error initializing 'assets/img/tokens' images. The image doesn't have the expected format: " + file
+      "Error initializing 'assets/img/tokens' images. The image doesn't have the expected format: " + file,
     )
   }
   acc[address.toLowerCase()] = file
@@ -50,7 +55,8 @@ const tokensIconsFilesByAddress: Record<string, string> = Object.keys(tokensIcon
 }, {})
 
 export const TokenImg: React.FC<Props> = (props) => {
-  const { address, addressMainnet, symbol, name } = props
+  const { address, addressMainnet, symbol, name, network } = props
+  const { data: tokenListTokens } = useTokenList(network)
 
   let iconFile = tokensIconsFilesByAddress[address.toLowerCase()]
   if (!iconFile && addressMainnet) {
@@ -59,7 +65,7 @@ export const TokenImg: React.FC<Props> = (props) => {
 
   const iconFileUrl: string | undefined = iconFile
     ? tokensIconsRequire[iconFile].default
-    : getImageUrl(addressMainnet || address)
+    : tokenListTokens[address.toLowerCase()]?.logoURI || getImageUrl(addressMainnet || address)
 
   // TODO: Simplify safeTokenName signature, it doesn't need the addressMainnet or id!
   // https://github.com/gnosis/gp-v1-ui/issues/1442
@@ -67,9 +73,5 @@ export const TokenImg: React.FC<Props> = (props) => {
 
   return <Wrapper alt={safeName} src={iconFileUrl} onError={_loadFallbackTokenImage} {...props} />
 }
-
-export const TokenImgWrapper = styled(TokenImg)`
-  margin: 0 1rem 0 0;
-`
 
 export default TokenImg

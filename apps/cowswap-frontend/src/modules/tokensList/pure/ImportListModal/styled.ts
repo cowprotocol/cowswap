@@ -2,6 +2,8 @@ import { UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
+import { ExternalSourceAlert } from 'common/pure/ExternalSourceAlert'
+
 export const Wrapper = styled.div`
   display: block;
   width: 100%;
@@ -29,4 +31,8 @@ export const ListTitle = styled.div`
 
 export const ListLink = styled.a`
   font-size: 14px;
+`
+
+export const ExternalSourceAlertStyled = styled(ExternalSourceAlert)`
+  margin: 0 20px 20px 20px;
 `
