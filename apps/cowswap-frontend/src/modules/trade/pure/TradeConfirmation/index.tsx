@@ -26,7 +26,6 @@ import { useIsPriceChanged } from './hooks/useIsPriceChanged'
 import * as styledEl from './styled'
 
 import { useTradeConfirmState } from '../../hooks/useTradeConfirmState'
-import { ConfirmDetailsItem } from '../ConfirmDetailsItem'
 import { PriceUpdatedBanner } from '../PriceUpdatedBanner'
 
 const ONE_SEC = ms`1s`
@@ -149,16 +148,8 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
           />
         </styledEl.AmountsPreviewContainer>
         {children}
-        {appData && (
-          <OrderHooksDetails appData={appData}>
-            {(children) => (
-              <ConfirmDetailsItem label="Hooks" tooltip="Hooks are interactions before/after order execution.">
-                {children}
-              </ConfirmDetailsItem>
-            )}
-          </OrderHooksDetails>
-        )}
-        {/*Banners*/}
+        {appData && <OrderHooksDetails appData={appData}>{(hookChildren) => hookChildren}</OrderHooksDetails>}
+
         {showRecipientWarning && <CustomRecipientWarningBanner orientation={BannerOrientation.Horizontal} />}
         {isPriceChanged && !isPriceStatic && <PriceUpdatedBanner onClick={resetPriceChanged} />}
         <ButtonPrimary onClick={handleConfirmClick} disabled={isButtonDisabled} buttonSize={ButtonSize.BIG}>

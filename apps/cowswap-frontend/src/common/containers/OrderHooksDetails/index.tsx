@@ -2,13 +2,15 @@ import { ReactElement, useMemo, useState } from 'react'
 
 import { latest } from '@cowprotocol/app-data'
 import { HookToDappMatch, matchHooksToDappsRegistry } from '@cowprotocol/hook-dapp-lib'
+import { InfoTooltip } from '@cowprotocol/ui'
 
 import { ChevronDown, ChevronUp } from 'react-feather'
 
 import { AppDataInfo, decodeAppData } from 'modules/appData'
 
 import { HookItem } from './HookItem'
-import { HooksList, InfoWrapper, ToggleButton, Wrapper } from './styled'
+import * as styledEl from './styled'
+import { CircleCount } from './styled'
 
 interface OrderHooksDetailsProps {
   appData: string | AppDataInfo
@@ -31,26 +33,37 @@ export function OrderHooksDetails({ appData, children }: OrderHooksDetailsProps)
   if (!preHooksToDapp.length && !postHooksToDapp.length) return null
 
   return children(
-    isOpen ? (
-      <Wrapper>
-        <ToggleButton onClick={() => setOpen(false)}>
-          <ChevronUp />
-        </ToggleButton>
-        <HooksInfo data={preHooksToDapp} title="Pre Hooks" />
-        <HooksInfo data={postHooksToDapp} title="Post Hooks" />
-      </Wrapper>
-    ) : (
-      <Wrapper>
-        <span>
-          {preHooksToDapp.length ? `Pre: ${preHooksToDapp.length}` : ''}
-          {preHooksToDapp.length && postHooksToDapp.length ? ' | ' : ''}
-          {postHooksToDapp.length ? `Post: ${postHooksToDapp.length}` : ''}
-        </span>
-        <ToggleButton onClick={() => setOpen(true)}>
-          <ChevronDown />
-        </ToggleButton>
-      </Wrapper>
-    ),
+    <styledEl.Wrapper isOpen={isOpen}>
+      <styledEl.Summary>
+        <styledEl.Label>
+          Hooks
+          <InfoTooltip content="Hooks are interactions before/after order execution." />
+        </styledEl.Label>
+        <styledEl.Content onClick={() => setOpen(!isOpen)}>
+          {preHooksToDapp.length > 0 && (
+            <styledEl.HookTag>
+              PRE <b>{preHooksToDapp.length}</b>
+            </styledEl.HookTag>
+          )}
+          {postHooksToDapp.length > 0 && (
+            <styledEl.HookTag isPost>
+              POST <b>{postHooksToDapp.length}</b>
+            </styledEl.HookTag>
+          )}
+        </styledEl.Content>
+        <styledEl.ToggleButton isOpen={isOpen} onClick={() => setOpen(!isOpen)}>
+          <styledEl.ToggleIcon isOpen={isOpen}>
+            {isOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+          </styledEl.ToggleIcon>
+        </styledEl.ToggleButton>
+      </styledEl.Summary>
+      {isOpen && (
+        <styledEl.Details>
+          <HooksInfo data={preHooksToDapp} title="Pre Hooks" />
+          <HooksInfo data={postHooksToDapp} title="Post Hooks" />
+        </styledEl.Details>
+      )}
+    </styledEl.Wrapper>,
   )
 }
 
@@ -63,14 +76,16 @@ function HooksInfo({ data, title }: HooksInfoProps) {
   return (
     <>
       {data.length ? (
-        <InfoWrapper>
-          <h3>{title}</h3>
-          <HooksList>
-            {data.map((item) => {
-              return <HookItem key={item.hook.callData + item.hook.target + item.hook.gasLimit} item={item} />
-            })}
-          </HooksList>
-        </InfoWrapper>
+        <styledEl.InfoWrapper>
+          <h3>
+            {title} <CircleCount>{data.length}</CircleCount>
+          </h3>
+          <styledEl.HooksList>
+            {data.map((item, index) => (
+              <HookItem key={item.hook.callData + item.hook.target + item.hook.gasLimit} item={item} index={index} />
+            ))}
+          </styledEl.HooksList>
+        </styledEl.InfoWrapper>
       ) : null}
     </>
   )
