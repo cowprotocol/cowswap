@@ -13,6 +13,7 @@ import { useSetupHooksStoreOrderParams } from '../../hooks/useSetupHooksStoreOrd
 import { HookRegistryList } from '../HookRegistryList'
 import { PostHookButton } from '../PostHookButton'
 import { PreHookButton } from '../PreHookButton'
+import { RescueFundsFromProxy } from '../RescueFundsFromProxy'
 
 type HookPosition = 'pre' | 'post'
 
@@ -55,6 +56,7 @@ export function HooksStoreWidget() {
 
   const TopContent = shouldNotUseHooks ? null : (
     <>
+      <RescueFundsFromProxy />
       <DismissableInlineBanner
         orientation={BannerOrientation.Horizontal}
         customIcon={ICON_HOOK}

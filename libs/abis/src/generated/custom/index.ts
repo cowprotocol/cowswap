@@ -4,6 +4,7 @@
 export type { Airdrop } from "./Airdrop";
 export type { CoWSwapEthFlow } from "./CoWSwapEthFlow";
 export type { ComposableCoW } from "./ComposableCoW";
+export type { CowShedContract } from "./CowShedContract";
 export type { ExtensibleFallbackHandler } from "./ExtensibleFallbackHandler";
 export type { GPv2Settlement } from "./GPv2Settlement";
 export type { MerkleDrop } from "./MerkleDrop";
@@ -15,6 +16,7 @@ export type { VCow } from "./VCow";
 export * as factories from "./factories";
 export { Airdrop__factory } from "./factories/Airdrop__factory";
 export { ComposableCoW__factory } from "./factories/ComposableCoW__factory";
+export { CowShedContract__factory } from "./factories/CowShedContract__factory";
 export { CoWSwapEthFlow__factory } from "./factories/CoWSwapEthFlow__factory";
 export { ExtensibleFallbackHandler__factory } from "./factories/ExtensibleFallbackHandler__factory";
 export { GPv2Settlement__factory } from "./factories/GPv2Settlement__factory";
