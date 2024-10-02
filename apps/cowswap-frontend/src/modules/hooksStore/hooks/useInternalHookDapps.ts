@@ -10,11 +10,17 @@ export function useInternalHookDapps(isPreHook: boolean): HookDapp[] {
 
   return useMemo(() => {
     return ALL_HOOK_DAPPS.filter((dapp) => {
-      if (dapp?.conditions?.supportedNetworks && !dapp.conditions.supportedNetworks.includes(chainId)) return false
+      const position = dapp?.conditions?.position
+      const supportedNetworks = dapp?.conditions?.supportedNetworks
 
-      if (isPreHook && dapp?.conditions?.position && dapp.conditions.position !== 'pre') return false
+      if (supportedNetworks && !supportedNetworks.includes(chainId)) return false
+
+      if (position) {
+        if (isPreHook && position !== 'pre') return false
+        if (!isPreHook && position !== 'post') return false
+      }
 
       return true
     })
-  }, [chainId])
+  }, [chainId, isPreHook])
 }
