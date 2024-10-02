@@ -33,6 +33,11 @@ export const TokenInfo = styled.div`
   gap: 10px;
   font-size: 14px;
   margin-bottom: 20px;
+  max-width: 100%;
+
+  > a {
+    word-break: break-all;
+  }
 
   &:last-child {
     margin-bottom: 0;
