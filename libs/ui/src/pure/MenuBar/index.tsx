@@ -580,7 +580,7 @@ const GlobalSettingsDropdown = forwardRef<HTMLUListElement, GlobalSettingsDropdo
       {isOpen &&
         (mobileMode ? (
           <MobileDropdownContainer mobileMode={mobileMode} ref={ref as React.RefObject<HTMLDivElement>}>
-            <DropdownContent isOpen={true} alignRight={true} mobileMode={mobileMode} ref={ref}>
+            <DropdownContent isOpen={true} alignRight={true} mobileMode={mobileMode}>
               {settingsNavItems.map((item, index) => {
                 const to = item.external
                   ? appendUtmParams(item.href!, item.utmSource, item.utmContent, rootDomain, item.external, item.label)
@@ -598,9 +598,9 @@ const GlobalSettingsDropdown = forwardRef<HTMLUListElement, GlobalSettingsDropdo
                 )
 
                 return (
-                  <DropdownContentItemButton key={index} onClick={_onDropdownItemClickFactory(item, closeDropdown)}>
+                  <StyledDropdownContentItem key={index} onClick={_onDropdownItemClickFactory(item, closeDropdown)}>
                     {to ? <LinkComponent href={to}>{content}</LinkComponent> : <div>{content}</div>}
-                  </DropdownContentItemButton>
+                  </StyledDropdownContentItem>
                 )
               })}
             </DropdownContent>
@@ -622,9 +622,9 @@ const GlobalSettingsDropdown = forwardRef<HTMLUListElement, GlobalSettingsDropdo
               )
 
               return (
-                <DropdownContentItemButton key={index} onClick={_onDropdownItemClickFactory(item, closeDropdown)}>
+                <StyledDropdownContentItem key={index} onClick={_onDropdownItemClickFactory(item, closeDropdown)}>
                   {to ? <LinkComponent href={to}>{content}</LinkComponent> : <div>{content}</div>}
-                </DropdownContentItemButton>
+                </StyledDropdownContentItem>
               )
             })}
           </DropdownContent>

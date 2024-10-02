@@ -23,12 +23,13 @@ export const TokenItem = styled.button`
   padding: 10px 20px;
   margin-bottom: 10px;
   opacity: ${({ disabled }) => (disabled ? 0.5 : 1)};
-  transition: background var(${UI.ANIMATION_DURATION}) ease-in-out, color var(${UI.ANIMATION_DURATION}) ease-in-out;
+  transition:
+    background var(${UI.ANIMATION_DURATION}) ease-in-out,
+    color var(${UI.ANIMATION_DURATION}) ease-in-out;
 
   ${Media.upToSmall()} {
     font-size: 14px;
     padding: 10px 15px;
-    justify-content: flex-end;
   }
 
   &:last-child {
