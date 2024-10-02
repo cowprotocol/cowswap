@@ -1,16 +1,18 @@
 import { useCallback, useMemo, useState } from 'react'
-import { COW_SHED_FACTORY, ICoWShedCall } from '@cowprotocol/cow-sdk'
-import { defaultAbiCoder } from '@ethersproject/abi'
-import { formatBytes32String, toUtf8Bytes } from '@ethersproject/strings'
-import { SigningScheme } from '@cowprotocol/contracts'
-import { useWalletProvider } from '@cowprotocol/wallet-provider'
-import { useWalletInfo } from '@cowprotocol/wallet'
-import { useCowShedHooks } from '../../../../common/hooks/useCowShedHooks'
-import { useContract } from '../../../../common/hooks/useContract'
+
 import { CowShedContract, CowShedContractAbi } from '@cowprotocol/abis'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import { SigningScheme } from '@cowprotocol/contracts'
+import { COW_SHED_FACTORY, ICoWShedCall } from '@cowprotocol/cow-sdk'
+import { useWalletInfo } from '@cowprotocol/wallet'
+import { useWalletProvider } from '@cowprotocol/wallet-provider'
+import { defaultAbiCoder } from '@ethersproject/abi'
 import { keccak256 } from '@ethersproject/keccak256'
 import { pack } from '@ethersproject/solidity'
+import { formatBytes32String, toUtf8Bytes } from '@ethersproject/strings'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+
+import { useContract } from 'common/hooks/useContract'
+import { useCowShedHooks } from 'common/hooks/useCowShedHooks'
 
 const fnSelector = (sig: string) => keccak256(toUtf8Bytes(sig)).slice(0, 10)
 
@@ -23,7 +25,7 @@ export function useRescueFundsFromProxy(
   const [isTxSigningInProgress, setTxSigningInProgress] = useState<boolean>(false)
 
   const provider = useWalletProvider()
-  const { account, chainId } = useWalletInfo()
+  const { account } = useWalletInfo()
   const cowShedHooks = useCowShedHooks()
   const cowShedContract = useContract<CowShedContract>(COW_SHED_FACTORY, CowShedContractAbi)
 

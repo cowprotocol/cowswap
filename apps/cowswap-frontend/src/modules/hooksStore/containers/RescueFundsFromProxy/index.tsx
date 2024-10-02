@@ -105,7 +105,7 @@ export function RescueFundsFromProxy({ onDismiss }: { onDismiss: Command }) {
         <Content>
           <CurrencySelectButton currency={selectedCurrency} loading={false} onClick={onCurrencySelectClick} />
 
-          {selectedTokenAddress && (
+          {selectedTokenAddress ? (
             <>
               <p>
                 Balance:{' '}
@@ -119,6 +119,8 @@ export function RescueFundsFromProxy({ onDismiss }: { onDismiss: Command }) {
                 {isTxSigningInProgress ? <Loader /> : hasBalance ? 'Rescue funds' : 'No balance'}
               </ButtonPrimary>
             </>
+          ) : (
+            <div></div>
           )}
         </Content>
       </NewModal>
