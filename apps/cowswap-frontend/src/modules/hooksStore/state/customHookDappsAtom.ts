@@ -8,7 +8,6 @@ import { walletInfoAtom } from '@cowprotocol/wallet'
 import { setHooksAtom } from './hookDetailsAtom'
 
 import { HookDappIframe } from '../types/hooks'
-import { getHookDappId } from '../utils'
 
 type CustomHookDapps = Record<HookDappIframe['url'], HookDappIframe>
 
@@ -69,7 +68,7 @@ export const removeCustomHookDappAtom = atom(null, (get, set, dapp: HookDappIfra
     [chainId]: currentState,
   })
 
-  const hookDappId = getHookDappId(dapp)
+  const hookDappId = dapp.id
 
   // Delete applied hooks along with the deleting hook-dapp
   set(setHooksAtom, (hooksState) => ({

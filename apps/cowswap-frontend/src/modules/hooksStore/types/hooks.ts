@@ -1,44 +1,22 @@
 import type { ReactNode } from 'react'
 
-import type {
+import {
   CowHook,
   CowHookCreation,
   HookDappOrderParams,
   CoWHookDappActions,
   HookDappContext as GenericHookDappContext,
   CowHookDetails,
+  HookDappBase,
+  HookDappType,
 } from '@cowprotocol/hook-dapp-lib'
 import type { Signer } from '@ethersproject/abstract-signer'
 
 export type { CowHook, CowHookCreation, HookDappOrderParams }
 
-export enum HookDappType {
-  INTERNAL = 'INTERNAL',
-  IFRAME = 'IFRAME',
-}
-
-export enum HookDappWalletCompatibility {
-  EOA = 'EOA',
-  SMART_CONTRACT = 'Smart contract',
-}
-
-export interface HookDappBase {
-  name: string
-  descriptionShort?: string
-  description?: ReactNode | string
-  type: HookDappType
-  version: string
-  website: string
-  image: string
-  walletCompatibility: HookDappWalletCompatibility[]
-}
-
-export type DappId = `${HookDappType}:::${HookDappBase['name']}`
-
 export interface HookDappInternal extends HookDappBase {
   type: HookDappType.INTERNAL
   component: (props: HookDappProps) => ReactNode
-  walletCompatibility: HookDappWalletCompatibility[]
 }
 
 export interface HookDappIframe extends HookDappBase {
@@ -50,7 +28,7 @@ export type HookDapp = HookDappInternal | HookDappIframe
 
 export interface CowHookDetailsSerialized {
   hookDetails: CowHookDetails
-  dappId: DappId
+  dappId: string
 }
 
 export type AddHook = CoWHookDappActions['addHook']

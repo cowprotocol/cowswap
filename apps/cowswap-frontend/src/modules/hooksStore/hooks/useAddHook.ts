@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid'
 
 import { setHooksAtom } from '../state/hookDetailsAtom'
 import { AddHook, CowHookDetailsSerialized, HookDapp } from '../types/hooks'
-import { getHookDappId } from '../utils'
+import { appendDappIdToCallData } from '../utils'
 
 export function useAddHook(dapp: HookDapp, isPreHook: boolean): AddHook {
   const updateHooks = useSetAtom(setHooksAtom)
@@ -16,8 +16,15 @@ export function useAddHook(dapp: HookDapp, isPreHook: boolean): AddHook {
 
       const uuid = uuidv4()
       const hookDetails: CowHookDetailsSerialized = {
-        hookDetails: { ...hookToAdd, uuid },
-        dappId: getHookDappId(dapp),
+        hookDetails: {
+          ...hookToAdd,
+          uuid,
+          hook: {
+            ...hookToAdd.hook,
+            callData: appendDappIdToCallData(hookToAdd.hook.callData, dapp.id),
+          },
+        },
+        dappId: dapp.id,
       }
 
       updateHooks((hooks) => {
