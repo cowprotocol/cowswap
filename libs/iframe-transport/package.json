@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/iframe-transport",
-  "version": "1.0.0-RC0",
+  "version": "1.0.0",
   "type": "commonjs",
   "description": "CoW Swap iframe-transport",
   "main": "index.js",
@@ -19,6 +19,5 @@
     "cowswap",
     "dex"
   ],
-  "dependencies": {
-  }
+  "dependencies": {}
 }

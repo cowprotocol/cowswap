@@ -13,6 +13,7 @@ import {
   useUnsupportedTokens,
   useUserAddedTokens,
 } from '@cowprotocol/tokens'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import styled from 'styled-components/macro'
 
@@ -42,6 +43,7 @@ export function SelectTokenWidget() {
   const [isManageWidgetOpen, setIsManageWidgetOpen] = useState(false)
 
   const updateSelectTokenWidget = useUpdateSelectTokenWidgetState()
+  const { account } = useWalletInfo()
 
   const addCustomTokenLists = useAddList((source) => addListAnalytics('Success', source))
   const importTokenCallback = useAddUserToken()
@@ -146,7 +148,8 @@ export function SelectTokenWidget() {
             onDismiss={onDismiss}
             onOpenManageWidget={() => setIsManageWidgetOpen(true)}
             hideFavoriteTokensTooltip={isInjectedWidgetMode}
-          ></SelectTokenModal>
+            account={account}
+          />
         )
       })()}
     </Wrapper>

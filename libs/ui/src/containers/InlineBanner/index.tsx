@@ -117,6 +117,7 @@ const Wrapper = styled.span<{
   > span > span > strong {
     display: flex;
     align-items: center;
+    text-align: center;
     gap: 6px;
     color: ${({ colorEnums }) => `var(${colorEnums.text})`};
   }
