@@ -1,4 +1,5 @@
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 export interface CowHook {
   target: string
@@ -30,6 +31,9 @@ export interface HookDappOrderParams {
   validTo: number
   sellTokenAddress: string
   buyTokenAddress: string
+  receiver: string
+  sellAmount: CurrencyAmount<Currency>
+  buyAmount: CurrencyAmount<Currency>
 }
 
 export interface HookDappContext {

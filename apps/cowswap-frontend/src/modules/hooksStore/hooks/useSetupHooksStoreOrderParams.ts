@@ -18,6 +18,9 @@ export function useSetupHooksStoreOrderParams() {
       validTo: orderParams.validTo,
       sellTokenAddress: getCurrencyAddress(orderParams.inputAmount.currency),
       buyTokenAddress: getCurrencyAddress(orderParams.outputAmount.currency),
+      sellAmount: orderParams.inputAmount,
+      buyAmount: orderParams.outputAmount,
+      receiver: orderParams.recipient,
     })
   }, [orderParams])
 }
