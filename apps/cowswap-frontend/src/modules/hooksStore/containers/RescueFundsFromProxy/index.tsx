@@ -1,110 +1,106 @@
-import { useCallback, useMemo, useState } from 'react'
+import { atom, useAtom } from 'jotai'
+import { useCallback, useState } from 'react'
 
-import { SigningScheme } from '@cowprotocol/contracts'
+import { getCurrencyAddress, getEtherscanLink } from '@cowprotocol/common-utils'
+import { ExternalLink, Loader, TokenAmount } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { useWalletProvider } from '@cowprotocol/wallet-provider'
-import { BigNumber } from '@ethersproject/bignumber/src.ts/bignumber'
-import { formatBytes32String, toUtf8Bytes } from '@ethersproject/strings'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { useContract, useTokenContract } from 'common/hooks/useContract'
-import { useCowShedHooks } from 'common/hooks/useCowShedHooks'
+import ms from 'ms.macro'
+import useSWR from 'swr'
 
-import { COW_SHED_FACTORY, ICoWShedCall } from '@cowprotocol/cow-sdk'
-import { CowShedContract, CowShedContractAbi } from '@cowprotocol/abis'
-import { defaultAbiCoder } from '@ethersproject/abi'
-import { pack } from '@ethersproject/solidity'
-import { keccak256 } from '@ethersproject/keccak256'
+import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
+import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 
-const fnSelector = (sig: string) => keccak256(toUtf8Bytes(sig)).slice(0, 10)
+import { useOpenTokenSelectWidget } from 'modules/tokensList'
 
-const fnCalldata = (sig: string, encodedData: string) => pack(['bytes4', 'bytes'], [fnSelector(sig), encodedData])
+import { useTokenContract } from 'common/hooks/useContract'
+import { CurrencySelectButton } from 'common/pure/CurrencySelectButton'
+
+import { useRescueFundsFromProxy } from './useRescueFundsFromProxy'
+
+const BALANCE_UPDATE_INTERVAL = ms`5s`
+
+const selectedCurrencyAtom = atom<Currency | undefined>(undefined)
 
 export function RescueFundsFromProxy() {
-  const [tokenAddress, setTokenAddress] = useState('')
-  const [tokenBalance, setTokenBalance] = useState<BigNumber | null>(null)
+  const [selectedCurrency, seSelectedCurrency] = useAtom(selectedCurrencyAtom)
+  const [tokenBalance, setTokenBalance] = useState<CurrencyAmount<Currency> | null>(null)
 
-  const provider = useWalletProvider()
-  const { account } = useWalletInfo()
-  const cowShedHooks = useCowShedHooks()
-  const erc20Contract = useTokenContract(tokenAddress)
-  const cowShedContract = useContract<CowShedContract>(COW_SHED_FACTORY, CowShedContractAbi)
+  const selectedTokenAddress = selectedCurrency ? getCurrencyAddress(selectedCurrency) : undefined
 
-  const proxyAddress = useMemo(() => {
-    if (!account || !cowShedHooks) return
+  const { chainId } = useWalletInfo()
+  const { ErrorModal, handleSetError } = useErrorModal()
+  const addTransaction = useTransactionAdder()
+  const erc20Contract = useTokenContract(selectedTokenAddress)
+  const onSelectToken = useOpenTokenSelectWidget()
 
-    return cowShedHooks.proxyOf(account)
-  }, [account, cowShedHooks])
+  const {
+    callback: rescueFundsCallback,
+    isTxSigningInProgress,
+    proxyAddress,
+  } = useRescueFundsFromProxy(selectedTokenAddress, tokenBalance)
 
-  const checkProxyBalance = useCallback(() => {
-    if (!erc20Contract || !proxyAddress) return
+  const { isLoading: isBalanceLoading } = useSWR(
+    erc20Contract && proxyAddress && selectedCurrency ? [erc20Contract, proxyAddress, selectedCurrency] : null,
+    async ([erc20Contract, proxyAddress, selectedCurrency]) => {
+      const balance = await erc20Contract.balanceOf(proxyAddress)
 
-    erc20Contract.balanceOf(proxyAddress).then(setTokenBalance)
-  }, [erc20Contract, proxyAddress])
+      setTokenBalance(CurrencyAmount.fromRawAmount(selectedCurrency, balance.toHexString()))
+    },
+    { refreshInterval: BALANCE_UPDATE_INTERVAL, revalidateOnFocus: true },
+  )
 
   const rescueFunds = useCallback(async () => {
-    if (!cowShedHooks || !provider || !proxyAddress || !cowShedContract || !tokenAddress || !account || !tokenBalance)
-      return
+    try {
+      const txHash = await rescueFundsCallback()
 
-    const calls: ICoWShedCall[] = [
-      {
-        target: tokenAddress,
-        callData: fnCalldata(
-          'transferFrom(address,address,uint256)',
-          defaultAbiCoder.encode(
-            ['address', 'address', 'uint256'],
-            [proxyAddress, account, tokenBalance.toHexString()],
-          ),
-        ),
-        value: 0n,
-        isDelegateCall: false,
-        allowFailure: false,
-      },
-    ]
+      if (txHash) {
+        addTransaction({ hash: txHash, summary: 'Rescue funds from CoW Shed Proxy' })
+      }
+    } catch (e) {
+      handleSetError(e.message || e.toString())
+    }
+  }, [rescueFundsCallback, addTransaction, handleSetError])
 
-    const nonce = formatBytes32String(Date.now().toString())
-    // This field is supposed to be used with orders, but here we just do a transaction
-    const validTo = 99999999999
-
-    const encodedSignature = await cowShedHooks.signCalls(
-      calls,
-      nonce,
-      BigInt(validTo),
-      provider.getSigner(),
-      SigningScheme.EIP712,
-    )
-
-    const gasLimit = await cowShedContract.estimateGas.executeHooks(
-      calls,
-      nonce,
-      BigInt(validTo),
-      account,
-      encodedSignature,
-    )
-
-    // TODO: handle errors
-    const transaction = await cowShedContract.executeHooks(calls, nonce, BigInt(validTo), account, encodedSignature, {
-      gasLimit,
-    })
-
-    console.log('Rescue funds transaction:', transaction)
-  }, [provider, proxyAddress, cowShedContract, tokenAddress, account, tokenBalance])
+  const onCurrencySelectClick = useCallback(() => {
+    onSelectToken(selectedTokenAddress, seSelectedCurrency)
+  }, [onSelectToken, selectedTokenAddress, seSelectedCurrency])
 
   return (
     <div>
-      <p>Proxy: {proxyAddress}</p>
-      {tokenBalance ? (
-        <>
-          <p>Balance: {tokenBalance.toString()}</p>
-          <button onClick={rescueFunds}>Rescue funds</button>
-        </>
-      ) : (
-        <>
-          <label>Token address</label>
-          <input type="text" onChange={(e) => setTokenAddress(e.target.value)} />
-          <br />
-          <button onClick={checkProxyBalance}>Check</button>
-        </>
-      )}
+      <ErrorModal />
+      <p>
+        Proxy:{' '}
+        {proxyAddress && (
+          <ExternalLink href={getEtherscanLink(chainId, 'address', proxyAddress)}>
+            <span>{proxyAddress}</span>
+          </ExternalLink>
+        )}
+      </p>
+      <CurrencySelectButton currency={selectedCurrency} loading={false} onClick={onCurrencySelectClick} />
+
+      <>
+        {selectedTokenAddress && (
+          <div>
+            <p>
+              Balance:{' '}
+              {tokenBalance ? (
+                <TokenAmount amount={tokenBalance} defaultValue="0" tokenSymbol={tokenBalance.currency} />
+              ) : isBalanceLoading ? (
+                <Loader />
+              ) : null}
+            </p>
+            {isTxSigningInProgress ? (
+              <Loader />
+            ) : tokenBalance?.greaterThan(0) ? (
+              <button onClick={rescueFunds}>Rescue funds</button>
+            ) : (
+              <button disabled>No balance</button>
+            )}
+          </div>
+        )}
+      </>
     </div>
   )
 }
