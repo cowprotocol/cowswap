@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { ReactElement, useEffect, useRef, useState } from 'react'
 
 import {
   BackButton,
@@ -47,7 +47,7 @@ export interface TradeConfirmationProps {
   isPriceStatic?: boolean
   recipient?: string | null
   buttonText?: React.ReactNode
-  children?: JSX.Element
+  children?: ReactElement | ((restContent: ReactElement) => ReactElement)
 }
 
 export function TradeConfirmation(props: TradeConfirmationProps) {
@@ -125,6 +125,10 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
     onConfirm()
   }
 
+  const hookDetailsElement = (
+    <>{appData && <OrderHooksDetails appData={appData}>{(hookChildren) => hookChildren}</OrderHooksDetails>}</>
+  )
+
   return (
     <styledEl.WidgetWrapper onKeyDown={(e) => e.key === 'Escape' && onDismiss()}>
       <styledEl.Header>
@@ -147,8 +151,14 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
             priceImpactParams={priceImpact}
           />
         </styledEl.AmountsPreviewContainer>
-        {children}
-        {appData && <OrderHooksDetails appData={appData}>{(hookChildren) => hookChildren}</OrderHooksDetails>}
+        {typeof children === 'function' ? (
+          children(hookDetailsElement)
+        ) : (
+          <>
+            {children}
+            {hookDetailsElement}
+          </>
+        )}
 
         {showRecipientWarning && <CustomRecipientWarningBanner orientation={BannerOrientation.Horizontal} />}
         {isPriceChanged && !isPriceStatic && <PriceUpdatedBanner onClick={resetPriceChanged} />}
