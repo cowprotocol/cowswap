@@ -3,10 +3,10 @@ import { useCallback, useState } from 'react'
 import ICON_HOOK from '@cowprotocol/assets/cow-swap/hook.svg'
 import { BannerOrientation, DismissableInlineBanner } from '@cowprotocol/ui'
 
-import styled from 'styled-components/macro'
-
 import { SwapWidget } from 'modules/swap'
 import { useIsSellNative } from 'modules/trade'
+
+import { RescueFundsToggle, TradeWidgetWrapper } from './styled'
 
 import { useSetRecipientOverride } from '../../hooks/useSetRecipientOverride'
 import { useSetupHooksStoreOrderParams } from '../../hooks/useSetupHooksStoreOrderParams'
@@ -19,14 +19,8 @@ type HookPosition = 'pre' | 'post'
 
 console.log(ICON_HOOK)
 
-const TradeWidgetWrapper = styled.div<{ visible$: boolean }>`
-  visibility: ${({ visible$ }) => (visible$ ? 'visible' : 'hidden')};
-  height: ${({ visible$ }) => (visible$ ? '' : '0px')};
-  width: ${({ visible$ }) => (visible$ ? '100%' : '0px')};
-  overflow: hidden;
-`
-
 export function HooksStoreWidget() {
+  const [isRescueWidgetOpen, setRescueWidgetOpen] = useState<boolean>(false)
   const [selectedHookPosition, setSelectedHookPosition] = useState<HookPosition | null>(null)
   const [hookToEdit, setHookToEdit] = useState<string | undefined>(undefined)
 
@@ -51,12 +45,15 @@ export function HooksStoreWidget() {
   useSetRecipientOverride()
 
   const isHookSelectionOpen = !!(selectedHookPosition || hookToEdit)
+  const hideSwapWidget = isHookSelectionOpen || isRescueWidgetOpen
 
   const shouldNotUseHooks = isNativeSell
 
   const TopContent = shouldNotUseHooks ? null : (
     <>
-      <RescueFundsFromProxy />
+      {!isRescueWidgetOpen && (
+        <RescueFundsToggle onClick={() => setRescueWidgetOpen(true)}>Problems receiving funds?</RescueFundsToggle>
+      )}
       <DismissableInlineBanner
         orientation={BannerOrientation.Horizontal}
         customIcon={ICON_HOOK}
@@ -80,12 +77,13 @@ export function HooksStoreWidget() {
 
   return (
     <>
-      <TradeWidgetWrapper visible$={!isHookSelectionOpen}>
+      <TradeWidgetWrapper visible$={!hideSwapWidget}>
         <SwapWidget topContent={TopContent} bottomContent={BottomContent} />
       </TradeWidgetWrapper>
       {isHookSelectionOpen && (
         <HookRegistryList onDismiss={onDismiss} hookToEdit={hookToEdit} isPreHook={selectedHookPosition === 'pre'} />
       )}
+      {isRescueWidgetOpen && <RescueFundsFromProxy onDismiss={() => setRescueWidgetOpen(false)} />}
     </>
   )
 }
