@@ -7,6 +7,7 @@ import { InfoTooltip } from '@cowprotocol/ui'
 import { ChevronDown, ChevronUp } from 'react-feather'
 
 import { AppDataInfo, decodeAppData } from 'modules/appData'
+import { useCustomHookDapps } from 'modules/hooksStore'
 
 import { HookItem } from './HookItem'
 import * as styledEl from './styled'
@@ -22,13 +23,15 @@ export function OrderHooksDetails({ appData, children }: OrderHooksDetailsProps)
   const appDataDoc = useMemo(() => {
     return typeof appData === 'string' ? decodeAppData(appData) : appData.doc
   }, [appData])
+  const preCustomHookDapps = useCustomHookDapps(true)
+  const postCustomHookDapps = useCustomHookDapps(false)
 
   if (!appDataDoc) return null
 
   const metadata = appDataDoc.metadata as latest.Metadata
 
-  const preHooksToDapp = matchHooksToDappsRegistry(metadata.hooks?.pre || [])
-  const postHooksToDapp = matchHooksToDappsRegistry(metadata.hooks?.post || [])
+  const preHooksToDapp = matchHooksToDappsRegistry(metadata.hooks?.pre || [], preCustomHookDapps)
+  const postHooksToDapp = matchHooksToDappsRegistry(metadata.hooks?.post || [], postCustomHookDapps)
 
   if (!preHooksToDapp.length && !postHooksToDapp.length) return null
 
