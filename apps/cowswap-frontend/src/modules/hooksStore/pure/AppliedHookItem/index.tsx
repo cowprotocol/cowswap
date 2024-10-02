@@ -9,6 +9,8 @@ import { InfoTooltip } from '@cowprotocol/ui'
 import { Edit2, Trash2, ExternalLink as ExternalLinkIcon } from 'react-feather'
 import SVG from 'react-inlinesvg'
 
+import { useHookSimulationData } from 'modules/tenderly/states/simulation'
+
 import * as styledEl from './styled'
 
 import { TenderlySimulate } from '../../containers/TenderlySimulate'
@@ -25,7 +27,7 @@ interface HookItemProp {
 }
 
 // TODO: remove once a tenderly bundle simulation is ready
-const isBundleSimulationReady = false
+const isBundleSimulationReady = true
 
 export function AppliedHookItem({
   account,
@@ -36,19 +38,12 @@ export function AppliedHookItem({
   removeHook,
   index,
 }: HookItemProp) {
-  // TODO: Determine the simulation status based on actual simulation results
-  // For demonstration, using a placeholder. Replace with actual logic.
-  const simulationPassed = true // TODO: Replace with actual condition
+  const { simulationPassed, tenderlySimulationLink, isSimulationSuccessful } = useHookSimulationData(hookDetails.hook)
+
   const simulationStatus = simulationPassed ? 'Simulation successful' : 'Simulation failed'
   const simulationTooltip = simulationPassed
     ? 'The Tenderly simulation was successful. Your transaction is expected to succeed.'
     : 'The Tenderly simulation failed. Please review your transaction.'
-
-  // TODO: Placeholder for Tenderly simulation URL; replace with actual logic when available
-  const tenderlySimulationUrl = '' // e.g., 'https://tenderly.co/simulation/12345'
-
-  // TODO: Determine if simulation passed or failed
-  const isSimulationSuccessful = simulationPassed
 
   return (
     <styledEl.HookItemWrapper data-uid={hookDetails.uuid} as="li">
@@ -78,8 +73,8 @@ export function AppliedHookItem({
           ) : (
             <SVG src={ICON_X} color="red" width={14} height={14} aria-label="Simulation Failed" />
           )}
-          {tenderlySimulationUrl ? (
-            <a href={tenderlySimulationUrl} target="_blank" rel="noopener noreferrer">
+          {tenderlySimulationLink ? (
+            <a href={tenderlySimulationLink} target="_blank" rel="noopener noreferrer">
               {simulationStatus}
               <ExternalLinkIcon size={14} />
             </a>

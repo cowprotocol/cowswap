@@ -2,9 +2,11 @@ import { Erc20 } from '@cowprotocol/abis'
 import { COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
+import { BigNumberish } from 'ethers'
+
 import { CowHook, HookDappOrderParams } from 'modules/hooksStore/types/hooks'
 
-import { TENDERLY_API_BASE_ENDPOINT } from '../const'
+import { TENDERLY_API_BASE_ENDPOINT, TENDERLY_API_KEY } from '../const'
 import { SimulationError, TenderlyBundleSimulationResponse, TenderlySimulatePayload } from '../types'
 
 export interface GetTransferTenderlySimulationInput {
@@ -16,6 +18,10 @@ export interface GetTransferTenderlySimulationInput {
   slotOverride?: string
 }
 
+export type TokenBuyTransferInfo = {
+  sender: string
+  amount: CurrencyAmount<Currency>
+}[]
 export interface PostBundleSimulationParams {
   account: string
   chainId: SupportedChainId
@@ -24,17 +30,19 @@ export interface PostBundleSimulationParams {
   preHooks: CowHook[]
   postHooks: CowHook[]
   orderParams: HookDappOrderParams
-  slotOverride: string
+  tokenBuyTransferInfo: TokenBuyTransferInfo
 }
 
 export const bundleSimulation = async (
   params: PostBundleSimulationParams,
 ): Promise<TenderlyBundleSimulationResponse | SimulationError> => {
+  const input = getBundleTenderlySimulationInput(params)
+  console.log({ TENDERLY_API_KEY })
   const response = await fetch(`${TENDERLY_API_BASE_ENDPOINT}/simulate-bundle`, {
     method: 'POST',
-    body: JSON.stringify(getBundleTenderlySimulationInput(params)),
+    body: JSON.stringify(input),
     headers: {
-      'X-Access-Key': process.env.TENDERLY_API_KEY as string,
+      'X-Access-Key': TENDERLY_API_KEY,
     },
   }).then((res) => res.json())
 
@@ -57,14 +65,24 @@ export function getCoWHookTenderlySimulationInput(
     save_if_fails: true,
   }
 }
+// TODO: check if there is a function to do this conversion
+function currencyAmountToBigNumberish(amount: CurrencyAmount<Currency>): BigNumberish {
+  // CurrencyAmount already stores the amount as a fraction internally
+  const fraction = amount.asFraction
 
-function currencyAmountToHexUint256(amount: CurrencyAmount<Currency>) {
-  const valueAsBigInt = BigInt(amount.quotient.toString())
+  // Get the numerator and denominator as BigInts
+  const numerator = BigInt(fraction.numerator.toString())
+  const denominator = BigInt(fraction.denominator.toString())
 
-  let hexString = valueAsBigInt.toString(16)
+  // Get the decimals of the currency
+  const decimals = BigInt(amount.currency.decimals)
 
-  hexString = hexString.padStart(64, '0')
-  return '0x' + hexString
+  // Perform the division
+  const scaledNumerator = numerator * 10n ** decimals
+  const result = scaledNumerator / denominator
+
+  // Convert the result to a string
+  return result.toString()
 }
 
 export function getTransferTenderlySimulationInput({
@@ -73,19 +91,11 @@ export function getTransferTenderlySimulationInput({
   receiver,
   token,
   chainId,
-  slotOverride,
 }: GetTransferTenderlySimulationInput): TenderlySimulatePayload {
-  const callData = token.interface.encodeFunctionData('transfer', [receiver, currencyAmount.toExact()])
-
-  const state_objects = slotOverride
-    ? {
-        [token.address]: {
-          storage: {
-            [slotOverride]: currencyAmountToHexUint256(currencyAmount),
-          },
-        },
-      }
-    : {}
+  const callData = token.interface.encodeFunctionData('transfer', [
+    receiver,
+    currencyAmountToBigNumberish(currencyAmount),
+  ])
 
   return {
     input: callData,
@@ -96,7 +106,6 @@ export function getTransferTenderlySimulationInput({
     network_id: chainId.toString(),
     save: true,
     save_if_fails: true,
-    state_objects,
   }
 }
 
@@ -108,9 +117,10 @@ export function getBundleTenderlySimulationInput({
   preHooks,
   postHooks,
   orderParams,
-  slotOverride,
+  tokenBuyTransferInfo,
 }: PostBundleSimulationParams): { simulations: TenderlySimulatePayload[] } {
   const settlementAddress = COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS[chainId]
+  console.log({ settlementAddress })
   const preHooksSimulations = preHooks.map((hook) =>
     getCoWHookTenderlySimulationInput(settlementAddress, hook, chainId),
   )
@@ -126,14 +136,15 @@ export function getBundleTenderlySimulationInput({
     chainId,
   })
 
-  const buyTokenSimulation = getTransferTenderlySimulationInput({
-    currencyAmount: orderParams.sellAmount,
-    from: COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS[chainId],
-    receiver: orderParams.receiver,
-    token: tokenBuy,
-    chainId,
-    slotOverride,
-  })
+  const buyTokenTransfers = tokenBuyTransferInfo.map((transferInfo) =>
+    getTransferTenderlySimulationInput({
+      currencyAmount: transferInfo.amount,
+      from: transferInfo.sender,
+      receiver: account,
+      token: tokenBuy,
+      chainId,
+    }),
+  )
 
-  return { simulations: [...preHooksSimulations, sellTokenTransfer, buyTokenSimulation, ...postHooksSimulations] }
+  return { simulations: [...preHooksSimulations, sellTokenTransfer, ...buyTokenTransfers, ...postHooksSimulations] }
 }
