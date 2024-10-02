@@ -33,20 +33,24 @@ export function HookItem({ item, index }: { item: HookToDappMatch; index: number
           {isOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
         </styledEl.ToggleIcon>
       </styledEl.HookItemHeader>
-      {isOpen && item.dapp && (
+      {isOpen && (
         <styledEl.HookItemContent>
-          <p>
-            <b>Description:</b> {item.dapp.descriptionShort}
-          </p>
-          <p>
-            <b>Version:</b> {item.dapp.version}
-          </p>
-          <p>
-            <b>Website:</b>{' '}
-            <a href={item.dapp.website} target="_blank" rel="noopener noreferrer" onClick={handleLinkClick}>
-              {item.dapp.website}
-            </a>
-          </p>
+          {item.dapp && (
+            <>
+              <p>
+                <b>Description:</b> {item.dapp.descriptionShort}
+              </p>
+              <p>
+                <b>Version:</b> {item.dapp.version}
+              </p>
+              <p>
+                <b>Website:</b>{' '}
+                <a href={item.dapp.website} target="_blank" rel="noopener noreferrer" onClick={handleLinkClick}>
+                  {item.dapp.website}
+                </a>
+              </p>
+            </>
+          )}
           <p>
             <b>calldata:</b> {item.hook.callData}
           </p>
