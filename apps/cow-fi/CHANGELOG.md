@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.14.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.13.0...cow-fi-v1.14.0) (2024-09-30)
+
+
+### Features
+
+* **cow-fi:** lazy load cms images /learn/ pages ([#4906](https://github.com/cowprotocol/cowswap/issues/4906)) ([897ce91](https://github.com/cowprotocol/cowswap/commit/897ce91ca60a6b2d3823e6a002c3bf64c5384afe))
+* **hooks-store:** support iframe hook-dapps ([#4885](https://github.com/cowprotocol/cowswap/issues/4885)) ([5116f29](https://github.com/cowprotocol/cowswap/commit/5116f296a0e4866d0a51a806b7abe55e809d26e9))
+
 ## [1.13.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.12.0...cow-fi-v1.13.0) (2024-09-12)
 
 
