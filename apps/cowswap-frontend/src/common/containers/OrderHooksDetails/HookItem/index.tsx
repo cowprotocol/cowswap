@@ -4,10 +4,16 @@ import { HookToDappMatch } from '@cowprotocol/hook-dapp-lib'
 
 import { ChevronDown, ChevronUp } from 'react-feather'
 
+import { clickOnHooks } from 'modules/analytics'
+
 import * as styledEl from './styled'
 
 export function HookItem({ item, index }: { item: HookToDappMatch; index: number }) {
   const [isOpen, setIsOpen] = useState(false)
+
+  const handleLinkClick = () => {
+    clickOnHooks(item.dapp?.name || 'Unknown hook dapp')
+  }
 
   return (
     <styledEl.HookItemWrapper as="li">
@@ -30,10 +36,16 @@ export function HookItem({ item, index }: { item: HookToDappMatch; index: number
       {isOpen && item.dapp && (
         <styledEl.HookItemContent>
           <p>
+            <b>Description:</b> {item.dapp.descriptionShort}
+          </p>
+          <p>
             <b>Version:</b> {item.dapp.version}
           </p>
           <p>
-            <b>Description:</b> {item.dapp.descriptionShort}
+            <b>Website:</b>{' '}
+            <a href={item.dapp.website} target="_blank" rel="noopener noreferrer" onClick={handleLinkClick}>
+              {item.dapp.website}
+            </a>
           </p>
           <p>
             <b>calldata:</b> {item.hook.callData}

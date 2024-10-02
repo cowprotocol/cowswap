@@ -83,12 +83,16 @@ export const HookItemContent = styled.div`
   padding: 10px;
   font-size: 13px;
   color: var(${UI.COLOR_TEXT_OPACITY_70});
-  margin-top: 10px;
+  margin: 10px 0 0;
 
   > p {
     margin: 0 0 1rem;
     word-break: break-all;
     font-weight: var(${UI.FONT_WEIGHT_NORMAL});
+
+    &:last-child {
+      margin: 0;
+    }
   }
 
   > p > b {
@@ -96,6 +100,15 @@ export const HookItemContent = styled.div`
     display: block;
     margin: 0 0 0.25rem;
     text-transform: capitalize;
+  }
+
+  > p > a {
+    color: var(${UI.COLOR_TEXT_OPACITY_70});
+    text-decoration: underline;
+
+    &:hover {
+      color: var(${UI.COLOR_TEXT});
+    }
   }
 `
 
