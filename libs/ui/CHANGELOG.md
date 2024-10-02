@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.10.0](https://github.com/cowprotocol/cowswap/compare/ui-v1.9.0...ui-v1.10.0) (2024-09-30)
+
+
+### Features
+
+* **cow-fi:** lazy load cms images /learn/ pages ([#4906](https://github.com/cowprotocol/cowswap/issues/4906)) ([897ce91](https://github.com/cowprotocol/cowswap/commit/897ce91ca60a6b2d3823e6a002c3bf64c5384afe))
+* **hooks-store:** import custom hook-dapps ([#4910](https://github.com/cowprotocol/cowswap/issues/4910)) ([5847017](https://github.com/cowprotocol/cowswap/commit/584701715500525365475660732edb6bbf7ba396))
+* **hooks-store:** style hook store ([#4905](https://github.com/cowprotocol/cowswap/issues/4905)) ([9fca0d9](https://github.com/cowprotocol/cowswap/commit/9fca0d9e9fac5715d3d05eb1c1fe234083af03fc))
+
 ## [1.9.0](https://github.com/cowprotocol/cowswap/compare/ui-v1.8.1...ui-v1.9.0) (2024-09-17)
 
 
