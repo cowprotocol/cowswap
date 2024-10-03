@@ -88,14 +88,20 @@ function useSmartSlippageFromFeePercentageV2(): number {
   const feeMultiplierFactor = new Fraction(100 + smartSlippageFeeMultiplierPercentage, 100) // 50% more fee, applied to the whole value => 150% => 15/10 in fraction
 
   const percentage = useMemo(() => {
-    if (!inputAmountWithFee || !inputAmountWithoutFee || !feeAsCurrency || tradeType === undefined) {
+    if (
+      !inputAmountWithFee ||
+      !inputAmountWithoutFee ||
+      !feeAsCurrency ||
+      tradeType === undefined ||
+      !smartSlippageFeeMultiplierPercentage
+    ) {
       return ZERO
     }
 
     if (tradeType === TradeType.EXACT_INPUT) {
       // sell
       // 1 - (sellAmount - feeAmount * 1.5) / (sellAmount - feeAmount)
-      // 1 - (inputAmountWithoutFee - feeAsCurrency * 1.5) / inputAmountWithFee
+      // 1 - (inputAmountWithoutFee - feeAsCurrency * feeMultiplierFactor) / inputAmountWithFee
       return ONE.subtract(
         inputAmountWithoutFee
           .subtract(feeAsCurrency.multiply(feeMultiplierFactor))
@@ -105,7 +111,7 @@ function useSmartSlippageFromFeePercentageV2(): number {
     } else {
       // buy
       // (sellAmount + feeAmount * 1.5) / (sellAmount + feeAmount) - 1
-      // (inputAmountWithFee + feeAsCurrency * 1.5) / inputAmountWithFee - 1
+      // (inputAmountWithFee + feeAsCurrency * feeMultiplierFactor) / inputAmountWithFee - 1
       return (
         inputAmountWithFee
           .add(feeAsCurrency.multiply(feeMultiplierFactor))
@@ -114,7 +120,7 @@ function useSmartSlippageFromFeePercentageV2(): number {
           .subtract(ONE)
       )
     }
-  }, [tradeType, inputAmountWithFee, inputAmountWithoutFee, feeAsCurrency])
+  }, [tradeType, inputAmountWithFee, inputAmountWithoutFee, feeAsCurrency, smartSlippageFeeMultiplierPercentage])
 
   // Stable reference
   // convert % to BPS. E.g.: 1% => 0.01 => 100 BPS
