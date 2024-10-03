@@ -24,6 +24,7 @@ export interface SelectTokenModalProps {
   selectedToken?: string
   permitCompatibleTokens: PermitCompatibleTokens
   hideFavoriteTokensTooltip?: boolean
+  account: string | undefined
 
   onSelectToken(token: TokenWithLogo): void
 
@@ -50,6 +51,7 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
     onDismiss,
     onOpenManageWidget,
     onInputPressEnter,
+    account,
   } = props
 
   const [inputValue, setInputValue] = useState<string>(defaultInputValue)
@@ -90,7 +92,7 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
       {inputValue.trim() ? (
         <TokenSearchResults searchInput={inputValue.trim()} {...selectTokenContext} />
       ) : (
-        <TokensVirtualList allTokens={allTokens} {...selectTokenContext} />
+        <TokensVirtualList allTokens={allTokens} {...selectTokenContext} account={account} />
       )}
       <styledEl.Separator />
       <div>

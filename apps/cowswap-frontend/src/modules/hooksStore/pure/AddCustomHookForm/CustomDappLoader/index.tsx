@@ -1,19 +1,20 @@
 import { Dispatch, SetStateAction, useEffect } from 'react'
 
-import { HookDappBase, HookDappIframe, HookDappType } from '../../../types/hooks'
+import {
+  HOOK_DAPP_ID_LENGTH,
+  HookDappBase,
+  HookDappType,
+  HookDappWalletCompatibility,
+} from '@cowprotocol/hook-dapp-lib'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
-interface HookDappConditions {
-  position?: 'post' | 'pre'
-  smartContractWalletSupported?: boolean
-}
+import { HookDappIframe } from '../../../types/hooks'
 
-type HookDappBaseInfo = Omit<HookDappBase, 'type'>
+type HookDappBaseInfo = Omit<HookDappBase, 'type' | 'conditions'>
 
-type HookDappManifest = HookDappBaseInfo & {
-  conditions?: HookDappConditions
-}
+const MANDATORY_DAPP_FIELDS: (keyof HookDappBaseInfo)[] = ['id', 'name', 'image', 'version', 'website']
 
-const MANDATORY_DAPP_FIELDS: (keyof HookDappBaseInfo)[] = ['name', 'image', 'version', 'website']
+const isHex = (val: string) => Boolean(val.match(/^[0-9a-f]+$/i))
 
 interface ExternalDappLoaderProps {
   input: string
@@ -32,6 +33,8 @@ export function ExternalDappLoader({
   isSmartContractWallet,
   isPreHook,
 }: ExternalDappLoaderProps) {
+  const { chainId } = useWalletInfo()
+
   useEffect(() => {
     let isRequestRelevant = true
 
@@ -42,7 +45,7 @@ export function ExternalDappLoader({
       .then((data) => {
         if (!isRequestRelevant) return
 
-        const { conditions = {}, ...dapp } = data.cow_hook_dapp as HookDappManifest
+        const { conditions = {}, ...dapp } = data.cow_hook_dapp as HookDappBase
 
         if (dapp) {
           const emptyFields = MANDATORY_DAPP_FIELDS.filter((field) => typeof dapp[field] === 'undefined')
@@ -50,8 +53,16 @@ export function ExternalDappLoader({
           if (emptyFields.length > 0) {
             setManifestError(`${emptyFields.join(',')} fields are no set.`)
           } else {
-            if (conditions.smartContractWalletSupported === false && isSmartContractWallet === true) {
+            if (
+              isSmartContractWallet === true &&
+              conditions.walletCompatibility &&
+              !conditions.walletCompatibility.includes(HookDappWalletCompatibility.SMART_CONTRACT)
+            ) {
               setManifestError('The app does not support smart-contract wallets.')
+            } else if (!isHex(dapp.id) || dapp.id.length !== HOOK_DAPP_ID_LENGTH) {
+              setManifestError(<p>Hook dapp id must be a hex with length 64.</p>)
+            } else if (conditions.supportedNetworks && !conditions.supportedNetworks.includes(chainId)) {
+              setManifestError(<p>This app/hook doesn't support current network (chainId={chainId}).</p>)
             } else if (conditions.position === 'post' && isPreHook) {
               setManifestError(
                 <p>
@@ -92,7 +103,7 @@ export function ExternalDappLoader({
     return () => {
       isRequestRelevant = false
     }
-  }, [input])
+  }, [input, chainId])
 
   return null
 }
