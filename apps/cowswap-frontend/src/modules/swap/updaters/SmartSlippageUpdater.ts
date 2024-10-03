@@ -70,7 +70,6 @@ export function SmartSlippageUpdater() {
   return null
 }
 
-const FEE_MULTIPLIER_FACTOR = new Fraction(15, 10) // 50% more fee, applied to the whole value => 150% => 15/10 in fraction
 const ONE = new Fraction(1)
 const ZERO = new Fraction(0)
 
@@ -85,6 +84,8 @@ function useSmartSlippageFromFeePercentageV2(): number {
   const { trade } = useDerivedSwapInfo() || {}
   const { fee, inputAmountWithFee, inputAmountWithoutFee, tradeType } = trade || {}
   const { feeAsCurrency } = fee || {}
+  const { smartSlippageFeeMultiplierPercentage = 0 } = useFeatureFlags()
+  const feeMultiplierFactor = new Fraction(100 + smartSlippageFeeMultiplierPercentage, 100) // 50% more fee, applied to the whole value => 150% => 15/10 in fraction
 
   const percentage = useMemo(() => {
     if (!inputAmountWithFee || !inputAmountWithoutFee || !feeAsCurrency || tradeType === undefined) {
@@ -97,7 +98,7 @@ function useSmartSlippageFromFeePercentageV2(): number {
       // 1 - (inputAmountWithoutFee - feeAsCurrency * 1.5) / inputAmountWithFee
       return ONE.subtract(
         inputAmountWithoutFee
-          .subtract(feeAsCurrency.multiply(FEE_MULTIPLIER_FACTOR))
+          .subtract(feeAsCurrency.multiply(feeMultiplierFactor))
           // !!! Need to convert to fraction before division to not lose precision
           .asFraction.divide(inputAmountWithFee.asFraction),
       )
@@ -107,7 +108,7 @@ function useSmartSlippageFromFeePercentageV2(): number {
       // (inputAmountWithFee + feeAsCurrency * 1.5) / inputAmountWithFee - 1
       return (
         inputAmountWithFee
-          .add(feeAsCurrency.multiply(FEE_MULTIPLIER_FACTOR))
+          .add(feeAsCurrency.multiply(feeMultiplierFactor))
           // !!! Need to convert to fraction before division to not lose precision
           .asFraction.divide(inputAmountWithFee.asFraction)
           .subtract(ONE)
