@@ -1,7 +1,8 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import ICON_HOOK from '@cowprotocol/assets/cow-swap/hook.svg'
 import { BannerOrientation, DismissableInlineBanner } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { SwapWidget } from 'modules/swap'
 import { useIsSellNative } from 'modules/trade'
@@ -20,6 +21,7 @@ type HookPosition = 'pre' | 'post'
 console.log(ICON_HOOK)
 
 export function HooksStoreWidget() {
+  const { account } = useWalletInfo()
   const [isRescueWidgetOpen, setRescueWidgetOpen] = useState<boolean>(false)
   const [selectedHookPosition, setSelectedHookPosition] = useState<HookPosition | null>(null)
   const [hookToEdit, setHookToEdit] = useState<string | undefined>(undefined)
@@ -41,6 +43,12 @@ export function HooksStoreWidget() {
     setHookToEdit(uuid)
   }, [])
 
+  useEffect(() => {
+    if (!account) {
+      setRescueWidgetOpen(false)
+    }
+  }, [account])
+
   useSetupHooksStoreOrderParams()
   useSetRecipientOverride()
 
@@ -51,7 +59,7 @@ export function HooksStoreWidget() {
 
   const TopContent = shouldNotUseHooks ? null : (
     <>
-      {!isRescueWidgetOpen && (
+      {!isRescueWidgetOpen && account && (
         <RescueFundsToggle onClick={() => setRescueWidgetOpen(true)}>Problems receiving funds?</RescueFundsToggle>
       )}
       <DismissableInlineBanner
