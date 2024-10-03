@@ -69,7 +69,7 @@ export function AppliedHookList({
         return (
           <AppliedHookItem
             key={hookDetails.hookDetails.uuid}
-            dapp={findHookDappById(dapps, hookDetails)!}
+            dapp={findHookDappById(dapps, hookDetails)}
             index={index}
             account={account}
             hookDetails={hookDetails}

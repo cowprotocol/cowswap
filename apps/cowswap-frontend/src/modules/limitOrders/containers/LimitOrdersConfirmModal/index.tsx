@@ -92,23 +92,27 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
         priceImpact={priceImpact}
         buttonText={buttonText}
         recipient={recipient}
+        appData={tradeContext.postOrderParams.appData || undefined}
         isPriceStatic={true}
       >
-        <>
-          {tradeContext && (
-            <LimitOrdersDetails
-              limitRateState={limitRateState}
-              tradeContext={tradeContext}
-              rateInfoParams={rateInfoParams}
-              settingsState={settingsState}
-              executionPrice={executionPrice}
-              partiallyFillableOverride={partiallyFillableOverride}
-            >
-              <TradeRateDetails />
-            </LimitOrdersDetails>
-          )}
-          <LimitOrdersWarnings isConfirmScreen={true} />
-        </>
+        {(restContent) => (
+          <>
+            {tradeContext && (
+              <LimitOrdersDetails
+                limitRateState={limitRateState}
+                tradeContext={tradeContext}
+                rateInfoParams={rateInfoParams}
+                settingsState={settingsState}
+                executionPrice={executionPrice}
+                partiallyFillableOverride={partiallyFillableOverride}
+              >
+                <TradeRateDetails />
+              </LimitOrdersDetails>
+            )}
+            {restContent}
+            <LimitOrdersWarnings isConfirmScreen={true} />
+          </>
+        )}
       </TradeConfirmation>
     </TradeConfirmModal>
   )

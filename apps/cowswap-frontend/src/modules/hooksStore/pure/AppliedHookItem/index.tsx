@@ -17,7 +17,7 @@ import { CowHookDetailsSerialized, HookDapp } from '../../types/hooks'
 interface HookItemProp {
   account: string | undefined
   hookDetails: CowHookDetailsSerialized
-  dapp: HookDapp
+  dapp: HookDapp | undefined
   isPreHook: boolean
   removeHook: (uuid: string, isPreHook: boolean) => void
   editHook: (uuid: string) => void
@@ -49,6 +49,8 @@ export function AppliedHookItem({
 
   // TODO: Determine if simulation passed or failed
   const isSimulationSuccessful = simulationPassed
+
+  if (!dapp) return null
 
   return (
     <styledEl.HookItemWrapper data-uid={hookDetails.uuid} as="li">
