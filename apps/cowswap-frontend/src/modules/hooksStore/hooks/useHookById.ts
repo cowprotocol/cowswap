@@ -5,5 +5,5 @@ export function useHookById(uuid: string | undefined, isPreHook: boolean) {
 
   if (!uuid) return undefined
 
-  return (isPreHook ? hooks.preHooks : hooks.postHooks).find((i) => i.hookDetails.uuid === uuid)
+  return (isPreHook ? hooks.preHooks : hooks.postHooks).find((i) => i.uuid === uuid)
 }

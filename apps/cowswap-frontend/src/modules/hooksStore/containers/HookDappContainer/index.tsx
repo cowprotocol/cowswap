@@ -44,7 +44,7 @@ export function HookDappContainer({ dapp, isPreHook, onDismiss, hookToEdit }: Ho
       chainId,
       account,
       orderParams,
-      hookToEdit: hookToEditDetails?.hookDetails,
+      hookToEdit: hookToEditDetails,
       signer,
       isSmartContract,
       isPreHook,

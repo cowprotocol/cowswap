@@ -1,9 +1,8 @@
-// src/modules/hooksStore/pure/AppliedHookItem/index.tsx
-
 import ICON_CHECK_ICON from '@cowprotocol/assets/cow-swap/check-singular.svg'
 import ICON_GRID from '@cowprotocol/assets/cow-swap/grid.svg'
 import TenderlyLogo from '@cowprotocol/assets/cow-swap/tenderly-logo.svg'
 import ICON_X from '@cowprotocol/assets/cow-swap/x.svg'
+import { CowHookDetails } from '@cowprotocol/hook-dapp-lib'
 import { InfoTooltip } from '@cowprotocol/ui'
 
 import { Edit2, Trash2, ExternalLink as ExternalLinkIcon } from 'react-feather'
@@ -12,11 +11,11 @@ import SVG from 'react-inlinesvg'
 import * as styledEl from './styled'
 
 import { TenderlySimulate } from '../../containers/TenderlySimulate'
-import { CowHookDetailsSerialized, HookDapp } from '../../types/hooks'
+import { HookDapp } from '../../types/hooks'
 
 interface HookItemProp {
   account: string | undefined
-  hookDetails: CowHookDetailsSerialized
+  hookDetails: CowHookDetails
   dapp: HookDapp | undefined
   isPreHook: boolean
   removeHook: (uuid: string, isPreHook: boolean) => void
@@ -27,15 +26,7 @@ interface HookItemProp {
 // TODO: remove once a tenderly bundle simulation is ready
 const isBundleSimulationReady = false
 
-export function AppliedHookItem({
-  account,
-  hookDetails: { hookDetails },
-  dapp,
-  isPreHook,
-  editHook,
-  removeHook,
-  index,
-}: HookItemProp) {
+export function AppliedHookItem({ account, hookDetails, dapp, isPreHook, editHook, removeHook, index }: HookItemProp) {
   // TODO: Determine the simulation status based on actual simulation results
   // For demonstration, using a placeholder. Replace with actual logic.
   const simulationPassed = true // TODO: Replace with actual condition

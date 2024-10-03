@@ -1,16 +1,15 @@
-import { HOOK_DAPP_ID_LENGTH } from './consts'
 import * as hookDappsRegistry from './hookDappsRegistry.json'
 import { CowHook, HookDappBase } from './types'
 
-// permit() function selector
-const PERMIT_SELECTOR = '0xd505accf'
+// Before the hooks store the dappId wasn't included in the hook object
+type StrictCowHook = Omit<CowHook, 'dappId'> & { dappId?: string }
 
 export interface HookToDappMatch {
   dapp: HookDappBase | null
   hook: CowHook
 }
 
-export function matchHooksToDapps(hooks: CowHook[], dapps: HookDappBase[]): HookToDappMatch[] {
+export function matchHooksToDapps(hooks: StrictCowHook[], dapps: HookDappBase[]): HookToDappMatch[] {
   const dappsMap = dapps.reduce(
     (acc, dapp) => {
       acc[dapp.id] = dapp
@@ -19,28 +18,24 @@ export function matchHooksToDapps(hooks: CowHook[], dapps: HookDappBase[]): Hook
     {} as Record<string, HookDappBase | undefined>,
   )
 
-  return hooks.map((hook) => {
-    const dapp = dappsMap[hook.callData.slice(-HOOK_DAPP_ID_LENGTH)]
+  return (
+    hooks
+      // Skip hooks before the hooks store was introduced
+      .filter((hook) => !!hook.dappId)
+      .map((_hook) => {
+        const hook = _hook as CowHook
+        const dapp = dappsMap[hook.dappId]
 
-    /**
-     * Permit token is a special case, as it's not a dapp, but a hook
-     */
-    if (!dapp && hook.callData.startsWith(PERMIT_SELECTOR)) {
-      return {
-        hook,
-        dapp: hookDappsRegistry.PERMIT_TOKEN as HookDappBase,
-      }
-    }
-
-    return {
-      hook,
-      dapp: dapp || null,
-    }
-  })
+        return {
+          hook,
+          dapp: dapp || null,
+        }
+      })
+  )
 }
 
 export function matchHooksToDappsRegistry(
-  hooks: CowHook[],
+  hooks: StrictCowHook[],
   additionalHookDapps: HookDappBase[] = [],
 ): HookToDappMatch[] {
   return matchHooksToDapps(hooks, (Object.values(hookDappsRegistry) as HookDappBase[]).concat(additionalHookDapps))
