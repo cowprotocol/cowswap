@@ -124,6 +124,8 @@ export function getBundleTenderlySimulationInput({
   // If there are no post hooks, we don't need to simulate the transfer
   if (postHooks.length === 0) return { simulations: preHooksSimulations }
 
+  const receiver = postHooks[0].hookDetails.recipientOverride || orderParams.receiver
+
   const sellTokenTransfer = getTransferTenderlySimulationInput({
     currencyAmount: orderParams.sellAmount,
     from: account,
@@ -136,7 +138,7 @@ export function getBundleTenderlySimulationInput({
     getTransferTenderlySimulationInput({
       currencyAmount: transferInfo.amount,
       from: transferInfo.sender,
-      receiver: account,
+      receiver,
       token: tokenBuy,
       chainId,
     }),
