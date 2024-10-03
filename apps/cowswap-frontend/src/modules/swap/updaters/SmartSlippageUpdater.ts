@@ -75,6 +75,7 @@ export function SmartSlippageUpdater() {
 }
 
 const ONE = new Fraction(1)
+const MAX_BPS = 5000 // 50%
 
 /**
  * Calculates smart slippage in bps, based on quoted fee
@@ -129,7 +130,14 @@ function useSmartSlippageFromFeePercentageV2(): number | undefined {
   // convert % to BPS. E.g.: 1% => 0.01 => 100 BPS
   const bps = percentage?.multiply(10_000).toFixed(0)
 
-  return useMemo(() => (bps ? +bps : undefined), [bps])
+  return useMemo(() => {
+    if (bps) {
+      // Cap it at MAX_BPS
+      return Math.min(+bps, MAX_BPS)
+    } else {
+      return undefined
+    }
+  }, [bps])
 }
 
 // TODO: remove
