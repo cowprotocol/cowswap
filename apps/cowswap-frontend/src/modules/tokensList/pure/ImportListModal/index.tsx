@@ -3,8 +3,6 @@ import { useState } from 'react'
 import { TokenLogo, getTokenListViewLink, ListState } from '@cowprotocol/tokens'
 import { ButtonPrimary } from '@cowprotocol/ui'
 
-import { ExternalSourceAlert } from 'common/pure/ExternalSourceAlert'
-
 import * as styledEl from './styled'
 
 import { ModalHeader } from '../ModalHeader'
@@ -39,7 +37,10 @@ export function ImportListModal(props: ImportListModalProps) {
           </styledEl.ListLink>
         </div>
       </styledEl.ListInfo>
-      <ExternalSourceAlert title="Import at your own risk" onChange={() => setIsAccepted((state) => !state)}>
+      <styledEl.ExternalSourceAlertStyled
+        title="Import at your own risk"
+        onChange={() => setIsAccepted((state) => !state)}
+      >
         <>
           <p>
             By adding this list you are implicitly trusting that the data is correct. Anyone can create a list,
@@ -50,7 +51,7 @@ export function ImportListModal(props: ImportListModalProps) {
             <strong>If you purchase a token from this list, you may not be able to sell it back.</strong>
           </p>
         </>
-      </ExternalSourceAlert>
+      </styledEl.ExternalSourceAlertStyled>
       <styledEl.ActionButtonWrapper>
         <ButtonPrimary disabled={!isAccepted} onClick={() => onImport(list)}>
           Import

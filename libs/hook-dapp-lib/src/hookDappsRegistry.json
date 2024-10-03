@@ -1,0 +1,53 @@
+{
+  "BUILD_CUSTOM_HOOK": {
+    "id": "c768665aa144bcf18c14eea0249b6322050e5daeba046d7e94df743a2e504586",
+    "type": "INTERNAL",
+    "name": "Build your own hook",
+    "descriptionShort": "Call any smart contract with your own parameters",
+    "description": "Didn't find a suitable hook? You can always create your own! To do this, you need to specify which smart contract you want to call, the parameters for the call and the gas limit.",
+    "image": "https://raw.githubusercontent.com/cowprotocol/cowswap/refs/heads/develop/apps/cowswap-frontend/src/modules/hooksStore/dapps/BuildHookApp/build.png",
+    "version": "v0.1.0",
+    "website": "https://docs.cow.fi/cow-protocol/tutorials/hook-dapp"
+  },
+  "CLAIM_GNO_FROM_VALIDATORS": {
+    "id": "ee4a6b1065cda592972b9ff7448ec111f29a566f137fef101ead7fbf8b01dd0b",
+    "type": "INTERNAL",
+    "name": "Claim GNO from validators",
+    "descriptionShort": "Withdraw rewards from your Gnosis validators.",
+    "description": "This hook allows you to withdraw rewards from your Gnosis Chain validators through CoW Swap. It automates the process of interacting with the Gnosis Deposit Contract, enabling you to claim any available rewards directly to your specified withdrawal address. The hook monitors your validator's accrued rewards and triggers the claimWithdrawals function when rewards are ready for withdrawal. This simplifies the management of Gnosis validator earnings without requiring ready for withdrawal. This simplifies the management of Gnosis validator earnings without requiring manual contract interaction, providing a smoother and more efficient experience for users.",
+    "image": "https://raw.githubusercontent.com/cowprotocol/cowswap/897ce91ca60a6b2d3823e6a002c3bf64c5384afe/libs/assets/src/cow-swap/network-gnosis-chain-logo.svg",
+    "version": "v0.1.1",
+    "website": "https://www.gnosis.io",
+    "conditions": {
+      "supportedNetworks": [100],
+      "position": "pre"
+    }
+  },
+  "PERMIT_TOKEN": {
+    "id": "1db4bacb661a90fb6b475fd5b585acba9745bc373573c65ecc3e8f5bfd5dee1f",
+    "type": "INTERNAL",
+    "name": "Permit a token",
+    "descriptionShort": "Infinite permit an address to spend one token on your behalf.",
+    "description": "This hook allows you to permit an address to spend your tokens on your behalf. This is useful for allowing a smart contract to spend your tokens without needing to approve each transaction.",
+    "image": "https://raw.githubusercontent.com/cowprotocol/cowswap/refs/heads/develop/apps/cowswap-frontend/src/modules/hooksStore/dapps/PermitHookApp/icon.png",
+    "version": "v0.1.0",
+    "website": "https://docs.cow.fi/cow-protocol/tutorials/hook-dapp",
+    "conditions": {
+      "walletCompatibility": ["EOA"],
+      "supportedNetworks": [11155111]
+    }
+  },
+  "CLAIM_COW_AIRDROP": {
+    "id": "40ed08569519f3b58c410ba35a8e684612663a7c9b58025e0a9c3a54551fb0ff",
+    "type": "INTERNAL",
+    "name": "Claim COW Airdrop",
+    "descriptionShort": "Retrieve COW tokens before or after a swap.",
+    "description": "Effortless Airdrop Claims! The Claim COW Airdrop feature simplifies the process of collecting free COW tokens before or after your swap, seamlessly integrating into the CoW Swap platform. Whether you're claiming new airdrops or exploring CoW on a new network, this tool ensures you get your rewards quickly and easily.",
+    "image": "https://raw.githubusercontent.com/cowprotocol/cowswap/897ce91ca60a6b2d3823e6a002c3bf64c5384afe/apps/cowswap-frontend/src/modules/hooksStore/dapps/AirdropHookApp/airdrop.svg",
+    "version": "v0.1.0",
+    "website": "https://github.com/bleu/cow-airdrop-contract-deployer",
+    "conditions": {
+      "supportedNetworks": [11155111]
+    }
+  }
+}

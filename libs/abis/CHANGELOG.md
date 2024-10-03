@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/cowprotocol/cowswap/compare/cowswap-abis-v1.0.0...cowswap-abis-v1.1.0) (2024-09-30)
+
+
+### Features
+
+* **cow-hooks:** add claim airdrop hook app  ([#4897](https://github.com/cowprotocol/cowswap/issues/4897)) ([cab2407](https://github.com/cowprotocol/cowswap/commit/cab240778128dfbdd29f0873062a39b23695d577))
+
 ## 1.0.0 (2024-07-12)
 
 

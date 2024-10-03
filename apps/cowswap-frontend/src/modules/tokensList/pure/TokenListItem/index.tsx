@@ -19,6 +19,7 @@ export interface TokenListItemProps {
   virtualRow?: VirtualItem
   isUnsupported: boolean
   isPermitCompatible: boolean
+  isWalletConnected: boolean
 }
 
 export function TokenListItem(props: TokenListItemProps) {
@@ -31,6 +32,7 @@ export function TokenListItem(props: TokenListItemProps) {
     isUnsupported,
     isPermitCompatible,
     measureElement,
+    isWalletConnected,
   } = props
 
   const isTokenSelected = token.address.toLowerCase() === selectedToken?.toLowerCase()
@@ -47,8 +49,12 @@ export function TokenListItem(props: TokenListItemProps) {
       onClick={() => onSelectToken(token)}
     >
       <TokenInfo token={token} />
-      <styledEl.TokenBalance>{balanceAmount && <TokenAmount amount={balanceAmount} />}</styledEl.TokenBalance>
-      <TokenTags isUnsupported={isUnsupported} isPermitCompatible={isPermitCompatible} />
+      {isWalletConnected && (
+        <>
+          <styledEl.TokenBalance>{balanceAmount && <TokenAmount amount={balanceAmount} />}</styledEl.TokenBalance>
+          <TokenTags isUnsupported={isUnsupported} isPermitCompatible={isPermitCompatible} />
+        </>
+      )}
     </styledEl.TokenItem>
   )
 }

@@ -25,11 +25,15 @@ const scrollDelay = ms`400ms`
 
 export interface TokensVirtualListProps extends SelectTokenContext {
   allTokens: TokenWithLogo[]
+  account: string | undefined
 }
 
 export function TokensVirtualList(props: TokensVirtualListProps) {
-  const { allTokens, selectedToken, balancesState, onSelectToken, unsupportedTokens, permitCompatibleTokens } = props
+  const { allTokens, selectedToken, balancesState, onSelectToken, unsupportedTokens, permitCompatibleTokens, account } =
+    props
   const { values: balances, isLoading: balancesLoading } = balancesState
+
+  const isWalletConnected = !!account
 
   const scrollTimeoutRef = useRef<NodeJS.Timeout>()
   const parentRef = useRef<HTMLDivElement>(null)
@@ -83,6 +87,7 @@ export function TokensVirtualList(props: TokensVirtualListProps) {
                 selectedToken={selectedToken}
                 balance={balance}
                 onSelectToken={onSelectToken}
+                isWalletConnected={isWalletConnected}
               />
             )
           })}

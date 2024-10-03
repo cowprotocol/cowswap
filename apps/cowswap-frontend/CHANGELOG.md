@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.84.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.83.0...cowswap-v1.84.0) (2024-09-30)
+
+
+### Features
+
+* **cow-fi:** lazy load cms images /learn/ pages ([#4906](https://github.com/cowprotocol/cowswap/issues/4906)) ([897ce91](https://github.com/cowprotocol/cowswap/commit/897ce91ca60a6b2d3823e6a002c3bf64c5384afe))
+* **cow-hooks:** add claim airdrop hook app  ([#4897](https://github.com/cowprotocol/cowswap/issues/4897)) ([cab2407](https://github.com/cowprotocol/cowswap/commit/cab240778128dfbdd29f0873062a39b23695d577))
+* **hooks-store:** import custom hook-dapps ([#4910](https://github.com/cowprotocol/cowswap/issues/4910)) ([5847017](https://github.com/cowprotocol/cowswap/commit/584701715500525365475660732edb6bbf7ba396))
+* **hooks-store:** style hook store ([#4905](https://github.com/cowprotocol/cowswap/issues/4905)) ([9fca0d9](https://github.com/cowprotocol/cowswap/commit/9fca0d9e9fac5715d3d05eb1c1fe234083af03fc))
+* **hooks-store:** support iframe hook-dapps ([#4885](https://github.com/cowprotocol/cowswap/issues/4885)) ([5116f29](https://github.com/cowprotocol/cowswap/commit/5116f296a0e4866d0a51a806b7abe55e809d26e9))
+
+
+### Bug Fixes
+
+* fix import list warning styles ([#4917](https://github.com/cowprotocol/cowswap/issues/4917)) ([fa3c4cb](https://github.com/cowprotocol/cowswap/commit/fa3c4cb09fb0728233de92c81c1e0a410143f65a))
+
 ## [1.83.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.82.0...cowswap-v1.83.0) (2024-09-18)
 
 

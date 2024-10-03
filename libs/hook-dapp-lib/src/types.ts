@@ -1,10 +1,19 @@
-import type { SupportedChainId } from '@cowprotocol/cow-sdk'
+import type { ReactNode } from 'react'
+
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+
+import { HookDappType, HookDappWalletCompatibility } from './consts'
 
 export interface CowHook {
   target: string
   callData: string
   gasLimit: string
+}
+
+export interface HookDappConditions {
+  position?: 'post' | 'pre'
+  walletCompatibility?: HookDappWalletCompatibility[]
+  supportedNetworks?: number[]
 }
 
 export interface CowHookCreation {
@@ -37,11 +46,23 @@ export interface HookDappOrderParams {
 }
 
 export interface HookDappContext {
-  chainId: SupportedChainId
+  chainId: number
   account?: string
   orderParams: HookDappOrderParams | null
   hookToEdit?: CowHookDetails
   isSmartContract: boolean | undefined
   isPreHook: boolean
   isDarkMode: boolean
+}
+
+export interface HookDappBase {
+  id: string
+  name: string
+  descriptionShort?: string
+  description?: ReactNode | string
+  type: HookDappType
+  version: string
+  website: string
+  image: string
+  conditions?: HookDappConditions
 }

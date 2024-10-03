@@ -83,7 +83,7 @@ function colors(darkMode: boolean): Colors {
     gradient1: `linear-gradient(145deg, ${paper}, ${background})`,
     gradient2: `linear-gradient(250deg, ${transparentize(alert, 0.92)} 10%, ${transparentize(
       success,
-      0.92
+      0.92,
     )} 50%, ${transparentize(success, 0.92)} 100%);`,
     boxShadow1: darkMode ? '0 24px 32px rgba(0, 0, 0, 0.06)' : '0 12px 12px rgba(5, 43, 101, 0.06)',
     boxShadow2: '0 4px 12px 0 rgb(0 0 0 / 15%)',
@@ -109,7 +109,7 @@ function utils(darkMode: boolean) {
       }
     `,
     colorScrollbar: css`
-      scrollbar-color: var(${UI.COLOR_PAPER_DARKEST}), var(${UI.COLOR_PAPER_DARKER});
+      scrollbar-color: var(${UI.COLOR_PAPER_DARKEST}), var(${UI.COLOR_TEXT_OPACITY_10});
       scroll-behavior: smooth;
 
       &::-webkit-scrollbar {
@@ -119,8 +119,8 @@ function utils(darkMode: boolean) {
       }
 
       &::-webkit-scrollbar-thumb {
-        background: var(${UI.COLOR_PAPER_DARKEST});
-        border: 3px solid var(${UI.COLOR_PAPER_DARKEST});
+        background: var(${UI.COLOR_TEXT_OPACITY_10});
+        border: 3px solid var(${UI.COLOR_TEXT_OPACITY_10});
         border-radius: 14px;
         background-clip: padding-box;
       }
