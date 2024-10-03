@@ -1,6 +1,7 @@
 import { ChangeEvent, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 
 import { useAvailableChains } from '@cowprotocol/common-hooks'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CowWidgetEventListeners } from '@cowprotocol/events'
 import { CowSwapWidgetParams, TokenInfo, TradeType } from '@cowprotocol/widget-lib'
 import { CowSwapWidget } from '@cowprotocol/widget-react'
@@ -23,7 +24,13 @@ import ListItemText from '@mui/material/ListItemText'
 import Typography from '@mui/material/Typography'
 import { useWeb3ModalAccount, useWeb3ModalTheme } from '@web3modal/ethers5/react'
 
-import { COW_LISTENERS, DEFAULT_PARTNER_FEE_RECIPIENT, DEFAULT_TOKEN_LISTS, IS_IFRAME, TRADE_MODES } from './consts'
+import {
+  COW_LISTENERS,
+  DEFAULT_PARTNER_FEE_RECIPIENT_PER_NETWORK,
+  DEFAULT_TOKEN_LISTS,
+  IS_IFRAME,
+  TRADE_MODES,
+} from './consts'
 import { CurrencyInputControl } from './controls/CurrencyInputControl'
 import { CurrentTradeTypeControl } from './controls/CurrentTradeTypeControl'
 import { CustomImagesControl } from './controls/CustomImagesControl'
@@ -151,7 +158,10 @@ export function Configurator({ title }: { title: string }) {
     customColors: colorPalette,
     defaultColors: defaultPalette,
     partnerFeeBps,
-    partnerFeeRecipient: DEFAULT_PARTNER_FEE_RECIPIENT,
+    partnerFeeRecipient:
+      DEFAULT_PARTNER_FEE_RECIPIENT_PER_NETWORK[
+        walletChainId ? (walletChainId as SupportedChainId) : SupportedChainId.MAINNET
+      ],
     standaloneMode,
     disableToastMessages,
     disableProgressBar,
