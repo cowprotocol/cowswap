@@ -4,7 +4,7 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { BigNumberish } from 'ethers'
 
-import { CowHook, HookDappOrderParams } from 'modules/hooksStore/types/hooks'
+import { CowHook, CowHookDetailsSerialized, HookDappOrderParams } from 'modules/hooksStore/types/hooks'
 
 import { TENDERLY_API_BASE_ENDPOINT, TENDERLY_API_KEY } from '../const'
 import { SimulationError, TenderlyBundleSimulationResponse, TenderlySimulatePayload } from '../types'
@@ -27,8 +27,8 @@ export interface PostBundleSimulationParams {
   chainId: SupportedChainId
   tokenSell: Erc20
   tokenBuy: Erc20
-  preHooks: CowHook[]
-  postHooks: CowHook[]
+  preHooks: CowHookDetailsSerialized[]
+  postHooks: CowHookDetailsSerialized[]
   orderParams: HookDappOrderParams
   tokenBuyTransferInfo: TokenBuyTransferInfo
 }
@@ -37,7 +37,6 @@ export const bundleSimulation = async (
   params: PostBundleSimulationParams,
 ): Promise<TenderlyBundleSimulationResponse | SimulationError> => {
   const input = getBundleTenderlySimulationInput(params)
-  console.log({ TENDERLY_API_KEY })
   const response = await fetch(`${TENDERLY_API_BASE_ENDPOINT}/simulate-bundle`, {
     method: 'POST',
     body: JSON.stringify(input),
@@ -74,12 +73,7 @@ function currencyAmountToBigNumberish(amount: CurrencyAmount<Currency>): BigNumb
   const numerator = BigInt(fraction.numerator.toString())
   const denominator = BigInt(fraction.denominator.toString())
 
-  // Get the decimals of the currency
-  const decimals = BigInt(amount.currency.decimals)
-
-  // Perform the division
-  const scaledNumerator = numerator * 10n ** decimals
-  const result = scaledNumerator / denominator
+  const result = numerator / denominator
 
   // Convert the result to a string
   return result.toString()
@@ -100,7 +94,7 @@ export function getTransferTenderlySimulationInput({
   return {
     input: callData,
     to: token.address,
-    gas: 100000, // TODO: this should be calculated based on the token
+    gas: 100000, // TODO: Check if this is relevant
     from,
     gas_price: '0',
     network_id: chainId.toString(),
@@ -120,13 +114,15 @@ export function getBundleTenderlySimulationInput({
   tokenBuyTransferInfo,
 }: PostBundleSimulationParams): { simulations: TenderlySimulatePayload[] } {
   const settlementAddress = COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS[chainId]
-  console.log({ settlementAddress })
   const preHooksSimulations = preHooks.map((hook) =>
-    getCoWHookTenderlySimulationInput(settlementAddress, hook, chainId),
+    getCoWHookTenderlySimulationInput(settlementAddress, hook.hookDetails.hook, chainId),
   )
   const postHooksSimulations = postHooks.map((hook) =>
-    getCoWHookTenderlySimulationInput(settlementAddress, hook, chainId),
+    getCoWHookTenderlySimulationInput(settlementAddress, hook.hookDetails.hook, chainId),
   )
+
+  // If there are no post hooks, we don't need to simulate the transfer
+  if (postHooks.length === 0) return { simulations: preHooksSimulations }
 
   const sellTokenTransfer = getTransferTenderlySimulationInput({
     currencyAmount: orderParams.sellAmount,

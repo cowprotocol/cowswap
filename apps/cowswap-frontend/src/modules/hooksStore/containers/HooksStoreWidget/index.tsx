@@ -1,11 +1,10 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useState } from 'react'
 
 import ICON_HOOK from '@cowprotocol/assets/cow-swap/hook.svg'
 import { BannerOrientation, DismissableInlineBanner } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-import { useHooks } from 'modules/hooksStore/hooks/useHooks'
 import { SwapWidget } from 'modules/swap'
 import { useIsSellNative } from 'modules/trade'
 
@@ -14,7 +13,6 @@ import { useSetupHooksStoreOrderParams } from '../../hooks/useSetupHooksStoreOrd
 import { HookRegistryList } from '../HookRegistryList'
 import { PostHookButton } from '../PostHookButton'
 import { PreHookButton } from '../PreHookButton'
-import { useTenderlyBundleSimulate } from 'modules/tenderly/hooks/useBundleSimulation'
 
 type HookPosition = 'pre' | 'post'
 
@@ -30,16 +28,8 @@ const TradeWidgetWrapper = styled.div<{ visible$: boolean }>`
 export function HooksStoreWidget() {
   const [selectedHookPosition, setSelectedHookPosition] = useState<HookPosition | null>(null)
   const [hookToEdit, setHookToEdit] = useState<string | undefined>(undefined)
-  const hooks = useHooks()
-  const tenderlyBundleSimulate = useTenderlyBundleSimulate()
 
   const isNativeSell = useIsSellNative()
-
-  useEffect(() => {
-    const preHooks = hooks.preHooks.map((hook) => hook.hookDetails.hook)
-    const postHooks = hooks.postHooks.map((hook) => hook.hookDetails.hook)
-    tenderlyBundleSimulate({ preHooks, postHooks })
-  }, [hooks])
 
   const onDismiss = useCallback(() => {
     setSelectedHookPosition(null)

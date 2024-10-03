@@ -1,3 +1,8 @@
+export interface SimulationData {
+  tenderlySimulationLink: string
+  simulationPassed: boolean
+}
+
 export interface TokenHolderItem {
   contract_decimals: number
   contract_name: string

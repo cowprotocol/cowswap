@@ -1,5 +1,7 @@
 // src/modules/hooksStore/pure/AppliedHookItem/index.tsx
 
+import { useMemo } from 'react'
+
 import ICON_CHECK_ICON from '@cowprotocol/assets/cow-swap/check-singular.svg'
 import ICON_GRID from '@cowprotocol/assets/cow-swap/grid.svg'
 import TenderlyLogo from '@cowprotocol/assets/cow-swap/tenderly-logo.svg'
@@ -9,7 +11,7 @@ import { InfoTooltip } from '@cowprotocol/ui'
 import { Edit2, Trash2, ExternalLink as ExternalLinkIcon } from 'react-feather'
 import SVG from 'react-inlinesvg'
 
-import { useHookSimulationData } from 'modules/tenderly/states/simulation'
+import { useTenderlyBundleSimulateSWR } from 'modules/tenderly/hooks/useTenderlyBundleSimulation'
 
 import * as styledEl from './styled'
 
@@ -26,7 +28,7 @@ interface HookItemProp {
   index: number
 }
 
-// TODO: remove once a tenderly bundle simulation is ready
+// TODO: refactor tu use single simulation as fallback
 const isBundleSimulationReady = true
 
 export function AppliedHookItem({
@@ -38,10 +40,15 @@ export function AppliedHookItem({
   removeHook,
   index,
 }: HookItemProp) {
-  const { simulationPassed, tenderlySimulationLink, isSimulationSuccessful } = useHookSimulationData(hookDetails.hook)
+  const { isValidating, data } = useTenderlyBundleSimulateSWR()
 
-  const simulationStatus = simulationPassed ? 'Simulation successful' : 'Simulation failed'
-  const simulationTooltip = simulationPassed
+  const simulationData = useMemo(() => {
+    if (!data) return
+    return data[hookDetails.uuid]
+  }, [data, hookDetails.uuid])
+
+  const simulationStatus = simulationData?.simulationPassed ? 'Simulation successful' : 'Simulation failed'
+  const simulationTooltip = simulationData?.simulationPassed
     ? 'The Tenderly simulation was successful. Your transaction is expected to succeed.'
     : 'The Tenderly simulation failed. Please review your transaction.'
 
@@ -55,6 +62,7 @@ export function AppliedHookItem({
           <styledEl.HookNumber>{index + 1}</styledEl.HookNumber>
           <img src={dapp.image} alt={dapp.name} />
           <span>{dapp.name}</span>
+          {isValidating && <styledEl.Spinner />}
         </styledEl.HookItemInfo>
         <styledEl.HookItemActions>
           <styledEl.ActionBtn onClick={() => editHook(hookDetails.uuid)}>
@@ -66,15 +74,15 @@ export function AppliedHookItem({
         </styledEl.HookItemActions>
       </styledEl.HookItemHeader>
 
-      {account && isBundleSimulationReady && (
-        <styledEl.SimulateContainer isSuccessful={isSimulationSuccessful}>
-          {isSimulationSuccessful ? (
+      {account && isBundleSimulationReady && simulationData && (
+        <styledEl.SimulateContainer isSuccessful={simulationData.simulationPassed}>
+          {simulationData.simulationPassed ? (
             <SVG src={ICON_CHECK_ICON} color="green" width={16} height={16} aria-label="Simulation Successful" />
           ) : (
             <SVG src={ICON_X} color="red" width={14} height={14} aria-label="Simulation Failed" />
           )}
-          {tenderlySimulationLink ? (
-            <a href={tenderlySimulationLink} target="_blank" rel="noopener noreferrer">
+          {simulationData.tenderlySimulationLink ? (
+            <a href={simulationData.tenderlySimulationLink} target="_blank" rel="noopener noreferrer">
               {simulationStatus}
               <ExternalLinkIcon size={14} />
             </a>
