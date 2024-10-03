@@ -52,8 +52,12 @@ export function SmartSlippageUpdater() {
   const tradeSizeSlippageBps = useSmartSlippageFromFeePercentageV2()
 
   useEffect(() => {
+    // If both are unset, don't use smart slippage
+    if (tradeSizeSlippageBps === undefined && bffSlippageBps === undefined) {
+      return
+    }
     // Add both slippage values, when present
-    const slippage = tradeSizeSlippageBps + (bffSlippageBps || 0)
+    const slippage = (tradeSizeSlippageBps || 0) + (bffSlippageBps || 0)
 
     setSmartSwapSlippage(slippage)
   }, [bffSlippageBps, setSmartSwapSlippage, tradeSizeSlippageBps])
@@ -71,7 +75,6 @@ export function SmartSlippageUpdater() {
 }
 
 const ONE = new Fraction(1)
-const ZERO = new Fraction(0)
 
 /**
  * Calculates smart slippage in bps, based on quoted fee
@@ -80,7 +83,7 @@ const ZERO = new Fraction(0)
  * for the limit price to take this much more fee.
  * More relevant for small orders in relation to fee amount, negligent for larger orders.
  */
-function useSmartSlippageFromFeePercentageV2(): number {
+function useSmartSlippageFromFeePercentageV2(): number | undefined {
   const { trade } = useDerivedSwapInfo() || {}
   const { fee, inputAmountWithFee, inputAmountWithoutFee, tradeType } = trade || {}
   const { feeAsCurrency } = fee || {}
@@ -95,7 +98,7 @@ function useSmartSlippageFromFeePercentageV2(): number {
       tradeType === undefined ||
       !smartSlippageFeeMultiplierPercentage
     ) {
-      return ZERO
+      return undefined
     }
 
     if (tradeType === TradeType.EXACT_INPUT) {
@@ -124,9 +127,9 @@ function useSmartSlippageFromFeePercentageV2(): number {
 
   // Stable reference
   // convert % to BPS. E.g.: 1% => 0.01 => 100 BPS
-  const bps = percentage.multiply(10_000).toFixed(0)
+  const bps = percentage?.multiply(10_000).toFixed(0)
 
-  return useMemo(() => +bps, [bps])
+  return useMemo(() => (bps ? +bps : undefined), [bps])
 }
 
 // TODO: remove
