@@ -78,19 +78,8 @@ export function useRescueFundsFromProxy(
         SigningScheme.EIP712,
       )
 
-      const gasLimit = await cowShedContract.estimateGas.executeHooks(
-        calls,
-        nonce,
-        BigInt(validTo),
-        account,
-        encodedSignature,
-        {
-          gasLimit: 600_000,
-        },
-      )
-
       const transaction = await cowShedContract.executeHooks(calls, nonce, BigInt(validTo), account, encodedSignature, {
-        gasLimit: gasLimit.toString(),
+        gasLimit: 600_000,
       })
 
       return transaction.hash
