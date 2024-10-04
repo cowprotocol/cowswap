@@ -65,7 +65,7 @@ export function HooksStoreWidget() {
   const isHookSelectionOpen = !!(selectedHookPosition || hookToEdit)
   const hideSwapWidget = isHookSelectionOpen || isRescueWidgetOpen
 
-  const shouldNotUseHooks = isNativeSell
+  const shouldNotUseHooks = isNativeSell || isChainIdUnsupported
 
   const TopContent = shouldNotUseHooks ? null : (
     <>
