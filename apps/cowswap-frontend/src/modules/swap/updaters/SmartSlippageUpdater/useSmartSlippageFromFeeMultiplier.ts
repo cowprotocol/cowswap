@@ -14,10 +14,9 @@ import { useReceiveAmountInfo } from '../../../trade'
  * More relevant for small orders in relation to fee amount, negligent for larger orders.
  */
 export function useSmartSlippageFromFeeMultiplier(): number | undefined {
-  const { beforeNetworkCosts, costs, isSell } = useReceiveAmountInfo() || {}
-  const { sellAmount: sellAmount } = beforeNetworkCosts || {}
-  const { networkFee } = costs || {}
-  const { amountInSellCurrency: feeAmount } = networkFee || {}
+  const { beforeNetworkCosts, afterNetworkCosts, costs, isSell } = useReceiveAmountInfo() || {}
+  const sellAmount = isSell ? afterNetworkCosts?.sellAmount : beforeNetworkCosts?.sellAmount
+  const feeAmount = costs?.networkFee?.amountInSellCurrency
 
   const { smartSlippageFeeMultiplierPercentage = 50 } = useFeatureFlags()
 
