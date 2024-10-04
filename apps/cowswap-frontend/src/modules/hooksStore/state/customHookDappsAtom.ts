@@ -39,7 +39,7 @@ export const customPostHookDappsAtom = atom((get) => {
   return Object.values(get(customHookDappsAtom).post) as HookDappIframe[]
 })
 
-export const addCustomHookDappAtom = atom(null, (get, set, isPreHook: boolean, dapp: HookDappIframe) => {
+export const upsertCustomHookDappAtom = atom(null, (get, set, isPreHook: boolean, dapp: HookDappIframe) => {
   const { chainId } = get(walletInfoAtom)
   const state = get(customHookDappsInner)
 

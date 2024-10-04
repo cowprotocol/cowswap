@@ -11,6 +11,7 @@ import { RescueFundsToggle, TradeWidgetWrapper } from './styled'
 
 import { useSetRecipientOverride } from '../../hooks/useSetRecipientOverride'
 import { useSetupHooksStoreOrderParams } from '../../hooks/useSetupHooksStoreOrderParams'
+import { IframeDappsManifestUpdater } from '../../updaters/iframeDappsManifestUpdater'
 import { HookRegistryList } from '../HookRegistryList'
 import { PostHookButton } from '../PostHookButton'
 import { PreHookButton } from '../PreHookButton'
@@ -88,6 +89,7 @@ export function HooksStoreWidget() {
       <TradeWidgetWrapper visible$={!hideSwapWidget}>
         <SwapWidget topContent={TopContent} bottomContent={BottomContent} />
       </TradeWidgetWrapper>
+      <IframeDappsManifestUpdater />
       {isHookSelectionOpen && (
         <HookRegistryList onDismiss={onDismiss} hookToEdit={hookToEdit} isPreHook={selectedHookPosition === 'pre'} />
       )}
