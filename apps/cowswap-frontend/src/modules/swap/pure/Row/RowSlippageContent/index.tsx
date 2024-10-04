@@ -64,7 +64,8 @@ export const getNonNativeSlippageTooltip = () => (
   </Trans>
 )
 
-const SUGGESTED_SLIPPAGE_TOOLTIP = "Based on recent volatility for the selected token pair, this is the suggested slippage for ensuring quick execution of your order."
+const SUGGESTED_SLIPPAGE_TOOLTIP =
+  'Based on recent volatility for the selected token pair, this is the suggested slippage for ensuring quick execution of your order.'
 
 export interface RowSlippageContentProps {
   chainId: SupportedChainId
@@ -111,19 +112,33 @@ export function RowSlippageContent(props: RowSlippageContentProps) {
   // In case the user happened to set the same slippage as the suggestion, do not show the suggestion
   const suggestedEqualToUserSlippage = smartSlippage && smartSlippage === displaySlippage
 
-  const displayDefaultSlippage = isSlippageModified && setAutoSlippage && smartSlippage && !suggestedEqualToUserSlippage && (
-    <DefaultSlippage>
-      {isSmartSlippageLoading ? (<CenteredDots />) : (
-        <>
-          <LinkStyledButton onClick={setAutoSlippage}>(Suggested: {smartSlippage})</LinkStyledButton>
-          <HoverTooltip wrapInContainer content={SUGGESTED_SLIPPAGE_TOOLTIP}>
-            <StyledInfoIcon size={16} />
-          </HoverTooltip>
-        </>
-      )}
-    </DefaultSlippage>
-  )
-  const loading = isSmartSlippageLoading && isSmartSlippageApplied && (<CenteredDots />)
+  const displayDefaultSlippage = isSlippageModified &&
+    setAutoSlippage &&
+    smartSlippage &&
+    !suggestedEqualToUserSlippage && (
+      <DefaultSlippage>
+        {isSmartSlippageLoading ? (
+          <CenteredDots />
+        ) : (
+          <>
+            <LinkStyledButton onClick={setAutoSlippage}>(Suggested: {smartSlippage})</LinkStyledButton>
+            <HoverTooltip wrapInContainer content={SUGGESTED_SLIPPAGE_TOOLTIP}>
+              <StyledInfoIcon size={16} />
+            </HoverTooltip>
+          </>
+        )}
+      </DefaultSlippage>
+    )
+
+  const displaySlippageWithLoader =
+    isSmartSlippageLoading && isSmartSlippageApplied ? (
+      <CenteredDots />
+    ) : (
+      <>
+        {displaySlippage}
+        {displayDefaultSlippage}
+      </>
+    )
 
   return (
     <StyledRowBetween {...styleProps}>
@@ -131,10 +146,18 @@ export function RowSlippageContent(props: RowSlippageContentProps) {
         <TextWrapper>
           {showSettingOnClick ? (
             <ClickableText onClick={toggleSettings}>
-              <SlippageTextContents isEoaEthFlow={isEoaEthFlow} slippageLabel={slippageLabel} isDynamicSlippageSet={isSmartSlippageApplied} />
+              <SlippageTextContents
+                isEoaEthFlow={isEoaEthFlow}
+                slippageLabel={slippageLabel}
+                isDynamicSlippageSet={isSmartSlippageApplied}
+              />
             </ClickableText>
           ) : (
-            <SlippageTextContents isEoaEthFlow={isEoaEthFlow} slippageLabel={slippageLabel} isDynamicSlippageSet={isSmartSlippageApplied} />
+            <SlippageTextContents
+              isEoaEthFlow={isEoaEthFlow}
+              slippageLabel={slippageLabel}
+              isDynamicSlippageSet={isSmartSlippageApplied}
+            />
           )}
         </TextWrapper>
         <HoverTooltip wrapInContainer content={tooltipContent}>
@@ -143,20 +166,20 @@ export function RowSlippageContent(props: RowSlippageContentProps) {
       </RowFixed>
       <TextWrapper textAlign="right">
         {showSettingOnClick ? (
-          <ClickableText onClick={toggleSettings}>
-            {loading ? loading : (<>{displaySlippage}{displayDefaultSlippage}</>)}
-          </ClickableText>
+          <ClickableText onClick={toggleSettings}>{displaySlippageWithLoader}</ClickableText>
         ) : (
-          <span>
-            {loading ? loading : (<>{displaySlippage}{displayDefaultSlippage}</>)}
-          </span>
+          <span>{displaySlippageWithLoader}</span>
         )}
       </TextWrapper>
     </StyledRowBetween>
   )
 }
 
-type SlippageTextContentsProps = { isEoaEthFlow: boolean; slippageLabel?: React.ReactNode, isDynamicSlippageSet: boolean }
+type SlippageTextContentsProps = {
+  isEoaEthFlow: boolean
+  slippageLabel?: React.ReactNode
+  isDynamicSlippageSet: boolean
+}
 
 function SlippageTextContents({ isEoaEthFlow, slippageLabel, isDynamicSlippageSet }: SlippageTextContentsProps) {
   return (
