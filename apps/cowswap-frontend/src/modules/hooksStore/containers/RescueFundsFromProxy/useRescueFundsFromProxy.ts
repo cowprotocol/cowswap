@@ -90,7 +90,7 @@ export function useRescueFundsFromProxy(
       )
 
       const transaction = await cowShedContract.executeHooks(calls, nonce, BigInt(validTo), account, encodedSignature, {
-        gasLimit,
+        gasLimit: gasLimit.toString(),
       })
 
       return transaction.hash
