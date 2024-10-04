@@ -108,7 +108,7 @@ export const HooksList = styled.ul`
   margin: 0;
 `
 
-export const HookTag = styled.div<{ isPost?: boolean }>`
+export const HookTag = styled.div<{ isPost?: boolean; addSeparator?: boolean }>`
   color: var(${UI.COLOR_TEXT_OPACITY_70});
   padding: 2px 6px;
   font-size: 11px;
@@ -132,8 +132,8 @@ export const HookTag = styled.div<{ isPost?: boolean }>`
 
   `}
 
-  ${({ isPost }) =>
-    !isPost &&
+  ${({ addSeparator }) =>
+    addSeparator &&
     `
     padding-right: 10px;
 
