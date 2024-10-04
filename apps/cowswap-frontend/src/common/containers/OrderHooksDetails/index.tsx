@@ -44,7 +44,7 @@ export function OrderHooksDetails({ appData, children }: OrderHooksDetailsProps)
         </styledEl.Label>
         <styledEl.Content onClick={() => setOpen(!isOpen)}>
           {preHooksToDapp.length > 0 && (
-            <styledEl.HookTag>
+            <styledEl.HookTag addSeparator={postHooksToDapp.length > 0}>
               PRE <b>{preHooksToDapp.length}</b>
             </styledEl.HookTag>
           )}
