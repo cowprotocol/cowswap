@@ -16,6 +16,9 @@ import ms from 'ms.macro'
 import { upToMedium, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
+import type { AppDataInfo } from 'modules/appData'
+
+import { OrderHooksDetails } from 'common/containers/OrderHooksDetails'
 import { CurrencyAmountPreview, CurrencyPreviewInfo } from 'common/pure/CurrencyInputPanel'
 
 import { QuoteCountdown } from './CountDown'
@@ -23,6 +26,7 @@ import { useIsPriceChanged } from './hooks/useIsPriceChanged'
 import * as styledEl from './styled'
 
 import { useTradeConfirmState } from '../../hooks/useTradeConfirmState'
+import { ConfirmDetailsItem } from '../ConfirmDetailsItem'
 import { PriceUpdatedBanner } from '../PriceUpdatedBanner'
 
 const ONE_SEC = ms`1s`
@@ -34,6 +38,7 @@ export interface TradeConfirmationProps {
 
   account: string | undefined
   ensName: string | undefined
+  appData?: string | AppDataInfo
   inputCurrencyInfo: CurrencyPreviewInfo
   outputCurrencyInfo: CurrencyPreviewInfo
   isConfirmDisabled: boolean
@@ -70,6 +75,7 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
     children,
     recipient,
     isPriceStatic,
+    appData,
   } = frozenProps || props
 
   /**
@@ -143,6 +149,15 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
           />
         </styledEl.AmountsPreviewContainer>
         {children}
+        {appData && (
+          <OrderHooksDetails appData={appData}>
+            {(children) => (
+              <ConfirmDetailsItem label="Hooks" tooltip="Hooks are interactions before/after order execution.">
+                {children}
+              </ConfirmDetailsItem>
+            )}
+          </OrderHooksDetails>
+        )}
         {/*Banners*/}
         {showRecipientWarning && <CustomRecipientWarningBanner orientation={BannerOrientation.Horizontal} />}
         {isPriceChanged && !isPriceStatic && <PriceUpdatedBanner onClick={resetPriceChanged} />}

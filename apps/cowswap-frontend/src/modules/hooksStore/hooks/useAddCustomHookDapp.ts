@@ -1,11 +1,11 @@
 import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
-import { addCustomHookDappAtom } from '../state/customHookDappsAtom'
+import { upsertCustomHookDappAtom } from '../state/customHookDappsAtom'
 import { HookDappIframe } from '../types/hooks'
 
 export function useAddCustomHookDapp(isPreHook: boolean) {
-  const setState = useSetAtom(addCustomHookDappAtom)
+  const setState = useSetAtom(upsertCustomHookDappAtom)
 
   return useCallback(
     (dapp: HookDappIframe) => {
