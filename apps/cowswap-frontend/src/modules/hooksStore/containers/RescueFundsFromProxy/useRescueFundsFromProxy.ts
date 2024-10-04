@@ -54,6 +54,16 @@ export function useRescueFundsFromProxy(
         {
           target: selectedTokenAddress,
           callData: fnCalldata(
+            'approve(address,uint256)',
+            defaultAbiCoder.encode(['address', 'uint256'], [proxyAddress, tokenBalance.quotient.toString()]),
+          ),
+          value: 0n,
+          isDelegateCall: false,
+          allowFailure: false,
+        },
+        {
+          target: selectedTokenAddress,
+          callData: fnCalldata(
             'transferFrom(address,address,uint256)',
             defaultAbiCoder.encode(
               ['address', 'address', 'uint256'],

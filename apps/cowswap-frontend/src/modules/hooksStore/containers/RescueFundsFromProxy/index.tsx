@@ -69,6 +69,7 @@ export function RescueFundsFromProxy({ onDismiss }: { onDismiss: Command }) {
         addTransaction({ hash: txHash, summary: 'Rescue funds from CoW Shed Proxy' })
       }
     } catch (e) {
+      console.error(e)
       handleSetError(e.message || e.toString())
     }
   }, [rescueFundsCallback, addTransaction, handleSetError])
