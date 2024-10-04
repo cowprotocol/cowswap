@@ -1,8 +1,10 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback } from 'react'
 
 import { SupportedChainId, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 
 import { useDispatch, useSelector } from 'react-redux'
+
+import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
 
 import {
   getNewQuote,
@@ -62,7 +64,11 @@ export const useGetQuoteAndStatus = (params: QuoteParams): UseGetQuoteAndStatus 
   const isGettingNewQuote = Boolean(isLoading && !quote?.price?.amount)
   const isRefreshingQuote = Boolean(isLoading && quote?.price?.amount)
 
-  return useMemo(() => ({ quote, isGettingNewQuote, isRefreshingQuote }), [quote, isGettingNewQuote, isRefreshingQuote])
+  return useSafeMemoObject({
+    quote,
+    isGettingNewQuote,
+    isRefreshingQuote,
+  })
 }
 
 export const useGetNewQuote = (): GetNewQuoteCallback => {
