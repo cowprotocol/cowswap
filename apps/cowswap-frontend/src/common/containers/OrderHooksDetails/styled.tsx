@@ -128,15 +128,15 @@ export const HookTag = styled.div<{ isPost?: boolean }>`
     isPost &&
     `
     padding-left: 6px;
-    
-     
+
+
   `}
 
   ${({ isPost }) =>
     !isPost &&
     `
     padding-right: 10px;
-    
+
     &::after {
       content: '';
       position: absolute;
