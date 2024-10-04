@@ -6,6 +6,7 @@ import { useSmartSlippageFromFeeMultiplier } from './useSmartSlippageFromFeeMult
 
 import { useDerivedSwapInfo, useHighFeeWarning } from '../../hooks/useSwapState'
 import { smartSwapSlippageAtom } from '../../state/slippageValueAndTypeAtom'
+import { useTradeConfirmState } from '../../../trade'
 
 const MAX_BPS = 5000 // 50%
 
@@ -17,7 +18,13 @@ export function SmartSlippageUpdater() {
   const tradeSizeSlippageBpsV1 = useSmartSlippageFromFeePercentage()
   const feeMultiplierSlippageBps = useSmartSlippageFromFeeMultiplier()
 
+  const { isOpen: isTradeReviewOpen } = useTradeConfirmState()
+
   useEffect(() => {
+    // Don't update it once review is open
+    if (isTradeReviewOpen) {
+      return
+    }
     // If both are unset, don't use smart slippage
     if (feeMultiplierSlippageBps === undefined && bffSlippageBps === undefined) {
       setSmartSwapSlippage(null)
@@ -27,7 +34,7 @@ export function SmartSlippageUpdater() {
     const slippage = (feeMultiplierSlippageBps || 0) + (bffSlippageBps || 0)
 
     setSmartSwapSlippage(Math.min(slippage, MAX_BPS))
-  }, [bffSlippageBps, setSmartSwapSlippage, feeMultiplierSlippageBps])
+  }, [bffSlippageBps, setSmartSwapSlippage, feeMultiplierSlippageBps, isTradeReviewOpen])
 
   // TODO: remove before merging
   useEffect(() => {
