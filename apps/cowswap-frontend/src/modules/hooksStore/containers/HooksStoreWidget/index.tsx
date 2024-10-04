@@ -7,6 +7,8 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { SwapWidget } from 'modules/swap'
 import { useIsSellNative } from 'modules/trade'
 
+import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
+
 import { RescueFundsToggle, TradeWidgetWrapper } from './styled'
 
 import { useSetRecipientOverride } from '../../hooks/useSetRecipientOverride'
@@ -22,12 +24,13 @@ type HookPosition = 'pre' | 'post'
 console.log(ICON_HOOK)
 
 export function HooksStoreWidget() {
-  const { account } = useWalletInfo()
+  const { account, chainId } = useWalletInfo()
   const [isRescueWidgetOpen, setRescueWidgetOpen] = useState<boolean>(false)
   const [selectedHookPosition, setSelectedHookPosition] = useState<HookPosition | null>(null)
   const [hookToEdit, setHookToEdit] = useState<string | undefined>(undefined)
 
   const isNativeSell = useIsSellNative()
+  const isChainIdUnsupported = useIsProviderNetworkUnsupported()
 
   const onDismiss = useCallback(() => {
     setSelectedHookPosition(null)
@@ -49,6 +52,12 @@ export function HooksStoreWidget() {
       setRescueWidgetOpen(false)
     }
   }, [account])
+
+  // Close all screens on network changes (including unsupported chain case)
+  useEffect(() => {
+    setRescueWidgetOpen(false)
+    onDismiss()
+  }, [chainId, isChainIdUnsupported, onDismiss])
 
   useSetupHooksStoreOrderParams()
   useSetRecipientOverride()
