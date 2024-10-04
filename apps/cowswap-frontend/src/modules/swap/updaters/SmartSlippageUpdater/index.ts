@@ -20,6 +20,7 @@ export function SmartSlippageUpdater() {
   useEffect(() => {
     // If both are unset, don't use smart slippage
     if (feeMultiplierSlippageBps === undefined && bffSlippageBps === undefined) {
+      setSmartSwapSlippage(null)
       return
     }
     // Add both slippage values, when present
