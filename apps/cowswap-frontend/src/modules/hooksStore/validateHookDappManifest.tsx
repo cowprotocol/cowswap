@@ -25,7 +25,7 @@ export function validateHookDappManifest(
     } else {
       if (
         isSmartContractWallet === true &&
-        conditions.walletCompatibility &&
+        typeof conditions.walletCompatibility !== 'undefined' &&
         !conditions.walletCompatibility.includes(HookDappWalletCompatibility.SMART_CONTRACT)
       ) {
         return 'The app does not support smart-contract wallets.'
