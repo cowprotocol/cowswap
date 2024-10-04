@@ -39,6 +39,9 @@ export function matchHooksToDapps(hooks: CowHook[], dapps: HookDappBase[]): Hook
   })
 }
 
-export function matchHooksToDappsRegistry(hooks: CowHook[]): HookToDappMatch[] {
-  return matchHooksToDapps(hooks, Object.values(hookDappsRegistry) as HookDappBase[])
+export function matchHooksToDappsRegistry(
+  hooks: CowHook[],
+  additionalHookDapps: HookDappBase[] = [],
+): HookToDappMatch[] {
+  return matchHooksToDapps(hooks, (Object.values(hookDappsRegistry) as HookDappBase[]).concat(additionalHookDapps))
 }

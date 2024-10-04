@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { ReactElement, useEffect, useRef, useState } from 'react'
 
 import {
   BackButton,
@@ -26,7 +26,6 @@ import { useIsPriceChanged } from './hooks/useIsPriceChanged'
 import * as styledEl from './styled'
 
 import { useTradeConfirmState } from '../../hooks/useTradeConfirmState'
-import { ConfirmDetailsItem } from '../ConfirmDetailsItem'
 import { PriceUpdatedBanner } from '../PriceUpdatedBanner'
 
 const ONE_SEC = ms`1s`
@@ -48,7 +47,7 @@ export interface TradeConfirmationProps {
   isPriceStatic?: boolean
   recipient?: string | null
   buttonText?: React.ReactNode
-  children?: JSX.Element
+  children?: ReactElement | ((restContent: ReactElement) => ReactElement)
 }
 
 export function TradeConfirmation(props: TradeConfirmationProps) {
@@ -126,6 +125,10 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
     onConfirm()
   }
 
+  const hookDetailsElement = (
+    <>{appData && <OrderHooksDetails appData={appData}>{(hookChildren) => hookChildren}</OrderHooksDetails>}</>
+  )
+
   return (
     <styledEl.WidgetWrapper onKeyDown={(e) => e.key === 'Escape' && onDismiss()}>
       <styledEl.Header>
@@ -148,17 +151,15 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
             priceImpactParams={priceImpact}
           />
         </styledEl.AmountsPreviewContainer>
-        {children}
-        {appData && (
-          <OrderHooksDetails appData={appData}>
-            {(children) => (
-              <ConfirmDetailsItem label="Hooks" tooltip="Hooks are interactions before/after order execution.">
-                {children}
-              </ConfirmDetailsItem>
-            )}
-          </OrderHooksDetails>
+        {typeof children === 'function' ? (
+          children(hookDetailsElement)
+        ) : (
+          <>
+            {children}
+            {hookDetailsElement}
+          </>
         )}
-        {/*Banners*/}
+
         {showRecipientWarning && <CustomRecipientWarningBanner orientation={BannerOrientation.Horizontal} />}
         {isPriceChanged && !isPriceStatic && <PriceUpdatedBanner onClick={resetPriceChanged} />}
         <ButtonPrimary onClick={handleConfirmClick} disabled={isButtonDisabled} buttonSize={ButtonSize.BIG}>

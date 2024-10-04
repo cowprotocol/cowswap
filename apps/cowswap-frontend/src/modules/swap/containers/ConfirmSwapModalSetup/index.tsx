@@ -125,28 +125,31 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
         recipient={recipient}
         appData={baseFlowContextSource?.appData || undefined}
       >
-        <>
-          {receiveAmountInfo && (
-            <TradeBasicConfirmDetails
-              isInvertedState={isInvertedState}
-              rateInfoParams={rateInfoParams}
-              slippage={allowedSlippage}
-              receiveAmountInfo={receiveAmountInfo}
-              widgetParams={widgetParams}
-              labelsAndTooltips={labelsAndTooltips}
-              recipient={recipient}
-              account={account}
-              hideLimitPrice
-              hideUsdValues
-              withTimelineDot={false}
-              alwaysRow
-            >
-              <RowDeadline />
-            </TradeBasicConfirmDetails>
-          )}
-          <HighFeeWarning trade={trade} />
-          {!priceImpact.priceImpact && <NoImpactWarning isAccepted withoutAccepting />}
-        </>
+        {(restContent) => (
+          <>
+            {receiveAmountInfo && (
+              <TradeBasicConfirmDetails
+                isInvertedState={isInvertedState}
+                rateInfoParams={rateInfoParams}
+                slippage={allowedSlippage}
+                receiveAmountInfo={receiveAmountInfo}
+                widgetParams={widgetParams}
+                labelsAndTooltips={labelsAndTooltips}
+                recipient={recipient}
+                account={account}
+                hideLimitPrice
+                hideUsdValues
+                withTimelineDot={false}
+                alwaysRow
+              >
+                <RowDeadline />
+              </TradeBasicConfirmDetails>
+            )}
+            {restContent}
+            <HighFeeWarning trade={trade} />
+            {!priceImpact.priceImpact && <NoImpactWarning isAccepted withoutAccepting />}
+          </>
+        )}
       </TradeConfirmation>
     </TradeConfirmModal>
   )

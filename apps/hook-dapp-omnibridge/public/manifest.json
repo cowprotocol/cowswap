@@ -32,7 +32,7 @@
     "image":  "http://localhost:4317/hook-dapp-omnibridge/apple-touch-icon.png",
     "conditions": {
       "position": "post",
-      "smartContractWalletSupported": false,
+      "walletCompatibility": ["EOA"],
       "supportedNetworks": [100]
     }
   }
