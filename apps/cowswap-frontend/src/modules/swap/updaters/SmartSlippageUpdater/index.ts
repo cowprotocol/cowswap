@@ -15,27 +15,27 @@ export function SmartSlippageUpdater() {
   const bffSlippageBps = useSmartSlippageFromBff()
   // TODO: remove v1
   const tradeSizeSlippageBpsV1 = useSmartSlippageFromFeePercentage()
-  const tradeSizeSlippageBps = useSmartSlippageFromFeeMultiplier()
+  const feeMultiplierSlippageBps = useSmartSlippageFromFeeMultiplier()
 
   useEffect(() => {
     // If both are unset, don't use smart slippage
-    if (tradeSizeSlippageBps === undefined && bffSlippageBps === undefined) {
+    if (feeMultiplierSlippageBps === undefined && bffSlippageBps === undefined) {
       return
     }
     // Add both slippage values, when present
-    const slippage = (tradeSizeSlippageBps || 0) + (bffSlippageBps || 0)
+    const slippage = (feeMultiplierSlippageBps || 0) + (bffSlippageBps || 0)
 
     setSmartSwapSlippage(Math.min(slippage, MAX_BPS))
-  }, [bffSlippageBps, setSmartSwapSlippage, tradeSizeSlippageBps])
+  }, [bffSlippageBps, setSmartSwapSlippage, feeMultiplierSlippageBps])
 
   // TODO: remove before merging
   useEffect(() => {
     console.log(`SmartSlippageUpdater`, {
       granularSlippage: tradeSizeSlippageBpsV1,
-      fiftyPercentFeeSlippage: tradeSizeSlippageBps,
+      fiftyPercentFeeSlippage: feeMultiplierSlippageBps,
       bffSlippageBps,
     })
-  }, [tradeSizeSlippageBpsV1, tradeSizeSlippageBps])
+  }, [tradeSizeSlippageBpsV1, feeMultiplierSlippageBps])
 
   return null
 }
