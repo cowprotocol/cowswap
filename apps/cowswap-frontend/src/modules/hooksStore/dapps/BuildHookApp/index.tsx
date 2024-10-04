@@ -53,7 +53,9 @@ export function BuildHookApp({ context }: HookDappProps) {
   const handleSubmit = useCallback(() => {
     const newErrors: Record<keyof CowHook, string> = { ...DEFAULT_ERRORS_STATE }
 
-    const hasErrors = [hook.target, hook.gasLimit, hook.callData].some(([key, value]) => {
+    const hasErrors = Object.entries(hook).some(([key, value]) => {
+      if (key === 'dappId') return false
+
       if (!value.trim()) {
         newErrors[key as keyof CowHook] = `${capitalizeFirstLetter(key)} is required`
         return true
