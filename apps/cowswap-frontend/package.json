@@ -27,7 +27,9 @@
       "last 1 safari version"
     ]
   },
-  "dependencies": {},
+  "dependencies": {
+    "@covalenthq/client-sdk": "^2.1.1"
+  },
   "devDependencies": {},
   "nx": {}
 }

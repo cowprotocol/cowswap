@@ -212,3 +212,19 @@ export const SimulateFooter = styled.div`
     padding: 2px;
   }
 `
+
+export const Spinner = styled.div`
+  border: 5px solid transparent;
+  border-top-color: ${`var(${UI.COLOR_PRIMARY_LIGHTER})`};
+  border-radius: 50%;
+  animation: spin 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+`
