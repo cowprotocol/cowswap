@@ -1,9 +1,11 @@
 import { useRef, useEffect } from 'react'
 
+import { CowHookDetails } from '@cowprotocol/hook-dapp-lib'
+
 import Sortable from 'sortablejs'
 import styled from 'styled-components/macro'
 
-import { CowHookDetailsSerialized, HookDapp } from '../../types/hooks'
+import { HookDapp } from '../../types/hooks'
 import { findHookDappById } from '../../utils'
 import { AppliedHookItem } from '../AppliedHookItem'
 
@@ -19,7 +21,7 @@ const HookList = styled.ul`
 interface AppliedHookListProps {
   account: string | undefined
   dapps: HookDapp[]
-  hooks: CowHookDetailsSerialized[]
+  hooks: CowHookDetails[]
   isPreHook: boolean
   removeHook: (uuid: string, isPreHook: boolean) => void
   editHook: (uuid: string) => void
@@ -68,7 +70,7 @@ export function AppliedHookList({
       {hooks.map((hookDetails, index) => {
         return (
           <AppliedHookItem
-            key={hookDetails.hookDetails.uuid}
+            key={hookDetails.uuid}
             dapp={findHookDappById(dapps, hookDetails)}
             index={index}
             account={account}

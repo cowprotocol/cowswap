@@ -10,8 +10,5 @@ export function usePostHooksRecipientOverride() {
    * because in the current implementation we always take the value from the last hook
    * but it might give an unexpected behaviour
    */
-  return useMemo(
-    () => postHooks.reverse().find((i) => i.hookDetails.recipientOverride)?.hookDetails.recipientOverride,
-    [postHooks],
-  )
+  return useMemo(() => postHooks.reverse().find((i) => i.recipientOverride)?.recipientOverride, [postHooks])
 }

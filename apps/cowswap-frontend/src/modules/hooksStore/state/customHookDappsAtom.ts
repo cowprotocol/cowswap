@@ -72,7 +72,7 @@ export const removeCustomHookDappAtom = atom(null, (get, set, dapp: HookDappIfra
 
   // Delete applied hooks along with the deleting hook-dapp
   set(setHooksAtom, (hooksState) => ({
-    preHooks: (hooksState.preHooks || []).filter((hook) => hook.dappId !== hookDappId),
-    postHooks: (hooksState.postHooks || []).filter((hook) => hook.dappId !== hookDappId),
+    preHooks: (hooksState.preHooks || []).filter((hookDetails) => hookDetails.hook.dappId !== hookDappId),
+    postHooks: (hooksState.postHooks || []).filter((hookDetails) => hookDetails.hook.dappId !== hookDappId),
   }))
 })
