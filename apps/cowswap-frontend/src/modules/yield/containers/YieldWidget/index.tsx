@@ -8,6 +8,7 @@ import { useTradeQuote } from 'modules/tradeQuote'
 
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 
+import { useTradeFlowContext } from '../../hooks/useTradeFlowContext'
 import { useYieldDerivedState } from '../../hooks/useYieldDerivedState'
 import { useYieldWidgetActions } from '../../hooks/useYieldWidgetActions'
 import { yieldSettingsAtom } from '../../state/yieldSettingsAtom'
@@ -31,6 +32,7 @@ export function YieldWidget() {
     outputCurrencyFiatAmount,
     recipient,
   } = useYieldDerivedState()
+  const tradeFlowContext = useTradeFlowContext()
 
   const { showRecipient } = settingsState
 
@@ -70,7 +72,7 @@ export function YieldWidget() {
 
   const slots = {
     settingsWidget: <button>Settings</button>,
-    bottomContent: <TradeButtons isTradeContextReady />,
+    bottomContent: <TradeButtons isTradeContextReady={!!tradeFlowContext} />,
   }
 
   const params = {
@@ -91,12 +93,15 @@ export function YieldWidget() {
       inputCurrencyInfo={inputCurrencyInfo}
       outputCurrencyInfo={outputCurrencyInfo}
       confirmModal={
-        <YieldConfirmModal
-          recipient={recipient}
-          priceImpact={priceImpact}
-          inputCurrencyInfo={inputCurrencyPreviewInfo}
-          outputCurrencyInfo={outputCurrencyPreviewInfo}
-        />
+        tradeFlowContext ? (
+          <YieldConfirmModal
+            tradeFlowContext={tradeFlowContext}
+            recipient={recipient}
+            priceImpact={priceImpact}
+            inputCurrencyInfo={inputCurrencyPreviewInfo}
+            outputCurrencyInfo={outputCurrencyPreviewInfo}
+          />
+        ) : null
       }
     />
   )

@@ -1,7 +1,6 @@
 import { useMemo } from 'react'
 
-import { TokenWithLogo } from '@cowprotocol/common-const'
-import { MAX_VALID_TO_EPOCH } from '@cowprotocol/common-utils'
+import { DEFAULT_DEADLINE_FROM_NOW, TokenWithLogo } from '@cowprotocol/common-const'
 import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS, OrderClass, OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
 import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
@@ -17,8 +16,8 @@ import { useGeneratePermitHook, useGetCachedPermit, usePermitInfo } from 'module
 import type { SwapFlowContext } from 'modules/swap/services/types'
 import { useEnoughBalanceAndAllowance } from 'modules/tokens'
 import { TradeType, useDerivedTradeState, useReceiveAmountInfo, useTradeConfirmActions } from 'modules/trade'
+import { getOrderValidTo, useTradeQuote } from 'modules/tradeQuote'
 
-import { useTradeQuote } from 'modules/tradeQuote'
 import { useGP2SettlementContract } from 'common/hooks/useContract'
 
 export function useTradeFlowContext(): SwapFlowContext | null {
@@ -28,10 +27,14 @@ export function useTradeFlowContext(): SwapFlowContext | null {
   const isSafeWallet = useIsSafeWallet()
   const derivedTradeState = useDerivedTradeState()
   const receiveAmountInfo = useReceiveAmountInfo()
+
   const sellCurrency = derivedTradeState?.inputCurrency
-  const sellAmountBeforeFee = receiveAmountInfo?.beforeNetworkCosts.sellAmount
+  const inputAmount = receiveAmountInfo?.afterNetworkCosts.sellAmount
+  const outputAmount = receiveAmountInfo?.afterSlippage.buyAmount
+  const sellAmountBeforeFee = receiveAmountInfo?.afterNetworkCosts.sellAmount
   const inputAmountWithSlippage = receiveAmountInfo?.afterSlippage.sellAmount
   const networkFee = receiveAmountInfo?.costs.networkFee.amountInSellCurrency
+
   const permitInfo = usePermitInfo(sellCurrency, TradeType.YIELD)
   const generatePermitHook = useGeneratePermitHook()
   const getCachedPermit = useGetCachedPermit()
@@ -50,16 +53,7 @@ export function useTradeFlowContext(): SwapFlowContext | null {
     checkAllowanceAddress,
   })
 
-  const quoteId = tradeQuote.response?.id
-
-  const {
-    inputCurrency: sellToken,
-    outputCurrency: buyToken,
-    inputCurrencyAmount: inputAmount,
-    outputCurrencyAmount: outputAmount,
-    recipient,
-    recipientAddress,
-  } = derivedTradeState || {}
+  const { inputCurrency: sellToken, outputCurrency: buyToken, recipient, recipientAddress } = derivedTradeState || {}
 
   return useMemo(() => {
     if (
@@ -73,9 +67,12 @@ export function useTradeFlowContext(): SwapFlowContext | null {
       !account ||
       !provider ||
       !appData ||
+      !tradeQuote?.quoteParams ||
+      !tradeQuote?.response ||
       !settlementContract
-    )
+    ) {
       return null
+    }
 
     return {
       context: {
@@ -115,14 +112,19 @@ export function useTradeFlowContext(): SwapFlowContext | null {
         feeAmount: networkFee,
         sellToken: sellToken as TokenWithLogo,
         buyToken: buyToken as TokenWithLogo,
-        validTo: MAX_VALID_TO_EPOCH, // TODO: bind to settings
+        validTo: getOrderValidTo(DEFAULT_DEADLINE_FROM_NOW, {
+          // TODO: bind to settings
+          validFor: tradeQuote.quoteParams.validFor,
+          quoteValidTo: tradeQuote.response.quote.validTo,
+          localQuoteTimestamp: tradeQuote.localQuoteTimestamp,
+        }),
         recipient: recipient || account,
         recipientAddressOrName: recipient || null,
         allowsOffchainSigning,
         appData,
         class: OrderClass.MARKET,
         partiallyFillable: false, // TODO: bind to settings
-        quoteId,
+        quoteId: tradeQuote.response.id,
         isSafeWallet,
       },
     }
@@ -142,7 +144,7 @@ export function useTradeFlowContext(): SwapFlowContext | null {
     outputAmount,
     permitInfo,
     provider,
-    quoteId,
+    tradeQuote,
     recipient,
     sellAmountBeforeFee,
     sellToken,
