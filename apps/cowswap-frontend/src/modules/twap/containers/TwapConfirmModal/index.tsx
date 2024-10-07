@@ -1,10 +1,9 @@
 import { useAtomValue } from 'jotai'
-import React, { useState } from 'react'
+import React from 'react'
 
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
-import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { TradeConfirmation, TradeConfirmModal, useTradeConfirmActions, useTradePriceImpact } from 'modules/trade'
 import { TradeBasicConfirmDetails } from 'modules/trade/containers/TradeBasicConfirmDetails'
 import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
@@ -75,10 +74,6 @@ export function TwapConfirmModal() {
   const tradeConfirmActions = useTradeConfirmActions()
   const createTwapOrder = useCreateTwapOrder()
 
-  const widgetParams = useInjectedWidgetParams()
-
-  const isInvertedState = useState(false)
-
   const isConfirmDisabled = !!localFormValidation
 
   const priceImpact = useTradePriceImpact()
@@ -124,10 +119,8 @@ export function TwapConfirmModal() {
         <>
           {receiveAmountInfo && numOfParts && (
             <TradeBasicConfirmDetails
-              widgetParams={widgetParams}
               rateInfoParams={rateInfoParams}
               receiveAmountInfo={receiveAmountInfo}
-              isInvertedState={isInvertedState}
               slippage={slippage}
               recipient={recipient}
               account={account}

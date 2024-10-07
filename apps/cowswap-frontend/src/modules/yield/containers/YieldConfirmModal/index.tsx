@@ -5,9 +5,18 @@ import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import type { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
 import { useAppData } from 'modules/appData'
-import { TradeConfirmation, TradeConfirmModal, useTradeConfirmActions } from 'modules/trade'
+import {
+  TradeConfirmation,
+  TradeConfirmModal,
+  useReceiveAmountInfo,
+  useTradeConfirmActions,
+  TradeBasicConfirmDetails,
+} from 'modules/trade'
 
+import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { CurrencyPreviewInfo } from 'common/pure/CurrencyAmountPreview'
+
+import { useYieldDerivedState } from '../../hooks/useYieldDerivedState'
 
 const CONFIRM_TITLE = 'Confirm order'
 
@@ -24,7 +33,11 @@ export function YieldConfirmModal(props: YieldConfirmModalProps) {
   const { account } = useWalletInfo()
   const { ensName } = useWalletDetails()
   const appData = useAppData()
+  const receiveAmountInfo = useReceiveAmountInfo()
   const tradeConfirmActions = useTradeConfirmActions()
+  const { slippage } = useYieldDerivedState()
+
+  const rateInfoParams = useRateInfoParams(inputCurrencyInfo.amount, outputCurrencyInfo.amount)
 
   const doTrade = () => {
     console.log('TODO doTrade')
@@ -49,7 +62,26 @@ export function YieldConfirmModal(props: YieldConfirmModalProps) {
         recipient={recipient}
         appData={appData || undefined}
         isPriceStatic={true}
-      ></TradeConfirmation>
+      >
+        {(restContent) => (
+          <>
+            {receiveAmountInfo && slippage && (
+              <TradeBasicConfirmDetails
+                rateInfoParams={rateInfoParams}
+                slippage={slippage}
+                receiveAmountInfo={receiveAmountInfo}
+                recipient={recipient}
+                account={account}
+                hideLimitPrice
+                hideUsdValues
+                withTimelineDot={false}
+                alwaysRow
+              ></TradeBasicConfirmDetails>
+            )}
+            {restContent}
+          </>
+        )}
+      </TradeConfirmation>
     </TradeConfirmModal>
   )
 }

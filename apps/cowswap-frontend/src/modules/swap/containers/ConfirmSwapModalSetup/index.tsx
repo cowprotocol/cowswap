@@ -73,13 +73,10 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
   const { recipient } = useSwapState()
   const tradeConfirmActions = useTradeConfirmActions()
   const receiveAmountInfo = useReceiveAmountInfo()
-  const widgetParams = useInjectedWidgetParams()
   const shouldPayGas = useShouldPayGas()
   const isEoaEthFlow = useIsEoaEthFlow()
   const nativeCurrency = useNativeCurrency()
   const baseFlowContextSource = useBaseFlowContextSource()
-
-  const isInvertedState = useState(false)
 
   const slippageAdjustedSellAmount = trade?.maximumAmountIn(allowedSlippage)
   const isExactIn = trade?.tradeType === TradeType.EXACT_INPUT
@@ -129,11 +126,9 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
           <>
             {receiveAmountInfo && (
               <TradeBasicConfirmDetails
-                isInvertedState={isInvertedState}
                 rateInfoParams={rateInfoParams}
                 slippage={allowedSlippage}
                 receiveAmountInfo={receiveAmountInfo}
-                widgetParams={widgetParams}
                 labelsAndTooltips={labelsAndTooltips}
                 recipient={recipient}
                 account={account}
