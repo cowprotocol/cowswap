@@ -1,7 +1,6 @@
 import { ChangeEvent, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 
 import { useAvailableChains } from '@cowprotocol/common-hooks'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CowWidgetEventListeners } from '@cowprotocol/events'
 import { CowSwapWidgetParams, TokenInfo, TradeType } from '@cowprotocol/widget-lib'
 import { CowSwapWidget } from '@cowprotocol/widget-react'
@@ -158,10 +157,7 @@ export function Configurator({ title }: { title: string }) {
     customColors: colorPalette,
     defaultColors: defaultPalette,
     partnerFeeBps,
-    partnerFeeRecipient:
-      DEFAULT_PARTNER_FEE_RECIPIENT_PER_NETWORK[
-        walletChainId ? (walletChainId as SupportedChainId) : SupportedChainId.MAINNET
-      ],
+    partnerFeeRecipient: DEFAULT_PARTNER_FEE_RECIPIENT_PER_NETWORK,
     standaloneMode,
     disableToastMessages,
     disableProgressBar,
