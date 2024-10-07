@@ -1,17 +1,15 @@
 import { useMemo } from 'react'
 
-import { useWalletInfo } from '@cowprotocol/wallet'
-
 import { useCustomHookDapps } from './useCustomHookDapps'
+import { useInternalHookDapps } from './useInternalHookDapps'
 
-import { POST_HOOK_REGISTRY, PRE_HOOK_REGISTRY } from '../hookRegistry'
 import { HookDapp } from '../types/hooks'
 
 export function useAllHookDapps(isPreHook: boolean): HookDapp[] {
-  const { chainId } = useWalletInfo()
+  const internalHookDapps = useInternalHookDapps(isPreHook)
   const customHookDapps = useCustomHookDapps(isPreHook)
 
   return useMemo(() => {
-    return (isPreHook ? PRE_HOOK_REGISTRY : POST_HOOK_REGISTRY)[chainId].concat(customHookDapps)
-  }, [customHookDapps, chainId])
+    return internalHookDapps.concat(customHookDapps)
+  }, [customHookDapps, internalHookDapps])
 }

@@ -1,12 +1,13 @@
 import { useMemo } from 'react'
 
-import { FlowType } from 'modules/swap/hooks/useFlowContext'
 import { SafeBundleEthFlowContext } from 'modules/swap/services/types'
 
 import { useWETHContract } from 'common/hooks/useContract'
 import { useNeedsApproval } from 'common/hooks/useNeedsApproval'
 
 import { useBaseSafeBundleFlowContext } from './useBaseSafeBundleFlowContext'
+
+import { FlowType } from '../types/flowContext'
 
 export function useSafeBundleEthFlowContext(): SafeBundleEthFlowContext | null {
   const baseContext = useBaseSafeBundleFlowContext()

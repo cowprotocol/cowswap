@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.2](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.7.1...common-utils-v1.7.2) (2024-09-30)
+
+
+### Bug Fixes
+
+* **amounts-display:** increase precision for small amounts ([#4793](https://github.com/cowprotocol/cowswap/issues/4793)) ([4195c68](https://github.com/cowprotocol/cowswap/commit/4195c68272eb1e7857458ef3f3b34b3a3864ed6b))
+
 ## [1.7.1](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.7.0...common-utils-v1.7.1) (2024-09-05)
 
 

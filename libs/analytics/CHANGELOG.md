@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.8.0](https://github.com/cowprotocol/cowswap/compare/analytics-v1.7.0...analytics-v1.8.0) (2024-09-30)
+
+
+### Features
+
+* **cow-fi:** lazy load cms images /learn/ pages ([#4906](https://github.com/cowprotocol/cowswap/issues/4906)) ([897ce91](https://github.com/cowprotocol/cowswap/commit/897ce91ca60a6b2d3823e6a002c3bf64c5384afe))
+
 ## [1.7.0](https://github.com/cowprotocol/cowswap/compare/analytics-v1.6.0...analytics-v1.7.0) (2024-09-17)
 
 

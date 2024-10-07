@@ -26,6 +26,8 @@ export const TokenLogoWrapper = styled.div<{ size?: number; sizeMobile?: number 
   border-radius: ${({ size }) => size ?? defaultSize}px;
   width: ${({ size }) => size ?? defaultSize}px;
   height: ${({ size }) => size ?? defaultSize}px;
+  min-width: ${({ size }) => size ?? defaultSize}px;
+  min-height: ${({ size }) => size ?? defaultSize}px;
   font-size: ${({ size }) => size ?? defaultSize}px;
   overflow: hidden;
 
@@ -44,6 +46,8 @@ export const TokenLogoWrapper = styled.div<{ size?: number; sizeMobile?: number 
             border-radius: ${sizeMobile}px;
             width: ${sizeMobile}px;
             height: ${sizeMobile}px;
+            min-width: ${sizeMobile}px;
+            min-height: ${sizeMobile}px;
             font-size: ${sizeMobile}px;
 
             > img,

@@ -17,7 +17,8 @@ import { TradeConfirmActions } from 'modules/trade'
 import { TradeFlowAnalyticsContext } from 'modules/trade/utils/tradeFlowAnalytics'
 
 import { EthFlowOrderExistsCallback } from '../hooks/useCheckEthFlowOrderExists'
-import { FlowType } from '../hooks/useFlowContext'
+import { FlowType } from '../types/flowContext'
+
 export interface BaseFlowContext {
   context: {
     chainId: number

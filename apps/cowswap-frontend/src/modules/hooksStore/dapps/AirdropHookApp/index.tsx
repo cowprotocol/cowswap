@@ -18,7 +18,7 @@ const COW_AIRDROP = {
   name: 'COW',
   dataBaseUrl: 'https://raw.githubusercontent.com/bleu/cow-airdrop-contract-deployer/example/mock-airdrop-data/',
   chainId: SupportedChainId.SEPOLIA,
-  address: '0x0D6361f70f54b0e63A34D3F2D2C2552a21F100Fc',
+  address: '0x06Ca512F7d35A35Dfa49aa69F12cFB2a9166a95b',
   token: TokenWithLogo.fromToken(
     new Token(cowSepolia.chainId, cowSepolia.address, cowSepolia.decimals, cowSepolia.symbol, cowSepolia.name),
     cowSepolia.logoURI,

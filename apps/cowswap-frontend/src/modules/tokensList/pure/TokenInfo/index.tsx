@@ -15,12 +15,12 @@ export function TokenInfo(props: TokenInfoProps) {
   return (
     <styledEl.Wrapper className={className}>
       <TokenLogo token={token} sizeMobile={32} />
-      <div>
+      <styledEl.TokenDetails>
         <TokenSymbol token={token} />
         <styledEl.TokenName>
           <TokenName token={token} />
         </styledEl.TokenName>
-      </div>
+      </styledEl.TokenDetails>
     </styledEl.Wrapper>
   )
 }

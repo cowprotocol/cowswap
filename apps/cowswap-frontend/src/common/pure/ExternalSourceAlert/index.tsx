@@ -10,10 +10,11 @@ interface ExternalSourceAlertProps {
   children: ReactElement
   title: ReactElement | string
   onChange: Command
+  className?: string
 }
-export function ExternalSourceAlert({ onChange, title, children }: ExternalSourceAlertProps) {
+export function ExternalSourceAlert({ className, onChange, title, children }: ExternalSourceAlertProps) {
   return (
-    <styledEl.Contents>
+    <styledEl.Contents className={className}>
       <AlertTriangle size={48} strokeWidth={1} />
       <h3>{title}</h3>
       {children}

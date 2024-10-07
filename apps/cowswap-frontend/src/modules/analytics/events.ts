@@ -10,6 +10,7 @@ webVitalsAnalytics.reportWebVitals()
 export enum Category {
   TRADE = 'Trade',
   LIST = 'Lists',
+  HOOKS = 'Hooks',
   CURRENCY_SELECT = 'Currency Select',
   RECIPIENT_ADDRESS = 'Recipient address',
   ORDER_SLIPAGE_TOLERANCE = 'Order Slippage Tolerance',
@@ -329,5 +330,12 @@ export function clickNotifications(event: string, notificationId?: number, title
     action: event,
     value: notificationId,
     label: title,
+  })
+}
+
+export function clickOnHooks(event: string) {
+  cowAnalytics.sendEvent({
+    category: Category.HOOKS,
+    action: event,
   })
 }

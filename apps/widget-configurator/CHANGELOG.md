@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.7.1](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v1.7.0...widget-configurator-v1.7.1) (2024-10-07)
+
+
+### Bug Fixes
+
+* **widget-configurator:** use different default partner fee address per chain ([#4942](https://github.com/cowprotocol/cowswap/issues/4942)) ([f282b94](https://github.com/cowprotocol/cowswap/commit/f282b948d011022c563e4c6189af8da86f020754))
+
+## [1.7.0](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v1.6.0...widget-configurator-v1.7.0) (2024-09-30)
+
+
+### Features
+
+* **hooks-store:** support iframe hook-dapps ([#4885](https://github.com/cowprotocol/cowswap/issues/4885)) ([5116f29](https://github.com/cowprotocol/cowswap/commit/5116f296a0e4866d0a51a806b7abe55e809d26e9))
+
 ## [1.6.0](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v1.5.1...widget-configurator-v1.6.0) (2024-08-27)
 
 

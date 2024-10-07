@@ -17,8 +17,12 @@ export const Contents = styled.div`
   h3 {
     font-size: 24px;
     text-align: center;
-    margin: 18px 0;
+    margin: 16px 0;
     font-weight: bold;
+  }
+
+  p {
+    margin: 6px 0;
   }
 
   > svg > path,
@@ -34,7 +38,7 @@ export const AcceptanceBox = styled.label`
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  margin: 24px auto 0;
+  margin: 16px auto 0;
   padding: 24px 0;
   border-top: 1px solid var(${UI.COLOR_DANGER_TEXT});
   width: 100%;

@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.9.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.8.1...tokens-v1.9.0) (2024-09-30)
+
+
+### Features
+
+* **tokens:** add Curve Tokenlists ([#4894](https://github.com/cowprotocol/cowswap/issues/4894)) ([69ec27c](https://github.com/cowprotocol/cowswap/commit/69ec27cb79669e1e46cc543224a3418c1b98449b))
+
+
+### Bug Fixes
+
+* **token-list:** increase token symbol validation length ([#4913](https://github.com/cowprotocol/cowswap/issues/4913)) ([47b7115](https://github.com/cowprotocol/cowswap/commit/47b7115f75487667f4f850dfb5469e6bbe22aba5))
+
 ## [1.8.1](https://github.com/cowprotocol/cowswap/compare/tokens-v1.8.0...tokens-v1.8.1) (2024-09-05)
 
 
