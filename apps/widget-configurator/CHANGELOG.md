@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.1](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v1.7.0...widget-configurator-v1.7.1) (2024-10-07)
+
+
+### Bug Fixes
+
+* **widget-configurator:** use different default partner fee address per chain ([#4942](https://github.com/cowprotocol/cowswap/issues/4942)) ([f282b94](https://github.com/cowprotocol/cowswap/commit/f282b948d011022c563e4c6189af8da86f020754))
+
 ## [1.7.0](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v1.6.0...widget-configurator-v1.7.0) (2024-09-30)
 
 
