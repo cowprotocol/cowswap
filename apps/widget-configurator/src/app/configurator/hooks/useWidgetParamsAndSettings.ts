@@ -12,7 +12,7 @@ const getBaseUrl = (): string => {
   if (isDev) return 'https://dev.swap.cow.fi'
   if (isVercel) {
     // TODO: revert before merging!!
-    return 'https://swap-dev-git-fix-widget-conf-parter-fee-cowswap.vercel.app/'
+    return 'https://swap-dev-git-fix-widget-configurator-fee-recipient-cowswap.vercel.app/'
   }
 
   return 'https://swap.cow.fi'
