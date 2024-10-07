@@ -11,8 +11,8 @@ const getBaseUrl = (): string => {
   if (isLocalHost) return 'http://localhost:3000'
   if (isDev) return 'https://dev.swap.cow.fi'
   if (isVercel) {
-    // TODO: revert before merging!!
-    return 'https://swap-dev-git-fix-widget-configurator-fee-recipient-cowswap.vercel.app/'
+    const prKey = window.location.hostname.replace('widget-configurator-git-', '').replace('-cowswap.vercel.app', '')
+    return `https://swap-dev-git-${prKey}-cowswap.vercel.app`
   }
 
   return 'https://swap.cow.fi'
