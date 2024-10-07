@@ -8,7 +8,7 @@ import { useDerivedSwapInfo, useHighFeeWarning } from '../../hooks/useSwapState'
 import { smartSwapSlippageAtom } from '../../state/slippageValueAndTypeAtom'
 import { useTradeConfirmState } from '../../../trade'
 
-const MAX_BPS = 5000 // 50%
+const MAX_BPS = 500 // 5%
 
 export function SmartSlippageUpdater() {
   const setSmartSwapSlippage = useSetAtom(smartSwapSlippageAtom)
