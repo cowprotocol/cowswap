@@ -5,6 +5,7 @@ import { HookToDappMatch, matchHooksToDappsRegistry } from '@cowprotocol/hook-da
 
 import { HookItem } from './HookItem'
 import { HooksList } from './styled'
+import { Wrapper } from './styled'
 
 import { useAppData } from '../../../hooks/useAppData'
 
@@ -39,17 +40,25 @@ interface HooksInfoProps {
 
 function HooksInfo({ data, title }: HooksInfoProps) {
   return (
-    <>
-      {data.length && (
+    <Wrapper>
+      {data.length > 0 && (
         <div>
-          <h3>{title}</h3>
+          <h3>
+            {title} ({data.length})
+          </h3>
           <HooksList>
-            {data.map((item) => {
-              return <HookItem key={item.hook.callData + item.hook.target + item.hook.gasLimit} item={item} />
+            {data.map((item, index) => {
+              return (
+                <HookItem
+                  key={item.hook.callData + item.hook.target + item.hook.gasLimit}
+                  item={item}
+                  number={index + 1}
+                />
+              )
             })}
           </HooksList>
         </div>
       )}
-    </>
+    </Wrapper>
   )
 }

@@ -417,16 +417,18 @@ export function DetailsTable(props: Props): React.ReactNode | null {
             </td>
           </tr>
           <OrderHooksDetails appData={appData} fullAppData={fullAppData ?? undefined}>
-            {(content) => (
-              <tr>
-                <td>
-                  <span>
-                    <HelpTooltip tooltip={tooltip.hooks} /> Hooks
-                  </span>
-                </td>
-                <td>{content}</td>
-              </tr>
-            )}
+            {(content) =>
+              content && (
+                <tr>
+                  <td>
+                    <span>
+                      <HelpTooltip tooltip={tooltip.hooks} /> Hooks
+                    </span>
+                  </td>
+                  <td>{content}</td>
+                </tr>
+              )
+            }
           </OrderHooksDetails>
           <tr>
             <td>

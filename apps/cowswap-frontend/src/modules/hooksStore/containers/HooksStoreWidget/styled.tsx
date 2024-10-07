@@ -9,16 +9,31 @@ export const TradeWidgetWrapper = styled.div<{ visible$: boolean }>`
   overflow: hidden;
 `
 
+export const HooksTopActions = styled.div`
+  border: 1px solid var(${UI.COLOR_PAPER_DARKER});
+  color: inherit;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px;
+  border-radius: 12px;
+  font-size: 13px;
+  background: var(${UI.COLOR_PAPER_DARKER});
+`
+
 export const RescueFundsToggle = styled.button`
-  background: var(${UI.COLOR_PAPER});
+  background: transparent;
+  font-size: inherit;
+  color: inherit;
   border: 0;
   outline: none;
-  text-align: right;
+  transition: all 0.2s ease-in-out;
+  border-radius: 9px;
   cursor: pointer;
-  text-decoration: underline;
-  padding: 5px;
+  padding: 6px;
 
   &:hover {
     text-decoration: none;
+    background: var(${UI.COLOR_PAPER});
   }
 `
