@@ -45,7 +45,7 @@ export function YieldConfirmModal(props: YieldConfirmModalProps) {
         onDismiss={tradeConfirmActions.onDismiss}
         isConfirmDisabled={isConfirmDisabled}
         priceImpact={priceImpact}
-        buttonText="Deposit" // TODO
+        buttonText="Confirm and swap" // TODO
         recipient={recipient}
         appData={appData || undefined}
         isPriceStatic={true}

@@ -11,6 +11,7 @@ import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 import { useYieldDerivedState } from '../../hooks/useYieldDerivedState'
 import { useYieldWidgetActions } from '../../hooks/useYieldWidgetActions'
 import { yieldSettingsAtom } from '../../state/yieldSettingsAtom'
+import { TradeButtons } from '../TradeButtons'
 import { YieldConfirmModal } from '../YieldConfirmModal'
 
 export function YieldWidget() {
@@ -69,11 +70,7 @@ export function YieldWidget() {
 
   const slots = {
     settingsWidget: <button>Settings</button>,
-    bottomContent: (
-      <>
-        <button>Deposit</button>
-      </>
-    ),
+    bottomContent: <TradeButtons isTradeContextReady />,
   }
 
   const params = {
