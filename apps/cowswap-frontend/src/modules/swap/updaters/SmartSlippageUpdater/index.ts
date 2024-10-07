@@ -6,7 +6,7 @@ import { useSmartSlippageFromFeeMultiplier } from './useSmartSlippageFromFeeMult
 
 import { useDerivedSwapInfo, useHighFeeWarning } from '../../hooks/useSwapState'
 import { smartSwapSlippageAtom } from '../../state/slippageValueAndTypeAtom'
-import { useTradeConfirmState } from '../../../trade'
+import { useTradeConfirmState } from 'modules/trade'
 
 const MAX_BPS = 500 // 5%
 const MIN_BPS = 50 // 0.5%

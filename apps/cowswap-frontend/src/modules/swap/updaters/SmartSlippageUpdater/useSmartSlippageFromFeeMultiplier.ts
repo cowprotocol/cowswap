@@ -2,9 +2,10 @@ import { useMemo } from 'react'
 
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 
+import { useReceiveAmountInfo } from 'modules/trade'
+
 import { calculateBpsFromFeeMultiplier } from './calculateBpsFromFeeMultiplier'
 
-import { useReceiveAmountInfo } from '../../../trade'
 
 /**
  * Calculates smart slippage in bps, based on quoted fee

@@ -6,7 +6,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import ms from 'ms.macro'
 import useSWR from 'swr'
 
-import { useDerivedTradeState, useIsWrapOrUnwrap } from '../../../trade'
+import { useDerivedTradeState, useIsWrapOrUnwrap } from 'modules/trade'
 
 const SWR_OPTIONS = {
   dedupingInterval: ms`1m`,
