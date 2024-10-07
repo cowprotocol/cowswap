@@ -9,6 +9,7 @@ import { smartSwapSlippageAtom } from '../../state/slippageValueAndTypeAtom'
 import { useTradeConfirmState } from '../../../trade'
 
 const MAX_BPS = 500 // 5%
+const MIN_BPS = 50 // 0.5%
 
 export function SmartSlippageUpdater() {
   const setSmartSwapSlippage = useSetAtom(smartSwapSlippageAtom)
@@ -33,7 +34,7 @@ export function SmartSlippageUpdater() {
     // Add both slippage values, when present
     const slippage = (feeMultiplierSlippageBps || 0) + (bffSlippageBps || 0)
 
-    setSmartSwapSlippage(Math.min(slippage, MAX_BPS))
+    setSmartSwapSlippage(Math.max(MIN_BPS, Math.min(slippage, MAX_BPS)))
   }, [bffSlippageBps, setSmartSwapSlippage, feeMultiplierSlippageBps, isTradeReviewOpen])
 
   // TODO: remove before merging
