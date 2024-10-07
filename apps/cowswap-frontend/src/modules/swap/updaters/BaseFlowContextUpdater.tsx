@@ -10,7 +10,6 @@ import { useDispatch } from 'react-redux'
 
 import { AppDispatch } from 'legacy/state'
 import { useCloseModals } from 'legacy/state/application/hooks'
-import { useAddPendingOrder } from 'legacy/state/orders/hooks'
 import { useGetQuoteAndStatus } from 'legacy/state/price/hooks'
 import { useUserTransactionTTL } from 'legacy/state/user/hooks'
 
@@ -48,7 +47,6 @@ export function BaseFlowContextUpdater() {
   const typedHooks = useAppDataHooks()
   const closeModals = useCloseModals()
   const uploadAppData = useUploadAppData()
-  const addOrderCallback = useAddPendingOrder()
   const dispatch = useDispatch<AppDispatch>()
   const tradeConfirmActions = useTradeConfirmActions()
 
@@ -86,7 +84,6 @@ export function BaseFlowContextUpdater() {
       uploadAppData,
       flowType,
       closeModals,
-      addOrderCallback,
       dispatch,
       allowedSlippage: slippage,
       tradeConfirmActions,
@@ -113,7 +110,6 @@ export function BaseFlowContextUpdater() {
       uploadAppData,
       flowType,
       closeModals,
-      addOrderCallback,
       dispatch,
       slippage,
       tradeConfirmActions,

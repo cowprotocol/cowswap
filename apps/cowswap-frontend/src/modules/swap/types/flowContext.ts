@@ -6,7 +6,6 @@ import type { Web3Provider } from '@ethersproject/providers'
 import type { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import type { AppDispatch } from 'legacy/state'
-import type { AddOrderCallback } from 'legacy/state/orders/hooks'
 import type { QuoteInformationObject } from 'legacy/state/price/reducer'
 import type TradeGp from 'legacy/state/swap/TradeGp'
 
@@ -31,7 +30,6 @@ export interface BaseFlowContextSource {
   appData: AppDataInfo | null
   wethContract: Weth | null
   inputAmountWithSlippage: CurrencyAmount<Currency> | undefined
-  outputAmountWithSlippage: CurrencyAmount<Currency> | undefined
   gnosisSafeInfo: GnosisSafeInfo | undefined
   recipient: string | null
   recipientAddressOrName: string | null
@@ -41,7 +39,6 @@ export interface BaseFlowContextSource {
   flowType: FlowType
   closeModals: Command
   uploadAppData: (update: UploadAppDataParams) => void
-  addOrderCallback: AddOrderCallback
   dispatch: AppDispatch
   allowedSlippage: Percent
   tradeConfirmActions: TradeConfirmActions

@@ -45,6 +45,15 @@ export function useSwapFlowContext(): SwapFlowContext | null {
 
     return {
       ...baseContext,
+      context: {
+        ...baseContext.context,
+        inputAmount: baseProps.trade.inputAmount,
+        outputAmount: baseProps.trade.outputAmount,
+      },
+      callbacks: {
+        ...baseContext.callbacks,
+        dispatch: baseProps.dispatch,
+      },
       contract,
       permitInfo: !enoughAllowance ? permitInfo : undefined,
       generatePermitHook,

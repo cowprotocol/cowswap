@@ -53,7 +53,6 @@ export function getFlowContext({ baseProps, sellToken, kind }: BaseGetFlowContex
     appData,
     wethContract,
     inputAmountWithSlippage,
-    outputAmountWithSlippage,
     gnosisSafeInfo,
     recipient,
     recipientAddressOrName,
@@ -61,7 +60,6 @@ export function getFlowContext({ baseProps, sellToken, kind }: BaseGetFlowContex
     ensRecipientAddress,
     allowsOffchainSigning,
     closeModals,
-    addOrderCallback,
     uploadAppData,
     dispatch,
     flowType,
@@ -73,16 +71,7 @@ export function getFlowContext({ baseProps, sellToken, kind }: BaseGetFlowContex
     typedHooks,
   } = baseProps
 
-  if (
-    !chainId ||
-    !account ||
-    !provider ||
-    !trade ||
-    !appData ||
-    !wethContract ||
-    !inputAmountWithSlippage ||
-    !outputAmountWithSlippage
-  ) {
+  if (!chainId || !account || !provider || !trade || !appData || !wethContract || !inputAmountWithSlippage) {
     return null
   }
 
@@ -143,7 +132,6 @@ export function getFlowContext({ baseProps, sellToken, kind }: BaseGetFlowContex
       chainId,
       trade,
       inputAmountWithSlippage,
-      outputAmountWithSlippage,
       flowType,
     },
     flags: {
@@ -151,7 +139,6 @@ export function getFlowContext({ baseProps, sellToken, kind }: BaseGetFlowContex
     },
     callbacks: {
       closeModals,
-      addOrderCallback,
       uploadAppData,
       getCachedPermit,
     },

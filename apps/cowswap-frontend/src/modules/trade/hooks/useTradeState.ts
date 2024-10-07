@@ -7,11 +7,11 @@ import {
 import { useLimitOrdersRawState, useUpdateLimitOrdersRawState } from 'modules/limitOrders/hooks/useLimitOrdersRawState'
 import { useSwapRawState, useUpdateSwapRawState } from 'modules/swap/hooks/useSwapRawState'
 import { ExtendedTradeRawState, TradeRawState } from 'modules/trade/types/TradeRawState'
+import { useUpdateYieldRawState, useYieldRawState } from 'modules/yield'
 
 import { useTradeTypeInfoFromUrl } from './useTradeTypeInfoFromUrl'
 
 import { TradeType } from '../types'
-import { useUpdateYieldRawState, useYieldRawState } from 'modules/yield'
 
 const EMPTY_TRADE_STATE = {}
 

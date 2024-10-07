@@ -1,15 +1,15 @@
 import { useCallback, useMemo } from 'react'
 
-import { FractionUtils, isSellOrder, tryParseCurrencyAmount } from '@cowprotocol/common-utils'
+import { isSellOrder, tryParseCurrencyAmount } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 
 import { Field } from 'legacy/state/types'
 
 import { TradeWidgetActions, useIsWrapOrUnwrap, useOnCurrencySelection, useSwitchTokensPlaces } from 'modules/trade'
 
+import { useUpdateCurrencyAmount } from './useUpdateCurrencyAmount'
 import { useUpdateYieldRawState } from './useUpdateYieldRawState'
 import { useYieldDerivedState } from './useYieldDerivedState'
-import { useUpdateCurrencyAmount } from './useUpdateCurrencyAmount'
 
 export function useYieldWidgetActions(): TradeWidgetActions {
   const { inputCurrency, outputCurrency, orderKind } = useYieldDerivedState()

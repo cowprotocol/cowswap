@@ -30,9 +30,7 @@ export async function swapFlow(
   } = input
 
   const {
-    context: {
-      trade: { inputAmount, outputAmount },
-    },
+    context: { inputAmount, outputAmount },
     typedHooks,
   } = input
   const tradeAmounts = { inputAmount, outputAmount }
@@ -42,9 +40,9 @@ export async function swapFlow(
     return false
   }
 
-  const { orderParams, context, permitInfo, generatePermitHook, swapFlowAnalyticsContext, callbacks, dispatch } = input
-  const { chainId, trade } = context
-  const inputCurrency = trade.inputAmount.currency
+  const { orderParams, context, permitInfo, generatePermitHook, swapFlowAnalyticsContext, callbacks } = input
+  const { chainId } = context
+  const inputCurrency = inputAmount.currency
   const cachedPermit = await getCachedPermit(getAddress(inputCurrency))
 
   try {
@@ -88,7 +86,7 @@ export async function swapFlow(
         },
         isSafeWallet,
       },
-      dispatch,
+      callbacks.dispatch,
     )
 
     logTradeFlow('SWAP FLOW', 'STEP 5: presign order (optional)')
@@ -119,7 +117,7 @@ export async function swapFlow(
           },
           isSafeWallet,
         },
-        dispatch,
+        callbacks.dispatch,
       )
     }
 

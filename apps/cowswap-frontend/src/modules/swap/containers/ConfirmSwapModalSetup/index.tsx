@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useMemo } from 'react'
 
 import { getMinimumReceivedTooltip } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -11,7 +11,6 @@ import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { useOrder } from 'legacy/state/orders/hooks'
 import TradeGp from 'legacy/state/swap/TradeGp'
 
-import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { useIsSmartSlippageApplied } from 'modules/swap/hooks/useIsSmartSlippageApplied'
 import {
   TradeConfirmation,

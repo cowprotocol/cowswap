@@ -6,7 +6,6 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { AppDispatch } from 'legacy/state'
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
-import { AddOrderCallback } from 'legacy/state/orders/hooks'
 import type { QuoteInformationObject } from 'legacy/state/price/reducer'
 import TradeGp from 'legacy/state/swap/TradeGp'
 import { PostOrderParams } from 'legacy/utils/trade'
@@ -24,7 +23,6 @@ export interface BaseFlowContext {
     chainId: number
     trade: TradeGp
     inputAmountWithSlippage: CurrencyAmount<Currency>
-    outputAmountWithSlippage: CurrencyAmount<Currency>
     flowType: FlowType
   }
   flags: {
@@ -32,7 +30,6 @@ export interface BaseFlowContext {
   }
   callbacks: {
     closeModals: Command
-    addOrderCallback: AddOrderCallback
     uploadAppData: (params: UploadAppDataParams) => void
     getCachedPermit: ReturnType<typeof useGetCachedPermit>
   }
@@ -46,7 +43,24 @@ export interface BaseFlowContext {
   typedHooks?: TypedAppDataHooks
 }
 
-export type SwapFlowContext = BaseFlowContext & {
+export type SwapFlowContext = {
+  context: {
+    chainId: number
+    inputAmount: CurrencyAmount<Currency>
+    outputAmount: CurrencyAmount<Currency>
+    inputAmountWithSlippage: CurrencyAmount<Currency>
+  }
+  flags: {
+    allowsOffchainSigning: boolean
+  }
+  callbacks: {
+    closeModals: Command
+    getCachedPermit: ReturnType<typeof useGetCachedPermit>
+    dispatch: AppDispatch
+  }
+  tradeConfirmActions: TradeConfirmActions
+  swapFlowAnalyticsContext: TradeFlowAnalyticsContext
+  orderParams: PostOrderParams
   contract: GPv2Settlement
   permitInfo: IsTokenPermittableResult
   generatePermitHook: GeneratePermitHook
