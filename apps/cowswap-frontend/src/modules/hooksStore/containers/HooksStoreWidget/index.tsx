@@ -9,7 +9,7 @@ import { useIsSellNative } from 'modules/trade'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
-import { RescueFundsToggle, TradeWidgetWrapper } from './styled'
+import { HooksTopActions, RescueFundsToggle, TradeWidgetWrapper } from './styled'
 
 import { useSetRecipientOverride } from '../../hooks/useSetRecipientOverride'
 import { useSetupHooksStoreOrderParams } from '../../hooks/useSetupHooksStoreOrderParams'
@@ -70,7 +70,9 @@ export function HooksStoreWidget() {
   const TopContent = shouldNotUseHooks ? null : (
     <>
       {!isRescueWidgetOpen && account && (
-        <RescueFundsToggle onClick={() => setRescueWidgetOpen(true)}>Problems receiving funds?</RescueFundsToggle>
+        <HooksTopActions>
+          <RescueFundsToggle onClick={() => setRescueWidgetOpen(true)}>Rescue funds</RescueFundsToggle>
+        </HooksTopActions>
       )}
       <DismissableInlineBanner
         orientation={BannerOrientation.Horizontal}

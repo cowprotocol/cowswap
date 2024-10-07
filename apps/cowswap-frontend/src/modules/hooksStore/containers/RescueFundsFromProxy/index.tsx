@@ -96,10 +96,10 @@ export function RescueFundsFromProxy({ onDismiss }: { onDismiss: Command }) {
           </p>
         </InlineBanner>
         <ProxyInfo>
-          Proxy account:{' '}
+          <h4>Proxy account:</h4>
           {proxyAddress && (
             <ExternalLink href={getEtherscanLink(chainId, 'address', proxyAddress)}>
-              <span>{proxyAddress}</span>
+              <span>{proxyAddress} ↗</span>
             </ExternalLink>
           )}
         </ProxyInfo>
@@ -109,15 +109,18 @@ export function RescueFundsFromProxy({ onDismiss }: { onDismiss: Command }) {
           {selectedTokenAddress ? (
             <>
               <p>
-                Balance:{' '}
+                Balance to be rescued:
+                <br />
                 {tokenBalance ? (
-                  <TokenAmount amount={tokenBalance} defaultValue="0" tokenSymbol={tokenBalance.currency} />
+                  <b>
+                    <TokenAmount amount={tokenBalance} defaultValue="0" tokenSymbol={tokenBalance.currency} />
+                  </b>
                 ) : isBalanceLoading ? (
                   <Loader />
                 ) : null}
               </p>
               <ButtonPrimary onClick={rescueFunds} disabled={!hasBalance || isTxSigningInProgress}>
-                {isTxSigningInProgress ? <Loader /> : hasBalance ? 'Rescue funds' : 'No balance'}
+                {isTxSigningInProgress ? <Loader /> : hasBalance ? 'Rescue funds' : 'No funds to rescue'}
               </ButtonPrimary>
             </>
           ) : (
