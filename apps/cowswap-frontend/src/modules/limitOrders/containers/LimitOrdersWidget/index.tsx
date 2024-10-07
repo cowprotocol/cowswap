@@ -79,7 +79,7 @@ export function LimitOrdersWidget() {
   const priceImpact = useTradePriceImpact()
   const quoteAmount = useMemo(
     () => (isSell ? inputCurrencyAmount : outputCurrencyAmount),
-    [isSell, inputCurrencyAmount, outputCurrencyAmount]
+    [isSell, inputCurrencyAmount, outputCurrencyAmount],
   )
 
   useSetTradeQuoteParams(quoteAmount)
@@ -135,15 +135,6 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
     priceImpact,
     feeAmount,
   } = props
-
-  const inputCurrency = inputCurrencyInfo.currency
-  const outputCurrency = outputCurrencyInfo.currency
-
-  const isTradePriceUpdating = useMemo(() => {
-    if (!inputCurrency || !outputCurrency) return false
-
-    return isRateLoading
-  }, [isRateLoading, inputCurrency, outputCurrency])
 
   const tradeContext = useTradeFlowContext()
   const updateLimitOrdersState = useUpdateLimitOrdersRawState()
@@ -206,7 +197,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
     compactView: false,
     recipient,
     showRecipient,
-    isTradePriceUpdating,
+    isTradePriceUpdating: isRateLoading,
     priceImpact,
     disablePriceImpact: localFormValidation === LimitOrdersFormState.FeeExceedsFrom,
     disableQuotePolling: isConfirmOpen,

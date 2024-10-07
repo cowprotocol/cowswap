@@ -11,6 +11,7 @@ import { ExtendedTradeRawState, TradeRawState } from 'modules/trade/types/TradeR
 import { useTradeTypeInfoFromUrl } from './useTradeTypeInfoFromUrl'
 
 import { TradeType } from '../types'
+import { useUpdateYieldRawState, useYieldRawState } from 'modules/yield'
 
 const EMPTY_TRADE_STATE = {}
 
@@ -29,6 +30,9 @@ export function useTradeState(): {
   const swapTradeState = useSwapRawState()
   const updateSwapState = useUpdateSwapRawState()
 
+  const yieldRawState = useYieldRawState()
+  const updateYieldRawState = useUpdateYieldRawState()
+
   return useMemo(() => {
     if (!tradeTypeInfo) return EMPTY_TRADE_STATE
 
@@ -46,6 +50,13 @@ export function useTradeState(): {
       }
     }
 
+    if (tradeTypeInfo.tradeType === TradeType.YIELD) {
+      return {
+        state: yieldRawState,
+        updateState: updateYieldRawState,
+      }
+    }
+
     return {
       state: limitOrdersState,
       updateState: updateLimitOrdersState,
@@ -60,7 +71,10 @@ export function useTradeState(): {
     JSON.stringify(advancedOrdersState),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     JSON.stringify(swapTradeState),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    JSON.stringify(yieldRawState),
     updateSwapState,
     updateLimitOrdersState,
+    updateYieldRawState,
   ])
 }

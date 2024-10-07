@@ -36,6 +36,7 @@ const TradeTypeToUiOrderType: Record<TradeType, UiOrderType> = {
   [TradeType.SWAP]: UiOrderType.SWAP,
   [TradeType.LIMIT_ORDER]: UiOrderType.LIMIT,
   [TradeType.ADVANCED_ORDERS]: UiOrderType.TWAP,
+  [TradeType.YIELD]: UiOrderType.YIELD,
 }
 
 function getTradeParamsEventPayload(tradeType: TradeType, state: TradeDerivedState): OnTradeParamsPayload {

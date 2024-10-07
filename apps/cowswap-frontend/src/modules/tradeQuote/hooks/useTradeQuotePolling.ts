@@ -29,7 +29,7 @@ export function useTradeQuotePolling() {
   const { amount } = useAtomValue(tradeQuoteParamsAtom)
   const amountStr = useDebounce(
     useMemo(() => amount?.quotient.toString() || null, [amount]),
-    AMOUNT_CHANGE_DEBOUNCE_TIME
+    AMOUNT_CHANGE_DEBOUNCE_TIME,
   )
   const quoteParams = useQuoteParams(amountStr)
 

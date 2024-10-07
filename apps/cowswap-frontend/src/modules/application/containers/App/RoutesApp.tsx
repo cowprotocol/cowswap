@@ -24,6 +24,7 @@ import { SwapPage } from 'pages/Swap'
 
 // Async routes
 const LimitOrders = lazy(() => import(/* webpackChunkName: "limit_orders" */ 'pages/LimitOrders'))
+const YieldPage = lazy(() => import(/* webpackChunkName: "yield_widget" */ 'pages/Yield'))
 const AdvancedOrders = lazy(() => import(/* webpackChunkName: "advanced_orders" */ 'pages/AdvancedOrders'))
 const NotFound = lazy(() => import(/* webpackChunkName: "not_found" */ 'pages/error/NotFound'))
 const CowRunner = lazy(() => import(/* webpackChunkName: "cow_runner" */ 'pages/games/CowRunner'))
@@ -52,6 +53,7 @@ function LazyRoute({ route, element, key }: LazyRouteProps) {
 
 const lazyRoutes: LazyRouteProps[] = [
   { route: RoutesEnum.LIMIT_ORDER, element: <LimitOrders /> },
+  { route: RoutesEnum.YIELD, element: <YieldPage /> },
   { route: RoutesEnum.LONG_LIMIT_ORDER, element: <RedirectToPath path={'/limit'} /> },
   { route: RoutesEnum.ADVANCED_ORDERS, element: <AdvancedOrders /> },
   { route: RoutesEnum.LONG_ADVANCED_ORDERS, element: <RedirectToPath path={'/advanced'} /> },

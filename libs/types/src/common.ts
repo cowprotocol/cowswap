@@ -11,6 +11,7 @@ export enum UiOrderType {
   LIMIT = 'LIMIT',
   TWAP = 'TWAP',
   HOOKS = 'HOOKS',
+  YIELD = 'YIELD',
 }
 
 export type TokenInfo = {

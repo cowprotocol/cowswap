@@ -199,7 +199,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
                 isCollapsed={compactView}
                 hasSeparatorLine={!compactView}
                 onSwitchTokens={isChainIdUnsupported ? () => void 0 : throttledOnSwitchTokens}
-                isLoading={isTradePriceUpdating}
+                isLoading={Boolean(inputCurrencyInfo.currency && outputCurrencyInfo.currency && isTradePriceUpdating)}
                 disabled={isAlternativeOrderModalVisible}
               />
             </styledEl.CurrencySeparatorBox>
