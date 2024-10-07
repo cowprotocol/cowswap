@@ -24,7 +24,7 @@ export function QuoteObserverUpdater() {
       return
     }
 
-    updateLimitRateState(Field.OUTPUT, beforeNetworkCosts?.buyAmount)
+    updateLimitRateState(Field.OUTPUT, beforeNetworkCosts.buyAmount)
   }, [beforeNetworkCosts, inputCurrency, outputCurrency, updateLimitRateState])
 
   // Reset the output amount when the input amount changes
@@ -34,7 +34,7 @@ export function QuoteObserverUpdater() {
     }
 
     updateLimitRateState(Field.OUTPUT, CurrencyAmount.fromRawAmount(outputCurrency, 0))
-  }, [state?.inputCurrencyAmount, updateLimitRateState, outputCurrency])
+  }, [state?.inputCurrencyAmount, state?.inputCurrency, updateLimitRateState, outputCurrency])
 
   return null
 }
