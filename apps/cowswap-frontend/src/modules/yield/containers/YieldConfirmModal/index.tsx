@@ -3,7 +3,6 @@ import React, { useCallback, useMemo } from 'react'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import type { PriceImpact } from 'legacy/hooks/usePriceImpact'
-import { Field } from 'legacy/state/types'
 
 import { useAppData } from 'modules/appData'
 import { swapFlow } from 'modules/swap/services/swapFlow'
@@ -15,6 +14,7 @@ import {
   useTradeConfirmActions,
   TradeBasicConfirmDetails,
   useTradePriceImpact,
+  useOrderSubmittedContent,
 } from 'modules/trade'
 
 import { useConfirmPriceImpactWithoutFee } from 'common/hooks/useConfirmPriceImpactWithoutFee'
@@ -22,7 +22,6 @@ import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { CurrencyPreviewInfo } from 'common/pure/CurrencyAmountPreview'
 
 import { useYieldDerivedState } from '../../hooks/useYieldDerivedState'
-import { useYieldWidgetActions } from '../../hooks/useYieldWidgetActions'
 
 const CONFIRM_TITLE = 'Confirm order'
 
@@ -45,9 +44,8 @@ export function YieldConfirmModal(props: YieldConfirmModalProps) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const tradeFlowContext = useMemo(() => tradeContextInitial, [])
 
-  const { account } = useWalletInfo()
+  const { account, chainId } = useWalletInfo()
   const { ensName } = useWalletDetails()
-  const { onChangeRecipient, onUserInput } = useYieldWidgetActions()
   const appData = useAppData()
   const receiveAmountInfo = useReceiveAmountInfo()
   const tradeConfirmActions = useTradeConfirmActions()
@@ -56,25 +54,18 @@ export function YieldConfirmModal(props: YieldConfirmModalProps) {
   const { confirmPriceImpactWithoutFee } = useConfirmPriceImpactWithoutFee()
 
   const rateInfoParams = useRateInfoParams(inputCurrencyInfo.amount, outputCurrencyInfo.amount)
+  const submittedContent = useOrderSubmittedContent(chainId)
 
   const doTrade = useCallback(async () => {
     if (!tradeFlowContext) return
 
-    const tradeResult = await swapFlow(tradeFlowContext, priceImpactParams, confirmPriceImpactWithoutFee)
-
-    const isPriceImpactDeclined = tradeResult === false
-
-    // Clean up form fields after successful swap
-    if (!isPriceImpactDeclined) {
-      onChangeRecipient(null)
-      onUserInput(Field.INPUT, '')
-    }
+    swapFlow(tradeFlowContext, priceImpactParams, confirmPriceImpactWithoutFee)
   }, [tradeFlowContext, priceImpactParams, confirmPriceImpactWithoutFee])
 
   const isConfirmDisabled = false // TODO: add conditions if needed
 
   return (
-    <TradeConfirmModal title={CONFIRM_TITLE}>
+    <TradeConfirmModal title={CONFIRM_TITLE} submittedContent={submittedContent}>
       <TradeConfirmation
         title={CONFIRM_TITLE}
         account={account}

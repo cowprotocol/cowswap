@@ -9,10 +9,10 @@ import { Order } from 'legacy/state/orders/actions'
 import { Routes } from 'common/constants/routes'
 import { useNavigate } from 'common/hooks/useNavigate'
 
-import { parameterizeTradeRoute } from '../../trade'
-import { TradeUrlParams } from '../../trade/types/TradeRawState'
+import { TradeUrlParams } from '../types/TradeRawState'
+import { parameterizeTradeRoute } from '../utils/parameterizeTradeRoute'
 
-export type NavigateToNewOrderCallback = (chainId: SupportedChainId, order?: Order, callback?: Command) => () => void
+type NavigateToNewOrderCallback = (chainId: SupportedChainId, order?: Order, callback?: Command) => () => void
 
 export function useNavigateToNewOrderCallback(): NavigateToNewOrderCallback {
   const navigate = useNavigate()
@@ -41,6 +41,6 @@ export function useNavigateToNewOrderCallback(): NavigateToNewOrderCallback {
         callback?.()
       }
     },
-    [navigate]
+    [navigate],
   )
 }
