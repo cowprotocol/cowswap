@@ -24,7 +24,7 @@ export interface ConfiguratorState {
   tokenListUrls: TokenListItem[]
   customColors: ColorPalette
   defaultColors: ColorPalette
-  partnerFeeBps: PartnerFee['bps']
+  partnerFeeBps: number
   partnerFeeRecipient: PartnerFee['recipient']
   standaloneMode: boolean
   disableToastMessages: boolean
