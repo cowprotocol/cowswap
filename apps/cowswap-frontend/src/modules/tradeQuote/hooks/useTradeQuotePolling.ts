@@ -52,14 +52,14 @@ export function useTradeQuotePolling() {
       return
     }
 
-    const fetchQuote = (hasParamsChanged: boolean, priceQuality: PriceQuality) => {
+    const fetchQuote = (hasParamsChanged: boolean, priceQuality: PriceQuality, fetchStartTimestamp: number) => {
       updateQuoteState({ isLoading: true, hasParamsChanged })
 
       const isOptimalQuote = priceQuality === PriceQuality.OPTIMAL
       const requestParams = { ...quoteParams, priceQuality }
       const request = isOptimalQuote ? getOptimalQuote(requestParams) : getFastQuote(requestParams)
 
-      request
+      return request
         .then((response) => {
           const { cancelled, data } = response
 
@@ -73,6 +73,7 @@ export function useTradeQuotePolling() {
             ...(isOptimalQuote ? { isLoading: false } : null),
             error: null,
             hasParamsChanged: false,
+            fetchStartTimestamp,
           })
         })
         .catch((error: QuoteApiError) => {
@@ -85,12 +86,14 @@ export function useTradeQuotePolling() {
         })
     }
 
-    fetchQuote(true, PriceQuality.OPTIMAL)
-    if (fastQuote) fetchQuote(true, PriceQuality.FAST)
+    const fetchStartTimestamp = Date.now()
+    if (fastQuote) fetchQuote(true, PriceQuality.FAST, fetchStartTimestamp)
+    fetchQuote(true, PriceQuality.OPTIMAL, fetchStartTimestamp)
 
     const intervalId = setInterval(() => {
-      fetchQuote(false, PriceQuality.OPTIMAL)
-      if (fastQuote) fetchQuote(false, PriceQuality.FAST)
+      const fetchStartTimestamp = Date.now()
+      if (fastQuote) fetchQuote(false, PriceQuality.FAST, fetchStartTimestamp)
+      fetchQuote(false, PriceQuality.OPTIMAL, fetchStartTimestamp)
     }, PRICE_UPDATE_INTERVAL)
 
     return () => clearInterval(intervalId)
