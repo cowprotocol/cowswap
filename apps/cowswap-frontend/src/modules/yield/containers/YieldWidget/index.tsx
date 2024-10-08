@@ -15,7 +15,7 @@ import { TradeButtons } from '../TradeButtons'
 import { YieldConfirmModal } from '../YieldConfirmModal'
 
 export function YieldWidget() {
-  const settingsState = useYieldSettings()
+  const { showRecipient } = useYieldSettings()
   const deadlineState = useYieldDeadlineState()
   const recipientToggleState = useYieldRecipientToggleState()
   const { isLoading: isRateLoading } = useTradeQuote()
@@ -34,8 +34,6 @@ export function YieldWidget() {
     recipient,
   } = useYieldDerivedState()
   const tradeFlowContext = useTradeFlowContext()
-
-  const { showRecipient } = settingsState
 
   const inputCurrencyInfo: CurrencyInfo = {
     field: Field.INPUT,

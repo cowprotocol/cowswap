@@ -19,6 +19,7 @@ import { TradeType, useDerivedTradeState, useReceiveAmountInfo, useTradeConfirmA
 import { getOrderValidTo, useTradeQuote } from 'modules/tradeQuote'
 
 import { useGP2SettlementContract } from 'common/hooks/useContract'
+import { useYieldSettings } from './useYieldSettings'
 
 export function useTradeFlowContext(): SwapFlowContext | null {
   const { chainId, account } = useWalletInfo()
@@ -27,6 +28,7 @@ export function useTradeFlowContext(): SwapFlowContext | null {
   const isSafeWallet = useIsSafeWallet()
   const derivedTradeState = useDerivedTradeState()
   const receiveAmountInfo = useReceiveAmountInfo()
+  const { deadline } = useYieldSettings()
 
   const sellCurrency = derivedTradeState?.inputCurrency
   const inputAmount = receiveAmountInfo?.afterNetworkCosts.sellAmount
@@ -112,8 +114,7 @@ export function useTradeFlowContext(): SwapFlowContext | null {
         feeAmount: networkFee,
         sellToken: sellToken as TokenWithLogo,
         buyToken: buyToken as TokenWithLogo,
-        validTo: getOrderValidTo(DEFAULT_DEADLINE_FROM_NOW, {
-          // TODO: bind to settings
+        validTo: getOrderValidTo(deadline, {
           validFor: tradeQuote.quoteParams.validFor,
           quoteValidTo: tradeQuote.response.quote.validTo,
           localQuoteTimestamp: tradeQuote.localQuoteTimestamp,
@@ -123,7 +124,7 @@ export function useTradeFlowContext(): SwapFlowContext | null {
         allowsOffchainSigning,
         appData,
         class: OrderClass.MARKET,
-        partiallyFillable: false, // TODO: bind to settings
+        partiallyFillable: true,
         quoteId: tradeQuote.response.id,
         isSafeWallet,
       },
@@ -151,5 +152,6 @@ export function useTradeFlowContext(): SwapFlowContext | null {
     settlementContract,
     tradeConfirmActions,
     typedHooks,
+    deadline,
   ])
 }
