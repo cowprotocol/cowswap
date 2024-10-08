@@ -8,7 +8,6 @@ import { useIsSafeViaWc, useWalletDetails, useWalletInfo } from '@cowprotocol/wa
 import { TradeType } from '@cowprotocol/widget-lib'
 
 import { NetworkAlert } from 'legacy/components/NetworkAlert/NetworkAlert'
-import { SettingsTab } from 'legacy/components/Settings'
 import { useModalIsOpen } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
 import { Field } from 'legacy/state/types'
@@ -29,7 +28,13 @@ import {
   SwapWarningsTop,
   SwapWarningsTopProps,
 } from 'modules/swap/pure/warnings'
-import { TradeWidget, TradeWidgetContainer, useReceiveAmountInfo, useTradePriceImpact } from 'modules/trade'
+import {
+  SettingsTab,
+  TradeWidget,
+  TradeWidgetContainer,
+  useReceiveAmountInfo,
+  useTradePriceImpact,
+} from 'modules/trade'
 import { useIsEoaEthFlow } from 'modules/trade'
 import { useTradeRouteContext } from 'modules/trade/hooks/useTradeRouteContext'
 import { useWrappedToken } from 'modules/trade/hooks/useWrappedToken'

@@ -10,12 +10,13 @@ import { ThemedText } from 'theme'
 
 import { AutoColumn } from 'legacy/components/Column'
 import { Toggle } from 'legacy/components/Toggle'
-import { TransactionSettings } from 'legacy/components/TransactionSettings'
 
 import { toggleRecipientAddressAnalytics } from 'modules/analytics'
 import { SettingsIcon } from 'modules/trade/pure/Settings'
 
 import * as styledEl from './styled'
+
+import { TransactionSettings } from '../TransactionSettings'
 
 interface SettingsTabProps {
   className?: string
