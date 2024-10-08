@@ -9,7 +9,7 @@ import { HighFeeWarning } from 'legacy/components/SwapWarnings'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import TradeGp from 'legacy/state/swap/TradeGp'
 
-import { useIsSmartSlippageApplied } from 'modules/swap/hooks/useIsSmartSlippageApplied'
+import { useIsSmartSlippageApplied } from 'modules/tradeSlippage'
 import {
   TradeConfirmation,
   TradeConfirmModal,

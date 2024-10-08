@@ -33,6 +33,7 @@ import { useIsEoaEthFlow } from 'modules/trade'
 import { useTradeRouteContext } from 'modules/trade/hooks/useTradeRouteContext'
 import { useWrappedToken } from 'modules/trade/hooks/useWrappedToken'
 import { getQuoteTimeOffset } from 'modules/tradeQuote'
+import { useIsSlippageModified, useSwapSlippage } from 'modules/tradeSlippage'
 import { useTradeUsdAmounts } from 'modules/usdAmount'
 import { useShouldZeroApprove } from 'modules/zeroApproval'
 
@@ -42,9 +43,7 @@ import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 import { SWAP_QUOTE_CHECK_INTERVAL } from 'common/updaters/FeesUpdater'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
-import { useIsSlippageModified } from '../../hooks/useIsSlippageModified'
 import { useIsSwapEth } from '../../hooks/useIsSwapEth'
-import { useSwapSlippage } from '../../hooks/useSwapSlippage'
 import {
   useDerivedSwapInfo,
   useHighFeeWarning,

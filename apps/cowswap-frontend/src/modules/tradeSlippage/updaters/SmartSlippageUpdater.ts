@@ -42,7 +42,7 @@ export function SmartSlippageUpdater() {
 
       return response.slippageBps
     },
-    SWR_OPTIONS
+    SWR_OPTIONS,
   ).data
 
   useEffect(() => {

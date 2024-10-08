@@ -12,10 +12,10 @@ import { PostOrderParams } from 'legacy/utils/trade'
 import { BaseFlowContext } from 'modules/swap/services/types'
 import { TradeFlowAnalyticsContext } from 'modules/trade/utils/tradeFlowAnalytics'
 import { getOrderValidTo } from 'modules/tradeQuote'
+import { useSwapSlippage } from 'modules/tradeSlippage'
 
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
-import { useSwapSlippage } from './useSwapSlippage'
 import { useDerivedSwapInfo } from './useSwapState'
 
 import { getAmountsForSignature } from '../helpers/getAmountsForSignature'

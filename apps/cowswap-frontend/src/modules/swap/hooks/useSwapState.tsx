@@ -23,12 +23,11 @@ import { Field } from 'legacy/state/types'
 import { changeSwapAmountAnalytics, switchTokensAnalytics } from 'modules/analytics'
 import { useNavigateOnCurrencySelection } from 'modules/trade/hooks/useNavigateOnCurrencySelection'
 import { useTradeNavigate } from 'modules/trade/hooks/useTradeNavigate'
+import { useSwapSlippage } from 'modules/tradeSlippage'
 import { useVolumeFee } from 'modules/volumeFee'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
-
-import { useSwapSlippage } from './useSwapSlippage'
 
 export const BAD_RECIPIENT_ADDRESSES: { [address: string]: true } = {
   '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f': true, // v2 factory
@@ -90,14 +89,14 @@ export function useSwapActionHandlers(): SwapActions {
       changeSwapAmountAnalytics(field, Number(typedValue))
       dispatch(typeInput({ field, typedValue }))
     },
-    [dispatch]
+    [dispatch],
   )
 
   const onChangeRecipient = useCallback(
     (recipient: string | null) => {
       dispatch(setRecipient({ recipient }))
     },
-    [dispatch]
+    [dispatch],
   )
 
   return useMemo(
@@ -107,7 +106,7 @@ export function useSwapActionHandlers(): SwapActions {
       onUserInput,
       onChangeRecipient,
     }),
-    [onSwitchTokens, onCurrencySelection, onUserInput, onChangeRecipient]
+    [onSwitchTokens, onCurrencySelection, onUserInput, onChangeRecipient],
   )
 }
 
@@ -150,7 +149,7 @@ export function useHighFeeWarning(trade?: TradeGp) {
       feeWarningAccepted: _computeFeeWarningAcceptedState({ feeWarningAccepted, isHighFee }),
       setFeeWarningAccepted,
     }),
-    [isHighFee, feePercentage, feeWarningAccepted, setFeeWarningAccepted]
+    [isHighFee, feePercentage, feeWarningAccepted, setFeeWarningAccepted],
   )
 }
 
@@ -187,7 +186,7 @@ export function useUnknownImpactWarning() {
       impactWarningAccepted,
       setImpactWarningAccepted,
     }),
-    [impactWarningAccepted, setImpactWarningAccepted]
+    [impactWarningAccepted, setImpactWarningAccepted],
   )
 }
 
@@ -220,7 +219,7 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
   const isExactIn: boolean = independentField === Field.INPUT
   const parsedAmount = useMemo(
     () => tryParseCurrencyAmount(typedValue, (isExactIn ? inputCurrency : outputCurrency) ?? undefined),
-    [inputCurrency, isExactIn, outputCurrency, typedValue]
+    [inputCurrency, isExactIn, outputCurrency, typedValue],
   )
 
   const currencies: { [field in Field]?: Currency | null } = useMemo(
@@ -228,7 +227,7 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
       [Field.INPUT]: inputCurrency,
       [Field.OUTPUT]: outputCurrency,
     }),
-    [inputCurrency, outputCurrency]
+    [inputCurrency, outputCurrency],
   )
 
   // TODO: be careful! For native tokens we use symbol instead of address
@@ -243,7 +242,7 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
           ? currencies.OUTPUT.symbol
           : currencies.OUTPUT?.address?.toLowerCase(),
     }),
-    [currencies]
+    [currencies],
   )
 
   const { quote } = useGetQuoteAndStatus({
@@ -280,7 +279,7 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
       [Field.INPUT]: inputCurrencyBalance,
       [Field.OUTPUT]: outputCurrencyBalance,
     }),
-    [inputCurrencyBalance, outputCurrencyBalance]
+    [inputCurrencyBalance, outputCurrencyBalance],
   )
 
   // allowed slippage is either auto slippage, or custom user defined slippage if auto slippage disabled

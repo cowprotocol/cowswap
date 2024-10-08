@@ -26,13 +26,17 @@ import { AutoColumn } from 'legacy/components/Column'
 import { useUserTransactionTTL } from 'legacy/state/user/hooks'
 
 import { orderExpirationTimeAnalytics, slippageToleranceAnalytics } from 'modules/analytics'
-import { useIsSlippageModified } from 'modules/swap/hooks/useIsSlippageModified'
-import { useIsSmartSlippageApplied } from 'modules/swap/hooks/useIsSmartSlippageApplied'
-import { useSetSlippage } from 'modules/swap/hooks/useSetSlippage'
-import { useDefaultSwapSlippage, useSmartSwapSlippage, useSwapSlippage } from 'modules/swap/hooks/useSwapSlippage'
 import { getNativeOrderDeadlineTooltip, getNonNativeOrderDeadlineTooltip } from 'modules/swap/pure/Row/RowDeadline'
 import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from 'modules/swap/pure/Row/RowSlippageContent'
 import { useIsEoaEthFlow } from 'modules/trade'
+import {
+  useDefaultSwapSlippage,
+  useSmartSwapSlippage,
+  useSwapSlippage,
+  useIsSlippageModified,
+  useIsSmartSlippageApplied,
+  useSetSlippage,
+} from 'modules/tradeSlippage'
 
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 

@@ -6,7 +6,7 @@ import { bpsToPercent } from '@cowprotocol/common-utils'
 import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { walletInfoAtom } from '@cowprotocol/wallet'
 
-import { isEoaEthFlowAtom } from '../../trade/state/isEoaEthFlowAtom'
+import { isEoaEthFlowAtom } from 'modules/trade'
 
 type SlippageBpsPerNetwork = Record<SupportedChainId, number | null>
 

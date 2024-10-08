@@ -8,9 +8,7 @@ import { useToggleSettingsMenu } from 'legacy/state/application/hooks'
 
 import { useIsEoaEthFlow } from 'modules/trade'
 
-import { useIsSmartSlippageApplied } from 'modules/swap/hooks/useIsSmartSlippageApplied'
-import { useSetSlippage } from 'modules/swap/hooks/useSetSlippage'
-import { useSmartSwapSlippage } from 'modules/swap/hooks/useSwapSlippage'
+import { useIsSmartSlippageApplied, useSetSlippage, useSmartSwapSlippage } from 'modules/tradeSlippage'
 import { RowSlippageContent } from 'modules/swap/pure/Row/RowSlippageContent'
 
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
