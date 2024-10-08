@@ -4,7 +4,7 @@
   "libs/permit-utils": "0.3.1",
   "libs/widget-lib": "0.15.0",
   "libs/widget-react": "0.11.0",
-  "apps/widget-configurator": "1.7.1",
+  "apps/widget-configurator": "1.7.2",
   "libs/analytics": "1.8.0",
   "libs/assets": "1.8.0",
   "libs/common-const": "1.7.0",
