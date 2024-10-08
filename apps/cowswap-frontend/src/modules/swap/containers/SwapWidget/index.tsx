@@ -12,6 +12,7 @@ import { SettingsTab } from 'legacy/components/Settings'
 import { useModalIsOpen } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
 import { Field } from 'legacy/state/types'
+import { useRecipientToggleManager, useUserTransactionTTL } from 'legacy/state/user/hooks'
 
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { EthFlowModal, EthFlowProps } from 'modules/swap/containers/EthFlow'
@@ -82,6 +83,8 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
   const priceImpactParams = useTradePriceImpact()
   const tradeQuoteStateOverride = useTradeQuoteStateFromLegacy()
   const receiveAmountInfo = useReceiveAmountInfo()
+  const recipientToggleState = useRecipientToggleManager()
+  const deadlineState = useUserTransactionTTL()
 
   const isTradePriceUpdating = useTradePricesUpdate()
 
@@ -251,7 +254,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
   }
 
   const slots = {
-    settingsWidget: <SettingsTab />,
+    settingsWidget: <SettingsTab recipientToggleState={recipientToggleState} deadlineState={deadlineState} />,
 
     topContent,
     bottomContent: (

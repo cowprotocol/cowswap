@@ -1,4 +1,3 @@
-import { INPUT_OUTPUT_EXPLANATION, MINIMUM_ETH_FLOW_DEADLINE_SECONDS } from '@cowprotocol/common-const'
 import { Command } from '@cowprotocol/types'
 import { HoverTooltip, RowFixed } from '@cowprotocol/ui'
 
@@ -9,25 +8,7 @@ import { StyledRowBetween, TextWrapper } from 'modules/swap/pure/Row/styled'
 import { RowStyleProps } from 'modules/swap/pure/Row/typings'
 import { StyledInfoIcon, TransactionText } from 'modules/swap/pure/styled'
 
-export function getNativeOrderDeadlineTooltip(symbols: (string | undefined)[] | undefined) {
-  return (
-    <Trans>
-      {symbols?.[0] || 'Native currency (e.g ETH)'} orders require a minimum transaction expiration time threshold of{' '}
-      {MINIMUM_ETH_FLOW_DEADLINE_SECONDS / 60} minutes to ensure the best swapping experience.
-      <br />
-      <br />
-      Orders not matched after the threshold time are automatically refunded.
-    </Trans>
-  )
-}
-export function getNonNativeOrderDeadlineTooltip() {
-  return (
-    <Trans>
-      Your swap expires and will not execute if it is pending for longer than the selected duration.
-      {INPUT_OUTPUT_EXPLANATION}
-    </Trans>
-  )
-}
+import { getNativeOrderDeadlineTooltip, getNonNativeOrderDeadlineTooltip } from 'common/utils/tradeSettingsTooltips'
 
 export interface RowDeadlineProps {
   toggleSettings: Command

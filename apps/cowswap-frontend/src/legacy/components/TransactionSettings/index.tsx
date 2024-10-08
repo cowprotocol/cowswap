@@ -14,6 +14,7 @@ import {
 } from '@cowprotocol/common-const'
 import { useOnClickOutside } from '@cowprotocol/common-hooks'
 import { getWrappedToken, percentToBps } from '@cowprotocol/common-utils'
+import { StatefulValue } from '@cowprotocol/types'
 import { HelpTooltip, RowBetween, RowFixed, UI } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Percent } from '@uniswap/sdk-core'
@@ -23,11 +24,8 @@ import { ThemeContext } from 'styled-components/macro'
 import { ThemedText } from 'theme'
 
 import { AutoColumn } from 'legacy/components/Column'
-import { useUserTransactionTTL } from 'legacy/state/user/hooks'
 
 import { orderExpirationTimeAnalytics, slippageToleranceAnalytics } from 'modules/analytics'
-import { getNativeOrderDeadlineTooltip, getNonNativeOrderDeadlineTooltip } from 'modules/swap/pure/Row/RowDeadline'
-import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from 'modules/swap/pure/Row/RowSlippageContent'
 import { useIsEoaEthFlow } from 'modules/trade'
 import {
   useDefaultTradeSlippage,
@@ -38,6 +36,12 @@ import {
   useSetSlippage,
 } from 'modules/tradeSlippage'
 
+import {
+  getNativeOrderDeadlineTooltip,
+  getNativeSlippageTooltip,
+  getNonNativeOrderDeadlineTooltip,
+  getNonNativeSlippageTooltip,
+} from 'common/utils/tradeSettingsTooltips'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 import * as styledEl from './styled'
@@ -52,7 +56,11 @@ enum DeadlineError {
   InvalidInput = 'InvalidInput',
 }
 
-export function TransactionSettings() {
+interface TransactionSettingsProps {
+  deadlineState: StatefulValue<number>
+}
+
+export function TransactionSettings({ deadlineState }: TransactionSettingsProps) {
   const { chainId } = useWalletInfo()
   const theme = useContext(ThemeContext)
 
@@ -67,7 +75,7 @@ export function TransactionSettings() {
 
   const chosenSlippageMatchesSmartSlippage = smartSlippage && new Percent(smartSlippage, 10_000).equalTo(swapSlippage)
 
-  const [deadline, setDeadline] = useUserTransactionTTL()
+  const [deadline, setDeadline] = deadlineState
 
   const [slippageInput, setSlippageInput] = useState('')
   const [slippageError, setSlippageError] = useState<SlippageError | false>(false)

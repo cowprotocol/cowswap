@@ -20,7 +20,7 @@ export function useIsDarkMode(): boolean {
       userDarkMode,
       matchesDarkMode,
     }),
-    shallowEqual
+    shallowEqual,
   )
 
   return userDarkMode === null ? matchesDarkMode : userDarkMode
@@ -48,37 +48,35 @@ export function useUserLocaleManager(): [SupportedLocale | null, (newLocale: Sup
     (newLocale: SupportedLocale) => {
       dispatch(updateUserLocale({ userLocale: newLocale }))
     },
-    [dispatch]
+    [dispatch],
   )
 
   return [locale, setLocale]
 }
 
-// TODO: mod, move to mod file
 export function useIsRecipientToggleVisible(): boolean {
   return useAppSelector((state) => state.user.recipientToggleVisible)
 }
 
-// TODO: mod, move to mod file
-export function useRecipientToggleManager(): [boolean, (value?: boolean) => void] {
+export function useRecipientToggleManager(): [boolean, (value: boolean) => void] {
   const dispatch = useAppDispatch()
   const isVisible = useIsRecipientToggleVisible()
   const onChangeRecipient = useCallback(
     (recipient: string | null) => {
       dispatch(setRecipient({ recipient }))
     },
-    [dispatch]
+    [dispatch],
   )
 
   const toggleVisibility = useCallback(
-    (value?: boolean) => {
-      const newIsVisible = value ?? !isVisible
+    (value: boolean) => {
+      const newIsVisible = value
       dispatch(updateRecipientToggleVisible({ recipientToggleVisible: newIsVisible }))
       if (!newIsVisible) {
         onChangeRecipient(null)
       }
     },
-    [isVisible, dispatch, onChangeRecipient]
+    [dispatch, onChangeRecipient],
   )
 
   return [isVisible, toggleVisibility]
@@ -94,7 +92,7 @@ export function useUserTransactionTTL(): [number, (slippage: number) => void] {
     (userDeadline: number) => {
       dispatch(updateUserDeadline({ userDeadline }))
     },
-    [dispatch]
+    [dispatch],
   )
 
   return [deadline, setUserDeadline]

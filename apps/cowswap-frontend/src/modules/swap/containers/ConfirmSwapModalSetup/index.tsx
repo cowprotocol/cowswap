@@ -32,8 +32,8 @@ import { useShouldPayGas } from '../../hooks/useShouldPayGas'
 import { useSwapConfirmButtonText } from '../../hooks/useSwapConfirmButtonText'
 import { useSwapState } from '../../hooks/useSwapState'
 import { NetworkCostsTooltipSuffix } from '../../pure/NetworkCostsTooltipSuffix'
-import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from '../../pure/Row/RowSlippageContent'
 import { RowDeadline } from '../Row/RowDeadline'
+import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from '../../../../common/utils/tradeSettingsTooltips'
 
 const CONFIRM_TITLE = 'Swap'
 
