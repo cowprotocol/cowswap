@@ -12,21 +12,6 @@ import { StyledInfoIcon, TransactionText } from 'modules/swap/pure/styled'
 
 import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from 'common/utils/tradeSettingsTooltips'
 
-export const ClickableText = styled.button`
-  background: none;
-  border: none;
-  outline: none;
-  padding: 0;
-  margin: 0;
-  font-size: inherit;
-  font-weight: inherit;
-  color: inherit;
-
-  > div {
-    display: inline-block;
-  }
-`
-
 const DefaultSlippage = styled.span`
   display: inline-flex;
   color: var(${UI.COLOR_TEXT_OPACITY_70});
@@ -48,14 +33,12 @@ const SUGGESTED_SLIPPAGE_TOOLTIP =
 
 export interface RowSlippageContentProps {
   chainId: SupportedChainId
-  toggleSettings: Command
   displaySlippage: string
   isEoaEthFlow: boolean
   symbols?: (string | undefined)[]
   wrappedSymbol?: string
   styleProps?: RowStyleProps
   allowedSlippage: Percent
-  showSettingOnClick?: boolean
   slippageLabel?: React.ReactNode
   slippageTooltip?: React.ReactNode
   isSlippageModified: boolean
@@ -69,8 +52,6 @@ export interface RowSlippageContentProps {
 export function RowSlippageContent(props: RowSlippageContentProps) {
   const {
     chainId,
-    showSettingOnClick,
-    toggleSettings,
     displaySlippage,
     isEoaEthFlow,
     symbols,
@@ -105,38 +86,21 @@ export function RowSlippageContent(props: RowSlippageContentProps) {
     <StyledRowBetween {...styleProps}>
       <RowFixed>
         <TextWrapper>
-          {showSettingOnClick ? (
-            <ClickableText onClick={toggleSettings}>
-              <SlippageTextContents
-                isEoaEthFlow={isEoaEthFlow}
-                slippageLabel={slippageLabel}
-                isDynamicSlippageSet={isSmartSlippageApplied}
-              />
-            </ClickableText>
-          ) : (
-            <SlippageTextContents
-              isEoaEthFlow={isEoaEthFlow}
-              slippageLabel={slippageLabel}
-              isDynamicSlippageSet={isSmartSlippageApplied}
-            />
-          )}
+          <SlippageTextContents
+            isEoaEthFlow={isEoaEthFlow}
+            slippageLabel={slippageLabel}
+            isDynamicSlippageSet={isSmartSlippageApplied}
+          />
         </TextWrapper>
         <HoverTooltip wrapInContainer content={tooltipContent}>
           <StyledInfoIcon size={16} />
         </HoverTooltip>
       </RowFixed>
       <TextWrapper textAlign="right">
-        {showSettingOnClick ? (
-          <ClickableText onClick={toggleSettings}>
-            {displaySlippage}
-            {displayDefaultSlippage}
-          </ClickableText>
-        ) : (
-          <span>
-            {displaySlippage}
-            {displayDefaultSlippage}
-          </span>
-        )}
+        <span>
+          {displaySlippage}
+          {displayDefaultSlippage}
+        </span>
       </TextWrapper>
     </StyledRowBetween>
   )

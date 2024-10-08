@@ -1,18 +1,16 @@
-import { useCallback, useRef } from 'react'
+import { useCallback } from 'react'
 
-import { useOnClickOutside } from '@cowprotocol/common-hooks'
 import { StatefulValue } from '@cowprotocol/types'
 import { HelpTooltip, RowBetween, RowFixed } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
+import { Menu } from '@reach/menu-button'
 import { Text } from 'rebass'
 import { ThemedText } from 'theme'
 
 import { AutoColumn } from 'legacy/components/Column'
 import { Toggle } from 'legacy/components/Toggle'
 import { TransactionSettings } from 'legacy/components/TransactionSettings'
-import { useModalIsOpen, useToggleSettingsMenu } from 'legacy/state/application/hooks'
-import { ApplicationModal } from 'legacy/state/application/reducer'
 
 import { toggleRecipientAddressAnalytics } from 'modules/analytics'
 import { SettingsIcon } from 'modules/trade/pure/Settings'
@@ -26,10 +24,6 @@ interface SettingsTabProps {
 }
 
 export function SettingsTab({ className, recipientToggleState, deadlineState }: SettingsTabProps) {
-  const node = useRef<HTMLDivElement>(null)
-  const open = useModalIsOpen(ApplicationModal.SETTINGS)
-  const toggle = useToggleSettingsMenu()
-
   const [recipientToggleVisible, toggleRecipientVisibilityAux] = recipientToggleState
   const toggleRecipientVisibility = useCallback(
     (value?: boolean) => {
@@ -40,15 +34,13 @@ export function SettingsTab({ className, recipientToggleState, deadlineState }: 
     [toggleRecipientVisibilityAux, recipientToggleVisible],
   )
 
-  useOnClickOutside([node], open ? toggle : undefined)
-
   return (
-    <styledEl.StyledMenu ref={node} className={className}>
-      <styledEl.StyledMenuButton onClick={toggle} id="open-settings-dialog-button">
-        <SettingsIcon />
-      </styledEl.StyledMenuButton>
-      {open && (
-        <styledEl.MenuFlyout>
+    <Menu>
+      <styledEl.StyledMenu className={className}>
+        <styledEl.StyledMenuButton id="open-settings-dialog-button">
+          <SettingsIcon />
+        </styledEl.StyledMenuButton>
+        <styledEl.MenuFlyout portal={false}>
           <AutoColumn gap="md" style={{ padding: '1rem' }}>
             <Text fontWeight={600} fontSize={14}>
               <Trans>Transaction Settings</Trans>
@@ -77,7 +69,7 @@ export function SettingsTab({ className, recipientToggleState, deadlineState }: 
             </RowBetween>
           </AutoColumn>
         </styledEl.MenuFlyout>
-      )}
-    </styledEl.StyledMenu>
+      </styledEl.StyledMenu>
+    </Menu>
   )
 }

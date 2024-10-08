@@ -10,9 +10,6 @@ const defaultProps: RowSlippageContentProps = {
   get displaySlippage() {
     return this.isEoaEthFlow ? '2%' : '0.2%'
   },
-  toggleSettings() {
-    console.log('RowSlippageContent settings toggled!')
-  },
   isSlippageModified: false,
   isSmartSlippageApplied: false,
   smartSlippage: '0.2%',

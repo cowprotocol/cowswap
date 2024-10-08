@@ -1,9 +1,10 @@
 import { Media, RowFixed, UI } from '@cowprotocol/ui'
 
+import { MenuButton, MenuList } from '@reach/menu-button'
 import { transparentize } from 'color2k'
 import styled from 'styled-components/macro'
 
-export const StyledMenuButton = styled.button`
+export const StyledMenuButton = styled(MenuButton)`
   position: relative;
   width: 100%;
   border: none;
@@ -54,7 +55,7 @@ export const StyledMenu = styled.div`
   }
 `
 
-export const MenuFlyout = styled.span`
+export const MenuFlyout = styled(MenuList)`
   min-width: 20.125rem;
   background: var(${UI.COLOR_PRIMARY});
   box-shadow:
@@ -82,6 +83,4 @@ export const MenuFlyout = styled.span`
   ${Media.upToMedium()} {
     min-width: 18.125rem;
   }
-
-  user-select: none;
 `
