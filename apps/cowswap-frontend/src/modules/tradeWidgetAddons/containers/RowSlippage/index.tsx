@@ -5,11 +5,11 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { Percent } from '@uniswap/sdk-core'
 
 import { useIsEoaEthFlow } from 'modules/trade'
-
 import { useIsSmartSlippageApplied, useSetSlippage, useSmartTradeSlippage } from 'modules/tradeSlippage'
-import { RowSlippageContent } from 'modules/swap/pure/Row/RowSlippageContent'
 
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
+
+import { RowSlippageContent } from '../../pure/Row/RowSlippageContent'
 
 export interface RowSlippageProps {
   allowedSlippage: Percent
@@ -23,7 +23,7 @@ export function RowSlippage({ allowedSlippage, slippageTooltip, slippageLabel, i
 
   const isEoaEthFlow = useIsEoaEthFlow()
   const nativeCurrency = useNativeCurrency()
-  const smartSwapSlippage = useSmartTradeSlippage()
+  const smartSlippage = useSmartTradeSlippage()
   const isSmartSlippageApplied = useIsSmartSlippageApplied()
   const setSlippage = useSetSlippage()
 
@@ -38,8 +38,8 @@ export function RowSlippage({ allowedSlippage, slippageTooltip, slippageLabel, i
       displaySlippage: `${formatPercent(allowedSlippage)}%`,
       isSmartSlippageApplied,
       smartSlippage:
-        smartSwapSlippage && !isEoaEthFlow ? `${formatPercent(new Percent(smartSwapSlippage, 10_000))}%` : undefined,
-      setAutoSlippage: smartSwapSlippage && !isEoaEthFlow ? () => setSlippage(null) : undefined,
+        smartSlippage && !isEoaEthFlow ? `${formatPercent(new Percent(smartSlippage, 10_000))}%` : undefined,
+      setAutoSlippage: smartSlippage && !isEoaEthFlow ? () => setSlippage(null) : undefined,
     }),
     [
       chainId,
@@ -48,7 +48,7 @@ export function RowSlippage({ allowedSlippage, slippageTooltip, slippageLabel, i
       allowedSlippage,
       slippageLabel,
       slippageTooltip,
-      smartSwapSlippage,
+      smartSlippage,
       isSmartSlippageApplied,
     ],
   )

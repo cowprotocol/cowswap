@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import { DEFAULT_DEADLINE_FROM_NOW, TokenWithLogo } from '@cowprotocol/common-const'
+import { TokenWithLogo } from '@cowprotocol/common-const'
 import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS, OrderClass, OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
 import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
@@ -19,6 +19,7 @@ import { TradeType, useDerivedTradeState, useReceiveAmountInfo, useTradeConfirmA
 import { getOrderValidTo, useTradeQuote } from 'modules/tradeQuote'
 
 import { useGP2SettlementContract } from 'common/hooks/useContract'
+
 import { useYieldSettings } from './useYieldSettings'
 
 export function useTradeFlowContext(): SwapFlowContext | null {

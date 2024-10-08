@@ -8,33 +8,32 @@ import { Percent, TradeType } from '@uniswap/sdk-core'
 import { HighFeeWarning } from 'legacy/components/SwapWarnings'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import TradeGp from 'legacy/state/swap/TradeGp'
+import { useUserTransactionTTL } from 'legacy/state/user/hooks'
 
-import { useIsSmartSlippageApplied } from 'modules/tradeSlippage'
 import {
   TradeConfirmation,
   TradeConfirmModal,
   useIsEoaEthFlow,
   useOrderSubmittedContent,
   useReceiveAmountInfo,
+  useShouldPayGas,
   useTradeConfirmActions,
 } from 'modules/trade'
 import { TradeBasicConfirmDetails } from 'modules/trade/containers/TradeBasicConfirmDetails'
 import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
+import { useIsSmartSlippageApplied } from 'modules/tradeSlippage'
+import { NetworkCostsTooltipSuffix, RowDeadline } from 'modules/tradeWidgetAddons'
 
 import { CurrencyPreviewInfo } from 'common/pure/CurrencyAmountPreview'
 import { NetworkCostsSuffix } from 'common/pure/NetworkCostsSuffix'
 import { RateInfoParams } from 'common/pure/RateInfo'
+import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from 'common/utils/tradeSettingsTooltips'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 import { useBaseFlowContextSource } from '../../hooks/useFlowContext'
-
-import { useShouldPayGas } from '../../hooks/useShouldPayGas'
 import { useSwapConfirmButtonText } from '../../hooks/useSwapConfirmButtonText'
 import { useSwapState } from '../../hooks/useSwapState'
-import { NetworkCostsTooltipSuffix } from '../../pure/NetworkCostsTooltipSuffix'
-import { RowDeadline } from '../Row/RowDeadline'
-import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from 'common/utils/tradeSettingsTooltips'
-import { useUserTransactionTTL } from 'legacy/state/user/hooks'
+
 
 const CONFIRM_TITLE = 'Swap'
 

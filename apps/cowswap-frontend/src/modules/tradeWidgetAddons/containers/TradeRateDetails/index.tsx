@@ -10,6 +10,7 @@ import {
   useDerivedTradeState,
   NetworkCostsRow,
   useReceiveAmountInfo,
+  useShouldPayGas,
 } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
 import { useIsSlippageModified, useTradeSlippage } from 'modules/tradeSlippage'
@@ -18,10 +19,9 @@ import { useUsdAmount } from 'modules/usdAmount'
 import { NetworkCostsSuffix } from 'common/pure/NetworkCostsSuffix'
 import { RateInfoParams } from 'common/pure/RateInfo'
 
-import { useShouldPayGas } from '../../hooks/useShouldPayGas'
 import { NetworkCostsTooltipSuffix } from '../../pure/NetworkCostsTooltipSuffix'
-import { RowDeadline } from '../Row/RowDeadline'
-import { RowSlippage } from '../Row/RowSlippage'
+import { RowDeadline } from '../RowDeadline'
+import { RowSlippage } from '../RowSlippage'
 
 interface TradeRateDetailsProps {
   deadline: number

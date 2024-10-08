@@ -4,7 +4,7 @@ import { useIsEoaEthFlow, useIsWrapOrUnwrap } from 'modules/trade'
 
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
-import { RowDeadlineContent } from '../../../pure/Row/RowDeadline'
+import { RowDeadlineContent } from '../../pure/Row/RowDeadline'
 
 export function RowDeadline({ deadline }: { deadline: number }) {
   const isEoaEthFlow = useIsEoaEthFlow()

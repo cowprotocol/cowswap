@@ -1,6 +1,6 @@
 import { Percent } from '@uniswap/sdk-core'
 
-import { RowSlippageContent, RowSlippageContentProps } from 'modules/swap/pure/Row/RowSlippageContent'
+import { RowSlippageContent, RowSlippageContentProps } from './index'
 
 const defaultProps: RowSlippageContentProps = {
   chainId: 1,

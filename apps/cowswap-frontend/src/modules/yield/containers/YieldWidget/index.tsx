@@ -2,9 +2,17 @@ import React from 'react'
 
 import { Field } from 'legacy/state/types'
 
-import { SettingsTab, TradeWidget, useTradeConfirmState, useTradePriceImpact } from 'modules/trade'
+import {
+  SettingsTab,
+  TradeWidget,
+  useReceiveAmountInfo,
+  useTradeConfirmState,
+  useTradePriceImpact,
+} from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
+import { TradeRateDetails } from 'modules/tradeWidgetAddons'
 
+import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 
 import { useTradeFlowContext } from '../../hooks/useTradeFlowContext'
@@ -22,6 +30,8 @@ export function YieldWidget() {
   const priceImpact = useTradePriceImpact()
   const { isOpen: isConfirmOpen } = useTradeConfirmState()
   const widgetActions = useYieldWidgetActions()
+  const receiveAmountInfo = useReceiveAmountInfo()
+
   const {
     inputCurrency,
     outputCurrency,
@@ -37,7 +47,6 @@ export function YieldWidget() {
 
   const inputCurrencyInfo: CurrencyInfo = {
     field: Field.INPUT,
-    label: 'Sell amount',
     currency: inputCurrency,
     amount: inputCurrencyAmount,
     isIndependent: true,
@@ -47,13 +56,12 @@ export function YieldWidget() {
   }
   const outputCurrencyInfo: CurrencyInfo = {
     field: Field.OUTPUT,
-    label: 'Buy exactly',
     currency: outputCurrency,
     amount: outputCurrencyAmount,
     isIndependent: true,
     balance: outputCurrencyBalance,
     fiatAmount: outputCurrencyFiatAmount,
-    receiveAmountInfo: null,
+    receiveAmountInfo,
   }
   const inputCurrencyPreviewInfo = {
     amount: inputCurrencyInfo.amount,
@@ -69,9 +77,16 @@ export function YieldWidget() {
     label: outputCurrencyInfo.label,
   }
 
+  const rateInfoParams = useRateInfoParams(inputCurrencyInfo.amount, outputCurrencyInfo.amount)
+
   const slots = {
     settingsWidget: <SettingsTab recipientToggleState={recipientToggleState} deadlineState={deadlineState} />,
-    bottomContent: <TradeButtons isTradeContextReady={!!tradeFlowContext} />,
+    bottomContent: (
+      <>
+        <TradeRateDetails rateInfoParams={rateInfoParams} deadline={deadlineState[0]} />
+        <TradeButtons isTradeContextReady={!!tradeFlowContext} />
+      </>
+    ),
   }
 
   const params = {

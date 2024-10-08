@@ -6,11 +6,9 @@ import { Percent } from '@uniswap/sdk-core'
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
 
-import { StyledRowBetween, TextWrapper } from 'modules/swap/pure/Row/styled'
-import { RowStyleProps } from 'modules/swap/pure/Row/types'
-import { StyledInfoIcon, TransactionText } from 'modules/swap/pure/styled'
-
 import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from 'common/utils/tradeSettingsTooltips'
+
+import { StyledRowBetween, TextWrapper, StyledInfoIcon, TransactionText, RowStyleProps } from '../styled'
 
 const DefaultSlippage = styled.span`
   display: inline-flex;

@@ -2,11 +2,9 @@ import { HoverTooltip, RowFixed } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 
-import { StyledRowBetween, TextWrapper } from 'modules/swap/pure/Row/styled'
-import { RowStyleProps } from 'modules/swap/pure/Row/typings'
-import { StyledInfoIcon, TransactionText } from 'modules/swap/pure/styled'
-
 import { getNativeOrderDeadlineTooltip, getNonNativeOrderDeadlineTooltip } from 'common/utils/tradeSettingsTooltips'
+
+import { StyledRowBetween, TextWrapper, StyledInfoIcon, TransactionText, RowStyleProps } from '../styled'
 
 export interface RowDeadlineProps {
   isEoaEthFlow: boolean
