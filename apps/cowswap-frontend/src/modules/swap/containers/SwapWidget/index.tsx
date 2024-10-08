@@ -28,19 +28,13 @@ import {
   SwapWarningsTop,
   SwapWarningsTopProps,
 } from 'modules/swap/pure/warnings'
-import {
-  SettingsTab,
-  TradeWidget,
-  TradeWidgetContainer,
-  useReceiveAmountInfo,
-  useTradePriceImpact,
-} from 'modules/trade'
+import { TradeWidget, TradeWidgetContainer, useReceiveAmountInfo, useTradePriceImpact } from 'modules/trade'
 import { useIsEoaEthFlow } from 'modules/trade'
 import { useTradeRouteContext } from 'modules/trade/hooks/useTradeRouteContext'
 import { useWrappedToken } from 'modules/trade/hooks/useWrappedToken'
 import { getQuoteTimeOffset } from 'modules/tradeQuote'
 import { useTradeSlippage } from 'modules/tradeSlippage'
-import { TradeRateDetails } from 'modules/tradeWidgetAddons'
+import { SettingsTab, TradeRateDetails } from 'modules/tradeWidgetAddons'
 import { useTradeUsdAmounts } from 'modules/usdAmount'
 import { useShouldZeroApprove } from 'modules/zeroApproval'
 

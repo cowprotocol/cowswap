@@ -2,15 +2,9 @@ import React from 'react'
 
 import { Field } from 'legacy/state/types'
 
-import {
-  SettingsTab,
-  TradeWidget,
-  useReceiveAmountInfo,
-  useTradeConfirmState,
-  useTradePriceImpact,
-} from 'modules/trade'
+import { TradeWidget, useReceiveAmountInfo, useTradeConfirmState, useTradePriceImpact } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
-import { TradeRateDetails } from 'modules/tradeWidgetAddons'
+import { SettingsTab, TradeRateDetails } from 'modules/tradeWidgetAddons'
 
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
