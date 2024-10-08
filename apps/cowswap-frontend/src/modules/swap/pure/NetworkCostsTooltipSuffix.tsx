@@ -1,9 +1,9 @@
 import { isTruthy } from '@cowprotocol/common-utils'
 import { useWalletDetails } from '@cowprotocol/wallet'
 
-import useNativeCurrency from 'lib/hooks/useNativeCurrency'
+import { useIsEoaEthFlow } from 'modules/trade'
 
-import { useIsEoaEthFlow } from '../hooks/useIsEoaEthFlow'
+import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 export function NetworkCostsTooltipSuffix() {
   const { allowsOffchainSigning } = useWalletDetails()

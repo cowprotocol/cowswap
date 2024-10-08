@@ -15,14 +15,13 @@ import { useUserTransactionTTL } from 'legacy/state/user/hooks'
 
 import { useAppData, useAppDataHooks, useUploadAppData } from 'modules/appData'
 import { useGetCachedPermit } from 'modules/permit'
-import { useTradeConfirmActions } from 'modules/trade'
+import { useTradeConfirmActions, useIsEoaEthFlow } from 'modules/trade'
 
 import { useTokenContract, useWETHContract } from 'common/hooks/useContract'
 import { useIsSafeApprovalBundle } from 'common/hooks/useIsSafeApprovalBundle'
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
 import { useSwapAmountsWithSlippage } from '../hooks/useFlowContext'
-import { useIsEoaEthFlow } from '../hooks/useIsEoaEthFlow'
 import { useIsSafeEthFlow } from '../hooks/useIsSafeEthFlow'
 import { useSwapSlippage } from '../hooks/useSwapSlippage'
 import { useDerivedSwapInfo, useSwapState } from '../hooks/useSwapState'

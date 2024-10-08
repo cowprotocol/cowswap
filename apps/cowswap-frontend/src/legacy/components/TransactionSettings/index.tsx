@@ -14,28 +14,29 @@ import {
 } from '@cowprotocol/common-const'
 import { useOnClickOutside } from '@cowprotocol/common-hooks'
 import { getWrappedToken, percentToBps } from '@cowprotocol/common-utils'
-import { FancyButton, HelpTooltip, Media, RowBetween, RowFixed, UI } from '@cowprotocol/ui'
+import { HelpTooltip, RowBetween, RowFixed, UI } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Percent } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
-import { darken } from 'color2k'
-import styled, { ThemeContext } from 'styled-components/macro'
+import { ThemeContext } from 'styled-components/macro'
 import { ThemedText } from 'theme'
 
 import { AutoColumn } from 'legacy/components/Column'
 import { useUserTransactionTTL } from 'legacy/state/user/hooks'
 
 import { orderExpirationTimeAnalytics, slippageToleranceAnalytics } from 'modules/analytics'
-import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { useIsSlippageModified } from 'modules/swap/hooks/useIsSlippageModified'
 import { useIsSmartSlippageApplied } from 'modules/swap/hooks/useIsSmartSlippageApplied'
 import { useSetSlippage } from 'modules/swap/hooks/useSetSlippage'
 import { useDefaultSwapSlippage, useSmartSwapSlippage, useSwapSlippage } from 'modules/swap/hooks/useSwapSlippage'
 import { getNativeOrderDeadlineTooltip, getNonNativeOrderDeadlineTooltip } from 'modules/swap/pure/Row/RowDeadline'
 import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from 'modules/swap/pure/Row/RowSlippageContent'
+import { useIsEoaEthFlow } from 'modules/trade'
 
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
+
+import * as styledEl from './styled'
 
 const MAX_DEADLINE_MINUTES = 180 // 3h
 
@@ -46,133 +47,6 @@ enum SlippageError {
 enum DeadlineError {
   InvalidInput = 'InvalidInput',
 }
-
-const Option = styled(FancyButton) <{ active: boolean }>`
-  margin-right: 8px;
-
-  :hover {
-    cursor: pointer;
-  }
-
-  &:disabled {
-    border: none;
-    pointer-events: none;
-  }
-`
-
-export const Input = styled.input`
-  background: var(${UI.COLOR_PAPER});
-  font-size: 16px;
-  width: auto;
-  outline: none;
-
-  &::-webkit-outer-spin-button,
-  &::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-  }
-
-  color: ${({ theme, color }) => (color === 'red' ? theme.error : `var(${UI.COLOR_TEXT})`)};
-  text-align: right;
-`
-
-export const OptionCustom = styled(FancyButton) <{ active?: boolean; warning?: boolean }>`
-  height: 2rem;
-  position: relative;
-  padding: 0 0.75rem;
-  flex: 1;
-  border: ${({ theme, active, warning }) => active && `1px solid ${warning ? theme.error : theme.bg2}`};
-
-  :hover {
-    border: ${({ theme, active, warning }) =>
-    active && `1px solid ${warning ? darken(theme.error, 0.1) : darken(theme.bg2, 0.1)}`};
-  }
-
-  input {
-    width: 100%;
-    height: 100%;
-    border: 0;
-    border-radius: 2rem;
-  }
-`
-
-const SlippageEmojiContainer = styled.span`
-  color: #f3841e;
-  ${Media.upToSmall()} {
-    display: none;
-  }
-`
-
-const SmartSlippageInfo = styled.div`
-  color: var(${UI.COLOR_GREEN});
-  font-size: 13px;
-  text-align: right;
-  width: 100%;
-  padding-right: 0.2rem;
-  display: flex;
-  justify-content: flex-end;
-  padding-bottom: 0.35rem;
-
-  > span {
-    margin-left: 4px;
-  }
-`
-
-const Wrapper = styled.div`
-  ${RowBetween} > button, ${OptionCustom} {
-    &:disabled {
-      color: var(${UI.COLOR_TEXT_OPACITY_50});
-      background-color: var(${UI.COLOR_PAPER});
-      border: none;
-      pointer-events: none;
-    }
-  }
-
-  ${OptionCustom} {
-    background-color: var(${UI.COLOR_PAPER_DARKER});
-    border: 0;
-    color: inherit;
-
-    > div > input {
-      background: transparent;
-      color: inherit;
-
-      &:disabled {
-        color: inherit;
-        background-color: inherit;
-      }
-    }
-
-    > div > input::placeholder {
-      opacity: 0.5;
-      color: inherit;
-    }
-  }
-
-  ${RowFixed} {
-    color: inherit;
-
-    > div {
-      color: inherit;
-      opacity: 0.85;
-    }
-
-    > button {
-      background-color: var(${UI.COLOR_PAPER_DARKER});
-      border: 0;
-    }
-
-    > button > input {
-      background: transparent;
-      color: inherit;
-    }
-
-    > button > input::placeholder {
-      background: transparent;
-      opacity: 0.5;
-      color: inherit;
-    }
-  }
-`
 
 export function TransactionSettings() {
   const { chainId } = useWalletInfo()
@@ -242,7 +116,7 @@ export function TransactionSettings() {
 
   const tooLow = swapSlippage.lessThan(new Percent(isEoaEthFlow ? minEthFlowSlippageBps : LOW_SLIPPAGE_BPS, 10_000))
   const tooHigh = swapSlippage.greaterThan(
-    new Percent(isEoaEthFlow ? HIGH_ETH_FLOW_SLIPPAGE_BPS : HIGH_SLIPPAGE_BPS, 10_000)
+    new Percent(isEoaEthFlow ? HIGH_ETH_FLOW_SLIPPAGE_BPS : HIGH_SLIPPAGE_BPS, 10_000),
   )
 
   function parseCustomDeadline(value: string) {
@@ -259,10 +133,10 @@ export function TransactionSettings() {
         if (
           !Number.isInteger(parsed) || // Check deadline is a number
           parsed <
-          (isEoaEthFlow
-            ? // 10 minute low threshold for eth flow
-            MINIMUM_ETH_FLOW_DEADLINE_SECONDS
-            : MINIMUM_ORDER_VALID_TO_TIME_SECONDS) || // Check deadline is not too small
+            (isEoaEthFlow
+              ? // 10 minute low threshold for eth flow
+                MINIMUM_ETH_FLOW_DEADLINE_SECONDS
+              : MINIMUM_ORDER_VALID_TO_TIME_SECONDS) || // Check deadline is not too small
           parsed > MAX_DEADLINE_MINUTES * 60 // Check deadline is not too big
         ) {
           setDeadlineError(DeadlineError.InvalidInput)
@@ -294,7 +168,7 @@ export function TransactionSettings() {
   useOnClickOutside([wrapperRef], onSlippageInputBlur)
 
   return (
-    <Wrapper>
+    <styledEl.Wrapper>
       <AutoColumn gap="md">
         <AutoColumn gap="sm">
           <RowFixed>
@@ -311,24 +185,24 @@ export function TransactionSettings() {
             />
           </RowFixed>
           <RowBetween>
-            <Option
+            <styledEl.Option
               onClick={() => {
                 setSwapSlippage(null)
               }}
               active={!isSlippageModified}
             >
               <Trans>Auto</Trans>
-            </Option>
-            <OptionCustom active={isSlippageModified} warning={!!slippageError} tabIndex={-1}>
+            </styledEl.Option>
+            <styledEl.OptionCustom active={isSlippageModified} warning={!!slippageError} tabIndex={-1}>
               <RowBetween>
                 {!isSmartSlippageApplied && !chosenSlippageMatchesSmartSlippage && (tooLow || tooHigh) ? (
-                  <SlippageEmojiContainer>
+                  <styledEl.SlippageEmojiContainer>
                     <span role="img" aria-label="warning">
                       ⚠️
                     </span>
-                  </SlippageEmojiContainer>
+                  </styledEl.SlippageEmojiContainer>
                 ) : null}
-                <Input
+                <styledEl.Input
                   placeholder={placeholderSlippage.toFixed(2)}
                   value={slippageInput.length > 0 ? slippageInput : !isSlippageModified ? '' : swapSlippage.toFixed(2)}
                   onChange={(e) => parseSlippageInput(e.target.value)}
@@ -337,15 +211,14 @@ export function TransactionSettings() {
                 />
                 %
               </RowBetween>
-            </OptionCustom>
+            </styledEl.OptionCustom>
           </RowBetween>
           {!isSmartSlippageApplied && !chosenSlippageMatchesSmartSlippage && (slippageError || tooLow || tooHigh) ? (
             <RowBetween
               style={{
                 fontSize: '14px',
                 paddingTop: '7px',
-                // color: slippageError ? 'red' : '#F3841E',
-                color: slippageError ? `var(${UI.COLOR_DANGER})` : theme.warning, // MOD
+                color: slippageError ? `var(${UI.COLOR_DANGER})` : theme.warning,
               }}
             >
               {slippageError ? (
@@ -362,17 +235,17 @@ export function TransactionSettings() {
           ) : null}
           {isSmartSlippageApplied && (
             <RowBetween>
-              <SmartSlippageInfo>
+              <styledEl.SmartSlippageInfo>
                 <HelpTooltip
                   text={
                     <Trans>
-                      Based on recent volatility observed for this token pair, it's recommended to leave the default
-                      to account for price changes.
+                      Based on recent volatility observed for this token pair, it's recommended to leave the default to
+                      account for price changes.
                     </Trans>
                   }
                 />
                 <span>Dynamic</span>
-              </SmartSlippageInfo>
+              </styledEl.SmartSlippageInfo>
             </RowBetween>
           )}
         </AutoColumn>
@@ -394,8 +267,8 @@ export function TransactionSettings() {
               />
             </RowFixed>
             <RowFixed>
-              <OptionCustom style={{ width: '80px' }} warning={!!deadlineError} tabIndex={-1}>
-                <Input
+              <styledEl.OptionCustom style={{ width: '80px' }} warning={!!deadlineError} tabIndex={-1}>
+                <styledEl.Input
                   placeholder={(DEFAULT_DEADLINE_FROM_NOW / 60).toString()}
                   value={
                     deadlineInput.length > 0
@@ -411,7 +284,7 @@ export function TransactionSettings() {
                   }}
                   color={deadlineError ? 'red' : ''}
                 />
-              </OptionCustom>
+              </styledEl.OptionCustom>
               <ThemedText.Body style={{ paddingLeft: '8px' }} fontSize={14}>
                 <Trans>minutes</Trans>
               </ThemedText.Body>
@@ -419,6 +292,6 @@ export function TransactionSettings() {
           </AutoColumn>
         )}
       </AutoColumn>
-    </Wrapper>
+    </styledEl.Wrapper>
   )
 }

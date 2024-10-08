@@ -13,6 +13,7 @@ import { useIsSmartSlippageApplied } from 'modules/swap/hooks/useIsSmartSlippage
 import {
   TradeConfirmation,
   TradeConfirmModal,
+  useIsEoaEthFlow,
   useOrderSubmittedContent,
   useReceiveAmountInfo,
   useTradeConfirmActions,
@@ -26,7 +27,7 @@ import { RateInfoParams } from 'common/pure/RateInfo'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 import { useBaseFlowContextSource } from '../../hooks/useFlowContext'
-import { useIsEoaEthFlow } from '../../hooks/useIsEoaEthFlow'
+
 import { useShouldPayGas } from '../../hooks/useShouldPayGas'
 import { useSwapConfirmButtonText } from '../../hooks/useSwapConfirmButtonText'
 import { useSwapState } from '../../hooks/useSwapState'

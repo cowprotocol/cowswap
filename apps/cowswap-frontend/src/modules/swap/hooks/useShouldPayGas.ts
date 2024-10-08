@@ -1,6 +1,6 @@
 import { useWalletDetails } from '@cowprotocol/wallet'
 
-import { useIsEoaEthFlow } from './useIsEoaEthFlow'
+import { useIsEoaEthFlow } from 'modules/trade'
 
 export function useShouldPayGas() {
   const { allowsOffchainSigning } = useWalletDetails()

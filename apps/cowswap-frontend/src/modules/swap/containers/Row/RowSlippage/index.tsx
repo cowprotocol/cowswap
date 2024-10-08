@@ -6,7 +6,8 @@ import { Percent } from '@uniswap/sdk-core'
 
 import { useToggleSettingsMenu } from 'legacy/state/application/hooks'
 
-import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
+import { useIsEoaEthFlow } from 'modules/trade'
+
 import { useIsSmartSlippageApplied } from 'modules/swap/hooks/useIsSmartSlippageApplied'
 import { useSetSlippage } from 'modules/swap/hooks/useSetSlippage'
 import { useSmartSwapSlippage } from 'modules/swap/hooks/useSwapSlippage'
@@ -49,10 +50,21 @@ export function RowSlippage({
       slippageTooltip,
       displaySlippage: `${formatPercent(allowedSlippage)}%`,
       isSmartSlippageApplied,
-      smartSlippage: smartSwapSlippage && !isEoaEthFlow ? `${formatPercent(new Percent(smartSwapSlippage, 10_000))}%` : undefined,
+      smartSlippage:
+        smartSwapSlippage && !isEoaEthFlow ? `${formatPercent(new Percent(smartSwapSlippage, 10_000))}%` : undefined,
       setAutoSlippage: smartSwapSlippage && !isEoaEthFlow ? () => setSlippage(null) : undefined,
     }),
-    [chainId, isEoaEthFlow, nativeCurrency.symbol, showSettingOnClick, allowedSlippage, slippageLabel, slippageTooltip, smartSwapSlippage, isSmartSlippageApplied]
+    [
+      chainId,
+      isEoaEthFlow,
+      nativeCurrency.symbol,
+      showSettingOnClick,
+      allowedSlippage,
+      slippageLabel,
+      slippageTooltip,
+      smartSwapSlippage,
+      isSmartSlippageApplied,
+    ],
   )
 
   return <RowSlippageContent {...props} toggleSettings={toggleSettings} isSlippageModified={isSlippageModified} />

@@ -3,8 +3,8 @@ import { useMemo } from 'react'
 import { useToggleSettingsMenu } from 'legacy/state/application/hooks'
 import { useUserTransactionTTL } from 'legacy/state/user/hooks'
 
-import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { RowDeadlineContent } from 'modules/swap/pure/Row/RowDeadline'
+import { useIsEoaEthFlow } from 'modules/trade'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
