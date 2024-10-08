@@ -12,7 +12,10 @@ type SlippageBpsPerNetwork = Record<SupportedChainId, number | null>
 
 type SlippageType = 'smart' | 'default' | 'user'
 
-const normalSwapSlippageAtom = atomWithStorage<SlippageBpsPerNetwork>('swapSlippageAtom:v0', mapSupportedNetworks(null))
+const normalTradeSlippageAtom = atomWithStorage<SlippageBpsPerNetwork>(
+  'tradeSlippageAtom:v0',
+  mapSupportedNetworks(null),
+)
 
 const ethFlowSlippageAtom = atomWithStorage<SlippageBpsPerNetwork>('ethFlowSlippageAtom:v0', mapSupportedNetworks(null))
 
@@ -26,40 +29,40 @@ export const defaultSlippageAtom = atom((get) => {
 const currentSlippageAtom = atom<number | null>((get) => {
   const { chainId } = get(walletInfoAtom)
   const isEoaEthFlow = get(isEoaEthFlowAtom)
-  const normalSwapSlippage = get(normalSwapSlippageAtom)
+  const normalSlippage = get(normalTradeSlippageAtom)
   const ethFlowSlippage = get(ethFlowSlippageAtom)
 
-  return (isEoaEthFlow ? ethFlowSlippage : normalSwapSlippage)?.[chainId] ?? null
+  return (isEoaEthFlow ? ethFlowSlippage : normalSlippage)?.[chainId] ?? null
 })
 
-export const smartSwapSlippageAtom = atom<number | null>(null)
+export const smartTradeSlippageAtom = atom<number | null>(null)
 
 export const slippageValueAndTypeAtom = atom<{ type: SlippageType; value: number }>((get) => {
   const currentSlippage = get(currentSlippageAtom)
   const defaultSlippage = get(defaultSlippageAtom)
-  const smartSwapSlippage = get(smartSwapSlippageAtom)
+  const smartSlippage = get(smartTradeSlippageAtom)
   const isEoaEthFlow = get(isEoaEthFlowAtom)
 
   if (typeof currentSlippage === 'number') {
     return { type: 'user', value: currentSlippage }
   }
 
-  if (!isEoaEthFlow && smartSwapSlippage && smartSwapSlippage !== defaultSlippage) {
-    return { type: 'smart', value: smartSwapSlippage }
+  if (!isEoaEthFlow && smartSlippage && smartSlippage !== defaultSlippage) {
+    return { type: 'smart', value: smartSlippage }
   }
 
   return { type: 'default', value: defaultSlippage }
 })
 
-export const swapSlippagePercentAtom = atom((get) => {
+export const tradeSlippagePercentAtom = atom((get) => {
   return bpsToPercent(get(slippageValueAndTypeAtom).value)
 })
 
-export const setSwapSlippageAtom = atom(null, (get, set, slippageBps: number | null) => {
+export const setTradeSlippageAtom = atom(null, (get, set, slippageBps: number | null) => {
   const { chainId } = get(walletInfoAtom)
   const isEoaEthFlow = get(isEoaEthFlowAtom)
 
-  const currentStateAtom = isEoaEthFlow ? ethFlowSlippageAtom : normalSwapSlippageAtom
+  const currentStateAtom = isEoaEthFlow ? ethFlowSlippageAtom : normalTradeSlippageAtom
   const currentState = get(currentStateAtom)
 
   set(currentStateAtom, { ...currentState, [chainId]: slippageBps })

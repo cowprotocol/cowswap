@@ -11,7 +11,7 @@ import useSWR from 'swr'
 
 import { useDerivedTradeState, useIsWrapOrUnwrap } from 'modules/trade'
 
-import { smartSwapSlippageAtom } from '../state/slippageValueAndTypeAtom'
+import { smartTradeSlippageAtom } from '../state/slippageValueAndTypeAtom'
 
 const SWR_OPTIONS = {
   dedupingInterval: ms`1m`,
@@ -25,7 +25,7 @@ export function SmartSlippageUpdater() {
   const { isSmartSlippageEnabled } = useFeatureFlags()
   const { chainId } = useWalletInfo()
   const { inputCurrency, outputCurrency } = useDerivedTradeState() || {}
-  const setSmartSwapSlippage = useSetAtom(smartSwapSlippageAtom)
+  const setSmartSlippage = useSetAtom(smartTradeSlippageAtom)
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
 
   const sellTokenAddress = inputCurrency && getCurrencyAddress(inputCurrency).toLowerCase()
@@ -46,8 +46,8 @@ export function SmartSlippageUpdater() {
   ).data
 
   useEffect(() => {
-    setSmartSwapSlippage(typeof slippageBps === 'number' ? slippageBps : null)
-  }, [slippageBps, setSmartSwapSlippage])
+    setSmartSlippage(typeof slippageBps === 'number' ? slippageBps : null)
+  }, [slippageBps, setSmartSlippage])
 
   return null
 }

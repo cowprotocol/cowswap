@@ -16,7 +16,7 @@ import { useUserTransactionTTL } from 'legacy/state/user/hooks'
 import { useAppData, useAppDataHooks, useUploadAppData } from 'modules/appData'
 import { useGetCachedPermit } from 'modules/permit'
 import { useTradeConfirmActions, useIsEoaEthFlow } from 'modules/trade'
-import { useSwapSlippage } from 'modules/tradeSlippage'
+import { useTradeSlippage } from 'modules/tradeSlippage'
 
 import { useTokenContract, useWETHContract } from 'common/hooks/useContract'
 import { useIsSafeApprovalBundle } from 'common/hooks/useIsSafeApprovalBundle'
@@ -35,7 +35,7 @@ export function BaseFlowContextUpdater() {
   const { allowsOffchainSigning } = useWalletDetails()
   const gnosisSafeInfo = useGnosisSafeInfo()
   const { recipient } = useSwapState()
-  const slippage = useSwapSlippage()
+  const slippage = useTradeSlippage()
   const { trade, currenciesIds } = useDerivedSwapInfo()
   const { quote } = useGetQuoteAndStatus({
     token: currenciesIds.INPUT,

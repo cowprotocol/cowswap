@@ -1,5 +1,5 @@
 export { SmartSlippageUpdater } from './updaters/SmartSlippageUpdater'
 export * from './hooks/useSetSlippage'
-export * from './hooks/useSwapSlippage'
+export * from './hooks/useTradeSlippage'
 export * from './hooks/useIsSmartSlippageApplied'
 export * from './hooks/useIsSlippageModified'

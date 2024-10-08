@@ -30,9 +30,9 @@ import { getNativeOrderDeadlineTooltip, getNonNativeOrderDeadlineTooltip } from 
 import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from 'modules/swap/pure/Row/RowSlippageContent'
 import { useIsEoaEthFlow } from 'modules/trade'
 import {
-  useDefaultSwapSlippage,
-  useSmartSwapSlippage,
-  useSwapSlippage,
+  useDefaultTradeSlippage,
+  useSmartTradeSlippage,
+  useTradeSlippage,
   useIsSlippageModified,
   useIsSmartSlippageApplied,
   useSetSlippage,
@@ -59,11 +59,11 @@ export function TransactionSettings() {
   const isEoaEthFlow = useIsEoaEthFlow()
   const nativeCurrency = useNativeCurrency()
 
-  const swapSlippage = useSwapSlippage()
-  const defaultSwapSlippage = useDefaultSwapSlippage()
+  const swapSlippage = useTradeSlippage()
+  const defaultSwapSlippage = useDefaultTradeSlippage()
   const setSwapSlippage = useSetSlippage()
   const isSmartSlippageApplied = useIsSmartSlippageApplied()
-  const smartSlippage = useSmartSwapSlippage()
+  const smartSlippage = useSmartTradeSlippage()
 
   const chosenSlippageMatchesSmartSlippage = smartSlippage && new Percent(smartSlippage, 10_000).equalTo(swapSlippage)
 

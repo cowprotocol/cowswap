@@ -12,7 +12,7 @@ import { PostOrderParams } from 'legacy/utils/trade'
 import { BaseFlowContext } from 'modules/swap/services/types'
 import { TradeFlowAnalyticsContext } from 'modules/trade/utils/tradeFlowAnalytics'
 import { getOrderValidTo } from 'modules/tradeQuote'
-import { useSwapSlippage } from 'modules/tradeSlippage'
+import { useTradeSlippage } from 'modules/tradeSlippage'
 
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
@@ -26,7 +26,7 @@ export function useSwapAmountsWithSlippage(): [
   CurrencyAmount<Currency> | undefined,
   CurrencyAmount<Currency> | undefined,
 ] {
-  const slippage = useSwapSlippage()
+  const slippage = useTradeSlippage()
   const { trade } = useDerivedSwapInfo()
 
   const { INPUT, OUTPUT } = computeSlippageAdjustedAmounts(trade, slippage)

@@ -23,7 +23,7 @@ import { Field } from 'legacy/state/types'
 import { changeSwapAmountAnalytics, switchTokensAnalytics } from 'modules/analytics'
 import { useNavigateOnCurrencySelection } from 'modules/trade/hooks/useNavigateOnCurrencySelection'
 import { useTradeNavigate } from 'modules/trade/hooks/useTradeNavigate'
-import { useSwapSlippage } from 'modules/tradeSlippage'
+import { useTradeSlippage } from 'modules/tradeSlippage'
 import { useVolumeFee } from 'modules/volumeFee'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
@@ -193,7 +193,7 @@ export function useUnknownImpactWarning() {
 // from the current swap inputs, compute the best trade and return it.
 export function useDerivedSwapInfo(): DerivedSwapInfo {
   const { account, chainId } = useWalletInfo()
-  const slippage = useSwapSlippage()
+  const slippage = useTradeSlippage()
 
   const {
     independentField,

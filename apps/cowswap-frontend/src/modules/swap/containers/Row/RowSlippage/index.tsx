@@ -8,7 +8,7 @@ import { useToggleSettingsMenu } from 'legacy/state/application/hooks'
 
 import { useIsEoaEthFlow } from 'modules/trade'
 
-import { useIsSmartSlippageApplied, useSetSlippage, useSmartSwapSlippage } from 'modules/tradeSlippage'
+import { useIsSmartSlippageApplied, useSetSlippage, useSmartTradeSlippage } from 'modules/tradeSlippage'
 import { RowSlippageContent } from 'modules/swap/pure/Row/RowSlippageContent'
 
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
@@ -33,7 +33,7 @@ export function RowSlippage({
 
   const isEoaEthFlow = useIsEoaEthFlow()
   const nativeCurrency = useNativeCurrency()
-  const smartSwapSlippage = useSmartSwapSlippage()
+  const smartSwapSlippage = useSmartTradeSlippage()
   const isSmartSlippageApplied = useIsSmartSlippageApplied()
   const setSlippage = useSetSlippage()
 
