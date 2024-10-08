@@ -25,6 +25,7 @@ export const ProxyInfo = styled.div`
 
   > a {
     color: inherit;
+    width: 100%;
   }
 
   > a > span {
@@ -35,8 +36,9 @@ export const ProxyInfo = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    width: max-content;
+    width: 100%;
     margin: 0 auto;
+    word-break: break-all;
   }
 `
 
