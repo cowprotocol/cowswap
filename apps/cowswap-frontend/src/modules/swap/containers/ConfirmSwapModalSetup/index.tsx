@@ -33,7 +33,8 @@ import { useSwapConfirmButtonText } from '../../hooks/useSwapConfirmButtonText'
 import { useSwapState } from '../../hooks/useSwapState'
 import { NetworkCostsTooltipSuffix } from '../../pure/NetworkCostsTooltipSuffix'
 import { RowDeadline } from '../Row/RowDeadline'
-import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from '../../../../common/utils/tradeSettingsTooltips'
+import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from 'common/utils/tradeSettingsTooltips'
+import { useUserTransactionTTL } from 'legacy/state/user/hooks'
 
 const CONFIRM_TITLE = 'Swap'
 
@@ -72,6 +73,7 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
   const isEoaEthFlow = useIsEoaEthFlow()
   const nativeCurrency = useNativeCurrency()
   const baseFlowContextSource = useBaseFlowContextSource()
+  const [userDeadline] = useUserTransactionTTL()
 
   const slippageAdjustedSellAmount = trade?.maximumAmountIn(allowedSlippage)
   const isExactIn = trade?.tradeType === TradeType.EXACT_INPUT
@@ -132,7 +134,7 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
                 withTimelineDot={false}
                 alwaysRow
               >
-                <RowDeadline />
+                <RowDeadline deadline={userDeadline} />
               </TradeBasicConfirmDetails>
             )}
             {restContent}

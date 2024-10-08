@@ -39,7 +39,7 @@ import { useIsEoaEthFlow } from 'modules/trade'
 import { useTradeRouteContext } from 'modules/trade/hooks/useTradeRouteContext'
 import { useWrappedToken } from 'modules/trade/hooks/useWrappedToken'
 import { getQuoteTimeOffset } from 'modules/tradeQuote'
-import { useIsSlippageModified, useTradeSlippage } from 'modules/tradeSlippage'
+import { useTradeSlippage } from 'modules/tradeSlippage'
 import { useTradeUsdAmounts } from 'modules/usdAmount'
 import { useShouldZeroApprove } from 'modules/zeroApproval'
 
@@ -73,7 +73,6 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
   const { chainId, account } = useWalletInfo()
   const { slippageAdjustedSellAmount, currencies, trade } = useDerivedSwapInfo()
   const slippage = useTradeSlippage()
-  const isSlippageModified = useIsSlippageModified()
   const parsedAmounts = useSwapCurrenciesAmounts()
   const { isSupportedWallet } = useWalletDetails()
   const isSwapUnsupported = useIsTradeUnsupported(currencies.INPUT, currencies.OUTPUT)
@@ -265,12 +264,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
     bottomContent: (
       <>
         {bottomContent}
-        <TradeRateDetails
-          allowedSlippage={slippage}
-          rateInfoParams={rateInfoParams}
-          receiveAmountInfo={receiveAmountInfo}
-          isSlippageModified={isSlippageModified}
-        />
+        <TradeRateDetails rateInfoParams={rateInfoParams} deadline={deadlineState[0]} />
         <SwapWarningsTop {...swapWarningsTopProps} />
         <SwapButtons {...swapButtonContext} />
         <SwapWarningsBottom {...swapWarningsBottomProps} />

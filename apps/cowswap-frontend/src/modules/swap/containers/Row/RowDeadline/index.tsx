@@ -1,29 +1,26 @@
 import { useMemo } from 'react'
 
-import { useUserTransactionTTL } from 'legacy/state/user/hooks'
-
-import { RowDeadlineContent } from 'modules/swap/pure/Row/RowDeadline'
-import { useIsEoaEthFlow } from 'modules/trade'
-import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
+import { useIsEoaEthFlow, useIsWrapOrUnwrap } from 'modules/trade'
 
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
-export function RowDeadline() {
-  const [userDeadline] = useUserTransactionTTL()
+import { RowDeadlineContent } from '../../../pure/Row/RowDeadline'
+
+export function RowDeadline({ deadline }: { deadline: number }) {
   const isEoaEthFlow = useIsEoaEthFlow()
   const nativeCurrency = useNativeCurrency()
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
 
   const props = useMemo(() => {
-    const displayDeadline = Math.floor(userDeadline / 60) + ' minutes'
+    const displayDeadline = Math.floor(deadline / 60) + ' minutes'
     return {
-      userDeadline,
+      userDeadline: deadline,
       symbols: [nativeCurrency.symbol],
       displayDeadline,
       isEoaEthFlow,
       isWrapOrUnwrap,
     }
-  }, [isEoaEthFlow, isWrapOrUnwrap, nativeCurrency.symbol, userDeadline])
+  }, [isEoaEthFlow, isWrapOrUnwrap, nativeCurrency.symbol, deadline])
 
   if (!isEoaEthFlow || isWrapOrUnwrap) {
     return null

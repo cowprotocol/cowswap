@@ -18,8 +18,6 @@ export interface RowDeadlineProps {
   slippageTooltip?: React.ReactNode
 }
 
-// TODO: RowDeadlineContent and RowSlippageContent are very similar. Refactor and extract base component?
-
 export function RowDeadlineContent(props: RowDeadlineProps) {
   const { displayDeadline, isEoaEthFlow, symbols, styleProps } = props
   const deadlineTooltipContent = isEoaEthFlow

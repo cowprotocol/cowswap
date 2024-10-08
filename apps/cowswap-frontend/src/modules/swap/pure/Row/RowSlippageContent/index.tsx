@@ -47,8 +47,6 @@ export interface RowSlippageContentProps {
   isSmartSlippageApplied: boolean
 }
 
-// TODO: RowDeadlineContent and RowSlippageContent are very similar. Refactor and extract base component?
-
 export function RowSlippageContent(props: RowSlippageContentProps) {
   const {
     chainId,

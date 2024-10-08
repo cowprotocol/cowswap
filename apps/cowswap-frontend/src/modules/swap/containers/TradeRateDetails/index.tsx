@@ -1,17 +1,18 @@
-import React, { useMemo, useState, useCallback } from 'react'
+import React, { useMemo, useState, useCallback, ReactElement } from 'react'
 
-import { CurrencyAmount, Percent } from '@uniswap/sdk-core'
+import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import {
   getTotalCosts,
-  ReceiveAmountInfo,
   TradeFeesAndCosts,
   TradeTotalCostsDetails,
   useDerivedTradeState,
   NetworkCostsRow,
+  useReceiveAmountInfo,
 } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
+import { useIsSlippageModified, useTradeSlippage } from 'modules/tradeSlippage'
 import { useUsdAmount } from 'modules/usdAmount'
 
 import { NetworkCostsSuffix } from 'common/pure/NetworkCostsSuffix'
@@ -23,19 +24,17 @@ import { RowDeadline } from '../Row/RowDeadline'
 import { RowSlippage } from '../Row/RowSlippage'
 
 interface TradeRateDetailsProps {
-  receiveAmountInfo: ReceiveAmountInfo | null
+  deadline: number
   rateInfoParams: RateInfoParams
-  allowedSlippage: Percent | null
-  isSlippageModified: boolean
+  children?: ReactElement
 }
 
-export function TradeRateDetails({
-  allowedSlippage,
-  receiveAmountInfo,
-  rateInfoParams,
-  isSlippageModified,
-}: TradeRateDetailsProps) {
+export function TradeRateDetails({ rateInfoParams, deadline }: TradeRateDetailsProps) {
   const [isFeeDetailsOpen, setFeeDetailsOpen] = useState(false)
+
+  const slippage = useTradeSlippage()
+  const isSlippageModified = useIsSlippageModified()
+  const receiveAmountInfo = useReceiveAmountInfo()
   const derivedTradeState = useDerivedTradeState()
   const tradeQuote = useTradeQuote()
   const shouldPayGas = useShouldPayGas()
@@ -90,8 +89,8 @@ export function TradeRateDetails({
         networkCostsTooltipSuffix={<NetworkCostsTooltipSuffix />}
         alwaysRow
       />
-      {allowedSlippage && <RowSlippage allowedSlippage={allowedSlippage} isSlippageModified={isSlippageModified} />}
-      <RowDeadline />
+      {slippage && <RowSlippage allowedSlippage={slippage} isSlippageModified={isSlippageModified} />}
+      <RowDeadline deadline={deadline} />
     </TradeTotalCostsDetails>
   )
 }
