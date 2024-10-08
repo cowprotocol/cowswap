@@ -1,19 +1,19 @@
 import { atomWithStorage } from 'jotai/utils'
 
+import { DEFAULT_DEADLINE_FROM_NOW } from '@cowprotocol/common-const'
+import { atomWithPartialUpdate } from '@cowprotocol/common-utils'
 import { getJotaiIsolatedStorage } from '@cowprotocol/core'
 
 export interface YieldSettingsState {
   readonly showRecipient: boolean
-  readonly partialFillsEnabled: boolean
+  readonly deadline: number
 }
 
 export const defaultYieldSettings: YieldSettingsState = {
   showRecipient: false,
-  partialFillsEnabled: true,
+  deadline: DEFAULT_DEADLINE_FROM_NOW,
 }
 
-export const yieldSettingsAtom = atomWithStorage<YieldSettingsState>(
-  'yieldSettingsAtom:v0',
-  defaultYieldSettings,
-  getJotaiIsolatedStorage(),
+export const { atom: yieldSettingsAtom, updateAtom: updateYieldSettingsAtom } = atomWithPartialUpdate(
+  atomWithStorage<YieldSettingsState>('yieldSettingsAtom:v1', defaultYieldSettings, getJotaiIsolatedStorage()),
 )

@@ -1,22 +1,23 @@
-import { useAtomValue } from 'jotai'
 import React from 'react'
 
 import { Field } from 'legacy/state/types'
 
-import { TradeWidget, useTradeConfirmState, useTradePriceImpact } from 'modules/trade'
+import { SettingsTab, TradeWidget, useTradeConfirmState, useTradePriceImpact } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
 
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 
 import { useTradeFlowContext } from '../../hooks/useTradeFlowContext'
 import { useYieldDerivedState } from '../../hooks/useYieldDerivedState'
+import { useYieldDeadlineState, useYieldRecipientToggleState, useYieldSettings } from '../../hooks/useYieldSettings'
 import { useYieldWidgetActions } from '../../hooks/useYieldWidgetActions'
-import { yieldSettingsAtom } from '../../state/yieldSettingsAtom'
 import { TradeButtons } from '../TradeButtons'
 import { YieldConfirmModal } from '../YieldConfirmModal'
 
 export function YieldWidget() {
-  const settingsState = useAtomValue(yieldSettingsAtom)
+  const settingsState = useYieldSettings()
+  const deadlineState = useYieldDeadlineState()
+  const recipientToggleState = useYieldRecipientToggleState()
   const { isLoading: isRateLoading } = useTradeQuote()
   const priceImpact = useTradePriceImpact()
   const { isOpen: isConfirmOpen } = useTradeConfirmState()
@@ -71,7 +72,7 @@ export function YieldWidget() {
   }
 
   const slots = {
-    settingsWidget: <button>Settings</button>,
+    settingsWidget: <SettingsTab recipientToggleState={recipientToggleState} deadlineState={deadlineState} />,
     bottomContent: <TradeButtons isTradeContextReady={!!tradeFlowContext} />,
   }
 
