@@ -1,12 +1,13 @@
 import { useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
+import { useTradeConfirmState } from 'modules/trade'
+
 import { useSmartSlippageFromBff } from './useSmartSlippageFromBff'
 import { useSmartSlippageFromFeeMultiplier } from './useSmartSlippageFromFeeMultiplier'
 
 import { useDerivedSwapInfo, useHighFeeWarning } from '../../hooks/useSwapState'
 import { smartSwapSlippageAtom } from '../../state/slippageValueAndTypeAtom'
-import { useTradeConfirmState } from 'modules/trade'
 
 const MAX_BPS = 500 // 5%
 const MIN_BPS = 50 // 0.5%
