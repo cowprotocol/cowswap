@@ -2,17 +2,18 @@ import { UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-export const Wrapper = styled.div<{ isOpen: boolean }>`
+export const Wrapper = styled.div<{ isOpen: boolean; margin?: string }>`
   display: flex;
   flex-flow: row wrap;
   align-items: center;
   width: 100%;
-  border: 1px solid var(${UI.COLOR_PAPER_DARKER});
+  border: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
   border-radius: 16px;
   padding: 10px;
   height: auto;
   font-size: 13px;
   font-weight: var(${UI.FONT_WEIGHT_MEDIUM});
+  margin: ${({ margin }) => margin || '0'};
 `
 
 export const Summary = styled.div`

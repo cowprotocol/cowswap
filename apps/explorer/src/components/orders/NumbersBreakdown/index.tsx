@@ -8,7 +8,7 @@ import useSafeState from 'hooks/useSafeState'
 import styled from 'styled-components/macro'
 
 const ShowMoreButton = styled.button`
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   border: none;
   background: none;
   color: ${({ theme }) => theme.textActive1};
