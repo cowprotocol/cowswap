@@ -1,7 +1,7 @@
 import { INPUT_OUTPUT_EXPLANATION, MINIMUM_ETH_FLOW_SLIPPAGE, PERCENTAGE_PRECISION } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
-import { HoverTooltip, LinkStyledButton, RowFixed, UI } from '@cowprotocol/ui'
+import { CenteredDots, HoverTooltip, LinkStyledButton, RowFixed, UI } from '@cowprotocol/ui'
 import { Percent } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
@@ -82,6 +82,7 @@ export interface RowSlippageContentProps {
   setAutoSlippage?: Command // todo: make them optional
   smartSlippage?: string
   isSmartSlippageApplied: boolean
+  isSmartSlippageLoading: boolean
 }
 
 // TODO: RowDeadlineContent and RowSlippageContent are very similar. Refactor and extract base component?
@@ -101,6 +102,7 @@ export function RowSlippageContent(props: RowSlippageContentProps) {
     setAutoSlippage,
     smartSlippage,
     isSmartSlippageApplied,
+    isSmartSlippageLoading,
   } = props
 
   const tooltipContent =
@@ -111,12 +113,17 @@ export function RowSlippageContent(props: RowSlippageContentProps) {
 
   const displayDefaultSlippage = isSlippageModified && setAutoSlippage && smartSlippage && !suggestedEqualToUserSlippage && (
     <DefaultSlippage>
-      <LinkStyledButton onClick={setAutoSlippage}>(Suggested: {smartSlippage})</LinkStyledButton>
-      <HoverTooltip wrapInContainer content={SUGGESTED_SLIPPAGE_TOOLTIP}>
-        <StyledInfoIcon size={16} />
-      </HoverTooltip>
+      {isSmartSlippageLoading ? (<CenteredDots />) : (
+        <>
+          <LinkStyledButton onClick={setAutoSlippage}>(Suggested: {smartSlippage})</LinkStyledButton>
+          <HoverTooltip wrapInContainer content={SUGGESTED_SLIPPAGE_TOOLTIP}>
+            <StyledInfoIcon size={16} />
+          </HoverTooltip>
+        </>
+      )}
     </DefaultSlippage>
   )
+  const loading = isSmartSlippageLoading && isSmartSlippageApplied && (<CenteredDots />)
 
   return (
     <StyledRowBetween {...styleProps}>
@@ -137,11 +144,11 @@ export function RowSlippageContent(props: RowSlippageContentProps) {
       <TextWrapper textAlign="right">
         {showSettingOnClick ? (
           <ClickableText onClick={toggleSettings}>
-            {displaySlippage}{displayDefaultSlippage}
+            {loading ? loading : (<>{displaySlippage}{displayDefaultSlippage}</>)}
           </ClickableText>
         ) : (
           <span>
-            {displaySlippage}{displayDefaultSlippage}
+            {loading ? loading : (<>{displaySlippage}{displayDefaultSlippage}</>)}
           </span>
         )}
       </TextWrapper>
