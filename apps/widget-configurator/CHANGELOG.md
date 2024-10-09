@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.2](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v1.7.1...widget-configurator-v1.7.2) (2024-10-08)
+
+
+### Bug Fixes
+
+* **widget-configurator:** update mainnet default partner fee recipient ([#4949](https://github.com/cowprotocol/cowswap/issues/4949)) ([173a0b3](https://github.com/cowprotocol/cowswap/commit/173a0b3c5e40e6e1679eaf052890b2395112b78b))
+
 ## [1.7.1](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v1.7.0...widget-configurator-v1.7.1) (2024-10-07)
 
 

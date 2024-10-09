@@ -13,52 +13,64 @@ export const StyledExplorerTabs = styled(ExplorerTabs)`
 
 export const Wrapper = styled(WrapperTemplate)`
   max-width: 118rem;
+
   .disclaimer {
     font-size: 1.2rem;
     line-height: 1.3;
     display: block;
     margin-bottom: 1rem;
+
     ol {
       padding-left: 2rem;
+
       li {
         margin: 0.5rem 0 0.5rem 0;
       }
     }
   }
+
   .info-header {
     margin-bottom: 2rem;
     font-size: 1.5rem;
+
     &.box {
       padding: 3rem 4rem;
       background: ${({ theme }): string => theme.background};
       border-radius: 0.4rem;
     }
+
     a {
       margin: 0 0.5rem 0 0.5rem;
       color: ${({ theme }): string => theme.orange};
     }
+
     &.inner-form {
+      margin-bottom: 3rem;
+      font-size: 1.2rem;
+
       h2 {
         margin-bottom: 2rem;
       }
-      margin-bottom: 3rem;
-      font-size: 1.2rem;
     }
+
     p {
       line-height: 1.5;
       margin: 0;
     }
   }
+
   ${Content} {
     display: flex;
     flex-direction: column;
     border: 0;
     padding: 0;
+
     .form-container {
       ${AppDataWrapper} {
         align-items: center;
       }
     }
+
     ${AppDataWrapper} {
       flex: 1;
       padding-left: 2rem;
@@ -67,6 +79,7 @@ export const Wrapper = styled(WrapperTemplate)`
         padding-left: 0;
       }
     }
+
     .json-formatter {
       line-height: 1.25;
 
@@ -82,15 +95,18 @@ export const Wrapper = styled(WrapperTemplate)`
         background: ${({ theme }): string => transparentize(0.8, theme.error)};
       }
     }
+
     .hidden-content {
       padding: 0 1rem;
       border-radius: 0.5rem;
       font-size: 1.3rem;
       line-height: 1.6;
+
       &:not(.error) {
         background: ${({ theme }): string => theme.greyOpacity};
       }
     }
+
     .appData-hash {
       margin: 0 0 1rem 0;
       max-width: 55rem;
@@ -98,10 +114,12 @@ export const Wrapper = styled(WrapperTemplate)`
       padding: 0.75rem;
       background: ${({ theme }): string => theme.tableRowBorder};
       border-radius: 0.5rem;
+
       ${Media.upToSmall()} {
         max-width: none;
         margin: 1rem 0;
       }
+
       span,
       a {
         font-size: 1.3rem;
@@ -131,23 +149,33 @@ export const Wrapper = styled(WrapperTemplate)`
     i.glyphicon {
       display: none;
     }
+
     .btn-add::after {
       content: 'Add';
     }
+
     .array-item-copy::after {
       content: 'Copy';
     }
+
     .array-item-move-up::after {
       content: 'Move Up';
     }
+
     .array-item-move-down::after {
       content: 'Move Down';
     }
+
     .array-item-remove::after {
       content: 'Remove';
     }
 
     .hidden-content {
+      h2 {
+        margin: 2rem 0 2rem 0;
+        font-size: 2rem;
+      }
+
       ${Media.LargeAndUp()} {
         position: sticky;
         top: 2.8rem;
@@ -171,11 +199,6 @@ export const Wrapper = styled(WrapperTemplate)`
         position: sticky;
         top: 4rem;
         width: 60rem;
-      }
-
-      h2 {
-        margin: 2rem 0 2rem 0;
-        font-size: 2rem;
       }
     }
   }
