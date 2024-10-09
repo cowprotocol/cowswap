@@ -1,10 +1,12 @@
 import { useCallback, useMemo } from 'react'
 
+import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
 import { isTruthy } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
 
 import { useDispatch, useSelector } from 'react-redux'
+import useSWR from 'swr'
 
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 
@@ -48,6 +50,9 @@ import { serializeToken } from '../user/hooks'
 
 type OrderID = string
 
+const EMPTY_ORDERS_ARRAY = [] as Order[]
+const EMPTY_ORDERS_MAP = {} as PartialOrdersMap
+
 export interface AddOrUpdateUnserialisedOrdersParams extends Omit<AddOrUpdateOrdersParams, 'orders'> {
   orders: Order[]
 }
@@ -90,7 +95,7 @@ export type CancelOrdersBatchCallback = (cancelOrdersBatchParams: CancelOrdersBa
 export type InvalidateOrdersBatchCallback = (params: InvalidateOrdersBatchParams) => void
 export type PresignOrdersCallback = (fulfillOrderParams: PresignOrdersParams) => void
 export type UpdatePresignGnosisSafeTxCallback = (
-  updatePresignGnosisSafeTxParams: UpdatePresignGnosisSafeTxParams
+  updatePresignGnosisSafeTxParams: UpdatePresignGnosisSafeTxParams,
 ) => void
 export type SetIsOrderUnfillable = (params: SetIsOrderUnfillableParams) => void
 export type SetIsOrderRefundedBatchCallback = (params: SetIsOrderRefundedBatch) => void
@@ -148,13 +153,13 @@ function useOrdersStateNetwork(chainId: SupportedChainId | undefined): OrdersSta
 export const useOrders = (
   chainId: SupportedChainId,
   account: string | undefined,
-  uiOrderType: UiOrderType
+  uiOrderType: UiOrderType,
 ): Order[] => {
   const state = useOrdersStateNetwork(chainId)
   const accountLowerCase = account?.toLowerCase()
 
   return useMemo(() => {
-    if (!state) return []
+    if (!state) return EMPTY_ORDERS_ARRAY
 
     return _concatOrdersState(state, ORDER_LIST_KEYS).reduce<Order[]>((acc, order) => {
       if (!order) return acc
@@ -180,7 +185,7 @@ const useAllOrdersMap = ({ chainId }: GetOrdersParams): PartialOrdersMap => {
   const state = useOrdersStateNetwork(chainId)
 
   return useMemo(() => {
-    if (!state) return {}
+    if (!state) return EMPTY_ORDERS_MAP
 
     return flatOrdersStateNetwork(state)
   }, [state])
@@ -223,29 +228,23 @@ export const useCombinedPendingOrders = ({
         creating: PartialOrdersMap
       }
     | undefined
-  >((state) => {
-    const ordersState = chainId && state.orders?.[chainId]
-    if (!ordersState) {
-      return
-    }
+  >((state) => state.orders?.[chainId])
 
-    return {
-      pending: ordersState.pending || {},
-      presignaturePending: ordersState.presignaturePending || {},
-      creating: ordersState.creating || {},
-    }
-  })
+  return useSWR(
+    [state, account],
+    ([state, account]) => {
+      if (!state || !account) return EMPTY_ORDERS_ARRAY
 
-  return useMemo(() => {
-    if (!state || !account) return []
+      const { pending, presignaturePending, creating } = state
 
-    const { pending, presignaturePending, creating } = state
-    const allPending = Object.values(pending).concat(Object.values(presignaturePending)).concat(Object.values(creating))
+      const allPending = Object.values({ ...pending, ...presignaturePending, ...creating })
 
-    return allPending.map(deserializeOrder).filter((order) => {
-      return order?.owner.toLowerCase() === account.toLowerCase()
-    }) as Order[]
-  }, [state, account])
+      return allPending.map(deserializeOrder).filter((order) => {
+        return order?.owner.toLowerCase() === account.toLowerCase()
+      }) as Order[]
+    },
+    { ...SWR_NO_REFRESH_OPTIONS, fallbackData: EMPTY_ORDERS_ARRAY },
+  ).data
 }
 
 /**
@@ -258,11 +257,11 @@ export const useCombinedPendingOrders = ({
  */
 export const useOnlyPendingOrders = (chainId: SupportedChainId): Order[] => {
   const state = useSelector<AppState, PartialOrdersMap | undefined>(
-    (state) => chainId && state.orders?.[chainId]?.pending
+    (state) => chainId && state.orders?.[chainId]?.pending,
   )
 
   return useMemo(() => {
-    if (!state) return []
+    if (!state) return EMPTY_ORDERS_ARRAY
 
     return Object.values(state).map(deserializeOrder).filter(isTruthy)
   }, [state])
@@ -270,11 +269,11 @@ export const useOnlyPendingOrders = (chainId: SupportedChainId): Order[] => {
 
 export const useCancelledOrders = ({ chainId }: GetOrdersParams): Order[] => {
   const state = useSelector<AppState, PartialOrdersMap | undefined>(
-    (state) => chainId && state.orders?.[chainId]?.cancelled
+    (state) => chainId && state.orders?.[chainId]?.cancelled,
   )
 
   return useMemo(() => {
-    if (!state) return []
+    if (!state) return EMPTY_ORDERS_ARRAY
 
     return Object.values(state).map(deserializeOrder).filter(isTruthy)
   }, [state])
@@ -282,11 +281,11 @@ export const useCancelledOrders = ({ chainId }: GetOrdersParams): Order[] => {
 
 export const useExpiredOrders = ({ chainId }: GetOrdersParams): Order[] => {
   const state = useSelector<AppState, PartialOrdersMap | undefined>(
-    (state) => chainId && state.orders?.[chainId]?.expired
+    (state) => chainId && state.orders?.[chainId]?.expired,
   )
 
   return useMemo(() => {
-    if (!state) return []
+    if (!state) return EMPTY_ORDERS_ARRAY
 
     return Object.values(state).map(deserializeOrder).filter(isTruthy)
   }, [state])
@@ -303,7 +302,7 @@ export const useAddOrUpdateOrders = (): AddOrUpdateOrdersCallback => {
       }))
       dispatch(addOrUpdateOrders({ ...params, orders }))
     },
-    [dispatch]
+    [dispatch],
   )
 }
 
@@ -313,7 +312,7 @@ export const useAddPendingOrder = (): AddOrderCallback => {
     (addOrderParams: AddUnserialisedPendingOrderParams) => {
       addPendingOrderStep(addOrderParams, dispatch)
     },
-    [dispatch]
+    [dispatch],
   )
 }
 
@@ -327,7 +326,7 @@ export const useFulfillOrdersBatch = (): FulfillOrdersBatchCallback => {
   const dispatch = useDispatch<AppDispatch>()
   return useCallback(
     (fulfillOrdersBatchParams: FulfillOrdersBatchParams) => dispatch(fulfillOrdersBatch(fulfillOrdersBatchParams)),
-    [dispatch]
+    [dispatch],
   )
 }
 
@@ -340,7 +339,7 @@ export const useUpdatePresignGnosisSafeTx = (): UpdatePresignGnosisSafeTxCallbac
   const dispatch = useDispatch<AppDispatch>()
   return useCallback(
     (params: UpdatePresignGnosisSafeTxParams) => dispatch(updatePresignGnosisSafeTx(params)),
-    [dispatch]
+    [dispatch],
   )
 }
 
@@ -348,7 +347,7 @@ export const useExpireOrdersBatch = (): ExpireOrdersBatchCallback => {
   const dispatch = useDispatch<AppDispatch>()
   return useCallback(
     (expireOrdersBatchParams: ExpireOrdersBatchParams) => dispatch(expireOrdersBatch(expireOrdersBatchParams)),
-    [dispatch]
+    [dispatch],
   )
 }
 
@@ -356,7 +355,7 @@ export const useCancelOrdersBatch = (): CancelOrdersBatchCallback => {
   const dispatch = useDispatch<AppDispatch>()
   return useCallback(
     (cancelOrdersBatchParams: CancelOrdersBatchParams) => dispatch(cancelOrdersBatch(cancelOrdersBatchParams)),
-    [dispatch]
+    [dispatch],
   )
 }
 
@@ -375,7 +374,7 @@ export const useRequestOrderCancellation = (): CancelOrderCallback => {
   const dispatch = useDispatch<AppDispatch>()
   return useCallback(
     (cancelOrderParams: CancelOrderParams) => dispatch(requestOrderCancellation(cancelOrderParams)),
-    [dispatch]
+    [dispatch],
   )
 }
 
