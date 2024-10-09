@@ -13,7 +13,12 @@ import useSWR from 'swr'
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 
-import { SelectTokenWidget, useOpenTokenSelectWidget, useUpdateSelectTokenWidgetState } from 'modules/tokensList'
+import {
+  SelectTokenWidget,
+  useOpenTokenSelectWidget,
+  useSelectTokenWidgetState,
+  useUpdateSelectTokenWidgetState,
+} from 'modules/tokensList'
 
 import { useTokenContract } from 'common/hooks/useContract'
 import { CurrencySelectButton } from 'common/pure/CurrencySelectButton'
@@ -39,6 +44,7 @@ export function RescueFundsFromProxy({ onDismiss }: { onDismiss: Command }) {
   const erc20Contract = useTokenContract(selectedTokenAddress)
   const onSelectToken = useOpenTokenSelectWidget()
   const updateSelectTokenWidget = useUpdateSelectTokenWidgetState()
+  const { open: isSelectTokenWidgetOpen } = useSelectTokenWidgetState()
 
   const onDismissCallback = useCallback(() => {
     updateSelectTokenWidget({ open: false })
@@ -89,41 +95,48 @@ export function RescueFundsFromProxy({ onDismiss }: { onDismiss: Command }) {
       >
         <ErrorModal />
         <SelectTokenWidget />
-        <InlineBanner orientation={BannerOrientation.Horizontal}>
-          <p>
-            In some cases, when orders contain a post-hook using a proxy account, something may go wrong and funds may
-            remain on the proxy account. Select a currency and get your funds back.
-          </p>
-        </InlineBanner>
-        <ProxyInfo>
-          Proxy account:{' '}
-          {proxyAddress && (
-            <ExternalLink href={getEtherscanLink(chainId, 'address', proxyAddress)}>
-              <span>{proxyAddress}</span>
-            </ExternalLink>
-          )}
-        </ProxyInfo>
-        <Content>
-          <CurrencySelectButton currency={selectedCurrency} loading={false} onClick={onCurrencySelectClick} />
-
-          {selectedTokenAddress ? (
-            <>
+        {!isSelectTokenWidgetOpen && (
+          <>
+            <InlineBanner orientation={BannerOrientation.Horizontal}>
               <p>
-                Balance:{' '}
-                {tokenBalance ? (
-                  <TokenAmount amount={tokenBalance} defaultValue="0" tokenSymbol={tokenBalance.currency} />
-                ) : isBalanceLoading ? (
-                  <Loader />
-                ) : null}
+                In some cases, when orders contain a post-hook using a proxy account, something may go wrong and funds
+                may remain on the proxy account. Select a currency and get your funds back.
               </p>
-              <ButtonPrimary onClick={rescueFunds} disabled={!hasBalance || isTxSigningInProgress}>
-                {isTxSigningInProgress ? <Loader /> : hasBalance ? 'Rescue funds' : 'No balance'}
-              </ButtonPrimary>
-            </>
-          ) : (
-            <div></div>
-          )}
-        </Content>
+            </InlineBanner>
+            <ProxyInfo>
+              <h4>Proxy account:</h4>
+              {proxyAddress && (
+                <ExternalLink href={getEtherscanLink(chainId, 'address', proxyAddress)}>
+                  <span>{proxyAddress} ↗</span>
+                </ExternalLink>
+              )}
+            </ProxyInfo>
+            <Content>
+              <CurrencySelectButton currency={selectedCurrency} loading={false} onClick={onCurrencySelectClick} />
+
+              {selectedTokenAddress ? (
+                <>
+                  <p>
+                    Balance to be rescued:
+                    <br />
+                    {tokenBalance ? (
+                      <b>
+                        <TokenAmount amount={tokenBalance} defaultValue="0" tokenSymbol={tokenBalance.currency} />
+                      </b>
+                    ) : isBalanceLoading ? (
+                      <Loader />
+                    ) : null}
+                  </p>
+                  <ButtonPrimary onClick={rescueFunds} disabled={!hasBalance || isTxSigningInProgress}>
+                    {isTxSigningInProgress ? <Loader /> : hasBalance ? 'Rescue funds' : 'No funds to rescue'}
+                  </ButtonPrimary>
+                </>
+              ) : (
+                <div></div>
+              )}
+            </Content>
+          </>
+        )}
       </NewModal>
     </Wrapper>
   )

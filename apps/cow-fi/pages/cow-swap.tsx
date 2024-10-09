@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 
 import { GetStaticProps } from 'next'
 import { Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
@@ -49,12 +49,29 @@ interface PageProps {
 }
 
 export default function Page({ tweets }: PageProps) {
-  // Load Twitter script
+  const tweetSectionRef = useRef<HTMLDivElement>(null)
+
   useEffect(() => {
-    const script = document.createElement('script')
-    script.src = 'https://platform.twitter.com/widgets.js'
-    script.async = true
-    document.head.appendChild(script)
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          const script = document.createElement('script')
+          script.src = 'https://platform.twitter.com/widgets.js'
+          script.async = true
+          document.head.appendChild(script)
+          observer.disconnect()
+        }
+      },
+      { rootMargin: '100px' },
+    )
+
+    if (tweetSectionRef.current) {
+      observer.observe(tweetSectionRef.current)
+    }
+
+    return () => {
+      observer.disconnect()
+    }
   }, [])
 
   return (
@@ -341,7 +358,7 @@ export default function Page({ tweets }: PageProps) {
           </ContainerCardSection>
         </ContainerCard>
 
-        <ContainerCard bgColor={'transparent'}>
+        <ContainerCard bgColor={'transparent'} ref={tweetSectionRef}>
           <ContainerCardSection>
             <SectionTitleWrapper maxWidth={1100}>
               <SectionTitleText textAlign="center">Don't take our word for it</SectionTitleText>
