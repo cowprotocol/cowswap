@@ -7,12 +7,12 @@ import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
 
-import { HighFeeWarning } from 'legacy/components/SwapWarnings'
 import TradeGp from 'legacy/state/swap/TradeGp'
 
 import { CompatibilityIssuesWarning } from 'modules/trade/pure/CompatibilityIssuesWarning'
 import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
 import { TradeUrlParams } from 'modules/trade/types/TradeRawState'
+import { HighFeeWarning } from 'modules/tradeWidgetAddons'
 
 import { ZeroApprovalWarning } from 'common/pure/ZeroApprovalWarning'
 

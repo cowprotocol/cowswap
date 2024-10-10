@@ -5,7 +5,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { Percent, TradeType } from '@uniswap/sdk-core'
 
-import { HighFeeWarning } from 'legacy/components/SwapWarnings'
+import { HighFeeWarning } from 'modules/tradeWidgetAddons'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import TradeGp from 'legacy/state/swap/TradeGp'
 import { useUserTransactionTTL } from 'legacy/state/user/hooks'

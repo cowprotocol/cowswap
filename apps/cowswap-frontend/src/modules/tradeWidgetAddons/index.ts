@@ -1,4 +1,5 @@
 export { RowDeadline } from './containers/RowDeadline'
 export { TradeRateDetails } from './containers/TradeRateDetails'
 export { SettingsTab } from './containers/SettingsTab'
+export { HighFeeWarning } from './containers/HighFeeWarning'
 export { NetworkCostsTooltipSuffix } from './pure/NetworkCostsTooltipSuffix'
