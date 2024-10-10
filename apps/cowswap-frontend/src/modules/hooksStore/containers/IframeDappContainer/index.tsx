@@ -10,7 +10,7 @@ import { HookDappContext as HookDappContextType, HookDappIframe } from '../../ty
 
 const Iframe = styled.iframe`
   border: 0;
-  min-height: 350px;
+  min-height: 300px;
 `
 
 interface IframeDappContainerProps {

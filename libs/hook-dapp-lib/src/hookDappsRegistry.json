@@ -49,5 +49,19 @@
     "conditions": {
       "supportedNetworks": [11155111]
     }
+  },
+  "CLAIM_LLAMAPAY_VESTING": {
+    "id": "5d2c081d11a01ca0b76e2fafbc0d3c62a4c9945ce404706fb1e49e826c0f99eb",
+    "type": "IFRAME",
+    "name": "Claim LlamaPay Vesting Hook",
+    "description": "The Claim LlamaPay Vesting Hook is a powerful and user-friendly feature designed to streamline the process of claiming funds from LlamaPay vesting contracts. This tool empowers users to easily access and manage their vested tokens, ensuring a smooth and efficient experience in handling time-locked assets.",
+    "descriptionShort": "Claim your LlamaPay vesting contract funds",
+    "image": "https://cow-hooks-dapps-claim-vesting.vercel.app/llama-pay-icon.png",
+    "version": "0.1.0",
+    "website": "https://github.com/bleu/cow-hooks-dapps",
+    "url": "https://cow-hooks-dapps-claim-vesting.vercel.app",
+    "conditions": {
+      "supportedNetworks": [1, 100, 42161]
+    }
   }
 }
