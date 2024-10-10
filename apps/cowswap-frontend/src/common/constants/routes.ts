@@ -42,11 +42,17 @@ export const MENU_ITEMS: { route: RoutesValues; label: string; fullLabel?: strin
   { route: Routes.SWAP, label: 'Swap', description: 'Trade tokens' },
   { route: Routes.LIMIT_ORDER, label: 'Limit', fullLabel: 'Limit order', description: 'Set your own price' },
   { route: Routes.ADVANCED_ORDERS, label: 'TWAP', description: 'Place orders with a time-weighted average price' },
-  { route: Routes.YIELD, label: 'Yield', fullLabel: 'Yield', description: 'Provide liquidity' }, // TODO
 ]
 
 export const HOOKS_STORE_MENU_ITEM = {
   route: Routes.HOOKS,
   label: 'Hooks',
   description: 'Powerful tool to generate pre/post interaction for CoW Protocol',
+}
+
+export const YIELD_MENU_ITEM = {
+  route: Routes.YIELD,
+  label: 'Yield',
+  fullLabel: 'Yield',
+  description: 'Provide liquidity',
 }
