@@ -59,7 +59,7 @@ export function YieldWidget() {
     field: Field.OUTPUT,
     currency: outputCurrency,
     amount: outputCurrencyAmount,
-    isIndependent: true,
+    isIndependent: false,
     balance: outputCurrencyBalance,
     fiatAmount: outputCurrencyFiatAmount,
     receiveAmountInfo,

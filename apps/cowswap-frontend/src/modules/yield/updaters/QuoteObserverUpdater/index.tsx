@@ -13,7 +13,7 @@ export function QuoteObserverUpdater() {
   const receiveAmountInfo = useReceiveAmountInfo()
   const { beforeNetworkCosts } = receiveAmountInfo || {}
 
-  const updateLimitRateState = useUpdateCurrencyAmount()
+  const updateCurrencyAmount = useUpdateCurrencyAmount()
 
   const inputCurrency = state?.inputCurrency
   const outputCurrency = state?.outputCurrency
@@ -24,8 +24,8 @@ export function QuoteObserverUpdater() {
       return
     }
 
-    updateLimitRateState(Field.OUTPUT, beforeNetworkCosts.buyAmount)
-  }, [beforeNetworkCosts, inputCurrency, outputCurrency, updateLimitRateState])
+    updateCurrencyAmount(Field.OUTPUT, beforeNetworkCosts.buyAmount)
+  }, [beforeNetworkCosts, inputCurrency, outputCurrency, updateCurrencyAmount])
 
   // Reset the output amount when the input amount changes
   useEffect(() => {
@@ -33,8 +33,8 @@ export function QuoteObserverUpdater() {
       return
     }
 
-    updateLimitRateState(Field.OUTPUT, CurrencyAmount.fromRawAmount(outputCurrency, 0))
-  }, [state?.inputCurrencyAmount, state?.inputCurrency, updateLimitRateState, outputCurrency])
+    updateCurrencyAmount(Field.OUTPUT, CurrencyAmount.fromRawAmount(outputCurrency, 0))
+  }, [state?.inputCurrencyAmount, state?.inputCurrency, updateCurrencyAmount, outputCurrency])
 
   return null
 }
