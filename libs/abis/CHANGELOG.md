@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/cowprotocol/cowswap/compare/cowswap-abis-v1.1.0...cowswap-abis-v1.2.0) (2024-10-10)
+
+
+### Features
+
+* rescue funds from CoW Shed Proxy ([#4935](https://github.com/cowprotocol/cowswap/issues/4935)) ([5fb7f34](https://github.com/cowprotocol/cowswap/commit/5fb7f344bec8dfd26177f62c765ed1e589c56a56))
+
 ## [1.1.0](https://github.com/cowprotocol/cowswap/compare/cowswap-abis-v1.0.0...cowswap-abis-v1.1.0) (2024-09-30)
 
 

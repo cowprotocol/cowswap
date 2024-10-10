@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.35.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.34.1...explorer-v2.35.0) (2024-10-10)
+
+
+### Features
+
+* **explorer:** display order hooks details ([#4921](https://github.com/cowprotocol/cowswap/issues/4921)) ([9c364bd](https://github.com/cowprotocol/cowswap/commit/9c364bd81f2e392a8cece06f6470734ee3d7623c))
+* **hooks-store:** adjust hook details and rescue funds styles ([#4948](https://github.com/cowprotocol/cowswap/issues/4948)) ([aedc8d1](https://github.com/cowprotocol/cowswap/commit/aedc8d14c9b8dc3b25f964985b41b25229fd1547))
+
 ## [2.34.1](https://github.com/cowprotocol/cowswap/compare/explorer-v2.34.0...explorer-v2.34.1) (2024-09-30)
 
 
