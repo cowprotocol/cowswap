@@ -394,7 +394,7 @@ export function ActivityDetails(props: {
               )}
 
               {appData && (
-                <OrderHooksDetails appData={appData}>
+                <OrderHooksDetails appData={appData} margin="10px 0 0">
                   {(children) => (
                     <SummaryInnerRow>
                       <b>Hooks</b>

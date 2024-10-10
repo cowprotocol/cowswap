@@ -128,7 +128,7 @@ export function FeesUpdater(): null {
   // Fee API calculation/call
   const typedValue = useDebounce(rawTypedValue, TYPED_VALUE_DEBOUNCE_TIME)
 
-  const quotesMap = useAllQuotes({ chainId })
+  const quotesMap = useAllQuotes(chainId)
 
   const quoteInfo = useMemo(() => {
     return quotesMap && sellCurrencyId ? quotesMap[sellCurrencyId] : undefined

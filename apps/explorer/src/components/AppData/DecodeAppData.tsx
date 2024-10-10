@@ -79,7 +79,7 @@ const DecodeAppData = (props: Props): React.ReactNode => {
 }
 
 const ShowMoreButton = styled.button`
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   margin-top: 0.5rem;
   border: none;
   background: none;
