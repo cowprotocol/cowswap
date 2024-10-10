@@ -170,7 +170,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
     !!priceImpactParams.priceImpact ||
     priceImpactParams.loading
 
-  const { feeWarningAccepted, setFeeWarningAccepted } = useHighFeeWarning(trade)
+  const { feeWarningAccepted, setFeeWarningAccepted } = useHighFeeWarning()
   const { impactWarningAccepted: _impactWarningAccepted, setImpactWarningAccepted } = useUnknownImpactWarning()
   const impactWarningAccepted = hideUnknownImpactWarning || _impactWarningAccepted
 

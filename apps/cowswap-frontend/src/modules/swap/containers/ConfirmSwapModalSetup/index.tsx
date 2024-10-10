@@ -34,7 +34,6 @@ import { useBaseFlowContextSource } from '../../hooks/useFlowContext'
 import { useSwapConfirmButtonText } from '../../hooks/useSwapConfirmButtonText'
 import { useSwapState } from '../../hooks/useSwapState'
 
-
 const CONFIRM_TITLE = 'Swap'
 
 export interface ConfirmSwapModalSetupProps {
@@ -137,7 +136,7 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
               </TradeBasicConfirmDetails>
             )}
             {restContent}
-            <HighFeeWarning trade={trade} />
+            <HighFeeWarning />
             {!priceImpact.priceImpact && <NoImpactWarning isAccepted withoutAccepting />}
           </>
         )}

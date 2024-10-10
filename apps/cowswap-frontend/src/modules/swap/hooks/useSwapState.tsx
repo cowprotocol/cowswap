@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 
 import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
 import { FEE_SIZE_THRESHOLD } from '@cowprotocol/common-const'
@@ -7,7 +7,7 @@ import { useENS } from '@cowprotocol/ens'
 import { useAreThereTokensWithSameSymbol, useTokenBySymbolOrAddress } from '@cowprotocol/tokens'
 import { Command } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { Currency, CurrencyAmount, TradeType } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/macro'
 
@@ -21,13 +21,14 @@ import { isWrappingTrade } from 'legacy/state/swap/utils'
 import { Field } from 'legacy/state/types'
 
 import { changeSwapAmountAnalytics, switchTokensAnalytics } from 'modules/analytics'
+import { useReceiveAmountInfo } from 'modules/trade'
 import { useNavigateOnCurrencySelection } from 'modules/trade/hooks/useNavigateOnCurrencySelection'
 import { useTradeNavigate } from 'modules/trade/hooks/useTradeNavigate'
 import { useTradeSlippage } from 'modules/tradeSlippage'
 import { useVolumeFee } from 'modules/volumeFee'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
-import { useSafeMemo } from 'common/hooks/useSafeMemo'
+import { useSafeEffect, useSafeMemo } from 'common/hooks/useSafeMemo'
 
 export const BAD_RECIPIENT_ADDRESSES: { [address: string]: true } = {
   '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f': true, // v2 factory
@@ -114,32 +115,47 @@ export function useSwapActionHandlers(): SwapActions {
  * useHighFeeWarning
  * @description checks whether fee vs trade inputAmount = high fee warning
  * @description returns params related to high fee and a cb for checking/unchecking fee acceptance
- * @param trade TradeGp param
  */
-export function useHighFeeWarning(trade?: TradeGp) {
-  const { INPUT, OUTPUT, independentField } = useSwapState()
+export function useHighFeeWarning() {
+  const receiveAmountInfo = useReceiveAmountInfo()
 
   const [feeWarningAccepted, setFeeWarningAccepted] = useState<boolean>(false) // mod - high fee warning disable state
 
   // only considers inputAmount vs fee (fee is in input token)
   const [isHighFee, feePercentage] = useMemo(() => {
-    if (!trade) return [false, undefined]
+    if (!receiveAmountInfo) return [false, undefined]
 
-    const { outputAmountWithoutFee, inputAmountAfterFees, fee, volumeFeeAmount } = trade
-    const isExactInput = trade.tradeType === TradeType.EXACT_INPUT
-    const feeAsCurrency = isExactInput ? trade.executionPrice.quote(fee.feeAsCurrency) : fee.feeAsCurrency
+    const {
+      isSell,
+      beforeNetworkCosts,
+      afterNetworkCosts,
+      costs: { networkFee, partnerFee },
+      quotePrice,
+    } = receiveAmountInfo
+
+    const outputAmountWithoutFee = isSell ? beforeNetworkCosts.buyAmount : afterNetworkCosts.buyAmount
+
+    const inputAmountAfterFees = isSell ? beforeNetworkCosts.sellAmount : afterNetworkCosts.sellAmount
+
+    const feeAsCurrency = isSell ? quotePrice.quote(networkFee.amountInSellCurrency) : networkFee.amountInSellCurrency
+
+    const volumeFeeAmount = partnerFee.amount
 
     const totalFeeAmount = volumeFeeAmount ? feeAsCurrency.add(volumeFeeAmount) : feeAsCurrency
-    const targetAmount = isExactInput ? outputAmountWithoutFee : inputAmountAfterFees
+    const targetAmount = isSell ? outputAmountWithoutFee : inputAmountAfterFees
     const feePercentage = totalFeeAmount.divide(targetAmount).multiply(100).asFraction
 
     return [feePercentage.greaterThan(FEE_SIZE_THRESHOLD), feePercentage]
-  }, [trade])
+  }, [receiveAmountInfo])
 
   // reset the state when users change swap params
-  useEffect(() => {
+  useSafeEffect(() => {
     setFeeWarningAccepted(false)
-  }, [INPUT.currencyId, OUTPUT.currencyId, independentField])
+  }, [
+    receiveAmountInfo?.beforeNetworkCosts.sellAmount.currency,
+    receiveAmountInfo?.beforeNetworkCosts.buyAmount.currency,
+    receiveAmountInfo?.isSell,
+  ])
 
   return useSafeMemo(
     () => ({
@@ -172,14 +188,19 @@ function _computeFeeWarningAcceptedState({
 }
 
 export function useUnknownImpactWarning() {
-  const { INPUT, OUTPUT, independentField } = useSwapState()
+  const receiveAmountInfo = useReceiveAmountInfo()
 
-  const [impactWarningAccepted, setImpactWarningAccepted] = useState<boolean>(false)
+  const state = useState<boolean>(false)
+  const [impactWarningAccepted, setImpactWarningAccepted] = state
 
   // reset the state when users change swap params
-  useEffect(() => {
+  useSafeEffect(() => {
     setImpactWarningAccepted(false)
-  }, [INPUT.currencyId, OUTPUT.currencyId, independentField])
+  }, [
+    receiveAmountInfo?.beforeNetworkCosts.sellAmount.currency,
+    receiveAmountInfo?.beforeNetworkCosts.buyAmount.currency,
+    receiveAmountInfo?.isSell,
+  ])
 
   return useMemo(
     () => ({

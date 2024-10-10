@@ -76,7 +76,6 @@ export const SwapWarningsTop = React.memo(function (props: SwapWarningsTopProps)
     <>
       {shouldZeroApprove && <ZeroApprovalWarning currency={trade?.inputAmount.currency} />}
       <HighFeeWarning
-        trade={trade}
         acceptedStatus={feeWarningAccepted}
         acceptWarningCb={account ? () => setFeeWarningAccepted((state) => !state) : undefined}
       />

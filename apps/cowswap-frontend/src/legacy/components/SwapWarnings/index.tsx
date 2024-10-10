@@ -1,4 +1,3 @@
-
 import { Command } from '@cowprotocol/types'
 import { HoverTooltip } from '@cowprotocol/ui'
 import { Fraction } from '@uniswap/sdk-core'
@@ -6,7 +5,6 @@ import { Fraction } from '@uniswap/sdk-core'
 import { AlertTriangle } from 'react-feather'
 import styled from 'styled-components/macro'
 
-import TradeGp from 'legacy/state/swap/TradeGp'
 import { useIsDarkMode } from 'legacy/state/user/hooks'
 
 import { useHighFeeWarning } from 'modules/swap/hooks/useSwapState'
@@ -45,7 +43,7 @@ const WarningCheckboxContainer = styled.span`
 const WarningContainer = styled(AuxInformationContainer).attrs((props) => ({
   ...props,
   hideInput: true,
-})) <HighFeeContainerProps>`
+}))<HighFeeContainerProps>`
   --warningColor: ${({ theme, level }) =>
     level === HIGH_TIER_FEE
       ? theme.danger
@@ -136,7 +134,6 @@ const HighFeeWarningMessage = ({ feePercentage }: { feePercentage?: Fraction }) 
 )
 
 export type WarningProps = {
-  trade?: TradeGp
   acceptedStatus?: boolean
   className?: string
   acceptWarningCb?: Command
@@ -144,10 +141,10 @@ export type WarningProps = {
 } & HighFeeContainerProps
 
 export const HighFeeWarning = (props: WarningProps) => {
-  const { acceptedStatus, acceptWarningCb, trade } = props
+  const { acceptedStatus, acceptWarningCb } = props
   const darkMode = useIsDarkMode()
 
-  const { isHighFee, feePercentage } = useHighFeeWarning(trade)
+  const { isHighFee, feePercentage } = useHighFeeWarning()
   const level = useSafeMemo(() => _getWarningInfo(feePercentage), [feePercentage])
 
   if (!isHighFee) return null
