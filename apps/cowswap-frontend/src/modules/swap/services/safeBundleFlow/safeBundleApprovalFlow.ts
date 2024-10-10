@@ -11,7 +11,7 @@ import { buildApproveTx } from 'modules/operations/bundle/buildApproveTx'
 import { buildPresignTx } from 'modules/operations/bundle/buildPresignTx'
 import { buildZeroApproveTx } from 'modules/operations/bundle/buildZeroApproveTx'
 import { emitPostedOrderEvent } from 'modules/orders'
-import { SafeBundleApprovalFlowContext } from 'modules/swap/services/types'
+import { SafeBundleFlowContext, TradeFlowContext } from 'modules/trade'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
@@ -21,7 +21,8 @@ import { shouldZeroApprove as shouldZeroApproveFn } from 'modules/zeroApproval'
 const LOG_PREFIX = 'SAFE APPROVAL BUNDLE FLOW'
 
 export async function safeBundleApprovalFlow(
-  input: SafeBundleApprovalFlowContext,
+  tradeContext: TradeFlowContext,
+  safeBundleContext: SafeBundleFlowContext,
   priceImpactParams: PriceImpact,
   confirmPriceImpactWithoutFee: (priceImpact: Percent) => Promise<boolean>,
 ): Promise<void | false> {
@@ -31,19 +32,9 @@ export async function safeBundleApprovalFlow(
     return false
   }
 
-  const {
-    erc20Contract,
-    spender,
-    context,
-    callbacks,
-    dispatch,
-    orderParams,
-    settlementContract,
-    safeAppsSdk,
-    swapFlowAnalyticsContext,
-    tradeConfirmActions,
-    typedHooks,
-  } = input
+  const { context, callbacks, orderParams, swapFlowAnalyticsContext, tradeConfirmActions, typedHooks } = tradeContext
+
+  const { spender, settlementContract, safeAppsSdk, erc20Contract } = safeBundleContext
 
   const { chainId } = context
   const { account, isSafeWallet, recipientAddressOrName, inputAmount, outputAmount, kind } = orderParams
@@ -59,7 +50,7 @@ export async function safeBundleApprovalFlow(
     const approveTx = await buildApproveTx({
       erc20Contract,
       spender,
-      amountToApprove: context.trade.inputAmount,
+      amountToApprove: context.inputAmount,
     })
 
     orderParams.appData = await removePermitHookFromAppData(orderParams.appData, typedHooks)
@@ -79,7 +70,7 @@ export async function safeBundleApprovalFlow(
         },
         isSafeWallet,
       },
-      dispatch,
+      callbacks.dispatch,
     )
 
     logTradeFlow(LOG_PREFIX, 'STEP 4: build presign tx')
@@ -94,7 +85,7 @@ export async function safeBundleApprovalFlow(
     const shouldZeroApprove = await shouldZeroApproveFn({
       tokenContract: erc20Contract,
       spender,
-      amountToApprove: context.trade.inputAmount,
+      amountToApprove: context.inputAmount,
       isBundle: true,
     })
 
@@ -102,7 +93,7 @@ export async function safeBundleApprovalFlow(
       const zeroApproveTx = await buildZeroApproveTx({
         erc20Contract,
         spender,
-        currency: context.trade.inputAmount.currency,
+        currency: context.inputAmount.currency,
       })
       safeTransactionData.unshift({
         to: zeroApproveTx.to!,
@@ -137,7 +128,7 @@ export async function safeBundleApprovalFlow(
         },
         isSafeWallet,
       },
-      dispatch,
+      callbacks.dispatch,
     )
     tradeFlowAnalytics.sign(swapFlowAnalyticsContext)
 

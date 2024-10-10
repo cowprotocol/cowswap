@@ -168,7 +168,6 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
     feeWarningAccepted,
     impactWarningAccepted,
     openNativeWrapModal,
-    priceImpactParams,
   })
 
   const tradeUrlParams = useTradeRouteContext()

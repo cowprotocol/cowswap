@@ -9,13 +9,13 @@ import {
   useTradeConfirmState,
   useTradePriceImpact,
 } from 'modules/trade'
+import { useTradeFlowContext } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
 import { SettingsTab, TradeRateDetails } from 'modules/tradeWidgetAddons'
 
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 
-import { useTradeFlowContext } from '../../hooks/useTradeFlowContext'
 import { useYieldDerivedState } from '../../hooks/useYieldDerivedState'
 import { useYieldDeadlineState, useYieldRecipientToggleState, useYieldSettings } from '../../hooks/useYieldSettings'
 import { useYieldWidgetActions } from '../../hooks/useYieldWidgetActions'
@@ -44,7 +44,7 @@ export function YieldWidget() {
     outputCurrencyFiatAmount,
     recipient,
   } = useYieldDerivedState()
-  const tradeFlowContext = useTradeFlowContext()
+  const tradeFlowContext = useTradeFlowContext({ deadline: deadlineState[0] })
 
   const inputCurrencyInfo: CurrencyInfo = {
     field: Field.INPUT,

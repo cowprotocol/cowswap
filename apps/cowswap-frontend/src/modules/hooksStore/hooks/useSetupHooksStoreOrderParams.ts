@@ -2,14 +2,17 @@ import { useEffect } from 'react'
 
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
 
-import { useSwapFlowContext } from 'modules/swap/hooks/useSwapFlowContext'
+import { useUserTransactionTTL } from 'legacy/state/user/hooks'
+
+import { useTradeFlowContext } from 'modules/trade'
 
 import { useSetOrderParams } from './useSetOrderParams'
 
 export function useSetupHooksStoreOrderParams() {
-  const swapFlowContext = useSwapFlowContext()
+  const [deadline] = useUserTransactionTTL()
+  const tradeFlowContext = useTradeFlowContext({ deadline })
   const setOrderParams = useSetOrderParams()
-  const orderParams = swapFlowContext?.orderParams
+  const orderParams = tradeFlowContext?.orderParams
 
   useEffect(() => {
     if (!orderParams) return

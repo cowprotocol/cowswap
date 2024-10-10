@@ -9,6 +9,7 @@ import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import TradeGp from 'legacy/state/swap/TradeGp'
 import { useUserTransactionTTL } from 'legacy/state/user/hooks'
 
+import { useAppData } from 'modules/appData'
 import {
   TradeConfirmation,
   TradeConfirmModal,
@@ -29,7 +30,6 @@ import { RateInfoParams } from 'common/pure/RateInfo'
 import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from 'common/utils/tradeSettingsTooltips'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
-import { useBaseFlowContextSource } from '../../hooks/useFlowContext'
 import { useSwapConfirmButtonText } from '../../hooks/useSwapConfirmButtonText'
 import { useSwapState } from '../../hooks/useSwapState'
 
@@ -69,7 +69,7 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
   const shouldPayGas = useShouldPayGas()
   const isEoaEthFlow = useIsEoaEthFlow()
   const nativeCurrency = useNativeCurrency()
-  const baseFlowContextSource = useBaseFlowContextSource()
+  const appData = useAppData()
   const [userDeadline] = useUserTransactionTTL()
 
   const slippageAdjustedSellAmount = trade?.maximumAmountIn(allowedSlippage)
@@ -114,7 +114,7 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
         priceImpact={priceImpact}
         buttonText={buttonText}
         recipient={recipient}
-        appData={baseFlowContextSource?.appData || undefined}
+        appData={appData || undefined}
       >
         {(restContent) => (
           <>

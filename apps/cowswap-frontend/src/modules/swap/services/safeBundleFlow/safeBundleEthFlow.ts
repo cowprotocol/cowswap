@@ -12,7 +12,7 @@ import { buildApproveTx } from 'modules/operations/bundle/buildApproveTx'
 import { buildPresignTx } from 'modules/operations/bundle/buildPresignTx'
 import { buildWrapTx } from 'modules/operations/bundle/buildWrapTx'
 import { emitPostedOrderEvent } from 'modules/orders'
-import { SafeBundleEthFlowContext } from 'modules/swap/services/types'
+import { SafeBundleFlowContext, TradeFlowContext } from 'modules/trade'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
@@ -21,7 +21,8 @@ import { tradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
 const LOG_PREFIX = 'SAFE BUNDLE ETH FLOW'
 
 export async function safeBundleEthFlow(
-  input: SafeBundleEthFlowContext,
+  tradeContext: TradeFlowContext,
+  safeBundleContext: SafeBundleFlowContext,
   priceImpactParams: PriceImpact,
   confirmPriceImpactWithoutFee: (priceImpact: Percent) => Promise<boolean>,
 ): Promise<void | false> {
@@ -31,27 +32,12 @@ export async function safeBundleEthFlow(
     return false
   }
 
-  const {
-    wrappedNativeContract,
-    needsApproval,
-    spender,
-    context,
-    callbacks,
-    dispatch,
-    orderParams,
-    settlementContract,
-    safeAppsSdk,
-    swapFlowAnalyticsContext,
-    tradeConfirmActions,
-    typedHooks,
-  } = input
+  const { context, callbacks, orderParams, swapFlowAnalyticsContext, tradeConfirmActions, typedHooks } = tradeContext
+
+  const { spender, settlementContract, safeAppsSdk, needsApproval, wrappedNativeContract } = safeBundleContext
 
   const { account, recipientAddressOrName, kind } = orderParams
-  const {
-    inputAmountWithSlippage,
-    chainId,
-    trade: { inputAmount, outputAmount },
-  } = context
+  const { inputAmountWithSlippage, chainId, inputAmount, outputAmount } = context
 
   tradeFlowAnalytics.wrapApproveAndPresign(swapFlowAnalyticsContext)
   const nativeAmountInWei = inputAmountWithSlippage.quotient.toString()
@@ -107,7 +93,7 @@ export async function safeBundleEthFlow(
         },
         isSafeWallet,
       },
-      dispatch,
+      callbacks.dispatch,
     )
 
     logTradeFlow(LOG_PREFIX, 'STEP 5: build presign tx')
@@ -148,7 +134,7 @@ export async function safeBundleEthFlow(
         },
         isSafeWallet,
       },
-      dispatch,
+      callbacks.dispatch,
     )
     tradeFlowAnalytics.sign(swapFlowAnalyticsContext)
 
