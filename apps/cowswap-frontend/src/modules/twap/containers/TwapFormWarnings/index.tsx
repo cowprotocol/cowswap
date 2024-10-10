@@ -1,7 +1,6 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
-import { BundleTxApprovalBanner } from '@cowprotocol/ui'
 import { useIsSafeViaWc, useWalletInfo } from '@cowprotocol/wallet'
 
 import { modifySafeHandlerAnalytics } from 'modules/analytics'
@@ -29,8 +28,6 @@ import { swapAmountDifferenceAtom } from '../../state/swapAmountDifferenceAtom'
 import { twapDeadlineAtom } from '../../state/twapOrderAtom'
 import { twapOrdersSettingsAtom, updateTwapOrdersSettingsAtom } from '../../state/twapOrdersSettingsAtom'
 import { isPriceProtectionNotEnough } from '../../utils/isPriceProtectionNotEnough'
-
-const BUNDLE_APPROVAL_STATES = [TradeFormValidation.ApproveAndSwap]
 
 interface TwapFormWarningsProps {
   localFormValidation: TwapFormState | null
@@ -60,8 +57,6 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
     [updateTwapOrdersSettings],
   )
 
-  const showApprovalBundlingBanner =
-    !isConfirmationModal && primaryFormValidation && BUNDLE_APPROVAL_STATES.includes(primaryFormValidation)
   const showTradeFormWarnings = !isConfirmationModal && canTrade
   const showFallbackHandlerWarning = showTradeFormWarnings && isFallbackHandlerRequired
 
@@ -78,8 +73,6 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
 
   return (
     <>
-      {showApprovalBundlingBanner && <BundleTxApprovalBanner />}
-
       {(() => {
         if (localFormValidation === TwapFormState.NOT_SAFE) {
           return <UnsupportedWalletWarning isSafeViaWc={isSafeViaWc} />

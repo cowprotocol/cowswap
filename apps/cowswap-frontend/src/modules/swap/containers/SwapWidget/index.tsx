@@ -3,7 +3,7 @@ import { ReactNode, useCallback, useMemo, useState } from 'react'
 import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
 import { NATIVE_CURRENCIES, TokenWithLogo } from '@cowprotocol/common-const'
 import { useIsTradeUnsupported } from '@cowprotocol/tokens'
-import { useIsSafeViaWc, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
+import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { TradeType } from '@cowprotocol/widget-lib'
 
 import { NetworkAlert } from 'legacy/components/NetworkAlert/NetworkAlert'
@@ -15,7 +15,6 @@ import { useRecipientToggleManager, useUserTransactionTTL } from 'legacy/state/u
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { EthFlowModal, EthFlowProps } from 'modules/swap/containers/EthFlow'
 import { SwapModals, SwapModalsProps } from 'modules/swap/containers/SwapModals'
-import { SwapButtonState } from 'modules/swap/helpers/getSwapButtonState'
 import { useShowRecipientControls } from 'modules/swap/hooks/useShowRecipientControls'
 import { useSwapButtonContext } from 'modules/swap/hooks/useSwapButtonContext'
 import { useSwapCurrenciesAmounts } from 'modules/swap/hooks/useSwapCurrenciesAmounts'
@@ -37,7 +36,6 @@ import {
 import {
   useIsEoaEthFlow,
   useTradeRouteContext,
-  useWrappedToken,
   useUnknownImpactWarning,
   useIsNoImpactWarningAccepted,
 } from 'modules/trade'
@@ -50,15 +48,10 @@ import { useSetLocalTimeOffset } from 'common/containers/InvalidLocalTimeWarning
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 import { SWAP_QUOTE_CHECK_INTERVAL } from 'common/updaters/FeesUpdater'
-import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
-import { useIsSwapEth } from '../../hooks/useIsSwapEth'
 import { useDerivedSwapInfo, useSwapActionHandlers, useSwapState } from '../../hooks/useSwapState'
 import { useTradeQuoteStateFromLegacy } from '../../hooks/useTradeQuoteStateFromLegacy'
 import { ConfirmSwapModalSetup } from '../ConfirmSwapModalSetup'
-
-const BUTTON_STATES_TO_SHOW_BUNDLE_APPROVAL_BANNER = [SwapButtonState.ApproveAndSwap]
-const BUTTON_STATES_TO_SHOW_BUNDLE_WRAP_BANNER = [SwapButtonState.WrapAndSwap]
 
 export interface SwapWidgetProps {
   topContent?: ReactNode
@@ -78,7 +71,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
   const showRecipientControls = useShowRecipientControls(recipient)
   const isEoaEthFlow = useIsEoaEthFlow()
   const widgetParams = useInjectedWidgetParams()
-  const { enabledTradeTypes, banners: widgetBanners } = widgetParams
+  const { enabledTradeTypes } = widgetParams
   const priceImpactParams = useTradePriceImpact()
   const tradeQuoteStateOverride = useTradeQuoteStateFromLegacy()
   const receiveAmountInfo = useReceiveAmountInfo()
@@ -194,38 +187,12 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
     showNativeWrapModal,
     showCowSubsidyModal,
   }
-
-  const showApprovalBundlingBanner = BUTTON_STATES_TO_SHOW_BUNDLE_APPROVAL_BANNER.includes(
-    swapButtonContext.swapButtonState,
-  )
-  const showWrapBundlingBanner = BUTTON_STATES_TO_SHOW_BUNDLE_WRAP_BANNER.includes(swapButtonContext.swapButtonState)
-
-  const isSafeViaWc = useIsSafeViaWc()
-  const isSwapEth = useIsSwapEth()
-
-  const showSafeWcApprovalBundlingBanner =
-    !showApprovalBundlingBanner && isSafeViaWc && swapButtonContext.swapButtonState === SwapButtonState.NeedApprove
-
-  const showSafeWcWrapBundlingBanner = !showWrapBundlingBanner && isSafeViaWc && isSwapEth
-
-  // Show the same banner when approval is needed or selling native token
-  const showSafeWcBundlingBanner =
-    (showSafeWcApprovalBundlingBanner || showSafeWcWrapBundlingBanner) && !widgetBanners?.hideSafeWebAppBanner
-
   const showTwapSuggestionBanner = !enabledTradeTypes || enabledTradeTypes.includes(TradeType.ADVANCED)
-
-  const nativeCurrencySymbol = useNativeCurrency().symbol || 'ETH'
-  const wrappedCurrencySymbol = useWrappedToken().symbol || 'WETH'
 
   const swapWarningsTopProps: SwapWarningsTopProps = {
     chainId,
     trade,
-    showApprovalBundlingBanner,
-    showWrapBundlingBanner,
-    showSafeWcBundlingBanner,
     showTwapSuggestionBanner,
-    nativeCurrencySymbol,
-    wrappedCurrencySymbol,
     buyingFiatAmount,
     priceImpact: priceImpactParams.priceImpact,
     tradeUrlParams,

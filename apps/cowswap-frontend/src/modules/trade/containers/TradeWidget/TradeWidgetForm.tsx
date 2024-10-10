@@ -3,8 +3,16 @@ import React, { useCallback, useMemo } from 'react'
 import ICON_ORDERS from '@cowprotocol/assets/svg/orders.svg'
 import ICON_TOKENS from '@cowprotocol/assets/svg/tokens.svg'
 import { isInjectedWidget, maxAmountSpend } from '@cowprotocol/common-utils'
-import { BannerOrientation, ButtonOutlined, ClosableBanner, InlineBanner, MY_ORDERS_ID } from '@cowprotocol/ui'
-import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
+import {
+  BannerOrientation,
+  BundleTxApprovalBanner,
+  BundleTxSafeWcBanner,
+  ButtonOutlined,
+  ClosableBanner,
+  InlineBanner,
+  MY_ORDERS_ID,
+} from '@cowprotocol/ui'
+import { useIsSafeViaWc, useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/macro'
 import SVG from 'react-inlinesvg'
@@ -53,7 +61,7 @@ const scrollToMyOrders = () => {
 
 export function TradeWidgetForm(props: TradeWidgetProps) {
   const isInjectedWidgetMode = isInjectedWidget()
-  const { standaloneMode } = useInjectedWidgetParams()
+  const { standaloneMode, banners: widgetBanners } = useInjectedWidgetParams()
 
   const isAlternativeOrderModalVisible = useIsAlternativeOrderModalVisible()
   const { pendingActivity } = useCategorizeRecentActivity()
@@ -97,6 +105,10 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
   const receiveAmountInfo = useReceiveAmountInfo()
   const inputAmountWithSlippage = receiveAmountInfo?.afterSlippage.sellAmount
   const shouldZeroApprove = useShouldZeroApprove(inputAmountWithSlippage)
+  const isSafeViaWc = useIsSafeViaWc()
+
+  const showSafeWcBundlingBanner =
+    isSafeViaWc && primaryFormValidation === TradeFormValidation.ApproveRequired && !widgetBanners?.hideSafeWebAppBanner
 
   const areCurrenciesLoading = !inputCurrencyInfo.currency && !outputCurrencyInfo.currency
   const bothCurrenciesSet = !!inputCurrencyInfo.currency && !!outputCurrencyInfo.currency
@@ -243,6 +255,8 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
                   <>
                     {shouldZeroApprove && <ZeroApprovalWarning currency={inputAmountWithSlippage?.currency} />}
                     <NoImpactWarning />
+                    {primaryFormValidation === TradeFormValidation.ApproveAndSwap && <BundleTxApprovalBanner />}
+                    {showSafeWcBundlingBanner && <BundleTxSafeWcBanner />}
                   </>
                 ),
               )

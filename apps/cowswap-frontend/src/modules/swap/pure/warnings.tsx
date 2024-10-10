@@ -2,26 +2,20 @@ import React from 'react'
 
 import { genericPropsChecker } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { BundleTxApprovalBanner, BundleTxSafeWcBanner, BundleTxWrapBanner } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import TradeGp from 'legacy/state/swap/TradeGp'
 
 import { CompatibilityIssuesWarning } from 'modules/trade/pure/CompatibilityIssuesWarning'
 import { TradeUrlParams } from 'modules/trade/types/TradeRawState'
-import { HighFeeWarning } from 'modules/tradeWidgetAddons'
+import { BundleTxWrapBanner, HighFeeWarning } from 'modules/tradeWidgetAddons'
 
 import { TwapSuggestionBanner } from './banners/TwapSuggestionBanner'
 
 export interface SwapWarningsTopProps {
   chainId: SupportedChainId
   trade: TradeGp | undefined
-  showApprovalBundlingBanner: boolean
-  showWrapBundlingBanner: boolean
-  showSafeWcBundlingBanner: boolean
   showTwapSuggestionBanner: boolean
-  nativeCurrencySymbol: string
-  wrappedCurrencySymbol: string
   buyingFiatAmount: CurrencyAmount<Currency> | null
   priceImpact: Percent | undefined
   tradeUrlParams: TradeUrlParams
@@ -35,30 +29,12 @@ export interface SwapWarningsBottomProps {
 }
 
 export const SwapWarningsTop = React.memo(function (props: SwapWarningsTopProps) {
-  const {
-    chainId,
-    trade,
-    showApprovalBundlingBanner,
-    showWrapBundlingBanner,
-    showSafeWcBundlingBanner,
-    showTwapSuggestionBanner,
-    nativeCurrencySymbol,
-    wrappedCurrencySymbol,
-    buyingFiatAmount,
-    priceImpact,
-    tradeUrlParams,
-  } = props
+  const { chainId, trade, showTwapSuggestionBanner, buyingFiatAmount, priceImpact, tradeUrlParams } = props
 
   return (
     <>
       <HighFeeWarning />
-      {showApprovalBundlingBanner && <BundleTxApprovalBanner />}
-      {showWrapBundlingBanner && (
-        <BundleTxWrapBanner nativeCurrencySymbol={nativeCurrencySymbol} wrappedCurrencySymbol={wrappedCurrencySymbol} />
-      )}
-      {showSafeWcBundlingBanner && (
-        <BundleTxSafeWcBanner nativeCurrencySymbol={nativeCurrencySymbol} supportsWrapping />
-      )}
+      <BundleTxWrapBanner />
 
       {showTwapSuggestionBanner && (
         <TwapSuggestionBanner
