@@ -3,16 +3,8 @@ import React, { useCallback, useMemo } from 'react'
 import ICON_ORDERS from '@cowprotocol/assets/svg/orders.svg'
 import ICON_TOKENS from '@cowprotocol/assets/svg/tokens.svg'
 import { isInjectedWidget, maxAmountSpend } from '@cowprotocol/common-utils'
-import {
-  BannerOrientation,
-  BundleTxApprovalBanner,
-  BundleTxSafeWcBanner,
-  ButtonOutlined,
-  ClosableBanner,
-  InlineBanner,
-  MY_ORDERS_ID,
-} from '@cowprotocol/ui'
-import { useIsSafeViaWc, useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
+import { BannerOrientation, ButtonOutlined, ClosableBanner, InlineBanner, MY_ORDERS_ID } from '@cowprotocol/ui'
+import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/macro'
 import SVG from 'react-inlinesvg'
@@ -28,7 +20,6 @@ import { SetRecipient } from 'modules/swap/containers/SetRecipient'
 import { useOpenTokenSelectWidget } from 'modules/tokensList'
 import { useIsAlternativeOrderModalVisible } from 'modules/trade/state/alternativeOrder'
 import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
-import { useShouldZeroApprove } from 'modules/zeroApproval'
 
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
@@ -42,11 +33,9 @@ import { TradeWidgetProps } from './types'
 
 import { useTradeStateFromUrl } from '../../hooks/setupTradeState/useTradeStateFromUrl'
 import { useIsWrapOrUnwrap } from '../../hooks/useIsWrapOrUnwrap'
-import { useReceiveAmountInfo } from '../../hooks/useReceiveAmountInfo'
 import { useTradeTypeInfo } from '../../hooks/useTradeTypeInfo'
-import { ZeroApprovalWarning } from '../../pure/ZeroApprovalWarning'
 import { TradeType } from '../../types'
-import { NoImpactWarning } from '../NoImpactWarning'
+import { TradeWarnings } from '../TradeWarnings'
 import { TradeWidgetLinks } from '../TradeWidgetLinks'
 import { WrapFlowActionButton } from '../WrapFlowActionButton'
 
@@ -61,7 +50,7 @@ const scrollToMyOrders = () => {
 
 export function TradeWidgetForm(props: TradeWidgetProps) {
   const isInjectedWidgetMode = isInjectedWidget()
-  const { standaloneMode, banners: widgetBanners } = useInjectedWidgetParams()
+  const { standaloneMode } = useInjectedWidgetParams()
 
   const isAlternativeOrderModalVisible = useIsAlternativeOrderModalVisible()
   const { pendingActivity } = useCategorizeRecentActivity()
@@ -102,13 +91,6 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
   const tradeStateFromUrl = useTradeStateFromUrl()
   const alternativeOrderModalVisible = useIsAlternativeOrderModalVisible()
   const primaryFormValidation = useGetTradeFormValidation()
-  const receiveAmountInfo = useReceiveAmountInfo()
-  const inputAmountWithSlippage = receiveAmountInfo?.afterSlippage.sellAmount
-  const shouldZeroApprove = useShouldZeroApprove(inputAmountWithSlippage)
-  const isSafeViaWc = useIsSafeViaWc()
-
-  const showSafeWcBundlingBanner =
-    isSafeViaWc && primaryFormValidation === TradeFormValidation.ApproveRequired && !widgetBanners?.hideSafeWebAppBanner
 
   const areCurrenciesLoading = !inputCurrencyInfo.currency && !outputCurrencyInfo.currency
   const bothCurrenciesSet = !!inputCurrencyInfo.currency && !!outputCurrencyInfo.currency
@@ -247,20 +229,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
             </div>
             {withRecipient && <SetRecipient recipient={recipient || ''} onChangeRecipient={onChangeRecipient} />}
 
-            {isWrapOrUnwrap ? (
-              <WrapFlowActionButton />
-            ) : (
-              bottomContent?.(
-                hideTradeWarnings ? null : (
-                  <>
-                    {shouldZeroApprove && <ZeroApprovalWarning currency={inputAmountWithSlippage?.currency} />}
-                    <NoImpactWarning />
-                    {primaryFormValidation === TradeFormValidation.ApproveAndSwap && <BundleTxApprovalBanner />}
-                    {showSafeWcBundlingBanner && <BundleTxSafeWcBanner />}
-                  </>
-                ),
-              )
-            )}
+            {isWrapOrUnwrap ? <WrapFlowActionButton /> : bottomContent?.(hideTradeWarnings ? null : <TradeWarnings />)}
           </>
         )}
 
