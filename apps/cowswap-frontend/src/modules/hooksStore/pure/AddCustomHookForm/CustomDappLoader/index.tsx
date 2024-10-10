@@ -1,19 +1,10 @@
 import { Dispatch, SetStateAction, useEffect } from 'react'
 
-import { HookDappBase, HookDappIframe, HookDappType } from '../../../types/hooks'
+import { HookDappBase, HookDappType } from '@cowprotocol/hook-dapp-lib'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
-interface HookDappConditions {
-  position?: 'post' | 'pre'
-  smartContractWalletSupported?: boolean
-}
-
-type HookDappBaseInfo = Omit<HookDappBase, 'type'>
-
-type HookDappManifest = HookDappBaseInfo & {
-  conditions?: HookDappConditions
-}
-
-const MANDATORY_DAPP_FIELDS: (keyof HookDappBaseInfo)[] = ['name', 'image', 'version', 'website']
+import { HookDappIframe } from '../../../types/hooks'
+import { validateHookDappManifest } from '../../../validateHookDappManifest'
 
 interface ExternalDappLoaderProps {
   input: string
@@ -32,6 +23,8 @@ export function ExternalDappLoader({
   isSmartContractWallet,
   isPreHook,
 }: ExternalDappLoaderProps) {
+  const { chainId } = useWalletInfo()
+
   useEffect(() => {
     let isRequestRelevant = true
 
@@ -42,39 +35,24 @@ export function ExternalDappLoader({
       .then((data) => {
         if (!isRequestRelevant) return
 
-        const { conditions = {}, ...dapp } = data.cow_hook_dapp as HookDappManifest
+        const dapp = data.cow_hook_dapp as HookDappBase
 
-        if (dapp) {
-          const emptyFields = MANDATORY_DAPP_FIELDS.filter((field) => typeof dapp[field] === 'undefined')
+        const validationError = validateHookDappManifest(
+          data.cow_hook_dapp as HookDappBase,
+          chainId,
+          isPreHook,
+          isSmartContractWallet,
+        )
 
-          if (emptyFields.length > 0) {
-            setManifestError(`${emptyFields.join(',')} fields are no set.`)
-          } else {
-            if (conditions.smartContractWalletSupported === false && isSmartContractWallet === true) {
-              setManifestError('The app does not support smart-contract wallets.')
-            } else if (conditions.position === 'post' && isPreHook) {
-              setManifestError(
-                <p>
-                  This app/hook can only be used as a <strong>post-hook</strong> and cannot be added as a pre-hook.
-                </p>,
-              )
-            } else if (conditions.position === 'pre' && !isPreHook) {
-              setManifestError(
-                <p>
-                  This app/hook can only be used as a <strong>pre-hook</strong> and cannot be added as a post-hook.
-                </p>,
-              )
-            } else {
-              setManifestError(null)
-              setDappInfo({
-                ...dapp,
-                type: HookDappType.IFRAME,
-                url: input,
-              })
-            }
-          }
+        if (validationError) {
+          setManifestError(validationError)
         } else {
-          setManifestError('Manifest does not contain "cow_hook_dapp" property.')
+          setManifestError(null)
+          setDappInfo({
+            ...dapp,
+            type: HookDappType.IFRAME,
+            url: input,
+          })
         }
       })
       .catch((error) => {
@@ -92,7 +70,7 @@ export function ExternalDappLoader({
     return () => {
       isRequestRelevant = false
     }
-  }, [input])
+  }, [input, chainId])
 
   return null
 }

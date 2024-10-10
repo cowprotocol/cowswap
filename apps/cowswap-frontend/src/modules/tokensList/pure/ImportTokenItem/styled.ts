@@ -1,4 +1,4 @@
-import { UI } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
@@ -9,6 +9,10 @@ export const Wrapper = styled.div`
   align-items: center;
   padding: 0 20px;
   margin-bottom: 20px;
+
+  ${Media.upToSmall()} {
+    padding: 0 14px;
+  }
 
   &:last-child {
     margin-bottom: 0;

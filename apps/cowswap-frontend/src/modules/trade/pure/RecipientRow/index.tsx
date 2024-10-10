@@ -7,6 +7,7 @@ import { Nullish } from 'types'
 
 const Row = styled.div`
   display: flex;
+  width: 100%;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
@@ -49,7 +50,7 @@ export function RecipientRow(props: RecipientRowProps) {
               href={getExplorerLink(chainId, recipient, ExplorerDataType.ADDRESS)}
               target="_blank"
             >
-              {isAddress(recipient) ? shortenAddress(recipient) : recipient}
+              {isAddress(recipient) ? shortenAddress(recipient) : recipient} ↗
             </Link>
           </div>
         </Row>

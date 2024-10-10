@@ -6,7 +6,7 @@ import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 
-import { FlowType, getFlowContext, useBaseFlowContextSetup } from 'modules/swap/hooks/useFlowContext'
+import { getFlowContext, useBaseFlowContextSource } from 'modules/swap/hooks/useFlowContext'
 import { EthFlowContext } from 'modules/swap/services/types'
 import { addInFlightOrderIdAtom } from 'modules/swap/state/EthFlow/ethFlowInFlightOrderIdsAtom'
 
@@ -14,12 +14,14 @@ import { useEthFlowContract } from 'common/hooks/useContract'
 
 import { useCheckEthFlowOrderExists } from './useCheckEthFlowOrderExists'
 
+import { FlowType } from '../types/flowContext'
+
 export function useEthFlowContext(): EthFlowContext | null {
   const contract = useEthFlowContract()
-  const baseProps = useBaseFlowContextSetup()
+  const baseProps = useBaseFlowContextSource()
   const addTransaction = useTransactionAdder()
 
-  const sellToken = baseProps.chainId ? NATIVE_CURRENCIES[baseProps.chainId as SupportedChainId] : undefined
+  const sellToken = baseProps?.chainId ? NATIVE_CURRENCIES[baseProps.chainId as SupportedChainId] : undefined
 
   const addInFlightOrderId = useSetAtom(addInFlightOrderIdAtom)
 
@@ -27,16 +29,17 @@ export function useEthFlowContext(): EthFlowContext | null {
 
   const baseContext = useMemo(
     () =>
+      baseProps &&
       getFlowContext({
         baseProps,
         sellToken,
         kind: OrderKind.SELL,
       }),
-    [baseProps, sellToken]
+    [baseProps, sellToken],
   )
 
   return useMemo(() => {
-    if (!baseContext || !contract || baseProps.flowType !== FlowType.EOA_ETH_FLOW) return null
+    if (!baseContext || !contract || baseProps?.flowType !== FlowType.EOA_ETH_FLOW) return null
 
     return {
       ...baseContext,
@@ -45,5 +48,5 @@ export function useEthFlowContext(): EthFlowContext | null {
       checkEthFlowOrderExists,
       addInFlightOrderId,
     }
-  }, [baseContext, contract, addTransaction, checkEthFlowOrderExists, addInFlightOrderId, baseProps.flowType])
+  }, [baseContext, contract, addTransaction, checkEthFlowOrderExists, addInFlightOrderId, baseProps?.flowType])
 }

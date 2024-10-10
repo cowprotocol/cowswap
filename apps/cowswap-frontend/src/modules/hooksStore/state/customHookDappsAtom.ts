@@ -8,7 +8,6 @@ import { walletInfoAtom } from '@cowprotocol/wallet'
 import { setHooksAtom } from './hookDetailsAtom'
 
 import { HookDappIframe } from '../types/hooks'
-import { getHookDappId } from '../utils'
 
 type CustomHookDapps = Record<HookDappIframe['url'], HookDappIframe>
 
@@ -40,7 +39,7 @@ export const customPostHookDappsAtom = atom((get) => {
   return Object.values(get(customHookDappsAtom).post) as HookDappIframe[]
 })
 
-export const addCustomHookDappAtom = atom(null, (get, set, isPreHook: boolean, dapp: HookDappIframe) => {
+export const upsertCustomHookDappAtom = atom(null, (get, set, isPreHook: boolean, dapp: HookDappIframe) => {
   const { chainId } = get(walletInfoAtom)
   const state = get(customHookDappsInner)
 
@@ -69,11 +68,11 @@ export const removeCustomHookDappAtom = atom(null, (get, set, dapp: HookDappIfra
     [chainId]: currentState,
   })
 
-  const hookDappId = getHookDappId(dapp)
+  const hookDappId = dapp.id
 
   // Delete applied hooks along with the deleting hook-dapp
   set(setHooksAtom, (hooksState) => ({
-    preHooks: (hooksState.preHooks || []).filter((hook) => hook.dappId !== hookDappId),
-    postHooks: (hooksState.postHooks || []).filter((hook) => hook.dappId !== hookDappId),
+    preHooks: (hooksState.preHooks || []).filter((hookDetails) => hookDetails.hook.dappId !== hookDappId),
+    postHooks: (hooksState.postHooks || []).filter((hookDetails) => hookDetails.hook.dappId !== hookDappId),
   }))
 })

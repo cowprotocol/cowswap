@@ -46,7 +46,6 @@ if (window.location.pathname !== '/') {
     for (let i = 0; i < version; i++) {
       localStorage.removeItem(`${name}:v${i}`)
     }
-    console.log(name, version)
   })
 })()
 

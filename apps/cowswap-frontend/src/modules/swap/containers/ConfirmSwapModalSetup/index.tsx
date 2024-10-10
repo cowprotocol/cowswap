@@ -30,6 +30,7 @@ import { RateInfoParams } from 'common/pure/RateInfo'
 import { TransactionSubmittedContent } from 'common/pure/TransactionSubmittedContent'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
+import { useBaseFlowContextSource } from '../../hooks/useFlowContext'
 import { useIsEoaEthFlow } from '../../hooks/useIsEoaEthFlow'
 import { useNavigateToNewOrderCallback } from '../../hooks/useNavigateToNewOrderCallback'
 import { useShouldPayGas } from '../../hooks/useShouldPayGas'
@@ -54,7 +55,6 @@ export interface ConfirmSwapModalSetupProps {
   doTrade(): void
 }
 
-
 export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
   const {
     chainId,
@@ -77,6 +77,7 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
   const shouldPayGas = useShouldPayGas()
   const isEoaEthFlow = useIsEoaEthFlow()
   const nativeCurrency = useNativeCurrency()
+  const baseFlowContextSource = useBaseFlowContextSource()
 
   const isInvertedState = useState(false)
 
@@ -89,7 +90,10 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
 
   const labelsAndTooltips = useMemo(
     () => ({
-      slippageLabel: isEoaEthFlow || isSmartSlippageApplied ? `Slippage tolerance (${isEoaEthFlow ? 'modified' : 'dynamic'})` : undefined,
+      slippageLabel:
+        isEoaEthFlow || isSmartSlippageApplied
+          ? `Slippage tolerance (${isEoaEthFlow ? 'modified' : 'dynamic'})`
+          : undefined,
       slippageTooltip: isEoaEthFlow
         ? getNativeSlippageTooltip(chainId, [nativeCurrency.symbol])
         : getNonNativeSlippageTooltip(),
@@ -99,7 +103,7 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
       networkCostsSuffix: shouldPayGas ? <NetworkCostsSuffix /> : null,
       networkCostsTooltipSuffix: <NetworkCostsTooltipSuffix />,
     }),
-    [chainId, allowedSlippage, nativeCurrency.symbol, isEoaEthFlow, isExactIn, shouldPayGas]
+    [chainId, allowedSlippage, nativeCurrency.symbol, isEoaEthFlow, isExactIn, shouldPayGas],
   )
 
   const submittedContent = useSubmittedContent(chainId)
@@ -119,29 +123,33 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
         priceImpact={priceImpact}
         buttonText={buttonText}
         recipient={recipient}
+        appData={baseFlowContextSource?.appData || undefined}
       >
-        <>
-          {receiveAmountInfo && (
-            <TradeBasicConfirmDetails
-              isInvertedState={isInvertedState}
-              rateInfoParams={rateInfoParams}
-              slippage={allowedSlippage}
-              receiveAmountInfo={receiveAmountInfo}
-              widgetParams={widgetParams}
-              labelsAndTooltips={labelsAndTooltips}
-              recipient={recipient}
-              account={account}
-              hideLimitPrice
-              hideUsdValues
-              withTimelineDot={false}
-              alwaysRow
-            >
-              <RowDeadline />
-            </TradeBasicConfirmDetails>
-          )}
-          <HighFeeWarning trade={trade} />
-          {!priceImpact.priceImpact && <NoImpactWarning isAccepted withoutAccepting />}
-        </>
+        {(restContent) => (
+          <>
+            {receiveAmountInfo && (
+              <TradeBasicConfirmDetails
+                isInvertedState={isInvertedState}
+                rateInfoParams={rateInfoParams}
+                slippage={allowedSlippage}
+                receiveAmountInfo={receiveAmountInfo}
+                widgetParams={widgetParams}
+                labelsAndTooltips={labelsAndTooltips}
+                recipient={recipient}
+                account={account}
+                hideLimitPrice
+                hideUsdValues
+                withTimelineDot={false}
+                alwaysRow
+              >
+                <RowDeadline />
+              </TradeBasicConfirmDetails>
+            )}
+            {restContent}
+            <HighFeeWarning trade={trade} />
+            {!priceImpact.priceImpact && <NoImpactWarning isAccepted withoutAccepting />}
+          </>
+        )}
       </TradeConfirmation>
     </TradeConfirmModal>
   )
@@ -166,7 +174,6 @@ function useSubmittedContent(chainId: SupportedChainId) {
         navigateToNewOrderCallback={navigateToNewOrderCallback}
       />
     ),
-    [chainId, transactionHash, orderProgressBarV2Props, navigateToNewOrderCallback]
+    [chainId, transactionHash, orderProgressBarV2Props, navigateToNewOrderCallback],
   )
 }
-

@@ -1,11 +1,12 @@
 import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
+import { CowHookDetails } from '@cowprotocol/hook-dapp-lib'
+
 import { v4 as uuidv4 } from 'uuid'
 
 import { setHooksAtom } from '../state/hookDetailsAtom'
-import { AddHook, CowHookDetailsSerialized, HookDapp } from '../types/hooks'
-import { getHookDappId } from '../utils'
+import { AddHook, HookDapp } from '../types/hooks'
 
 export function useAddHook(dapp: HookDapp, isPreHook: boolean): AddHook {
   const updateHooks = useSetAtom(setHooksAtom)
@@ -15,9 +16,13 @@ export function useAddHook(dapp: HookDapp, isPreHook: boolean): AddHook {
       console.log('[hooks] Add ' + (isPreHook ? 'pre-hook' : 'post-hook'), hookToAdd, isPreHook)
 
       const uuid = uuidv4()
-      const hookDetails: CowHookDetailsSerialized = {
-        hookDetails: { ...hookToAdd, uuid },
-        dappId: getHookDappId(dapp),
+      const hookDetails: CowHookDetails = {
+        ...hookToAdd,
+        uuid,
+        hook: {
+          ...hookToAdd.hook,
+          dappId: dapp.id,
+        },
       }
 
       updateHooks((hooks) => {
