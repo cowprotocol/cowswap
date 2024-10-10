@@ -21,10 +21,8 @@ import { SellNativeWarningBanner } from 'modules/trade/containers/SellNativeWarn
 import { useGetTradeFormValidation } from 'modules/tradeFormValidation'
 import { TradeFormValidation } from 'modules/tradeFormValidation/types'
 import { useTradeQuote } from 'modules/tradeQuote'
-import { useShouldZeroApprove } from 'modules/zeroApproval'
 
 import { HIGH_FEE_WARNING_PERCENTAGE } from 'common/constants/common'
-import { ZeroApprovalWarning } from 'common/pure/ZeroApprovalWarning'
 import { calculatePercentageInRelationToReference } from 'utils/orderUtils/calculatePercentageInRelationToReference'
 
 import { RateImpactWarning } from '../../pure/RateImpactWarning'
@@ -73,8 +71,6 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
   const showHighFeeWarning = feePercentage?.greaterThan(HIGH_FEE_WARNING_PERCENTAGE)
 
   const showApprovalBundlingBanner = !isConfirmScreen && isBundling
-  const shouldZeroApprove = useShouldZeroApprove(slippageAdjustedSellAmount)
-  const showZeroApprovalWarning = shouldZeroApprove && outputCurrency !== null // Show warning only when output currency is also present.
 
   const isSafeViaWc = useIsSafeViaWc()
   const showSafeWcBundlingBanner =
@@ -92,7 +88,6 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
     showHighFeeWarning ||
     showApprovalBundlingBanner ||
     showSafeWcBundlingBanner ||
-    shouldZeroApprove ||
     showNativeSellWarning
 
   // Reset rate impact before opening confirmation screen
@@ -111,7 +106,6 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
 
   return isVisible ? (
     <Wrapper className={className}>
-      {showZeroApprovalWarning && <ZeroApprovalWarning currency={inputCurrency} />}
       {showRateImpactWarning && (
         <StyledRateImpactWarning
           withAcknowledge={isConfirmScreen}

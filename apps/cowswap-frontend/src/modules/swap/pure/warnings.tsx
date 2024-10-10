@@ -11,8 +11,6 @@ import { CompatibilityIssuesWarning } from 'modules/trade/pure/CompatibilityIssu
 import { TradeUrlParams } from 'modules/trade/types/TradeRawState'
 import { HighFeeWarning } from 'modules/tradeWidgetAddons'
 
-import { ZeroApprovalWarning } from 'common/pure/ZeroApprovalWarning'
-
 import { TwapSuggestionBanner } from './banners/TwapSuggestionBanner'
 
 export interface SwapWarningsTopProps {
@@ -20,7 +18,6 @@ export interface SwapWarningsTopProps {
   trade: TradeGp | undefined
   showApprovalBundlingBanner: boolean
   showWrapBundlingBanner: boolean
-  shouldZeroApprove: boolean
   showSafeWcBundlingBanner: boolean
   showTwapSuggestionBanner: boolean
   nativeCurrencySymbol: string
@@ -47,7 +44,6 @@ export const SwapWarningsTop = React.memo(function (props: SwapWarningsTopProps)
     showTwapSuggestionBanner,
     nativeCurrencySymbol,
     wrappedCurrencySymbol,
-    shouldZeroApprove,
     buyingFiatAmount,
     priceImpact,
     tradeUrlParams,
@@ -55,7 +51,6 @@ export const SwapWarningsTop = React.memo(function (props: SwapWarningsTopProps)
 
   return (
     <>
-      {shouldZeroApprove && <ZeroApprovalWarning currency={trade?.inputAmount.currency} />}
       <HighFeeWarning />
       {showApprovalBundlingBanner && <BundleTxApprovalBanner />}
       {showWrapBundlingBanner && (

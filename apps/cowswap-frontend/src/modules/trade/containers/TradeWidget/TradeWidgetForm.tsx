@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react'
+import React, { useCallback, useMemo } from 'react'
 
 import ICON_ORDERS from '@cowprotocol/assets/svg/orders.svg'
 import ICON_TOKENS from '@cowprotocol/assets/svg/tokens.svg'
@@ -20,6 +20,7 @@ import { SetRecipient } from 'modules/swap/containers/SetRecipient'
 import { useOpenTokenSelectWidget } from 'modules/tokensList'
 import { useIsAlternativeOrderModalVisible } from 'modules/trade/state/alternativeOrder'
 import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
+import { useShouldZeroApprove } from 'modules/zeroApproval'
 
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
@@ -33,7 +34,9 @@ import { TradeWidgetProps } from './types'
 
 import { useTradeStateFromUrl } from '../../hooks/setupTradeState/useTradeStateFromUrl'
 import { useIsWrapOrUnwrap } from '../../hooks/useIsWrapOrUnwrap'
+import { useReceiveAmountInfo } from '../../hooks/useReceiveAmountInfo'
 import { useTradeTypeInfo } from '../../hooks/useTradeTypeInfo'
+import { ZeroApprovalWarning } from '../../pure/ZeroApprovalWarning'
 import { TradeType } from '../../types'
 import { NoImpactWarning } from '../NoImpactWarning'
 import { TradeWidgetLinks } from '../TradeWidgetLinks'
@@ -91,6 +94,9 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
   const tradeStateFromUrl = useTradeStateFromUrl()
   const alternativeOrderModalVisible = useIsAlternativeOrderModalVisible()
   const primaryFormValidation = useGetTradeFormValidation()
+  const receiveAmountInfo = useReceiveAmountInfo()
+  const inputAmountWithSlippage = receiveAmountInfo?.afterSlippage.sellAmount
+  const shouldZeroApprove = useShouldZeroApprove(inputAmountWithSlippage)
 
   const areCurrenciesLoading = !inputCurrencyInfo.currency && !outputCurrencyInfo.currency
   const bothCurrenciesSet = !!inputCurrencyInfo.currency && !!outputCurrencyInfo.currency
@@ -235,6 +241,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
               bottomContent?.(
                 hideTradeWarnings ? null : (
                   <>
+                    {shouldZeroApprove && <ZeroApprovalWarning currency={inputAmountWithSlippage?.currency} />}
                     <NoImpactWarning />
                   </>
                 ),

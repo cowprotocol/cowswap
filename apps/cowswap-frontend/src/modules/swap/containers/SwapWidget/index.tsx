@@ -45,7 +45,6 @@ import { getQuoteTimeOffset } from 'modules/tradeQuote'
 import { useTradeSlippage } from 'modules/tradeSlippage'
 import { SettingsTab, TradeRateDetails, useHighFeeWarning } from 'modules/tradeWidgetAddons'
 import { useTradeUsdAmounts } from 'modules/usdAmount'
-import { useShouldZeroApprove } from 'modules/zeroApproval'
 
 import { useSetLocalTimeOffset } from 'common/containers/InvalidLocalTimeWarning/localTimeOffsetState'
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
@@ -68,7 +67,7 @@ export interface SwapWidgetProps {
 
 export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
   const { chainId } = useWalletInfo()
-  const { slippageAdjustedSellAmount, currencies, trade } = useDerivedSwapInfo()
+  const { currencies, trade } = useDerivedSwapInfo()
   const slippage = useTradeSlippage()
   const parsedAmounts = useSwapCurrenciesAmounts()
   const { isSupportedWallet } = useWalletDetails()
@@ -78,7 +77,6 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
   const { independentField, recipient } = swapState
   const showRecipientControls = useShowRecipientControls(recipient)
   const isEoaEthFlow = useIsEoaEthFlow()
-  const shouldZeroApprove = useShouldZeroApprove(slippageAdjustedSellAmount)
   const widgetParams = useInjectedWidgetParams()
   const { enabledTradeTypes, banners: widgetBanners } = widgetParams
   const priceImpactParams = useTradePriceImpact()
@@ -228,7 +226,6 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
     showTwapSuggestionBanner,
     nativeCurrencySymbol,
     wrappedCurrencySymbol,
-    shouldZeroApprove,
     buyingFiatAmount,
     priceImpact: priceImpactParams.priceImpact,
     tradeUrlParams,
