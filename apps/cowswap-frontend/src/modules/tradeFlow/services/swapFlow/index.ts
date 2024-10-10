@@ -10,13 +10,14 @@ import { signAndPostOrder } from 'legacy/utils/trade'
 import { emitPostedOrderEvent } from 'modules/orders'
 import { handlePermit } from 'modules/permit'
 import { callDataContainsPermitSigner } from 'modules/permit'
-import { TradeFlowContext } from 'modules/trade'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
 import { tradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
 
 import { presignOrderStep } from './steps/presignOrderStep'
+
+import { TradeFlowContext } from '../../types/TradeFlowContext'
 
 export async function swapFlow(
   input: TradeFlowContext,

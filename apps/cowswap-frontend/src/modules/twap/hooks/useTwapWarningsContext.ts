@@ -2,7 +2,6 @@ import { useMemo } from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { useTradePriceImpact } from 'modules/trade'
 import { useGetTradeFormValidation } from 'modules/tradeFormValidation'
 import { TradeFormValidation } from 'modules/tradeFormValidation/types'
 
@@ -16,7 +15,6 @@ export interface TwapWarningsContext {
 export function useTwapWarningsContext(): TwapWarningsContext {
   const { account } = useWalletInfo()
   const primaryFormValidation = useGetTradeFormValidation()
-  const priceImpactParams = useTradePriceImpact()
 
   return useMemo(() => {
     const canTrade = !primaryFormValidation || NOT_BLOCKING_VALIDATIONS.includes(primaryFormValidation)
@@ -26,5 +24,5 @@ export function useTwapWarningsContext(): TwapWarningsContext {
       canTrade,
       walletIsNotConnected,
     }
-  }, [primaryFormValidation, account, priceImpactParams])
+  }, [primaryFormValidation, account])
 }

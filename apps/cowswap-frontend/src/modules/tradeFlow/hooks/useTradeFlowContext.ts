@@ -20,11 +20,11 @@ import { useGP2SettlementContract } from 'common/hooks/useContract'
 
 import { TradeFlowContext } from '../types/TradeFlowContext'
 
-interface Params {
+export interface TradeFlowParams {
   deadline: number
 }
 
-export function useTradeFlowContext({ deadline }: Params): TradeFlowContext | null {
+export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowContext | null {
   const { chainId, account } = useWalletInfo()
   const provider = useWalletProvider()
   const { allowsOffchainSigning } = useWalletDetails()

@@ -19,7 +19,6 @@ import { Field } from 'legacy/state/types'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { useTokenSupportsPermit } from 'modules/permit'
 import { getSwapButtonState } from 'modules/swap/helpers/getSwapButtonState'
-import { useHandleSwap } from 'modules/swap/hooks/useHandleSwap'
 import { SwapButtonsContext } from 'modules/swap/pure/SwapButtons'
 import { TradeType, useTradeConfirmActions, useWrapNativeFlow } from 'modules/trade'
 import { useIsNativeIn } from 'modules/trade/hooks/useIsNativeInOrOut'
@@ -30,7 +29,7 @@ import { QuoteDeadlineParams } from 'modules/tradeQuote'
 import { useApproveState } from 'common/hooks/useApproveState'
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
-import { useSwapFlowContext } from './useSwapFlowContext'
+import { useHandleSwapOrEthFlow } from './useHandleSwapOrEthFlow'
 import { useDerivedSwapInfo, useSwapActionHandlers } from './useSwapState'
 
 export interface SwapButtonInput {
@@ -57,7 +56,6 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
   const isBestQuoteLoading = useIsBestQuoteLoading()
   const tradeConfirmActions = useTradeConfirmActions()
   const { standaloneMode } = useInjectedWidgetParams()
-  const tradeFlowContext = useSwapFlowContext()
 
   const currencyIn = currencies[Field.INPUT]
   const currencyOut = currencies[Field.OUTPUT]
@@ -78,9 +76,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
   const wrapCallback = useWrapNativeFlow()
   const { state: approvalState } = useApproveState(slippageAdjustedSellAmount || null)
 
-  const { callback: handleSwap, contextIsReady } = useHandleSwap()
-
-  const recipientAddressOrName = tradeFlowContext?.orderParams.recipientAddressOrName || null
+  const { callback: handleSwap, contextIsReady } = useHandleSwapOrEthFlow()
 
   const swapCallbackError = contextIsReady ? null : 'Missing dependencies'
 
@@ -137,7 +133,6 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
       toggleWalletModal,
       swapInputError,
       onCurrencySelection,
-      recipientAddressOrName,
       widgetStandaloneMode: standaloneMode,
       quoteDeadlineParams,
     }),
@@ -154,7 +149,6 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
       toggleWalletModal,
       swapInputError,
       onCurrencySelection,
-      recipientAddressOrName,
       standaloneMode,
       quoteDeadlineParams,
     ],

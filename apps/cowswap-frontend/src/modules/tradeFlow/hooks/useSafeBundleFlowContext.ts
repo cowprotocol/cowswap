@@ -5,11 +5,11 @@ import { useSafeAppsSdk } from '@cowprotocol/wallet'
 
 import useSWR from 'swr'
 
+import { useReceiveAmountInfo } from 'modules/trade'
+
 import { useGP2SettlementContract, useTokenContract, useWETHContract } from 'common/hooks/useContract'
 import { useNeedsApproval } from 'common/hooks/useNeedsApproval'
 import { useTradeSpenderAddress } from 'common/hooks/useTradeSpenderAddress'
-
-import { useReceiveAmountInfo } from './useReceiveAmountInfo'
 
 import { SafeBundleFlowContext } from '../types/TradeFlowContext'
 

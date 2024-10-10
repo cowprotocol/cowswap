@@ -8,9 +8,8 @@ import type { PostOrderParams } from 'legacy/utils/trade'
 
 import type { TypedAppDataHooks } from 'modules/appData'
 import type { GeneratePermitHook, IsTokenPermittableResult, useGetCachedPermit } from 'modules/permit'
-
-import type { TradeConfirmActions } from '../hooks/useTradeConfirmActions'
-import type { TradeFlowAnalyticsContext } from '../utils/tradeFlowAnalytics'
+import type { TradeConfirmActions } from 'modules/trade'
+import type { TradeFlowAnalyticsContext } from 'modules/trade/utils/tradeFlowAnalytics'
 
 export enum FlowType {
   REGULAR = 'REGULAR',

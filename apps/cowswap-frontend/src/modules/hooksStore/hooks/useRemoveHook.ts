@@ -25,6 +25,6 @@ export function useRemoveHook(isPreHook: boolean): RemoveHook {
         }
       })
     },
-    [updateHooks],
+    [updateHooks, isPreHook],
   )
 }

@@ -1,12 +1,10 @@
-import React, { useCallback, useMemo } from 'react'
+import React, { useMemo } from 'react'
 
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import type { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
 import { useAppData } from 'modules/appData'
-import { swapFlow } from 'modules/swap/services/swapFlow'
-import type { SwapFlowContext } from 'modules/swap/services/types'
 import {
   TradeBasicConfirmDetails,
   TradeConfirmation,
@@ -14,11 +12,9 @@ import {
   useOrderSubmittedContent,
   useReceiveAmountInfo,
   useTradeConfirmActions,
-  useTradePriceImpact,
 } from 'modules/trade'
 import { HighFeeWarning } from 'modules/tradeWidgetAddons'
 
-import { useConfirmPriceImpactWithoutFee } from 'common/hooks/useConfirmPriceImpactWithoutFee'
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { CurrencyPreviewInfo } from 'common/pure/CurrencyAmountPreview'
 
@@ -27,7 +23,7 @@ import { useYieldDerivedState } from '../../hooks/useYieldDerivedState'
 const CONFIRM_TITLE = 'Confirm order'
 
 export interface YieldConfirmModalProps {
-  tradeFlowContext: SwapFlowContext
+  doTrade(): Promise<false | void>
   inputCurrencyInfo: CurrencyPreviewInfo
   outputCurrencyInfo: CurrencyPreviewInfo
   priceImpact: PriceImpact
@@ -35,7 +31,7 @@ export interface YieldConfirmModalProps {
 }
 
 export function YieldConfirmModal(props: YieldConfirmModalProps) {
-  const { inputCurrencyInfo, outputCurrencyInfo, priceImpact, recipient, tradeFlowContext: tradeContextInitial } = props
+  const { inputCurrencyInfo, outputCurrencyInfo, priceImpact, recipient, doTrade: _doTrade } = props
 
   /**
    * This is a very important part of the code.
@@ -43,7 +39,7 @@ export function YieldConfirmModal(props: YieldConfirmModalProps) {
    * In order to prevent this, we use useMemo to keep the trade context the same when the modal was opened.
    */
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const tradeFlowContext = useMemo(() => tradeContextInitial, [])
+  const doTrade = useMemo(() => _doTrade, [])
 
   const { account, chainId } = useWalletInfo()
   const { ensName } = useWalletDetails()
@@ -51,19 +47,9 @@ export function YieldConfirmModal(props: YieldConfirmModalProps) {
   const receiveAmountInfo = useReceiveAmountInfo()
   const tradeConfirmActions = useTradeConfirmActions()
   const { slippage } = useYieldDerivedState()
-  const priceImpactParams = useTradePriceImpact()
-  const { confirmPriceImpactWithoutFee } = useConfirmPriceImpactWithoutFee()
 
   const rateInfoParams = useRateInfoParams(inputCurrencyInfo.amount, outputCurrencyInfo.amount)
   const submittedContent = useOrderSubmittedContent(chainId)
-
-  const doTrade = useCallback(async () => {
-    if (!tradeFlowContext) return
-
-    swapFlow(tradeFlowContext, priceImpactParams, confirmPriceImpactWithoutFee)
-  }, [tradeFlowContext, priceImpactParams, confirmPriceImpactWithoutFee])
-
-  const isConfirmDisabled = false // TODO: add conditions if needed
 
   return (
     <TradeConfirmModal title={CONFIRM_TITLE} submittedContent={submittedContent}>
@@ -75,9 +61,9 @@ export function YieldConfirmModal(props: YieldConfirmModalProps) {
         outputCurrencyInfo={outputCurrencyInfo}
         onConfirm={doTrade}
         onDismiss={tradeConfirmActions.onDismiss}
-        isConfirmDisabled={isConfirmDisabled}
+        isConfirmDisabled={false}
         priceImpact={priceImpact}
-        buttonText="Confirm and swap" // TODO
+        buttonText="Confirm and swap"
         recipient={recipient}
         appData={appData || undefined}
         isPriceStatic={true}

@@ -1,10 +1,8 @@
+import { useIsEoaEthFlow, useIsSafeEthFlow, useReceiveAmountInfo } from 'modules/trade'
+
 import { useIsSafeApprovalBundle } from 'common/hooks/useIsSafeApprovalBundle'
 
-import { useIsEoaEthFlow } from './useIsEoaEthFlow'
-import { useIsSafeEthFlow } from './useIsSafeEthFlow'
-import { useReceiveAmountInfo } from './useReceiveAmountInfo'
-
-import { FlowType } from '../types'
+import { FlowType } from '../types/TradeFlowContext'
 
 export function useTradeFlowType(): FlowType {
   const isEoaEthFlow = useIsEoaEthFlow()

@@ -51,7 +51,7 @@ export function NoImpactWarning(props: NoImpactWarningProps) {
 
   useEffect(() => {
     setIsAccepted(!showPriceImpactWarning)
-  }, [showPriceImpactWarning])
+  }, [showPriceImpactWarning, setIsAccepted])
 
   if (!showPriceImpactWarning) return null
 

@@ -2,25 +2,24 @@ import { useEffect } from 'react'
 
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
 
-import { useUserTransactionTTL } from 'legacy/state/user/hooks'
-
-import { useTradeFlowContext } from 'modules/trade'
-
 import { useSetOrderParams } from './useSetOrderParams'
 
+import { useSwapFlowContext } from '../../swap/hooks/useSwapFlowContext'
+
 export function useSetupHooksStoreOrderParams() {
-  const [deadline] = useUserTransactionTTL()
-  const tradeFlowContext = useTradeFlowContext({ deadline })
+  const tradeFlowContext = useSwapFlowContext()
   const setOrderParams = useSetOrderParams()
   const orderParams = tradeFlowContext?.orderParams
 
   useEffect(() => {
-    if (!orderParams) return
-
-    setOrderParams({
-      validTo: orderParams.validTo,
-      sellTokenAddress: getCurrencyAddress(orderParams.inputAmount.currency),
-      buyTokenAddress: getCurrencyAddress(orderParams.outputAmount.currency),
-    })
-  }, [orderParams])
+    if (!orderParams) {
+      setOrderParams(null)
+    } else {
+      setOrderParams({
+        validTo: orderParams.validTo,
+        sellTokenAddress: getCurrencyAddress(orderParams.inputAmount.currency),
+        buyTokenAddress: getCurrencyAddress(orderParams.outputAmount.currency),
+      })
+    }
+  }, [orderParams, setOrderParams])
 }

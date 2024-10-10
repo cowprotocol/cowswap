@@ -20,7 +20,7 @@ export function useTenderlySimulate(): (params: CowHook) => Promise<TenderlySimu
 
       return response as TenderlySimulation | SimulationError
     },
-    [account, chainId],
+    [account, chainId, settlementContract],
   )
 }
 

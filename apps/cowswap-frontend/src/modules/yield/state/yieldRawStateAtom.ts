@@ -22,7 +22,7 @@ export function getDefaultYieldState(chainId: SupportedChainId | null): YieldRaw
 }
 
 export const { atom: yieldRawStateAtom, updateAtom: updateYieldRawStateAtom } = atomWithPartialUpdate(
-  atomWithStorage<YieldRawState>('yieldStateAtom:v0', getDefaultYieldState(null), getJotaiIsolatedStorage()),
+  atomWithStorage<YieldRawState>('yieldStateAtom:v1', getDefaultYieldState(null), getJotaiIsolatedStorage()),
 )
 
 export const yieldDerivedStateAtom = atom<YieldDerivedState>({

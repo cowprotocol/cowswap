@@ -12,11 +12,12 @@ import { buildApproveTx } from 'modules/operations/bundle/buildApproveTx'
 import { buildPresignTx } from 'modules/operations/bundle/buildPresignTx'
 import { buildWrapTx } from 'modules/operations/bundle/buildWrapTx'
 import { emitPostedOrderEvent } from 'modules/orders'
-import { SafeBundleFlowContext, TradeFlowContext } from 'modules/trade'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
 import { tradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
+
+import { SafeBundleFlowContext, TradeFlowContext } from '../../types/TradeFlowContext'
 
 const LOG_PREFIX = 'SAFE BUNDLE ETH FLOW'
 

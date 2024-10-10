@@ -9,11 +9,12 @@ import {
   useTradeConfirmState,
   useTradePriceImpact,
 } from 'modules/trade'
-import { useTradeFlowContext } from 'modules/trade'
+import { useHandleSwap } from 'modules/tradeFlow'
 import { useTradeQuote } from 'modules/tradeQuote'
 import { SettingsTab, TradeRateDetails } from 'modules/tradeWidgetAddons'
 
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
+import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 
 import { useYieldDerivedState } from '../../hooks/useYieldDerivedState'
@@ -44,7 +45,7 @@ export function YieldWidget() {
     outputCurrencyFiatAmount,
     recipient,
   } = useYieldDerivedState()
-  const tradeFlowContext = useTradeFlowContext({ deadline: deadlineState[0] })
+  const doTrade = useHandleSwap(useSafeMemoObject({ deadline: deadlineState[0] }))
 
   const inputCurrencyInfo: CurrencyInfo = {
     field: Field.INPUT,
@@ -88,7 +89,7 @@ export function YieldWidget() {
           <TradeRateDetails rateInfoParams={rateInfoParams} deadline={deadlineState[0]} />
           <Warnings />
           {tradeWarnings}
-          <TradeButtons isTradeContextReady={!!tradeFlowContext} />
+          <TradeButtons isTradeContextReady={doTrade.contextIsReady} />
         </>
       )
     },
@@ -112,9 +113,9 @@ export function YieldWidget() {
       inputCurrencyInfo={inputCurrencyInfo}
       outputCurrencyInfo={outputCurrencyInfo}
       confirmModal={
-        tradeFlowContext ? (
+        doTrade.contextIsReady ? (
           <YieldConfirmModal
-            tradeFlowContext={tradeFlowContext}
+            doTrade={doTrade.callback}
             recipient={recipient}
             priceImpact={priceImpact}
             inputCurrencyInfo={inputCurrencyPreviewInfo}
