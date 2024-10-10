@@ -14,6 +14,7 @@ import { useYieldDerivedState } from '../../hooks/useYieldDerivedState'
 import { useYieldDeadlineState, useYieldRecipientToggleState, useYieldSettings } from '../../hooks/useYieldSettings'
 import { useYieldWidgetActions } from '../../hooks/useYieldWidgetActions'
 import { TradeButtons } from '../TradeButtons'
+import { Warnings } from '../Warnings'
 import { YieldConfirmModal } from '../YieldConfirmModal'
 
 export function YieldWidget() {
@@ -78,6 +79,7 @@ export function YieldWidget() {
     bottomContent: (
       <>
         <TradeRateDetails rateInfoParams={rateInfoParams} deadline={deadlineState[0]} />
+        <Warnings />
         <TradeButtons isTradeContextReady={!!tradeFlowContext} />
       </>
     ),

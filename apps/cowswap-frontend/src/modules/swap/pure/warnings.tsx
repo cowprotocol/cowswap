@@ -21,7 +21,6 @@ import { TwapSuggestionBanner } from './banners/TwapSuggestionBanner'
 export interface SwapWarningsTopProps {
   chainId: SupportedChainId
   trade: TradeGp | undefined
-  account: string | undefined
   impactWarningAccepted: boolean
   hideUnknownImpactWarning: boolean
   showApprovalBundlingBanner: boolean
@@ -52,7 +51,6 @@ export const SwapWarningsTop = React.memo(function (props: SwapWarningsTopProps)
   const {
     chainId,
     trade,
-    account,
     impactWarningAccepted,
     hideUnknownImpactWarning,
     showApprovalBundlingBanner,

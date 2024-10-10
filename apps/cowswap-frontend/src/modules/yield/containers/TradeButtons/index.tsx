@@ -2,6 +2,7 @@ import React from 'react'
 
 import { useTradeConfirmActions } from 'modules/trade'
 import { TradeFormButtons, useGetTradeFormValidation, useTradeFormButtonContext } from 'modules/tradeFormValidation'
+import { useHighFeeWarning } from 'modules/tradeWidgetAddons'
 
 const CONFIRM_TEXT = 'Swap'
 
@@ -12,12 +13,13 @@ interface TradeButtonsProps {
 export function TradeButtons({ isTradeContextReady }: TradeButtonsProps) {
   const primaryFormValidation = useGetTradeFormValidation()
   const tradeConfirmActions = useTradeConfirmActions()
+  const { feeWarningAccepted } = useHighFeeWarning()
 
   const confirmTrade = tradeConfirmActions.onOpen
 
   const tradeFormButtonContext = useTradeFormButtonContext(CONFIRM_TEXT, confirmTrade)
 
-  const isDisabled = !isTradeContextReady
+  const isDisabled = !isTradeContextReady || !feeWarningAccepted
 
   if (!tradeFormButtonContext) return null
 

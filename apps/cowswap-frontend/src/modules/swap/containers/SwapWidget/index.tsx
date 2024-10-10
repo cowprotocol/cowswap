@@ -56,7 +56,7 @@ export interface SwapWidgetProps {
 }
 
 export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
-  const { chainId, account } = useWalletInfo()
+  const { chainId } = useWalletInfo()
   const { slippageAdjustedSellAmount, currencies, trade } = useDerivedSwapInfo()
   const slippage = useTradeSlippage()
   const parsedAmounts = useSwapCurrenciesAmounts()
@@ -218,7 +218,6 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
   const swapWarningsTopProps: SwapWarningsTopProps = {
     chainId,
     trade,
-    account,
     impactWarningAccepted,
     hideUnknownImpactWarning,
     showApprovalBundlingBanner,

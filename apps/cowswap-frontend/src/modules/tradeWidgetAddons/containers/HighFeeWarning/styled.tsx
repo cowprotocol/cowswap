@@ -53,7 +53,7 @@ export const AuxInformationContainer = styled.div<{
   }
 `
 
-export const WarningCheckboxContainer = styled.span`
+export const WarningCheckboxContainer = styled.label`
   display: flex;
   width: 100%;
   font-weight: bold;
@@ -63,6 +63,7 @@ export const WarningCheckboxContainer = styled.span`
   border-radius: 16px;
   padding: 0;
   margin: 10px auto;
+  cursor: pointer;
 
   > input {
     cursor: pointer;

@@ -8,14 +8,15 @@ import { useAppData } from 'modules/appData'
 import { swapFlow } from 'modules/swap/services/swapFlow'
 import type { SwapFlowContext } from 'modules/swap/services/types'
 import {
+  TradeBasicConfirmDetails,
   TradeConfirmation,
   TradeConfirmModal,
+  useOrderSubmittedContent,
   useReceiveAmountInfo,
   useTradeConfirmActions,
-  TradeBasicConfirmDetails,
   useTradePriceImpact,
-  useOrderSubmittedContent,
 } from 'modules/trade'
+import { HighFeeWarning } from 'modules/tradeWidgetAddons'
 
 import { useConfirmPriceImpactWithoutFee } from 'common/hooks/useConfirmPriceImpactWithoutFee'
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
@@ -97,6 +98,7 @@ export function YieldConfirmModal(props: YieldConfirmModalProps) {
               ></TradeBasicConfirmDetails>
             )}
             {restContent}
+            <HighFeeWarning readonlyMode />
           </>
         )}
       </TradeConfirmation>
