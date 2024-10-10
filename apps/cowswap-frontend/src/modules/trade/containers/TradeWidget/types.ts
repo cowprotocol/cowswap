@@ -26,6 +26,7 @@ interface TradeWidgetParams {
   disableQuotePolling?: boolean
   disableNativeSelling?: boolean
   disablePriceImpact?: boolean
+  hideTradeWarnings?: boolean
 }
 
 export interface TradeWidgetSlots {
@@ -33,7 +34,7 @@ export interface TradeWidgetSlots {
   lockScreen?: ReactNode
   topContent?: ReactNode
   middleContent?: ReactNode
-  bottomContent?: ReactNode
+  bottomContent?(warnings: ReactNode | null): ReactNode
   outerContent?: ReactNode
   updaters?: ReactNode
 }

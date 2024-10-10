@@ -29,6 +29,7 @@ const TRADE_TYPE_TO_ROUTE: Record<TradeType, string> = {
   swap: Routes.SWAP,
   limit: Routes.LIMIT_ORDER,
   advanced: Routes.ADVANCED_ORDERS,
+  yield: Routes.YIELD,
 }
 
 interface TradeWidgetLinksProps {

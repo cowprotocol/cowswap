@@ -74,7 +74,7 @@ export function BuildHookApp({ context }: HookDappProps) {
           hook,
         })
       : context.addHook({ hook })
-  }, [hook, context, hookToEdit, isPreHook])
+  }, [hook, context, hookToEdit])
 
   return (
     <Wrapper>

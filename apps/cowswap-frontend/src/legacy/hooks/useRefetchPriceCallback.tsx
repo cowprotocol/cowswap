@@ -19,7 +19,7 @@ import { LegacyFeeQuoteParams, LegacyQuoteParams } from 'legacy/state/price/type
 import { useUserTransactionTTL } from 'legacy/state/user/hooks'
 import { getBestQuote, getFastQuote, QuoteResult } from 'legacy/utils/price'
 
-import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
+import { useIsEoaEthFlow } from 'modules/trade'
 
 import { ApiErrorCodes, isValidOperatorError } from 'api/cowProtocol/errors/OperatorError'
 import QuoteApiError, {
@@ -183,8 +183,8 @@ export function useRefetchQuoteCallback() {
         const previouslyUnsupportedToken = getIsUnsupportedToken(sellToken)
           ? sellToken
           : getIsUnsupportedToken(buyToken)
-          ? buyToken
-          : null
+            ? buyToken
+            : null
         // can be a previously unsupported token which is now valid
         // so we check against map and remove it
         if (previouslyUnsupportedToken) {
@@ -263,6 +263,6 @@ export function useRefetchQuoteCallback() {
       removeGpUnsupportedToken,
       addUnsupportedToken,
       setQuoteError,
-    ]
+    ],
   )
 }

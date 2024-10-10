@@ -12,15 +12,17 @@ export function useTradeTypeInfoFromUrl(): TradeTypeInfo | null {
   const hooksMatch = !!useMatchTradeRoute('swap/hooks')
   const limitOrderMatch = !!useMatchTradeRoute('limit')
   const advancedOrdersMatch = !!useMatchTradeRoute('advanced')
+  const yieldMatch = !!useMatchTradeRoute('yield')
 
   return useMemo(() => {
     if (hooksMatch) return { tradeType: TradeType.SWAP, route: Routes.HOOKS }
     if (swapMatch) return { tradeType: TradeType.SWAP, route: Routes.SWAP }
     if (limitOrderMatch) return { tradeType: TradeType.LIMIT_ORDER, route: Routes.LIMIT_ORDER }
     if (advancedOrdersMatch) return { tradeType: TradeType.ADVANCED_ORDERS, route: Routes.ADVANCED_ORDERS }
+    if (yieldMatch) return { tradeType: TradeType.YIELD, route: Routes.YIELD }
 
     return null
-  }, [swapMatch, limitOrderMatch, advancedOrdersMatch])
+  }, [swapMatch, hooksMatch, limitOrderMatch, advancedOrdersMatch, yieldMatch])
 }
 
 function useMatchTradeRoute(route: string): PathMatch<'chainId'> | null {

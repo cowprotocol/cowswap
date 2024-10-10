@@ -44,8 +44,12 @@ export default function AdvancedOrdersPage() {
             params={advancedWidgetParams}
             mapCurrencyInfo={mapTwapCurrencyInfo}
           >
-            {/*TODO: conditionally display a widget for current advanced order type*/}
-            <TwapFormWidget />
+            {(tradeWarnings) => (
+              <>
+                {/*TODO: conditionally display a widget for current advanced order type*/}
+                <TwapFormWidget tradeWarnings={tradeWarnings} />
+              </>
+            )}
           </AdvancedOrdersWidget>
         </styledEl.PrimaryWrapper>
 

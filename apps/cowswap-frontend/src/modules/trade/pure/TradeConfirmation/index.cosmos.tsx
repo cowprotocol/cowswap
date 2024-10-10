@@ -17,7 +17,7 @@ const Fixtures = {
       refreshInterval={10_000}
       recipient={null}
     >
-      <span>Trade confirmation</span>
+      {() => <span>Trade confirmation</span>}
     </TradeConfirmation>
   ),
 }

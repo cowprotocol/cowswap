@@ -1,5 +1,5 @@
 import { useAtomValue } from 'jotai'
-import { PropsWithChildren, ReactNode } from 'react'
+import { ReactNode } from 'react'
 
 import { isSellOrder } from '@cowprotocol/common-utils'
 
@@ -38,12 +38,13 @@ export type AdvancedOrdersWidgetParams = {
   disablePriceImpact: boolean
 }
 
-export type AdvancedOrdersWidgetProps = PropsWithChildren<{
+export type AdvancedOrdersWidgetProps = {
   updaters?: ReactNode
   params: AdvancedOrdersWidgetParams
   mapCurrencyInfo?: (info: CurrencyInfo) => CurrencyInfo
   confirmContent: JSX.Element
-}>
+  children(warnings: ReactNode): ReactNode
+}
 
 export function AdvancedOrdersWidget({
   children,
@@ -98,7 +99,9 @@ export function AdvancedOrdersWidget({
 
   const slots: TradeWidgetSlots = {
     settingsWidget: <AdvancedOrdersSettings />,
-    bottomContent: children,
+    bottomContent(warnings) {
+      return children(warnings)
+    },
     updaters,
     lockScreen: isUnlocked ? undefined : (
       <UnlockWidgetScreen

@@ -1,18 +1,17 @@
 import { useAtomValue } from 'jotai'
 
+import { useIsNoImpactWarningAccepted } from 'modules/trade'
+
 import { useIsFallbackHandlerRequired } from './useFallbackHandlerVerification'
-import { useTwapWarningsContext } from './useTwapWarningsContext'
 
 import { twapOrdersSettingsAtom } from '../state/twapOrdersSettingsAtom'
 
 export function useAreWarningsAccepted(): boolean {
-  const { isPriceImpactAccepted, isFallbackHandlerSetupAccepted } = useAtomValue(twapOrdersSettingsAtom)
-  const { showPriceImpactWarning } = useTwapWarningsContext()
+  const { isFallbackHandlerSetupAccepted } = useAtomValue(twapOrdersSettingsAtom)
+  const isNoImpactWarningAccepted = useIsNoImpactWarningAccepted()
   const isFallbackHandlerRequired = useIsFallbackHandlerRequired()
-
-  if (showPriceImpactWarning) return isPriceImpactAccepted
 
   if (isFallbackHandlerRequired) return isFallbackHandlerSetupAccepted
 
-  return true
+  return isNoImpactWarningAccepted
 }

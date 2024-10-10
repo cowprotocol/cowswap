@@ -19,8 +19,8 @@ import { Field } from 'legacy/state/types'
 import { useUserTransactionTTL } from 'legacy/state/user/hooks'
 
 import { useAppData } from 'modules/appData'
-import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { useDerivedSwapInfo, useSwapState } from 'modules/swap/hooks/useSwapState'
+import { useIsEoaEthFlow } from 'modules/trade'
 
 export const TYPED_VALUE_DEBOUNCE_TIME = 350
 export const SWAP_QUOTE_CHECK_INTERVAL = ms`30s` // Every 30s
@@ -81,7 +81,7 @@ function quoteUsingSameParameters(currentParams: FeeQuoteParams, quoteInfo: Quot
 function isRefetchQuoteRequired(
   isLoading: boolean,
   currentParams: FeeQuoteParams,
-  quoteInformation?: QuoteInformationObject
+  quoteInformation?: QuoteInformationObject,
 ): boolean {
   // If there's no quote/fee information, we always re-fetch
   if (!quoteInformation) {

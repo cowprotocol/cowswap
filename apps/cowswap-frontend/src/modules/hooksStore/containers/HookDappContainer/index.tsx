@@ -78,6 +78,7 @@ export function HookDappContainer({ dapp, isPreHook, onDismiss, hookToEdit }: Ho
     inputCurrencyId,
     outputCurrencyId,
     isDarkMode,
+    orderParams,
   ])
 
   const dappProps = useMemo(() => ({ context, dapp, isPreHook }), [context, dapp, isPreHook])
