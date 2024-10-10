@@ -100,6 +100,10 @@
     {
       "priority": 4,
       "source": "https://curvefi.github.io/curve-assets/arbitrum.json"
+    },
+    {
+      "priority": 5,
+      "source": "https://raw.githubusercontent.com/balancer/tokenlists/refs/heads/main/generated/balancer.tokenlist.json"
     }
   ],
   "11155111": [
