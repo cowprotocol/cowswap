@@ -7,8 +7,8 @@ import styled from 'styled-components/macro'
 
 import { useIsDarkMode } from 'legacy/state/user/hooks'
 
-import { useHighFeeWarning } from 'modules/swap/hooks/useSwapState'
 import { StyledInfoIcon } from 'modules/swap/pure/styled'
+import { useHighFeeWarning } from 'modules/trade'
 
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 

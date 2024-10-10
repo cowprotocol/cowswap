@@ -29,9 +29,13 @@ import {
   SwapWarningsTopProps,
 } from 'modules/swap/pure/warnings'
 import { TradeWidget, TradeWidgetContainer, useReceiveAmountInfo, useTradePriceImpact } from 'modules/trade'
-import { useIsEoaEthFlow } from 'modules/trade'
-import { useTradeRouteContext } from 'modules/trade/hooks/useTradeRouteContext'
-import { useWrappedToken } from 'modules/trade/hooks/useWrappedToken'
+import {
+  useIsEoaEthFlow,
+  useHighFeeWarning,
+  useTradeRouteContext,
+  useWrappedToken,
+  useUnknownImpactWarning,
+} from 'modules/trade'
 import { getQuoteTimeOffset } from 'modules/tradeQuote'
 import { useTradeSlippage } from 'modules/tradeSlippage'
 import { SettingsTab, TradeRateDetails } from 'modules/tradeWidgetAddons'
@@ -45,13 +49,7 @@ import { SWAP_QUOTE_CHECK_INTERVAL } from 'common/updaters/FeesUpdater'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 import { useIsSwapEth } from '../../hooks/useIsSwapEth'
-import {
-  useDerivedSwapInfo,
-  useHighFeeWarning,
-  useSwapActionHandlers,
-  useSwapState,
-  useUnknownImpactWarning,
-} from '../../hooks/useSwapState'
+import { useDerivedSwapInfo, useSwapActionHandlers, useSwapState } from '../../hooks/useSwapState'
 import { useTradeQuoteStateFromLegacy } from '../../hooks/useTradeQuoteStateFromLegacy'
 import { ConfirmSwapModalSetup } from '../ConfirmSwapModalSetup'
 
