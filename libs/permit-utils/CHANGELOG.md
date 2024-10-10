@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://github.com/cowprotocol/cowswap/compare/permit-utils-v0.3.1...permit-utils-v0.4.0) (2024-10-10)
+
+
+### Features
+
+* **hooks-store:** use dappId from hook model to match with dapp ([#4938](https://github.com/cowprotocol/cowswap/issues/4938)) ([46699cb](https://github.com/cowprotocol/cowswap/commit/46699cbe6df02b0f7a3c6c380a04842e9f403a88))
+
 ## [0.3.1](https://github.com/cowprotocol/cowswap/compare/permit-utils-v0.3.0...permit-utils-v0.3.1) (2024-07-17)
 
 

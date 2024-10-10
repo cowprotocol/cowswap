@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.85.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.84.0...cowswap-v1.85.0) (2024-10-10)
+
+
+### Features
+
+* **hooks-store:** add dapp id to hook callData ([#4920](https://github.com/cowprotocol/cowswap/issues/4920)) ([7111756](https://github.com/cowprotocol/cowswap/commit/7111756e359a8e52daa674068f99217efe27ee5b))
+* **hooks-store:** adjust hook details and rescue funds styles ([#4948](https://github.com/cowprotocol/cowswap/issues/4948)) ([aedc8d1](https://github.com/cowprotocol/cowswap/commit/aedc8d14c9b8dc3b25f964985b41b25229fd1547))
+* **hooks-store:** style hook details ([#4932](https://github.com/cowprotocol/cowswap/issues/4932)) ([83184d2](https://github.com/cowprotocol/cowswap/commit/83184d23da3c812eff87bfc0ec5a2832af0ff235))
+* **hooks-store:** use dappId from hook model to match with dapp ([#4938](https://github.com/cowprotocol/cowswap/issues/4938)) ([46699cb](https://github.com/cowprotocol/cowswap/commit/46699cbe6df02b0f7a3c6c380a04842e9f403a88))
+* improve mobile rendering of custom recipient ([#4954](https://github.com/cowprotocol/cowswap/issues/4954)) ([64e58c6](https://github.com/cowprotocol/cowswap/commit/64e58c6a6995c8b91792aad5e68129cbf30b7c3a))
+* rescue funds from CoW Shed Proxy ([#4935](https://github.com/cowprotocol/cowswap/issues/4935)) ([5fb7f34](https://github.com/cowprotocol/cowswap/commit/5fb7f344bec8dfd26177f62c765ed1e589c56a56))
+* **swap:** display order hooks details ([#4925](https://github.com/cowprotocol/cowswap/issues/4925)) ([1e776fc](https://github.com/cowprotocol/cowswap/commit/1e776fc4f6dfb28eebf881e79bb45dbfd693e472))
+
+
+### Bug Fixes
+
+* **tokens-selector:** fix tokens displaying on mobile view ([#4929](https://github.com/cowprotocol/cowswap/issues/4929)) ([f055957](https://github.com/cowprotocol/cowswap/commit/f055957af450967b4bc4d58a15fc7a7b80f0aa77))
+
 ## [1.84.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.83.0...cowswap-v1.84.0) (2024-09-30)
 
 
