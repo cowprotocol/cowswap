@@ -5,10 +5,7 @@ import styled from 'styled-components/macro'
 
 import { HIGH_TIER_FEE, LOW_TIER_FEE, MEDIUM_TIER_FEE } from './consts'
 
-export interface HighFeeContainerProps {
-  padding?: string
-  margin?: string
-  width?: string
+interface HighFeeContainerProps {
   level?: number
   isDarkMode?: boolean
 }
@@ -86,8 +83,8 @@ export const WarningContainer = styled(AuxInformationContainer).attrs((props) =>
           ? theme.alert
           : theme.info};
   color: inherit;
-  padding: ${({ padding = '16px' }) => padding};
-  width: ${({ width = '100%' }) => width};
+  padding: 16px;
+  width: 100%;
   border-radius: 16px;
   border: 0;
   margin: ${({ margin = '0 auto' }) => margin};

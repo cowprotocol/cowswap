@@ -1,10 +1,13 @@
-import { useMemo, useState } from 'react'
+import { atom, useAtom } from 'jotai'
+import { useMemo } from 'react'
 
 import { FEE_SIZE_THRESHOLD } from '@cowprotocol/common-const'
 
+import { useReceiveAmountInfo } from 'modules/trade'
+
 import { useSafeEffect, useSafeMemo } from 'common/hooks/useSafeMemo'
 
-import { useReceiveAmountInfo } from './useReceiveAmountInfo'
+const feeWarningAcceptedAtom = atom(false)
 
 /**
  * useHighFeeWarning
@@ -14,7 +17,7 @@ import { useReceiveAmountInfo } from './useReceiveAmountInfo'
 export function useHighFeeWarning() {
   const receiveAmountInfo = useReceiveAmountInfo()
 
-  const [feeWarningAccepted, setFeeWarningAccepted] = useState<boolean>(false)
+  const [feeWarningAccepted, setFeeWarningAccepted] = useAtom(feeWarningAcceptedAtom)
 
   // only considers inputAmount vs fee (fee is in input token)
   const [isHighFee, feePercentage] = useMemo(() => {

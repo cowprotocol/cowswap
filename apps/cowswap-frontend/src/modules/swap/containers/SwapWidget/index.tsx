@@ -29,16 +29,10 @@ import {
   SwapWarningsTopProps,
 } from 'modules/swap/pure/warnings'
 import { TradeWidget, TradeWidgetContainer, useReceiveAmountInfo, useTradePriceImpact } from 'modules/trade'
-import {
-  useIsEoaEthFlow,
-  useHighFeeWarning,
-  useTradeRouteContext,
-  useWrappedToken,
-  useUnknownImpactWarning,
-} from 'modules/trade'
+import { useIsEoaEthFlow, useTradeRouteContext, useWrappedToken, useUnknownImpactWarning } from 'modules/trade'
 import { getQuoteTimeOffset } from 'modules/tradeQuote'
 import { useTradeSlippage } from 'modules/tradeSlippage'
-import { SettingsTab, TradeRateDetails } from 'modules/tradeWidgetAddons'
+import { SettingsTab, TradeRateDetails, useHighFeeWarning } from 'modules/tradeWidgetAddons'
 import { useTradeUsdAmounts } from 'modules/usdAmount'
 import { useShouldZeroApprove } from 'modules/zeroApproval'
 
@@ -168,7 +162,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
     !!priceImpactParams.priceImpact ||
     priceImpactParams.loading
 
-  const { feeWarningAccepted, setFeeWarningAccepted } = useHighFeeWarning()
+  const { feeWarningAccepted } = useHighFeeWarning()
   const { impactWarningAccepted: _impactWarningAccepted, setImpactWarningAccepted } = useUnknownImpactWarning()
   const impactWarningAccepted = hideUnknownImpactWarning || _impactWarningAccepted
 
@@ -225,7 +219,6 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
     chainId,
     trade,
     account,
-    feeWarningAccepted,
     impactWarningAccepted,
     hideUnknownImpactWarning,
     showApprovalBundlingBanner,
@@ -234,7 +227,6 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
     showTwapSuggestionBanner,
     nativeCurrencySymbol,
     wrappedCurrencySymbol,
-    setFeeWarningAccepted,
     setImpactWarningAccepted,
     shouldZeroApprove,
     buyingFiatAmount,

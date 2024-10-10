@@ -5,7 +5,6 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { Percent, TradeType } from '@uniswap/sdk-core'
 
-import { HighFeeWarning } from 'modules/tradeWidgetAddons'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import TradeGp from 'legacy/state/swap/TradeGp'
 import { useUserTransactionTTL } from 'legacy/state/user/hooks'
@@ -22,6 +21,7 @@ import {
 import { TradeBasicConfirmDetails } from 'modules/trade/containers/TradeBasicConfirmDetails'
 import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
 import { useIsSmartSlippageApplied } from 'modules/tradeSlippage'
+import { HighFeeWarning } from 'modules/tradeWidgetAddons'
 import { NetworkCostsTooltipSuffix, RowDeadline } from 'modules/tradeWidgetAddons'
 
 import { CurrencyPreviewInfo } from 'common/pure/CurrencyAmountPreview'
@@ -136,7 +136,7 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
               </TradeBasicConfirmDetails>
             )}
             {restContent}
-            <HighFeeWarning />
+            <HighFeeWarning readonlyMode />
             {!priceImpact.priceImpact && <NoImpactWarning isAccepted withoutAccepting />}
           </>
         )}

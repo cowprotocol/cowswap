@@ -1,28 +1,31 @@
-import { Command } from '@cowprotocol/types'
+import { useCallback } from 'react'
+
 import { HoverTooltip } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { Fraction } from '@uniswap/sdk-core'
 
 import { AlertTriangle } from 'react-feather'
 
 import { useIsDarkMode } from 'legacy/state/user/hooks'
 
-import { useHighFeeWarning } from 'modules/trade'
-
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
 import { HIGH_TIER_FEE, LOW_TIER_FEE, MEDIUM_TIER_FEE } from './consts'
-import { ErrorStyledInfoIcon, HighFeeContainerProps, WarningCheckboxContainer, WarningContainer } from './styled'
+import { useHighFeeWarning } from './hooks/useHighFeeWarning'
+import { ErrorStyledInfoIcon, WarningCheckboxContainer, WarningContainer } from './styled'
 
-export type WarningProps = {
-  acceptedStatus?: boolean
-  className?: string
-  acceptWarningCb?: Command
-  hide?: boolean
-} & HighFeeContainerProps
+interface HighFeeWarningProps {
+  readonlyMode?: boolean
+}
 
-export const HighFeeWarning = (props: WarningProps) => {
-  const { acceptedStatus, acceptWarningCb } = props
+export function HighFeeWarning({ readonlyMode }: HighFeeWarningProps) {
+  const { account } = useWalletInfo()
+  const { feeWarningAccepted, setFeeWarningAccepted } = useHighFeeWarning()
   const darkMode = useIsDarkMode()
+
+  const toggleFeeWarningAccepted = useCallback(() => {
+    setFeeWarningAccepted((state) => !state)
+  }, [setFeeWarningAccepted])
 
   const { isHighFee, feePercentage } = useHighFeeWarning()
   const level = useSafeMemo(() => _getWarningInfo(feePercentage), [feePercentage])
@@ -30,7 +33,7 @@ export const HighFeeWarning = (props: WarningProps) => {
   if (!isHighFee) return null
 
   return (
-    <WarningContainer {...props} level={level} isDarkMode={darkMode}>
+    <WarningContainer level={level} isDarkMode={darkMode}>
       <div>
         <AlertTriangle size={24} />
         Costs exceed {level}% of the swap amount!{' '}
@@ -39,10 +42,15 @@ export const HighFeeWarning = (props: WarningProps) => {
         </HoverTooltip>{' '}
       </div>
 
-      {acceptWarningCb && (
+      {account && !readonlyMode && (
         <WarningCheckboxContainer>
-          <input id="fees-exceed-checkbox" type="checkbox" onChange={acceptWarningCb} checked={!!acceptedStatus} /> Swap
-          anyway
+          <input
+            id="fees-exceed-checkbox"
+            type="checkbox"
+            onChange={toggleFeeWarningAccepted}
+            checked={feeWarningAccepted}
+          />{' '}
+          Swap anyway
         </WarningCheckboxContainer>
       )}
     </WarningContainer>

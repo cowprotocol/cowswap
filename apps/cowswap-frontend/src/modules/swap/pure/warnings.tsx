@@ -22,7 +22,6 @@ export interface SwapWarningsTopProps {
   chainId: SupportedChainId
   trade: TradeGp | undefined
   account: string | undefined
-  feeWarningAccepted: boolean
   impactWarningAccepted: boolean
   hideUnknownImpactWarning: boolean
   showApprovalBundlingBanner: boolean
@@ -35,7 +34,6 @@ export interface SwapWarningsTopProps {
   buyingFiatAmount: CurrencyAmount<Currency> | null
   priceImpact: Percent | undefined
   tradeUrlParams: TradeUrlParams
-  setFeeWarningAccepted(cb: (state: boolean) => boolean): void
   setImpactWarningAccepted(cb: (state: boolean) => boolean): void
 }
 
@@ -55,7 +53,6 @@ export const SwapWarningsTop = React.memo(function (props: SwapWarningsTopProps)
     chainId,
     trade,
     account,
-    feeWarningAccepted,
     impactWarningAccepted,
     hideUnknownImpactWarning,
     showApprovalBundlingBanner,
@@ -64,7 +61,6 @@ export const SwapWarningsTop = React.memo(function (props: SwapWarningsTopProps)
     showTwapSuggestionBanner,
     nativeCurrencySymbol,
     wrappedCurrencySymbol,
-    setFeeWarningAccepted,
     setImpactWarningAccepted,
     shouldZeroApprove,
     buyingFiatAmount,
@@ -75,10 +71,7 @@ export const SwapWarningsTop = React.memo(function (props: SwapWarningsTopProps)
   return (
     <>
       {shouldZeroApprove && <ZeroApprovalWarning currency={trade?.inputAmount.currency} />}
-      <HighFeeWarning
-        acceptedStatus={feeWarningAccepted}
-        acceptWarningCb={account ? () => setFeeWarningAccepted((state) => !state) : undefined}
-      />
+      <HighFeeWarning />
       {!hideUnknownImpactWarning && (
         <StyledNoImpactWarning
           isAccepted={impactWarningAccepted}
