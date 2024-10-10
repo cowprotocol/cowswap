@@ -224,7 +224,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
   const nativeCurrencySymbol = useNativeCurrency().symbol || 'ETH'
   const wrappedCurrencySymbol = useWrappedToken().symbol || 'WETH'
 
-  const isSuggestedSlippage = useIsSmartSlippageApplied() && !isTradePriceUpdating
+  const isSuggestedSlippage = useIsSmartSlippageApplied() && !isTradePriceUpdating && !!account
 
   const swapWarningsTopProps: SwapWarningsTopProps = {
     chainId,
