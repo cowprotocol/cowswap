@@ -5,12 +5,9 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { BundleTxApprovalBanner, BundleTxSafeWcBanner, BundleTxWrapBanner } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
-import styled from 'styled-components/macro'
-
 import TradeGp from 'legacy/state/swap/TradeGp'
 
 import { CompatibilityIssuesWarning } from 'modules/trade/pure/CompatibilityIssuesWarning'
-import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
 import { TradeUrlParams } from 'modules/trade/types/TradeRawState'
 import { HighFeeWarning } from 'modules/tradeWidgetAddons'
 
@@ -21,8 +18,6 @@ import { TwapSuggestionBanner } from './banners/TwapSuggestionBanner'
 export interface SwapWarningsTopProps {
   chainId: SupportedChainId
   trade: TradeGp | undefined
-  impactWarningAccepted: boolean
-  hideUnknownImpactWarning: boolean
   showApprovalBundlingBanner: boolean
   showWrapBundlingBanner: boolean
   shouldZeroApprove: boolean
@@ -33,7 +28,6 @@ export interface SwapWarningsTopProps {
   buyingFiatAmount: CurrencyAmount<Currency> | null
   priceImpact: Percent | undefined
   tradeUrlParams: TradeUrlParams
-  setImpactWarningAccepted(cb: (state: boolean) => boolean): void
 }
 
 export interface SwapWarningsBottomProps {
@@ -43,23 +37,16 @@ export interface SwapWarningsBottomProps {
   currencyOut: Currency | undefined
 }
 
-const StyledNoImpactWarning = styled(NoImpactWarning)`
-  margin-bottom: 15px;
-`
-
 export const SwapWarningsTop = React.memo(function (props: SwapWarningsTopProps) {
   const {
     chainId,
     trade,
-    impactWarningAccepted,
-    hideUnknownImpactWarning,
     showApprovalBundlingBanner,
     showWrapBundlingBanner,
     showSafeWcBundlingBanner,
     showTwapSuggestionBanner,
     nativeCurrencySymbol,
     wrappedCurrencySymbol,
-    setImpactWarningAccepted,
     shouldZeroApprove,
     buyingFiatAmount,
     priceImpact,
@@ -70,12 +57,6 @@ export const SwapWarningsTop = React.memo(function (props: SwapWarningsTopProps)
     <>
       {shouldZeroApprove && <ZeroApprovalWarning currency={trade?.inputAmount.currency} />}
       <HighFeeWarning />
-      {!hideUnknownImpactWarning && (
-        <StyledNoImpactWarning
-          isAccepted={impactWarningAccepted}
-          acceptCallback={() => setImpactWarningAccepted((state) => !state)}
-        />
-      )}
       {showApprovalBundlingBanner && <BundleTxApprovalBanner />}
       {showWrapBundlingBanner && (
         <BundleTxWrapBanner nativeCurrencySymbol={nativeCurrencySymbol} wrappedCurrencySymbol={wrappedCurrencySymbol} />

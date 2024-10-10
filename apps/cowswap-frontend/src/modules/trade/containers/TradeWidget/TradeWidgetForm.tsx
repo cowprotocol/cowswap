@@ -35,6 +35,7 @@ import { useTradeStateFromUrl } from '../../hooks/setupTradeState/useTradeStateF
 import { useIsWrapOrUnwrap } from '../../hooks/useIsWrapOrUnwrap'
 import { useTradeTypeInfo } from '../../hooks/useTradeTypeInfo'
 import { TradeType } from '../../types'
+import { NoImpactWarning } from '../NoImpactWarning'
 import { TradeWidgetLinks } from '../TradeWidgetLinks'
 import { WrapFlowActionButton } from '../WrapFlowActionButton'
 
@@ -59,7 +60,15 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
   const { settingsWidget, lockScreen, topContent, middleContent, bottomContent, outerContent } = slots
 
   const { onCurrencySelection, onUserInput, onSwitchTokens, onChangeRecipient } = actions
-  const { compactView, showRecipient, isTradePriceUpdating, isEoaEthFlow = false, priceImpact, recipient } = params
+  const {
+    compactView,
+    showRecipient,
+    isTradePriceUpdating,
+    isEoaEthFlow = false,
+    priceImpact,
+    recipient,
+    hideTradeWarnings,
+  } = params
 
   const inputCurrencyInfo = useMemo(
     () => (isWrapOrUnwrap ? { ...props.inputCurrencyInfo, receiveAmountInfo: null } : props.inputCurrencyInfo),
@@ -220,7 +229,17 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
             </div>
             {withRecipient && <SetRecipient recipient={recipient || ''} onChangeRecipient={onChangeRecipient} />}
 
-            {isWrapOrUnwrap ? <WrapFlowActionButton /> : bottomContent}
+            {isWrapOrUnwrap ? (
+              <WrapFlowActionButton />
+            ) : (
+              bottomContent?.(
+                hideTradeWarnings ? null : (
+                  <>
+                    <NoImpactWarning />
+                  </>
+                ),
+              )
+            )}
           </>
         )}
 

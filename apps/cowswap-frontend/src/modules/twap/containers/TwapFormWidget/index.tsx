@@ -1,5 +1,5 @@
 import { useAtomValue, useSetAtom } from 'jotai'
-import { useEffect, useLayoutEffect, useMemo, useState } from 'react'
+import { ReactNode, useEffect, useLayoutEffect, useMemo, useState } from 'react'
 
 import { renderTooltip } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -39,7 +39,11 @@ import { TwapFormWarnings } from '../TwapFormWarnings'
 
 export type { LabelTooltip, LabelTooltipItems } from './tooltips'
 
-export function TwapFormWidget() {
+interface TwapFormWidget {
+  tradeWarnings: ReactNode
+}
+
+export function TwapFormWidget({ tradeWarnings }: TwapFormWidget) {
   const { account } = useWalletInfo()
 
   const { numberOfPartsValue, deadline, customDeadline, isCustomDeadline } = useAtomValue(twapOrdersSettingsAtom)
@@ -65,7 +69,7 @@ export function TwapFormWidget() {
 
   const limitPriceAfterSlippage = usePrice(
     receiveAmountInfo?.afterSlippage.sellAmount,
-    receiveAmountInfo?.afterSlippage.buyAmount
+    receiveAmountInfo?.afterSlippage.buyAmount,
   )
 
   const deadlineState = {
@@ -76,7 +80,7 @@ export function TwapFormWidget() {
 
   // Reset warnings flags once on start
   useEffect(() => {
-    updateSettingsState({ isFallbackHandlerSetupAccepted: false, isPriceImpactAccepted: false })
+    updateSettingsState({ isFallbackHandlerSetupAccepted: false })
     openAdvancedOrdersTabAnalytics()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -182,6 +186,7 @@ export function TwapFormWidget() {
 
       <AmountParts />
 
+      {tradeWarnings}
       <TwapFormWarnings localFormValidation={localFormValidation} />
       <ActionButtons
         fallbackHandlerIsNotSet={isFallbackHandlerRequired}

@@ -10,7 +10,6 @@ const NOT_BLOCKING_VALIDATIONS = [TradeFormValidation.ApproveAndSwap, TradeFormV
 
 export interface TwapWarningsContext {
   canTrade: boolean
-  showPriceImpactWarning: boolean
   walletIsNotConnected: boolean
 }
 
@@ -21,12 +20,10 @@ export function useTwapWarningsContext(): TwapWarningsContext {
 
   return useMemo(() => {
     const canTrade = !primaryFormValidation || NOT_BLOCKING_VALIDATIONS.includes(primaryFormValidation)
-    const showPriceImpactWarning = canTrade && !priceImpactParams.loading && !priceImpactParams.priceImpact
     const walletIsNotConnected = !account
 
     return {
       canTrade,
-      showPriceImpactWarning,
       walletIsNotConnected,
     }
   }, [primaryFormValidation, account, priceImpactParams])

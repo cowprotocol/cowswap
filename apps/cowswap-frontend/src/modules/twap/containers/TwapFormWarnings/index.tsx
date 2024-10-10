@@ -8,7 +8,6 @@ import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
 import { modifySafeHandlerAnalytics } from 'modules/analytics'
 import { SellNativeWarningBanner } from 'modules/trade/containers/SellNativeWarningBanner'
 import { useTradeRouteContext } from 'modules/trade/hooks/useTradeRouteContext'
-import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
 import { useGetTradeFormValidation } from 'modules/tradeFormValidation'
 import { TradeFormValidation } from 'modules/tradeFormValidation/types'
 import { useTradeQuoteFeeFiatAmount } from 'modules/tradeQuote'
@@ -43,7 +42,7 @@ interface TwapFormWarningsProps {
 }
 
 export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: TwapFormWarningsProps) {
-  const { isFallbackHandlerSetupAccepted, isPriceImpactAccepted } = useAtomValue(twapOrdersSettingsAtom)
+  const { isFallbackHandlerSetupAccepted } = useAtomValue(twapOrdersSettingsAtom)
   const updateTwapOrdersSettings = useSetAtom(updateTwapOrdersSettingsAtom)
   const twapOrder = useAtomValue(twapOrderAtom)
   const slippage = useTwapSlippage()
@@ -56,7 +55,7 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
   const isFallbackHandlerRequired = useIsFallbackHandlerRequired()
   const isSafeViaWc = useIsSafeViaWc()
   const tradeQuoteFeeFiatAmount = useTradeQuoteFeeFiatAmount()
-  const { canTrade, showPriceImpactWarning, walletIsNotConnected } = useTwapWarningsContext()
+  const { canTrade, walletIsNotConnected } = useTwapWarningsContext()
   const tradeUrlParams = useTradeRouteContext()
 
   const toggleFallbackHandlerSetupFlag = useCallback(
@@ -74,10 +73,6 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
   const showTradeFormWarnings = !isConfirmationModal && canTrade
   const showFallbackHandlerWarning = showTradeFormWarnings && isFallbackHandlerRequired
 
-  const setIsPriceImpactAccepted = useCallback(() => {
-    updateTwapOrdersSettings({ isPriceImpactAccepted: !isPriceImpactAccepted })
-  }, [updateTwapOrdersSettings, isPriceImpactAccepted])
-
   // Don't display any warnings while a wallet is not connected
   if (walletIsNotConnected) return null
 
@@ -93,14 +88,6 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
     <>
       {showZeroApprovalWarning && <ZeroApprovalWarning currency={twapOrder?.sellAmount?.currency} />}
       {showApprovalBundlingBanner && <BundleTxApprovalBanner />}
-
-      {!isConfirmationModal && showPriceImpactWarning && (
-        <NoImpactWarning
-          withoutAccepting={false}
-          isAccepted={isPriceImpactAccepted}
-          acceptCallback={() => setIsPriceImpactAccepted()}
-        />
-      )}
 
       {(() => {
         if (localFormValidation === TwapFormState.NOT_SAFE) {

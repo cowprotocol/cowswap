@@ -8,7 +8,7 @@ import { Field } from 'legacy/state/types'
 import { LimitOrdersWarnings } from 'modules/limitOrders/containers/LimitOrdersWarnings'
 import { useLimitOrdersWidgetActions } from 'modules/limitOrders/containers/LimitOrdersWidget/hooks/useLimitOrdersWidgetActions'
 import { TradeButtons } from 'modules/limitOrders/containers/TradeButtons'
-import { TradeWidget, useTradePriceImpact } from 'modules/trade'
+import { TradeWidget, TradeWidgetSlots, useTradePriceImpact } from 'modules/trade'
 import { useTradeConfirmState } from 'modules/trade'
 import { BulletListItem, UnlockWidgetScreen } from 'modules/trade/pure/UnlockWidgetScreen'
 import { useSetTradeQuoteParams, useTradeQuote } from 'modules/tradeQuote'
@@ -157,7 +157,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
 
   console.debug('RENDER LIMIT ORDERS WIDGET', { inputCurrencyInfo, outputCurrencyInfo })
 
-  const slots = {
+  const slots: TradeWidgetSlots = {
     settingsWidget: <SettingsWidget />,
     lockScreen: isUnlocked ? undefined : (
       <UnlockWidgetScreen
@@ -177,19 +177,22 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
         <DeadlineInput />
       </styledEl.RateWrapper>
     ),
-    bottomContent: (
-      <>
-        <styledEl.FooterBox>
-          <TradeRateDetails rateInfoParams={rateInfoParams} />
-        </styledEl.FooterBox>
+    bottomContent(warnings) {
+      return (
+        <>
+          <styledEl.FooterBox>
+            <TradeRateDetails rateInfoParams={rateInfoParams} />
+          </styledEl.FooterBox>
 
-        <LimitOrdersWarnings feeAmount={feeAmount} />
+          <LimitOrdersWarnings feeAmount={feeAmount} />
+          {warnings}
 
-        <styledEl.TradeButtonBox>
-          <TradeButtons isTradeContextReady={!!tradeContext} />
-        </styledEl.TradeButtonBox>
-      </>
-    ),
+          <styledEl.TradeButtonBox>
+            <TradeButtons isTradeContextReady={!!tradeContext} />
+          </styledEl.TradeButtonBox>
+        </>
+      )
+    },
     outerContent: <>{isUnlocked && <InfoBanner />}</>,
   }
 
@@ -201,6 +204,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
     priceImpact,
     disablePriceImpact: localFormValidation === LimitOrdersFormState.FeeExceedsFrom,
     disableQuotePolling: isConfirmOpen,
+    hideTradeWarnings: !!localFormValidation,
   }
 
   return (

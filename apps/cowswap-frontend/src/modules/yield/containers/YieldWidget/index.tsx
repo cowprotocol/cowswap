@@ -2,7 +2,13 @@ import React from 'react'
 
 import { Field } from 'legacy/state/types'
 
-import { TradeWidget, useReceiveAmountInfo, useTradeConfirmState, useTradePriceImpact } from 'modules/trade'
+import {
+  TradeWidget,
+  TradeWidgetSlots,
+  useReceiveAmountInfo,
+  useTradeConfirmState,
+  useTradePriceImpact,
+} from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
 import { SettingsTab, TradeRateDetails } from 'modules/tradeWidgetAddons'
 
@@ -74,15 +80,18 @@ export function YieldWidget() {
 
   const rateInfoParams = useRateInfoParams(inputCurrencyInfo.amount, outputCurrencyInfo.amount)
 
-  const slots = {
+  const slots: TradeWidgetSlots = {
     settingsWidget: <SettingsTab recipientToggleState={recipientToggleState} deadlineState={deadlineState} />,
-    bottomContent: (
-      <>
-        <TradeRateDetails rateInfoParams={rateInfoParams} deadline={deadlineState[0]} />
-        <Warnings />
-        <TradeButtons isTradeContextReady={!!tradeFlowContext} />
-      </>
-    ),
+    bottomContent(tradeWarnings) {
+      return (
+        <>
+          <TradeRateDetails rateInfoParams={rateInfoParams} deadline={deadlineState[0]} />
+          <Warnings />
+          {tradeWarnings}
+          <TradeButtons isTradeContextReady={!!tradeFlowContext} />
+        </>
+      )
+    },
   }
 
   const params = {

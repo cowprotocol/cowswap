@@ -19,7 +19,6 @@ import {
   useTradeConfirmActions,
 } from 'modules/trade'
 import { TradeBasicConfirmDetails } from 'modules/trade/containers/TradeBasicConfirmDetails'
-import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
 import { useIsSmartSlippageApplied } from 'modules/tradeSlippage'
 import { HighFeeWarning } from 'modules/tradeWidgetAddons'
 import { NetworkCostsTooltipSuffix, RowDeadline } from 'modules/tradeWidgetAddons'
@@ -137,7 +136,6 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
             )}
             {restContent}
             <HighFeeWarning readonlyMode />
-            {!priceImpact.priceImpact && <NoImpactWarning isAccepted withoutAccepting />}
           </>
         )}
       </TradeConfirmation>

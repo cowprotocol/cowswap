@@ -2,7 +2,6 @@ import { ReactNode, useCallback, useMemo, useState } from 'react'
 
 import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
 import { NATIVE_CURRENCIES, TokenWithLogo } from '@cowprotocol/common-const'
-import { isFractionFalsy } from '@cowprotocol/common-utils'
 import { useIsTradeUnsupported } from '@cowprotocol/tokens'
 import { useIsSafeViaWc, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { TradeType } from '@cowprotocol/widget-lib'
@@ -28,8 +27,20 @@ import {
   SwapWarningsTop,
   SwapWarningsTopProps,
 } from 'modules/swap/pure/warnings'
-import { TradeWidget, TradeWidgetContainer, useReceiveAmountInfo, useTradePriceImpact } from 'modules/trade'
-import { useIsEoaEthFlow, useTradeRouteContext, useWrappedToken, useUnknownImpactWarning } from 'modules/trade'
+import {
+  TradeWidget,
+  TradeWidgetContainer,
+  TradeWidgetSlots,
+  useReceiveAmountInfo,
+  useTradePriceImpact,
+} from 'modules/trade'
+import {
+  useIsEoaEthFlow,
+  useTradeRouteContext,
+  useWrappedToken,
+  useUnknownImpactWarning,
+  useIsNoImpactWarningAccepted,
+} from 'modules/trade'
 import { getQuoteTimeOffset } from 'modules/tradeQuote'
 import { useTradeSlippage } from 'modules/tradeSlippage'
 import { SettingsTab, TradeRateDetails, useHighFeeWarning } from 'modules/tradeWidgetAddons'
@@ -154,17 +165,10 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
   const [showNativeWrapModal, setOpenNativeWrapModal] = useState(false)
   const showCowSubsidyModal = useModalIsOpen(ApplicationModal.COW_SUBSIDY)
 
-  // Hide the price impact warning when there is priceImpact value or when it's loading
-  // The loading values is debounced in useFiatValuePriceImpact() to avoid flickering
-  const hideUnknownImpactWarning =
-    isFractionFalsy(parsedAmounts.INPUT) ||
-    isFractionFalsy(parsedAmounts.OUTPUT) ||
-    !!priceImpactParams.priceImpact ||
-    priceImpactParams.loading
-
   const { feeWarningAccepted } = useHighFeeWarning()
-  const { impactWarningAccepted: _impactWarningAccepted, setImpactWarningAccepted } = useUnknownImpactWarning()
-  const impactWarningAccepted = hideUnknownImpactWarning || _impactWarningAccepted
+  const noImpactWarningAccepted = useIsNoImpactWarningAccepted()
+  const { impactWarningAccepted: unknownImpactWarning } = useUnknownImpactWarning()
+  const impactWarningAccepted = noImpactWarningAccepted || unknownImpactWarning
 
   const openNativeWrapModal = useCallback(() => setOpenNativeWrapModal(true), [])
   const dismissNativeWrapModal = useCallback(() => setOpenNativeWrapModal(false), [])
@@ -218,15 +222,12 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
   const swapWarningsTopProps: SwapWarningsTopProps = {
     chainId,
     trade,
-    impactWarningAccepted,
-    hideUnknownImpactWarning,
     showApprovalBundlingBanner,
     showWrapBundlingBanner,
     showSafeWcBundlingBanner,
     showTwapSuggestionBanner,
     nativeCurrencySymbol,
     wrappedCurrencySymbol,
-    setImpactWarningAccepted,
     shouldZeroApprove,
     buyingFiatAmount,
     priceImpact: priceImpactParams.priceImpact,
@@ -240,19 +241,22 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
     currencyOut: currencies.OUTPUT || undefined,
   }
 
-  const slots = {
+  const slots: TradeWidgetSlots = {
     settingsWidget: <SettingsTab recipientToggleState={recipientToggleState} deadlineState={deadlineState} />,
 
     topContent,
-    bottomContent: (
-      <>
-        {bottomContent}
-        <TradeRateDetails rateInfoParams={rateInfoParams} deadline={deadlineState[0]} />
-        <SwapWarningsTop {...swapWarningsTopProps} />
-        <SwapButtons {...swapButtonContext} />
-        <SwapWarningsBottom {...swapWarningsBottomProps} />
-      </>
-    ),
+    bottomContent(warnings) {
+      return (
+        <>
+          {bottomContent}
+          <TradeRateDetails rateInfoParams={rateInfoParams} deadline={deadlineState[0]} />
+          <SwapWarningsTop {...swapWarningsTopProps} />
+          {warnings}
+          <SwapButtons {...swapButtonContext} />
+          <SwapWarningsBottom {...swapWarningsBottomProps} />
+        </>
+      )
+    },
   }
 
   const params = {
